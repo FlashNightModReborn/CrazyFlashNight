@@ -2,15 +2,14 @@
 // 目标缓存提供者（集成FactionManager版本）
 // ----------------------------------------------------------------------------
 // 功能概述：
-// 1. 使用自适应替换缓存（ARC）算法管理 SortedUnitCache 实例
-// 2. 提供高效的缓存获取统一入口，自动适应不同访问模式
+// 1. 小工作集优化：使用 Object Map 管理 SortedUnitCache（典型工作集 <= 7 个键）
+// 2. 提供高效的缓存获取统一入口，适配高频场景（如子弹队列 updateInterval=1）
 // 3. 【重构改进】集成 FactionManager 支持多阵营系统
-// 4. 智能缓存替换策略，无需手动配置失效时间
+// 4. 失效由“版本号 + updateInterval”驱动，容量仅作为兜底
 // ============================================================================
 import org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
-import org.flashNight.naki.Cache.ARCCache;
 
 class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
 
@@ -19,12 +18,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
     // ========================================================================
     
     /**
-     * ARC缓存实例 - 核心缓存管理器
-     */
-    private static var _arcCache:ARCCache;
-    
-    /**
-     * 缓存注册表 - 用于跟踪活跃缓存项的详细信息
+     * 缓存表 - 小工作集优化（通常 <= 7 个键）
      * 【重构】现在使用阵营ID作为缓存键的一部分
      * 结构: {cacheKey: cacheValue对象}
      */
@@ -39,6 +33,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      * 缓存配置参数
      */
     private static var _cacheConfig:Object = {
+        // 兼容字段名：历史上用于 ARC 容量；现在作为缓存表容量上限（兜底）
         arcCacheCapacity: 100,
         forceRefreshThreshold: 600,
         versionCheckEnabled: true,
@@ -62,6 +57,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         versionMismatches: 0,
         forceRefreshCount: 0
     };
+
+    /**
+     * 【性能/内部】复用的临时缓存项（避免高频路径 new Object）
+     * 注意：仅作为 updateCache 的 out-param 使用，禁止外部持有引用。
+     */
+    private static var _tempCacheEntry:Object = {};
 
     /**
      * 缓存值结构定义
@@ -107,10 +108,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             // 初始化 TargetCacheUpdater
             _updater.initialize();
             
-            // 创建ARC缓存实例
-            _arcCache = new ARCCache(_cacheConfig.arcCacheCapacity);
-            
-            // 初始化缓存注册表
+            // 初始化缓存表
             _cacheRegistry = {};
             
             // 重置统计信息
@@ -157,6 +155,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         updateInterval:Number
     ):SortedUnitCache {
         var startTime:Number = getTimer();
+        // 延迟初始化兜底：静态初始化失败时（加载顺序问题）允许首次访问触发初始化
+        if (_cacheRegistry == undefined) {
+            if (!initialize()) {
+                recordAccessTime(startTime);
+                return null;
+            }
+        }
         _stats.totalRequests++;
 
         try {
@@ -165,16 +170,24 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
                 syncCacheRegistry();
             }
 
-            // 【重构】生成基于阵营的缓存键
-            var cacheKey:String = generateCacheKey(requestType, target);
+            // 【重构】生成基于阵营的缓存键 + 精细化版本号（按 requestType + requesterFaction）
+            var isAllRequest:Boolean = (requestType == "全体");
+            var targetFaction:String = isAllRequest ? null : FactionManager.getFactionFromUnit(target);
+            var cacheKey:String = isAllRequest ? "全体_all" : (requestType + "_" + targetFaction);
 
             // 获取当前帧数和版本信息
             var currentFrame:Number = _root.帧计时器.当前帧数;
-            var currentVersion:Number = _cacheConfig.versionCheckEnabled ? 
-                _updater.getCurrentVersion() : 0;
+            var currentVersion:Number = 0;
+            if (_cacheConfig.versionCheckEnabled) {
+                // 旧实现：全局 getCurrentVersion() 会导致“无关阵营变化”触发误失效
+                // 新实现：按请求类型 + 请求者阵营计算相关版本号
+                currentVersion = isAllRequest ?
+                    _updater.getCurrentVersion() :
+                    _updater.getVersionForRequest(requestType, targetFaction);
+            }
 
-            // 从ARC缓存中获取缓存值对象
-            var cacheValue:Object = _arcCache.get(cacheKey);
+            // 从缓存表中获取缓存值对象
+            var cacheValue:Object = _cacheRegistry[cacheKey];
             
             if (cacheValue != null) {
                 // 缓存命中 - 执行数据有效性检查
@@ -202,10 +215,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
                 
                 var newCacheValue:Object = createNewCacheValue(requestType, target, currentFrame, currentVersion);
                 
-                // 将新缓存值放入ARC缓存和注册表
-                _arcCache.put(cacheKey, newCacheValue);
+                // 放入缓存表
                 _cacheRegistry[cacheKey] = newCacheValue;
                 _stats.cacheCreations++;
+
+                // 兜底容量控制（小工作集场景一般不会触发，但保持行为稳定）
+                syncCacheRegistry();
                 
                 recordAccessTime(startTime);
                 return newCacheValue.cache;
@@ -215,25 +230,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             trace("缓存获取异常: " + error.message);
             recordAccessTime(startTime);
             return null;
-        }
-    }
-
-    /**
-     * 生成缓存键
-     * 【重构】使用 FactionManager 生成基于阵营的缓存键
-     * 
-     * @param {String} requestType - 请求类型
-     * @param {Object} target - 目标单位
-     * @return {String} 缓存键
-     * @private
-     */
-    private static function generateCacheKey(requestType:String, target:Object):String {
-        if (requestType == "全体") {
-            return "全体_all";
-        } else {
-            // 【重构】使用阵营ID而不是布尔值
-            var targetFaction:String = FactionManager.getFactionFromUnit(target);
-            return requestType + "_" + targetFaction;
         }
     }
 
@@ -290,13 +286,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         currentVersion:Number
     ):Object {
         // 创建临时缓存项对象
-        var tempCacheEntry:Object = {
-            data: [],
-            nameIndex: {},
-            rightValues: [],
-            leftValues: [],
-            lastUpdatedFrame: 0
-        };
+        // 注意：TargetCacheUpdater.updateCache 会完整写入 data/nameIndex/leftValues/rightValues/lastUpdatedFrame，
+        // 这里避免预先分配数组/对象造成无效GC。
+        var tempCacheEntry:Object = _tempCacheEntry;
         
         // 使用 TargetCacheUpdater 填充数据
         _updater.updateCache(
@@ -345,13 +337,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         currentFrame:Number,
         currentVersion:Number
     ):Void {
-        var tempCacheEntry:Object = {
-            data: [],
-            nameIndex: {},
-            rightValues: [],
-            leftValues: [],
-            lastUpdatedFrame: 0
-        };
+        // TargetCacheUpdater.updateCache 会写入完整字段，避免预分配导致的无效GC。
+        var tempCacheEntry:Object = _tempCacheEntry;
         
         _updater.updateCache(
             _root.gameworld,
@@ -402,44 +389,48 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
     // ========================================================================
     
     /**
-     * 清理注册表中被ARC淘汰的缓存项
+     * 同步/整理缓存表（容量兜底 + 清理无效项）
      * @private
      */
     private static function syncCacheRegistry():Void {
-        if (!_arcCache || !_cacheRegistry) return;
-        
-        // 获取ARC缓存中当前活跃的键
-        var activeKeys:Object = {};
-        var t1Keys:Array = _arcCache.getT1();
-        var t2Keys:Array = _arcCache.getT2();
-        
-        // 标记活跃键
-        for (var i:Number = 0; i < t1Keys.length; i++) {
-            var originalKey:String = convertARCKeyToOriginal(t1Keys[i]);
-            if (originalKey) activeKeys[originalKey] = true;
-        }
-        for (var j:Number = 0; j < t2Keys.length; j++) {
-            var originalKey2:String = convertARCKeyToOriginal(t2Keys[j]);
-            if (originalKey2) activeKeys[originalKey2] = true;
-        }
-        
-        // 清理注册表中不再活跃的项目
-        for (var regKey:String in _cacheRegistry) {
-            if (!activeKeys[regKey]) {
-                delete _cacheRegistry[regKey];
+        if (_cacheRegistry == undefined) return;
+
+        // 1) 清理无效项
+        var liveCount:Number = 0;
+        for (var key:String in _cacheRegistry) {
+            var cv:Object = _cacheRegistry[key];
+            if (!cv || !cv.cache) {
+                delete _cacheRegistry[key];
+            } else {
+                liveCount++;
             }
         }
-    }
-    
-    /**
-     * 将ARC缓存键转换为原始缓存键
-     * @private
-     */
-    private static function convertARCKeyToOriginal(arcKey:String):String {
-        if (arcKey && arcKey.charAt(0) == "_") {
-            return arcKey.substring(1);
+
+        // 2) 容量兜底：超出时淘汰“最久未访问”的条目
+        var capacity:Number = _cacheConfig.arcCacheCapacity;
+        if (capacity == undefined || capacity <= 0 || liveCount <= capacity) return;
+
+        var candidates:Array = [];
+        for (var k:String in _cacheRegistry) {
+            var v:Object = _cacheRegistry[k];
+            candidates.push({
+                key: k,
+                lastAccessFrame: v.lastAccessFrame,
+                createdFrame: v.createdFrame
+            });
         }
-        return arcKey;
+
+        // 小数组排序成本极低；按 lastAccessFrame 升序（最久未访问最先淘汰）
+        candidates.sort(function(a:Object, b:Object):Number {
+            var da:Number = a.lastAccessFrame - b.lastAccessFrame;
+            if (da != 0) return da;
+            return a.createdFrame - b.createdFrame;
+        });
+
+        var needRemove:Number = liveCount - capacity;
+        for (var i:Number = 0; i < needRemove; i++) {
+            delete _cacheRegistry[candidates[i].key];
+        }
     }
 
     /**
@@ -451,7 +442,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         if (requestType) {
             clearCacheByType(requestType);
         } else {
-            _arcCache = new ARCCache(_cacheConfig.arcCacheCapacity);
             _cacheRegistry = {};
         }
     }
@@ -461,6 +451,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      * @private
      */
     private static function clearCacheByType(requestType:String):Void {
+        if (_cacheRegistry == undefined) return;
+
         var keysToRemove:Array = [];
         
         for (var key:String in _cacheRegistry) {
@@ -472,10 +464,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         for (var i:Number = 0; i < keysToRemove.length; i++) {
             var keyToRemove:String = keysToRemove[i];
             delete _cacheRegistry[keyToRemove];
-            
-            if (_arcCache != null && typeof _arcCache.remove == "function") {
-                _arcCache.remove(keyToRemove);
-            }
         }
         
         syncCacheRegistry();
@@ -485,7 +473,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      * 强制刷新所有缓存
      */
     public static function invalidateAllCaches():Void {
-        _arcCache = new ARCCache(_cacheConfig.arcCacheCapacity);
         _cacheRegistry = {};
     }
 
@@ -598,7 +585,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      * 获取缓存数量
      */
     public static function getCacheCount():Number {
-        return _arcCache ? (_arcCache.getT1().length + _arcCache.getT2().length) : 0;
+        if (_cacheRegistry == undefined) return 0;
+        var count:Number = 0;
+        for (var key:String in _cacheRegistry) {
+            if (_cacheRegistry[key] && _cacheRegistry[key].cache) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -655,8 +649,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      * 【重构】包含阵营信息
      */
     public static function getCachePoolDetails():Object {
-        syncCacheRegistry();
-        
         var details:Object = {
             caches: {},
             totalUnits: 0,
@@ -665,6 +657,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             newestCacheAge: Number.MAX_VALUE,
             factionDistribution: {}  // 【新增】阵营分布
         };
+
+        if (_cacheRegistry == undefined) {
+            return details;
+        }
+
+        syncCacheRegistry();
         
         var currentFrame:Number = _root.帧计时器.当前帧数;
         var cacheCount:Number = 0;
@@ -737,19 +735,37 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      * 获取ARC缓存详细信息
      */
     public static function getARCCacheDetails():Object {
-        if (!_arcCache) return null;
-        
+        // 兼容接口：保留 ARC 字段形状，但数据来自小工作集缓存表
+        var t1:Array = [];
+        var t2:Array = [];
+        var b1:Array = [];
+        var b2:Array = [];
+
+        if (_cacheRegistry != undefined) {
+            for (var key:String in _cacheRegistry) {
+                var cv:Object = _cacheRegistry[key];
+                if (!cv || !cv.cache) continue;
+
+                // 轻量“冷热”划分：访问次数>=2 视为热（T2），否则视为冷（T1）
+                if (cv.accessCount >= 2) {
+                    t2.push(key);
+                } else {
+                    t1.push(key);
+                }
+            }
+        }
+
         return {
             capacity: _cacheConfig.arcCacheCapacity,
-            T1_queue: _arcCache.getT1(),
-            T2_queue: _arcCache.getT2(),
-            B1_queue: _arcCache.getB1(),
-            B2_queue: _arcCache.getB2(),
-            T1_size: _arcCache.getT1().length,
-            T2_size: _arcCache.getT2().length,
-            B1_size: _arcCache.getB1().length,
-            B2_size: _arcCache.getB2().length,
-            total_cached_items: _arcCache.getT1().length + _arcCache.getT2().length
+            T1_queue: t1,
+            T2_queue: t2,
+            B1_queue: b1,
+            B2_queue: b2,
+            T1_size: t1.length,
+            T2_size: t2.length,
+            B1_size: 0,
+            B2_size: 0,
+            total_cached_items: t1.length + t2.length
         };
     }
 
@@ -861,9 +877,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         var config:Object = getConfig();
         var arcDetails:Object = getARCCacheDetails();
         
-        // 检查ARC缓存可用性
-        if (!_arcCache) {
-            result.errors.push("ARC缓存实例不存在");
+        // 检查缓存表可用性
+        if (_cacheRegistry == undefined) {
+            result.errors.push("缓存表未初始化");
             result.healthy = false;
             return result;
         }

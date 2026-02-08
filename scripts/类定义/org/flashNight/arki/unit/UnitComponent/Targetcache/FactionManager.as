@@ -262,6 +262,24 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager {
         return _enemyFactionsCache[observerFaction] ? 
                _enemyFactionsCache[observerFaction].slice() : [];
     }
+
+    /**
+     * 【性能/内部】只读引用版 getEnemyFactions（零分配）
+     * - 返回缓存数组本体（无 slice），避免高频调用产生分配。
+     * - 调用方必须视为只读，禁止修改（push/splice/sort 等）。
+     * @return {Array} 内部缓存引用；无效阵营返回 null
+     */
+    public static function getEnemyFactionsRef(observerFaction:String):Array {
+        if (!_validFactionsMap[observerFaction]) {
+            return null;
+        }
+
+        if (!_cacheValid) {
+            rebuildCaches();
+        }
+
+        return _enemyFactionsCache[observerFaction];
+    }
     
     /**
      * 【优化2】缓存版 getAllyFactions
@@ -281,6 +299,24 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager {
         
         return _allyFactionsCache[observerFaction] ? 
                _allyFactionsCache[observerFaction].slice() : [];
+    }
+
+    /**
+     * 【性能/内部】只读引用版 getAllyFactions（零分配）
+     * - 返回缓存数组本体（无 slice），避免高频调用产生分配。
+     * - 调用方必须视为只读，禁止修改（push/splice/sort 等）。
+     * @return {Array} 内部缓存引用；无效阵营返回 null
+     */
+    public static function getAllyFactionsRef(observerFaction:String):Array {
+        if (!_validFactionsMap[observerFaction]) {
+            return null;
+        }
+
+        if (!_cacheValid) {
+            rebuildCaches();
+        }
+
+        return _allyFactionsCache[observerFaction];
     }
     
     /**

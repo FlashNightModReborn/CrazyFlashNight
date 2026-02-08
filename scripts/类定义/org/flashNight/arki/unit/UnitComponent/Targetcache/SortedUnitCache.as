@@ -42,11 +42,20 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      */
     public var leftValues:Array;
     
+     /**
+      * 预缓存的 aabbCollider.right 值数组
+      * 与 data 数组一一对应，用于范围查询的性能优化
+      */
+     public var rightValues:Array;
+
     /**
-     * 预缓存的 aabbCollider.right 值数组
-     * 与 data 数组一一对应，用于范围查询的性能优化
+     * 预计算的 right 前缀最大值数组（prefix max）
+     * 结构: rightMaxValues[i] = max(rightValues[0..i])
+     *
+     * 用途：为扫描线推进 / getTargetsFromIndex 提供**单调非降**的右边界键，
+     * 解决单位宽度变化导致 rightValues 非单调时二分/跳过逻辑不安全的问题。
      */
-    public var rightValues:Array;
+    public var rightMaxValues:Array;
     
     /**
      * 缓存最后更新的帧数
@@ -89,23 +98,27 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      * @param {Array} rightValues - right值数组（可选）
      * @param {Number} lastFrame - 最后更新帧数（可选）
      */
-    public function SortedUnitCache(
-        sortedUnits:Array,
-        nameIndex:Object,
-        leftValues:Array,
-        rightValues:Array,
-        lastFrame:Number
-    ) {
-        // 初始化数据结构
-        this.data = sortedUnits || [];
-        this.nameIndex = nameIndex || {};
-        this.leftValues = leftValues || [];
-        this.rightValues = rightValues || [];
-        this.lastUpdatedFrame = lastFrame || 0;
-        
-        // 重置查询状态缓存
-        resetQueryCache();
-    }
+     public function SortedUnitCache(
+         sortedUnits:Array,
+         nameIndex:Object,
+         leftValues:Array,
+         rightValues:Array,
+         lastFrame:Number
+     ) {
+         // 初始化数据结构
+         this.data = sortedUnits || [];
+         this.nameIndex = nameIndex || {};
+         this.leftValues = leftValues || [];
+         this.rightValues = rightValues || [];
+        this.rightMaxValues = [];
+         this.lastUpdatedFrame = lastFrame || 0;
+
+        // 构建 right 前缀最大值数组，保证右边界键单调性（供扫描线/二分使用）
+        rebuildRightMaxValues();
+
+         // 重置查询状态缓存
+         resetQueryCache();
+     }
 
     // ========================================================================
     // 基础信息方法
@@ -156,29 +169,32 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     // 范围查询核心方法（从TargetCacheManager迁移并优化）
     // ========================================================================
     
-    /**
-     * 从指定位置开始获取满足条件的目标列表（核心优化版）
-     * 
-     * 该方法在一个按 aabbCollider.right 升序排列的数组中，查找第一个
-     * 满足 aabbCollider.right >= query.left 条件的元素索引。
-     * 
-     * 性能优化策略：
-     * 1. 使用 rightValues 数组避免多层属性访问
-     * 2. 小数组（<=8个元素）：直接线性扫描
-     * 3. 缓存命中：当查询位置变化很小时，从上次位置开始线性扫描
-     * 4. 边界快速检查：检查首尾元素，快速处理极端情况
-     * 5. 二分查找：其他情况使用标准二分查找
-     * 
-     * @param {AABBCollider} query - 查询碰撞盒，使用其 left 属性作为查询边界
-     * @return {Object} 返回结果对象，包含：
-     *         - data: {Array} 完整的目标列表（引用原数组，未复制）
-     *         - startIndex: {Number} 第一个满足条件的元素索引
-     */
-    public function getTargetsFromIndex(query:AABBCollider):Object {
-        var n:Number = this.data.length;
-        
-        // 静态复用对象，减少GC压力
-        var result:Object = { data: this.data, startIndex: 0 };
+     /**
+      * 从指定位置开始获取满足条件的目标列表（核心优化版）
+      *
+      * 核心：在 data（按 aabbCollider.left 升序）上，借助 rightMaxValues（right 前缀最大值）
+      * 找到第一个满足 `aabbCollider.right >= query.left` 的索引。
+      *
+       * 注意：单位宽度会变化，rightValues（真实 right）不保证单调，不能直接对其做二分；
+       * rightMaxValues 保证单调非降，适用于二分/扫描线推进。
+       *
+       * 性能优化策略：
+       * 1. 使用 rightMaxValues 数组避免多层属性访问
+       * 2. 小数组（<=8个元素）：直接线性扫描
+       * 3. 缓存命中：当查询位置变化很小时，从上次位置开始线性扫描
+       * 4. 边界快速检查：检查首尾元素，快速处理极端情况
+       * 5. 二分查找：其他情况使用标准二分查找
+      *
+      * @param {AABBCollider} query - 查询碰撞盒，使用其 left 属性作为查询边界
+      * @return {Object} 返回结果对象，包含：
+      *         - data: {Array} 完整的目标列表（引用原数组，未复制）
+      *         - startIndex: {Number} 第一个满足条件的元素索引
+      */
+      public function getTargetsFromIndex(query:AABBCollider):Object {
+          var n:Number = this.data.length;
+
+          // 静态复用对象，减少GC压力
+          var result:Object = { data: this.data, startIndex: 0 };
         
         // 空数组快速返回
         if (n == 0) {
@@ -191,16 +207,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         // =====================================================================
         // 策略1：小数组优化（<=8个元素）
         // =====================================================================
-        if (n <= 8) {
-            var i:Number = 0;
-            do {
-                if (this.rightValues[i] >= queryLeft) {
-                    result.startIndex = i;
-                    _lastQueryLeft = queryLeft;
-                    _lastIndex = i;
-                    return result;
-                }
-            } while (++i < n);
+         if (n <= 8) {
+             var i:Number = 0;
+             do {
+                if (this.rightMaxValues[i] >= queryLeft) {
+                     result.startIndex = i;
+                     _lastQueryLeft = queryLeft;
+                     _lastIndex = i;
+                     return result;
+                 }
+             } while (++i < n);
             
             result.startIndex = n;
             _lastQueryLeft = queryLeft;
@@ -220,72 +236,72 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
             var threshold:Number = AdaptiveThresholdOptimizer.getThreshold();
             
             if ((deltaQueryDiff < 0 ? -deltaQueryDiff : deltaQueryDiff) <= threshold) {
-                var cachedRight:Number = this.rightValues[_lastIndex];
-                
-                if (cachedRight < queryLeft) {
-                    // 向后扫描
-                    var idxForward:Number = _lastIndex;
-                    while (idxForward < n && this.rightValues[idxForward] < queryLeft) {
-                        idxForward++;
-                    }
-                    if (idxForward > 0 && idxForward < n) {
-                        while (idxForward > 0 && this.rightValues[idxForward - 1] >= queryLeft) {
-                            idxForward--;
-                        }
-                    }
-                    result.startIndex = idxForward;
-                    _lastQueryLeft = queryLeft;
+                var cachedRight:Number = this.rightMaxValues[_lastIndex];
+
+                 if (cachedRight < queryLeft) {
+                     // 向后扫描
+                     var idxForward:Number = _lastIndex;
+                    while (idxForward < n && this.rightMaxValues[idxForward] < queryLeft) {
+                         idxForward++;
+                     }
+                     if (idxForward > 0 && idxForward < n) {
+                        while (idxForward > 0 && this.rightMaxValues[idxForward - 1] >= queryLeft) {
+                             idxForward--;
+                         }
+                     }
+                     result.startIndex = idxForward;
+                     _lastQueryLeft = queryLeft;
                     _lastIndex = idxForward;
                     return result;
-                } else {
-                    // 向前扫描
-                    var idxBackward:Number = _lastIndex;
-                    while (idxBackward > 0 && this.rightValues[idxBackward - 1] >= queryLeft) {
-                        idxBackward--;
-                    }
-                    result.startIndex = idxBackward;
-                    _lastQueryLeft = queryLeft;
-                    _lastIndex = idxBackward;
+                 } else {
+                     // 向前扫描
+                     var idxBackward:Number = _lastIndex;
+                    while (idxBackward > 0 && this.rightMaxValues[idxBackward - 1] >= queryLeft) {
+                         idxBackward--;
+                     }
+                     result.startIndex = idxBackward;
+                     _lastQueryLeft = queryLeft;
+                     _lastIndex = idxBackward;
                     return result;
                 }
             }
         }
         
-        // =====================================================================
-        // 策略3：边界元素快速检查
-        // =====================================================================
-        if (this.rightValues[0] >= queryLeft) {
-            result.startIndex = 0;
-            _lastQueryLeft = queryLeft;
-            _lastIndex = 0;
-            return result;
-        }
-        
-        if (this.rightValues[n - 1] < queryLeft) {
-            result.startIndex = n;
-            _lastQueryLeft = queryLeft;
-            _lastIndex = n;
-            return result;
-        }
+         // =====================================================================
+         // 策略3：边界元素快速检查
+         // =====================================================================
+        if (this.rightMaxValues[0] >= queryLeft) {
+             result.startIndex = 0;
+             _lastQueryLeft = queryLeft;
+             _lastIndex = 0;
+             return result;
+         }
+
+         if (this.rightMaxValues[n - 1] < queryLeft) {
+             result.startIndex = n;
+             _lastQueryLeft = queryLeft;
+             _lastIndex = n;
+             return result;
+         }
         
         // =====================================================================
         // 策略4：标准二分查找
-        // =====================================================================
-        var l:Number = 1;
-        var r:Number = n - 1;
-        
-        do {
-            var m:Number = (l + r) >> 1;
-            var unitRight:Number = this.rightValues[m];
-            
-            if (unitRight >= queryLeft) {
-                if (this.rightValues[m - 1] < queryLeft) {
-                    result.startIndex = m;
-                    _lastQueryLeft = queryLeft;
-                    _lastIndex = m;
-                    return result;
-                }
-                r = m - 1;
+          // =====================================================================
+          var l:Number = 1;
+          var r:Number = n - 1;
+
+          do {
+              var m:Number = (l + r) >> 1;
+             var unitRight:Number = this.rightMaxValues[m];
+
+              if (unitRight >= queryLeft) {
+                 if (this.rightMaxValues[m - 1] < queryLeft) {
+                      result.startIndex = m;
+                      _lastQueryLeft = queryLeft;
+                     _lastIndex = m;
+                     return result;
+                 }
+                 r = m - 1;
             } else {
                 l = m + 1;
             }
@@ -317,19 +333,19 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         }
     }
 
-    /**
-     * 基于“左→右”单调推进的起点查询。
-     * - 不使用二分与阈值判断，严格前向扫描，常数小，cache 友好。
-     * - 仅依赖 rightValues 与 _lastIndex；适合 bullets 按 X 升序处理的场景。
-     * - 查询条件：返回满足 right >= query.left 的第一个下标。
-     *
-     * @param {AABBCollider} query 查询 AABB，使用其 left 作为判定边界
-     * @return {Object} { data: this.data, startIndex: Number }
+     /**
+      * 基于“左→右”单调推进的起点查询。
+      * - 不使用二分与阈值判断，严格前向扫描，常数小，cache 友好。
+      * - 仅依赖 rightMaxValues 与 _lastIndex；适合 bullets 按 X 升序处理的场景。
+      * - 查询条件：返回满足 right >= query.left 的第一个下标。
+      *
+      * @param {AABBCollider} query 查询 AABB，使用其 left 作为判定边界
+      * @return {Object} { data: this.data, startIndex: Number }
      */
-    public function getTargetsFromIndexMonotonic(query:AABBCollider):Object {
-        var n:Number = this.data.length;
-        var result:Object = { data: this.data, startIndex: 0 };
-        if (n == 0) return result;
+     public function getTargetsFromIndexMonotonic(query:AABBCollider):Object {
+         var n:Number = this.data.length;
+         var result:Object = { data: this.data, startIndex: 0 };
+         if (n == 0) return result;
 
         var queryLeft:Number = query.left;
         // 起始索引选择：
@@ -341,10 +357,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
             idx = _lastIndex;
         }
 
-        // 仅向前推进，直到找到第一个 right >= queryLeft
-        while (idx < n && this.rightValues[idx] < queryLeft) {
-            idx++;
-        }
+         // 仅向前推进，直到找到第一个 right >= queryLeft
+        while (idx < n && this.rightMaxValues[idx] < queryLeft) {
+             idx++;
+         }
 
         result.startIndex = idx;
         _lastIndex = idx;
@@ -1079,21 +1095,45 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      * @param {Array} newRightValues - 新的right值数组
      * @param {Number} newFrame - 新的更新帧数
      */
-    public function updateData(
-        newData:Array,
-        newNameIndex:Object,
-        newLeftValues:Array,
-        newRightValues:Array,
-        newFrame:Number
-    ):Void {
-        this.data = newData || [];
-        this.nameIndex = newNameIndex || {};
-        this.leftValues = newLeftValues || [];
-        this.rightValues = newRightValues || [];
+     public function updateData(
+         newData:Array,
+         newNameIndex:Object,
+         newLeftValues:Array,
+         newRightValues:Array,
+         newFrame:Number
+     ):Void {
+         this.data = newData || [];
+         this.nameIndex = newNameIndex || {};
+         this.leftValues = newLeftValues || [];
+         this.rightValues = newRightValues || [];
         this.lastUpdatedFrame = newFrame || 0;
-        
-        // 重置查询缓存，因为数据已变化
-        resetQueryCache();
+
+        // 右边界键需要保持单调，供扫描线/二分使用
+        rebuildRightMaxValues();
+
+         // 重置查询缓存，因为数据已变化
+         resetQueryCache();
+     }
+
+    /**
+     * 重建 right 前缀最大值数组（rightMaxValues）
+     * @private
+     */
+    private function rebuildRightMaxValues():Void {
+        var n:Number = this.rightValues.length;
+        if (this.rightMaxValues == undefined) {
+            this.rightMaxValues = [];
+        }
+        this.rightMaxValues.length = n;
+
+        var currentMax:Number = -Infinity;
+        for (var i:Number = 0; i < n; i++) {
+            var rv:Number = this.rightValues[i];
+            if (!isNaN(rv) && rv > currentMax) {
+                currentMax = rv;
+            }
+            this.rightMaxValues[i] = currentMax;
+        }
     }
 
     /**
@@ -1193,19 +1233,33 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
             }
         }
 
-        // --- 右坐标单调性---
-        for (i = 1; i < len; i++) {
-            var ra:Number = this.rightValues[i - 1];
-            var rb:Number = this.rightValues[i];
-            if (isNaN(ra) || isNaN(rb)) {
-                result.errors.push("rightValues contain NaN at index " + i);
-                result.isValid = false;
-                break;
-            }
-            if (rb < ra) {
-                // 这里给 warning，提示你的 getTargetsFromIndex 二分假设不成立
-                result.warnings.push("rightValues not monotonic at index " + i + " (binary search on right is unsafe)");
-                break;
+         // --- 右坐标单调性---
+        // 右边界真实值(rightValues)不保证单调（单位宽度会变化），但用于扫描线/二分的 rightMaxValues 必须单调
+        if (this.rightMaxValues.length != len) {
+            result.errors.push("rightMaxValues length mismatch: " + this.rightMaxValues.length + " vs " + len);
+            result.isValid = false;
+        } else {
+            for (i = 0; i < len; i++) {
+                var rm:Number = this.rightMaxValues[i];
+                var rr:Number = this.rightValues[i];
+
+                if (isNaN(rr) || isNaN(rm)) {
+                    result.errors.push("rightValues/rightMaxValues contain NaN at index " + i);
+                    result.isValid = false;
+                    break;
+                }
+
+                if (rm < rr) {
+                    result.errors.push("rightMaxValues[" + i + "] < rightValues[" + i + "] (" + rm + " < " + rr + ")");
+                    result.isValid = false;
+                    break;
+                }
+
+                if (i > 0 && rm < this.rightMaxValues[i - 1]) {
+                    result.errors.push("rightMaxValues not monotonic at index " + i);
+                    result.isValid = false;
+                    break;
+                }
             }
         }
 
@@ -1237,14 +1291,15 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
                 lastQueryLeft: _lastQueryLeft,
                 lastIndex: _lastIndex
             },
-            memoryUsage: {
-                dataSize: this.data.length,
-                nameIndexSize: 0, // 计算对象大小比较复杂，这里简化
-                leftValuesSize: this.leftValues.length,
-                rightValuesSize: this.rightValues.length
-            }
-        };
-    }
+             memoryUsage: {
+                 dataSize: this.data.length,
+                 nameIndexSize: 0, // 计算对象大小比较复杂，这里简化
+                 leftValuesSize: this.leftValues.length,
+                rightValuesSize: this.rightValues.length,
+                rightMaxValuesSize: this.rightMaxValues.length
+             }
+         };
+     }
 
     /**
      * 生成状态报告字符串

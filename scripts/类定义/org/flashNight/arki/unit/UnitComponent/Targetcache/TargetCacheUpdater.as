@@ -21,10 +21,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     /**
      * 缓存池对象
      * 【重构】现在使用阵营ID作为缓存键的一部分
-     * 结构: {cacheKey: {tempList: Array, tempVersion: Number}}
+     * 结构: {cacheKey: {tempList: Array, tempVersion: Number, leftValues:Array, rightValues:Array, nameIndex:Object}}
      * - cacheKey: 缓存键，格式为 "敌人_FACTION_ID" 或 "友军_FACTION_ID" 或 "全体"
      * - tempList: 临时单位列表，用于减少重复收集
      * - tempVersion: 版本号，用于判断是否需要重新收集
+     * - leftValues/rightValues/nameIndex: 复用的数据结构，避免每帧分配导致GC抖动
      */
     private static var _cachePool:Object = {};
     
@@ -49,6 +50,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     private static var _ENEMY_TYPE:String = "敌人";
     private static var _ALLY_TYPE:String  = "友军";
     private static var _ALL_TYPE:String   = "全体";
+
+    /**
+     * TimSort 比较器复用（避免每次 updateCache new Function）
+     * @private
+     */
+    private static function _compareByLeft(a:Object, b:Object):Number {
+        return a.aabbCollider.left - b.aabbCollider.left;
+    }
 
     /**
      * 初始化标志
@@ -115,10 +124,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         var isAllRequest:Boolean   = (requestType == _ALL_TYPE);
         var isEnemyRequest:Boolean = (requestType == _ENEMY_TYPE);
 
-        // 【重构】创建一个假的单位对象来获取请求者的阵营
-        // 这是为了向后兼容，理想情况下应该直接传入单位对象或阵营ID
-        var requesterUnit:Object = { 是否为敌人: targetIsEnemy };
-        var requesterFaction:String = FactionManager.getFactionFromUnit(requesterUnit);
+        // 请求者阵营（向后兼容：由 legacy 的“是否为敌人”布尔值映射得到）
+        // 避免每次 updateCache new 临时对象造成 GC 压力。
+        var requesterFaction:String;
+        if (targetIsEnemy === true) {
+            requesterFaction = FactionManager.FACTION_ENEMY;
+        } else if (targetIsEnemy === false) {
+            requesterFaction = FactionManager.FACTION_PLAYER;
+        } else {
+            requesterFaction = FactionManager.FACTION_HOSTILE_NEUTRAL;
+        }
 
         // 生成缓存键
         var cacheKey:String = isAllRequest
@@ -127,7 +142,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
 
         // 获取或创建缓存类型数据
         if (!_cachePool[cacheKey]) {
-            _cachePool[cacheKey] = { tempList: [], tempVersion: -1 };
+            _cachePool[cacheKey] = {
+                tempList: [],
+                tempVersion: -1,
+                leftValues: [],
+                rightValues: [],
+                nameIndex: {}
+            };
         }
         var cacheTypeData:Object = _cachePool[cacheKey];
 
@@ -159,9 +180,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         var list:Array = cacheTypeData.tempList;
         var len:Number = list.length;
         if (len > 64) {
-            TimSort.sort(list, function(a:Object, b:Object):Number {
-                return a.aabbCollider.left - b.aabbCollider.left;
-            });
+            TimSort.sort(list, _compareByLeft);
         } else if (len > 1) {
             var i:Number = 1;
             do {
@@ -176,9 +195,18 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         }
 
         // 单循环完成所有数据提取
-        var leftValues:Array = [];
-        var rightValues:Array = [];
-        var newNameIndex:Object = {};
+        var leftValues:Array = cacheTypeData.leftValues;
+        var rightValues:Array = cacheTypeData.rightValues;
+        var newNameIndex:Object = cacheTypeData.nameIndex;
+
+        // 复用数组：缩短到当前长度，避免保留旧数据
+        leftValues.length = len;
+        rightValues.length = len;
+
+        // 复用索引对象：清空旧键，避免 stale 映射（不新建对象以减少分配）
+        for (var oldKey:String in newNameIndex) {
+            delete newNameIndex[oldKey];
+        }
         
         for (var k:Number = 0; k < len; k++) {
             var unit:Object = list[k];
@@ -198,6 +226,18 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         cacheEntry.rightValues       = rightValues;
         cacheEntry.leftValues        = leftValues;
         cacheEntry.lastUpdatedFrame  = currentFrame;
+    }
+
+    /**
+     * 获取指定请求在当前阵营关系下的“相关版本号”
+     * - 用于 Provider 做精细化版本检查，避免无关阵营变化导致缓存误失效。
+     *
+     * @param {String} requestType       请求类型: "敌人"、"友军"或"全体"
+     * @param {String} requesterFaction  请求者阵营ID
+     * @return {Number} 版本号
+     */
+    public static function getVersionForRequest(requestType:String, requesterFaction:String):Number {
+        return _calculateVersion(requestType, requesterFaction);
     }
 
     // ========================================================================
@@ -223,18 +263,24 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             return totalVersion;
         } else if (requestType == _ENEMY_TYPE) {
             // 敌人请求：所有敌对阵营版本号之和
-            var enemyFactions:Array = FactionManager.getEnemyFactions(requesterFaction);
+            // 使用 Ref 版本避免 slice 分配（高频路径）
+            var enemyFactions:Array = FactionManager.getEnemyFactionsRef(requesterFaction);
             var enemyVersion:Number = 0;
-            for (var i:Number = 0; i < enemyFactions.length; i++) {
-                enemyVersion += _factionVersions[enemyFactions[i]] || 0;
+            if (enemyFactions != null) {
+                for (var i:Number = 0; i < enemyFactions.length; i++) {
+                    enemyVersion += _factionVersions[enemyFactions[i]] || 0;
+                }
             }
             return enemyVersion;
         } else {
             // 友军请求：所有友好阵营版本号之和
-            var allyFactions:Array = FactionManager.getAllyFactions(requesterFaction);
+            // 使用 Ref 版本避免 slice 分配（高频路径）
+            var allyFactions:Array = FactionManager.getAllyFactionsRef(requesterFaction);
             var allyVersion:Number = 0;
-            for (var j:Number = 0; j < allyFactions.length; j++) {
-                allyVersion += _factionVersions[allyFactions[j]] || 0;
+            if (allyFactions != null) {
+                for (var j:Number = 0; j < allyFactions.length; j++) {
+                    allyVersion += _factionVersions[allyFactions[j]] || 0;
+                }
             }
             return allyVersion;
         }

@@ -644,7 +644,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
             // ---- 双指针扫描线数据准备：核心优化算法的数据基础 ----
             unitMap = cache.data;                       // 目标单位实例数组
-            unitRightKeys = cache.rightValues;          // 目标右边界数组（用于扫描线推进）
+            // 使用 rightMaxValues（right 前缀最大值）作为扫描线推进键：保证单调性，避免单位宽度变化导致跳过不安全
+            unitRightKeys = cache.rightMaxValues != undefined ? cache.rightMaxValues : cache.rightValues;
             unitLeftKeys = cache.leftValues;            // 目标左边界数组（用于碰撞窗口判断）
             len = unitMap.length;                       // 目标遍历边界（整个队列处理期间不变）
             bulletLeftKeys = q.getLeftKeysRef();        // 子弹左边界数组（查询起点）

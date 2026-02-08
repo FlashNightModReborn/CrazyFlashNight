@@ -142,7 +142,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * - 适用于同一帧中子弹按X从左到右处理的场景，常数更小。
      * @param {Object} target            目标单位（用于定位所属阵营缓存）
      * @param {Number} updateInterval    缓存更新间隔（帧）
-     * @param {String} requestType       请求类型："����"/"�Ѿ�"/"ȫ��"
+     * @param {String} requestType       请求类型："敌人"/"友军"/"全体"
      * @param {AABBCollider} query       查询AABB（使用 left 作为判定边界）
      * @return {Object} { data:Array, startIndex:Number }
      */
@@ -883,6 +883,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      */
     public static function clearCache(requestType:String):Void {
         _provider.clearCache(requestType);
+    }
+
+    /**
+     * 清理所有缓存（向后兼容别名）
+     * 旧代码中常用 TargetCacheManager.clear() 进行重置。
+     */
+    public static function clear():Void {
+        clearCache(null);
     }
 
     /**
