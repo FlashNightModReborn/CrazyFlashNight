@@ -606,16 +606,10 @@
     "$SIDE_DESCRIPTION_40009": "前往学生宿舍，看看你的新舍友。",
     "$SIDE_GET_40009": [
         {
-            "name": "Vanshuther",
-            "title": "教授",
-            "char": "Vanshuther",
-            "text": "宿舍区就在教学楼左边，你应该还记得路吧？"
-        },
-        {
             "name": "$PC",
             "title": "$PC_TITLE",
             "char": "$PC_CHAR",
-            "text": "当然。"
+            "text": "好。"
         }
     ],
     "$SIDE_FINISH_40009": [
@@ -1013,23 +1007,17 @@
             "name": "Vanshuther",
             "title": "教授",
             "char": "Vanshuther",
-            "text": "在这个时代，体育课可不是跑跑圈那么简单了，体育老师的课程对你们应该很有帮助。"
-        },
-        {
-            "name": "$PC",
-            "title": "$PC_TITLE",
-            "char": "$PC_CHAR",
-            "text": "好的，我去看看。"
+            "text": "在这个时代，体育课可不是跑跑圈那么简单了，体育老师的课程对你们应该很有帮助，他对空手战斗也非常在行。"
         }
     ],
     "$SIDE_TITLE_40014": "内力之道",
     "$SIDE_DESCRIPTION_40014": "前往教学楼门口，寻找体育老师进行进阶战斗训练。",
     "$SIDE_GET_40014": [
         {
-            "name": "Vanshuther",
-            "title": "教授",
-            "char": "Vanshuther",
-            "text": "体育老师应该在大楼外面，如果教学楼门口找不到的话，也可以去右边操场看看。他对空手战斗非常在行。"
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "好的，我去看看。"
         }
     ],
     "$SIDE_FINISH_40014": [
