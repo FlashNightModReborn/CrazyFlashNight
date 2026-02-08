@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景按钮/黑铁阁元件" itemID="6979b603-00000b17" lastModified="1769584205" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="场景按钮/黑铁阁元件" itemID="6979b603-00000b17" lastModified="1770557877" lastUniqueIdentifier="7">
   <timeline>
-    <DOMTimeline name="黑铁阁元件">
+    <DOMTimeline name="黑铁阁元件" currentFrame="1">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -44,7 +44,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="场景素材/黑铁阁背景素材" selected="true" centerPoint3DX="154.25" centerPoint3DY="61.85" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="场景素材/黑铁阁背景素材" centerPoint3DX="154.25" centerPoint3DY="61.85" exportAsBitmap="true">
                   <transformationPoint>
                     <Point x="154.25" y="61.8"/>
                   </transformationPoint>

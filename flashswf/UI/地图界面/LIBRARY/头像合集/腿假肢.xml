@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="头像合集/腿假肢" itemID="68141af0-000017b0" symbolType="graphic" lastModified="1746148080">
+  <timeline>
+    <DOMTimeline name="腿假肢">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="头像合集/腿假肢上部" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point x="47.5" y="53.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="头像合集/腿假肢下部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="20.25" ty="93.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.9" y="176.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

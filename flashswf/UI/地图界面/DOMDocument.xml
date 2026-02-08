@@ -1,21 +1,23 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="1024" height="576" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="gazer" itemID="69875401-000006bf"/>
-          <DOMFolderItem name="gazer/元件素材" itemID="69875401-000006c0"/>
-          <DOMFolderItem name="shape" itemID="6979a632-000006fc"/>
+          <DOMFolderItem name="image" itemID="6988b1c7-00000ce2"/>
+          <DOMFolderItem name="Shapes" itemID="53eaa42b-0000229b"/>
           <DOMFolderItem name="sound" itemID="674aa104-00000222"/>
+          <DOMFolderItem name="Sprites" itemID="68119024-0000045b"/>
           <DOMFolderItem name="按钮" itemID="69799cd9-0000058f"/>
-          <DOMFolderItem name="场景按钮" itemID="69799ec5-000005bb" isExpanded="true"/>
+          <DOMFolderItem name="场景按钮" itemID="69799ec5-000005bb"/>
           <DOMFolderItem name="场景素材" itemID="69799c66-00000585"/>
+          <DOMFolderItem name="场景素材/shape" itemID="6979a632-000006fc"/>
+          <DOMFolderItem name="场景素材/背景元件" itemID="666e999d-000002c6"/>
           <DOMFolderItem name="场景素材/房间摆件" itemID="6748cf4c-00000282"/>
           <DOMFolderItem name="场景素材/风扇" itemID="6745897d-0000007d"/>
           <DOMFolderItem name="场景素材/黑铁阁" itemID="6979b5aa-00000ae0"/>
           <DOMFolderItem name="场景素材/黑铁阁/未命名文件夹 1" itemID="6979b5aa-00000ae1" isExpanded="true"/>
           <DOMFolderItem name="场景素材/黑铁阁/未命名文件夹 1/杂项" itemID="6679b4c9-000001cd"/>
+          <DOMFolderItem name="场景素材/其他素材" itemID="6816da6d-000004e6"/>
           <DOMFolderItem name="场景素材/纹理图" itemID="67458b02-000000cf"/>
           <DOMFolderItem name="场景素材/修炼场" itemID="6979b4e7-00000ab6"/>
           <DOMFolderItem name="场景素材/重复项目文件夹" itemID="6979a96d-000007c4"/>
-          <DOMFolderItem name="待整理防具相关汇总" itemID="69888eef-000004b2"/>
           <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9"/>
           <DOMFolderItem name="对话框UI/黑铁会外交部长-部件" itemID="674abef1-00001ae9"/>
           <DOMFolderItem name="对话框UI/冷兵器商人" itemID="66656017-00001921"/>
@@ -24,22 +26,28 @@
           <DOMFolderItem name="对话框UI/冷兵器商人/冷武器商人/冷兵/冷兵构件" itemID="666555c7-00001364"/>
           <DOMFolderItem name="对话框UI/冷兵器商人/冷武器商人/肢体" itemID="674ab935-000019d8"/>
           <DOMFolderItem name="对话框UI/冷兵器商人/冷武器商人/肢体/细分 副本" itemID="66656c51-000019d4"/>
-          <DOMFolderItem name="官网壁纸" itemID="674aa074-0000020a"/>
-          <DOMFolderItem name="其他素材" itemID="6816da6d-000004e6"/>
-          <DOMFolderItem name="头像合集" itemID="69799c54-0000057f" isExpanded="true"/>
-          <DOMFolderItem name="头像合集/头像素材" itemID="69799d21-00000592" isExpanded="true"/>
+          <DOMFolderItem name="头像合集" itemID="69799c54-0000057f"/>
+          <DOMFolderItem name="头像合集/gazer" itemID="69875401-000006bf"/>
+          <DOMFolderItem name="头像合集/gazer/元件素材" itemID="69875401-000006c0" isExpanded="true"/>
+          <DOMFolderItem name="头像合集/头像素材" itemID="69799d21-00000592"/>
+          <DOMFolderItem name="头像合集/阎凝儿gazer" itemID="665b6b43-000044ac"/>
+          <DOMFolderItem name="头像合集/阎凝儿gazer/元件素材" itemID="6654b586-000002dd"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
-          <DOMFolderItem name="阎凝儿gazer" itemID="665b6b43-000044ac"/>
-          <DOMFolderItem name="阎凝儿gazer/元件素材" itemID="6654b586-000002dd"/>
      </folders>
      <media>
           <DOMBitmapItem name="头像合集/头像素材/andylaw" itemID="6979aec1-0000091e" sourceExternalFilepath="../地图界面/LIBRARY/头像合集/头像素材/andylaw.png" sourceLastImported="1769582217" externalFileCRC32="19696464" externalFileSize="3439" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/andylaw.png" bitmapDataHRef="M 49 1732947348.dat" frameRight="900" frameBottom="940"/>
+          <DOMBitmapItem name="头像合集/artist头像素材" itemID="6988af02-00000b4c" sourceExternalFilepath="位图 2.png" sourceLastImported="1770565378" externalFileSize="2645" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/artist头像素材.png" bitmapDataHRef="M 189 1770565119.dat" frameRight="960" frameBottom="940"/>
           <DOMBitmapItem name="场景素材/纹理图/Asphalt031_1K-JPG_Color.jpg" itemID="6745b232-00000155" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/Asphalt031_1K-JPG_Color.jpg" sourceLastImported="1728359378" allowSmoothing="true" quality="50" href="场景素材/纹理图/Asphalt031_1K-JPG_Color.jpg" bitmapDataHRef="M 5 1732944133.dat" frameRight="20480" frameBottom="20480" isJPEG="true"/>
           <DOMBitmapItem name="场景素材/纹理图/Asphalt031_1K-JPG_Displacement.jpg" itemID="6745b236-00000159" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/Asphalt031_1K-JPG_Displacement.jpg" sourceLastImported="1728359466" allowSmoothing="true" quality="50" href="场景素材/纹理图/Asphalt031_1K-JPG_Displacement.jpg" bitmapDataHRef="M 4 1732944133.dat" frameRight="20480" frameBottom="20480" isJPEG="true"/>
+          <DOMBitmapItem name="头像合集/Bat位图" itemID="6988cbe6-000010bd" sourceExternalFilepath="位图 3" sourceLastImported="1770572774" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/Bat位图" bitmapDataHRef="M 234 1770572743.dat" frameRight="3980" frameBottom="3080"/>
           <DOMBitmapItem name="场景素材/黑铁阁/未命名文件夹 1/bitmap1.png" itemID="6679b4ac-00000174" sourceLastImported="1719252140" originalCompressionType="lossless" quality="50" href="场景素材/黑铁阁/未命名文件夹 1/bitmap1.png" bitmapDataHRef="M 217 1769584042.dat" frameRight="35000" frameBottom="12000"/>
           <DOMBitmapItem name="场景素材/纹理图/bitmap13.jpg" itemID="66751b8b-00000042" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/bitmap13.jpg" sourceLastImported="1718950795" quality="50" href="场景素材/纹理图/bitmap13.jpg" bitmapDataHRef="M 7 1732944133.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
           <DOMBitmapItem name="场景素材/黑铁阁/未命名文件夹 1/bitmap13.png" itemID="6679b4ac-0000018d" sourceLastImported="1719252140" originalCompressionType="lossless" quality="50" href="场景素材/黑铁阁/未命名文件夹 1/bitmap13.png" bitmapDataHRef="M 218 1769584042.dat" frameRight="35000" frameBottom="12000"/>
+          <DOMBitmapItem name="场景素材/bitmap14.jpg" itemID="667aeb39-00000071" sourceLastImported="1719331642" quality="50" href="场景素材/bitmap14.jpg" bitmapDataHRef="M 167 1770559772.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="场景素材/bitmap15.jpg" itemID="667aeb3a-00000076" sourceLastImported="1719331642" quality="50" href="场景素材/bitmap15.jpg" bitmapDataHRef="M 168 1770559772.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
           <DOMBitmapItem name="场景素材/bitmap2123.jpg" itemID="6597607b-00000415" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2123.jpg" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="场景素材/bitmap2123.jpg" bitmapDataHRef="M 1 1732887827.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="image/bitmap2252.jpg" itemID="6597607b-00000456" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2252.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2252.jpg" bitmapDataHRef="M 193 1770566089.dat" frameRight="15120" frameBottom="4280" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2255.jpg" itemID="6597607b-0000045b" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2255.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2255.jpg" bitmapDataHRef="M 192 1770566089.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
           <DOMBitmapItem name="场景素材/bitmap2259.jpg" itemID="6597607b-00000460" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2259.jpg" sourceLastImported="1704419451" quality="50" href="场景素材/bitmap2259.jpg" bitmapDataHRef="M 25 1732944133.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
           <DOMBitmapItem name="场景素材/bitmap2261.png" itemID="6597607b-00000465" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2261.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/bitmap2261.png" bitmapDataHRef="M 18 1732944133.dat" frameRight="1140" frameBottom="1480"/>
           <DOMBitmapItem name="场景素材/纹理图/bitmap2261.png" itemID="67458aad-000000ba" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/bitmap2261.png" sourceLastImported="1732610729" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/纹理图/bitmap2261.png" bitmapDataHRef="M 8 1732944133.dat" frameRight="1140" frameBottom="1480"/>
@@ -54,11 +62,13 @@
           <DOMBitmapItem name="场景素材/bitmap2985.png" itemID="6597607d-00000509" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2985.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="场景素材/bitmap2985.png" bitmapDataHRef="M 19 1732944133.dat" frameRight="2360" frameBottom="1000"/>
           <DOMBitmapItem name="场景素材/bitmap2986.png" itemID="6597607d-0000050e" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2986.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="场景素材/bitmap2986.png" bitmapDataHRef="M 20 1732944133.dat" frameRight="3000" frameBottom="1120"/>
           <DOMBitmapItem name="场景素材/bitmap2993.png" itemID="6597607d-00000513" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2993.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="场景素材/bitmap2993.png" bitmapDataHRef="M 21 1732944133.dat" frameRight="3000" frameBottom="1040"/>
+          <DOMBitmapItem name="场景素材/bitmap3.jpg" itemID="667aeb39-0000006c" sourceLastImported="1719331641" allowSmoothing="true" quality="50" href="场景素材/bitmap3.jpg" bitmapDataHRef="M 166 1770559772.dat" frameRight="12000" frameBottom="7980" isJPEG="true"/>
           <DOMBitmapItem name="场景素材/bitmap3077.png" itemID="6597607d-0000051d" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap3077.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="场景素材/bitmap3077.png" bitmapDataHRef="M 22 1732944133.dat" frameRight="3400" frameBottom="1500"/>
           <DOMBitmapItem name="场景素材/bitmap3078.png" itemID="6597607d-00000522" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap3078.png" sourceLastImported="1704419453" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/bitmap3078.png" bitmapDataHRef="M 23 1732944133.dat" frameRight="3280" frameBottom="1140"/>
           <DOMBitmapItem name="场景素材/bitmap51850.png" itemID="6597607c-000004b6" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap51850.png" sourceLastImported="1704419453" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/bitmap51850.png" bitmapDataHRef="M 108 1743165665.dat" frameRight="44400" frameBottom="20900"/>
           <DOMBitmapItem name="场景素材/黑铁阁/未命名文件夹 1/bitmap56.png" itemID="6679b4ad-000001a1" sourceLastImported="1719252141" originalCompressionType="lossless" quality="50" href="场景素材/黑铁阁/未命名文件夹 1/bitmap56.png" bitmapDataHRef="M 221 1769584042.dat" frameRight="6400" frameBottom="4480"/>
           <DOMBitmapItem name="场景素材/纹理图/bitmap7.jpg" itemID="66751b8b-0000003d" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/bitmap7.jpg" sourceLastImported="1718950795" quality="50" href="场景素材/纹理图/bitmap7.jpg" bitmapDataHRef="M 6 1732944133.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="场景素材/bitmap74.png" itemID="667aeb3a-0000007b" sourceLastImported="1719331642" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/bitmap74.png" bitmapDataHRef="M 169 1770559772.dat" frameRight="3280" frameBottom="1140"/>
           <DOMBitmapItem name="头像合集/头像素材/blue" itemID="6979aec1-0000091f" sourceExternalFilepath="../地图界面/LIBRARY/头像合集/头像素材/blue.png" sourceLastImported="1769582225" externalFileCRC32="3439046131" externalFileSize="5137" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/blue.png" bitmapDataHRef="M 51 1732948263.dat" frameRight="1340" frameBottom="940"/>
           <DOMBitmapItem name="头像合集/头像素材/boy" itemID="6979aec1-00000920" sourceExternalFilepath="../地图界面/LIBRARY/头像合集/头像素材/boy.png" sourceLastImported="1769582249" externalFileCRC32="1781558417" externalFileSize="4617" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/boy.png" bitmapDataHRef="M 55 1732949545.dat" frameRight="1300" frameBottom="1060"/>
           <DOMBitmapItem name="D9F29DF522C4C3257F9ED4962ADE8291.png" itemID="67b06439-00000619" sourceExternalFilepath="../地图界面/LIBRARY/D9F29DF522C4C3257F9ED4962ADE8291.png" sourceLastImported="1739612526" externalFileSize="82877" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="D9F29DF522C4C3257F9ED4962ADE8291.png" bitmapDataHRef="M 103 1739612937.dat" frameRight="20480" frameBottom="11520"/>
@@ -66,68 +76,120 @@
           <DOMBitmapItem name="场景素材/image 4" itemID="65982aa0-00000004" sourceLastImported="1704471200" allowSmoothing="true" quality="100" href="场景素材/image 4" bitmapDataHRef="M 170 1769580910.dat" frameRight="6000" frameBottom="4800" isJPEG="true"/>
           <DOMBitmapItem name="头像合集/头像素材/king" itemID="6979aec1-00000922" sourceExternalFilepath="../地图界面/LIBRARY/头像合集/头像素材/king.png" sourceLastImported="1769582249" externalFileCRC32="2481595956" externalFileSize="5195" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/king.png" bitmapDataHRef="M 56 1732950039.dat" frameRight="1320" frameBottom="880"/>
           <DOMBitmapItem name="头像合集/头像素材/pig" itemID="6979aec1-00000923" sourceExternalFilepath="../地图界面/LIBRARY/头像合集/头像素材/pig.png" sourceLastImported="1769582249" externalFileCRC32="1542747713" externalFileSize="4367" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/pig.png" bitmapDataHRef="M 54 1732949340.dat" frameRight="880" frameBottom="1000"/>
+          <DOMBitmapItem name="头像合集/PROPHET头像素材" itemID="6988b77c-00000ef0" sourceExternalFilepath="位图 1" sourceLastImported="1770567548" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/PROPHET头像素材" bitmapDataHRef="M 228 1770567522.dat" frameRight="1080" frameBottom="2320"/>
           <DOMBitmapItem name="头像合集/头像素材/shopgirl" itemID="6979aec1-00000924" sourceExternalFilepath="../地图界面/LIBRARY/头像合集/头像素材/shopgirl.png" sourceLastImported="1769582233" externalFileCRC32="70558979" externalFileSize="3810" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/shopgirl.png" bitmapDataHRef="M 52 1732948501.dat" frameRight="800" frameBottom="960"/>
+          <DOMBitmapItem name="头像合集/soldier头像素材" itemID="6988af69-00000b71" sourceExternalFilepath="位图 2" sourceLastImported="1770565481" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/soldier头像素材" bitmapDataHRef="M 191 1770565456.dat" frameRight="1080" frameBottom="1260"/>
           <DOMSoundItem name="sound/sound2342.wav" itemID="6597607b-0000047f" sourceExternalFilepath="../地图界面/LIBRARY/sound/sound2342.wav" sourceLastImported="1704196122" href="sound/sound2342.wav" soundDataHRef="M 13 1732944133.dat" format="11kHz 16bit Mono" sampleCount="11908" exportFormat="5" exportBits="7" dataLength="23816"/>
           <DOMSoundItem name="sound/sound2343.mp3" itemID="6597607b-00000483" sourceExternalFilepath="../地图界面/LIBRARY/sound/sound2343.mp3" sourceLastImported="1704419451" href="sound/sound2343.mp3" soundDataHRef="M 14 1732944133.dat" format="44kHz 16bit Mono" sampleCount="52992" exportFormat="5" exportBits="7" dataLength="19226" exportNative="true" cachedSampleCount="6624"/>
           <DOMSoundItem name="sound/sound2344.mp3" itemID="6597607b-00000487" sourceExternalFilepath="../地图界面/LIBRARY/sound/sound2344.mp3" sourceLastImported="1704419451" href="sound/sound2344.mp3" soundDataHRef="M 15 1732944133.dat" format="44kHz 16bit Mono" sampleCount="93312" exportFormat="5" exportBits="7" dataLength="33854" exportNative="true" cachedSampleCount="11664"/>
           <DOMSoundItem name="sound/sound2390.wav" itemID="6597607b-00000488" sourceExternalFilepath="../地图界面/LIBRARY/sound/sound2390.wav" sourceLastImported="1704196122" href="sound/sound2390.wav" soundDataHRef="M 16 1732944133.dat" format="11kHz 16bit Mono" sampleCount="9576" exportFormat="5" exportBits="7" dataLength="19152"/>
           <DOMSoundItem name="sound/sound2609.wav" itemID="6597607c-000004b1" sourceExternalFilepath="../地图界面/LIBRARY/sound/sound2609.wav" sourceLastImported="1704196122" href="sound/sound2609.wav" soundDataHRef="M 24 1732944133.dat" format="11kHz 16bit Mono" sampleCount="35267" exportFormat="5" exportBits="7" dataLength="70534"/>
           <DOMBitmapItem name="头像合集/头像素材/the girl" itemID="6979aec1-00000925" sourceExternalFilepath="../地图界面/LIBRARY/头像合集/头像素材/the girl.png" sourceLastImported="1769582222" externalFileCRC32="2031290242" externalFileSize="7581" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/the girl.png" bitmapDataHRef="M 50 1732947542.dat" frameRight="1660" frameBottom="1140"/>
+          <DOMBitmapItem name="头像合集/Tomboy位图" itemID="6988cc50-000010ed" sourceExternalFilepath="位图 4" sourceLastImported="1770572880" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/Tomboy位图" bitmapDataHRef="M 235 1770572863.dat" frameRight="2180" frameBottom="2220"/>
+          <DOMBitmapItem name="头像合集/Vanshuther位图 " itemID="6988dd88-00001e3f" sourceExternalFilepath="位图 3" sourceLastImported="1770577288" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/Vanshuther位图 " bitmapDataHRef="M 210 1770577264.dat" frameRight="7440" frameBottom="9000"/>
+          <DOMBitmapItem name="头像合集/阿波头像素材" itemID="6988b400-00000d83" sourceExternalFilepath="位图 2" sourceLastImported="1770566656" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/阿波头像素材" bitmapDataHRef="M 206 1770566507.dat" frameRight="1820" frameBottom="1100"/>
           <DOMBitmapItem name="头像合集/头像素材/宝石线人" itemID="6979a297-000006a3" sourceExternalFilepath="../地图界面/LIBRARY/位图 1.png" sourceLastImported="1769579159" externalFileSize="4108" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/宝石线人.png" bitmapDataHRef="M 157 1769579086.dat" frameRight="880" frameBottom="880"/>
-          <DOMBitmapItem name="官网壁纸/车库.jpg" itemID="66e8080c-00000265" sourceExternalFilepath="../地图界面/LIBRARY/官网壁纸/车库.jpg" sourceLastImported="1726482426" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="官网壁纸/车库.jpg" bitmapDataHRef="M 2 1732943988.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="翅虎.png" itemID="69875858-000006e5" sourceExternalFilepath="./LIBRARY/翅虎.png" sourceLastImported="1770477569" externalFileSize="253099" originalCompressionType="lossless" quality="50" href="翅虎.png" bitmapDataHRef="M 123 1770477611.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="黑龙.png" itemID="698758d6-00000702" sourceExternalFilepath="./LIBRARY/黑龙.png" sourceLastImported="1770477195" externalFileSize="216063" originalCompressionType="lossless" quality="50" href="黑龙.png" bitmapDataHRef="M 127 1770477747.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="黑铁.png" itemID="69875910-00000710" sourceExternalFilepath="./LIBRARY/黑铁.png" sourceLastImported="1755253547" externalFileSize="187913" originalCompressionType="lossless" quality="50" href="黑铁.png" bitmapDataHRef="M 129 1770477807.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="火凤.png" itemID="698758a3-000006f3" sourceExternalFilepath="./LIBRARY/火凤.png" sourceLastImported="1770477530" externalFileSize="245527" originalCompressionType="lossless" quality="50" href="火凤.png" bitmapDataHRef="M 125 1770477700.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="头像合集/程铮位图 " itemID="6988d759-0000174c" sourceExternalFilepath="位图 5" sourceLastImported="1770575705" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/程铮位图 " bitmapDataHRef="M 264 1770575538.dat" frameRight="1640" frameBottom="2060"/>
+          <DOMBitmapItem name="头像合集/头像素材/翅虎.png" itemID="69875858-000006e5" sourceExternalFilepath="../地图界面/LIBRARY/翅虎.png" sourceLastImported="1770477569" externalFileSize="253099" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/翅虎.png" bitmapDataHRef="M 123 1770477611.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="场景素材/大学操场位图" itemID="6988d07d-00001303" sourceExternalFilepath="位图 3" sourceLastImported="1770573949" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/大学操场位图" bitmapDataHRef="M 253 1770573907.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="场景素材/大学操场位图2" itemID="6988d112-00001318" sourceExternalFilepath="场景素材/大学操场位图2.png" sourceLastImported="1770574095" externalFileSize="5580" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/大学操场位图2.png" bitmapDataHRef="M 257 1770574073.dat" frameRight="3860" frameBottom="1300"/>
+          <DOMBitmapItem name="场景素材/大学地下工坊位图" itemID="6988dcd7-00001e08" sourceExternalFilepath="位图 2" sourceLastImported="1770577111" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/大学地下工坊位图" bitmapDataHRef="M 209 1770577048.dat" frameRight="23960" frameBottom="11980"/>
+          <DOMBitmapItem name="场景素材/大学内部位图" itemID="6988cea3-000011f7" sourceExternalFilepath="位图 1" sourceLastImported="1770573475" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/大学内部位图" bitmapDataHRef="M 238 1770573471.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="场景素材/大学内部位图 2" itemID="6988d112-00001319" sourceExternalFilepath="场景素材/大学内部位图 2.png" sourceLastImported="1770574088" externalFileSize="19745" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/大学内部位图 2.png" bitmapDataHRef="M 254 1770574065.dat" frameRight="3180" frameBottom="1740"/>
+          <DOMBitmapItem name="场景素材/大学宿舍楼下位图" itemID="6988d1be-00001355" sourceExternalFilepath="位图 2" sourceLastImported="1770574270" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/大学宿舍楼下位图" bitmapDataHRef="M 258 1770574243.dat" frameRight="28600" frameBottom="16240"/>
+          <DOMBitmapItem name="场景素材/大学宿舍位图" itemID="6988d279-00001402" sourceExternalFilepath="位图 2" sourceLastImported="1770574457" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/大学宿舍位图" bitmapDataHRef="M 259 1770574443.dat" frameRight="17600" frameBottom="10160"/>
+          <DOMBitmapItem name="场景素材/第一防线防区素材" itemID="6988aa16-00000af9" sourceExternalFilepath="位图 1" sourceLastImported="1770564118" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/第一防线防区素材" bitmapDataHRef="M 181 1770564121.dat" frameRight="47780" frameBottom="16240"/>
+          <DOMBitmapItem name="头像合集/冯佑权位图 " itemID="6988d884-00001794" sourceExternalFilepath="位图 4" sourceLastImported="1770576004" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/冯佑权位图 " bitmapDataHRef="M 267 1770575979.dat" frameRight="2780" frameBottom="5480"/>
+          <DOMBitmapItem name="头像合集/头像素材/黑龙.png" itemID="698758d6-00000702" sourceExternalFilepath="../地图界面/LIBRARY/黑龙.png" sourceLastImported="1770477195" externalFileSize="216063" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/黑龙.png" bitmapDataHRef="M 127 1770477747.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="头像合集/头像素材/黑铁.png" itemID="69875910-00000710" sourceExternalFilepath="../地图界面/LIBRARY/黑铁.png" sourceLastImported="1755253547" externalFileSize="187913" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/黑铁.png" bitmapDataHRef="M 129 1770477807.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="头像合集/黑仔位图" itemID="6988cb5a-00001068" sourceExternalFilepath="位图 1" sourceLastImported="1770572634" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/黑仔位图" bitmapDataHRef="M 232 1770572623.dat" frameRight="4140" frameBottom="3060"/>
+          <DOMBitmapItem name="头像合集/头像素材/火凤.png" itemID="698758a3-000006f3" sourceExternalFilepath="../地图界面/LIBRARY/火凤.png" sourceLastImported="1770477530" externalFileSize="245527" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/火凤.png" bitmapDataHRef="M 125 1770477700.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="头像合集/机哥头像素材" itemID="6988b404-00000d84" sourceExternalFilepath="位图 3" sourceLastImported="1770566660" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/机哥头像素材" bitmapDataHRef="M 207 1770566633.dat" frameRight="1860" frameBottom="1700"/>
           <DOMBitmapItem name="头像合集/头像素材/吉他" itemID="6979aaf2-0000083e" sourceExternalFilepath="位图 1.png" sourceLastImported="1769581298" externalFileSize="5639" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/吉他.png" bitmapDataHRef="M 176 1769581283.dat" frameRight="900" frameBottom="900"/>
+          <DOMBitmapItem name="头像合集/头像素材/假肢仙人.png" itemID="698899bc-0000087b" sourceExternalFilepath="../地图界面/LIBRARY/假肢仙人.png" sourceLastImported="1761576704" externalFileSize="84519" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/假肢仙人.png" bitmapDataHRef="M 178 1770559901.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="场景素材/剑道社位图" itemID="6988d763-0000174d" sourceExternalFilepath="位图 2" sourceLastImported="1770575715" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/剑道社位图" bitmapDataHRef="M 265 1770575655.dat" frameRight="23800" frameBottom="12120"/>
+          <DOMBitmapItem name="头像合集/剑道社长位图 " itemID="6988d7da-0000176b" sourceExternalFilepath="位图 3" sourceLastImported="1770575834" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/剑道社长位图 " bitmapDataHRef="M 266 1770575827.dat" frameRight="2560" frameBottom="5800"/>
           <DOMBitmapItem name="头像合集/头像素材/键盘" itemID="6979ae6c-00000910" sourceExternalFilepath="位图 1.png" sourceLastImported="1769582188" externalFileSize="4161" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/键盘.png" bitmapDataHRef="M 205 1769582179.dat" frameRight="880" frameBottom="860"/>
           <DOMBitmapItem name="头像合集/头像素材/将军" itemID="6979a3ef-000006d9" sourceExternalFilepath="位图 1.png" sourceLastImported="1769579503" externalFileSize="3784" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/将军.png" bitmapDataHRef="M 166 1769579492.dat" frameRight="920" frameBottom="900"/>
+          <DOMBitmapItem name="头像合集/教导主任位图 " itemID="6988d3fc-0000151d" sourceExternalFilepath="位图 3" sourceLastImported="1770574844" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/教导主任位图 " bitmapDataHRef="M 261 1770574833.dat" frameRight="3540" frameBottom="7020"/>
+          <DOMBitmapItem name="场景素材/教室位图" itemID="6988da4c-000018a9" sourceExternalFilepath="位图 4" sourceLastImported="1770576460" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/教室位图" bitmapDataHRef="M 269 1770576415.dat" frameRight="20640" frameBottom="13960"/>
+          <DOMBitmapItem name="场景素材/教学楼办公室位图" itemID="6988d380-000014f3" sourceExternalFilepath="位图 2" sourceLastImported="1770574720" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/教学楼办公室位图" bitmapDataHRef="M 260 1770574682.dat" frameRight="24040" frameBottom="12140"/>
+          <DOMBitmapItem name="场景素材/教学楼内部位图 " itemID="6988d5ef-0000166a" sourceExternalFilepath="位图 4" sourceLastImported="1770575343" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/教学楼内部位图 " bitmapDataHRef="M 263 1770575319.dat" frameRight="31960" frameBottom="10640"/>
+          <DOMBitmapItem name="场景素材/教学楼内部右位图" itemID="6988d987-00001862" sourceExternalFilepath="位图 2" sourceLastImported="1770576263" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/教学楼内部右位图" bitmapDataHRef="M 268 1770576145.dat" frameRight="22800" frameBottom="11360"/>
           <DOMBitmapItem name="头像合集/头像素材/酒保" itemID="6979aeb0-0000091c" sourceExternalFilepath="../地图界面/LIBRARY/位图 25.png" sourceLastImported="1770476371" externalFileCRC32="1219198051" externalFileSize="6142" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/酒保.png" bitmapDataHRef="M 58 1732950737.dat" frameRight="920" frameBottom="2040"/>
           <DOMBitmapItem name="头像合集/头像素材/冷兵器商人" itemID="6979aec1-00000926" sourceExternalFilepath="../地图界面/LIBRARY/头像合集/头像素材/冷兵器商人.png" sourceLastImported="1769582249" externalFileCRC32="665269024" externalFileSize="14787" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/冷兵器商人.png" bitmapDataHRef="M 57 1732950339.dat" frameRight="2440" frameBottom="3260"/>
+          <DOMBitmapItem name="头像合集/理科教授位图" itemID="6988db5b-00001bd6" sourceExternalFilepath="位图 5" sourceLastImported="1770576731" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/理科教授位图" bitmapDataHRef="M 124 1770576700.dat" frameRight="860" frameBottom="1080"/>
+          <DOMBitmapItem name="场景素材/联合大学门口位图" itemID="6988ca8d-00001030" sourceExternalFilepath="位图 1" sourceLastImported="1770572429" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/联合大学门口位图" bitmapDataHRef="M 229 1770572437.dat" frameRight="54480" frameBottom="23760"/>
+          <DOMBitmapItem name="头像合集/头像素材/牛仔.png" itemID="698892e4-000006b8" sourceExternalFilepath="../地图界面/LIBRARY/牛仔.png" sourceLastImported="1755253547" externalFileSize="166405" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/牛仔.png" bitmapDataHRef="M 145 1770558105.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="头像合集/排骨头像素材" itemID="6988b30b-00000d41" sourceExternalFilepath="位图 1" sourceLastImported="1770566411" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/排骨头像素材" bitmapDataHRef="M 205 1770566405.dat" frameRight="1020" frameBottom="1280"/>
           <DOMBitmapItem name="头像合集/头像素材/前治安官" itemID="6979a2f9-000006b6" sourceExternalFilepath="位图 1.png" sourceLastImported="1769579257" externalFileSize="3124" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/前治安官.png" bitmapDataHRef="M 160 1769579243.dat" frameRight="880" frameBottom="940"/>
-          <DOMBitmapItem name="位图 1" itemID="69875477-000006d7" sourceExternalFilepath="../地图界面/LIBRARY/位图 1.png" sourceLastImported="1770476562" externalFileSize="4260" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 1.png" bitmapDataHRef="M 120 1770476552.dat" frameRight="1020" frameBottom="1260"/>
+          <DOMBitmapItem name="头像合集/体育老师位图 " itemID="6988cfa8-00001270" sourceExternalFilepath="位图 3" sourceLastImported="1770573736" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/体育老师位图 " bitmapDataHRef="M 249 1770573727.dat" frameRight="3200" frameBottom="5980"/>
+          <DOMBitmapItem name="场景素材/背景元件/位图 1" itemID="666e928a-00000669" sourceExternalFilepath="C:/Users/lsy20/AppData/Local/Temp/flash0.png" sourceLastImported="1718522503" originalCompressionType="lossless" quality="50" href="场景素材/背景元件/位图 1.png" bitmapDataHRef="M 131 1770557825.dat" frameRight="20480" frameBottom="20480"/>
+          <DOMBitmapItem name="头像合集/位图 1" itemID="69875477-000006d7" sourceExternalFilepath="../地图界面/LIBRARY/位图 1.png" sourceLastImported="1770476562" externalFileSize="4260" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/位图 1.png" bitmapDataHRef="M 120 1770476552.dat" frameRight="1020" frameBottom="1260"/>
           <DOMBitmapItem name="场景素材/位图 10" itemID="674aa622-00000aa9" sourceExternalFilepath="../地图界面/LIBRARY/位图 10.png" sourceLastImported="1770483409" externalFileCRC32="367608923" externalFileSize="423629" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/位图 10.png" bitmapDataHRef="M 39 1732945379.dat" frameRight="41680" frameBottom="12660"/>
           <DOMBitmapItem name="场景素材/位图 11" itemID="674aa62b-00000aaf" sourceExternalFilepath="../地图界面/LIBRARY/位图 11.png" sourceLastImported="1770483410" externalFileCRC32="2667047163" externalFileSize="266732" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/位图 11.png" bitmapDataHRef="M 42 1732945449.dat" frameRight="70780" frameBottom="14360"/>
           <DOMBitmapItem name="场景素材/位图 12" itemID="674aa6b2-00000abf" sourceExternalFilepath="../地图界面/LIBRARY/位图 12.png" sourceLastImported="1770483410" externalFileCRC32="1489464127" externalFileSize="107343" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/位图 12.png" bitmapDataHRef="M 45 1732945583.dat" frameRight="18000" frameBottom="12400"/>
           <DOMBitmapItem name="场景素材/位图 13" itemID="674aa6c1-00000ac5" sourceExternalFilepath="../地图界面/LIBRARY/位图 13.png" sourceLastImported="1770483412" externalFileCRC32="1390810398" externalFileSize="266605" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/位图 13.png" bitmapDataHRef="M 46 1732945598.dat" frameRight="63740" frameBottom="22540"/>
           <DOMBitmapItem name="场景素材/位图 14" itemID="674aa6cb-00000acb" sourceExternalFilepath="../地图界面/LIBRARY/位图 14.png" sourceLastImported="1770483412" externalFileCRC32="1391935479" externalFileSize="61198" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/位图 14.png" bitmapDataHRef="M 47 1732945608.dat" frameRight="22340" frameBottom="15940"/>
+          <DOMBitmapItem name="场景素材/背景元件/位图 2" itemID="666fe591-000001f8" sourceLastImported="1718609297" originalCompressionType="lossless" quality="50" href="场景素材/背景元件/位图 2" bitmapDataHRef="M 130 1770557825.dat" frameRight="11680" frameBottom="11540"/>
           <DOMBitmapItem name="场景素材/位图 2" itemID="674aa3e5-00000a69" sourceExternalFilepath="../地图界面/LIBRARY/位图 2.png" sourceLastImported="1770483412" externalFileCRC32="1187947389" externalFileSize="39502" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/位图 2.png" bitmapDataHRef="M 30 1732944860.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="位图 2" itemID="69875858-000006e6" sourceExternalFilepath="位图 2.png" sourceLastImported="1770477651" externalFileSize="5211" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 2.png" bitmapDataHRef="M 124 1770477651.dat" frameRight="880" frameBottom="880"/>
+          <DOMBitmapItem name="头像合集/位图 2" itemID="69875858-000006e6" sourceExternalFilepath="位图 2.png" sourceLastImported="1770477651" externalFileSize="5211" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/位图 2.png" bitmapDataHRef="M 124 1770477651.dat" frameRight="880" frameBottom="880"/>
           <DOMBitmapItem name="头像合集/头像素材/位图 27" itemID="674abc10-00001a77" sourceExternalFilepath="../地图界面/LIBRARY/位图 27.png" sourceLastImported="1770483412" externalFileCRC32="692037068" externalFileSize="3746" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/位图 27.png" bitmapDataHRef="M 60 1732951044.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="头像合集/头像素材/位图 29" itemID="674abe8e-00001ada" sourceExternalFilepath="../地图界面/LIBRARY/位图 29.png" sourceLastImported="1770483412" externalFileCRC32="1061271879" externalFileSize="4219" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/位图 29.png" bitmapDataHRef="M 67 1732951683.dat" frameRight="1040" frameBottom="1160"/>
-          <DOMBitmapItem name="位图 3" itemID="698758ae-000006f8" sourceExternalFilepath="D:/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/UI/地图界面/LIBRARY/位图 3.png" sourceLastImported="1770477732" externalFileSize="5048" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 3.png" bitmapDataHRef="M 126 1770477727.dat" frameRight="880" frameBottom="880"/>
+          <DOMBitmapItem name="头像合集/位图 3" itemID="698758ae-000006f8" sourceExternalFilepath="../地图界面/LIBRARY/位图 3.png" sourceLastImported="1770477732" externalFileSize="5048" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/位图 3.png" bitmapDataHRef="M 126 1770477727.dat" frameRight="880" frameBottom="880"/>
           <DOMBitmapItem name="头像合集/头像素材/位图 30" itemID="674abf2e-00001b0a" sourceExternalFilepath="../地图界面/LIBRARY/位图 30.png" sourceLastImported="1770483412" externalFileCRC32="2464677688" externalFileSize="7737" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/位图 30.png" bitmapDataHRef="M 68 1732951853.dat" frameRight="1800" frameBottom="3340"/>
           <DOMBitmapItem name="头像合集/头像素材/位图 33" itemID="674ac65e-00001e9c" sourceExternalFilepath="../地图界面/LIBRARY/位图 33.png" sourceLastImported="1770483412" externalFileCRC32="1889040826" externalFileSize="4022" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/位图 33.png" bitmapDataHRef="M 71 1732953690.dat" frameRight="1100" frameBottom="980"/>
           <DOMBitmapItem name="头像合集/头像素材/位图 34" itemID="674ac73d-00001ec6" sourceExternalFilepath="../地图界面/LIBRARY/位图 34.png" sourceLastImported="1770483412" externalFileCRC32="3821433227" externalFileSize="6014" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/位图 34.png" bitmapDataHRef="M 72 1732953913.dat" frameRight="940" frameBottom="1740"/>
-          <DOMBitmapItem name="头像合集/头像素材/位图 4" itemID="67e69a63-00000674" sourceExternalFilepath="位图 4.png" sourceLastImported="1770483412" externalFileSize="3584" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/位图 4.png" bitmapDataHRef="M 31 1743166037.dat" frameRight="3940" frameBottom="4180"/>
-          <DOMBitmapItem name="位图 4" itemID="698758d6-00000703" sourceExternalFilepath="位图 4.png" sourceLastImported="1770477779" externalFileSize="5049" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 4.png" bitmapDataHRef="M 128 1770477779.dat" frameRight="920" frameBottom="920"/>
-          <DOMBitmapItem name="位图 5" itemID="69875910-00000711" sourceExternalFilepath="位图 5.png" sourceLastImported="1770477832" externalFileSize="4843" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 5.png" bitmapDataHRef="M 130 1770477832.dat" frameRight="880" frameBottom="900"/>
+          <DOMBitmapItem name="头像合集/头像素材/位图 4" itemID="67e69a63-00000674" sourceExternalFilepath="位图 4.png" sourceLastImported="1770483412" externalFileSize="3584" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/位图 4.png" bitmapDataHRef="M 31 1743166037.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="头像合集/位图 4" itemID="698758d6-00000703" sourceExternalFilepath="位图 4.png" sourceLastImported="1770477779" externalFileSize="5049" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/位图 4.png" bitmapDataHRef="M 128 1770477779.dat" frameRight="920" frameBottom="920"/>
+          <DOMBitmapItem name="头像合集/位图 5" itemID="69875910-00000711" sourceExternalFilepath="位图 5.png" sourceLastImported="1770477832" externalFileSize="4843" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/位图 5.png" bitmapDataHRef="M 130 1770477832.dat" frameRight="880" frameBottom="900"/>
           <DOMBitmapItem name="头像合集/头像素材/位图 5" itemID="67e69b13-00000756" sourceExternalFilepath="位图 5" sourceLastImported="1743166227" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/位图 5" bitmapDataHRef="M 33 1743166227.dat" frameRight="780" frameBottom="1180"/>
           <DOMBitmapItem name="头像合集/头像素材/位图 6" itemID="67e69b73-0000077d" sourceExternalFilepath="位图 6" sourceLastImported="1743166323" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/位图 6" bitmapDataHRef="M 35 1743166323.dat" frameRight="1280" frameBottom="1140"/>
-          <DOMBitmapItem name="位图 6" itemID="69888f07-000004c1" sourceExternalFilepath="位图 6.png" sourceLastImported="1770557187" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="位图 6.png" bitmapDataHRef="M 98 1770557187.dat" frameRight="800" frameBottom="960"/>
+          <DOMBitmapItem name="头像合集/位图 6" itemID="69888f07-000004c1" sourceExternalFilepath="位图 6.png" sourceLastImported="1770557187" externalFileSize="3157" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/位图 6.png" bitmapDataHRef="M 98 1770557187.dat" frameRight="800" frameBottom="960"/>
+          <DOMBitmapItem name="头像合集/位图 7" itemID="698892e4-000006b9" sourceExternalFilepath="位图 7.png" sourceLastImported="1770558176" externalFileSize="4768" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/位图 7.png" bitmapDataHRef="M 146 1770558176.dat" frameRight="940" frameBottom="920"/>
           <DOMBitmapItem name="场景素材/位图 7" itemID="674aa424-00000a8c" sourceExternalFilepath="../地图界面/LIBRARY/位图 7.png" sourceLastImported="1770483413" externalFileCRC32="3673117695" externalFileSize="109293" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/位图 7.png" bitmapDataHRef="M 36 1732944930.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="头像合集/位图 8" itemID="698899bc-0000087c" sourceExternalFilepath="位图 8.png" sourceLastImported="1770559928" externalFileSize="3124" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/位图 8.png" bitmapDataHRef="M 179 1770559928.dat" frameRight="860" frameBottom="900"/>
           <DOMBitmapItem name="场景素材/位图 8" itemID="674aa431-00000a92" sourceExternalFilepath="../地图界面/LIBRARY/位图 8.png" sourceLastImported="1770483413" externalFileCRC32="2547069633" externalFileSize="18607" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/位图 8.png" bitmapDataHRef="M 37 1732944944.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="场景素材/位图 9" itemID="674aa43c-00000a98" sourceExternalFilepath="../地图界面/LIBRARY/位图 9.png" sourceLastImported="1770483413" externalFileCRC32="2412307290" externalFileSize="208847" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="场景素材/位图 9.png" bitmapDataHRef="M 38 1732944953.dat" frameRight="21580" frameBottom="10880"/>
           <DOMBitmapItem name="头像合集/头像素材/位图 机器人厨师" itemID="67c16fc9-0000141e" sourceExternalFilepath="位图 1" sourceLastImported="1740730313" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/位图 机器人厨师" bitmapDataHRef="M 135 1740730317.dat" frameRight="7920" frameBottom="9480"/>
+          <DOMBitmapItem name="头像合集/文科老师位图 " itemID="6988dccc-00001e07" sourceExternalFilepath="位图 6" sourceLastImported="1770577100" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/文科老师位图 " bitmapDataHRef="M 208 1770576905.dat" frameRight="860" frameBottom="1220"/>
+          <DOMBitmapItem name="头像合集/武器订购系统位图1" itemID="6988cd15-0000114e" sourceExternalFilepath="位图 5" sourceLastImported="1770573077" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/武器订购系统位图1" bitmapDataHRef="M 236 1770573028.dat" frameRight="2380" frameBottom="1320"/>
+          <DOMBitmapItem name="头像合集/武器订购系统位图2" itemID="6988cd1b-00001150" sourceExternalFilepath="位图 6" sourceLastImported="1770573083" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/武器订购系统位图2" bitmapDataHRef="M 237 1770573054.dat" frameRight="880" frameBottom="1380"/>
           <DOMBitmapItem name="头像合集/头像素材/舞女" itemID="6979aec1-00000927" sourceExternalFilepath="../地图界面/LIBRARY/头像合集/头像素材/舞女.png" sourceLastImported="1769582260" externalFileCRC32="287104084" externalFileSize="5140" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/舞女.png" bitmapDataHRef="M 59 1732950872.dat" frameRight="1000" frameBottom="1680"/>
+          <DOMBitmapItem name="头像合集/吸特乐头像素材" itemID="6988aefc-00000b4b" sourceExternalFilepath="位图 1.png" sourceLastImported="1770565372" externalFileSize="3457" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/吸特乐头像素材.png" bitmapDataHRef="M 180 1770561155.dat" frameRight="1120" frameBottom="1220"/>
           <DOMBitmapItem name="头像合集/头像素材/小F" itemID="6979ae99-00000917" sourceExternalFilepath="../地图界面/LIBRARY/位图 20.png" sourceLastImported="1770476372" externalFileCRC32="1092032357" externalFileSize="3249" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/小F.png" bitmapDataHRef="M 53 1732948632.dat" frameRight="800" frameBottom="1020"/>
           <DOMBitmapItem name="头像合集/头像素材/幸存老兵" itemID="6979b459-00000aaa" sourceExternalFilepath="位图 2.png" sourceLastImported="1769583705" externalFileSize="4345" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/幸存老兵.png" bitmapDataHRef="M 213 1769583394.dat" frameRight="840" frameBottom="900"/>
           <DOMBitmapItem name="头像合集/头像素材/学生妹" itemID="6979a399-000006c6" sourceExternalFilepath="位图 1.png" sourceLastImported="1769579417" externalFileSize="3557" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/学生妹.png" bitmapDataHRef="M 163 1769579383.dat" frameRight="720" frameBottom="840"/>
           <DOMBitmapItem name="头像合集/头像素材/主唱" itemID="6979b452-00000aa9" sourceExternalFilepath="位图 1.png" sourceLastImported="1769583698" externalFileSize="4417" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="头像合集/头像素材/主唱.png" bitmapDataHRef="M 207 1769582356.dat" frameRight="900" frameBottom="900"/>
      </media>
      <symbols>
-          <Include href="gazer/元件素材/头.xml" loadImmediate="false" itemID="6654ae56-0000020f" lastModified="1716827090"/>
-          <Include href="shape/Symbol 51746.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c08" lastModified="1704196122"/>
-          <Include href="shape/Symbol 51747.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c0a" lastModified="1704196122"/>
-          <Include href="shape/Symbol 51751.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c0f" lastModified="1704196122"/>
+          <Include href="Shapes/Shape 3805.xml" itemIcon="1" loadImmediate="false" itemID="53eaa4bd-00000407" lastModified="1407886525"/>
+          <Include href="Sprites/Sprite 3808.xml" loadImmediate="false" itemID="53eaa4bd-00000406" lastModified="1407886525"/>
           <Include href="按钮/Symbol 2122.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000aa7" lastModified="1704196122"/>
           <Include href="按钮/Symbol 2158.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000aaf" lastModified="1704196122"/>
           <Include href="按钮/Symbol 2606.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000c1a" lastModified="1704196122"/>
           <Include href="按钮/元件 14.xml" itemIcon="0" loadImmediate="false" itemID="67ed1b8e-00000a56" lastModified="1750527550"/>
           <Include href="按钮/长条按钮.xml" itemIcon="0" loadImmediate="false" itemID="664f55ad-00000fcf" lastModified="1743592292"/>
           <Include href="背景.xml" loadImmediate="false" itemID="674acfad-00001ecc" lastModified="1739643821"/>
-          <Include href="场景按钮/黑铁阁元件.xml" loadImmediate="false" itemID="6979b603-00000b17" lastModified="1769584205"/>
+          <Include href="场景按钮/Symbol 17.xml" itemIcon="1" loadImmediate="false" itemID="667aeb3a-00000086" lastModified="1746144990"/>
+          <Include href="场景按钮/大学操场元件.xml" loadImmediate="false" itemID="6988d06d-000012fe" lastModified="1770574137"/>
+          <Include href="场景按钮/大学内部.xml" loadImmediate="false" itemID="6988ceba-000011fe" lastModified="1770575371"/>
+          <Include href="场景按钮/大学宿舍.xml" loadImmediate="false" itemID="6988d283-00001409" lastModified="1770574514"/>
+          <Include href="场景按钮/大学宿舍楼下.xml" loadImmediate="false" itemID="6988d1ca-0000135c" lastModified="1770574757"/>
+          <Include href="场景按钮/第一防线防区元件.xml" loadImmediate="false" itemID="6988aa3f-00000b03" lastModified="1770566134"/>
+          <Include href="场景按钮/堕落城酒吧元件.xml" loadImmediate="false" itemID="698891b1-000005f4" lastModified="1770559851"/>
+          <Include href="场景按钮/堕落城商业街元件.xml" loadImmediate="false" itemID="69889932-00000826" lastModified="1770559844"/>
+          <Include href="场景按钮/黑铁阁元件.xml" loadImmediate="false" itemID="6979b603-00000b17" lastModified="1770557877"/>
           <Include href="场景按钮/黑铁会修炼场.xml" loadImmediate="false" itemID="6979b489-00000ab0" lastModified="1769583929"/>
+          <Include href="场景按钮/剑道社.xml" loadImmediate="false" itemID="6988d747-00001747" lastModified="1770575771"/>
+          <Include href="场景按钮/教学楼办公室.xml" loadImmediate="false" itemID="6988d38c-000014fa" lastModified="1770574780"/>
+          <Include href="场景按钮/教学楼内部.xml" loadImmediate="false" itemID="6988d5fb-00001671" lastModified="1770577174"/>
+          <Include href="场景按钮/教学楼内部右.xml" loadImmediate="false" itemID="6988d990-00001864" lastModified="1770576502"/>
+          <Include href="场景按钮/理科教室.xml" loadImmediate="false" itemID="6988da60-000018b4" lastModified="1770576534"/>
+          <Include href="场景按钮/联合大学.xml" loadImmediate="false" itemID="6988cac1-00001036" lastModified="1770574108"/>
+          <Include href="场景按钮/同盟通路.xml" loadImmediate="false" itemID="6988b696-00000e7e" lastModified="1770572490"/>
+          <Include href="场景按钮/同盟卸货站.xml" loadImmediate="false" itemID="6988b1e5-00000ceb" lastModified="1770567326"/>
+          <Include href="场景按钮/文科教室.xml" loadImmediate="false" itemID="6988da68-000018bf" lastModified="1770576537"/>
           <Include href="场景按钮/摇滚排练室.xml" loadImmediate="false" itemID="6979a983-000007da" lastModified="1769581967"/>
           <Include href="场景按钮/摇滚演唱会.xml" loadImmediate="false" itemID="6979a7c2-0000074a" lastModified="1769581958"/>
           <Include href="场景按钮/元件 1.xml" loadImmediate="false" itemID="674ad107-00001ed3" lastModified="1769581026"/>
@@ -145,8 +207,28 @@
           <Include href="场景按钮/元件 13.xml" loadImmediate="false" itemID="674adb0d-0000274a" lastModified="1732958989"/>
           <Include href="场景素材/shape 5.xml" itemIcon="1" loadImmediate="false" itemID="65982aa0-00000005" lastModified="1746369945"/>
           <Include href="场景素材/shape 35.xml" itemIcon="1" loadImmediate="false" itemID="65982aa0-00000023" lastModified="1746348483"/>
+          <Include href="场景素材/shape/Symbol 51746.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c08" lastModified="1704196122"/>
+          <Include href="场景素材/shape/Symbol 51747.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c0a" lastModified="1704196122"/>
+          <Include href="场景素材/shape/Symbol 51751.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c0f" lastModified="1704196122"/>
           <Include href="场景素材/sprite 6.xml" loadImmediate="false" itemID="65982aa0-00000006" lastModified="1754051898"/>
           <Include href="场景素材/Symbol 7.xml" itemIcon="1" loadImmediate="false" itemID="6679b2f3-0000001d" lastModified="1699960322"/>
+          <Include href="场景素材/Symbol 8.xml" loadImmediate="false" itemID="667aeb3a-00000080" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 10.xml" loadImmediate="false" itemID="667aeb3a-00000081" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="667aeb3a-00000085" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 18.xml" itemIcon="1" loadImmediate="false" itemID="667aeb3a-00000087" lastModified="1746145298"/>
+          <Include href="场景素材/Symbol 19.xml" itemIcon="1" loadImmediate="false" itemID="667aeb3a-00000088" lastModified="1746145128"/>
+          <Include href="场景素材/Symbol 20.xml" itemIcon="1" loadImmediate="false" itemID="667aeb3a-00000089" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="667aeb3a-0000008b" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 35.xml" itemIcon="1" loadImmediate="false" itemID="667aeb3a-00000098" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 36.xml" itemIcon="1" loadImmediate="false" itemID="667aeb3a-00000099" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 49.xml" itemIcon="1" loadImmediate="false" itemID="6630a86a-00000213" lastModified="1699960314"/>
+          <Include href="场景素材/Symbol 54.xml" itemIcon="1" loadImmediate="false" itemID="667aeb3a-000000a4" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 55.xml" loadImmediate="false" itemID="667aeb3a-000000a5" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 69.xml" loadImmediate="false" itemID="667aeb3a-000000ae" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 71.xml" loadImmediate="false" itemID="667aeb3a-000000af" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 72.xml" loadImmediate="false" itemID="667aeb3a-000000b0" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 73.xml" itemIcon="1" loadImmediate="false" itemID="667aeb3a-000000b1" lastModified="1714467188"/>
+          <Include href="场景素材/Symbol 75.xml" itemIcon="1" loadImmediate="false" itemID="667aeb3a-000000b2" lastModified="1714467188"/>
           <Include href="场景素材/Symbol 308.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000797" lastModified="1704196122"/>
           <Include href="场景素材/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
           <Include href="场景素材/Symbol 476.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a5" lastModified="1704196122"/>
@@ -347,12 +429,28 @@
           <Include href="场景素材/Symbol 51860.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cc2" lastModified="1704196122"/>
           <Include href="场景素材/Symbol 51863.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ccb" lastModified="1704196122"/>
           <Include href="场景素材/Symbol 51868.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cd6" lastModified="1704196122"/>
-          <Include href="场景素材/靶场.xml" itemIcon="1" loadImmediate="false" itemID="67e69b9f-00000799" lastModified="1743579199"/>
+          <Include href="场景素材/靶场.xml" itemIcon="1" loadImmediate="false" itemID="67e69b9f-00000799" lastModified="1770564205"/>
           <Include href="场景素材/靶场整体.xml" itemIcon="1" loadImmediate="false" itemID="67e69c17-000007e5" lastModified="1743166491"/>
+          <Include href="场景素材/背景元件/筹码fs.xml" loadImmediate="false" itemID="65cca2fb-00000366" lastModified="1707910086"/>
+          <Include href="场景素材/背景元件/筹码lsy.xml" loadImmediate="false" itemID="65cca359-00000370" lastModified="1707910094"/>
+          <Include href="场景素材/背景元件/筹码鸡蛋.xml" loadImmediate="false" itemID="65cca410-0000037c" lastModified="1707910160"/>
+          <Include href="场景素材/背景元件/筹码无名氏.xml" loadImmediate="false" itemID="65cca457-00000380" lastModified="1707910231"/>
+          <Include href="场景素材/背景元件/筹码雾人.xml" loadImmediate="false" itemID="65cca3b3-00000376" lastModified="1707910080"/>
+          <Include href="场景素材/背景元件/酒吧酒柜.xml" loadImmediate="false" itemID="65ccb7d8-0000042b" lastModified="1707915584"/>
+          <Include href="场景素材/背景元件/酒吧酒柜玻璃窗.xml" loadImmediate="false" itemID="65ccb7cf-00000427" lastModified="1707915595"/>
+          <Include href="场景素材/背景元件/酒吧椅子.xml" loadImmediate="false" itemID="65cca985-00000392" lastModified="1707911612"/>
+          <Include href="场景素材/背景元件/盘子.xml" loadImmediate="false" itemID="65ccb095-000003d1" lastModified="1707913365"/>
+          <Include href="场景素材/背景元件/棋牌桌.xml" loadImmediate="false" itemID="65cca158-0000035c" lastModified="1707909464"/>
+          <Include href="场景素材/背景元件/桌布.xml" loadImmediate="false" itemID="65ccaffc-000003c2" lastModified="1707913212"/>
           <Include href="场景素材/侧面墙.xml" itemIcon="1" loadImmediate="false" itemID="674587a4-0000004d" lastModified="1732792361"/>
           <Include href="场景素材/车库大车.xml" itemIcon="1" loadImmediate="false" itemID="67497a41-00000680" lastModified="1732868673"/>
           <Include href="场景素材/车库墙.xml" itemIcon="1" loadImmediate="false" itemID="67497a60-00000698" lastModified="1732868749"/>
           <Include href="场景素材/大屏幕.xml" loadImmediate="false" itemID="688ca1a2-00000322" lastModified="1754046882"/>
+          <Include href="场景素材/大学操场背景.xml" loadImmediate="false" itemID="6988d066-000012f8" lastModified="1770574073"/>
+          <Include href="场景素材/大学地下工坊背景.xml" loadImmediate="false" itemID="6988dcdd-00001e0a" lastModified="1770577117"/>
+          <Include href="场景素材/大学内部背景.xml" loadImmediate="false" itemID="6988ceb5-000011f9" lastModified="1770574065"/>
+          <Include href="场景素材/大学宿舍背景.xml" loadImmediate="false" itemID="6988d27e-00001404" lastModified="1770574462"/>
+          <Include href="场景素材/大学宿舍楼下背景.xml" loadImmediate="false" itemID="6988d1c3-00001357" lastModified="1770574275"/>
           <Include href="场景素材/单独架子.xml" itemIcon="1" loadImmediate="false" itemID="6745aeba-0000013e" lastModified="1732619962"/>
           <Include href="场景素材/地板.xml" itemIcon="1" loadImmediate="false" itemID="67484d44-0000014b" lastModified="1732944380"/>
           <Include href="场景素材/地板-new.xml" loadImmediate="false" itemID="6745b33d-0000018d" lastModified="1732957027"/>
@@ -371,6 +469,9 @@
           <Include href="场景素材/地下一层正面墙.xml" itemIcon="1" loadImmediate="false" itemID="674869ef-000003f8" lastModified="1732824858"/>
           <Include href="场景素材/地下一层左侧墙.xml" itemIcon="1" loadImmediate="false" itemID="674864db-000002f5" lastModified="1740730083"/>
           <Include href="场景素材/灯管.xml" itemIcon="1" loadImmediate="false" itemID="67458a98-000000b8" lastModified="1732610754"/>
+          <Include href="场景素材/第一防线防区背景.xml" loadImmediate="false" itemID="6988aa38-00000afe" lastModified="1770564152"/>
+          <Include href="场景素材/堕落城酒吧背景.xml" loadImmediate="false" itemID="6988917b-000005a7" lastModified="1770557819"/>
+          <Include href="场景素材/堕落城商业街背景.xml" loadImmediate="false" itemID="69889916-000007e0" lastModified="1770559766"/>
           <Include href="场景素材/发光灯管.xml" itemIcon="1" loadImmediate="false" itemID="67484eed-00000196" lastModified="1732792045"/>
           <Include href="场景素材/防御地带地胶整体.xml" itemIcon="1" loadImmediate="false" itemID="678f533a-00000041" lastModified="1737449542"/>
           <Include href="场景素材/房间摆件/摆件初始床.xml" loadImmediate="false" itemID="66363eaa-00000d76" lastModified="1714831225"/>
@@ -383,6 +484,7 @@
           <Include href="场景素材/风扇/风扇框.xml" loadImmediate="false" itemID="6745896d-00000078" lastModified="1732616182"/>
           <Include href="场景素材/风扇/风扇完整.xml" loadImmediate="false" itemID="67458968-00000077" lastModified="1732610408"/>
           <Include href="场景素材/风扇/风扇页.xml" itemIcon="1" loadImmediate="false" itemID="67458973-00000079" lastModified="1732610419"/>
+          <Include href="场景素材/浮世安保招牌.xml" itemIcon="1" loadImmediate="false" itemID="681411fc-00001776" lastModified="1746145788"/>
           <Include href="场景素材/柜子.xml" itemIcon="1" loadImmediate="false" itemID="67484f11-000001a5" lastModified="1732792081"/>
           <Include href="场景素材/海报集1.xml" itemIcon="1" loadImmediate="false" itemID="67484e75-00000166" lastModified="1732791925"/>
           <Include href="场景素材/海报集2.xml" itemIcon="1" loadImmediate="false" itemID="67484ea9-0000017c" lastModified="1732791977"/>
@@ -434,17 +536,32 @@
           <Include href="场景素材/基地一层全景.xml" itemIcon="1" loadImmediate="false" itemID="67497c3b-000006cd" lastModified="1732946313"/>
           <Include href="场景素材/基地一层箱子堆.xml" itemIcon="1" loadImmediate="false" itemID="67496d82-000003e1" lastModified="1732865410"/>
           <Include href="场景素材/架子.xml" itemIcon="1" loadImmediate="false" itemID="6745ab79-00000108" lastModified="1732619129"/>
+          <Include href="场景素材/剑道社背景.xml" loadImmediate="false" itemID="6988d741-00001742" lastModified="1770575681"/>
           <Include href="场景素材/健身房整体.xml" itemIcon="1" loadImmediate="false" itemID="67485085-000001b7" lastModified="1735607200"/>
+          <Include href="场景素材/教室背景.xml" loadImmediate="false" itemID="6988da57-000018ab" lastModified="1770576471"/>
+          <Include href="场景素材/教学楼办公室背景.xml" loadImmediate="false" itemID="6988d387-000014f5" lastModified="1770574727"/>
+          <Include href="场景素材/教学楼内部背景.xml" loadImmediate="false" itemID="6988d5f6-0000166c" lastModified="1770575350"/>
+          <Include href="场景素材/教学楼内部右背景.xml" loadImmediate="false" itemID="6988d981-00001861" lastModified="1770576257"/>
           <Include href="场景素材/酒吧大门.xml" itemIcon="1" loadImmediate="false" itemID="67496c74-0000035e" lastModified="1732865140"/>
           <Include href="场景素材/酒吧海量元件.xml" itemIcon="1" loadImmediate="false" itemID="67497707-000005c9" lastModified="1732868372"/>
           <Include href="场景素材/军阀基地土地.xml" itemIcon="1" loadImmediate="false" itemID="67e698da-000005de" lastModified="1743166454"/>
           <Include href="场景素材/砍刀.xml" loadImmediate="false" itemID="66099719-0000407b" lastModified="1717253609"/>
+          <Include href="场景素材/老登烧烤招牌.xml" loadImmediate="false" itemID="6814111f-0000176f" lastModified="1746145632"/>
           <Include href="场景素材/擂台.xml" itemIcon="1" loadImmediate="false" itemID="67484cef-00000096" lastModified="1732791535"/>
+          <Include href="场景素材/联合大学门口素材.xml" loadImmediate="false" itemID="6988ca83-0000102b" lastModified="1770572419"/>
           <Include href="场景素材/乱七八糟武器库台子.xml" itemIcon="1" loadImmediate="false" itemID="6748679e-00000353" lastModified="1732798847"/>
           <Include href="场景素材/乱七八糟武器库杂物.xml" itemIcon="1" loadImmediate="false" itemID="674867ce-00000371" lastModified="1732945214"/>
+          <Include href="场景素材/门店.xml" itemIcon="1" loadImmediate="false" itemID="68141cf4-000017c7" lastModified="1746148633"/>
           <Include href="场景素材/木吉他.xml" itemIcon="1" loadImmediate="false" itemID="46f38039-00000685" lastModified="1746350248"/>
           <Include href="场景素材/木桩.xml" itemIcon="1" loadImmediate="false" itemID="67484fc0-000001b1" lastModified="1732792256"/>
           <Include href="场景素材/排气窗.xml" itemIcon="1" loadImmediate="false" itemID="67458a72-000000b4" lastModified="1733071182"/>
+          <Include href="场景素材/其他素材/大提琴.xml" itemIcon="1" loadImmediate="false" itemID="669e2dbc-000010b0" lastModified="1721642428"/>
+          <Include href="场景素材/其他素材/电吉他.xml" itemIcon="1" loadImmediate="false" itemID="669e1625-00000d7b" lastModified="1721636389"/>
+          <Include href="场景素材/其他素材/电子琴.xml" itemIcon="1" loadImmediate="false" itemID="669df996-000009e5" lastModified="1721629113"/>
+          <Include href="场景素材/其他素材/琴弓.xml" itemIcon="1" loadImmediate="false" itemID="669e285c-00000fad" lastModified="1721641052"/>
+          <Include href="场景素材/其他素材/小提琴.xml" itemIcon="1" loadImmediate="false" itemID="669e282f-00000fa9" lastModified="1721641007"/>
+          <Include href="场景素材/其他素材/元件 15 复制 5.xml" itemIcon="1" loadImmediate="false" itemID="658918e5-000005ac" lastModified="1703482668"/>
+          <Include href="场景素材/其他素材/元件 17 复制 4.xml" itemIcon="1" loadImmediate="false" itemID="658918e5-000005ad" lastModified="1703483250"/>
           <Include href="场景素材/汽车废墟.xml" itemIcon="1" loadImmediate="false" itemID="67496f93-0000045f" lastModified="1732865939"/>
           <Include href="场景素材/墙裂缝.xml" itemIcon="1" loadImmediate="false" itemID="674587e0-0000005e" lastModified="1732610016"/>
           <Include href="场景素材/取餐处隔断.xml" itemIcon="1" loadImmediate="false" itemID="67458f4f-0000004f" lastModified="1732612783"/>
@@ -464,6 +581,10 @@
           <Include href="场景素材/书2.xml" itemIcon="1" loadImmediate="false" itemID="46c948b4-00000025" lastModified="1197970421"/>
           <Include href="场景素材/铁丝网1.xml" loadImmediate="false" itemID="65a61d99-0000046b" lastModified="1705385369"/>
           <Include href="场景素材/铁丝网2.xml" loadImmediate="false" itemID="65a61d9e-0000046f" lastModified="1705385374"/>
+          <Include href="场景素材/同盟通路背景.xml" loadImmediate="false" itemID="6988b5dd-00000e1b" lastModified="1770567414"/>
+          <Include href="场景素材/同盟通路上墙.xml" loadImmediate="false" itemID="6988b576-00000dec" lastModified="1770567030"/>
+          <Include href="场景素材/同盟通路右墙.xml" loadImmediate="false" itemID="6988b5aa-00000e0d" lastModified="1770567106"/>
+          <Include href="场景素材/同盟卸货站背景.xml" loadImmediate="false" itemID="6988b1a6-00000cd6" lastModified="1770566061"/>
           <Include href="场景素材/涂鸦1.xml" loadImmediate="false" itemID="688ca227-00000330" lastModified="1754047035"/>
           <Include href="场景素材/涂鸦2.xml" loadImmediate="false" itemID="688ca265-00000339" lastModified="1754047088"/>
           <Include href="场景素材/涂鸦3.xml" loadImmediate="false" itemID="688ca2d5-00000342" lastModified="1754047198"/>
@@ -529,6 +650,8 @@
           <Include href="场景素材/正面墙整体.xml" itemIcon="1" loadImmediate="false" itemID="67458c0a-000000d9" lastModified="1740729394"/>
           <Include href="场景素材/直升机.xml" itemIcon="1" loadImmediate="false" itemID="67497f33-00000834" lastModified="1732869939"/>
           <Include href="场景素材/纸贴.xml" itemIcon="1" loadImmediate="false" itemID="67459c8b-00000048" lastModified="1732615307"/>
+          <Include href="场景素材/终结者崇拜者招牌文字.xml" loadImmediate="false" itemID="68140fe8-0000176a" lastModified="1746145256"/>
+          <Include href="场景素材/终结者合成台.xml" loadImmediate="false" itemID="689b5bd6-00000e88" lastModified="1755014383"/>
           <Include href="场景素材/重复项目文件夹/元件 1 复制.xml" itemIcon="1" loadImmediate="false" itemID="6817292a-00000607" lastModified="1746349747"/>
           <Include href="场景素材/重复项目文件夹/元件 2 复制.xml" itemIcon="1" loadImmediate="false" itemID="6817292a-00000608" lastModified="1746325204"/>
           <Include href="场景素材/重复项目文件夹/元件 3 复制.xml" itemIcon="1" loadImmediate="false" itemID="68172df7-00000f46" lastModified="1747213690"/>
@@ -538,8 +661,8 @@
           <Include href="场景素材/重复项目文件夹/元件 11.xml" itemIcon="1" loadImmediate="false" itemID="6817292a-00000605" lastModified="1746325023"/>
           <Include href="场景素材/装饰门.xml" itemIcon="1" loadImmediate="false" itemID="674592e4-0000008a" lastModified="1732612836"/>
           <Include href="场景素材/走廊整体.xml" itemIcon="1" loadImmediate="false" itemID="6748cc01-000000dc" lastModified="1735607235"/>
-          <Include href="待整理防具相关汇总/Symbol 252.xml" itemID="668e7c1e-00000682" lastModified="1727366370"/>
-          <Include href="地图界面.xml" itemID="6749c50f-00000907" lastModified="1770551966"/>
+          <Include href="大学地下工坊.xml" loadImmediate="false" itemID="6988dce3-00001e0f" lastModified="1770577202"/>
+          <Include href="地图界面.xml" itemID="6749c50f-00000907" lastModified="1770577307"/>
           <Include href="对话框UI/黑铁会外交部长-部件/外交部长-脑袋.xml" loadImmediate="false" itemID="666080e1-000004db" lastModified="1717600548"/>
           <Include href="对话框UI/黑铁会外交部长-部件/外交部长-上身.xml" loadImmediate="false" itemID="666080e1-000004da" lastModified="1717599888"/>
           <Include href="对话框UI/冷兵器商人/冷武器商人/冷兵/刀-CF手斧.xml" loadImmediate="false" itemID="65bdbe01-00000077" lastModified="1717917073"/>
@@ -554,21 +677,16 @@
           <Include href="对话框UI/冷兵器商人/冷武器商人/肢体/冷兵商人肢体-上身.xml" itemIcon="1" loadImmediate="false" itemID="666555f7-00001368" lastModified="1717917175"/>
           <Include href="对话框UI/冷兵器商人/冷武器商人/肢体/细分 副本/冷兵商人肢体-表情.xml" itemIcon="1" loadImmediate="false" itemID="66656c42-000019d3" lastModified="1717917307"/>
           <Include href="对话框UI/冷兵器商人/冷武器商人/肢体/细分 副本/冷兵商人肢体-头颅.xml" itemIcon="1" loadImmediate="false" itemID="66656c42-000019d2" lastModified="1717922822"/>
-          <Include href="其他素材/大提琴.xml" itemIcon="1" loadImmediate="false" itemID="669e2dbc-000010b0" lastModified="1721642428"/>
-          <Include href="其他素材/电吉他.xml" itemIcon="1" loadImmediate="false" itemID="669e1625-00000d7b" lastModified="1721636389"/>
-          <Include href="其他素材/电子琴.xml" itemIcon="1" loadImmediate="false" itemID="669df996-000009e5" lastModified="1721629113"/>
-          <Include href="其他素材/琴弓.xml" itemIcon="1" loadImmediate="false" itemID="669e285c-00000fad" lastModified="1721641052"/>
-          <Include href="其他素材/小提琴.xml" itemIcon="1" loadImmediate="false" itemID="669e282f-00000fa9" lastModified="1721641007"/>
-          <Include href="其他素材/元件 15 复制 5.xml" itemIcon="1" loadImmediate="false" itemID="658918e5-000005ac" lastModified="1703482668"/>
-          <Include href="其他素材/元件 17 复制 4.xml" itemIcon="1" loadImmediate="false" itemID="658918e5-000005ad" lastModified="1703483250"/>
-          <Include href="闪光.xml" loadImmediate="false" itemID="69799deb-000005a1" lastModified="1769577963"/>
           <Include href="通用头像组件.xml" loadImmediate="false" itemID="69799fa9-000005d6" lastModified="1769579205"/>
-          <Include href="头.xml" loadImmediate="false" itemID="66f58168-000031bc" lastModified="1727368184"/>
           <Include href="头像合集/∞天ㄙ★使的剪∞头像.xml" loadImmediate="false" itemID="674abdca-00001aac" lastModified="1732951688"/>
           <Include href="头像合集/andy头像.xml" loadImmediate="false" itemID="674aad53-00000bcd" lastModified="1732947441"/>
+          <Include href="头像合集/artist头.xml" loadImmediate="false" itemID="67ca7cf3-00000302" lastModified="1741323507"/>
+          <Include href="头像合集/artist头像.xml" loadImmediate="false" itemID="6988ace0-00000b2a" lastModified="1770565120"/>
+          <Include href="头像合集/Bat头像.xml" loadImmediate="false" itemID="6988cb74-0000106c" lastModified="1770572758"/>
           <Include href="头像合集/blue头像.xml" loadImmediate="false" itemID="674ab102-00000e14" lastModified="1732948279"/>
           <Include href="头像合集/boy头像.xml" loadImmediate="false" itemID="674ab5f0-00000e8b" lastModified="1740730235"/>
           <Include href="头像合集/director头像.xml" loadImmediate="false" itemID="67e69a84-00000679" lastModified="1770557189"/>
+          <Include href="头像合集/gazer/元件素材/头.xml" loadImmediate="false" itemID="6654ae56-0000020f" lastModified="1716827090"/>
           <Include href="头像合集/gazer头像.xml" loadImmediate="false" itemID="67e6980b-00000564" lastModified="1770476559"/>
           <Include href="头像合集/general头像.xml" loadImmediate="false" itemID="67e6984d-000005ae" lastModified="1769579493"/>
           <Include href="头像合集/guitar头像.xml" loadImmediate="false" itemID="6979aa0c-0000081c" lastModified="1769581285"/>
@@ -576,34 +694,66 @@
           <Include href="头像合集/keyboard头像.xml" loadImmediate="false" itemID="6979aa05-00000818" lastModified="1769582259"/>
           <Include href="头像合集/king头像.xml" loadImmediate="false" itemID="674ab7e2-00000ea3" lastModified="1769577345"/>
           <Include href="头像合集/pig头像.xml" loadImmediate="false" itemID="674ab531-00000e77" lastModified="1732949372"/>
+          <Include href="头像合集/PROPHET头像.xml" loadImmediate="false" itemID="6988b738-00000ee0" lastModified="1770567535"/>
           <Include href="头像合集/shopgirl头像.xml" loadImmediate="false" itemID="674ab1e8-00000e2c" lastModified="1732948504"/>
           <Include href="头像合集/singer头像.xml" loadImmediate="false" itemID="6979a9fc-00000817" lastModified="1769582357"/>
+          <Include href="头像合集/soldier头像.xml" loadImmediate="false" itemID="6988aeda-00000b46" lastModified="1770565575"/>
           <Include href="头像合集/surveyor头像.xml" loadImmediate="false" itemID="67e69b1f-0000075b" lastModified="1743166239"/>
+          <Include href="头像合集/Symbol 97.xml" loadImmediate="false" itemID="668e7c1e-000005fe" lastModified="1770565522"/>
+          <Include href="头像合集/Symbol 137.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000013fb" lastModified="1746149522"/>
+          <Include href="头像合集/Symbol 252.xml" loadImmediate="false" itemID="668e7c1e-00000682" lastModified="1770565520"/>
           <Include href="头像合集/the girl头像.xml" loadImmediate="false" itemID="674aae00-00000be5" lastModified="1733361641"/>
+          <Include href="头像合集/Tomboy头像.xml" loadImmediate="false" itemID="6988cbfa-000010c3" lastModified="1770572882"/>
+          <Include href="头像合集/Vanshuther头像.xml" loadImmediate="false" itemID="6988dd41-00001e19" lastModified="1770577280"/>
+          <Include href="头像合集/阿波头像.xml" loadImmediate="false" itemID="6988b35e-00000d55" lastModified="1770566549"/>
           <Include href="头像合集/宝石线人头像.xml" loadImmediate="false" itemID="674ac06b-00001b35" lastModified="1769579100"/>
+          <Include href="头像合集/程铮头像.xml" loadImmediate="false" itemID="6988d65c-0000167b" lastModified="1770575558"/>
           <Include href="头像合集/翅虎头像.xml" loadImmediate="false" itemID="6979b782-00000ba8" lastModified="1770477652"/>
           <Include href="头像合集/厨师头像.xml" loadImmediate="false" itemID="67c16ff5-00001423" lastModified="1740730474"/>
+          <Include href="头像合集/发型-男式-bob自由爆炸头.xml" loadImmediate="false" itemID="67d7e464-00001ba8" lastModified="1742201956"/>
+          <Include href="头像合集/冯佑权头像.xml" loadImmediate="false" itemID="6988d84a-00001774" lastModified="1770576006"/>
           <Include href="头像合集/格格巫头像.xml" loadImmediate="false" itemID="674ac41f-00001cbe" lastModified="1732953693"/>
           <Include href="头像合集/黑龙头像.xml" loadImmediate="false" itemID="6979b77a-00000ba0" lastModified="1770477780"/>
           <Include href="头像合集/黑铁会外交部长头像.xml" loadImmediate="false" itemID="674abf01-00001af4" lastModified="1732951856"/>
           <Include href="头像合集/黑铁头像.xml" loadImmediate="false" itemID="6979b775-00000b9c" lastModified="1770477833"/>
+          <Include href="头像合集/黑仔头像.xml" loadImmediate="false" itemID="6988cb1a-00001048" lastModified="1770572641"/>
           <Include href="头像合集/火凤头像.xml" loadImmediate="false" itemID="6979b77e-00000ba4" lastModified="1770477728"/>
+          <Include href="头像合集/机哥头像.xml" loadImmediate="false" itemID="6988b3ab-00000d61" lastModified="1770566672"/>
+          <Include href="头像合集/机械臂假肢.xml" itemIcon="1" loadImmediate="false" itemID="6855a615-0000008e" lastModified="1750443541"/>
+          <Include href="头像合集/假肢仙人头像.xml" loadImmediate="false" itemID="69889987-0000086e" lastModified="1770559929"/>
+          <Include href="头像合集/剑道社长头像.xml" loadImmediate="false" itemID="6988d7b4-00001754" lastModified="1770575845"/>
+          <Include href="头像合集/教导主任头像.xml" loadImmediate="false" itemID="6988d405-00001521" lastModified="1770574876"/>
           <Include href="头像合集/酒保头像.xml" loadImmediate="false" itemID="674abaa1-00001a19" lastModified="1732950741"/>
           <Include href="头像合集/冷兵器商人头像.xml" loadImmediate="false" itemID="674ab988-000019f7" lastModified="1732950505"/>
+          <Include href="头像合集/理科教授头像.xml" loadImmediate="false" itemID="6988dadf-000018cb" lastModified="1770576705"/>
           <Include href="头像合集/丽丽丝头像.xml" loadImmediate="false" itemID="674ac704-00001ea9" lastModified="1732953914"/>
+          <Include href="头像合集/男变装-黑色X蒙面.xml" loadImmediate="false" itemID="67d7e45f-00001ba6" lastModified="1742201951"/>
+          <Include href="头像合集/男变装-红外线滤光镜.xml" loadImmediate="false" itemID="67d7e462-00001ba7" lastModified="1742201954"/>
+          <Include href="头像合集/牛仔头像.xml" loadImmediate="false" itemID="69889266-0000061f" lastModified="1770558177"/>
+          <Include href="头像合集/排骨头像.xml" loadImmediate="false" itemID="6988b2e5-00000d2a" lastModified="1770566422"/>
           <Include href="头像合集/前治安官头像.xml" loadImmediate="false" itemID="674abf9a-00001b16" lastModified="1769579245"/>
+          <Include href="头像合集/闪光.xml" loadImmediate="false" itemID="69799deb-000005a1" lastModified="1769577963"/>
+          <Include href="头像合集/体育老师头像.xml" loadImmediate="false" itemID="6988cf2d-00001227" lastModified="1770573755"/>
+          <Include href="头像合集/头.xml" loadImmediate="false" itemID="66f58168-000031bc" lastModified="1727368184"/>
+          <Include href="头像合集/腿假肢.xml" itemIcon="1" loadImmediate="false" itemID="68141af0-000017b0" lastModified="1746148080"/>
+          <Include href="头像合集/腿假肢上部.xml" itemIcon="1" loadImmediate="false" itemID="68141803-000017a7" lastModified="1746148167"/>
+          <Include href="头像合集/腿假肢下部.xml" itemIcon="1" loadImmediate="false" itemID="68141ae6-000017ac" lastModified="1746148247"/>
+          <Include href="头像合集/文科老师头像.xml" loadImmediate="false" itemID="6988db6a-00001bda" lastModified="1770576912"/>
+          <Include href="头像合集/武器订购系统头像.xml" loadImmediate="false" itemID="6988cc8f-000010f7" lastModified="1770573066"/>
           <Include href="头像合集/舞女头像.xml" loadImmediate="false" itemID="674abb36-00001a3c" lastModified="1732950875"/>
+          <Include href="头像合集/吸特乐头像.xml" loadImmediate="false" itemID="69889dd0-0000088c" lastModified="1770561156"/>
           <Include href="头像合集/小F头像.xml" loadImmediate="false" itemID="674ab254-00000e40" lastModified="1732948655"/>
           <Include href="头像合集/幸存老兵头像.xml" loadImmediate="false" itemID="674abbe2-00001a65" lastModified="1769583394"/>
           <Include href="头像合集/学生妹头像.xml" loadImmediate="false" itemID="674abd1c-00001a84" lastModified="1769579385"/>
+          <Include href="头像合集/阎凝儿gazer/元件素材/55588787.xml" loadImmediate="false" itemID="664d933c-00000107" lastModified="1716825544"/>
+          <Include href="头像合集/阎凝儿gazer/元件素材/nexus viser 副本 2.xml" itemIcon="1" loadImmediate="false" itemID="53774a4c-00006bfd" lastModified="1467991853"/>
+          <Include href="头像合集/阎凝儿gazer/元件素材/shape 386.xml" itemIcon="1" loadImmediate="false" itemID="559be189-00000183" lastModified="1467991158"/>
+          <Include href="头像合集/阎凝儿gazer/元件素材/shape 646.xml" itemIcon="1" loadImmediate="false" itemID="558fd8c5-00000287" lastModified="1467991678"/>
+          <Include href="头像合集/阎凝儿gazer/元件素材/shape 2391.xml" itemIcon="1" loadImmediate="false" itemID="560f79d6-00000958" lastModified="1467989825"/>
+          <Include href="头像合集/阎凝儿gazer/元件素材/元件 71.xml" loadImmediate="false" itemID="536390ed-00001ada" lastModified="1467991713"/>
           <Include href="图片容器.xml" loadImmediate="false" itemID="67b06460-0000061b" lastModified="1739613281"/>
           <Include href="无AS链接/Symbol 8.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005ba" lastModified="1720533000"/>
-          <Include href="阎凝儿gazer/元件素材/55588787.xml" loadImmediate="false" itemID="664d933c-00000107" lastModified="1716825544"/>
-          <Include href="阎凝儿gazer/元件素材/nexus viser 副本 2.xml" itemIcon="1" loadImmediate="false" itemID="53774a4c-00006bfd" lastModified="1467991853"/>
-          <Include href="阎凝儿gazer/元件素材/shape 386.xml" itemIcon="1" loadImmediate="false" itemID="559be189-00000183" lastModified="1467991158"/>
-          <Include href="阎凝儿gazer/元件素材/shape 646.xml" itemIcon="1" loadImmediate="false" itemID="558fd8c5-00000287" lastModified="1467991678"/>
-          <Include href="阎凝儿gazer/元件素材/shape 2391.xml" itemIcon="1" loadImmediate="false" itemID="560f79d6-00000958" lastModified="1467989825"/>
-          <Include href="阎凝儿gazer/元件素材/元件 71.xml" loadImmediate="false" itemID="536390ed-00001ada" lastModified="1467991713"/>
+          <Include href="无AS链接/Symbol 92.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005fd" lastModified="1720533000"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -632,6 +782,19 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="29524947" publishTime="1770576870"/>
+          <PublishItem publishSize="29523834" publishTime="1770576808"/>
+          <PublishItem publishSize="24401952" publishTime="1770569023"/>
+          <PublishItem publishSize="24401957" publishTime="1770567834"/>
+          <PublishItem publishSize="24400437" publishTime="1770567811"/>
+          <PublishItem publishSize="24205465" publishTime="1770562335"/>
+          <PublishItem publishSize="24205448" publishTime="1770561809"/>
+          <PublishItem publishSize="24205447" publishTime="1770561354"/>
+          <PublishItem publishSize="24203204" publishTime="1770560040"/>
+          <PublishItem publishSize="24236540" publishTime="1770559099"/>
+          <PublishItem publishSize="24236507" publishTime="1770558973"/>
+          <PublishItem publishSize="24236488" publishTime="1770558673"/>
+          <PublishItem publishSize="24234423" publishTime="1770558639"/>
           <PublishItem publishSize="22690378" publishTime="1770551987"/>
           <PublishItem publishSize="22690387" publishTime="1770551857"/>
           <PublishItem publishSize="22690575" publishTime="1770549630"/>
@@ -639,18 +802,5 @@
           <PublishItem publishSize="22688920" publishTime="1770496427"/>
           <PublishItem publishSize="22689144" publishTime="1770496201"/>
           <PublishItem publishSize="22688904" publishTime="1770495489"/>
-          <PublishItem publishSize="22692504" publishTime="1770478263"/>
-          <PublishItem publishSize="24196479" publishTime="1769585391"/>
-          <PublishItem publishSize="24196466" publishTime="1769585283"/>
-          <PublishItem publishSize="23656011" publishTime="1769583134"/>
-          <PublishItem publishSize="23656360" publishTime="1769582395"/>
-          <PublishItem publishSize="23639659" publishTime="1769581791"/>
-          <PublishItem publishSize="23986312" publishTime="1769581383"/>
-          <PublishItem publishSize="23978806" publishTime="1769581201"/>
-          <PublishItem publishSize="23477830" publishTime="1769579132"/>
-          <PublishItem publishSize="23477922" publishTime="1769578859"/>
-          <PublishItem publishSize="23477264" publishTime="1769578765"/>
-          <PublishItem publishSize="22075984" publishTime="1763085827"/>
-          <PublishItem publishSize="22075962" publishTime="1763085673"/>
      </publishHistory>
 </DOMDocument>
