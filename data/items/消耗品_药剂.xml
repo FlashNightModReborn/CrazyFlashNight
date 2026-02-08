@@ -195,7 +195,7 @@
     <type>消耗品</type>
     <use>药剂</use>
     <price>6000</price>
-    <description>使用净化药剂,清除自身积累的麻痹值,获得一定额度的麻痹抵抗能力,消除自身debuff,减少永久型地形伤害,缓解永久型地形负面效果。部分效果可叠加,效果逐步衰减。</description>
+    <description>使用净化药剂,清除自身积累的麻痹值,获得一定额度的麻痹抵抗能力,大幅减少自身debuff持续时间,减少永久型地形伤害,缓解永久型地形负面效果。部分效果可叠加,效果逐步衰减。</description>
     <data>
       <effects>
         <effect type="purify" value="50" scaleWithAlchemy="true" clearDebuffs="debuff_" />

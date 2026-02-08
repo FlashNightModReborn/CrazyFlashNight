@@ -25,12 +25,12 @@
     <icon>牛肉罐头</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>150</price>
+    <price>300</price>
     <description>末日带来的无数灾难使得末世的很多土壤作物产量低下,新鲜&lt;font color="#eee822"&gt;食物&lt;/font&gt;稀缺。末世前生产的罐头就成为了幸存者们重要的&lt;font color="#eee822"&gt;食物&lt;/font&gt;来源,其中&lt;font color="#eee822"&gt;牛肉罐头&lt;/font&gt;以其高营养价值尤其受人们欢迎。</description>
     <data>
       <effects>
-        <effect type="heal" hp="40" mp="25" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="2" duration="900" buffId="药剂_伤害加成" />
+        <effect type="heal" hp="100" mp="100" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="5" duration="1500" buffId="药剂_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
@@ -139,7 +139,7 @@
     <type>消耗品</type>
     <use>药剂</use>
     <price>1000</price>
-    <description>富含蛋白质的奶,除了提供营养以外,还有少许解毒效果。减少自身积累的麻痹值,获得少许的麻痹抵抗能力,小概率消除自身debuff,少量减少永久型地形伤害,缓解永久型地形负面效果。</description>
+    <description>富含蛋白质的奶,除了提供营养以外,还有少许解毒效果。减少自身积累的麻痹值,获得少许的麻痹抵抗能力,小幅度减少自身debuff持续时间,少量减少永久型地形伤害,缓解永久型地形负面效果。</description>
     <data>
       <effects>
         <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true" />
@@ -150,6 +150,25 @@
   </item>
 
   <!-- ========== 战斗食品 (Buff为主，恢复附带) ========== -->
+  <item>
+    <name>棒棒糖</name>
+    <displayname>棒棒糖</displayname>
+    <icon>棒棒糖</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>700</price>
+    <description>回忆起你的&lt;font color="#eee822"&gt;童年&lt;/font&gt;····糖分带来的愉悦让你精力充沛。末世稀缺的甜蜜,是奢侈品级别的存在。</description>
+    <data>
+      <effects>
+        <effect type="heal" hp="80" mp="80" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="120" mp="120" duration="90" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.06" duration="600" buffId="药剂_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="8" duration="600" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="5" duration="600" buffId="药剂_防御力" />
+        <effect type="playEffect" name="药剂动画" />
+      </effects>
+    </data>
+  </item>
   <item>
     <name>进口香烟</name>
     <displayname>进口香烟</displayname>
@@ -415,25 +434,6 @@
         <effect type="buff" property="伤害加成" calc="add_positive" value="50" duration="1800" buffId="药剂_伤害加成" />
         <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="药剂_速度" />
         <effect type="buff" property="防御力" calc="add_negative" value="-15" duration="1800" buffId="debuff_药剂_防御力" />
-        <effect type="playEffect" name="药剂动画" />
-      </effects>
-    </data>
-  </item>
-  <item>
-    <name>棒棒糖</name>
-    <displayname>棒棒糖</displayname>
-    <icon>棒棒糖</icon>
-    <type>消耗品</type>
-    <use>药剂</use>
-    <price>700</price>
-    <description>回忆起你的&lt;font color="#eee822"&gt;童年&lt;/font&gt;····糖分带来的愉悦让你精力充沛。末世稀缺的甜蜜,是奢侈品级别的存在。</description>
-    <data>
-      <effects>
-        <effect type="heal" hp="80" mp="80" target="self" scaleWithAlchemy="true" />
-        <effect type="regen" hp="120" mp="120" duration="90" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.06" duration="600" buffId="药剂_速度" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="8" duration="600" buffId="药剂_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="5" duration="600" buffId="药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
