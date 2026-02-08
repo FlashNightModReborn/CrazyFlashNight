@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/手雷攻击" itemID="66a5d6cd-00000693" lastModified="1770217659" lastUniqueIdentifier="353">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/手雷攻击" itemID="66a5d6cd-00000693" lastModified="1770554254" lastUniqueIdentifier="360">
   <timeline>
-    <DOMTimeline name="手雷攻击" currentFrame="9">
+    <DOMTimeline name="手雷攻击" currentFrame="59">
       <layers>
         <DOMLayer name="Labels Layer" color="#85C892">
           <frames>
@@ -36,7 +36,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#49FA85" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#49FA85">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <Actionscript>
@@ -486,7 +486,7 @@ else
 	子弹属性.发射效果 = 手雷属性.muzzle;
 	子弹属性.子弹种类 = 手雷属性.bullet;
 	子弹属性.子弹威力 = 手雷属性.power;
-	子弹属性.子弹速度 = Math.floor(手雷属性.velocity * 0.9);
+	子弹属性.子弹速度 = Math.floor(手雷属性.velocity * 1.0);
 	子弹属性.击中地图效果 = 手雷属性.bullethit;
 	子弹属性.Z轴攻击范围 = 手雷属性.bulletsize;
 	子弹属性.击倒率 = 手雷属性.impact;
@@ -585,7 +585,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 24" color="#FF4F4F">
+        <DOMLayer name="图层 24" color="#FF4F4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -1015,10 +1015,13 @@ else
               <elements/>
             </DOMFrame>
             <DOMFrame index="49" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" name="枪" centerPoint3DX="169.45" centerPoint3DY="-217.75">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" name="枪" centerPoint3DX="259.3" centerPoint3DY="-64.55">
                   <matrix>
-                    <Matrix a="0.98699951171875" b="0.141815185546875" c="-0.141815185546875" d="0.98699951171875" tx="150.65" ty="-249.5"/>
+                    <Matrix a="0.189254760742188" b="0.978973388671875" c="-0.978973388671875" d="0.189254760742188" tx="282.55" ty="-92.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1026,11 +1029,11 @@ else
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="50" duration="2" keyMode="9728">
+            <DOMFrame index="51" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" name="枪" centerPoint3DX="262.45" centerPoint3DY="-70.15">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" name="枪" centerPoint3DX="259.3" centerPoint3DY="-64.55">
                   <matrix>
-                    <Matrix a="0.118453979492188" b="0.990066528320313" c="-0.990066528320313" d="0.118453979492188" tx="288.05" ty="-96.95"/>
+                    <Matrix a="0.189254760742188" b="0.978973388671875" c="-0.978973388671875" d="0.189254760742188" tx="282.55" ty="-92.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1038,7 +1041,19 @@ else
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" duration="9" keyMode="9728">
+            <DOMFrame index="52" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" name="枪" centerPoint3DX="219.8" centerPoint3DY="44.45">
+                  <matrix>
+                    <Matrix a="-0.325576782226563" b="0.94244384765625" c="-0.94244384765625" d="-0.325576782226563" tx="253.75" ty="32.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="61" keyMode="9728">
@@ -1654,10 +1669,7 @@ else
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="42" duration="7" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="49" duration="38" keyMode="9728">
+            <DOMFrame index="42" duration="45" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="87" duration="3" keyMode="9728">
@@ -3555,6 +3567,14 @@ else
                     <Point y="-0.15"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 135" name="枪" centerPoint3DX="166.35" centerPoint3DY="-210.7">
+                  <matrix>
+                    <Matrix a="0.942459106445313" b="0.3255615234375" c="-0.3255615234375" d="0.942459106445313" tx="153.6" ty="-245.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="50" duration="2" keyMode="9728">
@@ -4623,7 +4643,7 @@ else
                     <Point x="-0.05" y="0.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="21.2" centerPoint3DY="-52.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="21.2" centerPoint3DY="-52.85">
                   <matrix>
                     <Matrix a="0.554595947265625" b="0.631011962890625" c="-0.631011962890625" d="0.554595947265625" tx="56.2" ty="-113.25"/>
                   </matrix>
