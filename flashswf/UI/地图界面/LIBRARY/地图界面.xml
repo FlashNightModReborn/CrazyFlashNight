@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1770585112" lastUniqueIdentifier="296">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1770586587" lastUniqueIdentifier="296">
   <timeline>
-    <DOMTimeline name="地图界面" currentFrame="7" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;937&lt;/guideline&gt;&lt;guideline direction="v"&gt;979&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="地图界面" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;937&lt;/guideline&gt;&lt;guideline direction="v"&gt;979&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="Script Layer" color="#D4FDCB">
+        <DOMLayer name="Script Layer" color="#D4FDCB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -1272,7 +1272,10 @@ function setTaskRelatedAvatar(avatarName, requiredProgress)
 
 function setDynamicTaskAvatars() {
     if (_root.主线任务进度 == undefined) return;
-    setTaskRelatedAvatar("牛仔头像", 95);
+	var infra = _root.基建系统.infrastructure;
+	if (infra.摩托车 || infra.越野车){
+		setTaskRelatedAvatar("牛仔头像", 95);
+	}
 }
 
 // 共享的 NPC 闪光提示数据
@@ -7895,7 +7898,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="大学背景" color="#4FFFFF" parentLayerIndex="57" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="大学背景" color="#4FFFFF" parentLayerIndex="57" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -8243,7 +8246,7 @@ onClipEvent (load) {
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="场景按钮/教学楼内部右" name="教学楼内部右侧" selected="true" centerPoint3DX="735.75" centerPoint3DY="240.8">
+                <DOMSymbolInstance libraryItemName="场景按钮/教学楼内部右" name="教学楼内部右侧" centerPoint3DX="735.75" centerPoint3DY="240.8">
                   <matrix>
                     <Matrix a="1.212646484375" d="1.212646484375" tx="652.95" ty="200.1"/>
                   </matrix>
