@@ -54,17 +54,18 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
 ✅ 版本号递增 PASS
 ✅ 批量操作后版本继续递增 PASS
 
-🧹 执行ARC缓存算法测试...
-✅ ARC算法控制缓存数量 PASS
-✅ ARC详细信息可获取 PASS (object is not null)
-✅ ARC容量设置正确 PASS (expected=5, actual=5)
-✅ T1+T2不超过容量 PASS
-✅ ARC缓存有活跃项目 PASS
-✅ T1队列处理新项目 PASS
-✅ T2队列处理热点项目 PASS
-✅ B1幽灵队列存在 PASS
-✅ B2幽灵队列存在 PASS
-✅ 幽灵队列记住淘汰项目 PASS
+🧹 执行缓存容量 & LRU淘汰测试（Object Map 版）...
+✅ LRU淘汰控制缓存数量<=5 PASS
+✅ 兼容详情接口可用 PASS (object is not null)
+✅ 容量设置正确 PASS (expected=5, actual=5)
+✅ 缓存项总数<=容量 PASS
+✅ 填满时缓存数=3 PASS (expected=3, actual=3)
+✅ 淘汰后缓存数<=3 PASS
+✅ 兼容接口返回对象 PASS (object is not null)
+✅ B1_size始终为0 PASS (expected=0, actual=0)
+✅ B2_size始终为0 PASS (expected=0, actual=0)
+✅ total_cached_items>0 PASS
+✅ T1或T2有项目 PASS
 ✅ 强制刷新阈值生效 PASS
 ✅ 强制刷新统计递增 PASS
 ✅ 版本检查后缓存可用 PASS (object is not null)
@@ -147,13 +148,13 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
 ✅ 缓存项目不超过容量 PASS
 
 ⚡ 执行性能基准测试...
-📊 缓存获取性能: 100次调用耗时 2ms
+📊 缓存获取性能: 100次调用耗时 4ms
 ✅ 缓存获取性能达标 PASS
-📊 缓存创建性能: 50次创建耗时 2ms
+📊 缓存创建性能: 50次创建耗时 6ms
 ✅ 缓存创建性能合理 PASS
-📊 大量操作测试: 50次操作耗时 3ms
+📊 大量操作测试: 50次操作耗时 7ms
 ✅ 大量操作性能合理 PASS
-📊 内存使用测试: 10次循环耗时 6ms
+📊 内存使用测试: 10次循环耗时 12ms
 ✅ 内存使用测试合理 PASS
 
 🔗 执行集成测试...
@@ -206,17 +207,17 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
 ================================================================================
 📊 测试结果汇总
 ================================================================================
-总测试数: 168
-通过: 168 ✅
+总测试数: 169
+通过: 169 ✅
 失败: 0 ❌
 成功率: 100%
-总耗时: 40ms
+总耗时: 115ms
 
 ⚡ 性能基准报告:
-  cacheRetrieval: 0.02ms/次 (100次测试)
-  cacheCreation: 0.04ms/次 (50次测试)
-  massiveOperations: 0.06ms/次 (50次测试)
-  memoryUsage: 0.6ms/次 (10次测试)
+  cacheRetrieval: 0.04ms/次 (100次测试)
+  cacheCreation: 0.12ms/次 (50次测试)
+  massiveOperations: 0.14ms/次 (50次测试)
+  memoryUsage: 1.2ms/次 (10次测试)
 
 🎯 TargetCacheProvider ARC增强版当前状态:
 === TargetCacheProvider ARC增强版状态报告 ===
@@ -228,8 +229,8 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
   缓存未命中: 30
   缓存创建: 1
   缓存更新: 29
-  平均访问时间: 0.03ms
-  最大访问时间: 1ms
+  平均访问时间: 0.13ms
+  最大访问时间: 2ms
 
 缓存池状态:
   活跃缓存数: 0
@@ -237,6 +238,8 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
   平均单位/缓存: 0
   最老缓存年龄: 0 帧
   最新缓存年龄: 0 帧
+
+阵营分布:
 
 ARC算法状态:
   缓存容量: 10
@@ -256,6 +259,11 @@ ARC算法状态:
   强制刷新阈值: 10000 帧
   版本检查启用: true
   详细统计启用: true
+
+FactionManager集成:
+  状态: 已集成
+  注册阵营数: 3
+  阵营列表: PLAYER, ENEMY, HOSTILE_NEUTRAL
 
 缓存详情:
 

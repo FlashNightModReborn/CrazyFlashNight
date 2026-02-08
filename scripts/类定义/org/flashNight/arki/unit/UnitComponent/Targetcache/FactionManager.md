@@ -139,11 +139,11 @@ FactionManager: 无效的关系状态 - INVALID_RELATION
 ✅ 状态包含阵营数量 PASS
 
 ⚡ 执行性能基准测试...
-📊 关系查询性能: 10000次查询耗时 30ms (平均 3μs/次)
+📊 关系查询性能: 10000次查询耗时 45ms (平均 4.5μs/次)
 ✅ 关系查询性能达标 PASS
-📊 适配器方法性能: 10000次调用耗时 17ms (平均 1.7μs/次)
+📊 适配器方法性能: 10000次调用耗时 28ms (平均 2.8μs/次)
 ✅ 适配器方法性能达标 PASS
-📊 性能对比: 新方法=35ms, 传统方法=2ms, 开销=1750%
+📊 性能对比: 新方法=51ms, 传统方法=2ms, 开销=2550%
 ✅ 相对性能开销可接受 PASS
 
 🔍 执行边界条件测试...
@@ -168,23 +168,47 @@ FactionManager: 无效的关系状态 - INVALID_RELATION
 ✅ 玩家vs中立敌对-敌对 PASS
 ✅ 敌人vs中立敌对-敌对 PASS
 
+🔗 执行 Ref 引用方法测试...
+✅ getEnemyFactionsRef('PLAYER')非null PASS (object is not null)
+✅ getEnemyFactionsRef('PLAYER')长度一致 PASS (expected="2", actual="2")
+✅ getEnemyFactionsRef('PLAYER')元素一致 PASS
+✅ getEnemyFactionsRef('ENEMY')非null PASS (object is not null)
+✅ getEnemyFactionsRef('ENEMY')长度一致 PASS (expected="2", actual="2")
+✅ getEnemyFactionsRef('ENEMY')元素一致 PASS
+✅ getEnemyFactionsRef('HOSTILE_NEUTRAL')非null PASS (object is not null)
+✅ getEnemyFactionsRef('HOSTILE_NEUTRAL')长度一致 PASS (expected="2", actual="2")
+✅ getEnemyFactionsRef('HOSTILE_NEUTRAL')元素一致 PASS
+✅ getAllyFactionsRef('PLAYER')非null PASS (object is not null)
+✅ getAllyFactionsRef('PLAYER')长度一致 PASS (expected="1", actual="1")
+✅ getAllyFactionsRef('PLAYER')元素一致 PASS
+✅ getAllyFactionsRef('ENEMY')非null PASS (object is not null)
+✅ getAllyFactionsRef('ENEMY')长度一致 PASS (expected="1", actual="1")
+✅ getAllyFactionsRef('ENEMY')元素一致 PASS
+✅ getAllyFactionsRef('HOSTILE_NEUTRAL')非null PASS (object is not null)
+✅ getAllyFactionsRef('HOSTILE_NEUTRAL')长度一致 PASS (expected="1", actual="1")
+✅ getAllyFactionsRef('HOSTILE_NEUTRAL')元素一致 PASS
+✅ getEnemyFactionsRef无效阵营返回null PASS
+✅ getAllyFactionsRef无效阵营返回null PASS
+✅ getEnemyFactionsRef返回同一引用 PASS
+✅ getAllyFactionsRef返回同一引用 PASS
+
 ================================================================================
 📊 测试结果汇总
 ================================================================================
-总测试数: 135
-通过: 135 ✅
+总测试数: 157
+通过: 157 ✅
 失败: 0 ❌
 成功率: 100%
-总耗时: 85ms
+总耗时: 131ms
 
 📌 新增方法测试覆盖:
   ✅ getFactionLegacyValue - 阵营到布尔值映射
   ✅ createFactionUnit - 假单位创建工具
 
 ⚡ 性能基准报告:
-  relationshipQueries: 3μs/次 (10000次测试)
-  adapterMethods: 1.7μs/次 (10000次测试)
-  vsLegacyComparison: 开销 1750% (10000次对比)
+  relationshipQueries: 4.5μs/次 (10000次测试)
+  adapterMethods: 2.8μs/次 (10000次测试)
+  vsLegacyComparison: 开销 2550% (10000次对比)
 
 🎯 FactionManager当前状态:
 === FactionManager 关系报告 ===
@@ -202,7 +226,7 @@ ENEMY	ENEM		SELF		ENEM		NEUT
 HOSTILE_	ENEM		ENEM		SELF		NEUT		
 TEST_FAC	NEUT		ALLY		NEUT		SELF		
 
-缓存状态: 失效
+缓存状态: 有效
 
 🎉 所有测试通过！FactionManager 组件质量优秀！
 ✅ 三阵营系统正常工作

@@ -81,8 +81,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      */
     private var _lastIndex:Number = 0;
 
-    // 单帧扫描标记：用于“单调前进”的两指针扫描
+    // 单帧扫描标记：用于"单调前进"的两指针扫描
     private var _sweepFrame:Number = -1;
+
+    // 查询结果复用对象（避免高频路径 new Object）
+    // 注意：调用方必须在下次调用前消费完毕，不得持有引用。
+    private var _resultIndex:Object;
+    private var _resultMonotonic:Object;
 
     // ========================================================================
     // 构造函数
@@ -112,6 +117,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
          this.rightValues = rightValues || [];
         this.rightMaxValues = [];
          this.lastUpdatedFrame = lastFrame || 0;
+
+        // 初始化查询结果复用对象
+        this._resultIndex = { data: null, startIndex: 0 };
+        this._resultMonotonic = { data: null, startIndex: 0 };
 
         // 构建 right 前缀最大值数组，保证右边界键单调性（供扫描线/二分使用）
         rebuildRightMaxValues();
@@ -193,8 +202,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
       public function getTargetsFromIndex(query:AABBCollider):Object {
           var n:Number = this.data.length;
 
-          // 静态复用对象，减少GC压力
-          var result:Object = { data: this.data, startIndex: 0 };
+          // 复用实例对象，减少GC压力（调用方须在下次调用前消费）
+          var result:Object = this._resultIndex;
+          result.data = this.data;
+          result.startIndex = 0;
         
         // 空数组快速返回
         if (n == 0) {
@@ -344,7 +355,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      */
      public function getTargetsFromIndexMonotonic(query:AABBCollider):Object {
          var n:Number = this.data.length;
-         var result:Object = { data: this.data, startIndex: 0 };
+         // 复用实例对象，减少GC压力（调用方须在下次调用前消费）
+         var result:Object = this._resultMonotonic;
+         result.data = this.data;
+         result.startIndex = 0;
          if (n == 0) return result;
 
         var queryLeft:Number = query.left;

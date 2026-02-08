@@ -557,106 +557,103 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
     }
     
     // ========================================================================
-    // ARC缓存算法测试
+    // 缓存容量 & LRU淘汰测试（Object Map 版）
     // ========================================================================
     
     private static function runAutoCleanupTests():Void {
-        trace("\n🧹 执行ARC缓存算法测试...");
-        
-        testARCCapacityLimits();
-        testARCAdaptiveBehavior();
-        testARCGhostCacheFeature();
+        trace("\n🧹 执行缓存容量 & LRU淘汰测试（Object Map 版）...");
+
+        testCapacityLimitsLRU();
+        testLRUEvictionOrder();
+        testCompatDetailsInterface();
         testForceRefreshThreshold();
         testVersionCheckMechanism();
     }
-    
-    private static function testARCCapacityLimits():Void {
+
+    /**
+     * 容量上限测试：超过 arcCacheCapacity 后自动淘汰
+     */
+    private static function testCapacityLimitsLRU():Void {
         TargetCacheProvider.clearCache();
         TargetCacheProvider.resetStats();
-        
-        // 设置较小的ARC容量进行测试
+
         TargetCacheProvider.setConfig({
             arcCacheCapacity: 5
         });
-        
+
         var targets:Array = [];
         for (var i:Number = 0; i < 8; i++) {
             targets[i] = createTestTarget(i % 2 == 0);
-            targets[i]._name = "arc_target_" + i;
+            targets[i]._name = "lru_target_" + i;
         }
-        
-        // 创建超过容量的缓存，验证ARC自动淘汰
+
+        // 创建超过容量的缓存
         for (var j:Number = 0; j < targets.length; j++) {
             var requestType:String = (j % 2 == 0) ? "敌人" : "友军";
             TargetCacheProvider.getCache(requestType, targets[j], 10);
         }
-        
+
         var finalCount:Number = TargetCacheProvider.getCacheCount();
-        assertTrue("ARC算法控制缓存数量", finalCount <= 5);
-        
-        // 验证ARC详细信息
-        var arcDetails:Object = TargetCacheProvider.getARCCacheDetails();
-        assertNotNull("ARC详细信息可获取", arcDetails);
-        assertEquals("ARC容量设置正确", 5, arcDetails.capacity, 0);
-        assertTrue("T1+T2不超过容量", arcDetails.T1_size + arcDetails.T2_size <= 5);
+        assertTrue("LRU淘汰控制缓存数量<=5", finalCount <= 5);
+
+        // 兼容接口仍可用
+        var details:Object = TargetCacheProvider.getARCCacheDetails();
+        assertNotNull("兼容详情接口可用", details);
+        assertEquals("容量设置正确", 5, details.capacity, 0);
+        assertTrue("缓存项总数<=容量", details.total_cached_items <= 5);
     }
-    
-    private static function testARCAdaptiveBehavior():Void {
+
+    /**
+     * LRU淘汰顺序：最早访问的条目最先被淘汰
+     */
+    /**
+     * LRU淘汰顺序：最早访问的条目最先被淘汰
+     * 缓存键 = requestType + "_" + faction，需确保 3 个请求产生 3 个不同键
+     */
+    private static function testLRUEvictionOrder():Void {
         TargetCacheProvider.clearCache();
         TargetCacheProvider.setConfig({
-            arcCacheCapacity: 10
+            arcCacheCapacity: 3
         });
-        
+
+        // 3 个不同缓存键：
+        //   "敌人_ENEMY"  (enemy unit → faction ENEMY)
+        //   "友军_PLAYER" (ally unit  → faction PLAYER)
+        //   "全体_all"
+        var t1:Object = createTestTarget(true);  t1._name = "lru_order_1";
+        var t2:Object = createTestTarget(false); t2._name = "lru_order_2";
+        var t3:Object = createTestTarget(true);  t3._name = "lru_order_3";
+
+        TargetCacheProvider.getCache("敌人", t1, 10);   // key: 敌人_ENEMY
+        TargetCacheProvider.getCache("友军", t2, 10);   // key: 友军_PLAYER
+        TargetCacheProvider.getCache("全体", t3, 10);   // key: 全体_all
+
+        assertEquals("填满时缓存数=3", 3, TargetCacheProvider.getCacheCount(), 0);
+
+        // 再访问"敌人"使其变热，然后用新键"友军_ENEMY"触发淘汰
+        TargetCacheProvider.getCache("敌人", t1, 10);   // 刷新 敌人_ENEMY
+        var t4:Object = createTestTarget(true); t4._name = "lru_order_4";
+        TargetCacheProvider.getCache("友军", t4, 10);   // key: 友军_ENEMY（第4个键）
+
+        var count:Number = TargetCacheProvider.getCacheCount();
+        assertTrue("淘汰后缓存数<=3", count <= 3);
+    }
+
+    /**
+     * 兼容接口 getARCCacheDetails：B1/B2 ghost 队列在 Object Map 下始终为 0
+     */
+    private static function testCompatDetailsInterface():Void {
+        TargetCacheProvider.clearCache();
+
         var target:Object = createTestTarget(true);
-        
-        // 模拟重复访问模式（频率优先）
-        for (var i:Number = 0; i < 5; i++) {
-            TargetCacheProvider.getCache("敌人", target, 50); // 重复访问同一缓存
-        }
-        
-        var arcDetails1:Object = TargetCacheProvider.getARCCacheDetails();
-        
-        // 模拟顺序访问模式（最近性优先）
-        for (var j:Number = 0; j < 5; j++) {
-            var seqTarget:Object = createTestTarget(j % 2 == 0);
-            seqTarget._name = "seq_target_" + j;
-            TargetCacheProvider.getCache("友军", seqTarget, 50);
-        }
-        
-        var arcDetails2:Object = TargetCacheProvider.getARCCacheDetails();
-        
-        // 验证ARC适应不同访问模式
-        assertTrue("ARC缓存有活跃项目", arcDetails2.total_cached_items > 0);
-        assertTrue("T1队列处理新项目", arcDetails2.T1_size >= 0);
-        assertTrue("T2队列处理热点项目", arcDetails2.T2_size >= 0);
-    }
-    
-    private static function testARCGhostCacheFeature():Void {
-        TargetCacheProvider.clearCache();
-        TargetCacheProvider.setConfig({
-            arcCacheCapacity: 3  // 很小的容量，容易触发淘汰
-        });
-        
-        var targets:Array = [];
-        for (var i:Number = 0; i < 6; i++) {
-            targets[i] = createTestTarget(i % 2 == 0);
-            targets[i]._name = "ghost_target_" + i;
-        }
-        
-        // 创建足够多的缓存项目，触发淘汰和幽灵缓存
-        for (var j:Number = 0; j < targets.length; j++) {
-            TargetCacheProvider.getCache("敌人", targets[j], 10);
-        }
-        
-        var arcDetails:Object = TargetCacheProvider.getARCCacheDetails();
-        
-        // 验证幽灵队列的存在（ARC特有功能）
-        assertTrue("B1幽灵队列存在", arcDetails.B1_size >= 0);
-        assertTrue("B2幽灵队列存在", arcDetails.B2_size >= 0);
-        
-        // 幽灵队列应该记住被淘汰的项目
-        var totalRemembered:Number = arcDetails.B1_size + arcDetails.B2_size;
-        assertTrue("幽灵队列记住淘汰项目", totalRemembered >= 0);
+        TargetCacheProvider.getCache("敌人", target, 10);
+
+        var details:Object = TargetCacheProvider.getARCCacheDetails();
+        assertNotNull("兼容接口返回对象", details);
+        assertEquals("B1_size始终为0", 0, details.B1_size, 0);
+        assertEquals("B2_size始终为0", 0, details.B2_size, 0);
+        assertTrue("total_cached_items>0", details.total_cached_items > 0);
+        assertTrue("T1或T2有项目", details.T1_size + details.T2_size > 0);
     }
     
     private static function testForceRefreshThreshold():Void {

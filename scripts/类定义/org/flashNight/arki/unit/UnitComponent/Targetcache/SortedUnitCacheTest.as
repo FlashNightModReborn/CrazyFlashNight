@@ -85,7 +85,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest {
             
             // === 过滤器查询测试 ===
             runFilteredQueryTests();
-            
+
+            // === rightMaxValues 前缀最大值测试 ===
+            runRightMaxValuesTests();
+
         } catch (error:Error) {
             failedTests++;
             trace("❌ 测试执行异常: " + error.message);
@@ -1626,9 +1629,166 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest {
     }
     
     // ========================================================================
+    // rightMaxValues 前缀最大值测试
+    // ========================================================================
+
+    private static function runRightMaxValuesTests():Void {
+        trace("\n🔢 执行 rightMaxValues 前缀最大值测试...");
+
+        testRightMaxValuesMonotonicity();
+        testRightMaxValuesDominatesRightValues();
+        testNonMonotonicRightValuesQuery();
+        testRightMaxValuesAfterUpdateData();
+        testRightMaxValuesValidateData();
+    }
+
+    /**
+     * 验证 rightMaxValues 总是单调非降
+     */
+    private static function testRightMaxValuesMonotonicity():Void {
+        // 创建宽度差异大的单位，使 rightValues 非单调
+        var units:Array = [];
+        var widths:Array = [50, 5, 5, 80, 5, 5, 5, 60, 5, 5];
+        for (var i:Number = 0; i < widths.length; i++) {
+            var L:Number = i * 30;
+            units[i] = {
+                _name: "rmv_" + i,
+                hp: 100, maxhp: 100,
+                aabbCollider: { left: L, right: L + widths[i] }
+            };
+        }
+        var cache:SortedUnitCache = createTestCache(units);
+
+        var prev:Number = -Infinity;
+        var allMono:Boolean = true;
+        for (var j:Number = 0; j < cache.rightMaxValues.length; j++) {
+            if (cache.rightMaxValues[j] < prev) {
+                allMono = false;
+                break;
+            }
+            prev = cache.rightMaxValues[j];
+        }
+        assertTrue("rightMaxValues单调非降", allMono);
+    }
+
+    /**
+     * 验证 rightMaxValues[i] >= rightValues[i] 对所有 i 成立
+     */
+    private static function testRightMaxValuesDominatesRightValues():Void {
+        var units:Array = [];
+        var widths:Array = [100, 5, 5, 5, 200, 5, 5, 5, 5, 5];
+        for (var i:Number = 0; i < widths.length; i++) {
+            var L:Number = i * 40;
+            units[i] = {
+                _name: "dom_" + i,
+                hp: 100, maxhp: 100,
+                aabbCollider: { left: L, right: L + widths[i] }
+            };
+        }
+        var cache:SortedUnitCache = createTestCache(units);
+
+        var allDom:Boolean = true;
+        for (var j:Number = 0; j < cache.rightValues.length; j++) {
+            if (cache.rightMaxValues[j] < cache.rightValues[j]) {
+                allDom = false;
+                break;
+            }
+        }
+        assertTrue("rightMaxValues[i]>=rightValues[i]", allDom);
+        assertEquals("rightMaxValues长度正确", cache.rightValues.length, cache.rightMaxValues.length, 0);
+    }
+
+    /**
+     * 核心测试：非单调 rightValues 下，getTargetsFromIndex 不漏检
+     * 与暴力扫描结果对比，确保使用 rightMaxValues 后无假阴性
+     */
+    private static function testNonMonotonicRightValuesQuery():Void {
+        // 构建明确的非单调 rightValues 场景
+        // sorted by left, widths vary wildly
+        var units:Array = [
+            { _name: "a", hp: 100, maxhp: 100, aabbCollider: { left: 0,   right: 120 } },  // wide
+            { _name: "b", hp: 100, maxhp: 100, aabbCollider: { left: 30,  right: 35  } },  // narrow → rightValues drops!
+            { _name: "c", hp: 100, maxhp: 100, aabbCollider: { left: 60,  right: 65  } },  // narrow
+            { _name: "d", hp: 100, maxhp: 100, aabbCollider: { left: 90,  right: 200 } },  // wide
+            { _name: "e", hp: 100, maxhp: 100, aabbCollider: { left: 100, right: 105 } },  // narrow → rightValues drops again!
+            { _name: "f", hp: 100, maxhp: 100, aabbCollider: { left: 150, right: 155 } }   // narrow
+        ];
+        var cache:SortedUnitCache = createTestCache(units);
+
+        // rightValues = [120, 35, 65, 200, 105, 155] — clearly non-monotonic
+        assertTrue("rightValues确实非单调", cache.rightValues[1] < cache.rightValues[0]);
+
+        // 测试多个查询点
+        var queryLefts:Array = [10, 50, 100, 110, 130, 190];
+        var q:AABBCollider = new AABBCollider();
+
+        for (var i:Number = 0; i < queryLefts.length; i++) {
+            q.left = queryLefts[i];
+            var result:Object = cache.getTargetsFromIndex(q);
+
+            // 暴力扫描：找到第一个 right >= queryLeft 的索引
+            var bruteIndex:Number = cache.data.length;
+            for (var k:Number = 0; k < cache.data.length; k++) {
+                if (cache.data[k].aabbCollider.right >= q.left) {
+                    bruteIndex = k;
+                    break;
+                }
+            }
+            // getTargetsFromIndex 使用 rightMaxValues，返回的 startIndex 可能 <= bruteIndex（保守），
+            // 但不能 > bruteIndex（否则漏检）
+            assertTrue("queryLeft=" + queryLefts[i] + " startIndex不大于暴力扫描结果",
+                       result.startIndex <= bruteIndex);
+        }
+    }
+
+    /**
+     * 验证 updateData 后 rightMaxValues 被正确重建
+     */
+    private static function testRightMaxValuesAfterUpdateData():Void {
+        var units1:Array = createTestUnits(10);
+        var cache:SortedUnitCache = createTestCache(units1);
+        var oldLen:Number = cache.rightMaxValues.length;
+        assertEquals("初始rightMaxValues长度", 10, oldLen, 0);
+
+        // 用不同大小的数据 updateData
+        var units2:Array = createTestUnits(20);
+        var cache2:SortedUnitCache = createTestCache(units2);
+        cache.updateData(cache2.data, cache2.nameIndex, cache2.leftValues, cache2.rightValues, 2000);
+
+        assertEquals("updateData后rightMaxValues长度", 20, cache.rightMaxValues.length, 0);
+
+        // 验证依然单调
+        var mono:Boolean = true;
+        for (var i:Number = 1; i < cache.rightMaxValues.length; i++) {
+            if (cache.rightMaxValues[i] < cache.rightMaxValues[i - 1]) {
+                mono = false;
+                break;
+            }
+        }
+        assertTrue("updateData后rightMaxValues仍然单调", mono);
+    }
+
+    /**
+     * 验证 validateData 对 rightMaxValues 进行完整性校验
+     */
+    private static function testRightMaxValuesValidateData():Void {
+        // 构造非单调 rightValues 的有效缓存
+        var units:Array = [
+            { _name: "v1", hp: 100, maxhp: 100, aabbCollider: { left: 0,  right: 100 } },
+            { _name: "v2", hp: 100, maxhp: 100, aabbCollider: { left: 20, right: 25  } },
+            { _name: "v3", hp: 100, maxhp: 100, aabbCollider: { left: 40, right: 150 } }
+        ];
+        var cache:SortedUnitCache = createTestCache(units);
+
+        var validation:Object = cache.validateData();
+        assertTrue("非单调rightValues下validateData通过", validation.isValid);
+        assertEquals("无验证错误", 0, validation.errors.length, 0);
+    }
+
+    // ========================================================================
     // 统计和报告
     // ========================================================================
-    
+
     private static function resetTestStats():Void {
         testCount = 0;
         passedTests = 0;

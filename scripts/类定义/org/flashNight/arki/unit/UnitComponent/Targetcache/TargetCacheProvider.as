@@ -49,8 +49,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         cacheMisses: 0,
         cacheCreations: 0,
         cacheUpdates: 0,
-        arcGhostHits: 0,
-        arcAdaptations: 0,
         avgAccessTime: 0,
         maxAccessTime: 0,
         totalAccessTime: 0,
@@ -610,8 +608,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             hitRate: hitRate,
             cacheCreations: _stats.cacheCreations,
             cacheUpdates: _stats.cacheUpdates,
-            arcGhostHits: _stats.arcGhostHits,
-            arcAdaptations: _stats.arcAdaptations,
             currentCacheCount: getCacheCount(),
             versionMismatches: _stats.versionMismatches,
             forceRefreshCount: _stats.forceRefreshCount
@@ -635,8 +631,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         _stats.cacheMisses = 0;
         _stats.cacheCreations = 0;
         _stats.cacheUpdates = 0;
-        _stats.arcGhostHits = 0;
-        _stats.arcAdaptations = 0;
         _stats.avgAccessTime = 0;
         _stats.maxAccessTime = 0;
         _stats.totalAccessTime = 0;

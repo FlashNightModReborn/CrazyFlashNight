@@ -546,10 +546,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
     
     private static function runVersionControlTests():Void {
         trace("\n📊 执行版本控制系统测试...");
-        
+
         testSingleUnitVersioning();
         testVersionReset();
         testVersionConsistency();
+        testGetVersionForRequest();
     }
     
     private static function testSingleUnitVersioning():Void {
@@ -613,7 +614,53 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         assertTrue("enemyVersion非负", versionInfo.enemyVersion >= 0);
         assertTrue("allyVersion非负", versionInfo.allyVersion >= 0);
     }
-    
+
+    /**
+     * 测试 getVersionForRequest —— 精细化版本号隔离
+     * 验证敌人阵营变化不影响友军版本号，反之亦然
+     */
+    private static function testGetVersionForRequest():Void {
+        TargetCacheUpdater.resetVersions();
+
+        // 初始状态：所有版本为 0
+        var v_enemy_P:Number = TargetCacheUpdater.getVersionForRequest("敌人", "PLAYER");
+        var v_ally_P:Number = TargetCacheUpdater.getVersionForRequest("友军", "PLAYER");
+        var v_all_P:Number = TargetCacheUpdater.getVersionForRequest("全体", "PLAYER");
+        assertEquals("初始敌人版本=0", 0, v_enemy_P, 0);
+        assertEquals("初始友军版本=0", 0, v_ally_P, 0);
+        assertEquals("初始全体版本=0", 0, v_all_P, 0);
+
+        // 添加一个敌方单位 → 只有敌人版本和全体版本应变化
+        var enemyUnit:Object = createSpecialUnits("all_enemies", 1)[0];
+        TargetCacheUpdater.addUnit(enemyUnit);
+
+        var v_enemy_after:Number = TargetCacheUpdater.getVersionForRequest("敌人", "PLAYER");
+        var v_ally_after:Number = TargetCacheUpdater.getVersionForRequest("友军", "PLAYER");
+        var v_all_after:Number = TargetCacheUpdater.getVersionForRequest("全体", "PLAYER");
+
+        assertTrue("添加敌人后敌人版本递增", v_enemy_after > v_enemy_P);
+        assertEquals("添加敌人后友军版本不变", v_ally_P, v_ally_after, 0);
+        assertTrue("添加敌人后全体版本递增", v_all_after > v_all_P);
+
+        // 添加一个友方单位 → 只有友军版本和全体版本应变化
+        var allyUnit:Object = createSpecialUnits("all_allies", 1)[0];
+        TargetCacheUpdater.addUnit(allyUnit);
+
+        var v_enemy_final:Number = TargetCacheUpdater.getVersionForRequest("敌人", "PLAYER");
+        var v_ally_final:Number = TargetCacheUpdater.getVersionForRequest("友军", "PLAYER");
+        var v_all_final:Number = TargetCacheUpdater.getVersionForRequest("全体", "PLAYER");
+
+        assertEquals("添加友军后敌人版本不变", v_enemy_after, v_enemy_final, 0);
+        assertTrue("添加友军后友军版本递增", v_ally_final > v_ally_after);
+        assertTrue("添加友军后全体版本递增", v_all_final > v_all_after);
+
+        // 全体版本 = 所有阵营版本之和
+        assertTrue("全体版本>=敌人版本", v_all_final >= v_enemy_final);
+        assertTrue("全体版本>=友军版本", v_all_final >= v_ally_final);
+
+        TargetCacheUpdater.resetVersions();
+    }
+
     // ========================================================================
     // AdaptiveThresholdOptimizer集成测试
     // ========================================================================

@@ -72,7 +72,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManagerTest {
             
             // === 向后兼容性测试 ===
             runBackwardCompatibilityTests();
-            
+
+            // === Ref 引用方法测试 ===
+            runRefMethodTests();
+
         } catch (error:Error) {
             failedTests++;
             trace("❌ 测试执行异常: " + error.message);
@@ -762,9 +765,90 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManagerTest {
     }
     
     // ========================================================================
+    // Ref 引用方法测试（零分配内部接口）
+    // ========================================================================
+
+    private static function runRefMethodTests():Void {
+        trace("\n🔗 执行 Ref 引用方法测试...");
+
+        testGetEnemyFactionsRefContent();
+        testGetAllyFactionsRefContent();
+        testRefReturnsNullForInvalidFaction();
+        testRefReturnsSameReference();
+    }
+
+    /**
+     * getEnemyFactionsRef 内容应与 getEnemyFactions 一致
+     */
+    private static function testGetEnemyFactionsRefContent():Void {
+        var factions:Array = ["PLAYER", "ENEMY", "HOSTILE_NEUTRAL"];
+        for (var i:Number = 0; i < factions.length; i++) {
+            var f:String = factions[i];
+            var copied:Array = FactionManager.getEnemyFactions(f);
+            var ref:Array = FactionManager.getEnemyFactionsRef(f);
+
+            assertNotNull("getEnemyFactionsRef('" + f + "')非null", ref);
+            assertEquals("getEnemyFactionsRef('" + f + "')长度一致",
+                         String(copied.length), String(ref.length));
+
+            var match:Boolean = true;
+            for (var j:Number = 0; j < copied.length; j++) {
+                if (copied[j] != ref[j]) { match = false; break; }
+            }
+            assertTrue("getEnemyFactionsRef('" + f + "')元素一致", match);
+        }
+    }
+
+    /**
+     * getAllyFactionsRef 内容应与 getAllyFactions 一致
+     */
+    private static function testGetAllyFactionsRefContent():Void {
+        var factions:Array = ["PLAYER", "ENEMY", "HOSTILE_NEUTRAL"];
+        for (var i:Number = 0; i < factions.length; i++) {
+            var f:String = factions[i];
+            var copied:Array = FactionManager.getAllyFactions(f);
+            var ref:Array = FactionManager.getAllyFactionsRef(f);
+
+            assertNotNull("getAllyFactionsRef('" + f + "')非null", ref);
+            assertEquals("getAllyFactionsRef('" + f + "')长度一致",
+                         String(copied.length), String(ref.length));
+
+            var match:Boolean = true;
+            for (var j:Number = 0; j < copied.length; j++) {
+                if (copied[j] != ref[j]) { match = false; break; }
+            }
+            assertTrue("getAllyFactionsRef('" + f + "')元素一致", match);
+        }
+    }
+
+    /**
+     * Ref 方法对无效阵营返回 null（非空数组）
+     */
+    private static function testRefReturnsNullForInvalidFaction():Void {
+        var enemyRef:Array = FactionManager.getEnemyFactionsRef("INVALID_FACTION");
+        assertTrue("getEnemyFactionsRef无效阵营返回null", enemyRef == null);
+
+        var allyRef:Array = FactionManager.getAllyFactionsRef("NONEXISTENT");
+        assertTrue("getAllyFactionsRef无效阵营返回null", allyRef == null);
+    }
+
+    /**
+     * 多次调用 Ref 返回同一引用（零分配验证）
+     */
+    private static function testRefReturnsSameReference():Void {
+        var ref1:Array = FactionManager.getEnemyFactionsRef("PLAYER");
+        var ref2:Array = FactionManager.getEnemyFactionsRef("PLAYER");
+        assertTrue("getEnemyFactionsRef返回同一引用", ref1 === ref2);
+
+        var aRef1:Array = FactionManager.getAllyFactionsRef("ENEMY");
+        var aRef2:Array = FactionManager.getAllyFactionsRef("ENEMY");
+        assertTrue("getAllyFactionsRef返回同一引用", aRef1 === aRef2);
+    }
+
+    // ========================================================================
     // 统计和报告
     // ========================================================================
-    
+
     private static function resetTestStats():Void {
         testCount = 0;
         passedTests = 0;

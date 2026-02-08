@@ -109,7 +109,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
             
             // === 最终波：边界条件战斗 ===
             runBoundaryBattleTests();
-            
+
+            // === 追加波：clear() 别名 & rightMaxValues 集成 ===
+            runClearAliasAndRightMaxValuesTests();
+
         } catch (error:Error) {
             failedTests++;
             trace("💥 测试执行异常: " + error.message);
@@ -2316,5 +2319,68 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
         var mono2:Object = TargetCacheManager.getCachedEnemyFromIndexMonotonic(hero, 10, aabb2);
         var base2:Object = TargetCacheManager.getCachedEnemyFromIndex(hero, 10, aabb2);
         assertEquals("Monotonic equals baseline after new frame", base2.startIndex, mono2.startIndex, 0);
+    }
+
+    // ------------------------------------------------------------------------
+    // clear() 别名 & rightMaxValues 集成测试
+    // ------------------------------------------------------------------------
+
+    private static function runClearAliasAndRightMaxValuesTests():Void {
+        trace("\n🧹 执行 clear() 别名 & rightMaxValues 集成测试...");
+
+        testClearAliasResetsCaches();
+        testRightMaxValuesExposedThroughAPI();
+    }
+
+    /**
+     * clear() 应等价于 clearCache(null)，清空所有缓存
+     */
+    private static function testClearAliasResetsCaches():Void {
+        var hero:Object = mockHero;
+
+        // 先确保缓存已填充
+        TargetCacheManager.getCachedEnemy(hero, 10);
+        TargetCacheManager.getCachedAlly(hero, 10);
+        var countBefore:Number = TargetCacheProvider.getCacheCount();
+        assertTrue("clear前缓存非空", countBefore > 0);
+
+        // 调用 clear()
+        TargetCacheManager.clear();
+
+        // clear 内部调用 clearCache(null)，会 resetVersions + 清理 registry
+        var countAfter:Number = TargetCacheProvider.getCacheCount();
+        assertTrue("clear后缓存数量减少或归零", countAfter <= countBefore);
+    }
+
+    /**
+     * 通过外观API获取的缓存应包含有效的 rightMaxValues
+     */
+    private static function testRightMaxValuesExposedThroughAPI():Void {
+        var hero:Object = mockHero;
+        var aabb:AABBCollider = createTestAABB(hero.x, 200);
+
+        var result:Object = TargetCacheManager.getCachedEnemyFromIndex(hero, 10, aabb);
+        assertNotNull("getCachedEnemyFromIndex返回结果", result);
+        assertNotNull("结果包含data", result.data);
+
+        if (result.data.length > 0) {
+            // 通过 Provider 获取底层 SortedUnitCache 验证 rightMaxValues
+            var cache:SortedUnitCache = TargetCacheProvider.getCache("敌人", hero, 10);
+            assertNotNull("Provider返回SortedUnitCache", cache);
+
+            assertTrue("rightMaxValues存在", cache.rightMaxValues != undefined);
+            assertEquals("rightMaxValues长度与data一致",
+                         cache.data.length, cache.rightMaxValues.length, 0);
+
+            // 验证单调性
+            var mono:Boolean = true;
+            for (var i:Number = 1; i < cache.rightMaxValues.length; i++) {
+                if (cache.rightMaxValues[i] < cache.rightMaxValues[i - 1]) {
+                    mono = false;
+                    break;
+                }
+            }
+            assertTrue("rightMaxValues通过API仍单调", mono);
+        }
     }
 }

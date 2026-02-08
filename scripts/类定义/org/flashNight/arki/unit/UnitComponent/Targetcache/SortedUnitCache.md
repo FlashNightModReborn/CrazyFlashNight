@@ -63,16 +63,16 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 ✅ Monotonic 基本前进: qLeft=26 PASS (expected=3, actual=3)
 ✅ 第一帧推进到右侧 PASS
 ✅ 新帧重置从0开始 PASS (expected=0, actual=0)
-✅ 单调模式应与基线一致 i=0 PASS (expected=1, actual=1)
-✅ 单调模式应与基线一致 i=1 PASS (expected=3, actual=3)
+✅ 单调模式应与基线一致 i=0 PASS (expected=2, actual=2)
+✅ 单调模式应与基线一致 i=1 PASS (expected=4, actual=4)
 ✅ 单调模式应与基线一致 i=2 PASS (expected=6, actual=6)
-✅ 单调模式应与基线一致 i=3 PASS (expected=7, actual=7)
-✅ 单调模式应与基线一致 i=4 PASS (expected=9, actual=9)
-✅ 单调模式应与基线一致 i=5 PASS (expected=11, actual=11)
-✅ 单调模式应与基线一致 i=6 PASS (expected=13, actual=13)
-✅ 单调模式应与基线一致 i=7 PASS (expected=15, actual=15)
-✅ 单调模式应与基线一致 i=8 PASS (expected=17, actual=17)
-✅ 单调模式应与基线一致 i=9 PASS (expected=19, actual=19)
+✅ 单调模式应与基线一致 i=3 PASS (expected=8, actual=8)
+✅ 单调模式应与基线一致 i=4 PASS (expected=10, actual=10)
+✅ 单调模式应与基线一致 i=5 PASS (expected=12, actual=12)
+✅ 单调模式应与基线一致 i=6 PASS (expected=14, actual=14)
+✅ 单调模式应与基线一致 i=7 PASS (expected=16, actual=16)
+✅ 单调模式应与基线一致 i=8 PASS (expected=18, actual=18)
+✅ 单调模式应与基线一致 i=9 PASS (expected=21, actual=21)
 ✅ 乱序查询也应保持与基线一致 PASS (expected=1, actual=1)
 
 📏 执行范围查询测试...
@@ -87,7 +87,7 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 ✅ 极大范围包含大部分单位 PASS
 ✅ 空缓存范围查询长度为0 PASS (expected=0, actual=0)
 ✅ findInRadius返回数组 PASS (object is not null)
-✅ findInRadius与findInRange结果一致 PASS (expected=8, actual=8)
+✅ findInRadius与findInRange结果一致 PASS (expected=9, actual=9)
 ✅ 大范围findNearestInRange PASS (object is not null)
 ✅ 零范围findNearestInRange返回null PASS (object is null)
 ✅ 大范围findFarthestInRange PASS (object is not null)
@@ -96,7 +96,7 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 ✅ 包含自身计数更大 PASS
 ✅ 计数与查询结果长度一致 PASS (expected=4, actual=4)
 ✅ 零范围计数为0 PASS (expected=0, actual=0)
-✅ 半径计数与范围计数一致 PASS (expected=8, actual=8)
+✅ 半径计数与范围计数一致 PASS (expected=9, actual=9)
 
 🎯 执行条件查询测试...
 ✅ critical血量计数 PASS
@@ -150,17 +150,17 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 ✅ 极值血量计数 PASS
 
 ⚡ 执行性能基准测试...
-📊 getTargetsFromIndex性能: 500次调用耗时 5ms
+📊 getTargetsFromIndex性能: 500次调用耗时 4ms
 ✅ getTargetsFromIndex性能达标 PASS
 📊 findNearest性能: 500次调用耗时 2ms
 ✅ findNearest性能达标 PASS
 📊 findFarthest性能: 500次调用耗时 1ms
 ✅ findFarthest性能达标 PASS
-📊 findInRange性能: 500次调用耗时 11ms
+📊 findInRange性能: 500次调用耗时 9ms
 ✅ findInRange性能达标 PASS
-📊 getCountInRange性能: 500次调用耗时 6ms
+📊 getCountInRange性能: 500次调用耗时 5ms
 ✅ getCountInRange性能达标 PASS
-📊 getCountByHP性能: 500次调用耗时 18ms
+📊 getCountByHP性能: 500次调用耗时 17ms
 ✅ getCountByHP性能达标 PASS
 📊 缓存优化测试: 100次相似查询耗时 1ms
 ✅ 缓存优化有效 PASS
@@ -198,17 +198,17 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 ✅ 快速查询压力测试通过 PASS
 ⚡ 快速查询测试: 200次混合查询耗时 6ms
 ✅ 内存压力测试通过 PASS
-🧠 内存使用测试: 20次缓存创建/销毁耗时 86ms
+🧠 内存使用测试: 20次缓存创建/销毁耗时 93ms
 ✅ 极端场景处理 PASS
 🔥 极端场景测试: 3/3 通过
 
 🧮 执行算法优化验证...
 ✅ 二分查找优化有效 PASS
 🔍 二分查找测试: 100次查询耗时 1ms
-🌡️ 缓存优化: 冷查询=0ms, 热查询平均=0.02ms
+🌡️ 缓存优化: 冷查询=0ms, 热查询平均=0ms
 ✅ 缓存优化效果(计时器下限) PASS
 ✅ 小数组线性扫描优化 PASS
-📏 线性扫描测试: 100次小数组查询耗时 0ms
+📏 线性扫描测试: 100次小数组查询耗时 1ms
 
 🔍 执行带过滤器的最近单位查询测试...
 ✅ 基础过滤查询返回结果 PASS (object is not null)
@@ -237,22 +237,39 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 ✅ 单元素缓存满足条件 PASS (object is not null)
 ✅ 单元素缓存不满足条件 PASS (object is null)
 
+🔢 执行 rightMaxValues 前缀最大值测试...
+✅ rightMaxValues单调非降 PASS
+✅ rightMaxValues[i]>=rightValues[i] PASS
+✅ rightMaxValues长度正确 PASS (expected=10, actual=10)
+✅ rightValues确实非单调 PASS
+✅ queryLeft=10 startIndex不大于暴力扫描结果 PASS
+✅ queryLeft=50 startIndex不大于暴力扫描结果 PASS
+✅ queryLeft=100 startIndex不大于暴力扫描结果 PASS
+✅ queryLeft=110 startIndex不大于暴力扫描结果 PASS
+✅ queryLeft=130 startIndex不大于暴力扫描结果 PASS
+✅ queryLeft=190 startIndex不大于暴力扫描结果 PASS
+✅ 初始rightMaxValues长度 PASS (expected=10, actual=10)
+✅ updateData后rightMaxValues长度 PASS (expected=20, actual=20)
+✅ updateData后rightMaxValues仍然单调 PASS
+✅ 非单调rightValues下validateData通过 PASS
+✅ 无验证错误 PASS (expected=0, actual=0)
+
 ================================================================================
 📊 测试结果汇总
 ================================================================================
-总测试数: 192
-通过: 192 ✅
+总测试数: 207
+通过: 207 ✅
 失败: 0 ❌
 成功率: 100%
-总耗时: 620ms
+总耗时: 633ms
 
 ⚡ 性能基准报告:
-  getTargetsFromIndex: 0.01ms/次 (500次测试)
+  getTargetsFromIndex: 0.008ms/次 (500次测试)
   findNearest: 0.004ms/次 (500次测试)
   findFarthest: 0.002ms/次 (500次测试)
-  findInRange: 0.022ms/次 (500次测试)
-  getCountInRange: 0.012ms/次 (500次测试)
-  getCountByHP: 0.036ms/次 (500次测试)
+  findInRange: 0.018ms/次 (500次测试)
+  getCountInRange: 0.01ms/次 (500次测试)
+  getCountByHP: 0.034ms/次 (500次测试)
 
 🎯 缓存当前状态:
 === SortedUnitCache Status ===
