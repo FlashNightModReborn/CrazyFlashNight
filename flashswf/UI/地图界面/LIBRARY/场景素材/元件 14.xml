@@ -28,12 +28,13 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!6212 76|6212 100"/>
-                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!6213 0|6212 76"/>
                     <Edge fillStyle0="1" edges="!6212 76|6222 76!6222 76|6222 0!6222 0|6213 0"/>
-                    <Edge strokeStyle="1" edges="!0 76|0 90"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!6213 0|6212 76"/>
+                    <Edge strokeStyle="1" edges="!6212 76|6212 100"/>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!0 0|0 76"/>
-                    <Edge fillStyle0="1" edges="!0 76|6212 76!6213 0|0 0"/>
+                    <Edge fillStyle0="1" edges="!0 76|6212 76"/>
+                    <Edge strokeStyle="1" edges="!0 76|0 90"/>
+                    <Edge fillStyle0="1" edges="!6213 0|0 0"/>
                     <Edge strokeStyle="1" edges="!6213 -6|6213 0"/>
                     <Edge cubics="!6222 76(;6222,76 6222,0 6222,0q6222 76 6222 0);"/>
                     <Edge cubics="!0 0(;0,0 0,76 0,76q0 0 0 76);"/>
