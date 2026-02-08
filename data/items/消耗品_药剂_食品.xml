@@ -425,8 +425,27 @@
     <icon>棒棒糖</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>6000</price>
+    <price>700</price>
     <description>回忆起你的&lt;font color="#eee822"&gt;童年&lt;/font&gt;····糖分带来的愉悦让你精力充沛。末世稀缺的甜蜜,是奢侈品级别的存在。</description>
+    <data>
+      <effects>
+        <effect type="heal" hp="80" mp="80" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="120" mp="120" duration="90" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.06" duration="600" buffId="药剂_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="8" duration="600" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="5" duration="600" buffId="药剂_防御力" />
+        <effect type="playEffect" name="药剂动画" />
+      </effects>
+    </data>
+  </item>
+  <item>
+    <name>超级棒棒糖</name>
+    <displayname>超级棒棒糖</displayname>
+    <icon>棒棒糖</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>7000</price>
+    <description>回忆起你的&lt;font color="#eee822"&gt;童年&lt;/font&gt;····糖分带来的愉悦让你精力充沛。迷糊老师发明的超级棒棒糖,更有额外的功效。</description>
     <data>
       <effects>
         <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true" />
