@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1770584995" lastUniqueIdentifier="296">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1770585112" lastUniqueIdentifier="296">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="7" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;937&lt;/guideline&gt;&lt;guideline direction="v"&gt;979&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -8257,7 +8257,7 @@ onClipEvent (load) {
 	{
 		_root.关卡结束界面._visible = 0;
 		_root.场景进入位置名 = "出生地";
-		_root.淡出动画.淡出跳转帧("地图-教学楼内部右");
+		_root.淡出动画.淡出跳转帧("地图-教学楼内部右侧");
 		_parent.gotoAndStop(1);
 	}
 }
