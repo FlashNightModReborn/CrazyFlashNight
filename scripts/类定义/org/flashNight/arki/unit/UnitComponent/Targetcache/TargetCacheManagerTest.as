@@ -1050,14 +1050,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
         
         // 测试配置设置
         var newConfig:Object = {
-            arcCacheCapacity: 75,
+            maxCacheCapacity: 75,
             forceRefreshThreshold: 400
         };
         
         TargetCacheManager.setSystemConfig(newConfig);
         var updatedConfig:Object = TargetCacheManager.getSystemConfig();
         
-        assertEquals("配置更新-容量", 75, updatedConfig.arcCacheCapacity, 0);
+        assertEquals("配置更新-容量", 75, updatedConfig.maxCacheCapacity, 0);
         assertEquals("配置更新-刷新阈值", 400, updatedConfig.forceRefreshThreshold, 0);
         
         // 恢复原始配置
@@ -1136,7 +1136,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
         var managerConfig:Object = TargetCacheManager.getSystemConfig();
         var providerConfig:Object = TargetCacheProvider.getConfig();
         
-        assertEquals("委托配置-缓存容量", providerConfig.arcCacheCapacity, managerConfig.arcCacheCapacity, 0);
+        assertEquals("委托配置-缓存容量", providerConfig.maxCacheCapacity, managerConfig.maxCacheCapacity, 0);
         assertTrue("委托配置-版本检查", providerConfig.versionCheckEnabled == managerConfig.versionCheckEnabled);
     }
     
@@ -2412,39 +2412,37 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
      * 修复后：_safeEmptyResult() 在每次返回前重置 data.length = 0
      */
     private static function testEmptyResultPollutionResilience():Void {
-        // 清空世界，确保缓存查询返回空结果
-        var savedWorld:Object = {};
-        for (var key:String in _root.gameworld) {
-            savedWorld[key] = _root.gameworld[key];
-            TargetCacheManager.removeUnit(_root.gameworld[key]);
-            delete _root.gameworld[key];
-        }
-        TargetCacheManager.clearCache();
+        // 临时置空帧计时器，使 Provider.getCache 内部抛异常 → catch 返回 null
+        // 从而命中 TargetCacheManager 的 if(!cache) return _safeEmptyResult() 分支
+        var savedTimer:Object = _root.帧计时器;
+        _root.帧计时器 = null;
 
         var hero:Object = mockHero;
         var aabb:AABBCollider = createTestAABB(0, 100);
 
-        // 第一次调用：获取空结果
+        // 第一次调用：Provider 异常 → cache==null → _safeEmptyResult()
         var result1:Object = TargetCacheManager.getCachedTargetsFromIndex(hero, 10, "敌人", aabb);
-        assertNotNull("空世界仍返回结果对象", result1);
-        assertEquals("空世界结果data长度为0", 0, result1.data.length, 0);
+        assertNotNull("Provider返回null时仍有结果对象", result1);
+        assertEquals("_safeEmptyResult data长度为0", 0, result1.data.length, 0);
+        assertEquals("_safeEmptyResult startIndex为0", 0, result1.startIndex, 0);
 
         // 模拟调用方污染：向 data 数组中 push 假数据
-        result1.data.push("污染数据1");
-        result1.data.push("污染数据2");
+        result1.data.push("污染1");
+        result1.data.push("污染2");
+        result1.startIndex = 999;
         assertTrue("污染后data长度为2", result1.data.length == 2);
 
-        // 第二次调用：应返回干净的空结果
-        TargetCacheManager.clearCache();
-        var result2:Object = TargetCacheManager.getCachedTargetsFromIndex(hero, 10, "敌人", aabb);
-        assertEquals("污染后再次调用data长度应为0", 0, result2.data.length, 0);
+        // 清除第一次调用在 Provider 注册表中残留的条目，
+        // 确保第二次调用也命中 cache==null → _safeEmptyResult() 路径
+        TargetCacheProvider.clearCache();
 
-        // 恢复世界
-        for (var k:String in savedWorld) {
-            _root.gameworld[k] = savedWorld[k];
-            TargetCacheManager.addUnit(savedWorld[k]);
-        }
-        TargetCacheManager.clearCache();
+        // 第二次调用：_safeEmptyResult 应自愈，重置 data.length 和 startIndex
+        var result2:Object = TargetCacheManager.getCachedTargetsFromIndex(hero, 10, "敌人", aabb);
+        assertEquals("污染自愈后data长度为0", 0, result2.data.length, 0);
+        assertEquals("污染自愈后startIndex为0", 0, result2.startIndex, 0);
+
+        // 恢复帧计时器
+        _root.帧计时器 = savedTimer;
     }
 
     /**

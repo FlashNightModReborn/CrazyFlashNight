@@ -33,8 +33,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      * 缓存配置参数
      */
     private static var _cacheConfig:Object = {
-        // 兼容字段名：历史上用于 ARC 容量；现在作为缓存表容量上限（兜底）
-        arcCacheCapacity: 100,
+        // 缓存表最大容量上限（兜底淘汰）
+        maxCacheCapacity: 100,
         forceRefreshThreshold: 600,
         versionCheckEnabled: true,
         detailedStatsEnabled: false
@@ -124,7 +124,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      */
     public static function reinitialize(newCapacity:Number):Boolean {
         if (newCapacity != undefined && newCapacity > 0) {
-            _cacheConfig.arcCacheCapacity = newCapacity;
+            _cacheConfig.maxCacheCapacity = newCapacity;
         }
         
         return initialize();
@@ -406,7 +406,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         }
 
         // 2) 容量兜底：超出时淘汰“最久未访问”的条目
-        var capacity:Number = _cacheConfig.arcCacheCapacity;
+        var capacity:Number = _cacheConfig.maxCacheCapacity;
         if (capacity == undefined || capacity <= 0 || liveCount <= capacity) return;
 
         var candidates:Array = [];
@@ -535,10 +535,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         
         var needReinit:Boolean = false;
         
-        // ARC缓存容量设置
-        if (config.arcCacheCapacity != undefined && config.arcCacheCapacity > 0) {
-            if (config.arcCacheCapacity != _cacheConfig.arcCacheCapacity) {
-                _cacheConfig.arcCacheCapacity = config.arcCacheCapacity;
+        // 缓存容量上限
+        if (config.maxCacheCapacity != undefined && config.maxCacheCapacity > 0) {
+            if (config.maxCacheCapacity != _cacheConfig.maxCacheCapacity) {
+                _cacheConfig.maxCacheCapacity = config.maxCacheCapacity;
                 needReinit = true;
             }
         }
@@ -569,7 +569,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      */
     public static function getConfig():Object {
         return {
-            arcCacheCapacity: _cacheConfig.arcCacheCapacity,
+            maxCacheCapacity: _cacheConfig.maxCacheCapacity,
             forceRefreshThreshold: _cacheConfig.forceRefreshThreshold,
             versionCheckEnabled: _cacheConfig.versionCheckEnabled,
             detailedStatsEnabled: _cacheConfig.detailedStatsEnabled
@@ -709,58 +709,49 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             details.newestCacheAge = 0;
         }
         
-        // 添加ARC特有的详细信息
-        var arcDetails:Object = getARCCacheDetails();
-        if (arcDetails) {
-            details.arcInfo = {
-                T1_size: arcDetails.T1_size,
-                T2_size: arcDetails.T2_size,
-                B1_size: arcDetails.B1_size,
-                B2_size: arcDetails.B2_size,
-                total_cached_items: arcDetails.total_cached_items,
-                cold_hot_ratio: arcDetails.T1_size + ":" + arcDetails.T2_size,
+        // 添加冷热分布信息
+        var dist:Object = getCacheDistribution();
+        if (dist) {
+            details.distribution = {
+                coldCount: dist.coldCount,
+                hotCount: dist.hotCount,
+                totalItems: dist.totalItems,
+                capacity: dist.capacity,
                 cache_efficiency: cacheCount > 0 ? Math.round((details.totalUnits / cacheCount) * 100) / 100 : 0
             };
         }
-        
+
         return details;
     }
 
     /**
-     * 获取ARC缓存详细信息
+     * 获取缓存冷热分布信息
+     * 基于访问次数的轻量划分：accessCount >= 2 为热缓存，否则为冷缓存
      */
-    public static function getARCCacheDetails():Object {
-        // 兼容接口：保留 ARC 字段形状，但数据来自小工作集缓存表
-        var t1:Array = [];
-        var t2:Array = [];
-        var b1:Array = [];
-        var b2:Array = [];
+    public static function getCacheDistribution():Object {
+        var cold:Array = [];
+        var hot:Array = [];
 
         if (_cacheRegistry != undefined) {
             for (var key:String in _cacheRegistry) {
                 var cv:Object = _cacheRegistry[key];
                 if (!cv || !cv.cache) continue;
 
-                // 轻量“冷热”划分：访问次数>=2 视为热（T2），否则视为冷（T1）
                 if (cv.accessCount >= 2) {
-                    t2.push(key);
+                    hot.push(key);
                 } else {
-                    t1.push(key);
+                    cold.push(key);
                 }
             }
         }
 
         return {
-            capacity: _cacheConfig.arcCacheCapacity,
-            T1_queue: t1,
-            T2_queue: t2,
-            B1_queue: b1,
-            B2_queue: b2,
-            T1_size: t1.length,
-            T2_size: t2.length,
-            B1_size: 0,
-            B2_size: 0,
-            total_cached_items: t1.length + t2.length
+            capacity: _cacheConfig.maxCacheCapacity,
+            coldKeys: cold,
+            hotKeys: hot,
+            coldCount: cold.length,
+            hotCount: hot.length,
+            totalItems: cold.length + hot.length
         };
     }
 
@@ -776,9 +767,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         var stats:Object = getStats();
         var config:Object = getConfig();
         var details:Object = getCachePoolDetails();
-        var arcDetails:Object = getARCCacheDetails();
-        
-        var report:String = "=== TargetCacheProvider ARC增强版状态报告 ===\n\n";
+        var dist:Object = getCacheDistribution();
+
+        var report:String = "=== TargetCacheProvider 状态报告 ===\n\n";
         
         // 性能统计
         report += "性能统计:\n";
@@ -810,17 +801,15 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         }
         report += "\n";
         
-        // ARC算法状态
-        if (arcDetails) {
-            report += "ARC算法状态:\n";
-            report += "  缓存容量: " + arcDetails.capacity + "\n";
-            report += "  T1队列(冷数据): " + arcDetails.T1_size + " 项\n";
-            report += "  T2队列(热数据): " + arcDetails.T2_size + " 项\n";
-            report += "  B1队列(冷幽灵): " + arcDetails.B1_size + " 项\n";
-            report += "  B2队列(热幽灵): " + arcDetails.B2_size + " 项\n";
-            report += "  总缓存项目: " + arcDetails.total_cached_items + "\n";
-            report += "  冷热比例: " + Math.round((arcDetails.T1_size / Math.max(1, arcDetails.total_cached_items)) * 100) + "% : " + 
-                     Math.round((arcDetails.T2_size / Math.max(1, arcDetails.total_cached_items)) * 100) + "%\n\n";
+        // 缓存冷热分布
+        if (dist) {
+            report += "缓存分布:\n";
+            report += "  容量上限: " + dist.capacity + "\n";
+            report += "  冷缓存(访问<2): " + dist.coldCount + " 项\n";
+            report += "  热缓存(访问>=2): " + dist.hotCount + " 项\n";
+            report += "  总缓存项目: " + dist.totalItems + "\n";
+            report += "  冷热比例: " + Math.round((dist.coldCount / Math.max(1, dist.totalItems)) * 100) + "% : " +
+                     Math.round((dist.hotCount / Math.max(1, dist.totalItems)) * 100) + "%\n\n";
         }
         
         // 数据一致性统计
@@ -830,7 +819,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         
         // 配置信息
         report += "配置信息:\n";
-        report += "  ARC缓存容量: " + config.arcCacheCapacity + "\n";
+        report += "  缓存容量: " + config.maxCacheCapacity + "\n";
         report += "  强制刷新阈值: " + config.forceRefreshThreshold + " 帧\n";
         report += "  版本检查启用: " + config.versionCheckEnabled + "\n";
         report += "  详细统计启用: " + config.detailedStatsEnabled + "\n\n";
@@ -870,8 +859,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         
         var stats:Object = getStats();
         var config:Object = getConfig();
-        var arcDetails:Object = getARCCacheDetails();
-        
+        var dist:Object = getCacheDistribution();
+
         // 检查缓存表可用性
         if (_cacheRegistry == undefined) {
             result.errors.push("缓存表未初始化");
@@ -905,13 +894,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             }
         }
         
-        // 检查ARC队列平衡性
-        if (arcDetails && arcDetails.total_cached_items > 0) {
-            var t1Ratio:Number = arcDetails.T1_size / arcDetails.total_cached_items;
-            if (t1Ratio > 0.9) {
-                result.warnings.push("T1队列占比过高(" + Math.round(t1Ratio * 100) + "%)，可能存在缓存冷启动问题");
-            } else if (t1Ratio < 0.1) {
-                result.warnings.push("T2队列占比过高(" + Math.round((1-t1Ratio) * 100) + "%)，可能缺乏新数据探索");
+        // 检查缓存冷热平衡性
+        if (dist && dist.totalItems > 0) {
+            var coldRatio:Number = dist.coldCount / dist.totalItems;
+            if (coldRatio > 0.9) {
+                result.warnings.push("冷缓存占比过高(" + Math.round(coldRatio * 100) + "%)，大多数缓存仅被访问一次");
             }
         }
         
@@ -946,30 +933,26 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         var recommendations:Array = [];
         var stats:Object = getStats();
         var config:Object = getConfig();
-        var arcDetails:Object = getARCCacheDetails();
+        var dist:Object = getCacheDistribution();
         var poolDetails:Object = getCachePoolDetails();
-        
+
         // 基于命中率的建议
         if (stats.totalRequests > 50) {
             if (stats.hitRate < 40) {
-                recommendations.push("命中率较低 - ARC算法需要更多时间学习访问模式，或考虑增加缓存容量");
+                recommendations.push("命中率较低 - 考虑增加缓存容量或检查访问模式是否过于分散");
             } else if (stats.hitRate > 90) {
                 recommendations.push("命中率很高 - 可以考虑减少强制刷新阈值以提高数据新鲜度");
             }
         }
-        
-        // 基于ARC队列分析的建议
-        if (arcDetails && arcDetails.total_cached_items > 0) {
-            var t1Ratio:Number = arcDetails.T1_size / arcDetails.total_cached_items;
-            
-            if (t1Ratio > 0.8) {
-                recommendations.push("冷数据占比过高 - 系统可能处于探索阶段，这是正常的学习过程");
-            } else if (t1Ratio < 0.2) {
-                recommendations.push("热数据占比过高 - 访问模式可能过于集中，考虑增加缓存容量");
-            }
-            
-            if (arcDetails.B1_size + arcDetails.B2_size > arcDetails.capacity) {
-                recommendations.push("幽灵队列过大 - ARC算法正在积极学习，这有助于提高未来命中率");
+
+        // 基于冷热分布的建议
+        if (dist && dist.totalItems > 0) {
+            var coldRatio:Number = dist.coldCount / dist.totalItems;
+
+            if (coldRatio > 0.8) {
+                recommendations.push("冷缓存占比过高 - 大量缓存仅被访问一次，访问模式较分散");
+            } else if (coldRatio < 0.2) {
+                recommendations.push("热缓存占比过高 - 访问模式高度集中，考虑检查是否有冗余缓存键");
             }
         }
         
@@ -990,9 +973,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         }
         
         // 基于配置的建议
-        if (config.arcCacheCapacity < 50) {
-            recommendations.push("缓存容量较小 - 考虑增加ARC缓存容量以提高算法效果");
-        } else if (config.arcCacheCapacity > 500) {
+        if (config.maxCacheCapacity < 50) {
+            recommendations.push("缓存容量较小 - 考虑增加缓存容量以容纳更多阵营组合");
+        } else if (config.maxCacheCapacity > 500) {
             recommendations.push("缓存容量很大 - 确保有足够内存，并监控内存使用情况");
         }
         

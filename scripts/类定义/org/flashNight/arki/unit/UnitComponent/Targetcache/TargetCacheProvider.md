@@ -56,13 +56,13 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
 
 🧹 执行缓存容量 & LRU淘汰测试（Object Map 版）...
 ✅ LRU淘汰控制缓存数量<=5 PASS
-✅ 兼容详情接口可用 PASS (object is not null)
+✅ 分布详情接口可用 PASS (object is not null)
 ✅ 容量设置正确 PASS (expected=5, actual=5)
 ✅ 缓存项总数<=容量 PASS
 ✅ 填满时缓存数=3 PASS (expected=3, actual=3)
 ✅ 淘汰后缓存数<=3 PASS
-✅ 兼容接口返回对象 PASS (object is not null)
-✅ total_cached_items>0 PASS
+✅ 分布接口返回对象 PASS (object is not null)
+✅ totalItems>0 PASS
 ✅ 缓存项目不超过容量 PASS
 ✅ 强制刷新阈值生效 PASS
 ✅ 强制刷新统计递增 PASS
@@ -74,16 +74,16 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
 ✅ 版本检查可以禁用 PASS
 
 ⚙️ 执行配置管理测试...
-✅ arcCacheCapacity设置正确 PASS (expected=80, actual=80)
+✅ maxCacheCapacity设置正确 PASS (expected=80, actual=80)
 ✅ forceRefreshThreshold设置正确 PASS (expected=300, actual=300)
 ✅ versionCheckEnabled设置正确 PASS
 ✅ detailedStatsEnabled设置正确 PASS
-✅ 无效arcCacheCapacity被拒绝 PASS
+✅ 无效maxCacheCapacity被拒绝 PASS
 ✅ 无效forceRefreshThreshold被拒绝 PASS
 ✅ null配置不影响现有配置 PASS (object is not null)
 ✅ 部分配置更新成功 PASS
 ✅ getConfig返回对象 PASS (object is not null)
-✅ 包含arcCacheCapacity PASS
+✅ 包含maxCacheCapacity PASS
 ✅ 包含forceRefreshThreshold PASS
 ✅ 包含versionCheckEnabled PASS
 ✅ 包含detailedStatsEnabled PASS
@@ -133,20 +133,20 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
 ✅ 报告包含缓存池状态 PASS
 ✅ 报告包含配置信息 PASS
 ✅ 报告包含数据一致性 PASS
-✅ getARCCacheDetails返回对象 PASS (object is not null)
+✅ getCacheDistribution返回对象 PASS (object is not null)
 ✅ 包含容量信息 PASS
 ✅ 包含总缓存项目 PASS
 ✅ 总缓存项目计算正确 PASS (expected=2, actual=2)
 ✅ 缓存项目不超过容量 PASS
 
 ⚡ 执行性能基准测试...
-📊 缓存获取性能: 100次调用耗时 3ms
+📊 缓存获取性能: 100次调用耗时 5ms
 ✅ 缓存获取性能达标 PASS
-📊 缓存创建性能: 50次创建耗时 4ms
+📊 缓存创建性能: 50次创建耗时 3ms
 ✅ 缓存创建性能合理 PASS
 📊 大量操作测试: 50次操作耗时 4ms
 ✅ 大量操作性能合理 PASS
-📊 内存使用测试: 10次循环耗时 13ms
+📊 内存使用测试: 10次循环耗时 11ms
 ✅ 内存使用测试合理 PASS
 
 🔗 执行集成测试...
@@ -203,16 +203,16 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
 通过: 161 ✅
 失败: 0 ❌
 成功率: 100%
-总耗时: 84ms
+总耗时: 86ms
 
 ⚡ 性能基准报告:
-  cacheRetrieval: 0.03ms/次 (100次测试)
-  cacheCreation: 0.08ms/次 (50次测试)
+  cacheRetrieval: 0.05ms/次 (100次测试)
+  cacheCreation: 0.06ms/次 (50次测试)
   massiveOperations: 0.08ms/次 (50次测试)
-  memoryUsage: 1.3ms/次 (10次测试)
+  memoryUsage: 1.1ms/次 (10次测试)
 
 🎯 TargetCacheProvider 当前状态:
-=== TargetCacheProvider ARC增强版状态报告 ===
+=== TargetCacheProvider 状态报告 ===
 
 性能统计:
   总请求次数: 30
@@ -221,8 +221,8 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
   缓存未命中: 30
   缓存创建: 1
   缓存更新: 29
-  平均访问时间: 0ms
-  最大访问时间: 0ms
+  平均访问时间: 0.03ms
+  最大访问时间: 1ms
 
 缓存池状态:
   活跃缓存数: 0
@@ -233,12 +233,10 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAl
 
 阵营分布:
 
-ARC算法状态:
-  缓存容量: 10
-  T1队列(冷数据): 0 项
-  T2队列(热数据): 0 项
-  B1队列(冷幽灵): 0 项
-  B2队列(热幽灵): 0 项
+缓存分布:
+  容量上限: 10
+  冷缓存(访问<2): 0 项
+  热缓存(访问>=2): 0 项
   总缓存项目: 0
   冷热比例: 0% : 0%
 
@@ -247,7 +245,7 @@ ARC算法状态:
   强制刷新: 0
 
 配置信息:
-  ARC缓存容量: 10
+  缓存容量: 10
   强制刷新阈值: 10000 帧
   版本检查启用: true
   详细统计启用: true

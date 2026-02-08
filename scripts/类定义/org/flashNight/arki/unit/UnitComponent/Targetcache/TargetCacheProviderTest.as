@@ -564,14 +564,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
     }
 
     /**
-     * 容量上限测试：超过 arcCacheCapacity 后自动淘汰
+     * 容量上限测试：超过 maxCacheCapacity 后 LRU 自动淘汰
      */
     private static function testCapacityLimitsLRU():Void {
         TargetCacheProvider.clearCache();
         TargetCacheProvider.resetStats();
 
         TargetCacheProvider.setConfig({
-            arcCacheCapacity: 5
+            maxCacheCapacity: 5
         });
 
         var targets:Array = [];
@@ -590,10 +590,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         assertTrue("LRU淘汰控制缓存数量<=5", finalCount <= 5);
 
         // 兼容接口仍可用
-        var details:Object = TargetCacheProvider.getARCCacheDetails();
-        assertNotNull("兼容详情接口可用", details);
-        assertEquals("容量设置正确", 5, details.capacity, 0);
-        assertTrue("缓存项总数<=容量", details.total_cached_items <= 5);
+        var dist:Object = TargetCacheProvider.getCacheDistribution();
+        assertNotNull("分布详情接口可用", dist);
+        assertEquals("容量设置正确", 5, dist.capacity, 0);
+        assertTrue("缓存项总数<=容量", dist.totalItems <= 5);
     }
 
     /**
@@ -606,7 +606,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
     private static function testLRUEvictionOrder():Void {
         TargetCacheProvider.clearCache();
         TargetCacheProvider.setConfig({
-            arcCacheCapacity: 3
+            maxCacheCapacity: 3
         });
 
         // 3 个不同缓存键：
@@ -633,7 +633,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
     }
 
     /**
-     * 兼容接口 getARCCacheDetails：验证返回结构的基本合理性
+     * getCacheDistribution：验证返回结构的基本合理性
      */
     private static function testCompatDetailsInterface():Void {
         TargetCacheProvider.clearCache();
@@ -641,10 +641,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         var target:Object = createTestTarget(true);
         TargetCacheProvider.getCache("敌人", target, 10);
 
-        var details:Object = TargetCacheProvider.getARCCacheDetails();
-        assertNotNull("兼容接口返回对象", details);
-        assertTrue("total_cached_items>0", details.total_cached_items > 0);
-        assertTrue("缓存项目不超过容量", details.total_cached_items <= details.capacity);
+        var dist:Object = TargetCacheProvider.getCacheDistribution();
+        assertNotNull("分布接口返回对象", dist);
+        assertTrue("totalItems>0", dist.totalItems > 0);
+        assertTrue("缓存项目不超过容量", dist.totalItems <= dist.capacity);
     }
     
     private static function testForceRefreshThreshold():Void {
@@ -759,7 +759,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         var originalConfig:Object = TargetCacheProvider.getConfig();
         
         var newConfig:Object = {
-            arcCacheCapacity: 80,
+            maxCacheCapacity: 80,
             forceRefreshThreshold: 300,
             versionCheckEnabled: false,
             detailedStatsEnabled: true
@@ -768,7 +768,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         TargetCacheProvider.setConfig(newConfig);
         var updatedConfig:Object = TargetCacheProvider.getConfig();
         
-        assertEquals("arcCacheCapacity设置正确", 80, updatedConfig.arcCacheCapacity, 0);
+        assertEquals("maxCacheCapacity设置正确", 80, updatedConfig.maxCacheCapacity, 0);
         assertEquals("forceRefreshThreshold设置正确", 300, updatedConfig.forceRefreshThreshold, 0);
         assertTrue("versionCheckEnabled设置正确", !updatedConfig.versionCheckEnabled);
         assertTrue("detailedStatsEnabled设置正确", updatedConfig.detailedStatsEnabled);
@@ -782,12 +782,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         
         // 测试无效配置（负值）
         TargetCacheProvider.setConfig({
-            arcCacheCapacity: -10,
+            maxCacheCapacity: -10,
             forceRefreshThreshold: -5
         });
         
         var config:Object = TargetCacheProvider.getConfig();
-        assertTrue("无效arcCacheCapacity被拒绝", config.arcCacheCapacity > 0);
+        assertTrue("无效maxCacheCapacity被拒绝", config.maxCacheCapacity > 0);
         assertTrue("无效forceRefreshThreshold被拒绝", config.forceRefreshThreshold > 0);
         
         // 测试null配置
@@ -807,34 +807,34 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         var config:Object = TargetCacheProvider.getConfig();
         
         assertNotNull("getConfig返回对象", config);
-        assertTrue("包含arcCacheCapacity", config.hasOwnProperty("arcCacheCapacity"));
+        assertTrue("包含maxCacheCapacity", config.hasOwnProperty("maxCacheCapacity"));
         assertTrue("包含forceRefreshThreshold", config.hasOwnProperty("forceRefreshThreshold"));
         assertTrue("包含versionCheckEnabled", config.hasOwnProperty("versionCheckEnabled"));
         assertTrue("包含detailedStatsEnabled", config.hasOwnProperty("detailedStatsEnabled"));
         
         // 验证配置是副本（修改不影响内部配置）
-        config.arcCacheCapacity = 999;
+        config.maxCacheCapacity = 999;
         var newConfig:Object = TargetCacheProvider.getConfig();
-        assertTrue("返回配置副本", newConfig.arcCacheCapacity != 999);
+        assertTrue("返回配置副本", newConfig.maxCacheCapacity != 999);
     }
     
     private static function testReinitializeFunction():Void {
         // 测试带容量参数的重新初始化
-        var originalCapacity:Number = TargetCacheProvider.getConfig().arcCacheCapacity;
+        var originalCapacity:Number = TargetCacheProvider.getConfig().maxCacheCapacity;
         
         var reinitResult:Boolean = TargetCacheProvider.reinitialize(150);
         assertTrue("reinitialize执行成功", reinitResult);
         
         var newConfig:Object = TargetCacheProvider.getConfig();
-        assertEquals("重新初始化后容量更新", 150, newConfig.arcCacheCapacity, 0);
+        assertEquals("重新初始化后容量更新", 150, newConfig.maxCacheCapacity, 0);
         assertEquals("重新初始化后缓存清空", 0, TargetCacheProvider.getCacheCount(), 0);
         
         // 测试不带参数的重新初始化
         TargetCacheProvider.reinitialize();
-        assertEquals("无参数重新初始化保持容量", 150, TargetCacheProvider.getConfig().arcCacheCapacity, 0);
+        assertEquals("无参数重新初始化保持容量", 150, TargetCacheProvider.getConfig().maxCacheCapacity, 0);
         
         // 恢复原始配置
-        TargetCacheProvider.setConfig({arcCacheCapacity: originalCapacity});
+        TargetCacheProvider.setConfig({maxCacheCapacity: originalCapacity});
     }
     
     // ========================================================================
@@ -944,7 +944,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         TargetCacheProvider.clearCache();
         TargetCacheProvider.resetStats();
         TargetCacheProvider.setConfig({
-            arcCacheCapacity: 20
+            maxCacheCapacity: 20
         });
         
         var target:Object = createTestTarget(true);
@@ -968,7 +968,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
     private static function testCacheHealthChecks():Void {
         TargetCacheProvider.clearCache();
         TargetCacheProvider.setConfig({
-            arcCacheCapacity: 10
+            maxCacheCapacity: 10
         });
 
         // 创建一些缓存以便进行健康检查
@@ -1039,7 +1039,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         
         // 测试不同容量配置下的优化建议
         TargetCacheProvider.setConfig({
-            arcCacheCapacity: 5  // 很小的容量
+            maxCacheCapacity: 5  // 很小的容量
         });
         
         var smallCapacityRecommendations:Array = TargetCacheProvider.getOptimizationRecommendations();
@@ -1047,7 +1047,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         
         // 测试大容量场景
         TargetCacheProvider.setConfig({
-            arcCacheCapacity: 600  // 很大的容量
+            maxCacheCapacity: 600  // 很大的容量
         });
         
         var largeCapacityRecommendations:Array = TargetCacheProvider.getOptimizationRecommendations();
@@ -1078,14 +1078,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
             TargetCacheProvider.getCache("敌人", targets[i], 10);
         }
 
-        var details:Object = TargetCacheProvider.getARCCacheDetails();
+        var dist:Object = TargetCacheProvider.getCacheDistribution();
 
-        assertNotNull("getARCCacheDetails返回对象", details);
-        assertTrue("包含容量信息", details.hasOwnProperty("capacity"));
-        assertTrue("包含总缓存项目", details.hasOwnProperty("total_cached_items"));
+        assertNotNull("getCacheDistribution返回对象", dist);
+        assertTrue("包含容量信息", dist.hasOwnProperty("capacity"));
+        assertTrue("包含总缓存项目", dist.hasOwnProperty("totalItems"));
 
-        assertEquals("总缓存项目计算正确", details.total_cached_items, details.T1_size + details.T2_size, 0);
-        assertTrue("缓存项目不超过容量", details.total_cached_items <= details.capacity);
+        assertEquals("总缓存项目计算正确", dist.totalItems, dist.coldCount + dist.hotCount, 0);
+        assertTrue("缓存项目不超过容量", dist.totalItems <= dist.capacity);
     }
     
     // ========================================================================
@@ -1368,7 +1368,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
     private static function testExtremeCacheScenarios():Void {
         TargetCacheProvider.clearCache();
         TargetCacheProvider.setConfig({
-            arcCacheCapacity: 1  // 极小容量
+            maxCacheCapacity: 1  // 极小容量
         });
         
         var target1:Object = createTestTarget(true);
@@ -1389,7 +1389,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         
         // 测试极大容量
         TargetCacheProvider.setConfig({
-            arcCacheCapacity: 10000
+            maxCacheCapacity: 10000
         });
         
         var hugeCacheCount:Number = TargetCacheProvider.getCacheCount();
@@ -1402,10 +1402,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         // 1. 测试容量为0的情况
         try {
             TargetCacheProvider.setConfig({
-                arcCacheCapacity: 0
+                maxCacheCapacity: 0
             });
             var config0:Object = TargetCacheProvider.getConfig();
-            assertTrue("容量0被正确处理", config0.arcCacheCapacity > 0); // 应该被拒绝或设为默认值
+            assertTrue("容量0被正确处理", config0.maxCacheCapacity > 0); // 应该被拒绝或设为默认值
         } catch (e:Error) {
             assertTrue("容量0异常处理正常", true);
         }
@@ -1413,7 +1413,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         // 2. 测试极端的强制刷新阈值
         TargetCacheProvider.setConfig({
             forceRefreshThreshold: 1,  // 每帧都强制刷新
-            arcCacheCapacity: 10
+            maxCacheCapacity: 10
         });
         
         var target:Object = createTestTarget(true);
