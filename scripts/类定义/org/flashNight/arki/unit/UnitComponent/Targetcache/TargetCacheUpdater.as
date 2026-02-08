@@ -36,6 +36,43 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
      */
     private static var _factionVersions:Object = {};
 
+    // ========================================================================
+    // 阵营分桶注册表
+    // ========================================================================
+
+    /**
+     * 阵营分桶注册表
+     * 结构: {factionId: [unit, unit, ...]}
+     * 作为 gameWorld 全量扫描的加速索引，由 addUnit/removeUnit 维护，
+     * 定期通过 _reconcile 与 gameWorld 权威数据源同步。
+     */
+    private static var _registry:Object = {};
+
+    /**
+     * 单位名 → 阵营映射
+     * 结构: {unitName: factionId}
+     * 用于 removeUnit 时 O(1) 定位目标桶，避免遍历所有桶查找。
+     */
+    private static var _registryMap:Object = {};
+
+    /**
+     * 注册表单位总数
+     * 用于校验时异常检测（与 gameWorld 扫描结果对比）。
+     */
+    private static var _registryCount:Number = 0;
+
+    /**
+     * 上次校验帧号
+     * -1 表示从未校验，强制首次 updateCache 时触发校验。
+     */
+    private static var _lastReconcileFrame:Number = -1;
+
+    /**
+     * 校验间隔（帧数）
+     * 约 10 秒 @30fps。定期全量扫描 gameWorld 重建注册表并预排序。
+     */
+    private static var RECONCILE_INTERVAL:Number = 300;
+
     /**
      * 缓存有效性阈值访问器
      * 委托给 AdaptiveThresholdOptimizer 管理
@@ -83,15 +120,21 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             return false;
         }
         
-        // 为所有阵营初始化版本号
+        // 为所有阵营初始化版本号和注册表桶
         var allFactions:Array = FactionManager.getAllFactions();
         for (var i:Number = 0; i < allFactions.length; i++) {
             var factionId:String = allFactions[i];
             if (!_factionVersions[factionId]) {
                 _factionVersions[factionId] = 0;
             }
+            if (!_registry[factionId]) {
+                _registry[factionId] = [];
+            }
         }
-        
+
+        // 强制首次 updateCache 时触发校验
+        _lastReconcileFrame = -1;
+
         return true;
     }
 
@@ -120,6 +163,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         targetIsEnemy:Boolean,
         cacheEntry:Object
     ):Void {
+        // 定期校验：首次强制（_lastReconcileFrame == -1）+ 定期间隔
+        if (_lastReconcileFrame < 0 ||
+            (currentFrame - _lastReconcileFrame >= RECONCILE_INTERVAL)) {
+            _reconcile(gameWorld, currentFrame);
+        }
+
         // 判断请求类型
         var isAllRequest:Boolean   = (requestType == _ALL_TYPE);
         var isEnemyRequest:Boolean = (requestType == _ENEMY_TYPE);
@@ -291,10 +340,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     // ========================================================================
     
     /**
-     * 使用FactionManager收集有效单位
-     * 【重构】替代原有的基于布尔值的收集逻辑
-     * 
-     * @param {Object} gameWorld - 游戏世界对象
+     * 从注册表收集有效单位（按阵营关系）
+     *
+     * 【优化】遍历相关阵营桶而非 gameWorld 全量扫描：
+     * - 消除非单位对象的无效迭代
+     * - 消除每单位的 getFactionFromUnit / areEnemies / areAllies 调用
+     * - 阵营分桶已隐式完成关系过滤
+     *
+     * hp > 0 检查仍保留，作为校验间隔内的安全网（过滤已死亡但未移除的条目）。
+     *
+     * @param {Object} gameWorld - 游戏世界对象（保留参数签名兼容性）
      * @param {String} requesterFaction - 请求者的阵营ID
      * @param {Boolean} isEnemyRequest - 是否请求敌人数据
      * @param {Array} targetList - 存储符合条件的单位（输出参数）
@@ -306,46 +361,34 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         isEnemyRequest:Boolean,
         targetList:Array
     ):Void {
-        var key:String, u:Object;
-        
-        for (key in gameWorld) {
-            u = gameWorld[key];
-            
-            // 仅处理存活单位
-            if (u.hp > 0) {
-                // 获取单位的阵营
-                var unitFaction:String = FactionManager.getFactionFromUnit(u);
-                
-                // 使用FactionManager判断关系
-                var shouldInclude:Boolean = false;
-                if (isEnemyRequest) {
-                    // 敌人请求：检查是否为敌对关系
-                    shouldInclude = FactionManager.areEnemies(requesterFaction, unitFaction);
-                } else {
-                    // 友军请求：检查是否为友好关系
-                    shouldInclude = FactionManager.areAllies(requesterFaction, unitFaction);
-                }
-                /*
-                _root.服务器.发布服务器消息(key + " : " + unitFaction + " , " + 
-                FactionManager.areEnemies(requesterFaction, unitFaction) + " " +
-                FactionManager.areAllies(requesterFaction, unitFaction) + " : " +
-                shouldInclude)
-                */
-                
-                if (shouldInclude) {
-                    // 更新碰撞器并添加到目标列表
+        // 确定目标阵营列表（零拷贝引用）
+        var factions:Array;
+        if (isEnemyRequest) {
+            factions = FactionManager.getEnemyFactionsRef(requesterFaction);
+        } else {
+            factions = FactionManager.getAllyFactionsRef(requesterFaction);
+        }
+
+        if (!factions) return;
+
+        // 遍历相关阵营桶
+        for (var f:Number = 0; f < factions.length; f++) {
+            var bucket:Array = _registry[factions[f]];
+            if (!bucket) continue;
+            for (var i:Number = 0; i < bucket.length; i++) {
+                var u:Object = bucket[i];
+                if (u.hp > 0) {
                     u.aabbCollider.updateFromUnitArea(targetList[targetList.length] = u);
                 }
             }
-        
         }
     }
 
     /**
-     * 收集所有有效单位
-     * 不区分阵营，收集所有存活的单位
-     * 
-     * @param {Object} gameWorld - 游戏世界对象，包含所有单位
+     * 从注册表收集所有有效单位
+     * 遍历所有阵营桶而非 gameWorld 全量扫描。
+     *
+     * @param {Object} gameWorld - 游戏世界对象（保留参数签名兼容性）
      * @param {Array} targetList - 存储所有有效单位（输出参数）
      * @private
      */
@@ -353,29 +396,149 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         gameWorld:Object,
         targetList:Array
     ):Void {
-        var key:String, u:Object;
-        
-        for (key in gameWorld) {
-            u = gameWorld[key];
-            if (u.hp > 0) {
-                // 更新碰撞器并添加到目标列表
-                u.aabbCollider.updateFromUnitArea(targetList[targetList.length] = u);
+        for (var factionId:String in _registry) {
+            var bucket:Array = _registry[factionId];
+            for (var i:Number = 0; i < bucket.length; i++) {
+                var u:Object = bucket[i];
+                if (u.hp > 0) {
+                    u.aabbCollider.updateFromUnitArea(targetList[targetList.length] = u);
+                }
             }
         }
     }
 
     // ========================================================================
+    // 校验重排（Reconciliation）
+    // ========================================================================
+
+    /**
+     * 定期校验：全量扫描 gameWorld 重建注册表并预排序
+     *
+     * 1. 清空现有注册表
+     * 2. 遍历 gameWorld 重建 _registry / _registryMap（仅 hp > 0 的单位）
+     * 3. 异常检测：如果数量与 _registryCount 不一致，强制 bump 所有版本刷新缓存
+     * 4. 对每个桶按 aabbCollider.left 预排序（插入排序），
+     *    使后续 "全体" 查询拼接时 TimSort 可识别 natural runs → O(n) 归并
+     *
+     * @param {Object} gameWorld - 游戏世界对象
+     * @param {Number} currentFrame - 当前帧号
+     * @private
+     */
+    private static function _reconcile(gameWorld:Object, currentFrame:Number):Void {
+        // 1. 清空注册表
+        for (var fid:String in _registry) {
+            _registry[fid].length = 0;
+        }
+        for (var oldName:String in _registryMap) {
+            delete _registryMap[oldName];
+        }
+        var newCount:Number = 0;
+
+        // 2. 全量扫描 gameWorld 重建注册表
+        for (var key:String in gameWorld) {
+            var u:Object = gameWorld[key];
+            if (u.hp > 0) {
+                var faction:String = FactionManager.getFactionFromUnit(u);
+                if (!_registry[faction]) {
+                    _registry[faction] = [];
+                }
+                _registry[faction].push(u);
+                _registryMap[u._name] = faction;
+                newCount++;
+            }
+        }
+
+        // 3. 异常检测：数量不一致时强制刷新所有缓存
+        if (newCount != _registryCount) {
+            for (var f:String in _factionVersions) {
+                _factionVersions[f]++;
+            }
+        }
+        _registryCount = newCount;
+
+        // 4. 预排序每个桶（按 left 升序，插入排序）
+        for (var fid2:String in _registry) {
+            var bucket:Array = _registry[fid2];
+            var bLen:Number = bucket.length;
+            if (bLen > 1) {
+                for (var i:Number = 1; i < bLen; i++) {
+                    var keyUnit:Object = bucket[i];
+                    var leftVal:Number = keyUnit.aabbCollider.left;
+                    var j:Number = i - 1;
+                    while (j >= 0 && bucket[j].aabbCollider.left > leftVal) {
+                        bucket[j + 1] = bucket[j];
+                        j--;
+                    }
+                    bucket[j + 1] = keyUnit;
+                }
+            }
+        }
+
+        // 5. 更新校验时间戳
+        _lastReconcileFrame = currentFrame;
+    }
+
+    // ========================================================================
     // 【重构】基于阵营的版本控制
     // ========================================================================
-    
+
     /**
-     * 添加单位时更新版本号
-     * 【重构】基于单位的阵营更新对应的版本号
-     * 
+     * 从指定阵营桶中移除单位（swap-and-pop）
+     * 不保序，由 _reconcile 定期重排恢复顺序。
+     * 桶大小典型 < 50，线性扫描足够快。
+     *
+     * @param {String} name - 单位名称
+     * @param {String} faction - 目标阵营ID
+     * @private
+     */
+    private static function _removeFromBucket(name:String, faction:String):Void {
+        var bucket:Array = _registry[faction];
+        if (!bucket) return;
+        var len:Number = bucket.length;
+        for (var i:Number = 0; i < len; i++) {
+            if (bucket[i]._name == name) {
+                bucket[i] = bucket[len - 1];
+                bucket.length = len - 1;
+                return;
+            }
+        }
+    }
+
+    /**
+     * 添加单位时更新版本号并维护注册表
+     * 处理重复注册（如 respawn）和阵营变更。
+     *
      * @param {Object} unit - 新增的单位对象
      */
     public static function addUnit(unit:Object):Void {
         var faction:String = FactionManager.getFactionFromUnit(unit);
+        var name:String = unit._name;
+
+        // 处理重复注册：检查是否已在注册表中
+        var oldFaction:String = _registryMap[name];
+        if (oldFaction !== undefined) {
+            if (oldFaction == faction) {
+                // 同阵营重复注册（如 respawn），仅 bump 版本
+                if (!_factionVersions[faction]) {
+                    _factionVersions[faction] = 0;
+                }
+                _factionVersions[faction]++;
+                return;
+            }
+            // 阵营变更，从旧桶移除
+            _removeFromBucket(name, oldFaction);
+            _registryCount--;
+        }
+
+        // 添加到对应阵营桶
+        if (!_registry[faction]) {
+            _registry[faction] = [];
+        }
+        _registry[faction].push(unit);
+        _registryMap[name] = faction;
+        _registryCount++;
+
+        // 版本 bump
         if (!_factionVersions[faction]) {
             _factionVersions[faction] = 0;
         }
@@ -383,13 +546,23 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     }
     
     /**
-     * 移除单位时更新版本号
-     * 【重构】基于单位的阵营更新对应的版本号
-     * 
+     * 移除单位时更新版本号并从注册表中删除
+     *
      * @param {Object} unit - 被移除的单位对象
      */
     public static function removeUnit(unit:Object):Void {
         var faction:String = FactionManager.getFactionFromUnit(unit);
+        var name:String = unit._name;
+
+        // 从注册表移除（使用 registryMap 定位正确的桶）
+        var registeredFaction:String = _registryMap[name];
+        if (registeredFaction !== undefined) {
+            _removeFromBucket(name, registeredFaction);
+            delete _registryMap[name];
+            _registryCount--;
+        }
+
+        // 版本 bump
         if (!_factionVersions[faction]) {
             _factionVersions[faction] = 0;
         }
@@ -398,22 +571,43 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
 
     /**
      * 批量添加单位
-     * 【重构】基于阵营批量更新版本号
-     * 
+     * 维护注册表并批量更新版本号。
+     *
      * @param {Array} units - 要添加的单位数组
      */
     public static function addUnits(units:Array):Void {
         var factionCounts:Object = {};
-        
-        // 统计各阵营的单位数量
+
         for (var i:Number = 0; i < units.length; i++) {
-            var faction:String = FactionManager.getFactionFromUnit(units[i]);
-            if (!factionCounts[faction]) {
-                factionCounts[faction] = 0;
+            var unit:Object = units[i];
+            var faction:String = FactionManager.getFactionFromUnit(unit);
+            var name:String = unit._name;
+
+            // 注册表维护：处理重复注册
+            var oldFaction:String = _registryMap[name];
+            if (oldFaction !== undefined) {
+                if (oldFaction == faction) {
+                    // 同阵营重复，跳过注册表操作，仅统计版本
+                    if (!factionCounts[faction]) factionCounts[faction] = 0;
+                    factionCounts[faction]++;
+                    continue;
+                }
+                // 阵营变更
+                _removeFromBucket(name, oldFaction);
+                _registryCount--;
             }
+
+            if (!_registry[faction]) {
+                _registry[faction] = [];
+            }
+            _registry[faction].push(unit);
+            _registryMap[name] = faction;
+            _registryCount++;
+
+            if (!factionCounts[faction]) factionCounts[faction] = 0;
             factionCounts[faction]++;
         }
-        
+
         // 批量更新版本号
         for (var factionId:String in factionCounts) {
             if (!_factionVersions[factionId]) {
@@ -425,22 +619,30 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
 
     /**
      * 批量移除单位
-     * 【重构】基于阵营批量更新版本号
-     * 
+     * 维护注册表并批量更新版本号。
+     *
      * @param {Array} units - 要移除的单位数组
      */
     public static function removeUnits(units:Array):Void {
         var factionCounts:Object = {};
-        
-        // 统计各阵营的单位数量
+
         for (var i:Number = 0; i < units.length; i++) {
-            var faction:String = FactionManager.getFactionFromUnit(units[i]);
-            if (!factionCounts[faction]) {
-                factionCounts[faction] = 0;
+            var unit:Object = units[i];
+            var faction:String = FactionManager.getFactionFromUnit(unit);
+            var name:String = unit._name;
+
+            // 注册表维护
+            var registeredFaction:String = _registryMap[name];
+            if (registeredFaction !== undefined) {
+                _removeFromBucket(name, registeredFaction);
+                delete _registryMap[name];
+                _registryCount--;
             }
+
+            if (!factionCounts[faction]) factionCounts[faction] = 0;
             factionCounts[faction]++;
         }
-        
+
         // 批量更新版本号
         for (var factionId:String in factionCounts) {
             if (!_factionVersions[factionId]) {
@@ -483,12 +685,22 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         for (var faction:String in _factionVersions) {
             _factionVersions[faction] = 0;
         }
-        
+
         // 清空缓存池
         for (var key:String in _cachePool) {
             delete _cachePool[key];
         }
         _cachePool = {};
+
+        // 清空注册表
+        for (var fid:String in _registry) {
+            _registry[fid].length = 0;
+        }
+        for (var rName:String in _registryMap) {
+            delete _registryMap[rName];
+        }
+        _registryCount = 0;
+        _lastReconcileFrame = -1; // 强制下次 updateCache 时重新校验
     }
 
     /**
@@ -534,9 +746,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         var stats:Object = {
             totalPools: 0,
             poolDetails: {},
-            memoryUsage: 0
+            memoryUsage: 0,
+            registryCount: _registryCount,
+            registryBuckets: {},
+            lastReconcileFrame: _lastReconcileFrame
         };
-        
+
         for (var key:String in _cachePool) {
             var pool:Object = _cachePool[key];
             stats.totalPools++;
@@ -546,7 +761,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             };
             stats.memoryUsage++;
         }
-        
+
+        for (var fid:String in _registry) {
+            stats.registryBuckets[fid] = _registry[fid].length;
+        }
+
         return stats;
     }
 
@@ -595,11 +814,20 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         report += "  Avg Density: " + Math.round(thresholdStatus.avgDensity) + "px\n";
         report += "  Optimizer Version: " + thresholdStatus.version + "\n";
         
+        // 注册表状态
+        report += "\nUnit Registry:\n";
+        report += "  Total Units: " + _registryCount + "\n";
+        report += "  Last Reconcile Frame: " + _lastReconcileFrame + "\n";
+        report += "  Reconcile Interval: " + RECONCILE_INTERVAL + " frames\n";
+        for (var fid:String in _registry) {
+            report += "  " + fid + ": " + _registry[fid].length + " units\n";
+        }
+
         // FactionManager 状态
         report += "\nFactionManager Integration:\n";
         report += "  Status: Integrated\n";
         report += "  Registered Factions: " + FactionManager.getAllFactions().length + "\n";
-        
+
         return report;
     }
 
@@ -655,11 +883,27 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             }
         }
         
+        // 检查注册表一致性
+        var registryMapCount:Number = 0;
+        for (var rName:String in _registryMap) {
+            registryMapCount++;
+        }
+        var bucketTotal:Number = 0;
+        for (var fid:String in _registry) {
+            bucketTotal += _registry[fid].length;
+        }
+        if (registryMapCount != _registryCount || bucketTotal != _registryCount) {
+            result.warnings.push("Registry count mismatch: counter=" + _registryCount
+                + " map=" + registryMapCount + " buckets=" + bucketTotal);
+        }
+
         result.performance.cachePoolCount = poolStats.totalPools;
         result.performance.totalCachedUnits = poolStats.memoryUsage;
         result.performance.currentThreshold = threshold;
         result.performance.factionManagerIntegrated = true;
-        
+        result.performance.registryCount = _registryCount;
+        result.performance.lastReconcileFrame = _lastReconcileFrame;
+
         return result;
     }
 }

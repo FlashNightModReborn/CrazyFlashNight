@@ -215,106 +215,106 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest.runAll
 ✅ nameIndex映射正确 PASS (expected=47, actual=47)
 ✅ nameIndex映射正确 PASS (expected=48, actual=48)
 ✅ nameIndex映射正确 PASS (expected=49, actual=49)
-✅ leftValues与实际坐标一致 PASS (expected=1250.07022688631, actual=1250.07022688631)
-✅ rightValues与实际坐标一致 PASS (expected=1270.07022688631, actual=1270.07022688631)
-✅ leftValues与实际坐标一致 PASS (expected=1250.23255926557, actual=1250.23255926557)
-✅ rightValues与实际坐标一致 PASS (expected=1270.23255926557, actual=1270.23255926557)
-✅ leftValues与实际坐标一致 PASS (expected=1250.39047928061, actual=1250.39047928061)
-✅ rightValues与实际坐标一致 PASS (expected=1270.39047928061, actual=1270.39047928061)
-✅ leftValues与实际坐标一致 PASS (expected=1250.40235802066, actual=1250.40235802066)
-✅ rightValues与实际坐标一致 PASS (expected=1270.40235802066, actual=1270.40235802066)
-✅ leftValues与实际坐标一致 PASS (expected=1250.6603565882, actual=1250.6603565882)
-✅ rightValues与实际坐标一致 PASS (expected=1270.6603565882, actual=1270.6603565882)
-✅ leftValues与实际坐标一致 PASS (expected=1250.69845920196, actual=1250.69845920196)
-✅ rightValues与实际坐标一致 PASS (expected=1270.69845920196, actual=1270.69845920196)
-✅ leftValues与实际坐标一致 PASS (expected=1250.71597301634, actual=1250.71597301634)
-✅ rightValues与实际坐标一致 PASS (expected=1270.71597301634, actual=1270.71597301634)
-✅ leftValues与实际坐标一致 PASS (expected=1250.73597345734, actual=1250.73597345734)
-✅ rightValues与实际坐标一致 PASS (expected=1270.73597345734, actual=1270.73597345734)
-✅ leftValues与实际坐标一致 PASS (expected=1250.87749883533, actual=1250.87749883533)
-✅ rightValues与实际坐标一致 PASS (expected=1270.87749883533, actual=1270.87749883533)
-✅ leftValues与实际坐标一致 PASS (expected=1250.93100933358, actual=1250.93100933358)
-✅ rightValues与实际坐标一致 PASS (expected=1270.93100933358, actual=1270.93100933358)
-✅ leftValues与实际坐标一致 PASS (expected=1250.9700963553, actual=1250.9700963553)
-✅ rightValues与实际坐标一致 PASS (expected=1270.9700963553, actual=1270.9700963553)
-✅ leftValues与实际坐标一致 PASS (expected=1251.32880651858, actual=1251.32880651858)
-✅ rightValues与实际坐标一致 PASS (expected=1271.32880651858, actual=1271.32880651858)
-✅ leftValues与实际坐标一致 PASS (expected=1251.40242634574, actual=1251.40242634574)
-✅ rightValues与实际坐标一致 PASS (expected=1271.40242634574, actual=1271.40242634574)
-✅ leftValues与实际坐标一致 PASS (expected=1251.60584523808, actual=1251.60584523808)
-✅ rightValues与实际坐标一致 PASS (expected=1271.60584523808, actual=1271.60584523808)
-✅ leftValues与实际坐标一致 PASS (expected=1251.69941133354, actual=1251.69941133354)
-✅ rightValues与实际坐标一致 PASS (expected=1271.69941133354, actual=1271.69941133354)
-✅ leftValues与实际坐标一致 PASS (expected=1251.97547137272, actual=1251.97547137272)
-✅ rightValues与实际坐标一致 PASS (expected=1271.97547137272, actual=1271.97547137272)
-✅ leftValues与实际坐标一致 PASS (expected=1252.12974484777, actual=1252.12974484777)
-✅ rightValues与实际坐标一致 PASS (expected=1272.12974484777, actual=1272.12974484777)
-✅ leftValues与实际坐标一致 PASS (expected=1252.12976276409, actual=1252.12976276409)
-✅ rightValues与实际坐标一致 PASS (expected=1272.12976276409, actual=1272.12976276409)
-✅ leftValues与实际坐标一致 PASS (expected=1252.23223820562, actual=1252.23223820562)
-✅ rightValues与实际坐标一致 PASS (expected=1272.23223820562, actual=1272.23223820562)
-✅ leftValues与实际坐标一致 PASS (expected=1252.25923729828, actual=1252.25923729828)
-✅ rightValues与实际坐标一致 PASS (expected=1272.25923729828, actual=1272.25923729828)
-✅ leftValues与实际坐标一致 PASS (expected=1252.31017719023, actual=1252.31017719023)
-✅ rightValues与实际坐标一致 PASS (expected=1272.31017719023, actual=1272.31017719023)
-✅ leftValues与实际坐标一致 PASS (expected=1252.4805986532, actual=1252.4805986532)
-✅ rightValues与实际坐标一致 PASS (expected=1272.4805986532, actual=1272.4805986532)
-✅ leftValues与实际坐标一致 PASS (expected=1252.51359581016, actual=1252.51359581016)
-✅ rightValues与实际坐标一致 PASS (expected=1272.51359581016, actual=1272.51359581016)
-✅ leftValues与实际坐标一致 PASS (expected=1252.67837402876, actual=1252.67837402876)
-✅ rightValues与实际坐标一致 PASS (expected=1272.67837402876, actual=1272.67837402876)
-✅ leftValues与实际坐标一致 PASS (expected=1252.72823074134, actual=1252.72823074134)
-✅ rightValues与实际坐标一致 PASS (expected=1272.72823074134, actual=1272.72823074134)
-✅ leftValues与实际坐标一致 PASS (expected=1252.741005274, actual=1252.741005274)
-✅ rightValues与实际坐标一致 PASS (expected=1272.741005274, actual=1272.741005274)
-✅ leftValues与实际坐标一致 PASS (expected=1252.85122103058, actual=1252.85122103058)
-✅ rightValues与实际坐标一致 PASS (expected=1272.85122103058, actual=1272.85122103058)
-✅ leftValues与实际坐标一致 PASS (expected=1252.9542754055, actual=1252.9542754055)
-✅ rightValues与实际坐标一致 PASS (expected=1272.9542754055, actual=1272.9542754055)
-✅ leftValues与实际坐标一致 PASS (expected=1253.01195000298, actual=1253.01195000298)
-✅ rightValues与实际坐标一致 PASS (expected=1273.01195000298, actual=1273.01195000298)
-✅ leftValues与实际坐标一致 PASS (expected=1253.11771610985, actual=1253.11771610985)
-✅ rightValues与实际坐标一致 PASS (expected=1273.11771610985, actual=1273.11771610985)
-✅ leftValues与实际坐标一致 PASS (expected=1253.14367677085, actual=1253.14367677085)
-✅ rightValues与实际坐标一致 PASS (expected=1273.14367677085, actual=1273.14367677085)
-✅ leftValues与实际坐标一致 PASS (expected=1253.3949870267, actual=1253.3949870267)
-✅ rightValues与实际坐标一致 PASS (expected=1273.3949870267, actual=1273.3949870267)
-✅ leftValues与实际坐标一致 PASS (expected=1253.47271759762, actual=1253.47271759762)
-✅ rightValues与实际坐标一致 PASS (expected=1273.47271759762, actual=1273.47271759762)
-✅ leftValues与实际坐标一致 PASS (expected=1253.62741091521, actual=1253.62741091521)
-✅ rightValues与实际坐标一致 PASS (expected=1273.62741091521, actual=1273.62741091521)
-✅ leftValues与实际坐标一致 PASS (expected=1253.72441325802, actual=1253.72441325802)
-✅ rightValues与实际坐标一致 PASS (expected=1273.72441325802, actual=1273.72441325802)
-✅ leftValues与实际坐标一致 PASS (expected=1253.80098693771, actual=1253.80098693771)
-✅ rightValues与实际坐标一致 PASS (expected=1273.80098693771, actual=1273.80098693771)
-✅ leftValues与实际坐标一致 PASS (expected=1253.81711776601, actual=1253.81711776601)
-✅ rightValues与实际坐标一致 PASS (expected=1273.81711776601, actual=1273.81711776601)
-✅ leftValues与实际坐标一致 PASS (expected=1253.89055441367, actual=1253.89055441367)
-✅ rightValues与实际坐标一致 PASS (expected=1273.89055441367, actual=1273.89055441367)
-✅ leftValues与实际坐标一致 PASS (expected=1253.95492856624, actual=1253.95492856624)
-✅ rightValues与实际坐标一致 PASS (expected=1273.95492856624, actual=1273.95492856624)
-✅ leftValues与实际坐标一致 PASS (expected=1253.97539075231, actual=1253.97539075231)
-✅ rightValues与实际坐标一致 PASS (expected=1273.97539075231, actual=1273.97539075231)
-✅ leftValues与实际坐标一致 PASS (expected=1254.0353966644, actual=1254.0353966644)
-✅ rightValues与实际坐标一致 PASS (expected=1274.0353966644, actual=1274.0353966644)
-✅ leftValues与实际坐标一致 PASS (expected=1254.05523222638, actual=1254.05523222638)
-✅ rightValues与实际坐标一致 PASS (expected=1274.05523222638, actual=1274.05523222638)
-✅ leftValues与实际坐标一致 PASS (expected=1254.33599657845, actual=1254.33599657845)
-✅ rightValues与实际坐标一致 PASS (expected=1274.33599657845, actual=1274.33599657845)
-✅ leftValues与实际坐标一致 PASS (expected=1254.33599995682, actual=1254.33599995682)
-✅ rightValues与实际坐标一致 PASS (expected=1274.33599995682, actual=1274.33599995682)
-✅ leftValues与实际坐标一致 PASS (expected=1254.33770542732, actual=1254.33770542732)
-✅ rightValues与实际坐标一致 PASS (expected=1274.33770542732, actual=1274.33770542732)
-✅ leftValues与实际坐标一致 PASS (expected=1254.39079475589, actual=1254.39079475589)
-✅ rightValues与实际坐标一致 PASS (expected=1274.39079475589, actual=1274.39079475589)
-✅ leftValues与实际坐标一致 PASS (expected=1254.46535559371, actual=1254.46535559371)
-✅ rightValues与实际坐标一致 PASS (expected=1274.46535559371, actual=1274.46535559371)
-✅ leftValues与实际坐标一致 PASS (expected=1254.54294917174, actual=1254.54294917174)
-✅ rightValues与实际坐标一致 PASS (expected=1274.54294917174, actual=1274.54294917174)
-✅ leftValues与实际坐标一致 PASS (expected=1254.64669839712, actual=1254.64669839712)
-✅ rightValues与实际坐标一致 PASS (expected=1274.64669839712, actual=1274.64669839712)
-✅ leftValues与实际坐标一致 PASS (expected=1254.902283845, actual=1254.902283845)
-✅ rightValues与实际坐标一致 PASS (expected=1274.902283845, actual=1274.902283845)
+✅ leftValues与实际坐标一致 PASS (expected=1250.11230625678, actual=1250.11230625678)
+✅ rightValues与实际坐标一致 PASS (expected=1270.11230625678, actual=1270.11230625678)
+✅ leftValues与实际坐标一致 PASS (expected=1250.33290554537, actual=1250.33290554537)
+✅ rightValues与实际坐标一致 PASS (expected=1270.33290554537, actual=1270.33290554537)
+✅ leftValues与实际坐标一致 PASS (expected=1250.39311266039, actual=1250.39311266039)
+✅ rightValues与实际坐标一致 PASS (expected=1270.39311266039, actual=1270.39311266039)
+✅ leftValues与实际坐标一致 PASS (expected=1250.48295984976, actual=1250.48295984976)
+✅ rightValues与实际坐标一致 PASS (expected=1270.48295984976, actual=1270.48295984976)
+✅ leftValues与实际坐标一致 PASS (expected=1250.48943680944, actual=1250.48943680944)
+✅ rightValues与实际坐标一致 PASS (expected=1270.48943680944, actual=1270.48943680944)
+✅ leftValues与实际坐标一致 PASS (expected=1250.54104458075, actual=1250.54104458075)
+✅ rightValues与实际坐标一致 PASS (expected=1270.54104458075, actual=1270.54104458075)
+✅ leftValues与实际坐标一致 PASS (expected=1250.5509284162, actual=1250.5509284162)
+✅ rightValues与实际坐标一致 PASS (expected=1270.5509284162, actual=1270.5509284162)
+✅ leftValues与实际坐标一致 PASS (expected=1250.65927370219, actual=1250.65927370219)
+✅ rightValues与实际坐标一致 PASS (expected=1270.65927370219, actual=1270.65927370219)
+✅ leftValues与实际坐标一致 PASS (expected=1250.67022664007, actual=1250.67022664007)
+✅ rightValues与实际坐标一致 PASS (expected=1270.67022664007, actual=1270.67022664007)
+✅ leftValues与实际坐标一致 PASS (expected=1250.67638401873, actual=1250.67638401873)
+✅ rightValues与实际坐标一致 PASS (expected=1270.67638401873, actual=1270.67638401873)
+✅ leftValues与实际坐标一致 PASS (expected=1250.6809912133, actual=1250.6809912133)
+✅ rightValues与实际坐标一致 PASS (expected=1270.6809912133, actual=1270.6809912133)
+✅ leftValues与实际坐标一致 PASS (expected=1250.87584944675, actual=1250.87584944675)
+✅ rightValues与实际坐标一致 PASS (expected=1270.87584944675, actual=1270.87584944675)
+✅ leftValues与实际坐标一致 PASS (expected=1251.22874262976, actual=1251.22874262976)
+✅ rightValues与实际坐标一致 PASS (expected=1271.22874262976, actual=1271.22874262976)
+✅ leftValues与实际坐标一致 PASS (expected=1251.26509428956, actual=1251.26509428956)
+✅ rightValues与实际坐标一致 PASS (expected=1271.26509428956, actual=1271.26509428956)
+✅ leftValues与实际坐标一致 PASS (expected=1251.28449717071, actual=1251.28449717071)
+✅ rightValues与实际坐标一致 PASS (expected=1271.28449717071, actual=1271.28449717071)
+✅ leftValues与实际坐标一致 PASS (expected=1251.31446372718, actual=1251.31446372718)
+✅ rightValues与实际坐标一致 PASS (expected=1271.31446372718, actual=1271.31446372718)
+✅ leftValues与实际坐标一致 PASS (expected=1251.46560481749, actual=1251.46560481749)
+✅ rightValues与实际坐标一致 PASS (expected=1271.46560481749, actual=1271.46560481749)
+✅ leftValues与实际坐标一致 PASS (expected=1251.4816904394, actual=1251.4816904394)
+✅ rightValues与实际坐标一致 PASS (expected=1271.4816904394, actual=1271.4816904394)
+✅ leftValues与实际坐标一致 PASS (expected=1251.4907433698, actual=1251.4907433698)
+✅ rightValues与实际坐标一致 PASS (expected=1271.4907433698, actual=1271.4907433698)
+✅ leftValues与实际坐标一致 PASS (expected=1251.51566918008, actual=1251.51566918008)
+✅ rightValues与实际坐标一致 PASS (expected=1271.51566918008, actual=1271.51566918008)
+✅ leftValues与实际坐标一致 PASS (expected=1251.55068236869, actual=1251.55068236869)
+✅ rightValues与实际坐标一致 PASS (expected=1271.55068236869, actual=1271.55068236869)
+✅ leftValues与实际坐标一致 PASS (expected=1251.7146751564, actual=1251.7146751564)
+✅ rightValues与实际坐标一致 PASS (expected=1271.7146751564, actual=1271.7146751564)
+✅ leftValues与实际坐标一致 PASS (expected=1251.77136404673, actual=1251.77136404673)
+✅ rightValues与实际坐标一致 PASS (expected=1271.77136404673, actual=1271.77136404673)
+✅ leftValues与实际坐标一致 PASS (expected=1251.82464502752, actual=1251.82464502752)
+✅ rightValues与实际坐标一致 PASS (expected=1271.82464502752, actual=1271.82464502752)
+✅ leftValues与实际坐标一致 PASS (expected=1251.94053664105, actual=1251.94053664105)
+✅ rightValues与实际坐标一致 PASS (expected=1271.94053664105, actual=1271.94053664105)
+✅ leftValues与实际坐标一致 PASS (expected=1252.28863463737, actual=1252.28863463737)
+✅ rightValues与实际坐标一致 PASS (expected=1272.28863463737, actual=1272.28863463737)
+✅ leftValues与实际坐标一致 PASS (expected=1252.30005781865, actual=1252.30005781865)
+✅ rightValues与实际坐标一致 PASS (expected=1272.30005781865, actual=1272.30005781865)
+✅ leftValues与实际坐标一致 PASS (expected=1252.37167983083, actual=1252.37167983083)
+✅ rightValues与实际坐标一致 PASS (expected=1272.37167983083, actual=1272.37167983083)
+✅ leftValues与实际坐标一致 PASS (expected=1252.4127882137, actual=1252.4127882137)
+✅ rightValues与实际坐标一致 PASS (expected=1272.4127882137, actual=1272.4127882137)
+✅ leftValues与实际坐标一致 PASS (expected=1252.67892690375, actual=1252.67892690375)
+✅ rightValues与实际坐标一致 PASS (expected=1272.67892690375, actual=1272.67892690375)
+✅ leftValues与实际坐标一致 PASS (expected=1252.71372336429, actual=1252.71372336429)
+✅ rightValues与实际坐标一致 PASS (expected=1272.71372336429, actual=1272.71372336429)
+✅ leftValues与实际坐标一致 PASS (expected=1252.76855166536, actual=1252.76855166536)
+✅ rightValues与实际坐标一致 PASS (expected=1272.76855166536, actual=1272.76855166536)
+✅ leftValues与实际坐标一致 PASS (expected=1252.84129006555, actual=1252.84129006555)
+✅ rightValues与实际坐标一致 PASS (expected=1272.84129006555, actual=1272.84129006555)
+✅ leftValues与实际坐标一致 PASS (expected=1252.94158247067, actual=1252.94158247067)
+✅ rightValues与实际坐标一致 PASS (expected=1272.94158247067, actual=1272.94158247067)
+✅ leftValues与实际坐标一致 PASS (expected=1253.01693917951, actual=1253.01693917951)
+✅ rightValues与实际坐标一致 PASS (expected=1273.01693917951, actual=1273.01693917951)
+✅ leftValues与实际坐标一致 PASS (expected=1253.1583760865, actual=1253.1583760865)
+✅ rightValues与实际坐标一致 PASS (expected=1273.1583760865, actual=1273.1583760865)
+✅ leftValues与实际坐标一致 PASS (expected=1253.45275541302, actual=1253.45275541302)
+✅ rightValues与实际坐标一致 PASS (expected=1273.45275541302, actual=1273.45275541302)
+✅ leftValues与实际坐标一致 PASS (expected=1253.46418004483, actual=1253.46418004483)
+✅ rightValues与实际坐标一致 PASS (expected=1273.46418004483, actual=1273.46418004483)
+✅ leftValues与实际坐标一致 PASS (expected=1253.82586134598, actual=1253.82586134598)
+✅ rightValues与实际坐标一致 PASS (expected=1273.82586134598, actual=1273.82586134598)
+✅ leftValues与实际坐标一致 PASS (expected=1253.85563490214, actual=1253.85563490214)
+✅ rightValues与实际坐标一致 PASS (expected=1273.85563490214, actual=1273.85563490214)
+✅ leftValues与实际坐标一致 PASS (expected=1254.12131461315, actual=1254.12131461315)
+✅ rightValues与实际坐标一致 PASS (expected=1274.12131461315, actual=1274.12131461315)
+✅ leftValues与实际坐标一致 PASS (expected=1254.14476228412, actual=1254.14476228412)
+✅ rightValues与实际坐标一致 PASS (expected=1274.14476228412, actual=1274.14476228412)
+✅ leftValues与实际坐标一致 PASS (expected=1254.15513363667, actual=1254.15513363667)
+✅ rightValues与实际坐标一致 PASS (expected=1274.15513363667, actual=1274.15513363667)
+✅ leftValues与实际坐标一致 PASS (expected=1254.34030688601, actual=1254.34030688601)
+✅ rightValues与实际坐标一致 PASS (expected=1274.34030688601, actual=1274.34030688601)
+✅ leftValues与实际坐标一致 PASS (expected=1254.34577294858, actual=1254.34577294858)
+✅ rightValues与实际坐标一致 PASS (expected=1274.34577294858, actual=1274.34577294858)
+✅ leftValues与实际坐标一致 PASS (expected=1254.41041972954, actual=1254.41041972954)
+✅ rightValues与实际坐标一致 PASS (expected=1274.41041972954, actual=1274.41041972954)
+✅ leftValues与实际坐标一致 PASS (expected=1254.4581947173, actual=1254.4581947173)
+✅ rightValues与实际坐标一致 PASS (expected=1274.4581947173, actual=1274.4581947173)
+✅ leftValues与实际坐标一致 PASS (expected=1254.53211440705, actual=1254.53211440705)
+✅ rightValues与实际坐标一致 PASS (expected=1274.53211440705, actual=1274.53211440705)
+✅ leftValues与实际坐标一致 PASS (expected=1254.76526753511, actual=1254.76526753511)
+✅ rightValues与实际坐标一致 PASS (expected=1274.76526753511, actual=1274.76526753511)
+✅ leftValues与实际坐标一致 PASS (expected=1254.89672872704, actual=1254.89672872704)
+✅ rightValues与实际坐标一致 PASS (expected=1274.89672872704, actual=1274.89672872704)
 
 📊 执行版本控制系统测试...
 ✅ 添加敌人版本递增 PASS (expected=1, actual=1)
@@ -397,16 +397,20 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest.runAll
 ✅ 混合移除后友军版本 PASS (expected=14, actual=14)
 
 ⚡ 执行性能基准测试...
-📊 updateCache性能: 100次调用耗时 459ms
+📊 updateCache性能: 100次调用耗时 217ms
 ✅ updateCache性能达标 PASS
-📊 批量操作性能: 100次批量操作耗时 50ms
+📊 批量操作性能: 100次批量操作耗时 395ms
 ✅ 批量操作性能合理 PASS
 📊 缓存池操作性能: 100次操作耗时 1ms
 ✅ 缓存池操作性能合理 PASS
-📊 大数据集测试: 1000个单位处理耗时 41ms
+📊 大数据集测试: 1000个单位处理耗时 204ms
 ✅ 大数据集处理时间合理 PASS
 ✅ 大数据集结果非空 PASS
 ✅ 大数据集数组长度一致 PASS (expected=1000, actual=1000)
+📊 注册表收集性能: 50次收集耗时 96ms (avg 1.92ms)
+📊 含500个噪声对象的世界, reconciliation耗时 4ms
+✅ 大规模世界单位数正确 PASS (expected=100, actual=100)
+✅ 注册表平均收集时间合理(<5ms) PASS
 
 🔍 执行调试监控测试...
 ✅ getDetailedStatusReport返回字符串 PASS (object is not null)
@@ -414,6 +418,9 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest.runAll
 ✅ 报告包含版本信息 PASS
 ✅ 报告包含缓存池信息 PASS
 ✅ 报告包含阈值信息 PASS
+✅ 报告包含注册表信息 PASS
+✅ 报告包含Reconcile帧信息 PASS
+✅ 报告包含Reconcile间隔信息 PASS
 ✅ performSelfCheck返回对象 PASS (object is not null)
 ✅ 自检结果包含passed PASS
 ✅ 自检结果包含errors PASS
@@ -426,8 +433,11 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest.runAll
 ✅ 报告提及Enemy Version PASS
 ✅ 报告提及Active Pools PASS
 ✅ 报告提及Current Threshold PASS
+✅ 报告提及Total Units PASS
 ✅ 自检包含缓存池数量 PASS
 ✅ 自检包含当前阈值 PASS
+✅ 自检包含registryCount PASS
+✅ 自检包含lastReconcileFrame PASS
 
 🔍 执行边界条件测试...
 ✅ 空世界data长度为0 PASS (expected=0, actual=0)
@@ -455,6 +465,135 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest.runAll
 ✅ 极端操作后版本号合理 PASS
 ✅ 大量操作后缓存池合理 PASS
 
+📋 执行注册表系统测试...
+✅ 注册表总数=8 PASS (expected=8, actual=8)
+✅ 注册表含ENEMY桶 PASS
+✅ 注册表含PLAYER桶 PASS
+✅ ENEMY桶数量=5 PASS (expected=5, actual=5)
+✅ PLAYER桶数量=3 PASS (expected=3, actual=3)
+✅ 移除前registryCount=4 PASS (expected=4, actual=4)
+✅ 移除2个后registryCount=2 PASS (expected=2, actual=2)
+✅ ENEMY桶减少到2 PASS (expected=2, actual=2)
+✅ 重复注册后registryCount仍=1 PASS (expected=1, actual=1)
+✅ 重复注册后ENEMY桶仍=1 PASS (expected=1, actual=1)
+✅ 重复注册版本bump=2 PASS (expected=2, actual=2)
+✅ 初始ENEMY桶=1 PASS (expected=1, actual=1)
+✅ 变更后ENEMY桶=0 PASS (expected=0, actual=0)
+✅ 变更后PLAYER桶=1 PASS (expected=1, actual=1)
+✅ 变更后registryCount仍=1 PASS (expected=1, actual=1)
+✅ 重置前有注册表数据 PASS
+✅ 重置后registryCount=0 PASS (expected=0, actual=0)
+✅ 重置后lastReconcileFrame=-1 PASS (expected=-1, actual=-1)
+✅ 重置后桶PLAYER为空 PASS (expected=0, actual=0)
+✅ 重置后桶ENEMY为空 PASS (expected=0, actual=0)
+✅ 重置后桶HOSTILE_NEUTRAL为空 PASS (expected=0, actual=0)
+✅ 批量添加后registryCount=10 PASS (expected=10, actual=10)
+✅ 批量添加后ENEMY桶=6 PASS (expected=6, actual=6)
+✅ 批量添加后PLAYER桶=4 PASS (expected=4, actual=4)
+✅ 批量移除敌人后registryCount=4 PASS (expected=4, actual=4)
+✅ 批量移除敌人后ENEMY桶=0 PASS (expected=0, actual=0)
+✅ 批量移除敌人后PLAYER桶不变=4 PASS (expected=4, actual=4)
+✅ 自检通过（注册表一致） PASS
+✅ 无注册表不一致警告 PASS
+✅ 自检含registryCount PASS
+✅ 自检含lastReconcileFrame PASS
+✅ 自检registryCount=20 PASS (expected=20, actual=20)
+✅ 注册表收集:敌人数量正确 PASS (expected=10, actual=10)
+✅ 注册表收集:敌人结果排序正确 PASS
+✅ 注册表收集:敌人结果排序正确 PASS
+✅ 注册表收集:敌人结果排序正确 PASS
+✅ 注册表收集:敌人结果排序正确 PASS
+✅ 注册表收集:敌人结果排序正确 PASS
+✅ 注册表收集:敌人结果排序正确 PASS
+✅ 注册表收集:敌人结果排序正确 PASS
+✅ 注册表收集:敌人结果排序正确 PASS
+✅ 注册表收集:敌人结果排序正确 PASS
+✅ 注册表收集:友军数量正确 PASS (expected=10, actual=10)
+✅ 注册表收集:全体=敌人+友军 PASS (expected=20, actual=20)
+✅ 初始全部10个单位 PASS (expected=10, actual=10)
+✅ 死亡单位被hp>0安全网过滤,剩余7个 PASS (expected=7, actual=7)
+✅ 结果单位hp>0 PASS
+✅ 结果单位hp>0 PASS
+✅ 结果单位hp>0 PASS
+✅ 结果单位hp>0 PASS
+✅ 结果单位hp>0 PASS
+✅ 结果单位hp>0 PASS
+✅ 结果单位hp>0 PASS
+
+🔄 执行校验重排测试...
+✅ 重置后lastReconcileFrame=-1 PASS (expected=-1, actual=-1)
+✅ 首次更新后lastReconcileFrame=12000 PASS (expected=12000, actual=12000)
+✅ 首次更新后registryCount>0 PASS
+✅ 第一次校验帧=13000 PASS (expected=13000, actual=13000)
+✅ 间隔内不触发校验,帧仍=13000 PASS (expected=13000, actual=13000)
+✅ 超出间隔后触发校验,帧=13301 PASS (expected=13301, actual=13301)
+✅ 初始registryCount=5 PASS (expected=5, actual=5)
+✅ 自愈后registryCount包含sneaky单位 PASS
+✅ 自愈后3个sneaky单位均被收集 PASS (expected=3, actual=3)
+✅ 预排序后结果非空 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ reconciliation预排序: leftValues升序 PASS
+✅ 预排序后nameIndex正确 PASS (expected=0, actual=0)
+✅ 预排序后nameIndex正确 PASS (expected=1, actual=1)
+✅ 预排序后nameIndex正确 PASS (expected=2, actual=2)
+✅ 预排序后nameIndex正确 PASS (expected=3, actual=3)
+✅ 预排序后nameIndex正确 PASS (expected=4, actual=4)
+✅ 预排序后nameIndex正确 PASS (expected=5, actual=5)
+✅ 预排序后nameIndex正确 PASS (expected=6, actual=6)
+✅ 预排序后nameIndex正确 PASS (expected=7, actual=7)
+✅ 预排序后nameIndex正确 PASS (expected=8, actual=8)
+✅ 预排序后nameIndex正确 PASS (expected=9, actual=9)
+✅ 预排序后nameIndex正确 PASS (expected=10, actual=10)
+✅ 预排序后nameIndex正确 PASS (expected=11, actual=11)
+✅ 预排序后nameIndex正确 PASS (expected=12, actual=12)
+✅ 预排序后nameIndex正确 PASS (expected=13, actual=13)
+✅ 预排序后nameIndex正确 PASS (expected=14, actual=14)
+✅ 预排序后nameIndex正确 PASS (expected=15, actual=15)
+✅ 预排序后nameIndex正确 PASS (expected=16, actual=16)
+✅ 预排序后nameIndex正确 PASS (expected=17, actual=17)
+✅ 预排序后nameIndex正确 PASS (expected=18, actual=18)
+✅ 预排序后nameIndex正确 PASS (expected=19, actual=19)
+✅ 预排序后nameIndex正确 PASS (expected=20, actual=20)
+✅ 预排序后nameIndex正确 PASS (expected=21, actual=21)
+✅ 预排序后nameIndex正确 PASS (expected=22, actual=22)
+✅ 预排序后nameIndex正确 PASS (expected=23, actual=23)
+✅ 预排序后nameIndex正确 PASS (expected=24, actual=24)
+✅ 预排序后nameIndex正确 PASS (expected=25, actual=25)
+✅ 预排序后nameIndex正确 PASS (expected=26, actual=26)
+✅ 预排序后nameIndex正确 PASS (expected=27, actual=27)
+✅ 预排序后nameIndex正确 PASS (expected=28, actual=28)
+✅ 预排序后nameIndex正确 PASS (expected=29, actual=29)
+✅ 空世界测试:初始registryCount=5 PASS (expected=5, actual=5)
+✅ 空世界reconciliation后registryCount=0 PASS (expected=0, actual=0)
+✅ 空世界reconciliation后data为空 PASS (expected=0, actual=0)
+
 🎯 执行复杂场景集成测试...
 ✅ 添加单位后数量可能变化 PASS
 ✅ 移除后数组长度一致 PASS (expected=18, actual=18)
@@ -476,34 +615,35 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest.runAll
 ✅ 并发更新数据一致性 PASS
 ✅ 全体请求数据最多 PASS
 ✅ 全体请求数据最多 PASS
-📊 内存效率测试: 10次循环耗时 82ms
+📊 内存效率测试: 10次循环耗时 34ms
 ✅ 内存效率测试时间合理 PASS
 ✅ 内存效率测试后缓存池合理 PASS
 
 ================================================================================
 📊 测试结果汇总
 ================================================================================
-总测试数: 446
-通过: 446 ✅
+总测试数: 579
+通过: 579 ✅
 失败: 0 ❌
 成功率: 100%
-总耗时: 815ms
+总耗时: 1065ms
 
 ⚡ 性能基准报告:
-  updateCache: 4.59ms/次 (100次测试)
-  batchOperations: 0.5ms/次 (100次测试)
+  updateCache: 2.17ms/次 (100次测试)
+  batchOperations: 3.95ms/次 (100次测试)
   cachePoolOps: 0.01ms/次 (100次测试)
-  largeDataset: 41ms/次 (1次测试)
-  memoryEfficiency: 8.2ms/次 (10次测试)
+  largeDataset: 204ms/次 (1次测试)
+  registryCollection: 1.92ms/次 (50次测试)
+  memoryEfficiency: 3.4ms/次 (10次测试)
 
 🎯 TargetCacheUpdater当前状态:
 === TargetCacheUpdater Status Report ===
 
 Faction Version Numbers:
-  PLAYER: 7
-  ENEMY: 8
-  HOSTILE_NEUTRAL: 0
-  Total Updates: 15
+  PLAYER: 10
+  ENEMY: 11
+  HOSTILE_NEUTRAL: 3
+  Total Updates: 24
 
 Cache Pool Stats:
   Active Pools: 0
@@ -513,6 +653,14 @@ Threshold Optimizer:
   Current Threshold: 30px
   Avg Density: 1px
   Optimizer Version: 1.0.0
+
+Unit Registry:
+  Total Units: 100
+  Last Reconcile Frame: 9000
+  Reconcile Interval: 300 frames
+  HOSTILE_NEUTRAL: 0 units
+  ENEMY: 50 units
+  PLAYER: 50 units
 
 FactionManager Integration:
   Status: Integrated
