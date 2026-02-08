@@ -1,16 +1,16 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/蜘蛛网" itemID="694964bb-00001180" linkageExportForAS="true" linkageIdentifier="蜘蛛网" lastModified="1766418105" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/蜘蛛网" itemID="694964bb-00001180" linkageExportForAS="true" linkageIdentifier="蜘蛛网" lastModified="1770560381" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="蜘蛛网" currentFrame="17">
+    <DOMTimeline name="蜘蛛网" currentFrame="28">
       <layers>
         <DOMLayer name="Labels Layer" color="#8ADE35" locked="true">
           <frames>
             <DOMFrame index="0" duration="6" name="未爆炸" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="6" duration="28" name="爆炸" labelType="name" keyMode="9728">
+            <DOMFrame index="6" duration="24" name="爆炸" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="34" duration="4" name="消失?" labelType="name" keyMode="9728">
+            <DOMFrame index="30" duration="4" name="消失?" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -43,13 +43,13 @@ stop();]]></script>
             <DOMFrame index="6" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="18" duration="16" keyMode="9728">
+            <DOMFrame index="18" duration="12" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.Z轴攻击范围 += 30;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="34" duration="4" keyMode="9728">
+            <DOMFrame index="30" duration="4" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 this.removeMovieClip();
@@ -76,14 +76,14 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="28" keyMode="9728">
+            <DOMFrame index="6" duration="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/蜘蛛网爆炸" centerPoint3DX="2.55" centerPoint3DY="3.45">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/蜘蛛网爆炸" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="-58.75" ty="-5.65"/>
+                    <Matrix a="0.904220581054688" d="0.904220581054688" tx="-1.45" ty="2.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="61.3" y="9.1"/>
+                    <Point x="71.15" y="2.9"/>
                   </transformationPoint>
                   <color>
                     <Color brightness="0.89"/>
@@ -91,14 +91,14 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="34" duration="4" keyMode="9728">
+            <DOMFrame index="30" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Sound Layer 0" color="#F442C8" locked="true">
           <frames>
-            <DOMFrame index="0" duration="38" keyMode="9728">
+            <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -150,10 +150,10 @@ this.removeMovieClip();
             <DOMFrame index="22" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="23" duration="11" keyMode="9728">
+            <DOMFrame index="23" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="34" duration="4" keyMode="9728">
+            <DOMFrame index="30" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

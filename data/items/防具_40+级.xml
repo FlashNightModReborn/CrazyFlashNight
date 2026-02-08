@@ -631,7 +631,7 @@
       </magicdefence>
     </data>
     <lifecycle>
-      <attr_0>
+      <attr_防具技能>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -646,7 +646,7 @@
             <y>-80</y>
           </cycleParam>
         </cycle>
-      </attr_0>
+      </attr_防具技能>
     </lifecycle>
   </item>
   <item>
@@ -1735,7 +1735,7 @@
       </magicdefence>
     </data>
     <lifecycle>
-      <attr_0>
+      <attr_防具技能>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -1750,7 +1750,7 @@
             <y>-80</y>
           </cycleParam>
         </cycle>
-      </attr_0>
+      </attr_防具技能>
     </lifecycle>
   </item>
   <item>
@@ -2132,7 +2132,7 @@
       </magicdefence>
     </data>
     <lifecycle>
-      <attr_喷气背包>
+      <attr_防具技能>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -2147,7 +2147,7 @@
             <y>-80</y>
           </cycleParam>
         </cycle>
-      </attr_喷气背包>
+      </attr_防具技能>
     </lifecycle>
   </item>
   <item>
@@ -2234,7 +2234,7 @@
       <skillname>贯空天盖战技</skillname>
       <description>可使用&lt;font color="#110d12"&gt;“咒针” [Shaker]&lt;/font&gt;和&lt;font color="#020202"&gt;“伸手及月” [Far Caress]&lt;/font&gt;，按切换键切换。
 &lt;font color="#110d12"&gt;“咒针”&lt;/font&gt;是由遗物&lt;font color="#110d12"&gt;“咒钢”&lt;/font&gt;打造的箭矢，拥有较强的诅咒效果，可造成剧毒伤害，并对人类敌人造成破击伤害。
-&lt;font color="#020202"&gt;“伸手及月”&lt;/font&gt;是由深渊原生生物加工制成的粘稠的黑色物质，形如蛛网，可以造成腐蚀类附加伤害，并阻碍敌方行动。</description>
+&lt;font color="#020202"&gt;“伸手及月”&lt;/font&gt;是由深渊原生生物加工制成的粘稠的黑色物质，形如蛛网，可以造成腐蚀类附加伤害，并阻碍敌方行动，在5秒内使得敌方行走速度降低90%。</description>
       <cd>3000</cd>
       <mp>100</mp>
     </skill>
@@ -2329,7 +2329,7 @@
           <cycleRoutines>挂载披风周期</cycleRoutines>
         </cycle>
       </attr_披风>
-      <attr_喷气背包>
+      <attr_防具技能>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -2344,7 +2344,7 @@
             <y>-80</y>
           </cycleParam>
         </cycle>
-      </attr_喷气背包>
+      </attr_防具技能>
     </lifecycle>
   </item>
   <item>

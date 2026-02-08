@@ -118,7 +118,28 @@ _root.主动战技函数.空手.贯空天盖战技 = {初始化: null,
                         Z轴攻击范围: 50,
                         击倒率:2,
                         伤害类型:"破击",
-                        魔法伤害属性:"蚀"
+                        魔法伤害属性:"蚀",
+                        击中时触发函数:function(){
+                            var 暂存敌人 = this.命中对象;
+                            var childBuffs:Array = [
+                                new PodBuff("行走X速度", BuffCalculationType.MULT_POSITIVE, 0.1)
+                            ];
+
+                            // 时间限制
+                            var timeLimitComp:TimeLimitComponent = new TimeLimitComponent(150);
+                            var components:Array = [timeLimitComp];
+
+                            var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
+                            暂存敌人.buffManager.addBuff(metaBuff, "伸手及月");
+                            if (!this.已爆炸)
+                            {
+                                this.已爆炸 = true;
+                                //this.伤害类型 = "真伤";
+                                this.xmov = 0;
+                                this.ymov = 0;
+                                gotoAndPlay("爆炸");
+                            }
+                        }
                     };
                     if(自机.性别 == "女"){
                         自机.手部发射子弹属性.声音 = "伸手及月无人声.wav";

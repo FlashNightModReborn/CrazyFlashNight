@@ -2767,7 +2767,7 @@
       </magicdefence>
     </data>
     <lifecycle>
-      <attr_0>
+      <attr_防具技能>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -2782,7 +2782,7 @@
             <y>-80</y>
           </cycleParam>
         </cycle>
-      </attr_0>
+      </attr_防具技能>
     </lifecycle>
   </item>
   <item>
@@ -2917,7 +2917,7 @@
       </magicdefence>
     </data>
     <lifecycle>
-      <attr_0>
+      <attr_防具技能>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -2932,7 +2932,7 @@
             <y>-80</y>
           </cycleParam>
         </cycle>
-      </attr_0>
+      </attr_防具技能>
     </lifecycle>
   </item>
   <item>
@@ -3395,7 +3395,7 @@
       </magicdefence>
     </data>
     <lifecycle>
-      <attr_0>
+      <attr_防具技能>
         <init>
           <initRoutines>喷气背包初始化</initRoutines>
           <initParam>
@@ -3410,7 +3410,7 @@
             <y>-80</y>
           </cycleParam>
         </cycle>
-      </attr_0>
+      </attr_防具技能>
     </lifecycle>
   </item>
   <item>
@@ -3952,6 +3952,7 @@
     <description>由工匠仿照末日前知名ip而制造的高性能战衣，从而一定程度提升了销量。
 采用先进生体材料制作，可显著提升肌肉力量。韧性与延展性优良，有效兼顾防护能力与灵活性。
 该护服不具有自我意识，也不会影响穿戴者的精神状态，请放心使用。但已知对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。</description>
+    <skill>&lt;font color="#66ccff"&gt;【发射蛛丝】&lt;/font&gt;按飞行键可以发射蛛丝，使得命中的敌人行走速度降低90%，持续3秒，每张地图可使用五次。</skill>
     <data>
       <level>30</level>
       <weight>2</weight>
@@ -3966,6 +3967,26 @@
         <热>-1</热>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_防具技能>
+        <init>
+          <initRoutines>蜘蛛侠蛛丝初始化</initRoutines>
+          <initParam>
+            <cd>1000</cd>
+            <limit>5</limit>
+            <frames>90</frames>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>蜘蛛侠蛛丝周期</cycleRoutines>
+          <initParam>
+            <cd>1000</cd>
+            <limit>5</limit>
+            <frames>90</frames>
+          </initParam>
+        </cycle>
+      </attr_防具技能>
+    </lifecycle>
   </item>
   <item>
     <name>毒液蜘蛛侠头套</name>
