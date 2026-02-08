@@ -63,8 +63,8 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 ✅ Monotonic 基本前进: qLeft=26 PASS (expected=3, actual=3)
 ✅ 第一帧推进到右侧 PASS
 ✅ 新帧重置从0开始 PASS (expected=0, actual=0)
-✅ 单调模式应与基线一致 i=0 PASS (expected=2, actual=2)
-✅ 单调模式应与基线一致 i=1 PASS (expected=4, actual=4)
+✅ 单调模式应与基线一致 i=0 PASS (expected=1, actual=1)
+✅ 单调模式应与基线一致 i=1 PASS (expected=3, actual=3)
 ✅ 单调模式应与基线一致 i=2 PASS (expected=6, actual=6)
 ✅ 单调模式应与基线一致 i=3 PASS (expected=8, actual=8)
 ✅ 单调模式应与基线一致 i=4 PASS (expected=10, actual=10)
@@ -72,7 +72,7 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 ✅ 单调模式应与基线一致 i=6 PASS (expected=14, actual=14)
 ✅ 单调模式应与基线一致 i=7 PASS (expected=16, actual=16)
 ✅ 单调模式应与基线一致 i=8 PASS (expected=18, actual=18)
-✅ 单调模式应与基线一致 i=9 PASS (expected=21, actual=21)
+✅ 单调模式应与基线一致 i=9 PASS (expected=20, actual=20)
 ✅ 乱序查询也应保持与基线一致 PASS (expected=1, actual=1)
 
 📏 执行范围查询测试...
@@ -150,17 +150,17 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 ✅ 极值血量计数 PASS
 
 ⚡ 执行性能基准测试...
-📊 getTargetsFromIndex性能: 500次调用耗时 4ms
+📊 getTargetsFromIndex性能: 500次调用耗时 5ms
 ✅ getTargetsFromIndex性能达标 PASS
 📊 findNearest性能: 500次调用耗时 2ms
 ✅ findNearest性能达标 PASS
-📊 findFarthest性能: 500次调用耗时 1ms
+📊 findFarthest性能: 500次调用耗时 3ms
 ✅ findFarthest性能达标 PASS
-📊 findInRange性能: 500次调用耗时 9ms
+📊 findInRange性能: 500次调用耗时 10ms
 ✅ findInRange性能达标 PASS
 📊 getCountInRange性能: 500次调用耗时 5ms
 ✅ getCountInRange性能达标 PASS
-📊 getCountByHP性能: 500次调用耗时 17ms
+📊 getCountByHP性能: 500次调用耗时 19ms
 ✅ getCountByHP性能达标 PASS
 📊 缓存优化测试: 100次相似查询耗时 1ms
 ✅ 缓存优化有效 PASS
@@ -196,19 +196,19 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 ✅ 大数据集处理时间合理 PASS
 💾 大数据集测试: 1000个单位，查询耗时 0ms
 ✅ 快速查询压力测试通过 PASS
-⚡ 快速查询测试: 200次混合查询耗时 6ms
+⚡ 快速查询测试: 200次混合查询耗时 5ms
 ✅ 内存压力测试通过 PASS
-🧠 内存使用测试: 20次缓存创建/销毁耗时 93ms
+🧠 内存使用测试: 20次缓存创建/销毁耗时 111ms
 ✅ 极端场景处理 PASS
 🔥 极端场景测试: 3/3 通过
 
 🧮 执行算法优化验证...
 ✅ 二分查找优化有效 PASS
 🔍 二分查找测试: 100次查询耗时 1ms
-🌡️ 缓存优化: 冷查询=0ms, 热查询平均=0ms
+🌡️ 缓存优化: 冷查询=0ms, 热查询平均=0.02ms
 ✅ 缓存优化效果(计时器下限) PASS
 ✅ 小数组线性扫描优化 PASS
-📏 线性扫描测试: 100次小数组查询耗时 1ms
+📏 线性扫描测试: 100次小数组查询耗时 0ms
 
 🔍 执行带过滤器的最近单位查询测试...
 ✅ 基础过滤查询返回结果 PASS (object is not null)
@@ -261,15 +261,15 @@ org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest.runAll();
 通过: 207 ✅
 失败: 0 ❌
 成功率: 100%
-总耗时: 633ms
+总耗时: 749ms
 
 ⚡ 性能基准报告:
-  getTargetsFromIndex: 0.008ms/次 (500次测试)
+  getTargetsFromIndex: 0.01ms/次 (500次测试)
   findNearest: 0.004ms/次 (500次测试)
-  findFarthest: 0.002ms/次 (500次测试)
-  findInRange: 0.018ms/次 (500次测试)
+  findFarthest: 0.006ms/次 (500次测试)
+  findInRange: 0.02ms/次 (500次测试)
   getCountInRange: 0.01ms/次 (500次测试)
-  getCountByHP: 0.034ms/次 (500次测试)
+  getCountByHP: 0.038ms/次 (500次测试)
 
 🎯 缓存当前状态:
 === SortedUnitCache Status ===

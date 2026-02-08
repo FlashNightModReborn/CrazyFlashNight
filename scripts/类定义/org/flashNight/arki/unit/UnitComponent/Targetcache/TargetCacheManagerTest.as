@@ -1125,7 +1125,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
         var managerConfig:Object = TargetCacheManager.getSystemConfig();
         var providerConfig:Object = TargetCacheProvider.getConfig();
         
-        assertEquals("委托配置-ARC容量", providerConfig.arcCacheCapacity, managerConfig.arcCacheCapacity, 0);
+        assertEquals("委托配置-缓存容量", providerConfig.arcCacheCapacity, managerConfig.arcCacheCapacity, 0);
         assertTrue("委托配置-版本检查", providerConfig.versionCheckEnabled == managerConfig.versionCheckEnabled);
     }
     

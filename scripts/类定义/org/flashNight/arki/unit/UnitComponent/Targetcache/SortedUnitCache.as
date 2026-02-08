@@ -445,22 +445,20 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         var idx:Number = this.nameIndex[target._name];
         
         if (idx == undefined) {
-            // 目标不在列表中，全表扫描
-            var minDist:Number = Number.MAX_VALUE;
-            var nearest:Object = null;
-            
-            for (var i:Number = 0; i < listLength; i++) {
-                var unit:Object = this.data[i];
-                if (unit == target) continue;
-                
-                var d:Number = this.leftValues[i] - targetX;
-                var absD:Number = (d < 0 ? -d : d);
-                if (absD < minDist) { 
-                    minDist = absD;
-                    nearest = unit;
-                }
-            }
-            return nearest;
+            // 目标不在列表中，利用二分查找定位后只检查相邻单位 O(log n)
+            var insertIdx:Number = _findInsertIndex(targetX);
+
+            var leftObj2:Object  = (insertIdx > 0) ? this.data[insertIdx - 1] : null;
+            var rightObj2:Object = (insertIdx < listLength) ? this.data[insertIdx] : null;
+
+            var diffL2:Number = leftObj2 ? (this.leftValues[insertIdx - 1] - targetX) : 0;
+            var dl2:Number    = leftObj2 ? (diffL2 < 0 ? -diffL2 : diffL2) : Number.MAX_VALUE;
+
+            var diffR2:Number = rightObj2 ? (this.leftValues[insertIdx] - targetX) : 0;
+            var dr2:Number    = rightObj2 ? (diffR2 < 0 ? -diffR2 : diffR2) : Number.MAX_VALUE;
+
+            if (dl2 == Number.MAX_VALUE && dr2 == Number.MAX_VALUE) return null;
+            return (dl2 <= dr2) ? leftObj2 : rightObj2;
         }
 
         // 目标在列表中，只需检查相邻单位
@@ -624,22 +622,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         var idx:Number = this.nameIndex[target._name];
         
         if (idx == undefined) {
-            // 目标不在列表中，全表扫描
-            var maxDist:Number = -1;
-            var farthest:Object = null;
-            
-            for (var i:Number = 0; i < listLength; i++) {
-                var unit:Object = this.data[i];
-                if (unit == target) continue;
-                
-                var d:Number = this.leftValues[i] - targetX;
-                var absD:Number = (d < 0 ? -d : d);
-                if (absD > maxDist) { 
-                    maxDist = absD;
-                    farthest = unit;
-                }
-            }
-            return farthest;
+            // 目标不在列表中，最远单位必定是首元素或尾元素 O(1)
+            var firstObj:Object = this.data[0];
+            var lastObj:Object  = this.data[listLength - 1];
+
+            var d1:Number = this.leftValues[0] - targetX;
+            var d2:Number = this.leftValues[listLength - 1] - targetX;
+
+            return ((d1 < 0 ? -d1 : d1) >= (d2 < 0 ? -d2 : d2)) ? firstObj : lastObj;
         }
 
         // O(1)核心算法：最远单位必定是首元素或尾元素

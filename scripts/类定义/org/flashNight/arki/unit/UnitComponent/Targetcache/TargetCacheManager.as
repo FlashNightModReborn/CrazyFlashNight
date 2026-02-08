@@ -45,8 +45,55 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     /**
      * 静态复用对象，减少GC压力
      * 用于空结果的返回
+     * 注意：调用方不得修改返回的 data 数组或持有引用
      */
     private static var _emptyResult:Object = { data: [], startIndex: 0 };
+
+    // ========================================================================
+    // 静态过滤器（避免高频路径重复创建闭包，减少GC压力）
+    // ========================================================================
+
+    /** 过滤器参数槽 - 在调用过滤器前设置，由过滤器读取（单线程安全） */
+    private static var _p_threat:Number;
+    private static var _p_unitType:String;
+    private static var _p_buffName:String;
+    private static var _p_maxDist:Number;
+    private static var _p_innerFilter:Function;
+
+    /** 低血量过滤器（血量 < 50%） */
+    private static function _fn_lowHP(u:Object, target:Object, distance:Number):Boolean {
+        return (u.hp / u.maxhp) < 0.5;
+    }
+
+    /** 受伤过滤器（血量 < 100%） */
+    private static function _fn_injured(u:Object, target:Object, distance:Number):Boolean {
+        return u.hp < u.maxhp;
+    }
+
+    /** 有效目标过滤器（排除地图元件） */
+    private static function _fn_validTarget(u:Object, target:Object, distance:Number):Boolean {
+        return !u.element;
+    }
+
+    /** 威胁过滤器（读取 _p_threat 参数槽） */
+    private static function _fn_threat(u:Object, target:Object, distance:Number):Boolean {
+        return u.threat != undefined && u.threat >= _p_threat;
+    }
+
+    /** 单位类型过滤器（读取 _p_unitType 参数槽） */
+    private static function _fn_unitType(u:Object, target:Object, distance:Number):Boolean {
+        return u.unitType == _p_unitType || u._name.indexOf(_p_unitType) != -1;
+    }
+
+    /** Buff过滤器（读取 _p_buffName 参数槽） */
+    private static function _fn_buff(u:Object, target:Object, distance:Number):Boolean {
+        return u.buffs && u.buffs[_p_buffName] != undefined;
+    }
+
+    /** 距离限制过滤器（读取 _p_maxDist 和 _p_innerFilter 参数槽） */
+    private static function _fn_distanceFilter(u:Object, t:Object, distance:Number):Boolean {
+        return distance <= _p_maxDist && _p_innerFilter(u, t, distance);
+    }
 
     // ========================================================================
     // 初始化方法
@@ -1044,11 +1091,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @return {Object} 最近的威胁敌人，不存在返回null
      */
     public static function findNearestThreateningEnemy(t:Object, interval:Number, threatThreshold:Number, searchLimit:Number):Object {
-        var threatFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
-            return u.threat != undefined && u.threat >= threatThreshold;
-        };
-        // _root.发布消息(t._name, "findNearestThreateningEnemy");
-        return findNearestEnemyWithFilter(t, interval, threatFilter, searchLimit, undefined);
+        _p_threat = threatThreshold;
+        return findNearestEnemyWithFilter(t, interval, _fn_threat, searchLimit, undefined);
     }
 
     /**
@@ -1059,10 +1103,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @return {Object} 最近的低血量敌人，不存在返回null
      */
     public static function findNearestLowHPEnemy(t:Object, interval:Number, searchLimit:Number):Object {
-        var lowHPFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
-            return (u.hp / u.maxhp) < 0.5;
-        };
-        return findNearestEnemyWithFilter(t, interval, lowHPFilter, searchLimit, undefined);
+        return findNearestEnemyWithFilter(t, interval, _fn_lowHP, searchLimit, undefined);
     }
 
     /**
@@ -1073,10 +1114,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @return {Object} 最近的受伤友军，不存在返回null
      */
     public static function findNearestInjuredAlly(t:Object, interval:Number, searchLimit:Number):Object {
-        var injuredFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
-            return u.hp < u.maxhp;
-        };
-        return findNearestAllyWithFilter(t, interval, injuredFilter, searchLimit, undefined);
+        return findNearestAllyWithFilter(t, interval, _fn_injured, searchLimit, undefined);
     }
 
     /**
@@ -1091,10 +1129,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     public static function findNearestUnitByType(
         t:Object, interval:Number, requestType:String, unitType:String, searchLimit:Number
     ):Object {
-        var typeFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
-            return u.unitType == unitType || u._name.indexOf(unitType) != -1;
-        };
-        return findNearestTargetWithFilter(t, interval, requestType, typeFilter, searchLimit, undefined);
+        _p_unitType = unitType;
+        return findNearestTargetWithFilter(t, interval, requestType, _fn_unitType, searchLimit, undefined);
     }
 
     /**
@@ -1106,10 +1142,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @return {Object} 最近的强化敌人，不存在返回null
      */
     public static function findNearestBuffedEnemy(t:Object, interval:Number, buffName:String, searchLimit:Number):Object {
-        var buffFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
-            return u.buffs && u.buffs[buffName] != undefined;
-        };
-        return findNearestEnemyWithFilter(t, interval, buffFilter, searchLimit, undefined);
+        _p_buffName = buffName;
+        return findNearestEnemyWithFilter(t, interval, _fn_buff, searchLimit, undefined);
     }
 
     /**
@@ -1130,10 +1164,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         maxDistance:Number,
         searchLimit:Number
     ):Object {
-        var distanceFilter:Function = function(u:Object, t:Object, distance:Number):Boolean {
-            return distance <= maxDistance && filter(u, t, distance);
-        };
-        return findNearestTargetWithFilter(target, updateInterval, requestType, distanceFilter, searchLimit, maxDistance);
+        _p_maxDist = maxDistance;
+        _p_innerFilter = filter;
+        return findNearestTargetWithFilter(target, updateInterval, requestType, _fn_distanceFilter, searchLimit, maxDistance);
     }
 
     // ========================================================================
@@ -1232,10 +1265,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @return {Object} 最近的威胁敌人，如果没有则返回最近敌人
      */
     public static function findNearestThreateningEnemyWithFallback(t:Object, interval:Number, threatThreshold:Number, searchLimit:Number):Object {
-        var threatFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
-            return u.threat != undefined && u.threat >= threatThreshold;
-        };
-        return findNearestEnemyWithFallback(t, interval, threatFilter, searchLimit, undefined);
+        var result:Object = findNearestThreateningEnemy(t, interval, threatThreshold, searchLimit);
+        return (result != null) ? result : findNearestEnemy(t, interval);
     }
 
     /**
@@ -1246,10 +1277,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @return {Object} 最近的低血量敌人，如果没有则返回最近敌人
      */
     public static function findNearestLowHPEnemyWithFallback(t:Object, interval:Number, searchLimit:Number):Object {
-        var lowHPFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
-            return (u.hp / u.maxhp) < 0.5;
-        };
-        return findNearestEnemyWithFallback(t, interval, lowHPFilter, searchLimit, undefined);
+        var result:Object = findNearestLowHPEnemy(t, interval, searchLimit);
+        return (result != null) ? result : findNearestEnemy(t, interval);
     }
 
     /**
@@ -1260,10 +1289,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @return {Object} 最近的受伤友军，如果没有则返回最近友军
      */
     public static function findNearestInjuredAllyWithFallback(t:Object, interval:Number, searchLimit:Number):Object {
-        var injuredFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
-            return u.hp < u.maxhp;
-        };
-        return findNearestAllyWithFallback(t, interval, injuredFilter, searchLimit, undefined);
+        var result:Object = findNearestInjuredAlly(t, interval, searchLimit);
+        return (result != null) ? result : findNearestAlly(t, interval);
     }
 
     /**
@@ -1278,10 +1305,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     public static function findNearestUnitByTypeWithFallback(
         t:Object, interval:Number, requestType:String, unitType:String, searchLimit:Number
     ):Object {
-        var typeFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
-            return u.unitType == unitType || u._name.indexOf(unitType) != -1;
-        };
-        return findNearestTargetWithFallback(t, interval, requestType, typeFilter, searchLimit, undefined);
+        var result:Object = findNearestUnitByType(t, interval, requestType, unitType, searchLimit);
+        return (result != null) ? result : findNearestTarget(t, interval, requestType);
     }
 
     /**
@@ -1293,10 +1318,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @return {Object} 最近的强化敌人，如果没有则返回最近敌人
      */
     public static function findNearestBuffedEnemyWithFallback(t:Object, interval:Number, buffName:String, searchLimit:Number):Object {
-        var buffFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
-            return u.buffs && u.buffs[buffName] != undefined;
-        };
-        return findNearestEnemyWithFallback(t, interval, buffFilter, searchLimit, undefined);
+        var result:Object = findNearestBuffedEnemy(t, interval, buffName, searchLimit);
+        return (result != null) ? result : findNearestEnemy(t, interval);
     }
 
     // ========================================================================
@@ -1315,18 +1338,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     public static function findValidEnemyForAI(t:Object, interval:Number, preferredThreat:Number):Object {
         // 第一步：使用原有逻辑查找威胁敌人（不做额外过滤）
         var target:Object = findNearestThreateningEnemy(t, interval, preferredThreat);
-        
-        // 第二步：找不到时使用兜底策略，过滤地图元件
+
+        // 第二步：找不到时使用兜底策略，过滤地图元件（使用静态过滤器，无闭包分配）
         if (!target) {
-            // 过滤地图元件的过滤器
-            var validTargetFilter:Function = function(u:Object, target:Object, distance:Number):Boolean {
-                // 排除带element属性的地图元件
-                return !u.element;
-            };
-            // _root.发布消息(t._name, "findValidEnemyForAI: Fallback to valid enemy search");
-            target = findNearestEnemyWithFilter(t, interval, validTargetFilter, undefined, undefined);
+            target = findNearestEnemyWithFilter(t, interval, _fn_validTarget, undefined, undefined);
         }
-        
+
         return target;
     }
     

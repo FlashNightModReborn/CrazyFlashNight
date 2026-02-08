@@ -436,10 +436,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      * 【重构】支持基于阵营的清理
      */
     public static function clearCache(requestType:String):Void {
-        TargetCacheUpdater.resetVersions();
         if (requestType) {
+            // 按类型清理：不重置全局版本号，只清除对应注册表条目
             clearCacheByType(requestType);
         } else {
+            // 全量清理（如重启场景）：重置所有版本号 + 清空注册表
+            TargetCacheUpdater.resetVersions();
             _cacheRegistry = {};
         }
     }
@@ -478,7 +480,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      * 强制刷新指定类型的缓存
      */
     public static function invalidateCache(requestType:String):Void {
-        TargetCacheUpdater.resetVersions();
+        // 只清除对应类型的注册表条目，不重置全局版本号
+        // 版本号属于数据变更追踪，不应被强制失效操作干扰
         clearCacheByType(requestType);
     }
 
@@ -492,16 +495,15 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      */
     public static function addUnit(unit:Object):Void {
         _updater.addUnit(unit);
-        invalidateAllCaches();
+        // 不再调用 invalidateAllCaches()：版本号机制会精细化驱动对应阵营缓存失效
     }
-    
+
     /**
      * 移除单位时更新版本号
      * 【重构】支持阵营系统
      */
     public static function removeUnit(unit:Object):Void {
         _updater.removeUnit(unit);
-        invalidateAllCaches();
     }
 
     /**
@@ -510,7 +512,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      */
     public static function addUnits(units:Array):Void {
         _updater.addUnits(units);
-        invalidateAllCaches();
     }
 
     /**
@@ -519,7 +520,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      */
     public static function removeUnits(units:Array):Void {
         _updater.removeUnits(units);
-        invalidateAllCaches();
     }
 
     // ========================================================================

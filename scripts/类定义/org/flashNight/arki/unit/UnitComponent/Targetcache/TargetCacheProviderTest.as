@@ -3,29 +3,21 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater;
 
 /**
- * 完整测试套件：TargetCacheProvider ARC增强版
- * =============================================
+ * 完整测试套件：TargetCacheProvider（Object Map + LRU 版）
+ * ==========================================================
  * 特性：
- * - 100% 方法覆盖率测试（包括ARC算法特有功能）
- * - ARC自适应替换缓存算法深度验证
- * - ARC队列状态和幽灵缓存机制测试
+ * - 100% 方法覆盖率测试
  * - 强制刷新阈值和版本检查机制验证
- * - 增强版统计信息准确性验证（包含ARC特有指标）
- * - 健康检查和诊断测试（适配ARC特性）
- * - 配置管理验证（ARC专用参数）
- * - 性能基准测试（ARC算法性能特征）
+ * - 统计信息准确性验证
+ * - 健康检查和诊断测试
+ * - 配置管理验证
+ * - 性能基准测试
  * - 集成测试（与TargetCacheUpdater/SortedUnitCache协作）
- * - 边界条件与异常处理测试（ARC边界场景）
- * - 内存管理和ARC优化建议测试
+ * - 边界条件与异常处理测试
+ * - 内存管理和优化建议测试
+ * - 容量限制和LRU自动淘汰机制
  * - 一句启动设计
- * 
- * ARC算法测试重点：
- * - T1/T2队列的自适应平衡机制
- * - B1/B2幽灵队列的记忆功能
- * - 不同访问模式下的算法适应性
- * - 容量限制和自动淘汰机制
- * - 冷热数据的智能识别和管理
- * 
+ *
  * 使用方法：
  * org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest.runAll();
  */
@@ -56,7 +48,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
      */
     public static function runAll():Void {
         trace("================================================================================");
-        trace("🚀 TargetCacheProvider ARC增强版 完整测试套件启动");
+        trace("🚀 TargetCacheProvider 完整测试套件启动");
         trace("================================================================================");
         
         var startTime:Number = getTimer();
@@ -489,7 +481,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         var originalFrame:Number = cache.lastUpdatedFrame;
         var originalCacheCount:Number = TargetCacheProvider.getCacheCount();
         
-        // 失效所有缓存（ARC版本会清空整个缓存）
+        // 失效所有缓存
         TargetCacheProvider.invalidateAllCaches();
         assertEquals("失效后缓存被清空", 0, TargetCacheProvider.getCacheCount(), 0);
         
@@ -640,7 +632,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
     }
 
     /**
-     * 兼容接口 getARCCacheDetails：B1/B2 ghost 队列在 Object Map 下始终为 0
+     * 兼容接口 getARCCacheDetails：验证返回结构的基本合理性
      */
     private static function testCompatDetailsInterface():Void {
         TargetCacheProvider.clearCache();
@@ -650,10 +642,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
 
         var details:Object = TargetCacheProvider.getARCCacheDetails();
         assertNotNull("兼容接口返回对象", details);
-        assertEquals("B1_size始终为0", 0, details.B1_size, 0);
-        assertEquals("B2_size始终为0", 0, details.B2_size, 0);
         assertTrue("total_cached_items>0", details.total_cached_items > 0);
-        assertTrue("T1或T2有项目", details.T1_size + details.T2_size > 0);
+        assertTrue("缓存项目不超过容量", details.total_cached_items <= details.capacity);
     }
     
     private static function testForceRefreshThreshold():Void {
@@ -708,19 +698,19 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
     }
     
     // ========================================================================
-    // 配置管理测试（ARC增强版）
+    // 配置管理测试
     // ========================================================================
     
     private static function runConfigurationManagementTests():Void {
         trace("\n⚙️ 执行配置管理测试...");
         
-        testARCConfigurationSetting();
+        testConfigurationSetting();
         testConfigurationValidation();
         testConfigurationRetrieval();
         testReinitializeFunction();
     }
     
-    private static function testARCConfigurationSetting():Void {
+    private static function testConfigurationSetting():Void {
         var originalConfig:Object = TargetCacheProvider.getConfig();
         
         var newConfig:Object = {
@@ -891,18 +881,18 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
     }
     
     // ========================================================================
-    // 健康检查和诊断测试（ARC增强版）
+    // 健康检查和诊断测试
     // ========================================================================
     
     private static function runHealthCheckTests():Void {
         trace("\n🏥 执行健康检查和诊断测试...");
         
         testHealthCheckNormal();
-        testARCHealthChecks();
+        testCacheHealthChecks();
         testHealthCheckWarnings();
         testOptimizationRecommendations();
         testStatusReporting();
-        testARCDetailsReporting();
+        testCacheDetailsReporting();
     }
     
     private static function testHealthCheckNormal():Void {
@@ -930,34 +920,23 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         assertTrue("正常情况下健康", health.healthy);
     }
     
-    private static function testARCHealthChecks():Void {
+    private static function testCacheHealthChecks():Void {
         TargetCacheProvider.clearCache();
         TargetCacheProvider.setConfig({
             arcCacheCapacity: 10
         });
-        
-        // 创建一些缓存以便进行ARC检查
+
+        // 创建一些缓存以便进行健康检查
         var targets:Array = [];
         for (var i:Number = 0; i < 5; i++) {
             targets[i] = createTestTarget(i % 2 == 0);
-            targets[i]._name = "arc_health_target_" + i;
+            targets[i]._name = "cache_health_target_" + i;
             TargetCacheProvider.getCache("敌人", targets[i], 10);
         }
-        
+
         var health:Object = TargetCacheProvider.performHealthCheck();
-        
-        // ARC特有的健康检查应该正常通过
-        assertTrue("ARC缓存健康检查通过", health.healthy);
-        
-        // 验证不会有ARC相关的错误
-        var hasARCErrors:Boolean = false;
-        for (var j:Number = 0; j < health.errors.length; j++) {
-            if (health.errors[j].indexOf("ARC") >= 0) {
-                hasARCErrors = true;
-                break;
-            }
-        }
-        assertTrue("正常情况下无ARC错误", !hasARCErrors);
+        assertTrue("缓存健康检查通过", health.healthy);
+        assertTrue("正常情况下无错误", health.errors.length == 0);
     }
     
     private static function testHealthCheckWarnings():Void {
@@ -1013,7 +992,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         assertTrue("getOptimizationRecommendations返回数组", recommendations instanceof Array);
         assertTrue("有足够统计数据时有建议", recommendations.length >= 0);
         
-        // 测试ARC特有的优化建议
+        // 测试不同容量配置下的优化建议
         TargetCacheProvider.setConfig({
             arcCacheCapacity: 5  // 很小的容量
         });
@@ -1036,45 +1015,32 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         assertNotNull("getDetailedStatusReport返回字符串", report);
         assertTrue("报告不为空", report.length > 0);
         
-        // 验证报告包含ARC增强版的关键部分
+        // 验证报告包含关键部分
         assertTrue("报告包含性能统计", report.indexOf("性能统计:") >= 0 || report.indexOf("Performance Stats:") >= 0);
         assertTrue("报告包含缓存池状态", report.indexOf("缓存池状态:") >= 0 || report.indexOf("Cache Status:") >= 0);
-        assertTrue("报告包含ARC算法状态", report.indexOf("ARC算法状态:") >= 0 || report.indexOf("ARC") >= 0);
         assertTrue("报告包含配置信息", report.indexOf("配置信息:") >= 0 || report.indexOf("Configuration:") >= 0);
         assertTrue("报告包含数据一致性", report.indexOf("数据一致性:") >= 0 || report.indexOf("consistency") >= 0);
     }
     
-    private static function testARCDetailsReporting():Void {
+    private static function testCacheDetailsReporting():Void {
         TargetCacheProvider.clearCache();
-        
-        // 创建一些缓存以产生ARC详细信息
+
+        // 创建一些缓存以产生详细信息
         var targets:Array = [];
         for (var i:Number = 0; i < 3; i++) {
             targets[i] = createTestTarget(i % 2 == 0);
-            targets[i]._name = "arc_detail_target_" + i;
+            targets[i]._name = "detail_target_" + i;
             TargetCacheProvider.getCache("敌人", targets[i], 10);
         }
-        
-        var arcDetails:Object = TargetCacheProvider.getARCCacheDetails();
-        
-        assertNotNull("getARCCacheDetails返回对象", arcDetails);
-        assertTrue("包含容量信息", arcDetails.hasOwnProperty("capacity"));
-        assertTrue("包含T1队列", arcDetails.hasOwnProperty("T1_queue"));
-        assertTrue("包含T2队列", arcDetails.hasOwnProperty("T2_queue"));
-        assertTrue("包含B1队列", arcDetails.hasOwnProperty("B1_queue"));
-        assertTrue("包含B2队列", arcDetails.hasOwnProperty("B2_queue"));
-        assertTrue("包含队列大小", arcDetails.hasOwnProperty("T1_size"));
-        assertTrue("包含总缓存项目", arcDetails.hasOwnProperty("total_cached_items"));
-        
-        // 验证ARC队列的合理性
-        assertTrue("T1队列大小非负", arcDetails.T1_size >= 0);
-        assertTrue("T2队列大小非负", arcDetails.T2_size >= 0);
-        assertTrue("B1队列大小非负", arcDetails.B1_size >= 0);
-        assertTrue("B2队列大小非负", arcDetails.B2_size >= 0);
-        
-        var totalCached:Number = arcDetails.T1_size + arcDetails.T2_size;
-        assertEquals("总缓存项目计算正确", totalCached, arcDetails.total_cached_items, 0);
-        assertTrue("缓存项目不超过容量", totalCached <= arcDetails.capacity);
+
+        var details:Object = TargetCacheProvider.getARCCacheDetails();
+
+        assertNotNull("getARCCacheDetails返回对象", details);
+        assertTrue("包含容量信息", details.hasOwnProperty("capacity"));
+        assertTrue("包含总缓存项目", details.hasOwnProperty("total_cached_items"));
+
+        assertEquals("总缓存项目计算正确", details.total_cached_items, details.T1_size + details.T2_size, 0);
+        assertTrue("缓存项目不超过容量", details.total_cached_items <= details.capacity);
     }
     
     // ========================================================================
@@ -1265,35 +1231,36 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         // 1. 初始请求
         var cache1:SortedUnitCache = TargetCacheProvider.getCache("敌人", target, 20);
         assertNotNull("端到端流程-初始缓存", cache1);
-        
+        var initialFrame:Number = cache1.lastUpdatedFrame; // 保存原始帧号（更新路径会就地修改同一对象）
+
         // 2. 重复请求（命中）
         var cache2:SortedUnitCache = TargetCacheProvider.getCache("敌人", target, 20);
         assertTrue("端到端流程-缓存命中", cache1 === cache2);
-        
+
         // 3. 添加新单位
         var newUnit:Object = createTestTarget(false);
         TargetCacheProvider.addUnit(newUnit);
-        
+
         // 4. 时间推进，缓存过期
         mockFrameTimer.advanceFrame(25);
-        
-        // 5. 再次请求（更新）
+
+        // 5. 再次请求（版本不匹配 → 就地更新同一 SortedUnitCache 实例）
         var cache3:SortedUnitCache = TargetCacheProvider.getCache("敌人", target, 20);
-        assertTrue("端到端流程-缓存更新", cache3.lastUpdatedFrame > cache1.lastUpdatedFrame);
+        assertTrue("端到端流程-缓存更新", cache3.lastUpdatedFrame > initialFrame);
         
         // 6. 验证统计信息
         var stats:Object = TargetCacheProvider.getStats();
         assertEquals("端到端流程-请求统计", 3, stats.totalRequests, 0);
         assertEquals("端到端流程-命中统计", 1, stats.cacheHits, 0);
         
-        // 根据 invalidateAllCaches 的行为调整期望值
-        // 因为 addUnit 清空了缓存，所以第三次访问是第二次创建，而不是更新。
-        assertEquals("端到端流程-创建统计", 2, stats.cacheCreations, 0); 
-        assertEquals("端到端流程-更新统计", 0, stats.cacheUpdates, 0);
+        // addUnit 不再调用 invalidateAllCaches()，版本号机制精细化驱动缓存失效。
+        // 第三次访问时缓存条目仍在注册表中，因版本不匹配走更新路径而非重建。
+        assertEquals("端到端流程-创建统计", 1, stats.cacheCreations, 0);
+        assertEquals("端到端流程-更新统计", 1, stats.cacheUpdates, 0);
     }
     
     // ========================================================================
-    // 边界条件测试（ARC增强版）
+    // 边界条件测试
     // ========================================================================
     
     private static function runBoundaryConditionTests():Void {
@@ -1302,7 +1269,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         testEmptyWorldScenario();
         testNullParameterHandling();
         testExtremeCacheScenarios();
-        testARCBoundaryConditions();
+        testCapacityBoundaryConditions();
         testExceptionHandling();
     }
     
@@ -1366,9 +1333,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         var cache1:SortedUnitCache = TargetCacheProvider.getCache("敌人", target1, 10);
         assertEquals("极限场景-第一个缓存", 1, TargetCacheProvider.getCacheCount(), 0);
         
-        // 创建第二个缓存，ARC算法应该自动淘汰
+        // 创建第二个缓存，LRU淘汰应自动清理
         var cache2:SortedUnitCache = TargetCacheProvider.getCache("友军", target2, 10);
-        assertTrue("极限场景-ARC控制缓存数量", TargetCacheProvider.getCacheCount() <= 1);
+        assertTrue("极限场景-LRU控制缓存数量", TargetCacheProvider.getCacheCount() <= 1);
         
         // 测试零更新间隔
         mockFrameTimer.advanceFrame(1);
@@ -1384,8 +1351,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         assertTrue("极大容量配置不崩溃", hugeCacheCount >= 0);
     }
     
-    private static function testARCBoundaryConditions():Void {
-        // 测试ARC特有的边界条件
+    private static function testCapacityBoundaryConditions():Void {
+        // 测试容量相关的边界条件
         
         // 1. 测试容量为0的情况
         try {
@@ -1487,8 +1454,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
             assertTrue("重新初始化异常被正确捕获", true);
         }
         
-        // 5. 测试ARC缓存不可用的情况
-        // 这个测试可能需要根据ARCCache的具体实现来调整
+        // 5. 测试异常状态下健康检查仍可用
         var healthCheck:Object = TargetCacheProvider.performHealthCheck();
         assertNotNull("异常情况下健康检查仍可用", healthCheck);
     }
@@ -1595,11 +1561,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
             }
         }
         
-        trace("\n🎯 TargetCacheProvider ARC增强版当前状态:");
+        trace("\n🎯 TargetCacheProvider 当前状态:");
         trace(TargetCacheProvider.getDetailedStatusReport());
         
         if (failedTests == 0) {
-            trace("\n🎉 所有测试通过！TargetCacheProvider ARC增强版 组件质量优秀！");
+            trace("\n🎉 所有测试通过！TargetCacheProvider 组件质量优秀！");
         } else {
             trace("\n⚠️ 发现 " + failedTests + " 个问题，请检查实现！");
         }
