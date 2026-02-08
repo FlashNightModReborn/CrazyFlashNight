@@ -1,13 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1770486472" lastUniqueIdentifier="79">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1770576141" lastUniqueIdentifier="79">
   <timeline>
     <DOMTimeline name="地图-联合大学">
       <layers>
-        <DOMLayer name="as" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="as" color="#4F80FF" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.关卡地图帧值 = "基地车库";
+_root.关卡地图帧值 = "地图-联合大学";
 _root.配置场景环境信息();]]></script>
               </Actionscript>
               <elements/>
@@ -170,7 +170,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="4" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="4" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -211,7 +211,7 @@ onClipEvent(load){
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/npc购买装置" selected="true" centerPoint3DX="1438.25" centerPoint3DY="410.8">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-购买装置/npc购买装置" centerPoint3DX="1438.25" centerPoint3DY="410.8">
                   <matrix>
                     <Matrix tx="1414.75" ty="427.65"/>
                   </matrix>

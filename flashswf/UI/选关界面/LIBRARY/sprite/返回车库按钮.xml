@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1025" itemID="6597607e-0000083c" lastModified="1714629712" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/返回车库按钮" itemID="6988db66-000009fd" lastModified="1770576791" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="Symbol 1025">
+    <DOMTimeline name="返回车库按钮">
       <layers>
-        <DOMLayer name="Layer 1" color="#3CAFA5">
+        <DOMLayer name="Layer 1" color="#3CAFA5" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -18,17 +18,29 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#70F24C" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#70F24C" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
-                <DOMDynamicText selected="true" fontRenderingMode="device" width="57.5" height="15.55" isSelectable="false">
+                <DOMDynamicText fontRenderingMode="device" width="77.35" height="33.1" isSelectable="false">
                   <matrix>
-                    <Matrix tx="16.5" ty="3.5"/>
+                    <Matrix tx="17.7" ty="3.5"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>返回</characters>
+                      <characters>回</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>A</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>兵团车库</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>
@@ -39,11 +51,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#9AC747">
+        <DOMLayer name="Layer 3" color="#9AC747" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" centerPoint3DX="39" centerPoint3DY="12">
+                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" selected="true" centerPoint3DX="47.15" centerPoint3DY="12">
+                  <matrix>
+                    <Matrix a="1.21025085449219"/>
+                  </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -56,7 +71,10 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" centerPoint3DX="39" centerPoint3DY="12">
+                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" selected="true" centerPoint3DX="47.15" centerPoint3DY="12">
+                  <matrix>
+                    <Matrix a="1.21025085449219"/>
+                  </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -72,9 +90,9 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" centerPoint3DX="39" centerPoint3DY="13">
+                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" selected="true" centerPoint3DX="47.15" centerPoint3DY="13">
                   <matrix>
-                    <Matrix ty="1"/>
+                    <Matrix a="1.21025085449219" ty="1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

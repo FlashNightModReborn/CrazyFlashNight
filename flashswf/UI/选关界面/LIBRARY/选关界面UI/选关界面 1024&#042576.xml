@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1759677322" lastUniqueIdentifier="215">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1770576801" lastUniqueIdentifier="241">
   <timeline>
-    <DOMTimeline name="选关界面 1024*576" currentFrame="22">
+    <DOMTimeline name="选关界面 1024*576" currentFrame="11">
       <layers>
         <DOMLayer name="Labels Layer" color="#5E5DCA">
           <frames>
@@ -88,11 +88,14 @@ gotoAndStop(_root.关卡地图帧值);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" duration="8" keyMode="9728">
+            <DOMFrame index="10" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.全部翻译(this);
 ]]></script>
               </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="7" name="地图-联合大学" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="18" keyMode="9728">
@@ -227,7 +230,7 @@ gotoAndStop(_root.关卡地图帧值);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 118" color="#F7CA97">
+        <DOMLayer name="Layer 118" color="#F7CA97" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -263,7 +266,41 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="8" keyMode="9728">
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" selected="true" centerPoint3DX="952.8" centerPoint3DY="309.55">
+                  <matrix>
+                    <Matrix tx="913.5" ty="297.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 1025" centerPoint3DX="952.8" centerPoint3DY="309.55">
                   <matrix>
@@ -281,6 +318,37 @@ on(release){
    gotoAndStop(1);
    _parent.删除所有();
    _root.场景进入位置名 = "出生地";
+   _root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
+}
+on(press){
+   gotoAndStop(3);
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/返回车库按钮" centerPoint3DX="946.2" centerPoint3DY="358.45">
+                  <matrix>
+                    <Matrix tx="906.9" ty="345.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   _root.全部翻译(this);
+}
+on(release){
+   gotoAndStop(1);
+   _parent.删除所有();
+   _root.场景进入位置名 = "出生地";
+   _root.关卡地图帧值 = "基地车库";
    _root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
 }
 on(press){
@@ -1003,7 +1071,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 120" color="#D8C265" current="true" isSelected="true">
+        <DOMLayer name="Layer 120" color="#D8C265">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -1255,7 +1323,345 @@ onClipEvent(load){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="8" keyMode="9728">
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="735.45" centerPoint3DY="559.1">
+                  <matrix>
+                    <Matrix tx="484.45" ty="336"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("DEATH MATCH入门赛");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="832.5" centerPoint3DY="501.3">
+                  <matrix>
+                    <Matrix tx="581.5" ty="278.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("DEATH MATCH角斗场");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="973.5" centerPoint3DY="406.15">
+                  <matrix>
+                    <Matrix tx="722.5" ty="183.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("堕落城区");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="1096.5" centerPoint3DY="546.1">
+                  <matrix>
+                    <Matrix tx="845.5" ty="323"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("游寇基地");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="807.5" centerPoint3DY="414">
+                  <matrix>
+                    <Matrix tx="556.5" ty="190.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("黑铁会");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="567.8" centerPoint3DY="523">
+                  <matrix>
+                    <Matrix tx="316.8" ty="299.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("摇滚公园");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="1162.5" centerPoint3DY="327.15">
+                  <matrix>
+                    <Matrix tx="911.5" ty="104.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("革命军哨所");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3308" selected="true" centerPoint3DX="502.5" centerPoint3DY="236.55">
+                  <matrix>
+                    <Matrix tx="449.45" ty="217.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("黑铁会总部");
+   }
+}
+onClipEvent(load){
+   显示文字 = "进入黑铁会总部";
+   关卡开放条件 = 25;
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="577.5" centerPoint3DY="436.95">
+                  <matrix>
+                    <Matrix tx="326.5" ty="213.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("堕落城深处");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="948.5" centerPoint3DY="563.1">
+                  <matrix>
+                    <Matrix tx="697.5" ty="340"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("A兵团试炼场");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="398.5" centerPoint3DY="364.4">
+                  <matrix>
+                    <Matrix tx="147.5" ty="141.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("压制摇滚公园");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="442.5" centerPoint3DY="528.75">
+                  <matrix>
+                    <Matrix tx="191.5" ty="305.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("摇滚内战");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-摇滚" selected="true" centerPoint3DX="358.5" centerPoint3DY="452.1">
+                  <matrix>
+                    <Matrix tx="107.5" ty="229"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-摇滚公园");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="-24.5" centerPoint3DY="486.55">
+                  <matrix>
+                    <Matrix tx="-275.5" ty="263.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   当前关卡名 = "pk场";
+   淡出跳转帧 = "pk场";
+   关卡开放条件 = 9;
+   详细 = "可以进行玩家间PK的DEATH MATCH角斗场";
+   关卡可获得奖励品 = [];
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-堕落城酒吧" selected="true" centerPoint3DX="1021.5" centerPoint3DY="320.45">
+                  <matrix>
+                    <Matrix tx="770.5" ty="97.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-堕落城酒吧");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="试炼场深处按钮" selected="true" centerPoint3DX="772.9" centerPoint3DY="439.6">
+                  <matrix>
+                    <Matrix tx="713.8" ty="408.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="59.35" y="30.9"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.删除所有();
+   if(this._currentframe == 1)
+   {
+      _parent.gotoAndStop("试炼场深处");
+   }
+}
+onClipEvent(load){
+   显示文字 = "进入试炼场深处";
+   关卡开放条件 = 88;
+   this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-联合大学" selected="true" centerPoint3DX="163.6" centerPoint3DY="207.45">
+                  <matrix>
+                    <Matrix tx="163.6" ty="68.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="138.7"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-联合大学");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="562.5" centerPoint3DY="341.45">
+                  <matrix>
+                    <Matrix tx="311.5" ty="118.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("大学城周边");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="512.45" centerPoint3DY="284.35">
+                  <matrix>
+                    <Matrix tx="261.45" ty="61.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("堕落城下水道入口");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="外交地图-堕落城商业街" selected="true" centerPoint3DX="626.45" centerPoint3DY="104.05">
+                  <matrix>
+                    <Matrix tx="613.95" ty="104.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-堕落城商业街");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="938.95" centerPoint3DY="303.35">
+                  <matrix>
+                    <Matrix tx="687.95" ty="80.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("堕落城保卫战");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="735.45" centerPoint3DY="559.1">
                   <matrix>
@@ -4027,7 +4433,7 @@ on(rollOut){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!20480 -2111|20480 11442!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111"/>
+                    <Edge fillStyle1="1" edges="!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111!20480 -2111|20480 11442"/>
                   </edges>
                 </DOMShape>
               </elements>
