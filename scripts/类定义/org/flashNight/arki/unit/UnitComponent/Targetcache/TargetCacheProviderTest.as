@@ -559,6 +559,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         testLRUEvictionOrder();
         testCompatDetailsInterface();
         testForceRefreshThreshold();
+        testForceRefreshThresholdResets();
         testVersionCheckMechanism();
     }
 
@@ -669,6 +670,50 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
         assertTrue("强制刷新统计递增", stats.forceRefreshCount > 0);
     }
     
+    /**
+     * 回归测试：createdFrame 在刷新后重置，防止 forceRefreshThreshold 永久触发
+     * 修复前行为：updateExistingCacheValue 不重置 createdFrame，
+     *   导致超过阈值后每次请求都强制刷新
+     * 修复后行为：刷新后 createdFrame 重置为当前帧，
+     *   需要再经过 forceRefreshThreshold 帧才会再次触发
+     */
+    private static function testForceRefreshThresholdResets():Void {
+        TargetCacheProvider.clearCache();
+        TargetCacheProvider.resetStats();
+        TargetCacheProvider.setConfig({
+            forceRefreshThreshold: 50
+        });
+
+        var target:Object = createTestTarget(true);
+
+        // 第1步：创建缓存（createdFrame = 当前帧）
+        var cache1:SortedUnitCache = TargetCacheProvider.getCache("全体", target, 1000);
+        var frame1:Number = cache1.lastUpdatedFrame;
+
+        // 第2步：推进 60 帧（超过阈值50），应触发一次强制刷新
+        mockFrameTimer.advanceFrame(60);
+        TargetCacheProvider.resetStats();
+        var cache2:SortedUnitCache = TargetCacheProvider.getCache("全体", target, 1000);
+        var stats2:Object = TargetCacheProvider.getStats();
+        assertTrue("首次超阈值触发强制刷新", stats2.forceRefreshCount > 0);
+        var frame2:Number = cache2.lastUpdatedFrame;
+        assertTrue("强制刷新后帧数更新", frame2 > frame1);
+
+        // 第3步：仅推进 30 帧（未超阈值50），不应触发强制刷新
+        mockFrameTimer.advanceFrame(30);
+        TargetCacheProvider.resetStats();
+        TargetCacheProvider.getCache("全体", target, 1000);
+        var stats3:Object = TargetCacheProvider.getStats();
+        assertEquals("阈值内不应触发强制刷新", 0, stats3.forceRefreshCount, 0);
+
+        // 第4步：再推进 30 帧（距上次刷新共 60 帧，超过阈值），应再次触发
+        mockFrameTimer.advanceFrame(30);
+        TargetCacheProvider.resetStats();
+        TargetCacheProvider.getCache("全体", target, 1000);
+        var stats4:Object = TargetCacheProvider.getStats();
+        assertTrue("再次超阈值应触发强制刷新", stats4.forceRefreshCount > 0);
+    }
+
     private static function testVersionCheckMechanism():Void {
         TargetCacheProvider.clearCache();
         TargetCacheProvider.setConfig({

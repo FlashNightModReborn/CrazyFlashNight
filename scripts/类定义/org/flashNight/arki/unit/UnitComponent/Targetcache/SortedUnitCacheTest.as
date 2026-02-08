@@ -89,6 +89,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest {
             // === rightMaxValues 前缀最大值测试 ===
             runRightMaxValuesTests();
 
+            // === Bug 修复回归测试 ===
+            runBugfixRegressionTests();
+
         } catch (error:Error) {
             failedTests++;
             trace("❌ 测试执行异常: " + error.message);
@@ -1783,6 +1786,97 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCacheTest {
         var validation:Object = cache.validateData();
         assertTrue("非单调rightValues下validateData通过", validation.isValid);
         assertEquals("无验证错误", 0, validation.errors.length, 0);
+    }
+
+    // ========================================================================
+    // Bug 修复回归测试
+    // ========================================================================
+
+    private static function runBugfixRegressionTests():Void {
+        trace("\n🔧 执行 Bug 修复回归测试...");
+
+        testUpdateDataNullsStaleResults();
+        testHpNormalizationChinese();
+    }
+
+    /**
+     * 回归测试：updateData 断开复用结果对象的旧数据引用
+     * 修复前：持有 getTargetsFromIndex 返回值的调用方在 updateData 后仍指向新数据
+     * 修复后：updateData 将 _resultIndex.data 和 _resultMonotonic.data 置 null
+     */
+    private static function testUpdateDataNullsStaleResults():Void {
+        var units:Array = createTestUnits(5);
+        var cache:SortedUnitCache = createTestCache(units);
+
+        // 执行一次查询，获取复用结果对象的引用
+        var aabb:AABBCollider = new AABBCollider();
+        aabb.left = units[0].aabbCollider.left;
+        aabb.right = units[units.length - 1].aabbCollider.right;
+
+        var result:Object = cache.getTargetsFromIndex(aabb);
+        assertNotNull("查询返回结果", result);
+        assertTrue("结果data指向cache.data", result.data === cache.data);
+
+        // 保存对旧 data 数组的引用
+        var oldData:Array = result.data;
+
+        // 用新数据更新缓存
+        var newUnits:Array = createTestUnits(10);
+        var newCache:SortedUnitCache = createTestCache(newUnits);
+        cache.updateData(
+            newCache.data,
+            newCache.nameIndex,
+            newCache.leftValues,
+            newCache.rightValues,
+            2000
+        );
+
+        // 验证：旧 result 对象的 data 已被置 null（断开引用）
+        assertTrue("updateData后旧result.data被置null", result.data == null);
+
+        // 验证：oldData 仍是旧数据（未被篡改），长度为5
+        assertEquals("旧数组仍保持原长度", 5, oldData.length, 0);
+
+        // 验证：新查询返回新数据
+        var result2:Object = cache.getTargetsFromIndex(aabb);
+        assertTrue("新查询result.data指向新cache.data", result2.data === cache.data);
+        assertEquals("新数据长度为10", 10, result2.data.length, 0);
+    }
+
+    /**
+     * 回归测试：HP 条件归一化支持中文输入
+     * 修复前：getCountByHP/findByHP 的 switch 只识别英文键，中文返回 0
+     * 修复后：_normalizeHP 将中文映射到英文键后进入 switch
+     */
+    private static function testHpNormalizationChinese():Void {
+        // 构造有明确血量分布的测试数据
+        var units:Array = [
+            { _name: "hp_low",   hp: 10,  maxhp: 100, aabbCollider: { left: 0,   right: 20  } },
+            { _name: "hp_mid",   hp: 50,  maxhp: 100, aabbCollider: { left: 100, right: 120 } },
+            { _name: "hp_high",  hp: 90,  maxhp: 100, aabbCollider: { left: 200, right: 220 } },
+            { _name: "hp_full",  hp: 100, maxhp: 100, aabbCollider: { left: 300, right: 320 } }
+        ];
+        var cache:SortedUnitCache = createTestCache(units);
+
+        // 英文键基准
+        var lowEN:Number  = cache.getCountByHP("low", null);
+        var midEN:Number  = cache.getCountByHP("medium", null);
+        var highEN:Number = cache.getCountByHP("high", null);
+        var fullEN:Number = cache.getCountByHP("healthy", null);
+
+        // 中文键应等价
+        assertEquals("低血量==low",   lowEN,  cache.getCountByHP("低血量", null), 0);
+        assertEquals("中血量==medium", midEN,  cache.getCountByHP("中血量", null), 0);
+        assertEquals("高血量==high",   highEN, cache.getCountByHP("高血量", null), 0);
+        assertEquals("满血==healthy",  fullEN, cache.getCountByHP("满血", null), 0);
+
+        // findByHP 同样验证
+        var lowArrEN:Array = cache.findByHP("low", null);
+        var lowArrCN:Array = cache.findByHP("低血量", null);
+        assertEquals("findByHP低血量长度等价", lowArrEN.length, lowArrCN.length, 0);
+
+        // 至少有一个低血量单位（hp=10, ratio=0.1 <= 0.3）
+        assertTrue("英文low至少1个", lowEN >= 1);
     }
 
     // ========================================================================

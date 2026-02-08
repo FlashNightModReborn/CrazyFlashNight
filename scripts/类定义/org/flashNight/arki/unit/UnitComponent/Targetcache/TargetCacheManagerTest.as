@@ -113,6 +113,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
             // === 追加波：clear() 别名 & rightMaxValues 集成 ===
             runClearAliasAndRightMaxValuesTests();
 
+            // === 回归波：Bug 修复回归测试 ===
+            runBugfixRegressionTests();
+
         } catch (error:Error) {
             failedTests++;
             trace("💥 测试执行异常: " + error.message);
@@ -948,16 +951,24 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
     
     private static function testConditionalQueryAccuracy():Void {
         var hero:Object = mockHero;
-        
+
         // 验证血量条件的逻辑正确性
         var totalEnemies:Number = TargetCacheManager.getEnemyCount(hero, 10);
         var lowHp:Number = TargetCacheManager.getEnemyCountByHP(hero, 10, "低血量", false);
         var midHp:Number = TargetCacheManager.getEnemyCountByHP(hero, 10, "中血量", false);
         var highHp:Number = TargetCacheManager.getEnemyCountByHP(hero, 10, "高血量", false);
-        
-        // 各种血量的总和应该等于总数（假设没有其他血量状态）
+
+        // 各种血量的总和应该等于总数（low/medium/high 三段应覆盖全部单位）
         var hpSum:Number = lowHp + midHp + highHp;
         assertTrue("血量分类覆盖合理", hpSum <= totalEnemies);
+        // 强断言：若存在敌人，三段之和必须 > 0（防止归一化失效静默返回全零）
+        if (totalEnemies > 0) {
+            assertTrue("血量分类总和必须大于0", hpSum > 0);
+        }
+
+        // 验证中文条件与英文条件结果一致
+        var lowHpEN:Number = TargetCacheManager.getEnemyCountByHP(hero, 10, "low", false);
+        assertEquals("中英文HP条件结果一致(low/低血量)", lowHp, lowHpEN, 0);
     }
     
     // ========================================================================
@@ -2381,6 +2392,84 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManagerTest 
                 }
             }
             assertTrue("rightMaxValues通过API仍单调", mono);
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    // 回归测试：Bug 修复验证
+    // ------------------------------------------------------------------------
+
+    private static function runBugfixRegressionTests():Void {
+        trace("\n🔧 执行 Bug 修复回归测试...");
+
+        testEmptyResultPollutionResilience();
+        testHpConditionChineseEnglishEquivalence();
+    }
+
+    /**
+     * 回归测试：_emptyResult 污染自愈
+     * 修复前：若调用方对空结果的 .data 执行 push，污染会永久累积
+     * 修复后：_safeEmptyResult() 在每次返回前重置 data.length = 0
+     */
+    private static function testEmptyResultPollutionResilience():Void {
+        // 清空世界，确保缓存查询返回空结果
+        var savedWorld:Object = {};
+        for (var key:String in _root.gameworld) {
+            savedWorld[key] = _root.gameworld[key];
+            TargetCacheManager.removeUnit(_root.gameworld[key]);
+            delete _root.gameworld[key];
+        }
+        TargetCacheManager.clearCache();
+
+        var hero:Object = mockHero;
+        var aabb:AABBCollider = createTestAABB(0, 100);
+
+        // 第一次调用：获取空结果
+        var result1:Object = TargetCacheManager.getCachedTargetsFromIndex(hero, 10, "敌人", aabb);
+        assertNotNull("空世界仍返回结果对象", result1);
+        assertEquals("空世界结果data长度为0", 0, result1.data.length, 0);
+
+        // 模拟调用方污染：向 data 数组中 push 假数据
+        result1.data.push("污染数据1");
+        result1.data.push("污染数据2");
+        assertTrue("污染后data长度为2", result1.data.length == 2);
+
+        // 第二次调用：应返回干净的空结果
+        TargetCacheManager.clearCache();
+        var result2:Object = TargetCacheManager.getCachedTargetsFromIndex(hero, 10, "敌人", aabb);
+        assertEquals("污染后再次调用data长度应为0", 0, result2.data.length, 0);
+
+        // 恢复世界
+        for (var k:String in savedWorld) {
+            _root.gameworld[k] = savedWorld[k];
+            TargetCacheManager.addUnit(savedWorld[k]);
+        }
+        TargetCacheManager.clearCache();
+    }
+
+    /**
+     * 回归测试：HP 条件中英文等价性（全量验证）
+     * 修复前：SortedUnitCache 只识别英文键，中文传入静默返回 0
+     * 修复后：_normalizeHP 映射保证中英文等价
+     */
+    private static function testHpConditionChineseEnglishEquivalence():Void {
+        var hero:Object = mockHero;
+
+        var pairs:Array = [
+            { cn: "低血量", en: "low" },
+            { cn: "中血量", en: "medium" },
+            { cn: "高血量", en: "high" },
+            { cn: "濒死",   en: "critical" },
+            { cn: "受伤",   en: "injured" },
+            { cn: "满血",   en: "healthy" }
+        ];
+
+        for (var i:Number = 0; i < pairs.length; i++) {
+            var cn:String = pairs[i].cn;
+            var en:String = pairs[i].en;
+            var countCN:Number = TargetCacheManager.getEnemyCountByHP(hero, 10, cn, false);
+            var countEN:Number = TargetCacheManager.getEnemyCountByHP(hero, 10, en, false);
+            assertEquals("HP条件等价(" + cn + "/" + en + ")", countEN, countCN, 0);
         }
     }
 }

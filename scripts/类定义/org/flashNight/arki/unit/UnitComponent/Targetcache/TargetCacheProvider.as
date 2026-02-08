@@ -357,6 +357,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
 
         // 更新元数据
         cacheValue.cache.lastUpdatedFrame = currentFrame;
+        cacheValue.createdFrame = currentFrame; // 重置创建帧，防止 forceRefreshThreshold 永久触发
         cacheValue.lastAccessFrame = currentFrame;
         cacheValue.accessCount++;
         cacheValue.dataVersion = currentVersion;

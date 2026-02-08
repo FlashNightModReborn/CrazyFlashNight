@@ -22,29 +22,38 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     // ========================================================================
     // 实例成员定义
     // ========================================================================
-    
+    // !! 以下 public 字段为性能考量暴露（避免 getter 调用开销）。
+    // !! 外部代码只可**只读**使用，禁止 push/splice/赋值/修改元素，否则会
+    // !! 污染全局缓存并导致碰撞检测等下游逻辑出错。
+    // !! 如需写入，请复制后操作：var copy = data.slice();
+    // ========================================================================
+
     /**
      * 已按 aabbCollider.left 升序排序的单位数组
      * 这是缓存的核心数据，所有查询都基于这个有序数组
+     * @readonly 外部只读
      */
     public var data:Array;
-    
+
     /**
      * 名称到索引的映射表
      * 结构: {单位._name: 数组索引}
      * 用于O(1)时间复杂度的单位定位
+     * @readonly 外部只读
      */
     public var nameIndex:Object;
-    
+
     /**
      * 预缓存的 aabbCollider.left 值数组
      * 与 data 数组一一对应，用于避免重复的属性链访问
+     * @readonly 外部只读
      */
     public var leftValues:Array;
-    
+
      /**
       * 预缓存的 aabbCollider.right 值数组
       * 与 data 数组一一对应，用于范围查询的性能优化
+      * @readonly 外部只读
       */
      public var rightValues:Array;
 
@@ -54,6 +63,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      *
      * 用途：为扫描线推进 / getTargetsFromIndex 提供**单调非降**的右边界键，
      * 解决单位宽度变化导致 rightValues 非单调时二分/跳过逻辑不安全的问题。
+     * @readonly 外部只读
      */
     public var rightMaxValues:Array;
     
@@ -859,11 +869,35 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     // ========================================================================
     // 条件查询方法
     // ========================================================================
-    
+
+    /**
+     * HP 条件名称归一化映射（中文 → 英文）
+     * 内部 switch 统一使用英文键，此表使对外 API 同时兼容中英文调用
+     * @private
+     */
+    private static var _hpConditionMap:Object = {
+        低血量: "low",
+        中血量: "medium",
+        高血量: "high",
+        濒死:   "critical",
+        受伤:   "injured",
+        满血:   "healthy"
+    };
+
+    /**
+     * 将中英文混合的 HP 条件字符串归一化为内部英文键
+     * @private
+     */
+    private static function _normalizeHP(cond:String):String {
+        var mapped:String = _hpConditionMap[cond];
+        return (mapped != undefined) ? mapped : cond;
+    }
+
     /**
      * 获取满足血量条件的单位数量
-     * 
-     * @param {String} hpCondition - 血量条件: "low", "medium", "high", "critical", "injured", "healthy"
+     *
+     * @param {String} hpCondition - 血量条件: "low"/"低血量", "medium"/"中血量",
+     *        "high"/"高血量", "critical"/"濒死", "injured"/"受伤", "healthy"/"满血"
      * @param {Object} excludeTarget - 要排除的目标单位（可选）
      * @return {Number} 满足条件的单位数量
      */
@@ -875,7 +909,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         var i:Number = 0;
         var unit:Object, hpRatio:Number;
 
-        switch (hpCondition) {
+        switch (_normalizeHP(hpCondition)) {
             case "low":
                 for (i = 0; i < len; i++) {
                     unit = this.data[i];
@@ -934,7 +968,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
 
     /**
      * 查找满足血量条件的单位列表
-     * @param {String} hpCondition - 血量条件
+     * @param {String} hpCondition - 血量条件（同 getCountByHP，支持中英文）
      * @param {Object} excludeTarget - 要排除的目标单位（可选）
      * @return {Array} 满足条件的单位数组
      */
@@ -946,7 +980,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         var resultIdx:Number = 0;
         var unit:Object, hpRatio:Number;
 
-        switch (hpCondition) {
+        switch (_normalizeHP(hpCondition)) {
             case "low":
                 for (var i:Number = 0; i < len; i++) {
                     unit = this.data[i];
@@ -1119,6 +1153,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
          this.leftValues = newLeftValues || [];
          this.rightValues = newRightValues || [];
         this.lastUpdatedFrame = newFrame || 0;
+
+        // 断开复用结果对象对旧数据的引用，防止已持有引用的调用方意外读到新数据
+        this._resultIndex.data = null;
+        this._resultMonotonic.data = null;
 
         // 右边界键需要保持单调，供扫描线/二分使用
         rebuildRightMaxValues();
