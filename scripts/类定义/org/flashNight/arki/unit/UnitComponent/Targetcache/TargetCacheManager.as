@@ -53,7 +53,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     // 静态过滤器（避免高频路径重复创建闭包，减少GC压力）
     // ========================================================================
 
-    /** 过滤器参数槽 - 在调用过滤器前设置，由过滤器读取（单线程安全） */
+    /**
+     * 过滤器参数槽 - 在调用过滤器前设置，由过滤器读取。
+     * 依赖 AS2 单线程模型保证安全；禁止在过滤器内部再触发另一类
+     * 参数化过滤查询（嵌套调用会覆盖槽值导致外层结果错误）。
+     */
     private static var _p_threat:Number;
     private static var _p_unitType:String;
     private static var _p_buffName:String;

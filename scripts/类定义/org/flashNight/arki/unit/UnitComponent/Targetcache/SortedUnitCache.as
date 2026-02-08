@@ -426,7 +426,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      * 
      * 利用有序数组的特性和nameIndex实现高性能查找：
      * - 如果目标在列表中：只需检查左右相邻的两个单位（O(1)）
-     * - 如果目标不在列表中：进行全表扫描但使用预缓存坐标值优化
+     * - 如果目标不在列表中：二分查找插入点后只比较相邻两个单位（O(log n)）
      * 
      * @param {Object} target - 目标单位
      * @return {Object} 最近的单位，不存在则返回null
@@ -450,6 +450,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
 
             var leftObj2:Object  = (insertIdx > 0) ? this.data[insertIdx - 1] : null;
             var rightObj2:Object = (insertIdx < listLength) ? this.data[insertIdx] : null;
+
+            // 防御性排除：数据不一致时可能在列表中找到 target 自身
+            if (leftObj2 == target) leftObj2 = null;
+            if (rightObj2 == target) rightObj2 = null;
 
             var diffL2:Number = leftObj2 ? (this.leftValues[insertIdx - 1] - targetX) : 0;
             var dl2:Number    = leftObj2 ? (diffL2 < 0 ? -diffL2 : diffL2) : Number.MAX_VALUE;
@@ -625,6 +629,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
             // 目标不在列表中，最远单位必定是首元素或尾元素 O(1)
             var firstObj:Object = this.data[0];
             var lastObj:Object  = this.data[listLength - 1];
+
+            // 防御性排除自身
+            if (firstObj == target) return lastObj;
+            if (lastObj == target) return firstObj;
 
             var d1:Number = this.leftValues[0] - targetX;
             var d2:Number = this.leftValues[listLength - 1] - targetX;
