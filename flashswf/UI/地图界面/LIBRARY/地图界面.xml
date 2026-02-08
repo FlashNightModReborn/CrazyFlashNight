@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1770583805" lastUniqueIdentifier="296">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1770583917" lastUniqueIdentifier="296">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="5" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;937&lt;/guideline&gt;&lt;guideline direction="v"&gt;979&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="Script Layer" color="#D4FDCB">
+        <DOMLayer name="Script Layer" color="#D4FDCB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -2365,27 +2365,45 @@ function Set_Faction_View(type:String, isShow:Boolean):Void {
 // 输入：clickType (被点击的阵营名)
 // 功能：如果该阵营解锁，则显示它，并隐藏名单中的其他已解锁阵营
 function On_Click_Faction(clickType:String):Void {
-	// 1. 首先检查被点击的阵营是否满足解锁条件
-	// 如果没解锁，直接返回，什么都不做
-	if (clickType != "初始化" && !Check_Unlock(clickType)) {
+	
+	// ==========================================
+	// 场景 1: 初始化 (开局自动运行)
+	// ==========================================
+	if (clickType == "初始化") {
+		for (var i = 0; i < 阵营名单.length; i++) {
+			var type = 阵营名单[i];
+			
+			// 核心逻辑：各自判断，互不干扰
+			// 这里的关键是【else分支】，显式地将不满足条件的隐藏掉
+			if (Check_Unlock(type)) {
+				Set_Faction_View(type, true);
+			} else {
+				Set_Faction_View(type, false);
+			}
+		}
+		return; // 初始化处理完毕，直接退出函数
+	}
+
+	// ==========================================
+	// 场景 2: 点击按钮切换 (互斥逻辑)
+	// ==========================================
+	
+	// 1. 安全检查：如果点击的目标根本没解锁，什么都不做
+	if (!Check_Unlock(clickType)) {
 		return;
 	}
 
-	// 2. 遍历整个【阵营名单】，进行互斥操作
-	// 优势：无论有多少个阵营，这里都不用改代码，会自动处理
+	// 2. 遍历名单进行互斥操作
 	for (var i = 0; i < 阵营名单.length; i++) {
 		var otherType = 阵营名单[i];
 		
-		if ((clickType ==  "初始化" && Check_Unlock(otherType)) || otherType == clickType) {
-			// A. 如果是自己 -> 显示
+		if (otherType == clickType) {
+			// 是被点击的那个 -> 显示
 			Set_Faction_View(otherType, true);
-		} 
-		else {
-			// B. 如果是别人
-			// 只有当别人也满足解锁条件时（意味着它可能正显示在屏幕上），才去执行隐藏
-			if (Check_Unlock(otherType)) {
-				Set_Faction_View(otherType, false);
-			}
+		} else {
+			// 是其他的 -> 强制隐藏
+			// 点击切换时，不需要关心“其他的”是否解锁，只要不是当前选中的，统统隐藏
+			Set_Faction_View(otherType, false);
 		}
 	}
 }
@@ -2440,7 +2458,8 @@ function Check_Unlock(type:String):Boolean {
 // 遍历"阵营名单"，自动初始化所有阵营
 for (var k = 0; k < 阵营名单.length; k++) {
 	Init_Faction_State(阵营名单[k]);
-}]]></script>
+}
+On_Click_Faction("初始化");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -4294,7 +4313,7 @@ On_Click_Faction("初始化");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="焦点按钮文字" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="焦点按钮文字" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
