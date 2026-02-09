@@ -726,7 +726,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         for (var faction:String in _factionVersions) {
             totalVersion += _factionVersions[faction];
         }
-        return totalVersion;
+        return totalVersion + _reconcileVersion;
     }
 
     // ========================================================================
