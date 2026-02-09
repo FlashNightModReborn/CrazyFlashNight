@@ -3,12 +3,12 @@ import org.flashNight.neur.StateMachine.IMachine;
 import org.flashNight.neur.StateMachine.Transitions;
 
 class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status implements IMachine {
-    private var statusDict:Object; // 状态列表
+    public var statusDict:Object; // 状态列表（public: BaseUnitBehavior/EnemyBehavior 需外部访问）
     private var statusCount:Number; // 状态总数
     private var activeState:FSM_Status; // 当前状态
     private var lastState:FSM_Status; // 上个状态
     private var defaultState:FSM_Status; // 默认状态
-    private var actionCount:Number = 0; // 当前状态已执行的action次数
+    public var actionCount:Number = 0; // 当前状态已执行的action次数（public: 外部消费者需读取）
     private var _isChanging:Boolean = false;
     private var _pending:String     = null;
 
@@ -184,22 +184,24 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
 
         // Phase 4: 状态机自身维护
         this.actionCount++; // 增加action计数
-        // super.onAction(); // FSM_Status的onAction为空函数，故不执行
+        super.onAction(); // 执行状态机自身的 _onActionCb 回调（如有），作为管线后处理
     }
 
     // ========== 修正区结束 ==========
 
-    public function destroy():Void{    
+    public function destroy():Void{
         this._pending = null;
         this._isChanging = false;
-        
-        super.destroy();
-        for(var statename in this.statusDict){
+
+        // 先销毁子状态，再销毁自身（由内而外）
+        for(var statename:String in this.statusDict){
             this.statusDict[statename].destroy();
         }
         this.statusDict = null;
         this.activeState = null;
         this.lastState = null;
         this.defaultState = null;
+
+        super.destroy();
     }
 }

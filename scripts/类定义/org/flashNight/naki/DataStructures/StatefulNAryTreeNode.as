@@ -1,8 +1,6 @@
 ﻿// 文件路径: org/flashNight/naki/DataStructures/StatefulNAryTreeNode.as
 import org.flashNight.naki.DataStructures.NAryTreeNode;
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
-import org.flashNight.neur.StateMachine.Machine;
-import org.flashNight.neur.StateMachine.Status;
 
 /**
  * 增强版 N 叉树节点类，通过组合绑定状态机 (FSM_StateMachine)
@@ -21,11 +19,12 @@ class org.flashNight.naki.DataStructures.StatefulNAryTreeNode extends NAryTreeNo
 
     // ------------ 状态机初始化 ------------
     private function initStateMachine():Void {
-        // 创建状态机实例，绑定默认回调
+        // 创建状态机实例，绑定机器级回调（Path B: 存为 _onXxxCb 字段，
+        // 作为管线后处理钩子，不会覆写 FSM_StateMachine 的 onAction/onEnter/onExit）
         _stateMachine = new FSM_StateMachine(
-            this.onStateAction,  // onAction 回调
-            this.onStateEnter,   // onEnter 回调
-            this.onStateExit     // onExit 回调
+            this.onStateAction,  // 管线完成后的 onAction 回调
+            this.onStateEnter,   // 状态机自身被 enter 时的回调
+            this.onStateExit     // 状态机自身被 exit 时的回调
         );
 
         // 初始化状态机数据黑板
@@ -34,6 +33,9 @@ class org.flashNight.naki.DataStructures.StatefulNAryTreeNode extends NAryTreeNo
             progress: {},        // 任务进度数据
             conditions: {}       // 动态条件缓存
         };
+
+        // 将数据黑板绑定到状态机，使子状态可通过 this.data 访问
+        _stateMachine.data = _stateData;
     }
 
     // ------------ 状态机访问器 ------------

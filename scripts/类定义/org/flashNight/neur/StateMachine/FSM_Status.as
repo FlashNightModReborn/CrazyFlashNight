@@ -10,39 +10,45 @@ class org.flashNight.neur.StateMachine.FSM_Status implements IStatus {
     public var data:Object; // 数据黑板
     public var transitions:Transitions; // 过渡线
 
-    public function onAction():Void{
-    }
-    public function onEnter():Void{
-    };
-    public function onExit():Void{
-    };
+    // Path B: 回调存储在私有字段中，类方法作为包装器。
+    // 这确保子类（如 FSM_StateMachine）override 的 onAction/onEnter/onExit
+    // 不会被构造函数传入的回调通过实例属性覆写而"穿透"。
+    private var _onActionCb:Function;
+    private var _onEnterCb:Function;
+    private var _onExitCb:Function;
 
-    public function FSM_Status(_onAction:Function, _onEnter:Function, _onExit:Function){
+    public function onAction():Void {
+        if (_onActionCb) _onActionCb.call(this);
+    }
+
+    public function onEnter():Void {
+        if (_onEnterCb) _onEnterCb.call(this);
+    }
+
+    public function onExit():Void {
+        if (_onExitCb) _onExitCb.call(this);
+    }
+
+    public function FSM_Status(_onAction:Function, _onEnter:Function, _onExit:Function) {
         this.active = true;
-        if(_onAction) this.onAction = _onAction;
-        if(_onEnter) this.onEnter = _onEnter;
-        if(_onExit) this.onExit = _onExit;
+        this._onActionCb = _onAction;
+        this._onEnterCb = _onEnter;
+        this._onExitCb = _onExit;
         this.superMachine = null;
     }
 
-    public function isRootMachine():Boolean{
+    public function isRootMachine():Boolean {
         return !this.superMachine;
     }
 
-    // In FSM_Status.as
-    public function OnInit():Void{
-        // 此方法逻辑已证明有害，其功能已由 FSM_StateMachine.onEnter 正确实现。
-        // 保留空方法以防现有代码调用，或从 FSM_StateMachine.AddStatus 中移除对此方法的调用。
-    }
-
-    public function destroy():Void{
+    public function destroy():Void {
         this.isDestroyed = true;
         this.active = false;
         this.superMachine = null;
         this.data = null;
         this.transitions = null;
-        this.onAction = null;
-        this.onEnter = null;
-        this.onExit = null;
+        this._onActionCb = null;
+        this._onEnterCb = null;
+        this._onExitCb = null;
     }
 }

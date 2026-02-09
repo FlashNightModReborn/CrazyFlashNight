@@ -72,7 +72,7 @@ a.runTests();
 
 --- Test: Complex Transition Logic ---
 [PASS] Game over when lives = 0
-[FAIL] Next level when score sufficient
+[PASS] Next level when score sufficient
 
 --- Test: Data Blackboard Sharing ---
 [PASS] State1 shares data with machine
@@ -145,7 +145,7 @@ Workflow completed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: B
+[PASS] Conditional branching led to valid path: A
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -178,28 +178,28 @@ Workflow completed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=76ms, Actions=132ms for 10000 operations
+Basic Performance: Transitions=122ms, Actions=159ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 34ms, 100 transitions in 2ms
+Many States Performance: Create 1000 states in 52ms, 100 transitions in 2ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 853ms
+Frequent Transitions Performance: 5000 transitions in 866ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 45ms
+Complex Transition Performance: 1000 complex transitions in 50ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=0ms, Transition=0ms, Operation=2ms
-Size 50: Create=1ms, Transition=0ms, Operation=3ms
-Size 100: Create=1ms, Transition=1ms, Operation=2ms
-Size 500: Create=6ms, Transition=6ms, Operation=2ms
+Size 10: Create=2ms, Transition=0ms, Operation=2ms
+Size 50: Create=1ms, Transition=1ms, Operation=3ms
+Size 100: Create=3ms, Transition=2ms, Operation=2ms
+Size 500: Create=13ms, Transition=13ms, Operation=1ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -209,7 +209,7 @@ Size 500: Create=6ms, Transition=6ms, Operation=2ms
 [PASS] Paused state should be entered
 
 --- Test: Transition→Action Order ---
-[FAIL] Correct number of lifecycle events
+[PASS] Correct number of lifecycle events
 [PASS] Should be in state B
 [PASS] B's action should execute in same frame as transition
 
@@ -219,11 +219,25 @@ Size 500: Create=6ms, Transition=6ms, Operation=2ms
 [PASS] Active state remains valid
 [PASS] Final state is valid
 
+--- Test: Path B - Callbacks Do Not Shadow Pipeline ---
+[PASS] Pipeline Phase 2 executed (state action ran)
+[PASS] Pipeline Phase 3 executed (transition fired)
+[PASS] Machine-level _onActionCb fired as post-pipeline hook
+
+--- Test: Path B - Machine Level Enter/Exit Hooks ---
+[PASS] Child machine enter hooks fired on AddStatus
+[PASS] Machine-level onEnter callback fired
+[PASS] Inner state onEnter propagated
+[PASS] Machine onEnter fires before inner state onEnter
+[PASS] Inner state onExit propagated
+[PASS] Machine-level onExit callback fired
+[PASS] Inner state exits before machine onExit
+
 === FINAL FSM TEST REPORT ===
-Tests Passed: 112
-Tests Failed: 2
-Success Rate: 98%
-⚠️  Some tests failed. Please review the implementation.
+Tests Passed: 124
+Tests Failed: 0
+Success Rate: 100%
+🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.
 === FSM VERIFICATION SUMMARY ===
 ✓ Basic state machine operations verified
 ✓ State lifecycle management tested

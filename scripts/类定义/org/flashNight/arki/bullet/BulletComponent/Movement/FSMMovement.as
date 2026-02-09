@@ -62,9 +62,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.FSMMovement implements
      * @param state:FSM_Status 状态实例
      */
     public function addState(stateName:String, state:FSM_Status):Void {
-        state.superMachine = this.stateMachine;
-        state.name = stateName;
-        state.data = this.stateMachine.data;
+        // superMachine/name/data 由 AddStatus 内部统一赋值，无需预设
         this.stateMachine.AddStatus(stateName, state);
     }
 }

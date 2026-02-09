@@ -87,7 +87,11 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testPauseGateImmediateEffect();
         this.testTransitionToActionOrder();
         this.testRecursiveTransitionSafety();
-        
+
+        // P0 Path B 回调字段化验证
+        this.testPathBCallbackNoShadow();
+        this.testPathBMachineLevelHooks();
+
         // 最终报告
         this.printFinalReport();
     }
@@ -519,8 +523,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.transitions.push("powerUp", "playing", function():Boolean { 
             return this.data.actionCounter % 5 == 0; // powerUp lasts 5 actions
         });
-        machine.transitions.push("nextLevel", "playing", function():Boolean { 
-            return true; // automatically return to playing
+        machine.transitions.push("nextLevel", "playing", function():Boolean {
+            return this.data.level > 1; // 条件化：避免同帧无限弹跳（0-frame state）
         });
         
         // 测试游戏结束条件
@@ -1440,11 +1444,11 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.clearLifecycleLog();
         machine.data.isPaused = true;  // 触发暂停条件
         machine.data.actionExecuted = false;  // 重置动作标记
-        
+
         machine.onAction();  // 执行一帧的逻辑
-        
-        // 【预期行为 - 当前会失败】：
-        // 暂停应该在当帧生效，阻止玩家状态的动作执行
+
+        // 预期行为（3-phase Gate 机制）：
+        // Phase 1 Gate 转换在 Phase 2 动作之前执行，暂停立即生效
         this.assert(machine.getActiveStateName() == "paused", "Should switch to paused state immediately");
         this.assert(!machine.data.actionExecuted, "Player action should NOT execute when paused in same frame");
         this._lifecycleLog.indexOf = function(str:String):Number{
@@ -1499,17 +1503,16 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         
         this.clearLifecycleLog();
         machine.onAction();  // 第1次：A:action:1
-        machine.onAction();  // 第2次：应该触发转换 A→B，然后执行B:action:2
-        
-        // 【预期行为 - 当前会失败】：
-        // 正确顺序应该是：A:action:1, A:action:2, A:exit, B:enter, B:action:3
-        // 当前实现是：A:action:1, A:action:2, A:exit, B:enter（B的action要到下一帧）
+        machine.onAction();  // 第2次：A:action:2 → 触发 Normal 转换 A→B → 同帧 B:action:3
+
+        // 预期行为（3-phase 管线 + 同帧稳定化）：
+        // clearLifecycleLog 已清除 AddStatus 触发的 "A:enter"，
+        // 第2次 onAction 中 Normal 转换后 while 循环继续执行 B 的动作
         var expectedOrder:Array = [
-            "A:enter",      // 初始进入A
             "A:action:1",   // 第1次onAction
             "A:action:2",   // 第2次onAction（触发转换条件）
             "A:exit",       // 退出A状态
-            "B:enter",      // 进入B状态  
+            "B:enter",      // 进入B状态
             "B:action:3"    // 同帧执行B的动作
         ];
         
@@ -1588,6 +1591,124 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         }
         
         machine.destroy();
+    }
+
+    // ========== P0 Path B 回调字段化验证 ==========
+
+    /**
+     * 核心回归测试：非 null 回调不再穿透 FSM_StateMachine 的管线
+     *
+     * 旧缺陷：FSM_Status 构造函数通过 this.onAction = _onAction 创建实例属性，
+     *         覆写了 FSM_StateMachine 原型链上的 3-phase 管线 onAction()。
+     * Path B：回调存储在 _onActionCb 字段中，类方法作为包装器。
+     *         FSM_StateMachine 的 override 通过原型链正常生效。
+     */
+    public function testPathBCallbackNoShadow():Void {
+        trace("\n--- Test: Path B - Callbacks Do Not Shadow Pipeline ---");
+
+        var pipelineRan:Boolean = false;
+        var callbackRan:Boolean = false;
+
+        // 创建带非 null 回调的状态机（以前这会穿透管线）
+        var machine:FSM_StateMachine = new FSM_StateMachine(
+            function():Void { callbackRan = true; },  // _onActionCb
+            null, null
+        );
+        machine.data = { counter: 0 };
+
+        var stateA:FSM_Status = new FSM_Status(
+            function():Void { this.data.counter++; pipelineRan = true; },
+            null, null
+        );
+        var stateB:FSM_Status = new FSM_Status(null, null, null);
+
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+
+        machine.transitions.push("A", "B", function():Boolean {
+            return this.data.counter >= 1;
+        });
+
+        machine.onAction();
+
+        // 管线必须执行（Phase 2: stateA.onAction + Phase 3: 转换到 B）
+        this.assert(pipelineRan, "Pipeline Phase 2 executed (state action ran)");
+        this.assert(machine.getActiveStateName() == "B", "Pipeline Phase 3 executed (transition fired)");
+
+        // 机器级回调通过 super.onAction() 在管线 Phase 4 后执行
+        this.assert(callbackRan, "Machine-level _onActionCb fired as post-pipeline hook");
+
+        machine.destroy();
+    }
+
+    /**
+     * 验证 FSM_StateMachine 的 onEnter/onExit 回调在嵌套场景下正确触发
+     *
+     * 当 FSM_StateMachine 作为嵌套状态被 enter/exit 时：
+     *  - onEnter: super.onEnter() 调用 _onEnterCb → 然后传播到子状态
+     *  - onExit:  先传播到子状态 → 然后 super.onExit() 调用 _onExitCb
+     */
+    public function testPathBMachineLevelHooks():Void {
+        trace("\n--- Test: Path B - Machine Level Enter/Exit Hooks ---");
+        var hookLog:Array = [];
+
+        // 父状态机
+        var parent:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+
+        // 子状态机（带非 null onEnter/onExit 回调）
+        var child:FSM_StateMachine = new FSM_StateMachine(
+            null,
+            function():Void { hookLog.push("child-machine:enter"); },
+            function():Void { hookLog.push("child-machine:exit"); }
+        );
+        child.data = {};
+
+        // 为子状态机添加内部状态
+        var innerState:FSM_Status = new FSM_Status(
+            null,
+            function():Void { hookLog.push("inner:enter"); },
+            function():Void { hookLog.push("inner:exit"); }
+        );
+        child.AddStatus("inner", innerState);
+
+        // 另一个顶级状态
+        var otherState:FSM_Status = new FSM_Status(
+            null,
+            function():Void { hookLog.push("other:enter"); },
+            function():Void { hookLog.push("other:exit"); }
+        );
+
+        parent.AddStatus("child", child);
+        parent.AddStatus("other", otherState);
+
+        // AddStatus 触发 child.onEnter → super.onEnter() + 子状态传播
+        this.assert(hookLog.length >= 2, "Child machine enter hooks fired on AddStatus");
+
+        var enterIdx:Number = -1;
+        var innerIdx:Number = -1;
+        for (var i:Number = 0; i < hookLog.length; i++) {
+            if (hookLog[i] == "child-machine:enter") enterIdx = i;
+            if (hookLog[i] == "inner:enter") innerIdx = i;
+        }
+        this.assert(enterIdx >= 0, "Machine-level onEnter callback fired");
+        this.assert(innerIdx >= 0, "Inner state onEnter propagated");
+        this.assert(enterIdx < innerIdx, "Machine onEnter fires before inner state onEnter");
+
+        // 切换到 other 状态 → 触发 child.onExit
+        hookLog = [];
+        parent.ChangeState("other");
+
+        var exitIdx:Number = -1;
+        var innerExitIdx:Number = -1;
+        for (var j:Number = 0; j < hookLog.length; j++) {
+            if (hookLog[j] == "child-machine:exit") exitIdx = j;
+            if (hookLog[j] == "inner:exit") innerExitIdx = j;
+        }
+        this.assert(innerExitIdx >= 0, "Inner state onExit propagated");
+        this.assert(exitIdx >= 0, "Machine-level onExit callback fired");
+        this.assert(innerExitIdx < exitIdx, "Inner state exits before machine onExit");
+
+        parent.destroy();
     }
 
     // ========== 报告生成 ==========

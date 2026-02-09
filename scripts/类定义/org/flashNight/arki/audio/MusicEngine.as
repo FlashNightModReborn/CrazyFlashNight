@@ -53,9 +53,10 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
         });
         
         // 转换：淡出完成后尝试切换到下一首背景音乐
+        var self:MusicEngine = this;
         this.transitions.push("fadeout", "fadein", function():Boolean {
             var state = this.getActiveState();
-            if (currentClip != null && currentClip !== "" && state.isComplete()) {
+            if (self.currentClip != null && self.currentClip !== "" && state.isComplete()) {
                 return true;
             }
             return false;
@@ -68,9 +69,7 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
             }
             return false;
         });
-        
-        // 默认进入空闲状态
-        this.ChangeState("idle");
+        // idle 已由 AddStatus 首个状态自动激活，无需重复 ChangeState
     }
     
     // 注入具体音乐播放器实现
@@ -225,11 +224,6 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
                 trace("[MusicEngine] Unknown command: " + command);
                 return false;
         }
-    }
-    
-    // 每帧更新
-    public function onAction():Void {
-        super.onAction();
     }
     
     // IMusicEngine: stop()
