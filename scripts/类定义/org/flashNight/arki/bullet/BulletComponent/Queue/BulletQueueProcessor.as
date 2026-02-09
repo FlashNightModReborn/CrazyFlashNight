@@ -69,8 +69,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     // ========================================================================
 
     /**
+     * 友伤队列键名常量
+     * 友伤子弹（STATE_FRIENDLY_FIRE）需要检测全体单位，使用 acquireAllCache 获取缓存。
+     * 此键名仅用于 activeQueues/fakeUnits/queueUIDs 的索引，
+     * 与 TargetCacheUpdater._ALL_FACTION 无关联。
+     */
+    private static var FRIENDLY_FIRE_KEY:String = "all";
+
+    /**
      * 按阵营分类的活动队列映射表
-     * 键: 阵营名称字符串（与FactionManager.getAllFactions()返回值一致，以及特殊的"all"）
+     * 键: 阵营名称字符串（与FactionManager.getAllFactions()返回值一致，以及 FRIENDLY_FIRE_KEY）
      * 值: BulletQueue实例
      * 注意：键名大小写需与FactionManager注册时保持一致
      */
@@ -166,7 +174,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * 初始化内容：
      * 1. 为每个已知阵营创建独立的BulletQueue实例
      * 2. 为每个阵营创建假单位对象，用于目标缓存查询
-     * 3. 创建特殊的"all"队列，处理友伤子弹
+     * 3. 创建特殊的友伤队列（FRIENDLY_FIRE_KEY），处理友伤子弹
      */
     public static function initialize():Boolean {
         // 初始化映射表
@@ -195,10 +203,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         }
 
         // 创建特殊的友伤队列，处理设置了友军伤害标志的子弹
-        activeQueues["all"] = new BulletQueue();
-        fakeUnit = FactionManager.createFactionUnit("all", "queue");
-        fakeUnits["all"] = fakeUnit;
-        queueUIDs["all"] = Dictionary.getStaticUID(fakeUnit) & 0x0FFF;  // 新增：预计算特殊队列UID
+        // 使用已注册的 HOSTILE_NEUTRAL 阵营创建 fake unit（语义：对所有人敌对）
+        // 注意：acquireAllCache 走 "全体" 路径，完全忽略 fakeUnit 的阵营，
+        // 此处选择 HOSTILE_NEUTRAL 仅为确保使用已注册阵营，避免隐式行为依赖
+        activeQueues[FRIENDLY_FIRE_KEY] = new BulletQueue();
+        fakeUnit = FactionManager.createFactionUnit(FactionManager.FACTION_HOSTILE_NEUTRAL, "queue_friendlyfire");
+        fakeUnits[FRIENDLY_FIRE_KEY] = fakeUnit;
+        queueUIDs[FRIENDLY_FIRE_KEY] = Dictionary.getStaticUID(fakeUnit) & 0x0FFF;
 
         return true;
     }
@@ -239,7 +250,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * @param {Object} bullet 要添加的子弹对象
      *
      * 路由规则：
-     * - 若 STATE_FRIENDLY_FIRE 标志位为1，添加到"all"队列（可伤害所有单位）
+     * - 若 STATE_FRIENDLY_FIRE 标志位为1，添加到友伤队列（FRIENDLY_FIRE_KEY，可伤害所有单位）
      * - 否则根据发射者的阵营，添加到对应阵营的队列
      *
      * 性能说明：
@@ -255,7 +266,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var isFriendlyFire:Boolean = (sf & STATE_FRIENDLY_FIRE) != 0;
 
         // 根据友军伤害标志选择队列类型
-        var queueKey:String = isFriendlyFire ? "all" :
+        var queueKey:String = isFriendlyFire ? FRIENDLY_FIRE_KEY :
             FactionManager.getFactionFromUnit(_root.gameworld[bullet.发射者名]);
 
         // 将子弹添加到对应队列
@@ -508,7 +519,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // ================================================================
 
         // ---- 队列上下文管理变量 ----
-        var key:String;                     // 当前处理的阵营键名（如"player", "enemy", "all"等）
+        var key:String;                     // 当前处理的阵营键名（如"PLAYER", "ENEMY", FRIENDLY_FIRE_KEY等）
         var q:BulletQueue;                  // 当前阵营的子弹队列实例
         var n:Number;                       // 队列中子弹数量（用于空队列早退判断）
         var frameId:Number;                 // 当前帧ID
@@ -632,7 +643,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             fakeUnit = fakeUnits[key];  // 获取阵营代理单位（用于缓存查询）
 
             // ---- 目标缓存获取：根据阵营类型选择合适的缓存策略 ----
-            if(key == "all") {
+            if(key == FRIENDLY_FIRE_KEY) {
                 // 友伤模式：获取所有单位（包括友军）
                 // updateInterval=1 强制每帧刷新缓存，保证碰撞检测使用最新数据
                 cache = TargetCacheManager.acquireAllCache(fakeUnit, 1);

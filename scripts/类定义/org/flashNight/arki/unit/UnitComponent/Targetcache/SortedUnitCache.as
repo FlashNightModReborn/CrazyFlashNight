@@ -105,6 +105,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     private var _resultIndex:Object;
     private var _resultMonotonic:Object;
     private var _resultRange:Array;
+    private var _resultHP:Array;
 
     // ========================================================================
     // 构造函数
@@ -139,6 +140,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         this._resultIndex = { data: null, startIndex: 0 };
         this._resultMonotonic = { data: null, startIndex: 0 };
         this._resultRange = [];
+        this._resultHP = [];
 
         // 构建 right 前缀最大值数组，保证右边界键单调性（供扫描线/二分使用）
         rebuildRightMaxValues();
@@ -980,15 +982,23 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
 
     /**
      * 查找满足血量条件的单位列表
+     *
+     * !! 返回值为**复用数组**，调用方必须在当前调用栈内消费完毕，
+     * !! 不得持有引用或修改数组内容，否则下次调用会覆盖数据。
+     * !! 如需保留，请立即复制：var copy = result.slice();
+     *
      * @param {String} hpCondition - 血量条件（同 getCountByHP，支持中英文）
      * @param {Object} excludeTarget - 要排除的目标单位（可选）
-     * @return {Array} 满足条件的单位数组
+     * @return {Array} 满足条件的单位数组（复用，勿持有引用）
      */
     public function findByHP(hpCondition:String, excludeTarget:Object):Array {
-        var len:Number = this.data.length;
-        if (len == 0) return [];
+        // 复用内部数组，避免每次调用 new Array 产生 GC 压力
+        var result:Array = this._resultHP;
+        result.length = 0;
 
-        var result:Array = [];
+        var len:Number = this.data.length;
+        if (len == 0) return result;
+
         var resultIdx:Number = 0;
         var unit:Object, hpRatio:Number;
 
@@ -1000,7 +1010,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
                     if ((unit.hp / unit.maxhp) <= 0.3) result[resultIdx++] = unit;
                 }
                 break;
-                
+
             case "medium":
                 for (var i2:Number = 0; i2 < len; i2++) {
                     unit = this.data[i2];
@@ -1009,7 +1019,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
                     if (hpRatio > 0.3 && hpRatio <= 0.7) result[resultIdx++] = unit;
                 }
                 break;
-                
+
             case "high":
                 for (var i3:Number = 0; i3 < len; i3++) {
                     unit = this.data[i3];
@@ -1017,7 +1027,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
                     if ((unit.hp / unit.maxhp) > 0.7) result[resultIdx++] = unit;
                 }
                 break;
-                
+
             case "critical":
                 for (var i4:Number = 0; i4 < len; i4++) {
                     unit = this.data[i4];
@@ -1025,7 +1035,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
                     if ((unit.hp / unit.maxhp) <= 0.1) result[resultIdx++] = unit;
                 }
                 break;
-                
+
             case "injured":
                 for (var i5:Number = 0; i5 < len; i5++) {
                     unit = this.data[i5];
@@ -1033,7 +1043,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
                     if (unit.hp < unit.maxhp) result[resultIdx++] = unit;
                 }
                 break;
-                
+
             case "healthy":
                 for (var i6:Number = 0; i6 < len; i6++) {
                     unit = this.data[i6];
