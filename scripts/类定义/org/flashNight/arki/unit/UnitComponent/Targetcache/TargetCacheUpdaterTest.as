@@ -88,6 +88,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             // === 校验重排（Reconciliation）测试 ===
             runReconciliationTests();
 
+            // === 版本失效正确性测试 ===
+            runVersionInvalidationTests();
+
             // === 复杂场景集成测试 ===
             runComplexScenarioTests();
             
@@ -1243,6 +1246,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         TargetCacheUpdater.resetVersions();
         for (var i:Number = 0; i < 1000; i++) {
             var unit:Object = createTestUnits(1)[0];
+            unit._name = "extreme_" + i; // 唯一名称，避免同名重复注册导致阵营变更
             unit.是否为敌人 = (i % 2 == 0);
             TargetCacheUpdater.addUnit(unit);
         }
@@ -1369,6 +1373,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         var s1:Object = TargetCacheUpdater.getCachePoolStats();
         assertEquals("初始ENEMY桶=1", 1, s1.registryBuckets["ENEMY"], 0);
 
+        // 版本验证：初次注册只 bump ENEMY
+        var v1:Object = TargetCacheUpdater.getVersionInfo();
+        assertEquals("变更前ENEMY版本=1", 1, v1.enemyVersion, 0);
+        assertEquals("变更前PLAYER版本=0", 0, v1.allyVersion, 0);
+
         // 变更阵营为友军
         unit.是否为敌人 = false;
         TargetCacheUpdater.addUnit(unit);
@@ -1377,6 +1386,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         assertEquals("变更后ENEMY桶=0", 0, s2.registryBuckets["ENEMY"], 0);
         assertEquals("变更后PLAYER桶=1", 1, s2.registryBuckets["PLAYER"], 0);
         assertEquals("变更后registryCount仍=1", 1, s2.registryCount, 0);
+
+        // 版本验证：阵营变更应 bump 旧阵营(ENEMY) + 新阵营(PLAYER)
+        var v2:Object = TargetCacheUpdater.getVersionInfo();
+        assertTrue("变更后ENEMY版本递增(旧桶被修改)", v2.enemyVersion > v1.enemyVersion);
+        assertTrue("变更后PLAYER版本递增(新桶被修改)", v2.allyVersion > v1.allyVersion);
     }
 
     /**
@@ -1421,6 +1435,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         assertEquals("批量添加后ENEMY桶=6", 6, s1.registryBuckets["ENEMY"], 0);
         assertEquals("批量添加后PLAYER桶=4", 4, s1.registryBuckets["PLAYER"], 0);
 
+        // 版本验证
+        var v1:Object = TargetCacheUpdater.getVersionInfo();
+        assertEquals("批量添加后ENEMY版本=6", 6, v1.enemyVersion, 0);
+        assertEquals("批量添加后PLAYER版本=4", 4, v1.allyVersion, 0);
+
         // 批量移除敌人
         TargetCacheUpdater.removeUnits(enemies);
 
@@ -1428,6 +1447,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         assertEquals("批量移除敌人后registryCount=4", 4, s2.registryCount, 0);
         assertEquals("批量移除敌人后ENEMY桶=0", 0, s2.registryBuckets["ENEMY"], 0);
         assertEquals("批量移除敌人后PLAYER桶不变=4", 4, s2.registryBuckets["PLAYER"], 0);
+
+        // 版本验证：移除只 bump ENEMY，不影响 PLAYER
+        var v2:Object = TargetCacheUpdater.getVersionInfo();
+        assertEquals("批量移除敌人后ENEMY版本=12", 12, v2.enemyVersion, 0);
+        assertEquals("批量移除敌人后PLAYER版本不变=4", 4, v2.allyVersion, 0);
     }
 
     /**
@@ -1790,6 +1814,180 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         var sa:Object = TargetCacheUpdater.getCachePoolStats();
         assertEquals("空世界reconciliation后registryCount=0", 0, sa.registryCount, 0);
         assertEquals("空世界reconciliation后data为空", 0, cacheEntry.data.length, 0);
+    }
+
+    // ========================================================================
+    // 版本失效正确性测试
+    // ========================================================================
+
+    private static function runVersionInvalidationTests():Void {
+        trace("\n🔖 执行版本失效正确性测试...");
+
+        testRemoveUnitBumpsRegisteredFaction();
+        testBatchRemoveUnitsBumpsRegisteredFaction();
+        testBatchFactionChangeVersionBumps();
+        testReconciliationForcesVersionRefresh();
+    }
+
+    /**
+     * removeUnit 应 bump 注册时的阵营，而非运行时 getFactionFromUnit 的结果
+     */
+    private static function testRemoveUnitBumpsRegisteredFaction():Void {
+        TargetCacheUpdater.resetVersions();
+
+        var unit:Object = {
+            _name: "faction_drift_unit",
+            hp: 100,
+            maxhp: 100,
+            是否为敌人: true,
+            aabbCollider: {
+                left: 50, right: 70,
+                updateFromUnitArea: function(u:Object):Void {}
+            }
+        };
+
+        // 以 ENEMY 身份注册
+        TargetCacheUpdater.addUnit(unit);
+        var v1:Object = TargetCacheUpdater.getVersionInfo();
+        assertEquals("removeReg:注册后ENEMY版本=1", 1, v1.enemyVersion, 0);
+        assertEquals("removeReg:注册后PLAYER版本=0", 0, v1.allyVersion, 0);
+
+        // 运行时改变阵营属性（模拟 是否为敌人 被外部修改）
+        unit.是否为敌人 = false;
+
+        // 移除单位 — 应 bump registeredFaction(ENEMY)
+        TargetCacheUpdater.removeUnit(unit);
+        var v2:Object = TargetCacheUpdater.getVersionInfo();
+        assertEquals("removeReg:移除时bump注册阵营ENEMY=2", 2, v2.enemyVersion, 0);
+        assertEquals("removeReg:移除时不bump当前阵营PLAYER=0", 0, v2.allyVersion, 0);
+    }
+
+    /**
+     * removeUnits 批量版本同样应以注册阵营为准
+     */
+    private static function testBatchRemoveUnitsBumpsRegisteredFaction():Void {
+        TargetCacheUpdater.resetVersions();
+
+        var units:Array = [];
+        for (var i:Number = 0; i < 4; i++) {
+            var u:Object = {
+                _name: "batch_drift_" + i,
+                hp: 100,
+                maxhp: 100,
+                是否为敌人: true,
+                aabbCollider: {
+                    left: i * 20, right: i * 20 + 15,
+                    updateFromUnitArea: function(u:Object):Void {}
+                }
+            };
+            units.push(u);
+        }
+
+        // 全部以 ENEMY 注册
+        TargetCacheUpdater.addUnits(units);
+        var v1:Object = TargetCacheUpdater.getVersionInfo();
+        assertEquals("batchRemoveReg:添加后ENEMY=4", 4, v1.enemyVersion, 0);
+
+        // 运行时全部改为友军
+        for (var j:Number = 0; j < units.length; j++) {
+            units[j].是否为敌人 = false;
+        }
+
+        // 批量移除 — 应 bump ENEMY(注册阵营)，不影响 PLAYER
+        TargetCacheUpdater.removeUnits(units);
+        var v2:Object = TargetCacheUpdater.getVersionInfo();
+        assertEquals("batchRemoveReg:移除后ENEMY=8", 8, v2.enemyVersion, 0);
+        assertEquals("batchRemoveReg:PLAYER不变=0", 0, v2.allyVersion, 0);
+    }
+
+    /**
+     * addUnits 中阵营变更应同时 bump 旧阵营和新阵营
+     */
+    private static function testBatchFactionChangeVersionBumps():Void {
+        TargetCacheUpdater.resetVersions();
+
+        var units:Array = [];
+        for (var i:Number = 0; i < 3; i++) {
+            var u:Object = {
+                _name: "batch_change_" + i,
+                hp: 100,
+                maxhp: 100,
+                是否为敌人: true,
+                aabbCollider: {
+                    left: i * 20, right: i * 20 + 15,
+                    updateFromUnitArea: function(u:Object):Void {}
+                }
+            };
+            units.push(u);
+        }
+
+        // 以 ENEMY 注册
+        TargetCacheUpdater.addUnits(units);
+        var v1:Object = TargetCacheUpdater.getVersionInfo();
+        assertEquals("batchChange:初始ENEMY=3", 3, v1.enemyVersion, 0);
+        assertEquals("batchChange:初始PLAYER=0", 0, v1.allyVersion, 0);
+
+        // 全部改为友军
+        for (var j:Number = 0; j < units.length; j++) {
+            units[j].是否为敌人 = false;
+        }
+
+        // 重新 addUnits — 触发阵营变更
+        TargetCacheUpdater.addUnits(units);
+        var v2:Object = TargetCacheUpdater.getVersionInfo();
+        // 旧阵营 ENEMY 应被 bump（3次移除），新阵营 PLAYER 应被 bump（3次添加）
+        assertTrue("batchChange:ENEMY版本递增(旧桶被修改)", v2.enemyVersion > v1.enemyVersion);
+        assertTrue("batchChange:PLAYER版本递增(新桶被修改)", v2.allyVersion > v1.allyVersion);
+    }
+
+    /**
+     * reconciliation 应通过 _reconcileVersion 确保所有缓存刷新，
+     * 即使阵营单位总数不变（跨阵营迁移/互换场景）
+     */
+    private static function testReconciliationForcesVersionRefresh():Void {
+        TargetCacheUpdater.resetVersions();
+
+        var units:Array = [];
+        for (var i:Number = 0; i < 4; i++) {
+            var u:Object = {
+                _name: "rv_" + i,
+                hp: 100,
+                maxhp: 100,
+                是否为敌人: (i < 2), // 2 enemies, 2 allies
+                aabbCollider: {
+                    left: i * 20, right: i * 20 + 15,
+                    updateFromUnitArea: function(u:Object):Void {}
+                }
+            };
+            units.push(u);
+            TargetCacheUpdater.addUnit(u);
+        }
+
+        var world:Object = {};
+        for (var j:Number = 0; j < units.length; j++) {
+            world[units[j]._name] = units[j];
+        }
+
+        var cacheEntry:Object = createTestCacheEntry();
+
+        // 首次 updateCache（触发 reconciliation）
+        TargetCacheUpdater.updateCache(world, 20000, "敌人", false, cacheEntry);
+
+        // 记录当前版本（通过 getVersionForRequest 获取含 _reconcileVersion 的值）
+        var verBefore:Number = TargetCacheUpdater.getVersionForRequest("敌人", "PLAYER");
+
+        // 偷偷交换阵营（不通过 addUnit，模拟注册表漂移）
+        // 总数不变: 仍然 2 enemy + 2 ally
+        units[0].是否为敌人 = false; // enemy → ally
+        units[2].是否为敌人 = true;  // ally → enemy
+
+        // 跨越 RECONCILE_INTERVAL 触发 reconciliation
+        TargetCacheUpdater.updateCache(world, 20301, "敌人", false, cacheEntry);
+
+        var verAfter:Number = TargetCacheUpdater.getVersionForRequest("敌人", "PLAYER");
+
+        // 版本必须递增，即使阵营总数未变
+        assertTrue("reconcile版本刷新:即使总数不变版本也递增", verAfter > verBefore);
     }
 
     // ========================================================================

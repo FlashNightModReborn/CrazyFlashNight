@@ -74,6 +74,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     private static var RECONCILE_INTERVAL:Number = 300;
 
     /**
+     * 校验版本号
+     * 每次 _reconcile 执行后递增，纳入 _calculateVersion 确保所有缓存必然刷新。
+     */
+    private static var _reconcileVersion:Number = 0;
+
+    /**
      * 缓存有效性阈值访问器
      * 委托给 AdaptiveThresholdOptimizer 管理
      */
@@ -309,7 +315,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             for (var faction:String in _factionVersions) {
                 totalVersion += _factionVersions[faction];
             }
-            return totalVersion;
+            return totalVersion + _reconcileVersion;
         } else if (requestType == _ENEMY_TYPE) {
             // 敌人请求：所有敌对阵营版本号之和
             // 使用 Ref 版本避免 slice 分配（高频路径）
@@ -320,7 +326,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
                     enemyVersion += _factionVersions[enemyFactions[i]] || 0;
                 }
             }
-            return enemyVersion;
+            return enemyVersion + _reconcileVersion;
         } else {
             // 友军请求：所有友好阵营版本号之和
             // 使用 Ref 版本避免 slice 分配（高频路径）
@@ -331,7 +337,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
                     allyVersion += _factionVersions[allyFactions[j]] || 0;
                 }
             }
-            return allyVersion;
+            return allyVersion + _reconcileVersion;
         }
     }
 
@@ -416,7 +422,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
      *
      * 1. 清空现有注册表
      * 2. 遍历 gameWorld 重建 _registry / _registryMap（仅 hp > 0 的单位）
-     * 3. 异常检测：如果数量与 _registryCount 不一致，强制 bump 所有版本刷新缓存
+     * 3. 递增 _reconcileVersion，确保所有缓存在校验后必然刷新
      * 4. 对每个桶按 aabbCollider.left 预排序（插入排序），
      *    使后续 "全体" 查询拼接时 TimSort 可识别 natural runs → O(n) 归并
      *
@@ -448,12 +454,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             }
         }
 
-        // 3. 异常检测：数量不一致时强制刷新所有缓存
-        if (newCount != _registryCount) {
-            for (var f:String in _factionVersions) {
-                _factionVersions[f]++;
-            }
-        }
+        // 3. 递增校验版本号，确保所有缓存在 reconciliation 后必然刷新
+        _reconcileVersion++;
         _registryCount = newCount;
 
         // 4. 预排序每个桶（按 left 升序，插入排序）
@@ -525,9 +527,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
                 _factionVersions[faction]++;
                 return;
             }
-            // 阵营变更，从旧桶移除
+            // 阵营变更，从旧桶移除，并 bump 旧阵营版本
             _removeFromBucket(name, oldFaction);
             _registryCount--;
+            if (!_factionVersions[oldFaction]) {
+                _factionVersions[oldFaction] = 0;
+            }
+            _factionVersions[oldFaction]++;
         }
 
         // 添加到对应阵营桶
@@ -562,11 +568,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             _registryCount--;
         }
 
-        // 版本 bump
-        if (!_factionVersions[faction]) {
-            _factionVersions[faction] = 0;
+        // 版本 bump：以实际被修改的桶为准
+        var bumpFaction:String = (registeredFaction !== undefined) ? registeredFaction : faction;
+        if (!_factionVersions[bumpFaction]) {
+            _factionVersions[bumpFaction] = 0;
         }
-        _factionVersions[faction]++;
+        _factionVersions[bumpFaction]++;
     }
 
     /**
@@ -592,9 +599,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
                     factionCounts[faction]++;
                     continue;
                 }
-                // 阵营变更
+                // 阵营变更，从旧桶移除，并统计旧阵营版本 bump
                 _removeFromBucket(name, oldFaction);
                 _registryCount--;
+                if (!factionCounts[oldFaction]) factionCounts[oldFaction] = 0;
+                factionCounts[oldFaction]++;
             }
 
             if (!_registry[faction]) {
@@ -639,8 +648,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
                 _registryCount--;
             }
 
-            if (!factionCounts[faction]) factionCounts[faction] = 0;
-            factionCounts[faction]++;
+            // 版本 bump：以实际被修改的桶为准
+            var bumpFaction:String = (registeredFaction !== undefined) ? registeredFaction : faction;
+            if (!factionCounts[bumpFaction]) factionCounts[bumpFaction] = 0;
+            factionCounts[bumpFaction]++;
         }
 
         // 批量更新版本号
@@ -685,6 +696,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         for (var faction:String in _factionVersions) {
             _factionVersions[faction] = 0;
         }
+        _reconcileVersion = 0;
 
         // 清空缓存池
         for (var key:String in _cachePool) {
