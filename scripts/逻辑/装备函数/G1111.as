@@ -321,7 +321,7 @@ _root.装备生命周期函数.G1111周期 = function (ref)
                 // 如果没有目标或当前目标无效，搜索新目标
                 if (ref.autoTarget == null || ref.autoTarget._x == undefined) {
                     if (typeof TargetCacheManager !== "undefined") {
-                        ref.autoTarget = TargetCacheManager.findNearestEnemy(自机, ref.ENEMY_SEARCH_DISTANCE);
+                        ref.autoTarget = TargetCacheManager.findNearestEnemy(自机, ref.TARGET_SEARCH_INTERVAL);
                     }
                 }
 

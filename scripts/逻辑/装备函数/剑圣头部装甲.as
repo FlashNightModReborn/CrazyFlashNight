@@ -198,7 +198,7 @@ _root.装备生命周期函数.剑圣头部装甲周期 = function(ref:Object) {
     ref.帧计数 = 0;
 
     // 搜索最近的一个敌人
-    ref.当前目标 = TargetCacheManager.findNearestEnemy(target, ref.搜索距离);
+    ref.当前目标 = TargetCacheManager.findNearestEnemy(target, ref.绘制间隔);
 
     // 处理当前目标
     var enemy:MovieClip = ref.当前目标;

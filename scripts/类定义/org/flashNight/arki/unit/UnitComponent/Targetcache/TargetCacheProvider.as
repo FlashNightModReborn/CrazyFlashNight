@@ -5,7 +5,14 @@
 // 1. 小工作集优化：使用 Object Map 管理 SortedUnitCache（典型工作集 <= 7 个键）
 // 2. 提供高效的缓存获取统一入口，适配高频场景（如子弹队列 updateInterval=1）
 // 3. 【重构改进】集成 FactionManager 支持多阵营系统
-// 4. 失效由“版本号 + updateInterval”驱动，容量仅作为兜底
+// 4. 失效由"版本号 + updateInterval"驱动，容量仅作为兜底
+//
+// 【注意：全体 vs 分阵营 缓存视图一致性】
+// "全体" 缓存与 "敌人_X"/"友军_X" 缓存是独立的 cacheKey 条目，
+// 各自拥有独立的 lastUpdatedFrame 和 updateInterval 生命周期。
+// 因此，在同一帧内，若两类缓存的 updateInterval 不同，
+// 它们的数据新鲜度可能不一致（"全体" 可能比 "分阵营" 更旧或更新）。
+// 对于需要严格跨视图一致性的场景，调用方应确保使用相同的 updateInterval。
 // ============================================================================
 import org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater;
@@ -293,7 +300,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             _root.gameworld,
             currentFrame,
             requestType,
-            target.是否为敌人,  // 向后兼容参数
+            FactionManager.getFactionFromUnit(target),
             tempCacheEntry
         );
         
@@ -343,7 +350,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             _root.gameworld,
             currentFrame,
             requestType,
-            target.是否为敌人,  // 向后兼容参数
+            FactionManager.getFactionFromUnit(target),
             tempCacheEntry
         );
         

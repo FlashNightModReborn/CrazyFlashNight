@@ -126,7 +126,7 @@ class org.flashNight.arki.unit.Action.Regeneration.RegenerationCore {
      */
     public static function applyGroupRegeneration(caster, regenType:String, valueMode:String, value:Number, config:Object):Boolean {
         var hero:MovieClip = TargetCacheManager.findHero();
-        var allies:Array = TargetCacheManager.getCachedAlly(hero, config.maxTargets || 30);
+        var allies:Array = TargetCacheManager.getCachedAlly(hero, 5);
         var successCount:Number = 0;
         
         for (var i:Number = 0; i < allies.length; ++i) {
@@ -156,7 +156,7 @@ class org.flashNight.arki.unit.Action.Regeneration.RegenerationCore {
     public static function applyRangeRegeneration(caster:MovieClip, regenType:String, valueMode:String, value:Number, config:Object):Boolean {
         if (!config.rangeX || !config.rangeY) return false;
         
-        var allies:Array = TargetCacheManager.findAlliesInRange(caster, config.maxTargets || 30, config.rangeX);
+        var allies:Array = TargetCacheManager.findAlliesInRange(caster, 5, config.rangeX, config.rangeX);
         var successCount:Number = 0;
 
         // 施法者自身也应用恢复（findAlliesInRange默认排除自身）

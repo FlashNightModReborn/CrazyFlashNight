@@ -159,14 +159,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
      * @param {Object} gameWorld - 游戏世界对象，包含所有单位
      * @param {Number} currentFrame - 当前帧数，用于更新时间戳
      * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
-     * @param {Boolean} targetIsEnemy - 目标（请求者）是否为敌人（向后兼容参数）
+     * @param {String} requesterFaction - 请求者阵营ID（FactionManager.FACTION_*）
      * @param {Object} cacheEntry - 要更新的缓存项对象
      */
     public static function updateCache(
         gameWorld:Object,
         currentFrame:Number,
         requestType:String,
-        targetIsEnemy:Boolean,
+        requesterFaction:String,
         cacheEntry:Object
     ):Void {
         // 定期校验：首次强制（_lastReconcileFrame == -1）+ 定期间隔
@@ -178,17 +178,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         // 判断请求类型
         var isAllRequest:Boolean   = (requestType == _ALL_TYPE);
         var isEnemyRequest:Boolean = (requestType == _ENEMY_TYPE);
-
-        // 请求者阵营（向后兼容：由 legacy 的“是否为敌人”布尔值映射得到）
-        // 避免每次 updateCache new 临时对象造成 GC 压力。
-        var requesterFaction:String;
-        if (targetIsEnemy === true) {
-            requesterFaction = FactionManager.FACTION_ENEMY;
-        } else if (targetIsEnemy === false) {
-            requesterFaction = FactionManager.FACTION_PLAYER;
-        } else {
-            requesterFaction = FactionManager.FACTION_HOSTILE_NEUTRAL;
-        }
 
         // 生成缓存键
         var cacheKey:String = isAllRequest
@@ -442,7 +431,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         // 2. 全量扫描 gameWorld 重建注册表
         for (var key:String in gameWorld) {
             var u:Object = gameWorld[key];
-            if (u.hp > 0) {
+            if (u.hp > 0 && u.aabbCollider) {
                 var faction:String = FactionManager.getFactionFromUnit(u);
                 if (!_registry[faction]) {
                     _registry[faction] = [];

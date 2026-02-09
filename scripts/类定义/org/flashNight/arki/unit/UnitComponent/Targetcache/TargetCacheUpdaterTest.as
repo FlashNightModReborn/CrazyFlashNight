@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.AdaptiveThresholdOptimizer;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
 
 /**
  * 完整测试套件：TargetCacheUpdater
@@ -398,7 +399,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             mockGameWorld,
             100,
             "敌人",
-            enemyRequester.是否为敌人,
+            FactionManager.getFactionFromUnit(enemyRequester),
             testCacheEntry
         );
         
@@ -428,7 +429,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             mockGameWorld,
             200,
             "友军",
-            enemyRequester.是否为敌人,
+            FactionManager.getFactionFromUnit(enemyRequester),
             testCacheEntry
         );
         
@@ -447,7 +448,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             mockGameWorld,
             300,
             "全体",
-            true,
+            FactionManager.FACTION_ENEMY,
             testCacheEntry
         );
         
@@ -476,7 +477,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             mockGameWorld,
             400,
             "敌人",
-            true,
+            FactionManager.FACTION_ENEMY,
             testCacheEntry
         );
         
@@ -488,7 +489,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             mockGameWorld,
             500,
             "敌人",
-            true,
+            FactionManager.FACTION_ENEMY,
             testCacheEntry
         );
         
@@ -504,7 +505,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             mockGameWorld,
             600,
             "敌人",
-            true,
+            FactionManager.FACTION_ENEMY,
             testCacheEntry
         );
         
@@ -520,7 +521,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             mockGameWorld,
             700,
             "全体",
-            true,
+            FactionManager.FACTION_ENEMY,
             testCacheEntry
         );
         
@@ -732,7 +733,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             mockGameWorld,
             800,
             "全体",
-            true,
+            FactionManager.FACTION_ENEMY,
             testCacheEntry
         );
         
@@ -766,9 +767,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         assertEquals("初始内存使用为0", 0, initialStats.memoryUsage, 0);
         
         // 触发一些缓存创建
-        TargetCacheUpdater.updateCache(mockGameWorld, 900, "敌人", true, testCacheEntry);
-        TargetCacheUpdater.updateCache(mockGameWorld, 901, "友军", true, testCacheEntry);
-        TargetCacheUpdater.updateCache(mockGameWorld, 902, "全体", true, testCacheEntry);
+        TargetCacheUpdater.updateCache(mockGameWorld, 900, "敌人", FactionManager.FACTION_ENEMY, testCacheEntry);
+        TargetCacheUpdater.updateCache(mockGameWorld, 901, "友军", FactionManager.FACTION_ENEMY, testCacheEntry);
+        TargetCacheUpdater.updateCache(mockGameWorld, 902, "全体", FactionManager.FACTION_ENEMY, testCacheEntry);
         
         var afterStats:Object = TargetCacheUpdater.getCachePoolStats();
         assertTrue("创建缓存后池数量增加", afterStats.totalPools > initialStats.totalPools);
@@ -780,8 +781,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
     
     private static function testCachePoolClearing():Void {
         // 先创建一些缓存
-        TargetCacheUpdater.updateCache(mockGameWorld, 1000, "敌人", true, testCacheEntry);
-        TargetCacheUpdater.updateCache(mockGameWorld, 1001, "友军", false, testCacheEntry);
+        TargetCacheUpdater.updateCache(mockGameWorld, 1000, "敌人", FactionManager.FACTION_ENEMY, testCacheEntry);
+        TargetCacheUpdater.updateCache(mockGameWorld, 1001, "友军", FactionManager.FACTION_PLAYER, testCacheEntry);
         
         var beforeClear:Object = TargetCacheUpdater.getCachePoolStats();
         assertTrue("清理前有缓存池", beforeClear.totalPools > 0);
@@ -801,13 +802,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         TargetCacheUpdater.resetVersions();
         
         var requestTypes:Array = ["敌人", "友军", "全体"];
-        var factionTypes:Array = [true, false];
+        var factionTypes:Array = [FactionManager.FACTION_ENEMY, FactionManager.FACTION_PLAYER];
         
         // 创建多种类型的缓存
         for (var i:Number = 0; i < requestTypes.length; i++) {
             var requestType:String = requestTypes[i];
             if (requestType == "全体") {
-                TargetCacheUpdater.updateCache(mockGameWorld, 1100 + i, requestType, true, testCacheEntry);
+                TargetCacheUpdater.updateCache(mockGameWorld, 1100 + i, requestType, FactionManager.FACTION_ENEMY, testCacheEntry);
             } else {
                 for (var j:Number = 0; j < factionTypes.length; j++) {
                     TargetCacheUpdater.updateCache(mockGameWorld, 1100 + i * 10 + j, requestType, factionTypes[j], testCacheEntry);
@@ -934,13 +935,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         var startTime:Number = getTimer();
         for (var i:Number = 0; i < trials; i++) {
             var requestType:String = (i % 3 == 0) ? "全体" : ((i % 3 == 1) ? "敌人" : "友军");
-            var isEnemy:Boolean = (i % 2 == 0);
-            
+            var requesterFaction:String = (i % 2 == 0) ? FactionManager.FACTION_ENEMY : FactionManager.FACTION_PLAYER;
+
             TargetCacheUpdater.updateCache(
                 largeWorld,
                 2000 + i,
                 requestType,
-                isEnemy,
+                requesterFaction,
                 cacheEntry
             );
         }
@@ -1011,7 +1012,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             massiveWorld,
             3000,
             "全体",
-            true,
+            FactionManager.FACTION_ENEMY,
             cacheEntry
         );
         var massiveTime:Number = getTimer() - startTime;
@@ -1057,7 +1058,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
 
         // 首次 updateCache 触发 reconciliation（全量扫描）
         var startReconcile:Number = getTimer();
-        TargetCacheUpdater.updateCache(bigWorld, 17000, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(bigWorld, 17000, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
         var reconcileTime:Number = getTimer() - startReconcile;
 
         // 后续调用在 RECONCILE_INTERVAL 内，走注册表路径
@@ -1066,7 +1067,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         for (var t:Number = 0; t < trials; t++) {
             // bump 版本以强制每次重新收集
             TargetCacheUpdater.addUnit(bigUnits[0]);
-            TargetCacheUpdater.updateCache(bigWorld, 17001 + t, "全体", true, cacheEntry);
+            TargetCacheUpdater.updateCache(bigWorld, 17001 + t, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
         }
         var registryTime:Number = getTimer() - startRegistry;
         var avgRegistryTime:Number = registryTime / trials;
@@ -1133,7 +1134,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
     private static function testStatusReportContent():Void {
         // 先触发一些活动以产生有意义的状态
         TargetCacheUpdater.addUnit(testUnits[0]);
-        TargetCacheUpdater.updateCache(mockGameWorld, 4000, "敌人", true, testCacheEntry);
+        TargetCacheUpdater.updateCache(mockGameWorld, 4000, "敌人", FactionManager.FACTION_ENEMY, testCacheEntry);
 
         var report:String = TargetCacheUpdater.getDetailedStatusReport();
 
@@ -1174,7 +1175,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             emptyWorld,
             5000,
             "全体",
-            true,
+            FactionManager.FACTION_ENEMY,
             cacheEntry
         );
         
@@ -1199,7 +1200,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             singleWorld,
             5100,
             "全体",
-            true,
+            FactionManager.FACTION_ENEMY,
             cacheEntry
         );
         
@@ -1223,7 +1224,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             mixedWorld,
             5200,
             "全体",
-            true,
+            FactionManager.FACTION_ENEMY,
             cacheEntry
         );
         
@@ -1260,8 +1261,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         
         for (var j:Number = 0; j < 20; j++) {
             var reqType:String = (j % 3 == 0) ? "全体" : ((j % 3 == 1) ? "敌人" : "友军");
-            var isEnemy:Boolean = (j % 2 == 0);
-            TargetCacheUpdater.updateCache(testWorld, 6000 + j, reqType, isEnemy, cacheEntry);
+            var requesterFaction:String = (j % 2 == 0) ? FactionManager.FACTION_ENEMY : FactionManager.FACTION_PLAYER;
+            TargetCacheUpdater.updateCache(testWorld, 6000 + j, reqType, requesterFaction, cacheEntry);
         }
         
         var poolStats:Object = TargetCacheUpdater.getCachePoolStats();
@@ -1514,7 +1515,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
 
         // 触发一次 updateCache 让 reconciliation 初始化完成
         var cacheEntry:Object = createTestCacheEntry();
-        TargetCacheUpdater.updateCache(world, 10000, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 10000, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
 
         // 手动计算期望的敌人数量（对于 ENEMY 请求者，敌人是 PLAYER 即 是否为敌人==false）
         var expectedAllyForEnemy:Number = 0;
@@ -1524,7 +1525,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
 
         // 请求敌人（请求者为PLAYER，即是否为敌人=false）
         var enemyCacheEntry:Object = createTestCacheEntry();
-        TargetCacheUpdater.updateCache(world, 10001, "敌人", false, enemyCacheEntry);
+        TargetCacheUpdater.updateCache(world, 10001, "敌人", FactionManager.FACTION_PLAYER, enemyCacheEntry);
 
         assertEquals(
             "注册表收集:敌人数量正确",
@@ -1543,7 +1544,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
 
         // 请求友军（请求者为PLAYER）
         var allyCacheEntry:Object = createTestCacheEntry();
-        TargetCacheUpdater.updateCache(world, 10002, "友军", false, allyCacheEntry);
+        TargetCacheUpdater.updateCache(world, 10002, "友军", FactionManager.FACTION_PLAYER, allyCacheEntry);
 
         var expectedAllyForPlayer:Number = 0;
         for (var n:Number = 0; n < units.length; n++) {
@@ -1595,7 +1596,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
 
         // 首次 updateCache 触发 reconciliation
         var cacheEntry:Object = createTestCacheEntry();
-        TargetCacheUpdater.updateCache(world, 11000, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 11000, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
         assertEquals("初始全部10个单位", 10, cacheEntry.data.length, 0);
 
         // 模拟3个单位死亡（hp=0）但不调用 removeUnit — 模拟漏删场景
@@ -1611,7 +1612,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             aabbCollider: { left: 0, right: 0, updateFromUnitArea: function():Void {} }
         });
 
-        TargetCacheUpdater.updateCache(world, 11001, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 11001, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
         assertEquals("死亡单位被hp>0安全网过滤,剩余7个", 7, cacheEntry.data.length, 0);
 
         // 验证所有返回的单位都 hp > 0
@@ -1646,7 +1647,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         var world:Object = createMockGameWorld(createTestUnits(5));
         var cacheEntry:Object = createTestCacheEntry();
 
-        TargetCacheUpdater.updateCache(world, 12000, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 12000, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
 
         var stats1:Object = TargetCacheUpdater.getCachePoolStats();
         assertEquals("首次更新后lastReconcileFrame=12000", 12000, stats1.lastReconcileFrame, 0);
@@ -1663,19 +1664,19 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         var cacheEntry:Object = createTestCacheEntry();
 
         // 首次更新：触发 reconciliation 在 frame 13000
-        TargetCacheUpdater.updateCache(world, 13000, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 13000, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
         var stats1:Object = TargetCacheUpdater.getCachePoolStats();
         assertEquals("第一次校验帧=13000", 13000, stats1.lastReconcileFrame, 0);
 
         // 在 RECONCILE_INTERVAL 内更新（不触发 reconciliation）
         TargetCacheUpdater.addUnit(createSpecialUnits("all_enemies", 1)[0]); // bump 版本
-        TargetCacheUpdater.updateCache(world, 13100, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 13100, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
         var stats2:Object = TargetCacheUpdater.getCachePoolStats();
         assertEquals("间隔内不触发校验,帧仍=13000", 13000, stats2.lastReconcileFrame, 0);
 
         // 超过 RECONCILE_INTERVAL（默认300帧）后更新
         TargetCacheUpdater.addUnit(createSpecialUnits("all_enemies", 1)[0]); // bump 版本
-        TargetCacheUpdater.updateCache(world, 13301, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 13301, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
         var stats3:Object = TargetCacheUpdater.getCachePoolStats();
         assertEquals("超出间隔后触发校验,帧=13301", 13301, stats3.lastReconcileFrame, 0);
     }
@@ -1697,7 +1698,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         }
 
         // 首次更新（触发 reconciliation，此时 world 和 registry 一致）
-        TargetCacheUpdater.updateCache(world, 14000, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 14000, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
         var stats1:Object = TargetCacheUpdater.getCachePoolStats();
         assertEquals("初始registryCount=5", 5, stats1.registryCount, 0);
 
@@ -1721,13 +1722,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
 
         // 在 RECONCILE_INTERVAL 内更新 — sneaky 单位不在注册表中
         TargetCacheUpdater.addUnit(createSpecialUnits("all_enemies", 1)[0]); // bump 版本
-        TargetCacheUpdater.updateCache(world, 14050, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 14050, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
         // 注册表不含 sneaky 单位，但它们在 world 中
         // 收集仅来自注册表，所以结果中没有 sneaky
 
         // 超过 RECONCILE_INTERVAL 触发 reconciliation — 自愈
         TargetCacheUpdater.addUnit(createSpecialUnits("all_enemies", 1)[0]); // bump 版本
-        TargetCacheUpdater.updateCache(world, 14301, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 14301, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
 
         var stats2:Object = TargetCacheUpdater.getCachePoolStats();
         // reconciliation 从 gameWorld 重建注册表，应包含所有 hp>0 的单位
@@ -1770,7 +1771,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         var cacheEntry:Object = createTestCacheEntry();
 
         // 首次 updateCache 触发 reconciliation → 预排序
-        TargetCacheUpdater.updateCache(world, 15000, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 15000, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
 
         // 验证结果排序正确
         assertTrue("预排序后结果非空", cacheEntry.data.length > 0);
@@ -1809,7 +1810,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         // 用空世界触发 reconciliation
         var emptyWorld:Object = {};
         var cacheEntry:Object = createTestCacheEntry();
-        TargetCacheUpdater.updateCache(emptyWorld, 16000, "全体", true, cacheEntry);
+        TargetCacheUpdater.updateCache(emptyWorld, 16000, "全体", FactionManager.FACTION_ENEMY, cacheEntry);
 
         var sa:Object = TargetCacheUpdater.getCachePoolStats();
         assertEquals("空世界reconciliation后registryCount=0", 0, sa.registryCount, 0);
@@ -1971,7 +1972,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         var cacheEntry:Object = createTestCacheEntry();
 
         // 首次 updateCache（触发 reconciliation）
-        TargetCacheUpdater.updateCache(world, 20000, "敌人", false, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 20000, "敌人", FactionManager.FACTION_PLAYER, cacheEntry);
 
         // 记录当前版本（通过 getVersionForRequest 获取含 _reconcileVersion 的值）
         var verBefore:Number = TargetCacheUpdater.getVersionForRequest("敌人", "PLAYER");
@@ -1982,7 +1983,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         units[2].是否为敌人 = true;  // ally → enemy
 
         // 跨越 RECONCILE_INTERVAL 触发 reconciliation
-        TargetCacheUpdater.updateCache(world, 20301, "敌人", false, cacheEntry);
+        TargetCacheUpdater.updateCache(world, 20301, "敌人", FactionManager.FACTION_PLAYER, cacheEntry);
 
         var verAfter:Number = TargetCacheUpdater.getVersionForRequest("敌人", "PLAYER");
 
@@ -2009,7 +2010,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         var cacheEntry:Object = createTestCacheEntry();
         
         // 初始更新
-        TargetCacheUpdater.updateCache(dynamicWorld, 7000, "敌人", true, cacheEntry);
+        TargetCacheUpdater.updateCache(dynamicWorld, 7000, "敌人", FactionManager.FACTION_ENEMY, cacheEntry);
         var initialCount:Number = cacheEntry.data.length;
         
         // 添加新单位
@@ -2022,7 +2023,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         }
         
         // 重新更新
-        TargetCacheUpdater.updateCache(dynamicWorld, 7100, "敌人", true, cacheEntry);
+        TargetCacheUpdater.updateCache(dynamicWorld, 7100, "敌人", FactionManager.FACTION_ENEMY, cacheEntry);
         var afterAddCount:Number = cacheEntry.data.length;
         
         assertTrue("添加单位后数量可能变化", afterAddCount >= 0);
@@ -2035,7 +2036,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         }
         
         // 再次更新
-        TargetCacheUpdater.updateCache(dynamicWorld, 7200, "敌人", true, cacheEntry);
+        TargetCacheUpdater.updateCache(dynamicWorld, 7200, "敌人", FactionManager.FACTION_ENEMY, cacheEntry);
         var afterRemoveCount:Number = cacheEntry.data.length;
         
         // 验证数据一致性
@@ -2053,11 +2054,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
         }
         
         var requestConfigs:Array = [
-            {type: "敌人", isEnemy: true},
-            {type: "友军", isEnemy: true},
-            {type: "全体", isEnemy: true},
-            {type: "敌人", isEnemy: false},
-            {type: "友军", isEnemy: false}
+            {type: "敌人", faction: FactionManager.FACTION_ENEMY},
+            {type: "友军", faction: FactionManager.FACTION_ENEMY},
+            {type: "全体", faction: FactionManager.FACTION_ENEMY},
+            {type: "敌人", faction: FactionManager.FACTION_PLAYER},
+            {type: "友军", faction: FactionManager.FACTION_PLAYER}
         ];
         
         // 并发更新（模拟同一帧内多个请求）
@@ -2068,7 +2069,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
                 sharedWorld,
                 frame,
                 config.type,
-                config.isEnemy,
+                config.faction,
                 cacheEntries[j]
             );
         }
@@ -2098,7 +2099,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdaterTest 
             var tempWorld:Object = createMockGameWorld(createTestUnits(100));
             var tempCache:Object = createTestCacheEntry();
             
-            TargetCacheUpdater.updateCache(tempWorld, 9000 + cycle, "全体", true, tempCache);
+            TargetCacheUpdater.updateCache(tempWorld, 9000 + cycle, "全体", FactionManager.FACTION_ENEMY, tempCache);
             
             // 模拟内存释放
             tempWorld = null;
