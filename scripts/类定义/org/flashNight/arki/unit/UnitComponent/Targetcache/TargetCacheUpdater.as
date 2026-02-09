@@ -455,7 +455,17 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             }
         }
 
-        // 3. 递增校验版本号，确保所有缓存在 reconciliation 后必然刷新
+        // 3. 重置所有阵营版本号为 0，防止长时间运行后版本号溢出（IEEE 754 双精度 2^53 上限）。
+        //    同时必须重置 _cachePool 中每个条目的 tempVersion 为 -1，
+        //    因为阵营版本归零后 _calculateVersion 的结果可能 ≤ 先前的 tempVersion，
+        //    导致 tempVersion < currentVersion 判断失败而跳过收集。
+        //    最后递增 _reconcileVersion 保证 Provider 层缓存也必然失效。
+        for (var fReset:String in _factionVersions) {
+            _factionVersions[fReset] = 0;
+        }
+        for (var poolKey:String in _cachePool) {
+            _cachePool[poolKey].tempVersion = -1;
+        }
         _reconcileVersion++;
         _registryCount = newCount;
 

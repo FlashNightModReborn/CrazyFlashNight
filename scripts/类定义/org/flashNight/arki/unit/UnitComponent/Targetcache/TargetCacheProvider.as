@@ -75,7 +75,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
      */
     private static var _cacheValueSchema:Object = {
         // cache: SortedUnitCache实例
-        // createdFrame: 创建帧数
+        // lastRefreshFrame: 上次刷新帧数（创建或更新缓存数据的帧）
         // lastAccessFrame: 最后访问帧数
         // accessCount: 访问次数
         // dataVersion: 数据版本号
@@ -239,7 +239,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         }
         
         // 检查2: 强制刷新阈值
-        var framesSinceCreation:Number = currentFrame - cacheValue.createdFrame;
+        var framesSinceCreation:Number = currentFrame - cacheValue.lastRefreshFrame;
         if (framesSinceCreation > _cacheConfig.forceRefreshThreshold) {
             _stats.forceRefreshCount++;
             return false;
@@ -304,7 +304,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         // 使用 updateCache 输出的 post-reconcile 版本号，避免首次 reconcile 导致版本过时
         var cacheValue:Object = {
             cache: cache,
-            createdFrame: currentFrame,
+            lastRefreshFrame: currentFrame,
             lastAccessFrame: currentFrame,
             accessCount: 1,
             dataVersion: tempCacheEntry.dataVersion,
@@ -353,7 +353,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         );
 
         // 更新元数据（lastUpdatedFrame 已由 updateData() 内部赋值，无需重复设置）
-        cacheValue.createdFrame = currentFrame; // 重置创建帧，防止 forceRefreshThreshold 永久触发
+        cacheValue.lastRefreshFrame = currentFrame; // 重置刷新帧，防止 forceRefreshThreshold 永久触发
         cacheValue.lastAccessFrame = currentFrame;
         cacheValue.accessCount++;
         cacheValue.dataVersion = tempCacheEntry.dataVersion; // 使用 post-reconcile 版本
@@ -392,7 +392,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             candidates.push({
                 key: k,
                 lastAccessFrame: v.lastAccessFrame,
-                createdFrame: v.createdFrame
+                lastRefreshFrame: v.lastRefreshFrame
             });
         }
 
@@ -400,7 +400,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         candidates.sort(function(a:Object, b:Object):Number {
             var da:Number = a.lastAccessFrame - b.lastAccessFrame;
             if (da != 0) return da;
-            return a.createdFrame - b.createdFrame;
+            return a.lastRefreshFrame - b.lastRefreshFrame;
         });
 
         var needRemove:Number = liveCount - capacity;
@@ -652,7 +652,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
                 unitCount: cache.getCount(),
                 lastUpdated: cache.lastUpdatedFrame,
                 age: age,
-                createdFrame: cacheValue.createdFrame,
+                lastRefreshFrame: cacheValue.lastRefreshFrame,
                 lastAccessFrame: cacheValue.lastAccessFrame,
                 accessCount: cacheValue.accessCount,
                 dataVersion: cacheValue.dataVersion,

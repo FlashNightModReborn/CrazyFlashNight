@@ -31,7 +31,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     /**
      * 已按 aabbCollider.left 升序排序的单位数组
      * 这是缓存的核心数据，所有查询都基于这个有序数组
-     * @readonly 外部只读
+     *
+     * !! 此数组与 TargetCacheUpdater 内部的 tempList 共享引用。
+     * !! 当缓存因版本失效被刷新时，底层数组会被清空并重新填充。
+     * !! 外部持有的引用将**静默指向新数据**，不再是获取时的快照。
+     * !! 如需保留快照，请立即复制：var copy = cache.data.slice();
+     *
+     * @readonly 外部只读，禁止 push/splice/赋值/修改元素
      */
     public var data:Array;
 

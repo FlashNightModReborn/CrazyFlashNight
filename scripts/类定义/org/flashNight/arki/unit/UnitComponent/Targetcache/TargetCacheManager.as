@@ -384,12 +384,17 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 查找指定X轴范围内的所有单位
+     *
+     * !! 返回值为**复用数组**，调用方必须在当前调用栈内消费完毕，
+     * !! 不得持有引用或修改数组内容，否则下次调用会覆盖数据。
+     * !! 如需保留，请立即复制：var copy = result.slice();
+     *
      * @param {Object} target - 目标单位
      * @param {Number} updateInterval - 更新间隔(帧数)
      * @param {String} requestType - 请求类型
      * @param {Number} leftRange - 左侧搜索范围
      * @param {Number} rightRange - 右侧搜索范围
-     * @return {Array} 范围内的单位数组
+     * @return {Array} 范围内的单位数组（复用，勿持有引用）
      */
     public static function findTargetsInRange(
         target:Object,
@@ -404,11 +409,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 查找指定半径范围内的所有单位
+     *
+     * !! 返回值为**复用数组**，调用方必须在当前调用栈内消费完毕，
+     * !! 不得持有引用或修改数组内容，否则下次调用会覆盖数据。
+     * !! 如需保留，请立即复制：var copy = result.slice();
+     *
      * @param {Object} target - 目标单位
      * @param {Number} updateInterval - 更新间隔(帧数)
      * @param {String} requestType - 请求类型
      * @param {Number} radius - 搜索半径
-     * @return {Array} 范围内的单位数组
+     * @return {Array} 范围内的单位数组（复用，勿持有引用）
      */
     public static function findTargetsInRadius(
         target:Object,
@@ -422,11 +432,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 查找指定X轴范围内的敌人单位
+     * !! 返回值为复用数组，勿持有引用（详见 findTargetsInRange）
      * @param {Object} t - 目标单位
      * @param {Number} interval - 更新间隔(帧数)
      * @param {Number} leftRange - 左侧搜索范围
      * @param {Number} rightRange - 右侧搜索范围
-     * @return {Array} 范围内的敌人数组
+     * @return {Array} 范围内的敌人数组（复用，勿持有引用）
      */
     public static function findEnemiesInRange(
         t:Object, interval:Number, leftRange:Number, rightRange:Number
@@ -436,11 +447,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 查找指定X轴范围内的友军单位
+     * !! 返回值为复用数组，勿持有引用（详见 findTargetsInRange）
      * @param {Object} t - 目标单位
      * @param {Number} interval - 更新间隔(帧数)
      * @param {Number} leftRange - 左侧搜索范围
      * @param {Number} rightRange - 右侧搜索范围
-     * @return {Array} 范围内的友军数组
+     * @return {Array} 范围内的友军数组（复用，勿持有引用）
      */
     public static function findAlliesInRange(
         t:Object, interval:Number, leftRange:Number, rightRange:Number
@@ -450,11 +462,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 查找指定X轴范围内的全体单位
+     * !! 返回值为复用数组，勿持有引用（详见 findTargetsInRange）
      * @param {Object} t - 目标单位
      * @param {Number} interval - 更新间隔(帧数)
      * @param {Number} leftRange - 左侧搜索范围
      * @param {Number} rightRange - 右侧搜索范围
-     * @return {Array} 范围内的全体单位数组
+     * @return {Array} 范围内的全体单位数组（复用，勿持有引用）
      */
     public static function findAllInRange(
         t:Object, interval:Number, leftRange:Number, rightRange:Number
@@ -464,10 +477,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 查找指定半径内的敌人单位
+     * !! 返回值为复用数组，勿持有引用（详见 findTargetsInRadius）
      * @param {Object} t - 目标单位
      * @param {Number} interval - 更新间隔(帧数)
      * @param {Number} radius - 搜索半径
-     * @return {Array} 半径内的敌人数组
+     * @return {Array} 半径内的敌人数组（复用，勿持有引用）
      */
     public static function findEnemiesInRadius(t:Object, interval:Number, radius:Number):Array {
         return findTargetsInRadius(t, interval, "敌人", radius);
@@ -475,10 +489,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 查找指定半径内的友军单位
+     * !! 返回值为复用数组，勿持有引用（详见 findTargetsInRadius）
      * @param {Object} t - 目标单位
      * @param {Number} interval - 更新间隔(帧数)
      * @param {Number} radius - 搜索半径
-     * @return {Array} 半径内的友军数组
+     * @return {Array} 半径内的友军数组（复用，勿持有引用）
      */
     public static function findAlliesInRadius(t:Object, interval:Number, radius:Number):Array {
         return findTargetsInRadius(t, interval, "友军", radius);
@@ -486,10 +501,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 查找指定半径内的全体单位
+     * !! 返回值为复用数组，勿持有引用（详见 findTargetsInRadius）
      * @param {Object} t - 目标单位
      * @param {Number} interval - 更新间隔(帧数)
      * @param {Number} radius - 搜索半径
-     * @return {Array} 半径内的全体单位数组
+     * @return {Array} 半径内的全体单位数组（复用，勿持有引用）
      */
     public static function findAllInRadius(t:Object, interval:Number, radius:Number):Array {
         return findTargetsInRadius(t, interval, "全体", radius);

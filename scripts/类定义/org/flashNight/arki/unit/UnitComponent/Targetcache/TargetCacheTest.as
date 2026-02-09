@@ -592,6 +592,308 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
         }
     }
   
+    // ========================================================================
+    // 高级测试：过滤器查询 / 单调扫描 / 版本失效 / rightMaxValues
+    // ========================================================================
+
+    /** 高级测试失败计数 */
+    private var advancedTestCases:Number = 0;
+    private var advancedTestFailures:Number = 0;
+
+    /** 高级测试断言：布尔条件 */
+    public function advAssertTrue(context:String, condition:Boolean):Void {
+        if (!condition) {
+            trace("[高级断言失败] " + context);
+            advancedTestFailures++;
+        }
+    }
+
+    /** 高级测试断言：相等 */
+    public function advAssertEqual(context:String, actual, expected):Void {
+        if (actual !== expected) {
+            trace("[高级断言失败] " + context + " 预期:" + expected + " 实际:" + actual);
+            advancedTestFailures++;
+        }
+    }
+
+    /**
+     * 运行所有高级测试
+     */
+    public function runAdvancedTests():Boolean {
+        trace("\n=== 开始高级测试 ===");
+        advancedTestCases = 0;
+        advancedTestFailures = 0;
+
+        testFilterQuery();
+        testFilterFallback();
+        testMonotonicSweep();
+        testVersionInvalidation();
+        testRightMaxValues();
+
+        trace("\n=== 高级测试完成 ===");
+        trace("测试用例总数: " + advancedTestCases);
+        trace("通过用例: " + (advancedTestCases - advancedTestFailures));
+        trace("失败用例: " + advancedTestFailures);
+        return (advancedTestFailures == 0);
+    }
+
+    // ------------------------------------------------------------------
+    // 测试7：过滤器查询（findNearestWithFilter 系列）
+    // ------------------------------------------------------------------
+    private function testFilterQuery():Void {
+        advancedTestCases++;
+        trace("\n运行高级测试: 过滤器查询");
+        _resetCacheSystem();
+
+        // 创建场景：友军请求者 + 3 个敌人
+        var requester:Object = _addUnitDirectly(false); // 友军
+        requester.x = 200;
+        requester.aabbCollider.updateFromUnitArea(requester);
+
+        var e1:Object = _addUnitDirectly(true); // 敌人，近，高血量
+        e1.x = 220; e1.hp = 100; e1.maxhp = 100; e1.threat = 5;
+        e1.aabbCollider.updateFromUnitArea(e1);
+
+        var e2:Object = _addUnitDirectly(true); // 敌人，中，低血量
+        e2.x = 250; e2.hp = 30; e2.maxhp = 100; e2.threat = 1;
+        e2.aabbCollider.updateFromUnitArea(e2);
+
+        var e3:Object = _addUnitDirectly(true); // 敌人，远，高威胁
+        e3.x = 300; e3.hp = 80; e3.maxhp = 100; e3.threat = 10;
+        e3.aabbCollider.updateFromUnitArea(e3);
+
+        // 测试 findNearestEnemy：应返回 e1（最近）
+        var nearest:Object = TargetCacheManager.findNearestEnemy(requester, 0);
+        advAssertTrue("findNearestEnemy 返回最近敌人", nearest == e1);
+
+        // 测试 findNearestLowHPEnemy：应返回 e2（hp < 50%）
+        var lowHP:Object = TargetCacheManager.findNearestLowHPEnemy(requester, 0, 30);
+        advAssertTrue("findNearestLowHPEnemy 返回低血量敌人", lowHP == e2);
+
+        // 测试 findNearestThreateningEnemy（阈值8）：e1(5) 和 e2(1) 不满足，应返回 e3(10)
+        var threatening:Object = TargetCacheManager.findNearestThreateningEnemy(requester, 0, 8, 30);
+        advAssertTrue("findNearestThreateningEnemy 返回高威胁敌人", threatening == e3);
+
+        // 测试 findNearestEnemyWithFilter 自定义过滤器：查找 hp > 50 的敌人
+        var customResult:Object = TargetCacheManager.findNearestEnemyWithFilter(
+            requester, 0,
+            function(u:Object, t:Object, dist:Number):Boolean { return u.hp > 50; },
+            30, undefined
+        );
+        advAssertTrue("自定义过滤器返回 hp>50 的最近敌人", customResult == e1);
+    }
+
+    // ------------------------------------------------------------------
+    // 测试8：过滤器回退（findNearestWithFallback 系列）
+    // ------------------------------------------------------------------
+    private function testFilterFallback():Void {
+        advancedTestCases++;
+        trace("\n运行高级测试: 过滤器回退");
+        _resetCacheSystem();
+
+        // 场景：友军请求者 + 1 个敌人，无高威胁
+        var requester:Object = _addUnitDirectly(false);
+        requester.x = 100;
+        requester.aabbCollider.updateFromUnitArea(requester);
+
+        var e1:Object = _addUnitDirectly(true);
+        e1.x = 150; e1.hp = 80; e1.maxhp = 100; e1.threat = 2;
+        e1.aabbCollider.updateFromUnitArea(e1);
+
+        // 查找威胁>=10的敌人（不存在），应回退到最近敌人 e1
+        var fallback:Object = TargetCacheManager.findNearestThreateningEnemyWithFallback(requester, 0, 10, 30);
+        advAssertTrue("回退返回最近敌人", fallback == e1);
+
+        // 查找低血量敌人（e1 hp=80%，不满足 <50%），应回退到最近敌人 e1
+        var fallback2:Object = TargetCacheManager.findNearestLowHPEnemyWithFallback(requester, 0, 30);
+        advAssertTrue("低血量回退返回最近敌人", fallback2 == e1);
+    }
+
+    // ------------------------------------------------------------------
+    // 测试9：单调扫描正确性
+    // ------------------------------------------------------------------
+    private function testMonotonicSweep():Void {
+        advancedTestCases++;
+        trace("\n运行高级测试: 单调扫描");
+        _resetCacheSystem();
+
+        // 创建 5 个等距敌人：x = 50, 100, 150, 200, 250
+        var requester:Object = _addUnitDirectly(false);
+        requester.x = 0;
+        requester.aabbCollider.updateFromUnitArea(requester);
+
+        var enemies:Array = [];
+        for (var i:Number = 0; i < 5; i++) {
+            var e:Object = _addUnitDirectly(true);
+            e.x = 50 + i * 50;
+            e.width = 40;
+            e.aabbCollider.updateFromUnitArea(e);
+            enemies.push(e);
+        }
+
+        // 触发一次缓存构建
+        TargetCacheManager.getCachedEnemy(requester, 0);
+
+        // 获取缓存对象
+        var cache:SortedUnitCache = TargetCacheManager.acquireEnemyCache(requester, 0);
+        advAssertTrue("缓存非空", cache != null);
+
+        if (cache != null) {
+            // 模拟从左到右的单调扫描查询
+            var currentFrame:Number = _root.帧计时器.当前帧数;
+            cache.beginMonotonicSweep(currentFrame);
+
+            var lastStartIndex:Number = -1;
+            var sweepCorrect:Boolean = true;
+
+            // 5 个查询点从左到右：queryLeft = 30, 80, 130, 180, 230
+            for (var q:Number = 0; q < 5; q++) {
+                var queryLeft:Number = 30 + q * 50;
+                // 构造一个模拟的查询 AABB
+                var mockQuery = { left: queryLeft, right: queryLeft + 20 };
+                var result:Object = cache.getTargetsFromIndexMonotonic(mockQuery);
+
+                // startIndex 必须单调非减
+                if (result.startIndex < lastStartIndex) {
+                    sweepCorrect = false;
+                    trace("  单调性违反：查询" + q + " startIndex=" + result.startIndex
+                        + " < 上次=" + lastStartIndex);
+                }
+                lastStartIndex = result.startIndex;
+            }
+            advAssertTrue("单调扫描 startIndex 单调非减", sweepCorrect);
+
+            // 验证跨帧重置：新帧号应重置指针
+            cache.beginMonotonicSweep(currentFrame + 1);
+            var mockQuery2 = { left: 9999, right: 10000 };
+            var resetResult:Object = cache.getTargetsFromIndexMonotonic(mockQuery2);
+            // 查询一个超远位置，startIndex 应等于数据长度
+            advAssertEqual("跨帧重置后超远查询", resetResult.startIndex, cache.data.length);
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // 测试10：版本失效逻辑
+    // ------------------------------------------------------------------
+    private function testVersionInvalidation():Void {
+        advancedTestCases++;
+        trace("\n运行高级测试: 版本失效");
+        _resetCacheSystem();
+
+        // 初始场景：1 友军请求者 + 2 敌人
+        var requester:Object = _addUnitDirectly(false);
+        requester.x = 100;
+        requester.aabbCollider.updateFromUnitArea(requester);
+
+        var e1:Object = _addUnitDirectly(true);
+        e1.x = 150;
+        e1.aabbCollider.updateFromUnitArea(e1);
+
+        var e2:Object = _addUnitDirectly(true);
+        e2.x = 200;
+        e2.aabbCollider.updateFromUnitArea(e2);
+
+        // 首次获取：应有 2 个敌人，使用较大 interval 使缓存不会自动过期
+        var enemies1:Array = TargetCacheManager.getCachedEnemy(requester, 9999);
+        advAssertEqual("初始敌人数", enemies1.length, 2);
+
+        // 添加新敌人 → 版本号变更 → 即使 interval 未到，缓存应失效并包含新单位
+        var e3:Object = _addUnitDirectly(true);
+        e3.x = 250;
+        e3.aabbCollider.updateFromUnitArea(e3);
+
+        var enemies2:Array = TargetCacheManager.getCachedEnemy(requester, 9999);
+        advAssertEqual("添加后敌人数", enemies2.length, 3);
+
+        // 移除一个敌人 → 版本号变更
+        TargetCacheUpdater.removeUnit(e1);
+        delete gameWorld[e1._name];
+
+        var enemies3:Array = TargetCacheManager.getCachedEnemy(requester, 9999);
+        advAssertEqual("移除后敌人数", enemies3.length, 2);
+
+        // 验证友军缓存不受敌人变更影响（版本号隔离）
+        // 先获取一次友军缓存建立基线
+        var allies1:Array = TargetCacheManager.getCachedAlly(requester, 9999);
+        var allyCount1:Number = allies1.length;
+
+        // 添加一个敌人（不应影响友军缓存版本）
+        var e4:Object = _addUnitDirectly(true);
+        e4.x = 300;
+        e4.aabbCollider.updateFromUnitArea(e4);
+
+        // 由于友军阵营版本未变，且 interval=9999 足够大，应命中缓存（返回相同数据）
+        var allies2:Array = TargetCacheManager.getCachedAlly(requester, 9999);
+        advAssertEqual("友军缓存不受敌人变更影响", allies2.length, allyCount1);
+    }
+
+    // ------------------------------------------------------------------
+    // 测试11：rightMaxValues 构建正确性
+    // ------------------------------------------------------------------
+    private function testRightMaxValues():Void {
+        advancedTestCases++;
+        trace("\n运行高级测试: rightMaxValues 构建");
+        _resetCacheSystem();
+
+        // 创建宽度各异的单位（left 递增但 right 不一定单调）
+        var requester:Object = _addUnitDirectly(false);
+        requester.x = 0;
+        requester.aabbCollider.updateFromUnitArea(requester);
+
+        // 敌人：不同宽度导致 right 非单调
+        // e1: x=50, width=100 → left=50, right=150  (宽)
+        // e2: x=80, width=20  → left=80, right=100  (窄，right < e1.right)
+        // e3: x=120, width=30 → left=120, right=150 (right = e1.right)
+        // e4: x=200, width=80 → left=200, right=280 (新最大)
+        var widths:Array = [100, 20, 30, 80];
+        var xPositions:Array = [50, 80, 120, 200];
+
+        for (var i:Number = 0; i < 4; i++) {
+            var e:Object = _addUnitDirectly(true);
+            e.x = xPositions[i];
+            e.width = widths[i];
+            e.aabbCollider.updateFromUnitArea(e);
+        }
+
+        // 触发缓存构建
+        TargetCacheManager.getCachedEnemy(requester, 0);
+        var cache:SortedUnitCache = TargetCacheManager.acquireEnemyCache(requester, 0);
+        advAssertTrue("rightMaxValues 缓存非空", cache != null);
+
+        if (cache != null) {
+            var data:Array = cache.data;
+            var rv:Array = cache.rightValues;
+            var rmv:Array = cache.rightMaxValues;
+            var n:Number = data.length;
+
+            advAssertEqual("rightMaxValues 长度一致", rmv.length, n);
+
+            // 验证前缀最大值性质
+            var runningMax:Number = -Infinity;
+            var prefixCorrect:Boolean = true;
+            var monotonicCorrect:Boolean = true;
+
+            for (var k:Number = 0; k < n; k++) {
+                if (rv[k] > runningMax) runningMax = rv[k];
+
+                if (rmv[k] != runningMax) {
+                    prefixCorrect = false;
+                    trace("  rightMaxValues[" + k + "]=" + rmv[k] + " != 期望=" + runningMax);
+                }
+                if (k > 0 && rmv[k] < rmv[k - 1]) {
+                    monotonicCorrect = false;
+                    trace("  rightMaxValues 非单调：[" + (k-1) + "]=" + rmv[k-1] + " > [" + k + "]=" + rmv[k]);
+                }
+            }
+            advAssertTrue("rightMaxValues 满足前缀最大值", prefixCorrect);
+            advAssertTrue("rightMaxValues 单调非降", monotonicCorrect);
+
+            // 验证 validateData 也能通过
+            var validation:Object = cache.validateData();
+            advAssertTrue("validateData 通过", validation.isValid);
+        }
+    }
+
     /**
      * 执行测试：重复多次预热+准确性校验，再执行正式测试，并输出性能指标
      */
@@ -602,6 +904,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
         runBoundaryTests();
         if(!boundaryTestPassed) {
             trace("\n!!! 边界条件测试未通过，终止测试流程 !!!");
+            return;
+        }
+
+        // 阶段1.5：执行高级测试
+        var advancedPassed:Boolean = runAdvancedTests();
+        if(!advancedPassed) {
+            trace("\n!!! 高级测试未通过，终止测试流程 !!!");
             return;
         }
         

@@ -671,10 +671,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
     }
     
     /**
-     * 回归测试：createdFrame 在刷新后重置，防止 forceRefreshThreshold 永久触发
-     * 修复前行为：updateExistingCacheValue 不重置 createdFrame，
+     * 回归测试：lastRefreshFrame 在刷新后重置，防止 forceRefreshThreshold 永久触发
+     * 修复前行为：updateExistingCacheValue 不重置 lastRefreshFrame，
      *   导致超过阈值后每次请求都强制刷新
-     * 修复后行为：刷新后 createdFrame 重置为当前帧，
+     * 修复后行为：刷新后 lastRefreshFrame 重置为当前帧，
      *   需要再经过 forceRefreshThreshold 帧才会再次触发
      */
     private static function testForceRefreshThresholdResets():Void {
@@ -686,7 +686,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProviderTest
 
         var target:Object = createTestTarget(true);
 
-        // 第1步：创建缓存（createdFrame = 当前帧）
+        // 第1步：创建缓存（lastRefreshFrame = 当前帧）
         var cache1:SortedUnitCache = TargetCacheProvider.getCache("全体", target, 1000);
         var frame1:Number = cache1.lastUpdatedFrame;
 
