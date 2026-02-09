@@ -35,7 +35,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnE
         target.mp = target.mp满血值;
 
         _root.发布消息("复活");
-        TargetCacheUpdater.addUnit(target);
+        TargetCacheManager.addUnit(target);
         target.动画完毕(); // 通常用于强制重置动画状态
 
     }

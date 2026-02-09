@@ -22,7 +22,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
      * 缓存池对象
      * 【重构】现在使用阵营ID作为缓存键的一部分
      * 结构: {cacheKey: {tempList: Array, tempVersion: Number, leftValues:Array, rightValues:Array, nameIndex:Object}}
-     * - cacheKey: 缓存键，格式为 "敌人_FACTION_ID" 或 "友军_FACTION_ID" 或 "全体"
+     * - cacheKey: 缓存键，由 buildCacheKey() 生成，格式为 "type_faction"（如 "敌人_PLAYER"、"全体_all"）
      * - tempList: 临时单位列表，用于减少重复收集
      * - tempVersion: 版本号，用于判断是否需要重新收集
      * - leftValues/rightValues/nameIndex: 复用的数据结构，避免每帧分配导致GC抖动
@@ -90,9 +90,25 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     /**
      * 请求类型常量定义
      */
-    private static var _ENEMY_TYPE:String = "敌人";
-    private static var _ALLY_TYPE:String  = "友军";
-    private static var _ALL_TYPE:String   = "全体";
+    public static var ENEMY_TYPE:String = "敌人";
+    public static var ALLY_TYPE:String  = "友军";
+    public static var ALL_TYPE:String   = "全体";
+
+    /** 全体请求的阵营占位符 */
+    private static var _ALL_FACTION:String = "all";
+
+    /**
+     * 根据请求类型和阵营生成缓存键
+     * 统一入口，确保 Updater / Provider 使用同一格式
+     * @param requestType 请求类型（ENEMY_TYPE / ALLY_TYPE / ALL_TYPE）
+     * @param faction     阵营ID（全体请求时忽略）
+     * @return 缓存键字符串，格式 "type_faction"
+     */
+    public static function buildCacheKey(requestType:String, faction:String):String {
+        return (requestType == ALL_TYPE)
+            ? (ALL_TYPE + "_" + _ALL_FACTION)
+            : (requestType + "_" + faction);
+    }
 
     /**
      * TimSort 比较器复用（避免每次 updateCache new Function）
@@ -176,13 +192,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         }
 
         // 判断请求类型
-        var isAllRequest:Boolean   = (requestType == _ALL_TYPE);
-        var isEnemyRequest:Boolean = (requestType == _ENEMY_TYPE);
+        var isAllRequest:Boolean   = (requestType == ALL_TYPE);
+        var isEnemyRequest:Boolean = (requestType == ENEMY_TYPE);
 
         // 生成缓存键
-        var cacheKey:String = isAllRequest
-            ? _ALL_TYPE
-            : requestType + "_" + requesterFaction;
+        var cacheKey:String = buildCacheKey(requestType, requesterFaction);
 
         // 获取或创建缓存类型数据
         if (!_cachePool[cacheKey]) {
@@ -297,14 +311,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
      * @private
      */
     private static function _calculateVersion(requestType:String, requesterFaction:String):Number {
-        if (requestType == _ALL_TYPE) {
+        if (requestType == ALL_TYPE) {
             // 全体请求：所有阵营版本号之和
             var totalVersion:Number = 0;
             for (var faction:String in _factionVersions) {
                 totalVersion += _factionVersions[faction];
             }
             return totalVersion + _reconcileVersion;
-        } else if (requestType == _ENEMY_TYPE) {
+        } else if (requestType == ENEMY_TYPE) {
             // 敌人请求：所有敌对阵营版本号之和
             // 使用 Ref 版本避免 slice 分配（高频路径）
             var enemyFactions:Array = FactionManager.getEnemyFactionsRef(requesterFaction);

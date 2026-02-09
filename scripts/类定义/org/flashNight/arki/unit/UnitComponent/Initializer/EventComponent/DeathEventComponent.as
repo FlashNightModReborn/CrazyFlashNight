@@ -44,7 +44,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
             if(target.publishStageEvent === true){
                 _root.gameworld.dispatcher.publish("UnitDeath", target._name);
             }
-            TargetCacheUpdater.removeUnit(target);
+            TargetCacheManager.removeUnit(target);
         }
 
 

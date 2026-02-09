@@ -176,9 +176,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             }
 
             // 【重构】生成基于阵营的缓存键 + 精细化版本号（按 requestType + requesterFaction）
-            var isAllRequest:Boolean = (requestType == "全体");
+            var isAllRequest:Boolean = (requestType == TargetCacheUpdater.ALL_TYPE);
             var targetFaction:String = isAllRequest ? null : FactionManager.getFactionFromUnit(target);
-            var cacheKey:String = isAllRequest ? "全体_all" : (requestType + "_" + targetFaction);
+            var cacheKey:String = TargetCacheUpdater.buildCacheKey(requestType, targetFaction);
 
             // 获取当前帧数和版本信息
             var currentFrame:Number = _root.帧计时器.当前帧数;

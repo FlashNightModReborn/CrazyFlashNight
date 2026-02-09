@@ -43,7 +43,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         DressupInitializer.initialize(target); // 只有主角模板会执行
         DisplayNameInitializer.initialize(target);
 
-        TargetCacheUpdater.addUnit(target);
+        TargetCacheManager.addUnit(target);
 
         ExtraPropertyInitializer.initialize(target);
         BuffManagerInitializer.initialize(target);
