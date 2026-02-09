@@ -57,14 +57,14 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!9 71|0 62!0 62|1 31!1 31|5 14!5 14[7 7 21 2!21 2|45 5!45 5[56 13 56 19!56 19|57 35!57 35|50 72"/>
-                    <Edge strokeStyle="1" edges="!50 72|51 71"/>
-                    <Edge strokeStyle="2" edges="!51 71|51 72"/>
+                    <Edge fillStyle1="1" edges="!50 72|51 72"/>
                     <Edge fillStyle1="1" strokeStyle="2" edges="!51 72|51 1507"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!51 1507|3 1507"/>
                     <Edge fillStyle1="1" strokeStyle="2" edges="!3 1507|3 71"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!3 71|9 71"/>
                     <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!9 71|35 74!35 74|50 72"/>
-                    <Edge fillStyle1="1" edges="!50 72|51 72"/>
+                    <Edge strokeStyle="1" edges="!50 72|51 71"/>
+                    <Edge strokeStyle="2" edges="!51 71|51 72"/>
                   </edges>
                 </DOMShape>
               </elements>
