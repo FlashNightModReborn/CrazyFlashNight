@@ -1281,6 +1281,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 查找最近的构成威胁的敌人（威胁值 >= 阈值），如果没有则回退到最近敌人
+     * 使用统一的 findNearestTargetWithFallback 路径，单次 getCache 调用
      * @param {Object} t - 目标单位
      * @param {Number} interval - 更新间隔(帧数)
      * @param {Number} threatThreshold - 威胁阈值
@@ -1288,36 +1289,37 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @return {Object} 最近的威胁敌人，如果没有则返回最近敌人
      */
     public static function findNearestThreateningEnemyWithFallback(t:Object, interval:Number, threatThreshold:Number, searchLimit:Number):Object {
-        var result:Object = findNearestThreateningEnemy(t, interval, threatThreshold, searchLimit);
-        return (result != null) ? result : findNearestEnemy(t, interval);
+        _p_threat = threatThreshold;
+        return findNearestEnemyWithFallback(t, interval, _fn_threat, searchLimit, undefined);
     }
 
     /**
      * 查找最近的低血量敌人，如果没有则回退到最近敌人
+     * 使用统一的 findNearestTargetWithFallback 路径，单次 getCache 调用
      * @param {Object} t - 目标单位
      * @param {Number} interval - 更新间隔(帧数)
      * @param {Number} searchLimit - 最大搜索步数（可选）
      * @return {Object} 最近的低血量敌人，如果没有则返回最近敌人
      */
     public static function findNearestLowHPEnemyWithFallback(t:Object, interval:Number, searchLimit:Number):Object {
-        var result:Object = findNearestLowHPEnemy(t, interval, searchLimit);
-        return (result != null) ? result : findNearestEnemy(t, interval);
+        return findNearestEnemyWithFallback(t, interval, _fn_lowHP, searchLimit, undefined);
     }
 
     /**
      * 查找最近的受伤友军，如果没有则回退到最近友军
+     * 使用统一的 findNearestTargetWithFallback 路径，单次 getCache 调用
      * @param {Object} t - 目标单位
      * @param {Number} interval - 更新间隔(帧数)
      * @param {Number} searchLimit - 最大搜索步数（可选）
      * @return {Object} 最近的受伤友军，如果没有则返回最近友军
      */
     public static function findNearestInjuredAllyWithFallback(t:Object, interval:Number, searchLimit:Number):Object {
-        var result:Object = findNearestInjuredAlly(t, interval, searchLimit);
-        return (result != null) ? result : findNearestAlly(t, interval);
+        return findNearestAllyWithFallback(t, interval, _fn_injured, searchLimit, undefined);
     }
 
     /**
      * 查找最近的特定类型单位，如果没有则回退到最近单位
+     * 使用统一的 findNearestTargetWithFallback 路径，单次 getCache 调用
      * @param {Object} t - 目标单位
      * @param {Number} interval - 更新间隔(帧数)
      * @param {String} requestType - 请求类型("敌人"、"友军"或"全体")
@@ -1328,12 +1330,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     public static function findNearestUnitByTypeWithFallback(
         t:Object, interval:Number, requestType:String, unitType:String, searchLimit:Number
     ):Object {
-        var result:Object = findNearestUnitByType(t, interval, requestType, unitType, searchLimit);
-        return (result != null) ? result : findNearestTarget(t, interval, requestType);
+        _p_unitType = unitType;
+        return findNearestTargetWithFallback(t, interval, requestType, _fn_unitType, searchLimit, undefined);
     }
 
     /**
      * 查找最近的强化单位，如果没有则回退到最近敌人
+     * 使用统一的 findNearestTargetWithFallback 路径，单次 getCache 调用
      * @param {Object} t - 目标单位
      * @param {Number} interval - 更新间隔(帧数)
      * @param {String} buffName - buff名称
@@ -1341,8 +1344,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @return {Object} 最近的强化敌人，如果没有则返回最近敌人
      */
     public static function findNearestBuffedEnemyWithFallback(t:Object, interval:Number, buffName:String, searchLimit:Number):Object {
-        var result:Object = findNearestBuffedEnemy(t, interval, buffName, searchLimit);
-        return (result != null) ? result : findNearestEnemy(t, interval);
+        _p_buffName = buffName;
+        return findNearestEnemyWithFallback(t, interval, _fn_buff, searchLimit, undefined);
     }
 
     // ========================================================================

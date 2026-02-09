@@ -437,9 +437,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         for (var fid:String in _registry) {
             _registry[fid].length = 0;
         }
-        for (var oldName:String in _registryMap) {
-            delete _registryMap[oldName];
-        }
+        // O(1) 替换：旧对象在重建后自然 GC，避免 for-in + delete 的未定义行为风险
+        _registryMap = {};
         var newCount:Number = 0;
 
         // 2. 全量扫描 gameWorld 重建注册表

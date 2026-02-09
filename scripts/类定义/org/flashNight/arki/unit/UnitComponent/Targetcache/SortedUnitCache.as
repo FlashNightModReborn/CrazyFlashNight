@@ -94,10 +94,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     // 单帧扫描标记：用于"单调前进"的两指针扫描
     private var _sweepFrame:Number = -1;
 
-    // 查询结果复用对象（避免高频路径 new Object）
+    // 查询结果复用对象（避免高频路径 new Object / new Array）
     // 注意：调用方必须在下次调用前消费完毕，不得持有引用。
     private var _resultIndex:Object;
     private var _resultMonotonic:Object;
+    private var _resultRange:Array;
 
     // ========================================================================
     // 构造函数
@@ -131,6 +132,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         // 初始化查询结果复用对象
         this._resultIndex = { data: null, startIndex: 0 };
         this._resultMonotonic = { data: null, startIndex: 0 };
+        this._resultRange = [];
 
         // 构建 right 前缀最大值数组，保证右边界键单调性（供扫描线/二分使用）
         rebuildRightMaxValues();
@@ -682,10 +684,15 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         rightRange:Number,
         excludeSelf:Boolean
     ):Array {
+        // 复用内部数组，避免每次调用 new Array 产生 GC 压力
+        // 注意：调用方必须在下次调用前消费完毕，不得持有引用。
+        var result:Array = this._resultRange;
+        result.length = 0;
+
         if (excludeSelf == undefined) excludeSelf = true;
-        
+
         var len:Number = this.data.length;
-        if (len == 0) return [];
+        if (len == 0) return result;
 
         var targetX:Number = target.aabbCollider.left;
         var leftBound:Number = targetX - leftRange;
@@ -696,7 +703,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         if (this.leftValues[0] >= leftBound) {
             startIdx = 0;
         } else if (this.leftValues[len - 1] < leftBound) {
-            return [];
+            return result;
         } else {
             var l:Number = 0;
             var r:Number = len - 1;
@@ -723,10 +730,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
             endIdx = l2;
         }
 
-        // 构建结果数组
-        var result:Array = [];
+        // 填充复用数组
         var resultIdx:Number = 0;
-        
+
         for (var i:Number = startIdx; i < endIdx; i++) {
             var unit:Object = this.data[i];
             if (excludeSelf && unit == target) continue;

@@ -83,11 +83,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
         unit.y = Math.random() * 500;
         unit.width = 50; // 假定单位宽度
       
-        // 模拟碰撞箱对象，包含右边界属性和更新方法
+        // 模拟碰撞箱对象，包含左右边界属性和更新方法
         unit.aabbCollider = {
+            left: unit.x,
             right: unit.x + unit.width,
             updateFromUnitArea: function(u:Object):Void {
-                // 根据单位当前 x 位置更新右边界
+                this.left = u.x;
                 this.right = u.x + u.width;
             }
         };
@@ -288,7 +289,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
                 test.sampleUnit = units[4];
                 var sorted:Array = units.slice();
                 sorted.sort(function(a:Object, b:Object):Number {
-                    return a.aabbCollider.right - b.aabbCollider.right;
+                    return a.aabbCollider.left - b.aabbCollider.left;
                 });
                 test.expectedOrder = sorted;
             },
@@ -513,11 +514,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
     }
   
     // 以下方法用于手动筛选，用以验证缓存准确性
+    // 使用 FactionManager 进行阵营关系判断，正确处理三阵营（PLAYER/ENEMY/HOSTILE_NEUTRAL）
     private function collectManualEnemies(requestor:Object):Array {
         var result:Array = [];
         for (var key:String in this.gameWorld) {
             var u:Object = this.gameWorld[key];
-            if (u.hp > 0 && u.是否为敌人 != requestor.是否为敌人) { 
+            if (u.hp > 0 && FactionManager.areUnitsEnemies(requestor, u)) {
                 u.aabbCollider.updateFromUnitArea(u);
                 result.push(u);
             }
@@ -530,7 +532,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
         var result:Array = [];
         for (var key:String in this.gameWorld) {
             var u:Object = this.gameWorld[key];
-            if (u.hp > 0 && u.是否为敌人 == requestor.是否为敌人) { 
+            if (u.hp > 0 && FactionManager.areUnitsAllies(requestor, u)) {
                 u.aabbCollider.updateFromUnitArea(u);
                 result.push(u);
             }

@@ -159,82 +159,66 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         target:Object,
         updateInterval:Number
     ):SortedUnitCache {
-        var startTime:Number = _cacheConfig.detailedStatsEnabled ? getTimer() : 0;
         // 延迟初始化兜底：静态初始化失败时（加载顺序问题）允许首次访问触发初始化
         if (_cacheRegistry == undefined) {
             if (!initialize()) {
-                recordAccessTime(startTime);
                 return null;
             }
         }
         _stats.totalRequests++;
 
-        try {
-            // 定期同步缓存注册表
-            if (_stats.totalRequests % 100 == 0) {
-                syncCacheRegistry();
-            }
+        // 生成基于阵营的缓存键 + 精细化版本号（按 requestType + requesterFaction）
+        var isAllRequest:Boolean = (requestType == TargetCacheUpdater.ALL_TYPE);
+        var targetFaction:String = isAllRequest ? null : FactionManager.getFactionFromUnit(target);
+        var cacheKey:String = TargetCacheUpdater.buildCacheKey(requestType, targetFaction);
 
-            // 【重构】生成基于阵营的缓存键 + 精细化版本号（按 requestType + requesterFaction）
-            var isAllRequest:Boolean = (requestType == TargetCacheUpdater.ALL_TYPE);
-            var targetFaction:String = isAllRequest ? null : FactionManager.getFactionFromUnit(target);
-            var cacheKey:String = TargetCacheUpdater.buildCacheKey(requestType, targetFaction);
+        // 获取当前帧数和版本信息
+        var currentFrame:Number = _root.帧计时器.当前帧数;
+        var currentVersion:Number = 0;
+        if (_cacheConfig.versionCheckEnabled) {
+            // 按请求类型 + 请求者阵营计算相关版本号，避免无关阵营变化触发误失效
+            currentVersion = isAllRequest ?
+                _updater.getCurrentVersion() :
+                _updater.getVersionForRequest(requestType, targetFaction);
+        }
 
-            // 获取当前帧数和版本信息
-            var currentFrame:Number = _root.帧计时器.当前帧数;
-            var currentVersion:Number = 0;
-            if (_cacheConfig.versionCheckEnabled) {
-                // 旧实现：全局 getCurrentVersion() 会导致“无关阵营变化”触发误失效
-                // 新实现：按请求类型 + 请求者阵营计算相关版本号
-                currentVersion = isAllRequest ?
-                    _updater.getCurrentVersion() :
-                    _updater.getVersionForRequest(requestType, targetFaction);
-            }
+        // 从缓存表中获取缓存值对象
+        var cacheValue:Object = _cacheRegistry[cacheKey];
 
-            // 从缓存表中获取缓存值对象
-            var cacheValue:Object = _cacheRegistry[cacheKey];
-            
-            if (cacheValue != null) {
-                // 缓存命中 - 执行数据有效性检查
-                var isValid:Boolean = validateCacheValue(cacheValue, currentFrame, currentVersion, updateInterval);
-                
-                if (isValid) {
-                    // 缓存有效 - 更新访问统计并返回
-                    updateAccessStats(cacheValue, currentFrame);
-                    _stats.cacheHits++;
-                    
-                    recordAccessTime(startTime);
-                    return cacheValue.cache;
-                } else {
-                    // 缓存失效 - 更新现有缓存
-                    _stats.cacheMisses++;
-                    updateExistingCacheValue(cacheValue, requestType, target, currentFrame, currentVersion);
-                    _stats.cacheUpdates++;
-                    
-                    recordAccessTime(startTime);
-                    return cacheValue.cache;
-                }
+        if (cacheValue != null) {
+            // 缓存命中 - 执行数据有效性检查
+            var isValid:Boolean = validateCacheValue(cacheValue, currentFrame, currentVersion, updateInterval);
+
+            if (isValid) {
+                // 缓存有效 - 更新访问统计并返回
+                updateAccessStats(cacheValue, currentFrame);
+                _stats.cacheHits++;
+
+                return cacheValue.cache;
             } else {
-                // 缓存未命中 - 创建新缓存
+                // 缓存失效 - 更新现有缓存
+                // 复用已计算的 targetFaction，避免重复调用 getFactionFromUnit
                 _stats.cacheMisses++;
-                
-                var newCacheValue:Object = createNewCacheValue(requestType, target, currentFrame, currentVersion);
-                
-                // 放入缓存表
-                _cacheRegistry[cacheKey] = newCacheValue;
-                _stats.cacheCreations++;
+                updateExistingCacheValue(cacheValue, requestType, targetFaction, currentFrame, currentVersion);
+                _stats.cacheUpdates++;
 
-                // 兜底容量控制（小工作集场景一般不会触发，但保持行为稳定）
-                syncCacheRegistry();
-                
-                recordAccessTime(startTime);
-                return newCacheValue.cache;
+                return cacheValue.cache;
             }
-            
-        } catch (error:Error) {
-            trace("缓存获取异常: " + error.message);
-            recordAccessTime(startTime);
-            return null;
+        } else {
+            // 缓存未命中 - 创建新缓存
+            // 复用已计算的 targetFaction，避免重复调用 getFactionFromUnit
+            _stats.cacheMisses++;
+
+            var newCacheValue:Object = createNewCacheValue(requestType, targetFaction, currentFrame, currentVersion);
+
+            // 放入缓存表
+            _cacheRegistry[cacheKey] = newCacheValue;
+            _stats.cacheCreations++;
+
+            // 兜底容量控制（小工作集场景一般不会触发，但保持行为稳定）
+            syncCacheRegistry();
+
+            return newCacheValue.cache;
         }
     }
 
@@ -281,12 +265,15 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
 
     /**
      * 创建新的缓存值对象
-     * 【重构】支持阵营系统
+     * @param {String} requestType - 请求类型
+     * @param {String} targetFaction - 目标阵营ID（由调用方预先计算，避免重复 getFactionFromUnit）
+     * @param {Number} currentFrame - 当前帧数
+     * @param {Number} currentVersion - 当前版本号
      * @private
      */
     private static function createNewCacheValue(
         requestType:String,
-        target:Object,
+        targetFaction:String,
         currentFrame:Number,
         currentVersion:Number
     ):Object {
@@ -294,16 +281,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         // 注意：TargetCacheUpdater.updateCache 会完整写入 data/nameIndex/leftValues/rightValues/lastUpdatedFrame，
         // 这里避免预先分配数组/对象造成无效GC。
         var tempCacheEntry:Object = _tempCacheEntry;
-        
-        // 使用 TargetCacheUpdater 填充数据
+
+        // 使用 TargetCacheUpdater 填充数据（直接使用已计算的 targetFaction）
         _updater.updateCache(
             _root.gameworld,
             currentFrame,
             requestType,
-            FactionManager.getFactionFromUnit(target),
+            targetFaction,
             tempCacheEntry
         );
-        
+
         // 创建 SortedUnitCache 实例
         var cache:SortedUnitCache = new SortedUnitCache(
             tempCacheEntry.data,
@@ -312,10 +299,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             tempCacheEntry.rightValues,
             tempCacheEntry.lastUpdatedFrame
         );
-        
-        // 【重构】获取目标阵营
-        var targetFaction:String = FactionManager.getFactionFromUnit(target);
-        
+
         // 构建完整的缓存值对象
         // 使用 updateCache 输出的 post-reconcile 版本号，避免首次 reconcile 导致版本过时
         var cacheValue:Object = {
@@ -325,35 +309,40 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             accessCount: 1,
             dataVersion: tempCacheEntry.dataVersion,
             requestType: requestType,
-            targetFaction: targetFaction  // 【重构】存储阵营ID
+            targetFaction: targetFaction
         };
-        
+
         return cacheValue;
     }
 
     /**
      * 更新现有缓存值对象
-     * 【重构】支持阵营系统
+     * @param {Object} cacheValue - 缓存值对象
+     * @param {String} requestType - 请求类型
+     * @param {String} targetFaction - 目标阵营ID（由调用方预先计算，避免重复 getFactionFromUnit）
+     * @param {Number} currentFrame - 当前帧数
+     * @param {Number} currentVersion - 当前版本号
      * @private
      */
     private static function updateExistingCacheValue(
         cacheValue:Object,
         requestType:String,
-        target:Object,
+        targetFaction:String,
         currentFrame:Number,
         currentVersion:Number
     ):Void {
         // TargetCacheUpdater.updateCache 会写入完整字段，避免预分配导致的无效GC。
         var tempCacheEntry:Object = _tempCacheEntry;
-        
+
+        // 直接使用已计算的 targetFaction，避免重复调用 getFactionFromUnit
         _updater.updateCache(
             _root.gameworld,
             currentFrame,
             requestType,
-            FactionManager.getFactionFromUnit(target),
+            targetFaction,
             tempCacheEntry
         );
-        
+
         // 更新SortedUnitCache实例的数据
         cacheValue.cache.updateData(
             tempCacheEntry.data,
@@ -368,26 +357,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         cacheValue.lastAccessFrame = currentFrame;
         cacheValue.accessCount++;
         cacheValue.dataVersion = tempCacheEntry.dataVersion; // 使用 post-reconcile 版本
-        
-        // 【重构】更新阵营信息
-        cacheValue.targetFaction = FactionManager.getFactionFromUnit(target);
-    }
-
-    /**
-     * 记录访问时间统计
-     * @private
-     */
-    private static function recordAccessTime(startTime:Number):Void {
-        if (!_cacheConfig.detailedStatsEnabled) return;
-        
-        var accessTime:Number = getTimer() - startTime;
-        _stats.totalAccessTime += accessTime;
-        
-        if (accessTime > _stats.maxAccessTime) {
-            _stats.maxAccessTime = accessTime;
-        }
-        
-        _stats.avgAccessTime = _stats.totalAccessTime / _stats.totalRequests;
+        cacheValue.targetFaction = targetFaction;
     }
 
     // ========================================================================

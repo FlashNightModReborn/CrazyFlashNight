@@ -135,7 +135,7 @@ enemy_0 vs enemy_0
 ✅ 范围敌人计数合理 VICTORY
 ✅ 范围友军计数合理 VICTORY
 ✅ 简化范围敌人计数一致 VICTORY (expected=3, actual=3)
-✅ 简化范围友军计数一致 VICTORY (expected=4, actual=4)
+✅ 简化范围友军计数一致 VICTORY (expected=5, actual=5)
 ✅ 范围计数与搜索结果一致 VICTORY (expected=3, actual=3)
 ✅ 半径敌人计数返回数字 VICTORY (correct Number type)
 ✅ 半径友军计数返回数字 VICTORY (correct Number type)
@@ -209,13 +209,13 @@ enemy_0 vs enemy_0
 ✅ 短参数名兼容性-数字 VICTORY
 
 ⚔️ 第九波：性能基准战斗测试...
-📊 基础查询性能: 1000次调用耗时 39ms
+📊 基础查询性能: 1000次调用耗时 36ms
 ✅ 基础查询性能达标 VICTORY
-📊 复杂查询性能: 1500次调用耗时 75ms
+📊 复杂查询性能: 1500次调用耗时 69ms
 ✅ 复杂查询性能合理 VICTORY
-📊 外观层开销: Manager=385ms, Provider=381ms, 开销=1%
+📊 外观层开销: Manager=351ms, Provider=639ms, 开销=-45%
 ✅ 外观层开销合理 VICTORY
-📊 大规模数据性能: 200次调用耗时 17ms
+📊 大规模数据性能: 200次调用耗时 232ms
 ✅ 大规模数据性能合理 VICTORY
 
 ⚔️ 第十波：过滤器查询战斗测试...
@@ -235,9 +235,9 @@ enemy_0 vs enemy_0
 ✅ 永远匹配过滤器与直接查询一致 VICTORY
 ✅ null过滤器处理 VICTORY (object is null)
 ✅ 零searchLimit返回null VICTORY (object is null)
-📊 过滤查询性能: 100次调用耗时 7ms
+📊 过滤查询性能: 100次调用耗时 80ms
 ✅ 过滤查询性能合理 VICTORY
-📊 复杂过滤查询性能: 50次调用耗时 2ms
+📊 复杂过滤查询性能: 50次调用耗时 49ms
 ✅ 复杂过滤查询性能合理 VICTORY
 ✅ 过滤查询与手动过滤一致性 VICTORY
 ✅ Manager与Cache过滤查询一致性 VICTORY
@@ -255,7 +255,7 @@ enemy_0 vs enemy_0
 ✅ 受伤友军回退查询有合理结果 VICTORY
 ✅ 特定类型回退查询有合理结果 VICTORY
 ✅ 强化单位回退查询有合理结果 VICTORY
-📊 回退查询性能 - 成功过滤: 0.05ms, 触发回退: 0.21ms
+📊 回退查询性能 - 成功过滤: 0.78ms, 触发回退: 1.7ms
 ✅ 成功过滤性能合理 VICTORY
 ✅ 回退查询性能合理 VICTORY
 ✅ 边界情况测试完成 VICTORY
@@ -270,7 +270,7 @@ enemy_0 vs enemy_0
 ✅ 完整工作流集成测试成功
 ✅ 跨组件集成-新单位被正确处理 VICTORY
 ✅ 跨组件集成-单位移除正确处理 VICTORY
-📊 真实场景模拟: 10轮战斗耗时 4ms
+📊 真实场景模拟: 10轮战斗耗时 5ms
 ✅ 真实场景性能合理 VICTORY
 ✅ 高压下系统统计正常 VICTORY (object exists)
 ✅ 高压下缓存命中率合理 VICTORY
@@ -280,11 +280,11 @@ enemy_0 vs enemy_0
 ✅ 大规模数据-敌人计数合理 VICTORY
 ✅ 大规模数据-友军计数合理 VICTORY
 ✅ 大规模数据-处理时间合理 VICTORY
-📊 大规模数据压力: 301个单位，处理耗时 23ms
-📊 并发访问压力: 20次突发请求耗时 7ms
+📊 大规模数据压力: 301个单位，处理耗时 27ms
+📊 并发访问压力: 20次突发请求耗时 8ms
 ✅ 并发访问性能合理 VICTORY
 ✅ 高并发下系统健康 VICTORY
-📊 内存压力测试: 20次循环耗时 40ms
+📊 内存压力测试: 20次循环耗时 42ms
 ✅ 内存压力测试完成 VICTORY
 ✅ 内存压力后系统恢复正常 VICTORY
 
@@ -333,28 +333,28 @@ enemy_0 vs enemy_0
 🏆 通过次数: 267 ✅
 💥 失败次数: 0 ❌
 🎯 胜通过: 100%
-⏱️ 测试用时: 1068ms
+⏱️ 测试用时: 1924ms
 📋 API覆盖数: 267 个方法
 
 ⚡ 测试报告:
-  basicQueries: 0.039ms/次 (1000次测试)
-  complexQueries: 0.05ms/次 (1500次测试)
-  facadeOverhead: 开销 1% (10000次测试)
-  largeScale: 0.085ms/次 (200次测试)
-  filteredQuery: 0.07ms/次 (100次测试)
-  complexFilteredQuery: 0.04ms/次 (50次测试)
-  realWorldSimulation: 0.4ms/次 (10次测试)
-  massiveDataStress: 301个单位，23ms
-  concurrentAccess: 0.35ms/次 (20次突发)
-  memoryStress: 2ms/次 (20次循环)
+  basicQueries: 0.036ms/次 (1000次测试)
+  complexQueries: 0.046ms/次 (1500次测试)
+  facadeOverhead: 开销 -45% (10000次测试)
+  largeScale: 1.16ms/次 (200次测试)
+  filteredQuery: 0.8ms/次 (100次测试)
+  complexFilteredQuery: 0.98ms/次 (50次测试)
+  realWorldSimulation: 0.5ms/次 (10次测试)
+  massiveDataStress: 301个单位，27ms
+  concurrentAccess: 0.4ms/次 (20次突发)
+  memoryStress: 2.1ms/次 (20次循环)
 
 🎯 TargetCacheManager外观层当前状态:
 === TargetCacheProvider 状态报告 ===
 
 性能统计:
-  总请求次数: 23486
+  总请求次数: 23483
   缓存命中率: 99.75%
-  缓存命中: 23427
+  缓存命中: 23424
   缓存未命中: 59
   缓存创建: 36
   缓存更新: 23
