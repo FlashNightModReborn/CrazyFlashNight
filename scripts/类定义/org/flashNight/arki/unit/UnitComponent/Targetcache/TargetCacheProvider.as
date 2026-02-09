@@ -152,7 +152,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         target:Object,
         updateInterval:Number
     ):SortedUnitCache {
-        var startTime:Number = getTimer();
+        var startTime:Number = _cacheConfig.detailedStatsEnabled ? getTimer() : 0;
         // 延迟初始化兜底：静态初始化失败时（加载顺序问题）允许首次访问触发初始化
         if (_cacheRegistry == undefined) {
             if (!initialize()) {
@@ -310,12 +310,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
         var targetFaction:String = FactionManager.getFactionFromUnit(target);
         
         // 构建完整的缓存值对象
+        // 使用 updateCache 输出的 post-reconcile 版本号，避免首次 reconcile 导致版本过时
         var cacheValue:Object = {
             cache: cache,
             createdFrame: currentFrame,
             lastAccessFrame: currentFrame,
             accessCount: 1,
-            dataVersion: currentVersion,
+            dataVersion: tempCacheEntry.dataVersion,
             requestType: requestType,
             targetFaction: targetFaction  // 【重构】存储阵营ID
         };
@@ -355,12 +356,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider {
             tempCacheEntry.lastUpdatedFrame
         );
 
-        // 更新元数据
-        cacheValue.cache.lastUpdatedFrame = currentFrame;
+        // 更新元数据（lastUpdatedFrame 已由 updateData() 内部赋值，无需重复设置）
         cacheValue.createdFrame = currentFrame; // 重置创建帧，防止 forceRefreshThreshold 永久触发
         cacheValue.lastAccessFrame = currentFrame;
         cacheValue.accessCount++;
-        cacheValue.dataVersion = currentVersion;
+        cacheValue.dataVersion = tempCacheEntry.dataVersion; // 使用 post-reconcile 版本
         
         // 【重构】更新阵营信息
         cacheValue.targetFaction = FactionManager.getFactionFromUnit(target);

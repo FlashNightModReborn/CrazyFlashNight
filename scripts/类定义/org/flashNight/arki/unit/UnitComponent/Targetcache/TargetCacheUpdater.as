@@ -252,16 +252,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         // 单循环完成所有数据提取
         var leftValues:Array = cacheTypeData.leftValues;
         var rightValues:Array = cacheTypeData.rightValues;
-        var newNameIndex:Object = cacheTypeData.nameIndex;
-
         // 复用数组：缩短到当前长度，避免保留旧数据
         leftValues.length = len;
         rightValues.length = len;
 
-        // 复用索引对象：清空旧键，避免 stale 映射（不新建对象以减少分配）
-        for (var oldKey:String in newNameIndex) {
-            delete newNameIndex[oldKey];
-        }
+        // O(1) 替换：新建空对象取代 for-in + delete 逐键清除
+        // 旧对象在 SortedUnitCache.updateData 重新赋值 this.nameIndex 后自然 GC
+        cacheTypeData.nameIndex = {};
+        var newNameIndex:Object = cacheTypeData.nameIndex;
         
         for (var k:Number = 0; k < len; k++) {
             var unit:Object = list[k];
@@ -281,6 +279,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         cacheEntry.rightValues       = rightValues;
         cacheEntry.leftValues        = leftValues;
         cacheEntry.lastUpdatedFrame  = currentFrame;
+        cacheEntry.dataVersion       = currentVersion; // post-reconcile 版本，供 Provider 存储
     }
 
     /**
