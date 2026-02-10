@@ -105,6 +105,10 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testDestroyTransitionsCleanup();
         this.testAddStatusInputValidation();
 
+        // Batch 5 新增：_started 门控
+        this.testOnActionBlockedBeforeStart();
+        this.testChangeStatePointerOnlyBeforeStart();
+
         // 最终报告
         this.printFinalReport();
     }
@@ -197,11 +201,12 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.AddStatus("running", state2);
         
         this.assert(machine.getActiveStateName() == "idle", "Initial state is idle");
-        
+
+        machine.start();
         machine.ChangeState("running");
         this.assert(machine.getActiveStateName() == "running", "State changed to running");
         this.assert(machine.getLastState() == state1, "Last state is idle");
-        
+
         machine.destroy();
     }
 
@@ -282,7 +287,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.AddStatus("A", state1);
         machine.AddStatus("B", state2);
         machine.AddStatus("C", state3);
-        
+
+        machine.start();
         this.clearLifecycleLog();
         machine.ChangeState("B");
         machine.ChangeState("C");
@@ -350,8 +356,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         );
         
         machine.AddStatus("actionTest", testState);
+        machine.start();
         machine.ChangeState("actionTest");
-        
+
         machine.onAction();
         this.assert(actionExecuted, "Action executed successfully");
         
@@ -386,12 +393,13 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.transitions.push("idle", "running", function():Boolean { 
             return this.data.actionCounter >= 2; 
         });
-        machine.transitions.push("running", "idle", function():Boolean { 
-            return this.data.actionCounter >= 5; 
+        machine.transitions.push("running", "idle", function():Boolean {
+            return this.data.actionCounter >= 5;
         });
-        
+
+        machine.start();
         this.assert(machine.getActiveStateName() == "idle", "Initial state is idle");
-        
+
         machine.onAction(); // actionCounter = 1
         this.assert(machine.getActiveStateName() == "idle", "Still in idle state");
         
@@ -415,7 +423,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         // 添加多个转换条件，都返回true，测试优先级
         machine.transitions.push("state1", "state2", function():Boolean { return true; }); // 低优先级
         machine.transitions.unshift("state1", "state3", function():Boolean { return true; }); // 高优先级
-        
+
+        machine.start();
         machine.onAction();
         this.assert(machine.getActiveStateName() == "state3", "Higher priority transition executed");
         
@@ -440,7 +449,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.transitions.push("healthy", "injured", function():Boolean { return this.data.health < 30; });
         machine.transitions.push("tired", "healthy", function():Boolean { return this.data.energy > 80; });
         machine.transitions.push("injured", "healthy", function():Boolean { return this.data.health > 90; });
-        
+
+        machine.start();
         this.assert(machine.getActiveStateName() == "healthy", "Initial state is healthy");
         
         machine.data.energy = 10;
@@ -546,7 +556,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.transitions.push("nextLevel", "playing", function():Boolean {
             return this.data.level > 1; // 条件化：避免同帧无限弹跳（0-frame state）
         });
-        
+
+        machine.start();
+
         // 测试游戏结束条件
         machine.data.lives = 0;
         machine.onAction();
@@ -786,27 +798,32 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         
         try {
             machine.AddStatus("faulty", faultyState);
+            machine.start(); // triggers faultyState.onEnter → throws
         } catch (e:Error) {
             exceptionCount++;
         }
-        
+
         machine.AddStatus("normal", normalState);
-        
+
         try {
             machine.ChangeState("faulty");
         } catch (e:Error) {
             exceptionCount++;
         }
-        
+
         try {
             machine.onAction();
         } catch (e:Error) {
             exceptionCount++;
         }
-        
+
         this.assert(exceptionCount > 0, "Exceptions properly propagated from lifecycle methods");
-        
-        machine.destroy();
+
+        try {
+            machine.destroy(); // faultyState.onExit throws during destroy - expected
+        } catch (e:Error) {
+            // 已 start 的 faulty 状态在 destroy 时触发 onExit → 抛异常，吞掉即可
+        }
     }
 
     public function testExceptionInTransitionConditions():Void {
@@ -822,7 +839,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
             throw new Error("Transition condition exception");
             return false;
         });
-        
+
+        machine.start();
         var exceptionCaught:Boolean = false;
         try {
             machine.onAction();
@@ -972,7 +990,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.transitions.push("process", "retry", function():Boolean { return this.data.errors > 0 && this.data.retries < this.data.maxRetries; });
         machine.transitions.push("process", "error", function():Boolean { return this.data.errors > 0 && this.data.retries >= this.data.maxRetries; });
         machine.transitions.push("retry", "process", function():Boolean { return true; });
-        
+
+        machine.start();
         // 运行工作流
         for (var i:Number = 0; i < 20 && machine.getActiveStateName() != "complete" && machine.getActiveStateName() != "error"; i++) {
             machine.onAction();
@@ -1655,6 +1674,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
             return this.data.counter >= 1;
         });
 
+        machine.start();
         machine.onAction();
 
         // 管线必须执行（Phase 2: stateA.onAction + Phase 3: 转换到 B）
@@ -1843,6 +1863,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.AddStatus("B", stateB);
         machine.AddStatus("C", stateC);
 
+        machine.start();
         // D → A → (onEnter chains) → B → C
         machine.ChangeState("A");
 
@@ -1883,6 +1904,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
             return false;
         });
 
+        machine.start();
         machine.onAction();
 
         this.assert(machine.data.phase2Triggered, "Phase 2 state action executed");
@@ -1938,6 +1960,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         // 验证初始状态
         this.assert(machine.getActiveStateName() == "A", "Initial state is A");
 
+        machine.start();
         this.clearLifecycleLog();
         // A→B，但 A.onExit 重定向到 C
         machine.ChangeState("B");
@@ -2012,6 +2035,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.AddStatus("C", stateC);
         machine.AddStatus("D", stateD);
 
+        machine.start();
         this.clearLifecycleLog();
         machine.ChangeState("B"); // A→B, 但 A.onExit→C, C.onEnter→D
 
@@ -2150,8 +2174,91 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.destroy();
     }
 
+    // ========== Batch 5 新增：_started 门控 ==========
+
+    /**
+     * 测试 onAction 在未 start 时被阻断
+     * 验证 _started 门控：未调用 start() 的状态机，onAction 为空操作
+     */
+    public function testOnActionBlockedBeforeStart():Void {
+        trace("\n--- Test: onAction Blocked Before start() ---");
+        this.clearLifecycleLog();
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.data = {actionRan: false};
+        var self = this;
+
+        var stateA:FSM_Status = new FSM_Status(
+            function():Void {
+                this.data.actionRan = true;
+                self._lifecycleLog.push("A:action");
+            },
+            function():Void { self._lifecycleLog.push("A:enter"); },
+            null
+        );
+
+        machine.AddStatus("A", stateA);
+
+        // 未调用 start()，onAction 应被阻断
+        machine.onAction();
+        this.assert(!machine.data.actionRan, "onAction blocked before start()");
+        this.assert(this._lifecycleLog.length == 0, "No lifecycle events before start()");
+
+        // 调用 start() 后 onAction 正常执行
+        machine.start();
+        this.clearLifecycleLog();
+        machine.onAction();
+        this.assert(machine.data.actionRan, "onAction works after start()");
+
+        machine.destroy();
+    }
+
+    /**
+     * 测试 ChangeState 在未 start 时仅移指针，不触发生命周期
+     * 验证构建期语义：ChangeState 可调整初始状态，但不调用 onExit/onEnter
+     */
+    public function testChangeStatePointerOnlyBeforeStart():Void {
+        trace("\n--- Test: ChangeState Pointer-Only Before start() ---");
+        this.clearLifecycleLog();
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        var self = this;
+
+        var stateA:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("A:enter"); },
+            function():Void { self._lifecycleLog.push("A:exit"); }
+        );
+        var stateB:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("B:enter"); },
+            function():Void { self._lifecycleLog.push("B:exit"); }
+        );
+
+        machine.AddStatus("A", stateA);  // A 为默认
+        machine.AddStatus("B", stateB);
+
+        // 构建期 ChangeState：仅移指针
+        machine.ChangeState("B");
+        this.assert(machine.getActiveStateName() == "B", "Pointer moved to B before start");
+        this.assert(this._lifecycleLog.length == 0,
+                   "No lifecycle events (no A:exit, no B:enter) before start");
+
+        // start() 触发当前指针状态（B）的 onEnter
+        machine.start();
+        this.assert(this._lifecycleLog.length == 1, "Only B:enter on start (not A:enter)");
+        this.assert(this._lifecycleLog[0] == "B:enter", "start() enters current pointer state B");
+
+        // start 后 ChangeState 触发完整生命周期
+        this.clearLifecycleLog();
+        machine.ChangeState("A");
+        this.assert(this._lifecycleLog.length == 2, "Full lifecycle after start");
+        this.assert(this._lifecycleLog[0] == "B:exit", "B exits with lifecycle");
+        this.assert(this._lifecycleLog[1] == "A:enter", "A enters with lifecycle");
+
+        machine.destroy();
+    }
+
     // ========== 报告生成 ==========
-    
+
     public function printFinalReport():Void {
         trace("\n=== FINAL FSM TEST REPORT ===");
         trace("Tests Passed: " + this._testPassed);
@@ -2183,6 +2290,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         trace("  destroy() activeState onExit lifecycle verified");
         trace("  destroy() Transitions cleanup verified");
         trace("  AddStatus input validation verified");
+        trace("  _started gate: onAction blocked verified");
+        trace("  _started gate: ChangeState pointer-only verified");
         trace("=============================");
     }
 }

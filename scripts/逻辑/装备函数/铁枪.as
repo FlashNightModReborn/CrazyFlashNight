@@ -162,10 +162,10 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
             return this.data.isWeaponActive === false;
         });
 
-    // 9. 初始状态
+    // 9. 启动状态机（构建期 ChangeState 仅移指针，start 统一触发首次 onEnter）
     var init = (自机.攻击模式 === "长枪") ? "DEPLOYED" : "HOLSTERED";
-    ref.fsm.setActiveState(ref.fsm.statusDict[init]);
-    ref.fsm.setLastState(null);
+    ref.fsm.ChangeState(init);
+    ref.fsm.start();
 
     ref.energyLevel = 1;
 

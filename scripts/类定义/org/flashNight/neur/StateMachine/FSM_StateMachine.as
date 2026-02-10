@@ -45,6 +45,13 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         // instanceof 防止 Object.prototype 属性穿透（如 toString/constructor）
         if (!(target instanceof FSM_Status) || target == this.activeState) return;
 
+        // 构建期（未 start）：仅移动指针，不触发 onExit/onEnter 生命周期。
+        // 避免"没 enter 先 exit"的怪序列。start() 会统一触发首次 onEnter。
+        if (!this._started) {
+            this.activeState = target;
+            return;
+        }
+
         if (_isChanging) {
             // 在 onEnter/onExit 回调中触发的 ChangeState，暂存而非递归
             _pending = next;
@@ -69,9 +76,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
                 if (exitRedirect instanceof FSM_Status && exitRedirect != this.activeState) {
                     target = exitRedirect;
                     next = _pending;
+                    chainCount++; // 仅在 target 实际被修改时消耗链式配额
                 }
                 _pending = null;
-                chainCount++;
                 // fall through → Phase C 使用（可能被重定向的）target
             }
 
@@ -231,17 +238,28 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     /**
      * 当此状态机作为状态被"退出"时调用。
      * 此方法确保在自身退出前，先正确地退出其子状态。
+     *
+     * 契约：机器退出期间禁止内部 ChangeState。
+     * 若子状态 onExit 回调尝试 ChangeState，请求被静默丢弃（机器即将停用）。
+     * 此策略与 destroy() 一致。
      */
     public function onExit():Void {
-        // 1. 首先将onExit事件传播到当前激活的子状态（由内而外）。
+        // 1. 锁定状态切换，防止子状态 onExit 回调触发内部 ChangeState
+        this._isChanging = true;
+
+        // 2. 将 onExit 事件传播到当前激活的子状态（由内而外）
         if (this.activeState != null) {
             this.activeState.onExit();
         }
 
-        // 2. 然后执行状态机自身的onExit回调（如果已定义）。
+        // 3. 丢弃退出期间产生的任何 pending，解除锁定
+        this._pending = null;
+        this._isChanging = false;
+
+        // 4. 执行状态机自身的 onExit 回调（如果已定义）
         super.onExit();
 
-        // 3. 标记为未启动，防止 destroy() 中重复触发 onExit
+        // 5. 标记为未启动，防止 destroy() 中重复触发 onExit
         this._started = false;
     }
 
@@ -256,7 +274,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
      * Phase 4: 状态机自身维护（actionCount + machine-level callback）
      */
     public function onAction():Void {
-        if (!this.activeState) return;
+        if (!this._started || !this.activeState) return;
 
         var maxTransitions:Number = 10; // 防止无限循环
         var transitionCount:Number = 0;

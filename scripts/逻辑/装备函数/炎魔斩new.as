@@ -165,10 +165,9 @@ _root.装备生命周期函数.炎魔斩new初始化 = function(反射对象, �
         return this.data.isWeaponActive === false;
     });
 
-    // 9. 设置初始状态
-    var initState = "HOLSTERED";
-    反射对象.fsm.setActiveState(反射对象.fsm.statusDict[initState]);
-    反射对象.fsm.setLastState(null);
+    // 9. 启动状态机（构建期 ChangeState 仅移指针，start 统一触发首次 onEnter）
+    反射对象.fsm.ChangeState("HOLSTERED");
+    反射对象.fsm.start();
 
     // 10. 定义切换与特效函数
     d.toggleShape = function() {

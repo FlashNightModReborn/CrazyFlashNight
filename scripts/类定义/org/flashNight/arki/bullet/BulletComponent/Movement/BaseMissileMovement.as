@@ -53,9 +53,12 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.BaseMissileMovement ex
         
         // 初始化委托方法
         this.initDelegates();
-        
-        // 初始化状态
+
+        // 初始化状态（第二次调用，覆盖 super() 中的首次调用）
         this.initializeStates();
+
+        // 启动状态机：构建期 changeState 仅移指针，start 统一触发首次 onEnter
+        this.stateMachine.start();
     }
 
     /**

@@ -32,7 +32,8 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitBehavior extends FSM_StateMachine{
             }
         }
         this.active = true;
-        this.setActiveState(this.defaultState);
+        // start() 幂等：首次调用触发 Sleeping.onEnter，后续调用为 no-op
+        this.start();
     }
 
 

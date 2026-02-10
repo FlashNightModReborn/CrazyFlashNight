@@ -69,7 +69,8 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
             }
             return false;
         });
-        // idle 已由 AddStatus 首个状态自动激活，无需重复 ChangeState
+        // 启动状态机：idle 为默认首状态，start 触发 idle.onEnter
+        this.start();
     }
     
     // 注入具体音乐播放器实现

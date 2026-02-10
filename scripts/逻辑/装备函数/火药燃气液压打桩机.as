@@ -57,8 +57,8 @@
         return this.data.currentframe > 60;
     });
     
-    // 设置初始状态
-    reflector.fsm.ChangeState("IDLE");
+    // 启动状态机（IDLE 为默认首状态，start 触发 IDLE.onEnter）
+    reflector.fsm.start();
     
     // 订阅长枪射击事件
     target.dispatcher.subscribe("长枪射击", function() {
