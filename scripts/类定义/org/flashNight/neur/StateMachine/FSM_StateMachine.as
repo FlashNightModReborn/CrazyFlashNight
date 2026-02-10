@@ -307,9 +307,14 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             var activeStateName:String = this.activeState.name;
             var gateTarget:String = this.transitions.TransitGate(activeStateName);
             if (gateTarget && gateTarget != activeStateName) {
+                var stateBeforeGate:FSM_Status = this.activeState;
                 this.ChangeState(gateTarget);
-                transitionCount++;
-                continue; // Gate转换后立即开始下一轮循环，不执行旧状态动作
+                if (this.activeState != stateBeforeGate) {
+                    transitionCount++;
+                    continue; // Gate转换成功，开始下一轮循环
+                }
+                // ChangeState 未生效（目标不在 statusDict 中），终止循环避免空转
+                break;
             }
 
             // Phase 2: 执行当前状态动作
@@ -327,9 +332,14 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             activeStateName = this.activeState.name;
             var normalTarget:String = this.transitions.TransitNormal(activeStateName);
             if (normalTarget && normalTarget != activeStateName) {
+                var stateBeforeNormal:FSM_Status = this.activeState;
                 this.ChangeState(normalTarget);
-                transitionCount++;
-                continue; // Normal转换后继续下一轮循环，让新状态也能执行动作
+                if (this.activeState != stateBeforeNormal) {
+                    transitionCount++;
+                    continue; // Normal转换成功，继续下一轮循环
+                }
+                // ChangeState 未生效（目标不在 statusDict 中），终止循环避免空转
+                break;
             }
 
             // 如果既没有Gate转换也没有Normal转换，退出循环
@@ -350,6 +360,17 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
 
     // ========== 修正区结束 ==========
 
+    /**
+     * 终态销毁 - 释放状态机持有的全部资源。
+     *
+     * 契约：
+     * - 仅触发 activeState（子状态链）的 onExit 传播，不触发机器自身的 _onExitCb。
+     *   对于嵌套机，父机在切换/销毁时已通过 onExit() 触发过子机的 _onExitCb，
+     *   此处不再重复调用。
+     * - 若根状态机需要 _onExitCb 语义，应在调用 destroy() 前手动调用 onExit()。
+     * - 销毁期间禁止内部 ChangeState（_isChanging 锁），与 onExit() 一致。
+     * - 调用后 isDestroyed=true，所有引用（statusDict/activeState/transitions 等）置 null。
+     */
     public function destroy():Void{
         // 1. 锁定状态切换，防止 onExit 回调触发 ChangeState 干扰销毁流程
         this._isChanging = true;

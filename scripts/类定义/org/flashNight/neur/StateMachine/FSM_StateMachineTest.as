@@ -119,6 +119,11 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testRiskA_OnEnterCbChangeStateSafety();
         this.testRiskB_ConstructionPhaseLastStateSync();
 
+        // Batch 8 新增：onAction 无效目标空转修复验证
+        this.testGateInvalidTargetNoSpin();
+        this.testNormalInvalidTargetNoSpin();
+        this.testGateValidTargetStillWorks();
+
         // 最终报告
         this.printFinalReport();
     }
@@ -2770,6 +2775,186 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.destroy();
     }
 
+    // ========== Batch 8 新增：onAction 无效目标空转修复验证 ==========
+
+    /**
+     * 测试 Gate 转换目标不在 statusDict 中时不会空转 10 次
+     *
+     * 旧行为（Bug）：
+     *   TransitGate 返回无效名字 → ChangeState 静默 return → transitionCount++ → continue
+     *   → 同一个 Gate 再次命中 → 循环 10 次 → "possible oscillation" 误报。
+     *
+     * 修复后行为：
+     *   ChangeState 后检测 activeState 未变化 → break，仅一次循环，不误报。
+     *   Phase 4 (actionCount / super.onAction) 仍正常执行。
+     */
+    public function testGateInvalidTargetNoSpin():Void {
+        trace("\n--- Test: Gate Invalid Target No Spin ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        var actionCount:Number = 0;
+        var stateA:FSM_Status = new FSM_Status(
+            function():Void { actionCount++; },
+            function():Void { self._lifecycleLog.push("A:enter"); },
+            null
+        );
+        var stateB:FSM_Status = new FSM_Status(null, null, null);
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+
+        // Gate: A → "nonExistent"（不在 statusDict 中）
+        machine.transitions.push("A", "nonExistent", function():Boolean {
+            return true;
+        }, true);
+
+        machine.start();
+        this.clearLifecycleLog();
+        actionCount = 0;
+
+        // 执行 onAction — 旧代码会空转 10 次，新代码 break 后直接到 Phase 4
+        machine.onAction();
+
+        // 验证 1: 状态未变（ChangeState 对无效目标静默 return）
+        this.assert(machine.getActiveStateName() == "A",
+                   "Gate invalid target: activeState unchanged");
+
+        // 验证 2: Phase 2 的 action 未执行（Gate 条件命中 → break，跳过 Phase 2）
+        this.assert(actionCount == 0,
+                   "Gate invalid target: Phase 2 action skipped (gate fired but target invalid)");
+
+        // 验证 3: Phase 4 的 actionCount 仍递增（break 后走到 Phase 4）
+        this.assert(machine.actionCount == 1,
+                   "Gate invalid target: Phase 4 actionCount still increments");
+
+        // 验证 4: 多帧调用不会累积误报（每帧只 break 一次，不是循环 10 次）
+        machine.onAction();
+        machine.onAction();
+        this.assert(machine.actionCount == 3,
+                   "Gate invalid target: multiple frames stable, no oscillation spin");
+
+        machine.destroy();
+    }
+
+    /**
+     * 测试 Normal 转换目标无效时不会空转
+     *
+     * 与 Gate 对称：Normal 在 Phase 3 执行，无效目标 → break。
+     * Phase 2 的 action 应正常执行（Normal 在 action 之后检查）。
+     */
+    public function testNormalInvalidTargetNoSpin():Void {
+        trace("\n--- Test: Normal Invalid Target No Spin ---");
+        var self = this;
+
+        var actionCount:Number = 0;
+        var stateA:FSM_Status = new FSM_Status(
+            function():Void { actionCount++; },
+            null, null
+        );
+        var stateB:FSM_Status = new FSM_Status(null, null, null);
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+
+        // Normal: A → "ghost"（不在 statusDict 中）
+        machine.transitions.push("A", "ghost", function():Boolean {
+            return true;
+        });
+
+        machine.start();
+        actionCount = 0;
+
+        machine.onAction();
+
+        // 验证 1: 状态未变
+        this.assert(machine.getActiveStateName() == "A",
+                   "Normal invalid target: activeState unchanged");
+
+        // 验证 2: Phase 2 的 action 正常执行（Normal 在 Phase 3，不阻断 Phase 2）
+        this.assert(actionCount == 1,
+                   "Normal invalid target: Phase 2 action executed normally");
+
+        // 验证 3: Phase 4 的 actionCount 递增
+        this.assert(machine.actionCount == 1,
+                   "Normal invalid target: Phase 4 actionCount increments");
+
+        // 验证 4: 多帧稳定
+        machine.onAction();
+        machine.onAction();
+        this.assert(actionCount == 3,
+                   "Normal invalid target: action executes every frame, no spin");
+        this.assert(machine.actionCount == 3,
+                   "Normal invalid target: actionCount stable across frames");
+
+        machine.destroy();
+    }
+
+    /**
+     * 回归测试：确保有效的 Gate 转换仍正常工作
+     *
+     * 防止 break-on-noop 修改意外破坏正常 Gate 逻辑。
+     */
+    public function testGateValidTargetStillWorks():Void {
+        trace("\n--- Test: Gate Valid Target Still Works ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        var stateA:FSM_Status = new FSM_Status(
+            function():Void { self._lifecycleLog.push("A:action"); },
+            function():Void { self._lifecycleLog.push("A:enter"); },
+            function():Void { self._lifecycleLog.push("A:exit"); }
+        );
+        var stateB:FSM_Status = new FSM_Status(
+            function():Void { self._lifecycleLog.push("B:action"); },
+            function():Void { self._lifecycleLog.push("B:enter"); },
+            null
+        );
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.data = { shouldGate: false };
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+
+        // Gate: A → B（条件可控）
+        machine.transitions.push("A", "B", function():Boolean {
+            return this.data.shouldGate;
+        }, true);
+
+        machine.start();
+
+        // 条件未触发：A 的 action 应正常执行
+        this.clearLifecycleLog();
+        machine.onAction();
+        var hasAAction:Boolean = false;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "A:action") hasAAction = true;
+        }
+        this.assert(machine.getActiveStateName() == "A",
+                   "Gate valid: stays in A when condition is false");
+        this.assert(hasAAction,
+                   "Gate valid: A's action executes when gate not triggered");
+
+        // 触发 Gate
+        machine.data.shouldGate = true;
+        this.clearLifecycleLog();
+        machine.onAction();
+
+        this.assert(machine.getActiveStateName() == "B",
+                   "Gate valid: transitions to B when condition is true");
+        // B 应在同帧执行 action（Gate 转换后 continue → Phase 2 执行 B 的 action）
+        var hasBAction:Boolean = false;
+        for (var j:Number = 0; j < this._lifecycleLog.length; j++) {
+            if (this._lifecycleLog[j] == "B:action") hasBAction = true;
+        }
+        this.assert(hasBAction,
+                   "Gate valid: B's action executes in same frame after gate transition");
+
+        machine.destroy();
+    }
+
     // ========== 报告生成 ==========
 
     public function printFinalReport():Void {
@@ -2810,6 +2995,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         trace("  onExit lock nested interaction verified");
         trace("  Risk A: onEnterCb ChangeState safety verified");
         trace("  Risk B: construction-phase lastState/actionCount sync verified");
+        trace("  Gate invalid target no-spin verified");
+        trace("  Normal invalid target no-spin verified");
+        trace("  Gate valid target regression verified");
         trace("=============================");
     }
 }
