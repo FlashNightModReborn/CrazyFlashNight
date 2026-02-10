@@ -20,15 +20,15 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitBehavior extends FSM_StateMachine{
     }
 
     private function pushGateTransition(current:String, target:String, func:Function):Void{
-        if(!this.statusDict[current] || !this.statusDict[target]  || !func) return;
+        if(!this.statusDict[current] || !this.statusDict[target] || !func) return;
         this.transitions.push(current, target, func, true);
     }
-    
+
     public function activate():Void{
-        for(var statename in this.statusDict){
+        for(var key:String in this.statusDict){
             // 所有状态在游戏暂停时及思考标签不存在时均会过渡到睡眠状态
-            if(statename != "Sleeping"){
-                this.pushGateTransition(statename, "Sleeping", this.sleepCheck);
+            if(key != "Sleeping"){
+                this.pushGateTransition(key, "Sleeping", this.sleepCheck);
             }
         }
         this.active = true;

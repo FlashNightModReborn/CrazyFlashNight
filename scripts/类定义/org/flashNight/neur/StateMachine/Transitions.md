@@ -116,27 +116,27 @@ a.runTests();
 [PASS] Successfully recovered from errors
 
 --- Test: Basic Performance ---
-Basic Performance: 10000 transit calls in 69ms
+Basic Performance: 10000 transit calls in 70ms
 [PASS] Basic performance acceptable
 
 --- Test: Many Transitions Performance ---
-Many Transitions Performance: 1000 transitions, 1000 calls in 2162ms
+Many Transitions Performance: 1000 transitions, 1000 calls in 2287ms
 [PASS] Many transitions performance acceptable
 
 --- Test: Complex Conditions Performance ---
-Complex Conditions Performance: 1000 complex calculations in 17ms
+Complex Conditions Performance: 1000 complex calculations in 22ms
 [PASS] Complex conditions performance acceptable
 
 --- Test: Frequent Transit Calls Performance ---
-Frequent Calls Performance: 50000 calls in 313ms
+Frequent Calls Performance: 50000 calls in 337ms
 [PASS] Frequent calls performance acceptable
 
 --- Test: Transition Scalability ---
 Scale 10: 100 calls in 3ms
-Scale 50: 100 calls in 15ms
-Scale 100: 100 calls in 18ms
-Scale 500: 100 calls in 33ms
-Scale 1000: 100 calls in 31ms
+Scale 50: 100 calls in 16ms
+Scale 100: 100 calls in 21ms
+Scale 500: 100 calls in 35ms
+Scale 1000: 100 calls in 40ms
 [PASS] Transition scalability is acceptable
 
 --- Test: Memory Usage Optimization ---
@@ -144,7 +144,7 @@ Scale 1000: 100 calls in 31ms
 
 --- Test: Transition Caching ---
 [PASS] All calculations executed (no caching implemented)
-Caching test: 10 calls took 8ms
+Caching test: 10 calls took 6ms
 [PASS] Caching test completed (baseline established)
 
 --- Test: Conditional Short-Circuiting ---
@@ -160,8 +160,26 @@ Caching test: 10 calls took 8ms
 [PASS] Phase 2 active
 [PASS] Disabled state active
 
+--- Test: Gate/Normal Separation ---
+[PASS] TransitGate returns Gate transition
+[PASS] TransitNormal returns Normal transition
+[PASS] TransitGate does not return Normal transition
+[PASS] TransitNormal does not return Gate transition
+
+--- Test: Gate/Normal Isolation ---
+[PASS] No Normal result for Gate-only state
+[PASS] Gate result exists for Gate-only state
+[PASS] No Gate result for Normal-only state
+[PASS] Normal result exists for Normal-only state
+
+--- Test: Gate/Normal Clear and Reset ---
+[PASS] Gate cleared for state
+[PASS] Normal cleared for state
+[PASS] Gate cleared after reset
+[PASS] Normal cleared after reset
+
 === TRANSITIONS TEST FINAL REPORT ===
-Tests Passed: 68
+Tests Passed: 80
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TRANSITIONS TESTS PASSED!
@@ -178,27 +196,27 @@ Success Rate: 100%
 === TRANSITIONS PERFORMANCE ANALYSIS ===
 Context: Basic Transit Call
   Iterations: 10000
-  Total Time: 69ms
-  Avg per Operation: 0.0069ms
-  Operations per Second: 144928
+  Total Time: 70ms
+  Avg per Operation: 0.007ms
+  Operations per Second: 142857
 ---
 Context: Many Transitions
   Iterations: 1000
-  Total Time: 2162ms
-  Avg per Operation: 2.162ms
-  Operations per Second: 463
+  Total Time: 2287ms
+  Avg per Operation: 2.287ms
+  Operations per Second: 437
 ---
 Context: Complex Conditions
   Iterations: 1000
-  Total Time: 17ms
-  Avg per Operation: 0.017ms
-  Operations per Second: 58824
+  Total Time: 22ms
+  Avg per Operation: 0.022ms
+  Operations per Second: 45455
 ---
 Context: Frequent Transit Calls
   Iterations: 50000
-  Total Time: 313ms
-  Avg per Operation: 0.00626ms
-  Operations per Second: 159744
+  Total Time: 337ms
+  Avg per Operation: 0.00674ms
+  Operations per Second: 148368
 ---
 Context: Scale 10
   Iterations: 100
@@ -208,35 +226,35 @@ Context: Scale 10
 ---
 Context: Scale 50
   Iterations: 100
-  Total Time: 15ms
-  Avg per Operation: 0.15ms
-  Operations per Second: 6667
+  Total Time: 16ms
+  Avg per Operation: 0.16ms
+  Operations per Second: 6250
 ---
 Context: Scale 100
   Iterations: 100
-  Total Time: 18ms
-  Avg per Operation: 0.18ms
-  Operations per Second: 5556
+  Total Time: 21ms
+  Avg per Operation: 0.21ms
+  Operations per Second: 4762
 ---
 Context: Scale 500
   Iterations: 100
-  Total Time: 33ms
-  Avg per Operation: 0.33ms
-  Operations per Second: 3030
+  Total Time: 35ms
+  Avg per Operation: 0.35ms
+  Operations per Second: 2857
 ---
 Context: Scale 1000
   Iterations: 100
-  Total Time: 31ms
-  Avg per Operation: 0.31ms
-  Operations per Second: 3226
+  Total Time: 40ms
+  Avg per Operation: 0.4ms
+  Operations per Second: 2500
 ---
 Context: Memory Stress Test
   Iterations: 1000
-  Total Time: 5ms
-  Avg per Operation: 0.005ms
-  Operations per Second: 200000
+  Total Time: 9ms
+  Avg per Operation: 0.009ms
+  Operations per Second: 111111
 ---
 === PERFORMANCE RECOMMENDATIONS ===
-Overall Average: 0.0419842519685039ms per operation
+Overall Average: 0.0447244094488189ms per operation
 ✅ Excellent performance - suitable for real-time applications
 =============================

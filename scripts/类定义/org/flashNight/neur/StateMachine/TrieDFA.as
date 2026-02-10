@@ -293,16 +293,30 @@ class org.flashNight.neur.StateMachine.TrieDFA {
      * 扩展容量（内部方法）
      */
     private function expand():Void {
-        var newCapacity:Number = this.stateCapacity * 2;
+        var oldCapacity:Number = this.stateCapacity;
+        var newCapacity:Number = oldCapacity * 2;
         trace("[TrieDFA] Expanding capacity to " + newCapacity);
 
         // 扩展转移表
         var newTransitions:Array = new Array(newCapacity * this.alphabetSize);
-        var oldLen:Number = this.stateCapacity * this.alphabetSize;
+        var oldLen:Number = oldCapacity * this.alphabetSize;
         for (var i:Number = 0; i < oldLen; i++) {
             newTransitions[i] = this.transitions[i];
         }
         this.transitions = newTransitions;
+
+        // 扩展 accept/depth/hint 数组（与 transitions 保持一致）
+        var newAccept:Array = new Array(newCapacity);
+        var newDepth:Array = new Array(newCapacity);
+        var newHint:Array = new Array(newCapacity);
+        for (var j:Number = 0; j < oldCapacity; j++) {
+            newAccept[j] = this.accept[j];
+            newDepth[j] = this.depth[j];
+            newHint[j] = this.hint[j];
+        }
+        this.accept = newAccept;
+        this.depth = newDepth;
+        this.hint = newHint;
 
         this.stateCapacity = newCapacity;
     }

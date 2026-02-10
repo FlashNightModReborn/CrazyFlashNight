@@ -23,15 +23,18 @@ a.runTests();
 
 --- Test: Default State Handling ---
 [PASS] Default state is first added
+[FSM] Warning: setActiveState() bypasses lifecycle. Use ChangeState() for safe transitions.
 [PASS] Setting null active state reverts to default
 
 --- Test: Active State Management ---
+[FSM] Warning: setActiveState() bypasses lifecycle. Use ChangeState() for safe transitions.
 [PASS] Active state set correctly
 [PASS] Last state set correctly
 
 --- Test: State Lifecycle Events ---
-[PASS] onEnter called when state added as first state
+[PASS] AddStatus does not trigger onEnter (deferred to start())
 [PASS] onEnter not called for non-active state
+[PASS] start() triggers onEnter for default state
 [PASS] Both onExit and onEnter called during transition
 [PASS] onExit called first
 [PASS] onEnter called second
@@ -41,7 +44,7 @@ a.runTests();
 [PASS] Lifecycle events in correct order
 
 --- Test: Lifecycle with Data Sharing ---
-[PASS] Counter incremented on first state enter
+[PASS] Counter incremented on first state enter via start()
 [PASS] Counter decremented on state change
 [PASS] Counter incremented again
 
@@ -64,8 +67,8 @@ a.runTests();
 [PASS] Transitioned to injured when health low
 
 --- Test: Transition with Callback ---
-[PASS] All callbacks executed
-[PASS] Initial state entered
+[PASS] All callbacks executed (start + transition)
+[PASS] Initial state entered via start()
 [PASS] Transition condition checked
 [PASS] Old state exited
 [PASS] New state entered
@@ -87,7 +90,7 @@ a.runTests();
 
 --- Test: Data Persistence Across Transitions ---
 [PASS] Persistent data maintained
-[PASS] Data modified by state1 onEnter
+[PASS] Data modified by state1 onEnter via start()
 [PASS] Persistent data maintained across transition
 [PASS] Data modified by state2 onEnter
 
@@ -112,6 +115,7 @@ a.runTests();
 [PASS] No transition event for same-state change
 
 --- Test: Null State Handling ---
+[FSM] Warning: setActiveState() bypasses lifecycle. Use ChangeState() for safe transitions.
 [PASS] Null active state defaults to default
 [PASS] Last state can be set to null
 
@@ -129,12 +133,11 @@ a.runTests();
 
 --- Test: Nested StateMachines ---
 [PASS] Parent machine active state is child machine
-[PASS] Child machine 1 has its own active state
+[PASS] Child machine 1 has its own active state (pre-start)
 [PASS] Parent machine state changed
 [PASS] Child machine state changed independently
 
 --- Test: Complex Workflow ---
-Initializing workflow...
 Processing...
 Workflow completed!
 [PASS] Workflow reached final state
@@ -145,7 +148,7 @@ Workflow completed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: A
+[PASS] Conditional branching led to valid path: C
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -178,28 +181,1162 @@ Workflow completed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=122ms, Actions=159ms for 10000 operations
+Basic Performance: Transitions=130ms, Actions=137ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 52ms, 100 transitions in 2ms
+Many States Performance: Create 1000 states in 52ms, 100 transitions in 1ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 866ms
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillat [... 截断的文本] mit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+Frequent Transitions Performance: 5000 transitions in 864ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 50ms
+Complex Transition Performance: 1000 complex transitions in 47ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=2ms, Transition=0ms, Operation=2ms
-Size 50: Create=1ms, Transition=1ms, Operation=3ms
+Size 10: Create=0ms, Transition=0ms, Operation=2ms
+Size 50: Create=1ms, Transition=1ms, Operation=2ms
 Size 100: Create=3ms, Transition=2ms, Operation=2ms
-Size 500: Create=13ms, Transition=13ms, Operation=1ms
+Size 500: Create=13ms, Transition=13ms, Operation=3ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -214,6 +1351,10 @@ Size 500: Create=13ms, Transition=13ms, Operation=1ms
 [PASS] B's action should execute in same frame as transition
 
 --- Test: Recursive Transition Safety ---
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
 [PASS] No stack overflow during rapid transitions
 [PASS] Transitions completed within reasonable frames
 [PASS] Active state remains valid
@@ -225,7 +1366,8 @@ Size 500: Create=13ms, Transition=13ms, Operation=1ms
 [PASS] Machine-level _onActionCb fired as post-pipeline hook
 
 --- Test: Path B - Machine Level Enter/Exit Hooks ---
-[PASS] Child machine enter hooks fired on AddStatus
+[PASS] AddStatus does not trigger enter hooks (deferred to start())
+[PASS] Child machine enter hooks fired on start()
 [PASS] Machine-level onEnter callback fired
 [PASS] Inner state onEnter propagated
 [PASS] Machine onEnter fires before inner state onEnter
@@ -233,18 +1375,47 @@ Size 500: Create=13ms, Transition=13ms, Operation=1ms
 [PASS] Machine-level onExit callback fired
 [PASS] Inner state exits before machine onExit
 
+--- Test: Explicit start() Method ---
+[PASS] No onEnter before start()
+[PASS] start() triggers default state onEnter
+[PASS] Duplicate start() is no-op
+
+--- Test: Reserved Name Validation ---
+[FSM] Error: 'toString' is a reserved name (Object prototype). Choose another.
+[FSM] Error: 'constructor' is a reserved name (Object prototype). Choose another.
+[PASS] Reserved name 'toString' rejected by AddStatus
+[PASS] Reserved name 'constructor' rejected by AddStatus
+[PASS] Normal name 'Attack' works correctly
+
+--- Test: ChangeState Chain While Loop ---
+[PASS] Chain A->B->C resolved via while loop
+[PASS] All three enters logged
+[PASS] A entered first
+[PASS] B entered second
+[PASS] C entered third
+
+--- Test: Phase 2 ActiveState Detection ---
+[PASS] Phase 2 state action executed
+[PASS] State changed to B via Phase 2 ChangeState
+[PASS] Normal transition check skipped after Phase 2 state change
+
 === FINAL FSM TEST REPORT ===
-Tests Passed: 124
+Tests Passed: 140
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.
 === FSM VERIFICATION SUMMARY ===
-✓ Basic state machine operations verified
-✓ State lifecycle management tested
-✓ Transition system robustness confirmed
-✓ Data blackboard functionality verified
-✓ Error handling and edge cases tested
-✓ Memory management and cleanup verified
-✓ Performance benchmarks completed
-✓ Complex workflow scenarios tested
+  Basic state machine operations verified
+  State lifecycle management tested
+  Transition system robustness confirmed
+  Data blackboard functionality verified
+  Error handling and edge cases tested
+  Memory management and cleanup verified
+  Performance benchmarks completed
+  Complex workflow scenarios tested
+  Path B callback field safety verified
+  Explicit start() separation verified
+  Reserved name validation verified
+  While-loop ChangeState chain verified
+  Phase 2 activeState detection verified
 =============================

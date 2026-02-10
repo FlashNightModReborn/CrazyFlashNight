@@ -2,7 +2,7 @@
 
 > **版本**: 1.1
 > **作者**: FlashNight
-> **测试状态**: 188/188 PASSED (100%)
+> **测试状态**: 230/230 PASSED (100%)
 
 ---
 
@@ -800,7 +800,7 @@ test.runTests();
 
 ```
 === TRIEDFA TEST FINAL REPORT ===
-Tests Passed: 188
+Tests Passed: 230
 Tests Failed: 0
 Success Rate: 100%
 ALL TRIEDFA TESTS PASSED!
@@ -814,6 +814,7 @@ ALL TRIEDFA TESTS PASSED!
 * Convenience methods (match, findAll) tested
 * Performance benchmarks established
 * Auto-expansion mechanism verified
+* Expand preserves accept/depth/hint arrays
 ```
 
 ### 详细测试日志
@@ -1109,6 +1110,51 @@ ALL TRIEDFA TESTS PASSED!
 [PASS] All 20 patterns inserted despite small initial capacity (got: 20)
 [PASS] States expanded beyond initial capacity
 
+--- Test: Expand Preserves Metadata (accept/depth/hint) ---
+[PASS] Pattern 1 inserted after expansion
+[PASS] Pattern 2 inserted after expansion
+[PASS] Pattern 3 inserted after expansion
+[TrieDFA] Compiled: 3 patterns, 16 states, alphabet=5, maxPatternLen=5
+[PASS] Pattern1 transition at depth 1 exists
+[PASS] Pattern1 depth at step 1 (got: 1)
+[PASS] Pattern1 hint at depth 1 is valid
+[PASS] Pattern1 transition at depth 2 exists
+[PASS] Pattern1 depth at step 2 (got: 2)
+[PASS] Pattern1 hint at depth 2 is valid
+[PASS] Pattern1 transition at depth 3 exists
+[PASS] Pattern1 depth at step 3 (got: 3)
+[PASS] Pattern1 hint at depth 3 is valid
+[PASS] Pattern1 transition at depth 4 exists
+[PASS] Pattern1 depth at step 4 (got: 4)
+[PASS] Pattern1 hint at depth 4 is valid
+[PASS] Pattern1 transition at depth 5 exists
+[PASS] Pattern1 depth at step 5 (got: 5)
+[PASS] Pattern1 hint at depth 5 is valid
+[PASS] Pattern1 accept state correct after expansion (got: 1)
+[PASS] Pattern2 transition at depth 1 exists
+[PASS] Pattern2 depth at step 1 (got: 1)
+[PASS] Pattern2 transition at depth 2 exists
+[PASS] Pattern2 depth at step 2 (got: 2)
+[PASS] Pattern2 transition at depth 3 exists
+[PASS] Pattern2 depth at step 3 (got: 3)
+[PASS] Pattern2 transition at depth 4 exists
+[PASS] Pattern2 depth at step 4 (got: 4)
+[PASS] Pattern2 transition at depth 5 exists
+[PASS] Pattern2 depth at step 5 (got: 5)
+[PASS] Pattern2 accept state correct after expansion (got: 2)
+[PASS] Pattern3 transition at depth 1 exists
+[PASS] Pattern3 depth at step 1 (got: 1)
+[PASS] Pattern3 transition at depth 2 exists
+[PASS] Pattern3 depth at step 2 (got: 2)
+[PASS] Pattern3 transition at depth 3 exists
+[PASS] Pattern3 depth at step 3 (got: 3)
+[PASS] Pattern3 transition at depth 4 exists
+[PASS] Pattern3 depth at step 4 (got: 4)
+[PASS] Pattern3 transition at depth 5 exists
+[PASS] Pattern3 depth at step 5 (got: 5)
+[PASS] Pattern3 accept state correct after expansion (got: 3)
+[PASS] State count 16 exceeds initial capacity 4
+
 --- Test: Dump ---
 [TrieDFA] Compiled: 2 patterns, 6 states, alphabet=5, maxPatternLen=3
 ===== TrieDFA Dump =====
@@ -1172,52 +1218,52 @@ Compiled: true
 
 --- Test: Basic Performance ---
 [TrieDFA] Compiled: 1 patterns, 6 states, alphabet=10, maxPatternLen=5
-Basic Performance: 10000 traversals in 76ms
+Basic Performance: 10000 traversals in 93ms
 [PASS] Basic traversal performance acceptable
 
 --- Test: Transition Performance ---
 [TrieDFA] Expanding capacity to 128
 [TrieDFA] Compiled: 100 patterns, 101 states, alphabet=100, maxPatternLen=1
-Transition Performance: 100000 single transitions in 366ms
+Transition Performance: 100000 single transitions in 484ms
 [PASS] Single transition performance acceptable
 
 --- Test: Many Patterns Performance ---
 [TrieDFA] Compiled: 1000 patterns, 61 states, alphabet=20, maxPatternLen=3
-Insert 1000 patterns: 21ms
+Insert 1000 patterns: 25ms
 Compile: 0ms
 [PASS] Insert 1000 patterns in acceptable time
 [PASS] Compile in acceptable time
 
 --- Test: FindAll Performance ---
 [TrieDFA] Compiled: 50 patterns, 21 states, alphabet=10, maxPatternLen=2
-FindAll Performance: 100 calls on 1000-symbol sequence in 321ms
+FindAll Performance: 100 calls on 1000-symbol sequence in 416ms
 [PASS] FindAll performance acceptable
 
 --- Test: FindAllFast Performance ---
 [TrieDFA] Compiled: 50 patterns, 21 states, alphabet=10, maxPatternLen=2
-FindAllFast Performance: 100 calls on 1000-symbol sequence in 212ms
+FindAllFast Performance: 100 calls on 1000-symbol sequence in 271ms
 [PASS] FindAllFast performance acceptable
 
 --- Test: FindAll vs FindAllFast Comparison ---
 [TrieDFA] Compiled: 50 patterns, 31 states, alphabet=10, maxPatternLen=3
-  FindAll (object creation): 405ms
-  FindAllFast (parallel arrays): 280ms
-  Speedup: 1.45x
+  FindAll (object creation): 494ms
+  FindAllFast (parallel arrays): 358ms
+  Speedup: 1.38x
 [PASS] FindAllFast is faster or equal to FindAll
 
 --- Test: Scalability ---
 [TrieDFA] Compiled: 10 patterns, 31 states, alphabet=20, maxPatternLen=3
-Scale 10: Insert 0ms, 1000 matches 5ms
+Scale 10: Insert 1ms, 1000 matches 5ms
 [TrieDFA] Compiled: 50 patterns, 61 states, alphabet=20, maxPatternLen=3
 Scale 50: Insert 1ms, 1000 matches 6ms
 [TrieDFA] Compiled: 100 patterns, 61 states, alphabet=20, maxPatternLen=3
 Scale 100: Insert 3ms, 1000 matches 6ms
 [TrieDFA] Compiled: 500 patterns, 61 states, alphabet=20, maxPatternLen=3
-Scale 500: Insert 9ms, 1000 matches 5ms
+Scale 500: Insert 14ms, 1000 matches 7ms
 [PASS] Scalability is acceptable
 
 === TRIEDFA TEST FINAL REPORT ===
-Tests Passed: 188
+Tests Passed: 230
 Tests Failed: 0
 Success Rate: 100%
 ALL TRIEDFA TESTS PASSED!
@@ -1231,41 +1277,45 @@ ALL TRIEDFA TESTS PASSED!
 * Convenience methods (match, findAll) tested
 * Performance benchmarks established
 * Auto-expansion mechanism verified
+* Expand preserves accept/depth/hint arrays
 =============================
 
 
 === TRIEDFA PERFORMANCE ANALYSIS ===
 Context: Basic 5-step transition
   Iterations: 10000
-  Total Time: 76ms
-  Avg per Operation: 0.0076ms
-  Operations per Second: 131579
+  Total Time: 93ms
+  Avg per Operation: 0.0093ms
+  Operations per Second: 107527
 ---
 Context: Single transition
   Iterations: 100000
-  Total Time: 366ms
-  Avg per Operation: 0.0037ms
-  Operations per Second: 273224
+  Total Time: 484ms
+  Avg per Operation: 0.0048ms
+  Operations per Second: 206612
 ---
 Context: FindAll on 1000-symbol sequence
   Iterations: 100
-  Total Time: 321ms
-  Avg per Operation: 3.21ms
-  Operations per Second: 312
+  Total Time: 416ms
+  Avg per Operation: 4.16ms
+  Operations per Second: 240
 ---
 Context: FindAllFast on 1000-symbol sequence
   Iterations: 100
-  Total Time: 212ms
-  Avg per Operation: 2.12ms
-  Operations per Second: 472
+  Total Time: 271ms
+  Avg per Operation: 2.71ms
+  Operations per Second: 369
 ---
 Context: FindAll vs FindAllFast Comparison
   Iterations: 200
-  Total Time: 405ms
-  Avg per Operation: 2.025ms
-  Operations per Second: 494
+  Total Time: 494ms
+  Avg per Operation: 2.47ms
+  Operations per Second: 405
 ---
 =============================
+
+
+
 ```
 
 </details>

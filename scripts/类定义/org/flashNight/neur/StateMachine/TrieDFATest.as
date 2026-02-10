@@ -99,6 +99,7 @@ class org.flashNight.neur.StateMachine.TrieDFATest {
 
         // 扩容测试
         this.testAutoExpansion();
+        this.testExpandPreservesMetadata();
 
         // 调试方法测试
         this.testDump();
@@ -1003,6 +1004,66 @@ class org.flashNight.neur.StateMachine.TrieDFATest {
         this.assert(dfa.getStateCount() > 4, "States expanded beyond initial capacity");
     }
 
+    /**
+     * 测试 expand() 正确扩展 accept/depth/hint 数组
+     * 此前 expand() 仅扩展 transitions 数组，导致扩容后的状态
+     * accept/depth/hint 读取到 undefined
+     */
+    public function testExpandPreservesMetadata():Void {
+        trace("\n--- Test: Expand Preserves Metadata (accept/depth/hint) ---");
+
+        // 使用极小初始容量（4 states），强制多次扩容
+        var dfa:TrieDFA = new TrieDFA(5, 4);
+
+        // 插入足够多的不同长度模式来超出初始容量
+        // 每个模式至少创建 length+1 个状态（含 root），共享前缀会减少
+        var id1:Number = dfa.insert([0, 1, 2, 3, 4], 10);  // 需要 5+1=6 个状态（超出4）
+        var id2:Number = dfa.insert([1, 2, 3, 4, 0], 20);  // 又新增 5 个状态
+        var id3:Number = dfa.insert([2, 3, 4, 0, 1], 30);  // 再新增 5 个状态
+
+        this.assert(id1 != TrieDFA.INVALID, "Pattern 1 inserted after expansion");
+        this.assert(id2 != TrieDFA.INVALID, "Pattern 2 inserted after expansion");
+        this.assert(id3 != TrieDFA.INVALID, "Pattern 3 inserted after expansion");
+
+        dfa.compile();
+
+        // 验证 pattern 1 的完整路径上 depth/hint/accept 均正常
+        var s:Number = TrieDFA.ROOT;
+        var inputs1:Array = [0, 1, 2, 3, 4];
+        for (var i:Number = 0; i < inputs1.length; i++) {
+            s = dfa.transition(s, inputs1[i]);
+            this.assert(s != undefined, "Pattern1 transition at depth " + (i + 1) + " exists");
+            this.assertEq(dfa.getDepth(s), i + 1, "Pattern1 depth at step " + (i + 1));
+            // hint 在扩容后的状态上也应该有值
+            this.assert(dfa.getHint(s) != undefined && dfa.getHint(s) != TrieDFA.NO_MATCH,
+                       "Pattern1 hint at depth " + (i + 1) + " is valid");
+        }
+        this.assertEq(dfa.getAccept(s), id1, "Pattern1 accept state correct after expansion");
+
+        // 验证 pattern 2
+        s = TrieDFA.ROOT;
+        var inputs2:Array = [1, 2, 3, 4, 0];
+        for (var j:Number = 0; j < inputs2.length; j++) {
+            s = dfa.transition(s, inputs2[j]);
+            this.assert(s != undefined, "Pattern2 transition at depth " + (j + 1) + " exists");
+            this.assertEq(dfa.getDepth(s), j + 1, "Pattern2 depth at step " + (j + 1));
+        }
+        this.assertEq(dfa.getAccept(s), id2, "Pattern2 accept state correct after expansion");
+
+        // 验证 pattern 3
+        s = TrieDFA.ROOT;
+        var inputs3:Array = [2, 3, 4, 0, 1];
+        for (var k:Number = 0; k < inputs3.length; k++) {
+            s = dfa.transition(s, inputs3[k]);
+            this.assert(s != undefined, "Pattern3 transition at depth " + (k + 1) + " exists");
+            this.assertEq(dfa.getDepth(s), k + 1, "Pattern3 depth at step " + (k + 1));
+        }
+        this.assertEq(dfa.getAccept(s), id3, "Pattern3 accept state correct after expansion");
+
+        // 额外：验证总状态数远超初始容量（确认扩容确实发生了）
+        this.assert(dfa.getStateCount() > 4, "State count " + dfa.getStateCount() + " exceeds initial capacity 4");
+    }
+
     // ========== 调试方法测试 ==========
 
     public function testDump():Void {
@@ -1452,6 +1513,7 @@ class org.flashNight.neur.StateMachine.TrieDFATest {
         trace("* Convenience methods (match, findAll) tested");
         trace("* Performance benchmarks established");
         trace("* Auto-expansion mechanism verified");
+        trace("* Expand preserves accept/depth/hint arrays");
         trace("=============================\n");
     }
 

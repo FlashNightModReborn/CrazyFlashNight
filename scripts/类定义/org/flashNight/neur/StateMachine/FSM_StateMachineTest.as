@@ -92,6 +92,12 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testPathBCallbackNoShadow();
         this.testPathBMachineLevelHooks();
 
+        // Batch 3 新增：start() / 保留名校验 / while-loop 链 / Phase 2 检测
+        this.testStartMethod();
+        this.testReservedNameValidation();
+        this.testChangeStateChainWhileLoop();
+        this.testPhase2ActiveStateDetection();
+
         // 最终报告
         this.printFinalReport();
     }
@@ -238,13 +244,17 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         var state2:FSM_Status = this.createTestState("running", true);
         
         machine.AddStatus("idle", state1);
-        this.assert(this._lifecycleLog.length == 1 && this._lifecycleLog[0] == "idle:enter", 
-                   "onEnter called when state added as first state");
-        
-        this.clearLifecycleLog();
+        this.assert(this._lifecycleLog.length == 0,
+                   "AddStatus does not trigger onEnter (deferred to start())");
+
         machine.AddStatus("running", state2);
         this.assert(this._lifecycleLog.length == 0, "onEnter not called for non-active state");
-        
+
+        machine.start();
+        this.assert(this._lifecycleLog.length == 1 && this._lifecycleLog[0] == "idle:enter",
+                   "start() triggers onEnter for default state");
+
+        this.clearLifecycleLog();
         machine.ChangeState("running");
         this.assert(this._lifecycleLog.length == 2, "Both onExit and onEnter called during transition");
         this.assert(this._lifecycleLog[0] == "idle:exit", "onExit called first");
@@ -305,8 +315,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         
         machine.AddStatus("increment", incrementState);
         machine.AddStatus("decrement", decrementState);
-        
-        this.assert(machine.data.counter == 1, "Counter incremented on first state enter");
+
+        machine.start();
+        this.assert(machine.data.counter == 1, "Counter incremented on first state enter via start()");
         
         machine.ChangeState("decrement");
         this.assert(machine.data.counter == 0, "Counter decremented on state change");
@@ -460,16 +471,18 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         
         machine.AddStatus("state1", state1);
         machine.AddStatus("state2", state2);
-        
-        machine.transitions.push("state1", "state2", function():Boolean { 
+
+        machine.transitions.push("state1", "state2", function():Boolean {
             transitionLog.push("transition condition checked");
             return this.data.actionCounter >= 1;
         });
-        
+
+        machine.start();
+
         machine.onAction();
-        
-        this.assert(transitionLog.length == 4, "All callbacks executed");
-        this.assert(transitionLog[0] == "entered state1", "Initial state entered");
+
+        this.assert(transitionLog.length == 4, "All callbacks executed (start + transition)");
+        this.assert(transitionLog[0] == "entered state1", "Initial state entered via start()");
         this.assert(transitionLog[1] == "transition condition checked", "Transition condition checked");
         this.assert(transitionLog[2] == "exited state1", "Old state exited");
         this.assert(transitionLog[3] == "entered state2", "New state entered");
@@ -626,9 +639,10 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         
         machine.AddStatus("state1", state1);
         machine.AddStatus("state2", state2);
-        
+
+        machine.start();
         this.assert(machine.data.persistent == 42, "Persistent data maintained");
-        this.assert(machine.data.modified == 10, "Data modified by state1 onEnter");
+        this.assert(machine.data.modified == 10, "Data modified by state1 onEnter via start()");
         
         machine.ChangeState("state2");
         this.assert(machine.data.persistent == 42, "Persistent data maintained across transition");
@@ -871,17 +885,14 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         // 将子状态机作为状态添加到父状态机
         parentMachine.AddStatus("machine1", childMachine1);
         parentMachine.AddStatus("machine2", childMachine2);
-        
-        // === 修正后的断言 ===
-        
-        // 第一次断言：父状态机的活动状态应该是第一个子状态机
+
+        // AddStatus 设置 activeState 但不触发 onEnter
         this.assert(parentMachine.getActiveStateName() == "machine1", "Parent machine active state is child machine");
-        
-        // 第二次断言：由于 FSM_StateMachine.as 已修复，
-        // parentMachine.AddStatus 会触发 childMachine1.onEnter，
-        // 这会正确初始化 childMachine1 的内部状态。
-        this.assert(childMachine1.getActiveStateName() == "child1_idle", "Child machine 1 has its own active state");
-        
+        this.assert(childMachine1.getActiveStateName() == "child1_idle", "Child machine 1 has its own active state (pre-start)");
+
+        // start() 触发 parent.onEnter → childMachine1.onEnter → child1_idle.onEnter
+        parentMachine.start();
+
         // 切换父状态机状态
         parentMachine.ChangeState("machine2");
         this.assert(parentMachine.getActiveStateName() == "machine2", "Parent machine state changed");
@@ -985,7 +996,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         for (var j:Number = 1; j < 5; j++) {
             machine.transitions.push("step" + j, "step" + (j + 1), function():Boolean { return true; });
         }
-        
+
+        machine.start();
+
         // 执行链
         for (var k:Number = 0; k < 10; k++) {
             machine.onAction();
@@ -1032,7 +1045,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.AddStatus("pathA", pathAState);
         machine.AddStatus("pathB", pathBState);
         machine.AddStatus("pathC", pathCState);
-        
+
+        machine.start();
+
         // 添加条件分支
         machine.transitions.push("decision", "pathA", function():Boolean { return this.data.condition == 0; });
         machine.transitions.push("decision", "pathB", function():Boolean { return this.data.condition == 1; });
@@ -1436,10 +1451,12 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.AddStatus("paused", pausedState);
         
         // 添加暂停转换：当isPaused=true时立即切换到暂停状态（使用Gate机制）
-        machine.transitions.push("player", "paused", function():Boolean { 
-            return this.data.isPaused; 
+        machine.transitions.push("player", "paused", function():Boolean {
+            return this.data.isPaused;
         }, true);
-        
+
+        machine.start();
+
         // 【关键测试】：在同一帧内触发暂停并执行onAction
         this.clearLifecycleLog();
         machine.data.isPaused = true;  // 触发暂停条件
@@ -1497,10 +1514,11 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.AddStatus("B", stateB);
         
         // 转换条件：第2次动作后切换
-        machine.transitions.push("A", "B", function():Boolean { 
-            return this.data.actionCount >= 2; 
+        machine.transitions.push("A", "B", function():Boolean {
+            return this.data.actionCount >= 2;
         });
-        
+
+        machine.start();
         this.clearLifecycleLog();
         machine.onAction();  // 第1次：A:action:1
         machine.onAction();  // 第2次：A:action:2 → 触发 Normal 转换 A→B → 同帧 B:action:3
@@ -1562,10 +1580,11 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.transitions.push("ping", "pong", function():Boolean { 
             return this.data.transitions % 2 == 1; 
         });
-        machine.transitions.push("pong", "ping", function():Boolean { 
-            return this.data.transitions % 2 == 0 && this.data.transitions < this.data.maxTransitions; 
+        machine.transitions.push("pong", "ping", function():Boolean {
+            return this.data.transitions % 2 == 0 && this.data.transitions < this.data.maxTransitions;
         });
-        
+
+        machine.start();
         this.clearLifecycleLog();
         
         // 执行多帧，测试是否会栈溢出或无限递归
@@ -1681,8 +1700,13 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         parent.AddStatus("child", child);
         parent.AddStatus("other", otherState);
 
-        // AddStatus 触发 child.onEnter → super.onEnter() + 子状态传播
-        this.assert(hookLog.length >= 2, "Child machine enter hooks fired on AddStatus");
+        // AddStatus 不再触发 onEnter（延迟到 start()）
+        this.assert(hookLog.length == 0, "AddStatus does not trigger enter hooks (deferred to start())");
+
+        parent.start();
+
+        // start() 触发 child.onEnter → super.onEnter() + 子状态传播
+        this.assert(hookLog.length >= 2, "Child machine enter hooks fired on start()");
 
         var enterIdx:Number = -1;
         var innerIdx:Number = -1;
@@ -1711,6 +1735,156 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         parent.destroy();
     }
 
+    // ========== Batch 3 新增测试：start() / $ 前缀 / while-loop / Phase 2 ==========
+
+    /**
+     * 测试 start() 显式启动方法
+     * 验证构建期与启动期分离
+     */
+    public function testStartMethod():Void {
+        trace("\n--- Test: Explicit start() Method ---");
+        this.clearLifecycleLog();
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        var state:FSM_Status = this.createTestState("idle", true);
+
+        machine.AddStatus("idle", state);
+
+        // AddStatus 不触发 onEnter
+        this.assert(this._lifecycleLog.length == 0, "No onEnter before start()");
+
+        // 首次 start() 触发 onEnter
+        machine.start();
+        this.assert(this._lifecycleLog.length == 1 && this._lifecycleLog[0] == "idle:enter",
+                   "start() triggers default state onEnter");
+
+        // 重复 start() 无效（幂等）
+        this.clearLifecycleLog();
+        machine.start();
+        this.assert(this._lifecycleLog.length == 0, "Duplicate start() is no-op");
+
+        machine.destroy();
+    }
+
+    /**
+     * 测试 AddStatus 保留名校验
+     * Object 原型链上的键名（toString/constructor 等）应被拒绝并 trace 报错
+     */
+    public function testReservedNameValidation():Void {
+        trace("\n--- Test: Reserved Name Validation ---");
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+
+        var normalState:FSM_Status = this.createTestState("normal", false);
+        var toStringState:FSM_Status = this.createTestState("toString", false);
+        var constructorState:FSM_Status = this.createTestState("constructor", false);
+
+        machine.AddStatus("normal", normalState);
+
+        // 保留名应被拒绝（AddStatus 静默返回，trace 报错）
+        machine.AddStatus("toString", toStringState);
+        machine.AddStatus("constructor", constructorState);
+
+        // 验证保留名状态未被注册
+        machine.ChangeState("toString");
+        this.assert(machine.getActiveStateName() == "normal", "Reserved name 'toString' rejected by AddStatus");
+
+        machine.ChangeState("constructor");
+        this.assert(machine.getActiveStateName() == "normal", "Reserved name 'constructor' rejected by AddStatus");
+
+        // 正常名称仍然可用
+        var attackState:FSM_Status = this.createTestState("Attack", false);
+        machine.AddStatus("Attack", attackState);
+        machine.ChangeState("Attack");
+        this.assert(machine.getActiveStateName() == "Attack", "Normal name 'Attack' works correctly");
+
+        machine.destroy();
+    }
+
+    /**
+     * 测试 ChangeState while 循环链式切换安全性
+     * 验证 onEnter 中触发的 ChangeState 被正确展开为迭代而非递归
+     */
+    public function testChangeStateChainWhileLoop():Void {
+        trace("\n--- Test: ChangeState Chain While Loop ---");
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.data = {log: []};
+
+        // 状态 A 的 onEnter 触发切换到 B
+        var stateA:FSM_Status = new FSM_Status(null,
+            function():Void {
+                this.data.log.push("A:enter");
+                this.superMachine.ChangeState("B");
+            }, null);
+
+        // 状态 B 的 onEnter 触发切换到 C
+        var stateB:FSM_Status = new FSM_Status(null,
+            function():Void {
+                this.data.log.push("B:enter");
+                this.superMachine.ChangeState("C");
+            }, null);
+
+        // 状态 C 不再触发切换
+        var stateC:FSM_Status = new FSM_Status(null,
+            function():Void { this.data.log.push("C:enter"); },
+            null);
+
+        // 起始状态 D
+        var stateD:FSM_Status = new FSM_Status(null, null, null);
+
+        machine.AddStatus("D", stateD);
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+        machine.AddStatus("C", stateC);
+
+        // D → A → (onEnter chains) → B → C
+        machine.ChangeState("A");
+
+        this.assert(machine.getActiveStateName() == "C", "Chain A->B->C resolved via while loop");
+        this.assert(machine.data.log.length == 3, "All three enters logged");
+        this.assert(machine.data.log[0] == "A:enter", "A entered first");
+        this.assert(machine.data.log[1] == "B:enter", "B entered second");
+        this.assert(machine.data.log[2] == "C:enter", "C entered third");
+
+        machine.destroy();
+    }
+
+    /**
+     * 测试 onAction Phase 2 中 activeState 变化检测
+     * 当状态的 onAction 内部调用 ChangeState 时，Phase 2 检测到变化，
+     * 跳过 Normal 转换检查，回到 Gate 检查
+     */
+    public function testPhase2ActiveStateDetection():Void {
+        trace("\n--- Test: Phase 2 ActiveState Detection ---");
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.data = {phase2Triggered: false, normalChecked: false};
+
+        // stateA 的 onAction 主动切换到 stateB
+        var stateA:FSM_Status = new FSM_Status(
+            function():Void {
+                this.data.phase2Triggered = true;
+                this.superMachine.ChangeState("B");
+            }, null, null);
+
+        var stateB:FSM_Status = new FSM_Status(null, null, null);
+
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+
+        // 添加一个不应该被检查的 Normal 转换（Phase 2 已切换状态，跳过 Normal）
+        machine.transitions.push("A", "B", function():Boolean {
+            this.data.normalChecked = true;
+            return false;
+        });
+
+        machine.onAction();
+
+        this.assert(machine.data.phase2Triggered, "Phase 2 state action executed");
+        this.assert(machine.getActiveStateName() == "B", "State changed to B via Phase 2 ChangeState");
+        this.assert(!machine.data.normalChecked, "Normal transition check skipped after Phase 2 state change");
+
+        machine.destroy();
+    }
+
     // ========== 报告生成 ==========
     
     public function printFinalReport():Void {
@@ -1726,14 +1900,19 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         }
         
         trace("=== FSM VERIFICATION SUMMARY ===");
-        trace("✓ Basic state machine operations verified");
-        trace("✓ State lifecycle management tested");
-        trace("✓ Transition system robustness confirmed");
-        trace("✓ Data blackboard functionality verified");
-        trace("✓ Error handling and edge cases tested");
-        trace("✓ Memory management and cleanup verified");
-        trace("✓ Performance benchmarks completed");
-        trace("✓ Complex workflow scenarios tested");
+        trace("  Basic state machine operations verified");
+        trace("  State lifecycle management tested");
+        trace("  Transition system robustness confirmed");
+        trace("  Data blackboard functionality verified");
+        trace("  Error handling and edge cases tested");
+        trace("  Memory management and cleanup verified");
+        trace("  Performance benchmarks completed");
+        trace("  Complex workflow scenarios tested");
+        trace("  Path B callback field safety verified");
+        trace("  Explicit start() separation verified");
+        trace("  Reserved name validation verified");
+        trace("  While-loop ChangeState chain verified");
+        trace("  Phase 2 activeState detection verified");
         trace("=============================");
     }
 }

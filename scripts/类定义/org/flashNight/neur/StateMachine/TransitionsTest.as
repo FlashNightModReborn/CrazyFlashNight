@@ -94,7 +94,12 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         this.testConditionalShortCircuiting();
         this.testTransitionGrouping();
         this.testDynamicTransitionManagement();
-        
+
+        // Gate/Normal分表测试
+        this.testGateNormalSeparation();
+        this.testGateNormalIsolation();
+        this.testGateNormalClearAndReset();
+
         // 最终报告
         this.printFinalReport();
         this.generatePerformanceReport();
@@ -138,7 +143,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         var transitions:Transitions = new Transitions(this._mockStatus);
         
         this.assert(transitions != null, "Transitions object created successfully");
-        this.assert(transitions.Transit("nonexistent") == null, "Transit returns null for non-existent state");
+        this.assert(transitions.TransitNormal("nonexistent") == null, "Transit returns null for non-existent state");
     }
 
     public function testPushTransition():Void {
@@ -146,13 +151,13 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         var transitions:Transitions = new Transitions(this._mockStatus);
         
         transitions.push("idle", "running", function():Boolean { return true; });
-        var result:String = transitions.Transit("idle");
+        var result:String = transitions.TransitNormal("idle");
         
         this.assert(result == "running", "Push transition works correctly");
         
         // 测试多个push的顺序
         transitions.push("idle", "walking", function():Boolean { return true; });
-        var result2:String = transitions.Transit("idle");
+        var result2:String = transitions.TransitNormal("idle");
         this.assert(result2 == "running", "First pushed transition has higher priority");
     }
 
@@ -163,7 +168,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         transitions.push("idle", "running", function():Boolean { return true; });
         transitions.unshift("idle", "jumping", function():Boolean { return true; });
         
-        var result:String = transitions.Transit("idle");
+        var result:String = transitions.TransitNormal("idle");
         this.assert(result == "jumping", "Unshift transition has highest priority");
     }
 
@@ -173,11 +178,11 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         
         // 测试条件为false的情况
         transitions.push("state1", "state2", function():Boolean { return false; });
-        this.assert(transitions.Transit("state1") == null, "Transit returns null when condition is false");
+        this.assert(transitions.TransitNormal("state1") == null, "Transit returns null when condition is false");
         
         // 测试条件为true的情况
         transitions.push("state1", "state3", function():Boolean { return true; });
-        this.assert(transitions.Transit("state1") == "state3", "Transit returns target when condition is true");
+        this.assert(transitions.TransitNormal("state1") == "state3", "Transit returns target when condition is true");
     }
 
     public function testTransitionActivation():Void {
@@ -186,12 +191,12 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         
         // 添加一个默认为active的转换
         transitions.push("active_state", "target1", function():Boolean { return true; });
-        this.assert(transitions.Transit("active_state") == "target1", "Active transition works");
+        this.assert(transitions.TransitNormal("active_state") == "target1", "Active transition works");
         
         // 测试inactive转换（需要扩展Transitions类支持此功能）
         // 这里先测试基本行为
         transitions.push("inactive_state", "target2", function():Boolean { return false; });
-        this.assert(transitions.Transit("inactive_state") == null, "Inactive condition returns null");
+        this.assert(transitions.TransitNormal("inactive_state") == null, "Inactive condition returns null");
     }
 
     // ========== 优先级测试 ==========
@@ -206,7 +211,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         transitions.unshift("multi", "high", function():Boolean { return true; });
         transitions.unshift("multi", "highest", function():Boolean { return true; });
         
-        var result:String = transitions.Transit("multi");
+        var result:String = transitions.TransitNormal("multi");
         this.assert(result == "highest", "Highest priority transition executed first");
     }
 
@@ -220,10 +225,10 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         transitions.push("test", "p2", function():Boolean { return this.data.priority >= 2; });
         transitions.unshift("test", "p1", function():Boolean { return this.data.priority >= 1; });
         
-        this.assert(transitions.Transit("test") == "p1", "Priority 1 condition met");
+        this.assert(transitions.TransitNormal("test") == "p1", "Priority 1 condition met");
         
         this._mockStatus.data.priority = 2;
-        this.assert(transitions.Transit("test") == "p1", "Higher priority still wins even when lower priority conditions are true");
+        this.assert(transitions.TransitNormal("test") == "p1", "Higher priority still wins even when lower priority conditions are true");
     }
 
     public function testPriorityInsertion():Void {
@@ -236,7 +241,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         transitions.push("insertion", "end2", function():Boolean { return true; });
         transitions.unshift("insertion", "start2", function():Boolean { return true; });
         
-        var result:String = transitions.Transit("insertion");
+        var result:String = transitions.TransitNormal("insertion");
         this.assert(result == "start2", "Last unshift has highest priority");
     }
 
@@ -249,7 +254,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         transitions.unshift("override", "high", function():Boolean { return this.data.override; });
         transitions.push("override", "low", function():Boolean { return !this.data.override; });
         
-        var result:String = transitions.Transit("override");
+        var result:String = transitions.TransitNormal("override");
         this.assert(result == "low", "Lower priority executes when higher priority condition fails");
     }
 
@@ -264,12 +269,12 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         transitions.push("simple", "high", function():Boolean { return this.data.value > 50; });
         transitions.push("simple", "low", function():Boolean { return this.data.value <= 50; });
         
-        this.assert(transitions.Transit("simple") == "high", "Simple numeric condition works");
+        this.assert(transitions.TransitNormal("simple") == "high", "Simple numeric condition works");
         
         // 布尔条件
         this._mockStatus.data.flag = true;
         transitions.push("bool", "enabled", function():Boolean { return this.data.flag; });
-        this.assert(transitions.Transit("bool") == "enabled", "Simple boolean condition works");
+        this.assert(transitions.TransitNormal("bool") == "enabled", "Simple boolean condition works");
     }
 
     public function testComplexConditions():Void {
@@ -285,7 +290,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
                 this.data.stats.mana > 20 && 
                 this.data.stats.level >= 3;
         });
-        this.assert(transitions.Transit("complex") == "combat", "Complex AND condition works");
+        this.assert(transitions.TransitNormal("complex") == "combat", "Complex AND condition works");
         
         // 测试 "advanced"
         // 修复：提供满足条件的数据
@@ -296,7 +301,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
                 stats.level >= 5 &&
                 stats.health + stats.mana > 100;
         });
-        this.assert(transitions.Transit("advanced") == "special", "Advanced complex condition works");
+        this.assert(transitions.TransitNormal("advanced") == "special", "Advanced complex condition works");
     }
 
     public function testDynamicConditions():Void {
@@ -315,7 +320,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         });
         
         this._mockStatus.data.time = 8; // 模拟早上8点
-        this.assert(transitions.Transit("dyn") == "morning", "Dynamic time-based condition works");
+        this.assert(transitions.TransitNormal("dyn") == "morning", "Dynamic time-based condition works");
     }
 
     public function testConditionalChaining():Void {
@@ -340,10 +345,10 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
             return false;
         });
         
-        var result1:String = transitions.Transit("chain");
+        var result1:String = transitions.TransitNormal("chain");
         this.assert(result1 == "step1", "First step in chain executed");
         
-        var result2:String = transitions.Transit("chain");
+        var result2:String = transitions.TransitNormal("chain");
         this.assert(result2 == "step2", "Second step in chain executed");
     }
 
@@ -375,7 +380,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
                    player.inventory.items.length > 0;
         });
         
-        this.assert(transitions.Transit("nested") == "shop", "Nested object condition works");
+        this.assert(transitions.TransitNormal("nested") == "shop", "Nested object condition works");
     }
 
     // ========== 数据访问测试 ==========
@@ -394,7 +399,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
             return true;
         });
         
-        transitions.Transit("access");
+        transitions.TransitNormal("access");
         this.assert(accessedValue == 42, "Numeric data accessed correctly");
         this.assert(accessedName == "test", "String data accessed correctly");
     }
@@ -411,9 +416,9 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         });
         
         // 前两次调用应该返回null（条件为false）
-        this.assert(transitions.Transit("modify") == null, "First call returns null");
-        this.assert(transitions.Transit("modify") == null, "Second call returns null");
-        this.assert(transitions.Transit("modify") == "increment", "Third call returns target");
+        this.assert(transitions.TransitNormal("modify") == null, "First call returns null");
+        this.assert(transitions.TransitNormal("modify") == null, "Second call returns null");
+        this.assert(transitions.TransitNormal("modify") == "increment", "Third call returns target");
         this.assert(this._mockStatus.data.modifyTest.counter == 3, "Counter modified correctly");
     }
 
@@ -430,10 +435,10 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
             return this.data.validation.isValid === true;
         });
         
-        this.assert(transitions.Transit("validate") == null, "Null data handled safely");
+        this.assert(transitions.TransitNormal("validate") == null, "Null data handled safely");
         
         this._mockStatus.data.validation = {isValid: true};
-        this.assert(transitions.Transit("validate") == "safe", "Valid data processed correctly");
+        this.assert(transitions.TransitNormal("validate") == "safe", "Valid data processed correctly");
     }
 
     public function testCrossStateDataAccess():Void {
@@ -456,7 +461,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
             return false;
         });
         
-        this.assert(transitions.Transit("idle") == "running", "Cross-state data modification works");
+        this.assert(transitions.TransitNormal("idle") == "running", "Cross-state data modification works");
         this.assert(!this._mockStatus.data.states.idle.active, "Source state deactivated");
         this.assert(this._mockStatus.data.states.running.active, "Target state activated");
     }
@@ -467,9 +472,9 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         trace("\n--- Test: Empty Transition List ---");
         var transitions:Transitions = new Transitions(this._mockStatus);
         
-        this.assert(transitions.Transit("any") == null, "Empty transition list returns null");
-        this.assert(transitions.Transit("") == null, "Empty state name returns null");
-        this.assert(transitions.Transit(null) == null, "Null state name returns null");
+        this.assert(transitions.TransitNormal("any") == null, "Empty transition list returns null");
+        this.assert(transitions.TransitNormal("") == null, "Empty state name returns null");
+        this.assert(transitions.TransitNormal(null) == null, "Null state name returns null");
     }
 
     public function testNullConditions():Void {
@@ -479,7 +484,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         // 测试null条件函数的处理
         try {
             transitions.push("test", "target", null);
-            var result:String = transitions.Transit("test");
+            var result:String = transitions.TransitNormal("test");
             this.assert(result == null, "Null condition handled gracefully");
         } catch (e:Error) {
             this.assert(true, "Null condition throws expected error");
@@ -495,7 +500,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         
         for (var i:Number = 0; i < invalidNames.length; i++) {
             transitions.push(invalidNames[i], "target", function():Boolean { return true; });
-            var result:String = transitions.Transit(invalidNames[i]);
+            var result:String = transitions.TransitNormal(invalidNames[i]);
             // 应该能处理这些情况而不崩溃
             this.assert(true, "Invalid state name handled: '" + invalidNames[i] + "'");
         }
@@ -512,9 +517,9 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
             return this.data.selfCount >= 3;
         });
         
-        this.assert(transitions.Transit("self") == null, "First self-transition check returns null");
-        this.assert(transitions.Transit("self") == null, "Second self-transition check returns null");
-        this.assert(transitions.Transit("self") == "self", "Third self-transition succeeds");
+        this.assert(transitions.TransitNormal("self") == null, "First self-transition check returns null");
+        this.assert(transitions.TransitNormal("self") == null, "Second self-transition check returns null");
+        this.assert(transitions.TransitNormal("self") == "self", "Third self-transition succeeds");
     }
 
     public function testCircularTransitions():Void {
@@ -528,13 +533,13 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         transitions.push("C", "A", function():Boolean { return this.data.cycle % 3 == 2; });
         
         this._mockStatus.data.cycle = 0;
-        this.assert(transitions.Transit("A") == "B", "A -> B transition");
+        this.assert(transitions.TransitNormal("A") == "B", "A -> B transition");
         
         this._mockStatus.data.cycle = 1;
-        this.assert(transitions.Transit("B") == "C", "B -> C transition");
+        this.assert(transitions.TransitNormal("B") == "C", "B -> C transition");
         
         this._mockStatus.data.cycle = 2;
-        this.assert(transitions.Transit("C") == "A", "C -> A transition completes cycle");
+        this.assert(transitions.TransitNormal("C") == "A", "C -> A transition completes cycle");
     }
 
     public function testMissingTargetStates():Void {
@@ -544,7 +549,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         // 转换到不存在的目标状态
         transitions.push("source", "nonexistent_target", function():Boolean { return true; });
         
-        var result:String = transitions.Transit("source");
+        var result:String = transitions.TransitNormal("source");
         this.assert(result == "nonexistent_target", "Transition returns target name even if target doesn't exist");
         // 注意：Transitions类本身不验证目标状态是否存在，这由状态机负责
     }
@@ -568,7 +573,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         var result:String = null;
         
         try {
-            result = transitions.Transit("error");
+            result = transitions.TransitNormal("error");
         } catch (e:Error) {
             exceptionCaught = true;
         }
@@ -600,7 +605,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
             return this.data && this.data.someProperty;
         });
         
-        var result:String = transitions.Transit("corrupted");
+        var result:String = transitions.TransitNormal("corrupted");
         this.assert(result == null, "Corrupted data handled gracefully");
     }
 
@@ -629,7 +634,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         
         while (attempts < 5 && !this._mockStatus.data.recovered) {
             try {
-                finalResult = transitions.Transit("recovery");
+                finalResult = transitions.TransitNormal("recovery");
                 attempts++;
             } catch (e:Error) {
                 attempts++;
@@ -651,7 +656,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         
         var iterations:Number = 10000;
         var time:Number = this.measureTime(function() {
-            transitions.Transit("perf");
+            transitions.TransitNormal("perf");
         }, iterations, "Basic Transit Call");
         
         trace("Basic Performance: " + iterations + " transit calls in " + time + "ms");
@@ -673,7 +678,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         
         var iterations:Number = 1000;
         var time:Number = this.measureTime(function() {
-            transitions.Transit("many");
+            transitions.TransitNormal("many");
         }, iterations, "Many Transitions");
         
         trace("Many Transitions Performance: " + numTransitions + " transitions, " + iterations + " calls in " + time + "ms");
@@ -706,7 +711,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         
         var iterations:Number = 1000;
         var time:Number = this.measureTime(function() {
-            transitions.Transit("complex");
+            transitions.TransitNormal("complex");
         }, iterations, "Complex Conditions");
         
         trace("Complex Conditions Performance: " + iterations + " complex calculations in " + time + "ms");
@@ -726,7 +731,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         
         var iterations:Number = 50000;
         var time:Number = this.measureTime(function() {
-            transitions.Transit("frequent");
+            transitions.TransitNormal("frequent");
         }, iterations, "Frequent Transit Calls");
         
         trace("Frequent Calls Performance: " + iterations + " calls in " + time + "ms");
@@ -754,7 +759,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
             transitions.push("scale", "success", function():Boolean { return true; });
             
             var time:Number = this.measureTime(function() {
-                transitions.Transit("scale");
+                transitions.TransitNormal("scale");
             }, 100, "Scale " + scale);
             
             results.push({scale: scale, time: time});
@@ -793,16 +798,16 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
             transitions.push("memory", aTarget, aFunc);
         }
         
-        // 经过修复后，lists["memory"] 数组的长度应该只有 1
+        // 经过去重后，normalLists["memory"] 数组的长度应该只有 1
         
         // 执行一些操作
         for (var j:Number = 0; j < 100; j++) {
-            transitions.Transit("memory");
+            transitions.TransitNormal("memory");
         }
         
         // 由于数组长度为1，这里的性能会非常高
         var time:Number = this.measureTime(function() {
-            transitions.Transit("memory");
+            transitions.TransitNormal("memory");
         }, 1000, "Memory Stress Test");
         
         this.assert(time < 5000, "Memory usage remains efficient under stress"); // 现在应该远小于5000ms
@@ -831,7 +836,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         // 多次调用相同条件
         var startTime:Number = getTimer();
         for (var j:Number = 0; j < 10; j++) {
-            transitions.Transit("cache");
+            transitions.TransitNormal("cache");
         }
         var totalTime:Number = getTimer() - startTime;
         
@@ -858,7 +863,7 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
             return true;
         });
         
-        var result:String = transitions.Transit("short");
+        var result:String = transitions.TransitNormal("short");
         
         this.assert(result == "first", "First transition executed");
         this.assert(this._mockStatus.data.shortCircuit.evaluations == 1, "Short-circuiting works - only first condition evaluated");
@@ -882,11 +887,11 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
             return this.data.group.category == "B";
         });
         
-        var result1:String = transitions.Transit("group");
+        var result1:String = transitions.TransitNormal("group");
         this.assert(result1 == "groupA_low", "Group A low priority selected");
         
         this._mockStatus.data.group.priority = 3;
-        var result2:String = transitions.Transit("group");
+        var result2:String = transitions.TransitNormal("group");
         this.assert(result2 == "groupA_high", "Group A high priority selected");
     }
 
@@ -909,18 +914,88 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         });
         
         // 测试阶段1
-        var result1:String = transitions.Transit("dyn");
+        var result1:String = transitions.TransitNormal("dyn");
         this.assert(result1 == "phase1", "Phase 1 active");
         
         // 切换到阶段2
         this._mockStatus.data.dyn.phase = 2;
-        var result2:String = transitions.Transit("dyn");
+        var result2:String = transitions.TransitNormal("dyn");
         this.assert(result2 == "phase2", "Phase 2 active");
         
         // 禁用所有
         this._mockStatus.data.dyn.enabled = false;
-        var result3:String = transitions.Transit("dyn");
+        var result3:String = transitions.TransitNormal("dyn");
         this.assert(result3 == "disabled", "Disabled state active");
+    }
+
+    // ========== Gate/Normal 分表测试 ==========
+
+    /**
+     * 验证 Gate 和 Normal 转换正确分表存储和查询
+     */
+    public function testGateNormalSeparation():Void {
+        trace("\n--- Test: Gate/Normal Separation ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        // 添加 Gate 转换
+        transitions.push("state1", "paused", function():Boolean { return true; }, true);
+        // 添加 Normal 转换
+        transitions.push("state1", "running", function():Boolean { return true; }, false);
+
+        // TransitGate 应该只看到 Gate 规则
+        this.assert(transitions.TransitGate("state1") == "paused", "TransitGate returns Gate transition");
+        // TransitNormal 应该只看到 Normal 规则
+        this.assert(transitions.TransitNormal("state1") == "running", "TransitNormal returns Normal transition");
+
+        // Gate 不应返回 Normal 规则
+        this.assert(transitions.TransitGate("state1") != "running", "TransitGate does not return Normal transition");
+        // Normal 不应返回 Gate 规则
+        this.assert(transitions.TransitNormal("state1") != "paused", "TransitNormal does not return Gate transition");
+    }
+
+    /**
+     * 验证 Gate 和 Normal 之间完全隔离
+     */
+    public function testGateNormalIsolation():Void {
+        trace("\n--- Test: Gate/Normal Isolation ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        // 只添加 Gate 转换
+        transitions.push("gateOnly", "target", function():Boolean { return true; }, true);
+        // Normal 查询应返回 null
+        this.assert(transitions.TransitNormal("gateOnly") == null, "No Normal result for Gate-only state");
+        this.assert(transitions.TransitGate("gateOnly") == "target", "Gate result exists for Gate-only state");
+
+        // 只添加 Normal 转换
+        transitions.push("normalOnly", "target", function():Boolean { return true; }, false);
+        // Gate 查询应返回 null
+        this.assert(transitions.TransitGate("normalOnly") == null, "No Gate result for Normal-only state");
+        this.assert(transitions.TransitNormal("normalOnly") == "target", "Normal result exists for Normal-only state");
+    }
+
+    /**
+     * 验证 clear 和 reset 同时清除 Gate 和 Normal
+     */
+    public function testGateNormalClearAndReset():Void {
+        trace("\n--- Test: Gate/Normal Clear and Reset ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        transitions.push("test", "gateTarget", function():Boolean { return true; }, true);
+        transitions.push("test", "normalTarget", function():Boolean { return true; }, false);
+
+        // clear 应清除指定状态的 Gate 和 Normal
+        transitions.clear("test");
+        this.assert(transitions.TransitGate("test") == null, "Gate cleared for state");
+        this.assert(transitions.TransitNormal("test") == null, "Normal cleared for state");
+
+        // 重新添加
+        transitions.push("test2", "g", function():Boolean { return true; }, true);
+        transitions.push("test2", "n", function():Boolean { return true; }, false);
+
+        // reset 应清除所有
+        transitions.reset();
+        this.assert(transitions.TransitGate("test2") == null, "Gate cleared after reset");
+        this.assert(transitions.TransitNormal("test2") == null, "Normal cleared after reset");
     }
 
     // ========== 报告生成 ==========
