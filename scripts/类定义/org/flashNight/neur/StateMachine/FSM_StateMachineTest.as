@@ -113,6 +113,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testNestedMachineOnActionPropagation();
         this.testDestroyNestedMachineRecursive();
         this.testOnExitLockNestedInteraction();
+        this.testOnExitMachineLevelCallbackChangeStateBlocked();
 
         // Batch 7 新增：Risk A (exit-before-enter) / Risk B (lastState sync) 修复验证
         this.testRiskA_OnEnterCbChangeStateSafety();
@@ -2526,6 +2527,83 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         }
         this.assert(innerExitIdx >= 0 && childExitIdx >= 0, "Both exit events fired");
         this.assert(innerExitIdx < childExitIdx, "inner exits before child (inside-out order preserved)");
+
+        parent.destroy();
+    }
+
+    /**
+     * 测试 machine-level onExit 回调中的 ChangeState 会被退出锁吞掉
+     *
+     * 场景：parent.ChangeState 触发 child.onExit → child.super.onExit() 执行 _onExitCb。
+     * 若 _onExitCb 内部调用 this.ChangeState("another")：
+     * - 旧行为：因 _isChanging=false 且 _started=true，会走完整管线并触发额外生命周期（危险）。
+     * - 期望行为：契约要求退出期间禁止内部 ChangeState，请求应被静默丢弃，且不产生副作用。
+     */
+    public function testOnExitMachineLevelCallbackChangeStateBlocked():Void {
+        trace("\n--- Test: onExit Machine Callback ChangeState Blocked ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        var innerExitCount:Number = 0;
+        var machineExitCount:Number = 0;
+
+        var inner:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("inner:enter"); },
+            function():Void {
+                self._lifecycleLog.push("inner:exit");
+                innerExitCount++;
+            }
+        );
+
+        var another:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("another:enter"); },
+            null
+        );
+
+        // child: machine-level onExit 回调尝试 ChangeState（应被锁吞掉）
+        var child:FSM_StateMachine = new FSM_StateMachine(null,
+            function():Void { self._lifecycleLog.push("child:enter"); },
+            function():Void {
+                self._lifecycleLog.push("child:exit");
+                machineExitCount++;
+                this.ChangeState("another");
+            }
+        );
+        child.data = {};
+        child.AddStatus("inner", inner);
+        child.AddStatus("another", another);
+
+        var target:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("target:enter"); },
+            null
+        );
+
+        var parent:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        parent.AddStatus("child", child);
+        parent.AddStatus("target", target);
+
+        parent.start();
+
+        // ── 触发 parent 切换：child.onExit → child._onExitCb 尝试重入 ──
+        this.clearLifecycleLog();
+        parent.ChangeState("target");
+
+        // 验证 inner.onExit 只执行一次（不应被 machine-level ChangeState 触发二次 onExit）
+        this.assert(innerExitCount == 1, "Inner state onExit called exactly once during machine exit");
+
+        // 验证 child machine-level onExit hook 执行一次
+        this.assert(machineExitCount == 1, "Machine-level onExit callback fired exactly once");
+
+        // 验证 another 未被进入（退出期间 ChangeState 被吞掉）
+        var anotherEntered:Boolean = false;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "another:enter") anotherEntered = true;
+        }
+        this.assert(!anotherEntered, "ChangeState inside machine onExit callback is swallowed (no enter)");
+
+        // parent 应安全到达目标状态
+        this.assert(parent.getActiveStateName() == "target",
+                   "Parent safely reached target state despite machine-level reentrant attempt");
 
         parent.destroy();
     }

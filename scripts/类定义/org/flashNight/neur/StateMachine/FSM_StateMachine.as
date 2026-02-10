@@ -254,7 +254,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
      * 此方法确保在自身退出前，先正确地退出其子状态。
      *
      * 契约：机器退出期间禁止内部 ChangeState。
-     * 若子状态 onExit 回调尝试 ChangeState，请求被静默丢弃（机器即将停用）。
+     * 若子状态 onExit 或机器级 onExit 回调尝试 ChangeState，请求被静默丢弃（机器即将停用）。
      * 此策略与 destroy() 一致。
      */
     public function onExit():Void {
@@ -266,14 +266,18 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             this.activeState.onExit();
         }
 
-        // 3. 丢弃退出期间产生的任何 pending，解除锁定
+        // 3. 丢弃退出期间产生的任何 pending（保持锁定覆盖整个 onExit）
+        this._pending = null;
+
+        // 4. 执行状态机自身的 onExit 回调（如果已定义）
+        //    契约：退出期间禁止内部 ChangeState → 这里仍保持 _isChanging=true
+        super.onExit();
+
+        // 5. 丢弃机器级回调期间产生的 pending，解除锁定
         this._pending = null;
         this._isChanging = false;
 
-        // 4. 执行状态机自身的 onExit 回调（如果已定义）
-        super.onExit();
-
-        // 5. 标记为未启动，防止 destroy() 中重复触发 onExit
+        // 6. 标记为未启动，防止 destroy() 中重复触发 onExit
         this._booted = false;
         this._started = false;
     }

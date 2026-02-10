@@ -182,17 +182,17 @@ Workflow completed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=31ms, Actions=31ms for 10000 operations
+Basic Performance: Transitions=33ms, Actions=29ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 42ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 39ms, 100 transitions in 0ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 34ms
+Frequent Transitions Performance: 5000 transitions in 17ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
@@ -200,10 +200,10 @@ Complex Transition Performance: 1000 complex transitions in 6ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=0ms, Transition=1ms, Operation=0ms
-Size 50: Create=1ms, Transition=0ms, Operation=0ms
+Size 10: Create=0ms, Transition=0ms, Operation=1ms
+Size 50: Create=0ms, Transition=1ms, Operation=0ms
 Size 100: Create=2ms, Transition=1ms, Operation=0ms
-Size 500: Create=8ms, Transition=8ms, Operation=0ms
+Size 500: Create=8ms, Transition=7ms, Operation=0ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -340,6 +340,12 @@ Size 500: Create=8ms, Transition=8ms, Operation=0ms
 [PASS] Both exit events fired
 [PASS] inner exits before child (inside-out order preserved)
 
+--- Test: onExit Machine Callback ChangeState Blocked ---
+[PASS] Inner state onExit called exactly once during machine exit
+[PASS] Machine-level onExit callback fired exactly once
+[PASS] ChangeState inside machine onExit callback is swallowed (no enter)
+[PASS] Parent safely reached target state despite machine-level reentrant attempt
+
 --- Test: Risk A - onEnterCb ChangeState Safety ---
 [PASS] Risk A fix: idle.onExit NOT called (never entered, no exit-before-enter)
 [PASS] Risk A fix: idle.onEnter NOT called (pointer moved past idle before propagation)
@@ -362,7 +368,7 @@ Size 500: Create=8ms, Transition=8ms, Operation=0ms
 [PASS] Risk B: full lifecycle after start()
 
 === FINAL FSM TEST REPORT ===
-Tests Passed: 208
+Tests Passed: 212
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.
