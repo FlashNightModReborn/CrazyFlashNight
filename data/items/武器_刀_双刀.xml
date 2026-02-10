@@ -101,8 +101,63 @@
       <type>武器</type>
       <use>刀</use>
       <actiontype>双刀</actiontype>
-      <price>195000</price>
-      <description>由破旧军刀和战术狗腿刀组合而成的双持武器，适合双手协调性极佳的雇佣兵使用。</description>
+      <price>50700</price>
+      <description>由破旧军刀和战术狗腿刀组合而成的双持武器，适合双手协调性极佳的雇佣兵使用，很不幸的是，由于此武器的战技过于强大，所以战技的冷却时间和mp消耗会有所增加。</description>
+      <skill>
+        <skillname>深冲利刺</skillname>
+        <description>手持该武器时可以使用深冲利刺。</description>
+        <cd>11000</cd>
+        <mp>110</mp>
+      </skill>
+      <data>
+        <level>13</level>
+        <weight>3</weight>
+        <dressup>刀-破旧军刀</dressup>
+        <dressup2>刀-战术狗腿刀</dressup2>
+        <power>130</power>
+        <hp>0</hp>
+        <mp>20</mp>
+        <defence>0</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+    <item>
+      <name>双持砍刀</name>
+      <displayname>双持砍刀</displayname>
+      <icon>双持砍刀</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>双刀</actiontype>
+      <price>70200</price>
+      <description>凭什么黑铁的小兵都能拿两把砍刀对你一顿乱劈风刀法而你不能呢？拿上它把他们细细的剁成臊子！</description>
+      <skill>
+        <skillname>深冲利刺</skillname>
+        <description>手持该武器时可以使用深冲利刺。</description>
+        <cd>10000</cd>
+        <mp>100</mp>
+      </skill>
+      <data>
+        <level>18</level>
+        <weight>6</weight>
+        <dressup>刀-单刀</dressup>
+        <dressup2>刀-砍刀</dressup2>
+        <power>200</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>10</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+    <item>
+      <name>双持中国战刀</name>
+      <displayname>双持中国战刀</displayname>
+      <icon>双持中国战刀</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>双刀</actiontype>
+      <price>128700</price>
+      <description>末日似乎带给了这个世界一道时空裂缝，将沉寂于历史中的兵器交付苟活的世人。
+        要是一把“鬼灭之刃”都不能满足你的需求？！那就两把！</description>
       <skill>
         <skillname>深冲利刺</skillname>
         <description>手持该武器时可以使用深冲利刺。</description>
@@ -110,14 +165,46 @@
         <mp>80</mp>
       </skill>
       <data>
-        <level>12</level>
-        <weight>3</weight>
-        <dressup>刀-破旧军刀</dressup>
-        <dressup2>刀-战术狗腿刀</dressup2>
-        <power>130</power>
+        <level>22</level>
+        <weight>5</weight>
+        <dressup>刀-中国战刀</dressup>
+        <dressup2>刀-中国战刀</dressup2>
+        <power>200</power>
         <hp>0</hp>
         <mp>0</mp>
-        <defence>0</defence>
+        <defence>40</defence>
+        <skillmultipliers>
+          <凶斩>3</凶斩>
+          <龙斩>3</龙斩>
+        </skillmultipliers>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+    <item>
+      <name>血十字刀剑</name>
+      <displayname>血十字刀剑</displayname>
+      <icon>血十字刀剑</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>双刀</actiontype>
+      <price>380000</price>
+      <description>继承了血刀和十文字光剑属性的双持武器，不过因为每一把武器都只有一只手操作，防御力打了折扣。</description>
+      <skill>
+        <skillname>深冲利刺</skillname>
+        <description>手持该武器时可以使用深冲利刺。</description>
+        <cd>8000</cd>
+        <mp>80</mp>
+      </skill>
+      <data>
+        <level>31</level>
+        <weight>12</weight>
+        <dressup>刀-十文字大剑</dressup>
+        <dressup2>刀-血刀</dressup2>
+        <power>273</power>
+        <hp>60</hp>
+        <mp>60</mp>
+        <defence>60</defence>
+        <vampirism>1</vampirism>
         <bladeCount>3</bladeCount>
       </data>
     </item>
