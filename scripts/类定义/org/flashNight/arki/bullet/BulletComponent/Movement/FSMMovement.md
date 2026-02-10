@@ -92,23 +92,29 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.FSMMovement implements
 
     // 添加状态到状态机
     public function addState(stateName:String, state:FSM_Status):Void {
-        state.superMachine = this.stateMachine;
-        state.name = stateName;
-        state.data = this.stateMachine.data;
+        // superMachine/name/data 由 AddStatus 内部统一赋值，无需预设
         this.stateMachine.AddStatus(stateName, state);
     }
 }
 ```
+
+> **重要**：`FSMMovement` 的 `_started` 门控机制
+>
+> 状态机在调用 `start()` 之前处于**构建期**：
+> - `changeState()` 仅移动内部指针，不触发 `onEnter`/`onExit` 生命周期。
+> - `updateMovement()`（即 `onAction()`）会被阻断，不执行任何逻辑。
+>
+> 子类必须在构建完成后调用 `this.stateMachine.start()` 来启动状态机。
 
 ### **核心属性与方法**
 
 - **stateMachine**：`FSM_StateMachine` 实例，管理状态和状态转换。
 - **targetObject**：移动对象的引用，通常是一个 `MovieClip` 实例。
 - **initializeStates()**：初始化状态的方法，供子类覆盖。
-- **updateMovement(target:MovieClip)**：每帧调用，更新移动逻辑。
-- **changeState(stateName:String)**：切换到指定状态。
+- **updateMovement(target:MovieClip)**：每帧调用，更新移动逻辑。需先调用 `start()`。
+- **changeState(stateName:String)**：切换到指定状态。未 `start()` 时仅移指针。
 - **getCurrentStateName()**：获取当前状态的名称。
-- **addState(stateName:String, state:FSM_Status)**：将状态添加到状态机。
+- **addState(stateName:String, state:FSM_Status)**：将状态添加到状态机（`superMachine`/`name`/`data` 由内部赋值）。
 
 ---
 
@@ -121,7 +127,9 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.FSMMovement implements
 ```actionscript
 class CustomMovement extends FSMMovement {
     public function CustomMovement() {
-        super();
+        super(); // 调用 initializeStates()（构建期）
+        // 启动状态机：统一触发首次 onEnter
+        this.stateMachine.start();
     }
 
     public function initializeStates():Void {
@@ -169,7 +177,7 @@ public function initializeStates():Void {
     this.addState("State1", state1);
     this.addState("State2", state2);
 
-    // 设置初始状态
+    // 构建期：仅移指针，不触发 onEnter（start() 由构造函数统一调用）
     this.changeState("State1");
 }
 ```
@@ -185,6 +193,7 @@ mc._x = 100;
 mc._y = 100;
 
 var movement:CustomMovement = new CustomMovement();
+// start() 已在 CustomMovement 构造函数中调用
 
 mc.onEnterFrame = function() {
     movement.updateMovement(this);
@@ -200,7 +209,9 @@ mc.onEnterFrame = function() {
 ```actionscript
 class BulletMovement extends FSMMovement {
     public function BulletMovement() {
-        super();
+        super(); // 调用 initializeStates()（构建期）
+        // 启动状态机：触发 Fly.onEnter
+        this.stateMachine.start();
     }
 
     public function initializeStates():Void {
@@ -210,6 +221,7 @@ class BulletMovement extends FSMMovement {
         this.addState("Fly", flyState);
         this.addState("Explode", explodeState);
 
+        // 构建期：仅移指针
         this.changeState("Fly");
     }
 }
@@ -289,6 +301,7 @@ bullet._x = 100;
 bullet._y = 200;
 
 var bulletMovement:BulletMovement = new BulletMovement();
+// start() 已在 BulletMovement 构造函数中调用
 
 bullet.onEnterFrame = function() {
     bulletMovement.updateMovement(this);
@@ -342,9 +355,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.FSMMovement implements
     }
 
     public function addState(stateName:String, state:FSM_Status):Void {
-        state.superMachine = this.stateMachine;
-        state.name = stateName;
-        state.data = this.stateMachine.data;
+        // superMachine/name/data 由 AddStatus 内部统一赋值，无需预设
         this.stateMachine.AddStatus(stateName, state);
     }
 }
@@ -355,7 +366,9 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.FSMMovement implements
 ```actionscript
 class BulletMovement extends FSMMovement {
     public function BulletMovement() {
-        super();
+        super(); // 调用 initializeStates()（构建期）
+        // 启动状态机：触发 Fly.onEnter
+        this.stateMachine.start();
     }
 
     public function initializeStates():Void {
@@ -365,6 +378,7 @@ class BulletMovement extends FSMMovement {
         this.addState("Fly", flyState);
         this.addState("Explode", explodeState);
 
+        // 构建期：仅移指针
         this.changeState("Fly");
     }
 }
@@ -436,6 +450,7 @@ bullet._x = 100;
 bullet._y = 200;
 
 var bulletMovement:BulletMovement = new BulletMovement();
+// start() 已在 BulletMovement 构造函数中调用
 
 bullet.onEnterFrame = function() {
     bulletMovement.updateMovement(this);

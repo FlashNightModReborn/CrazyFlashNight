@@ -97,8 +97,11 @@ var moveState:MoveState = new MoveState(movement);
 movement.addState("IdleState", idleState);
 movement.addState("MoveState", moveState);
 
-// 设置初始状态
+// 设置初始状态（构建期 ChangeState 仅移指针，不触发 onEnter）
 movement.changeState("IdleState");
+
+// 启动状态机：统一触发首次 onEnter
+movement.stateMachine.start();
 
 // 在 onEnterFrame 中更新移动逻辑
 mc.onEnterFrame = function() {

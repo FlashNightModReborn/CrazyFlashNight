@@ -80,8 +80,10 @@ class org.flashNight.naki.DataStructures.StatefulNAryTreeNode extends NAryTreeNo
         // 激活所有子节点的状态机
         this.traversePreOrder(function(node:NAryTreeNode):Boolean {
             if (node instanceof StatefulNAryTreeNode) {
-                node.stateMachine.start(); // 幂等：确保 _started 后 ChangeState 才触发生命周期
+                // 构建期 ChangeState 仅移指针，不触发生命周期；
+                // start() 统一触发 active.onEnter，避免"默认态 enter→exit→active enter"的抖动
                 node.stateMachine.ChangeState("active");
+                node.stateMachine.start();
             }
             return true;
         });
