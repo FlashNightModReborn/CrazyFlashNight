@@ -94,4 +94,31 @@
         <bladeCount>3</bladeCount>
       </data>
     </item>
+    <item>
+      <name>战术双刀</name>
+      <displayname>战术双刀</displayname>
+      <icon>战术双刀</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>双刀</actiontype>
+      <price>195000</price>
+      <description>由破旧军刀和战术狗腿刀组合而成的双持武器，适合双手协调性极佳的雇佣兵使用。</description>
+      <skill>
+        <skillname>深冲利刺</skillname>
+        <description>手持该武器时可以使用深冲利刺。</description>
+        <cd>8000</cd>
+        <mp>80</mp>
+      </skill>
+      <data>
+        <level>12</level>
+        <weight>3</weight>
+        <dressup>刀-破旧军刀</dressup>
+        <dressup2>刀-战术狗腿刀</dressup2>
+        <power>130</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
 </root>
