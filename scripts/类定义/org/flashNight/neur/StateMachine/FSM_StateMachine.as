@@ -4,7 +4,6 @@ import org.flashNight.neur.StateMachine.Transitions;
 
 class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status implements IMachine {
     public var statusDict:Object; // 状态列表（public: BaseUnitBehavior/EnemyBehavior 需外部访问）
-    private var statusCount:Number; // 状态总数
     private var activeState:FSM_Status; // 当前状态
     private var lastState:FSM_Status; // 上个状态
     private var defaultState:FSM_Status; // 默认状态
@@ -25,15 +24,21 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     public function FSM_StateMachine(_onAction:Function, _onEnter:Function, _onExit:Function){
         super(_onAction, _onEnter, _onExit);
         this.statusDict = new Object();
-        this.statusCount = 0;
         this.actionCount = 0;
         this.transitions = new Transitions(this);
     }
 
     /**
-     * 状态切换 - 使用 while 循环替代递归以避免栈溢出风险。
-     * 当 onEnter/onExit 中触发新的 ChangeState 时，新请求被暂存到 _pending，
-     * 循环回来处理，而非递归调用。
+     * 状态切换 - 4 阶段管线，while 循环替代递归。
+     *
+     * 修复：onExit 中触发的 ChangeState 不再被静默吞掉。
+     * Phase A: 退出当前状态（_pending 清零后调 onExit，onExit 可设 _pending）
+     * Phase B: 检查 onExit 重定向（若 _pending 有效则覆盖 target）
+     * Phase C: 进入新状态（更新 activeState/lastState/actionCount）
+     * Phase D: 检查 onEnter 链式切换（若 _pending 有效则继续循环）
+     *
+     * 契约：调用者保证 next 是已通过 AddStatus 注册的合法状态名。
+     * 若 next 不存在或等于当前状态，静默返回（不切换）。
      */
     public function ChangeState(next:String):Void {
         var target:FSM_Status = this.statusDict[next];
@@ -47,27 +52,41 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         }
 
         _isChanging = true;
-        // 用 while 循环处理连锁切换（原递归展开为迭代）
         var maxChain:Number = 10; // 安全上限，防止无限连锁
         var chainCount:Number = 0;
 
         while ((target instanceof FSM_Status) && target != this.activeState && chainCount < maxChain) {
-            // 先退出当前状态
+            // ── Phase A: 退出当前状态 ──
+            _pending = null;
             if (this.activeState) {
                 this.activeState.onExit();
+                // onExit 回调可能调用 ChangeState → 设置 _pending
             }
 
+            // ── Phase B: onExit 重定向检查 ──
+            if (_pending != null) {
+                var exitRedirect:FSM_Status = this.statusDict[_pending];
+                if (exitRedirect instanceof FSM_Status && exitRedirect != this.activeState) {
+                    target = exitRedirect;
+                    next = _pending;
+                }
+                _pending = null;
+                chainCount++;
+                // fall through → Phase C 使用（可能被重定向的）target
+            }
+
+            // ── Phase C: 进入新状态 ──
             this.lastState = this.activeState;
             this.activeState = target;
             this.actionCount = 0;
 
-            // 再进入新状态（onEnter 可能设置 _pending）
+            // ── Phase D: onEnter 链式切换检查 ──
             _pending = null;
             if (this.activeState) {
                 this.activeState.onEnter();
+                // onEnter 回调可能调用 ChangeState → 设置 _pending
             }
 
-            // 检查 onEnter 中是否触发了新的 ChangeState
             if (_pending != null) {
                 next = _pending;
                 _pending = null;
@@ -79,7 +98,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         }
 
         if (chainCount >= maxChain) {
-            trace("[FSM] Warning: ChangeState chain reached limit (" + maxChain + "), possible oscillation");
+            trace("[FSM] Warning: ChangeState chain reached limit (" + maxChain + "), possible oscillation. last=" + next);
         }
 
         _isChanging = false;
@@ -126,6 +145,16 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
      * 否则旧状态会持有陈旧的 data 引用。
      */
     public function AddStatus(name:String, state:FSM_Status):Void {
+        // 契约校验：拒绝无效输入
+        if (!name) {
+            trace("[FSM] Error: State name cannot be null or empty.");
+            return;
+        }
+        if (!(state instanceof FSM_Status)) {
+            trace("[FSM] Error: State must be an instance of FSM_Status.");
+            return;
+        }
+
         // 构建期校验：拒绝 Object 原型链上的保留名
         if (RESERVED[name] === 1) {
             trace("[FSM] Error: '" + name + "' is a reserved name (Object prototype). Choose another.");
@@ -143,9 +172,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         }
 
         this.statusDict[name] = state;
-        this.statusCount++;
 
-        if (this.statusCount == 1) {
+        if (this.defaultState == null) {
             this.defaultState = state;
             this.activeState = state;
             this.lastState = state;
@@ -212,6 +240,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
 
         // 2. 然后执行状态机自身的onExit回调（如果已定义）。
         super.onExit();
+
+        // 3. 标记为未启动，防止 destroy() 中重复触发 onExit
+        this._started = false;
     }
 
     /**
@@ -277,14 +308,30 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     // ========== 修正区结束 ==========
 
     public function destroy():Void{
+        // 1. 锁定状态切换，防止 onExit 回调触发 ChangeState 干扰销毁流程
+        this._isChanging = true;
         this._pending = null;
+
+        // 2. 若已启动，先触发 activeState 的 onExit 生命周期（由内而外）
+        if (this._started && this.activeState) {
+            this.activeState.onExit();
+        }
         this._isChanging = false;
         this._started = false;
 
-        // 先销毁子状态，再销毁自身（由内而外）
-        for(var statename:String in this.statusDict){
-            this.statusDict[statename].destroy();
+        // 3. 销毁所有子状态（instanceof 防御原型链污染）
+        for (var statename:String in this.statusDict) {
+            var s = this.statusDict[statename];
+            if (s instanceof FSM_Status) {
+                s.destroy();
+            }
         }
+
+        // 4. 清理转换表
+        if (this.transitions) {
+            this.transitions.reset();
+        }
+
         this.statusDict = null;
         this.activeState = null;
         this.lastState = null;

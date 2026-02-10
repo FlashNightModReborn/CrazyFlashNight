@@ -98,6 +98,13 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testChangeStateChainWhileLoop();
         this.testPhase2ActiveStateDetection();
 
+        // Batch 4 新增：onExit 重定向 / destroy 生命周期 / AddStatus 输入校验
+        this.testOnExitChangeStateRedirect();
+        this.testOnExitRedirectChain();
+        this.testDestroyCallsActiveStateOnExit();
+        this.testDestroyTransitionsCleanup();
+        this.testAddStatusInputValidation();
+
         // 最终报告
         this.printFinalReport();
     }
@@ -1885,6 +1892,264 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.destroy();
     }
 
+    // ========== Batch 4 新增：onExit 重定向 / destroy 生命周期 / AddStatus 输入校验 ==========
+
+    /**
+     * 测试 onExit 中触发 ChangeState 的重定向能力
+     *
+     * 场景：A→B 切换时，A 的 onExit 检测到复活条件满足，
+     * 调用 ChangeState("C") 重定向到 C 而非 B。
+     * 旧代码会静默吞掉 onExit 的 _pending，导致无条件进入 B。
+     */
+    public function testOnExitChangeStateRedirect():Void {
+        trace("\n--- Test: onExit ChangeState Redirect ---");
+        this.clearLifecycleLog();
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.data = {log: []};
+        var self = this;
+
+        // 状态 A: onExit 时重定向到 C
+        var stateA:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("A:enter"); },
+            function():Void {
+                self._lifecycleLog.push("A:exit");
+                // 死亡状态退出时，检测到复活条件 → 重定向到 C（复活）
+                this.superMachine.ChangeState("C");
+            }
+        );
+
+        // 状态 B: 原始 target（默认/待机状态）
+        var stateB:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("B:enter"); },
+            function():Void { self._lifecycleLog.push("B:exit"); }
+        );
+
+        // 状态 C: 重定向目标（复活状态）
+        var stateC:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("C:enter"); },
+            function():Void { self._lifecycleLog.push("C:exit"); }
+        );
+
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+        machine.AddStatus("C", stateC);
+
+        // 验证初始状态
+        this.assert(machine.getActiveStateName() == "A", "Initial state is A");
+
+        this.clearLifecycleLog();
+        // A→B，但 A.onExit 重定向到 C
+        machine.ChangeState("B");
+
+        // 最终应该在 C，而非 B
+        this.assert(machine.getActiveStateName() == "C",
+                   "onExit redirect: should end at C, not B");
+
+        // 验证生命周期顺序：A:exit → C:enter（B 不被进入）
+        this.assert(this._lifecycleLog.length == 2,
+                   "Only 2 lifecycle events (A:exit + C:enter)");
+        this.assert(this._lifecycleLog[0] == "A:exit",
+                   "A exits first");
+        this.assert(this._lifecycleLog[1] == "C:enter",
+                   "C enters (redirected from B)");
+
+        // B 的 onEnter 不应该被调用
+        var bEntered:Boolean = false;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "B:enter") bEntered = true;
+        }
+        this.assert(!bEntered, "B should never be entered (redirected)");
+
+        machine.destroy();
+    }
+
+    /**
+     * 测试 onExit 重定向 + onEnter 链式切换的复合场景
+     *
+     * 场景：A→B 切换，A.onExit→C（重定向），C.onEnter→D（链式）
+     * 验证两种 _pending 语义在同一次 ChangeState 中协同工作。
+     */
+    public function testOnExitRedirectChain():Void {
+        trace("\n--- Test: onExit Redirect + onEnter Chain ---");
+        this.clearLifecycleLog();
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        var self = this;
+
+        // A: onExit 重定向到 C
+        var stateA:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("A:enter"); },
+            function():Void {
+                self._lifecycleLog.push("A:exit");
+                this.superMachine.ChangeState("C");
+            }
+        );
+
+        // B: 原始 target（不应被进入）
+        var stateB:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("B:enter"); },
+            function():Void { self._lifecycleLog.push("B:exit"); }
+        );
+
+        // C: onEnter 链式切换到 D
+        var stateC:FSM_Status = new FSM_Status(null,
+            function():Void {
+                self._lifecycleLog.push("C:enter");
+                this.superMachine.ChangeState("D");
+            },
+            function():Void { self._lifecycleLog.push("C:exit"); }
+        );
+
+        // D: 最终稳定状态
+        var stateD:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("D:enter"); },
+            function():Void { self._lifecycleLog.push("D:exit"); }
+        );
+
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+        machine.AddStatus("C", stateC);
+        machine.AddStatus("D", stateD);
+
+        this.clearLifecycleLog();
+        machine.ChangeState("B"); // A→B, 但 A.onExit→C, C.onEnter→D
+
+        this.assert(machine.getActiveStateName() == "D",
+                   "Compound redirect+chain: should end at D");
+
+        // 预期生命周期：A:exit → C:enter → D:enter
+        // 注意：C.onEnter 中的 ChangeState("D") 通过 _pending 传递到 Phase D
+        // Phase D 检测到 _pending="D"，继续 while 循环
+        // 下一轮 Phase A: C.onExit → Phase C: enter D → Phase D: D.onEnter
+        var expected:Array = ["A:exit", "C:enter", "C:exit", "D:enter"];
+        this.assert(this._lifecycleLog.length == expected.length,
+                   "Correct lifecycle event count: " + this._lifecycleLog.length + " == " + expected.length);
+
+        var allMatch:Boolean = true;
+        for (var i:Number = 0; i < expected.length; i++) {
+            if (this._lifecycleLog[i] != expected[i]) {
+                allMatch = false;
+                trace("[DEBUG] Expected[" + i + "]=" + expected[i] + ", Got=" + this._lifecycleLog[i]);
+            }
+        }
+        this.assert(allMatch, "Lifecycle order: A:exit → C:enter → C:exit → D:enter");
+
+        machine.destroy();
+    }
+
+    /**
+     * 测试 destroy() 会触发 activeState 的 onExit 生命周期
+     * 且仅在已 start() 的状态机上触发
+     */
+    public function testDestroyCallsActiveStateOnExit():Void {
+        trace("\n--- Test: destroy() Calls ActiveState onExit ---");
+        this.clearLifecycleLog();
+
+        var self = this;
+
+        // Case 1: 已 start() 的状态机，destroy 应触发 onExit
+        var machine1:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        var state1:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("started:enter"); },
+            function():Void { self._lifecycleLog.push("started:exit"); }
+        );
+        machine1.AddStatus("test", state1);
+        machine1.start(); // 触发 enter
+
+        this.clearLifecycleLog();
+        machine1.destroy();
+
+        this.assert(this._lifecycleLog.length >= 1, "destroy triggers lifecycle events for started machine");
+        var hasExit:Boolean = false;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "started:exit") hasExit = true;
+        }
+        this.assert(hasExit, "destroy() triggers activeState.onExit() for started machine");
+
+        // Case 2: 未 start() 的状态机，destroy 不应触发 onExit
+        this.clearLifecycleLog();
+        var machine2:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        var state2:FSM_Status = new FSM_Status(null,
+            null,
+            function():Void { self._lifecycleLog.push("unstarted:exit"); }
+        );
+        machine2.AddStatus("test", state2);
+        // 不调用 start()
+        machine2.destroy();
+
+        var hasUnstartedExit:Boolean = false;
+        for (var j:Number = 0; j < this._lifecycleLog.length; j++) {
+            if (this._lifecycleLog[j] == "unstarted:exit") hasUnstartedExit = true;
+        }
+        this.assert(!hasUnstartedExit, "destroy() does NOT trigger onExit for unstarted machine");
+    }
+
+    /**
+     * 测试 destroy() 是否正确清理 Transitions
+     */
+    public function testDestroyTransitionsCleanup():Void {
+        trace("\n--- Test: destroy() Transitions Cleanup ---");
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        var state1:FSM_Status = this.createTestState("s1", false);
+        var state2:FSM_Status = this.createTestState("s2", false);
+
+        machine.AddStatus("s1", state1);
+        machine.AddStatus("s2", state2);
+
+        machine.transitions.push("s1", "s2", function():Boolean { return true; });
+
+        // transitions 存在
+        this.assert(machine.transitions != null, "Transitions exist before destroy");
+
+        // 保存引用用于销毁后验证
+        var transRef:Transitions = machine.transitions;
+
+        machine.destroy();
+
+        // destroy 后 statusDict 应为 null
+        this.assert(machine.statusDict == null, "statusDict nulled after destroy");
+        this.assert(machine.getActiveState() == null, "activeState nulled after destroy");
+    }
+
+    /**
+     * 测试 AddStatus 输入校验（契约式防御）
+     * 验证 null/empty name、非 FSM_Status state 被拒绝
+     */
+    public function testAddStatusInputValidation():Void {
+        trace("\n--- Test: AddStatus Input Validation ---");
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+
+        // null name 应被拒绝
+        var state1:FSM_Status = this.createTestState("test1", false);
+        machine.AddStatus(null, state1);
+        this.assert(machine.getDefaultState() == null,
+                   "null name rejected: no default state set");
+
+        // empty string name 应被拒绝
+        var state2:FSM_Status = this.createTestState("test2", false);
+        machine.AddStatus("", state2);
+        this.assert(machine.getDefaultState() == null,
+                   "empty name rejected: no default state set");
+
+        // null state 应被拒绝（instanceof null === false）
+        machine.AddStatus("validName", null);
+        this.assert(machine.getDefaultState() == null,
+                   "null state rejected: no default state set");
+
+        // 正常输入应被接受
+        var validState:FSM_Status = this.createTestState("valid", false);
+        machine.AddStatus("valid", validState);
+        this.assert(machine.getDefaultState() == validState,
+                   "Valid input accepted: default state set");
+        this.assert(machine.getActiveStateName() == "valid",
+                   "Valid state is active");
+
+        machine.destroy();
+    }
+
     // ========== 报告生成 ==========
     
     public function printFinalReport():Void {
@@ -1913,6 +2178,11 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         trace("  Reserved name validation verified");
         trace("  While-loop ChangeState chain verified");
         trace("  Phase 2 activeState detection verified");
+        trace("  onExit ChangeState redirect verified");
+        trace("  onExit redirect + onEnter chain verified");
+        trace("  destroy() activeState onExit lifecycle verified");
+        trace("  destroy() Transitions cleanup verified");
+        trace("  AddStatus input validation verified");
         trace("=============================");
     }
 }

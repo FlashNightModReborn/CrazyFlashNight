@@ -148,7 +148,7 @@ Workflow completed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: C
+[PASS] Conditional branching led to valid path: A
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -181,12 +181,12 @@ Workflow completed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=130ms, Actions=137ms for 10000 operations
+Basic Performance: Transitions=108ms, Actions=171ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 52ms, 100 transitions in 1ms
+Many States Performance: Create 1000 states in 41ms, 100 transitions in 2ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
@@ -746,7 +746,7 @@ Many States Performance: Create 1000 states in 52ms, 100 transitions in 1ms
 [FSM] Warning: onAction transition loop reached limit (10), possible oscillation
 [FSM] Warning: onAction transition loop reached limit (10), possible oscillation
 [FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillat [... 截断的文本] mit (10), possible oscillation
+[FSM] Warning: onAction transition loop reached limit (10), possible oscillat [... 截断的文本] ion transition loop reached limit (10), possible oscillation
 [FSM] Warning: onAction transition loop reached limit (10), possible oscillation
 [FSM] Warning: onAction transition loop reached limit (10), possible oscillation
 [FSM] Warning: onAction transition loop reached limit (10), possible oscillation
@@ -1312,31 +1312,18 @@ Many States Performance: Create 1000 states in 52ms, 100 transitions in 1ms
 [FSM] Warning: onAction transition loop reached limit (10), possible oscillation
 [FSM] Warning: onAction transition loop reached limit (10), possible oscillation
 [FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-[FSM] Warning: onAction transition loop reached limit (10), possible oscillation
-Frequent Transitions Performance: 5000 transitions in 864ms
+Frequent Transitions Performance: 5000 transitions in 784ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 47ms
+Complex Transition Performance: 1000 complex transitions in 48ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
 Size 10: Create=0ms, Transition=0ms, Operation=2ms
-Size 50: Create=1ms, Transition=1ms, Operation=2ms
-Size 100: Create=3ms, Transition=2ms, Operation=2ms
-Size 500: Create=13ms, Transition=13ms, Operation=3ms
+Size 50: Create=1ms, Transition=1ms, Operation=1ms
+Size 100: Create=2ms, Transition=2ms, Operation=1ms
+Size 500: Create=10ms, Transition=11ms, Operation=2ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -1399,8 +1386,41 @@ Size 500: Create=13ms, Transition=13ms, Operation=3ms
 [PASS] State changed to B via Phase 2 ChangeState
 [PASS] Normal transition check skipped after Phase 2 state change
 
+--- Test: onExit ChangeState Redirect ---
+[PASS] Initial state is A
+[PASS] onExit redirect: should end at C, not B
+[PASS] Only 2 lifecycle events (A:exit + C:enter)
+[PASS] A exits first
+[PASS] C enters (redirected from B)
+[PASS] B should never be entered (redirected)
+
+--- Test: onExit Redirect + onEnter Chain ---
+[PASS] Compound redirect+chain: should end at D
+[PASS] Correct lifecycle event count: 4 == 4
+[PASS] Lifecycle order: A:exit → C:enter → C:exit → D:enter
+
+--- Test: destroy() Calls ActiveState onExit ---
+[PASS] destroy triggers lifecycle events for started machine
+[PASS] destroy() triggers activeState.onExit() for started machine
+[PASS] destroy() does NOT trigger onExit for unstarted machine
+
+--- Test: destroy() Transitions Cleanup ---
+[PASS] Transitions exist before destroy
+[PASS] statusDict nulled after destroy
+[PASS] activeState nulled after destroy
+
+--- Test: AddStatus Input Validation ---
+[FSM] Error: State name cannot be null or empty.
+[PASS] null name rejected: no default state set
+[FSM] Error: State name cannot be null or empty.
+[PASS] empty name rejected: no default state set
+[FSM] Error: State must be an instance of FSM_Status.
+[PASS] null state rejected: no default state set
+[PASS] Valid input accepted: default state set
+[PASS] Valid state is active
+
 === FINAL FSM TEST REPORT ===
-Tests Passed: 140
+Tests Passed: 160
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.
@@ -1418,4 +1438,9 @@ Success Rate: 100%
   Reserved name validation verified
   While-loop ChangeState chain verified
   Phase 2 activeState detection verified
+  onExit ChangeState redirect verified
+  onExit redirect + onEnter chain verified
+  destroy() activeState onExit lifecycle verified
+  destroy() Transitions cleanup verified
+  AddStatus input validation verified
 =============================
