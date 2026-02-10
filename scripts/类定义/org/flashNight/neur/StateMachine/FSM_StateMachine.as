@@ -3,14 +3,17 @@ import org.flashNight.neur.StateMachine.IMachine;
 import org.flashNight.neur.StateMachine.Transitions;
 
 class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status implements IMachine {
-    public var statusDict:Object; // 状态列表（public: BaseUnitBehavior/EnemyBehavior 需外部访问）
-    private var activeState:FSM_Status; // 当前状态
-    private var lastState:FSM_Status; // 上个状态
-    private var defaultState:FSM_Status; // 默认状态
-    public var actionCount:Number = 0; // 当前状态已执行的action次数（public: 外部消费者需读取）
-    private var _isChanging:Boolean = false;
-    private var _booted:Boolean = false;  // 幂等守卫：防止 start()/onEnter() 重复执行
-    private var _started:Boolean = false; // 生命周期启用标记：true 时 ChangeState 走完整管线
+
+    // ═══════ 字段声明 ═══════
+
+    public var statusDict:Object;           // 状态列表（public: BaseUnitBehavior/EnemyBehavior 需外部访问）
+    private var activeState:FSM_Status;     // 当前状态
+    private var lastState:FSM_Status;       // 上个状态
+    private var defaultState:FSM_Status;    // 默认状态
+    public var actionCount:Number = 0;      // 当前状态已执行的action次数（public: 外部消费者需读取）
+    private var _booted:Boolean = false;    // start() 幂等守卫
+    private var _started:Boolean = false;   // destroy() 生命周期守卫（不在热路径中）
+    private var _pending:String = null;     // 重入挂起目标
 
     /**
      * 保留名黑名单：Object 原型链上的属性名不可用作状态名。
@@ -22,48 +25,65 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         propertyIsEnumerable: 1, toLocaleString: 1
     };
 
-    public function FSM_StateMachine(_onAction:Function, _onEnter:Function, _onExit:Function){
+    // ═══════ 构造函数 ═══════
+
+    public function FSM_StateMachine(_onAction:Function, _onEnter:Function, _onExit:Function) {
         super(_onAction, _onEnter, _onExit);
         this.statusDict = new Object();
         this.actionCount = 0;
         this.transitions = new Transitions(this);
+
+        // Meta-State Polymorphism: 初始态——仅指针移动，不触发生命周期
+        this.ChangeState = this._csInit;
+        this.onAction = this._oaNoop;
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  Meta-State Polymorphism — 方法变体
+    //
+    //  通过实例属性遮蔽原型方法，消除热路径中的分支判断。
+    //  状态机生命周期各阶段切换不同的方法实现：
+    //
+    //  ChangeState 变体：
+    //    ┌─ 构造/onExit后 ─→ _csInit  (指针移动)
+    //    ├─ 运行中        ─→ _csRun   (完整4阶段管线)
+    //    ├─ _csRun管线内  ─→ _csPend  (挂起重入)
+    //    └─ onExit/destroy ─→ _csNoop  (静默吞掉)
+    //
+    //  onAction 变体：
+    //    ├─ 未启动        ─→ _oaNoop  (空操作)
+    //    └─ 运行中        ─→ _oaRun   (Gate→Action→Normal)
+    // ═══════════════════════════════════════════════════
+
+    /**
+     * 构建期 ChangeState：仅移动指针，不触发 onExit/onEnter 生命周期。
+     * 用于 start() 之前的状态预设和 onEnter 回调中的安全切换 (Risk A fix)。
+     */
+    private function _csInit(next:String):Void {
+        var target:FSM_Status = this.statusDict[next];
+        if (!(target instanceof FSM_Status) || target == this.activeState) return;
+        this.lastState = this.activeState;
+        this.activeState = target;
+        this.actionCount = 0;
     }
 
     /**
-     * 状态切换 - 4 阶段管线，while 循环替代递归。
+     * 运行期 ChangeState：完整 4 阶段管线，while 循环替代递归。
+     * 入口自动切换为 _csPend 捕获重入请求，退出时恢复为 _csRun。
      *
-     * 修复：onExit 中触发的 ChangeState 不再被静默吞掉。
      * Phase A: 退出当前状态（_pending 清零后调 onExit，onExit 可设 _pending）
      * Phase B: 检查 onExit 重定向（若 _pending 有效则覆盖 target）
      * Phase C: 进入新状态（更新 activeState/lastState/actionCount）
      * Phase D: 检查 onEnter 链式切换（若 _pending 有效则继续循环）
      *
      * 契约：调用者保证 next 是已通过 AddStatus 注册的合法状态名。
-     * 若 next 不存在或等于当前状态，静默返回（不切换）。
      */
-    public function ChangeState(next:String):Void {
+    private function _csRun(next:String):Void {
         var target:FSM_Status = this.statusDict[next];
-        // instanceof 防止 Object.prototype 属性穿透（如 toString/constructor）
         if (!(target instanceof FSM_Status) || target == this.activeState) return;
 
-        // 构建期（未 start）或 onEnter 回调阶段：仅移动指针，不触发 onExit/onEnter 生命周期。
-        // 避免"没 enter 先 exit"的怪序列。start()/onEnter() 会统一触发首次 onEnter。
-        // Risk B fix: 同步 lastState 和 actionCount，防止遗留陈旧值。
-        if (!this._started) {
-            this.lastState = this.activeState;
-            this.activeState = target;
-            this.actionCount = 0;
-            return;
-        }
-
-        if (_isChanging) {
-            // 在 onEnter/onExit 回调中触发的 ChangeState，暂存而非递归
-            _pending = next;
-            return;
-        }
-
-        _isChanging = true;
-        var maxChain:Number = 10; // 安全上限，防止无限连锁
+        this.ChangeState = this._csPend;
+        var maxChain:Number = 10;
         var chainCount:Number = 0;
 
         while ((target instanceof FSM_Status) && target != this.activeState && chainCount < maxChain) {
@@ -71,7 +91,6 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             _pending = null;
             if (this.activeState) {
                 this.activeState.onExit();
-                // onExit 回调可能调用 ChangeState → 设置 _pending
             }
 
             // ── Phase B: onExit 重定向检查 ──
@@ -83,7 +102,6 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
                     chainCount++; // 仅在 target 实际被修改时消耗链式配额
                 }
                 _pending = null;
-                // fall through → Phase C 使用（可能被重定向的）target
             }
 
             // ── Phase C: 进入新状态 ──
@@ -95,7 +113,6 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             _pending = null;
             if (this.activeState) {
                 this.activeState.onEnter();
-                // onEnter 回调可能调用 ChangeState → 设置 _pending
             }
 
             if (_pending != null) {
@@ -112,198 +129,44 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             trace("[FSM] Warning: ChangeState chain reached limit (" + maxChain + "), possible oscillation. last=" + next);
         }
 
-        _isChanging = false;
-    }
-
-    // _pending 字段声明（AS2 中不需要显式声明，但保持语义清晰）
-    private var _pending:String = null;
-
-    public function getDefaultState():FSM_Status{
-        return this.defaultState;
-    }
-    public function getActiveState():FSM_Status{
-        return this.activeState;
+        this.ChangeState = this._csRun;
     }
 
     /**
-     * 直接设置活跃状态，不触发 onEnter/onExit 生命周期。
-     *
-     * 警告：此方法绕过完整的生命周期管理（lastState/actionCount/enter/exit 均不会更新），
-     * 仅应在明确需要跳过生命周期的场景中使用（如 activate() 初始化）。
-     * 推荐使用 ChangeState() 来保证状态一致性。
+     * 重入挂起：在 _csRun 管线执行期间被调用时，仅记录目标名，不递归。
      */
-    public function setActiveState(state:FSM_Status):Void{
-        trace("[FSM] Warning: setActiveState() bypasses lifecycle. Use ChangeState() for safe transitions.");
-        if(state == null) this.activeState = this.defaultState;
-        else this.activeState = state;
-    }
-    public function getLastState():FSM_Status{
-        return this.lastState;
-    }
-    public function setLastState(state:FSM_Status):Void{
-        this.lastState = state;
-    }
-    public function getActiveStateName():String{
-        return this.activeState ? this.activeState.name : null;
+    private function _csPend(next:String):Void {
+        _pending = next;
     }
 
     /**
-     * 添加子状态到状态机。
-     *
-     * 注意：data 黑板在此处按引用赋值给非嵌套子状态。
-     * 约束：machine.data 必须在第一次 AddStatus 调用之前设定，
-     * 且后续不能替换 data 引用（只能修改 data 内部字段），
-     * 否则旧状态会持有陈旧的 data 引用。
+     * 空操作：onExit/destroy 期间静默吞掉所有 ChangeState 请求。
      */
-    public function AddStatus(name:String, state:FSM_Status):Void {
-        // 契约校验：拒绝无效输入
-        if (!name) {
-            trace("[FSM] Error: State name cannot be null or empty.");
-            return;
-        }
-        if (!(state instanceof FSM_Status)) {
-            trace("[FSM] Error: State must be an instance of FSM_Status.");
-            return;
-        }
-
-        // 构建期校验：拒绝 Object 原型链上的保留名
-        if (RESERVED[name] === 1) {
-            trace("[FSM] Error: '" + name + "' is a reserved name (Object prototype). Choose another.");
-            return;
-        }
-
-        var isNestedMachine:Boolean = (state instanceof FSM_StateMachine);
-
-        state.superMachine = this;
-        state.name = name;
-
-        // data 黑板下发：仅对非嵌套状态赋值（嵌套机有自己的 data）
-        if (!isNestedMachine) {
-            state.data = this.data;
-        }
-
-        this.statusDict[name] = state;
-
-        if (this.defaultState == null) {
-            this.defaultState = state;
-            this.activeState = state;
-            this.lastState = state;
-            // 不在 AddStatus 中触发 onEnter，由 start() 统一处理
-        }
+    private function _csNoop(next:String):Void {
     }
 
     /**
-     * 显式启动状态机。
-     *
-     * 将构建期与启动期分离：AddStatus 只做数据挂接，start() 统一触发首次 onEnter。
-     * 这避免了嵌套状态机"先建子机再挂到父机"时子机默认状态 onEnter 过早/重复触发的问题。
-     *
-     * 对于根状态机，外部在组装完成后调用 start()；
-     * 对于嵌套状态机，父机的 onEnter 传播会自动处理。
+     * 空操作：start() 之前不执行任何动作。
      */
-    public function start():Void {
-        if (this._booted) return; // 幂等守卫使用 _booted 而非 _started
-        this._booted = true;
-        // 不在此处设 _started = true：
-        // onEnter() 的 super.onEnter() 回调（_onEnterCb）需在 _started=false 环境下执行，
-        // 确保回调中的 ChangeState 走 pointer-only 路径，防止 exit-before-enter (Risk A)。
-        // _started 由 onEnter() 在 super.onEnter() 之后、子状态传播之前设置。
-
-        if (this.activeState == null && this.defaultState != null) {
-            this.activeState = this.defaultState;
-            this.lastState = this.defaultState;
-        }
-        // 走 this.onEnter() 统一入口，确保 machine-level hook 一致触发
-        this.onEnter();
-    }
-
-    // ========== 【核心修正区】 ==========
-    // 以下是解决嵌套状态机问题的关键代码。
-
-    /**
-     * 当此状态机作为状态被"进入"时调用。
-     * 此方法现在能正确地激活和传播事件到其子状态。
-     */
-    public function onEnter():Void {
-        // 1. 执行状态机自身的 onEnter 回调。
-        // 此时 _started 仍为 false → 回调中的 ChangeState 走 pointer-only 路径 (Risk A fix)。
-        super.onEnter();
-
-        // 2. 标记为已启动
-        // _booted: 嵌套机通过父机 onEnter 传播自动标记（start() 不经过此路径时需要）
-        // _started: 此后 ChangeState 走完整生命周期管线
-        // 必须在子状态 onEnter 传播之前设置，因为 InitializeState 等消费者
-        // 在 onEnter 中调用 superMachine.ChangeState() 需要完整生命周期。
-        this._booted = true;
-        this._started = true;
-
-        // 3. 检查并激活内部状态。
-        if (this.activeState == null && this.defaultState != null) {
-            this.activeState = this.defaultState;
-            this.lastState = this.defaultState;
-        }
-
-        // 4. 将onEnter事件传播到当前激活的子状态。
-        if (this.activeState != null) {
-            this.activeState.onEnter();
-        }
+    private function _oaNoop():Void {
     }
 
     /**
-     * 当此状态机作为状态被"退出"时调用。
-     * 此方法确保在自身退出前，先正确地退出其子状态。
+     * 运行期 onAction：Gate→Action→Normal 4 阶段管线。
      *
-     * 契约：机器退出期间禁止内部 ChangeState。
-     * 若子状态 onExit 或机器级 onExit 回调尝试 ChangeState，请求被静默丢弃（机器即将停用）。
-     * 此策略与 destroy() 一致。
-     */
-    public function onExit():Void {
-        // 1. 锁定状态切换，防止子状态 onExit 回调触发内部 ChangeState
-        this._isChanging = true;
-
-        // 2. 将 onExit 事件传播到当前激活的子状态（由内而外）
-        if (this.activeState != null) {
-            this.activeState.onExit();
-        }
-
-        // 3. 丢弃退出期间产生的任何 pending（保持锁定覆盖整个 onExit）
-        this._pending = null;
-
-        // 4. 执行状态机自身的 onExit 回调（如果已定义）
-        //    契约：退出期间禁止内部 ChangeState → 这里仍保持 _isChanging=true
-        super.onExit();
-
-        // 5. 丢弃机器级回调期间产生的 pending，解除锁定
-        this._pending = null;
-        this._isChanging = false;
-
-        // 6. 标记为未启动，防止 destroy() 中重复触发 onExit
-        this._booted = false;
-        this._started = false;
-    }
-
-    /**
-     * 每帧更新。
-     * 此方法正确地将onAction传播到活动的子状态，并处理自身的过渡。
-     *
-     * 4阶段管线：
      * Phase 1: Gate转换检查（动作前，即时阻断）
      * Phase 2: 执行当前状态动作
      * Phase 3: Normal转换检查（动作后，条件转换）
      * Phase 4: 状态机自身维护（actionCount + machine-level callback）
      */
-    public function onAction():Void {
-        if (!this._started || !this.activeState) return;
+    private function _oaRun():Void {
+        if (!this.activeState) return;
 
-        var maxTransitions:Number = 10; // 防止无限循环
+        var maxTransitions:Number = 10;
         var transitionCount:Number = 0;
 
-        // 主循环：处理Gate转换、状态动作、Normal转换的完整流程
         while (transitionCount < maxTransitions) {
             // Phase 1: Gate转换检查 - 门转换优先，立即生效
-            // 直接访问 activeState.name 替代 getActiveStateName()，
-            // 省掉函数调用开销（入口守卫已保证 activeState 非 null，
-            // ChangeState 保证 target 必须是 FSM_Status 实例）。
             var activeStateName:String = this.activeState.name;
             var gateTarget:String = this.transitions.TransitGate(activeStateName);
             if (gateTarget && gateTarget != activeStateName) {
@@ -311,9 +174,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
                 this.ChangeState(gateTarget);
                 if (this.activeState != stateBeforeGate) {
                     transitionCount++;
-                    continue; // Gate转换成功，开始下一轮循环
+                    continue;
                 }
-                // ChangeState 未生效（目标不在 statusDict 中），终止循环避免空转
                 break;
             }
 
@@ -322,10 +184,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             if (this.activeState) {
                 this.activeState.onAction();
             }
-            // 检测 Phase 2 期间是否发生了状态切换（如 onAction 内部调用了 ChangeState）
             if (this.activeState != stateBeforeAction) {
                 transitionCount++;
-                continue; // activeState 已变更，跳过 Normal 检查，重新走 Gate
+                continue;
             }
 
             // Phase 3: Normal转换检查 - 基于动作结果的转换
@@ -336,13 +197,11 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
                 this.ChangeState(normalTarget);
                 if (this.activeState != stateBeforeNormal) {
                     transitionCount++;
-                    continue; // Normal转换成功，继续下一轮循环
+                    continue;
                 }
-                // ChangeState 未生效（目标不在 statusDict 中），终止循环避免空转
                 break;
             }
 
-            // 如果既没有Gate转换也没有Normal转换，退出循环
             break;
         }
 
@@ -351,40 +210,191 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         }
 
         // Phase 4: 状态机自身维护
-        // actionCount 在 Gate→Action→Normal 循环完毕后递增。
-        // 若循环中发生了状态切换，Phase C 已将 actionCount 重置为 0，
-        // 因此切换后新状态的第一帧结束时 actionCount == 1。
         this.actionCount++;
-        super.onAction(); // 执行状态机自身的 _onActionCb 回调（如有），作为管线后处理
+        super.onAction();
     }
 
-    // ========== 修正区结束 ==========
+    // ═══════ 原型 ChangeState（接口合规 + 安全回退）═══════
 
     /**
-     * 终态销毁 - 释放状态机持有的全部资源。
-     *
-     * 契约：
-     * - 仅触发 activeState（子状态链）的 onExit 传播，不触发机器自身的 _onExitCb。
-     *   对于嵌套机，父机在切换/销毁时已通过 onExit() 触发过子机的 _onExitCb，
-     *   此处不再重复调用。
-     * - 若根状态机需要 _onExitCb 语义，应在调用 destroy() 前手动调用 onExit()。
-     * - 销毁期间禁止内部 ChangeState（_isChanging 锁），与 onExit() 一致。
-     * - 调用后 isDestroyed=true，所有引用（statusDict/activeState/transitions 等）置 null。
+     * 原型 ChangeState：指针移动语义（同 _csInit）。
+     * 正常运行时被实例属性遮蔽，不会被调用。
+     * 保留此定义用于：
+     * 1. IMachine 接口编译合规
+     * 2. delete 后的安全回退（降级为 pointer-only）
      */
-    public function destroy():Void{
-        // 1. 锁定状态切换，防止 onExit 回调触发 ChangeState 干扰销毁流程
-        this._isChanging = true;
+    public function ChangeState(next:String):Void {
+        var target:FSM_Status = this.statusDict[next];
+        if (!(target instanceof FSM_Status) || target == this.activeState) return;
+        this.lastState = this.activeState;
+        this.activeState = target;
+        this.actionCount = 0;
+    }
+
+    // ═══════ Accessors ═══════
+
+    public function getDefaultState():FSM_Status {
+        return this.defaultState;
+    }
+
+    public function getActiveState():FSM_Status {
+        return this.activeState;
+    }
+
+    /**
+     * 直接设置活跃状态，不触发 onEnter/onExit 生命周期。
+     * 警告：绕过完整生命周期管理，推荐使用 ChangeState()。
+     */
+    public function setActiveState(state:FSM_Status):Void {
+        trace("[FSM] Warning: setActiveState() bypasses lifecycle. Use ChangeState() for safe transitions.");
+        if (state == null) this.activeState = this.defaultState;
+        else this.activeState = state;
+    }
+
+    public function getLastState():FSM_Status {
+        return this.lastState;
+    }
+
+    public function setLastState(state:FSM_Status):Void {
+        this.lastState = state;
+    }
+
+    public function getActiveStateName():String {
+        return this.activeState ? this.activeState.name : null;
+    }
+
+    // ═══════ AddStatus ═══════
+
+    /**
+     * 添加子状态到状态机。
+     * data 黑板按引用赋值给非嵌套子状态。
+     * 约束：machine.data 必须在第一次 AddStatus 调用之前设定。
+     */
+    public function AddStatus(name:String, state:FSM_Status):Void {
+        if (!name) {
+            trace("[FSM] Error: State name cannot be null or empty.");
+            return;
+        }
+        if (!(state instanceof FSM_Status)) {
+            trace("[FSM] Error: State must be an instance of FSM_Status.");
+            return;
+        }
+        if (RESERVED[name] === 1) {
+            trace("[FSM] Error: '" + name + "' is a reserved name (Object prototype). Choose another.");
+            return;
+        }
+
+        var isNestedMachine:Boolean = (state instanceof FSM_StateMachine);
+        state.superMachine = this;
+        state.name = name;
+        if (!isNestedMachine) {
+            state.data = this.data;
+        }
+
+        this.statusDict[name] = state;
+
+        if (this.defaultState == null) {
+            this.defaultState = state;
+            this.activeState = state;
+            this.lastState = state;
+        }
+    }
+
+    // ═══════ Lifecycle ═══════
+
+    /**
+     * 显式启动状态机。
+     * 将构建期与启动期分离：AddStatus 只做数据挂接，start() 统一触发首次 onEnter。
+     */
+    public function start():Void {
+        if (this._booted) return;
+        this._booted = true;
+
+        if (this.activeState == null && this.defaultState != null) {
+            this.activeState = this.defaultState;
+            this.lastState = this.defaultState;
+        }
+        this.onEnter();
+    }
+
+    /**
+     * 当此状态机作为状态被"进入"时调用。
+     * 激活并传播事件到子状态。
+     */
+    public function onEnter():Void {
+        // 1. Machine-level onEnter 回调
+        //    此时 ChangeState 仍为 _csInit → 回调中的 ChangeState 走指针移动路径 (Risk A fix)
+        super.onEnter();
+
+        // 2. 激活：切换到运行态方法
+        this._booted = true;
+        this._started = true;
+        this.ChangeState = this._csRun;
+        this.onAction = this._oaRun;
+
+        // 3. 确保 activeState 有效
+        if (this.activeState == null && this.defaultState != null) {
+            this.activeState = this.defaultState;
+            this.lastState = this.defaultState;
+        }
+
+        // 4. 传播 onEnter 到当前激活的子状态
+        //    此时 ChangeState = _csRun，子状态 onEnter 中的 ChangeState 走完整管线
+        //    （满足 InitializeState 等消费者的需求）
+        if (this.activeState != null) {
+            this.activeState.onEnter();
+        }
+    }
+
+    /**
+     * 当此状态机作为状态被"退出"时调用。
+     * 契约：退出期间禁止内部 ChangeState，请求被静默丢弃。
+     */
+    public function onExit():Void {
+        // 1. 锁定：ChangeState → noop（退出期间吞掉所有切换请求）
+        this.ChangeState = this._csNoop;
+
+        // 2. 传播 onExit 到当前激活的子状态（由内而外）
+        if (this.activeState != null) {
+            this.activeState.onExit();
+        }
+
+        // 3. 丢弃退出期间产生的 pending
         this._pending = null;
 
-        // 2. 若已启动，先触发 activeState 的 onExit 生命周期（由内而外）
+        // 4. Machine-level onExit 回调
+        super.onExit();
+
+        // 5. 停用：切换回初始态方法
+        this._pending = null;
+        this.ChangeState = this._csInit;
+        this.onAction = this._oaNoop;
+
+        // 6. 重置生命周期标志（可被重新 start/onEnter）
+        this._booted = false;
+        this._started = false;
+    }
+
+    /**
+     * 终态销毁 - 释放全部资源。
+     * 契约：销毁期间禁止内部 ChangeState。
+     */
+    public function destroy():Void {
+        // 1. 锁定
+        this.ChangeState = this._csNoop;
+        this.onAction = this._oaNoop;
+        this._pending = null;
+
+        // 2. 若已启动，传播 onExit（由内而外）
         if (this._started && this.activeState) {
             this.activeState.onExit();
         }
-        this._isChanging = false;
+
+        // 3. 重置
         this._booted = false;
         this._started = false;
 
-        // 3. 销毁所有子状态（instanceof 防御原型链污染）
+        // 4. 销毁所有子状态（instanceof 防御原型链污染）
         for (var statename:String in this.statusDict) {
             var s = this.statusDict[statename];
             if (s instanceof FSM_Status) {
@@ -392,11 +402,12 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             }
         }
 
-        // 4. 清理转换表
+        // 5. 清理转换表
         if (this.transitions) {
             this.transitions.reset();
         }
 
+        // 6. 释放引用
         this.statusDict = null;
         this.activeState = null;
         this.lastState = null;

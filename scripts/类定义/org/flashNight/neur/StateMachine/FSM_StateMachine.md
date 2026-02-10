@@ -140,13 +140,7 @@ a.runTests();
 --- Test: Complex Workflow ---
 Initializing workflow...
 Processing...
-Retrying...
-Processing...
-Retrying...
-Processing...
-Retrying...
-Processing...
-Workflow failed!
+Workflow completed!
 [PASS] Workflow reached final state
 
 --- Test: State Chaining ---
@@ -155,7 +149,7 @@ Workflow failed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: A
+[PASS] Conditional branching led to valid path: B
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -188,28 +182,28 @@ Workflow failed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=29ms, Actions=27ms for 10000 operations
+Basic Performance: Transitions=32ms, Actions=31ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 68ms, 100 transitions in 1ms
+Many States Performance: Create 1000 states in 43ms, 100 transitions in 2ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 14ms
+Frequent Transitions Performance: 5000 transitions in 15ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 9ms
+Complex Transition Performance: 1000 complex transitions in 8ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=0ms, Transition=0ms, Operation=0ms
+Size 10: Create=0ms, Transition=1ms, Operation=0ms
 Size 50: Create=1ms, Transition=1ms, Operation=0ms
-Size 100: Create=2ms, Transition=1ms, Operation=0ms
-Size 500: Create=7ms, Transition=8ms, Operation=0ms
+Size 100: Create=2ms, Transition=2ms, Operation=1ms
+Size 500: Create=9ms, Transition=9ms, Operation=0ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
