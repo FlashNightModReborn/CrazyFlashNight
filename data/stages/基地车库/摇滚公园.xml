@@ -446,6 +446,11 @@ BasicInformation描述地图基本配置。
             <Background>flashswf/backgrounds/gk15_5_BG.swf</Background>
             <PlayerX>1114</PlayerX>
             <PlayerY>561</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Daniel Ingram - Under Our Spell</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <!-- 
 Instances描述额外加载的影片剪辑实例。

@@ -409,6 +409,11 @@
             <Background>flashswf/backgrounds/gk13_1_BG.swf</Background>
             <PlayerX>150</PlayerX>
             <PlayerY>480</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Daniel Ingram - Under Our Spell</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Event>
             <EventName>Start</EventName>
