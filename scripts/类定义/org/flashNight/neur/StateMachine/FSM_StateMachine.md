@@ -149,7 +149,7 @@ Workflow completed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: C
+[PASS] Conditional branching led to valid path: A
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -182,17 +182,17 @@ Workflow completed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=40ms, Actions=30ms for 10000 operations
+Basic Performance: Transitions=31ms, Actions=31ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 37ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 42ms, 100 transitions in 0ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 16ms
+Frequent Transitions Performance: 5000 transitions in 34ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
@@ -201,9 +201,9 @@ Complex Transition Performance: 1000 complex transitions in 6ms
 
 --- Test: Scalability Test ---
 Size 10: Create=0ms, Transition=1ms, Operation=0ms
-Size 50: Create=0ms, Transition=1ms, Operation=0ms
-Size 100: Create=2ms, Transition=2ms, Operation=0ms
-Size 500: Create=8ms, Transition=7ms, Operation=0ms
+Size 50: Create=1ms, Transition=0ms, Operation=0ms
+Size 100: Create=2ms, Transition=1ms, Operation=0ms
+Size 500: Create=8ms, Transition=8ms, Operation=0ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -313,8 +313,56 @@ Size 500: Create=8ms, Transition=7ms, Operation=0ms
 [PASS] B exits with lifecycle
 [PASS] A enters with lifecycle
 
+--- Test: Nested Machine onAction Propagation ---
+[PASS] start() propagates onEnter to child machine
+[PASS] start() propagates onEnter to child's default leaf state
+[PASS] parent.onAction() propagates to leafX.onAction()
+[PASS] child machine _onActionCb fires as Phase 4 post-hook
+[PASS] After child ChangeState, propagates to leafY
+[PASS] leafX no longer receives onAction after switch
+[PASS] Child leaves get no onAction after parent switches away
+[PASS] Child machine gets no onAction after parent switches away
+[PASS] plainB now receives onAction
+
+--- Test: destroy() Nested Machine Recursive ---
+[PASS] inner2.onExit called during destroy
+[PASS] child machine onExit called during destroy
+[PASS] Exit order: inner2 exits before child machine (inside-out)
+[PASS] inner1 destroyed after parent.destroy()
+[PASS] inner2 destroyed after parent.destroy()
+[PASS] child machine destroyed after parent.destroy()
+[PASS] other state destroyed after parent.destroy()
+
+--- Test: onExit Lock Nested Interaction ---
+[PASS] inner.onExit executed and attempted reentrant ChangeState
+[PASS] Reentrant ChangeState blocked by _isChanging lock
+[PASS] Parent safely reached target state despite reentrant attempt
+[PASS] Both exit events fired
+[PASS] inner exits before child (inside-out order preserved)
+
+--- Test: Risk A - onEnterCb ChangeState Safety ---
+[PASS] Risk A fix: idle.onExit NOT called (never entered, no exit-before-enter)
+[PASS] Risk A fix: idle.onEnter NOT called (pointer moved past idle before propagation)
+[PASS] Risk A fix: combat.onEnter called exactly once (not double-entered), got 1
+[PASS] Risk A fix: activeState is combat after start()
+[PASS] Risk A fix: lastState correctly set to idle by pointer-only branch
+[PASS] Risk A fix: actionCount reset to 0 by pointer-only branch
+[PASS] Risk A fix: duplicate start() still no-op (guarded by _booted)
+
+--- Test: Risk B - Construction Phase lastState/actionCount Sync ---
+[PASS] Risk B: pointer moved to B
+[PASS] Risk B: lastState synced to A (previous activeState)
+[PASS] Risk B: actionCount reset to 0 after first pointer-only ChangeState
+[PASS] Risk B: pointer moved to C
+[PASS] Risk B: lastState synced to B (previous activeState)
+[PASS] Risk B: actionCount still 0 after second pointer-only ChangeState
+[PASS] Risk B: no lifecycle events during construction phase
+[PASS] Risk B: start() enters current pointer state C
+[PASS] Risk B: lastState updated by full lifecycle ChangeState
+[PASS] Risk B: full lifecycle after start()
+
 === FINAL FSM TEST REPORT ===
-Tests Passed: 170
+Tests Passed: 208
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.
@@ -339,4 +387,9 @@ Success Rate: 100%
   AddStatus input validation verified
   _started gate: onAction blocked verified
   _started gate: ChangeState pointer-only verified
+  Nested machine onAction propagation verified
+  Nested machine recursive destroy verified
+  onExit lock nested interaction verified
+  Risk A: onEnterCb ChangeState safety verified
+  Risk B: construction-phase lastState/actionCount sync verified
 =============================

@@ -9,7 +9,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     private var defaultState:FSM_Status; // 默认状态
     public var actionCount:Number = 0; // 当前状态已执行的action次数（public: 外部消费者需读取）
     private var _isChanging:Boolean = false;
-    private var _started:Boolean = false; // 是否已显式启动
+    private var _booted:Boolean = false;  // 幂等守卫：防止 start()/onEnter() 重复执行
+    private var _started:Boolean = false; // 生命周期启用标记：true 时 ChangeState 走完整管线
 
     /**
      * 保留名黑名单：Object 原型链上的属性名不可用作状态名。
@@ -45,10 +46,13 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         // instanceof 防止 Object.prototype 属性穿透（如 toString/constructor）
         if (!(target instanceof FSM_Status) || target == this.activeState) return;
 
-        // 构建期（未 start）：仅移动指针，不触发 onExit/onEnter 生命周期。
-        // 避免"没 enter 先 exit"的怪序列。start() 会统一触发首次 onEnter。
+        // 构建期（未 start）或 onEnter 回调阶段：仅移动指针，不触发 onExit/onEnter 生命周期。
+        // 避免"没 enter 先 exit"的怪序列。start()/onEnter() 会统一触发首次 onEnter。
+        // Risk B fix: 同步 lastState 和 actionCount，防止遗留陈旧值。
         if (!this._started) {
+            this.lastState = this.activeState;
             this.activeState = target;
+            this.actionCount = 0;
             return;
         }
 
@@ -198,8 +202,12 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
      * 对于嵌套状态机，父机的 onEnter 传播会自动处理。
      */
     public function start():Void {
-        if (this._started) return;
-        this._started = true;
+        if (this._booted) return; // 幂等守卫使用 _booted 而非 _started
+        this._booted = true;
+        // 不在此处设 _started = true：
+        // onEnter() 的 super.onEnter() 回调（_onEnterCb）需在 _started=false 环境下执行，
+        // 确保回调中的 ChangeState 走 pointer-only 路径，防止 exit-before-enter (Risk A)。
+        // _started 由 onEnter() 在 super.onEnter() 之后、子状态传播之前设置。
 
         if (this.activeState == null && this.defaultState != null) {
             this.activeState = this.defaultState;
@@ -217,10 +225,16 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
      * 此方法现在能正确地激活和传播事件到其子状态。
      */
     public function onEnter():Void {
-        // 1. 首先执行状态机自身的onEnter回调（如果已定义）。
+        // 1. 执行状态机自身的 onEnter 回调。
+        // 此时 _started 仍为 false → 回调中的 ChangeState 走 pointer-only 路径 (Risk A fix)。
         super.onEnter();
 
-        // 2. 标记为已启动（嵌套机通过父机 onEnter 传播自动启动）
+        // 2. 标记为已启动
+        // _booted: 嵌套机通过父机 onEnter 传播自动标记（start() 不经过此路径时需要）
+        // _started: 此后 ChangeState 走完整生命周期管线
+        // 必须在子状态 onEnter 传播之前设置，因为 InitializeState 等消费者
+        // 在 onEnter 中调用 superMachine.ChangeState() 需要完整生命周期。
+        this._booted = true;
         this._started = true;
 
         // 3. 检查并激活内部状态。
@@ -260,6 +274,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         super.onExit();
 
         // 5. 标记为未启动，防止 destroy() 中重复触发 onExit
+        this._booted = false;
         this._started = false;
     }
 
@@ -282,7 +297,10 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         // 主循环：处理Gate转换、状态动作、Normal转换的完整流程
         while (transitionCount < maxTransitions) {
             // Phase 1: Gate转换检查 - 门转换优先，立即生效
-            var activeStateName:String = this.getActiveStateName();
+            // 直接访问 activeState.name 替代 getActiveStateName()，
+            // 省掉函数调用开销（入口守卫已保证 activeState 非 null，
+            // ChangeState 保证 target 必须是 FSM_Status 实例）。
+            var activeStateName:String = this.activeState.name;
             var gateTarget:String = this.transitions.TransitGate(activeStateName);
             if (gateTarget && gateTarget != activeStateName) {
                 this.ChangeState(gateTarget);
@@ -302,7 +320,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             }
 
             // Phase 3: Normal转换检查 - 基于动作结果的转换
-            activeStateName = this.getActiveStateName();
+            activeStateName = this.activeState.name;
             var normalTarget:String = this.transitions.TransitNormal(activeStateName);
             if (normalTarget && normalTarget != activeStateName) {
                 this.ChangeState(normalTarget);
@@ -319,7 +337,10 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         }
 
         // Phase 4: 状态机自身维护
-        this.actionCount++; // 增加action计数
+        // actionCount 在 Gate→Action→Normal 循环完毕后递增。
+        // 若循环中发生了状态切换，Phase C 已将 actionCount 重置为 0，
+        // 因此切换后新状态的第一帧结束时 actionCount == 1。
+        this.actionCount++;
         super.onAction(); // 执行状态机自身的 _onActionCb 回调（如有），作为管线后处理
     }
 
@@ -335,6 +356,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             this.activeState.onExit();
         }
         this._isChanging = false;
+        this._booted = false;
         this._started = false;
 
         // 3. 销毁所有子状态（instanceof 防御原型链污染）

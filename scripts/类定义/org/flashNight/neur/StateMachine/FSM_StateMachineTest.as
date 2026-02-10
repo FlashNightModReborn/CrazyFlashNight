@@ -109,6 +109,15 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testOnActionBlockedBeforeStart();
         this.testChangeStatePointerOnlyBeforeStart();
 
+        // Batch 6 新增：嵌套场景覆盖（onAction 传播 / 递归销毁 / onExit 锁交互）
+        this.testNestedMachineOnActionPropagation();
+        this.testDestroyNestedMachineRecursive();
+        this.testOnExitLockNestedInteraction();
+
+        // Batch 7 新增：Risk A (exit-before-enter) / Risk B (lastState sync) 修复验证
+        this.testRiskA_OnEnterCbChangeStateSafety();
+        this.testRiskB_ConstructionPhaseLastStateSync();
+
         // 最终报告
         this.printFinalReport();
     }
@@ -2257,6 +2266,432 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.destroy();
     }
 
+    // ========== Batch 6 新增：嵌套场景覆盖 ==========
+
+    /**
+     * 测试嵌套状态机的 onAction 传播
+     *
+     * 验证：
+     * 1. parent.onAction() 传播到子机的 activeState.onAction()
+     * 2. 子机内部切换状态后，传播目标随之改变
+     * 3. parent 切换到非子机状态后，子机 onAction 不再被调用
+     */
+    public function testNestedMachineOnActionPropagation():Void {
+        trace("\n--- Test: Nested Machine onAction Propagation ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        // ── 构建结构：parent( childMachine(leafX, leafY), plainB ) ──
+
+        // 叶状态 leafX / leafY
+        var leafX:FSM_Status = new FSM_Status(
+            function():Void { self._lifecycleLog.push("leafX:action"); },
+            function():Void { self._lifecycleLog.push("leafX:enter"); },
+            function():Void { self._lifecycleLog.push("leafX:exit"); }
+        );
+        var leafY:FSM_Status = new FSM_Status(
+            function():Void { self._lifecycleLog.push("leafY:action"); },
+            function():Void { self._lifecycleLog.push("leafY:enter"); },
+            function():Void { self._lifecycleLog.push("leafY:exit"); }
+        );
+
+        // 子状态机
+        var childMachine:FSM_StateMachine = new FSM_StateMachine(
+            function():Void { self._lifecycleLog.push("child-machine:action"); },
+            function():Void { self._lifecycleLog.push("child-machine:enter"); },
+            function():Void { self._lifecycleLog.push("child-machine:exit"); }
+        );
+        childMachine.data = {};
+        childMachine.AddStatus("leafX", leafX);
+        childMachine.AddStatus("leafY", leafY);
+
+        // 顶层普通状态
+        var plainB:FSM_Status = new FSM_Status(
+            function():Void { self._lifecycleLog.push("plainB:action"); },
+            function():Void { self._lifecycleLog.push("plainB:enter"); },
+            function():Void { self._lifecycleLog.push("plainB:exit"); }
+        );
+
+        // 父状态机
+        var parent:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        parent.AddStatus("child", childMachine);
+        parent.AddStatus("plainB", plainB);
+
+        // ── 验证 1: start 后 onEnter 传播链 ──
+        parent.start();
+        // 预期: child-machine:enter → leafX:enter
+        var hasChildEnter:Boolean = false;
+        var hasLeafXEnter:Boolean = false;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "child-machine:enter") hasChildEnter = true;
+            if (this._lifecycleLog[i] == "leafX:enter") hasLeafXEnter = true;
+        }
+        this.assert(hasChildEnter, "start() propagates onEnter to child machine");
+        this.assert(hasLeafXEnter, "start() propagates onEnter to child's default leaf state");
+
+        // ── 验证 2: parent.onAction() 传播到 leafX ──
+        this.clearLifecycleLog();
+        parent.onAction();
+        // 预期日志包含: leafX:action + child-machine:action（子机管线的 Phase 4）
+        var hasLeafXAction:Boolean = false;
+        var hasChildAction:Boolean = false;
+        for (var j:Number = 0; j < this._lifecycleLog.length; j++) {
+            if (this._lifecycleLog[j] == "leafX:action") hasLeafXAction = true;
+            if (this._lifecycleLog[j] == "child-machine:action") hasChildAction = true;
+        }
+        this.assert(hasLeafXAction, "parent.onAction() propagates to leafX.onAction()");
+        this.assert(hasChildAction, "child machine _onActionCb fires as Phase 4 post-hook");
+
+        // ── 验证 3: 子机内切换后传播目标改变 ──
+        childMachine.ChangeState("leafY");
+        this.clearLifecycleLog();
+        parent.onAction();
+        var hasLeafYAction:Boolean = false;
+        hasLeafXAction = false;
+        for (var k:Number = 0; k < this._lifecycleLog.length; k++) {
+            if (this._lifecycleLog[k] == "leafY:action") hasLeafYAction = true;
+            if (this._lifecycleLog[k] == "leafX:action") hasLeafXAction = true;
+        }
+        this.assert(hasLeafYAction, "After child ChangeState, propagates to leafY");
+        this.assert(!hasLeafXAction, "leafX no longer receives onAction after switch");
+
+        // ── 验证 4: parent 切换到 plainB 后，子机不再收到 onAction ──
+        parent.ChangeState("plainB");
+        this.clearLifecycleLog();
+        parent.onAction();
+        var hasAnyLeafAction:Boolean = false;
+        hasChildAction = false;
+        for (var m:Number = 0; m < this._lifecycleLog.length; m++) {
+            if (this._lifecycleLog[m] == "leafX:action" || this._lifecycleLog[m] == "leafY:action") hasAnyLeafAction = true;
+            if (this._lifecycleLog[m] == "child-machine:action") hasChildAction = true;
+        }
+        this.assert(!hasAnyLeafAction, "Child leaves get no onAction after parent switches away");
+        this.assert(!hasChildAction, "Child machine gets no onAction after parent switches away");
+
+        var hasPlainBAction:Boolean = false;
+        for (var n:Number = 0; n < this._lifecycleLog.length; n++) {
+            if (this._lifecycleLog[n] == "plainB:action") hasPlainBAction = true;
+        }
+        this.assert(hasPlainBAction, "plainB now receives onAction");
+
+        parent.destroy();
+    }
+
+    /**
+     * 测试 destroy() 对嵌套状态机的递归销毁
+     *
+     * 验证：
+     * 1. parent.destroy() 触发 activeState(child) 的 onExit → 内部 inner2.onExit
+     * 2. 由内而外的退出顺序（inner2:exit 在 child:exit 之前）
+     * 3. 所有子状态（含子机内部）的 isDestroyed 均为 true
+     */
+    public function testDestroyNestedMachineRecursive():Void {
+        trace("\n--- Test: destroy() Nested Machine Recursive ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        // ── 构建结构：parent( child(inner1, inner2), other ) ──
+        var inner1:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("inner1:enter"); },
+            function():Void { self._lifecycleLog.push("inner1:exit"); }
+        );
+        var inner2:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("inner2:enter"); },
+            function():Void { self._lifecycleLog.push("inner2:exit"); }
+        );
+
+        var child:FSM_StateMachine = new FSM_StateMachine(null,
+            function():Void { self._lifecycleLog.push("child:enter"); },
+            function():Void { self._lifecycleLog.push("child:exit"); }
+        );
+        child.data = {};
+        child.AddStatus("inner1", inner1);
+        child.AddStatus("inner2", inner2);
+
+        var other:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("other:enter"); },
+            function():Void { self._lifecycleLog.push("other:exit"); }
+        );
+
+        var parent:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        parent.AddStatus("child", child);
+        parent.AddStatus("other", other);
+
+        // 启动并切换子机到 inner2
+        parent.start();
+        // 此时 child 已被 parent.onEnter 传播自动启动（_started = true）
+        child.ChangeState("inner2");
+
+        // ── 验证销毁 ──
+        this.clearLifecycleLog();
+        parent.destroy();
+
+        // 验证退出事件：应有 inner2:exit 和 child:exit
+        var inner2ExitIdx:Number = -1;
+        var childExitIdx:Number = -1;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "inner2:exit" && inner2ExitIdx == -1) inner2ExitIdx = i;
+            if (this._lifecycleLog[i] == "child:exit" && childExitIdx == -1) childExitIdx = i;
+        }
+        this.assert(inner2ExitIdx >= 0, "inner2.onExit called during destroy");
+        this.assert(childExitIdx >= 0, "child machine onExit called during destroy");
+        this.assert(inner2ExitIdx < childExitIdx,
+                   "Exit order: inner2 exits before child machine (inside-out)");
+
+        // 验证 isDestroyed 标记
+        this.assert(inner1.isDestroyed, "inner1 destroyed after parent.destroy()");
+        this.assert(inner2.isDestroyed, "inner2 destroyed after parent.destroy()");
+        this.assert(child.isDestroyed, "child machine destroyed after parent.destroy()");
+        this.assert(other.isDestroyed, "other state destroyed after parent.destroy()");
+    }
+
+    /**
+     * 测试 onExit 锁在嵌套层级上的交互
+     *
+     * 场景：parent 切换状态触发 child.onExit → inner.onExit，
+     * inner.onExit 尝试调用 child.ChangeState("another") — 应被 _isChanging 锁阻断。
+     *
+     * 验证：
+     * 1. inner 的 onExit 确实被调用
+     * 2. child.ChangeState 在 onExit 锁期间被静默丢弃
+     * 3. parent 最终安全到达目标状态
+     */
+    public function testOnExitLockNestedInteraction():Void {
+        trace("\n--- Test: onExit Lock Nested Interaction ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        var reentrantAttempted:Boolean = false;
+
+        // inner: onExit 尝试对子机触发 ChangeState（应被锁阻断）
+        var inner:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("inner:enter"); },
+            function():Void {
+                self._lifecycleLog.push("inner:exit");
+                reentrantAttempted = true;
+                // 子机正在 onExit 传播中，_isChanging=true → 此调用被静默丢弃
+                this.superMachine.ChangeState("another");
+            }
+        );
+
+        // another: 如果 inner 的重入 ChangeState 生效，这个状态会被进入（不应发生）
+        var another:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("another:enter"); },
+            null
+        );
+
+        var child:FSM_StateMachine = new FSM_StateMachine(null,
+            function():Void { self._lifecycleLog.push("child:enter"); },
+            function():Void { self._lifecycleLog.push("child:exit"); }
+        );
+        child.data = {};
+        child.AddStatus("inner", inner);
+        child.AddStatus("another", another);
+
+        var target:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("target:enter"); },
+            null
+        );
+
+        var parent:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        parent.AddStatus("child", child);
+        parent.AddStatus("target", target);
+
+        parent.start();
+
+        // ── 触发 parent 切换：child.onExit → inner.onExit → inner 尝试重入 ──
+        this.clearLifecycleLog();
+        parent.ChangeState("target");
+
+        // 验证 inner.onExit 确实被调用
+        this.assert(reentrantAttempted, "inner.onExit executed and attempted reentrant ChangeState");
+
+        // 验证 "another" 未被进入（锁阻断了重入 ChangeState）
+        var anotherEntered:Boolean = false;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "another:enter") anotherEntered = true;
+        }
+        this.assert(!anotherEntered, "Reentrant ChangeState blocked by _isChanging lock");
+
+        // 验证 parent 安全到达目标状态
+        this.assert(parent.getActiveStateName() == "target",
+                   "Parent safely reached target state despite reentrant attempt");
+
+        // 验证退出顺序：inner:exit 在 child:exit 之前
+        var innerExitIdx:Number = -1;
+        var childExitIdx:Number = -1;
+        for (var j:Number = 0; j < this._lifecycleLog.length; j++) {
+            if (this._lifecycleLog[j] == "inner:exit" && innerExitIdx == -1) innerExitIdx = j;
+            if (this._lifecycleLog[j] == "child:exit" && childExitIdx == -1) childExitIdx = j;
+        }
+        this.assert(innerExitIdx >= 0 && childExitIdx >= 0, "Both exit events fired");
+        this.assert(innerExitIdx < childExitIdx, "inner exits before child (inside-out order preserved)");
+
+        parent.destroy();
+    }
+
+    // ========== Batch 7 新增：Risk A / Risk B 修复验证 ==========
+
+    /**
+     * 测试 Risk A 修复：_onEnterCb 中调用 ChangeState 的安全性
+     *
+     * 旧行为（Bug）：
+     *   start() 设 _started=true 后调 onEnter() → super.onEnter() 触发 _onEnterCb，
+     *   回调中 ChangeState("combat") 走完整管线 → 对 idle 调 onExit（但 idle 从未 onEnter）
+     *   → "exit-before-enter" + 之后 onEnter() 继续传播导致 combat 被 enter 两次。
+     *
+     * 修复后行为：
+     *   start() 只设 _booted=true，不设 _started。
+     *   onEnter() 中 super.onEnter() 触发回调时 _started=false → ChangeState 走 pointer-only。
+     *   回调返回后 _started=true → 子状态传播正常进入 combat（仅一次）。
+     */
+    public function testRiskA_OnEnterCbChangeStateSafety():Void {
+        trace("\n--- Test: Risk A - onEnterCb ChangeState Safety ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        // 状态 idle（默认）、combat
+        var idle:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("idle:enter"); },
+            function():Void { self._lifecycleLog.push("idle:exit"); }
+        );
+        var combat:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("combat:enter"); },
+            function():Void { self._lifecycleLog.push("combat:exit"); }
+        );
+
+        // 机器级 _onEnterCb：在 start 的 onEnter 阶段调用 ChangeState
+        var machine:FSM_StateMachine = new FSM_StateMachine(null,
+            function():Void {
+                self._lifecycleLog.push("machine:enterCb");
+                // Risk A 场景：回调中切换状态
+                this.ChangeState("combat");
+            },
+            null
+        );
+        machine.data = {};
+        machine.AddStatus("idle", idle);
+        machine.AddStatus("combat", combat);
+
+        // start 触发 onEnter → super.onEnter() → _onEnterCb → ChangeState("combat")
+        machine.start();
+
+        // 验证 1: idle 的 onExit 不应被调用（idle 从未 onEnter，不应被 exit）
+        var idleExited:Boolean = false;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "idle:exit") idleExited = true;
+        }
+        this.assert(!idleExited,
+                   "Risk A fix: idle.onExit NOT called (never entered, no exit-before-enter)");
+
+        // 验证 2: idle 的 onEnter 不应被调用（pointer-only 切换跳过了 idle，直接到 combat）
+        var idleEntered:Boolean = false;
+        for (var j:Number = 0; j < this._lifecycleLog.length; j++) {
+            if (this._lifecycleLog[j] == "idle:enter") idleEntered = true;
+        }
+        this.assert(!idleEntered,
+                   "Risk A fix: idle.onEnter NOT called (pointer moved past idle before propagation)");
+
+        // 验证 3: combat 的 onEnter 恰好被调用一次（非两次）
+        var combatEnterCount:Number = 0;
+        for (var k:Number = 0; k < this._lifecycleLog.length; k++) {
+            if (this._lifecycleLog[k] == "combat:enter") combatEnterCount++;
+        }
+        this.assert(combatEnterCount == 1,
+                   "Risk A fix: combat.onEnter called exactly once (not double-entered), got " + combatEnterCount);
+
+        // 验证 4: 最终 activeState 是 combat
+        this.assert(machine.getActiveStateName() == "combat",
+                   "Risk A fix: activeState is combat after start()");
+
+        // 验证 5: lastState 是 idle（pointer-only 阶段由 Risk B fix 同步）
+        this.assert(machine.getLastState() == idle,
+                   "Risk A fix: lastState correctly set to idle by pointer-only branch");
+
+        // 验证 6: actionCount 重置为 0（pointer-only 阶段由 Risk B fix 同步）
+        this.assert(machine.actionCount == 0,
+                   "Risk A fix: actionCount reset to 0 by pointer-only branch");
+
+        // 验证 7: start() 幂等性仍有效（_booted 守卫）
+        this.clearLifecycleLog();
+        machine.start();
+        this.assert(this._lifecycleLog.length == 0,
+                   "Risk A fix: duplicate start() still no-op (guarded by _booted)");
+
+        machine.destroy();
+    }
+
+    /**
+     * 测试 Risk B 修复：构建期 ChangeState 同步 lastState 和 actionCount
+     *
+     * 旧行为（Bug）：
+     *   构建期 ChangeState 仅移动 activeState 指针，lastState 和 actionCount 不更新，
+     *   导致 getLastState() 返回陈旧值、actionCount 保持上一次残留值。
+     *
+     * 修复后行为：
+     *   pointer-only 分支同步 lastState = activeState(旧), actionCount = 0。
+     */
+    public function testRiskB_ConstructionPhaseLastStateSync():Void {
+        trace("\n--- Test: Risk B - Construction Phase lastState/actionCount Sync ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        var stateA:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("A:enter"); },
+            function():Void { self._lifecycleLog.push("A:exit"); }
+        );
+        var stateB:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("B:enter"); },
+            function():Void { self._lifecycleLog.push("B:exit"); }
+        );
+        var stateC:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("C:enter"); },
+            function():Void { self._lifecycleLog.push("C:exit"); }
+        );
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.AddStatus("A", stateA); // A 为默认：activeState=A, lastState=A
+        machine.AddStatus("B", stateB);
+        machine.AddStatus("C", stateC);
+
+        // 构建期第一次 ChangeState
+        machine.ChangeState("B");
+        this.assert(machine.getActiveStateName() == "B",
+                   "Risk B: pointer moved to B");
+        this.assert(machine.getLastState() == stateA,
+                   "Risk B: lastState synced to A (previous activeState)");
+        this.assert(machine.actionCount == 0,
+                   "Risk B: actionCount reset to 0 after first pointer-only ChangeState");
+
+        // 构建期第二次 ChangeState
+        machine.ChangeState("C");
+        this.assert(machine.getActiveStateName() == "C",
+                   "Risk B: pointer moved to C");
+        this.assert(machine.getLastState() == stateB,
+                   "Risk B: lastState synced to B (previous activeState)");
+        this.assert(machine.actionCount == 0,
+                   "Risk B: actionCount still 0 after second pointer-only ChangeState");
+
+        // 构建期无生命周期事件
+        this.assert(this._lifecycleLog.length == 0,
+                   "Risk B: no lifecycle events during construction phase");
+
+        // start() 后 activeState(C) 的 onEnter 被触发
+        machine.start();
+        this.assert(this._lifecycleLog.length == 1 && this._lifecycleLog[0] == "C:enter",
+                   "Risk B: start() enters current pointer state C");
+
+        // start 后 ChangeState 走完整管线，lastState 正确更新
+        this.clearLifecycleLog();
+        machine.ChangeState("A");
+        this.assert(machine.getLastState() == stateC,
+                   "Risk B: lastState updated by full lifecycle ChangeState");
+        this.assert(this._lifecycleLog[0] == "C:exit" && this._lifecycleLog[1] == "A:enter",
+                   "Risk B: full lifecycle after start()");
+
+        machine.destroy();
+    }
+
     // ========== 报告生成 ==========
 
     public function printFinalReport():Void {
@@ -2292,6 +2727,11 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         trace("  AddStatus input validation verified");
         trace("  _started gate: onAction blocked verified");
         trace("  _started gate: ChangeState pointer-only verified");
+        trace("  Nested machine onAction propagation verified");
+        trace("  Nested machine recursive destroy verified");
+        trace("  onExit lock nested interaction verified");
+        trace("  Risk A: onEnterCb ChangeState safety verified");
+        trace("  Risk B: construction-phase lastState/actionCount sync verified");
         trace("=============================");
     }
 }
