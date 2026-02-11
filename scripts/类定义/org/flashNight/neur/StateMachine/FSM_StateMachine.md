@@ -147,7 +147,7 @@ Workflow completed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: A
+[PASS] Conditional branching led to valid path: B
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -178,28 +178,28 @@ Workflow completed!
 [PASS] Transitions reference released after destroy
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=29ms, Actions=46ms for 10000 operations
+Basic Performance: Transitions=28ms, Actions=34ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 40ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 41ms, 100 transitions in 0ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 18ms
+Frequent Transitions Performance: 5000 transitions in 16ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 7ms
+Complex Transition Performance: 1000 complex transitions in 6ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=0ms, Transition=0ms, Operation=0ms
+Size 10: Create=0ms, Transition=1ms, Operation=0ms
 Size 50: Create=1ms, Transition=1ms, Operation=0ms
-Size 100: Create=1ms, Transition=2ms, Operation=0ms
-Size 500: Create=11ms, Transition=9ms, Operation=1ms
+Size 100: Create=1ms, Transition=3ms, Operation=0ms
+Size 500: Create=10ms, Transition=10ms, Operation=0ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---

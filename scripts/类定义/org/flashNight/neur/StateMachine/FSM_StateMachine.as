@@ -394,7 +394,6 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
      */
     public function start():Void {
         if (this._booted) return;
-        this._booted = true;
 
         if (this.activeState == null && this.defaultState != null) {
             this.activeState = this.defaultState;
@@ -414,17 +413,20 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
      * 调用前提：_booted == false && _started == false
      *   （由 onExit() 重置或初始构造保证；父机管线自动满足此前提。）
      *
-     * _booted 在此方法内设为 true 是路径 2 的必要保障：
-     *   嵌套入口不经过 start()，需在此处设置以确保后续 start() 幂等。
-     *   路径 1 中 start() 已预设 _booted，此赋值冗余但无害。
+     * _booted 在 super.onEnter() 之前设为 true（两条路径的唯一赋值点）：
+     *   1. 阻止 super.onEnter() 回调重入 start()（单线程下唯一重入窗口）
+     *   2. 覆盖路径 2（嵌套入口不经 start()），确保后续 start() 幂等
      */
     public function onEnter():Void {
-        // 1. Machine-level onEnter 回调
+        // 1. 幂等守卫：两条路径的唯一赋值点
+        //    必须在 super.onEnter() 之前：阻止回调经 start() 重入
+        this._booted = true;
+
+        // 2. Machine-level onEnter 回调
         //    此时 ChangeState 仍为 _csInit → 回调中的 ChangeState 走指针移动路径 (Risk A fix)
         super.onEnter();
 
-        // 2. 激活：切换到运行态方法
-        this._booted = true;
+        // 3. 激活：切换到运行态方法
         this._started = true;
         this.ChangeState = this._csRun;
         this.onAction = this._oaRun;
