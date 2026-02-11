@@ -100,6 +100,16 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         this.testGateNormalIsolation();
         this.testGateNormalClearAndReset();
 
+        // remove()/setActive() API 测试
+        this.testRemoveNormalTransition();
+        this.testRemoveGateTransition();
+        this.testRemoveNonExistent();
+        this.testSetActiveDisableEnable();
+        this.testSetActiveGateTransition();
+        this.testSetActiveNonExistent();
+        this.testRemoveAndReAdd();
+        this.testSetActiveWithPriority();
+
         // 最终报告
         this.printFinalReport();
         this.generatePerformanceReport();
@@ -996,6 +1006,176 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         transitions.reset();
         this.assert(transitions.TransitGate("test2") == null, "Gate cleared after reset");
         this.assert(transitions.TransitNormal("test2") == null, "Normal cleared after reset");
+    }
+
+    // ========== remove()/setActive() API 测试 ==========
+
+    /**
+     * 验证 remove() 能物理移除 Normal 转换规则
+     */
+    public function testRemoveNormalTransition():Void {
+        trace("\n--- Test: Remove Normal Transition ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        var fn1:Function = function():Boolean { return true; };
+        var fn2:Function = function():Boolean { return true; };
+
+        transitions.push("st", "A", fn1);
+        transitions.push("st", "B", fn2);
+
+        // 移除第一条规则
+        var removed:Boolean = transitions.remove("st", "A", fn1);
+        this.assert(removed == true, "remove() returns true for existing rule");
+        // TransitNormal 应该返回 B（A 已被移除）
+        this.assert(transitions.TransitNormal("st") == "B", "After remove, next rule takes effect");
+    }
+
+    /**
+     * 验证 remove() 能物理移除 Gate 转换规则
+     */
+    public function testRemoveGateTransition():Void {
+        trace("\n--- Test: Remove Gate Transition ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        var fn:Function = function():Boolean { return true; };
+
+        transitions.push("st", "gateTarget", fn, true);
+
+        this.assert(transitions.TransitGate("st") == "gateTarget", "Gate rule exists before remove");
+
+        var removed:Boolean = transitions.remove("st", "gateTarget", fn, true);
+        this.assert(removed == true, "remove(isGate=true) returns true");
+        this.assert(transitions.TransitGate("st") == null, "Gate rule removed successfully");
+    }
+
+    /**
+     * 验证 remove() 对不存在的规则返回 false
+     */
+    public function testRemoveNonExistent():Void {
+        trace("\n--- Test: Remove Non-Existent ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        var fn:Function = function():Boolean { return true; };
+        transitions.push("st", "A", fn);
+
+        // 错误的 target
+        this.assert(transitions.remove("st", "X", fn) == false, "remove() returns false for wrong target");
+        // 错误的 func
+        this.assert(transitions.remove("st", "A", function():Boolean { return true; }) == false, "remove() returns false for different func ref");
+        // 错误的 state
+        this.assert(transitions.remove("noState", "A", fn) == false, "remove() returns false for non-existent state");
+        // 原规则仍在
+        this.assert(transitions.TransitNormal("st") == "A", "Original rule still active after failed removes");
+    }
+
+    /**
+     * 验证 setActive() 禁用和重新启用 Normal 规则
+     */
+    public function testSetActiveDisableEnable():Void {
+        trace("\n--- Test: setActive Disable/Enable ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        var fn1:Function = function():Boolean { return true; };
+        var fn2:Function = function():Boolean { return true; };
+
+        transitions.push("st", "A", fn1);
+        transitions.push("st", "B", fn2);
+
+        // 禁用 A
+        var result:Boolean = transitions.setActive("st", "A", fn1, false, false);
+        this.assert(result == true, "setActive() returns true for existing rule");
+        this.assert(transitions.TransitNormal("st") == "B", "Disabled rule skipped, B takes effect");
+
+        // 重新启用 A
+        transitions.setActive("st", "A", fn1, false, true);
+        this.assert(transitions.TransitNormal("st") == "A", "Re-enabled rule takes effect again");
+    }
+
+    /**
+     * 验证 setActive() 对 Gate 规则生效
+     */
+    public function testSetActiveGateTransition():Void {
+        trace("\n--- Test: setActive Gate Transition ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        var fn:Function = function():Boolean { return true; };
+
+        transitions.push("st", "gateTarget", fn, true);
+        this.assert(transitions.TransitGate("st") == "gateTarget", "Gate rule active initially");
+
+        // 禁用 Gate 规则
+        transitions.setActive("st", "gateTarget", fn, true, false);
+        this.assert(transitions.TransitGate("st") == null, "Gate rule disabled via setActive");
+
+        // 重新启用
+        transitions.setActive("st", "gateTarget", fn, true, true);
+        this.assert(transitions.TransitGate("st") == "gateTarget", "Gate rule re-enabled via setActive");
+    }
+
+    /**
+     * 验证 setActive() 对不存在的规则返回 false
+     */
+    public function testSetActiveNonExistent():Void {
+        trace("\n--- Test: setActive Non-Existent ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        this.assert(transitions.setActive("noState", "A", function():Boolean { return true; }, false, false) == false,
+            "setActive() returns false for non-existent state");
+
+        var fn:Function = function():Boolean { return true; };
+        transitions.push("st", "A", fn);
+        this.assert(transitions.setActive("st", "X", fn, false, false) == false,
+            "setActive() returns false for wrong target");
+    }
+
+    /**
+     * 验证 remove() 后重新 push 同规则能正常工作
+     */
+    public function testRemoveAndReAdd():Void {
+        trace("\n--- Test: Remove and Re-Add ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        var fn:Function = function():Boolean { return true; };
+        transitions.push("st", "A", fn);
+
+        // 移除
+        transitions.remove("st", "A", fn);
+        this.assert(transitions.TransitNormal("st") == null, "Rule removed");
+
+        // 重新添加
+        transitions.push("st", "A", fn);
+        this.assert(transitions.TransitNormal("st") == "A", "Rule re-added and working");
+    }
+
+    /**
+     * 验证 setActive(false) 后高优先级规则被跳过，低优先级规则生效
+     */
+    public function testSetActiveWithPriority():Void {
+        trace("\n--- Test: setActive with Priority ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        var fnHigh:Function = function():Boolean { return true; };
+        var fnMid:Function = function():Boolean { return true; };
+        var fnLow:Function = function():Boolean { return true; };
+
+        transitions.unshift("st", "high", fnHigh);
+        transitions.push("st", "mid", fnMid);
+        transitions.push("st", "low", fnLow);
+
+        this.assert(transitions.TransitNormal("st") == "high", "Highest priority rule fires");
+
+        // 禁用最高优先级
+        transitions.setActive("st", "high", fnHigh, false, false);
+        this.assert(transitions.TransitNormal("st") == "mid", "Mid priority fires when high disabled");
+
+        // 禁用中优先级
+        transitions.setActive("st", "mid", fnMid, false, false);
+        this.assert(transitions.TransitNormal("st") == "low", "Low priority fires when high+mid disabled");
+
+        // 全部重新启用
+        transitions.setActive("st", "high", fnHigh, false, true);
+        transitions.setActive("st", "mid", fnMid, false, true);
+        this.assert(transitions.TransitNormal("st") == "high", "All re-enabled, highest priority fires again");
     }
 
     // ========== 报告生成 ==========

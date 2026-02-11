@@ -124,6 +124,14 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testNormalInvalidTargetNoSpin();
         this.testGateValidTargetStillWorks();
 
+        // Batch 9 新增：异常安全 / 边界完备性 / 深层嵌套
+        this.testExceptionInCsRunLocksPipeline();
+        this.testGateInvalidTargetSkipsAction();
+        this.testThreeLevelNestedOnAction();
+        this.testOnExitDoubleChangeStateLastWins();
+        this.testDestroyThenStartSafety();
+        this.testOnExitRedirectToOriginalTarget();
+
         // 最终报告
         this.printFinalReport();
     }
@@ -2951,6 +2959,423 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         }
         this.assert(hasBAction,
                    "Gate valid: B's action executes in same frame after gate transition");
+
+        machine.destroy();
+    }
+
+    // ========== Batch 9 新增：异常安全 / 边界完备性 / 深层嵌套 ==========
+
+    /**
+     * T1: 验证 _csRun 内回调抛异常后，ChangeState 被锁死为 _csPend
+     *
+     * 这是已知的设计取舍（契约 C2a / C7），本测试将其行为固化为规格：
+     *   - 异常后 ChangeState 调用不再产生状态切换
+     *   - onAction 仍可正常 tick（_oaRun 未受影响）
+     *   - delete machine.ChangeState 可恢复到 pointer-only 语义
+     */
+    public function testExceptionInCsRunLocksPipeline():Void {
+        trace("\n--- Test: T1 - Exception in _csRun Locks Pipeline ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        var actionRanCount:Number = 0;
+
+        var stateA:FSM_Status = new FSM_Status(
+            function():Void { actionRanCount++; },
+            function():Void { self._lifecycleLog.push("A:enter"); },
+            function():Void { self._lifecycleLog.push("A:exit"); }
+        );
+
+        // stateB: onEnter 抛异常
+        var stateB:FSM_Status = new FSM_Status(null,
+            function():Void {
+                self._lifecycleLog.push("B:enter");
+                throw new Error("B.onEnter exploded");
+            },
+            function():Void { self._lifecycleLog.push("B:exit"); }
+        );
+
+        var stateC:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("C:enter"); },
+            null
+        );
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+        machine.AddStatus("C", stateC);
+
+        machine.start();
+        this.clearLifecycleLog();
+        actionRanCount = 0;
+
+        // ── 触发异常：A→B，B.onEnter 抛出 ──
+        var exceptionCaught:Boolean = false;
+        try {
+            machine.ChangeState("B");
+        } catch (e:Error) {
+            exceptionCaught = true;
+        }
+        this.assert(exceptionCaught, "T1: Exception propagated from B.onEnter");
+
+        // 此时 activeState 已被更新为 B（Phase C 在 Phase D 之前）
+        this.assert(machine.getActiveStateName() == "B",
+                   "T1: activeState advanced to B (Phase C completed before Phase D threw)");
+
+        // ── 验证 ChangeState 锁死：尝试 B→C 应静默失败 ──
+        this.clearLifecycleLog();
+        try {
+            machine.ChangeState("C");
+        } catch (e2:Error) {
+            // 不应再抛异常——_csPend 只是设 _pending
+        }
+        this.assert(machine.getActiveStateName() == "B",
+                   "T1: ChangeState locked (_csPend) — cannot transition to C");
+
+        // C 的 onEnter 不应被调用
+        var cEntered:Boolean = false;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "C:enter") cEntered = true;
+        }
+        this.assert(!cEntered, "T1: C.onEnter never called (pipeline locked)");
+
+        // ── 验证 onAction 仍可 tick ──
+        // 注意：B 的 onAction 是 null，所以不会抛异常
+        // _oaRun 会尝试 Gate/Normal 转换，但 ChangeState 是 _csPend → 无法切换
+        try {
+            machine.onAction();
+        } catch (e3:Error) {
+            // _oaRun 本身不应抛
+        }
+        // Phase 4 actionCount 仍递增
+        this.assert(machine.actionCount == 1,
+                   "T1: onAction still ticks (actionCount increments)");
+
+        // ── 验证 delete 恢复手段 ──
+        // delete 实例属性后回退到原型 ChangeState（pointer-only 语义）
+        // AS2: delete obj.prop 删除实例属性，露出原型方法
+        delete machine.ChangeState;
+        machine.ChangeState("C");
+        this.assert(machine.getActiveStateName() == "C",
+                   "T1: After delete, prototype ChangeState (pointer-only) works");
+
+        // 注意：pointer-only 不触发生命周期
+        var cEnteredAfterDelete:Boolean = false;
+        for (var j:Number = 0; j < this._lifecycleLog.length; j++) {
+            if (this._lifecycleLog[j] == "C:enter") cEnteredAfterDelete = true;
+        }
+        this.assert(!cEnteredAfterDelete,
+                   "T1: Prototype ChangeState is pointer-only (no onEnter)");
+
+        // 清理（destroy 内部会设 _csNoop，不依赖当前 ChangeState 状态）
+        machine.destroy();
+    }
+
+    /**
+     * T2: 验证 Gate 返回无效目标时，当帧 onAction 被完全跳过
+     *
+     * 对 Batch 8 testGateInvalidTargetNoSpin 的补充：
+     * 明确验证 Phase 2 action 被跳过这一行为是否符合预期。
+     * （Gate 语义 = "阻断"，即使目标无效，阻断意图仍然生效。）
+     */
+    public function testGateInvalidTargetSkipsAction():Void {
+        trace("\n--- Test: T2 - Gate Invalid Target Skips Action ---");
+        var self = this;
+
+        var actionLog:Array = [];
+        var normalChecked:Boolean = false;
+
+        var stateA:FSM_Status = new FSM_Status(
+            function():Void { actionLog.push("A:action"); },
+            null, null
+        );
+        var stateB:FSM_Status = new FSM_Status(null, null, null);
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+
+        // Gate → 无效目标
+        machine.transitions.push("A", "doesNotExist", function():Boolean {
+            return true;
+        }, true);
+
+        // Normal → 有效目标（不应被检查，因为 Gate break 了）
+        machine.transitions.push("A", "B", function():Boolean {
+            normalChecked = true;
+            return true;
+        });
+
+        machine.start();
+
+        machine.onAction();
+
+        // Gate 触发 → ChangeState 失败 → break → Phase 2/3 均跳过
+        this.assert(actionLog.length == 0,
+                   "T2: Phase 2 action skipped when Gate fires with invalid target");
+        this.assert(!normalChecked,
+                   "T2: Phase 3 Normal check skipped when Gate fires with invalid target");
+        this.assert(machine.getActiveStateName() == "A",
+                   "T2: State unchanged");
+
+        // Phase 4 仍执行
+        this.assert(machine.actionCount == 1,
+                   "T2: Phase 4 actionCount still increments after Gate break");
+
+        machine.destroy();
+    }
+
+    /**
+     * T3: 3 层嵌套机：叶状态 onAction 触发中间层 ChangeState
+     *
+     * 结构：grandparent( parent( leaf ), other )
+     * 叶状态 leaf.onAction 中调用 parent.ChangeState("otherLeaf")
+     * 验证 3 层嵌套下的 onAction 传播和内部转换正常工作。
+     */
+    public function testThreeLevelNestedOnAction():Void {
+        trace("\n--- Test: T3 - Three Level Nested onAction ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        // ── 第 3 层：叶状态 ──
+        var leafA:FSM_Status = new FSM_Status(
+            function():Void {
+                self._lifecycleLog.push("leafA:action");
+                // 从叶状态切换中间层的兄弟状态
+                this.superMachine.ChangeState("leafB");
+            },
+            function():Void { self._lifecycleLog.push("leafA:enter"); },
+            function():Void { self._lifecycleLog.push("leafA:exit"); }
+        );
+        var leafB:FSM_Status = new FSM_Status(
+            function():Void { self._lifecycleLog.push("leafB:action"); },
+            function():Void { self._lifecycleLog.push("leafB:enter"); },
+            function():Void { self._lifecycleLog.push("leafB:exit"); }
+        );
+
+        // ── 第 2 层：中间状态机 ──
+        var middle:FSM_StateMachine = new FSM_StateMachine(
+            function():Void { self._lifecycleLog.push("middle:action"); },
+            function():Void { self._lifecycleLog.push("middle:enter"); },
+            function():Void { self._lifecycleLog.push("middle:exit"); }
+        );
+        middle.data = {};
+        middle.AddStatus("leafA", leafA);
+        middle.AddStatus("leafB", leafB);
+
+        // 第 2 层的兄弟状态
+        var sibling:FSM_Status = new FSM_Status(
+            function():Void { self._lifecycleLog.push("sibling:action"); },
+            function():Void { self._lifecycleLog.push("sibling:enter"); },
+            null
+        );
+
+        // ── 第 1 层：顶层状态机 ──
+        var top:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        top.AddStatus("middle", middle);
+        top.AddStatus("sibling", sibling);
+
+        top.start();
+        this.clearLifecycleLog();
+
+        // ── 第 1 次 onAction ──
+        // 传播链：top._oaRun → middle._oaRun → leafA.onAction → middle.ChangeState("leafB")
+        top.onAction();
+
+        // leafA.onAction 执行并触发 middle 内部切换到 leafB
+        var hasLeafAAction:Boolean = false;
+        var hasLeafAExit:Boolean = false;
+        var hasLeafBEnter:Boolean = false;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "leafA:action") hasLeafAAction = true;
+            if (this._lifecycleLog[i] == "leafA:exit") hasLeafAExit = true;
+            if (this._lifecycleLog[i] == "leafB:enter") hasLeafBEnter = true;
+        }
+        this.assert(hasLeafAAction, "T3: leafA.onAction executed");
+        this.assert(hasLeafAExit, "T3: leafA exited after ChangeState");
+        this.assert(hasLeafBEnter, "T3: leafB entered after ChangeState");
+
+        // middle 内部 activeState 应为 leafB
+        this.assert(middle.getActiveStateName() == "leafB",
+                   "T3: middle's activeState is now leafB");
+
+        // top 的 activeState 仍为 middle（内部切换不影响上级）
+        this.assert(top.getActiveStateName() == "middle",
+                   "T3: top's activeState unchanged (still middle)");
+
+        // ── 第 2 次 onAction ──
+        this.clearLifecycleLog();
+        top.onAction();
+
+        // 此次应传播到 leafB（不再是 leafA）
+        var hasLeafBAction:Boolean = false;
+        var hasLeafAAction2:Boolean = false;
+        for (var j:Number = 0; j < this._lifecycleLog.length; j++) {
+            if (this._lifecycleLog[j] == "leafB:action") hasLeafBAction = true;
+            if (this._lifecycleLog[j] == "leafA:action") hasLeafAAction2 = true;
+        }
+        this.assert(hasLeafBAction, "T3: Second tick propagates to leafB");
+        this.assert(!hasLeafAAction2, "T3: leafA no longer receives onAction");
+
+        top.destroy();
+    }
+
+    /**
+     * T4: onExit 中连续调用两次 ChangeState — 最后一次 wins
+     *
+     * 验证 _csPend 的覆盖语义：Phase B 只读取最终的 _pending 值。
+     */
+    public function testOnExitDoubleChangeStateLastWins():Void {
+        trace("\n--- Test: T4 - onExit Double ChangeState Last Wins ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        var stateA:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("A:enter"); },
+            function():Void {
+                self._lifecycleLog.push("A:exit");
+                // 连续两次 ChangeState（_csPend 模式下后者覆盖前者）
+                this.superMachine.ChangeState("C");
+                this.superMachine.ChangeState("D");
+            }
+        );
+        var stateB:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("B:enter"); },
+            null
+        );
+        var stateC:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("C:enter"); },
+            null
+        );
+        var stateD:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("D:enter"); },
+            null
+        );
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+        machine.AddStatus("C", stateC);
+        machine.AddStatus("D", stateD);
+
+        machine.start();
+        this.clearLifecycleLog();
+
+        // A→B，但 A.onExit 先重定向到 C 再重定向到 D
+        machine.ChangeState("B");
+
+        // 最后一次 _csPend("D") 覆盖了 _csPend("C")
+        this.assert(machine.getActiveStateName() == "D",
+                   "T4: Last ChangeState in onExit wins (D, not C or B)");
+
+        // B 和 C 都不应被进入
+        var bEntered:Boolean = false;
+        var cEntered:Boolean = false;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "B:enter") bEntered = true;
+            if (this._lifecycleLog[i] == "C:enter") cEntered = true;
+        }
+        this.assert(!bEntered, "T4: B never entered (overridden by redirect)");
+        this.assert(!cEntered, "T4: C never entered (overridden by second redirect)");
+
+        // D 的 onEnter 应被调用
+        var dEntered:Boolean = false;
+        for (var j:Number = 0; j < this._lifecycleLog.length; j++) {
+            if (this._lifecycleLog[j] == "D:enter") dEntered = true;
+        }
+        this.assert(dEntered, "T4: D entered (final redirect target)");
+
+        machine.destroy();
+    }
+
+    /**
+     * T5: destroy() 后再调 start() 应安全（不崩溃）
+     *
+     * destroy 后 statusDict=null, activeState=null。
+     * start() 应走 _booted 守卫或安全处理 null activeState。
+     */
+    public function testDestroyThenStartSafety():Void {
+        trace("\n--- Test: T5 - destroy() Then start() Safety ---");
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        var state:FSM_Status = this.createTestState("test", false);
+        machine.AddStatus("test", state);
+        machine.start();
+        machine.destroy();
+
+        // destroy 重置 _booted=false, _started=false
+        // 再次 start() 不应崩溃
+        var crashed:Boolean = false;
+        try {
+            machine.start();
+        } catch (e:Error) {
+            crashed = true;
+        }
+
+        // start → onEnter → activeState is null → cur=defaultState=null → 跳过子状态传播
+        // 不崩溃即为通过
+        this.assert(!crashed,
+                   "T5: start() after destroy() does not crash");
+
+        // 验证状态仍为 null（destroy 清理了一切）
+        this.assert(machine.getActiveState() == null,
+                   "T5: activeState remains null after destroy+start");
+    }
+
+    /**
+     * T6: onExit 重定向到原始 target — 不浪费 chainCount 但仍进入 target
+     *
+     * 场景：A→B，A.onExit 重定向到 B（即原始目标）。
+     * Phase B 检查 exitRedirect != cur（cur=A, redirect=B → 通过），
+     * 但 target 未变（仍为 B），chainCount++ 是浪费的计数。
+     * 最终仍正确进入 B。
+     */
+    public function testOnExitRedirectToOriginalTarget():Void {
+        trace("\n--- Test: T6 - onExit Redirect to Original Target ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        var stateA:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("A:enter"); },
+            function():Void {
+                self._lifecycleLog.push("A:exit");
+                // 重定向到原始 target（B）
+                this.superMachine.ChangeState("B");
+            }
+        );
+        var stateB:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("B:enter"); },
+            function():Void { self._lifecycleLog.push("B:exit"); }
+        );
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+
+        machine.start();
+        this.clearLifecycleLog();
+
+        // A→B，A.onExit 重定向到 B（无变化）
+        machine.ChangeState("B");
+
+        this.assert(machine.getActiveStateName() == "B",
+                   "T6: Correctly ends at B (redirect to same target)");
+
+        // B 的 onEnter 应恰好调用一次
+        var bEnterCount:Number = 0;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "B:enter") bEnterCount++;
+        }
+        this.assert(bEnterCount == 1,
+                   "T6: B.onEnter called exactly once (no double-enter from redundant redirect)");
+
+        // 生命周期顺序：A:exit → B:enter
+        this.assert(this._lifecycleLog.length == 2,
+                   "T6: Exactly 2 lifecycle events");
+        this.assert(this._lifecycleLog[0] == "A:exit",
+                   "T6: A exits first");
+        this.assert(this._lifecycleLog[1] == "B:enter",
+                   "T6: B enters second");
 
         machine.destroy();
     }

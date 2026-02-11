@@ -2,6 +2,92 @@
 import org.flashNight.neur.StateMachine.IMachine;
 import org.flashNight.neur.StateMachine.Transitions;
 
+/**
+ * FSM_StateMachine — 分层有限状态机（HFSM）
+ *
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  契约总览（维护者必读）
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *
+ * 【C1 — 生命周期阶段】
+ *
+ *   构建期      ─ new → AddStatus → [ChangeState] → start()
+ *   运行期      ─ start() 之后，onAction / ChangeState 正常工作
+ *   退出/重入期 ─ 被上级 ChangeState 退出后，可被再次 onEnter 重新激活
+ *   终态        ─ destroy() 之后不可复用
+ *
+ *   ChangeState 在不同阶段有不同语义（Meta-State Polymorphism）:
+ *     构建期 / onEnter回调中 → _csInit  — 仅移指针，不触发 onExit/onEnter
+ *     运行期               → _csRun   — 完整 4 阶段管线
+ *     _csRun 管线执行中     → _csPend  — 记录目标名，由 while 循环消费
+ *     onExit / destroy 中  → _csNoop  — 静默丢弃
+ *
+ * 【C2 — 回调契约（最重要）】
+ *
+ *   所有用户回调（onAction/onEnter/onExit 的 callback）必须满足：
+ *
+ *   a) 不得抛出异常。
+ *      原因：_csRun 入口将 ChangeState 替换为 _csPend，异常会跳过末尾的
+ *      恢复语句（this.ChangeState = this._csRun），导致状态机永久锁死为
+ *      _csPend——后续所有 ChangeState 调用仅设 _pending 而无人消费，
+ *      表现为"单位卡死在当前状态"。onAction 不受影响但无法转换。
+ *      （本设计有意不加 try/catch 以保持热路径零开销。）
+ *
+ *   b) onExit 回调中可以调用 ChangeState 实现重定向，
+ *      但仅最后一次调用生效（_csPend 覆盖语义）。
+ *
+ *   c) onEnter 回调中可以调用 ChangeState 实现链式切换，
+ *      同样仅最后一次生效，while 循环最多展开 maxChain=10 步。
+ *
+ *   d) 不得从回调中调用 destroy()。destroy 有独立的锁机制。
+ *
+ * 【C3 — AddStatus 契约】
+ *
+ *   a) name 不可为 null / 空字符串。
+ *   b) state 必须是 FSM_Status 实例（instanceof 校验）。
+ *   c) name 不可为 Object 原型链保留名（toString/constructor 等），
+ *      见 RESERVED 静态表。违反上述任一条件，AddStatus 静默拒绝并 trace 报错。
+ *   d) machine.data 必须在首次 AddStatus 之前设定（非嵌套子状态会继承 data 引用）。
+ *   e) 嵌套子机（FSM_StateMachine）不继承父机 data，需自行管理。
+ *
+ * 【C4 — ChangeState 4 阶段管线（_csRun）】
+ *
+ *   Phase A: 退出当前状态 — _pending=null → cur.onExit()（可设 _pending）
+ *   Phase B: onExit 重定向 — 若 _pending 有效且不同于 cur，覆盖 target
+ *   Phase C: 进入新状态   — lastState=cur, activeState=target, actionCount=0
+ *   Phase D: onEnter 链   — _pending=null → target.onEnter()（可设 _pending）
+ *            若 _pending 有效，while 继续（最多 maxChain=10 步）
+ *
+ *   自转换（target == cur）在入口即被拒绝，不触发任何生命周期。
+ *
+ * 【C5 — onAction 管线（_oaRun）】
+ *
+ *   Phase 1: Gate 转换检查（动作前，即时阻断）
+ *   Phase 2: 执行 cur.onAction()（可内部调用 ChangeState）
+ *   Phase 3: Normal 转换检查（动作后，条件转换）
+ *   Phase 4: actionCount++ + super.onAction()（机器级回调）
+ *
+ *   任一 Phase 导致 activeState 变化 → continue 回到 Phase 1（最多 10 次）。
+ *   Gate/Normal 返回无效目标 → ChangeState 静默失败 → break 跳出循环，
+ *   该帧的 Phase 2 action 不执行（Gate 场景）或已执行（Normal 场景）。
+ *
+ * 【C6 — 嵌套机约束】
+ *
+ *   a) 嵌套子机的 onEnter/onExit 由父机管线自动调用，不需手动 start()。
+ *   b) 子状态 onAction/onExit 中可通过 this.superMachine.ChangeState()
+ *      切换父机状态，但不得跨越两级以上（祖父机）。
+ *      跨级调用不会崩溃，但会导致已退出的中间层在当前帧残余执行。
+ *   c) destroy() 递归由外向内传播 onExit（已启动时），再由外向内销毁。
+ *
+ * 【C7 — 异常安全等级】
+ *
+ *   本系统采用"契约优先，无 try/catch"策略。
+ *   回调抛异常 → _csRun 永久锁死（见 C2a）。
+ *   恢复手段：外部调用 delete machine.ChangeState 可回退到原型方法（pointer-only），
+ *   机器可继续运行但只有 pointer-only 切换语义。
+ *
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
 class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status implements IMachine {
 
     // ═══════ 字段声明 ═══════
@@ -251,10 +337,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         return this.activeState;
     }
 
-    /**
-     * 直接设置活跃状态，不触发 onEnter/onExit 生命周期。
-     * 警告：绕过完整生命周期管理，推荐使用 ChangeState()。
-     */
+    /** @deprecated 绕过生命周期，请用 ChangeState()。已从 IMachine 接口移除，仅测试使用。 */
     public function setActiveState(state:FSM_Status):Void {
         trace("[FSM] Warning: setActiveState() bypasses lifecycle. Use ChangeState() for safe transitions.");
         if (state == null) this.activeState = this.defaultState;
@@ -265,6 +348,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         return this.lastState;
     }
 
+    /** @deprecated 绕过生命周期。已从 IMachine 接口移除，仅测试使用。 */
     public function setLastState(state:FSM_Status):Void {
         this.lastState = state;
     }

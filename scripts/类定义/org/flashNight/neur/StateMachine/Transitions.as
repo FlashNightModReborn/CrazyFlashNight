@@ -129,6 +129,66 @@ class org.flashNight.neur.StateMachine.Transitions {
     }
 
     /**
+     * 移除指定的转换规则
+     *
+     * 通过 (target, func) 组合定位并物理移除规则节点。
+     * 如果该规则不存在，则静默返回 false。
+     *
+     * @param current 源状态名称
+     * @param target  目标状态名称
+     * @param func    条件判断函数
+     * @param isGate  是否为Gate转换（默认false）
+     * @return Boolean 是否成功移除（true=找到并移除，false=未找到）
+     */
+    public function remove(current:String, target:String, func:Function, isGate:Boolean):Boolean {
+        if (isGate == null) isGate = false;
+        var store:Object = isGate ? this.gateLists : this.normalLists;
+        var list:Array = store[current];
+        if (list == null) return false;
+
+        var len:Number = list.length;
+        for (var i:Number = 0; i < len; i++) {
+            var n:Object = list[i];
+            if (n.target == target && n.func == func) {
+                list.splice(i, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 设置指定转换规则的激活状态
+     *
+     * 通过 (target, func) 组合定位规则节点并设置其 active 标志。
+     * 非活跃规则在 TransitGate/TransitNormal 中被跳过，但仍保留在列表中，
+     * 可随时通过再次调用本方法重新启用。
+     *
+     * @param current 源状态名称
+     * @param target  目标状态名称
+     * @param func    条件判断函数
+     * @param isGate  是否为Gate转换（默认false）
+     * @param active  是否激活（true=启用，false=禁用）
+     * @return Boolean 是否成功设置（true=找到并设置，false=未找到）
+     */
+    public function setActive(current:String, target:String, func:Function, isGate:Boolean, active:Boolean):Boolean {
+        if (isGate == null) isGate = false;
+        var store:Object = isGate ? this.gateLists : this.normalLists;
+        var list:Array = store[current];
+        if (list == null) return false;
+
+        var len:Number = list.length;
+        for (var i:Number = 0; i < len; i++) {
+            var n:Object = list[i];
+            if (n.target == target && n.func == func) {
+                n.active = active;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 清除指定状态的所有转换规则（Gate 和 Normal 均清除）
      *
      * @param current 要清除转换规则的状态名称

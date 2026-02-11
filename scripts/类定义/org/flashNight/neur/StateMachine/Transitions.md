@@ -116,27 +116,27 @@ a.runTests();
 [PASS] Successfully recovered from errors
 
 --- Test: Basic Performance ---
-Basic Performance: 10000 transit calls in 70ms
+Basic Performance: 10000 transit calls in 59ms
 [PASS] Basic performance acceptable
 
 --- Test: Many Transitions Performance ---
-Many Transitions Performance: 1000 transitions, 1000 calls in 2287ms
+Many Transitions Performance: 1000 transitions, 1000 calls in 2067ms
 [PASS] Many transitions performance acceptable
 
 --- Test: Complex Conditions Performance ---
-Complex Conditions Performance: 1000 complex calculations in 22ms
+Complex Conditions Performance: 1000 complex calculations in 20ms
 [PASS] Complex conditions performance acceptable
 
 --- Test: Frequent Transit Calls Performance ---
-Frequent Calls Performance: 50000 calls in 337ms
+Frequent Calls Performance: 50000 calls in 306ms
 [PASS] Frequent calls performance acceptable
 
 --- Test: Transition Scalability ---
 Scale 10: 100 calls in 3ms
-Scale 50: 100 calls in 16ms
-Scale 100: 100 calls in 21ms
-Scale 500: 100 calls in 35ms
-Scale 1000: 100 calls in 40ms
+Scale 50: 100 calls in 15ms
+Scale 100: 100 calls in 18ms
+Scale 500: 100 calls in 29ms
+Scale 1000: 100 calls in 32ms
 [PASS] Transition scalability is acceptable
 
 --- Test: Memory Usage Optimization ---
@@ -144,7 +144,7 @@ Scale 1000: 100 calls in 40ms
 
 --- Test: Transition Caching ---
 [PASS] All calculations executed (no caching implemented)
-Caching test: 10 calls took 6ms
+Caching test: 10 calls took 5ms
 [PASS] Caching test completed (baseline established)
 
 --- Test: Conditional Short-Circuiting ---
@@ -178,8 +178,47 @@ Caching test: 10 calls took 6ms
 [PASS] Gate cleared after reset
 [PASS] Normal cleared after reset
 
+--- Test: Remove Normal Transition ---
+[PASS] remove() returns true for existing rule
+[PASS] After remove, next rule takes effect
+
+--- Test: Remove Gate Transition ---
+[PASS] Gate rule exists before remove
+[PASS] remove(isGate=true) returns true
+[PASS] Gate rule removed successfully
+
+--- Test: Remove Non-Existent ---
+[PASS] remove() returns false for wrong target
+[PASS] remove() returns false for different func ref
+[PASS] remove() returns false for non-existent state
+[PASS] Original rule still active after failed removes
+
+--- Test: setActive Disable/Enable ---
+[PASS] setActive() returns true for existing rule
+[PASS] Disabled rule skipped, B takes effect
+[PASS] Re-enabled rule takes effect again
+
+--- Test: setActive Gate Transition ---
+[PASS] Gate rule active initially
+[PASS] Gate rule disabled via setActive
+[PASS] Gate rule re-enabled via setActive
+
+--- Test: setActive Non-Existent ---
+[PASS] setActive() returns false for non-existent state
+[PASS] setActive() returns false for wrong target
+
+--- Test: Remove and Re-Add ---
+[PASS] Rule removed
+[PASS] Rule re-added and working
+
+--- Test: setActive with Priority ---
+[PASS] Highest priority rule fires
+[PASS] Mid priority fires when high disabled
+[PASS] Low priority fires when high+mid disabled
+[PASS] All re-enabled, highest priority fires again
+
 === TRANSITIONS TEST FINAL REPORT ===
-Tests Passed: 80
+Tests Passed: 103
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TRANSITIONS TESTS PASSED!
@@ -196,27 +235,27 @@ Success Rate: 100%
 === TRANSITIONS PERFORMANCE ANALYSIS ===
 Context: Basic Transit Call
   Iterations: 10000
-  Total Time: 70ms
-  Avg per Operation: 0.007ms
-  Operations per Second: 142857
+  Total Time: 59ms
+  Avg per Operation: 0.0059ms
+  Operations per Second: 169492
 ---
 Context: Many Transitions
   Iterations: 1000
-  Total Time: 2287ms
-  Avg per Operation: 2.287ms
-  Operations per Second: 437
+  Total Time: 2067ms
+  Avg per Operation: 2.067ms
+  Operations per Second: 484
 ---
 Context: Complex Conditions
   Iterations: 1000
-  Total Time: 22ms
-  Avg per Operation: 0.022ms
-  Operations per Second: 45455
+  Total Time: 20ms
+  Avg per Operation: 0.02ms
+  Operations per Second: 50000
 ---
 Context: Frequent Transit Calls
   Iterations: 50000
-  Total Time: 337ms
-  Avg per Operation: 0.00674ms
-  Operations per Second: 148368
+  Total Time: 306ms
+  Avg per Operation: 0.00612ms
+  Operations per Second: 163399
 ---
 Context: Scale 10
   Iterations: 100
@@ -226,35 +265,35 @@ Context: Scale 10
 ---
 Context: Scale 50
   Iterations: 100
-  Total Time: 16ms
-  Avg per Operation: 0.16ms
-  Operations per Second: 6250
+  Total Time: 15ms
+  Avg per Operation: 0.15ms
+  Operations per Second: 6667
 ---
 Context: Scale 100
   Iterations: 100
-  Total Time: 21ms
-  Avg per Operation: 0.21ms
-  Operations per Second: 4762
+  Total Time: 18ms
+  Avg per Operation: 0.18ms
+  Operations per Second: 5556
 ---
 Context: Scale 500
   Iterations: 100
-  Total Time: 35ms
-  Avg per Operation: 0.35ms
-  Operations per Second: 2857
+  Total Time: 29ms
+  Avg per Operation: 0.29ms
+  Operations per Second: 3448
 ---
 Context: Scale 1000
   Iterations: 100
-  Total Time: 40ms
-  Avg per Operation: 0.4ms
-  Operations per Second: 2500
+  Total Time: 32ms
+  Avg per Operation: 0.32ms
+  Operations per Second: 3125
 ---
 Context: Memory Stress Test
   Iterations: 1000
-  Total Time: 9ms
-  Avg per Operation: 0.009ms
-  Operations per Second: 111111
+  Total Time: 6ms
+  Avg per Operation: 0.006ms
+  Operations per Second: 166667
 ---
 === PERFORMANCE RECOMMENDATIONS ===
-Overall Average: 0.0447244094488189ms per operation
+Overall Average: 0.0402362204724409ms per operation
 ✅ Excellent performance - suitable for real-time applications
 =============================

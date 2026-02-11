@@ -155,7 +155,7 @@ Workflow failed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: B
+[PASS] Conditional branching led to valid path: C
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -188,28 +188,28 @@ Workflow failed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=30ms, Actions=34ms for 10000 operations
+Basic Performance: Transitions=33ms, Actions=32ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 44ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 40ms, 100 transitions in 0ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 16ms
+Frequent Transitions Performance: 5000 transitions in 19ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 8ms
+Complex Transition Performance: 1000 complex transitions in 7ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=0ms, Transition=0ms, Operation=1ms
+Size 10: Create=0ms, Transition=0ms, Operation=0ms
 Size 50: Create=1ms, Transition=0ms, Operation=1ms
-Size 100: Create=1ms, Transition=2ms, Operation=0ms
-Size 500: Create=11ms, Transition=9ms, Operation=0ms
+Size 100: Create=2ms, Transition=2ms, Operation=0ms
+Size 500: Create=11ms, Transition=12ms, Operation=0ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -392,8 +392,49 @@ Size 500: Create=11ms, Transition=9ms, Operation=0ms
 [PASS] Gate valid: transitions to B when condition is true
 [PASS] Gate valid: B's action executes in same frame after gate transition
 
+--- Test: T1 - Exception in _csRun Locks Pipeline ---
+[PASS] T1: Exception propagated from B.onEnter
+[PASS] T1: activeState advanced to B (Phase C completed before Phase D threw)
+[PASS] T1: ChangeState locked (_csPend) — cannot transition to C
+[PASS] T1: C.onEnter never called (pipeline locked)
+[PASS] T1: onAction still ticks (actionCount increments)
+[PASS] T1: After delete, prototype ChangeState (pointer-only) works
+[PASS] T1: Prototype ChangeState is pointer-only (no onEnter)
+
+--- Test: T2 - Gate Invalid Target Skips Action ---
+[PASS] T2: Phase 2 action skipped when Gate fires with invalid target
+[PASS] T2: Phase 3 Normal check skipped when Gate fires with invalid target
+[PASS] T2: State unchanged
+[PASS] T2: Phase 4 actionCount still increments after Gate break
+
+--- Test: T3 - Three Level Nested onAction ---
+[PASS] T3: leafA.onAction executed
+[PASS] T3: leafA exited after ChangeState
+[PASS] T3: leafB entered after ChangeState
+[PASS] T3: middle's activeState is now leafB
+[PASS] T3: top's activeState unchanged (still middle)
+[PASS] T3: Second tick propagates to leafB
+[PASS] T3: leafA no longer receives onAction
+
+--- Test: T4 - onExit Double ChangeState Last Wins ---
+[PASS] T4: Last ChangeState in onExit wins (D, not C or B)
+[PASS] T4: B never entered (overridden by redirect)
+[PASS] T4: C never entered (overridden by second redirect)
+[PASS] T4: D entered (final redirect target)
+
+--- Test: T5 - destroy() Then start() Safety ---
+[PASS] T5: start() after destroy() does not crash
+[PASS] T5: activeState remains null after destroy+start
+
+--- Test: T6 - onExit Redirect to Original Target ---
+[PASS] T6: Correctly ends at B (redirect to same target)
+[PASS] T6: B.onEnter called exactly once (no double-enter from redundant redirect)
+[PASS] T6: Exactly 2 lifecycle events
+[PASS] T6: A exits first
+[PASS] T6: B enters second
+
 === FINAL FSM TEST REPORT ===
-Tests Passed: 225
+Tests Passed: 254
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.

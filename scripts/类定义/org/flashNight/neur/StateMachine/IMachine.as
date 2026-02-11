@@ -1,13 +1,16 @@
 ﻿import org.flashNight.neur.StateMachine.FSM_Status;
 
+/**
+ * 状态机公共接口
+ *
+ * 仅暴露行为方法与只读查询。
+ * setter（setActiveState/setLastState）已移除 — 绕过生命周期，
+ * 实现类仍保留但标记 @deprecated，仅供测试使用。
+ */
 interface org.flashNight.neur.StateMachine.IMachine {
-    function start():Void;                 // 显式启动状态机，触发首次 onEnter（幂等）
-    function ChangeState(name:String):Void; // 请求切换状态（未 start 时仅移指针）
-    function getActiveState():FSM_Status;
-    function setActiveState(state:FSM_Status):Void;
-    // 当前处于的状态
-    function getLastState():FSM_Status;
-    function setLastState(state:FSM_Status):Void;
-    // 上次处于的状态
-    function getActiveStateName():String;
+    function start():Void;                  // 显式启动状态机，触发首次 onEnter（幂等）
+    function ChangeState(name:String):Void;  // 请求切换状态（未 start 时仅移指针）
+    function getActiveState():FSM_Status;    // 当前活跃状态
+    function getLastState():FSM_Status;      // 上一个状态
+    function getActiveStateName():String;    // 当前活跃状态名
 }
