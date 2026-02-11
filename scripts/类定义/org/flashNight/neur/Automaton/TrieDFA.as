@@ -28,7 +28,7 @@
  * @author FlashNight
  * @version 1.1
  */
-class org.flashNight.neur.StateMachine.TrieDFA {
+class org.flashNight.neur.Automaton.TrieDFA {
 
     // ========== 常量 ==========
     //

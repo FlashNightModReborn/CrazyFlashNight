@@ -1,4 +1,4 @@
-﻿import org.flashNight.neur.StateMachine.TrieDFA; 
+﻿import org.flashNight.neur.Automaton.TrieDFA;
 
 /**
  * TrieDFA 测试套件
@@ -15,7 +15,7 @@
  * @author FlashNight
  * @version 1.0
  */
-class org.flashNight.neur.StateMachine.TrieDFATest {
+class org.flashNight.neur.Automaton.TrieDFATest {
 
     private var _testPassed:Number;
     private var _testFailed:Number;

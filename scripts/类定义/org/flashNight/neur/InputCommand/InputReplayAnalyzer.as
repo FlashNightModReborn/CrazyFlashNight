@@ -1,4 +1,4 @@
-﻿import org.flashNight.neur.StateMachine.TrieDFA;
+﻿import org.flashNight.neur.Automaton.TrieDFA;
 import org.flashNight.neur.InputCommand.CommandDFA; 
 import org.flashNight.neur.InputCommand.CommandRegistry;
 import org.flashNight.neur.InputCommand.InputEvent;

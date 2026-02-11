@@ -790,7 +790,7 @@ dfa.findAllFast(seq2);  // seq1 的结果已被覆盖！
 ### 测试执行代码
 
 ```actionscript
-import org.flashNight.neur.StateMachine.TrieDFATest;
+import org.flashNight.neur.Automaton.TrieDFATest;
 
 var test:TrieDFATest = new TrieDFATest();
 test.runTests();

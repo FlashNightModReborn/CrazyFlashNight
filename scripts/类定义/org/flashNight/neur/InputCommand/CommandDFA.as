@@ -1,4 +1,4 @@
-﻿import org.flashNight.neur.StateMachine.TrieDFA; 
+﻿import org.flashNight.neur.Automaton.TrieDFA;
 import org.flashNight.neur.InputCommand.InputEvent;
 import org.flashNight.neur.InputCommand.InputHistoryBuffer;
 
@@ -8,7 +8,7 @@ import org.flashNight.neur.InputCommand.InputHistoryBuffer;
  * 基于通用 TrieDFA 的领域特化封装，用于格斗游戏风格的输入序列识别。
  *
  * 职责分离：
- * - TrieDFA: 通用前缀树 DFA 数据结构（StateMachine 层）
+ * - TrieDFA: 通用前缀树 DFA 数据结构（Automaton 层）
  * - CommandDFA: 搓招领域的特化逻辑（InputCommand 层）
  *   - 命令元数据管理（名称、动作、序列）
  *   - 角色状态更新（容错计时器、同帧多事件）
