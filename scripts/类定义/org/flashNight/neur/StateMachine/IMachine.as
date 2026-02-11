@@ -4,8 +4,8 @@
  * 状态机公共接口
  *
  * 仅暴露行为方法与只读查询。
- * setter（setActiveState/setLastState）已移除 — 绕过生命周期，
- * 实现类仍保留但标记 @deprecated，仅供测试使用。
+ * setter（setActiveState/setLastState）已从接口和实现类中完全移除 —
+ * 绕过生命周期管理，请使用 ChangeState() 进行安全的状态切换。
  */
 interface org.flashNight.neur.StateMachine.IMachine {
     function start():Void;                  // 显式启动状态机，触发首次 onEnter（幂等）

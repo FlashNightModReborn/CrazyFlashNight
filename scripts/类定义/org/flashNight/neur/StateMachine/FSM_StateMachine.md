@@ -23,13 +23,11 @@ a.runTests();
 
 --- Test: Default State Handling ---
 [PASS] Default state is first added
-[FSM] Warning: setActiveState() bypasses lifecycle. Use ChangeState() for safe transitions.
-[PASS] Setting null active state reverts to default
+[PASS] Active state defaults to first added
 
 --- Test: Active State Management ---
-[FSM] Warning: setActiveState() bypasses lifecycle. Use ChangeState() for safe transitions.
-[PASS] Active state set correctly
-[PASS] Last state set correctly
+[PASS] Active state changed via ChangeState
+[PASS] Last state tracks previous active state
 
 --- Test: State Lifecycle Events ---
 [PASS] AddStatus does not trigger onEnter (deferred to start())
@@ -115,9 +113,9 @@ a.runTests();
 [PASS] No transition event for same-state change
 
 --- Test: Null State Handling ---
-[FSM] Warning: setActiveState() bypasses lifecycle. Use ChangeState() for safe transitions.
-[PASS] Null active state defaults to default
-[PASS] Last state can be set to null
+[PASS] Active state is null before AddStatus
+[PASS] Last state is null before AddStatus
+[PASS] Active state name is null before AddStatus
 
 --- Test: Exception in Lifecycle Methods ---
 [PASS] Exceptions properly propagated from lifecycle methods
@@ -140,13 +138,7 @@ a.runTests();
 --- Test: Complex Workflow ---
 Initializing workflow...
 Processing...
-Retrying...
-Processing...
-Retrying...
-Processing...
-Retrying...
-Processing...
-Workflow failed!
+Workflow completed!
 [PASS] Workflow reached final state
 
 --- Test: State Chaining ---
@@ -155,7 +147,7 @@ Workflow failed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: A
+[PASS] Conditional branching led to valid path: B
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -188,28 +180,28 @@ Workflow failed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=31ms, Actions=34ms for 10000 operations
+Basic Performance: Transitions=35ms, Actions=37ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 44ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 50ms, 100 transitions in 0ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 18ms
+Frequent Transitions Performance: 5000 transitions in 24ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 10ms
+Complex Transition Performance: 1000 complex transitions in 8ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=0ms, Transition=0ms, Operation=0ms
-Size 50: Create=3ms, Transition=1ms, Operation=0ms
+Size 10: Create=0ms, Transition=0ms, Operation=2ms
+Size 50: Create=1ms, Transition=1ms, Operation=0ms
 Size 100: Create=2ms, Transition=2ms, Operation=0ms
-Size 500: Create=10ms, Transition=10ms, Operation=0ms
+Size 500: Create=14ms, Transition=11ms, Operation=1ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -446,7 +438,7 @@ Size 500: Create=10ms, Transition=10ms, Operation=0ms
 [PASS] T8: isDestroyed flag intact
 
 === FINAL FSM TEST REPORT ===
-Tests Passed: 262
+Tests Passed: 263
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.

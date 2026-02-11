@@ -242,15 +242,14 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
         var state1:FSM_Status = this.createTestState("first", false);
         var state2:FSM_Status = this.createTestState("second", false);
-        
+
         machine.AddStatus("first", state1);
         machine.AddStatus("second", state2);
-        
+
         this.assert(machine.getDefaultState() == state1, "Default state is first added");
-        
-        machine.setActiveState(null);
-        this.assert(machine.getActiveState() == machine.getDefaultState(), "Setting null active state reverts to default");
-        
+        // AddStatus 首次添加自动设为 activeState
+        this.assert(machine.getActiveState() == state1, "Active state defaults to first added");
+
         machine.destroy();
     }
 
@@ -259,16 +258,15 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
         var state1:FSM_Status = this.createTestState("state1", false);
         var state2:FSM_Status = this.createTestState("state2", false);
-        
+
         machine.AddStatus("state1", state1);
         machine.AddStatus("state2", state2);
-        
-        machine.setActiveState(state2);
-        this.assert(machine.getActiveState() == state2, "Active state set correctly");
-        
-        machine.setLastState(state1);
-        this.assert(machine.getLastState() == state1, "Last state set correctly");
-        
+
+        // 通过正规的 ChangeState 验证 getter 行为
+        machine.ChangeState("state2");
+        this.assert(machine.getActiveState() == state2, "Active state changed via ChangeState");
+        this.assert(machine.getLastState() == state1, "Last state tracks previous active state");
+
         machine.destroy();
     }
 
@@ -795,16 +793,12 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
     public function testNullStateHandling():Void {
         trace("\n--- Test: Null State Handling ---");
         var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
-        var state:FSM_Status = this.createTestState("test", false);
-        
-        machine.AddStatus("test", state);
-        
-        machine.setActiveState(null);
-        this.assert(machine.getActiveState() == machine.getDefaultState(), "Null active state defaults to default");
-        
-        machine.setLastState(null);
-        this.assert(machine.getLastState() == null, "Last state can be set to null");
-        
+
+        // 未添加任何状态时，getter 应返回 null
+        this.assert(machine.getActiveState() == null, "Active state is null before AddStatus");
+        this.assert(machine.getLastState() == null, "Last state is null before AddStatus");
+        this.assert(machine.getActiveStateName() == null, "Active state name is null before AddStatus");
+
         machine.destroy();
     }
 

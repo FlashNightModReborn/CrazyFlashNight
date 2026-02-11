@@ -340,20 +340,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         return this.activeState;
     }
 
-    /** @deprecated 绕过生命周期，请用 ChangeState()。已从 IMachine 接口移除，仅测试使用。 */
-    public function setActiveState(state:FSM_Status):Void {
-        trace("[FSM] Warning: setActiveState() bypasses lifecycle. Use ChangeState() for safe transitions.");
-        if (state == null) this.activeState = this.defaultState;
-        else this.activeState = state;
-    }
-
     public function getLastState():FSM_Status {
         return this.lastState;
-    }
-
-    /** @deprecated 绕过生命周期。已从 IMachine 接口移除，仅测试使用。 */
-    public function setLastState(state:FSM_Status):Void {
-        this.lastState = state;
     }
 
     public function getActiveStateName():String {
