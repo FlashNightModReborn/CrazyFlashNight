@@ -6,7 +6,16 @@ import org.flashNight.neur.StateMachine.Transitions;
  * FSM_StateMachine — 分层有限状态机（HFSM）
  *
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  契约总览（维护者必读）
+ *  快速参考（回调编写者最小知识集）
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *
+ *  - 回调中不得抛异常（C2a）、不得调 destroy()（C2d）
+ *  - onExit 回调可 ChangeState 重定向，最后一次生效（C2b → C4 Phase B）
+ *  - onEnter 回调可 ChangeState 链式切换，最多 10 步（C2c → C4 Phase D）
+ *  - data 黑板须在首次 AddStatus 前设定（C3d）
+ *
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *  完整契约（实现维护者）
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  *
  * 【C1 — 生命周期阶段】
@@ -19,8 +28,9 @@ import org.flashNight.neur.StateMachine.Transitions;
  *   ChangeState 在不同阶段有不同语义（Meta-State Polymorphism）:
  *     构建期 / onEnter回调中 → _csInit  — 仅移指针，不触发 onExit/onEnter
  *     运行期               → _csRun   — 完整 4 阶段管线
- *     _csRun 管线执行中     → _csPend  — 记录目标名，由 while 循环消费
- *     onExit / destroy 中  → _csNoop  — 静默丢弃
+ *     _csRun 管线执行中          → _csPend  — 记录目标名，由 while 循环消费
+ *     机器级 onExit()/destroy() 中 → _csNoop  — 静默丢弃
+ *       （注：_csRun Phase A 内子状态的 onExit 回调走 _csPend，可重定向，见 C4）
  *
  * 【C2 — 回调契约（最重要）】
  *
@@ -33,10 +43,10 @@ import org.flashNight.neur.StateMachine.Transitions;
  *      表现为"单位卡死在当前状态"。onAction 不受影响但无法转换。
  *      （本设计有意不加 try/catch 以保持热路径零开销。）
  *
- *   b) onExit 回调中可以调用 ChangeState 实现重定向，
+ *   b) onExit 回调中可以调用 ChangeState 实现重定向（C4 Phase B 消费），
  *      但仅最后一次调用生效（_csPend 覆盖语义）。
  *
- *   c) onEnter 回调中可以调用 ChangeState 实现链式切换，
+ *   c) onEnter 回调中可以调用 ChangeState 实现链式切换（C4 Phase D 消费），
  *      同样仅最后一次生效，while 循环最多展开 maxChain=10 步。
  *
  *   d) 不得从回调中调用 destroy()。destroy 有独立的锁机制。
@@ -49,6 +59,9 @@ import org.flashNight.neur.StateMachine.Transitions;
  *      见 RESERVED 静态表。违反上述任一条件，AddStatus 静默拒绝并 trace 报错。
  *   d) machine.data 必须在首次 AddStatus 之前设定（非嵌套子状态会继承 data 引用）。
  *   e) 嵌套子机（FSM_StateMachine）不继承父机 data，需自行管理。
+ *   f) 同名覆盖允许但产生 trace 警告。覆盖后 statusDict 指向新实例，
+ *      但 defaultState/activeState 仍指向旧实例（首次注册时锁定，不随覆盖更新）。
+ *      若覆盖的是当前 activeState，旧实例会继续被 onAction 调用直到下次 ChangeState。
  *
  * 【C4 — ChangeState 4 阶段管线（_csRun）】
  *
@@ -132,17 +145,13 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     //  Meta-State Polymorphism — 方法变体
     //
     //  通过实例属性遮蔽原型方法，消除热路径中的分支判断。
-    //  状态机生命周期各阶段切换不同的方法实现：
+    //  状态机生命周期各阶段切换不同的方法实现。
     //
-    //  ChangeState 变体：
-    //    ┌─ 构造/onExit后 ─→ _csInit  (指针移动)
-    //    ├─ 运行中        ─→ _csRun   (完整4阶段管线)
-    //    ├─ _csRun管线内  ─→ _csPend  (挂起重入)
-    //    └─ onExit/destroy ─→ _csNoop  (静默吞掉)
+    //  ChangeState 变体表 → 见契约 C1（权威定义）
     //
-    //  onAction 变体：
-    //    ├─ 未启动        ─→ _oaNoop  (空操作)
-    //    └─ 运行中        ─→ _oaRun   (Gate→Action→Normal)
+    //  onAction 变体（C1 未覆盖）：
+    //    ├─ 未启动  ─→ _oaNoop  (空操作)
+    //    └─ 运行中  ─→ _oaRun   (Gate→Action→Normal → C5)
     // ═══════════════════════════════════════════════════
 
     /**
@@ -237,7 +246,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     }
 
     /**
-     * 空操作：onExit/destroy 期间静默吞掉所有 ChangeState 请求。
+     * 空操作：机器级 onExit() / destroy() 期间静默吞掉所有 ChangeState 请求。
+     * 注意区分：_csRun Phase A 中子状态的 onExit 回调期间，ChangeState 走 _csPend（可重定向）。
      */
     private function _csNoop(next:String):Void {
     }
@@ -374,6 +384,14 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         if (existing instanceof FSM_Status) {
             trace("[FSM] Warning: State '" + name + "' already registered, overwriting. "
                 + "Previous state instance will have stale superMachine/name/data references.");
+            if (existing == this.activeState) {
+                trace("[FSM] Warning: Overwriting the ACTIVE state '" + name + "'. "
+                    + "activeState still references the old instance until next ChangeState.");
+            }
+            if (existing == this.defaultState) {
+                trace("[FSM] Warning: Overwriting the DEFAULT state '" + name + "'. "
+                    + "defaultState still points to the original instance and will NOT update.");
+            }
         }
 
         var isNestedMachine:Boolean = (state instanceof FSM_StateMachine);

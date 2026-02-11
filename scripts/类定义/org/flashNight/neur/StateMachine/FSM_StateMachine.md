@@ -184,28 +184,28 @@ Workflow failed!
 [PASS] Transitions reference released after destroy
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=28ms, Actions=32ms for 10000 operations
+Basic Performance: Transitions=29ms, Actions=31ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 42ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 48ms, 100 transitions in 0ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 16ms
+Frequent Transitions Performance: 5000 transitions in 14ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 6ms
+Complex Transition Performance: 1000 complex transitions in 8ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=2ms, Transition=0ms, Operation=0ms
-Size 50: Create=1ms, Transition=1ms, Operation=0ms
-Size 100: Create=1ms, Transition=2ms, Operation=0ms
-Size 500: Create=11ms, Transition=12ms, Operation=2ms
+Size 10: Create=0ms, Transition=0ms, Operation=0ms
+Size 50: Create=1ms, Transition=1ms, Operation=1ms
+Size 100: Create=3ms, Transition=2ms, Operation=0ms
+Size 500: Create=13ms, Transition=12ms, Operation=0ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -445,6 +445,8 @@ Size 500: Create=11ms, Transition=12ms, Operation=2ms
 [PASS] T9: First AddStatus sets defaultState
 [PASS] T9: First AddStatus sets activeState
 [FSM] Warning: State 'dup' already registered, overwriting. Previous state instance will have stale superMachine/name/data references.
+[FSM] Warning: Overwriting the ACTIVE state 'dup'. activeState still references the old instance until next ChangeState.
+[FSM] Warning: Overwriting the DEFAULT state 'dup'. defaultState still points to the original instance and will NOT update.
 [PASS] T9: defaultState still points to original (not overwritten by duplicate)
 [PASS] T9: ChangeState uses overwritten state from statusDict
 [PASS] T9: Old state has stale superMachine reference (documented behavior)
@@ -456,8 +458,51 @@ Size 500: Create=11ms, Transition=12ms, Operation=2ms
 [PASS] T10: Prototype ChangeState safe after destroy (statusDict=null → silent return)
 [PASS] T10: activeState still null after prototype ChangeState on destroyed machine
 
+--- Test: T11 - Nested Machine Re-entry Cycle ---
+[PASS] T11: Parent starts with childA
+[PASS] T11: childA.idle onEnter propagated on start
+[PASS] T11: childA.idle receives onAction before exit
+[PASS] T11: childA internal state changed to combat
+[PASS] T11: Parent switched to childB
+[PASS] T11: childA machine-level onExit called during parent exit
+[PASS] T11: Parent switched back to childA
+[PASS] T11: childA machine-level onEnter re-triggered on re-entry
+[PASS] T11: childA retains internal activeState (combat) across re-entry
+[PASS] T11: childA.combat receives onAction after re-entry
+
+--- Test: T12 - maxChain=10 Limit Hit ---
+[FSM] Warning: ChangeState chain reached limit (10), possible oscillation. last=S11
+[PASS] T12: Exactly 10 onEnter calls (S1-S10), got 10
+[PASS] T12: Chain starts at S1
+[PASS] T12: Chain ends at S10 (limit hit before S11)
+[PASS] T12: S11 never entered (maxChain=10 limit stopped the chain)
+[PASS] T12: activeState is S10 (last entered before limit)
+
+--- Test: T13 - AddStatus Overwrite ActiveState During Runtime ---
+[PASS] T13: Old state receives onAction before overwrite
+[PASS] T13: New state not yet active
+[FSM] Warning: State 'run' already registered, overwriting. Previous state instance will have stale superMachine/name/data references.
+[FSM] Warning: Overwriting the ACTIVE state 'run'. activeState still references the old instance until next ChangeState.
+[FSM] Warning: Overwriting the DEFAULT state 'run'. defaultState still points to the original instance and will NOT update.
+[PASS] T13: Old state STILL receives onAction after overwrite (stale activeState)
+[PASS] T13: New state still not receiving onAction
+[PASS] T13: After round-trip, activeState points to new instance
+[PASS] T13: New state onEnter called on re-entry
+[PASS] T13: New state now receives onAction
+[PASS] T13: Old state no longer receives onAction
+
+--- Test: T14 - onExit Redirect + onEnter Chain Composite ---
+[PASS] T14: Final state is D (Phase B redirect + Phase D chain)
+[PASS] T14: B never entered (bypassed by onExit redirect)
+[PASS] T14: Exactly 4 lifecycle events, got 4
+[PASS] T14: [0] A exits
+[PASS] T14: [1] C enters (Phase B redirect target)
+[PASS] T14: [2] C exits (Phase D chain triggers re-loop)
+[PASS] T14: [3] D enters (final destination)
+[PASS] T14: lastState is C (state entered just before D)
+
 === FINAL FSM TEST REPORT ===
-Tests Passed: 271
+Tests Passed: 302
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.
@@ -492,4 +537,8 @@ Success Rate: 100%
   Gate valid target regression verified
   AddStatus duplicate name detection verified
   destroy() complete seal (ChangeState+onAction) verified
+  Nested machine re-entry cycle verified
+  maxChain=10 limit hit verified
+  AddStatus overwrite activeState during runtime verified
+  onExit redirect + onEnter chain composite verified
 =============================

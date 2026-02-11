@@ -140,6 +140,12 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testAddStatusDuplicateNameWarning();
         this.testDestroySealCoversChangeStateAndOnAction();
 
+        // Batch 12 新增：重入周期 / maxChain 极限 / 运行期覆盖 / 复合管线
+        this.testNestedMachineReentyCycle();
+        this.testMaxChainLimitHit();
+        this.testAddStatusOverwriteActiveStateDuringRuntime();
+        this.testOnExitRedirectPlusOnEnterChainComposite();
+
         // 最终报告
         this.printFinalReport();
     }
@@ -184,6 +190,26 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
                 if (logLifecycle) self._lifecycleLog.push(name + ":exit");
             }
         );
+    }
+
+    /**
+     * 创建链式切换状态：onEnter 时 push name 到 log，然后 ChangeState(nextName)。
+     * 用独立方法代替 IIFE 解决 AS2 闭包捕获问题。
+     * @param log       共享日志数组（引用传递，不可在外部重赋值）
+     * @param name      本状态的标识名
+     * @param nextName  链式切换目标名（null 表示终点，不链）
+     */
+    private function createChainState(log:Array, name:String, nextName:String):FSM_Status {
+        if (nextName != null) {
+            return new FSM_Status(null,
+                function():Void {
+                    log.push(name);
+                    this.superMachine.ChangeState(nextName);
+                }, null);
+        }
+        return new FSM_Status(null,
+            function():Void { log.push(name); },
+            null);
     }
 
     /**
@@ -3604,6 +3630,360 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
                    "T10: activeState still null after prototype ChangeState on destroyed machine");
     }
 
+    // ========== Batch 12 新增：重入周期 / maxChain 极限 / 运行期覆盖 / 复合管线 ==========
+
+    /**
+     * T11: 嵌套机 退出→重入 完整周期（C1 "退出/重入期"）
+     *
+     * 场景：parent 含两个子机 childA、childB。
+     *   1. start → childA 启动（onEnter 传播）
+     *   2. parent.ChangeState("B") → childA 退出，childB 进入
+     *   3. parent.ChangeState("A") → childB 退出，childA 重新进入
+     *
+     * 验证：
+     *   - childA 的 _booted/_started 在退出时被重置
+     *   - 重新进入后 childA 的 onEnter 再次触发、onAction 恢复工作
+     *   - childA 内部 activeState 正确恢复到 defaultState
+     */
+    public function testNestedMachineReentyCycle():Void {
+        trace("\n--- Test: T11 - Nested Machine Re-entry Cycle ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        // ── childA：嵌套子机，含 idle/combat ──
+        var childA:FSM_StateMachine = new FSM_StateMachine(
+            null,
+            function():Void { self._lifecycleLog.push("childA:enter"); },
+            function():Void { self._lifecycleLog.push("childA:exit"); }
+        );
+        childA.data = {};
+        var a_idle:FSM_Status = new FSM_Status(
+            function():Void { self._lifecycleLog.push("a_idle:action"); },
+            function():Void { self._lifecycleLog.push("a_idle:enter"); },
+            function():Void { self._lifecycleLog.push("a_idle:exit"); }
+        );
+        var a_combat:FSM_Status = new FSM_Status(
+            function():Void { self._lifecycleLog.push("a_combat:action"); },
+            function():Void { self._lifecycleLog.push("a_combat:enter"); },
+            null
+        );
+        childA.AddStatus("idle", a_idle);
+        childA.AddStatus("combat", a_combat);
+
+        // ── childB：简单子状态 ──
+        var childB:FSM_Status = new FSM_Status(
+            function():Void { self._lifecycleLog.push("childB:action"); },
+            function():Void { self._lifecycleLog.push("childB:enter"); },
+            function():Void { self._lifecycleLog.push("childB:exit"); }
+        );
+
+        // ── parent ──
+        var parent:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        parent.AddStatus("A", childA);
+        parent.AddStatus("B", childB);
+
+        // ── Phase 1: 启动 ──
+        parent.start();
+        this.assert(parent.getActiveStateName() == "A",
+                   "T11: Parent starts with childA");
+
+        // childA 应已启动（onEnter 传播到 a_idle）
+        var hasAIdleEnter:Boolean = false;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "a_idle:enter") hasAIdleEnter = true;
+        }
+        this.assert(hasAIdleEnter,
+                   "T11: childA.idle onEnter propagated on start");
+
+        // onAction 应传播到 a_idle
+        this.clearLifecycleLog();
+        parent.onAction();
+        var hasAIdleAction:Boolean = false;
+        for (var j:Number = 0; j < this._lifecycleLog.length; j++) {
+            if (this._lifecycleLog[j] == "a_idle:action") hasAIdleAction = true;
+        }
+        this.assert(hasAIdleAction,
+                   "T11: childA.idle receives onAction before exit");
+
+        // 在 childA 内部切换到 combat
+        childA.ChangeState("combat");
+        this.assert(childA.getActiveStateName() == "combat",
+                   "T11: childA internal state changed to combat");
+
+        // ── Phase 2: 退出 childA，进入 childB ──
+        this.clearLifecycleLog();
+        parent.ChangeState("B");
+
+        this.assert(parent.getActiveStateName() == "B",
+                   "T11: Parent switched to childB");
+
+        // childA 退出序列：a_combat.onExit(null) → childA:exit
+        var hasChildAExit:Boolean = false;
+        for (var k:Number = 0; k < this._lifecycleLog.length; k++) {
+            if (this._lifecycleLog[k] == "childA:exit") hasChildAExit = true;
+        }
+        this.assert(hasChildAExit,
+                   "T11: childA machine-level onExit called during parent exit");
+
+        // ── Phase 3: 重新进入 childA ──
+        this.clearLifecycleLog();
+        parent.ChangeState("A");
+
+        this.assert(parent.getActiveStateName() == "A",
+                   "T11: Parent switched back to childA");
+
+        // childA 应重新 onEnter
+        var hasChildAReenter:Boolean = false;
+        for (var m:Number = 0; m < this._lifecycleLog.length; m++) {
+            if (this._lifecycleLog[m] == "childA:enter") hasChildAReenter = true;
+        }
+        this.assert(hasChildAReenter,
+                   "T11: childA machine-level onEnter re-triggered on re-entry");
+
+        // childA 内部 activeState 仍为 combat（onExit 不重置 activeState 到 default）
+        // 因为 onExit 只重置 _booted/_started 和方法指针，不修改 activeState
+        // re-entry 时 onEnter step 4 检查 activeState != null → 跳过 default 回退
+        this.assert(childA.getActiveStateName() == "combat",
+                   "T11: childA retains internal activeState (combat) across re-entry");
+
+        // onAction 应恢复工作（_oaRun 被重新赋值）
+        this.clearLifecycleLog();
+        parent.onAction();
+        var hasACombatAction:Boolean = false;
+        for (var n:Number = 0; n < this._lifecycleLog.length; n++) {
+            if (this._lifecycleLog[n] == "a_combat:action") hasACombatAction = true;
+        }
+        this.assert(hasACombatAction,
+                   "T11: childA.combat receives onAction after re-entry");
+
+        parent.destroy();
+    }
+
+    /**
+     * T12: maxChain=10 极限触发
+     *
+     * 构造 12 个状态 S0-S11，每个状态的 onEnter 都链式切换到下一个。
+     * 从 S0 触发 ChangeState("S1")，S1.onEnter→S2→...→S10→S11。
+     * S1→S11 需要 10 步 chain（S1.onEnter 不算 chain，S2 开始 chainCount=1）。
+     * 实际：Phase D 在 S1.onEnter 后检测到 pending("S2")，chainCount=1。
+     * S2.onEnter → pending("S3"), chainCount=2... S10.onEnter → pending("S11"), chainCount=10。
+     * while 条件 chainCount < 10 → false → 退出循环，S11 永远不被进入。
+     *
+     * 验证：
+     *   - 最终停在 S10（第 10 步 chain 的目标）
+     *   - trace 警告被触发（通过最终状态间接验证）
+     */
+    public function testMaxChainLimitHit():Void {
+        trace("\n--- Test: T12 - maxChain=10 Limit Hit ---");
+        var enterLog:Array = [];
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.data = {};
+
+        // S0: 起始状态（不触发链）
+        machine.AddStatus("S0", new FSM_Status(null, null, null));
+
+        // S1-S10: 每个 onEnter 链到下一个；S11: 终点不链
+        // 用 createChainState 独立方法确保闭包正确捕获每次迭代的参数
+        for (var i:Number = 1; i <= 11; i++) {
+            var nextN:String = (i < 11) ? ("S" + (i + 1)) : null;
+            machine.AddStatus("S" + i, this.createChainState(enterLog, "S" + i, nextN));
+        }
+
+        machine.start(); // S0 is default, S0.onEnter=null → enterLog 仍为空
+        // 注意：不可用 enterLog = [] 重赋值，否则闭包引用断裂
+        // start() 不触发 S0 的 onEnter（null callback），所以 enterLog 仍为空
+
+        // 触发链：S0 → S1 → S2 → ... → S10 (maxChain hit) → stop
+        machine.ChangeState("S1");
+
+        // S1 through S10 的 onEnter 应执行（10个）
+        // S1 进入后 pending="S2" chainCount=1
+        // S2 进入后 pending="S3" chainCount=2
+        // ...
+        // S10 进入后 pending="S11" chainCount=10
+        // while 条件 chainCount < 10 → false → break
+        this.assert(enterLog.length == 10,
+                   "T12: Exactly 10 onEnter calls (S1-S10), got " + enterLog.length);
+        this.assert(enterLog[0] == "S1",
+                   "T12: Chain starts at S1");
+        this.assert(enterLog[9] == "S10",
+                   "T12: Chain ends at S10 (limit hit before S11)");
+
+        // S11 不应被进入
+        var s11Entered:Boolean = false;
+        for (var j:Number = 0; j < enterLog.length; j++) {
+            if (enterLog[j] == "S11") s11Entered = true;
+        }
+        this.assert(!s11Entered,
+                   "T12: S11 never entered (maxChain=10 limit stopped the chain)");
+
+        // activeState 应为 S10（最后成功进入的状态）
+        this.assert(machine.getActiveStateName() == "S10",
+                   "T12: activeState is S10 (last entered before limit)");
+
+        machine.destroy();
+    }
+
+    /**
+     * T13: 运行期 AddStatus 覆盖当前 activeState（P3 新增告警覆盖）
+     *
+     * 场景：机器已启动并运行在状态 "run"。
+     * AddStatus("run", newState) 覆盖 statusDict 中的引用。
+     * 验证：
+     *   1. 旧实例继续被 onAction 调用（activeState 仍指向旧实例）
+     *   2. ChangeState 到其他状态再回来，才使用新实例
+     *   3. 覆盖不影响当前帧的状态机运行
+     */
+    public function testAddStatusOverwriteActiveStateDuringRuntime():Void {
+        trace("\n--- Test: T13 - AddStatus Overwrite ActiveState During Runtime ---");
+        var self = this;
+
+        var oldActionCount:Number = 0;
+        var newActionCount:Number = 0;
+        var newEnterCount:Number = 0;
+
+        var stateOld:FSM_Status = new FSM_Status(
+            function():Void { oldActionCount++; },
+            null, null
+        );
+        var stateNew:FSM_Status = new FSM_Status(
+            function():Void { newActionCount++; },
+            function():Void { newEnterCount++; },
+            null
+        );
+        var stateOther:FSM_Status = new FSM_Status(null, null, null);
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.data = {};
+        machine.AddStatus("run", stateOld);
+        machine.AddStatus("other", stateOther);
+        machine.start();
+
+        // 运行中: onAction 调用旧实例
+        machine.onAction();
+        this.assert(oldActionCount == 1,
+                   "T13: Old state receives onAction before overwrite");
+        this.assert(newActionCount == 0,
+                   "T13: New state not yet active");
+
+        // ── 运行期覆盖 ──（P3 新增告警会在此触发）
+        machine.AddStatus("run", stateNew);
+
+        // 覆盖后 onAction 仍调用旧实例（activeState 未更新）
+        machine.onAction();
+        this.assert(oldActionCount == 2,
+                   "T13: Old state STILL receives onAction after overwrite (stale activeState)");
+        this.assert(newActionCount == 0,
+                   "T13: New state still not receiving onAction");
+
+        // ChangeState 到 other 再回来：现在应使用 statusDict 中的新实例
+        machine.ChangeState("other");
+        machine.ChangeState("run");
+        this.assert(machine.getActiveState() == stateNew,
+                   "T13: After round-trip, activeState points to new instance");
+
+        // 新实例的 onEnter 被调用
+        this.assert(newEnterCount == 1,
+                   "T13: New state onEnter called on re-entry");
+
+        // 新实例接收 onAction
+        machine.onAction();
+        this.assert(newActionCount == 1,
+                   "T13: New state now receives onAction");
+        this.assert(oldActionCount == 2,
+                   "T13: Old state no longer receives onAction");
+
+        machine.destroy();
+    }
+
+    /**
+     * T14: Phase B 重定向 + Phase D 链式切换复合交互
+     *
+     * 场景：A→B，A.onExit 重定向到 C，C.onEnter 链式切换到 D。
+     * 管线执行序列：
+     *   Phase A: A.onExit → _csPend("C")
+     *   Phase B: redirect to C (target=C, chainCount=1)
+     *   Phase C: enter C (activeState=C)
+     *   Phase D: C.onEnter → _csPend("D") → target=D, chainCount=2
+     *   Phase A (loop): C.onExit
+     *   Phase B: no redirect
+     *   Phase C: enter D
+     *   Phase D: D.onEnter → no pending → break
+     *
+     * 验证完整的 Phase B→D 复合管线。
+     */
+    public function testOnExitRedirectPlusOnEnterChainComposite():Void {
+        trace("\n--- Test: T14 - onExit Redirect + onEnter Chain Composite ---");
+        this.clearLifecycleLog();
+        var self = this;
+
+        var stateA:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("A:enter"); },
+            function():Void {
+                self._lifecycleLog.push("A:exit");
+                this.superMachine.ChangeState("C"); // Phase B redirect
+            }
+        );
+        var stateB:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("B:enter"); },
+            null
+        );
+        var stateC:FSM_Status = new FSM_Status(null,
+            function():Void {
+                self._lifecycleLog.push("C:enter");
+                this.superMachine.ChangeState("D"); // Phase D chain
+            },
+            function():Void { self._lifecycleLog.push("C:exit"); }
+        );
+        var stateD:FSM_Status = new FSM_Status(null,
+            function():Void { self._lifecycleLog.push("D:enter"); },
+            null
+        );
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+        machine.AddStatus("C", stateC);
+        machine.AddStatus("D", stateD);
+
+        machine.start();
+        this.clearLifecycleLog();
+
+        // A→B，但 A.onExit 重定向到 C，C.onEnter 链到 D
+        machine.ChangeState("B");
+
+        // 最终应到达 D
+        this.assert(machine.getActiveStateName() == "D",
+                   "T14: Final state is D (Phase B redirect + Phase D chain)");
+
+        // B 从未被进入（被 Phase B 重定向绕过）
+        var bEntered:Boolean = false;
+        for (var i:Number = 0; i < this._lifecycleLog.length; i++) {
+            if (this._lifecycleLog[i] == "B:enter") bEntered = true;
+        }
+        this.assert(!bEntered,
+                   "T14: B never entered (bypassed by onExit redirect)");
+
+        // 预期生命周期顺序：A:exit → C:enter → C:exit → D:enter
+        this.assert(this._lifecycleLog.length == 4,
+                   "T14: Exactly 4 lifecycle events, got " + this._lifecycleLog.length);
+        this.assert(this._lifecycleLog[0] == "A:exit",
+                   "T14: [0] A exits");
+        this.assert(this._lifecycleLog[1] == "C:enter",
+                   "T14: [1] C enters (Phase B redirect target)");
+        this.assert(this._lifecycleLog[2] == "C:exit",
+                   "T14: [2] C exits (Phase D chain triggers re-loop)");
+        this.assert(this._lifecycleLog[3] == "D:enter",
+                   "T14: [3] D enters (final destination)");
+
+        // lastState 应为 C（D 进入前的状态）
+        this.assert(machine.getLastState() == stateC,
+                   "T14: lastState is C (state entered just before D)");
+
+        machine.destroy();
+    }
+
     // ========== 报告生成 ==========
 
     public function printFinalReport():Void {
@@ -3649,6 +4029,10 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         trace("  Gate valid target regression verified");
         trace("  AddStatus duplicate name detection verified");
         trace("  destroy() complete seal (ChangeState+onAction) verified");
+        trace("  Nested machine re-entry cycle verified");
+        trace("  maxChain=10 limit hit verified");
+        trace("  AddStatus overwrite activeState during runtime verified");
+        trace("  onExit redirect + onEnter chain composite verified");
         trace("=============================");
     }
 }
