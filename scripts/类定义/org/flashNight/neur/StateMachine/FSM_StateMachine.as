@@ -431,7 +431,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         this.ChangeState = this._csRun;
         this.onAction = this._oaRun;
 
-        // 3. 确保 activeState 有效，缓存到本地寄存器
+        // 4. 确保 activeState 有效，缓存到本地寄存器
         var cur:FSM_Status = this.activeState;
         if (cur == null) {
             cur = this.defaultState;
@@ -441,7 +441,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             }
         }
 
-        // 4. 传播 onEnter 到当前激活的子状态
+        // 5. 传播 onEnter 到当前激活的子状态
         //    此时 ChangeState = _csRun，子状态 onEnter 中的 ChangeState 走完整管线
         //    （满足 InitializeState 等消费者的需求）
         if (cur != null) {
