@@ -136,6 +136,10 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testDestroyCallsMachineLevelOnExit();
         this.testDestroySealsAllEntryPoints();
 
+        // Batch 11 新增：AddStatus 重复名检测 / destroy 完整封印
+        this.testAddStatusDuplicateNameWarning();
+        this.testDestroySealCoversChangeStateAndOnAction();
+
         // 最终报告
         this.printFinalReport();
     }
@@ -3492,6 +3496,114 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
                    "T8: isDestroyed flag intact");
     }
 
+    // ========== Batch 11 新增：AddStatus 重复名检测 / destroy 完整封印 ==========
+
+    /**
+     * T9: AddStatus 重复状态名行为验证
+     *
+     * 验证：
+     *   1. 首次 AddStatus 正常注册为 defaultState
+     *   2. 同名第二次 AddStatus 覆盖 statusDict 中的引用（trace 警告）
+     *   3. ChangeState 使用新引用，旧引用悬挂
+     *   4. defaultState 仍指向旧引用（首次注册时设置，不随覆盖更新）
+     */
+    public function testAddStatusDuplicateNameWarning():Void {
+        trace("\n--- Test: T9 - AddStatus Duplicate Name Warning ---");
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        machine.data = {};
+
+        var stateOld:FSM_Status = this.createTestState("old", false);
+        var stateNew:FSM_Status = this.createTestState("new", false);
+        var stateOther:FSM_Status = this.createTestState("other", false);
+
+        // 首次注册 "dup" → 成为 defaultState
+        machine.AddStatus("dup", stateOld);
+        this.assert(machine.getDefaultState() == stateOld,
+                   "T9: First AddStatus sets defaultState");
+        this.assert(machine.getActiveStateName() == "dup",
+                   "T9: First AddStatus sets activeState");
+
+        // 注册另一个状态
+        machine.AddStatus("other", stateOther);
+
+        // 同名覆盖 "dup"（trace 会输出警告，但不阻断）
+        machine.AddStatus("dup", stateNew);
+
+        // statusDict["dup"] 指向 stateNew
+        // defaultState 仍指向 stateOld（首次注册时锁定）
+        this.assert(machine.getDefaultState() == stateOld,
+                   "T9: defaultState still points to original (not overwritten by duplicate)");
+
+        // start 后 ChangeState("dup") 应切换到 stateNew（statusDict 中的当前值）
+        machine.start();
+        machine.ChangeState("other");
+        machine.ChangeState("dup");
+        this.assert(machine.getActiveState() == stateNew,
+                   "T9: ChangeState uses overwritten state from statusDict");
+
+        // 旧引用的 superMachine 仍指向 machine（AddStatus 设置后未清理）
+        this.assert(stateOld.superMachine == machine,
+                   "T9: Old state has stale superMachine reference (documented behavior)");
+
+        machine.destroy();
+    }
+
+    /**
+     * T10: destroy() 封印覆盖 ChangeState 和 onAction
+     *
+     * 验证 TD-2 修复：destroy 后 ChangeState 和 onAction 被显式封印为 _oaNoop，
+     * 即使通过 delete 移除实例属性也只能回退到原型方法（statusDict=null 安全返回）。
+     */
+    public function testDestroySealCoversChangeStateAndOnAction():Void {
+        trace("\n--- Test: T10 - destroy() Seal Covers ChangeState and onAction ---");
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        var state:FSM_Status = this.createTestState("test", false);
+        machine.AddStatus("test", state);
+        machine.start();
+        machine.destroy();
+
+        // ChangeState 应为 sealed noop
+        var csCrashed:Boolean = false;
+        try {
+            machine.ChangeState("test");
+            machine.ChangeState("nonExistent");
+            machine.ChangeState(null);
+        } catch (e:Error) {
+            csCrashed = true;
+        }
+        this.assert(!csCrashed,
+                   "T10: ChangeState is sealed noop after destroy (no crash with any argument)");
+
+        // onAction 应为 sealed noop
+        var oaCrashed:Boolean = false;
+        try {
+            machine.onAction();
+        } catch (e2:Error) {
+            oaCrashed = true;
+        }
+        this.assert(!oaCrashed,
+                   "T10: onAction is sealed noop after destroy");
+
+        // 验证 activeState 不会被 sealed ChangeState "复活"
+        this.assert(machine.getActiveState() == null,
+                   "T10: activeState stays null after sealed ChangeState calls");
+
+        // delete 后回退到原型 ChangeState — 因 statusDict=null，也是安全的
+        delete machine.ChangeState;
+        var deleteCrashed:Boolean = false;
+        try {
+            machine.ChangeState("test");
+        } catch (e3:Error) {
+            deleteCrashed = true;
+        }
+        this.assert(!deleteCrashed,
+                   "T10: Prototype ChangeState safe after destroy (statusDict=null → silent return)");
+        this.assert(machine.getActiveState() == null,
+                   "T10: activeState still null after prototype ChangeState on destroyed machine");
+    }
+
     // ========== 报告生成 ==========
 
     public function printFinalReport():Void {
@@ -3535,6 +3647,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         trace("  Gate invalid target no-spin verified");
         trace("  Normal invalid target no-spin verified");
         trace("  Gate valid target regression verified");
+        trace("  AddStatus duplicate name detection verified");
+        trace("  destroy() complete seal (ChangeState+onAction) verified");
         trace("=============================");
     }
 }

@@ -138,7 +138,13 @@ a.runTests();
 --- Test: Complex Workflow ---
 Initializing workflow...
 Processing...
-Workflow completed!
+Retrying...
+Processing...
+Retrying...
+Processing...
+Retrying...
+Processing...
+Workflow failed!
 [PASS] Workflow reached final state
 
 --- Test: State Chaining ---
@@ -147,7 +153,7 @@ Workflow completed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: B
+[PASS] Conditional branching led to valid path: C
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -178,12 +184,12 @@ Workflow completed!
 [PASS] Transitions reference released after destroy
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=28ms, Actions=34ms for 10000 operations
+Basic Performance: Transitions=28ms, Actions=32ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 41ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 42ms, 100 transitions in 0ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
@@ -196,10 +202,10 @@ Complex Transition Performance: 1000 complex transitions in 6ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=0ms, Transition=1ms, Operation=0ms
+Size 10: Create=2ms, Transition=0ms, Operation=0ms
 Size 50: Create=1ms, Transition=1ms, Operation=0ms
-Size 100: Create=1ms, Transition=3ms, Operation=0ms
-Size 500: Create=10ms, Transition=10ms, Operation=0ms
+Size 100: Create=1ms, Transition=2ms, Operation=0ms
+Size 500: Create=11ms, Transition=12ms, Operation=2ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -435,8 +441,23 @@ Size 500: Create=10ms, Transition=10ms, Operation=0ms
 [PASS] T8: activeStateName remains null (sealed)
 [PASS] T8: isDestroyed flag intact
 
+--- Test: T9 - AddStatus Duplicate Name Warning ---
+[PASS] T9: First AddStatus sets defaultState
+[PASS] T9: First AddStatus sets activeState
+[FSM] Warning: State 'dup' already registered, overwriting. Previous state instance will have stale superMachine/name/data references.
+[PASS] T9: defaultState still points to original (not overwritten by duplicate)
+[PASS] T9: ChangeState uses overwritten state from statusDict
+[PASS] T9: Old state has stale superMachine reference (documented behavior)
+
+--- Test: T10 - destroy() Seal Covers ChangeState and onAction ---
+[PASS] T10: ChangeState is sealed noop after destroy (no crash with any argument)
+[PASS] T10: onAction is sealed noop after destroy
+[PASS] T10: activeState stays null after sealed ChangeState calls
+[PASS] T10: Prototype ChangeState safe after destroy (statusDict=null → silent return)
+[PASS] T10: activeState still null after prototype ChangeState on destroyed machine
+
 === FINAL FSM TEST REPORT ===
-Tests Passed: 261
+Tests Passed: 271
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.
@@ -469,4 +490,6 @@ Success Rate: 100%
   Gate invalid target no-spin verified
   Normal invalid target no-spin verified
   Gate valid target regression verified
+  AddStatus duplicate name detection verified
+  destroy() complete seal (ChangeState+onAction) verified
 =============================

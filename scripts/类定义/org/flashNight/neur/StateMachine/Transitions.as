@@ -97,8 +97,10 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @param current 源状态名称
      * @param target  目标状态名称
      * @param func    条件判断函数，返回Boolean类型
-     *                函数签名：function(current:String, target:String):Boolean
-     *                函数内this指向status实例
+     *                调用方式：func.call(status, current, target)
+     *                  - this 指向 FSM_Status 实例（可通过 this.data 访问黑板）
+     *                  - current: 源状态名（可选参数，不声明亦可）
+     *                  - target:  目标状态名（可选参数，不声明亦可）
      * @param isGate  是否为Gate转换（默认false）。Gate转换在动作前评估，普通转换在动作后评估
      */
     public function push(current:String, target:String, func:Function, isGate:Boolean):Void {

@@ -370,6 +370,12 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             return;
         }
 
+        var existing:FSM_Status = this.statusDict[name];
+        if (existing instanceof FSM_Status) {
+            trace("[FSM] Warning: State '" + name + "' already registered, overwriting. "
+                + "Previous state instance will have stale superMachine/name/data references.");
+        }
+
         var isNestedMachine:Boolean = (state instanceof FSM_StateMachine);
         state.superMachine = this;
         state.name = name;
@@ -528,11 +534,15 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         super.destroy();
 
         // 7. P0-1: 终态封印 — 防止 destroy 后误调用导致"部分复活"
-        //    与 ChangeState/_csNoop、onAction/_oaNoop 同源的方法替换模式
+        //    显式封印所有公共入口为空操作。
+        //    ChangeState/onAction 在 step 1 已设为 _csNoop/_oaNoop，
+        //    此处再次赋值确保即使 _csRun 末尾恢复覆盖（契约违反场景）也被覆盖。
         var sealed:Function = this._oaNoop;
         this.start = sealed;
         this.onEnter = sealed;
         this.onExit = sealed;
         this.AddStatus = sealed;
+        this.ChangeState = sealed;
+        this.onAction = sealed;
     }
 }
