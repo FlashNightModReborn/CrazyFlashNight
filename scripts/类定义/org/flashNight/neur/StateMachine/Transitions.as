@@ -49,8 +49,8 @@
  * 注意事项：
  * ========
  * - 条件函数的this指向FSM_Status实例
- * - 条件函数为纯谓词，不接收Transitions引用（编译期消除迭代期突变风险）
- * - 若需在条件函数中查询转换表，通过 this.transitions 访问（FSM_Status 已持有引用）
+ * - 条件函数不接收Transitions引用，减少默认路径上的突变能力
+ *   （this.transitions 仍可达，属契约约束而非物理隔离）
  * - 避免在条件函数中执行耗时操作
  * - unshift添加的规则具有最高优先级
  *
@@ -235,8 +235,8 @@ class org.flashNight.neur.StateMachine.Transitions {
             if (!node.active) continue;
             var fn:Function = node.func;
             var tgt:String = node.target;
-            // 不传递 this（Transitions 引用）：条件函数为纯谓词，
-            // 物理上不可达突变方法，从编译期消除迭代期突变风险
+            // 不传递 Transitions 引用，减少默认路径上的突变能力
+            // （this.transitions 仍可间接访问，属契约约束）
             if (fn.call(statusRef, current, tgt)) {
                 return tgt;
             }

@@ -1184,10 +1184,10 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
     // ========== 迭代安全契约测试 ==========
 
     /**
-     * 验证条件函数不接收 Transitions 引用（编译期消除迭代期突变风险）
+     * 验证条件函数不接收 Transitions 引用（减少默认路径上的突变能力）
      *
      * Transit 方法调用 fn.call(statusRef, current, tgt)，不传递第 4 个参数。
-     * 条件函数的第 3 个形参（若声明）将为 undefined，物理上无法调用突变方法。
+     * 注意：this.transitions 仍可间接访问，属契约约束而非物理隔离。
      */
     public function testConditionFuncNoTransitionsRef():Void {
         trace("\n--- Test: Condition Function Receives No Transitions Ref ---");

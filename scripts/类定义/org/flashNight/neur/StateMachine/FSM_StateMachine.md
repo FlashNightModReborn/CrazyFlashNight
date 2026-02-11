@@ -122,7 +122,6 @@ a.runTests();
 
 --- Test: Exception in Transition Conditions ---
 [PASS] Exception in transition condition properly propagated
-[Transitions] 错误：迭代过程中禁止调用 reset()
 
 --- Test: Corrupted State Handling ---
 [PASS] Invalid state transition handled gracefully
@@ -139,13 +138,7 @@ a.runTests();
 --- Test: Complex Workflow ---
 Initializing workflow...
 Processing...
-Retrying...
-Processing...
-Retrying...
-Processing...
-Retrying...
-Processing...
-Workflow failed!
+Workflow completed!
 [PASS] Workflow reached final state
 
 --- Test: State Chaining ---
@@ -154,7 +147,7 @@ Workflow failed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: B
+[PASS] Conditional branching led to valid path: A
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -185,28 +178,28 @@ Workflow failed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=33ms, Actions=36ms for 10000 operations
+Basic Performance: Transitions=33ms, Actions=32ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 45ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 42ms, 100 transitions in 0ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 20ms
+Frequent Transitions Performance: 5000 transitions in 16ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 9ms
+Complex Transition Performance: 1000 complex transitions in 7ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=0ms, Transition=0ms, Operation=1ms
+Size 10: Create=0ms, Transition=1ms, Operation=0ms
 Size 50: Create=1ms, Transition=1ms, Operation=0ms
-Size 100: Create=2ms, Transition=3ms, Operation=0ms
-Size 500: Create=12ms, Transition=12ms, Operation=0ms
+Size 100: Create=2ms, Transition=2ms, Operation=0ms
+Size 500: Create=10ms, Transition=8ms, Operation=0ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
