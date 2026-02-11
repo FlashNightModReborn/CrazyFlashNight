@@ -96,6 +96,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     // ═══════ 字段声明 ═══════
 
     public var statusDict:Object;           // 状态列表（public: BaseUnitBehavior/EnemyBehavior 需外部访问）
+    public var transitions:Transitions;     // 过渡线（仅状态机需要，从 FSM_Status 移至此处）
     private var activeState:FSM_Status;     // 当前状态
     private var lastState:FSM_Status;       // 上个状态
     private var defaultState:FSM_Status;    // 默认状态
@@ -405,6 +406,17 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     /**
      * 当此状态机作为状态被"进入"时调用。
      * 激活并传播事件到子状态。
+     *
+     * 合法调用者：
+     *   1. start()          — 顶层首次启动（_booted 守卫确保幂等）
+     *   2. 父机 _csRun Phase D — 嵌套子机被父机管线进入
+     *
+     * 调用前提：_booted == false && _started == false
+     *   （由 onExit() 重置或初始构造保证；父机管线自动满足此前提。）
+     *
+     * _booted 在此方法内设为 true 是路径 2 的必要保障：
+     *   嵌套入口不经过 start()，需在此处设置以确保后续 start() 幂等。
+     *   路径 1 中 start() 已预设 _booted，此赋值冗余但无害。
      */
     public function onEnter():Void {
         // 1. Machine-level onEnter 回调
@@ -501,11 +513,12 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         // 5. 清理转换表
         var t:Transitions = this.transitions;
         if (t) {
-            t.reset();
+            t.destroy();
         }
 
         // 6. 释放引用
         this.statusDict = null;
+        this.transitions = null;
         this.activeState = null;
         this.lastState = null;
         this.defaultState = null;

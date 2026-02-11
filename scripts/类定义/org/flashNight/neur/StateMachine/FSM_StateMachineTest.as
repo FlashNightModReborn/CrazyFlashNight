@@ -1254,9 +1254,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.assert(machine.transitions != null, "Transitions exist before cleanup");
         
         machine.destroy();
-        
-        // 转换应该被清理（具体实现取决于destroy方法）
-        this.assert(true, "Transition cleanup completed");
+
+        // P1-3: transitions 字段移至 FSM_StateMachine 后，destroy 应释放引用
+        this.assert(machine.transitions == null, "Transitions reference released after destroy");
     }
 
     // ========== 性能测试 ==========

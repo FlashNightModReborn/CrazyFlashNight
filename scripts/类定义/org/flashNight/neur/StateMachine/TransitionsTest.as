@@ -113,6 +113,10 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         // 迭代安全契约测试
         this.testConditionFuncNoTransitionsRef();
 
+        // P0-1/P1-2 修复验证
+        this.testUnshiftDeduplicatePreservesOrder();
+        this.testDestroyReleasesReferences();
+
         // 最终报告
         this.printFinalReport();
         this.generatePerformanceReport();
@@ -1216,6 +1220,73 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
 
         transitions.TransitGate("st");
         this.assert(gateArgs.length == 2, "Gate condition also receives exactly 2 arguments");
+    }
+
+    // ========== P0-1/P1-2 修复验证 ==========
+
+    /**
+     * P0-1 验证：unshift 去重时保持其余规则的相对优先级
+     *
+     * 修复前：swap 将 list[0] 与重复项交换，破坏第三方规则顺序
+     *   [X, Y, Z] → unshift(Z) → [Z, Y, X]  ← X 被静默降级
+     * 修复后：splice+unshift 仅移动重复项，其余保序
+     *   [X, Y, Z] → unshift(Z) → [Z, X, Y]  ← X, Y 相对顺序不变
+     */
+    public function testUnshiftDeduplicatePreservesOrder():Void {
+        trace("\n--- Test: Unshift Deduplicate Preserves Order ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        var fnX:Function = function():Boolean { return true; };
+        var fnY:Function = function():Boolean { return true; };
+        var fnZ:Function = function():Boolean { return true; };
+
+        // 构建初始列表：[X, Y, Z]（X 最高优先级）
+        transitions.unshift("st", "X", fnX);
+        transitions.push("st", "Y", fnY);
+        transitions.push("st", "Z", fnZ);
+
+        // 验证初始优先级：X > Y > Z
+        this.assert(transitions.TransitNormal("st") == "X", "Initial: X has highest priority");
+        transitions.setActive("st", "X", fnX, false, false);
+        this.assert(transitions.TransitNormal("st") == "Y", "Initial: Y has second priority");
+        transitions.setActive("st", "X", fnX, false, true);
+
+        // 关键操作：unshift 已存在的 Z → 期望 [Z, X, Y]
+        transitions.unshift("st", "Z", fnZ);
+
+        // Z 现在应是最高优先级
+        this.assert(transitions.TransitNormal("st") == "Z", "After unshift dedup: Z promoted to highest");
+
+        // 禁用 Z，验证 X 仍在 Y 前面（相对顺序未被破坏）
+        transitions.setActive("st", "Z", fnZ, false, false);
+        this.assert(transitions.TransitNormal("st") == "X", "After unshift dedup: X retains second priority (order preserved)");
+
+        // 禁用 X，Y 应是最低优先级
+        transitions.setActive("st", "X", fnX, false, false);
+        this.assert(transitions.TransitNormal("st") == "Y", "After unshift dedup: Y retains third priority (order preserved)");
+    }
+
+    /**
+     * P1-2 验证：destroy() 彻底释放引用
+     * gateLists/normalLists 设为 null，TransitGate/TransitNormal 安全返回 null
+     */
+    public function testDestroyReleasesReferences():Void {
+        trace("\n--- Test: Destroy Releases References ---");
+        var transitions:Transitions = new Transitions(this._mockStatus);
+
+        transitions.push("st", "A", function():Boolean { return true; });
+        transitions.push("st", "B", function():Boolean { return true; }, true);
+
+        // 销毁前正常工作
+        this.assert(transitions.TransitNormal("st") == "A", "Normal works before destroy");
+        this.assert(transitions.TransitGate("st") == "B", "Gate works before destroy");
+
+        // 销毁
+        transitions.destroy();
+
+        // 销毁后 TransitGate/TransitNormal 应安全返回 null（不崩溃）
+        this.assert(transitions.TransitNormal("st") == null, "Normal returns null after destroy");
+        this.assert(transitions.TransitGate("st") == null, "Gate returns null after destroy");
     }
 
     // ========== 报告生成 ==========

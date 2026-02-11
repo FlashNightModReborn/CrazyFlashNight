@@ -211,6 +211,17 @@ class org.flashNight.neur.StateMachine.Transitions {
     }
 
     /**
+     * 销毁转换管理器，释放所有引用。
+     * 由 FSM_StateMachine.destroy() 调用。
+     * 与 reset() 的区别：reset() 重建空表可继续使用，destroy() 彻底释放。
+     */
+    public function destroy():Void {
+        this.gateLists = null;
+        this.normalLists = null;
+        this.status = null;
+    }
+
+    /**
      * 执行Gate转换检查（仅检查Gate转换）
      *
      * 专门用于在动作执行前检查Gate转换条件。
@@ -306,11 +317,14 @@ class org.flashNight.neur.StateMachine.Transitions {
             if (n.target == target && n.func == func) {
                 // 找到重复规则，重新激活
                 n.active = true;
-                // 如果需要提升优先级且不在首位，则交换到首位
+                // 如果需要提升优先级且不在首位，则移动到首位
+                // 手动移位代替 splice+unshift：避免两次 C++ 桥接开销，
+                // 单次 O(i) 遍历将 0..i-1 右移一位，保持其余项相对顺序
                 if (atHead && i != 0) {
-                    var tmp:Object = list[0];
+                    for (var j:Number = i; j > 0; --j) {
+                        list[j] = list[j - 1];
+                    }
                     list[0] = n;
-                    list[i] = tmp;
                 }
                 return;
             }

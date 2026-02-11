@@ -1,13 +1,11 @@
 ﻿import org.flashNight.neur.StateMachine.IStatus;
 import org.flashNight.neur.StateMachine.IMachine;
-import org.flashNight.neur.StateMachine.Transitions;
 
 class org.flashNight.neur.StateMachine.FSM_Status implements IStatus {
 	public var name:String; // 状态名称
     public var superMachine:IMachine; // 上级状态机
     public var isDestroyed:Boolean = false; // 该状态是否已销毁
     public var data:Object; // 数据黑板
-    public var transitions:Transitions; // 过渡线
 
     // Path B: 回调存储在私有字段中，类方法作为包装器。
     // 这确保子类（如 FSM_StateMachine）override 的 onAction/onEnter/onExit
@@ -43,7 +41,6 @@ class org.flashNight.neur.StateMachine.FSM_Status implements IStatus {
         this.isDestroyed = true;
         this.superMachine = null;
         this.data = null;
-        this.transitions = null;
         this._onActionCb = null;
         this._onEnterCb = null;
         this._onExitCb = null;

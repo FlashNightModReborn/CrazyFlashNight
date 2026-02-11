@@ -116,27 +116,27 @@ a.runTests();
 [PASS] Successfully recovered from errors
 
 --- Test: Basic Performance ---
-Basic Performance: 10000 transit calls in 50ms
+Basic Performance: 10000 transit calls in 52ms
 [PASS] Basic performance acceptable
 
 --- Test: Many Transitions Performance ---
-Many Transitions Performance: 1000 transitions, 1000 calls in 1805ms
+Many Transitions Performance: 1000 transitions, 1000 calls in 1699ms
 [PASS] Many transitions performance acceptable
 
 --- Test: Complex Conditions Performance ---
-Complex Conditions Performance: 1000 complex calculations in 18ms
+Complex Conditions Performance: 1000 complex calculations in 16ms
 [PASS] Complex conditions performance acceptable
 
 --- Test: Frequent Transit Calls Performance ---
-Frequent Calls Performance: 50000 calls in 277ms
+Frequent Calls Performance: 50000 calls in 280ms
 [PASS] Frequent calls performance acceptable
 
 --- Test: Transition Scalability ---
 Scale 10: 100 calls in 4ms
-Scale 50: 100 calls in 12ms
-Scale 100: 100 calls in 19ms
-Scale 500: 100 calls in 23ms
-Scale 1000: 100 calls in 28ms
+Scale 50: 100 calls in 15ms
+Scale 100: 100 calls in 16ms
+Scale 500: 100 calls in 32ms
+Scale 1000: 100 calls in 25ms
 [PASS] Transition scalability is acceptable
 
 --- Test: Memory Usage Optimization ---
@@ -144,7 +144,7 @@ Scale 1000: 100 calls in 28ms
 
 --- Test: Transition Caching ---
 [PASS] All calculations executed (no caching implemented)
-Caching test: 10 calls took 9ms
+Caching test: 10 calls took 6ms
 [PASS] Caching test completed (baseline established)
 
 --- Test: Conditional Short-Circuiting ---
@@ -224,8 +224,21 @@ Caching test: 10 calls took 9ms
 [PASS] 2nd argument is target state name
 [PASS] Gate condition also receives exactly 2 arguments
 
+--- Test: Unshift Deduplicate Preserves Order ---
+[PASS] Initial: X has highest priority
+[PASS] Initial: Y has second priority
+[PASS] After unshift dedup: Z promoted to highest
+[PASS] After unshift dedup: X retains second priority (order preserved)
+[PASS] After unshift dedup: Y retains third priority (order preserved)
+
+--- Test: Destroy Releases References ---
+[PASS] Normal works before destroy
+[PASS] Gate works before destroy
+[PASS] Normal returns null after destroy
+[PASS] Gate returns null after destroy
+
 === TRANSITIONS TEST FINAL REPORT ===
-Tests Passed: 108
+Tests Passed: 117
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TRANSITIONS TESTS PASSED!
@@ -242,27 +255,27 @@ Success Rate: 100%
 === TRANSITIONS PERFORMANCE ANALYSIS ===
 Context: Basic Transit Call
   Iterations: 10000
-  Total Time: 50ms
-  Avg per Operation: 0.005ms
-  Operations per Second: 200000
+  Total Time: 52ms
+  Avg per Operation: 0.0052ms
+  Operations per Second: 192308
 ---
 Context: Many Transitions
   Iterations: 1000
-  Total Time: 1805ms
-  Avg per Operation: 1.805ms
-  Operations per Second: 554
+  Total Time: 1699ms
+  Avg per Operation: 1.699ms
+  Operations per Second: 589
 ---
 Context: Complex Conditions
   Iterations: 1000
-  Total Time: 18ms
-  Avg per Operation: 0.018ms
-  Operations per Second: 55556
+  Total Time: 16ms
+  Avg per Operation: 0.016ms
+  Operations per Second: 62500
 ---
 Context: Frequent Transit Calls
   Iterations: 50000
-  Total Time: 277ms
-  Avg per Operation: 0.00554ms
-  Operations per Second: 180505
+  Total Time: 280ms
+  Avg per Operation: 0.0056ms
+  Operations per Second: 178571
 ---
 Context: Scale 10
   Iterations: 100
@@ -272,35 +285,35 @@ Context: Scale 10
 ---
 Context: Scale 50
   Iterations: 100
-  Total Time: 12ms
-  Avg per Operation: 0.12ms
-  Operations per Second: 8333
+  Total Time: 15ms
+  Avg per Operation: 0.15ms
+  Operations per Second: 6667
 ---
 Context: Scale 100
   Iterations: 100
-  Total Time: 19ms
-  Avg per Operation: 0.19ms
-  Operations per Second: 5263
+  Total Time: 16ms
+  Avg per Operation: 0.16ms
+  Operations per Second: 6250
 ---
 Context: Scale 500
   Iterations: 100
-  Total Time: 23ms
-  Avg per Operation: 0.23ms
-  Operations per Second: 4348
+  Total Time: 32ms
+  Avg per Operation: 0.32ms
+  Operations per Second: 3125
 ---
 Context: Scale 1000
   Iterations: 100
-  Total Time: 28ms
-  Avg per Operation: 0.28ms
-  Operations per Second: 3571
+  Total Time: 25ms
+  Avg per Operation: 0.25ms
+  Operations per Second: 4000
 ---
 Context: Memory Stress Test
   Iterations: 1000
-  Total Time: 7ms
-  Avg per Operation: 0.007ms
-  Operations per Second: 142857
+  Total Time: 5ms
+  Avg per Operation: 0.005ms
+  Operations per Second: 200000
 ---
 === PERFORMANCE RECOMMENDATIONS ===
-Overall Average: 0.0353228346456693ms per operation
+Overall Average: 0.0337637795275591ms per operation
 ✅ Excellent performance - suitable for real-time applications
 =============================
