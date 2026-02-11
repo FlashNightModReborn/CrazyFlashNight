@@ -72,6 +72,6 @@ Running: testPutGetInteraction
 [PASS] Evaluator should not be called again after manual put
 Running: testPerformance
 [PASS] Evaluator should be called 1000 times to fill cache
-Performance: 10000 cache hits took 45ms
-[PASS] 10000 cache hits should complete in under 200ms (actual: 45ms)
+Performance: 10000 cache hits took 43ms
+[PASS] 10000 cache hits should complete in under 200ms (actual: 43ms)
 === ARCEnhancedLazyCacheTest v2.0: 58 assertions, 58 passed, 0 failed ===

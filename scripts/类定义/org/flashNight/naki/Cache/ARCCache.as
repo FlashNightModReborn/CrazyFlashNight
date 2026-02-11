@@ -15,6 +15,8 @@
  * [P1] OPT-3          : T2 head 快速路径 — 已在头部时跳过 remove+addToHead
  * [P1] OPT-4          : 链表操作局部变量缓存 — unlink/addToHead/removeTail 模式中
  *                        缓存 node.prev/node.next/sentinel.next，消除冗余属性读取
+ * [P1] OPT-5          : _lastNode 字段 — ghost hit 时暴露节点引用给子类，
+ *                        子类可直接 node.value=x 跳过 putNoEvict 的二次 UID+查找
  * [P2] sentinel        : 哨兵节点消除所有 head/tail null 分支检查
  * [P2] p adaptation    : 标准 ARC delta 公式 max(1, |B_other|/|B_self|)
  * [P2] Case IV         : 标准 ARC 幽灵清理（L1/L2 不变式）
@@ -70,12 +72,30 @@ class org.flashNight.naki.Cache.ARCCache {
      */
     public var _hitType:Number;
 
+    /**
+     * 上次 get() 命中的节点引用（供子类在 ghost hit 后直接赋值，跳过二次查找）。
+     *
+     * 使用场景（OPT-5）：
+     *   var node:Object = this._lastNode;   // get() 后立即读取
+     *   var computed = evaluator(key);       // 调用 evaluator（可能可重入）
+     *   node.value = computed;               // 直接赋值，无需 putNoEvict
+     *
+     * 注意：必须在调用 evaluator 之前将 _lastNode 存入局部变量，
+     *       防止 evaluator 内部再次调用 get() 覆盖 _lastNode。
+     *
+     * 生命周期：每次 get() 调用时更新。MISS 时为 null。
+     *
+     * public：AS2 没有 protected，子类需要直接读取此字段。
+     */
+    public var _lastNode:Object;
+
     // ==================== 构造 ====================
 
     public function ARCCache(capacity:Number) {
         this.maxCapacity = capacity;
         this.p = 0;
         this._hitType = 0;
+        this._lastNode = null;
         this.T1 = this._createQueue();
         this.T2 = this._createQueue();
         this.B1 = this._createQueue();
@@ -103,6 +123,7 @@ class org.flashNight.naki.Cache.ARCCache {
     public function _clear():Void {
         this.p = 0;
         this._hitType = 0;
+        this._lastNode = null;
         this.T1 = this._createQueue();
         this.T2 = this._createQueue();
         this.B1 = this._createQueue();
@@ -189,6 +210,7 @@ class org.flashNight.naki.Cache.ARCCache {
         var node:Object = this.nodeMap[uid];
         if (node == undefined) {
             this._hitType = 0; // MISS
+            this._lastNode = null;
             return null;
         }
 
@@ -273,6 +295,7 @@ class org.flashNight.naki.Cache.ARCCache {
             localT2.size++;
             node.list = localT2;
 
+            this._lastNode = node; // OPT-5: 供子类直接赋值，跳过 putNoEvict
             return null; // 幽灵命中无实际值
         }
 
@@ -307,11 +330,13 @@ class org.flashNight.naki.Cache.ARCCache {
             localT2.size++;
             node.list = localT2;
 
+            this._lastNode = node; // OPT-5: 供子类直接赋值，跳过 putNoEvict
             return null;
         }
 
         // 不应到达此处
         this._hitType = 0;
+        this._lastNode = null;
         return null;
     }
 

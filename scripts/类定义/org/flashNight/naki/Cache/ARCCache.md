@@ -355,13 +355,13 @@ Assertion Passed: Value for keyExtra should be 'valueExtra'
 testCacheEviction completed successfully.
 
 Running testCacheHitRate...
-Cache Hit Rate: 51.5%
+Cache Hit Rate: 48.6%
 Assertion Passed: Cache hit rate should be between 0% and 100%
 testCacheHitRate completed successfully.
 
 Running testPerformance...
-Performed 10000 cache operations in 104 ms.
-Cache Operations per Second: 96153.8461538461
+Performed 10000 cache operations in 106 ms.
+Cache Operations per Second: 94339.6226415094
 
 Assertion Passed: Operations per second should be greater than 0
 testPerformance completed successfully.
@@ -438,6 +438,5 @@ Assertion Passed: remove non-existent key should return false
 testRemoveFromAllQueues completed successfully.
 
 === ARCCacheTest v2.0: All Tests Completed ===
-
 
 ```
