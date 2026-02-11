@@ -31,6 +31,7 @@ class org.flashNight.naki.Cache.ARCCacheTest {
         this.testPutOnGhostKey();
         this.testB2HitWithEmptyT1();
         this.testCapacityInvariant();
+        this.testCapacityInvariantMixed();
         this.testRemoveFromAllQueues();
 
         trace("=== ARCCacheTest v2.0: All Tests Completed ===");
@@ -406,7 +407,7 @@ class org.flashNight.naki.Cache.ARCCacheTest {
     }
 
     /**
-     * remove() 覆盖：从所有四个队列中移除
+     * remove() 覆盖：从所有四个队列中移除（含 B1/B2 ghost）
      */
     private function testRemoveFromAllQueues():Void {
         trace("Running testRemoveFromAllQueues...");
@@ -424,11 +425,116 @@ class org.flashNight.naki.Cache.ARCCacheTest {
         this._assertEqual(c.remove("Y"), true, "remove from T2 should return true");
         this._assertEqual(c.get("Y"), null, "Y should be gone after remove from T2");
 
+        // 从 B1 移除（ghost）
+        // 关键：纯顺序 put 填满 c=|T1| 时，Case A else 直接删除不进 B1。
+        // 必须先让部分 key 进入 T2（使 |T1|<c），才能触发 REPLACE → T1 victim → B1。
+        var c3:ARCCache = new ARCCache(3);
+        c3.put("P", "vP");  // T1=[P]
+        c3.put("Q", "vQ");  // T1=[Q,P]
+        c3.put("R", "vR");  // T1=[R,Q,P], full
+        c3.get("P");         // P: T1→T2. T1=[R,Q], T2=[P], |T1|=2<c=3
+        c3.put("S", "vS");  // Case B: |T1|+|T2|=2+1=3>=c → REPLACE(false)
+                              // REPLACE: |T1|=2>0, |T1|=2>p=0 → T1 tail(Q)→B1
+                              // T1=[S,R], T2=[P], B1=[Q]
+        // Q 现在在 B1，直接 remove 它
+        this._assertEqual(c3.remove("Q"), true, "remove from B1 ghost should return true");
+        // remove 后 get("Q") 应该是完全 miss（不再是 ghost hit）
+        c3.get("Q");
+        this._assertEqual(c3._hitType, 0, "After remove from B1, Q should be complete MISS (hitType=0)");
+
+        // 从 B2 移除（ghost）
+        var c4:ARCCache = new ARCCache(3);
+        c4.put("M", "vM");
+        c4.put("N", "vN");
+        c4.put("O", "vO");
+        // 全部提升到 T2
+        c4.get("M"); c4.get("N"); c4.get("O");
+        // T1=0, T2=[O,N,M]
+        c4.put("W", "vW"); // M 被从 T2 淘汰到 B2
+        c4.get("W"); // W: T1→T2, T1=0, T2=[W,O,N], B2=[M]
+        // M 在 B2，直接 remove
+        this._assertEqual(c4.remove("M"), true, "remove from B2 ghost should return true");
+        c4.get("M");
+        this._assertEqual(c4._hitType, 0, "After remove from B2, M should be complete MISS (hitType=0)");
+
         // 移除不存在的 key
         this._assertEqual(c.remove("nonexistent"), false,
             "remove non-existent key should return false");
 
         trace("testRemoveFromAllQueues completed successfully.\n");
+    }
+
+    /**
+     * 容量不变式 + 混合访问模式
+     * 纯顺序插入不产生 ghost hit（Case A else 直接删 T1），B1/B2 始终为空。
+     * 此变式用混合模式（填满 → 部分 get 提升 T2 → 插入新 key → 循环）
+     * 确保 ghost 队列被使用，且不变式仍然成立。
+     */
+    private function testCapacityInvariantMixed():Void {
+        trace("Running testCapacityInvariantMixed...");
+        var cap:Number = 30;
+        var c:ARCCache = new ARCCache(cap);
+
+        // Phase 1: 填满缓存
+        for (var i:Number = 0; i < cap; i++) {
+            c.put("k" + i, "v" + i);
+        }
+
+        // Phase 2: 提升部分 key 到 T2（创建冷热分层）
+        for (var j:Number = 0; j < cap / 2; j++) {
+            c.get("k" + j); // k0..k14 → T2
+        }
+
+        // Phase 3: 插入新 key，淘汰旧 key 到 B1
+        for (var k:Number = cap; k < cap * 2; k++) {
+            c.put("k" + k, "v" + k);
+        }
+
+        // Phase 4: 重新访问部分淘汰的 key，触发 ghost hit
+        for (var m:Number = 0; m < cap / 3; m++) {
+            c.get("k" + m); // ghost hit（B1 或 B2）
+        }
+
+        // Phase 5: 再插入一批新 key
+        for (var n:Number = cap * 2; n < cap * 3; n++) {
+            c.put("k" + n, "v" + n);
+        }
+
+        // 验证所有不变式
+        var t1s:Number = c.getT1().length;
+        var t2s:Number = c.getT2().length;
+        var b1s:Number = c.getB1().length;
+        var b2s:Number = c.getB2().length;
+        var cacheSize:Number = t1s + t2s;
+        var totalSize:Number = t1s + t2s + b1s + b2s;
+        var L1:Number = t1s + b1s;
+
+        trace("  Mixed: T1=" + t1s + " T2=" + t2s + " B1=" + b1s + " B2=" + b2s);
+
+        if (cacheSize > cap) {
+            trace("Assertion Failed: |T1|+|T2|=" + cacheSize + " > capacity " + cap);
+        } else {
+            trace("Assertion Passed: |T1|+|T2|=" + cacheSize + " <= capacity " + cap);
+        }
+        if (totalSize > 2 * cap) {
+            trace("Assertion Failed: total=" + totalSize + " > 2c=" + (2 * cap));
+        } else {
+            trace("Assertion Passed: total=" + totalSize + " <= 2c=" + (2 * cap));
+        }
+        if (L1 > cap) {
+            trace("Assertion Failed: L1=|T1|+|B1|=" + L1 + " > c=" + cap);
+        } else {
+            trace("Assertion Passed: L1=|T1|+|B1|=" + L1 + " <= c=" + cap);
+        }
+
+        // 关键：ghost 队列不应全空（否则说明混合模式没生效）
+        if (b1s + b2s > 0) {
+            trace("Assertion Passed: Ghost queues non-empty (B1+B2=" + (b1s + b2s) + "), mixed pattern exercised");
+        } else {
+            trace("Warning: Ghost queues empty — mixed pattern may not have produced ghost hits");
+        }
+
+        trace("testCapacityInvariantMixed completed successfully.\n");
     }
 
     // ==================== 工具方法 ====================

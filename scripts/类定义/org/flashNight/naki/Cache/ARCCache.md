@@ -355,13 +355,13 @@ Assertion Passed: Value for keyExtra should be 'valueExtra'
 testCacheEviction completed successfully.
 
 Running testCacheHitRate...
-Cache Hit Rate: 51.9%
+Cache Hit Rate: 51.5%
 Assertion Passed: Cache hit rate should be between 0% and 100%
 testCacheHitRate completed successfully.
 
 Running testPerformance...
-Performed 10000 cache operations in 106 ms.
-Cache Operations per Second: 94339.6226415094
+Performed 10000 cache operations in 104 ms.
+Cache Operations per Second: 96153.8461538461
 
 Assertion Passed: Operations per second should be greater than 0
 testPerformance completed successfully.
@@ -417,14 +417,27 @@ Assertion Passed: |T1|+|T2|=50 <= capacity 50
 Assertion Passed: total=50 <= 2*capacity 100
 testCapacityInvariant completed successfully.
 
+Running testCapacityInvariantMixed...
+  Mixed: T1=15 T2=15 B1=15 B2=0
+Assertion Passed: |T1|+|T2|=30 <= capacity 30
+Assertion Passed: total=45 <= 2c=60
+Assertion Passed: L1=|T1|+|B1|=30 <= c=30
+Assertion Passed: Ghost queues non-empty (B1+B2=15), mixed pattern exercised
+testCapacityInvariantMixed completed successfully.
+
 Running testRemoveFromAllQueues...
 Assertion Passed: remove from T1 should return true
 Assertion Passed: X should be gone after remove
 Assertion Passed: remove from T2 should return true
 Assertion Passed: Y should be gone after remove from T2
+Assertion Passed: remove from B1 ghost should return true
+Assertion Passed: After remove from B1, Q should be complete MISS (hitType=0)
+Assertion Passed: remove from B2 ghost should return true
+Assertion Passed: After remove from B2, M should be complete MISS (hitType=0)
 Assertion Passed: remove non-existent key should return false
 testRemoveFromAllQueues completed successfully.
 
 === ARCCacheTest v2.0: All Tests Completed ===
+
 
 ```

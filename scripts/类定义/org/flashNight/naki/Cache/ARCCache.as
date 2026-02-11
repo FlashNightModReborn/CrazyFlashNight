@@ -13,6 +13,8 @@
  * [P1] OPT-1          : 值直接存储在节点 node.value 上，消除独立 cacheStore 哈希表
  * [P1] OPT-2          : put/putNoEvict 更新路径全部内联，不再调用 get()
  * [P1] OPT-3          : T2 head 快速路径 — 已在头部时跳过 remove+addToHead
+ * [P1] OPT-4          : 链表操作局部变量缓存 — unlink/addToHead/removeTail 模式中
+ *                        缓存 node.prev/node.next/sentinel.next，消除冗余属性读取
  * [P2] sentinel        : 哨兵节点消除所有 head/tail null 分支检查
  * [P2] p adaptation    : 标准 ARC delta 公式 max(1, |B_other|/|B_self|)
  * [P2] Case IV         : 标准 ARC 幽灵清理（L1/L2 不变式）
@@ -35,6 +37,11 @@
  * 队列结构：{ sentinel:Object, size:Number }
  *   sentinel 是循环哨兵：空队列时 sentinel.prev = sentinel.next = sentinel
  *   head = sentinel.next, tail = sentinel.prev
+ *
+ * 链表操作三模式（OPT-4，所有 var 缓存均为消除冗余属性读取）：
+ *   unlink:      var np=node.prev, nn=node.next; np.next=nn; nn.prev=np;
+ *   addToHead:   var oh=s.next; node.next=oh; node.prev=s; oh.prev=node; s.next=node;
+ *   removeTail:  var victim=s.prev, vp=victim.prev; vp.next=s; s.prev=vp;
  */
 import org.flashNight.naki.DataStructures.*;
 
@@ -58,8 +65,10 @@ class org.flashNight.naki.Cache.ARCCache {
      *   1 = 缓存命中   (HIT, T1/T2)
      *   2 = 幽灵命中 B1 (GHOST_B1)
      *   3 = 幽灵命中 B2 (GHOST_B2)
+     *
+     * public：AS2 没有 protected，子类需要直接读取此字段。
      */
-    private var _hitType:Number;
+    public var _hitType:Number;
 
     // ==================== 构造 ====================
 
@@ -87,9 +96,11 @@ class org.flashNight.naki.Cache.ARCCache {
     }
 
     /**
-     * 重置所有队列和映射（供子类 reset/clear 使用）
+     * 重置所有队列和映射（供子类 reset/clear 使用）。
+     *
+     * public：AS2 没有 protected，子类（ARCEnhancedLazyCache.reset）需要调用。
      */
-    private function _clear():Void {
+    public function _clear():Void {
         this.p = 0;
         this._hitType = 0;
         this.T1 = this._createQueue();
@@ -103,6 +114,8 @@ class org.flashNight.naki.Cache.ARCCache {
      * REPLACE(p, isB2Hit) — 标准 ARC 淘汰
      * 从 T1 或 T2 中淘汰一个条目到对应的幽灵队列。
      * 包含 |T1|>0 前置守卫（HIGH-1 fix）。
+     *
+     * 隐式前置条件：|T1|+|T2| >= 1（由 put() Case IV 保证）。
      */
     private function _doReplace(isB2Hit:Boolean):Void {
         var t1:Object = this.T1;
@@ -113,17 +126,19 @@ class org.flashNight.naki.Cache.ARCCache {
             // 从 T1 尾部淘汰 → B1
             var s1:Object = t1.sentinel;
             var victim:Object = s1.prev;
-            // 从 T1 移除
-            victim.prev.next = s1;
-            s1.prev = victim.prev;
+            // removeTail: 从 T1 移除
+            var vp:Object = victim.prev;
+            vp.next = s1;
+            s1.prev = vp;
             t1.size--;
             victim.value = undefined; // 幽灵节点不存值
-            // 添加到 B1 头部
+            // addToHead: 添加到 B1 头部
             var b1:Object = this.B1;
             var sb1:Object = b1.sentinel;
-            victim.next = sb1.next;
+            var oh:Object = sb1.next;
+            victim.next = oh;
             victim.prev = sb1;
-            sb1.next.prev = victim;
+            oh.prev = victim;
             sb1.next = victim;
             b1.size++;
             victim.list = b1;
@@ -133,17 +148,19 @@ class org.flashNight.naki.Cache.ARCCache {
             var s2:Object = t2.sentinel;
             var victim2:Object = s2.prev;
             if (victim2 !== s2) {
-                // 从 T2 移除
-                victim2.prev.next = s2;
-                s2.prev = victim2.prev;
+                // removeTail: 从 T2 移除
+                var vp2:Object = victim2.prev;
+                vp2.next = s2;
+                s2.prev = vp2;
                 t2.size--;
                 victim2.value = undefined;
-                // 添加到 B2 头部
+                // addToHead: 添加到 B2 头部
                 var b2:Object = this.B2;
                 var sb2:Object = b2.sentinel;
-                victim2.next = sb2.next;
+                var oh2:Object = sb2.next;
+                victim2.next = oh2;
                 victim2.prev = sb2;
-                sb2.next.prev = victim2;
+                oh2.prev = victim2;
                 sb2.next = victim2;
                 b2.size++;
                 victim2.list = b2;
@@ -179,17 +196,25 @@ class org.flashNight.naki.Cache.ARCCache {
         var localT1:Object = this.T1;
         var localT2:Object = this.T2;
 
+        // ---- 链表操作复用变量（AS2 函数作用域，各分支互斥） ----
+        var np:Object; // node.prev 缓存
+        var nn:Object; // node.next 缓存
+        var oh:Object; // sentinel.next 缓存 (old head)
+
         // ---- T2 命中（最热路径优先） ----
         if (nodeList === localT2) {
             this._hitType = 1;
             var s:Object = localT2.sentinel;
             if (node !== s.next) {
-                // 移到 T2 头部（同队列移动，size 不变）
-                node.prev.next = node.next;
-                node.next.prev = node.prev;
-                node.next = s.next;
+                // unlink + addToHead（同队列移动，size 不变）
+                np = node.prev;
+                nn = node.next;
+                np.next = nn;
+                nn.prev = np;
+                oh = s.next;
+                node.next = oh;
                 node.prev = s;
-                s.next.prev = node;
+                oh.prev = node;
                 s.next = node;
             }
             return node.value;
@@ -198,15 +223,18 @@ class org.flashNight.naki.Cache.ARCCache {
         // ---- T1 命中 ----
         if (nodeList === localT1) {
             this._hitType = 1;
-            // 从 T1 移除
-            node.prev.next = node.next;
-            node.next.prev = node.prev;
+            // unlink: 从 T1 移除
+            np = node.prev;
+            nn = node.next;
+            np.next = nn;
+            nn.prev = np;
             localT1.size--;
-            // 添加到 T2 头部
+            // addToHead: 添加到 T2 头部
             var s2:Object = localT2.sentinel;
-            node.next = s2.next;
+            oh = s2.next;
+            node.next = oh;
             node.prev = s2;
-            s2.next.prev = node;
+            oh.prev = node;
             s2.next = node;
             localT2.size++;
             node.list = localT2;
@@ -229,15 +257,18 @@ class org.flashNight.naki.Cache.ARCCache {
             // REPLACE
             this._doReplace(false);
 
-            // 从 B1 移除
-            node.prev.next = node.next;
-            node.next.prev = node.prev;
+            // unlink: 从 B1 移除
+            np = node.prev;
+            nn = node.next;
+            np.next = nn;
+            nn.prev = np;
             localB1.size--;
-            // 添加到 T2 头部
+            // addToHead: 添加到 T2 头部
             var s3:Object = localT2.sentinel;
-            node.next = s3.next;
+            oh = s3.next;
+            node.next = oh;
             node.prev = s3;
-            s3.next.prev = node;
+            oh.prev = node;
             s3.next = node;
             localT2.size++;
             node.list = localT2;
@@ -260,15 +291,18 @@ class org.flashNight.naki.Cache.ARCCache {
             // REPLACE
             this._doReplace(true);
 
-            // 从 B2 移除
-            node.prev.next = node.next;
-            node.next.prev = node.prev;
+            // unlink: 从 B2 移除
+            np = node.prev;
+            nn = node.next;
+            np.next = nn;
+            nn.prev = np;
             localB2b.size--;
-            // 添加到 T2 头部
+            // addToHead: 添加到 T2 头部
             var s4:Object = localT2.sentinel;
-            node.next = s4.next;
+            oh = s4.next;
+            node.next = oh;
             node.prev = s4;
-            s4.next.prev = node;
+            oh.prev = node;
             s4.next = node;
             localT2.size++;
             node.list = localT2;
@@ -303,6 +337,11 @@ class org.flashNight.naki.Cache.ARCCache {
         var localT1:Object = this.T1;
         var localT2:Object = this.T2;
 
+        // ---- 链表操作复用变量 ----
+        var np:Object;
+        var nn:Object;
+        var oh:Object;
+
         if (node != undefined) {
             var nodeList:Object = node.list;
 
@@ -311,11 +350,14 @@ class org.flashNight.naki.Cache.ARCCache {
                 node.value = value;
                 var s:Object = localT2.sentinel;
                 if (node !== s.next) {
-                    node.prev.next = node.next;
-                    node.next.prev = node.prev;
-                    node.next = s.next;
+                    np = node.prev;
+                    nn = node.next;
+                    np.next = nn;
+                    nn.prev = np;
+                    oh = s.next;
+                    node.next = oh;
                     node.prev = s;
-                    s.next.prev = node;
+                    oh.prev = node;
                     s.next = node;
                 }
                 return;
@@ -324,13 +366,16 @@ class org.flashNight.naki.Cache.ARCCache {
             // ---- T1 中：更新值 + 移到 T2 头部 ----
             if (nodeList === localT1) {
                 node.value = value;
-                node.prev.next = node.next;
-                node.next.prev = node.prev;
+                np = node.prev;
+                nn = node.next;
+                np.next = nn;
+                nn.prev = np;
                 localT1.size--;
                 var s2:Object = localT2.sentinel;
-                node.next = s2.next;
+                oh = s2.next;
+                node.next = oh;
                 node.prev = s2;
-                s2.next.prev = node;
+                oh.prev = node;
                 s2.next = node;
                 localT2.size++;
                 node.list = localT2;
@@ -349,15 +394,19 @@ class org.flashNight.naki.Cache.ARCCache {
                 this.p = np1;
                 // REPLACE
                 this._doReplace(false);
-                // 从 B1 移除，添加到 T2
-                node.prev.next = node.next;
-                node.next.prev = node.prev;
+                // unlink: 从 B1 移除
+                np = node.prev;
+                nn = node.next;
+                np.next = nn;
+                nn.prev = np;
                 localB1.size--;
                 node.value = value;
+                // addToHead: 添加到 T2
                 var s3:Object = localT2.sentinel;
-                node.next = s3.next;
+                oh = s3.next;
+                node.next = oh;
                 node.prev = s3;
-                s3.next.prev = node;
+                oh.prev = node;
                 s3.next = node;
                 localT2.size++;
                 node.list = localT2;
@@ -367,24 +416,28 @@ class org.flashNight.naki.Cache.ARCCache {
             // ---- B2 幽灵命中 (CRITICAL-2 fix) ----
             var localB2b:Object = this.B2;
             if (nodeList === localB2b) {
-                var localB1b:Object = this.B1;
+                // localB1 已在 B1 路径声明并赋值，AS2 函数作用域下此处可直接复用
                 // p 自适应
-                var d2:Number = localB1b.size / localB2b.size;
+                var d2:Number = localB1.size / localB2b.size;
                 if (d2 < 1) d2 = 1;
                 var np2:Number = this.p - d2;
                 if (np2 < 0) np2 = 0;
                 this.p = np2;
                 // REPLACE
                 this._doReplace(true);
-                // 从 B2 移除，添加到 T2
-                node.prev.next = node.next;
-                node.next.prev = node.prev;
+                // unlink: 从 B2 移除
+                np = node.prev;
+                nn = node.next;
+                np.next = nn;
+                nn.prev = np;
                 localB2b.size--;
                 node.value = value;
+                // addToHead: 添加到 T2
                 var s4:Object = localT2.sentinel;
-                node.next = s4.next;
+                oh = s4.next;
+                node.next = oh;
                 node.prev = s4;
-                s4.next.prev = node;
+                oh.prev = node;
                 s4.next = node;
                 localT2.size++;
                 node.list = localT2;
@@ -402,12 +455,13 @@ class org.flashNight.naki.Cache.ARCCache {
         if (L1 == mc) {
             // Case A：|L1| == c
             if (localT1.size < mc) {
-                // 删除 B1 尾部（最老幽灵）
+                // removeTail: 删除 B1 尾部（最老幽灵）
                 var sb1a:Object = lB1.sentinel;
                 var ghost:Object = sb1a.prev;
                 if (ghost !== sb1a) {
-                    ghost.prev.next = sb1a;
-                    sb1a.prev = ghost.prev;
+                    var gp:Object = ghost.prev;
+                    gp.next = sb1a;
+                    sb1a.prev = gp;
                     lB1.size--;
                     delete this.nodeMap[ghost.uid];
                 }
@@ -418,8 +472,9 @@ class org.flashNight.naki.Cache.ARCCache {
                 var st1a:Object = localT1.sentinel;
                 var direct:Object = st1a.prev;
                 if (direct !== st1a) {
-                    direct.prev.next = st1a;
-                    st1a.prev = direct.prev;
+                    var dp:Object = direct.prev;
+                    dp.next = st1a;
+                    st1a.prev = dp;
                     localT1.size--;
                     delete this.nodeMap[direct.uid];
                 }
@@ -429,12 +484,13 @@ class org.flashNight.naki.Cache.ARCCache {
             // Case B：|L1| < c
             var L2:Number = localT2.size + lB2.size;
             if (L1 + L2 >= 2 * mc) {
-                // 删除 B2 尾部
+                // removeTail: 删除 B2 尾部
                 var sb2a:Object = lB2.sentinel;
                 var ghost2:Object = sb2a.prev;
                 if (ghost2 !== sb2a) {
-                    ghost2.prev.next = sb2a;
-                    sb2a.prev = ghost2.prev;
+                    var g2p:Object = ghost2.prev;
+                    g2p.next = sb2a;
+                    sb2a.prev = g2p;
                     lB2.size--;
                     delete this.nodeMap[ghost2.uid];
                 }
@@ -445,14 +501,15 @@ class org.flashNight.naki.Cache.ARCCache {
             }
         }
 
-        // 插入新节点到 T1 头部
+        // addToHead: 插入新节点到 T1 头部
         var newNode:Object = { uid: uid, prev: undefined, next: undefined,
                                list: undefined, value: value };
         this.nodeMap[uid] = newNode;
         var st1h:Object = localT1.sentinel;
-        newNode.next = st1h.next;
+        oh = st1h.next;
+        newNode.next = oh;
         newNode.prev = st1h;
-        st1h.next.prev = newNode;
+        oh.prev = newNode;
         st1h.next = newNode;
         localT1.size++;
         newNode.list = localT1;
@@ -482,6 +539,11 @@ class org.flashNight.naki.Cache.ARCCache {
         var localT1:Object = this.T1;
         var localT2:Object = this.T2;
 
+        // ---- 链表操作复用变量 ----
+        var np:Object;
+        var nn:Object;
+        var oh:Object;
+
         if (node != undefined) {
             var nodeList:Object = node.list;
 
@@ -490,11 +552,14 @@ class org.flashNight.naki.Cache.ARCCache {
                 node.value = value;
                 var s:Object = localT2.sentinel;
                 if (node !== s.next) {
-                    node.prev.next = node.next;
-                    node.next.prev = node.prev;
-                    node.next = s.next;
+                    np = node.prev;
+                    nn = node.next;
+                    np.next = nn;
+                    nn.prev = np;
+                    oh = s.next;
+                    node.next = oh;
                     node.prev = s;
-                    s.next.prev = node;
+                    oh.prev = node;
                     s.next = node;
                 }
                 return;
@@ -503,13 +568,16 @@ class org.flashNight.naki.Cache.ARCCache {
             if (nodeList === localT1) {
                 // T1 中：更新值 + 移到 T2 头部
                 node.value = value;
-                node.prev.next = node.next;
-                node.next.prev = node.prev;
+                np = node.prev;
+                nn = node.next;
+                np.next = nn;
+                nn.prev = np;
                 localT1.size--;
                 var s2:Object = localT2.sentinel;
-                node.next = s2.next;
+                oh = s2.next;
+                node.next = oh;
                 node.prev = s2;
-                s2.next.prev = node;
+                oh.prev = node;
                 s2.next = node;
                 localT2.size++;
                 node.list = localT2;
@@ -517,28 +585,36 @@ class org.flashNight.naki.Cache.ARCCache {
             }
 
             // B1/B2 中（BUG-3 fix）：先从幽灵队列断链，再插入 T1
-            node.prev.next = node.next;
-            node.next.prev = node.prev;
+            // 注意：这是防御性代码。当前唯一调用者 ARCEnhancedLazyCache 在 ghost hit 时，
+            // super.get() 已将 node 从 B→T2，后续 putNoEvict 走 T2 更新分支。
+            // 此分支仅在直接调 putNoEvict(ghostKey) 时触发。
+            // 插入 T1（而非 T2）是有意为之：未经 p 自适应的回填不应享受 T2 热端优先级。
+            np = node.prev;
+            nn = node.next;
+            np.next = nn;
+            nn.prev = np;
             nodeList.size--;
             node.value = value;
             var s3:Object = localT1.sentinel;
-            node.next = s3.next;
+            oh = s3.next;
+            node.next = oh;
             node.prev = s3;
-            s3.next.prev = node;
+            oh.prev = node;
             s3.next = node;
             localT1.size++;
             node.list = localT1;
             return;
         }
 
-        // 全新节点：创建并添加到 T1（不淘汰）
+        // addToHead: 全新节点 → T1（不淘汰）
         var newNode:Object = { uid: uid, prev: undefined, next: undefined,
                                list: undefined, value: value };
         this.nodeMap[uid] = newNode;
         var s4:Object = localT1.sentinel;
-        newNode.next = s4.next;
+        oh = s4.next;
+        newNode.next = oh;
         newNode.prev = s4;
-        s4.next.prev = newNode;
+        oh.prev = newNode;
         s4.next = newNode;
         localT1.size++;
         newNode.list = localT1;
@@ -563,9 +639,11 @@ class org.flashNight.naki.Cache.ARCCache {
         var node:Object = this.nodeMap[uid];
         if (node == undefined) return false;
 
-        // 哨兵节点使断链无需分支
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
+        // unlink: 哨兵节点使断链无需分支
+        var np:Object = node.prev;
+        var nn:Object = node.next;
+        np.next = nn;
+        nn.prev = np;
         node.list.size--;
         delete this.nodeMap[uid];
         return true;
