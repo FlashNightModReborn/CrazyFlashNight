@@ -596,6 +596,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var polygonCollider:ICollider;      // 多边形碰撞检测器（精确检测用）
         var unitIndex:Number;               // 单位遍历索引（原i）
         var i:Number;                       // 通用循环索引（用于消弹区域遍历）
+        var uTop:Number;                    // 目标AABB上边界（含Z偏移投影）
+        var uBottom:Number;                 // 目标AABB下边界（含Z偏移投影）
+        var crCenter:Vector;                // overlapCenter缓存（避免重复属性链访问）
 
         // ---- 命中后处理变量 ----
         var isNormalKill:Boolean;           // 是否普通击杀
@@ -750,6 +753,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 }
             }
 
+            var _aabbResult:CollisionResult = AABBCollider.result; // 预缓存静态AABB碰撞结果
+
             for (bulletIndex = 0; bulletIndex < sortedLength; bulletIndex++) {
                 bullet = sortedArr[bulletIndex];
                 flags = bullet.flags;
@@ -867,9 +872,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
                             unitArea = hitTarget.aabbCollider;
 
-                            // AABB 检测（无序早退交由右边界截断处理）
-                            collisionResult = areaAABB.checkCollision(unitArea, zOffset);
-                            if (!collisionResult.isColliding) {
+                            // 扫描线特化AABB宽相检测（全内联，依赖 ICollider C2 不变量）
+                            // 前置条件：areaAABB/unitArea 的 left/right/top/bottom 已由各自 update 方法维护
+                            // X-left分离已由扫描线右截断保证（unitLeftKeys[i] <= Rb）
+                            // getAABB内联：仅Y坐标需要zOffset投影，X坐标直接使用
+                            uTop = unitArea.top + zOffset;
+                            uBottom = unitArea.bottom + zOffset;
+                            if (areaAABB.left >= unitArea.right ||
+                                areaAABB.bottom <= uTop ||
+                                areaAABB.top >= uBottom) {
                                 continue;
                             }
 
@@ -902,6 +913,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 if (!collisionResult.isColliding) {
                                     continue;
                                 }
+                            } else {
+                                // AABB宽相直接命中：填充碰撞结果（窄相路径由各自collider负责）
+                                // 未来扩展：Ray窄相在此处增加 else if 分支即可
+                                collisionResult = _aabbResult;
+                                crCenter = collisionResult.overlapCenter;
+                                crCenter.x = (((areaAABB.left > unitArea.left) ? areaAABB.left : unitArea.left) + ((areaAABB.right < unitArea.right) ? areaAABB.right : unitArea.right)) >> 1;
+                                crCenter.y = (((areaAABB.top > uTop) ? areaAABB.top : uTop) + ((areaAABB.bottom < uBottom) ? areaAABB.bottom : uBottom)) >> 1;
                             }
 
                             // 确认命中后才写入hitTarget，避免无效的哈希表操作

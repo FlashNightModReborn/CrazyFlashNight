@@ -6,6 +6,23 @@ import org.flashNight.sara.util.*;
  * PolygonCollider 类用于检测凸四边形与另一个碰撞体之间的碰撞。
  * 该类继承自 RectanglePointSet，并实现了 ICollider 接口。
  *
+ * ========================= 管线定位契约 =========================
+ *
+ * 【纯窄相碰撞器】
+ *   本类仅作为窄相碰撞器使用，挂载于 bullet.polygonCollider，
+ *   不得挂载到 .aabbCollider（不满足 ICollider C2 AABB 自维护不变量）。
+ *
+ *   原因：PolygonCollider 继承 RectanglePointSet（非 AABB），
+ *   不持有 left/right/top/bottom 实例属性。其 getAABB(zOffset) 从
+ *   4 个顶点坐标实时计算包围盒，无法被宽相内联路径直接读取。
+ *
+ *   调用链路：
+ *     BulletQueueProcessor 宽相内联通过 → 进入窄相 →
+ *     polygonCollider.checkCollision(unitArea, zOffset) →
+ *     内部调用 other.getAABB(zOffset) 获取目标 AABB
+ *
+ * =================================================================
+ *
  * 设计约束：
  * - 本碰撞器假设多边形为凸四边形，顶点按顺时针或逆时针顺序排列
  * - 其他碰撞器通过 getAABB() 退化为 AABB，因此交集多边形最多 4+4+8=16 个顶点

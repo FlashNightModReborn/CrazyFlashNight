@@ -9,14 +9,39 @@ import org.flashNight.arki.render.*;
  *
  * 基于轴对齐边界框 (Axis-Aligned Bounding Box, AABB) 的碰撞检测器。
  * 继承 AABB 类并实现 ICollider 接口，提供碰撞检测功能、边界坐标获取和碰撞信息计算。
- * 
+ *
  * 功能概述：
  * 1. 碰撞检测逻辑：通过比较两个 AABB 的边界坐标判断是否发生碰撞。
  * 2. 提供多种静态辅助方法，用于获取不同类型的对象 (如子弹、透明子弹、单位区域) 的边界信息。
  * 3. 支持动态更新边界信息，适配游戏中实时变化的对象坐标。
  * 4. 提供碰撞结果，包括重叠中心点与重叠范围。
- * 
+ *
  * 使用场景：主要用于游戏中的子弹碰撞检测、单位区域碰撞等。
+ *
+ * ========================= 宽相碰撞器基类契约 =========================
+ *
+ * 本类是所有宽相碰撞器的基类（extends AABB，天然持有 left/right/top/bottom）。
+ * 所有子类在实现 update 方法时必须遵守 ICollider C2 不变量：
+ *
+ *   【子类 update 契约】
+ *   updateFromBullet / updateFromTransparentBullet / updateFromUnitArea
+ *   在返回前必须将 this.left, this.right, this.top, this.bottom 更新为
+ *   当前几何形状的精确轴对齐包围盒。
+ *
+ *   【原因】
+ *   BulletQueueProcessor 的宽相内联路径直接读取这四个属性：
+ *     uTop = unitArea.top + zOffset;
+ *     uBottom = unitArea.bottom + zOffset;
+ *     if (areaAABB.left >= unitArea.right || ...)
+ *   不经过 getAABB(zOffset)，因此属性必须始终处于最新状态。
+ *
+ *   【已验证子类】
+ *   - AABBCollider: updateFromBullet/updateFromTransparentBullet/updateFromUnitArea ✓
+ *   - CoverageAABBCollider: 继承本类 update 方法 ✓
+ *   - RayCollider: 所有 update 方法从射线端点计算并写入 left/right/top/bottom ✓
+ *   - PointCollider: 所有 update 方法同步 _position 和 left/right/top/bottom ✓
+ *
+ * =====================================================================
  */
 class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends AABB implements ICollider {
 
