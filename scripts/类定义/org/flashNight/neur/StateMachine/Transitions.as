@@ -52,7 +52,7 @@
  * - 避免在条件函数中执行耗时操作
  * - unshift添加的规则具有最高优先级
  *
- * @author flashNight神经网络团队
+ * @author flashNight
  * @version 3.0 (Gate/Normal分表优化版)
  * @since AS2
  */
@@ -60,9 +60,6 @@ class org.flashNight.neur.StateMachine.Transitions {
 
     /** 状态机引用，用于条件函数的上下文调用 */
     private var status:FSM_Status;
-
-    /** 迭代守卫计数器：>0 时禁止对转换表进行结构性修改 */
-    private var _iterating:Number = 0;
 
     /**
      * Gate转换规则存储结构（动作前评估，用于暂停/死亡等即时阻断）
@@ -144,10 +141,6 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @return Boolean 是否成功移除（true=找到并移除，false=未找到）
      */
     public function remove(current:String, target:String, func:Function, isGate:Boolean):Boolean {
-        if (this._iterating > 0) {
-            trace("[Transitions] 错误：迭代过程中禁止调用 remove(\"" + current + "\", \"" + target + "\")");
-            return false;
-        }
         if (isGate == null) isGate = false;
         var store:Object = isGate ? this.gateLists : this.normalLists;
         var list:Array = store[current];
@@ -179,10 +172,6 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @return Boolean 是否成功设置（true=找到并设置，false=未找到）
      */
     public function setActive(current:String, target:String, func:Function, isGate:Boolean, active:Boolean):Boolean {
-        if (this._iterating > 0) {
-            trace("[Transitions] 错误：迭代过程中禁止调用 setActive(\"" + current + "\", \"" + target + "\")");
-            return false;
-        }
         if (isGate == null) isGate = false;
         var store:Object = isGate ? this.gateLists : this.normalLists;
         var list:Array = store[current];
@@ -205,10 +194,6 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @param current 要清除转换规则的状态名称
      */
     public function clear(current:String):Void {
-        if (this._iterating > 0) {
-            trace("[Transitions] 错误：迭代过程中禁止调用 clear(\"" + current + "\")");
-            return;
-        }
         delete this.gateLists[current];
         delete this.normalLists[current];
     }
@@ -219,10 +204,6 @@ class org.flashNight.neur.StateMachine.Transitions {
      * 清空整个转换规则表，恢复到初始状态。
      */
     public function reset():Void {
-        if (this._iterating > 0) {
-            trace("[Transitions] 错误：迭代过程中禁止调用 reset()");
-            return;
-        }
         this.gateLists = {};
         this.normalLists = {};
     }
@@ -246,25 +227,33 @@ class org.flashNight.neur.StateMachine.Transitions {
         // 缓存数组长度，避免重复计算
         var len:Number = list.length;
 
-        ++this._iterating;
+        // 遮蔽突变方法（Meta-State Polymorphism）
+        this._add      = this._addBlk;
+        this.remove    = this._removeBlk;
+        this.setActive = this._setActiveBlk;
+        this.clear     = this._clearBlk;
+        this.reset     = this._resetBlk;
+
         // 按优先级顺序检查转换条件
+        var result:String = null;
         for (var i:Number = 0; i < len; i++) {
             var node:Object = list[i];
-            // 跳过非活跃规则
             if (!node.active) continue;
-
-            // 缓存函数和目标到局部变量，优化属性访问
             var fn:Function = node.func;
             var tgt:String = node.target;
-
-            // 调用条件函数，this指向statusRef
             if (fn.call(statusRef, current, tgt, this)) {
-                --this._iterating;
-                return tgt;
+                result = tgt;
+                break;
             }
         }
-        --this._iterating;
-        return null;
+
+        // 恢复原型方法
+        delete this._add;
+        delete this.remove;
+        delete this.setActive;
+        delete this.clear;
+        delete this.reset;
+        return result;
     }
 
     /**
@@ -285,25 +274,82 @@ class org.flashNight.neur.StateMachine.Transitions {
         // 缓存数组长度，避免重复计算
         var len:Number = list.length;
 
-        ++this._iterating;
+        // 遮蔽突变方法（Meta-State Polymorphism）
+        this._add      = this._addBlk;
+        this.remove    = this._removeBlk;
+        this.setActive = this._setActiveBlk;
+        this.clear     = this._clearBlk;
+        this.reset     = this._resetBlk;
+
         // 按优先级顺序检查转换条件
+        var result:String = null;
         for (var i:Number = 0; i < len; i++) {
             var node:Object = list[i];
-            // 跳过非活跃规则
             if (!node.active) continue;
-
-            // 缓存函数和目标到局部变量，优化属性访问
             var fn:Function = node.func;
             var tgt:String = node.target;
-
-            // 调用条件函数，this指向statusRef
             if (fn.call(statusRef, current, tgt, this)) {
-                --this._iterating;
-                return tgt;
+                result = tgt;
+                break;
             }
         }
-        --this._iterating;
-        return null;
+
+        // 恢复原型方法
+        delete this._add;
+        delete this.remove;
+        delete this.setActive;
+        delete this.clear;
+        delete this.reset;
+        return result;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Meta-State Polymorphism — 迭代期突变阻塞
+    //
+    //  与 FSM_StateMachine._csRun/_csPend/_csNoop 同源的手法：
+    //  TransitGate/TransitNormal 入口将 5 个突变方法遮蔽为阻塞桩
+    //  （实例属性覆盖原型方法），出口通过 delete 恢复原型实现。
+    //  遮蔽/恢复内联于 Transit 方法，无额外函数调用。
+    //  突变方法本体零条件分支。
+    //
+    //  ┌─ 非迭代期 ─→ 原型方法（真实逻辑）
+    //  └─ 迭代期   ─→ 实例属性（阻塞桩，trace + 拒绝）
+    //
+    //  契约：
+    //    - 条件回调函数（fn.call）不得调用 TransitGate/TransitNormal
+    //      （不支持嵌套，首层 _unlockMut 即恢复全部方法）
+    //    - fn.call 抛异常 → delete 恢复不执行 → 5 个方法永久阻塞
+    //      恢复：delete transitions._add / .remove / .setActive / .clear / .reset
+    // ═══════════════════════════════════════════════════════════
+
+    /** 阻塞桩：迭代期遮蔽 _add（push/unshift 经由 _add 转发） */
+    private function _addBlk():Void {
+        trace("[Transitions] 错误：迭代过程中禁止调用 push/unshift(\""
+              + arguments[1] + "\", \"" + arguments[2] + "\")");
+    }
+
+    /** 阻塞桩：迭代期遮蔽 remove */
+    private function _removeBlk():Boolean {
+        trace("[Transitions] 错误：迭代过程中禁止调用 remove(\""
+              + arguments[0] + "\", \"" + arguments[1] + "\")");
+        return false;
+    }
+
+    /** 阻塞桩：迭代期遮蔽 setActive */
+    private function _setActiveBlk():Boolean {
+        trace("[Transitions] 错误：迭代过程中禁止调用 setActive(\""
+              + arguments[0] + "\", \"" + arguments[1] + "\")");
+        return false;
+    }
+
+    /** 阻塞桩：迭代期遮蔽 clear */
+    private function _clearBlk():Void {
+        trace("[Transitions] 错误：迭代过程中禁止调用 clear(\"" + arguments[0] + "\")");
+    }
+
+    /** 阻塞桩：迭代期遮蔽 reset */
+    private function _resetBlk():Void {
+        trace("[Transitions] 错误：迭代过程中禁止调用 reset()");
     }
 
     /**
@@ -323,10 +369,6 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @param atHead  是否添加到头部（高优先级）
      */
     private function _add(store:Object, current:String, target:String, func:Function, atHead:Boolean):Void {
-        if (this._iterating > 0) {
-            trace("[Transitions] 错误：迭代过程中禁止调用 push/unshift(\"" + current + "\", \"" + target + "\")");
-            return;
-        }
         // 获取或创建状态的转换规则列表
         var list:Array = store[current];
         if (list == null) {

@@ -1218,6 +1218,9 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
 
     /**
      * 验证条件函数内调用 remove 被守卫拦截
+     *
+     * 关键：fn2 必须排在 fn1 之前评估，否则 fn1 先命中 → fn2 永远不执行，
+     * 守卫实际上未被测试。
      */
     public function testIterationGuardBlocksRemove():Void {
         trace("\n--- Test: Iteration Guard Blocks Remove ---");
@@ -1225,15 +1228,16 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
 
         var fn1:Function = function():Boolean { return true; };
         var fn2:Function = function(cur, tgt, trans):Boolean {
-            // 在迭代过程中尝试 remove fn1
+            // 在迭代过程中尝试 remove fn1 —— 应被拦截
             trans.remove("st", "A", fn1);
             return false;
         };
 
+        // fn2 先评估（尝试 remove → 被拦截），fn1 后评估（返回 true）
+        transitions.push("st", "B", fn2);
         transitions.push("st", "A", fn1);
-        transitions.push("st", "B", fn2); // B 条件 false，不会触发转换
 
-        // 第一次调用：A 条件 true → 返回 "A"；B 的条件函数尝试 remove A 但被拦截
+        // 第一次调用：fn2 条件 false、尝试 remove 被拦截 → fn1 返回 "A"
         var result:String = transitions.TransitNormal("st");
         this.assert(result == "A", "A still fires (remove was blocked during iteration)");
 
@@ -1244,6 +1248,9 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
 
     /**
      * 验证条件函数内调用 setActive 被守卫拦截
+     *
+     * 关键：fn2 必须排在 fn1 之前评估，否则 fn1 先命中 → fn2 永远不执行，
+     * 守卫实际上未被测试。
      */
     public function testIterationGuardBlocksSetActive():Void {
         trace("\n--- Test: Iteration Guard Blocks setActive ---");
@@ -1251,16 +1258,16 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
 
         var fn1:Function = function():Boolean { return true; };
         var fn2:Function = function(cur, tgt, trans):Boolean {
-            // 在迭代过程中尝试禁用 fn1
+            // 在迭代过程中尝试禁用 fn1 —— 应被拦截
             trans.setActive("st", "A", fn1, false, false);
             return false;
         };
 
-        // A 在前（高优先级），B 在后
-        transitions.push("st", "A", fn1);
+        // fn2 先评估（尝试 setActive → 被拦截），fn1 后评估（返回 true）
         transitions.push("st", "B", fn2);
+        transitions.push("st", "A", fn1);
 
-        transitions.TransitNormal("st"); // A fires, B 的 setActive 被拦截
+        transitions.TransitNormal("st"); // fn2 的 setActive 被拦截，fn1 触发
 
         // A 应该依然 active
         this.assert(transitions.TransitNormal("st") == "A", "A still active (setActive was blocked during iteration)");

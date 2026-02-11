@@ -116,27 +116,27 @@ a.runTests();
 [PASS] Successfully recovered from errors
 
 --- Test: Basic Performance ---
-Basic Performance: 10000 transit calls in 66ms
+Basic Performance: 10000 transit calls in 85ms
 [PASS] Basic performance acceptable
 
 --- Test: Many Transitions Performance ---
-Many Transitions Performance: 1000 transitions, 1000 calls in 2214ms
+Many Transitions Performance: 1000 transitions, 1000 calls in 2099ms
 [PASS] Many transitions performance acceptable
 
 --- Test: Complex Conditions Performance ---
-Complex Conditions Performance: 1000 complex calculations in 19ms
+Complex Conditions Performance: 1000 complex calculations in 21ms
 [PASS] Complex conditions performance acceptable
 
 --- Test: Frequent Transit Calls Performance ---
-Frequent Calls Performance: 50000 calls in 359ms
+Frequent Calls Performance: 50000 calls in 432ms
 [PASS] Frequent calls performance acceptable
 
 --- Test: Transition Scalability ---
-Scale 10: 100 calls in 5ms
-Scale 50: 100 calls in 16ms
+Scale 10: 100 calls in 3ms
+Scale 50: 100 calls in 12ms
 Scale 100: 100 calls in 20ms
 Scale 500: 100 calls in 37ms
-Scale 1000: 100 calls in 42ms
+Scale 1000: 100 calls in 28ms
 [PASS] Transition scalability is acceptable
 
 --- Test: Memory Usage Optimization ---
@@ -144,7 +144,7 @@ Scale 1000: 100 calls in 42ms
 
 --- Test: Transition Caching ---
 [PASS] All calculations executed (no caching implemented)
-Caching test: 10 calls took 7ms
+Caching test: 10 calls took 6ms
 [PASS] Caching test completed (baseline established)
 
 --- Test: Conditional Short-Circuiting ---
@@ -223,10 +223,14 @@ Caching test: 10 calls took 7ms
 [PASS] Guarded push was rejected, B added fresh after iteration
 
 --- Test: Iteration Guard Blocks Remove ---
+[Transitions] 错误：迭代过程中禁止调用 remove("st", "A")
 [PASS] A still fires (remove was blocked during iteration)
+[Transitions] 错误：迭代过程中禁止调用 remove("st", "A")
 [PASS] A survives because remove was blocked
 
 --- Test: Iteration Guard Blocks setActive ---
+[Transitions] 错误：迭代过程中禁止调用 setActive("st", "A")
+[Transitions] 错误：迭代过程中禁止调用 setActive("st", "A")
 [PASS] A still active (setActive was blocked during iteration)
 
 --- Test: Iteration Guard Blocks Clear ---
@@ -267,39 +271,39 @@ Success Rate: 100%
 === TRANSITIONS PERFORMANCE ANALYSIS ===
 Context: Basic Transit Call
   Iterations: 10000
-  Total Time: 66ms
-  Avg per Operation: 0.0066ms
-  Operations per Second: 151515
+  Total Time: 85ms
+  Avg per Operation: 0.0085ms
+  Operations per Second: 117647
 ---
 Context: Many Transitions
   Iterations: 1000
-  Total Time: 2214ms
-  Avg per Operation: 2.214ms
-  Operations per Second: 452
+  Total Time: 2099ms
+  Avg per Operation: 2.099ms
+  Operations per Second: 476
 ---
 Context: Complex Conditions
   Iterations: 1000
-  Total Time: 19ms
-  Avg per Operation: 0.019ms
-  Operations per Second: 52632
+  Total Time: 21ms
+  Avg per Operation: 0.021ms
+  Operations per Second: 47619
 ---
 Context: Frequent Transit Calls
   Iterations: 50000
-  Total Time: 359ms
-  Avg per Operation: 0.00718ms
-  Operations per Second: 139276
+  Total Time: 432ms
+  Avg per Operation: 0.00864ms
+  Operations per Second: 115741
 ---
 Context: Scale 10
   Iterations: 100
-  Total Time: 5ms
-  Avg per Operation: 0.05ms
-  Operations per Second: 20000
+  Total Time: 3ms
+  Avg per Operation: 0.03ms
+  Operations per Second: 33333
 ---
 Context: Scale 50
   Iterations: 100
-  Total Time: 16ms
-  Avg per Operation: 0.16ms
-  Operations per Second: 6250
+  Total Time: 12ms
+  Avg per Operation: 0.12ms
+  Operations per Second: 8333
 ---
 Context: Scale 100
   Iterations: 100
@@ -315,9 +319,9 @@ Context: Scale 500
 ---
 Context: Scale 1000
   Iterations: 100
-  Total Time: 42ms
-  Avg per Operation: 0.42ms
-  Operations per Second: 2381
+  Total Time: 28ms
+  Avg per Operation: 0.28ms
+  Operations per Second: 3571
 ---
 Context: Memory Stress Test
   Iterations: 1000
@@ -326,6 +330,6 @@ Context: Memory Stress Test
   Operations per Second: 111111
 ---
 === PERFORMANCE RECOMMENDATIONS ===
-Overall Average: 0.0438897637795276ms per operation
+Overall Average: 0.043244094488189ms per operation
 ✅ Excellent performance - suitable for real-time applications
 =============================
