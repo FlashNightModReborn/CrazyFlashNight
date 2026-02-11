@@ -1,4 +1,4 @@
-# ARCCache 使用指南
+# ARCCache v2.0 使用指南
 
 ## 目录
 
@@ -9,24 +9,27 @@
    - [核心方法解析](#核心方法解析)
      - [`get` 方法](#get-方法)
      - [`put` 方法](#put-方法)
-4. [使用指南](#使用指南)
+     - [`putNoEvict` 方法](#putnoevict-方法)
+     - [`remove` 方法](#remove-方法)
+4. [v2.0 变更摘要](#v20-变更摘要)
+5. [使用指南](#使用指南)
    - [初始化缓存](#初始化缓存)
    - [缓存数据](#缓存数据)
    - [检索数据](#检索数据)
    - [复杂对象键的使用注意事项](#复杂对象键的使用注意事项)
    - [调试与测试](#调试与测试)
-5. [优势与局限性](#优势与局限性)
+6. [优势与局限性](#优势与局限性)
    - [优势](#优势)
    - [局限性](#局限性)
-6. [注意事项](#注意事项)
-7. [完整代码结构](#完整代码结构)
-8. [结语](#结语)
+7. [注意事项](#注意事项)
+8. [完整代码结构](#完整代码结构)
+9. [结语](#结语)
 
 ---
 
 ## 简介
 
-**ARCCache** 是一个基于 **自适应替换缓存（Adaptive Replacement Cache，ARC）** 算法的缓存实现，旨在提供高效的缓存策略，适应多种访问模式，提高缓存命中率。该实现使用 **ActionScript 2（AS2）**，经过性能优化，适用于对性能和资源敏感的环境。
+**ARCCache v2.0** 是一个基于 **自适应替换缓存（Adaptive Replacement Cache，ARC）** 算法（Megiddo & Modha, 2003）的完整实现，旨在提供高效的缓存策略，适应多种访问模式，提高缓存命中率。该实现使用 **ActionScript 2（AS2）**，采用哨兵节点和全内联优化，适用于对性能和资源敏感的环境。
 
 ---
 
@@ -60,9 +63,15 @@ ARC 算法是一种高级缓存替换策略，结合了 **LRU（最近最少使�
 
 ### 数据结构设计
 
-- **缓存队列**：使用链表（双向链表）实现 T1、T2、B1、B2 队列。
-- **缓存存储（`cacheStore`）**：用于存储实际的缓存数据，键为 UID，值为缓存内容。
+- **缓存队列**：使用带**哨兵节点**的循环双向链表实现 T1、T2、B1、B2 队列。哨兵节点消除了所有 head/tail 的 null 分支检查。
+  - 队列结构：`{ sentinel: Object, size: Number }`
+  - 空队列：`sentinel.prev = sentinel.next = sentinel`
+  - head = `sentinel.next`，tail = `sentinel.prev`
+- **节点结构**：`{ uid: String, prev: Object, next: Object, list: Object, value: * }`
+  - 值直接存储在节点上（v2.0 消除了独立的 `cacheStore` 哈希表）
+  - 幽灵节点的 `value` 为 `undefined`
 - **节点映射（`nodeMap`）**：将 UID 映射到对应的链表节点，方便快速访问和更新。
+- **命中类型（`_hitType`）**：`get()` 后设置，供子类判断命中情况（0=MISS, 1=HIT, 2=GHOST_B1, 3=GHOST_B2）。
 
 ### 核心方法解析
 
@@ -107,18 +116,62 @@ ARC 算法是一种高级缓存替换策略，结合了 **LRU（最近最少使�
 1. **生成 UID**：同 `get` 方法。
 
 2. **检查是否已存在**：
-   - **已存在于 T1 或 T2 中**：
-     - 更新缓存值。
-     - 调用 `get` 方法提升其优先级。
-   - **不在缓存中**：
-     - **计算总大小**：`totalSize = T1.size + T2.size`。
-     - **缓存已满**：
-       - 根据 `p` 值和队列大小，从 T1 或 T2 中移除尾部节点，移至对应的幽灵队列（B1 或 B2）。
-     - **幽灵队列超过容量限制**：
-       - 确保 `B1.size + B2.size <= 2 * maxCapacity`，超出部分从尾部开始移除。
-     - **插入新节点**：
-       - 创建新节点，加入 T1 的头部。
-       - 更新 `cacheStore` 和 `nodeMap`。
+   - **T2 中**：更新值，移到 T2 头部。
+   - **T1 中**：更新值，从 T1 移除并添加到 T2 头部。
+   - **B1 中**（v2.0 CRITICAL-2 fix）：执行标准 ARC 的 p 自适应（增大）、REPLACE 淘汰、从 B1 移除并带值添加到 T2。
+   - **B2 中**（v2.0 CRITICAL-2 fix）：执行标准 ARC 的 p 自适应（减小）、REPLACE 淘汰、从 B2 移除并带值添加到 T2。
+
+3. **完全新 key（标准 ARC Case IV）**：
+   - **Case A**（|L1| == c）：如果 |T1| < c，删除 B1 尾部最老幽灵 + REPLACE；否则（|T1| == c）直接从 T1 删除（不进 B1）。
+   - **Case B**（|L1| < c）：如果总量 ≥ 2c，删除 B2 尾部最老幽灵；如果缓存已满则 REPLACE。
+   - 创建新节点插入 T1 头部。
+
+4. **队列不变式**（所有操作维护）：
+   - `0 <= |T1|+|T2| <= c`
+   - `0 <= |T1|+|B1| <= c` (L1)
+   - `0 <= |T1|+|T2|+|B1|+|B2| <= 2c` (总量)
+   - `0 <= p <= c`
+
+#### `putNoEvict` 方法
+
+**功能**：不触发淘汰的 put — 专为子类（如 ARCEnhancedLazyCache）在幽灵命中后存储计算值设计。
+
+**v2.0 修复**：
+- 不再调用 `this.get()`（消除虚调用导致的无限递归风险）
+- 所有 promote 逻辑全部内联
+- 正确处理 B1/B2 节点（先断链再插入 T1）
+
+#### `remove` 方法
+
+**功能**：从缓存中移除一个项目（包括幽灵队列中的记录）。哨兵节点使断链无需分支。返回 true/false 表示是否成功。
+
+---
+
+## v2.0 变更摘要
+
+### 正确性修复
+
+| 优先级 | 编号 | 问题 | 修复 |
+|--------|------|------|------|
+| P0 | CRITICAL-1 | `putNoEvict` 通过 `this.get()` 虚调用子类重写 → 无限递归/栈溢出 | 全内联 promote 逻辑，不再调用 `this.get()` |
+| P0 | CRITICAL-2 | `put()` 对 B1/B2 中的 key 创建孤儿节点 → 数据损坏 | `put()` 正确处理 B1/B2 幽灵命中（p 自适应 + REPLACE + 移入 T2） |
+| P0 | HIGH-1 | B2 ghost hit + T1 空时跳过淘汰 → 永久超容量 | `_doReplace` 增加 `|T1|>0` 前置守卫 |
+| P0 | HIGH-2 | `ARCEnhancedLazyCache` 对完全未命中使用 `putNoEvict` → 无界增长 | 新增 `_hitType` 字段区分 MISS/GHOST/HIT，MISS 走 `put()` |
+
+### 性能优化
+
+| 编号 | 优化 | 效果 |
+|------|------|------|
+| OPT-1 | 值存储在 `node.value` 上，消除 `cacheStore` 哈希表 | 每次操作少一次哈希查找 |
+| OPT-2 | put/putNoEvict 更新路径全部内联 | 消除虚调用开销 |
+| OPT-3 | T2 head 快速路径 | 头部命中跳过 remove+addToHead |
+| sentinel | 哨兵节点 | 消除所有 head/tail null 分支 |
+
+### 算法对齐（标准 ARC）
+
+- **p 自适应**：`delta = max(1, |B_other|/|B_self|)` 替代 ±1
+- **Case IV 幽灵清理**：标准 L1/L2 不变式替代 `B1+B2 <= 2c`
+- **REPLACE 条件**：严格遵循论文公式，含 `isB2Hit` 参数
 
 ---
 
@@ -191,18 +244,17 @@ var data:String = cache.get(user); // 成功命中缓存
 **查看缓存内部状态**：
 
 ```actionscript
-// 查看 T1 队列内容
+// 查看四个队列的 UID 列表（从头到尾）
 trace("T1 Queue: " + cache.getT1());
-
-// 查看 T2 队列内容
 trace("T2 Queue: " + cache.getT2());
+trace("B1 Queue: " + cache.getB1());
+trace("B2 Queue: " + cache.getB2());
 
-// 查看缓存存储内容
-trace("Cache Store: " + cache._getCacheContents());
-
-// 查看节点映射内容
-trace("Node Map: " + cache._getNodeMapContents());
+// 获取容量
+trace("Capacity: " + cache.getCapacity());
 ```
+
+> **v2.0 变更**：`_getCacheContents()` 和 `_getNodeMapContents()` 已移除。值现在直接存储在节点上，无独立的 `cacheStore`。
 
 ---
 
@@ -246,15 +298,21 @@ trace("Node Map: " + cache._getNodeMapContents());
 
 **ARCCache.as** 文件包含以下主要部分：
 
-1. **成员变量**：定义缓存的容量、平衡参数、四个队列、缓存存储和节点映射。
+1. **成员变量**：`maxCapacity`、`p`、`_hitType`、四个队列（T1/T2/B1/B2）、`nodeMap`。
 
-2. **构造函数**：初始化缓存容量和各个队列。
+2. **构造函数**：初始化缓存容量、哨兵节点和各队列。
 
-3. **`get` 方法**：用于从缓存中检索数据，并根据 ARC 算法调整缓存结构。
+3. **内部工具**：`_createQueue()`（创建带哨兵的空队列）、`_clear()`（重置所有状态）、`_doReplace()`（标准 ARC REPLACE 淘汰）。
 
-4. **`put` 方法**：用于将数据插入缓存，并根据需要进行替换和调整。
+4. **`get` 方法**：检索数据，设置 `_hitType`，处理 T1/T2 命中和 B1/B2 幽灵命中。
 
-5. **辅助方法**：`getT1()`、`getT2()`、`getB1()`、`getB2()`、`_getListContents()`、`_getCacheContents()`、`_getNodeMapContents()`，用于调试和测试。
+5. **`put` 方法**：插入数据，处理 T1/T2 更新、B1/B2 幽灵命中、标准 Case IV 新 key 插入。
+
+6. **`putNoEvict` 方法**：不触发淘汰的写入，全内联逻辑（不走虚调用）。
+
+7. **`remove` 方法**：从任意队列中移除项目。
+
+8. **调试方法**：`getT1()`、`getT2()`、`getB1()`、`getB2()`、`getCapacity()`。
 
 ---
 
@@ -266,24 +324,19 @@ trace("Node Map: " + cache._getNodeMapContents());
 
 ---
 
+### 运行测试
 
-
-
-// Create a test instance with a desired cache capacity
+```actionscript
+// ARCCache 基础测试
 var cacheTest = new org.flashNight.naki.Cache.ARCCacheTest(100);
-
-// Run all tests
 cacheTest.runTests();
 
+// ARCEnhancedLazyCache 测试
+org.flashNight.gesh.func.ARCEnhancedLazyCacheTest.runTests();
+```
 
-
-
-
-
-
-
-
-=== ARCCacheTest: Starting Tests ===
+```
+=== ARCCacheTest v2.0: Starting Tests ===
 Running testPutAndGet...
 Assertion Passed: Value for key1 should be 'value1'
 Assertion Passed: Value for key2 should be 'value2'
@@ -302,31 +355,30 @@ Assertion Passed: Value for keyExtra should be 'valueExtra'
 testCacheEviction completed successfully.
 
 Running testCacheHitRate...
-Cache Hit Rate: 65.5%
+Cache Hit Rate: 51.9%
 Assertion Passed: Cache hit rate should be between 0% and 100%
 testCacheHitRate completed successfully.
 
 Running testPerformance...
-Performed 10000 cache operations in 211 ms.
-Cache Operations per Second: 47393.36492891
+Performed 10000 cache operations in 106 ms.
+Cache Operations per Second: 94339.6226415094
 
 Assertion Passed: Operations per second should be greater than 0
 testPerformance completed successfully.
 
 Running testEdgeCases...
-Assertion Passed: Value for null key should be null
-Assertion Passed: Value for undefined key should be undefined
+Assertion Passed: Value for null key should be 'nullKeyValue'
+Assertion Passed: Value for undefined key should be 'undefKeyValue'
 Assertion Passed: Value for 'key@#' should be 'value@#'
 Assertion Passed: Value for empty string key should be 'emptyKey'
 Assertion Passed: Value for numeric key 123 should be 'numericKey'
+Assertion Passed: Cached null value should be returned as null (not trigger miss)
 testEdgeCases completed successfully.
 
 Running testHighFrequencyAccess...
-Verifying high-frequency keys...
 Assertion Passed: High-frequency key hfKey1 should still be present
 Assertion Passed: High-frequency key hfKey2 should still be present
 Assertion Passed: High-frequency key hfKey3 should still be present
-Assertion Passed: Low-frequency key 'hfKey4' should be null (evicted)
 testHighFrequencyAccess completed successfully.
 
 Running testDuplicateKeys...
@@ -336,7 +388,6 @@ Assertion Passed: Value for 'dupKey' should still be 'updatedValue'
 testDuplicateKeys completed successfully.
 
 Running testLargeScaleCache...
-Verifying frequently accessed keys...
 Assertion Passed: Frequently accessed 'largeKey1' should still be present
 Assertion Passed: Frequently accessed 'largeKey2' should still be present
 Assertion Passed: Frequently accessed 'largeKey3' should still be present
@@ -347,8 +398,33 @@ Assertion Passed: Frequently accessed 'largeKey7' should still be present
 Assertion Passed: Frequently accessed 'largeKey8' should still be present
 Assertion Passed: Frequently accessed 'largeKey9' should still be present
 Assertion Passed: Frequently accessed 'largeKey10' should still be present
-Verifying infrequently accessed keys...
-Assertion Passed: Infrequently accessed 'largeKey6000' should be null (evicted)
 testLargeScaleCache completed successfully.
 
-=== ARCCacheTest: All Tests Completed ===
+Running testPutOnGhostKey...
+Assertion Passed: A should be ghost (in B1)
+Assertion Passed: After put on ghost key, A should be accessible with new value
+Assertion Passed: Cache size 3 within capacity
+Assertion Passed: No orphan '_A' in B1
+testPutOnGhostKey completed successfully.
+
+Running testB2HitWithEmptyT1...
+Assertion Passed: Cache size 3 within capacity after B2 hit with empty T1
+testB2HitWithEmptyT1 completed successfully.
+
+Running testCapacityInvariant...
+  T1=50 T2=0 B1=0 B2=0
+Assertion Passed: |T1|+|T2|=50 <= capacity 50
+Assertion Passed: total=50 <= 2*capacity 100
+testCapacityInvariant completed successfully.
+
+Running testRemoveFromAllQueues...
+Assertion Passed: remove from T1 should return true
+Assertion Passed: X should be gone after remove
+Assertion Passed: remove from T2 should return true
+Assertion Passed: Y should be gone after remove from T2
+Assertion Passed: remove non-existent key should return false
+testRemoveFromAllQueues completed successfully.
+
+=== ARCCacheTest v2.0: All Tests Completed ===
+
+```
