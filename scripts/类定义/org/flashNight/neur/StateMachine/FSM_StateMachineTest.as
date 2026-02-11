@@ -1231,13 +1231,11 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.AddStatus("test", state);
         
         this.assert(!state.isDestroyed, "State not destroyed initially");
-        this.assert(state.active, "State is active initially");
         this.assert(state.superMachine == machine, "State has reference to super machine");
-        
+
         machine.destroy();
-        
+
         this.assert(state.isDestroyed, "State destroyed with machine");
-        this.assert(!state.active, "State inactive after destroy");
         this.assert(state.superMachine == null, "State super machine reference cleared");
     }
 

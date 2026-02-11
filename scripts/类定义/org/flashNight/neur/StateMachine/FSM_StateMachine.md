@@ -122,6 +122,7 @@ a.runTests();
 
 --- Test: Exception in Transition Conditions ---
 [PASS] Exception in transition condition properly propagated
+[Transitions] 错误：迭代过程中禁止调用 reset()
 
 --- Test: Corrupted State Handling ---
 [PASS] Invalid state transition handled gracefully
@@ -138,7 +139,13 @@ a.runTests();
 --- Test: Complex Workflow ---
 Initializing workflow...
 Processing...
-Workflow completed!
+Retrying...
+Processing...
+Retrying...
+Processing...
+Retrying...
+Processing...
+Workflow failed!
 [PASS] Workflow reached final state
 
 --- Test: State Chaining ---
@@ -169,10 +176,8 @@ Workflow completed!
 
 --- Test: State Cleanup ---
 [PASS] State not destroyed initially
-[PASS] State is active initially
 [PASS] State has reference to super machine
 [PASS] State destroyed with machine
-[PASS] State inactive after destroy
 [PASS] State super machine reference cleared
 
 --- Test: Transition Cleanup ---
@@ -180,28 +185,28 @@ Workflow completed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=35ms, Actions=37ms for 10000 operations
+Basic Performance: Transitions=33ms, Actions=36ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 50ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 45ms, 100 transitions in 0ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 24ms
+Frequent Transitions Performance: 5000 transitions in 20ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 8ms
+Complex Transition Performance: 1000 complex transitions in 9ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=0ms, Transition=0ms, Operation=2ms
+Size 10: Create=0ms, Transition=0ms, Operation=1ms
 Size 50: Create=1ms, Transition=1ms, Operation=0ms
-Size 100: Create=2ms, Transition=2ms, Operation=0ms
-Size 500: Create=14ms, Transition=11ms, Operation=1ms
+Size 100: Create=2ms, Transition=3ms, Operation=0ms
+Size 500: Create=12ms, Transition=12ms, Operation=0ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -438,7 +443,7 @@ Size 500: Create=14ms, Transition=11ms, Operation=1ms
 [PASS] T8: isDestroyed flag intact
 
 === FINAL FSM TEST REPORT ===
-Tests Passed: 263
+Tests Passed: 261
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.

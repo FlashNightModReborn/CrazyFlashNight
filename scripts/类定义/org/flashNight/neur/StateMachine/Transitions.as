@@ -61,6 +61,9 @@ class org.flashNight.neur.StateMachine.Transitions {
     /** 状态机引用，用于条件函数的上下文调用 */
     private var status:FSM_Status;
 
+    /** 迭代守卫计数器：>0 时禁止对转换表进行结构性修改 */
+    private var _iterating:Number = 0;
+
     /**
      * Gate转换规则存储结构（动作前评估，用于暂停/死亡等即时阻断）
      * 格式：{ 状态名: [规则数组] }
@@ -141,6 +144,10 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @return Boolean 是否成功移除（true=找到并移除，false=未找到）
      */
     public function remove(current:String, target:String, func:Function, isGate:Boolean):Boolean {
+        if (this._iterating > 0) {
+            trace("[Transitions] 错误：迭代过程中禁止调用 remove(\"" + current + "\", \"" + target + "\")");
+            return false;
+        }
         if (isGate == null) isGate = false;
         var store:Object = isGate ? this.gateLists : this.normalLists;
         var list:Array = store[current];
@@ -172,6 +179,10 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @return Boolean 是否成功设置（true=找到并设置，false=未找到）
      */
     public function setActive(current:String, target:String, func:Function, isGate:Boolean, active:Boolean):Boolean {
+        if (this._iterating > 0) {
+            trace("[Transitions] 错误：迭代过程中禁止调用 setActive(\"" + current + "\", \"" + target + "\")");
+            return false;
+        }
         if (isGate == null) isGate = false;
         var store:Object = isGate ? this.gateLists : this.normalLists;
         var list:Array = store[current];
@@ -194,6 +205,10 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @param current 要清除转换规则的状态名称
      */
     public function clear(current:String):Void {
+        if (this._iterating > 0) {
+            trace("[Transitions] 错误：迭代过程中禁止调用 clear(\"" + current + "\")");
+            return;
+        }
         delete this.gateLists[current];
         delete this.normalLists[current];
     }
@@ -204,6 +219,10 @@ class org.flashNight.neur.StateMachine.Transitions {
      * 清空整个转换规则表，恢复到初始状态。
      */
     public function reset():Void {
+        if (this._iterating > 0) {
+            trace("[Transitions] 错误：迭代过程中禁止调用 reset()");
+            return;
+        }
         this.gateLists = {};
         this.normalLists = {};
     }
@@ -227,6 +246,7 @@ class org.flashNight.neur.StateMachine.Transitions {
         // 缓存数组长度，避免重复计算
         var len:Number = list.length;
 
+        ++this._iterating;
         // 按优先级顺序检查转换条件
         for (var i:Number = 0; i < len; i++) {
             var node:Object = list[i];
@@ -239,9 +259,11 @@ class org.flashNight.neur.StateMachine.Transitions {
 
             // 调用条件函数，this指向statusRef
             if (fn.call(statusRef, current, tgt, this)) {
+                --this._iterating;
                 return tgt;
             }
         }
+        --this._iterating;
         return null;
     }
 
@@ -263,6 +285,7 @@ class org.flashNight.neur.StateMachine.Transitions {
         // 缓存数组长度，避免重复计算
         var len:Number = list.length;
 
+        ++this._iterating;
         // 按优先级顺序检查转换条件
         for (var i:Number = 0; i < len; i++) {
             var node:Object = list[i];
@@ -275,9 +298,11 @@ class org.flashNight.neur.StateMachine.Transitions {
 
             // 调用条件函数，this指向statusRef
             if (fn.call(statusRef, current, tgt, this)) {
+                --this._iterating;
                 return tgt;
             }
         }
+        --this._iterating;
         return null;
     }
 
@@ -298,6 +323,10 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @param atHead  是否添加到头部（高优先级）
      */
     private function _add(store:Object, current:String, target:String, func:Function, atHead:Boolean):Void {
+        if (this._iterating > 0) {
+            trace("[Transitions] 错误：迭代过程中禁止调用 push/unshift(\"" + current + "\", \"" + target + "\")");
+            return;
+        }
         // 获取或创建状态的转换规则列表
         var list:Array = store[current];
         if (list == null) {

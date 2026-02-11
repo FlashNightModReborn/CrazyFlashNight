@@ -116,27 +116,27 @@ a.runTests();
 [PASS] Successfully recovered from errors
 
 --- Test: Basic Performance ---
-Basic Performance: 10000 transit calls in 59ms
+Basic Performance: 10000 transit calls in 66ms
 [PASS] Basic performance acceptable
 
 --- Test: Many Transitions Performance ---
-Many Transitions Performance: 1000 transitions, 1000 calls in 2067ms
+Many Transitions Performance: 1000 transitions, 1000 calls in 2214ms
 [PASS] Many transitions performance acceptable
 
 --- Test: Complex Conditions Performance ---
-Complex Conditions Performance: 1000 complex calculations in 20ms
+Complex Conditions Performance: 1000 complex calculations in 19ms
 [PASS] Complex conditions performance acceptable
 
 --- Test: Frequent Transit Calls Performance ---
-Frequent Calls Performance: 50000 calls in 306ms
+Frequent Calls Performance: 50000 calls in 359ms
 [PASS] Frequent calls performance acceptable
 
 --- Test: Transition Scalability ---
-Scale 10: 100 calls in 3ms
-Scale 50: 100 calls in 15ms
-Scale 100: 100 calls in 18ms
-Scale 500: 100 calls in 29ms
-Scale 1000: 100 calls in 32ms
+Scale 10: 100 calls in 5ms
+Scale 50: 100 calls in 16ms
+Scale 100: 100 calls in 20ms
+Scale 500: 100 calls in 37ms
+Scale 1000: 100 calls in 42ms
 [PASS] Transition scalability is acceptable
 
 --- Test: Memory Usage Optimization ---
@@ -144,7 +144,7 @@ Scale 1000: 100 calls in 32ms
 
 --- Test: Transition Caching ---
 [PASS] All calculations executed (no caching implemented)
-Caching test: 10 calls took 5ms
+Caching test: 10 calls took 7ms
 [PASS] Caching test completed (baseline established)
 
 --- Test: Conditional Short-Circuiting ---
@@ -217,8 +217,40 @@ Caching test: 10 calls took 5ms
 [PASS] Low priority fires when high+mid disabled
 [PASS] All re-enabled, highest priority fires again
 
+--- Test: Iteration Guard Blocks Push ---
+[Transitions] 错误：迭代过程中禁止调用 push/unshift("st", "B")
+[PASS] Original transition still fires during guarded iteration
+[PASS] Guarded push was rejected, B added fresh after iteration
+
+--- Test: Iteration Guard Blocks Remove ---
+[PASS] A still fires (remove was blocked during iteration)
+[PASS] A survives because remove was blocked
+
+--- Test: Iteration Guard Blocks setActive ---
+[PASS] A still active (setActive was blocked during iteration)
+
+--- Test: Iteration Guard Blocks Clear ---
+[Transitions] 错误：迭代过程中禁止调用 clear("st")
+[PASS] Transition fires despite clear attempt during iteration
+[Transitions] 错误：迭代过程中禁止调用 clear("st")
+[PASS] Rules survive because clear was blocked
+
+--- Test: Iteration Guard Blocks Reset ---
+[Transitions] 错误：迭代过程中禁止调用 reset()
+[PASS] Transition fires despite reset attempt during iteration
+[Transitions] 错误：迭代过程中禁止调用 reset()
+[PASS] Rules survive because reset was blocked
+
+--- Test: Iteration Guard Allows After Iteration ---
+[PASS] Normal iteration works
+[PASS] unshift works after iteration
+[PASS] remove works after iteration
+[PASS] setActive works after iteration
+[PASS] clear works after iteration
+[PASS] reset works after iteration
+
 === TRANSITIONS TEST FINAL REPORT ===
-Tests Passed: 103
+Tests Passed: 118
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TRANSITIONS TESTS PASSED!
@@ -235,65 +267,65 @@ Success Rate: 100%
 === TRANSITIONS PERFORMANCE ANALYSIS ===
 Context: Basic Transit Call
   Iterations: 10000
-  Total Time: 59ms
-  Avg per Operation: 0.0059ms
-  Operations per Second: 169492
+  Total Time: 66ms
+  Avg per Operation: 0.0066ms
+  Operations per Second: 151515
 ---
 Context: Many Transitions
   Iterations: 1000
-  Total Time: 2067ms
-  Avg per Operation: 2.067ms
-  Operations per Second: 484
+  Total Time: 2214ms
+  Avg per Operation: 2.214ms
+  Operations per Second: 452
 ---
 Context: Complex Conditions
   Iterations: 1000
-  Total Time: 20ms
-  Avg per Operation: 0.02ms
-  Operations per Second: 50000
+  Total Time: 19ms
+  Avg per Operation: 0.019ms
+  Operations per Second: 52632
 ---
 Context: Frequent Transit Calls
   Iterations: 50000
-  Total Time: 306ms
-  Avg per Operation: 0.00612ms
-  Operations per Second: 163399
+  Total Time: 359ms
+  Avg per Operation: 0.00718ms
+  Operations per Second: 139276
 ---
 Context: Scale 10
   Iterations: 100
-  Total Time: 3ms
-  Avg per Operation: 0.03ms
-  Operations per Second: 33333
+  Total Time: 5ms
+  Avg per Operation: 0.05ms
+  Operations per Second: 20000
 ---
 Context: Scale 50
   Iterations: 100
-  Total Time: 15ms
-  Avg per Operation: 0.15ms
-  Operations per Second: 6667
+  Total Time: 16ms
+  Avg per Operation: 0.16ms
+  Operations per Second: 6250
 ---
 Context: Scale 100
   Iterations: 100
-  Total Time: 18ms
-  Avg per Operation: 0.18ms
-  Operations per Second: 5556
+  Total Time: 20ms
+  Avg per Operation: 0.2ms
+  Operations per Second: 5000
 ---
 Context: Scale 500
   Iterations: 100
-  Total Time: 29ms
-  Avg per Operation: 0.29ms
-  Operations per Second: 3448
+  Total Time: 37ms
+  Avg per Operation: 0.37ms
+  Operations per Second: 2703
 ---
 Context: Scale 1000
   Iterations: 100
-  Total Time: 32ms
-  Avg per Operation: 0.32ms
-  Operations per Second: 3125
+  Total Time: 42ms
+  Avg per Operation: 0.42ms
+  Operations per Second: 2381
 ---
 Context: Memory Stress Test
   Iterations: 1000
-  Total Time: 6ms
-  Avg per Operation: 0.006ms
-  Operations per Second: 166667
+  Total Time: 9ms
+  Avg per Operation: 0.009ms
+  Operations per Second: 111111
 ---
 === PERFORMANCE RECOMMENDATIONS ===
-Overall Average: 0.0402362204724409ms per operation
+Overall Average: 0.0438897637795276ms per operation
 ✅ Excellent performance - suitable for real-time applications
 =============================

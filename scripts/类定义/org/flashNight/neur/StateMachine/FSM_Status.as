@@ -5,7 +5,6 @@ import org.flashNight.neur.StateMachine.Transitions;
 class org.flashNight.neur.StateMachine.FSM_Status implements IStatus {
 	public var name:String; // 状态名称
     public var superMachine:IMachine; // 上级状态机
-    public var active:Boolean; // 该状态是否激活
     public var isDestroyed:Boolean = false; // 该状态是否已销毁
     public var data:Object; // 数据黑板
     public var transitions:Transitions; // 过渡线
@@ -30,7 +29,6 @@ class org.flashNight.neur.StateMachine.FSM_Status implements IStatus {
     }
 
     public function FSM_Status(_onAction:Function, _onEnter:Function, _onExit:Function) {
-        this.active = true;
         this._onActionCb = _onAction;
         this._onEnterCb = _onEnter;
         this._onExitCb = _onExit;
@@ -43,7 +41,6 @@ class org.flashNight.neur.StateMachine.FSM_Status implements IStatus {
 
     public function destroy():Void {
         this.isDestroyed = true;
-        this.active = false;
         this.superMachine = null;
         this.data = null;
         this.transitions = null;

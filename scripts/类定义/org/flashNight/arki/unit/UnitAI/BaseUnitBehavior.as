@@ -12,7 +12,6 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitBehavior extends FSM_StateMachine{
     public function BaseUnitBehavior(_data:UnitAIData){
         super(null,null,null);
         this.data = _data;
-        this.active = false;
 
         // 状态列表
         // 睡眠状态（默认状态）
@@ -31,7 +30,6 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitBehavior extends FSM_StateMachine{
                 this.pushGateTransition(key, "Sleeping", this.sleepCheck);
             }
         }
-        this.active = true;
         // start() 幂等：首次调用触发 Sleeping.onEnter，后续调用为 no-op
         this.start();
     }

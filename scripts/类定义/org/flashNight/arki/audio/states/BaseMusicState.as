@@ -17,7 +17,6 @@ class org.flashNight.arki.audio.states.BaseMusicState extends FSM_Status {
     
     public function BaseMusicState(_onAction:Function, _onEnter:Function, _onExit:Function) {
         super(_onAction, _onEnter, _onExit);
-        this.active = true;
     }
     
     // 供外部设置音乐播放器
