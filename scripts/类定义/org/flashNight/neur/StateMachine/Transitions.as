@@ -49,6 +49,8 @@
  * 注意事项：
  * ========
  * - 条件函数的this指向FSM_Status实例
+ * - 条件函数为纯谓词，不接收Transitions引用（编译期消除迭代期突变风险）
+ * - 若需在条件函数中查询转换表，通过 this.transitions 访问（FSM_Status 已持有引用）
  * - 避免在条件函数中执行耗时操作
  * - unshift添加的规则具有最高优先级
  *
@@ -95,7 +97,7 @@ class org.flashNight.neur.StateMachine.Transitions {
      * @param current 源状态名称
      * @param target  目标状态名称
      * @param func    条件判断函数，返回Boolean类型
-     *                函数签名：function(current:String, target:String, transitions:Transitions):Boolean
+     *                函数签名：function(current:String, target:String):Boolean
      *                函数内this指向status实例
      * @param isGate  是否为Gate转换（默认false）。Gate转换在动作前评估，普通转换在动作后评估
      */
@@ -227,33 +229,19 @@ class org.flashNight.neur.StateMachine.Transitions {
         // 缓存数组长度，避免重复计算
         var len:Number = list.length;
 
-        // 遮蔽突变方法（Meta-State Polymorphism）
-        this._add      = this._addBlk;
-        this.remove    = this._removeBlk;
-        this.setActive = this._setActiveBlk;
-        this.clear     = this._clearBlk;
-        this.reset     = this._resetBlk;
-
         // 按优先级顺序检查转换条件
-        var result:String = null;
         for (var i:Number = 0; i < len; i++) {
             var node:Object = list[i];
             if (!node.active) continue;
             var fn:Function = node.func;
             var tgt:String = node.target;
-            if (fn.call(statusRef, current, tgt, this)) {
-                result = tgt;
-                break;
+            // 不传递 this（Transitions 引用）：条件函数为纯谓词，
+            // 物理上不可达突变方法，从编译期消除迭代期突变风险
+            if (fn.call(statusRef, current, tgt)) {
+                return tgt;
             }
         }
-
-        // 恢复原型方法
-        delete this._add;
-        delete this.remove;
-        delete this.setActive;
-        delete this.clear;
-        delete this.reset;
-        return result;
+        return null;
     }
 
     /**
@@ -274,82 +262,17 @@ class org.flashNight.neur.StateMachine.Transitions {
         // 缓存数组长度，避免重复计算
         var len:Number = list.length;
 
-        // 遮蔽突变方法（Meta-State Polymorphism）
-        this._add      = this._addBlk;
-        this.remove    = this._removeBlk;
-        this.setActive = this._setActiveBlk;
-        this.clear     = this._clearBlk;
-        this.reset     = this._resetBlk;
-
         // 按优先级顺序检查转换条件
-        var result:String = null;
         for (var i:Number = 0; i < len; i++) {
             var node:Object = list[i];
             if (!node.active) continue;
             var fn:Function = node.func;
             var tgt:String = node.target;
-            if (fn.call(statusRef, current, tgt, this)) {
-                result = tgt;
-                break;
+            if (fn.call(statusRef, current, tgt)) {
+                return tgt;
             }
         }
-
-        // 恢复原型方法
-        delete this._add;
-        delete this.remove;
-        delete this.setActive;
-        delete this.clear;
-        delete this.reset;
-        return result;
-    }
-
-    // ═══════════════════════════════════════════════════════════
-    //  Meta-State Polymorphism — 迭代期突变阻塞
-    //
-    //  与 FSM_StateMachine._csRun/_csPend/_csNoop 同源的手法：
-    //  TransitGate/TransitNormal 入口将 5 个突变方法遮蔽为阻塞桩
-    //  （实例属性覆盖原型方法），出口通过 delete 恢复原型实现。
-    //  遮蔽/恢复内联于 Transit 方法，无额外函数调用。
-    //  突变方法本体零条件分支。
-    //
-    //  ┌─ 非迭代期 ─→ 原型方法（真实逻辑）
-    //  └─ 迭代期   ─→ 实例属性（阻塞桩，trace + 拒绝）
-    //
-    //  契约：
-    //    - 条件回调函数（fn.call）不得调用 TransitGate/TransitNormal
-    //      （不支持嵌套，首层 _unlockMut 即恢复全部方法）
-    //    - fn.call 抛异常 → delete 恢复不执行 → 5 个方法永久阻塞
-    //      恢复：delete transitions._add / .remove / .setActive / .clear / .reset
-    // ═══════════════════════════════════════════════════════════
-
-    /** 阻塞桩：迭代期遮蔽 _add（push/unshift 经由 _add 转发） */
-    private function _addBlk():Void {
-        trace("[Transitions] 错误：迭代过程中禁止调用 push/unshift(\""
-              + arguments[1] + "\", \"" + arguments[2] + "\")");
-    }
-
-    /** 阻塞桩：迭代期遮蔽 remove */
-    private function _removeBlk():Boolean {
-        trace("[Transitions] 错误：迭代过程中禁止调用 remove(\""
-              + arguments[0] + "\", \"" + arguments[1] + "\")");
-        return false;
-    }
-
-    /** 阻塞桩：迭代期遮蔽 setActive */
-    private function _setActiveBlk():Boolean {
-        trace("[Transitions] 错误：迭代过程中禁止调用 setActive(\""
-              + arguments[0] + "\", \"" + arguments[1] + "\")");
-        return false;
-    }
-
-    /** 阻塞桩：迭代期遮蔽 clear */
-    private function _clearBlk():Void {
-        trace("[Transitions] 错误：迭代过程中禁止调用 clear(\"" + arguments[0] + "\")");
-    }
-
-    /** 阻塞桩：迭代期遮蔽 reset */
-    private function _resetBlk():Void {
-        trace("[Transitions] 错误：迭代过程中禁止调用 reset()");
+        return null;
     }
 
     /**

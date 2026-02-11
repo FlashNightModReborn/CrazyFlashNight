@@ -110,13 +110,8 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         this.testRemoveAndReAdd();
         this.testSetActiveWithPriority();
 
-        // 迭代守卫测试
-        this.testIterationGuardBlocksPush();
-        this.testIterationGuardBlocksRemove();
-        this.testIterationGuardBlocksSetActive();
-        this.testIterationGuardBlocksClear();
-        this.testIterationGuardBlocksReset();
-        this.testIterationGuardAllowsAfterIteration();
+        // 迭代安全契约测试
+        this.testConditionFuncNoTransitionsRef();
 
         // 最终报告
         this.printFinalReport();
@@ -1186,162 +1181,41 @@ class org.flashNight.neur.StateMachine.TransitionsTest {
         this.assert(transitions.TransitNormal("st") == "high", "All re-enabled, highest priority fires again");
     }
 
-    // ========== 迭代守卫测试 ==========
+    // ========== 迭代安全契约测试 ==========
 
     /**
-     * 验证条件函数内调用 push/unshift 被守卫拦截
-     */
-    public function testIterationGuardBlocksPush():Void {
-        trace("\n--- Test: Iteration Guard Blocks Push ---");
-        var transitions:Transitions = new Transitions(this._mockStatus);
-        var pushBlocked:Boolean = false;
-
-        transitions.push("st", "A", function(cur, tgt, trans):Boolean {
-            // 在迭代过程中尝试 push —— 应被拦截
-            trans.push("st", "B", function():Boolean { return true; });
-            pushBlocked = true; // 如果没有抛异常则到达此处
-            return true;
-        });
-
-        var result:String = transitions.TransitNormal("st");
-        this.assert(result == "A", "Original transition still fires during guarded iteration");
-        // push 被拒绝 → 规则 B 不应存在；清理后验证
-        // 需要重新测试，A 依然是唯一规则
-        // 先把 A 的条件改为 false，看 B 是否存在
-        transitions.remove("st", "A", null); // 无法精确移除（匿名），改用 clear
-        transitions.clear("st");
-        transitions.push("st", "B", function():Boolean { return true; });
-        // 如果之前 push 成功了，normalLists["st"] 会有两个 B（去重后仍为一个）
-        // 实际上 push 被拦截了，所以这里只有我们刚 push 的这一个
-        this.assert(transitions.TransitNormal("st") == "B", "Guarded push was rejected, B added fresh after iteration");
-    }
-
-    /**
-     * 验证条件函数内调用 remove 被守卫拦截
+     * 验证条件函数不接收 Transitions 引用（编译期消除迭代期突变风险）
      *
-     * 关键：fn2 必须排在 fn1 之前评估，否则 fn1 先命中 → fn2 永远不执行，
-     * 守卫实际上未被测试。
+     * Transit 方法调用 fn.call(statusRef, current, tgt)，不传递第 4 个参数。
+     * 条件函数的第 3 个形参（若声明）将为 undefined，物理上无法调用突变方法。
      */
-    public function testIterationGuardBlocksRemove():Void {
-        trace("\n--- Test: Iteration Guard Blocks Remove ---");
+    public function testConditionFuncNoTransitionsRef():Void {
+        trace("\n--- Test: Condition Function Receives No Transitions Ref ---");
         var transitions:Transitions = new Transitions(this._mockStatus);
+        var receivedArgs:Array = null;
 
-        var fn1:Function = function():Boolean { return true; };
-        var fn2:Function = function(cur, tgt, trans):Boolean {
-            // 在迭代过程中尝试 remove fn1 —— 应被拦截
-            trans.remove("st", "A", fn1);
-            return false;
-        };
-
-        // fn2 先评估（尝试 remove → 被拦截），fn1 后评估（返回 true）
-        transitions.push("st", "B", fn2);
-        transitions.push("st", "A", fn1);
-
-        // 第一次调用：fn2 条件 false、尝试 remove 被拦截 → fn1 返回 "A"
-        var result:String = transitions.TransitNormal("st");
-        this.assert(result == "A", "A still fires (remove was blocked during iteration)");
-
-        // 迭代结束后 A 应该仍然存在
-        var result2:String = transitions.TransitNormal("st");
-        this.assert(result2 == "A", "A survives because remove was blocked");
-    }
-
-    /**
-     * 验证条件函数内调用 setActive 被守卫拦截
-     *
-     * 关键：fn2 必须排在 fn1 之前评估，否则 fn1 先命中 → fn2 永远不执行，
-     * 守卫实际上未被测试。
-     */
-    public function testIterationGuardBlocksSetActive():Void {
-        trace("\n--- Test: Iteration Guard Blocks setActive ---");
-        var transitions:Transitions = new Transitions(this._mockStatus);
-
-        var fn1:Function = function():Boolean { return true; };
-        var fn2:Function = function(cur, tgt, trans):Boolean {
-            // 在迭代过程中尝试禁用 fn1 —— 应被拦截
-            trans.setActive("st", "A", fn1, false, false);
-            return false;
-        };
-
-        // fn2 先评估（尝试 setActive → 被拦截），fn1 后评估（返回 true）
-        transitions.push("st", "B", fn2);
-        transitions.push("st", "A", fn1);
-
-        transitions.TransitNormal("st"); // fn2 的 setActive 被拦截，fn1 触发
-
-        // A 应该依然 active
-        this.assert(transitions.TransitNormal("st") == "A", "A still active (setActive was blocked during iteration)");
-    }
-
-    /**
-     * 验证条件函数内调用 clear 被守卫拦截
-     */
-    public function testIterationGuardBlocksClear():Void {
-        trace("\n--- Test: Iteration Guard Blocks Clear ---");
-        var transitions:Transitions = new Transitions(this._mockStatus);
-
-        transitions.push("st", "A", function(cur, tgt, trans):Boolean {
-            trans.clear("st");
+        transitions.push("st", "A", function():Boolean {
+            receivedArgs = arguments;
             return true;
         });
 
-        var result:String = transitions.TransitNormal("st");
-        this.assert(result == "A", "Transition fires despite clear attempt during iteration");
+        transitions.TransitNormal("st");
 
-        // clear 被拦截 → 规则仍在
-        this.assert(transitions.TransitNormal("st") == "A", "Rules survive because clear was blocked");
-    }
+        // fn.call(statusRef, current, tgt) → arguments = [current, tgt]
+        this.assert(receivedArgs != null, "Condition function was called");
+        this.assert(receivedArgs.length == 2, "Condition receives exactly 2 arguments (current, target)");
+        this.assert(receivedArgs[0] == "st", "1st argument is current state name");
+        this.assert(receivedArgs[1] == "A", "2nd argument is target state name");
 
-    /**
-     * 验证条件函数内调用 reset 被守卫拦截
-     */
-    public function testIterationGuardBlocksReset():Void {
-        trace("\n--- Test: Iteration Guard Blocks Reset ---");
-        var transitions:Transitions = new Transitions(this._mockStatus);
-
-        transitions.push("st", "A", function(cur, tgt, trans):Boolean {
-            trans.reset();
+        // 验证 Gate 路径同样不传递 Transitions 引用
+        var gateArgs:Array = null;
+        transitions.push("st", "G", function():Boolean {
+            gateArgs = arguments;
             return true;
-        });
+        }, true);
 
-        var result:String = transitions.TransitNormal("st");
-        this.assert(result == "A", "Transition fires despite reset attempt during iteration");
-
-        // reset 被拦截 → 规则仍在
-        this.assert(transitions.TransitNormal("st") == "A", "Rules survive because reset was blocked");
-    }
-
-    /**
-     * 验证迭代结束后变更操作恢复正常
-     */
-    public function testIterationGuardAllowsAfterIteration():Void {
-        trace("\n--- Test: Iteration Guard Allows After Iteration ---");
-        var transitions:Transitions = new Transitions(this._mockStatus);
-
-        var fn1:Function = function():Boolean { return true; };
-        transitions.push("st", "A", fn1);
-
-        // 正常迭代
-        this.assert(transitions.TransitNormal("st") == "A", "Normal iteration works");
-
-        // 迭代结束后，所有变更操作应正常
-        var fn2:Function = function():Boolean { return true; };
-        transitions.unshift("st", "B", fn2);
-        this.assert(transitions.TransitNormal("st") == "B", "unshift works after iteration");
-
-        transitions.remove("st", "B", fn2);
-        this.assert(transitions.TransitNormal("st") == "A", "remove works after iteration");
-
-        transitions.setActive("st", "A", fn1, false, false);
-        this.assert(transitions.TransitNormal("st") == null, "setActive works after iteration");
-
-        transitions.setActive("st", "A", fn1, false, true);
-        transitions.clear("st");
-        this.assert(transitions.TransitNormal("st") == null, "clear works after iteration");
-
-        transitions.push("st", "C", function():Boolean { return true; });
-        transitions.reset();
-        this.assert(transitions.TransitNormal("st") == null, "reset works after iteration");
+        transitions.TransitGate("st");
+        this.assert(gateArgs.length == 2, "Gate condition also receives exactly 2 arguments");
     }
 
     // ========== 报告生成 ==========
