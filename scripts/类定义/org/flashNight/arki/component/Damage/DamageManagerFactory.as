@@ -143,8 +143,17 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     // 储存处理器数组，索引即为位掩码的位置
     private var _handles:Array;
 
-    // 用于缓存 DamageManager 的 LazyCache 实例
+    // 用于缓存 DamageManager 的 LazyCache 实例（ARC 策略时非 null）
     private var _managerCache:ARCEnhancedLazyCache;
+
+    // 直接数组缓存（直接策略时非 null，索引 = bitmask）
+    private var _directCache:Array;
+
+    // evaluator 函数引用（直接策略时使用，允许 resetFactory 更新而无需重建闭包）
+    private var _evaluator:Function;
+
+    // 统一的 bitmask → DamageManager 解析入口（闭包，构造时绑定策略）
+    public var _resolve:Function;
 
     // 预计算的 skipCheck 位掩码，用于快速过滤无需条件检查的处理器
     private var _skipCheckBitmask:Number;
@@ -152,12 +161,21 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     // 仅包含需要进行 canHandle 检查的处理器的索引数组
     private var _conditionalHandlerIndices:Array;
 
+    /** 条件处理器数量阈值：≤ 此值使用直接数组策略，> 此值使用 ARC 策略 */
+    private static var DIRECT_THRESHOLD:Number = 12;
+
     /**
      * 构造函数。
      * 初始化 DamageManagerFactory 实例。
      *
+     * 缓存策略自动选择：
+     * - 条件处理器数量 ≤ DIRECT_THRESHOLD（12）：直接数组索引，O(1) 零开销
+     *   键空间 = 2^conditionalCount，最大 2^12 = 4096 个槽位
+     * - 条件处理器数量 > DIRECT_THRESHOLD：ARC 自适应替换缓存
+     *   适用于键空间过大不宜全量缓存的场景
+     *
      * @param handles       处理器数组（顺序影响执行顺序）
-     * @param cacheCapacity 缓存容量
+     * @param cacheCapacity 缓存容量（ARC 策略时使用；直接策略时忽略）
      * @throws 如果处理器数组为空或数量超过32个，则抛出异常
      */
     public function DamageManagerFactory(handles:Array, cacheCapacity:Number) {
@@ -193,11 +211,48 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var evaluator:Function = createEvaluator(_handles);
         this.getDamageManager = this["getDamageManager" + len];
 
-        if (cacheCapacity <= 0) {
-            throw "缓存容量必须大于 0。";
+        // ---- 缓存策略选择 ----
+        if (_conditionalHandlerIndices.length <= DIRECT_THRESHOLD) {
+            // 直接数组策略：键空间 ≤ 2^12 = 4096，可全量缓存
+            _setupDirectResolve(evaluator, null);
+            _managerCache = null;
+        } else {
+            // ARC 策略：键空间过大，使用自适应替换缓存
+            if (cacheCapacity <= 0) {
+                throw "缓存容量必须大于 0。";
+            }
+            _directCache = null;
+            _evaluator = null;
+            var arc:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, cacheCapacity);
+            _managerCache = arc;
+            this._resolve = function(bitmask:Number):DamageManager {
+                return DamageManager(arc.get(bitmask));
+            };
         }
+    }
 
-        _managerCache = new ARCEnhancedLazyCache(evaluator, cacheCapacity);
+    /**
+     * 设置直接数组解析策略。
+     *
+     * 闭包直接捕获 dc（数组引用），命中路径零间接层。
+     * evaluator 通过 self._evaluator 间接读取，允许 resetFactory 更新
+     * evaluator 而无需重建闭包。
+     *
+     * @param evaluator     bitmask → DamageManager 的计算函数
+     * @param existingCache 可复用的已有缓存数组（null 则新建）
+     */
+    private function _setupDirectResolve(evaluator:Function, existingCache:Array):Void {
+        var dc:Array = (existingCache != null) ? existingCache : [];
+        var self:DamageManagerFactory = this;
+        this._directCache = dc;
+        this._evaluator = evaluator;
+        this._resolve = function(bitmask:Number):DamageManager {
+            var mgr:DamageManager = dc[bitmask];
+            if (mgr != undefined) return mgr;
+            mgr = self._evaluator(bitmask);
+            dc[bitmask] = mgr;
+            return mgr;
+        };
     }
 
     /**
@@ -301,7 +356,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
             }
         } while (++i < len);
 
-        return DamageManager(_managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager1(bullet:Object):DamageManager {
@@ -312,7 +367,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (this._handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager2(bullet:Object):DamageManager {
@@ -328,7 +383,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager3(bullet:Object):DamageManager {
@@ -347,7 +402,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager4(bullet:Object):DamageManager {
@@ -369,7 +424,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager5(bullet:Object):DamageManager {
@@ -394,7 +449,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager6(bullet:Object):DamageManager {
@@ -422,7 +477,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager7(bullet:Object):DamageManager {
@@ -453,7 +508,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager8(bullet:Object):DamageManager {
@@ -487,7 +542,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager9(bullet:Object):DamageManager {
@@ -524,7 +579,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager10(bullet:Object):DamageManager {
@@ -564,7 +619,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager11(bullet:Object):DamageManager {
@@ -607,7 +662,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager12(bullet:Object):DamageManager {
@@ -653,7 +708,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager13(bullet:Object):DamageManager {
@@ -702,7 +757,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager14(bullet:Object):DamageManager {
@@ -754,7 +809,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager15(bullet:Object):DamageManager {
@@ -809,7 +864,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager16(bullet:Object):DamageManager {
@@ -867,7 +922,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager17(bullet:Object):DamageManager {
@@ -928,7 +983,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager18(bullet:Object):DamageManager {
@@ -992,7 +1047,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager19(bullet:Object):DamageManager {
@@ -1059,7 +1114,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager20(bullet:Object):DamageManager {
@@ -1129,7 +1184,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager21(bullet:Object):DamageManager {
@@ -1202,7 +1257,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager22(bullet:Object):DamageManager {
@@ -1278,7 +1333,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager23(bullet:Object):DamageManager {
@@ -1357,7 +1412,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager24(bullet:Object):DamageManager {
@@ -1439,7 +1494,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager25(bullet:Object):DamageManager {
@@ -1524,7 +1579,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager26(bullet:Object):DamageManager {
@@ -1612,7 +1667,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager27(bullet:Object):DamageManager {
@@ -1703,7 +1758,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager28(bullet:Object):DamageManager {
@@ -1797,7 +1852,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager29(bullet:Object):DamageManager {
@@ -1894,7 +1949,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager30(bullet:Object):DamageManager {
@@ -1994,7 +2049,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager31(bullet:Object):DamageManager {
@@ -2097,7 +2152,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
     public function getDamageManager32(bullet:Object):DamageManager {
@@ -2203,7 +2258,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         if (handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
-        return DamageManager(this._managerCache.get(bitmask));
+        return this._resolve(bitmask);
     }
 
 
@@ -2212,8 +2267,11 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     /**
      * 重置工厂（支持更新处理器和缓存）。
      *
+     * 当提供 newHandles 时，会重新计算 skipCheck 掩码和条件索引，
+     * 并根据新的条件处理器数量重新选择缓存策略（直接/ARC）。
+     *
      * @param newHandles   新的处理器数组（可选）
-     * @param newEvaluator 新的评估器函数（可选）
+     * @param newEvaluator 新的评估器函数（可选，仅在 newHandles 为 null 时生效）
      * @param clearCache   是否清空缓存（默认 true）
      * @throws 如果处理器数量超过32个或 newEvaluator 不是函数，则抛出异常
      */
@@ -2236,17 +2294,49 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
             }
 
             var newEvaluatorFunc:Function = createEvaluator(_handles);
-            _managerCache.reset(newEvaluatorFunc, clearCache);
+
+            // 根据新的条件处理器数量重新选择策略
+            if (_conditionalHandlerIndices.length <= DIRECT_THRESHOLD) {
+                // 直接策略：清空 ARC，设置直接解析
+                _managerCache = null;
+                _setupDirectResolve(newEvaluatorFunc, (clearCache !== false) ? null : _directCache);
+            } else {
+                // ARC 策略
+                _directCache = null;
+                _evaluator = null;
+                if (_managerCache != null) {
+                    _managerCache.reset(newEvaluatorFunc, clearCache);
+                } else {
+                    var arc:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(newEvaluatorFunc, 64);
+                    _managerCache = arc;
+                    this._resolve = function(bitmask:Number):DamageManager {
+                        return DamageManager(arc.get(bitmask));
+                    };
+                }
+            }
             return;
         }
 
+        // 仅更新 evaluator 或清空缓存（不改变处理器组合）
         if (newEvaluator != null) {
             if (typeof(newEvaluator) != "function") {
                 throw "newEvaluator 必须是一个函数。";
             }
-            _managerCache.reset(newEvaluator, clearCache);
-        } else if (clearCache) {
-            _managerCache.reset(null, true);
+            if (_directCache != null) {
+                // 直接策略：更新 evaluator 引用（闭包通过 self._evaluator 间接读取）
+                _evaluator = newEvaluator;
+                if (clearCache !== false) {
+                    _directCache.length = 0;
+                }
+            } else {
+                _managerCache.reset(newEvaluator, clearCache);
+            }
+        } else if (clearCache !== false) {
+            if (_directCache != null) {
+                _directCache.length = 0;
+            } else {
+                _managerCache.reset(null, true);
+            }
         }
     }
 
@@ -2264,7 +2354,11 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
             result += "  [" + i + "] " + handler.toString() + " (skipCheck: " + handler.skipCheck + ")\n";
         }
 
-        result += "Cache Capacity: " + _managerCache.getCapacity() + "\n";
+        if (_directCache != null) {
+            result += "Cache Strategy: DirectArray (keySpace: " + (1 << _conditionalHandlerIndices.length) + ")\n";
+        } else {
+            result += "Cache Strategy: ARC (capacity: " + _managerCache.getCapacity() + ")\n";
+        }
         result += "SkipCheck Bitmask: " + _skipCheckBitmask.toString(2) + "\n";
         result += "Conditional Handler Indices: " + _conditionalHandlerIndices.join(", ") + "\n";
 
