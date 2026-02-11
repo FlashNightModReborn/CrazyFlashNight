@@ -132,6 +132,10 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testDestroyThenStartSafety();
         this.testOnExitRedirectToOriginalTarget();
 
+        // Batch 10 新增：destroy 安全加固 (P0-1/P0-2)
+        this.testDestroyCallsMachineLevelOnExit();
+        this.testDestroySealsAllEntryPoints();
+
         // 最终报告
         this.printFinalReport();
     }
@@ -3291,8 +3295,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
     /**
      * T5: destroy() 后再调 start() 应安全（不崩溃）
      *
-     * destroy 后 statusDict=null, activeState=null。
-     * start() 应走 _booted 守卫或安全处理 null activeState。
+     * destroy 后 start/onEnter/onExit/AddStatus 被封为空操作（P0-1 终态封印），
+     * 调用不会产生任何副作用。
      */
     public function testDestroyThenStartSafety():Void {
         trace("\n--- Test: T5 - destroy() Then start() Safety ---");
@@ -3303,8 +3307,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.start();
         machine.destroy();
 
-        // destroy 重置 _booted=false, _started=false
-        // 再次 start() 不应崩溃
+        // destroy 后 start 被封为 noop，调用无效果
         var crashed:Boolean = false;
         try {
             machine.start();
@@ -3312,12 +3315,10 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
             crashed = true;
         }
 
-        // start → onEnter → activeState is null → cur=defaultState=null → 跳过子状态传播
-        // 不崩溃即为通过
         this.assert(!crashed,
                    "T5: start() after destroy() does not crash");
 
-        // 验证状态仍为 null（destroy 清理了一切）
+        // 验证状态仍为 null（destroy 清理了一切，start 是 noop 无法复活）
         this.assert(machine.getActiveState() == null,
                    "T5: activeState remains null after destroy+start");
     }
@@ -3378,6 +3379,125 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
                    "T6: B enters second");
 
         machine.destroy();
+    }
+
+    // ========== Batch 10 新增：destroy 安全加固 (P0-1/P0-2) ==========
+
+    /**
+     * T7: destroy() 触发 machine-level onExit 回调 (P0-2)
+     *
+     * 正常 onExit() 会调用 super.onExit() 触发 machine-level 回调。
+     * 旧版 destroy() 只调了 cur.onExit()（子状态退出），
+     * 漏掉了 super.onExit()（machine-level 回调）。
+     *
+     * 验证：
+     *   1. 子状态 onExit 被调用
+     *   2. machine-level onExit 回调被调用
+     *   3. 调用顺序：子状态先退出，machine-level 后
+     */
+    public function testDestroyCallsMachineLevelOnExit():Void {
+        trace("\n--- Test: T7 - destroy() Calls Machine-Level onExit ---");
+        var log:Array = [];
+
+        // 创建带 machine-level onExit 回调的状态机
+        var machine:FSM_StateMachine = new FSM_StateMachine(
+            null,
+            function():Void { log.push("machine:enter"); },
+            function():Void { log.push("machine:exit"); }
+        );
+
+        // 添加子状态，带 onExit 回调
+        var childState:FSM_Status = new FSM_Status(
+            null,
+            function():Void { log.push("child:enter"); },
+            function():Void { log.push("child:exit"); }
+        );
+        machine.AddStatus("child", childState);
+        machine.start();
+
+        // 清除 start 阶段的日志，只关注 destroy
+        log = [];
+
+        // 直接 destroy（不先调 onExit）
+        machine.destroy();
+
+        // 验证 machine-level onExit 被调用
+        var machineExitFound:Boolean = false;
+        var childExitFound:Boolean = false;
+        var childExitIdx:Number = -1;
+        var machineExitIdx:Number = -1;
+
+        for (var i:Number = 0; i < log.length; i++) {
+            if (log[i] == "child:exit") {
+                childExitFound = true;
+                childExitIdx = i;
+            }
+            if (log[i] == "machine:exit") {
+                machineExitFound = true;
+                machineExitIdx = i;
+            }
+        }
+
+        this.assert(childExitFound,
+                   "T7: Child state onExit called during destroy");
+        this.assert(machineExitFound,
+                   "T7: Machine-level onExit callback called during destroy");
+        this.assert(childExitIdx < machineExitIdx,
+                   "T7: Child exits before machine-level callback (correct order)");
+    }
+
+    /**
+     * T8: destroy() 后所有公共入口被封为空操作 (P0-1)
+     *
+     * destroy 结束后 start/onEnter/onExit/AddStatus/ChangeState/onAction
+     * 全部被方法替换为 noop。验证：
+     *   1. 调用任一方法不崩溃
+     *   2. 不产生任何副作用（状态不变）
+     *   3. 不会"部分复活"状态机
+     */
+    public function testDestroySealsAllEntryPoints():Void {
+        trace("\n--- Test: T8 - destroy() Seals All Entry Points ---");
+
+        var enterCalled:Boolean = false;
+        var machine:FSM_StateMachine = new FSM_StateMachine(
+            null,
+            function():Void { enterCalled = true; },
+            null
+        );
+
+        var state:FSM_Status = new FSM_Status(null, null, null);
+        machine.AddStatus("A", state);
+        machine.start();
+        enterCalled = false; // 重置，只关注 destroy 后的行为
+        machine.destroy();
+
+        // 逐一调用所有公共入口，均不应崩溃
+        var crashed:Boolean = false;
+        try {
+            machine.start();
+            machine.onEnter();
+            machine.onExit();
+            machine.onAction();
+            machine.ChangeState("A");
+            machine.AddStatus("B", new FSM_Status(null, null, null));
+        } catch (e:Error) {
+            crashed = true;
+        }
+
+        this.assert(!crashed,
+                   "T8: All public methods are safe after destroy (no crash)");
+
+        // 验证 onEnter callback 不会被触发（未被"复活"）
+        this.assert(!enterCalled,
+                   "T8: Machine-level onEnter not re-triggered (no revival)");
+
+        // 验证核心状态仍为 destroy 后的值
+        this.assert(machine.getActiveState() == null,
+                   "T8: activeState remains null (sealed)");
+        this.assert(machine.getActiveStateName() == null,
+                   "T8: activeStateName remains null (sealed)");
+        this.assert(machine.isDestroyed == true,
+                   "T8: isDestroyed flag intact");
     }
 
     // ========== 报告生成 ==========

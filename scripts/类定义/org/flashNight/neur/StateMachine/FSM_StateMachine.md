@@ -155,7 +155,7 @@ Workflow failed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: C
+[PASS] Conditional branching led to valid path: A
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -188,28 +188,28 @@ Workflow failed!
 [PASS] Transition cleanup completed
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=33ms, Actions=32ms for 10000 operations
+Basic Performance: Transitions=31ms, Actions=34ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 40ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 44ms, 100 transitions in 0ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 19ms
+Frequent Transitions Performance: 5000 transitions in 18ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 7ms
+Complex Transition Performance: 1000 complex transitions in 10ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
 Size 10: Create=0ms, Transition=0ms, Operation=0ms
-Size 50: Create=1ms, Transition=0ms, Operation=1ms
+Size 50: Create=3ms, Transition=1ms, Operation=0ms
 Size 100: Create=2ms, Transition=2ms, Operation=0ms
-Size 500: Create=11ms, Transition=12ms, Operation=0ms
+Size 500: Create=10ms, Transition=10ms, Operation=0ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -433,8 +433,20 @@ Size 500: Create=11ms, Transition=12ms, Operation=0ms
 [PASS] T6: A exits first
 [PASS] T6: B enters second
 
+--- Test: T7 - destroy() Calls Machine-Level onExit ---
+[PASS] T7: Child state onExit called during destroy
+[PASS] T7: Machine-level onExit callback called during destroy
+[PASS] T7: Child exits before machine-level callback (correct order)
+
+--- Test: T8 - destroy() Seals All Entry Points ---
+[PASS] T8: All public methods are safe after destroy (no crash)
+[PASS] T8: Machine-level onEnter not re-triggered (no revival)
+[PASS] T8: activeState remains null (sealed)
+[PASS] T8: activeStateName remains null (sealed)
+[PASS] T8: isDestroyed flag intact
+
 === FINAL FSM TEST REPORT ===
-Tests Passed: 254
+Tests Passed: 262
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.

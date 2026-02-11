@@ -14,7 +14,7 @@ import org.flashNight.neur.StateMachine.Transitions;
  *   构建期      ─ new → AddStatus → [ChangeState] → start()
  *   运行期      ─ start() 之后，onAction / ChangeState 正常工作
  *   退出/重入期 ─ 被上级 ChangeState 退出后，可被再次 onEnter 重新激活
- *   终态        ─ destroy() 之后不可复用
+ *   终态        ─ destroy() 之后不可复用（所有公共入口被封为空操作）
  *
  *   ChangeState 在不同阶段有不同语义（Meta-State Polymorphism）:
  *     构建期 / onEnter回调中 → _csInit  — 仅移指针，不触发 onExit/onEnter
@@ -77,7 +77,10 @@ import org.flashNight.neur.StateMachine.Transitions;
  *   b) 子状态 onAction/onExit 中可通过 this.superMachine.ChangeState()
  *      切换父机状态，但不得跨越两级以上（祖父机）。
  *      跨级调用不会崩溃，但会导致已退出的中间层在当前帧残余执行。
- *   c) destroy() 递归由外向内传播 onExit（已启动时），再由外向内销毁。
+ *   c) destroy() 若已启动：先 cur.onExit()（子状态退出），再 super.onExit()
+ *      （machine-level 回调），最后递归销毁所有子状态。
+ *   d) destroy() 结束后，start/onEnter/onExit/AddStatus/ChangeState/onAction
+ *      全部被方法替换为空操作，防止误调用导致"部分复活"。
  *
  * 【C7 — 异常安全等级】
  *
@@ -476,7 +479,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
 
     /**
      * 终态销毁 - 释放全部资源。
-     * 契约：销毁期间禁止内部 ChangeState。
+     * 契约：销毁期间禁止内部 ChangeState；销毁后所有公共入口被封为空操作。
      */
     public function destroy():Void {
         // 1. 锁定
@@ -484,10 +487,14 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         this.onAction = this._oaNoop;
         this._pending = null;
 
-        // 2. 若已启动，传播 onExit（由内而外）
-        var cur:FSM_Status = this.activeState;
-        if (this._started && cur) {
-            cur.onExit();
+        // 2. 若已启动，传播 onExit 并触发 machine-level 回调
+        if (this._started) {
+            var cur:FSM_Status = this.activeState;
+            if (cur) {
+                cur.onExit();                // 子状态退出
+            }
+            this._pending = null;            // 清除子状态 onExit 中可能产生的 pending
+            super.onExit();                  // P0-2: machine-level onExit 回调（与 onExit() 对称）
         }
 
         // 3. 重置
@@ -516,5 +523,13 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         this.defaultState = null;
 
         super.destroy();
+
+        // 7. P0-1: 终态封印 — 防止 destroy 后误调用导致"部分复活"
+        //    与 ChangeState/_csNoop、onAction/_oaNoop 同源的方法替换模式
+        var sealed:Function = this._oaNoop;
+        this.start = sealed;
+        this.onEnter = sealed;
+        this.onExit = sealed;
+        this.AddStatus = sealed;
     }
 }
