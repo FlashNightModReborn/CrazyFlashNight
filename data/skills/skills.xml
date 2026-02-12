@@ -575,12 +575,12 @@
         <Type>被动</Type>
         <Description>被动技能学习后可获得被动效果，点击可启用或停用。
 被动效果：
-解锁多段冲刺攻击。
+解锁多段冲刺攻击：攻击后摇期间再次按J。
 在空中空手战斗时按J键可以触发三段空中连招，技能升级可以略微增加伤害。</Description>
         <UnlockLevel>15</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>35</UnlockSP>
-        <UpgradeSP>35</UpgradeSP>
+        <UpgradeSP>30</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
@@ -728,13 +728,13 @@
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
-    <Skill id="60">
+    <Skill id="60">s
         <Name>刀剑攻击</Name>
         <Type>被动</Type>
         <Description>被动技能学习后可获得被动效果，点击可启用或停用。
 被动效果：
 刀剑跳劈可以通过反作用力浮空。
-&lt;font color="#2bff00"&gt;Lv1&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;多段冲刺攻击&lt;/font&gt;。
+&lt;font color="#2bff00"&gt;Lv1&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;多段冲刺攻击&lt;/font&gt;，攻击后摇时再次按&lt;font color="#ffee00"&gt;J&lt;/font&gt;。
 &lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;贯穿突刺&lt;/font&gt;
 攻击后摇时&lt;font color="#ffee00"&gt;→→&lt;/font&gt;。
 &lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;剑气释放(轻武器)&lt;/font&gt;
@@ -770,7 +770,7 @@
 解锁诛杀步：攻击后摇期间→→，期间按J派生破极拳第5式。
 解锁后撤步：攻击后摇期间Shift+←，期间按J派生截拳第5式。
 增加空手普通攻击的基础伤害，技能升级时伤害将线性提升。
-        初始收益：较高。升级收益：中等。</Description>
+初始收益：较高。升级收益：中等。</Description>
         <UnlockLevel>1</UnlockLevel>
         <MaxLevel>20</MaxLevel>
         <UnlockSP>20</UnlockSP>
