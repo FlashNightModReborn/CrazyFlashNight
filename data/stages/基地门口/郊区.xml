@@ -125,6 +125,15 @@
                         <x>1109</x>
                         <y>418</y>
                     </Enemy>
+                    <Enemy>
+                        <Type>兵种353</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>10</Level>
+                        <x>1000</x>
+                        <y>350</y>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
                 </EnemyGroup>
             </SubWave>
         </Wave>
