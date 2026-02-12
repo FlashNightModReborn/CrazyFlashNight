@@ -467,224 +467,80 @@ BuiltInSort: ✗ 不稳定
 --- 随机数据 ---
 
 规模: 10
-  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  InsertionSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   QuickSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  AdaptiveSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 50
-  InsertionSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PDQSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  QuickSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PDQSort 平均:0.6ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
+  QuickSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  AdaptiveSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  NaturalMergeSort 平均:1.0ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
+  PowerSort 平均:0.8ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 100
-  InsertionSort 平均:2.2ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  PDQSort 平均:1.4ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  InsertionSort 平均:3.0ms 最小:2.0ms 最大:4.0ms 成功率:100.0%
+  PDQSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
   QuickSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:1.0ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
+  AdaptiveSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
   NaturalMergeSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PowerSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  BuiltInSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
 
 规模: 300
-  InsertionSort 平均:20.4ms 最小:20.0ms 最大:21.0ms 成功率:100.0%
+  InsertionSort 平均:27.2ms 最小:23.0ms 最大:38.0ms 成功率:100.0%
   PDQSort 平均:4.8ms 最小:4.0ms 最大:5.0ms 成功率:100.0%
-  QuickSort 平均:2.0ms 最小:2.0ms 最大:2.0ms 成功率:100.0%
-  AdaptiveSort 平均:3.0ms 最小:3.0ms 最大:3.0ms 成功率:100.0%
-  TimSort 平均:3.4ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
-  NaturalMergeSort 平均:3.4ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
-  PowerSort 平均:5.2ms 最小:5.0ms 最大:6.0ms 成功率:100.0%
+  QuickSort 平均:1.4ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  AdaptiveSort 平均:3.8ms 最小:3.0ms 最大:5.0ms 成功率:100.0%
+  TimSort 平均:3.0ms 最小:3.0ms 最大:3.0ms 成功率:100.0%
+  NaturalMergeSort 平均:4.6ms 最小:3.0ms 最大:7.0ms 成功率:100.0%
+  PowerSort 平均:5.2ms 最小:4.0ms 最大:6.0ms 成功率:100.0%
   BuiltInSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
 
 规模: 1000
-  InsertionSort 平均:211.4ms 最小:208.0ms 最大:215.0ms 成功率:100.0%
-  PDQSort 平均:18.6ms 最小:18.0ms 最大:19.0ms 成功率:100.0%
-  QuickSort 平均:4.6ms 最小:4.0ms 最大:6.0ms 成功率:100.0%
-  AdaptiveSort 平均:11.4ms 最小:11.0ms 最大:12.0ms 成功率:100.0%
-  TimSort 平均:13.4ms 最小:13.0ms 最大:14.0ms 成功率:100.0%
-  NaturalMergeSort 平均:11.8ms 最小:11.0ms 最大:12.0ms 成功率:100.0%
-  PowerSort 平均:24.4ms 最小:24.0ms 最大:26.0ms 成功率:100.0%
-  BuiltInSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:265.4ms 最小:260.0ms 最大:270.0ms 成功率:100.0%
+  PDQSort 平均:21.2ms 最小:19.0ms 最大:26.0ms 成功率:100.0%
+  QuickSort 平均:5.6ms 最小:5.0ms 最大:7.0ms 成功率:100.0%
+  AdaptiveSort 平均:14.2ms 最小:13.0ms 最大:18.0ms 成功率:100.0%
+  TimSort 平均:14.8ms 最小:13.0ms 最大:16.0ms 成功率:100.0%
+  NaturalMergeSort 平均:14.4ms 最小:13.0ms 最大:18.0ms 成功率:100.0%
+  PowerSort 平均:27.8ms 最小:27.0ms 最大:29.0ms 成功率:100.0%
+  BuiltInSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
 
 规模: 3000
-  InsertionSort 平均:1948.4ms 最小:1929.0ms 最大:1959.0ms 成功率:100.0%
-  PDQSort 平均:70.6ms 最小:69.0ms 最大:73.0ms 成功率:100.0%
-  QuickSort 平均:18.0ms 最小:17.0ms 最大:19.0ms 成功率:100.0%
-  AdaptiveSort 平均:41.6ms 最小:41.0ms 最大:42.0ms 成功率:100.0%
-  TimSort 平均:48.0ms 最小:47.0ms 最大:49.0ms 成功率:100.0%
-  NaturalMergeSort 平均:44.8ms 最小:44.0ms 最大:45.0ms 成功率:100.0%
-  PowerSort 平均:131.4ms 最小:130.0ms 最大:133.0ms 成功率:100.0%
-  BuiltInSort 平均:1.8ms 最小:1.0ms 最大:3.0ms 成功率:100.0%
+  InsertionSort 平均:2605.8ms 最小:2323.0ms 最大:2827.0ms 成功率:100.0%
+  PDQSort 平均:98.0ms 最小:97.0ms 最大:99.0ms 成功率:100.0%
+  QuickSort 平均:24.6ms 最小:24.0ms 最大:26.0ms 成功率:100.0%
+  AdaptiveSort 平均:55.2ms 最小:54.0ms 最大:56.0ms 成功率:100.0%
+  TimSort 平均:63.2ms 最小:62.0ms 最大:64.0ms 成功率:100.0%
+  NaturalMergeSort 平均:62.8ms 最小:58.0ms 最大:78.0ms 成功率:100.0%
+  PowerSort 平均:183.0ms 最小:180.0ms 最大:187.0ms 成功率:100.0%
+  BuiltInSort 平均:2.8ms 最小:2.0ms 最大:4.0ms 成功率:100.0%
 
 规模: 10000
-  InsertionSort 平均:21496.2ms 最小:21405.0ms 最大:21638.0ms 成功率:100.0%
-  PDQSort 平均:264.2ms 最小:263.0ms 最大:267.0ms 成功率:100.0%
-  QuickSort 平均:58.2ms 最小:57.0ms 最大:59.0ms 成功率:100.0%
-  AdaptiveSort 平均:138.0ms 最小:134.0ms 最大:144.0ms 成功率:100.0%
-  TimSort 平均:175.2ms 最小:171.0ms 最大:180.0ms 成功率:100.0%
-  NaturalMergeSort 平均:165.8ms 最小:163.0ms 最大:169.0ms 成功率:100.0%
-  PowerSort 平均:845.0ms 最小:843.0ms 最大:847.0ms 成功率:100.0%
-  BuiltInSort 平均:5.2ms 最小:5.0ms 最大:6.0ms 成功率:100.0%
+  InsertionSort 平均:29533.0ms 最小:29192.0ms 最大:30348.0ms 成功率:100.0%
+  PDQSort 平均:383.4ms 最小:368.0ms 最大:408.0ms 成功率:100.0%
+  QuickSort 平均:82.2ms 最小:82.0ms 最大:83.0ms 成功率:100.0%
+  AdaptiveSort 平均:191.8ms 最小:189.0ms 最大:196.0ms 成功率:100.0%
+  TimSort 平均:242.4ms 最小:237.0ms 最大:246.0ms 成功率:100.0%
+  NaturalMergeSort 平均:232.8ms 最小:228.0ms 最大:237.0ms 成功率:100.0%
+  PowerSort 平均:1217.0ms 最小:1199.0ms 最大:1239.0ms 成功率:100.0%
+  BuiltInSort 平均:10.0ms 最小:9.0ms 最大:11.0ms 成功率:100.0%
 
 --- 已排序 ---
 
 规模: 10
   InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  QuickSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-
-规模: 50
-  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  QuickSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  TimSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  BuiltInSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-
-规模: 100
-  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  QuickSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  BuiltInSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-
-规模: 300
-  InsertionSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  QuickSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:1.4ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PowerSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  BuiltInSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-
-规模: 1000
-  InsertionSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PDQSort 平均:1.4ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  QuickSort 平均:3.2ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
-  AdaptiveSort 平均:7.2ms 最小:7.0ms 最大:8.0ms 成功率:100.0%
-  TimSort 平均:1.0ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  BuiltInSort 平均:5.8ms 最小:5.0ms 最大:6.0ms 成功率:100.0%
-
-规模: 3000
-  InsertionSort 平均:2.8ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  PDQSort 平均:3.4ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
-  QuickSort 平均:9.4ms 最小:8.0ms 最大:10.0ms 成功率:100.0%
-  AdaptiveSort 平均:23.2ms 最小:22.0ms 最大:24.0ms 成功率:100.0%
-  TimSort 平均:2.4ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  NaturalMergeSort 平均:2.0ms 最小:1.0ms 最大:3.0ms 成功率:100.0%
-  PowerSort 平均:2.2ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  BuiltInSort 平均:53.4ms 最小:53.0ms 最大:54.0ms 成功率:100.0%
-
-规模: 10000
-  InsertionSort 平均:9.2ms 最小:9.0ms 最大:10.0ms 成功率:100.0%
-  PDQSort 平均:9.8ms 最小:9.0ms 最大:11.0ms 成功率:100.0%
-  QuickSort 平均:38.2ms 最小:37.0ms 最大:39.0ms 成功率:100.0%
-  AdaptiveSort 平均:91.8ms 最小:91.0ms 最大:93.0ms 成功率:100.0%
-  TimSort 平均:8.2ms 最小:8.0ms 最大:9.0ms 成功率:100.0%
-  NaturalMergeSort 平均:7.4ms 最小:7.0ms 最大:9.0ms 成功率:100.0%
-  PowerSort 平均:8.4ms 最小:8.0ms 最大:9.0ms 成功率:100.0%
-  BuiltInSort 平均:594.0ms 最小:591.0ms 最大:597.0ms 成功率:100.0%
-
---- 逆序 ---
-
-规模: 10
-  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  QuickSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-
-规模: 50
-  InsertionSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  QuickSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  BuiltInSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-
-规模: 100
-  InsertionSort 平均:4.2ms 最小:4.0ms 最大:5.0ms 成功率:100.0%
-  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  QuickSort 平均:0.6ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  BuiltInSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-
-规模: 300
-  InsertionSort 平均:36.4ms 最小:36.0ms 最大:37.0ms 成功率:100.0%
-  PDQSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  QuickSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:2.0ms 最小:2.0ms 最大:2.0ms 成功率:100.0%
-  TimSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  BuiltInSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-
-规模: 1000
-  InsertionSort 平均:406.2ms 最小:401.0ms 最大:418.0ms 成功率:100.0%
-  PDQSort 平均:1.4ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  QuickSort 平均:3.4ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
-  AdaptiveSort 平均:9.2ms 最小:9.0ms 最大:10.0ms 成功率:100.0%
-  TimSort 平均:1.6ms 最小:0.0ms 最大:3.0ms 成功率:100.0%
-  NaturalMergeSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:1.0ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
-  BuiltInSort 平均:6.6ms 最小:6.0ms 最大:7.0ms 成功率:100.0%
-
-规模: 3000
-  InsertionSort 平均:3696.2ms 最小:3690.0ms 最大:3703.0ms 成功率:100.0%
-  PDQSort 平均:3.4ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
-  QuickSort 平均:12.8ms 最小:12.0ms 最大:13.0ms 成功率:100.0%
-  AdaptiveSort 平均:30.0ms 最小:29.0ms 最大:31.0ms 成功率:100.0%
-  TimSort 平均:3.4ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
-  NaturalMergeSort 平均:2.8ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  PowerSort 平均:3.2ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
-  BuiltInSort 平均:54.2ms 最小:54.0ms 最大:55.0ms 成功率:100.0%
-
-规模: 10000
-  InsertionSort 平均:41452.6ms 最小:40899.0ms 最大:41844.0ms 成功率:100.0%
-  PDQSort 平均:12.8ms 最小:12.0ms 最大:13.0ms 成功率:100.0%
-  QuickSort 平均:49.0ms 最小:49.0ms 最大:49.0ms 成功率:100.0%
-  AdaptiveSort 平均:113.2ms 最小:111.0ms 最大:116.0ms 成功率:100.0%
-  TimSort 平均:10.2ms 最小:10.0ms 最大:11.0ms 成功率:100.0%
-  NaturalMergeSort 平均:9.8ms 最小:9.0ms 最大:10.0ms 成功率:100.0%
-  PowerSort 平均:10.4ms 最小:10.0ms 最大:11.0ms 成功率:100.0%
-  BuiltInSort 平均:604.6ms 最小:599.0ms 最大:608.0ms 成功率:100.0%
-
---- 部分有序 ---
-
-规模: 10
-  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PDQSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   QuickSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   AdaptiveSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
@@ -694,63 +550,207 @@ BuiltInSort: ✗ 不稳定
 
 规模: 50
   InsertionSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PDQSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   QuickSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   AdaptiveSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+
+规模: 100
+  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  QuickSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  AdaptiveSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  BuiltInSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+
+规模: 300
+  InsertionSort 平均:1.2ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
+  PDQSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  QuickSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  AdaptiveSort 平均:2.2ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
+  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  NaturalMergeSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  BuiltInSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+
+规模: 1000
+  InsertionSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  PDQSort 平均:1.6ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  QuickSort 平均:3.4ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
+  AdaptiveSort 平均:9.8ms 最小:9.0ms 最大:11.0ms 成功率:100.0%
+  TimSort 平均:1.6ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  NaturalMergeSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  PowerSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
+  BuiltInSort 平均:12.0ms 最小:12.0ms 最大:12.0ms 成功率:100.0%
+
+规模: 3000
+  InsertionSort 平均:4.4ms 最小:3.0ms 最大:5.0ms 成功率:100.0%
+  PDQSort 平均:4.4ms 最小:4.0ms 最大:5.0ms 成功率:100.0%
+  QuickSort 平均:13.0ms 最小:13.0ms 最大:13.0ms 成功率:100.0%
+  AdaptiveSort 平均:32.4ms 最小:30.0ms 最大:34.0ms 成功率:100.0%
+  TimSort 平均:3.2ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
+  NaturalMergeSort 平均:3.4ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
+  PowerSort 平均:3.0ms 最小:2.0ms 最大:4.0ms 成功率:100.0%
+  BuiltInSort 平均:107.8ms 最小:105.0ms 最大:111.0ms 成功率:100.0%
+
+规模: 10000
+  InsertionSort 平均:12.4ms 最小:12.0ms 最大:13.0ms 成功率:100.0%
+  PDQSort 平均:13.6ms 最小:12.0ms 最大:15.0ms 成功率:100.0%
+  QuickSort 平均:51.8ms 最小:50.0ms 最大:55.0ms 成功率:100.0%
+  AdaptiveSort 平均:127.4ms 最小:121.0ms 最大:138.0ms 成功率:100.0%
+  TimSort 平均:11.0ms 最小:10.0ms 最大:12.0ms 成功率:100.0%
+  NaturalMergeSort 平均:10.4ms 最小:10.0ms 最大:11.0ms 成功率:100.0%
+  PowerSort 平均:10.2ms 最小:10.0ms 最大:11.0ms 成功率:100.0%
+  BuiltInSort 平均:1174.4ms 最小:1161.0ms 最大:1191.0ms 成功率:100.0%
+
+--- 逆序 ---
+
+规模: 10
+  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  QuickSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  AdaptiveSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+
+规模: 50
+  InsertionSort 平均:2.0ms 最小:2.0ms 最大:2.0ms 成功率:100.0%
+  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  QuickSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  AdaptiveSort 平均:2.0ms 最小:1.0ms 最大:3.0ms 成功率:100.0%
+  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   NaturalMergeSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 100
-  InsertionSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PDQSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  QuickSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:7.4ms 最小:7.0ms 最大:8.0ms 成功率:100.0%
+  PDQSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  QuickSort 平均:1.0ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
+  AdaptiveSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  BuiltInSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+
+规模: 300
+  InsertionSort 平均:65.4ms 最小:64.0ms 最大:68.0ms 成功率:100.0%
+  PDQSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  QuickSort 平均:1.8ms 最小:1.0ms 最大:3.0ms 成功率:100.0%
+  AdaptiveSort 平均:3.4ms 最小:3.0ms 最大:5.0ms 成功率:100.0%
+  TimSort 平均:0.8ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   PowerSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  BuiltInSort 平均:1.4ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+
+规模: 1000
+  InsertionSort 平均:620.2ms 最小:603.0ms 最大:658.0ms 成功率:100.0%
+  PDQSort 平均:2.0ms 最小:2.0ms 最大:2.0ms 成功率:100.0%
+  QuickSort 平均:5.4ms 最小:5.0ms 最大:6.0ms 成功率:100.0%
+  AdaptiveSort 平均:12.0ms 最小:11.0ms 最大:13.0ms 成功率:100.0%
+  TimSort 平均:1.4ms 最小:1.0ms 最大:3.0ms 成功率:100.0%
+  NaturalMergeSort 平均:1.6ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  PowerSort 平均:1.6ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  BuiltInSort 平均:12.4ms 最小:12.0ms 最大:13.0ms 成功率:100.0%
+
+规模: 3000
+  InsertionSort 平均:5503.0ms 最小:5323.0ms 最大:5725.0ms 成功率:100.0%
+  PDQSort 平均:5.4ms 最小:5.0ms 最大:6.0ms 成功率:100.0%
+  QuickSort 平均:18.0ms 最小:17.0ms 最大:19.0ms 成功率:100.0%
+  AdaptiveSort 平均:39.4ms 最小:39.0ms 最大:40.0ms 成功率:100.0%
+  TimSort 平均:4.2ms 最小:4.0ms 最大:5.0ms 成功率:100.0%
+  NaturalMergeSort 平均:3.8ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
+  PowerSort 平均:4.6ms 最小:4.0ms 最大:5.0ms 成功率:100.0%
+  BuiltInSort 平均:107.4ms 最小:106.0ms 最大:109.0ms 成功率:100.0%
+
+规模: 10000
+  InsertionSort 平均:59732.4ms 最小:58874.0ms 最大:61031.0ms 成功率:100.0%
+  PDQSort 平均:17.0ms 最小:15.0ms 最大:18.0ms 成功率:100.0%
+  QuickSort 平均:65.2ms 最小:64.0ms 最大:67.0ms 成功率:100.0%
+  AdaptiveSort 平均:155.4ms 最小:150.0ms 最大:168.0ms 成功率:100.0%
+  TimSort 平均:13.4ms 最小:12.0ms 最大:16.0ms 成功率:100.0%
+  NaturalMergeSort 平均:13.2ms 最小:13.0ms 最大:14.0ms 成功率:100.0%
+  PowerSort 平均:13.6ms 最小:12.0ms 最大:15.0ms 成功率:100.0%
+  BuiltInSort 平均:1173.8ms 最小:1154.0ms 最大:1198.0ms 成功率:100.0%
+
+--- 部分有序 ---
+
+规模: 10
+  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  QuickSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  AdaptiveSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+
+规模: 50
+  InsertionSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PDQSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  QuickSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  AdaptiveSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+
+规模: 100
+  InsertionSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
+  PDQSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
+  QuickSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  AdaptiveSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  NaturalMergeSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  PowerSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 300
-  InsertionSort 平均:4.6ms 最小:4.0ms 最大:5.0ms 成功率:100.0%
-  PDQSort 平均:3.0ms 最小:2.0ms 最大:4.0ms 成功率:100.0%
-  QuickSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  AdaptiveSort 平均:2.0ms 最小:1.0ms 最大:3.0ms 成功率:100.0%
-  TimSort 平均:2.8ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  NaturalMergeSort 平均:1.8ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  PowerSort 平均:3.0ms 最小:2.0ms 最大:4.0ms 成功率:100.0%
-  BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  InsertionSort 平均:5.8ms 最小:5.0ms 最大:7.0ms 成功率:100.0%
+  PDQSort 平均:4.0ms 最小:3.0ms 最大:5.0ms 成功率:100.0%
+  QuickSort 平均:1.6ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  AdaptiveSort 平均:3.2ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
+  TimSort 平均:3.2ms 最小:2.0ms 最大:4.0ms 成功率:100.0%
+  NaturalMergeSort 平均:2.8ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
+  PowerSort 平均:4.2ms 最小:4.0ms 最大:5.0ms 成功率:100.0%
+  BuiltInSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
 
 规模: 1000
-  InsertionSort 平均:49.8ms 最小:49.0ms 最大:51.0ms 成功率:100.0%
-  PDQSort 平均:18.2ms 最小:17.0ms 最大:19.0ms 成功率:100.0%
-  QuickSort 平均:4.4ms 最小:4.0ms 最大:5.0ms 成功率:100.0%
-  AdaptiveSort 平均:9.8ms 最小:9.0ms 最大:11.0ms 成功率:100.0%
-  TimSort 平均:11.2ms 最小:10.0ms 最大:12.0ms 成功率:100.0%
-  NaturalMergeSort 平均:9.0ms 最小:9.0ms 最大:9.0ms 成功率:100.0%
-  PowerSort 平均:12.4ms 最小:12.0ms 最大:13.0ms 成功率:100.0%
-  BuiltInSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:69.0ms 最小:68.0ms 最大:70.0ms 成功率:100.0%
+  PDQSort 平均:24.2ms 最小:23.0ms 最大:25.0ms 成功率:100.0%
+  QuickSort 平均:5.8ms 最小:5.0ms 最大:6.0ms 成功率:100.0%
+  AdaptiveSort 平均:14.2ms 最小:13.0ms 最大:16.0ms 成功率:100.0%
+  TimSort 平均:14.2ms 最小:14.0ms 最大:15.0ms 成功率:100.0%
+  NaturalMergeSort 平均:12.8ms 最小:12.0ms 最大:14.0ms 成功率:100.0%
+  PowerSort 平均:18.0ms 最小:17.0ms 最大:19.0ms 成功率:100.0%
+  BuiltInSort 平均:1.2ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
 
 规模: 3000
-  InsertionSort 平均:439.4ms 最小:433.0ms 最大:448.0ms 成功率:100.0%
-  PDQSort 平均:73.8ms 最小:72.0ms 最大:77.0ms 成功率:100.0%
-  QuickSort 平均:17.4ms 最小:16.0ms 最大:18.0ms 成功率:100.0%
-  AdaptiveSort 平均:37.8ms 最小:37.0ms 最大:40.0ms 成功率:100.0%
-  TimSort 平均:38.8ms 最小:37.0ms 最大:41.0ms 成功率:100.0%
-  NaturalMergeSort 平均:31.8ms 最小:31.0ms 最大:33.0ms 成功率:100.0%
-  PowerSort 平均:70.6ms 最小:69.0ms 最大:73.0ms 成功率:100.0%
-  BuiltInSort 平均:2.2ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
+  InsertionSort 平均:631.8ms 最小:621.0ms 最大:660.0ms 成功率:100.0%
+  PDQSort 平均:107.0ms 最小:102.0ms 最大:121.0ms 成功率:100.0%
+  QuickSort 平均:23.4ms 最小:23.0ms 最大:24.0ms 成功率:100.0%
+  AdaptiveSort 平均:55.6ms 最小:52.0ms 最大:59.0ms 成功率:100.0%
+  TimSort 平均:51.0ms 最小:50.0ms 最大:52.0ms 成功率:100.0%
+  NaturalMergeSort 平均:45.2ms 最小:45.0ms 最大:46.0ms 成功率:100.0%
+  PowerSort 平均:99.6ms 最小:97.0ms 最大:103.0ms 成功率:100.0%
+  BuiltInSort 平均:3.4ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
 
 规模: 10000
-  InsertionSort 平均:4492.2ms 最小:4436.0ms 最大:4605.0ms 成功率:100.0%
-  PDQSort 平均:265.2ms 最小:262.0ms 最大:268.0ms 成功率:100.0%
-  QuickSort 平均:66.2ms 最小:66.0ms 最大:67.0ms 成功率:100.0%
-  AdaptiveSort 平均:150.8ms 最小:149.0ms 最大:155.0ms 成功率:100.0%
-  TimSort 平均:148.4ms 最小:146.0ms 最大:149.0ms 成功率:100.0%
-  NaturalMergeSort 平均:120.2ms 最小:119.0ms 最大:124.0ms 成功率:100.0%
-  PowerSort 平均:476.2ms 最小:472.0ms 最大:481.0ms 成功率:100.0%
-  BuiltInSort 平均:6.6ms 最小:6.0ms 最大:7.0ms 成功率:100.0%
+  InsertionSort 平均:6830.8ms 最小:6777.0ms 最大:6898.0ms 成功率:100.0%
+  PDQSort 平均:391.4ms 最小:382.0ms 最大:404.0ms 成功率:100.0%
+  QuickSort 平均:97.8ms 最小:97.0ms 最大:99.0ms 成功率:100.0%
+  AdaptiveSort 平均:226.0ms 最小:220.0ms 最大:237.0ms 成功率:100.0%
+  TimSort 平均:200.0ms 最小:199.0ms 最大:201.0ms 成功率:100.0%
+  NaturalMergeSort 平均:177.8ms 最小:171.0ms 最大:187.0ms 成功率:100.0%
+  PowerSort 平均:727.8ms 最小:699.0ms 最大:755.0ms 成功率:100.0%
+  BuiltInSort 平均:15.0ms 最小:14.0ms 最大:16.0ms 成功率:100.0%
 
 --- 重复元素 ---
 
@@ -759,70 +759,70 @@ BuiltInSort: ✗ 不稳定
   PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   QuickSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   AdaptiveSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  TimSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 50
-  InsertionSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PDQSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PDQSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   QuickSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  AdaptiveSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  TimSort 平均:0.8ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
   NaturalMergeSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PowerSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 100
-  InsertionSort 平均:1.4ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  PDQSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  QuickSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  BuiltInSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:2.8ms 最小:2.0ms 最大:4.0ms 成功率:100.0%
+  PDQSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
+  QuickSort 平均:0.6ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
+  AdaptiveSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  NaturalMergeSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  PowerSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
+  BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 300
-  InsertionSort 平均:15.8ms 最小:15.0ms 最大:17.0ms 成功率:100.0%
-  PDQSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  QuickSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  AdaptiveSort 平均:2.2ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  TimSort 平均:3.2ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
-  NaturalMergeSort 平均:3.0ms 最小:2.0ms 最大:4.0ms 成功率:100.0%
-  PowerSort 平均:4.4ms 最小:4.0ms 最大:5.0ms 成功率:100.0%
+  InsertionSort 平均:22.2ms 最小:22.0ms 最大:23.0ms 成功率:100.0%
+  PDQSort 平均:2.0ms 最小:2.0ms 最大:2.0ms 成功率:100.0%
+  QuickSort 平均:1.6ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  AdaptiveSort 平均:3.2ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
+  TimSort 平均:4.0ms 最小:3.0ms 最大:5.0ms 成功率:100.0%
+  NaturalMergeSort 平均:4.4ms 最小:4.0ms 最大:6.0ms 成功率:100.0%
+  PowerSort 平均:6.4ms 最小:6.0ms 最大:7.0ms 成功率:100.0%
   BuiltInSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
 
 规模: 1000
-  InsertionSort 平均:168.2ms 最小:167.0ms 最大:169.0ms 成功率:100.0%
-  PDQSort 平均:5.0ms 最小:5.0ms 最大:5.0ms 成功率:100.0%
-  QuickSort 平均:10.4ms 最小:9.0ms 最大:11.0ms 成功率:100.0%
-  AdaptiveSort 平均:18.2ms 最小:18.0ms 最大:19.0ms 成功率:100.0%
-  TimSort 平均:12.4ms 最小:11.0ms 最大:13.0ms 成功率:100.0%
-  NaturalMergeSort 平均:11.0ms 最小:10.0ms 最大:12.0ms 成功率:100.0%
-  PowerSort 平均:16.6ms 最小:16.0ms 最大:17.0ms 成功率:100.0%
-  BuiltInSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:251.2ms 最小:246.0ms 最大:268.0ms 成功率:100.0%
+  PDQSort 平均:7.0ms 最小:6.0ms 最大:8.0ms 成功率:100.0%
+  QuickSort 平均:15.2ms 最小:14.0ms 最大:16.0ms 成功率:100.0%
+  AdaptiveSort 平均:26.2ms 最小:25.0ms 最大:27.0ms 成功率:100.0%
+  TimSort 平均:16.8ms 最小:16.0ms 最大:18.0ms 成功率:100.0%
+  NaturalMergeSort 平均:16.6ms 最小:16.0ms 最大:18.0ms 成功率:100.0%
+  PowerSort 平均:23.6ms 最小:23.0ms 最大:24.0ms 成功率:100.0%
+  BuiltInSort 平均:2.0ms 最小:1.0ms 最大:3.0ms 成功率:100.0%
 
 规模: 3000
-  InsertionSort 平均:1621.6ms 最小:1618.0ms 最大:1626.0ms 成功率:100.0%
-  PDQSort 平均:16.8ms 最小:16.0ms 最大:17.0ms 成功率:100.0%
-  QuickSort 平均:79.0ms 最小:78.0ms 最大:80.0ms 成功率:100.0%
-  AdaptiveSort 平均:144.6ms 最小:143.0ms 最大:146.0ms 成功率:100.0%
-  TimSort 平均:41.8ms 最小:41.0ms 最大:42.0ms 成功率:100.0%
-  NaturalMergeSort 平均:39.2ms 最小:37.0ms 最大:40.0ms 成功率:100.0%
-  PowerSort 平均:86.0ms 最小:84.0ms 最大:88.0ms 成功率:100.0%
-  BuiltInSort 平均:6.6ms 最小:6.0ms 最大:7.0ms 成功率:100.0%
+  InsertionSort 平均:2433.8ms 最小:2408.0ms 最大:2517.0ms 成功率:100.0%
+  PDQSort 平均:24.4ms 最小:24.0ms 最大:25.0ms 成功率:100.0%
+  QuickSort 平均:112.2ms 最小:111.0ms 最大:114.0ms 成功率:100.0%
+  AdaptiveSort 平均:216.8ms 最小:212.0ms 最大:221.0ms 成功率:100.0%
+  TimSort 平均:60.4ms 最小:55.0ms 最大:78.0ms 成功率:100.0%
+  NaturalMergeSort 平均:58.2ms 最小:56.0ms 最大:62.0ms 成功率:100.0%
+  PowerSort 平均:128.2ms 最小:126.0ms 最大:130.0ms 成功率:100.0%
+  BuiltInSort 平均:12.6ms 最小:12.0ms 最大:13.0ms 成功率:100.0%
 
 规模: 10000
-  InsertionSort 平均:18015.4ms 最小:17629.0ms 最大:18231.0ms 成功率:100.0%
-  PDQSort 平均:52.8ms 最小:52.0ms 最大:55.0ms 成功率:100.0%
-  QuickSort 平均:827.8ms 最小:821.0ms 最大:851.0ms 成功率:100.0%
-  AdaptiveSort 平均:1583.4ms 最小:1557.0ms 最大:1653.0ms 成功率:100.0%
-  TimSort 平均:158.4ms 最小:156.0ms 最大:161.0ms 成功率:100.0%
-  NaturalMergeSort 平均:145.2ms 最小:144.0ms 最大:146.0ms 成功率:100.0%
-  PowerSort 平均:631.6ms 最小:627.0ms 最大:634.0ms 成功率:100.0%
-  BuiltInSort 平均:60.4ms 最小:60.0ms 最大:61.0ms 成功率:100.0%
+  InsertionSort 平均:26110.4ms 最小:26039.0ms 最大:26215.0ms 成功率:100.0%
+  PDQSort 平均:75.8ms 最小:75.0ms 最大:77.0ms 成功率:100.0%
+  QuickSort 平均:1185.8ms 最小:1160.0ms 最大:1244.0ms 成功率:100.0%
+  AdaptiveSort 平均:2356.2ms 最小:2303.0ms 最大:2403.0ms 成功率:100.0%
+  TimSort 平均:192.2ms 最小:189.0ms 最大:197.0ms 成功率:100.0%
+  NaturalMergeSort 平均:209.8ms 最小:205.0ms 最大:218.0ms 成功率:100.0%
+  PowerSort 平均:958.6ms 最小:919.0ms 最大:987.0ms 成功率:100.0%
+  BuiltInSort 平均:122.4ms 最小:121.0ms 最大:124.0ms 成功率:100.0%
 
 --- 全相同 ---
 
@@ -837,208 +837,208 @@ BuiltInSort: ✗ 不稳定
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 50
-  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  InsertionSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   QuickSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   AdaptiveSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  TimSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   NaturalMergeSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 100
-  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PDQSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  QuickSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:1.8ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  TimSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PDQSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  QuickSort 平均:1.4ms 最小:1.0ms 最大:3.0ms 成功率:100.0%
+  AdaptiveSort 平均:2.0ms 最小:2.0ms 最大:2.0ms 成功率:100.0%
+  TimSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
 
 规模: 300
-  InsertionSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PDQSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  QuickSort 平均:7.4ms 最小:7.0ms 最大:8.0ms 成功率:100.0%
-  AdaptiveSort 平均:13.8ms 最小:13.0ms 最大:14.0ms 成功率:100.0%
-  TimSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  BuiltInSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  QuickSort 平均:10.0ms 最小:9.0ms 最大:11.0ms 成功率:100.0%
+  AdaptiveSort 平均:20.0ms 最小:19.0ms 最大:21.0ms 成功率:100.0%
+  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  BuiltInSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
 
 规模: 1000
-  InsertionSort 平均:1.0ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
-  PDQSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  QuickSort 平均:79.4ms 最小:79.0ms 最大:80.0ms 成功率:100.0%
-  AdaptiveSort 平均:154.0ms 最小:153.0ms 最大:155.0ms 成功率:100.0%
-  TimSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  BuiltInSort 平均:5.8ms 最小:5.0ms 最大:6.0ms 成功率:100.0%
+  InsertionSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
+  PDQSort 平均:1.8ms 最小:1.0ms 最大:3.0ms 成功率:100.0%
+  QuickSort 平均:114.2ms 最小:108.0ms 最大:124.0ms 成功率:100.0%
+  AdaptiveSort 平均:226.0ms 最小:225.0ms 最大:227.0ms 成功率:100.0%
+  TimSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  NaturalMergeSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  PowerSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  BuiltInSort 平均:11.8ms 最小:11.0ms 最大:12.0ms 成功率:100.0%
 
 规模: 3000
-  InsertionSort 平均:2.4ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  PDQSort 平均:3.0ms 最小:3.0ms 最大:3.0ms 成功率:100.0%
-  QuickSort 平均:723.4ms 最小:718.0ms 最大:729.0ms 成功率:100.0%
-  AdaptiveSort 平均:1420.0ms 最小:1388.0ms 最大:1462.0ms 成功率:100.0%
-  TimSort 平均:2.2ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  NaturalMergeSort 平均:2.8ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  PowerSort 平均:2.8ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  BuiltInSort 平均:51.8ms 最小:51.0ms 最大:52.0ms 成功率:100.0%
+  InsertionSort 平均:3.6ms 最小:3.0ms 最大:5.0ms 成功率:100.0%
+  PDQSort 平均:4.4ms 最小:4.0ms 最大:5.0ms 成功率:100.0%
+  QuickSort 平均:1032.6ms 最小:1009.0ms 最大:1062.0ms 成功率:100.0%
+  AdaptiveSort 平均:2179.4ms 最小:2133.0ms 最大:2215.0ms 成功率:100.0%
+  TimSort 平均:3.4ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
+  NaturalMergeSort 平均:3.6ms 最小:3.0ms 最大:5.0ms 成功率:100.0%
+  PowerSort 平均:3.2ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
+  BuiltInSort 平均:103.8ms 最小:103.0ms 最大:105.0ms 成功率:100.0%
 
 规模: 10000
-  InsertionSort 平均:9.0ms 最小:8.0ms 最大:10.0ms 成功率:100.0%
-  PDQSort 平均:9.8ms 最小:9.0ms 最大:11.0ms 成功率:100.0%
-  QuickSort 平均:7984.6ms 最小:7938.0ms 最大:8012.0ms 成功率:100.0%
-  AdaptiveSort 平均:15830.8ms 最小:15455.0ms 最大:16416.0ms 成功率:100.0%
-  TimSort 平均:8.0ms 最小:7.0ms 最大:9.0ms 成功率:100.0%
-  NaturalMergeSort 平均:7.8ms 最小:7.0ms 最大:8.0ms 成功率:100.0%
-  PowerSort 平均:7.2ms 最小:7.0ms 最大:8.0ms 成功率:100.0%
-  BuiltInSort 平均:591.0ms 最小:585.0ms 最大:607.0ms 成功率:100.0%
+  InsertionSort 平均:12.0ms 最小:11.0ms 最大:13.0ms 成功率:100.0%
+  PDQSort 平均:14.8ms 最小:14.0ms 最大:16.0ms 成功率:100.0%
+  QuickSort 平均:11289.2ms 最小:11200.0ms 最大:11445.0ms 成功率:100.0%
+  AdaptiveSort 平均:23062.0ms 最小:22879.0ms 最大:23241.0ms 成功率:100.0%
+  TimSort 平均:11.0ms 最小:10.0ms 最大:12.0ms 成功率:100.0%
+  NaturalMergeSort 平均:11.2ms 最小:10.0ms 最大:13.0ms 成功率:100.0%
+  PowerSort 平均:10.8ms 最小:10.0ms 最大:12.0ms 成功率:100.0%
+  BuiltInSort 平均:1179.0ms 最小:1156.0ms 最大:1203.0ms 成功率:100.0%
 
 --- 几乎排序 ---
 
 规模: 10
-  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PDQSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   QuickSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  AdaptiveSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+
+规模: 50
+  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  QuickSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   AdaptiveSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
-规模: 50
-  InsertionSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  QuickSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PowerSort 平均:0.4ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
-  BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-
 规模: 100
-  InsertionSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:0.4ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
   PDQSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   QuickSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  AdaptiveSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 300
-  InsertionSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PDQSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  QuickSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:2.0ms 最小:2.0ms 最大:2.0ms 成功率:100.0%
-  TimSort 平均:0.6ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  BuiltInSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PDQSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  QuickSort 平均:1.4ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  AdaptiveSort 平均:2.4ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
+  TimSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PowerSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  BuiltInSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
 
 规模: 1000
-  InsertionSort 平均:4.0ms 最小:3.0ms 最大:5.0ms 成功率:100.0%
-  PDQSort 平均:4.6ms 最小:4.0ms 最大:5.0ms 成功率:100.0%
-  QuickSort 平均:3.2ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
-  AdaptiveSort 平均:7.8ms 最小:7.0ms 最大:9.0ms 成功率:100.0%
+  InsertionSort 平均:5.2ms 最小:5.0ms 最大:6.0ms 成功率:100.0%
+  PDQSort 平均:6.8ms 最小:6.0ms 最大:8.0ms 成功率:100.0%
+  QuickSort 平均:4.6ms 最小:3.0ms 最大:6.0ms 成功率:100.0%
+  AdaptiveSort 平均:10.8ms 最小:10.0ms 最大:12.0ms 成功率:100.0%
   TimSort 平均:3.2ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
-  NaturalMergeSort 平均:4.0ms 最小:3.0ms 最大:5.0ms 成功率:100.0%
-  PowerSort 平均:3.2ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
-  BuiltInSort 平均:3.4ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
+  NaturalMergeSort 平均:5.8ms 最小:5.0ms 最大:8.0ms 成功率:100.0%
+  PowerSort 平均:6.0ms 最小:5.0ms 最大:8.0ms 成功率:100.0%
+  BuiltInSort 平均:7.8ms 最小:7.0ms 最大:8.0ms 成功率:100.0%
 
 规模: 3000
-  InsertionSort 平均:37.2ms 最小:36.0ms 最大:38.0ms 成功率:100.0%
-  PDQSort 平均:44.8ms 最小:41.0ms 最大:53.0ms 成功率:100.0%
-  QuickSort 平均:12.0ms 最小:11.0ms 最大:13.0ms 成功率:100.0%
-  AdaptiveSort 平均:28.4ms 最小:27.0ms 最大:29.0ms 成功率:100.0%
-  TimSort 平均:18.8ms 最小:18.0ms 最大:19.0ms 成功率:100.0%
-  NaturalMergeSort 平均:16.8ms 最小:16.0ms 最大:17.0ms 成功率:100.0%
-  PowerSort 平均:16.0ms 最小:16.0ms 最大:16.0ms 成功率:100.0%
-  BuiltInSort 平均:19.2ms 最小:19.0ms 最大:20.0ms 成功率:100.0%
+  InsertionSort 平均:54.8ms 最小:54.0ms 最大:56.0ms 成功率:100.0%
+  PDQSort 平均:61.4ms 最小:60.0ms 最大:63.0ms 成功率:100.0%
+  QuickSort 平均:17.6ms 最小:17.0ms 最大:20.0ms 成功率:100.0%
+  AdaptiveSort 平均:41.6ms 最小:40.0ms 最大:43.0ms 成功率:100.0%
+  TimSort 平均:13.8ms 最小:13.0ms 最大:14.0ms 成功率:100.0%
+  NaturalMergeSort 平均:23.8ms 最小:23.0ms 最大:25.0ms 成功率:100.0%
+  PowerSort 平均:21.6ms 最小:21.0ms 最大:22.0ms 成功率:100.0%
+  BuiltInSort 平均:40.0ms 最小:39.0ms 最大:42.0ms 成功率:100.0%
 
 规模: 10000
-  InsertionSort 平均:441.4ms 最小:440.0ms 最大:443.0ms 成功率:100.0%
-  PDQSort 平均:499.6ms 最小:498.0ms 最大:501.0ms 成功率:100.0%
-  QuickSort 平均:52.0ms 最小:51.0ms 最大:53.0ms 成功率:100.0%
-  AdaptiveSort 平均:118.8ms 最小:117.0ms 最大:122.0ms 成功率:100.0%
-  TimSort 平均:82.6ms 最小:80.0ms 最大:87.0ms 成功率:100.0%
-  NaturalMergeSort 平均:80.0ms 最小:76.0ms 最大:82.0ms 成功率:100.0%
-  PowerSort 平均:108.0ms 最小:105.0ms 最大:112.0ms 成功率:100.0%
-  BuiltInSort 平均:56.0ms 最小:55.0ms 最大:57.0ms 成功率:100.0%
+  InsertionSort 平均:696.0ms 最小:635.0ms 最大:830.0ms 成功率:100.0%
+  PDQSort 平均:729.6ms 最小:718.0ms 最大:743.0ms 成功率:100.0%
+  QuickSort 平均:75.2ms 最小:72.0ms 最大:79.0ms 成功率:100.0%
+  AdaptiveSort 平均:166.8ms 最小:164.0ms 最大:169.0ms 成功率:100.0%
+  TimSort 平均:61.0ms 最小:55.0ms 最大:75.0ms 成功率:100.0%
+  NaturalMergeSort 平均:115.8ms 最小:113.0ms 最大:120.0ms 成功率:100.0%
+  PowerSort 平均:155.8ms 最小:154.0ms 最大:162.0ms 成功率:100.0%
+  BuiltInSort 平均:114.4ms 最小:112.0ms 最大:118.0ms 成功率:100.0%
 
 --- 管道风琴 ---
 
 规模: 10
   InsertionSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PDQSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PDQSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   QuickSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   AdaptiveSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  TimSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 50
-  InsertionSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PDQSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  QuickSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PDQSort 平均:0.6ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
+  QuickSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  AdaptiveSort 平均:0.8ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   TimSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.4ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
   PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 100
-  InsertionSort 平均:2.0ms 最小:2.0ms 最大:2.0ms 成功率:100.0%
-  PDQSort 平均:1.0ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
-  QuickSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  AdaptiveSort 平均:2.4ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  TimSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:3.0ms 最小:3.0ms 最大:3.0ms 成功率:100.0%
+  PDQSort 平均:1.6ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  QuickSort 平均:1.8ms 最小:1.0ms 最大:3.0ms 成功率:100.0%
+  AdaptiveSort 平均:3.4ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
+  TimSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 300
-  InsertionSort 平均:17.6ms 最小:17.0ms 最大:18.0ms 成功率:100.0%
-  PDQSort 平均:5.2ms 最小:4.0ms 最大:6.0ms 成功率:100.0%
-  QuickSort 平均:10.4ms 最小:10.0ms 最大:11.0ms 成功率:100.0%
-  AdaptiveSort 平均:21.8ms 最小:21.0ms 最大:22.0ms 成功率:100.0%
+  InsertionSort 平均:25.8ms 最小:25.0ms 最大:27.0ms 成功率:100.0%
+  PDQSort 平均:7.0ms 最小:7.0ms 最大:7.0ms 成功率:100.0%
+  QuickSort 平均:15.4ms 最小:14.0ms 最大:16.0ms 成功率:100.0%
+  AdaptiveSort 平均:32.8ms 最小:32.0ms 最大:34.0ms 成功率:100.0%
   TimSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-
-规模: 1000
-  InsertionSort 平均:199.6ms 最小:198.0ms 最大:203.0ms 成功率:100.0%
-  PDQSort 平均:39.0ms 最小:38.0ms 最大:40.0ms 成功率:100.0%
-  QuickSort 平均:114.8ms 最小:112.0ms 最大:116.0ms 成功率:100.0%
-  AdaptiveSort 平均:239.0ms 最小:234.0ms 最大:251.0ms 成功率:100.0%
-  TimSort 平均:2.0ms 最小:2.0ms 最大:2.0ms 成功率:100.0%
-  NaturalMergeSort 平均:2.2ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  PowerSort 平均:2.2ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
+  NaturalMergeSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  PowerSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
 
+规模: 1000
+  InsertionSort 平均:307.4ms 最小:296.0ms 最大:318.0ms 成功率:100.0%
+  PDQSort 平均:59.8ms 最小:59.0ms 最大:62.0ms 成功率:100.0%
+  QuickSort 平均:171.0ms 最小:169.0ms 最大:172.0ms 成功率:100.0%
+  AdaptiveSort 平均:359.4ms 最小:353.0ms 最大:366.0ms 成功率:100.0%
+  TimSort 平均:2.8ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
+  NaturalMergeSort 平均:3.0ms 最小:3.0ms 最大:3.0ms 成功率:100.0%
+  PowerSort 平均:3.6ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
+  BuiltInSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+
 规模: 3000
-  InsertionSort 平均:1860.4ms 最小:1803.0ms 最大:1886.0ms 成功率:100.0%
-  PDQSort 平均:313.2ms 最小:310.0ms 最大:316.0ms 成功率:100.0%
-  QuickSort 平均:1073.4ms 最小:1063.0ms 最大:1100.0ms 成功率:100.0%
-  AdaptiveSort 平均:2177.6ms 最小:2169.0ms 最大:2191.0ms 成功率:100.0%
-  TimSort 平均:7.0ms 最小:6.0ms 最大:8.0ms 成功率:100.0%
-  NaturalMergeSort 平均:6.6ms 最小:5.0ms 最大:8.0ms 成功率:100.0%
-  PowerSort 平均:7.0ms 最小:6.0ms 最大:8.0ms 成功率:100.0%
-  BuiltInSort 平均:2.2ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
+  InsertionSort 平均:2735.2ms 最小:2699.0ms 最大:2782.0ms 成功率:100.0%
+  PDQSort 平均:445.6ms 最小:436.0ms 最大:469.0ms 成功率:100.0%
+  QuickSort 平均:1539.2ms 最小:1513.0ms 最大:1562.0ms 成功率:100.0%
+  AdaptiveSort 平均:3744.2ms 最小:3131.0ms 最大:6032.0ms 成功率:100.0%
+  TimSort 平均:9.4ms 最小:8.0ms 最大:11.0ms 成功率:100.0%
+  NaturalMergeSort 平均:7.8ms 最小:7.0ms 最大:8.0ms 成功率:100.0%
+  PowerSort 平均:8.8ms 最小:7.0ms 最大:11.0ms 成功率:100.0%
+  BuiltInSort 平均:3.6ms 最小:3.0ms 最大:4.0ms 成功率:100.0%
 
 规模: 10000
-  InsertionSort 平均:20710.6ms 最小:20614.0ms 最大:20836.0ms 成功率:100.0%
-  PDQSort 平均:3036.6ms 最小:3017.0ms 最大:3063.0ms 成功率:100.0%
-  QuickSort 平均:11615.6ms 最小:11496.0ms 最大:11733.0ms 成功率:100.0%
-  AdaptiveSort 平均:23708.4ms 最小:23647.0ms 最大:23772.0ms 成功率:100.0%
-  TimSort 平均:23.4ms 最小:23.0ms 最大:24.0ms 成功率:100.0%
-  NaturalMergeSort 平均:19.8ms 最小:19.0ms 最大:20.0ms 成功率:100.0%
-  PowerSort 平均:22.4ms 最小:22.0ms 最大:23.0ms 成功率:100.0%
-  BuiltInSort 平均:7.0ms 最小:6.0ms 最大:8.0ms 成功率:100.0%
+  InsertionSort 平均:29876.2ms 最小:29321.0ms 最大:30301.0ms 成功率:100.0%
+  PDQSort 平均:4517.6ms 最小:4460.0ms 最大:4594.0ms 成功率:100.0%
+  QuickSort 平均:17172.4ms 最小:17049.0ms 最大:17329.0ms 成功率:100.0%
+  AdaptiveSort 平均:40055.0ms 最小:35299.0ms 最大:49185.0ms 成功率:100.0%
+  TimSort 平均:30.4ms 最小:27.0ms 最大:34.0ms 成功率:100.0%
+  NaturalMergeSort 平均:32.8ms 最小:29.0ms 最大:40.0ms 成功率:100.0%
+  PowerSort 平均:29.6ms 最小:27.0ms 最大:31.0ms 成功率:100.0%
+  BuiltInSort 平均:13.2ms 最小:11.0ms 最大:16.0ms 成功率:100.0%
 
 --- 锯齿波 ---
 
@@ -1049,68 +1049,68 @@ BuiltInSort: ✗ 不稳定
   AdaptiveSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   TimSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
   NaturalMergeSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
-  PowerSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
+  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 50
-  InsertionSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   PDQSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   QuickSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  AdaptiveSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  TimSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.4ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
-  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  AdaptiveSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  TimSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  PowerSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 100
-  InsertionSort 平均:1.8ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  PDQSort 平均:1.6ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  QuickSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:2.0ms 最小:2.0ms 最大:2.0ms 成功率:100.0%
+  PDQSort 平均:2.4ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
+  QuickSort 平均:1.0ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
   AdaptiveSort 平均:0.6ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
   TimSort 平均:1.0ms 最小:1.0ms 最大:1.0ms 成功率:100.0%
-  NaturalMergeSort 平均:0.4ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
-  PowerSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  NaturalMergeSort 平均:0.8ms 最小:0.0ms 最大:2.0ms 成功率:100.0%
+  PowerSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
   BuiltInSort 平均:0.0ms 最小:0.0ms 最大:0.0ms 成功率:100.0%
 
 规模: 300
-  InsertionSort 平均:16.0ms 最小:15.0ms 最大:17.0ms 成功率:100.0%
-  PDQSort 平均:17.8ms 最小:17.0ms 最大:19.0ms 成功率:100.0%
-  QuickSort 平均:2.6ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
-  AdaptiveSort 平均:1.6ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  TimSort 平均:1.8ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  NaturalMergeSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
-  PowerSort 平均:2.2ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
+  InsertionSort 平均:21.8ms 最小:19.0ms 最大:30.0ms 成功率:100.0%
+  PDQSort 平均:24.0ms 最小:22.0ms 最大:26.0ms 成功率:100.0%
+  QuickSort 平均:4.6ms 最小:4.0ms 最大:5.0ms 成功率:100.0%
+  AdaptiveSort 平均:2.4ms 最小:2.0ms 最大:3.0ms 成功率:100.0%
+  TimSort 平均:2.4ms 最小:2.0ms 最大:4.0ms 成功率:100.0%
+  NaturalMergeSort 平均:1.8ms 最小:1.0ms 最大:3.0ms 成功率:100.0%
+  PowerSort 平均:4.6ms 最小:3.0ms 最大:5.0ms 成功率:100.0%
   BuiltInSort 平均:0.2ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
 
 规模: 1000
-  InsertionSort 平均:179.6ms 最小:179.0ms 最大:180.0ms 成功率:100.0%
-  PDQSort 平均:194.8ms 最小:193.0ms 最大:196.0ms 成功率:100.0%
-  QuickSort 平均:24.8ms 最小:24.0ms 最大:26.0ms 成功率:100.0%
-  AdaptiveSort 平均:7.2ms 最小:7.0ms 最大:8.0ms 成功率:100.0%
-  TimSort 平均:5.6ms 最小:5.0ms 最大:6.0ms 成功率:100.0%
-  NaturalMergeSort 平均:4.6ms 最小:3.0ms 最大:6.0ms 成功率:100.0%
-  PowerSort 平均:7.4ms 最小:7.0ms 最大:8.0ms 成功率:100.0%
-  BuiltInSort 平均:0.6ms 最小:0.0ms 最大:1.0ms 成功率:100.0%
+  InsertionSort 平均:240.4ms 最小:231.0ms 最大:257.0ms 成功率:100.0%
+  PDQSort 平均:289.0ms 最小:279.0ms 最大:308.0ms 成功率:100.0%
+  QuickSort 平均:36.2ms 最小:35.0ms 最大:37.0ms 成功率:100.0%
+  AdaptiveSort 平均:11.2ms 最小:11.0ms 最大:12.0ms 成功率:100.0%
+  TimSort 平均:8.4ms 最小:8.0ms 最大:9.0ms 成功率:100.0%
+  NaturalMergeSort 平均:6.8ms 最小:6.0ms 最大:8.0ms 成功率:100.0%
+  PowerSort 平均:11.0ms 最小:11.0ms 最大:11.0ms 成功率:100.0%
+  BuiltInSort 平均:1.2ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
 
 规模: 3000
-  InsertionSort 平均:1609.6ms 最小:1587.0ms 最大:1685.0ms 成功率:100.0%
-  PDQSort 平均:1768.4ms 最小:1727.0ms 最大:1788.0ms 成功率:100.0%
-  QuickSort 平均:222.0ms 最小:221.0ms 最大:224.0ms 成功率:100.0%
-  AdaptiveSort 平均:221.4ms 最小:218.0ms 最大:226.0ms 成功率:100.0%
-  TimSort 平均:16.6ms 最小:16.0ms 最大:17.0ms 成功率:100.0%
-  NaturalMergeSort 平均:14.2ms 最小:14.0ms 最大:15.0ms 成功率:100.0%
-  PowerSort 平均:22.4ms 最小:22.0ms 最大:23.0ms 成功率:100.0%
-  BuiltInSort 平均:1.8ms 最小:1.0ms 最大:2.0ms 成功率:100.0%
+  InsertionSort 平均:2455.8ms 最小:2421.0ms 最大:2492.0ms 成功率:100.0%
+  PDQSort 平均:2611.4ms 最小:2559.0ms 最大:2642.0ms 成功率:100.0%
+  QuickSort 平均:329.2ms 最小:325.0ms 最大:335.0ms 成功率:100.0%
+  AdaptiveSort 平均:328.2ms 最小:323.0ms 最大:343.0ms 成功率:100.0%
+  TimSort 平均:24.4ms 最小:23.0ms 最大:27.0ms 成功率:100.0%
+  NaturalMergeSort 平均:22.4ms 最小:19.0ms 最大:31.0ms 成功率:100.0%
+  PowerSort 平均:34.4ms 最小:33.0ms 最大:35.0ms 成功率:100.0%
+  BuiltInSort 平均:4.0ms 最小:3.0ms 最大:6.0ms 成功率:100.0%
 
 规模: 10000
-  InsertionSort 平均:17954.2ms 最小:17621.0ms 最大:18492.0ms 成功率:100.0%
-  PDQSort 平均:19345.8ms 最小:19004.0ms 最大:19895.0ms 成功率:100.0%
-  QuickSort 平均:2425.2ms 最小:2408.0ms 最大:2445.0ms 成功率:100.0%
-  AdaptiveSort 平均:4943.8ms 最小:4881.0ms 最大:5035.0ms 成功率:100.0%
-  TimSort 平均:54.6ms 最小:53.0ms 最大:56.0ms 成功率:100.0%
-  NaturalMergeSort 平均:45.0ms 最小:44.0ms 最大:47.0ms 成功率:100.0%
-  PowerSort 平均:74.2ms 最小:73.0ms 最大:75.0ms 成功率:100.0%
-  BuiltInSort 平均:5.4ms 最小:5.0ms 最大:6.0ms 成功率:100.0%
+  InsertionSort 平均:33879.0ms 最小:24788.0ms 最大:42976.0ms 成功率:100.0%
+  PDQSort 平均:29775.2ms 最小:28952.0ms 最大:32475.0ms 成功率:100.0%
+  QuickSort 平均:3681.6ms 最小:3602.0ms 最大:3804.0ms 成功率:100.0%
+  AdaptiveSort 平均:7295.2ms 最小:7145.0ms 最大:7440.0ms 成功率:100.0%
+  TimSort 平均:84.2ms 最小:79.0ms 最大:99.0ms 成功率:100.0%
+  NaturalMergeSort 平均:69.6ms 最小:65.0ms 最大:73.0ms 成功率:100.0%
+  PowerSort 平均:111.2ms 最小:106.0ms 最大:117.0ms 成功率:100.0%
+  BuiltInSort 平均:11.6ms 最小:11.0ms 最大:12.0ms 成功率:100.0%
 
 ========================================
 特殊场景测试
@@ -1118,58 +1118,58 @@ BuiltInSort: ✗ 不稳定
 
 --- 极值数据 ---
 示例前10:undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined
-  InsertionSort: 2ms ✓
+  InsertionSort: 4ms ✓
   PDQSort: 2ms ✓
-  QuickSort: 103ms ✓
-  AdaptiveSort: 366ms ✓
-  TimSort: 2ms ✓
+  QuickSort: 149ms ✓
+  AdaptiveSort: 516ms ✓
+  TimSort: 3ms ✓
   NaturalMergeSort: 2ms ✓
   PowerSort: 2ms ✓
-  BuiltInSort: 116ms ✓
+  BuiltInSort: 158ms ✓
 
 --- 高重复率 ---
 示例前10:undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined
   InsertionSort: 2ms ✓
-  PDQSort: 2ms ✓
-  QuickSort: 102ms ✓
-  AdaptiveSort: 364ms ✓
-  TimSort: 2ms ✓
-  NaturalMergeSort: 1ms ✓
+  PDQSort: 4ms ✓
+  QuickSort: 145ms ✓
+  AdaptiveSort: 522ms ✓
+  TimSort: 3ms ✓
+  NaturalMergeSort: 3ms ✓
   PowerSort: 2ms ✓
-  BuiltInSort: 114ms ✓
+  BuiltInSort: 162ms ✓
 
 --- 三值分布 ---
 示例前10:1,1,1,1,1,1,1,1,1,1
-  InsertionSort: 1ms ✓
-  PDQSort: 2ms ✓
-  QuickSort: 28ms ✓
-  AdaptiveSort: 153ms ✓
-  TimSort: 1ms ✓
+  InsertionSort: 2ms ✓
+  PDQSort: 3ms ✓
+  QuickSort: 41ms ✓
+  AdaptiveSort: 238ms ✓
+  TimSort: 3ms ✓
   NaturalMergeSort: 2ms ✓
-  PowerSort: 1ms ✓
-  BuiltInSort: 6ms ✓
+  PowerSort: 2ms ✓
+  BuiltInSort: 14ms ✓
 
 --- 交替模式 ---
 示例前10:1,1000,1,1000,1,1000,1,1000,1,1000
-  InsertionSort: 97ms ✓
+  InsertionSort: 150ms ✓
   PDQSort: 4ms ✓
-  QuickSort: 42ms ✓
-  AdaptiveSort: 78ms ✓
+  QuickSort: 59ms ✓
+  AdaptiveSort: 121ms ✓
   TimSort: 9ms ✓
-  NaturalMergeSort: 11ms ✓
-  PowerSort: 9ms ✓
-  BuiltInSort: 4ms ✓
+  NaturalMergeSort: 17ms ✓
+  PowerSort: 13ms ✓
+  BuiltInSort: 7ms ✓
 
 --- 指数分布 ---
 示例前10:NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN
   InsertionSort: 2ms ✓
-  PDQSort: 2ms ✓
-  QuickSort: 98ms ✓
-  AdaptiveSort: 359ms ✓
-  TimSort: 2ms ✓
+  PDQSort: 3ms ✓
+  QuickSort: 144ms ✓
+  AdaptiveSort: 517ms ✓
+  TimSort: 3ms ✓
   NaturalMergeSort: 2ms ✓
-  PowerSort: 1ms ✓
-  BuiltInSort: 104ms ✓
+  PowerSort: 2ms ✓
+  BuiltInSort: 144ms ✓
 
 ========================================
 算法比较分析
@@ -1178,182 +1178,182 @@ BuiltInSort: ✗ 不稳定
 数据模式性能分析:
 
 BuiltInSort:
-  锯齿波: 1.14ms
-  管道风琴: 1.37ms
-  几乎排序: 11.31ms
-  全相同: 92.74ms
-  重复元素: 9.8ms
-  部分有序: 1.31ms
-  逆序: 95.2ms
-  已排序: 93.43ms
-  随机数据: 1.09ms
-  最优: 随机数据(1.09ms)
-  最差: 逆序(95.2ms)
+  锯齿波: 2.43ms
+  管道风琴: 2.63ms
+  几乎排序: 23.29ms
+  全相同: 185.14ms
+  重复元素: 19.63ms
+  部分有序: 2.91ms
+  逆序: 185.03ms
+  已排序: 185.09ms
+  随机数据: 2.00ms
+  最优: 随机数据(2.00ms)
+  最差: 全相同(185.14ms)
 
 PowerSort:
-  锯齿波: 15.23ms
-  管道风琴: 4.66ms
-  几乎排序: 18.4ms
-  全相同: 1.66ms
-  重复元素: 105.6ms
-  部分有序: 80.43ms
-  逆序: 2.14ms
-  已排序: 1.69ms
-  随机数据: 143.91ms
-  最优: 全相同(1.66ms)
-  最差: 随机数据(143.91ms)
+  锯齿波: 23.29ms
+  管道风琴: 6.23ms
+  几乎排序: 26.43ms
+  全相同: 2.26ms
+  重复元素: 159.77ms
+  部分有序: 121.51ms
+  逆序: 2.97ms
+  已排序: 2.06ms
+  随机数据: 204.94ms
+  最优: 已排序(2.06ms)
+  最差: 随机数据(204.94ms)
 
 NaturalMergeSort:
-  锯齿波: 9.4ms
-  管道风琴: 4.2ms
-  几乎排序: 14.51ms
-  全相同: 1.69ms
-  重复元素: 28.54ms
-  部分有序: 23.4ms
-  逆序: 2.00ms
-  已排序: 1.54ms
-  随机数据: 32.51ms
-  最优: 已排序(1.54ms)
-  最差: 随机数据(32.51ms)
+  锯齿波: 14.57ms
+  管道风琴: 6.51ms
+  几乎排序: 20.97ms
+  全相同: 2.31ms
+  重复元素: 41.54ms
+  部分有序: 34.34ms
+  逆序: 2.83ms
+  已排序: 2.31ms
+  随机数据: 45.23ms
+  最优: 全相同(2.31ms)
+  最差: 随机数据(45.23ms)
 
 TimSort:
-  锯齿波: 11.4ms
-  管道风琴: 4.8ms
-  几乎排序: 15.03ms
-  全相同: 1.71ms
-  重复元素: 31.03ms
-  部分有序: 28.86ms
-  逆序: 2.23ms
-  已排序: 1.69ms
-  随机数据: 34.51ms
-  最优: 已排序(1.69ms)
-  最差: 随机数据(34.51ms)
+  锯齿波: 17.26ms
+  管道风琴: 6.26ms
+  几乎排序: 11.29ms
+  全相同: 2.29ms
+  重复元素: 39.34ms
+  部分有序: 38.46ms
+  逆序: 2.86ms
+  已排序: 2.26ms
+  随机数据: 46.4ms
+  最优: 已排序(2.26ms)
+  最差: 随机数据(46.4ms)
 
 AdaptiveSort:
-  锯齿波: 739.26ms
-  管道风琴: 3735.69ms
-  几乎排序: 22.54ms
-  全相同: 2488.66ms
-  重复元素: 249.86ms
-  部分有序: 28.74ms
-  逆序: 22.31ms
-  已排序: 17.74ms
-  随机数据: 27.91ms
-  最优: 已排序(17.74ms)
-  最差: 管道风琴(3735.69ms)
+  锯齿波: 1091.14ms
+  管道风琴: 6313.66ms
+  几乎排序: 31.74ms
+  全相同: 3641.37ms
+  重复元素: 372.03ms
+  部分有序: 42.8ms
+  逆序: 30.49ms
+  已排序: 24.66ms
+  随机数据: 38.09ms
+  最优: 已排序(24.66ms)
+  最差: 管道风琴(6313.66ms)
 
 QuickSort:
-  锯齿波: 382.17ms
-  管道风琴: 1830.8ms
-  几乎排序: 9.74ms
-  全相同: 1256.57ms
-  重复元素: 131.34ms
-  部分有序: 12.77ms
-  逆序: 9.6ms
-  已排序: 7.37ms
-  随机数据: 11.89ms
-  最优: 已排序(7.37ms)
-  最差: 管道风琴(1830.8ms)
+  锯齿波: 578.97ms
+  管道风琴: 2700.03ms
+  几乎排序: 14.2ms
+  全相同: 1778.23ms
+  重复元素: 187.97ms
+  部分有序: 18.49ms
+  逆序: 13.06ms
+  已排序: 9.94ms
+  随机数据: 16.34ms
+  最优: 已排序(9.94ms)
+  最差: 管道风琴(2700.03ms)
 
 PDQSort:
-  锯齿波: 3046.94ms
-  管道风琴: 485.09ms
-  几乎排序: 78.63ms
-  全相同: 2.03ms
-  重复元素: 10.97ms
-  部分有序: 51.66ms
-  逆序: 2.57ms
-  已排序: 2.09ms
-  随机数据: 51.46ms
-  最优: 全相同(2.03ms)
-  最差: 锯齿波(3046.94ms)
+  锯齿波: 4671.74ms
+  管道风琴: 718.89ms
+  几乎排序: 114.17ms
+  全相同: 3.09ms
+  重复元素: 15.83ms
+  部分有序: 75.43ms
+  逆序: 3.66ms
+  已排序: 2.97ms
+  随机数据: 72.74ms
+  最优: 已排序(2.97ms)
+  最差: 锯齿波(4671.74ms)
 
 InsertionSort:
-  锯齿波: 2823.11ms
-  管道风琴: 3255.8ms
-  几乎排序: 69.11ms
-  全相同: 1.83ms
-  重复元素: 2831.83ms
-  部分有序: 712.4ms
-  逆序: 6513.83ms
-  已排序: 1.89ms
-  随机数据: 3382.77ms
-  最优: 全相同(1.83ms)
-  最差: 逆序(6513.83ms)
+  锯齿波: 5228.49ms
+  管道风琴: 4706.89ms
+  几乎排序: 108.09ms
+  全相同: 2.43ms
+  重复元素: 4117.31ms
+  部分有序: 1076.97ms
+  逆序: 9418.63ms
+  已排序: 2.77ms
+  随机数据: 4633.6ms
+  最优: 全相同(2.43ms)
+  最差: 逆序(9418.63ms)
 
 规模伸缩性分析:
 
 InsertionSort 随机数据趋势:
-  10→50: 时间比N/A 复杂度因子N/A
-  50→100: 时间比2.75 复杂度因子1.375
-  100→300: 时间比9.273 复杂度因子3.091
-  300→1000: 时间比10.363 复杂度因子3.109
-  1000→3000: 时间比9.217 复杂度因子3.072
-  3000→10000: 时间比11.033 复杂度因子3.31
+  10→50: 时间比3.000 复杂度因子0.6
+  50→100: 时间比5.000 复杂度因子2.5
+  100→300: 时间比9.067 复杂度因子3.022
+  300→1000: 时间比9.757 复杂度因子2.927
+  1000→3000: 时间比9.818 复杂度因子3.273
+  3000→10000: 时间比11.334 复杂度因子3.4
 
 PDQSort 随机数据趋势:
   10→50: 时间比N/A 复杂度因子N/A
-  50→100: 时间比2.333 复杂度因子1.167
-  100→300: 时间比3.429 复杂度因子1.143
-  300→1000: 时间比3.875 复杂度因子1.163
-  1000→3000: 时间比3.796 复杂度因子1.265
-  3000→10000: 时间比3.742 复杂度因子1.123
+  50→100: 时间比2.000 复杂度因子1.000
+  100→300: 时间比4.000 复杂度因子1.333
+  300→1000: 时间比4.417 复杂度因子1.325
+  1000→3000: 时间比4.623 复杂度因子1.541
+  3000→10000: 时间比3.912 复杂度因子1.174
 
 QuickSort 随机数据趋势:
   10→50: 时间比N/A 复杂度因子N/A
-  50→100: 时间比N/A 复杂度因子N/A
-  100→300: 时间比5.000 复杂度因子1.667
-  300→1000: 时间比2.3 复杂度因子0.69
-  1000→3000: 时间比3.913 复杂度因子1.304
-  3000→10000: 时间比3.233 复杂度因子0.97
+  50→100: 时间比2.000 复杂度因子1.000
+  100→300: 时间比3.5 复杂度因子1.167
+  300→1000: 时间比4.000 复杂度因子1.2
+  1000→3000: 时间比4.393 复杂度因子1.464
+  3000→10000: 时间比3.341 复杂度因子1.002
 
 AdaptiveSort 随机数据趋势:
-  10→50: 时间比N/A 复杂度因子N/A
-  50→100: 时间比1.333 复杂度因子0.667
-  100→300: 时间比3.75 复杂度因子1.25
-  300→1000: 时间比3.8 复杂度因子1.14
-  1000→3000: 时间比3.649 复杂度因子1.216
-  3000→10000: 时间比3.317 复杂度因子0.995
+  10→50: 时间比2.000 复杂度因子0.4
+  50→100: 时间比2.5 复杂度因子1.25
+  100→300: 时间比3.8 复杂度因子1.267
+  300→1000: 时间比3.737 复杂度因子1.121
+  1000→3000: 时间比3.887 复杂度因子1.296
+  3000→10000: 时间比3.475 复杂度因子1.042
 
 TimSort 随机数据趋势:
   10→50: 时间比N/A 复杂度因子N/A
-  50→100: 时间比1.667 复杂度因子0.833
-  100→300: 时间比3.4 复杂度因子1.133
-  300→1000: 时间比3.941 复杂度因子1.182
-  1000→3000: 时间比3.582 复杂度因子1.194
-  3000→10000: 时间比3.65 复杂度因子1.095
+  50→100: 时间比2.5 复杂度因子1.25
+  100→300: 时间比3.000 复杂度因子1.000
+  300→1000: 时间比4.933 复杂度因子1.48
+  1000→3000: 时间比4.27 复杂度因子1.423
+  3000→10000: 时间比3.835 复杂度因子1.151
 
 NaturalMergeSort 随机数据趋势:
-  10→50: 时间比3.000 复杂度因子0.6
-  50→100: 时间比1.667 复杂度因子0.833
-  100→300: 时间比3.4 复杂度因子1.133
-  300→1000: 时间比3.471 复杂度因子1.041
-  1000→3000: 时间比3.797 复杂度因子1.266
-  3000→10000: 时间比3.701 复杂度因子1.11
+  10→50: 时间比N/A 复杂度因子N/A
+  50→100: 时间比1.000 复杂度因子0.5
+  100→300: 时间比4.6 复杂度因子1.533
+  300→1000: 时间比3.13 复杂度因子0.939
+  1000→3000: 时间比4.361 复杂度因子1.454
+  3000→10000: 时间比3.707 复杂度因子1.112
 
 PowerSort 随机数据趋势:
   10→50: 时间比N/A 复杂度因子N/A
-  50→100: 时间比2.5 复杂度因子1.25
-  100→300: 时间比5.2 复杂度因子1.733
-  300→1000: 时间比4.692 复杂度因子1.408
-  1000→3000: 时间比5.385 复杂度因子1.795
-  3000→10000: 时间比6.431 复杂度因子1.929
+  50→100: 时间比1.000 复杂度因子0.5
+  100→300: 时间比6.5 复杂度因子2.167
+  300→1000: 时间比5.346 复杂度因子1.604
+  1000→3000: 时间比6.583 复杂度因子2.194
+  3000→10000: 时间比6.65 复杂度因子1.995
 
 BuiltInSort 随机数据趋势:
   10→50: 时间比N/A 复杂度因子N/A
   50→100: 时间比N/A 复杂度因子N/A
-  100→300: 时间比N/A 复杂度因子N/A
-  300→1000: 时间比2.000 复杂度因子0.6
-  1000→3000: 时间比4.5 复杂度因子1.5
-  3000→10000: 时间比2.889 复杂度因子0.867
+  100→300: 时间比1.000 复杂度因子0.333
+  300→1000: 时间比4.000 复杂度因子1.2
+  1000→3000: 时间比3.5 复杂度因子1.167
+  3000→10000: 时间比3.571 复杂度因子1.071
 
 使用建议:
   • 小数据(<100): BuiltInSort
-  • 需要稳定: NaturalMergeSort
+  • 需要稳定: TimSort
   • 内存受限: QuickSort
   • 随机数据: BuiltInSort
   • 部分有序: BuiltInSort
-  • 重复多: BuiltInSort
+  • 重复多: PDQSort
 
 ================================================================================
 最终测试报告
@@ -1367,8 +1367,8 @@ BuiltInSort 随机数据趋势:
 • 测试规模范围: 10 - 10000
 • 总测试样本: 504 个性能数据点
 • 每组重复次数: 5
-• 综合最佳算法: NaturalMergeSort
-• 测试完成时间: Mon Oct 27 20:23:08 GMT+0800 2025
+• 综合最佳算法: TimSort
+• 测试完成时间: Fri Feb 13 00:15:35 GMT+0800 2026
 
 ------------------------------------------------------------
 📈 性能矩阵 (平均执行时间 ms)
@@ -1376,110 +1376,110 @@ BuiltInSort 随机数据趋势:
 
 锯齿波:
 算法\规模	10	50	100	300	1000	3000	10000
-InsertionSort	0.0	0.6	1.8	16.0	179.6	1609.6	17954.2
-PDQSort	0.0	0.2	1.6	17.8	194.8	1768.4	19345.8
-QuickSort	0.0	0.2	0.4	2.6	24.8	222.0	2425.2
-AdaptiveSort	0.0	0.2	0.6	1.6	7.2	221.4	4943.8
-TimSort	0.0	0.2	1.0	1.8	5.6	16.6	54.6
-NaturalMergeSort	0.0	0.4	0.4	1.2	4.6	14.2	45.0
-PowerSort	0.0	0.2	0.2	2.2	7.4	22.4	74.2
-BuiltInSort	0.0	0.0	0.0	0.2	0.6	1.8	5.4
+InsertionSort	0.0	0.4	2.0	21.8	240.4	2455.8	33879.0
+PDQSort	0.0	0.2	2.4	24.0	289.0	2611.4	29775.2
+QuickSort	0.0	0.2	1.0	4.6	36.2	329.2	3681.6
+AdaptiveSort	0.0	0.4	0.6	2.4	11.2	328.2	7295.2
+TimSort	0.0	0.4	1.0	2.4	8.4	24.4	84.2
+NaturalMergeSort	0.0	0.6	0.8	1.8	6.8	22.4	69.6
+PowerSort	0.2	0.4	1.2	4.6	11.0	34.4	111.2
+BuiltInSort	0.0	0.0	0.0	0.2	1.2	4.0	11.6
 最佳: BuiltInSort
 
 管道风琴:
 算法\规模	10	50	100	300	1000	3000	10000
-InsertionSort	0.0	0.4	2.0	17.6	199.6	1860.4	20710.6
-PDQSort	0.2	0.4	1.0	5.2	39.0	313.2	3036.6
-QuickSort	0.0	0.2	1.2	10.4	114.8	1073.4	11615.6
-AdaptiveSort	0.0	0.6	2.4	21.8	239.0	2177.6	23708.4
-TimSort	0.2	0.2	0.2	0.6	2.0	7.0	23.4
-NaturalMergeSort	0.0	0.2	0.2	0.4	2.2	6.6	19.8
-PowerSort	0.0	0.2	0.2	0.6	2.2	7.0	22.4
-BuiltInSort	0.0	0.0	0.0	0.0	0.4	2.2	7.0
+InsertionSort	0.0	0.6	3.0	25.8	307.4	2735.2	29876.2
+PDQSort	0.0	0.6	1.6	7.0	59.8	445.6	4517.6
+QuickSort	0.0	0.4	1.8	15.4	171.0	1539.2	17172.4
+AdaptiveSort	0.0	0.8	3.4	32.8	359.4	3744.2	40055.0
+TimSort	0.0	0.2	0.4	0.6	2.8	9.4	30.4
+NaturalMergeSort	0.0	0.4	0.4	1.2	3.0	7.8	32.8
+PowerSort	0.2	0.2	0.2	1.0	3.6	8.8	29.6
+BuiltInSort	0.0	0.0	0.0	0.4	1.2	3.6	13.2
 最佳: BuiltInSort
 
 几乎排序:
 算法\规模	10	50	100	300	1000	3000	10000
-InsertionSort	0.0	0.2	0.4	0.6	4.0	37.2	441.4
-PDQSort	0.2	0.0	0.2	1.0	4.6	44.8	499.6
-QuickSort	0.0	0.2	0.4	0.4	3.2	12.0	52.0
-AdaptiveSort	0.0	0.2	0.6	2.0	7.8	28.4	118.8
-TimSort	0.0	0.0	0.0	0.6	3.2	18.8	82.6
-NaturalMergeSort	0.0	0.0	0.2	0.6	4.0	16.8	80.0
-PowerSort	0.0	0.4	0.4	0.8	3.2	16.0	108.0
-BuiltInSort	0.0	0.0	0.0	0.6	3.4	19.2	56.0
-最佳: QuickSort
+InsertionSort	0.2	0.0	0.4	0.0	5.2	54.8	696.0
+PDQSort	0.0	0.0	0.2	1.2	6.8	61.4	729.6
+QuickSort	0.0	0.2	0.4	1.4	4.6	17.6	75.2
+AdaptiveSort	0.2	0.0	0.4	2.4	10.8	41.6	166.8
+TimSort	0.0	0.0	0.2	0.8	3.2	13.8	61.0
+NaturalMergeSort	0.0	0.0	0.6	0.8	5.8	23.8	115.8
+PowerSort	0.2	0.0	0.2	1.2	6.0	21.6	155.8
+BuiltInSort	0.0	0.0	0.0	0.8	7.8	40.0	114.4
+最佳: TimSort
 
 全相同:
 算法\规模	10	50	100	300	1000	3000	10000
-InsertionSort	0.0	0.0	0.0	0.4	1.0	2.4	9.0
-PDQSort	0.0	0.0	0.2	0.2	1.0	3.0	9.8
-QuickSort	0.0	0.2	1.0	7.4	79.4	723.4	7984.6
-AdaptiveSort	0.0	0.2	1.8	13.8	154.0	1420.0	15830.8
-TimSort	0.0	0.0	0.4	0.4	1.0	2.2	8.0
-NaturalMergeSort	0.0	0.2	0.0	0.2	0.8	2.8	7.8
-PowerSort	0.0	0.0	0.2	0.4	1.0	2.8	7.2
-BuiltInSort	0.0	0.0	0.2	0.4	5.8	51.8	591.0
+InsertionSort	0.0	0.2	0.2	0.0	1.0	3.6	12.0
+PDQSort	0.0	0.0	0.6	0.0	1.8	4.4	14.8
+QuickSort	0.0	0.2	1.4	10.0	114.2	1032.6	11289.2
+AdaptiveSort	0.0	0.2	2.0	20.0	226.0	2179.4	23062.0
+TimSort	0.0	0.2	0.2	0.0	1.2	3.4	11.0
+NaturalMergeSort	0.0	0.2	0.0	0.0	1.2	3.6	11.2
+PowerSort	0.0	0.2	0.2	0.2	1.2	3.2	10.8
+BuiltInSort	0.0	0.0	0.2	1.2	11.8	103.8	1179.0
 最佳: PowerSort
 
 重复元素:
 算法\规模	10	50	100	300	1000	3000	10000
-InsertionSort	0.0	0.4	1.4	15.8	168.2	1621.6	18015.4
-PDQSort	0.0	0.4	0.6	1.2	5.0	16.8	52.8
-QuickSort	0.0	0.4	0.6	1.2	10.4	79.0	827.8
-AdaptiveSort	0.0	0.4	0.2	2.2	18.2	144.6	1583.4
-TimSort	0.2	0.2	1.0	3.2	12.4	41.8	158.4
-NaturalMergeSort	0.0	0.4	1.0	3.0	11.0	39.2	145.2
-PowerSort	0.0	0.0	0.6	4.4	16.6	86.0	631.6
-BuiltInSort	0.0	0.0	0.2	0.4	1.0	6.6	60.4
-最佳: BuiltInSort
+InsertionSort	0.0	0.8	2.8	22.2	251.2	2433.8	26110.4
+PDQSort	0.0	0.6	1.0	2.0	7.0	24.4	75.8
+QuickSort	0.0	0.4	0.6	1.6	15.2	112.2	1185.8
+AdaptiveSort	0.0	1.2	0.6	3.2	26.2	216.8	2356.2
+TimSort	0.0	0.8	1.2	4.0	16.8	60.4	192.2
+NaturalMergeSort	0.2	0.4	1.2	4.4	16.6	58.2	209.8
+PowerSort	0.2	0.4	1.0	6.4	23.6	128.2	958.6
+BuiltInSort	0.0	0.0	0.0	0.4	2.0	12.6	122.4
+最佳: PDQSort
 
 部分有序:
 算法\规模	10	50	100	300	1000	3000	10000
-InsertionSort	0.0	0.2	0.6	4.6	49.8	439.4	4492.2
-PDQSort	0.2	0.2	1.0	3.0	18.2	73.8	265.2
-QuickSort	0.0	0.0	0.2	1.2	4.4	17.4	66.2
-AdaptiveSort	0.2	0.2	0.4	2.0	9.8	37.8	150.8
-TimSort	0.0	0.2	0.6	2.8	11.2	38.8	148.4
-NaturalMergeSort	0.0	0.2	0.8	1.8	9.0	31.8	120.2
-PowerSort	0.0	0.2	0.6	3.0	12.4	70.6	476.2
-BuiltInSort	0.0	0.0	0.0	0.0	0.4	2.2	6.6
+InsertionSort	0.0	0.4	1.0	5.8	69.0	631.8	6830.8
+PDQSort	0.0	0.4	1.0	4.0	24.2	107.0	391.4
+QuickSort	0.0	0.4	0.4	1.6	5.8	23.4	97.8
+AdaptiveSort	0.0	0.2	0.4	3.2	14.2	55.6	226.0
+TimSort	0.0	0.0	0.8	3.2	14.2	51.0	200.0
+NaturalMergeSort	0.2	0.4	1.2	2.8	12.8	45.2	177.8
+PowerSort	0.0	0.0	1.0	4.2	18.0	99.6	727.8
+BuiltInSort	0.0	0.0	0.0	0.8	1.2	3.4	15.0
 最佳: BuiltInSort
 
 逆序:
 算法\规模	10	50	100	300	1000	3000	10000
-InsertionSort	0.0	1.2	4.2	36.4	406.2	3696.2	41452.6
-PDQSort	0.0	0.0	0.0	0.4	1.4	3.4	12.8
-QuickSort	0.2	0.4	0.6	0.8	3.4	12.8	49.0
-AdaptiveSort	0.0	1.0	0.8	2.0	9.2	30.0	113.2
-TimSort	0.0	0.0	0.0	0.4	1.6	3.4	10.2
-NaturalMergeSort	0.0	0.2	0.0	0.2	1.0	2.8	9.8
-PowerSort	0.0	0.0	0.2	0.2	1.0	3.2	10.4
-BuiltInSort	0.0	0.2	0.2	0.6	6.6	54.2	604.6
+InsertionSort	0.0	2.0	7.4	65.4	620.2	5503.0	59732.4
+PDQSort	0.0	0.0	0.4	0.8	2.0	5.4	17.0
+QuickSort	0.0	0.0	1.0	1.8	5.4	18.0	65.2
+AdaptiveSort	0.2	2.0	1.0	3.4	12.0	39.4	155.4
+TimSort	0.0	0.0	0.2	0.8	1.4	4.2	13.4
+NaturalMergeSort	0.0	0.2	0.4	0.6	1.6	3.8	13.2
+PowerSort	0.0	0.2	0.2	0.6	1.6	4.6	13.6
+BuiltInSort	0.0	0.0	0.2	1.4	12.4	107.4	1173.8
 最佳: NaturalMergeSort
 
 已排序:
 算法\规模	10	50	100	300	1000	3000	10000
-InsertionSort	0.0	0.0	0.0	0.6	0.6	2.8	9.2
-PDQSort	0.0	0.0	0.0	0.0	1.4	3.4	9.8
-QuickSort	0.0	0.0	0.2	0.6	3.2	9.4	38.2
-AdaptiveSort	0.0	0.0	0.6	1.4	7.2	23.2	91.8
-TimSort	0.0	0.2	0.0	0.0	1.0	2.4	8.2
-NaturalMergeSort	0.2	0.0	0.4	0.0	0.8	2.0	7.4
-PowerSort	0.0	0.2	0.0	0.4	0.6	2.2	8.4
-BuiltInSort	0.0	0.2	0.2	0.4	5.8	53.4	594.0
-最佳: NaturalMergeSort
+InsertionSort	0.0	0.2	0.0	1.2	1.2	4.4	12.4
+PDQSort	0.0	0.0	0.0	1.2	1.6	4.4	13.6
+QuickSort	0.0	0.0	0.2	1.2	3.4	13.0	51.8
+AdaptiveSort	0.2	0.2	0.4	2.2	9.8	32.4	127.4
+TimSort	0.0	0.0	0.0	0.0	1.6	3.2	11.0
+NaturalMergeSort	0.0	0.0	0.0	1.2	1.2	3.4	10.4
+PowerSort	0.0	0.0	0.2	0.0	1.0	3.0	10.2
+BuiltInSort	0.0	0.0	0.2	1.2	12.0	107.8	1174.4
+最佳: PowerSort
 
 随机数据:
 算法\规模	10	50	100	300	1000	3000	10000
-InsertionSort	0.0	0.8	2.2	20.4	211.4	1948.4	21496.2
-PDQSort	0.0	0.6	1.4	4.8	18.6	70.6	264.2
-QuickSort	0.0	0.0	0.4	2.0	4.6	18.0	58.2
-AdaptiveSort	0.0	0.6	0.8	3.0	11.4	41.6	138.0
-TimSort	0.0	0.6	1.0	3.4	13.4	48.0	175.2
-NaturalMergeSort	0.2	0.6	1.0	3.4	11.8	44.8	165.8
-PowerSort	0.0	0.4	1.0	5.2	24.4	131.4	845.0
-BuiltInSort	0.0	0.0	0.0	0.2	0.4	1.8	5.2
+InsertionSort	0.2	0.6	3.0	27.2	265.4	2605.8	29533.0
+PDQSort	0.0	0.6	1.2	4.8	21.2	98.0	383.4
+QuickSort	0.0	0.2	0.4	1.4	5.6	24.6	82.2
+AdaptiveSort	0.2	0.4	1.0	3.8	14.2	55.2	191.8
+TimSort	0.0	0.4	1.0	3.0	14.8	63.2	242.4
+NaturalMergeSort	0.0	1.0	1.0	4.6	14.4	62.8	232.8
+PowerSort	0.0	0.8	0.8	5.2	27.8	183.0	1217.0
+BuiltInSort	0.0	0.0	0.2	0.2	0.8	2.8	10.0
 最佳: BuiltInSort
 
 ------------------------------------------------------------
@@ -1487,98 +1487,98 @@ BuiltInSort	0.0	0.0	0.0	0.2	0.4	1.8	5.2
 ------------------------------------------------------------
 排名	算法		综合得分		理论复杂度	最佳场景	最差场景
 --------------------------------------------------------------------------------
-1	NaturalMergeSort		13.09		O(n log n)	已排序	随机数据
-2	TimSort		14.58		O(n log n)	已排序	随机数据
-3	BuiltInSort		34.16		O(n log n)	随机数据	逆序
-4	PowerSort		41.52		O(n log n)	全相同	随机数据
-5	QuickSort		405.81		O(n log n)	已排序	管道风琴
-6	PDQSort		414.6		O(n log n)	全相同	锯齿波
-7	AdaptiveSort		814.75		O(n log n)	已排序	管道风琴
-8	InsertionSort		2176.95		O(n²)	全相同	逆序
+1	TimSort		18.49		O(n log n)	已排序	随机数据
+2	NaturalMergeSort		18.96		O(n log n)	全相同	随机数据
+3	PowerSort		61.05		O(n log n)	已排序	随机数据
+4	BuiltInSort		67.57		O(n log n)	随机数据	全相同
+5	QuickSort		590.8		O(n log n)	已排序	管道风琴
+6	PDQSort		630.95		O(n log n)	已排序	锯齿波
+7	AdaptiveSort		1287.33		O(n log n)	已排序	管道风琴
+8	InsertionSort		3255.02		O(n²)	全相同	逆序
 
 ------------------------------------------------------------
 📊 复杂度分析
 ------------------------------------------------------------
 
 InsertionSort (理论: O(n²)):
-  实际表现: O(n^2.28) (斜率: 2.285)
-  R²相关系数: 0.985 (越接近1越准确)
-  最佳情况: 全相同 (1.83ms)
-  最差情况: 逆序 (6513.83ms)
-  性能比率: 3562.2:1
+  实际表现: O(n²) (斜率: 1.814)
+  R²相关系数: 0.991 (越接近1越准确)
+  最佳情况: 全相同 (2.43ms)
+  最差情况: 逆序 (9418.63ms)
+  性能比率: 3878.3:1
 
 PDQSort (理论: O(n log n)):
-  实际表现: O(n log n) (斜率: 1.607)
-  R²相关系数: 0.946 (越接近1越准确)
-  最佳情况: 全相同 (2.03ms)
-  最差情况: 锯齿波 (3046.94ms)
-  性能比率: 1502.0:1
+  实际表现: O(n log n) (斜率: 1.673)
+  R²相关系数: 0.955 (越接近1越准确)
+  最佳情况: 已排序 (2.97ms)
+  最差情况: 锯齿波 (4671.74ms)
+  性能比率: 1572.2:1
 
 QuickSort (理论: O(n log n)):
-  实际表现: O(n log n) (斜率: 1.722)
-  R²相关系数: 0.931 (越接近1越准确)
-  最佳情况: 已排序 (7.37ms)
-  最差情况: 管道风琴 (1830.8ms)
-  性能比率: 248.4:1
+  实际表现: O(n log n) (斜率: 1.495)
+  R²相关系数: 0.965 (越接近1越准确)
+  最佳情况: 已排序 (9.94ms)
+  最差情况: 管道风琴 (2700.03ms)
+  性能比率: 271.6:1
 
 AdaptiveSort (理论: O(n log n)):
-  实际表现: O(n log n) (斜率: 1.515)
-  R²相关系数: 0.943 (越接近1越准确)
-  最佳情况: 已排序 (17.74ms)
-  最差情况: 管道风琴 (3735.69ms)
-  性能比率: 210.5:1
+  实际表现: O(n) (斜率: 1.055)
+  R²相关系数: 0.992 (越接近1越准确)
+  最佳情况: 已排序 (24.66ms)
+  最差情况: 管道风琴 (6313.66ms)
+  性能比率: 256.1:1
 
 TimSort (理论: O(n log n)):
-  实际表现: O(n log n) (斜率: 1.545)
-  R²相关系数: 0.944 (越接近1越准确)
-  最佳情况: 已排序 (1.69ms)
-  最差情况: 随机数据 (34.51ms)
-  性能比率: 20.5:1
+  实际表现: O(n log n) (斜率: 1.619)
+  R²相关系数: 0.958 (越接近1越准确)
+  最佳情况: 已排序 (2.26ms)
+  最差情况: 随机数据 (46.4ms)
+  性能比率: 20.6:1
 
 NaturalMergeSort (理论: O(n log n)):
-  实际表现: O(n) (斜率: 1.000)
-  R²相关系数: 0.995 (越接近1越准确)
-  最佳情况: 已排序 (1.54ms)
-  最差情况: 随机数据 (32.51ms)
-  性能比率: 21.1:1
+  实际表现: O(n log n) (斜率: 1.563)
+  R²相关系数: 0.937 (越接近1越准确)
+  最佳情况: 全相同 (2.31ms)
+  最差情况: 随机数据 (45.23ms)
+  性能比率: 19.5:1
 
 PowerSort (理论: O(n log n)):
-  实际表现: O(n²) (斜率: 1.801)
-  R²相关系数: 0.972 (越接近1越准确)
-  最佳情况: 全相同 (1.66ms)
-  最差情况: 随机数据 (143.91ms)
-  性能比率: 86.8:1
+  实际表现: O(n²) (斜率: 1.831)
+  R²相关系数: 0.968 (越接近1越准确)
+  最佳情况: 已排序 (2.06ms)
+  最差情况: 随机数据 (204.94ms)
+  性能比率: 99.6:1
 
 BuiltInSort (理论: O(n log n)):
-  实际表现: O(n log n) (斜率: 1.478)
-  R²相关系数: 0.939 (越接近1越准确)
-  最佳情况: 随机数据 (1.09ms)
-  最差情况: 逆序 (95.2ms)
-  性能比率: 87.7:1
+  实际表现: O(n log n) (斜率: 1.409)
+  R²相关系数: 0.935 (越接近1越准确)
+  最佳情况: 随机数据 (2.00ms)
+  最差情况: 全相同 (185.14ms)
+  性能比率: 92.6:1
 
 ------------------------------------------------------------
 🎯 特殊场景性能摘要
 ------------------------------------------------------------
 
 已排序 - 测试算法对有序数据的优化
-  1. NaturalMergeSort: 1.54ms
-  2. TimSort: 1.69ms
-  3. PowerSort: 1.69ms
+  1. PowerSort: 2.06ms
+  2. TimSort: 2.26ms
+  3. NaturalMergeSort: 2.31ms
 
 逆序 - 测试算法对逆序数据的处理
-  1. NaturalMergeSort: 2.00ms
-  2. PowerSort: 2.14ms
-  3. TimSort: 2.23ms
+  1. NaturalMergeSort: 2.83ms
+  2. TimSort: 2.86ms
+  3. PowerSort: 2.97ms
 
 全相同 - 测试算法对重复元素的处理
-  1. PowerSort: 1.66ms
-  2. NaturalMergeSort: 1.69ms
-  3. TimSort: 1.71ms
+  1. PowerSort: 2.26ms
+  2. TimSort: 2.29ms
+  3. NaturalMergeSort: 2.31ms
 
 几乎排序 - 测试算法对近有序数据的适应性
-  1. QuickSort: 9.74ms
-  2. BuiltInSort: 11.31ms
-  3. NaturalMergeSort: 14.51ms
+  1. TimSort: 11.29ms
+  2. QuickSort: 14.2ms
+  3. NaturalMergeSort: 20.97ms
 
 ------------------------------------------------------------
 💡 使用推荐矩阵
@@ -1588,19 +1588,19 @@ BuiltInSort (理论: O(n log n)):
   原因: 小数据量时开销低的算法更优
 
 • 数据规模 > 3000
-  推荐: NaturalMergeSort
+  推荐: TimSort
   原因: 大数据量需要高效的分治算法
 
 • 数据已基本有序
-  推荐: NaturalMergeSort
+  推荐: PowerSort
   原因: 利用现有有序性可显著提升性能
 
 • 包含大量重复元素
-  推荐: BuiltInSort
+  推荐: PDQSort
   原因: 在重复元素场景下表现最优
 
 • 需要稳定排序
-  推荐: NaturalMergeSort
+  推荐: TimSort
   原因: 保持相同元素的相对顺序（4个稳定算法中性能最优）
 
 • 内存限制严格
@@ -1613,20 +1613,20 @@ BuiltInSort (理论: O(n log n)):
 ------------------------------------------------------------
 整体统计:
 • 最快单次执行: 0.0ms (BuiltInSort - 锯齿波, 100元素)
-• 最慢单次执行: 41452.6ms (InsertionSort - 逆序, 10000元素)
+• 最慢单次执行: 59732.4ms (InsertionSort - 逆序, 10000元素)
 • 性能差距: 无法计算
-• 平均执行时间: 489.43ms
-• 标准差: 3032.62ms
+• 平均执行时间: 741.27ms
+• 标准差: 4583.62ms
 
 算法可靠性 (变异系数):
-• InsertionSort: 3.198 (一般)
-• PDQSort: 5.942 (一般)
-• QuickSort: 4.388 (一般)
-• AdaptiveSort: 4.422 (一般)
-• TimSort: 2.491 (一般)
-• NaturalMergeSort: 2.507 (一般)
-• PowerSort: 3.461 (一般)
-• BuiltInSort: 3.737 (一般)
+• InsertionSort: 3.17 (一般)
+• PDQSort: 6.004 (一般)
+• QuickSort: 4.4 (一般)
+• AdaptiveSort: 4.532 (一般)
+• TimSort: 2.555 (一般)
+• NaturalMergeSort: 2.491 (一般)
+• PowerSort: 3.479 (一般)
+• BuiltInSort: 3.723 (一般)
 
 ------------------------------------------------------------
 📄 CSV格式数据导出
@@ -1636,9 +1636,9 @@ CSV数据已生成 (共 505 行)
 
 前5行数据示例:
 Algorithm,DataDistribution,Size,AverageTime,Iterations
-BuiltInSort,锯齿波,10000,5.4,5
-BuiltInSort,锯齿波,3000,1.8,5
-BuiltInSort,锯齿波,1000,0.6,5
+BuiltInSort,锯齿波,10000,11.6,5
+BuiltInSort,锯齿波,3000,4.000,5
+BuiltInSort,锯齿波,1000,1.2,5
 BuiltInSort,锯齿波,300,0.2,5
 ...(完整数据可导出到文件)
 
@@ -1647,10 +1647,10 @@ BuiltInSort,锯齿波,300,0.2,5
 ------------------------------------------------------------
 基于本次测试的主要发现:
 
-1. 综合性能最佳: NaturalMergeSort
+1. 综合性能最佳: TimSort
    在大多数测试场景中表现优异，具有良好的时间复杂度特性。
 
-2. 适应性最强: TimSort
+2. 适应性最强: NaturalMergeSort
    在各种数据分布下都能保持相对稳定的性能表现。
 
 3. 关键洞察:
@@ -1661,9 +1661,9 @@ BuiltInSort,锯齿波,300,0.2,5
    • 内存使用模式是选择算法的重要考虑因素
 
 4. 建议:
-   • 一般用途推荐: NaturalMergeSort
-   • 性能要求极高: NaturalMergeSort
-   • 稳定性要求: NaturalMergeSort (性能最优的稳定排序)
+   • 一般用途推荐: TimSort
+   • 性能要求极高: TimSort
+   • 稳定性要求: TimSort (性能最优的稳定排序)
    • 内存受限环境: QuickSort (性能最优的原地排序)
 
 ================================================================================
