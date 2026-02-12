@@ -1,6 +1,6 @@
 ﻿/**
- * ARCCacheTest v3.0
- * 覆盖基础功能 + v2.0 修复 + v3.0 新特性的所有边界场景。
+ * ARCCacheTest v3.2
+ * 覆盖基础功能 + v2.0 修复 + v3.0/v3.1 新特性的所有边界场景。
  *
  * v3.0 新增测试：
  *   - testHasAPI            : P4 has() 方法
@@ -9,8 +9,14 @@
  *   - testNodePoolReuse     : OPT-6 节点池复用验证
  *   - testRawKeySemantics   : ARCH-1 原始键语义验证
  *
+ * v3.1 新增测试：
+ *   - testPutOnB2GhostKey   : B2 ghost put 路径
+ *
  * v3.0 变更：
  *   - 移除 UID 前缀 "_" 相关断言（ARCH-1：原始键直接用作属性名）
+ *
+ * v3.2 变更：
+ *   - 版本号同步 ARCCache v3.2（测试覆盖不变，底层实现已优化）
  */
 import org.flashNight.naki.Cache.ARCCache;
 
@@ -26,7 +32,7 @@ class org.flashNight.naki.Cache.ARCCacheTest {
     }
 
     public function runTests():Void {
-        trace("=== ARCCacheTest v3.1: Starting Tests ===");
+        trace("=== ARCCacheTest v3.2: Starting Tests ===");
 
         this.testPutAndGet();
         this.testCacheEviction();
@@ -54,7 +60,7 @@ class org.flashNight.naki.Cache.ARCCacheTest {
         // ---- v3.1 新增测试 ----
         this.testPutOnB2GhostKey();
 
-        trace("=== ARCCacheTest v3.1: All Tests Completed ===");
+        trace("=== ARCCacheTest v3.2: All Tests Completed ===");
     }
 
     // ==================== 基础测试 ====================

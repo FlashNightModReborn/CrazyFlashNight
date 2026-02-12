@@ -36,7 +36,8 @@
  * [P1] OPT-B       : 提取 _evictForInsert() 消除 put()/_putNew() Case IV ~80 行代码克隆。
  * [P1] ROBUST-3    : Case IV 淘汰条件 L1 == c → L1 >= c，防御性兜底。
  * [P2] OPT-A       : _clear() 回收节点入池（_drainToPool），避免 reset 后 GC 重建。
- * [P2] ROBUST-4    : putNoEvict() ghost 路径增加 |T1|+|T2| >= c 容量守卫。
+ * [P2] ROBUST-4    : putNoEvict() ghost 路径增加 |T1|+|T2| >= c 容量守卫（触发 _doReplace）。
+ *                     注意：MISS 路径仍不检查容量，调用者负责避免无界增长。
  * [P3] OPT-E       : put() B1/B2 幽灵路径合并（~14 行）+ 变量整合（~35 var → 16 var）。
  *
  * 保留自 v2.0 的优化：
@@ -589,13 +590,19 @@ class org.flashNight.naki.Cache.ARCCache {
     // ==================== putNoEvict ====================
 
     /**
-     * 不触发淘汰的 put — 用于子类在幽灵命中后存储计算值。
+     * 轻量 put — MISS 路径跳过 Case IV 淘汰与 p 自适应，
+     * 但 ghost 路径在缓存满时仍会触发 _doReplace（ROBUST-4）。
+     *
+     * 行为矩阵：
+     *   T1/T2 HIT  → 更新值 + promote，不淘汰（|T1|+|T2| 不变）
+     *   B1/B2 GHOST→ 断链 + 容量守卫（满时 _doReplace）→ 插入 T1
+     *                 不执行 p 自适应，不享受 T2 热端优先级
+     *   MISS       → 从池/新建 → 直插 T1，不检查容量
+     *                 调用者负责确保不会无界增长（或接受临时 |T1|+|T2| > c）
      *
      * 注：v3.1 后 LazyCache 的 ghost hit 走 OPT-5 直赋，MISS 走 _putNew()，
      * 此方法当前无外部调用者。保留为公共 API 供未来扩展使用；
      * 若确认无需求可在后续版本移除。
-     *
-     * v3.2 ROBUST-4: ghost 路径增加 |T1|+|T2| >= c 容量守卫。
      *
      * @param key   键（原始键）
      * @param value 值

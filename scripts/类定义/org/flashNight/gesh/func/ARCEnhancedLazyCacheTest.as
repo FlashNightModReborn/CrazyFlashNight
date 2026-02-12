@@ -347,7 +347,7 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
      * HIGH-2 覆盖：懒加载缓存的容量不变式
      *
      * 旧版对完全未命中统一使用 putNoEvict → 缓存无界增长。
-     * 新版对 MISS 使用 put()（触发淘汰），GHOST 使用 putNoEvict()。
+     * v3.1+：MISS 走 _putNew()（触发淘汰），GHOST 走 OPT-5 直赋（_lastNode.value）。
      *
      * 验证：连续访问 3x 容量的唯一 key 后，|T1|+|T2| 仍 ≤ capacity。
      */

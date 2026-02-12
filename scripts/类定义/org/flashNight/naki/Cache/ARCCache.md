@@ -116,11 +116,13 @@ ARC 算法是一种高级缓存替换策略，结合了 **LRU（最近最少使�
 
 #### `putNoEvict` 方法
 
-**功能**：不触发淘汰的 put — 专为子类（如 ARCEnhancedLazyCache）在幽灵命中后存储计算值设计。
+**功能**：轻量 put — MISS 路径跳过 Case IV 淘汰与 p 自适应，但 ghost 路径在缓存满时仍触发 `_doReplace`（ROBUST-4）。
 
-- T1/T2 中：更新值 + 正常 promote
-- B1/B2 中：断链后插入 T1（不执行 p 自适应，不享受 T2 热端优先级）
-- 新 key：从池分配或新建，直接插入 T1（不淘汰）
+- **T1/T2 中**：更新值 + 正常 promote（`|T1|+|T2|` 不变，无需淘汰）
+- **B1/B2 中**：断链 → 容量守卫（`|T1|+|T2| >= c` 时 `_doReplace`）→ 插入 T1。不执行 p 自适应，不享受 T2 热端优先级
+- **新 key**：从池分配或新建，直接插入 T1（**不检查容量**，调用者负责控制调用频次）
+
+> **注意**：方法名中 "NoEvict" 仅适用于 MISS 路径。ghost 路径为维护 `|T1|+|T2| <= c` 不变式，会触发淘汰。当前无外部调用者。
 
 #### `remove` 方法
 
@@ -185,7 +187,7 @@ if (cache.has("myKey")) {
 | P1 | OPT-B | 提取 `_evictForInsert()` | 消除 put()/_putNew() Case IV ~80 行代码克隆 |
 | P1 | ROBUST-3 | Case IV `L1 == c` → `L1 >= c` | 防御性兜底，防止 remove() 导致的 L1 超限漏过 Case A |
 | P2 | OPT-A | `_clear()` 回收节点入池（`_drainToPool`） | 避免 reset 后 GC 压力，节点立即可复用 |
-| P2 | ROBUST-4 | `putNoEvict()` ghost 路径增加容量守卫 | 防止外部调用导致 `|T1|+|T2| > c` |
+| P2 | ROBUST-4 | `putNoEvict()` ghost 路径增加容量守卫（`_doReplace`） | 防止外部调用导致 `\|T1\|+\|T2\| > c`；MISS 路径仍不检查 |
 | P3 | OPT-E | `put()` B1/B2 幽灵路径合并 + 变量整合（~35→16 var） | 减少 ~14 行重复 + 省 19 次 DefineLocal2 |
 
 ### 保留自 v2.0 的优化
@@ -359,7 +361,7 @@ trace("Capacity: " + cache.getCapacity());
 
 5. **`put` 方法**：插入数据。v3.2 优化：B1/B2 路径合并（OPT-E，~35→16 var）、Case IV 委托 `_evictForInsert()`（OPT-B）。
 
-6. **`putNoEvict` 方法**：不触发淘汰的写入。v3.2 增加 ROBUST-4 容量守卫。注：当前无外部调用者。
+6. **`putNoEvict` 方法**：轻量 put — MISS 路径不淘汰，ghost 路径触发 `_doReplace`（ROBUST-4 容量守卫）。注：当前无外部调用者。
 
 7. **`_putNew` 方法**（v3.1）：纯新 key 快速插入，v3.2 淘汰逻辑委托 `_evictForInsert()`（OPT-B）。
 
@@ -396,7 +398,7 @@ org.flashNight.gesh.func.ARCEnhancedLazyCacheTest.runTests();
 
 ```
 
-=== ARCCacheTest v3.1: Starting Tests ===
+=== ARCCacheTest v3.2: Starting Tests ===
 Running testPutAndGet...
 Assertion Passed: Value for key1 should be 'value1'
 Assertion Passed: Value for key2 should be 'value2'
@@ -545,7 +547,7 @@ Assertion Passed: Cache size 3 within capacity after B2 ghost put
 Assertion Passed: No orphan 'A' in B2 after put on B2 ghost key
 testPutOnB2GhostKey completed successfully.
 
-=== ARCCacheTest v3.1: All Tests Completed ===
+=== ARCCacheTest v3.2: All Tests Completed ===
 
 
 ```

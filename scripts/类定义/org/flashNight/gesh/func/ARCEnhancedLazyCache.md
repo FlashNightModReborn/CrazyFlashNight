@@ -1,4 +1,4 @@
-# ARCEnhancedLazyCache v3.1 使用指南
+# ARCEnhancedLazyCache v3.2 使用指南
 
 ## 目录
 
@@ -15,7 +15,7 @@
 
 ## 简介
 
-**ARCEnhancedLazyCache v3.0** 继承自 `ARCCache v3.0`，在其基础上增加了**懒加载**能力：当 `get(key)` 缓存未命中时，自动调用 `evaluator(key)` 计算并缓存结果。
+**ARCEnhancedLazyCache v3.2** 继承自 `ARCCache v3.2`，在其基础上增加了**懒加载**能力：当 `get(key)` 缓存未命中时，自动调用 `evaluator(key)` 计算并缓存结果。
 
 适用于"计算结果可缓存"的场景 —— 调用者只需提供一个计算函数和容量，之后对缓存的使用完全透明：首次 get 自动计算，后续 get 直接命中。
 
@@ -99,7 +99,7 @@ var result = upperCache.get("key"); // 先从 cache 取 base，再 toUpperCase
 | 方法 | 说明 |
 |------|------|
 | `put(key, value)` | 手动放入值（后续 get 命中时返回手动值，不调用 evaluator） |
-| `putNoEvict(key, value)` | 不触发淘汰的 put |
+| `putNoEvict(key, value)` | 轻量 put（MISS 不淘汰，ghost 路径触发 `_doReplace`） |
 | `remove(key):Boolean` | 移除 key（含幽灵队列） |
 | `has(key):Boolean` | 不变更状态的存在性检查（v3.0 新增） |
 | `getT1/T2/B1/B2():Array` | 调试用：获取队列内容 |
@@ -126,6 +126,14 @@ var result = upperCache.get("key"); // 先从 cache 取 base，再 toUpperCase
 - OPT-8：`_clear()` 重用哨兵
 - VALID-1：容量校验
 - API-1：`has()` 方法
+
+### 继承自 ARCCache v3.2 的变更
+
+- OPT-C/D：`get()` 变量整合 + MISS 延迟检查（热路径加速）
+- OPT-B：`_evictForInsert()` 统一淘汰入口
+- OPT-A：`_clear()` 回收节点入池（`_drainToPool`）
+- OPT-E：`put()` 路径合并 + 变量整合
+- ROBUST-3/4：防御性 `>=` + `putNoEvict` ghost 路径容量守卫（触发 `_doReplace`）
 
 ---
 
@@ -226,7 +234,7 @@ evaluator MUST NOT 对**同一缓存实例**调用 `get()`/`put()`/`remove()`。
 
 ---
 
-### v3.1 测试覆盖
+### v3.2 测试覆盖
 
 | 测试 | 覆盖点 |
 |------|--------|
@@ -245,6 +253,12 @@ evaluator MUST NOT 对**同一缓存实例**调用 `get()`/`put()`/`remove()`。
 | testHasViaLazyCache | API-1：has() 不触发 evaluator |
 | testRawKeyLazyCache | ARCH-1：原始键语义 |
 | **testCapacity1LazyCache** | **v3.1 P2：capacity=1 边界（ghost/pool 密集交互）** |
+| **testRemoveAndGet** | **v3.2：remove() 后 get() 触发 evaluator 重计算** |
+| **testPutGhostPath** | **v3.2：put() 对 B1 ghost key 的完整路径验证** |
+| **testResetNullEvaluator** | **v3.2：reset(null, true) 保持原 evaluator** |
+| **testCapacity2Boundary** | **v3.2：capacity=2 边界 + p 自适应极端行为** |
+| **testMapParentReset** | **v3.2：map() 父缓存 reset 后子缓存 stale 行为** |
+| **testClearPoolDrain** | **v3.2：OPT-A _clear() 池回收 + 多轮 reset 稳定性** |
 | testPerformance | 10000 次命中 < 200ms |
 
 
