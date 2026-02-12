@@ -1,10 +1,16 @@
 ﻿/**
- * ARCEnhancedLazyCacheTest v2.0
+ * ARCEnhancedLazyCacheTest v3.0
  *
- * 覆盖基础功能 + v2.0 修复的所有边界场景：
+ * 覆盖基础功能 + v2.0 修复 + v3.0 新特性的所有边界场景：
  *   - CRITICAL-1 : evaluator 返回 null/undefined 时不再无限递归
  *   - HIGH-2     : 完全未命中走 put() 触发淘汰，容量不会无界增长
  *   - 幽灵命中   : ghost hit 后 evaluator 计算、缓存、后续命中的完整链路
+ *
+ * v3.0 新增测试：
+ *   - testEvaluatorExceptionOnMiss     : MISS 路径 evaluator 异常无副作用
+ *   - testEvaluatorExceptionOnGhostHit : GHOST 路径 SAFE-1 僵尸清除
+ *   - testHasViaLazyCache              : P4 has() API 在懒加载缓存上的行为
+ *   - testRawKeyLazyCache              : ARCH-1 原始键语义验证
  */
 import org.flashNight.gesh.func.ARCEnhancedLazyCache;
 
@@ -439,8 +445,202 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
         assertEquals(evaluatorCallCount, 1, "Evaluator should not be called again after manual put");
     }
 
+    // ==================== v3.0 新增测试 ====================
+
     /**
-     * 性能测试 v2.0
+     * SAFE-1 覆盖：MISS 路径 evaluator 异常无副作用
+     *
+     * 当 evaluator 在 MISS 路径抛出异常时：
+     *   - super.put() 尚未调用，缓存状态不变
+     *   - 异常正常传播到调用者
+     *   - 后续正常 get 不受影响
+     */
+    public static function testEvaluatorExceptionOnMiss():Void {
+        trace("Running: testEvaluatorExceptionOnMiss");
+
+        var evaluatorCallCount:Number = 0;
+        var shouldThrow:Boolean = false;
+
+        var evaluator:Function = function(key:Object):Object {
+            evaluatorCallCount++;
+            if (shouldThrow) {
+                throw new Error("Evaluator MISS error for key: " + key);
+            }
+            return "val-" + key;
+        };
+
+        var cache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 3);
+
+        // 正常填充一个 key
+        cache.get("A");
+        assertEquals(evaluatorCallCount, 1, "Evaluator called once for 'A'");
+
+        // 开启异常模式
+        shouldThrow = true;
+        var caught:Boolean = false;
+        try {
+            cache.get("B"); // MISS → evaluator throws
+        } catch (e) {
+            caught = true;
+        }
+        assertTrue(caught, "[SAFE-1/MISS] Exception should propagate to caller");
+        assertEquals(evaluatorCallCount, 2, "Evaluator was called for 'B' before throwing");
+
+        // 验证缓存状态未被污染
+        // 'B' 不应在缓存中（put 未执行）
+        assertEquals(cache.has("B"), false,
+            "[SAFE-1/MISS] Failed key 'B' should NOT be in cache");
+
+        // 'A' 应仍然正常
+        shouldThrow = false;
+        var valA = cache.get("A");
+        assertEquals(valA, "val-A", "[SAFE-1/MISS] Pre-existing key 'A' should be unaffected");
+
+        // 重试 'B' 应该成功
+        var valB = cache.get("B");
+        assertEquals(valB, "val-B", "[SAFE-1/MISS] Retry key 'B' should succeed after error cleared");
+        assertEquals(evaluatorCallCount, 3,
+            "Evaluator count: A(1) + B_throw(2) + A_hit(skip) + B_retry(3) = 3");
+    }
+
+    /**
+     * SAFE-1 覆盖：GHOST 路径 evaluator 异常后僵尸清除
+     *
+     * 当 evaluator 在 ghost hit 路径抛出异常时：
+     *   - super.get() 已将节点移入 T2（value = undefined）
+     *   - catch 中调用 super.remove(key) 清除僵尸节点
+     *   - 异常重抛给调用者
+     *   - 后续 get 同一 key 应为完全 MISS，不返回 undefined
+     */
+    public static function testEvaluatorExceptionOnGhostHit():Void {
+        trace("Running: testEvaluatorExceptionOnGhostHit");
+
+        var evaluatorCallCount:Number = 0;
+        var shouldThrow:Boolean = false;
+
+        var evaluator:Function = function(key:Object):Object {
+            evaluatorCallCount++;
+            if (shouldThrow) {
+                throw new Error("Evaluator GHOST error for key: " + key);
+            }
+            return "val-" + key;
+        };
+
+        var cache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 3);
+
+        // Phase 1: 填满缓存 + 构造 ghost
+        cache.get("A"); // evaluatorCallCount = 1, T1=[A]
+        cache.get("B"); // evaluatorCallCount = 2, T1=[B,A]
+        cache.get("C"); // evaluatorCallCount = 3, T1=[C,B,A]
+
+        // 插入 D 触发 A 淘汰到 B1
+        cache.get("D"); // evaluatorCallCount = 4, T1=[D,C,B?], A→B1
+
+        // Phase 2: A 在 ghost 中，设置 evaluator 抛异常
+        shouldThrow = true;
+        var caught:Boolean = false;
+        try {
+            cache.get("A"); // ghost hit → evaluator throws → remove zombie
+        } catch (e) {
+            caught = true;
+        }
+        assertTrue(caught, "[SAFE-1/GHOST] Exception should propagate to caller");
+        assertEquals(evaluatorCallCount, 5, "Evaluator was called for ghost 'A' before throwing");
+
+        // Phase 3: 验证僵尸已被清除
+        // A 不应在缓存或 ghost 中（remove 已清除）
+        assertEquals(cache.has("A"), false,
+            "[SAFE-1/GHOST] Zombie key 'A' should NOT be in cache (has=false)");
+
+        // 重新 get A 应是完全 MISS，不是返回 undefined
+        shouldThrow = false;
+        var valA = cache.get("A");
+        assertEquals(valA, "val-A",
+            "[SAFE-1/GHOST] Retry ghost-failed key 'A' should recompute correctly");
+        assertEquals(evaluatorCallCount, 6,
+            "Evaluator called again for 'A' (complete miss after zombie cleanup)");
+
+        // Phase 4: 正常命中
+        var valA2 = cache.get("A");
+        assertEquals(valA2, "val-A", "Recomputed 'A' should now be cached");
+        assertEquals(evaluatorCallCount, 6, "No extra evaluator call for cached 'A'");
+    }
+
+    /**
+     * P4 API-1：has() 方法在懒加载缓存上的行为
+     *
+     * has() 检查 key 是否在 T1/T2 中，不触发 evaluator。
+     */
+    public static function testHasViaLazyCache():Void {
+        trace("Running: testHasViaLazyCache");
+
+        var evaluatorCallCount:Number = 0;
+        var evaluator:Function = function(key:Object):Object {
+            evaluatorCallCount++;
+            return "val-" + key;
+        };
+
+        var cache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 3);
+
+        // 空缓存
+        assertEquals(cache.has("A"), false, "has() on empty cache should be false");
+        assertEquals(evaluatorCallCount, 0, "has() should NOT trigger evaluator");
+
+        // get 填充后
+        cache.get("A"); // evaluatorCallCount = 1
+        assertEquals(cache.has("A"), true, "has() after get should be true");
+        assertEquals(evaluatorCallCount, 1, "has() should NOT call evaluator again");
+
+        // has() 对不存在的 key 不触发计算
+        assertEquals(cache.has("B"), false, "has() for uncached key should be false");
+        assertEquals(evaluatorCallCount, 1, "has() must NOT trigger evaluator for uncached key");
+
+        // 手动 put 后
+        cache.put("X", "manual-X");
+        assertEquals(cache.has("X"), true, "has() after manual put should be true");
+
+        // remove 后
+        cache.remove("X");
+        assertEquals(cache.has("X"), false, "has() after remove should be false");
+    }
+
+    /**
+     * ARCH-1：原始键语义验证（通过懒加载缓存）
+     *
+     * 验证 Number 键在懒加载缓存中的行为符合预期。
+     */
+    public static function testRawKeyLazyCache():Void {
+        trace("Running: testRawKeyLazyCache");
+
+        var evaluatorCallCount:Number = 0;
+        var evaluator:Function = function(key:Object):Object {
+            evaluatorCallCount++;
+            return "computed-" + key;
+        };
+
+        var cache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 10);
+
+        // Number 键
+        var val1 = cache.get(42);
+        assertEquals(val1, "computed-42", "Number key 42 should work via lazy cache");
+        assertEquals(evaluatorCallCount, 1, "Evaluator called once for Number 42");
+
+        // 命中
+        var val2 = cache.get(42);
+        assertEquals(val2, "computed-42", "Number key 42 should hit cache");
+        assertEquals(evaluatorCallCount, 1, "Evaluator not called again for cached Number 42");
+
+        // 已知限制：Number 与 String 碰撞
+        // get(42) 已缓存 "computed-42"，get("42") 应命中同一个条目
+        var val3 = cache.get("42");
+        assertEquals(val3, "computed-42",
+            "[Known] String '42' should hit same entry as Number 42");
+        assertEquals(evaluatorCallCount, 1,
+            "Evaluator not called for '42' (collision with 42)");
+    }
+
+    /**
+     * 性能测试 v3.0
      * 调整阈值：AS2 VM 下 10000 次命中在 200ms 内为合理预期。
      */
     public static function testPerformance():Void {
@@ -471,7 +671,7 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
         var duration:Number = getTimer() - start;
         trace("Performance: 10000 cache hits took " + duration + "ms");
 
-        // v2.0 阈值：AS2 VM 下 200ms 为合理上限（sentinel 优化后应明显低于此值）
+        // v3.0 阈值：AS2 VM 下 200ms 为合理上限（sentinel + pool 优化后应明显低于此值）
         var performanceThreshold:Number = 200;
         assertTrue(duration < performanceThreshold,
             "10000 cache hits should complete in under " + performanceThreshold + "ms (actual: " + duration + "ms)");
@@ -480,7 +680,7 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
     // ==================== 入口 ====================
 
     public static function runTests():Void {
-        trace("=== ARCEnhancedLazyCacheTest v2.0: Starting Tests ===");
+        trace("=== ARCEnhancedLazyCacheTest v3.0: Starting Tests ===");
         testResults = [];
 
         // 基础测试
@@ -497,6 +697,12 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
         testGhostHitRoundTrip();
         testPutGetInteraction();
 
+        // v3.0 新增测试
+        testEvaluatorExceptionOnMiss();
+        testEvaluatorExceptionOnGhostHit();
+        testHasViaLazyCache();
+        testRawKeyLazyCache();
+
         // 性能测试
         testPerformance();
 
@@ -510,7 +716,7 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
                 failCount++;
             }
         }
-        trace("=== ARCEnhancedLazyCacheTest v2.0: " + testResults.length + " assertions, "
+        trace("=== ARCEnhancedLazyCacheTest v3.0: " + testResults.length + " assertions, "
               + passCount + " passed, " + failCount + " failed ===");
     }
 }
