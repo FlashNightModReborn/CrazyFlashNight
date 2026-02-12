@@ -125,7 +125,14 @@
  * 
  */
 class org.flashNight.naki.Sort.TimSort {
-    
+
+    // 静态工作区缓存 - 跨调用复用，减少 new Array() 产生的 GC 压力
+    private static var _workspace:Array   = null;  // tempArray 缓存
+    private static var _wsLen:Number      = 0;     // _workspace 当前容量
+    private static var _runBase:Array     = null;  // runBase 栈缓存
+    private static var _runLen:Array      = null;  // runLen 栈缓存
+    private static var _stackCap:Number   = 0;     // 栈缓存当前容量
+
     /**
      * TimSort主排序方法
      * 
@@ -172,7 +179,7 @@ class org.flashNight.naki.Sort.TimSort {
         // 核心算法数据结构 - TimSort核心组件
         // ==========================================
         var compare:Function,            // 比较函数：用户提供或默认数值比较
-            tempArray:Array,             // 临时数组：存储合并时的较短序列，最大需要n/2空间
+            tempArray:Array,             // 临时数组：存储合并时的较短序列（优先复用静态缓存）
             runBase:Array,               // run栈：存储每个有序片段的起始位置
             runLen:Array,                // run栈：存储每个有序片段的长度  
             stackSize:Number,            // 栈大小：当前run栈中的元素数量
@@ -362,13 +369,24 @@ class org.flashNight.naki.Sort.TimSort {
             return arr;
         }
 
-        // 初始化核心数据结构
-        tempArray = null;                                      // 延迟分配：仅在实际需要合并时创建
-        stackCapacity = 64;                                    // 栈容量预分配（在预期使用场景下足够，标准实现常见85）
-        runBase = new Array(stackCapacity);                                    // run栈：存储run起始位置
-        runLen = new Array(stackCapacity);                                     // run栈：存储run长度
-        stackSize = 0;                                   // 栈大小初始化
-        minGallop = MIN_GALLOP;                         // 动态galloping阈值
+        // 初始化核心数据结构（优先复用静态缓存，减少 GC）
+        stackCapacity = 64;
+        if (_stackCap < stackCapacity) {
+            _runBase  = new Array(stackCapacity);
+            _runLen   = new Array(stackCapacity);
+            _stackCap = stackCapacity;
+        }
+        runBase = _runBase;
+        runLen  = _runLen;
+
+        // tempArray: 优先复用缓存，不足时延迟分配
+        if (_wsLen >= ((n + 1) >> 1)) {
+            tempArray = _workspace;
+        } else {
+            tempArray = null;
+        }
+        stackSize = 0;
+        minGallop = MIN_GALLOP;
         
         /*
          * 计算最小run长度 (内联 _calculateMinRun)
@@ -630,7 +648,7 @@ class org.flashNight.naki.Sort.TimSort {
                 base = loA;             // A区域的起始基准位置
                 len = lenA;             // A区域的搜索长度
                 
-                if (len == 0 || compare(arr[base], target) > 0) {
+                if (compare(arr[base], target) > 0) {
                     gallopK = 0;        // 边界情况：A[0] > B[0]，无需裁剪
                 } else {
                     /*
@@ -691,7 +709,7 @@ class org.flashNight.naki.Sort.TimSort {
                     base = loB;
                     len = lenB;
                     
-                    if (len == 0 || compare(arr[base], target) >= 0) {
+                    if (compare(arr[base], target) >= 0) {
                         gallopK = 0;              // B[0] >= A[last]，无需裁剪B
                     } else {
                         // 指数搜索 - gallopLeft（lower_bound）语义
@@ -801,7 +819,7 @@ class org.flashNight.naki.Sort.TimSort {
                          * 平均节省50%的临时空间使用量
                          */
                         // 延迟分配临时数组：仅在实际需要合并时创建
-                        if (tempArray == null) tempArray = new Array(Math.ceil(n / 2));
+                        if (tempArray == null) { tempArray = new Array((n + 1) >> 1); _workspace = tempArray; _wsLen = tempArray.length; }
 
                         if (lenA <= lenB) {
                             /*
@@ -879,88 +897,14 @@ class org.flashNight.naki.Sort.TimSort {
                              */
                             while (pa < ea && pb < eb) {
                                 if (ca >= minGallop) {
-                                    // A方进入galloping模式 (内联 gallopRight 逻辑)
-                                    target = tempArray[pa];
-                                    base = pb;
-                                    len = eb - pb;
-                                    gallopK = 0;
-                                    
-                                    if (len == 0 || compare(arr[base], target) >= 0) {
-                                        gallopK = 0;
-                                    } else {
-                                        ofs = 1;
-                                        lastOfs = 0;
-                                        while (ofs < len && compare(arr[base + ofs], target) < 0) {
-                                            lastOfs = ofs;
-                                            ofs = (ofs << 1) + 1;
-                                            if (ofs <= 0) ofs = len;
-                                        }
-                                        if (ofs > len) ofs = len;
-                                        left = lastOfs;
-                                        hi2 = ofs;
-                                        while (left < hi2) {
-                                            mid = (left + hi2) >> 1;
-                                            if (compare(arr[base + mid], target) < 0) {
-                                                left = mid + 1;
-                                            } else {
-                                                hi2 = mid;
-                                            }
-                                        }
-                                        gallopK = left;
-                                    }
-                                    
-                                    /*
-                                     * ============================================================
-                                     * 【Galloping模式批量复制优化】B序列快速复制
-                                     * ============================================================
-                                     * 
-                                     * 【算法背景】
-                                     * Galloping模式下，通过指数搜索确定了大量连续元素的相对位置，
-                                     * 可以批量复制而无需逐个比较，这是TimSort的核心性能优势。
-                                     * 
-                                     * 【双重优化技术】
-                                     * 1. 循环展开：4元素为一组减少循环开销
-                                     * 2. 双地址缓存：同时缓存源地址(tempIdx)和目标地址(copyIdx)
-                                     * 
-                                     * 【副作用合并策略】
-                                     * arr[copyIdx = d + copyI] = arr[tempIdx = pb + copyI]
-                                     * 这行代码实现了复杂的优化：
-                                     * - copyIdx = d + copyI：缓存目标地址计算结果
-                                     * - tempIdx = pb + copyI：缓存源地址计算结果  
-                                     * - 两个缓存结果可以在实践中提高数据访问效率
-                                     * 
-                                     * 【性能提升原理】
-                                     * 传统方式每次都要计算 d+copyI 和 pb+copyI，需要8次地址运算
-                                     * 优化方式只计算一次基础地址，后续3次只需 +1/+2/+3，仅需4次运算
-                                     * 在AS2虚拟机上可获得显著的地址计算性能提升
-                                     */
-                                    copyEnd = gallopK - (gallopK & 3);  // 4字节对齐边界
-                                    for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                                        // 【双地址缓存】源地址和目标地址同时缓存
-                                        arr[copyIdx = d + copyI] = arr[tempIdx = pb + copyI];
-                                        arr[copyIdx + 1] = arr[tempIdx + 1];   // 复用双缓存 +1
-                                        arr[copyIdx + 2] = arr[tempIdx + 2];   // 复用双缓存 +2
-                                        arr[copyIdx + 3] = arr[tempIdx + 3];   // 复用双缓存 +3
-                                    }
-                                    // 处理剩余元素（非优化循环）
-                                    for (; copyI < gallopK; copyI++) {
-                                        arr[d + copyI] = arr[pb + copyI];
-                                    }
-                                    d += gallopK;
-                                    pb += gallopK;
-                                    ca = 0;
-                                    
-                                    // 动态调整galloping阈值
-                                    minGallop -= (gallopK >= MIN_GALLOP ? 1 : -1);
-                                    if (minGallop < 1) minGallop = 1;
-                                } else if (cb >= minGallop) {
-                                    // B方进入galloping模式 (内联 gallopLeft 逻辑)
+                                    // A方进入galloping模式 - gallopRight: 在A(tempArray)中查找B当前元素的插入位置
+                                    // 找出tempArray中有多少连续A元素 <= arr[pb]，批量复制这些A元素
                                     target = arr[pb];
                                     base = pa;
                                     len = ea - pa;
                                     gallopK = 0;
-                                    
-                                    if (len == 0 || compare(tempArray[base], target) > 0) {
+
+                                    if (compare(tempArray[base], target) > 0) {
                                         gallopK = 0;
                                     } else {
                                         ofs = 1;
@@ -985,43 +929,74 @@ class org.flashNight.naki.Sort.TimSort {
                                     }
                                     
                                     /*
-                                     * ============================================================
                                      * 【A序列Galloping批量复制】临时数组到主数组的高速传输
-                                     * ============================================================
-                                     * 
-                                     * 【数据流向分析】
-                                     * 从临时数组(tempArray)批量复制到主数组(arr)：
-                                     * tempArray[pa + copyI] -> arr[d + copyI]
-                                     * 
-                                     * 【地址缓存策略差异】
-                                     * 与B序列复制不同，这里采用了交叉缓存策略：
-                                     * - tempIdx 缓存目标地址 (d + copyI)
-                                     * - copyIdx 缓存源地址 (pa + copyI)
-                                     * 
-                                     * 【变量复用原理】
-                                     * arr[tempIdx = d + copyI] = tempArray[copyIdx = pa + copyI]
-                                     * 左侧：tempIdx存储目标地址计算结果，支持+1/+2/+3偏移
-                                     * 右侧：copyIdx存储源地址计算结果，支持+1/+2/+3偏移
-                                     * 
-                                     * 【AS2优化效果】
-                                     * - 减少70%的地址计算（8次减少到2.4次平均）
-                                     * - 提升寄存器命中率（两个缓存变量常驻寄存器）
-                                     * - 优化内存访问模式（连续4元素块访问）
+                                     * A连续获胜时，将tempArray中的A元素批量写入arr
                                      */
-                                    copyEnd = gallopK - (gallopK & 3);  // 4字节对齐边界
+                                    copyEnd = gallopK - (gallopK & 3);
                                     for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                                        // 【交叉地址缓存】目标和源地址分别缓存
                                         arr[tempIdx = d + copyI] = tempArray[copyIdx = pa + copyI];
-                                        arr[tempIdx + 1] = tempArray[copyIdx + 1];  // 双缓存复用 +1
-                                        arr[tempIdx + 2] = tempArray[copyIdx + 2];  // 双缓存复用 +2
-                                        arr[tempIdx + 3] = tempArray[copyIdx + 3];  // 双缓存复用 +3
+                                        arr[tempIdx + 1] = tempArray[copyIdx + 1];
+                                        arr[tempIdx + 2] = tempArray[copyIdx + 2];
+                                        arr[tempIdx + 3] = tempArray[copyIdx + 3];
                                     }
-                                    // 处理剩余元素（标准循环）
                                     for (; copyI < gallopK; copyI++) {
                                         arr[d + copyI] = tempArray[pa + copyI];
                                     }
                                     d += gallopK;
                                     pa += gallopK;
+                                    ca = 0;
+                                    
+                                    // 动态调整galloping阈值
+                                    minGallop -= (gallopK >= MIN_GALLOP ? 1 : -1);
+                                    if (minGallop < 1) minGallop = 1;
+                                } else if (cb >= minGallop) {
+                                    // B方进入galloping模式 - gallopLeft: 在B(arr)中查找A当前元素的插入位置
+                                    // 找出arr中有多少连续B元素 < tempArray[pa]，批量复制这些B元素
+                                    target = tempArray[pa];
+                                    base = pb;
+                                    len = eb - pb;
+                                    gallopK = 0;
+
+                                    if (compare(arr[base], target) >= 0) {
+                                        gallopK = 0;
+                                    } else {
+                                        ofs = 1;
+                                        lastOfs = 0;
+                                        while (ofs < len && compare(arr[base + ofs], target) < 0) {
+                                            lastOfs = ofs;
+                                            ofs = (ofs << 1) + 1;
+                                            if (ofs <= 0) ofs = len;
+                                        }
+                                        if (ofs > len) ofs = len;
+                                        left = lastOfs;
+                                        hi2 = ofs;
+                                        while (left < hi2) {
+                                            mid = (left + hi2) >> 1;
+                                            if (compare(arr[base + mid], target) < 0) {
+                                                left = mid + 1;
+                                            } else {
+                                                hi2 = mid;
+                                            }
+                                        }
+                                        gallopK = left;
+                                    }
+                                    
+                                    /*
+                                     * 【B序列Galloping批量复制】arr内部元素前移
+                                     * B连续获胜时，将arr中的B元素批量前移到目标位置
+                                     */
+                                    copyEnd = gallopK - (gallopK & 3);
+                                    for (copyI = 0; copyI < copyEnd; copyI += 4) {
+                                        arr[copyIdx = d + copyI] = arr[tempIdx = pb + copyI];
+                                        arr[copyIdx + 1] = arr[tempIdx + 1];
+                                        arr[copyIdx + 2] = arr[tempIdx + 2];
+                                        arr[copyIdx + 3] = arr[tempIdx + 3];
+                                    }
+                                    for (; copyI < gallopK; copyI++) {
+                                        arr[d + copyI] = arr[pb + copyI];
+                                    }
+                                    d += gallopK;
+                                    pb += gallopK;
                                     cb = 0;
                                     
                                     // 动态调整galloping阈值
@@ -1109,7 +1084,7 @@ class org.flashNight.naki.Sort.TimSort {
                                     target = tempArray[pb];
                                     len = pa - ba0 + 1;
 
-                                    if (len == 0 || compare(arr[pa], target) <= 0) {
+                                    if (compare(arr[pa], target) <= 0) {
                                         gallopK = 0;  // A的最右元素 <= B当前元素，无需批量复制
                                     } else if (compare(arr[ba0], target) > 0) {
                                         gallopK = len;  // A的所有元素都 > B当前元素，全部批量复制
@@ -1159,9 +1134,8 @@ class org.flashNight.naki.Sort.TimSort {
                                     target = arr[pa];
                                     base = 0;
                                     len = pb + 1;
-                                    gallopK = len;
 
-                                    if (len == 0 || compare(tempArray[base], target) >= 0) {
+                                    if (compare(tempArray[base], target) >= 0) {
                                         gallopK = len;  // 所有B元素 >= target，全部批量复制
                                     } else {
                                         ofs = 1;
@@ -1285,7 +1259,7 @@ class org.flashNight.naki.Sort.TimSort {
             base = loA;
             len = lenA;
 
-            if (len == 0 || compare(arr[base], target) > 0) {
+            if (compare(arr[base], target) > 0) {
                 gallopK = 0;
             } else {
                 ofs = 1;
@@ -1321,7 +1295,7 @@ class org.flashNight.naki.Sort.TimSort {
                 base = loB;
                 len = lenB;
 
-                if (len == 0 || compare(arr[base], target) >= 0) {
+                if (compare(arr[base], target) >= 0) {
                     gallopK = 0;
                 } else {
                     ofs = 1;
@@ -1368,7 +1342,6 @@ class org.flashNight.naki.Sort.TimSort {
                                 arr[loA + i] = arr[loB + i];
                             }
                             arr[loA + left] = tmp;
-                            size = stackSize;
                             continue;
                         }
                         if (lenB == 1) {
@@ -1387,12 +1360,11 @@ class org.flashNight.naki.Sort.TimSort {
                                 arr[loA + j + 1] = arr[loA + j];
                             }
                             arr[loA + left] = tmp;
-                            size = stackSize;
                             continue;
                         }// 完整的合并逻辑（与上面_mergeCollapse中完全相同）
                         // ⚠️ 维护提示：这里是强制合并的重复实现，修改时请同步更新上面的正常合并逻辑
                     // 延迟分配临时数组：仅在实际需要合并时创建
-                    if (tempArray == null) tempArray = new Array(Math.ceil(n / 2));
+                    if (tempArray == null) { tempArray = new Array((n + 1) >> 1); _workspace = tempArray; _wsLen = tempArray.length; }
 
                     if (lenA <= lenB) {
                         // 完整的mergeLo（重复实现）
@@ -1430,58 +1402,13 @@ class org.flashNight.naki.Sort.TimSort {
                         
                         while (pa < ea && pb < eb) {
                             if (ca >= minGallop) {
-                                target = tempArray[pa];
-                                base = pb;
-                                len = eb - pb;
-                                gallopK = 0;
-                                
-                                if (len == 0 || compare(arr[base], target) >= 0) {
-                                    gallopK = 0;
-                                } else {
-                                    ofs = 1;
-                                    lastOfs = 0;
-                                    while (ofs < len && compare(arr[base + ofs], target) < 0) {
-                                        lastOfs = ofs;
-                                        ofs = (ofs << 1) + 1;
-                                        if (ofs <= 0) ofs = len;
-                                    }
-                                    if (ofs > len) ofs = len;
-                                    left = lastOfs;
-                                    hi2 = ofs;
-                                    while (left < hi2) {
-                                        mid = (left + hi2) >> 1;
-                                        if (compare(arr[base + mid], target) < 0) {
-                                            left = mid + 1;
-                                        } else {
-                                            hi2 = mid;
-                                        }
-                                    }
-                                    gallopK = left;
-                                }
-                                
-                                // 批量复制（循环展开优化）
-                                copyEnd = gallopK - (gallopK & 3);
-                                for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                                    arr[copyIdx = d + copyI] = arr[tempIdx = pb + copyI];
-                                    arr[copyIdx + 1] = arr[tempIdx + 1];
-                                    arr[copyIdx + 2] = arr[tempIdx + 2];
-                                    arr[copyIdx + 3] = arr[tempIdx + 3];
-                                }
-                                for (; copyI < gallopK; copyI++) {
-                                    arr[d + copyI] = arr[pb + copyI];
-                                }
-                                d += gallopK;
-                                pb += gallopK;
-                                ca = 0;
-                                minGallop -= (gallopK >= MIN_GALLOP ? 1 : -1);
-                                if (minGallop < 1) minGallop = 1;
-                            } else if (cb >= minGallop) {
+                                // A方galloping - gallopRight: 在A(tempArray)中查找B当前元素的插入位置
                                 target = arr[pb];
                                 base = pa;
                                 len = ea - pa;
                                 gallopK = 0;
-                                
-                                if (len == 0 || compare(tempArray[base], target) > 0) {
+
+                                if (compare(tempArray[base], target) > 0) {
                                     gallopK = 0;
                                 } else {
                                     ofs = 1;
@@ -1504,8 +1431,8 @@ class org.flashNight.naki.Sort.TimSort {
                                     }
                                     gallopK = left;
                                 }
-                                
-                                // 批量复制（循环展开优化）
+
+                                // A序列批量复制: tempArray → arr
                                 copyEnd = gallopK - (gallopK & 3);
                                 for (copyI = 0; copyI < copyEnd; copyI += 4) {
                                     arr[tempIdx = d + copyI] = tempArray[copyIdx = pa + copyI];
@@ -1518,6 +1445,53 @@ class org.flashNight.naki.Sort.TimSort {
                                 }
                                 d += gallopK;
                                 pa += gallopK;
+                                ca = 0;
+                                minGallop -= (gallopK >= MIN_GALLOP ? 1 : -1);
+                                if (minGallop < 1) minGallop = 1;
+                            } else if (cb >= minGallop) {
+                                // B方galloping - gallopLeft: 在B(arr)中查找A当前元素的插入位置
+                                target = tempArray[pa];
+                                base = pb;
+                                len = eb - pb;
+                                gallopK = 0;
+
+                                if (compare(arr[base], target) >= 0) {
+                                    gallopK = 0;
+                                } else {
+                                    ofs = 1;
+                                    lastOfs = 0;
+                                    while (ofs < len && compare(arr[base + ofs], target) < 0) {
+                                        lastOfs = ofs;
+                                        ofs = (ofs << 1) + 1;
+                                        if (ofs <= 0) ofs = len;
+                                    }
+                                    if (ofs > len) ofs = len;
+                                    left = lastOfs;
+                                    hi2 = ofs;
+                                    while (left < hi2) {
+                                        mid = (left + hi2) >> 1;
+                                        if (compare(arr[base + mid], target) < 0) {
+                                            left = mid + 1;
+                                        } else {
+                                            hi2 = mid;
+                                        }
+                                    }
+                                    gallopK = left;
+                                }
+
+                                // B序列批量复制: arr内部元素前移
+                                copyEnd = gallopK - (gallopK & 3);
+                                for (copyI = 0; copyI < copyEnd; copyI += 4) {
+                                    arr[copyIdx = d + copyI] = arr[tempIdx = pb + copyI];
+                                    arr[copyIdx + 1] = arr[tempIdx + 1];
+                                    arr[copyIdx + 2] = arr[tempIdx + 2];
+                                    arr[copyIdx + 3] = arr[tempIdx + 3];
+                                }
+                                for (; copyI < gallopK; copyI++) {
+                                    arr[d + copyI] = arr[pb + copyI];
+                                }
+                                d += gallopK;
+                                pb += gallopK;
                                 cb = 0;
                                 minGallop -= (gallopK >= MIN_GALLOP ? 1 : -1);
                                 if (minGallop < 1) minGallop = 1;
@@ -1588,7 +1562,7 @@ class org.flashNight.naki.Sort.TimSort {
                                 target = tempArray[pb];
                                 len = pa - ba0 + 1;
 
-                                if (len == 0 || compare(arr[pa], target) <= 0) {
+                                if (compare(arr[pa], target) <= 0) {
                                     gallopK = 0;
                                 } else if (compare(arr[ba0], target) > 0) {
                                     gallopK = len;
@@ -1636,9 +1610,8 @@ class org.flashNight.naki.Sort.TimSort {
                                 target = arr[pa];
                                 base = 0;
                                 len = pb + 1;
-                                gallopK = len;
 
-                                if (len == 0 || compare(tempArray[base], target) >= 0) {
+                                if (compare(tempArray[base], target) >= 0) {
                                     gallopK = len;
                                 } else {
                                     ofs = 1;
