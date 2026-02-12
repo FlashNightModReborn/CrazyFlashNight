@@ -493,15 +493,17 @@ class org.flashNight.naki.Sort.TimSort {
              * 2. 避免病态输入导致的性能退化 
              * 3. 保持算法的稳定性（相等元素相对位置不变）
              * 
-             * 【两个核心不变量】
+             * 【三个核心不变量】（含2015年de Gouw等人修复的第三条件）
              * 设栈顶为索引i，则必须满足：
-             * 不变量1: runLen[i-1] > runLen[i] + runLen[i+1]  （三元素和不等式）
+             * 不变量1: runLen[i-1] > runLen[i] + runLen[i+1]  （栈顶三元组）
              * 不变量2: runLen[i] > runLen[i+1]                （相邻元素递减）
-             * 
+             * 不变量3: runLen[i-2] > runLen[i-1] + runLen[i]  （次顶三元组，防止深层违反）
+             *
              * 【不变量违反的处理策略】
-             * - 违反不变量1：选择runLen[i-1]和runLen[i+1]中较小者与runLen[i]合并
+             * - 违反不变量1或3：选择runLen[i-1]和runLen[i+1]中较小者与runLen[i]合并
+             *   （与OpenJDK TimSort.mergeCollapse一致的合并索引选择）
              * - 违反不变量2：直接合并runLen[i]和runLen[i+1]
-             * - 优先级：不变量1的修复优先于不变量2
+             * - 优先级：不变量1/3的修复优先于不变量2
              * 
              * 【算法数学分析】
              * 这些不变量确保了run长度呈近似斐波那契数列增长，
