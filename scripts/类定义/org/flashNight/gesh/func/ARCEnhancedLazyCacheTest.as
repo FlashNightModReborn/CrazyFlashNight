@@ -1,7 +1,7 @@
 ﻿/**
- * ARCEnhancedLazyCacheTest v3.1
+ * ARCEnhancedLazyCacheTest v3.2
  *
- * 覆盖基础功能 + v2.0 修复 + v3.0/v3.1 特性的所有边界场景：
+ * 覆盖基础功能 + v2.0 修复 + v3.0/v3.1/v3.2 特性的所有边界场景：
  *   - CRITICAL-1 : evaluator 返回 null/undefined 时不再无限递归
  *   - HIGH-2     : 完全未命中走 _putNew() 触发淘汰，容量不会无界增长
  *   - 幽灵命中   : ghost hit 后 evaluator 计算、缓存、后续命中的完整链路
@@ -14,6 +14,14 @@
  * v3.1 新增/重写测试：
  *   - testEvaluatorExceptionOnGhostHit : C8 契约验证（僵尸行为 + remove 恢复）
  *   - testCapacity1LazyCache           : capacity=1 极端交互（ghost/pool 密集路径）
+ *
+ * v3.2 新增测试：
+ *   - testRemoveAndGet                 : remove() 后 get() 触发 evaluator 重计算
+ *   - testPutGhostPath                 : put() 对 B1 ghost key 的完整路径验证
+ *   - testResetNullEvaluator           : reset(null, true) 保持原 evaluator
+ *   - testCapacity2Boundary            : capacity=2 边界 + p 自适应极端行为
+ *   - testMapParentReset               : map() 父缓存 reset 后子缓存 stale 行为
+ *   - testClearPoolDrain               : OPT-A _clear() 池回收 + 多轮 reset 稳定性
  */
 import org.flashNight.gesh.func.ARCEnhancedLazyCache;
 
@@ -761,10 +769,261 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
             "c=1: |T1|+|T2|=" + (t1s + t2s) + " should be <= 1");
     }
 
+    // ==================== v3.2 新增测试 ====================
+
+    /**
+     * P3: remove() 后 get() 应触发 evaluator 重新计算
+     */
+    public static function testRemoveAndGet():Void {
+        trace("Running: testRemoveAndGet");
+
+        var evaluatorCallCount:Number = 0;
+        var evaluator:Function = function(key:Object):Object {
+            evaluatorCallCount++;
+            return "val-" + evaluatorCallCount + "-" + key;
+        };
+
+        var cache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 5);
+
+        // 填充
+        var v1 = cache.get("A"); // evaluatorCallCount = 1
+        assertEquals(v1, "val-1-A", "remove+get: Initial get returns computed value");
+        assertEquals(evaluatorCallCount, 1, "remove+get: Evaluator called once");
+
+        // 命中
+        var v2 = cache.get("A");
+        assertEquals(v2, "val-1-A", "remove+get: Cached value returned");
+        assertEquals(evaluatorCallCount, 1, "remove+get: No extra call on HIT");
+
+        // 移除
+        cache.remove("A");
+        assertEquals(cache.has("A"), false, "remove+get: After remove, has() returns false");
+
+        // 重新获取 — 应触发 evaluator
+        var v3 = cache.get("A"); // evaluatorCallCount = 2
+        assertEquals(v3, "val-2-A", "remove+get: After remove, evaluator re-called");
+        assertEquals(evaluatorCallCount, 2, "remove+get: Evaluator called again after remove");
+
+        // 再次命中
+        var v4 = cache.get("A");
+        assertEquals(v4, "val-2-A", "remove+get: Re-cached value returned");
+        assertEquals(evaluatorCallCount, 2, "remove+get: No extra call after re-cache");
+    }
+
+    /**
+     * P3: put() 对 ghost 队列中 key 的处理路径
+     * 验证手动 put() 命中 B1/B2 ghost 时正确执行 p 自适应 + REPLACE + 赋值
+     */
+    public static function testPutGhostPath():Void {
+        trace("Running: testPutGhostPath");
+
+        var evaluatorCallCount:Number = 0;
+        var evaluator:Function = function(key:Object):Object {
+            evaluatorCallCount++;
+            return "computed-" + key;
+        };
+
+        var cache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 3);
+
+        // Phase 1: 填满并构造 B1 ghost
+        cache.get("A"); // T1=[A]
+        cache.get("B"); // T1=[B,A]
+        cache.get("C"); // T1=[C,B,A]
+        cache.get("C"); // HIT: C T1→T2. T1=[B,A], T2=[C]
+        cache.get("D"); // MISS: REPLACE A→B1. T1=[D,B], T2=[C], B1=[A]
+        assertEquals(evaluatorCallCount, 4, "putGhost: 4 evaluator calls after setup");
+
+        // Phase 2: 手动 put 到 B1 ghost key
+        cache.put("A", "manual-A");
+
+        // Phase 3: 验证 put 后的状态
+        assertEquals(cache.has("A"), true, "putGhost: A should be in cache after put on ghost");
+
+        var valA = cache.get("A");
+        assertEquals(cache._hitType, 1, "putGhost: A should be HIT after ghost put");
+        assertEquals(valA, "manual-A", "putGhost: A should have manual value, not computed");
+        assertEquals(evaluatorCallCount, 4, "putGhost: Evaluator not called for manual put on ghost");
+
+        // Phase 4: 容量不变式
+        var t1s:Number = cache.getT1().length;
+        var t2s:Number = cache.getT2().length;
+        assertTrue(t1s + t2s <= 3,
+            "putGhost: |T1|+|T2|=" + (t1s + t2s) + " should be <= 3");
+    }
+
+    /**
+     * P3: reset(null, true) — null evaluator 保持原 evaluator 不变 + 清空缓存
+     */
+    public static function testResetNullEvaluator():Void {
+        trace("Running: testResetNullEvaluator");
+
+        var evaluatorCallCount:Number = 0;
+        var evaluator:Function = function(key:Object):Object {
+            evaluatorCallCount++;
+            return "val-" + key;
+        };
+
+        var cache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 3);
+
+        // 填充
+        cache.get("A"); // evaluatorCallCount = 1
+        assertEquals(evaluatorCallCount, 1, "resetNull: Evaluator called once for A");
+
+        // reset(null, true): 传 null evaluator 应保持原 evaluator，清空缓存
+        cache.reset(null, true);
+
+        // A 已被清空，应重新计算
+        var v2 = cache.get("A"); // evaluatorCallCount = 2
+        assertEquals(v2, "val-A", "resetNull: Original evaluator still works after reset(null, true)");
+        assertEquals(evaluatorCallCount, 2, "resetNull: Evaluator called again after cache clear");
+    }
+
+    /**
+     * P3: capacity=2 边界 — T1/T2 各最多 1-2 个条目，p 自适应行为极端
+     */
+    public static function testCapacity2Boundary():Void {
+        trace("Running: testCapacity2Boundary");
+
+        var evaluatorCallCount:Number = 0;
+        var evaluator:Function = function(key:Object):Object {
+            evaluatorCallCount++;
+            return "val-" + key;
+        };
+
+        var cache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 2);
+
+        // A, B 填满
+        cache.get("A"); // T1=[A]
+        cache.get("B"); // T1=[B,A]
+        assertEquals(evaluatorCallCount, 2, "c=2: Two evaluator calls");
+
+        // 提升 A 到 T2
+        cache.get("A"); // HIT: A T1→T2. T1=[B], T2=[A]
+
+        // C 触发淘汰
+        cache.get("C"); // MISS: REPLACE B→B1. T1=[C], T2=[A], B1=[B]
+        assertEquals(evaluatorCallCount, 3, "c=2: Three evaluator calls");
+
+        // A 仍在 T2
+        var valA = cache.get("A");
+        assertEquals(cache._hitType, 1, "c=2: A should be T2 HIT");
+        assertEquals(evaluatorCallCount, 3, "c=2: No extra call for cached A");
+
+        // B ghost hit
+        var valB = cache.get("B");
+        assertEquals(cache._hitType, 2, "c=2: B should be B1 ghost hit");
+        assertEquals(evaluatorCallCount, 4, "c=2: Evaluator called for ghost B");
+
+        // 容量不变式
+        var t1s:Number = cache.getT1().length;
+        var t2s:Number = cache.getT2().length;
+        assertTrue(t1s + t2s <= 2,
+            "c=2: |T1|+|T2|=" + (t1s + t2s) + " should be <= 2");
+        var totalSize:Number = t1s + t2s + cache.getB1().length + cache.getB2().length;
+        assertTrue(totalSize <= 4,
+            "c=2: total=" + totalSize + " should be <= 2*2=4");
+    }
+
+    /**
+     * P3: map() 父缓存 reset 后子缓存的 stale 行为
+     * reset 父缓存后，子缓存的已缓存值不会自动失效
+     */
+    public static function testMapParentReset():Void {
+        trace("Running: testMapParentReset");
+
+        var evaluatorCallCount:Number = 0;
+        var evaluator:Function = function(key:Object):Object {
+            evaluatorCallCount++;
+            return key + "-base-v" + evaluatorCallCount;
+        };
+
+        var parentCache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 5);
+        var childCache:ARCEnhancedLazyCache = parentCache.map(function(baseValue:Object):Object {
+            return String(baseValue).toUpperCase();
+        }, 5);
+
+        // 通过子缓存触发计算链
+        var v1 = childCache.get("A"); // parent evaluator(A)="A-base-v1", child="A-BASE-V1"
+        assertEquals(v1, "A-BASE-V1", "mapReset: Child returns transformed value");
+        assertEquals(evaluatorCallCount, 1, "mapReset: Evaluator called once");
+
+        // 子缓存命中
+        var v2 = childCache.get("A");
+        assertEquals(v2, "A-BASE-V1", "mapReset: Child cache HIT");
+        assertEquals(evaluatorCallCount, 1, "mapReset: No extra evaluator call");
+
+        // Reset 父缓存（换新 evaluator + 清空）
+        parentCache.reset(function(key:Object):Object {
+            evaluatorCallCount++;
+            return key + "-newbase-v" + evaluatorCallCount;
+        }, true);
+
+        // 子缓存仍有旧值（stale）
+        var v3 = childCache.get("A");
+        assertEquals(v3, "A-BASE-V1",
+            "mapReset: Child still returns stale cached value after parent reset");
+        assertEquals(evaluatorCallCount, 1, "mapReset: No evaluator call for stale child HIT");
+
+        // 访问子缓存中不存在的 key → 触发新的 parent evaluator
+        var v4 = childCache.get("B"); // parent evaluator("B")="B-newbase-v2", child="B-NEWBASE-V2"
+        assertEquals(v4, "B-NEWBASE-V2",
+            "mapReset: New key through child uses parent's new evaluator");
+        assertEquals(evaluatorCallCount, 2, "mapReset: New evaluator called for B");
+    }
+
+    /**
+     * P3: OPT-A 验证 — _clear() 后池回收的节点可被后续插入复用
+     * 通过观察容量不变式在多次 reset 后仍成立来间接验证。
+     */
+    public static function testClearPoolDrain():Void {
+        trace("Running: testClearPoolDrain");
+
+        var evaluatorCallCount:Number = 0;
+        var evaluator:Function = function(key:Object):Object {
+            evaluatorCallCount++;
+            return "val-" + key;
+        };
+
+        var cache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 10);
+
+        // 第一轮：填满缓存
+        for (var i:Number = 0; i < 10; i++) {
+            cache.get("key" + i);
+        }
+        assertEquals(evaluatorCallCount, 10, "clearPool: 10 evaluator calls for initial fill");
+
+        // reset → OPT-A 应将 10 个节点回收入池
+        cache.reset(null, true);
+
+        // 第二轮：重新填满（应复用池节点，不分配新对象）
+        for (var j:Number = 0; j < 10; j++) {
+            cache.get("newkey" + j);
+        }
+        assertEquals(evaluatorCallCount, 20, "clearPool: 10 more evaluator calls after reset");
+
+        // 容量不变式
+        var t1s:Number = cache.getT1().length;
+        var t2s:Number = cache.getT2().length;
+        assertTrue(t1s + t2s <= 10,
+            "clearPool: |T1|+|T2|=" + (t1s + t2s) + " should be <= 10 after reset+refill");
+
+        // 再 reset 一次验证稳定性
+        cache.reset(null, true);
+        for (var k:Number = 0; k < 15; k++) {
+            cache.get("third" + k);
+        }
+        assertEquals(evaluatorCallCount, 35, "clearPool: 15 more evaluator calls after second reset");
+
+        t1s = cache.getT1().length;
+        t2s = cache.getT2().length;
+        assertTrue(t1s + t2s <= 10,
+            "clearPool: capacity invariant holds after multiple reset cycles");
+    }
+
     // ==================== 入口 ====================
 
     public static function runTests():Void {
-        trace("=== ARCEnhancedLazyCacheTest v3.1: Starting Tests ===");
+        trace("=== ARCEnhancedLazyCacheTest v3.2: Starting Tests ===");
         testResults = [];
 
         // 基础测试
@@ -790,6 +1049,14 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
         // v3.1 新增测试
         testCapacity1LazyCache();
 
+        // v3.2 新增测试
+        testRemoveAndGet();
+        testPutGhostPath();
+        testResetNullEvaluator();
+        testCapacity2Boundary();
+        testMapParentReset();
+        testClearPoolDrain();
+
         // 性能测试
         testPerformance();
 
@@ -803,7 +1070,7 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
                 failCount++;
             }
         }
-        trace("=== ARCEnhancedLazyCacheTest v3.1: " + testResults.length + " assertions, "
+        trace("=== ARCEnhancedLazyCacheTest v3.2: " + testResults.length + " assertions, "
               + passCount + " passed, " + failCount + " failed ===");
     }
 }

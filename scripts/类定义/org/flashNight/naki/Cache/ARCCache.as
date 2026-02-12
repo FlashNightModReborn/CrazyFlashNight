@@ -1,5 +1,5 @@
 ﻿/**
- * ARCCache v3.0 — Adaptive Replacement Cache (AS2 raw-key + pooling + robust)
+ * ARCCache v3.2 — Adaptive Replacement Cache (AS2 raw-key + pooling + robust)
  *
  * 基于 Megiddo & Modha (2003) ARC 论文的完整实现。
  *
@@ -25,6 +25,19 @@
  *                     供 LazyCache MISS 路径使用，省一次 nodeMap hash 查找。
  * [P1] OPT-10      : 入池仅清 value（唯一可能持有外部大对象引用的字段）。
  *                     uid/prev/list 在复用时覆盖，无需预清。省 3 次赋值/次入池。
+ *
+ * v3.2 优化（代码审阅）：
+ * ──────────────────────
+ * [P0] OPT-C       : get() 变量整合（20 var → 13 var），B1/B2 幽灵路径合并，
+ *                     localT1 延迟初始化。省 7 次 DefineLocal2 + T2 HIT 省 1 属性读取。
+ * [P0] OPT-D       : get() MISS 检查后置至 T1/T2 之后。
+ *                     AS2 AVM1 对 undefined.prop 返回 undefined 而非抛出异常，
+ *                     T2/T1 HIT 各省 1 次 StrictEquals 比较。
+ * [P1] OPT-B       : 提取 _evictForInsert() 消除 put()/_putNew() Case IV ~80 行代码克隆。
+ * [P1] ROBUST-3    : Case IV 淘汰条件 L1 == c → L1 >= c，防御性兜底。
+ * [P2] OPT-A       : _clear() 回收节点入池（_drainToPool），避免 reset 后 GC 重建。
+ * [P2] ROBUST-4    : putNoEvict() ghost 路径增加 |T1|+|T2| >= c 容量守卫。
+ * [P3] OPT-E       : put() B1/B2 幽灵路径合并（~14 行）+ 变量整合（~35 var → 16 var）。
  *
  * 保留自 v2.0 的优化：
  *   OPT-1 值直存节点 / OPT-2 内联 promote / OPT-3 T2 head 快路径
@@ -135,8 +148,28 @@ class org.flashNight.naki.Cache.ARCCache {
     }
 
     /**
+     * 将队列中所有节点回收入池，并重置队列为空（OPT-A）。
+     * 回收节点通过 _pool 链供后续 _putNew/put 复用，减少 GC 压力。
+     */
+    private function _drainToPool(list:Object):Void {
+        var s:Object = list.sentinel;
+        var curr:Object = s.next;
+        while (curr !== s) {
+            var nxt:Object = curr.next;
+            curr.value = undefined; // OPT-10: 仅清 value
+            curr.next = this._pool;
+            this._pool = curr;
+            curr = nxt;
+        }
+        s.prev = s;
+        s.next = s;
+        list.size = 0;
+    }
+
+    /**
      * 重置所有队列和映射（供子类 reset/clear 使用）。
-     * P2 OPT-8：重用哨兵节点，避免 8 次对象分配。
+     * OPT-8：重用哨兵节点，避免 8 次对象分配。
+     * OPT-A：回收现有节点入池，避免 reset 后重新分配。
      *
      * public：AS2 没有 protected，子类（ARCEnhancedLazyCache.reset）需要调用。
      */
@@ -144,13 +177,11 @@ class org.flashNight.naki.Cache.ARCCache {
         this.p = 0;
         this._hitType = 0;
         this._lastNode = null;
-        this._pool = null;
-        // 重用哨兵
-        var s:Object;
-        s = this.T1.sentinel; s.prev = s; s.next = s; this.T1.size = 0;
-        s = this.T2.sentinel; s.prev = s; s.next = s; this.T2.size = 0;
-        s = this.B1.sentinel; s.prev = s; s.next = s; this.B1.size = 0;
-        s = this.B2.sentinel; s.prev = s; s.next = s; this.B2.size = 0;
+        // OPT-A: 回收所有队列节点入池（而非丢弃）
+        this._drainToPool(this.T1);
+        this._drainToPool(this.T2);
+        this._drainToPool(this.B1);
+        this._drainToPool(this.B2);
         var nm:Object = {};
         nm.__proto__ = null;
         this.nodeMap = nm;
@@ -207,36 +238,112 @@ class org.flashNight.naki.Cache.ARCCache {
         victim.list = dst;
     }
 
+    /**
+     * Case IV 淘汰 — 为新 key 腾出空间（OPT-B）。
+     *
+     * 从 put()/_putNew() 提取的共用淘汰逻辑，消除 ~80 行代码克隆。
+     * 调用后调用者可安全插入一个新节点到 T1。
+     *
+     * ROBUST-3: L1 >= c（防御性，原 L1 == c）。
+     */
+    private function _evictForInsert():Void {
+        var localT1:Object = this.T1;
+        var localT2:Object = this.T2;
+        var mc:Number = this.maxCapacity;
+        var lB1:Object = this.B1;
+        var lB2:Object = this.B2;
+        var L1:Number = localT1.size + lB1.size;
+
+        if (L1 >= mc) {
+            // Case A：|L1| >= c（ROBUST-3: >= 替代 ==）
+            if (localT1.size < mc) {
+                // removeTail B1（最老幽灵）+ pool
+                var sb:Object = lB1.sentinel;
+                var ghost:Object = sb.prev;
+                if (ghost !== sb) {
+                    var gp:Object = ghost.prev;
+                    gp.next = sb;
+                    sb.prev = gp;
+                    lB1.size--;
+                    delete this.nodeMap[ghost.uid];
+                    // OPT-6 + OPT-10: pool（仅清 value）
+                    ghost.value = undefined;
+                    ghost.next = this._pool;
+                    this._pool = ghost;
+                }
+                this._doReplace(false);
+            } else {
+                // |T1| >= c: 直接从 T1 删除（不进 B1）+ pool
+                var st:Object = localT1.sentinel;
+                var direct:Object = st.prev;
+                if (direct !== st) {
+                    var dp:Object = direct.prev;
+                    dp.next = st;
+                    st.prev = dp;
+                    localT1.size--;
+                    delete this.nodeMap[direct.uid];
+                    // OPT-6 + OPT-10: pool（仅清 value）
+                    direct.value = undefined;
+                    direct.next = this._pool;
+                    this._pool = direct;
+                }
+            }
+        } else {
+            // Case B：|L1| < c
+            var L2:Number = localT2.size + lB2.size;
+            if (L1 + L2 >= 2 * mc) {
+                // removeTail B2 + pool
+                var sb2:Object = lB2.sentinel;
+                var ghost2:Object = sb2.prev;
+                if (ghost2 !== sb2) {
+                    var g2p:Object = ghost2.prev;
+                    g2p.next = sb2;
+                    sb2.prev = g2p;
+                    lB2.size--;
+                    delete this.nodeMap[ghost2.uid];
+                    // OPT-6 + OPT-10: pool（仅清 value）
+                    ghost2.value = undefined;
+                    ghost2.next = this._pool;
+                    this._pool = ghost2;
+                }
+            }
+            if (localT1.size + localT2.size >= mc) {
+                this._doReplace(false);
+            }
+        }
+    }
+
     // ==================== get ====================
 
     /**
      * 从缓存获取项目。
      * 根据命中类型设置 _hitType，供子类判断后续操作。
      *
+     * v3.2 OPT-C: 变量整合（20→13 var），B1/B2 路径合并，localT1 延迟。
+     * v3.2 OPT-D: MISS 检查后置至 T1/T2 之后。
+     *   AS2 AVM1 对 undefined.prop 返回 undefined（不抛异常），
+     *   nodeMap[key] 为 undefined 时 node.list → undefined，
+     *   不会匹配 T2/T1 的对象引用，安全落入延迟 MISS 检查。
+     *
      * @param  key  要获取的键（原始键，直接用作属性名）
      * @return 缓存命中时返回值；未命中或幽灵命中返回 null
      */
     public function get(key:Object):Object {
         var node:Object = this.nodeMap[key];
-        if (node === undefined) {
-            this._hitType = 0; // MISS
-            this._lastNode = null;
-            return null;
-        }
-
+        // OPT-D: node 可能为 undefined，node.list → undefined（AS2 安全）
         var nodeList:Object = node.list;
-        var localT1:Object = this.T1;
         var localT2:Object = this.T2;
 
-        // ---- 链表操作复用变量（AS2 函数作用域，各分支互斥） ----
+        // ---- 链表操作复用变量（OPT-C: 13 var 替代原 20 var） ----
         var np:Object;
         var nn:Object;
         var oh:Object;
+        var s:Object;
 
-        // ---- T2 命中（最热路径优先） ----
+        // ---- T2 命中（最热路径优先，localT1 延迟） ----
         if (nodeList === localT2) {
             this._hitType = 1;
-            var s:Object = localT2.sentinel;
+            s = localT2.sentinel;
             if (node !== s.next) {
                 // unlink + addToHead（同队列，size 不变）
                 np = node.prev;
@@ -252,6 +359,8 @@ class org.flashNight.naki.Cache.ARCCache {
             return node.value;
         }
 
+        var localT1:Object = this.T1; // OPT-C: T2 HIT 不需要，延迟初始化
+
         // ---- T1 命中 ----
         if (nodeList === localT1) {
             this._hitType = 1;
@@ -262,97 +371,80 @@ class org.flashNight.naki.Cache.ARCCache {
             nn.prev = np;
             localT1.size--;
             // addToHead T2
-            var s2:Object = localT2.sentinel;
-            oh = s2.next;
+            s = localT2.sentinel;
+            oh = s.next;
             node.next = oh;
-            node.prev = s2;
+            node.prev = s;
             oh.prev = node;
-            s2.next = node;
+            s.next = node;
             localT2.size++;
             node.list = localT2;
             return node.value;
         }
 
-        // ---- B1 幽灵命中 ----
-        var localB1:Object = this.B1;
-        if (nodeList === localB1) {
-            this._hitType = 2;
-            var localB2:Object = this.B2;
+        // ---- OPT-D: MISS 延迟检查 ----
+        if (node === undefined) {
+            this._hitType = 0;
+            this._lastNode = null;
+            return null;
+        }
 
-            // p 自适应：增大（偏向 T1 扩张）
-            var d1:Number = localB2.size / localB1.size;
-            if (d1 < 1) d1 = 1;
-            var newP:Number = this.p + d1;
-            var mc:Number = this.maxCapacity;
+        // ---- B1/B2 幽灵命中（OPT-C 合并 + 共用变量） ----
+        var localB1:Object = this.B1;
+        var localB2:Object = this.B2;
+        var mc:Number = this.maxCapacity;
+        var delta:Number;
+        var newP:Number;
+
+        if (nodeList === localB1) {
+            // B1 幽灵命中：p 自适应（增大，偏向 T1 扩张）
+            this._hitType = 2;
+            delta = localB2.size / localB1.size;
+            if (delta < 1) delta = 1;
+            newP = this.p + delta;
             if (newP > mc) newP = mc;
             this.p = newP;
-
             // ROBUST-2：仅在 cache 满时 REPLACE
             if (localT1.size + localT2.size >= mc) {
                 this._doReplace(false);
             }
-
-            // unlink from B1
-            np = node.prev;
-            nn = node.next;
-            np.next = nn;
-            nn.prev = np;
-            localB1.size--;
-            // addToHead T2
-            var s3:Object = localT2.sentinel;
-            oh = s3.next;
-            node.next = oh;
-            node.prev = s3;
-            oh.prev = node;
-            s3.next = node;
-            localT2.size++;
-            node.list = localT2;
-
-            this._lastNode = node; // OPT-5
-            return null;
-        }
-
-        // ---- B2 幽灵命中 ----
-        var localB2b:Object = this.B2;
-        if (nodeList === localB2b) {
+        } else if (nodeList === localB2) {
+            // B2 幽灵命中：p 自适应（减小，偏向 T2 扩张）
             this._hitType = 3;
-
-            // p 自适应：减小（偏向 T2 扩张）
-            var d2:Number = localB1.size / localB2b.size;
-            if (d2 < 1) d2 = 1;
-            var newP2:Number = this.p - d2;
-            if (newP2 < 0) newP2 = 0;
-            this.p = newP2;
-
+            delta = localB1.size / localB2.size;
+            if (delta < 1) delta = 1;
+            newP = this.p - delta;
+            if (newP < 0) newP = 0;
+            this.p = newP;
             // ROBUST-2
-            var mc2:Number = this.maxCapacity;
-            if (localT1.size + localT2.size >= mc2) {
+            if (localT1.size + localT2.size >= mc) {
                 this._doReplace(true);
             }
-
-            // unlink from B2
-            np = node.prev;
-            nn = node.next;
-            np.next = nn;
-            nn.prev = np;
-            localB2b.size--;
-            // addToHead T2
-            var s4:Object = localT2.sentinel;
-            oh = s4.next;
-            node.next = oh;
-            node.prev = s4;
-            oh.prev = node;
-            s4.next = node;
-            localT2.size++;
-            node.list = localT2;
-
-            this._lastNode = node; // OPT-5
+        } else {
+            // 不应到达
+            this._hitType = 0;
+            this._lastNode = null;
             return null;
         }
 
-        // 不应到达此处
-        this._hitType = 0;
-        this._lastNode = null;
+        // B1/B2 共用：从幽灵队列断链
+        np = node.prev;
+        nn = node.next;
+        np.next = nn;
+        nn.prev = np;
+        nodeList.size--; // nodeList 即 B1 或 B2
+
+        // B1/B2 共用：加入 T2 头部
+        s = localT2.sentinel;
+        oh = s.next;
+        node.next = oh;
+        node.prev = s;
+        oh.prev = node;
+        s.next = node;
+        localT2.size++;
+        node.list = localT2;
+
+        this._lastNode = node; // OPT-5
         return null;
     }
 
@@ -361,6 +453,9 @@ class org.flashNight.naki.Cache.ARCCache {
     /**
      * 向缓存放入项目。
      * 正确处理：T1/T2 更新、B1/B2 幽灵命中、完全新 key。
+     *
+     * v3.2 OPT-E: B1/B2 幽灵路径合并 + 变量整合（~35 var → 16 var）。
+     * v3.2 OPT-B: Case IV 使用 _evictForInsert()。
      *
      * @param key   键（原始键）
      * @param value 值
@@ -373,6 +468,7 @@ class org.flashNight.naki.Cache.ARCCache {
         var np:Object;
         var nn:Object;
         var oh:Object;
+        var s:Object;
 
         if (node !== undefined) {
             var nodeList:Object = node.list;
@@ -380,7 +476,7 @@ class org.flashNight.naki.Cache.ARCCache {
             // ---- T2 中：更新值 + 移到头部 ----
             if (nodeList === localT2) {
                 node.value = value;
-                var s:Object = localT2.sentinel;
+                s = localT2.sentinel;
                 if (node !== s.next) {
                     np = node.prev;
                     nn = node.next;
@@ -403,147 +499,69 @@ class org.flashNight.naki.Cache.ARCCache {
                 np.next = nn;
                 nn.prev = np;
                 localT1.size--;
-                var s2:Object = localT2.sentinel;
-                oh = s2.next;
+                s = localT2.sentinel;
+                oh = s.next;
                 node.next = oh;
-                node.prev = s2;
+                node.prev = s;
                 oh.prev = node;
-                s2.next = node;
+                s.next = node;
                 localT2.size++;
                 node.list = localT2;
                 return;
             }
 
-            // ---- B1 幽灵命中 ----
+            // ---- B1/B2 幽灵命中（OPT-E 合并） ----
             var localB1:Object = this.B1;
+            var localB2:Object = this.B2;
+            var mc:Number = this.maxCapacity;
+            var delta:Number;
+            var newP:Number;
+
             if (nodeList === localB1) {
-                var localB2:Object = this.B2;
-                // p 自适应
-                var d1:Number = localB2.size / localB1.size;
-                if (d1 < 1) d1 = 1;
-                var np1:Number = this.p + d1;
-                var mc0:Number = this.maxCapacity;
-                if (np1 > mc0) np1 = mc0;
-                this.p = np1;
+                // p 自适应：增大
+                delta = localB2.size / localB1.size;
+                if (delta < 1) delta = 1;
+                newP = this.p + delta;
+                if (newP > mc) newP = mc;
+                this.p = newP;
                 // ROBUST-2
-                if (localT1.size + localT2.size >= mc0) {
+                if (localT1.size + localT2.size >= mc) {
                     this._doReplace(false);
                 }
-                // unlink from B1
-                np = node.prev;
-                nn = node.next;
-                np.next = nn;
-                nn.prev = np;
-                localB1.size--;
-                node.value = value;
-                // addToHead T2
-                var s3:Object = localT2.sentinel;
-                oh = s3.next;
-                node.next = oh;
-                node.prev = s3;
-                oh.prev = node;
-                s3.next = node;
-                localT2.size++;
-                node.list = localT2;
-                return;
-            }
-
-            // ---- B2 幽灵命中 ----
-            var localB2b:Object = this.B2;
-            if (nodeList === localB2b) {
-                var d2:Number = localB1.size / localB2b.size;
-                if (d2 < 1) d2 = 1;
-                var np2:Number = this.p - d2;
-                if (np2 < 0) np2 = 0;
-                this.p = np2;
-                var mc1:Number = this.maxCapacity;
-                if (localT1.size + localT2.size >= mc1) {
+            } else if (nodeList === localB2) {
+                // p 自适应：减小
+                delta = localB1.size / localB2.size;
+                if (delta < 1) delta = 1;
+                newP = this.p - delta;
+                if (newP < 0) newP = 0;
+                this.p = newP;
+                if (localT1.size + localT2.size >= mc) {
                     this._doReplace(true);
                 }
-                // unlink from B2
-                np = node.prev;
-                nn = node.next;
-                np.next = nn;
-                nn.prev = np;
-                localB2b.size--;
-                node.value = value;
-                // addToHead T2
-                var s4:Object = localT2.sentinel;
-                oh = s4.next;
-                node.next = oh;
-                node.prev = s4;
-                oh.prev = node;
-                s4.next = node;
-                localT2.size++;
-                node.list = localT2;
-                return;
-            }
-        }
-
-        // ======== Case IV：完全新 key ========
-        // ⚠ SYNC: 以下淘汰逻辑与 _putNew() 完全相同。修改时须同步。
-        var mc:Number = this.maxCapacity;
-        var lB1:Object = this.B1;
-        var lB2:Object = this.B2;
-        var L1:Number = localT1.size + lB1.size;
-
-        if (L1 == mc) {
-            // Case A：|L1| == c
-            if (localT1.size < mc) {
-                // removeTail B1（最老幽灵）+ pool
-                var sb1a:Object = lB1.sentinel;
-                var ghost:Object = sb1a.prev;
-                if (ghost !== sb1a) {
-                    var gp:Object = ghost.prev;
-                    gp.next = sb1a;
-                    sb1a.prev = gp;
-                    lB1.size--;
-                    delete this.nodeMap[ghost.uid];
-                    // OPT-6 + OPT-10: pool（仅清 value）
-                    ghost.value = undefined;
-                    ghost.next = this._pool;
-                    this._pool = ghost;
-                }
-                this._doReplace(false);
             } else {
-                // |T1| == c: 直接从 T1 删除（不进 B1）+ pool
-                var st1a:Object = localT1.sentinel;
-                var direct:Object = st1a.prev;
-                if (direct !== st1a) {
-                    var dp:Object = direct.prev;
-                    dp.next = st1a;
-                    st1a.prev = dp;
-                    localT1.size--;
-                    delete this.nodeMap[direct.uid];
-                    // OPT-6 + OPT-10: pool（仅清 value）
-                    direct.value = undefined;
-                    direct.next = this._pool;
-                    this._pool = direct;
-                }
+                return; // 不应到达
             }
-        } else {
-            // Case B：|L1| < c
-            var L2:Number = localT2.size + lB2.size;
-            if (L1 + L2 >= 2 * mc) {
-                // removeTail B2 + pool
-                var sb2a:Object = lB2.sentinel;
-                var ghost2:Object = sb2a.prev;
-                if (ghost2 !== sb2a) {
-                    var g2p:Object = ghost2.prev;
-                    g2p.next = sb2a;
-                    sb2a.prev = g2p;
-                    lB2.size--;
-                    delete this.nodeMap[ghost2.uid];
-                    // OPT-6 + OPT-10: pool（仅清 value）
-                    ghost2.value = undefined;
-                    ghost2.next = this._pool;
-                    this._pool = ghost2;
-                }
-            }
-            if (localT1.size + localT2.size >= mc) {
-                this._doReplace(false);
-            }
+
+            // B1/B2 共用：断链 + 赋值 + 加入 T2 头部
+            np = node.prev;
+            nn = node.next;
+            np.next = nn;
+            nn.prev = np;
+            nodeList.size--;
+            node.value = value;
+            s = localT2.sentinel;
+            oh = s.next;
+            node.next = oh;
+            node.prev = s;
+            oh.prev = node;
+            s.next = node;
+            localT2.size++;
+            node.list = localT2;
+            return;
         }
+
+        // ======== Case IV：完全新 key（OPT-B） ========
+        this._evictForInsert();
 
         // OPT-6: 从池分配或新建节点
         var newNode:Object;
@@ -576,6 +594,8 @@ class org.flashNight.naki.Cache.ARCCache {
      * 注：v3.1 后 LazyCache 的 ghost hit 走 OPT-5 直赋，MISS 走 _putNew()，
      * 此方法当前无外部调用者。保留为公共 API 供未来扩展使用；
      * 若确认无需求可在后续版本移除。
+     *
+     * v3.2 ROBUST-4: ghost 路径增加 |T1|+|T2| >= c 容量守卫。
      *
      * @param key   键（原始键）
      * @param value 值
@@ -631,14 +651,16 @@ class org.flashNight.naki.Cache.ARCCache {
 
             // B1/B2 中：先断链再插入 T1
             // 未经 p 自适应的回填不应享受 T2 热端优先级
-            // 注：此路径在当前 LazyCache 中为死代码（ghost hit 走 OPT-5 _lastNode 直赋）
-            // 保留供外部直接调用 putNoEvict(ghost_key) 的场景使用
             np = node.prev;
             nn = node.next;
             np.next = nn;
             nn.prev = np;
             nodeList.size--;
             node.value = value;
+            // ROBUST-4: 容量守卫（防止外部调用时 |T1|+|T2| 超过 c）
+            if (localT1.size + localT2.size >= this.maxCapacity) {
+                this._doReplace(false);
+            }
             var s3:Object = localT1.sentinel;
             oh = s3.next;
             node.next = oh;
@@ -680,8 +702,7 @@ class org.flashNight.naki.Cache.ARCCache {
      * 跳过 nodeMap[key] 存在性检查和 T1/T2/B1/B2 分支，直接执行 Case IV。
      * 供 ARCEnhancedLazyCache MISS 路径使用，省一次 hash 查找。
      *
-     * ⚠ SYNC: 此方法的淘汰逻辑与 put() Case IV（第 483–568 行）完全相同。
-     *         修改任一处时须同步另一处，否则淘汰行为将出现分歧。
+     * v3.2 OPT-B: 淘汰逻辑委托 _evictForInsert()，消除代码克隆。
      *
      * 契约：
      *   - 调用者 MUST 保证 nodeMap[key] === undefined
@@ -691,67 +712,7 @@ class org.flashNight.naki.Cache.ARCCache {
      * @param value 值
      */
     public function _putNew(key:Object, value:Object):Void {
-        var localT1:Object = this.T1;
-        var localT2:Object = this.T2;
-        var mc:Number = this.maxCapacity;
-        var lB1:Object = this.B1;
-        var lB2:Object = this.B2;
-        var L1:Number = localT1.size + lB1.size;
-        var oh:Object;
-
-        if (L1 == mc) {
-            if (localT1.size < mc) {
-                // removeTail B1 + pool
-                var sb1a:Object = lB1.sentinel;
-                var ghost:Object = sb1a.prev;
-                if (ghost !== sb1a) {
-                    var gp:Object = ghost.prev;
-                    gp.next = sb1a;
-                    sb1a.prev = gp;
-                    lB1.size--;
-                    delete this.nodeMap[ghost.uid];
-                    ghost.value = undefined;
-                    ghost.next = this._pool;
-                    this._pool = ghost;
-                }
-                this._doReplace(false);
-            } else {
-                // |T1| == c: 直接从 T1 删除 + pool
-                var st1a:Object = localT1.sentinel;
-                var direct:Object = st1a.prev;
-                if (direct !== st1a) {
-                    var dp:Object = direct.prev;
-                    dp.next = st1a;
-                    st1a.prev = dp;
-                    localT1.size--;
-                    delete this.nodeMap[direct.uid];
-                    direct.value = undefined;
-                    direct.next = this._pool;
-                    this._pool = direct;
-                }
-            }
-        } else {
-            // Case B：|L1| < c
-            var L2:Number = localT2.size + lB2.size;
-            if (L1 + L2 >= 2 * mc) {
-                // removeTail B2 + pool
-                var sb2a:Object = lB2.sentinel;
-                var ghost2:Object = sb2a.prev;
-                if (ghost2 !== sb2a) {
-                    var g2p:Object = ghost2.prev;
-                    g2p.next = sb2a;
-                    sb2a.prev = g2p;
-                    lB2.size--;
-                    delete this.nodeMap[ghost2.uid];
-                    ghost2.value = undefined;
-                    ghost2.next = this._pool;
-                    this._pool = ghost2;
-                }
-            }
-            if (localT1.size + localT2.size >= mc) {
-                this._doReplace(false);
-            }
-        }
+        this._evictForInsert();
 
         // OPT-6: 从池分配或新建节点
         var newNode:Object;
@@ -766,8 +727,9 @@ class org.flashNight.naki.Cache.ARCCache {
                         list: undefined, value: value };
         }
         this.nodeMap[key] = newNode;
+        var localT1:Object = this.T1;
         var st1h:Object = localT1.sentinel;
-        oh = st1h.next;
+        var oh:Object = st1h.next;
         newNode.next = oh;
         newNode.prev = st1h;
         oh.prev = newNode;

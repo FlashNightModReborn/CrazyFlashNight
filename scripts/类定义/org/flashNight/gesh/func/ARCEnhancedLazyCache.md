@@ -258,7 +258,7 @@ org.flashNight.gesh.func.ARCEnhancedLazyCacheTest.runTests();
 
 ```
 
-=== ARCEnhancedLazyCacheTest v3.1: Starting Tests ===
+=== ARCEnhancedLazyCacheTest v3.2: Starting Tests ===
 Running: testBasicFunctionality
 [PASS] Cache should compute and return Value-A for key 'A'
 [PASS] Evaluator should be called once for key 'A'
@@ -379,11 +379,55 @@ Running: testCapacity1LazyCache
 [PASS] c=1: A should be HIT after ghost refill
 [PASS] c=1: no extra evaluator for cached A
 [PASS] c=1: |T1|+|T2|=1 should be <= 1
+Running: testRemoveAndGet
+[PASS] remove+get: Initial get returns computed value
+[PASS] remove+get: Evaluator called once
+[PASS] remove+get: Cached value returned
+[PASS] remove+get: No extra call on HIT
+[PASS] remove+get: After remove, has() returns false
+[PASS] remove+get: After remove, evaluator re-called
+[PASS] remove+get: Evaluator called again after remove
+[PASS] remove+get: Re-cached value returned
+[PASS] remove+get: No extra call after re-cache
+Running: testPutGhostPath
+[PASS] putGhost: 4 evaluator calls after setup
+[PASS] putGhost: A should be in cache after put on ghost
+[PASS] putGhost: A should be HIT after ghost put
+[PASS] putGhost: A should have manual value, not computed
+[PASS] putGhost: Evaluator not called for manual put on ghost
+[PASS] putGhost: |T1|+|T2|=3 should be <= 3
+Running: testResetNullEvaluator
+[PASS] resetNull: Evaluator called once for A
+[PASS] resetNull: Original evaluator still works after reset(null, true)
+[PASS] resetNull: Evaluator called again after cache clear
+Running: testCapacity2Boundary
+[PASS] c=2: Two evaluator calls
+[PASS] c=2: Three evaluator calls
+[PASS] c=2: A should be T2 HIT
+[PASS] c=2: No extra call for cached A
+[PASS] c=2: B should be B1 ghost hit
+[PASS] c=2: Evaluator called for ghost B
+[PASS] c=2: |T1|+|T2|=2 should be <= 2
+[PASS] c=2: total=3 should be <= 2*2=4
+Running: testMapParentReset
+[PASS] mapReset: Child returns transformed value
+[PASS] mapReset: Evaluator called once
+[PASS] mapReset: Child cache HIT
+[PASS] mapReset: No extra evaluator call
+[PASS] mapReset: Child still returns stale cached value after parent reset
+[PASS] mapReset: No evaluator call for stale child HIT
+[PASS] mapReset: New key through child uses parent's new evaluator
+[PASS] mapReset: New evaluator called for B
+Running: testClearPoolDrain
+[PASS] clearPool: 10 evaluator calls for initial fill
+[PASS] clearPool: 10 more evaluator calls after reset
+[PASS] clearPool: |T1|+|T2|=10 should be <= 10 after reset+refill
+[PASS] clearPool: 15 more evaluator calls after second reset
+[PASS] clearPool: capacity invariant holds after multiple reset cycles
 Running: testPerformance
 [PASS] Evaluator should be called 1000 times to fill cache
-Performance: 10000 cache hits took 40ms
-[PASS] 10000 cache hits should complete in under 200ms (actual: 40ms)
-=== ARCEnhancedLazyCacheTest v3.1: 106 assertions, 106 passed, 0 failed ===
-
+Performance: 10000 cache hits took 39ms
+[PASS] 10000 cache hits should complete in under 200ms (actual: 39ms)
+=== ARCEnhancedLazyCacheTest v3.2: 145 assertions, 145 passed, 0 failed ===
 
 ```
