@@ -1,4 +1,4 @@
-# ARCEnhancedLazyCache v3.0 使用指南
+# ARCEnhancedLazyCache v3.1 使用指南
 
 ## 目录
 
@@ -30,7 +30,7 @@
 | _hitType | 含义 | LazyCache 行为 |
 |----------|------|----------------|
 | 1 (HIT) | T1/T2 命中 | 直接返回缓存值 |
-| 0 (MISS) | 完全未命中 | `evaluator(key)` → `super.put(key, computed)`（触发淘汰） |
+| 0 (MISS) | 完全未命中 | `evaluator(key)` → `super._putNew(key, computed)`（OPT-9，省一次 hash 查找） |
 | 2/3 (GHOST) | B1/B2 幽灵命中 | `evaluator(key)` → `node.value = computed`（直赋，OPT-5） |
 
 ### ghost hit 直赋 (OPT-5)
@@ -115,7 +115,8 @@ var result = upperCache.get("key"); // 先从 cache 取 base，再 toUpperCase
 |--------|------|------|------|
 | P0 | ARCH-1 | 继承 ARCCache v3.0 原始键语义 | 无内部 UID 转换，key 直接传递给父类 |
 | P1 | OPT-7 | `===` 严格比较替代 `==` | 消除 ActionEquals2 类型协商 |
-| P3 | SAFE-1 | ghost hit 路径增加 try/catch | evaluator 异常时调用 `super.remove(key)` 清除 T2 中的僵尸节点后重抛 |
+| — | SAFE-1 | (v3.1 移除) 不再使用 try/catch | 改为契约优先（C8/C9），与项目全局规范对齐 |
+| P0 | OPT-9 | MISS 路径 `super._putNew()` | 跳过 nodeMap 存在性检查，省一次 hash 查找 |
 
 ### 继承自 ARCCache v3.0 的变更
 
@@ -182,42 +183,40 @@ var result = derivedCache.get("key");
 
 ---
 
-## 异常安全性
+## 契约与异常安全性
 
-### MISS 路径
+### 契约 C8：evaluator MUST NOT throw
 
-evaluator 抛异常时，`super.put()` 尚未执行，缓存状态不变。异常直接传播给调用者。
+v3.1 移除了 ghost 路径的 try/catch（原 SAFE-1），改为契约优先设计，与项目全局规范（避免异常影响性能）对齐。
 
-### GHOST 路径 (SAFE-1)
+**MISS 路径**：evaluator 抛异常时，`super._putNew()` 尚未执行，缓存状态不变。天然安全。
 
-evaluator 抛异常时，`super.get()` 已将节点移入 T2（value = undefined），形成"僵尸节点"。`catch` 中调用 `super.remove(key)` 清除僵尸后重抛异常。
+**GHOST 路径**：evaluator 抛异常时，`super.get()` 已将节点移入 T2（value = undefined），形成"僵尸节点"。异常传播给调用者，**僵尸不会自动清除**。
 
-这确保了：
-- 缓存中不会保留 value 为 undefined 的僵尸节点
-- 后续 `get(同一key)` 会得到完全 MISS（而非错误的 HIT 返回 undefined）
-- 调用者可以 catch 异常后重试
+僵尸行为：
+- `has(key)` 返回 `true`（节点在 T2 中）
+- `get(key)` 返回 `undefined`（僵尸 HIT，不会重新计算）
+- 恢复方式：`remove(key)` 后重试
 
 ```actionscript
-try {
-    var result = cache.get("problematicKey");
-} catch (e) {
-    // evaluator 抛异常
-    // 缓存状态已清理（僵尸已移除）
-    // 可安全重试
-    trace("Error: " + e.message);
-}
+// 如果 evaluator 违反 C8 抛异常后的恢复
+cache.remove("problematicKey"); // 清除僵尸
+var result = cache.get("problematicKey"); // 重新计算
 ```
+
+### 契约 C9：evaluator MUST NOT 可重入
+
+evaluator MUST NOT 对**同一缓存实例**调用 `get()`/`put()`/`remove()`。违反将导致 `_lastNode` 被覆盖，产生静默数据损坏（use-after-pool）。
+
+通过 `map()` 链访问**父缓存**是安全的（不同实例，`_lastNode` 独立）。
 
 ---
 
 ## 注意事项
 
-1. **evaluator 不应抛异常**：虽然有 SAFE-1 保护，但异常路径有额外开销（remove 操作）。生产代码中 evaluator 应尽量确保不抛异常。
+1. **evaluator MUST NOT 抛异常（C8）**：v3.1 移除了 try/catch 保护。GHOST 路径 evaluator 异常将产生 T2 僵尸节点。恢复方式：`remove(key)` + 重试。
 
-2. **同 key 可重入**：如果 evaluator 内部又调用 `get(同一key)`：
-   - MISS 路径：会递归调用 evaluator（可能导致无限递归）
-   - GHOST 路径：内层 get 会 HIT 并返回 undefined（因为节点已在 T2 但 value 未填充）
-   - **建议**：evaluator 不应对同一缓存实例递归调用 `get()`
+2. **evaluator MUST NOT 可重入（C9）**：evaluator 不得对同一缓存实例调用 `get()`/`put()`/`remove()`。违反将导致静默数据损坏。通过 `map()` 链访问父缓存是安全的。
 
 3. **键语义**：继承 ARCCache v3.0 的原始键语义。Number 与 String 表示相同时会碰撞。详见 ARCCache.md。
 
@@ -227,7 +226,7 @@ try {
 
 ---
 
-### v3.0 测试覆盖
+### v3.1 测试覆盖
 
 | 测试 | 覆盖点 |
 |------|--------|
@@ -239,24 +238,27 @@ try {
 | testNullValueEvaluator | CRITICAL-1：null 值正确缓存 |
 | testUndefinedValueEvaluator | CRITICAL-1：undefined 值正确缓存 |
 | testCapacityInvariantLazyCache | HIGH-2：容量不变式 |
-| testGhostHitRoundTrip | ghost hit 回填完整链路 |
+| testGhostHitRoundTrip | ghost hit 回填完整链路（含 _hitType 断言） |
 | testPutGetInteraction | put+get 交互（手动值优先） |
-| **testEvaluatorExceptionOnMiss** | **v3.0 SAFE-1/MISS：异常无副作用** |
-| **testEvaluatorExceptionOnGhostHit** | **v3.0 SAFE-1/GHOST：僵尸清除** |
-| **testHasViaLazyCache** | **v3.0 API-1：has() 不触发 evaluator** |
-| **testRawKeyLazyCache** | **v3.0 ARCH-1：原始键语义** |
+| testEvaluatorExceptionOnMiss | MISS 路径异常无副作用 |
+| **testEvaluatorExceptionOnGhostHit** | **v3.1 C8 契约验证：僵尸行为 + remove 恢复** |
+| testHasViaLazyCache | API-1：has() 不触发 evaluator |
+| testRawKeyLazyCache | ARCH-1：原始键语义 |
+| **testCapacity1LazyCache** | **v3.1 P2：capacity=1 边界（ghost/pool 密集交互）** |
 | testPerformance | 10000 次命中 < 200ms |
 
 
 ## 运行测试
 
 ```actionscript
+
 org.flashNight.gesh.func.ARCEnhancedLazyCacheTest.runTests();
-```
 
 ```
 
-=== ARCEnhancedLazyCacheTest v3.0: Starting Tests ===
+```
+
+=== ARCEnhancedLazyCacheTest v3.1: Starting Tests ===
 Running: testBasicFunctionality
 [PASS] Cache should compute and return Value-A for key 'A'
 [PASS] Evaluator should be called once for key 'A'
@@ -315,8 +317,10 @@ Running: testCapacityInvariantLazyCache
 [PASS] [HIGH-2] |T1|+|T2|=50 should be <= capacity 50
 [PASS] [HIGH-2] total=50 should be <= 2*capacity 100
 Running: testGhostHitRoundTrip
+[PASS] get('A') should be B1 ghost hit (_hitType=2)
 [PASS] Evaluator should be called for ghost-hit key 'A'
 [PASS] Recomputed value should be 'v5-A'
+[PASS] Second get('A') should be HIT (_hitType=1)
 [PASS] After ghost-hit refill, 'A' should be cached — evaluator not called again
 [PASS] Cached value should still be 'v5-A'
 Running: testPutGetInteraction
@@ -333,12 +337,17 @@ Running: testEvaluatorExceptionOnMiss
 [PASS] [SAFE-1/MISS] Retry key 'B' should succeed after error cleared
 [PASS] Evaluator count: A(1) + B_throw(2) + A_hit(skip) + B_retry(3) = 3
 Running: testEvaluatorExceptionOnGhostHit
-[PASS] [SAFE-1/GHOST] Exception should propagate to caller
+[PASS] [C8] Exception should propagate to caller
+[PASS] [C8] get('A') should be B1 ghost hit (_hitType=2) before evaluator threw
 [PASS] Evaluator was called for ghost 'A' before throwing
-[PASS] [SAFE-1/GHOST] Zombie key 'A' should NOT be in cache (has=false)
-[PASS] [SAFE-1/GHOST] Retry ghost-failed key 'A' should recompute correctly
-[PASS] Evaluator called again for 'A' (complete miss after zombie cleanup)
-[PASS] Recomputed 'A' should now be cached
+[PASS] [C8/ZOMBIE] Zombie key 'A' should be in cache (has=true, in T2 with undefined value)
+[PASS] [C8/ZOMBIE] Zombie 'A' should be T2 HIT (_hitType=1)
+[PASS] [C8/ZOMBIE] Zombie 'A' should return undefined (not recompute)
+[PASS] [C8/ZOMBIE] No evaluator call for zombie HIT
+[PASS] [C8/RECOVER] After remove, 'A' should not be in cache
+[PASS] [C8/RECOVER] After remove+retry, 'A' should be recomputed correctly
+[PASS] [C8/RECOVER] Evaluator called again for 'A' after zombie removal
+[PASS] Recovered 'A' should now be cached
 [PASS] No extra evaluator call for cached 'A'
 Running: testHasViaLazyCache
 [PASS] has() on empty cache should be false
@@ -356,11 +365,25 @@ Running: testRawKeyLazyCache
 [PASS] Evaluator not called again for cached Number 42
 [PASS] [Known] String '42' should hit same entry as Number 42
 [PASS] Evaluator not called for '42' (collision with 42)
+Running: testCapacity1LazyCache
+[PASS] c=1: A should be computed
+[PASS] c=1: evaluator called once for A
+[PASS] c=1: A should be HIT
+[PASS] c=1: A should be HIT (_hitType=1)
+[PASS] c=1: no extra evaluator call for HIT
+[PASS] c=1: B should be computed
+[PASS] c=1: evaluator called for B
+[PASS] c=1: A should be B2 ghost hit (_hitType=3)
+[PASS] c=1: A should be recomputed via ghost hit
+[PASS] c=1: evaluator called again for ghost A
+[PASS] c=1: A should be HIT after ghost refill
+[PASS] c=1: no extra evaluator for cached A
+[PASS] c=1: |T1|+|T2|=1 should be <= 1
 Running: testPerformance
 [PASS] Evaluator should be called 1000 times to fill cache
 Performance: 10000 cache hits took 40ms
 [PASS] 10000 cache hits should complete in under 200ms (actual: 40ms)
-=== ARCEnhancedLazyCacheTest v3.0: 86 assertions, 86 passed, 0 failed ===
+=== ARCEnhancedLazyCacheTest v3.1: 106 assertions, 106 passed, 0 failed ===
 
 
 ```

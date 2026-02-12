@@ -26,7 +26,7 @@ class org.flashNight.naki.Cache.ARCCacheTest {
     }
 
     public function runTests():Void {
-        trace("=== ARCCacheTest v3.0: Starting Tests ===");
+        trace("=== ARCCacheTest v3.1: Starting Tests ===");
 
         this.testPutAndGet();
         this.testCacheEviction();
@@ -51,7 +51,10 @@ class org.flashNight.naki.Cache.ARCCacheTest {
         this.testNodePoolReuse();
         this.testRawKeySemantics();
 
-        trace("=== ARCCacheTest v3.0: All Tests Completed ===");
+        // ---- v3.1 新增测试 ----
+        this.testPutOnB2GhostKey();
+
+        trace("=== ARCCacheTest v3.1: All Tests Completed ===");
     }
 
     // ==================== 基础测试 ====================
@@ -296,18 +299,34 @@ class org.flashNight.naki.Cache.ARCCacheTest {
         trace("Running testPutOnGhostKey...");
         var c:ARCCache = new ARCCache(3);
 
-        c.put("A", "v1");
-        c.put("B", "v2");
-        c.put("C", "v3");
+        // 填满缓存
+        c.put("A", "v1"); // T1=[A]
+        c.put("B", "v2"); // T1=[B,A]
+        c.put("C", "v3"); // T1=[C,B,A]
 
-        c.put("D", "v4");
-        this._assertEqual(c.get("A"), null, "A should be ghost (in B1)");
+        // 提升 C 到 T2，确保后续插入走 REPLACE 而非直接删除
+        // 若不提升，|T1|=3=c → Case A else → 直接删除 T1 tail，不产生 ghost
+        c.get("C"); // HIT: C T1→T2. T1=[B,A], T2=[C]
 
+        // 插入 D → Case B (|T1|=2 < c=3), REPLACE 淘汰 T1 tail (A)→B1
+        c.put("D", "v4"); // T1=[D,B], T2=[C], B1=[A]
+
+        // 验证 A 确实在 B1 ghost 中（不能用 get，get 会触发 ghost hit 处理）
+        var b1Before:Array = c.getB1();
+        var foundInB1:Boolean = false;
+        for (var i:Number = 0; i < b1Before.length; i++) {
+            if (b1Before[i] == "A") { foundInB1 = true; break; }
+        }
+        this._assertEqual(foundInB1, true, "A should be in B1 ghost queue before put");
+
+        // 对 B1 ghost key 执行 put → put() 中的 B1 ghost hit 路径
         c.put("A", "newA");
 
+        // 验证 A 已可访问且值正确（put on ghost → 移入 T2）
         this._assertEqual(c.get("A"), "newA",
             "After put on ghost key, A should be accessible with new value");
 
+        // 容量不变式
         var t1Size:Number = c.getT1().length;
         var t2Size:Number = c.getT2().length;
         var totalCache:Number = t1Size + t2Size;
@@ -317,17 +336,13 @@ class org.flashNight.naki.Cache.ARCCacheTest {
             trace("Assertion Passed: Cache size " + totalCache + " within capacity");
         }
 
-        // v3.0: 原始键不带前缀，检查 "A" 而非 "_A"
-        var b1:Array = c.getB1();
+        // B1 中不应残留 A（CRITICAL-2 回归检查）
+        var b1After:Array = c.getB1();
         var foundOrphan:Boolean = false;
-        for (var i:Number = 0; i < b1.length; i++) {
-            if (b1[i] == "A") { foundOrphan = true; break; }
+        for (var j:Number = 0; j < b1After.length; j++) {
+            if (b1After[j] == "A") { foundOrphan = true; break; }
         }
-        if (foundOrphan) {
-            trace("Assertion Failed: Orphan node 'A' found in B1 (CRITICAL-2 regression)");
-        } else {
-            trace("Assertion Passed: No orphan 'A' in B1");
-        }
+        this._assertEqual(foundOrphan, false, "No orphan 'A' in B1 after put on ghost key");
 
         trace("testPutOnGhostKey completed successfully.\n");
     }
@@ -729,6 +744,64 @@ class org.flashNight.naki.Cache.ARCCacheTest {
         this._assertEqual(c4.getCapacity(), 1, "capacity=-5 should be corrected to 1");
 
         trace("testRawKeySemantics completed successfully.\n");
+    }
+
+    // ==================== v3.1 新增测试 ====================
+
+    /**
+     * v3.1 P2：对 B2 ghost key 调用 put()
+     * 构造 T2 → B2 淘汰路径，验证 put() 的 B2 ghost hit 行为。
+     */
+    private function testPutOnB2GhostKey():Void {
+        trace("Running testPutOnB2GhostKey...");
+        var c:ARCCache = new ARCCache(3);
+
+        // 填满缓存并全部提升到 T2
+        c.put("A", "v1"); // T1=[A]
+        c.put("B", "v2"); // T1=[B,A]
+        c.put("C", "v3"); // T1=[C,B,A]
+        c.get("A"); // A: T1→T2. T1=[C,B], T2=[A]
+        c.get("B"); // B: T1→T2. T1=[C], T2=[B,A]
+        c.get("C"); // C: T1→T2. T1=[], T2=[C,B,A]
+
+        // 插入 D → _doReplace 从 T2 淘汰 tail (A) → B2
+        // p=0, t1Size=0 → T2 eviction
+        c.put("D", "v4"); // T1=[D], T2=[C,B], B2=[A]
+
+        // 验证 A 在 B2 中（不能用 get，会触发 ghost hit 处理）
+        var b2Before:Array = c.getB2();
+        var foundInB2:Boolean = false;
+        for (var i:Number = 0; i < b2Before.length; i++) {
+            if (b2Before[i] == "A") { foundInB2 = true; break; }
+        }
+        this._assertEqual(foundInB2, true, "A should be in B2 ghost queue before put");
+
+        // 对 B2 ghost key 执行 put → put() 中的 B2 ghost hit 路径
+        c.put("A", "newA");
+
+        // 验证 A 可访问且值正确（put on B2 ghost → 移入 T2）
+        this._assertEqual(c.get("A"), "newA",
+            "After put on B2 ghost key, A should be accessible with new value");
+
+        // 容量不变式
+        var t1Size:Number = c.getT1().length;
+        var t2Size:Number = c.getT2().length;
+        var totalCache:Number = t1Size + t2Size;
+        if (totalCache > 3) {
+            trace("Assertion Failed: T1+T2=" + totalCache + " exceeds capacity 3");
+        } else {
+            trace("Assertion Passed: Cache size " + totalCache + " within capacity after B2 ghost put");
+        }
+
+        // B2 中不应残留 A
+        var b2After:Array = c.getB2();
+        var foundOrphan:Boolean = false;
+        for (var j:Number = 0; j < b2After.length; j++) {
+            if (b2After[j] == "A") { foundOrphan = true; break; }
+        }
+        this._assertEqual(foundOrphan, false, "No orphan 'A' in B2 after put on B2 ghost key");
+
+        trace("testPutOnB2GhostKey completed successfully.\n");
     }
 
     // ==================== 工具方法 ====================

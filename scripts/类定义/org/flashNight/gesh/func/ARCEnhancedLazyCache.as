@@ -9,13 +9,15 @@
  * ──────────
  * [P0] ARCH-1     : 继承 ARCCache v3.0 原始键语义，无内部 UID 转换。
  * [P1] OPT-7      : === 严格比较替代 ==。
- * [P3] SAFE-1     : ghost hit 路径增加 try/catch —— evaluator 异常时
- *                    调用 super.remove(key) 清除 T2 中的空值僵尸节点后重抛。
- *                    MISS 路径无需 catch（super.put 尚未执行，无副作用）。
+ * [—]  SAFE-1     : (v3.1 移除) 不再使用 try/catch，改为契约优先。
+ *                    evaluator MUST NOT throw（C8）/ MUST NOT 对同一实例递归调用（C9）。
+ *                    与项目全局规范（避免异常影响性能）对齐。
+ * [P0] OPT-9      : MISS 路径使用 super._putNew() 替代 super.put()，
+ *                    省一次 nodeMap 存在性检查（hash 查找）。
  *
  * 保留自 v2.0 的修复：
  *   CRITICAL-1 : _hitType 判断命中类型（消除 null 值语义漏洞）
- *   HIGH-2     : MISS 走 super.put() 触发正常淘汰
+ *   HIGH-2     : MISS 走 super._putNew() 触发正常淘汰（v3.1 升级为 OPT-9）
  *   OPT-5      : ghost hit 通过 _lastNode.value 直赋
  */
 class org.flashNight.gesh.func.ARCEnhancedLazyCache extends ARCCache {
@@ -38,15 +40,18 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCache extends ARCCache {
      *
      * 通过 _hitType 区分三种情况：
      *   HIT (1)        → 直接返回缓存值
-     *   MISS (0)       → evaluator + super.put()（触发淘汰）
+     *   MISS (0)       → evaluator + super._putNew()（OPT-9 省一次 hash 查找）
      *   GHOST (2/3)    → evaluator + _lastNode.value 直赋（OPT-5）
      *
-     * SAFE-1：ghost hit 时 super.get() 已将节点移入 T2（value = undefined）。
-     *   若 evaluator 抛异常，该节点成为 T2 中的僵尸（HIT 返回 undefined）。
-     *   catch 中调用 super.remove(key) 清除后重抛，确保缓存一致性。
-     *   MISS 路径无此风险：异常时 super.put() 未执行，cache 状态不变。
+     * 契约 C8（evaluator 安全）：
+     *   evaluator MUST NOT 抛出异常。违反时 GHOST 路径将产生 T2 僵尸节点
+     *   （value=undefined 的 HIT），直到该节点被淘汰或手动 remove(key)。
+     *   MISS 路径天然安全（super._putNew 未调用，cache 状态不变）。
      *
-     * 可重入安全：_lastNode 在调用 evaluator 之前存入局部变量 node。
+     * 契约 C9（可重入禁止）：
+     *   evaluator MUST NOT 对同一缓存实例调用 get()/put()/remove()。
+     *   违反将导致 _lastNode 被覆盖、静默数据损坏（use-after-pool）。
+     *   通过 map() 链访问父缓存是安全的（不同实例，_lastNode 独立）。
      */
     public function get(key:Object):Object {
         var result:Object = super.get(key);
@@ -58,20 +63,13 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCache extends ARCCache {
         }
 
         var node:Object = this._lastNode;
-        var computed:Object;
+        var computed:Object = this.evaluator(key);
 
         if (hitType === 0) {
-            // MISS：evaluator 失败无副作用（put 未调用）
-            computed = this.evaluator(key);
-            super.put(key, computed);
+            // MISS：OPT-9 _putNew 跳过存在性检查
+            super._putNew(key, computed);
         } else {
-            // GHOST (2/3)：节点已在 T2，evaluator 失败需清除僵尸
-            try {
-                computed = this.evaluator(key);
-            } catch (e) {
-                super.remove(key);
-                throw e;
-            }
+            // GHOST (2/3)：OPT-5 直赋（evaluator MUST NOT throw — C8）
             node.value = computed;
         }
 

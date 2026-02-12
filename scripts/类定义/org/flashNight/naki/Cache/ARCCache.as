@@ -19,6 +19,13 @@
  * [P3] VALID-1     : 构造函数校验 capacity >= 1。
  * [P4] API-1       : 新增 has(key) — 不变更状态的存在性检查（仅 T1/T2）。
  *
+ * v3.1 增量优化（交叉评审）：
+ * ──────────────────────────
+ * [P0] OPT-9       : 新增 _putNew(key, value) — 纯新 key 快速插入，跳过存在性检查。
+ *                     供 LazyCache MISS 路径使用，省一次 nodeMap hash 查找。
+ * [P1] OPT-10      : 入池仅清 value（唯一可能持有外部大对象引用的字段）。
+ *                     uid/prev/list 在复用时覆盖，无需预清。省 3 次赋值/次入池。
+ *
  * 保留自 v2.0 的优化：
  *   OPT-1 值直存节点 / OPT-2 内联 promote / OPT-3 T2 head 快路径
  *   OPT-4 链表局部变量缓存 / OPT-5 _lastNode ghost 直赋 / sentinel 哨兵
@@ -491,11 +498,8 @@ class org.flashNight.naki.Cache.ARCCache {
                     sb1a.prev = gp;
                     lB1.size--;
                     delete this.nodeMap[ghost.uid];
-                    // OPT-6: pool freed node
-                    ghost.uid = undefined;
+                    // OPT-6 + OPT-10: pool（仅清 value）
                     ghost.value = undefined;
-                    ghost.prev = undefined;
-                    ghost.list = undefined;
                     ghost.next = this._pool;
                     this._pool = ghost;
                 }
@@ -510,11 +514,8 @@ class org.flashNight.naki.Cache.ARCCache {
                     st1a.prev = dp;
                     localT1.size--;
                     delete this.nodeMap[direct.uid];
-                    // OPT-6: pool
-                    direct.uid = undefined;
+                    // OPT-6 + OPT-10: pool（仅清 value）
                     direct.value = undefined;
-                    direct.prev = undefined;
-                    direct.list = undefined;
                     direct.next = this._pool;
                     this._pool = direct;
                 }
@@ -532,11 +533,8 @@ class org.flashNight.naki.Cache.ARCCache {
                     sb2a.prev = g2p;
                     lB2.size--;
                     delete this.nodeMap[ghost2.uid];
-                    // OPT-6: pool
-                    ghost2.uid = undefined;
+                    // OPT-6 + OPT-10: pool（仅清 value）
                     ghost2.value = undefined;
-                    ghost2.prev = undefined;
-                    ghost2.list = undefined;
                     ghost2.next = this._pool;
                     this._pool = ghost2;
                 }
@@ -628,6 +626,8 @@ class org.flashNight.naki.Cache.ARCCache {
 
             // B1/B2 中：先断链再插入 T1
             // 未经 p 自适应的回填不应享受 T2 热端优先级
+            // 注：此路径在当前 LazyCache 中为死代码（ghost hit 走 OPT-5 _lastNode 直赋）
+            // 保留供外部直接调用 putNoEvict(ghost_key) 的场景使用
             np = node.prev;
             nn = node.next;
             np.next = nn;
@@ -668,6 +668,106 @@ class org.flashNight.naki.Cache.ARCCache {
         newNode.list = localT1;
     }
 
+    // ==================== _putNew ====================
+
+    /**
+     * v3.1 OPT-9: 仅新 key 插入路径 — 调用者保证 key 不在 nodeMap 中。
+     * 跳过 nodeMap[key] 存在性检查和 T1/T2/B1/B2 分支，直接执行 Case IV。
+     * 供 ARCEnhancedLazyCache MISS 路径使用，省一次 hash 查找。
+     *
+     * 契约：
+     *   - 调用者 MUST 保证 nodeMap[key] === undefined
+     *   - 违反契约将导致 nodeMap 中出现重复节点（数据损坏）
+     *
+     * @param key   键
+     * @param value 值
+     */
+    public function _putNew(key:Object, value:Object):Void {
+        var localT1:Object = this.T1;
+        var localT2:Object = this.T2;
+        var mc:Number = this.maxCapacity;
+        var lB1:Object = this.B1;
+        var lB2:Object = this.B2;
+        var L1:Number = localT1.size + lB1.size;
+        var oh:Object;
+
+        if (L1 == mc) {
+            if (localT1.size < mc) {
+                // removeTail B1 + pool
+                var sb1a:Object = lB1.sentinel;
+                var ghost:Object = sb1a.prev;
+                if (ghost !== sb1a) {
+                    var gp:Object = ghost.prev;
+                    gp.next = sb1a;
+                    sb1a.prev = gp;
+                    lB1.size--;
+                    delete this.nodeMap[ghost.uid];
+                    ghost.value = undefined;
+                    ghost.next = this._pool;
+                    this._pool = ghost;
+                }
+                this._doReplace(false);
+            } else {
+                // |T1| == c: 直接从 T1 删除 + pool
+                var st1a:Object = localT1.sentinel;
+                var direct:Object = st1a.prev;
+                if (direct !== st1a) {
+                    var dp:Object = direct.prev;
+                    dp.next = st1a;
+                    st1a.prev = dp;
+                    localT1.size--;
+                    delete this.nodeMap[direct.uid];
+                    direct.value = undefined;
+                    direct.next = this._pool;
+                    this._pool = direct;
+                }
+            }
+        } else {
+            // Case B：|L1| < c
+            var L2:Number = localT2.size + lB2.size;
+            if (L1 + L2 >= 2 * mc) {
+                // removeTail B2 + pool
+                var sb2a:Object = lB2.sentinel;
+                var ghost2:Object = sb2a.prev;
+                if (ghost2 !== sb2a) {
+                    var g2p:Object = ghost2.prev;
+                    g2p.next = sb2a;
+                    sb2a.prev = g2p;
+                    lB2.size--;
+                    delete this.nodeMap[ghost2.uid];
+                    ghost2.value = undefined;
+                    ghost2.next = this._pool;
+                    this._pool = ghost2;
+                }
+            }
+            if (localT1.size + localT2.size >= mc) {
+                this._doReplace(false);
+            }
+        }
+
+        // OPT-6: 从池分配或新建节点
+        var newNode:Object;
+        var poolNode:Object = this._pool;
+        if (poolNode !== null) {
+            newNode = poolNode;
+            this._pool = poolNode.next;
+            newNode.uid = key;
+            newNode.value = value;
+        } else {
+            newNode = { uid: key, prev: undefined, next: undefined,
+                        list: undefined, value: value };
+        }
+        this.nodeMap[key] = newNode;
+        var st1h:Object = localT1.sentinel;
+        oh = st1h.next;
+        newNode.next = oh;
+        newNode.prev = st1h;
+        oh.prev = newNode;
+        st1h.next = newNode;
+        localT1.size++;
+        newNode.list = localT1;
+    }
+
     // ==================== remove ====================
 
     /**
@@ -689,11 +789,8 @@ class org.flashNight.naki.Cache.ARCCache {
         node.list.size--;
         delete this.nodeMap[key];
 
-        // OPT-6: pool
-        node.uid = undefined;
+        // OPT-6 + OPT-10: pool（仅清 value）
         node.value = undefined;
-        node.prev = undefined;
-        node.list = undefined;
         node.next = this._pool;
         this._pool = node;
         return true;

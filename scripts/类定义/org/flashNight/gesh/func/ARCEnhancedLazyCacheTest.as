@@ -391,20 +391,28 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
         var cache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 3);
 
         // Phase 1: 填满缓存
-        cache.get("A"); // evaluatorCallCount = 1, returns "v1-A"
-        cache.get("B"); // evaluatorCallCount = 2
-        cache.get("C"); // evaluatorCallCount = 3
+        cache.get("A"); // evaluatorCallCount = 1, T1=[A]
+        cache.get("B"); // evaluatorCallCount = 2, T1=[B,A]
+        cache.get("C"); // evaluatorCallCount = 3, T1=[C,B,A]
 
-        // Phase 2: 插入新 key 触发淘汰 A
-        cache.get("D"); // evaluatorCallCount = 4, A 被淘汰到 B1
+        // Phase 2: 提升 C 到 T2，确保后续插入走 REPLACE 而非直接删除
+        // 不提升的话 |T1|==c → Case A else → 直接删除 T1 tail（不进 ghost）
+        cache.get("C"); // HIT: C T1→T2. T1=[B,A], T2=[C]. count 不变
 
-        // Phase 3: 再次访问 A → ghost hit → evaluator 被调用
+        // Phase 3: 插入 D → Case B, REPLACE 淘汰 T1 tail (A)→B1
+        cache.get("D"); // evaluatorCallCount = 4. T1=[D,B], T2=[C], B1=[A]
+
+        // Phase 4: 访问 A → B1 ghost hit → evaluator 被调用
         var valA_recomputed = cache.get("A"); // evaluatorCallCount = 5
+        assertEquals(cache._hitType, 2,
+            "get('A') should be B1 ghost hit (_hitType=2)");
         assertEquals(evaluatorCallCount, 5, "Evaluator should be called for ghost-hit key 'A'");
         assertEquals(valA_recomputed, "v5-A", "Recomputed value should be 'v5-A'");
 
-        // Phase 4: 再次访问 A → 应命中缓存
+        // Phase 5: 再次访问 A → 应命中缓存
         var valA_cached = cache.get("A");
+        assertEquals(cache._hitType, 1,
+            "Second get('A') should be HIT (_hitType=1)");
         assertEquals(evaluatorCallCount, 5,
             "After ghost-hit refill, 'A' should be cached — evaluator not called again");
         assertEquals(valA_cached, "v5-A", "Cached value should still be 'v5-A'");
@@ -504,13 +512,15 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
     }
 
     /**
-     * SAFE-1 覆盖：GHOST 路径 evaluator 异常后僵尸清除
+     * C8 契约验证：GHOST 路径 evaluator 异常后的僵尸行为
      *
-     * 当 evaluator 在 ghost hit 路径抛出异常时：
+     * v3.1 契约优先：不使用 try/catch 保护 ghost 路径。
+     * 当 evaluator 违反 C8 契约在 ghost hit 路径抛出异常时：
      *   - super.get() 已将节点移入 T2（value = undefined）
-     *   - catch 中调用 super.remove(key) 清除僵尸节点
-     *   - 异常重抛给调用者
-     *   - 后续 get 同一 key 应为完全 MISS，不返回 undefined
+     *   - evaluator 异常传播，node.value = computed 未执行
+     *   - T2 中留下僵尸节点（value=undefined 的 HIT）
+     *   - 后续 get 同一 key 返回 undefined（僵尸 HIT），而非重新计算
+     *   - 恢复方式：手动 remove(key) 后重试
      */
     public static function testEvaluatorExceptionOnGhostHit():Void {
         trace("Running: testEvaluatorExceptionOnGhostHit");
@@ -528,41 +538,59 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
 
         var cache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 3);
 
-        // Phase 1: 填满缓存 + 构造 ghost
+        // Phase 1: 填满缓存
         cache.get("A"); // evaluatorCallCount = 1, T1=[A]
         cache.get("B"); // evaluatorCallCount = 2, T1=[B,A]
         cache.get("C"); // evaluatorCallCount = 3, T1=[C,B,A]
 
-        // 插入 D 触发 A 淘汰到 B1
-        cache.get("D"); // evaluatorCallCount = 4, T1=[D,C,B?], A→B1
+        // Phase 1.5: 提升 C 到 T2，构造 ghost
+        cache.get("C"); // HIT: C T1→T2. T1=[B,A], T2=[C]. evaluatorCallCount 不变
 
-        // Phase 2: A 在 ghost 中，设置 evaluator 抛异常
+        // 插入 D → Case B, REPLACE 淘汰 T1 tail (A)→B1
+        cache.get("D"); // evaluatorCallCount = 4. T1=[D,B], T2=[C], B1=[A]
+
+        // Phase 2: A 在 B1 ghost 中，evaluator 抛异常（违反 C8）
         shouldThrow = true;
         var caught:Boolean = false;
         try {
-            cache.get("A"); // ghost hit → evaluator throws → remove zombie
+            cache.get("A"); // B1 ghost hit → evaluator throws → zombie in T2
         } catch (e) {
             caught = true;
         }
-        assertTrue(caught, "[SAFE-1/GHOST] Exception should propagate to caller");
+        assertTrue(caught, "[C8] Exception should propagate to caller");
+        assertEquals(cache._hitType, 2,
+            "[C8] get('A') should be B1 ghost hit (_hitType=2) before evaluator threw");
         assertEquals(evaluatorCallCount, 5, "Evaluator was called for ghost 'A' before throwing");
 
-        // Phase 3: 验证僵尸已被清除
-        // A 不应在缓存或 ghost 中（remove 已清除）
-        assertEquals(cache.has("A"), false,
-            "[SAFE-1/GHOST] Zombie key 'A' should NOT be in cache (has=false)");
+        // Phase 3: 验证僵尸行为（v3.1 契约优先 — 无自动清除）
+        // A 现在在 T2 中，value=undefined（僵尸）
+        assertEquals(cache.has("A"), true,
+            "[C8/ZOMBIE] Zombie key 'A' should be in cache (has=true, in T2 with undefined value)");
 
-        // 重新 get A 应是完全 MISS，不是返回 undefined
+        // 后续 get("A") 命中僵尸：返回 undefined 而非重新计算
         shouldThrow = false;
-        var valA = cache.get("A");
-        assertEquals(valA, "val-A",
-            "[SAFE-1/GHOST] Retry ghost-failed key 'A' should recompute correctly");
-        assertEquals(evaluatorCallCount, 6,
-            "Evaluator called again for 'A' (complete miss after zombie cleanup)");
+        var valZombie = cache.get("A");
+        assertEquals(cache._hitType, 1,
+            "[C8/ZOMBIE] Zombie 'A' should be T2 HIT (_hitType=1)");
+        assertEquals(valZombie, undefined,
+            "[C8/ZOMBIE] Zombie 'A' should return undefined (not recompute)");
+        assertEquals(evaluatorCallCount, 5,
+            "[C8/ZOMBIE] No evaluator call for zombie HIT");
 
-        // Phase 4: 正常命中
-        var valA2 = cache.get("A");
-        assertEquals(valA2, "val-A", "Recomputed 'A' should now be cached");
+        // Phase 4: 恢复 — remove + retry
+        cache.remove("A");
+        assertEquals(cache.has("A"), false,
+            "[C8/RECOVER] After remove, 'A' should not be in cache");
+
+        var valRecovered = cache.get("A");
+        assertEquals(valRecovered, "val-A",
+            "[C8/RECOVER] After remove+retry, 'A' should be recomputed correctly");
+        assertEquals(evaluatorCallCount, 6,
+            "[C8/RECOVER] Evaluator called again for 'A' after zombie removal");
+
+        // Phase 5: 正常命中
+        var valCached = cache.get("A");
+        assertEquals(valCached, "val-A", "Recovered 'A' should now be cached");
         assertEquals(evaluatorCallCount, 6, "No extra evaluator call for cached 'A'");
     }
 
@@ -677,10 +705,63 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
             "10000 cache hits should complete in under " + performanceThreshold + "ms (actual: " + duration + "ms)");
     }
 
+    /**
+     * P2 capacity=1 边界：LazyCache 层面的极端交互
+     * capacity=1 时每次 MISS 必淘汰，pool 和 ghost 交互最密集。
+     */
+    public static function testCapacity1LazyCache():Void {
+        trace("Running: testCapacity1LazyCache");
+
+        var evaluatorCallCount:Number = 0;
+        var evaluator:Function = function(key:Object):Object {
+            evaluatorCallCount++;
+            return "val-" + key;
+        };
+
+        var cache:ARCEnhancedLazyCache = new ARCEnhancedLazyCache(evaluator, 1);
+
+        // MISS: A → T1=[A]
+        var valA = cache.get("A");
+        assertEquals(valA, "val-A", "c=1: A should be computed");
+        assertEquals(evaluatorCallCount, 1, "c=1: evaluator called once for A");
+
+        // HIT: A → promote T1→T2. T1=[], T2=[A]
+        var valA2 = cache.get("A");
+        assertEquals(valA2, "val-A", "c=1: A should be HIT");
+        assertEquals(cache._hitType, 1, "c=1: A should be HIT (_hitType=1)");
+        assertEquals(evaluatorCallCount, 1, "c=1: no extra evaluator call for HIT");
+
+        // MISS: B → _putNew triggers REPLACE, A evicted from T2 → B2
+        // T1=[B], T2=[], B2=[A]
+        var valB = cache.get("B");
+        assertEquals(valB, "val-B", "c=1: B should be computed");
+        assertEquals(evaluatorCallCount, 2, "c=1: evaluator called for B");
+
+        // HIT: B → promote T1→T2. T1=[], T2=[B]
+        cache.get("B");
+
+        // GHOST: A → B2 ghost hit → evaluator re-called
+        var valA3 = cache.get("A");
+        assertEquals(cache._hitType, 3, "c=1: A should be B2 ghost hit (_hitType=3)");
+        assertEquals(valA3, "val-A", "c=1: A should be recomputed via ghost hit");
+        assertEquals(evaluatorCallCount, 3, "c=1: evaluator called again for ghost A");
+
+        // HIT: A (now in T2)
+        var valA4 = cache.get("A");
+        assertEquals(cache._hitType, 1, "c=1: A should be HIT after ghost refill");
+        assertEquals(evaluatorCallCount, 3, "c=1: no extra evaluator for cached A");
+
+        // 容量不变式
+        var t1s:Number = cache.getT1().length;
+        var t2s:Number = cache.getT2().length;
+        assertTrue(t1s + t2s <= 1,
+            "c=1: |T1|+|T2|=" + (t1s + t2s) + " should be <= 1");
+    }
+
     // ==================== 入口 ====================
 
     public static function runTests():Void {
-        trace("=== ARCEnhancedLazyCacheTest v3.0: Starting Tests ===");
+        trace("=== ARCEnhancedLazyCacheTest v3.1: Starting Tests ===");
         testResults = [];
 
         // 基础测试
@@ -703,6 +784,9 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
         testHasViaLazyCache();
         testRawKeyLazyCache();
 
+        // v3.1 新增测试
+        testCapacity1LazyCache();
+
         // 性能测试
         testPerformance();
 
@@ -716,7 +800,7 @@ class org.flashNight.gesh.func.ARCEnhancedLazyCacheTest {
                 failCount++;
             }
         }
-        trace("=== ARCEnhancedLazyCacheTest v3.0: " + testResults.length + " assertions, "
+        trace("=== ARCEnhancedLazyCacheTest v3.1: " + testResults.length + " assertions, "
               + passCount + " passed, " + failCount + " failed ===");
     }
 }

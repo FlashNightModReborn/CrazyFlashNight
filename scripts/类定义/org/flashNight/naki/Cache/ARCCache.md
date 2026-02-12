@@ -1,4 +1,4 @@
-# ARCCache v3.0 使用指南
+# ARCCache v3.1 使用指南
 
 ## 目录
 
@@ -169,6 +169,13 @@ if (cache.has("myKey")) {
 |--------|------|-----|------|
 | P4 | API-1 | `has(key):Boolean` | 不变更状态的存在性检查（仅 T1/T2） |
 
+### v3.1 增量优化（交叉评审）
+
+| 优先级 | 编号 | 变更 | 效果 |
+|--------|------|------|------|
+| P0 | OPT-9 | 新增 `_putNew(key, value)` | 纯新 key 快速插入，跳过 nodeMap 存在性检查。供 LazyCache MISS 路径使用 |
+| P1 | OPT-10 | 入池仅清 `value` | uid/prev/list 在复用时覆盖，省 3 次赋值/次入池 |
+
 ### 保留自 v2.0 的优化
 
 - OPT-1: 值直存节点（消除 `cacheStore` 哈希表）
@@ -338,19 +345,21 @@ trace("Capacity: " + cache.getCapacity());
 
 5. **`put` 方法**：插入数据，处理 T1/T2 更新、B1/B2 幽灵命中（含 ROBUST-2 守卫）、标准 Case IV 新 key 插入（含节点池化）。
 
-6. **`putNoEvict` 方法**：不触发淘汰的写入，全内联逻辑。
+6. **`putNoEvict` 方法**：不触发淘汰的写入，全内联逻辑。注：B1/B2 分支在当前 LazyCache 中为死代码（ghost hit 走 OPT-5）。
 
-7. **`remove` 方法**：从任意队列移除项目，节点入池。
+7. **`_putNew` 方法**（v3.1 新增）：纯新 key 快速插入，跳过 nodeMap 存在性检查，直接执行 Case IV 逻辑。调用者 MUST 保证 key 不在 nodeMap 中。
 
-8. **`has` 方法**（v3.0 新增）：不变更状态的存在性检查。
+8. **`remove` 方法**：从任意队列移除项目，节点入池（OPT-10 仅清 value）。
 
-9. **调试方法**：`getT1()`、`getT2()`、`getB1()`、`getB2()`、`getCapacity()`。
+9. **`has` 方法**（v3.0 新增）：不变更状态的存在性检查。
+
+10. **调试方法**：`getT1()`、`getT2()`、`getB1()`、`getB2()`、`getCapacity()`。
 
 ---
 
 ## 结语
 
-**ARCCache v3.0** 在 v2.0 的正确性修复基础上，进一步优化了性能（原始键语义、节点池化、严格比较）并增强了健壮性（空队列回退、REPLACE 守卫、容量校验）。新增的 `has()` API 为外部代码提供了不影响缓存状态的存在性检查能力。
+**ARCCache v3.1** 在 v3.0 基础上新增 `_putNew()` 快速插入方法（OPT-9，省 MISS 路径一次 hash 查找）和入池精简（OPT-10，省 3 次赋值/次入池）。这些变更来自 Claude/GPT 交叉评审的 P0-P1 建议。
 
 ---
 
@@ -367,7 +376,7 @@ org.flashNight.gesh.func.ARCEnhancedLazyCacheTest.runTests();
 
 ```
 
-=== ARCCacheTest v3.0: Starting Tests ===
+=== ARCCacheTest v3.1: Starting Tests ===
 Running testPutAndGet...
 Assertion Passed: Value for key1 should be 'value1'
 Assertion Passed: Value for key2 should be 'value2'
@@ -386,13 +395,13 @@ Assertion Passed: Value for keyExtra should be 'valueExtra'
 testCacheEviction completed successfully.
 
 Running testCacheHitRate...
-Cache Hit Rate: 47.4%
+Cache Hit Rate: 47.9%
 Assertion Passed: Cache hit rate should be between 0% and 100%
 testCacheHitRate completed successfully.
 
 Running testPerformance...
-Performed 10000 cache operations in 96 ms.
-Cache Operations per Second: 104166.666666667
+Performed 10000 cache operations in 107 ms.
+Cache Operations per Second: 93457.9439252336
 
 Assertion Passed: Operations per second should be greater than 0
 testPerformance completed successfully.
@@ -432,10 +441,10 @@ Assertion Passed: Frequently accessed 'largeKey10' should still be present
 testLargeScaleCache completed successfully.
 
 Running testPutOnGhostKey...
-Assertion Passed: A should be ghost (in B1)
+Assertion Passed: A should be in B1 ghost queue before put
 Assertion Passed: After put on ghost key, A should be accessible with new value
 Assertion Passed: Cache size 3 within capacity
-Assertion Passed: No orphan 'A' in B1
+Assertion Passed: No orphan 'A' in B1 after put on ghost key
 testPutOnGhostKey completed successfully.
 
 Running testB2HitWithEmptyT1...
@@ -509,7 +518,14 @@ Assertion Passed: capacity=0 should be corrected to 1
 Assertion Passed: capacity=-5 should be corrected to 1
 testRawKeySemantics completed successfully.
 
-=== ARCCacheTest v3.0: All Tests Completed ===
+Running testPutOnB2GhostKey...
+Assertion Passed: A should be in B2 ghost queue before put
+Assertion Passed: After put on B2 ghost key, A should be accessible with new value
+Assertion Passed: Cache size 3 within capacity after B2 ghost put
+Assertion Passed: No orphan 'A' in B2 after put on B2 ghost key
+testPutOnB2GhostKey completed successfully.
+
+=== ARCCacheTest v3.1: All Tests Completed ===
 
 
 ```
