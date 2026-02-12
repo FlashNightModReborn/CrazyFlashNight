@@ -153,7 +153,7 @@ Workflow failed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: C
+[PASS] Conditional branching led to valid path: B
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -184,7 +184,7 @@ Workflow failed!
 [PASS] Transitions reference released after destroy
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=29ms, Actions=31ms for 10000 operations
+Basic Performance: Transitions=33ms, Actions=37ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
@@ -194,18 +194,18 @@ Many States Performance: Create 1000 states in 48ms, 100 transitions in 0ms
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 14ms
+Frequent Transitions Performance: 5000 transitions in 19ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 8ms
+Complex Transition Performance: 1000 complex transitions in 10ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
 Size 10: Create=0ms, Transition=0ms, Operation=0ms
-Size 50: Create=1ms, Transition=1ms, Operation=1ms
-Size 100: Create=3ms, Transition=2ms, Operation=0ms
-Size 500: Create=13ms, Transition=12ms, Operation=0ms
+Size 50: Create=2ms, Transition=1ms, Operation=0ms
+Size 100: Create=2ms, Transition=2ms, Operation=0ms
+Size 500: Create=12ms, Transition=10ms, Operation=2ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -249,11 +249,9 @@ Size 500: Create=13ms, Transition=12ms, Operation=0ms
 [PASS] start() triggers default state onEnter
 [PASS] Duplicate start() is no-op
 
---- Test: Reserved Name Validation ---
-[FSM] Error: 'toString' is a reserved name (Object prototype). Choose another.
-[FSM] Error: 'constructor' is a reserved name (Object prototype). Choose another.
-[PASS] Reserved name 'toString' rejected by AddStatus
-[PASS] Reserved name 'constructor' rejected by AddStatus
+--- Test: Proto-null statusDict — Object.prototype names as state names ---
+[PASS] Proto-null: 'toString' accepted as state name
+[PASS] Proto-null: 'constructor' accepted as state name
 [PASS] Normal name 'Attack' works correctly
 
 --- Test: ChangeState Chain While Loop ---

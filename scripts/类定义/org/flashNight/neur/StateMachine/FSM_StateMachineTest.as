@@ -92,7 +92,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testPathBCallbackNoShadow();
         this.testPathBMachineLevelHooks();
 
-        // Batch 3 新增：start() / 保留名校验 / while-loop 链 / Phase 2 检测
+        // Batch 3 新增：start() / proto-null 状态名校验 / while-loop 链 / Phase 2 检测
         this.testStartMethod();
         this.testReservedNameValidation();
         this.testChangeStateChainWhileLoop();
@@ -1843,11 +1843,11 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
     }
 
     /**
-     * 测试 AddStatus 保留名校验
-     * Object 原型链上的键名（toString/constructor 等）应被拒绝并 trace 报错
+     * 测试 statusDict 断开原型链后，Object.prototype 属性名可安全用作状态名。
+     * statusDict = {__proto__: null} 结构性消除命名冲突，无需黑名单校验。
      */
     public function testReservedNameValidation():Void {
-        trace("\n--- Test: Reserved Name Validation ---");
+        trace("\n--- Test: Proto-null statusDict — Object.prototype names as state names ---");
         var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
 
         var normalState:FSM_Status = this.createTestState("normal", false);
@@ -1856,18 +1856,17 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
 
         machine.AddStatus("normal", normalState);
 
-        // 保留名应被拒绝（AddStatus 静默返回，trace 报错）
+        // 断开原型链后，Object.prototype 属性名可正常注册和切换
         machine.AddStatus("toString", toStringState);
         machine.AddStatus("constructor", constructorState);
 
-        // 验证保留名状态未被注册
         machine.ChangeState("toString");
-        this.assert(machine.getActiveStateName() == "normal", "Reserved name 'toString' rejected by AddStatus");
+        this.assert(machine.getActiveStateName() == "toString", "Proto-null: 'toString' accepted as state name");
 
         machine.ChangeState("constructor");
-        this.assert(machine.getActiveStateName() == "normal", "Reserved name 'constructor' rejected by AddStatus");
+        this.assert(machine.getActiveStateName() == "constructor", "Proto-null: 'constructor' accepted as state name");
 
-        // 正常名称仍然可用
+        // 普通名称仍然可用
         var attackState:FSM_Status = this.createTestState("Attack", false);
         machine.AddStatus("Attack", attackState);
         machine.ChangeState("Attack");

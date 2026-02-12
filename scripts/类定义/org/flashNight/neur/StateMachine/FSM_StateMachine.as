@@ -55,8 +55,9 @@ import org.flashNight.neur.StateMachine.Transitions;
  *
  *   a) name 不可为 null / 空字符串。
  *   b) state 必须是 FSM_Status 实例（instanceof 校验）。
- *   c) name 不可为 Object 原型链保留名（toString/constructor 等），
- *      见 RESERVED 静态表。违反上述任一条件，AddStatus 静默拒绝并 trace 报错。
+ *   c) statusDict 通过 {__proto__: null} 断开原型链，结构性消除
+ *      Object.prototype 命名冲突（toString/constructor 等可安全用作状态名）。
+ *      违反 a/b 条件时，AddStatus 静默拒绝并 trace 报错。
  *   d) machine.data 必须在首次 AddStatus 之前设定（非嵌套子状态会继承 data 引用）。
  *   e) 嵌套子机（FSM_StateMachine）不继承父机 data，需自行管理。
  *   f) 同名覆盖允许但产生 trace 警告。覆盖后 statusDict 指向新实例，
@@ -118,21 +119,11 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     private var _started:Boolean = false;   // destroy() 生命周期守卫（不在热路径中）
     private var _pending:String = null;     // 重入挂起目标
 
-    /**
-     * 保留名黑名单：Object 原型链上的属性名不可用作状态名。
-     * 在 AddStatus 中一次性校验，零运行时开销。
-     */
-    private static var RESERVED:Object = {
-        toString: 1, constructor: 1, __proto__: 1,
-        valueOf: 1, hasOwnProperty: 1, isPrototypeOf: 1,
-        propertyIsEnumerable: 1, toLocaleString: 1
-    };
-
     // ═══════ 构造函数 ═══════
 
     public function FSM_StateMachine(_onAction:Function, _onEnter:Function, _onExit:Function) {
         super(_onAction, _onEnter, _onExit);
-        this.statusDict = new Object();
+        this.statusDict = {__proto__: null}; // 断开原型链，结构性消除 Object.prototype 命名冲突
         this.actionCount = 0;
         this.transitions = new Transitions(this);
 
@@ -375,11 +366,6 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             trace("[FSM] Error: State must be an instance of FSM_Status.");
             return;
         }
-        if (RESERVED[name] === 1) {
-            trace("[FSM] Error: '" + name + "' is a reserved name (Object prototype). Choose another.");
-            return;
-        }
-
         var existing:FSM_Status = this.statusDict[name];
         if (existing instanceof FSM_Status) {
             trace("[FSM] Warning: State '" + name + "' already registered, overwriting. "
@@ -527,7 +513,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         this._booted = false;
         this._started = false;
 
-        // 4. 销毁所有子状态（instanceof 防御原型链污染）
+        // 4. 销毁所有子状态（statusDict 已断开原型链，for-in 仅遍历自有属性；instanceof 作为冗余保险）
         var dict:Object = this.statusDict;
         for (var statename:String in dict) {
             var s:FSM_Status = dict[statename];
