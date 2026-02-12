@@ -54,11 +54,11 @@ PASS: 最大栈深度测试
 
 === 实际应用场景测试 ===
 PASS: 部分有序数据测试
-    部分有序数据排序耗时: 1ms
+    部分有序数据排序耗时: 2ms
 PASS: 交替模式测试
 PASS: 钢琴键模式测试
 PASS: 大量重复值测试
-    大量重复值排序耗时: 13ms
+    大量重复值排序耗时: 16ms
 PASS: 管道模式测试
 PASS: 随机游走模式测试
 PASS: 数据库风格数据测试
@@ -73,7 +73,7 @@ PASS: MIN_RUN边界测试 (length=64)
 PASS: MIN_RUN边界测试 (length=65)
 PASS: Gallop阈值边界测试
 PASS: 大数组压力测试
-    大数组压力测试 (size=50000) 耗时: 1069ms
+    大数组压力测试 (size=50000) 耗时: 1254ms
 PASS: 深度递归避免测试
 PASS: 内存效率测试
     内存效率测试耗时: 1ms
@@ -82,38 +82,38 @@ PASS: 内存效率测试
 
 开始增强版性能测试...
   测试数组大小: 1000
-    random: 17ms
+    random: 20ms
     sorted: 1ms
-    reverse: 1ms
-    partiallyOrdered: 21ms
-    manyDuplicates: 17ms
-    pianoKeys: 4ms
-    organPipe: 3ms
-    mergeStress: 4ms
-    gallopFriendly: 2ms
-    gallopUnfriendly: 11ms
+    reverse: 2ms
+    partiallyOrdered: 16ms
+    manyDuplicates: 21ms
+    pianoKeys: 5ms
+    organPipe: 4ms
+    mergeStress: 6ms
+    gallopFriendly: 3ms
+    gallopUnfriendly: 13ms
   测试数组大小: 5000
-    random: 114ms
-    sorted: 7ms
-    reverse: 11ms
-    partiallyOrdered: 94ms
-    manyDuplicates: 106ms
-    pianoKeys: 19ms
+    random: 129ms
+    sorted: 8ms
+    reverse: 9ms
+    partiallyOrdered: 112ms
+    manyDuplicates: 122ms
+    pianoKeys: 24ms
     organPipe: 20ms
-    mergeStress: 25ms
-    gallopFriendly: 10ms
+    mergeStress: 30ms
+    gallopFriendly: 9ms
     gallopUnfriendly: 93ms
   测试数组大小: 10000
-    random: 242ms
-    sorted: 11ms
-    reverse: 16ms
-    partiallyOrdered: 209ms
-    manyDuplicates: 233ms
-    pianoKeys: 46ms
-    organPipe: 33ms
-    mergeStress: 50ms
-    gallopFriendly: 15ms
-    gallopUnfriendly: 176ms
+    random: 301ms
+    sorted: 15ms
+    reverse: 19ms
+    partiallyOrdered: 242ms
+    manyDuplicates: 266ms
+    pianoKeys: 50ms
+    organPipe: 37ms
+    mergeStress: 57ms
+    gallopFriendly: 18ms
+    gallopUnfriendly: 201ms
 增强版性能测试完成
 
 All Enhanced TimSort Tests Completed.
