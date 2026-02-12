@@ -1,16 +1,19 @@
 ﻿/**
- * ARCEnhancedLazyCacheTest v3.0
+ * ARCEnhancedLazyCacheTest v3.1
  *
- * 覆盖基础功能 + v2.0 修复 + v3.0 新特性的所有边界场景：
+ * 覆盖基础功能 + v2.0 修复 + v3.0/v3.1 特性的所有边界场景：
  *   - CRITICAL-1 : evaluator 返回 null/undefined 时不再无限递归
- *   - HIGH-2     : 完全未命中走 put() 触发淘汰，容量不会无界增长
+ *   - HIGH-2     : 完全未命中走 _putNew() 触发淘汰，容量不会无界增长
  *   - 幽灵命中   : ghost hit 后 evaluator 计算、缓存、后续命中的完整链路
  *
  * v3.0 新增测试：
  *   - testEvaluatorExceptionOnMiss     : MISS 路径 evaluator 异常无副作用
- *   - testEvaluatorExceptionOnGhostHit : GHOST 路径 SAFE-1 僵尸清除
  *   - testHasViaLazyCache              : P4 has() API 在懒加载缓存上的行为
  *   - testRawKeyLazyCache              : ARCH-1 原始键语义验证
+ *
+ * v3.1 新增/重写测试：
+ *   - testEvaluatorExceptionOnGhostHit : C8 契约验证（僵尸行为 + remove 恢复）
+ *   - testCapacity1LazyCache           : capacity=1 极端交互（ghost/pool 密集路径）
  */
 import org.flashNight.gesh.func.ARCEnhancedLazyCache;
 

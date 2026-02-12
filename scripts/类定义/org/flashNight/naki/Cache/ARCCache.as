@@ -481,6 +481,7 @@ class org.flashNight.naki.Cache.ARCCache {
         }
 
         // ======== Case IV：完全新 key ========
+        // ⚠ SYNC: 以下淘汰逻辑与 _putNew() 完全相同。修改时须同步。
         var mc:Number = this.maxCapacity;
         var lB1:Object = this.B1;
         var lB2:Object = this.B2;
@@ -571,6 +572,10 @@ class org.flashNight.naki.Cache.ARCCache {
 
     /**
      * 不触发淘汰的 put — 用于子类在幽灵命中后存储计算值。
+     *
+     * 注：v3.1 后 LazyCache 的 ghost hit 走 OPT-5 直赋，MISS 走 _putNew()，
+     * 此方法当前无外部调用者。保留为公共 API 供未来扩展使用；
+     * 若确认无需求可在后续版本移除。
      *
      * @param key   键（原始键）
      * @param value 值
@@ -674,6 +679,9 @@ class org.flashNight.naki.Cache.ARCCache {
      * v3.1 OPT-9: 仅新 key 插入路径 — 调用者保证 key 不在 nodeMap 中。
      * 跳过 nodeMap[key] 存在性检查和 T1/T2/B1/B2 分支，直接执行 Case IV。
      * 供 ARCEnhancedLazyCache MISS 路径使用，省一次 hash 查找。
+     *
+     * ⚠ SYNC: 此方法的淘汰逻辑与 put() Case IV（第 483–568 行）完全相同。
+     *         修改任一处时须同步另一处，否则淘汰行为将出现分歧。
      *
      * 契约：
      *   - 调用者 MUST 保证 nodeMap[key] === undefined

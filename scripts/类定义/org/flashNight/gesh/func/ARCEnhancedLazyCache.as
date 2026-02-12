@@ -1,7 +1,7 @@
 ﻿import org.flashNight.naki.Cache.ARCCache;
 
 /**
- * ARCEnhancedLazyCache v3.0 — 继承自 ARCCache 的懒加载缓存
+ * ARCEnhancedLazyCache v3.1 — 继承自 ARCCache 的懒加载缓存
  *
  * 当 get(key) 缓存未命中时，自动调用 evaluator(key) 计算并缓存结果。
  *
@@ -9,11 +9,14 @@
  * ──────────
  * [P0] ARCH-1     : 继承 ARCCache v3.0 原始键语义，无内部 UID 转换。
  * [P1] OPT-7      : === 严格比较替代 ==。
- * [—]  SAFE-1     : (v3.1 移除) 不再使用 try/catch，改为契约优先。
- *                    evaluator MUST NOT throw（C8）/ MUST NOT 对同一实例递归调用（C9）。
- *                    与项目全局规范（避免异常影响性能）对齐。
+ *
+ * v3.1 变更（交叉评审）：
+ * ──────────────────────
  * [P0] OPT-9      : MISS 路径使用 super._putNew() 替代 super.put()，
  *                    省一次 nodeMap 存在性检查（hash 查找）。
+ * [P0] C8/C9      : 移除 try/catch（原 SAFE-1），改为契约优先。
+ *                    evaluator MUST NOT throw（C8）/ MUST NOT 对同一实例递归调用（C9）。
+ *                    与项目全局规范（避免异常影响性能）对齐。
  *
  * 保留自 v2.0 的修复：
  *   CRITICAL-1 : _hitType 判断命中类型（消除 null 值语义漏洞）
