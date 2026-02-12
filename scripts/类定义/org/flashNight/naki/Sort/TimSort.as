@@ -311,18 +311,59 @@ class org.flashNight.naki.Sort.TimSort {
         // 初始化基本参数
         n = arr.length;
         if (n < 2) return arr;           // 长度小于2直接返回
-        
+
         // 设置算法常量
         MIN_MERGE = 32;                  // 当发现run长度小于minRun时，用插入排序将该run扩展到minRun
         MIN_GALLOP = 7;                  // galloping模式触发阈值
-        
+
         // 初始化比较函数
         compare = (compareFunction == null)
             ? function(a, b):Number { return a - b; }    // 默认数值比较
             : compareFunction;
-        
+
+        /*
+         * 【小数组快速路径】n <= MIN_MERGE 时直接二分插入排序
+         * 避免创建 tempArray/runBase/runLen 等数据结构的开销
+         * 对于游戏中常见的 10-50 个单位的排序场景，常数因子显著更低
+         */
+        if (n <= MIN_MERGE) {
+            // 内联二分插入排序（稳定）
+            for (i = 1; i < n; i++) {
+                key = arr[i];
+                if (compare(arr[i - 1], key) <= 0) continue;  // 已有序守卫
+                if (i <= 8) {
+                    // 短距离线性插入
+                    j = i - 1;
+                    while (j >= 0 && compare(arr[j], key) > 0) {
+                        arr[j + 1] = arr[j];
+                        j--;
+                    }
+                    arr[j + 1] = key;
+                } else {
+                    // 二分查找插入点
+                    left = 0;
+                    hi2 = i;
+                    while (left < hi2) {
+                        mid = (left + hi2) >> 1;
+                        if (compare(arr[mid], key) <= 0) {
+                            left = mid + 1;
+                        } else {
+                            hi2 = mid;
+                        }
+                    }
+                    j = i;
+                    while (j > left) {
+                        arr[j] = arr[j - 1];
+                        j--;
+                    }
+                    arr[left] = key;
+                }
+            }
+            return arr;
+        }
+
         // 初始化核心数据结构
-        tempArray = new Array(Math.ceil(n / 2));         // 临时数组，最大需要n/2空间
+        tempArray = null;                                      // 延迟分配：仅在实际需要合并时创建
         stackCapacity = 64;                                    // 栈容量预分配（在预期使用场景下足够，标准实现常见85）
         runBase = new Array(stackCapacity);                                    // run栈：存储run起始位置
         runLen = new Array(stackCapacity);                                     // run栈：存储run长度
@@ -398,7 +439,7 @@ class org.flashNight.naki.Sort.TimSort {
                 // 内联插入排序 (_insertionSort)
                 right = lo + force - 1;
 
-                for (i = lo + 1; i <= right; i++) {
+                for (i = lo + runLength; i <= right; i++) {
                     key = arr[i];
                     j = i - 1;
                     // 混合插入策略：已有序守卫 + 短距离线性，否则继续走二分插入
@@ -476,7 +517,8 @@ class org.flashNight.naki.Sort.TimSort {
                  * 【栈不变量检查】按优先级顺序检查违反情况
                  * ========================================================
                  */
-                if (n_idx > 0 && runLen[n_idx - 1] <= runLen[n_idx] + runLen[n_idx + 1]) {
+                if ((n_idx > 0 && runLen[n_idx - 1] <= runLen[n_idx] + runLen[n_idx + 1])
+                    || (n_idx > 1 && runLen[n_idx - 2] <= runLen[n_idx - 1] + runLen[n_idx])) {
                     /*
                      * 【不变量1违反】三元素和不等式失效
                      * 
@@ -586,46 +628,46 @@ class org.flashNight.naki.Sort.TimSort {
                 base = loA;             // A区域的起始基准位置
                 len = lenA;             // A区域的搜索长度
                 
-                if (len == 0 || compare(arr[base], target) >= 0) {
-                    gallopK = 0;        // 边界情况：插入到A的开头
+                if (len == 0 || compare(arr[base], target) > 0) {
+                    gallopK = 0;        // 边界情况：A[0] > B[0]，无需裁剪
                 } else {
                     /*
                      * =============================================
-                     * 【指数搜索阶段】快速定位目标范围
+                     * 【指数搜索阶段 - gallopRight】快速定位目标范围
                      * =============================================
-                     * 目标：找到一个区间 [lastOfs, ofs)，使得：
-                     * - arr[base + lastOfs] < target
-                     * - arr[base + ofs] >= target
+                     * 使用gallopRight（upper_bound）语义：
+                     * 找到A中第一个严格大于B[0]的位置
+                     * A中 <= B[0] 的前缀元素不需要参与合并（稳定性安全）
                      */
                     ofs = 1;            // 指数搜索起始步长
                     lastOfs = 0;        // 前一个有效步长
-                    
-                    // 指数增长直到找到上界
-                    while (ofs < len && compare(arr[base + ofs], target) < 0) {
+
+                    // 指数增长直到找到上界（<= 表示跳过等于target的元素）
+                    while (ofs < len && compare(arr[base + ofs], target) <= 0) {
                         lastOfs = ofs;                    // 保存当前有效位置
                         ofs = (ofs << 1) + 1;             // 【指数增长公式】步长翻倍+1
                         if (ofs <= 0) ofs = len;         // 整数溢出保护
                     }
                     if (ofs > len) ofs = len;            // 边界保护
-                    
+
                     /*
-                     * =============================================  
-                     * 【二分搜索阶段】精确定位插入点
                      * =============================================
-                     * 在 [lastOfs, ofs) 区间内精确查找插入位置
-                     * 使用左二分搜索，找到第一个 >= target 的位置
+                     * 【二分搜索阶段 - upper_bound】精确定位插入点
+                     * =============================================
+                     * 在 [lastOfs, ofs) 区间内精确查找
+                     * 找到第一个 > target 的位置（等于target的元素归入前缀裁剪）
                      */
                     left = lastOfs;      // 复用left作为bsLo（二分左边界）
                     hi2 = ofs;           // 复用hi2作为bsHi（二分右边界）
                     while (left < hi2) {
                         mid = (left + hi2) >> 1;          // 复用mid作为bsMid（中点计算）
-                        if (compare(arr[base + mid], target) < 0) {
-                            left = mid + 1;               // target在右半部
+                        if (compare(arr[base + mid], target) <= 0) {
+                            left = mid + 1;               // 跳过 <= target 的元素
                         } else {
-                            hi2 = mid;                    // target在左半部（包含mid）
+                            hi2 = mid;                    // 找到 > target 的位置
                         }
                     }
-                    gallopK = left;      // 最终插入位置
+                    gallopK = left;      // 最终插入位置（跳过了所有 <= B[0] 的A前缀）
                 }
                 
                 if (gallopK == lenA) {
@@ -647,26 +689,28 @@ class org.flashNight.naki.Sort.TimSort {
                     base = loB;
                     len = lenB;
                     
-                    if (len == 0 || compare(arr[base], target) > 0) {
-                        gallopK = 0;              // 插入到B的开头
+                    if (len == 0 || compare(arr[base], target) >= 0) {
+                        gallopK = 0;              // B[0] >= A[last]，无需裁剪B
                     } else {
-                        // 指数搜索
+                        // 指数搜索 - gallopLeft（lower_bound）语义
+                        // 找到B中第一个 >= A[last] 的位置
+                        // B中 < A[last] 的前缀需要参与合并，>= A[last] 的尾部已在正确位置
                         ofs = 1;
                         lastOfs = 0;
-                        
-                        while (ofs < len && compare(arr[base + ofs], target) <= 0) {
+
+                        while (ofs < len && compare(arr[base + ofs], target) < 0) {
                             lastOfs = ofs;
                             ofs = (ofs << 1) + 1;
                             if (ofs <= 0) ofs = len;
                         }
                         if (ofs > len) ofs = len;
-                        
-                        // 二分搜索 (内联 _binarySearchRight)
+
+                        // 二分搜索 - lower_bound（找第一个 >= target 的位置）
                         left = lastOfs;  // 复用left作为bsLo
                         hi2 = ofs;       // 复用hi2作为bsHi
                         while (left < hi2) {
                             mid = (left + hi2) >> 1;  // 复用mid作为bsMid
-                            if (compare(arr[base + mid], target) <= 0) {
+                            if (compare(arr[base + mid], target) < 0) {
                                 left = mid + 1;
                             } else {
                                 hi2 = mid;
@@ -680,7 +724,7 @@ class org.flashNight.naki.Sort.TimSort {
                     } else {
                         // 调整B的范围
                         lenB = gallopK;
-                        
+
                         // 单元素合并优化（快速路径）
                         if (lenA == 1) {
                             tmp = arr[loA];
@@ -694,13 +738,11 @@ class org.flashNight.naki.Sort.TimSort {
                                     hi2 = mid;
                                 }
                             }
+                            // 将B的前left个元素左移一位（loA紧邻loB），然后插入tmp
                             for (i = 0; i < left; i++) {
                                 arr[loA + i] = arr[loB + i];
                             }
                             arr[loA + left] = tmp;
-                            for (i = left; i < lenB; i++) {
-                                arr[loA + i + 1] = arr[loB + i];
-                            }
                             size = stackSize;
                             continue;
                         }
@@ -756,6 +798,9 @@ class org.flashNight.naki.Sort.TimSort {
                          * - TimSort优化：S = min(lenA, lenB)
                          * 平均节省50%的临时空间使用量
                          */
+                        // 延迟分配临时数组：仅在实际需要合并时创建
+                        if (tempArray == null) tempArray = new Array(Math.ceil(n / 2));
+
                         if (lenA <= lenB) {
                             /*
                              * 执行mergeLo (内联 _mergeLo)
@@ -981,7 +1026,8 @@ class org.flashNight.naki.Sort.TimSort {
                                     minGallop -= (gallopK >= MIN_GALLOP ? 1 : -1);
                                     if (minGallop < 1) minGallop = 1;
                                 } else {
-                                    // 退出galloping模式，回到简单合并
+                                    // 退出galloping模式，惩罚阈值防止频繁振荡
+                                    ++minGallop;
                                     while (pa < ea && pb < eb && ca < minGallop && cb < minGallop) {
                                         if (compare(tempArray[pa], arr[pb]) <= 0) {  // 相等时取A，保证稳定
                                             arr[d++] = tempArray[pa++];
@@ -1056,38 +1102,39 @@ class org.flashNight.naki.Sort.TimSort {
                             // Galloping模式合并（从右到左）
                             while (pa >= ba0 && pb >= 0) {
                                 if (ca >= minGallop) {
-                                    // A方galloping (内联 gallopLeft 逻辑用于mergeHi)
+                                    // A方galloping - 从右端开始的反向指数搜索（hint-based）
+                                    // 在mergeHi中答案大概率在pa附近，从右端搜索为O(log k)而非O(log n)
                                     target = tempArray[pb];
-                                    base = ba0;
                                     len = pa - ba0 + 1;
-                                    gallopK = len;
-                                    
-                                    if (len == 0 || compare(arr[base], target) > 0) {
-                                        gallopK = len;
+
+                                    if (len == 0 || compare(arr[pa], target) <= 0) {
+                                        gallopK = 0;  // A的最右元素 <= B当前元素，无需批量复制
+                                    } else if (compare(arr[ba0], target) > 0) {
+                                        gallopK = len;  // A的所有元素都 > B当前元素，全部批量复制
                                     } else {
+                                        // 从pa向左做指数搜索，找到 > target 的边界
                                         ofs = 1;
                                         lastOfs = 0;
-                                        while (ofs < len && compare(arr[base + ofs], target) <= 0) {
+                                        while (ofs < len && compare(arr[pa - ofs], target) > 0) {
                                             lastOfs = ofs;
                                             ofs = (ofs << 1) + 1;
                                             if (ofs <= 0) ofs = len;
                                         }
                                         if (ofs > len) ofs = len;
+                                        // 二分搜索：在距离pa的[lastOfs, ofs]范围内精确定位边界
                                         left = lastOfs;
                                         hi2 = ofs;
                                         while (left < hi2) {
                                             mid = (left + hi2) >> 1;
-                                            if (compare(arr[base + mid], target) <= 0) {
-                                                left = mid + 1;
+                                            if (compare(arr[pa - mid], target) > 0) {
+                                                left = mid + 1;  // 更多元素 > target
                                             } else {
-                                                hi2 = mid;
+                                                hi2 = mid;        // 找到边界
                                             }
                                         }
-                                        gallopK = len - left;
-                                        // 在mergeHi(反向合并)中，我们需要的是从右边数起、需要移动的元素数量
-                                        // 二分查找的'left'结果是从左边数起的插入点，因此需要移动的数量是'len - left'
+                                        gallopK = left;  // 从右端数起 > target 的元素个数
                                     }
-                                    
+
                                     // 从右到左批量复制A中的元素（循环展开优化）
                                     copyEnd = gallopK - (gallopK & 3);
                                     for (copyI = 0; copyI < copyEnd; copyI += 4) {
@@ -1105,18 +1152,19 @@ class org.flashNight.naki.Sort.TimSort {
                                     minGallop -= (gallopK >= MIN_GALLOP ? 1 : -1);
                                     if (minGallop < 1) minGallop = 1;
                                 } else if (cb >= minGallop) {
-                                    // B方galloping (内联 gallopLeft 逻辑用于temp数组)
+                                    // B方galloping - gallopLeft（lower_bound）语义
+                                    // 在tempArray中找A[pa]的插入点，等于A[pa]的B元素应被批量复制（稳定性：B在右）
                                     target = arr[pa];
                                     base = 0;
                                     len = pb + 1;
                                     gallopK = len;
-                                    
-                                    if (len == 0 || compare(tempArray[base], target) > 0) {
-                                        gallopK = len;
+
+                                    if (len == 0 || compare(tempArray[base], target) >= 0) {
+                                        gallopK = len;  // 所有B元素 >= target，全部批量复制
                                     } else {
                                         ofs = 1;
                                         lastOfs = 0;
-                                        while (ofs < len && compare(tempArray[base + ofs], target) <= 0) {
+                                        while (ofs < len && compare(tempArray[base + ofs], target) < 0) {
                                             lastOfs = ofs;
                                             ofs = (ofs << 1) + 1;
                                             if (ofs <= 0) ofs = len;
@@ -1126,15 +1174,15 @@ class org.flashNight.naki.Sort.TimSort {
                                         hi2 = ofs;
                                         while (left < hi2) {
                                             mid = (left + hi2) >> 1;
-                                            if (compare(tempArray[base + mid], target) <= 0) {
+                                            if (compare(tempArray[base + mid], target) < 0) {
                                                 left = mid + 1;
                                             } else {
                                                 hi2 = mid;
                                             }
                                         }
                                         gallopK = len - left;
-                                        // 在mergeHi(反向合并)中，我们需要的是从右边数起、需要移动的元素数量
-                                        // 二分查找的'left'结果是从左边数起的插入点，因此需要移动的数量是'len - left'
+                                        // lower_bound: left是第一个 >= target 的位置
+                                        // len - left = 从右边数起 >= target 的元素数量（含等于，稳定性正确）
                                     }
                                     
                                     // 从右到左批量复制B中的元素（循环展开优化）
@@ -1154,7 +1202,8 @@ class org.flashNight.naki.Sort.TimSort {
                                     minGallop -= (gallopK >= MIN_GALLOP ? 1 : -1);
                                     if (minGallop < 1) minGallop = 1;
                                 } else {
-                                    // 回到简单合并
+                                    // 退出galloping模式，惩罚阈值防止频繁振荡
+                                    ++minGallop;
                                     while (pa >= ba0 && pb >= 0 && ca < minGallop && cb < minGallop) {
                                         if (compare(arr[pa], tempArray[pb]) > 0) {  // 相等时取B，保证稳定
                                             arr[d--] = arr[pa--];
@@ -1228,18 +1277,18 @@ class org.flashNight.naki.Sort.TimSort {
             }
             stackSize--;
             
-            // 完整的gallopRight逻辑（重复实现以避免函数调用）
+            // gallopRight（upper_bound）- 跳过A中 <= B[0] 的前缀
             gallopK = 0;
             target = arr[loB];
             base = loA;
             len = lenA;
-            
-            if (len == 0 || compare(arr[base], target) >= 0) {
+
+            if (len == 0 || compare(arr[base], target) > 0) {
                 gallopK = 0;
             } else {
                 ofs = 1;
                 lastOfs = 0;
-                while (ofs < len && compare(arr[base + ofs], target) < 0) {
+                while (ofs < len && compare(arr[base + ofs], target) <= 0) {
                     lastOfs = ofs;
                     ofs = (ofs << 1) + 1;
                     if (ofs <= 0) ofs = len;
@@ -1249,7 +1298,7 @@ class org.flashNight.naki.Sort.TimSort {
                 hi2 = ofs;
                 while (left < hi2) {
                     mid = (left + hi2) >> 1;
-                    if (compare(arr[base + mid], target) < 0) {
+                    if (compare(arr[base + mid], target) <= 0) {
                         left = mid + 1;
                     } else {
                         hi2 = mid;
@@ -1264,18 +1313,18 @@ class org.flashNight.naki.Sort.TimSort {
                 loA += gallopK;
                 lenA -= gallopK;
                 
-                // 完整的gallopLeft逻辑（重复实现）
+                // gallopLeft（lower_bound）- 找B中第一个 >= A[last] 的位置
                 gallopK = 0;  // 复用gallopK，前面的已用完
                 target = arr[loA + lenA - 1];
                 base = loB;
                 len = lenB;
-                
-                if (len == 0 || compare(arr[base], target) > 0) {
+
+                if (len == 0 || compare(arr[base], target) >= 0) {
                     gallopK = 0;
                 } else {
                     ofs = 1;
                     lastOfs = 0;
-                    while (ofs < len && compare(arr[base + ofs], target) <= 0) {
+                    while (ofs < len && compare(arr[base + ofs], target) < 0) {
                         lastOfs = ofs;
                         ofs = (ofs << 1) + 1;
                         if (ofs <= 0) ofs = len;
@@ -1285,7 +1334,7 @@ class org.flashNight.naki.Sort.TimSort {
                     hi2 = ofs;
                     while (left < hi2) {
                         mid = (left + hi2) >> 1;
-                        if (compare(arr[base + mid], target) <= 0) {
+                        if (compare(arr[base + mid], target) < 0) {
                             left = mid + 1;
                         } else {
                             hi2 = mid;
@@ -1297,7 +1346,8 @@ class org.flashNight.naki.Sort.TimSort {
                 if (gallopK == 0) {
                     // 无需合并，直接继续
                 } else {
-                    
+                    lenB = gallopK;  // 修正：同步B的裁剪后长度（与主合并逻辑一致）
+
                         // 单元素合并优化（快速路径）
                         if (lenA == 1) {
                             tmp = arr[loA];
@@ -1311,13 +1361,11 @@ class org.flashNight.naki.Sort.TimSort {
                                     hi2 = mid;
                                 }
                             }
+                            // 将B的前left个元素左移一位，然后插入tmp
                             for (i = 0; i < left; i++) {
                                 arr[loA + i] = arr[loB + i];
                             }
                             arr[loA + left] = tmp;
-                            for (i = left; i < lenB; i++) {
-                                arr[loA + i + 1] = arr[loB + i];
-                            }
                             size = stackSize;
                             continue;
                         }
@@ -1341,6 +1389,9 @@ class org.flashNight.naki.Sort.TimSort {
                             continue;
                         }// 完整的合并逻辑（与上面_mergeCollapse中完全相同）
                         // ⚠️ 维护提示：这里是强制合并的重复实现，修改时请同步更新上面的正常合并逻辑
+                    // 延迟分配临时数组：仅在实际需要合并时创建
+                    if (tempArray == null) tempArray = new Array(Math.ceil(n / 2));
+
                     if (lenA <= lenB) {
                         // 完整的mergeLo（重复实现）
                         pa = 0;
@@ -1469,6 +1520,7 @@ class org.flashNight.naki.Sort.TimSort {
                                 minGallop -= (gallopK >= MIN_GALLOP ? 1 : -1);
                                 if (minGallop < 1) minGallop = 1;
                             } else {
+                                ++minGallop;
                                 while (pa < ea && pb < eb && ca < minGallop && cb < minGallop) {
                                     if (compare(tempArray[pa], arr[pb]) <= 0) {
                                         arr[d++] = tempArray[pa++];
@@ -1530,17 +1582,18 @@ class org.flashNight.naki.Sort.TimSort {
                         
                         while (pa >= ba0 && pb >= 0) {
                             if (ca >= minGallop) {
+                                // A方galloping - 从右端开始的反向指数搜索（hint-based）
                                 target = tempArray[pb];
-                                base = ba0;
                                 len = pa - ba0 + 1;
-                                gallopK = len;
-                                
-                                if (len == 0 || compare(arr[base], target) > 0) {
+
+                                if (len == 0 || compare(arr[pa], target) <= 0) {
+                                    gallopK = 0;
+                                } else if (compare(arr[ba0], target) > 0) {
                                     gallopK = len;
                                 } else {
                                     ofs = 1;
                                     lastOfs = 0;
-                                    while (ofs < len && compare(arr[base + ofs], target) <= 0) {
+                                    while (ofs < len && compare(arr[pa - ofs], target) > 0) {
                                         lastOfs = ofs;
                                         ofs = (ofs << 1) + 1;
                                         if (ofs <= 0) ofs = len;
@@ -1550,15 +1603,15 @@ class org.flashNight.naki.Sort.TimSort {
                                     hi2 = ofs;
                                     while (left < hi2) {
                                         mid = (left + hi2) >> 1;
-                                        if (compare(arr[base + mid], target) <= 0) {
+                                        if (compare(arr[pa - mid], target) > 0) {
                                             left = mid + 1;
                                         } else {
                                             hi2 = mid;
                                         }
                                     }
-                                    gallopK = len - left;
+                                    gallopK = left;
                                 }
-                                
+
                                 // 从右到左批量复制（循环展开优化）
                                 copyEnd = gallopK - (gallopK & 3);
                                 for (copyI = 0; copyI < copyEnd; copyI += 4) {
@@ -1577,17 +1630,18 @@ class org.flashNight.naki.Sort.TimSort {
                                 minGallop -= (gallopK >= MIN_GALLOP ? 1 : -1);
                                 if (minGallop < 1) minGallop = 1;
                             } else if (cb >= minGallop) {
+                                // B方galloping - gallopLeft（lower_bound）语义
                                 target = arr[pa];
                                 base = 0;
                                 len = pb + 1;
                                 gallopK = len;
-                                
-                                if (len == 0 || compare(tempArray[base], target) > 0) {
+
+                                if (len == 0 || compare(tempArray[base], target) >= 0) {
                                     gallopK = len;
                                 } else {
                                     ofs = 1;
                                     lastOfs = 0;
-                                    while (ofs < len && compare(tempArray[base + ofs], target) <= 0) {
+                                    while (ofs < len && compare(tempArray[base + ofs], target) < 0) {
                                         lastOfs = ofs;
                                         ofs = (ofs << 1) + 1;
                                         if (ofs <= 0) ofs = len;
@@ -1597,7 +1651,7 @@ class org.flashNight.naki.Sort.TimSort {
                                     hi2 = ofs;
                                     while (left < hi2) {
                                         mid = (left + hi2) >> 1;
-                                        if (compare(tempArray[base + mid], target) <= 0) {
+                                        if (compare(tempArray[base + mid], target) < 0) {
                                             left = mid + 1;
                                         } else {
                                             hi2 = mid;
@@ -1605,7 +1659,7 @@ class org.flashNight.naki.Sort.TimSort {
                                     }
                                     gallopK = len - left;
                                 }
-                                
+
                                 // 从右到左批量复制（循环展开优化）
                                 copyEnd = gallopK - (gallopK & 3);
                                 for (copyI = 0; copyI < copyEnd; copyI += 4) {
@@ -1624,6 +1678,7 @@ class org.flashNight.naki.Sort.TimSort {
                                 minGallop -= (gallopK >= MIN_GALLOP ? 1 : -1);
                                 if (minGallop < 1) minGallop = 1;
                             } else {
+                                ++minGallop;
                                 while (pa >= ba0 && pb >= 0 && ca < minGallop && cb < minGallop) {
                                     if (compare(arr[pa], tempArray[pb]) > 0) {
                                         arr[d--] = arr[pa--];
