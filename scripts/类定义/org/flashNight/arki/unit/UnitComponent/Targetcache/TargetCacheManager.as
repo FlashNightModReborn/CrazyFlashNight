@@ -129,10 +129,15 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     
     /**
      * 获取缓存的目标单位列表
+     *
+     * 契约：返回值为缓存内部数组的直接引用（零拷贝）。
+     * 调用方必须在当前调用栈 / 当前帧内消费完毕，禁止跨帧持有引用。
+     * 下一次缓存刷新可能通过指针交换使旧引用指向被覆写的缓冲区。
+     *
      * @param {Object} target - 目标单位
      * @param {Number} updateInterval - 更新间隔(帧数)
      * @param {String} requestType - 请求类型: "敌人"、"友军"或"全体"
-     * @return {Array} 目标单位数组(已按x轴排序)
+     * @return {Array} 目标单位数组(已按x轴排序)，禁止跨帧持有
      */
     public static function getCachedTargets(
         target:Object,
@@ -144,33 +149,33 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     }
 
     /**
-     * 获取缓存的敌人单位列表
+     * 获取缓存的敌人单位列表（零拷贝，禁止跨帧持有返回值引用）
      * @param {Object} t - 目标单位
      * @param {Number} i - 更新间隔(帧数)
-     * @return {Array} 敌人单位数组
+     * @return {Array} 敌人单位数组，禁止跨帧持有
      */
-    public static function getCachedEnemy(t:Object, i:Number):Array { 
-        return getCachedTargets(t, i, "敌人"); 
+    public static function getCachedEnemy(t:Object, i:Number):Array {
+        return getCachedTargets(t, i, "敌人");
+    }
+
+    /**
+     * 获取缓存的友军单位列表（零拷贝，禁止跨帧持有返回值引用）
+     * @param {Object} t - 目标单位
+     * @param {Number} i - 更新间隔(帧数)
+     * @return {Array} 友军单位数组，禁止跨帧持有
+     */
+    public static function getCachedAlly(t:Object, i:Number):Array {
+        return getCachedTargets(t, i, "友军");
     }
     
     /**
-     * 获取缓存的友军单位列表
+     * 获取缓存的全体单位列表（零拷贝，禁止跨帧持有返回值引用）
      * @param {Object} t - 目标单位
      * @param {Number} i - 更新间隔(帧数)
-     * @return {Array} 友军单位数组
+     * @return {Array} 全体单位数组，禁止跨帧持有
      */
-    public static function getCachedAlly(t:Object, i:Number):Array { 
-        return getCachedTargets(t, i, "友军"); 
-    }
-    
-    /**
-     * 获取缓存的全体单位列表
-     * @param {Object} t - 目标单位
-     * @param {Number} i - 更新间隔(帧数)
-     * @return {Array} 全体单位数组
-     */
-    public static function getCachedAll(t:Object, i:Number):Array { 
-        return getCachedTargets(t, i, "全体"); 
+    public static function getCachedAll(t:Object, i:Number):Array {
+        return getCachedTargets(t, i, "全体");
     }
 
     // ========================================================================

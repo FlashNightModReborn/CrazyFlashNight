@@ -27,7 +27,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
      * - tempList: 临时单位列表，用于减少重复收集
      * - tempVersion: 版本号，用于判断是否需要重新收集
      * - leftValues/rightValues/nameIndex: 复用的数据结构，避免每帧分配导致GC抖动
-     * - indices/sorted*: 间接排序(sortIndirect)的内部复用缓冲（避免高频路径分配）
+     * - indices/sorted*: 间接排序(sortIndirect)的投影缓冲，与 tempList/leftValues/rightValues 乒乓交换复用
+     *
+     * 契约：
+     *   C1-返回值生命周期: updateCache 写入 cacheEntry 的 data/leftValues/rightValues
+     *      是缓存内部数组的当前引用。调用方（含通过 getCachedEnemy 等公共API获取的消费者）
+     *      必须在当前调用栈 / 当前帧内消费完毕，禁止跨帧持有引用。
+     *      下一次 updateCache 可能通过指针交换使旧引用指向被覆写的缓冲区。
+     *   C2-指针交换: sortIndirect 路径使用乒乓交换而非回写，消除 O(n) 拷贝。
+     *      tempList ↔ sortedList, leftValues ↔ sortedLeft, rightValues ↔ sortedRight
+     *      在每次排序后交换引用，两组数组交替充当"公开数据"和"投影缓冲"。
      */
     private static var _cachePool:Object = {};
     
@@ -102,7 +111,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     /**
      * 排序阈值（元素个数）
      * - < 阈值：内联插入排序（并行移动 list/left/right）
-     * - ≥ 阈值：TimSort.sortIndirect（零比较器回调）+ 投影回写（保持数组引用不变）
+     * - ≥ 阈值：TimSort.sortIndirect（零比较器回调）+ 投影 + 指针交换（O(1) 替代 O(n) 回写）
      *
      * 微基准调优结果（TargetCacheThresholdTuner 方案A）：
      * 交叉点 n≈16-20，阈值16在 random/twoRuns/descending 等分布上
@@ -318,13 +327,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
                     rkeys[j + 1] = keyRight;
                 } while (++i < len);
             } else {
-                // 大数组：sortIndirect（零函数调用比较）+ 投影回写（保持数组引用不变）
+                // 大数组：sortIndirect（零函数调用比较）+ 投影 + 指针交换
                 var indices:Array = cacheTypeData.indices;
                 indices.length = len;
                 for (k = 0; k < len; k++) indices[k] = k;
 
                 TimSort.sortIndirect(indices, leftValues);
 
+                // 投影到交换缓冲（排序后的有序数据写入 sorted* 数组）
                 var sortedList:Array = cacheTypeData.sortedList;
                 var sortedLeft:Array = cacheTypeData.sortedLeft;
                 var sortedRight:Array = cacheTypeData.sortedRight;
@@ -332,19 +342,26 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
                 sortedLeft.length = len;
                 sortedRight.length = len;
 
-                // 投影到缓冲
                 for (k = 0; k < len; k++) {
                     var idx:Number = indices[k];
                     sortedList[k] = list[idx];
                     sortedLeft[k] = leftValues[idx];
                     sortedRight[k] = rightValues[idx];
                 }
-                // 回写到公开数组（保持引用）
-                for (k = 0; k < len; k++) {
-                    list[k] = sortedList[k];
-                    leftValues[k] = sortedLeft[k];
-                    rightValues[k] = sortedRight[k];
-                }
+
+                // O(1) 指针交换：sorted* 成为公开数据，旧 list/left/right 成为下次投影缓冲
+                // 乒乓复用：两组数组交替角色，零额外分配
+                cacheTypeData.sortedList  = list;
+                cacheTypeData.tempList    = sortedList;
+                cacheTypeData.sortedLeft  = leftValues;
+                cacheTypeData.leftValues  = sortedLeft;
+                cacheTypeData.sortedRight = rightValues;
+                cacheTypeData.rightValues = sortedRight;
+
+                // 同步局部变量（后续 nameIndex 构建 + cacheEntry 赋值依赖这些引用）
+                list        = sortedList;
+                leftValues  = sortedLeft;
+                rightValues = sortedRight;
             }
         }
 
