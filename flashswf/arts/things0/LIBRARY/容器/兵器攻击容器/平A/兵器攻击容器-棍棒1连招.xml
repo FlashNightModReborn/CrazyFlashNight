@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招" itemID="698642fe-00000b06" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-棍棒1连招" lastModified="1770477966" lastUniqueIdentifier="426">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招" itemID="698642fe-00000b06" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-棍棒1连招" lastModified="1771007301" lastUniqueIdentifier="426">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-棍棒1连招" currentFrame="92">
+    <DOMTimeline name="兵器攻击容器-棍棒1连招" currentFrame="88">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -402,35 +402,32 @@ _root.兵器攻击路由.动画完毕(this, _parent);
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power;
-Z轴攻击范围 = 60;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
+Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
+水平击退速度 = 2;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power;
-Z轴攻击范围 = 60;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
+Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
+水平击退速度 = 2;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" duration="2" keyMode="9728">
+            <DOMFrame index="8" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power;
-Z轴攻击范围 = 60;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
+Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
+水平击退速度 = 8;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="10" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="13" duration="6" keyMode="9728">
@@ -438,10 +435,10 @@ Z轴攻击范围 = 60;
             </DOMFrame>
             <DOMFrame index="19" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1;
-Z轴攻击范围 = 60;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1;
+Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
+水平击退速度 = 8;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
               <elements/>
@@ -449,83 +446,79 @@ Z轴攻击范围 = 60;
             <DOMFrame index="21" duration="17" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1;
-Z轴攻击范围 = 60;
+Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
+水平击退速度 = 8;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="38" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.2;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.2;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
+水平击退速度 = 8;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="40" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.2;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.2;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
+水平击退速度 = 8;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="42" duration="11" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.2;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.2;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
+水平击退速度 = 8;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="53" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.2;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
-垂直击退速度 = 3;
+水平击退速度 = 6;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="55" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.2;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
-垂直击退速度 = 3;
+水平击退速度 = 6;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="59" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.2;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
-垂直击退速度 = 3;
+水平击退速度 = 6;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="61" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.2;
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
-垂直击退速度 = 3;
+水平击退速度 = 6;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度);]]></script>
               </Actionscript>
               <elements/>
@@ -535,8 +528,7 @@ Z轴攻击范围 = 30;
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.2;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
-垂直击退速度 = 3;
+水平击退速度 = 6;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度);]]></script>
               </Actionscript>
               <elements/>
@@ -546,8 +538,7 @@ Z轴攻击范围 = 30;
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.2;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
-垂直击退速度 = 3;
+水平击退速度 = 6;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度);]]></script>
               </Actionscript>
               <elements/>
@@ -557,8 +548,7 @@ Z轴攻击范围 = 30;
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.2;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 10;
-垂直击退速度 = 3;
+水平击退速度 = 6;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度);]]></script>
               </Actionscript>
               <elements/>
@@ -568,7 +558,7 @@ Z轴攻击范围 = 30;
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 30;
+水平击退速度 = 12;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
               <elements/>
@@ -578,7 +568,7 @@ Z轴攻击范围 = 30;
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 30;
+水平击退速度 = 12;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
               <elements/>
@@ -588,7 +578,7 @@ Z轴攻击范围 = 30;
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
 击倒率 = 10;
-水平击退速度 = 30;
+水平击退速度 = 12;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
               </Actionscript>
               <elements/>
@@ -627,7 +617,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements>
@@ -640,7 +630,7 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
+   _parent.攻击时移动(10,35);
 }
 ]]></script>
                   </Actionscript>
@@ -670,7 +660,7 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
+   _parent.攻击时移动(10,35);
 }
 ]]></script>
                   </Actionscript>
@@ -691,7 +681,7 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
+   _parent.攻击时移动(10,35);
 }
 ]]></script>
                   </Actionscript>
@@ -703,7 +693,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="50" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -712,7 +702,7 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
+   _parent.攻击时移动(10,35);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -732,7 +722,7 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
+   _parent.攻击时移动(10,35);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -752,7 +742,7 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
+   _parent.攻击时移动(10,35);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -772,7 +762,7 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
+   _parent.攻击时移动(10,35);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -792,7 +782,7 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
+   _parent.攻击时移动(10,35);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -815,7 +805,7 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
+   _parent.攻击时移动(10,35);
 }
 ]]></script>
                   </Actionscript>
@@ -827,7 +817,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -959,7 +949,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -982,7 +972,7 @@ Z轴攻击范围 = 30;
 	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 3 + _parent._parent.刀属性.power * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1;
 	if (_parent._parent.被动技能.刀剑攻击 && _parent._parent.被动技能.刀剑攻击.启用)
 	{
 		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.刀剑攻击.等级 * 0.075;
@@ -992,9 +982,9 @@ Z轴攻击范围 = 30;
 	子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 60;
+	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
-	子弹属性.水平击退速度 = 13;
+	子弹属性.水平击退速度 = 8;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
 	
 	//非常用
@@ -1032,7 +1022,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="8" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="923.4" centerPoint3DY="308.2">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="923.4" centerPoint3DY="308.2">
                   <matrix>
                     <Matrix a="30.1124725341797" d="16.1451873779297" tx="394.95" ty="-12.6"/>
                   </matrix>
@@ -1060,7 +1050,7 @@ Z轴攻击范围 = 30;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 10;
-	子弹属性.水平击退速度 = 13;
+	子弹属性.水平击退速度 = 2;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
 	
 	//非常用
@@ -1124,9 +1114,9 @@ Z轴攻击范围 = 30;
 	子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 60;
+	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
-	子弹属性.水平击退速度 = 13;
+	子弹属性.水平击退速度 = 8;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
 	
 	//非常用
@@ -1190,9 +1180,9 @@ Z轴攻击范围 = 30;
 	子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 60;
+	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
-	子弹属性.水平击退速度 = 13;
+	子弹属性.水平击退速度 = 8;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
 	
 	//非常用
@@ -1230,7 +1220,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="60" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="824.45" centerPoint3DY="380.25">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="824.45" centerPoint3DY="380.25">
                   <matrix>
                     <Matrix a="30.1124725341797" d="16.1451873779297" tx="296" ty="59.45"/>
                   </matrix>
@@ -1258,7 +1248,7 @@ Z轴攻击范围 = 30;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
-	子弹属性.水平击退速度 = 13;
+	子弹属性.水平击退速度 = 6;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
 	
 	//非常用
@@ -1324,7 +1314,7 @@ Z轴攻击范围 = 30;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
-	子弹属性.水平击退速度 = 13;
+	子弹属性.水平击退速度 = 6;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
 	
 	//非常用
@@ -1388,9 +1378,9 @@ Z轴攻击范围 = 30;
 	子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 60;
+	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
-	子弹属性.水平击退速度 = 20;
+	子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
 	
 	//非常用
@@ -1454,9 +1444,9 @@ Z轴攻击范围 = 30;
 	子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 60;
+	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 10;
-	子弹属性.水平击退速度 = 30;
+	子弹属性.水平击退速度 = 12;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
 	
 	//非常用
@@ -1909,8 +1899,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-2550 -1520[742 -2746 5399 -2746!5399 -2746[10057 -2746 13350 -1520!13350 -1520[16641 -294 16641 1442!16641 1442[16641 3176 13350 4402!13350 4402[12619 4675 11820 4887!11820 4887[9023 5629 5399 5629!5399 5629[742 5629 -2550 4402!-2550
- 4402[-5843 3176 -5843 1442!-5843 1442[-5843 155 -4033 -851!-4033 -851[-3402 -1203 -2550 -1520"/>
+!13350 4402[12619 4675 11820 4887!11820 4887[9023 5629 5399 5629!5399 5629[742 5629 -2550 4402!-2550 4402[-5843 3176 -5843 1442!-5843 1442[-5843 155 -4033 -851!-4033 -851[-3402 -1203 -2550 -1520!-2550 -1520[742 -2746 5399 -2746!5399 -2746
+[10057 -2746 13350 -1520!13350 -1520[16641 -294 16641 1442!16641 1442[16641 3176 13350 4402"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2073,8 +2063,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14082 -1889[17373 -663 17373 1073!17373 1073[17373 2807 14082 4033!14082 4033[10789 5260 6131 5260!6131 5260[1474 5260 -1818 4033!-1818 4033[-5111 2807 -5111 1073!-5111 1073[-5111 -663 -1818 -1889!-1818 -1889[1474 -3115 6131 -3115!6131
- -3115[10789 -3115 14082 -1889"/>
+!14082 4033[10789 5260 6131 5260!6131 5260[1474 5260 -1818 4033!-1818 4033[-5111 2807 -5111 1073!-5111 1073[-5111 -663 -1818 -1889!-1818 -1889[1474 -3115 6131 -3115!6131 -3115[10789 -3115 14082 -1889!14082 -1889[17373 -663 17373 1073
+!17373 1073[17373 2807 14082 4033"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2095,8 +2085,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14082 -1889S2[17373 -663 17373 1073!17373 1073[17373 2807 14082 4033!14082 4033[10789 5260 6131 5260!6131 5260[1474 5260 -1818 4033!-1818 4033[-5111 2807 -5111 1073!-5111 1073[-5111 -663 -1818 -1889!-1818 -1889[1474 -3115 6131 -3115
-!6131 -3115[10789 -3115 14082 -1889"/>
+!14082 4033S2[10789 5260 6131 5260!6131 5260[1474 5260 -1818 4033!-1818 4033[-5111 2807 -5111 1073!-5111 1073[-5111 -663 -1818 -1889!-1818 -1889[1474 -3115 6131 -3115!6131 -3115[10789 -3115 14082 -1889!14082 -1889[17373 -663 17373 1073
+!17373 1073[17373 2807 14082 4033"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -17989,8 +17979,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13679 -1124S2[17263 -245 17263 999!17263 999[17263 2242 13679 3121!13679 3121[10093 4001 5021 4001!5021 4001[-50 4001 -3635 3121!-3635 3121[-7221 2242 -7221 999!-7221 999[-7221 -245 -3635 -1124!-3635 -1124[-50 -2003 5021 -2003!5021 -2003
-[10093 -2003 13679 -1124"/>
+!13679 3121S2[10093 4001 5021 4001!5021 4001[-50 4001 -3635 3121!-3635 3121[-7221 2242 -7221 999!-7221 999[-7221 -245 -3635 -1124!-3635 -1124[-50 -2003 5021 -2003!5021 -2003[10093 -2003 13679 -1124!13679 -1124[17263 -245 17263 999!17263
+ 999[17263 2242 13679 3121"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -18011,8 +18001,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13679 -1124[17263 -245 17263 999!17263 999[17263 2242 13679 3121!13679 3121[10093 4001 5021 4001!5021 4001[-50 4001 -3635 3121!-3635 3121[-7221 2242 -7221 999!-7221 999[-7221 -245 -3635 -1124!-3635 -1124[-50 -2003 5021 -2003!5021 -2003
-[10093 -2003 13679 -1124"/>
+!13679 3121[10093 4001 5021 4001!5021 4001[-50 4001 -3635 3121!-3635 3121[-7221 2242 -7221 999!-7221 999[-7221 -245 -3635 -1124!-3635 -1124[-50 -2003 5021 -2003!5021 -2003[10093 -2003 13679 -1124!13679 -1124[17263 -245 17263 999!17263
+ 999[17263 2242 13679 3121"/>
                   </edges>
                 </DOMShape>
               </elements>
