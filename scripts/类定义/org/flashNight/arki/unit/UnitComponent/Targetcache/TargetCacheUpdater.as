@@ -21,11 +21,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     /**
      * 缓存池对象
      * 【重构】现在使用阵营ID作为缓存键的一部分
-     * 结构: {cacheKey: {tempList: Array, tempVersion: Number, leftValues:Array, rightValues:Array, nameIndex:Object}}
+     * 结构: {cacheKey: {tempList:Array, tempVersion:Number, leftValues:Array, rightValues:Array, nameIndex:Object,
+     *                  indices:Array, sortedList:Array, sortedLeft:Array, sortedRight:Array}}
      * - cacheKey: 缓存键，由 buildCacheKey() 生成，格式为 "type_faction"（如 "敌人_PLAYER"、"全体_all"）
      * - tempList: 临时单位列表，用于减少重复收集
      * - tempVersion: 版本号，用于判断是否需要重新收集
      * - leftValues/rightValues/nameIndex: 复用的数据结构，避免每帧分配导致GC抖动
+     * - indices/sorted*: 间接排序(sortIndirect)的内部复用缓冲（避免高频路径分配）
      */
     private static var _cachePool:Object = {};
     
@@ -98,6 +100,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     private static var _ALL_FACTION:String = "all";
 
     /**
+     * 排序阈值（元素个数）
+     * - < 阈值：内联插入排序（并行移动 list/left/right）
+     * - ≥ 阈值：TimSort.sortIndirect（零比较器回调）+ 投影回写（保持数组引用不变）
+     *
+     * 说明：与 BulletQueue 的 16 不同，这里必须回写到同一 tempList 引用，
+     * break-even 通常更大；默认取 32 贴近 TimSort 的 MIN_MERGE 小数组分界。
+     */
+    private static var INSERTION_SORT_THRESHOLD:Number = 32;
+
+    /**
      * 根据请求类型和阵营生成缓存键
      * 统一入口，确保 Updater / Provider 使用同一格式
      * @param requestType 请求类型（ENEMY_TYPE / ALLY_TYPE / ALL_TYPE）
@@ -108,14 +120,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         return (requestType == ALL_TYPE)
             ? (ALL_TYPE + "_" + _ALL_FACTION)
             : (requestType + "_" + faction);
-    }
-
-    /**
-     * TimSort 比较器复用（避免每次 updateCache new Function）
-     * @private
-     */
-    private static function _compareByLeft(a:Object, b:Object):Number {
-        return a.aabbCollider.left - b.aabbCollider.left;
     }
 
     /**
@@ -205,7 +209,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
                 tempVersion: -1,
                 leftValues: [],
                 rightValues: [],
-                nameIndex: {}
+                nameIndex: {},
+                indices: [],
+                sortedList: [],
+                sortedLeft: [],
+                sortedRight: []
             };
         }
         var cacheTypeData:Object = _cachePool[cacheKey];
@@ -234,43 +242,104 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             cacheTypeData.tempVersion = currentVersion;
         }
 
-        // 插入排序（按 left 升序）
+        // ===== 预取 left/right 到并行数组（顺便检测是否已有序）=====
         var list:Array = cacheTypeData.tempList;
         var len:Number = list.length;
-        if (len > 64) {
-            TimSort.sort(list, _compareByLeft);
-        } else if (len > 1) {
-            var i:Number = 1;
-            do {
-                var key:Object = list[i];
-                var leftVal:Number = key.aabbCollider.left;
-                var j:Number = i - 1;
-                while (j >= 0 && list[j].aabbCollider.left > leftVal) {
-                    list[j + 1] = list[j--];
-                }
-                list[j + 1] = key;
-            } while (++i < len);
-        }
-
-        // 单循环完成所有数据提取
         var leftValues:Array = cacheTypeData.leftValues;
         var rightValues:Array = cacheTypeData.rightValues;
-        // 复用数组：缩短到当前长度，避免保留旧数据
         leftValues.length = len;
         rightValues.length = len;
 
+        var isSorted:Boolean = true;
+        var prevLeft:Number = -Infinity;
+        var k:Number = 0;
+        var unit:Object;
+        var collider:Object;
+        var lv:Number;
+        while (k < len) {
+            unit = list[k];
+            collider = unit.aabbCollider;
+            lv = collider.left;
+
+            leftValues[k] = lv;
+            rightValues[k] = collider.right;
+
+            if (isSorted && lv < prevLeft) {
+                isSorted = false;
+            }
+            prevLeft = lv;
+            k++;
+        }
+
+        // ===== 稳定排序（按 left 升序）=====
+        if (!isSorted && len > 1) {
+            // 小数组：内联插入排序（并行移动 list/left/right，低开销）
+            if (len < INSERTION_SORT_THRESHOLD) {
+                var arr:Array = list;
+                var lkeys:Array = leftValues;
+                var rkeys:Array = rightValues;
+                var i:Number = 1;
+                var j:Number;
+                var keyUnit:Object;
+                var keyLeft:Number;
+                var keyRight:Number;
+
+                do {
+                    keyUnit = arr[i];
+                    keyLeft = lkeys[i];
+                    if (lkeys[i - 1] <= keyLeft) continue;
+                    keyRight = rkeys[i];
+
+                    j = i - 1;
+                    while (j >= 0 && lkeys[j] > keyLeft) {
+                        arr[j + 1] = arr[j];
+                        lkeys[j + 1] = lkeys[j];
+                        rkeys[j + 1] = rkeys[j];
+                        j--;
+                    }
+                    arr[j + 1] = keyUnit;
+                    lkeys[j + 1] = keyLeft;
+                    rkeys[j + 1] = keyRight;
+                } while (++i < len);
+            } else {
+                // 大数组：sortIndirect（零函数调用比较）+ 投影回写（保持数组引用不变）
+                var indices:Array = cacheTypeData.indices;
+                indices.length = len;
+                for (k = 0; k < len; k++) indices[k] = k;
+
+                TimSort.sortIndirect(indices, leftValues);
+
+                var sortedList:Array = cacheTypeData.sortedList;
+                var sortedLeft:Array = cacheTypeData.sortedLeft;
+                var sortedRight:Array = cacheTypeData.sortedRight;
+                sortedList.length = len;
+                sortedLeft.length = len;
+                sortedRight.length = len;
+
+                // 投影到缓冲
+                for (k = 0; k < len; k++) {
+                    var idx:Number = indices[k];
+                    sortedList[k] = list[idx];
+                    sortedLeft[k] = leftValues[idx];
+                    sortedRight[k] = rightValues[idx];
+                }
+                // 回写到公开数组（保持引用）
+                for (k = 0; k < len; k++) {
+                    list[k] = sortedList[k];
+                    leftValues[k] = sortedLeft[k];
+                    rightValues[k] = sortedRight[k];
+                }
+            }
+        }
+
+        // ===== 重建 nameIndex（O(1) 替换）=====
         // O(1) 替换：新建空对象取代 for-in + delete 逐键清除
         // 旧对象在 SortedUnitCache.updateData 重新赋值 this.nameIndex 后自然 GC
         cacheTypeData.nameIndex = {};
         var newNameIndex:Object = cacheTypeData.nameIndex;
-        
-        for (var k:Number = 0; k < len; k++) {
-            var unit:Object = list[k];
-            var collider:Object = unit.aabbCollider;
-            
-            leftValues[k] = collider.left;
-            rightValues[k] = collider.right;
-            newNameIndex[unit._name] = k;
+
+        for (k = 0; k < len; k++) {
+            newNameIndex[list[k]._name] = k;
         }
 
         // 使用 AdaptiveThresholdOptimizer 更新阈值
