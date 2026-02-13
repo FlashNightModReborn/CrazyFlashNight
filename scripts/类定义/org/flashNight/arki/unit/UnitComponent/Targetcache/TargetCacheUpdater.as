@@ -104,10 +104,26 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
      * - < 阈值：内联插入排序（并行移动 list/left/right）
      * - ≥ 阈值：TimSort.sortIndirect（零比较器回调）+ 投影回写（保持数组引用不变）
      *
-     * 说明：与 BulletQueue 的 16 不同，这里必须回写到同一 tempList 引用，
-     * break-even 通常更大；默认取 32 贴近 TimSort 的 MIN_MERGE 小数组分界。
+     * 微基准调优结果（TargetCacheThresholdTuner 方案A）：
+     * 交叉点 n≈16-20，阈值16在 random/twoRuns/descending 等分布上
+     * 比旧值32快约9%，与 BulletQueue 的阈值统一。
      */
-    private static var INSERTION_SORT_THRESHOLD:Number = 32;
+    private static var INSERTION_SORT_THRESHOLD:Number = 16;
+
+    /**
+     * 获取当前排序阈值（供调优测试读取）
+     */
+    public static function getSortThreshold():Number {
+        return INSERTION_SORT_THRESHOLD;
+    }
+
+    /**
+     * 设置排序阈值（仅供调优测试使用，生产环境请勿动态修改）
+     * @param v 新阈值，必须 >= 2
+     */
+    public static function setSortThreshold(v:Number):Void {
+        if (v >= 2) INSERTION_SORT_THRESHOLD = v;
+    }
 
     /**
      * 根据请求类型和阵营生成缓存键
