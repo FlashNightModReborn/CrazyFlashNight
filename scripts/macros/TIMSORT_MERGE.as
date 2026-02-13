@@ -5,6 +5,11 @@
  * - 零函数调用开销（编译时文本展开，无静态字段读写）
  * - 单一维护点（mergeCollapse / forceCollapse 共享同一份源码）
  *
+ * v3.1 优化：
+ * - P3: 哨兵搬运（sentinel pre-move）：pre-trim保证首输出元素确定，
+ *   跳过第一次比较分支，并使外层/内层Phase1循环可安全转为do-while
+ * - P3: do-while替代while：哨兵保证首次迭代有效，节省入口条件检查
+ *
  * 前置条件（调用方需在 #include 前设置）:
  *   loA, lenA - A run 的起始位置和长度
  *   loB, lenB - B run 的起始位置和长度
@@ -118,11 +123,15 @@ if (lenA <= lenB) {
     }
     for (; copyI < lenA; copyI++) { tempArray[copyI] = arr[loA + copyI]; }
 
+    // P3: 哨兵搬运 - pre-trim保证B[loB] < A[loA]，B首元素必先输出
+    // 此后 pa < ea (lenA>=2) 且 pb < eb (lenB-1>=1)，do-while安全
+    arr[d++] = arr[pb++];
+
     // === P0: 标准双阶段合并 ===
-    while (pa < ea && pb < eb) {
+    do {
         // Phase 1: one-at-a-time
         ca = 0; cb = 0;
-        while (pa < ea && pb < eb) {
+        do {
             if (compare(tempArray[pa], arr[pb]) <= 0) {
                 arr[d++] = tempArray[pa++];
                 ca++; cb = 0;
@@ -132,7 +141,7 @@ if (lenA <= lenB) {
                 cb++; ca = 0;
                 if (cb >= minGallop) break;
             }
-        }
+        } while (pa < ea && pb < eb);
         if (pa >= ea || pb >= eb) break;
 
         // Phase 2: galloping (do-while)
@@ -211,7 +220,7 @@ if (lenA <= lenB) {
         if (pa >= ea || pb >= eb) break;
         if (minGallop < 0) minGallop = 0;
         minGallop += 2; // penalty for leaving gallop mode
-    }
+    } while (pa < ea && pb < eb);
 
     // remainder: copy leftover A
     copyLen = ea - pa;
@@ -238,11 +247,15 @@ if (lenA <= lenB) {
     }
     for (; copyI < lenB; copyI++) { tempArray[copyI] = arr[loB + copyI]; }
 
+    // P3: 哨兵搬运 - pre-trim保证A[last] > B[last]，A尾元素必先输出
+    // 此后 pa >= ba0 (lenA-1>=1) 且 pb >= 0 (lenB>=2)，do-while安全
+    arr[d--] = arr[pa--];
+
     // === P0: 标准双阶段合并（反向） ===
-    while (pa >= ba0 && pb >= 0) {
+    do {
         // Phase 1: one-at-a-time (right to left)
         ca = 0; cb = 0;
-        while (pa >= ba0 && pb >= 0) {
+        do {
             if (compare(arr[pa], tempArray[pb]) > 0) {
                 arr[d--] = arr[pa--];
                 ca++; cb = 0;
@@ -252,7 +265,7 @@ if (lenA <= lenB) {
                 cb++; ca = 0;
                 if (cb >= minGallop) break;
             }
-        }
+        } while (pa >= ba0 && pb >= 0);
         if (pa < ba0 || pb < 0) break;
 
         // Phase 2: galloping (do-while, right to left)
@@ -340,7 +353,7 @@ if (lenA <= lenB) {
         if (pa < ba0 || pb < 0) break;
         if (minGallop < 0) minGallop = 0;
         minGallop += 2;
-    }
+    } while (pa >= ba0 && pb >= 0);
 
     // remainder: copy leftover B
     copyLen = pb + 1;

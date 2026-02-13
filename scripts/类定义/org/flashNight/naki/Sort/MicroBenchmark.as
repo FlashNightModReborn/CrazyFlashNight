@@ -7,7 +7,7 @@
  * 基准测试项目：
  * 1. 插入排序 线性/二分 切换阈值 (当前=8)
  * 2. Gallop 激活阈值 MIN_GALLOP (当前=7)
- * 3. MIN_MERGE / minRun 对插入排序负载的影响
+ * 3. MIN_MERGE / minRun 插入排序 vs 合并代价权衡分析
  *
  * 调用方式：MicroBenchmark.runAll() 或单独调用各 bench* 方法
  */
@@ -226,6 +226,45 @@ class org.flashNight.naki.Sort.MicroBenchmark {
     }
 
     // =====================================================================
+    //  Merge 辅助函数（供 Benchmark 3 使用）
+    // =====================================================================
+
+    /**
+     * 简单合并 arr[lo..mid-1] 和 arr[mid..hi-1]
+     * tmp 需至少 (mid-lo) 容量。无 galloping，纯逐元素比较。
+     */
+    private static function simpleMerge(arr:Array, lo:Number, mid:Number, hi:Number,
+                                         tmp:Array, cmp:Function):Void {
+        var lenA:Number = mid - lo;
+        var pa:Number = 0, pb:Number = mid, d:Number = lo, i:Number;
+        for (i = 0; i < lenA; i++) tmp[i] = arr[lo + i];
+        while (pa < lenA && pb < hi) {
+            if (cmp(tmp[pa], arr[pb]) <= 0) arr[d++] = tmp[pa++];
+            else arr[d++] = arr[pb++];
+        }
+        while (pa < lenA) arr[d++] = tmp[pa++];
+    }
+
+    /**
+     * 自底向上逐层合并：arr 已按 chunkSize 分块排序。
+     * 每层两两合并，curSize 翻倍直到 >= n。
+     * 奇数块和末尾不足块自动晋级下一层。
+     */
+    private static function bottomUpMerge(arr:Array, n:Number, chunkSize:Number,
+                                           tmp:Array, cmp:Function):Void {
+        var sz:Number = chunkSize;
+        while (sz < n) {
+            for (var lo:Number = 0; lo + sz < n; lo += sz * 2) {
+                var mid:Number = lo + sz;
+                var hi:Number = mid + sz;
+                if (hi > n) hi = n;
+                simpleMerge(arr, lo, mid, hi, tmp, cmp);
+            }
+            sz *= 2;
+        }
+    }
+
+    // =====================================================================
     //  Benchmark 2: Gallop 激活阈值 (MIN_GALLOP)
     // =====================================================================
 
@@ -376,7 +415,7 @@ class org.flashNight.naki.Sort.MicroBenchmark {
     }
 
     // =====================================================================
-    //  Benchmark 3: MIN_MERGE / minRun
+    //  Benchmark 3: minRun 权衡分析 (Insertion Sort vs Merge Cost)
     // =====================================================================
 
     private static function calcMinRun(n:Number, minMerge:Number):Number {
@@ -385,104 +424,160 @@ class org.flashNight.naki.Sort.MicroBenchmark {
         return n + r;
     }
 
+    /**
+     * 生成 master 数据（按 pattern 选择）
+     */
+    private static function genByPattern(pName:String, n:Number):Array {
+        if (pName == "random") return genRandom(n);
+        if (pName == "nearlySorted") return genNearlySorted(n, Math.max(3, Math.floor(n * 0.03)));
+        return genReversed(n);
+    }
+
+    /**
+     * 对 arr 按 minR 分块做插入排序
+     */
+    private static function sortChunks(arr:Array, n:Number, minR:Number, cmp:Function):Void {
+        var numChunks:Number = Math.ceil(n / minR);
+        for (var c:Number = 0; c < numChunks; c++) {
+            var cLo:Number = c * minR;
+            var cHi:Number = cLo + minR - 1;
+            if (cHi >= n) cHi = n - 1;
+            insertSort(arr, cLo, cHi, 4, cmp);
+        }
+    }
+
     public static function benchMinRun():Void {
         trace("\n" + ruler(76));
-        trace("  Benchmark 3: MIN_MERGE / minRun Effect on Insertion Sort");
+        trace("  Benchmark 3: minRun Tradeoff (Insertion vs Merge)");
         trace(ruler(76));
 
         var minMerges:Array = [16, 24, 32, 48, 64];
-        var sizes:Array     = [100, 500, 1000, 5000];
+        var sizes:Array     = [500, 1000, 5000];
+        var patterns:Array  = ["random", "nearlySorted", "reversed"];
+        var mi:Number, si:Number, pi:Number, iter:Number;
 
-        // 先展示 minRun 值对照表
-        trace("\nminRun values for reference:");
+        // ---- 参考表：minRun / merge-levels ----
+        trace("\nminRun / merge-levels reference:");
         var hdr:String = padR("n", 8);
-        var mi:Number, si:Number;
         for (mi = 0; mi < minMerges.length; mi++) hdr += padL("MM=" + minMerges[mi], 10);
         trace(hdr);
         trace(ruler(58));
         for (si = 0; si < sizes.length; si++) {
             var row:String = padR(String(sizes[si]), 8);
             for (mi = 0; mi < minMerges.length; mi++) {
-                row += padL(String(calcMinRun(sizes[si], minMerges[mi])), 10);
+                var mr:Number = calcMinRun(sizes[si], minMerges[mi]);
+                var nk:Number = Math.ceil(sizes[si] / mr);
+                var lv:Number = (nk <= 1) ? 0 : Math.ceil(Math.log(nk) / Math.log(2));
+                row += padL(mr + "/" + lv + "L", 10);
             }
             trace(row);
         }
 
-        // 基准测试：以不同 minRun 大小做插入排序切片
-        var patterns:Array = ["random", "nearlySorted", "reversed"];
-        var pi:Number, iter:Number;
-
+        // ---- 主基准测试 ----
         for (pi = 0; pi < patterns.length; pi++) {
             var pName:String = patterns[pi];
-            trace("\n--- pattern: " + pName + " ---");
-            hdr = padR("n", 8);
-            for (mi = 0; mi < minMerges.length; mi++) hdr += padL("MM=" + minMerges[mi], 10);
-            hdr += "   (ms, normalized to 1000 iters)";
-            trace(hdr);
-            trace(ruler(76));
+            trace("\n=== " + pName + " ===");
 
             for (si = 0; si < sizes.length; si++) {
                 var n:Number = sizes[si];
-                row = padR(String(n), 8);
+                var tmp:Array = new Array(n);
+
+                hdr = padR("n=" + n, 14);
+                for (mi = 0; mi < minMerges.length; mi++) hdr += padL("MM=" + minMerges[mi], 10);
+                trace(hdr);
+                trace(ruler(64));
+
+                var insRow:String = padR("  InsSort", 14);
+                var mrgRow:String = padR("  Merge", 14);
+                var totRow:String = padR("  Total", 14);
 
                 for (mi = 0; mi < minMerges.length; mi++) {
                     var minR:Number = calcMinRun(n, minMerges[mi]);
-                    var numChunks:Number = Math.ceil(n / minR);
 
+                    // 固定种子生成 master
                     resetRng();
-                    var master:Array;
-                    if (pName == "random") master = genRandom(n);
-                    else if (pName == "nearlySorted") master = genNearlySorted(n, Math.max(3, Math.floor(n * 0.03)));
-                    else master = genReversed(n);
+                    var master:Array = genByPattern(pName, n);
 
-                    // 自适应迭代次数：保证总工作量可测
+                    // 预排序块（供 Phase 2 输入）
+                    var sorted:Array = copyArr(master);
+                    sortChunks(sorted, n, minR, cmpNum);
+
                     var adjIters:Number = Math.max(10, Math.floor(50000 / n));
+
+                    // Phase 1: Insertion Sort
                     var t0:Number = getTimer();
                     for (iter = 0; iter < adjIters; iter++) {
                         var work:Array = copyArr(master);
-                        for (var c:Number = 0; c < numChunks; c++) {
-                            var cLo:Number = c * minR;
-                            var cHi:Number = cLo + minR - 1;
-                            if (cHi >= n) cHi = n - 1;
-                            insertSort(work, cLo, cHi, 8, cmpNum);
-                        }
+                        sortChunks(work, n, minR, cmpNum);
                     }
-                    var elapsed:Number = getTimer() - t0;
-                    // 归一化到 1000 次迭代
-                    var norm:Number = Math.round(elapsed * 1000 / adjIters);
-                    row += padL(String(norm), 10);
+                    var insMs:Number = Math.round((getTimer() - t0) * 1000 / adjIters);
+
+                    // Phase 2: Bottom-up Merge
+                    t0 = getTimer();
+                    for (iter = 0; iter < adjIters; iter++) {
+                        work = copyArr(sorted);
+                        bottomUpMerge(work, n, minR, tmp, cmpNum);
+                    }
+                    var mrgMs:Number = Math.round((getTimer() - t0) * 1000 / adjIters);
+
+                    insRow += padL(String(insMs), 10);
+                    mrgRow += padL(String(mrgMs), 10);
+                    totRow += padL(String(insMs + mrgMs), 10);
                 }
-                trace(row);
+                trace(insRow + "  ms/k");
+                trace(mrgRow + "  ms/k");
+                trace(totRow + "  ms/k");
+
+                // 正确性验证（MM=32）
+                resetRng();
+                var vm:Array = genByPattern(pName, n);
+                var vw:Array = copyArr(vm);
+                var vr:Number = calcMinRun(n, 32);
+                sortChunks(vw, n, vr, cmpNum);
+                bottomUpMerge(vw, n, vr, tmp, cmpNum);
+                trace("  Verify: " + (isSorted(vw) ? "PASS" : "FAIL"));
             }
         }
 
-        // 比较次数（单次，n=1000）
-        trace("\nComparison counts (n=1000, single pass):");
-        hdr = padR("Pattern", 16);
+        // ---- 比较次数（n=1000，单次）----
+        trace("\nComparison counts (n=1000):");
+        hdr = padR("", 14);
         for (mi = 0; mi < minMerges.length; mi++) hdr += padL("MM=" + minMerges[mi], 10);
         trace(hdr);
-        trace(ruler(66));
+        trace(ruler(64));
+
         for (pi = 0; pi < patterns.length; pi++) {
-            var pName2:String = patterns[pi];
-            var row2:String = padR(pName2, 16);
+            var pn:String = patterns[pi];
+            var ciRow:String = padR(pn + " ins", 14);
+            var cmRow:String = padR(pn + " mrg", 14);
+            var ctRow:String = padR(pn + " tot", 14);
+
             for (mi = 0; mi < minMerges.length; mi++) {
-                var minR2:Number = calcMinRun(1000, minMerges[mi]);
-                var chunks2:Number = Math.ceil(1000 / minR2);
+                var mr2:Number = calcMinRun(1000, minMerges[mi]);
+
                 resetRng();
-                var m2:Array;
-                if (pName2 == "random") m2 = genRandom(1000);
-                else if (pName2 == "nearlySorted") m2 = genNearlySorted(1000, 30);
-                else m2 = genReversed(1000);
+                var d2:Array = genByPattern(pn, 1000);
+
+                // InsSort comparisons
                 _cmpCount = 0;
-                for (var c2:Number = 0; c2 < chunks2; c2++) {
-                    var lo2:Number = c2 * minR2;
-                    var hi2:Number = lo2 + minR2 - 1;
-                    if (hi2 >= 1000) hi2 = 999;
-                    insertSort(m2, lo2, hi2, 8, cmpCounted);
-                }
-                row2 += padL(String(_cmpCount), 10);
+                var w2:Array = copyArr(d2);
+                sortChunks(w2, 1000, mr2, cmpCounted);
+                var ic:Number = _cmpCount;
+
+                // Merge comparisons
+                _cmpCount = 0;
+                var t2:Array = new Array(1000);
+                bottomUpMerge(w2, 1000, mr2, t2, cmpCounted);
+                var mc:Number = _cmpCount;
+
+                ciRow += padL(String(ic), 10);
+                cmRow += padL(String(mc), 10);
+                ctRow += padL(String(ic + mc), 10);
             }
-            trace(row2);
+            trace(ciRow);
+            trace(cmRow);
+            trace(ctRow);
+            if (pi < patterns.length - 1) trace("");
         }
     }
 

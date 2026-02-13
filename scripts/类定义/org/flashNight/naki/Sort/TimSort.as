@@ -1,11 +1,16 @@
 ﻿/**
  * ActionScript 2.0 TimSort - 高性能稳定排序
  *
- * 核心优化（v3.0 宏化重构）：
+ * 核心优化（v3.1 四方审阅调优）：
  * - P0: 标准双向交替galloping + 正确的minGallop自适应（修复双重惩罚）
+ * - P0: workspace GC清理（阈值256，防止对象引用泄漏）
  * - P1: 合并逻辑宏化(#include)，零函数调用开销 + 单一维护点
  * - P1: hint-based搜索方向修复（预裁剪gallopLeft + mergeHi B-gallop）
- * - P2: _inUse重入保护
+ * - P1: MINRUN_BASE=24 解耦（小数组cutoff=32不变，minRun计算用24）
+ * - P2: _inUse重入保护 + 安全阀resetState() + trace警告
+ * - P2: 小数组null comparator内联特化（零函数调用开销）
+ * - P3: MIN_GALLOP 7→9（benchmark支持，AS2下延迟进入gallop更优）
+ * - P3: 哨兵搬运 + do-while合并循环优化（减少分支）
  *
  * AS2专项优化保留：循环展开×4、副作用合并、变量提升、静态缓存复用
  */
@@ -22,13 +27,21 @@ class org.flashNight.naki.Sort.TimSort {
     private static var _inUse:Boolean = false;
 
     // ==============================================================
+    //  resetState() - 安全阀：异常后重置_inUse标记
+    //  在帧初始化时调用，防止compare()异常导致永久降级
+    // ==============================================================
+    public static function resetState():Void {
+        _inUse = false;
+    }
+
+    // ==============================================================
     //  sort() - 主排序入口
     // ==============================================================
     public static function sort(arr:Array, compareFunction:Function):Array {
 
         // 变量声明提升（AS2函数作用域）
         // --- sort 自有 ---
-        var n:Number, MIN_MERGE:Number, MIN_GALLOP:Number;
+        var n:Number, MIN_MERGE:Number, MINRUN_BASE:Number, MIN_GALLOP:Number;
         var compare:Function, tempArray:Array;
         var runBase:Array, runLen:Array, stackSize:Number, minGallop:Number;
         var minRun:Number;
@@ -52,40 +65,69 @@ class org.flashNight.naki.Sort.TimSort {
         if (n < 2) return arr;
 
         MIN_MERGE = 32;
-        MIN_GALLOP = 7;
-
-        compare = (compareFunction == null)
-            ? function(a, b):Number { return a - b; }
-            : compareFunction;
+        MINRUN_BASE = 24;
+        MIN_GALLOP = 9;
 
         // 小数组快速路径（不使用静态状态，无需重入保护）
         if (n <= MIN_MERGE) {
-            for (i = 1; i < n; i++) {
-                key = arr[i];
-                if (compare(arr[i - 1], key) <= 0) continue;
-                if (i <= 4) {
-                    j = i - 1;
-                    while (j >= 0 && compare(arr[j], key) > 0) {
-                        arr[j + 1] = arr[j]; j--;
+            if (compareFunction != null) {
+                compare = compareFunction;
+                for (i = 1; i < n; i++) {
+                    key = arr[i];
+                    if (compare(arr[i - 1], key) <= 0) continue;
+                    if (i <= 4) {
+                        j = i - 1;
+                        while (j >= 0 && compare(arr[j], key) > 0) {
+                            arr[j + 1] = arr[j]; j--;
+                        }
+                        arr[j + 1] = key;
+                    } else {
+                        left = 0; hi2 = i;
+                        while (left < hi2) {
+                            mid = (left + hi2) >> 1;
+                            if (compare(arr[mid], key) <= 0) left = mid + 1;
+                            else hi2 = mid;
+                        }
+                        j = i;
+                        while (j > left) { arr[j] = arr[j - 1]; j--; }
+                        arr[left] = key;
                     }
-                    arr[j + 1] = key;
-                } else {
-                    left = 0; hi2 = i;
-                    while (left < hi2) {
-                        mid = (left + hi2) >> 1;
-                        if (compare(arr[mid], key) <= 0) left = mid + 1;
-                        else hi2 = mid;
+                }
+            } else {
+                // P2: null comparator 内联数值比较，零函数调用开销
+                for (i = 1; i < n; i++) {
+                    key = arr[i];
+                    if (arr[i - 1] <= key) continue;
+                    if (i <= 4) {
+                        j = i - 1;
+                        while (j >= 0 && arr[j] > key) {
+                            arr[j + 1] = arr[j]; j--;
+                        }
+                        arr[j + 1] = key;
+                    } else {
+                        left = 0; hi2 = i;
+                        while (left < hi2) {
+                            mid = (left + hi2) >> 1;
+                            if (arr[mid] <= key) left = mid + 1;
+                            else hi2 = mid;
+                        }
+                        j = i;
+                        while (j > left) { arr[j] = arr[j - 1]; j--; }
+                        arr[left] = key;
                     }
-                    j = i;
-                    while (j > left) { arr[j] = arr[j - 1]; j--; }
-                    arr[left] = key;
                 }
             }
             return arr;
         }
 
+        // compare闭包仅在完整TimSort路径创建（小数组路径已返回）
+        compare = (compareFunction == null)
+            ? function(a, b):Number { return a - b; }
+            : compareFunction;
+
         // P2: 重入保护
         if (_inUse) {
+            trace("[TimSort] Warning: reentrant call detected, falling back to Array.sort()");
             if (compareFunction != null) arr.sort(compareFunction);
             else arr.sort(function(a, b) { return a - b; });
             return arr;
@@ -111,9 +153,9 @@ class org.flashNight.naki.Sort.TimSort {
         stackSize = 0;
         minGallop = MIN_GALLOP;
 
-        // 计算minRun（复用ofs/lastOfs）
+        // 计算minRun（MINRUN_BASE=24，与小数组cutoff=32解耦）
         ofs = n; lastOfs = 0;
-        while (ofs >= MIN_MERGE) {
+        while (ofs >= MINRUN_BASE) {
             lastOfs |= ofs & 1;
             ofs >>= 1;
         }
@@ -217,20 +259,21 @@ class org.flashNight.naki.Sort.TimSort {
 
             loA = runBase[forceIdx];
             lenA = runLen[forceIdx];
-            loB = runBase[forceIdx + 1];
-            lenB = runLen[forceIdx + 1];
+            loB = runBase[tempIdx = forceIdx + 1];
+            lenB = runLen[tempIdx];
             runLen[forceIdx] = lenA + lenB;
             copyLen = stackSize - 1;
-            for (copyI = forceIdx + 1; copyI < copyLen; copyI++) {
-                runBase[copyI] = runBase[copyI + 1];
-                runLen[copyI] = runLen[copyI + 1];
+            for (copyI = tempIdx; copyI < copyLen; copyI++) {
+                runBase[copyI] = runBase[tempIdx = copyI + 1];
+                runLen[copyI] = runLen[tempIdx];
             }
             stackSize--;
 
             #include "../macros/TIMSORT_MERGE.as"
         }
 
-        // 清理
+        // P0: 清理 - 大workspace释放防止GC泄漏，小workspace保留复用
+        if (_wsLen > 256) { _workspace = null; _wsLen = 0; }
         _inUse = false;
         return arr;
     }
