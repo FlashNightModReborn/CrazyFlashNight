@@ -619,7 +619,6 @@
       <split>1</split>
       <diffusion>5</diffusion>
       <interval>180</interval>
-      <singleshoot>true</singleshoot>
       <velocity>35</velocity>
       <bullet>穿刺子弹</bullet>
       <sound>m4a1_unsil-2.wav</sound>
@@ -627,7 +626,7 @@
       <bullethit>火花</bullethit>
       <clipname>突击步枪钨芯穿甲弹</clipname>
       <bulletsize>30</bulletsize>
-      <power>1025</power>
+      <power>900</power>
       <impact>60</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
