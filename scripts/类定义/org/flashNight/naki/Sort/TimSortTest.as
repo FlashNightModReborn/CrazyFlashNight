@@ -1146,15 +1146,13 @@ class org.flashNight.naki.Sort.TimSortTest {
     // 增强版性能测试
     // ================================
     private static function runEnhancedPerformanceTests():Void {
-        trace("\n开始增强版性能测试...");
-        
-        // 重置随机数种子以确保性能测试结果可重现
-        resetRNG(54321);
+        trace("\n开始增强版性能测试（3次取中位数）...");
+
         var sizes:Array = [1000, 5000, 10000];
         var distributions:Array = [
-            "random", 
-            "sorted", 
-            "reverse", 
+            "random",
+            "sorted",
+            "reverse",
             "partiallyOrdered",
             "manyDuplicates",
             "pianoKeys",
@@ -1163,21 +1161,29 @@ class org.flashNight.naki.Sort.TimSortTest {
             "gallopFriendly",
             "gallopUnfriendly"
         ];
-        
+        var BENCH_RUNS:Number = 3;
+
         for(var i:Number=0; i<sizes.length; i++){
             var size:Number = sizes[i];
             trace("  测试数组大小: " + size);
-            
+
             for(var j:Number=0; j<distributions.length; j++){
                 var dist:String = distributions[j];
-                var arr:Array = generateEnhancedTestArray(size, dist);
-                
-                var start:Number = getTimer();
-                var sorted:Array = TimSort.sort(arr.concat(), null);
-                var time:Number = getTimer() - start;
-                
-                verifySorted(arr, sorted, dist);
-                trace("    " + dist + ": " + time + "ms");
+                var times:Array = [];
+
+                for(var r:Number = 0; r < BENCH_RUNS; r++){
+                    resetRNG(54321);
+                    var arr:Array = generateEnhancedTestArray(size, dist);
+
+                    var start:Number = getTimer();
+                    var sorted:Array = TimSort.sort(arr.concat(), null);
+                    var time:Number = getTimer() - start;
+
+                    if(r == 0) verifySorted(arr, sorted, dist);
+                    times.push(time);
+                }
+                times.sort(Array.NUMERIC);
+                trace("    " + dist + ": " + times[1] + "ms");
             }
         }
         trace("增强版性能测试完成");
@@ -1244,9 +1250,14 @@ class org.flashNight.naki.Sort.TimSortTest {
                 for(var w:Number=size; w>size/2; w--) arr.push(w);
                 break;
             case "gallopUnfriendly":
-                // Gallop不友好数据
-                for(var x:Number=0; x<size; x++){
-                    arr.push(x % 2);  // 大量交替
+                // 完美交织：前半降序偶数 + 后半升序奇数
+                // TimSort形成2个run，合并时逐元素交替，galloping永远无法触发
+                var gHalf:Number = size >> 1;
+                for(var x:Number = 0; x < gHalf; x++){
+                    arr.push((gHalf - 1 - x) * 2);
+                }
+                for(x = 0; x < size - gHalf; x++){
+                    arr.push(x * 2 + 1);
                 }
                 break;
         }
