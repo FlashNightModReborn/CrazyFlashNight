@@ -120,7 +120,21 @@ class org.flashNight.naki.Sort.TimSortTest {
         // ================================
         trace("\n=== 性能测试 ===");
         runEnhancedPerformanceTests();
-        
+
+        // ================================
+        // sortIndirect 正确性与稳定性测试
+        // ================================
+        trace("\n=== sortIndirect 正确性与稳定性测试 ===");
+        testSortIndirectCorrectness();
+        testSortIndirectStability();
+        testSortIndirectConsistency();
+
+        // ================================
+        // sortIndirect vs sort 性能对比
+        // ================================
+        trace("\n=== sortIndirect vs sort 性能对比 ===");
+        runSortIndirectPerformanceComparison();
+
         trace("\nAll Enhanced TimSort Tests Completed.");
     }
 
@@ -1267,17 +1281,278 @@ class org.flashNight.naki.Sort.TimSortTest {
     private static function verifySorted(original:Array, sorted:Array, testName:String):Void {
         var expected:Array = original.concat();
         expected.sort(Array.NUMERIC);
-        
+
         if(expected.length != sorted.length){
             trace("      验证失败 - " + testName + ": 数组长度改变");
             return;
         }
-        
+
         for(var i:Number=0; i<expected.length; i++){
             if(expected[i] !== sorted[i]){
                 trace("      验证失败 - " + testName + ": 错误索引 " + i);
                 return;
             }
         }
+    }
+
+    // ================================
+    // sortIndirect 测试辅助方法
+    // ================================
+
+    /**
+     * 生成指定分布的键数组（用于 sortIndirect 测试）
+     */
+    private static function generateKeysArray(size:Number, type:String):Array {
+        var keys:Array = [];
+        var ii:Number;
+        switch(type) {
+            case "random":
+                for (ii = 0; ii < size; ii++) keys.push(rng.nextFloat() * size);
+                break;
+            case "sorted":
+                for (ii = 0; ii < size; ii++) keys.push(ii);
+                break;
+            case "reverse":
+                for (ii = 0; ii < size; ii++) keys.push(size - ii);
+                break;
+            case "partiallyOrdered":
+                for (ii = 0; ii < size; ii++) keys.push(ii);
+                var swaps:Number = size / 10;
+                for (ii = 0; ii < swaps; ii++) {
+                    var p1:Number = rng.randomInteger(0, size - 1);
+                    var p2:Number = rng.randomInteger(0, size - 1);
+                    var tmp:Number = keys[p1]; keys[p1] = keys[p2]; keys[p2] = tmp;
+                }
+                break;
+            case "manyDuplicates":
+                for (ii = 0; ii < size; ii++) keys.push(rng.randomInteger(0, 9));
+                break;
+            case "gallopFriendly":
+                // 两段不重叠的有序序列，合并时 galloping 高效跳过
+                for (ii = 0; ii < size / 2; ii++) keys.push(ii);
+                for (ii = size; ii > size / 2; ii--) keys.push(ii);
+                break;
+            case "gallopUnfriendly":
+                // 完美交织：降序偶数 + 升序奇数，合并时逐元素交替
+                var half:Number = size >> 1;
+                for (ii = 0; ii < half; ii++) keys.push((half - 1 - ii) * 2);
+                for (ii = 0; ii < size - half; ii++) keys.push(ii * 2 + 1);
+                break;
+        }
+        return keys;
+    }
+
+    // ================================
+    // sortIndirect 正确性与稳定性测试
+    // ================================
+
+    /**
+     * sortIndirect 全分布正确性测试
+     * 覆盖小数组路径（n<=32）和完整 TimSort 路径（n>32）
+     */
+    private static function testSortIndirectCorrectness():Void {
+        // --- 边界情况 ---
+        var e0:Array = [];
+        TimSort.sortIndirect(e0, []);
+        assertTrue(e0.length == 0, "sortIndirect 空数组", "长度应为0");
+
+        var e1:Array = [0];
+        TimSort.sortIndirect(e1, [42]);
+        assertTrue(e1[0] == 0, "sortIndirect 单元素", "索引应保持0");
+
+        // --- 系统性测试：sizes × distributions ---
+        var sizes:Array = [2, 5, 10, 20, 32, 50, 100, 200, 500, 1000];
+        var dists:Array = ["random", "sorted", "reverse", "partiallyOrdered", "manyDuplicates"];
+        var allPassed:Boolean = true;
+        var failCount:Number = 0;
+
+        for (var si:Number = 0; si < sizes.length; si++) {
+            for (var di:Number = 0; di < dists.length; di++) {
+                var n:Number = sizes[si];
+                resetRNG(60000 + si * 100 + di);
+
+                var keys:Array = generateKeysArray(n, dists[di]);
+                var indices:Array = new Array(n);
+                for (var ii:Number = 0; ii < n; ii++) indices[ii] = ii;
+
+                TimSort.sortIndirect(indices, keys);
+
+                for (var jj:Number = 1; jj < n; jj++) {
+                    if (keys[indices[jj - 1]] > keys[indices[jj]]) {
+                        trace("FAIL: sortIndirect n=" + n + " dist=" + dists[di] + " at j=" + jj
+                            + " keys[" + indices[jj - 1] + "]=" + keys[indices[jj - 1]]
+                            + " > keys[" + indices[jj] + "]=" + keys[indices[jj]]);
+                        allPassed = false;
+                        failCount++;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (allPassed) {
+            trace("PASS: sortIndirect 正确性 (" + (sizes.length * dists.length) + " 组合全通过)");
+        } else {
+            trace("FAIL: sortIndirect 正确性 (" + failCount + " 组合失败)");
+        }
+    }
+
+    /**
+     * sortIndirect 稳定性测试
+     * 验证相同键值的索引保持原始相对顺序
+     */
+    private static function testSortIndirectStability():Void {
+        var sizes:Array = [10, 32, 100, 500];
+        var allStable:Boolean = true;
+
+        for (var si:Number = 0; si < sizes.length; si++) {
+            var n:Number = sizes[si];
+            var keys:Array = new Array(n);
+            var indices:Array = new Array(n);
+
+            // 仅 5 种不同键值，制造大量重复
+            for (var ii:Number = 0; ii < n; ii++) {
+                keys[ii] = ii % 5;
+                indices[ii] = ii;
+            }
+
+            TimSort.sortIndirect(indices, keys);
+
+            for (var jj:Number = 1; jj < n; jj++) {
+                if (keys[indices[jj - 1]] == keys[indices[jj]] && indices[jj - 1] > indices[jj]) {
+                    trace("FAIL: sortIndirect 稳定性 n=" + n + " at j=" + jj
+                        + " idx " + indices[jj - 1] + " > " + indices[jj]
+                        + " (同key=" + keys[indices[jj]] + ")");
+                    allStable = false;
+                    break;
+                }
+            }
+        }
+
+        if (allStable) {
+            trace("PASS: sortIndirect 稳定性 (4 sizes × 5-duplicate keys)");
+        }
+    }
+
+    /**
+     * sortIndirect 与 sort 结果一致性测试
+     * 用相同数据验证两种方法产生完全相同的索引序列（含稳定性保证）
+     */
+    private static function testSortIndirectConsistency():Void {
+        var sizes:Array = [10, 32, 100, 500];
+        var allMatch:Boolean = true;
+
+        for (var si:Number = 0; si < sizes.length; si++) {
+            var n:Number = sizes[si];
+            resetRNG(80000 + n);
+
+            var keys:Array = generateKeysArray(n, "random");
+
+            // sort() with comparator
+            var indicesA:Array = new Array(n);
+            for (var ii:Number = 0; ii < n; ii++) indicesA[ii] = ii;
+            var ref:Array = keys;
+            TimSort.sort(indicesA, function(a, b) { return ref[a] - ref[b]; });
+
+            // sortIndirect()
+            var indicesB:Array = new Array(n);
+            for (var jj:Number = 0; jj < n; jj++) indicesB[jj] = jj;
+            TimSort.sortIndirect(indicesB, keys);
+
+            for (var kk:Number = 0; kk < n; kk++) {
+                if (indicesA[kk] !== indicesB[kk]) {
+                    trace("FAIL: sort/sortIndirect 不一致 n=" + n + " at k=" + kk
+                        + " sort→" + indicesA[kk] + " indirect→" + indicesB[kk]);
+                    allMatch = false;
+                    break;
+                }
+            }
+        }
+
+        if (allMatch) {
+            trace("PASS: sortIndirect 与 sort 结果一致 (4 sizes)");
+        }
+    }
+
+    // ================================
+    // sortIndirect vs sort 性能对比
+    // ================================
+
+    /**
+     * sort (闭包比较器) vs sortIndirect (内联键比较) 性能对比
+     *
+     * 测量同一数据下两种方法的排序耗时，计算提升百分比。
+     * 闭包比较器模拟现有生产模式：function(a,b){ return keys[a]-keys[b]; }
+     */
+    private static function runSortIndirectPerformanceComparison():Void {
+        trace("sort vs sortIndirect 性能对比（3次取中位数）...");
+
+        var sizes:Array = [1000, 5000, 10000];
+        var dists:Array = [
+            "random", "sorted", "reverse",
+            "partiallyOrdered", "manyDuplicates",
+            "gallopFriendly", "gallopUnfriendly"
+        ];
+        var BENCH_RUNS:Number = 3;
+
+        for (var si:Number = 0; si < sizes.length; si++) {
+            var size:Number = sizes[si];
+            trace("  数组大小: " + size);
+
+            for (var di:Number = 0; di < dists.length; di++) {
+                var dist:String = dists[di];
+                var sortTimes:Array = [];
+                var indirectTimes:Array = [];
+
+                for (var r:Number = 0; r < BENCH_RUNS; r++) {
+                    resetRNG(54321 + r * 1000);
+                    var keys:Array = generateKeysArray(size, dist);
+
+                    // --- Method A: sort with closure comparator ---
+                    var indicesA:Array = new Array(size);
+                    for (var ii:Number = 0; ii < size; ii++) indicesA[ii] = ii;
+                    var cmpRef:Array = keys;
+
+                    var t0:Number = getTimer();
+                    TimSort.sort(indicesA, function(a, b) { return cmpRef[a] - cmpRef[b]; });
+                    sortTimes.push(getTimer() - t0);
+
+                    // --- Method B: sortIndirect ---
+                    var indicesB:Array = new Array(size);
+                    for (var jj:Number = 0; jj < size; jj++) indicesB[jj] = jj;
+
+                    t0 = getTimer();
+                    TimSort.sortIndirect(indicesB, keys);
+                    indirectTimes.push(getTimer() - t0);
+
+                    // 首轮验证结果一致性
+                    if (r == 0) {
+                        var mismatch:Boolean = false;
+                        for (var kk:Number = 0; kk < size; kk++) {
+                            if (indicesA[kk] !== indicesB[kk]) { mismatch = true; break; }
+                        }
+                        if (mismatch) {
+                            trace("      WARNING: sort/sortIndirect 结果不一致 - " + dist);
+                        }
+                    }
+                }
+
+                sortTimes.sort(Array.NUMERIC);
+                indirectTimes.sort(Array.NUMERIC);
+                var ms:Number = sortTimes[1];
+                var mi:Number = indirectTimes[1];
+                var speedup:String;
+                if (ms > 0) {
+                    speedup = String(Math.round((1 - mi / ms) * 100)) + "%";
+                } else if (mi == 0) {
+                    speedup = "both<1ms";
+                } else {
+                    speedup = "N/A";
+                }
+
+                trace("    " + dist + ": sort=" + ms + "ms  indirect=" + mi + "ms  提升=" + speedup);
+            }
+        }
+        trace("sort vs sortIndirect 性能对比完成");
     }
 }

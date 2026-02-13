@@ -16,40 +16,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
     private var bullets:Array;
     
     // 排序阈值常量
-    private static var INSERTION_SORT_THRESHOLD:Number = 32;
-    
-    // ========== 静态比较器支持 ==========
-    // 避免每帧创建闭包
-    private static var _cmpKeys:Array;
-    
-    /**
-     * 索引比较函数，用于 TimSort 排序
-     * 
-     * 设计说明：
-     * - 通过索引访问 _cmpKeys 数组中的实际排序值
-     * - 简化版：(va > vb) - (va < vb) 利用布尔值隐式转换为 0/1
-     * - 返回值：-1（a<b）、0（a==b）、1（a>b）
-     * 
-     * 前置条件：
-     * - 所有键值已在 add() 中验证，保证为有效 Number
-     * - 不存在 NaN、undefined 等异常值
-     * 
-     * 性能考虑：
-     * - 静态函数避免闭包开销
-     * - 通过共享 _cmpKeys 数组避免参数传递
-     * - 简化的比较逻辑减少分支预测失败
-     * 
-     * @param a 第一个元素的索引
-     * @param b 第二个元素的索引
-     * @return 比较结果：-1/0/1
-     */
-    private static function cmpIndex(a:Number, b:Number):Number {
-        var va:Number = _cmpKeys[a];
-        var vb:Number = _cmpKeys[b];
-        // AS2 中布尔值转数字是可靠的：true→1, false→0
-        return (va > vb) - (va < vb);
-    }
-
+    private static var INSERTION_SORT_THRESHOLD:Number = 16;
     
     // ========== 缓冲区复用 ==========
     // 减少每帧GC压力
@@ -293,9 +260,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue {
                 i++;
             }
             
-            // 使用静态比较器（避免闭包开销）
-            _cmpKeys = leftKeys;
-            TimSort.sort(indices, cmpIndex);
+            // 间接排序：内联键比较，零函数调用开销
+            TimSort.sortIndirect(indices, leftKeys);
             
             // 选择源和目标缓冲区
             var srcBullets:Array = this.bullets;
