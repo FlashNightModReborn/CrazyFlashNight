@@ -23,8 +23,9 @@
  *   将逐元素扫描的数组查表量减半
  * - P1: mergeLo远端O(1)拦截（两个宏文件），补齐与mergeHi对称的
  *   tempArray[base+len-1]/arr[base+len-1]快速路径，跳过O(log n)二分
- * - P2: 插入排序移位缓存（5处），tmp=arr[j]消除循环体内重复读取，
- *   同时消除arr[j+1]=arr[j--]的求值顺序平台依赖
+ * - P2: 插入排序移位缓存（5处），tmp=arr[j]消除循环体内重复读取
+ * - P5: 插入排序副作用合并（5处），arr[j+1]=tmp;j-- → arr[--j+2]=tmp
+ *   利用AVM1 StoreRegister寄存器快速路径（见平台决策记录）
  * - P3: 静态默认比较器_defaultCmp，避免每次sort()创建闭包
  * - P4: 删除宏文件中8处if(ofs<=0)ofs=len溢出防护死代码
  *   （AS2数组上限~16M，ofs翻倍最高~33M，远低于Number溢出阈值）
@@ -37,7 +38,14 @@
  * - 隐式布尔转换优于三元：compare(a,b)<=0 返回 Boolean，
  *   AVM1 的 ActionSubtract 等算术指令内部硬连线 Boolean→Number 快速路径，
  *   比显式三元 (cond ? 1 : 0) 更快。勿尝试"装箱消除"优化。
- * - 副作用合并、变量提升、静态缓存复用
+ * - 副作用表达式触发StoreRegister寄存器快速路径：
+ *   AVM1编译器仅在副作用语句中生成StoreRegister（store-without-pop，
+ *   值留栈继续参与运算）。独立语句 j-- 走 GetVariable/SetVariable
+ *   变量名查找路径，开销显著更高。因此 arr[--j+2]=tmp 优于分离的
+ *   arr[j+1]=tmp;j--;——前者 --j 触发寄存器直读写，后者走名查找。
+ *   根因：AVM1时代CPU寄存器稀缺，编译器仅副作用上下文分配寄存器。
+ *   实测字节码反汇编已确认。勿将副作用拆分为独立语句。
+ * - 变量提升、静态缓存复用
  */
 class org.flashNight.naki.Sort.TimSort {
 
@@ -109,8 +117,7 @@ class org.flashNight.naki.Sort.TimSort {
                         while (j >= 0) {
                             tmp = arr[j];
                             if (compare(tmp, key) <= 0) break;
-                            arr[j + 1] = tmp;
-                            j--;
+                            arr[--j + 2] = tmp; // P5: StoreRegister
                         }
                         arr[j + 1] = key;
                     } else {
@@ -135,8 +142,7 @@ class org.flashNight.naki.Sort.TimSort {
                         while (j >= 0) {
                             tmp = arr[j];
                             if (tmp <= key) break;
-                            arr[j + 1] = tmp;
-                            j--;
+                            arr[--j + 2] = tmp; // P5: StoreRegister
                         }
                         arr[j + 1] = key;
                     } else {
@@ -242,8 +248,7 @@ class org.flashNight.naki.Sort.TimSort {
                         while (j >= lo) {
                             tmp = arr[j];
                             if (compare(tmp, key) <= 0) break;
-                            arr[j + 1] = tmp;
-                            j--;
+                            arr[--j + 2] = tmp; // P5: StoreRegister
                         }
                         arr[j + 1] = key;
                         continue;
@@ -386,8 +391,7 @@ class org.flashNight.naki.Sort.TimSort {
                     while (j >= 0) {
                         tmp = arr[j];
                         if (keys[tmp] <= keyVal) break;
-                        arr[j + 1] = tmp;
-                        j--;
+                        arr[--j + 2] = tmp; // P5: StoreRegister
                     }
                     arr[j + 1] = key;
                 } else {
@@ -492,8 +496,7 @@ class org.flashNight.naki.Sort.TimSort {
                         while (j >= lo) {
                             tmp = arr[j];
                             if (keys[tmp] <= keyVal) break;
-                            arr[j + 1] = tmp;
-                            j--;
+                            arr[--j + 2] = tmp; // P5: StoreRegister
                         }
                         arr[j + 1] = key;
                         continue;
