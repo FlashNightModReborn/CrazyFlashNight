@@ -113,14 +113,14 @@ class org.flashNight.arki.item.drug.DrugContext {
 
     /**
      * 计算淬毒值（含炼金加成）
-     * 公式: baseValue + min(floor(baseValue * alchemyLevel * 0.07), 2000)
+     * 公式: baseValue + min(floor(baseValue * alchemyLevel * 0.03), 2000)
      *
      * @param baseValue 基础淬毒值
      * @return Number 加成后的淬毒值
      */
     public function calcPoisonWithAlchemy(baseValue:Number):Number {
         if (isNaN(baseValue) || baseValue == 0) return 0;
-        var bonus:Number = Math.min(Math.floor(baseValue * this.alchemyLevel * 0.07), 2000);
+        var bonus:Number = Math.min(Math.floor(baseValue * this.alchemyLevel * 0.03), 2000);
         return baseValue + bonus;
     }
 
