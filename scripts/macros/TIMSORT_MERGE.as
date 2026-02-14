@@ -40,18 +40,22 @@ target = arr[loB];
 base = loA;
 len = lenA;
 if (compare(arr[base], target) <= 0) {
-    ofs = 1; lastOfs = 0;
-    while (ofs < len && compare(arr[base + ofs], target) <= 0) {
-        lastOfs = ofs; ofs = (ofs << 1) + 1;
+    if (compare(arr[base + len - 1], target) <= 0) {
+        gallopK = len;
+    } else {
+        ofs = 1; lastOfs = 0;
+        while (ofs < len && compare(arr[base + ofs], target) <= 0) {
+            lastOfs = ofs; ofs = (ofs << 1) + 1;
+        }
+        if (ofs > len) ofs = len;
+        left = lastOfs; hi2 = ofs;
+        while (left < hi2) {
+            mid = (left + hi2) >> 1;
+            if (compare(arr[base + mid], target) <= 0) left = mid + 1;
+            else hi2 = mid;
+        }
+        gallopK = left;
     }
-    if (ofs > len) ofs = len;
-    left = lastOfs; hi2 = ofs;
-    while (left < hi2) {
-        mid = (left + hi2) >> 1;
-        if (compare(arr[base + mid], target) <= 0) left = mid + 1;
-        else hi2 = mid;
-    }
-    gallopK = left;
 }
 if (gallopK == lenA) break;
 loA += gallopK;

@@ -39,18 +39,22 @@ target = keys[arr[loB]];
 base = loA;
 len = lenA;
 if (keys[arr[base]] <= target) {
-    ofs = 1; lastOfs = 0;
-    while (ofs < len && keys[arr[base + ofs]] <= target) {
-        lastOfs = ofs; ofs = (ofs << 1) + 1;
+    if (keys[arr[base + len - 1]] <= target) {
+        gallopK = len;
+    } else {
+        ofs = 1; lastOfs = 0;
+        while (ofs < len && keys[arr[base + ofs]] <= target) {
+            lastOfs = ofs; ofs = (ofs << 1) + 1;
+        }
+        if (ofs > len) ofs = len;
+        left = lastOfs; hi2 = ofs;
+        while (left < hi2) {
+            mid = (left + hi2) >> 1;
+            if (keys[arr[base + mid]] <= target) left = mid + 1;
+            else hi2 = mid;
+        }
+        gallopK = left;
     }
-    if (ofs > len) ofs = len;
-    left = lastOfs; hi2 = ofs;
-    while (left < hi2) {
-        mid = (left + hi2) >> 1;
-        if (keys[arr[base + mid]] <= target) left = mid + 1;
-        else hi2 = mid;
-    }
-    gallopK = left;
 }
 if (gallopK == lenA) break;
 loA += gallopK;
