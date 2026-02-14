@@ -63,7 +63,18 @@ Hypothesis: LHS array index is evaluated BEFORE RHS value
   PASS: T8.7 Pattern B shift 8 elements right
   PASS: T8.8 --copyEnd>=0 batch control (8 elements, 2 rounds)
 
-=== Summary: 41 passed, 0 failed ===
+--- Group 9: Array shift patterns (Pattern C: arr[i]=arr[++i]) ---
+  PASS: T9.1 a[i]=a[++i] single
+  PASS: T9.2 loop left-shift a[i]=a[++i]
+  PASS: T9.3 dual-array shift (runBase/runLen simulation)
+  PASS: T9.4 mid-array shift start=2 len=6
+  PASS: T9.5 single-element shift
+  PASS: T9.6 zero-element shift (no-op)
+  PASS: T9.7 a[i++]=val (order-independent)
+  PASS: T9.8 a[++i]=val (order-independent)
+  PASS: T9.9 a[i]=a[--i] right-shift single (Pattern B, cross-check)
+
+=== Summary: 50 passed, 0 failed ===
 All tests passed! Safe transformations:
   Pattern A: arr[j+1]=arr[j]; j--  -->  arr[j+1]=arr[j--]
   Pattern B: arr[j]=arr[j-1]; j--  -->  arr[j]=arr[--j]

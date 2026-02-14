@@ -226,13 +226,20 @@ class org.flashNight.naki.Sort.TimSort {
             // mergeCollapse: 维护栈不变量
             size = stackSize;
             while (size > 1) {
-                n_idx = size - 2;
+                copyI = size - 1;
+                cb = runLen[copyI];
+                ca = runLen[--copyI];
+                n_idx = copyI;
                 shouldMerge = false;
-                if ((n_idx > 0 && runLen[n_idx - 1] <= runLen[n_idx] + runLen[n_idx + 1])
-                    || (n_idx > 1 && runLen[n_idx - 2] <= runLen[n_idx - 1] + runLen[n_idx])) {
-                    mergeIdx = n_idx - (runLen[n_idx - 1] < runLen[n_idx + 1]);
-                    shouldMerge = true;
-                } else if (runLen[n_idx] <= runLen[n_idx + 1]) {
+                if (copyI > 0) {
+                    copyLen = runLen[--copyI];
+                    if (copyLen <= ca + cb
+                        || (copyI > 0 && runLen[--copyI] <= copyLen + ca)) {
+                        mergeIdx = n_idx - (copyLen < cb);
+                        shouldMerge = true;
+                    }
+                }
+                if (!shouldMerge && ca <= cb) {
                     mergeIdx = n_idx;
                     shouldMerge = true;
                 }
@@ -243,10 +250,11 @@ class org.flashNight.naki.Sort.TimSort {
                 loB = runBase[tempIdx = mergeIdx + 1];
                 lenB = runLen[tempIdx];
                 runLen[mergeIdx] = lenA + lenB;
+                copyI = tempIdx;
                 copyLen = stackSize - 1;
-                for (copyI = tempIdx; copyI < copyLen; copyI++) {
-                    runBase[copyI] = runBase[tempIdx = copyI + 1];
-                    runLen[copyI] = runLen[tempIdx];
+                while (copyI < copyLen) {
+                    runBase[copyI] = runBase[++copyI];
+                    runLen[copyI - 1] = runLen[copyI];
                 }
                 --stackSize;
 
@@ -261,18 +269,21 @@ class org.flashNight.naki.Sort.TimSort {
 
         // forceCollapse: 合并剩余所有run
         while (stackSize > 1) {
-            forceIdx = (stackSize > 2 && runLen[stackSize - 3] < runLen[stackSize - 1])
-                ? stackSize - 3 : stackSize - 2;
+            copyI = stackSize - 1;
+            cb = runLen[copyI];
+            forceIdx = (--copyI > 0 && runLen[copyI - 1] < cb)
+                ? copyI - 1 : copyI;
 
             loA = runBase[forceIdx];
             lenA = runLen[forceIdx];
             loB = runBase[tempIdx = forceIdx + 1];
             lenB = runLen[tempIdx];
             runLen[forceIdx] = lenA + lenB;
+            copyI = tempIdx;
             copyLen = stackSize - 1;
-            for (copyI = tempIdx; copyI < copyLen; copyI++) {
-                runBase[copyI] = runBase[tempIdx = copyI + 1];
-                runLen[copyI] = runLen[tempIdx];
+            while (copyI < copyLen) {
+                runBase[copyI] = runBase[++copyI];
+                runLen[copyI - 1] = runLen[copyI];
             }
             stackSize--;
 
@@ -443,13 +454,20 @@ class org.flashNight.naki.Sort.TimSort {
             // mergeCollapse: 维护栈不变量
             size = stackSize;
             while (size > 1) {
-                n_idx = size - 2;
+                copyI = size - 1;
+                cb = runLen[copyI];
+                ca = runLen[--copyI];
+                n_idx = copyI;
                 shouldMerge = false;
-                if ((n_idx > 0 && runLen[n_idx - 1] <= runLen[n_idx] + runLen[n_idx + 1])
-                    || (n_idx > 1 && runLen[n_idx - 2] <= runLen[n_idx - 1] + runLen[n_idx])) {
-                    mergeIdx = n_idx - (runLen[n_idx - 1] < runLen[n_idx + 1]);
-                    shouldMerge = true;
-                } else if (runLen[n_idx] <= runLen[n_idx + 1]) {
+                if (copyI > 0) {
+                    copyLen = runLen[--copyI];
+                    if (copyLen <= ca + cb
+                        || (copyI > 0 && runLen[--copyI] <= copyLen + ca)) {
+                        mergeIdx = n_idx - (copyLen < cb);
+                        shouldMerge = true;
+                    }
+                }
+                if (!shouldMerge && ca <= cb) {
                     mergeIdx = n_idx;
                     shouldMerge = true;
                 }
@@ -460,10 +478,11 @@ class org.flashNight.naki.Sort.TimSort {
                 loB = runBase[tempIdx = mergeIdx + 1];
                 lenB = runLen[tempIdx];
                 runLen[mergeIdx] = lenA + lenB;
+                copyI = tempIdx;
                 copyLen = stackSize - 1;
-                for (copyI = tempIdx; copyI < copyLen; copyI++) {
-                    runBase[copyI] = runBase[tempIdx = copyI + 1];
-                    runLen[copyI] = runLen[tempIdx];
+                while (copyI < copyLen) {
+                    runBase[copyI] = runBase[++copyI];
+                    runLen[copyI - 1] = runLen[copyI];
                 }
                 --stackSize;
 
@@ -478,18 +497,21 @@ class org.flashNight.naki.Sort.TimSort {
 
         // forceCollapse: 合并剩余所有run
         while (stackSize > 1) {
-            forceIdx = (stackSize > 2 && runLen[stackSize - 3] < runLen[stackSize - 1])
-                ? stackSize - 3 : stackSize - 2;
+            copyI = stackSize - 1;
+            cb = runLen[copyI];
+            forceIdx = (--copyI > 0 && runLen[copyI - 1] < cb)
+                ? copyI - 1 : copyI;
 
             loA = runBase[forceIdx];
             lenA = runLen[forceIdx];
             loB = runBase[tempIdx = forceIdx + 1];
             lenB = runLen[tempIdx];
             runLen[forceIdx] = lenA + lenB;
+            copyI = tempIdx;
             copyLen = stackSize - 1;
-            for (copyI = tempIdx; copyI < copyLen; copyI++) {
-                runBase[copyI] = runBase[tempIdx = copyI + 1];
-                runLen[copyI] = runLen[tempIdx];
+            while (copyI < copyLen) {
+                runBase[copyI] = runBase[++copyI];
+                runLen[copyI - 1] = runLen[copyI];
             }
             stackSize--;
 

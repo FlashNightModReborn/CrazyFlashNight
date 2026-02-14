@@ -57,6 +57,7 @@ class org.flashNight.naki.Sort.EvalOrderTest {
         testGroup6_InsertionSort();
         testGroup7_Exhaustive();
         testGroup8_EdgeCases();
+        testGroup9_ArrayShift();
 
         trace("");
         trace("=== Summary: " + _passed + " passed, " + _failed + " failed ===");
@@ -540,6 +541,153 @@ class org.flashNight.naki.Sort.EvalOrderTest {
         ok("T8.8 --copyEnd>=0 batch control (8 elements, 2 rounds)",
             arrEq(dst, [100, 200, 300, 400, 500, 600, 700, 800]) && d == 8 && p == 8,
             "dst=" + s(dst) + " d=" + d + " p=" + p);
+    }
+
+    // ── Group 9: 数组左移模式 (merge collapse stack shift) ────
+    //
+    // 核心模式 Pattern C: arr[i] = arr[++i]
+    //   LHS-first: LHS index = old_i, then ++i, RHS = arr[old_i+1] → 正确左移
+    //   RHS-first: ++i, RHS = arr[new_i], LHS = arr[new_i] → noop (错误)
+    //
+    // 应用场景: mergeCollapse 栈元素移除后的左移
+    //   原始: for(copyI=start; copyI<end; copyI++) {
+    //            runBase[copyI] = runBase[tempIdx = copyI+1];
+    //            runLen[copyI]  = runLen[tempIdx]; }
+    //   优化: while(copyI < end) {
+    //            runBase[copyI] = runBase[++copyI];
+    //            runLen[copyI-1] = runLen[copyI]; }
+    //
+    // 节省: 每轮省 1 次 SetVariable(tempIdx) + for 头部 copyI++ 换为体内 ++copyI
+
+    private static function testGroup9_ArrayShift():Void {
+        trace("");
+        trace("--- Group 9: Array shift patterns (Pattern C: arr[i]=arr[++i]) ---");
+        var a:Array, b:Array, i:Number;
+        var origA:Array, origB:Array, oi:Number;
+
+        // T9.1: 单次 arr[i] = arr[++i] — LHS-first 鉴别器
+        // LHS-first: a[1] = a[2] = 30, i = 2 ✓
+        // RHS-first: ++i→2, a[2] = a[2] = 30 (noop!), i = 2
+        a = [10, 20, 30, 40, 50]; i = 1;
+        a[i] = a[++i];
+        ok("T9.1 a[i]=a[++i] single",
+            a[1] == 30 && i == 2,
+            "a=" + s(a) + " i=" + i + (a[1] == 30 ? " [LHS-first OK]" : " [RHS-first: NOOP!]"));
+
+        // T9.2: 循环左移 — 基线 vs 合并形式
+        origA = [10, 20, 30, 40, 50];
+        oi = 0;
+        while (oi < 4) { origA[oi] = origA[oi + 1]; oi++; }
+
+        a = [10, 20, 30, 40, 50];
+        i = 0;
+        while (i < 4) { a[i] = a[++i]; }
+
+        ok("T9.2 loop left-shift a[i]=a[++i]",
+            arrEq(a, origA) && i == oi,
+            "orig=" + s(origA) + " merged=" + s(a));
+
+        // T9.3: 双数组共享计数器左移 — 模拟 runBase/runLen 栈移除
+        // 基线
+        origA = [100, 200, 300, 400, 500];
+        origB = [10, 20, 30, 40, 50];
+        oi = 1;
+        while (oi < 4) {
+            origA[oi] = origA[oi + 1];
+            origB[oi] = origB[oi + 1];
+            oi++;
+        }
+
+        // 合并形式: arr1[i]=arr1[++i]; arr2[i-1]=arr2[i];
+        a = [100, 200, 300, 400, 500];
+        b = [10, 20, 30, 40, 50];
+        i = 1;
+        while (i < 4) {
+            a[i] = a[++i];
+            b[i - 1] = b[i];
+        }
+
+        ok("T9.3 dual-array shift (runBase/runLen simulation)",
+            arrEq(a, origA) && arrEq(b, origB) && i == oi,
+            "origA=" + s(origA) + " a=" + s(a) + " origB=" + s(origB) + " b=" + s(b));
+
+        // T9.4: 移除中间元素 — 从 index=2 开始左移，长度=6
+        origA = [0, 1, 2, 3, 4, 5];
+        origB = [10, 11, 12, 13, 14, 15];
+        oi = 2;
+        while (oi < 5) {
+            origA[oi] = origA[oi + 1];
+            origB[oi] = origB[oi + 1];
+            oi++;
+        }
+
+        a = [0, 1, 2, 3, 4, 5];
+        b = [10, 11, 12, 13, 14, 15];
+        i = 2;
+        while (i < 5) {
+            a[i] = a[++i];
+            b[i - 1] = b[i];
+        }
+
+        ok("T9.4 mid-array shift start=2 len=6",
+            arrEq(a, origA) && arrEq(b, origB) && i == oi,
+            "origA=" + s(origA) + " a=" + s(a) + " origB=" + s(origB) + " b=" + s(b));
+
+        // T9.5: 边界 — 只移 1 个元素
+        origA = [100, 200, 300];
+        origB = [10, 20, 30];
+        oi = 1;
+        while (oi < 2) {
+            origA[oi] = origA[oi + 1];
+            origB[oi] = origB[oi + 1];
+            oi++;
+        }
+
+        a = [100, 200, 300];
+        b = [10, 20, 30];
+        i = 1;
+        while (i < 2) {
+            a[i] = a[++i];
+            b[i - 1] = b[i];
+        }
+
+        ok("T9.5 single-element shift",
+            arrEq(a, origA) && arrEq(b, origB) && i == oi,
+            "origA=" + s(origA) + " a=" + s(a));
+
+        // T9.6: 边界 — 0 个元素需要移动 (start >= end)
+        a = [100, 200, 300];
+        b = [10, 20, 30];
+        i = 2;
+        while (i < 2) {
+            a[i] = a[++i];
+            b[i - 1] = b[i];
+        }
+        ok("T9.6 zero-element shift (no-op)",
+            arrEq(a, [100, 200, 300]) && arrEq(b, [10, 20, 30]) && i == 2,
+            "a=" + s(a) + " b=" + s(b) + " i=" + i);
+
+        // T9.7: arr[i++] = val — LHS后置自增，简单RHS (两种求值序结果相同)
+        a = [0, 0, 0, 0, 0]; i = 1;
+        a[i++] = 42;
+        ok("T9.7 a[i++]=val (order-independent)",
+            a[1] == 42 && i == 2,
+            "a=" + s(a) + " i=" + i);
+
+        // T9.8: arr[++i] = val — LHS前置自增，简单RHS (两种求值序结果相同)
+        a = [0, 0, 0, 0, 0]; i = 1;
+        a[++i] = 42;
+        ok("T9.8 a[++i]=val (order-independent)",
+            a[2] == 42 && i == 2,
+            "a=" + s(a) + " i=" + i);
+
+        // T9.9: 反向右移 arr[i] = arr[--i] (已在Group2确认安全)
+        // 与 arr[i] = arr[++i] 对称验证
+        a = [10, 20, 30, 40, 50]; i = 3;
+        a[i] = a[--i];
+        ok("T9.9 a[i]=a[--i] right-shift single (Pattern B, cross-check)",
+            a[3] == 30 && i == 2,
+            "a=" + s(a) + " i=" + i);
     }
 
     // ── 原始插入排序（基准） ─────────────────────────
