@@ -319,16 +319,18 @@ if (lenA <= lenB) {
                     ca = left;
                 }
             }
-            // batch copy ca elements from A (right to left)
-            copyEnd = ca - (ca & 3);
-            for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                arr[copyIdx = d - copyI]     = arr[tempIdx = pa - copyI];
-                arr[copyIdx - 1] = arr[tempIdx - 1];
-                arr[copyIdx - 2] = arr[tempIdx - 2];
-                arr[copyIdx - 3] = arr[tempIdx - 3];
+            // batch copy ca elements from A (P2: --展开)
+            copyEnd = ca >> 2;
+            while (--copyEnd >= 0) {
+                arr[d--] = arr[pa--];
+                arr[d--] = arr[pa--];
+                arr[d--] = arr[pa--];
+                arr[d--] = arr[pa--];
             }
-            for (; copyI < ca; copyI++) { arr[d - copyI] = arr[pa - copyI]; }
-            d -= ca; pa -= ca;
+            copyEnd = ca & 3;
+            while (--copyEnd >= 0) {
+                arr[d--] = arr[pa--];
+            }
             if (pa < ba0) break;
             // copy 1 B trigger element
             arr[d--] = tempArray[pb--];
@@ -358,16 +360,18 @@ if (lenA <= lenB) {
                     cb = left;
                 }
             }
-            // batch copy cb elements from B (right to left)
-            copyEnd = cb - (cb & 3);
-            for (copyI = 0; copyI < copyEnd; copyI += 4) {
-                arr[copyIdx = d - copyI]     = tempArray[tempIdx = pb - copyI];
-                arr[copyIdx - 1] = tempArray[tempIdx - 1];
-                arr[copyIdx - 2] = tempArray[tempIdx - 2];
-                arr[copyIdx - 3] = tempArray[tempIdx - 3];
+            // batch copy cb elements from B (P2: --展开)
+            copyEnd = cb >> 2;
+            while (--copyEnd >= 0) {
+                arr[d--] = tempArray[pb--];
+                arr[d--] = tempArray[pb--];
+                arr[d--] = tempArray[pb--];
+                arr[d--] = tempArray[pb--];
             }
-            for (; copyI < cb; copyI++) { arr[d - copyI] = tempArray[pb - copyI]; }
-            d -= cb; pb -= cb;
+            copyEnd = cb & 3;
+            while (--copyEnd >= 0) {
+                arr[d--] = tempArray[pb--];
+            }
             if (pb < 0) break;
             // copy 1 A trigger element
             arr[d--] = arr[pa--];
