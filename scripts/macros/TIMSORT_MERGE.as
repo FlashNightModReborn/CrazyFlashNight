@@ -92,8 +92,11 @@ if (lenA == 1) {
         if (compare(arr[loB + mid], tmp) < 0) left = mid + 1;
         else hi2 = mid;
     }
-    for (i = 0; i < left; i++) { arr[loA + i] = arr[loB + i]; }
-    arr[loA + left] = tmp;
+    // P2: Pattern C 零偏移左移
+    i = loA;
+    hi2 = loA + left;
+    while (i < hi2) { arr[i] = arr[++i]; }
+    arr[hi2] = tmp;
     break;
 }
 if (lenB == 1) {
@@ -104,8 +107,11 @@ if (lenB == 1) {
         if (compare(arr[loA + mid], tmp) <= 0) left = mid + 1;
         else hi2 = mid;
     }
-    for (j = lenA - 1; j >= left; j--) { arr[loA + j + 1] = arr[loA + j]; }
-    arr[loA + left] = tmp;
+    // P2: Pattern B 零偏移右移
+    j = loA + lenA;
+    left += loA;
+    while (j > left) { arr[j] = arr[--j]; }
+    arr[left] = tmp;
     break;
 }
 
