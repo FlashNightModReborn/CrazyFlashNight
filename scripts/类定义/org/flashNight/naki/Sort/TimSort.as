@@ -18,7 +18,26 @@
  * - 完全消除比较器函数调用开销（keys[X] OP keys[Y] 替代 compare(X,Y)）
  * - keys数组排序期间只读，tempArray存索引值，无需额外tempKeys
  *
- * AS2专项优化保留：循环展开×4、副作用合并、变量提升、静态缓存复用
+ * v3.3 微观优化（架构审阅驱动）：
+ * - P0: Run识别阶段缓存（sort/sortIndirect），消除arr[hi-1]重复读取，
+ *   将逐元素扫描的数组查表量减半
+ * - P1: mergeLo远端O(1)拦截（两个宏文件），补齐与mergeHi对称的
+ *   tempArray[base+len-1]/arr[base+len-1]快速路径，跳过O(log n)二分
+ * - P2: 插入排序移位缓存（5处），tmp=arr[j]消除循环体内重复读取，
+ *   同时消除arr[j+1]=arr[j--]的求值顺序平台依赖
+ * - P3: 静态默认比较器_defaultCmp，避免每次sort()创建闭包
+ * - P4: 删除宏文件中8处if(ofs<=0)ofs=len溢出防护死代码
+ *   （AS2数组上限~16M，ofs翻倍最高~33M，远低于Number溢出阈值）
+ *
+ * AS2/AVM1 平台决策记录（实测验证，勿逆向"优化"）：
+ * - 4路循环展开 + 偏移寻址：批量拷贝用 arr[d+k]...d+=4 而非 arr[d++]×4。
+ *   AVM1中 d++ 编译为 read-dup-increment-store（4条字节码），
+ *   d+k 编译为 push-k-add（3条字节码），每4路展开净省4条指令。
+ *   实测 d++ 版本性能回退已确认，偏移寻址为当前最优模式。
+ * - 隐式布尔转换优于三元：compare(a,b)<=0 返回 Boolean，
+ *   AVM1 的 ActionSubtract 等算术指令内部硬连线 Boolean→Number 快速路径，
+ *   比显式三元 (cond ? 1 : 0) 更快。勿尝试"装箱消除"优化。
+ * - 副作用合并、变量提升、静态缓存复用
  */
 class org.flashNight.naki.Sort.TimSort {
 
@@ -31,6 +50,9 @@ class org.flashNight.naki.Sort.TimSort {
 
     // 重入保护
     private static var _inUse:Boolean = false;
+
+    // 默认数值比较器 - 静态方法引用，避免每次sort()创建闭包
+    private static function _defaultCmp(a, b):Number { return a - b; }
 
     // ==============================================================
     //  resetState() - 安全阀：异常后重置_inUse标记
@@ -84,8 +106,11 @@ class org.flashNight.naki.Sort.TimSort {
                     if (compare(arr[i - 1], key) <= 0) continue;
                     if (i <= 4) {
                         j = i - 1;
-                        while (j >= 0 && compare(arr[j], key) > 0) {
-                            arr[j + 1] = arr[j--];
+                        while (j >= 0) {
+                            tmp = arr[j];
+                            if (compare(tmp, key) <= 0) break;
+                            arr[j + 1] = tmp;
+                            j--;
                         }
                         arr[j + 1] = key;
                     } else {
@@ -107,8 +132,11 @@ class org.flashNight.naki.Sort.TimSort {
                     if (arr[i - 1] <= key) continue;
                     if (i <= 4) {
                         j = i - 1;
-                        while (j >= 0 && arr[j] > key) {
-                            arr[j + 1] = arr[j--];
+                        while (j >= 0) {
+                            tmp = arr[j];
+                            if (tmp <= key) break;
+                            arr[j + 1] = tmp;
+                            j--;
                         }
                         arr[j + 1] = key;
                     } else {
@@ -128,15 +156,13 @@ class org.flashNight.naki.Sort.TimSort {
         }
 
         // compare闭包仅在完整TimSort路径创建（小数组路径已返回）
-        compare = (compareFunction == null)
-            ? function(a, b):Number { return a - b; }
-            : compareFunction;
+        compare = (compareFunction == null) ? _defaultCmp : compareFunction;
 
         // P2: 重入保护
         if (_inUse) {
             trace("[TimSort] Warning: reentrant call detected, falling back to Array.sort()");
             if (compareFunction != null) arr.sort(compareFunction);
-            else arr.sort(function(a, b) { return a - b; });
+            else arr.sort(_defaultCmp);
             return arr;
         }
         _inUse = true;
@@ -177,16 +203,29 @@ class org.flashNight.naki.Sort.TimSort {
             if (hi >= n) {
                 runLength = 1;
             } else {
-                if (compare(arr[lo], arr[hi]) > 0) {
+                // P0: 缓存arr[hi]，避免下一轮重复读取arr[hi-1]
+                tmp = arr[hi];
+                if (compare(arr[lo], tmp) > 0) {
                     hi++;
-                    while (hi < n && compare(arr[hi - 1], arr[hi]) > 0) hi++;
+                    while (hi < n) {
+                        aVal = arr[hi];
+                        if (compare(tmp, aVal) <= 0) break;
+                        hi++;
+                        tmp = aVal;
+                    }
                     // 反转下降run
                     revLo = lo; revHi = hi - 1;
                     while (revLo < revHi) {
                         tmp = arr[revLo]; arr[revLo++] = arr[revHi]; arr[revHi--] = tmp;
                     }
                 } else {
-                    while (hi < n && compare(arr[hi - 1], arr[hi]) <= 0) hi++;
+                    hi++;
+                    while (hi < n) {
+                        aVal = arr[hi];
+                        if (compare(tmp, aVal) > 0) break;
+                        hi++;
+                        tmp = aVal;
+                    }
                 }
                 runLength = hi - lo;
             }
@@ -200,8 +239,11 @@ class org.flashNight.naki.Sort.TimSort {
                     j = i - 1;
                     if (compare(arr[i - 1], key) <= 0) continue;
                     if ((i - lo) <= 4) {
-                        while (j >= lo && compare(arr[j], key) > 0) {
-                            arr[j + 1] = arr[j--];
+                        while (j >= lo) {
+                            tmp = arr[j];
+                            if (compare(tmp, key) <= 0) break;
+                            arr[j + 1] = tmp;
+                            j--;
                         }
                         arr[j + 1] = key;
                         continue;
@@ -322,7 +364,7 @@ class org.flashNight.naki.Sort.TimSort {
         var ofs:Number, lastOfs:Number, left:Number, hi2:Number, mid:Number;
         var pa:Number, pb:Number, d:Number, ea:Number, eb:Number;
         var ca:Number, cb:Number, ba0:Number;
-        var keyA:Number, keyB:Number;
+        var keyA:Number, keyB:Number, aVal:Number, bVal:Number;
         var copyLen:Number, copyI:Number, copyIdx:Number, copyEnd:Number, tempIdx:Number;
 
         // 初始化
@@ -341,8 +383,11 @@ class org.flashNight.naki.Sort.TimSort {
                 if (keys[arr[i - 1]] <= keyVal) continue;
                 if (i <= 4) {
                     j = i - 1;
-                    while (j >= 0 && keys[arr[j]] > keyVal) {
-                        arr[j + 1] = arr[j--];
+                    while (j >= 0) {
+                        tmp = arr[j];
+                        if (keys[tmp] <= keyVal) break;
+                        arr[j + 1] = tmp;
+                        j--;
                     }
                     arr[j + 1] = key;
                 } else {
@@ -404,16 +449,32 @@ class org.flashNight.naki.Sort.TimSort {
             if (hi >= n) {
                 runLength = 1;
             } else {
-                if (keys[arr[lo]] > keys[arr[hi]]) {
+                // P0: 双重解引用缓存，每次循环省2次数组查表
+                keyA = keys[arr[lo]];
+                keyB = keys[arr[hi]];
+                if (keyA > keyB) {
                     hi++;
-                    while (hi < n && keys[arr[hi - 1]] > keys[arr[hi]]) hi++;
+                    keyA = keyB;
+                    while (hi < n) {
+                        keyB = keys[arr[hi]];
+                        if (keyA <= keyB) break;
+                        hi++;
+                        keyA = keyB;
+                    }
                     // 反转下降run
                     revLo = lo; revHi = hi - 1;
                     while (revLo < revHi) {
                         tmp = arr[revLo]; arr[revLo++] = arr[revHi]; arr[revHi--] = tmp;
                     }
                 } else {
-                    while (hi < n && keys[arr[hi - 1]] <= keys[arr[hi]]) hi++;
+                    hi++;
+                    keyA = keyB;
+                    while (hi < n) {
+                        keyB = keys[arr[hi]];
+                        if (keyA > keyB) break;
+                        hi++;
+                        keyA = keyB;
+                    }
                 }
                 runLength = hi - lo;
             }
@@ -428,8 +489,11 @@ class org.flashNight.naki.Sort.TimSort {
                     j = i - 1;
                     if (keys[arr[i - 1]] <= keyVal) continue;
                     if ((i - lo) <= 4) {
-                        while (j >= lo && keys[arr[j]] > keyVal) {
-                            arr[j + 1] = arr[j--];
+                        while (j >= lo) {
+                            tmp = arr[j];
+                            if (keys[tmp] <= keyVal) break;
+                            arr[j + 1] = tmp;
+                            j--;
                         }
                         arr[j + 1] = key;
                         continue;

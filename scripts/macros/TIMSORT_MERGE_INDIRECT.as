@@ -9,6 +9,17 @@
  * 关键洞察：keys 数组在排序期间只读，tempArray 存储的是索引值，
  * 因此 keys[tempArray[pos]] 正确访问原始键值，无需额外 tempKeys。
  *
+ * v3.3 优化：
+ * - P1: mergeLo A-gallop/B-gallop远端O(1)拦截，补齐与mergeHi对称的
+ *   keys[tempArray[base+len-1]]/keys[arr[base+len-1]]快速路径
+ * - P4: 删除所有6处if(ofs<=0)ofs=len溢出防护死代码
+ *
+ * 批量拷贝策略（4路偏移寻址展开）：
+ *   所有批量拷贝使用 arr[d+k]...d+=4 而非 arr[d++]×4。
+ *   AVM1中 d++ = read-dup-increment-store（4条字节码），
+ *   d+k = push-k-add（3条字节码），每4路展开净省4条指令。
+ *   实测确认 d++ 版本性能回退。尾部余量(len&3)仍用 d++ 因仅执行0-3次。
+ *
  * 前置条件（调用方需在 #include 前设置）:
  *   loA, lenA - A run 的起始位置和长度
  *   loB, lenB - B run 的起始位置和长度
@@ -31,7 +42,6 @@ if (keys[arr[base]] <= target) {
     ofs = 1; lastOfs = 0;
     while (ofs < len && keys[arr[base + ofs]] <= target) {
         lastOfs = ofs; ofs = (ofs << 1) + 1;
-        if (ofs <= 0) ofs = len;
     }
     if (ofs > len) ofs = len;
     left = lastOfs; hi2 = ofs;
@@ -59,7 +69,6 @@ if (keys[arr[base + len - 1]] < target) {
     ofs = 1; lastOfs = 0;
     while (ofs < len && keys[arr[base + len - 1 - ofs]] >= target) {
         lastOfs = ofs; ofs = (ofs << 1) + 1;
-        if (ofs <= 0) ofs = len;
     }
     if (ofs > len) ofs = len;
     left = lastOfs; hi2 = ofs;
@@ -114,15 +123,17 @@ if (lenA <= lenB) {
     // ============ mergeLo: 复制A到tempArray，从左到右合并 ============
     pa = 0; pb = loB; d = loA; ea = lenA; eb = loB + lenB;
 
-    // 复制A到临时数组（P2: ++展开）
+    // 复制A到临时数组（4路偏移寻址展开）
     copyI = 0;
     copyIdx = loA;
     copyEnd = lenA >> 2;
     while (--copyEnd >= 0) {
-        tempArray[copyI++] = arr[copyIdx++];
-        tempArray[copyI++] = arr[copyIdx++];
-        tempArray[copyI++] = arr[copyIdx++];
-        tempArray[copyI++] = arr[copyIdx++];
+        tempArray[copyI]     = arr[copyIdx];
+        tempArray[copyI + 1] = arr[copyIdx + 1];
+        tempArray[copyI + 2] = arr[copyIdx + 2];
+        tempArray[copyI + 3] = arr[copyIdx + 3];
+        copyI += 4;
+        copyIdx += 4;
     }
     copyEnd = lenA & 3;
     while (--copyEnd >= 0) {
@@ -135,21 +146,23 @@ if (lenA <= lenB) {
 
     // === P0: 标准双阶段合并 ===
     do {
-        // Phase 1: one-at-a-time (P1: keyA/keyB缓存，消除败者侧重复键查找)
+        // Phase 1: one-at-a-time (P1: aVal/bVal+keyA/keyB双缓存，消除re-read)
         ca = 0; cb = 0;
-        keyA = keys[tempArray[pa]];
-        keyB = keys[arr[pb]];
+        aVal = tempArray[pa];
+        keyA = keys[aVal];
+        bVal = arr[pb];
+        keyB = keys[bVal];
         do {
             if (keyA <= keyB) {
-                arr[d++] = tempArray[pa];
+                arr[d++] = aVal;
                 if (++pa >= ea) break;
-                keyA = keys[tempArray[pa]];
+                keyA = keys[aVal = tempArray[pa]];
                 ca++; cb = 0;
                 if (ca >= minGallop) break;
             } else {
-                arr[d++] = arr[pb];
+                arr[d++] = bVal;
                 if (++pb >= eb) break;
-                keyB = keys[arr[pb]];
+                keyB = keys[bVal = arr[pb]];
                 cb++; ca = 0;
                 if (cb >= minGallop) break;
             }
@@ -163,27 +176,32 @@ if (lenA <= lenB) {
             base = pa; len = ea - pa;
             ca = 0;
             if (keys[tempArray[base]] <= target) {
-                ofs = 1; lastOfs = 0;
-                while (ofs < len && keys[tempArray[base + ofs]] <= target) {
-                    lastOfs = ofs; ofs = (ofs << 1) + 1;
-                    if (ofs <= 0) ofs = len;
+                if (keys[tempArray[base + len - 1]] <= target) {
+                    ca = len;
+                } else {
+                    ofs = 1; lastOfs = 0;
+                    while (ofs < len && keys[tempArray[base + ofs]] <= target) {
+                        lastOfs = ofs; ofs = (ofs << 1) + 1;
+                    }
+                    if (ofs > len) ofs = len;
+                    left = lastOfs; hi2 = ofs;
+                    while (left < hi2) {
+                        mid = (left + hi2) >> 1;
+                        if (keys[tempArray[base + mid]] <= target) left = mid + 1;
+                        else hi2 = mid;
+                    }
+                    ca = left;
                 }
-                if (ofs > len) ofs = len;
-                left = lastOfs; hi2 = ofs;
-                while (left < hi2) {
-                    mid = (left + hi2) >> 1;
-                    if (keys[tempArray[base + mid]] <= target) left = mid + 1;
-                    else hi2 = mid;
-                }
-                ca = left;
             }
-            // batch copy ca elements from A (P2: ++展开)
+            // batch copy ca elements from A （4路偏移寻址展开）
             copyEnd = ca >> 2;
             while (--copyEnd >= 0) {
-                arr[d++] = tempArray[pa++];
-                arr[d++] = tempArray[pa++];
-                arr[d++] = tempArray[pa++];
-                arr[d++] = tempArray[pa++];
+                arr[d]     = tempArray[pa];
+                arr[d + 1] = tempArray[pa + 1];
+                arr[d + 2] = tempArray[pa + 2];
+                arr[d + 3] = tempArray[pa + 3];
+                d += 4;
+                pa += 4;
             }
             copyEnd = ca & 3;
             while (--copyEnd >= 0) {
@@ -199,27 +217,32 @@ if (lenA <= lenB) {
             base = pb; len = eb - pb;
             cb = 0;
             if (keys[arr[base]] < target) {
-                ofs = 1; lastOfs = 0;
-                while (ofs < len && keys[arr[base + ofs]] < target) {
-                    lastOfs = ofs; ofs = (ofs << 1) + 1;
-                    if (ofs <= 0) ofs = len;
+                if (keys[arr[base + len - 1]] < target) {
+                    cb = len;
+                } else {
+                    ofs = 1; lastOfs = 0;
+                    while (ofs < len && keys[arr[base + ofs]] < target) {
+                        lastOfs = ofs; ofs = (ofs << 1) + 1;
+                    }
+                    if (ofs > len) ofs = len;
+                    left = lastOfs; hi2 = ofs;
+                    while (left < hi2) {
+                        mid = (left + hi2) >> 1;
+                        if (keys[arr[base + mid]] < target) left = mid + 1;
+                        else hi2 = mid;
+                    }
+                    cb = left;
                 }
-                if (ofs > len) ofs = len;
-                left = lastOfs; hi2 = ofs;
-                while (left < hi2) {
-                    mid = (left + hi2) >> 1;
-                    if (keys[arr[base + mid]] < target) left = mid + 1;
-                    else hi2 = mid;
-                }
-                cb = left;
             }
-            // batch copy cb elements from B (P2: ++展开)
+            // batch copy cb elements from B （4路偏移寻址展开）
             copyEnd = cb >> 2;
             while (--copyEnd >= 0) {
-                arr[d++] = arr[pb++];
-                arr[d++] = arr[pb++];
-                arr[d++] = arr[pb++];
-                arr[d++] = arr[pb++];
+                arr[d]     = arr[pb];
+                arr[d + 1] = arr[pb + 1];
+                arr[d + 2] = arr[pb + 2];
+                arr[d + 3] = arr[pb + 3];
+                d += 4;
+                pb += 4;
             }
             copyEnd = cb & 3;
             while (--copyEnd >= 0) {
@@ -238,30 +261,37 @@ if (lenA <= lenB) {
         minGallop += 2; // penalty for leaving gallop mode
     } while (pa < ea && pb < eb);
 
-    // remainder: copy leftover A
+    // remainder: copy leftover A （4路偏移寻址展开）
     copyLen = ea - pa;
-    copyEnd = copyLen - (copyLen & 3);
-    for (copyI = 0; copyI < copyEnd; copyI += 4) {
-        arr[tempIdx = d + copyI] = tempArray[copyIdx = pa + copyI];
-        arr[tempIdx + 1] = tempArray[copyIdx + 1];
-        arr[tempIdx + 2] = tempArray[copyIdx + 2];
-        arr[tempIdx + 3] = tempArray[copyIdx + 3];
+    copyEnd = copyLen >> 2;
+    while (--copyEnd >= 0) {
+        arr[d]     = tempArray[pa];
+        arr[d + 1] = tempArray[pa + 1];
+        arr[d + 2] = tempArray[pa + 2];
+        arr[d + 3] = tempArray[pa + 3];
+        d += 4;
+        pa += 4;
     }
-    for (; copyI < copyLen; copyI++) { arr[d + copyI] = tempArray[pa + copyI]; }
+    copyEnd = copyLen & 3;
+    while (--copyEnd >= 0) {
+        arr[d++] = tempArray[pa++];
+    }
 
 } else {
     // ============ mergeHi: 复制B到tempArray，从右到左合并 ============
     pa = loA + lenA - 1; pb = lenB - 1; d = loB + lenB - 1; ba0 = loA;
 
-    // 复制B到临时数组（P2: ++展开）
+    // 复制B到临时数组（4路偏移寻址展开）
     copyI = 0;
     copyIdx = loB;
     copyEnd = lenB >> 2;
     while (--copyEnd >= 0) {
-        tempArray[copyI++] = arr[copyIdx++];
-        tempArray[copyI++] = arr[copyIdx++];
-        tempArray[copyI++] = arr[copyIdx++];
-        tempArray[copyI++] = arr[copyIdx++];
+        tempArray[copyI]     = arr[copyIdx];
+        tempArray[copyI + 1] = arr[copyIdx + 1];
+        tempArray[copyI + 2] = arr[copyIdx + 2];
+        tempArray[copyI + 3] = arr[copyIdx + 3];
+        copyI += 4;
+        copyIdx += 4;
     }
     copyEnd = lenB & 3;
     while (--copyEnd >= 0) {
@@ -274,21 +304,23 @@ if (lenA <= lenB) {
 
     // === P0: 标准双阶段合并（反向） ===
     do {
-        // Phase 1: one-at-a-time (right to left, P1: keyA/keyB缓存)
+        // Phase 1: one-at-a-time (right to left, P1: aVal/bVal+keyA/keyB双缓存)
         ca = 0; cb = 0;
-        keyA = keys[arr[pa]];
-        keyB = keys[tempArray[pb]];
+        aVal = arr[pa];
+        keyA = keys[aVal];
+        bVal = tempArray[pb];
+        keyB = keys[bVal];
         do {
             if (keyA > keyB) {
-                arr[d--] = arr[pa];
+                arr[d--] = aVal;
                 if (--pa < ba0) break;
-                keyA = keys[arr[pa]];
+                keyA = keys[aVal = arr[pa]];
                 ca++; cb = 0;
                 if (ca >= minGallop) break;
             } else {
-                arr[d--] = tempArray[pb];
+                arr[d--] = bVal;
                 if (--pb < 0) break;
-                keyB = keys[tempArray[pb]];
+                keyB = keys[bVal = tempArray[pb]];
                 cb++; ca = 0;
                 if (cb >= minGallop) break;
             }
@@ -308,7 +340,6 @@ if (lenA <= lenB) {
                     ofs = 1; lastOfs = 0;
                     while (ofs < len && keys[arr[pa - ofs]] > target) {
                         lastOfs = ofs; ofs = (ofs << 1) + 1;
-                        if (ofs <= 0) ofs = len;
                     }
                     if (ofs > len) ofs = len;
                     left = lastOfs; hi2 = ofs;
@@ -320,13 +351,15 @@ if (lenA <= lenB) {
                     ca = left;
                 }
             }
-            // batch copy ca elements from A (P2: --展开)
+            // batch copy ca elements from A （4路偏移寻址展开，反向）
             copyEnd = ca >> 2;
             while (--copyEnd >= 0) {
-                arr[d--] = arr[pa--];
-                arr[d--] = arr[pa--];
-                arr[d--] = arr[pa--];
-                arr[d--] = arr[pa--];
+                arr[d]     = arr[pa];
+                arr[d - 1] = arr[pa - 1];
+                arr[d - 2] = arr[pa - 2];
+                arr[d - 3] = arr[pa - 3];
+                d -= 4;
+                pa -= 4;
             }
             copyEnd = ca & 3;
             while (--copyEnd >= 0) {
@@ -349,7 +382,6 @@ if (lenA <= lenB) {
                     ofs = 1; lastOfs = 0;
                     while (ofs < len && keys[tempArray[pb - ofs]] >= target) {
                         lastOfs = ofs; ofs = (ofs << 1) + 1;
-                        if (ofs <= 0) ofs = len;
                     }
                     if (ofs > len) ofs = len;
                     left = lastOfs; hi2 = ofs;
@@ -361,13 +393,15 @@ if (lenA <= lenB) {
                     cb = left;
                 }
             }
-            // batch copy cb elements from B (P2: --展开)
+            // batch copy cb elements from B （4路偏移寻址展开，反向）
             copyEnd = cb >> 2;
             while (--copyEnd >= 0) {
-                arr[d--] = tempArray[pb--];
-                arr[d--] = tempArray[pb--];
-                arr[d--] = tempArray[pb--];
-                arr[d--] = tempArray[pb--];
+                arr[d]     = tempArray[pb];
+                arr[d - 1] = tempArray[pb - 1];
+                arr[d - 2] = tempArray[pb - 2];
+                arr[d - 3] = tempArray[pb - 3];
+                d -= 4;
+                pb -= 4;
             }
             copyEnd = cb & 3;
             while (--copyEnd >= 0) {
@@ -386,16 +420,21 @@ if (lenA <= lenB) {
         minGallop += 2;
     } while (pa >= ba0 && pb >= 0);
 
-    // remainder: copy leftover B
+    // remainder: copy leftover B （4路偏移寻址展开，反向）
     copyLen = pb + 1;
-    copyEnd = copyLen - (copyLen & 3);
-    for (copyI = 0; copyI < copyEnd; copyI += 4) {
-        arr[copyIdx = d - copyI]     = tempArray[tempIdx = pb - copyI];
-        arr[copyIdx - 1] = tempArray[tempIdx - 1];
-        arr[copyIdx - 2] = tempArray[tempIdx - 2];
-        arr[copyIdx - 3] = tempArray[tempIdx - 3];
+    copyEnd = copyLen >> 2;
+    while (--copyEnd >= 0) {
+        arr[d]     = tempArray[pb];
+        arr[d - 1] = tempArray[pb - 1];
+        arr[d - 2] = tempArray[pb - 2];
+        arr[d - 3] = tempArray[pb - 3];
+        d -= 4;
+        pb -= 4;
     }
-    for (; copyI < copyLen; copyI++) { arr[d - copyI] = tempArray[pb - copyI]; }
+    copyEnd = copyLen & 3;
+    while (--copyEnd >= 0) {
+        arr[d--] = tempArray[pb--];
+    }
 }
 
 // final clamp
