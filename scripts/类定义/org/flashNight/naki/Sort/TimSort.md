@@ -21,7 +21,7 @@ PASS: 三元素数组测试（完全逆序）
 === TimSort 核心特性测试 ===
 PASS: Galloping Mode 激活测试
 PASS: Galloping Mode 效率测试
-    Galloping效率测试耗时: 0ms
+    Galloping效率测试耗时: 1ms
 PASS: Galloping Mode 自适应阈值测试
 PASS: 自然run检测测试
 PASS: 降序run反转优化测试
@@ -54,7 +54,7 @@ PASS: 最大栈深度测试
 
 === 实际应用场景测试 ===
 PASS: 部分有序数据测试
-    部分有序数据排序耗时: 0ms
+    部分有序数据排序耗时: 1ms
 PASS: 交替模式测试
 PASS: 钢琴键模式测试
 PASS: 大量重复值测试
@@ -73,7 +73,7 @@ PASS: MIN_RUN边界测试 (length=64)
 PASS: MIN_RUN边界测试 (length=65)
 PASS: Gallop阈值边界测试
 PASS: 大数组压力测试
-    大数组压力测试 (size=50000) 耗时: 771ms
+    大数组压力测试 (size=50000) 耗时: 826ms
 PASS: 深度递归避免测试
 PASS: 内存效率测试
     内存效率测试耗时: 1ms
@@ -85,35 +85,35 @@ PASS: 内存效率测试
     random: 14ms
     sorted: 1ms
     reverse: 1ms
-    partiallyOrdered: 13ms
+    partiallyOrdered: 10ms
     manyDuplicates: 11ms
     pianoKeys: 4ms
-    organPipe: 3ms
-    mergeStress: 4ms
+    organPipe: 2ms
+    mergeStress: 3ms
     gallopFriendly: 1ms
-    gallopUnfriendly: 3ms
+    gallopUnfriendly: 2ms
   测试数组大小: 5000
-    random: 90ms
-    sorted: 7ms
-    reverse: 7ms
-    partiallyOrdered: 63ms
-    manyDuplicates: 70ms
-    pianoKeys: 20ms
+    random: 85ms
+    sorted: 6ms
+    reverse: 8ms
+    partiallyOrdered: 85ms
+    manyDuplicates: 64ms
+    pianoKeys: 21ms
     organPipe: 16ms
-    mergeStress: 24ms
-    gallopFriendly: 6ms
+    mergeStress: 25ms
+    gallopFriendly: 8ms
     gallopUnfriendly: 13ms
   测试数组大小: 10000
-    random: 195ms
-    sorted: 12ms
-    reverse: 15ms
-    partiallyOrdered: 120ms
-    manyDuplicates: 145ms
-    pianoKeys: 37ms
-    organPipe: 31ms
-    mergeStress: 52ms
-    gallopFriendly: 15ms
-    gallopUnfriendly: 29ms
+    random: 201ms
+    sorted: 11ms
+    reverse: 16ms
+    partiallyOrdered: 131ms
+    manyDuplicates: 141ms
+    pianoKeys: 39ms
+    organPipe: 28ms
+    mergeStress: 48ms
+    gallopFriendly: 14ms
+    gallopUnfriendly: 26ms
 增强版性能测试完成
 
 === sortIndirect 正确性与稳定性测试 ===
@@ -126,29 +126,29 @@ PASS: sortIndirect 与 sort 结果一致 (4 sizes)
 === sortIndirect vs sort 性能对比 ===
 sort vs sortIndirect 性能对比（3次取中位数）...
   数组大小: 1000
-    random: sort=18ms  indirect=13ms  提升=28%
-    sorted: sort=2ms  indirect=1ms  提升=50%
-    reverse: sort=2ms  indirect=1ms  提升=50%
-    partiallyOrdered: sort=12ms  indirect=8ms  提升=33%
-    manyDuplicates: sort=15ms  indirect=8ms  提升=47%
-    gallopFriendly: sort=2ms  indirect=1ms  提升=50%
+    random: sort=18ms  indirect=10ms  提升=44%
+    sorted: sort=1ms  indirect=1ms  提升=0%
+    reverse: sort=1ms  indirect=1ms  提升=0%
+    partiallyOrdered: sort=14ms  indirect=8ms  提升=43%
+    manyDuplicates: sort=17ms  indirect=10ms  提升=41%
+    gallopFriendly: sort=3ms  indirect=1ms  提升=67%
     gallopUnfriendly: sort=4ms  indirect=2ms  提升=50%
   数组大小: 5000
-    random: sort=131ms  indirect=81ms  提升=38%
+    random: sort=127ms  indirect=70ms  提升=45%
     sorted: sort=8ms  indirect=4ms  提升=50%
-    reverse: sort=10ms  indirect=6ms  提升=40%
-    partiallyOrdered: sort=84ms  indirect=54ms  提升=36%
-    manyDuplicates: sort=96ms  indirect=61ms  提升=36%
-    gallopFriendly: sort=10ms  indirect=6ms  提升=40%
-    gallopUnfriendly: sort=20ms  indirect=12ms  提升=40%
+    reverse: sort=10ms  indirect=5ms  提升=50%
+    partiallyOrdered: sort=83ms  indirect=52ms  提升=37%
+    manyDuplicates: sort=106ms  indirect=64ms  提升=40%
+    gallopFriendly: sort=13ms  indirect=7ms  提升=46%
+    gallopUnfriendly: sort=23ms  indirect=12ms  提升=48%
   数组大小: 10000
-    random: sort=298ms  indirect=182ms  提升=39%
+    random: sort=288ms  indirect=158ms  提升=45%
     sorted: sort=16ms  indirect=8ms  提升=50%
-    reverse: sort=19ms  indirect=12ms  提升=37%
-    partiallyOrdered: sort=178ms  indirect=112ms  提升=37%
-    manyDuplicates: sort=199ms  indirect=124ms  提升=38%
+    reverse: sort=19ms  indirect=13ms  提升=32%
+    partiallyOrdered: sort=178ms  indirect=109ms  提升=39%
+    manyDuplicates: sort=204ms  indirect=124ms  提升=39%
     gallopFriendly: sort=20ms  indirect=12ms  提升=40%
-    gallopUnfriendly: sort=41ms  indirect=24ms  提升=41%
+    gallopUnfriendly: sort=39ms  indirect=21ms  提升=46%
 sort vs sortIndirect 性能对比完成
 
 All Enhanced TimSort Tests Completed.

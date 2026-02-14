@@ -129,19 +129,25 @@ if (lenA <= lenB) {
 
     // === P0: 标准双阶段合并 ===
     do {
-        // Phase 1: one-at-a-time
+        // Phase 1: one-at-a-time (P1: aVal/bVal缓存，消除败者侧重复查找)
         ca = 0; cb = 0;
+        aVal = tempArray[pa];
+        bVal = arr[pb];
         do {
-            if (compare(tempArray[pa], arr[pb]) <= 0) {
-                arr[d++] = tempArray[pa++];
+            if (compare(aVal, bVal) <= 0) {
+                arr[d++] = aVal;
+                if (++pa >= ea) break;
+                aVal = tempArray[pa];
                 ca++; cb = 0;
                 if (ca >= minGallop) break;
             } else {
-                arr[d++] = arr[pb++];
+                arr[d++] = bVal;
+                if (++pb >= eb) break;
+                bVal = arr[pb];
                 cb++; ca = 0;
                 if (cb >= minGallop) break;
             }
-        } while (pa < ea && pb < eb);
+        } while (true);
         if (pa >= ea || pb >= eb) break;
 
         // Phase 2: galloping (do-while)
@@ -253,19 +259,25 @@ if (lenA <= lenB) {
 
     // === P0: 标准双阶段合并（反向） ===
     do {
-        // Phase 1: one-at-a-time (right to left)
+        // Phase 1: one-at-a-time (right to left, P1: aVal/bVal缓存)
         ca = 0; cb = 0;
+        aVal = arr[pa];
+        bVal = tempArray[pb];
         do {
-            if (compare(arr[pa], tempArray[pb]) > 0) {
-                arr[d--] = arr[pa--];
+            if (compare(aVal, bVal) > 0) {
+                arr[d--] = aVal;
+                if (--pa < ba0) break;
+                aVal = arr[pa];
                 ca++; cb = 0;
                 if (ca >= minGallop) break;
             } else {
-                arr[d--] = tempArray[pb--];
+                arr[d--] = bVal;
+                if (--pb < 0) break;
+                bVal = tempArray[pb];
                 cb++; ca = 0;
                 if (cb >= minGallop) break;
             }
-        } while (pa >= ba0 && pb >= 0);
+        } while (true);
         if (pa < ba0 || pb < 0) break;
 
         // Phase 2: galloping (do-while, right to left)

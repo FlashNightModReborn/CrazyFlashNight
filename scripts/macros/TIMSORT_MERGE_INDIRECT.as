@@ -130,19 +130,25 @@ if (lenA <= lenB) {
 
     // === P0: 标准双阶段合并 ===
     do {
-        // Phase 1: one-at-a-time
+        // Phase 1: one-at-a-time (P1: keyA/keyB缓存，消除败者侧重复键查找)
         ca = 0; cb = 0;
+        keyA = keys[tempArray[pa]];
+        keyB = keys[arr[pb]];
         do {
-            if (keys[tempArray[pa]] <= keys[arr[pb]]) {
-                arr[d++] = tempArray[pa++];
+            if (keyA <= keyB) {
+                arr[d++] = tempArray[pa];
+                if (++pa >= ea) break;
+                keyA = keys[tempArray[pa]];
                 ca++; cb = 0;
                 if (ca >= minGallop) break;
             } else {
-                arr[d++] = arr[pb++];
+                arr[d++] = arr[pb];
+                if (++pb >= eb) break;
+                keyB = keys[arr[pb]];
                 cb++; ca = 0;
                 if (cb >= minGallop) break;
             }
-        } while (pa < ea && pb < eb);
+        } while (true);
         if (pa >= ea || pb >= eb) break;
 
         // Phase 2: galloping (do-while)
@@ -254,19 +260,25 @@ if (lenA <= lenB) {
 
     // === P0: 标准双阶段合并（反向） ===
     do {
-        // Phase 1: one-at-a-time (right to left)
+        // Phase 1: one-at-a-time (right to left, P1: keyA/keyB缓存)
         ca = 0; cb = 0;
+        keyA = keys[arr[pa]];
+        keyB = keys[tempArray[pb]];
         do {
-            if (keys[arr[pa]] > keys[tempArray[pb]]) {
-                arr[d--] = arr[pa--];
+            if (keyA > keyB) {
+                arr[d--] = arr[pa];
+                if (--pa < ba0) break;
+                keyA = keys[arr[pa]];
                 ca++; cb = 0;
                 if (ca >= minGallop) break;
             } else {
-                arr[d--] = tempArray[pb--];
+                arr[d--] = tempArray[pb];
+                if (--pb < 0) break;
+                keyB = keys[tempArray[pb]];
                 cb++; ca = 0;
                 if (cb >= minGallop) break;
             }
-        } while (pa >= ba0 && pb >= 0);
+        } while (true);
         if (pa < ba0 || pb < 0) break;
 
         // Phase 2: galloping (do-while, right to left)

@@ -64,6 +64,7 @@ class org.flashNight.naki.Sort.TimSort {
         var ofs:Number, lastOfs:Number, left:Number, hi2:Number, mid:Number;
         var pa:Number, pb:Number, d:Number, ea:Number, eb:Number;
         var ca:Number, cb:Number, ba0:Number;
+        var aVal:Object, bVal:Object;
         var copyLen:Number, copyI:Number, copyIdx:Number, copyEnd:Number, tempIdx:Number;
 
         // 初始化
@@ -84,7 +85,7 @@ class org.flashNight.naki.Sort.TimSort {
                     if (i <= 4) {
                         j = i - 1;
                         while (j >= 0 && compare(arr[j], key) > 0) {
-                            arr[j + 1] = arr[j]; j--;
+                            arr[j + 1] = arr[j--];
                         }
                         arr[j + 1] = key;
                     } else {
@@ -95,7 +96,7 @@ class org.flashNight.naki.Sort.TimSort {
                             else hi2 = mid;
                         }
                         j = i;
-                        while (j > left) { arr[j] = arr[j - 1]; j--; }
+                        while (j > left) { arr[j] = arr[--j]; }
                         arr[left] = key;
                     }
                 }
@@ -107,7 +108,7 @@ class org.flashNight.naki.Sort.TimSort {
                     if (i <= 4) {
                         j = i - 1;
                         while (j >= 0 && arr[j] > key) {
-                            arr[j + 1] = arr[j]; j--;
+                            arr[j + 1] = arr[j--];
                         }
                         arr[j + 1] = key;
                     } else {
@@ -118,7 +119,7 @@ class org.flashNight.naki.Sort.TimSort {
                             else hi2 = mid;
                         }
                         j = i;
-                        while (j > left) { arr[j] = arr[j - 1]; j--; }
+                        while (j > left) { arr[j] = arr[--j]; }
                         arr[left] = key;
                     }
                 }
@@ -200,7 +201,7 @@ class org.flashNight.naki.Sort.TimSort {
                     if (compare(arr[i - 1], key) <= 0) continue;
                     if ((i - lo) <= 4) {
                         while (j >= lo && compare(arr[j], key) > 0) {
-                            arr[j + 1] = arr[j]; j--;
+                            arr[j + 1] = arr[j--];
                         }
                         arr[j + 1] = key;
                         continue;
@@ -212,7 +213,7 @@ class org.flashNight.naki.Sort.TimSort {
                         else hi2 = mid;
                     }
                     j = i;
-                    while (j > left) { arr[j] = arr[j - 1]; j--; }
+                    while (j > left) { arr[j] = arr[--j]; }
                     arr[left] = key;
                 }
                 runLength = force;
@@ -310,6 +311,7 @@ class org.flashNight.naki.Sort.TimSort {
         var ofs:Number, lastOfs:Number, left:Number, hi2:Number, mid:Number;
         var pa:Number, pb:Number, d:Number, ea:Number, eb:Number;
         var ca:Number, cb:Number, ba0:Number;
+        var keyA:Number, keyB:Number;
         var copyLen:Number, copyI:Number, copyIdx:Number, copyEnd:Number, tempIdx:Number;
 
         // 初始化
@@ -329,7 +331,7 @@ class org.flashNight.naki.Sort.TimSort {
                 if (i <= 4) {
                     j = i - 1;
                     while (j >= 0 && keys[arr[j]] > keyVal) {
-                        arr[j + 1] = arr[j]; j--;
+                        arr[j + 1] = arr[j--];
                     }
                     arr[j + 1] = key;
                 } else {
@@ -340,7 +342,7 @@ class org.flashNight.naki.Sort.TimSort {
                         else hi2 = mid;
                     }
                     j = i;
-                    while (j > left) { arr[j] = arr[j - 1]; j--; }
+                    while (j > left) { arr[j] = arr[--j]; }
                     arr[left] = key;
                 }
             }
@@ -416,7 +418,7 @@ class org.flashNight.naki.Sort.TimSort {
                     if (keys[arr[i - 1]] <= keyVal) continue;
                     if ((i - lo) <= 4) {
                         while (j >= lo && keys[arr[j]] > keyVal) {
-                            arr[j + 1] = arr[j]; j--;
+                            arr[j + 1] = arr[j--];
                         }
                         arr[j + 1] = key;
                         continue;
@@ -428,7 +430,7 @@ class org.flashNight.naki.Sort.TimSort {
                         else hi2 = mid;
                     }
                     j = i;
-                    while (j > left) { arr[j] = arr[j - 1]; j--; }
+                    while (j > left) { arr[j] = arr[--j]; }
                     arr[left] = key;
                 }
                 runLength = force;

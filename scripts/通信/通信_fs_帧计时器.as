@@ -782,6 +782,8 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     // 这是解耦 _root 依赖后的初始化保障
     org.flashNight.arki.component.Damage.DamageResult.IMPACT.displayFunction = HitNumberSystem.effect;
     org.flashNight.arki.component.Damage.DamageResult.NULL.displayFunction = HitNumberSystem.effect;
+    // 重置 TimSort 重入保护标志，防止 compare 异常后永久降级为 Array.sort()
+    org.flashNight.naki.Sort.TimSort.resetState();
 }, null);
 
 
