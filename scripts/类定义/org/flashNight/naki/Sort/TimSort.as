@@ -138,17 +138,19 @@ class org.flashNight.naki.Sort.TimSort {
                 // P2: null comparator 内联数值比较，零函数调用开销
                 for (i = 1; i < n; i++) {
                     key = arr[i];
-                    if (arr[i - 1] <= key) continue;
+                    j = i - 1;
+                    tmp = arr[j]; // P0: 预读缓存arr[i-1]
+                    if (tmp <= key) continue;
                     if (i <= 4) {
-                        j = i - 1;
+                        arr[--j + 2] = tmp; // P0: 首次移位直出，跳过冗余比较
                         while (j >= 0) {
                             tmp = arr[j];
                             if (tmp <= key) break;
-                            arr[--j + 2] = tmp; // P5: StoreRegister
+                            arr[--j + 2] = tmp;
                         }
                         arr[j + 1] = key;
                     } else {
-                        left = 0; hi2 = i;
+                        left = 0; hi2 = j; // P0: 上界收紧 i→i-1
                         while (left < hi2) {
                             mid = (left + hi2) >> 1;
                             if (arr[mid] <= key) left = mid + 1;
@@ -389,17 +391,19 @@ class org.flashNight.naki.Sort.TimSort {
             for (i = 1; i < n; i++) {
                 key = arr[i];
                 keyVal = keys[key];
-                if (keys[arr[i - 1]] <= keyVal) continue;
+                j = i - 1;
+                tmp = arr[j]; // P0: 预读缓存arr[i-1]
+                if (keys[tmp] <= keyVal) continue;
                 if (i <= 4) {
-                    j = i - 1;
+                    arr[--j + 2] = tmp; // P0: 首次移位直出，跳过冗余比较
                     while (j >= 0) {
                         tmp = arr[j];
                         if (keys[tmp] <= keyVal) break;
-                        arr[--j + 2] = tmp; // P5: StoreRegister
+                        arr[--j + 2] = tmp;
                     }
                     arr[j + 1] = key;
                 } else {
-                    left = 0; hi2 = i;
+                    left = 0; hi2 = j; // P0: 上界收紧 i→i-1
                     while (left < hi2) {
                         mid = (left + hi2) >> 1;
                         if (keys[arr[mid]] <= keyVal) left = mid + 1;
@@ -495,17 +499,19 @@ class org.flashNight.naki.Sort.TimSort {
                     key = arr[i];
                     keyVal = keys[key];
                     j = i - 1;
-                    if (keys[arr[i - 1]] <= keyVal) continue;
+                    tmp = arr[j]; // P0: 预读缓存arr[i-1]
+                    if (keys[tmp] <= keyVal) continue;
                     if ((i - lo) <= 4) {
+                        arr[--j + 2] = tmp; // P0: 首次移位直出，跳过冗余比较
                         while (j >= lo) {
                             tmp = arr[j];
                             if (keys[tmp] <= keyVal) break;
-                            arr[--j + 2] = tmp; // P5: StoreRegister
+                            arr[--j + 2] = tmp;
                         }
                         arr[j + 1] = key;
                         continue;
                     }
-                    left = lo; hi2 = i;
+                    left = lo; hi2 = j; // P0: 上界收紧 i→i-1
                     while (left < hi2) {
                         mid = (left + hi2) >> 1;
                         if (keys[arr[mid]] <= keyVal) left = mid + 1;

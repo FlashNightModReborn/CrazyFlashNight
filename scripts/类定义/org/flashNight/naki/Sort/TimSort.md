@@ -54,11 +54,11 @@ PASS: 最大栈深度测试
 
 === 实际应用场景测试 ===
 PASS: 部分有序数据测试
-    部分有序数据排序耗时: 1ms
+    部分有序数据排序耗时: 2ms
 PASS: 交替模式测试
 PASS: 钢琴键模式测试
 PASS: 大量重复值测试
-    大量重复值排序耗时: 6ms
+    大量重复值排序耗时: 8ms
 PASS: 管道模式测试
 PASS: 随机游走模式测试
 PASS: 数据库风格数据测试
@@ -73,7 +73,7 @@ PASS: MIN_RUN边界测试 (length=64)
 PASS: MIN_RUN边界测试 (length=65)
 PASS: Gallop阈值边界测试
 PASS: 大数组压力测试
-    大数组压力测试 (size=50000) 耗时: 819ms
+    大数组压力测试 (size=50000) 耗时: 779ms
 PASS: 深度递归避免测试
 PASS: 内存效率测试
     内存效率测试耗时: 1ms
@@ -83,37 +83,37 @@ PASS: 内存效率测试
 开始增强版性能测试（3次取中位数）...
   测试数组大小: 1000
     random: 15ms
-    sorted: 2ms
-    reverse: 1ms
-    partiallyOrdered: 13ms
-    manyDuplicates: 11ms
+    sorted: 1ms
+    reverse: 2ms
+    partiallyOrdered: 11ms
+    manyDuplicates: 13ms
     pianoKeys: 4ms
-    organPipe: 4ms
-    mergeStress: 4ms
+    organPipe: 3ms
+    mergeStress: 5ms
     gallopFriendly: 2ms
-    gallopUnfriendly: 4ms
+    gallopUnfriendly: 3ms
   测试数组大小: 5000
-    random: 87ms
-    sorted: 4ms
+    random: 103ms
+    sorted: 6ms
     reverse: 7ms
     partiallyOrdered: 62ms
-    manyDuplicates: 72ms
-    pianoKeys: 17ms
-    organPipe: 15ms
-    mergeStress: 24ms
+    manyDuplicates: 71ms
+    pianoKeys: 20ms
+    organPipe: 14ms
+    mergeStress: 25ms
     gallopFriendly: 7ms
-    gallopUnfriendly: 13ms
+    gallopUnfriendly: 14ms
   测试数组大小: 10000
-    random: 277ms
-    sorted: 11ms
-    reverse: 13ms
-    partiallyOrdered: 132ms
-    manyDuplicates: 156ms
-    pianoKeys: 39ms
-    organPipe: 29ms
+    random: 205ms
+    sorted: 12ms
+    reverse: 14ms
+    partiallyOrdered: 135ms
+    manyDuplicates: 148ms
+    pianoKeys: 38ms
+    organPipe: 28ms
     mergeStress: 49ms
-    gallopFriendly: 15ms
-    gallopUnfriendly: 29ms
+    gallopFriendly: 14ms
+    gallopUnfriendly: 28ms
 增强版性能测试完成
 
 === sortIndirect 正确性与稳定性测试 ===
@@ -128,27 +128,27 @@ sort vs sortIndirect 性能对比（3次取中位数）...
   数组大小: 1000
     random: sort=20ms  indirect=10ms  提升=50%
     sorted: sort=1ms  indirect=0ms  提升=100%
-    reverse: sort=1ms  indirect=0ms  提升=100%
-    partiallyOrdered: sort=14ms  indirect=8ms  提升=43%
-    manyDuplicates: sort=17ms  indirect=10ms  提升=41%
-    gallopFriendly: sort=2ms  indirect=0ms  提升=100%
-    gallopUnfriendly: sort=6ms  indirect=3ms  提升=50%
+    reverse: sort=2ms  indirect=1ms  提升=50%
+    partiallyOrdered: sort=13ms  indirect=8ms  提升=38%
+    manyDuplicates: sort=16ms  indirect=10ms  提升=38%
+    gallopFriendly: sort=2ms  indirect=1ms  提升=50%
+    gallopUnfriendly: sort=4ms  indirect=2ms  提升=50%
   数组大小: 5000
-    random: sort=143ms  indirect=80ms  提升=44%
-    sorted: sort=9ms  indirect=3ms  提升=67%
-    reverse: sort=10ms  indirect=5ms  提升=50%
-    partiallyOrdered: sort=98ms  indirect=60ms  提升=39%
-    manyDuplicates: sort=101ms  indirect=58ms  提升=43%
+    random: sort=123ms  indirect=65ms  提升=47%
+    sorted: sort=8ms  indirect=3ms  提升=63%
+    reverse: sort=9ms  indirect=4ms  提升=56%
+    partiallyOrdered: sort=79ms  indirect=48ms  提升=39%
+    manyDuplicates: sort=89ms  indirect=54ms  提升=39%
     gallopFriendly: sort=9ms  indirect=4ms  提升=56%
-    gallopUnfriendly: sort=19ms  indirect=8ms  提升=58%
+    gallopUnfriendly: sort=19ms  indirect=9ms  提升=53%
   数组大小: 10000
-    random: sort=272ms  indirect=146ms  提升=46%
-    sorted: sort=14ms  indirect=5ms  提升=64%
-    reverse: sort=18ms  indirect=8ms  提升=56%
-    partiallyOrdered: sort=177ms  indirect=107ms  提升=40%
-    manyDuplicates: sort=191ms  indirect=116ms  提升=39%
+    random: sort=272ms  indirect=149ms  提升=45%
+    sorted: sort=15ms  indirect=5ms  提升=67%
+    reverse: sort=19ms  indirect=9ms  提升=53%
+    partiallyOrdered: sort=173ms  indirect=108ms  提升=38%
+    manyDuplicates: sort=185ms  indirect=116ms  提升=37%
     gallopFriendly: sort=18ms  indirect=8ms  提升=56%
-    gallopUnfriendly: sort=41ms  indirect=20ms  提升=51%
+    gallopUnfriendly: sort=37ms  indirect=17ms  提升=54%
 sort vs sortIndirect 性能对比完成
 
 All Enhanced TimSort Tests Completed.
