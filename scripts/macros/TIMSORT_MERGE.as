@@ -113,15 +113,20 @@ if (lenA <= lenB) {
     // ============ mergeLo: 复制A到tempArray，从左到右合并 ============
     pa = 0; pb = loB; d = loA; ea = lenA; eb = loB + lenB;
 
-    // 复制A到临时数组（×4展开）
-    copyEnd = lenA - (lenA & 3);
-    for (copyI = 0; copyI < copyEnd; copyI += 4) {
-        tempArray[copyI]     = arr[copyIdx = loA + copyI];
-        tempArray[copyI + 1] = arr[copyIdx + 1];
-        tempArray[copyI + 2] = arr[copyIdx + 2];
-        tempArray[copyI + 3] = arr[copyIdx + 3];
+    // 复制A到临时数组（P2: ++展开）
+    copyI = 0;
+    copyIdx = loA;
+    copyEnd = lenA >> 2;
+    while (--copyEnd >= 0) {
+        tempArray[copyI++] = arr[copyIdx++];
+        tempArray[copyI++] = arr[copyIdx++];
+        tempArray[copyI++] = arr[copyIdx++];
+        tempArray[copyI++] = arr[copyIdx++];
     }
-    for (; copyI < lenA; copyI++) { tempArray[copyI] = arr[loA + copyI]; }
+    copyEnd = lenA & 3;
+    while (--copyEnd >= 0) {
+        tempArray[copyI++] = arr[copyIdx++];
+    }
 
     // P3: 哨兵搬运 - pre-trim保证B[loB] < A[loA]，B首元素必先输出
     // 此后 pa < ea (lenA>=2) 且 pb < eb (lenB-1>=1)，do-while安全
@@ -243,15 +248,20 @@ if (lenA <= lenB) {
     // ============ mergeHi: 复制B到tempArray，从右到左合并 ============
     pa = loA + lenA - 1; pb = lenB - 1; d = loB + lenB - 1; ba0 = loA;
 
-    // 复制B到临时数组（×4展开）
-    copyEnd = lenB - (lenB & 3);
-    for (copyI = 0; copyI < copyEnd; copyI += 4) {
-        tempArray[copyI]     = arr[copyIdx = loB + copyI];
-        tempArray[copyI + 1] = arr[copyIdx + 1];
-        tempArray[copyI + 2] = arr[copyIdx + 2];
-        tempArray[copyI + 3] = arr[copyIdx + 3];
+    // 复制B到临时数组（P2: ++展开）
+    copyI = 0;
+    copyIdx = loB;
+    copyEnd = lenB >> 2;
+    while (--copyEnd >= 0) {
+        tempArray[copyI++] = arr[copyIdx++];
+        tempArray[copyI++] = arr[copyIdx++];
+        tempArray[copyI++] = arr[copyIdx++];
+        tempArray[copyI++] = arr[copyIdx++];
     }
-    for (; copyI < lenB; copyI++) { tempArray[copyI] = arr[loB + copyI]; }
+    copyEnd = lenB & 3;
+    while (--copyEnd >= 0) {
+        tempArray[copyI++] = arr[copyIdx++];
+    }
 
     // P3: 哨兵搬运 - pre-trim保证A[last] > B[last]，A尾元素必先输出
     // 此后 pa >= ba0 (lenA-1>=1) 且 pb >= 0 (lenB>=2)，do-while安全
