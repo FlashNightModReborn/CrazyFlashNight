@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1770215188" lastUniqueIdentifier="314">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1771144935" lastUniqueIdentifier="320">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="59">
+    <DOMTimeline name="主角-男" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
           <frames>
@@ -328,14 +328,14 @@ on(release){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="ai" color="#C2C2C7" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="ai" color="#C2C2C7" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" duration="27" keyMode="9728">
+            <DOMFrame index="1" duration="28" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" name="思考标签" selected="true" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
                     <Matrix tx="-36" ty="16.35"/>
                   </matrix>
@@ -350,9 +350,9 @@ on(release){
             </DOMFrame>
             <DOMFrame index="142" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" name="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
-                    <Matrix tx="-34.5" ty="11.35"/>
+                    <Matrix tx="-36" ty="16.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -365,9 +365,9 @@ on(release){
             </DOMFrame>
             <DOMFrame index="191" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" name="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
-                    <Matrix tx="-34.5" ty="11.35"/>
+                    <Matrix tx="-36" ty="16.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -380,9 +380,9 @@ on(release){
             </DOMFrame>
             <DOMFrame index="240" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" name="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
-                    <Matrix tx="-34.5" ty="11.35"/>
+                    <Matrix tx="-36" ty="16.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -395,9 +395,9 @@ on(release){
             </DOMFrame>
             <DOMFrame index="289" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" name="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
-                    <Matrix tx="-34.5" ty="11.35"/>
+                    <Matrix tx="-36" ty="16.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -410,9 +410,9 @@ on(release){
             </DOMFrame>
             <DOMFrame index="358" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" name="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
-                    <Matrix tx="-34.5" ty="11.35"/>
+                    <Matrix tx="-36" ty="16.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -425,9 +425,9 @@ on(release){
             </DOMFrame>
             <DOMFrame index="407" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" centerPoint3DX="-32" centerPoint3DY="13.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 76" name="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
-                    <Matrix tx="-34.5" ty="11.35"/>
+                    <Matrix tx="-36" ty="16.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -779,7 +779,7 @@ on(release){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="动画层" color="#32BDEF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -798,7 +798,7 @@ on(release){
             </DOMFrame>
             <DOMFrame index="2" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" selected="true" centerPoint3DX="191.6" centerPoint3DY="218">
+                <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" centerPoint3DX="191.6" centerPoint3DY="218">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>
@@ -1155,7 +1155,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="142" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="移动射击动画层/长枪上身" name="man" selected="true" centerPoint3DX="232.3" centerPoint3DY="217.65">
+                <DOMSymbolInstance libraryItemName="移动射击动画层/长枪上身" name="man" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
                   </matrix>
@@ -1674,7 +1674,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="358" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="移动射击动画层/双枪上身" name="man" selected="true" centerPoint3DX="255.35" centerPoint3DY="216.05">
+                <DOMSymbolInstance libraryItemName="移动射击动画层/双枪上身" name="man" centerPoint3DX="255.35" centerPoint3DY="216.05">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
                   </matrix>
@@ -1761,7 +1761,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="407" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/兵器待机" name="man" selected="true" centerPoint3DX="223.1" centerPoint3DY="209.55">
+                <DOMSymbolInstance libraryItemName="sprite/兵器待机" name="man" centerPoint3DX="223.1" centerPoint3DY="209.55">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276992797851563" tx="3.4" ty="-62.3"/>
                   </matrix>

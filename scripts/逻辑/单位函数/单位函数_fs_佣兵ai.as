@@ -7,6 +7,11 @@ _root.佣兵思考时间间隔 = 1.5 * _root.帧计时器.帧率;
 _root.主角模板ai函数 = new Object();
 
 _root.主角模板ai函数.思考 = function() {
+    // HFSM 已接管 → 停止帧脚本 AI（初始化时 unitAI 可能尚未创建，需在每次思考时检查）
+    if (_parent.unitAI != null) {
+        this.stop();
+        return;
+    }
     // ────────────── 1. 早期退出条件 ──────────────
     // 若处于暂停状态，则直接执行当前命令并退出
     if (_root.暂停) {
@@ -287,6 +292,11 @@ _root.主角模板ai函数.根据等级取得随机技能 = function() {
 
 _root.初始化主角模板ai = function(){
 	if(_parent._name == _root.控制目标){
+		this.stop();
+		return;
+	}
+	// HFSM 已接管 → 停止帧脚本 AI
+	if(_parent.unitAI != null){
 		this.stop();
 		return;
 	}

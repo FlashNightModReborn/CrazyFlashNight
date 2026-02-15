@@ -2110,6 +2110,8 @@ _root.初始化玩家模板 = function() {
     this.jetpack = _root.jetpack;
     this.jetpackCheck = _root.jetpackCheck;
 
+    使用人形怪AI = true;
+
     最小经验值 = 16;
     最大经验值 = 134;
     hp_min = 200;

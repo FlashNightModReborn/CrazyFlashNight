@@ -24,6 +24,9 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitAI{
                 eb.setPickupEnabled();
                 this.stateMachine = eb;
                 break;
+            case "Hero":
+                this.stateMachine = new HeroCombatBehavior(this.data);
+                break;
             case "Mecenary":
                 this.stateMachine = new MecenaryBehavior(this.data);
                 break;
