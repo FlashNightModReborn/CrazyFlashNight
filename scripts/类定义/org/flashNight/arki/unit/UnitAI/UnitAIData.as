@@ -51,6 +51,8 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
     public var standby:Boolean; // 是否处于待机状态
 
+    public var aiNextMode:String; // 模块主观完成信号（方案A预留）
+
     
     public function UnitAIData(_self:MovieClip){
         this.self = _self;
@@ -83,6 +85,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         this.run_threshold_x = runX * 8;
         this.run_threshold_z = runY * 8;
 
+        this.aiNextMode = null;
         this.createdFrame = _root.帧计时器.当前帧数;
     }
 
