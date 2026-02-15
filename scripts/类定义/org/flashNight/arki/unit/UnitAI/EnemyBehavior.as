@@ -141,7 +141,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior {
 
         // Step 3: 拾取物搜索（仅当 PickupModule 已注册且单位允许拾取）
         var targetItem:MovieClip = null;
-        var hasPickupModule:Boolean = (this.superMachine["statusDict"]["PickupModule"] != null);
+        var hasPickupModule:Boolean = (this.superMachine && this.superMachine.hasStatus("PickupModule"));
 
         if (hasPickupModule && self.允许拾取) {
             // 己方单位背包已满时禁用拾取

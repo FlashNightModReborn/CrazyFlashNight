@@ -50,7 +50,7 @@ class org.flashNight.arki.unit.UnitAI.PickupModule extends FSM_StateMachine {
             self.状态改变("拾取");
         } else {
             var sm = this.superMachine;
-            if (sm.actionCount % 2 == 0) {
+            if ((sm.getActionCount() & 1) == 0) {
                 if (data.absdiff_x + data.absdiff_z < 150) {
                     self.状态改变(self.攻击模式 + "行走");
                 } else if (self.状态 != self.攻击模式 + "跑" && LinearCongruentialEngine.instance.randomCheck(3)) {

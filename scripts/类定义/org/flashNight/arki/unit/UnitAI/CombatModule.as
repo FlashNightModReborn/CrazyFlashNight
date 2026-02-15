@@ -128,7 +128,7 @@ class org.flashNight.arki.unit.UnitAI.CombatModule extends FSM_StateMachine {
             self.状态改变(self.攻击模式 + "攻击");
         } else if (!data.standby) {
             var sm = this.superMachine;
-            if (sm.actionCount % 2 == 0) {
+            if ((sm.getActionCount() & 1) == 0) {
                 self.上行 = data.diff_z < 0;
                 self.下行 = data.diff_z > 0;
                 self.左行 = data.x > data.tx + data.xdistance;

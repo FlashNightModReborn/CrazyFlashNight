@@ -350,6 +350,15 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         return this.activeState ? this.activeState.name : null;
     }
 
+    public function getActionCount():Number {
+        return this.actionCount;
+    }
+
+    public function hasStatus(name:String):Boolean {
+        var s:FSM_Status = this.statusDict[name];
+        return (s instanceof FSM_Status);
+    }
+
     // ═══════ AddStatus ═══════
 
     /**
