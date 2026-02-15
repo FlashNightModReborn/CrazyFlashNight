@@ -53,6 +53,10 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
     public var aiNextMode:String; // 模块主观完成信号（方案A预留）
 
+    // 人格向量 + 派生AI参数（Phase 2）
+    // 引用 self.personality 同一对象，mutate-only 策略保证不陈旧
+    public var personality:Object;
+
     
     public function UnitAIData(_self:MovieClip){
         this.self = _self;
@@ -86,6 +90,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         this.run_threshold_z = runY * 8;
 
         this.aiNextMode = null;
+        this.personality = self.personality; // 六维 + 派生参数（同一对象引用）
         this.createdFrame = _root.帧计时器.当前帧数;
     }
 

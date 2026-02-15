@@ -315,7 +315,17 @@ _root.加载并配置佣兵随机对话 = function(xml文件地址:String):Void
 
 				}
 				_root.佣兵随机对话[i] = dialogue;
-			}//trace("佣兵随机对话配置成功: " + _root.佣兵随机对话);
+			}
+			// ── Phase 2: 按 Personality 分池 ──
+			_root.佣兵对话池 = {};
+			for (var k:Number = 0; k < len; k++) {
+				var d:Object = _root.佣兵随机对话[k];
+				var pKey:String = d.Personality;
+				if (_root.佣兵对话池[pKey] == null) {
+					_root.佣兵对话池[pKey] = [];
+				}
+				_root.佣兵对话池[pKey].push(d);
+			}
 		}
 		else
 		{//trace("无法加载 XML 文件: " + xml文件地址);
@@ -689,6 +699,7 @@ _root.佣兵配置_unload = function(reason:String):Void {
 	_root.战队信息数组 = null;
 	_root.随机名称库 = null;
 	_root.佣兵随机对话 = null;
+	_root.佣兵对话池 = null;
 
 	// 清除回调队列
 	_root.佣兵配置_回调队列 = [];
@@ -793,6 +804,16 @@ _root.佣兵配置_加载随机对话 = function(path:String, onOk:Function, onE
 					dialogue[nodeName] = nodeValue;
 				}
 				_root.佣兵随机对话[i] = dialogue;
+			}
+			// ── Phase 2: 按 Personality 分池 ──
+			_root.佣兵对话池 = {};
+			for (var k:Number = 0; k < len; k++) {
+				var d:Object = _root.佣兵随机对话[k];
+				var pKey:String = d.Personality;
+				if (_root.佣兵对话池[pKey] == null) {
+					_root.佣兵对话池[pKey] = [];
+				}
+				_root.佣兵对话池[pKey].push(d);
 			}
 			onOk();
 		} else {

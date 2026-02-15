@@ -2226,6 +2226,8 @@ _root.初始化玩家模板 = function() {
         被动技能 = _root.主角被动技能;
     }
 
+    _root.配置人形怪AI(this);
+
     this.buff = new 主角模板数值buff(this);
 
     //初始化完毕
@@ -2243,6 +2245,157 @@ _root.初始化玩家模板 = function() {
 };
 
 
+
+// ═══════ 人格驱动 AI 配置 (Phase 2 Step 1) ═══════
+
+/**
+ * 配置人形怪AI — 只负责 personality / AI派生参数
+ * unitAIType 的分配由 UnitAIInitializer 负责，这里不碰
+ *
+ * 调用时机：初始化玩家模板末尾（初始化可用技能之后、buff创建之前）
+ * 引用语义：所有派生参数直接 mutate 到 personality 对象上
+ *           UnitAIData.personality 缓存同一引用，永不陈旧
+ */
+_root.配置人形怪AI = function(target:MovieClip):Void {
+    // ─── 1. AI 种子（名字hash + 等级 → 确定性，可复现）───
+    if (target.aiSeed == null) {
+        var seed:Number = target.等级;
+        var n:String = target.名字;
+        for (var i:Number = 0; i < n.length; i++) {
+            seed = seed * 31 + n.charCodeAt(i);
+        }
+        target.aiSeed = seed & 0x7FFFFFFF;
+    }
+
+    // ─── 2. 人格 ID（后续可从 XML profile 读取）───
+    if (target.personalityId == null) {
+        target.personalityId = "random";
+    }
+
+    // ─── 3. 人格向量（Dirichlet-like，1-2 维突出）───
+    if (target.personality == null) {
+        target.personality = _root.生成随机人格(target.aiSeed);
+    }
+
+    // ─── 4. 派生 AI 参数（mutate personality 对象）───
+    _root.计算AI参数(target.personality);
+
+    // ─── 5. Profile 覆盖（预设模板，mutate 而非 replace）───
+    if (target.profileId != null) {
+        var profile = _root.佣兵AI模板[target.profileId];
+        if (profile) {
+            for (var k in profile.personality) {
+                target.personality[k] = profile.personality[k];
+            }
+            _root.计算AI参数(target.personality); // 重算派生参数
+        }
+    }
+};
+
+/**
+ * 生成随机人格 — Dirichlet-like 分配
+ *
+ * ALPHA=0.4 使分布尖锐（1-2 维明显突出）
+ * 用确定性 LCG 内联保证同 seed 同结果
+ *
+ * @param seed 确定性种子（aiSeed）
+ * @return 六维人格对象，归一化总和 = 1
+ */
+_root.生成随机人格 = function(seed:Number):Object {
+    var keys:Array = ["勇气", "技术", "经验", "反应", "智力", "谋略"];
+    var raw:Array = [];
+    var sum:Number = 0;
+    var ALPHA:Number = 0.4;
+
+    var s:Number = seed;
+    for (var i:Number = 0; i < 6; i++) {
+        // LCG 内联（Numerical Recipes 参数）
+        s = (1664525 * s + 1013904223) & 0x7FFFFFFF;
+        var u:Number = s / 0x7FFFFFFF;
+        // Gamma(alpha,1) 近似：pow(-log(U), ALPHA)
+        var val:Number = Math.pow(-Math.log(u + 0.001), ALPHA);
+        raw.push(val);
+        sum += val;
+    }
+
+    var p:Object = {};
+    for (var j:Number = 0; j < 6; j++) {
+        p[keys[j]] = raw[j] / sum;
+    }
+    return p;
+};
+
+/**
+ * 计算AI参数 — mutate personality 对象，追加派生字段
+ *
+ * 所有 Utility 评估器读取的参数都在这里计算
+ * 直接写入 personality 对象（不创建独立 aiParams）
+ *
+ * ── 六维人格 → AI 行为映射设计意图 ──
+ *
+ * 勇气：攻击倾向。影响"咬死不放 vs 撤退恢复"的决策阈值。
+ *       高勇气 = 低血量仍追击，commitment 帧数长。
+ *
+ * 技术：每武器模式决策准确性。高技术 = 该 Stance 下评分接近最优；
+ *       低技术 = 评分加噪声，决策更散漫。
+ *       实现: score += noise * (1 - 技术 * stanceMatchFactor)
+ *
+ * 经验：抑制随机表现，行为更机械稳定。影响 Boltzmann 温度下限
+ *       和候选动作池大小（低经验只评估少量技能，高经验评估全部）。
+ *       temperature = f(谋略) / (1 + 经验 * k)
+ *
+ * 反应：状态机执行频率。高反应 = 每1-2帧tick（极灵敏），
+ *       低反应 = 每5-6帧tick（迟钝）。不改 scheduler，
+ *       在 onAction 内部 frame-skip: tickInterval = max(1, round(6 - 反应*5))
+ *
+ * 智力：策略求解质量和深度。控制活跃评分维度数。
+ *       低智力 = 只看 w_damage（莽）；高智力 = 全5维激活（全面权衡）。
+ *
+ * 谋略：特定战术模块解锁（离散能力，非连续参数）。
+ *       >0.25 → 抱团移动（向友军质心偏移）
+ *       >0.35 → 规避敌群（敌人密度高时后撤）
+ *       >0.45 → 状态不佳时主动脱战寻求恢复
+ *       作为 Selector 前置决策分支拦截。
+ *
+ * @param p personality 对象（六维 + 将被追加派生参数）
+ */
+_root.计算AI参数 = function(p:Object):Void {
+    // ── 勇气 → 攻击倾向（咬死不放 vs 撤退恢复）──
+    p.engageDistanceMult  = 0.8 + p.勇气 * 0.4;   // 交战距离倍率
+    p.retreatHPRatio      = 0.15 + (1 - p.勇气) * 0.2; // 撤退血量阈值（高勇气→低阈值）
+    p.chaseCommitment     = 3 + p.勇气 * 4;        // 追击锁定帧数
+
+    // ── 技术 → 每武器模式决策准确性（噪声系数）──
+    p.decisionNoise       = 1 - p.技术 * 0.7;      // Utility评分噪声倍率（高技术→低噪声）
+    p.stanceMastery       = p.技术;                 // Stance匹配时噪声额外衰减系数
+
+    // ── 经验 → 抑制随机/机械稳定 + 策略池容量 ──
+    p.stabilityFactor     = p.经验;                 // 温度衰减因子: T /= (1 + stabilityFactor)
+    p.maxCandidates       = Math.round(2 + p.经验 * 6); // 候选动作池上限（2~8）
+
+    // ── 反应 → 状态机执行频率 ──
+    p.tickInterval        = Math.max(1, Math.round(6 - p.反应 * 5)); // 1~6帧/tick
+
+    // ── 智力 → 策略求解深度（活跃评分维度数）──
+    p.evalDepth           = Math.round(1 + p.智力 * 4); // 1~5维激活
+    p.healEagerness       = 0.3 + p.智力 * 0.5;    // 治疗积极性
+
+    // ── 谋略 → 战术模块解锁阈值 + Boltzmann 基础温度 ──
+    p.baseTemperature     = 0.1 + p.谋略 * 0.4;    // 基础温度（经验会压低）
+    p.tacticsGrouping     = p.谋略 >= 0.25;         // 抱团移动
+    p.tacticsEvadeCluster = p.谋略 >= 0.35;         // 规避敌群
+    p.tacticsSeekRecovery = p.谋略 >= 0.45;         // 状态不佳时脱战恢复
+
+    // ── 综合 → Boltzmann 有效温度 ──
+    p.temperature = p.baseTemperature / (1 + p.stabilityFactor);
+
+    // ── Utility 评分维度权重（智力 gate 通过 evalDepth 控制哪些维度激活）──
+    p.w_damage      = 0.3 + p.勇气 * 0.4;
+    p.w_safety      = 0.3 + p.智力 * 0.4;
+    p.w_resource    = 0.1 + p.智力 * 0.2;
+    p.w_positioning = 0.15 + p.经验 * 0.2;
+    p.w_combo       = 0.15 + p.技术 * 0.3;
+};
 
 _root.初始化佣兵NPC模板 = function() {
     this.获取佣兵装备属性 = _root.主角函数.获取佣兵装备属性;

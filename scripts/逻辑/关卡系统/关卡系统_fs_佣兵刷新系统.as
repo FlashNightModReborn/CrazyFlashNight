@@ -487,15 +487,54 @@ _root.创建佣兵实体对象 = function(佣兵数据, X, Y)
 	// 受雇欲望为5的单位必定可以雇佣
 	佣兵对象.受雇欲望 = 5;
 
-	// 设置佣兵对象的默认对话
+	// 提前生成人格向量（幂等，初始化玩家模板中的二次调用会跳过已生成的）
+	_root.配置人形怪AI(佣兵对象);
+
+	// 按人格主维度抽对话（Phase 2: 先人格 → 再按人格抽匹配对话）
 	佣兵对象.默认对话 = [[]];
-	// 设置佣兵对象的默认对话
-	var 对话数量 = _root.随机整数(1, 5);
-	for (var i = 0; i < 对话数量; ++i)
-	{
-		var 随机对话编号 = _root.获取随机索引(_root.佣兵随机对话);
-		var 随机对话内容 = _root.佣兵随机对话[随机对话编号].Text + "   (" + _root.佣兵随机对话[随机对话编号].Personality + ":" + _root.佣兵随机对话[随机对话编号].Value + ")";
-		佣兵对象.默认对话[0][i] = [佣兵数据[1], "佣兵", "主角模板", 随机对话内容, _root.佣兵随机对话[随机对话编号].Expression, 佣兵对象];
+	var _pool:Object = _root.佣兵对话池;
+	if (_pool != null && 佣兵对象.personality != null) {
+		var _p:Object = 佣兵对象.personality;
+		var _dims:Array = ["勇气", "技术", "经验", "反应", "智力", "谋略"];
+		// 按人格值降序排列 → 前2个为主要维度
+		_dims.sort(function(a, b) { return (_p[b] > _p[a]) ? 1 : ((_p[b] < _p[a]) ? -1 : 0); });
+
+		var _di:Number = 0;
+		// 第一主维度：抽 2 条
+		var _p1:Array = _pool[_dims[0]];
+		if (_p1 != null && _p1.length > 0) {
+			for (var i:Number = 0; i < 2; i++) {
+				var d1:Object = _p1[_root.获取随机索引(_p1)];
+				佣兵对象.默认对话[0][_di++] = [佣兵数据[1], "佣兵", "主角模板",
+					d1.Text + "   (" + d1.Personality + ":" + d1.Value + ")",
+					d1.Expression, 佣兵对象];
+			}
+		}
+		// 第二主维度：抽 1 条
+		var _p2:Array = _pool[_dims[1]];
+		if (_p2 != null && _p2.length > 0) {
+			var d2:Object = _p2[_root.获取随机索引(_p2)];
+			佣兵对象.默认对话[0][_di++] = [佣兵数据[1], "佣兵", "主角模板",
+				d2.Text + "   (" + d2.Personality + ":" + d2.Value + ")",
+				d2.Expression, 佣兵对象];
+		}
+		// 随机池补充 0-2 条
+		var _fill:Number = _root.随机整数(0, 2);
+		for (var j:Number = 0; j < _fill; j++) {
+			var _ri:Number = _root.获取随机索引(_root.佣兵随机对话);
+			var dr:Object = _root.佣兵随机对话[_ri];
+			佣兵对象.默认对话[0][_di++] = [佣兵数据[1], "佣兵", "主角模板",
+				dr.Text + "   (" + dr.Personality + ":" + dr.Value + ")",
+				dr.Expression, 佣兵对象];
+		}
+	} else {
+		// Fallback: 对话池未就绪时走原始随机逻辑
+		var 对话数量:Number = _root.随机整数(1, 5);
+		for (var i:Number = 0; i < 对话数量; ++i) {
+			var 随机对话编号:Number = _root.获取随机索引(_root.佣兵随机对话);
+			var 随机对话内容:String = _root.佣兵随机对话[随机对话编号].Text + "   (" + _root.佣兵随机对话[随机对话编号].Personality + ":" + _root.佣兵随机对话[随机对话编号].Value + ")";
+			佣兵对象.默认对话[0][i] = [佣兵数据[1], "佣兵", "主角模板", 随机对话内容, _root.佣兵随机对话[随机对话编号].Expression, 佣兵对象];
+		}
 	}
 
 	var nx:Number = 佣兵对象.人物文字信息._x;
