@@ -57,6 +57,10 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     // 引用 self.personality 同一对象，mutate-only 策略保证不陈旧
     public var personality:Object;
 
+    // Utility 评估器实例（Phase 2 Step 3）
+    // 仅 Hero 类型创建，其他类型为 null
+    public var evaluator;
+
     
     public function UnitAIData(_self:MovieClip){
         this.self = _self;

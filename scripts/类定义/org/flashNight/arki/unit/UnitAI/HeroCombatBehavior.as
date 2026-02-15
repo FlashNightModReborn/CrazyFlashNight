@@ -4,6 +4,7 @@ import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.BaseUnitBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.HeroCombatModule;
+import org.flashNight.arki.unit.UnitAI.UtilityEvaluator;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.component.StatHandler.DamageResistanceHandler;
 
@@ -38,6 +39,11 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // FSM_Status 回调中 this = FSM_Status 实例，无法访问 HeroCombatBehavior 的方法
         // 通过闭包委托到根机实例方法，确保 evaluateWeapon/evaluateHeal/searchTarget 可达
         var behavior:HeroCombatBehavior = this;
+
+        // ── Phase 2: 创建 Utility 评估器（personality 存在时）──
+        if (data.personality != null) {
+            data.evaluator = new UtilityEvaluator(data.personality);
+        }
 
         // ═══════ 状态列表 ═══════
         // 已存在：Sleeping（基类默认状态）
@@ -165,99 +171,58 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         this.ChangeState(newstate);
     }
 
-    // ═══════ 武器模式评估（Phase 2 注入点）═══════
+    // ═══════ 武器模式评估 ═══════
 
     /**
-     * evaluateWeapon — Phase 1: 复刻原 随机切换攻击模式 + 攻击范围设定
-     *
-     * 调用单位自身的 随机切换攻击模式() 方法（定义于玩家模板迁移脚本），
-     * 然后根据当前攻击模式设定 x/z 轴攻击范围和保持距离。
+     * evaluateWeapon — 委托 UtilityEvaluator 或回退 Phase 1 逻辑
      */
     public function evaluateWeapon():Void {
+        if (data.evaluator != null) {
+            data.evaluator.evaluateWeaponMode(data);
+            return;
+        }
+        // ── Phase 1 fallback ──
         var self = data.self;
-
-        // 调用单位自身的武器切换逻辑（_root.主角函数.随机切换攻击模式）
         self.随机切换攻击模式();
-
-        // 根据攻击模式设定范围（精确复刻原 switch 逻辑）
         switch (self.攻击模式) {
             case "空手":
-                self.x轴攻击范围 = 90;
-                self.y轴攻击范围 = 20;
-                self.x轴保持距离 = 50;
-                break;
+                self.x轴攻击范围 = 90;  self.y轴攻击范围 = 20; self.x轴保持距离 = 50;  break;
             case "兵器":
-                self.x轴攻击范围 = 150;
-                self.y轴攻击范围 = 20;
-                self.x轴保持距离 = 150;
-                break;
-            case "长枪":
-            case "手枪":
-            case "手枪2":
-            case "双枪":
-                self.x轴攻击范围 = 400;
-                self.y轴攻击范围 = 20;
-                self.x轴保持距离 = 200;
-                break;
+                self.x轴攻击范围 = 150; self.y轴攻击范围 = 20; self.x轴保持距离 = 150; break;
+            case "长枪": case "手枪": case "手枪2": case "双枪":
+                self.x轴攻击范围 = 400; self.y轴攻击范围 = 20; self.x轴保持距离 = 200; break;
             case "手雷":
-                self.x轴攻击范围 = 300;
-                self.y轴攻击范围 = 10;
-                self.x轴保持距离 = 200;
-                break;
-            default:
-                break;
+                self.x轴攻击范围 = 300; self.y轴攻击范围 = 10; self.x轴保持距离 = 200; break;
         }
-
-        // 同步到 data（供 HeroCombatModule Gate 判定使用）
         data.xrange = self.x轴攻击范围;
         data.zrange = self.y轴攻击范围;
         data.xdistance = self.x轴保持距离;
     }
 
-    // ═══════ 血包评估（Phase 2 注入点）═══════
+    // ═══════ 血包评估 ═══════
 
     /**
-     * evaluateHeal — Phase 1: 精确复刻原血包使用逻辑
-     *
-     * 基于双方肉度（hp/防御减伤比）计算使用概率，
-     * 满足条件时使用血包。
+     * evaluateHeal — 委托 UtilityEvaluator 或回退 Phase 1 逻辑
      */
     public function evaluateHeal():Void {
-        var self = data.self;
-        var 当前时间:Number = _root.帧计时器.当前帧数;
-
-        // 前置条件：有血包 + 冷却完毕
-        if (self.血包数量 <= 0 || 当前时间 - self.上次使用血包时间 <= self.血包使用间隔) {
+        if (data.evaluator != null) {
+            data.evaluator.evaluateHealNeed(data);
             return;
         }
-
+        // ── Phase 1 fallback ──
+        var self = data.self;
+        var 当前时间:Number = _root.帧计时器.当前帧数;
+        if (self.血包数量 <= 0 || 当前时间 - self.上次使用血包时间 <= self.血包使用间隔) return;
         var 游戏世界 = _root.gameworld;
-
-        // 计算己方肉度：hp / 防御减伤比
         var 自机肉度:Number = self.hp / DamageResistanceHandler.defenseDamageRatio(self.防御力);
-
-        // 安全计算敌方肉度，目标不存在则取己方肉度的1/5
         var enemy = 游戏世界[self.攻击目标];
         var 敌机肉度:Number = (enemy && enemy.hp != undefined)
-            ? enemy.hp / DamageResistanceHandler.defenseDamageRatio(enemy.防御力)
-            : NaN;
-        if (isNaN(敌机肉度)) {
-            敌机肉度 = 自机肉度 / 5;
-        }
-
-        // 强弱修正与恢复系数
+            ? enemy.hp / DamageResistanceHandler.defenseDamageRatio(enemy.防御力) : NaN;
+        if (isNaN(敌机肉度)) 敌机肉度 = 自机肉度 / 5;
         var 强弱修正系数:Number = 敌机肉度 / 自机肉度;
-        var 喝血系数:Number = 100 + 强弱修正系数 * 2
-            - self.血包恢复比例 * (100 - self.血包恢复比例) / 100;
+        var 喝血系数:Number = 100 + 强弱修正系数 * 2 - self.血包恢复比例 * (100 - self.血包恢复比例) / 100;
         var 损血补正:Number = self.hp满血值 * 喝血系数 / 100;
-
-        // 使用血包概率
-        var 使用血包概率:Number = Math.min(
-            (损血补正 - self.hp) * 100 / self.hp满血值 * 强弱修正系数,
-            喝血系数
-        );
-
-        // 触发判定（精确复刻原条件）
+        var 使用血包概率:Number = Math.min((损血补正 - self.hp) * 100 / self.hp满血值 * 强弱修正系数, 喝血系数);
         if (
             (_root.成功率(使用血包概率) && self.hp满血值 > self.hp * (100 + self.血包恢复比例 / 8) / 100) ||
             (游戏世界.允许通行 && self.hp满血值 > self.hp)

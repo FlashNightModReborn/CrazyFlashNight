@@ -123,8 +123,12 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
             self.方向改变("右");
         }
 
-        // 技能/普攻选择（Phase 2 注入点）
-        selectSkill();
+        // 技能/普攻选择 — 委托 UtilityEvaluator 或回退 Phase 1
+        if (data.evaluator != null) {
+            data.evaluator.selectCombatAction(data);
+        } else {
+            selectSkillFallback();
+        }
 
         // 目标死亡检查
         if (t.hp <= 0 || t.hp == undefined) {
@@ -132,24 +136,14 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         }
     }
 
-    // ═══════ 技能选择（Phase 2 替换为 Utility 评分）═══════
+    // ═══════ Phase 1 Fallback（evaluator 不存在时）═══════
 
-    /**
-     * selectSkill — Phase 1: 复刻当前随机技能选择逻辑
-     */
-    public function selectSkill():Void {
+    private function selectSkillFallback():Void {
         var self:MovieClip = data.self;
         var X轴距离:Number = data.absdiff_x;
 
-        // 技能使用概率 = 距离越近越高，基底20%
         var 技能使用概率:Number = Math.max(60 / X轴距离 * self.等级, 20);
-
-        // 尾上世莉架 特殊3倍
-        if (self.名字 == "尾上世莉架") {
-            技能使用概率 *= 3;
-        }
-
-        // 空手模式抑制
+        if (self.名字 == "尾上世莉架") 技能使用概率 *= 3;
         if (self.攻击模式 === "空手") {
             技能使用概率 = Math.min(技能使用概率, 100 - (Math.sqrt(self.佣兵技能概率抑制基数) + 5) * 2);
         }
@@ -165,10 +159,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         }
     }
 
-    /**
-     * getRandomSkill — 蓄水池随机技能选择（精确复刻）
-     */
-    public function getRandomSkill():String {
+    private function getRandomSkill():String {
         var self:MovieClip = data.self;
         var 当前时间:Number = getTimer();
         var 攻击目标:String = self.攻击目标;

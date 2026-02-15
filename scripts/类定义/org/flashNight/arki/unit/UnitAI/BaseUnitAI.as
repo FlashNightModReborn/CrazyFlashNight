@@ -35,13 +35,16 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitAI{
                 this.stateMachine = new EnemyBehavior(this.data);
                 break;
         }
-        
+
         this.stateMachine.activate();
     }
 
     //更新函数
+    // 反应(反应)驱动的throttle不在此层实现 — unitUpdateWheel已是4帧间隔，
+    // 复合tickInterval会导致Z轴阈值(10-20px)内振荡永远无法进入Engaging。
+    // 反应对AI灵敏度的影响通过 UtilityEvaluator 的 commitUntilFrame 实现。
     public function update():Void{
         this.stateMachine.onAction();
     }
-    
+
 }
