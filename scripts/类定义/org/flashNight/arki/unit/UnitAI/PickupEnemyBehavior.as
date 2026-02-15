@@ -20,7 +20,8 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
 
         // 过渡线
         this.pushGateTransition("ChasingPickup","Thinking",function(){
-            return data.target.area == null || this.actionCount >= PickupEnemyBehavior.CHASE_PICKUP_TIME;
+            var t = data.target;
+            return t == null || t.area == null || this.actionCount >= PickupEnemyBehavior.CHASE_PICKUP_TIME;
         });
     }
 
@@ -32,26 +33,31 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
         var maxdistance = 800;
         // 寻找攻击目标
         var chaseTarget = self.攻击目标;
-        if (!chaseTarget || chaseTarget == "无"){
-            // 在1到威胁阈值中选取一个随机值，通过该威胁值索敌
-            var threshold = self.threatThreshold > 1 ? LinearCongruentialEngine.instance.randomIntegerStrict(1, threshold) : self.threatThreshold;
-            var target_enemy = TargetCacheManager.findNearestThreateningEnemy(self, 1, threshold); 
-            // 先检索敌人距离
-            var distance:Number = Math.abs(target_enemy._x - data.x);
-            
-            if(target_enemy){
-                // 最大拾取范围为最近敌人的距离与800中的最小值
-                if(distance > 0 && distance < maxdistance) maxdistance = distance;
-                data.target = target_enemy;
-                self.dispatcher.publish("aggroSet", self, target_enemy);
-                self.拾取目标 = null;
-            }
-        }else{
+        if (chaseTarget && chaseTarget != "无") {
             data.target = _root.gameworld[chaseTarget];
+        } else {
+            // 在1到威胁阈值中选取一个随机值，通过该威胁值索敌
+            var threshold = self.threatThreshold > 1 ? LinearCongruentialEngine.instance.randomIntegerStrict(1, self.threatThreshold) : self.threatThreshold;
+            var target_enemy = TargetCacheManager.findNearestThreateningEnemy(self, 1, threshold);
+
+            if (target_enemy) {
+                // 最大拾取范围为最近敌人的距离与800中的最小值
+                var distance:Number = Math.abs(target_enemy._x - data.x);
+                if (distance > 0 && distance < maxdistance) maxdistance = distance;
+
+                data.target = target_enemy;
+                if (self.dispatcher) self.dispatcher.publish("aggroSet", self, target_enemy);
+                self.拾取目标 = null;
+            } else {
+                data.target = null;
+            }
         }
-        if (data.target.hp <= 0){
+
+        // 清理无效的仇恨目标（死亡/已删除/无hp字段）
+        var enemy:MovieClip = data.target;
+        if (enemy != null && !(enemy.hp > 0)) {
             data.target = null;
-            self.dispatcher.publish("aggroClear", self);
+            if (self.dispatcher) self.dispatcher.publish("aggroClear", self);
         }
         // 寻找地上的可拾取物
         // 单位为己方单位时，判定背包是否已满，若背包已满则本张图无法再触发拾取
@@ -103,14 +109,24 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
             // 若找到符合条件的可拾取物，进入拾取状态
             if(target_item != null){
                 data.target = target_item;
-                self.dispatcher.publish("aggroClear", self);
+                if (self.dispatcher) self.dispatcher.publish("aggroClear", self);
                 self.拾取目标 = target_item._name;
                 this.superMachine.ChangeState("ChasingPickup");
                 return;
             }
         }
-        var newstate:String = data.target ? "Chasing" : "Following";
-        this.superMachine.ChangeState(newstate);
+
+        // 无拾取目标时按战斗目标/主角生存决定状态
+        if (data.target) {
+            this.superMachine.ChangeState("Chasing");
+            return;
+        }
+
+        var hero = TargetCacheManager.findHero();
+        if (hero != data.player) {
+            data.player = hero;
+        }
+        this.superMachine.ChangeState((!hero || !(hero.hp > 0)) ? "Evading" : "Following");
     }
 
     // 拾取物品

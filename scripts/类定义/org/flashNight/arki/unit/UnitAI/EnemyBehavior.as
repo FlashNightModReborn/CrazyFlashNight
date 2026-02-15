@@ -77,9 +77,22 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior {
     public function think():Void {
         data.updateSelf(); // 更新自身坐标
 
-        //search target
+        // search target
         var self = data.self;
         var chaseTarget = self.攻击目标;
+
+        // 先尝试解析“当前仇恨目标名”到真实对象；若目标已失效则清除并降级为重新索敌
+        if (chaseTarget && chaseTarget != "无") {
+            data.target = _root.gameworld[chaseTarget];
+            var resolved:MovieClip = data.target;
+            if (resolved == null || !(resolved.hp > 0)) {
+                data.target = null;
+                self.dispatcher.publish("aggroClear", self);
+                chaseTarget = "无";
+            }
+        }
+
+        // 当前无有效仇恨目标时才执行主动索敌
         if (!chaseTarget || chaseTarget == "无") {
             // 在1到威胁阈值中选取一个随机值，通过该威胁值索敌
             var threshold = self.threatThreshold > 1 ? LinearCongruentialEngine.instance.randomIntegerStrict(1, self.threatThreshold) : self.threatThreshold;
@@ -90,16 +103,6 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior {
                 data.target = target;
                 self.dispatcher.publish("aggroSet", self, target);
             }
-        } else {
-            data.target = _root.gameworld[chaseTarget];
-        }
-        // 检查目标是否有效，利用 !(hp > 0) 的数值比较特性同时处理：
-        // undefined(已删除)、NaN、<=0 的情况；仅需排除已主动清除的 null 状态
-        var t:MovieClip = data.target;
-        if (t !== null && !(t.hp > 0)) {
-            data.target = null;
-            self.dispatcher.publish("aggroClear", self);
-                // _root.服务器.发布服务器消息(self._name, " 原攻击目标无效，已清除");
         }
 
         // _root.服务器.发布服务器消息(self._name, " 思考结果：", (data.target ? data.target._name : "无目标"));
@@ -115,7 +118,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior {
                 data.player = hero;
             }
 
-            if (!hero || hero.hp <= 0) {
+            if (!hero || !(hero.hp > 0)) {
                 // 未找到攻击目标且主角死亡时，选择远离
                 newstate = "Evading";
             } else {
@@ -147,10 +150,37 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior {
     // 追击
     public function chase():Void {
         var self = data.self;
-        // 与攻击目标参数一致
-        if (data.target._name != self.攻击目标) {
-            data.target = _root.gameworld[self.攻击目标];
+
+        // 追击状态必须保证目标存在且有效；否则立即退回思考重新决策（避免“发呆/锁死”）
+        var chaseTarget:String = self.攻击目标;
+        if (!chaseTarget || chaseTarget == "无") {
+            data.target = null;
+            self.dispatcher.publish("aggroClear", self);
+            self.左行 = false;
+            self.右行 = false;
+            self.上行 = false;
+            self.下行 = false;
+            this.superMachine.ChangeState("Thinking");
+            return;
         }
+
+        // 与攻击目标参数一致（避免直接访问 data.target._name 导致 undefined 异常）
+        if (!data.target || data.target._name != chaseTarget) {
+            data.target = _root.gameworld[chaseTarget];
+        }
+
+        var t:MovieClip = data.target;
+        if (t == null || !(t.hp > 0)) {
+            data.target = null;
+            self.dispatcher.publish("aggroClear", self);
+            self.左行 = false;
+            self.右行 = false;
+            self.上行 = false;
+            self.下行 = false;
+            this.superMachine.ChangeState("Thinking");
+            return;
+        }
+
         // 更新自身与攻击目标的坐标及差值
         data.updateSelf();
         data.updateTarget();
