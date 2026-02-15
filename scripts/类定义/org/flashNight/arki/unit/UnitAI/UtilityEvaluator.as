@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.unit.UnitAI.UnitAIData;
+import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
 /**
  * UtilityEvaluator — 人格驱动 Utility AI 评估器
@@ -31,6 +32,9 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
     private var _repeatCount:Number;
     private var _lastWeaponSwitchFrame:Number;
 
+    // ── 确定性随机源 ──
+    private var _rng:LinearCongruentialEngine;
+
     // ── 候选池（复用减少 GC）──
     private var _candidates:Array;
 
@@ -42,6 +46,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
 
     public function UtilityEvaluator(personality:Object) {
         this.p = personality;
+        this._rng = LinearCongruentialEngine.getInstance();
         this._commitUntilFrame = 0;
         this._lastActionType = null;
         this._lastSkillName = null;
@@ -107,8 +112,8 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
             }
         }
 
-        // Hold（始终可选，低分兜底）
-        candidates.push({name: "Hold", type: "hold", score: 0});
+        // Hold 已移除：Engaging 状态 = 射程内应战，BasicAttack 是万能兜底。
+        // 不想打 → Gate 退回 Chasing；Hold 只会造成发呆。
 
         // ── 2. Score: 多维评分 ──
         var evalDepth:Number = p.evalDepth;
@@ -138,7 +143,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
             }
 
             // 技术噪声（高技术→低噪声→更准确）
-            total += (Math.random() - 0.5) * noise;
+            total += (_rng.nextFloat() - 0.5) * noise;
 
             c.score = total;
         }
@@ -183,10 +188,18 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         // ── 4. Boltzmann 选择 ──
         var selected:Object = boltzmannSelect(candidates, T);
 
-        // ── 5. 执行 ──
+        // ── 5. 技能属性预写入（必须在 executeCombatAction 之前）──
+        // 技能路由 技能标签跳转_旧 内部读取 self.技能等级 决定技能版本，
+        // 上次使用时间 也必须在路由前写入以防同帧重入冷却检查
+        if (selected.type == "skill") {
+            self.技能等级 = selected.skill.技能等级;
+            selected.skill.上次使用时间 = nowMs;
+        }
+
+        // ── 6. 执行 ──
         executeCombatAction(selected, self);
 
-        // ── 6. 更新状态 ──
+        // ── 7. 更新评估器内部状态 ──
         // commitment × reactionMult 已在函数开头预计算
         _commitUntilFrame = currentFrame + Math.round(commitment * reactionMult);
         _lastActionType = selected.type;
@@ -198,13 +211,11 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
                 _repeatCount = 0;
             }
             _lastSkillName = selected.name;
-            selected.skill.上次使用时间 = nowMs;
-            self.技能等级 = selected.skill.技能等级;
         } else {
             _repeatCount = 0;
         }
 
-        // ── 7. Debug 输出 ──
+        // ── 8. Debug 输出 ──
         if (_root.AI调试模式 == true) {
             debugTop3(candidates, selected, self, T);
         }
@@ -300,7 +311,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         }
 
         // 轮盘选择
-        var r:Number = Math.random() * sumExp;
+        var r:Number = _rng.nextFloat() * sumExp;
         var cum:Number = 0;
         for (var k:Number = 0; k < len; k++) {
             cum += candidates[k]._ew;
@@ -331,11 +342,12 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
     }
 
     private function repeatLastAction(self:MovieClip):Void {
-        // commitment 期间：普攻继续输出，技能/hold 不重复触发
-        if (_lastActionType == "attack") {
-            self.动作A = true;
-            if (self.攻击模式 === "双枪") self.动作B = true;
-        }
+        // commitment 锁期内一律输出普攻:
+        // - 技能是一次性路由（动画触发后引擎接管），不能也不需要"重复"
+        // - hold 只在决策帧有意义，后续帧空输出 = 发呆
+        // 锁的作用是阻止重新选择动作，不是阻止攻击输出
+        self.动作A = true;
+        if (self.攻击模式 === "双枪") self.动作B = true;
     }
 
     // ═══════ 2. 武器模式选择 ═══════
@@ -510,6 +522,13 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
     // ═══════ Debug 输出 ═══════
 
     private function debugTop3(candidates:Array, selected:Object, self:MovieClip, T:Number):Void {
+        // 计算概率分母（所有候选的 exp 权重之和）
+        var sumExp:Number = 0;
+        for (var s:Number = 0; s < candidates.length; s++) {
+            sumExp += candidates[s]._ew;
+        }
+        if (sumExp <= 0) sumExp = 1; // 防除零
+
         // 按分数降序排列（浅拷贝）
         var sorted:Array = candidates.slice(0);
         sorted.sort(function(a, b) {
@@ -520,8 +539,8 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         var count:Number = sorted.length < 3 ? sorted.length : 3;
         for (var i:Number = 0; i < count; i++) {
             var ci:Object = sorted[i];
-            var prob:Number = Math.round((ci._ew / (ci._ew + 0.001)) * 100);
-            msg += ci.name + "=" + (Math.round(ci.score * 100) / 100);
+            var prob:Number = Math.round(ci._ew / sumExp * 100);
+            msg += ci.name + "=" + (Math.round(ci.score * 100) / 100) + "(" + prob + "%)";
             if (i < count - 1) msg += ", ";
         }
         msg += " -> " + selected.name + " [T=" + (Math.round(T * 100) / 100) + "]";
