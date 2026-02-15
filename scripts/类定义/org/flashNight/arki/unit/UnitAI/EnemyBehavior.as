@@ -191,11 +191,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior {
             self.右行 = false;
             self.上行 = false;
             self.下行 = false;
-            if (data.target.hp <= 0) {
-                self.dispatcher.publish("aggroClear", self);
-            } else {
-                self.dispatcher.publish("aggroSet", self, data.target);
-            }
+            self.dispatcher.publish("aggroSet", self, data.target);
             if (data.diff_x < 0) {
                 self.方向改变("左");
             } else if (data.diff_x > 0) {

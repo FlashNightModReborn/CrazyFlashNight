@@ -33,10 +33,20 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
         var maxdistance = 800;
         // 寻找攻击目标
         var chaseTarget = self.攻击目标;
+
+        // 先尝试解析现有仇恨目标；若已失效则清除并降级为重新索敌
         if (chaseTarget && chaseTarget != "无") {
             data.target = _root.gameworld[chaseTarget];
-        } else {
-            // 在1到威胁阈值中选取一个随机值，通过该威胁值索敌
+            var resolved:MovieClip = data.target;
+            if (resolved == null || !(resolved.hp > 0)) {
+                data.target = null;
+                self.dispatcher.publish("aggroClear", self);
+                chaseTarget = "无";
+            }
+        }
+
+        // 当前无有效仇恨目标时执行主动索敌
+        if (!chaseTarget || chaseTarget == "无") {
             var threshold = self.threatThreshold > 1 ? LinearCongruentialEngine.instance.randomIntegerStrict(1, self.threatThreshold) : self.threatThreshold;
             var target_enemy = TargetCacheManager.findNearestThreateningEnemy(self, 1, threshold);
 
@@ -46,18 +56,11 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
                 if (distance > 0 && distance < maxdistance) maxdistance = distance;
 
                 data.target = target_enemy;
-                if (self.dispatcher) self.dispatcher.publish("aggroSet", self, target_enemy);
+                self.dispatcher.publish("aggroSet", self, target_enemy);
                 self.拾取目标 = null;
             } else {
                 data.target = null;
             }
-        }
-
-        // 清理无效的仇恨目标（死亡/已删除/无hp字段）
-        var enemy:MovieClip = data.target;
-        if (enemy != null && !(enemy.hp > 0)) {
-            data.target = null;
-            if (self.dispatcher) self.dispatcher.publish("aggroClear", self);
         }
         // 寻找地上的可拾取物
         // 单位为己方单位时，判定背包是否已满，若背包已满则本张图无法再触发拾取
@@ -109,7 +112,7 @@ class org.flashNight.arki.unit.UnitAI.PickupEnemyBehavior extends EnemyBehavior{
             // 若找到符合条件的可拾取物，进入拾取状态
             if(target_item != null){
                 data.target = target_item;
-                if (self.dispatcher) self.dispatcher.publish("aggroClear", self);
+                self.dispatcher.publish("aggroClear", self);
                 self.拾取目标 = target_item._name;
                 this.superMachine.ChangeState("ChasingPickup");
                 return;
