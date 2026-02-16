@@ -134,6 +134,20 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
     }
 
     /**
+     * holdCurrentBody — 维持当前 body 动作的持续按键输出
+     *
+     * Attack 是 hold 语义：engage() 每 tick 重置 動作A=false，
+     * 若不重新输出则 ShootCore/ComboChain 视为"松手" → 加特林停火/连招中断。
+     * Trigger 类型（skill/reload/preBuff）由引擎管理动画，无需 hold。
+     */
+    public function holdCurrentBody(self:MovieClip):Void {
+        if (_bodyType == "attack") {
+            self.动作A = true;
+            if (self.攻击模式 === "双枪") self.动作B = true;
+        }
+    }
+
+    /**
      * getContinueScore — 当前 body 动作对应的 Continue 候选评分
      *
      * Skill/PreBuff: 1.5（强保护）
@@ -204,7 +218,13 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
                 self.man.gotoAndPlay("换弹匣");
                 break;
             case "continue":
-                // 延续当前动作 — 不输出任何指令
+                // 安全兜底：attack hold 语义
+                // 正常路径下 attack committed 不注入 Continue（tier 2 hold 分流）
+                // 此处仅防御性保护，避免结构变更后遗漏
+                if (_bodyType == "attack") {
+                    self.动作A = true;
+                    if (self.攻击模式 === "双枪") self.动作B = true;
+                }
                 break;
         }
     }

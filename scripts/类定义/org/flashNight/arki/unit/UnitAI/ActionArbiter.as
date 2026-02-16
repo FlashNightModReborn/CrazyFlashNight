@@ -149,51 +149,76 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             }
         }
 
-        // 2. 中断过滤 + Continue 注入
+        // 2. 中断过滤 + hold/trigger 分流
+        //
+        // 输入语义区分：
+        //   attack = hold 型（持续按键）→ 不注入 Continue，由 holdCurrentBody 维持
+        //   skill/reload/preBuff = trigger 型（一次性触发）→ Continue 作为 Boltzmann 屏障
+        //
         if (candidates.length > 0) {
-            if (_executor.isBodyCommitted(frame)) {
+            var isCommitted:Boolean = _executor.isBodyCommitted(frame);
+            var holdAttack:Boolean = false;
+
+            if (isCommitted) {
                 _filterByInterrupt(candidates, frame);
-                // 注入 Continue 候选（分数按当前 body 动作类型区分）
-                candidates.push({
-                    name: "Continue", type: "continue", priority: -1,
-                    score: _executor.getContinueScore()
-                });
+
+                if (_executor.getCurrentBodyType() == "attack") {
+                    // ── Hold 语义 ──
+                    // 不注入 Continue → Boltzmann 只在能抢断的候选中选
+                    // 无候选/无新动作 → holdCurrentBody 维持 動作A
+                    holdAttack = true;
+                } else {
+                    // ── Trigger 语义 ──
+                    // Continue 分数屏障：保护技能/换弹动画不被低分候选打断
+                    candidates.push({
+                        name: "Continue", type: "continue", priority: -1,
+                        score: _executor.getContinueScore()
+                    });
+                }
             }
 
             // 3. 评分 + Boltzmann + 执行
-            var T:Number = p.temperature;
-            if (isNaN(T) || T < 0.01) T = 0.2;
+            if (candidates.length > 0) {
+                var T:Number = p.temperature;
+                if (isNaN(T) || T < 0.01) T = 0.2;
 
-            _scoreCandidates(candidates, data, self, T);
-            var selected:Object = _scorer.boltzmannSelect(candidates, T);
+                _scoreCandidates(candidates, data, self, T);
+                var selected:Object = _scorer.boltzmannSelect(candidates, T);
 
-            if (selected != null) {
-                // 技能属性预写入（必须在 execute 之前）
-                if (selected.type == "skill" || selected.type == "preBuff") {
-                    if (selected.skill != null) {
-                        self.技能等级 = selected.skill.技能等级;
-                        selected.skill.上次使用时间 = getTimer();
+                if (selected != null) {
+                    // 技能属性预写入（必须在 execute 之前）
+                    if (selected.type == "skill" || selected.type == "preBuff") {
+                        if (selected.skill != null) {
+                            self.技能等级 = selected.skill.技能等级;
+                            selected.skill.上次使用时间 = getTimer();
+                        }
+                    }
+
+                    // 执行
+                    _executor.execute(selected, self);
+
+                    // 提交 commitment + 后处理（Continue 不提交）
+                    if (selected.type != "continue") {
+                        var commitF:Number = selected.commitFrames;
+                        if (isNaN(commitF)) commitF = 5;
+                        var reactionMult:Number = p.tickInterval || 1;
+                        if (reactionMult < 1) reactionMult = 1;
+                        _executor.commitBody(selected.type, selected.priority,
+                            Math.round(commitF * reactionMult), frame);
+                        _postExecution(selected, data, frame);
+                        holdAttack = false; // 新动作已接管 body 轨
+                    }
+
+                    // Debug 输出
+                    if (_root.AI调试模式 == true) {
+                        _scorer.debugTop3(candidates, selected, self, T);
                     }
                 }
+            }
 
-                // 执行
-                _executor.execute(selected, self);
-
-                // 提交 commitment + 后处理（Continue 不提交）
-                if (selected.type != "continue") {
-                    var commitF:Number = selected.commitFrames;
-                    if (isNaN(commitF)) commitF = 5;
-                    var reactionMult:Number = p.tickInterval || 1;
-                    if (reactionMult < 1) reactionMult = 1;
-                    _executor.commitBody(selected.type, selected.priority,
-                        Math.round(commitF * reactionMult), frame);
-                    _postExecution(selected, data, frame);
-                }
-
-                // Debug 输出
-                if (_root.AI调试模式 == true) {
-                    _scorer.debugTop3(candidates, selected, self, T);
-                }
+            // 4. Attack hold：无新动作打断 → 维持按键输出
+            if (holdAttack) {
+                _executor.holdCurrentBody(self);
             }
         }
 
