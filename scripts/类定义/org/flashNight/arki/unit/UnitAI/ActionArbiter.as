@@ -20,7 +20,8 @@ import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
  *
  * Candidate 结构：
  *   { name, type, priority, commitFrames, score, skill?, mode? }
- *   priority: 0=emergency, 1=skill/preBuff, 2=reload, 3=attack
+ *   priority: 0=emergency(躲避/解围霸体), 1=skill/preBuff, 2=reload, 3=attack
+ *   中断规则：严格小于（<）才能中断 → 同优先级不互断
  */
 class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
@@ -89,19 +90,25 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         var candidates:Array = _candidates;
         candidates.length = 0;
 
-        // 1. 策略组按 context 注入候选
-        switch (context) {
-            case "engage":
-                _collectOffense(data, candidates);      // priority 1 (skill) / 3 (attack)
-                _collectReload(data, candidates);       // priority 2
-                break;
-            case "chase":
-                _collectPreBuff(data, candidates);      // priority 1
-                _collectReload(data, candidates);       // priority 2
-                break;
-            case "selector":
-                // body 轨无候选（selector 是瞬态，只做 stance + item 评估）
-                break;
+        // 换弹状态保护：换弹动画播放中 → body 轨强制空置（不收集新候选）
+        // 换弹标签是游戏引擎的实际动画状态，比帧计数更可靠
+        var isReloading:Boolean = (self.man.换弹标签 != null && self.man.换弹标签 != undefined);
+
+        // 1. 策略组按 context 注入候选（换弹中跳过）
+        if (!isReloading) {
+            switch (context) {
+                case "engage":
+                    _collectOffense(data, candidates);      // priority 0(emergency) / 1(skill) / 3(attack)
+                    _collectReload(data, candidates);       // priority 2
+                    break;
+                case "chase":
+                    _collectPreBuff(data, candidates);      // priority 1
+                    _collectReload(data, candidates);       // priority 2
+                    break;
+                case "selector":
+                    // body 轨无候选（selector 是瞬态，只做 stance + item 评估）
+                    break;
+            }
         }
 
         // 2. 中断过滤 + Continue 注入
@@ -156,9 +163,8 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         _evaluateStance(data, context, frame);
 
         // ═══ item 轨：血包使用 ═══
-        if (context == "selector") {
-            _evaluateHeal(data);
-        }
+        // 所有 context 均可评估（使用间隔由 evaluateHealNeed 内部控制）
+        _evaluateHeal(data);
     }
 
     // ═══════ 策略组：Offense（技能 + 平A）═══════
@@ -194,8 +200,10 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                     if (self.buffManager != null && self.buffManager.getBuffById(preBuffMark.buffId) != null) continue;
                 }
 
+                // 躲避/解围霸体 → emergency(0)：可中断正在施放的普通技能
+                var skillPri:Number = (sk.功能 == "躲避" || sk.功能 == "解围霸体") ? 0 : 1;
                 candidates.push({
-                    name: sk.技能名, type: "skill", priority: 1,
+                    name: sk.技能名, type: "skill", priority: skillPri,
                     skill: sk, commitFrames: commitment, score: 0
                 });
                 skillCount++;
@@ -225,7 +233,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
         candidates.push({
             name: "Reload", type: "reload", priority: 2,
-            commitFrames: 15, score: score
+            commitFrames: 30, score: score  // 30帧 ≈ 换弹动画时长；主保护靠换弹标签状态检查
         });
     }
 
@@ -472,6 +480,13 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
      */
     private function _evaluateStance(data:UnitAIData, context:String, frame:Number):Void {
         var self:MovieClip = data.self;
+
+        // 换弹中禁止切武器（切武器会打断换弹动画）
+        if (self.man.换弹标签 != null && self.man.换弹标签 != undefined) {
+            _scorer.applyWeaponRanges(self, data);
+            _scorer.syncStance(self.攻击模式);
+            return;
+        }
 
         // stance 冷却（8帧）
         if (!_executor.canEvaluateStance(frame)) {

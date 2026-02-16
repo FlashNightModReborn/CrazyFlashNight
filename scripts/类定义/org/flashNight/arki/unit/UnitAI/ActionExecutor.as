@@ -6,8 +6,9 @@
  *   stance: 武器模式切换 — 冷却
  *   item  : 消耗品使用（血包）— 冷却
  *
- * body 中断规则：candidate.priority <= currentAction.priority → 允许中断
+ * body 中断规则：candidate.priority < currentAction.priority → 允许中断（严格小于）
  *   Emergency(0) > Skill/PreBuff(1) > Reload(2) > Attack(3)
+ *   同优先级不互断；躲避/解围霸体设为 Emergency(0) 可抢断技能
  */
 class org.flashNight.arki.unit.UnitAI.ActionExecutor {
 
@@ -49,12 +50,14 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
     /**
      * canInterruptBody — 检查候选是否能中断当前 body 动作
      *
-     * 规则：candidate.priority <= currentAction.priority
+     * 规则：candidate.priority < currentAction.priority（严格小于）
+     * 同优先级不能互相中断 → 技能(1)不取消技能(1)
+     * 紧急技能(0)可中断技能(1) → 躲避/解围霸体设为 priority=0
      * 未 committed 时始终允许
      */
     public function canInterruptBody(candidatePriority:Number, frame:Number):Boolean {
         if (!isBodyCommitted(frame)) return true;
-        return candidatePriority <= _bodyPriority;
+        return candidatePriority < _bodyPriority;
     }
 
     /**
