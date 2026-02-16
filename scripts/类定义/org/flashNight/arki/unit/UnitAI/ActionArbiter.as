@@ -87,15 +87,23 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
         // ═══ body 轨：统一动作选择 ═══
 
+        // 刷新动画标签锁（换弹标签 / 刚体 / 刚体标签）
+        _executor.updateAnimLock(self);
+
         var candidates:Array = _candidates;
         candidates.length = 0;
 
-        // 换弹状态保护：换弹动画播放中 → body 轨强制空置（不收集新候选）
-        // 换弹标签是游戏引擎的实际动画状态，比帧计数更可靠
-        var isReloading:Boolean = (self.man.换弹标签 != null && self.man.换弹标签 != undefined);
-
-        // 1. 策略组按 context 注入候选（换弹中跳过）
-        if (!isReloading) {
+        // 1. 策略组按 context 注入候选
+        if (_executor.isAnimLocked()) {
+            // 动画锁期间：仅收集紧急候选（priority=0: 躲避/解围霸体）
+            // 换弹/技能刚体动画不应被普通技能/平A/换弹打断
+            if (context == "engage" || context == "chase") {
+                _collectOffense(data, candidates);
+                for (var ri:Number = candidates.length - 1; ri >= 0; ri--) {
+                    if (candidates[ri].priority > 0) candidates.splice(ri, 1);
+                }
+            }
+        } else {
             switch (context) {
                 case "engage":
                     _collectOffense(data, candidates);      // priority 0(emergency) / 1(skill) / 3(attack)
@@ -231,9 +239,11 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         var distBonus:Number = (safeDist > 1) ? 0.3 : -0.2;
         var score:Number = 0.3 + urgency * 0.5 + distBonus;
 
+        var reloadCommit:Number = p.reloadCommitFrames;
+        if (isNaN(reloadCommit) || reloadCommit < 15) reloadCommit = 30;
         candidates.push({
             name: "Reload", type: "reload", priority: 2,
-            commitFrames: 30, score: score  // 30帧 ≈ 换弹动画时长；主保护靠换弹标签状态检查
+            commitFrames: reloadCommit, score: score  // 主保护靠动画标签锁（换弹标签/刚体）
         });
     }
 
@@ -475,36 +485,42 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
      * _evaluateStance — 委托 scorer 进行武器评估
      *
      * 在 body 管线之后执行，独立轨道不与 body 冲突。
-     * 追加 executor 层的 cooldown + 技能保护守卫。
-     * chase 上下文：仅在追击 40 帧后评估（frustration 机制）。
+     * 守卫链：动画锁 → stance冷却 → 技能保护 → chase frustration
+     * 参数来源：p.stanceCooldown, p.skillAnimProtect, p.chaseFrustration
      */
     private function _evaluateStance(data:UnitAIData, context:String, frame:Number):Void {
         var self:MovieClip = data.self;
 
-        // 换弹中禁止切武器（切武器会打断换弹动画）
-        if (self.man.换弹标签 != null && self.man.换弹标签 != undefined) {
+        // 动画锁期间禁止切武器（换弹/技能刚体动画会被打断）
+        if (_executor.isAnimLocked()) {
             _scorer.applyWeaponRanges(self, data);
             _scorer.syncStance(self.攻击模式);
             return;
         }
 
-        // stance 冷却（8帧）
+        // stance 冷却
+        var stanceCd:Number = p.stanceCooldown;
+        if (isNaN(stanceCd) || stanceCd < 4) stanceCd = 8;
         if (!_executor.canEvaluateStance(frame)) {
             _scorer.applyWeaponRanges(self, data);
             _scorer.syncStance(self.攻击模式);
             return;
         }
 
-        // 技能动画保护：18帧内禁止切换武器
-        if (frame - _executor.getLastSkillUseFrame() < 18) {
+        // 技能动画保护：施放技能后 N 帧内禁止切武器
+        var skillProtect:Number = p.skillAnimProtect;
+        if (isNaN(skillProtect) || skillProtect < 8) skillProtect = 18;
+        if (frame - _executor.getLastSkillUseFrame() < skillProtect) {
             _scorer.applyWeaponRanges(self, data);
             _scorer.syncStance(self.攻击模式);
             return;
         }
 
-        // chase frustration：追击 40 帧后才评估
+        // chase frustration：追击 N 帧后才评估
+        var frustration:Number = p.chaseFrustration;
+        if (isNaN(frustration) || frustration < 10) frustration = 40;
         if (context == "chase" && !isNaN(data._chaseStartFrame)) {
-            if (frame - data._chaseStartFrame <= 40) {
+            if (frame - data._chaseStartFrame <= frustration) {
                 _scorer.applyWeaponRanges(self, data);
                 _scorer.syncStance(self.攻击模式);
                 return;
@@ -513,7 +529,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
         // 委托 scorer 执行实际武器评估
         _scorer.evaluateWeaponMode(data);
-        _executor.commitStance(8, frame);
+        _executor.commitStance(stanceCd, frame);
     }
 
     // ═══════ item 轨：血包使用 ═══════

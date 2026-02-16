@@ -71,17 +71,36 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
     //   远程牵制 > 近战换血 的战术思路通过系数差异表达
 
     private static var WEAPON_POWER:Object = initWeaponPower();
-    private static var POWER_WEIGHT:Number = 0.5;
+    private static var POWER_WEIGHT:Number = 0.3;  // 降权：让距离/人格有更多发言权
 
     private static function initWeaponPower():Object {
         var wp:Object = {};
         wp["空手"] = 0.1;   // 极低：几乎不应主动选择
-        wp["兵器"] = 0.75;   // 近战武器，效率较高但有风险
+        wp["兵器"] = 0.75;  // 近战武器，效率较高但有风险
         wp["手枪"] = 0.6;   // 单手枪，略优于近战
         wp["双枪"] = 0.8;   // 双持高火力
         wp["长枪"] = 1.0;   // 最高效远程输出
         wp["手雷"] = 0.5;   // 情境武器，中性
         return wp;
+    }
+
+    // ═══════ 武器有效射程表（射程匹配度评分用）═══════
+    //
+    // min/max 定义每种武器的最优作战距离区间
+    // 在区间内 → +0.1，偏离 → 按距离线性惩罚，封顶 -0.3
+    // 与 WEAPON_POWER 共同决定武器选择：power 管基准偏好，range 管距离适应
+
+    private static var WEAPON_RANGES:Object = initWeaponRanges();
+
+    private static function initWeaponRanges():Object {
+        var wr:Object = {};
+        wr["空手"] = { min: 0,   max: 80  };
+        wr["兵器"] = { min: 0,   max: 180 };
+        wr["手枪"] = { min: 100, max: 350 };
+        wr["双枪"] = { min: 80,  max: 350 };
+        wr["长枪"] = { min: 150, max: 400 };
+        wr["手雷"] = { min: 150, max: 350 };
+        return wr;
     }
 
     // ═══════ Stance 配置表 ═══════
@@ -845,25 +864,51 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         }
         if (has长枪) modes.push("长枪");
 
+        // 切换成本/迟滞（从 personality 读取，fallback 硬编码）
+        var baseSwitchCost:Number = p.weaponSwitchCost;
+        if (isNaN(baseSwitchCost) || baseSwitchCost < 0.05) baseSwitchCost = 0.2;
+        var hysteresis:Number = p.weaponHysteresis;
+        if (isNaN(hysteresis) || hysteresis < 0) hysteresis = 0.1;
+
         for (var i:Number = 0; i < modes.length; i++) {
             var mode:String = modes[i];
             var score:Number = scoreWeaponMode(mode, dist, hpRatio);
+
+            // ── 射程匹配度 ──
+            // 在最优区间内 → +0.1；偏离 → 按距离线性惩罚，封顶 -0.3
+            var wRange:Object = WEAPON_RANGES[mode];
+            if (wRange != null) {
+                if (dist < wRange.min) {
+                    var underPenalty:Number = -(wRange.min - dist) / 200;
+                    score += (underPenalty < -0.3) ? -0.3 : underPenalty;
+                } else if (dist > wRange.max) {
+                    var overPenalty:Number = -(dist - wRange.max) / 200;
+                    score += (overPenalty < -0.3) ? -0.3 : overPenalty;
+                } else {
+                    score += 0.1; // 在最优区间内
+                }
+            }
 
             // ── 余弹比评分调制 ──
             // 满弹=+0.1, 半弹=0, 空弹=-0.5（大惩罚直接淘汰）
             var ammoR:Number = getAmmoRatio(self, mode);
             if (ammoR <= 0) {
-                score -= 0.5; // 空弹武器几乎不选
+                score -= 0.5;
             } else {
-                score += (ammoR - 0.5) * 0.2; // -0.1 ~ +0.1
+                score += (ammoR - 0.5) * 0.2;
             }
 
-            // 切换成本：基础 0.15，生存压力越高越愿意切换（成本降低）
-            if (mode != self.攻击模式) {
-                var switchCost:Number = 0.15 * (1 - healthPressure * 0.7);
-                if (switchCost < 0.03) switchCost = 0.03;
-                score -= switchCost;
+            // ── 切换成本 + 迟滞（hysteresis）──
+            // 切入新武器：需要越过 switchCost 关卡
+            // 维持当前武器：获得 hysteresis 加分（形成死区，抑制抖动）
+            if (mode == self.攻击模式) {
+                score += hysteresis; // 维持当前 → 加分
+            } else {
+                var switchCost:Number = baseSwitchCost * (1 - healthPressure * 0.7);
+                if (switchCost < 0.05) switchCost = 0.05;
+                score -= switchCost; // 切换 → 惩罚
             }
+
             if (score > bestScore) {
                 bestScore = score;
                 bestMode = mode;
@@ -887,9 +932,9 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         // ── Debug 武器评估输出 ──
         if (_root.AI调试模式 == true) {
             var curMode:String = didSwitch ? prevMode : self.攻击模式;
-            var dbgSwitchCost:Number = 0.15 * (1 - healthPressure * 0.7);
-            if (dbgSwitchCost < 0.03) dbgSwitchCost = 0.03;
-            var wmsg:String = "[WPN] " + self.名字 + " cur=" + curMode + " sc=" + (Math.round(dbgSwitchCost * 100) / 100) + " | ";
+            var dbgSwitchCost:Number = baseSwitchCost * (1 - healthPressure * 0.7);
+            if (dbgSwitchCost < 0.05) dbgSwitchCost = 0.05;
+            var wmsg:String = "[WPN] " + self.名字 + " cur=" + curMode + " sc=" + (Math.round(dbgSwitchCost * 100) / 100) + " hy=" + (Math.round(hysteresis * 100) / 100) + " | ";
             for (var di:Number = 0; di < modes.length; di++) {
                 var dm:String = modes[di];
                 var ds:Number = scoreWeaponMode(dm, dist, hpRatio);

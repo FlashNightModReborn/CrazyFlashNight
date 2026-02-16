@@ -6,6 +6,11 @@
  *   stance: 武器模式切换 — 冷却
  *   item  : 消耗品使用（血包）— 冷却
  *
+ * body commitment 双重锁定：
+ *   1. 帧计数锁（commitBody 提交时设定 _bodyCommitUntil）
+ *   2. 动画标签锁（换弹标签 / 刚体 / 刚体标签 → 动画仍在播放）
+ *   两者 OR 合并：任一为 true 即视为 committed
+ *
  * body 中断规则：candidate.priority < currentAction.priority → 允许中断（严格小于）
  *   Emergency(0) > Skill/PreBuff(1) > Reload(2) > Attack(3)
  *   同优先级不互断；躲避/解围霸体设为 Emergency(0) 可抢断技能
@@ -16,6 +21,9 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
     private var _bodyPriority:Number;
     private var _bodyCommitUntil:Number;
     private var _bodyType:String;
+
+    // ── 动画标签锁（每 tick 由 updateAnimLock 刷新）──
+    private var _animLocked:Boolean;
 
     // ── stance 轨冷却 ──
     private var _stanceCooldownUntil:Number;
@@ -36,15 +44,40 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         _bodyPriority = -1;
         _bodyCommitUntil = 0;
         _bodyType = null;
+        _animLocked = false;
         _stanceCooldownUntil = 0;
         _itemCooldownUntil = 0;
         _lastSkillUseFrame = -999;
     }
 
+    // ═══════ 动画标签锁 ═══════
+
+    /**
+     * updateAnimLock — 每 tick 刷新动画标签锁状态
+     *
+     * 检测游戏引擎实际动画状态（比帧计数更可靠）：
+     *   换弹标签 → 换弹动画播放中
+     *   刚体 / 刚体标签 → 技能超级装甲期间
+     * 注意：射击中(普攻)不视为锁定 — 技能应该能取消普攻
+     */
+    public function updateAnimLock(self:MovieClip):Void {
+        _animLocked = false;
+        if (self.man.换弹标签 != null && self.man.换弹标签 != undefined) { _animLocked = true; return; }
+        if (self.刚体 == true) { _animLocked = true; return; }
+        if (self.man.刚体标签 != null && self.man.刚体标签 != undefined) { _animLocked = true; return; }
+    }
+
+    public function isAnimLocked():Boolean {
+        return _animLocked;
+    }
+
     // ═══════ body 轨 ═══════
 
+    /**
+     * isBodyCommitted — 帧计数锁 OR 动画标签锁
+     */
     public function isBodyCommitted(frame:Number):Boolean {
-        return frame < _bodyCommitUntil;
+        return frame < _bodyCommitUntil || _animLocked;
     }
 
     /**
