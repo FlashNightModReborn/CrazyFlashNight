@@ -163,10 +163,24 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                 _filterByInterrupt(candidates, frame);
 
                 if (_executor.getCurrentBodyType() == "attack") {
-                    // ── Hold 语义 ──
-                    // 不注入 Continue → Boltzmann 只在能抢断的候选中选
-                    // 无候选/无新动作 → holdCurrentBody 维持 動作A
-                    holdAttack = true;
+                    var atkMode:String = self.攻击模式;
+                    if (atkMode == "空手" || atkMode == "兵器") {
+                        // ── 近战 Hold+Continue: 连招保护 ──
+                        // 勇气越高 → Continue 分数越高 → 连招越难被打断
+                        //   勇气 0.05 → 0.6（低保护，技能容易抢断）
+                        //   勇气 0.50 → 1.5（高保护，只有紧急技能能抢断）
+                        // execute(continue) 的 tier 1 安全兜底输出 動作A
+                        var meleeContScore:Number = 0.5 + (p.勇气 || 0) * 2.0;
+                        candidates.push({
+                            name: "Continue", type: "continue", priority: -1,
+                            score: meleeContScore
+                        });
+                    } else {
+                        // ── 远程 Hold: 不注入 Continue ──
+                        // 任何通过中断过滤的候选直接执行
+                        // 无候选/无新动作 → holdCurrentBody 维持按键
+                        holdAttack = true;
+                    }
                 } else {
                     // ── Trigger 语义 ──
                     // Continue 分数屏障：保护技能/换弹动画不被低分候选打断

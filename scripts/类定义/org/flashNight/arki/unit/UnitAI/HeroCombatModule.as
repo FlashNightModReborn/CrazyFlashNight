@@ -34,7 +34,19 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
             return _data.absdiff_z <= _data.zrange && _data.absdiff_x <= _data.xrange;
         }, true);
         this.transitions.push("Engaging", "Chasing", function() {
-            return _data.absdiff_z > _data.zrange || _data.absdiff_x > _data.xrange;
+            // 迟滞退出：防止连招中被击退一帧就切回追击断段
+            // 基础迟滞 1.2 + 勇气加成 0~0.3 → 退出阈值 1.2~1.5 倍射程
+            var exitMult:Number = 1.2;
+            if (_data.personality != null) {
+                exitMult += (_data.personality.勇气 || 0) * 0.3;
+            }
+            // 近战连招中：大幅加宽退出阈值（1.7~2.0 倍）
+            // 防止连招前段推人/自身被击退导致越界切回追击
+            var s:MovieClip = _data.self;
+            if (s.状态 == "空手攻击" || s.状态 == "兵器攻击") {
+                exitMult += 0.5;
+            }
+            return _data.absdiff_z > _data.zrange || _data.absdiff_x > _data.xrange * exitMult;
         }, true);
     }
 
