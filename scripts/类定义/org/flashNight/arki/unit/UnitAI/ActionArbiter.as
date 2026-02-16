@@ -244,8 +244,22 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                     if (self.buffManager != null && self.buffManager.getBuffById(preBuffMark.buffId) != null) continue;
                 }
 
-                // 躲避/解围霸体 → emergency(0)：可中断正在施放的普通技能
-                var skillPri:Number = (sk.功能 == "躲避" || sk.功能 == "解围霸体") ? 0 : 1;
+                // 优先级：解围霸体常驻 emergency(0)；躲避仅受威胁时为 0
+                var skillPri:Number = 1;
+                if (sk.功能 == "解围霸体") {
+                    skillPri = 0;
+                } else if (sk.功能 == "躲避") {
+                    // underFire: 近期被击 OR 目标正在攻击/施技
+                    var dw:Number = p.dodgeReactWindow;
+                    if (isNaN(dw) || dw < 5) dw = 20;
+                    var ha:Number = _root.帧计时器.当前帧数 - _recentHitFrame;
+                    var tgt:MovieClip = data.target;
+                    var threat:Boolean = (ha >= 0 && ha < dw);
+                    if (!threat && tgt != null) {
+                        threat = (tgt.射击中 == true || tgt.状态 == "技能" || tgt.状态 == "战技");
+                    }
+                    skillPri = threat ? 0 : 1;
+                }
                 candidates.push({
                     name: sk.技能名, type: "skill", priority: skillPri,
                     skill: sk, commitFrames: skillCommit, score: 0
@@ -377,6 +391,19 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             tactical = null;
         }
 
+        // ── 威胁判定（驱动反应性躲避 + 距离压力门控）──
+        var underFire:Boolean = false;
+        var ufDodgeWin:Number = p.dodgeReactWindow;
+        if (isNaN(ufDodgeWin) || ufDodgeWin < 5) ufDodgeWin = 20;
+        var ufHitAge:Number = currentFrame - _recentHitFrame;
+        if (ufHitAge >= 0 && ufHitAge < ufDodgeWin) underFire = true;
+        if (!underFire) {
+            var ufTgt:MovieClip = data.target;
+            if (ufTgt != null && (ufTgt.射击中 == true || ufTgt.状态 == "技能" || ufTgt.状态 == "战技")) {
+                underFire = true;
+            }
+        }
+
         // ── 维度评分循环 ──
         for (var j:Number = 0; j < candidates.length; j++) {
             var c:Object = candidates[j];
@@ -444,27 +471,31 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                 }
             }
 
-            // 距离压力（远程被近身）
+            // 距离压力（远程被近身）— 门控：躲避/普攻惩罚需 underFire
             if (stance != null && stance.repositionDir > 0 && xDist < data.xdistance) {
                 var rangePressure:Number = 1 - xDist / data.xdistance;
                 rangePressure *= (1 - (p.勇气 || 0));
                 if (c.type == "skill") {
                     var rpFunc:String = c.skill.功能;
-                    if (rpFunc == "躲避") total += rangePressure * 0.25;
-                    else if (rpFunc == "位移" || rpFunc == "高频位移") total += rangePressure * 0.4;
+                    if (rpFunc == "躲避") {
+                        // 躲避：仅受威胁或极近距离（< 40%射程）时加分
+                        if (underFire || xDist < data.xdistance * 0.4) {
+                            total += rangePressure * 0.25;
+                        }
+                    } else if (rpFunc == "位移" || rpFunc == "高频位移") {
+                        total += rangePressure * 0.4; // 位移技能保留：走位不是怂
+                    }
                 } else if (c.type == "attack") {
-                    total -= rangePressure * 0.15;
+                    // 普攻扣分：仅受威胁时（站着不动不应该被扣攻击分）
+                    if (underFire) {
+                        total -= rangePressure * 0.15;
+                    }
                 }
             }
 
-            // 被击反应性躲避：命中事件驱动的闪避提权
-            if (c.type == "skill" && c.skill.功能 == "躲避") {
-                var dodgeWindow:Number = p.dodgeReactWindow;
-                if (isNaN(dodgeWindow) || dodgeWindow < 5) dodgeWindow = 20;
-                var frameSinceHit:Number = currentFrame - _recentHitFrame;
-                if (frameSinceHit >= 0 && frameSinceHit < dodgeWindow) {
-                    total += 0.5;  // 被击后反应窗口内大幅提升躲避优先级
-                }
+            // 反应性躲避：受威胁时（被击/目标攻击中）大幅提升躲避优先级
+            if (c.type == "skill" && c.skill.功能 == "躲避" && underFire) {
+                total += 0.5;
             }
 
             // 决策噪声
