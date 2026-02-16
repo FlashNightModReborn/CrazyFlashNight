@@ -129,6 +129,11 @@ _root.路由基础.绑定结束清理 = function(clip:MovieClip, unit:MovieClip,
                 unit[floatFlag] = false;
             }
         }
+        // AI 事件：技能/战技动画结束（man 被卸载）
+        // 订阅方（ActionArbiter）据此立即释放帧锁，消除"技能后发呆"
+        if (unit.dispatcher != undefined && unit.dispatcher != null) {
+            unit.dispatcher.publish("skillEnd", unit);
+        }
     };
 };
 

@@ -28,9 +28,14 @@ _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:S
     unit.技能名 = skillName;
     _root.路由基础.确保临时Y(unit);
 
-    // 进入技能状态（主角-男会在状态改变中映射到“容器”帧）
+    // 进入技能状态（主角-男会在状态改变中映射到"容器"帧）
     unit.状态改变("技能");
     _root.路由基础.准备姿态与加成(unit);
+
+    // AI 事件：技能释放开始（供日志/分析/未来响应式系统）
+    if (unit.dispatcher != undefined && unit.dispatcher != null) {
+        unit.dispatcher.publish("skillStart", unit, skillName);
+    }
 
     // 主角-男使用技能容器（attachMovie 动态man）
     if (unit.兵种 === "主角-男") {

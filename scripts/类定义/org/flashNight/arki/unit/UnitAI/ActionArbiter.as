@@ -42,9 +42,15 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     // ── 预战buff帧节流 ──
     private var _preBuffCooldownFrame:Number;
 
+    // ── 事件响应状态 ──
+    private var _recentHitFrame:Number;         // 最近一次被击中的帧号
+    private var _selfRef:MovieClip;             // self 引用（事件订阅/退订）
+    private var _onHitCallback:Function;        // hit 回调（退订用）
+    private var _onSkillEndCallback:Function;   // skillEnd 回调（退订用）
+
     // ═══════ 构造 ═══════
 
-    public function ActionArbiter(personality:Object, scorer:UtilityEvaluator) {
+    public function ActionArbiter(personality:Object, scorer:UtilityEvaluator, self:MovieClip) {
         this.p = personality;
         this._scorer = scorer;
         this._executor = new ActionExecutor();
@@ -54,6 +60,30 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         this._lastSkillName = null;
         this._repeatCount = 0;
         this._preBuffCooldownFrame = 0;
+        this._recentHitFrame = -999;
+        this._selfRef = self;
+
+        // ── 事件订阅 ──
+        if (self.dispatcher != undefined && self.dispatcher != null) {
+            var arbiter:ActionArbiter = this;
+
+            // 被击事件：记录帧号，用于反应性躲避评分
+            this._onHitCallback = function() {
+                arbiter._recentHitFrame = _root.帧计时器.当前帧数;
+            };
+            self.dispatcher.subscribe("hit", this._onHitCallback, arbiter);
+
+            // 技能结束事件：立即释放帧锁，消除"技能后发呆"
+            this._onSkillEndCallback = function() {
+                // 安全检查：只在技能/战技正常结束后才释放
+                // 如果 状态 仍是"技能"/"战技"，说明被另一个技能中断了，不释放
+                var currentState:String = self.状态;
+                if (currentState != "技能" && currentState != "战技") {
+                    arbiter._executor.expireBodyCommit();
+                }
+            };
+            self.dispatcher.subscribe("skillEnd", this._onSkillEndCallback, arbiter);
+        }
     }
 
     // ═══════ 公开接口 ═══════
@@ -179,13 +209,19 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
     private function _collectOffense(data:UnitAIData, candidates:Array):Void {
         var self:MovieClip = data.self;
-        var commitment:Number = p.chaseCommitment;
-        if (isNaN(commitment)) commitment = 5;
+
+        // 平A commitment：短窗口，容易被技能取消
+        var attackCommit:Number = p.chaseCommitment;
+        if (isNaN(attackCommit) || attackCommit < 2) attackCommit = 5;
+
+        // 技能 commitment：独立且更长，保护技能动画最小执行窗口
+        var skillCommit:Number = p.skillCommitFrames;
+        if (isNaN(skillCommit) || skillCommit < 5) skillCommit = 10;
 
         // BasicAttack
         candidates.push({
             name: "BasicAttack", type: "attack", priority: 3,
-            commitFrames: commitment, score: 0
+            commitFrames: attackCommit, score: 0
         });
 
         // Skills（距离 + 冷却 + buff 过滤）
@@ -212,7 +248,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                 var skillPri:Number = (sk.功能 == "躲避" || sk.功能 == "解围霸体") ? 0 : 1;
                 candidates.push({
                     name: sk.技能名, type: "skill", priority: skillPri,
-                    skill: sk, commitFrames: commitment, score: 0
+                    skill: sk, commitFrames: skillCommit, score: 0
                 });
                 skillCount++;
             }
@@ -284,9 +320,11 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             if (isRigid && sk.功能 == "解围霸体") continue;
 
             var pri:Number = mark.priority || 0;
+            var buffCommit:Number = p.skillCommitFrames;
+            if (isNaN(buffCommit) || buffCommit < 5) buffCommit = 10;
             candidates.push({
                 name: sk.技能名, type: "preBuff", priority: 1,
-                skill: sk, commitFrames: 30,
+                skill: sk, commitFrames: buffCommit,
                 score: 0.8 + pri * 0.2
             });
             found = true;
@@ -412,10 +450,20 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                 rangePressure *= (1 - (p.勇气 || 0));
                 if (c.type == "skill") {
                     var rpFunc:String = c.skill.功能;
-                    if (rpFunc == "躲避") total += rangePressure * 0.5;
+                    if (rpFunc == "躲避") total += rangePressure * 0.25;
                     else if (rpFunc == "位移" || rpFunc == "高频位移") total += rangePressure * 0.4;
                 } else if (c.type == "attack") {
                     total -= rangePressure * 0.15;
+                }
+            }
+
+            // 被击反应性躲避：命中事件驱动的闪避提权
+            if (c.type == "skill" && c.skill.功能 == "躲避") {
+                var dodgeWindow:Number = p.dodgeReactWindow;
+                if (isNaN(dodgeWindow) || dodgeWindow < 5) dodgeWindow = 20;
+                var frameSinceHit:Number = currentFrame - _recentHitFrame;
+                if (frameSinceHit >= 0 && frameSinceHit < dodgeWindow) {
+                    total += 0.5;  // 被击后反应窗口内大幅提升躲避优先级
                 }
             }
 
@@ -536,5 +584,25 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
     private function _evaluateHeal(data:UnitAIData):Void {
         _scorer.evaluateHealNeed(data);
+    }
+
+    // ═══════ 生命周期 ═══════
+
+    /**
+     * destroy — 清理事件订阅
+     * 由单位销毁时调用，防止回调泄漏
+     */
+    public function destroy():Void {
+        if (_selfRef != null && _selfRef.dispatcher != undefined) {
+            if (_onHitCallback != null) {
+                _selfRef.dispatcher.unsubscribe("hit", _onHitCallback, this);
+            }
+            if (_onSkillEndCallback != null) {
+                _selfRef.dispatcher.unsubscribe("skillEnd", _onSkillEndCallback, this);
+            }
+        }
+        _selfRef = null;
+        _onHitCallback = null;
+        _onSkillEndCallback = null;
     }
 }

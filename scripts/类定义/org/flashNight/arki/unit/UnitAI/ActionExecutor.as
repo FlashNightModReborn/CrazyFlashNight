@@ -8,8 +8,12 @@
  *
  * body commitment 双重锁定：
  *   1. 帧计数锁（commitBody 提交时设定 _bodyCommitUntil）
- *   2. 动画标签锁（换弹标签 / 刚体 / 刚体标签 → 动画仍在播放）
+ *   2. 动画标签锁（换弹标签 / self.状态=="技能" → 动作动画播放中）
  *   两者 OR 合并：任一为 true 即视为 committed
+ *   仅当已有 body 动作提交（_bodyPriority >= 0）时动画锁才生效
+ *
+ * 重要：刚体/刚体标签 是 buff 状态（护盾/霸体），不是动作动画
+ *       不应纳入 animLock，否则 buff 期间会永久空转
  *
  * body 中断规则：candidate.priority < currentAction.priority → 允许中断（严格小于）
  *   Emergency(0) > Skill/PreBuff(1) > Reload(2) > Attack(3)
@@ -55,16 +59,22 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
     /**
      * updateAnimLock — 每 tick 刷新动画标签锁状态
      *
-     * 检测游戏引擎实际动画状态（比帧计数更可靠）：
+     * 只绑定"动作播放期"，不绑 buff 状态：
      *   换弹标签 → 换弹动画播放中
-     *   刚体 / 刚体标签 → 技能超级装甲期间
-     * 注意：射击中(普攻)不视为锁定 — 技能应该能取消普攻
+     *   self.状态 == "技能" → 技能路由必经 状态改变("技能")，技能动画播放期
+     *
+     * 不包含：
+     *   刚体/刚体标签 → buff/护盾状态，可持续很久，不是动作动画
+     *   射击中 → 普攻播放期，但应该能被技能取消
      */
     public function updateAnimLock(self:MovieClip):Void {
         _animLocked = false;
-        if (self.man.换弹标签 != null && self.man.换弹标签 != undefined) { _animLocked = true; return; }
-        if (self.刚体 == true) { _animLocked = true; return; }
-        if (self.man.刚体标签 != null && self.man.刚体标签 != undefined) { _animLocked = true; return; }
+        // null guard: man 可能尚未初始化
+        if (self.man != null && self.man != undefined) {
+            if (self.man.换弹标签 != null && self.man.换弹标签 != undefined) { _animLocked = true; return; }
+        }
+        // 技能播放期：技能路由 → 状态改变("技能") → 动画完毕后自动离开
+        if (self.状态 == "技能") { _animLocked = true; return; }
     }
 
     public function isAnimLocked():Boolean {
@@ -75,8 +85,13 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
 
     /**
      * isBodyCommitted — 帧计数锁 OR 动画标签锁
+     *
+     * 关键：_bodyPriority < 0 = 从未提交过 body 动作 → 直接放行
+     * 否则 animLocked=true + _bodyPriority=-1 会导致 canInterruptBody
+     * 把所有 priority≥0 的候选过滤掉，只剩 Continue → 永久空转
      */
     public function isBodyCommitted(frame:Number):Boolean {
+        if (_bodyPriority < 0) return false;
         return frame < _bodyCommitUntil || _animLocked;
     }
 
@@ -103,6 +118,19 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         if (type == "skill" || type == "preBuff") {
             _lastSkillUseFrame = frame;
         }
+    }
+
+    /**
+     * expireBodyCommit — 立即释放帧计数锁
+     *
+     * 由 ActionArbiter 在技能动画正常结束后调用（skillEnd 事件），
+     * 避免 _bodyCommitUntil 超出动画实际持续时间导致空转。
+     * 不清除 _animLocked（由 updateAnimLock 每 tick 刷新）。
+     */
+    public function expireBodyCommit():Void {
+        _bodyCommitUntil = 0;
+        _bodyPriority = -1;
+        _bodyType = null;
     }
 
     /**

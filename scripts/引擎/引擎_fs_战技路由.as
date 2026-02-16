@@ -45,6 +45,11 @@ _root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:S
 
     _root.路由基础.准备姿态与加成(unit);
 
+    // AI 事件：战技释放开始（供日志/分析/未来响应式系统）
+    if (unit.dispatcher != undefined && unit.dispatcher != null) {
+        unit.dispatcher.publish("skillStart", unit, skillName);
+    }
+
     // 主角-男优先走容器化
     if (unit.兵种 === "主角-男") {
         _root.战技路由.载入后跳转战技容器(unit.container, unit);

@@ -44,7 +44,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // ── Phase 2: 创建 Utility 评估器 + 统一动作管线（personality 存在时）──
         if (data.personality != null) {
             data.evaluator = new UtilityEvaluator(data.personality);
-            data.arbiter = new ActionArbiter(data.personality, data.evaluator);
+            data.arbiter = new ActionArbiter(data.personality, data.evaluator, data.self);
         }
 
         // ═══════ 状态列表 ═══════

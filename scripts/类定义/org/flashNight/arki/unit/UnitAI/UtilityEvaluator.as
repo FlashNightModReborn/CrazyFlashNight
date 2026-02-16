@@ -642,7 +642,13 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         if (c.type == "attack") return 0.5;
         if (c.type == "hold") return 0.5;
         // Skill
-        if (c.skill.功能 == "躲避") return 0.9;
+        if (c.skill.功能 == "躲避") {
+            // 基础分大幅下调：躲避是反应性行为，非默认选项
+            // 被击加分（+0.5）由 ActionArbiter._scoreCandidates 处理
+            var hpDodge:Number = self.hp / self.hp满血值;
+            if (hpDodge < 0.3) return 0.6;  // 低血恐慌躲避
+            return 0.2;                      // 正常低基础分
+        }
         var base:Number = 0.3 + hpRatio * 0.4;
         return base > 1 ? 1 : base;
     }

@@ -2397,6 +2397,9 @@ _root.计算AI参数 = function(p:Object):Void {
     p.w_combo       = 0.15 + p.技术 * 0.3;
 
     // ── 动作管线参数（ActionArbiter / ActionExecutor 使用）──
+    // 技能 commit 帧数：帧计数锁的最小执行窗口（主保护靠 self.状态=="技能" 动画锁）
+    // 高勇气→更长窗口（坚持完成动作），基准比 attack 高一档
+    p.skillCommitFrames   = 8 + Math.round(p.勇气 * 8);     // 8~16帧
     // 技能→武器切换保护帧数：经验高→保护窗口长（动画完整播放）
     p.skillAnimProtect    = 12 + Math.round(p.经验 * 12);   // 12~24帧
     // 武器评估冷却帧数：经验高→评估间隔长（不频繁切换）
@@ -2409,6 +2412,9 @@ _root.计算AI参数 = function(p:Object):Void {
     p.weaponSwitchCost    = 0.15 + (1 - p.反应) * 0.15;     // 0.15~0.30
     // 武器切换迟滞：经验高→维持当前武器的惯性强
     p.weaponHysteresis    = 0.08 + p.经验 * 0.12;           // 0.08~0.20
+
+    // 被击→躲避反应窗口：反应高→窗口更宽（反射闪避持续更久）
+    p.dodgeReactWindow    = 15 + Math.round(p.反应 * 30);   // 15~45帧
 };
 
 _root.初始化佣兵NPC模板 = function() {
