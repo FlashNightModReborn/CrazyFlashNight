@@ -2328,8 +2328,31 @@ _root.生成随机人格 = function(seed:Number):Object {
 /**
  * 计算AI参数 — mutate personality 对象，追加派生字段
  *
- * 所有 Utility 评估器读取的参数都在这里计算
- * 直接写入 personality 对象（不创建独立 aiParams）
+ * 所有 ActionArbiter / UtilityEvaluator / strategies 读取的参数都在这里计算。
+ * 直接写入 personality 对象（mutate-only 引用，不创建独立 aiParams）。
+ *
+ * ── 参数层次结构 ──
+ *
+ * Layer 0 — traits（六维特质，归一化 sum≈1，只读语义）
+ *   勇气, 技术, 经验, 反应, 智力, 谋略
+ *
+ * Layer 1 — params.behavior（从特质派生，控制决策特性）
+ *   engageDistanceMult, retreatHPRatio, chaseCommitment, decisionNoise,
+ *   stanceMastery, stabilityFactor, maxCandidates, tickInterval, evalDepth,
+ *   healEagerness, baseTemperature, momentumDecay, comboPreference
+ *
+ * Layer 2 — params.pipeline（从特质派生，控制 Arbiter/Executor 时序）
+ *   skillCommitFrames, skillAnimProtect, stanceCooldown, chaseFrustration,
+ *   reloadCommitFrames, weaponSwitchCost, weaponHysteresis, dodgeReactWindow
+ *
+ * Layer 3 — params.derived（从 Layer 1 多参数计算）
+ *   temperature = baseTemperature / (1 + stabilityFactor)
+ *
+ * Layer 4 — params.weights（评分维度权重，被 evalDepth 门控）
+ *   w_damage, w_safety, w_resource, w_positioning, w_combo
+ *
+ * Layer 5 — params.tactics（战术解锁，布尔门控）
+ *   tacticsGrouping, tacticsEvadeCluster, tacticsSeekRecovery
  *
  * ── 六维人格 → AI 行为映射设计意图 ──
  *
@@ -2415,6 +2438,91 @@ _root.计算AI参数 = function(p:Object):Void {
 
     // 被击→躲避反应窗口：反应高→窗口更宽（反射闪避持续更久）
     p.dodgeReactWindow    = 15 + Math.round(p.反应 * 30);   // 15~45帧
+
+    // ── 反抖动 / 连招参数（Phase A 补全）──
+    // momentumDecay：高经验→惯性衰减快（快速切换动作），低经验→惯性强（维持当前动作）
+    p.momentumDecay       = 0.3 + p.经验 * 0.4;             // 0.3~0.7
+    // comboPreference：勇气+技术共同驱动连招倾向
+    p.comboPreference     = 0.1 + p.勇气 * 0.3 + p.技术 * 0.2; // 0.1~0.6
+
+    // ── 全参数 clamp（防御边界溢出，保证管线内信任参数）──
+    var clamp = function(v:Number, lo:Number, hi:Number):Number {
+        return v < lo ? lo : (v > hi ? hi : v);
+    };
+    p.engageDistanceMult  = clamp(p.engageDistanceMult, 0.8, 1.2);
+    p.retreatHPRatio      = clamp(p.retreatHPRatio, 0.05, 0.35);
+    p.chaseCommitment     = clamp(p.chaseCommitment, 3, 7);
+    p.decisionNoise       = clamp(p.decisionNoise, 0.3, 1.0);
+    p.stanceMastery       = clamp(p.stanceMastery, 0, 1);
+    p.stabilityFactor     = clamp(p.stabilityFactor, 0, 1);
+    p.maxCandidates       = clamp(p.maxCandidates, 2, 8);
+    p.tickInterval        = clamp(p.tickInterval, 1, 6);
+    p.evalDepth           = clamp(p.evalDepth, 1, 5);
+    p.healEagerness       = clamp(p.healEagerness, 0.3, 0.8);
+    p.baseTemperature     = clamp(p.baseTemperature, 0.1, 0.5);
+    p.temperature         = clamp(p.temperature, 0.01, 0.5);
+    p.w_damage            = clamp(p.w_damage, 0.1, 0.7);
+    p.w_safety            = clamp(p.w_safety, 0.1, 0.7);
+    p.w_resource          = clamp(p.w_resource, 0.1, 0.3);
+    p.w_positioning       = clamp(p.w_positioning, 0.1, 0.35);
+    p.w_combo             = clamp(p.w_combo, 0.1, 0.45);
+    p.skillCommitFrames   = clamp(p.skillCommitFrames, 8, 16);
+    p.skillAnimProtect    = clamp(p.skillAnimProtect, 12, 24);
+    p.stanceCooldown      = clamp(p.stanceCooldown, 6, 12);
+    p.chaseFrustration    = clamp(p.chaseFrustration, 20, 60);
+    p.reloadCommitFrames  = clamp(p.reloadCommitFrames, 20, 40);
+    p.weaponSwitchCost    = clamp(p.weaponSwitchCost, 0.15, 0.30);
+    p.weaponHysteresis    = clamp(p.weaponHysteresis, 0.08, 0.20);
+    p.dodgeReactWindow    = clamp(p.dodgeReactWindow, 15, 45);
+    p.momentumDecay       = clamp(p.momentumDecay, 0.3, 0.7);
+    p.comboPreference     = clamp(p.comboPreference, 0.1, 0.6);
+
+    // ── 结构化子对象（traits/params 双根）──
+    // 新代码一律读 p.traits.* / p.params.*
+    // 平铺字段保留（兼容期：所有旧消费者迁移完成前）
+
+    p.traits = {
+        勇气: p.勇气, 技术: p.技术, 经验: p.经验,
+        反应: p.反应, 智力: p.智力, 谋略: p.谋略
+    };
+
+    p.params = {
+        // Layer 1: behavior
+        engageDistanceMult: p.engageDistanceMult,
+        retreatHPRatio:     p.retreatHPRatio,
+        chaseCommitment:    p.chaseCommitment,
+        decisionNoise:      p.decisionNoise,
+        stanceMastery:      p.stanceMastery,
+        stabilityFactor:    p.stabilityFactor,
+        maxCandidates:      p.maxCandidates,
+        tickInterval:       p.tickInterval,
+        evalDepth:          p.evalDepth,
+        healEagerness:      p.healEagerness,
+        baseTemperature:    p.baseTemperature,
+        momentumDecay:      p.momentumDecay,
+        comboPreference:    p.comboPreference,
+        // Layer 2: pipeline
+        skillCommitFrames:  p.skillCommitFrames,
+        skillAnimProtect:   p.skillAnimProtect,
+        stanceCooldown:     p.stanceCooldown,
+        chaseFrustration:   p.chaseFrustration,
+        reloadCommitFrames: p.reloadCommitFrames,
+        weaponSwitchCost:   p.weaponSwitchCost,
+        weaponHysteresis:   p.weaponHysteresis,
+        dodgeReactWindow:   p.dodgeReactWindow,
+        // Layer 3: derived
+        temperature:        p.temperature,
+        // Layer 4: weights
+        w_damage:           p.w_damage,
+        w_safety:           p.w_safety,
+        w_resource:         p.w_resource,
+        w_positioning:      p.w_positioning,
+        w_combo:            p.w_combo,
+        // Layer 5: tactics
+        tacticsGrouping:      p.tacticsGrouping,
+        tacticsEvadeCluster:  p.tacticsEvadeCluster,
+        tacticsSeekRecovery:  p.tacticsSeekRecovery
+    };
 };
 
 _root.初始化佣兵NPC模板 = function() {

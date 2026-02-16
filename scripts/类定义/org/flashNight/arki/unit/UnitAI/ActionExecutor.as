@@ -21,6 +21,13 @@
  */
 class org.flashNight.arki.unit.UnitAI.ActionExecutor {
 
+    // ── 输入语义常量表 ──
+    // attack = hold（持续按键，每帧需重新输出）
+    // skill/reload/preBuff = trigger（一次性触发，引擎管理后续动画）
+    static var INPUT_SEMANTIC:Object = {
+        attack: "hold", skill: "trigger", preBuff: "trigger", reload: "trigger"
+    };
+
     // ── body 轨状态 ──
     private var _bodyPriority:Number;
     private var _bodyCommitUntil:Number;
@@ -28,6 +35,9 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
 
     // ── 动画标签锁（每 tick 由 updateAnimLock 刷新）──
     private var _animLocked:Boolean;
+
+    // ── 连续攻击计数（连招深度代理）──
+    private var _consecutiveAttacks:Number;
 
     // ── stance 轨冷却 ──
     private var _stanceCooldownUntil:Number;
@@ -37,6 +47,9 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
 
     // ── 技能使用帧（武器切换保护）──
     private var _lastSkillUseFrame:Number;
+
+    // ── 换弹结束伪事件（追踪 换弹标签 true→false 下降沿）──
+    private var _lastReloadTag:Boolean;
 
     // ═══════ 构造 ═══════
 
@@ -52,6 +65,8 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         _stanceCooldownUntil = 0;
         _itemCooldownUntil = 0;
         _lastSkillUseFrame = -999;
+        _lastReloadTag = false;
+        _consecutiveAttacks = 0;
     }
 
     // ═══════ 动画标签锁 ═══════
@@ -69,12 +84,25 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
      */
     public function updateAnimLock(self:MovieClip):Void {
         _animLocked = false;
+
+        // ── 换弹标签追踪（必须在所有 early return 之前采样）──
+        var currentReloadTag:Boolean = (self.man != null && self.man != undefined
+            && self.man.换弹标签 != null && self.man.换弹标签 != undefined);
+
         // null guard: man 可能尚未初始化
-        if (self.man != null && self.man != undefined) {
-            if (self.man.换弹标签 != null && self.man.换弹标签 != undefined) { _animLocked = true; return; }
+        if (currentReloadTag) { _animLocked = true; _lastReloadTag = true; return; }
+
+        // 技能/战技播放期：技能路由 → 状态改变("技能"/"战技") → 动画完毕后自动离开
+        if (self.状态 == "技能" || self.状态 == "战技") { _animLocked = true; _lastReloadTag = false; return; }
+
+        // ── 换弹结束伪事件：追踪 换弹标签 下降沿（true→false）──
+        // skill 有 skillEnd 事件驱动 expireBodyCommit()；reload 无对应事件，
+        // 纯靠 reloadCommitFrames + animLock 可能与动画实际时长不匹配。
+        // 检测 换弹标签 消失的瞬间 → 立即释放帧计数锁，消除空转/提前放开。
+        if (_bodyType == "reload" && _lastReloadTag && !currentReloadTag) {
+            expireBodyCommit();
         }
-        // 技能播放期：技能路由 → 状态改变("技能") → 动画完毕后自动离开
-        if (self.状态 == "技能") { _animLocked = true; return; }
+        _lastReloadTag = currentReloadTag;
     }
 
     public function isAnimLocked():Boolean {
@@ -112,6 +140,12 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
      * commitBody — 提交 body 动作，更新 commitment 状态
      */
     public function commitBody(type:String, priority:Number, commitFrames:Number, frame:Number):Void {
+        // 连续攻击追踪
+        if (type == "attack") {
+            _consecutiveAttacks++;
+        } else {
+            _consecutiveAttacks = 0;
+        }
         _bodyType = type;
         _bodyPriority = priority;
         _bodyCommitUntil = frame + commitFrames;
@@ -174,6 +208,51 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
 
     public function getLastSkillUseFrame():Number {
         return _lastSkillUseFrame;
+    }
+
+    public function getConsecutiveAttacks():Number {
+        return _consecutiveAttacks;
+    }
+
+    /**
+     * getInputSemantic — 当前 body 动作的输入语义
+     * @return "hold" | "trigger" | null
+     */
+    public function getInputSemantic():String {
+        if (_bodyType == null) return null;
+        return INPUT_SEMANTIC[_bodyType];
+    }
+
+    /**
+     * getLockSource — 结构化锁定原因（供 AIContext / DecisionTrace 使用）
+     *
+     * @return "FRAME_COMMIT" | "ANIM_SKILL" | "ANIM_RELOAD" | null
+     *   null = 未锁定；FRAME_COMMIT = 帧计数锁尚未到期；
+     *   ANIM_SKILL = 技能/战技动画播放中；ANIM_RELOAD = 换弹动画播放中
+     */
+    public function getLockSource(frame:Number):String {
+        if (_bodyPriority < 0) return null;
+        if (_animLocked) {
+            // 区分动画锁来源：换弹标签 vs 技能/战技状态
+            // _lastReloadTag == true 意味着当前帧换弹标签存在（updateAnimLock 已采样）
+            if (_lastReloadTag) return "ANIM_RELOAD";
+            return "ANIM_SKILL";
+        }
+        if (frame < _bodyCommitUntil) return "FRAME_COMMIT";
+        return null;
+    }
+
+    /**
+     * autoHold — 自动维持 hold 型 body 动作的按键输出
+     *
+     * 目标态：ActionExecutor 内部管理 hold 输出，Arbiter 不再负责 holdCurrentBody 调用。
+     * 当前阶段（Phase B）先添加方法，Phase C/D 迁移后再从 Arbiter 移除 holdAttack 分支。
+     */
+    public function autoHold(self:MovieClip):Void {
+        if (_bodyType == "attack" && _bodyPriority >= 0) {
+            self.动作A = true;
+            if (self.攻击模式 === "双枪") self.动作B = true;
+        }
     }
 
     // ═══════ stance 轨 ═══════

@@ -92,16 +92,10 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // arbiter 内部按中断规则互斥，不再有覆盖冲突
         if (data.arbiter != null) {
             data.arbiter.tick(data, "chase");
-        } else if (data.evaluator != null && !self.射击中 && data.absdiff_x > data.xrange * 1.5) {
-            // Phase 2 fallback（arbiter 不存在但 evaluator 存在 — 理论上不应发生）
-            data.evaluator.selectPreCombatBuff(data);
-            if (data.evaluator.shouldReload(data, 0.3)) {
-                self.man.gotoAndPlay("换弹匣");
-            }
         }
 
-        // 跑步切换（复刻原逻辑，含原始换弹标签表达式）
-        if (!self.射击中 && !self.man.换弹标签 != null && random(3) === 0) {
+        // 跑步切换（修正运算符优先级：原 !self.man.换弹标签 != null 永远为 true）
+        if (!self.射击中 && (self.man == null || !self.man.换弹标签) && random(3) == 0) {
             self.状态改变(self.攻击模式 + "跑");
         }
 

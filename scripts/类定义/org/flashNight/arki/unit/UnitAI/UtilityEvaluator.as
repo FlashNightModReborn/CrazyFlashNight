@@ -2,30 +2,23 @@
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
 /**
- * UtilityEvaluator — 人格驱动 Utility AI 评估器
+ * UtilityEvaluator — 人格驱动 Utility AI 评分与评估服务
  *
- * 职责：
- *   1. selectCombatAction  — 交战状态下的动作选择（替换 selectSkill）
- *   2. evaluateWeaponMode  — 武器模式选择（替换 evaluateWeapon）
- *   3. evaluateHealNeed    — 血包使用决策（替换 evaluateHeal）
+ * 职责（Phase E 清理后）：
+ *   1. 评分服务：scoreDimension() + 5 维度函数 + boltzmannSelect()
+ *   2. 武器评估：evaluateWeaponMode() + scoreWeaponMode() + applyWeaponRanges()
+ *   3. 治疗评估：evaluateHealNeed()
+ *   4. Stance：STANCES, syncStance(), getRepositionDir(), getCurrentStance()
+ *   5. Tactical Bias：triggerTacticalBias(), getTacticalBias(), clearTacticalBias()
+ *   6. 工具：getAmmoRatio()
  *
- * 管线：Filter → Score(+Stance 调制 +战术偏置) → Anti-oscillation → Boltzmann
+ * 以下职责已迁移至 ActionArbiter + strategies：
+ *   - 动作选择管线 → ActionArbiter.tick()
+ *   - 候选收集 → OffenseStrategy / ReloadStrategy / PreBuffStrategy
+ *   - 动作执行 → ActionExecutor.execute()
+ *   - 决策日志 → DecisionTrace
  *
- * Stance 系统（Step 4）：
- *   武器模式 → Stance 配置（dimMod + skillAffinity + repositionDir）
- *   Stance 调制评分维度权重 + 候选加成，驱动近战贴身/远程拉距行为分化
- *
- * 战术偏置（Tactical Bias）：
- *   技能执行后设定短期评分偏置（如位移后追加近战连招）
- *   自然衰减（expiryFrame），不需要独立状态机
- *
- * 所有参数从 personality 对象读取（mutate-only 引用）：
- *   六维人格：勇气/技术/经验/反应/智力/谋略
- *   派生参数：engageDistanceMult, retreatHPRatio, chaseCommitment,
- *            decisionNoise, stanceMastery, stabilityFactor, maxCandidates,
- *            tickInterval, evalDepth, healEagerness, baseTemperature,
- *            temperature, w_damage, w_safety, w_resource, w_positioning, w_combo
- *
+ * 所有参数从 personality 对象读取（mutate-only 引用）
  * 降级策略：personality == null 时评估器不创建，原 Phase 1 逻辑不变
  */
 class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
@@ -33,19 +26,11 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
     // ── 人格引用 ──
     private var p:Object;
 
-    // ── 反抖动状态 ──
-    private var _commitUntilFrame:Number;
-    private var _lastActionType:String;
-    private var _lastSkillName:String;
-    private var _repeatCount:Number;
+    // ── 武器评估冷却 ──
     private var _lastWeaponSwitchFrame:Number;
-    private var _lastSkillUseFrame:Number;
 
     // ── 确定性随机源 ──
     private var _rng:LinearCongruentialEngine;
-
-    // ── 候选池（复用减少 GC）──
-    private var _candidates:Array;
 
     // ── 武器姿态（Stance）──
     private var _currentStance:Object;
@@ -53,9 +38,6 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
     // ── 战术偏置（Tactical Bias）──
     // 技能执行后的短期评分偏置，expiryFrame 后自动失效
     private var _tacticalBias:Object;
-
-    // ── 预战buff冷却帧 ──
-    private var _preBuffCooldownFrame:Number;
 
     // ── 评分维度键序（evalDepth 控制前 N 维激活）──
     // dim0=damage, dim1=safety, dim2=resource, dim3=positioning, dim4=combo
@@ -170,16 +152,9 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
     public function UtilityEvaluator(personality:Object) {
         this.p = personality;
         this._rng = LinearCongruentialEngine.getInstance();
-        this._commitUntilFrame = 0;
-        this._lastActionType = null;
-        this._lastSkillName = null;
-        this._repeatCount = 0;
         this._lastWeaponSwitchFrame = -999;
-        this._lastSkillUseFrame = -999;
-        this._candidates = [];
         this._currentStance = null;
         this._tacticalBias = null;
-        this._preBuffCooldownFrame = 0;
     }
 
     // ═══════ Stance 公开接口 ═══════
@@ -214,358 +189,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         _tacticalBias = null;
     }
 
-    // ═══════ 0. 预战buff准备 ═══════
-
-    /**
-     * selectPreCombatBuff — Chasing 阶段远距离时主动施放增益技能
-     *
-     * 由 HeroCombatModule.chase() 调用，当距离足够远时触发。
-     * 读取 _root.技能函数.预战buff标记 确定哪些技能是预战buff及优先级。
-     * 通过 buffManager.getBuffById() 检测全局buff是否已激活（避免重复使用）。
-     * 帧节流防止频繁尝试。
-     */
-    public function selectPreCombatBuff(data:UnitAIData):Void {
-        var self:MovieClip = data.self;
-        var currentFrame:Number = _root.帧计时器.当前帧数;
-
-        // 帧节流
-        if (currentFrame < _preBuffCooldownFrame) return;
-
-        var skills:Array = self.已学技能表;
-        if (skills == null) return;
-
-        var marks:Object = _root.技能函数.预战buff标记;
-        if (marks == null) return;
-
-        var nowMs:Number = getTimer();
-        var hasBM:Boolean = (self.buffManager != null);
-
-        // 刚体检测（霸体类 buff 在刚体期间跳过）
-        var isRigid:Boolean = (self.刚体 == true) ||
-            (self.man.刚体标签 != null && self.man.刚体标签 != undefined);
-
-        var bestSkill:Object = null;
-        var bestPriority:Number = -1;
-
-        for (var i:Number = 0; i < skills.length; i++) {
-            var sk:Object = skills[i];
-            var mark:Object = marks[sk.技能名];
-            if (mark == null) continue; // 不在预战buff表中
-
-            // 技能冷却过滤
-            if (!isNaN(sk.上次使用时间) && (nowMs - sk.上次使用时间 <= sk.冷却 * 1000)) continue;
-
-            // 全局buff已激活 → 跳过（通过 buffManager 查询实际状态）
-            if (mark.global && hasBM && mark.buffId != null) {
-                if (self.buffManager.getBuffById(mark.buffId) != null) continue;
-            }
-
-            // 刚体已激活 → 跳过霸体类
-            if (isRigid && sk.功能 == "解围霸体") continue;
-
-            // 优先级比较
-            var pri:Number = mark.priority;
-            if (pri > bestPriority) {
-                bestPriority = pri;
-                bestSkill = sk;
-            }
-        }
-
-        if (bestSkill != null) {
-            // 执行 buff 技能
-            self.技能等级 = bestSkill.技能等级;
-            bestSkill.上次使用时间 = nowMs;
-            _root.技能路由.技能标签跳转_旧(self, bestSkill.技能名);
-            // 施放后长冷却，等技能动画完成再考虑下一个
-            _preBuffCooldownFrame = currentFrame + 30;
-        } else {
-            // 无可用 buff，短冷却后再检查
-            _preBuffCooldownFrame = currentFrame + 20;
-        }
-    }
-
-    // ═══════ 1. 交战动作选择 ═══════
-
-    /**
-     * selectCombatAction — 替换 HeroCombatModule.selectSkill
-     *
-     * 在 Engaging 状态的 onAction 中每帧调用。
-     * 管线：Filter → Score(+Stance+Tactical) → Anti-oscillation → Freq → Boltzmann
-     */
-    public function selectCombatAction(data:UnitAIData):Void {
-        var self:MovieClip = data.self;
-        var currentFrame:Number = _root.帧计时器.当前帧数;
-
-        // 预计算决策间隔参数（频率校正 + commitment 锁共用）
-        var commitment:Number = p.chaseCommitment;
-        if (isNaN(commitment)) commitment = 5;
-        var reactionMult:Number = p.tickInterval;
-        if (isNaN(reactionMult) || reactionMult < 1) reactionMult = 1;
-
-        // ── commitment 锁 ──
-        // 技能阶段：软评估 — "Continue" 高分候选参与 Boltzmann 竞争
-        //   技能只能被技能取消（BasicAttack 不参与），不能被平A取消
-        // 平A阶段：硬锁（短期内不重新评估）
-        //   平A可以被技能取消（commitment 过期后自然进入正常评估）
-        var inSkillPhase:Boolean = false;
-        if (currentFrame < _commitUntilFrame) {
-            if (_lastActionType == "skill") {
-                inSkillPhase = true;
-                // 不 return：继续到候选构建，但 BasicAttack 被排除
-            } else {
-                repeatLastAction(self);
-                return;
-            }
-        }
-
-        // ── 战术偏置过期检查 ──
-        if (_tacticalBias != null && currentFrame >= _tacticalBias.expiryFrame) {
-            _tacticalBias = null;
-        }
-
-        // ── 1. Filter: 构建候选列表 ──
-        var candidates:Array = this._candidates;
-        candidates.length = 0;
-
-        // BasicAttack（技能阶段不可用 — 技能只能被技能取消，不能被平A取消）
-        if (!inSkillPhase) {
-            candidates.push({name: "BasicAttack", type: "attack", score: 0});
-        }
-
-        // 技能（距离 + 冷却过滤）
-        var skills:Array = self.已学技能表;
-        var nowMs:Number = getTimer();
-        var xDist:Number = data.absdiff_x;
-        var maxC:Number = p.maxCandidates;
-        if (isNaN(maxC) || maxC < 2) maxC = 8;
-        var skillCount:Number = 0;
-
-        if (skills != null) {
-            for (var i:Number = 0; i < skills.length && skillCount < maxC; i++) {
-                var sk:Object = skills[i];
-                // 距离过滤
-                if (xDist < sk.距离min || xDist > sk.距离max) continue;
-                // 冷却过滤
-                if (!isNaN(sk.上次使用时间) && (nowMs - sk.上次使用时间 <= sk.冷却 * 1000)) continue;
-
-                // 全局buff已激活 → 排除（兴奋剂/铁布衫等场景永久buff不重复使用）
-                var preBuffMark:Object = _root.技能函数.预战buff标记[sk.技能名];
-                if (preBuffMark != null && preBuffMark.global && preBuffMark.buffId != null) {
-                    if (self.buffManager != null && self.buffManager.getBuffById(preBuffMark.buffId) != null) continue;
-                }
-
-                candidates.push({
-                    name: sk.技能名,
-                    type: "skill",
-                    skill: sk,
-                    score: 0
-                });
-                skillCount++;
-            }
-        }
-
-        // ── 2. Score: 多维评分 + Stance 调制 + 战术偏置 ──
-        var evalDepth:Number = p.evalDepth;
-        if (isNaN(evalDepth) || evalDepth < 1) evalDepth = 1;
-        if (evalDepth > 5) evalDepth = 5;
-
-        var noise:Number = p.decisionNoise;
-        if (isNaN(noise)) noise = 0.5;
-
-        // 特殊角色加成
-        var skillBonus:Number = 0;
-        if (self.名字 == "尾上世莉架") skillBonus = 0.3;
-
-        // 刚体（超级装甲）状态检测 — 循环外预计算
-        var isRigid:Boolean = (self.刚体 == true) || (self.man.刚体标签 != null && self.man.刚体标签 != undefined);
-
-        // 缓存 stance/tactical 引用（避免循环内重复解引用）
-        var stance:Object = _currentStance;
-        var tactical:Object = _tacticalBias;
-
-        for (var j:Number = 0; j < candidates.length; j++) {
-            var c:Object = candidates[j];
-            var total:Number = 0;
-
-            for (var d:Number = 0; d < evalDepth; d++) {
-                var w:Number = p[DIM_WEIGHTS[d]];
-                if (isNaN(w)) w = 0.2;
-
-                // Stance 维度权重调制
-                if (stance != null) {
-                    var dm:Number = stance.dimMod[d];
-                    if (!isNaN(dm)) w += dm;
-                }
-
-                total += w * scoreDimension(d, c, data, self);
-            }
-
-            // 特殊角色加成
-            if (c.type == "skill" && skillBonus > 0) {
-                total += skillBonus;
-            }
-
-            // ── Stance 候选加成 ──
-            if (stance != null) {
-                if (c.type == "attack") {
-                    total += stance.attackBonus;
-                } else if (c.type == "skill") {
-                    // 技能类型亲和
-                    var aff:Number = stance.skillAffinity[c.skill.类型];
-                    if (!isNaN(aff)) total += aff;
-
-                    // 手雷距离窗口
-                    if (stance.optDistMin != undefined) {
-                        if (xDist >= stance.optDistMin && xDist <= stance.optDistMax) {
-                            total += 0.3;
-                        } else {
-                            total -= 0.15;
-                        }
-                    }
-                }
-            }
-
-            // ── 战术偏置 ──
-            if (tactical != null) {
-                if (c.type == "attack") {
-                    total += tactical.attackBonus;
-                } else if (c.type == "skill") {
-                    var tb:Number = tactical.skillType[c.skill.类型];
-                    if (!isNaN(tb)) total += tb;
-                }
-            }
-
-            // ── 刚体状态感知 ──
-            // 增益技能的主要贡献是提供刚体状态，输出极低；
-            // 已有刚体时大幅降权（避免重复施放），同时鼓励攻击性行为利用霸体窗口
-            if (isRigid) {
-                if (c.type == "skill" && c.skill.功能 == "增益") {
-                    total -= 0.8;
-                } else if (c.type == "attack") {
-                    total += 0.15;
-                } else if (c.type == "skill") {
-                    var rigidFunc:String = c.skill.功能;
-                    // 近战/输出类技能在霸体窗口期加分（不会被打断）
-                    if (rigidFunc != "躲避") total += 0.1;
-                }
-            }
-
-            // ── 距离压力（远程被近身应急）──
-            // 远程姿态 + 敌人侵入保持距离以内 → 躲避/位移技能升权
-            // 勇气调制：低勇气急于脱离，高勇气沉着应对（可能触发武器切换近战）
-            if (stance != null && stance.repositionDir > 0 && xDist < data.xdistance) {
-                // 0~1: 越近压力越大（dist=0 → 1, dist=xdistance → 0）
-                var rangePressure:Number = 1 - xDist / data.xdistance;
-                rangePressure *= (1 - (p.勇气 || 0));  // 勇气抵消
-
-                if (c.type == "skill") {
-                    var rpFunc:String = c.skill.功能;
-                    // 躲避类（翻滚换弹等）：最高优先
-                    if (rpFunc == "躲避") total += rangePressure * 0.5;
-                    // 位移类（闪现等）：高优先
-                    else if (rpFunc == "位移" || rpFunc == "高频位移") total += rangePressure * 0.4;
-                } else if (c.type == "attack") {
-                    // 被贴脸时远程普攻效率低，轻惩罚
-                    total -= rangePressure * 0.15;
-                }
-            }
-
-            // 技术噪声（高技术→低噪声→更准确）
-            total += (_rng.nextFloat() - 0.5) * noise;
-
-            c.score = total;
-        }
-
-        // ── 3. Anti-oscillation ──
-        var momentumDecay:Number = p.momentumDecay;
-        if (isNaN(momentumDecay)) momentumDecay = 0.5;
-
-        for (var k:Number = 0; k < candidates.length; k++) {
-            var ca:Object = candidates[k];
-
-            // 动量奖励：与上次同类型 → 加分（被 momentumDecay 衰减）
-            if (ca.type == _lastActionType) {
-                ca.score += 0.1 * (1 - momentumDecay);
-            }
-
-            // 重复惩罚：连续使用同一技能 → 递减
-            if (ca.type == "skill" && ca.name == _lastSkillName) {
-                ca.score -= 0.08 * (_repeatCount + 1);
-            }
-        }
-
-        // ── 3.5 频率校正：使技能总使用期望与原始16帧基准等价 ──
-        // 原始技能概率按每16帧决策一次设计。当前有效决策间隔 E = commitment × reactionMult。
-        // Boltzmann 概率缩放: P_new = P_old × (E/16)，等价于 δ = T × ln(E/16)
-        // E < 16(高反应,决策频繁)→ δ < 0 → 技能降权，避免滥用
-        // E > 16(低反应,决策稀疏)→ δ > 0 → 技能升权，保持总期望
-        var T:Number = p.temperature;
-        if (isNaN(T) || T < 0.01) T = 0.2;
-
-        var effectiveInterval:Number = commitment * reactionMult;
-        if (effectiveInterval < 1) effectiveInterval = 1;
-        var BASELINE_INTERVAL:Number = 16;
-        var freqAdjust:Number = T * Math.log(effectiveInterval / BASELINE_INTERVAL);
-
-        for (var fa:Number = 0; fa < candidates.length; fa++) {
-            if (candidates[fa].type == "skill") {
-                candidates[fa].score += freqAdjust;
-            }
-        }
-
-        // ── 技能延续候选：固定高分，跳过评分管线 ──
-        // 在 Boltzmann 前注入，不参与维度评分/反抖动/频率校正
-        // 高分（1.5）确保大多数情况下技能动画继续播放
-        // 只有特别高分的替代技能（紧急/完美时机）才能竞争胜出
-        if (inSkillPhase) {
-            candidates.push({name: "Continue", type: "continue", score: 1.5});
-        }
-
-        // ── 4. Boltzmann 选择 ──
-        var selected:Object = boltzmannSelect(candidates, T);
-
-        // ── 5. 技能属性预写入（必须在 executeCombatAction 之前）──
-        // 技能路由 技能标签跳转_旧 内部读取 self.技能等级 决定技能版本，
-        // 上次使用时间 也必须在路由前写入以防同帧重入冷却检查
-        if (selected.type == "skill") {
-            self.技能等级 = selected.skill.技能等级;
-            selected.skill.上次使用时间 = nowMs;
-        }
-
-        // ── 6. 执行 ──
-        executeCombatAction(selected, self);
-
-        // ── 7. 战术偏置触发 + 武器切换锁 ──
-        if (selected.type == "skill") {
-            triggerTacticalBias(selected.skill, currentFrame);
-            _lastSkillUseFrame = currentFrame; // 技能动画保护：18帧内禁止切换武器
-        }
-
-        // ── 8. 更新评估器内部状态 ──
-        // Continue（延续技能）：不更新任何状态，保留技能阶段上下文
-        // → 下一帧 _lastActionType 仍为 "skill"，_commitUntilFrame 不变
-        // → 自然维持技能阶段直到 commitment 过期或被其他技能取代
-        if (selected.type != "continue") {
-            _commitUntilFrame = currentFrame + Math.round(commitment * reactionMult);
-            _lastActionType = selected.type;
-
-            if (selected.type == "skill") {
-                if (_lastSkillName == selected.name) {
-                    _repeatCount++;
-                } else {
-                    _repeatCount = 0;
-                }
-                _lastSkillName = selected.name;
-            } else {
-                _repeatCount = 0;
-            }
-        }
-
-        // ── 9. Debug 输出 ──
-        if (_root.AI调试模式 == true) {
-            debugTop3(candidates, selected, self, T);
-        }
-    }
+    // ═══════ 评分服务（供 ActionArbiter._scoreCandidates 调用）═══════
 
     // ── 战术偏置触发 ──
 
@@ -714,36 +338,6 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         return candidates[len - 1];
     }
 
-    // ── 动作执行 ──
-
-    private function executeCombatAction(selected:Object, self:MovieClip):Void {
-        if (selected == null) {
-            self.动作A = true;
-            return;
-        }
-        switch (selected.type) {
-            case "attack":
-                self.动作A = true;
-                if (self.攻击模式 === "双枪") self.动作B = true;
-                break;
-            case "skill":
-                _root.技能路由.技能标签跳转_旧(self, selected.name);
-                break;
-            case "continue":
-                // 延续当前技能动画 — 不输出任何动作指令
-                break;
-        }
-    }
-
-    private function repeatLastAction(self:MovieClip):Void {
-        // commitment 锁期内一律输出普攻:
-        // - 技能是一次性路由（动画触发后引擎接管），不能也不需要"重复"
-        // - hold 只在决策帧有意义，后续帧空输出 = 发呆
-        // 锁的作用是阻止重新选择动作，不是阻止攻击输出
-        self.动作A = true;
-        if (self.攻击模式 === "双枪") self.动作B = true;
-    }
-
     // ═══════ 2. 武器模式选择 ═══════
 
     /**
@@ -766,22 +360,6 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
                 return (r1 < r2) ? r1 : r2; // 短板值
         }
         return 1.0; // 近战/空手/无限弹药
-    }
-
-    /**
-     * shouldReload — 当前远程武器是否需要主动换弹
-     *
-     * 由 HeroCombatModule.chase()/engage() 调用
-     * 条件：远程姿态 + 余弹低于阈值 + 非换弹中
-     * @param threshold 余弹比阈值，低于此值触发（默认 0.3）
-     * @return true=应该换弹
-     */
-    public function shouldReload(data:UnitAIData, threshold:Number):Boolean {
-        if (_currentStance == null || _currentStance.repositionDir <= 0) return false;
-        var self:MovieClip = data.self;
-        if (self.man.换弹标签) return false; // 已在换弹
-        var ratio:Number = getAmmoRatio(self, self.攻击模式);
-        return ratio < threshold;
     }
 
     /**
@@ -841,13 +419,8 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
             }
         }
 
-        // 技能动画保护：使用技能后 18帧（≈0.6s）内禁止切换武器
-        // 放在紧急切换之后：空弹贴脸是生死问题不受此限制
-        if (currentFrame - _lastSkillUseFrame < 18) {
-            applyWeaponRanges(self, data);
-            syncStance(self.攻击模式);
-            return;
-        }
+        // 技能动画保护已由 ActionArbiter._evaluateStance 处理
+        // （p.skillAnimProtect 帧，基于人格派生）
 
         // 生命值比例（供武器评分中生存压力计算）
         var hpRatio:Number = self.hp / self.hp满血值;
@@ -1116,38 +689,4 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         }
     }
 
-    // ═══════ Debug 输出 ═══════
-
-    public function debugTop3(candidates:Array, selected:Object, self:MovieClip, T:Number):Void {
-        // 计算概率分母（所有候选的 exp 权重之和）
-        var sumExp:Number = 0;
-        for (var s:Number = 0; s < candidates.length; s++) {
-            sumExp += candidates[s]._ew;
-        }
-        if (sumExp <= 0) sumExp = 1; // 防除零
-
-        // 按分数降序排列（浅拷贝）
-        var sorted:Array = candidates.slice(0);
-        sorted.sort(function(a, b) {
-            return (b.score > a.score) ? 1 : ((b.score < a.score) ? -1 : 0);
-        });
-
-        // Stance 标签
-        var stanceTag:String = (_currentStance != null) ? (" S:" + self.攻击模式) : "";
-        // 战术偏置标签
-        var tactTag:String = (_tacticalBias != null) ? " T!" : "";
-        // 刚体标签
-        var rigidTag:String = ((self.刚体 == true) || (self.man.刚体标签 != null && self.man.刚体标签 != undefined)) ? " R!" : "";
-
-        var msg:String = "[AI] " + self.名字 + stanceTag + tactTag + rigidTag + " Top3: ";
-        var count:Number = sorted.length < 3 ? sorted.length : 3;
-        for (var i:Number = 0; i < count; i++) {
-            var ci:Object = sorted[i];
-            var prob:Number = Math.round(ci._ew / sumExp * 100);
-            msg += ci.name + "=" + (Math.round(ci.score * 100) / 100) + "(" + prob + "%)";
-            if (i < count - 1) msg += ", ";
-        }
-        msg += " -> " + selected.name + " [T=" + (Math.round(T * 100) / 100) + "]";
-        _root.服务器.发布服务器消息(msg);
-    }
 }
