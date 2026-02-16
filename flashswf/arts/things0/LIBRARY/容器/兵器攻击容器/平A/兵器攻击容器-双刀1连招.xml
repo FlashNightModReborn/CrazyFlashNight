@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招" itemID="6974a6b3-00001f9d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双刀1连招" lastModified="1770412761" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招" itemID="6974a6b3-00001f9d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双刀1连招" lastModified="1771257464" lastUniqueIdentifier="7">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-双刀1连招" currentFrame="30">
+    <DOMTimeline name="兵器攻击容器-双刀1连招" currentFrame="76">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -416,7 +416,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -463,7 +463,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="30" duration="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -642,44 +642,56 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="音效" color="#9933CC" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="6" duration="15" keyMode="9728">
+            <DOMFrame index="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力竖斩.wav");]]></script>
+                <script><![CDATA[_root.播放音效("双剑音效1.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="13" keyMode="9728">
+            <DOMFrame index="7" duration="14" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力竖斩.wav");]]></script>
+                <script><![CDATA[_root.播放音效("双剑音效2.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("双剑音效3.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("双剑音效4.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="34" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力竖斩.wav");]]></script>
+                <script><![CDATA[_root.播放音效("双剑音效4.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="38" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力竖斩.wav");]]></script>
+                <script><![CDATA[_root.播放音效("双剑音效7.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="43" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力竖斩.wav");]]></script>
+                <script><![CDATA[_root.播放音效("双剑音效4.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="48" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力竖斩.wav");]]></script>
+                <script><![CDATA[_root.播放音效("双剑音效7.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -688,13 +700,13 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="65" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀挥刀.wav");]]></script>
+                <script><![CDATA[_root.播放音效("双剑音效5.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="71" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
+                <script><![CDATA[_root.播放音效("双剑音效4.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -703,7 +715,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="76" duration="8" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("普通刀用力横斩.wav");]]></script>
+                <script><![CDATA[_root.播放音效("双剑音效6.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -3261,7 +3273,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="131.7" centerPoint3DY="196.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="131.7" centerPoint3DY="196.5">
                   <matrix>
                     <Matrix a="-0.95050048828125" b="-0.206298828125" c="-0.206298828125" d="0.95050048828125" tx="179" ty="-9.2"/>
                   </matrix>
@@ -3479,7 +3491,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="384.3" centerPoint3DY="-29.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="384.3" centerPoint3DY="-29.7">
                   <matrix>
                     <Matrix a="0.49237060546875" b="0.84088134765625" c="0.84088134765625" d="-0.49237060546875" tx="200.5" ty="74.9"/>
                   </matrix>
@@ -5963,7 +5975,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="86.05" centerPoint3DY="-217.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="86.05" centerPoint3DY="-217.65">
                   <matrix>
                     <Matrix a="-0.75140380859375" b="0.572021484375" c="-0.572021484375" d="-0.75140380859375" tx="212.25" ty="-56"/>
                   </matrix>
@@ -6181,7 +6193,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="348.8" centerPoint3DY="-112.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="348.8" centerPoint3DY="-112.9">
                   <matrix>
                     <Matrix a="-0.609420776367188" b="-0.719024658203125" c="0.719024658203125" d="-0.609420776367188" tx="194.3" ty="21.35"/>
                   </matrix>
@@ -6399,7 +6411,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="382.25" centerPoint3DY="25.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="382.25" centerPoint3DY="25.85">
                   <matrix>
                     <Matrix a="-0.3282470703125" b="-0.881378173828125" c="0.881378173828125" d="-0.3282470703125" tx="191.75" ty="99.5"/>
                   </matrix>
@@ -10060,7 +10072,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-61.8" centerPoint3DY="114.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-61.8" centerPoint3DY="114.05">
                   <matrix>
                     <Matrix a="0.831146240234375" b="0.337158203125" c="-0.337158203125" d="0.831146240234375" tx="9.2" ty="-67.1"/>
                   </matrix>
@@ -12240,7 +12252,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="64.45" centerPoint3DY="139.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="64.45" centerPoint3DY="139.9">
                   <matrix>
                     <Matrix a="0.872406005859375" b="-0.17413330078125" c="0.17413330078125" d="0.872406005859375" tx="24.45" ty="-48.9"/>
                   </matrix>

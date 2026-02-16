@@ -92,7 +92,7 @@
           <DOMFolderItem name="余烬小队" itemID="663cf35d-000026f7"/>
           <DOMFolderItem name="余烬小队/余烬剑痴" itemID="663cf35d-000026f8" isExpanded="true"/>
           <DOMFolderItem name="重复项目文件夹" itemID="66b9eabe-00000ca4"/>
-          <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
+          <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52" isExpanded="true"/>
           <DOMFolderItem name="主角肢体素材" itemID="68c8295d-0000091e"/>
      </folders>
      <media>
@@ -1052,7 +1052,7 @@
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1769694922"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1769694922"/>
           <Include href="sprite/兵器使用标签.xml" loadImmediate="false" itemID="697b1094-00002017" lastModified="1719241655"/>
-          <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1770063608"/>
+          <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1771259105"/>
           <Include href="sprite/兵器跳跃旧动作备份.xml" loadImmediate="false" itemID="690cd8d3-0000117f" lastModified="1769694922"/>
           <Include href="sprite/兵器走路.xml" loadImmediate="false" itemID="690ce360-00000724" lastModified="1769694922"/>
           <Include href="sprite/兵器走路旧版备份.xml" loadImmediate="false" itemID="690ce373-00000766" lastModified="1769694922"/>
@@ -1246,7 +1246,7 @@
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招.xml" itemID="698642fe-00000b06" lastModified="1771007301"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1770477886"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1770225044"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml" itemID="6974a6b3-00001f9d" lastModified="1770412761"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml" itemID="6974a6b3-00001f9d" lastModified="1771257464"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招.xml" itemID="69875871-00000a1a" lastModified="1770477876"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1770409209"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1770412422"/>
@@ -2085,7 +2085,7 @@
           <Include href="重复项目文件夹/不知道怎么说的特效.xml" itemIcon="1" loadImmediate="false" itemID="6910baf4-00000c46" lastModified="1762700036"/>
           <Include href="重复项目文件夹/气流.xml" loadImmediate="false" itemID="674099cc-000008b1" lastModified="1766640847"/>
           <Include href="重复项目文件夹/特殊地震.xml" loadImmediate="false" itemID="6910baf4-00000c45" lastModified="1763126335"/>
-          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1771144935"/>
+          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1771258426"/>
           <Include href="主角动画层/手枪2攻击.xml" loadImmediate="false" itemID="66576c39-00002e31" lastModified="1769694922"/>
           <Include href="主角动画层/手枪2站立.xml" loadImmediate="false" itemID="66576852-000009ed" lastModified="1769694922"/>
           <Include href="主角动画层/手枪攻击.xml" loadImmediate="false" itemID="6657384b-0000061d" lastModified="1769694922"/>
@@ -2123,7 +2123,7 @@
           <Include href="主角肢体素材/左下臂.xml" loadImmediate="false" itemID="697b650d-00002f97" lastModified="1770119899"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Layer 1" color="#DEEE3E" current="true" isSelected="true">
                          <frames>
