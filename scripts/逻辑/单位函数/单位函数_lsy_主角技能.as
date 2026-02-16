@@ -68,6 +68,16 @@ _root.技能函数.释放行为.默认 = function(技能名, 技能等级){
 //buff系统实装后，部分技能可以通过更改释放行为函数，不进技能动画释放
 
 
+// ── AI 辅助标记：预战buff属性 ──
+// UtilityEvaluator.selectPreCombatBuff 读取此表决定预战buff策略
+// priority: 预战使用优先级（越高越优先）
+// global: true 表示全场/全场景生效，不需要重复使用
+// buffId: buff 在 BuffManager 中的注册 ID（用于查询是否已激活）
+_root.技能函数.预战buff标记 = {};
+_root.技能函数.预战buff标记["兴奋剂"] = { priority: 3, global: true, buffId: "兴奋剂" };
+_root.技能函数.预战buff标记["铁布衫"] = { priority: 2, global: true, buffId: "铁布衫" };
+_root.技能函数.预战buff标记["霸体"]   = { priority: 1, global: false, buffId: "霸体" };
+_root.技能函数.预战buff标记["能量盾"] = { priority: 1, global: false, buffId: null };
 
 
 //主角技能的移动相关函数

@@ -53,6 +53,8 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         if (data.target != null) {
             self.dispatcher.publish("aggroSet", self, data.target);
         }
+        // 追击计时：用于检测长时间追不上目标
+        data._chaseStartFrame = _root.帧计时器.当前帧数;
     }
 
     public function chase():Void {
@@ -73,6 +75,18 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         data.updateSelf();
         data.updateTarget();
 
+        // 预战准备：距离足够远时主动施放增益技能（兴奋剂/铁布衫/霸体等）
+        // 条件：有评估器 + 非射击中 + 距离 > 1.5 倍攻击范围（安全距离）
+        if (data.evaluator != null && !self.射击中 && data.absdiff_x > data.xrange * 1.5) {
+            data.evaluator.selectPreCombatBuff(data);
+
+            // 追击阶段安全距离主动换弹（余弹 < 30%）
+            // 追击中还没接敌，是最佳换弹时机
+            if (data.evaluator.shouldReload(data, 0.3)) {
+                self.man.gotoAndPlay("换弹匣");
+            }
+        }
+
         // 跑步切换（复刻原逻辑，含原始换弹标签表达式）
         if (!self.射击中 && !self.man.换弹标签 != null && random(3) === 0) {
             self.状态改变(self.攻击模式 + "跑");
@@ -91,6 +105,16 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         } else if (data.x < data.tx - data.xdistance) {
             self.右行 = true;
         }
+
+        // 追击过久 → 重评估武器（长距离自然偏向远程）
+        // 切远程后 xrange 变为 400，Gate 立刻推入 Engaging 射击
+        // 40帧 ≈ 1.5s（给近战公平机会，但不死追）
+        if (data.evaluator != null && !isNaN(data._chaseStartFrame)) {
+            var chaseDuration:Number = _root.帧计时器.当前帧数 - data._chaseStartFrame;
+            if (chaseDuration > 40) {
+                data.evaluator.evaluateWeaponMode(data);
+            }
+        }
     }
 
     // ═══════ 交战（射程内）═══════
@@ -106,8 +130,11 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
     public function engage():Void {
         var self:MovieClip = data.self;
 
+        // 每 tick 重置所有输出标志（evaluator/fallback 按需设置）
         self.动作A = false;
         self.动作B = false;
+        self.左行 = false;
+        self.右行 = false;
 
         // 目标失效守卫
         var t:MovieClip = data.target;
@@ -115,6 +142,13 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
         data.updateSelf();
         data.updateTarget();
+
+        // 周期性武器模式重评估（交战中距离变化可能使当前武器不再最优）
+        // evaluateWeaponMode 内部有 30 帧冷却，不会每帧都跑完整评估
+        // 切换武器后会同步 xrange/zrange/xdistance 和 Stance
+        if (data.evaluator != null) {
+            data.evaluator.evaluateWeaponMode(data);
+        }
 
         // 面朝目标
         if (data.x > data.tx) {
@@ -126,6 +160,22 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // 技能/普攻选择 — 委托 UtilityEvaluator 或回退 Phase 1
         if (data.evaluator != null) {
             data.evaluator.selectCombatAction(data);
+
+            // 远程风筝：边打边退（Stance repositionDir > 0 时激活）
+            // 目标过近（< 40% 保持距离）→ 后退，保持射击距离
+            if (data.evaluator.getRepositionDir() > 0 && data.absdiff_x < data.xdistance * 0.4) {
+                if (data.diff_x > 0) {
+                    self.左行 = true;
+                } else {
+                    self.右行 = true;
+                }
+            }
+
+            // 交战中安全距离主动换弹（余弹 < 20%，距离 > 保持距离）
+            // 比追击阶段阈值更低，避免战斗中频繁换弹
+            if (data.absdiff_x > data.xdistance && data.evaluator.shouldReload(data, 0.2)) {
+                self.man.gotoAndPlay("换弹匣");
+            }
         } else {
             selectSkillFallback();
         }
