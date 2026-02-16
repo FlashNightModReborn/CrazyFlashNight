@@ -39,7 +39,7 @@
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798" isExpanded="true"/>
           <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79" isExpanded="true"/>
           <DOMFolderItem name="容器/战技容器/sprite" itemID="695e92dd-000012bc"/>
-          <DOMFolderItem name="容器/战技容器/属性标签标志元件" itemID="695e8bfa-000070f2" isExpanded="true"/>
+          <DOMFolderItem name="容器/战技容器/属性标签标志元件" itemID="695e8bfa-000070f2"/>
           <DOMFolderItem name="尚未整理" itemID="693ece28-00001dc3"/>
           <DOMFolderItem name="神秘文件夹" itemID="66530522-00000d7c"/>
           <DOMFolderItem name="属性标签标志元件" itemID="66738923-00001ce2"/>
@@ -1304,6 +1304,7 @@
           <Include href="容器/技能容器/技能容器-重力井.xml" itemID="694a6898-0000224b" lastModified="1769769310"/>
           <Include href="容器/技能容器/技能容器-追猎射击.xml" itemID="694a31f1-00000882" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-组合拳.xml" itemID="694ac049-0000487b" lastModified="1769694923"/>
+          <Include href="容器/空手攻击容器/！空手攻击容器-起身回旋踢.xml" loadImmediate="false" itemID="699377ec-00000b28" lastModified="1771272172"/>
           <Include href="容器/空手攻击容器/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1769694922"/>
           <Include href="容器/空手攻击容器/空手攻击容器-波动拳.xml" itemID="6963b380-0000111d" lastModified="1769694923"/>
           <Include href="容器/空手攻击容器/空手攻击容器-后撤步.xml" itemID="6964d656-00002843" lastModified="1770214757"/>
@@ -1321,6 +1322,7 @@
           <Include href="容器/空手攻击容器/平A/空手攻击容器-兽形拳1连招.xml" itemID="6964d0f9-000026f0" lastModified="1770225226"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-腕刃1连招.xml" itemID="6963b211-00000fda" lastModified="1770225277"/>
           <Include href="容器/容器.xml" loadImmediate="false" itemID="6957d2ea-0000091e" lastModified="1768414239"/>
+          <Include href="容器/战技容器/！战技容器-逆暴雨.xml" loadImmediate="false" itemID="6993780a-00000b8f" lastModified="1771272354"/>
           <Include href="容器/战技容器/sprite/Symbol 8.xml" loadImmediate="false" itemID="695e92f4-00001514" lastModified="1767805684"/>
           <Include href="容器/战技容器/sprite/Symbol 12.xml" loadImmediate="false" itemID="695e92f4-0000150a" lastModified="1767805684"/>
           <Include href="容器/战技容器/sprite/Symbol 16.xml" loadImmediate="false" itemID="695e92f4-0000150d" lastModified="1767805684"/>
@@ -2132,7 +2134,7 @@
                                         <script><![CDATA[stop();]]></script>
                                    </Actionscript>
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="加载MC库-00" selected="true" centerPoint3DX="1277" centerPoint3DY="546.05">
+                                        <DOMSymbolInstance libraryItemName="加载MC库-00" centerPoint3DX="1277" centerPoint3DY="546.05">
                                              <matrix>
                                                   <Matrix tx="356.3" ty="-65.75"/>
                                              </matrix>
