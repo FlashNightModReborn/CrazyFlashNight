@@ -53,6 +53,8 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
     public var aiNextMode:String; // 模块主观完成信号（方案A预留）
 
+    public var _chaseStartFrame:Number; // 追击开始帧（chase frustration 武器切换用）
+
     // 人格向量 + 派生AI参数（Phase 2）
     // 引用 self.personality 同一对象，mutate-only 策略保证不陈旧
     public var personality:Object;
@@ -60,6 +62,10 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     // Utility 评估器实例（Phase 2 Step 3）
     // 仅 Hero 类型创建，其他类型为 null
     public var evaluator;
+
+    // 统一动作决策管线（Phase 2 Step 5）
+    // ActionArbiter 协调 body/stance/item 三轨，替代直接调用 evaluator
+    public var arbiter;
 
     
     public function UnitAIData(_self:MovieClip){

@@ -59,7 +59,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
 
     // ── 评分维度键序（evalDepth 控制前 N 维激活）──
     // dim0=damage, dim1=safety, dim2=resource, dim3=positioning, dim4=combo
-    private static var DIM_WEIGHTS:Array = ["w_damage", "w_safety", "w_resource", "w_positioning", "w_combo"];
+    public static var DIM_WEIGHTS:Array = ["w_damage", "w_safety", "w_resource", "w_positioning", "w_combo"];
 
     // ═══════ 武器威力系数（DPS 代理）═══════
     //
@@ -76,7 +76,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
     private static function initWeaponPower():Object {
         var wp:Object = {};
         wp["空手"] = 0.1;   // 极低：几乎不应主动选择
-        wp["兵器"] = 0.7;   // 近战武器，效率较高但有风险
+        wp["兵器"] = 0.75;   // 近战武器，效率较高但有风险
         wp["手枪"] = 0.6;   // 单手枪，略优于近战
         wp["双枪"] = 0.8;   // 双持高火力
         wp["长枪"] = 1.0;   // 最高效远程输出
@@ -179,6 +179,20 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
      */
     public function getRepositionDir():Number {
         return (_currentStance != null) ? _currentStance.repositionDir : 0;
+    }
+
+    // ═══════ Stance/Tactical 访问器（供 ActionArbiter 评分用）═══════
+
+    public function getCurrentStance():Object {
+        return _currentStance;
+    }
+
+    public function getTacticalBias():Object {
+        return _tacticalBias;
+    }
+
+    public function clearTacticalBias():Void {
+        _tacticalBias = null;
     }
 
     // ═══════ 0. 预战buff准备 ═══════
@@ -529,7 +543,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         }
 
         // ── 9. Debug 输出 ──
-        if (_root.AI调试模式 = true) {
+        if (_root.AI调试模式 == true) {
             debugTop3(candidates, selected, self, T);
         }
     }
@@ -545,7 +559,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
      *
      * 偏置自然过期（expiryFrame），无需独立状态机
      */
-    private function triggerTacticalBias(skill:Object, currentFrame:Number):Void {
+    public function triggerTacticalBias(skill:Object, currentFrame:Number):Void {
         var func:String = skill.功能;
 
         if (func == "位移" || func == "高频位移") {
@@ -575,7 +589,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
 
     // ── 单维度评分 ──
 
-    private function scoreDimension(dim:Number, c:Object, data:UnitAIData, self:MovieClip):Number {
+    public function scoreDimension(dim:Number, c:Object, data:UnitAIData, self:MovieClip):Number {
         switch (dim) {
             case 0: return scoreDamage(c, data, self);
             case 1: return scoreSafety(c, self);
@@ -643,7 +657,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
 
     // ── Boltzmann 选择 ──
 
-    private function boltzmannSelect(candidates:Array, T:Number):Object {
+    public function boltzmannSelect(candidates:Array, T:Number):Object {
         var len:Number = candidates.length;
         if (len == 0) return null;
         if (len == 1) {
@@ -795,7 +809,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
                 _lastWeaponSwitchFrame = currentFrame;
                 applyWeaponRanges(self, data);
                 syncStance("兵器");
-                if (_root.AI调试模式 = true) {
+                if (_root.AI调试模式 == true) {
                     _root.服务器.发布服务器消息("[WPN] " + self.名字 + " EMERGENCY melee! ammo=0 dist=" + Math.round(dist));
                 }
                 return;
@@ -871,7 +885,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         syncStance(self.攻击模式);
 
         // ── Debug 武器评估输出 ──
-        if (_root.AI调试模式 = true) {
+        if (_root.AI调试模式 == true) {
             var curMode:String = didSwitch ? prevMode : self.攻击模式;
             var dbgSwitchCost:Number = 0.15 * (1 - healthPressure * 0.7);
             if (dbgSwitchCost < 0.03) dbgSwitchCost = 0.03;
@@ -981,7 +995,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
      * 根据当前攻击模式设定范围参数
      * 保留原始 Phase 1 的硬编码值（这些是游戏平衡参数）
      */
-    private function applyWeaponRanges(self:MovieClip, data:UnitAIData):Void {
+    public function applyWeaponRanges(self:MovieClip, data:UnitAIData):Void {
         switch (self.攻击模式) {
             case "空手":
                 self.x轴攻击范围 = 90;
@@ -1053,7 +1067,7 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
 
     // ═══════ Debug 输出 ═══════
 
-    private function debugTop3(candidates:Array, selected:Object, self:MovieClip, T:Number):Void {
+    public function debugTop3(candidates:Array, selected:Object, self:MovieClip, T:Number):Void {
         // 计算概率分母（所有候选的 exp 权重之和）
         var sumExp:Number = 0;
         for (var s:Number = 0; s < candidates.length; s++) {

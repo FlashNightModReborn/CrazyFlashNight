@@ -5,6 +5,7 @@ import org.flashNight.arki.unit.UnitAI.BaseUnitBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.HeroCombatModule;
 import org.flashNight.arki.unit.UnitAI.UtilityEvaluator;
+import org.flashNight.arki.unit.UnitAI.ActionArbiter;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.component.StatHandler.DamageResistanceHandler;
 
@@ -40,9 +41,10 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // 通过闭包委托到根机实例方法，确保 evaluateWeapon/evaluateHeal/searchTarget 可达
         var behavior:HeroCombatBehavior = this;
 
-        // ── Phase 2: 创建 Utility 评估器（personality 存在时）──
+        // ── Phase 2: 创建 Utility 评估器 + 统一动作管线（personality 存在时）──
         if (data.personality != null) {
             data.evaluator = new UtilityEvaluator(data.personality);
+            data.arbiter = new ActionArbiter(data.personality, data.evaluator);
         }
 
         // ═══════ 状态列表 ═══════
@@ -124,14 +126,16 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             return;
         }
 
-        // 4. 武器模式评估（Phase 2 注入点）
-        evaluateWeapon();
+        // 4-6. 武器模式 + 血包评估（统一管线 / Phase 1 fallback）
+        if (data.arbiter != null) {
+            data.arbiter.tick(data, "selector");
+        } else {
+            evaluateWeapon();
+            evaluateHeal();
+        }
 
         // 5. 命令同步（复刻原 _parent.命令 = _root.命令）
         self.命令 = _root.命令;
-
-        // 6. 血包评估（Phase 2 注入点）
-        evaluateHeal();
 
         // 7. 目标搜索（复刻原 aggroClear → 寻找攻击目标）
         self.dispatcher.publish("aggroClear", self);
