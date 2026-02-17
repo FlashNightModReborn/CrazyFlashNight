@@ -362,6 +362,16 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                 total += 0.5;
             }
 
+            // 技能换弹加成（翻滚换弹等）：弹药低 + 经验高 → 强烈偏好技能换弹
+            // 经验=1 弹药=0%: +1.5；经验=0 弹药=0%: +0.3（轻微偏好）
+            if (c.type == "skill" && c.skill.功能 == "换弹") {
+                var ammoR:Number = _ctx.ammoRatio;
+                if (isNaN(ammoR) || ammoR < 0.5) {
+                    var ammoUrgency:Number = isNaN(ammoR) ? 1 : (1 - ammoR);
+                    total += ammoUrgency * (0.3 + (p.经验 || 0) * 1.2);
+                }
+            }
+
             // 决策噪声
             total += (_rng.nextFloat() - 0.5) * noise;
 

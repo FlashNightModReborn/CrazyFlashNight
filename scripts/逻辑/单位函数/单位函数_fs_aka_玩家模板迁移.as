@@ -17,7 +17,8 @@ import org.flashNight.gesh.object.*;
 import org.flashNight.arki.unit.*;
 
 // _root.玩家与佣兵区分装扮刷新 = false;
-_root.AI调试模式 = true;
+// _root.AI调试模式 = true;
+// _root.AI日志级别 = 3;
 _root.主角函数 = new Object();
 
 /*防止被自动格式折叠

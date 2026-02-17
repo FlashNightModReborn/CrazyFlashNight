@@ -30,6 +30,7 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
     public var hpRatio:Number;           // clamped [0,1]
     public var isRigid:Boolean;          // 刚体 || man.刚体标签
     public var attackMode:String;        // self.攻击模式
+    public var ammoRatio:Number;         // 当前武器余弹比 [0,1]（远程姿态有效）
 
     // ── 目标/距离 ──
     public var target:MovieClip;
@@ -98,6 +99,7 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
         this.isRigid = (s.刚体 == true) ||
             (s.man != null && s.man.刚体标签 != null && s.man.刚体标签 != undefined);
         this.attackMode = s.攻击模式;
+        this.ammoRatio = scorer.getAmmoRatio(s, s.攻击模式);
 
         // ── 目标/距离 ──
         this.target = t;
