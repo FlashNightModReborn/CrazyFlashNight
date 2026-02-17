@@ -119,14 +119,38 @@ class org.flashNight.arki.unit.UnitAI.scoring.ScoringPipeline {
         }
 
         // ═══ end phase (后处理器) ═══
+        // FULL trace: 逐 post 快照差分，记录每个后处理器的贡献
         for (var ei:Number = 0; ei < numPosts; ei++) {
+            if (fullTrace) {
+                for (var snap:Number = 0; snap < len; snap++) {
+                    candidates[snap]._beforePost = candidates[snap].score;
+                }
+            }
+
             _posts[ei].end(candidates, ctx, p, scratch);
+
+            if (fullTrace) {
+                var postName:String = _posts[ei].getName();
+                for (var pd:Number = 0; pd < len; pd++) {
+                    var postD:Number = candidates[pd].score - candidates[pd]._beforePost;
+                    if (postD != 0) {
+                        var ps:String = postD > 0 ? "+" : "";
+                        var entry:String = postName + "=" + ps
+                            + String(Math.round(postD * 100) / 100);
+                        if (candidates[pd]._postStr == undefined) {
+                            candidates[pd]._postStr = entry;
+                        } else {
+                            candidates[pd]._postStr += " " + entry;
+                        }
+                    }
+                }
+            }
         }
 
         // ═══ trace recording（所有候选，最终分数）═══
         for (var tr:Number = 0; tr < len; tr++) {
             var tc:Object = candidates[tr];
-            trace.scored(tc, tc._dimScores, tc._modStr);
+            trace.scored(tc, tc._dimScores, tc._modStr, tc._postStr);
         }
     }
 }

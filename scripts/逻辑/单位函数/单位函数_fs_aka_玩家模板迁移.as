@@ -2293,6 +2293,15 @@ _root.配置人形怪AI = function(target:MovieClip):Void {
     }
 
     // ─── 6. 角色专属参数（hardcode → data-driven 过渡）───
+    // personality.aiSpec 可选：覆盖 PipelineFactory 默认管线配置
+    // 示例（纯近战角色可省略弹药相关修正器）：
+    //   target.personality.aiSpec = {
+    //       mods: ["StanceAffinity","TacticalBias","RigidState","RangePressure",
+    //              "ReactiveDodge","SkillHierarchy","SurvivalUrgency","DecisionNoise"],
+    //       posts: ["Momentum","FreqAdjust"],
+    //       sources: { engage:["Offense"], chase:["PreBuff"], selector:[], retreat:["PreBuff"] },
+    //       filters: ["AnimLock","Interrupt"]
+    //   };
     if (target.名字 == "尾上世莉架") {
         target.personality.skillBaseBonus = 0.3;
     }
@@ -2509,59 +2518,17 @@ _root.计算AI参数 = function(p:Object):Void {
     p.comboPreference     = clamp(p.comboPreference, 0.1, 0.6);
     p.skillBaseBonus      = clamp(p.skillBaseBonus, 0, 1.0);
 
-    // ── 结构化子对象（traits/params 双根）──
-    // 新代码一律读 p.traits.* / p.params.*
-    // 平铺字段保留（兼容期：所有旧消费者迁移完成前）
-
-    p.traits = {
-        勇气: p.勇气, 技术: p.技术, 经验: p.经验,
-        反应: p.反应, 智力: p.智力, 谋略: p.谋略
-    };
-
-    p.params = {
-        // Layer 1: behavior
-        engageDistanceMult: p.engageDistanceMult,
-        retreatHPRatio:     p.retreatHPRatio,
-        chaseCommitment:    p.chaseCommitment,
-        decisionNoise:      p.decisionNoise,
-        stanceMastery:      p.stanceMastery,
-        stabilityFactor:    p.stabilityFactor,
-        maxCandidates:      p.maxCandidates,
-        tickInterval:       p.tickInterval,
-        evalDepth:          p.evalDepth,
-        healEagerness:      p.healEagerness,
-        baseTemperature:    p.baseTemperature,
-        momentumDecay:      p.momentumDecay,
-        comboPreference:    p.comboPreference,
-        // Layer 2: pipeline
-        skillCommitFrames:  p.skillCommitFrames,
-        skillAnimProtect:   p.skillAnimProtect,
-        stanceCooldown:     p.stanceCooldown,
-        chaseFrustration:   p.chaseFrustration,
-        reloadCommitFrames: p.reloadCommitFrames,
-        weaponSwitchCost:   p.weaponSwitchCost,
-        weaponHysteresis:   p.weaponHysteresis,
-        dodgeReactWindow:   p.dodgeReactWindow,
-        kiteThreshold:      p.kiteThreshold,
-        targetSwitchInterval: p.targetSwitchInterval,
-        targetSwitchRatio:    p.targetSwitchRatio,
-        preBuffDistMult:    p.preBuffDistMult,
-        preBuffCooldown:    p.preBuffCooldown,
-        // Layer 3: derived
-        temperature:        p.temperature,
-        // Layer 4: weights
-        w_damage:           p.w_damage,
-        w_safety:           p.w_safety,
-        w_resource:         p.w_resource,
-        w_positioning:      p.w_positioning,
-        w_combo:            p.w_combo,
-        // Layer 5: tactics
-        tacticsGrouping:      p.tacticsGrouping,
-        tacticsEvadeCluster:  p.tacticsEvadeCluster,
-        tacticsSeekRecovery:  p.tacticsSeekRecovery,
-        // Layer 6: character-specific
-        skillBaseBonus:       p.skillBaseBonus
-    };
+    // ── 参数布局说明 ──
+    // 所有参数平铺在 personality 对象 (p) 上，分层如下：
+    //   Base traits:  p.勇气, p.技术, p.经验, p.反应, p.智力, p.谋略
+    //   Behavior:     p.engageDistanceMult, p.retreatHPRatio, ...
+    //   Pipeline:     p.skillCommitFrames, p.stanceCooldown, ...
+    //   Derived:      p.temperature
+    //   Weights:      p.w_damage, p.w_safety, ...
+    //   Tactics:      p.tacticsGrouping, p.tacticsEvadeCluster, ...
+    //   Character:    p.skillBaseBonus
+    //   Config:       p.aiSpec (optional, see PipelineFactory)
+    // 消费方一律直读 p.*（无子对象间接层）。
 };
 
 _root.初始化佣兵NPC模板 = function() {

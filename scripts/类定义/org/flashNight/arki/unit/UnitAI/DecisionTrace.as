@@ -136,11 +136,13 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
     /**
      * scored — 记录候选评分结果
      *
-     * @param candidate     候选对象（含 name, type, score）
-     * @param dimScores     维度分解数组（可选，FULL 级别使用）
-     * @param modBreakdown  修正器分解字符串（可选，FULL 级别使用）
+     * @param candidate      候选对象（含 name, type, score）
+     * @param dimScores      维度分解数组（可选，FULL 级别使用）
+     * @param modBreakdown   修正器分解字符串（可选，FULL 级别使用）
+     * @param postBreakdown  后处理器分解字符串（可选，FULL 级别使用）
      */
-    public function scored(candidate:Object, dimScores:Array, modBreakdown:String):Void {
+    public function scored(candidate:Object, dimScores:Array,
+                           modBreakdown:String, postBreakdown:String):Void {
         if (_level < LEVEL_TOP3) return;
 
         _scored.push({
@@ -148,7 +150,8 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
             type: candidate.type,
             score: candidate.score,
             dims: dimScores,
-            mods: modBreakdown
+            mods: modBreakdown,
+            posts: postBreakdown
         });
     }
 
@@ -247,6 +250,9 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
             }
             if (top.mods != null && top.mods.length > 0) {
                 msg += "\n  mods[" + top.name + "]: " + top.mods;
+            }
+            if (top.posts != null && top.posts.length > 0) {
+                msg += "\n  posts[" + top.name + "]: " + top.posts;
             }
         }
 

@@ -3,25 +3,10 @@ import org.flashNight.arki.unit.UnitAI.UtilityEvaluator;
 import org.flashNight.arki.unit.UnitAI.ActionExecutor;
 import org.flashNight.arki.unit.UnitAI.AIContext;
 import org.flashNight.arki.unit.UnitAI.DecisionTrace;
-import org.flashNight.arki.unit.UnitAI.strategies.OffenseStrategy;
-import org.flashNight.arki.unit.UnitAI.strategies.ReloadStrategy;
-import org.flashNight.arki.unit.UnitAI.strategies.PreBuffStrategy;
-import org.flashNight.arki.unit.UnitAI.strategies.InterruptFilter;
-import org.flashNight.arki.unit.UnitAI.strategies.AnimLockFilter;
+import org.flashNight.arki.unit.UnitAI.PipelineFactory;
+import org.flashNight.arki.unit.UnitAI.scoring.ScoringPipeline;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
-import org.flashNight.arki.unit.UnitAI.scoring.ScoringPipeline;
-import org.flashNight.arki.unit.UnitAI.scoring.StanceAffinityMod;
-import org.flashNight.arki.unit.UnitAI.scoring.TacticalBiasMod;
-import org.flashNight.arki.unit.UnitAI.scoring.RigidStateMod;
-import org.flashNight.arki.unit.UnitAI.scoring.RangePressureMod;
-import org.flashNight.arki.unit.UnitAI.scoring.ReactiveDodgeMod;
-import org.flashNight.arki.unit.UnitAI.scoring.AmmoReloadMod;
-import org.flashNight.arki.unit.UnitAI.scoring.SkillHierarchyMod;
-import org.flashNight.arki.unit.UnitAI.scoring.SurvivalUrgencyMod;
-import org.flashNight.arki.unit.UnitAI.scoring.DecisionNoiseMod;
-import org.flashNight.arki.unit.UnitAI.scoring.MomentumPost;
-import org.flashNight.arki.unit.UnitAI.scoring.FreqAdjustPost;
 
 /**
  * ActionArbiter — 统一动作决策管线
@@ -102,39 +87,23 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         this._ctx = new AIContext();
         this._trace = new DecisionTrace();
 
-        // ── 评分管线 ──
-        var mods:Array = [
-            new StanceAffinityMod(),
-            new TacticalBiasMod(),
-            new RigidStateMod(),
-            new RangePressureMod(),
-            new ReactiveDodgeMod(),
-            new AmmoReloadMod(),
-            new SkillHierarchyMod(),
-            new SurvivalUrgencyMod(),
-            new DecisionNoiseMod(this._rng)
-        ];
-        var posts:Array = [
-            new MomentumPost(this._jitterState),
-            new FreqAdjustPost()
-        ];
+        // ── 声明式管线构建（PipelineFactory 注册表驱动）──
+        // personality.aiSpec 可选：{ mods, posts, sources, filters }
+        // null → 使用 PipelineFactory.DEFAULT_* 全量配置
+        var deps:Object = {
+            personality: personality,
+            scorer: scorer,
+            rng: this._rng,
+            jitterState: this._jitterState,
+            executor: this._executor
+        };
+        var spec:Object = personality.aiSpec;
+
+        var mods:Array = PipelineFactory.buildMods(spec != null ? spec.mods : null, deps);
+        var posts:Array = PipelineFactory.buildPosts(spec != null ? spec.posts : null, deps);
         this._pipeline = new ScoringPipeline(scorer, mods, posts);
-
-        // ── 策略注册 ──
-        var offense = new OffenseStrategy(personality);
-        var reload = new ReloadStrategy(personality, scorer);
-        var preBuff = new PreBuffStrategy(personality);
-
-        this._sources = {};
-        this._sources["engage"]   = [offense, reload];
-        this._sources["chase"]    = [preBuff, reload];
-        this._sources["selector"] = [];
-        this._sources["retreat"]  = [preBuff, reload]; // RESERVED: 未来走位策略撤退上下文使用，当前无 tick(data,"retreat") 调用点
-
-        this._filters = [
-            new AnimLockFilter(),
-            new InterruptFilter(this._executor)
-        ];
+        this._sources = PipelineFactory.buildSources(spec != null ? spec.sources : null, deps);
+        this._filters = PipelineFactory.buildFilters(spec != null ? spec.filters : null, deps);
 
         // ── 事件订阅 ──
         if (self.dispatcher != undefined && self.dispatcher != null) {
