@@ -2291,6 +2291,11 @@ _root.配置人形怪AI = function(target:MovieClip):Void {
             _root.计算AI参数(target.personality); // 重算派生参数
         }
     }
+
+    // ─── 6. 角色专属参数（hardcode → data-driven 过渡）───
+    if (target.名字 == "尾上世莉架") {
+        target.personality.skillBaseBonus = 0.3;
+    }
 };
 
 /**
@@ -2463,6 +2468,9 @@ _root.计算AI参数 = function(p:Object):Void {
     // comboPreference：勇气+技术共同驱动连招倾向
     p.comboPreference     = 0.1 + p.勇气 * 0.3 + p.技术 * 0.2; // 0.1~0.6
 
+    // ── 角色专属技能加成（由 配置人形怪AI 或 profile 设置，默认 0）──
+    if (isNaN(p.skillBaseBonus)) p.skillBaseBonus = 0;
+
     // ── 全参数 clamp（防御边界溢出，保证管线内信任参数）──
     var clamp = function(v:Number, lo:Number, hi:Number):Number {
         return v < lo ? lo : (v > hi ? hi : v);
@@ -2499,6 +2507,7 @@ _root.计算AI参数 = function(p:Object):Void {
     p.preBuffCooldown     = clamp(p.preBuffCooldown, 10, 30);
     p.momentumDecay       = clamp(p.momentumDecay, 0.3, 0.7);
     p.comboPreference     = clamp(p.comboPreference, 0.1, 0.6);
+    p.skillBaseBonus      = clamp(p.skillBaseBonus, 0, 1.0);
 
     // ── 结构化子对象（traits/params 双根）──
     // 新代码一律读 p.traits.* / p.params.*
@@ -2549,7 +2558,9 @@ _root.计算AI参数 = function(p:Object):Void {
         // Layer 5: tactics
         tacticsGrouping:      p.tacticsGrouping,
         tacticsEvadeCluster:  p.tacticsEvadeCluster,
-        tacticsSeekRecovery:  p.tacticsSeekRecovery
+        tacticsSeekRecovery:  p.tacticsSeekRecovery,
+        // Layer 6: character-specific
+        skillBaseBonus:       p.skillBaseBonus
     };
 };
 

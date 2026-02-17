@@ -10,6 +10,18 @@ import org.flashNight.arki.unit.UnitAI.strategies.InterruptFilter;
 import org.flashNight.arki.unit.UnitAI.strategies.AnimLockFilter;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
+import org.flashNight.arki.unit.UnitAI.scoring.ScoringPipeline;
+import org.flashNight.arki.unit.UnitAI.scoring.StanceAffinityMod;
+import org.flashNight.arki.unit.UnitAI.scoring.TacticalBiasMod;
+import org.flashNight.arki.unit.UnitAI.scoring.RigidStateMod;
+import org.flashNight.arki.unit.UnitAI.scoring.RangePressureMod;
+import org.flashNight.arki.unit.UnitAI.scoring.ReactiveDodgeMod;
+import org.flashNight.arki.unit.UnitAI.scoring.AmmoReloadMod;
+import org.flashNight.arki.unit.UnitAI.scoring.SkillHierarchyMod;
+import org.flashNight.arki.unit.UnitAI.scoring.SurvivalUrgencyMod;
+import org.flashNight.arki.unit.UnitAI.scoring.DecisionNoiseMod;
+import org.flashNight.arki.unit.UnitAI.scoring.MomentumPost;
+import org.flashNight.arki.unit.UnitAI.scoring.FreqAdjustPost;
 
 /**
  * ActionArbiter — 统一动作决策管线
@@ -50,10 +62,11 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     // ── 复用候选池 ──
     private var _candidates:Array;
 
-    // ── 反抖动状态 ──
-    private var _lastActionType:String;
-    private var _lastSkillName:String;
-    private var _repeatCount:Number;
+    // ── 反抖动状态（共享给 MomentumPost）──
+    private var _jitterState:Object;
+
+    // ── 评分管线 ──
+    private var _pipeline:ScoringPipeline;
 
     // ── 事件响应状态 ──
     private var _recentHitFrame:Number;
@@ -83,13 +96,29 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         this._executor = new ActionExecutor();
         this._rng = LinearCongruentialEngine.getInstance();
         this._candidates = [];
-        this._lastActionType = null;
-        this._lastSkillName = null;
-        this._repeatCount = 0;
+        this._jitterState = { lastActionType: null, lastSkillName: null, repeatCount: 0 };
         this._recentHitFrame = -999;
         this._selfRef = self;
         this._ctx = new AIContext();
         this._trace = new DecisionTrace();
+
+        // ── 评分管线 ──
+        var mods:Array = [
+            new StanceAffinityMod(),
+            new TacticalBiasMod(),
+            new RigidStateMod(),
+            new RangePressureMod(),
+            new ReactiveDodgeMod(),
+            new AmmoReloadMod(),
+            new SkillHierarchyMod(),
+            new SurvivalUrgencyMod(),
+            new DecisionNoiseMod(this._rng)
+        ];
+        var posts:Array = [
+            new MomentumPost(this._jitterState),
+            new FreqAdjustPost()
+        ];
+        this._pipeline = new ScoringPipeline(scorer, mods, posts);
 
         // ── 策略注册 ──
         var offense = new OffenseStrategy(personality);
@@ -100,7 +129,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         this._sources["engage"]   = [offense, reload];
         this._sources["chase"]    = [preBuff, reload];
         this._sources["selector"] = [];
-        this._sources["retreat"]  = [preBuff, reload];
+        this._sources["retreat"]  = [preBuff, reload]; // RESERVED: 未来走位策略撤退上下文使用，当前无 tick(data,"retreat") 调用点
 
         this._filters = [
             new AnimLockFilter(),
@@ -245,7 +274,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             if (candidates.length > 0) {
                 var T:Number = p.temperature;
 
-                _scoreCandidates(candidates, data, self, T);
+                _pipeline.scoreAll(candidates, _ctx, data, self, p, T, _trace);
                 var selected:Object = _scorer.boltzmannSelect(candidates, T);
 
                 if (selected != null) {
@@ -301,216 +330,6 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         _trace.flush();
     }
 
-    // ═══════ 集中评分 ═══════
-
-    /**
-     * _scoreCandidates — 对候选列表评分
-     *
-     * Continue / Reload / PreBuff 的分数已在收集时预设，跳过评分管线。
-     * Skill / Attack 走完整维度评分 + Stance 调制 + 战术偏置 + 噪声 + 反抖动 + 频率校正。
-     */
-    private function _scoreCandidates(candidates:Array, data:UnitAIData, self:MovieClip, T:Number):Void {
-        var evalDepth:Number = p.evalDepth;
-        var noise:Number = p.decisionNoise;
-
-        var skillBonus:Number = 0;
-        if (self.名字 == "尾上世莉架") skillBonus = 0.3;
-
-        // 信号从 ctx 读取（单一真相源）
-        var isRigid:Boolean = _ctx.isRigid;
-        var stance:Object = _ctx.stance;
-        var tactical:Object = _ctx.tactical;
-        var xDist:Number = _ctx.xDist;
-        var underFire:Boolean = _ctx.underFire;
-
-        // ── 维度评分循环 ──
-        for (var j:Number = 0; j < candidates.length; j++) {
-            var c:Object = candidates[j];
-
-            if (c.type == "continue" || c.type == "reload" || c.type == "preBuff") continue;
-
-            var total:Number = 0;
-
-            // 多维评分 + Stance 调制
-            for (var d:Number = 0; d < evalDepth; d++) {
-                var wKey:String = UtilityEvaluator.DIM_WEIGHTS[d];
-                var w:Number = p[wKey];
-
-                if (stance != null) {
-                    var dm:Number = stance.dimMod[d];
-                    if (!isNaN(dm)) w += dm;
-                }
-
-                total += w * _scorer.scoreDimension(d, c, data, self);
-            }
-
-            // 特殊角色加成
-            if (c.type == "skill" && skillBonus > 0) {
-                total += skillBonus;
-            }
-
-            // Stance 候选加成
-            if (stance != null) {
-                if (c.type == "attack") {
-                    total += stance.attackBonus;
-                } else if (c.type == "skill") {
-                    var aff:Number = stance.skillAffinity[c.skill.类型];
-                    if (!isNaN(aff)) total += aff;
-
-                    if (stance.optDistMin != undefined) {
-                        if (xDist >= stance.optDistMin && xDist <= stance.optDistMax) {
-                            total += 0.3;
-                        } else {
-                            total -= 0.15;
-                        }
-                    }
-                }
-            }
-
-            // 战术偏置
-            if (tactical != null) {
-                if (c.type == "attack") {
-                    total += tactical.attackBonus;
-                } else if (c.type == "skill") {
-                    var tb:Number = tactical.skillType[c.skill.类型];
-                    if (!isNaN(tb)) total += tb;
-                }
-            }
-
-            // 刚体状态感知
-            if (isRigid) {
-                if (c.type == "skill" && c.skill.功能 == "增益") {
-                    total -= 0.8;
-                } else if (c.type == "attack") {
-                    total += 0.15;
-                } else if (c.type == "skill") {
-                    if (c.skill.功能 != "躲避") total += 0.1;
-                }
-            }
-
-            // 距离压力（远程被近身）
-            if (stance != null && stance.repositionDir > 0 && xDist < _ctx.xdistance) {
-                var rangePressure:Number = 1 - xDist / _ctx.xdistance;
-                rangePressure *= (1 - p.勇气);
-                if (c.type == "skill") {
-                    var rpFunc:String = c.skill.功能;
-                    if (rpFunc == "躲避") {
-                        if (underFire || xDist < _ctx.xdistance * 0.4) {
-                            total += rangePressure * 0.25;
-                        }
-                    } else if (rpFunc == "位移" || rpFunc == "高频位移") {
-                        total += rangePressure * 0.4;
-                    }
-                } else if (c.type == "attack") {
-                    if (underFire) {
-                        total -= rangePressure * 0.15;
-                    }
-                }
-            }
-
-            // 反应性躲避
-            if (c.type == "skill" && c.skill.功能 == "躲避" && underFire) {
-                total += 0.5;
-            }
-
-            // 技能换弹加成（翻滚换弹等）：弹药低 + 经验高 → 强烈偏好技能换弹
-            // 经验=1 弹药=0%: +1.5；经验=0 弹药=0%: +0.3（轻微偏好）
-            if (c.type == "skill" && c.skill.功能 == "换弹") {
-                var ammoR:Number = _ctx.ammoRatio;
-                if (isNaN(ammoR) || ammoR < 0.5) {
-                    var ammoUrgency:Number = isNaN(ammoR) ? 1 : (1 - ammoR);
-                    total += ammoUrgency * (0.3 + (p.经验 || 0) * 1.2);
-                }
-            }
-
-            // 上位技能抑制（同功能 + 更高点数 = 完全上位 → 抑制低版本）
-            // 典型：觉醒霸体(150点) 是 霸体(10点) 的完全上位
-            // 高经验角色几乎不使用低版本；仅在上位技能 CD 中作为紧急突围选择
-            if (c.type == "skill" && c.skill.功能 == "解围霸体") {
-                var myPts:Number = c.skill.点数;
-                var allSkills:Array = self.已学技能表;
-                if (allSkills != null) {
-                    for (var si:Number = 0; si < allSkills.length; si++) {
-                        if (allSkills[si].功能 == "解围霸体" && allSkills[si].点数 > myPts) {
-                            total -= (p.经验 || 0) * 1.5;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // 受创紧迫 → 提升逃脱/防御技能评分（求生本能）
-            if (c.type == "skill" && _ctx.retreatUrgency > 0.15) {
-                var urgFunc:String = c.skill.功能;
-                if (urgFunc == "躲避") {
-                    total += _ctx.retreatUrgency * 0.8;
-                } else if (urgFunc == "位移" || urgFunc == "高频位移") {
-                    total += _ctx.retreatUrgency * 0.6;
-                } else if (urgFunc == "解围霸体") {
-                    total += _ctx.retreatUrgency * 1.2;
-                } else if (urgFunc == "增益") {
-                    total += _ctx.retreatUrgency * 0.4;
-                }
-            }
-
-            // 包围状态 → 高勇气主动解围（AoE 清场），低勇气求生已通过 retreatUrgency 放大处理
-            if (c.type == "skill" && _ctx.encirclement > 0.2) {
-                var enc:Number = _ctx.encirclement;
-                var cour:Number = p.勇气;
-                var encFunc:String = c.skill.功能;
-                if (encFunc == "解围霸体") {
-                    // 被围 + 高勇气 → 强烈偏好解围霸体（AoE 清场）
-                    // 勇气=1: +1.5×enc, 勇气=0: +0.5×enc
-                    total += enc * (0.5 + cour * 1.0);
-                } else if (cour > 0.4) {
-                    // 高勇气近战：被围时更主动出击
-                    if (c.skill.类型 == "格斗" || c.skill.类型 == "刀技") {
-                        total += enc * cour * 0.3;
-                    }
-                }
-            }
-
-            // 决策噪声
-            total += (_rng.nextFloat() - 0.5) * noise;
-
-            c.score = total;
-            _trace.scored(c, null);
-        }
-
-        // ── 反抖动 ──
-        var momentumDecay:Number = p.momentumDecay;
-
-        for (var k:Number = 0; k < candidates.length; k++) {
-            var ca:Object = candidates[k];
-            if (ca.type == "continue" || ca.type == "reload" || ca.type == "preBuff") continue;
-
-            if (ca.type == _lastActionType) {
-                ca.score += 0.1 * (1 - momentumDecay);
-            }
-            if (ca.type == "skill" && ca.name == _lastSkillName) {
-                ca.score -= 0.08 * (_repeatCount + 1);
-            }
-        }
-
-        // ── 频率校正 ──
-        var effectiveInterval:Number = p.chaseCommitment * p.tickInterval;
-        if (effectiveInterval < 1) effectiveInterval = 1;
-        var freqAdjust:Number = T * Math.log(effectiveInterval / 16);
-
-        for (var fa:Number = 0; fa < candidates.length; fa++) {
-            if (candidates[fa].type == "skill") {
-                candidates[fa].score += freqAdjust;
-            }
-        }
-
-        // 记录预设分数的候选
-        for (var tr:Number = 0; tr < candidates.length; tr++) {
-            var tc:Object = candidates[tr];
-            if (tc.type == "continue" || tc.type == "reload" || tc.type == "preBuff") {
-                _trace.scored(tc, null);
-            }
-        }
-    }
 
     // ═══════ 后处理 ═══════
 
@@ -519,16 +338,16 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             _scorer.triggerTacticalBias(selected.skill, frame);
         }
 
-        _lastActionType = selected.type;
+        _jitterState.lastActionType = selected.type;
         if (selected.type == "skill") {
-            if (_lastSkillName == selected.name) {
-                _repeatCount++;
+            if (_jitterState.lastSkillName == selected.name) {
+                _jitterState.repeatCount++;
             } else {
-                _repeatCount = 0;
+                _jitterState.repeatCount = 0;
             }
-            _lastSkillName = selected.name;
+            _jitterState.lastSkillName = selected.name;
         } else {
-            _repeatCount = 0;
+            _jitterState.repeatCount = 0;
         }
     }
 

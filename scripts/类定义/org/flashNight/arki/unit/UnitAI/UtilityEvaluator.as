@@ -354,6 +354,9 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
             case "手枪":
                 if (self.手枪弹匣容量 > 0) return 1 - self.手枪.value.shot / self.手枪弹匣容量;
                 break;
+            case "手枪2":
+                if (self.手枪2弹匣容量 > 0) return 1 - self.手枪2.value.shot / self.手枪2弹匣容量;
+                break;
             case "双枪":
                 var r1:Number = (self.手枪弹匣容量 > 0) ? (1 - self.手枪.value.shot / self.手枪弹匣容量) : 1;
                 var r2:Number = (self.手枪2弹匣容量 > 0) ? (1 - self.手枪2.value.shot / self.手枪2弹匣容量) : 1;

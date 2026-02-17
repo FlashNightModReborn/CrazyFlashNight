@@ -267,11 +267,16 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         }
 
         // 防呆：管线边界情况兜底（所有候选被过滤 / commitment 间隙 / 状态切换空隙）
+        // 增加 commitment 检查：避免在换弹/技能 commitment 期间强行输出普攻打断动画
         if (!self.动作A && !self.动作B && !self.左行 && !self.右行 && !self.上行 && !self.下行) {
             var st:String = self.状态;
             if (st != "技能" && st != "战技" && !self.射击中) {
-                self.动作A = true;
-                if (self.攻击模式 === "双枪") self.动作B = true;
+                var safeToAttack:Boolean = (data.arbiter == null)
+                    || !data.arbiter.getExecutor().isBodyCommitted(_root.帧计时器.当前帧数);
+                if (safeToAttack) {
+                    self.动作A = true;
+                    if (self.攻击模式 === "双枪") self.动作B = true;
+                }
             }
         }
 

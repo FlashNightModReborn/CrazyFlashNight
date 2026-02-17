@@ -127,19 +127,28 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
     }
 
     /**
+     * isFullTrace — 供外部管线判断是否需要收集诊断信息
+     */
+    public function isFullTrace():Boolean {
+        return _level >= LEVEL_FULL;
+    }
+
+    /**
      * scored — 记录候选评分结果
      *
-     * @param candidate  候选对象（含 name, type, score）
-     * @param dimScores  维度分解数组（可选，FULL 级别使用）
+     * @param candidate     候选对象（含 name, type, score）
+     * @param dimScores     维度分解数组（可选，FULL 级别使用）
+     * @param modBreakdown  修正器分解字符串（可选，FULL 级别使用）
      */
-    public function scored(candidate:Object, dimScores:Array):Void {
+    public function scored(candidate:Object, dimScores:Array, modBreakdown:String):Void {
         if (_level < LEVEL_TOP3) return;
 
         _scored.push({
             name: candidate.name,
             type: candidate.type,
             score: candidate.score,
-            dims: dimScores
+            dims: dimScores,
+            mods: modBreakdown
         });
     }
 
@@ -227,7 +236,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
             msg += "\n  rejects: " + _rejectDetails.join(", ");
         }
 
-        // 维度分解（FULL 级别，Top1 候选）
+        // 维度分解 + 修正器分解（FULL 级别，Top1 候选）
         if (_level >= LEVEL_FULL && _scored.length > 0) {
             var top:Object = _scored[0];
             if (top.dims != null && top.dims.length > 0) {
@@ -235,6 +244,9 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
                 for (var di:Number = 0; di < top.dims.length; di++) {
                     msg += " d" + di + "=" + _formatNum(top.dims[di]);
                 }
+            }
+            if (top.mods != null && top.mods.length > 0) {
+                msg += "\n  mods[" + top.name + "]: " + top.mods;
             }
         }
 
