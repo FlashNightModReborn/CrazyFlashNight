@@ -2439,6 +2439,12 @@ _root.计算AI参数 = function(p:Object):Void {
     // 被击→躲避反应窗口：反应高→窗口更宽（反射闪避持续更久）
     p.dodgeReactWindow    = 15 + Math.round(p.反应 * 30);   // 15~45帧
 
+    // ── 预战buff参数（经验驱动）──
+    // 高经验→远距离就开始准备buff（预判战场），低经验→贴近才想起来用
+    p.preBuffDistMult     = 1.5 + p.经验 * 2.5;              // 安全距离倍率：1.5~4.0
+    // 高经验→更短冷却（频繁尝试确保buff到位），低经验→节奏慢
+    p.preBuffCooldown     = Math.round(30 - p.经验 * 20);    // 10~30帧
+
     // ── 反抖动 / 连招参数（Phase A 补全）──
     // momentumDecay：高经验→惯性衰减快（快速切换动作），低经验→惯性强（维持当前动作）
     p.momentumDecay       = 0.3 + p.经验 * 0.4;             // 0.3~0.7
@@ -2474,6 +2480,8 @@ _root.计算AI参数 = function(p:Object):Void {
     p.weaponSwitchCost    = clamp(p.weaponSwitchCost, 0.15, 0.30);
     p.weaponHysteresis    = clamp(p.weaponHysteresis, 0.08, 0.20);
     p.dodgeReactWindow    = clamp(p.dodgeReactWindow, 15, 45);
+    p.preBuffDistMult     = clamp(p.preBuffDistMult, 1.5, 4.0);
+    p.preBuffCooldown     = clamp(p.preBuffCooldown, 10, 30);
     p.momentumDecay       = clamp(p.momentumDecay, 0.3, 0.7);
     p.comboPreference     = clamp(p.comboPreference, 0.1, 0.6);
 
@@ -2510,6 +2518,8 @@ _root.计算AI参数 = function(p:Object):Void {
         weaponSwitchCost:   p.weaponSwitchCost,
         weaponHysteresis:   p.weaponHysteresis,
         dodgeReactWindow:   p.dodgeReactWindow,
+        preBuffDistMult:    p.preBuffDistMult,
+        preBuffCooldown:    p.preBuffCooldown,
         // Layer 3: derived
         temperature:        p.temperature,
         // Layer 4: weights
