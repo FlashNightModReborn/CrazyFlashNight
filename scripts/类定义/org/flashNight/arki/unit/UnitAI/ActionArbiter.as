@@ -21,8 +21,8 @@ import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
  *   selector → []（selector 是瞬态，只做 stance + item 评估）
  *
  * 过滤器（顺序执行）：
- *   AnimLockFilter   → 动画锁期间只保留 priority=0
- *   InterruptFilter  → 中断规则（candidate.priority < current.priority）
+ *   AnimLockFilter   → 技能期仅保留 skill/preBuff；换弹期仅保留 priority=0
+ *   InterruptFilter  → 中断规则（默认 candidate.priority < current.priority；技能允许技能互断）
  *
  * 三轨并行：
  *   body  : 技能/平A/换弹/预战buff — 互斥管线（本类核心）
@@ -222,11 +222,17 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                     _trace.selected(selected, 0, T);
                 }
             }
-
+ 
             // 5. Attack hold：无新动作打断 → 维持按键输出
             if (holdAttack) {
                 _executor.holdCurrentBody(self);
             }
+        }
+
+        // 5.5 自动维持普攻 hold 输入（修复：中断过滤后 candidates 为空导致"松手点射"）
+        // 仅在 engage 期启用：chase/selector 不应持续输出普攻按键。
+        if (context == "engage") {
+            _executor.autoHold(self);
         }
 
         // ═══ stance 轨：武器模式选择 ═══

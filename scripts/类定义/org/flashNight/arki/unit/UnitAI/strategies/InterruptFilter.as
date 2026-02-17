@@ -21,7 +21,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.InterruptFilter {
         var lockSrc:String = ctx.lockSource;
         var frame:Number = ctx.frame;
         for (var i:Number = candidates.length - 1; i >= 0; i--) {
-            if (!_executor.canInterruptBody(candidates[i].priority, frame)) {
+            if (!_executor.canInterruptBody(candidates[i].type, candidates[i].priority, frame)) {
                 trace.reject(candidates[i].name,
                     DecisionTrace.REASON_INTERRUPT + (lockSrc != null ? ":" + lockSrc : ""));
                 candidates.splice(i, 1);

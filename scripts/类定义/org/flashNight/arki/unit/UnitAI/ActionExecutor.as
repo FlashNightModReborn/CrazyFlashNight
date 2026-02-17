@@ -15,7 +15,9 @@
  * 重要：刚体/刚体标签 是 buff 状态（护盾/霸体），不是动作动画
  *       不应纳入 animLock，否则 buff 期间会永久空转
  *
- * body 中断规则：candidate.priority < currentAction.priority → 允许中断（严格小于）
+ * body 中断规则：
+ *   - 默认：candidate.priority < currentAction.priority → 允许中断（严格小于）
+ *   - 例外：skill/preBuff 允许 skill/preBuff 互相取消（同优先级也允许）
  *   Emergency(0) > Skill/PreBuff(1) > Reload(2) > Attack(3)
  *   同优先级不互断；躲避/解围霸体设为 Emergency(0) 可抢断技能
  */
@@ -126,13 +128,21 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
     /**
      * canInterruptBody — 检查候选是否能中断当前 body 动作
      *
-     * 规则：candidate.priority < currentAction.priority（严格小于）
-     * 同优先级不能互相中断 → 技能(1)不取消技能(1)
+     * 规则：
+     *   - 默认：candidate.priority < currentAction.priority（严格小于）
+     *   - 例外：当前为 skill/preBuff 时，skill/preBuff 允许 <=（同优先级也可取消）
      * 紧急技能(0)可中断技能(1) → 躲避/解围霸体设为 priority=0
      * 未 committed 时始终允许
      */
-    public function canInterruptBody(candidatePriority:Number, frame:Number):Boolean {
+    public function canInterruptBody(candidateType:String, candidatePriority:Number, frame:Number):Boolean {
         if (!isBodyCommitted(frame)) return true;
+
+        // 仅技能可取消技能：skill/preBuff 允许互相中断（同优先级也允许）
+        if ((_bodyType == "skill" || _bodyType == "preBuff")
+            && (candidateType == "skill" || candidateType == "preBuff")) {
+            return candidatePriority <= _bodyPriority;
+        }
+
         return candidatePriority < _bodyPriority;
     }
 
@@ -176,6 +186,10 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
      */
     public function holdCurrentBody(self:MovieClip):Void {
         if (_bodyType == "attack") {
+            // 技能/战技/换弹动画锁期间禁止维持普攻按键，避免打断 trigger 动作
+            if (self.状态 == "技能" || self.状态 == "战技") return;
+            if (self.man != null && self.man != undefined
+                && self.man.换弹标签 != null && self.man.换弹标签 != undefined) return;
             self.动作A = true;
             if (self.攻击模式 === "双枪") self.动作B = true;
         }
@@ -250,6 +264,10 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
      */
     public function autoHold(self:MovieClip):Void {
         if (_bodyType == "attack" && _bodyPriority >= 0) {
+            // 技能/战技/换弹动画锁期间禁止维持普攻按键，避免打断 trigger 动作
+            if (self.状态 == "技能" || self.状态 == "战技") return;
+            if (self.man != null && self.man != undefined
+                && self.man.换弹标签 != null && self.man.换弹标签 != undefined) return;
             self.动作A = true;
             if (self.攻击模式 === "双枪") self.动作B = true;
         }

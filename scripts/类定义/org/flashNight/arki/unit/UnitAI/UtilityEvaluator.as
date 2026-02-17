@@ -662,6 +662,9 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         var self:MovieClip = data.self;
         var currentFrame:Number = _root.帧计时器.当前帧数;
 
+        // 技能/战技播放期：血包动作会打断技能，按“仅技能可取消技能”规则延后
+        if (self.状态 == "技能" || self.状态 == "战技") return;
+
         // 前置条件
         if (self.血包数量 <= 0) return;
         if (currentFrame - self.上次使用血包时间 <= self.血包使用间隔) return;

@@ -5,7 +5,9 @@ import org.flashNight.arki.unit.UnitAI.DecisionTrace;
  * AnimLockFilter — 动画锁期间非紧急候选过滤器
  *
  * 从 ActionArbiter.tick() 中 animLock 分支提取。
- * 职责：动画锁期间只保留 priority=0（Emergency）候选。
+ * 职责：
+ *   - 技能期：仅保留 skill/preBuff（实现“只有技能才能取消技能”）
+ *   - 换弹期：仅保留 priority=0（Emergency）候选
  */
 class org.flashNight.arki.unit.UnitAI.strategies.AnimLockFilter {
 
@@ -13,6 +15,25 @@ class org.flashNight.arki.unit.UnitAI.strategies.AnimLockFilter {
 
     public function filter(ctx:AIContext, candidates:Array, trace:DecisionTrace):Void {
         if (!ctx.isAnimLocked) return;
+
+        var self:MovieClip = ctx.self;
+        var isReloadAnim:Boolean = (self != null && self.man != null && self.man != undefined
+            && self.man.换弹标签 != null && self.man.换弹标签 != undefined);
+        var isSkillAnim:Boolean = (self != null && (self.状态 == "技能" || self.状态 == "战技"));
+
+        // 技能期：仅允许技能取消技能（skill/preBuff）；其他动作必须等待技能结束
+        if (isSkillAnim && !isReloadAnim) {
+            for (var si:Number = candidates.length - 1; si >= 0; si--) {
+                var c:Object = candidates[si];
+                if (c.type != "skill" && c.type != "preBuff") {
+                    trace.reject(c.name, DecisionTrace.REASON_ANIMLOCK);
+                    candidates.splice(si, 1);
+                }
+            }
+            return;
+        }
+
+        // 换弹期：保留旧规则（仅紧急 priority=0 允许抢断）
         for (var i:Number = candidates.length - 1; i >= 0; i--) {
             if (candidates[i].priority > 0) {
                 trace.reject(candidates[i].name, DecisionTrace.REASON_ANIMLOCK);

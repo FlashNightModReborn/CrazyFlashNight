@@ -92,6 +92,13 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // arbiter 内部按中断规则互斥，不再有覆盖冲突
         if (data.arbiter != null) {
             data.arbiter.tick(data, "chase");
+
+            // 技能期：禁止跑步切换/移动输入，避免非技能动作打断技能
+            // （设计：只有技能才能取消技能）
+            var bt:String = data.arbiter.getExecutor().getCurrentBodyType();
+            if (bt == "skill" || bt == "preBuff" || self.状态 == "技能" || self.状态 == "战技") {
+                return;
+            }
         }
 
         // 跑步切换（修正运算符优先级：原 !self.man.换弹标签 != null 永远为 true）
@@ -155,11 +162,15 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
             // 远程风筝：边打边退（Stance repositionDir > 0 时激活）
             // 目标过近（< 40% 保持距离）→ 后退，保持射击距离
-            if (data.arbiter.getRepositionDir() > 0 && data.absdiff_x < data.xdistance * 0.4) {
-                if (data.diff_x > 0) {
-                    self.左行 = true;
-                } else {
-                    self.右行 = true;
+            // 技能期不输出移动（避免走动取消技能）
+            var bodyType:String = data.arbiter.getExecutor().getCurrentBodyType();
+            if (bodyType != "skill" && bodyType != "preBuff" && self.状态 != "技能" && self.状态 != "战技") {
+                if (data.arbiter.getRepositionDir() > 0 && data.absdiff_x < data.xdistance * 0.4) {
+                    if (data.diff_x > 0) {
+                        self.左行 = true;
+                    } else {
+                        self.右行 = true;
+                    }
                 }
             }
         } else {
