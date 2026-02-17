@@ -8,6 +8,7 @@ import org.flashNight.arki.unit.UnitAI.strategies.ReloadStrategy;
 import org.flashNight.arki.unit.UnitAI.strategies.PreBuffStrategy;
 import org.flashNight.arki.unit.UnitAI.strategies.InterruptFilter;
 import org.flashNight.arki.unit.UnitAI.strategies.AnimLockFilter;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
 /**
@@ -70,6 +71,10 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     private var _prevHpRatio:Number = 1;
     private var _retreatUrgency:Number = 0;
 
+    // ── 包围度（左右敌人分布检测）──
+    private var _encirclement:Number = 0;
+    private var _lastEncirclementFrame:Number = -999;
+
     // ═══════ 构造 ═══════
 
     public function ActionArbiter(personality:Object, scorer:UtilityEvaluator, self:MovieClip) {
@@ -95,6 +100,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         this._sources["engage"]   = [offense, reload];
         this._sources["chase"]    = [preBuff, reload];
         this._sources["selector"] = [];
+        this._sources["retreat"]  = [preBuff, reload];
 
         this._filters = [
             new AnimLockFilter(),
@@ -134,6 +140,10 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         return _retreatUrgency;
     }
 
+    public function getEncirclement():Number {
+        return _encirclement;
+    }
+
     // ═══════ 核心管线 ═══════
 
     /**
@@ -162,6 +172,26 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         _retreatUrgency *= 0.92;
         if (_retreatUrgency < 0.05) _retreatUrgency = 0;
         _ctx.retreatUrgency = _retreatUrgency;
+
+        // ═══ 包围度检测（周期性，每 16 帧 ≈ 0.6s）═══
+        // 用 getEnemyCountInRange 分别统计左右 250px 内的敌人
+        // 乘积公式：一侧为 0 则 encirclement=0；两侧各 2 个即满值
+        if (frame - _lastEncirclementFrame >= 16) {
+            _lastEncirclementFrame = frame;
+            var scanRange:Number = 250;
+            var leftCount:Number = TargetCacheManager.getEnemyCountInRange(self, 8, scanRange, 0, true);
+            var rightCount:Number = TargetCacheManager.getEnemyCountInRange(self, 8, 0, scanRange, true);
+            _encirclement = Math.min(1, leftCount * rightCount / 4);
+        }
+        _ctx.encirclement = _encirclement;
+
+        // 包围加剧低勇气角色的撤退紧迫度
+        // 高勇气不受影响（主动解围由评分层处理）
+        if (_encirclement > 0.2) {
+            var courageDampen:Number = 1.0 - p.勇气;
+            _retreatUrgency = Math.min(1, _retreatUrgency + _encirclement * courageDampen * 0.3);
+            _ctx.retreatUrgency = _retreatUrgency;
+        }
 
         // ═══ 决策追踪 ═══
         _trace.begin(self.名字, _ctx);
@@ -420,6 +450,23 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                     total += _ctx.retreatUrgency * 1.2;
                 } else if (urgFunc == "增益") {
                     total += _ctx.retreatUrgency * 0.4;
+                }
+            }
+
+            // 包围状态 → 高勇气主动解围（AoE 清场），低勇气求生已通过 retreatUrgency 放大处理
+            if (c.type == "skill" && _ctx.encirclement > 0.2) {
+                var enc:Number = _ctx.encirclement;
+                var cour:Number = p.勇气;
+                var encFunc:String = c.skill.功能;
+                if (encFunc == "解围霸体") {
+                    // 被围 + 高勇气 → 强烈偏好解围霸体（AoE 清场）
+                    // 勇气=1: +1.5×enc, 勇气=0: +0.5×enc
+                    total += enc * (0.5 + cour * 1.0);
+                } else if (cour > 0.4) {
+                    // 高勇气近战：被围时更主动出击
+                    if (c.skill.类型 == "格斗" || c.skill.类型 == "刀技") {
+                        total += enc * cour * 0.3;
+                    }
                 }
             }
 

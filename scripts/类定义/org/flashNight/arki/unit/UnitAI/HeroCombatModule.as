@@ -16,6 +16,11 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
     private var _lastTargetCheckFrame:Number = -999;
 
+    // Z 轴走位脉冲状态
+    private var _strafeDir:Number = 0;        // -1=上, 1=下, 0=不动
+    private var _strafePulseEnd:Number = 0;   // 当前移动脉冲结束帧
+    private var _strafeNextStart:Number = 0;  // 下次移动脉冲开始帧
+
     public function HeroCombatModule(_data:UnitAIData) {
         // machine-level onEnter: 重入时强制重置到 Chasing
         super(null, function() { this.ChangeState("Chasing"); }, null);
@@ -57,6 +62,8 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
     public function chase_enter():Void {
         var self:MovieClip = data.self;
+        _strafePulseEnd = 0; // 脱离交战，重置走位状态
+        _strafeNextStart = 0;
         // 同步外部攻击目标变更
         var extTarget:String = self.攻击目标;
         if (extTarget && extTarget != "无") {
@@ -109,16 +116,22 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
             }
         }
 
-        // 跑步切换（修正运算符优先级：原 !self.man.换弹标签 != null 永远为 true）
+        // Z轴计算（先算距离，供跑步判定使用）
+        var targetZ:Number = isNaN(t.Z轴坐标) ? t._y : t.Z轴坐标;
+        var zDiff:Number = self._y - targetZ;
+        var absZDiff:Number = zDiff < 0 ? -zDiff : zDiff;
+
+        // 跑步切换：Z 轴基本对齐后再切跑，避免跑步高速导致 Z 轴抖动
+        // absZDiff > 20 时保持走路（低速精确对齐），对齐后才允许跑步追击
         if (!self.射击中 && (self.man == null || !self.man.换弹标签) && random(3) == 0) {
-            self.状态改变(self.攻击模式 + "跑");
+            if (absZDiff <= 20) {
+                self.状态改变(self.攻击模式 + "跑");
+            }
         }
 
-        // Z轴移动（原始使用 _y 而非 Z轴坐标）
-        if (self._y > t.Z轴坐标) {
-            self.上行 = true;
-        } else {
-            self.下行 = true;
+        // Z轴移动（5px 死区避免来回抖动）
+        if (absZDiff > 5) {
+            if (zDiff > 0) { self.上行 = true; } else { self.下行 = true; }
         }
 
         // X轴移动（保持距离）
@@ -174,44 +187,79 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // 技能/平A/换弹/武器评估 全部收敛到 arbiter.tick()
         // arbiter 内部按中断规则互斥，不再有 gotoAndPlay 覆盖冲突
         if (data.arbiter != null) {
+            var frame:Number = _root.帧计时器.当前帧数;
+
+            // 始终 engage context — 走位与进攻并行，不抑制 offense
             data.arbiter.tick(data, "engage");
 
-            // 远程风筝：边打边退（Stance repositionDir > 0 时激活）
-            // 目标进入 xdistance × kiteThreshold 时后退
-            // 智力高→中距离就撤退（战术意识），智力低→近距离才退
-            // 技能期不输出移动（避免走动取消技能）
             var bodyType:String = data.arbiter.getExecutor().getCurrentBodyType();
-            if (bodyType != "skill" && bodyType != "preBuff" && self.状态 != "技能" && self.状态 != "战技") {
+            var inSkill:Boolean = (bodyType == "skill" || bodyType == "preBuff"
+                                || self.状态 == "技能" || self.状态 == "战技");
+
+            // ── 战术走位（技能期不输出移动）──
+            // 只在有战术理由时走位，正常近战不干扰攻击输出
+            if (!inSkill) {
+                var urgency:Number = data.arbiter.getRetreatUrgency();
+                var repoDir:Number = data.arbiter.getRepositionDir();
+                var enc:Number = data.arbiter.getEncirclement();
+
+                // 走位触发条件
                 var kiteT:Number = 0.7;
                 if (data.personality != null && !isNaN(data.personality.kiteThreshold)) {
                     kiteT = data.personality.kiteThreshold;
                 }
-
-                // 受创紧迫 → 动态加宽风筝/撤退范围
-                // urgency=1 时 kiteT→1.0（xdistance 内全程风筝）
-                var urgency:Number = data.arbiter.getRetreatUrgency();
                 if (urgency > 0) {
                     kiteT = kiteT + urgency * (1.0 - kiteT);
                 }
+                var wantsKite:Boolean = (repoDir > 0 && data.absdiff_x < data.xdistance * kiteT);
+                var wantsEvade:Boolean = (urgency > 0.5) || (enc > 0.3);
 
-                var repoDir:Number = data.arbiter.getRepositionDir();
+                // 仅在远程风筝 / 受创 / 被围时启动走位脉冲
+                if (wantsKite || wantsEvade) {
+                    var inPulse:Boolean = frame < _strafePulseEnd;
+                    if (!inPulse && frame >= _strafeNextStart) {
+                        _strafeDir = _pickStrafeDir();
+                        var dur:Number = 8 + random(8); // 8~15帧 ≈ 0.3~0.6s
+                        _strafePulseEnd = frame + dur;
+                        var gap:Number = 12 - Math.floor((enc + urgency) * 5);
+                        if (gap < 3) gap = 3;
+                        _strafeNextStart = _strafePulseEnd + gap + random(gap);
+                        inPulse = true;
+                    }
 
-                if (repoDir > 0 && data.absdiff_x < data.xdistance * kiteT) {
-                    // ── 远程风筝 ──
-                    if (self.移动射击 != true) {
-                        self.动作A = false;
-                        self.动作B = false;
-                        if (!self.射击中) {
-                            self.状态改变(self.攻击模式 + "跑");
+                    if (inPulse) {
+                        // Z 轴走位
+                        if (_strafeDir < 0) {
+                            self.上行 = true;
+                        } else if (_strafeDir > 0) {
+                            self.下行 = true;
+                        }
+
+                        // X 轴后退（远程风筝 / 近战高紧迫脱战）
+                        if (wantsKite || (urgency > 0.7 && repoDir <= 0)) {
+                            var margin:Number = 80;
+                            var bMinX:Number = (_root.Xmin != undefined) ? _root.Xmin : 0;
+                            var bMaxX:Number = (_root.Xmax != undefined) ? _root.Xmax : Stage.width;
+                            var retreatLeft:Boolean = data.diff_x > 0;
+                            var wallBlocked:Boolean = (retreatLeft && (data.x - bMinX < margin))
+                                                   || (!retreatLeft && (bMaxX - data.x < margin));
+                            if (!wallBlocked) {
+                                if (retreatLeft) { self.左行 = true; } else { self.右行 = true; }
+                            } else {
+                                // 退无可退 → 斜向穿越敌人突围（Z偏移 + 反向冲刺）
+                                if (retreatLeft) { self.右行 = true; } else { self.左行 = true; }
+                            }
+                        }
+
+                        // 抑制攻击以允许移动执行（移动射击保持输出）
+                        if (self.移动射击 != true) {
+                            self.动作A = false;
+                            self.动作B = false;
+                            if (!self.射击中) {
+                                self.状态改变(self.攻击模式 + "跑");
+                            }
                         }
                     }
-                    _retreatMove();
-                } else if (urgency > 0.5 && repoDir <= 0) {
-                    // ── 近战应急脱战（受创严重时后退求生）──
-                    // 勇气已在 urgency 计算中对抗，此处仅检查阈值
-                    self.动作A = false;
-                    self.动作B = false;
-                    _retreatMove();
                 }
             }
         } else {
@@ -286,38 +334,31 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         return null;
     }
 
-    // ═══════ 边界感知撤退 ═══════
+    // ═══════ 走位方向选择 ═══════
 
     /**
-     * _retreatMove — 边界感知撤退走位（远程风筝 / 近战应急脱战 共用）
+     * _pickStrafeDir — 选择走位脉冲的 Z 轴方向
      *
-     * 优先水平后退（远离目标 X 轴方向）；
-     * 受 X 轴边界阻挡（退无可退）时改为垂直绕行（Z 轴脱离后
-     * Gate 自然触发回 Chasing 再拉距）。
+     * 交替上/下方向，形成自然的 Z 轴蛇形走位。
+     * 边界检查：贴边时强制反向；双边贴边时放弃走位。
      */
-    private function _retreatMove():Void {
-        var self:MovieClip = data.self;
-        var retreatLeft:Boolean = data.diff_x > 0;
+    private function _pickStrafeDir():Number {
         var margin:Number = 80;
-        var bMinX:Number = (_root.Xmin != undefined) ? _root.Xmin : 0;
-        var bMaxX:Number = (_root.Xmax != undefined) ? _root.Xmax : Stage.width;
-        var wallBlocked:Boolean = (retreatLeft && (data.x - bMinX < margin))
-                               || (!retreatLeft && (bMaxX - data.x < margin));
+        var bMinY:Number = (_root.Ymin != undefined) ? _root.Ymin : 0;
+        var bMaxY:Number = (_root.Ymax != undefined) ? _root.Ymax : Stage.height;
+        var upSpace:Number = data.y - bMinY;
+        var downSpace:Number = bMaxY - data.y;
 
-        if (wallBlocked) {
-            // 退无可退 → 垂直绕行
-            var bMinY:Number = (_root.Ymin != undefined) ? _root.Ymin : 0;
-            var bMaxY:Number = (_root.Ymax != undefined) ? _root.Ymax : Stage.height;
-            var goUp:Boolean = data.diff_z >= 0;
-            if (goUp && (data.y - bMinY < margin)) {
-                goUp = false;
-            } else if (!goUp && (bMaxY - data.y < margin)) {
-                goUp = true;
-            }
-            if (goUp) { self.上行 = true; } else { self.下行 = true; }
-        } else {
-            if (retreatLeft) { self.左行 = true; } else { self.右行 = true; }
+        // 边界约束
+        if (upSpace < margin && downSpace < margin) return 0;
+        if (upSpace < margin) return 1;  // 靠近上边界，只能向下
+        if (downSpace < margin) return -1; // 靠近下边界，只能向上
+
+        // 交替方向（首次选择空间较大的一侧）
+        if (_strafeDir == 0) {
+            return (upSpace >= downSpace) ? -1 : 1;
         }
+        return -_strafeDir;
     }
 
     // ═══════ 目标切换（近距离感知）═══════
@@ -345,9 +386,16 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         if (frame - _lastTargetCheckFrame < interval) return false;
         _lastTargetCheckFrame = frame;
 
-        // 查找最近敌人
+        // 查找最近敌人（X 轴排序）
         var nearest = TargetCacheManager.findNearestEnemy(self, 1);
         if (nearest == null || nearest.hp <= 0) return false;
+
+        // Z 轴过滤：Z 距离过远说明在不同战团，不切换
+        var nearestZ:Number = nearest.Z轴坐标;
+        if (isNaN(nearestZ)) nearestZ = nearest._y;
+        var selfZ:Number = self.Z轴坐标;
+        if (isNaN(selfZ)) selfZ = self._y;
+        if (Math.abs(selfZ - nearestZ) > 60) return false;
 
         var t:MovieClip = data.target;
 
@@ -360,7 +408,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // 已是当前目标 → 跳过
         if (nearest == t) return false;
 
-        // 距离比较 + 迟滞
+        // 距离比较 + 迟滞（X 轴）
         var currentDist:Number = Math.abs(self._x - t._x);
         var nearestDist:Number = Math.abs(self._x - nearest._x);
 

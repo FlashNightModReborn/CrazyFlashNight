@@ -61,6 +61,9 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
     // ── 撤退紧迫度（burst damage → 勇气调节）──
     public var retreatUrgency:Number;    // [0,1] 受创紧迫程度（高=重创应撤退）
 
+    // ── 包围度（左右敌人分布）──
+    public var encirclement:Number;      // [0,1] 被包围程度（乘积公式：两侧均有敌人时高）
+
     // ── pipeline context ──
     public var context:String;           // "chase" | "engage" | "selector"
 

@@ -17,8 +17,8 @@ import org.flashNight.gesh.object.*;
 import org.flashNight.arki.unit.*;
 
 // _root.玩家与佣兵区分装扮刷新 = false;
-// _root.AI调试模式 = true;
-// _root.AI日志级别 = 3;
+_root.AI调试模式 = true;
+_root.AI日志级别 = 3;
 _root.主角函数 = new Object();
 
 /*防止被自动格式折叠
@@ -2446,6 +2446,17 @@ _root.计算AI参数 = function(p:Object):Void {
     // 高经验→更短冷却（频繁尝试确保buff到位），低经验→节奏慢
     p.preBuffCooldown     = Math.round(30 - p.经验 * 20);    // 10~30帧
 
+    // ── 远程风筝阈值 ──
+    // 目标距离 < xdistance × kiteThreshold 时开始后退走位
+    // 智力高→中距离就开始撤退（战术意识强），智力低→近距离才退
+    p.kiteThreshold       = 0.6 + p.智力 * 0.35;              // 0.6~0.95
+
+    // ── 目标切换参数 ──
+    // 检测频率：反应高→频繁检测（快速感知近身威胁）
+    p.targetSwitchInterval = Math.round(16 - p.反应 * 12);   // 4~16帧
+    // 切换距离比率（迟滞）：智力高→更易切换（战术认知力）
+    p.targetSwitchRatio    = 0.4 + p.智力 * 0.25;            // 0.4~0.65
+
     // ── 反抖动 / 连招参数（Phase A 补全）──
     // momentumDecay：高经验→惯性衰减快（快速切换动作），低经验→惯性强（维持当前动作）
     p.momentumDecay       = 0.3 + p.经验 * 0.4;             // 0.3~0.7
@@ -2481,6 +2492,9 @@ _root.计算AI参数 = function(p:Object):Void {
     p.weaponSwitchCost    = clamp(p.weaponSwitchCost, 0.15, 0.30);
     p.weaponHysteresis    = clamp(p.weaponHysteresis, 0.08, 0.20);
     p.dodgeReactWindow    = clamp(p.dodgeReactWindow, 15, 45);
+    p.kiteThreshold        = clamp(p.kiteThreshold, 0.6, 0.95);
+    p.targetSwitchInterval = clamp(p.targetSwitchInterval, 4, 16);
+    p.targetSwitchRatio    = clamp(p.targetSwitchRatio, 0.4, 0.65);
     p.preBuffDistMult     = clamp(p.preBuffDistMult, 1.5, 4.0);
     p.preBuffCooldown     = clamp(p.preBuffCooldown, 10, 30);
     p.momentumDecay       = clamp(p.momentumDecay, 0.3, 0.7);
@@ -2519,6 +2533,9 @@ _root.计算AI参数 = function(p:Object):Void {
         weaponSwitchCost:   p.weaponSwitchCost,
         weaponHysteresis:   p.weaponHysteresis,
         dodgeReactWindow:   p.dodgeReactWindow,
+        kiteThreshold:      p.kiteThreshold,
+        targetSwitchInterval: p.targetSwitchInterval,
+        targetSwitchRatio:    p.targetSwitchRatio,
         preBuffDistMult:    p.preBuffDistMult,
         preBuffCooldown:    p.preBuffCooldown,
         // Layer 3: derived
