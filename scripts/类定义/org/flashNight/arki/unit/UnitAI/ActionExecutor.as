@@ -50,6 +50,9 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
     // ── 技能使用帧（武器切换保护）──
     private var _lastSkillUseFrame:Number;
 
+    // ── 当前技能 CD（秒，用于 Continue 分数缩放）──
+    private var _bodySkillCD:Number;
+
     // ── 换弹结束伪事件（追踪 换弹标签 true→false 下降沿）──
     private var _lastReloadTag:Boolean;
 
@@ -69,6 +72,7 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         _lastSkillUseFrame = -999;
         _lastReloadTag = false;
         _consecutiveAttacks = 0;
+        _bodySkillCD = 0;
     }
 
     // ═══════ 动画标签锁 ═══════
@@ -148,8 +152,11 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
 
     /**
      * commitBody — 提交 body 动作，更新 commitment 状态
+     *
+     * @param skillCD  当前技能的冷却时间（秒），用于 getContinueScore 的 CD 比例保护。
+     *                 非技能动作传 0 或省略。
      */
-    public function commitBody(type:String, priority:Number, commitFrames:Number, frame:Number):Void {
+    public function commitBody(type:String, priority:Number, commitFrames:Number, frame:Number, skillCD:Number):Void {
         // 连续攻击追踪
         if (type == "attack") {
             _consecutiveAttacks++;
@@ -159,6 +166,7 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         _bodyType = type;
         _bodyPriority = priority;
         _bodyCommitUntil = frame + commitFrames;
+        _bodySkillCD = isNaN(skillCD) ? 0 : skillCD;
         if (type == "skill" || type == "preBuff") {
             _lastSkillUseFrame = frame;
         }
@@ -175,6 +183,7 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         _bodyCommitUntil = 0;
         _bodyPriority = -1;
         _bodyType = null;
+        _bodySkillCD = 0;
     }
 
     /**
@@ -198,15 +207,27 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
     /**
      * getContinueScore — 当前 body 动作对应的 Continue 候选评分
      *
-     * Skill/PreBuff: 1.5（强保护）
-     * Reload: 1.0（中等保护）
-     * Attack: 0.3（弱保护）
+     * 基础分：
+     *   Skill/PreBuff: 1.5
+     *   Reload: 1.0
+     *   Attack: 0.3
+     *
+     * CD 比例保护（仅 skill/preBuff）：
+     *   cdBoost = clamp(ln(cd/3) × 0.5, 0, 2.0)
+     *   3秒CD → +0（行为不变），60秒CD → +1.5（极强保护）
+     *   紧急技能（priority=0）走 AnimLockFilter 不参与 Boltzmann，不受此影响
      */
     public function getContinueScore():Number {
         switch (_bodyType) {
             case "skill":
             case "preBuff":
-                return 1.5;
+                var base:Number = 1.5;
+                if (_bodySkillCD > 3) {
+                    var cdBoost:Number = Math.log(_bodySkillCD / 3) * 0.5;
+                    if (cdBoost > 2.0) cdBoost = 2.0;
+                    base += cdBoost;
+                }
+                return base;
             case "reload":
                 return 1.0;
             case "attack":

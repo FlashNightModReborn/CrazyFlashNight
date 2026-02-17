@@ -213,8 +213,13 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                     if (selected.type != "continue") {
                         var commitF:Number = selected.commitFrames;
                         if (isNaN(commitF)) commitF = 5;
+                        // 技能 CD 传入 executor，用于 getContinueScore CD 比例保护
+                        var skillCD:Number = 0;
+                        if (selected.skill != null) {
+                            skillCD = selected.skill.冷却;
+                        }
                         _executor.commitBody(selected.type, selected.priority,
-                            Math.round(commitF * p.tickInterval), frame);
+                            Math.round(commitF * p.tickInterval), frame, skillCD);
                         _postExecution(selected, data, frame);
                         holdAttack = false;
                     }
