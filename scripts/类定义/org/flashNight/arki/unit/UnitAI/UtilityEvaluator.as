@@ -498,7 +498,10 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
         var didSwitch:Boolean = false;
         if (bestMode != self.攻击模式 && bestMode != "空手") {
             var prevMode:String = self.攻击模式;
-            self.攻击模式切换(bestMode);
+            // 攻击模式切换() 只接受 "手枪"（内部判断 双枪/手枪/手枪2）
+            // 评分列表中 "双枪" 需要映射回 "手枪" 才能正确执行切换
+            var switchArg:String = (bestMode == "双枪") ? "手枪" : bestMode;
+            self.攻击模式切换(switchArg);
             didSwitch = true;
         }
 
