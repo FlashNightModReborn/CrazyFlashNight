@@ -10,7 +10,7 @@
  *   0 = OFF    — 不输出（零开销：reject/scored 方法直接 return）
  *   1 = BRIEF  — 选中动作 + 关键上下文（一行）
  *   2 = TOP3   — Top3 候选 + 概率 + 过滤聚合
- *   3 = FULL   — 维度分解 + 逐条过滤原因
+ *   3 = FULL   — 维度分解 + 逐条过滤原因 + 人格溯源（首次输出 traits→params→__aiMeta）
  *
  * 智能触发（替代固定采样）：
  *   FULL     → 始终输出
@@ -51,6 +51,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
     private var _level:Number;
     private var _unitName:String;
     private var _ctx:AIContext;
+    private var _p:Object;   // personality 引用（4a __aiMeta 溯源）
 
     // ── Reject 聚合（计数而非逐条）──
     private var _rejectCounts:Object;
@@ -67,12 +68,14 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
 
     // ── 跨 tick 状态（智能触发）──
     private var _lastSelectedName:String;
+    private var _traitsPrinted:Boolean;  // FULL: 已输出 traits 概览（同一单位仅输出一次）
 
     // ═══════ 构造 ═══════
 
     public function DecisionTrace() {
         _level = 0;
         _lastSelectedName = null;
+        _traitsPrinted = false;
         _rejectCounts = {};
         _rejectDetails = [];
         _scored = [];
@@ -82,8 +85,9 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
 
     /**
      * begin — tick 开始时调用，重置本 tick 数据
+     * @param p  personality 引用（FULL 级别溯源输出用）
      */
-    public function begin(unitName:String, ctx:AIContext):Void {
+    public function begin(unitName:String, ctx:AIContext, p:Object):Void {
         // 动态读取日志级别
         var lv:Number = _root.AI日志级别;
         _level = (isNaN(lv) || lv < 0) ? 0 : lv;
@@ -92,6 +96,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
 
         _unitName = unitName;
         _ctx = ctx;
+        _p = p;
 
         // 重置聚合器
         for (var k:String in _rejectCounts) {
@@ -256,6 +261,36 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
             }
         }
 
+        // FULL: 人格概览（同一单位首次 FULL 输出时打印一次）
+        if (_level >= LEVEL_FULL && !_traitsPrinted && _p != null) {
+            _traitsPrinted = true;
+            msg += "\n  ── personality ──"
+                + " 勇气=" + _formatNum(_p.勇气)
+                + " 技术=" + _formatNum(_p.技术)
+                + " 经验=" + _formatNum(_p.经验)
+                + " 反应=" + _formatNum(_p.反应)
+                + " 智力=" + _formatNum(_p.智力)
+                + " 谋略=" + _formatNum(_p.谋略);
+            msg += "\n  T=" + _formatNum(_p.temperature)
+                + " depth=" + _p.evalDepth
+                + " tick=" + _p.tickInterval
+                + " noise=" + _formatNum(_p.decisionNoise)
+                + " kite=" + _formatNum(_p.kiteThreshold);
+            // __aiMeta 溯源：输出选中动作相关的关键参数派生公式
+            if (_p.__aiMeta != null && _selectedName != null) {
+                var metaKeys:Array = _getRelevantMeta(_selectedName);
+                if (metaKeys.length > 0) {
+                    msg += "\n  meta:";
+                    for (var mi:Number = 0; mi < metaKeys.length; mi++) {
+                        var mk:String = metaKeys[mi];
+                        if (_p.__aiMeta[mk] != undefined) {
+                            msg += "\n    " + mk + ": " + _p.__aiMeta[mk];
+                        }
+                    }
+                }
+            }
+        }
+
         _root.服务器.发布服务器消息(msg);
 
         _lastSelectedName = _selectedName;
@@ -273,5 +308,39 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
 
     private function _formatNum(v:Number):String {
         return String(Math.round(v * 100) / 100);
+    }
+
+    /**
+     * _getRelevantMeta — 根据选中动作类型返回最相关的 __aiMeta key 列表
+     *
+     * 避免倒出全部 35+ 个参数，只展示与当前决策最直接相关的 3~5 个。
+     */
+    private function _getRelevantMeta(selectedName:String):Array {
+        // 通用：temperature 和 evalDepth 始终相关
+        var keys:Array = ["temperature", "evalDepth"];
+
+        // Reload → 换弹参数
+        if (selectedName == "Reload") {
+            keys.push("reloadCommitFrames", "weaponSwitchCost");
+            return keys;
+        }
+
+        // 技能类（含 preBuff）
+        if (_selectedName != null) {
+            // 检查是否是已知的非技能 name
+            var isAttack:Boolean = (selectedName == "Attack" || selectedName == "Continue");
+            if (!isAttack && selectedName != "Reload") {
+                keys.push("skillCommitFrames", "skillAnimProtect", "decisionNoise");
+                // preBuff 专属
+                if (_p.__aiMeta["preBuffDistMult"] != undefined) {
+                    keys.push("preBuffDistMult", "preBuffCooldown");
+                }
+                return keys;
+            }
+        }
+
+        // Attack / Continue → 攻击倾向
+        keys.push("engageDistanceMult", "comboPreference", "w_damage");
+        return keys;
     }
 }

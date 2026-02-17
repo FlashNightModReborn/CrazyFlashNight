@@ -2518,17 +2518,60 @@ _root.计算AI参数 = function(p:Object):Void {
     p.comboPreference     = clamp(p.comboPreference, 0.1, 0.6);
     p.skillBaseBonus      = clamp(p.skillBaseBonus, 0, 1.0);
 
-    // ── 参数布局说明 ──
-    // 所有参数平铺在 personality 对象 (p) 上，分层如下：
-    //   Base traits:  p.勇气, p.技术, p.经验, p.反应, p.智力, p.谋略
-    //   Behavior:     p.engageDistanceMult, p.retreatHPRatio, ...
-    //   Pipeline:     p.skillCommitFrames, p.stanceCooldown, ...
-    //   Derived:      p.temperature
-    //   Weights:      p.w_damage, p.w_safety, ...
-    //   Tactics:      p.tacticsGrouping, p.tacticsEvadeCluster, ...
-    //   Character:    p.skillBaseBonus
-    //   Config:       p.aiSpec (optional, see PipelineFactory)
-    // 消费方一律直读 p.*（无子对象间接层）。
+    // ── 参数派生溯源（Phase 4a: debug-only, AI日志级别>=3 时构建）──
+    // p.__aiMeta[paramName] = "formula = value, from: trait1=v1, trait2=v2"
+    // 用于 DecisionTrace FULL 级别输出和交互式调试
+    if (_root.AI日志级别 >= 3) {
+        var _r2 = function(v:Number):String { return String(Math.round(v * 1000) / 1000); };
+        var meta:Object = {};
+
+        // Layer 1 — 行为参数 ← 特质
+        meta.engageDistanceMult  = "0.8+勇气*0.4=" + _r2(p.engageDistanceMult) + " ← 勇气=" + _r2(p.勇气);
+        meta.retreatHPRatio      = "0.15+(1-勇气)*0.2=" + _r2(p.retreatHPRatio) + " ← 勇气=" + _r2(p.勇气);
+        meta.chaseCommitment     = "3+勇气*4=" + _r2(p.chaseCommitment) + " ← 勇气=" + _r2(p.勇气);
+        meta.decisionNoise       = "1-技术*0.7=" + _r2(p.decisionNoise) + " ← 技术=" + _r2(p.技术);
+        meta.stanceMastery       = "技术=" + _r2(p.stanceMastery) + " ← 技术=" + _r2(p.技术);
+        meta.stabilityFactor     = "经验=" + _r2(p.stabilityFactor) + " ← 经验=" + _r2(p.经验);
+        meta.maxCandidates       = "2+经验*6=" + p.maxCandidates + " ← 经验=" + _r2(p.经验);
+        meta.tickInterval        = "max(1,6-反应*5)=" + p.tickInterval + " ← 反应=" + _r2(p.反应);
+        meta.evalDepth           = "1+智力*4=" + p.evalDepth + " ← 智力=" + _r2(p.智力);
+        meta.healEagerness       = "0.3+智力*0.5=" + _r2(p.healEagerness) + " ← 智力=" + _r2(p.智力);
+        meta.baseTemperature     = "0.1+谋略*0.4=" + _r2(p.baseTemperature) + " ← 谋略=" + _r2(p.谋略);
+
+        // Layer 2 — 管线参数 ← 特质
+        meta.skillCommitFrames   = "8+勇气*8=" + p.skillCommitFrames + " ← 勇气=" + _r2(p.勇气);
+        meta.skillAnimProtect    = "12+经验*12=" + p.skillAnimProtect + " ← 经验=" + _r2(p.经验);
+        meta.stanceCooldown      = "6+经验*6=" + p.stanceCooldown + " ← 经验=" + _r2(p.经验);
+        meta.chaseFrustration    = "20+(1-反应)*40=" + p.chaseFrustration + " ← 反应=" + _r2(p.反应);
+        meta.reloadCommitFrames  = "20+经验*20=" + p.reloadCommitFrames + " ← 经验=" + _r2(p.经验);
+        meta.weaponSwitchCost    = "0.15+(1-反应)*0.15=" + _r2(p.weaponSwitchCost) + " ← 反应=" + _r2(p.反应);
+        meta.weaponHysteresis    = "0.08+经验*0.12=" + _r2(p.weaponHysteresis) + " ← 经验=" + _r2(p.经验);
+        meta.dodgeReactWindow    = "15+反应*30=" + p.dodgeReactWindow + " ← 反应=" + _r2(p.反应);
+        meta.preBuffDistMult     = "1.5+经验*2.5=" + _r2(p.preBuffDistMult) + " ← 经验=" + _r2(p.经验);
+        meta.preBuffCooldown     = "30-经验*20=" + p.preBuffCooldown + " ← 经验=" + _r2(p.经验);
+        meta.kiteThreshold       = "0.6+智力*0.35=" + _r2(p.kiteThreshold) + " ← 智力=" + _r2(p.智力);
+        meta.targetSwitchInterval = "16-反应*12=" + p.targetSwitchInterval + " ← 反应=" + _r2(p.反应);
+        meta.targetSwitchRatio   = "0.4+智力*0.25=" + _r2(p.targetSwitchRatio) + " ← 智力=" + _r2(p.智力);
+        meta.momentumDecay       = "0.3+经验*0.4=" + _r2(p.momentumDecay) + " ← 经验=" + _r2(p.经验);
+        meta.comboPreference     = "0.1+勇气*0.3+技术*0.2=" + _r2(p.comboPreference) + " ← 勇气=" + _r2(p.勇气) + ",技术=" + _r2(p.技术);
+
+        // Layer 3 — 复合派生
+        meta.temperature = "baseT/(1+stab)=" + _r2(p.temperature) + " ← 谋略=" + _r2(p.谋略) + ",经验=" + _r2(p.经验);
+
+        // Layer 4 — 评分权重
+        meta.w_damage      = "0.3+勇气*0.4=" + _r2(p.w_damage) + " ← 勇气=" + _r2(p.勇气);
+        meta.w_safety      = "0.3+智力*0.4=" + _r2(p.w_safety) + " ← 智力=" + _r2(p.智力);
+        meta.w_resource    = "0.1+智力*0.2=" + _r2(p.w_resource) + " ← 智力=" + _r2(p.智力);
+        meta.w_positioning = "0.15+经验*0.2=" + _r2(p.w_positioning) + " ← 经验=" + _r2(p.经验);
+        meta.w_combo       = "0.15+技术*0.3=" + _r2(p.w_combo) + " ← 技术=" + _r2(p.技术);
+
+        // Layer 5 — 战术解锁
+        meta.tacticsGrouping     = "谋略>=0.25→" + p.tacticsGrouping + " ← 谋略=" + _r2(p.谋略);
+        meta.tacticsEvadeCluster = "谋略>=0.35→" + p.tacticsEvadeCluster + " ← 谋略=" + _r2(p.谋略);
+        meta.tacticsSeekRecovery = "谋略>=0.45→" + p.tacticsSeekRecovery + " ← 谋略=" + _r2(p.谋略);
+
+        p.__aiMeta = meta;
+    }
 };
 
 _root.初始化佣兵NPC模板 = function() {

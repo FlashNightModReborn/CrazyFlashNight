@@ -43,12 +43,21 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // ── 创建 Utility 评估器 + 统一动作管线（无条件）──
         // Phase 3a: 移除 personality null 守卫；personality 应在 配置人形怪AI 中已设置
         if (data.personality == null) {
-            // 防御性断言（Phase 3b: 两周后确认无触发则可删除此分支）
+            // 防御性兜底：复用 配置人形怪AI 的 seed 算法，避免 seed=0 导致同质化
             _root.服务器.发布服务器消息("[AI WARNING] " + data.self._name
-                + " personality==null, auto-generating default");
-            data.self.personality = _root.生成随机人格(0);
-            _root.计算AI参数(data.self.personality);
-            data.personality = data.self.personality;
+                + " personality==null, auto-generating");
+            var self:MovieClip = data.self;
+            if (self.aiSeed == null) {
+                var _seed:Number = self.等级 || 0;
+                var _n:String = self.名字 || self._name;
+                for (var _i:Number = 0; _i < _n.length; _i++) {
+                    _seed = _seed * 31 + _n.charCodeAt(_i);
+                }
+                self.aiSeed = _seed & 0x7FFFFFFF;
+            }
+            self.personality = _root.生成随机人格(self.aiSeed);
+            _root.计算AI参数(self.personality);
+            data.personality = self.personality;
         }
         data.evaluator = new UtilityEvaluator(data.personality);
         data.arbiter = new ActionArbiter(data.personality, data.evaluator, data.self);

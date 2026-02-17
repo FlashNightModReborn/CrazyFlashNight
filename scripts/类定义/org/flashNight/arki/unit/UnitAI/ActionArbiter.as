@@ -192,7 +192,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         }
 
         // ═══ 决策追踪 ═══
-        _trace.begin(self.名字, _ctx);
+        _trace.begin(self.名字, _ctx, p);
 
         // ═══ body 轨：统一动作选择 ═══
 
