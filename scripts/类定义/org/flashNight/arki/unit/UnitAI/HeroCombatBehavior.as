@@ -126,6 +126,10 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             return;
         }
 
+        // 清除残留战斗输入（避免退出战斗后持续攻击/换弹）
+        self.动作A = false;
+        self.动作B = false;
+
         // 4-6. 武器模式 + 血包评估（统一管线 / Phase 1 fallback）
         if (data.arbiter != null) {
             data.arbiter.tick(data, "selector");
@@ -271,8 +275,8 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
     /**
      * follow_enter — 跟随状态
      *
-     * 己方佣兵：停止移动，等待 Gate 超时后重新评估（复刻原 gotoAndPlay(命令) 行为）
-     * 敌方佣兵：朝玩家角色移动（复刻原 gotoAndStop("跟随") 行为）
+     * 敌方佣兵：朝主角移动（复刻原 gotoAndStop("跟随") 行为）
+     * 己方佣兵：朝主角移动，远距离时跑步跟随（Gate 超时后重新评估索敌）
      */
     public function follow_enter():Void {
         var self = data.self;
@@ -280,28 +284,38 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         self.右行 = false;
         self.上行 = false;
         self.下行 = false;
+        // 清除残留战斗输入（避免退出战斗后持续攻击/换弹）
+        self.动作A = false;
+        self.动作B = false;
 
         if (data.standby) return;
 
-        // 敌方佣兵：朝玩家角色移动
-        if (self.是否为敌人) {
-            var hero:MovieClip = TargetCacheManager.findHero();
-            if (hero && hero.hp > 0) {
-                data.updateSelf();
-                var dx:Number = hero._x - data.x;
-                var dz:Number = hero._y - data.z;
+        // 跟随目标：敌方 → 主角，己方 → 主角
+        var hero:MovieClip = self.是否为敌人
+            ? TargetCacheManager.findHero()
+            : (data.player || TargetCacheManager.findHero());
+        if (hero == null || hero.hp <= 0) return;
 
-                if (Math.abs(dx) > 100) {
-                    self.左行 = dx < 0;
-                    self.右行 = dx > 0;
-                }
-                if (Math.abs(dz) > 20) {
-                    self.上行 = dz < 0;
-                    self.下行 = dz > 0;
-                }
+        data.updateSelf();
+        var dx:Number = hero._x - data.x;
+        var dz:Number = hero._y - data.z;
+        var absDx:Number = Math.abs(dx);
+
+        // 距离阈值：敌方 100，己方 150（稍远避免重叠）
+        var moveThreshold:Number = self.是否为敌人 ? 100 : 150;
+
+        if (absDx > moveThreshold) {
+            self.左行 = dx < 0;
+            self.右行 = dx > 0;
+            // 己方远距离跑步跟随
+            if (!self.是否为敌人 && absDx > 300) {
+                self.状态改变(self.攻击模式 + "跑");
             }
         }
-        // 己方佣兵：停止移动，Gate 超时后回到 Selector 重新评估
+        if (Math.abs(dz) > 20) {
+            self.上行 = dz < 0;
+            self.下行 = dz > 0;
+        }
     }
 
     // ═══════ 玩家手动控制（映射原 不思考）═══════

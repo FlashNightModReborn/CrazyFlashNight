@@ -2,6 +2,7 @@
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
 import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 /**
  * 佣兵战斗模块 — 作为子状态机嵌入根机 HeroCombatBehavior
@@ -12,6 +13,8 @@ import org.flashNight.arki.unit.UnitAI.UnitAIData;
  * Phase 2 注入点：selectSkill() 可替换为 Utility 评分选择
  */
 class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine {
+
+    private var _lastTargetCheckFrame:Number = -999;
 
     public function HeroCombatModule(_data:UnitAIData) {
         // machine-level onEnter: 重入时强制重置到 Chasing
@@ -87,6 +90,11 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         data.updateSelf();
         data.updateTarget();
 
+        // ── 周期性目标评估（近身感知 + 转火）──
+        if (_checkTargetSwitch()) {
+            data.updateTarget();
+        }
+
         // ── 统一动作管线（Phase 2 Step 5）──
         // 预战buff + 换弹 + 武器评估 全部收敛到 arbiter.tick()
         // arbiter 内部按中断规则互斥，不再有覆盖冲突
@@ -139,6 +147,8 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         self.动作B = false;
         self.左行 = false;
         self.右行 = false;
+        self.上行 = false;
+        self.下行 = false;
 
         // 目标失效守卫
         var t:MovieClip = data.target;
@@ -146,6 +156,12 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
         data.updateSelf();
         data.updateTarget();
+
+        // ── 周期性目标评估（近身感知 + 转火）──
+        if (_checkTargetSwitch()) {
+            data.updateTarget();
+            t = data.target;
+        }
 
         // 面朝目标
         if (data.x > data.tx) {
@@ -161,20 +177,54 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
             data.arbiter.tick(data, "engage");
 
             // 远程风筝：边打边退（Stance repositionDir > 0 时激活）
-            // 目标过近（< 40% 保持距离）→ 后退，保持射击距离
+            // 目标进入 xdistance × kiteThreshold 时后退
+            // 智力高→中距离就撤退（战术意识），智力低→近距离才退
             // 技能期不输出移动（避免走动取消技能）
             var bodyType:String = data.arbiter.getExecutor().getCurrentBodyType();
             if (bodyType != "skill" && bodyType != "preBuff" && self.状态 != "技能" && self.状态 != "战技") {
-                if (data.arbiter.getRepositionDir() > 0 && data.absdiff_x < data.xdistance * 0.4) {
-                    if (data.diff_x > 0) {
-                        self.左行 = true;
-                    } else {
-                        self.右行 = true;
+                var kiteT:Number = 0.7;
+                if (data.personality != null && !isNaN(data.personality.kiteThreshold)) {
+                    kiteT = data.personality.kiteThreshold;
+                }
+
+                // 受创紧迫 → 动态加宽风筝/撤退范围
+                // urgency=1 时 kiteT→1.0（xdistance 内全程风筝）
+                var urgency:Number = data.arbiter.getRetreatUrgency();
+                if (urgency > 0) {
+                    kiteT = kiteT + urgency * (1.0 - kiteT);
+                }
+
+                var repoDir:Number = data.arbiter.getRepositionDir();
+
+                if (repoDir > 0 && data.absdiff_x < data.xdistance * kiteT) {
+                    // ── 远程风筝 ──
+                    if (self.移动射击 != true) {
+                        self.动作A = false;
+                        self.动作B = false;
+                        if (!self.射击中) {
+                            self.状态改变(self.攻击模式 + "跑");
+                        }
                     }
+                    _retreatMove();
+                } else if (urgency > 0.5 && repoDir <= 0) {
+                    // ── 近战应急脱战（受创严重时后退求生）──
+                    // 勇气已在 urgency 计算中对抗，此处仅检查阈值
+                    self.动作A = false;
+                    self.动作B = false;
+                    _retreatMove();
                 }
             }
         } else {
             selectSkillFallback();
+        }
+
+        // 防呆：管线边界情况兜底（所有候选被过滤 / commitment 间隙 / 状态切换空隙）
+        if (!self.动作A && !self.动作B && !self.左行 && !self.右行 && !self.上行 && !self.下行) {
+            var st:String = self.状态;
+            if (st != "技能" && st != "战技" && !self.射击中) {
+                self.动作A = true;
+                if (self.攻击模式 === "双枪") self.动作B = true;
+            }
         }
 
         // 目标死亡检查
@@ -234,5 +284,103 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
             return 选中技能.技能名;
         }
         return null;
+    }
+
+    // ═══════ 边界感知撤退 ═══════
+
+    /**
+     * _retreatMove — 边界感知撤退走位（远程风筝 / 近战应急脱战 共用）
+     *
+     * 优先水平后退（远离目标 X 轴方向）；
+     * 受 X 轴边界阻挡（退无可退）时改为垂直绕行（Z 轴脱离后
+     * Gate 自然触发回 Chasing 再拉距）。
+     */
+    private function _retreatMove():Void {
+        var self:MovieClip = data.self;
+        var retreatLeft:Boolean = data.diff_x > 0;
+        var margin:Number = 80;
+        var bMinX:Number = (_root.Xmin != undefined) ? _root.Xmin : 0;
+        var bMaxX:Number = (_root.Xmax != undefined) ? _root.Xmax : Stage.width;
+        var wallBlocked:Boolean = (retreatLeft && (data.x - bMinX < margin))
+                               || (!retreatLeft && (bMaxX - data.x < margin));
+
+        if (wallBlocked) {
+            // 退无可退 → 垂直绕行
+            var bMinY:Number = (_root.Ymin != undefined) ? _root.Ymin : 0;
+            var bMaxY:Number = (_root.Ymax != undefined) ? _root.Ymax : Stage.height;
+            var goUp:Boolean = data.diff_z >= 0;
+            if (goUp && (data.y - bMinY < margin)) {
+                goUp = false;
+            } else if (!goUp && (bMaxY - data.y < margin)) {
+                goUp = true;
+            }
+            if (goUp) { self.上行 = true; } else { self.下行 = true; }
+        } else {
+            if (retreatLeft) { self.左行 = true; } else { self.右行 = true; }
+        }
+    }
+
+    // ═══════ 目标切换（近距离感知）═══════
+
+    /**
+     * _checkTargetSwitch — 周期性检测更近的敌人
+     *
+     * 使用 TargetCacheManager.findNearestEnemy 感知被近身。
+     * 距离比率迟滞：新目标必须显著更近才切换（避免频繁转火）。
+     * 检测频率 / 迟滞阈值由人格参数驱动。
+     *
+     * @return Boolean 是否发生了目标切换
+     */
+    private function _checkTargetSwitch():Boolean {
+        var self:MovieClip = data.self;
+        var frame:Number = _root.帧计时器.当前帧数;
+
+        // 人格参数驱动检测频率
+        var p:Object = data.personality;
+        var interval:Number = 12;
+        if (p != null && !isNaN(p.targetSwitchInterval)) {
+            interval = p.targetSwitchInterval;
+        }
+
+        if (frame - _lastTargetCheckFrame < interval) return false;
+        _lastTargetCheckFrame = frame;
+
+        // 查找最近敌人
+        var nearest = TargetCacheManager.findNearestEnemy(self, 1);
+        if (nearest == null || nearest.hp <= 0) return false;
+
+        var t:MovieClip = data.target;
+
+        // 无当前目标 → 直接获取
+        if (t == null || t.hp <= 0) {
+            _switchTarget(nearest);
+            return true;
+        }
+
+        // 已是当前目标 → 跳过
+        if (nearest == t) return false;
+
+        // 距离比较 + 迟滞
+        var currentDist:Number = Math.abs(self._x - t._x);
+        var nearestDist:Number = Math.abs(self._x - nearest._x);
+
+        var ratio:Number = 0.5;
+        if (p != null && !isNaN(p.targetSwitchRatio)) {
+            ratio = p.targetSwitchRatio;
+        }
+
+        if (nearestDist < currentDist * ratio) {
+            _switchTarget(nearest);
+            return true;
+        }
+
+        return false;
+    }
+
+    private function _switchTarget(newTarget):Void {
+        var self:MovieClip = data.self;
+        data.target = newTarget;
+        self.攻击目标 = newTarget._name;
+        self.dispatcher.publish("aggroSet", self, newTarget);
     }
 }

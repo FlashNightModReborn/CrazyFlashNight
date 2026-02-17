@@ -66,6 +66,10 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     // ── 决策追踪（可观测性）──
     private var _trace:DecisionTrace;
 
+    // ── 撤退紧迫度（burst damage tracking）──
+    private var _prevHpRatio:Number = 1;
+    private var _retreatUrgency:Number = 0;
+
     // ═══════ 构造 ═══════
 
     public function ActionArbiter(personality:Object, scorer:UtilityEvaluator, self:MovieClip) {
@@ -126,6 +130,10 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         return _executor;
     }
 
+    public function getRetreatUrgency():Number {
+        return _retreatUrgency;
+    }
+
     // ═══════ 核心管线 ═══════
 
     /**
@@ -141,6 +149,19 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         _executor.updateAnimLock(self);
         _ctx.build(data, context, _executor, _scorer, _recentHitFrame, p);
         var frame:Number = _ctx.frame;
+
+        // ═══ 撤退紧迫度（burst damage → 勇气调节）═══
+        // HP 下降量超过勇气抵消阈值时累积紧迫度；自然衰减
+        // 高勇气 → 需要更大伤害才触发撤退；低勇气 → 轻伤即退
+        var hpDelta:Number = _ctx.hpRatio - _prevHpRatio;
+        _prevHpRatio = _ctx.hpRatio;
+        if (hpDelta < -0.01) {
+            _retreatUrgency = Math.min(1,
+                _retreatUrgency + Math.max(0, -hpDelta - p.勇气 * 0.15) * 3);
+        }
+        _retreatUrgency *= 0.92;
+        if (_retreatUrgency < 0.05) _retreatUrgency = 0;
+        _ctx.retreatUrgency = _retreatUrgency;
 
         // ═══ 决策追踪 ═══
         _trace.begin(self.名字, _ctx);
@@ -369,6 +390,36 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                 if (isNaN(ammoR) || ammoR < 0.5) {
                     var ammoUrgency:Number = isNaN(ammoR) ? 1 : (1 - ammoR);
                     total += ammoUrgency * (0.3 + (p.经验 || 0) * 1.2);
+                }
+            }
+
+            // 上位技能抑制（同功能 + 更高点数 = 完全上位 → 抑制低版本）
+            // 典型：觉醒霸体(150点) 是 霸体(10点) 的完全上位
+            // 高经验角色几乎不使用低版本；仅在上位技能 CD 中作为紧急突围选择
+            if (c.type == "skill" && c.skill.功能 == "解围霸体") {
+                var myPts:Number = c.skill.点数;
+                var allSkills:Array = self.已学技能表;
+                if (allSkills != null) {
+                    for (var si:Number = 0; si < allSkills.length; si++) {
+                        if (allSkills[si].功能 == "解围霸体" && allSkills[si].点数 > myPts) {
+                            total -= (p.经验 || 0) * 1.5;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // 受创紧迫 → 提升逃脱/防御技能评分（求生本能）
+            if (c.type == "skill" && _ctx.retreatUrgency > 0.15) {
+                var urgFunc:String = c.skill.功能;
+                if (urgFunc == "躲避") {
+                    total += _ctx.retreatUrgency * 0.8;
+                } else if (urgFunc == "位移" || urgFunc == "高频位移") {
+                    total += _ctx.retreatUrgency * 0.6;
+                } else if (urgFunc == "解围霸体") {
+                    total += _ctx.retreatUrgency * 1.2;
+                } else if (urgFunc == "增益") {
+                    total += _ctx.retreatUrgency * 0.4;
                 }
             }
 

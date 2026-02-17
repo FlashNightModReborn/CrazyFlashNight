@@ -58,6 +58,9 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
     public var inputSemantic:String;         // "hold" | "trigger" | null
     public var lockSource:String;            // "FRAME_COMMIT" | "ANIM_SKILL" | "ANIM_RELOAD" | null
 
+    // ── 撤退紧迫度（burst damage → 勇气调节）──
+    public var retreatUrgency:Number;    // [0,1] 受创紧迫程度（高=重创应撤退）
+
     // ── pipeline context ──
     public var context:String;           // "chase" | "engage" | "selector"
 

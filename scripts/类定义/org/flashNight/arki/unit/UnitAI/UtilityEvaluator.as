@@ -617,37 +617,60 @@ class org.flashNight.arki.unit.UnitAI.UtilityEvaluator {
 
     /**
      * 根据当前攻击模式设定范围参数
-     * 保留原始 Phase 1 的硬编码值（这些是游戏平衡参数）
+     *
+     * 基础值（武器模式决定）+ 智力×强弱动态延伸
+     * 远程基础 xrange=600 → 600px 有效射程
+     * 智力延伸：面对更强敌人时自动拉开保持距离
      */
     public function applyWeaponRanges(self:MovieClip, data:UnitAIData):Void {
         switch (self.攻击模式) {
             case "空手":
                 self.x轴攻击范围 = 90;
-                self.y轴攻击范围 = 20;
+                self.y轴攻击范围 = 25;
                 self.x轴保持距离 = 50;
                 break;
             case "兵器":
                 self.x轴攻击范围 = 150;
-                self.y轴攻击范围 = 20;
-                self.x轴保持距离 = 150;
+                self.y轴攻击范围 = 25;
+                self.x轴保持距离 = 120;
                 break;
             case "长枪":
             case "手枪":
             case "手枪2":
             case "双枪":
-                self.x轴攻击范围 = 400;
-                self.y轴攻击范围 = 20;
-                self.x轴保持距离 = 200;
+                self.x轴攻击范围 = 600;
+                self.y轴攻击范围 = 25;
+                self.x轴保持距离 = 350;
                 break;
             case "手雷":
-                self.x轴攻击范围 = 300;
+                self.x轴攻击范围 = 400;
                 self.y轴攻击范围 = 10;
-                self.x轴保持距离 = 200;
+                self.x轴保持距离 = 250;
                 break;
         }
         data.xrange = self.x轴攻击范围;
         data.zrange = self.y轴攻击范围;
         data.xdistance = self.x轴保持距离;
+
+        // ── 智力×敌我强弱 → 动态保持距离延伸 ──
+        // 高智力 + 敌强我弱 → 加大保持距离（远程骚扰而非硬碰硬）
+        // 仅修改 data.xdistance（不改 self.x轴保持距离 基础值）
+        if (p != null && data.target != null && data.target.hp > 0) {
+            var intel:Number = p.智力;
+            if (!isNaN(intel) && intel > 0) {
+                var selfHP:Number = self.hp满血值;
+                var enemyHP:Number = data.target.hp满血值;
+                if (selfHP > 0 && enemyHP > 0) {
+                    var strengthRatio:Number = enemyHP / selfHP; // >1 = 敌强我弱
+                    if (strengthRatio > 1) {
+                        // 智力1 + 敌方3倍血量: +300px；智力0.5 + 敌方2倍: +75px
+                        var excess:Number = strengthRatio - 1;
+                        if (excess > 2) excess = 2;
+                        data.xdistance += Math.round(intel * excess * 150);
+                    }
+                }
+            }
+        }
     }
 
     // ═══════ 3. 血包评估 ═══════
