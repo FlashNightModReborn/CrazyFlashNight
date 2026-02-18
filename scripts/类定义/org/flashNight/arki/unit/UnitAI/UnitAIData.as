@@ -28,6 +28,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     public var targetVX:Number;
     private var _prevTx:Number;
     private var _prevUpdateFrame:Number;
+    private var _prevTargetRef:MovieClip;  // 检测目标切换，归零速度历史
     // 攻击目标与自身的坐标差值
     public var diff_x:Number;
     public var diff_y:Number;
@@ -144,14 +145,22 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         if(target != null){
             // T2-A：目标速度追踪（预测拦截用）
             var curFrame:Number = _root.帧计时器.当前帧数;
-            var dt:Number = curFrame - _prevUpdateFrame;
-            if (dt > 0 && !isNaN(_prevTx)) {
-                targetVX = (target._x - _prevTx) / dt;
-            } else {
+            // 目标切换检测：不同对象引用 → 归零速度历史，防止预测过冲
+            if (target != _prevTargetRef) {
+                _prevTargetRef = target;
+                _prevTx = target._x;
+                _prevUpdateFrame = curFrame;
                 targetVX = 0;
+            } else {
+                var dt:Number = curFrame - _prevUpdateFrame;
+                if (dt > 0 && !isNaN(_prevTx)) {
+                    targetVX = (target._x - _prevTx) / dt;
+                } else {
+                    targetVX = 0;
+                }
+                _prevTx = target._x;
+                _prevUpdateFrame = curFrame;
             }
-            _prevTx = target._x;
-            _prevUpdateFrame = curFrame;
 
             this.tx = target._x;
             this.ty = target._y;

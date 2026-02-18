@@ -49,7 +49,7 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
     public static var DEFAULT_MODS:Array = [
         "StanceAffinity", "TacticalBias", "RigidState", "RangePressure",
         "ReactiveDodge", "AmmoReload", "SkillHierarchy", "SurvivalUrgency",
-        "BulletPressure", "DecisionNoise", "ComboDepth", "CrowdAwareness"
+        "BulletPressure", "ComboDepth", "CrowdAwareness", "DecisionNoise"
     ];
     public static var DEFAULT_POSTS:Array = ["Momentum", "FreqAdjust"];
     public static var DEFAULT_FILTERS:Array = ["AnimLock", "Interrupt"];

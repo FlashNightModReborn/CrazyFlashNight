@@ -34,6 +34,7 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavior {
 
     public static var FOLLOW_REEVAL_TIME:Number = 2; // 跟随状态重新评估间隔（2次action = 8帧）
+    private var _retreatStartFrame:Number = -1;      // 撤退开始帧（超时兜底用）
 
     public function HeroCombatBehavior(_data:UnitAIData) {
         super(_data);
@@ -106,8 +107,9 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // 跟随 → Selector（超时重新评估 + 敌人接近快速通道）
         this.pushGateTransition("FollowingHero", "Selector", function() {
             if (this.actionCount >= HeroCombatBehavior.FOLLOW_REEVAL_TIME) return true;
-            // 快速通道：附近有有效敌人 → 立即重评估（16帧缓存）
-            if (TargetCacheManager.getEnemyCountInRange(data.self, 16, 400, 400, true) > 0) {
+            // 快速通道：附近有有效敌人 → 立即重评估
+            // 复用 ActionArbiter 周期采样的 nearbyCount（150px，16帧周期）
+            if (data.arbiter != null && data.arbiter.getNearbyCount() > 0) {
                 return true;
             }
             return false;
@@ -119,9 +121,10 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             return self.操控编号 == -1 || _root.控制目标全自动 == true;
         });
 
-        // Retreating → Selector（紧迫度恢复 + HP回升 + 撤退方向被堵）
+        // Retreating → Selector（紧迫度恢复 + HP回升 + 撤退方向被堵 + 超时兜底）
         this.pushGateTransition("Retreating", "Selector", function() {
-            if (data.arbiter.getRetreatUrgency() > 0.2) {
+            var urgency:Number = data.arbiter.getRetreatUrgency();
+            if (urgency > 0.2) {
                 // 紧迫度仍高，但检查是否退无可退
                 // 角落（X+Z双贴边）
                 if (data.bndCorner > 0.5) return true;
@@ -132,6 +135,12 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
                      || (retDir > 0 && data.bndRightDist < 80)) {
                         return true;
                     }
+                }
+                // 超时兜底：撤退超过 120 帧(~5s) 且紧迫度已降至中等以下 → 回去战斗
+                // 防止"低血无药一直跑"的死循环
+                if (urgency < 0.5) {
+                    var retreatDur:Number = _root.帧计时器.当前帧数 - behavior._retreatStartFrame;
+                    if (retreatDur > 120) return true;
                 }
                 return false;
             }
@@ -318,6 +327,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
      */
     public function retreat_enter():Void {
         UnitAIData.clearInput(data.self);
+        _retreatStartFrame = _root.帧计时器.当前帧数;
     }
 
     /**

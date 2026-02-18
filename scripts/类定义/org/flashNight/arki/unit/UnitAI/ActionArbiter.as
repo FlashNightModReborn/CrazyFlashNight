@@ -76,8 +76,9 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     private var _prevHpRatio:Number = 1;
     private var _retreatUrgency:Number = 0;
 
-    // ── 包围度（左右敌人分布检测）──
+    // ── 包围度 + 近距密度（左右敌人分布检测，统一采样）──
     private var _encirclement:Number = 0;
+    private var _nearbyCount:Number = 0;
     private var _lastEncirclementFrame:Number = -999;
 
     // ═══════ 构造 ═══════
@@ -154,6 +155,10 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         return _encirclement;
     }
 
+    public function getNearbyCount():Number {
+        return _nearbyCount;
+    }
+
     // ═══════ 核心管线 ═══════
 
     /**
@@ -179,13 +184,15 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         _retreatUrgency *= 0.92;
         if (_retreatUrgency < 0.05) _retreatUrgency = 0;
 
-        // ═══ 包围度检测（周期性，每 16 帧 ≈ 0.6s）═══
+        // ═══ 包围度 + 近距密度检测（周期性，每 16 帧 ≈ 0.6s）═══
         if (frame - _lastEncirclementFrame >= 16) {
             _lastEncirclementFrame = frame;
             var scanRange:Number = 250;
             var leftCount:Number = TargetCacheManager.getEnemyCountInRange(self, 8, scanRange, 0, true);
             var rightCount:Number = TargetCacheManager.getEnemyCountInRange(self, 8, 0, scanRange, true);
             _encirclement = Math.min(1, leftCount * rightCount / 4);
+            // 近距密度（150px，复用给 CrowdAwarenessMod / FollowingHero Gate）
+            _nearbyCount = TargetCacheManager.getEnemyCountInRange(self, 16, 150, 150, true);
         }
 
         // 包围加剧低勇气角色的撤退紧迫度
@@ -216,7 +223,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         // ═══ 黑板构建（build-once 契约：所有信号在此一次性聚合，build 只读）═══
         _executor.updateAnimLock(self);
         _ctx.build(data, context, _executor, _stanceMgr, _weaponEval, _recentHitFrame, p,
-                   _retreatUrgency, _encirclement);
+                   _retreatUrgency, _encirclement, _nearbyCount);
 
         // ═══ 决策追踪 ═══
         _trace.begin(self.名字, _ctx, p);

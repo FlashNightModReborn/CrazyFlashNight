@@ -64,6 +64,7 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
 
     // ── 包围度（左右敌人分布）──
     public var encirclement:Number;      // [0,1] 被包围程度（乘积公式：两侧均有敌人时高）
+    public var nearbyCount:Number;       // 近距(150px)敌人数（ActionArbiter 周期采样，复用包围度扫描）
 
     // ── 射弹预警（BulletQueueProcessor 尾循环写入 _bt* 动态属性）──
     public var bulletThreat:Number;      // 威胁子弹计数（0=无）
@@ -94,6 +95,7 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
      * @param p                personality 引用（含派生参数）
      * @param retreatUrgency   撤退紧迫度 [0,1]（ActionArbiter 预计算）
      * @param encirclement     包围度 [0,1]（ActionArbiter 预计算）
+     * @param nearbyCount      近距敌人数（ActionArbiter 周期采样，复用包围度扫描窗口）
      */
     public function build(
         data:UnitAIData,
@@ -104,7 +106,8 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
         recentHitFrame:Number,
         p:Object,
         retreatUrgency:Number,
-        encirclement:Number
+        encirclement:Number,
+        nearbyCount:Number
     ):Void {
         var s:MovieClip = data.self;
         var t:MovieClip = data.target;
@@ -171,9 +174,10 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
         this.inputSemantic = executor.getInputSemantic();
         this.lockSource = executor.getLockSource(this.frame);
 
-        // ── 撤退/包围度（ActionArbiter 预计算，build-once 契约）──
+        // ── 撤退/包围度/密度（ActionArbiter 预计算，build-once 契约）──
         this.retreatUrgency = retreatUrgency;
         this.encirclement = encirclement;
+        this.nearbyCount = nearbyCount;
 
         // ── 边界压迫（updateSelf 预计算）──
         this.bndCorner = data.bndCorner;
