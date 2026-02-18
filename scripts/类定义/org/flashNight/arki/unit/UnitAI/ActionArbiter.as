@@ -10,6 +10,7 @@ import org.flashNight.arki.unit.UnitAI.HealExecutor;
 import org.flashNight.arki.unit.UnitAI.scoring.ScoringPipeline;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
+import org.flashNight.arki.bullet.BulletComponent.Queue.BulletThreatScanProcessor;
 
 /**
  * ActionArbiter — 统一动作决策管线
@@ -93,6 +94,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         this._jitterState = { lastActionType: null, lastSkillName: null, repeatCount: 0 };
         this._recentHitFrame = -999;
         this._selfRef = self;
+        BulletThreatScanProcessor.register(self);
         this._ctx = new AIContext();
         this._trace = new DecisionTrace();
 
@@ -192,6 +194,18 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             _retreatUrgency = Math.min(1, _retreatUrgency + _encirclement * courageDampen * 0.3);
         }
 
+        // ═══ 射弹预警 → 前瞻性撤退（Layer 0）═══
+        var btCount:Number = self._btCount;
+        if (self._btFrame == frame && !isNaN(btCount) && btCount > 0) {
+            var btETA:Number = self._btMinETA;
+            if (isNaN(btETA)) btETA = 30;
+            // 子弹多+到达快 → 紧迫；勇气高 → 抑制
+            var btUrgency:Number = Math.min(0.5, btCount * 0.1)
+                * Math.max(0, 1 - btETA / 20)
+                * (1 - p.勇气 * 0.7);
+            _retreatUrgency = Math.min(1, _retreatUrgency + btUrgency);
+        }
+
         // ═══ 战术偏置过期清理（build 前处理，保持 build 无副作用）═══
         var tactBias:Object = _stanceMgr.getTacticalBias();
         if (tactBias != null && frame >= tactBias.expiryFrame) {
@@ -222,6 +236,38 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         // 2. 过滤器（AnimLock → Interrupt）
         for (var fi:Number = 0; fi < _filters.length; fi++) {
             _filters[fi].filter(_ctx, candidates, _trace);
+        }
+
+        // 2.5 反射闪避（高反应角色：bulletETA ≤ 8 帧直接触发，跳过评分）
+        if (_ctx.bulletThreat > 0 && _ctx.bulletETA <= 8 && p.反应 >= 0.7
+            && candidates.length > 0) {
+            var reflexDodge:Object = null;
+            for (var ri:Number = 0; ri < candidates.length; ri++) {
+                var rc:Object = candidates[ri];
+                if (rc.type == "skill" && rc.skill != null && rc.skill.功能 == "躲避") {
+                    reflexDodge = rc;
+                    break;
+                }
+            }
+            if (reflexDodge != null) {
+                // 直接执行，跳过 Boltzmann
+                if (reflexDodge.skill != null) {
+                    self.技能等级 = reflexDodge.skill.技能等级;
+                    reflexDodge.skill.上次使用时间 = _ctx.nowMs;
+                }
+                _executor.execute(reflexDodge, self);
+                var rCommit:Number = reflexDodge.commitFrames;
+                if (isNaN(rCommit)) rCommit = 5;
+                _executor.commitBody("skill", 0,
+                    Math.round(rCommit * p.tickInterval), frame,
+                    reflexDodge.skill != null ? reflexDodge.skill.冷却 : 0);
+                _executor.setDodgeActive(true);
+                _postExecution(reflexDodge, data, frame);
+                _trace.selected(reflexDodge, 1.0, 0);
+                // stance/heal 可延后一 tick，此处不再评估
+                _trace.flush();
+                return;
+            }
         }
 
         // 3. hold/trigger 分流 + Continue 注入
@@ -281,6 +327,11 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                         }
                         _executor.commitBody(selected.type, selected.priority,
                             Math.round(commitF * p.tickInterval), frame, skillCD);
+                        // 标记闪避/位移技能激活（允许 EngageMovement Z 轴输入）
+                        if (selected.skill != null
+                            && (selected.skill.功能 == "躲避" || selected.skill.功能 == "位移")) {
+                            _executor.setDodgeActive(true);
+                        }
                         _postExecution(selected, data, frame);
                         holdAttack = false;
                     }
@@ -396,6 +447,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                 _selfRef.dispatcher.unsubscribe("skillEnd", _onSkillEndCallback, this);
             }
         }
+        BulletThreatScanProcessor.unregister(_selfRef);
         _selfRef = null;
         _onHitCallback = null;
         _onSkillEndCallback = null;

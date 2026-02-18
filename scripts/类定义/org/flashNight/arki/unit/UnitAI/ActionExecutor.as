@@ -56,6 +56,9 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
     // ── 换弹结束伪事件（追踪 换弹标签 true→false 下降沿）──
     private var _lastReloadTag:Boolean;
 
+    // ── 闪避技能激活标志（EngageMovementStrategy 读取，允许 Z 轴输入）──
+    private var _isDodgeActive:Boolean;
+
     // ═══════ 构造 ═══════
 
     public function ActionExecutor() {
@@ -73,6 +76,7 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         _lastReloadTag = false;
         _consecutiveAttacks = 0;
         _bodySkillCD = 0;
+        _isDodgeActive = false;
     }
 
     // ═══════ 动画标签锁 ═══════
@@ -165,6 +169,7 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         }
         _bodyType = type;
         _bodyPriority = priority;
+        _isDodgeActive = false; // 默认清除，由 Arbiter 根据技能功能设置
         _bodyCommitUntil = frame + commitFrames;
         _bodySkillCD = isNaN(skillCD) ? 0 : skillCD;
         if (type == "skill" || type == "preBuff") {
@@ -184,6 +189,7 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         _bodyPriority = -1;
         _bodyType = null;
         _bodySkillCD = 0;
+        _isDodgeActive = false;
     }
 
     /** @deprecated 统一使用 autoHold */
@@ -226,6 +232,18 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
 
     public function getCurrentBodyType():String {
         return _bodyType;
+    }
+
+    /**
+     * isDodgeActive — 当前 body 动作是否为闪避/位移技能
+     * EngageMovementStrategy 用于决定是否在技能期间保持 Z 轴输入
+     */
+    public function isDodgeActive():Boolean {
+        return _isDodgeActive;
+    }
+
+    public function setDodgeActive(active:Boolean):Void {
+        _isDodgeActive = active;
     }
 
     public function getLastSkillUseFrame():Number {

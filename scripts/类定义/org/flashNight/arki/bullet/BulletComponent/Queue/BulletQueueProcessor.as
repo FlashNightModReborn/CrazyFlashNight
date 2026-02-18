@@ -125,6 +125,19 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     private static var KF_PIERCE_LIMIT_REMOVE:Number = (1 << 1) | (1 << 9);  // 0x202
 
     // ========================================================================
+    // 射弹预警常量（Phase 2+ 尾循环）
+    // ========================================================================
+
+    /** X方向探测窗扩展距离（~20帧 × 15px/帧） */
+    private static var WARN_PAD_X:Number = 300;
+
+    /** ETA上限帧数（超过不预警） */
+    private static var ETA_MAX_FRAMES:Number = 25;
+
+    /** Y走廊容差（擦弹压迫感） */
+    private static var WARN_PAD_Y:Number = 15;
+
+    // ========================================================================
     // 消弹状态缓存（逐帧复用）
     // ========================================================================
     /**
@@ -234,6 +247,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             queue = activeQueues[key];
             queue.clear();
         }
+        // 重置射弹预警门控计数（场景切换时单位已销毁）
+        BulletThreatScanProcessor.reset();
         return true;
     }
 
@@ -610,6 +625,17 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var targetX:Number;                 // 目标X坐标
         var targetY:Number;                 // 目标Y坐标
 
+        // ---- 射弹预警变量（Phase 2+ 尾循环）----
+        var hasTZ:Boolean;              // 全局门控：是否有单位订阅 bulletThreat
+        var effectiveRb:Number;         // 预警扩展右边界（空窗快判用）
+        var warnRb:Number;              // 尾循环终止边界 = Rb + WARN_PAD_X
+        var warnTarget:MovieClip;       // 预警循环当前目标
+        var warnZOff:Number;            // Z 偏移
+        var warnEta:Number;             // 到达帧数估算
+        var warnDx:Number;              // X 距离
+        var warnSpd:Number;             // X 速度绝对值
+        var warnPredictY:Number;        // Y 轴线性外推预测位置
+
         // ================================================================
         // 主处理循环：按阵营遍历所有活动队列
         // ================================================================
@@ -665,6 +691,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bulletLeftKeys = q.getLeftKeysRef();        // 子弹左边界数组（查询起点）
             bulletRightKeys = q.getRightKeysRef();      // 子弹右边界数组（截断终点）
             sweepIndex = 0;                             // 扫描线索引重置
+
+            // ---- 射弹预警门控：全局开关，O(1)布尔检查 ----
+            hasTZ = BulletThreatScanProcessor.hasListeners();
 
             // --- 调试期单位池预检与清洗 ---
             if (false) {
@@ -818,7 +847,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     }
                     startIndex = sweepIndex;                // 记录有效检测的起始索引
                     // ---- 空窗口快判：O(1)时间复杂度，避免无效循环开销 ----
-                    if (startIndex >= len || Rb < unitLeftKeys[startIndex]) {
+                    effectiveRb = hasTZ ? (Rb + WARN_PAD_X) : Rb;
+                    if (startIndex >= len || effectiveRb < unitLeftKeys[startIndex]) {
 
                         // 【僵尸子弹防御】优先检查边界标志，防止隧穿出地图的子弹逃逸
                         // 背景：高速子弹可能隧穿出地图边界，此时shouldDestroy中的
@@ -998,6 +1028,69 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     // ---- 影子记账提交：仅对已初始化的联弹子弹 ----
                     if (needsDeferScatter) {
                         __commitDeferScatter(bullet);
+                    }
+
+                    // ============================================================
+                    // Phase 2+: 射弹预警尾循环
+                    //
+                    // unitIndex 自然衔接碰撞循环结束位置，只扫 (Rb, Rb+WARN_PAD_X]
+                    // 区间内尚未被碰撞循环覆盖的单位。
+                    // 门控：hasTZ=true 且子弹未被终止（killFlags 无 VANISH/REMOVE）
+                    // ============================================================
+                    if (hasTZ && (killFlags & (MODE_VANISH | MODE_REMOVE)) == 0) {
+                        warnRb = Rb + WARN_PAD_X;
+                        for (; unitIndex < len && unitLeftKeys[unitIndex] <= warnRb; ++unitIndex) {
+                            warnTarget = unitMap[unitIndex];
+
+                            // (1) 订阅门控：无 _btEnabled → 跳过
+                            if (warnTarget._btEnabled != true) continue;
+
+                            // (2) 存活过滤
+                            if (warnTarget.hp <= 0) continue;
+
+                            // (3) Z 粗判（内联，复用碰撞侧逻辑）
+                            warnZOff = bulletZOffset - warnTarget.Z轴坐标;
+                            if (warnZOff >= bulletZRange || warnZOff <= -bulletZRange) continue;
+
+                            // (4) 接近方向过滤：子弹须朝向目标
+                            bx = bullet._x;
+                            if (bullet.xmov > 0) {
+                                if (bx > warnTarget._x) continue;
+                            } else if (bullet.xmov < 0) {
+                                if (bx < warnTarget._x) continue;
+                            } else {
+                                continue; // xmov == 0 → 静止/纯纵向弹，不预警
+                            }
+
+                            // (5) ETA 估算
+                            warnDx = warnTarget._x - bx;
+                            if (warnDx < 0) warnDx = -warnDx;
+                            warnSpd = bullet.xmov;
+                            if (warnSpd < 0) warnSpd = -warnSpd;
+                            warnEta = warnDx / warnSpd;
+                            if (warnEta > ETA_MAX_FRAMES) continue;
+
+                            // (6) Y 走廊预测（线性外推 + WARN_PAD_Y 容差）
+                            warnPredictY = bullet._y + bullet.ymov * warnEta;
+                            unitArea = warnTarget.aabbCollider;
+                            uTop = unitArea.top + warnZOff;
+                            uBottom = unitArea.bottom + warnZOff;
+                            if (warnPredictY < uTop - WARN_PAD_Y || warnPredictY > uBottom + WARN_PAD_Y) continue;
+
+                            // (7) 节流：同帧同单位仅累积，不重复事件
+                            if (warnTarget._btFrame != frameId) {
+                                warnTarget._btFrame = frameId;
+                                warnTarget._btCount = 0;
+                                warnTarget._btMinETA = 9999;
+                                warnTarget._btDirX = 0;
+                            }
+                            warnTarget._btCount++;
+                            if (warnEta < warnTarget._btMinETA) {
+                                warnTarget._btMinETA = warnEta;
+                                warnTarget._btShooter = shooter;
+                            }
+                            warnTarget._btDirX += (bullet.xmov > 0) ? 1 : -1;
+                        }
                     }
                 } // end if (!skipUnits)
 

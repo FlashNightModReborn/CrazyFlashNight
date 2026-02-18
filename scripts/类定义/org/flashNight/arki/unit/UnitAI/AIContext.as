@@ -65,6 +65,11 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
     // ── 包围度（左右敌人分布）──
     public var encirclement:Number;      // [0,1] 被包围程度（乘积公式：两侧均有敌人时高）
 
+    // ── 射弹预警（BulletQueueProcessor 尾循环写入 _bt* 动态属性）──
+    public var bulletThreat:Number;      // 威胁子弹计数（0=无）
+    public var bulletThreatDir:Number;   // -1=从左, +1=从右, 0=混合/无
+    public var bulletETA:Number;         // 最近子弹到达帧数（9999=无）
+
     // ── pipeline context ──
     public var context:String;           // "chase" | "engage" | "selector"
 
@@ -133,7 +138,20 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
             this.targetThreat = (t.射击中 == true || t.状态 == "技能" || t.状态 == "战技");
         }
 
-        this.underFire = hitThreat || this.targetThreat;
+        // ── 射弹预警（尾循环每帧写入 _bt* 属性，帧戳检测时效）──
+        if (s._btFrame == this.frame && s._btCount > 0) {
+            this.bulletThreat = s._btCount;
+            var btDir:Number = s._btDirX;
+            this.bulletThreatDir = (btDir > 0) ? 1 : ((btDir < 0) ? -1 : 0);
+            this.bulletETA = s._btMinETA;
+        } else {
+            this.bulletThreat = 0;
+            this.bulletThreatDir = 0;
+            this.bulletETA = 9999;
+        }
+
+        this.underFire = hitThreat || this.targetThreat
+            || (this.bulletThreat > 0 && this.bulletETA < dodgeWin);
 
         // ── Stance / Tactical（只读快照，过期清理由 ActionArbiter 负责）──
         this.stance = stanceMgr.getCurrentStance();

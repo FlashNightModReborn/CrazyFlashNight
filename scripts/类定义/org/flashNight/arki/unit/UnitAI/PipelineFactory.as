@@ -8,6 +8,7 @@ import org.flashNight.arki.unit.UnitAI.scoring.AmmoReloadMod;
 import org.flashNight.arki.unit.UnitAI.scoring.SkillHierarchyMod;
 import org.flashNight.arki.unit.UnitAI.scoring.SurvivalUrgencyMod;
 import org.flashNight.arki.unit.UnitAI.scoring.DecisionNoiseMod;
+import org.flashNight.arki.unit.UnitAI.scoring.BulletPressureMod;
 import org.flashNight.arki.unit.UnitAI.scoring.MomentumPost;
 import org.flashNight.arki.unit.UnitAI.scoring.FreqAdjustPost;
 import org.flashNight.arki.unit.UnitAI.strategies.OffenseStrategy;
@@ -46,7 +47,7 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
     public static var DEFAULT_MODS:Array = [
         "StanceAffinity", "TacticalBias", "RigidState", "RangePressure",
         "ReactiveDodge", "AmmoReload", "SkillHierarchy", "SurvivalUrgency",
-        "DecisionNoise"
+        "BulletPressure", "DecisionNoise"
     ];
     public static var DEFAULT_POSTS:Array = ["Momentum", "FreqAdjust"];
     public static var DEFAULT_FILTERS:Array = ["AnimLock", "Interrupt"];
@@ -74,6 +75,7 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
         if (key == "AmmoReload")      return new AmmoReloadMod();
         if (key == "SkillHierarchy")  return new SkillHierarchyMod();
         if (key == "SurvivalUrgency") return new SurvivalUrgencyMod();
+        if (key == "BulletPressure")  return new BulletPressureMod();
         if (key == "DecisionNoise")   return new DecisionNoiseMod(deps.rng);
         // 自定义扩展
         var f:Function = _customMods[key];

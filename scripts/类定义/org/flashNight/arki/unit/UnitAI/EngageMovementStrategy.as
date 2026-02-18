@@ -48,7 +48,16 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
      * @param inSkill 是否在技能/换弹动画中（true 时跳过走位）
      */
     public function apply(data:UnitAIData, self:MovieClip, frame:Number, inSkill:Boolean):Void {
-        if (inSkill) return;
+        if (inSkill) {
+            // 闪避/位移技能期间保持 Z 轴垂直闪避（子弹威胁时斜向机动）
+            if (data.arbiter.getExecutor().isDodgeActive()
+                && self._btFrame == frame && self._btCount > 0) {
+                if (_strafeDir == 0) _strafeDir = _pickStrafeDir(data);
+                if (_strafeDir < 0) { self.上行 = true; }
+                else if (_strafeDir > 0) { self.下行 = true; }
+            }
+            return;
+        }
 
         var urgency:Number = data.arbiter.getRetreatUrgency();
         var repoDir:Number = data.arbiter.getRepositionDir();
