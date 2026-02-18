@@ -71,6 +71,9 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     // 统一动作决策管线（ActionArbiter）
     public var arbiter:Object;
 
+    // 已施放的全局buff技能（单次施放保护，fight-scoped）
+    public var _usedGlobalBuffs:Object;
+
     // ═══════ 边界感知（updateSelf 计算）═══════
     public var bndLeftDist:Number;   // 距左边界距离（像素）
     public var bndRightDist:Number;  // 距右边界距离
@@ -113,6 +116,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         this.aiNextMode = null;
         this.personality = self.personality; // 六维 + 派生参数（同一对象引用）
         this.createdFrame = _root.帧计时器.当前帧数;
+        this._usedGlobalBuffs = {};
     }
 
     public function updateSelf():Void{

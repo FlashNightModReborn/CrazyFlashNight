@@ -66,6 +66,11 @@ class org.flashNight.arki.unit.UnitAI.strategies.PreBuffStrategy {
                     continue;
                 }
             }
+            // 单次施放保护：全局buff已施放过 → 不重复（即使 buffManager 未检测到）
+            if (mark.global && data._usedGlobalBuffs[sk.技能名] == true) {
+                trace.reject(sk.技能名, DecisionTrace.REASON_BUFF);
+                continue;
+            }
             if (ctx.isRigid && sk.功能 == "解围霸体") {
                 trace.reject(sk.技能名, DecisionTrace.REASON_RIGID);
                 continue;

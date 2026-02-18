@@ -163,6 +163,10 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         return _weaponEval.getAmmoRatio(self, self.攻击模式);
     }
 
+    public function getAmmoRatioForMode(self:MovieClip, mode:String):Number {
+        return _weaponEval.getAmmoRatio(self, mode);
+    }
+
     // ═══════ 核心管线 ═══════
 
     /**
@@ -397,6 +401,14 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     private function _postExecution(selected:Object, data:UnitAIData, frame:Number):Void {
         if (selected.type == "skill") {
             _stanceMgr.triggerTacticalBias(selected.skill, frame);
+        }
+
+        // 全局buff单次施放记录（兴奋剂/铁布衫/觉醒霸体等永久buff仅施放一次）
+        if (selected.type == "skill" || selected.type == "preBuff") {
+            var pbMark:Object = _root.技能函数.预战buff标记[selected.name];
+            if (pbMark != null && pbMark.global) {
+                data._usedGlobalBuffs[selected.name] = true;
+            }
         }
 
         _jitterState.lastActionType = selected.type;

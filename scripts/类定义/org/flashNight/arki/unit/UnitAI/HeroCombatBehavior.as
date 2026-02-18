@@ -124,6 +124,10 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
 
         // Retreating → Selector（紧迫度恢复 + HP回升 + 撤退方向被堵 + 超时兜底）
         this.pushGateTransition("Retreating", "Selector", function() {
+            // Target lost/dead → 立即退出撤退回到 Selector（防止 diff_x=NaN 导致只有垂直移动）
+            var rt = data.target;
+            if (rt == null || !(rt.hp > 0) || rt._x == undefined) return true;
+
             var urgency:Number = data.arbiter.getRetreatUrgency();
             if (urgency > 0.2) {
                 // 紧迫度仍高，但检查是否退无可退
@@ -362,17 +366,72 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             return;
         }
 
+        // ── 安全距离换弹：撤退到安全距离后主动停下来换弹 ──
+        // 解决"远距离撤退后不换弹"的问题
+        // 条件：X距离充足(>xrange*2且>400) + 紧急度低(<0.3) + 非射击中
+        // 支持切换到弹药不足的武器进行换弹
+        var safeReloadDist:Number = data.xrange * 2;
+        if (safeReloadDist < 400) safeReloadDist = 400;
+        if (!isNaN(data.absdiff_x) && data.absdiff_x > safeReloadDist
+            && data.arbiter.getRetreatUrgency() < 0.3
+            && !self.射击中) {
+            // 已在换弹 → 原地等待完成
+            if (self.man != null && self.man.换弹标签) {
+                return;
+            }
+            // 当前武器弹药不足 → 停下换弹
+            var curAmmoRR:Number = data.arbiter.getAmmoRatio(self);
+            if (!(curAmmoRR >= 0.5)) { // NaN-safe: NaN >= 0.5 is false → trigger reload
+                self.状态改变(self.攻击模式 + "停");
+                if (self.man != null) self.man.gotoAndPlay("换弹匣");
+                if (_root.AI调试模式 == true) {
+                    _root.服务器.发布服务器消息("[RET-RELOAD] " + self.名字
+                        + " 安全距离换弹 cur=" + self.攻击模式
+                        + " ammo=" + Math.round((curAmmoRR || 0) * 100) + "%");
+                }
+                return;
+            }
+            // 当前武器满弹 → 检查其他远程武器是否需要换弹
+            var reloadModes:Array = ["长枪", "双枪", "手枪"];
+            for (var rmi:Number = 0; rmi < reloadModes.length; rmi++) {
+                var rmMode:String = reloadModes[rmi];
+                if (rmMode == self.攻击模式) continue;
+                // 检查装备
+                if (rmMode == "长枪" && !self.长枪) continue;
+                if ((rmMode == "手枪" || rmMode == "双枪") && !self.手枪) continue;
+                var rmAmmo:Number = data.arbiter.getAmmoRatioForMode(self, rmMode);
+                if (!isNaN(rmAmmo) && rmAmmo < 0.5) {
+                    // 切换到该武器并立即换弹
+                    var rmSwitchArg:String = (rmMode == "双枪") ? "手枪" : rmMode;
+                    self.攻击模式切换(rmSwitchArg);
+                    self.状态改变(self.攻击模式 + "停");
+                    if (self.man != null) self.man.gotoAndPlay("换弹匣");
+                    if (_root.AI调试模式 == true) {
+                        _root.服务器.发布服务器消息("[RET-RELOAD] " + self.名字
+                            + " 切换到 " + rmMode + " 换弹 ammo="
+                            + Math.round(rmAmmo * 100) + "%");
+                    }
+                    return;
+                }
+            }
+        }
+
         var repoDir:Number = data.arbiter.getRepositionDir();
 
         // ── 收集移动意图 + 统一边界感知输出 ──
         var moveX:Number = 0;
-        if (data.target != null && data.target._x != undefined) {
+        if (data.target != null && data.target._x != undefined && data.target.hp > 0) {
             var retDir:Number = (data.diff_x > 0) ? -1 : 1; // 远离目标
             // 撤退方向贴墙检查：退路被堵 → 放弃X轴撤退（Gate会检测并退出Retreating）
             var retWall:Boolean = (retDir < 0 && data.bndLeftDist < 80)
                                || (retDir > 0 && data.bndRightDist < 80);
             if (!retWall) {
                 moveX = retDir;
+            }
+        } else {
+            // Target lost/dead: 使用最后已知方向继续撤退（Gate 下帧会退出 Retreating）
+            if (!isNaN(data.diff_x) && data.diff_x != 0) {
+                moveX = (data.diff_x > 0) ? -1 : 1;
             }
         }
         // Z轴撤退策略：优先拉开垂直距离，足够后轻微蛇形闪避

@@ -61,6 +61,11 @@ class org.flashNight.arki.unit.UnitAI.strategies.OffenseStrategy {
                         continue;
                     }
                 }
+                // 单次施放保护：全局buff已施放过 → 不重复（即使 buffManager 未检测到）
+                if (preBuffMark != null && preBuffMark.global && data._usedGlobalBuffs[sk.技能名] == true) {
+                    trace.reject(sk.技能名, DecisionTrace.REASON_BUFF);
+                    continue;
+                }
 
                 // 优先级：解围霸体常驻 emergency(0)；躲避仅受威胁时为 0
                 var skillPri:Number = 1;

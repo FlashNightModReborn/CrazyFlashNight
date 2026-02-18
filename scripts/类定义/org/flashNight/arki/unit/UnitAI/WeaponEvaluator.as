@@ -145,18 +145,21 @@ class org.flashNight.arki.unit.UnitAI.WeaponEvaluator {
             dist = data.absdiff_x;
         }
 
-        // ── 紧急前置：远程空弹 + 近距 → 直接切近战 ──
+        // ── 紧急前置：远程缺弹 + 近距 → 直接切近战 ──
         // 不走评分，生死攸关不交给概率
+        // 门槛放宽：ammo<=15% + dist<200 即触发（原 ammo=0 + dist<150 太迟）
         var curStance:Object = _stanceMgr.getCurrentStance();
         if (curStance != null && curStance.repositionDir > 0) {
             var curAmmo:Number = getAmmoRatio(self, self.攻击模式);
-            if (curAmmo <= 0 && dist < 150 && has刀) {
+            if (curAmmo <= 0.15 && dist < 200 && has刀) {
                 self.攻击模式切换("兵器");
                 _lastWeaponSwitchFrame = currentFrame;
                 applyWeaponRanges(self, data);
                 _stanceMgr.syncStance("兵器");
                 if (_root.AI调试模式 == true) {
-                    _root.服务器.发布服务器消息("[WPN] " + self.名字 + " EMERGENCY melee! ammo=0 dist=" + Math.round(dist));
+                    _root.服务器.发布服务器消息("[WPN] " + self.名字
+                        + " EMERGENCY melee! ammo=" + Math.round(curAmmo * 100)
+                        + "% dist=" + Math.round(dist));
                 }
                 return;
             }
@@ -216,6 +219,17 @@ class org.flashNight.arki.unit.UnitAI.WeaponEvaluator {
                 score -= 0.5;
             } else {
                 score += (ammoR - 0.5) * 0.2;
+            }
+
+            // ── 近距×缺弹交互惩罚（远程风筝失败信号）──
+            // 远程武器在射程下限内 + 弹药不健康 = 风筝失败，应切近战
+            // penalty = (1-ammoR) × (underRatio) × 0.5
+            //   dist=100, ammo=20%, min=150 → 0.8 × 0.33 × 0.5 = -0.13
+            //   dist=50,  ammo=10%, min=150 → 0.9 × 0.67 × 0.5 = -0.30
+            // 仅影响远程武器（近战 min=0，underRatio=0）
+            if (wRange != null && dist < wRange.min && ammoR < 0.5) {
+                var underRatio:Number = (wRange.min - dist) / wRange.min;
+                score -= (1 - ammoR) * underRatio * 0.5;
             }
 
             // ── 切换成本 + 迟滞（hysteresis）──
