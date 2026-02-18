@@ -98,10 +98,12 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // arbiter 内部按中断规则互斥，不再有覆盖冲突
         data.arbiter.tick(data, "chase");
 
-        // 技能期：禁止跑步切换/移动输入，避免非技能动作打断技能
-        // （设计：只有技能才能取消技能）
+        // 动作保护期：禁止跑步切换/移动输入，避免打断技能/换弹动画
+        // 技能：只有技能才能取消技能
+        // 换弹：跑步/移动可能打断换弹动画导致"没子弹发呆"
         var bt:String = data.arbiter.getExecutor().getCurrentBodyType();
-        if (bt == "skill" || bt == "preBuff" || self.状态 == "技能" || self.状态 == "战技") {
+        if (bt == "skill" || bt == "preBuff" || self.状态 == "技能" || self.状态 == "战技"
+            || (self.man != null && self.man.换弹标签)) {
             return;
         }
 

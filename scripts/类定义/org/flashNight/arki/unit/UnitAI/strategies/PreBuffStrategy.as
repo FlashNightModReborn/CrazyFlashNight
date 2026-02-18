@@ -29,10 +29,13 @@ class org.flashNight.arki.unit.UnitAI.strategies.PreBuffStrategy {
         var self:MovieClip = ctx.self;
 
         // 条件：非射击中 + 安全距离（经验缩放）
+        // 使用 xdistance（保持距离）而非 xrange（最大攻击范围）：
+        //   xrange(长枪)=600 * 1.5=900px → 几乎永远不满足
+        //   xdistance(长枪)=350 * 1.5=525px → 合理的预战准备距离
         if (self.射击中) return;
         var distMult:Number = p.preBuffDistMult;
         if (isNaN(distMult) || distMult < 1.5) distMult = 1.5;
-        if (ctx.xDist <= ctx.xrange * distMult) return;
+        if (ctx.xDist <= ctx.xdistance * distMult) return;
 
         // 帧节流（经验缩放）
         var currentFrame:Number = ctx.frame;

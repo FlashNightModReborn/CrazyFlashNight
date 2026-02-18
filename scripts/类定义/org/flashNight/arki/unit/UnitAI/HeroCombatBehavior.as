@@ -35,6 +35,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
 
     public static var FOLLOW_REEVAL_TIME:Number = 2; // 跟随状态重新评估间隔（2次action = 8帧）
     private var _retreatStartFrame:Number = -1;      // 撤退开始帧（超时兜底用）
+    private var _retreatFireCounter:Number = 0;      // 撤退掩护射击计数器（避免 frame%gap 取模别名）
 
     public function HeroCombatBehavior(_data:UnitAIData) {
         super(_data);
@@ -328,6 +329,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
     public function retreat_enter():Void {
         UnitAIData.clearInput(data.self);
         _retreatStartFrame = _root.帧计时器.当前帧数;
+        _retreatFireCounter = 0;
     }
 
     /**
@@ -337,7 +339,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
      *   远程姿态(repositionDir > 0)：面朝目标（边退边射/边退边buff）
      *   近战姿态(repositionDir <= 0)：背对目标（全速奔跑撤离）
      *
-     * 调用 arbiter.tick(data, "retreat") → PreBuff + Reload（无 Offense）
+     * 调用 arbiter.tick(data, "retreat") → PreBuff only（无 Offense/Reload，换弹延到 chase）
      */
     public function retreat_action():Void {
         var self:MovieClip = data.self;
@@ -411,19 +413,61 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // ── 掩护射击判定（远程姿态：火力-机动交替）──
         // 核心问题：引擎将 左行/右行 与面朝方向耦合，无法同时移动和反向射击
         // 解法：开火帧放弃X轴移动（原地面朝目标射击），非开火帧正常撤退
+        //
+        // 五重门控：
+        //   1. 姿态门控：远程(repoDir>0) + 非动画锁
+        //   2. 弹药门控：ammoR > 0.3（NaN安全）
+        //   3. Z轴对齐门控：absdiff_z <= zrange*2（Z差太远子弹打不到 → 白送）
+        //   4. X轴安全门控：absdiff_x <= xrange*1.5（已安全距离 → 省弹药纯跑）
+        //   5. 紧急度门控：urgency < 0.8 且无迫近弹道（紧急时不停车射击）
+        //
+        // 节奏：内部 _retreatFireCounter 计数器，避免 frame%gap 与4帧wheel取模别名
+
+        var executor:Object = data.arbiter.getExecutor();
         var wantFire:Boolean = false;
-        if (repoDir > 0 && !self.射击中
-            && bt != "reload"
-            && (self.man == null || !self.man.换弹标签)) {
-            // 余弹检查：弹药不足时停止掩护射击，纯撤退避免途中换弹
-            // NaN 安全：武器属性异常时默认允许开火（NaN > 0.3 = false，故取反）
+
+        if (repoDir > 0 && !self.射击中 && !executor.isAnimLocked()) {
+
+            // ── 弹药门控 ──
             var ammoR:Number = data.arbiter.getAmmoRatio(self);
-            if (!(ammoR <= 0.3)) {
+            var ammoOK:Boolean = !(ammoR <= 0.3); // NaN → true（默认允许）
+
+            // ── Z轴对齐门控 ──
+            var zRange:Number = data.zrange;
+            if (isNaN(zRange) || zRange < 10) zRange = 25;
+            var zAligned:Boolean = (isNaN(zSep) || zSep <= zRange * 2);
+
+            // ── X轴安全门控 ──
+            var xSafe:Boolean = !(data.absdiff_x > data.xrange * 1.5);
+
+            // ── 紧急度门控 ──
+            var urgency:Number = data.arbiter.getRetreatUrgency();
+            var btAge:Number = frame - self._btFrame;
+            var imminent:Boolean = (btAge >= 0 && btAge <= 1
+                && self._btCount > 0 && (self._btMinETA - btAge) < 8);
+            var canPause:Boolean = (urgency < 0.8 && !imminent);
+
+            if (ammoOK && zAligned && xSafe && canPause) {
+                // 节奏控制：内部计数器（射 1 tick + 走 N tick）
                 var fireGap:Number = 6 - Math.floor((data.personality.反应 || 0) * 4);
                 if (fireGap < 2) fireGap = 2;
-                if (frame % fireGap == 0) {
+                _retreatFireCounter++;
+                if (_retreatFireCounter >= fireGap) {
                     wantFire = true;
+                    _retreatFireCounter = 0;
                 }
+            }
+
+            // 调试日志
+            if (_root.AI调试模式 == true && (frame & 31) == 0) {
+                _root.服务器.发布服务器消息("[RET-FIRE] " + self.名字
+                    + " ammo=" + Math.round((ammoR || 0) * 100) + "%"
+                    + " z=" + Math.round(zSep) + "/" + Math.round(zRange * 2)
+                    + " x=" + Math.round(data.absdiff_x) + "/" + Math.round(data.xrange * 1.5)
+                    + " urg=" + Math.round(urgency * 100)
+                    + " bt=" + (bt || "null")
+                    + " anim=" + executor.isAnimLocked()
+                    + " fire=" + wantFire);
             }
         }
 
