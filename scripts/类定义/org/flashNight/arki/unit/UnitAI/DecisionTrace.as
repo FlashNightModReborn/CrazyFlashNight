@@ -63,6 +63,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
 
     // ── 选中结果 ──
     private var _selectedName:String;
+    private var _selectedType:String;
     private var _selectedProb:Number;
     private var _temperature:Number;
 
@@ -105,8 +106,18 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
         _rejectDetails.length = 0;
         _scored.length = 0;
         _selectedName = null;
+        _selectedType = null;
         _selectedProb = 0;
         _temperature = 0;
+    }
+
+    /**
+     * isEnabled — 是否启用任意级别的日志输出（>0）
+     *
+     * 用于调用方避免在 LEVEL_OFF 下计算额外诊断信息。
+     */
+    public function isEnabled():Boolean {
+        return _level > 0;
     }
 
     /**
@@ -166,6 +177,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
     public function selected(candidate:Object, prob:Number, T:Number):Void {
         if (_level <= 0) return;
         _selectedName = candidate.name;
+        _selectedType = candidate.type;
         _selectedProb = prob;
         _temperature = T;
     }
@@ -278,7 +290,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
                 + " kite=" + _formatNum(_p.kiteThreshold);
             // __aiMeta 溯源：输出选中动作相关的关键参数派生公式
             if (_p.__aiMeta != null && _selectedName != null) {
-                var metaKeys:Array = _getRelevantMeta(_selectedName);
+                var metaKeys:Array = _getRelevantMeta(_selectedType, _selectedName);
                 if (metaKeys.length > 0) {
                     msg += "\n  meta:";
                     for (var mi:Number = 0; mi < metaKeys.length; mi++) {
@@ -315,28 +327,26 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
      *
      * 避免倒出全部 35+ 个参数，只展示与当前决策最直接相关的 3~5 个。
      */
-    private function _getRelevantMeta(selectedName:String):Array {
+    private function _getRelevantMeta(selectedType:String, selectedName:String):Array {
         // 通用：temperature 和 evalDepth 始终相关
         var keys:Array = ["temperature", "evalDepth"];
 
         // Reload → 换弹参数
-        if (selectedName == "Reload") {
+        if (selectedType == "reload" || selectedName == "Reload") {
             keys.push("reloadCommitFrames", "weaponSwitchCost");
             return keys;
         }
 
         // 技能类（含 preBuff）
-        if (_selectedName != null) {
-            // 检查是否是已知的非技能 name
-            var isAttack:Boolean = (selectedName == "Attack" || selectedName == "Continue");
-            if (!isAttack && selectedName != "Reload") {
-                keys.push("skillCommitFrames", "skillAnimProtect", "decisionNoise");
-                // preBuff 专属
+        if (selectedType == "skill" || selectedType == "preBuff") {
+            keys.push("skillCommitFrames", "skillAnimProtect", "decisionNoise");
+            // preBuff 专属
+            if (selectedType == "preBuff" && _p != null && _p.__aiMeta != null) {
                 if (_p.__aiMeta["preBuffDistMult"] != undefined) {
                     keys.push("preBuffDistMult", "preBuffCooldown");
                 }
-                return keys;
             }
+            return keys;
         }
 
         // Attack / Continue → 攻击倾向

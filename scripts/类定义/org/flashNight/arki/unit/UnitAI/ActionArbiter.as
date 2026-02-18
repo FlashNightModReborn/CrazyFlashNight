@@ -245,7 +245,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
                 _pipeline.scoreAll(candidates, _ctx, data, self, p, T, _trace);
                 var selected:Object = _scorer.boltzmannSelect(candidates, T);
-
+ 
                 if (selected != null) {
                     // 技能属性预写入（必须在 execute 之前）
                     if (selected.type == "skill" || selected.type == "preBuff") {
@@ -272,8 +272,20 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                         _postExecution(selected, data, frame);
                         holdAttack = false;
                     }
-
-                    _trace.selected(selected, 0, T);
+ 
+                    // 选中概率（仅日志启用时计算，避免热路径额外开销）
+                    var prob:Number = 0;
+                    if (_trace.isEnabled()) {
+                        var sumExp:Number = 0;
+                        for (var pi:Number = 0; pi < candidates.length; pi++) {
+                            var ew:Number = candidates[pi]._ew;
+                            if (!isNaN(ew) && ew > 0) sumExp += ew;
+                        }
+                        if (sumExp > 0 && selected._ew != undefined && !isNaN(selected._ew)) {
+                            prob = selected._ew / sumExp;
+                        }
+                    }
+                    _trace.selected(selected, prob, T);
                 }
             }
  
