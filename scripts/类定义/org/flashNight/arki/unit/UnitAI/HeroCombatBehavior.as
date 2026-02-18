@@ -360,12 +360,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             return;
         }
 
-        // 面朝方向：远程姿态面朝目标（可射击），近战姿态背对目标（全速跑）
         var repoDir:Number = data.arbiter.getRepositionDir();
-        if (repoDir > 0 && data.target != null) {
-            if (data.diff_x > 0) self.方向改变("右");
-            else if (data.diff_x < 0) self.方向改变("左");
-        }
 
         // ── 收集移动意图 + 统一边界感知输出 ──
         var moveX:Number = 0;
@@ -413,11 +408,40 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             // 否则 moveZ=0，不做Z轴移动（已拉开足够距离）
         }
 
-        // 统一处理边界碰撞：沿墙滑行 / 角落突围 / 正常输出
-        UnitAIData.applyBoundaryAwareMovement(data, self, moveX, moveZ);
+        // ── 掩护射击判定（远程姿态：火力-机动交替）──
+        // 核心问题：引擎将 左行/右行 与面朝方向耦合，无法同时移动和反向射击
+        // 解法：开火帧放弃X轴移动（原地面朝目标射击），非开火帧正常撤退
+        var wantFire:Boolean = false;
+        if (repoDir > 0 && !self.射击中
+            && bt != "reload"
+            && (self.man == null || !self.man.换弹标签)) {
+            // 余弹检查：弹药不足时停止掩护射击，纯撤退避免途中换弹
+            // NaN 安全：武器属性异常时默认允许开火（NaN > 0.3 = false，故取反）
+            var ammoR:Number = data.arbiter.getAmmoRatio(self);
+            if (!(ammoR <= 0.3)) {
+                var fireGap:Number = 6 - Math.floor((data.personality.反应 || 0) * 4);
+                if (fireGap < 2) fireGap = 2;
+                if (frame % fireGap == 0) {
+                    wantFire = true;
+                }
+            }
+        }
 
-        // 切换跑步
-        if (!self.射击中 && (self.man == null || !self.man.换弹标签)) {
+        if (wantFire) {
+            // 开火帧：放弃X轴移动，仅保留Z轴（侧向闪避不影响面朝）
+            UnitAIData.applyBoundaryAwareMovement(data, self, 0, moveZ);
+            // 无X轴移动干扰，方向改变可生效
+            if (data.diff_x > 0) self.方向改变("右");
+            else if (data.diff_x < 0) self.方向改变("左");
+            self.动作A = true;
+            if (self.攻击模式 === "双枪") self.动作B = true;
+        } else {
+            // 非开火帧 / 弹药不足 / 近战姿态：正常撤退
+            UnitAIData.applyBoundaryAwareMovement(data, self, moveX, moveZ);
+        }
+
+        // 切换跑步（非射击期间才切，避免打断射击动作）
+        if (!self.射击中 && !self.动作A && (self.man == null || !self.man.换弹标签)) {
             self.状态改变(self.攻击模式 + "跑");
         }
     }

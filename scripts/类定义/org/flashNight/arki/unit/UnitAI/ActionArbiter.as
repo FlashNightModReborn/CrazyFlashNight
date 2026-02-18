@@ -159,6 +159,10 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         return _nearbyCount;
     }
 
+    public function getAmmoRatio(self:MovieClip):Number {
+        return _weaponEval.getAmmoRatio(self, self.攻击模式);
+    }
+
     // ═══════ 核心管线 ═══════
 
     /**

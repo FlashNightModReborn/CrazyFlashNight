@@ -62,7 +62,7 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
         DEFAULT_SOURCES["engage"]   = ["Offense", "Reload"];
         DEFAULT_SOURCES["chase"]    = ["PreBuff", "Reload"];
         DEFAULT_SOURCES["selector"] = [];
-        DEFAULT_SOURCES["retreat"]  = ["PreBuff", "Reload"];
+        DEFAULT_SOURCES["retreat"]  = ["PreBuff"]; // 撤退不换弹：避免跑步状态换弹失败导致发呆，换弹延到 chase 阶段
         return true;
     }
 
