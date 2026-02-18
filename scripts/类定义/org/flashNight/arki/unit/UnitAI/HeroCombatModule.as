@@ -81,9 +81,9 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         var self:MovieClip = data.self;
         UnitAIData.clearInput(self);
 
-        // 目标失效守卫
+        // 目标失效守卫（T0-1：增加 hp 校验，防止追尸体）
         var t:MovieClip = data.target;
-        if (t == null || !t._x) return;
+        if (t == null || !t._x || !(t.hp > 0)) return;
 
         data.updateSelf();
         data.updateTarget();
@@ -118,17 +118,35 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
             }
         }
 
-        // Z轴移动（5px 死区避免来回抖动）
+        // ── 收集移动意图 + 统一边界感知输出 ──
+
+        // Z轴意图（5px 死区避免来回抖动）
+        var wantZ:Number = 0;
         if (absZDiff > 5) {
-            if (zDiff > 0) { self.上行 = true; } else { self.下行 = true; }
+            wantZ = (zDiff > 0) ? -1 : 1; // zDiff>0=自身偏下→上行(-1)
         }
 
-        // X轴移动（保持距离）
-        if (data.x > data.tx + data.xdistance) {
-            self.左行 = true;
-        } else if (data.x < data.tx - data.xdistance) {
-            self.右行 = true;
+        // T2-A：预测拦截 — 朝预测位置移动而非当前位置
+        var leadFrames:Number = 0;
+        if (!isNaN(data.targetVX) && data.targetVX != 0) {
+            var spd:Number = self.跑X速度;
+            if (isNaN(spd) || spd <= 0) spd = (self.行走X速度 || 5) * 2;
+            leadFrames = data.absdiff_x / (spd + 1);
+            if (leadFrames < 4) leadFrames = 4;
+            if (leadFrames > 12) leadFrames = 12;
         }
+        var predTx:Number = data.tx + (data.targetVX || 0) * leadFrames;
+
+        // X轴意图（保持距离，朝预测位置）
+        var wantX:Number = 0;
+        if (data.x > predTx + data.xdistance) {
+            wantX = -1; // 左移接近
+        } else if (data.x < predTx - data.xdistance) {
+            wantX = 1;  // 右移接近
+        }
+
+        // 统一处理边界碰撞：沿墙滑行 / 角落突围 / 正常输出
+        UnitAIData.applyBoundaryAwareMovement(UnitAIData(data), self, wantX, wantZ);
     }
 
     // ═══════ 交战（射程内）═══════
@@ -142,9 +160,9 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
         UnitAIData.clearInput(self);
 
-        // 目标失效守卫
+        // 目标失效守卫（T0-1：增加 hp 校验，防止攻击尸体）
         var t:MovieClip = data.target;
-        if (t == null || !t._x) return;
+        if (t == null || !t._x || !(t.hp > 0)) return;
 
         data.updateSelf();
         data.updateTarget();
@@ -186,6 +204,20 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
                 var safeToAttack:Boolean =
                     !data.arbiter.getExecutor().isBodyCommitted(_root.帧计时器.当前帧数);
                 if (safeToAttack) {
+                    self.动作A = true;
+                    if (self.攻击模式 === "双枪") self.动作B = true;
+                }
+            }
+        }
+
+        // T0-3：移动中但无攻击输出的兜底（防止纯走位不输出）
+        // 仅当 arbiter 未提交任何 body 动作且未 committed 时生效
+        if (!self.动作A && self.射击中 != true) {
+            var st2:String = self.状态;
+            if (st2 != "技能" && st2 != "战技") {
+                var exec = data.arbiter.getExecutor();
+                if (!exec.isBodyCommitted(_root.帧计时器.当前帧数)
+                    && exec.getCurrentBodyType() == null) {
                     self.动作A = true;
                     if (self.攻击模式 === "双枪") self.动作B = true;
                 }
@@ -245,21 +277,46 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // 已是当前目标 → 跳过
         if (nearest == t) return false;
 
-        // 距离比较 + 迟滞（X 轴）
-        var currentDist:Number = Math.abs(self._x - t._x);
-        var nearestDist:Number = Math.abs(self._x - nearest._x);
+        // T1-B：多维目标评分（距离 + 残血优先 → 高效清场）
+        var currentScore:Number = _scoreTarget(t, self, p);
+        var nearestScore:Number = _scoreTarget(nearest, self, p);
 
         var ratio:Number = 0.5;
         if (p != null && !isNaN(p.targetSwitchRatio)) {
             ratio = p.targetSwitchRatio;
         }
 
-        if (nearestDist < currentDist * ratio) {
+        // 迟滞：新目标必须明显更优才切换（ratio 作为优势阈值）
+        if (nearestScore > currentScore * (1 + ratio)) {
             _switchTarget(nearest);
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * _scoreTarget — 多维目标优先级评分
+     *
+     * 维度：距离（近优先）+ HP比率（残血优先）
+     * 权重受经验调节：高经验角色更重视残血击杀（高效清场）
+     */
+    private function _scoreTarget(candidate:MovieClip, self:MovieClip, p:Object):Number {
+        // 距离分（反比，归一化到 0~1）
+        var dist:Number = Math.abs(self._x - candidate._x);
+        var distScore:Number = 1.0 / (1.0 + dist * 0.005); // 200px→0.5, 400px→0.33
+
+        // HP分（残血→高分，高效清场）
+        var maxHP:Number = candidate.hp满血值;
+        var hpRatio:Number = (maxHP > 0) ? candidate.hp / maxHP : 1;
+        var hpScore:Number = 1.0 - hpRatio; // 满血=0, 残血=~1
+
+        // 权重：经验高→残血优先，经验低→距离优先
+        var wHP:Number = 0.3;
+        if (p != null && !isNaN(p.经验)) {
+            wHP = 0.3 + p.经验 * 0.3; // 0.3 ~ 0.6
+        }
+        return distScore * (1.0 - wHP) + hpScore * wHP;
     }
 
     private function _switchTarget(newTarget):Void {

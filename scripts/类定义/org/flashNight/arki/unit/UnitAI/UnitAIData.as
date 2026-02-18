@@ -23,6 +23,11 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     public var tx:Number;
     public var ty:Number;
     public var tz:Number;
+
+    // 目标速度追踪（T2-A 预测拦截）
+    public var targetVX:Number;
+    private var _prevTx:Number;
+    private var _prevUpdateFrame:Number;
     // 攻击目标与自身的坐标差值
     public var diff_x:Number;
     public var diff_y:Number;
@@ -65,7 +70,14 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     // 统一动作决策管线（ActionArbiter）
     public var arbiter:Object;
 
-    
+    // ═══════ 边界感知（updateSelf 计算）═══════
+    public var bndLeftDist:Number;   // 距左边界距离（像素）
+    public var bndRightDist:Number;  // 距右边界距离
+    public var bndUpDist:Number;     // 距上边界距离
+    public var bndDownDist:Number;   // 距下边界距离
+    public var bndCorner:Number;     // 角落压迫度 [0,1]（0=开阔, 1=贴角）
+
+
     public function UnitAIData(_self:MovieClip){
         this.self = _self;
         init();
@@ -110,12 +122,37 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         this.right = self.方向 === "右";
         this.left = self.方向 === "左";
         this.standby = self.待机 ? true : false;
-        // _root.发布消息(self._name, this.standby, self.待机)
+
+        // 边界距离（供 applyBoundaryAwareMovement 和评分修正器使用）
+        var bMinX:Number = (_root.Xmin != undefined) ? _root.Xmin : 0;
+        var bMaxX:Number = (_root.Xmax != undefined) ? _root.Xmax : Stage.width;
+        var bMinY:Number = (_root.Ymin != undefined) ? _root.Ymin : 0;
+        var bMaxY:Number = (_root.Ymax != undefined) ? _root.Ymax : Stage.height;
+        this.bndLeftDist  = this.x - bMinX;
+        this.bndRightDist = bMaxX - this.x;
+        this.bndUpDist    = this.y - bMinY;
+        this.bndDownDist  = bMaxY - this.y;
+        // 角落压迫度：X轴和Z轴的边界压力乘积
+        var _m:Number = 80;
+        var xP:Number = 1 - Math.min(this.bndLeftDist, this.bndRightDist) / _m;
+        var zP:Number = 1 - Math.min(this.bndUpDist, this.bndDownDist) / _m;
+        this.bndCorner = ((xP > 0) ? xP : 0) * ((zP > 0) ? zP : 0);
     }
     
     public function updateTarget():Void{
         var target:MovieClip = this.target;
         if(target != null){
+            // T2-A：目标速度追踪（预测拦截用）
+            var curFrame:Number = _root.帧计时器.当前帧数;
+            var dt:Number = curFrame - _prevUpdateFrame;
+            if (dt > 0 && !isNaN(_prevTx)) {
+                targetVX = (target._x - _prevTx) / dt;
+            } else {
+                targetVX = 0;
+            }
+            _prevTx = target._x;
+            _prevUpdateFrame = curFrame;
+
             this.tx = target._x;
             this.ty = target._y;
             this.tz = isNaN(target.Z轴坐标) ? target._y : target.Z轴坐标;
@@ -229,6 +266,102 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
         // 只有连续多次无移动才判定为真正卡死
         return this._stuckCheckCount >= minStuckCount;
+    }
+
+    // ═══════ 统一边界感知移动 ═══════
+
+    /**
+     * applyBoundaryAwareMovement — 统一边界感知移动输出
+     *
+     * 接收语义化移动意图（wantX: -1=左, 0=无, 1=右; wantZ: -1=上, 0=无, 1=下），
+     * 处理边界碰撞并输出到 self 的移动标志。
+     *
+     * 三级逃脱策略：
+     *   0=正常：方向可行，直接输出
+     *   1=沿墙滑行：X轴贴墙 → 不输出X，自动注入Z分量斜向逃脱
+     *   2=角落突围：X+Z都被堵 → 反转X方向冲出（打出去）
+     *
+     * 所有移动代码（retreat_action, EngageMovementStrategy 等）统一调用此方法，
+     * 消除分散的 ad-hoc 边界处理。调用前需已执行 updateSelf()。
+     *
+     * @param data   UnitAIData（bnd* 字段需有效）
+     * @param self   MovieClip
+     * @param wantX  X轴意图: -1=左, 0=无, 1=右
+     * @param wantZ  Z轴意图: -1=上, 0=无, 1=下
+     * @return Number  0=正常, 1=X轴沿墙滑行, 2=角落突围
+     */
+    public static function applyBoundaryAwareMovement(
+        data:UnitAIData, self:MovieClip,
+        wantX:Number, wantZ:Number
+    ):Number {
+        var MARGIN:Number = 80;
+        var xBlocked:Boolean = false;
+
+        // ── Phase 1: X轴可行性检查 ──
+        if (wantX < 0 && data.bndLeftDist < MARGIN) {
+            xBlocked = true;
+        } else if (wantX > 0 && data.bndRightDist < MARGIN) {
+            xBlocked = true;
+        }
+
+        // ── Phase 2: X轴被阻时注入Z逃脱分量 ──
+        if (xBlocked && wantX != 0 && wantZ == 0) {
+            wantZ = (data.bndUpDist > data.bndDownDist) ? -1 : 1;
+        }
+
+        // ── Phase 3: Z轴输出（含自动重定向）──
+        var zBlocked:Boolean = false;
+        if (wantZ < 0) {
+            if (data.bndUpDist >= MARGIN) {
+                self.上行 = true;
+            } else if (data.bndDownDist >= MARGIN) {
+                self.下行 = true;
+            } else {
+                zBlocked = true;
+            }
+        } else if (wantZ > 0) {
+            if (data.bndDownDist >= MARGIN) {
+                self.下行 = true;
+            } else if (data.bndUpDist >= MARGIN) {
+                self.上行 = true;
+            } else {
+                zBlocked = true;
+            }
+        }
+
+        // ── Phase 4: X轴输出 + 结果码 ──
+        var result:Number = 0;
+        if (!xBlocked && wantX != 0) {
+            if (wantX < 0) self.左行 = true;
+            else self.右行 = true;
+            result = 0;
+        } else if (xBlocked && !zBlocked) {
+            result = 1; // 沿墙滑行（Z已在 Phase 3 输出）
+        } else if (xBlocked && zBlocked && wantX != 0) {
+            // 角落突围：反转X
+            if (wantX < 0) self.右行 = true;
+            else self.左行 = true;
+            result = 2;
+        }
+
+        // ── 调试日志（每 32 帧输出一次，覆盖所有调用）──
+        if (_root.AI调试模式 == true) {
+            var _f:Number = _root.帧计时器.当前帧数;
+            if ((_f & 31) == 0 || result > 0) {
+                var tag:String = (result == 0) ? "OK" : ((result == 1) ? "SLIDE" : "CORNER");
+                _root.服务器.发布服务器消息("[MOV] " + self.名字
+                    + " " + tag
+                    + " wX=" + wantX + " wZ=" + wantZ
+                    + " pos=" + Math.round(data.x) + "," + Math.round(data.y)
+                    + " L=" + Math.round(data.bndLeftDist)
+                    + " R=" + Math.round(data.bndRightDist)
+                    + " U=" + Math.round(data.bndUpDist)
+                    + " D=" + Math.round(data.bndDownDist)
+                    + " xB=" + xBlocked + " zB=" + zBlocked);
+            }
+        }
+
+        return result;
     }
 
     // ═══════ 输入清除工具 ═══════

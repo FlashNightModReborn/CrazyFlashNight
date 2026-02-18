@@ -15,12 +15,15 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
  *   Sleeping        → 基类默认状态（暂停/无思考标签）
  *   Selector        → 决策中枢（映射原 思考()）
  *   HeroCombatModule → 战斗子状态机（Chasing / Engaging）
+ *   Retreating      → 撤退/重整（受创脱离 → buff/换弹 → 恢复后重新进攻）
  *   FollowingHero   → 无目标时跟随（映射原 gotoAndPlay(命令) / 跟随）
  *   ManualOverride  → 玩家手动控制（映射原 不思考）
  *
  * 模块退出机制：
+ *   HeroCombatModule → Retreating：retreatUrgency > 0.6（受创严重，主动脱离）
  *   HeroCombatModule → Selector：Root Gate 检测 data.target 死亡/消失
- *   FollowingHero    → Selector：超时重新评估
+ *   Retreating       → Selector：紧迫度恢复 + HP回升
+ *   FollowingHero    → Selector：超时重新评估 / 附近有敌人
  *   ManualOverride   → Selector：玩家释放控制 / 全自动开启
  *
  * Phase 2 注入点：
@@ -30,7 +33,7 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
  */
 class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavior {
 
-    public static var FOLLOW_REEVAL_TIME:Number = 5; // 跟随状态重新评估间隔（5次action = 20帧）
+    public static var FOLLOW_REEVAL_TIME:Number = 2; // 跟随状态重新评估间隔（2次action = 8帧）
 
     public function HeroCombatBehavior(_data:UnitAIData) {
         super(_data);
@@ -80,7 +83,19 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // 玩家手动控制
         this.AddStatus("ManualOverride", new FSM_Status(null, this.manual_enter, null));
 
+        // 撤退/重整状态（受创脱离 → buff/换弹 → 恢复后重新进攻）
+        this.AddStatus("Retreating", new FSM_Status(
+            function() { behavior.retreat_action(); },
+            function() { behavior.retreat_enter(); },
+            null
+        ));
+
         // ═══════ Root Gate 转换 ═══════
+
+        // HeroCombatModule → Retreating（撤退检查，优先于目标死亡检查）
+        this.pushGateTransition("HeroCombatModule", "Retreating", function() {
+            return data.arbiter.getRetreatUrgency() > 0.6;
+        });
 
         // HeroCombatModule 退出：目标死亡/消失 → 回到 Selector 重新决策
         this.pushGateTransition("HeroCombatModule", "Selector", function() {
@@ -88,15 +103,41 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             return (t == null || !(t.hp > 0));
         });
 
-        // 跟随 → Selector（超时重新评估）
+        // 跟随 → Selector（超时重新评估 + 敌人接近快速通道）
         this.pushGateTransition("FollowingHero", "Selector", function() {
-            return this.actionCount >= HeroCombatBehavior.FOLLOW_REEVAL_TIME;
+            if (this.actionCount >= HeroCombatBehavior.FOLLOW_REEVAL_TIME) return true;
+            // 快速通道：附近有有效敌人 → 立即重评估（16帧缓存）
+            if (TargetCacheManager.getEnemyCountInRange(data.self, 16, 400, 400, true) > 0) {
+                return true;
+            }
+            return false;
         });
 
         // 手动控制 → Selector（控制释放 / 全自动开启）
         this.pushGateTransition("ManualOverride", "Selector", function() {
             var self = data.self;
             return self.操控编号 == -1 || _root.控制目标全自动 == true;
+        });
+
+        // Retreating → Selector（紧迫度恢复 + HP回升 + 撤退方向被堵）
+        this.pushGateTransition("Retreating", "Selector", function() {
+            if (data.arbiter.getRetreatUrgency() > 0.2) {
+                // 紧迫度仍高，但检查是否退无可退
+                // 角落（X+Z双贴边）
+                if (data.bndCorner > 0.5) return true;
+                // 撤退方向贴墙（单轴）→ 无法继续后退，回去战斗
+                if (data.target != null && data.target._x != undefined) {
+                    var retDir:Number = (data.diff_x > 0) ? -1 : 1;
+                    if ((retDir < 0 && data.bndLeftDist < 80)
+                     || (retDir > 0 && data.bndRightDist < 80)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            var maxHP = data.self.hp满血值;
+            var hpR = (maxHP > 0) ? data.self.hp / maxHP : 1;
+            return hpR > 0.4;
         });
 
         // 唤醒：Sleeping → Selector
@@ -243,17 +284,20 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // 距离阈值：敌方 100，己方 150（稍远避免重叠）
         var moveThreshold:Number = self.是否为敌人 ? 100 : 150;
 
+        // 收集移动意图 + 统一边界感知输出
+        var wantX:Number = 0;
+        var wantZ:Number = 0;
         if (absDx > moveThreshold) {
-            self.左行 = dx < 0;
-            self.右行 = dx > 0;
-            // 己方远距离跑步跟随
-            if (!self.是否为敌人 && absDx > 300) {
-                self.状态改变(self.攻击模式 + "跑");
-            }
+            wantX = (dx < 0) ? -1 : 1;
         }
         if (Math.abs(dz) > 20) {
-            self.上行 = dz < 0;
-            self.下行 = dz > 0;
+            wantZ = (dz < 0) ? -1 : 1;
+        }
+        UnitAIData.applyBoundaryAwareMovement(data, self, wantX, wantZ);
+
+        // 己方远距离跑步跟随
+        if (wantX != 0 && !self.是否为敌人 && absDx > 300) {
+            self.状态改变(self.攻击模式 + "跑");
         }
     }
 
@@ -264,5 +308,107 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
      */
     public function manual_enter():Void {
         UnitAIData.clearInput(data.self);
+    }
+
+    // ═══════ 撤退/重整（T1-A）═══════
+
+    /**
+     * retreat_enter — 进入撤退状态
+     * 保留当前目标引用（用于确定撤退方向），清除输入
+     */
+    public function retreat_enter():Void {
+        UnitAIData.clearInput(data.self);
+    }
+
+    /**
+     * retreat_action — 撤退状态每帧动作
+     *
+     * 面朝方向策略：
+     *   远程姿态(repositionDir > 0)：面朝目标（边退边射/边退边buff）
+     *   近战姿态(repositionDir <= 0)：背对目标（全速奔跑撤离）
+     *
+     * 调用 arbiter.tick(data, "retreat") → PreBuff + Reload（无 Offense）
+     */
+    public function retreat_action():Void {
+        var self:MovieClip = data.self;
+        UnitAIData.clearInput(self);
+
+        if (self.hp <= 0) return;
+        if (_root.暂停) return;
+
+        data.updateSelf();
+        if (data.target != null && data.target.hp > 0) {
+            data.updateTarget();
+        }
+
+        // 调用管线（retreat context → PreBuff + Reload，无 Offense）
+        data.arbiter.tick(data, "retreat");
+
+        // 技能期不移动
+        var bt:String = data.arbiter.getExecutor().getCurrentBodyType();
+        if (bt == "skill" || bt == "preBuff" || self.状态 == "技能" || self.状态 == "战技") {
+            return;
+        }
+
+        // 面朝方向：远程姿态面朝目标（可射击），近战姿态背对目标（全速跑）
+        var repoDir:Number = data.arbiter.getRepositionDir();
+        if (repoDir > 0 && data.target != null) {
+            if (data.diff_x > 0) self.方向改变("右");
+            else if (data.diff_x < 0) self.方向改变("左");
+        }
+
+        // ── 收集移动意图 + 统一边界感知输出 ──
+        var moveX:Number = 0;
+        if (data.target != null && data.target._x != undefined) {
+            var retDir:Number = (data.diff_x > 0) ? -1 : 1; // 远离目标
+            // 撤退方向贴墙检查：退路被堵 → 放弃X轴撤退（Gate会检测并退出Retreating）
+            var retWall:Boolean = (retDir < 0 && data.bndLeftDist < 80)
+                               || (retDir > 0 && data.bndRightDist < 80);
+            if (!retWall) {
+                moveX = retDir;
+            }
+        }
+        // Z轴撤退策略：优先拉开垂直距离，足够后轻微蛇形闪避
+        var frame:Number = _root.帧计时器.当前帧数;
+        var moveZ:Number = 0;
+        var zSep:Number = data.absdiff_z; // 与目标的Z轴距离
+        if (isNaN(zSep)) zSep = 0;
+        var Z_SAFE:Number = 120; // 安全Z距离阈值
+
+        if (zSep < Z_SAFE) {
+            // Z距离不足：持续远离目标Z轴（选空间更大的一侧）
+            if (data.diff_z != null && data.diff_z != 0) {
+                // diff_z = tz - z，>0 目标在下方 → 往上(-1)，<0 目标在上方 → 往下(+1)
+                var escapeZ:Number = (data.diff_z > 0) ? -1 : 1;
+                // 验证逃离方向有空间
+                if (escapeZ < 0 && data.bndUpDist < 50) {
+                    escapeZ = 1; // 上方没空间，改往下
+                } else if (escapeZ > 0 && data.bndDownDist < 50) {
+                    escapeZ = -1; // 下方没空间，改往上
+                }
+                moveZ = escapeZ;
+            } else {
+                // 无目标Z信息：朝空间更大的一侧撤
+                moveZ = (data.bndUpDist > data.bndDownDist) ? -1 : 1;
+            }
+        } else {
+            // Z距离充足：轻微蛇形（30帧周期，不来回跑回去）
+            // 仅在当前方向有空间时微调，不强制
+            var zWave:Number = Math.floor(frame / 30) % 2;
+            if (zWave == 0 && data.bndUpDist > 60) {
+                moveZ = -1;
+            } else if (zWave == 1 && data.bndDownDist > 60) {
+                moveZ = 1;
+            }
+            // 否则 moveZ=0，不做Z轴移动（已拉开足够距离）
+        }
+
+        // 统一处理边界碰撞：沿墙滑行 / 角落突围 / 正常输出
+        UnitAIData.applyBoundaryAwareMovement(data, self, moveX, moveZ);
+
+        // 切换跑步
+        if (!self.射击中 && (self.man == null || !self.man.换弹标签)) {
+            self.状态改变(self.攻击模式 + "跑");
+        }
     }
 }

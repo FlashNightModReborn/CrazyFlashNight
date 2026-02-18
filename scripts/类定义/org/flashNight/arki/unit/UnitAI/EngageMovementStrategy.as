@@ -53,8 +53,10 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
             if (data.arbiter.getExecutor().isDodgeActive()
                 && (frame - self._btFrame) <= 1 && self._btCount > 0) {
                 if (_strafeDir == 0) _strafeDir = _pickStrafeDir(data);
-                if (_strafeDir < 0) { self.上行 = true; }
-                else if (_strafeDir > 0) { self.下行 = true; }
+                // 通过统一工具输出（自动处理边界贴墙重定向）
+                if (_strafeDir != 0) {
+                    UnitAIData.applyBoundaryAwareMovement(data, self, 0, _strafeDir);
+                }
             }
             return;
         }
@@ -81,6 +83,12 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
             var dur:Number = 8 + random(8); // 8~15帧 ≈ 0.3~0.6s
             _strafePulseEnd = frame + dur;
             var gap:Number = 12 - Math.floor((enc + urgency) * 5);
+            // T2-B：弹道威胁时缩短间歇（更密集的走位脉冲）
+            var btAge2:Number = frame - self._btFrame;
+            if (btAge2 >= 0 && btAge2 <= 1 && self._btCount > 0) {
+                var btETA2:Number = self._btMinETA - btAge2;
+                if (btETA2 < 15) gap -= 3;
+            }
             if (gap < 3) gap = 3;
             _strafeNextStart = _strafePulseEnd + gap + random(gap);
             inPulse = true;
@@ -88,33 +96,26 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
 
         if (!inPulse) return;
 
-        // Z 轴走位
-        if (_strafeDir < 0) {
-            self.上行 = true;
-        } else if (_strafeDir > 0) {
-            self.下行 = true;
-        }
-
-        // X 轴后退（远程风筝 / 近战高紧迫脱战）
-        var wallBlocked:Boolean = false;
+        // ── 收集移动意图 + 统一边界感知输出 ──
+        var moveZ:Number = _strafeDir; // -1=上, 1=下, 0=不动
+        var moveX:Number = 0;
         if (wantsKite || (urgency > 0.7 && repoDir <= 0)) {
-            var margin:Number = 80;
-            var bMinX:Number = (_root.Xmin != undefined) ? _root.Xmin : 0;
-            var bMaxX:Number = (_root.Xmax != undefined) ? _root.Xmax : Stage.width;
-            var retreatLeft:Boolean = data.diff_x > 0;
-            wallBlocked = (retreatLeft && (data.x - bMinX < margin))
-                       || (!retreatLeft && (bMaxX - data.x < margin));
-            if (!wallBlocked) {
-                if (retreatLeft) { self.左行 = true; } else { self.右行 = true; }
-            } else {
-                // 退无可退 → 斜向穿越敌人突围（Z偏移 + 反向冲刺）
-                if (retreatLeft) { self.右行 = true; } else { self.左行 = true; }
+            var kiteDir:Number = (data.diff_x > 0) ? -1 : 1; // 远离目标
+            // 风筝方向贴墙检查：退路被堵 → 放弃风筝，接受近身战斗
+            var kiteWall:Boolean = (kiteDir < 0 && data.bndLeftDist < 80)
+                                || (kiteDir > 0 && data.bndRightDist < 80);
+            if (!kiteWall) {
+                moveX = kiteDir;
             }
         }
 
-        // 抑制攻击以允许移动执行（仅在真实后撤时生效）
-        // 修复1：dir=0（上下均贴边）时 inPulse=true 但无移动输入 → 不应抑制攻击
-        // 修复2：wallBlocked 突围时不抑制攻击 — 正面冲锋应保持输出，否则呈现发呆
+        // 统一处理边界碰撞：沿墙滑行 / 角落突围 / 正常输出
+        var bndResult:Number = UnitAIData.applyBoundaryAwareMovement(data, self, moveX, moveZ);
+        // SLIDE(1) 和 CORNER(2) 都视为贴墙 — 保持攻击输出，不抑制
+        var wallBlocked:Boolean = (bndResult >= 1);
+
+        // 抑制攻击以允许移动执行（仅正常风筝时）
+        // wallBlocked(贴墙) → 保持攻击输出（贴墙时应该战斗，不应发呆）
         var moving:Boolean = (self.左行 || self.右行 || self.上行 || self.下行);
         if (moving && self.移动射击 != true && !wallBlocked) {
             self.动作A = false;
@@ -135,15 +136,22 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
      */
     private function _pickStrafeDir(data:UnitAIData):Number {
         var margin:Number = 80;
-        var bMinY:Number = (_root.Ymin != undefined) ? _root.Ymin : 0;
-        var bMaxY:Number = (_root.Ymax != undefined) ? _root.Ymax : Stage.height;
-        var upSpace:Number = data.y - bMinY;
-        var downSpace:Number = bMaxY - data.y;
+        // 复用 updateSelf 中已计算的边界距离（消除重复计算）
+        var upSpace:Number = data.bndUpDist;
+        var downSpace:Number = data.bndDownDist;
 
         // 边界约束
         if (upSpace < margin && downSpace < margin) return 0;
         if (upSpace < margin) return 1;  // 靠近上边界，只能向下
         if (downSpace < margin) return -1; // 靠近下边界，只能向上
+
+        // T2-B：弹道方向感知 — 有子弹威胁时选择空间更大的一侧
+        var s:MovieClip = data.self;
+        var btAge:Number = _root.帧计时器.当前帧数 - s._btFrame;
+        if (btAge >= 0 && btAge <= 1 && s._btCount > 0) {
+            if (upSpace > downSpace * 1.3) return -1;  // 上方空间明显更大
+            if (downSpace > upSpace * 1.3) return 1;   // 下方空间明显更大
+        }
 
         // 交替方向（首次选择空间较大的一侧）
         if (_strafeDir == 0) {

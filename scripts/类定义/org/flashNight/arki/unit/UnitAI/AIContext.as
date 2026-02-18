@@ -70,8 +70,11 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
     public var bulletThreatDir:Number;   // -1=从左, +1=从右, 0=混合/无
     public var bulletETA:Number;         // 最近子弹到达帧数（9999=无）
 
+    // ── 边界压迫 ──
+    public var bndCorner:Number;         // 角落压迫度 [0,1]（X+Z双轴贴墙时趋近1）
+
     // ── pipeline context ──
-    public var context:String;           // "chase" | "engage" | "selector"
+    public var context:String;           // "chase" | "engage" | "selector" | "retreat"
 
     // ═══════ 构造（空壳，由 build 填充）═══════
 
@@ -171,6 +174,9 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
         // ── 撤退/包围度（ActionArbiter 预计算，build-once 契约）──
         this.retreatUrgency = retreatUrgency;
         this.encirclement = encirclement;
+
+        // ── 边界压迫（updateSelf 预计算）──
+        this.bndCorner = data.bndCorner;
 
         // ── pipeline ──
         this.context = ctx;

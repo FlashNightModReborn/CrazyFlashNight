@@ -105,7 +105,9 @@
       "Bash(type \"c:\\\\Program Files \\(x86\\)\\\\Steam\\\\steamapps\\\\common\\\\CRAZYFLASHER7StandAloneStarter\\\\resources\\\\data\\\\intelligence\\\\双管白火铳制作图纸_1.txt\")",
       "Bash(python3:*)",
       "Bash(where:*)",
-      "Bash(del \"C:\\\\Users\\\\Public\\\\analyze_logs.py\")"
+      "Bash(del \"C:\\\\Users\\\\Public\\\\analyze_logs.py\")",
+      "WebFetch(domain:www.gameaipro.com)",
+      "WebFetch(domain:codegeekology.com)"
     ],
     "deny": [],
     "ask": [],
