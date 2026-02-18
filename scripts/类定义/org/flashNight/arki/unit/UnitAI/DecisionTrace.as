@@ -43,6 +43,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
     static var REASON_BUFF:String      = "BUFF";
     static var REASON_RIGID:String     = "RIGID";
     static var REASON_AMMO:String      = "AMMO";
+    static var REASON_THREAT:String    = "THREAT";
     static var REASON_STANCE:String    = "STANCE";
     static var REASON_INTERRUPT:String = "INT";
     static var REASON_ANIMLOCK:String  = "ALOCK";

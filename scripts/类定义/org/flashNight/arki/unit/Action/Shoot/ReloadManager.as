@@ -152,16 +152,19 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
             // 逐发换弹（tube类型）：有残余换弹值时可以继续换弹，无需弹匣
             if (reloadType == "tube" && parentRef[attackMode].value.reloadCount > 0) {
+                target.换弹标签 = true;
                 target.gotoAndPlay("换弹匣");
                 return;
             }
 
             // 检查是否有可用弹匣
             if (ItemUtil.singleContain(target.使用弹匣名称, 1) != null) {
+                target.换弹标签 = true;
                 target.gotoAndPlay("换弹匣");
             }
         } else {
             // AI角色直接进入换弹状态
+            target.换弹标签 = true;
             target.gotoAndPlay("换弹匣");
         }
     }
@@ -212,6 +215,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         // 清理双枪换弹序列标记，避免影响下一次换弹
         delete target.dualReloadStartHand;
         delete target._dualReloadFirstInitStartFrame;
+        target.换弹标签 = false;
         target.gotoAndStop("空闲");
     }
     

@@ -83,7 +83,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
         // 目标失效守卫（T0-1：增加 hp 校验，防止追尸体）
         var t:MovieClip = data.target;
-        if (t == null || !t._x || !(t.hp > 0)) return;
+        if (t == null || isNaN(t._x) || !(t.hp > 0)) return;
 
         data.updateSelf();
         data.updateTarget();
@@ -103,7 +103,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // 换弹：跑步/移动可能打断换弹动画导致"没子弹发呆"
         var bt:String = data.arbiter.getExecutor().getCurrentBodyType();
         if (bt == "skill" || bt == "preBuff" || self.状态 == "技能" || self.状态 == "战技"
-            || (self.man != null && self.man.换弹标签)) {
+            || self.换弹标签 || (self.man != null && self.man.换弹标签)) {
             return;
         }
 
@@ -124,7 +124,9 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
         // 跑步切换：Z 轴基本对齐后再切跑，避免跑步高速导致 Z 轴抖动
         // absZDiff > 20 时保持走路（低速精确对齐），对齐后才允许跑步追击
-        if (!self.射击中 && (self.man == null || !self.man.换弹标签) && random(3) == 0) {
+        if (!self.射击中
+            && !(self.换弹标签 || (self.man != null && self.man.换弹标签))
+            && random(3) == 0) {
             if (absZDiff <= 20) {
                 self.状态改变(self.攻击模式 + "跑");
             }
@@ -174,7 +176,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
         // 目标失效守卫（T0-1：增加 hp 校验，防止攻击尸体）
         var t:MovieClip = data.target;
-        if (t == null || !t._x || !(t.hp > 0)) return;
+        if (t == null || isNaN(t._x) || !(t.hp > 0)) return;
 
         data.updateSelf();
         data.updateTarget();
