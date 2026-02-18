@@ -635,6 +635,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var warnDx:Number;              // X 距离
         var warnSpd:Number;             // X 速度绝对值
         var warnPredictY:Number;        // Y 轴线性外推预测位置
+        var wi:Number;                  // 左向预警反向扫描索引
 
         // ================================================================
         // 主处理循环：按阵营遍历所有活动队列
@@ -847,7 +848,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     }
                     startIndex = sweepIndex;                // 记录有效检测的起始索引
                     // ---- 空窗口快判：O(1)时间复杂度，避免无效循环开销 ----
-                    effectiveRb = hasTZ ? (Rb + WARN_PAD_X) : Rb;
+                    effectiveRb = (hasTZ && bullet.xmov > 0) ? (Rb + WARN_PAD_X) : Rb;
                     if (startIndex >= len || effectiveRb < unitLeftKeys[startIndex]) {
 
                         // 【僵尸子弹防御】优先检查边界标志，防止隧穿出地图的子弹逃逸
@@ -1031,53 +1032,44 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     }
 
                     // ============================================================
-                    // Phase 2+: 射弹预警尾循环
+                    // Phase 2+: 射弹预警（方向感知双向扫描 + AABB 边缘 ETA）
                     //
-                    // unitIndex 自然衔接碰撞循环结束位置，只扫 (Rb, Rb+WARN_PAD_X]
-                    // 区间内尚未被碰撞循环覆盖的单位。
-                    // 门控：hasTZ=true 且子弹未被终止（killFlags 无 VANISH/REMOVE）
+                    // xmov > 0 → 右侧尾循环：unitIndex 衔接碰撞循环，扫 (Rb, Rb+WARN_PAD_X]
+                    // xmov < 0 → 左侧反向扫描：从 startIndex-1 向左回扫
+                    // ETA 使用 AABB 边缘距离（非锚点 _x）
+                    // 门控：hasTZ=true 且子弹未被终止
                     // ============================================================
-                    if (hasTZ && (killFlags & (MODE_VANISH | MODE_REMOVE)) == 0) {
+
+                    // ── 右侧尾循环（xmov > 0：子弹向右飞，预警右方单位）──
+                    if (hasTZ && bullet.xmov > 0 && (killFlags & (MODE_VANISH | MODE_REMOVE)) == 0) {
                         warnRb = Rb + WARN_PAD_X;
                         for (; unitIndex < len && unitLeftKeys[unitIndex] <= warnRb; ++unitIndex) {
                             warnTarget = unitMap[unitIndex];
 
-                            // (1) 订阅门控：无 _btEnabled → 跳过
+                            // (1) 订阅门控
                             if (warnTarget._btEnabled != true) continue;
 
                             // (2) 存活过滤
                             if (warnTarget.hp <= 0) continue;
 
-                            // (3) Z 粗判（内联，复用碰撞侧逻辑）
+                            // (3) Z 粗判
                             warnZOff = bulletZOffset - warnTarget.Z轴坐标;
                             if (warnZOff >= bulletZRange || warnZOff <= -bulletZRange) continue;
 
-                            // (4) 接近方向过滤：子弹须朝向目标
-                            bx = bullet._x;
-                            if (bullet.xmov > 0) {
-                                if (bx > warnTarget._x) continue;
-                            } else if (bullet.xmov < 0) {
-                                if (bx < warnTarget._x) continue;
-                            } else {
-                                continue; // xmov == 0 → 静止/纯纵向弹，不预警
-                            }
-
-                            // (5) ETA 估算
-                            warnDx = warnTarget._x - bx;
-                            if (warnDx < 0) warnDx = -warnDx;
-                            warnSpd = bullet.xmov;
-                            if (warnSpd < 0) warnSpd = -warnSpd;
-                            warnEta = warnDx / warnSpd;
+                            // (4) AABB 边缘 ETA：目标左边界 - 子弹右边界
+                            warnDx = unitLeftKeys[unitIndex] - Rb;
+                            if (warnDx < 0) warnDx = 0; // 重叠：即将命中
+                            warnEta = warnDx / bullet.xmov; // xmov > 0
                             if (warnEta > ETA_MAX_FRAMES) continue;
 
-                            // (6) Y 走廊预测（线性外推 + WARN_PAD_Y 容差）
+                            // (5) Y 走廊预测（线性外推 + WARN_PAD_Y 容差）
                             warnPredictY = bullet._y + bullet.ymov * warnEta;
                             unitArea = warnTarget.aabbCollider;
                             uTop = unitArea.top + warnZOff;
                             uBottom = unitArea.bottom + warnZOff;
                             if (warnPredictY < uTop - WARN_PAD_Y || warnPredictY > uBottom + WARN_PAD_Y) continue;
 
-                            // (7) 节流：同帧同单位仅累积，不重复事件
+                            // (6) 节流：同帧同单位仅累积
                             if (warnTarget._btFrame != frameId) {
                                 warnTarget._btFrame = frameId;
                                 warnTarget._btCount = 0;
@@ -1089,7 +1081,57 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 warnTarget._btMinETA = warnEta;
                                 warnTarget._btShooter = shooter;
                             }
-                            warnTarget._btDirX += (bullet.xmov > 0) ? 1 : -1;
+                            warnTarget._btDirX += 1;
+                        }
+                    }
+
+                    // ── 左侧反向扫描（xmov < 0：子弹向左飞，预警左方单位）──
+                    // startIndex 左侧的单位已被 sweepIndex 跳过（unitRightKeys < Lb），
+                    // 其实际右边界 < Lb，即在子弹左方——正是左飞子弹的预警目标。
+                    if (hasTZ && bullet.xmov < 0 && (killFlags & (MODE_VANISH | MODE_REMOVE)) == 0) {
+                        warnSpd = -bullet.xmov; // 取绝对值（xmov < 0）
+                        for (wi = startIndex - 1; wi >= 0; --wi) {
+                            // 终止条件：单位左边界距子弹太远（WARN_PAD_X + 300 容许最大单位宽度）
+                            if (Lb - unitLeftKeys[wi] > WARN_PAD_X + 300) break;
+
+                            warnTarget = unitMap[wi];
+
+                            // (1) 订阅门控
+                            if (warnTarget._btEnabled != true) continue;
+
+                            // (2) 存活过滤
+                            if (warnTarget.hp <= 0) continue;
+
+                            // (3) Z 粗判
+                            warnZOff = bulletZOffset - warnTarget.Z轴坐标;
+                            if (warnZOff >= bulletZRange || warnZOff <= -bulletZRange) continue;
+
+                            // (4) AABB 边缘 ETA：子弹左边界 - 目标右边界
+                            unitArea = warnTarget.aabbCollider;
+                            warnDx = Lb - unitArea.right;
+                            if (warnDx < 0) warnDx = 0; // 重叠：即将命中
+                            warnEta = warnDx / warnSpd;
+                            if (warnEta > ETA_MAX_FRAMES) continue;
+
+                            // (5) Y 走廊预测
+                            warnPredictY = bullet._y + bullet.ymov * warnEta;
+                            uTop = unitArea.top + warnZOff;
+                            uBottom = unitArea.bottom + warnZOff;
+                            if (warnPredictY < uTop - WARN_PAD_Y || warnPredictY > uBottom + WARN_PAD_Y) continue;
+
+                            // (6) 节流
+                            if (warnTarget._btFrame != frameId) {
+                                warnTarget._btFrame = frameId;
+                                warnTarget._btCount = 0;
+                                warnTarget._btMinETA = 9999;
+                                warnTarget._btDirX = 0;
+                            }
+                            warnTarget._btCount++;
+                            if (warnEta < warnTarget._btMinETA) {
+                                warnTarget._btMinETA = warnEta;
+                                warnTarget._btShooter = shooter;
+                            }
+                            warnTarget._btDirX += -1;
                         }
                     }
                 } // end if (!skipUnits)

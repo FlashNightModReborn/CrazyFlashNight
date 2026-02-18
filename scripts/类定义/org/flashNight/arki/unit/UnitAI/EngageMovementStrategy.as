@@ -51,7 +51,7 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
         if (inSkill) {
             // 闪避/位移技能期间保持 Z 轴垂直闪避（子弹威胁时斜向机动）
             if (data.arbiter.getExecutor().isDodgeActive()
-                && self._btFrame == frame && self._btCount > 0) {
+                && (frame - self._btFrame) <= 1 && self._btCount > 0) {
                 if (_strafeDir == 0) _strafeDir = _pickStrafeDir(data);
                 if (_strafeDir < 0) { self.上行 = true; }
                 else if (_strafeDir > 0) { self.下行 = true; }

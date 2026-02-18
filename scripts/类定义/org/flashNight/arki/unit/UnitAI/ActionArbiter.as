@@ -194,11 +194,12 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             _retreatUrgency = Math.min(1, _retreatUrgency + _encirclement * courageDampen * 0.3);
         }
 
-        // ═══ 射弹预警 → 前瞻性撤退（Layer 0）═══
+        // ═══ 射弹预警 → 前瞻性撤退（Layer 0，年龄窗口容忍 0~1 帧延迟）═══
+        var btAge:Number = frame - self._btFrame;
         var btCount:Number = self._btCount;
-        if (self._btFrame == frame && !isNaN(btCount) && btCount > 0) {
-            var btETA:Number = self._btMinETA;
-            if (isNaN(btETA)) btETA = 30;
+        if (btAge >= 0 && btAge <= 1 && !isNaN(btCount) && btCount > 0) {
+            var btETA:Number = self._btMinETA - btAge; // 年龄修正
+            if (isNaN(btETA) || btETA < 0) btETA = 0;
             // 子弹多+到达快 → 紧迫；勇气高 → 抑制
             var btUrgency:Number = Math.min(0.5, btCount * 0.1)
                 * Math.max(0, 1 - btETA / 20)

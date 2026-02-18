@@ -138,12 +138,14 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
             this.targetThreat = (t.射击中 == true || t.状态 == "技能" || t.状态 == "战技");
         }
 
-        // ── 射弹预警（尾循环每帧写入 _bt* 属性，帧戳检测时效）──
-        if (s._btFrame == this.frame && s._btCount > 0) {
+        // ── 射弹预警（帧末尾循环写入 _bt* 属性，年龄窗口容忍 0~1 帧延迟）──
+        // processQueue() 在帧末执行，AI 在帧更新执行 → 写入帧与读取帧差 1
+        var btAge:Number = this.frame - s._btFrame;
+        if (btAge >= 0 && btAge <= 1 && s._btCount > 0) {
             this.bulletThreat = s._btCount;
             var btDir:Number = s._btDirX;
             this.bulletThreatDir = (btDir > 0) ? 1 : ((btDir < 0) ? -1 : 0);
-            this.bulletETA = s._btMinETA;
+            this.bulletETA = s._btMinETA - btAge; // 年龄修正：补偿延迟帧数
         } else {
             this.bulletThreat = 0;
             this.bulletThreatDir = 0;
