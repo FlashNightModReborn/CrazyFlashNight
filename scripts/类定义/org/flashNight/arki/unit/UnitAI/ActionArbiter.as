@@ -4,6 +4,9 @@ import org.flashNight.arki.unit.UnitAI.ActionExecutor;
 import org.flashNight.arki.unit.UnitAI.AIContext;
 import org.flashNight.arki.unit.UnitAI.DecisionTrace;
 import org.flashNight.arki.unit.UnitAI.PipelineFactory;
+import org.flashNight.arki.unit.UnitAI.StanceManager;
+import org.flashNight.arki.unit.UnitAI.WeaponEvaluator;
+import org.flashNight.arki.unit.UnitAI.HealExecutor;
 import org.flashNight.arki.unit.UnitAI.scoring.ScoringPipeline;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
@@ -37,6 +40,9 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     // ── 组件引用 ──
     private var _executor:ActionExecutor;
     private var _scorer:UtilityEvaluator;
+    private var _stanceMgr:StanceManager;
+    private var _weaponEval:WeaponEvaluator;
+    private var _healExec:HealExecutor;
     private var p:Object;                    // personality 引用
     private var _rng:LinearCongruentialEngine;
 
@@ -78,6 +84,9 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     public function ActionArbiter(personality:Object, scorer:UtilityEvaluator, self:MovieClip) {
         this.p = personality;
         this._scorer = scorer;
+        this._stanceMgr = new StanceManager();
+        this._weaponEval = new WeaponEvaluator(personality, this._stanceMgr);
+        this._healExec = new HealExecutor(personality);
         this._executor = new ActionExecutor();
         this._rng = LinearCongruentialEngine.getInstance();
         this._candidates = [];
@@ -93,6 +102,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         var deps:Object = {
             personality: personality,
             scorer: scorer,
+            weaponEval: this._weaponEval,
             rng: this._rng,
             jitterState: this._jitterState,
             executor: this._executor
@@ -127,7 +137,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     // ═══════ 公开接口 ═══════
 
     public function getRepositionDir():Number {
-        return _scorer.getRepositionDir();
+        return _stanceMgr.getRepositionDir();
     }
 
     public function getExecutor():ActionExecutor {
@@ -152,28 +162,22 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
      */
     public function tick(data:UnitAIData, context:String):Void {
         var self:MovieClip = data.self;
+        var frame:Number = _root.帧计时器.当前帧数;
 
-        // ═══ 黑板构建（单 tick 唯一真相源）═══
-        _executor.updateAnimLock(self);
-        _ctx.build(data, context, _executor, _scorer, _recentHitFrame, p);
-        var frame:Number = _ctx.frame;
-
-        // ═══ 撤退紧迫度（burst damage → 勇气调节）═══
-        // HP 下降量超过勇气抵消阈值时累积紧迫度；自然衰减
-        // 高勇气 → 需要更大伤害才触发撤退；低勇气 → 轻伤即退
-        var hpDelta:Number = _ctx.hpRatio - _prevHpRatio;
-        _prevHpRatio = _ctx.hpRatio;
+        // ═══ 撤退紧迫度（burst damage → 勇气调节，build 前预计算）═══
+        // hpRatio 内联计算（与 build 内相同公式，同 tick 内一致）
+        var maxHP:Number = self.hp满血值;
+        var hpRatio:Number = (maxHP > 0) ? Math.max(0, Math.min(1, self.hp / maxHP)) : 1;
+        var hpDelta:Number = hpRatio - _prevHpRatio;
+        _prevHpRatio = hpRatio;
         if (hpDelta < -0.01) {
             _retreatUrgency = Math.min(1,
                 _retreatUrgency + Math.max(0, -hpDelta - p.勇气 * 0.15) * 3);
         }
         _retreatUrgency *= 0.92;
         if (_retreatUrgency < 0.05) _retreatUrgency = 0;
-        _ctx.retreatUrgency = _retreatUrgency;
 
         // ═══ 包围度检测（周期性，每 16 帧 ≈ 0.6s）═══
-        // 用 getEnemyCountInRange 分别统计左右 250px 内的敌人
-        // 乘积公式：一侧为 0 则 encirclement=0；两侧各 2 个即满值
         if (frame - _lastEncirclementFrame >= 16) {
             _lastEncirclementFrame = frame;
             var scanRange:Number = 250;
@@ -181,15 +185,23 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             var rightCount:Number = TargetCacheManager.getEnemyCountInRange(self, 8, 0, scanRange, true);
             _encirclement = Math.min(1, leftCount * rightCount / 4);
         }
-        _ctx.encirclement = _encirclement;
 
         // 包围加剧低勇气角色的撤退紧迫度
-        // 高勇气不受影响（主动解围由评分层处理）
         if (_encirclement > 0.2) {
             var courageDampen:Number = 1.0 - p.勇气;
             _retreatUrgency = Math.min(1, _retreatUrgency + _encirclement * courageDampen * 0.3);
-            _ctx.retreatUrgency = _retreatUrgency;
         }
+
+        // ═══ 战术偏置过期清理（build 前处理，保持 build 无副作用）═══
+        var tactBias:Object = _stanceMgr.getTacticalBias();
+        if (tactBias != null && frame >= tactBias.expiryFrame) {
+            _stanceMgr.clearTacticalBias();
+        }
+
+        // ═══ 黑板构建（build-once 契约：所有信号在此一次性聚合，build 只读）═══
+        _executor.updateAnimLock(self);
+        _ctx.build(data, context, _executor, _stanceMgr, _weaponEval, _recentHitFrame, p,
+                   _retreatUrgency, _encirclement);
 
         // ═══ 决策追踪 ═══
         _trace.begin(self.名字, _ctx, p);
@@ -316,7 +328,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
     private function _postExecution(selected:Object, data:UnitAIData, frame:Number):Void {
         if (selected.type == "skill") {
-            _scorer.triggerTacticalBias(selected.skill, frame);
+            _stanceMgr.triggerTacticalBias(selected.skill, frame);
         }
 
         _jitterState.lastActionType = selected.type;
@@ -338,39 +350,39 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         var self:MovieClip = _ctx.self;
 
         if (_ctx.isAnimLocked) {
-            _scorer.applyWeaponRanges(self, data);
-            _scorer.syncStance(_ctx.attackMode);
+            _weaponEval.applyWeaponRanges(self, data);
+            _stanceMgr.syncStance(_ctx.attackMode);
             return;
         }
 
         if (!_executor.canEvaluateStance(frame)) {
-            _scorer.applyWeaponRanges(self, data);
-            _scorer.syncStance(_ctx.attackMode);
+            _weaponEval.applyWeaponRanges(self, data);
+            _stanceMgr.syncStance(_ctx.attackMode);
             return;
         }
 
         if (frame - _executor.getLastSkillUseFrame() < p.skillAnimProtect) {
-            _scorer.applyWeaponRanges(self, data);
-            _scorer.syncStance(_ctx.attackMode);
+            _weaponEval.applyWeaponRanges(self, data);
+            _stanceMgr.syncStance(_ctx.attackMode);
             return;
         }
 
         if (context == "chase" && !isNaN(data._chaseStartFrame)) {
             if (frame - data._chaseStartFrame <= p.chaseFrustration) {
-                _scorer.applyWeaponRanges(self, data);
-                _scorer.syncStance(_ctx.attackMode);
+                _weaponEval.applyWeaponRanges(self, data);
+                _stanceMgr.syncStance(_ctx.attackMode);
                 return;
             }
         }
 
-        _scorer.evaluateWeaponMode(data);
+        _weaponEval.evaluateWeaponMode(data);
         _executor.commitStance(p.stanceCooldown, frame);
     }
 
     // ═══════ item 轨 ═══════
 
     private function _evaluateHeal(data:UnitAIData):Void {
-        _scorer.evaluateHealNeed(data);
+        _healExec.evaluateHealNeed(data);
     }
 
     // ═══════ 生命周期 ═══════

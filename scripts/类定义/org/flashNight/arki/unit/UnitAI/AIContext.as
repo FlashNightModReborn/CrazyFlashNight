@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.ActionExecutor;
-import org.flashNight.arki.unit.UnitAI.UtilityEvaluator;
+import org.flashNight.arki.unit.UnitAI.StanceManager;
+import org.flashNight.arki.unit.UnitAI.WeaponEvaluator;
 
 /**
  * AIContext — 单 tick 黑板（Blackboard）
@@ -79,17 +80,23 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
      * @param data           共享 AI 数据
      * @param ctx            "chase" | "engage" | "selector"
      * @param executor       ActionExecutor 实例
-     * @param scorer         UtilityEvaluator 实例
-     * @param recentHitFrame 最近被击帧号
-     * @param p              personality 引用（含派生参数）
+     * @param stanceMgr      StanceManager 实例（姿态/战术偏置）
+     * @param weaponEval     WeaponEvaluator 实例（余弹比查询）
+     * @param recentHitFrame   最近被击帧号
+     * @param p                personality 引用（含派生参数）
+     * @param retreatUrgency   撤退紧迫度 [0,1]（ActionArbiter 预计算）
+     * @param encirclement     包围度 [0,1]（ActionArbiter 预计算）
      */
     public function build(
         data:UnitAIData,
         ctx:String,
         executor:ActionExecutor,
-        scorer:UtilityEvaluator,
+        stanceMgr:StanceManager,
+        weaponEval:WeaponEvaluator,
         recentHitFrame:Number,
-        p:Object
+        p:Object,
+        retreatUrgency:Number,
+        encirclement:Number
     ):Void {
         var s:MovieClip = data.self;
         var t:MovieClip = data.target;
@@ -105,7 +112,7 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
         this.isRigid = (s.刚体 == true) ||
             (s.man != null && s.man.刚体标签 != null && s.man.刚体标签 != undefined);
         this.attackMode = s.攻击模式;
-        this.ammoRatio = scorer.getAmmoRatio(s, s.攻击模式);
+        this.ammoRatio = weaponEval.getAmmoRatio(s, s.攻击模式);
 
         // ── 目标/距离 ──
         this.target = t;
@@ -128,14 +135,9 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
 
         this.underFire = hitThreat || this.targetThreat;
 
-        // ── Stance / Tactical ──
-        this.stance = scorer.getCurrentStance();
-        this.tactical = scorer.getTacticalBias();
-        // 战术偏置过期检查
-        if (this.tactical != null && this.frame >= this.tactical.expiryFrame) {
-            scorer.clearTacticalBias();
-            this.tactical = null;
-        }
+        // ── Stance / Tactical（只读快照，过期清理由 ActionArbiter 负责）──
+        this.stance = stanceMgr.getCurrentStance();
+        this.tactical = stanceMgr.getTacticalBias();
         this.repositionDir = (this.stance != null) ? this.stance.repositionDir : 0;
 
         // ── 动作生命周期 ──
@@ -145,6 +147,10 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
         this.consecutiveAttacks = executor.getConsecutiveAttacks();
         this.inputSemantic = executor.getInputSemantic();
         this.lockSource = executor.getLockSource(this.frame);
+
+        // ── 撤退/包围度（ActionArbiter 预计算，build-once 契约）──
+        this.retreatUrgency = retreatUrgency;
+        this.encirclement = encirclement;
 
         // ── pipeline ──
         this.context = ctx;

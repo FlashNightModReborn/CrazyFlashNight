@@ -1,7 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitAI.AIContext;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.DecisionTrace;
-import org.flashNight.arki.unit.UnitAI.UtilityEvaluator;
+import org.flashNight.arki.unit.UnitAI.WeaponEvaluator;
 
 /**
  * ReloadStrategy — 换弹候选源
@@ -17,11 +17,11 @@ import org.flashNight.arki.unit.UnitAI.UtilityEvaluator;
 class org.flashNight.arki.unit.UnitAI.strategies.ReloadStrategy {
 
     private var p:Object;
-    private var _scorer:UtilityEvaluator;
+    private var _weaponEval:WeaponEvaluator;
 
-    public function ReloadStrategy(personality:Object, scorer:UtilityEvaluator) {
+    public function ReloadStrategy(personality:Object, weaponEval:WeaponEvaluator) {
         this.p = personality;
-        this._scorer = scorer;
+        this._weaponEval = weaponEval;
     }
 
     public function getName():String { return "Reload"; }
@@ -33,7 +33,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.ReloadStrategy {
         if (ctx.isAnimLocked) { trace.reject("Reload", DecisionTrace.REASON_ANIMLOCK); return; }
 
         var ratio:Number = ctx.ammoRatio;
-        if (isNaN(ratio)) ratio = _scorer.getAmmoRatio(ctx.self, ctx.attackMode);
+        if (isNaN(ratio)) ratio = _weaponEval.getAmmoRatio(ctx.self, ctx.attackMode);
         if (ratio >= 0.5) { trace.reject("Reload", DecisionTrace.REASON_AMMO); return; }
 
         // 评分：弹药越少越高 + 距离系数

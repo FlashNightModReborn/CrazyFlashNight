@@ -16,10 +16,10 @@ class org.flashNight.arki.unit.UnitAI.strategies.AnimLockFilter {
     public function filter(ctx:AIContext, candidates:Array, trace:DecisionTrace):Void {
         if (!ctx.isAnimLocked) return;
 
-        var self:MovieClip = ctx.self;
-        var isReloadAnim:Boolean = (self != null && self.man != null && self.man != undefined
-            && self.man.换弹标签 != null && self.man.换弹标签 != undefined);
-        var isSkillAnim:Boolean = (self != null && (self.状态 == "技能" || self.状态 == "战技"));
+        // 通过 ctx.lockSource 判断锁定类型（单一真相源，不再直接读 self）
+        var lockSrc:String = ctx.lockSource;
+        var isReloadAnim:Boolean = (lockSrc == "ANIM_RELOAD");
+        var isSkillAnim:Boolean = (lockSrc == "ANIM_SKILL");
 
         // 技能期：仅允许技能取消技能（skill/preBuff）；其他动作必须等待技能结束
         if (isSkillAnim && !isReloadAnim) {

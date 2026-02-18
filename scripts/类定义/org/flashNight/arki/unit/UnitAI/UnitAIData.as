@@ -59,13 +59,11 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     // 引用 self.personality 同一对象，mutate-only 策略保证不陈旧
     public var personality:Object;
 
-    // Utility 评估器实例（Phase 2 Step 3）
-    // 仅 Hero 类型创建，其他类型为 null
-    public var evaluator;
+    // Utility 评估器实例（仅 Hero 类型创建）
+    public var evaluator:Object;
 
-    // 统一动作决策管线（Phase 2 Step 5）
-    // ActionArbiter 协调 body/stance/item 三轨，替代直接调用 evaluator
-    public var arbiter;
+    // 统一动作决策管线（ActionArbiter）
+    public var arbiter:Object;
 
     
     public function UnitAIData(_self:MovieClip){
@@ -233,34 +231,19 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         return this._stuckCheckCount >= minStuckCount;
     }
 
+    // ═══════ 输入清除工具 ═══════
+
     /**
-     * 兼容旧版本的卡死检测（已废弃，保留向下兼容）
-     * @deprecated 请使用改进版的 stuckProbeByDiffChange
+     * clearInput — 重置所有移动/动作输入标志
+     * 消除 6 行重复模式（selector_enter/follow_enter/manual_enter/chase/engage/engage_enter）
      */
-    public function stuckProbeByDiffChange_Legacy(isTryingToMove:Boolean, eps:Number):Boolean {
-        if (eps == undefined) eps = 0;
-        if (!isTryingToMove || this.standby || this.target == null) {
-            return false;
-        }
-
-        var old_dx:Number = this.diff_x;
-        var old_dy:Number = this.diff_y;
-        var old_dz:Number = this.diff_z;
-
-        this.updateSelf();
-        this.updateTarget();
-
-        if (old_dx == null || old_dy == null || old_dz == null ||
-            this.diff_x == null || this.diff_y == null || this.diff_z == null) {
-            return false;
-        }
-
-        var changed:Boolean =
-            Math.abs(this.diff_x - old_dx) > eps ||
-            Math.abs(this.diff_y - old_dy) > eps ||
-            Math.abs(this.diff_z - old_dz) > eps;
-
-        return !changed;
+    public static function clearInput(self:MovieClip):Void {
+        self.左行 = false;
+        self.右行 = false;
+        self.上行 = false;
+        self.下行 = false;
+        self.动作A = false;
+        self.动作B = false;
     }
 
 }

@@ -19,7 +19,7 @@ class org.flashNight.arki.unit.UnitAI.scoring.ScoringModifier {
      * begin — tick 级预计算（可选）
      * 在评分循环开始前调用一次，可将预计算结果存入 scratch。
      */
-    public function begin(ctx, data, candidates:Array, scratch:Object):Void {}
+    public function begin(ctx, data, scratch:Object):Void {}
 
     /**
      * modify — 逐候选评分增量

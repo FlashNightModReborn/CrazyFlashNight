@@ -14,7 +14,7 @@ class org.flashNight.arki.unit.UnitAI.scoring.SkillHierarchyMod extends ScoringM
 
     public function getName():String { return "SkillHierarchy"; }
 
-    public function begin(ctx, data, candidates:Array, scratch:Object):Void {
+    public function begin(ctx, data, scratch:Object):Void {
         // 预扫技能表：仅记录 解围霸体 的最高点数（纯 Number，零分配）
         var maxPts:Number = 0;
         var allSkills:Array = data.self.已学技能表;

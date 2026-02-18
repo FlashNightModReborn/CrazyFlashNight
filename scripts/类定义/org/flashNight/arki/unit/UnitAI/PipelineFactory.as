@@ -16,6 +16,7 @@ import org.flashNight.arki.unit.UnitAI.strategies.PreBuffStrategy;
 import org.flashNight.arki.unit.UnitAI.strategies.AnimLockFilter;
 import org.flashNight.arki.unit.UnitAI.strategies.InterruptFilter;
 import org.flashNight.arki.unit.UnitAI.UtilityEvaluator;
+import org.flashNight.arki.unit.UnitAI.WeaponEvaluator;
 import org.flashNight.arki.unit.UnitAI.ActionExecutor;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
@@ -29,7 +30,7 @@ import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
  * 运行时扩展通过 registerMod/registerSource 注册自定义 factory。
  *
  * deps 对象结构：
- *   { personality, scorer, rng, jitterState, executor }
+ *   { personality, scorer, weaponEval, rng, jitterState, executor }
  *
  * 所有 build 方法：keys==null 则使用 DEFAULT_* 默认配置。
  */
@@ -90,7 +91,7 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
 
     private static function _createSource(key:String, deps:Object) {
         if (key == "Offense") return new OffenseStrategy(deps.personality);
-        if (key == "Reload")  return new ReloadStrategy(deps.personality, deps.scorer);
+        if (key == "Reload")  return new ReloadStrategy(deps.personality, deps.weaponEval);
         if (key == "PreBuff") return new PreBuffStrategy(deps.personality);
         var f:Function = _customSources[key];
         if (f != null) return f(deps);

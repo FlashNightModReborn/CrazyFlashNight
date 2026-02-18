@@ -186,22 +186,9 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         _bodySkillCD = 0;
     }
 
-    /**
-     * holdCurrentBody — 维持当前 body 动作的持续按键输出
-     *
-     * Attack 是 hold 语义：engage() 每 tick 重置 動作A=false，
-     * 若不重新输出则 ShootCore/ComboChain 视为"松手" → 加特林停火/连招中断。
-     * Trigger 类型（skill/reload/preBuff）由引擎管理动画，无需 hold。
-     */
+    /** @deprecated 统一使用 autoHold */
     public function holdCurrentBody(self:MovieClip):Void {
-        if (_bodyType == "attack") {
-            // 技能/战技/换弹动画锁期间禁止维持普攻按键，避免打断 trigger 动作
-            if (self.状态 == "技能" || self.状态 == "战技") return;
-            if (self.man != null && self.man != undefined
-                && self.man.换弹标签 != null && self.man.换弹标签 != undefined) return;
-            self.动作A = true;
-            if (self.攻击模式 === "双枪") self.动作B = true;
-        }
+        autoHold(self);
     }
 
     /**

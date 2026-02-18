@@ -50,14 +50,16 @@ class org.flashNight.arki.unit.UnitAI.scoring.ScoringPipeline {
 
         // ═══ begin phase ═══
         for (var bi:Number = 0; bi < numMods; bi++) {
-            _mods[bi].begin(ctx, data, candidates, scratch);
+            _mods[bi].begin(ctx, data, scratch);
         }
         for (var bpi:Number = 0; bpi < numPosts; bpi++) {
-            _posts[bpi].begin(ctx, data, candidates, scratch);
+            _posts[bpi].begin(ctx, data, scratch);
         }
 
         // ═══ per-candidate scoring ═══
         var evalDepth:Number = p.evalDepth;
+        if (isNaN(evalDepth) || evalDepth < 1) evalDepth = 1;
+        if (evalDepth > UtilityEvaluator.DIM_WEIGHTS.length) evalDepth = UtilityEvaluator.DIM_WEIGHTS.length;
         var stance:Object = ctx.stance;
 
         // 角色技能基础加成（从 personality 读取，替代硬编码 name check）
@@ -80,6 +82,7 @@ class org.flashNight.arki.unit.UnitAI.scoring.ScoringPipeline {
             for (var d:Number = 0; d < evalDepth; d++) {
                 var wKey:String = UtilityEvaluator.DIM_WEIGHTS[d];
                 var w:Number = p[wKey];
+                if (isNaN(w)) w = 0;
 
                 if (stance != null) {
                     var dm:Number = stance.dimMod[d];

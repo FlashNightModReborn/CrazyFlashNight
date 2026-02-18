@@ -1,6 +1,7 @@
 ﻿import org.flashNight.neur.StateMachine.FSM_Status;
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
+import org.flashNight.arki.unit.UnitAI.EngageMovementStrategy;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 /**
@@ -15,15 +16,14 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
     private var _lastTargetCheckFrame:Number = -999;
 
-    // Z 轴走位脉冲状态
-    private var _strafeDir:Number = 0;        // -1=上, 1=下, 0=不动
-    private var _strafePulseEnd:Number = 0;   // 当前移动脉冲结束帧
-    private var _strafeNextStart:Number = 0;  // 下次移动脉冲开始帧
+    // 战术走位策略
+    private var _movement:EngageMovementStrategy;
 
     public function HeroCombatModule(_data:UnitAIData) {
         // machine-level onEnter: 重入时强制重置到 Chasing
         super(null, function() { this.ChangeState("Chasing"); }, null);
         this.data = _data;
+        this._movement = new EngageMovementStrategy();
 
         // 闭包捕获子状态机引用 — engage() 需要访问 HeroCombatModule 实例方法
         // FSM_Status 回调中 this = FSM_Status 无法直接访问
@@ -61,8 +61,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
     public function chase_enter():Void {
         var self:MovieClip = data.self;
-        _strafePulseEnd = 0; // 脱离交战，重置走位状态
-        _strafeNextStart = 0;
+        _movement.reset(); // 脱离交战，重置走位状态
         // 同步外部攻击目标变更
         var extTarget:String = self.攻击目标;
         if (extTarget && extTarget != "无") {
@@ -80,14 +79,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
     public function chase():Void {
         var self:MovieClip = data.self;
-
-        // 重置移动与动作标志
-        self.左行 = false;
-        self.右行 = false;
-        self.上行 = false;
-        self.下行 = false;
-        self.动作A = false;
-        self.动作B = false;
+        UnitAIData.clearInput(self);
 
         // 目标失效守卫
         var t:MovieClip = data.target;
@@ -142,23 +134,13 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
     // ═══════ 交战（射程内）═══════
 
     public function engage_enter():Void {
-        var self:MovieClip = data.self;
-        self.左行 = false;
-        self.右行 = false;
-        self.上行 = false;
-        self.下行 = false;
+        UnitAIData.clearInput(data.self);
     }
 
     public function engage():Void {
         var self:MovieClip = data.self;
 
-        // 每 tick 重置所有输出标志（evaluator/fallback 按需设置）
-        self.动作A = false;
-        self.动作B = false;
-        self.左行 = false;
-        self.右行 = false;
-        self.上行 = false;
-        self.下行 = false;
+        UnitAIData.clearInput(self);
 
         // 目标失效守卫
         var t:MovieClip = data.target;
@@ -193,70 +175,8 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
                             || bodyType == "reload"
                             || self.状态 == "技能" || self.状态 == "战技");
 
-        // ── 战术走位（技能期不输出移动）──
-        // 只在有战术理由时走位，正常近战不干扰攻击输出
-        if (!inSkill) {
-            var urgency:Number = data.arbiter.getRetreatUrgency();
-            var repoDir:Number = data.arbiter.getRepositionDir();
-            var enc:Number = data.arbiter.getEncirclement();
-
-            // 走位触发条件
-            var kiteT:Number = data.personality.kiteThreshold;
-            if (isNaN(kiteT)) kiteT = 0.7;
-            if (urgency > 0) {
-                kiteT = kiteT + urgency * (1.0 - kiteT);
-            }
-            var wantsKite:Boolean = (repoDir > 0 && data.absdiff_x < data.xdistance * kiteT);
-            var wantsEvade:Boolean = (urgency > 0.5) || (enc > 0.3);
-
-            // 仅在远程风筝 / 受创 / 被围时启动走位脉冲
-            if (wantsKite || wantsEvade) {
-                var inPulse:Boolean = frame < _strafePulseEnd;
-                if (!inPulse && frame >= _strafeNextStart) {
-                    _strafeDir = _pickStrafeDir();
-                    var dur:Number = 8 + random(8); // 8~15帧 ≈ 0.3~0.6s
-                    _strafePulseEnd = frame + dur;
-                    var gap:Number = 12 - Math.floor((enc + urgency) * 5);
-                    if (gap < 3) gap = 3;
-                    _strafeNextStart = _strafePulseEnd + gap + random(gap);
-                    inPulse = true;
-                }
-
-                if (inPulse) {
-                    // Z 轴走位
-                    if (_strafeDir < 0) {
-                        self.上行 = true;
-                    } else if (_strafeDir > 0) {
-                        self.下行 = true;
-                    }
-
-                    // X 轴后退（远程风筝 / 近战高紧迫脱战）
-                    if (wantsKite || (urgency > 0.7 && repoDir <= 0)) {
-                        var margin:Number = 80;
-                        var bMinX:Number = (_root.Xmin != undefined) ? _root.Xmin : 0;
-                        var bMaxX:Number = (_root.Xmax != undefined) ? _root.Xmax : Stage.width;
-                        var retreatLeft:Boolean = data.diff_x > 0;
-                        var wallBlocked:Boolean = (retreatLeft && (data.x - bMinX < margin))
-                                               || (!retreatLeft && (bMaxX - data.x < margin));
-                        if (!wallBlocked) {
-                            if (retreatLeft) { self.左行 = true; } else { self.右行 = true; }
-                        } else {
-                            // 退无可退 → 斜向穿越敌人突围（Z偏移 + 反向冲刺）
-                            if (retreatLeft) { self.右行 = true; } else { self.左行 = true; }
-                        }
-                    }
-
-                    // 抑制攻击以允许移动执行（移动射击保持输出）
-                    if (self.移动射击 != true) {
-                        self.动作A = false;
-                        self.动作B = false;
-                        if (!self.射击中) {
-                            self.状态改变(self.攻击模式 + "跑");
-                        }
-                    }
-                }
-            }
-        }
+        // ── 战术走位（策略委托）──
+        _movement.apply(UnitAIData(data), self, frame, inSkill);
 
         // 防呆：管线边界情况兜底（所有候选被过滤 / commitment 间隙 / 状态切换空隙）
         // 增加 commitment 检查：避免在换弹/技能 commitment 期间强行输出普攻打断动画
@@ -276,33 +196,6 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         if (t.hp <= 0 || t.hp == undefined) {
             self.dispatcher.publish("aggroClear", self);
         }
-    }
-
-    // ═══════ 走位方向选择 ═══════
-
-    /**
-     * _pickStrafeDir — 选择走位脉冲的 Z 轴方向
-     *
-     * 交替上/下方向，形成自然的 Z 轴蛇形走位。
-     * 边界检查：贴边时强制反向；双边贴边时放弃走位。
-     */
-    private function _pickStrafeDir():Number {
-        var margin:Number = 80;
-        var bMinY:Number = (_root.Ymin != undefined) ? _root.Ymin : 0;
-        var bMaxY:Number = (_root.Ymax != undefined) ? _root.Ymax : Stage.height;
-        var upSpace:Number = data.y - bMinY;
-        var downSpace:Number = bMaxY - data.y;
-
-        // 边界约束
-        if (upSpace < margin && downSpace < margin) return 0;
-        if (upSpace < margin) return 1;  // 靠近上边界，只能向下
-        if (downSpace < margin) return -1; // 靠近下边界，只能向上
-
-        // 交替方向（首次选择空间较大的一侧）
-        if (_strafeDir == 0) {
-            return (upSpace >= downSpace) ? -1 : 1;
-        }
-        return -_strafeDir;
     }
 
     // ═══════ 目标切换（近距离感知）═══════

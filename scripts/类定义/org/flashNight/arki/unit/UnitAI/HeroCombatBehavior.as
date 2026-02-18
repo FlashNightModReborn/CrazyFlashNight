@@ -59,8 +59,9 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             _root.计算AI参数(self.personality);
             data.personality = self.personality;
         }
-        data.evaluator = new UtilityEvaluator(data.personality);
-        data.arbiter = new ActionArbiter(data.personality, data.evaluator, data.self);
+        var eval:UtilityEvaluator = new UtilityEvaluator(data.personality);
+        data.evaluator = eval;
+        data.arbiter = new ActionArbiter(data.personality, eval, data.self);
 
         // ═══════ 状态列表 ═══════
         // 已存在：Sleeping（基类默认状态）
@@ -141,9 +142,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             return;
         }
 
-        // 清除残留战斗输入（避免退出战斗后持续攻击/换弹）
-        self.动作A = false;
-        self.动作B = false;
+        UnitAIData.clearInput(self);
 
         // 4-6. 武器模式 + 血包评估（统一管线）
         data.arbiter.tick(data, "selector");
@@ -189,18 +188,6 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         this.ChangeState(newstate);
     }
 
-    // ═══════ 武器模式评估 ═══════
-
-    public function evaluateWeapon():Void {
-        data.evaluator.evaluateWeaponMode(data);
-    }
-
-    // ═══════ 血包评估 ═══════
-
-    public function evaluateHeal():Void {
-        data.evaluator.evaluateHealNeed(data);
-    }
-
     // ═══════ 目标搜索（复刻原 寻找攻击目标）═══════
 
     /**
@@ -238,13 +225,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
      */
     public function follow_enter():Void {
         var self = data.self;
-        self.左行 = false;
-        self.右行 = false;
-        self.上行 = false;
-        self.下行 = false;
-        // 清除残留战斗输入（避免退出战斗后持续攻击/换弹）
-        self.动作A = false;
-        self.动作B = false;
+        UnitAIData.clearInput(self);
 
         if (data.standby) return;
 
@@ -282,12 +263,6 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
      * manual_enter — 停止所有 AI 输出，让玩家输入接管
      */
     public function manual_enter():Void {
-        var self = data.self;
-        self.左行 = false;
-        self.右行 = false;
-        self.上行 = false;
-        self.下行 = false;
-        self.动作A = false;
-        self.动作B = false;
+        UnitAIData.clearInput(data.self);
     }
 }
