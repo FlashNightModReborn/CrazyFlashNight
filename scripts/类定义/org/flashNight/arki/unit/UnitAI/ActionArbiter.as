@@ -240,8 +240,12 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         }
 
         // 2.5 反射闪避（高反应角色：bulletETA ≤ 8 帧直接触发，跳过评分）
+        // 行为预算：两次反射闪避间隔至少 3*tickInterval 帧（DOOM push-forward 模式）
+        // 间歇期 Boltzmann 正常运作，让换弹/攻击/技能有机会被选中
+        var reflexCooldown:Number = 3 * p.tickInterval;
         if (_ctx.bulletThreat > 0 && _ctx.bulletETA <= 8 && p.反应 >= 0.7
-            && candidates.length > 0) {
+            && candidates.length > 0
+            && (frame - _executor.getLastReflexFrame() >= reflexCooldown)) {
             var reflexDodge:Object = null;
             for (var ri:Number = 0; ri < candidates.length; ri++) {
                 var rc:Object = candidates[ri];
@@ -263,6 +267,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                     Math.round(rCommit * p.tickInterval), frame,
                     reflexDodge.skill != null ? reflexDodge.skill.冷却 : 0);
                 _executor.setDodgeActive(true);
+                _executor.commitReflex(frame);
                 _postExecution(reflexDodge, data, frame);
                 _trace.selected(reflexDodge, 1.0, 0);
                 // stance/heal 可延后一 tick，此处不再评估

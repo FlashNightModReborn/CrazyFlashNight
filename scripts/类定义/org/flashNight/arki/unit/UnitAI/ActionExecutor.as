@@ -59,6 +59,9 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
     // ── 闪避技能激活标志（EngageMovementStrategy 读取，允许 Z 轴输入）──
     private var _isDodgeActive:Boolean;
 
+    // ── 反射闪避冷却帧（防止弹幕下反射闪避锁死决策管线）──
+    private var _lastReflexFrame:Number;
+
     // ═══════ 构造 ═══════
 
     public function ActionExecutor() {
@@ -77,6 +80,7 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         _consecutiveAttacks = 0;
         _bodySkillCD = 0;
         _isDodgeActive = false;
+        _lastReflexFrame = -999;
     }
 
     // ═══════ 动画标签锁 ═══════
@@ -244,6 +248,20 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
 
     public function setDodgeActive(active:Boolean):Void {
         _isDodgeActive = active;
+    }
+
+    /**
+     * getLastReflexFrame / commitReflex — 反射闪避行为预算
+     *
+     * DOOM push-forward 模式：反射闪避每 N*tickInterval 帧最多触发 1 次，
+     * 间歇期 Boltzmann 正常工作，让换弹/攻击/普通技能有机会被选中。
+     */
+    public function getLastReflexFrame():Number {
+        return _lastReflexFrame;
+    }
+
+    public function commitReflex(frame:Number):Void {
+        _lastReflexFrame = frame;
     }
 
     public function getLastSkillUseFrame():Number {

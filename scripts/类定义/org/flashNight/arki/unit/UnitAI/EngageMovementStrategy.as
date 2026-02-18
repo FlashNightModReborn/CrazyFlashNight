@@ -96,13 +96,14 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
         }
 
         // X 轴后退（远程风筝 / 近战高紧迫脱战）
+        var wallBlocked:Boolean = false;
         if (wantsKite || (urgency > 0.7 && repoDir <= 0)) {
             var margin:Number = 80;
             var bMinX:Number = (_root.Xmin != undefined) ? _root.Xmin : 0;
             var bMaxX:Number = (_root.Xmax != undefined) ? _root.Xmax : Stage.width;
             var retreatLeft:Boolean = data.diff_x > 0;
-            var wallBlocked:Boolean = (retreatLeft && (data.x - bMinX < margin))
-                                   || (!retreatLeft && (bMaxX - data.x < margin));
+            wallBlocked = (retreatLeft && (data.x - bMinX < margin))
+                       || (!retreatLeft && (bMaxX - data.x < margin));
             if (!wallBlocked) {
                 if (retreatLeft) { self.左行 = true; } else { self.右行 = true; }
             } else {
@@ -111,10 +112,11 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
             }
         }
 
-        // 抑制攻击以允许移动执行（仅在真实移动时生效，移动射击保持输出）
-        // 修复：dir=0（上下均贴边）时 inPulse=true 但无移动输入 → 不应抑制攻击
+        // 抑制攻击以允许移动执行（仅在真实后撤时生效）
+        // 修复1：dir=0（上下均贴边）时 inPulse=true 但无移动输入 → 不应抑制攻击
+        // 修复2：wallBlocked 突围时不抑制攻击 — 正面冲锋应保持输出，否则呈现发呆
         var moving:Boolean = (self.左行 || self.右行 || self.上行 || self.下行);
-        if (moving && self.移动射击 != true) {
+        if (moving && self.移动射击 != true && !wallBlocked) {
             self.动作A = false;
             self.动作B = false;
             if (!self.射击中) {

@@ -864,12 +864,18 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             startIndex = len;
                         }
                         // 【极快路径】无销毁需求 → 维持旧逻辑，最快早退
+                        // 例外：左向子弹需执行预警左侧反向扫描 → 不能 continue
                         else if (!bullet.shouldDestroy(bullet)) {
-                            bullet.updateMovement(bullet);
-                            if (needsDeferScatter) {
-                                __commitDeferScatter(bullet);
+                            if (hasTZ && bullet.xmov < 0) {
+                                // 碰撞循环因空窗条件自然 0 迭代
+                                // 落入 Phase 2+ 预警左侧反向扫描
+                            } else {
+                                bullet.updateMovement(bullet);
+                                if (needsDeferScatter) {
+                                    __commitDeferScatter(bullet);
+                                }
+                                continue;
                             }
-                            continue;
                         }
                         // 【需要销毁】不在这里做释放/FX/移除，只声明"终止意图"，交给单出口收尾
                         else {
