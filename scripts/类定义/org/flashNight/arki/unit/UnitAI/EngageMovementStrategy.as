@@ -99,14 +99,27 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
         // ── 收集移动意图 + 统一边界感知输出 ──
         var moveZ:Number = _strafeDir; // -1=上, 1=下, 0=不动
         var moveX:Number = 0;
+
+        // 贴边时向场内回拉，防止“卡边缘只上下移动”
+        // 说明：kiteDir 被墙挡住时继续 Z 轴蛇形没有意义，应该先脱离边缘再重新风筝
+        var edgeMargin:Number = 80;
+        var edgeEscapeX:Number = 0;
+        if (data.bndLeftDist < edgeMargin) edgeEscapeX = 1;
+        else if (data.bndRightDist < edgeMargin) edgeEscapeX = -1;
         if (wantsKite || (urgency > 0.7 && repoDir <= 0)) {
             var kiteDir:Number = (data.diff_x > 0) ? -1 : 1; // 远离目标
             // 风筝方向贴墙检查：退路被堵 → 放弃风筝，接受近身战斗
-            var kiteWall:Boolean = (kiteDir < 0 && data.bndLeftDist < 80)
-                                || (kiteDir > 0 && data.bndRightDist < 80);
+            var kiteWall:Boolean = (kiteDir < 0 && data.bndLeftDist < edgeMargin)
+                                || (kiteDir > 0 && data.bndRightDist < edgeMargin);
             if (!kiteWall) {
                 moveX = kiteDir;
+            } else if (edgeEscapeX != 0) {
+                // 退路被堵：优先向场内挪出空间（等价于 -kiteDir）
+                moveX = edgeEscapeX;
             }
+        } else if (wantsEvade && edgeEscapeX != 0) {
+            // 被围/受创且贴边：优先脱离边缘，否则容易被压墙集火
+            moveX = edgeEscapeX;
         }
 
         // 统一处理边界碰撞：沿墙滑行 / 角落突围 / 正常输出
@@ -135,28 +148,16 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
      * 边界检查：贴边时强制反向；双边贴边时放弃走位。
      */
     private function _pickStrafeDir(data:UnitAIData):Number {
-        var margin:Number = 80;
-        // 复用 updateSelf 中已计算的边界距离（消除重复计算）
-        var upSpace:Number = data.bndUpDist;
-        var downSpace:Number = data.bndDownDist;
-
-        // 边界约束
-        if (upSpace < margin && downSpace < margin) return 0;
-        if (upSpace < margin) return 1;  // 靠近上边界，只能向下
-        if (downSpace < margin) return -1; // 靠近下边界，只能向上
-
-        // T2-B：弹道方向感知 — 有子弹威胁时选择空间更大的一侧
         var s:MovieClip = data.self;
-        var btAge:Number = _root.帧计时器.当前帧数 - s._btFrame;
-        if (btAge >= 0 && btAge <= 1 && s._btCount > 0) {
-            if (upSpace > downSpace * 1.3) return -1;  // 上方空间明显更大
-            if (downSpace > upSpace * 1.3) return 1;   // 下方空间明显更大
-        }
+        var zPick:Number = UnitAIData.pickZDirBySpaceEx(data, s, 80);
+        if (zPick == 0) return 0;
 
-        // 交替方向（首次选择空间较大的一侧）
-        if (_strafeDir == 0) {
-            return (upSpace >= downSpace) ? -1 : 1;
-        }
+        var dir:Number = (zPick < 0) ? -1 : 1;
+        var forced:Boolean = (Math.abs(zPick) == 2);
+        if (forced) return dir;
+
+        // 交替方向（首次选择偏好方向，后续交替）
+        if (_strafeDir == 0) return dir;
         return -_strafeDir;
     }
 }

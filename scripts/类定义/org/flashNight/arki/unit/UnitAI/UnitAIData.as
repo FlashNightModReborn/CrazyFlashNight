@@ -363,6 +363,44 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         return this._stuckCheckCount >= minStuckCount;
     }
 
+    /**
+     * pickZDirBySpaceEx — 根据上下边界空间选择 Z 方向（轻量版）
+     *
+     * 统一多处“上下空间选择”逻辑（走位/沿墙滑行/脱困），避免各处规则漂移。
+     *
+     * 返回值约定：
+     *   0  : 上下都无空间（不建议输出 Z）
+     *   1  : 偏好向下（可交替）
+     *  -1  : 偏好向上（可交替）
+     *   2  : 强制向下（贴边/强弹道威胁）
+     *  -2  : 强制向上（贴边/强弹道威胁）
+     *
+     * @param data   UnitAIData（需已 updateSelf）
+     * @param self   MovieClip（用于读取 _bt* 弹道威胁）
+     * @param margin 边界余量（像素），默认 80
+     */
+    public static function pickZDirBySpaceEx(data:UnitAIData, self:MovieClip, margin:Number):Number {
+        if (margin == undefined) margin = 80;
+
+        var upSpace:Number = data.bndUpDist;
+        var downSpace:Number = data.bndDownDist;
+
+        // 边界硬约束：一侧空间不足时强制反向
+        if (upSpace < margin && downSpace < margin) return 0;
+        if (upSpace < margin) return 2;
+        if (downSpace < margin) return -2;
+
+        // 弹道威胁：强偏向空间更大的一侧（保持与 EngageMovementStrategy 一致）
+        var btAge:Number = _root.帧计时器.当前帧数 - self._btFrame;
+        if (btAge >= 0 && btAge <= 1 && self._btCount > 0) {
+            if (upSpace > downSpace * 1.3) return -2;
+            if (downSpace > upSpace * 1.3) return 2;
+        }
+
+        // 默认偏好：空间更大的一侧
+        return (upSpace >= downSpace) ? -1 : 1;
+    }
+
     // ═══════ 统一边界感知移动 ═══════
 
     /**
@@ -417,33 +455,59 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
                 if (data.tz != null && !isNaN(data.tz)) {
                     preferZ = (data.tz > data.z) ? 1 : -1;
                 } else {
-                    preferZ = (data.bndUpDist > data.bndDownDist) ? -1 : 1;
+                    var zp:Number = UnitAIData.pickZDirBySpaceEx(data, self, MARGIN);
+                    if (zp < 0) preferZ = -1;
+                    else if (zp > 0) preferZ = 1;
+                    else preferZ = (data.bndUpDist > data.bndDownDist) ? -1 : 1;
                 }
                 var altZ:Number = -preferZ;
 
                 var bestX:Number = 0;
                 var bestZ:Number = 0;
 
+                // 边界脱困：贴左右边时优先往屏幕中间挪（解决卡在左右边不反向的问题）
+                var edgeEscapeX:Number = 0;
+                if (data.bndLeftDist < MARGIN) edgeEscapeX = 1;
+                else if (data.bndRightDist < MARGIN) edgeEscapeX = -1;
+                if (edgeEscapeX != 0) {
+                    if (oldWZ != 0 && Mover.isDirectionWalkable(self, edgeEscapeX, oldWZ, probe)) {
+                        bestX = edgeEscapeX; bestZ = oldWZ;
+                    } else if (Mover.isDirectionWalkable(self, edgeEscapeX, preferZ, probe)) {
+                        bestX = edgeEscapeX; bestZ = preferZ;
+                    } else if (Mover.isDirectionWalkable(self, edgeEscapeX, altZ, probe)) {
+                        bestX = edgeEscapeX; bestZ = altZ;
+                    } else if (Mover.isDirectionWalkable(self, edgeEscapeX, 0, probe)) {
+                        bestX = edgeEscapeX; bestZ = 0;
+                    }
+                }
+
                 // 1) 尽量保持原意图（含对角）
-                if ((oldWX != 0 || oldWZ != 0) && Mover.isDirectionWalkable(self, oldWX, oldWZ, probe)) {
+                if (bestX == 0 && bestZ == 0
+                    && (oldWX != 0 || oldWZ != 0) && Mover.isDirectionWalkable(self, oldWX, oldWZ, probe)) {
                     bestX = oldWX; bestZ = oldWZ;
                 }
                 // 2) X优先：对角绕障（X + preferZ / altZ）
-                else if (oldWX != 0 && Mover.isDirectionWalkable(self, oldWX, preferZ, probe)) {
+                else if (bestX == 0 && bestZ == 0
+                    && oldWX != 0 && Mover.isDirectionWalkable(self, oldWX, preferZ, probe)) {
                     bestX = oldWX; bestZ = preferZ;
-                } else if (oldWX != 0 && Mover.isDirectionWalkable(self, oldWX, altZ, probe)) {
+                } else if (bestX == 0 && bestZ == 0
+                    && oldWX != 0 && Mover.isDirectionWalkable(self, oldWX, altZ, probe)) {
                     bestX = oldWX; bestZ = altZ;
                 }
                 // 3) 纯Z挪位（沿墙滑行/绕柱）
-                else if (Mover.isDirectionWalkable(self, 0, preferZ, probe)) {
+                else if (bestX == 0 && bestZ == 0
+                    && Mover.isDirectionWalkable(self, 0, preferZ, probe)) {
                     bestX = 0; bestZ = preferZ;
-                } else if (Mover.isDirectionWalkable(self, 0, altZ, probe)) {
+                } else if (bestX == 0 && bestZ == 0
+                    && Mover.isDirectionWalkable(self, 0, altZ, probe)) {
                     bestX = 0; bestZ = altZ;
                 }
                 // 4) 退一步（反向X/反向Z）
-                else if (oldWX != 0 && Mover.isDirectionWalkable(self, -oldWX, 0, probe)) {
+                else if (bestX == 0 && bestZ == 0
+                    && oldWX != 0 && Mover.isDirectionWalkable(self, -oldWX, 0, probe)) {
                     bestX = -oldWX; bestZ = 0;
-                } else if (oldWZ != 0 && Mover.isDirectionWalkable(self, 0, -oldWZ, probe)) {
+                } else if (bestX == 0 && bestZ == 0
+                    && oldWZ != 0 && Mover.isDirectionWalkable(self, 0, -oldWZ, probe)) {
                     bestX = 0; bestZ = -oldWZ;
                 }
 
@@ -478,7 +542,9 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
         // ── Phase 2: X轴被阻时注入Z逃脱分量 ──
         if (xBlocked && wantX != 0 && wantZ == 0) {
-            wantZ = (data.bndUpDist > data.bndDownDist) ? -1 : 1;
+            var zPick:Number = UnitAIData.pickZDirBySpaceEx(data, self, MARGIN);
+            if (zPick < 0) wantZ = -1;
+            else if (zPick > 0) wantZ = 1;
         }
 
         // ── Phase 3: Z轴输出（含自动重定向）──

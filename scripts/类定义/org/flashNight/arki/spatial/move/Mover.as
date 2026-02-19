@@ -466,6 +466,14 @@ class org.flashNight.arki.spatial.move.Mover {
         if (isNaN(baseZ)) baseZ = entity._y;
         var tx:Number = entity._x + dirX * distance;
         var tz:Number = baseZ + dirZ * distance;
+
+        // 边界检查：地图左右/上下越界直接视为不可行走
+        var minX:Number = _root.Xmin;
+        var maxX:Number = _root.Xmax;
+        var minY:Number = _root.Ymin;
+        var maxY:Number = _root.Ymax;
+        if (tx < minX || tx > maxX || tz < minY || tz > maxY) return false;
+
         return Mover.isPointValid(tx, tz);
     }
 
@@ -588,10 +596,10 @@ class org.flashNight.arki.spatial.move.Mover {
      */
     public static function enforceScreenBounds(entity:MovieClip):Void {
         // 从全局读取边界值，确保在关卡里定义了 Xmin/Xmax/Ymin/Ymax
-        var minX:Number = (_root.Xmin != undefined) ? _root.Xmin : 0;
-        var maxX:Number = (_root.Xmax != undefined) ? _root.Xmax : Stage.width;
-        var minY:Number = (_root.Ymin != undefined) ? _root.Ymin : 0;
-        var maxY:Number = (_root.Ymax != undefined) ? _root.Ymax : Stage.height;
+        var minX:Number = _root.Xmin;
+        var maxX:Number = _root.Xmax;
+        var minY:Number = _root.Ymin;
+        var maxY:Number = _root.Ymax;
 
         // 限制水平坐标
         if (entity._x < minX) {
