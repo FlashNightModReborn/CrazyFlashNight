@@ -446,6 +446,30 @@ class org.flashNight.arki.spatial.move.Mover {
     }
 
     /**
+     * 方向可行走检测（轻量版）
+     *
+     * 用于 AI 卡死脱困等热路径：仅探测指定方向的单个点，
+     * 不分配 Object / 不遍历 8 向表。
+     *
+     * @param entity   需要检测的 MovieClip 对象
+     * @param dirX     方向X分量：-1/0/1（左/无/右）
+     * @param dirZ     方向Z分量：-1/0/1（上/无/下）
+     * @param distance 探测距离（像素），默认 40
+     * @return Boolean 该方向的目标点是否可行走（无碰撞）
+     */
+    public static function isDirectionWalkable(entity:MovieClip,
+                                               dirX:Number, dirZ:Number,
+                                               distance:Number):Boolean {
+        if (distance == null || distance <= 0) distance = 40;
+        // 注意：碰撞层以 X + Z轴坐标 为准（Z轴坐标缺失时回退 _y）
+        var baseZ:Number = entity.Z轴坐标;
+        if (isNaN(baseZ)) baseZ = entity._y;
+        var tx:Number = entity._x + dirX * distance;
+        var tz:Number = baseZ + dirZ * distance;
+        return Mover.isPointValid(tx, tz);
+    }
+
+    /**
      * 检测影片剪辑的当前位置是否合法（其自身坐标点是否与地图碰撞）
      * 
      * @param mc 要检测的影片剪辑（将检测其注册点的位置）

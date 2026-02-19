@@ -1,5 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
+import org.flashNight.arki.spatial.move.Mover;
+
 class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
     // 自身引用
@@ -195,6 +197,11 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     private var _lastSelfZ:Number;
     private var _stuckCheckCount:Number = 0;
 
+    // 障碍脱困（仅在确实卡死时触发，避免每帧碰撞探测）
+    private var _unstuckUntilFrame:Number = 0;
+    private var _unstuckX:Number = 0;
+    private var _unstuckZ:Number = 0;
+
     /**
      * 改进版卡死检测 - 基于自身绝对位置变化而非相对距离变化
      * 
@@ -253,10 +260,11 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         var deltaX:Number = Math.abs(this.x - this._lastSelfX);
         var deltaY:Number = Math.abs(this.y - this._lastSelfY);
         var deltaZ:Number = Math.abs(this.z - this._lastSelfZ);
-        var totalDelta:Number = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+        var delta2:Number = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
+        var eps2:Number = eps * eps;
 
-        // 判断是否有显著移动
-        var hasMoved:Boolean = totalDelta > eps;
+        // 判断是否有显著移动（避免 sqrt，性能更好）
+        var hasMoved:Boolean = delta2 > eps2;
 
         if (hasMoved) {
             // 有移动：重置卡死计数
@@ -274,10 +282,84 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
         // 调试输出
         if (_root.调试模式 && this._stuckCheckCount > 0) {
+            var totalDelta:Number = Math.sqrt(delta2);
             _root.发布消息(this.self, "卡死检测: " + this._stuckCheckCount + "/" + minStuckCount + " 移动距离: " + totalDelta);
         }
 
         // 只有连续多次无移动才判定为真正卡死
+        return this._stuckCheckCount >= minStuckCount;
+    }
+
+    /**
+     * 轻量卡死检测（假设本帧已调用 updateSelf）
+     *
+     * 与 stuckProbeByDiffChange 的区别：
+     *  - 不会在内部调用 updateSelf()（避免重复计算）
+     *  - 适合 applyBoundaryAwareMovement 等热路径统一调用
+     *
+     * @param isTryingToMove 是否有移动意图（wantX/wantZ 非0）
+     * @param eps            位置变化阈值（像素）
+     * @param minStuckCount  连续无移动次数阈值
+     * @param minFrameGap    两次检测的最小帧间隔
+     * @return Boolean       true=确实卡死；false=正常
+     */
+    public function stuckProbeByCurrentPosition(isTryingToMove:Boolean,
+                                                eps:Number,
+                                                minStuckCount:Number,
+                                                minFrameGap:Number):Boolean {
+        if (eps == undefined) eps = 8;
+        if (minStuckCount == undefined) minStuckCount = 3;
+        if (minFrameGap == undefined) minFrameGap = 4;
+
+        var currentFrame:Number = _root.帧计时器.当前帧数;
+
+        // 非移动意图 / 待机状态：重置检测计数
+        if (!isTryingToMove || this.standby) {
+            this._stuckCheckCount = 0;
+            this._lastStuckCheckFrame = currentFrame;
+            this._lastSelfX = this.x;
+            this._lastSelfY = this.y;
+            this._lastSelfZ = this.z;
+            return false;
+        }
+
+        // 初次检测：记录位置，不判定卡死
+        if (this._lastStuckCheckFrame < 0
+            || this._lastSelfX == undefined
+            || this._lastSelfY == undefined
+            || this._lastSelfZ == undefined) {
+            this._lastSelfX = this.x;
+            this._lastSelfY = this.y;
+            this._lastSelfZ = this.z;
+            this._lastStuckCheckFrame = currentFrame;
+            this._stuckCheckCount = 0;
+            return false;
+        }
+
+        // 检测时间间隔过短，跳过本次检测
+        var frameGap:Number = currentFrame - this._lastStuckCheckFrame;
+        if (frameGap < minFrameGap) {
+            return this._stuckCheckCount >= minStuckCount;
+        }
+
+        // 计算位置变化量（使用本帧已更新的 x/y/z）
+        var deltaX:Number = Math.abs(this.x - this._lastSelfX);
+        var deltaY:Number = Math.abs(this.y - this._lastSelfY);
+        var deltaZ:Number = Math.abs(this.z - this._lastSelfZ);
+        var delta2:Number = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
+        var eps2:Number = eps * eps;
+
+        if (delta2 > eps2) {
+            this._stuckCheckCount = 0;
+        } else {
+            this._stuckCheckCount++;
+        }
+
+        this._lastSelfX = this.x;
+        this._lastSelfY = this.y;
+        this._lastSelfZ = this.z;
+        this._lastStuckCheckFrame = currentFrame;
+
         return this._stuckCheckCount >= minStuckCount;
     }
 
@@ -309,6 +391,83 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     ):Number {
         var MARGIN:Number = 80;
         var xBlocked:Boolean = false;
+
+        // ── Phase 0: 障碍物脱困（仅在确实卡死时触发）──
+        // 说明：边界贴墙可用 bnd* 直接判断，但地图障碍需要碰撞探测。
+        // 这里不引入 getWalkableDirections（8向全探测太重），只在卡死时用少量 probe。
+        var frameNow:Number = _root.帧计时器.当前帧数;
+        var trying:Boolean = (wantX != 0 || wantZ != 0);
+        if (trying && !self.射击中 && self.状态 != "技能" && self.状态 != "战技") {
+            // 脱困窗口内：直接复用上次方向（避免重复 hitTest）
+            if (frameNow < data._unstuckUntilFrame) {
+                wantX = data._unstuckX;
+                wantZ = data._unstuckZ;
+            } else if (data.stuckProbeByCurrentPosition(true, 6, 3, 4)) {
+                var oldWX:Number = wantX;
+                var oldWZ:Number = wantZ;
+                // 探测距离：不要过大（会错过狭窄出口），也不要过小（容易被抖动误导）
+                var spd:Number = self.行走X速度;
+                if (isNaN(spd) || spd <= 0) spd = 6;
+                var probe:Number = spd * 4;
+                if (probe < 20) probe = 20;
+                else if (probe > 60) probe = 60;
+
+                // 优先 Z 方向：朝目标对齐（无目标则朝空间更大的一侧）
+                var preferZ:Number = 0;
+                if (data.tz != null && !isNaN(data.tz)) {
+                    preferZ = (data.tz > data.z) ? 1 : -1;
+                } else {
+                    preferZ = (data.bndUpDist > data.bndDownDist) ? -1 : 1;
+                }
+                var altZ:Number = -preferZ;
+
+                var bestX:Number = 0;
+                var bestZ:Number = 0;
+
+                // 1) 尽量保持原意图（含对角）
+                if ((oldWX != 0 || oldWZ != 0) && Mover.isDirectionWalkable(self, oldWX, oldWZ, probe)) {
+                    bestX = oldWX; bestZ = oldWZ;
+                }
+                // 2) X优先：对角绕障（X + preferZ / altZ）
+                else if (oldWX != 0 && Mover.isDirectionWalkable(self, oldWX, preferZ, probe)) {
+                    bestX = oldWX; bestZ = preferZ;
+                } else if (oldWX != 0 && Mover.isDirectionWalkable(self, oldWX, altZ, probe)) {
+                    bestX = oldWX; bestZ = altZ;
+                }
+                // 3) 纯Z挪位（沿墙滑行/绕柱）
+                else if (Mover.isDirectionWalkable(self, 0, preferZ, probe)) {
+                    bestX = 0; bestZ = preferZ;
+                } else if (Mover.isDirectionWalkable(self, 0, altZ, probe)) {
+                    bestX = 0; bestZ = altZ;
+                }
+                // 4) 退一步（反向X/反向Z）
+                else if (oldWX != 0 && Mover.isDirectionWalkable(self, -oldWX, 0, probe)) {
+                    bestX = -oldWX; bestZ = 0;
+                } else if (oldWZ != 0 && Mover.isDirectionWalkable(self, 0, -oldWZ, probe)) {
+                    bestX = 0; bestZ = -oldWZ;
+                }
+
+                if (bestX != 0 || bestZ != 0) {
+                    wantX = bestX;
+                    wantZ = bestZ;
+                    data._unstuckX = bestX;
+                    data._unstuckZ = bestZ;
+                    data._unstuckUntilFrame = frameNow + 10;
+
+                    // UNSTUCK 属于“关键异常事件”，即便不开 AI调试模式，也建议在较高日志级别输出
+                    if (_root.AI调试模式 == true || _root.AI日志级别 >= 2) {
+                        _root.服务器.发布服务器消息("[MOV] " + self.名字
+                            + " UNSTUCK"
+                            + " from=" + oldWX + "," + oldWZ
+                            + " to=" + bestX + "," + bestZ
+                            + " pos=" + Math.round(data.x) + "," + Math.round(data.y));
+                    }
+                }
+            }
+        } else if (!trying) {
+            // 无移动意图：清空脱困窗口，避免下一次移动继承旧方向
+            data._unstuckUntilFrame = 0;
+        }
 
         // ── Phase 1: X轴可行性检查 ──
         if (wantX < 0 && data.bndLeftDist < MARGIN) {
