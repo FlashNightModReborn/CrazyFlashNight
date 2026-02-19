@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/被击飞击倒" itemID="690f5883-00001c3b" lastModified="1769694922" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/被击飞击倒" itemID="690f5883-00001c3b" lastModified="1771501751" lastUniqueIdentifier="28">
   <timeline>
-    <DOMTimeline name="被击飞击倒" currentFrame="126">
+    <DOMTimeline name="被击飞击倒" currentFrame="1">
       <layers>
-        <DOMLayer name="Labels Layer" color="#6ED760">
+        <DOMLayer name="Labels Layer" color="#6ED760" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" name="空手" labelType="name" keyMode="9728">
               <elements/>
@@ -216,7 +216,7 @@
             </DOMFrame>
             <DOMFrame index="133" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -246,7 +246,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招" color="#9933CC" autoNamed="false">
+        <DOMLayer name="变招" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -322,7 +322,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#76CD3E">
+        <DOMLayer name="Layer 3" color="#76CD3E" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -548,7 +548,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#A75CFE">
+        <DOMLayer name="Layer 4" color="#A75CFE" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -1408,7 +1408,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#B0835D">
+        <DOMLayer name="Layer 5" color="#B0835D" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -1829,7 +1829,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#F58F75">
+        <DOMLayer name="Layer 6" color="#F58F75" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2055,7 +2055,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#3ADED3">
+        <DOMLayer name="Layer 7" color="#3ADED3" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2164,7 +2164,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#47C5F4">
+        <DOMLayer name="Layer 8" color="#47C5F4" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2490,7 +2490,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#4B69E2">
+        <DOMLayer name="Layer 9" color="#4B69E2" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -2816,7 +2816,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#C058B9">
+        <DOMLayer name="Layer 10" color="#C058B9" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -3158,7 +3158,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#2FA9DB" current="true" isSelected="true">
+        <DOMLayer name="Layer 11" color="#2FA9DB" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -3465,7 +3465,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#D6E6E7">
+        <DOMLayer name="Layer 12" color="#D6E6E7" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -3791,7 +3791,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#B0A43B">
+        <DOMLayer name="Layer 13" color="#B0A43B" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -4181,7 +4181,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#50F942">
+        <DOMLayer name="Layer 14" color="#50F942" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -4571,7 +4571,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#44B0AF">
+        <DOMLayer name="Layer 15" color="#44B0AF" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -4897,7 +4897,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#18D5E9">
+        <DOMLayer name="Layer 16" color="#18D5E9" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -5271,7 +5271,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#F92DA1">
+        <DOMLayer name="Layer 17" color="#F92DA1" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -5645,7 +5645,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#B68B9B">
+        <DOMLayer name="Layer 18" color="#B68B9B" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -5971,7 +5971,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#ECFEAD">
+        <DOMLayer name="Layer 19" color="#ECFEAD" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -6345,7 +6345,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#B30AE4">
+        <DOMLayer name="Layer 20" color="#B30AE4" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -6671,7 +6671,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#BB6BB5">
+        <DOMLayer name="Layer 21" color="#BB6BB5" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -6997,7 +6997,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 22" color="#FAF078">
+        <DOMLayer name="Layer 22" color="#FAF078" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -7323,7 +7323,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 56" color="#F8397B">
+        <DOMLayer name="Layer 56" color="#F8397B" locked="true">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -7592,7 +7592,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手" color="#9933CC" autoNamed="false">
+        <DOMLayer name="左手" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="102" keyMode="9728">
               <elements/>
@@ -7714,7 +7714,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小臂" color="#FF800A" autoNamed="false">
+        <DOMLayer name="左小臂" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="102" keyMode="9728">
               <elements/>
@@ -7868,7 +7868,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左大臂" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="左大臂" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="102" keyMode="9728">
               <elements/>
@@ -7990,7 +7990,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="长枪" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="长枪" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="102" keyMode="9728">
               <elements/>
@@ -8033,7 +8033,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="阴影" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="119" keyMode="9728">
               <elements/>

@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="起身回旋踢特效" itemID="69974607-00000a31" lastModified="1771521543" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="起身回旋踢特效">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="127.1" centerPoint3DY="14.7">
+                  <matrix>
+                    <Matrix a="-0.396102905273438" b="-0.737060546875" c="0.737060546875" d="-0.396102905273438" tx="117.95" ty="64.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="0.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="76.3" centerPoint3DY="32.75">
+                  <matrix>
+                    <Matrix a="-0.184799194335938" b="-0.824996948242188" c="0.824996948242188" d="-0.184799194335938" tx="22.2" ty="86.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="0.65"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

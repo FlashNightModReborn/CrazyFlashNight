@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跳" itemID="6919df9d-00001065" lastModified="1769769278" lastUniqueIdentifier="358">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跳" itemID="6919df9d-00001065" lastModified="1771503334" lastUniqueIdentifier="358">
   <timeline>
-    <DOMTimeline name="空手跳" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="空手跳" currentFrame="20" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#B562FD" locked="true">
           <frames>
@@ -57,7 +57,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="14" name="开始跳跃" labelType="name" keyMode="9728">
               <elements/>
@@ -210,7 +210,7 @@ gotoAndPlay("跳跃状态");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#E89962" autoNamed="false">
+        <DOMLayer name="攻击点" color="#E89962" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -928,7 +928,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹" color="#65BC72" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹" color="#65BC72" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -2663,7 +2663,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="38" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -3023,7 +3023,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements/>
@@ -3064,7 +3064,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="35" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -7396,7 +7396,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效" color="#9933CC" autoNamed="false">
+        <DOMLayer name="特效" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -39187,7 +39187,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#47ACE2">
+        <DOMLayer name="Layer 23" color="#47ACE2" locked="true">
           <frames>
             <DOMFrame index="0" duration="121" keyMode="9728">
               <elements>
@@ -39272,7 +39272,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="sound layer 0" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="sound layer 0" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1771259105" lastUniqueIdentifier="687">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跳跃" itemID="690cd8ce-0000117e" lastModified="1771510315" lastUniqueIdentifier="687">
   <timeline>
-    <DOMTimeline name="兵器跳跃" currentFrame="193" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器跳跃" currentFrame="18" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="v"&gt;-150&lt;/guideline&gt;&lt;guideline direction="h"&gt;-164&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="刀-中层" color="#6DA6D6" locked="true" autoNamed="false">
           <frames>
@@ -54,7 +54,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="变招" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -223,8 +223,7 @@ onClipEvent (load) {
                     <Point x="-73.6" y="-71.35"/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[
-onClipEvent (enterFrame) {
+                    <script><![CDATA[onClipEvent (enterFrame) {
 	自机 = _parent._parent;
 	if (自机._name == _root.控制目标)
 	{
@@ -267,7 +266,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="18" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -1467,7 +1466,7 @@ _parent.UpdateSmallState("兵器空中攻击二段中");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="音效" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -6821,10 +6820,10 @@ onClipEvent(load){
                   <edges>
                     <Edge fillStyle0="2" edges="!3682 857[#463.85 #24C.9 -3669 -2154!-3669 -2154|-7298 4364!-7298 4364[-1386 5050 2924 4279!2924 4279[11730 2711 8798 -2785!8798 -2785[6533 -7025 335 -7089!335 -7089[6996 -6159 6592 -1336!6592 -1336[6450 349 5154 756!5154 756|5154 1610
 !5154 1610|3888 1610!3888 1610|3888 1402"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!3888 1402|3888 875!3888 875[#ECA.DD #364.26 3682 857"/>
                     <Edge fillStyle0="1" edges="
 !3888 1402|4855 1402!4855 1402|4855 611!4855 611[#1107.9D #2FE.F1 3682 721!3682 721|3682 857"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="
-!3682 857[#ECA.DD #364.26 3888 875!3888 875|3888 1402"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -9734,11 +9733,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀-中层" color="#B7F8BD" autoNamed="false">
+        <DOMLayer name="刀-中层" color="#B7F8BD" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-305.55" centerPoint3DY="-103.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="-305.55" centerPoint3DY="-103.5">
                   <matrix>
                     <Matrix a="-0.15704345703125" b="-0.972671508789063" c="0.972671508789063" d="-0.15704345703125" tx="-106.85" ty="-58.4"/>
                   </matrix>

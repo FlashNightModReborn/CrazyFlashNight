@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跑攻" itemID="6919e2a5-00001141" lastModified="1769694922" lastUniqueIdentifier="9">
   <timeline>
-    <DOMTimeline name="空手跑攻" currentFrame="84">
+    <DOMTimeline name="空手跑攻" currentFrame="52">
       <layers>
         <DOMLayer name="连段标识" color="#AAB49D" autoNamed="false">
           <frames>
@@ -288,7 +288,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#ADA948" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 2" color="#ADA948" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -704,7 +704,7 @@ if (!抓取 && 蓄力 && 蓄力>=20 && Math.abs(_parent.Z轴坐标 - _root.gamew
             </DOMFrame>
             <DOMFrame index="51" duration="23" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -1792,7 +1792,7 @@ _parent.play();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹&amp;变招" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="子弹&amp;变招" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

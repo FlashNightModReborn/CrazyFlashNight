@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1771258426" lastUniqueIdentifier="320">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1771509866" lastUniqueIdentifier="320">
   <timeline>
     <DOMTimeline name="主角-男" currentFrame="436">
       <layers>
@@ -834,7 +834,7 @@ on(release){
             </DOMFrame>
             <DOMFrame index="29" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手跳" name="man" selected="true" centerPoint3DX="261.55" centerPoint3DY="214.65">
+                <DOMSymbolInstance libraryItemName="sprite/空手跳" name="man" centerPoint3DX="261.55" centerPoint3DY="214.65">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.4" ty="-60.9"/>
                   </matrix>
@@ -933,7 +933,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手跑攻" name="man" centerPoint3DX="281.75" centerPoint3DY="249.7">
+                <DOMSymbolInstance libraryItemName="sprite/空手跑攻" name="man" selected="true" centerPoint3DX="281.75" centerPoint3DY="249.7">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
@@ -1056,7 +1056,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="88" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 144" name="man" centerPoint3DX="279.4" centerPoint3DY="158.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 144" name="man" selected="true" centerPoint3DX="279.4" centerPoint3DY="158.85">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>
