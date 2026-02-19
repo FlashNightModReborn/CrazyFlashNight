@@ -1,8 +1,10 @@
 ﻿import org.flashNight.neur.StateMachine.FSM_Status;
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
-import org.flashNight.arki.unit.UnitAI.EngageMovementStrategy;
+import org.flashNight.arki.unit.UnitAI.MovementResolver;
+import org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
 /**
  * 佣兵战斗模块 — 作为子状态机嵌入根机 HeroCombatBehavior
@@ -19,11 +21,15 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
     // 战术走位策略
     private var _movement:EngageMovementStrategy;
 
+    // 确定性随机源（可复现行为）
+    private var _rng:LinearCongruentialEngine;
+
     public function HeroCombatModule(_data:UnitAIData) {
         // machine-level onEnter: 重入时强制重置到 Chasing
         super(null, function() { this.ChangeState("Chasing"); }, null);
         this.data = _data;
         this._movement = new EngageMovementStrategy();
+        this._rng = LinearCongruentialEngine.getInstance();
 
         // 闭包捕获子状态机引用 — engage() 需要访问 HeroCombatModule 实例方法
         // FSM_Status 回调中 this = FSM_Status 无法直接访问
@@ -79,7 +85,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
     public function chase():Void {
         var self:MovieClip = data.self;
-        UnitAIData.clearInput(self);
+        MovementResolver.clearInput(self);
 
         // 目标失效守卫（T0-1：增加 hp 校验，防止追尸体）
         var t:MovieClip = data.target;
@@ -126,7 +132,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
         // 跑步切换：Z 轴基本对齐后再切跑，避免跑步高速导致 Z 轴抖动
         // absZDiff > 20 时保持走路（低速精确对齐），对齐后才允许跑步追击
-        if (!self.射击中 && !self.man.换弹标签 && random(3) == 0) {
+        if (!self.射击中 && !self.man.换弹标签 && _rng.randomInteger(0, 2) == 0) {
             if (absZDiff <= 20) {
                 self.状态改变(self.攻击模式 + "跑");
             }
@@ -163,19 +169,19 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         }
 
         // 统一处理边界碰撞：沿墙滑行 / 角落突围 / 正常输出
-        UnitAIData.applyBoundaryAwareMovement(UnitAIData(data), self, wantX, wantZ);
+        MovementResolver.applyBoundaryAwareMovement(UnitAIData(data), self, wantX, wantZ);
     }
 
     // ═══════ 交战（射程内）═══════
 
     public function engage_enter():Void {
-        UnitAIData.clearInput(data.self);
+        MovementResolver.clearInput(data.self);
     }
 
     public function engage():Void {
         var self:MovieClip = data.self;
 
-        UnitAIData.clearInput(self);
+        MovementResolver.clearInput(self);
 
         // 目标失效守卫（T0-1：增加 hp 校验，防止攻击尸体）
         var t:MovieClip = data.target;
@@ -213,31 +219,15 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // ── 战术走位（策略委托）──
         _movement.apply(UnitAIData(data), self, frame, inSkill);
 
-        // 防呆：管线边界情况兜底（所有候选被过滤 / commitment 间隙 / 状态切换空隙）
-        // 增加 commitment 检查：避免在换弹/技能 commitment 期间强行输出普攻打断动画
-        if (!self.动作A && !self.动作B && !self.左行 && !self.右行 && !self.上行 && !self.下行) {
-            var st:String = self.状态;
-            if (st != "技能" && st != "战技" && !self.射击中) {
-                var safeToAttack:Boolean =
-                    !data.arbiter.getExecutor().isBodyCommitted(_root.帧计时器.当前帧数);
-                if (safeToAttack) {
-                    self.动作A = true;
-                    if (self.攻击模式 === "双枪") self.动作B = true;
-                }
-            }
-        }
-
-        // T0-3：移动中但无攻击输出的兜底（防止纯走位不输出）
-        // 仅当 arbiter 未提交任何 body 动作且未 committed 时生效
+        // 防呆兜底：管线未产出动作 + 无 commitment → 默认普攻
+        // getCurrentBodyType()==null 蕴含 !isBodyCommitted()（无类型 = 无承诺）
+        // 覆盖：纯站立无输出 + 移动中无攻击 两种边界场景
         if (!self.动作A && self.射击中 != true) {
-            var st2:String = self.状态;
-            if (st2 != "技能" && st2 != "战技") {
-                var exec = data.arbiter.getExecutor();
-                if (!exec.isBodyCommitted(_root.帧计时器.当前帧数)
-                    && exec.getCurrentBodyType() == null) {
-                    self.动作A = true;
-                    if (self.攻击模式 === "双枪") self.动作B = true;
-                }
+            var st:String = self.状态;
+            if (st != "技能" && st != "战技"
+                && data.arbiter.getExecutor().getCurrentBodyType() == null) {
+                self.动作A = true;
+                if (self.攻击模式 === "双枪") self.动作B = true;
             }
         }
 

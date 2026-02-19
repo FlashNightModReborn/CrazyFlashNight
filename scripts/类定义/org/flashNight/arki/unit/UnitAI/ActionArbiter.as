@@ -73,7 +73,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     private var _trace:DecisionTrace;
 
     // ── 撤退紧迫度（burst damage tracking）──
-    private var _prevHpRatio:Number = 1;
+    private var _prevHpRatio:Number;
     private var _retreatUrgency:Number = 0;
 
     // ── 包围度 + 近距密度（左右敌人分布检测，统一采样）──
@@ -183,6 +183,15 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
      /**
       * tick — 每 AI 帧唯一入口
       *
+      * 7 阶段管线：
+      *   1. _updateRetreatUrgency  — burst damage → 撤退紧迫度
+      *   2. _updateSpatialAwareness — 包围度/近距密度/射弹预警
+      *   3. _prepareContext         — 战术偏置清理 + build 黑板 + 自适应温度
+      *   4. _selectBodyAction       — collect → filter → score → select → execute
+      *   5. _evaluateStance         — 武器模式选择（独立冷却）
+      *   6. _evaluateHeal           — 血包使用（独立冷却）
+      *   7. _trace.flush            — 决策追踪输出
+      *
       * @param data    共享 AI 数据
       * @param context "chase" | "engage" | "selector" | "retreat"
       */
@@ -190,20 +199,48 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         var self:MovieClip = data.self;
         var frame:Number = _root.帧计时器.当前帧数;
 
-        // ═══ 撤退紧迫度（burst damage → 勇气调节，build 前预计算）═══
-        // hpRatio 内联计算（与 build 内相同公式，同 tick 内一致）
+        _updateRetreatUrgency(self, frame);
+        _updateSpatialAwareness(self, frame);
+        var dynT:Number = _prepareContext(data, context, frame);
+        _selectBodyAction(data, context, self, frame, dynT);
+
+        _evaluateStance(data, context, frame);
+        _evaluateHeal(data);
+        _trace.flush();
+    }
+
+    // ═══════ tick 阶段 1：撤退紧迫度 ═══════
+
+    /**
+     * _updateRetreatUrgency — burst damage → 勇气调节的撤退紧迫度
+     *
+     * hpRatio 内联计算（与 AIContext.build 内相同公式，同 tick 内一致）。
+     * 首帧 _prevHpRatio 为 NaN → hpDelta 视为 0（避免非满血单位误触撤退）。
+     */
+    private function _updateRetreatUrgency(self:MovieClip, frame:Number):Void {
         var maxHP:Number = self.hp满血值;
         var hpRatio:Number = (maxHP > 0) ? Math.max(0, Math.min(1, self.hp / maxHP)) : 1;
         var hpDelta:Number = hpRatio - _prevHpRatio;
         _prevHpRatio = hpRatio;
+        if (isNaN(hpDelta)) hpDelta = 0;
         if (hpDelta < -0.01) {
             _retreatUrgency = Math.min(1,
                 _retreatUrgency + Math.max(0, -hpDelta - p.勇气 * 0.15) * 3);
         }
         _retreatUrgency *= 0.92;
         if (_retreatUrgency < 0.05) _retreatUrgency = 0;
+    }
 
-        // ═══ 包围度 + 近距密度检测（周期性，每 16 帧 ≈ 0.6s）═══
+    // ═══════ tick 阶段 2：空间感知 ═══════
+
+    /**
+     * _updateSpatialAwareness — 包围度 + 近距密度 + 射弹预警
+     *
+     * 包围度/近距密度每 16 帧周期性采样（≈0.6s），射弹预警逐帧检测。
+     * 两者均可加剧 _retreatUrgency。
+     */
+    private function _updateSpatialAwareness(self:MovieClip, frame:Number):Void {
+        // 包围度 + 近距密度检测（周期性，每 16 帧 ≈ 0.6s）
         if (frame - _lastEncirclementFrame >= 16) {
             _lastEncirclementFrame = frame;
             var scanRange:Number = 250;
@@ -212,7 +249,6 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             _leftEnemyCount = leftCount;
             _rightEnemyCount = rightCount;
             _encirclement = Math.min(1, leftCount * rightCount / 4);
-            // 近距密度（150px，复用给 CrowdAwarenessMod / FollowingHero Gate）
             _nearbyCount = TargetCacheManager.getEnemyCountInRange(self, 16, 150, 150, true);
         }
 
@@ -222,33 +258,39 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             _retreatUrgency = Math.min(1, _retreatUrgency + _encirclement * courageDampen * 0.3);
         }
 
-        // ═══ 射弹预警 → 前瞻性撤退（Layer 0，年龄窗口容忍 0~1 帧延迟）═══
+        // 射弹预警 → 前瞻性撤退（年龄窗口容忍 0~1 帧延迟）
         var btAge:Number = frame - self._btFrame;
         var btCount:Number = self._btCount;
         if (btAge >= 0 && btAge <= 1 && !isNaN(btCount) && btCount > 0) {
-            var btETA:Number = self._btMinETA - btAge; // 年龄修正
+            var btETA:Number = self._btMinETA - btAge;
             if (isNaN(btETA) || btETA < 0) btETA = 0;
-            // 子弹多+到达快 → 紧迫；勇气高 → 抑制
             var btUrgency:Number = Math.min(0.5, btCount * 0.1)
                 * Math.max(0, 1 - btETA / 20)
                 * (1 - p.勇气 * 0.7);
             _retreatUrgency = Math.min(1, _retreatUrgency + btUrgency);
         }
+    }
 
-        // ═══ 战术偏置过期清理（build 前处理，保持 build 无副作用）═══
+    // ═══════ tick 阶段 3：黑板构建 + 温度 ═══════
+
+    /**
+     * _prepareContext — 战术偏置过期 + build-once 黑板 + 自适应温度 + trace begin
+     *
+     * @return dynT 自适应 Boltzmann 温度
+     */
+    private function _prepareContext(data:UnitAIData, context:String, frame:Number):Number {
+        // 战术偏置过期清理（build 前处理，保持 build 无副作用）
         var tactBias:Object = _stanceMgr.getTacticalBias();
         if (tactBias != null && frame >= tactBias.expiryFrame) {
             _stanceMgr.clearTacticalBias();
         }
 
-        // ═══ 黑板构建（build-once 契约：所有信号在此一次性聚合，build 只读）═══
-        _executor.updateAnimLock(self);
+        // 黑板构建（build-once 契约：所有信号在此一次性聚合）
+        _executor.updateAnimLock(data.self);
         _ctx.build(data, context, _executor, _stanceMgr, _weaponEval, _recentHitFrame, p,
                    _retreatUrgency, _encirclement, _nearbyCount, _leftEnemyCount, _rightEnemyCount);
 
-        // ═══ 自适应温度（高压更确定，低压更灵动）═══
-        // base: personality.temperature（由 计算AI参数 生成并 clamp）
-        // dyn : 根据 ctx 信号缩放，避免弹压/受创/被围时“抖机灵”选错动作
+        // 自适应温度（高压更确定，低压更灵动）
         var dynT:Number = p.temperature;
         if (isNaN(dynT) || dynT <= 0) dynT = 0.1;
 
@@ -269,11 +311,22 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         if (dynT < 0.01) dynT = 0.01;
         if (dynT > 0.5) dynT = 0.5;
 
-        // ═══ 决策追踪 ═══
-        _trace.begin(self.名字, _ctx, p);
+        // 决策追踪 begin
+        _trace.begin(data.self.名字, _ctx, p);
 
-        // ═══ body 轨：统一动作选择 ═══
+        return dynT;
+    }
 
+    // ═══════ tick 阶段 4：body 轨动作选择 ═══════
+
+    /**
+     * _selectBodyAction — collect → filter → score → select → execute
+     *
+     * 完整的 body 轨管线：候选收集 + 过滤 + 评分 + Boltzmann 选择 + 执行提交。
+     * ReflexBoostMod 在评分阶段对反射闪避注入高分（替代原硬旁路）。
+     */
+    private function _selectBodyAction(data:UnitAIData, context:String,
+                                       self:MovieClip, frame:Number, dynT:Number):Void {
         var candidates:Array = _candidates;
         candidates.length = 0;
 
@@ -292,7 +345,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         }
         var postFilterCount:Number = candidates.length;
 
-        // 诊断：记录候选计数 + 源概览；无候选时标记 noDecision（LEVEL_FULL 仍输出）
+        // 诊断：记录候选计数 + 源概览
         if (_trace.isEnabled()) {
             var srcSummary:String = "";
             if (sources == null) {
@@ -302,7 +355,6 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             } else {
                 for (var ssi:Number = 0; ssi < sources.length; ssi++) {
                     if (ssi > 0) srcSummary += "+";
-                    // 内置策略都有 getName()，自定义策略缺失时回退到 "?"
                     srcSummary += (sources[ssi].getName != undefined) ? sources[ssi].getName() : "?";
                 }
             }
@@ -318,43 +370,6 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             }
         }
 
-        // 2.5 反射闪避（高反应角色：bulletETA ≤ 8 帧直接触发，跳过评分）
-        // 行为预算：两次反射闪避间隔至少 3*tickInterval 帧（DOOM push-forward 模式）
-        // 间歇期 Boltzmann 正常运作，让换弹/攻击/技能有机会被选中
-        var reflexCooldown:Number = 3 * p.tickInterval;
-        if (_ctx.bulletThreat > 0 && _ctx.bulletETA <= 8 && p.反应 >= 0.7
-            && candidates.length > 0
-            && (frame - _executor.getLastReflexFrame() >= reflexCooldown)) {
-            var reflexDodge:Object = null;
-            for (var ri:Number = 0; ri < candidates.length; ri++) {
-                var rc:Object = candidates[ri];
-                if (rc.type == "skill" && rc.skill != null && rc.skill.功能 == "躲避") {
-                    reflexDodge = rc;
-                    break;
-                }
-            }
-            if (reflexDodge != null) {
-                // 直接执行，跳过 Boltzmann
-                if (reflexDodge.skill != null) {
-                    self.技能等级 = reflexDodge.skill.技能等级;
-                    reflexDodge.skill.上次使用时间 = _ctx.nowMs;
-                }
-                _executor.execute(reflexDodge, self);
-                var rCommit:Number = reflexDodge.commitFrames;
-                if (isNaN(rCommit)) rCommit = 5;
-                _executor.commitBody("skill", 0,
-                    Math.round(rCommit * p.tickInterval), frame,
-                    reflexDodge.skill != null ? reflexDodge.skill.冷却 : 0);
-                _executor.setDodgeActive(true);
-                _executor.commitReflex(frame);
-                _postExecution(reflexDodge, data, frame);
-                _trace.selected(reflexDodge, 1.0, 0);
-                // stance/heal 可延后一 tick，此处不再评估
-                _trace.flush();
-                return;
-            }
-        }
-
         // 3. hold/trigger 分流 + Continue 注入
         if (candidates.length > 0) {
             var holdAttack:Boolean = false;
@@ -363,18 +378,15 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                 if (_ctx.inputSemantic == "hold") {
                     var atkMode:String = _ctx.attackMode;
                     if (atkMode == "空手" || atkMode == "兵器") {
-                        // 近战 Hold+Continue: 连招保护
                         var meleeContScore:Number = 0.5 + p.勇气 * 2.0;
                         candidates.push({
                             name: "Continue", type: "continue", priority: -1,
                             score: meleeContScore
                         });
                     } else {
-                        // 远程 Hold: 不注入 Continue
                         holdAttack = true;
                     }
                 } else {
-                    // Trigger 语义（skill/reload/preBuff）
                     candidates.push({
                         name: "Continue", type: "continue", priority: -1,
                         score: _executor.getContinueScore()
@@ -388,9 +400,8 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
                 _pipeline.scoreAll(candidates, _ctx, data, self, p, T, _trace);
                 var selected:Object = _scorer.boltzmannSelect(candidates, T);
- 
+
                 if (selected != null) {
-                    // 技能属性预写入（必须在 execute 之前）
                     if (selected.type == "skill" || selected.type == "preBuff") {
                         if (selected.skill != null) {
                             self.技能等级 = selected.skill.技能等级;
@@ -398,30 +409,28 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                         }
                     }
 
-                    // 执行
                     _executor.execute(selected, self);
 
-                    // 提交 commitment + 后处理（Continue 不提交）
                     if (selected.type != "continue") {
                         var commitF:Number = selected.commitFrames;
                         if (isNaN(commitF)) commitF = 5;
-                        // 技能 CD 传入 executor，用于 getContinueScore CD 比例保护
                         var skillCD:Number = 0;
                         if (selected.skill != null) {
                             skillCD = selected.skill.冷却;
                         }
                         _executor.commitBody(selected.type, selected.priority,
                             Math.round(commitF * p.tickInterval), frame, skillCD);
-                        // 标记闪避/位移技能激活（允许 EngageMovement Z 轴输入）
                         if (selected.skill != null
                             && (selected.skill.功能 == "躲避" || selected.skill.功能 == "位移")) {
                             _executor.setDodgeActive(true);
                         }
+                        if (selected._reflexBoosted) {
+                            _executor.commitReflex(frame);
+                        }
                         _postExecution(selected, data, frame);
                         holdAttack = false;
                     }
- 
-                    // 选中概率（仅日志启用时计算，避免热路径额外开销）
+
                     var prob:Number = 0;
                     if (_trace.isEnabled()) {
                         var sumExp:Number = 0;
@@ -436,27 +445,17 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                     _trace.selected(selected, prob, T);
                 }
             }
- 
+
             // 5. Attack hold：无新动作打断 → 维持按键输出
             if (holdAttack) {
-                _executor.holdCurrentBody(self);
+                _executor.autoHold(self);
             }
         }
 
-        // 5.5 自动维持普攻 hold 输入（修复：中断过滤后 candidates 为空导致"松手点射"）
-        // 仅在 engage 期启用：chase/selector 不应持续输出普攻按键。
+        // 5.5 自动维持普攻 hold 输入
         if (context == "engage") {
             _executor.autoHold(self);
         }
-
-        // ═══ stance 轨：武器模式选择 ═══
-        _evaluateStance(data, context, frame);
-
-        // ═══ item 轨：血包使用 ═══
-        _evaluateHeal(data);
-
-        // ═══ 决策追踪输出 ═══
-        _trace.flush();
     }
 
 

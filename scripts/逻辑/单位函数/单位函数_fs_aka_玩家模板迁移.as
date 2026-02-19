@@ -2411,7 +2411,12 @@ _root.计算AI参数 = function(p:Object):Void {
     p.stabilityFactor     = p.经验;                 // 温度衰减因子: T /= (1 + stabilityFactor)
     p.maxCandidates       = Math.round(2 + p.经验 * 6); // 候选动作池上限（2~8）
 
-    // ── 反应 → 状态机执行频率 ──
+    // ── 反应 → commitment 时间缩放因子 ──
+    // 语义：动作提交后的锁定帧数乘数。高反应(1帧)=快速切换，低反应(6帧)=行动迟缓。
+    // 消费方：ActionArbiter._selectBodyAction: commitFrames * tickInterval
+    //         FreqAdjustPost: δ = T * ln(E/16) 频率校正
+    //         ReflexBoostMod: reflexCooldown = 3 * tickInterval
+    // 注意：不是 AI update 频率（那由 unitUpdateWheel 4帧固定间隔控制）。
     p.tickInterval        = Math.max(1, Math.round(6 - p.反应 * 5)); // 1~6帧/tick
 
     // ── 智力 → 策略求解深度（活跃评分维度数）──
@@ -2477,6 +2482,26 @@ _root.计算AI参数 = function(p:Object):Void {
     // comboPreference：勇气+技术共同驱动连招倾向
     p.comboPreference     = 0.1 + p.勇气 * 0.3 + p.技术 * 0.2; // 0.1~0.6
 
+    // ── 撤退/状态切换阈值（勇气驱动，替代硬编码常量）──
+    // 撤退进入：低勇气更容易撤退(0.45)，高勇气坚持战斗(0.75)
+    p.retreatEnterThreshold   = 0.45 + (1 - p.勇气) * 0.3;     // 0.45~0.75
+    // 撤退退出：紧迫度降到此值以下才允许退出撤退
+    p.retreatExitMinUrgency   = 0.15 + p.勇气 * 0.15;           // 0.15~0.30
+    // 撤退退出HP：HP高于此比例才退出撤退
+    p.retreatExitHPThreshold  = 0.25 + p.勇气 * 0.25;           // 0.25~0.50
+    // 撤退超时：低勇气撤退更久(160帧)，高勇气快速回归(80帧)
+    p.retreatMaxDuration      = 80 + Math.round((1 - p.勇气) * 80); // 80~160帧
+    // 掩护射击间隔：反应高→射击更频繁(2)，反应低→间隔更长(6)
+    p.coveringFireGap         = Math.max(2, 6 - Math.floor(p.反应 * 4)); // 2~6
+    // 安全距离换弹倍率：经验高→更远距离主动换弹
+    p.safeReloadDistMult      = 1.5 + p.经验 * 1.0;             // 1.5~2.5
+    // 安全距离换弹紧急度上限：勇气高→更愿意在高压下换弹
+    p.safeReloadUrgMax        = 0.2 + p.勇气 * 0.2;             // 0.2~0.4
+    // 走位闪避紧急度阈值：低勇气更容易触发闪避走位
+    p.evadeUrgencyThreshold   = 0.4 + (1 - p.勇气) * 0.3;      // 0.4~0.7
+    // 走位被围阈值：智力高→更早感知包围
+    p.evadeEncirclementThreshold = 0.25 + (1 - p.智力) * 0.2;   // 0.25~0.45
+
     // ── 角色专属技能加成（由 配置人形怪AI 或 profile 设置，默认 0）──
     if (isNaN(p.skillBaseBonus)) p.skillBaseBonus = 0;
 
@@ -2517,6 +2542,15 @@ _root.计算AI参数 = function(p:Object):Void {
     p.momentumDecay       = clamp(p.momentumDecay, 0.3, 0.7);
     p.comboPreference     = clamp(p.comboPreference, 0.1, 0.6);
     p.skillBaseBonus      = clamp(p.skillBaseBonus, 0, 1.0);
+    p.retreatEnterThreshold  = clamp(p.retreatEnterThreshold, 0.45, 0.75);
+    p.retreatExitMinUrgency  = clamp(p.retreatExitMinUrgency, 0.15, 0.30);
+    p.retreatExitHPThreshold = clamp(p.retreatExitHPThreshold, 0.25, 0.50);
+    p.retreatMaxDuration     = clamp(p.retreatMaxDuration, 80, 160);
+    p.coveringFireGap        = clamp(p.coveringFireGap, 2, 6);
+    p.safeReloadDistMult     = clamp(p.safeReloadDistMult, 1.5, 2.5);
+    p.safeReloadUrgMax       = clamp(p.safeReloadUrgMax, 0.2, 0.4);
+    p.evadeUrgencyThreshold  = clamp(p.evadeUrgencyThreshold, 0.4, 0.7);
+    p.evadeEncirclementThreshold = clamp(p.evadeEncirclementThreshold, 0.25, 0.45);
 
     // ── 参数派生溯源（Phase 4a: debug-only, AI日志级别>=3 时构建）──
     // p.__aiMeta[paramName] = "formula = value, from: trait1=v1, trait2=v2"

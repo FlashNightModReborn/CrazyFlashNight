@@ -18,7 +18,7 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitBehavior extends FSM_StateMachine{
         this.AddStatus("Sleeping",new FSM_Status(null, this.sleep_enter, null));
     }
 
-    private function pushGateTransition(current:String, target:String, func:Function):Void{
+    public function pushGateTransition(current:String, target:String, func:Function):Void{
         if(!this.statusDict[current] || !this.statusDict[target] || !func) return;
         this.transitions.push(current, target, func, true);
     }

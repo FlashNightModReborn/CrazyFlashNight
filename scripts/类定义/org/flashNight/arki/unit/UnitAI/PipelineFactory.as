@@ -11,6 +11,7 @@ import org.flashNight.arki.unit.UnitAI.scoring.DecisionNoiseMod;
 import org.flashNight.arki.unit.UnitAI.scoring.BulletPressureMod;
 import org.flashNight.arki.unit.UnitAI.scoring.ComboDepthMod;
 import org.flashNight.arki.unit.UnitAI.scoring.CrowdAwarenessMod;
+import org.flashNight.arki.unit.UnitAI.scoring.ReflexBoostMod;
 import org.flashNight.arki.unit.UnitAI.scoring.MomentumPost;
 import org.flashNight.arki.unit.UnitAI.scoring.FreqAdjustPost;
 import org.flashNight.arki.unit.UnitAI.strategies.OffenseStrategy;
@@ -49,7 +50,7 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
     public static var DEFAULT_MODS:Array = [
         "StanceAffinity", "TacticalBias", "RigidState", "RangePressure",
         "ReactiveDodge", "AmmoReload", "SkillHierarchy", "SurvivalUrgency",
-        "BulletPressure", "ComboDepth", "CrowdAwareness", "DecisionNoise"
+        "BulletPressure", "ComboDepth", "CrowdAwareness", "ReflexBoost", "DecisionNoise"
     ];
     public static var DEFAULT_POSTS:Array = ["Momentum", "FreqAdjust"];
     public static var DEFAULT_FILTERS:Array = ["AnimLock", "Interrupt"];
@@ -81,6 +82,7 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
         if (key == "DecisionNoise")   return new DecisionNoiseMod(deps.rng);
         if (key == "ComboDepth")      return new ComboDepthMod();
         if (key == "CrowdAwareness")  return new CrowdAwarenessMod();
+        if (key == "ReflexBoost")    return new ReflexBoostMod(deps.executor);
         // 自定义扩展
         var f:Function = _customMods[key];
         if (f != null) return f(deps);
@@ -150,15 +152,29 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
      * 同 key 的策略实例在各上下文间共享（保留有状态策略的跨上下文行为，
      * 如 PreBuffStrategy._preBuffCooldownFrame 在 chase/retreat 间同步）。
      *
-     * @param sourceSpec  { context: [key, ...] }（null -> DEFAULT_SOURCES）
+     * 增量覆盖：sourceSpec 非 null 时，先以 DEFAULT_SOURCES 为基础，
+     * 再用 sourceSpec 中的条目覆盖对应 context。
+     * 这样调用方只需声明想要覆盖的 context，其余自动继承默认配置。
+     *
+     * @param sourceSpec  { context: [key, ...] }（null -> DEFAULT_SOURCES 全盘采用）
      * @param deps        依赖对象
      */
     public static function buildSources(sourceSpec:Object, deps:Object):Object {
-        if (sourceSpec == null) sourceSpec = DEFAULT_SOURCES;
+        // 合并：DEFAULT_SOURCES 为基础，sourceSpec 覆盖
+        var merged:Object = {};
+        for (var dk:String in DEFAULT_SOURCES) {
+            merged[dk] = DEFAULT_SOURCES[dk];
+        }
+        if (sourceSpec != null) {
+            for (var sk:String in sourceSpec) {
+                merged[sk] = sourceSpec[sk];
+            }
+        }
+
         var cache:Object = {};
         var result:Object = {};
-        for (var ctx:String in sourceSpec) {
-            var keys:Array = sourceSpec[ctx];
+        for (var ctx:String in merged) {
+            var keys:Array = merged[ctx];
             var arr:Array = [];
             for (var i:Number = 0; i < keys.length; i++) {
                 var key:String = keys[i];

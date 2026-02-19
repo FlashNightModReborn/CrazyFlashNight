@@ -6,6 +6,8 @@ import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.HeroCombatModule;
 import org.flashNight.arki.unit.UnitAI.UtilityEvaluator;
 import org.flashNight.arki.unit.UnitAI.ActionArbiter;
+import org.flashNight.arki.unit.UnitAI.MovementResolver;
+import org.flashNight.arki.unit.UnitAI.strategies.RetreatMovementStrategy;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 /**
@@ -34,14 +36,9 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavior {
 
     public static var FOLLOW_REEVAL_TIME:Number = 2; // 跟随状态重新评估间隔（2次action = 8帧）
-    private var _retreatStartFrame:Number = -1;      // 撤退开始帧（超时兜底用）
-    private var _retreatFireCounter:Number = 0;      // 撤退掩护射击计数器（避免 frame%gap 取模别名）
 
-    // ── 撤退子方法间共享的 per-tick 暂存值 ──
-    // retreat_action → _computeRetreatMove 写入，_evaluateCoveringFire / _applyRetreatOutput 读取
-    private var _retMoveX:Number = 0;
-    private var _retMoveZ:Number = 0;
-    private var _retZSep:Number = 0;
+    // ── 撤退移动策略（封装全部撤退移动 + 掩护射击逻辑）──
+    private var _retreatMovement:RetreatMovementStrategy;
 
     public function HeroCombatBehavior(_data:UnitAIData) {
         super(_data);
@@ -51,28 +48,12 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // 通过闭包委托到根机实例方法，确保 evaluateWeapon/evaluateHeal/searchTarget 可达
         var behavior:HeroCombatBehavior = this;
 
-        // ── 创建 Utility 评估器 + 统一动作管线（无条件）──
-        // Phase 3a: 移除 personality null 守卫；personality 应在 配置人形怪AI 中已设置
-        if (data.personality == null) {
-            // 防御性兜底：复用 配置人形怪AI 的 seed 算法，避免 seed=0 导致同质化
-            _root.服务器.发布服务器消息("[AI WARNING] " + data.self._name
-                + " personality==null, auto-generating");
-            var self:MovieClip = data.self;
-            if (self.aiSeed == null) {
-                var _seed:Number = self.等级 || 0;
-                var _n:String = self.名字 || self._name;
-                for (var _i:Number = 0; _i < _n.length; _i++) {
-                    _seed = _seed * 31 + _n.charCodeAt(_i);
-                }
-                self.aiSeed = _seed & 0x7FFFFFFF;
-            }
-            self.personality = _root.生成随机人格(self.aiSeed);
-            _root.计算AI参数(self.personality);
-            data.personality = self.personality;
-        }
+        // ── 创建 Utility 评估器 + 统一动作管线 ──
+        // personality null 守卫已提升到 BaseUnitAI 构造函数，此处保证不为 null
         var eval:UtilityEvaluator = new UtilityEvaluator(data.personality);
         data.evaluator = eval;
         data.arbiter = new ActionArbiter(data.personality, eval, data.self);
+        this._retreatMovement = new RetreatMovementStrategy();
 
         // ═══════ 状态列表 ═══════
         // 已存在：Sleeping（基类默认状态）
@@ -101,8 +82,11 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // ═══════ Root Gate 转换 ═══════
 
         // HeroCombatModule → Retreating（撤退检查，优先于目标死亡检查）
+        // 阈值由 personality.retreatEnterThreshold 驱动（勇气低→更容易撤退）
         this.pushGateTransition("HeroCombatModule", "Retreating", function() {
-            return data.arbiter.getRetreatUrgency() > 0.6;
+            var threshold:Number = data.personality.retreatEnterThreshold;
+            if (isNaN(threshold)) threshold = 0.6;
+            return data.arbiter.getRetreatUrgency() > threshold;
         });
 
         // HeroCombatModule 退出：目标死亡/消失 → 回到 Selector 重新决策
@@ -129,17 +113,20 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         });
 
         // Retreating → Selector（紧迫度恢复 + HP回升 + 撤退方向被堵 + 超时兜底）
+        // 阈值由 personality 驱动（retreatExitMinUrgency, retreatMaxDuration, retreatExitHPThreshold）
         this.pushGateTransition("Retreating", "Selector", function() {
-            // Target lost/dead → 立即退出撤退回到 Selector（防止 diff_x=NaN 导致只有垂直移动）
+            // Target lost/dead → 立即退出撤退回到 Selector
             var rt = data.target;
             if (rt == null || !(rt.hp > 0) || rt._x == undefined) return true;
 
+            var pp:Object = data.personality;
+            var exitUrg:Number = pp.retreatExitMinUrgency;
+            if (isNaN(exitUrg)) exitUrg = 0.2;
+
             var urgency:Number = data.arbiter.getRetreatUrgency();
-            if (urgency > 0.2) {
+            if (urgency > exitUrg) {
                 // 紧迫度仍高，但检查是否退无可退
-                // 角落（X+Z双贴边）
                 if (data.bndCorner > 0.5) return true;
-                // 撤退方向贴墙（单轴）→ 无法继续后退，回去战斗
                 if (data.target != null && data.target._x != undefined) {
                     var retDir:Number = (data.diff_x > 0) ? -1 : 1;
                     if ((retDir < 0 && data.bndLeftDist < 80)
@@ -147,17 +134,20 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
                         return true;
                     }
                 }
-                // 超时兜底：撤退超过 120 帧(~5s) 且紧迫度已降至中等以下 → 回去战斗
-                // 防止"低血无药一直跑"的死循环
+                // 超时兜底：紧迫度已降至中等以下 + 超时 → 回去战斗
                 if (urgency < 0.5) {
-                    var retreatDur:Number = _root.帧计时器.当前帧数 - behavior._retreatStartFrame;
-                    if (retreatDur > 120) return true;
+                    var maxDur:Number = pp.retreatMaxDuration;
+                    if (isNaN(maxDur)) maxDur = 120;
+                    var retreatDur:Number = _root.帧计时器.当前帧数 - behavior._retreatMovement.getStartFrame();
+                    if (retreatDur > maxDur) return true;
                 }
                 return false;
             }
+            var exitHP:Number = pp.retreatExitHPThreshold;
+            if (isNaN(exitHP)) exitHP = 0.4;
             var maxHP = data.self.hp满血值;
             var hpR = (maxHP > 0) ? data.self.hp / maxHP : 1;
-            return hpR > 0.4;
+            return hpR > exitHP;
         });
 
         // 唤醒：Sleeping → Selector
@@ -203,7 +193,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             return;
         }
 
-        UnitAIData.clearInput(self);
+        MovementResolver.clearInput(self);
 
         // 4-6. 武器模式 + 血包评估（统一管线）
         data.arbiter.tick(data, "selector");
@@ -286,7 +276,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
      */
     public function follow_enter():Void {
         var self = data.self;
-        UnitAIData.clearInput(self);
+        MovementResolver.clearInput(self);
 
         if (data.standby) return;
 
@@ -313,7 +303,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         if (Math.abs(dz) > 20) {
             wantZ = (dz < 0) ? -1 : 1;
         }
-        UnitAIData.applyBoundaryAwareMovement(data, self, wantX, wantZ);
+        MovementResolver.applyBoundaryAwareMovement(data, self, wantX, wantZ);
 
         // 己方远距离跑步跟随
         if (wantX != 0 && !self.是否为敌人 && absDx > 300) {
@@ -327,39 +317,31 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
      * manual_enter — 停止所有 AI 输出，让玩家输入接管
      */
     public function manual_enter():Void {
-        UnitAIData.clearInput(data.self);
+        MovementResolver.clearInput(data.self);
     }
 
-    // ═══════ 撤退/重整（T1-A）═══════
+    // ═══════ 撤退/重整 ═══════
 
     /**
      * retreat_enter — 进入撤退状态
      * 保留当前目标引用（用于确定撤退方向），清除输入
      */
     public function retreat_enter():Void {
-        UnitAIData.clearInput(data.self);
-        _retreatStartFrame = _root.帧计时器.当前帧数;
-        _retreatFireCounter = 0;
+        MovementResolver.clearInput(data.self);
+        _retreatMovement.enter(_root.帧计时器.当前帧数);
     }
 
     /**
-     * retreat_action — 撤退状态每帧动作（编排器）
+     * retreat_action — 撤退状态每帧动作
      *
-     * 四阶段管线：
-     *   1. _trySafeReload()       — 安全距离换弹（到达安全距离后主动停下换弹）
-     *   2. _computeRetreatMove()  — 收集 X/Z 轴移动意图
-     *   3. _evaluateCoveringFire() — 五重门控掩护射击判定
-     *   4. _applyRetreatOutput()  — 统一输出（开火帧 vs 撤退帧）
+     * 前置处理（死亡/暂停/数据更新/管线调用/技能保护）后委托给
+     * RetreatMovementStrategy 执行四阶段移动管线。
      *
-     * 面朝方向策略：
-     *   远程姿态(repositionDir > 0)：面朝目标（边退边射/边退边buff）
-     *   近战姿态(repositionDir <= 0)：背对目标（全速奔跑撤离）
-     *
-     * 调用 arbiter.tick(data, "retreat") → PreBuff + Reload（无 Offense）
+     * 调用 arbiter.tick(data, "retreat") → PreBuff（无 Offense）
      */
     public function retreat_action():Void {
         var self:MovieClip = data.self;
-        UnitAIData.clearInput(self);
+        MovementResolver.clearInput(self);
 
         if (self.hp <= 0) return;
         if (_root.暂停) return;
@@ -369,7 +351,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             data.updateTarget();
         }
 
-        // 调用管线（retreat context → PreBuff + Reload，无 Offense）
+        // 调用管线（retreat context → PreBuff，无 Offense）
         data.arbiter.tick(data, "retreat");
 
         // 技能期不移动
@@ -378,251 +360,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             return;
         }
 
-        // 阶段 1: 安全距离换弹（可能 early return）
-        if (_trySafeReload(self)) return;
-
-        // 阶段 2: 收集移动意图 → 写入 _retMoveX, _retMoveZ, _retZSep
-        _computeRetreatMove(self);
-
-        // 阶段 3: 掩护射击判定
-        var wantFire:Boolean = _evaluateCoveringFire(self);
-
-        // 阶段 4: 统一输出
-        _applyRetreatOutput(self, wantFire);
-    }
-
-    // ═══════ 撤退子阶段 1: 安全距离换弹 ═══════
-
-    /**
-     * _trySafeReload — 撤退到安全距离后主动停下来换弹
-     *
-     * 解决"远距离撤退后不换弹"的问题。
-     * 条件：X距离充足(>xrange*2且>400) + 紧急度低(<0.3) + 非射击中
-     * 支持切换到弹药不足的其他远程武器进行换弹。
-     *
-     * P1-3 修复：换弹后通知 ActionExecutor.commitBody()，
-     * 防止下一帧 arbiter.tick() 注入 skill/attack 打断换弹动画。
-     *
-     * @return true 表示已处理（换弹中/已触发换弹），调用方应 return
-     */
-    private function _trySafeReload(self:MovieClip):Boolean {
-        var safeReloadDist:Number = data.xrange * 2;
-        if (safeReloadDist < 400) safeReloadDist = 400;
-
-        if (isNaN(data.absdiff_x) || data.absdiff_x <= safeReloadDist
-            || data.arbiter.getRetreatUrgency() >= 0.3
-            || self.射击中) {
-            return false;
-        }
-
-        // 已在换弹 → 原地等待完成
-        if (self.man.换弹标签) {
-            return true;
-        }
-
-        var executor:Object = data.arbiter.getExecutor();
-        var frame:Number = _root.帧计时器.当前帧数;
-        var commitFrames:Number = data.personality.reloadCommitFrames;
-        if (isNaN(commitFrames) || commitFrames <= 0) commitFrames = 30;
-
-        // 当前武器弹药不足 → 停下换弹
-        var curAmmoRR:Number = data.arbiter.getAmmoRatio(self);
-        if (!(curAmmoRR >= 0.5)) { // NaN-safe: NaN >= 0.5 is false → trigger reload
-            self.状态改变(self.攻击模式 + "停");
-            if (self.man.开始换弹) {
-                self.man.开始换弹();
-            } else {
-                self.man.换弹标签 = true;
-                self.man.gotoAndPlay("换弹匣");
-            }
-            // 通知 executor 追踪此换弹（P1-3 修复）
-            executor.commitBody("reload", 2, commitFrames, frame, 0);
-            if (_root.AI调试模式 == true) {
-                _root.服务器.发布服务器消息("[RET-RELOAD] " + self.名字
-                    + " 安全距离换弹 cur=" + self.攻击模式
-                    + " ammo=" + Math.round((curAmmoRR || 0) * 100) + "%");
-            }
-            return true;
-        }
-
-        // 当前武器满弹 → 检查其他远程武器是否需要换弹
-        var reloadModes:Array = ["长枪", "双枪", "手枪"];
-        for (var rmi:Number = 0; rmi < reloadModes.length; rmi++) {
-            var rmMode:String = reloadModes[rmi];
-            if (rmMode == self.攻击模式) continue;
-            if (rmMode == "长枪" && !self.长枪) continue;
-            if ((rmMode == "手枪" || rmMode == "双枪") && !self.手枪) continue;
-            var rmAmmo:Number = data.arbiter.getAmmoRatioForMode(self, rmMode);
-            if (!isNaN(rmAmmo) && rmAmmo < 0.5) {
-                var rmSwitchArg:String = (rmMode == "双枪") ? "手枪" : rmMode;
-                self.攻击模式切换(rmSwitchArg);
-                self.状态改变(self.攻击模式 + "停");
-                if (self.man.开始换弹) {
-                    self.man.开始换弹();
-                } else {
-                    self.man.换弹标签 = true;
-                    self.man.gotoAndPlay("换弹匣");
-                }
-                // 通知 executor 追踪此换弹（P1-3 修复）
-                executor.commitBody("reload", 2, commitFrames, frame, 0);
-                if (_root.AI调试模式 == true) {
-                    _root.服务器.发布服务器消息("[RET-RELOAD] " + self.名字
-                        + " 切换到 " + rmMode + " 换弹 ammo="
-                        + Math.round(rmAmmo * 100) + "%");
-                }
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    // ═══════ 撤退子阶段 2: 移动意图收集 ═══════
-
-    /**
-     * _computeRetreatMove — 计算 X/Z 轴撤退移动意图
-     *
-     * X轴：远离目标方向移动，贴墙检查（退路被堵 → 放弃，Gate 会退出 Retreating）
-     * Z轴：优先拉开垂直距离(zSep < 120)，足够后轻微蛇形闪避(30帧周期)
-     *
-     * 结果写入 _retMoveX, _retMoveZ, _retZSep 供后续阶段读取
-     */
-    private function _computeRetreatMove(self:MovieClip):Void {
-        // X轴
-        _retMoveX = 0;
-        if (data.target != null && data.target._x != undefined && data.target.hp > 0) {
-            var retDir:Number = (data.diff_x > 0) ? -1 : 1; // 远离目标
-            var retWall:Boolean = (retDir < 0 && data.bndLeftDist < 80)
-                               || (retDir > 0 && data.bndRightDist < 80);
-            if (!retWall) {
-                _retMoveX = retDir;
-            }
-        } else {
-            if (!isNaN(data.diff_x) && data.diff_x != 0) {
-                _retMoveX = (data.diff_x > 0) ? -1 : 1;
-            }
-        }
-
-        // Z轴
-        var frame:Number = _root.帧计时器.当前帧数;
-        _retMoveZ = 0;
-        _retZSep = data.absdiff_z;
-        if (isNaN(_retZSep)) _retZSep = 0;
-        var Z_SAFE:Number = 120;
-
-        if (_retZSep < Z_SAFE) {
-            if (data.diff_z != null && data.diff_z != 0) {
-                var escapeZ:Number = (data.diff_z > 0) ? -1 : 1;
-                if (escapeZ < 0 && data.bndUpDist < 50) {
-                    escapeZ = 1;
-                } else if (escapeZ > 0 && data.bndDownDist < 50) {
-                    escapeZ = -1;
-                }
-                _retMoveZ = escapeZ;
-            } else {
-                _retMoveZ = (data.bndUpDist > data.bndDownDist) ? -1 : 1;
-            }
-        } else {
-            var zWave:Number = Math.floor(frame / 30) % 2;
-            if (zWave == 0 && data.bndUpDist > 60) {
-                _retMoveZ = -1;
-            } else if (zWave == 1 && data.bndDownDist > 60) {
-                _retMoveZ = 1;
-            }
-        }
-    }
-
-    // ═══════ 撤退子阶段 3: 掩护射击判定 ═══════
-
-    /**
-     * _evaluateCoveringFire — 远程姿态下的火力-机动交替判定
-     *
-     * 五重门控：
-     *   1. 姿态门控：远程(repoDir>0) + 非射击中 + 非动画锁
-     *   2. 弹药门控：ammoR > 0.3（NaN安全）
-     *   3. Z轴对齐门控：_retZSep <= zrange*2
-     *   4. X轴安全门控：absdiff_x <= xrange*1.5
-     *   5. 紧急度门控：urgency < 0.8 且无迫近弹道
-     *
-     * 节奏：内部 _retreatFireCounter 计数器，避免 frame%gap 与4帧wheel取模别名
-     *
-     * @return true 表示本帧应开火（X轴停下射击）
-     */
-    private function _evaluateCoveringFire(self:MovieClip):Boolean {
-        var repoDir:Number = data.arbiter.getRepositionDir();
-        var executor:Object = data.arbiter.getExecutor();
-        var frame:Number = _root.帧计时器.当前帧数;
-
-        if (repoDir <= 0 || self.射击中 || executor.isAnimLocked()) {
-            return false;
-        }
-
-        // 弹药门控
-        var ammoR:Number = data.arbiter.getAmmoRatio(self);
-        var ammoOK:Boolean = !(ammoR <= 0.3); // NaN → true
-
-        // Z轴对齐门控
-        var zRange:Number = data.zrange;
-        if (isNaN(zRange) || zRange < 10) zRange = 25;
-        var zAligned:Boolean = (isNaN(_retZSep) || _retZSep <= zRange * 2);
-
-        // X轴安全门控
-        var xSafe:Boolean = !(data.absdiff_x > data.xrange * 1.5);
-
-        // 紧急度门控
-        var urgency:Number = data.arbiter.getRetreatUrgency();
-        var btAge:Number = frame - self._btFrame;
-        var imminent:Boolean = (btAge >= 0 && btAge <= 1
-            && self._btCount > 0 && (self._btMinETA - btAge) < 8);
-        var canPause:Boolean = (urgency < 0.8 && !imminent);
-
-        var wantFire:Boolean = false;
-        if (ammoOK && zAligned && xSafe && canPause) {
-            var fireGap:Number = 6 - Math.floor((data.personality.反应 || 0) * 4);
-            if (fireGap < 2) fireGap = 2;
-            _retreatFireCounter++;
-            if (_retreatFireCounter >= fireGap) {
-                wantFire = true;
-                _retreatFireCounter = 0;
-            }
-        }
-
-        // 调试日志
-        if (_root.AI调试模式 == true && (frame & 31) == 0) {
-            _root.服务器.发布服务器消息("[RET-FIRE] " + self.名字
-                + " ammo=" + Math.round((ammoR || 0) * 100) + "%"
-                + " z=" + Math.round(_retZSep) + "/" + Math.round(zRange * 2)
-                + " x=" + Math.round(data.absdiff_x) + "/" + Math.round(data.xrange * 1.5)
-                + " urg=" + Math.round(urgency * 100)
-                + " anim=" + executor.isAnimLocked()
-                + " fire=" + wantFire);
-        }
-
-        return wantFire;
-    }
-
-    // ═══════ 撤退子阶段 4: 统一输出 ═══════
-
-    /**
-     * _applyRetreatOutput — 根据开火判定输出移动/射击指令
-     *
-     * 开火帧：放弃X轴移动，仅Z轴闪避 + 面朝目标射击
-     * 非开火帧：正常撤退移动
-     */
-    private function _applyRetreatOutput(self:MovieClip, wantFire:Boolean):Void {
-        if (wantFire) {
-            UnitAIData.applyBoundaryAwareMovement(data, self, 0, _retMoveZ);
-            if (data.diff_x > 0) self.方向改变("右");
-            else if (data.diff_x < 0) self.方向改变("左");
-            self.动作A = true;
-            if (self.攻击模式 === "双枪") self.动作B = true;
-        } else {
-            UnitAIData.applyBoundaryAwareMovement(data, self, _retMoveX, _retMoveZ);
-        }
-
-        // 切换跑步（非射击期间才切，避免打断射击动作）
-        if (!self.射击中 && !self.动作A && !self.man.换弹标签) {
-            self.状态改变(self.攻击模式 + "跑");
-        }
+        // 委托撤退移动策略
+        _retreatMovement.apply(data, self);
     }
 }

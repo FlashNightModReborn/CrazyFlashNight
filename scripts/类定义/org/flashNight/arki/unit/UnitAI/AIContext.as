@@ -19,6 +19,17 @@ import org.flashNight.arki.unit.UnitAI.WeaponEvaluator;
  * 复用策略：
  *   ActionArbiter 持有 _ctx 单例字段，每次 build() 覆写所有字段。
  *   避免每 tick 创建新对象产生 GC 压力。
+ *
+ * data / ctx 分工约定：
+ *   ctx (AIContext)   — 管线组件使用（候选源、过滤器、评分器、后处理器）。
+ *                       每 tick build-once，只读快照，保证管线内信号一致性。
+ *   data (UnitAIData) — 移动组件使用（EngageMovementStrategy、RetreatMovementStrategy、
+ *                       MovementResolver、HeroCombatModule.chase/engage）。
+ *                       包含坐标、边界距离、目标差值等几何信息，
+ *                       updateSelf/updateTarget 后实时有效。
+ *   personality       — 两者皆可读取（管线读 p = data.personality，移动读 data.personality）。
+ *   重叠字段（如 xDist/absdiff_x）：管线组件始终从 ctx 读取，移动组件从 data 读取。
+ *   此约定消除"二次口径"计算风险。
  */
 class org.flashNight.arki.unit.UnitAI.AIContext {
 

@@ -29,7 +29,8 @@ class org.flashNight.arki.unit.UnitAI.scoring.ScoringPipeline {
     /**
      * scoreAll — 对候选列表完成完整评分管线
      *
-     * Continue / Reload / PreBuff 的分数已在收集时预设，跳过评分管线。
+     * Continue 完全跳过评分管线（占位/维持 hold）。
+     * Reload / PreBuff 跳过基础维度评分，但走修正器管线（允许 BulletPressureMod 等影响换弹倾向）。
      * Skill / Attack 走完整维度评分 + 修正器管线 + 后处理。
      */
     public function scoreAll(
@@ -72,34 +73,39 @@ class org.flashNight.arki.unit.UnitAI.scoring.ScoringPipeline {
         for (var j:Number = 0; j < len; j++) {
             var c:Object = candidates[j];
 
-            // 预设分数的候选跳过评分管线
-            if (c.type == "continue" || c.type == "reload" || c.type == "preBuff") continue;
+            // Continue 完全跳过评分管线（占位候选）
+            if (c.type == "continue") continue;
+
+            // Reload / PreBuff 已有预设分数，跳过基础维度评分但走修正器管线
+            var skipDimScoring:Boolean = (c.type == "reload" || c.type == "preBuff");
 
             var dimScores:Array = fullTrace ? [] : null;
 
             // ── 基础维度评分 + Stance dimMod ──
-            var total:Number = 0;
-            for (var d:Number = 0; d < evalDepth; d++) {
-                var wKey:String = UtilityEvaluator.DIM_WEIGHTS[d];
-                var w:Number = p[wKey];
-                if (isNaN(w)) w = 0;
+            var total:Number = skipDimScoring ? c.score : 0;
+            if (!skipDimScoring) {
+                for (var d:Number = 0; d < evalDepth; d++) {
+                    var wKey:String = UtilityEvaluator.DIM_WEIGHTS[d];
+                    var w:Number = p[wKey];
+                    if (isNaN(w)) w = 0;
 
-                if (stance != null) {
-                    var dm:Number = stance.dimMod[d];
-                    if (!isNaN(dm)) w += dm;
+                    if (stance != null) {
+                        var dm:Number = stance.dimMod[d];
+                        if (!isNaN(dm)) w += dm;
+                    }
+
+                    var dimVal:Number = w * _scorer.scoreDimension(d, c, data, self);
+                    total += dimVal;
+                    if (fullTrace) dimScores.push(dimVal);
                 }
 
-                var dimVal:Number = w * _scorer.scoreDimension(d, c, data, self);
-                total += dimVal;
-                if (fullTrace) dimScores.push(dimVal);
+                // 角色技能基础加成
+                if (c.type == "skill" && skillBaseBonus > 0) {
+                    total += skillBaseBonus;
+                }
             }
 
-            // 角色技能基础加成
-            if (c.type == "skill" && skillBaseBonus > 0) {
-                total += skillBaseBonus;
-            }
-
-            // ── 修正器管线 ──
+            // ── 修正器管线（reload/preBuff 也经过，允许 BulletPressureMod 等影响）──
             var modParts:Array = fullTrace ? [] : null;
 
             for (var m:Number = 0; m < numMods; m++) {

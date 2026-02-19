@@ -1,37 +1,43 @@
 ﻿import org.flashNight.arki.unit.UnitAI.UnitAIData;
+import org.flashNight.arki.unit.UnitAI.MovementResolver;
+import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
 /**
- * EngageMovementStrategy — 交战期战术走位
+ * EngageMovementStrategy -- 交战期战术走位
  *
  * 从 HeroCombatModule.engage() 提取的移动逻辑。
  * 职责：脉冲式 Z 轴蛇形走位 + X 轴风筝/撤退
  *
  * 触发条件（每 tick 评估）：
- *   远程风筝：repositionDir > 0 且距离 < 保持距离 × kiteThreshold
- *   受创闪避：retreatUrgency > 0.5 或 encirclement > 0.3
+ *   远程风筝：repositionDir > 0 且距离 < 保持距离 * kiteThreshold
+ *   受创闪避：retreatUrgency > evadeUrgencyThreshold 或 encirclement > evadeEncirclementThreshold
  *
  * 脉冲机制：
- *   激活 → dur 帧移动（8~15帧） → gap 帧间歇 → 重新评估
+ *   激活 -> dur 帧移动（8~15帧） -> gap 帧间歇 -> 重新评估
  *   间歇长度随紧迫度/包围度缩短（紧急时密集走位）
  *
  * 攻击抑制：
  *   走位脉冲期间清除攻击输入以允许移动执行（移动射击除外）
  */
-class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
+class org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy {
 
     // ── Z 轴走位脉冲状态 ──
     private var _strafeDir:Number;        // -1=上, 1=下, 0=不动
     private var _strafePulseEnd:Number;   // 当前移动脉冲结束帧
     private var _strafeNextStart:Number;  // 下次移动脉冲开始帧
 
+    // 确定性随机源（可复现行为）
+    private var _rng:LinearCongruentialEngine;
+
     // ═══════ 构造 ═══════
 
     public function EngageMovementStrategy() {
+        _rng = LinearCongruentialEngine.getInstance();
         reset();
     }
 
     /**
-     * reset — 脱离交战时重置走位状态（chase_enter 调用）
+     * reset -- 脱离交战时重置走位状态（chase_enter 调用）
      */
     public function reset():Void {
         _strafeDir = 0;
@@ -40,7 +46,7 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
     }
 
     /**
-     * apply — 每 engage tick 执行战术走位
+     * apply -- 每 engage tick 执行战术走位
      *
      * @param data    共享 AI 数据（含 arbiter、personality、位置信息）
      * @param self    单位 MovieClip
@@ -55,7 +61,7 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
                 if (_strafeDir == 0) _strafeDir = _pickStrafeDir(data);
                 // 通过统一工具输出（自动处理边界贴墙重定向）
                 if (_strafeDir != 0) {
-                    UnitAIData.applyBoundaryAwareMovement(data, self, 0, _strafeDir);
+                    MovementResolver.applyBoundaryAwareMovement(data, self, 0, _strafeDir);
                 }
             }
             return;
@@ -72,7 +78,11 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
             kiteT = kiteT + urgency * (1.0 - kiteT);
         }
         var wantsKite:Boolean = (repoDir > 0 && data.absdiff_x < data.xdistance * kiteT);
-        var wantsEvade:Boolean = (urgency > 0.5) || (enc > 0.3);
+        var evadeUrg:Number = data.personality.evadeUrgencyThreshold;
+        if (isNaN(evadeUrg)) evadeUrg = 0.5;
+        var evadeEnc:Number = data.personality.evadeEncirclementThreshold;
+        if (isNaN(evadeEnc)) evadeEnc = 0.3;
+        var wantsEvade:Boolean = (urgency > evadeUrg) || (enc > evadeEnc);
 
         // 仅在远程风筝 / 受创 / 被围时启动走位脉冲
         if (!wantsKite && !wantsEvade) return;
@@ -80,7 +90,7 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
         var inPulse:Boolean = frame < _strafePulseEnd;
         if (!inPulse && frame >= _strafeNextStart) {
             _strafeDir = _pickStrafeDir(data);
-            var dur:Number = 8 + random(8); // 8~15帧 ≈ 0.3~0.6s
+            var dur:Number = 8 + _rng.randomInteger(0, 7); // 8~15帧 ≈ 0.3~0.6s
             _strafePulseEnd = frame + dur;
             var gap:Number = 12 - Math.floor((enc + urgency) * 5);
             // T2-B：弹道威胁时缩短间歇（更密集的走位脉冲）
@@ -90,7 +100,7 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
                 if (btETA2 < 15) gap -= 3;
             }
             if (gap < 3) gap = 3;
-            _strafeNextStart = _strafePulseEnd + gap + random(gap);
+            _strafeNextStart = _strafePulseEnd + gap + _rng.randomInteger(0, gap - 1);
             inPulse = true;
         }
 
@@ -101,7 +111,7 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
         var moveX:Number = 0;
 
         // 1vN：反包夹（Anti-Pincer / Directional Dominance）
-        // 目标：在被围/受创走位触发时，尽量向“敌人更少的一侧”突围，
+        // 目标：在被围/受创走位触发时，尽量向"敌人更少的一侧"突围，
         // 让敌人集中到同一侧（横版格斗黄金法则：不要让敌人出现在身后）。
         var safeX:Number = 0;
         if (data.arbiter != null && enc > 0.25) {
@@ -115,7 +125,7 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
             else if (safeX > 0 && data.bndRightDist < 60) safeX = (data.bndLeftDist > 60) ? -1 : 0;
         }
 
-        // 贴边时向场内回拉，防止“卡边缘只上下移动”
+        // 贴边时向场内回拉，防止"卡边缘只上下移动"
         // 说明：kiteDir 被墙挡住时继续 Z 轴蛇形没有意义，应该先脱离边缘再重新风筝
         var edgeMargin:Number = 80;
         var edgeEscapeX:Number = 0;
@@ -145,7 +155,7 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
         }
 
         // 统一处理边界碰撞：沿墙滑行 / 角落突围 / 正常输出
-        var bndResult:Number = UnitAIData.applyBoundaryAwareMovement(data, self, moveX, moveZ);
+        var bndResult:Number = MovementResolver.applyBoundaryAwareMovement(data, self, moveX, moveZ);
         // SLIDE(1) 和 CORNER(2) 都视为贴墙 — 保持攻击输出，不抑制
         var wallBlocked:Boolean = (bndResult >= 1);
 
@@ -164,14 +174,14 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
     // ═══════ 走位方向选择 ═══════
 
     /**
-     * _pickStrafeDir — 选择走位脉冲的 Z 轴方向
+     * _pickStrafeDir -- 选择走位脉冲的 Z 轴方向
      *
      * 交替上/下方向，形成自然的 Z 轴蛇形走位。
      * 边界检查：贴边时强制反向；双边贴边时放弃走位。
      */
     private function _pickStrafeDir(data:UnitAIData):Number {
         var s:MovieClip = data.self;
-        var zPick:Number = UnitAIData.pickZDirBySpaceEx(data, s, 80);
+        var zPick:Number = MovementResolver.pickZDirBySpaceEx(data, s, 80);
         if (zPick == 0) return 0;
 
         var dir:Number = (zPick < 0) ? -1 : 1;

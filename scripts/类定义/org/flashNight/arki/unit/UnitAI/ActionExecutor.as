@@ -194,11 +194,6 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         _isDodgeActive = false;
     }
 
-    /** @deprecated 统一使用 autoHold */
-    public function holdCurrentBody(self:MovieClip):Void {
-        autoHold(self);
-    }
-
     /**
      * getContinueScore — 当前 body 动作对应的 Continue 候选评分
      *
@@ -301,8 +296,7 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
     /**
      * autoHold — 自动维持 hold 型 body 动作的按键输出
      *
-     * 目标态：ActionExecutor 内部管理 hold 输出，Arbiter 不再负责 holdCurrentBody 调用。
-     * 当前阶段（Phase B）先添加方法，Phase C/D 迁移后再从 Arbiter 移除 holdAttack 分支。
+     * ActionExecutor 内部管理 hold 输出，Arbiter 调用 autoHold 维持按键。
      */
     public function autoHold(self:MovieClip):Void {
         if (_bodyType == "attack" && _bodyPriority >= 0) {
