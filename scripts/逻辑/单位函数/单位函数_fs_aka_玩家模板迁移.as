@@ -2483,8 +2483,8 @@ _root.计算AI参数 = function(p:Object):Void {
     p.comboPreference     = 0.1 + p.勇气 * 0.3 + p.技术 * 0.2; // 0.1~0.6
 
     // ── 撤退/状态切换阈值（勇气驱动，替代硬编码常量）──
-    // 撤退进入：低勇气更容易撤退(0.45)，高勇气坚持战斗(0.75)
-    p.retreatEnterThreshold   = 0.45 + (1 - p.勇气) * 0.3;     // 0.45~0.75
+    // 撤退进入：高勇气需要更高紧迫度才撤退(0.75)，低勇气更易撤退(0.45)
+    p.retreatEnterThreshold   = 0.45 + p.勇气 * 0.3;            // 0.45~0.75
     // 撤退退出：紧迫度降到此值以下才允许退出撤退
     p.retreatExitMinUrgency   = 0.15 + p.勇气 * 0.15;           // 0.15~0.30
     // 撤退退出HP：HP高于此比例才退出撤退
@@ -2497,8 +2497,8 @@ _root.计算AI参数 = function(p:Object):Void {
     p.safeReloadDistMult      = 1.5 + p.经验 * 1.0;             // 1.5~2.5
     // 安全距离换弹紧急度上限：勇气高→更愿意在高压下换弹
     p.safeReloadUrgMax        = 0.2 + p.勇气 * 0.2;             // 0.2~0.4
-    // 走位闪避紧急度阈值：低勇气更容易触发闪避走位
-    p.evadeUrgencyThreshold   = 0.4 + (1 - p.勇气) * 0.3;      // 0.4~0.7
+    // 走位闪避紧急度阈值：高勇气需更高紧迫度才闪避(0.7)，低勇气更易触发闪避走位(0.4)
+    p.evadeUrgencyThreshold   = 0.4 + p.勇气 * 0.3;             // 0.4~0.7
     // 走位被围阈值：智力高→更早感知包围
     p.evadeEncirclementThreshold = 0.25 + (1 - p.智力) * 0.2;   // 0.25~0.45
 
