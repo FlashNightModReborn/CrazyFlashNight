@@ -272,31 +272,51 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         if (frame - _lastTargetCheckFrame < interval) return false;
         _lastTargetCheckFrame = frame;
 
-        // 查找最近敌人（X 轴排序）
-        var nearest = TargetCacheManager.findNearestEnemy(self, 1);
-        if (nearest == null || nearest.hp <= 0) return false;
+        // 目标采样（低成本）：最近 / 最近活跃威胁 / 最近残血
+        // 说明：不做全局扫描与怪物特判，只用通用信号提升 1vN 的转火质量。
+        var searchLimit:Number = 12;
+        var candNearest:MovieClip = MovieClip(TargetCacheManager.findNearestEnemy(self, 1));
+        var candActive:MovieClip = MovieClip(TargetCacheManager.findNearestEnemyWithFilter(
+            self, 1, _filterActiveThreat,
+            searchLimit, undefined
+        ));
+        var candLowHP:MovieClip = MovieClip(TargetCacheManager.findNearestLowHPEnemy(self, 1, searchLimit));
 
-        // Z 轴过滤：Z 距离过远说明在不同战团，不切换
-        var nearestZ:Number = nearest.Z轴坐标;
-        if (isNaN(nearestZ)) nearestZ = nearest._y;
         var selfZ:Number = self.Z轴坐标;
         if (isNaN(selfZ)) selfZ = self._y;
-        if (Math.abs(selfZ - nearestZ) > 60) return false;
+
+        // 选出最佳候选（同战团Z过滤）
+        var best:MovieClip = null;
+        var bestScore:Number = -999;
+        var samples:Array = [candNearest, candActive, candLowHP];
+        for (var si:Number = 0; si < samples.length; si++) {
+            var c:MovieClip = samples[si];
+            if (c == null || !(c.hp > 0) || c._x == undefined) continue;
+            var cz:Number = c.Z轴坐标;
+            if (isNaN(cz)) cz = c._y;
+            if (Math.abs(selfZ - cz) > 60) continue;
+            var sc:Number = _scoreTarget(c, self, p);
+            if (sc > bestScore) {
+                bestScore = sc;
+                best = c;
+            }
+        }
+
+        if (best == null) return false;
 
         var t:MovieClip = data.target;
 
         // 无当前目标 → 直接获取
         if (t == null || t.hp <= 0) {
-            _switchTarget(nearest);
+            _switchTarget(best);
             return true;
         }
 
         // 已是当前目标 → 跳过
-        if (nearest == t) return false;
+        if (best == t) return false;
 
         // T1-B：多维目标评分（距离 + 残血优先 → 高效清场）
         var currentScore:Number = _scoreTarget(t, self, p);
-        var nearestScore:Number = _scoreTarget(nearest, self, p);
 
         var ratio:Number = 0.5;
         if (p != null && !isNaN(p.targetSwitchRatio)) {
@@ -304,8 +324,8 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         }
 
         // 迟滞：新目标必须明显更优才切换（ratio 作为优势阈值）
-        if (nearestScore > currentScore * (1 + ratio)) {
-            _switchTarget(nearest);
+        if (bestScore > currentScore * (1 + ratio)) {
+            _switchTarget(best);
             return true;
         }
 
@@ -315,8 +335,11 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
     /**
      * _scoreTarget — 多维目标优先级评分
      *
-     * 维度：距离（近优先）+ HP比率（残血优先）
-     * 权重受经验调节：高经验角色更重视残血击杀（高效清场）
+     * 维度：
+     *   1) 距离（近优先）
+     *   2) HP比率（残血优先，高效清场）
+     *   3) 活跃威胁（正在攻击/技能的敌人更优先）
+     *   4) 补刀窗口（极残血目标强优先：减少威胁源数量）
      */
     private function _scoreTarget(candidate:MovieClip, self:MovieClip, p:Object):Number {
         // 距离分（反比，归一化到 0~1）
@@ -326,6 +349,8 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // HP分（残血→高分，高效清场）
         var maxHP:Number = candidate.hp满血值;
         var hpRatio:Number = (maxHP > 0) ? candidate.hp / maxHP : 1;
+        if (isNaN(hpRatio) || hpRatio > 1) hpRatio = 1;
+        if (hpRatio < 0) hpRatio = 0;
         var hpScore:Number = 1.0 - hpRatio; // 满血=0, 残血=~1
 
         // 权重：经验高→残血优先，经验低→距离优先
@@ -333,7 +358,44 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         if (p != null && !isNaN(p.经验)) {
             wHP = 0.3 + p.经验 * 0.3; // 0.3 ~ 0.6
         }
-        return distScore * (1.0 - wHP) + hpScore * wHP;
+        var score:Number = distScore * (1.0 - wHP) + hpScore * wHP;
+
+        // 活跃威胁：正在攻击/施技的敌人优先处理（降低入射伤害）
+        var activeThreat:Boolean = (candidate.射击中 == true
+            || candidate.状态 == "技能" || candidate.状态 == "战技");
+        if (activeThreat) {
+            var strat:Number = (p != null && !isNaN(p.谋略)) ? p.谋略 : 0;
+            score += 0.15 + strat * 0.25; // 0.15~0.40
+        }
+
+        // 补刀窗口：极残血目标强优先（减少威胁源数量）
+        if (hpRatio < 0.2) {
+            var fin:Number = (0.2 - hpRatio) / 0.2; // 0~1
+            var exp:Number = (p != null && !isNaN(p.经验)) ? p.经验 : 0;
+            score += fin * (0.25 + exp * 0.25); // 0~0.50
+        }
+
+        // 背后威胁：若候选与当前目标分居两侧且距离近，提升优先级
+        // 近似“不要让敌人出现在身后”，不依赖怪物类型。
+        var cur:MovieClip = data.target;
+        if (cur != null && cur != candidate && cur.hp > 0 && cur._x != undefined && dist < 160) {
+            var frontSide:Number = (cur._x >= self._x) ? 1 : -1;
+            var candSide:Number = (candidate._x >= self._x) ? 1 : -1;
+            if (candSide != frontSide) {
+                score += activeThreat ? 0.25 : 0.15;
+            }
+        }
+
+        return score;
+    }
+
+    /**
+     * _filterActiveThreat — TargetCacheManager.findNearestEnemyWithFilter 使用
+     * 仅使用通用信号：射击中/技能/战技
+     */
+    private static function _filterActiveThreat(u:Object):Boolean {
+        if (u == null) return false;
+        return (u.射击中 == true || u.状态 == "技能" || u.状态 == "战技");
     }
 
     private function _switchTarget(newTarget):Void {

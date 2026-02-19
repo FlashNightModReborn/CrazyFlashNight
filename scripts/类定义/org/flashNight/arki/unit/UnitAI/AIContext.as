@@ -66,6 +66,10 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
     // ── 包围度（左右敌人分布）──
     public var encirclement:Number;      // [0,1] 被包围程度（乘积公式：两侧均有敌人时高）
     public var nearbyCount:Number;       // 近距(150px)敌人数（ActionArbiter 周期采样，复用包围度扫描）
+    public var enemyLeftCount:Number;    // 左侧敌人数（scanRange 窗口内，周期采样）
+    public var enemyRightCount:Number;   // 右侧敌人数（scanRange 窗口内，周期采样）
+    public var enemyBalance:Number;      // (-1..1) (right-left)/(left+right)，0=均衡
+    public var enemyDominantSide:Number; // -1=左侧明显更多, 1=右侧明显更多, 0=近似均衡
 
     // ── 射弹预警（BulletQueueProcessor 尾循环写入 _bt* 动态属性）──
     public var bulletThreat:Number;      // 威胁子弹计数（0=无）
@@ -88,7 +92,7 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
      * build — 聚合所有管线信号到黑板
      *
      * @param data           共享 AI 数据
-     * @param ctx            "chase" | "engage" | "selector"
+     * @param ctx            "chase" | "engage" | "selector" | "retreat"
      * @param executor       ActionExecutor 实例
      * @param stanceMgr      StanceManager 实例（姿态/战术偏置）
      * @param weaponEval     WeaponEvaluator 实例（余弹比查询）
@@ -97,6 +101,8 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
      * @param retreatUrgency   撤退紧迫度 [0,1]（ActionArbiter 预计算）
      * @param encirclement     包围度 [0,1]（ActionArbiter 预计算）
      * @param nearbyCount      近距敌人数（ActionArbiter 周期采样，复用包围度扫描窗口）
+     * @param leftCount        左侧敌人数（ActionArbiter 周期采样）
+     * @param rightCount       右侧敌人数（ActionArbiter 周期采样）
      */
     public function build(
         data:UnitAIData,
@@ -108,7 +114,9 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
         p:Object,
         retreatUrgency:Number,
         encirclement:Number,
-        nearbyCount:Number
+        nearbyCount:Number,
+        leftCount:Number,
+        rightCount:Number
     ):Void {
         var s:MovieClip = data.self;
         var t:MovieClip = data.target;
@@ -179,6 +187,14 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
         this.retreatUrgency = retreatUrgency;
         this.encirclement = encirclement;
         this.nearbyCount = nearbyCount;
+        this.enemyLeftCount = leftCount;
+        this.enemyRightCount = rightCount;
+        var lrSum:Number = leftCount + rightCount;
+        this.enemyBalance = (lrSum > 0) ? ((rightCount - leftCount) / lrSum) : 0;
+        // dominantSide 使用 1 的滞后阈值，避免轻微抖动导致方向频繁翻转
+        if (rightCount > leftCount + 1) this.enemyDominantSide = 1;
+        else if (leftCount > rightCount + 1) this.enemyDominantSide = -1;
+        else this.enemyDominantSide = 0;
 
         // ── 边界压迫（updateSelf 预计算）──
         this.bndCorner = data.bndCorner;

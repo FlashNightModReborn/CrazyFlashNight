@@ -79,6 +79,8 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     // ── 包围度 + 近距密度（左右敌人分布检测，统一采样）──
     private var _encirclement:Number = 0;
     private var _nearbyCount:Number = 0;
+    private var _leftEnemyCount:Number = 0;
+    private var _rightEnemyCount:Number = 0;
     private var _lastEncirclementFrame:Number = -999;
 
     // ═══════ 构造 ═══════
@@ -159,6 +161,15 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         return _nearbyCount;
     }
 
+    /**
+     * getLeftEnemyCount / getRightEnemyCount — 左右敌人数量（周期采样）
+     *
+     * 说明：统计窗口为 scanRange（当前 250px），仅用于走位/战术偏置等
+     * 低频信号，不用于精确碰撞或逐帧反应。
+     */
+    public function getLeftEnemyCount():Number  { return _leftEnemyCount; }
+    public function getRightEnemyCount():Number { return _rightEnemyCount; }
+
     public function getAmmoRatio(self:MovieClip):Number {
         return _weaponEval.getAmmoRatio(self, self.攻击模式);
     }
@@ -169,12 +180,12 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
     // ═══════ 核心管线 ═══════
 
-    /**
-     * tick — 每 AI 帧唯一入口
-     *
-     * @param data    共享 AI 数据
-     * @param context "chase" | "engage" | "selector"
-     */
+     /**
+      * tick — 每 AI 帧唯一入口
+      *
+      * @param data    共享 AI 数据
+      * @param context "chase" | "engage" | "selector" | "retreat"
+      */
     public function tick(data:UnitAIData, context:String):Void {
         var self:MovieClip = data.self;
         var frame:Number = _root.帧计时器.当前帧数;
@@ -198,6 +209,8 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             var scanRange:Number = 250;
             var leftCount:Number = TargetCacheManager.getEnemyCountInRange(self, 8, scanRange, 0, true);
             var rightCount:Number = TargetCacheManager.getEnemyCountInRange(self, 8, 0, scanRange, true);
+            _leftEnemyCount = leftCount;
+            _rightEnemyCount = rightCount;
             _encirclement = Math.min(1, leftCount * rightCount / 4);
             // 近距密度（150px，复用给 CrowdAwarenessMod / FollowingHero Gate）
             _nearbyCount = TargetCacheManager.getEnemyCountInRange(self, 16, 150, 150, true);
@@ -231,7 +244,30 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         // ═══ 黑板构建（build-once 契约：所有信号在此一次性聚合，build 只读）═══
         _executor.updateAnimLock(self);
         _ctx.build(data, context, _executor, _stanceMgr, _weaponEval, _recentHitFrame, p,
-                   _retreatUrgency, _encirclement, _nearbyCount);
+                   _retreatUrgency, _encirclement, _nearbyCount, _leftEnemyCount, _rightEnemyCount);
+
+        // ═══ 自适应温度（高压更确定，低压更灵动）═══
+        // base: personality.temperature（由 计算AI参数 生成并 clamp）
+        // dyn : 根据 ctx 信号缩放，避免弹压/受创/被围时“抖机灵”选错动作
+        var dynT:Number = p.temperature;
+        if (isNaN(dynT) || dynT <= 0) dynT = 0.1;
+
+        var pressure:Number = 0;
+        if (_ctx.underFire) pressure += 0.35;
+        pressure += _ctx.retreatUrgency * 0.6;
+        pressure += _ctx.encirclement * 0.5;
+        if (_ctx.bulletThreat > 0) {
+            var etaP:Number = 1 - _ctx.bulletETA / 20;
+            if (etaP < 0) etaP = 0;
+            if (etaP > 1) etaP = 1;
+            pressure += etaP * 0.4;
+        }
+        if (pressure > 1) pressure = 1;
+
+        var calm:Number = 1 - pressure;
+        dynT = dynT * (0.6 + calm * 0.6); // 0.6~1.2 倍
+        if (dynT < 0.01) dynT = 0.01;
+        if (dynT > 0.5) dynT = 0.5;
 
         // ═══ 决策追踪 ═══
         _trace.begin(self.名字, _ctx, p);
@@ -278,7 +314,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                 else if (sources.length == 0) nd = "NO_SOURCES";
                 else if (rawCount == 0) nd = "NO_CANDIDATES";
                 else nd = "FILTERED_TO_ZERO";
-                _trace.noDecision(nd, p.temperature);
+                _trace.noDecision(nd, dynT);
             }
         }
 
@@ -348,7 +384,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
             // 4. 评分 + Boltzmann + 执行
             if (candidates.length > 0) {
-                var T:Number = p.temperature;
+                var T:Number = dynT;
 
                 _pipeline.scoreAll(candidates, _ctx, data, self, p, T, _trace);
                 var selected:Object = _scorer.boltzmannSelect(candidates, T);

@@ -100,6 +100,21 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
         var moveZ:Number = _strafeDir; // -1=上, 1=下, 0=不动
         var moveX:Number = 0;
 
+        // 1vN：反包夹（Anti-Pincer / Directional Dominance）
+        // 目标：在被围/受创走位触发时，尽量向“敌人更少的一侧”突围，
+        // 让敌人集中到同一侧（横版格斗黄金法则：不要让敌人出现在身后）。
+        var safeX:Number = 0;
+        if (data.arbiter != null && enc > 0.25) {
+            var lCnt:Number = data.arbiter.getLeftEnemyCount();
+            var rCnt:Number = data.arbiter.getRightEnemyCount();
+            // 使用 1 的滞后阈值抑制左右抖动
+            if (lCnt > rCnt + 1) safeX = 1;
+            else if (rCnt > lCnt + 1) safeX = -1;
+            // 边界门控：突围方向必须有空间
+            if (safeX < 0 && data.bndLeftDist < 60) safeX = (data.bndRightDist > 60) ? 1 : 0;
+            else if (safeX > 0 && data.bndRightDist < 60) safeX = (data.bndLeftDist > 60) ? -1 : 0;
+        }
+
         // 贴边时向场内回拉，防止“卡边缘只上下移动”
         // 说明：kiteDir 被墙挡住时继续 Z 轴蛇形没有意义，应该先脱离边缘再重新风筝
         var edgeMargin:Number = 80;
@@ -120,6 +135,13 @@ class org.flashNight.arki.unit.UnitAI.EngageMovementStrategy {
         } else if (wantsEvade && edgeEscapeX != 0) {
             // 被围/受创且贴边：优先脱离边缘，否则容易被压墙集火
             moveX = edgeEscapeX;
+        }
+
+        // 被围：优先突围到安全侧（若当前未产生 X 意图或包围度很高）
+        if (wantsEvade && safeX != 0) {
+            if (moveX == 0 || (moveX != safeX && enc > 0.6)) {
+                moveX = safeX;
+            }
         }
 
         // 统一处理边界碰撞：沿墙滑行 / 角落突围 / 正常输出
