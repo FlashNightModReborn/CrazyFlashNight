@@ -107,20 +107,22 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
             return;
         }
 
-        // ── 近战追击兜底：X轴已达攻击范围但Z轴未对齐 → 边追边打 ──
-        // 远程追击不攻击（缩距优先，不浪费弹药）
-        // 近战在射程内应立即输出，避免"切到近战后只追不打"
-        var atkMode:String = self.攻击模式;
-        if ((atkMode == "空手" || atkMode == "兵器") && data.absdiff_x <= data.xrange) {
-            if (!self.射击中 && self.状态 != "技能" && self.状态 != "战技") {
-                self.动作A = true;
-            }
-        }
-
         // Z轴计算（先算距离，供跑步判定使用）
         var targetZ:Number = isNaN(t.Z轴坐标) ? t._y : t.Z轴坐标;
         var zDiff:Number = self._y - targetZ;
         var absZDiff:Number = zDiff < 0 ? -zDiff : zDiff;
+
+        // ── 近战追击兜底：仅在Z轴已对齐时输出平A，避免"空挥锁帧"阻碍对齐 ──
+        // 远程追击不攻击（缩距优先，不浪费弹药）
+        // 近战在射程内应立即输出，避免"切到近战后只追不打"
+        var atkMode:String = self.攻击模式;
+        if ((atkMode == "空手" || atkMode == "兵器")
+            && data.absdiff_x <= data.xrange
+            && absZDiff <= data.zrange) {
+            if (!self.射击中 && self.状态 != "技能" && self.状态 != "战技") {
+                self.动作A = true;
+            }
+        }
 
         // 跑步切换：Z 轴基本对齐后再切跑，避免跑步高速导致 Z 轴抖动
         // absZDiff > 20 时保持走路（低速精确对齐），对齐后才允许跑步追击
