@@ -90,8 +90,19 @@ class org.flashNight.arki.unit.UnitAI.strategies.ReloadStrategy {
             score = 0.15 + tactUrg * 0.35 + tacDistBonus;
         }
 
-        // ── 技能换弹（翻滚换弹等）──
-        // 高经验→优先使用技能换弹（带闪避/增益的换弹方式）
+        // ── 技能换弹 + 普通换弹：双候选竞争设计 ──
+        //
+        // 意图：技能换弹(type:"skill", score:0) 和 普通换弹(type:"reload", score:preset)
+        //       同时注入候选池，通过 Boltzmann 竞争选出一个赢家。
+        //       技能换弹 score=0 走 ScoringPipeline 评分管线（AmmoReloadMod 给予加成），
+        //       普通换弹 score=preset 跳过管线（ScoringPipeline 对 type:"reload" 直通）。
+        //
+        // 效果：高经验 AI 的 AmmoReloadMod 加成足以让技能换弹评分超过普通换弹 →
+        //       优先使用带闪避/增益的换弹方式；
+        //       低经验 AI 加成不足 → 退化为普通换弹。
+        //
+        // 注意：两者是互斥竞争关系（Boltzmann 只选一个），不会双重执行。
+        //       如果改为 if/else 互斥注入，低经验 AI 将无法触发普通换弹兜底。
         var sk:Object = _findReloadSkill(ctx);
         if (sk != null) {
             out.push({
@@ -100,7 +111,6 @@ class org.flashNight.arki.unit.UnitAI.strategies.ReloadStrategy {
             });
         }
 
-        // 普通换弹（兜底，始终注入）
         out.push({
             name: "Reload", type: "reload", priority: 2,
             commitFrames: p.reloadCommitFrames, score: score
