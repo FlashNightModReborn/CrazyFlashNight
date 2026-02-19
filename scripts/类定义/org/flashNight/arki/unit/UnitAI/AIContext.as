@@ -120,8 +120,7 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
         this.self = s;
         var maxHP:Number = s.hp满血值;
         this.hpRatio = (maxHP > 0) ? Math.max(0, Math.min(1, s.hp / maxHP)) : 1;
-        this.isRigid = (s.刚体 == true) ||
-            (s.man != null && s.man.刚体标签 != null && s.man.刚体标签 != undefined);
+        this.isRigid = (s.刚体 == true) || s.man.刚体标签;
         this.attackMode = s.攻击模式;
         this.ammoRatio = weaponEval.getAmmoRatio(s, s.攻击模式);
 

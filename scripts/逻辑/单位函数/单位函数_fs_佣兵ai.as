@@ -145,7 +145,7 @@ _root.主角模板ai函数.攻击 = function(x轴攻击范围, y轴攻击范围,
 	var Y轴距离 = Math.abs(_parent._y - 攻击对象.Z轴坐标);
 	if (Y轴距离 > y轴攻击范围 || X轴距离 > x轴攻击范围)
 	{
-		if (!_parent.射击中 && !_parent.man.换弹标签 != null && random(3) === 0)
+		if (!_parent.射击中 && !_parent.man.换弹标签 && random(3) === 0)
 		{
 			_parent.状态改变(_parent.攻击模式 + "跑");
 		}

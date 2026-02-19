@@ -376,16 +376,16 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             && data.arbiter.getRetreatUrgency() < 0.3
             && !self.射击中) {
             // 已在换弹 → 原地等待完成
-            if (self.换弹标签 || (self.man != null && self.man.换弹标签)) {
+            if (self.man.换弹标签) {
                 return;
             }
             // 当前武器弹药不足 → 停下换弹
             var curAmmoRR:Number = data.arbiter.getAmmoRatio(self);
             if (!(curAmmoRR >= 0.5)) { // NaN-safe: NaN >= 0.5 is false → trigger reload
                 self.状态改变(self.攻击模式 + "停");
-                if (self.man != null && self.man.开始换弹 != undefined) {
+                if (self.man.开始换弹) {
                     self.man.开始换弹();
-                } else if (self.man != null) {
+                } else {
                     self.man.换弹标签 = true;
                     self.man.gotoAndPlay("换弹匣");
                 }
@@ -410,9 +410,9 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
                      var rmSwitchArg:String = (rmMode == "双枪") ? "手枪" : rmMode;
                      self.攻击模式切换(rmSwitchArg);
                      self.状态改变(self.攻击模式 + "停");
-                     if (self.man != null && self.man.开始换弹 != undefined) {
+                     if (self.man.开始换弹) {
                          self.man.开始换弹();
-                     } else if (self.man != null) {
+                     } else {
                          self.man.换弹标签 = true;
                          self.man.gotoAndPlay("换弹匣");
                      }
@@ -554,8 +554,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         }
 
         // 切换跑步（非射击期间才切，避免打断射击动作）
-        if (!self.射击中 && !self.动作A
-            && !(self.换弹标签 || (self.man != null && self.man.换弹标签))) {
+        if (!self.射击中 && !self.动作A && !self.man.换弹标签) {
             self.状态改变(self.攻击模式 + "跑");
         }
     }

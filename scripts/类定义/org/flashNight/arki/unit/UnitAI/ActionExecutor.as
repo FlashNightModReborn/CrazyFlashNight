@@ -83,32 +83,6 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         _lastReflexFrame = -999;
     }
 
-    // ═══════ Reload Tag Helpers ═══════
-
-    /**
-     * _hasReloadTag — 判断是否处于换弹动画
-     *
-     * 引擎/单位实现差异：有的单位把换弹标签挂在 self.man 上，有的挂在 self 上。
-     * 统一用 truthy 语义判断（与 ReloadManager / ShootCore 的用法一致）。
-     */
-    private function _hasReloadTag(self:MovieClip):Boolean {
-        if (self == null) return false;
-        if (self.换弹标签) return true;
-        if (self.man != null && self.man != undefined && self.man.换弹标签) return true;
-        return false;
-    }
-
-    /**
-     * _getReloadActor — 获取负责执行 gotoAndPlay("换弹匣") 的动画载体
-     *
-     * 通常为 self.man；若不存在则退化为 self。
-     */
-    private function _getReloadActor(self:MovieClip):MovieClip {
-        if (self == null) return null;
-        if (self.man != null && self.man != undefined) return self.man;
-        return self;
-    }
-
     // ═══════ 动画标签锁 ═══════
 
     /**
@@ -126,7 +100,7 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         _animLocked = false;
 
         // ── 换弹标签追踪（必须在所有 early return 之前采样）──
-        var currentReloadTag:Boolean = _hasReloadTag(self);
+        var currentReloadTag:Boolean = self.man.换弹标签;
 
         // ── 换弹结束伪事件：追踪 换弹标签 下降沿（true→false）──
         // skill 有 skillEnd 事件驱动 expireBodyCommit()；reload 无对应事件，
@@ -137,7 +111,6 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         }
         _lastReloadTag = currentReloadTag;
 
-        // null guard: man 可能尚未初始化
         if (currentReloadTag) { _animLocked = true; return; }
 
         // 技能/战技播放期：技能路由 → 状态改变("技能"/"战技") → 动画完毕后自动离开
@@ -335,7 +308,7 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
         if (_bodyType == "attack" && _bodyPriority >= 0) {
             // 技能/战技/换弹动画锁期间禁止维持普攻按键，避免打断 trigger 动作
             if (self.状态 == "技能" || self.状态 == "战技") return;
-            if (_hasReloadTag(self)) return;
+            if (self.man.换弹标签) return;
             self.动作A = true;
             if (self.攻击模式 === "双枪") self.动作B = true;
         }
@@ -380,16 +353,15 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
                 _root.技能路由.技能标签跳转_旧(self, candidate.name);
                 break;
             case "reload":
-                var actor:MovieClip = _getReloadActor(self);
-                if (actor == null) break;
+                var man:MovieClip = self.man;
 
                 // 优先走武器系统绑定的开始换弹（包含门禁与差异化逻辑）
-                if (actor.开始换弹 != undefined) {
-                    actor.开始换弹();
+                if (man.开始换弹) {
+                    man.开始换弹();
                 } else {
                     // fallback：直接跳转动画；为 AI 动画锁补齐换弹标签
-                    actor.换弹标签 = true;
-                    actor.gotoAndPlay("换弹匣");
+                    man.换弹标签 = true;
+                    man.gotoAndPlay("换弹匣");
                 }
                 break;
             case "continue":
