@@ -68,6 +68,12 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
     private var _selectedProb:Number;
     private var _temperature:Number;
 
+    // ── 候选计数（诊断：无动作/发呆）──
+    private var _rawCandidateCount:Number;        // 收集后（过滤前）
+    private var _postFilterCandidateCount:Number; // 过滤后（评分前）
+    private var _sourceSummary:String;            // 上下文候选源概览（如 Offense+Reload）
+    private var _noDecisionReason:String;         // 未产生 selected 的原因（仅诊断）
+
     // ── 跨 tick 状态（智能触发）──
     private var _lastSelectedName:String;
     private var _traitsPrinted:Boolean;  // FULL: 已输出 traits 概览（同一单位仅输出一次）
@@ -81,6 +87,10 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
         _rejectCounts = {};
         _rejectDetails = [];
         _scored = [];
+        _rawCandidateCount = 0;
+        _postFilterCandidateCount = 0;
+        _sourceSummary = null;
+        _noDecisionReason = null;
     }
 
     // ═══════ 每 tick 生命周期 ═══════
@@ -110,6 +120,10 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
         _selectedType = null;
         _selectedProb = 0;
         _temperature = 0;
+        _rawCandidateCount = 0;
+        _postFilterCandidateCount = 0;
+        _sourceSummary = null;
+        _noDecisionReason = null;
     }
 
     /**
@@ -183,6 +197,38 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
         _temperature = T;
     }
 
+    /**
+     * setCandidateCounts — 记录候选数量（用于诊断“无动作/发呆”）
+     *
+     * @param rawCount       收集后（过滤前）候选数
+     * @param postFilterCount 过滤后（评分前）候选数
+     */
+    public function setCandidateCounts(rawCount:Number, postFilterCount:Number):Void {
+        if (_level <= 0) return;
+        _rawCandidateCount = rawCount;
+        _postFilterCandidateCount = postFilterCount;
+    }
+
+    /**
+     * setSourceSummary — 记录上下文候选源概览（如 Offense+Reload）
+     */
+    public function setSourceSummary(summary:String):Void {
+        if (_level <= 0) return;
+        _sourceSummary = summary;
+    }
+
+    /**
+     * noDecision — 标记本 tick 未产生 selected（candidates 为空等）
+     *
+     * 仅用于日志输出，不代表真实动作。
+     */
+    public function noDecision(reason:String, T:Number):Void {
+        if (_level <= 0) return;
+        _noDecisionReason = reason;
+        // 仍记录温度，便于对比评分环境（FULL 下会输出）
+        _temperature = T;
+    }
+
     // ═══════ 输出 ═══════
 
     /**
@@ -191,7 +237,11 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
      * 智能触发：安静时不刷屏，关键时刻自动详细。
      */
     public function flush():Void {
-        if (_level <= 0 || _selectedName == null) return;
+        if (_level <= 0) return;
+
+        // 未产生 selected：LEVEL_FULL 仍输出（否则最关键的“发呆”阶段完全无日志）
+        var hasSelection:Boolean = (_selectedName != null);
+        if (!hasSelection && _level < LEVEL_FULL) return;
 
         // 智能触发条件
         var shouldOutput:Boolean = false;
@@ -200,9 +250,9 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
             shouldOutput = true;
         } else if (_ctx.underFire) {
             shouldOutput = true;
-        } else if (_selectedName != _lastSelectedName) {
+        } else if (hasSelection && _selectedName != _lastSelectedName) {
             shouldOutput = true;
-        } else if (_scored.length >= 2) {
+        } else if (hasSelection && _scored.length >= 2) {
             // 低置信度检查
             _scored.sortOn("score", Array.DESCENDING | Array.NUMERIC);
             var gap:Number = _scored[0].score - _scored[1].score;
@@ -212,7 +262,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
         }
 
         if (!shouldOutput) {
-            _lastSelectedName = _selectedName;
+            if (hasSelection) _lastSelectedName = _selectedName;
             return;
         }
 
@@ -220,14 +270,26 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
         var msg:String = "[AI] " + _unitName + " F:" + _ctx.frame;
 
         if (_level >= LEVEL_BRIEF) {
-            msg += " → " + _selectedName;
-            if (_selectedProb > 0) {
-                msg += " (p=" + _formatNum(_selectedProb) + ")";
+            if (hasSelection) {
+                msg += " → " + _selectedName;
+                if (_selectedProb > 0) {
+                    msg += " (p=" + _formatNum(_selectedProb) + ")";
+                }
+                msg += " ctx:" + _ctx.context;
+            } else {
+                var r:String = (_noDecisionReason != null) ? _noDecisionReason : "NO_SELECTION";
+                msg += " → (NO_DECISION:" + r + ") ctx:" + _ctx.context;
             }
-            msg += " ctx:" + _ctx.context;
+
             if (_ctx.underFire) msg += " THREAT";
             if (_ctx.isRigid) msg += " RIGID";
             if (_ctx.lockSource != null) msg += " lock:" + _ctx.lockSource;
+
+            // FULL: 输出候选计数 + 候选源概览（发呆定位用）
+            if (_level >= LEVEL_FULL) {
+                msg += " | cand:" + _rawCandidateCount + "→" + _postFilterCandidateCount;
+                if (_sourceSummary != null) msg += " src:" + _sourceSummary;
+            }
         }
 
         if (_level >= LEVEL_TOP3) {
@@ -255,6 +317,28 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
 
         if (_level >= LEVEL_FULL && _rejectDetails.length > 0) {
             msg += "\n  rejects: " + _rejectDetails.join(", ");
+        }
+
+        // FULL: 黑板上下文摘要（发呆/卡死/无输出定位用）
+        if (_level >= LEVEL_FULL && _ctx != null) {
+            msg += "\n  ctx:"
+                + " hp=" + _formatNum(_ctx.hpRatio * 100) + "%"
+                + " xDist=" + _formatInt(_ctx.xDist)
+                + " zDist=" + _formatInt(_ctx.zDist)
+                + " xrange=" + _formatInt(_ctx.xrange)
+                + " zrange=" + _formatInt(_ctx.zrange)
+                + " keepX=" + _formatInt(_ctx.xdistance)
+                + " mode=" + _fmtStr(_ctx.attackMode)
+                + " body=" + _fmtStr(_ctx.bodyType)
+                + " committed=" + (_ctx.isBodyCommitted ? "1" : "0")
+                + " anim=" + (_ctx.isAnimLocked ? "1" : "0")
+                + " urg=" + _formatNum(_ctx.retreatUrgency)
+                + " enc=" + _formatNum(_ctx.encirclement)
+                + " near=" + _formatInt(_ctx.nearbyCount)
+                + " bt=" + _formatInt(_ctx.bulletThreat)
+                + " eta=" + _formatInt(_ctx.bulletETA)
+                + " hitAge=" + _formatInt(_ctx.recentHitAge)
+                + " tThreat=" + (_ctx.targetThreat ? "1" : "0");
         }
 
         // 维度分解 + 修正器分解（FULL 级别，Top1 候选）
@@ -306,7 +390,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
 
         _root.服务器.发布服务器消息(msg);
 
-        _lastSelectedName = _selectedName;
+        if (hasSelection) _lastSelectedName = _selectedName;
     }
 
     // ═══════ 内部工具 ═══════
@@ -321,6 +405,16 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
 
     private function _formatNum(v:Number):String {
         return String(Math.round(v * 100) / 100);
+    }
+
+    private function _formatInt(v:Number):String {
+        if (v == null || v == undefined || isNaN(v)) return "NA";
+        return String(Math.round(v));
+    }
+
+    private function _fmtStr(s:String):String {
+        if (s == null || s == undefined) return "-";
+        return s;
     }
 
     /**

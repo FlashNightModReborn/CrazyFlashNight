@@ -40,6 +40,7 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
     public var zDist:Number;             // data.absdiff_z
     public var xdistance:Number;         // 保持距离
     public var xrange:Number;            // 攻击范围
+    public var zrange:Number;            // Z轴攻击范围（data.zrange = self.y轴攻击范围）
 
     // ── 威胁感知（唯一计算点）──
     public var underFire:Boolean;        // 被击窗口内 OR 目标正在攻击/施技
@@ -131,6 +132,7 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
         this.zDist = data.absdiff_z;
         this.xdistance = data.xdistance;
         this.xrange = data.xrange;
+        this.zrange = data.zrange;
 
         // ── 威胁感知（单一真相源）──
         var dodgeWin:Number = p.dodgeReactWindow;

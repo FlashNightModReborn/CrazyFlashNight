@@ -408,5 +408,16 @@ class org.flashNight.arki.unit.UnitAI.WeaponEvaluator {
                 }
             }
         }
+
+        // ── 防发呆：保持距离不得超过攻击范围（否则 chase 会停在射程外）──
+        // 留一个很小的余量，避免边界抖动（<= 判定反复切换）
+        var margin:Number = 5;
+        if (!isNaN(data.xrange) && data.xrange > 0 && !isNaN(data.xdistance)) {
+            var maxKeep:Number = data.xrange - margin;
+            if (maxKeep < 0) maxKeep = 0;
+            if (data.xdistance > maxKeep) {
+                data.xdistance = maxKeep;
+            }
+        }
     }
 }

@@ -248,10 +248,38 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
                 sources[si].collect(_ctx, data, candidates, _trace);
             }
         }
+        var rawCount:Number = candidates.length;
 
         // 2. 过滤器（AnimLock → Interrupt）
         for (var fi:Number = 0; fi < _filters.length; fi++) {
             _filters[fi].filter(_ctx, candidates, _trace);
+        }
+        var postFilterCount:Number = candidates.length;
+
+        // 诊断：记录候选计数 + 源概览；无候选时标记 noDecision（LEVEL_FULL 仍输出）
+        if (_trace.isEnabled()) {
+            var srcSummary:String = "";
+            if (sources == null) {
+                srcSummary = "null";
+            } else if (sources.length == 0) {
+                srcSummary = "-";
+            } else {
+                for (var ssi:Number = 0; ssi < sources.length; ssi++) {
+                    if (ssi > 0) srcSummary += "+";
+                    // 内置策略都有 getName()，自定义策略缺失时回退到 "?"
+                    srcSummary += (sources[ssi].getName != undefined) ? sources[ssi].getName() : "?";
+                }
+            }
+            _trace.setSourceSummary(srcSummary);
+            _trace.setCandidateCounts(rawCount, postFilterCount);
+            if (postFilterCount == 0) {
+                var nd:String;
+                if (sources == null) nd = "CTX_UNCONFIGURED";
+                else if (sources.length == 0) nd = "NO_SOURCES";
+                else if (rawCount == 0) nd = "NO_CANDIDATES";
+                else nd = "FILTERED_TO_ZERO";
+                _trace.noDecision(nd, p.temperature);
+            }
         }
 
         // 2.5 反射闪避（高反应角色：bulletETA ≤ 8 帧直接触发，跳过评分）

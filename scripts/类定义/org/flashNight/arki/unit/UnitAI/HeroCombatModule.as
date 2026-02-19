@@ -152,10 +152,13 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         var predTx:Number = data.tx + (data.targetVX || 0) * leadFrames;
 
         // X轴意图（保持距离，朝预测位置）
+        // 防发呆：keepX 不得大于 xrange，否则会停在射程外进不了 engage
+        var keepX:Number = data.xdistance;
+        if (keepX > data.xrange) keepX = data.xrange;
         var wantX:Number = 0;
-        if (data.x > predTx + data.xdistance) {
+        if (data.x > predTx + keepX) {
             wantX = -1; // 左移接近
-        } else if (data.x < predTx - data.xdistance) {
+        } else if (data.x < predTx - keepX) {
             wantX = 1;  // 右移接近
         }
 
