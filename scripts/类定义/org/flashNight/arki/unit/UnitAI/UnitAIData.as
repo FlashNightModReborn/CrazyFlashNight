@@ -197,11 +197,25 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     private var _lastSelfZ:Number;
     private var _stuckCheckCount:Number = 0;
 
+    /** 只读访问：MovementResolver 动态脱困窗口需要读取连续卡死计数 */
+    public function getStuckCheckCount():Number {
+        return _stuckCheckCount;
+    }
+
     // 障碍脱困（仅在确实卡死时触发，避免每帧碰撞探测）
     // public: MovementResolver.applyBoundaryAwareMovement 跨类读写
     public var _unstuckUntilFrame:Number = 0;
     public var _unstuckX:Number = 0;
     public var _unstuckZ:Number = 0;
+
+    // 进展投影检测：位移在意图方向上的投影连续不足 → 判定"被阻"
+    // 捕获"贴障碍物侧向滑动"和"被敌人反向推挤"两种 stuckProbe 无法覆盖的场景
+    public var _noProgressCount:Number = 0;
+    public var _lastProgressX:Number;
+    public var _lastProgressZ:Number;
+
+    // 探测全败计数：所有方向都不可行走时累计，达到阈值触发 pushOutFromCollision
+    public var _probeFailCount:Number = 0;
 
     /**
      * 改进版卡死检测 - 基于自身绝对位置变化而非相对距离变化

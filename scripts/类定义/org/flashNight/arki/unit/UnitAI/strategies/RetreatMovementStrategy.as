@@ -236,6 +236,13 @@ class org.flashNight.arki.unit.UnitAI.strategies.RetreatMovementStrategy {
             return false;
         }
 
+        // 贴边/角落门控：先活下来再谈掩护射击
+        // 开火帧会强制 wantX=0（放弃X轴移动），贴边时会反复打断脱边机会
+        if (data.bndCorner > 0.2
+            || data.bndLeftDist < 80 || data.bndRightDist < 80) {
+            return false;
+        }
+
         // 弹药门控
         var ammoR:Number = data.arbiter.getAmmoRatio(self);
         var ammoOK:Boolean = !(ammoR <= 0.3); // NaN → true

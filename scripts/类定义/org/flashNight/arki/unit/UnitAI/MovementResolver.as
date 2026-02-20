@@ -96,13 +96,44 @@ class org.flashNight.arki.unit.UnitAI.MovementResolver {
                 if (probe < 20) probe = 20;
                 else if (probe > 60) probe = 60;
 
-                // 两类触发：
+                // 三类触发：
                 //  1) blockedAhead：前方探测点不可行走（边界/障碍）
-                //  2) stuck：位置长期无进展（防止“顶着障碍抖动/被推挤”漏报）
-                var blockedAhead:Boolean = !Mover.isDirectionWalkable(self, wantX, wantZ, probe);
+                //  2) noProgress：位移在意图方向上的投影连续不足（贴障碍滑动/被推挤）
+                //  3) stuck：绝对位置长期无进展（兜底）
+
+                // blockedAhead: 先用 bnd 快速排除，只在接近边界/障碍时才做 hitTest
+                var blockedAhead:Boolean = false;
+                var bndMaybe:Boolean = false;
+                if (wantX < 0 && data.bndLeftDist < probe + MARGIN) bndMaybe = true;
+                else if (wantX > 0 && data.bndRightDist < probe + MARGIN) bndMaybe = true;
+                if (wantZ < 0 && data.bndUpDist < probe + MARGIN) bndMaybe = true;
+                else if (wantZ > 0 && data.bndDownDist < probe + MARGIN) bndMaybe = true;
+                if (bndMaybe) {
+                    blockedAhead = !Mover.isDirectionWalkable(self, wantX, wantZ, probe);
+                }
+
+                // noProgress: 位移在意图方向上的投影（dot product）
+                // 捕获"贴障碍物侧向滑动"和"被敌人反向推挤"两种 stuck 无法覆盖的场景
+                var noProgress:Boolean = false;
+                var curPlaneZ:Number = !isNaN(data.z) ? data.z : data.y;
+                if (data._lastProgressX != undefined) {
+                    var dpX:Number = data.x - data._lastProgressX;
+                    var dpZ:Number = curPlaneZ - data._lastProgressZ;
+                    // 投影：正数表示朝意图方向前进
+                    var prog:Number = dpX * wantX + dpZ * wantZ;
+                    if (prog < 1.0) {
+                        data._noProgressCount++;
+                    } else {
+                        data._noProgressCount = 0;
+                    }
+                    noProgress = (data._noProgressCount >= 3);
+                }
+                data._lastProgressX = data.x;
+                data._lastProgressZ = curPlaneZ;
+
                 var stuck:Boolean = data.stuckProbeByCurrentPosition(true, 6, 3, 4);
 
-                if (blockedAhead || stuck) {
+                if (blockedAhead || noProgress || stuck) {
                     var oldWX:Number = wantX;
                     var oldWZ:Number = wantZ;
 
@@ -172,24 +203,44 @@ class org.flashNight.arki.unit.UnitAI.MovementResolver {
                         wantZ = bestZ;
                         data._unstuckX = bestX;
                         data._unstuckZ = bestZ;
-                        // 脱困窗口稍微加长：足够绕过中型障碍，减少“刚挪开就又顶回去”的抖动
-                        data._unstuckUntilFrame = frameNow + 12;
+                        // 脱困窗口递增：持续卡死时逐步加长，足够绕过大障碍
+                        var scc:Number = data.getStuckCheckCount();
+                        var baseWindow:Number = 12;
+                        if (scc > 12) baseWindow = 40;
+                        else if (scc > 6) baseWindow = 24;
+                        data._unstuckUntilFrame = frameNow + baseWindow;
+                        data._noProgressCount = 0; // 成功找到脱困方向，重置进展计数
 
-                        // UNSTUCK 属于"关键异常事件"，即便不开 AI调试模式，也建议在较高日志级别输出
                         if (_root.AI调试模式 == true || _root.AI日志级别 >= 2) {
-                            var reason:String = blockedAhead ? "BLOCKED" : "STUCK";
+                            var reason:String = blockedAhead ? "BLOCKED"
+                                : (noProgress ? "NO_PROGRESS" : "STUCK");
                             _root.服务器.发布服务器消息("[MOV] " + self.名字
                                 + " UNSTUCK(" + reason + ")"
                                 + " from=" + oldWX + "," + oldWZ
                                 + " to=" + bestX + "," + bestZ
+                                + " win=" + baseWindow
                                 + " pos=" + Math.round(data.x) + "," + Math.round(data.y));
+                        }
+                    } else {
+                        // 5) 所有方向探测全败（嵌入复杂碰撞体内）→ 同心圆搜索兜底
+                        data._probeFailCount = (data._probeFailCount || 0) + 1;
+                        if (data._probeFailCount >= 3) {
+                            Mover.pushOutFromCollision(self, 120, 10, 45);
+                            data._probeFailCount = 0;
+                            if (_root.AI调试模式 == true || _root.AI日志级别 >= 2) {
+                                _root.服务器.发布服务器消息("[MOV] " + self.名字
+                                    + " PUSHOUT pos=" + Math.round(data.x) + "," + Math.round(data.y));
+                            }
                         }
                     }
                 }
             }
         } else if (!trying) {
-            // 无移动意图：清空脱困窗口，避免下一次移动继承旧方向
+            // 无移动意图：清空脱困窗口 + 进展计数，避免下一次移动继承旧状态
             data._unstuckUntilFrame = 0;
+            data._noProgressCount = 0;
+            data._lastProgressX = undefined;
+            data._lastProgressZ = undefined;
         }
 
         // ── Phase 1: X轴可行性检查 ──

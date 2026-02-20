@@ -113,10 +113,10 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
             return;
         }
 
-        // Z轴计算（先算距离，供跑步判定使用）
-        var targetZ:Number = isNaN(t.Z轴坐标) ? t._y : t.Z轴坐标;
-        var zDiff:Number = self._y - targetZ;
-        var absZDiff:Number = zDiff < 0 ? -zDiff : zDiff;
+        // Z轴计算：统一使用 data.diff_z（基于 Z轴坐标，与碰撞层一致）
+        // 不再自行用 _y 计算，避免跳跃/浮空/受击抖动导致 Z 对齐错向
+        var zDiff:Number = data.diff_z;
+        var absZDiff:Number = data.absdiff_z;
 
         // ── 近战追击兜底：仅在Z轴已对齐时输出平A，避免"空挥锁帧"阻碍对齐 ──
         // 远程追击不攻击（缩距优先，不浪费弹药）
@@ -143,7 +143,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // Z轴意图（5px 死区避免来回抖动）
         var wantZ:Number = 0;
         if (absZDiff > 5) {
-            wantZ = (zDiff > 0) ? -1 : 1; // zDiff>0=自身偏下→上行(-1)
+            wantZ = (zDiff < 0) ? -1 : 1; // diff_z<0=自身偏下→上行(-1)
         }
 
         // T2-A：预测拦截 — 朝预测位置移动而非当前位置
