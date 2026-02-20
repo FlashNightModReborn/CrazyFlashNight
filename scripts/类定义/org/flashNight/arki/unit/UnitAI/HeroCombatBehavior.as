@@ -334,15 +334,38 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
     }
 
     /**
-     * retreat_exit — 退出撤退状态（S6 振荡抑制）
+     * retreat_exit — 退出撤退状态
      *
-     * 设置再入冷却：退出后 retreatReentryCooldown 帧内禁止重新进入撤退。
-     * 防止 Retreating→Selector→HeroCombatModule→Retreating 快速振荡。
+     * S6: 设置再入冷却（振荡抑制）。
+     * S9: 结果导向评估撤退有效性 — 未能拉开有效距离则累积失败计数，
+     *     WeaponEvaluator 据此偏置近战（刷怪场景下远程撤退=负收益循环）。
      */
     public function retreat_exit():Void {
+        var frame:Number = _root.帧计时器.当前帧数;
+
+        // S6: 再入冷却
         var cooldown:Number = data.personality.retreatReentryCooldown;
         if (isNaN(cooldown) || cooldown <= 0) cooldown = 60;
-        data._retreatCooldownUntil = _root.帧计时器.当前帧数 + cooldown;
+        data._retreatCooldownUntil = frame + cooldown;
+
+        // S9: 撤退效果评估（结果导向：不管退出原因，看是否拉开了有效距离）
+        var t = data.target;
+        if (t != null && t.hp > 0 && t._x != undefined) {
+            data.updateSelf();
+            data.updateTarget();
+            // 远程有效距离阈值：≥200px 才够远程武器发挥
+            if (data.absdiff_x < 200) {
+                data._retreatFailCount++;
+            } else {
+                data._retreatFailCount = 0;
+            }
+        }
+
+        if (_root.AI调试模式 == true) {
+            _root.服务器.发布服务器消息("[RET-EXIT] " + data.self.名字
+                + " dist=" + Math.round(data.absdiff_x)
+                + " failCount=" + data._retreatFailCount);
+        }
     }
 
     /**

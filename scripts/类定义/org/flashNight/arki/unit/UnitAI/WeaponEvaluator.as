@@ -232,6 +232,23 @@ class org.flashNight.arki.unit.UnitAI.WeaponEvaluator {
                 score -= (1 - ammoR) * underRatio * 0.5;
             }
 
+            // ── S9: 撤退失效 → 近战偏置 ──
+            // 连续撤退未能拉开有效距离 = 远程风筝不可行
+            // 刷怪场景下撤退耗时→敌人越来越多→更难撤退，应果断切近战
+            var rfc:Number = data._retreatFailCount;
+            if (rfc >= 2) {
+                var failBias:Number = rfc * 0.2;
+                if (failBias > 0.5) failBias = 0.5;
+                if (mode == "兵器") {
+                    score += failBias;
+                } else if (mode == "空手") {
+                    score += failBias * 0.4;
+                } else {
+                    // 远程武器降权（抵消 healthPressure 的远程偏好）
+                    score -= failBias * 0.8;
+                }
+            }
+
             // ── 切换成本 + 迟滞（hysteresis）──
             if (mode == self.攻击模式) {
                 score += hysteresis; // 维持当前 → 加分
@@ -279,7 +296,9 @@ class org.flashNight.arki.unit.UnitAI.WeaponEvaluator {
                 wmsg += " ";
             }
             wmsg += "-> " + bestMode + (didSwitch ? " SWITCH!" : " hold");
-            wmsg += " [dist=" + Math.round(dist) + " hp=" + Math.round(hpRatio * 100) + "% pr=" + (Math.round(healthPressure * 100) / 100) + "]";
+            wmsg += " [dist=" + Math.round(dist) + " hp=" + Math.round(hpRatio * 100) + "% pr=" + (Math.round(healthPressure * 100) / 100);
+            if (data._retreatFailCount >= 2) wmsg += " retFail=" + data._retreatFailCount;
+            wmsg += "]";
             _root.服务器.发布服务器消息(wmsg);
         }
     }
