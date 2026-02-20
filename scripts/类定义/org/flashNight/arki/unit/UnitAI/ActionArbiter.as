@@ -76,6 +76,9 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     private var _prevHpRatio:Number;
     private var _retreatUrgency:Number = 0;
 
+    // ── 角落激进模式（S7: 被逼入角落时主动解围而非继续逃跑）──
+    private var _corneredAggression:Number = 0;
+
     // ── 包围度 + 近距密度（左右敌人分布检测，统一采样）──
     private var _encirclement:Number = 0;
     private var _nearbyCount:Number = 0;
@@ -150,6 +153,11 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     }
 
     public function getRetreatUrgency():Number {
+        // S7: 角落激进模式下降低有效撤退紧迫度
+        // 逃不掉就不该逃 — 抑制 Retreating Gate 触发，转为原地解围
+        if (_corneredAggression > 0) {
+            return _retreatUrgency * (1 - _corneredAggression * 0.5);
+        }
         return _retreatUrgency;
     }
 
@@ -289,6 +297,26 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         _executor.updateAnimLock(data.self);
         _ctx.build(data, context, _executor, _stanceMgr, _weaponEval, _recentHitFrame, p,
                    _retreatUrgency, _encirclement, _nearbyCount, _leftEnemyCount, _rightEnemyCount);
+
+        // S7: 角落激进模式 — 被逼入角落 + 高勇气 + 目标活跃 → 主动解围
+        // bndCorner > 0.3 = X轴和Z轴同时靠近边界（无处可逃）
+        // 高勇气角色转为激进（解围/击退），低勇气角色维持求生本能
+        var corner:Number = data.bndCorner;
+        if (isNaN(corner)) corner = 0;
+        if (corner > 0.3 && p.勇气 > 0.3) {
+            var caTgt:Number = corner * p.勇气;
+            // 快速上升、缓慢衰减（进入角落立刻反应，脱离后逐渐恢复）
+            if (caTgt > _corneredAggression) {
+                _corneredAggression = caTgt;
+            } else {
+                _corneredAggression += (caTgt - _corneredAggression) * 0.15;
+            }
+        } else {
+            _corneredAggression *= 0.9;
+        }
+        if (_corneredAggression < 0.05) _corneredAggression = 0;
+        if (_corneredAggression > 1) _corneredAggression = 1;
+        _ctx.corneredAggression = _corneredAggression;
 
         // 自适应温度（高压更确定，低压更灵动）
         var dynT:Number = p.temperature;

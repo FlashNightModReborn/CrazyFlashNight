@@ -76,14 +76,16 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         this.AddStatus("Retreating", new FSM_Status(
             function() { behavior.retreat_action(); },
             function() { behavior.retreat_enter(); },
-            null
+            function() { behavior.retreat_exit(); }
         ));
 
         // ═══════ Root Gate 转换 ═══════
 
         // HeroCombatModule → Retreating（撤退检查，优先于目标死亡检查）
         // 阈值由 personality.retreatEnterThreshold 驱动（勇气低→更容易撤退）
+        // S6: 冷却期内禁止再次进入撤退（振荡抑制）
         this.pushGateTransition("HeroCombatModule", "Retreating", function() {
+            if (_root.帧计时器.当前帧数 < data._retreatCooldownUntil) return false;
             var threshold:Number = data.personality.retreatEnterThreshold;
             if (isNaN(threshold)) threshold = 0.6;
             return data.arbiter.getRetreatUrgency() > threshold;
@@ -329,6 +331,18 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
     public function retreat_enter():Void {
         MovementResolver.clearInput(data.self);
         _retreatMovement.enter(_root.帧计时器.当前帧数);
+    }
+
+    /**
+     * retreat_exit — 退出撤退状态（S6 振荡抑制）
+     *
+     * 设置再入冷却：退出后 retreatReentryCooldown 帧内禁止重新进入撤退。
+     * 防止 Retreating→Selector→HeroCombatModule→Retreating 快速振荡。
+     */
+    public function retreat_exit():Void {
+        var cooldown:Number = data.personality.retreatReentryCooldown;
+        if (isNaN(cooldown) || cooldown <= 0) cooldown = 60;
+        data._retreatCooldownUntil = _root.帧计时器.当前帧数 + cooldown;
     }
 
     /**

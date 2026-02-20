@@ -217,6 +217,10 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     // 探测全败计数：所有方向都不可行走时累计，达到阈值触发 pushOutFromCollision
     public var _probeFailCount:Number = 0;
 
+    // S6: 撤退再入冷却（振荡抑制）
+    // Retreating onExit 写入，HeroCombatModule→Retreating Gate 读取
+    public var _retreatCooldownUntil:Number = 0;
+
     /**
      * 改进版卡死检测 - 基于自身绝对位置变化而非相对距离变化
      * 

@@ -89,6 +89,7 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
 
     // ── 边界压迫 ──
     public var bndCorner:Number;         // 角落压迫度 [0,1]（X+Z双轴贴墙时趋近1）
+    public var corneredAggression:Number;// S7: 角落激进信号 [0,1]（被逼角落+高勇气→主动解围）
 
     // ── pipeline context ──
     public var context:String;           // "chase" | "engage" | "selector" | "retreat"

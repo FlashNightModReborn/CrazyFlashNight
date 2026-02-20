@@ -51,6 +51,22 @@ class org.flashNight.arki.unit.UnitAI.scoring.SurvivalUrgencyMod extends Scoring
             }
         }
 
+        // ── S7: 角落激进模式 → 被逼入角落时提升解围/击退，抑制位移/躲避 ──
+        // 逃不掉就不该逃 — 转为主动解围、击退敌人创造空间
+        var ca:Number = ctx.corneredAggression;
+        if (ca > 0.1) {
+            if (func == "解围霸体") {
+                // 角落下强烈偏好解围霸体（震地/气动波/霸体破围）
+                delta += ca * 1.5;
+            } else if (func == "击退") {
+                // 击退技能把敌人推开，创造脱困空间
+                delta += ca * 1.0;
+            } else if (func == "躲避" || func == "位移" || func == "高频位移") {
+                // 角落里闪避/位移效果差（无处可闪），抑制评分
+                delta -= ca * 0.5;
+            }
+        }
+
         return delta;
     }
 }
