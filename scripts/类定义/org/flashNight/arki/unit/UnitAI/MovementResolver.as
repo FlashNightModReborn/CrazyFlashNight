@@ -78,19 +78,17 @@ class org.flashNight.arki.unit.UnitAI.MovementResolver {
         var MARGIN:Number = 80;
         var xBlocked:Boolean = false;
 
-        // ── Phase 0: 障碍物脱困（仅在确实卡死时触发）──
+        // ── Phase 0: 障碍物/边界脱困（在被阻/卡死时触发）──
         // 说明：边界贴墙可用 bnd* 直接判断，但地图障碍需要碰撞探测。
-        // 这里不引入 getWalkableDirections（8向全探测太重），只在卡死时用少量 probe。
+        // 这里不引入 getWalkableDirections（8向全探测太重），仅在“方向不可走/确实卡死”时用少量 probe。
         var frameNow:Number = _root.帧计时器.当前帧数;
         var trying:Boolean = (wantX != 0 || wantZ != 0);
-        if (trying && !self.射击中 && self.状态 != "技能" && self.状态 != "战技") {
+        if (trying && self.状态 != "技能" && self.状态 != "战技") {
             // 脱困窗口内：直接复用上次方向（避免重复 hitTest）
             if (frameNow < data._unstuckUntilFrame) {
                 wantX = data._unstuckX;
                 wantZ = data._unstuckZ;
-            } else if (data.stuckProbeByCurrentPosition(true, 6, 3, 4)) {
-                var oldWX:Number = wantX;
-                var oldWZ:Number = wantZ;
+            } else {
                 // 探测距离：不要过大（会错过狭窄出口），也不要过小（容易被抖动误导）
                 var spd:Number = self.行走X速度;
                 if (isNaN(spd) || spd <= 0) spd = 6;
@@ -98,81 +96,94 @@ class org.flashNight.arki.unit.UnitAI.MovementResolver {
                 if (probe < 20) probe = 20;
                 else if (probe > 60) probe = 60;
 
-                // 优先 Z 方向：朝目标对齐（无目标则朝空间更大的一侧）
-                var preferZ:Number = 0;
-                if (data.tz != null && !isNaN(data.tz)) {
-                    preferZ = (data.tz > data.z) ? 1 : -1;
-                } else {
-                    var zp:Number = MovementResolver.pickZDirBySpaceEx(data, self, MARGIN);
-                    if (zp < 0) preferZ = -1;
-                    else if (zp > 0) preferZ = 1;
-                    else preferZ = (data.bndUpDist > data.bndDownDist) ? -1 : 1;
-                }
-                var altZ:Number = -preferZ;
+                // 两类触发：
+                //  1) blockedAhead：前方探测点不可行走（边界/障碍）
+                //  2) stuck：位置长期无进展（防止“顶着障碍抖动/被推挤”漏报）
+                var blockedAhead:Boolean = !Mover.isDirectionWalkable(self, wantX, wantZ, probe);
+                var stuck:Boolean = data.stuckProbeByCurrentPosition(true, 6, 3, 4);
 
-                var bestX:Number = 0;
-                var bestZ:Number = 0;
+                if (blockedAhead || stuck) {
+                    var oldWX:Number = wantX;
+                    var oldWZ:Number = wantZ;
 
-                // 边界脱困：贴左右边时优先往屏幕中间挪（解决卡在左右边不反向的问题）
-                var edgeEscapeX:Number = 0;
-                if (data.bndLeftDist < MARGIN) edgeEscapeX = 1;
-                else if (data.bndRightDist < MARGIN) edgeEscapeX = -1;
-                if (edgeEscapeX != 0) {
-                    if (oldWZ != 0 && Mover.isDirectionWalkable(self, edgeEscapeX, oldWZ, probe)) {
-                        bestX = edgeEscapeX; bestZ = oldWZ;
-                    } else if (Mover.isDirectionWalkable(self, edgeEscapeX, preferZ, probe)) {
-                        bestX = edgeEscapeX; bestZ = preferZ;
-                    } else if (Mover.isDirectionWalkable(self, edgeEscapeX, altZ, probe)) {
-                        bestX = edgeEscapeX; bestZ = altZ;
-                    } else if (Mover.isDirectionWalkable(self, edgeEscapeX, 0, probe)) {
-                        bestX = edgeEscapeX; bestZ = 0;
+                    // 优先 Z 方向：朝目标对齐（无目标则朝空间更大的一侧）
+                    var preferZ:Number = 0;
+                    if (data.tz != null && !isNaN(data.tz)) {
+                        preferZ = (data.tz > data.z) ? 1 : -1;
+                    } else {
+                        var zp:Number = MovementResolver.pickZDirBySpaceEx(data, self, MARGIN);
+                        if (zp < 0) preferZ = -1;
+                        else if (zp > 0) preferZ = 1;
+                        else preferZ = (data.bndUpDist > data.bndDownDist) ? -1 : 1;
                     }
-                }
+                    var altZ:Number = -preferZ;
 
-                // 1) 尽量保持原意图（含对角）
-                if (bestX == 0 && bestZ == 0
-                    && (oldWX != 0 || oldWZ != 0) && Mover.isDirectionWalkable(self, oldWX, oldWZ, probe)) {
-                    bestX = oldWX; bestZ = oldWZ;
-                }
-                // 2) X优先：对角绕障（X + preferZ / altZ）
-                else if (bestX == 0 && bestZ == 0
-                    && oldWX != 0 && Mover.isDirectionWalkable(self, oldWX, preferZ, probe)) {
-                    bestX = oldWX; bestZ = preferZ;
-                } else if (bestX == 0 && bestZ == 0
-                    && oldWX != 0 && Mover.isDirectionWalkable(self, oldWX, altZ, probe)) {
-                    bestX = oldWX; bestZ = altZ;
-                }
-                // 3) 纯Z挪位（沿墙滑行/绕柱）
-                else if (bestX == 0 && bestZ == 0
-                    && Mover.isDirectionWalkable(self, 0, preferZ, probe)) {
-                    bestX = 0; bestZ = preferZ;
-                } else if (bestX == 0 && bestZ == 0
-                    && Mover.isDirectionWalkable(self, 0, altZ, probe)) {
-                    bestX = 0; bestZ = altZ;
-                }
-                // 4) 退一步（反向X/反向Z）
-                else if (bestX == 0 && bestZ == 0
-                    && oldWX != 0 && Mover.isDirectionWalkable(self, -oldWX, 0, probe)) {
-                    bestX = -oldWX; bestZ = 0;
-                } else if (bestX == 0 && bestZ == 0
-                    && oldWZ != 0 && Mover.isDirectionWalkable(self, 0, -oldWZ, probe)) {
-                    bestX = 0; bestZ = -oldWZ;
-                }
+                    var bestX:Number = 0;
+                    var bestZ:Number = 0;
 
-                if (bestX != 0 || bestZ != 0) {
-                    wantX = bestX;
-                    wantZ = bestZ;
-                    data._unstuckX = bestX;
-                    data._unstuckZ = bestZ;
-                    data._unstuckUntilFrame = frameNow + 10;
+                    // 边界脱困：贴左右边时优先往屏幕中间挪（解决卡在左右边不反向的问题）
+                    var edgeEscapeX:Number = 0;
+                    if (data.bndLeftDist < MARGIN) edgeEscapeX = 1;
+                    else if (data.bndRightDist < MARGIN) edgeEscapeX = -1;
+                    if (edgeEscapeX != 0) {
+                        if (oldWZ != 0 && Mover.isDirectionWalkable(self, edgeEscapeX, oldWZ, probe)) {
+                            bestX = edgeEscapeX; bestZ = oldWZ;
+                        } else if (Mover.isDirectionWalkable(self, edgeEscapeX, preferZ, probe)) {
+                            bestX = edgeEscapeX; bestZ = preferZ;
+                        } else if (Mover.isDirectionWalkable(self, edgeEscapeX, altZ, probe)) {
+                            bestX = edgeEscapeX; bestZ = altZ;
+                        } else if (Mover.isDirectionWalkable(self, edgeEscapeX, 0, probe)) {
+                            bestX = edgeEscapeX; bestZ = 0;
+                        }
+                    }
 
-                    // UNSTUCK 属于"关键异常事件"，即便不开 AI调试模式，也建议在较高日志级别输出
-                    if (_root.AI调试模式 == true || _root.AI日志级别 >= 2) {
-                        _root.服务器.发布服务器消息("[MOV] " + self.名字
-                            + " UNSTUCK"
-                            + " from=" + oldWX + "," + oldWZ
-                            + " to=" + bestX + "," + bestZ
-                            + " pos=" + Math.round(data.x) + "," + Math.round(data.y));
+                    // 1) 尽量保持原意图（含对角）
+                    if (bestX == 0 && bestZ == 0
+                        && (oldWX != 0 || oldWZ != 0) && Mover.isDirectionWalkable(self, oldWX, oldWZ, probe)) {
+                        bestX = oldWX; bestZ = oldWZ;
+                    }
+                    // 2) X优先：对角绕障（X + preferZ / altZ）
+                    else if (bestX == 0 && bestZ == 0
+                        && oldWX != 0 && Mover.isDirectionWalkable(self, oldWX, preferZ, probe)) {
+                        bestX = oldWX; bestZ = preferZ;
+                    } else if (bestX == 0 && bestZ == 0
+                        && oldWX != 0 && Mover.isDirectionWalkable(self, oldWX, altZ, probe)) {
+                        bestX = oldWX; bestZ = altZ;
+                    }
+                    // 3) 纯Z挪位（沿墙滑行/绕柱）
+                    else if (bestX == 0 && bestZ == 0
+                        && Mover.isDirectionWalkable(self, 0, preferZ, probe)) {
+                        bestX = 0; bestZ = preferZ;
+                    } else if (bestX == 0 && bestZ == 0
+                        && Mover.isDirectionWalkable(self, 0, altZ, probe)) {
+                        bestX = 0; bestZ = altZ;
+                    }
+                    // 4) 退一步（反向X/反向Z）
+                    else if (bestX == 0 && bestZ == 0
+                        && oldWX != 0 && Mover.isDirectionWalkable(self, -oldWX, 0, probe)) {
+                        bestX = -oldWX; bestZ = 0;
+                    } else if (bestX == 0 && bestZ == 0
+                        && oldWZ != 0 && Mover.isDirectionWalkable(self, 0, -oldWZ, probe)) {
+                        bestX = 0; bestZ = -oldWZ;
+                    }
+
+                    if (bestX != 0 || bestZ != 0) {
+                        wantX = bestX;
+                        wantZ = bestZ;
+                        data._unstuckX = bestX;
+                        data._unstuckZ = bestZ;
+                        // 脱困窗口稍微加长：足够绕过中型障碍，减少“刚挪开就又顶回去”的抖动
+                        data._unstuckUntilFrame = frameNow + 12;
+
+                        // UNSTUCK 属于"关键异常事件"，即便不开 AI调试模式，也建议在较高日志级别输出
+                        if (_root.AI调试模式 == true || _root.AI日志级别 >= 2) {
+                            var reason:String = blockedAhead ? "BLOCKED" : "STUCK";
+                            _root.服务器.发布服务器消息("[MOV] " + self.名字
+                                + " UNSTUCK(" + reason + ")"
+                                + " from=" + oldWX + "," + oldWZ
+                                + " to=" + bestX + "," + bestZ
+                                + " pos=" + Math.round(data.x) + "," + Math.round(data.y));
+                        }
                     }
                 }
             }

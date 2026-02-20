@@ -164,7 +164,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.RetreatMovementStrategy {
     /**
      * _computeRetreatMove — 计算 X/Z 轴撤退移动意图
      *
-     * X轴：远离目标方向移动，贴墙检查
+     * X轴：远离目标方向移动（贴墙/角落/障碍统一交给 MovementResolver 处理）
      * Z轴：优先拉开垂直距离(zSep < Z_SAFE)，足够后轻微蛇形闪避(30帧周期)
      *
      * 结果写入 _retMoveX, _retMoveZ, _retZSep
@@ -173,14 +173,13 @@ class org.flashNight.arki.unit.UnitAI.strategies.RetreatMovementStrategy {
         // X轴
         _retMoveX = 0;
         if (data.target != null && data.target._x != undefined && data.target.hp > 0) {
-            var retDir:Number = (data.diff_x > 0) ? -1 : 1; // 远离目标
-            var retWall:Boolean = (retDir < 0 && data.bndLeftDist < 80)
-                               || (retDir > 0 && data.bndRightDist < 80);
-            if (!retWall) {
-                _retMoveX = retDir;
-            }
+            // 注意：撤退方向在策略层不做“贴墙归零”门控。
+            // 贴边/障碍处理应统一交给 MovementResolver.applyBoundaryAwareMovement：
+            //   - retWall 归零会导致 wantX=0，从而无法触发沿墙滑行/角落突围/edgeEscape 脱离逻辑
+            //   - 实战表现为：被压到地图边缘后只上下移动，无法正确反向撤离
+            _retMoveX = (data.diff_x > 0) ? -1 : 1; // 远离目标
         } else {
-            if (!isNaN(data.diff_x) && data.diff_x != 0) {
+            if (data.diff_x != null && !isNaN(data.diff_x) && data.diff_x != 0) {
                 _retMoveX = (data.diff_x > 0) ? -1 : 1;
             }
         }

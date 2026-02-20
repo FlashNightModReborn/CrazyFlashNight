@@ -236,6 +236,10 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
         // 更新自身坐标
         this.updateSelf();
+        // 使用“地面坐标”(x,z) 做卡死检测：
+        // - z = Z轴坐标（单位在地面平面上的纵向坐标）
+        // - _y 可能包含跳跃/浮空/受击抖动的显示偏移，纳入检测会导致误判为“在移动”→漏报卡死
+        var curPlaneZ:Number = !isNaN(this.z) ? this.z : this.y;
 
         // 初次检测：记录位置，不判定卡死
         if (this._lastStuckCheckFrame < 0 || 
@@ -245,7 +249,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
             
             this._lastSelfX = this.x;
             this._lastSelfY = this.y;
-            this._lastSelfZ = this.z;
+            this._lastSelfZ = curPlaneZ;
             this._lastStuckCheckFrame = currentFrame;
             this._stuckCheckCount = 0;
             return false;
@@ -259,9 +263,8 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
         // 计算位置变化量
         var deltaX:Number = Math.abs(this.x - this._lastSelfX);
-        var deltaY:Number = Math.abs(this.y - this._lastSelfY);
-        var deltaZ:Number = Math.abs(this.z - this._lastSelfZ);
-        var delta2:Number = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
+        var deltaZ:Number = Math.abs(curPlaneZ - this._lastSelfZ);
+        var delta2:Number = deltaX * deltaX + deltaZ * deltaZ;
         var eps2:Number = eps * eps;
 
         // 判断是否有显著移动（避免 sqrt，性能更好）
@@ -278,7 +281,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         // 更新检测记录
         this._lastSelfX = this.x;
         this._lastSelfY = this.y;
-        this._lastSelfZ = this.z;
+        this._lastSelfZ = curPlaneZ;
         this._lastStuckCheckFrame = currentFrame;
 
         // 调试输出
@@ -305,14 +308,16 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
      * @return Boolean       true=确实卡死；false=正常
      */
     public function stuckProbeByCurrentPosition(isTryingToMove:Boolean,
-                                                eps:Number,
-                                                minStuckCount:Number,
-                                                minFrameGap:Number):Boolean {
+                                                 eps:Number,
+                                                 minStuckCount:Number,
+                                                 minFrameGap:Number):Boolean {
         if (eps == undefined) eps = 8;
         if (minStuckCount == undefined) minStuckCount = 3;
         if (minFrameGap == undefined) minFrameGap = 4;
 
         var currentFrame:Number = _root.帧计时器.当前帧数;
+        // 使用地面坐标做检测（见 stuckProbeByDiffChange 说明）
+        var curPlaneZ:Number = !isNaN(this.z) ? this.z : this.y;
 
         // 非移动意图 / 待机状态：重置检测计数
         if (!isTryingToMove || this.standby) {
@@ -320,7 +325,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
             this._lastStuckCheckFrame = currentFrame;
             this._lastSelfX = this.x;
             this._lastSelfY = this.y;
-            this._lastSelfZ = this.z;
+            this._lastSelfZ = curPlaneZ;
             return false;
         }
 
@@ -331,7 +336,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
             || this._lastSelfZ == undefined) {
             this._lastSelfX = this.x;
             this._lastSelfY = this.y;
-            this._lastSelfZ = this.z;
+            this._lastSelfZ = curPlaneZ;
             this._lastStuckCheckFrame = currentFrame;
             this._stuckCheckCount = 0;
             return false;
@@ -345,9 +350,8 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
         // 计算位置变化量（使用本帧已更新的 x/y/z）
         var deltaX:Number = Math.abs(this.x - this._lastSelfX);
-        var deltaY:Number = Math.abs(this.y - this._lastSelfY);
-        var deltaZ:Number = Math.abs(this.z - this._lastSelfZ);
-        var delta2:Number = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
+        var deltaZ:Number = Math.abs(curPlaneZ - this._lastSelfZ);
+        var delta2:Number = deltaX * deltaX + deltaZ * deltaZ;
         var eps2:Number = eps * eps;
 
         if (delta2 > eps2) {
@@ -358,7 +362,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
         this._lastSelfX = this.x;
         this._lastSelfY = this.y;
-        this._lastSelfZ = this.z;
+        this._lastSelfZ = curPlaneZ;
         this._lastStuckCheckFrame = currentFrame;
 
         return this._stuckCheckCount >= minStuckCount;
