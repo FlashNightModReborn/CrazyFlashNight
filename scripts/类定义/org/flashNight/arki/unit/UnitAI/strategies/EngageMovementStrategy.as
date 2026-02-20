@@ -25,6 +25,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy {
     private var _strafeDir:Number;        // -1=上, 1=下, 0=不动
     private var _strafePulseEnd:Number;   // 当前移动脉冲结束帧
     private var _strafeNextStart:Number;  // 下次移动脉冲开始帧
+    private var _stutterPhase:Number;     // 走位期“走-打”交替：0=走，1=打
 
     // 确定性随机源（可复现行为）
     private var _rng:LinearCongruentialEngine;
@@ -43,6 +44,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy {
         _strafeDir = 0;
         _strafePulseEnd = 0;
         _strafeNextStart = 0;
+        _stutterPhase = 0;
     }
 
     /**
@@ -159,14 +161,42 @@ class org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy {
         // SLIDE(1) 和 CORNER(2) 都视为贴墙 — 保持攻击输出，不抑制
         var wallBlocked:Boolean = (bndResult >= 1);
 
-        // 抑制攻击以允许移动执行（仅正常风筝时）
+        // 抑制攻击以允许移动执行（非移动射击武器）
+        // 关键修复：不要“全程禁攻”导致 AI 在有效射程内只跑不打。
+        // 方案：在非硬性闪避时做 stutter-step（走/打交替），保证输出不被走位饿死。
         // wallBlocked(贴墙) → 保持攻击输出（贴墙时应该战斗，不应发呆）
         var moving:Boolean = (self.左行 || self.右行 || self.上行 || self.下行);
         if (moving && self.移动射击 != true && !wallBlocked) {
-            self.动作A = false;
-            self.动作B = false;
-            if (!self.射击中) {
-                self.状态改变(self.攻击模式 + "跑");
+            // 硬性闪避窗口：子弹逼近/高紧迫/重包围 → 纯走位优先
+            var btAge:Number = frame - self._btFrame;
+            var bulletSoon:Boolean = (btAge >= 0 && btAge <= 1
+                && self._btCount > 0 && self._btMinETA < 12);
+            var hardEvade:Boolean = wantsEvade && (bulletSoon || urgency > 0.75 || enc > 0.55);
+
+            if (hardEvade) {
+                self.动作A = false;
+                self.动作B = false;
+                if (!self.射击中) {
+                    self.状态改变(self.攻击模式 + "跑");
+                }
+                return;
+            }
+
+            // stutter-step：走位帧与开火帧交替（避免一直清空动作输入）
+            _stutterPhase = 1 - _stutterPhase;
+            if (_stutterPhase == 1) {
+                // 开火帧：停步让出攻击窗口（攻击键由 ActionExecutor.autoHold/arbiter 负责）
+                self.左行 = false;
+                self.右行 = false;
+                self.上行 = false;
+                self.下行 = false;
+            } else {
+                // 走位帧：清空攻击输入以保证移动执行
+                self.动作A = false;
+                self.动作B = false;
+                if (!self.射击中) {
+                    self.状态改变(self.攻击模式 + "跑");
+                }
             }
         }
     }
