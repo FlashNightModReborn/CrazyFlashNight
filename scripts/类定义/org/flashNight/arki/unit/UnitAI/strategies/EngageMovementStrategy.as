@@ -16,8 +16,10 @@ import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
  *   激活 -> dur 帧移动（8~15帧） -> gap 帧间歇 -> 重新评估
  *   间歇长度随紧迫度/包围度缩短（紧急时密集走位）
  *
- * 攻击抑制：
- *   走位脉冲期间清除攻击输入以允许移动执行（移动射击除外）
+ * 职责边界（Input Composer 模式）：
+ *   本策略只输出移动意图（通过 MovementResolver），不操控开火输入。
+ *   返回模式代码，由 HeroCombatModule.engage() 统一裁决开火/走位冲突。
+ *   0=无走位, 1=正常脉冲, 2=硬性闪避, 3=贴墙走位
  */
 class org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy {
 
@@ -25,7 +27,6 @@ class org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy {
     private var _strafeDir:Number;        // -1=上, 1=下, 0=不动
     private var _strafePulseEnd:Number;   // 当前移动脉冲结束帧
     private var _strafeNextStart:Number;  // 下次移动脉冲开始帧
-    private var _stutterPhase:Number;     // 走位期“走-打”交替：0=走，1=打
 
     // 确定性随机源（可复现行为）
     private var _rng:LinearCongruentialEngine;
@@ -44,18 +45,21 @@ class org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy {
         _strafeDir = 0;
         _strafePulseEnd = 0;
         _strafeNextStart = 0;
-        _stutterPhase = 0;
     }
 
     /**
-     * apply -- 每 engage tick 执行战术走位
+     * apply -- 每 engage tick 执行战术走位（纯移动输出）
+     *
+     * 只通过 MovementResolver 写入移动键，不操控 动作A/B。
+     * 返回模式代码供 HeroCombatModule 的 Input Composer 统一裁决。
      *
      * @param data    共享 AI 数据（含 arbiter、personality、位置信息）
      * @param self    单位 MovieClip
      * @param frame   当前帧数
      * @param inSkill 是否在技能/换弹动画中（true 时跳过走位）
+     * @return 走位模式: 0=无, 1=正常脉冲, 2=硬性闪避, 3=贴墙
      */
-    public function apply(data:UnitAIData, self:MovieClip, frame:Number, inSkill:Boolean):Void {
+    public function apply(data:UnitAIData, self:MovieClip, frame:Number, inSkill:Boolean):Number {
         if (inSkill) {
             // 闪避/位移技能期间保持 Z 轴垂直闪避（子弹威胁时斜向机动）
             if (data.arbiter.getExecutor().isDodgeActive()
@@ -66,7 +70,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy {
                     MovementResolver.applyBoundaryAwareMovement(data, self, 0, _strafeDir);
                 }
             }
-            return;
+            return 0;
         }
 
         var urgency:Number = data.arbiter.getRetreatUrgency();
@@ -87,7 +91,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy {
         var wantsEvade:Boolean = (urgency > evadeUrg) || (enc > evadeEnc);
 
         // 仅在远程风筝 / 受创 / 被围时启动走位脉冲
-        if (!wantsKite && !wantsEvade) return;
+        if (!wantsKite && !wantsEvade) return 0;
 
         var inPulse:Boolean = frame < _strafePulseEnd;
         if (!inPulse && frame >= _strafeNextStart) {
@@ -106,7 +110,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy {
             inPulse = true;
         }
 
-        if (!inPulse) return;
+        if (!inPulse) return 0;
 
         // ── 收集移动意图 + 统一边界感知输出 ──
         var moveZ:Number = _strafeDir; // -1=上, 1=下, 0=不动
@@ -158,47 +162,26 @@ class org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy {
 
         // 统一处理边界碰撞：沿墙滑行 / 角落突围 / 正常输出
         var bndResult:Number = MovementResolver.applyBoundaryAwareMovement(data, self, moveX, moveZ);
-        // SLIDE(1) 和 CORNER(2) 都视为贴墙 — 保持攻击输出，不抑制
+        // SLIDE(1) 和 CORNER(2) 都视为贴墙
         var wallBlocked:Boolean = (bndResult >= 1);
 
-        // 抑制攻击以允许移动执行（非移动射击武器）
-        // 关键修复：不要“全程禁攻”导致 AI 在有效射程内只跑不打。
-        // 方案：在非硬性闪避时做 stutter-step（走/打交替），保证输出不被走位饿死。
-        // wallBlocked(贴墙) → 保持攻击输出（贴墙时应该战斗，不应发呆）
+        // ── 返回模式代码（不操控 动作A/B，交由 Input Composer 裁决）──
         var moving:Boolean = (self.左行 || self.右行 || self.上行 || self.下行);
-        if (moving && self.移动射击 != true && !wallBlocked) {
-            // 硬性闪避窗口：子弹逼近/高紧迫/重包围 → 纯走位优先
+        if (!moving) return 0;
+
+        // 贴墙：虽有移动意图但受限于边界，建议保持开火
+        if (wallBlocked) return 3;
+
+        // 硬性闪避检测：子弹逼近/高紧迫/重包围 → 建议纯走位
+        if (wantsEvade) {
             var btAge:Number = frame - self._btFrame;
             var bulletSoon:Boolean = (btAge >= 0 && btAge <= 1
                 && self._btCount > 0 && self._btMinETA < 12);
-            var hardEvade:Boolean = wantsEvade && (bulletSoon || urgency > 0.75 || enc > 0.55);
-
-            if (hardEvade) {
-                self.动作A = false;
-                self.动作B = false;
-                if (!self.射击中) {
-                    self.状态改变(self.攻击模式 + "跑");
-                }
-                return;
-            }
-
-            // stutter-step：走位帧与开火帧交替（避免一直清空动作输入）
-            _stutterPhase = 1 - _stutterPhase;
-            if (_stutterPhase == 1) {
-                // 开火帧：停步让出攻击窗口（攻击键由 ActionExecutor.autoHold/arbiter 负责）
-                self.左行 = false;
-                self.右行 = false;
-                self.上行 = false;
-                self.下行 = false;
-            } else {
-                // 走位帧：清空攻击输入以保证移动执行
-                self.动作A = false;
-                self.动作B = false;
-                if (!self.射击中) {
-                    self.状态改变(self.攻击模式 + "跑");
-                }
-            }
+            if (bulletSoon || urgency > 0.75 || enc > 0.55) return 2;
         }
+
+        // 正常走位脉冲
+        return 1;
     }
 
     // ═══════ 走位方向选择 ═══════

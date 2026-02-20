@@ -21,6 +21,10 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
     // 战术走位策略
     private var _movement:EngageMovementStrategy;
 
+    // Input Composer 状态
+    private var _stutterPhase:Number;  // stutter-step 走打交替: 0=走, 1=打
+    private var _noFireTicks:Number;   // 连续无攻击输出的 tick 数（starvation guard）
+
     // 确定性随机源（可复现行为）
     private var _rng:LinearCongruentialEngine;
 
@@ -29,6 +33,8 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         super(null, function() { this.ChangeState("Chasing"); }, null);
         this.data = _data;
         this._movement = new EngageMovementStrategy();
+        this._stutterPhase = 0;
+        this._noFireTicks = 0;
         this._rng = LinearCongruentialEngine.getInstance();
 
         // 闭包捕获子状态机引用 — engage() 需要访问 HeroCombatModule 实例方法
@@ -176,6 +182,8 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
 
     public function engage_enter():Void {
         MovementResolver.clearInput(data.self);
+        _stutterPhase = 0;
+        _noFireTicks = 0;
     }
 
     public function engage():Void {
@@ -203,25 +211,93 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
             self.方向改变("右");
         }
 
-        // ── 统一动作管线 ──
-        // 技能/平A/换弹/武器评估 全部收敛到 arbiter.tick()
-        // arbiter 内部按中断规则互斥，不再有 gotoAndPlay 覆盖冲突
+        // ═══════════════════════════════════════════════════════
+        // Input Composer — 4 阶段统一裁决开火/走位
+        //
+        // 设计原则（业界标准 Action Scheduler 模式）：
+        //   同一帧内"移动意图+开火意图"统一合成，
+        //   单一裁决点解决冲突，禁止下游后处理层覆盖上游决策。
+        //
+        // Phase 1: Arbiter → 收集开火意图
+        // Phase 2: Movement → 写入移动键，返回模式代码
+        // Phase 3: Compose → 按模式/能力统一裁决
+        // Phase 4: Starvation Guard → 防输出饥饿
+        // ═══════════════════════════════════════════════════════
+
         var frame:Number = _root.帧计时器.当前帧数;
 
-        // 始终 engage context — 走位与进攻并行，不抑制 offense
+        // ── Phase 1: Arbiter — 收集开火意图 ──
         data.arbiter.tick(data, "engage");
+        var wantFire:Boolean = self.动作A;
+        var wantFireB:Boolean = self.动作B;
 
+        // ── Phase 2: Movement — 战术走位（纯移动输出）──
         var bodyType:String = data.arbiter.getExecutor().getCurrentBodyType();
         var inSkill:Boolean = (bodyType == "skill" || bodyType == "preBuff"
                             || bodyType == "reload"
                             || self.状态 == "技能" || self.状态 == "战技");
 
-        // ── 战术走位（策略委托）──
-        _movement.apply(UnitAIData(data), self, frame, inSkill);
+        // 清除开火输入，保证走位阶段的输入隔离
+        self.动作A = false;
+        self.动作B = false;
+
+        var moveMode:Number = _movement.apply(UnitAIData(data), self, frame, inSkill);
+
+        // ── Phase 3: Compose — 统一裁决开火/走位 ──
+        var moving:Boolean = (self.左行 || self.右行 || self.上行 || self.下行);
+
+        if (inSkill || !moving || self.移动射击 == true
+            || moveMode == 0 || moveMode == 3) {
+            // 无冲突：技能中/无移动/移动射击/无脉冲/贴墙 → 恢复开火意图
+            self.动作A = wantFire;
+            self.动作B = wantFireB;
+        } else if (moveMode == 2) {
+            // 硬性闪避：完全抑制开火，保持移动（动作A/B 已清零）
+            if (!self.射击中) {
+                self.状态改变(self.攻击模式 + "跑");
+            }
+        } else {
+            // 正常走位脉冲 (moveMode==1)：stutter-step 走打交替
+            _stutterPhase = 1 - _stutterPhase;
+            if (_stutterPhase == 1) {
+                // 开火帧：停步让出攻击窗口
+                self.左行 = false;
+                self.右行 = false;
+                self.上行 = false;
+                self.下行 = false;
+                self.动作A = wantFire;
+                self.动作B = wantFireB;
+            } else {
+                // 走位帧：保持移动，抑制开火（动作A/B 已清零）
+                if (!self.射击中) {
+                    self.状态改变(self.攻击模式 + "跑");
+                }
+            }
+        }
+
+        // ── Phase 4: Starvation Guard — 防输出饥饿 ──
+        // 连续 N tick 无有效攻击输出 → 强制开火窗口
+        // 跳过：技能/换弹中（单位正在做有意义的动作）、硬性闪避（生存优先）
+        if (!inSkill && moveMode != 2) {
+            if (self.动作A || self.射击中 == true) {
+                _noFireTicks = 0;
+            } else {
+                _noFireTicks++;
+                if (_noFireTicks >= 3) {
+                    // 强制开火窗口：停步攻击
+                    self.左行 = false;
+                    self.右行 = false;
+                    self.上行 = false;
+                    self.下行 = false;
+                    self.动作A = true;
+                    if (self.攻击模式 === "双枪") self.动作B = true;
+                    _noFireTicks = 0;
+                }
+            }
+        }
 
         // 防呆兜底：管线未产出动作 + 无 commitment → 默认普攻
         // getCurrentBodyType()==null 蕴含 !isBodyCommitted()（无类型 = 无承诺）
-        // 覆盖：纯站立无输出 + 移动中无攻击 两种边界场景
         if (!self.动作A && self.射击中 != true) {
             var st:String = self.状态;
             if (st != "技能" && st != "战技"
