@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-1连招" itemID="6976bef2-00000a1e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-1连招" lastModified="1770402967" lastUniqueIdentifier="4142">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-1连招" itemID="6976bef2-00000a1e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-1连招" lastModified="1771713597" lastUniqueIdentifier="4142">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-1连招" currentFrame="51" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器攻击容器-1连招" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
@@ -22,7 +22,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#FF800A" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#EA62EE" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#EA62EE" parentLayerIndex="1" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -438,7 +438,7 @@ _root.兵器攻击路由.动画完毕(this, _parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#808080" parentLayerIndex="1" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#808080" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1491,7 +1491,7 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!1064 6556[-3428 6556 -6606 4219!-6606 4219[#FFDB1B.4D #852.9E -9748 -728.5!-9748 -728.5|11871.5 -682!11871.5 -682[#2D1E.85 #863.AC 8735 4219!8735 4219[5557 6556 1064 6556"/>
+!11871.5 -682[#2D1E.85 #863.AC 8735 4219!8735 4219[5557 6556 1064 6556!1064 6556[-3428 6556 -6606 4219!-6606 4219[#FFDB1B.4D #852.9E -9748 -728.5!-9748 -728.5|11871.5 -682"/>
                   </edges>
                 </DOMShape>
               </elements>

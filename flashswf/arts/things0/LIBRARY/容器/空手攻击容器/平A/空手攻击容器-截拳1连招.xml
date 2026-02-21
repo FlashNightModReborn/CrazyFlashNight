@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-截拳1连招" itemID="6964ce51-00002614" linkageExportForAS="true" linkageIdentifier="空手攻击容器-截拳1连招" lastModified="1770225515">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-截拳1连招" itemID="6964ce51-00002614" linkageExportForAS="true" linkageIdentifier="空手攻击容器-截拳1连招" lastModified="1771683020">
   <timeline>
-    <DOMTimeline name="空手攻击容器-截拳1连招" currentFrame="61">
+    <DOMTimeline name="空手攻击容器-截拳1连招" currentFrame="1">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -56,7 +56,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -920,7 +920,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>

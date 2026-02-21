@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击" itemID="6919dfac-00001066" lastModified="1771508285" lastUniqueIdentifier="841">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击" itemID="6919dfac-00001066" lastModified="1771683128" lastUniqueIdentifier="841">
   <timeline>
-    <DOMTimeline name="空手攻击" currentFrame="70" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;844&lt;/guideline&gt;&lt;guideline direction="v"&gt;1202&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="空手攻击" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;844&lt;/guideline&gt;&lt;guideline direction="v"&gt;1202&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -35,7 +35,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#D8AA90" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#D8AA90" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -806,7 +806,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#4FB28F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#4FB28F" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
