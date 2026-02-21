@@ -309,7 +309,8 @@ _root.主角函数.初始化可用技能 = function() {
     var 技能缓存:Object = _root.技能缓存;
     var 技能点数表:Array = _root.技能点数查找表;
 
-    var 缓存键:String = 名字 + "_" + 等级;
+    var 技术档位:Number = (this.personality && this.personality.技术) ? (Math.round(this.personality.技术 * 4)) : 0;
+    var 缓存键:String = 名字 + "_" + 等级 + "_t" + 技术档位;
     if (技能缓存 && 技能缓存[缓存键] != undefined) {
         this.已学技能表 = 技能缓存[缓存键];
         return;
@@ -335,7 +336,11 @@ _root.主角函数.初始化可用技能 = function() {
     var LCG_M:Number = 4294967296;
 
     // 调用函数获取技能点数（内部已处理查表和超范围计算）
+    // 技术维度加成：0技术=1倍基准，满技术=2倍，线性插值
     var 技能点总数:Number = _root.计算技能点数总和(等级);
+    if (this.personality && this.personality.技术) {
+        技能点总数 = Math.round(技能点总数 * (1 + this.personality.技术));
+    }
     var 技能表:Array = 主角函数.人形怪技能表;
 
     // 从预处理的装备技能桶直接获取可用技能索引（已按装备类型过滤）
