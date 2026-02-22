@@ -2313,13 +2313,21 @@ _root.配置人形怪AI = function(target:MovieClip):Void {
 };
 
 /**
- * 生成随机人格 — Dirichlet-like 分配
+ * 生成随机人格 — Dirichlet-like 分配 + 有界仿射重缩放
  *
- * ALPHA=0.4 使分布尖锐（1-2 维明显突出）
- * 用确定性 LCG 内联保证同 seed 同结果
+ * 两阶段流程：
+ *   1. Dirichlet 归一化：ALPHA=0.4 使 1-2 维明显突出，确定维度间相对排序
+ *   2. Per-character affine rescaling：将 [min, max] 拉伸到 [FLOOR, CEIL]
+ *      保留排序结构（人格"形状"不变），同时让每个维度真正覆盖 [0, 1] 区间
+ *
+ * 设计意图：
+ *   - 原 Dirichlet(0.4, k=6) 的 sum=1 约束把每维值域压缩到 [0.06, 0.28]
+ *   - 下游 40+ 线性公式按 [0, 1] 设计，实际只利用了 22% 的参数范围
+ *   - Rescaling 后：连续参数利用率 → ~90%，离散参数全范围覆盖，硬门控恢复可达
+ *   - 同 seed 产生相同结果（确定性 LCG 不变）
  *
  * @param seed 确定性种子（aiSeed）
- * @return 六维人格对象，归一化总和 = 1
+ * @return 六维人格对象，rescaled 后各维值域 ≈ [FLOOR, CEIL]
  */
 _root.生成随机人格 = function(seed:Number):Object {
     var keys:Array = ["勇气", "技术", "经验", "反应", "智力", "谋略"];
@@ -2338,10 +2346,38 @@ _root.生成随机人格 = function(seed:Number):Object {
         sum += val;
     }
 
-    var p:Object = {};
+    // 阶段 1：Dirichlet 归一化（保留维度间相对排序）
+    var norm:Array = [];
     for (var j:Number = 0; j < 6; j++) {
-        p[keys[j]] = raw[j] / sum;
+        norm.push(raw[j] / sum);
     }
+
+    // 阶段 2：Per-character bounded affine rescaling
+    // 将本角色的 [min, max] 线性映射到 [FLOOR, CEIL]
+    var FLOOR:Number = 0.05;
+    var CEIL:Number  = 0.95;
+
+    var lo:Number = norm[0];
+    var hi:Number = norm[0];
+    for (var k:Number = 1; k < 6; k++) {
+        if (norm[k] < lo) lo = norm[k];
+        if (norm[k] > hi) hi = norm[k];
+    }
+
+    var p:Object = {};
+    var range:Number = hi - lo;
+    if (range < 0.001) {
+        // 退化情况：所有维度几乎相等 → 全部映射到中点
+        for (var m:Number = 0; m < 6; m++) {
+            p[keys[m]] = (FLOOR + CEIL) / 2;
+        }
+    } else {
+        var scale:Number = (CEIL - FLOOR) / range;
+        for (var n:Number = 0; n < 6; n++) {
+            p[keys[n]] = FLOOR + (norm[n] - lo) * scale;
+        }
+    }
+
     return p;
 };
 
@@ -2353,7 +2389,7 @@ _root.生成随机人格 = function(seed:Number):Object {
  *
  * ── 参数层次结构 ──
  *
- * Layer 0 — traits（六维特质，归一化 sum≈1，只读语义）
+ * Layer 0 — traits（六维特质，rescaled 后各维 ∈ [0.05, 0.95]，只读语义）
  *   勇气, 技术, 经验, 反应, 智力, 谋略
  *
  * Layer 1 — params.behavior（从特质派生，控制决策特性）
