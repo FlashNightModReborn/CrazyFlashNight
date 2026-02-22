@@ -2434,8 +2434,8 @@ _root.计算AI参数 = function(p:Object):Void {
     // ── 谋略 → 战术模块解锁阈值 + Boltzmann 基础温度 ──
     // baseTemperature = 谋略定义探索欲，技术阻尼压低温度（高技术更确定性）
     // 谋略=0,技术=0: 0.10  谋略=1,技术=0: 0.50
-    // 谋略=0,技术=1: 0.07  谋略=1,技术=1: 0.35（clamp下限兜底0.10）
-    p.baseTemperature     = (0.1 + p.谋略 * 0.4) * p.techTempDamp;
+    // 谋略=0,技术=1: 0.07→0.10  谋略=1,技术=1: 0.35（clamp下限兜底0.10）
+    p.baseTemperature     = Math.max(0.10, (0.1 + p.谋略 * 0.4) * p.techTempDamp);
     p.tacticsGrouping     = p.谋略 >= 0.25;         // 抱团移动
     p.tacticsEvadeCluster = p.谋略 >= 0.35;         // 规避敌群
     p.tacticsSeekRecovery = p.谋略 >= 0.45;         // 状态不佳时脱战恢复
@@ -2576,12 +2576,13 @@ _root.计算AI参数 = function(p:Object):Void {
         meta.chaseCommitment     = "3+勇气*4=" + _r2(p.chaseCommitment) + " ← 勇气=" + _r2(p.勇气);
         meta.decisionNoise       = "1-技术*0.7=" + _r2(p.decisionNoise) + " ← 技术=" + _r2(p.技术);
         meta.stanceMastery       = "技术=" + _r2(p.stanceMastery) + " ← 技术=" + _r2(p.技术);
+        meta.techTempDamp        = "1-技术*0.3=" + _r2(p.techTempDamp) + " ← 技术=" + _r2(p.技术);
         meta.stabilityFactor     = "经验=" + _r2(p.stabilityFactor) + " ← 经验=" + _r2(p.经验);
         meta.maxCandidates       = "2+经验*6=" + p.maxCandidates + " ← 经验=" + _r2(p.经验);
         meta.tickInterval        = "max(1,6-反应*5)=" + p.tickInterval + " ← 反应=" + _r2(p.反应);
         meta.evalDepth           = "1+智力*4=" + p.evalDepth + " (dim+strat) ← 智力=" + _r2(p.智力);
         meta.healEagerness       = "0.3+智力*0.5=" + _r2(p.healEagerness) + " ← 智力=" + _r2(p.智力);
-        meta.baseTemperature     = "(0.1+谋略*0.4)*(1-技术*0.3)=" + _r2(p.baseTemperature) + " ← 谋略=" + _r2(p.谋略) + " 技术=" + _r2(p.技术);
+        meta.baseTemperature     = "max(0.10,(0.1+谋略*0.4)*techTempDamp)=" + _r2(p.baseTemperature) + " ← 谋略=" + _r2(p.谋略) + " techTempDamp=" + _r2(p.techTempDamp);
 
         // Layer 2 — 管线参数 ← 特质
         meta.skillCommitFrames   = "8+勇气*8=" + p.skillCommitFrames + " ← 勇气=" + _r2(p.勇气);

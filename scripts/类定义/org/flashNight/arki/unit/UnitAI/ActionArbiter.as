@@ -24,8 +24,8 @@ import org.flashNight.arki.bullet.BulletComponent.Queue.BulletThreatScanProcesso
  *   retreat  → [PreBuffStrategy]
  *
  * 智力门控（PipelineFactory.STRATEGY_DEPTH）：
- *   depth 1: BasicAttack only
- *   depth 2: + Skill + engage紧急换弹
+ *   depth 1: BasicAttack + Skill（技能始终可用，低智力靠评分维度削减体现差距）
+ *   depth 2: + engage紧急换弹
  *   depth 3: + chase战术换弹
  *   depth 4: + PreBuff预战准备
  *

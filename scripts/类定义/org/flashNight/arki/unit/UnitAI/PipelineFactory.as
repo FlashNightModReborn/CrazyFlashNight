@@ -80,8 +80,8 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
     //
     // | depth | 智力范围   | 新增能力                    |
     // |-------|-----------|---------------------------|
-    // | 1     | 0~0.12    | BasicAttack only           |
-    // | 2     | 0.13~0.37 | + Skill + engage紧急换弹    |
+    // | 1     | 0~0.12    | BasicAttack + Skill        |
+    // | 2     | 0.13~0.37 | + engage紧急换弹            |
     // | 3     | 0.38~0.62 | + chase战术换弹             |
     // | 4     | 0.63~0.87 | + PreBuff预战准备            |
     // | 5     | 0.88~1.0  | 预留（战术模块）              |
@@ -91,7 +91,7 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
     private static function _initDepth():Boolean {
         STRATEGY_DEPTH = {};
         STRATEGY_DEPTH["*:BasicAttack"] = 1;   // 始终启用
-        STRATEGY_DEPTH["*:Skill"]       = 2;   // 智力≥0.13
+        STRATEGY_DEPTH["*:Skill"]       = 1;   // 始终启用（低智力通过 evalDepth 削减评分维度 + decisionNoise 体现差距）
         STRATEGY_DEPTH["*:Reload"]      = 3;   // 默认：战术性换弹需 depth 3
         STRATEGY_DEPTH["engage:Reload"] = 2;   // 覆盖：engage 中紧急换弹仅需 depth 2
         STRATEGY_DEPTH["*:PreBuff"]     = 4;   // 智力≥0.63
