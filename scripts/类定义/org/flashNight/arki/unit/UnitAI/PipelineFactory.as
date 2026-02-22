@@ -15,6 +15,8 @@ import org.flashNight.arki.unit.UnitAI.scoring.ReflexBoostMod;
 import org.flashNight.arki.unit.UnitAI.scoring.MomentumPost;
 import org.flashNight.arki.unit.UnitAI.scoring.FreqAdjustPost;
 import org.flashNight.arki.unit.UnitAI.strategies.OffenseStrategy;
+import org.flashNight.arki.unit.UnitAI.strategies.BasicAttackStrategy;
+import org.flashNight.arki.unit.UnitAI.strategies.SkillCandidateStrategy;
 import org.flashNight.arki.unit.UnitAI.strategies.ReloadStrategy;
 import org.flashNight.arki.unit.UnitAI.strategies.PreBuffStrategy;
 import org.flashNight.arki.unit.UnitAI.strategies.AnimLockFilter;
@@ -60,11 +62,49 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
     private static var _ready:Boolean = _initSources();
     private static function _initSources():Boolean {
         DEFAULT_SOURCES = {};
-        DEFAULT_SOURCES["engage"]   = ["Offense", "Reload"];
+        DEFAULT_SOURCES["engage"]   = ["BasicAttack", "Skill", "Reload"];
         DEFAULT_SOURCES["chase"]    = ["PreBuff", "Reload"];
         DEFAULT_SOURCES["selector"] = [];
         DEFAULT_SOURCES["retreat"]  = ["PreBuff"]; // 撤退不换弹：避免跑步状态换弹失败导致发呆，换弹延到 chase 阶段
         return true;
+    }
+
+    // ── 智力门控：策略启用深度表 ──
+    //
+    // STRATEGY_DEPTH — 策略启用的最低 evalDepth 要求
+    //
+    // 键格式: "context:key"（上下文特定覆盖）或 "*:key"（默认）
+    // 查询优先级: context:key > *:key > 1（始终通过）
+    //
+    // evalDepth = round(1 + 智力*4), 范围 1-5
+    //
+    // | depth | 智力范围   | 新增能力                    |
+    // |-------|-----------|---------------------------|
+    // | 1     | 0~0.12    | BasicAttack only           |
+    // | 2     | 0.13~0.37 | + Skill + engage紧急换弹    |
+    // | 3     | 0.38~0.62 | + chase战术换弹             |
+    // | 4     | 0.63~0.87 | + PreBuff预战准备            |
+    // | 5     | 0.88~1.0  | 预留（战术模块）              |
+    //
+    public static var STRATEGY_DEPTH:Object;
+    private static var _depthReady:Boolean = _initDepth();
+    private static function _initDepth():Boolean {
+        STRATEGY_DEPTH = {};
+        STRATEGY_DEPTH["*:BasicAttack"] = 1;   // 始终启用
+        STRATEGY_DEPTH["*:Skill"]       = 2;   // 智力≥0.13
+        STRATEGY_DEPTH["*:Reload"]      = 3;   // 默认：战术性换弹需 depth 3
+        STRATEGY_DEPTH["engage:Reload"] = 2;   // 覆盖：engage 中紧急换弹仅需 depth 2
+        STRATEGY_DEPTH["*:PreBuff"]     = 4;   // 智力≥0.63
+        return true;
+    }
+
+    /** 查询指定上下文+策略的最低深度要求 */
+    private static function _getDepth(context:String, key:String):Number {
+        var d:Number = STRATEGY_DEPTH[context + ":" + key];
+        if (!isNaN(d)) return d;
+        d = STRATEGY_DEPTH["*:" + key];
+        if (!isNaN(d)) return d;
+        return 1;
     }
 
     // ═══════ 内置工厂方法（无 closure，AS2 安全）═══════
@@ -98,7 +138,9 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
     }
 
     private static function _createSource(key:String, deps:Object) {
-        if (key == "Offense") return new OffenseStrategy(deps.personality);
+        if (key == "BasicAttack") return new BasicAttackStrategy(deps.personality);
+        if (key == "Skill")   return new SkillCandidateStrategy(deps.personality);
+        if (key == "Offense") return new OffenseStrategy(deps.personality); // 向后兼容 aiSpec
         if (key == "Reload")  return new ReloadStrategy(deps.personality, deps.weaponEval);
         if (key == "PreBuff") return new PreBuffStrategy(deps.personality);
         var f:Function = _customSources[key];
@@ -156,10 +198,15 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
      * 再用 sourceSpec 中的条目覆盖对应 context。
      * 这样调用方只需声明想要覆盖的 context，其余自动继承默认配置。
      *
+     * 智力门控：evalDepth >= 1 时，根据 STRATEGY_DEPTH 表过滤各上下文的 key。
+     * 上下文特定覆盖（如 engage:Reload=2）优先于默认（*:Reload=3）。
+     * 未注册 key 默认 depth=1（始终通过），确保 aiSpec 自定义策略不受影响。
+     *
      * @param sourceSpec  { context: [key, ...] }（null -> DEFAULT_SOURCES 全盘采用）
      * @param deps        依赖对象
+     * @param evalDepth   智力深度（1-5）；NaN/undefined → 不过滤（全量策略）
      */
-    public static function buildSources(sourceSpec:Object, deps:Object):Object {
+    public static function buildSources(sourceSpec:Object, deps:Object, evalDepth:Number):Object {
         // 合并：DEFAULT_SOURCES 为基础，sourceSpec 覆盖
         var merged:Object = {};
         for (var dk:String in DEFAULT_SOURCES) {
@@ -168,6 +215,21 @@ class org.flashNight.arki.unit.UnitAI.PipelineFactory {
         if (sourceSpec != null) {
             for (var sk:String in sourceSpec) {
                 merged[sk] = sourceSpec[sk];
+            }
+        }
+
+        // 智力门控：根据 STRATEGY_DEPTH 过滤 key（上下文感知）
+        var gateActive:Boolean = (!isNaN(evalDepth) && evalDepth >= 1);
+        if (gateActive) {
+            for (var gk:String in merged) {
+                var raw:Array = merged[gk];
+                var gated:Array = [];
+                for (var gi:Number = 0; gi < raw.length; gi++) {
+                    if (evalDepth >= _getDepth(gk, raw[gi])) {
+                        gated.push(raw[gi]);
+                    }
+                }
+                merged[gk] = gated;
             }
         }
 

@@ -17,10 +17,17 @@ import org.flashNight.arki.bullet.BulletComponent.Queue.BulletThreatScanProcesso
  *
  * 架构：策略组（候选源 + 过滤器）+ 集中评分 + Boltzmann 选择 + 统一执行
  *
- * body 轨候选源（context → strategy[] 映射）：
- *   engage   → [OffenseStrategy, ReloadStrategy]
+ * body 轨候选源（context → strategy[] 映射，受 evalDepth 智力门控）：
+ *   engage   → [BasicAttackStrategy, SkillCandidateStrategy, ReloadStrategy]
  *   chase    → [PreBuffStrategy, ReloadStrategy]
  *   selector → []（selector 是瞬态，只做 stance + item 评估）
+ *   retreat  → [PreBuffStrategy]
+ *
+ * 智力门控（PipelineFactory.STRATEGY_DEPTH）：
+ *   depth 1: BasicAttack only
+ *   depth 2: + Skill + engage紧急换弹
+ *   depth 3: + chase战术换弹
+ *   depth 4: + PreBuff预战准备
  *
  * 过滤器（顺序执行）：
  *   AnimLockFilter   → 技能期仅保留 skill/preBuff；换弹期仅保留 priority=0
@@ -120,7 +127,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         var mods:Array = PipelineFactory.buildMods(spec != null ? spec.mods : null, deps);
         var posts:Array = PipelineFactory.buildPosts(spec != null ? spec.posts : null, deps);
         this._pipeline = new ScoringPipeline(scorer, mods, posts);
-        this._sources = PipelineFactory.buildSources(spec != null ? spec.sources : null, deps);
+        this._sources = PipelineFactory.buildSources(spec != null ? spec.sources : null, deps, personality.evalDepth);
         this._filters = PipelineFactory.buildFilters(spec != null ? spec.filters : null, deps);
 
         // ── 事件订阅 ──

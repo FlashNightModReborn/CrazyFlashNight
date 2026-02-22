@@ -2408,9 +2408,12 @@ _root.计算AI参数 = function(p:Object):Void {
     p.retreatHPRatio      = 0.15 + (1 - p.勇气) * 0.2; // 撤退血量阈值（高勇气→低阈值）
     p.chaseCommitment     = 3 + p.勇气 * 4;        // 追击锁定帧数
 
-    // ── 技术 → 每武器模式决策准确性（噪声系数）──
+    // ── 技术 → 决策准确性（噪声）+ Boltzmann温度阻尼 ──
+    // 高技术：评分噪声低、动作选择更确定性、温度被压低（精确但不冒险）
+    // 低技术：噪声高、温度高（多样但不稳定）
     p.decisionNoise       = 1 - p.技术 * 0.7;      // Utility评分噪声倍率（高技术→低噪声）
     p.stanceMastery       = p.技术;                 // Stance匹配时噪声额外衰减系数
+    p.techTempDamp        = 1 - p.技术 * 0.3;       // 温度阻尼因子（1.0~0.7），乘入baseTemperature
 
     // ── 经验 → 抑制随机/机械稳定 + 策略池容量 ──
     p.stabilityFactor     = p.经验;                 // 温度衰减因子: T /= (1 + stabilityFactor)
@@ -2429,7 +2432,10 @@ _root.计算AI参数 = function(p:Object):Void {
     p.healEagerness       = 0.3 + p.智力 * 0.5;    // 治疗积极性
 
     // ── 谋略 → 战术模块解锁阈值 + Boltzmann 基础温度 ──
-    p.baseTemperature     = 0.1 + p.谋略 * 0.4;    // 基础温度（经验会压低）
+    // baseTemperature = 谋略定义探索欲，技术阻尼压低温度（高技术更确定性）
+    // 谋略=0,技术=0: 0.10  谋略=1,技术=0: 0.50
+    // 谋略=0,技术=1: 0.07  谋略=1,技术=1: 0.35（clamp下限兜底0.10）
+    p.baseTemperature     = (0.1 + p.谋略 * 0.4) * p.techTempDamp;
     p.tacticsGrouping     = p.谋略 >= 0.25;         // 抱团移动
     p.tacticsEvadeCluster = p.谋略 >= 0.35;         // 规避敌群
     p.tacticsSeekRecovery = p.谋略 >= 0.45;         // 状态不佳时脱战恢复
@@ -2573,9 +2579,9 @@ _root.计算AI参数 = function(p:Object):Void {
         meta.stabilityFactor     = "经验=" + _r2(p.stabilityFactor) + " ← 经验=" + _r2(p.经验);
         meta.maxCandidates       = "2+经验*6=" + p.maxCandidates + " ← 经验=" + _r2(p.经验);
         meta.tickInterval        = "max(1,6-反应*5)=" + p.tickInterval + " ← 反应=" + _r2(p.反应);
-        meta.evalDepth           = "1+智力*4=" + p.evalDepth + " ← 智力=" + _r2(p.智力);
+        meta.evalDepth           = "1+智力*4=" + p.evalDepth + " (dim+strat) ← 智力=" + _r2(p.智力);
         meta.healEagerness       = "0.3+智力*0.5=" + _r2(p.healEagerness) + " ← 智力=" + _r2(p.智力);
-        meta.baseTemperature     = "0.1+谋略*0.4=" + _r2(p.baseTemperature) + " ← 谋略=" + _r2(p.谋略);
+        meta.baseTemperature     = "(0.1+谋略*0.4)*(1-技术*0.3)=" + _r2(p.baseTemperature) + " ← 谋略=" + _r2(p.谋略) + " 技术=" + _r2(p.技术);
 
         // Layer 2 — 管线参数 ← 特质
         meta.skillCommitFrames   = "8+勇气*8=" + p.skillCommitFrames + " ← 勇气=" + _r2(p.勇气);

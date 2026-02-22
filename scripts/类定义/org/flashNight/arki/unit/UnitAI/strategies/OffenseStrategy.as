@@ -3,11 +3,14 @@ import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.DecisionTrace;
 
 /**
+ * @deprecated 已拆分为 BasicAttackStrategy + SkillCandidateStrategy (2026-02)
+ *
  * OffenseStrategy — 攻击候选源（技能 + 平A）
  *
- * 从 ActionArbiter._collectOffense 提取。
- * 职责：生成 BasicAttack + 技能候选（距离/冷却/buff 初级过滤）。
- * 不做评分（评分保持集中在 Arbiter 的 _scoreCandidates）。
+ * 保留此类仅用于向后兼容 aiSpec.sources 中使用 "Offense" key 的配置。
+ * 新代码应使用 "BasicAttack" + "Skill" 两个独立 key。
+ *
+ * 原始职责：生成 BasicAttack + 技能候选（距离/冷却/buff 初级过滤）。
  */
 class org.flashNight.arki.unit.UnitAI.strategies.OffenseStrategy {
 
