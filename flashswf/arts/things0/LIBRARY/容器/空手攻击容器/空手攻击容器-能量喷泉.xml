@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-能量喷泉" itemID="6964d683-000028c1" linkageExportForAS="true" linkageIdentifier="空手攻击容器-能量喷泉" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-能量喷泉" itemID="6964d683-000028c1" linkageExportForAS="true" linkageIdentifier="空手攻击容器-能量喷泉" lastModified="1771725654">
   <timeline>
-    <DOMTimeline name="空手攻击容器-能量喷泉" currentFrame="33">
+    <DOMTimeline name="空手攻击容器-能量喷泉" currentFrame="10">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -37,7 +37,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
@@ -313,14 +313,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -413,7 +413,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 8" color="#FF4F4F">
+        <DOMLayer name="图层 8" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -447,14 +447,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 9" color="#4FFF4F">
+        <DOMLayer name="图层 9" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="8" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/03.赤橙色系/ROUND WAVE/ROUND WAVE素材" blendMode="hardlight" centerPoint3DX="294.6" centerPoint3DY="234.95">
+                <DOMSymbolInstance libraryItemName="特效与子弹/03.赤橙色系/ROUND WAVE/ROUND WAVE素材" selected="true" blendMode="hardlight" centerPoint3DX="294.6" centerPoint3DY="234.95">
                   <matrix>
                     <Matrix a="3.64056396484375" d="3.7076416015625" tx="275.3" ty="236.45"/>
                   </matrix>

@@ -411,7 +411,7 @@ _root.空手攻击路由.构建空手攻击容器初始化对象 = function(cont
     initObj.能量喷泉可派生搓招 = _root.技能函数.能量喷泉可派生搓招;
     initObj.燃烧指节可派生搓招 = _root.技能函数.燃烧指节可派生搓招;
     initObj.狼炮可派生搓招 = _root.技能函数.狼炮可派生搓招;
-
+    initObj.连环踢可派生搓招 = _root.技能函数.连环踢可派生搓招;
     return initObj;
 };
 

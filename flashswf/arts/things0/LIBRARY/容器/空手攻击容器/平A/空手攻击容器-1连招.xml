@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-1连招" itemID="696514e0-00002b88" linkageExportForAS="true" linkageIdentifier="空手攻击容器-1连招" lastModified="1771683096">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-1连招" itemID="696514e0-00002b88" linkageExportForAS="true" linkageIdentifier="空手攻击容器-1连招" lastModified="1771729444">
   <timeline>
-    <DOMTimeline name="空手攻击容器-1连招">
+    <DOMTimeline name="空手攻击容器-1连招" currentFrame="1">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -35,7 +35,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -248,6 +248,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 波动拳可派生搓招 = _root.技能函数.波动拳可派生搓招;
 能量喷泉可派生搓招 = _root.技能函数.能量喷泉可派生搓招;
 燃烧指节可派生搓招 = _root.技能函数.燃烧指节可派生搓招;
+连环踢可派生搓招 = _root.技能函数.连环踢可派生搓招;
 
 if(_parent.空手动作类型){
 	帧名 = _parent.空手动作类型 + "1连招";
@@ -689,14 +690,14 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
