@@ -178,7 +178,8 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             : scatteringAngle;
 
         // 创建子弹实例
-        if (isTransparent) {
+        // 射线子弹也是透明子弹,需要使用浅拷贝
+        if (isTransparent || isRay) {
             bulletInstance = _root.对象浅拷贝(Obj);
         } else {
             // 利用子弹计数来管理子弹深度

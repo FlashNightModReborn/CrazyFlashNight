@@ -190,8 +190,16 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
 
         // _root.发布消息(baseAsset + ":" + flagsToString(flags, true));
 
-        // 缓存并且返回标志位
-        return bullet.flags = flags;
+        // === 修复:合并标志位而非覆盖 ===
+        // 如果 bullet.flags 已存在(可能包含 additionalFlags 如 FLAG_RAY),
+        // 则使用位或合并以保留已有标志位
+        if (bullet.flags != undefined && bullet.flags != 0) {
+            bullet.flags |= flags;  // 合并新标志位
+        } else {
+            bullet.flags = flags;   // 首次设置
+        }
+
+        return bullet.flags;
     }
 
     /**
