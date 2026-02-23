@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" width="1200" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" guidesLocked="true" rulerVisible="true" timelineLabelWidth="216" viewAngle3D="97.275380851371" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" width="1200" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" timelineLabelWidth="216" viewAngle3D="97.275380851371" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="1.冷兵器" itemID="69231b51-000071f8"/>
           <DOMFolderItem name="1.冷兵器/锐器" itemID="69231b51-000071f9"/>
@@ -689,7 +689,7 @@
           <Include href="sprite/Symbol 136.xml" loadImmediate="false" itemID="6577b699-000009b3" lastModified="1769694922"/>
           <Include href="sprite/Symbol 137.xml" loadImmediate="false" itemID="6577b699-000009b4" lastModified="1769694922"/>
           <Include href="sprite/Symbol 142.xml" loadImmediate="false" itemID="6577b699-000009b7" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 144.xml" loadImmediate="false" itemID="6577b699-000009b8" lastModified="1771716563"/>
+          <Include href="sprite/Symbol 144.xml" loadImmediate="false" itemID="6577b699-000009b8" lastModified="1771870127"/>
           <Include href="sprite/Symbol 154.xml" loadImmediate="false" itemID="6577b699-000009bb" lastModified="1702343951"/>
           <Include href="sprite/Symbol 156.xml" loadImmediate="false" itemID="6577b699-000009bc" lastModified="1702343951"/>
           <Include href="sprite/Symbol 158.xml" loadImmediate="false" itemID="6577b699-000009bd" lastModified="1702343951"/>
@@ -1094,7 +1094,7 @@
           <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1770063574"/>
           <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1769694923"/>
-          <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1769694922"/>
+          <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1771782851"/>
           <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1771503334"/>
           <Include href="sprite/落地特效-闪光.xml" loadImmediate="false" itemID="663ba576-00000122" lastModified="1715185258"/>
           <Include href="sprite/木偶-主角-男.xml" itemID="668be718-0000065b" lastModified="1769694913"/>
@@ -1328,11 +1328,11 @@
           <Include href="容器/空手攻击容器/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1771729412"/>
           <Include href="容器/空手攻击容器/空手攻击容器-波动拳.xml" itemID="6963b380-0000111d" lastModified="1771725833"/>
           <Include href="容器/空手攻击容器/空手攻击容器-后撤步.xml" itemID="6964d656-00002843" lastModified="1771725837"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-连环踢.xml" itemID="699a5324-00000a8e" lastModified="1771729581"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-连环踢.xml" itemID="699a5324-00000a8e" lastModified="1771868801"/>
           <Include href="容器/空手攻击容器/空手攻击容器-能量喷泉.xml" itemID="6964d683-000028c1" lastModified="1771725654"/>
           <Include href="容器/空手攻击容器/空手攻击容器-燃烧指节.xml" itemID="6964d6d2-0000293c" lastModified="1771725677"/>
           <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" itemID="6964d583-0000279b" lastModified="1771683091"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-1连招.xml" itemID="696514e0-00002b88" lastModified="1771729444"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-1连招.xml" itemID="696514e0-00002b88" lastModified="1771867888"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-单臂巨拳1连招.xml" itemID="6967d527-00000a61" lastModified="1771726596"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" itemID="6964ce51-00002614" lastModified="1771727064"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-巨拳1连招.xml" itemID="6964c727-0000249e" lastModified="1771724391"/>
@@ -1397,7 +1397,7 @@
           <Include href="容器/战技容器/战技容器-突刺.xml" itemID="6967ddae-00000ce5" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-猩红凶斩.xml" itemID="6958efa4-0000307e" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-凶斩.xml" itemID="6959e9c2-00000938" lastModified="1769694922"/>
-          <Include href="容器/战技容器/战技容器-旋风腿.xml" itemID="6959da65-000011b7" lastModified="1771511466"/>
+          <Include href="容器/战技容器/战技容器-旋风腿.xml" itemID="6959da65-000011b7" lastModified="1771781258"/>
           <Include href="容器/战技容器/战技容器-一文字落雷.xml" itemID="695e518e-0000599b" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-战技小跳.xml" itemID="695a6637-00001877" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-掌炮.xml" itemID="6959110f-00000989" lastModified="1769694922"/>
@@ -2650,6 +2650,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4089423" publishTime="1771867993"/>
+          <PublishItem publishSize="4089445" publishTime="1771867203"/>
+          <PublishItem publishSize="4114797" publishTime="1771782025"/>
+          <PublishItem publishSize="4121819" publishTime="1771779576"/>
           <PublishItem publishSize="4087730" publishTime="1771729208"/>
           <PublishItem publishSize="4087606" publishTime="1771727403"/>
           <PublishItem publishSize="4088473" publishTime="1771724465"/>
@@ -2666,9 +2670,5 @@
           <PublishItem publishSize="4020140" publishTime="1771502338"/>
           <PublishItem publishSize="4020318" publishTime="1771141223"/>
           <PublishItem publishSize="4021155" publishTime="1771006156"/>
-          <PublishItem publishSize="4011629" publishTime="1770554144"/>
-          <PublishItem publishSize="4011615" publishTime="1770553680"/>
-          <PublishItem publishSize="4013314" publishTime="1770413386"/>
-          <PublishItem publishSize="4013326" publishTime="1770413094"/>
      </publishHistory>
 </DOMDocument>

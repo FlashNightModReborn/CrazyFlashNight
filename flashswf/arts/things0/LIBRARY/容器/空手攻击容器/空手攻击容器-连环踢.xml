@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-连环踢" itemID="699a5324-00000a8e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-连环踢" lastModified="1771729581" lastUniqueIdentifier="843">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-连环踢" itemID="699a5324-00000a8e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-连环踢" lastModified="1771868801" lastUniqueIdentifier="843">
   <timeline>
-    <DOMTimeline name="空手攻击容器-连环踢" currentFrame="3">
+    <DOMTimeline name="空手攻击容器-连环踢" currentFrame="18">
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -263,12 +263,12 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
             <DOMFrame index="3" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="666.25" centerPoint3DY="14.05">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="683.25" centerPoint3DY="14.05">
                   <matrix>
-                    <Matrix a="4.669921875" d="2.37677001953125" tx="185.35" ty="56.65"/>
+                    <Matrix a="2.94229125976563" d="2.37677001953125" tx="76.5" ty="56.65"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="-72.8" y="2.1"/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
@@ -279,11 +279,11 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 1 + 自机.内力 * 3;
+	子弹属性.子弹威力 =  自机.空手攻击力 * 2 + 自机.内力 * 3;
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.2;
+		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	/*if (_parent._parent.mp攻击加成)
 	{
@@ -331,12 +331,12 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
             <DOMFrame index="9" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="667.15" centerPoint3DY="-15.65">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="607.15" centerPoint3DY="-15.65">
                   <matrix>
-                    <Matrix a="4.86943054199219" d="3.1649169921875" tx="186.25" ty="26.95"/>
+                    <Matrix a="3.40283203125" d="3.1649169921875" tx="85.75" ty="26.95"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="-73.6" y="1.45"/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
@@ -347,11 +347,11 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 1 + 自机.内力 * 3;
+	子弹属性.子弹威力 =  自机.空手攻击力 * 2 + 自机.内力 * 3;
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.3;
+		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	/*if (_parent._parent.mp攻击加成)
 	{
@@ -399,12 +399,12 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
             <DOMFrame index="14" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="675.25" centerPoint3DY="-53.95">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="527.5" centerPoint3DY="-69.95">
                   <matrix>
-                    <Matrix a="4.11483764648438" d="4.17303466796875" tx="194.35" ty="-11.35"/>
+                    <Matrix a="2.45919799804688" d="3.80282592773438" tx="46.6" ty="-26.95"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="-73.6" y="1.4"/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
@@ -415,11 +415,11 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 1 + 自机.内力 * 3;
+	子弹属性.子弹威力 =  自机.空手攻击力 * 2 + 自机.内力 * 3;
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.2;
+		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	/*if (_parent._parent.mp攻击加成)
 	{
@@ -467,12 +467,12 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
             <DOMFrame index="18" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="675.25" centerPoint3DY="-53.95">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="602.25" centerPoint3DY="-70.7">
                   <matrix>
-                    <Matrix a="4.11483764648438" d="4.17303466796875" tx="194.35" ty="-11.35"/>
+                    <Matrix a="2.77339172363281" d="3.83148193359375" tx="154.75" ty="-27.7"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="-73.6" y="1.4"/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
@@ -483,11 +483,11 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 1 + 自机.内力 * 3;
+	子弹属性.子弹威力 =  自机.空手攻击力 * 2.5 + 自机.内力 * 3;
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.6;
+		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	/*if (_parent._parent.mp攻击加成)
 	{
@@ -634,7 +634,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#9933CC" locked="true" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -855,7 +855,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#00FFFF" locked="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#00FFFF" locked="true" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1100,7 +1100,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_8" color="#FF4F4F" locked="true">
+        <DOMLayer name="图层_8" color="#FF4F4F" locked="true" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

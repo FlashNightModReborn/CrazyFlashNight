@@ -562,7 +562,9 @@
 被动效果：
 解锁能量喷泉：攻击后摇期间↓+K，再按K键追加后续派生。
 在空中空手战斗时按K键可以使用裂地拳，砸向敌人并略微拉近一定距离的敌人。
-伤害由滞空时间决定，技能升级可以略微增加伤害。</Description>
+伤害由滞空时间决定，技能升级可以略微增加伤害。
+解锁起身回旋踢：倒地时按J或K，该技能可在施放过程中移动。
+        </Description>
         <UnlockLevel>5</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>35</UnlockSP>
@@ -575,9 +577,10 @@
         <Type>被动</Type>
         <Description>被动技能学习后可获得被动效果，点击可启用或停用。
 被动效果：
-快速起身：需同时学习并启用&lt;font color="#ffee00"&gt;拳脚攻击&lt;/font&gt;。至2级，倒地时按j使用“起身回旋踢”快速起身。
+快速起身：倒地时按j使用“起身回旋踢”快速起身。
 解锁多段冲刺攻击：攻击后摇期间再次按J。
-在空中空手战斗时按J键可以触发三段空中连招，技能升级可以略微增加伤害。</Description>
+在空中空手战斗时按J键可以触发三段空中连招，技能升级可以略微增加伤害。
+        </Description>
         <UnlockLevel>15</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>35</UnlockSP>
@@ -767,13 +770,14 @@
         <Type>被动</Type>
         <Description>被动技能学习后可获得被动效果，点击可启用或停用。
 被动效果：
-快速起身：需同时学习并启用&lt;font color="#ffee00"&gt;拳脚空中连招1级&lt;/font&gt;，倒地时按j使用“起身回旋踢”快速起身。
 空手飞踢可以通过反作用力浮空。
-解锁连环踢：攻击后摇期间↑+J。
 解锁诛杀步：攻击后摇期间→→，期间按J派生破极拳第5式。
 解锁后撤步：攻击后摇期间Shift+←，期间按J派生截拳第5式。
+&lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;连环踢&lt;/font&gt;
+攻击后摇时&lt;font color="#ffee00"&gt;↑+J&lt;/font&gt;。
 增加空手普通攻击的基础伤害，技能升级时伤害将线性提升。
-初始收益：较高。升级收益：中等。</Description>
+初始收益：较高。升级收益：中等。
+        </Description>
         <UnlockLevel>1</UnlockLevel>
         <MaxLevel>20</MaxLevel>
         <UnlockSP>20</UnlockSP>
