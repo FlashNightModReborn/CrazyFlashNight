@@ -548,13 +548,13 @@
                 <rayLength>900</rayLength>
                 <primaryColor>0x00FFFF</primaryColor>
                 <secondaryColor>0xFFFFFF</secondaryColor>
-                <thickness>3</thickness>
+                <thickness>2</thickness>
                 <branchCount>4</branchCount>
                 <branchProbability>0.5</branchProbability>
                 <segmentLength>25</segmentLength>
                 <jitter>18</jitter>
-                <visualDuration>30</visualDuration>
-                <fadeOutDuration>15</fadeOutDuration>
+                <visualDuration>5</visualDuration>
+                <fadeOutDuration>3</fadeOutDuration>
                 <hitEffect>电击火花</hitEffect>
             </rayConfig>
         </attribute>
