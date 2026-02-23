@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Loader.*;
+import org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig;
 
 
 class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implements IComponentLoader {
@@ -24,6 +25,7 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
     public function load(data:Object):Object {
         // === 宏展开：状态标志位常量（函数内局部变量） ===
         #include "../macros/STATE_GRENADE_XML.as"
+        #include "../macros/FLAG_RAY.as"
 
         var attributeNode:Object = data.attribute;
 
@@ -43,6 +45,17 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
 
             if(attributeNode.hitMark != undefined) {
                 attributeInfo.hitMark = String(attributeNode.hitMark);
+            }
+
+            // === 射线配置解析 ===
+            // 通过 <rayConfig> 节点存在性判定射线类型，同时设置 FLAG_RAY
+            // 使用 additionalFlags 存储，由 BulletInitializer.initializeBulletProperties 位或合并到 Obj.flags
+            // 这样避免覆盖 BulletTypesetter.setTypeFlags 设置的基础 flags
+            if(attributeNode.rayConfig != undefined) {
+                // 解析射线配置到 rayConfig 属性
+                attributeInfo.rayConfig = TeslaRayConfig.fromXML(attributeNode.rayConfig);
+                // 设置附加标志位（由 BulletInitializer 合并到 flags）
+                attributeInfo.additionalFlags = FLAG_RAY;
             }
 
             // 仅当有预置状态位时才写入

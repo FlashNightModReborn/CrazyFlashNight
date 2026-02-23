@@ -456,6 +456,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         #include "../macros/FLAG_MELEE.as"
         #include "../macros/FLAG_PIERCE.as"
         #include "../macros/FLAG_EXPLOSIVE.as"
+        #include "../macros/FLAG_RAY.as"
 
         // 实例状态标志位（用于硬直免疫检测和击中地图检测）
         #include "../macros/STATE_NO_STUN.as"
@@ -636,6 +637,17 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var warnSpd:Number;             // X 速度绝对值
         var warnPredictY:Number;        // Y 轴线性外推预测位置
         var wi:Number;                  // 左向预警反向扫描索引
+
+        // ---- 射线碰撞检测变量（FLAG_RAY 专用）----
+        var isRay:Boolean;              // 是否为射线子弹
+        var rayNearestDist:Number;      // 射线命中的最近距离
+        var rayNearestTarget:MovieClip; // 射线命中的最近目标
+        var rayNearestResult:CollisionResult; // 射线最近命中的碰撞结果
+        var rayHitDist:Number;          // 当前射线命中距离
+        var rayOriginX:Number;          // 射线起点X坐标
+        var rayOriginY:Number;          // 射线起点Y坐标
+        var rayHitX:Number;             // 射线命中点X坐标
+        var rayHitY:Number;             // 射线命中点Y坐标
 
         // ================================================================
         // 主处理循环：按阵营遍历所有活动队列
@@ -898,6 +910,145 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     // ---- 多边形更新控制：避免同一子弹重复更新碰撞器 ----
                     isUpdatePolygon = false;
 
+                    // ---- 射线子弹检测标志 ----
+                    isRay = (flags & FLAG_RAY) != 0;
+
+                    // ================================================================
+                    // 射线子弹专用分支：单帧检测，命中最近目标
+                    // ================================================================
+                    if (isRay) {
+                        // 射线子弹使用独立的碰撞检测逻辑：
+                        // 1. 扫描所有候选目标
+                        // 2. 找到最近的命中目标
+                        // 3. 只对最近目标执行伤害处理
+                        // 4. 触发电弧视觉效果
+
+                        rayNearestDist = Infinity;
+                        rayNearestTarget = null;
+                        rayNearestResult = null;
+                        rayOriginX = bullet._x;
+                        rayOriginY = bullet._y;
+
+                        // 射线命中扫描循环：遍历所有候选目标，找到最近命中
+                        for (unitIndex = startIndex; unitIndex < len && unitLeftKeys[unitIndex] <= Rb; ++unitIndex) {
+                            hitTarget = unitMap[unitIndex];
+
+                            // Z 轴粗判
+                            zOffset = bulletZOffset - hitTarget.Z轴坐标;
+                            if (zOffset >= bulletZRange || zOffset <= -bulletZRange) continue;
+
+                            if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
+                                unitArea = hitTarget.aabbCollider;
+
+                                // 射线碰撞检测
+                                collisionResult = areaAABB.checkCollision(unitArea, zOffset);
+
+                                if (collisionResult.isColliding) {
+                                    // 计算命中距离（overlapCenter 存储射线上最接近目标中心的点）
+                                    crCenter = collisionResult.overlapCenter;
+                                    rayHitX = crCenter.x;
+                                    rayHitY = crCenter.y;
+                                    rayHitDist = Math.sqrt(
+                                        (rayHitX - rayOriginX) * (rayHitX - rayOriginX) +
+                                        (rayHitY - rayOriginY) * (rayHitY - rayOriginY)
+                                    );
+
+                                    // 更新最近命中
+                                    if (rayHitDist < rayNearestDist) {
+                                        rayNearestDist = rayHitDist;
+                                        rayNearestTarget = hitTarget;
+                                        // 克隆碰撞结果（因为 RayCollider.result 是静态复用的）
+                                        rayNearestResult = CollisionResult.Create(true, new Vector(rayHitX, rayHitY), 1);
+                                    }
+                                }
+                            }
+                        }
+
+                        // 射线命中处理：只处理最近目标
+                        if (rayNearestTarget != null) {
+                            hitTarget = rayNearestTarget;
+                            collisionResult = rayNearestResult;
+
+                            // 确认命中后写入hitTarget
+                            bullet.hitTarget = hitTarget;
+
+                            if (debugMode) {
+                                unitArea = hitTarget.aabbCollider;
+                                zOffset = bulletZOffset - hitTarget.Z轴坐标;
+                                AABBRenderer.renderAABB(areaAABB, zOffset, "thick");
+                                AABBRenderer.renderAABB(unitArea, zOffset, "filled");
+                            }
+
+                            // --- 上下文填充 ---
+                            bullet.附加层伤害计算 = 0;
+                            bullet.命中对象 = hitTarget;
+
+                            // --- 闪避/命中状态 ---
+                            dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
+                                Dodge.calculateDodgeState(
+                                    hitTarget,
+                                    Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
+                                    bullet
+                                );
+
+                            // --- 击中时触发函数 ---
+                            if (bullet.击中时触发函数) bullet.击中时触发函数();
+
+                            // --- 计算伤害 ---
+                            damageResult = Damage.calculateDamage(
+                                bullet, shooter, hitTarget, collisionResult.overlapRatio, dodgeState
+                            );
+
+                            // --- 命中计数 ---
+                            bullet.hitCount += damageResult.actualScatterUsed;
+
+                            // --- 事件分发 ---
+                            targetDispatcher = hitTarget.dispatcher;
+                            targetDispatcher.publish("hit", hitTarget, shooter, bullet, collisionResult, damageResult);
+
+                            // --- 死亡判定 ---
+                            if (hitTarget.hp <= 0) {
+                                isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;
+                                targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
+                                shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
+                            }
+
+                            // --- 表现触发 ---
+                            targetX = hitTarget._x;
+                            targetY = hitTarget._y;
+                            damageResult.triggerDisplay(targetX, targetY);
+
+                            // 射线命中后效果
+                            if (bullet.shouldGeneratePostHitEffect) {
+                                FX.Effect(bullet.击中后子弹的效果, collisionResult.overlapCenter.x, collisionResult.overlapCenter.y, shooter._xscale);
+                                // 电弧视觉效果
+                                LightningRenderer.spawn(rayOriginX, rayOriginY, collisionResult.overlapCenter.x, collisionResult.overlapCenter.y, bullet.rayConfig);
+                            }
+                        } else {
+                            // 射线未命中：电弧打到最远处
+                            if (bullet.shouldGeneratePostHitEffect) {
+                                // 计算射线终点：起点 + 方向 * 射程
+                                var rayAngle:Number = bullet._rotation * (Math.PI / 180);
+                                var rayLength:Number = (bullet.rayConfig != null && !isNaN(bullet.rayConfig.rayLength))
+                                    ? bullet.rayConfig.rayLength : 900;
+                                var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
+                                var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
+
+                                FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                                // 电弧视觉效果（打到最远处）
+                                LightningRenderer.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, bullet.rayConfig);
+                            }
+                        }
+
+                        // 射线子弹是单帧检测，检测完成后立即标记销毁
+                        killFlags |= MODE_VANISH;
+                        wantDestroy = true;
+
+                    } else {
+                    // ================================================================
+                    // 普通子弹碰撞检测分支（原有逻辑）
+                    // ================================================================
+
                     // ----------- 命中循环（带右边界截断） -----------
                     for (unitIndex = startIndex; unitIndex < len && unitLeftKeys[unitIndex] <= Rb; ++unitIndex) {
                         hitTarget = unitMap[unitIndex];  // 只读取目标，延迟写入
@@ -1036,6 +1187,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     if (needsDeferScatter) {
                         __commitDeferScatter(bullet);
                     }
+                    } // end else (普通子弹碰撞检测分支)
 
                     // ============================================================
                     // Phase 2+: 射弹预警（方向感知双向扫描 + AABB 边缘 ETA）

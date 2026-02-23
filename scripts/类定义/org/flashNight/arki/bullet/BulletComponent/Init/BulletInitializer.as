@@ -225,6 +225,12 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
             if (Obj.pierceLimit > 0) {
                 Obj.pierceLimit *= Obj.霰弹值;
             }
+            // === 合并附加标志位 ===
+            // additionalFlags 由 AttributeLoader 设置（如 FLAG_RAY），需要位或合并到 flags
+            // 这样不会覆盖 BulletTypesetter.setTypeFlags 设置的基础类型标志
+            if (attr.additionalFlags != undefined) {
+                Obj.flags |= attr.additionalFlags;
+            }
         }
     }
 

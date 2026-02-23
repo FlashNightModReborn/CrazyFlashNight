@@ -145,11 +145,13 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         #include "../macros/FLAG_CHAIN.as"
         #include "../macros/FLAG_MELEE.as"
         #include "../macros/FLAG_TRANSPARENCY.as"
+        #include "../macros/FLAG_RAY.as"
 
         var gameWorld:MovieClip = _root.gameworld,
-            // === 位掩码批量检测：三种核心子弹类型快速识别 ===
+            // === 位掩码批量检测：四种核心子弹类型快速识别 ===
             // 使用编译时注入的局部常量进行高效位运算检测
             isTransparent:Boolean = (Obj.flags & FLAG_TRANSPARENCY) != 0,  // 透明子弹标志检测
+            isRay:Boolean = (Obj.flags & FLAG_RAY) != 0,                    // 射线子弹标志检测
             isChain:Boolean = (Obj.flags & FLAG_CHAIN) != 0,                // 联弹子弹标志检测  
             zyRatio:Number = Obj.ZY比例,
             speedX:Number = Obj.速度X,
@@ -205,7 +207,14 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
 
         var lifecycle:ILifecycle;
 
-        if (isTransparent) {
+        // === 生命周期选择：基于位标志的快速分支 ===
+        // 优先级顺序：射线 > 透明 > 近战 > 普通
+        // 射线子弹优先检测，因为它可能同时设置 FLAG_TRANSPARENCY
+        if (isRay) {
+            // 射线子弹：单帧检测，使用 RayCollider
+            lifecycle = TeslaRayLifecycle.BASIC;
+        }
+        else if (isTransparent) {
             lifecycle = TransparentBulletLifecycle.BASIC;
         }
         else

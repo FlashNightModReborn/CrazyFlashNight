@@ -289,6 +289,8 @@ _root.帧计时器.初始化任务栈 = function():Void {
     this.eventBus.subscribe("frameEnd", function():Void {
         // 帧末批量处理伤害数字显示
         HitNumberBatchProcessor.flush();
+        // 更新电弧渲染器（磁暴射线视觉效果）
+        LightningRenderer.update();
         // _root.服务器.发布服务器消息("frameEnd")
     }, this);
 };
@@ -778,6 +780,8 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     _root.关卡结束界面._visible = false;
     // 清空打击数字批处理队列，避免跨场景残留
     HitNumberBatchProcessor.clear();
+    // 重置电弧渲染器，清理跨场景残留的电弧
+    LightningRenderer.reset();
     // 重置 DamageResult 的 displayFunction 引用，确保类加载后引用正确
     // 这是解耦 _root 依赖后的初始化保障
     org.flashNight.arki.component.Damage.DamageResult.IMPACT.displayFunction = HitNumberSystem.effect;
