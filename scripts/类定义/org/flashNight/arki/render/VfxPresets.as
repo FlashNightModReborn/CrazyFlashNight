@@ -37,7 +37,10 @@ class org.flashNight.arki.render.VfxPresets {
         branchCount: 4,
         branchProbability: 0.5,
         segmentLength: 25,
-        jitter: 18
+        jitter: 18,
+        flickerEnabled: true,        // 启用随机爆闪（模拟高压放电不稳定）
+        flickerMin: 70,              // alpha 最小值
+        flickerMax: 100              // alpha 最大值
     };
 
     /**
@@ -54,8 +57,9 @@ class org.flashNight.arki.render.VfxPresets {
         fadeOutDuration: 2,
         // Prism 专用
         shimmerAmp: 0.1,             // 呼吸幅度 (0~1)
-        shimmerFreq: 0.5,            // 呼吸频率 (周期/帧)
-        forkThicknessMul: 0.7        // 折射线粗细倍率
+        shimmerFreq: 0.08,           // 呼吸频率 (周期/帧，约12帧一个周期)
+        forkThicknessMul: 0.7,       // 折射线粗细倍率
+        flickerEnabled: false        // 禁用爆闪（光棱塔需要稳定的视觉感受）
     };
 
     /**
@@ -75,7 +79,8 @@ class org.flashNight.arki.render.VfxPresets {
         paletteScrollSpeed: 20,      // 滚动速度 (hue/帧)
         stripeCount: 7,              // 条纹数
         distortAmp: 3,               // 波形抖动幅度 (像素)
-        distortWaveLen: 60           // 波长 (像素)
+        distortWaveLen: 60,          // 波长 (像素)
+        flickerEnabled: false        // 禁用爆闪（光谱塔需要稳定的视觉感受）
     };
 
     /**
@@ -97,7 +102,8 @@ class org.flashNight.arki.render.VfxPresets {
         pulseAmp: 0.2,               // 脉冲幅度 (粗细倍率)
         pulseRate: 0.3,              // 脉冲速率 (周期/帧)
         hitRippleSize: 15,           // 命中点波纹大小 (像素)
-        hitRippleAlpha: 50           // 命中点波纹透明度
+        hitRippleAlpha: 50,          // 命中点波纹透明度
+        flickerEnabled: false        // 禁用爆闪（波能炮需要稳定的视觉感受）
     };
 
     // ════════════════════════════════════════════════════════════════════════

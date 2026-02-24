@@ -697,7 +697,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         hitPoints: pierceHitPoints
                     };
 
-                    LightningRenderer.spawnWithMeta(rayOriginX, rayOriginY, rayEndX, rayEndY, config, pierceMeta);
+                    RayVfxManager.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, config, pierceMeta);
 
                 } else {
                     // 穿透射线未命中：电弧打到最远处
@@ -716,7 +716,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         isHit: false,
                         hitPoints: null
                     };
-                    LightningRenderer.spawnWithMeta(rayOriginX, rayOriginY, rayEndX, rayEndY, config, missedPierceMeta);
+                    RayVfxManager.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, config, missedPierceMeta);
                 }
 
             // ================================================================
@@ -800,7 +800,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     if (bullet.shouldGeneratePostHitEffect) {
                         FX.Effect(bullet.击中后子弹的效果, rayNearestHitX, rayNearestHitY, shooter._xscale);
                     }
-                    LightningRenderer.spawn(rayOriginX, rayOriginY, rayNearestHitX, rayNearestHitY, config);
+                    // 构建主命中 SegmentMeta
+                    var mainMeta:Object = {
+                        segmentKind: "main",
+                        hitIndex: 0,
+                        intensity: 1.0,
+                        isHit: true
+                    };
+                    RayVfxManager.spawn(rayOriginX, rayOriginY, rayNearestHitX, rayNearestHitY, config, mainMeta);
 
                     if (debugMode) {
                         unitArea = hitTarget.aabbCollider;
@@ -926,7 +933,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             if (bullet.shouldGeneratePostHitEffect) {
                                 FX.Effect(bullet.击中后子弹的效果, chainBestX, chainBestY, shooter._xscale);
                             }
-                            LightningRenderer.spawn(prevChainX, prevChainY, chainBestX, chainBestY, config);
+                            // 构建 chain 弹跳 SegmentMeta (hitIndex 从 1 开始，0 是主命中)
+                            var chainMeta:Object = {
+                                segmentKind: "chain",
+                                hitIndex: ci + 1,
+                                intensity: chainDmgMult,
+                                isHit: true,
+                                parentEndX: prevChainX,
+                                parentEndY: prevChainY
+                            };
+                            RayVfxManager.spawn(prevChainX, prevChainY, chainBestX, chainBestY, config, chainMeta);
 
                             // 更新链式起点（含 Z 轴传递）
                             prevChainX = chainBestX;
@@ -1067,7 +1083,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 FX.Effect(bullet.击中后子弹的效果, fh.centerX, fh.centerY, shooter._xscale);
                             }
                             // 折射电弧：从主命中点定向射向折射目标
-                            LightningRenderer.spawn(rayNearestHitX, rayNearestHitY, fh.centerX, fh.centerY, config);
+                            var forkMeta:Object = {
+                                segmentKind: "fork",
+                                hitIndex: fk,
+                                intensity: forkFalloff,
+                                isHit: true,
+                                parentEndX: rayNearestHitX,
+                                parentEndY: rayNearestHitY
+                            };
+                            RayVfxManager.spawn(rayNearestHitX, rayNearestHitY, fh.centerX, fh.centerY, config, forkMeta);
                         }
                     }
                     // single 模式无额外处理
@@ -1082,7 +1106,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                     // 未命中时无 HitUpdater 回调，直接播放击中地图效果
                     FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
-                    LightningRenderer.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, config);
+                    var missMeta:Object = {
+                        segmentKind: "main",
+                        hitIndex: 0,
+                        intensity: 1.0,
+                        isHit: false
+                    };
+                    RayVfxManager.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, config, missMeta);
                 }
             }
 

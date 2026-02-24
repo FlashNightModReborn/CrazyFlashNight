@@ -132,7 +132,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     /**
      * 弹跳间视觉延迟帧数（0 = 即时全部显示）
      * 【预留字段】当前 processRayBullets 未消费，所有弹跳在同一帧即时渲染。
-     * 未来如需逐帧展示连锁动画，可在 LightningRenderer 中读取此值。
+     * 未来如需逐帧展示连锁动画，可在 RayVfxManager 中读取此值。
      */
     public var chainDelay:Number;
 
@@ -158,6 +158,13 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
 
     /** 抖动幅度（像素），控制电弧锯齿程度 */
     public var jitter:Number;
+
+    /** 是否启用随机爆闪 (true = 启用，Tesla 默认开，其他风格默认关) */
+    public var flickerEnabled:Boolean;
+
+    /** 爆闪范围 [minAlpha, maxAlpha]，如 [70, 100] 表示 alpha 在 70~100 之间随机 */
+    public var flickerMin:Number;
+    public var flickerMax:Number;
 
     // ========== Prism 专用参数 ==========
 
@@ -237,10 +244,13 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static var DEFAULT_BRANCH_PROBABILITY:Number = 0.5;
     private static var DEFAULT_SEGMENT_LENGTH:Number = 35;
     private static var DEFAULT_JITTER:Number = 40;
+    private static var DEFAULT_FLICKER_ENABLED:Boolean = true;   // Tesla 默认开启爆闪
+    private static var DEFAULT_FLICKER_MIN:Number = 70;
+    private static var DEFAULT_FLICKER_MAX:Number = 100;
 
     // Prism 专用默认值
     private static var DEFAULT_SHIMMER_AMP:Number = 0.1;
-    private static var DEFAULT_SHIMMER_FREQ:Number = 0.5;
+    private static var DEFAULT_SHIMMER_FREQ:Number = 0.08;  // 约12帧一个周期，避免整数帧归零
     private static var DEFAULT_FORK_THICKNESS_MUL:Number = 0.7;
 
     // Spectrum 专用默认值
@@ -292,6 +302,9 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         branchProbability = DEFAULT_BRANCH_PROBABILITY;
         segmentLength = DEFAULT_SEGMENT_LENGTH;
         jitter = DEFAULT_JITTER;
+        flickerEnabled = DEFAULT_FLICKER_ENABLED;
+        flickerMin = DEFAULT_FLICKER_MIN;
+        flickerMax = DEFAULT_FLICKER_MAX;
 
         // Prism 专用
         shimmerAmp = DEFAULT_SHIMMER_AMP;
@@ -447,6 +460,15 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         if (node.jitter != undefined) {
             config.jitter = Number(node.jitter);
         }
+        if (node.flickerEnabled != undefined) {
+            config.flickerEnabled = (String(node.flickerEnabled).toLowerCase() == "true");
+        }
+        if (node.flickerMin != undefined) {
+            config.flickerMin = Number(node.flickerMin);
+        }
+        if (node.flickerMax != undefined) {
+            config.flickerMax = Number(node.flickerMax);
+        }
 
         // Prism 专用参数
         if (node.shimmerAmp != undefined) {
@@ -529,6 +551,9 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         if (preset.branchProbability != undefined) config.branchProbability = preset.branchProbability;
         if (preset.segmentLength != undefined) config.segmentLength = preset.segmentLength;
         if (preset.jitter != undefined) config.jitter = preset.jitter;
+        if (preset.flickerEnabled != undefined) config.flickerEnabled = preset.flickerEnabled;
+        if (preset.flickerMin != undefined) config.flickerMin = preset.flickerMin;
+        if (preset.flickerMax != undefined) config.flickerMax = preset.flickerMax;
 
         // Prism 专用
         if (preset.shimmerAmp != undefined) config.shimmerAmp = preset.shimmerAmp;

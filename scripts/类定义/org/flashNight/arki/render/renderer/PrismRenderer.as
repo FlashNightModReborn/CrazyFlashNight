@@ -31,7 +31,7 @@ class org.flashNight.arki.render.renderer.PrismRenderer {
     private static var DEFAULT_SECONDARY_COLOR:Number = 0xFFFFAA;  // 淡黄高光
     private static var DEFAULT_THICKNESS:Number = 3;
     private static var DEFAULT_SHIMMER_AMP:Number = 0.1;           // 呼吸幅度
-    private static var DEFAULT_SHIMMER_FREQ:Number = 0.5;          // 呼吸频率
+    private static var DEFAULT_SHIMMER_FREQ:Number = 0.08;         // 呼吸频率 (周期/帧，约12帧一个周期)
     private static var DEFAULT_FORK_THICKNESS_MUL:Number = 0.7;    // 折射线粗细倍率
 
     // ════════════════════════════════════════════════════════════════════════

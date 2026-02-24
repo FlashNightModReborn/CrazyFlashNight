@@ -17,7 +17,7 @@ import org.flashNight.sara.util.*;
  * 特点：
  * 1. 单帧检测 - 子弹发射瞬间完成全部碰撞检测
  * 2. 射线碰撞器 - 使用 RayCollider + Slab 算法进行射线-AABB相交检测
- * 3. 视觉独立 - 电弧视觉效果由 LightningRenderer 独立管理
+ * 3. 视觉独立 - 射线视觉效果由 RayVfxManager 独立管理（支持多风格）
  * 4. 多模式支持 - single / pierce / chain / fork 四种射线模式
  *
  * 射线模式（由 TeslaRayConfig.rayMode 控制）：
@@ -44,7 +44,7 @@ import org.flashNight.sara.util.*;
  *   -> bindLifecycle -> bindCollider (创建 RayCollider)
  *   -> bindFrameHandler (加入 preCheckRay 队列)
  *   -> BulletQueueProcessor.processRayBullets -> 碰撞检测 + 模式分派
- *   -> LightningRenderer.spawn (视觉效果)
+ *   -> RayVfxManager.spawn (视觉效果，支持 Tesla/Prism/Spectrum/Wave 风格)
  */
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TeslaRayLifecycle
     extends TransparentBulletLifecycle implements ILifecycle {

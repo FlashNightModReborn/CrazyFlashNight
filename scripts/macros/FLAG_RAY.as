@@ -20,6 +20,6 @@
  * • AttributeLoader 解析 <rayConfig> 时自动设置此标志
  * • BulletFactory 选择 TeslaRayLifecycle 生命周期
  * • BulletQueueProcessor 中的射线窄相碰撞分支
- * • LightningRenderer 电弧视觉渲染触发
+ * • RayVfxManager 射线视觉效果渲染（支持 Tesla/Prism/Spectrum/Wave 风格）
  */
 var FLAG_RAY:Number = 1 << 8;  // 射线标志位 - 位值: 256 (第8位)

@@ -334,9 +334,17 @@ class org.flashNight.arki.render.RayVfxManager {
             arc.age++;
 
             if (arc.age <= arc.visualDuration) {
-                // 活跃期：每帧重绘 + 随机爆闪
+                // 活跃期：每帧重绘
                 renderArc(arc);
-                arc.mc._alpha = 70 + Math.random() * 30;
+                // 随机爆闪（由 config.flickerEnabled 控制，默认仅 Tesla 开启）
+                var cfg:Object = arc.config;
+                if (cfg != null && cfg.flickerEnabled == true) {
+                    var fMin:Number = (!isNaN(cfg.flickerMin)) ? cfg.flickerMin : 70;
+                    var fMax:Number = (!isNaN(cfg.flickerMax)) ? cfg.flickerMax : 100;
+                    arc.mc._alpha = fMin + Math.random() * (fMax - fMin);
+                } else {
+                    arc.mc._alpha = 100;
+                }
             } else if (arc.age <= arc.totalDuration) {
                 // 淡出期：线性递减透明度
                 var fadeProgress:Number = (arc.age - arc.visualDuration) / arc.fadeDuration;
