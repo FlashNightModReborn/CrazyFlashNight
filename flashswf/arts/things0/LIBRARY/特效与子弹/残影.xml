@@ -1,0 +1,41 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/残影" itemID="69972aa4-00000c37" lastModified="1771515296" lastUniqueIdentifier="33">
+  <timeline>
+    <DOMTimeline name="残影">
+      <layers>
+        <DOMLayer name="Layer 1" color="#BDD3F1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#83C998">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#F76FB9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!246 1256[-46 1425 871 2074!871 2074[525 2017 427 1952!427 1952[127 2353 1502 3016!1502 3016|574 2768!574 2768[184 3212 2032 3626!2032 3626[700 3832 -77 3782!-77 3782[-1200 3552 -1397 2891!-1397 2891[-915 2949 -468 2802!-468 2802[-863
+ 2494 -889 2176!-889 2176[-699 2196 -418 2025!-418 2025[-590 1762 -692 1471!-692 1471[-474 1556 -253 1269!-253 1269|-510 852!-510 852[-350 765 125 250!125 250[-275 914 481 1288!481 1288|246 1256"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
