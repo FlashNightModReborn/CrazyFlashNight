@@ -470,7 +470,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var rayOriginX:Number = bullet._x;
             var rayOriginY:Number = bullet._y;
             var bulletZOffset:Number = bullet.Z轴坐标;
-            var bulletZRange:Number = bullet.Z轴范围 || 50;
+            var bulletZRange:Number = bullet.Z轴攻击范围 || 50;
             var flags:Number = bullet.flags | 0;
 
             // ---- 扫描所有候选目标，找到最近命中 ----
@@ -564,9 +564,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
                 var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
 
-                if (bullet.shouldGeneratePostHitEffect) {
-                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
-                }
+                // 未命中时无 HitUpdater 回调，直接播放击中地图效果
+                FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
                 LightningRenderer.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, bullet.rayConfig);
             }
 

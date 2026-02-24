@@ -196,6 +196,16 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         //   existingFlags | flags → 合并（保留已有标志位）
         bullet.flags |= flags;
 
+        // === FLAG_RAY 蕴含 FLAG_TRANSPARENCY ===
+        // 射线子弹本质是特殊的透明子弹：无 MovieClip 实例、浅拷贝创建。
+        // 在 flag 体系层面建立蕴含关系，下游只需检测 FLAG_TRANSPARENCY 即可
+        // 涵盖所有需要浅拷贝的子弹类型，无需逐处添加 || isRay。
+        #include "../macros/FLAG_RAY.as"
+        #include "../macros/FLAG_TRANSPARENCY.as"
+        if ((bullet.flags & FLAG_RAY) != 0) {
+            bullet.flags |= FLAG_TRANSPARENCY;
+        }
+
         return bullet.flags;
     }
 

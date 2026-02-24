@@ -5,7 +5,6 @@
  * • 射线物理参数（长度）
  * • 电弧视觉参数（颜色、粗细、分支、抖动）
  * • 时间参数（持续时间、淡出时间）
- * • 命中效果（hitEffect库链接名）
  *
  * 使用方式：
  * 1. XML配置通过 AttributeLoader 解析后调用 fromXML() 创建实例
@@ -50,11 +49,6 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     /** 淡出帧数（alpha从100渐变到0的时间） */
     public var fadeOutDuration:Number;
 
-    // ========== 命中效果 ==========
-
-    /** 命中特效的库链接名（用户需在库中创建对应MC） */
-    public var hitEffect:String;
-
     // ========== 默认值常量 ==========
 
     private static var DEFAULT_RAY_LENGTH:Number = 900;
@@ -83,7 +77,6 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         jitter = DEFAULT_JITTER;
         visualDuration = DEFAULT_VISUAL_DURATION;
         fadeOutDuration = DEFAULT_FADE_OUT_DURATION;
-        hitEffect = null;
     }
 
     /**
@@ -104,7 +97,6 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      *     <jitter>18</jitter>
      *     <visualDuration>180</visualDuration>
      *     <fadeOutDuration>60</fadeOutDuration>
-     *     <hitEffect>电击火花</hitEffect>
      * </rayConfig>
      */
     public static function fromXML(node:Object):TeslaRayConfig {
@@ -164,11 +156,6 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             config.fadeOutDuration = Number(node.fadeOutDuration);
         }
 
-        // 命中特效
-        if (node.hitEffect != undefined) {
-            config.hitEffect = String(node.hitEffect);
-        }
-
         return config;
     }
 
@@ -206,7 +193,6 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
                " thickness=" + thickness +
                " branchCount=" + branchCount +
                " visualDuration=" + visualDuration +
-               " fadeOutDuration=" + fadeOutDuration +
-               " hitEffect=" + hitEffect + "]";
+               " fadeOutDuration=" + fadeOutDuration + "]";
     }
 }

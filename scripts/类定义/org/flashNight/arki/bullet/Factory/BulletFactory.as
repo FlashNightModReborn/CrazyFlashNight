@@ -178,8 +178,8 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             : scatteringAngle;
 
         // 创建子弹实例
-        // 射线子弹也是透明子弹,需要使用浅拷贝
-        if (isTransparent || isRay) {
+        // 透明子弹（含射线）使用浅拷贝；FLAG_RAY 已在 BulletTypesetter 中蕴含 FLAG_TRANSPARENCY
+        if (isTransparent) {
             bulletInstance = _root.对象浅拷贝(Obj);
         } else {
             // 利用子弹计数来管理子弹深度
@@ -210,7 +210,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
 
         // === 生命周期选择：基于位标志的快速分支 ===
         // 优先级顺序：射线 > 透明 > 近战 > 普通
-        // 射线子弹优先检测，因为它可能同时设置 FLAG_TRANSPARENCY
+        // 射线子弹必然携带 FLAG_TRANSPARENCY（BulletTypesetter 蕴含），需优先匹配
         if (isRay) {
             // 射线子弹：单帧检测，使用 RayCollider
             lifecycle = TeslaRayLifecycle.BASIC;
