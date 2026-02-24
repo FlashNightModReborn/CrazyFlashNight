@@ -53,8 +53,8 @@ _root.技能函数.搓招监控 = function(招式名:String, 触发码:Number):N
 
 _root.技能函数.使用波动拳 = function():Number {
 	var 自机 = _parent;
-	var 技能 = 自机.被动技能.拳脚攻击;
-	if(!技能 || 技能.等级 < 5) return 0;
+	var 技能 = 自机.被动技能.内力爆发;
+	if(!技能 || 技能.等级 < 2) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "波动拳") {
