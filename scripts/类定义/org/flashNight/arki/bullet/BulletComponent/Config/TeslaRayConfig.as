@@ -77,7 +77,11 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     /** 下一目标搜索半径（像素） */
     public var chainRadius:Number;
 
-    /** 弹跳间视觉延迟帧数（0 = 即时全部显示） */
+    /**
+     * 弹跳间视觉延迟帧数（0 = 即时全部显示）
+     * 【预留字段】当前 processRayBullets 未消费，所有弹跳在同一帧即时渲染。
+     * 未来如需逐帧展示连锁动画，可在 LightningRenderer 中读取此值。
+     */
     public var chainDelay:Number;
 
     // ========== 分裂模式特有参数 ==========

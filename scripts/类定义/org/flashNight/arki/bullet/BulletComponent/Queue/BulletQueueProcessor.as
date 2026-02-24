@@ -539,15 +539,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var finalResult:CollisionResult = _rayHitResult;
 
             // ================================================================
-            // 穿透模式：收集所有命中 → 按 tEntry 排序 → 逐个伤害
+            // 穿透模式：扫描时维护前 N 小 tEntry 有序表 → 逐个伤害
             // ================================================================
             if (rayMode == "pierce") {
                 var pierceLimit:Number = bulletPierceLimit;
                 var pierceFalloff:Number = config.damageFalloff;
 
-                // 收集所有命中到临时数组
+                // 前 N 小 tEntry 有序表（按 tEntry 升序，长度 ≤ pierceLimit）
                 // 每个元素: {target, hitX, hitY, tEntry, zOffset}
                 var pierceHits:Array = [];
+                var pLen:Number = 0;
 
                 for (var u:Number = lo; u < unitLen && unitLeftKeys[u] <= rayRight; u++) {
                     var hitTarget:MovieClip = unitMap[u];
@@ -559,32 +560,40 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         var collisionResult:Object = areaAABB.checkCollision(unitArea, zOffset);
 
                         if (collisionResult.isColliding) {
-                            pierceHits.push({
-                                target: hitTarget,
-                                hitX: collisionResult.overlapCenter.x,
-                                hitY: collisionResult.overlapCenter.y,
-                                tEntry: collisionResult.tEntry,
-                                zOffset: zOffset
-                            });
+                            var newTEntry:Number = collisionResult.tEntry;
+
+                            // 有序表未满或 newTEntry < 表尾最大值 → 需要插入
+                            if (pLen < pierceLimit || newTEntry < pierceHits[pLen - 1].tEntry) {
+                                var newHit:Object = {
+                                    target: hitTarget,
+                                    hitX: collisionResult.overlapCenter.x,
+                                    hitY: collisionResult.overlapCenter.y,
+                                    tEntry: newTEntry,
+                                    zOffset: zOffset
+                                };
+
+                                // 插入排序：从表尾向前找插入位置（表长 ≤ pierceLimit，O(N)）
+                                var insertPos:Number = pLen;
+                                if (insertPos > 0) {
+                                    // 若表已满则从倒数第二个开始比较（表尾将被挤出）
+                                    var scanStart:Number = (pLen >= pierceLimit) ? pLen - 2 : pLen - 1;
+                                    for (var pi:Number = scanStart; pi >= 0; pi--) {
+                                        if (pierceHits[pi].tEntry > newTEntry) {
+                                            pierceHits[pi + 1] = pierceHits[pi];
+                                            insertPos = pi;
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                }
+                                pierceHits[insertPos] = newHit;
+                                if (pLen < pierceLimit) pLen++;
+                            }
                         }
                     }
                 }
 
-                if (pierceHits.length > 0) {
-                    // 按 tEntry 升序排序（插入排序，pierceLimit 通常很小）
-                    var pLen:Number = pierceHits.length;
-                    for (var pi:Number = 1; pi < pLen; pi++) {
-                        var pKey:Object = pierceHits[pi];
-                        var pj:Number = pi - 1;
-                        while (pj >= 0 && pierceHits[pj].tEntry > pKey.tEntry) {
-                            pierceHits[pj + 1] = pierceHits[pj];
-                            pj--;
-                        }
-                        pierceHits[pj + 1] = pKey;
-                    }
-
-                    // 限制穿透数量
-                    var pCount:Number = (pLen < pierceLimit) ? pLen : pierceLimit;
+                if (pLen > 0) {
                     var pDmgMult:Number = 1.0;
 
                     // 处理第一个命中（含击中触发函数）
@@ -598,9 +607,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     if (bullet.击中时触发函数) bullet.击中时触发函数();
 
                     // 逐个处理所有穿透命中
-                    for (var pk:Number = 0; pk < pCount; pk++) {
+                    for (var pk:Number = 0; pk < pLen; pk++) {
                         var ph:Object = pierceHits[pk];
                         hitTarget = ph.target;
+
+                        // 每次命中前同步 命中对象，保证下游读取一致
+                        bullet.hitTarget = hitTarget;
+                        bullet.命中对象 = hitTarget;
 
                         // 更新复用结果
                         finalResult.overlapCenter.x = ph.hitX;
@@ -768,6 +781,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                         var prevChainX:Number = rayNearestHitX;
                         var prevChainY:Number = rayNearestHitY;
+                        // Z 轴传递：从上一个命中目标的 Z 位置继续搜索
+                        var prevChainZ:Number = rayNearestTarget.Z轴坐标;
 
                         for (var ci:Number = 0; ci < chainMaxBounces; ci++) {
                             // 从当前命中点搜索最近未命中目标
@@ -799,8 +814,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 // 跳过已命中目标
                                 if (chainVisited[chainTarget._name] == true) continue;
 
-                                // Z 轴范围检查
-                                var czOff:Number = bulletZOffset - chainTarget.Z轴坐标;
+                                // Z 轴范围检查（参照上一个弹跳目标的 Z，允许跨层传播）
+                                var czOff:Number = prevChainZ - chainTarget.Z轴坐标;
                                 if (czOff >= bulletZRange || czOff <= -bulletZRange) continue;
 
                                 if (chainTarget.hp > 0 && chainTarget.防止无限飞 != true) {
@@ -827,6 +842,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                             // 标记已命中
                             chainVisited[chainBestTarget._name] = true;
+
+                            // 同步 命中对象，保证下游读取一致
+                            bullet.hitTarget = chainBestTarget;
+                            bullet.命中对象 = chainBestTarget;
 
                             // 对链式目标应用伤害
                             finalResult.overlapCenter.x = chainBestX;
@@ -864,9 +883,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             }
                             LightningRenderer.spawn(prevChainX, prevChainY, chainBestX, chainBestY, config);
 
-                            // 更新链式起点
+                            // 更新链式起点（含 Z 轴传递）
                             prevChainX = chainBestX;
                             prevChainY = chainBestY;
+                            prevChainZ = chainBestTarget.Z轴坐标;
                             chainDmgMult *= chainFalloff;
                         }
 
@@ -931,7 +951,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 // 不命中主射线已命中的目标
                                 if (subTarget == rayNearestTarget) continue;
 
-                                var szOff:Number = bulletZOffset - subTarget.Z轴坐标;
+                                // Z 轴参照主命中目标（子射线从命中点出发，继承其 Z 位置）
+                                var szOff:Number = rayNearestTarget.Z轴坐标 - subTarget.Z轴坐标;
                                 if (szOff >= bulletZRange || szOff <= -bulletZRange) continue;
 
                                 if (subTarget.hp > 0 && subTarget.防止无限飞 != true) {
@@ -948,6 +969,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             }
 
                             if (subNearestTarget != null) {
+                                // 同步 命中对象，保证下游读取一致
+                                bullet.hitTarget = subNearestTarget;
+                                bullet.命中对象 = subNearestTarget;
+
                                 // 对子射线命中目标应用伤害
                                 finalResult.overlapCenter.x = subNearestHitX;
                                 finalResult.overlapCenter.y = subNearestHitY;
