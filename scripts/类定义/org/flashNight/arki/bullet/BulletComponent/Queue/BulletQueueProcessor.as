@@ -601,9 +601,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     hitTarget = firstHit.target;
 
                     bullet.hitTarget = hitTarget;
+                    // 【设计决策】附加层伤害计算 仅在首命中前重置，副命中不重置。
+                    // 当前该字段未被下游消费，若未来启用需评估是否每次命中都重置。
                     bullet.附加层伤害计算 = 0;
                     bullet.命中对象 = hitTarget;
 
+                    // 【设计决策】击中时触发函数 仅在首命中时调用，副命中（穿透）不调用。
+                    // 平衡性考虑：避免连锁 Buff/效果过于强力。若需改变，在下方循环内添加调用即可。
                     if (bullet.击中时触发函数) bullet.击中时触发函数();
 
                     // 逐个处理所有穿透命中
@@ -722,6 +726,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     finalResult.tEntry = rayNearestTEntry;
 
                     bullet.hitTarget = hitTarget;
+                    // 【设计决策】附加层伤害计算 仅在主命中前重置，chain/fork 副命中不重置。
+                    // 当前该字段未被下游消费，若未来启用需评估是否每次命中都重置。
                     bullet.附加层伤害计算 = 0;
                     bullet.命中对象 = hitTarget;
 
@@ -732,6 +738,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             bullet
                         );
 
+                    // 【设计决策】击中时触发函数 仅在主命中时调用，chain/fork 副命中不调用。
+                    // 平衡性考虑：避免连锁 Buff/效果过于强力。若需改变，在 chain/fork 循环内添加调用即可。
                     if (bullet.击中时触发函数) bullet.击中时触发函数();
 
                     damageResult = Damage.calculateDamage(

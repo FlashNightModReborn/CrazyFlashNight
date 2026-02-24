@@ -257,6 +257,8 @@ class org.flashNight.arki.render.LightningRenderer {
                 arc.mc._alpha = 70 + Math.random() * 30;
             } else if (arc.age <= arc.totalDuration) {
                 // 淡出期：线性递减透明度，保持最后一帧的路径形态
+                // 【注意】若 fadeDuration=0 会产生除零（Infinity），AS2 不崩溃，
+                // _alpha 被 Flash Player 自动 clamp 到 0~100，表现为立即消失，可接受。
                 var fadeProgress:Number = (arc.age - arc.visualDuration) / arc.fadeDuration;
                 arc.mc._alpha = 100 * (1 - fadeProgress);
             } else {

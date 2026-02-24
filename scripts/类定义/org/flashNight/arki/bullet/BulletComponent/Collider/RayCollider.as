@@ -158,21 +158,21 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
         var otherAABB:AABB = other.getAABB(zOffset);
 
         // ========== 有序分离快速检测 ==========
-        // 使用严格比较 (<) 保持"边界接触算命中"的语义
-        // 与 AABBCollider/CoverageAABBCollider 保持一致的有序分离模式
+        // 使用宽松比较 (<=/>= ) 与 AABBCollider 保持一致：边界恰好接触视为分离。
+        // 这避免了"擦边"情况进入 Slab 窄相的额外计算，且语义统一便于维护。
         var otherLeft:Number = otherAABB.left;
         var otherRight:Number = otherAABB.right;
         var otherTop:Number = otherAABB.top;
         var otherBottom:Number = otherAABB.bottom;
 
         // 射线 AABB 完全在目标左侧 -> X轴有序分离
-        if (this.right < otherLeft) return CollisionResult.ORDERFALSE;
+        if (this.right <= otherLeft) return CollisionResult.ORDERFALSE;
         // 射线 AABB 完全在目标右侧 -> 普通分离
-        if (this.left > otherRight) return CollisionResult.FALSE;
+        if (this.left >= otherRight) return CollisionResult.FALSE;
         // 射线 AABB 完全在目标上方 -> Y轴有序分离
-        if (this.bottom < otherTop) return CollisionResult.YORDERFALSE;
+        if (this.bottom <= otherTop) return CollisionResult.YORDERFALSE;
         // 射线 AABB 完全在目标下方 -> 普通分离
-        if (this.top > otherBottom) return CollisionResult.FALSE;
+        if (this.top >= otherBottom) return CollisionResult.FALSE;
 
         // 内联获取射线参数（避免属性访问开销）
         var ox:Number = _ray.origin.x;
