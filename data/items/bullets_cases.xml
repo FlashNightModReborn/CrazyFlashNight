@@ -548,6 +548,8 @@
             <hitMark>电击弹坑</hitMark>
             <rayConfig>
                 <rayLength>900</rayLength>
+                <vfxStyle>tesla</vfxStyle>
+                <vfxPreset>ra2_tesla</vfxPreset>
                 <primaryColor>0x00FFFF</primaryColor>
                 <secondaryColor>0xFFFFFF</secondaryColor>
                 <thickness>2</thickness>
@@ -569,6 +571,9 @@
             <rayConfig>
                 <rayLength>900</rayLength>
                 <rayMode>chain</rayMode>
+                <vfxStyle>tesla</vfxStyle>
+                <vfxPreset>ra2_tesla</vfxPreset>
+                <chainDelay>2</chainDelay>
                 <damageFalloff>0.7</damageFalloff>
                 <chainRadius>200</chainRadius>
                 <primaryColor>0x00FFFF</primaryColor>
@@ -592,13 +597,14 @@
             <hitMark>灼烧弹坑</hitMark>
             <rayConfig>
                 <rayLength>800</rayLength>
+                <vfxStyle>prism</vfxStyle>
+                <vfxPreset>ra2_prism</vfxPreset>
                 <primaryColor>0xFFDD00</primaryColor>
                 <secondaryColor>0xFFFFAA</secondaryColor>
                 <thickness>3</thickness>
-                <branchCount>2</branchCount>
-                <branchProbability>0.3</branchProbability>
-                <segmentLength>40</segmentLength>
-                <jitter>8</jitter>
+                <shimmerAmp>0.1</shimmerAmp>
+                <shimmerFreq>0.5</shimmerFreq>
+                <forkThicknessMul>0.7</forkThicknessMul>
                 <visualDuration>4</visualDuration>
                 <fadeOutDuration>2</fadeOutDuration>
             </rayConfig>
@@ -613,42 +619,92 @@
             <rayConfig>
                 <rayLength>900</rayLength>
                 <rayMode>fork</rayMode>
+                <vfxStyle>prism</vfxStyle>
+                <vfxPreset>ra2_prism</vfxPreset>
+                <chainDelay>1</chainDelay>
                 <damageFalloff>0.6</damageFalloff>
                 <chainRadius>900</chainRadius>
                 <primaryColor>0xFFDD00</primaryColor>
                 <secondaryColor>0xFFFFAA</secondaryColor>
                 <thickness>3</thickness>
-                <branchCount>2</branchCount>
-                <branchProbability>0.3</branchProbability>
-                <segmentLength>40</segmentLength>
-                <jitter>8</jitter>
+                <shimmerAmp>0.1</shimmerAmp>
+                <shimmerFreq>0.5</shimmerFreq>
+                <forkThicknessMul>0.7</forkThicknessMul>
                 <visualDuration>4</visualDuration>
                 <fadeOutDuration>2</fadeOutDuration>
             </rayConfig>
         </attribute>
     </bullet>
 
+    <!-- ========== 光谱科技 (Spectrum / Red Alert 3) ========== -->
+    <!-- 基础版: single模式, 彩虹光束, 颜色滚动流动感 -->
+    <bullet>
+        <name>光谱射线</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <rayConfig>
+                <rayLength>800</rayLength>
+                <vfxStyle>spectrum</vfxStyle>
+                <vfxPreset>ra3_spectrum</vfxPreset>
+                <thickness>4</thickness>
+                <stripeCount>7</stripeCount>
+                <paletteScrollSpeed>20</paletteScrollSpeed>
+                <distortAmp>3</distortAmp>
+                <distortWaveLen>60</distortWaveLen>
+                <visualDuration>5</visualDuration>
+                <fadeOutDuration>3</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+    <!-- 强化版: fork光谱折射, 主命中+4条折射光束(棱镜色散效果), 每条子射线单色 -->
+    <bullet>
+        <name>光谱射线-强化</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <pierceLimit>30</pierceLimit>
+            <rayConfig>
+                <rayLength>900</rayLength>
+                <rayMode>fork</rayMode>
+                <vfxStyle>spectrum</vfxStyle>
+                <vfxPreset>ra3_spectrum</vfxPreset>
+                <chainDelay>1</chainDelay>
+                <damageFalloff>0.6</damageFalloff>
+                <chainRadius>900</chainRadius>
+                <thickness>4</thickness>
+                <stripeCount>7</stripeCount>
+                <paletteScrollSpeed>20</paletteScrollSpeed>
+                <distortAmp>3</distortAmp>
+                <distortWaveLen>60</distortWaveLen>
+                <visualDuration>5</visualDuration>
+                <fadeOutDuration>3</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+
     <!-- ========== 波能科技 (Wave-Force / Red Alert 3) ========== -->
-    <!-- 基础版: single模式, 红橙色高能光束, 用于贴图调教 -->
+    <!-- 基础版: single模式, 红橙色高能光束, 正弦波形传播 -->
     <bullet>
         <name>波能射线</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
             <rayConfig>
                 <rayLength>1000</rayLength>
+                <vfxStyle>wave</vfxStyle>
+                <vfxPreset>ra3_wave</vfxPreset>
                 <primaryColor>0xFF4400</primaryColor>
-                <secondaryColor>0xFF8800</secondaryColor>
-                <thickness>4</thickness>
-                <branchCount>1</branchCount>
-                <branchProbability>0.2</branchProbability>
-                <segmentLength>50</segmentLength>
-                <jitter>5</jitter>
+                <secondaryColor>0xFFAA00</secondaryColor>
+                <thickness>5</thickness>
+                <waveAmp>8</waveAmp>
+                <waveLen>40</waveLen>
+                <waveSpeed>0.15</waveSpeed>
+                <pulseAmp>0.2</pulseAmp>
+                <pulseRate>0.3</pulseRate>
                 <visualDuration>6</visualDuration>
                 <fadeOutDuration>4</fadeOutDuration>
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: pierce穿透模式, 沿路径命中最多5个目标, 每穿透一个伤害×0.8 -->
+    <!-- 强化版: pierce穿透模式, 沿路径命中最多5个目标, 命中点有波纹增亮效果 -->
     <bullet>
         <name>波能射线-强化</name>
         <attribute>
@@ -657,14 +713,19 @@
             <rayConfig>
                 <rayLength>1000</rayLength>
                 <rayMode>pierce</rayMode>
+                <vfxStyle>wave</vfxStyle>
+                <vfxPreset>ra3_wave</vfxPreset>
                 <damageFalloff>0.8</damageFalloff>
                 <primaryColor>0xFF4400</primaryColor>
-                <secondaryColor>0xFF8800</secondaryColor>
-                <thickness>4</thickness>
-                <branchCount>1</branchCount>
-                <branchProbability>0.2</branchProbability>
-                <segmentLength>50</segmentLength>
-                <jitter>5</jitter>
+                <secondaryColor>0xFFAA00</secondaryColor>
+                <thickness>5</thickness>
+                <waveAmp>8</waveAmp>
+                <waveLen>40</waveLen>
+                <waveSpeed>0.15</waveSpeed>
+                <pulseAmp>0.2</pulseAmp>
+                <pulseRate>0.3</pulseRate>
+                <hitRippleSize>15</hitRippleSize>
+                <hitRippleAlpha>50</hitRippleAlpha>
                 <visualDuration>6</visualDuration>
                 <fadeOutDuration>4</fadeOutDuration>
             </rayConfig>

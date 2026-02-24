@@ -663,13 +663,41 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         pDmgMult *= pierceFalloff;
                     }
 
-                    // 穿透射线视觉：一条完整电弧贯穿整条射线
-                    // 终点为射线末端（无论是否穿透完所有目标）
+                    // 穿透射线视觉
                     var rayAngle:Number = bullet._rotation * DEG_TO_RAD;
                     var rayLength:Number = config.rayLength || 900;
-                    var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
-                    var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
-                    LightningRenderer.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, config);
+                    var rayEndX:Number;
+                    var rayEndY:Number;
+
+                    // 判断是否达到穿透上限
+                    // pLen == pierceLimit 表示命中数达到上限，终点截止到最后一个命中的敌人
+                    // pLen < pierceLimit 表示敌人数量不足，射线应该打到 rayLength 全长
+                    if (pLen >= pierceLimit) {
+                        // 命中数达到上限：终点为最后一个命中的敌人位置
+                        var lastHit:Object = pierceHits[pLen - 1];
+                        rayEndX = lastHit.hitX;
+                        rayEndY = lastHit.hitY;
+                    } else {
+                        // 敌人不足：射线延伸到 rayLength 全长，并播放击中地图效果
+                        rayEndX = rayOriginX + Math.cos(rayAngle) * rayLength;
+                        rayEndY = rayOriginY + Math.sin(rayAngle) * rayLength;
+                        FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                    }
+
+                    // 构建 SegmentMeta，包含所有命中点信息（用于 WaveRenderer 的命中点波纹）
+                    var pierceHitPoints:Array = [];
+                    for (var hpi:Number = 0; hpi < pLen; hpi++) {
+                        pierceHitPoints.push({x: pierceHits[hpi].hitX, y: pierceHits[hpi].hitY});
+                    }
+                    var pierceMeta:Object = {
+                        segmentKind: "pierce",
+                        hitIndex: 0,
+                        intensity: 1.0,
+                        isHit: true,
+                        hitPoints: pierceHitPoints
+                    };
+
+                    LightningRenderer.spawnWithMeta(rayOriginX, rayOriginY, rayEndX, rayEndY, config, pierceMeta);
 
                 } else {
                     // 穿透射线未命中：电弧打到最远处
@@ -679,7 +707,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     rayEndY = rayOriginY + Math.sin(rayAngle) * rayLength;
 
                     FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
-                    LightningRenderer.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, config);
+
+                    // 未命中的 pierce 射线 meta
+                    var missedPierceMeta:Object = {
+                        segmentKind: "pierce",
+                        hitIndex: 0,
+                        intensity: 1.0,
+                        isHit: false,
+                        hitPoints: null
+                    };
+                    LightningRenderer.spawnWithMeta(rayOriginX, rayOriginY, rayEndX, rayEndY, config, missedPierceMeta);
                 }
 
             // ================================================================
