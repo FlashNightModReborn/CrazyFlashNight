@@ -891,129 +891,138 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         }
 
                     // ========================================================
-                    // fork 模式：从命中点分裂出子射线
+                    // fork 模式：光棱折射 —— 从命中点搜索附近目标定向折射
+                    //
+                    // 类似红警光棱塔：主射线命中后，从命中点搜索半径内
+                    // 最近的 N 个敌人，对每个目标发射定向折射光束。
+                    // 没有目标 = 不发射，不存在"打空"的光束。
+                    // 复用 chainRadius 作为搜索半径。
                     // ========================================================
                     } else if (rayMode == "fork" && bulletPierceLimit > 1) {
-                        // bulletPierceLimit - 1 = 子射线数量（主命中已消耗1个名额）
                         var forkCount:Number = bulletPierceLimit - 1;
-                        var forkAngle:Number = config.forkAngle;
-                        var forkLength:Number = config.forkLength;
+                        var forkRadius:Number = config.chainRadius;
                         var forkFalloff:Number = config.damageFalloff;
+                        var forkRadiusSq:Number = forkRadius * forkRadius;
 
-                        // 主射线方向角
-                        var mainAngle:Number = bullet._rotation * DEG_TO_RAD;
+                        // Z 轴参照主命中目标（折射从命中点出发，继承其 Z 位置）
+                        var forkRefZ:Number = rayNearestTarget.Z轴坐标;
 
-                        // 计算子射线角度（均匀分布在 [-forkAngle/2, +forkAngle/2]）
-                        var halfSpread:Number = forkAngle * DEG_TO_RAD * 0.5;
-                        var angleStep:Number = (forkCount > 1)
-                            ? (forkAngle * DEG_TO_RAD) / (forkCount - 1) : 0;
-                        var startAngle:Number = mainAngle - halfSpread;
+                        // 搜索窗口：以命中点为中心 ± forkRadius
+                        var forkSearchLeft:Number = rayNearestHitX - forkRadius;
+                        var forkSearchRight:Number = rayNearestHitX + forkRadius;
 
-                        for (var fi:Number = 0; fi < forkCount; fi++) {
-                            var subAngle:Number = (forkCount > 1)
-                                ? startAngle + angleStep * fi : mainAngle;
-                            var subDirX:Number = Math.cos(subAngle);
-                            var subDirY:Number = Math.sin(subAngle);
+                        // 二分查找起始索引
+                        var flo:Number = 0;
+                        var fhi:Number = unitLen;
+                        if (unitRightMax != undefined) {
+                            while (flo < fhi) {
+                                var fmid:Number = (flo + fhi) >> 1;
+                                if (unitRightMax[fmid] < forkSearchLeft) {
+                                    flo = fmid + 1;
+                                } else {
+                                    fhi = fmid;
+                                }
+                            }
+                        }
 
-                            // 复用子弹的 RayCollider 设置子射线参数
-                            // （主射线已处理完毕，可以安全覆盖）
-                            RayCollider(areaAABB).setRayFast(
-                                rayNearestHitX, rayNearestHitY,
-                                subDirX, subDirY, forkLength
-                            );
+                        // 维护前 N 近有序表（按距离升序，长度 ≤ forkCount）
+                        // 每个元素: {target, centerX, centerY, distSq}
+                        var forkHits:Array = [];
+                        var fLen:Number = 0;
 
-                            // 重新计算子射线的碰撞窗口
-                            var subLeft:Number = areaAABB.left;
-                            var subRight:Number = areaAABB.right;
+                        for (var fu:Number = flo; fu < unitLen && unitLeftKeys[fu] <= forkSearchRight; fu++) {
+                            var fTarget:MovieClip = unitMap[fu];
 
-                            var slo:Number = 0;
-                            var shi:Number = unitLen;
-                            if (unitRightMax != undefined) {
-                                while (slo < shi) {
-                                    var smid:Number = (slo + shi) >> 1;
-                                    if (unitRightMax[smid] < subLeft) {
-                                        slo = smid + 1;
-                                    } else {
-                                        shi = smid;
+                            // 跳过主射线已命中的目标
+                            if (fTarget == rayNearestTarget) continue;
+
+                            // Z 轴范围检查（参照主命中目标 Z）
+                            var fzOff:Number = forkRefZ - fTarget.Z轴坐标;
+                            if (fzOff >= bulletZRange || fzOff <= -bulletZRange) continue;
+
+                            if (fTarget.hp > 0 && fTarget.防止无限飞 != true) {
+                                // 计算到命中点的距离²
+                                var ftAABB:AABBCollider = fTarget.aabbCollider;
+                                var ftCX:Number = (ftAABB.left + ftAABB.right) * 0.5;
+                                var ftCY:Number = (ftAABB.top + ftAABB.bottom) * 0.5;
+
+                                var fdx:Number = ftCX - rayNearestHitX;
+                                var fdy:Number = ftCY - rayNearestHitY;
+                                var fdistSq:Number = fdx * fdx + fdy * fdy;
+
+                                if (fdistSq < forkRadiusSq) {
+                                    // 有序表未满或比表尾更近 → 插入
+                                    if (fLen < forkCount || fdistSq < forkHits[fLen - 1].distSq) {
+                                        var fNewHit:Object = {
+                                            target: fTarget,
+                                            centerX: ftCX,
+                                            centerY: ftCY,
+                                            distSq: fdistSq
+                                        };
+
+                                        // 插入排序（表长 ≤ forkCount，O(N)）
+                                        var fInsertPos:Number = fLen;
+                                        if (fInsertPos > 0) {
+                                            var fScanStart:Number = (fLen >= forkCount) ? fLen - 2 : fLen - 1;
+                                            for (var fpi:Number = fScanStart; fpi >= 0; fpi--) {
+                                                if (forkHits[fpi].distSq > fdistSq) {
+                                                    forkHits[fpi + 1] = forkHits[fpi];
+                                                    fInsertPos = fpi;
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        forkHits[fInsertPos] = fNewHit;
+                                        if (fLen < forkCount) fLen++;
                                     }
                                 }
                             }
+                        }
 
-                            // 在子射线窗口内找最近命中
-                            var subNearestTEntry:Number = Infinity;
-                            var subNearestTarget:MovieClip = null;
-                            var subNearestHitX:Number = 0;
-                            var subNearestHitY:Number = 0;
+                        // 对每个折射目标造成伤害 + 渲染定向电弧
+                        for (var fk:Number = 0; fk < fLen; fk++) {
+                            var fh:Object = forkHits[fk];
+                            var fhTarget:MovieClip = fh.target;
 
-                            for (var su:Number = slo; su < unitLen && unitLeftKeys[su] <= subRight; su++) {
-                                var subTarget:MovieClip = unitMap[su];
+                            // 同步 命中对象
+                            bullet.hitTarget = fhTarget;
+                            bullet.命中对象 = fhTarget;
 
-                                // 不命中主射线已命中的目标
-                                if (subTarget == rayNearestTarget) continue;
+                            finalResult.overlapCenter.x = fh.centerX;
+                            finalResult.overlapCenter.y = fh.centerY;
+                            finalResult.overlapRatio = forkFalloff;
+                            finalResult.tEntry = -1; // 折射无 tEntry
 
-                                // Z 轴参照主命中目标（子射线从命中点出发，继承其 Z 位置）
-                                var szOff:Number = rayNearestTarget.Z轴坐标 - subTarget.Z轴坐标;
-                                if (szOff >= bulletZRange || szOff <= -bulletZRange) continue;
-
-                                if (subTarget.hp > 0 && subTarget.防止无限飞 != true) {
-                                    var subUnitArea:AABBCollider = subTarget.aabbCollider;
-                                    var subCR:Object = areaAABB.checkCollision(subUnitArea, szOff);
-
-                                    if (subCR.isColliding && subCR.tEntry < subNearestTEntry) {
-                                        subNearestTEntry = subCR.tEntry;
-                                        subNearestTarget = subTarget;
-                                        subNearestHitX = subCR.overlapCenter.x;
-                                        subNearestHitY = subCR.overlapCenter.y;
-                                    }
-                                }
-                            }
-
-                            if (subNearestTarget != null) {
-                                // 同步 命中对象，保证下游读取一致
-                                bullet.hitTarget = subNearestTarget;
-                                bullet.命中对象 = subNearestTarget;
-
-                                // 对子射线命中目标应用伤害
-                                finalResult.overlapCenter.x = subNearestHitX;
-                                finalResult.overlapCenter.y = subNearestHitY;
-                                finalResult.overlapRatio = forkFalloff;
-                                finalResult.tEntry = subNearestTEntry;
-
-                                dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
-                                    Dodge.calculateDodgeState(
-                                        subNearestTarget,
-                                        Dodge.calcDodgeResult(shooter, subNearestTarget, bullet.命中率),
-                                        bullet
-                                    );
-
-                                damageResult = Damage.calculateDamage(
-                                    bullet, shooter, subNearestTarget, forkFalloff, dodgeState
+                            dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
+                                Dodge.calculateDodgeState(
+                                    fhTarget,
+                                    Dodge.calcDodgeResult(shooter, fhTarget, bullet.命中率),
+                                    bullet
                                 );
 
-                                bullet.hitCount += damageResult.actualScatterUsed;
+                            damageResult = Damage.calculateDamage(
+                                bullet, shooter, fhTarget, forkFalloff, dodgeState
+                            );
 
-                                targetDispatcher = subNearestTarget.dispatcher;
-                                targetDispatcher.publish("hit", subNearestTarget, shooter, bullet, finalResult, damageResult);
+                            bullet.hitCount += damageResult.actualScatterUsed;
 
-                                if (subNearestTarget.hp <= 0) {
-                                    isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;
-                                    targetDispatcher.publish(isNormalKill ? "kill" : "death", subNearestTarget);
-                                    shooter.dispatcher.publish("enemyKilled", subNearestTarget, bullet);
-                                }
+                            targetDispatcher = fhTarget.dispatcher;
+                            targetDispatcher.publish("hit", fhTarget, shooter, bullet, finalResult, damageResult);
 
-                                damageResult.triggerDisplay(subNearestTarget._x, subNearestTarget._y);
-
-                                if (bullet.shouldGeneratePostHitEffect) {
-                                    FX.Effect(bullet.击中后子弹的效果, subNearestHitX, subNearestHitY, shooter._xscale);
-                                }
-                                // 子射线电弧：从主命中点到子命中点
-                                LightningRenderer.spawn(rayNearestHitX, rayNearestHitY, subNearestHitX, subNearestHitY, config);
-                            } else {
-                                // 子射线未命中：电弧打到子射线末端
-                                var subEndX:Number = rayNearestHitX + subDirX * forkLength;
-                                var subEndY:Number = rayNearestHitY + subDirY * forkLength;
-                                LightningRenderer.spawn(rayNearestHitX, rayNearestHitY, subEndX, subEndY, config);
+                            if (fhTarget.hp <= 0) {
+                                isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;
+                                targetDispatcher.publish(isNormalKill ? "kill" : "death", fhTarget);
+                                shooter.dispatcher.publish("enemyKilled", fhTarget, bullet);
                             }
+
+                            damageResult.triggerDisplay(fhTarget._x, fhTarget._y);
+
+                            if (bullet.shouldGeneratePostHitEffect) {
+                                FX.Effect(bullet.击中后子弹的效果, fh.centerX, fh.centerY, shooter._xscale);
+                            }
+                            // 折射电弧：从主命中点定向射向折射目标
+                            LightningRenderer.spawn(rayNearestHitX, rayNearestHitY, fh.centerX, fh.centerY, config);
                         }
                     }
                     // single 模式无额外处理

@@ -24,7 +24,7 @@ import org.flashNight.sara.util.*;
  * • single  - 命中最近单目标（默认行为）
  * • pierce  - 穿透射线，命中路径上所有目标，按 tEntry 距离排序
  * • chain   - 连锁弹跳，命中后从命中点搜索附近下一目标继续连锁
- * • fork    - 分裂射线，命中后从命中点分裂出多条子射线
+ * • fork    - 光棱折射，命中后从命中点搜索附近目标定向折射
  *
  * 【pierceLimit 设计决策】
  * 所有模式的目标数量统一由 bullet.pierceLimit（<attribute> 层）控制：
@@ -32,7 +32,7 @@ import org.flashNight.sara.util.*;
  *   bullet.pierceLimit = N →
  *     pierce: 沿路径命中 N 个目标
  *     chain:  主命中 + (N-1) 次弹跳
- *     fork:   主命中 + (N-1) 条子射线
+ *     fork:   主命中 + (N-1) 条折射光束（搜索半径内最近的 N-1 个目标）
  *
  * 与普通子弹的 pierceLimit 不冲突：射线子弹不进入主碰撞循环，
  * 在 processRayBullets 的 FLAG_RAY 分支中独立处理。

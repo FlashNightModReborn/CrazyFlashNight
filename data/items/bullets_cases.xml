@@ -540,8 +540,29 @@
             <FLAG_GRENADE>true</FLAG_GRENADE>
         </attribute>
     </bullet>
+    <!-- ========== 磁暴科技 (Tesla) ========== -->
+    <!-- 基础版: single模式, 青色电弧, 用于贴图调教 -->
     <bullet>
         <name>磁暴射线</name>
+        <attribute>
+            <hitMark>电击弹坑</hitMark>
+            <rayConfig>
+                <rayLength>900</rayLength>
+                <primaryColor>0x00FFFF</primaryColor>
+                <secondaryColor>0xFFFFFF</secondaryColor>
+                <thickness>2</thickness>
+                <branchCount>4</branchCount>
+                <branchProbability>0.5</branchProbability>
+                <segmentLength>25</segmentLength>
+                <jitter>18</jitter>
+                <visualDuration>5</visualDuration>
+                <fadeOutDuration>3</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+    <!-- 强化版: chain连锁模式, 主命中+2次弹跳, 每次弹跳伤害×0.7 -->
+    <bullet>
+        <name>磁暴射线-强化</name>
         <attribute>
             <hitMark>电击弹坑</hitMark>
             <pierceLimit>3</pierceLimit>
@@ -562,21 +583,90 @@
             </rayConfig>
         </attribute>
     </bullet>
+
+    <!-- ========== 光棱科技 (Prism / Red Alert 2) ========== -->
+    <!-- 基础版: single模式, 金黄色光束, 用于贴图调教 -->
     <bullet>
-        <name>磁暴射线-强化</name>
+        <name>光棱射线</name>
         <attribute>
-            <hitMark>电击弹坑</hitMark>
+            <hitMark>灼烧弹坑</hitMark>
             <rayConfig>
-                <rayLength>1200</rayLength>
-                <primaryColor>0xFF00FF</primaryColor>
-                <secondaryColor>0xFFFFFF</secondaryColor>
-                <thickness>5</thickness>
-                <branchCount>6</branchCount>
-                <branchProbability>0.6</branchProbability>
-                <segmentLength>20</segmentLength>
-                <jitter>25</jitter>
-                <visualDuration>45</visualDuration>
-                <fadeOutDuration>20</fadeOutDuration>
+                <rayLength>800</rayLength>
+                <primaryColor>0xFFDD00</primaryColor>
+                <secondaryColor>0xFFFFAA</secondaryColor>
+                <thickness>3</thickness>
+                <branchCount>2</branchCount>
+                <branchProbability>0.3</branchProbability>
+                <segmentLength>40</segmentLength>
+                <jitter>8</jitter>
+                <visualDuration>4</visualDuration>
+                <fadeOutDuration>2</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+    <!-- 强化版: fork光棱折射, 主命中+4条折射光束, 搜索半径250, 每条子射线伤害×0.6 -->
+    <bullet>
+        <name>光棱射线-强化</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <pierceLimit>30</pierceLimit>
+            <rayConfig>
+                <rayLength>900</rayLength>
+                <rayMode>fork</rayMode>
+                <damageFalloff>0.6</damageFalloff>
+                <chainRadius>900</chainRadius>
+                <primaryColor>0xFFDD00</primaryColor>
+                <secondaryColor>0xFFFFAA</secondaryColor>
+                <thickness>3</thickness>
+                <branchCount>2</branchCount>
+                <branchProbability>0.3</branchProbability>
+                <segmentLength>40</segmentLength>
+                <jitter>8</jitter>
+                <visualDuration>4</visualDuration>
+                <fadeOutDuration>2</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+
+    <!-- ========== 波能科技 (Wave-Force / Red Alert 3) ========== -->
+    <!-- 基础版: single模式, 红橙色高能光束, 用于贴图调教 -->
+    <bullet>
+        <name>波能射线</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <rayConfig>
+                <rayLength>1000</rayLength>
+                <primaryColor>0xFF4400</primaryColor>
+                <secondaryColor>0xFF8800</secondaryColor>
+                <thickness>4</thickness>
+                <branchCount>1</branchCount>
+                <branchProbability>0.2</branchProbability>
+                <segmentLength>50</segmentLength>
+                <jitter>5</jitter>
+                <visualDuration>6</visualDuration>
+                <fadeOutDuration>4</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+    <!-- 强化版: pierce穿透模式, 沿路径命中最多5个目标, 每穿透一个伤害×0.8 -->
+    <bullet>
+        <name>波能射线-强化</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <pierceLimit>5</pierceLimit>
+            <rayConfig>
+                <rayLength>1000</rayLength>
+                <rayMode>pierce</rayMode>
+                <damageFalloff>0.8</damageFalloff>
+                <primaryColor>0xFF4400</primaryColor>
+                <secondaryColor>0xFF8800</secondaryColor>
+                <thickness>4</thickness>
+                <branchCount>1</branchCount>
+                <branchProbability>0.2</branchProbability>
+                <segmentLength>50</segmentLength>
+                <jitter>5</jitter>
+                <visualDuration>6</visualDuration>
+                <fadeOutDuration>4</fadeOutDuration>
             </rayConfig>
         </attribute>
     </bullet>

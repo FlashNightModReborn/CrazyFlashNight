@@ -4,7 +4,7 @@
  * 封装射线子弹的所有可配置参数，包括：
  * • 射线物理参数（长度）
  * • 射线模式与多目标控制（模式、目标数、衰减）
- * • 模式特有参数（连锁搜索半径、分裂角度等）
+ * • 模式特有参数（连锁/折射搜索半径等）
  * • 电弧视觉参数（颜色、粗细、分支、抖动）
  * • 时间参数（持续时间、淡出时间）
  *
@@ -17,7 +17,7 @@
  * • "single" - 默认，命中最近单目标（现有行为，无需配置 rayMode）
  * • "chain"  - 连锁弹跳，命中后从命中点搜索附近下一目标继续连锁
  * • "pierce" - 穿透射线，一条射线命中路径上所有目标，按 tEntry 距离排序
- * • "fork"   - 分裂射线，命中后从命中点分裂出多条子射线
+ * • "fork"   - 光棱折射，命中后从命中点搜索附近目标定向折射（复用 chainRadius）
  *
  * 多目标控制设计：
  * 目标数量由 bullet.pierceLimit（<attribute> 层）控制，与普通子弹共用同一字段。
@@ -28,7 +28,7 @@
  *   bullet.pierceLimit = N →
  *     pierce: 沿路径命中 N 个目标
  *     chain:  主命中 + (N-1) 次弹跳
- *     fork:   主命中 + (N-1) 条子射线
+ *     fork:   主命中 + (N-1) 条折射光束（搜索半径内最近的 N-1 个目标）
  */
 class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
 
@@ -40,7 +40,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     public static var MODE_CHAIN:String = "chain";
     /** 穿透模式：射线贯穿路径上所有目标 */
     public static var MODE_PIERCE:String = "pierce";
-    /** 分裂模式：命中后分裂出子射线 */
+    /** 光棱折射模式：命中后从命中点搜索附近目标定向折射 */
     public static var MODE_FORK:String = "fork";
 
     // ========== 射线物理参数 ==========
@@ -72,9 +72,13 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      */
     public var damageFalloff:Number;
 
-    // ========== 连锁模式特有参数 ==========
+    // ========== 连锁/折射 共用参数 ==========
 
-    /** 下一目标搜索半径（像素） */
+    /**
+     * 目标搜索半径（像素）
+     * chain 模式：每次弹跳从当前命中点搜索下一目标的半径
+     * fork 模式：从主命中点搜索折射目标的半径
+     */
     public var chainRadius:Number;
 
     /**
@@ -83,14 +87,6 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      * 未来如需逐帧展示连锁动画，可在 LightningRenderer 中读取此值。
      */
     public var chainDelay:Number;
-
-    // ========== 分裂模式特有参数 ==========
-
-    /** 分裂扩散角度（度，子射线在此角度范围内均匀分布） */
-    public var forkAngle:Number;
-
-    /** 子射线长度（像素，默认为主射线长度的一半） */
-    public var forkLength:Number;
 
     // ========== 电弧视觉参数 ==========
 
@@ -140,13 +136,9 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     // 多目标伤害衰减默认值
     private static var DEFAULT_DAMAGE_FALLOFF:Number = 1.0;
 
-    // 连锁特有默认值
+    // 连锁/折射共用默认值
     private static var DEFAULT_CHAIN_RADIUS:Number = 200;
     private static var DEFAULT_CHAIN_DELAY:Number = 0;
-
-    // 分裂特有默认值
-    private static var DEFAULT_FORK_ANGLE:Number = 30;
-    private static var DEFAULT_FORK_LENGTH:Number = -1; // -1 表示使用 rayLength * 0.5
 
     /**
      * 构造函数
@@ -169,13 +161,9 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         // 伤害衰减（damageFalloff=1.0 → 无衰减）
         damageFalloff = DEFAULT_DAMAGE_FALLOFF;
 
-        // 连锁特有
+        // 连锁/折射共用
         chainRadius = DEFAULT_CHAIN_RADIUS;
         chainDelay = DEFAULT_CHAIN_DELAY;
-
-        // 分裂特有
-        forkAngle = DEFAULT_FORK_ANGLE;
-        forkLength = DEFAULT_FORK_LENGTH;
     }
 
     /**
@@ -190,8 +178,6 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      *     <rayMode>chain</rayMode>
      *     <damageFalloff>0.7</damageFalloff>
      *     <chainRadius>200</chainRadius>
-     *     <forkAngle>30</forkAngle>
-     *     <forkLength>400</forkLength>
      *     <primaryColor>0x00FFFF</primaryColor>
      *     <secondaryColor>0xFFFFFF</secondaryColor>
      *     <thickness>3</thickness>
@@ -231,22 +217,13 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             config.damageFalloff = Number(node.damageFalloff);
         }
 
-        // ====== 连锁模式特有参数 ======
+        // ====== 连锁/折射共用参数 ======
 
         if (node.chainRadius != undefined) {
             config.chainRadius = Number(node.chainRadius);
         }
         if (node.chainDelay != undefined) {
             config.chainDelay = Number(node.chainDelay);
-        }
-
-        // ====== 分裂模式特有参数 ======
-
-        if (node.forkAngle != undefined) {
-            config.forkAngle = Number(node.forkAngle);
-        }
-        if (node.forkLength != undefined) {
-            config.forkLength = Number(node.forkLength);
         }
 
         // ====== 电弧视觉参数 ======
@@ -280,13 +257,6 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         }
         if (node.fadeOutDuration != undefined) {
             config.fadeOutDuration = Number(node.fadeOutDuration);
-        }
-
-        // ====== 后处理 ======
-
-        // forkLength=-1 表示使用 rayLength 的一半
-        if (config.forkLength < 0) {
-            config.forkLength = config.rayLength * 0.5;
         }
 
         return config;
@@ -334,11 +304,8 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
                " branchCount=" + branchCount +
                " visualDuration=" + visualDuration +
                " fadeOutDuration=" + fadeOutDuration;
-        if (rayMode == "chain") {
+        if (rayMode == "chain" || rayMode == "fork") {
             s += " chainRadius=" + chainRadius;
-        } else if (rayMode == "fork") {
-            s += " forkAngle=" + forkAngle +
-                 " forkLength=" + forkLength;
         }
         return s + "]";
     }
