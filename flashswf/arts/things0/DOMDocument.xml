@@ -10,7 +10,7 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
           <DOMFolderItem name="个人编辑单位" itemID="695d3442-00003dd6"/>
           <DOMFolderItem name="个人编辑单位/浮士德的一堆相关或是不相关" itemID="695d3442-00003dd7"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
@@ -34,11 +34,11 @@
           <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A" itemID="696462ce-00000acc" isExpanded="true"/>
-          <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板" itemID="699de5c3-0000134b"/>
-          <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件" itemID="699de5c3-0000134c"/>
+          <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板" itemID="699e0c3e-00001e05"/>
+          <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件" itemID="699e0c3e-00001e06"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="69949a8d-0000357a"/>
-          <DOMFolderItem name="容器/兵器攻击容器/平A/属性标签标志元件" itemID="699de5c3-0000134f"/>
-          <DOMFolderItem name="容器/兵器攻击容器/平A/主角肢体素材" itemID="699de5c3-00001352"/>
+          <DOMFolderItem name="容器/兵器攻击容器/平A/属性标签标志元件" itemID="699e0c3e-00001e09"/>
+          <DOMFolderItem name="容器/兵器攻击容器/平A/主角肢体素材" itemID="699e0c3e-00001e0c"/>
           <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09" isExpanded="true"/>
           <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504" isExpanded="true"/>
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798" isExpanded="true"/>
@@ -694,7 +694,7 @@
           <Include href="sprite/Symbol 136.xml" loadImmediate="false" itemID="6577b699-000009b3" lastModified="1769694922"/>
           <Include href="sprite/Symbol 137.xml" loadImmediate="false" itemID="6577b699-000009b4" lastModified="1769694922"/>
           <Include href="sprite/Symbol 142.xml" loadImmediate="false" itemID="6577b699-000009b7" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 144.xml" loadImmediate="false" itemID="6577b699-000009b8" lastModified="1771870127"/>
+          <Include href="sprite/Symbol 144.xml" loadImmediate="false" itemID="6577b699-000009b8" lastModified="1771961318"/>
           <Include href="sprite/Symbol 154.xml" loadImmediate="false" itemID="6577b699-000009bb" lastModified="1702343951"/>
           <Include href="sprite/Symbol 156.xml" loadImmediate="false" itemID="6577b699-000009bc" lastModified="1702343951"/>
           <Include href="sprite/Symbol 158.xml" loadImmediate="false" itemID="6577b699-000009bd" lastModified="1702343951"/>
@@ -1099,8 +1099,8 @@
           <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1770063574"/>
           <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1769694923"/>
-          <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1769694922"/>
-          <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1771503334"/>
+          <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1771962004"/>
+          <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1771964970"/>
           <Include href="sprite/落地特效-闪光.xml" loadImmediate="false" itemID="663ba576-00000122" lastModified="1715185258"/>
           <Include href="sprite/木偶-主角-男.xml" itemID="668be718-0000065b" lastModified="1769694913"/>
           <Include href="sprite/男变装-基本脸型.xml" itemID="697b6508-00002817" lastModified="1729259751"/>
@@ -1267,7 +1267,8 @@
           <Include href="容器/兵器攻击容器/平A/！兵器攻击容器-棍棒1连招（屑鱼搓的）.xml" loadImmediate="false" itemID="6986462c-00000c0f" lastModified="1770407468"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-1连招.xml" itemID="6976bef2-00000a1e" lastModified="1771713597"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招.xml" itemID="69637c74-0000337c" lastModified="1771682960"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="697b6555-00003229" lastModified="1771956309"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="697b6555-00003229" lastModified="1770412910"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短柄1连招.xml" itemID="699e0c20-00001dff" lastModified="1771966499"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招.xml" itemID="698642fe-00000b06" lastModified="1771007301"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1770477886"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1770225044"/>
@@ -1316,7 +1317,7 @@
           <Include href="容器/技能容器/技能容器-日字冲拳.xml" itemID="694ac160-00004b65" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-闪现.xml" itemID="694ab994-00004272" lastModified="1770026609"/>
           <Include href="容器/技能容器/技能容器-上帝之杖.xml" itemID="69563522-00000949" lastModified="1769694923"/>
-          <Include href="容器/技能容器/技能容器-升龙拳.xml" itemID="69563508-00000946" lastModified="1769746408"/>
+          <Include href="容器/技能容器/技能容器-升龙拳.xml" itemID="69563508-00000946" lastModified="1771957810"/>
           <Include href="容器/技能容器/技能容器-升天斩.xml" itemID="695634eb-00000945" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-时间停止.xml" itemID="694a6a88-0000242f" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-兽王崩拳.xml" itemID="695634c8-00000944" lastModified="1769694923"/>
@@ -1335,16 +1336,16 @@
           <Include href="容器/技能容器/技能容器-重力井.xml" itemID="694a6898-0000224b" lastModified="1769769310"/>
           <Include href="容器/技能容器/技能容器-追猎射击.xml" itemID="694a31f1-00000882" lastModified="1769694923"/>
           <Include href="容器/技能容器/技能容器-组合拳.xml" itemID="694ac049-0000487b" lastModified="1769694923"/>
-          <Include href="容器/空手攻击容器/！空手攻击容器-起身回旋踢.xml" loadImmediate="false" itemID="699377ec-00000b28" lastModified="1771501826"/>
           <Include href="容器/空手攻击容器/空手攻击.xml" loadImmediate="false" itemID="6919dfac-00001066" lastModified="1771729412"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-波动拳.xml" itemID="6963b380-0000111d" lastModified="1771725833"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-后撤步.xml" itemID="6964d656-00002843" lastModified="1771725837"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-连环踢.xml" itemID="699a5324-00000a8e" lastModified="1771868801"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-能量喷泉.xml" itemID="6964d683-000028c1" lastModified="1771725654"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-波动拳.xml" itemID="6963b380-0000111d" lastModified="1771960383"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-后撤步.xml" itemID="6964d656-00002843" lastModified="1771960365"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-回旋踢.xml" itemID="699df8c4-00000bc2" lastModified="1771965027"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-连环踢.xml" itemID="699a5324-00000a8e" lastModified="1771962697"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-能量喷泉.xml" itemID="6964d683-000028c1" lastModified="1771961055"/>
           <Include href="容器/空手攻击容器/空手攻击容器-燃烧指节.xml" itemID="6964d6d2-0000293c" lastModified="1771725677"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" itemID="6964d583-0000279b" lastModified="1771683091"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-1连招.xml" itemID="696514e0-00002b88" lastModified="1771729444"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-单臂巨拳1连招.xml" itemID="6967d527-00000a61" lastModified="1771726596"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" itemID="6964d583-0000279b" lastModified="1771960474"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-1连招.xml" itemID="696514e0-00002b88" lastModified="1771867888"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-单臂巨拳1连招.xml" itemID="6967d527-00000a61" lastModified="1771957275"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" itemID="6964ce51-00002614" lastModified="1771727064"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-巨拳1连招.xml" itemID="6964c727-0000249e" lastModified="1771724391"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1771724413"/>
@@ -1408,7 +1409,7 @@
           <Include href="容器/战技容器/战技容器-突刺.xml" itemID="6967ddae-00000ce5" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-猩红凶斩.xml" itemID="6958efa4-0000307e" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-凶斩.xml" itemID="6959e9c2-00000938" lastModified="1769694922"/>
-          <Include href="容器/战技容器/战技容器-旋风腿.xml" itemID="6959da65-000011b7" lastModified="1771511466"/>
+          <Include href="容器/战技容器/战技容器-旋风腿.xml" itemID="6959da65-000011b7" lastModified="1771781258"/>
           <Include href="容器/战技容器/战技容器-一文字落雷.xml" itemID="695e518e-0000599b" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-战技小跳.xml" itemID="695a6637-00001877" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-掌炮.xml" itemID="6959110f-00000989" lastModified="1769694922"/>
@@ -2662,6 +2663,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4128583" publishTime="1771966331"/>
+          <PublishItem publishSize="4098914" publishTime="1771965075"/>
+          <PublishItem publishSize="4098985" publishTime="1771963614"/>
+          <PublishItem publishSize="4098948" publishTime="1771963532"/>
+          <PublishItem publishSize="4099041" publishTime="1771963385"/>
+          <PublishItem publishSize="4099078" publishTime="1771962741"/>
+          <PublishItem publishSize="4099069" publishTime="1771962421"/>
           <PublishItem publishSize="4089423" publishTime="1771867993"/>
           <PublishItem publishSize="4089445" publishTime="1771867203"/>
           <PublishItem publishSize="4114797" publishTime="1771782025"/>
@@ -2675,12 +2683,5 @@
           <PublishItem publishSize="4020517" publishTime="1771612832"/>
           <PublishItem publishSize="4020510" publishTime="1771612594"/>
           <PublishItem publishSize="4020518" publishTime="1771612385"/>
-          <PublishItem publishSize="4020431" publishTime="1771510416"/>
-          <PublishItem publishSize="4020260" publishTime="1771508410"/>
-          <PublishItem publishSize="4020251" publishTime="1771507620"/>
-          <PublishItem publishSize="4020157" publishTime="1771503726"/>
-          <PublishItem publishSize="4020140" publishTime="1771502338"/>
-          <PublishItem publishSize="4020318" publishTime="1771141223"/>
-          <PublishItem publishSize="4021155" publishTime="1771006156"/>
      </publishHistory>
 </DOMDocument>

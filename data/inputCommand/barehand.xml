@@ -7,7 +7,8 @@
     - 后撤步: Shift + ← (Shift + 后)，要求拳脚攻击 Lv1
     - 燃烧指节: → + B (前B)，要求升龙拳 Lv1
     - 能量喷泉: ↓ + B (下B)，要求裂地拳 Lv1 + 10% MP
-    - 连环踢： ↑ + A （上A），要求拳脚攻击 LV1
+    - 连环踢： ↑ + A （上A），要求拳脚攻击 LV2
+    - 回旋踢： ↓ + A （下A），要求裂地拳 LV1
 -->
 <CommandSet id="barehand" label="空手">
     <Commands>
@@ -91,7 +92,7 @@
         </Command>
     </Commands>
 
-        <!-- 连环踢: 上 + A，要求拳脚攻击 Lv1 -->
+        <!-- 连环踢: 上 + A，要求拳脚攻击 Lv2 -->
     <Command name="连环踢" action="连环踢" priority="8">
             <Sequence>
                 <Event>UP</Event>
@@ -107,6 +108,22 @@
         </Command>
     </Commands>
 
+        <!-- 回旋踢: 下 + A，要求裂地拳 Lv1 -->
+    <Command name="连环踢" action="连环踢" priority="8">
+            <Sequence>
+                <Event>DOWN</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>空手</Tag>
+                <Tag>近战</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="裂地拳" minLevel="1"/>
+            </Requirements>
+        </Command>
+    </Commands>
+
     <Derivations>
         <Derive from="波动拳">
             <To>诛杀步</To>
@@ -114,6 +131,7 @@
             <To>燃烧指节</To>
             <To>能量喷泉</To>
             <To>连环踢</To>
+            <To>回旋踢</To>
         </Derive>
         <Derive from="诛杀步">
             <To>波动拳</To>
@@ -121,6 +139,7 @@
             <To>燃烧指节</To>
             <To>能量喷泉</To>
             <To>连环踢</To>
+            <To>回旋踢</To>
         </Derive>
         <Derive from="后撤步">
             <To>波动拳</To>
@@ -128,6 +147,7 @@
             <To>燃烧指节</To>
             <To>能量喷泉</To>
             <To>连环踢</To>
+            <To>回旋踢</To>
         </Derive>
         <Derive from="燃烧指节">
             <To>波动拳</To>
@@ -135,6 +155,7 @@
             <To>后撤步</To>
             <To>能量喷泉</To>
             <To>连环踢</To>
+            <To>回旋踢</To>
         </Derive>
         <Derive from="能量喷泉">
             <To>波动拳</To>
@@ -142,6 +163,7 @@
             <To>后撤步</To>
             <To>燃烧指节</To>
             <To>连环踢</To>
+            <To>回旋踢</To>
         </Derive>
         <Derive from="连环踢">
             <To>波动拳</To>
@@ -149,6 +171,7 @@
             <To>后撤步</To>
             <To>燃烧指节</To>
             <To>能量喷泉</To>
+            <To>回旋踢</To>
         </Derive>
     </Derivations>
 
@@ -160,6 +183,7 @@
             <Member>燃烧指节</Member>
             <Member>能量喷泉</Member>
             <Member>连环踢</Member>
+            <Member>回旋踢</Member>
         </Group>
         <Group name="移动类">
             <Member>诛杀步</Member>
@@ -170,6 +194,7 @@
             <Member>燃烧指节</Member>
             <Member>能量喷泉</Member>
             <Member>连环踢</Member>
+            <Member>回旋踢</Member>
         </Group>
     </Groups>
 </CommandSet>

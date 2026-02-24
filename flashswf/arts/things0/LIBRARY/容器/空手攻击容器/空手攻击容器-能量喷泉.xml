@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-能量喷泉" itemID="6964d683-000028c1" linkageExportForAS="true" linkageIdentifier="空手攻击容器-能量喷泉" lastModified="1771725654">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-能量喷泉" itemID="6964d683-000028c1" linkageExportForAS="true" linkageIdentifier="空手攻击容器-能量喷泉" lastModified="1771961055">
   <timeline>
     <DOMTimeline name="空手攻击容器-能量喷泉" currentFrame="10">
       <layers>
@@ -25,7 +25,8 @@
 后撤步可派生搓招 = _root.技能函数.后撤步可派生搓招;
 波动拳可派生搓招 = _root.技能函数.波动拳可派生搓招;
 能量喷泉可派生搓招 = _root.技能函数.能量喷泉可派生搓招;
-燃烧指节可派生搓招 = _root.技能函数.燃烧指节可派生搓招;]]></script>
+燃烧指节可派生搓招 = _root.技能函数.燃烧指节可派生搓招;
+连环踢可派生搓招 = _root.技能函数.连环踢可派生搓招;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -454,7 +455,7 @@
             </DOMFrame>
             <DOMFrame index="8" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/03.赤橙色系/ROUND WAVE/ROUND WAVE素材" selected="true" blendMode="hardlight" centerPoint3DX="294.6" centerPoint3DY="234.95">
+                <DOMSymbolInstance libraryItemName="特效与子弹/03.赤橙色系/ROUND WAVE/ROUND WAVE素材" blendMode="hardlight" centerPoint3DX="294.6" centerPoint3DY="234.95">
                   <matrix>
                     <Matrix a="3.64056396484375" d="3.7076416015625" tx="275.3" ty="236.45"/>
                   </matrix>

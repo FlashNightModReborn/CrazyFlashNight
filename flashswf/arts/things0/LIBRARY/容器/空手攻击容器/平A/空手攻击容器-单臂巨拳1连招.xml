@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-单臂巨拳1连招" itemID="6967d527-00000a61" linkageExportForAS="true" linkageIdentifier="空手攻击容器-单臂巨拳1连招" lastModified="1771726596">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-单臂巨拳1连招" itemID="6967d527-00000a61" linkageExportForAS="true" linkageIdentifier="空手攻击容器-单臂巨拳1连招" lastModified="1771957275">
   <timeline>
-    <DOMTimeline name="空手攻击容器-单臂巨拳1连招" currentFrame="90">
+    <DOMTimeline name="空手攻击容器-单臂巨拳1连招" currentFrame="21">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -630,7 +630,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
             </DOMFrame>
             <DOMFrame index="75" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="227.25" centerPoint3DY="25.2">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="227.25" centerPoint3DY="25.2">
                   <matrix>
                     <Matrix a="6.5196533203125" d="2.28054809570313" tx="230.55" ty="115.95"/>
                   </matrix>
@@ -820,7 +820,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -1583,7 +1583,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 18" color="#9933CC" locked="true">
+        <DOMLayer name="图层 18" color="#9933CC" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -22057,7 +22057,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
             </DOMFrame>
             <DOMFrame index="95" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="29.5" centerPoint3DY="207.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="29.5" centerPoint3DY="207.55">
                   <matrix>
                     <Matrix a="0.738555908203125" b="-0.642135620117188" c="-0.642135620117188" d="-0.738555908203125" tx="-44.15" ty="79.4"/>
                   </matrix>
@@ -22068,7 +22068,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="159.8" centerPoint3DY="219.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="159.8" centerPoint3DY="219.1">
                   <matrix>
                     <Matrix a="0.086456298828125" b="0.9779052734375" c="-0.9779052734375" d="0.086456298828125" tx="257.95" ty="41.8"/>
                   </matrix>
@@ -22079,7 +22079,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="138.15" centerPoint3DY="127.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="138.15" centerPoint3DY="127.3">
                   <matrix>
                     <Matrix a="-0.820098876953125" b="0.02423095703125" c="0.02423095703125" d="0.820098876953125" tx="120.05" ty="60.65"/>
                   </matrix>
@@ -22090,7 +22090,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="153.85" centerPoint3DY="101.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="153.85" centerPoint3DY="101.25">
                   <matrix>
                     <Matrix a="-0.790267944335938" b="0.10064697265625" c="0.10064697265625" d="0.790267944335938" tx="119.5" ty="144.15"/>
                   </matrix>
@@ -22101,7 +22101,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="89.4" centerPoint3DY="221.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="89.4" centerPoint3DY="221.35">
                   <matrix>
                     <Matrix a="0.297149658203125" b="0.75445556640625" c="-0.75445556640625" d="0.297149658203125" tx="124.6" ty="218.45"/>
                   </matrix>
@@ -22112,7 +22112,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="84" centerPoint3DY="164.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="84" centerPoint3DY="164.15">
                   <matrix>
                     <Matrix a="-0.3060302734375" b="0.95086669921875" c="-0.95086669921875" d="-0.3060302734375" tx="35.5" ty="118.05"/>
                   </matrix>
@@ -22123,7 +22123,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="-11.85" centerPoint3DY="220.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-11.85" centerPoint3DY="220.95">
                   <matrix>
                     <Matrix a="0.831268310546875" b="0.174484252929688" c="-0.174484252929688" d="0.831268310546875" tx="21.55" ty="144.85"/>
                   </matrix>
@@ -22134,7 +22134,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-134.2" centerPoint3DY="258.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-134.2" centerPoint3DY="258.3">
                   <matrix>
                     <Matrix a="-0.32305908203125" b="0.7451171875" c="-0.7451171875" d="-0.32305908203125" tx="-90" ty="235.55"/>
                   </matrix>
@@ -22145,7 +22145,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-69.9" centerPoint3DY="265.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-69.9" centerPoint3DY="265.15">
                   <matrix>
                     <Matrix a="-0.0865325927734375" b="0.8232421875" c="-0.8232421875" d="-0.0865325927734375" tx="3.65" ty="246.45"/>
                   </matrix>
@@ -22156,7 +22156,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="8.85" centerPoint3DY="220.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="8.85" centerPoint3DY="220.75">
                   <matrix>
                     <Matrix a="0.547119140625" b="0.651580810546875" c="-0.651580810546875" d="0.547119140625" tx="32.8" ty="100.55"/>
                   </matrix>
@@ -22167,7 +22167,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="165.3" centerPoint3DY="54.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="165.3" centerPoint3DY="54.9">
                   <matrix>
                     <Matrix a="0.867218017578125" b="0.383712768554688" c="-0.383712768554688" d="0.867218017578125" tx="137" ty="13.95"/>
                   </matrix>
@@ -22178,7 +22178,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="33.8" centerPoint3DY="186.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="33.8" centerPoint3DY="186.6">
                   <matrix>
                     <Matrix a="0.79559326171875" b="0.31268310546875" c="-0.31268310546875" d="0.79559326171875" tx="1.1" ty="138.5"/>
                   </matrix>
@@ -22189,7 +22189,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="24.85" centerPoint3DY="200.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="24.85" centerPoint3DY="200.95">
                   <matrix>
                     <Matrix a="0.847412109375" b="-0.0731964111328125" c="0.0731964111328125" d="0.847412109375" tx="-27.2" ty="135.15"/>
                   </matrix>
@@ -22200,7 +22200,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-137.4" centerPoint3DY="270.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-137.4" centerPoint3DY="270.6">
                   <matrix>
                     <Matrix a="-0.0615692138671875" b="0.813583374023438" c="-0.813583374023438" d="-0.0615692138671875" tx="-105.9" ty="231.75"/>
                   </matrix>
@@ -22211,7 +22211,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-70.9" centerPoint3DY="285.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-70.9" centerPoint3DY="285.9">
                   <matrix>
                     <Matrix a="-0.0100555419921875" b="0.82940673828125" c="-0.82940673828125" d="-0.0100555419921875" tx="-12.5" ty="237.15"/>
                   </matrix>
@@ -22222,7 +22222,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="24.7" centerPoint3DY="116.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="24.7" centerPoint3DY="116.9">
                   <matrix>
                     <Matrix a="-0.3673095703125" b="0.9287109375" c="-0.9287109375" d="-0.3673095703125" tx="-23.8" ty="70.8"/>
                   </matrix>
@@ -22233,7 +22233,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="15.8" centerPoint3DY="24.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="15.8" centerPoint3DY="24.75">
                   <matrix>
                     <Matrix a="0.20916748046875" b="0.7967529296875" c="-0.7967529296875" d="0.20916748046875" tx="84.85" ty="13.9"/>
                   </matrix>
@@ -22244,7 +22244,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-49" centerPoint3DY="19.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-49" centerPoint3DY="19.05">
                   <matrix>
                     <Matrix a="0.634567260742188" b="-0.483505249023438" c="0.483505249023438" d="0.634567260742188" tx="4.65" ty="34.8"/>
                   </matrix>
@@ -22255,7 +22255,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="11.5" centerPoint3DY="102.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="11.5" centerPoint3DY="102.7">
                   <matrix>
                     <Matrix a="0.534271240234375" b="0.612228393554688" c="-0.612228393554688" d="0.534271240234375" tx="44.3" ty="90.05"/>
                   </matrix>

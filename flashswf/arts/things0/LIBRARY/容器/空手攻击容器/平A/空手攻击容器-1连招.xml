@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-1连招" itemID="696514e0-00002b88" linkageExportForAS="true" linkageIdentifier="空手攻击容器-1连招" lastModified="1771729444">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-1连招" itemID="696514e0-00002b88" linkageExportForAS="true" linkageIdentifier="空手攻击容器-1连招" lastModified="1771867888">
   <timeline>
-    <DOMTimeline name="空手攻击容器-1连招" currentFrame="1">
+    <DOMTimeline name="空手攻击容器-1连招" currentFrame="32">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -349,7 +349,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -489,7 +489,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="32" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="104.5" centerPoint3DY="24.1">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="104.5" centerPoint3DY="24.1">
                   <matrix>
                     <Matrix a="2.07952880859375" d="2.65098571777344" tx="105.35" ty="22.85"/>
                   </matrix>
@@ -557,7 +557,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="48" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="192" centerPoint3DY="-7.15">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="192" centerPoint3DY="-7.15">
                   <matrix>
                     <Matrix a="1.80216979980469" d="1.35382080078125" tx="192.6" ty="-7.8"/>
                   </matrix>
@@ -625,7 +625,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="63" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="185.55" centerPoint3DY="-21.5">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="185.55" centerPoint3DY="-21.5">
                   <matrix>
                     <Matrix a="1.998779296875" d="3.04562377929688" tx="186.3" ty="-23"/>
                   </matrix>
@@ -690,7 +690,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
