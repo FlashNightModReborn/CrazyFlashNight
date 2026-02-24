@@ -131,6 +131,25 @@ class org.flashNight.arki.render.LightningRenderer {
     private static var _initialized:Boolean = false;
 
     // ════════════════════════════════════════════════════════════════════════
+    // 对象池（减少 renderArc 每帧临时对象分配的 GC 压力）
+    // ════════════════════════════════════════════════════════════════════════
+
+    /** 路径点对象池 {x, y, t} */
+    private static var _ptPool:Array = [];
+    /** 路径点池当前使用量 */
+    private static var _ptIdx:Number = 0;
+
+    /** 路径数组池 (Array[]) */
+    private static var _arrPool:Array = [];
+    /** 路径数组池当前使用量 */
+    private static var _arrIdx:Number = 0;
+
+    /** 路径描述对象池 {path, isMain, isFork} */
+    private static var _pdPool:Array = [];
+    /** 路径描述池当前使用量 */
+    private static var _pdIdx:Number = 0;
+
+    // ════════════════════════════════════════════════════════════════════════
     // 初始化
     // ════════════════════════════════════════════════════════════════════════
 
@@ -274,6 +293,59 @@ class org.flashNight.arki.render.LightningRenderer {
     }
 
     // ════════════════════════════════════════════════════════════════════════
+    // 对象池操作（内联级轻量方法）
+    // ════════════════════════════════════════════════════════════════════════
+
+    /** 重置所有池的使用计数（每次 renderArc 调用前执行） */
+    private static function resetPools():Void {
+        _ptIdx = 0;
+        _arrIdx = 0;
+        _pdIdx = 0;
+    }
+
+    /** 从池中获取或创建路径点对象 */
+    private static function pt(x:Number, y:Number, t:Number):Object {
+        var p:Object;
+        if (_ptIdx < _ptPool.length) {
+            p = _ptPool[_ptIdx];
+            p.x = x; p.y = y; p.t = t;
+        } else {
+            p = {x: x, y: y, t: t};
+            _ptPool[_ptIdx] = p;
+        }
+        _ptIdx++;
+        return p;
+    }
+
+    /** 从池中获取或创建干净数组 */
+    private static function poolArr():Array {
+        var a:Array;
+        if (_arrIdx < _arrPool.length) {
+            a = _arrPool[_arrIdx];
+            a.length = 0;
+        } else {
+            a = [];
+            _arrPool[_arrIdx] = a;
+        }
+        _arrIdx++;
+        return a;
+    }
+
+    /** 从池中获取或创建路径描述对象 */
+    private static function pd(path:Array, isMain:Boolean, isFork:Boolean):Object {
+        var d:Object;
+        if (_pdIdx < _pdPool.length) {
+            d = _pdPool[_pdIdx];
+            d.path = path; d.isMain = isMain; d.isFork = isFork;
+        } else {
+            d = {path: path, isMain: isMain, isFork: isFork};
+            _pdPool[_pdIdx] = d;
+        }
+        _pdIdx++;
+        return d;
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
     // 渲染核心：纺锤约束算法 (Spindle Containment Algorithm)
     // ════════════════════════════════════════════════════════════════════════
 
@@ -298,6 +370,9 @@ class org.flashNight.arki.render.LightningRenderer {
         var mc:MovieClip = arc.mc;
         mc.clear();
 
+        // 重置对象池（本次 renderArc 的所有临时对象从池中分配）
+        resetPools();
+
         // 解析分支配置
         var strands:Number = isNaN(arc.branchCount) ? 4 : Math.max(1, arc.branchCount);
         var prob:Number = isNaN(arc.branchProbability) ? 0.5 : arc.branchProbability;
@@ -308,9 +383,9 @@ class org.flashNight.arki.render.LightningRenderer {
         var dist:Number = Math.sqrt(dx * dx + dy * dy);
         if (dist == 0) return;
 
-        // 路径收集器：先生成所有路径，再按图层统一绘制
-        var pathsToDraw:Array = [];
-        var mainPaths:Array = [];
+        // 路径收集器：从池中获取，避免每帧 new Array
+        var pathsToDraw:Array = poolArr();
+        var mainPaths:Array = poolArr();
 
         // ─────────────────────────────────────────────────────────────
         // 阶段 1：生成主干电弧（贯穿 t=0.0 → t=1.0 的全长路径）
@@ -321,7 +396,7 @@ class org.flashNight.arki.render.LightningRenderer {
             var isMain:Boolean = (i == 0);
             // 第一条主干使用标准抖动，第二条增加 30% 抖动以产生层次感
             var mainPath:Array = generateSpindlePath(arc, 0.0, 1.0, isMain ? 1.0 : 1.3, null);
-            pathsToDraw.push({path: mainPath, isMain: isMain, isFork: false});
+            pathsToDraw.push(pd(mainPath, isMain, false));
             mainPaths.push(mainPath);
         }
 
@@ -348,7 +423,7 @@ class org.flashNight.arki.render.LightningRenderer {
                 // 生成分叉路径（抖动倍率 1.5，更狂野的视觉）
                 var forkPath:Array = generateSpindlePath(arc, startNode.t, endT, 1.5, startNode);
                 if (forkPath.length > 1) {
-                    pathsToDraw.push({path: forkPath, isMain: false, isFork: true});
+                    pathsToDraw.push(pd(forkPath, false, true));
                 }
             }
         }
@@ -418,13 +493,13 @@ class org.flashNight.arki.render.LightningRenderer {
         var perpX:Number = -dy / totalDist;  // 垂直方向 X 分量
         var perpY:Number = dx / totalDist;   // 垂直方向 Y 分量
 
-        var points:Array = [];
+        var points:Array = poolArr();
 
         // 起始点：分叉从父节点无缝连接，主干从电弧起点开始
         if (startNode != null) {
-            points.push({x: startNode.x, y: startNode.y, t: startNode.t});
+            points.push(pt(startNode.x, startNode.y, startNode.t));
         } else {
-            points.push({x: arc.startX, y: arc.startY, t: 0.0});
+            points.push(pt(arc.startX, arc.startY, 0.0));
         }
 
         // 计算分段参数
@@ -473,11 +548,7 @@ class org.flashNight.arki.render.LightningRenderer {
                 offset = (Math.random() - 0.5) * 2 * arc.jitter * jitterMult * env;
             }
 
-            points.push({
-                x: baseX + perpX * offset,
-                y: baseY + perpY * offset,
-                t: globalT
-            });
+            points.push(pt(baseX + perpX * offset, baseY + perpY * offset, globalT));
         }
         return points;
     }

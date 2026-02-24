@@ -20,10 +20,20 @@ import org.flashNight.sara.util.*;
  * 3. 视觉独立 - 电弧视觉效果由 LightningRenderer 独立管理
  * 4. 命中最近 - 射线碰撞返回最近命中点
  *
+ * 【设计决策：穿透(pierce)机制不适用于射线子弹】
+ * 射线子弹走透明子弹(TransparentBullet)的碰撞路径以复用其性能优化，
+ * 但碰撞逻辑为"单帧扫描全部候选→只命中最近目标"。
+ * pierceLimit 属性在射线分支中被静默跳过，这是有意为之：
+ * - 物理语义：射线是瞬时能量释放，与穿透的"依次贯穿"语义不同
+ * - 性能优化：射线复用透明子弹的 preCheckTransparent 队列路径，
+ *   避免为射线单独维护一套队列管理逻辑
+ * - 如需"射线穿透多目标"效果，应在 BulletQueueProcessor 的
+ *   FLAG_RAY 分支中按距离排序后依次处理前 N 个目标，而非复用 pierceLimit
+ *
  * 调用链路：
  *   BulletFactory 检测 FLAG_RAY -> 选择 TeslaRayLifecycle
  *   -> bindLifecycle -> bindCollider (创建 RayCollider)
- *   -> bindFrameHandler (加入队列)
+ *   -> bindFrameHandler (加入队列，复用 preCheckTransparent 路径)
  *   -> BulletQueueProcessor 射线窄相分支 -> 碰撞检测
  *   -> LightningRenderer.spawn (视觉效果)
  */
@@ -88,8 +98,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TeslaRayLifecycle
      * @param target:MovieClip 要绑定的子弹对象
      */
     public function bindFrameHandler(target:MovieClip):Void {
-        // 直接加入碰撞检测队列（单帧检测）
-        BulletQueueProcessor.preCheckTransparent(target);
+        // 加入射线独立处理队列（不进入主碰撞循环）
+        BulletQueueProcessor.preCheckRay(target);
     }
 
     /**

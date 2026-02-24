@@ -61,12 +61,12 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static var DEFAULT_PRIMARY_COLOR:Number = 0x00FFFF;
     private static var DEFAULT_SECONDARY_COLOR:Number = 0xFFFFFF;
     private static var DEFAULT_THICKNESS:Number = 3;
-    private static var DEFAULT_BRANCH_COUNT:Number = 3;
-    private static var DEFAULT_BRANCH_PROBABILITY:Number = 0.4;
-    private static var DEFAULT_SEGMENT_LENGTH:Number = 25;
-    private static var DEFAULT_JITTER:Number = 15;
-    private static var DEFAULT_VISUAL_DURATION:Number = 120;
-    private static var DEFAULT_FADE_OUT_DURATION:Number = 30;
+    private static var DEFAULT_BRANCH_COUNT:Number = 4;
+    private static var DEFAULT_BRANCH_PROBABILITY:Number = 0.5;
+    private static var DEFAULT_SEGMENT_LENGTH:Number = 35;
+    private static var DEFAULT_JITTER:Number = 40;
+    private static var DEFAULT_VISUAL_DURATION:Number = 5;
+    private static var DEFAULT_FADE_OUT_DURATION:Number = 3;
 
     /**
      * 构造函数
