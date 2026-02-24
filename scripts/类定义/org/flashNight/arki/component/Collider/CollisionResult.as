@@ -10,6 +10,22 @@ class org.flashNight.arki.component.Collider.CollisionResult {
     public var overlapRatio:Number;       // 重叠比率（可选字段）
     public var additionalInfo:Object;     // 额外碰撞信息（可选字段）
 
+    /**
+     * 射线入射参数（Slab 算法输出）
+     *
+     * 表示射线与 AABB 的入射点在射线上的参数位置：
+     *   入射点 = origin + direction * tEntry
+     *
+     * 语义：
+     * - tEntry >= 0: 射线从 AABB 外部射入，值为入射距离
+     * - tEntry = 0: 射线起点在 AABB 内部
+     * - tEntry = -1: 未计算（非射线碰撞器或未命中）
+     *
+     * 仅由 RayCollider.checkCollision 设置，其他碰撞器不使用此字段。
+     * 用于穿透射线(pierce)模式的命中距离排序。
+     */
+    public var tEntry:Number;
+
     // 静态属性：表示无碰撞结果的常量实例
     //
     // 语义说明（0成本约束下的信息最大化）：
@@ -29,6 +45,7 @@ class org.flashNight.arki.component.Collider.CollisionResult {
      */
     public function CollisionResult(isColliding:Boolean) {
         this.isColliding = isColliding;
+        this.tEntry = -1;
         // this.additionalInfo = {}; // 初始化为空对象，避免 null 检查
     }
     
@@ -114,6 +131,7 @@ class org.flashNight.arki.component.Collider.CollisionResult {
         cr.isYOrdered = this.isYOrdered;
         cr.overlapCenter = this.overlapCenter ? this.overlapCenter.clone() : null;
         cr.overlapRatio = this.overlapRatio;
+        cr.tEntry = this.tEntry;
 
         if (this.additionalInfo) {
             cr.additionalInfo = ObjectUtil.cloneFast(this.additionalInfo);

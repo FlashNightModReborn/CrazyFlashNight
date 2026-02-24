@@ -544,8 +544,12 @@
         <name>磁暴射线</name>
         <attribute>
             <hitMark>电击弹坑</hitMark>
+            <pierceLimit>3</pierceLimit>
             <rayConfig>
                 <rayLength>900</rayLength>
+                <rayMode>chain</rayMode>
+                <damageFalloff>0.7</damageFalloff>
+                <chainRadius>200</chainRadius>
                 <primaryColor>0x00FFFF</primaryColor>
                 <secondaryColor>0xFFFFFF</secondaryColor>
                 <thickness>2</thickness>
@@ -555,7 +559,6 @@
                 <jitter>18</jitter>
                 <visualDuration>5</visualDuration>
                 <fadeOutDuration>3</fadeOutDuration>
-
             </rayConfig>
         </attribute>
     </bullet>
@@ -574,7 +577,6 @@
                 <jitter>25</jitter>
                 <visualDuration>45</visualDuration>
                 <fadeOutDuration>20</fadeOutDuration>
-
             </rayConfig>
         </attribute>
     </bullet>

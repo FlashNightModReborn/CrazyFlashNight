@@ -16,25 +16,34 @@ import org.flashNight.sara.util.*;
  *
  * 特点：
  * 1. 单帧检测 - 子弹发射瞬间完成全部碰撞检测
- * 2. 射线碰撞器 - 使用 RayCollider 进行射线-AABB相交检测
+ * 2. 射线碰撞器 - 使用 RayCollider + Slab 算法进行射线-AABB相交检测
  * 3. 视觉独立 - 电弧视觉效果由 LightningRenderer 独立管理
- * 4. 命中最近 - 射线碰撞返回最近命中点
+ * 4. 多模式支持 - single / pierce / chain / fork 四种射线模式
  *
- * 【设计决策：穿透(pierce)机制不适用于射线子弹】
- * 射线子弹走透明子弹(TransparentBullet)的碰撞路径以复用其性能优化，
- * 但碰撞逻辑为"单帧扫描全部候选→只命中最近目标"。
- * pierceLimit 属性在射线分支中被静默跳过，这是有意为之：
- * - 物理语义：射线是瞬时能量释放，与穿透的"依次贯穿"语义不同
- * - 性能优化：射线复用透明子弹的 preCheckTransparent 队列路径，
- *   避免为射线单独维护一套队列管理逻辑
- * - 如需"射线穿透多目标"效果，应在 BulletQueueProcessor 的
- *   FLAG_RAY 分支中按距离排序后依次处理前 N 个目标，而非复用 pierceLimit
+ * 射线模式（由 TeslaRayConfig.rayMode 控制）：
+ * • single  - 命中最近单目标（默认行为）
+ * • pierce  - 穿透射线，命中路径上所有目标，按 tEntry 距离排序
+ * • chain   - 连锁弹跳，命中后从命中点搜索附近下一目标继续连锁
+ * • fork    - 分裂射线，命中后从命中点分裂出多条子射线
+ *
+ * 【pierceLimit 设计决策】
+ * 所有模式的目标数量统一由 bullet.pierceLimit（<attribute> 层）控制：
+ *   bullet.pierceLimit = 1（默认）→ 任何模式都退化为 single 行为
+ *   bullet.pierceLimit = N →
+ *     pierce: 沿路径命中 N 个目标
+ *     chain:  主命中 + (N-1) 次弹跳
+ *     fork:   主命中 + (N-1) 条子射线
+ *
+ * 与普通子弹的 pierceLimit 不冲突：射线子弹不进入主碰撞循环，
+ * 在 processRayBullets 的 FLAG_RAY 分支中独立处理。
+ *
+ * 伤害衰减由 TeslaRayConfig.damageFalloff（<rayConfig> 内）控制。
  *
  * 调用链路：
  *   BulletFactory 检测 FLAG_RAY -> 选择 TeslaRayLifecycle
  *   -> bindLifecycle -> bindCollider (创建 RayCollider)
- *   -> bindFrameHandler (加入队列，复用 preCheckTransparent 路径)
- *   -> BulletQueueProcessor 射线窄相分支 -> 碰撞检测
+ *   -> bindFrameHandler (加入 preCheckRay 队列)
+ *   -> BulletQueueProcessor.processRayBullets -> 碰撞检测 + 模式分派
  *   -> LightningRenderer.spawn (视觉效果)
  */
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TeslaRayLifecycle

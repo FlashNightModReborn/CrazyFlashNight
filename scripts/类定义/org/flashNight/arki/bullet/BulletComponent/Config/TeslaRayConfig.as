@@ -3,6 +3,8 @@
  *
  * 封装射线子弹的所有可配置参数，包括：
  * • 射线物理参数（长度）
+ * • 射线模式与多目标控制（模式、目标数、衰减）
+ * • 模式特有参数（连锁搜索半径、分裂角度等）
  * • 电弧视觉参数（颜色、粗细、分支、抖动）
  * • 时间参数（持续时间、淡出时间）
  *
@@ -10,13 +12,81 @@
  * 1. XML配置通过 AttributeLoader 解析后调用 fromXML() 创建实例
  * 2. 实例存储在 bullet.rayConfig 属性上
  * 3. TeslaRayLifecycle 和 LightningRenderer 读取配置执行逻辑
+ *
+ * 射线模式说明：
+ * • "single" - 默认，命中最近单目标（现有行为，无需配置 rayMode）
+ * • "chain"  - 连锁弹跳，命中后从命中点搜索附近下一目标继续连锁
+ * • "pierce" - 穿透射线，一条射线命中路径上所有目标，按 tEntry 距离排序
+ * • "fork"   - 分裂射线，命中后从命中点分裂出多条子射线
+ *
+ * 多目标控制设计：
+ * 目标数量由 bullet.pierceLimit（<attribute> 层）控制，与普通子弹共用同一字段。
+ * 射线子弹不进入主循环，因此该字段不会与普通穿透机制冲突。
+ * damageFalloff 在 <rayConfig> 内配置，控制每额外命中一个目标的伤害衰减。
+ *
+ *   bullet.pierceLimit = 1（默认）→ 任何模式都退化为 single 行为
+ *   bullet.pierceLimit = N →
+ *     pierce: 沿路径命中 N 个目标
+ *     chain:  主命中 + (N-1) 次弹跳
+ *     fork:   主命中 + (N-1) 条子射线
  */
 class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
+
+    // ========== 射线模式常量 ==========
+
+    /** 单发模式（默认）：命中最近目标 */
+    public static var MODE_SINGLE:String = "single";
+    /** 连锁模式：命中后弹跳到附近目标 */
+    public static var MODE_CHAIN:String = "chain";
+    /** 穿透模式：射线贯穿路径上所有目标 */
+    public static var MODE_PIERCE:String = "pierce";
+    /** 分裂模式：命中后分裂出子射线 */
+    public static var MODE_FORK:String = "fork";
 
     // ========== 射线物理参数 ==========
 
     /** 射线长度（像素），必须配置 */
     public var rayLength:Number;
+
+    // ========== 射线模式控制 ==========
+
+    /**
+     * 射线模式标识
+     * 可选值: "single" | "chain" | "pierce" | "fork"
+     * 默认 "single"，与现有行为完全一致
+     */
+    public var rayMode:String;
+
+    // ========== 多目标伤害衰减 ==========
+
+    /**
+     * 每额外命中一个目标的伤害衰减系数（所有模式通用）
+     *
+     * 应用方式：
+     * - pierce: 第 i 个目标伤害 = 原始伤害 × damageFalloff^(i-1)
+     * - chain:  第 i 次弹跳伤害 = 原始伤害 × damageFalloff^i
+     * - fork:   第 j 条子射线伤害 = 原始伤害 × damageFalloff
+     *           （fork 不做累积衰减，所有子射线使用相同系数）
+     *
+     * 默认 1.0 → 无伤害衰减
+     */
+    public var damageFalloff:Number;
+
+    // ========== 连锁模式特有参数 ==========
+
+    /** 下一目标搜索半径（像素） */
+    public var chainRadius:Number;
+
+    /** 弹跳间视觉延迟帧数（0 = 即时全部显示） */
+    public var chainDelay:Number;
+
+    // ========== 分裂模式特有参数 ==========
+
+    /** 分裂扩散角度（度，子射线在此角度范围内均匀分布） */
+    public var forkAngle:Number;
+
+    /** 子射线长度（像素，默认为主射线长度的一半） */
+    public var forkLength:Number;
 
     // ========== 电弧视觉参数 ==========
 
@@ -52,6 +122,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     // ========== 默认值常量 ==========
 
     private static var DEFAULT_RAY_LENGTH:Number = 900;
+    private static var DEFAULT_RAY_MODE:String = "single";
     private static var DEFAULT_PRIMARY_COLOR:Number = 0x00FFFF;
     private static var DEFAULT_SECONDARY_COLOR:Number = 0xFFFFFF;
     private static var DEFAULT_THICKNESS:Number = 3;
@@ -62,12 +133,25 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static var DEFAULT_VISUAL_DURATION:Number = 5;
     private static var DEFAULT_FADE_OUT_DURATION:Number = 3;
 
+    // 多目标伤害衰减默认值
+    private static var DEFAULT_DAMAGE_FALLOFF:Number = 1.0;
+
+    // 连锁特有默认值
+    private static var DEFAULT_CHAIN_RADIUS:Number = 200;
+    private static var DEFAULT_CHAIN_DELAY:Number = 0;
+
+    // 分裂特有默认值
+    private static var DEFAULT_FORK_ANGLE:Number = 30;
+    private static var DEFAULT_FORK_LENGTH:Number = -1; // -1 表示使用 rayLength * 0.5
+
     /**
      * 构造函数
      * 初始化所有参数为默认值
+     * pierceLimit=1 + damageFalloff=1.0 等价于 "single" 模式行为
      */
     public function TeslaRayConfig() {
         rayLength = DEFAULT_RAY_LENGTH;
+        rayMode = DEFAULT_RAY_MODE;
         primaryColor = DEFAULT_PRIMARY_COLOR;
         secondaryColor = DEFAULT_SECONDARY_COLOR;
         thickness = DEFAULT_THICKNESS;
@@ -77,6 +161,17 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         jitter = DEFAULT_JITTER;
         visualDuration = DEFAULT_VISUAL_DURATION;
         fadeOutDuration = DEFAULT_FADE_OUT_DURATION;
+
+        // 伤害衰减（damageFalloff=1.0 → 无衰减）
+        damageFalloff = DEFAULT_DAMAGE_FALLOFF;
+
+        // 连锁特有
+        chainRadius = DEFAULT_CHAIN_RADIUS;
+        chainDelay = DEFAULT_CHAIN_DELAY;
+
+        // 分裂特有
+        forkAngle = DEFAULT_FORK_ANGLE;
+        forkLength = DEFAULT_FORK_LENGTH;
     }
 
     /**
@@ -85,9 +180,14 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      * @param node XML节点对象（attributeNode.rayConfig）
      * @return TeslaRayConfig 配置实例
      *
-     * XML结构示例：
+     * XML结构示例（现有字段完全向后兼容，新字段均可选）：
      * <rayConfig>
      *     <rayLength>900</rayLength>
+     *     <rayMode>chain</rayMode>
+     *     <damageFalloff>0.7</damageFalloff>
+     *     <chainRadius>200</chainRadius>
+     *     <forkAngle>30</forkAngle>
+     *     <forkLength>400</forkLength>
      *     <primaryColor>0x00FFFF</primaryColor>
      *     <secondaryColor>0xFFFFFF</secondaryColor>
      *     <thickness>3</thickness>
@@ -95,8 +195,8 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      *     <branchProbability>0.5</branchProbability>
      *     <segmentLength>25</segmentLength>
      *     <jitter>18</jitter>
-     *     <visualDuration>180</visualDuration>
-     *     <fadeOutDuration>60</fadeOutDuration>
+     *     <visualDuration>5</visualDuration>
+     *     <fadeOutDuration>3</fadeOutDuration>
      * </rayConfig>
      */
     public static function fromXML(node:Object):TeslaRayConfig {
@@ -106,54 +206,83 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             return config;
         }
 
-        // 射线长度（必须参数，有默认值兜底）
+        // ====== 基础物理参数 ======
+
         if (node.rayLength != undefined) {
             config.rayLength = Number(node.rayLength);
         }
 
-        // 主电弧颜色（支持十六进制字符串如 "0x00FFFF"）
+        // ====== 射线模式 ======
+
+        if (node.rayMode != undefined) {
+            var mode:String = String(node.rayMode);
+            if (mode == "chain" || mode == "pierce" || mode == "fork") {
+                config.rayMode = mode;
+            }
+        }
+
+        // ====== 伤害衰减 ======
+
+        if (node.damageFalloff != undefined) {
+            config.damageFalloff = Number(node.damageFalloff);
+        }
+
+        // ====== 连锁模式特有参数 ======
+
+        if (node.chainRadius != undefined) {
+            config.chainRadius = Number(node.chainRadius);
+        }
+        if (node.chainDelay != undefined) {
+            config.chainDelay = Number(node.chainDelay);
+        }
+
+        // ====== 分裂模式特有参数 ======
+
+        if (node.forkAngle != undefined) {
+            config.forkAngle = Number(node.forkAngle);
+        }
+        if (node.forkLength != undefined) {
+            config.forkLength = Number(node.forkLength);
+        }
+
+        // ====== 电弧视觉参数 ======
+
         if (node.primaryColor != undefined) {
             config.primaryColor = parseColor(node.primaryColor);
         }
-
-        // 辉光颜色
         if (node.secondaryColor != undefined) {
             config.secondaryColor = parseColor(node.secondaryColor);
         }
-
-        // 线条粗细
         if (node.thickness != undefined) {
             config.thickness = Number(node.thickness);
         }
-
-        // 分支数量
         if (node.branchCount != undefined) {
             config.branchCount = Number(node.branchCount);
         }
-
-        // 分支概率
         if (node.branchProbability != undefined) {
             config.branchProbability = Number(node.branchProbability);
         }
-
-        // 分段长度
         if (node.segmentLength != undefined) {
             config.segmentLength = Number(node.segmentLength);
         }
-
-        // 抖动幅度
         if (node.jitter != undefined) {
             config.jitter = Number(node.jitter);
         }
 
-        // 视觉持续时间
+        // ====== 时间参数 ======
+
         if (node.visualDuration != undefined) {
             config.visualDuration = Number(node.visualDuration);
         }
-
-        // 淡出时间
         if (node.fadeOutDuration != undefined) {
             config.fadeOutDuration = Number(node.fadeOutDuration);
+        }
+
+        // ====== 后处理 ======
+
+        // forkLength=-1 表示使用 rayLength 的一半
+        if (config.forkLength < 0) {
+            config.forkLength = config.rayLength * 0.5;
         }
 
         return config;
@@ -171,16 +300,21 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             return value;
         }
         var str:String = String(value);
-        // 处理 "0x" 前缀的十六进制字符串
         if (str.indexOf("0x") == 0 || str.indexOf("0X") == 0) {
             return parseInt(str, 16);
         }
-        // 处理 "#" 前缀的十六进制字符串
         if (str.charAt(0) == "#") {
             return parseInt("0x" + str.substr(1), 16);
         }
-        // 尝试直接转换为数字
         return Number(value);
+    }
+
+    /**
+     * 判断是否为 single 模式（默认行为）
+     * 当 rayMode 未配置或为 "single" 时返回 true
+     */
+    public function isSingle():Boolean {
+        return rayMode == "single";
     }
 
     /**
@@ -188,11 +322,20 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      * @return String 配置的字符串表示
      */
     public function toString():String {
-        return "[TeslaRayConfig rayLength=" + rayLength +
+        var s:String = "[TeslaRayConfig mode=" + rayMode +
+               " rayLength=" + rayLength +
+               " damageFalloff=" + damageFalloff +
                " primaryColor=0x" + primaryColor.toString(16) +
                " thickness=" + thickness +
                " branchCount=" + branchCount +
                " visualDuration=" + visualDuration +
-               " fadeOutDuration=" + fadeOutDuration + "]";
+               " fadeOutDuration=" + fadeOutDuration;
+        if (rayMode == "chain") {
+            s += " chainRadius=" + chainRadius;
+        } else if (rayMode == "fork") {
+            s += " forkAngle=" + forkAngle +
+                 " forkLength=" + forkLength;
+        }
+        return s + "]";
     }
 }

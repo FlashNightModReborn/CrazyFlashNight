@@ -127,17 +127,32 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
 
     /**
      * 检查射线碰撞器与其他碰撞器的碰撞情况。
-     * 检测方法：将射线作为有限线段（从起点到 endpoint）与其他碰撞器的 AABB 进行相交测试。
-     * 若相交，则计算出一个近似交点作为碰撞结果。
      *
-     * 性能优化：
-     * - 使用零分配的数值计算替代 Vector 对象创建
-     * - 内联 getEndpoint、getCenter、closestPointTo 逻辑
+     * 使用内联 Slab (Kay-Kajiya) 算法替代 AABB.intersectsLine()，
+     * 同时输出精确入射参数 tEntry 和入射点坐标。
+     *
+     * 算法流程：
+     * 1. AABB 宽相：有序分离快速检测（与 AABBCollider 一致）
+     * 2. Slab 窄相：计算射线与 AABB 四条边的参数交点
+     *    - tMin = max(t_enter_x, t_enter_y) → 射线进入 AABB 的参数
+     *    - tMax = min(t_exit_x, t_exit_y)  → 射线离开 AABB 的参数
+     *    - 相交条件: tMin <= tMax && tMax >= 0 && tMin <= maxDistance
+     * 3. 输出 tEntry（clamp 到 [0, maxDistance]）和精确入射点
+     *
+     * 性能特征：
+     * - 零分配：所有计算为内联数值运算
+     * - 替换而非新增：Slab 计算取代了原 intersectsLine() + 中心投影，总指令数近似
+     * - tEntry 零额外开销：Slab 天然产出 tMin，仅需一次 clamp + 写入
+     *
+     * 视觉改善：
+     * - overlapCenter 从"射线到 AABB 中心的最近点"改为"射线进入 AABB 的精确入射点"
+     * - 电弧终点从穿入目标体内移到目标体表面，视觉更自然
      *
      * @param other 其他 ICollider 实例
      * @param zOffset z轴偏移
      * @return 如果射线与其他碰撞器相交，返回 CollisionResult，
-     *         并在 CollisionResult.overlapCenter 中存储近似交点；否则返回 CollisionResult.FALSE
+     *         其中 overlapCenter = 精确入射点，tEntry = 射线参数；
+     *         否则返回 CollisionResult.FALSE / ORDERFALSE / YORDERFALSE
      */
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
         var otherAABB:AABB = other.getAABB(zOffset);
@@ -166,35 +181,58 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
         var dy:Number = _ray.direction.y;
         var maxDist:Number = _ray.maxDistance;
 
-        // 内联计算终点（零分配）
-        var ex:Number = ox + dx * maxDist;
-        var ey:Number = oy + dy * maxDist;
+        // ========== 内联 Slab (Kay-Kajiya) 射线-AABB 相交检测 ==========
+        //
+        // 原理：将 AABB 视为 X/Y 两组平行平面（slab）的交集，
+        // 分别计算射线与每组平面的进入/离开参数 t，取交集。
+        //
+        // 注意：当 dx 或 dy 为 0 时（射线平行于某轴），
+        // 使用极大倒数 1e10 使得 t 值趋向 ±Infinity，
+        // 由后续 tMin/tMax 比较自然处理平行情况。
 
-        // 利用 AABB 的线段相交检测
-        if (otherAABB.intersectsLine(ox, oy, ex, ey)) {
-            // 内联计算 AABB 中心（零分配，避免 getCenter() 创建 Vector）
-            var cx:Number = (otherAABB.left + otherAABB.right) * 0.5;
-            var cy:Number = (otherAABB.top + otherAABB.bottom) * 0.5;
+        var invDx:Number = (dx != 0) ? (1.0 / dx) : 1e10;
+        var invDy:Number = (dy != 0) ? (1.0 / dy) : 1e10;
 
-            // 内联计算 closestPointTo（零分配）
-            // t = dot(center - origin, direction)
-            var opx:Number = cx - ox;
-            var opy:Number = cy - oy;
-            var t:Number = opx * dx + opy * dy;
-            if (t < 0) t = 0;
-            if (t > maxDist) t = maxDist;
+        // X 轴 slab 参数
+        var t1x:Number = (otherLeft - ox) * invDx;
+        var t2x:Number = (otherRight - ox) * invDx;
+        // 保证 t1x <= t2x（射线方向为负时交换）
+        var tmp:Number;
+        if (t1x > t2x) { tmp = t1x; t1x = t2x; t2x = tmp; }
 
-            // 最近点坐标
-            var closestX:Number = ox + dx * t;
-            var closestY:Number = oy + dy * t;
+        // Y 轴 slab 参数
+        var t1y:Number = (otherTop - oy) * invDy;
+        var t2y:Number = (otherBottom - oy) * invDy;
+        if (t1y > t2y) { tmp = t1y; t1y = t2y; t2y = tmp; }
 
-            // 复用 RayCollider 独立的静态 CollisionResult
-            var collisionResult:CollisionResult = RayCollider.result;
-            collisionResult.overlapCenter.x = closestX;
-            collisionResult.overlapCenter.y = closestY;
-            return collisionResult;
+        // tMin = 射线进入 AABB 的参数（两轴进入参数取大）
+        // tMax = 射线离开 AABB 的参数（两轴离开参数取小）
+        var tMin:Number = (t1x > t1y) ? t1x : t1y;
+        var tMax:Number = (t2x < t2y) ? t2x : t2y;
+
+        // 相交判定：
+        // 1. tMin <= tMax: 两个 slab 有交集
+        // 2. tMax >= 0: AABB 不完全在射线起点后方
+        // 3. tMin <= maxDist: 入射点在射线有效长度内
+        if (tMin > tMax || tMax < 0 || tMin > maxDist) {
+            return CollisionResult.FALSE;
         }
-        return CollisionResult.FALSE;
+
+        // clamp tEntry 到 [0, maxDist]
+        // tMin < 0 表示射线起点在 AABB 内部，此时入射点为起点
+        var tEntry:Number = tMin;
+        if (tEntry < 0) tEntry = 0;
+
+        // 精确入射点坐标（零分配）
+        var entryX:Number = ox + dx * tEntry;
+        var entryY:Number = oy + dy * tEntry;
+
+        // 复用 RayCollider 独立的静态 CollisionResult
+        var collisionResult:CollisionResult = RayCollider.result;
+        collisionResult.overlapCenter.x = entryX;
+        collisionResult.overlapCenter.y = entryY;
+        collisionResult.tEntry = tEntry;
+        return collisionResult;
     }
 
     /**

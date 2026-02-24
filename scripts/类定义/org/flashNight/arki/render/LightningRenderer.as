@@ -251,6 +251,8 @@ class org.flashNight.arki.render.LightningRenderer {
 
             if (arc.age <= arc.visualDuration) {
                 // 活跃期：每帧重绘产生路径抖动 + 随机爆闪模拟电弧不稳定性
+                // 注意：使用 <= 使 visualDuration=N 实际产生 N+1 帧活跃渲染
+                // （spawn 首帧 age=0 + update 中 age 1..N 共 N 帧），这是有意为之
                 renderArc(arc);
                 arc.mc._alpha = 70 + Math.random() * 30;
             } else if (arc.age <= arc.totalDuration) {
@@ -258,9 +260,14 @@ class org.flashNight.arki.render.LightningRenderer {
                 var fadeProgress:Number = (arc.age - arc.visualDuration) / arc.fadeDuration;
                 arc.mc._alpha = 100 * (1 - fadeProgress);
             } else {
-                // 过期销毁
+                // 过期销毁：swap-delete O(1)，避免 splice O(n) 的元素移动开销
+                // 反向遍历保证被换入位置 i 的元素（来自更高索引）已处理过
                 arc.mc.removeMovieClip();
-                _activeArcs.splice(i, 1);
+                var last:Number = _activeArcs.length - 1;
+                if (i < last) {
+                    _activeArcs[i] = _activeArcs[last];
+                }
+                _activeArcs.length = last;
             }
         }
     }

@@ -40,6 +40,7 @@
 import org.flashNight.arki.bullet.BulletComponent.Queue.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.component.*;
 import org.flashNight.arki.component.Effect.*;
@@ -108,6 +109,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * 避免每发常规子弹都为射线子弹承担分支检测开销。
      */
     private static var _rayBullets:Array = [];
+
+    /**
+     * 射线命中结果复用对象（零分配）
+     * 用于 processRayBullets 中传递给事件系统的 CollisionResult，
+     * 每次命中前更新 overlapCenter 和 overlapRatio 即可。
+     * 由于事件处理是同步的，复用安全。
+     */
+    private static var _rayHitResult:CollisionResult = CollisionResult.Create(
+        true, new Vector(0, 0), 1
+    );
 
     // ========================================================================
     // 子弹终止控制标志位（位运算优化）
@@ -419,8 +430,20 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      *
      * 射线子弹独立于主碰撞循环处理，原因：
      * 1. 射线子弹是单帧检测（发射即检测即销毁），不需要逐帧移动
-     * 2. 射线子弹数量稀少（通常 0~2 发/帧），O(T) 暴力扫描即可
-     * 3. 独立处理避免主循环中每发常规子弹都承担 FLAG_RAY 分支检测开销
+     * 2. 独立处理避免主循环中每发常规子弹都承担 FLAG_RAY 分支检测开销
+     *
+     * 支持四种射线模式（由 TeslaRayConfig.rayMode 控制）：
+     * - "single" (默认): 命中最近单目标
+     * - "pierce": 穿透射线，命中路径上所有目标（按 tEntry 距离排序）
+     * - "chain": 连锁弹跳，命中后从命中点搜索附近下一目标
+     * - "fork": 分裂射线，命中后从命中点分裂出多条子射线
+     *
+     * 优化策略：
+     * - 利用 cache.rightMaxValues（右边界前缀最大值，单调非降）二分查找起始索引
+     * - 利用 cache.leftValues（左边界升序）右截断扫描窗口
+     * - 复杂度从 O(T) 降低为 O(log T + W)，W = 碰撞窗口内目标数
+     * - 使用 tEntry（Slab 算法输出）直接比较距离，消除 sqrt 和 dist² 开销
+     * - 复用静态 _rayHitResult 传递命中数据，零分配
      *
      * 调用时机：processQueue() 中，主循环之前
      */
@@ -439,6 +462,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var Dodge:Object = DodgeHandler;
         var Damage:Object = DamageCalculator;
         var FX:Object = EffectSystem;
+        var DEG_TO_RAD:Number = Math.PI / 180;
 
         // 遍历所有待处理射线子弹
         for (var i:Number = 0; i < count; i++) {
@@ -448,6 +472,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 bullet.removeMovieClip();
                 continue;
             }
+
+            // 射线子弹绕过主循环，需手动初始化效果标志
+            // （主循环中此标志在每发子弹处理前设置为 true）
+            bullet.shouldGeneratePostHitEffect = true;
 
             // ---- 阵营判定 + 目标缓存获取 ----
             var sf:Number = bullet.stateFlags | 0;
@@ -473,100 +501,510 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var bulletZRange:Number = bullet.Z轴攻击范围 || 50;
             var flags:Number = bullet.flags | 0;
 
-            // ---- 扫描所有候选目标，找到最近命中 ----
-            var rayNearestDist:Number = Infinity;
-            var rayNearestTarget:MovieClip = null;
-            var rayNearestHitX:Number = 0;
-            var rayNearestHitY:Number = 0;
+            // ---- 射线模式判定 ----
+            var config:TeslaRayConfig = TeslaRayConfig(bullet.rayConfig);
+            var rayMode:String = (config != null && config.rayMode != undefined)
+                ? config.rayMode : "single";
 
-            for (var u:Number = 0; u < unitLen; u++) {
-                var hitTarget:MovieClip = unitMap[u];
-                var zOffset:Number = bulletZOffset - hitTarget.Z轴坐标;
-                if (zOffset >= bulletZRange || zOffset <= -bulletZRange) continue;
+            // 目标数量从 bullet.pierceLimit 读取（与普通子弹共用 <attribute> 层字段）
+            // 射线子弹不进入主循环，不会与普通穿透机制冲突
+            // undefined/NaN → 默认 1（single 行为）
+            var bulletPierceLimit:Number = bullet.pierceLimit;
+            if (!(bulletPierceLimit > 0)) bulletPierceLimit = 1;
 
-                if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
-                    var unitArea:AABBCollider = hitTarget.aabbCollider;
-                    var collisionResult:Object = areaAABB.checkCollision(unitArea, zOffset);
+            // ---- 利用有序缓存进行窗口裁剪 ----
+            // cache.leftValues 按 X 升序排列，rightMaxValues 是右边界前缀最大值（单调非降）
+            // 射线 AABB 水平范围 [rayLeft, rayRight] 定义碰撞窗口
+            var rayLeft:Number = areaAABB.left;
+            var rayRight:Number = areaAABB.right;
+            var unitLeftKeys:Array = cache.leftValues;
+            var unitRightMax:Array = cache.rightMaxValues;
 
-                    if (collisionResult.isColliding) {
-                        var crCenter:Object = collisionResult.overlapCenter;
-                        var rayHitX:Number = crCenter.x;
-                        var rayHitY:Number = crCenter.y;
-                        var rayHitDist:Number = Math.sqrt(
-                            (rayHitX - rayOriginX) * (rayHitX - rayOriginX) +
-                            (rayHitY - rayOriginY) * (rayHitY - rayOriginY)
-                        );
-
-                        if (rayHitDist < rayNearestDist) {
-                            rayNearestDist = rayHitDist;
-                            rayNearestTarget = hitTarget;
-                            rayNearestHitX = rayHitX;
-                            rayNearestHitY = rayHitY;
-                        }
+            // 二分查找起始索引：跳过 rightMaxValues[i] < rayLeft 的目标
+            // 这些目标的右边界全部在射线左侧，不可能碰撞
+            var lo:Number = 0;
+            var hi:Number = unitLen;
+            if (unitRightMax != undefined) {
+                while (lo < hi) {
+                    var mid:Number = (lo + hi) >> 1;
+                    if (unitRightMax[mid] < rayLeft) {
+                        lo = mid + 1;
+                    } else {
+                        hi = mid;
                     }
                 }
             }
 
-            // ---- 命中处理 ----
-            if (rayNearestTarget != null) {
-                hitTarget = rayNearestTarget;
-                var finalResult:CollisionResult = CollisionResult.Create(
-                    true, new Vector(rayNearestHitX, rayNearestHitY), 1
-                );
+            // 复用静态命中结果（同步事件处理保证安全）
+            var finalResult:CollisionResult = _rayHitResult;
 
-                bullet.hitTarget = hitTarget;
-                bullet.附加层伤害计算 = 0;
-                bullet.命中对象 = hitTarget;
+            // ================================================================
+            // 穿透模式：收集所有命中 → 按 tEntry 排序 → 逐个伤害
+            // ================================================================
+            if (rayMode == "pierce") {
+                var pierceLimit:Number = bulletPierceLimit;
+                var pierceFalloff:Number = config.damageFalloff;
 
-                var dodgeState:String = (bullet.伤害类型 == "真伤") ? "未躲闪" :
-                    Dodge.calculateDodgeState(
-                        hitTarget,
-                        Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
-                        bullet
+                // 收集所有命中到临时数组
+                // 每个元素: {target, hitX, hitY, tEntry, zOffset}
+                var pierceHits:Array = [];
+
+                for (var u:Number = lo; u < unitLen && unitLeftKeys[u] <= rayRight; u++) {
+                    var hitTarget:MovieClip = unitMap[u];
+                    var zOffset:Number = bulletZOffset - hitTarget.Z轴坐标;
+                    if (zOffset >= bulletZRange || zOffset <= -bulletZRange) continue;
+
+                    if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
+                        var unitArea:AABBCollider = hitTarget.aabbCollider;
+                        var collisionResult:Object = areaAABB.checkCollision(unitArea, zOffset);
+
+                        if (collisionResult.isColliding) {
+                            pierceHits.push({
+                                target: hitTarget,
+                                hitX: collisionResult.overlapCenter.x,
+                                hitY: collisionResult.overlapCenter.y,
+                                tEntry: collisionResult.tEntry,
+                                zOffset: zOffset
+                            });
+                        }
+                    }
+                }
+
+                if (pierceHits.length > 0) {
+                    // 按 tEntry 升序排序（插入排序，pierceLimit 通常很小）
+                    var pLen:Number = pierceHits.length;
+                    for (var pi:Number = 1; pi < pLen; pi++) {
+                        var pKey:Object = pierceHits[pi];
+                        var pj:Number = pi - 1;
+                        while (pj >= 0 && pierceHits[pj].tEntry > pKey.tEntry) {
+                            pierceHits[pj + 1] = pierceHits[pj];
+                            pj--;
+                        }
+                        pierceHits[pj + 1] = pKey;
+                    }
+
+                    // 限制穿透数量
+                    var pCount:Number = (pLen < pierceLimit) ? pLen : pierceLimit;
+                    var pDmgMult:Number = 1.0;
+
+                    // 处理第一个命中（含击中触发函数）
+                    var firstHit:Object = pierceHits[0];
+                    hitTarget = firstHit.target;
+
+                    bullet.hitTarget = hitTarget;
+                    bullet.附加层伤害计算 = 0;
+                    bullet.命中对象 = hitTarget;
+
+                    if (bullet.击中时触发函数) bullet.击中时触发函数();
+
+                    // 逐个处理所有穿透命中
+                    for (var pk:Number = 0; pk < pCount; pk++) {
+                        var ph:Object = pierceHits[pk];
+                        hitTarget = ph.target;
+
+                        // 更新复用结果
+                        finalResult.overlapCenter.x = ph.hitX;
+                        finalResult.overlapCenter.y = ph.hitY;
+                        finalResult.overlapRatio = pDmgMult;
+                        finalResult.tEntry = ph.tEntry;
+
+                        var dodgeState:String = (bullet.伤害类型 == "真伤") ? "未躲闪" :
+                            Dodge.calculateDodgeState(
+                                hitTarget,
+                                Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
+                                bullet
+                            );
+
+                        var damageResult:Object = Damage.calculateDamage(
+                            bullet, shooter, hitTarget, pDmgMult, dodgeState
+                        );
+
+                        bullet.hitCount += damageResult.actualScatterUsed;
+
+                        var targetDispatcher:Object = hitTarget.dispatcher;
+                        targetDispatcher.publish("hit", hitTarget, shooter, bullet, finalResult, damageResult);
+
+                        if (hitTarget.hp <= 0) {
+                            var isNormalKill:Boolean = (flags & MELEE_EXPLOSIVE_MASK) == 0;
+                            targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
+                            shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
+                        }
+
+                        damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
+
+                        // 每个穿透命中点都显示命中特效
+                        if (bullet.shouldGeneratePostHitEffect) {
+                            FX.Effect(bullet.击中后子弹的效果, ph.hitX, ph.hitY, shooter._xscale);
+                        }
+
+                        if (debugMode) {
+                            unitArea = hitTarget.aabbCollider;
+                            AABBRenderer.renderAABB(areaAABB, ph.zOffset, "thick");
+                            AABBRenderer.renderAABB(unitArea, ph.zOffset, "filled");
+                        }
+
+                        pDmgMult *= pierceFalloff;
+                    }
+
+                    // 穿透射线视觉：一条完整电弧贯穿整条射线
+                    // 终点为射线末端（无论是否穿透完所有目标）
+                    var rayAngle:Number = bullet._rotation * DEG_TO_RAD;
+                    var rayLength:Number = config.rayLength || 900;
+                    var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
+                    var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
+                    LightningRenderer.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, config);
+
+                } else {
+                    // 穿透射线未命中：电弧打到最远处
+                    rayAngle = bullet._rotation * DEG_TO_RAD;
+                    rayLength = (config != null && !isNaN(config.rayLength)) ? config.rayLength : 900;
+                    rayEndX = rayOriginX + Math.cos(rayAngle) * rayLength;
+                    rayEndY = rayOriginY + Math.sin(rayAngle) * rayLength;
+
+                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                    LightningRenderer.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, config);
+                }
+
+            // ================================================================
+            // single / chain / fork 模式：先找最近命中
+            // ================================================================
+            } else {
+                // ---- 在窗口内扫描候选目标，找到最近命中 ----
+                // 使用 tEntry（Slab 输出）直接比较，比 dist² 更精确
+                var rayNearestTEntry:Number = Infinity;
+                var rayNearestTarget:MovieClip = null;
+                var rayNearestHitX:Number = 0;
+                var rayNearestHitY:Number = 0;
+
+                for (u = lo; u < unitLen && unitLeftKeys[u] <= rayRight; u++) {
+                    hitTarget = unitMap[u];
+                    zOffset = bulletZOffset - hitTarget.Z轴坐标;
+                    if (zOffset >= bulletZRange || zOffset <= -bulletZRange) continue;
+
+                    if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
+                        unitArea = hitTarget.aabbCollider;
+                        collisionResult = areaAABB.checkCollision(unitArea, zOffset);
+
+                        if (collisionResult.isColliding) {
+                            // 使用 tEntry 直接比较距离
+                            // Slab 算法保证 tEntry 就是射线参数，无需额外 dist² 计算
+                            if (collisionResult.tEntry < rayNearestTEntry) {
+                                rayNearestTEntry = collisionResult.tEntry;
+                                rayNearestTarget = hitTarget;
+                                rayNearestHitX = collisionResult.overlapCenter.x;
+                                rayNearestHitY = collisionResult.overlapCenter.y;
+                            }
+                        }
+                    }
+                }
+
+                // ---- 主命中处理 ----
+                if (rayNearestTarget != null) {
+                    hitTarget = rayNearestTarget;
+
+                    // 更新复用结果
+                    finalResult.overlapCenter.x = rayNearestHitX;
+                    finalResult.overlapCenter.y = rayNearestHitY;
+                    finalResult.overlapRatio = 1;
+                    finalResult.tEntry = rayNearestTEntry;
+
+                    bullet.hitTarget = hitTarget;
+                    bullet.附加层伤害计算 = 0;
+                    bullet.命中对象 = hitTarget;
+
+                    dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
+                        Dodge.calculateDodgeState(
+                            hitTarget,
+                            Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
+                            bullet
+                        );
+
+                    if (bullet.击中时触发函数) bullet.击中时触发函数();
+
+                    damageResult = Damage.calculateDamage(
+                        bullet, shooter, hitTarget, 1, dodgeState
                     );
 
-                if (bullet.击中时触发函数) bullet.击中时触发函数();
+                    bullet.hitCount += damageResult.actualScatterUsed;
 
-                var damageResult:Object = Damage.calculateDamage(
-                    bullet, shooter, hitTarget, finalResult.overlapRatio, dodgeState
-                );
+                    targetDispatcher = hitTarget.dispatcher;
+                    targetDispatcher.publish("hit", hitTarget, shooter, bullet, finalResult, damageResult);
 
-                bullet.hitCount += damageResult.actualScatterUsed;
+                    if (hitTarget.hp <= 0) {
+                        isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;
+                        targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
+                        shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
+                    }
 
-                var targetDispatcher:Object = hitTarget.dispatcher;
-                targetDispatcher.publish("hit", hitTarget, shooter, bullet, finalResult, damageResult);
+                    damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 
-                if (hitTarget.hp <= 0) {
-                    var isNormalKill:Boolean = (flags & MELEE_EXPLOSIVE_MASK) == 0;
-                    targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
-                    shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
+                    // 电弧视觉效果（命中）
+                    if (bullet.shouldGeneratePostHitEffect) {
+                        FX.Effect(bullet.击中后子弹的效果, rayNearestHitX, rayNearestHitY, shooter._xscale);
+                    }
+                    LightningRenderer.spawn(rayOriginX, rayOriginY, rayNearestHitX, rayNearestHitY, config);
+
+                    if (debugMode) {
+                        unitArea = hitTarget.aabbCollider;
+                        zOffset = bulletZOffset - hitTarget.Z轴坐标;
+                        AABBRenderer.renderAABB(areaAABB, zOffset, "thick");
+                        AABBRenderer.renderAABB(unitArea, zOffset, "filled");
+                    }
+
+                    // ========================================================
+                    // chain 模式：从命中点连锁弹跳到附近目标
+                    // ========================================================
+                    if (rayMode == "chain" && bulletPierceLimit > 1) {
+                        // bulletPierceLimit - 1 = 弹跳次数（主命中已消耗1个名额）
+                        var chainMaxBounces:Number = bulletPierceLimit - 1;
+                        var chainRadius:Number = config.chainRadius;
+                        var chainFalloff:Number = config.damageFalloff;
+                        var chainRadiusSq:Number = chainRadius * chainRadius;
+                        var chainDmgMult:Number = chainFalloff; // 第一次弹跳已经衰减
+
+                        // 已命中目标集合（防重复弹跳）
+                        var chainVisited:Object = {};
+                        chainVisited[rayNearestTarget._name] = true;
+
+                        var prevChainX:Number = rayNearestHitX;
+                        var prevChainY:Number = rayNearestHitY;
+
+                        for (var ci:Number = 0; ci < chainMaxBounces; ci++) {
+                            // 从当前命中点搜索最近未命中目标
+                            var searchLeft:Number = prevChainX - chainRadius;
+                            var searchRight:Number = prevChainX + chainRadius;
+
+                            // 二分查找起始索引（复用 rightMaxValues）
+                            var clo:Number = 0;
+                            var chi:Number = unitLen;
+                            if (unitRightMax != undefined) {
+                                while (clo < chi) {
+                                    var cmid:Number = (clo + chi) >> 1;
+                                    if (unitRightMax[cmid] < searchLeft) {
+                                        clo = cmid + 1;
+                                    } else {
+                                        chi = cmid;
+                                    }
+                                }
+                            }
+
+                            var chainBestDistSq:Number = chainRadiusSq;
+                            var chainBestTarget:MovieClip = null;
+                            var chainBestX:Number = 0;
+                            var chainBestY:Number = 0;
+
+                            for (var cu:Number = clo; cu < unitLen && unitLeftKeys[cu] <= searchRight; cu++) {
+                                var chainTarget:MovieClip = unitMap[cu];
+
+                                // 跳过已命中目标
+                                if (chainVisited[chainTarget._name] == true) continue;
+
+                                // Z 轴范围检查
+                                var czOff:Number = bulletZOffset - chainTarget.Z轴坐标;
+                                if (czOff >= bulletZRange || czOff <= -bulletZRange) continue;
+
+                                if (chainTarget.hp > 0 && chainTarget.防止无限飞 != true) {
+                                    // 使用 AABB 中心计算距离（链式弹跳不需要精确入射点）
+                                    var ctAABB:AABBCollider = chainTarget.aabbCollider;
+                                    var ctCenterX:Number = (ctAABB.left + ctAABB.right) * 0.5;
+                                    var ctCenterY:Number = (ctAABB.top + ctAABB.bottom) * 0.5;
+
+                                    var cdx:Number = ctCenterX - prevChainX;
+                                    var cdy:Number = ctCenterY - prevChainY;
+                                    var cdistSq:Number = cdx * cdx + cdy * cdy;
+
+                                    if (cdistSq < chainBestDistSq) {
+                                        chainBestDistSq = cdistSq;
+                                        chainBestTarget = chainTarget;
+                                        chainBestX = ctCenterX;
+                                        chainBestY = ctCenterY;
+                                    }
+                                }
+                            }
+
+                            // 未找到目标：链断裂
+                            if (chainBestTarget == null) break;
+
+                            // 标记已命中
+                            chainVisited[chainBestTarget._name] = true;
+
+                            // 对链式目标应用伤害
+                            finalResult.overlapCenter.x = chainBestX;
+                            finalResult.overlapCenter.y = chainBestY;
+                            finalResult.overlapRatio = chainDmgMult;
+                            finalResult.tEntry = -1; // 链式弹跳无 tEntry
+
+                            dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
+                                Dodge.calculateDodgeState(
+                                    chainBestTarget,
+                                    Dodge.calcDodgeResult(shooter, chainBestTarget, bullet.命中率),
+                                    bullet
+                                );
+
+                            damageResult = Damage.calculateDamage(
+                                bullet, shooter, chainBestTarget, chainDmgMult, dodgeState
+                            );
+
+                            bullet.hitCount += damageResult.actualScatterUsed;
+
+                            targetDispatcher = chainBestTarget.dispatcher;
+                            targetDispatcher.publish("hit", chainBestTarget, shooter, bullet, finalResult, damageResult);
+
+                            if (chainBestTarget.hp <= 0) {
+                                isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;
+                                targetDispatcher.publish(isNormalKill ? "kill" : "death", chainBestTarget);
+                                shooter.dispatcher.publish("enemyKilled", chainBestTarget, bullet);
+                            }
+
+                            damageResult.triggerDisplay(chainBestTarget._x, chainBestTarget._y);
+
+                            // 每段链式弹跳生成独立电弧
+                            if (bullet.shouldGeneratePostHitEffect) {
+                                FX.Effect(bullet.击中后子弹的效果, chainBestX, chainBestY, shooter._xscale);
+                            }
+                            LightningRenderer.spawn(prevChainX, prevChainY, chainBestX, chainBestY, config);
+
+                            // 更新链式起点
+                            prevChainX = chainBestX;
+                            prevChainY = chainBestY;
+                            chainDmgMult *= chainFalloff;
+                        }
+
+                    // ========================================================
+                    // fork 模式：从命中点分裂出子射线
+                    // ========================================================
+                    } else if (rayMode == "fork" && bulletPierceLimit > 1) {
+                        // bulletPierceLimit - 1 = 子射线数量（主命中已消耗1个名额）
+                        var forkCount:Number = bulletPierceLimit - 1;
+                        var forkAngle:Number = config.forkAngle;
+                        var forkLength:Number = config.forkLength;
+                        var forkFalloff:Number = config.damageFalloff;
+
+                        // 主射线方向角
+                        var mainAngle:Number = bullet._rotation * DEG_TO_RAD;
+
+                        // 计算子射线角度（均匀分布在 [-forkAngle/2, +forkAngle/2]）
+                        var halfSpread:Number = forkAngle * DEG_TO_RAD * 0.5;
+                        var angleStep:Number = (forkCount > 1)
+                            ? (forkAngle * DEG_TO_RAD) / (forkCount - 1) : 0;
+                        var startAngle:Number = mainAngle - halfSpread;
+
+                        for (var fi:Number = 0; fi < forkCount; fi++) {
+                            var subAngle:Number = (forkCount > 1)
+                                ? startAngle + angleStep * fi : mainAngle;
+                            var subDirX:Number = Math.cos(subAngle);
+                            var subDirY:Number = Math.sin(subAngle);
+
+                            // 复用子弹的 RayCollider 设置子射线参数
+                            // （主射线已处理完毕，可以安全覆盖）
+                            RayCollider(areaAABB).setRayFast(
+                                rayNearestHitX, rayNearestHitY,
+                                subDirX, subDirY, forkLength
+                            );
+
+                            // 重新计算子射线的碰撞窗口
+                            var subLeft:Number = areaAABB.left;
+                            var subRight:Number = areaAABB.right;
+
+                            var slo:Number = 0;
+                            var shi:Number = unitLen;
+                            if (unitRightMax != undefined) {
+                                while (slo < shi) {
+                                    var smid:Number = (slo + shi) >> 1;
+                                    if (unitRightMax[smid] < subLeft) {
+                                        slo = smid + 1;
+                                    } else {
+                                        shi = smid;
+                                    }
+                                }
+                            }
+
+                            // 在子射线窗口内找最近命中
+                            var subNearestTEntry:Number = Infinity;
+                            var subNearestTarget:MovieClip = null;
+                            var subNearestHitX:Number = 0;
+                            var subNearestHitY:Number = 0;
+
+                            for (var su:Number = slo; su < unitLen && unitLeftKeys[su] <= subRight; su++) {
+                                var subTarget:MovieClip = unitMap[su];
+
+                                // 不命中主射线已命中的目标
+                                if (subTarget == rayNearestTarget) continue;
+
+                                var szOff:Number = bulletZOffset - subTarget.Z轴坐标;
+                                if (szOff >= bulletZRange || szOff <= -bulletZRange) continue;
+
+                                if (subTarget.hp > 0 && subTarget.防止无限飞 != true) {
+                                    var subUnitArea:AABBCollider = subTarget.aabbCollider;
+                                    var subCR:Object = areaAABB.checkCollision(subUnitArea, szOff);
+
+                                    if (subCR.isColliding && subCR.tEntry < subNearestTEntry) {
+                                        subNearestTEntry = subCR.tEntry;
+                                        subNearestTarget = subTarget;
+                                        subNearestHitX = subCR.overlapCenter.x;
+                                        subNearestHitY = subCR.overlapCenter.y;
+                                    }
+                                }
+                            }
+
+                            if (subNearestTarget != null) {
+                                // 对子射线命中目标应用伤害
+                                finalResult.overlapCenter.x = subNearestHitX;
+                                finalResult.overlapCenter.y = subNearestHitY;
+                                finalResult.overlapRatio = forkFalloff;
+                                finalResult.tEntry = subNearestTEntry;
+
+                                dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
+                                    Dodge.calculateDodgeState(
+                                        subNearestTarget,
+                                        Dodge.calcDodgeResult(shooter, subNearestTarget, bullet.命中率),
+                                        bullet
+                                    );
+
+                                damageResult = Damage.calculateDamage(
+                                    bullet, shooter, subNearestTarget, forkFalloff, dodgeState
+                                );
+
+                                bullet.hitCount += damageResult.actualScatterUsed;
+
+                                targetDispatcher = subNearestTarget.dispatcher;
+                                targetDispatcher.publish("hit", subNearestTarget, shooter, bullet, finalResult, damageResult);
+
+                                if (subNearestTarget.hp <= 0) {
+                                    isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;
+                                    targetDispatcher.publish(isNormalKill ? "kill" : "death", subNearestTarget);
+                                    shooter.dispatcher.publish("enemyKilled", subNearestTarget, bullet);
+                                }
+
+                                damageResult.triggerDisplay(subNearestTarget._x, subNearestTarget._y);
+
+                                if (bullet.shouldGeneratePostHitEffect) {
+                                    FX.Effect(bullet.击中后子弹的效果, subNearestHitX, subNearestHitY, shooter._xscale);
+                                }
+                                // 子射线电弧：从主命中点到子命中点
+                                LightningRenderer.spawn(rayNearestHitX, rayNearestHitY, subNearestHitX, subNearestHitY, config);
+                            } else {
+                                // 子射线未命中：电弧打到子射线末端
+                                var subEndX:Number = rayNearestHitX + subDirX * forkLength;
+                                var subEndY:Number = rayNearestHitY + subDirY * forkLength;
+                                LightningRenderer.spawn(rayNearestHitX, rayNearestHitY, subEndX, subEndY, config);
+                            }
+                        }
+                    }
+                    // single 模式无额外处理
+
+                } else {
+                    // 射线未命中：电弧打到最远处
+                    rayAngle = bullet._rotation * DEG_TO_RAD;
+                    rayLength = (config != null && !isNaN(config.rayLength))
+                        ? config.rayLength : 900;
+                    rayEndX = rayOriginX + Math.cos(rayAngle) * rayLength;
+                    rayEndY = rayOriginY + Math.sin(rayAngle) * rayLength;
+
+                    // 未命中时无 HitUpdater 回调，直接播放击中地图效果
+                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                    LightningRenderer.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, config);
                 }
-
-                damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
-
-                // 电弧视觉效果（命中）
-                if (bullet.shouldGeneratePostHitEffect) {
-                    FX.Effect(bullet.击中后子弹的效果, finalResult.overlapCenter.x, finalResult.overlapCenter.y, shooter._xscale);
-                }
-                LightningRenderer.spawn(rayOriginX, rayOriginY, finalResult.overlapCenter.x, finalResult.overlapCenter.y, bullet.rayConfig);
-
-                if (debugMode) {
-                    unitArea = hitTarget.aabbCollider;
-                    zOffset = bulletZOffset - hitTarget.Z轴坐标;
-                    AABBRenderer.renderAABB(areaAABB, zOffset, "thick");
-                    AABBRenderer.renderAABB(unitArea, zOffset, "filled");
-                }
-            } else {
-                // 射线未命中：电弧打到最远处
-                var rayAngle:Number = bullet._rotation * (Math.PI / 180);
-                var rayLength:Number = (bullet.rayConfig != null && !isNaN(bullet.rayConfig.rayLength))
-                    ? bullet.rayConfig.rayLength : 900;
-                var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
-                var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
-
-                // 未命中时无 HitUpdater 回调，直接播放击中地图效果
-                FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
-                LightningRenderer.spawn(rayOriginX, rayOriginY, rayEndX, rayEndY, bullet.rayConfig);
             }
 
             // 射线子弹单帧检测后销毁

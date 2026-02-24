@@ -107,7 +107,8 @@
       "Bash(where:*)",
       "Bash(del \"C:\\\\Users\\\\Public\\\\analyze_logs.py\")",
       "WebFetch(domain:www.gameaipro.com)",
-      "WebFetch(domain:codegeekology.com)"
+      "WebFetch(domain:codegeekology.com)",
+      "Bash(wmic diskdrive:*)"
     ],
     "deny": [],
     "ask": [],
