@@ -46,20 +46,40 @@ class org.flashNight.arki.render.VfxPresets {
     /**
      * RA2 光棱塔预设
      *
-     * 视觉特征：稳定金黄直束，强高光，轻微呼吸动画
+     * 视觉特征：纯黄亮束 + 纯白内核 + 高频微颤，致敬原版光棱塔
      */
     public static var ra2_prism:Object = {
+        // 公共字段
+        primaryColor: 0xFFFF00,      // 纯正亮黄（匹配RA2原版）
+        secondaryColor: 0xFFFFAA,    // 淡黄过渡护套（v3三层光学：金黄外晕→淡黄护套→纯白内核）
+        thickness: 4,                // 加粗基准（笔直射线需要更有力道）
+        visualDuration: 4,
+        fadeOutDuration: 2,
+        // Prism v3 专用
+        shimmerAmp: 0.25,            // 频闪幅度（控制粗细/亮度脉冲强度，非路径抖动）
+        shimmerFreq: 0.08,           // 保留（v3未使用，向前兼容）
+        forkThicknessMul: 0.6,       // 折射线更细（v3 加强色散对比）
+        flickerEnabled: false        // v3自带脉冲频闪，无需额外爆闪
+    };
+
+    /**
+     * 辉光射线预设
+     *
+     * 视觉特征：稳定金黄直束，三层辉光渲染，呼吸动画
+     * 原 ra2_prism 的视觉风格独立保留
+     */
+    public static var radiance:Object = {
         // 公共字段
         primaryColor: 0xFFDD00,      // 金黄色
         secondaryColor: 0xFFFFAA,    // 淡黄高光
         thickness: 3,
         visualDuration: 4,
         fadeOutDuration: 2,
-        // Prism 专用
+        // Radiance 专用
         shimmerAmp: 0.1,             // 呼吸幅度 (0~1)
         shimmerFreq: 0.08,           // 呼吸频率 (周期/帧，约12帧一个周期)
         forkThicknessMul: 0.7,       // 折射线粗细倍率
-        flickerEnabled: false        // 禁用爆闪（光棱塔需要稳定的视觉感受）
+        flickerEnabled: false        // 禁用爆闪（辉光需要稳定的视觉感受）
     };
 
     /**
@@ -125,6 +145,7 @@ class org.flashNight.arki.render.VfxPresets {
             _presetMap = {
                 ra2_tesla: ra2_tesla,
                 ra2_prism: ra2_prism,
+                radiance: radiance,
                 ra3_spectrum: ra3_spectrum,
                 ra3_wave: ra3_wave
             };
@@ -148,7 +169,7 @@ class org.flashNight.arki.render.VfxPresets {
      * @return 预设名数组
      */
     public static function getPresetNames():Array {
-        return ["ra2_tesla", "ra2_prism", "ra3_spectrum", "ra3_wave"];
+        return ["ra2_tesla", "ra2_prism", "radiance", "ra3_spectrum", "ra3_wave"];
     }
 
     /**
@@ -161,6 +182,7 @@ class org.flashNight.arki.render.VfxPresets {
         switch (vfxStyle) {
             case "tesla":    return "ra2_tesla";
             case "prism":    return "ra2_prism";
+            case "radiance": return "radiance";
             case "spectrum": return "ra3_spectrum";
             case "wave":     return "ra3_wave";
             default:         return "ra2_tesla";
