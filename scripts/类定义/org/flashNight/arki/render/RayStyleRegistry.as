@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.render.renderer.TeslaRenderer;
+﻿import org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig;
+import org.flashNight.arki.render.renderer.TeslaRenderer;
 import org.flashNight.arki.render.renderer.PrismRenderer;
 import org.flashNight.arki.render.renderer.RadianceRenderer;
 import org.flashNight.arki.render.renderer.SpectrumRenderer;
@@ -20,10 +21,15 @@ import org.flashNight.arki.render.renderer.PlasmaRenderer;
  * - getStyleCost(style)              LOD 成本权重
  * - getStyleNames()                  所有已注册风格列表
  *
- * 新增风格只需在 ensureRegistry() 中添加一行 reg(...) 调用。
+ * 新增风格只需在 ensureRegistry() 中添加一行 reg(...) 调用，
+ * 并在 TeslaRayConfig 中添加对应的 VFX_xxx 常量。
+ *
+ * 注意：所有 reg() 调用使用 TeslaRayConfig.VFX_xxx 常量作为风格键，
+ * 确保风格字符串只在 TeslaRayConfig 中定义一次（单一事实来源）。
+ * 渲染方法必须为静态方法（函数引用不依赖 this 绑定）。
  *
  * @author FlashNight
- * @version 1.2
+ * @version 1.3
  */
 class org.flashNight.arki.render.RayStyleRegistry {
 
@@ -54,22 +60,24 @@ class org.flashNight.arki.render.RayStyleRegistry {
         _registry = {};
         _styleNames = [];
 
-        // ─── 逐条注册（新增风格只改这里） ──────────────────────
-        //     style          renderer.render            preset name       cost
-        reg("tesla",     TeslaRenderer.render,          "ra2_tesla",       1.5);
-        reg("prism",     PrismRenderer.render,          "ra2_prism",       1.0);
-        reg("radiance",  RadianceRenderer.render,       "radiance",        1.0);
-        reg("spectrum",  SpectrumRenderer.render,       "ra3_spectrum",    2.5);
-        reg("resonance", PhaseResonanceRenderer.render, "resonance",       2.5);
-        reg("wave",      WaveRenderer.render,           "ra3_wave",        2.0);
-        reg("thermal",   ThermalRenderer.render,        "thermal",         2.0);
-        reg("vortex",    VortexRenderer.render,         "vortex",          2.0);
-        reg("plasma",    PlasmaRenderer.render,         "plasma",          2.0);
+        // ─── 逐条注册（新增风格只改这里 + TeslaRayConfig 常量） ────
+        var C:Function = TeslaRayConfig; // 缩写，减少行宽
+        //     style (VFX_xxx)     renderer.render            preset name       cost
+        reg(C.VFX_TESLA,     TeslaRenderer.render,          "ra2_tesla",       1.5);
+        reg(C.VFX_PRISM,     PrismRenderer.render,          "ra2_prism",       1.0);
+        reg(C.VFX_RADIANCE,  RadianceRenderer.render,       "radiance",        1.0);
+        reg(C.VFX_SPECTRUM,  SpectrumRenderer.render,       "ra3_spectrum",    2.5);
+        reg(C.VFX_RESONANCE, PhaseResonanceRenderer.render, "resonance",       2.5);
+        reg(C.VFX_WAVE,      WaveRenderer.render,           "ra3_wave",        2.0);
+        reg(C.VFX_THERMAL,   ThermalRenderer.render,        "thermal",         2.0);
+        reg(C.VFX_VORTEX,    VortexRenderer.render,         "vortex",          2.0);
+        reg(C.VFX_PLASMA,    PlasmaRenderer.render,         "plasma",          2.0);
     }
 
-    /** 注册一条风格记录（内部 helper） */
+    /** 注册一条风格记录（内部 helper，重复注册静默忽略） */
     private static function reg(style:String, renderFn:Function,
                                  preset:String, cost:Number):Void {
+        if (_registry[style] != undefined) return; // 防止重复注册导致 _styleNames 出现重复项
         _registry[style] = { render: renderFn, preset: preset, cost: cost };
         _styleNames.push(style);
     }
@@ -99,7 +107,7 @@ class org.flashNight.arki.render.RayStyleRegistry {
         ensureRegistry();
         var entry:Object = _registry[style];
         if (entry == null) {
-            entry = _registry["tesla"]; // fallback
+            entry = _registry[TeslaRayConfig.VFX_TESLA]; // fallback
         }
         entry.render(arc, lod, mc);
     }

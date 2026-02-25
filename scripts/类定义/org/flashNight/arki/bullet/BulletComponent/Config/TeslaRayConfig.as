@@ -99,15 +99,17 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
 
     /**
      * 渲染风格标识 (与 rayMode 完全正交)
-     * 可选值: "tesla" | "prism" | "spectrum" | "wave"
+     * 可选值: "tesla" | "prism" | "radiance" | "spectrum" | "resonance" | "wave" | "thermal" | "vortex" | "plasma"
      * 默认 "tesla"
+     * @see RayStyleRegistry 所有合法风格的注册表（单一事实来源）
      */
     public var vfxStyle:String;
 
     /**
      * 预设名称
-     * 可选值: "ra2_tesla" | "ra2_prism" | "ra3_spectrum" | "ra3_wave"
+     * 可选值: "ra2_tesla" | "ra2_prism" | "radiance" | "ra3_spectrum" | "resonance" | "ra3_wave" | "thermal" | "vortex" | "plasma"
      * 若未指定，根据 vfxStyle 自动选择默认预设
+     * @see RayStyleRegistry.getDefaultPreset()
      */
     public var vfxPreset:String;
 

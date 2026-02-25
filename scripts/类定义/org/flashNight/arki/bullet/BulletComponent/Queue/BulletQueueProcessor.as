@@ -823,6 +823,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                     // 【设计决策】击中时触发函数 仅在主命中时调用，chain/fork 副命中不调用。
                     // 平衡性考虑：避免连锁 Buff/效果过于强力。若需改变，在 chain/fork 循环内添加调用即可。
+                    // 注意：hitTarget/命中对象 在此处提前赋值供 击中时触发函数 读取，
+                    // settleRayHit 内部会再次赋值（值相同），这是有意为之的冗余。
                     bullet.hitTarget = hitTarget;
                     bullet.命中对象 = hitTarget;
                     if (bullet.击中时触发函数) bullet.击中时触发函数();
