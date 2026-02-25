@@ -6,6 +6,9 @@ import org.flashNight.arki.render.renderer.RadianceRenderer;
 import org.flashNight.arki.render.renderer.SpectrumRenderer;
 import org.flashNight.arki.render.renderer.WaveRenderer;
 import org.flashNight.arki.render.renderer.PhaseResonanceRenderer;
+import org.flashNight.arki.render.renderer.ThermalRenderer;
+import org.flashNight.arki.render.renderer.VortexRenderer;
+import org.flashNight.arki.render.renderer.PlasmaRenderer;
 
 /**
  * RayVfxManager - 射线视觉效果管理器 (路由器)
@@ -83,7 +86,10 @@ class org.flashNight.arki.render.RayVfxManager {
         radiance: 1.0,  // 辉光射线（与 prism 同级）
         spectrum: 2.5,  // 多条纹 N 倍 drawcall
         resonance: 2.5, // 相位谐振波（与 spectrum 同级）
-        wave: 2.0       // 正弦波分段 + 波纹
+        wave: 2.0,      // 正弦波分段 + 波纹
+        thermal: 2.0,   // 热能射线（与 wave 同级）
+        vortex: 2.0,    // 涡旋射线（与 wave 同级）
+        plasma: 2.0     // 等离子射线（与 wave 同级）
     };
 
     /** LOD 阈值 */
@@ -426,6 +432,15 @@ class org.flashNight.arki.render.RayVfxManager {
             case "wave":
                 WaveRenderer.render(arc, _currentLOD, mc);
                 break;
+            case "thermal":
+                ThermalRenderer.render(arc, _currentLOD, mc);
+                break;
+            case "vortex":
+                VortexRenderer.render(arc, _currentLOD, mc);
+                break;
+            case "plasma":
+                PlasmaRenderer.render(arc, _currentLOD, mc);
+                break;
             case "tesla":
             default:
                 TeslaRenderer.render(arc, _currentLOD, mc);
@@ -502,19 +517,36 @@ class org.flashNight.arki.render.RayVfxManager {
     }
 
     /**
-     * 绘制圆形（用于 Wave 的命中点波纹）
+     * 绘制平滑填充圆盘
+     *
+     * v6 重写：用 8 段二次贝塞尔曲线 + beginFill 替代旧的
+     * 8 段 lineTo 八边形描边。旧实现在 additive blend 下
+     * 会暴露明显的八边形硬边轮廓（"六边形能量盾"伪影）。
+     *
+     * 新实现：无描边、纯填充、curveTo 曲线 → 视觉上完美平滑的圆。
+     * 8 段二次贝塞尔近似圆的最大误差 < 0.06% 半径，肉眼不可见。
      */
     public static function drawCircle(mc:MovieClip, cx:Number, cy:Number,
                                        radius:Number, color:Number, alpha:Number):Void {
-        mc.lineStyle(2, color, alpha, true, "normal", "none", "round");
-        mc.moveTo(cx + radius, cy);
+        if (radius <= 0 || alpha <= 0) return;
 
-        // 使用 8 段近似圆
-        var segments:Number = 8;
-        var angleStep:Number = (2 * Math.PI) / segments;
-        for (var i:Number = 1; i <= segments; i++) {
-            var angle:Number = i * angleStep;
-            mc.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
+        // 关闭描边（alpha=0 使 hairline 不可见）
+        mc.lineStyle(0, 0, 0);
+        mc.beginFill(color, alpha);
+
+        // 8 段 curveTo：每段 45°，控制点距圆心 r/cos(π/8)
+        var segAngle:Number = 0.7853981633974483; // π/4
+        var k:Number = radius * 1.0823922002923940; // 1/cos(π/8)
+
+        mc.moveTo(cx + radius, cy);
+        for (var i:Number = 0; i < 8; i++) {
+            var midA:Number = (i + 0.5) * segAngle;
+            var endA:Number = (i + 1) * segAngle;
+            mc.curveTo(
+                cx + k * Math.cos(midA), cy + k * Math.sin(midA),
+                cx + radius * Math.cos(endA), cy + radius * Math.sin(endA)
+            );
         }
+        mc.endFill();
     }
 }

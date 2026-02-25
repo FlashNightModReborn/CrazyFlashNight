@@ -125,18 +125,41 @@ class org.flashNight.arki.render.VfxPresets {
     };
 
     /**
-     * RA3 波能炮预设
+     * RA3 波能炮预设 (v6 能量光矛深度还原)
      *
-     * 视觉特征：宽能量束，波形传播，节律脉冲，强贯穿感
+     * 视觉特征：超宽Bloom + 管道填充 + 极淡等离子鞘 + 强主轴 + 运动模糊光矛
      */
     public static var ra3_wave:Object = {
+        // 公共字段
+        primaryColor: 0x0099FF,      // 电光蓝
+        secondaryColor: 0x77EEFF,    // 亮青白
+        thickness: 8,                // ★ 加粗基准
+        visualDuration: 6,
+        fadeOutDuration: 4,
+        // Wave v6 专用
+        waveAmp: 7,                  // 低振幅等离子鞘，微可见包裹质感
+        waveLen: 200,                // ★ 拉伸波长，高速流感
+        waveSpeed: 2.2,              // ★ 快速流动
+        pulseAmp: 0.12,              // 呼吸脉冲
+        pulseRate: 0.35,             // 呼吸频率
+        hitRippleSize: 25,           // 命中点波纹大小
+        hitRippleAlpha: 70,          // 命中点波纹透明度
+        flickerEnabled: false        // v6自带光矛脉冲，无需额外爆闪
+    };
+
+    /**
+     * 热能射线预设
+     *
+     * 视觉特征：红橙正弦波 + 脉冲膨胀 + 命中波纹，原波能射线的独立变种
+     */
+    public static var thermal:Object = {
         // 公共字段
         primaryColor: 0xFF4400,      // 红橙色
         secondaryColor: 0xFFAA00,    // 橙黄高光
         thickness: 5,
         visualDuration: 6,
         fadeOutDuration: 4,
-        // Wave 专用
+        // Thermal 专用
         waveAmp: 8,                  // 波形幅度 (像素)
         waveLen: 40,                 // 波长 (像素)
         waveSpeed: 0.15,             // 波传播速度 (像素/帧)
@@ -144,7 +167,54 @@ class org.flashNight.arki.render.VfxPresets {
         pulseRate: 0.3,              // 脉冲速率 (周期/帧)
         hitRippleSize: 15,           // 命中点波纹大小 (像素)
         hitRippleAlpha: 50,          // 命中点波纹透明度
-        flickerEnabled: false        // 禁用爆闪（波能炮需要稳定的视觉感受）
+        flickerEnabled: false
+    };
+
+    /**
+     * 涡旋射线预设 (v2 渲染升级)
+     *
+     * 视觉特征：宽展双螺旋 + 波纹白芯交汇爆白 + 多层泛光 + 炮口辉光
+     */
+    public static var vortex:Object = {
+        // 公共字段
+        primaryColor: 0x0088FF,      // 亮蓝
+        secondaryColor: 0x88DDFF,    // 淡青白高光
+        thickness: 6,
+        visualDuration: 6,
+        fadeOutDuration: 4,
+        // Vortex v2 专用（保持宽展涡旋特色）
+        waveAmp: 12,                 // 宽振幅（涡旋特色）
+        waveLen: 90,                 // 长波长（宽展缠绕）
+        waveSpeed: 0.3,              // 慢波速（优雅旋转）
+        pulseAmp: 0.2,               // 脉冲幅度
+        pulseRate: 0.3,              // 脉冲速率
+        hitRippleSize: 20,           // 命中点波纹大小
+        hitRippleAlpha: 60,          // 命中点波纹透明度
+        flickerEnabled: false
+    };
+
+    /**
+     * 等离子射线预设
+     *
+     * 视觉特征：多层递减泛光 + 半透明游丝 + 高频扰动 + 不对称双螺旋
+     * WaveRenderer v3 的独立保留，为等离子武器系列服务
+     */
+    public static var plasma:Object = {
+        // 公共字段
+        primaryColor: 0x0088FF,      // 主蓝
+        secondaryColor: 0x88EEFF,    // 极亮青白
+        thickness: 5,
+        visualDuration: 6,
+        fadeOutDuration: 4,
+        // Plasma 专用
+        waveAmp: 6,                  // 紧贴光柱
+        waveLen: 60,                 // 紧密螺旋
+        waveSpeed: 0.5,              // 高速流动
+        pulseAmp: 0.15,              // 脉冲幅度
+        pulseRate: 0.4,              // 脉冲速率
+        hitRippleSize: 20,           // 命中点波纹大小
+        hitRippleAlpha: 60,          // 命中点波纹透明度
+        flickerEnabled: false
     };
 
     // ════════════════════════════════════════════════════════════════════════
@@ -169,7 +239,10 @@ class org.flashNight.arki.render.VfxPresets {
                 radiance: radiance,
                 ra3_spectrum: ra3_spectrum,
                 resonance: resonance,
-                ra3_wave: ra3_wave
+                ra3_wave: ra3_wave,
+                thermal: thermal,
+                vortex: vortex,
+                plasma: plasma
             };
         }
         return _presetMap[presetName];
@@ -191,7 +264,7 @@ class org.flashNight.arki.render.VfxPresets {
      * @return 预设名数组
      */
     public static function getPresetNames():Array {
-        return ["ra2_tesla", "ra2_prism", "radiance", "ra3_spectrum", "resonance", "ra3_wave"];
+        return ["ra2_tesla", "ra2_prism", "radiance", "ra3_spectrum", "resonance", "ra3_wave", "thermal", "vortex", "plasma"];
     }
 
     /**
@@ -208,6 +281,9 @@ class org.flashNight.arki.render.VfxPresets {
             case "spectrum": return "ra3_spectrum";
             case "resonance": return "resonance";
             case "wave":     return "ra3_wave";
+            case "thermal":  return "thermal";
+            case "vortex":   return "vortex";
+            case "plasma":   return "plasma";
             default:         return "ra2_tesla";
         }
     }

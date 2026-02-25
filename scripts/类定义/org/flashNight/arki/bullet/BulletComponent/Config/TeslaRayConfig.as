@@ -381,7 +381,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
 
         if (node.vfxStyle != undefined) {
             var style:String = String(node.vfxStyle);
-            if (style == "tesla" || style == "prism" || style == "radiance" || style == "spectrum" || style == "resonance" || style == "wave") {
+            if (style == "tesla" || style == "prism" || style == "radiance" || style == "spectrum" || style == "resonance" || style == "wave" || style == "thermal" || style == "vortex" || style == "plasma") {
                 config.vfxStyle = style;
             }
         }
@@ -723,6 +723,15 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             case "wave":
                 s += " waveAmp=" + waveAmp + " pulseAmp=" + pulseAmp;
                 break;
+            case "thermal":
+                s += " waveAmp=" + waveAmp + " pulseAmp=" + pulseAmp;
+                break;
+            case "vortex":
+                s += " waveAmp=" + waveAmp + " waveLen=" + waveLen + " pulseAmp=" + pulseAmp;
+                break;
+            case "plasma":
+                s += " waveAmp=" + waveAmp + " waveLen=" + waveLen + " pulseAmp=" + pulseAmp;
+                break;
         }
 
         return s + "]";
@@ -761,6 +770,27 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      */
     public function isResonance():Boolean {
         return vfxStyle == "resonance";
+    }
+
+    /**
+     * 判断是否为 Thermal 风格
+     */
+    public function isThermal():Boolean {
+        return vfxStyle == "thermal";
+    }
+
+    /**
+     * 判断是否为 Vortex 风格
+     */
+    public function isVortex():Boolean {
+        return vfxStyle == "vortex";
+    }
+
+    /**
+     * 判断是否为 Plasma 风格
+     */
+    public function isPlasma():Boolean {
+        return vfxStyle == "plasma";
     }
 
     /**

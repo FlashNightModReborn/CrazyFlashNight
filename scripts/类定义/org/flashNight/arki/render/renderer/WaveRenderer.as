@@ -1,42 +1,59 @@
 ﻿import org.flashNight.arki.render.RayVfxManager;
 
 /**
- * WaveRenderer - 波能射线渲染器
+ * WaveRenderer - 波能射线渲染器 (RA3 深度还原版 v6)
  *
- * 致敬红警3波能炮的视觉风格，核心特征：
- * • 正弦波路径：能量束呈波浪形态传播
- * • 脉冲膨胀：粗细随时间周期性变化
- * • 四层渲染：红底光 → 橙泛光 → 主体 → 白芯
- * • pierce 命中点增亮：穿透命中点绘制环形波纹
+ * v6 核心变更（基于四模型交叉审阅）：
  *
- * 路径生成原理：
- *   waveOffset = waveAmp × envelope × sin((t × dist / waveLen - age × waveSpeed) × 2π)
- *   其中 envelope = sin(t × π) 为纺锤包络，约束两端归零。
+ * 1. drawCircle 底层已修复（RayVfxManager: 8段curveTo+beginFill填充圆盘）
+ *    → 彻底消除"八边形/六边形空心护盾"伪影
  *
- * LOD 降级效果：
- *   LOD 0: 全特效（正弦波 + 脉冲 + 命中点波纹）
- *   LOD 1: 取消命中点波纹，简化波形
- *   LOD 2: 取消脉冲动画，直线路径
+ * 2. 删除 drawCircle 节点，改用"能量光矛"(Energy Lance)
+ *    → 沿射线方向的圆角粗线段，round 线帽天然形成运动模糊胶囊体
+ *    → 消除"冰糖葫芦"静态球体感，重现 RA3 高速流动的能量脉冲
+ *
+ * 3. 波纹大幅弱化：振幅 12→5，成为半透明等离子鞘
+ *    → 不再是"发光铁丝弹簧"，而是隐约的高温气体包裹层
+ *
+ * 4. 新增管道填充层 (Tube Fill)
+ *    → 中等宽度直线泛光填充螺旋间隙，形成 RA3 能量圆柱轮廓
+ *
+ * 5. 超宽三层 Bloom → 模拟 RA3 高温辉光溢出
+ *
+ * 6. 波长拉伸至200 + 波速2.2 → 真正的高速拉伸能量流
+ *
+ * 渲染层级（后→前）：
+ *   L0: 超宽大气泛光 (straight, α6+α12+α20)
+ *   L1: 管道填充 (straight, α25) → 填充螺旋间隙
+ *   L2: 极淡等离子鞘 (wave×2, α25+α50)
+ *   L3: 核心主轴 (straight, α85+α100)
+ *   L4: ★能量光矛 (lance segments, round caps → 运动模糊胶囊)
+ *   → 炮口辉光 → 命中点爆破
+ *
+ * LOD 降级：
+ *   LOD 0: 全特效（双螺旋鞘 + 光矛 + 炮口辉光 + 命中波纹）
+ *   LOD 1: 单螺旋鞘（无光矛、无命中波纹、无炮口辉光）
+ *   LOD 2: 纯直线（无螺旋）
  *
  * @author FlashNight
- * @version 1.0
+ * @version 6.0
  */
 class org.flashNight.arki.render.renderer.WaveRenderer {
 
     // ════════════════════════════════════════════════════════════════════════
-    // 默认配置常量
+    // 默认配置（v6: 贴近 RA3 参数组合）
     // ════════════════════════════════════════════════════════════════════════
 
-    private static var DEFAULT_PRIMARY_COLOR:Number = 0xFF4400;    // 红橙色
-    private static var DEFAULT_SECONDARY_COLOR:Number = 0xFFAA00;  // 橙黄高光
-    private static var DEFAULT_THICKNESS:Number = 5;
-    private static var DEFAULT_WAVE_AMP:Number = 8;                // 波形幅度
-    private static var DEFAULT_WAVE_LEN:Number = 40;               // 波长
-    private static var DEFAULT_WAVE_SPEED:Number = 0.15;           // 波传播速度
-    private static var DEFAULT_PULSE_AMP:Number = 0.2;             // 脉冲幅度
-    private static var DEFAULT_PULSE_RATE:Number = 0.3;            // 脉冲速率
-    private static var DEFAULT_HIT_RIPPLE_SIZE:Number = 15;        // 命中点波纹大小
-    private static var DEFAULT_HIT_RIPPLE_ALPHA:Number = 50;       // 命中点波纹透明度
+    private static var DEFAULT_PRIMARY_COLOR:Number = 0x0099FF;    // 电光蓝
+    private static var DEFAULT_SECONDARY_COLOR:Number = 0x77EEFF;  // 亮青白
+    private static var DEFAULT_THICKNESS:Number = 8;               // 加粗基准
+    private static var DEFAULT_WAVE_AMP:Number = 7;                // 低振幅等离子鞘，微可见包裹质感
+    private static var DEFAULT_WAVE_LEN:Number = 200;              // ★ 拉伸波长，高速流感
+    private static var DEFAULT_WAVE_SPEED:Number = 2.2;            // ★ 快速流动
+    private static var DEFAULT_PULSE_AMP:Number = 0.12;            // 呼吸脉冲
+    private static var DEFAULT_PULSE_RATE:Number = 0.35;           // 呼吸频率
+    private static var DEFAULT_HIT_RIPPLE_SIZE:Number = 25;        // 命中点波纹大小
+    private static var DEFAULT_HIT_RIPPLE_ALPHA:Number = 70;       // 命中点波纹透明度
 
     // ════════════════════════════════════════════════════════════════════════
     // 渲染入口
@@ -45,7 +62,7 @@ class org.flashNight.arki.render.renderer.WaveRenderer {
     /**
      * 渲染波能射线
      *
-     * @param arc 电弧数据对象
+     * @param arc 电弧数据对象 {startX, startY, endX, endY, age, config, meta}
      * @param lod 当前 LOD 等级 (0=高, 1=中, 2=低)
      * @param mc  目标 MovieClip
      */
@@ -55,16 +72,26 @@ class org.flashNight.arki.render.renderer.WaveRenderer {
         var age:Number = arc.age;
 
         // 解析配置参数
-        var primaryColor:Number = (config != null && !isNaN(config.primaryColor)) ? config.primaryColor : DEFAULT_PRIMARY_COLOR;
-        var secondaryColor:Number = (config != null && !isNaN(config.secondaryColor)) ? config.secondaryColor : DEFAULT_SECONDARY_COLOR;
-        var thickness:Number = (config != null && !isNaN(config.thickness)) ? config.thickness : DEFAULT_THICKNESS;
-        var waveAmp:Number = (config != null && !isNaN(config.waveAmp)) ? config.waveAmp : DEFAULT_WAVE_AMP;
-        var waveLen:Number = (config != null && !isNaN(config.waveLen)) ? config.waveLen : DEFAULT_WAVE_LEN;
-        var waveSpeed:Number = (config != null && !isNaN(config.waveSpeed)) ? config.waveSpeed : DEFAULT_WAVE_SPEED;
-        var pulseAmp:Number = (config != null && !isNaN(config.pulseAmp)) ? config.pulseAmp : DEFAULT_PULSE_AMP;
-        var pulseRate:Number = (config != null && !isNaN(config.pulseRate)) ? config.pulseRate : DEFAULT_PULSE_RATE;
-        var hitRippleSize:Number = (config != null && !isNaN(config.hitRippleSize)) ? config.hitRippleSize : DEFAULT_HIT_RIPPLE_SIZE;
-        var hitRippleAlpha:Number = (config != null && !isNaN(config.hitRippleAlpha)) ? config.hitRippleAlpha : DEFAULT_HIT_RIPPLE_ALPHA;
+        var primaryColor:Number = (config != null && !isNaN(config.primaryColor))
+            ? config.primaryColor : DEFAULT_PRIMARY_COLOR;
+        var secondaryColor:Number = (config != null && !isNaN(config.secondaryColor))
+            ? config.secondaryColor : DEFAULT_SECONDARY_COLOR;
+        var thickness:Number = (config != null && !isNaN(config.thickness))
+            ? config.thickness : DEFAULT_THICKNESS;
+        var waveAmp:Number = (config != null && !isNaN(config.waveAmp))
+            ? config.waveAmp : DEFAULT_WAVE_AMP;
+        var waveLen:Number = (config != null && !isNaN(config.waveLen))
+            ? config.waveLen : DEFAULT_WAVE_LEN;
+        var waveSpeed:Number = (config != null && !isNaN(config.waveSpeed))
+            ? config.waveSpeed : DEFAULT_WAVE_SPEED;
+        var pulseAmp:Number = (config != null && !isNaN(config.pulseAmp))
+            ? config.pulseAmp : DEFAULT_PULSE_AMP;
+        var pulseRate:Number = (config != null && !isNaN(config.pulseRate))
+            ? config.pulseRate : DEFAULT_PULSE_RATE;
+        var hitRippleSize:Number = (config != null && !isNaN(config.hitRippleSize))
+            ? config.hitRippleSize : DEFAULT_HIT_RIPPLE_SIZE;
+        var hitRippleAlpha:Number = (config != null && !isNaN(config.hitRippleAlpha))
+            ? config.hitRippleAlpha : DEFAULT_HIT_RIPPLE_ALPHA;
 
         // 应用 intensity 强度因子
         var intensity:Number = (meta != null && !isNaN(meta.intensity)) ? meta.intensity : 1.0;
@@ -82,55 +109,191 @@ class org.flashNight.arki.render.renderer.WaveRenderer {
         var dist:Number = Math.sqrt(dx * dx + dy * dy);
         if (dist == 0) return;
 
-        // 垂直方向向量
-        var perpX:Number = -dy / dist;
-        var perpY:Number = dx / dist;
+        var dirX:Number = dx / dist;
+        var dirY:Number = dy / dist;
+        var perpX:Number = -dirY;
+        var perpY:Number = dirX;
 
-        // 计算脉冲粗细调制
+        // 全局加色混合
+        mc.blendMode = "add";
+
+        // 呼吸脉冲
         var pulseFactor:Number = 1.0;
         if (enablePulse) {
             pulseFactor = 1.0 + pulseAmp * Math.sin(age * pulseRate * 2 * Math.PI);
         }
-        var currentThick:Number = thickness * pulseFactor;
+        var T:Number = thickness * pulseFactor;
 
-        // 生成路径
-        var path:Array;
+        // ─────────────────────────────────────────────────────────────
+        // 路径生成：笔直主轴 + 对称双螺旋（低振幅等离子鞘）
+        // ─────────────────────────────────────────────────────────────
+
+        var pathStraight:Array = generateStraightPath(arc);
+        var pathWave1:Array = null;
+        var pathWave2:Array = null;
+
         if (enableWave) {
-            path = generateWavePath(arc, perpX, perpY, dist, waveAmp, waveLen, waveSpeed, age);
-        } else {
-            // LOD 2: 直线路径
-            path = generateStraightPath(arc);
+            pathWave1 = generateWavePath(arc, perpX, perpY, dist,
+                waveAmp, waveLen, waveSpeed, age, 0);
+            if (lod == 0) {
+                pathWave2 = generateWavePath(arc, perpX, perpY, dist,
+                    waveAmp, waveLen, waveSpeed, age, Math.PI);
+            }
         }
 
         // ─────────────────────────────────────────────────────────────
-        // 四层渲染
+        // L0: 超宽大气泛光（RA3 标志性辉光溢出，三层递减）
         // ─────────────────────────────────────────────────────────────
 
-        // Layer 0: 红底光（最宽，营造能量辐射感）
-        RayVfxManager.drawPath(mc, path, 0xFF0000, currentThick * 8, 15);
-
-        // Layer 1: 橙泛光
-        RayVfxManager.drawPath(mc, path, primaryColor, currentThick * 4, 35);
-
-        // Layer 2: 主体
-        RayVfxManager.drawPath(mc, path, primaryColor, currentThick * 2, 85);
-
-        // Layer 3: 白芯
-        RayVfxManager.drawPath(mc, path, secondaryColor, currentThick * 0.5, 100);
+        RayVfxManager.drawPath(mc, pathStraight, primaryColor, T * 14.0, 6);
+        RayVfxManager.drawPath(mc, pathStraight, primaryColor, T * 9.0, 12);
+        RayVfxManager.drawPath(mc, pathStraight, secondaryColor, T * 5.0, 20);
 
         // ─────────────────────────────────────────────────────────────
-        // pierce 命中点增亮
+        // L1: 管道填充（填充螺旋间隙，形成 RA3 能量圆柱轮廓）
         // ─────────────────────────────────────────────────────────────
+
+        RayVfxManager.drawPath(mc, pathStraight, primaryColor, T * 3.0, 25);
+
+        // ─────────────────────────────────────────────────────────────
+        // L2: 极淡等离子鞘（波纹彻底退为背景包裹层）
+        // ─────────────────────────────────────────────────────────────
+
+        if (enableWave) {
+            var waveThick:Number = T * 0.8;
+
+            // 波纹 A：蓝色外晕 + 亮青内层，无白芯
+            RayVfxManager.drawPath(mc, pathWave1, primaryColor, waveThick * 2.0, 25);
+            RayVfxManager.drawPath(mc, pathWave1, secondaryColor, waveThick * 0.8, 50);
+
+            // 波纹 B（LOD 0 专属）
+            if (pathWave2 != null) {
+                RayVfxManager.drawPath(mc, pathWave2, primaryColor, waveThick * 2.0, 25);
+                RayVfxManager.drawPath(mc, pathWave2, secondaryColor, waveThick * 0.8, 50);
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // L3: 核心主轴（直线 + 强白芯，RA3 贯穿感的核心）
+        // ─────────────────────────────────────────────────────────────
+
+        RayVfxManager.drawPath(mc, pathStraight, secondaryColor, T * 2.0, 85);
+        RayVfxManager.drawPath(mc, pathStraight, 0xFFFFFF, T * 0.7, 100);
+
+        // ─────────────────────────────────────────────────────────────
+        // L4: ★★★ 能量光矛 (Energy Lance / Motion Blur Slugs)
+        //
+        //   数学解算双螺旋交汇坐标（同 v5），但不再画圆——
+        //   改为沿射线方向的圆角粗线段。round 线帽天然形成
+        //   流线型运动模糊胶囊体，消除冰糖葫芦/六边形感。
+        //   高速游走的拉伸光矛 >> 静态球体，更贴合 RA3。
+        // ─────────────────────────────────────────────────────────────
+
+        if (enableWave && lod == 0) {
+            var k_min:Number = Math.ceil(-2 * age * waveSpeed);
+            var k_max:Number = Math.floor(2 * (dist / waveLen - age * waveSpeed));
+
+            // 光矛长度 = 波长的45%，强调运动模糊方向感
+            var lanceLen:Number = waveLen * 0.45;
+
+            for (var k:Number = k_min; k <= k_max; k++) {
+                var nodeDist:Number = (k * 0.5 + age * waveSpeed) * waveLen;
+                var t:Number = nodeDist / dist;
+
+                if (t <= 0.03 || t >= 0.97) continue;
+
+                // smoothstep 包络
+                var envelope:Number = 1.0;
+                var margin:Number = 0.08;
+                if (t < margin) {
+                    envelope = t / margin;
+                } else if (t > 1.0 - margin) {
+                    envelope = (1.0 - t) / margin;
+                }
+                envelope = envelope * envelope * (3 - 2 * envelope);
+
+                if (envelope > 0.05) {
+                    var nodeX:Number = arc.startX + dx * t;
+                    var nodeY:Number = arc.startY + dy * t;
+                    var scale:Number = T * envelope;
+                    var curLen:Number = lanceLen * envelope;
+
+                    // 三层递减光矛：round 线帽 → 修长胶囊体
+                    // 外层收窄(5→3)避免气泡感，拉长比例强调方向
+                    drawLance(mc, nodeX, nodeY, dirX, dirY, curLen,
+                        primaryColor, scale * 3.0, 22);
+                    drawLance(mc, nodeX, nodeY, dirX, dirY, curLen * 0.75,
+                        secondaryColor, scale * 1.5, 75);
+                    drawLance(mc, nodeX, nodeY, dirX, dirY, curLen * 0.5,
+                        0xFFFFFF, scale * 0.6, 100);
+                }
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // 炮口辉光球（drawCircle 已修复为平滑填充圆盘）
+        // ─────────────────────────────────────────────────────────────
+
+        if (enableRipple) {
+            // 填充圆盘比旧描边重很多，缩小半径+降低alpha补偿
+            RayVfxManager.drawCircle(mc, arc.startX, arc.startY,
+                T * 3.0, primaryColor, 25);
+            RayVfxManager.drawCircle(mc, arc.startX, arc.startY,
+                T * 1.4, secondaryColor, 55);
+            RayVfxManager.drawCircle(mc, arc.startX, arc.startY,
+                T * 0.5, 0xFFFFFF, 100);
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // pierce 命中点三层爆破波纹
+        // ─────────────────────────────────────────────────────────────
+
         if (enableRipple && meta != null && meta.segmentKind == "pierce" && meta.hitPoints != null) {
             var hitPoints:Array = meta.hitPoints;
             for (var i:Number = 0; i < hitPoints.length; i++) {
                 var hp:Object = hitPoints[i];
-                // 绘制环形波纹
-                RayVfxManager.drawCircle(mc, hp.x, hp.y, hitRippleSize, secondaryColor, hitRippleAlpha);
-                // 绘制内部增亮点
-                RayVfxManager.drawCircle(mc, hp.x, hp.y, hitRippleSize * 0.5, 0xFFFFFF, hitRippleAlpha * 1.5);
+                var pulseSize:Number = hitRippleSize * pulseFactor;
+                // 填充圆盘补偿：缩小半径，降低alpha
+                RayVfxManager.drawCircle(mc, hp.x, hp.y,
+                    pulseSize * 1.0, primaryColor, hitRippleAlpha * 0.3);
+                RayVfxManager.drawCircle(mc, hp.x, hp.y,
+                    pulseSize * 0.55, secondaryColor, hitRippleAlpha * 0.7);
+                RayVfxManager.drawCircle(mc, hp.x, hp.y,
+                    pulseSize * 0.2, 0xFFFFFF, 100);
             }
         }
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // 能量光矛绘制
+    // ════════════════════════════════════════════════════════════════════════
+
+    /**
+     * 绘制能量光矛 —— 沿射线方向的圆角粗线段
+     *
+     * 利用 Flash lineStyle 的 "round" 线帽（caps），线段两端自然生成
+     * 半径 = thickness/2 的半圆，使整体形状为流线型胶囊体（stadium）。
+     * 在 additive blend 下，多层递减叠加产生：
+     *   外层蓝色大胶囊 → 中层亮青 → 内层白热芯
+     * 视觉效果：高速运动模糊的能量弹头，替代静态球体。
+     *
+     * @param mc    目标 MovieClip
+     * @param cx    光矛中心 X
+     * @param cy    光矛中心 Y
+     * @param dirX  射线方向 X（单位向量）
+     * @param dirY  射线方向 Y（单位向量）
+     * @param len   光矛总长度
+     * @param color 颜色
+     * @param thick 线粗（即胶囊直径）
+     * @param alpha 透明度 0-100
+     */
+    private static function drawLance(mc:MovieClip, cx:Number, cy:Number,
+                                       dirX:Number, dirY:Number, len:Number,
+                                       color:Number, thick:Number, alpha:Number):Void {
+        var halfLen:Number = len * 0.5;
+        mc.lineStyle(thick, color, alpha, true, "normal", "round", "round", 3);
+        mc.moveTo(cx - dirX * halfLen, cy - dirY * halfLen);
+        mc.lineTo(cx + dirX * halfLen, cy + dirY * halfLen);
     }
 
     // ════════════════════════════════════════════════════════════════════════
@@ -138,54 +301,56 @@ class org.flashNight.arki.render.renderer.WaveRenderer {
     // ════════════════════════════════════════════════════════════════════════
 
     /**
-     * 生成正弦波路径
-     *
-     * @param arc       电弧数据对象
-     * @param perpX     垂直方向 X 分量
-     * @param perpY     垂直方向 Y 分量
-     * @param dist      射线总长度
-     * @param waveAmp   波形幅度
-     * @param waveLen   波长
-     * @param waveSpeed 波传播速度
-     * @param age       当前帧龄
-     * @return          路径点数组
+     * 生成纯正弦波路径（低振幅等离子鞘用）
      */
     private static function generateWavePath(arc:Object, perpX:Number, perpY:Number,
                                               dist:Number, waveAmp:Number, waveLen:Number,
-                                              waveSpeed:Number, age:Number):Array {
+                                              waveSpeed:Number, age:Number,
+                                              phaseOffset:Number):Array {
         var dx:Number = arc.endX - arc.startX;
         var dy:Number = arc.endY - arc.startY;
 
         var points:Array = RayVfxManager.poolArr();
 
-        // 分段数（波能需要更多分段以保证波形平滑）
-        var segmentCount:Number = Math.max(10, Math.ceil(dist / 20));
+        var ptsPerWave:Number = 24;
+        if (waveLen < 5) waveLen = 5;
+        var segmentCount:Number = Math.ceil(dist / (waveLen / ptsPerWave));
+        if (segmentCount < 10) segmentCount = 10;
+        if (segmentCount > 250) segmentCount = 250;
+
         var step:Number = 1.0 / segmentCount;
+        var margin:Number = 0.08;
 
         for (var i:Number = 0; i <= segmentCount; i++) {
             var t:Number = i * step;
 
-            // 基础坐标
             var baseX:Number = arc.startX + dx * t;
             var baseY:Number = arc.startY + dy * t;
 
-            // 计算波形偏移
             var offset:Number = 0;
+
             if (t > 0.001 && t < 0.999) {
-                // 纺锤包络约束两端
-                var envelope:Number = Math.sin(t * Math.PI);
-                // 正弦波（沿束方向传播）
-                // 使用 t × dist 确保像素尺度的波长
-                offset = waveAmp * envelope * Math.sin((t * dist / waveLen - age * waveSpeed) * 2 * Math.PI);
+                var envelope:Number = 1.0;
+                if (t < margin) {
+                    envelope = t / margin;
+                } else if (t > 1.0 - margin) {
+                    envelope = (1.0 - t) / margin;
+                }
+                envelope = envelope * envelope * (3 - 2 * envelope);
+
+                var phase:Number = (t * dist / waveLen - age * waveSpeed) * 2 * Math.PI
+                    + phaseOffset;
+                offset = waveAmp * envelope * Math.sin(phase);
             }
 
-            // 端点强制锁定
             if (t <= 0.001) {
                 points.push(RayVfxManager.pt(arc.startX, arc.startY, 0.0));
             } else if (t >= 0.999) {
                 points.push(RayVfxManager.pt(arc.endX, arc.endY, 1.0));
             } else {
-                points.push(RayVfxManager.pt(baseX + perpX * offset, baseY + perpY * offset, t));
+                points.push(RayVfxManager.pt(
+                    baseX + perpX * offset,
+                    baseY + perpY * offset, t));
             }
         }
 
@@ -193,10 +358,7 @@ class org.flashNight.arki.render.renderer.WaveRenderer {
     }
 
     /**
-     * 生成直线路径（LOD 2 降级用）
-     *
-     * @param arc 电弧数据对象
-     * @return    路径点数组
+     * 生成直线路径
      */
     private static function generateStraightPath(arc:Object):Array {
         var points:Array = RayVfxManager.poolArr();

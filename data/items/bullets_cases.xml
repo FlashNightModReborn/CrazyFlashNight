@@ -773,16 +773,16 @@
         </attribute>
     </bullet>
 
-    <!-- ========== 波能科技 (Wave-Force / Red Alert 3) ========== -->
-    <!-- 基础版: single模式, 红橙色高能光束, 正弦波形传播 -->
+    <!-- ========== 热能射线 (Thermal) ========== -->
+    <!-- 基础版: single模式, 红橙色正弦波脉冲 -->
     <bullet>
-        <name>波能射线</name>
+        <name>热能射线</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
             <rayConfig>
                 <rayLength>1000</rayLength>
-                <vfxStyle>wave</vfxStyle>
-                <vfxPreset>ra3_wave</vfxPreset>
+                <vfxStyle>thermal</vfxStyle>
+                <vfxPreset>thermal</vfxPreset>
                 <primaryColor>0xFF4400</primaryColor>
                 <secondaryColor>0xFFAA00</secondaryColor>
                 <thickness>5</thickness>
@@ -796,17 +796,17 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: pierce穿透模式, 沿路径命中最多5个目标, 命中点有波纹增亮效果 -->
+    <!-- 强化版: pierce穿透模式, 命中点有波纹增亮效果 -->
     <bullet>
-        <name>波能射线-强化</name>
+        <name>热能射线-强化</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
             <pierceLimit>3</pierceLimit>
             <rayConfig>
                 <rayLength>1000</rayLength>
                 <rayMode>pierce</rayMode>
-                <vfxStyle>wave</vfxStyle>
-                <vfxPreset>ra3_wave</vfxPreset>
+                <vfxStyle>thermal</vfxStyle>
+                <vfxPreset>thermal</vfxPreset>
                 <damageFalloff>0.8</damageFalloff>
                 <primaryColor>0xFF4400</primaryColor>
                 <secondaryColor>0xFFAA00</secondaryColor>
@@ -818,6 +818,159 @@
                 <pulseRate>0.3</pulseRate>
                 <hitRippleSize>15</hitRippleSize>
                 <hitRippleAlpha>50</hitRippleAlpha>
+                <visualDuration>6</visualDuration>
+                <fadeOutDuration>4</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+
+    <!-- ========== 涡旋射线 (Vortex v2) ========== -->
+    <!-- 基础版: single模式, 宽展双螺旋+波纹白芯交汇爆白+多层泛光 -->
+    <bullet>
+        <name>涡旋射线</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <rayConfig>
+                <rayLength>1000</rayLength>
+                <vfxStyle>vortex</vfxStyle>
+                <vfxPreset>vortex</vfxPreset>
+                <primaryColor>0x0088FF</primaryColor>
+                <secondaryColor>0x88DDFF</secondaryColor>
+                <thickness>6</thickness>
+                <waveAmp>12</waveAmp>
+                <waveLen>90</waveLen>
+                <waveSpeed>0.3</waveSpeed>
+                <pulseAmp>0.2</pulseAmp>
+                <pulseRate>0.3</pulseRate>
+                <visualDuration>6</visualDuration>
+                <fadeOutDuration>4</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+    <!-- 强化版: pierce穿透模式, 宽展双螺旋贯穿多目标, 三层命中点爆破 -->
+    <bullet>
+        <name>涡旋射线-强化</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <pierceLimit>3</pierceLimit>
+            <rayConfig>
+                <rayLength>1000</rayLength>
+                <rayMode>pierce</rayMode>
+                <vfxStyle>vortex</vfxStyle>
+                <vfxPreset>vortex</vfxPreset>
+                <damageFalloff>0.8</damageFalloff>
+                <primaryColor>0x0088FF</primaryColor>
+                <secondaryColor>0x88DDFF</secondaryColor>
+                <thickness>6</thickness>
+                <waveAmp>12</waveAmp>
+                <waveLen>90</waveLen>
+                <waveSpeed>0.3</waveSpeed>
+                <pulseAmp>0.2</pulseAmp>
+                <pulseRate>0.3</pulseRate>
+                <hitRippleSize>20</hitRippleSize>
+                <hitRippleAlpha>60</hitRippleAlpha>
+                <visualDuration>6</visualDuration>
+                <fadeOutDuration>4</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+
+    <!-- ========== 波能科技 (Wave-Force / Red Alert 3) ========== -->
+    <!-- 基础版: single模式, 能量光矛+超宽Bloom+等离子鞘, 致敬RA3波能炮 v6 -->
+    <bullet>
+        <name>波能射线</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <rayConfig>
+                <rayLength>1000</rayLength>
+                <vfxStyle>wave</vfxStyle>
+                <vfxPreset>ra3_wave</vfxPreset>
+                <primaryColor>0x0099FF</primaryColor>
+                <secondaryColor>0x77EEFF</secondaryColor>
+                <thickness>8</thickness>
+                <waveAmp>7</waveAmp>
+                <waveLen>200</waveLen>
+                <waveSpeed>2.2</waveSpeed>
+                <pulseAmp>0.12</pulseAmp>
+                <pulseRate>0.35</pulseRate>
+                <visualDuration>6</visualDuration>
+                <fadeOutDuration>4</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+    <!-- 强化版: pierce穿透模式, 光矛贯穿多目标, 三层命中点爆破 -->
+    <bullet>
+        <name>波能射线-强化</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <pierceLimit>3</pierceLimit>
+            <rayConfig>
+                <rayLength>1000</rayLength>
+                <rayMode>pierce</rayMode>
+                <vfxStyle>wave</vfxStyle>
+                <vfxPreset>ra3_wave</vfxPreset>
+                <damageFalloff>0.8</damageFalloff>
+                <primaryColor>0x0099FF</primaryColor>
+                <secondaryColor>0x77EEFF</secondaryColor>
+                <thickness>8</thickness>
+                <waveAmp>7</waveAmp>
+                <waveLen>200</waveLen>
+                <waveSpeed>2.2</waveSpeed>
+                <pulseAmp>0.12</pulseAmp>
+                <pulseRate>0.35</pulseRate>
+                <hitRippleSize>25</hitRippleSize>
+                <hitRippleAlpha>70</hitRippleAlpha>
+                <visualDuration>6</visualDuration>
+                <fadeOutDuration>4</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+
+    <!-- ========== 等离子科技 (Plasma) ========== -->
+    <!-- 基础版: single模式, 多层泛光+半透明游丝+高频扰动, 等离子武器系列 -->
+    <bullet>
+        <name>等离子射线</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <rayConfig>
+                <rayLength>1000</rayLength>
+                <vfxStyle>plasma</vfxStyle>
+                <vfxPreset>plasma</vfxPreset>
+                <primaryColor>0x0088FF</primaryColor>
+                <secondaryColor>0x88EEFF</secondaryColor>
+                <thickness>5</thickness>
+                <waveAmp>6</waveAmp>
+                <waveLen>60</waveLen>
+                <waveSpeed>0.5</waveSpeed>
+                <pulseAmp>0.15</pulseAmp>
+                <pulseRate>0.4</pulseRate>
+                <visualDuration>6</visualDuration>
+                <fadeOutDuration>4</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+    <!-- 强化版: pierce穿透模式, 等离子光柱贯穿多目标, 三层命中点爆破 -->
+    <bullet>
+        <name>等离子射线-强化</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <pierceLimit>3</pierceLimit>
+            <rayConfig>
+                <rayLength>1000</rayLength>
+                <rayMode>pierce</rayMode>
+                <vfxStyle>plasma</vfxStyle>
+                <vfxPreset>plasma</vfxPreset>
+                <damageFalloff>0.8</damageFalloff>
+                <primaryColor>0x0088FF</primaryColor>
+                <secondaryColor>0x88EEFF</secondaryColor>
+                <thickness>5</thickness>
+                <waveAmp>6</waveAmp>
+                <waveLen>60</waveLen>
+                <waveSpeed>0.5</waveSpeed>
+                <pulseAmp>0.15</pulseAmp>
+                <pulseRate>0.4</pulseRate>
+                <hitRippleSize>20</hitRippleSize>
+                <hitRippleAlpha>60</hitRippleAlpha>
                 <visualDuration>6</visualDuration>
                 <fadeOutDuration>4</fadeOutDuration>
             </rayConfig>
