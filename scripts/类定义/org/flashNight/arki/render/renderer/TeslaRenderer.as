@@ -51,18 +51,19 @@ class org.flashNight.arki.render.renderer.TeslaRenderer {
     public static function render(arc:Object, lod:Number, mc:MovieClip):Void {
         var config:Object = arc.config;
         var meta:Object = arc.meta;
+        var VM:Function = RayVfxManager;
 
         // 解析配置参数
-        var primaryColor:Number = (config != null && !isNaN(config.primaryColor)) ? config.primaryColor : DEFAULT_PRIMARY_COLOR;
-        var secondaryColor:Number = (config != null && !isNaN(config.secondaryColor)) ? config.secondaryColor : DEFAULT_SECONDARY_COLOR;
-        var thickness:Number = (config != null && !isNaN(config.thickness)) ? config.thickness : DEFAULT_THICKNESS;
-        var branchCount:Number = (config != null && !isNaN(config.branchCount)) ? config.branchCount : DEFAULT_BRANCH_COUNT;
-        var branchProb:Number = (config != null && !isNaN(config.branchProbability)) ? config.branchProbability : DEFAULT_BRANCH_PROB;
-        var segmentLength:Number = (config != null && !isNaN(config.segmentLength)) ? config.segmentLength : DEFAULT_SEGMENT_LENGTH;
-        var jitter:Number = (config != null && !isNaN(config.jitter)) ? config.jitter : DEFAULT_JITTER;
+        var primaryColor:Number   = VM.cfgNum(config, "primaryColor", DEFAULT_PRIMARY_COLOR);
+        var secondaryColor:Number = VM.cfgNum(config, "secondaryColor", DEFAULT_SECONDARY_COLOR);
+        var thickness:Number      = VM.cfgNum(config, "thickness", DEFAULT_THICKNESS);
+        var branchCount:Number    = VM.cfgNum(config, "branchCount", DEFAULT_BRANCH_COUNT);
+        var branchProb:Number     = VM.cfgNum(config, "branchProbability", DEFAULT_BRANCH_PROB);
+        var segmentLength:Number  = VM.cfgNum(config, "segmentLength", DEFAULT_SEGMENT_LENGTH);
+        var jitter:Number         = VM.cfgNum(config, "jitter", DEFAULT_JITTER);
 
         // 应用 intensity 强度因子
-        var intensity:Number = (meta != null && !isNaN(meta.intensity)) ? meta.intensity : 1.0;
+        var intensity:Number = VM.cfgIntensity(meta);
         thickness *= intensity;
         jitter *= intensity;
 

@@ -52,24 +52,20 @@ class org.flashNight.arki.render.renderer.PrismRenderer {
     public static function render(arc:Object, lod:Number, mc:MovieClip):Void {
         var config:Object = arc.config;
         var meta:Object = arc.meta;
+        var VM:Function = RayVfxManager;
 
         // ★ 叠加混合 ── 光棱塔的灵魂，多束交叠处自然爆白致盲
         mc.blendMode = "add";
 
         // 解析配置参数
-        var primaryColor:Number = (config != null && !isNaN(config.primaryColor))
-            ? config.primaryColor : DEFAULT_PRIMARY_COLOR;
-        var secondaryColor:Number = (config != null && !isNaN(config.secondaryColor))
-            ? config.secondaryColor : DEFAULT_SECONDARY_COLOR;
-        var baseThickness:Number = (config != null && !isNaN(config.thickness))
-            ? config.thickness : DEFAULT_THICKNESS;
-        var shimmerAmp:Number = (config != null && !isNaN(config.shimmerAmp))
-            ? config.shimmerAmp : DEFAULT_SHIMMER_AMP;
-        var forkThicknessMul:Number = (config != null && !isNaN(config.forkThicknessMul))
-            ? config.forkThicknessMul : DEFAULT_FORK_THICKNESS_MUL;
+        var primaryColor:Number   = VM.cfgNum(config, "primaryColor", DEFAULT_PRIMARY_COLOR);
+        var secondaryColor:Number = VM.cfgNum(config, "secondaryColor", DEFAULT_SECONDARY_COLOR);
+        var baseThickness:Number  = VM.cfgNum(config, "thickness", DEFAULT_THICKNESS);
+        var shimmerAmp:Number     = VM.cfgNum(config, "shimmerAmp", DEFAULT_SHIMMER_AMP);
+        var forkThicknessMul:Number = VM.cfgNum(config, "forkThicknessMul", DEFAULT_FORK_THICKNESS_MUL);
 
         // 强度因子（由生命周期系统驱动）
-        var intensity:Number = (meta != null && !isNaN(meta.intensity)) ? meta.intensity : 1.0;
+        var intensity:Number = VM.cfgIntensity(meta);
 
         // 折射线处理
         var isFork:Boolean = (meta != null && meta.segmentKind == "fork");

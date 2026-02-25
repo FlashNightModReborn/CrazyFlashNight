@@ -53,21 +53,22 @@ class org.flashNight.arki.render.renderer.ThermalRenderer {
         var config:Object = arc.config;
         var meta:Object = arc.meta;
         var age:Number = arc.age;
+        var VM:Function = RayVfxManager;
 
         // 解析配置参数
-        var primaryColor:Number = (config != null && !isNaN(config.primaryColor)) ? config.primaryColor : DEFAULT_PRIMARY_COLOR;
-        var secondaryColor:Number = (config != null && !isNaN(config.secondaryColor)) ? config.secondaryColor : DEFAULT_SECONDARY_COLOR;
-        var thickness:Number = (config != null && !isNaN(config.thickness)) ? config.thickness : DEFAULT_THICKNESS;
-        var waveAmp:Number = (config != null && !isNaN(config.waveAmp)) ? config.waveAmp : DEFAULT_WAVE_AMP;
-        var waveLen:Number = (config != null && !isNaN(config.waveLen)) ? config.waveLen : DEFAULT_WAVE_LEN;
-        var waveSpeed:Number = (config != null && !isNaN(config.waveSpeed)) ? config.waveSpeed : DEFAULT_WAVE_SPEED;
-        var pulseAmp:Number = (config != null && !isNaN(config.pulseAmp)) ? config.pulseAmp : DEFAULT_PULSE_AMP;
-        var pulseRate:Number = (config != null && !isNaN(config.pulseRate)) ? config.pulseRate : DEFAULT_PULSE_RATE;
-        var hitRippleSize:Number = (config != null && !isNaN(config.hitRippleSize)) ? config.hitRippleSize : DEFAULT_HIT_RIPPLE_SIZE;
-        var hitRippleAlpha:Number = (config != null && !isNaN(config.hitRippleAlpha)) ? config.hitRippleAlpha : DEFAULT_HIT_RIPPLE_ALPHA;
+        var primaryColor:Number   = VM.cfgNum(config, "primaryColor", DEFAULT_PRIMARY_COLOR);
+        var secondaryColor:Number = VM.cfgNum(config, "secondaryColor", DEFAULT_SECONDARY_COLOR);
+        var thickness:Number      = VM.cfgNum(config, "thickness", DEFAULT_THICKNESS);
+        var waveAmp:Number        = VM.cfgNum(config, "waveAmp", DEFAULT_WAVE_AMP);
+        var waveLen:Number        = VM.cfgNum(config, "waveLen", DEFAULT_WAVE_LEN);
+        var waveSpeed:Number      = VM.cfgNum(config, "waveSpeed", DEFAULT_WAVE_SPEED);
+        var pulseAmp:Number       = VM.cfgNum(config, "pulseAmp", DEFAULT_PULSE_AMP);
+        var pulseRate:Number      = VM.cfgNum(config, "pulseRate", DEFAULT_PULSE_RATE);
+        var hitRippleSize:Number  = VM.cfgNum(config, "hitRippleSize", DEFAULT_HIT_RIPPLE_SIZE);
+        var hitRippleAlpha:Number = VM.cfgNum(config, "hitRippleAlpha", DEFAULT_HIT_RIPPLE_ALPHA);
 
         // 应用 intensity 强度因子
-        var intensity:Number = (meta != null && !isNaN(meta.intensity)) ? meta.intensity : 1.0;
+        var intensity:Number = VM.cfgIntensity(meta);
         thickness *= intensity;
         waveAmp *= intensity;
 

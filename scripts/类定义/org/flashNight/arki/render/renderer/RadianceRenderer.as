@@ -51,17 +51,18 @@ class org.flashNight.arki.render.renderer.RadianceRenderer {
         var config:Object = arc.config;
         var meta:Object = arc.meta;
         var age:Number = arc.age;
+        var VM:Function = RayVfxManager;
 
         // 解析配置参数
-        var primaryColor:Number = (config != null && !isNaN(config.primaryColor)) ? config.primaryColor : DEFAULT_PRIMARY_COLOR;
-        var secondaryColor:Number = (config != null && !isNaN(config.secondaryColor)) ? config.secondaryColor : DEFAULT_SECONDARY_COLOR;
-        var thickness:Number = (config != null && !isNaN(config.thickness)) ? config.thickness : DEFAULT_THICKNESS;
-        var shimmerAmp:Number = (config != null && !isNaN(config.shimmerAmp)) ? config.shimmerAmp : DEFAULT_SHIMMER_AMP;
-        var shimmerFreq:Number = (config != null && !isNaN(config.shimmerFreq)) ? config.shimmerFreq : DEFAULT_SHIMMER_FREQ;
-        var forkThicknessMul:Number = (config != null && !isNaN(config.forkThicknessMul)) ? config.forkThicknessMul : DEFAULT_FORK_THICKNESS_MUL;
+        var primaryColor:Number   = VM.cfgNum(config, "primaryColor", DEFAULT_PRIMARY_COLOR);
+        var secondaryColor:Number = VM.cfgNum(config, "secondaryColor", DEFAULT_SECONDARY_COLOR);
+        var thickness:Number      = VM.cfgNum(config, "thickness", DEFAULT_THICKNESS);
+        var shimmerAmp:Number     = VM.cfgNum(config, "shimmerAmp", DEFAULT_SHIMMER_AMP);
+        var shimmerFreq:Number    = VM.cfgNum(config, "shimmerFreq", DEFAULT_SHIMMER_FREQ);
+        var forkThicknessMul:Number = VM.cfgNum(config, "forkThicknessMul", DEFAULT_FORK_THICKNESS_MUL);
 
         // 应用 intensity 强度因子
-        var intensity:Number = (meta != null && !isNaN(meta.intensity)) ? meta.intensity : 1.0;
+        var intensity:Number = VM.cfgIntensity(meta);
         thickness *= intensity;
 
         // 判断是否为折射线

@@ -180,7 +180,7 @@ class org.flashNight.arki.render.RayVfxManager {
     public static function computeSegmentDelay(config:TeslaRayConfig, meta:Object):Number {
         if (meta == null) return 0;
 
-        var chainDelay:Number = (config != null && !isNaN(config.chainDelay)) ? config.chainDelay : 0;
+        var chainDelay:Number = cfgNum(config, "chainDelay", 0);
         if (chainDelay <= 0) return 0;
 
         if (meta.segmentKind == "chain") {
@@ -317,8 +317,8 @@ class org.flashNight.arki.render.RayVfxManager {
         }
 
         // 从 config 读取时间参数
-        arc.visualDuration = (config != null && !isNaN(config.visualDuration)) ? config.visualDuration : 5;
-        arc.fadeDuration = (config != null && !isNaN(config.fadeOutDuration)) ? config.fadeOutDuration : 3;
+        arc.visualDuration = cfgNum(config, "visualDuration", 5);
+        arc.fadeDuration = cfgNum(config, "fadeOutDuration", 3);
         arc.totalDuration = arc.visualDuration + arc.fadeDuration;
 
         // 首帧立即渲染
@@ -356,13 +356,17 @@ class org.flashNight.arki.render.RayVfxManager {
             arc.age++;
 
             if (arc.age <= arc.visualDuration) {
-                // 活跃期：每帧重绘
-                renderArc(arc);
+                // 活跃期重绘策略：
+                //   LOD < 2: 每帧重绘（支持抖动/动画/随机路径等动态效果）
+                //   LOD >= 2: 冻结重绘，首帧已在 createArc 渲染完成，仅做 alpha 控制
+                if (_currentLOD < 2) {
+                    renderArc(arc);
+                }
                 // 随机爆闪（由 config.flickerEnabled 控制，默认仅 Tesla 开启）
                 var cfg:Object = arc.config;
                 if (cfg != null && cfg.flickerEnabled == true) {
-                    var fMin:Number = (!isNaN(cfg.flickerMin)) ? cfg.flickerMin : 70;
-                    var fMax:Number = (!isNaN(cfg.flickerMax)) ? cfg.flickerMax : 100;
+                    var fMin:Number = cfgNum(cfg, "flickerMin", 70);
+                    var fMax:Number = cfgNum(cfg, "flickerMax", 100);
                     arc.mc._alpha = fMin + Math.random() * (fMax - fMin);
                 } else {
                     arc.mc._alpha = 100;
@@ -424,6 +428,54 @@ class org.flashNight.arki.render.RayVfxManager {
 
         // 通过注册表查表路由（消除 switch/case，新增风格只改 Registry）
         RayStyleRegistry.renderArc(arc.vfxStyle || "tesla", arc, _currentLOD, mc);
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // 配置读取工具（供渲染器使用，消除样板代码）
+    // ════════════════════════════════════════════════════════════════════════
+
+    /**
+     * 从 config 读取 Number 字段，null/NaN/undefined 返回默认值
+     *
+     * 利用 NaN != NaN 特性：AS2 中 Number(undefined) → NaN，
+     * 因此 (v == v) 同时排除 NaN 和 undefined。
+     * config == null 时短路返回，避免 null[field] 异常。
+     *
+     * @param config 配置对象（可为 null）
+     * @param field  字段名
+     * @param def    默认值
+     * @return 有效值或默认值
+     */
+    public static function cfgNum(config:Object, field:String, def:Number):Number {
+        if (config == null) return def;
+        var v:Number = config[field];
+        return (v == v) ? v : def;
+    }
+
+    /**
+     * 从 config 读取 Array 字段，null 返回默认值
+     *
+     * @param config 配置对象（可为 null）
+     * @param field  字段名
+     * @param def    默认数组
+     * @return 有效数组或默认值
+     */
+    public static function cfgArr(config:Object, field:String, def:Array):Array {
+        if (config == null) return def;
+        var v:Array = config[field];
+        return (v != null) ? v : def;
+    }
+
+    /**
+     * 从 SegmentMeta 读取 intensity，null/NaN 返回 1.0
+     *
+     * @param meta SegmentMeta 对象（可为 null）
+     * @return intensity 值或 1.0
+     */
+    public static function cfgIntensity(meta:Object):Number {
+        if (meta == null) return 1.0;
+        var v:Number = meta.intensity;
+        return (v == v) ? v : 1.0;
     }
 
     // ════════════════════════════════════════════════════════════════════════

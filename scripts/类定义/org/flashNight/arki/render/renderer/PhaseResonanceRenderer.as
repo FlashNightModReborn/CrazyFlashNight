@@ -59,23 +59,18 @@ class org.flashNight.arki.render.renderer.PhaseResonanceRenderer {
         var config:Object = arc.config;
         var meta:Object = arc.meta;
         var age:Number = arc.age;
+        var VM:Function = RayVfxManager;
 
         // 解析配置参数
-        var thickness:Number = (config != null && !isNaN(config.thickness))
-            ? config.thickness : DEFAULT_THICKNESS;
-        var stripeCount:Number = (config != null && !isNaN(config.stripeCount))
-            ? config.stripeCount : DEFAULT_STRIPE_COUNT;
-        var paletteScrollSpeed:Number = (config != null && !isNaN(config.paletteScrollSpeed))
-            ? config.paletteScrollSpeed : DEFAULT_PALETTE_SCROLL_SPEED;
-        var distortAmp:Number = (config != null && !isNaN(config.distortAmp))
-            ? config.distortAmp : DEFAULT_DISTORT_AMP;
-        var distortWaveLen:Number = (config != null && !isNaN(config.distortWaveLen))
-            ? config.distortWaveLen : DEFAULT_DISTORT_WAVE_LEN;
-        var palette:Array = (config != null && config.palette != null)
-            ? config.palette : DEFAULT_PALETTE;
+        var thickness:Number          = VM.cfgNum(config, "thickness", DEFAULT_THICKNESS);
+        var stripeCount:Number        = VM.cfgNum(config, "stripeCount", DEFAULT_STRIPE_COUNT);
+        var paletteScrollSpeed:Number = VM.cfgNum(config, "paletteScrollSpeed", DEFAULT_PALETTE_SCROLL_SPEED);
+        var distortAmp:Number         = VM.cfgNum(config, "distortAmp", DEFAULT_DISTORT_AMP);
+        var distortWaveLen:Number     = VM.cfgNum(config, "distortWaveLen", DEFAULT_DISTORT_WAVE_LEN);
+        var palette:Array             = VM.cfgArr(config, "palette", DEFAULT_PALETTE);
 
         // 强度因子（由生命周期系统驱动）
-        var intensity:Number = (meta != null && !isNaN(meta.intensity)) ? meta.intensity : 1.0;
+        var intensity:Number = VM.cfgIntensity(meta);
         var baseThickness:Number = thickness * intensity;
 
         var isFork:Boolean = (meta != null && meta.segmentKind == "fork");

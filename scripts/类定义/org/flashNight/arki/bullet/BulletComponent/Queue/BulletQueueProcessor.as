@@ -120,6 +120,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         true, new Vector(0, 0), 1
     );
 
+    /**
+     * 射线命中上下文复用对象（零分配）
+     * 打包 processRayBullets 中每发子弹不变的参数（bullet, shooter,
+     * finalResult, flags, meleeMask, Dodge, Damage, FX），
+     * 使 settleRayHit 签名从 13 参数降到 6 参数。
+     * 每发子弹入口处初始化一次，同步处理保证复用安全。
+     */
+    private static var _rayHitCtx:Object = {};
+
     // ========================================================================
     // 子弹终止控制标志位（位运算优化）
     // 说明：REASON_* 位用于统计/诊断；实际终止分支仅依据 MODE_* 位（见收尾处理）
@@ -461,26 +470,24 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * 中提取的公共管线。每次命中调用一次，单帧内最多约 pierceLimit 次，
      * 函数调用开销可忽略。
      *
-     * @param bullet    子弹对象
-     * @param shooter   发射者
+     * @param ctx       命中上下文（_rayHitCtx，每发子弹入口初始化一次）
+     *                  包含: bullet, shooter, result(CollisionResult),
+     *                        flags, meleeMask, Dodge, Damage, FX
      * @param hitTarget 命中目标
      * @param hitX      命中点 X
      * @param hitY      命中点 Y
      * @param dmgMult   伤害乘数（穿透衰减/折射衰减等）
      * @param tEntry    射线参数 t（chain/fork 传 -1）
-     * @param finalResult 复用的 CollisionResult
-     * @param flags     子弹 flags（用于判断击杀事件类型）
-     * @param meleeMask MELEE_EXPLOSIVE_MASK 常量
-     * @param Dodge     DodgeHandler 引用
-     * @param Damage    DamageCalculator 引用
-     * @param FX        EffectSystem 引用
      * @return damageResult 对象（调用方可能需要读取 actualScatterUsed）
      */
     private static function settleRayHit(
-            bullet:Object, shooter:MovieClip, hitTarget:MovieClip,
-            hitX:Number, hitY:Number, dmgMult:Number, tEntry:Number,
-            finalResult:CollisionResult, flags:Number, meleeMask:Number,
-            Dodge:Object, Damage:Object, FX:Object):Object {
+            ctx:Object, hitTarget:MovieClip,
+            hitX:Number, hitY:Number,
+            dmgMult:Number, tEntry:Number):Object {
+
+        var bullet:Object = ctx.bullet;
+        var shooter:MovieClip = ctx.shooter;
+        var finalResult:CollisionResult = ctx.result;
 
         // 同步命中对象引用
         bullet.hitTarget = hitTarget;
@@ -494,14 +501,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
         // 闪避判定
         var dodgeState:String = (bullet.伤害类型 == "真伤") ? "未躲闪" :
-            Dodge.calculateDodgeState(
+            ctx.Dodge.calculateDodgeState(
                 hitTarget,
-                Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
+                ctx.Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
                 bullet
             );
 
         // 伤害计算
-        var damageResult:Object = Damage.calculateDamage(
+        var damageResult:Object = ctx.Damage.calculateDamage(
             bullet, shooter, hitTarget, dmgMult, dodgeState
         );
 
@@ -512,7 +519,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         targetDispatcher.publish("hit", hitTarget, shooter, bullet, finalResult, damageResult);
 
         if (hitTarget.hp <= 0) {
-            var isNormalKill:Boolean = (flags & meleeMask) == 0;
+            var isNormalKill:Boolean = (ctx.flags & ctx.meleeMask) == 0;
             targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
             shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
         }
@@ -522,7 +529,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
         // 命中特效
         if (bullet.shouldGeneratePostHitEffect) {
-            FX.Effect(bullet.击中后子弹的效果, hitX, hitY, shooter._xscale);
+            ctx.FX.Effect(bullet.击中后子弹的效果, hitX, hitY, shooter._xscale);
         }
 
         return damageResult;
@@ -633,6 +640,17 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             // 复用静态命中结果（同步事件处理保证安全）
             var finalResult:CollisionResult = _rayHitResult;
 
+            // 初始化命中上下文（每发子弹不变的参数打包，settleRayHit 13→6 参数）
+            var ctx:Object = _rayHitCtx;
+            ctx.bullet = bullet;
+            ctx.shooter = shooter;
+            ctx.result = finalResult;
+            ctx.flags = flags;
+            ctx.meleeMask = MELEE_EXPLOSIVE_MASK;
+            ctx.Dodge = Dodge;
+            ctx.Damage = Damage;
+            ctx.FX = FX;
+
             // ================================================================
             // 穿透模式：扫描时维护前 N 小 tEntry 有序表 → 逐个伤害
             // ================================================================
@@ -710,10 +728,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         var ph:Object = pierceHits[pk];
                         hitTarget = ph.target;
 
-                        settleRayHit(bullet, shooter, hitTarget,
-                            ph.hitX, ph.hitY, pDmgMult, ph.tEntry,
-                            finalResult, flags, MELEE_EXPLOSIVE_MASK,
-                            Dodge, Damage, FX);
+                        settleRayHit(ctx, hitTarget,
+                            ph.hitX, ph.hitY, pDmgMult, ph.tEntry);
 
                         if (debugMode) {
                             unitArea = hitTarget.aabbCollider;
@@ -829,10 +845,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     bullet.命中对象 = hitTarget;
                     if (bullet.击中时触发函数) bullet.击中时触发函数();
 
-                    settleRayHit(bullet, shooter, hitTarget,
-                        rayNearestHitX, rayNearestHitY, 1, rayNearestTEntry,
-                        finalResult, flags, MELEE_EXPLOSIVE_MASK,
-                        Dodge, Damage, FX);
+                    settleRayHit(ctx, hitTarget,
+                        rayNearestHitX, rayNearestHitY, 1, rayNearestTEntry);
                     // 构建主命中 SegmentMeta
                     var mainMeta:Object = {
                         segmentKind: "main",
@@ -918,10 +932,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             chainVisited[chainBestTarget._name] = true;
 
                             // 对链式目标应用伤害
-                            settleRayHit(bullet, shooter, chainBestTarget,
-                                chainBestX, chainBestY, chainDmgMult, -1,
-                                finalResult, flags, MELEE_EXPLOSIVE_MASK,
-                                Dodge, Damage, FX);
+                            settleRayHit(ctx, chainBestTarget,
+                                chainBestX, chainBestY, chainDmgMult, -1);
                             // 构建 chain 弹跳 SegmentMeta (hitIndex 从 1 开始，0 是主命中)
                             var chainMeta:Object = {
                                 segmentKind: "chain",
@@ -1024,10 +1036,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             var fh:Object = forkHits[fk];
                             var fhTarget:MovieClip = fh.target;
 
-                            settleRayHit(bullet, shooter, fhTarget,
-                                fh.centerX, fh.centerY, forkFalloff, -1,
-                                finalResult, flags, MELEE_EXPLOSIVE_MASK,
-                                Dodge, Damage, FX);
+                            settleRayHit(ctx, fhTarget,
+                                fh.centerX, fh.centerY, forkFalloff, -1);
                             // 折射电弧：从主命中点定向射向折射目标
                             var forkMeta:Object = {
                                 segmentKind: "fork",
