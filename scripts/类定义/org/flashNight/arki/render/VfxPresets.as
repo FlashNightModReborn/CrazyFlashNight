@@ -270,21 +270,13 @@ class org.flashNight.arki.render.VfxPresets {
     /**
      * 根据 vfxStyle 获取默认预设名
      *
-     * @param vfxStyle 渲染风格 ("tesla", "prism", "spectrum", "wave")
+     * 委托给 RayStyleRegistry（单一事实来源），
+     * 保留此方法签名以兼容现有调用方。
+     *
+     * @param vfxStyle 渲染风格
      * @return 对应的默认预设名
      */
     public static function getDefaultPresetForStyle(vfxStyle:String):String {
-        switch (vfxStyle) {
-            case "tesla":    return "ra2_tesla";
-            case "prism":    return "ra2_prism";
-            case "radiance": return "radiance";
-            case "spectrum": return "ra3_spectrum";
-            case "resonance": return "resonance";
-            case "wave":     return "ra3_wave";
-            case "thermal":  return "thermal";
-            case "vortex":   return "vortex";
-            case "plasma":   return "plasma";
-            default:         return "ra2_tesla";
-        }
+        return org.flashNight.arki.render.RayStyleRegistry.getDefaultPreset(vfxStyle);
     }
 }

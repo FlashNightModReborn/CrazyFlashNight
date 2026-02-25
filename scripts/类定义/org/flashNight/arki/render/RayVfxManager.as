@@ -1,14 +1,6 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig;
 import org.flashNight.arki.spatial.transform.SceneCoordinateManager;
-import org.flashNight.arki.render.renderer.TeslaRenderer;
-import org.flashNight.arki.render.renderer.PrismRenderer;
-import org.flashNight.arki.render.renderer.RadianceRenderer;
-import org.flashNight.arki.render.renderer.SpectrumRenderer;
-import org.flashNight.arki.render.renderer.WaveRenderer;
-import org.flashNight.arki.render.renderer.PhaseResonanceRenderer;
-import org.flashNight.arki.render.renderer.ThermalRenderer;
-import org.flashNight.arki.render.renderer.VortexRenderer;
-import org.flashNight.arki.render.renderer.PlasmaRenderer;
+import org.flashNight.arki.render.RayStyleRegistry;
 
 /**
  * RayVfxManager - 射线视觉效果管理器 (路由器)
@@ -79,18 +71,7 @@ class org.flashNight.arki.render.RayVfxManager {
     /** 当前加权渲染成本 */
     private static var _renderCost:Number = 0;
 
-    /** 风格渲染成本权重 */
-    private static var STYLE_COST:Object = {
-        tesla: 1.5,     // 分支 + 多路径
-        prism: 1.0,     // 基础成本
-        radiance: 1.0,  // 辉光射线（与 prism 同级）
-        spectrum: 2.5,  // 多条纹 N 倍 drawcall
-        resonance: 2.5, // 相位谐振波（与 spectrum 同级）
-        wave: 2.0,      // 正弦波分段 + 波纹
-        thermal: 2.0,   // 热能射线（与 wave 同级）
-        vortex: 2.0,    // 涡旋射线（与 wave 同级）
-        plasma: 2.0     // 等离子射线（与 wave 同级）
-    };
+    // 风格渲染成本权重已迁入 RayStyleRegistry（单一事实来源）
 
     /** LOD 阈值 */
     private static var LOD_THRESHOLD_MEDIUM:Number = 8;   // cost >= 8 → LOD 1
@@ -432,7 +413,7 @@ class org.flashNight.arki.render.RayVfxManager {
     // ════════════════════════════════════════════════════════════════════════
 
     /**
-     * 渲染电弧（根据 vfxStyle 路由到对应渲染器）
+     * 渲染电弧（通过 RayStyleRegistry 查表路由到对应渲染器）
      */
     private static function renderArc(arc:Object):Void {
         var mc:MovieClip = arc.mc;
@@ -441,39 +422,8 @@ class org.flashNight.arki.render.RayVfxManager {
         // 重置对象池
         resetPools();
 
-        // 根据 vfxStyle 路由
-        var style:String = arc.vfxStyle || "tesla";
-
-        switch (style) {
-            case "prism":
-                PrismRenderer.render(arc, _currentLOD, mc);
-                break;
-            case "radiance":
-                RadianceRenderer.render(arc, _currentLOD, mc);
-                break;
-            case "spectrum":
-                SpectrumRenderer.render(arc, _currentLOD, mc);
-                break;
-            case "resonance":
-                PhaseResonanceRenderer.render(arc, _currentLOD, mc);
-                break;
-            case "wave":
-                WaveRenderer.render(arc, _currentLOD, mc);
-                break;
-            case "thermal":
-                ThermalRenderer.render(arc, _currentLOD, mc);
-                break;
-            case "vortex":
-                VortexRenderer.render(arc, _currentLOD, mc);
-                break;
-            case "plasma":
-                PlasmaRenderer.render(arc, _currentLOD, mc);
-                break;
-            case "tesla":
-            default:
-                TeslaRenderer.render(arc, _currentLOD, mc);
-                break;
-        }
+        // 通过注册表查表路由（消除 switch/case，新增风格只改 Registry）
+        RayStyleRegistry.renderArc(arc.vfxStyle || "tesla", arc, _currentLOD, mc);
     }
 
     // ════════════════════════════════════════════════════════════════════════
@@ -555,11 +505,98 @@ class org.flashNight.arki.render.RayVfxManager {
     }
 
     /**
-     * 获取风格渲染成本权重
+     * 获取风格渲染成本权重（委托给 RayStyleRegistry）
      */
     private static function getStyleCost(style:String):Number {
-        var cost:Number = STYLE_COST[style];
-        return (cost != undefined && !isNaN(cost)) ? cost : 1.0;
+        return RayStyleRegistry.getStyleCost(style);
+    }
+
+    /**
+     * 生成正弦波路径（通用方法，供 Wave/Vortex/Plasma 等渲染器复用）
+     *
+     * 算法：沿射线方向均匀采样，每个采样点叠加正弦波偏移。
+     * 两端使用 smoothstep 包络衰减，避免端点突变。
+     *
+     * @param arc           电弧数据对象 {startX, startY, endX, endY}
+     * @param perpX         垂直方向 X 分量（单位向量）
+     * @param perpY         垂直方向 Y 分量（单位向量）
+     * @param dist          射线总长度
+     * @param waveAmp       波形幅度（像素）
+     * @param waveLen       波长（像素）
+     * @param waveSpeed     波传播速度（波长/帧）
+     * @param age           当前帧龄
+     * @param phaseOffset   相位偏移（弧度）
+     * @param ptsPerWave    每波长采样点数（Wave/Vortex=24, Plasma=12）
+     * @param maxSegments   最大分段数上限（Wave/Vortex=250, Plasma=200）
+     * @param noiseRatio    高频噪声比率（0=无噪声, >0=叠加 sin 噪声）
+     *                      噪声波长 = waveLen * noiseRatio，噪声幅度 = 0.25
+     * @return              路径点数组（池化）
+     */
+    public static function generateSinePath(
+        arc:Object, perpX:Number, perpY:Number, dist:Number,
+        waveAmp:Number, waveLen:Number, waveSpeed:Number,
+        age:Number, phaseOffset:Number,
+        ptsPerWave:Number, maxSegments:Number, noiseRatio:Number
+    ):Array {
+        var dx:Number = arc.endX - arc.startX;
+        var dy:Number = arc.endY - arc.startY;
+
+        var points:Array = poolArr();
+
+        if (waveLen < 5) waveLen = 5;
+        var segmentCount:Number = Math.ceil(dist / (waveLen / ptsPerWave));
+        if (segmentCount < 10) segmentCount = 10;
+        if (segmentCount > maxSegments) segmentCount = maxSegments;
+
+        var step:Number = 1.0 / segmentCount;
+        var margin:Number = 0.08;
+        var hasNoise:Boolean = (noiseRatio > 0);
+        var TWO_PI:Number = 2 * Math.PI;
+
+        for (var i:Number = 0; i <= segmentCount; i++) {
+            var t:Number = i * step;
+
+            var baseX:Number = arc.startX + dx * t;
+            var baseY:Number = arc.startY + dy * t;
+
+            var offset:Number = 0;
+
+            if (t > 0.001 && t < 0.999) {
+                // smoothstep 包络
+                var envelope:Number = 1.0;
+                if (t < margin) {
+                    envelope = t / margin;
+                } else if (t > 1.0 - margin) {
+                    envelope = (1.0 - t) / margin;
+                }
+                envelope = envelope * envelope * (3 - 2 * envelope);
+
+                var phase:Number = (t * dist / waveLen - age * waveSpeed) * TWO_PI
+                    + phaseOffset;
+                var wave:Number = Math.sin(phase);
+
+                // 可选高频噪声叠加（Plasma 专用）
+                if (hasNoise) {
+                    var noisePhase:Number = (t * dist / (waveLen * noiseRatio) - age * waveSpeed * 1.5)
+                        * TWO_PI;
+                    wave += Math.sin(noisePhase) * 0.25;
+                }
+
+                offset = waveAmp * envelope * wave;
+            }
+
+            if (t <= 0.001) {
+                points.push(pt(arc.startX, arc.startY, 0.0));
+            } else if (t >= 0.999) {
+                points.push(pt(arc.endX, arc.endY, 1.0));
+            } else {
+                points.push(pt(
+                    baseX + perpX * offset,
+                    baseY + perpY * offset, t));
+            }
+        }
+
+        return points;
     }
 
     /**

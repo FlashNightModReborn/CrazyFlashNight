@@ -422,6 +422,113 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     }
 
     // ========================================================================
+    // 射线子弹辅助函数
+    // ========================================================================
+
+    /**
+     * 在单调非降数组 rightMaxValues 上执行二分查找，
+     * 返回第一个满足 rightMaxValues[i] >= targetLeft 的索引。
+     *
+     * 用于跳过右边界前缀最大值 < targetLeft 的所有目标——
+     * 这些目标的右边界全部在搜索窗口左侧，不可能碰撞。
+     *
+     * @param rightMax  cache.rightMaxValues（单调非降）
+     * @param len       数组有效长度
+     * @param targetLeft 搜索窗口左边界
+     * @return 扫描起始索引（0 ≤ result ≤ len）
+     */
+    private static function bsearchScanStart(rightMax:Array,
+                                              len:Number,
+                                              targetLeft:Number):Number {
+        if (rightMax == undefined) return 0;
+        var lo:Number = 0;
+        var hi:Number = len;
+        while (lo < hi) {
+            var mid:Number = (lo + hi) >> 1;
+            if (rightMax[mid] < targetLeft) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
+    }
+
+    /**
+     * 射线命中结算：闪避→伤害→事件→显示→特效
+     *
+     * 从 processRayBullets 的 4 个命中处理分支（pierce/single/chain/fork）
+     * 中提取的公共管线。每次命中调用一次，单帧内最多约 pierceLimit 次，
+     * 函数调用开销可忽略。
+     *
+     * @param bullet    子弹对象
+     * @param shooter   发射者
+     * @param hitTarget 命中目标
+     * @param hitX      命中点 X
+     * @param hitY      命中点 Y
+     * @param dmgMult   伤害乘数（穿透衰减/折射衰减等）
+     * @param tEntry    射线参数 t（chain/fork 传 -1）
+     * @param finalResult 复用的 CollisionResult
+     * @param flags     子弹 flags（用于判断击杀事件类型）
+     * @param meleeMask MELEE_EXPLOSIVE_MASK 常量
+     * @param Dodge     DodgeHandler 引用
+     * @param Damage    DamageCalculator 引用
+     * @param FX        EffectSystem 引用
+     * @return damageResult 对象（调用方可能需要读取 actualScatterUsed）
+     */
+    private static function settleRayHit(
+            bullet:Object, shooter:MovieClip, hitTarget:MovieClip,
+            hitX:Number, hitY:Number, dmgMult:Number, tEntry:Number,
+            finalResult:CollisionResult, flags:Number, meleeMask:Number,
+            Dodge:Object, Damage:Object, FX:Object):Object {
+
+        // 同步命中对象引用
+        bullet.hitTarget = hitTarget;
+        bullet.命中对象 = hitTarget;
+
+        // 更新复用结果
+        finalResult.overlapCenter.x = hitX;
+        finalResult.overlapCenter.y = hitY;
+        finalResult.overlapRatio = dmgMult;
+        finalResult.tEntry = tEntry;
+
+        // 闪避判定
+        var dodgeState:String = (bullet.伤害类型 == "真伤") ? "未躲闪" :
+            Dodge.calculateDodgeState(
+                hitTarget,
+                Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
+                bullet
+            );
+
+        // 伤害计算
+        var damageResult:Object = Damage.calculateDamage(
+            bullet, shooter, hitTarget, dmgMult, dodgeState
+        );
+
+        bullet.hitCount += damageResult.actualScatterUsed;
+
+        // 事件发布
+        var targetDispatcher:Object = hitTarget.dispatcher;
+        targetDispatcher.publish("hit", hitTarget, shooter, bullet, finalResult, damageResult);
+
+        if (hitTarget.hp <= 0) {
+            var isNormalKill:Boolean = (flags & meleeMask) == 0;
+            targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
+            shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
+        }
+
+        // 伤害数字显示
+        damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
+
+        // 命中特效
+        if (bullet.shouldGeneratePostHitEffect) {
+            FX.Effect(bullet.击中后子弹的效果, hitX, hitY, shooter._xscale);
+        }
+
+        return damageResult;
+    }
+
+    // ========================================================================
     // 射线子弹独立处理（不进入主碰撞循环）
     // ========================================================================
 
@@ -520,20 +627,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var unitLeftKeys:Array = cache.leftValues;
             var unitRightMax:Array = cache.rightMaxValues;
 
-            // 二分查找起始索引：跳过 rightMaxValues[i] < rayLeft 的目标
-            // 这些目标的右边界全部在射线左侧，不可能碰撞
-            var lo:Number = 0;
-            var hi:Number = unitLen;
-            if (unitRightMax != undefined) {
-                while (lo < hi) {
-                    var mid:Number = (lo + hi) >> 1;
-                    if (unitRightMax[mid] < rayLeft) {
-                        lo = mid + 1;
-                    } else {
-                        hi = mid;
-                    }
-                }
-            }
+            // 二分查找起始索引：跳过右边界全部在射线左侧的目标
+            var lo:Number = bsearchScanStart(unitRightMax, unitLen, rayLeft);
 
             // 复用静态命中结果（同步事件处理保证安全）
             var finalResult:CollisionResult = _rayHitResult;
@@ -615,44 +710,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         var ph:Object = pierceHits[pk];
                         hitTarget = ph.target;
 
-                        // 每次命中前同步 命中对象，保证下游读取一致
-                        bullet.hitTarget = hitTarget;
-                        bullet.命中对象 = hitTarget;
-
-                        // 更新复用结果
-                        finalResult.overlapCenter.x = ph.hitX;
-                        finalResult.overlapCenter.y = ph.hitY;
-                        finalResult.overlapRatio = pDmgMult;
-                        finalResult.tEntry = ph.tEntry;
-
-                        var dodgeState:String = (bullet.伤害类型 == "真伤") ? "未躲闪" :
-                            Dodge.calculateDodgeState(
-                                hitTarget,
-                                Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
-                                bullet
-                            );
-
-                        var damageResult:Object = Damage.calculateDamage(
-                            bullet, shooter, hitTarget, pDmgMult, dodgeState
-                        );
-
-                        bullet.hitCount += damageResult.actualScatterUsed;
-
-                        var targetDispatcher:Object = hitTarget.dispatcher;
-                        targetDispatcher.publish("hit", hitTarget, shooter, bullet, finalResult, damageResult);
-
-                        if (hitTarget.hp <= 0) {
-                            var isNormalKill:Boolean = (flags & MELEE_EXPLOSIVE_MASK) == 0;
-                            targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
-                            shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
-                        }
-
-                        damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
-
-                        // 每个穿透命中点都显示命中特效
-                        if (bullet.shouldGeneratePostHitEffect) {
-                            FX.Effect(bullet.击中后子弹的效果, ph.hitX, ph.hitY, shooter._xscale);
-                        }
+                        settleRayHit(bullet, shooter, hitTarget,
+                            ph.hitX, ph.hitY, pDmgMult, ph.tEntry,
+                            finalResult, flags, MELEE_EXPLOSIVE_MASK,
+                            Dodge, Damage, FX);
 
                         if (debugMode) {
                             unitArea = hitTarget.aabbCollider;
@@ -756,50 +817,20 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 if (rayNearestTarget != null) {
                     hitTarget = rayNearestTarget;
 
-                    // 更新复用结果
-                    finalResult.overlapCenter.x = rayNearestHitX;
-                    finalResult.overlapCenter.y = rayNearestHitY;
-                    finalResult.overlapRatio = 1;
-                    finalResult.tEntry = rayNearestTEntry;
-
-                    bullet.hitTarget = hitTarget;
                     // 【设计决策】附加层伤害计算 仅在主命中前重置，chain/fork 副命中不重置。
                     // 当前该字段未被下游消费，若未来启用需评估是否每次命中都重置。
                     bullet.附加层伤害计算 = 0;
-                    bullet.命中对象 = hitTarget;
-
-                    dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
-                        Dodge.calculateDodgeState(
-                            hitTarget,
-                            Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
-                            bullet
-                        );
 
                     // 【设计决策】击中时触发函数 仅在主命中时调用，chain/fork 副命中不调用。
                     // 平衡性考虑：避免连锁 Buff/效果过于强力。若需改变，在 chain/fork 循环内添加调用即可。
+                    bullet.hitTarget = hitTarget;
+                    bullet.命中对象 = hitTarget;
                     if (bullet.击中时触发函数) bullet.击中时触发函数();
 
-                    damageResult = Damage.calculateDamage(
-                        bullet, shooter, hitTarget, 1, dodgeState
-                    );
-
-                    bullet.hitCount += damageResult.actualScatterUsed;
-
-                    targetDispatcher = hitTarget.dispatcher;
-                    targetDispatcher.publish("hit", hitTarget, shooter, bullet, finalResult, damageResult);
-
-                    if (hitTarget.hp <= 0) {
-                        isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;
-                        targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
-                        shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
-                    }
-
-                    damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
-
-                    // 电弧视觉效果（命中）
-                    if (bullet.shouldGeneratePostHitEffect) {
-                        FX.Effect(bullet.击中后子弹的效果, rayNearestHitX, rayNearestHitY, shooter._xscale);
-                    }
+                    settleRayHit(bullet, shooter, hitTarget,
+                        rayNearestHitX, rayNearestHitY, 1, rayNearestTEntry,
+                        finalResult, flags, MELEE_EXPLOSIVE_MASK,
+                        Dodge, Damage, FX);
                     // 构建主命中 SegmentMeta
                     var mainMeta:Object = {
                         segmentKind: "main",
@@ -841,19 +872,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             var searchLeft:Number = prevChainX - chainRadius;
                             var searchRight:Number = prevChainX + chainRadius;
 
-                            // 二分查找起始索引（复用 rightMaxValues）
-                            var clo:Number = 0;
-                            var chi:Number = unitLen;
-                            if (unitRightMax != undefined) {
-                                while (clo < chi) {
-                                    var cmid:Number = (clo + chi) >> 1;
-                                    if (unitRightMax[cmid] < searchLeft) {
-                                        clo = cmid + 1;
-                                    } else {
-                                        chi = cmid;
-                                    }
-                                }
-                            }
+                            // 二分查找起始索引
+                            var clo:Number = bsearchScanStart(unitRightMax, unitLen, searchLeft);
 
                             var chainBestDistSq:Number = chainRadiusSq;
                             var chainBestTarget:MovieClip = null;
@@ -895,44 +915,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             // 标记已命中
                             chainVisited[chainBestTarget._name] = true;
 
-                            // 同步 命中对象，保证下游读取一致
-                            bullet.hitTarget = chainBestTarget;
-                            bullet.命中对象 = chainBestTarget;
-
                             // 对链式目标应用伤害
-                            finalResult.overlapCenter.x = chainBestX;
-                            finalResult.overlapCenter.y = chainBestY;
-                            finalResult.overlapRatio = chainDmgMult;
-                            finalResult.tEntry = -1; // 链式弹跳无 tEntry
-
-                            dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
-                                Dodge.calculateDodgeState(
-                                    chainBestTarget,
-                                    Dodge.calcDodgeResult(shooter, chainBestTarget, bullet.命中率),
-                                    bullet
-                                );
-
-                            damageResult = Damage.calculateDamage(
-                                bullet, shooter, chainBestTarget, chainDmgMult, dodgeState
-                            );
-
-                            bullet.hitCount += damageResult.actualScatterUsed;
-
-                            targetDispatcher = chainBestTarget.dispatcher;
-                            targetDispatcher.publish("hit", chainBestTarget, shooter, bullet, finalResult, damageResult);
-
-                            if (chainBestTarget.hp <= 0) {
-                                isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;
-                                targetDispatcher.publish(isNormalKill ? "kill" : "death", chainBestTarget);
-                                shooter.dispatcher.publish("enemyKilled", chainBestTarget, bullet);
-                            }
-
-                            damageResult.triggerDisplay(chainBestTarget._x, chainBestTarget._y);
-
-                            // 每段链式弹跳生成独立电弧
-                            if (bullet.shouldGeneratePostHitEffect) {
-                                FX.Effect(bullet.击中后子弹的效果, chainBestX, chainBestY, shooter._xscale);
-                            }
+                            settleRayHit(bullet, shooter, chainBestTarget,
+                                chainBestX, chainBestY, chainDmgMult, -1,
+                                finalResult, flags, MELEE_EXPLOSIVE_MASK,
+                                Dodge, Damage, FX);
                             // 构建 chain 弹跳 SegmentMeta (hitIndex 从 1 开始，0 是主命中)
                             var chainMeta:Object = {
                                 segmentKind: "chain",
@@ -973,18 +960,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         var forkSearchRight:Number = rayNearestHitX + forkRadius;
 
                         // 二分查找起始索引
-                        var flo:Number = 0;
-                        var fhi:Number = unitLen;
-                        if (unitRightMax != undefined) {
-                            while (flo < fhi) {
-                                var fmid:Number = (flo + fhi) >> 1;
-                                if (unitRightMax[fmid] < forkSearchLeft) {
-                                    flo = fmid + 1;
-                                } else {
-                                    fhi = fmid;
-                                }
-                            }
-                        }
+                        var flo:Number = bsearchScanStart(unitRightMax, unitLen, forkSearchLeft);
 
                         // 维护前 N 近有序表（按距离升序，长度 ≤ forkCount）
                         // 每个元素: {target, centerX, centerY, distSq}
@@ -1046,42 +1022,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             var fh:Object = forkHits[fk];
                             var fhTarget:MovieClip = fh.target;
 
-                            // 同步 命中对象
-                            bullet.hitTarget = fhTarget;
-                            bullet.命中对象 = fhTarget;
-
-                            finalResult.overlapCenter.x = fh.centerX;
-                            finalResult.overlapCenter.y = fh.centerY;
-                            finalResult.overlapRatio = forkFalloff;
-                            finalResult.tEntry = -1; // 折射无 tEntry
-
-                            dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
-                                Dodge.calculateDodgeState(
-                                    fhTarget,
-                                    Dodge.calcDodgeResult(shooter, fhTarget, bullet.命中率),
-                                    bullet
-                                );
-
-                            damageResult = Damage.calculateDamage(
-                                bullet, shooter, fhTarget, forkFalloff, dodgeState
-                            );
-
-                            bullet.hitCount += damageResult.actualScatterUsed;
-
-                            targetDispatcher = fhTarget.dispatcher;
-                            targetDispatcher.publish("hit", fhTarget, shooter, bullet, finalResult, damageResult);
-
-                            if (fhTarget.hp <= 0) {
-                                isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;
-                                targetDispatcher.publish(isNormalKill ? "kill" : "death", fhTarget);
-                                shooter.dispatcher.publish("enemyKilled", fhTarget, bullet);
-                            }
-
-                            damageResult.triggerDisplay(fhTarget._x, fhTarget._y);
-
-                            if (bullet.shouldGeneratePostHitEffect) {
-                                FX.Effect(bullet.击中后子弹的效果, fh.centerX, fh.centerY, shooter._xscale);
-                            }
+                            settleRayHit(bullet, shooter, fhTarget,
+                                fh.centerX, fh.centerY, forkFalloff, -1,
+                                finalResult, flags, MELEE_EXPLOSIVE_MASK,
+                                Dodge, Damage, FX);
                             // 折射电弧：从主命中点定向射向折射目标
                             var forkMeta:Object = {
                                 segmentKind: "fork",

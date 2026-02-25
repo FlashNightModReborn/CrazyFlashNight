@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.render.VfxPresets;
+import org.flashNight.arki.render.RayStyleRegistry;
 
 /**
  * TeslaRayConfig - 射线配置类 (扩展版)
@@ -286,18 +287,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static var DEFAULT_CHAIN_RADIUS:Number = 200;
     private static var DEFAULT_CHAIN_DELAY:Number = 0;
 
-    // 合法枚举映射（避免重复字符串比较）
-    private static var VALID_STYLES:Object = {
-        tesla: true,
-        prism: true,
-        radiance: true,
-        spectrum: true,
-        resonance: true,
-        wave: true,
-        thermal: true,
-        vortex: true,
-        plasma: true
-    };
+    // 合法风格校验已迁入 RayStyleRegistry（单一事实来源）
 
     private static var VALID_MODES:Object = {
         single: true,
@@ -757,10 +747,10 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     }
 
     /**
-     * 判断渲染风格是否合法
+     * 判断渲染风格是否合法（委托给 RayStyleRegistry）
      */
     private static function isValidStyle(style:String):Boolean {
-        return VALID_STYLES[style] == true;
+        return RayStyleRegistry.isValidStyle(style);
     }
 
     /**

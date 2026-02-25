@@ -301,60 +301,16 @@ class org.flashNight.arki.render.renderer.WaveRenderer {
     // ════════════════════════════════════════════════════════════════════════
 
     /**
-     * 生成纯正弦波路径（低振幅等离子鞘用）
+     * 生成纯正弦波路径（委托给 RayVfxManager.generateSinePath）
      */
     private static function generateWavePath(arc:Object, perpX:Number, perpY:Number,
                                               dist:Number, waveAmp:Number, waveLen:Number,
                                               waveSpeed:Number, age:Number,
                                               phaseOffset:Number):Array {
-        var dx:Number = arc.endX - arc.startX;
-        var dy:Number = arc.endY - arc.startY;
-
-        var points:Array = RayVfxManager.poolArr();
-
-        var ptsPerWave:Number = 24;
-        if (waveLen < 5) waveLen = 5;
-        var segmentCount:Number = Math.ceil(dist / (waveLen / ptsPerWave));
-        if (segmentCount < 10) segmentCount = 10;
-        if (segmentCount > 250) segmentCount = 250;
-
-        var step:Number = 1.0 / segmentCount;
-        var margin:Number = 0.08;
-
-        for (var i:Number = 0; i <= segmentCount; i++) {
-            var t:Number = i * step;
-
-            var baseX:Number = arc.startX + dx * t;
-            var baseY:Number = arc.startY + dy * t;
-
-            var offset:Number = 0;
-
-            if (t > 0.001 && t < 0.999) {
-                var envelope:Number = 1.0;
-                if (t < margin) {
-                    envelope = t / margin;
-                } else if (t > 1.0 - margin) {
-                    envelope = (1.0 - t) / margin;
-                }
-                envelope = envelope * envelope * (3 - 2 * envelope);
-
-                var phase:Number = (t * dist / waveLen - age * waveSpeed) * 2 * Math.PI
-                    + phaseOffset;
-                offset = waveAmp * envelope * Math.sin(phase);
-            }
-
-            if (t <= 0.001) {
-                points.push(RayVfxManager.pt(arc.startX, arc.startY, 0.0));
-            } else if (t >= 0.999) {
-                points.push(RayVfxManager.pt(arc.endX, arc.endY, 1.0));
-            } else {
-                points.push(RayVfxManager.pt(
-                    baseX + perpX * offset,
-                    baseY + perpY * offset, t));
-            }
-        }
-
-        return points;
+        return RayVfxManager.generateSinePath(
+            arc, perpX, perpY, dist,
+            waveAmp, waveLen, waveSpeed, age, phaseOffset,
+            24, 250, 0);
     }
 
     /**

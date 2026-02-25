@@ -191,77 +191,18 @@ class org.flashNight.arki.render.renderer.PlasmaRenderer {
     // ════════════════════════════════════════════════════════════════════════
 
     /**
-     * 生成带高频扰动的等离子波路径
+     * 生成带高频扰动的等离子波路径（委托给 RayVfxManager.generateSinePath）
      *
-     * @param arc         电弧数据对象
-     * @param perpX       垂直方向 X 分量
-     * @param perpY       垂直方向 Y 分量
-     * @param dist        射线总长度
-     * @param waveAmp     波形幅度
-     * @param waveLen     波长
-     * @param waveSpeed   波传播速度
-     * @param age         当前帧龄
-     * @param phaseOffset 相位偏移（弧度）
-     * @return            路径点数组
+     * noiseRatio=0.37 启用 Plasma 特有的高频湍流叠加。
      */
     private static function generatePlasmaPath(arc:Object, perpX:Number, perpY:Number,
                                               dist:Number, waveAmp:Number, waveLen:Number,
                                               waveSpeed:Number, age:Number,
                                               phaseOffset:Number):Array {
-        var dx:Number = arc.endX - arc.startX;
-        var dy:Number = arc.endY - arc.startY;
-
-        var points:Array = RayVfxManager.poolArr();
-
-        var ptsPerWave:Number = 12;
-        if (waveLen < 5) waveLen = 5;
-        var segmentCount:Number = Math.ceil(dist / (waveLen / ptsPerWave));
-        if (segmentCount < 10) segmentCount = 10;
-        if (segmentCount > 200) segmentCount = 200;
-
-        var step:Number = 1.0 / segmentCount;
-        var margin:Number = 0.08;
-
-        for (var i:Number = 0; i <= segmentCount; i++) {
-            var t:Number = i * step;
-
-            var baseX:Number = arc.startX + dx * t;
-            var baseY:Number = arc.startY + dy * t;
-
-            var offset:Number = 0;
-
-            if (t > 0.001 && t < 0.999) {
-                var envelope:Number = 1.0;
-                if (t < margin) {
-                    envelope = t / margin;
-                } else if (t > 1.0 - margin) {
-                    envelope = (1.0 - t) / margin;
-                }
-                envelope = envelope * envelope * (3 - 2 * envelope);
-
-                var mainPhase:Number = (t * dist / waveLen - age * waveSpeed) * 2 * Math.PI
-                    + phaseOffset;
-                var mainWave:Number = Math.sin(mainPhase);
-
-                var noisePhase:Number = (t * dist / (waveLen * 0.37) - age * waveSpeed * 1.5)
-                    * 2 * Math.PI;
-                var noiseWave:Number = Math.sin(noisePhase) * 0.25;
-
-                offset = waveAmp * envelope * (mainWave + noiseWave);
-            }
-
-            if (t <= 0.001) {
-                points.push(RayVfxManager.pt(arc.startX, arc.startY, 0.0));
-            } else if (t >= 0.999) {
-                points.push(RayVfxManager.pt(arc.endX, arc.endY, 1.0));
-            } else {
-                points.push(RayVfxManager.pt(
-                    baseX + perpX * offset,
-                    baseY + perpY * offset, t));
-            }
-        }
-
-        return points;
+        return RayVfxManager.generateSinePath(
+            arc, perpX, perpY, dist,
+            waveAmp, waveLen, waveSpeed, age, phaseOffset,
+            12, 200, 0.37);
     }
 
     /**

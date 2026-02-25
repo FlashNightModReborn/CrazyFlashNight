@@ -190,74 +190,18 @@ class org.flashNight.arki.render.renderer.VortexRenderer {
     // ════════════════════════════════════════════════════════════════════════
 
     /**
-     * 生成极致平滑的纯正弦涡旋路径
+     * 生成涡旋路径（委托给 RayVfxManager.generateSinePath）
      *
-     * v2 升级：24 点/波长采样，零折角
-     *
-     * @param arc         电弧数据对象
-     * @param perpX       垂直方向 X 分量
-     * @param perpY       垂直方向 Y 分量
-     * @param dist        射线总长度
-     * @param waveAmp     波形幅度
-     * @param waveLen     波长
-     * @param waveSpeed   波传播速度
-     * @param age         当前帧龄
-     * @param phaseOffset 相位偏移（弧度）
-     * @return            路径点数组
+     * 与 WaveRenderer 共享同一路径生成算法，差异仅在参数（宽振幅、长波长、慢波速）。
      */
     private static function generateVortexPath(arc:Object, perpX:Number, perpY:Number,
                                               dist:Number, waveAmp:Number, waveLen:Number,
                                               waveSpeed:Number, age:Number,
                                               phaseOffset:Number):Array {
-        var dx:Number = arc.endX - arc.startX;
-        var dy:Number = arc.endY - arc.startY;
-
-        var points:Array = RayVfxManager.poolArr();
-
-        // ★ v2: 24 点/波长，极致平滑
-        var ptsPerWave:Number = 24;
-        if (waveLen < 5) waveLen = 5;
-        var segmentCount:Number = Math.ceil(dist / (waveLen / ptsPerWave));
-        if (segmentCount < 10) segmentCount = 10;
-        if (segmentCount > 250) segmentCount = 250;
-
-        var step:Number = 1.0 / segmentCount;
-        var margin:Number = 0.08;
-
-        for (var i:Number = 0; i <= segmentCount; i++) {
-            var t:Number = i * step;
-
-            var baseX:Number = arc.startX + dx * t;
-            var baseY:Number = arc.startY + dy * t;
-
-            var offset:Number = 0;
-
-            if (t > 0.001 && t < 0.999) {
-                var envelope:Number = 1.0;
-                if (t < margin) {
-                    envelope = t / margin;
-                } else if (t > 1.0 - margin) {
-                    envelope = (1.0 - t) / margin;
-                }
-                envelope = envelope * envelope * (3 - 2 * envelope);
-
-                var phase:Number = (t * dist / waveLen - age * waveSpeed) * 2 * Math.PI
-                    + phaseOffset;
-                offset = waveAmp * envelope * Math.sin(phase);
-            }
-
-            if (t <= 0.001) {
-                points.push(RayVfxManager.pt(arc.startX, arc.startY, 0.0));
-            } else if (t >= 0.999) {
-                points.push(RayVfxManager.pt(arc.endX, arc.endY, 1.0));
-            } else {
-                points.push(RayVfxManager.pt(
-                    baseX + perpX * offset,
-                    baseY + perpY * offset, t));
-            }
-        }
-
-        return points;
+        return RayVfxManager.generateSinePath(
+            arc, perpX, perpY, dist,
+            waveAmp, waveLen, waveSpeed, age, phaseOffset,
+            24, 250, 0);
     }
 
     /**
