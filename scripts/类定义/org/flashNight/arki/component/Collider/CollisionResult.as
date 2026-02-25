@@ -103,11 +103,14 @@ class org.flashNight.arki.component.Collider.CollisionResult {
 
     /**
      * 添加额外信息的包装方法
-     * 
+     *
      * @param key 键
      * @param value 值
      */
     public function addInfo(key:String, value):Void {
+        if (this.additionalInfo == undefined) {
+            this.additionalInfo = {};
+        }
         this.additionalInfo[key] = value;
     }
 

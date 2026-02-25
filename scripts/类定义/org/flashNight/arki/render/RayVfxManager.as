@@ -326,6 +326,15 @@ class org.flashNight.arki.render.RayVfxManager {
             age: 0
         };
 
+        // 对 pierce 命中点应用相同坐标偏移（与 start/end 保持一致）
+        if (meta != null && meta.hitPoints != null && (offsetX != 0 || offsetY != 0)) {
+            var hps:Array = meta.hitPoints;
+            for (var h:Number = hps.length - 1; h >= 0; --h) {
+                hps[h].x += offsetX;
+                hps[h].y += offsetY;
+            }
+        }
+
         // 从 config 读取时间参数
         arc.visualDuration = (config != null && !isNaN(config.visualDuration)) ? config.visualDuration : 5;
         arc.fadeDuration = (config != null && !isNaN(config.fadeOutDuration)) ? config.fadeOutDuration : 3;

@@ -65,10 +65,20 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     public static var VFX_TESLA:String = "tesla";
     /** 光棱风格：稳定直束 + 强高光 + 呼吸动画 */
     public static var VFX_PRISM:String = "prism";
+    /** 辉光风格：三层泛光渲染 + 呼吸脉冲 + 色散偏移 */
+    public static var VFX_RADIANCE:String = "radiance";
     /** 光谱风格：彩虹渐变 + 颜色滚动 */
     public static var VFX_SPECTRUM:String = "spectrum";
+    /** 相位谐振风格：密集多色短波螺旋 */
+    public static var VFX_RESONANCE:String = "resonance";
     /** 波能风格：正弦波路径 + 脉冲膨胀 */
     public static var VFX_WAVE:String = "wave";
+    /** 热能风格：红橙正弦波 + 脉冲宽度调制 */
+    public static var VFX_THERMAL:String = "thermal";
+    /** 涡旋风格：宽展双螺旋缠绕 */
+    public static var VFX_VORTEX:String = "vortex";
+    /** 等离子风格：湍流双螺旋 + 高频扰动 */
+    public static var VFX_PLASMA:String = "plasma";
 
     // ========== 射线物理参数 ==========
 
