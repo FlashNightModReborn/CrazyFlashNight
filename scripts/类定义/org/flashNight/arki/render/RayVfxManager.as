@@ -168,19 +168,10 @@ class org.flashNight.arki.render.RayVfxManager {
         }
 
         // 延迟策略：按 segmentKind 区分
-        var delay:Number = 0;
-        var chainDelay:Number = (config != null) ? config.chainDelay : 0;
-
-        if (meta.segmentKind == "chain" && meta.hitIndex > 0 && chainDelay > 0) {
-            // chain: 逐段推进 (hitIndex × chainDelay)
-            delay = chainDelay * meta.hitIndex;
-        } else if (meta.segmentKind == "fork" && meta.hitIndex > 0 && chainDelay > 0) {
-            // fork: 统一延迟 1 帧（主命中先，折射后）
-            delay = 1;
-        }
-        // pierce: 不延迟 (delay = 0)
+        var delay:Number = computeSegmentDelay(config, meta);
 
         if (delay > 0) {
+            var delayedStyle:String = (config != null && config.vfxStyle != null) ? config.vfxStyle : "tesla";
             _delayedSegments.push({
                 startX: startX,
                 startY: startY,
@@ -188,12 +179,42 @@ class org.flashNight.arki.render.RayVfxManager {
                 endY: endY,
                 config: config,
                 meta: meta,
+                styleCost: getStyleCost(delayedStyle),
                 delayRemaining: delay
             });
             return;
         }
 
         createArc(startX, startY, endX, endY, config, meta);
+    }
+
+    /**
+     * 计算段的延迟帧数（供 spawn 与测试复用）
+     *
+     * 规则：
+     * - chain: hitIndex * chainDelay（主命中 hitIndex=0 不延迟）
+     * - fork:  统一延迟 1 帧（主命中先，折射后）
+     * - 其他模式不延迟
+     */
+    public static function computeSegmentDelay(config:TeslaRayConfig, meta:Object):Number {
+        if (meta == null) return 0;
+
+        var chainDelay:Number = (config != null && !isNaN(config.chainDelay)) ? config.chainDelay : 0;
+        if (chainDelay <= 0) return 0;
+
+        if (meta.segmentKind == "chain") {
+            var hitIndex:Number = (meta.hitIndex != undefined && !isNaN(meta.hitIndex))
+                ? Number(meta.hitIndex) : 0;
+            if (hitIndex <= 0) return 0;
+            return chainDelay * hitIndex;
+        }
+
+        if (meta.segmentKind == "fork") {
+            // fork 统一延迟 1 帧：所有折射段都在主命中后显示
+            return 1;
+        }
+
+        return 0;
     }
 
     /**
@@ -301,6 +322,7 @@ class org.flashNight.arki.render.RayVfxManager {
             config: config,
             meta: meta,
             vfxStyle: vfxStyle,
+            styleCost: getStyleCost(vfxStyle),
             age: 0
         };
 
@@ -380,13 +402,10 @@ class org.flashNight.arki.render.RayVfxManager {
 
         var i:Number;
         for (i = 0; i < _activeArcs.length; i++) {
-            var style:String = _activeArcs[i].vfxStyle || "tesla";
-            _renderCost += STYLE_COST[style] || 1.0;
+            _renderCost += (_activeArcs[i].styleCost != undefined) ? _activeArcs[i].styleCost : 1.0;
         }
         for (i = 0; i < _delayedSegments.length; i++) {
-            var dConfig:TeslaRayConfig = _delayedSegments[i].config;
-            var dStyle:String = (dConfig != null && dConfig.vfxStyle != null) ? dConfig.vfxStyle : "tesla";
-            _renderCost += STYLE_COST[dStyle] || 1.0;
+            _renderCost += (_delayedSegments[i].styleCost != undefined) ? _delayedSegments[i].styleCost : 1.0;
         }
 
         // 基于加权成本判定 LOD
@@ -514,6 +533,24 @@ class org.flashNight.arki.render.RayVfxManager {
         for (var i:Number = 1; i < path.length; i++) {
             mc.lineTo(path[i].x, path[i].y);
         }
+    }
+
+    /**
+     * 构建起点到终点的直线路径（供各渲染器复用）
+     */
+    public static function straightPath(startX:Number, startY:Number, endX:Number, endY:Number):Array {
+        var path:Array = poolArr();
+        path.push(pt(startX, startY, 0.0));
+        path.push(pt(endX, endY, 1.0));
+        return path;
+    }
+
+    /**
+     * 获取风格渲染成本权重
+     */
+    private static function getStyleCost(style:String):Number {
+        var cost:Number = STYLE_COST[style];
+        return (cost != undefined && !isNaN(cost)) ? cost : 1.0;
     }
 
     /**

@@ -98,9 +98,7 @@ class org.flashNight.arki.render.renderer.SpectrumRenderer {
         mc.blendMode = "add";
 
         // 绝对笔直的中心轴线
-        var straightPath:Array = RayVfxManager.poolArr();
-        straightPath.push(RayVfxManager.pt(arc.startX, arc.startY, 0.0));
-        straightPath.push(RayVfxManager.pt(arc.endX, arc.endY, 1.0));
+        var straightPath:Array = RayVfxManager.straightPath(arc.startX, arc.startY, arc.endX, arc.endY);
 
         // ─────────────────────────────────────────────────────────────
         // 图层 1：底层有色泛光（仅 LOD 0）

@@ -361,9 +361,6 @@ class org.flashNight.arki.render.renderer.WaveRenderer {
      * 生成直线路径
      */
     private static function generateStraightPath(arc:Object):Array {
-        var points:Array = RayVfxManager.poolArr();
-        points.push(RayVfxManager.pt(arc.startX, arc.startY, 0.0));
-        points.push(RayVfxManager.pt(arc.endX, arc.endY, 1.0));
-        return points;
+        return RayVfxManager.straightPath(arc.startX, arc.startY, arc.endX, arc.endY);
     }
 }

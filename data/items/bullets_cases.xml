@@ -562,7 +562,7 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: chain连锁模式, 主命中+2次弹跳, 每次弹跳伤害×0.7 -->
+    <!-- 强化版: chain连锁模式, 主命中+4次弹跳, 每次弹跳伤害×0.7 -->
     <bullet>
         <name>磁暴射线-强化</name>
         <attribute>
@@ -610,7 +610,7 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: fork光棱折射, 主命中+4条折射光束, 搜索半径250, 每条子射线伤害×0.6 -->
+    <!-- 强化版: fork光棱折射, 主命中+3条折射光束, 搜索半径300, 每条子射线伤害×0.6 -->
     <bullet>
         <name>光棱射线-强化</name>
         <attribute>
@@ -657,7 +657,7 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: fork辉光折射, 主命中+4条折射光束, 搜索半径300, 每条子射线伤害×0.6 -->
+    <!-- 强化版: fork辉光折射, 主命中+3条折射光束, 搜索半径300, 每条子射线伤害×0.6 -->
     <bullet>
         <name>辉光射线-强化</name>
         <attribute>
@@ -703,7 +703,7 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: fork光谱折射, 主命中+4条折射光束(棱镜色散效果), 每条子射线单色 -->
+    <!-- 强化版: fork光谱折射, 主命中+3条折射光束(棱镜色散效果), 每条子射线单色 -->
     <bullet>
         <name>光谱射线-强化</name>
         <attribute>
@@ -748,7 +748,7 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: fork谐振折射, 主命中+4条折射光束 -->
+    <!-- 强化版: fork谐振折射, 主命中+3条折射光束 -->
     <bullet>
         <name>谐振波射线-强化</name>
         <attribute>

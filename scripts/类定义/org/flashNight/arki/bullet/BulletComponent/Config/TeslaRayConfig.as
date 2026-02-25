@@ -276,6 +276,26 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static var DEFAULT_CHAIN_RADIUS:Number = 200;
     private static var DEFAULT_CHAIN_DELAY:Number = 0;
 
+    // 合法枚举映射（避免重复字符串比较）
+    private static var VALID_STYLES:Object = {
+        tesla: true,
+        prism: true,
+        radiance: true,
+        spectrum: true,
+        resonance: true,
+        wave: true,
+        thermal: true,
+        vortex: true,
+        plasma: true
+    };
+
+    private static var VALID_MODES:Object = {
+        single: true,
+        chain: true,
+        pierce: true,
+        fork: true
+    };
+
     /**
      * 构造函数
      * 初始化所有参数为默认值
@@ -380,8 +400,8 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         // ====== 第1步：解析 vfxStyle ======
 
         if (node.vfxStyle != undefined) {
-            var style:String = String(node.vfxStyle);
-            if (style == "tesla" || style == "prism" || style == "radiance" || style == "spectrum" || style == "resonance" || style == "wave" || style == "thermal" || style == "vortex" || style == "plasma") {
+            var style:String = normalizeToken(String(node.vfxStyle));
+            if (isValidStyle(style)) {
                 config.vfxStyle = style;
             }
         }
@@ -412,8 +432,8 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
 
         // 射线模式
         if (node.rayMode != undefined) {
-            var mode:String = String(node.rayMode);
-            if (mode == "chain" || mode == "pierce" || mode == "fork" || mode == "single") {
+            var mode:String = normalizeToken(String(node.rayMode));
+            if (isValidMode(mode)) {
                 config.rayMode = mode;
             }
         }
@@ -591,15 +611,19 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         var result:Object = {};
         for (var key:String in vfxParamsNode) {
             var value = vfxParamsNode[key];
-            // 尝试解析颜色值
-            if (key.indexOf("Color") >= 0 || key == "palette") {
-                if (key == "palette") {
-                    result[key] = parsePalette(value);
-                } else {
-                    result[key] = parseColor(value);
-                }
+
+            // 颜色参数
+            if (key == "palette") {
+                result[key] = parsePalette(value);
+            } else if (key.indexOf("Color") >= 0) {
+                result[key] = parseColor(value);
+            // 显式布尔字段
+            } else if (key == "flickerEnabled") {
+                result[key] = parseBoolean(value, false);
             } else {
-                result[key] = Number(value);
+                var numericValue:Number = Number(value);
+                // 数值字段解析失败时保留原值，避免把 NaN 写入配置
+                result[key] = isNaN(numericValue) ? value : numericValue;
             }
         }
         return result;
@@ -614,7 +638,28 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static function applyVfxParams(config:TeslaRayConfig, params:Object):Void {
         for (var key:String in params) {
             if (config[key] != undefined) {
-                config[key] = params[key];
+                var currentValue = config[key];
+                var nextValue = params[key];
+                var currentType:String = typeof(currentValue);
+
+                if (currentType == "number") {
+                    // 仅接受有效数值，拒绝 NaN
+                    if (typeof(nextValue) == "number" && !isNaN(nextValue)) {
+                        config[key] = Number(nextValue);
+                    }
+                } else if (currentType == "boolean") {
+                    if (typeof(nextValue) == "boolean") {
+                        config[key] = nextValue;
+                    } else {
+                        config[key] = parseBoolean(nextValue, currentValue);
+                    }
+                } else if (currentValue instanceof Array) {
+                    if (nextValue instanceof Array) {
+                        config[key] = nextValue.slice(0);
+                    }
+                } else {
+                    config[key] = nextValue;
+                }
             }
         }
     }
@@ -672,6 +717,47 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             return parseInt("0x" + str.substr(1), 16);
         }
         return Number(value);
+    }
+
+    /**
+     * 解析布尔值（支持 true/false/1/0）
+     */
+    private static function parseBoolean(value, defaultValue:Boolean):Boolean {
+        if (typeof(value) == "boolean") return Boolean(value);
+        if (typeof(value) == "number") return Number(value) != 0;
+        var str:String = normalizeToken(String(value));
+        if (str == "true" || str == "1") return true;
+        if (str == "false" || str == "0") return false;
+        return defaultValue;
+    }
+
+    /**
+     * 规范化字符串标记（去除首尾空白并转小写）
+     */
+    private static function normalizeToken(value:String):String {
+        var str:String = value;
+        var start:Number = 0;
+        var end:Number = str.length - 1;
+
+        while (start <= end && str.charCodeAt(start) <= 32) start++;
+        while (end >= start && str.charCodeAt(end) <= 32) end--;
+
+        if (start > end) return "";
+        return str.substring(start, end + 1).toLowerCase();
+    }
+
+    /**
+     * 判断渲染风格是否合法
+     */
+    private static function isValidStyle(style:String):Boolean {
+        return VALID_STYLES[style] == true;
+    }
+
+    /**
+     * 判断射线模式是否合法
+     */
+    private static function isValidMode(mode:String):Boolean {
+        return VALID_MODES[mode] == true;
     }
 
     /**

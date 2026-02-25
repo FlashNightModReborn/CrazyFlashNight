@@ -101,9 +101,7 @@ class org.flashNight.arki.render.renderer.PhaseResonanceRenderer {
         mc.blendMode = "add";
 
         // 绝对笔直的中心轴线（用于核心高光和底层泛光）
-        var straightPath:Array = RayVfxManager.poolArr();
-        straightPath.push(RayVfxManager.pt(arc.startX, arc.startY, 0.0));
-        straightPath.push(RayVfxManager.pt(arc.endX, arc.endY, 1.0));
+        var straightPath:Array = RayVfxManager.straightPath(arc.startX, arc.startY, arc.endX, arc.endY);
 
         // ─────────────────────────────────────────────────────────────
         // 图层 1：底层有色泛光（营造冷色光污染氛围，仅 LOD 0）
