@@ -381,7 +381,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
 
         if (node.vfxStyle != undefined) {
             var style:String = String(node.vfxStyle);
-            if (style == "tesla" || style == "prism" || style == "radiance" || style == "spectrum" || style == "wave") {
+            if (style == "tesla" || style == "prism" || style == "radiance" || style == "spectrum" || style == "resonance" || style == "wave") {
                 config.vfxStyle = style;
             }
         }
@@ -717,6 +717,9 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             case "spectrum":
                 s += " stripeCount=" + stripeCount + " paletteScrollSpeed=" + paletteScrollSpeed;
                 break;
+            case "resonance":
+                s += " stripeCount=" + stripeCount + " paletteScrollSpeed=" + paletteScrollSpeed + " distortWaveLen=" + distortWaveLen;
+                break;
             case "wave":
                 s += " waveAmp=" + waveAmp + " pulseAmp=" + pulseAmp;
                 break;
@@ -751,6 +754,13 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      */
     public function isRadiance():Boolean {
         return vfxStyle == "radiance";
+    }
+
+    /**
+     * 判断是否为 PhaseResonance 风格
+     */
+    public function isResonance():Boolean {
+        return vfxStyle == "resonance";
     }
 
     /**

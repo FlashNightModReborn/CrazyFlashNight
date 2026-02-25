@@ -85,22 +85,43 @@ class org.flashNight.arki.render.VfxPresets {
     /**
      * RA3 光谱塔预设
      *
-     * 视觉特征：厚彩虹光束，颜色滚动，现代感
+     * 视觉特征：冷色螺旋交织 + 叠加泛光 + 笔直白核，致敬RA3光谱武器
      */
     public static var ra3_spectrum:Object = {
         // 公共字段
-        primaryColor: 0xFFFFFF,      // 白色底（被调色板覆盖）
+        primaryColor: 0xFFFFFF,      // 白色（核心层使用）
+        secondaryColor: 0xFFFFFF,
+        thickness: 4,                // 基准粗细（v3：配合少量线条保持清晰）
+        visualDuration: 5,
+        fadeOutDuration: 3,
+        // Spectrum v3 专用
+        palette: [0xFF00FF, 0x00FFFF, 0x0066FF],  // 精简三原色（洋红/亮青/湛蓝）
+        paletteScrollSpeed: 30,      // 颜色流速
+        stripeCount: 3,              // 3条：高饱和度不糊白，优雅交织
+        distortAmp: 10,              // 大振幅：色条间留出镂空
+        distortWaveLen: 300,         // 长波：优雅交织1~2次（告别紧绷弹簧感）
+        flickerEnabled: false        // v3自带叠加泛光，无需额外爆闪
+    };
+
+    /**
+     * 相位谐振波预设
+     *
+     * 视觉特征：短波密织 + 五色霓虹轮转 + 纺锤包络 + 叠加泛光
+     */
+    public static var resonance:Object = {
+        // 公共字段
+        primaryColor: 0xFFFFFF,      // 白色（核心层使用）
         secondaryColor: 0xFFFFFF,
         thickness: 4,
         visualDuration: 5,
         fadeOutDuration: 3,
-        // Spectrum 专用
-        palette: [0xFF0000, 0xFF8800, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0088FF, 0x8800FF],
-        paletteScrollSpeed: 20,      // 滚动速度 (hue/帧)
-        stripeCount: 7,              // 条纹数
-        distortAmp: 3,               // 波形抖动幅度 (像素)
-        distortWaveLen: 60,          // 波长 (像素)
-        flickerEnabled: false        // 禁用爆闪（光谱塔需要稳定的视觉感受）
+        // PhaseResonance 专用
+        palette: [0xFF00FF, 0x00FFFF, 0x8800FF, 0x0088FF, 0xFF66FF],  // 五色冷色霓虹
+        paletteScrollSpeed: 30,      // 颜色流速
+        stripeCount: 5,              // 5条螺旋（密织饱满感）
+        distortAmp: 8,               // 交织振幅
+        distortWaveLen: 80,          // 短波长（密集缠绕）
+        flickerEnabled: false
     };
 
     /**
@@ -147,6 +168,7 @@ class org.flashNight.arki.render.VfxPresets {
                 ra2_prism: ra2_prism,
                 radiance: radiance,
                 ra3_spectrum: ra3_spectrum,
+                resonance: resonance,
                 ra3_wave: ra3_wave
             };
         }
@@ -169,7 +191,7 @@ class org.flashNight.arki.render.VfxPresets {
      * @return 预设名数组
      */
     public static function getPresetNames():Array {
-        return ["ra2_tesla", "ra2_prism", "radiance", "ra3_spectrum", "ra3_wave"];
+        return ["ra2_tesla", "ra2_prism", "radiance", "ra3_spectrum", "resonance", "ra3_wave"];
     }
 
     /**
@@ -184,6 +206,7 @@ class org.flashNight.arki.render.VfxPresets {
             case "prism":    return "ra2_prism";
             case "radiance": return "radiance";
             case "spectrum": return "ra3_spectrum";
+            case "resonance": return "resonance";
             case "wave":     return "ra3_wave";
             default:         return "ra2_tesla";
         }

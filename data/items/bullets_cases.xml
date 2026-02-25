@@ -684,7 +684,7 @@
     </bullet>
 
     <!-- ========== 光谱科技 (Spectrum / Red Alert 3) ========== -->
-    <!-- 基础版: single模式, 彩虹光束, 颜色滚动流动感 -->
+    <!-- 基础版: single模式, 冷色长波交织光束, 致敬RA3光谱武器 -->
     <bullet>
         <name>光谱射线</name>
         <attribute>
@@ -694,10 +694,10 @@
                 <vfxStyle>spectrum</vfxStyle>
                 <vfxPreset>ra3_spectrum</vfxPreset>
                 <thickness>4</thickness>
-                <stripeCount>7</stripeCount>
-                <paletteScrollSpeed>20</paletteScrollSpeed>
-                <distortAmp>3</distortAmp>
-                <distortWaveLen>60</distortWaveLen>
+                <stripeCount>3</stripeCount>
+                <paletteScrollSpeed>30</paletteScrollSpeed>
+                <distortAmp>10</distortAmp>
+                <distortWaveLen>300</distortWaveLen>
                 <visualDuration>5</visualDuration>
                 <fadeOutDuration>3</fadeOutDuration>
             </rayConfig>
@@ -718,10 +718,55 @@
                 <damageFalloff>0.6</damageFalloff>
                 <chainRadius>300</chainRadius>
                 <thickness>4</thickness>
-                <stripeCount>7</stripeCount>
-                <paletteScrollSpeed>20</paletteScrollSpeed>
-                <distortAmp>3</distortAmp>
-                <distortWaveLen>60</distortWaveLen>
+                <stripeCount>3</stripeCount>
+                <paletteScrollSpeed>30</paletteScrollSpeed>
+                <distortAmp>10</distortAmp>
+                <distortWaveLen>300</distortWaveLen>
+                <visualDuration>5</visualDuration>
+                <fadeOutDuration>3</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+
+    <!-- ========== 相位谐振波 (Phase Resonance) ========== -->
+    <!-- 基础版: single模式, 短波密织五色霓虹缠绕 -->
+    <bullet>
+        <name>谐振波射线</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <rayConfig>
+                <rayLength>800</rayLength>
+                <vfxStyle>resonance</vfxStyle>
+                <vfxPreset>resonance</vfxPreset>
+                <thickness>4</thickness>
+                <stripeCount>5</stripeCount>
+                <paletteScrollSpeed>30</paletteScrollSpeed>
+                <distortAmp>8</distortAmp>
+                <distortWaveLen>80</distortWaveLen>
+                <visualDuration>5</visualDuration>
+                <fadeOutDuration>3</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+    <!-- 强化版: fork谐振折射, 主命中+4条折射光束 -->
+    <bullet>
+        <name>谐振波射线-强化</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <pierceLimit>4</pierceLimit>
+            <rayConfig>
+                <rayLength>900</rayLength>
+                <rayMode>fork</rayMode>
+                <vfxStyle>resonance</vfxStyle>
+                <vfxPreset>resonance</vfxPreset>
+                <chainDelay>1</chainDelay>
+                <damageFalloff>0.6</damageFalloff>
+                <chainRadius>300</chainRadius>
+                <thickness>4</thickness>
+                <stripeCount>5</stripeCount>
+                <paletteScrollSpeed>30</paletteScrollSpeed>
+                <distortAmp>8</distortAmp>
+                <distortWaveLen>80</distortWaveLen>
                 <visualDuration>5</visualDuration>
                 <fadeOutDuration>3</fadeOutDuration>
             </rayConfig>
