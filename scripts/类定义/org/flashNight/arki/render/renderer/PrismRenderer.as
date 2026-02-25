@@ -1,25 +1,24 @@
 ﻿import org.flashNight.arki.render.RayVfxManager;
 
 /**
- * PrismRenderer - 光棱射线渲染器
+ * PrismRenderer - 光棱射线渲染器 (RA2 致敬版 v3)
  *
- * 致敬红警2光棱塔的视觉风格，核心特征：
- * • 稳定直束：极低抖动，保持几何锐利感
- * • 三层渲染：外晕 → 主束 → 白热内核
- * • 呼吸动画：低频正弦波调制亮度/粗细
- * • fork 色偏：折射线更细 + 轻微色相偏移（模拟棱镜色散）
- *
- * 路径生成原理：
- *   沿垂直于束方向做低频正弦微扰，而非 Tesla 的随机锯齿：
- *   offset = shimmerAmp × sin(age × shimmerFreq × 2π) × sin(t × π)
+ * 致敬红警2光棱塔的视觉风格，核心设计原则：
+ * • 绝对笔直：激光沿直线传播，无任何空间弯曲
+ * • 叠加混合：blendMode="add"，多束交叠自然爆白致盲
+ * • 能量频闪：shimmerAmp 控制粗细/亮度的高频随机脉冲（非路径抖动）
+ * • 三层光学：外晕(主色) → 过渡护套(副色) → 白热内核(纯白,加粗)
+ * • 棱镜色散：概率性伴生极细折射微光（LOD 0 主射线专属）
+ * • 端点耀斑：锐化径向渐变，模拟枪口闪焰与命中高光
+ * • fork 色偏：折射线更细 + 色相偏移（模拟棱镜色散）
  *
  * LOD 降级效果：
- *   LOD 0: 全特效（呼吸动画 + 三层渲染）
- *   LOD 1: 取消呼吸动画
- *   LOD 2: 单层渲染（仅主束）
+ *   LOD 0: 全特效（三层 + 色散伴生 + 耀斑 + 频闪）
+ *   LOD 1: 三层 + 频闪（无色散伴生，无耀斑）
+ *   LOD 2: 双层简化（主色 + 白核，无频闪）
  *
  * @author FlashNight
- * @version 1.0
+ * @version 3.0
  */
 class org.flashNight.arki.render.renderer.PrismRenderer {
 
@@ -27,12 +26,16 @@ class org.flashNight.arki.render.renderer.PrismRenderer {
     // 默认配置常量
     // ════════════════════════════════════════════════════════════════════════
 
-    private static var DEFAULT_PRIMARY_COLOR:Number = 0xFFDD00;    // 金黄色
-    private static var DEFAULT_SECONDARY_COLOR:Number = 0xFFFFAA;  // 淡黄高光
-    private static var DEFAULT_THICKNESS:Number = 3;
-    private static var DEFAULT_SHIMMER_AMP:Number = 0.1;           // 呼吸幅度
-    private static var DEFAULT_SHIMMER_FREQ:Number = 0.08;         // 呼吸频率 (周期/帧，约12帧一个周期)
-    private static var DEFAULT_FORK_THICKNESS_MUL:Number = 0.7;    // 折射线粗细倍率
+    private static var DEFAULT_PRIMARY_COLOR:Number   = 0xFFFF00;   // 纯正亮黄（RA2原版）
+    private static var DEFAULT_SECONDARY_COLOR:Number = 0xFFFFAA;   // 淡黄过渡（preset 可覆盖为白）
+    private static var DEFAULT_THICKNESS:Number       = 3;
+    private static var DEFAULT_SHIMMER_AMP:Number     = 0.25;       // 频闪幅度（控制粗细/亮度脉冲）
+    private static var DEFAULT_FORK_THICKNESS_MUL:Number = 0.6;     // 折射线粗细倍率
+    private static var DEFAULT_FLARE_RADIUS_MUL:Number   = 4.5;    // 耀斑半径 = 粗细 × 此倍率
+
+    // 贝塞尔画圆常量：tan(π/8) 和 sin(π/4)
+    private static var KAPPA:Number = 0.414213562;
+    private static var DIAG:Number  = 0.707106781;
 
     // ════════════════════════════════════════════════════════════════════════
     // 渲染入口
@@ -48,129 +51,157 @@ class org.flashNight.arki.render.renderer.PrismRenderer {
     public static function render(arc:Object, lod:Number, mc:MovieClip):Void {
         var config:Object = arc.config;
         var meta:Object = arc.meta;
-        var age:Number = arc.age;
+
+        // ★ 叠加混合 ── 光棱塔的灵魂，多束交叠处自然爆白致盲
+        mc.blendMode = "add";
 
         // 解析配置参数
-        var primaryColor:Number = (config != null && !isNaN(config.primaryColor)) ? config.primaryColor : DEFAULT_PRIMARY_COLOR;
-        var secondaryColor:Number = (config != null && !isNaN(config.secondaryColor)) ? config.secondaryColor : DEFAULT_SECONDARY_COLOR;
-        var thickness:Number = (config != null && !isNaN(config.thickness)) ? config.thickness : DEFAULT_THICKNESS;
-        var shimmerAmp:Number = (config != null && !isNaN(config.shimmerAmp)) ? config.shimmerAmp : DEFAULT_SHIMMER_AMP;
-        var shimmerFreq:Number = (config != null && !isNaN(config.shimmerFreq)) ? config.shimmerFreq : DEFAULT_SHIMMER_FREQ;
-        var forkThicknessMul:Number = (config != null && !isNaN(config.forkThicknessMul)) ? config.forkThicknessMul : DEFAULT_FORK_THICKNESS_MUL;
+        var primaryColor:Number = (config != null && !isNaN(config.primaryColor))
+            ? config.primaryColor : DEFAULT_PRIMARY_COLOR;
+        var secondaryColor:Number = (config != null && !isNaN(config.secondaryColor))
+            ? config.secondaryColor : DEFAULT_SECONDARY_COLOR;
+        var baseThickness:Number = (config != null && !isNaN(config.thickness))
+            ? config.thickness : DEFAULT_THICKNESS;
+        var shimmerAmp:Number = (config != null && !isNaN(config.shimmerAmp))
+            ? config.shimmerAmp : DEFAULT_SHIMMER_AMP;
+        var forkThicknessMul:Number = (config != null && !isNaN(config.forkThicknessMul))
+            ? config.forkThicknessMul : DEFAULT_FORK_THICKNESS_MUL;
 
-        // 应用 intensity 强度因子
+        // 强度因子（由生命周期系统驱动）
         var intensity:Number = (meta != null && !isNaN(meta.intensity)) ? meta.intensity : 1.0;
-        thickness *= intensity;
 
-        // 判断是否为折射线
+        // 折射线处理
         var isFork:Boolean = (meta != null && meta.segmentKind == "fork");
         if (isFork) {
-            thickness *= forkThicknessMul;
-            // 折射线色相偏移（模拟棱镜色散）
+            baseThickness *= forkThicknessMul;
+            // 色相偏移（模拟棱镜色散）
             primaryColor = shiftHue(primaryColor, 15);
+            secondaryColor = shiftHue(secondaryColor, 15);
         }
 
-        // LOD 降级
-        var enableShimmer:Boolean = (lod < 1);
-        var fullLayers:Boolean = (lod < 2);
-
-        // 计算电弧方向向量
+        // 方向向量
         var dx:Number = arc.endX - arc.startX;
         var dy:Number = arc.endY - arc.startY;
         var dist:Number = Math.sqrt(dx * dx + dy * dy);
         if (dist == 0) return;
 
-        // 垂直方向向量（用于微扰偏移）
-        var perpX:Number = -dy / dist;
-        var perpY:Number = dx / dist;
+        // ★ 核心1：能量频闪 ── shimmerAmp 控制粗细/亮度的随机脉冲
+        //   模拟高能光束的不稳定输出（"滋滋"感），而非路径弯曲
+        var pulse:Number = 1.0;
+        if (lod < 2) {
+            pulse = 1.0 + (Math.random() * 2 - 1) * shimmerAmp;
+        }
 
-        // 生成路径（直线 + 低频正弦微扰）
-        var path:Array = generatePrismPath(arc, perpX, perpY, dist, shimmerAmp, shimmerFreq, age, enableShimmer);
+        // 光束粗细随生命周期收束，主要靠 alpha 衰减
+        var currentAlpha:Number = intensity * pulse;
+        var currentThick:Number = baseThickness * (0.6 + 0.4 * intensity) * pulse;
 
-        // 计算呼吸动画的亮度调制
-        var breathFactor:Number = 1.0;
-        if (enableShimmer) {
-            breathFactor = 1.0 + shimmerAmp * Math.sin(age * shimmerFreq * 2 * Math.PI);
+        // ★ 核心2：绝对笔直的路径 ── 激光沿直线传播，无空间弯曲
+        //   仅首尾两点连线，还原激光质感并大幅降低 CPU 负担
+        var mainPath:Array = RayVfxManager.poolArr();
+        mainPath.push(RayVfxManager.pt(arc.startX, arc.startY, 0.0));
+        mainPath.push(RayVfxManager.pt(arc.endX, arc.endY, 1.0));
+
+        // ─────────────────────────────────────────────────────────────
+        // 三层光学渲染
+        // ─────────────────────────────────────────────────────────────
+
+        if (lod < 2) {
+            // Layer 1: 环境外晕（极宽，低透明度，主色辉光）
+            RayVfxManager.drawPath(mc, mainPath, primaryColor, currentThick * 4.5, 20 * currentAlpha);
+
+            // Layer 2: 能量护套（中等宽度，副色过渡层，增加光学层次感）
+            RayVfxManager.drawPath(mc, mainPath, secondaryColor, currentThick * 2.0, 60 * currentAlpha);
+
+            // ★ 核心3：白热内核（0.8x 加粗！叠加爆白的关键）
+            RayVfxManager.drawPath(mc, mainPath, 0xFFFFFF, currentThick * 0.8, 100 * currentAlpha);
+
+            // ★ 核心4：棱镜色散伴生光束（LOD 0 主射线专属）
+            //   模拟高能光穿透棱镜时的细微光学溢出
+            if (lod == 0 && !isFork && Math.random() > 0.4) {
+                var perpX:Number = -dy / dist;
+                var perpY:Number =  dx / dist;
+                var strandsNum:Number = (Math.random() > 0.5) ? 2 : 1;
+
+                for (var i:Number = 0; i < strandsNum; i++) {
+                    var strandPath:Array = RayVfxManager.poolArr();
+                    // 终端点微量横向偏移，伴生光从同一起点散射出去
+                    var offset:Number = (Math.random() * 2 - 1) * currentThick * 1.5;
+
+                    strandPath.push(RayVfxManager.pt(arc.startX, arc.startY, 0.0));
+                    strandPath.push(RayVfxManager.pt(
+                        arc.endX + perpX * offset,
+                        arc.endY + perpY * offset, 1.0));
+
+                    RayVfxManager.drawPath(mc, strandPath, secondaryColor,
+                        currentThick * 0.25, 60 * currentAlpha);
+                }
+            }
+        } else {
+            // LOD 2：双层简化（无频闪，无色散）
+            RayVfxManager.drawPath(mc, mainPath, primaryColor, baseThickness * 2.0, 80 * intensity);
+            RayVfxManager.drawPath(mc, mainPath, 0xFFFFFF, baseThickness * 0.6, 100 * intensity);
         }
 
         // ─────────────────────────────────────────────────────────────
-        // 三层渲染
+        // 端点耀斑（仅 LOD 0）
         // ─────────────────────────────────────────────────────────────
 
-        if (fullLayers) {
-            // Layer 1: 外晕（宽域泛光）
-            var alpha1:Number = Math.min(100, 20 * breathFactor);
-            RayVfxManager.drawPath(mc, path, primaryColor, thickness * 5.0, alpha1);
-
-            // Layer 2: 主束
-            var alpha2:Number = Math.min(100, 90 * breathFactor);
-            RayVfxManager.drawPath(mc, path, primaryColor, thickness * 1.5, alpha2);
-
-            // Layer 3: 白热内核
-            RayVfxManager.drawPath(mc, path, secondaryColor, thickness * 0.5, 100);
-        } else {
-            // LOD 2: 单层渲染（仅主束）
-            RayVfxManager.drawPath(mc, path, primaryColor, thickness * 1.5, 90);
+        if (lod < 1) {
+            var flareR:Number = currentThick * DEFAULT_FLARE_RADIUS_MUL;
+            // 枪口耀斑（较小）
+            drawFlare(mc, arc.startX, arc.startY, flareR * 0.6, primaryColor, currentAlpha);
+            // 命中点耀斑（较大，脉冲同步爆闪）
+            drawFlare(mc, arc.endX, arc.endY, flareR * 1.3, secondaryColor, currentAlpha);
         }
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // 路径生成
+    // 端点耀斑
     // ════════════════════════════════════════════════════════════════════════
 
     /**
-     * 生成光棱路径（直线 + 低频正弦微扰）
+     * 绘制锐化能量耀斑（径向渐变圆）
      *
-     * 微扰沿垂直于束方向偏移，而非全局 y，确保任意角度下表现一致。
+     * 中心纯白 → 边缘主色 → 透明。
+     * ratios [0, 40, 255] 使白心区域更集中、打击感更硬朗。
      *
-     * @param arc         电弧数据对象
-     * @param perpX       垂直方向 X 分量
-     * @param perpY       垂直方向 Y 分量
-     * @param dist        射线总长度
-     * @param shimmerAmp  呼吸幅度
-     * @param shimmerFreq 呼吸频率
-     * @param age         当前帧龄
-     * @param enableShimmer 是否启用呼吸动画
-     * @return            路径点数组
+     * @param mc          目标 MovieClip
+     * @param x           耀斑中心 X
+     * @param y           耀斑中心 Y
+     * @param radius      耀斑半径
+     * @param color       边缘色
+     * @param alphaFactor 透明度因子 (0~1)
      */
-    private static function generatePrismPath(arc:Object, perpX:Number, perpY:Number,
-                                               dist:Number, shimmerAmp:Number, shimmerFreq:Number,
-                                               age:Number, enableShimmer:Boolean):Array {
-        var dx:Number = arc.endX - arc.startX;
-        var dy:Number = arc.endY - arc.startY;
+    private static function drawFlare(mc:MovieClip, x:Number, y:Number,
+                                       radius:Number, color:Number, alphaFactor:Number):Void {
+        mc.lineStyle(undefined);
 
-        var points:Array = RayVfxManager.poolArr();
+        // 径向渐变：中心白 → 边缘主色 → 透明（锐化版）
+        var alphas:Array = [100 * alphaFactor, 60 * alphaFactor, 0];
+        var colors:Array = [0xFFFFFF, color, color];
+        var ratios:Array = [0, 40, 255];
+        var matrix:Object = {
+            matrixType: "box",
+            x: x - radius, y: y - radius,
+            w: radius * 2, h: radius * 2, r: 0
+        };
 
-        // 分段数（光棱使用较少分段，保持直线感）
-        var segmentCount:Number = Math.max(3, Math.ceil(dist / 100));
-        var step:Number = 1.0 / segmentCount;
+        mc.beginGradientFill("radial", colors, alphas, ratios, matrix);
 
-        for (var i:Number = 0; i <= segmentCount; i++) {
-            var t:Number = i * step;
-
-            // 基础坐标
-            var baseX:Number = arc.startX + dx * t;
-            var baseY:Number = arc.startY + dy * t;
-
-            // 计算微扰偏移
-            var offset:Number = 0;
-            if (enableShimmer && t > 0.001 && t < 0.999) {
-                // 纺锤包络 + 呼吸动画
-                var envelope:Number = Math.sin(t * Math.PI);
-                offset = shimmerAmp * 10 * envelope * Math.sin(age * shimmerFreq * 2 * Math.PI);
-            }
-
-            // 端点强制锁定
-            if (t <= 0.001) {
-                points.push(RayVfxManager.pt(arc.startX, arc.startY, 0.0));
-            } else if (t >= 0.999) {
-                points.push(RayVfxManager.pt(arc.endX, arc.endY, 1.0));
-            } else {
-                points.push(RayVfxManager.pt(baseX + perpX * offset, baseY + perpY * offset, t));
-            }
-        }
-
-        return points;
+        // 8 段贝塞尔近似圆
+        var a:Number = radius * KAPPA;
+        var b:Number = radius * DIAG;
+        mc.moveTo(x + radius, y);
+        mc.curveTo(x + radius, y + a, x + b, y + b);
+        mc.curveTo(x + a, y + radius, x, y + radius);
+        mc.curveTo(x - a, y + radius, x - b, y + b);
+        mc.curveTo(x - radius, y + a, x - radius, y);
+        mc.curveTo(x - radius, y - a, x - b, y - b);
+        mc.curveTo(x - a, y - radius, x, y - radius);
+        mc.curveTo(x + a, y - radius, x + b, y - b);
+        mc.curveTo(x + radius, y - a, x + radius, y);
+        mc.endFill();
     }
 
     // ════════════════════════════════════════════════════════════════════════
@@ -185,12 +216,10 @@ class org.flashNight.arki.render.renderer.PrismRenderer {
      * @return          偏移后的颜色
      */
     private static function shiftHue(color:Number, degrees:Number):Number {
-        // 提取 RGB
         var r:Number = (color >> 16) & 0xFF;
         var g:Number = (color >> 8) & 0xFF;
         var b:Number = color & 0xFF;
 
-        // RGB to HSV
         var max:Number = Math.max(r, Math.max(g, b));
         var min:Number = Math.min(r, Math.min(g, b));
         var delta:Number = max - min;
@@ -210,11 +239,9 @@ class org.flashNight.arki.render.renderer.PrismRenderer {
         }
         if (h < 0) h += 360;
 
-        // 偏移色相
         h = (h + degrees) % 360;
         if (h < 0) h += 360;
 
-        // HSV to RGB
         var c:Number = v * s;
         var x:Number = c * (1 - Math.abs((h / 60) % 2 - 1));
         var m:Number = v - c;

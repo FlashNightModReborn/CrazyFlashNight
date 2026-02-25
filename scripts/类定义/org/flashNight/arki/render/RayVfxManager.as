@@ -2,8 +2,10 @@
 import org.flashNight.arki.spatial.transform.SceneCoordinateManager;
 import org.flashNight.arki.render.renderer.TeslaRenderer;
 import org.flashNight.arki.render.renderer.PrismRenderer;
+import org.flashNight.arki.render.renderer.RadianceRenderer;
 import org.flashNight.arki.render.renderer.SpectrumRenderer;
 import org.flashNight.arki.render.renderer.WaveRenderer;
+import org.flashNight.arki.render.renderer.PhaseResonanceRenderer;
 
 /**
  * RayVfxManager - 射线视觉效果管理器 (路由器)
@@ -78,7 +80,9 @@ class org.flashNight.arki.render.RayVfxManager {
     private static var STYLE_COST:Object = {
         tesla: 1.5,     // 分支 + 多路径
         prism: 1.0,     // 基础成本
+        radiance: 1.0,  // 辉光射线（与 prism 同级）
         spectrum: 2.5,  // 多条纹 N 倍 drawcall
+        resonance: 2.5, // 相位谐振波（与 spectrum 同级）
         wave: 2.0       // 正弦波分段 + 波纹
     };
 
@@ -410,8 +414,14 @@ class org.flashNight.arki.render.RayVfxManager {
             case "prism":
                 PrismRenderer.render(arc, _currentLOD, mc);
                 break;
+            case "radiance":
+                RadianceRenderer.render(arc, _currentLOD, mc);
+                break;
             case "spectrum":
                 SpectrumRenderer.render(arc, _currentLOD, mc);
+                break;
+            case "resonance":
+                PhaseResonanceRenderer.render(arc, _currentLOD, mc);
                 break;
             case "wave":
                 WaveRenderer.render(arc, _currentLOD, mc);

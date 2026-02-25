@@ -27,6 +27,7 @@
  * 视觉风格说明 (vfxStyle - 渲染风格，与 rayMode 完全正交)：
  * • "tesla"    - 磁暴风格：高频抖动电弧 + 随机分叉 + 闪烁
  * • "prism"    - 光棱风格：稳定直束 + 强高光 + 呼吸动画
+ * • "radiance" - 辉光风格：三层泛光渲染 + 呼吸脉冲 + 色散偏移
  * • "spectrum" - 光谱风格：彩虹渐变 + 颜色滚动 + 流动感
  * • "wave"     - 波能风格：正弦波路径 + 脉冲膨胀 + 命中点增亮
  *
@@ -380,7 +381,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
 
         if (node.vfxStyle != undefined) {
             var style:String = String(node.vfxStyle);
-            if (style == "tesla" || style == "prism" || style == "spectrum" || style == "wave") {
+            if (style == "tesla" || style == "prism" || style == "radiance" || style == "spectrum" || style == "resonance" || style == "wave") {
                 config.vfxStyle = style;
             }
         }
@@ -710,8 +711,14 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             case "prism":
                 s += " shimmerAmp=" + shimmerAmp + " forkThicknessMul=" + forkThicknessMul;
                 break;
+            case "radiance":
+                s += " shimmerAmp=" + shimmerAmp + " forkThicknessMul=" + forkThicknessMul;
+                break;
             case "spectrum":
                 s += " stripeCount=" + stripeCount + " paletteScrollSpeed=" + paletteScrollSpeed;
+                break;
+            case "resonance":
+                s += " stripeCount=" + stripeCount + " paletteScrollSpeed=" + paletteScrollSpeed + " distortWaveLen=" + distortWaveLen;
                 break;
             case "wave":
                 s += " waveAmp=" + waveAmp + " pulseAmp=" + pulseAmp;
@@ -740,6 +747,20 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      */
     public function isSpectrum():Boolean {
         return vfxStyle == "spectrum";
+    }
+
+    /**
+     * 判断是否为 Radiance 风格
+     */
+    public function isRadiance():Boolean {
+        return vfxStyle == "radiance";
+    }
+
+    /**
+     * 判断是否为 PhaseResonance 风格
+     */
+    public function isResonance():Boolean {
+        return vfxStyle == "resonance";
     }
 
     /**
