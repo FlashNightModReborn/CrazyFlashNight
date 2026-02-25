@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-诛杀步" itemID="6964d583-0000279b" linkageExportForAS="true" linkageIdentifier="空手攻击容器-诛杀步" lastModified="1771960474">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-诛杀步" itemID="6964d583-0000279b" linkageExportForAS="true" linkageIdentifier="空手攻击容器-诛杀步" lastModified="1772042740">
   <timeline>
-    <DOMTimeline name="空手攻击容器-诛杀步" currentFrame="4">
+    <DOMTimeline name="空手攻击容器-诛杀步">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -16,7 +16,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <Actionscript>
@@ -26,7 +26,9 @@
 后撤步可派生搓招 = _root.技能函数.后撤步可派生搓招;
 波动拳可派生搓招 = _root.技能函数.波动拳可派生搓招;
 能量喷泉可派生搓招 = _root.技能函数.能量喷泉可派生搓招;
-燃烧指节可派生搓招 = _root.技能函数.燃烧指节可派生搓招;]]></script>
+燃烧指节可派生搓招 = _root.技能函数.燃烧指节可派生搓招;
+连环踢可派生搓招 = _root.技能函数.连环踢可派生搓招;
+回旋踢可派生搓招 = _root.技能函数.回旋踢可派生搓招;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -38,7 +40,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -60,7 +62,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -85,7 +87,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -104,9 +106,13 @@
 	if (_parent._parent._name == _root.控制目标)
 	{	
 		_parent.诛杀步可派生搓招();
-	
 		if(Key.isDown(_parent._parent.A键))
-		{_parent.gotoAndPlay("破极拳5连招");}
+	{
+    _root.空手攻击路由.跨容器标签跳转(_parent._parent, "破极拳1连招", "破极拳5连招");
+	}
+			
+		/*if(Key.isDown(_parent._parent.A键))
+		{_parent.gotoAndPlay("破极拳5连招");}*/
 	}
 }]]></script>
                   </Actionscript>
@@ -131,7 +137,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 8" color="#FF4F4F">
+        <DOMLayer name="图层 8" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
@@ -183,14 +189,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="腕刃反转标签" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="腕刃反转标签" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 10" color="#9933CC">
+        <DOMLayer name="图层 10" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -254,7 +260,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 11" color="#FF800A">
+        <DOMLayer name="图层 11" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -382,7 +388,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
+        <DOMLayer name="图层 13" color="#4FFFFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -446,7 +452,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 14" color="#808080">
+        <DOMLayer name="图层 14" color="#808080" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -510,7 +516,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF">
+        <DOMLayer name="图层 15" color="#4F80FF" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -574,7 +580,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 16" color="#FF4F4F">
+        <DOMLayer name="图层 16" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -638,7 +644,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 17" color="#4FFF4F">
+        <DOMLayer name="图层 17" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -702,7 +708,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 18" color="#9933CC">
+        <DOMLayer name="图层 18" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -766,7 +772,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 19" color="#FF800A">
+        <DOMLayer name="图层 19" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -830,7 +836,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 20" color="#FF4FFF">
+        <DOMLayer name="图层 20" color="#FF4FFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -894,7 +900,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 21" color="#4FFFFF">
+        <DOMLayer name="图层 21" color="#4FFFFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -958,7 +964,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 22" color="#808080">
+        <DOMLayer name="图层 22" color="#808080" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -1022,7 +1028,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 23" color="#4F80FF">
+        <DOMLayer name="图层 23" color="#4F80FF" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -1086,7 +1092,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 24" color="#FF4F4F">
+        <DOMLayer name="图层 24" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -1150,7 +1156,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 25" color="#4FFF4F">
+        <DOMLayer name="图层 25" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -1214,7 +1220,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 26" color="#9933CC">
+        <DOMLayer name="图层 26" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -1278,7 +1284,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 27" color="#FF800A">
+        <DOMLayer name="图层 27" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
@@ -1342,7 +1348,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 28" color="#FF4FFF">
+        <DOMLayer name="图层 28" color="#FF4FFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>

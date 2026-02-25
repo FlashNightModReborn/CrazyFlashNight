@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1771995050" lastUniqueIdentifier="41">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1772043068" lastUniqueIdentifier="41">
   <timeline>
-    <DOMTimeline name="Symbol 144" currentFrame="42">
+    <DOMTimeline name="Symbol 144" currentFrame="25">
       <layers>
         <DOMLayer name="连段标识" color="#AE8F69" locked="true" autoNamed="false">
           <frames>
@@ -44,12 +44,12 @@ _parent.死亡检测();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#A1AC76" locked="true">
+        <DOMLayer name="Layer 2" color="#A1AC76" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="7" keyMode="9728">
+            <DOMFrame index="1" duration="24" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
@@ -66,26 +66,20 @@ _parent.死亡检测();
 		if (Key.isDown(_parent._parent.A键))
 		{
 			_parent.受身反制 = true;
-			_parent.gotoAndPlay("起身回旋踢");
+			_root.空手攻击路由.跨容器标签跳转(_parent._parent, "回旋踢", "回旋踢");
 		}
 		// 按下跳跃键K后触发：写法2  
 		if (_parent._parent.动作B)
 		{
 			//_parent._parent.状态改变("兵器跳");
 			_parent.受身反制 = true;
-			_parent.gotoAndPlay("起身回旋踢");
+			_root.空手攻击路由.跨容器标签跳转(_parent._parent, "回旋踢", "回旋踢");
 		}
 	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="8" duration="6" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="14" duration="11" keyMode="9728">
-              <elements/>
             </DOMFrame>
             <DOMFrame index="25" keyMode="9728">
               <Actionscript>
@@ -310,7 +304,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击代码" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="攻击代码" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -562,7 +556,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击代码2" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击代码2" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -693,7 +687,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-7.85" centerPoint3DY="-117.8">
                   <matrix>
-                    <Matrix a="3.38874816894531" d="5.21493530273438" tx="-6.45" ty="-119.8"/>
+                    <Matrix a="3.38873291015625" d="5.21493530273438" tx="-6.45" ty="-119.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.25" y="0.35"/>
@@ -1047,7 +1041,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="31.65" centerPoint3DY="125">
                   <matrix>
@@ -5150,7 +5144,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-51.2" centerPoint3DY="187.1">
                   <matrix>
@@ -5199,7 +5193,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-123.8" centerPoint3DY="172.05">
                   <matrix>
@@ -5248,7 +5242,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-16.1" centerPoint3DY="233.25">
                   <matrix>
@@ -5297,7 +5291,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="112.85" centerPoint3DY="280.35">
                   <matrix>
@@ -5346,7 +5340,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="222.7" centerPoint3DY="241.7">
                   <matrix>
@@ -5395,7 +5389,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="7.5" centerPoint3DY="271.3">
                   <matrix>
@@ -5444,7 +5438,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="106.35" centerPoint3DY="177.85">
                   <matrix>
@@ -5493,7 +5487,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="204.95" centerPoint3DY="189.25">
                   <matrix>
@@ -5542,7 +5536,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="34.85" centerPoint3DY="207.05">
                   <matrix>
@@ -5591,7 +5585,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-115.05" centerPoint3DY="83.35">
                   <matrix>
@@ -5640,7 +5634,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="7.25" centerPoint3DY="251.3">
                   <matrix>
@@ -5689,7 +5683,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="25.55" centerPoint3DY="236.15">
                   <matrix>
@@ -5738,7 +5732,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="31.55" centerPoint3DY="174.55">
                   <matrix>
@@ -5787,7 +5781,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="62.4" centerPoint3DY="46.8">
                   <matrix>
@@ -5836,7 +5830,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-2.45" centerPoint3DY="132.75">
                   <matrix>
@@ -5885,7 +5879,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-74" centerPoint3DY="117.95">
                   <matrix>
@@ -5934,7 +5928,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-90.9" centerPoint3DY="125.3">
                   <matrix>
@@ -5983,7 +5977,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="5" keyMode="9728">
+            <DOMFrame index="14" duration="5" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="74.8" centerPoint3DY="274.5">
                   <matrix>

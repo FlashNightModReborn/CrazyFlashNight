@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-回旋踢" itemID="699df8c4-00000bc2" linkageExportForAS="true" linkageIdentifier="空手攻击容器-回旋踢" lastModified="1771997366" lastUniqueIdentifier="908">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-回旋踢" itemID="699df8c4-00000bc2" linkageExportForAS="true" linkageIdentifier="空手攻击容器-回旋踢" lastModified="1772042353" lastUniqueIdentifier="908">
   <timeline>
     <DOMTimeline name="空手攻击容器-回旋踢" currentFrame="13">
       <layers>
@@ -251,7 +251,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -369,7 +369,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 4;
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -428,13 +428,13 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 4;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 5;
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 0.5;
 	子弹属性.垂直击退速度 = 3;
 	子弹属性.水平击退速度 = 1;
 	//非常用
@@ -524,7 +524,7 @@ else if(_parent.性别 == "女"){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -583,7 +583,7 @@ else if(_parent.性别 == "女"){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -642,7 +642,7 @@ else if(_parent.性别 == "女"){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
@@ -687,7 +687,7 @@ else if(_parent.性别 == "女"){
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="61.9" centerPoint3DY="46.6">
                   <matrix>
-                    <Matrix a="5.85609436035156" d="3.29600524902344" tx="63.8" ty="45.1"/>
+                    <Matrix a="5.8560791015625" d="3.29600524902344" tx="63.8" ty="45.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.3" y="0.5"/>
@@ -701,13 +701,13 @@ else if(_parent.性别 == "女"){
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 4;
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
-	子弹属性.击倒率 = 1;
+	子弹属性.击倒率 = 0.5;
 	子弹属性.垂直击退速度 = 2;
 	子弹属性.水平击退速度 = 1;
 	//非常用
@@ -950,7 +950,7 @@ else if(_parent.性别 == "女"){
             </DOMFrame>
             <DOMFrame index="39" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-破极拳1连招" lastModified="1771724413">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-破极拳1连招" lastModified="1772043780">
   <timeline>
-    <DOMTimeline name="空手攻击容器-破极拳1连招" currentFrame="7">
+    <DOMTimeline name="空手攻击容器-破极拳1连招" currentFrame="54">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -204,7 +204,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <Actionscript>
@@ -273,7 +273,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -795,7 +795,7 @@
             </DOMFrame>
             <DOMFrame index="54" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="-59.8" centerPoint3DY="0.95">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" selected="true" centerPoint3DX="-59.8" centerPoint3DY="0.95">
                   <matrix>
                     <Matrix a="5.53178405761719" d="4.15505981445313" tx="-58.55" ty="-0.6"/>
                   </matrix>
@@ -926,7 +926,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1050,7 +1050,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1199,7 +1199,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 8" color="#FF4F4F">
+        <DOMLayer name="图层 8" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -1592,7 +1592,7 @@
             </DOMFrame>
             <DOMFrame index="54" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 217" blendMode="overlay" centerPoint3DX="155.8" centerPoint3DY="4.85">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 217" selected="true" blendMode="overlay" centerPoint3DX="155.8" centerPoint3DY="4.85">
                   <matrix>
                     <Matrix a="1.12191772460938" d="3.50131225585938" tx="94.1" ty="251.9"/>
                   </matrix>
@@ -1600,7 +1600,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1048" blendMode="overlay" centerPoint3DX="105.05" centerPoint3DY="13.5">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1048" selected="true" blendMode="overlay" centerPoint3DX="105.05" centerPoint3DY="13.5">
                   <matrix>
                     <Matrix a="0" b="-4.3460693359375" c="1.392578125" d="0" tx="142.15" ty="-18.25"/>
                   </matrix>
@@ -1608,7 +1608,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 210" blendMode="overlay" centerPoint3DX="16.9" centerPoint3DY="-9.45">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 210" selected="true" blendMode="overlay" centerPoint3DX="16.9" centerPoint3DY="-9.45">
                   <matrix>
                     <Matrix a="1.6669921875" d="3.50131225585938" tx="43.6" ty="237.6"/>
                   </matrix>
@@ -1616,7 +1616,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b107" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b107" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0" b="1.87847900390625" c="-1.0208740234375" d="0" tx="4.75" ty="11.4"/>
                   </matrix>
@@ -1723,14 +1723,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="腕刃反转标签" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="腕刃反转标签" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="64" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 10" color="#9933CC">
+        <DOMLayer name="图层 10" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1773,7 +1773,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 11" color="#FF800A">
+        <DOMLayer name="图层 11" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1874,7 +1874,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
+        <DOMLayer name="图层 13" color="#4FFFFF" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -12510,7 +12510,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 14" color="#808080">
+        <DOMLayer name="图层 14" color="#808080" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -12619,7 +12619,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF">
+        <DOMLayer name="图层 15" color="#4F80FF" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -12874,7 +12874,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 16" color="#FF4F4F">
+        <DOMLayer name="图层 16" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements/>
@@ -12899,7 +12899,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 33" color="#4FFF4F">
+        <DOMLayer name="图层 33" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
