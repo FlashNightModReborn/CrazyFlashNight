@@ -149,6 +149,70 @@ _root.空手攻击路由.空手攻击标签跳转 = function(unit:MovieClip, act
     unit.状态改变("空手攻击");
 };
 
+/**
+ * 跨容器标签跳转（供搓招派生跨容器连段使用）
+ * 当目标帧标签所在容器与帧标签名不一致时使用。
+ * 例：诛杀步(独立容器) → 破极拳5连招(在破极拳1连招容器内)
+ *
+ * @param unit:MovieClip 执行空手攻击的单位
+ * @param containerActionName:String 容器首帧标签（用于拼接 attachMovie 的 linkageIdentifier）
+ * @param targetLabel:String 实际要跳转到的帧标签
+ */
+_root.空手攻击路由.跨容器标签跳转 = function(unit:MovieClip, containerActionName:String, targetLabel:String):Void {
+    unit.空手攻击名 = targetLabel;
+    unit.__skipBarehandChangeFrame = _root.帧计时器.当前帧数;
+
+    // 非主角-男：继续走旧man跳帧
+    if (unit.兵种 !== "主角-男") {
+        if (unit.man != undefined) {
+            unit.man.gotoAndPlay(targetLabel);
+        }
+        return;
+    }
+
+    // 屏蔽旧容器卸载回调
+    if (unit.man != undefined) {
+        unit.man.onUnload = function() {};
+    }
+
+    // 强制触发 gotoAndStop 以保证作业回调执行
+    if (unit.状态 === "空手攻击" && unit.__stateGotoLabel === "容器") {
+        unit.__stateGotoLabel = "空手攻击";
+    }
+
+    unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
+        var initObj:Object = _root.空手攻击路由.构建空手攻击容器初始化对象(u.container);
+        var man:MovieClip = u.attachMovie("空手攻击容器-" + containerActionName, "man", 0, initObj);
+        if (man == undefined) { return; }
+
+        // 对齐升龙拳判定
+        if (u._name == _root.控制目标) {
+            u.读取当前飞行状态();
+            if (!u.飞行浮空 &&
+                u.被动技能.升龙拳 &&
+                u.被动技能.升龙拳.启用 &&
+                Key.isDown(u.A键) &&
+                Key.isDown(u.B键)) {
+                u.跳横移速度 = u.行走X速度;
+                u.跳跃中移动速度 = u.行走X速度;
+                u.状态改变("空手跳");
+                man.removeMovieClip();
+                return;
+            }
+        }
+        u.格斗架势 = true;
+
+        var prevOnUnload:Function = man.onUnload;
+        man.onUnload = function() {
+            if (prevOnUnload != undefined) { prevOnUnload.apply(this); }
+            u.UpdateBigSmallState("普攻结束", "空手攻击结束");
+        };
+
+        man.gotoAndPlay(targetLabel);
+    });
+    unit.状态改变("空手攻击");
+};
+
 // ============================================================================
 // 【兼容性实现参考 - 渐进式容器化的标签跳转】
 // 检测容器符号是否存在，存在走容器路径，不存在回退旧帧路径
