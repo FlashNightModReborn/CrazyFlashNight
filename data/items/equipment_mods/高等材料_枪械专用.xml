@@ -292,6 +292,9 @@
         <stats>
             <override>
                 <bullet>磁暴射线</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为磁暴射线。</description>
@@ -300,10 +303,13 @@
     <mod>
         <name>磁暴射线弹-强化</name>
         <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <weapontype>发射器</weapontype>
         <stats>
             <override>
                 <bullet>磁暴射线-强化</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为磁暴射线-强化（连锁模式）。</description>
@@ -316,6 +322,9 @@
         <stats>
             <override>
                 <bullet>光棱射线</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为光棱射线。</description>
@@ -324,10 +333,13 @@
     <mod>
         <name>光棱射线弹-强化</name>
         <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <weapontype>发射器</weapontype>
         <stats>
             <override>
                 <bullet>光棱射线-强化</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为光棱射线-强化（折射模式）。</description>
@@ -340,6 +352,9 @@
         <stats>
             <override>
                 <bullet>辉光射线</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为辉光射线。</description>
@@ -348,10 +363,13 @@
     <mod>
         <name>辉光射线弹-强化</name>
         <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <weapontype>发射器</weapontype>
         <stats>
             <override>
                 <bullet>辉光射线-强化</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为辉光射线-强化（折射模式）。</description>
@@ -364,6 +382,9 @@
         <stats>
             <override>
                 <bullet>光谱射线</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为光谱射线。</description>
@@ -372,10 +393,13 @@
     <mod>
         <name>光谱射线弹-强化</name>
         <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <weapontype>发射器</weapontype>
         <stats>
             <override>
                 <bullet>光谱射线-强化</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为光谱射线-强化（折射模式）。</description>
@@ -388,6 +412,9 @@
         <stats>
             <override>
                 <bullet>谐振波射线</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为谐振波射线。</description>
@@ -396,10 +423,13 @@
     <mod>
         <name>谐振波射线弹-强化</name>
         <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <weapontype>发射器</weapontype>
         <stats>
             <override>
                 <bullet>谐振波射线-强化</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为谐振波射线-强化（折射模式）。</description>
@@ -412,6 +442,9 @@
         <stats>
             <override>
                 <bullet>热能射线</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为热能射线。</description>
@@ -420,10 +453,13 @@
     <mod>
         <name>热能射线弹-强化</name>
         <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <weapontype>发射器</weapontype>
         <stats>
             <override>
                 <bullet>热能射线-强化</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为热能射线-强化（穿透模式）。</description>
@@ -436,6 +472,9 @@
         <stats>
             <override>
                 <bullet>涡旋射线</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为涡旋射线。</description>
@@ -444,10 +483,13 @@
     <mod>
         <name>涡旋射线弹-强化</name>
         <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <weapontype>发射器</weapontype>
         <stats>
             <override>
                 <bullet>涡旋射线-强化</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为涡旋射线-强化（穿透模式）。</description>
@@ -460,6 +502,9 @@
         <stats>
             <override>
                 <bullet>波能射线</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为波能射线。</description>
@@ -468,10 +513,13 @@
     <mod>
         <name>波能射线弹-强化</name>
         <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <weapontype>发射器</weapontype>
         <stats>
             <override>
                 <bullet>波能射线-强化</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为波能射线-强化（穿透模式）。</description>
@@ -484,6 +532,9 @@
         <stats>
             <override>
                 <bullet>等离子射线</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为等离子射线。</description>
@@ -492,10 +543,13 @@
     <mod>
         <name>等离子射线弹-强化</name>
         <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <weapontype>发射器</weapontype>
         <stats>
             <override>
                 <bullet>等离子射线-强化</bullet>
+                <damagetype>魔法</damagetype>
+                <magictype>波</magictype>
+                <impact>100</impact>
             </override>
         </stats>
         <description>占位测试用。将子弹替换为等离子射线-强化（穿透模式）。</description>
