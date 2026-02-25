@@ -93,6 +93,33 @@ class org.flashNight.arki.render.RayVfxManager {
     private static var _pdPool:Array = [];
     private static var _pdIdx:Number = 0;
 
+    /** 池容量上限（超出时在 resetPools 截断，防止爆发场景后内存泄漏） */
+    private static var MAX_PT_POOL:Number  = 512;  // 路径点：典型 ~100, 峰值 ~300
+    private static var MAX_ARR_POOL:Number = 64;   // 路径数组：典型 ~10, 峰值 ~30
+    private static var MAX_PD_POOL:Number  = 64;   // 路径描述：典型 ~10, 峰值 ~30
+
+    // ════════════════════════════════════════════════════════════════════════
+    // drawCircle 预计算查表
+    // ════════════════════════════════════════════════════════════════════════
+
+    /** 8 段 curveTo 控制点/端点的 cos/sin 预计算表，消除每次 drawCircle 的 32 次 Math.cos/sin */
+    private static var _ccCos:Array = null;
+    private static var _ccSin:Array = null;
+    private static var _ecCos:Array = null;
+    private static var _ecSin:Array = null;
+
+    private static function ensureCircleLUT():Void {
+        if (_ccCos != null) return;
+        var seg:Number = 0.7853981633974483; // π/4
+        _ccCos = []; _ccSin = []; _ecCos = []; _ecSin = [];
+        for (var i:Number = 0; i < 8; i++) {
+            var midA:Number = (i + 0.5) * seg;
+            var endA:Number = (i + 1) * seg;
+            _ccCos[i] = Math.cos(midA);  _ccSin[i] = Math.sin(midA);
+            _ecCos[i] = Math.cos(endA);  _ecSin[i] = Math.sin(endA);
+        }
+    }
+
     // ════════════════════════════════════════════════════════════════════════
     // 初始化
     // ════════════════════════════════════════════════════════════════════════
@@ -482,11 +509,15 @@ class org.flashNight.arki.render.RayVfxManager {
     // 对象池操作（供渲染器使用）
     // ════════════════════════════════════════════════════════════════════════
 
-    /** 重置所有池的使用计数 */
+    /** 重置所有池的使用计数，超容时截断防止内存泄漏 */
     public static function resetPools():Void {
         _ptIdx = 0;
         _arrIdx = 0;
         _pdIdx = 0;
+        // 容量限制：array.length 赋值在 AS2 中为 O(1)
+        if (_ptPool.length > MAX_PT_POOL)   _ptPool.length = MAX_PT_POOL;
+        if (_arrPool.length > MAX_ARR_POOL) _arrPool.length = MAX_ARR_POOL;
+        if (_pdPool.length > MAX_PD_POOL)   _pdPool.length = MAX_PD_POOL;
     }
 
     /** 从池中获取或创建路径点对象 */
@@ -665,21 +696,21 @@ class org.flashNight.arki.render.RayVfxManager {
                                        radius:Number, color:Number, alpha:Number):Void {
         if (radius <= 0 || alpha <= 0) return;
 
+        ensureCircleLUT();
+
         // 关闭描边（alpha=0 使 hairline 不可见）
         mc.lineStyle(0, 0, 0);
         mc.beginFill(color, alpha);
 
         // 8 段 curveTo：每段 45°，控制点距圆心 r/cos(π/8)
-        var segAngle:Number = 0.7853981633974483; // π/4
+        // cos/sin 值已预计算到 _ccCos/_ccSin/_ecCos/_ecSin
         var k:Number = radius * 1.0823922002923940; // 1/cos(π/8)
 
         mc.moveTo(cx + radius, cy);
         for (var i:Number = 0; i < 8; i++) {
-            var midA:Number = (i + 0.5) * segAngle;
-            var endA:Number = (i + 1) * segAngle;
             mc.curveTo(
-                cx + k * Math.cos(midA), cy + k * Math.sin(midA),
-                cx + radius * Math.cos(endA), cy + radius * Math.sin(endA)
+                cx + k * _ccCos[i],      cy + k * _ccSin[i],
+                cx + radius * _ecCos[i], cy + radius * _ecSin[i]
             );
         }
         mc.endFill();

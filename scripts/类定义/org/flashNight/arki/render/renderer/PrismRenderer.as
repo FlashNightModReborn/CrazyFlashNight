@@ -38,6 +38,9 @@ class org.flashNight.arki.render.renderer.PrismRenderer {
     private static var KAPPA:Number = 0.414213562;
     private static var DIAG:Number  = 0.707106781;
 
+    /** 复用矩阵对象（drawFlare 内部使用，避免每帧 GC 分配） */
+    private static var _flareMatrix:Object = {matrixType:"box", x:0, y:0, w:0, h:0, r:0};
+
     // ════════════════════════════════════════════════════════════════════════
     // 渲染入口
     // ════════════════════════════════════════════════════════════════════════
@@ -176,11 +179,11 @@ class org.flashNight.arki.render.renderer.PrismRenderer {
         var alphas:Array = [100 * alphaFactor, 60 * alphaFactor, 0];
         var colors:Array = [0xFFFFFF, color, color];
         var ratios:Array = [0, 40, 255];
-        var matrix:Object = {
-            matrixType: "box",
-            x: x - radius, y: y - radius,
-            w: radius * 2, h: radius * 2, r: 0
-        };
+        var matrix:Object = _flareMatrix;
+        matrix.x = x - radius;
+        matrix.y = y - radius;
+        matrix.w = radius * 2;
+        matrix.h = radius * 2;
 
         mc.beginGradientFill("radial", colors, alphas, ratios, matrix);
 

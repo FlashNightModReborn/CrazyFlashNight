@@ -298,6 +298,74 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         fork: true
     };
 
+    // ========== FIELD_MAP 字段映射（applyPreset/fromXML Stage 3 共用） ==========
+
+    /** 解析器类型常量（用 Number 避免 AS2 跨类 Function 引用不稳定） */
+    private static var P_NUM:Number   = 0;  // Number()
+    private static var P_COLOR:Number = 1;  // parseColor()
+    private static var P_BOOL:Number  = 2;  // String(v).toLowerCase() == "true"
+    private static var P_PAL:Number   = 3;  // parsePalette()
+
+    /** 字段映射表：{k:字段名, p:解析器类型}。新增字段只需在此添加一行。 */
+    private static var FIELD_MAP:Array = null;
+
+    private static function ensureFieldMap():Void {
+        if (FIELD_MAP != null) return;
+        FIELD_MAP = [
+            // 基础物理
+            {k:"rayLength",          p:P_NUM},
+            // 伤害衰减
+            {k:"damageFalloff",      p:P_NUM},
+            // 连锁/折射
+            {k:"chainRadius",        p:P_NUM},
+            {k:"chainDelay",         p:P_NUM},
+            // 公共视觉
+            {k:"primaryColor",       p:P_COLOR},
+            {k:"secondaryColor",     p:P_COLOR},
+            {k:"thickness",          p:P_NUM},
+            {k:"visualDuration",     p:P_NUM},
+            {k:"fadeOutDuration",    p:P_NUM},
+            // Tesla
+            {k:"branchCount",        p:P_NUM},
+            {k:"branchProbability",  p:P_NUM},
+            {k:"segmentLength",      p:P_NUM},
+            {k:"jitter",             p:P_NUM},
+            {k:"flickerEnabled",     p:P_BOOL},
+            {k:"flickerMin",         p:P_NUM},
+            {k:"flickerMax",         p:P_NUM},
+            // Prism
+            {k:"shimmerAmp",         p:P_NUM},
+            {k:"shimmerFreq",        p:P_NUM},
+            {k:"forkThicknessMul",   p:P_NUM},
+            // Spectrum
+            {k:"palette",            p:P_PAL},
+            {k:"paletteScrollSpeed", p:P_NUM},
+            {k:"stripeCount",        p:P_NUM},
+            {k:"distortAmp",         p:P_NUM},
+            {k:"distortWaveLen",     p:P_NUM},
+            // Wave
+            {k:"waveAmp",            p:P_NUM},
+            {k:"waveLen",            p:P_NUM},
+            {k:"waveSpeed",          p:P_NUM},
+            {k:"pulseAmp",           p:P_NUM},
+            {k:"pulseRate",          p:P_NUM},
+            {k:"hitRippleSize",      p:P_NUM},
+            {k:"hitRippleAlpha",     p:P_NUM}
+        ];
+    }
+
+    /**
+     * 按解析器类型分发字段值解析（供 fromXML Stage 3 使用）
+     */
+    private static function parseField(value, pType:Number) {
+        switch (pType) {
+            case 1:  return parseColor(value);                              // P_COLOR
+            case 2:  return (String(value).toLowerCase() == "true");        // P_BOOL
+            case 3:  return parsePalette(value);                            // P_PAL
+            default: return Number(value);                                  // P_NUM
+        }
+    }
+
     /**
      * 构造函数
      * 初始化所有参数为默认值
@@ -425,123 +493,22 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             applyPreset(config, preset);
         }
 
-        // ====== 第3步：XML 显式值覆盖预设 ======
+        // ====== 第3步：XML 显式值覆盖预设（FIELD_MAP 驱动） ======
 
-        // 基础物理参数
-        if (node.rayLength != undefined) {
-            config.rayLength = Number(node.rayLength);
+        ensureFieldMap();
+        for (var fi:Number = 0; fi < FIELD_MAP.length; fi++) {
+            var entry:Object = FIELD_MAP[fi];
+            if (node[entry.k] != undefined) {
+                config[entry.k] = parseField(node[entry.k], entry.p);
+            }
         }
 
-        // 射线模式
+        // rayMode 需要 normalizeToken + isValidMode 校验，不走 FIELD_MAP
         if (node.rayMode != undefined) {
             var mode:String = normalizeToken(String(node.rayMode));
             if (isValidMode(mode)) {
                 config.rayMode = mode;
             }
-        }
-
-        // 伤害衰减
-        if (node.damageFalloff != undefined) {
-            config.damageFalloff = Number(node.damageFalloff);
-        }
-
-        // 连锁/折射共用参数
-        if (node.chainRadius != undefined) {
-            config.chainRadius = Number(node.chainRadius);
-        }
-        if (node.chainDelay != undefined) {
-            config.chainDelay = Number(node.chainDelay);
-        }
-
-        // 公共视觉参数
-        if (node.primaryColor != undefined) {
-            config.primaryColor = parseColor(node.primaryColor);
-        }
-        if (node.secondaryColor != undefined) {
-            config.secondaryColor = parseColor(node.secondaryColor);
-        }
-        if (node.thickness != undefined) {
-            config.thickness = Number(node.thickness);
-        }
-        if (node.visualDuration != undefined) {
-            config.visualDuration = Number(node.visualDuration);
-        }
-        if (node.fadeOutDuration != undefined) {
-            config.fadeOutDuration = Number(node.fadeOutDuration);
-        }
-
-        // Tesla 专用参数
-        if (node.branchCount != undefined) {
-            config.branchCount = Number(node.branchCount);
-        }
-        if (node.branchProbability != undefined) {
-            config.branchProbability = Number(node.branchProbability);
-        }
-        if (node.segmentLength != undefined) {
-            config.segmentLength = Number(node.segmentLength);
-        }
-        if (node.jitter != undefined) {
-            config.jitter = Number(node.jitter);
-        }
-        if (node.flickerEnabled != undefined) {
-            config.flickerEnabled = (String(node.flickerEnabled).toLowerCase() == "true");
-        }
-        if (node.flickerMin != undefined) {
-            config.flickerMin = Number(node.flickerMin);
-        }
-        if (node.flickerMax != undefined) {
-            config.flickerMax = Number(node.flickerMax);
-        }
-
-        // Prism 专用参数
-        if (node.shimmerAmp != undefined) {
-            config.shimmerAmp = Number(node.shimmerAmp);
-        }
-        if (node.shimmerFreq != undefined) {
-            config.shimmerFreq = Number(node.shimmerFreq);
-        }
-        if (node.forkThicknessMul != undefined) {
-            config.forkThicknessMul = Number(node.forkThicknessMul);
-        }
-
-        // Spectrum 专用参数
-        if (node.palette != undefined) {
-            config.palette = parsePalette(node.palette);
-        }
-        if (node.paletteScrollSpeed != undefined) {
-            config.paletteScrollSpeed = Number(node.paletteScrollSpeed);
-        }
-        if (node.stripeCount != undefined) {
-            config.stripeCount = Number(node.stripeCount);
-        }
-        if (node.distortAmp != undefined) {
-            config.distortAmp = Number(node.distortAmp);
-        }
-        if (node.distortWaveLen != undefined) {
-            config.distortWaveLen = Number(node.distortWaveLen);
-        }
-
-        // Wave 专用参数
-        if (node.waveAmp != undefined) {
-            config.waveAmp = Number(node.waveAmp);
-        }
-        if (node.waveLen != undefined) {
-            config.waveLen = Number(node.waveLen);
-        }
-        if (node.waveSpeed != undefined) {
-            config.waveSpeed = Number(node.waveSpeed);
-        }
-        if (node.pulseAmp != undefined) {
-            config.pulseAmp = Number(node.pulseAmp);
-        }
-        if (node.pulseRate != undefined) {
-            config.pulseRate = Number(node.pulseRate);
-        }
-        if (node.hitRippleSize != undefined) {
-            config.hitRippleSize = Number(node.hitRippleSize);
-        }
-        if (node.hitRippleAlpha != undefined) {
-            config.hitRippleAlpha = Number(node.hitRippleAlpha);
         }
 
         // ====== 第4步：vfxParams 覆盖 ======
@@ -562,45 +529,14 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      * @param preset 预设对象
      */
     private static function applyPreset(config:TeslaRayConfig, preset:Object):Void {
-        // 公共字段
-        if (preset.primaryColor != undefined) config.primaryColor = preset.primaryColor;
-        if (preset.secondaryColor != undefined) config.secondaryColor = preset.secondaryColor;
-        if (preset.thickness != undefined) config.thickness = preset.thickness;
-        if (preset.visualDuration != undefined) config.visualDuration = preset.visualDuration;
-        if (preset.fadeOutDuration != undefined) config.fadeOutDuration = preset.fadeOutDuration;
-
-        // Tesla 专用
-        if (preset.branchCount != undefined) config.branchCount = preset.branchCount;
-        if (preset.branchProbability != undefined) config.branchProbability = preset.branchProbability;
-        if (preset.segmentLength != undefined) config.segmentLength = preset.segmentLength;
-        if (preset.jitter != undefined) config.jitter = preset.jitter;
-        if (preset.flickerEnabled != undefined) config.flickerEnabled = preset.flickerEnabled;
-        if (preset.flickerMin != undefined) config.flickerMin = preset.flickerMin;
-        if (preset.flickerMax != undefined) config.flickerMax = preset.flickerMax;
-
-        // Prism 专用
-        if (preset.shimmerAmp != undefined) config.shimmerAmp = preset.shimmerAmp;
-        if (preset.shimmerFreq != undefined) config.shimmerFreq = preset.shimmerFreq;
-        if (preset.forkThicknessMul != undefined) config.forkThicknessMul = preset.forkThicknessMul;
-
-        // Spectrum 专用
-        if (preset.palette != undefined) {
-            // 复制数组以避免共享引用
-            config.palette = preset.palette.slice(0);
+        ensureFieldMap();
+        for (var fi:Number = 0; fi < FIELD_MAP.length; fi++) {
+            var key:String = FIELD_MAP[fi].k;
+            if (preset[key] != undefined) {
+                // palette 深拷贝，防止多个 config 实例共享同一预设数组
+                config[key] = (key == "palette") ? preset[key].slice(0) : preset[key];
+            }
         }
-        if (preset.paletteScrollSpeed != undefined) config.paletteScrollSpeed = preset.paletteScrollSpeed;
-        if (preset.stripeCount != undefined) config.stripeCount = preset.stripeCount;
-        if (preset.distortAmp != undefined) config.distortAmp = preset.distortAmp;
-        if (preset.distortWaveLen != undefined) config.distortWaveLen = preset.distortWaveLen;
-
-        // Wave 专用
-        if (preset.waveAmp != undefined) config.waveAmp = preset.waveAmp;
-        if (preset.waveLen != undefined) config.waveLen = preset.waveLen;
-        if (preset.waveSpeed != undefined) config.waveSpeed = preset.waveSpeed;
-        if (preset.pulseAmp != undefined) config.pulseAmp = preset.pulseAmp;
-        if (preset.pulseRate != undefined) config.pulseRate = preset.pulseRate;
-        if (preset.hitRippleSize != undefined) config.hitRippleSize = preset.hitRippleSize;
-        if (preset.hitRippleAlpha != undefined) config.hitRippleAlpha = preset.hitRippleAlpha;
     }
 
     /**
