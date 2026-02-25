@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-升天斩" itemID="695634eb-00000945" linkageExportForAS="true" linkageIdentifier="技能容器-升天斩" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-升天斩" itemID="695634eb-00000945" linkageExportForAS="true" linkageIdentifier="技能容器-升天斩" lastModified="1771990167">
   <timeline>
-    <DOMTimeline name="技能容器-升天斩" currentFrame="10">
+    <DOMTimeline name="技能容器-升天斩">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -19,7 +19,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
@@ -96,7 +96,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -119,7 +119,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" selected="true" centerPoint3DX="-81.55" centerPoint3DY="307.4">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-81.55" centerPoint3DY="307.4">
                   <matrix>
                     <Matrix tx="-81.55" ty="307.4"/>
                   </matrix>
@@ -138,7 +138,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="5" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" selected="true" centerPoint3DX="-121.65" centerPoint3DY="336.3">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" centerPoint3DX="-121.65" centerPoint3DY="336.3">
                   <matrix>
                     <Matrix tx="-86.15" ty="348.3"/>
                   </matrix>
@@ -1433,11 +1433,11 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 36" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 36" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" selected="true" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>

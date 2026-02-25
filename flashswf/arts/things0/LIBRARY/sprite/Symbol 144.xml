@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1771961318" lastUniqueIdentifier="41">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1771995050" lastUniqueIdentifier="41">
   <timeline>
-    <DOMTimeline name="Symbol 144" currentFrame="49">
+    <DOMTimeline name="Symbol 144" currentFrame="42">
       <layers>
         <DOMLayer name="连段标识" color="#AE8F69" locked="true" autoNamed="false">
           <frames>
@@ -44,7 +44,7 @@ _parent.死亡检测();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#A1AC76" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#A1AC76" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -282,7 +282,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
             <DOMFrame index="49" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -310,7 +310,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击代码" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="攻击代码" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -343,7 +343,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 35;
 	子弹属性.击倒率 = 1;
-	子弹属性.垂直击退速度 = 6;
+	子弹属性.垂直击退速度 = 2;
 	
 	//非常用
 	/*
@@ -402,7 +402,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 35;
 	子弹属性.击倒率 = 1;
-	子弹属性.垂直击退速度 = 6;
+	子弹属性.垂直击退速度 = 2;
 	
 	//非常用
 	/*
@@ -459,9 +459,9 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 35;
+	子弹属性.Z轴攻击范围 = 50;
 	子弹属性.击倒率 = 1;
-	子弹属性.垂直击退速度 = 6;
+	子弹属性.垂直击退速度 = 2;
 	
 	//非常用
 	/*
@@ -497,12 +497,12 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
             <DOMFrame index="40" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-7.85" centerPoint3DY="68.25">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-7.85" centerPoint3DY="26.25">
                   <matrix>
-                    <Matrix a="4.03173828125" d="2.69677734375" tx="-6.35" ty="67.05"/>
+                    <Matrix a="4.03173828125" d="3.36672973632813" tx="-6.35" ty="24.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.3" y="0.35"/>
+                    <Point x="-0.25" y="0.35"/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
@@ -518,9 +518,9 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 35;
+	子弹属性.Z轴攻击范围 = 50;
 	子弹属性.击倒率 = 1;
-	子弹属性.垂直击退速度 = 6;
+	子弹属性.垂直击退速度 = 2;
 	
 	//非常用
 	/*
@@ -562,7 +562,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击代码2" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="攻击代码2" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -595,7 +595,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 35;
 	子弹属性.击倒率 = 1;
-	子弹属性.垂直击退速度 = 6;
+	子弹属性.垂直击退速度 = 2;
 	
 	//非常用
 	/*
@@ -654,7 +654,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 35;
 	子弹属性.击倒率 = 1;
-	子弹属性.垂直击退速度 = 6;
+	子弹属性.垂直击退速度 = 2;
 	
 	//非常用
 	/*
@@ -686,12 +686,71 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="15" keyMode="9728">
+            <DOMFrame index="40" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-7.85" centerPoint3DY="-117.8">
+                  <matrix>
+                    <Matrix a="3.38874816894531" d="5.21493530273438" tx="-6.45" ty="-119.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.35"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 60;
+	子弹属性.击倒率 = 1;
+	子弹属性.垂直击退速度 = 4;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#9933CC" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
