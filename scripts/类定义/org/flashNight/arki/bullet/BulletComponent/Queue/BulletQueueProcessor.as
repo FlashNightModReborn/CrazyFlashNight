@@ -619,6 +619,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var config:TeslaRayConfig = TeslaRayConfig(bullet.rayConfig);
             var rayMode:String = (config != null && config.rayMode != undefined)
                 ? config.rayMode : "single";
+            var rayModeMask:Number = (config != null && config.rayModeMask != undefined)
+                ? config.rayModeMask : 0;
 
             // 目标数量从 bullet.pierceLimit 读取（与普通子弹共用 <attribute> 层字段）
             // 射线子弹不进入主循环，不会与普通穿透机制冲突
@@ -652,9 +654,523 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             ctx.FX = FX;
 
             // ================================================================
-            // 穿透模式：扫描时维护前 N 小 tEntry 有序表 → 逐个伤害
+            // 组合模式：多个能力位同时置位时走此分支（isCombo）
+            // hasPierce → per-node 管道（逐穿透节点触发 chain/fork）
+            // !hasPierce → per-phase 管道（chain+fork 从 hit₁ 触发）
             // ================================================================
-            if (rayMode == "pierce") {
+            if (config != null && config.isCombo()) {
+                var MASK_P:Number = TeslaRayConfig.MASK_PIERCE;
+                var MASK_C:Number = TeslaRayConfig.MASK_CHAIN;
+                var MASK_F:Number = TeslaRayConfig.MASK_FORK;
+                var comboMask:Number = rayModeMask;
+                var budget:Number = bulletPierceLimit; // 共享名额池
+                var globalVisited:Object = {};         // 全局去重
+
+            if (config.hasPierce()) {
+                // ================================================================
+                // per-node 管道：pierce + chain/fork
+                // 沿穿透路径逐节点触发 chain/fork，分支效果均匀分布在射线上
+                // ================================================================
+                var wantChain:Boolean = (comboMask & MASK_C) != 0;
+                var wantFork:Boolean  = (comboMask & MASK_F) != 0;
+
+                // ══════ Phase 0：扫描所有碰撞，收集 allHits（按 tEntry 升序） ══════
+                var comboAllHits:Array = null;
+                var comboAllLen:Number = 0;
+
+                for (var cu0:Number = lo; cu0 < unitLen && unitLeftKeys[cu0] <= rayRight; cu0++) {
+                    var ct0:MovieClip = unitMap[cu0];
+                    var cz0:Number = bulletZOffset - ct0.Z轴坐标;
+                    if (cz0 >= bulletZRange || cz0 <= -bulletZRange) continue;
+
+                    if (ct0.hp > 0 && ct0.防止无限飞 != true) {
+                        var ca0:AABBCollider = ct0.aabbCollider;
+                        var cr0:Object = areaAABB.checkCollision(ca0, cz0);
+
+                        if (cr0.isColliding) {
+                            var cte0:Number = cr0.tEntry;
+                            if (comboAllHits == null) comboAllHits = [];
+                            var cNewHit:Object = {
+                                target: ct0,
+                                hitX: cr0.overlapCenter.x,
+                                hitY: cr0.overlapCenter.y,
+                                tEntry: cte0,
+                                zOffset: cz0
+                            };
+                            // 插入排序（按 tEntry 升序）
+                            var cInsPos:Number = comboAllLen;
+                            for (var cip:Number = comboAllLen - 1; cip >= 0; cip--) {
+                                if (comboAllHits[cip].tEntry > cte0) {
+                                    comboAllHits[cip + 1] = comboAllHits[cip];
+                                    cInsPos = cip;
+                                } else {
+                                    break;
+                                }
+                            }
+                            comboAllHits[cInsPos] = cNewHit;
+                            comboAllLen++;
+                        }
+                    }
+                }
+
+                if (comboAllHits != null && comboAllLen > 0) {
+                    // 首命中特殊处理（击中时触发函数 仅首命中调用）
+                    var firstNodeHit:Object = comboAllHits[0];
+                    bullet.附加层伤害计算 = 0;
+                    bullet.hitTarget = firstNodeHit.target;
+                    bullet.命中对象 = firstNodeHit.target;
+                    if (bullet.击中时触发函数) bullet.击中时触发函数();
+
+                    var pnFalloff:Number = config.damageFalloff;
+                    var pnDmgMult:Number = 1.0;
+                    var pnHitPoints:Array = [];
+                    var pnChainRadius:Number = config.chainRadius;
+                    var pnChainRadiusSq:Number = pnChainRadius * pnChainRadius;
+                    var pnChainIdx:Number = 0; // chain 段全局编号
+                    var pnForkIdx:Number = 0;  // fork 段全局编号
+
+                    // ══════ 逐节点 pipeline ══════
+                    for (var ni:Number = 0; ni < comboAllLen; ni++) {
+                        var nodeHit:Object = comboAllHits[ni];
+                        if (globalVisited[nodeHit.target._name] == true) continue;
+                        if (budget <= 0) break;
+
+                        // ── pierce 命中处理 ──
+                        globalVisited[nodeHit.target._name] = true;
+                        budget--;
+
+                        settleRayHit(ctx, nodeHit.target,
+                            nodeHit.hitX, nodeHit.hitY, pnDmgMult, nodeHit.tEntry);
+                        pnHitPoints.push({x: nodeHit.hitX, y: nodeHit.hitY});
+                        pnDmgMult *= pnFalloff;
+
+                        // ── chain 子阶段：从当前穿透节点开始连锁弹跳 ──
+                        if (wantChain && budget > 0) {
+                            var ccDmgMult:Number = pnDmgMult; // 继承当前衰减后的倍率
+                            var ccPrevX:Number = nodeHit.hitX;
+                            var ccPrevY:Number = nodeHit.hitY;
+                            var ccPrevZ:Number = nodeHit.target.Z轴坐标;
+
+                            for (var cci:Number = 0; budget > 0; cci++) {
+                                var ccSearchL:Number = ccPrevX - pnChainRadius;
+                                var ccSearchR:Number = ccPrevX + pnChainRadius;
+                                var ccLo:Number = bsearchScanStart(unitRightMax, unitLen, ccSearchL);
+
+                                var ccBestDistSq:Number = pnChainRadiusSq;
+                                var ccBestTarget:MovieClip = null;
+                                var ccBestX:Number = 0;
+                                var ccBestY:Number = 0;
+
+                                for (var ccu:Number = ccLo; ccu < unitLen && unitLeftKeys[ccu] <= ccSearchR; ccu++) {
+                                    var ccT:MovieClip = unitMap[ccu];
+                                    if (globalVisited[ccT._name] == true) continue;
+                                    var ccZOff:Number = ccPrevZ - ccT.Z轴坐标;
+                                    if (ccZOff >= bulletZRange || ccZOff <= -bulletZRange) continue;
+
+                                    if (ccT.hp > 0 && ccT.防止无限飞 != true) {
+                                        var ccAABB:AABBCollider = ccT.aabbCollider;
+                                        var ccCX:Number = (ccAABB.left + ccAABB.right) * 0.5;
+                                        var ccCY:Number = (ccAABB.top + ccAABB.bottom) * 0.5;
+                                        var ccdx:Number = ccCX - ccPrevX;
+                                        var ccdy:Number = ccCY - ccPrevY;
+                                        var ccDSq:Number = ccdx * ccdx + ccdy * ccdy;
+
+                                        if (ccDSq < ccBestDistSq) {
+                                            ccBestDistSq = ccDSq;
+                                            ccBestTarget = ccT;
+                                            ccBestX = ccCX;
+                                            ccBestY = ccCY;
+                                        }
+                                    }
+                                }
+
+                                if (ccBestTarget == null) break; // 链断裂
+
+                                globalVisited[ccBestTarget._name] = true;
+                                budget--;
+
+                                settleRayHit(ctx, ccBestTarget,
+                                    ccBestX, ccBestY, ccDmgMult, -1);
+
+                                var ccMeta:Object = {
+                                    segmentKind: "chain",
+                                    hitIndex: pnChainIdx,
+                                    intensity: ccDmgMult,
+                                    isHit: true,
+                                    parentEndX: ccPrevX,
+                                    parentEndY: ccPrevY
+                                };
+                                RayVfxManager.spawn(ccPrevX, ccPrevY,
+                                    ccBestX, ccBestY, config, ccMeta);
+                                pnChainIdx++;
+
+                                ccPrevX = ccBestX;
+                                ccPrevY = ccBestY;
+                                ccPrevZ = ccBestTarget.Z轴坐标;
+                                ccDmgMult *= pnFalloff;
+                            }
+                        }
+
+                        // ── fork 子阶段：从当前穿透节点搜索近邻分裂 ──
+                        if (wantFork && budget > 0) {
+                            var cfRefZ:Number = nodeHit.target.Z轴坐标;
+                            var cfSearchL:Number = nodeHit.hitX - pnChainRadius;
+                            var cfSearchR:Number = nodeHit.hitX + pnChainRadius;
+                            var cfLo:Number = bsearchScanStart(unitRightMax, unitLen, cfSearchL);
+
+                            // 收集前 budget 近的未命中目标
+                            var cfHits:Array = [];
+                            var cfLen:Number = 0;
+                            var cfMaxCount:Number = budget;
+
+                            for (var cfu:Number = cfLo; cfu < unitLen && unitLeftKeys[cfu] <= cfSearchR; cfu++) {
+                                var cfT:MovieClip = unitMap[cfu];
+                                if (globalVisited[cfT._name] == true) continue;
+                                var cfZOff:Number = cfRefZ - cfT.Z轴坐标;
+                                if (cfZOff >= bulletZRange || cfZOff <= -bulletZRange) continue;
+
+                                if (cfT.hp > 0 && cfT.防止无限飞 != true) {
+                                    var cfAABB:AABBCollider = cfT.aabbCollider;
+                                    var cfCX:Number = (cfAABB.left + cfAABB.right) * 0.5;
+                                    var cfCY:Number = (cfAABB.top + cfAABB.bottom) * 0.5;
+                                    var cfdx:Number = cfCX - nodeHit.hitX;
+                                    var cfdy:Number = cfCY - nodeHit.hitY;
+                                    var cfDSq:Number = cfdx * cfdx + cfdy * cfdy;
+
+                                    if (cfDSq < pnChainRadiusSq) {
+                                        if (cfLen < cfMaxCount || cfDSq < cfHits[cfLen - 1].distSq) {
+                                            var cfNewHit:Object = {
+                                                target: cfT,
+                                                centerX: cfCX,
+                                                centerY: cfCY,
+                                                distSq: cfDSq
+                                            };
+                                            var cfInsPos:Number = cfLen;
+                                            if (cfInsPos > 0) {
+                                                var cfScanStart:Number = (cfLen >= cfMaxCount) ? cfLen - 2 : cfLen - 1;
+                                                for (var cfpi:Number = cfScanStart; cfpi >= 0; cfpi--) {
+                                                    if (cfHits[cfpi].distSq > cfDSq) {
+                                                        cfHits[cfpi + 1] = cfHits[cfpi];
+                                                        cfInsPos = cfpi;
+                                                    } else {
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            cfHits[cfInsPos] = cfNewHit;
+                                            if (cfLen < cfMaxCount) cfLen++;
+                                        }
+                                    }
+                                }
+                            }
+
+                            // 对每个 fork 目标造成伤害 + 渲染
+                            for (var cfk:Number = 0; cfk < cfLen; cfk++) {
+                                var cfh:Object = cfHits[cfk];
+                                var cfhTarget:MovieClip = cfh.target;
+
+                                // chain 子阶段可能已命中此目标
+                                if (globalVisited[cfhTarget._name] == true) continue;
+
+                                globalVisited[cfhTarget._name] = true;
+                                budget--;
+
+                                settleRayHit(ctx, cfhTarget,
+                                    cfh.centerX, cfh.centerY, pnDmgMult, -1);
+
+                                var cfMeta:Object = {
+                                    segmentKind: "fork",
+                                    hitIndex: pnForkIdx,
+                                    intensity: pnDmgMult,
+                                    isHit: true,
+                                    parentEndX: nodeHit.hitX,
+                                    parentEndY: nodeHit.hitY
+                                };
+                                RayVfxManager.spawn(nodeHit.hitX, nodeHit.hitY,
+                                    cfh.centerX, cfh.centerY, config, cfMeta);
+                                pnForkIdx++;
+
+                                if (budget <= 0) break;
+                            }
+                        }
+                    } // end per-node loop
+
+                    // ══════ pierce VFX segment：一条覆盖全射线 ══════
+                    var rayAngle:Number = bullet._rotation * DEG_TO_RAD;
+                    var rayLength:Number = (config != null && !isNaN(config.rayLength))
+                        ? config.rayLength : 900;
+                    var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
+                    var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
+
+                    // 预算耗尽时射线截止到最后一个穿透命中点
+                    if (budget <= 0 && pnHitPoints.length > 0) {
+                        var lastHP:Object = pnHitPoints[pnHitPoints.length - 1];
+                        rayEndX = lastHP.x;
+                        rayEndY = lastHP.y;
+                    }
+
+                    var pnPierceMeta:Object = {
+                        segmentKind: "pierce",
+                        hitIndex: 0,
+                        intensity: 1.0,
+                        isHit: pnHitPoints.length > 0,
+                        hitPoints: pnHitPoints.length > 0 ? pnHitPoints : null
+                    };
+                    RayVfxManager.spawn(rayOriginX, rayOriginY,
+                        rayEndX, rayEndY, config, pnPierceMeta);
+
+                    // 射线到达全长时播放地图命中效果
+                    if (budget > 0) {
+                        FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                    }
+
+                } else {
+                    // per-node 未命中：射线打到最远处
+                    var rayAngle:Number = bullet._rotation * DEG_TO_RAD;
+                    var rayLength:Number = (config != null && !isNaN(config.rayLength))
+                        ? config.rayLength : 900;
+                    var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
+                    var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
+
+                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                    var pnMissMeta:Object = {
+                        segmentKind: "pierce",
+                        hitIndex: 0,
+                        intensity: 1.0,
+                        isHit: false,
+                        hitPoints: null
+                    };
+                    RayVfxManager.spawn(rayOriginX, rayOriginY,
+                        rayEndX, rayEndY, config, pnMissMeta);
+                }
+
+            } else {
+                // ================================================================
+                // per-phase 管道：chain + fork（无 pierce）
+                // 从 hit₁ 触发 chain → fork，适用于 chain+fork 组合
+                // ================================================================
+
+                // ══════ 扫描找最近命中 ══════
+                var comboNearestTEntry:Number = Infinity;
+                var comboNearestTarget:MovieClip = null;
+                var comboNearestHitX:Number = 0;
+                var comboNearestHitY:Number = 0;
+
+                for (var cu0:Number = lo; cu0 < unitLen && unitLeftKeys[cu0] <= rayRight; cu0++) {
+                    var ct0:MovieClip = unitMap[cu0];
+                    var cz0:Number = bulletZOffset - ct0.Z轴坐标;
+                    if (cz0 >= bulletZRange || cz0 <= -bulletZRange) continue;
+
+                    if (ct0.hp > 0 && ct0.防止无限飞 != true) {
+                        var ca0:AABBCollider = ct0.aabbCollider;
+                        var cr0:Object = areaAABB.checkCollision(ca0, cz0);
+
+                        if (cr0.isColliding && cr0.tEntry < comboNearestTEntry) {
+                            comboNearestTEntry = cr0.tEntry;
+                            comboNearestTarget = ct0;
+                            comboNearestHitX = cr0.overlapCenter.x;
+                            comboNearestHitY = cr0.overlapCenter.y;
+                        }
+                    }
+                }
+
+                if (comboNearestTarget != null) {
+                    budget--;
+                    globalVisited[comboNearestTarget._name] = true;
+
+                    bullet.附加层伤害计算 = 0;
+                    bullet.hitTarget = comboNearestTarget;
+                    bullet.命中对象 = comboNearestTarget;
+                    if (bullet.击中时触发函数) bullet.击中时触发函数();
+
+                    settleRayHit(ctx, comboNearestTarget,
+                        comboNearestHitX, comboNearestHitY, 1, comboNearestTEntry);
+
+                    var comboMainMeta:Object = {
+                        segmentKind: "main",
+                        hitIndex: 0,
+                        intensity: 1.0,
+                        isHit: true
+                    };
+                    RayVfxManager.spawn(rayOriginX, rayOriginY,
+                        comboNearestHitX, comboNearestHitY, config, comboMainMeta);
+
+                    // ══════ chain 连锁（从 hit₁ 开始弹跳） ══════
+                    if ((comboMask & MASK_C) != 0 && budget > 0) {
+                        var ccRadius:Number = config.chainRadius;
+                        var ccFalloff:Number = config.damageFalloff;
+                        var ccRadiusSq:Number = ccRadius * ccRadius;
+                        var ccDmgMult:Number = ccFalloff;
+                        var ccPrevX:Number = comboNearestHitX;
+                        var ccPrevY:Number = comboNearestHitY;
+                        var ccPrevZ:Number = comboNearestTarget.Z轴坐标;
+
+                        for (var cci:Number = 0; budget > 0; cci++) {
+                            var ccSearchL:Number = ccPrevX - ccRadius;
+                            var ccSearchR:Number = ccPrevX + ccRadius;
+                            var ccLo:Number = bsearchScanStart(unitRightMax, unitLen, ccSearchL);
+
+                            var ccBestDistSq:Number = ccRadiusSq;
+                            var ccBestTarget:MovieClip = null;
+                            var ccBestX:Number = 0;
+                            var ccBestY:Number = 0;
+
+                            for (var ccu:Number = ccLo; ccu < unitLen && unitLeftKeys[ccu] <= ccSearchR; ccu++) {
+                                var ccT:MovieClip = unitMap[ccu];
+                                if (globalVisited[ccT._name] == true) continue;
+                                var ccZOff:Number = ccPrevZ - ccT.Z轴坐标;
+                                if (ccZOff >= bulletZRange || ccZOff <= -bulletZRange) continue;
+
+                                if (ccT.hp > 0 && ccT.防止无限飞 != true) {
+                                    var ccAABB:AABBCollider = ccT.aabbCollider;
+                                    var ccCX:Number = (ccAABB.left + ccAABB.right) * 0.5;
+                                    var ccCY:Number = (ccAABB.top + ccAABB.bottom) * 0.5;
+                                    var ccdx:Number = ccCX - ccPrevX;
+                                    var ccdy:Number = ccCY - ccPrevY;
+                                    var ccDSq:Number = ccdx * ccdx + ccdy * ccdy;
+
+                                    if (ccDSq < ccBestDistSq) {
+                                        ccBestDistSq = ccDSq;
+                                        ccBestTarget = ccT;
+                                        ccBestX = ccCX;
+                                        ccBestY = ccCY;
+                                    }
+                                }
+                            }
+
+                            if (ccBestTarget == null) break; // 链断裂
+
+                            globalVisited[ccBestTarget._name] = true;
+                            budget--;
+
+                            settleRayHit(ctx, ccBestTarget,
+                                ccBestX, ccBestY, ccDmgMult, -1);
+
+                            var ccMeta:Object = {
+                                segmentKind: "chain",
+                                hitIndex: cci + 1,
+                                intensity: ccDmgMult,
+                                isHit: true,
+                                parentEndX: ccPrevX,
+                                parentEndY: ccPrevY
+                            };
+                            RayVfxManager.spawn(ccPrevX, ccPrevY,
+                                ccBestX, ccBestY, config, ccMeta);
+
+                            ccPrevX = ccBestX;
+                            ccPrevY = ccBestY;
+                            ccPrevZ = ccBestTarget.Z轴坐标;
+                            ccDmgMult *= ccFalloff;
+                        }
+                    }
+
+                    // ══════ fork 分裂（仅从 hit₁ 发射） ══════
+                    if ((comboMask & MASK_F) != 0 && budget > 0) {
+                        var cfRadius:Number = config.chainRadius;
+                        var cfFalloff:Number = config.damageFalloff;
+                        var cfRadiusSq:Number = cfRadius * cfRadius;
+                        var cfRefZ:Number = comboNearestTarget.Z轴坐标;
+
+                        var cfSearchL:Number = comboNearestHitX - cfRadius;
+                        var cfSearchR:Number = comboNearestHitX + cfRadius;
+                        var cfLo:Number = bsearchScanStart(unitRightMax, unitLen, cfSearchL);
+
+                        var cfHits:Array = [];
+                        var cfLen:Number = 0;
+                        var cfMaxCount:Number = budget;
+
+                        for (var cfu:Number = cfLo; cfu < unitLen && unitLeftKeys[cfu] <= cfSearchR; cfu++) {
+                            var cfT:MovieClip = unitMap[cfu];
+                            if (globalVisited[cfT._name] == true) continue;
+                            var cfZOff:Number = cfRefZ - cfT.Z轴坐标;
+                            if (cfZOff >= bulletZRange || cfZOff <= -bulletZRange) continue;
+
+                            if (cfT.hp > 0 && cfT.防止无限飞 != true) {
+                                var cfAABB:AABBCollider = cfT.aabbCollider;
+                                var cfCX:Number = (cfAABB.left + cfAABB.right) * 0.5;
+                                var cfCY:Number = (cfAABB.top + cfAABB.bottom) * 0.5;
+                                var cfdx:Number = cfCX - comboNearestHitX;
+                                var cfdy:Number = cfCY - comboNearestHitY;
+                                var cfDSq:Number = cfdx * cfdx + cfdy * cfdy;
+
+                                if (cfDSq < cfRadiusSq) {
+                                    if (cfLen < cfMaxCount || cfDSq < cfHits[cfLen - 1].distSq) {
+                                        var cfNewHit:Object = {
+                                            target: cfT,
+                                            centerX: cfCX,
+                                            centerY: cfCY,
+                                            distSq: cfDSq
+                                        };
+                                        var cfInsPos:Number = cfLen;
+                                        if (cfInsPos > 0) {
+                                            var cfScanStart:Number = (cfLen >= cfMaxCount) ? cfLen - 2 : cfLen - 1;
+                                            for (var cfpi:Number = cfScanStart; cfpi >= 0; cfpi--) {
+                                                if (cfHits[cfpi].distSq > cfDSq) {
+                                                    cfHits[cfpi + 1] = cfHits[cfpi];
+                                                    cfInsPos = cfpi;
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        cfHits[cfInsPos] = cfNewHit;
+                                        if (cfLen < cfMaxCount) cfLen++;
+                                    }
+                                }
+                            }
+                        }
+
+                        for (var cfk:Number = 0; cfk < cfLen; cfk++) {
+                            var cfh:Object = cfHits[cfk];
+                            var cfhTarget:MovieClip = cfh.target;
+
+                            if (globalVisited[cfhTarget._name] == true) continue;
+
+                            globalVisited[cfhTarget._name] = true;
+                            budget--;
+
+                            settleRayHit(ctx, cfhTarget,
+                                cfh.centerX, cfh.centerY, cfFalloff, -1);
+
+                            var cfMeta:Object = {
+                                segmentKind: "fork",
+                                hitIndex: cfk,
+                                intensity: cfFalloff,
+                                isHit: true,
+                                parentEndX: comboNearestHitX,
+                                parentEndY: comboNearestHitY
+                            };
+                            RayVfxManager.spawn(comboNearestHitX, comboNearestHitY,
+                                cfh.centerX, cfh.centerY, config, cfMeta);
+
+                            if (budget <= 0) break;
+                        }
+                    }
+
+                } else {
+                    // per-phase 未命中：射线打到最远处
+                    var rayAngle:Number = bullet._rotation * DEG_TO_RAD;
+                    var rayLength:Number = (config != null && !isNaN(config.rayLength))
+                        ? config.rayLength : 900;
+                    var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
+                    var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
+
+                    FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale);
+                    var comboMissMeta:Object = {
+                        segmentKind: "main",
+                        hitIndex: 0,
+                        intensity: 1.0,
+                        isHit: false
+                    };
+                    RayVfxManager.spawn(rayOriginX, rayOriginY,
+                        rayEndX, rayEndY, config, comboMissMeta);
+                }
+            } // end per-phase
+
+            // ================================================================
+            // 穿透模式（单模式）：扫描时维护前 N 小 tEntry 有序表 → 逐个伤害
+            // ================================================================
+            } else if (rayMode == "pierce") {
                 var pierceLimit:Number = bulletPierceLimit;
                 var pierceFalloff:Number = config.damageFalloff;
 

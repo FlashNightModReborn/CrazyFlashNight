@@ -60,6 +60,15 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     /** 光棱折射模式：命中后从命中点搜索附近目标定向折射 */
     public static var MODE_FORK:String = "fork";
 
+    // ========== 射线模式 Bitmask（支持组合模式） ==========
+
+    /** 穿透能力位 */
+    public static var MASK_PIERCE:Number = 1;
+    /** 连锁能力位 */
+    public static var MASK_CHAIN:Number  = 2;
+    /** 分裂能力位 */
+    public static var MASK_FORK:Number   = 4;
+
     // ========== 视觉风格常量 ==========
 
     /** 磁暴风格：高频抖动电弧 + 随机分叉 */
@@ -92,10 +101,17 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
 
     /**
      * 射线模式标识 (命中拓扑)
-     * 可选值: "single" | "chain" | "pierce" | "fork"
+     * 可选值: "single" | "chain" | "pierce" | "fork" | 逗号分隔组合如 "chain,fork,pierce"
      * 默认 "single"
      */
     public var rayMode:String;
+
+    /**
+     * 射线模式位掩码 (运行时用于位运算快速判定)
+     * 由 parseRayMode() 从 rayMode 字符串编译而来
+     * 0 = single, 1 = pierce, 2 = chain, 4 = fork, 7 = pierce+chain+fork
+     */
+    public var rayModeMask:Number;
 
     // ========== 视觉风格参数 ==========
 
@@ -321,12 +337,16 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
 
     // 合法风格校验已迁入 RayStyleRegistry（单一事实来源）
 
+    /** 合法模式 → bitmask 映射（single=0, pierce=1, chain=2, fork=4） */
     private static var VALID_MODES:Object = {
-        single: true,
-        chain: true,
-        pierce: true,
-        fork: true
+        single: 0,
+        chain:  2,
+        pierce: 1,
+        fork:   4
     };
+
+    /** 规范化输出顺序（用于 parseRayMode 生成确定性字符串） */
+    private static var MODE_ORDER:Array = ["chain", "fork", "pierce"];
 
     // ========== FIELD_MAP 字段映射（applyPreset/fromXML Stage 3 共用） ==========
 
@@ -412,6 +432,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         // 基础物理参数
         rayLength = DEFAULT_RAY_LENGTH;
         rayMode = DEFAULT_RAY_MODE;
+        rayModeMask = 0; // single = 无能力位
 
         // 视觉风格（默认 tesla）
         vfxStyle = DEFAULT_VFX_STYLE;
@@ -548,12 +569,11 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             }
         }
 
-        // rayMode 需要 normalizeToken + isValidMode 校验，不走 FIELD_MAP
+        // rayMode 支持逗号分隔组合（如 "chain,fork,pierce"），不走 FIELD_MAP
         if (node.rayMode != undefined) {
-            var mode:String = normalizeToken(String(node.rayMode));
-            if (isValidMode(mode)) {
-                config.rayMode = mode;
-            }
+            var parsed:Object = parseRayMode(String(node.rayMode));
+            config.rayMode = parsed.str;
+            config.rayModeMask = parsed.mask;
         }
 
         // ====== 第4步：vfxParams 覆盖 ======
@@ -737,18 +757,73 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     }
 
     /**
-     * 判断射线模式是否合法
+     * 判断单个射线模式 token 是否合法
      */
     private static function isValidMode(mode:String):Boolean {
-        return VALID_MODES[mode] == true;
+        return VALID_MODES[mode] != undefined;
+    }
+
+    /**
+     * 解析 rayMode 字符串（支持逗号分隔组合）
+     *
+     * @param raw 原始字符串，如 "pierce" 或 "chain,fork,pierce"
+     * @return {mask:Number, str:String}
+     *         mask = bitmask（pierce=1, chain=2, fork=4）
+     *         str  = 按 MODE_ORDER 规范化后的字符串，用于 debug/回显
+     */
+    private static function parseRayMode(raw:String):Object {
+        var tokens:Array = raw.split(",");
+        var mask:Number = 0;
+        for (var i:Number = 0; i < tokens.length; i++) {
+            var t:String = normalizeToken(tokens[i]);
+            if (VALID_MODES[t] != undefined) {
+                mask = mask | Number(VALID_MODES[t]);
+            }
+        }
+        // 如果 mask==0（只有 single 或全部无效），返回 single
+        if (mask == 0) {
+            return {mask: 0, str: "single"};
+        }
+        // 按固定顺序生成规范化字符串
+        var parts:Array = [];
+        for (var j:Number = 0; j < MODE_ORDER.length; j++) {
+            var m:String = MODE_ORDER[j];
+            if ((mask & Number(VALID_MODES[m])) != 0) {
+                parts.push(m);
+            }
+        }
+        return {mask: mask, str: parts.join(",")};
     }
 
     /**
      * 判断是否为 single 模式（默认行为）
-     * 当 rayMode 未配置或为 "single" 时返回 true
+     * 当 rayModeMask==0 时为 single（无任何能力位）
      */
     public function isSingle():Boolean {
-        return rayMode == "single";
+        return rayModeMask == 0;
+    }
+
+    /** 是否具备穿透能力 */
+    public function hasPierce():Boolean {
+        return (rayModeMask & MASK_PIERCE) != 0;
+    }
+
+    /** 是否具备连锁能力 */
+    public function hasChain():Boolean {
+        return (rayModeMask & MASK_CHAIN) != 0;
+    }
+
+    /** 是否具备分裂能力 */
+    public function hasFork():Boolean {
+        return (rayModeMask & MASK_FORK) != 0;
+    }
+
+    /**
+     * 是否为组合模式（超过 1 个能力位置位）
+     * 用于 BulletQueueProcessor 快速路径分发
+     */
+    public function isCombo():Boolean {
+        return rayModeMask != 0 && (rayModeMask & (rayModeMask - 1)) != 0;
     }
 
     /**
@@ -758,6 +833,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     public function toString():String {
         var s:String = "[TeslaRayConfig" +
                " rayMode=" + rayMode +
+               " mask=" + rayModeMask +
                " vfxStyle=" + vfxStyle +
                " vfxPreset=" + vfxPreset +
                " rayLength=" + rayLength +
@@ -767,8 +843,8 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
                " visualDuration=" + visualDuration +
                " fadeOutDuration=" + fadeOutDuration;
 
-        // 模式特有参数
-        if (rayMode == "chain" || rayMode == "fork") {
+        // 模式特有参数（chain/fork 需要 chainRadius）
+        if (hasChain() || hasFork()) {
             s += " chainRadius=" + chainRadius + " chainDelay=" + chainDelay;
         }
 

@@ -978,15 +978,16 @@
     </bullet>
 
     <!-- ========== 聚束科技 (Convergence) ========== -->
-    <!-- 铁枪专属: pierce穿透模式, 无限穿透 -->
+    <!-- 铁枪专属: chain→fork→pierce 组合模式, 共享预算池 -->
     <bullet>
         <name>铁枪聚束射线</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
-            <pierceLimit>999</pierceLimit>
+            <pierceLimit>20</pierceLimit>
             <rayConfig>
                 <rayLength>1200</rayLength>
-                <rayMode>pierce</rayMode>
+                <rayMode>chain,fork,pierce</rayMode>
+                <chainRadius>200</chainRadius>
                 <vfxStyle>convergence</vfxStyle>
                 <vfxPreset>convergence</vfxPreset>
                 <damageFalloff>0.85</damageFalloff>
