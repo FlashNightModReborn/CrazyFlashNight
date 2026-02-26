@@ -217,6 +217,29 @@ class org.flashNight.arki.render.VfxPresets {
         flickerEnabled: false
     };
 
+    /**
+     * 聚束射线预设（顶级精密能量步枪专属）
+     *
+     * V6 灭世裁决：实体多边形光柱 + 马赫激波环 + 3D体积缎带
+     * + 分形闪电 + 势力图腾法阵 + 3D碎甲爆破
+     */
+    public static var convergence:Object = {
+        // 公共字段
+        primaryColor: 0x00E5FF,      // 电光极青
+        secondaryColor: 0xFF6600,    // 狂暴余烬橙
+        thickness: 2.0,              // V6.1 狙击精度优先
+        visualDuration: 5,           // 瞬发+余辉
+        fadeOutDuration: 3,
+        // Convergence V6.1 专用
+        railSpread: 10,              // 收束漏斗宽度（像素）
+        convergenceRatio: 0.18,      // 焦点位置（18%处，受MAX_FOCAL_DIST=80限制）
+        railCount: 5,                // 5条导轨
+        nodeCount: 6,                // 推进光楔/光矛数量
+        nodeSpeed: 0.15,             // 推进速度
+        crosshairScale: 0.9,         // 法阵/靶心缩放
+        flickerEnabled: false        // 禁用爆闪
+    };
+
     // ════════════════════════════════════════════════════════════════════════
     // 预设查询 API
     // ════════════════════════════════════════════════════════════════════════
@@ -242,7 +265,8 @@ class org.flashNight.arki.render.VfxPresets {
                 ra3_wave: ra3_wave,
                 thermal: thermal,
                 vortex: vortex,
-                plasma: plasma
+                plasma: plasma,
+                convergence: convergence
             };
         }
         return _presetMap[presetName];
@@ -264,7 +288,7 @@ class org.flashNight.arki.render.VfxPresets {
      * @return 预设名数组
      */
     public static function getPresetNames():Array {
-        return ["ra2_tesla", "ra2_prism", "radiance", "ra3_spectrum", "resonance", "ra3_wave", "thermal", "vortex", "plasma"];
+        return ["ra2_tesla", "ra2_prism", "radiance", "ra3_spectrum", "resonance", "ra3_wave", "thermal", "vortex", "plasma", "convergence"];
     }
 
     /**

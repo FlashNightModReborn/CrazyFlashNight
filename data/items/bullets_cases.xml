@@ -976,4 +976,32 @@
             </rayConfig>
         </attribute>
     </bullet>
+
+    <!-- ========== 聚束科技 (Convergence) ========== -->
+    <!-- 铁枪专属: pierce穿透模式, 无限穿透 -->
+    <bullet>
+        <name>铁枪聚束射线</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <pierceLimit>999</pierceLimit>
+            <rayConfig>
+                <rayLength>1200</rayLength>
+                <rayMode>pierce</rayMode>
+                <vfxStyle>convergence</vfxStyle>
+                <vfxPreset>convergence</vfxPreset>
+                <damageFalloff>0.85</damageFalloff>
+                <primaryColor>0x00E5FF</primaryColor>
+                <secondaryColor>0xFF6600</secondaryColor>
+                <thickness>2.0</thickness>
+                <railSpread>10</railSpread>
+                <convergenceRatio>0.18</convergenceRatio>
+                <railCount>5</railCount>
+                <nodeCount>6</nodeCount>
+                <nodeSpeed>0.15</nodeSpeed>
+                <crosshairScale>0.9</crosshairScale>
+                <visualDuration>5</visualDuration>
+                <fadeOutDuration>3</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
 </bullets>

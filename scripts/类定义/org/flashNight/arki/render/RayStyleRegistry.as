@@ -8,6 +8,7 @@ import org.flashNight.arki.render.renderer.PhaseResonanceRenderer;
 import org.flashNight.arki.render.renderer.ThermalRenderer;
 import org.flashNight.arki.render.renderer.VortexRenderer;
 import org.flashNight.arki.render.renderer.PlasmaRenderer;
+import org.flashNight.arki.render.renderer.ConvergenceRenderer;
 
 /**
  * RayStyleRegistry - 射线视觉风格注册表（单一事实来源）
@@ -72,6 +73,7 @@ class org.flashNight.arki.render.RayStyleRegistry {
         reg(C.VFX_THERMAL,   ThermalRenderer.render,        "thermal",         2.0);
         reg(C.VFX_VORTEX,    VortexRenderer.render,         "vortex",          2.0);
         reg(C.VFX_PLASMA,    PlasmaRenderer.render,         "plasma",          2.0);
+        reg(C.VFX_CONVERGENCE, ConvergenceRenderer.render,  "convergence",     1.8);
     }
 
     /** 注册一条风格记录（内部 helper，重复注册静默忽略） */

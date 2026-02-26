@@ -80,6 +80,8 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     public static var VFX_VORTEX:String = "vortex";
     /** 等离子风格：湍流双螺旋 + 高频扰动 */
     public static var VFX_PLASMA:String = "plasma";
+    /** 聚束风格：多导轨漏斗收束 + 压缩节点 + 十字准星 */
+    public static var VFX_CONVERGENCE:String = "convergence";
 
     // ========== 射线物理参数 ==========
 
@@ -99,7 +101,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
 
     /**
      * 渲染风格标识 (与 rayMode 完全正交)
-     * 可选值: "tesla" | "prism" | "radiance" | "spectrum" | "resonance" | "wave" | "thermal" | "vortex" | "plasma"
+     * 可选值: "tesla" | "prism" | "radiance" | "spectrum" | "resonance" | "wave" | "thermal" | "vortex" | "plasma" | "convergence"
      * 默认 "tesla"
      * @see RayStyleRegistry 所有合法风格的注册表（单一事实来源）
      */
@@ -231,6 +233,26 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     /** 命中点波纹透明度 (0~100) */
     public var hitRippleAlpha:Number;
 
+    // ========== Convergence 专用参数 ==========
+
+    /** 导轨起始展开宽度（像素），控制炮口处的导轨扩散范围 */
+    public var railSpread:Number;
+
+    /** 焦点位置比例（0~1），如 0.3 表示射线全长 30% 处导轨收束为一点 */
+    public var convergenceRatio:Number;
+
+    /** 导轨数量（≥2），扩散段的平行导轨条数 */
+    public var railCount:Number;
+
+    /** 压缩脉冲节点数量，沿聚焦段等距分布的前进式能量节点 */
+    public var nodeCount:Number;
+
+    /** 节点移动速度（像素/帧） */
+    public var nodeSpeed:Number;
+
+    /** 准星缩放系数，控制命中十字准星的整体大小 */
+    public var crosshairScale:Number;
+
     // ========== 时间参数 ==========
 
     /** 视觉持续帧数（电弧保持显示的时间） */
@@ -281,6 +303,14 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static var DEFAULT_PULSE_RATE:Number = 0.3;
     private static var DEFAULT_HIT_RIPPLE_SIZE:Number = 15;
     private static var DEFAULT_HIT_RIPPLE_ALPHA:Number = 50;
+
+    // Convergence 专用默认值
+    private static var DEFAULT_RAIL_SPREAD:Number = 20;
+    private static var DEFAULT_CONVERGENCE_RATIO:Number = 0.3;
+    private static var DEFAULT_RAIL_COUNT:Number = 3;
+    private static var DEFAULT_NODE_COUNT:Number = 5;
+    private static var DEFAULT_NODE_SPEED:Number = 0.12;
+    private static var DEFAULT_CROSSHAIR_SCALE:Number = 1.0;
 
     // 多目标伤害衰减默认值
     private static var DEFAULT_DAMAGE_FALLOFF:Number = 1.0;
@@ -350,7 +380,14 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             {k:"pulseAmp",           p:P_NUM},
             {k:"pulseRate",          p:P_NUM},
             {k:"hitRippleSize",      p:P_NUM},
-            {k:"hitRippleAlpha",     p:P_NUM}
+            {k:"hitRippleAlpha",     p:P_NUM},
+            // Convergence
+            {k:"railSpread",         p:P_NUM},
+            {k:"convergenceRatio",   p:P_NUM},
+            {k:"railCount",          p:P_NUM},
+            {k:"nodeCount",          p:P_NUM},
+            {k:"nodeSpeed",          p:P_NUM},
+            {k:"crosshairScale",     p:P_NUM}
         ];
     }
 
@@ -417,6 +454,14 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         pulseRate = DEFAULT_PULSE_RATE;
         hitRippleSize = DEFAULT_HIT_RIPPLE_SIZE;
         hitRippleAlpha = DEFAULT_HIT_RIPPLE_ALPHA;
+
+        // Convergence 专用
+        railSpread = DEFAULT_RAIL_SPREAD;
+        convergenceRatio = DEFAULT_CONVERGENCE_RATIO;
+        railCount = DEFAULT_RAIL_COUNT;
+        nodeCount = DEFAULT_NODE_COUNT;
+        nodeSpeed = DEFAULT_NODE_SPEED;
+        crosshairScale = DEFAULT_CROSSHAIR_SCALE;
 
         // 伤害衰减（damageFalloff=1.0 → 无衰减）
         damageFalloff = DEFAULT_DAMAGE_FALLOFF;
@@ -756,6 +801,9 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             case "plasma":
                 s += " waveAmp=" + waveAmp + " waveLen=" + waveLen + " pulseAmp=" + pulseAmp;
                 break;
+            case "convergence":
+                s += " railSpread=" + railSpread + " convergenceRatio=" + convergenceRatio + " railCount=" + railCount + " nodeCount=" + nodeCount;
+                break;
         }
 
         return s + "]";
@@ -822,5 +870,12 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      */
     public function isWave():Boolean {
         return vfxStyle == "wave";
+    }
+
+    /**
+     * 判断是否为 Convergence 风格
+     */
+    public function isConvergence():Boolean {
+        return vfxStyle == "convergence";
     }
 }
