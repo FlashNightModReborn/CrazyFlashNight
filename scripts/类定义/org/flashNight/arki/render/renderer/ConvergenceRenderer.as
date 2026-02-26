@@ -33,6 +33,20 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
     private static var MAX_FOCAL_DIST:Number = 80;
 
     // ════════════════════════════════════════════════════════════════════════
+    // 性能：scratch 复用对象/常量表（减少每帧临时对象分配）
+    // ════════════════════════════════════════════════════════════════════════
+
+    /** 复用 arc 结构体：用于短段 plasma filament 的路径生成 */
+    private static var _scratchArc:Object = {startX: 0, startY: 0, endX: 0, endY: 0};
+
+    /** 纺锤链六层：宽度倍率 */
+    private static var SPINDLE_LAYER_WIDTH_MUL:Array = [7.0, 4.5, 3.2, 1.8, 0.9, 0.35];
+    /** 纺锤链六层：透明度倍率 */
+    private static var SPINDLE_LAYER_ALPHA_MUL:Array = [0.15, 0.28, 0.45, 0.75, 0.9, 1.0];
+    /** 纺锤链六层：节点收束最小比例（越大越“不断裂”） */
+    private static var SPINDLE_LAYER_PINCH_MIN:Array = [0.50, 0.55, 0.60, 0.68, 0.78, 0.88];
+
+    // ════════════════════════════════════════════════════════════════════════
     // 渲染入口
     // ════════════════════════════════════════════════════════════════════════
 
@@ -134,7 +148,7 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         // ─────────────────────────────────────────────────────────────
         var focalT:Number = actualFocalDist / dist;
         var cascadeCount:Number = 0;
-        var sigilTs:Array = [];
+        var sigilTs:Array = VM.poolArr();
 
         if (dist > 60 && !isFork) {
             // 级联法阵数量以 nodeCount 为上限，避免长距离时节点过密造成视觉噪音
@@ -147,11 +161,22 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
             }
         }
 
-        // 纺锤约束点 = 级联法阵节点 + 焦点
-        var pinchTs:Array = sigilTs.concat();
+        // 纺锤约束点 = 级联法阵节点 + 焦点（池化数组，避免 concat/sort 分配）
+        var pinchTs:Array = VM.poolArr();
+        for (var pti:Number = 0; pti < sigilTs.length; pti++) {
+            pinchTs.push(sigilTs[pti]);
+        }
         if (focalT > 0.02 && focalT < 0.98 && !isFork) {
-            pinchTs.push(focalT);
-            pinchTs.sort(Array.NUMERIC);
+            // sigilTs 已按 t 递增；插入 focalT 以避免 concat+sort 带来的排序/分配成本
+            var insertAt:Number = pinchTs.length;
+            for (var ins:Number = 0; ins < pinchTs.length; ins++) {
+                if (focalT < pinchTs[ins]) { insertAt = ins; break; }
+            }
+            pinchTs.push(0); // 扩容 1 位（占位即可）
+            for (var sh:Number = pinchTs.length - 1; sh > insertAt; sh--) {
+                pinchTs[sh] = pinchTs[sh - 1];
+            }
+            pinchTs[insertAt] = focalT;
         }
 
         // ─────────────────────────────────────────────────────────────
@@ -399,11 +424,28 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
             if (meta != null && meta.segmentKind == "pierce"
                 && meta.hitPoints != null) {
                 var hitPoints:Array = meta.hitPoints;
-                for (var i:Number = 0; i < hitPoints.length; i++) {
-                    drawShatterImpact(mc, hitPoints[i].x, hitPoints[i].y,
-                        hitSize, priColor, secColor,
-                        clampAlpha(100 * intensity), age, dirX, dirY,
-                        enableHeavy);
+                var hpLen:Number = hitPoints.length;
+                var hp:Object;
+                // pierce 无限穿透时 hitPoints 可能极大：采样绘制避免雪崩式渲染与 GC 抖动
+                var maxHP:Number = enableHeavy ? 12 : 6;
+                if (maxHP < 4) maxHP = 4;
+                if (hpLen > maxHP) {
+                    var stride:Number = hpLen / maxHP;
+                    for (var hi:Number = 0; hi < maxHP; hi++) {
+                        hp = hitPoints[Math.floor(hi * stride)];
+                        drawShatterImpact(mc, hp.x, hp.y,
+                            hitSize, priColor, secColor,
+                            clampAlpha(100 * intensity), age, dirX, dirY,
+                            enableHeavy);
+                    }
+                } else {
+                    for (var i:Number = 0; i < hpLen; i++) {
+                        hp = hitPoints[i];
+                        drawShatterImpact(mc, hp.x, hp.y,
+                            hitSize, priColor, secColor,
+                            clampAlpha(100 * intensity), age, dirX, dirY,
+                            enableHeavy);
+                    }
                 }
             } else {
                 drawShatterImpact(mc, arc.endX, arc.endY, hitSize * 1.5,
@@ -529,22 +571,46 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
             var frameThick:Number = Math.max(1.0, size * 0.10);
             mc.lineStyle(frameThick, priColor, frameA,
                 true, "normal", "round", "round");
-            var dPts:Array = [
-                {x: cx + rdX * size, y: cy + rdY * size},
-                {x: cx + rpX * size, y: cy + rpY * size},
-                {x: cx - rdX * size, y: cy - rdY * size},
-                {x: cx - rpX * size, y: cy - rpY * size}
-            ];
-            for (var j:Number = 0; j < 4; j++) {
-                var p1:Object = dPts[j];
-                var p2:Object = dPts[(j + 1) % 4];
-                var vx:Number = p2.x - p1.x;
-                var vy:Number = p2.y - p1.y;
-                mc.moveTo(p1.x + vx * 0.12, p1.y + vy * 0.12);
-                mc.lineTo(p1.x + vx * 0.45, p1.y + vy * 0.45);
-                mc.moveTo(p1.x + vx * 0.55, p1.y + vy * 0.55);
-                mc.lineTo(p1.x + vx * 0.88, p1.y + vy * 0.88);
-            }
+            // 4点直接展开（避免每帧分配 dPts 与 {x,y} 临时对象）
+            var p0x:Number = cx + rdX * size;
+            var p0y:Number = cy + rdY * size;
+            var p1x:Number = cx + rpX * size;
+            var p1y:Number = cy + rpY * size;
+            var p2x:Number = cx - rdX * size;
+            var p2y:Number = cy - rdY * size;
+            var p3x:Number = cx - rpX * size;
+            var p3y:Number = cy - rpY * size;
+
+            var vx:Number;
+            var vy:Number;
+
+            // edge 0: p0 -> p1
+            vx = p1x - p0x; vy = p1y - p0y;
+            mc.moveTo(p0x + vx * 0.12, p0y + vy * 0.12);
+            mc.lineTo(p0x + vx * 0.45, p0y + vy * 0.45);
+            mc.moveTo(p0x + vx * 0.55, p0y + vy * 0.55);
+            mc.lineTo(p0x + vx * 0.88, p0y + vy * 0.88);
+
+            // edge 1: p1 -> p2
+            vx = p2x - p1x; vy = p2y - p1y;
+            mc.moveTo(p1x + vx * 0.12, p1y + vy * 0.12);
+            mc.lineTo(p1x + vx * 0.45, p1y + vy * 0.45);
+            mc.moveTo(p1x + vx * 0.55, p1y + vy * 0.55);
+            mc.lineTo(p1x + vx * 0.88, p1y + vy * 0.88);
+
+            // edge 2: p2 -> p3
+            vx = p3x - p2x; vy = p3y - p2y;
+            mc.moveTo(p2x + vx * 0.12, p2y + vy * 0.12);
+            mc.lineTo(p2x + vx * 0.45, p2y + vy * 0.45);
+            mc.moveTo(p2x + vx * 0.55, p2y + vy * 0.55);
+            mc.lineTo(p2x + vx * 0.88, p2y + vy * 0.88);
+
+            // edge 3: p3 -> p0
+            vx = p0x - p3x; vy = p0y - p3y;
+            mc.moveTo(p3x + vx * 0.12, p3y + vy * 0.12);
+            mc.lineTo(p3x + vx * 0.45, p3y + vy * 0.45);
+            mc.moveTo(p3x + vx * 0.55, p3y + vy * 0.55);
+            mc.lineTo(p3x + vx * 0.88, p3y + vy * 0.88);
             mc.lineStyle(undefined);
         }
 
@@ -641,7 +707,8 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         var ex:Number = cx + ax * halfLen;
         var ey:Number = cy + ay * halfLen;
 
-        var arc:Object = {startX: sx, startY: sy, endX: ex, endY: ey};
+        var arc:Object = _scratchArc;
+        arc.startX = sx; arc.startY = sy; arc.endX = ex; arc.endY = ey;
         var dist:Number = halfLen * 2;
         var path:Array = RayVfxManager.generateSinePath(
             arc, px, py, dist,
@@ -707,7 +774,7 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         var invSegs:Number = 1.0 / segs;
 
         // ── 预计算纺锤包络 (扫描指针法，O(segs+nPinch)) ──
-        var widths:Array = [];
+        var widths:Array = RayVfxManager.poolArr();
         var pIdx:Number = 0;
         var leftB:Number = 0;
         var rightB:Number = (nPinch > 0) ? pinchTs[0] : 1.0;
@@ -742,19 +809,24 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         // L3: 极青主干       priColor   1.8      75%   68%
         // L4: 炽白过渡       0xAAFFFF   0.9      90%   78%
         // L5: 纯白刃芯       0xFFFFFF   0.35     100%  88%
-        var lC:Array = [priColor, priColor, 0x001B33, priColor, 0xAAFFFF, 0xFFFFFF];
-        var lW:Array = [7.0, 4.5, 3.2, 1.8, 0.9, 0.35];
-        var lA:Array = [0.15, 0.28, 0.45, 0.75, 0.9, 1.0];
-        var lP:Array = [0.50, 0.55, 0.60, 0.68, 0.78, 0.88];
+        var lW:Array = SPINDLE_LAYER_WIDTH_MUL;
+        var lA:Array = SPINDLE_LAYER_ALPHA_MUL;
+        var lP:Array = SPINDLE_LAYER_PINCH_MIN;
 
-        for (var L:Number = 0; L < lC.length; L++) {
+        for (var L:Number = 0; L < 6; L++) {
             var layerW:Number = baseWidth * lW[L];
             var layerA:Number = clampAlpha(alpha * lA[L]);
             if (layerA <= 0) continue;
             var pMin:Number = lP[L];
 
+            var layerColor:Number;
+            if (L == 2) layerColor = 0x001B33;
+            else if (L == 4) layerColor = 0xAAFFFF;
+            else if (L == 5) layerColor = 0xFFFFFF;
+            else layerColor = priColor;
+
             mc.lineStyle(undefined);
-            mc.beginFill(lC[L], layerA);
+            mc.beginFill(layerColor, layerA);
 
             // 上沿（正向扫描）
             for (var fi:Number = 0; fi <= segs; fi++) {
@@ -889,22 +961,46 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
 
         mc.lineStyle(size * 0.22, priColor, clampAlpha(a * 0.95),
             true, "normal", "square", "miter");
-        var dPts:Array = [
-            {x: cx + rdX * outR, y: cy + rdY * outR},
-            {x: cx + rpX * outR, y: cy + rpY * outR},
-            {x: cx - rdX * outR, y: cy - rdY * outR},
-            {x: cx - rpX * outR, y: cy - rpY * outR}
-        ];
-        for (var j:Number = 0; j < 4; j++) {
-            var p1:Object = dPts[j];
-            var p2:Object = dPts[(j + 1) % 4];
-            var vx:Number = p2.x - p1.x;
-            var vy:Number = p2.y - p1.y;
-            mc.moveTo(p1.x + vx * 0.10, p1.y + vy * 0.10);
-            mc.lineTo(p1.x + vx * 0.42, p1.y + vy * 0.42);
-            mc.moveTo(p1.x + vx * 0.58, p1.y + vy * 0.58);
-            mc.lineTo(p1.x + vx * 0.90, p1.y + vy * 0.90);
-        }
+        // 4点直接展开（避免每帧分配 dPts 与 {x,y} 临时对象）
+        var h0x:Number = cx + rdX * outR;
+        var h0y:Number = cy + rdY * outR;
+        var h1x:Number = cx + rpX * outR;
+        var h1y:Number = cy + rpY * outR;
+        var h2x:Number = cx - rdX * outR;
+        var h2y:Number = cy - rdY * outR;
+        var h3x:Number = cx - rpX * outR;
+        var h3y:Number = cy - rpY * outR;
+
+        var hvx:Number;
+        var hvy:Number;
+
+        // edge 0: h0 -> h1
+        hvx = h1x - h0x; hvy = h1y - h0y;
+        mc.moveTo(h0x + hvx * 0.10, h0y + hvy * 0.10);
+        mc.lineTo(h0x + hvx * 0.42, h0y + hvy * 0.42);
+        mc.moveTo(h0x + hvx * 0.58, h0y + hvy * 0.58);
+        mc.lineTo(h0x + hvx * 0.90, h0y + hvy * 0.90);
+
+        // edge 1: h1 -> h2
+        hvx = h2x - h1x; hvy = h2y - h1y;
+        mc.moveTo(h1x + hvx * 0.10, h1y + hvy * 0.10);
+        mc.lineTo(h1x + hvx * 0.42, h1y + hvy * 0.42);
+        mc.moveTo(h1x + hvx * 0.58, h1y + hvy * 0.58);
+        mc.lineTo(h1x + hvx * 0.90, h1y + hvy * 0.90);
+
+        // edge 2: h2 -> h3
+        hvx = h3x - h2x; hvy = h3y - h2y;
+        mc.moveTo(h2x + hvx * 0.10, h2y + hvy * 0.10);
+        mc.lineTo(h2x + hvx * 0.42, h2y + hvy * 0.42);
+        mc.moveTo(h2x + hvx * 0.58, h2y + hvy * 0.58);
+        mc.lineTo(h2x + hvx * 0.90, h2y + hvy * 0.90);
+
+        // edge 3: h3 -> h0
+        hvx = h0x - h3x; hvy = h0y - h3y;
+        mc.moveTo(h3x + hvx * 0.10, h3y + hvy * 0.10);
+        mc.lineTo(h3x + hvx * 0.42, h3y + hvy * 0.42);
+        mc.moveTo(h3x + hvx * 0.58, h3y + hvy * 0.58);
+        mc.lineTo(h3x + hvx * 0.90, h3y + hvy * 0.90);
         mc.lineStyle(undefined);
 
         // 3. 贯穿圣矛 (暗色装甲底漆)
@@ -1099,33 +1195,34 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         a:Number, segDensity:Number, phase:Number
     ):Void {
         if (a <= 0) return;
-        var pts:Array = [];
+        var pts:Array = RayVfxManager.poolArr();
         var currU:Number = 0;
         var currV:Number = 0;
-        pts.push({u: 0, v: 0});
+        pts.push(RayVfxManager.pt(0, 0, 0.0));
 
         var rSeed:Number = seed;
-        var nextRand:Function = function():Number {
-            rSeed = (rSeed * 93.01 + 49.297) % 233280.0;
-            return rSeed / 233280.0;
-        };
+        var RAND_M:Number = 233280.0;
 
         var stepBase:Number = dist / (segDensity * 2);
         var safetyLimit:Number = 100;
 
         while (currU < dist && --safetyLimit > 0) {
-            var r:Number = nextRand();
+            rSeed = (rSeed * 93.01 + 49.297) % RAND_M;
+            var r:Number = rSeed / RAND_M;
             var stepU:Number = 0;
             var stepV:Number = 0;
-            var slen:Number = stepBase * (0.5 + nextRand() * 0.9);
+            rSeed = (rSeed * 93.01 + 49.297) % RAND_M;
+            var slen:Number = stepBase * (0.5 + (rSeed / RAND_M) * 0.9);
 
             if (r < 0.35) {
                 stepU = slen;
             } else if (r < 0.7) {
                 stepU = slen;
-                stepV = slen * (nextRand() > 0.5 ? 1 : -1);
+                rSeed = (rSeed * 93.01 + 49.297) % RAND_M;
+                stepV = slen * ((rSeed / RAND_M) > 0.5 ? 1 : -1);
             } else {
-                stepV = slen * 1.5 * (nextRand() > 0.5 ? 1 : -1);
+                rSeed = (rSeed * 93.01 + 49.297) % RAND_M;
+                stepV = slen * 1.5 * ((rSeed / RAND_M) > 0.5 ? 1 : -1);
                 stepU = slen * 0.15;
             }
 
@@ -1136,7 +1233,7 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
             currU += stepU;
             currV += stepV;
             if (currU > dist) { currU = dist; currV = 0; }
-            pts.push({u: currU, v: currV});
+            pts.push(RayVfxManager.pt(currU, currV, 0.0));
         }
 
         if (phase == undefined) phase = 0;
@@ -1147,10 +1244,10 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
             true, "normal", "round", "round");
         mc.moveTo(sx, sy);
         for (var i:Number = 1; i < pts.length; i++) {
-            var u1:Number = pts[i].u;
+            var u1:Number = pts[i].x;
             var t1:Number = (dist > 0) ? (u1 / dist) : 0;
             var env1:Number = Math.sin(t1 * Math.PI);
-            var v1:Number = pts[i].v + wobbleAmp * env1
+            var v1:Number = pts[i].y + wobbleAmp * env1
                 * Math.sin(t1 * Math.PI * 2 * 2 + phase);
             mc.lineTo(sx + dX * u1 + pX * v1,
                       sy + dY * u1 + pY * v1);
@@ -1161,10 +1258,10 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
             true, "normal", "round", "round");
         mc.moveTo(sx, sy);
         for (var k:Number = 1; k < pts.length; k++) {
-            var u2:Number = pts[k].u;
+            var u2:Number = pts[k].x;
             var t2:Number = (dist > 0) ? (u2 / dist) : 0;
             var env2:Number = Math.sin(t2 * Math.PI);
-            var v2:Number = pts[k].v + wobbleAmp * env2
+            var v2:Number = pts[k].y + wobbleAmp * env2
                 * Math.sin(t2 * Math.PI * 2 * 2 + phase);
             mc.lineTo(sx + dX * u2 + pX * v2,
                       sy + dY * u2 + pY * v2);
