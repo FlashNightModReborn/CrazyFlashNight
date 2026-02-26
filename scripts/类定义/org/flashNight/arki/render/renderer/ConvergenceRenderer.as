@@ -24,6 +24,7 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
     private static var DEFAULT_SECONDARY_COLOR:Number = 0xFF6600;
     private static var DEFAULT_THICKNESS:Number       = 2.0;
     private static var DEFAULT_RAIL_SPREAD:Number     = 10;
+    private static var DEFAULT_RAIL_COUNT:Number      = 5;
     private static var DEFAULT_CONVERGENCE_RATIO:Number = 0.18;
     private static var DEFAULT_NODE_COUNT:Number      = 6;
     private static var DEFAULT_NODE_SPEED:Number      = 0.15;
@@ -44,10 +45,15 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         var priColor:Number   = VM.cfgNum(config, "primaryColor", DEFAULT_PRIMARY_COLOR);
         var secColor:Number   = VM.cfgNum(config, "secondaryColor", DEFAULT_SECONDARY_COLOR);
         var railSpread:Number = VM.cfgNum(config, "railSpread", DEFAULT_RAIL_SPREAD);
+        var railCount:Number  = VM.cfgNum(config, "railCount", DEFAULT_RAIL_COUNT);
         var convRatio:Number  = VM.cfgNum(config, "convergenceRatio", DEFAULT_CONVERGENCE_RATIO);
         var nodeCount:Number  = VM.cfgNum(config, "nodeCount", DEFAULT_NODE_COUNT);
         var nodeSpeed:Number  = VM.cfgNum(config, "nodeSpeed", DEFAULT_NODE_SPEED);
         var scale:Number      = VM.cfgNum(config, "crosshairScale", DEFAULT_CROSSHAIR_SCALE);
+
+        railCount = Math.round(railCount);
+        if (railCount < 2) railCount = 2;
+        if (railCount > 8) railCount = 8;
 
         var intensity:Number = VM.cfgIntensity(meta);
         var T:Number = VM.cfgNum(config, "thickness", DEFAULT_THICKNESS) * intensity;
@@ -182,7 +188,8 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
                 var bgAlpha:Number = clampAlpha((28 + 18 * bgEnv) * intensity);
 
                 drawMiniSigil(mc, bgX, bgY, dirX, dirY, perpX, perpY,
-                    bgSize, priColor, bgAlpha, bgRot, 0.35);
+                    bgSize, priColor, secColor, bgAlpha, bgRot,
+                    0.35, age, railCount, nodeSpeed);
             }
         }
 
@@ -309,6 +316,28 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
             var curX:Number = arc.startX + dirX * dist * scanT;
             var curY:Number = arc.startY + dirY * dist * scanT;
             var curSize:Number = T * 3.2 * scale * intensity;
+
+            // Plasma 扫描游标：湍流游丝 + 锁定环（让“中继补能”更可读）
+            if (curSize > 1.2) {
+                var cHalf:Number = curSize * 0.95;
+                var cAmp:Number = curSize * 0.14;
+                var cWaveLen:Number = Math.max(8, cHalf * 1.4);
+                var cSpeed:Number = 0.75 + nodeSpeed * 2.6;
+                var cA:Number = clampAlpha(85 * intensity);
+                drawPlasmaFilament(mc, curX, curY,
+                    dirX, dirY, perpX, perpY,
+                    cHalf, cAmp, cWaveLen, cSpeed,
+                    age, 1.2,
+                    priColor, secColor,
+                    cA, 0.75, 0.45);
+                drawPlasmaFilament(mc, curX, curY,
+                    perpX, perpY, -dirX, -dirY,
+                    cHalf * 0.85, cAmp * 0.9, cWaveLen * 0.9, cSpeed * 1.05,
+                    age, 3.1,
+                    priColor, secColor,
+                    cA, 0.55, 0.37);
+            }
+
             drawRing(mc, curX, curY, curSize * 0.55, Math.max(1.0, curSize * 0.10),
                 secColor, clampAlpha(70 * intensity));
             RayVfxManager.drawCircle(mc, curX, curY, curSize * 0.14,
@@ -340,7 +369,8 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
                 var detail:Number = 0.65 + 0.35 * w;
 
                 drawMiniSigil(mc, csX, csY, dirX, dirY, perpX, perpY,
-                    csSize, priColor, csAlpha, csRot, detail);
+                    csSize, priColor, secColor, csAlpha, csRot,
+                    detail, age, railCount, nodeSpeed);
 
                 // 次色仅作聚焦强调，不做全程交替，避免色噪
                 drawRing(mc, csX, csY, csSize * 0.55, Math.max(1.0, csSize * 0.05),
@@ -357,7 +387,8 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
             var sigilSize:Number = T * 5.5 * scale * intensity;
             drawHoloSigil(mc, fX, fY, dirX, dirY, perpX, perpY,
                 sigilSize, priColor, secColor,
-                clampAlpha(100 * intensity), age);
+                clampAlpha(100 * intensity), age,
+                enableHeavy, railCount, nodeSpeed);
         }
 
         // ─────────────────────────────────────────────────────────────
@@ -396,13 +427,26 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
     private static function drawMiniSigil(
         mc:MovieClip, cx:Number, cy:Number,
         dirX:Number, dirY:Number, perpX:Number, perpY:Number,
-        size:Number, color:Number, alpha:Number, rot:Number, detail:Number
+        size:Number, priColor:Number, secColor:Number,
+        alpha:Number, rot:Number, detail:Number,
+        age:Number, railCount:Number, nodeSpeed:Number
     ):Void {
         var a:Number = clampAlpha(alpha);
         if (a <= 0 || size <= 1) return;
         if (detail == undefined) detail = 1.0;
         if (detail < 0) detail = 0;
         if (detail > 1) detail = 1;
+
+        if (railCount == undefined) railCount = DEFAULT_RAIL_COUNT;
+        railCount = Math.round(railCount);
+        if (railCount < 2) railCount = 2;
+        if (railCount > 10) railCount = 10;
+        if (nodeSpeed == undefined) nodeSpeed = DEFAULT_NODE_SPEED;
+
+        // 激活强度：scan 接近时 detail≈0.65~1.0 → act≈0~1
+        var act:Number = (detail - 0.65) / 0.35;
+        if (act < 0) act = 0;
+        if (act > 1) act = 1;
 
         var cosR:Number = Math.cos(rot);
         var sinR:Number = Math.sin(rot);
@@ -411,11 +455,79 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         var rpX:Number = perpX * cosR - dirX * sinR;
         var rpY:Number = perpY * cosR - dirY * sinR;
 
+        // ─────────────────────────────────────────────────────────────
+        // Plasma 质感底层：湍流游丝 + 轻度压制盘（保持极繁但让法阵“可读”）
+        // ─────────────────────────────────────────────────────────────
+
+        // 轻度压制盘：让法阵在高亮时从光柱里“切出来”（screen/add 下会自然变弱，不会产生黑洞感）
+        var cutA:Number = clampAlpha(a * (0.06 + 0.14 * detail + 0.22 * act));
+        if (cutA > 0) {
+            drawSolidCircle(mc, cx, cy, size * 0.72, 0x000814, cutA);
+        }
+
+        // 等离子游丝：沿两条轴线交错穿过法阵，模拟 PlasmaRenderer 的“半透明能量游丝 + 湍流噪声”
+        // 仅在 detail>0.28 时启用，避免远景节点变成噪点
+        if (detail > 0.28) {
+            var plasmaStrength:Number = 0.25 + 0.75 * detail;
+            var halfLen:Number = size * (0.55 + 0.35 * detail);
+            var amp:Number = size * (0.08 + 0.07 * detail);
+            var waveLen:Number = Math.max(8, halfLen * 1.25);
+            var waveSpeed:Number = 0.55 + nodeSpeed * 2.8; // 30fps 下仍有连续运动
+            var phaseBase:Number = rot * 0.9;
+
+            // filament 数量以 railCount 为上限，并在激活时略增
+            var fCount:Number = 2;
+            if (railCount >= 6) fCount = 3;
+            if (act > 0.7 && fCount < 4) fCount++;
+
+            // A: 主轴游丝（主色为主）
+            drawPlasmaFilament(mc, cx, cy,
+                rdX, rdY, rpX, rpY,
+                halfLen, amp, waveLen, waveSpeed,
+                age, phaseBase + 0.0,
+                priColor, secColor,
+                a, plasmaStrength, 0.37);
+
+            // B: 交叉游丝（强调湍流）
+            drawPlasmaFilament(mc, cx, cy,
+                rpX, rpY, -rdX, -rdY,
+                halfLen * 0.95, amp * 0.9, waveLen * 0.9, waveSpeed * 1.05,
+                age, phaseBase + 1.9,
+                priColor, secColor,
+                a, plasmaStrength * 0.9, 0.45);
+
+            // C/D: 激活态追加 45° 对角游丝（作为“中继重聚焦”提示）
+            if (fCount >= 3) {
+                var d1x:Number = (rdX + rpX) * 0.707106781;
+                var d1y:Number = (rdY + rpY) * 0.707106781;
+                var d1pX:Number = -d1y;
+                var d1pY:Number = d1x;
+                drawPlasmaFilament(mc, cx, cy,
+                    d1x, d1y, d1pX, d1pY,
+                    halfLen * 0.85, amp * 1.05, waveLen * 0.8, waveSpeed * 1.1,
+                    age, phaseBase + 3.7,
+                    priColor, secColor,
+                    a, plasmaStrength * (0.55 + 0.45 * act), 0.37);
+            }
+            if (fCount >= 4) {
+                var d2x:Number = (rdX - rpX) * 0.707106781;
+                var d2y:Number = (rdY - rpY) * 0.707106781;
+                var d2pX:Number = -d2y;
+                var d2pY:Number = d2x;
+                drawPlasmaFilament(mc, cx, cy,
+                    d2x, d2y, d2pX, d2pY,
+                    halfLen * 0.85, amp * 1.05, waveLen * 0.8, waveSpeed * 1.1,
+                    age, phaseBase + 5.4,
+                    priColor, secColor,
+                    a, plasmaStrength * (0.55 + 0.45 * act), 0.45);
+            }
+        }
+
         // 碎裂菱形框
         if (detail > 0.45) {
             var frameA:Number = clampAlpha(a * (detail - 0.45) * 1.4);
             var frameThick:Number = Math.max(1.0, size * 0.10);
-            mc.lineStyle(frameThick, color, frameA,
+            mc.lineStyle(frameThick, priColor, frameA,
                 true, "normal", "round", "round");
             var dPts:Array = [
                 {x: cx + rdX * size, y: cy + rdY * size},
@@ -447,7 +559,7 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         var zmy2:Number = cy + rdY * size * 0.1 - rpY * size * 0.05;
         if (detail > 0.7) {
             var boltA:Number = clampAlpha(a * (detail - 0.7) * 2.6);
-            mc.lineStyle(Math.max(1.0, size * 0.18), color, boltA,
+            mc.lineStyle(Math.max(1.0, size * 0.18), priColor, boltA,
                 true, "normal", "round", "round");
             mc.moveTo(lx1, ly1);
             mc.lineTo(zmx1, zmy1);
@@ -465,7 +577,17 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
 
         // 瞄准环 (稳定，不随菱形旋转)
         drawRing(mc, cx, cy, size * 0.45, Math.max(1.0, size * 0.07),
-            color, clampAlpha(a * (0.45 + 0.25 * detail)));
+            priColor, clampAlpha(a * (0.45 + 0.25 * detail)));
+
+        // Plasma 锁定虚线环：远景弱化、激活增强，强调“中继节点”
+        if (detail > 0.35) {
+            var dashCount:Number = 10 + Math.min(6, railCount);
+            var dashThick:Number = Math.max(1.0, size * 0.045);
+            var dashA:Number = clampAlpha(a * (0.12 + 0.30 * detail + 0.30 * act));
+            drawDashedRing(mc, cx, cy, size * 0.62,
+                dashCount, dashThick, secColor,
+                dashA, age * (0.18 + 0.10 * act) + rot * 0.6);
+        }
 
         // 光束对齐断开式十字准星 (稳定瞄准参考，与旋转菱形形成动静对比)
         var chLen:Number = size * 0.6;
@@ -485,6 +607,61 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
 
         // 中心聚焦点
         RayVfxManager.drawCircle(mc, cx, cy, size * 0.12, 0xFFFFFF, a);
+
+        // 激活态喷射：沿光束方向轻微“再发射”，解释无限穿透的中继补能
+        if (act > 0.25) {
+            var jetA:Number = clampAlpha(a * (0.25 + 0.55 * act));
+            drawDiamondFlare(mc, cx, cy, dirX, dirY,
+                size * (0.55 + 0.55 * act), size * 0.10,
+                0xFFFFFF, jetA);
+        }
+    }
+
+    /**
+     * Plasma 风格湍流游丝（短段）
+     *
+     * 复用 RayVfxManager.generateSinePath 的噪声叠加逻辑（noiseRatio），
+     * 用多层 drawPath 叠出“散光→高光→白芯”的等离子质感。
+     */
+    private static function drawPlasmaFilament(
+        mc:MovieClip,
+        cx:Number, cy:Number,
+        ax:Number, ay:Number, px:Number, py:Number,
+        halfLen:Number, amp:Number,
+        waveLen:Number, waveSpeed:Number,
+        age:Number, phaseOffset:Number,
+        priColor:Number, secColor:Number,
+        alpha:Number, strength:Number,
+        noiseRatio:Number
+    ):Void {
+        if (alpha <= 0 || strength <= 0 || halfLen <= 0) return;
+
+        var sx:Number = cx - ax * halfLen;
+        var sy:Number = cy - ay * halfLen;
+        var ex:Number = cx + ax * halfLen;
+        var ey:Number = cy + ay * halfLen;
+
+        var arc:Object = {startX: sx, startY: sy, endX: ex, endY: ey};
+        var dist:Number = halfLen * 2;
+        var path:Array = RayVfxManager.generateSinePath(
+            arc, px, py, dist,
+            amp, waveLen, waveSpeed,
+            age, phaseOffset,
+            12, 80, noiseRatio);
+
+        var baseThick:Number = Math.max(0.8, halfLen * 0.10);
+        var a0:Number = clampAlpha(alpha * (0.16 * strength));
+        var a1:Number = clampAlpha(alpha * (0.26 * strength));
+        var a2:Number = clampAlpha(alpha * (0.38 * strength));
+        var a3:Number = clampAlpha(alpha * (0.55 + 0.25 * strength));
+
+        // 外散光 → 主色包裹 → 次色高光 → 极白内核
+        RayVfxManager.drawPath(mc, path, priColor, baseThick * 2.2, a0);
+        RayVfxManager.drawPath(mc, path, priColor, baseThick * 1.2, a1);
+        RayVfxManager.drawPath(mc, path, secColor, baseThick * 0.7, a2);
+        RayVfxManager.drawPath(mc, path, 0xFFFFFF, baseThick * 0.30, a3);
+
+        mc.lineStyle(undefined);
     }
 
     /** 四重体积重叠光柱 (深海暗鞘→极青主干→炽白过渡→纯白极点刃) */
@@ -636,10 +813,18 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         mc:MovieClip, cx:Number, cy:Number,
         dirX:Number, dirY:Number, perpX:Number, perpY:Number,
         size:Number, priColor:Number, secColor:Number,
-        alpha:Number, age:Number
+        alpha:Number, age:Number,
+        enableHeavy:Boolean, railCount:Number, nodeSpeed:Number
     ):Void {
         var a:Number = clampAlpha(alpha);
         if (a <= 0) return;
+
+        if (railCount == undefined) railCount = DEFAULT_RAIL_COUNT;
+        railCount = Math.round(railCount);
+        if (railCount < 2) railCount = 2;
+        if (railCount > 10) railCount = 10;
+        if (nodeSpeed == undefined) nodeSpeed = DEFAULT_NODE_SPEED;
+        if (enableHeavy == undefined) enableHeavy = false;
 
         // 1. 暗遮挡盘 (压制下方特效，营造立体层级)
         drawSolidCircle(mc, cx, cy, size * 1.5, 0x000B1A, clampAlpha(a * 0.7));
@@ -653,6 +838,54 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         var rdY:Number = dirY * cosR + perpY * sinR;
         var rpX:Number = perpX * cosR - dirX * sinR;
         var rpY:Number = perpY * cosR - dirY * sinR;
+
+        // Plasma Underlay：让主法阵也具备“等离子湍流”质感（但不压过 Logo 线稿）
+        var pStrength:Number = enableHeavy ? 1.0 : 0.65;
+        var pHalf:Number = size * (1.10 + 0.20 * pStrength);
+        var pAmp:Number = size * (0.14 + 0.05 * pStrength);
+        var pWaveLen:Number = Math.max(10, pHalf * 1.25);
+        var pSpeed:Number = 0.55 + nodeSpeed * 2.2;
+        var pPhase:Number = frameRot * 1.7;
+        var pA:Number = clampAlpha(a * (0.85 + 0.15 * pStrength));
+
+        // 轴向游丝（2~4 条，railCount 越高越“湍流密”）
+        drawPlasmaFilament(mc, cx, cy,
+            rdX, rdY, rpX, rpY,
+            pHalf, pAmp, pWaveLen, pSpeed,
+            age, pPhase + 0.4,
+            priColor, secColor,
+            pA, 0.80 * pStrength, 0.37);
+        drawPlasmaFilament(mc, cx, cy,
+            rpX, rpY, -rdX, -rdY,
+            pHalf * 0.95, pAmp * 0.9, pWaveLen * 0.9, pSpeed * 1.05,
+            age, pPhase + 2.0,
+            priColor, secColor,
+            pA, 0.65 * pStrength, 0.45);
+
+        if (railCount >= 6 || enableHeavy) {
+            var d1x:Number = (rdX + rpX) * 0.707106781;
+            var d1y:Number = (rdY + rpY) * 0.707106781;
+            var d1pX:Number = -d1y;
+            var d1pY:Number = d1x;
+            drawPlasmaFilament(mc, cx, cy,
+                d1x, d1y, d1pX, d1pY,
+                pHalf * 0.85, pAmp * 1.05, pWaveLen * 0.8, pSpeed * 1.1,
+                age, pPhase + 3.6,
+                priColor, secColor,
+                pA, 0.55 * pStrength, 0.37);
+        }
+        if (railCount >= 8 && enableHeavy) {
+            var d2x:Number = (rdX - rpX) * 0.707106781;
+            var d2y:Number = (rdY - rpY) * 0.707106781;
+            var d2pX:Number = -d2y;
+            var d2pY:Number = d2x;
+            drawPlasmaFilament(mc, cx, cy,
+                d2x, d2y, d2pX, d2pY,
+                pHalf * 0.85, pAmp * 1.05, pWaveLen * 0.8, pSpeed * 1.1,
+                age, pPhase + 5.1,
+                priColor, secColor,
+                pA, 0.55 * pStrength, 0.45);
+        }
 
         mc.lineStyle(size * 0.22, priColor, clampAlpha(a * 0.95),
             true, "normal", "square", "miter");
