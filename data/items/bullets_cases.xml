@@ -562,12 +562,12 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: chain连锁模式, 主命中+4次弹跳, 每次弹跳伤害×0.7 -->
+    <!-- 强化版: 纯chain专精, 高弹跳次数补偿功能单一, 闪电在密集敌群中大量弹跳 -->
     <bullet>
         <name>磁暴射线-强化</name>
         <attribute>
             <hitMark>电击弹坑</hitMark>
-            <pierceLimit>5</pierceLimit>
+            <pierceLimit>10</pierceLimit>
             <rayConfig>
                 <rayLength>900</rayLength>
                 <rayMode>chain</rayMode>
@@ -610,12 +610,12 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: fork光棱折射, 主命中+3条折射光束, 搜索半径300, 每条子射线伤害×0.6 -->
+    <!-- 强化版: 纯fork专精, 高分裂数补偿功能单一, 光棱折射覆盖大范围 -->
     <bullet>
         <name>光棱射线-强化</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
-            <pierceLimit>4</pierceLimit>
+            <pierceLimit>8</pierceLimit>
             <rayConfig>
                 <rayLength>900</rayLength>
                 <rayMode>fork</rayMode>
@@ -657,20 +657,20 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: fork辉光折射, 主命中+3条折射光束, 搜索半径300, 每条子射线伤害×0.6 -->
+    <!-- 强化版: fork+远射程, 辉光扩散覆盖宽广区域, 预算适中 -->
     <bullet>
         <name>辉光射线-强化</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
-            <pierceLimit>4</pierceLimit>
+            <pierceLimit>6</pierceLimit>
             <rayConfig>
-                <rayLength>900</rayLength>
+                <rayLength>1100</rayLength>
                 <rayMode>fork</rayMode>
                 <vfxStyle>radiance</vfxStyle>
                 <vfxPreset>radiance</vfxPreset>
                 <chainDelay>1</chainDelay>
-                <damageFalloff>0.6</damageFalloff>
-                <chainRadius>300</chainRadius>
+                <damageFalloff>0.65</damageFalloff>
+                <chainRadius>350</chainRadius>
                 <primaryColor>0xFFDD00</primaryColor>
                 <secondaryColor>0xFFFFAA</secondaryColor>
                 <thickness>3</thickness>
@@ -703,20 +703,20 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: fork光谱折射, 主命中+3条折射光束(棱镜色散效果), 每条子射线单色 -->
+    <!-- 强化版: chain+fork组合, 棱镜色散+连锁扩散, 从命中点先弹跳后分裂 -->
     <bullet>
         <name>光谱射线-强化</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
-            <pierceLimit>4</pierceLimit>
+            <pierceLimit>5</pierceLimit>
             <rayConfig>
                 <rayLength>900</rayLength>
-                <rayMode>fork</rayMode>
+                <rayMode>chain,fork</rayMode>
                 <vfxStyle>spectrum</vfxStyle>
                 <vfxPreset>ra3_spectrum</vfxPreset>
                 <chainDelay>1</chainDelay>
-                <damageFalloff>0.6</damageFalloff>
-                <chainRadius>300</chainRadius>
+                <damageFalloff>0.65</damageFalloff>
+                <chainRadius>250</chainRadius>
                 <thickness>4</thickness>
                 <stripeCount>3</stripeCount>
                 <paletteScrollSpeed>30</paletteScrollSpeed>
@@ -748,25 +748,27 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: fork谐振折射, 主命中+3条折射光束 -->
+    <!-- 强化版: chain+pierce组合, 谐振波沿穿透路径逐节点连锁扩散(per-node) -->
     <bullet>
         <name>谐振波射线-强化</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
-            <pierceLimit>4</pierceLimit>
+            <pierceLimit>6</pierceLimit>
             <rayConfig>
                 <rayLength>900</rayLength>
-                <rayMode>fork</rayMode>
+                <rayMode>chain,pierce</rayMode>
                 <vfxStyle>resonance</vfxStyle>
                 <vfxPreset>resonance</vfxPreset>
                 <chainDelay>1</chainDelay>
-                <damageFalloff>0.6</damageFalloff>
-                <chainRadius>300</chainRadius>
+                <damageFalloff>0.7</damageFalloff>
+                <chainRadius>200</chainRadius>
                 <thickness>4</thickness>
                 <stripeCount>5</stripeCount>
                 <paletteScrollSpeed>30</paletteScrollSpeed>
                 <distortAmp>8</distortAmp>
                 <distortWaveLen>80</distortWaveLen>
+                <hitRippleSize>15</hitRippleSize>
+                <hitRippleAlpha>50</hitRippleAlpha>
                 <visualDuration>5</visualDuration>
                 <fadeOutDuration>3</fadeOutDuration>
             </rayConfig>
@@ -796,18 +798,18 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: pierce穿透模式, 命中点有波纹增亮效果 -->
+    <!-- 强化版: pierce+远射程, 热辐射穿透+超远射程, 热能衰减慢 -->
     <bullet>
         <name>热能射线-强化</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
-            <pierceLimit>3</pierceLimit>
+            <pierceLimit>5</pierceLimit>
             <rayConfig>
-                <rayLength>1000</rayLength>
+                <rayLength>1200</rayLength>
                 <rayMode>pierce</rayMode>
                 <vfxStyle>thermal</vfxStyle>
                 <vfxPreset>thermal</vfxPreset>
-                <damageFalloff>0.8</damageFalloff>
+                <damageFalloff>0.85</damageFalloff>
                 <primaryColor>0xFF4400</primaryColor>
                 <secondaryColor>0xFFAA00</secondaryColor>
                 <thickness>5</thickness>
@@ -847,18 +849,19 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: pierce穿透模式, 宽展双螺旋贯穿多目标, 三层命中点爆破 -->
+    <!-- 强化版: fork+pierce组合, 涡旋穿透路径逐节点向两侧撕裂分裂(per-node) -->
     <bullet>
         <name>涡旋射线-强化</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
-            <pierceLimit>3</pierceLimit>
+            <pierceLimit>6</pierceLimit>
             <rayConfig>
                 <rayLength>1000</rayLength>
-                <rayMode>pierce</rayMode>
+                <rayMode>fork,pierce</rayMode>
                 <vfxStyle>vortex</vfxStyle>
                 <vfxPreset>vortex</vfxPreset>
-                <damageFalloff>0.8</damageFalloff>
+                <damageFalloff>0.75</damageFalloff>
+                <chainRadius>250</chainRadius>
                 <primaryColor>0x0088FF</primaryColor>
                 <secondaryColor>0x88DDFF</secondaryColor>
                 <thickness>6</thickness>
@@ -898,12 +901,12 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: pierce穿透模式, 光矛贯穿多目标, 三层命中点爆破 -->
+    <!-- 强化版: 纯pierce专精, 高穿透数补偿功能单一, 波能光矛贯穿一切 -->
     <bullet>
         <name>波能射线-强化</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
-            <pierceLimit>3</pierceLimit>
+            <pierceLimit>6</pierceLimit>
             <rayConfig>
                 <rayLength>1000</rayLength>
                 <rayMode>pierce</rayMode>
@@ -949,18 +952,19 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: pierce穿透模式, 等离子光柱贯穿多目标, 三层命中点爆破 -->
+    <!-- 强化版: chain+fork+pierce全量组合, 等离子态穿透路径逐节点连锁+分裂(per-node), 最低预算 -->
     <bullet>
         <name>等离子射线-强化</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
-            <pierceLimit>3</pierceLimit>
+            <pierceLimit>4</pierceLimit>
             <rayConfig>
                 <rayLength>1000</rayLength>
-                <rayMode>pierce</rayMode>
+                <rayMode>chain,fork,pierce</rayMode>
                 <vfxStyle>plasma</vfxStyle>
                 <vfxPreset>plasma</vfxPreset>
-                <damageFalloff>0.8</damageFalloff>
+                <damageFalloff>0.75</damageFalloff>
+                <chainRadius>200</chainRadius>
                 <primaryColor>0x0088FF</primaryColor>
                 <secondaryColor>0x88EEFF</secondaryColor>
                 <thickness>5</thickness>
