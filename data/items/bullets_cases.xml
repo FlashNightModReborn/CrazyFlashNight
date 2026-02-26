@@ -541,24 +541,24 @@
         </attribute>
     </bullet>
     <!-- ========== 磁暴科技 (Tesla) ========== -->
-    <!-- 基础版: single模式, 青色电弧, 用于贴图调教 -->
+    <!-- 基础版: single模式, 低压放电原型——电弧不稳定、分叉少、色泽偏暗 -->
     <bullet>
         <name>磁暴射线</name>
         <attribute>
             <hitMark>电击弹坑</hitMark>
             <rayConfig>
-                <rayLength>900</rayLength>
+                <rayLength>700</rayLength>
                 <vfxStyle>tesla</vfxStyle>
                 <vfxPreset>ra2_tesla</vfxPreset>
-                <primaryColor>0x00FFFF</primaryColor>
-                <secondaryColor>0xFFFFFF</secondaryColor>
-                <thickness>2</thickness>
-                <branchCount>4</branchCount>
-                <branchProbability>0.5</branchProbability>
+                <primaryColor>0x66CCCC</primaryColor>
+                <secondaryColor>0xCCDDDD</secondaryColor>
+                <thickness>1.5</thickness>
+                <branchCount>2</branchCount>
+                <branchProbability>0.3</branchProbability>
                 <segmentLength>25</segmentLength>
-                <jitter>18</jitter>
-                <visualDuration>5</visualDuration>
-                <fadeOutDuration>3</fadeOutDuration>
+                <jitter>12</jitter>
+                <visualDuration>4</visualDuration>
+                <fadeOutDuration>2</fadeOutDuration>
             </rayConfig>
         </attribute>
     </bullet>
@@ -590,22 +590,22 @@
     </bullet>
 
     <!-- ========== 光棱科技 (Prism / Red Alert 2) ========== -->
-    <!-- 基础版: single模式, 金黄色光束, 用于贴图调教 -->
+    <!-- 基础版: single模式, 未经校准的棱镜——光束散焦、色泽偏浊 -->
     <bullet>
         <name>光棱射线</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
             <rayConfig>
-                <rayLength>800</rayLength>
+                <rayLength>650</rayLength>
                 <vfxStyle>prism</vfxStyle>
                 <vfxPreset>ra2_prism</vfxPreset>
-                <primaryColor>0xFFDD00</primaryColor>
-                <secondaryColor>0xFFFFAA</secondaryColor>
-                <thickness>3</thickness>
-                <shimmerAmp>0.1</shimmerAmp>
-                <shimmerFreq>0.08</shimmerFreq>
+                <primaryColor>0xCCBB44</primaryColor>
+                <secondaryColor>0xDDDD99</secondaryColor>
+                <thickness>2</thickness>
+                <shimmerAmp>0.05</shimmerAmp>
+                <shimmerFreq>0.06</shimmerFreq>
                 <forkThicknessMul>0.7</forkThicknessMul>
-                <visualDuration>4</visualDuration>
+                <visualDuration>3</visualDuration>
                 <fadeOutDuration>2</fadeOutDuration>
             </rayConfig>
         </attribute>
@@ -637,22 +637,22 @@
     </bullet>
 
     <!-- ========== 辉光射线 (Radiance) ========== -->
-    <!-- 基础版: single模式, 金黄辉光束, 三层泛光+呼吸脉冲 -->
+    <!-- 基础版: single模式, 辉光腔室未满载——泛光减弱、色泽偏暗金 -->
     <bullet>
         <name>辉光射线</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
             <rayConfig>
-                <rayLength>800</rayLength>
+                <rayLength>700</rayLength>
                 <vfxStyle>radiance</vfxStyle>
                 <vfxPreset>radiance</vfxPreset>
-                <primaryColor>0xFFDD00</primaryColor>
-                <secondaryColor>0xFFFFAA</secondaryColor>
-                <thickness>3</thickness>
-                <shimmerAmp>0.1</shimmerAmp>
-                <shimmerFreq>0.08</shimmerFreq>
+                <primaryColor>0xDDBB33</primaryColor>
+                <secondaryColor>0xDDDD88</secondaryColor>
+                <thickness>2</thickness>
+                <shimmerAmp>0.06</shimmerAmp>
+                <shimmerFreq>0.06</shimmerFreq>
                 <forkThicknessMul>0.7</forkThicknessMul>
-                <visualDuration>4</visualDuration>
+                <visualDuration>3</visualDuration>
                 <fadeOutDuration>2</fadeOutDuration>
             </rayConfig>
         </attribute>
@@ -684,22 +684,22 @@
     </bullet>
 
     <!-- ========== 光谱科技 (Spectrum / Red Alert 3) ========== -->
-    <!-- 基础版: single模式, 冷色长波交织光束, 致敬RA3光谱武器 -->
+    <!-- 基础版: single模式, 色散棱栅未对齐——仅双色输出、畸变微弱 -->
     <bullet>
         <name>光谱射线</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
             <rayConfig>
-                <rayLength>800</rayLength>
+                <rayLength>700</rayLength>
                 <vfxStyle>spectrum</vfxStyle>
                 <vfxPreset>ra3_spectrum</vfxPreset>
-                <thickness>4</thickness>
-                <stripeCount>3</stripeCount>
-                <paletteScrollSpeed>30</paletteScrollSpeed>
-                <distortAmp>10</distortAmp>
+                <thickness>3</thickness>
+                <stripeCount>2</stripeCount>
+                <paletteScrollSpeed>20</paletteScrollSpeed>
+                <distortAmp>6</distortAmp>
                 <distortWaveLen>300</distortWaveLen>
-                <visualDuration>5</visualDuration>
-                <fadeOutDuration>3</fadeOutDuration>
+                <visualDuration>4</visualDuration>
+                <fadeOutDuration>2</fadeOutDuration>
             </rayConfig>
         </attribute>
     </bullet>
@@ -729,22 +729,22 @@
     </bullet>
 
     <!-- ========== 相位谐振波 (Phase Resonance) ========== -->
-    <!-- 基础版: single模式, 短波密织五色霓虹缠绕 -->
+    <!-- 基础版: single模式, 谐振频率不同步——编织稀疏、仅三色 -->
     <bullet>
         <name>谐振波射线</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
             <rayConfig>
-                <rayLength>800</rayLength>
+                <rayLength>700</rayLength>
                 <vfxStyle>resonance</vfxStyle>
                 <vfxPreset>resonance</vfxPreset>
-                <thickness>4</thickness>
-                <stripeCount>5</stripeCount>
-                <paletteScrollSpeed>30</paletteScrollSpeed>
-                <distortAmp>8</distortAmp>
+                <thickness>3</thickness>
+                <stripeCount>3</stripeCount>
+                <paletteScrollSpeed>20</paletteScrollSpeed>
+                <distortAmp>5</distortAmp>
                 <distortWaveLen>80</distortWaveLen>
-                <visualDuration>5</visualDuration>
-                <fadeOutDuration>3</fadeOutDuration>
+                <visualDuration>4</visualDuration>
+                <fadeOutDuration>2</fadeOutDuration>
             </rayConfig>
         </attribute>
     </bullet>
@@ -776,25 +776,25 @@
     </bullet>
 
     <!-- ========== 热能射线 (Thermal) ========== -->
-    <!-- 基础版: single模式, 红橙色正弦波脉冲 -->
+    <!-- 基础版: single模式, 热堆预热不足——辐射偏暗、波形平缓 -->
     <bullet>
         <name>热能射线</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
             <rayConfig>
-                <rayLength>1000</rayLength>
+                <rayLength>800</rayLength>
                 <vfxStyle>thermal</vfxStyle>
                 <vfxPreset>thermal</vfxPreset>
-                <primaryColor>0xFF4400</primaryColor>
-                <secondaryColor>0xFFAA00</secondaryColor>
-                <thickness>5</thickness>
-                <waveAmp>8</waveAmp>
+                <primaryColor>0xCC5522</primaryColor>
+                <secondaryColor>0xDD8833</secondaryColor>
+                <thickness>3.5</thickness>
+                <waveAmp>5</waveAmp>
                 <waveLen>40</waveLen>
-                <waveSpeed>0.15</waveSpeed>
-                <pulseAmp>0.2</pulseAmp>
-                <pulseRate>0.3</pulseRate>
-                <visualDuration>6</visualDuration>
-                <fadeOutDuration>4</fadeOutDuration>
+                <waveSpeed>0.1</waveSpeed>
+                <pulseAmp>0.12</pulseAmp>
+                <pulseRate>0.2</pulseRate>
+                <visualDuration>5</visualDuration>
+                <fadeOutDuration>3</fadeOutDuration>
             </rayConfig>
         </attribute>
     </bullet>
@@ -827,25 +827,25 @@
     </bullet>
 
     <!-- ========== 涡旋射线 (Vortex v2) ========== -->
-    <!-- 基础版: single模式, 宽展双螺旋+波纹白芯交汇爆白+多层泛光 -->
+    <!-- 基础版: single模式, 磁约束环未锁定——螺旋松散、色泽偏淡 -->
     <bullet>
         <name>涡旋射线</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
             <rayConfig>
-                <rayLength>1000</rayLength>
+                <rayLength>800</rayLength>
                 <vfxStyle>vortex</vfxStyle>
                 <vfxPreset>vortex</vfxPreset>
-                <primaryColor>0x0088FF</primaryColor>
-                <secondaryColor>0x88DDFF</secondaryColor>
-                <thickness>6</thickness>
-                <waveAmp>12</waveAmp>
+                <primaryColor>0x5588BB</primaryColor>
+                <secondaryColor>0x99BBCC</secondaryColor>
+                <thickness>4</thickness>
+                <waveAmp>8</waveAmp>
                 <waveLen>90</waveLen>
-                <waveSpeed>0.3</waveSpeed>
-                <pulseAmp>0.2</pulseAmp>
-                <pulseRate>0.3</pulseRate>
-                <visualDuration>6</visualDuration>
-                <fadeOutDuration>4</fadeOutDuration>
+                <waveSpeed>0.2</waveSpeed>
+                <pulseAmp>0.12</pulseAmp>
+                <pulseRate>0.2</pulseRate>
+                <visualDuration>5</visualDuration>
+                <fadeOutDuration>3</fadeOutDuration>
             </rayConfig>
         </attribute>
     </bullet>
@@ -879,25 +879,25 @@
     </bullet>
 
     <!-- ========== 波能科技 (Wave-Force / Red Alert 3) ========== -->
-    <!-- 基础版: single模式, 能量光矛+超宽Bloom+等离子鞘, 致敬RA3波能炮 v6 -->
+    <!-- 基础版: single模式, 波能腔蓄能不足——光矛纤细、色泽偏灰蓝 -->
     <bullet>
         <name>波能射线</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
             <rayConfig>
-                <rayLength>1000</rayLength>
+                <rayLength>800</rayLength>
                 <vfxStyle>wave</vfxStyle>
                 <vfxPreset>ra3_wave</vfxPreset>
-                <primaryColor>0x0099FF</primaryColor>
-                <secondaryColor>0x77EEFF</secondaryColor>
-                <thickness>8</thickness>
-                <waveAmp>7</waveAmp>
+                <primaryColor>0x5599CC</primaryColor>
+                <secondaryColor>0x99CCDD</secondaryColor>
+                <thickness>5</thickness>
+                <waveAmp>4</waveAmp>
                 <waveLen>200</waveLen>
-                <waveSpeed>2.2</waveSpeed>
-                <pulseAmp>0.12</pulseAmp>
-                <pulseRate>0.35</pulseRate>
-                <visualDuration>6</visualDuration>
-                <fadeOutDuration>4</fadeOutDuration>
+                <waveSpeed>1.5</waveSpeed>
+                <pulseAmp>0.08</pulseAmp>
+                <pulseRate>0.25</pulseRate>
+                <visualDuration>5</visualDuration>
+                <fadeOutDuration>3</fadeOutDuration>
             </rayConfig>
         </attribute>
     </bullet>
@@ -930,25 +930,25 @@
     </bullet>
 
     <!-- ========== 等离子科技 (Plasma) ========== -->
-    <!-- 基础版: single模式, 多层泛光+半透明游丝+高频扰动, 等离子武器系列 -->
+    <!-- 基础版: single模式, 约束场强度不够——等离子体稀薄、游丝淡弱 -->
     <bullet>
         <name>等离子射线</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
             <rayConfig>
-                <rayLength>1000</rayLength>
+                <rayLength>800</rayLength>
                 <vfxStyle>plasma</vfxStyle>
                 <vfxPreset>plasma</vfxPreset>
-                <primaryColor>0x0088FF</primaryColor>
-                <secondaryColor>0x88EEFF</secondaryColor>
-                <thickness>5</thickness>
-                <waveAmp>6</waveAmp>
+                <primaryColor>0x5588AA</primaryColor>
+                <secondaryColor>0x99BBCC</secondaryColor>
+                <thickness>3.5</thickness>
+                <waveAmp>4</waveAmp>
                 <waveLen>60</waveLen>
-                <waveSpeed>0.5</waveSpeed>
-                <pulseAmp>0.15</pulseAmp>
-                <pulseRate>0.4</pulseRate>
-                <visualDuration>6</visualDuration>
-                <fadeOutDuration>4</fadeOutDuration>
+                <waveSpeed>0.35</waveSpeed>
+                <pulseAmp>0.1</pulseAmp>
+                <pulseRate>0.3</pulseRate>
+                <visualDuration>5</visualDuration>
+                <fadeOutDuration>3</fadeOutDuration>
             </rayConfig>
         </attribute>
     </bullet>
