@@ -287,38 +287,57 @@
          override 直接覆盖整个 bullet 字段，确保射线名称完整正确。 -->
     <mod>
         <name>磁暴射线弹</name>
-        <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <use>长枪</use>
+        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>磁暴射线</bullet>
                 <damagetype>魔法</damagetype>
-                <magictype>波</magictype>
+                <magictype>电</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>12</power>
+            </percentage>
+            <flat>
+                <bulletsize>4</bulletsize>
+                <weight>1</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为磁暴射线。</description>
+        <description>便携式电弧发生器,将弹药化学能转化为低压放电。仅能维持单目标电弧,色泽偏暗且无法形成连锁。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>磁暴射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>磁暴射线-强化</bullet>
                 <damagetype>魔法</damagetype>
-                <magictype>波</magictype>
+                <magictype>电</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>20</power>
+            </percentage>
+            <flat>
+                <bulletsize>6</bulletsize>
+                <weight>2.5</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为磁暴射线-强化（连锁模式）。</description>
+        <description>满压特斯拉线圈,利用弹仓空间容纳完整电容阵列。满功率放电产生高亮闪电,最多连锁弹跳10个目标。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>光棱射线弹</name>
-        <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <use>长枪</use>
+        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>光棱射线</bullet>
@@ -326,14 +345,23 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>12</power>
+            </percentage>
+            <flat>
+                <accuracy>12</accuracy>
+                <weight>1</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为光棱射线。</description>
+        <description>便携式折射棱镜组,利用弹药化学能激发光束。受限于枪管空间无法容纳完整棱镜阵列,仅输出单目标散焦光束。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>光棱射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>光棱射线-强化</bullet>
@@ -341,14 +369,23 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>20</power>
+            </percentage>
+            <flat>
+                <accuracy>20</accuracy>
+                <weight>2.5</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为光棱射线-强化（折射模式）。</description>
+        <description>全光谱棱镜阵列,精密校准的多面体折射腔。满功率激发产生明亮金色光束,最多分裂为8条折射光束。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>辉光射线弹</name>
-        <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <use>长枪</use>
+        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>辉光射线</bullet>
@@ -356,14 +393,23 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>12</power>
+            </percentage>
+            <flat>
+                <bulletsize>4</bulletsize>
+                <weight>1</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为辉光射线。</description>
+        <description>便携式辉光谐振腔,化学能驱动的荧光激发器。腔体谐振条件不佳,仅能输出暗金色单目标光束。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>辉光射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>辉光射线-强化</bullet>
@@ -371,14 +417,23 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>20</power>
+            </percentage>
+            <flat>
+                <bulletsize>6</bulletsize>
+                <weight>2.5</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为辉光射线-强化（折射模式）。</description>
+        <description>大口径辉光增幅腔,聚焦透镜提供超远射程。满功率辉光谐振产生明亮金色光束,远距离大范围折射覆盖</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>光谱射线弹</name>
-        <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <use>长枪</use>
+        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>光谱射线</bullet>
@@ -386,14 +441,24 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>12</power>
+            </percentage>
+            <flat>
+                <bulletsize>2</bulletsize>
+                <accuracy>5</accuracy>
+                <weight>1</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为光谱射线。</description>
+        <description>便携式双频棱栅模块,化学能驱动的多波段发射器。受限口径仅能安装双层棱栅,无法触发完整色散连锁与分裂。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>光谱射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>光谱射线-强化</bullet>
@@ -401,14 +466,24 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>20</power>
+            </percentage>
+            <flat>
+                <bulletsize>3</bulletsize>
+                <accuracy>8</accuracy>
+                <weight>2.5</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为光谱射线-强化（折射模式）。</description>
+        <description>全谱色散引擎,精密对齐的多层棱栅阵列。全功率驱动下光束在目标间弹跳后继续分裂,覆盖整片战场。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>谐振波射线弹</name>
-        <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <use>长枪</use>
+        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>谐振波射线</bullet>
@@ -416,14 +491,23 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>12</power>
+            </percentage>
+            <flat>
+                <accuracy>12</accuracy>
+                <weight>1</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为谐振波射线。</description>
+        <description>便携式谐振编织器,化学能驱动的多频干涉模块。枪管长度不足以容纳完整干涉腔,仅输出三色编织光束,无法形成穿透连锁。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>谐振波射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>谐振波射线-强化</bullet>
@@ -431,44 +515,71 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>20</power>
+            </percentage>
+            <flat>
+                <accuracy>20</accuracy>
+                <weight>2.5</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为谐振波射线-强化（折射模式）。</description>
+        <description>三频锁相谐振穿透核心,干涉提供稳定驻波。光束贯穿目标后沿路径逐节点触发连锁弹跳。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>热能射线弹</name>
-        <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <use>长枪</use>
+        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>热能射线</bullet>
                 <damagetype>魔法</damagetype>
-                <magictype>波</magictype>
+                <magictype>热</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>12</power>
+            </percentage>
+            <flat>
+                <bulletsize>4</bulletsize>
+                <weight>1</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为热能射线。</description>
+        <description>便携式热辐射聚焦器,化学能驱动的红外激发模块。仅能输出低频远红外,能量被目标表面大量吸收,无法贯穿。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>热能射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>热能射线-强化</bullet>
                 <damagetype>魔法</damagetype>
-                <magictype>波</magictype>
+                <magictype>热</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>20</power>
+            </percentage>
+            <flat>
+                <bulletsize>6</bulletsize>
+                <weight>2.5</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为热能射线-强化（穿透模式）。</description>
+        <description>发射器专用热辐射主炮,大型热堆反应器提供持续高温输出。超远射程光束贯穿多个目标且衰减极慢。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>涡旋射线弹</name>
-        <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <use>长枪</use>
+        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>涡旋射线</bullet>
@@ -476,14 +587,23 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>12</power>
+            </percentage>
+            <flat>
+                <bulletsize>5</bulletsize>
+                <weight>1</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为涡旋射线。</description>
+        <description>便携式涡旋发生器,化学能驱动的磁约束螺旋模块。单级超导线圈磁约束场强度不足,仅输出淡蓝色单目标螺旋。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>涡旋射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>涡旋射线-强化</bullet>
@@ -491,14 +611,23 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>20</power>
+            </percentage>
+            <flat>
+                <bulletsize>8</bulletsize>
+                <weight>2.5</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为涡旋射线-强化（穿透模式）。</description>
+        <description>多级涡旋撕裂炮,高强度磁约束场产生稳定螺旋。光束贯穿目标后沿路径逐节点触发分裂扩散。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>波能射线弹</name>
-        <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <use>长枪</use>
+        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>波能射线</bullet>
@@ -506,14 +635,22 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>15</power>
+            </percentage>
+            <flat>
+                <weight>1</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为波能射线。</description>
+        <description>便携式波能聚焦器,化学能驱动的定向能量模块。蓄能不足,仅输出纤细单目标光矛,穿透深度有限。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>波能射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>波能射线-强化</bullet>
@@ -521,38 +658,65 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>25</power>
+            </percentage>
+            <flat>
+                <weight>2.5</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为波能射线-强化（穿透模式）。</description>
+        <description>波能光矛主炮,大型蓄能电容提供高密度定向能量。光束连续贯穿最多6个目标。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>等离子射线弹</name>
-        <use>手枪,长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <use>长枪</use>
+        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>等离子射线</bullet>
                 <damagetype>魔法</damagetype>
-                <magictype>波</magictype>
+                <magictype>能</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>12</power>
+            </percentage>
+            <flat>
+                <bulletsize>2</bulletsize>
+                <accuracy>5</accuracy>
+                <weight>1</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为等离子射线。</description>
+        <description>便携式等离子约束环,化学能驱动的等离子激发模块，输出稀薄单目标等离子束。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
         <name>等离子射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
+        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>等离子射线-强化</bullet>
                 <damagetype>魔法</damagetype>
-                <magictype>波</magictype>
+                <magictype>能</magictype>
                 <impact>100</impact>
             </override>
+            <percentage>
+                <diffusion>-90</diffusion>
+                <power>20</power>
+            </percentage>
+            <flat>
+                <bulletsize>3</bulletsize>
+                <accuracy>8</accuracy>
+                <weight>2.5</weight>
+            </flat>
         </stats>
-        <description>占位测试用。将子弹替换为等离子射线-强化（穿透模式）。</description>
+        <description>全态等离子武器系统,集成反应堆级约束场与三重作战模块。光束沿穿透路径逐节点触发连锁弹跳与分裂扩散。</description>
         <tag>弹药</tag>
     </mod>
 </root>
