@@ -610,7 +610,7 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: 纯fork专精, 高分裂数补偿功能单一, 光棱折射覆盖大范围 -->
+    <!-- 强化版: 纯fork专精, 高分裂数补偿功能单一, 光棱折射覆盖大范围, 衰减较快 -->
     <bullet>
         <name>光棱射线-强化</name>
         <attribute>
@@ -622,7 +622,7 @@
                 <vfxStyle>prism</vfxStyle>
                 <vfxPreset>ra2_prism</vfxPreset>
                 <chainDelay>1</chainDelay>
-                <damageFalloff>0.6</damageFalloff>
+                <damageFalloff>0.5</damageFalloff>
                 <chainRadius>300</chainRadius>
                 <primaryColor>0xFFDD00</primaryColor>
                 <secondaryColor>0xFFFFAA</secondaryColor>
@@ -657,19 +657,19 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: fork+远射程, 辉光扩散覆盖宽广区域, 预算适中 -->
+    <!-- 强化版: fork+远射程, 辉光扩散覆盖宽广区域, 预算收紧 -->
     <bullet>
         <name>辉光射线-强化</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
-            <pierceLimit>6</pierceLimit>
+            <pierceLimit>5</pierceLimit>
             <rayConfig>
                 <rayLength>1100</rayLength>
                 <rayMode>fork</rayMode>
                 <vfxStyle>radiance</vfxStyle>
                 <vfxPreset>radiance</vfxPreset>
                 <chainDelay>1</chainDelay>
-                <damageFalloff>0.65</damageFalloff>
+                <damageFalloff>0.6</damageFalloff>
                 <chainRadius>350</chainRadius>
                 <primaryColor>0xFFDD00</primaryColor>
                 <secondaryColor>0xFFFFAA</secondaryColor>
@@ -798,18 +798,18 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: pierce+远射程, 热辐射穿透+超远射程, 热能衰减慢 -->
+    <!-- 强化版: pierce+远射程, 热辐射穿透+超远射程, 预算收紧 -->
     <bullet>
         <name>热能射线-强化</name>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
-            <pierceLimit>5</pierceLimit>
+            <pierceLimit>4</pierceLimit>
             <rayConfig>
                 <rayLength>1200</rayLength>
                 <rayMode>pierce</rayMode>
                 <vfxStyle>thermal</vfxStyle>
                 <vfxPreset>thermal</vfxPreset>
-                <damageFalloff>0.85</damageFalloff>
+                <damageFalloff>0.82</damageFalloff>
                 <primaryColor>0xFF4400</primaryColor>
                 <secondaryColor>0xFFAA00</secondaryColor>
                 <thickness>5</thickness>
