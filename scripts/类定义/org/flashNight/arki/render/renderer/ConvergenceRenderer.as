@@ -107,17 +107,19 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         // 阶段二：贝塞尔能量收束漏斗 (EnergyFin)
         // ─────────────────────────────────────────────────────────────
         if (actualFocalDist > 0 && !isFork) {
-            var finCount:Number = enableHeavy ? 4 : 2;
+            var finCount:Number = enableHeavy ? 3 : 2;
             for (var r:Number = 0; r < finCount; r++) {
                 var offsetRatio:Number = (2.0 * r / (finCount - 1) - 1.0);
                 var fSpread:Number = railSpread * offsetRatio * 1.2;
-                var finColor:Number = (Math.abs(offsetRatio) > 0.6)
-                    ? secColor : priColor;
-                var finPulse:Number = 1.0 + Math.sin(age * 15.0 + r) * 0.2;
+                var outerFin:Boolean = (Math.abs(offsetRatio) > 0.6);
+                var finColor:Number = outerFin ? secColor : priColor;
+                // 30fps 下避免高频别名闪烁：用低频呼吸脉冲保持每帧可感知运动
+                var finPulse:Number = 1.0 + Math.sin(age * 0.85 + r * 1.7) * 0.12;
+                var finAlpha:Number = outerFin ? 42 : 55;
 
                 drawEnergyFin(mc, arc.startX, arc.startY, fX, fY,
                     perpX, perpY, fSpread * finPulse, finColor,
-                    clampAlpha(65 * intensity));
+                    clampAlpha(finAlpha * intensity));
             }
         }
 
@@ -129,9 +131,11 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         var sigilTs:Array = [];
 
         if (dist > 60 && !isFork) {
-            var sigilSpacing:Number = 80;
+            // 级联法阵数量以 nodeCount 为上限，避免长距离时节点过密造成视觉噪音
+            var sigilSpacing:Number = 90;
+            var nodeCap:Number = Math.max(1, Math.min(nodeCount, 10));
             cascadeCount = Math.max(1, Math.floor(dist / sigilSpacing));
-            if (cascadeCount > 8) cascadeCount = 8;
+            if (cascadeCount > nodeCap) cascadeCount = nodeCap;
             for (var csi:Number = 0; csi < cascadeCount; csi++) {
                 sigilTs.push((csi + 1.0) / (cascadeCount + 1.0));
             }
@@ -145,9 +149,48 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         }
 
         // ─────────────────────────────────────────────────────────────
+        // 共享计算：沿束“准星法阵链”扫描指针（无限穿透=途中重聚焦补能）
+        // ─────────────────────────────────────────────────────────────
+        var scanSpeed:Number = Math.max(0.06, nodeSpeed * 0.8); // t/帧
+        var scanT:Number = age * scanSpeed;
+        scanT = scanT - Math.floor(scanT);
+        var scanSigma:Number = 0.06;
+        if (cascadeCount > 0) {
+            scanSigma = 0.55 / (cascadeCount + 1.0);
+            if (scanSigma < 0.035) scanSigma = 0.035;
+            if (scanSigma > 0.09) scanSigma = 0.09;
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // 阶段二·五：背景级联法阵（先绘于光柱下层，避免压顶导致杂乱）
+        // ─────────────────────────────────────────────────────────────
+        if (enableHeavy && cascadeCount > 0) {
+            for (var bg:Number = 0; bg < cascadeCount; bg++) {
+                var bgT:Number = sigilTs[bg];
+                var bgX:Number = arc.startX + dirX * dist * bgT;
+                var bgY:Number = arc.startY + dirY * dist * bgT;
+
+                var bgEnv:Number = Math.sin(bgT * Math.PI);
+                var bgFocalBoost:Number = Math.exp(
+                    -((bgT - focalT) * (bgT - focalT)) / 0.03);
+                var bgScale:Number = 0.55 + 0.35 * bgEnv + 0.25 * bgFocalBoost;
+
+                var bgSize:Number = T * 7.0 * bgScale * scale * intensity;
+                if (bgSize < 2.0) continue;
+
+                var bgRot:Number = age * (0.10 + bg * 0.05) + bg * 2.094;
+                var bgAlpha:Number = clampAlpha((28 + 18 * bgEnv) * intensity);
+
+                drawMiniSigil(mc, bgX, bgY, dirX, dirY, perpX, perpY,
+                    bgSize, priColor, bgAlpha, bgRot, 0.35);
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────
         // 阶段三：纺锤链光柱 (法阵节点处收束，段间弧形膨胀)
         // ─────────────────────────────────────────────────────────────
-        var pulse:Number = 1.0 + Math.sin(age * 22.0) * 0.12;
+        // 低频脉冲：保证每帧有细微呼吸感，避免22rad/帧的别名闪烁
+        var pulse:Number = 1.0 + Math.sin(age * 0.9) * 0.06;
         if (enableHeavy && pinchTs.length > 0) {
             drawSpindleChainBeam(mc, arc.startX, arc.startY,
                 arc.endX, arc.endY, perpX, perpY, dist,
@@ -172,19 +215,21 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
             if (enableHeavy) {
                 drawVolumetricRibbon(mc, fX, fY, arc.endX, arc.endY,
                     dirX, dirY, perpX, perpY, postDist, 60,
-                    T * 3.0, age, 0, T * 2.0,
-                    priColor, clampAlpha(85 * intensity));
+                    T * 2.6, age, 0, T * 1.6,
+                    priColor, clampAlpha(65 * intensity));
                 drawVolumetricRibbon(mc, fX, fY, arc.endX, arc.endY,
                     dirX, dirY, perpX, perpY, postDist, 60,
-                    T * 3.0, age, Math.PI, T * 2.0,
-                    secColor, clampAlpha(85 * intensity));
+                    T * 2.6, age, Math.PI, T * 1.6,
+                    secColor, clampAlpha(45 * intensity));
             }
 
             // 2. 三维马赫推力锥
             if (enableHeavy && postDist > 60) {
                 var machCount:Number = Math.floor(postDist / 80);
+                if (machCount > 3) machCount = 3;
                 for (var m:Number = 0; m < machCount; m++) {
-                    var mT:Number = ((m / machCount) - age * 3.0);
+                    // 低频推进：保证每帧在动，但不产生闪烁式跳变
+                    var mT:Number = ((m / machCount) - age * nodeSpeed * 0.8);
                     mT = mT - Math.floor(mT);
                     if (mT > 0.05 && mT < 0.95) {
                         var mx:Number = fX + dirX * postDist * mT;
@@ -192,31 +237,30 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
                         var mScale:Number = Math.sin(mT * Math.PI) * intensity;
                         drawMachCone(mc, mx, my, dirX, dirY, perpX, perpY,
                             T * 8.0 * mScale, T * 5.0 * mScale,
-                            priColor, secColor, clampAlpha(85 * mScale));
+                            priColor, secColor, clampAlpha(65 * mScale));
                     }
                 }
             }
 
             // 3. 矩阵正交闪电
             if (lod == 0) {
-                var cAmp:Number = T * 5.0 * intensity;
-                var circuitSeed:Number = Math.floor(age * 6.0 * nodeSpeed / 0.15);
+                var cAmp:Number = T * 4.2 * intensity;
+                // 固定拓扑 + 相位波动：避免每帧重随机导致的视觉噪音，同时保证30fps下持续运动
+                var baseSeed:Number = Math.floor(
+                    arc.startX * 13 + arc.startY * 17 + arc.endX * 19 + arc.endY * 23);
+                if (baseSeed < 0) baseSeed = -baseSeed;
+                baseSeed = baseSeed % 233280;
+                var circuitPhase:Number = age * (1.25 + nodeSpeed * 2.0);
+                var circuitDensity:Number = Math.max(1, Math.min(nodeCount, 10));
 
                 drawMatrixCircuit(mc, fX, fY, arc.endX, arc.endY,
                     dirX, dirY, perpX, perpY, postDist, cAmp,
-                    circuitSeed * 11 + 7, priColor, T * 1.5,
-                    clampAlpha(90 * intensity), nodeCount);
-
-                if (enableHeavy) {
-                    drawMatrixCircuit(mc, fX, fY, arc.endX, arc.endY,
-                        dirX, dirY, perpX, perpY, postDist, cAmp * 1.3,
-                        circuitSeed * 17 + 88, secColor, T * 1.0,
-                        clampAlpha(75 * intensity), nodeCount);
-                }
+                    baseSeed * 11 + 7, priColor, T * 1.1,
+                    clampAlpha(55 * intensity), circuitDensity, circuitPhase);
             }
 
             // 4. 战术标尺
-            if (enableHeavy) {
+            if (enableHeavy && cascadeCount <= 0) {
                 var tickCount:Number = Math.floor(postDist / 80);
                 for (var tk:Number = 1; tk <= tickCount; tk++) {
                     var tkT:Number = tk / (tickCount + 1);
@@ -261,6 +305,16 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         // 阶段四·五：全程级联法阵 (绘于纺锤收束节点之上)
         // ─────────────────────────────────────────────────────────────
         if (enableHeavy && cascadeCount > 0) {
+            // 扫描游标：每帧沿束推进，解释“途中重聚焦补能”的无限穿透机制
+            var curX:Number = arc.startX + dirX * dist * scanT;
+            var curY:Number = arc.startY + dirY * dist * scanT;
+            var curSize:Number = T * 3.2 * scale * intensity;
+            drawRing(mc, curX, curY, curSize * 0.55, Math.max(1.0, curSize * 0.10),
+                secColor, clampAlpha(70 * intensity));
+            RayVfxManager.drawCircle(mc, curX, curY, curSize * 0.14,
+                0xFFFFFF, clampAlpha(75 * intensity));
+
+            // 高亮法阵节点：只强化扫描附近的1~2个节点，保持极繁但层次清晰
             for (var cs:Number = 0; cs < cascadeCount; cs++) {
                 var csT:Number = sigilTs[cs];
                 var csX:Number = arc.startX + dirX * dist * csT;
@@ -275,14 +329,24 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
                 var csSize:Number = T * 8.0 * csScale * scale * intensity;
                 if (csSize < 2.5) continue;
 
-                var csPhase:Number = age * (0.18 + cs * 0.07)
-                    + cs * 2.094;
-                var csColor:Number = (cs % 2 == 0) ? priColor : secColor;
-                var csAlpha:Number = clampAlpha(
-                    (70 + 20 * csEnv) * intensity);
+                // 扫描权重：高亮沿束推进，色彩与细节集中在重点处
+                var dT:Number = Math.abs(csT - scanT);
+                if (dT > 0.5) dT = 1.0 - dT;
+                var w:Number = Math.exp(-(dT * dT) / (scanSigma * scanSigma));
+                if (w < 0.35) continue;
+
+                var csRot:Number = age * (0.14 + cs * 0.05) + cs * 2.094;
+                var csAlpha:Number = clampAlpha((55 + 30 * w) * intensity);
+                var detail:Number = 0.65 + 0.35 * w;
 
                 drawMiniSigil(mc, csX, csY, dirX, dirY, perpX, perpY,
-                    csSize, csColor, csAlpha, csPhase);
+                    csSize, priColor, csAlpha, csRot, detail);
+
+                // 次色仅作聚焦强调，不做全程交替，避免色噪
+                drawRing(mc, csX, csY, csSize * 0.55, Math.max(1.0, csSize * 0.05),
+                    secColor, clampAlpha(csAlpha * 0.55));
+                RayVfxManager.drawCircle(mc, csX, csY, csSize * 0.10,
+                    secColor, clampAlpha(csAlpha * 0.25));
             }
         }
 
@@ -322,14 +386,23 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
     // 视觉引擎：核心渲染函数
     // ════════════════════════════════════════════════════════════════════════
 
-    /** 迷你级联聚焦法阵 (碎裂菱形+Z闪电，展示能量多级压缩传递) */
+    /**
+     * 迷你级联聚焦法阵（沿束准星链）
+     *
+     * detail 用于控制复杂度：
+     * - 低 detail：环 + 十字 + 聚焦点（干净可读，作为底层结构）
+     * - 高 detail：叠加碎裂菱形 + Z 闪电（作为扫描高亮强调）
+     */
     private static function drawMiniSigil(
         mc:MovieClip, cx:Number, cy:Number,
         dirX:Number, dirY:Number, perpX:Number, perpY:Number,
-        size:Number, color:Number, alpha:Number, rot:Number
+        size:Number, color:Number, alpha:Number, rot:Number, detail:Number
     ):Void {
         var a:Number = clampAlpha(alpha);
         if (a <= 0 || size <= 1) return;
+        if (detail == undefined) detail = 1.0;
+        if (detail < 0) detail = 0;
+        if (detail > 1) detail = 1;
 
         var cosR:Number = Math.cos(rot);
         var sinR:Number = Math.sin(rot);
@@ -338,30 +411,30 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         var rpX:Number = perpX * cosR - dirX * sinR;
         var rpY:Number = perpY * cosR - dirY * sinR;
 
-        // 暗遮挡盘 (截断泛光，营造局部暗窗，与主法阵设计统一)
-        drawSolidCircle(mc, cx, cy, size * 1.2, 0x000B1A,
-            clampAlpha(a * 0.6));
-
         // 碎裂菱形框
-        mc.lineStyle(size * 0.15, color, clampAlpha(a * 0.9),
-            true, "normal", "square", "miter");
-        var dPts:Array = [
-            {x: cx + rdX * size, y: cy + rdY * size},
-            {x: cx + rpX * size, y: cy + rpY * size},
-            {x: cx - rdX * size, y: cy - rdY * size},
-            {x: cx - rpX * size, y: cy - rpY * size}
-        ];
-        for (var j:Number = 0; j < 4; j++) {
-            var p1:Object = dPts[j];
-            var p2:Object = dPts[(j + 1) % 4];
-            var vx:Number = p2.x - p1.x;
-            var vy:Number = p2.y - p1.y;
-            mc.moveTo(p1.x + vx * 0.12, p1.y + vy * 0.12);
-            mc.lineTo(p1.x + vx * 0.45, p1.y + vy * 0.45);
-            mc.moveTo(p1.x + vx * 0.55, p1.y + vy * 0.55);
-            mc.lineTo(p1.x + vx * 0.88, p1.y + vy * 0.88);
+        if (detail > 0.45) {
+            var frameA:Number = clampAlpha(a * (detail - 0.45) * 1.4);
+            var frameThick:Number = Math.max(1.0, size * 0.10);
+            mc.lineStyle(frameThick, color, frameA,
+                true, "normal", "round", "round");
+            var dPts:Array = [
+                {x: cx + rdX * size, y: cy + rdY * size},
+                {x: cx + rpX * size, y: cy + rpY * size},
+                {x: cx - rdX * size, y: cy - rdY * size},
+                {x: cx - rpX * size, y: cy - rpY * size}
+            ];
+            for (var j:Number = 0; j < 4; j++) {
+                var p1:Object = dPts[j];
+                var p2:Object = dPts[(j + 1) % 4];
+                var vx:Number = p2.x - p1.x;
+                var vy:Number = p2.y - p1.y;
+                mc.moveTo(p1.x + vx * 0.12, p1.y + vy * 0.12);
+                mc.lineTo(p1.x + vx * 0.45, p1.y + vy * 0.45);
+                mc.moveTo(p1.x + vx * 0.55, p1.y + vy * 0.55);
+                mc.lineTo(p1.x + vx * 0.88, p1.y + vy * 0.88);
+            }
+            mc.lineStyle(undefined);
         }
-        mc.lineStyle(undefined);
 
         // Z型闪电
         var lx1:Number = cx - rdX * size * 0.7 + rpX * size * 0.9;
@@ -372,31 +445,34 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         var zmy1:Number = cy - rdY * size * 0.1 + rpY * size * 0.15;
         var zmx2:Number = cx + rdX * size * 0.1 - rpX * size * 0.05;
         var zmy2:Number = cy + rdY * size * 0.1 - rpY * size * 0.05;
+        if (detail > 0.7) {
+            var boltA:Number = clampAlpha(a * (detail - 0.7) * 2.6);
+            mc.lineStyle(Math.max(1.0, size * 0.18), color, boltA,
+                true, "normal", "round", "round");
+            mc.moveTo(lx1, ly1);
+            mc.lineTo(zmx1, zmy1);
+            mc.lineTo(zmx2, zmy2);
+            mc.lineTo(lx2, ly2);
 
-        mc.lineStyle(size * 0.22, color, a,
-            true, "normal", "round", "miter");
-        mc.moveTo(lx1, ly1);
-        mc.lineTo(zmx1, zmy1);
-        mc.lineTo(zmx2, zmy2);
-        mc.lineTo(lx2, ly2);
-
-        mc.lineStyle(size * 0.07, 0xFFFFFF, a,
-            true, "normal", "round", "miter");
-        mc.moveTo(lx1, ly1);
-        mc.lineTo(zmx1, zmy1);
-        mc.lineTo(zmx2, zmy2);
-        mc.lineTo(lx2, ly2);
-        mc.lineStyle(undefined);
+            mc.lineStyle(Math.max(1.0, size * 0.06), 0xFFFFFF, boltA,
+                true, "normal", "round", "round");
+            mc.moveTo(lx1, ly1);
+            mc.lineTo(zmx1, zmy1);
+            mc.lineTo(zmx2, zmy2);
+            mc.lineTo(lx2, ly2);
+            mc.lineStyle(undefined);
+        }
 
         // 瞄准环 (稳定，不随菱形旋转)
-        drawRing(mc, cx, cy, size * 0.45, size * 0.08,
-            color, clampAlpha(a * 0.7));
+        drawRing(mc, cx, cy, size * 0.45, Math.max(1.0, size * 0.07),
+            color, clampAlpha(a * (0.45 + 0.25 * detail)));
 
         // 光束对齐断开式十字准星 (稳定瞄准参考，与旋转菱形形成动静对比)
         var chLen:Number = size * 0.6;
         var chGap:Number = size * 0.18;
-        mc.lineStyle(size * 0.08, 0xFFFFFF, clampAlpha(a * 0.85),
-            true, "normal", "none", "miter");
+        mc.lineStyle(Math.max(1.0, size * 0.07), 0xFFFFFF,
+            clampAlpha(a * (0.65 + 0.25 * detail)),
+            true, "normal", "round", "round");
         mc.moveTo(cx - dirX * chLen, cy - dirY * chLen);
         mc.lineTo(cx - dirX * chGap, cy - dirY * chGap);
         mc.moveTo(cx + dirX * chLen, cy + dirY * chLen);
@@ -545,8 +621,8 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         mc.curveTo(inMidX, inMidY, sx, sy);
         mc.endFill();
 
-        mc.lineStyle(2.5, 0xFFFFFF, clampAlpha(alpha * 0.9),
-            true, "normal", "none", "miter");
+        mc.lineStyle(1.8, 0xFFFFFF, clampAlpha(alpha * 0.75),
+            true, "normal", "round", "round");
         mc.moveTo(sx, sy);
         mc.curveTo(midX, midY, fx, fy);
         mc.lineStyle(undefined);
@@ -708,7 +784,7 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
             var t:Number = i * step;
             var env:Number = Math.pow(Math.sin(t * Math.PI), 0.7);
             var ang:Number = (t * dist / waveLen) * Math.PI * 2
-                + age * 5.0 + phase;
+                + age * 1.8 + phase;
 
             var offset:Number = Math.sin(ang) * amp * env;
             var zDepth:Number = Math.cos(ang);
@@ -787,7 +863,7 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         mc:MovieClip, sx:Number, sy:Number, ex:Number, ey:Number,
         dX:Number, dY:Number, pX:Number, pY:Number, dist:Number,
         amp:Number, seed:Number, color:Number, thick:Number,
-        a:Number, segDensity:Number
+        a:Number, segDensity:Number, phase:Number
     ):Void {
         if (a <= 0) return;
         var pts:Array = [];
@@ -830,22 +906,35 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
             pts.push({u: currU, v: currV});
         }
 
+        if (phase == undefined) phase = 0;
+        var wobbleAmp:Number = amp * 0.18;
+
         // 泛光外晕
-        mc.lineStyle(thick * 2.8, color, clampAlpha(a * 0.6),
-            true, "normal", "square", "miter");
+        mc.lineStyle(thick * 2.1, color, clampAlpha(a * 0.35),
+            true, "normal", "round", "round");
         mc.moveTo(sx, sy);
         for (var i:Number = 1; i < pts.length; i++) {
-            mc.lineTo(sx + dX * pts[i].u + pX * pts[i].v,
-                      sy + dY * pts[i].u + pY * pts[i].v);
+            var u1:Number = pts[i].u;
+            var t1:Number = (dist > 0) ? (u1 / dist) : 0;
+            var env1:Number = Math.sin(t1 * Math.PI);
+            var v1:Number = pts[i].v + wobbleAmp * env1
+                * Math.sin(t1 * Math.PI * 2 * 2 + phase);
+            mc.lineTo(sx + dX * u1 + pX * v1,
+                      sy + dY * u1 + pY * v1);
         }
 
         // 极白内核
-        mc.lineStyle(thick * 0.9, 0xFFFFFF, a,
-            true, "normal", "square", "miter");
+        mc.lineStyle(thick * 0.75, 0xFFFFFF, a,
+            true, "normal", "round", "round");
         mc.moveTo(sx, sy);
         for (var k:Number = 1; k < pts.length; k++) {
-            mc.lineTo(sx + dX * pts[k].u + pX * pts[k].v,
-                      sy + dY * pts[k].u + pY * pts[k].v);
+            var u2:Number = pts[k].u;
+            var t2:Number = (dist > 0) ? (u2 / dist) : 0;
+            var env2:Number = Math.sin(t2 * Math.PI);
+            var v2:Number = pts[k].v + wobbleAmp * env2
+                * Math.sin(t2 * Math.PI * 2 * 2 + phase);
+            mc.lineTo(sx + dX * u2 + pX * v2,
+                      sy + dY * u2 + pY * v2);
         }
         mc.lineStyle(undefined);
     }
