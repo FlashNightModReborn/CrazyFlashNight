@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跳" itemID="6919df9d-00001065" lastModified="1771964970" lastUniqueIdentifier="358">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跳" itemID="6919df9d-00001065" lastModified="1772128261" lastUniqueIdentifier="358">
   <timeline>
-    <DOMTimeline name="空手跳" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="空手跳" currentFrame="12" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#B562FD" locked="true">
           <frames>
@@ -57,7 +57,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="14" name="开始跳跃" labelType="name" keyMode="9728">
               <elements/>
@@ -2470,11 +2470,11 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招" color="#FF4FFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="169.5" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="169.5" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="72.05" ty="366.2"/>
                   </matrix>
@@ -2545,7 +2545,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="4" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="169.5" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="169.5" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="72.05" ty="366.2"/>
                   </matrix>
@@ -2585,7 +2585,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="12" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -2765,7 +2765,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="95" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>

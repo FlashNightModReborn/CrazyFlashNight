@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-回旋踢" itemID="699df8c4-00000bc2" linkageExportForAS="true" linkageIdentifier="空手攻击容器-回旋踢" lastModified="1772042353" lastUniqueIdentifier="908">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-回旋踢" itemID="699df8c4-00000bc2" linkageExportForAS="true" linkageIdentifier="空手攻击容器-回旋踢" lastModified="1772128447" lastUniqueIdentifier="908">
   <timeline>
-    <DOMTimeline name="空手攻击容器-回旋踢" currentFrame="13">
+    <DOMTimeline name="空手攻击容器-回旋踢" currentFrame="29">
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -228,7 +228,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#D8AA90" autoNamed="false">
+        <DOMLayer name="动作代码" color="#D8AA90" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -501,7 +501,7 @@ else if(_parent.性别 == "女"){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#73BC75" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#73BC75" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -909,7 +909,7 @@ else if(_parent.性别 == "女"){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
