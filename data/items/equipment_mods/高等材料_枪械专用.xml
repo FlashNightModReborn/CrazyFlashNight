@@ -297,6 +297,7 @@
         <stats>
             <override>
                 <bullet>磁暴射线</bullet>
+                <bulletrename>电弧射线</bulletrename>
                 <damagetype>魔法</damagetype>
                 <magictype>电</magictype>
                 <impact>100</impact>
@@ -310,7 +311,7 @@
                 <weight>1</weight>
             </flat>
         </stats>
-        <description>便携式电弧发生器,将弹药化学能转化为低压放电。仅能维持单目标电弧,色泽偏暗且无法形成连锁。</description>
+        <description>微型化特斯拉电弧模块,将完整线圈组压缩至弹药尺寸。受限于微型电容储能,仅能维持单目标低压电弧,无法形成连锁。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -321,6 +322,7 @@
         <stats>
             <override>
                 <bullet>磁暴射线-强化</bullet>
+                <bulletrename>特斯拉射线</bulletrename>
                 <damagetype>魔法</damagetype>
                 <magictype>电</magictype>
                 <impact>100</impact>
@@ -349,6 +351,7 @@
         <stats>
             <override>
                 <bullet>光棱射线</bullet>
+                <bulletrename>棱镜射线弹</bulletrename>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
