@@ -686,6 +686,24 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
                     scope: "current",
                     cond: {op: "is", path: "data.damagetype", value: "破击"}
                 }
+            },
+            // group 嵌套测试：(damagetype=="魔法" AND interval>200) OR (damagetype=="破击")
+            {
+                name: "条件插件_嵌套组",
+                use: "头部装备,长枪",
+                installCondition: {
+                    mode: "any",
+                    cond: [
+                        {op: "is", path: "data.damagetype", value: "破击"}
+                    ],
+                    group: {
+                        mode: "all",
+                        cond: [
+                            {op: "is", path: "data.damagetype", value: "魔法"},
+                            {op: "above", path: "data.interval", value: 200}
+                        ]
+                    }
+                }
             }
         ]);
 
@@ -710,6 +728,8 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         result += testInstallCondition_Operators();
         result += testInstallCondition_DotPath();
         result += testInstallCondition_ModeAny();
+        result += testInstallCondition_ScopeCurrent();
+        result += testInstallCondition_GroupNesting();
 
         return result;
     }
@@ -1169,6 +1189,87 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
                    + "，都满足=" + code4 + "）\n";
         }
         return "✓ installCondition OR模式测试通过\n";
+    }
+
+    /**
+     * 测试 installCondition scope="current" 作用域
+     * 验证条件基于传入的 itemData（含已安装配件效果）进行判断
+     */
+    private static function testInstallCondition_ScopeCurrent():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: [] }
+        };
+
+        // 传入的 itemData 模拟"计算后"的数据（含配件效果），damagetype 被配件改为"破击"
+        var testItemData1 = {
+            data: { modslot: 3, damagetype: "破击", interval: 300 }
+        };
+        var code1:Number = TagManager.checkModAvailability(testItem, testItemData1, "条件插件_current作用域");
+        var pass1:Boolean = (code1 == 1); // 满足 damagetype=="破击"
+
+        // 基础值是"魔法"，不满足 scope="current" 的条件
+        var testItemData2 = {
+            data: { modslot: 3, damagetype: "魔法", interval: 300 }
+        };
+        var code2:Number = TagManager.checkModAvailability(testItem, testItemData2, "条件插件_current作用域");
+        var fail2:Boolean = (code2 == -256); // 不满足
+
+        var passed:Boolean = pass1 && fail2;
+
+        if (!passed) {
+            return "✗ installCondition scope=current测试失败（满足=" + code1
+                   + "，不满足=" + code2 + "）\n";
+        }
+        return "✓ installCondition scope=current测试通过\n";
+    }
+
+    /**
+     * 测试 installCondition group 嵌套求值
+     * 条件插件_嵌套组: (damagetype=="魔法" AND interval>200) OR (damagetype=="破击")
+     */
+    private static function testInstallCondition_GroupNesting():String {
+        var testItem = {
+            name: "测试装备",
+            value: { mods: [] }
+        };
+
+        // 满足外层 cond: damagetype=="破击"（OR模式，只需一个分支满足）
+        var testItemData1 = {
+            data: { modslot: 3, damagetype: "破击", interval: 100 }
+        };
+        var code1:Number = TagManager.checkModAvailability(testItem, testItemData1, "条件插件_嵌套组");
+        var pass1:Boolean = (code1 == 1);
+
+        // 满足 group 分支: damagetype=="魔法" AND interval>200
+        var testItemData2 = {
+            data: { modslot: 3, damagetype: "魔法", interval: 300 }
+        };
+        var code2:Number = TagManager.checkModAvailability(testItem, testItemData2, "条件插件_嵌套组");
+        var pass2:Boolean = (code2 == 1);
+
+        // 不满足任何分支: damagetype=="普通"
+        var testItemData3 = {
+            data: { modslot: 3, damagetype: "普通", interval: 300 }
+        };
+        var code3:Number = TagManager.checkModAvailability(testItem, testItemData3, "条件插件_嵌套组");
+        var fail3:Boolean = (code3 == -256);
+
+        // group 分支部分满足（魔法但 interval 不够）→ 不通过，且外层 cond 也不满足
+        var testItemData4 = {
+            data: { modslot: 3, damagetype: "魔法", interval: 100 }
+        };
+        var code4:Number = TagManager.checkModAvailability(testItem, testItemData4, "条件插件_嵌套组");
+        var fail4:Boolean = (code4 == -256);
+
+        var passed:Boolean = pass1 && pass2 && fail3 && fail4;
+
+        if (!passed) {
+            return "✗ installCondition group嵌套测试失败（破击=" + code1
+                   + "，魔法高间隔=" + code2 + "，普通=" + code3
+                   + "，魔法低间隔=" + code4 + "）\n";
+        }
+        return "✓ installCondition group嵌套测试通过\n";
     }
 
     // ==================== TierSystem 测试 ====================

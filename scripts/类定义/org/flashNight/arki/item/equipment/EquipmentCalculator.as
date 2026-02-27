@@ -3,6 +3,8 @@ import org.flashNight.arki.item.equipment.PropertyOperators;
 import org.flashNight.arki.item.equipment.ModRegistry;
 import org.flashNight.arki.item.equipment.TierSystem;
 import org.flashNight.arki.item.equipment.TagManager;
+import org.flashNight.arki.item.equipment.EquipmentConfigManager;
+import org.flashNight.arki.item.ItemUtil;
 
 /** 
  * EquipmentCalculator - 装备数值纯计算类
@@ -367,5 +369,32 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         for (var key:String in newData) {
             itemData[key] = newData[key];
         }
+    }
+
+    /**
+     * 计算装备的基础数据（仅含 tier/强化，不含任何配件效果）
+     * 用于 installCondition scope="base" 条件判断
+     *
+     * @param itemName 装备名称
+     * @param value 装备值对象（包含 level, tier 等）
+     * @return 基础数据（已克隆），如果获取失败返回 null
+     */
+    public static function calculateBaseData(itemName:String, value:Object):Object {
+        var rawData:Object = ItemUtil.getItemData(itemName);
+        if (!rawData) return null;
+
+        var v:Object = value || {};
+        if (v.level > 1 || v.tier) {
+            var config:Object = EquipmentConfigManager.getFullConfig();
+            var modReg:Object = ModRegistry.getModDict();
+            calculateInPlace(
+                rawData,
+                {level: v.level || 1, tier: v.tier, mods: []},
+                config,
+                modReg
+            );
+        }
+
+        return rawData;
     }
 }

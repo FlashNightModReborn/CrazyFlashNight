@@ -799,5 +799,4 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         // AND: 全部通过返回 true；OR: 全部未通过返回 false
         return isAll;
     }
-
 }

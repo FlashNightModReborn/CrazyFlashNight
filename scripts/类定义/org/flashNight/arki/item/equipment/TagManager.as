@@ -3,7 +3,6 @@ import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.equipment.ModRegistry;
 import org.flashNight.arki.item.equipment.EquipmentCalculator;
-import org.flashNight.arki.item.equipment.EquipmentConfigManager;
 import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 
 /**
@@ -340,8 +339,10 @@ class org.flashNight.arki.item.equipment.TagManager {
         var filtered:Array = [];
         var tagContext:Object = buildTagContext(item, itemData);
 
-        // 惰性计算的装备数据（仅在需要检查子弹类型时才计算）
+        // 惰性计算的装备数据（仅在需要检查子弹类型或 scope="current" 条件时才计算）
         var calculatedItemData:Object = undefined;
+        // 惰性计算的基础数据（仅在需要 scope="base" 条件时才计算，同一装备内缓存）
+        var baseCondData:Object = undefined;
 
         // 处理blockedTags
         var blockedTagDict:Object = null;
@@ -397,7 +398,21 @@ class org.flashNight.arki.item.equipment.TagManager {
 
             // 检查安装条件（installCondition）
             if (canUse && modData.installCondList) {
-                var condCheckData:Object = getConditionCheckData(modData.installCondList, item, itemData);
+                var condCheckData:Object;
+                if (modData.installCondList.scope == "current") {
+                    // scope="current"：惰性获取计算后的装备数据（含已安装配件效果）
+                    if (calculatedItemData == undefined) {
+                        calculatedItemData = item.getData();
+                    }
+                    condCheckData = calculatedItemData;
+                } else {
+                    // scope="base"（默认）：惰性获取基础数据（仅 tier/强化，不含配件）
+                    if (baseCondData == undefined) {
+                        baseCondData = EquipmentCalculator.calculateBaseData(item.name, item.value);
+                        if (!baseCondData) baseCondData = itemData; // 回退
+                    }
+                    condCheckData = baseCondData;
+                }
                 if (!ModRegistry.evaluateConditionGroup(modData.installCondList, condCheckData)) {
                     canUse = false;
                     if (_debugMode) {
@@ -490,10 +505,10 @@ class org.flashNight.arki.item.equipment.TagManager {
     /**
      * 获取 installCondition 检查所需的装备数据
      * scope="base" 时：获取不含任何配件的基础数据（含 tier/强化）
-     * scope="current" 时：使用传入的已计算数据
+     * scope="current" 时：使用传入的已计算数据（应来自 item.getData()）
      * @param condList 条件组对象（包含 scope 属性）
      * @param item 装备物品对象
-     * @param itemData 当前装备数据（可能是计算后的）
+     * @param itemData 当前装备数据（scope="current" 时应为 item.getData() 的结果）
      * @return 用于条件检查的装备数据
      * @private
      */
@@ -502,24 +517,9 @@ class org.flashNight.arki.item.equipment.TagManager {
             return itemData;
         }
 
-        // scope="base"（默认）：获取不含配件的基础数据
-        var rawData:Object = ItemUtil.getItemData(item.name);
-        if (!rawData) return itemData; // 回退到传入数据
-
-        // 应用 tier 和强化等级（但不含任何配件）
-        var value:Object = item.value || {};
-        if (value.level > 1 || value.tier) {
-            var config:Object = EquipmentConfigManager.getFullConfig();
-            var modRegistry:Object = ModRegistry.getModDict();
-            EquipmentCalculator.calculateInPlace(
-                rawData,
-                {level: value.level || 1, tier: value.tier, mods: []},
-                config,
-                modRegistry
-            );
-        }
-
-        return rawData;
+        // scope="base"（默认）：委托 EquipmentCalculator 计算基础数据
+        var baseData:Object = EquipmentCalculator.calculateBaseData(item.name, item.value);
+        return baseData || itemData; // 获取失败时回退到传入数据
     }
 
     /**
