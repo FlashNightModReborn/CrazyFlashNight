@@ -132,6 +132,11 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             mod.excludeBulletTypeDict = buildDictFromList(mod.excludeBulletTypes);
         }
 
+        // 8.5. 处理 installCondition（安装条件表达式）
+        if (mod.installCondition) {
+            mod.installCondList = processInstallCondition(mod.installCondition);
+        }
+
         // 9. 归一化percentage（百分比值）
         normalizePercentage(mod);
 
@@ -338,6 +343,7 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         _modAvailabilityResults[-32] = "有其他插件依赖此插件";
         _modAvailabilityResults[-64] = "该装备禁止安装此挂点类型的插件";
         _modAvailabilityResults[-128] = "当前弹药与此配件不兼容";
+        _modAvailabilityResults[-256] = "装备属性不满足安装条件";
     }
 
     // ==================== 公共查询接口 ====================
@@ -584,6 +590,214 @@ class org.flashNight.arki.item.equipment.ModRegistry {
      */
     public static function isDebugMode():Boolean {
         return _debugMode;
+    }
+
+    // ==================== installCondition 安装条件系统 ====================
+
+    /**
+     * 处理 installCondition 配置，归一化为标准条件组结构
+     *
+     * XML 示例:
+     *   <installCondition scope="base" mode="all">
+     *     <cond op="is" path="data.damagetype" value="魔法"/>
+     *     <cond op="above" path="data.interval" value="200"/>
+     *   </installCondition>
+     *
+     * 支持的运算符（避开 AS2 关键字 eq/ne/gt/lt/ge/le/not）:
+     *   is, isNot, above, atLeast, below, atMost,
+     *   oneOf, noneOf, contains, range, exists, missing
+     *
+     * @param condObj XMLParser 解析后的 installCondition 对象
+     * @return 归一化条件组 {scope, mode, conditions:[...]}
+     * @private
+     */
+    private static function processInstallCondition(condObj:Object):Object {
+        if (!condObj) return null;
+
+        var result:Object = {
+            scope: condObj.scope || "base",
+            mode: condObj.mode || "all",
+            conditions: []
+        };
+
+        // 收集顶层 <cond> 节点（单个为对象，多个为数组）
+        var rawConds:Array = normalizeToArray(condObj.cond);
+
+        // 收集顶层 <group> 节点
+        var rawGroups:Array = normalizeToArray(condObj.group);
+
+        // 处理每个 <cond>
+        for (var i:Number = 0; i < rawConds.length; i++) {
+            var c:Object = rawConds[i];
+            if (!c || !c.op) continue;
+
+            var processed:Object = {
+                type: "cond",
+                op: c.op,
+                path: c.path || ""
+            };
+
+            // 对 oneOf/noneOf 预构建字典以获得 O(1) 查找
+            if (c.op == "oneOf" || c.op == "noneOf") {
+                processed.value = c.value;
+                processed.valueDict = buildDictFromList(String(c.value));
+            } else if (c.op == "range") {
+                processed.min = Number(c.min);
+                processed.max = Number(c.max);
+            } else if (c.op != "exists" && c.op != "missing") {
+                processed.value = c.value;
+            }
+
+            result.conditions.push(processed);
+        }
+
+        // 处理嵌套 <group>
+        for (var g:Number = 0; g < rawGroups.length; g++) {
+            var grp:Object = rawGroups[g];
+            if (!grp) continue;
+
+            var subGroup:Object = processInstallCondition(grp);
+            if (subGroup && subGroup.conditions.length > 0) {
+                subGroup.type = "group";
+                result.conditions.push(subGroup);
+            }
+        }
+
+        if (_debugMode && result.conditions.length > 0) {
+            trace("[ModRegistry] installCondition: scope=" + result.scope
+                  + ", mode=" + result.mode
+                  + ", conditions=" + result.conditions.length);
+        }
+
+        return (result.conditions.length > 0) ? result : null;
+    }
+
+    /**
+     * 将单个对象或数组统一转为数组
+     * XMLParser 对单个子节点返回对象，多个返回数组
+     * @private
+     */
+    private static function normalizeToArray(val):Array {
+        if (!val) return [];
+        if (val instanceof Array) return val;
+        return [val];
+    }
+
+    /**
+     * 按点路径从对象中取值
+     * 例如 resolvePathValue(itemData, "data.magicdefence.电")
+     * @param obj 目标对象
+     * @param path 点分隔路径字符串
+     * @return 路径指向的值，不存在返回 undefined
+     */
+    public static function resolvePathValue(obj:Object, path:String) {
+        if (!obj || !path) return undefined;
+
+        var parts:Array = path.split(".");
+        var current = obj;
+
+        for (var i:Number = 0; i < parts.length; i++) {
+            if (current == undefined || current == null) return undefined;
+            current = current[parts[i]];
+        }
+
+        return current;
+    }
+
+    /**
+     * 求值单个条件
+     * @param cond 条件对象 {op, path, value, valueDict?, min?, max?}
+     * @param itemData 装备数据
+     * @return 条件是否满足
+     */
+    public static function evaluateCondition(cond:Object, itemData:Object):Boolean {
+        if (!cond || !cond.op) return false;
+
+        var op:String = cond.op;
+
+        // exists/missing 不需要取值
+        if (op == "exists") {
+            return resolvePathValue(itemData, cond.path) != undefined;
+        }
+        if (op == "missing") {
+            return resolvePathValue(itemData, cond.path) == undefined;
+        }
+
+        var actual = resolvePathValue(itemData, cond.path);
+
+        // 字段不存在：除 exists/missing 外一律判定为不满足
+        if (actual == undefined) return false;
+
+        switch (op) {
+            case "is":
+                // 统一转字符串比较，兼容数字和字符串
+                return String(actual) == String(cond.value);
+
+            case "isNot":
+                return String(actual) != String(cond.value);
+
+            case "above":
+                return Number(actual) > Number(cond.value);
+
+            case "atLeast":
+                return Number(actual) >= Number(cond.value);
+
+            case "below":
+                return Number(actual) < Number(cond.value);
+
+            case "atMost":
+                return Number(actual) <= Number(cond.value);
+
+            case "oneOf":
+                return cond.valueDict[String(actual)] == true;
+
+            case "noneOf":
+                return cond.valueDict[String(actual)] != true;
+
+            case "contains":
+                return String(actual).indexOf(String(cond.value)) >= 0;
+
+            case "range":
+                var numActual:Number = Number(actual);
+                return numActual >= cond.min && numActual <= cond.max;
+
+            default:
+                if (_debugMode) {
+                    trace("[ModRegistry] 未知的 installCondition 运算符: " + op);
+                }
+                return false;
+        }
+    }
+
+    /**
+     * 求值条件组（支持嵌套 group）
+     * @param condGroup 条件组对象 {mode, conditions:[...]}
+     * @param itemData 装备数据
+     * @return 条件组是否满足
+     */
+    public static function evaluateConditionGroup(condGroup:Object, itemData:Object):Boolean {
+        if (!condGroup || !condGroup.conditions) return true;
+
+        var conditions:Array = condGroup.conditions;
+        var isAll:Boolean = (condGroup.mode != "any"); // 默认 "all"
+
+        for (var i:Number = 0; i < conditions.length; i++) {
+            var item:Object = conditions[i];
+            var result:Boolean;
+
+            if (item.type == "group") {
+                // 递归求值子 group
+                result = evaluateConditionGroup(item, itemData);
+            } else {
+                result = evaluateCondition(item, itemData);
+            }
+
+            if (isAll && !result) return false;   // AND: 遇到 false 立即返回
+            if (!isAll && result) return true;     // OR: 遇到 true 立即返回
+        }
+
+        // AND: 全部通过返回 true；OR: 全部未通过返回 false
+        return isAll;
     }
 
 }

@@ -642,6 +642,50 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
                 name: "被禁止tag插件",
                 use: "头部装备",
                 tag: "被禁止的挂点"
+            },
+            // installCondition 安装条件测试用
+            {
+                name: "条件插件_魔法高间隔",
+                use: "头部装备,长枪",
+                installCondition: {
+                    cond: [
+                        {op: "is", path: "data.damagetype", value: "魔法"},
+                        {op: "above", path: "data.interval", value: 200}
+                    ]
+                }
+            },
+            {
+                name: "条件插件_轻武器",
+                use: "头部装备,长枪",
+                installCondition: {
+                    cond: {op: "atMost", path: "data.weight", value: 3}
+                }
+            },
+            {
+                name: "条件插件_OR模式",
+                use: "头部装备,长枪",
+                installCondition: {
+                    mode: "any",
+                    cond: [
+                        {op: "is", path: "data.damagetype", value: "魔法"},
+                        {op: "above", path: "data.interval", value: 500}
+                    ]
+                }
+            },
+            {
+                name: "条件插件_嵌套路径",
+                use: "头部装备,长枪",
+                installCondition: {
+                    cond: {op: "atLeast", path: "data.magicdefence.电", value: 10}
+                }
+            },
+            {
+                name: "条件插件_current作用域",
+                use: "头部装备,长枪",
+                installCondition: {
+                    scope: "current",
+                    cond: {op: "is", path: "data.damagetype", value: "破击"}
+                }
             }
         ]);
 
@@ -660,6 +704,12 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         result += testTagManager_StatusCode_MissingTag();     // -16
         result += testTagManager_StatusCode_DependentMods();  // -32
         result += testTagManager_StatusCode_BlockedTag();     // -64
+        result += testTagManager_StatusCode_InstallCondition(); // -256
+
+        // installCondition 详细测试
+        result += testInstallCondition_Operators();
+        result += testInstallCondition_DotPath();
+        result += testInstallCondition_ModeAny();
 
         return result;
     }
@@ -872,6 +922,253 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         var passed:Boolean = (code == -64);
 
         return passed ? "✓ 状态码-64(被禁止)测试通过\n" : "✗ 状态码-64测试失败（返回" + code + "）\n";
+    }
+
+    /**
+     * 状态码 -256: 装备属性不满足安装条件
+     */
+    private static function testTagManager_StatusCode_InstallCondition():String {
+        // 不满足条件的装备：damagetype="普通", interval=120
+        var testItem1 = {
+            name: "测试装备_条件不满足",
+            value: { mods: [] }
+        };
+        var testItemData1 = {
+            data: { modslot: 3, damagetype: "普通", interval: 120 }
+        };
+
+        var code1:Number = TagManager.checkModAvailability(testItem1, testItemData1, "条件插件_魔法高间隔");
+        var fail1:Boolean = (code1 == -256);
+
+        // 满足条件的装备：damagetype="魔法", interval=250
+        var testItem2 = {
+            name: "测试装备_条件满足",
+            value: { mods: [] }
+        };
+        var testItemData2 = {
+            data: { modslot: 3, damagetype: "魔法", interval: 250 }
+        };
+
+        var code2:Number = TagManager.checkModAvailability(testItem2, testItemData2, "条件插件_魔法高间隔");
+        var pass2:Boolean = (code2 == 1);
+
+        // 只满足一个条件：damagetype="魔法" 但 interval=100（不满足 above 200）
+        var testItem3 = {
+            name: "测试装备_部分满足",
+            value: { mods: [] }
+        };
+        var testItemData3 = {
+            data: { modslot: 3, damagetype: "魔法", interval: 100 }
+        };
+
+        var code3:Number = TagManager.checkModAvailability(testItem3, testItemData3, "条件插件_魔法高间隔");
+        var fail3:Boolean = (code3 == -256);
+
+        var passed:Boolean = fail1 && pass2 && fail3;
+
+        if (!passed) {
+            return "✗ 状态码-256(安装条件)测试失败（不满足=" + code1
+                   + "，满足=" + code2 + "，部分满足=" + code3 + "）\n";
+        }
+        return "✓ 状态码-256(安装条件)测试通过\n";
+    }
+
+    /**
+     * installCondition 运算符详细测试
+     * 覆盖所有12种运算符
+     */
+    private static function testInstallCondition_Operators():String {
+        var testData:Object = {
+            data: {
+                damagetype: "魔法",
+                interval: 250,
+                power: 150,
+                weight: 2.5,
+                bullet: "横向联弹-穿刺子弹",
+                magictype: "电"
+            }
+        };
+
+        var results:Array = [];
+        var allPassed:Boolean = true;
+
+        // is: 魔法 == 魔法 → true
+        var r1:Boolean = ModRegistry.evaluateCondition({op: "is", path: "data.damagetype", value: "魔法"}, testData);
+        if (!r1) { results.push("is应为true"); allPassed = false; }
+
+        // is: 魔法 == 普通 → false
+        var r2:Boolean = ModRegistry.evaluateCondition({op: "is", path: "data.damagetype", value: "普通"}, testData);
+        if (r2) { results.push("is应为false"); allPassed = false; }
+
+        // isNot: 魔法 != 普通 → true
+        var r3:Boolean = ModRegistry.evaluateCondition({op: "isNot", path: "data.damagetype", value: "普通"}, testData);
+        if (!r3) { results.push("isNot应为true"); allPassed = false; }
+
+        // above: 250 > 200 → true
+        var r4:Boolean = ModRegistry.evaluateCondition({op: "above", path: "data.interval", value: 200}, testData);
+        if (!r4) { results.push("above应为true"); allPassed = false; }
+
+        // above: 250 > 250 → false（严格大于）
+        var r5:Boolean = ModRegistry.evaluateCondition({op: "above", path: "data.interval", value: 250}, testData);
+        if (r5) { results.push("above边界应为false"); allPassed = false; }
+
+        // atLeast: 250 >= 250 → true
+        var r6:Boolean = ModRegistry.evaluateCondition({op: "atLeast", path: "data.interval", value: 250}, testData);
+        if (!r6) { results.push("atLeast应为true"); allPassed = false; }
+
+        // below: 2.5 < 3 → true
+        var r7:Boolean = ModRegistry.evaluateCondition({op: "below", path: "data.weight", value: 3}, testData);
+        if (!r7) { results.push("below应为true"); allPassed = false; }
+
+        // atMost: 2.5 <= 3 → true
+        var r8:Boolean = ModRegistry.evaluateCondition({op: "atMost", path: "data.weight", value: 3}, testData);
+        if (!r8) { results.push("atMost应为true"); allPassed = false; }
+
+        // atMost: 2.5 <= 2 → false
+        var r9:Boolean = ModRegistry.evaluateCondition({op: "atMost", path: "data.weight", value: 2}, testData);
+        if (r9) { results.push("atMost应为false"); allPassed = false; }
+
+        // oneOf: 魔法 in {魔法,破击} → true
+        var r10:Boolean = ModRegistry.evaluateCondition(
+            {op: "oneOf", path: "data.damagetype", value: "魔法,破击", valueDict: {魔法: true, 破击: true}},
+            testData
+        );
+        if (!r10) { results.push("oneOf应为true"); allPassed = false; }
+
+        // noneOf: 魔法 not in {普通,破击} → true
+        var r11:Boolean = ModRegistry.evaluateCondition(
+            {op: "noneOf", path: "data.damagetype", value: "普通,破击", valueDict: {普通: true, 破击: true}},
+            testData
+        );
+        if (!r11) { results.push("noneOf应为true"); allPassed = false; }
+
+        // contains: "横向联弹-穿刺子弹" contains "穿刺" → true
+        var r12:Boolean = ModRegistry.evaluateCondition({op: "contains", path: "data.bullet", value: "穿刺"}, testData);
+        if (!r12) { results.push("contains应为true"); allPassed = false; }
+
+        // range: 150 in [100, 300] → true
+        var r13:Boolean = ModRegistry.evaluateCondition({op: "range", path: "data.power", min: 100, max: 300}, testData);
+        if (!r13) { results.push("range应为true"); allPassed = false; }
+
+        // range: 150 in [200, 300] → false
+        var r14:Boolean = ModRegistry.evaluateCondition({op: "range", path: "data.power", min: 200, max: 300}, testData);
+        if (r14) { results.push("range应为false"); allPassed = false; }
+
+        // exists: data.magictype 存在 → true
+        var r15:Boolean = ModRegistry.evaluateCondition({op: "exists", path: "data.magictype"}, testData);
+        if (!r15) { results.push("exists应为true"); allPassed = false; }
+
+        // missing: data.skill 不存在 → true
+        var r16:Boolean = ModRegistry.evaluateCondition({op: "missing", path: "data.skill"}, testData);
+        if (!r16) { results.push("missing应为true"); allPassed = false; }
+
+        // 缺失字段: data.notexist is "X" → false
+        var r17:Boolean = ModRegistry.evaluateCondition({op: "is", path: "data.notexist", value: "X"}, testData);
+        if (r17) { results.push("缺失字段应为false"); allPassed = false; }
+
+        if (!allPassed) {
+            return "✗ installCondition运算符测试失败（" + results.join(", ") + "）\n";
+        }
+        return "✓ installCondition运算符测试通过（17项全通过）\n";
+    }
+
+    /**
+     * installCondition 点路径嵌套访问测试
+     */
+    private static function testInstallCondition_DotPath():String {
+        var testItem = {
+            name: "测试装备_嵌套",
+            value: { mods: [] }
+        };
+        var testItemData = {
+            data: {
+                modslot: 3,
+                magicdefence: {
+                    电: 15,
+                    冷: 5,
+                    热: 0
+                }
+            }
+        };
+
+        // resolvePathValue 直接测试
+        var val1 = ModRegistry.resolvePathValue(testItemData, "data.magicdefence.电");
+        var val2 = ModRegistry.resolvePathValue(testItemData, "data.magicdefence.冷");
+        var val3 = ModRegistry.resolvePathValue(testItemData, "data.magicdefence.不存在");
+
+        var pathOk:Boolean = (val1 == 15 && val2 == 5 && val3 == undefined);
+
+        // 通过 checkModAvailability 测试嵌套路径（条件插件_嵌套路径 要求 data.magicdefence.电 >= 10）
+        var code1:Number = TagManager.checkModAvailability(testItem, testItemData, "条件插件_嵌套路径");
+        var condOk:Boolean = (code1 == 1); // 电=15 >= 10，应通过
+
+        // 不满足时
+        var testItemData2 = {
+            data: {
+                modslot: 3,
+                magicdefence: {
+                    电: 5
+                }
+            }
+        };
+        var code2:Number = TagManager.checkModAvailability(testItem, testItemData2, "条件插件_嵌套路径");
+        var condFail:Boolean = (code2 == -256); // 电=5 < 10，应拒绝
+
+        var passed:Boolean = pathOk && condOk && condFail;
+
+        if (!passed) {
+            return "✗ installCondition点路径测试失败（pathOk=" + pathOk
+                   + "，condOk=" + code1 + "，condFail=" + code2 + "）\n";
+        }
+        return "✓ installCondition点路径测试通过\n";
+    }
+
+    /**
+     * installCondition mode="any" (OR逻辑) 测试
+     */
+    private static function testInstallCondition_ModeAny():String {
+        // 条件插件_OR模式: mode="any", damagetype is 魔法 OR interval above 500
+
+        // 只满足第一个条件（魔法但间隔不够）→ 通过
+        var testItem = {
+            name: "测试装备_OR",
+            value: { mods: [] }
+        };
+        var testItemData1 = {
+            data: { modslot: 3, damagetype: "魔法", interval: 100 }
+        };
+        var code1:Number = TagManager.checkModAvailability(testItem, testItemData1, "条件插件_OR模式");
+        var pass1:Boolean = (code1 == 1); // 魔法满足 → OR通过
+
+        // 只满足第二个条件（不是魔法但间隔超高）→ 通过
+        var testItemData2 = {
+            data: { modslot: 3, damagetype: "普通", interval: 600 }
+        };
+        var code2:Number = TagManager.checkModAvailability(testItem, testItemData2, "条件插件_OR模式");
+        var pass2:Boolean = (code2 == 1); // interval>500 满足 → OR通过
+
+        // 两个都不满足 → 拒绝
+        var testItemData3 = {
+            data: { modslot: 3, damagetype: "普通", interval: 100 }
+        };
+        var code3:Number = TagManager.checkModAvailability(testItem, testItemData3, "条件插件_OR模式");
+        var fail3:Boolean = (code3 == -256); // 都不满足 → 拒绝
+
+        // 两个都满足 → 通过
+        var testItemData4 = {
+            data: { modslot: 3, damagetype: "魔法", interval: 600 }
+        };
+        var code4:Number = TagManager.checkModAvailability(testItem, testItemData4, "条件插件_OR模式");
+        var pass4:Boolean = (code4 == 1); // 都满足 → 当然通过
+
+        var passed:Boolean = pass1 && pass2 && fail3 && pass4;
+
+        if (!passed) {
+            return "✗ installCondition OR模式测试失败（满足一=" + code1
+                   + "，满足二=" + code2 + "，都不满足=" + code3
+                   + "，都满足=" + code4 + "）\n";
+        }
+        return "✓ installCondition OR模式测试通过\n";
     }
 
     // ==================== TierSystem 测试 ====================

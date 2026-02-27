@@ -28,6 +28,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var COL_USE_SWITCH:String = "#FFCC66";   // useSwitch条件效果（淡金）
   public static var COL_TAG_SWITCH:String = "#88CCFF";   // tagSwitch结构加成（淡蓝）
   public static var COL_COND_PROVIDE:String = "#99FF99"; // 条件性provideTags（淡绿）
+  public static var COL_INSTALL_COND:String = "#FFAA44"; // 安装条件（橙黄色）
 
   // ══════════════════════════════════════════════════════════════
   // 获取方式相关颜色 (Obtain Methods Colors)
@@ -129,6 +130,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_MOD_EXCLUDE_WEAPON_TYPE:String = "排除武器子类";
   public static var LBL_PROVIDE_TAGS:String = "提供结构";
   public static var LBL_REQUIRE_TAGS:String = "前置需求";
+  public static var LBL_INSTALL_CONDITION:String = "安装条件";
   public static var LBL_INHERENT_TAGS:String = "固有结构";
   public static var LBL_BLOCKED_TAGS:String = "禁止挂点";
 

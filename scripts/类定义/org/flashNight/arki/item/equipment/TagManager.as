@@ -2,6 +2,8 @@
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.equipment.ModRegistry;
+import org.flashNight.arki.item.equipment.EquipmentCalculator;
+import org.flashNight.arki.item.equipment.EquipmentConfigManager;
 import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 
 /**
@@ -218,6 +220,17 @@ class org.flashNight.arki.item.equipment.TagManager {
             }
         }
 
+        // 检查安装条件（installCondition）
+        if (modData.installCondList) {
+            var condCheckData:Object = getConditionCheckData(modData.installCondList, item, itemData);
+            if (!ModRegistry.evaluateConditionGroup(modData.installCondList, condCheckData)) {
+                if (_debugMode) {
+                    trace("[TagManager] 插件 '" + modName + "' 的安装条件不满足");
+                }
+                return -256; // 装备属性不满足安装条件
+            }
+        }
+
         return 1; // 允许装备
     }
 
@@ -382,6 +395,17 @@ class org.flashNight.arki.item.equipment.TagManager {
                 }
             }
 
+            // 检查安装条件（installCondition）
+            if (canUse && modData.installCondList) {
+                var condCheckData:Object = getConditionCheckData(modData.installCondList, item, itemData);
+                if (!ModRegistry.evaluateConditionGroup(modData.installCondList, condCheckData)) {
+                    canUse = false;
+                    if (_debugMode) {
+                        trace("[TagManager] 过滤掉 '" + modName + "': 安装条件不满足");
+                    }
+                }
+            }
+
             if (canUse) {
                 filtered.push(modName);
             }
@@ -461,6 +485,41 @@ class org.flashNight.arki.item.equipment.TagManager {
         }
 
         return false;
+    }
+
+    /**
+     * 获取 installCondition 检查所需的装备数据
+     * scope="base" 时：获取不含任何配件的基础数据（含 tier/强化）
+     * scope="current" 时：使用传入的已计算数据
+     * @param condList 条件组对象（包含 scope 属性）
+     * @param item 装备物品对象
+     * @param itemData 当前装备数据（可能是计算后的）
+     * @return 用于条件检查的装备数据
+     * @private
+     */
+    private static function getConditionCheckData(condList:Object, item:BaseItem, itemData:Object):Object {
+        if (condList.scope == "current") {
+            return itemData;
+        }
+
+        // scope="base"（默认）：获取不含配件的基础数据
+        var rawData:Object = ItemUtil.getItemData(item.name);
+        if (!rawData) return itemData; // 回退到传入数据
+
+        // 应用 tier 和强化等级（但不含任何配件）
+        var value:Object = item.value || {};
+        if (value.level > 1 || value.tier) {
+            var config:Object = EquipmentConfigManager.getFullConfig();
+            var modRegistry:Object = ModRegistry.getModDict();
+            EquipmentCalculator.calculateInPlace(
+                rawData,
+                {level: value.level || 1, tier: value.tier, mods: []},
+                config,
+                modRegistry
+            );
+        }
+
+        return rawData;
     }
 
     /**

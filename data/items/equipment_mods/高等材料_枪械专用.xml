@@ -290,6 +290,10 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.damagetype" value="魔法"/>
+            <cond op="above" path="data.interval" value="200"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>磁暴射线</bullet>
@@ -338,6 +342,10 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.damagetype" value="魔法"/>
+            <cond op="above" path="data.interval" value="200"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>光棱射线</bullet>
@@ -386,6 +394,10 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.damagetype" value="魔法"/>
+            <cond op="above" path="data.interval" value="200"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>辉光射线</bullet>
@@ -434,6 +446,10 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.damagetype" value="魔法"/>
+            <cond op="above" path="data.interval" value="200"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>光谱射线</bullet>
@@ -484,6 +500,10 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.damagetype" value="魔法"/>
+            <cond op="above" path="data.interval" value="200"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>谐振波射线</bullet>
@@ -532,6 +552,10 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.damagetype" value="魔法"/>
+            <cond op="above" path="data.interval" value="200"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>热能射线</bullet>
@@ -580,6 +604,10 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.damagetype" value="魔法"/>
+            <cond op="above" path="data.interval" value="200"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>涡旋射线</bullet>
@@ -628,6 +656,10 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.damagetype" value="魔法"/>
+            <cond op="above" path="data.interval" value="200"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>波能射线</bullet>
@@ -674,6 +706,10 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.damagetype" value="魔法"/>
+            <cond op="above" path="data.interval" value="200"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>等离子射线</bullet>

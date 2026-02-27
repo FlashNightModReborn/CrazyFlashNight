@@ -634,6 +634,17 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       }
     }
 
+    // 显示安装条件（installCondition）
+    if(modData.installCondList){
+      var condLines:Array = buildInstallConditionText(modData.installCondList);
+      if(condLines.length > 0){
+        result.push("<font color='" + TooltipConstants.COL_INSTALL_COND + "'>" + TooltipConstants.LBL_INSTALL_CONDITION + "：</font><BR>");
+        for(var ci:Number = 0; ci < condLines.length; ci++){
+          result.push("  " + condLines[ci] + "<BR>");
+        }
+      }
+    }
+
     var stats = modData.stats;
 
     // 使用 UseSwitchStatsBuilder.buildStatBlock 统一处理顶层 stats 的所有属性
@@ -654,6 +665,109 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       result.push(modData.description.split("\r\n").join(TooltipFormatter.br()), TooltipFormatter.br());
     }
     return result;
+  }
+
+  // ==================== installCondition 展示 ====================
+
+  /**
+   * 属性路径到可读名称的映射
+   */
+  private static var _pathNameMap:Object = null;
+  private static function getPathNameMap():Object {
+    if (_pathNameMap) return _pathNameMap;
+    _pathNameMap = {actiontype: "动作类型"};
+    _pathNameMap["data.damagetype"] = "伤害类型";
+    _pathNameMap["data.interval"] = "攻击间隔";
+    _pathNameMap["data.power"] = "威力";
+    _pathNameMap["data.defence"] = "防御";
+    _pathNameMap["data.weight"] = "重量";
+    _pathNameMap["data.hp"] = "生命值";
+    _pathNameMap["data.mp"] = "魔法值";
+    _pathNameMap["data.accuracy"] = "精准";
+    _pathNameMap["data.diffusion"] = "散布";
+    _pathNameMap["data.velocity"] = "弹速";
+    _pathNameMap["data.capacity"] = "弹匣容量";
+    _pathNameMap["data.damage"] = "伤害";
+    _pathNameMap["data.force"] = "力度";
+    _pathNameMap["data.punch"] = "冲击";
+    _pathNameMap["data.bullet"] = "子弹类型";
+    _pathNameMap["data.magictype"] = "魔法属性";
+    _pathNameMap["data.criticalhit"] = "暴击";
+    _pathNameMap["data.bulletsize"] = "纵向范围";
+    _pathNameMap["data.modslot"] = "插件槽";
+    return _pathNameMap;
+  }
+
+  /**
+   * 运算符到可读符号的映射
+   */
+  private static var _opSymbolMap:Object = null;
+  private static function getOpSymbolMap():Object {
+    if (_opSymbolMap) return _opSymbolMap;
+    _opSymbolMap = {
+      isNot: " ≠ ",
+      above: " > ",
+      atLeast: " ≥ ",
+      below: " < ",
+      atMost: " ≤ ",
+      oneOf: " ∈ ",
+      noneOf: " ∉ ",
+      contains: " 包含 ",
+      range: "",
+      exists: " 存在",
+      missing: " 不存在"
+    };
+    _opSymbolMap["is"] = " = ";
+    return _opSymbolMap;
+  }
+
+  /**
+   * 将 installCondition 条件组转为可读文本行数组
+   * @param condList 条件组对象
+   * @return 文本行数组，每行如 "伤害类型 = 魔法"
+   */
+  private static function buildInstallConditionText(condList:Object):Array {
+    var lines:Array = [];
+    if (!condList || !condList.conditions) return lines;
+
+    var pathNames:Object = getPathNameMap();
+    var opSymbols:Object = getOpSymbolMap();
+    var conditions:Array = condList.conditions;
+
+    for (var i:Number = 0; i < conditions.length; i++) {
+      var cond:Object = conditions[i];
+      if (!cond) continue;
+
+      if (cond.type == "group") {
+        // 递归处理嵌套 group
+        var subLines:Array = buildInstallConditionText(cond);
+        var modeLabel:String = (cond.mode == "any") ? "任一满足" : "全部满足";
+        lines.push("<font color='" + TooltipConstants.COL_INSTALL_COND + "'>[" + modeLabel + "]</font>");
+        for (var s:Number = 0; s < subLines.length; s++) {
+          lines.push("  " + subLines[s]);
+        }
+        continue;
+      }
+
+      // 普通条件
+      var pathLabel:String = pathNames[cond.path] || cond.path;
+      var opSymbol:String = opSymbols[cond.op] || " " + cond.op + " ";
+      var line:String;
+
+      if (cond.op == "exists" || cond.op == "missing") {
+        line = pathLabel + opSymbol;
+      } else if (cond.op == "range") {
+        line = pathLabel + " ∈ [" + cond.min + ", " + cond.max + "]";
+      } else if (cond.op == "oneOf" || cond.op == "noneOf") {
+        line = pathLabel + opSymbol + "{" + cond.value + "}";
+      } else {
+        line = pathLabel + opSymbol + cond.value;
+      }
+
+      lines.push(line);
+    }
+
+    return lines;
   }
 
   /**

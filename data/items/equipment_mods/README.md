@@ -408,6 +408,114 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 - 实现子弹类型的互斥机制
 - 平衡配件与武器的组合效果
 
+#### installCondition - 安装条件（数值层校验）
+
+**作用：** 基于装备的数值属性精准控制配件的安装资格
+
+**错误码：** -256（装备属性不满足安装条件）
+
+**基本结构：**
+```xml
+<installCondition>
+    <cond op="运算符" path="属性路径" value="期望值"/>
+    <cond op="运算符" path="属性路径" value="期望值"/>
+</installCondition>
+```
+
+**默认行为：**
+- `scope="base"`（默认）：基于装备**基础值**（含进阶/强化，不含配件效果）判定，无安装顺序依赖
+- `scope="current"`：基于装备**当前计算值**（含已安装配件效果）判定
+- `mode="all"`（默认）：所有条件都满足才通过（AND 逻辑）
+- `mode="any"`：任一条件满足即通过（OR 逻辑）
+
+**支持的运算符：**
+
+| 运算符 | 含义 | 示例 | 说明 |
+|--------|------|------|------|
+| `is` | 等于 | `<cond op="is" path="data.damagetype" value="魔法"/>` | 字符串/数值相等比较 |
+| `isNot` | 不等于 | `<cond op="isNot" path="data.damagetype" value="普通"/>` | 字符串/数值不等比较 |
+| `above` | 大于 (>) | `<cond op="above" path="data.interval" value="200"/>` | 严格大于 |
+| `atLeast` | 大于等于 (>=) | `<cond op="atLeast" path="data.interval" value="200"/>` | |
+| `below` | 小于 (<) | `<cond op="below" path="data.weight" value="3"/>` | 严格小于 |
+| `atMost` | 小于等于 (<=) | `<cond op="atMost" path="data.weight" value="3"/>` | |
+| `oneOf` | 在列表中 | `<cond op="oneOf" path="data.damagetype" value="魔法,破击"/>` | 逗号分隔列表 |
+| `noneOf` | 不在列表中 | `<cond op="noneOf" path="data.damagetype" value="普通"/>` | 逗号分隔列表 |
+| `contains` | 包含子串 | `<cond op="contains" path="data.bullet" value="穿刺"/>` | 字符串包含检查 |
+| `range` | 区间 | `<cond op="range" path="data.power" min="100" max="300"/>` | 闭区间 [min, max] |
+| `exists` | 字段存在 | `<cond op="exists" path="data.magictype"/>` | 不需要 value |
+| `missing` | 字段不存在 | `<cond op="missing" path="data.skill"/>` | 不需要 value |
+
+> **注意：** 运算符名称刻意避开 AS2 保留关键字（eq/ne/gt/lt/ge/le/not），防止解析冲突。
+
+**属性路径（path）：** 使用点号分隔的路径访问嵌套属性
+- `data.damagetype` → 伤害类型
+- `data.interval` → 攻击间隔
+- `data.power` → 威力
+- `data.weight` → 重量
+- `data.magicdefence.电` → 电属性魔法防御（支持任意深度嵌套）
+
+**缺失字段处理：**
+- `exists` → 返回 false
+- `missing` → 返回 true
+- 其他运算符 → 一律返回 false（条件不满足）
+
+**group 嵌套语法（高级）：**
+```xml
+<installCondition>
+    <cond op="is" path="data.damagetype" value="魔法"/>
+    <group mode="any">
+        <cond op="above" path="data.interval" value="200"/>
+        <cond op="atLeast" path="data.power" value="300"/>
+    </group>
+</installCondition>
+```
+语义：damagetype 是魔法 **AND** （interval > 200 **OR** power >= 300）
+
+**实际应用示例：**
+```xml
+<!-- 非强化射线弹：仅限魔法属性武器且攻击间隔 > 200 -->
+<mod>
+    <name>磁暴射线弹</name>
+    <use>长枪</use>
+    <installCondition>
+        <cond op="is" path="data.damagetype" value="魔法"/>
+        <cond op="above" path="data.interval" value="200"/>
+    </installCondition>
+    <stats>...</stats>
+</mod>
+
+<!-- 轻武器专用：重量不超过3 -->
+<mod>
+    <name>轻量化套件</name>
+    <use>手枪,长枪</use>
+    <installCondition>
+        <cond op="atMost" path="data.weight" value="3"/>
+    </installCondition>
+    <stats>...</stats>
+</mod>
+
+<!-- 使用当前计算值（含已装配件效果）判定 -->
+<mod>
+    <name>进阶模组</name>
+    <use>长枪</use>
+    <installCondition scope="current">
+        <cond op="atLeast" path="data.power" value="500"/>
+    </installCondition>
+    <stats>...</stats>
+</mod>
+```
+
+**与其他安装条件的层级关系：**
+```
+1. use / weapontype        ← 类型层（装备大类/子类）
+2. requireTags / provideTags ← 结构层（插件依赖链）
+3. excludeBulletTypes       ← 子弹层（弹药互斥）
+4. installCondition         ← 数值层（属性精准控制）  ← 新增
+```
+检查顺序：类型 → 结构 → 子弹 → 数值，前面不通过则不会执行后面的检查。
+
+---
+
 #### grantsWeapontype - 授予武器类型
 **作用：** 让装备可以安装其他子类的配件
 **示例：** 突击步枪
