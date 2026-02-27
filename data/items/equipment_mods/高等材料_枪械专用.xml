@@ -699,7 +699,6 @@
         <name>涡旋射线弹</name>
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
-        <requireTags>电力</requireTags>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法"/>
             <cond op="above" path="data.interval" value="200"/>
@@ -720,8 +719,7 @@
                 <power>4</power>
             </multiplier>
             <flat>
-                <bulletsize>7</bulletsize>
-                <weight>1</weight>
+                <weight>1</weight>  <!-- 无电力需求, 无命中/判定加成 -->
             </flat>
         </stats>
         <description>便携式涡旋发生器,化学能驱动的磁约束螺旋模块。单级超导线圈磁约束场强度不足,仅输出淡蓝色单目标螺旋。</description>
@@ -731,7 +729,6 @@
         <name>涡旋射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
-        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>涡旋射线-强化</bullet>
@@ -748,9 +745,7 @@
                 <power>7</power>
             </multiplier>
             <flat>
-                <bulletsize>8</bulletsize>
-                <accuracy>10</accuracy>  <!-- 命中期望伤害: +2.29% -->
-                <weight>2.5</weight>
+                <weight>2.5</weight>  <!-- 无电力需求, 无命中/判定加成 -->
             </flat>
         </stats>
         <description>多级涡旋撕裂炮,高强度磁约束场产生稳定螺旋。光束贯穿目标后沿路径逐节点触发分裂扩散。</description>
