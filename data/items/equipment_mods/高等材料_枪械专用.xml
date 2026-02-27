@@ -303,38 +303,38 @@
                  破击定位, 对单56%(vs发射器裸伤), 6目标追至83%
                  子弹层: pierceLimit=6, falloff=0.90 (高穿透低衰减)
                  弹容+35%补偿(3发→4发), 每弹仓3目标可超越发射器(117%)
-                 破击×1.15 vs 魔法×2.0 差距由穿透深度+弹容补回
+                 破击 vs 魔法差距取决于目标防御/抗性, 由穿透深度+弹容补回
                  恒定×1.45不随强化稀释, 零强化门槛, 匹配前期暴力定位
 
-         回本节点设计 (强化版 vs 旧统一pct=20%基线):
+         回本节点设计 (强化版 vs 旧统一pct=20%基线, 按 +5/+7/+9 三档):
            回本早 → 上限低;  回本晚 → 上限高
 
            射线       pct  mult  回本点   Lv1增益   Lv13增益  定位
            ─────────────────────────────────────────────────────────
            热能         0   45   全等级恒定×1.45    破击前期暴力+35%弹容
-           磁暴        16    3   ~Lv4     -0.43%    +1.73%   泛用连锁
+           磁暴        17    2   ~Lv5     -0.55%    +1.06%   泛用连锁
            光棱/光谱   14    4   Lv5      -1.20%    +2.07%   精准分裂 (RA2光棱=RA3光谱,同数值致敬)
-           辉光        12    5   ~Lv6     -2.00%    +2.41%   超远覆盖
-           涡旋        13    4   ~Lv7     -2.07%    +1.75%   大面积撕裂
-           谐振波      10    6   ~Lv7     -2.83%    +2.73%   高精穿透连锁,回本晚但上限高
-           等离子       9    6   ~Lv8     -3.72%    +2.40%   全能全模式
-           波能         8    8   ~Lv6     -2.80%    +4.00%   极致后期,Lv9反超热能成为第一
+           辉光        13    4   ~Lv7     -2.07%    +1.75%   超远覆盖
+           涡旋         8    7   ~Lv7     -3.70%    +3.04%   大面积撕裂
+           谐振波       8    7   ~Lv7     -3.70%    +3.04%   高精穿透连锁
+           等离子       2    9   ~Lv9     -7.35%    +2.94%   全能全模式
+           波能         0   10   ~Lv9     -8.33%    +3.21%   极致后期
     -->
     <!--
-         基础版回本节点 (vs 旧统一pct=12%基线):
+         基础版回本节点 (vs 旧统一pct=12%基线, 按 +5/+7/+9 三档):
            与强化版回本节点对齐,降低玩家心智负担
 
            射线       pct  mult  回本点   定位
            ─────────────────────────────────────
-           热能        14    0   Lv1始终  纯pct,破击定位 (同强化版回本点)
-           磁暴         7    4   ~Lv4     稳定电弧         (同强化版)
-           光棱         8    3   Lv5      高精准           (同强化版)
-           光谱         8    3   Lv5      均衡多维         (同光棱致敬,同强化版)
-           辉光         6    4   ~Lv6     大判定           (同强化版)
-           波能         3    6   ~Lv6     零副属性高潜力   (同强化版)
-           涡旋         4    5   ~Lv7     超大判定         (同强化版)
-           谐振波       4    5   ~Lv7     高潜力精准       (同强化版)
-           等离子       5    4   ~Lv8     三维均衡         (同强化版)
+           热能        14    0   Lv1始终  纯pct,破击定位
+           磁暴         9    2   ~Lv5     泛用电弧
+           光棱         9    2   ~Lv5     高精准
+           光谱         9    2   ~Lv5     均衡多维 (同光棱致敬)
+           辉光         5    4   ~Lv7     大判定
+           波能         0    6   ~Lv9     零副属性高潜力
+           涡旋         5    4   ~Lv7     超大判定
+           谐振波       5    4   ~Lv7     高潜力精准
+           等离子       2    5   ~Lv9     三维均衡
     -->
     <mod>
         <name>磁暴射线弹</name>
@@ -356,10 +356,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>7</power>
+                <power>9</power>
             </percentage>
             <multiplier>
-                <power>4</power>
+                <power>2</power>
             </multiplier>
             <flat>
                 <bulletsize>4</bulletsize>
@@ -385,10 +385,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>16</power>
+                <power>17</power>
             </percentage>
             <multiplier>
-                <power>3</power>
+                <power>2</power>
             </multiplier>
             <flat>
                 <bulletsize>6</bulletsize>
@@ -419,10 +419,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>8</power>
+                <power>9</power>
             </percentage>
             <multiplier>
-                <power>3</power>
+                <power>2</power>
             </multiplier>
             <flat>
                 <accuracy>15</accuracy>  <!-- 命中期望伤害(L30): +3.31% -->
@@ -479,7 +479,7 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>6</power>
+                <power>5</power>
             </percentage>
             <multiplier>
                 <power>4</power>
@@ -507,10 +507,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>12</power>
+                <power>13</power>
             </percentage>
             <multiplier>
-                <power>5</power>
+                <power>4</power>
             </multiplier>
             <flat>
                 <bulletsize>8</bulletsize>
@@ -539,10 +539,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>8</power>
+                <power>9</power>
             </percentage>
             <multiplier>
-                <power>3</power>
+                <power>2</power>
             </multiplier>
             <flat>
                 <bulletsize>2</bulletsize>
@@ -601,10 +601,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>4</power>
+                <power>5</power>
             </percentage>
             <multiplier>
-                <power>5</power>
+                <power>4</power>
             </multiplier>
             <flat>
                 <accuracy>12</accuracy>  <!-- 命中期望伤害(L30): +2.71% -->
@@ -629,10 +629,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>10</power>
+                <power>8</power>
             </percentage>
             <multiplier>
-                <power>6</power>
+                <power>7</power>
             </multiplier>
             <flat>
                 <accuracy>20</accuracy>  <!-- 命中期望伤害(L30): +4.24% -->
@@ -715,10 +715,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>4</power>
+                <power>5</power>
             </percentage>
             <multiplier>
-                <power>5</power>
+                <power>4</power>
             </multiplier>
             <flat>
                 <bulletsize>7</bulletsize>
@@ -743,10 +743,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>13</power>
+                <power>8</power>
             </percentage>
             <multiplier>
-                <power>4</power>
+                <power>7</power>
             </multiplier>
             <flat>
                 <bulletsize>8</bulletsize>
@@ -776,7 +776,6 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>3</power>
             </percentage>
             <multiplier>
                 <power>6</power>
@@ -803,10 +802,9 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>8</power>
             </percentage>
             <multiplier>
-                <power>8</power>
+                <power>10</power>
             </multiplier>
             <flat>
                 <weight>2.5</weight>
@@ -834,10 +832,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>5</power>
+                <power>2</power>
             </percentage>
             <multiplier>
-                <power>4</power>
+                <power>5</power>
             </multiplier>
             <flat>
                 <bulletsize>3</bulletsize>
@@ -863,10 +861,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>9</power>
+                <power>2</power>
             </percentage>
             <multiplier>
-                <power>6</power>
+                <power>9</power>
             </multiplier>
             <flat>
                 <bulletsize>3</bulletsize>
