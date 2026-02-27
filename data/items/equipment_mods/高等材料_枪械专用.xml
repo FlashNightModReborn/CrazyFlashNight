@@ -280,11 +280,62 @@
         <description>拥有穿刺能力的弹药，能在未经适配的武器上发射，代价是降低一定射速。</description>
         <tag>弹药</tag>
     </mod>
-    <!-- ========== 射线子弹测试插件 ========== -->
-    <!-- 射线子弹使用 override 而非 merge 替换 bullet：
+    <!-- ========== 射线子弹插件 ========== -->
+    <!-- 技术说明：射线子弹使用 override 而非 merge 替换 bullet：
          merge 的字符串拼接会保留联弹前缀（如 "横向联弹-磁暴射线"），
          而这种组合名在 attributeMap 中不存在，导致射线属性无法加载。
          override 直接覆盖整个 bullet 字段，确保射线名称完整正确。 -->
+
+    <!-- ========== 数值设计框架 ==========
+         公式: 最终威力 = base × (delta + pct/100) × (1 + mult/100)
+               delta = 1 + 0.01 × (强化等级-1) × (强化等级+4)
+               Lv5=1.36  Lv7=1.66  Lv9=2.04  Lv11=2.50  Lv13=3.04
+
+         三轴分化:
+           percentage.power  — 直伤浓度，即时生效，随强化线性稀释
+           multiplier.power  — 独立乘区，强化越高增幅越明显（后期潜力）
+           flat (acc/size)   — 战术辅助，挤占power额度
+
+         额度框架:
+           基础版 ≈ 15% 总预算 (pct + mult + acc换算)
+           强化版 ≈ 25% 总预算
+           特例: 热能强化版 — 纯独立乘区45% + 弹容35%
+                 破击定位, 对单56%(vs发射器裸伤), 6目标追至83%
+                 子弹层: pierceLimit=6, falloff=0.90 (高穿透低衰减)
+                 弹容+35%补偿(3发→4发), 每弹仓3目标可超越发射器(117%)
+                 破击×1.15 vs 魔法×2.0 差距由穿透深度+弹容补回
+                 恒定×1.45不随强化稀释, 零强化门槛, 匹配前期暴力定位
+
+         回本节点设计 (强化版 vs 旧统一pct=20%基线):
+           回本早 → 上限低;  回本晚 → 上限高
+
+           射线       pct  mult  回本点   Lv1增益   Lv13增益  定位
+           ─────────────────────────────────────────────────────────
+           热能         0   45   全等级恒定×1.45    破击前期暴力+35%弹容
+           磁暴        16    3   ~Lv4     -0.43%    +1.73%   泛用连锁
+           光棱/光谱   14    4   Lv5      -1.20%    +2.07%   精准分裂 (RA2光棱=RA3光谱,同数值致敬)
+           辉光        12    5   ~Lv6     -2.00%    +2.41%   超远覆盖
+           涡旋        13    4   ~Lv7     -2.07%    +1.75%   大面积撕裂
+           谐振波      10    6   ~Lv7     -2.83%    +2.73%   高精穿透连锁,回本晚但上限高
+           等离子       9    6   ~Lv8     -3.72%    +2.40%   全能全模式
+           波能         8    8   ~Lv6     -2.80%    +4.00%   极致后期,Lv9反超热能成为第一
+    -->
+    <!--
+         基础版回本节点 (vs 旧统一pct=12%基线):
+           与强化版回本节点对齐,降低玩家心智负担
+
+           射线       pct  mult  回本点   定位
+           ─────────────────────────────────────
+           热能        14    0   Lv1始终  纯pct,破击定位 (同强化版回本点)
+           磁暴         7    4   ~Lv4     稳定电弧         (同强化版)
+           光棱         8    3   Lv5      高精准           (同强化版)
+           光谱         8    3   Lv5      均衡多维         (同光棱致敬,同强化版)
+           辉光         6    4   ~Lv6     大判定           (同强化版)
+           波能         3    6   ~Lv6     零副属性高潜力   (同强化版)
+           涡旋         4    5   ~Lv7     超大判定         (同强化版)
+           谐振波       4    5   ~Lv7     高潜力精准       (同强化版)
+           等离子       5    4   ~Lv8     三维均衡         (同强化版)
+    -->
     <mod>
         <name>磁暴射线弹</name>
         <use>长枪</use>
@@ -305,10 +356,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>11</power>
+                <power>7</power>
             </percentage>
             <multiplier>
-                <power>2</power>
+                <power>4</power>
             </multiplier>
             <flat>
                 <bulletsize>4</bulletsize>
@@ -368,13 +419,13 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>9</power>
+                <power>8</power>
             </percentage>
             <multiplier>
-                <power>2</power>
+                <power>3</power>
             </multiplier>
             <flat>
-                <accuracy>15</accuracy>  <!-- 命中期望伤害: +3.31% -->
+                <accuracy>15</accuracy>  <!-- 命中期望伤害(L30): +3.31% -->
                 <weight>1</weight>
             </flat>
         </stats>
@@ -428,10 +479,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>8</power>
+                <power>6</power>
             </percentage>
             <multiplier>
-                <power>3</power>
+                <power>4</power>
             </multiplier>
             <flat>
                 <bulletsize>6</bulletsize>
@@ -488,14 +539,14 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>5</power>
+                <power>8</power>
             </percentage>
             <multiplier>
-                <power>4</power>
+                <power>3</power>
             </multiplier>
             <flat>
                 <bulletsize>2</bulletsize>
-                <accuracy>10</accuracy>  <!-- 命中期望伤害: +2.29% -->
+                <accuracy>10</accuracy>  <!-- 命中期望伤害(L30): +2.29% -->
                 <weight>1</weight>
             </flat>
         </stats>
@@ -550,13 +601,13 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>2</power>
+                <power>4</power>
             </percentage>
             <multiplier>
                 <power>5</power>
             </multiplier>
             <flat>
-                <accuracy>12</accuracy>  <!-- 命中期望伤害: +2.71% -->
+                <accuracy>12</accuracy>  <!-- 命中期望伤害(L30): +2.71% -->
                 <weight>1</weight>
             </flat>
         </stats>
@@ -581,10 +632,10 @@
                 <power>10</power>
             </percentage>
             <multiplier>
-                <power>5</power>
+                <power>6</power>
             </multiplier>
             <flat>
-                <accuracy>20</accuracy>  <!-- 命中期望伤害: +4.24% -->
+                <accuracy>20</accuracy>  <!-- 命中期望伤害(L30): +4.24% -->
                 <weight>2.5</weight>
             </flat>
         </stats>
@@ -595,16 +646,14 @@
         <name>热能射线弹</name>
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
-        <requireTags>电力</requireTags>
         <installCondition>
-            <cond op="is" path="data.damagetype" value="魔法"/>
             <cond op="above" path="data.interval" value="200"/>
         </installCondition>
         <stats>
             <override>
                 <bullet>热能射线</bullet>
                 <muzzle>null</muzzle>
-                <damagetype>魔法</damagetype>
+                <damagetype>破击</damagetype>
                 <magictype>热</magictype>
                 <impact>100</impact>
             </override>
@@ -624,28 +673,27 @@
         <name>热能射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
-        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>热能射线-强化</bullet>
                 <muzzle>null</muzzle>
-                <damagetype>魔法</damagetype>
+                <damagetype>破击</damagetype>
                 <magictype>热</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>22</power>
+                <clipSize>35</clipSize>
             </percentage>
             <multiplier>
-                <power>1</power>
+                <power>45</power>
             </multiplier>
             <flat>
                 <bulletsize>6</bulletsize>
                 <weight>2.5</weight>
             </flat>
         </stats>
-        <description>发射器专用热辐射主炮,大型热堆反应器提供持续高温输出。超远射程光束贯穿多个目标且衰减极慢。</description>
+        <description>发射器专用热辐射主炮,大型热堆反应器提供持续高温输出。超大弹仓与高功率输出弥补射线单段命中的先天劣势。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -667,10 +715,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>6</power>
+                <power>4</power>
             </percentage>
             <multiplier>
-                <power>4</power>
+                <power>5</power>
             </multiplier>
             <flat>
                 <bulletsize>7</bulletsize>
@@ -728,10 +776,10 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>5</power>
+                <power>3</power>
             </percentage>
             <multiplier>
-                <power>5</power>
+                <power>6</power>
             </multiplier>
             <flat>
                 <weight>1</weight>
@@ -786,14 +834,14 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>8</power>
+                <power>5</power>
             </percentage>
             <multiplier>
-                <power>3</power>
+                <power>4</power>
             </multiplier>
             <flat>
                 <bulletsize>3</bulletsize>
-                <accuracy>5</accuracy>  <!-- 命中期望伤害: +1.19% -->
+                <accuracy>5</accuracy>  <!-- 命中期望伤害(L30): +1.19% -->
                 <weight>1</weight>
             </flat>
         </stats>
