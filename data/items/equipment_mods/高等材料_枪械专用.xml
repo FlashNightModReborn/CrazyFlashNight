@@ -425,7 +425,7 @@
                 <power>2</power>
             </multiplier>
             <flat>
-                <accuracy>15</accuracy>  <!-- 命中期望伤害(L30): +3.31% -->
+                <accuracy>18</accuracy>  <!-- 极致精准路线: +3.93% 命中期望 -->
                 <weight>1</weight>
             </flat>
         </stats>
@@ -453,7 +453,7 @@
                 <power>4</power>
             </multiplier>
             <flat>
-                <accuracy>20</accuracy>  <!-- 命中期望伤害: +4.24% -->
+                <accuracy>25</accuracy>  <!-- 极致精准: +5.24% 命中期望, 零判定补偿 -->
                 <weight>2.5</weight>
             </flat>
         </stats>
@@ -545,8 +545,7 @@
                 <power>2</power>
             </multiplier>
             <flat>
-                <bulletsize>2</bulletsize>
-                <accuracy>10</accuracy>  <!-- 命中期望伤害(L30): +2.29% -->
+                <bulletsize>7</bulletsize>  <!-- 极致判定路线: 大范围覆盖 -->
                 <weight>1</weight>
             </flat>
         </stats>
@@ -574,8 +573,7 @@
                 <power>4</power>
             </multiplier>
             <flat>
-                <bulletsize>3</bulletsize>
-                <accuracy>12</accuracy>  <!-- 命中期望伤害: +2.71% -->
+                <bulletsize>10</bulletsize>  <!-- 极致判定: 大范围泛覆盖, 零命中补偿 -->
                 <weight>2.5</weight>
             </flat>
         </stats>
@@ -635,7 +633,8 @@
                 <power>7</power>
             </multiplier>
             <flat>
-                <accuracy>20</accuracy>  <!-- 命中期望伤害(L30): +4.24% -->
+                <accuracy>15</accuracy>  <!-- 命中期望伤害(L30): +3.31% -->
+                <bulletsize>5</bulletsize>
                 <weight>2.5</weight>
             </flat>
         </stats>
