@@ -298,14 +298,18 @@
             <override>
                 <bullet>磁暴射线</bullet>
                 <bulletrename>电弧射线</bulletrename>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>电</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>12</power>
+                <power>11</power>
             </percentage>
+            <multiplier>
+                <power>2</power>
+            </multiplier>
             <flat>
                 <bulletsize>4</bulletsize>
                 <weight>1</weight>
@@ -323,16 +327,21 @@
             <override>
                 <bullet>磁暴射线-强化</bullet>
                 <bulletrename>特斯拉射线</bulletrename>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>电</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>20</power>
+                <power>16</power>
             </percentage>
+            <multiplier>
+                <power>3</power>
+            </multiplier>
             <flat>
                 <bulletsize>6</bulletsize>
+                <accuracy>12</accuracy>  <!-- 命中期望伤害: +2.71% -->
                 <weight>2.5</weight>
             </flat>
         </stats>
@@ -352,16 +361,20 @@
             <override>
                 <bullet>光棱射线</bullet>
                 <bulletrename>棱镜射线弹</bulletrename>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>12</power>
+                <power>9</power>
             </percentage>
+            <multiplier>
+                <power>2</power>
+            </multiplier>
             <flat>
-                <accuracy>12</accuracy>
+                <accuracy>15</accuracy>  <!-- 命中期望伤害: +3.31% -->
                 <weight>1</weight>
             </flat>
         </stats>
@@ -376,16 +389,20 @@
         <stats>
             <override>
                 <bullet>光棱射线-强化</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>20</power>
+                <power>14</power>
             </percentage>
+            <multiplier>
+                <power>4</power>
+            </multiplier>
             <flat>
-                <accuracy>20</accuracy>
+                <accuracy>20</accuracy>  <!-- 命中期望伤害: +4.24% -->
                 <weight>2.5</weight>
             </flat>
         </stats>
@@ -404,16 +421,20 @@
         <stats>
             <override>
                 <bullet>辉光射线</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>12</power>
+                <power>8</power>
             </percentage>
+            <multiplier>
+                <power>3</power>
+            </multiplier>
             <flat>
-                <bulletsize>4</bulletsize>
+                <bulletsize>6</bulletsize>
                 <weight>1</weight>
             </flat>
         </stats>
@@ -428,16 +449,20 @@
         <stats>
             <override>
                 <bullet>辉光射线-强化</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>20</power>
+                <power>12</power>
             </percentage>
+            <multiplier>
+                <power>5</power>
+            </multiplier>
             <flat>
-                <bulletsize>6</bulletsize>
+                <bulletsize>8</bulletsize>
                 <weight>2.5</weight>
             </flat>
         </stats>
@@ -456,17 +481,21 @@
         <stats>
             <override>
                 <bullet>光谱射线</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>12</power>
+                <power>5</power>
             </percentage>
+            <multiplier>
+                <power>4</power>
+            </multiplier>
             <flat>
                 <bulletsize>2</bulletsize>
-                <accuracy>5</accuracy>
+                <accuracy>10</accuracy>  <!-- 命中期望伤害: +2.29% -->
                 <weight>1</weight>
             </flat>
         </stats>
@@ -481,17 +510,21 @@
         <stats>
             <override>
                 <bullet>光谱射线-强化</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>20</power>
+                <power>14</power>
             </percentage>
+            <multiplier>
+                <power>4</power>
+            </multiplier>
             <flat>
                 <bulletsize>3</bulletsize>
-                <accuracy>8</accuracy>
+                <accuracy>12</accuracy>  <!-- 命中期望伤害: +2.71% -->
                 <weight>2.5</weight>
             </flat>
         </stats>
@@ -510,16 +543,20 @@
         <stats>
             <override>
                 <bullet>谐振波射线</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>12</power>
+                <power>2</power>
             </percentage>
+            <multiplier>
+                <power>5</power>
+            </multiplier>
             <flat>
-                <accuracy>12</accuracy>
+                <accuracy>12</accuracy>  <!-- 命中期望伤害: +2.71% -->
                 <weight>1</weight>
             </flat>
         </stats>
@@ -534,16 +571,20 @@
         <stats>
             <override>
                 <bullet>谐振波射线-强化</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>20</power>
+                <power>10</power>
             </percentage>
+            <multiplier>
+                <power>5</power>
+            </multiplier>
             <flat>
-                <accuracy>20</accuracy>
+                <accuracy>20</accuracy>  <!-- 命中期望伤害: +4.24% -->
                 <weight>2.5</weight>
             </flat>
         </stats>
@@ -562,13 +603,14 @@
         <stats>
             <override>
                 <bullet>热能射线</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>热</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>12</power>
+                <power>14</power>
             </percentage>
             <flat>
                 <bulletsize>4</bulletsize>
@@ -586,14 +628,18 @@
         <stats>
             <override>
                 <bullet>热能射线-强化</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>热</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>20</power>
+                <power>22</power>
             </percentage>
+            <multiplier>
+                <power>1</power>
+            </multiplier>
             <flat>
                 <bulletsize>6</bulletsize>
                 <weight>2.5</weight>
@@ -614,16 +660,20 @@
         <stats>
             <override>
                 <bullet>涡旋射线</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>12</power>
+                <power>6</power>
             </percentage>
+            <multiplier>
+                <power>4</power>
+            </multiplier>
             <flat>
-                <bulletsize>5</bulletsize>
+                <bulletsize>7</bulletsize>
                 <weight>1</weight>
             </flat>
         </stats>
@@ -638,16 +688,21 @@
         <stats>
             <override>
                 <bullet>涡旋射线-强化</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>20</power>
+                <power>13</power>
             </percentage>
+            <multiplier>
+                <power>4</power>
+            </multiplier>
             <flat>
                 <bulletsize>8</bulletsize>
+                <accuracy>10</accuracy>  <!-- 命中期望伤害: +2.29% -->
                 <weight>2.5</weight>
             </flat>
         </stats>
@@ -666,14 +721,18 @@
         <stats>
             <override>
                 <bullet>波能射线</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>15</power>
+                <power>5</power>
             </percentage>
+            <multiplier>
+                <power>5</power>
+            </multiplier>
             <flat>
                 <weight>1</weight>
             </flat>
@@ -689,14 +748,18 @@
         <stats>
             <override>
                 <bullet>波能射线-强化</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>25</power>
+                <power>8</power>
             </percentage>
+            <multiplier>
+                <power>8</power>
+            </multiplier>
             <flat>
                 <weight>2.5</weight>
             </flat>
@@ -716,17 +779,21 @@
         <stats>
             <override>
                 <bullet>等离子射线</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>能</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>12</power>
+                <power>8</power>
             </percentage>
+            <multiplier>
+                <power>3</power>
+            </multiplier>
             <flat>
-                <bulletsize>2</bulletsize>
-                <accuracy>5</accuracy>
+                <bulletsize>3</bulletsize>
+                <accuracy>5</accuracy>  <!-- 命中期望伤害: +1.19% -->
                 <weight>1</weight>
             </flat>
         </stats>
@@ -741,17 +808,21 @@
         <stats>
             <override>
                 <bullet>等离子射线-强化</bullet>
+                <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>能</magictype>
                 <impact>100</impact>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>20</power>
+                <power>9</power>
             </percentage>
+            <multiplier>
+                <power>6</power>
+            </multiplier>
             <flat>
                 <bulletsize>3</bulletsize>
-                <accuracy>8</accuracy>
+                <accuracy>8</accuracy>  <!-- 命中期望伤害: +1.86% -->
                 <weight>2.5</weight>
             </flat>
         </stats>

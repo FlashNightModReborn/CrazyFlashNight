@@ -305,6 +305,7 @@
           <Include href="材料相关/图标-强化柄芯.xml" itemID="68f98a85-0000069f" lastModified="1761894239"/>
           <Include href="材料相关/图标-强化金属管.xml" itemID="66adc3dd-0000192a" lastModified="1756949391"/>
           <Include href="材料相关/图标-强力胶.xml" itemID="66adc2da-00001925" lastModified="1756949358"/>
+          <Include href="材料相关/图标-全光谱棱镜阵列.xml" itemID="69a18ffd-0000051a" lastModified="1772196345"/>
           <Include href="材料相关/图标-拳演破极环.xml" itemID="69203346-0000088f" lastModified="1763717958"/>
           <Include href="材料相关/图标-热能射线弹.xml" itemID="69a1463b-000018b0" lastModified="1772177121"/>
           <Include href="材料相关/图标-三阶复合防御组件.xml" itemID="68d7f64a-00005098" lastModified="1758983813"/>
@@ -618,7 +619,7 @@
           <Include href="食材相关/猪肉.xml" itemIcon="1" loadImmediate="false" itemID="67bdc63d-000000de" lastModified="1740490301"/>
           <Include href="食材相关/竹笋.xml" loadImmediate="false" itemID="6814918b-0000039e" lastModified="1746178443"/>
           <Include href="食材相关/柱侯酱.xml" loadImmediate="false" itemID="6814612e-000005fb" lastModified="1746166062"/>
-          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1772178071"/>
+          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1772196634"/>
           <Include href="图标-方舟碎片.xml" itemID="66adbe1b-0000187e" lastModified="1760513120"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1718516867"/>
           <Include href="未命名文件夹 1/Symbol 34.xml" itemIcon="1" loadImmediate="false" itemID="664c57d7-0000029e" lastModified="1740222009"/>
@@ -1147,6 +1148,11 @@
                     <SolidSwatchItem color="#54582E" hue="44" saturation="76" brightness="63"/>
                     <SolidSwatchItem color="#919C4F" hue="46" saturation="79" brightness="111"/>
                     <SolidSwatchItem color="#100736" hue="167" saturation="182" brightness="29"/>
+                    <SolidSwatchItem color="#080302" hue="7" saturation="144" brightness="5"/>
+                    <SolidSwatchItem color="#2F3E51" hue="143" saturation="64" brightness="60"/>
+                    <SolidSwatchItem color="#545863" hue="149" saturation="20" brightness="86"/>
+                    <SolidSwatchItem color="#EDE892" hue="38" saturation="172" brightness="180"/>
+                    <SolidSwatchItem color="#758176" hue="84" saturation="11" brightness="116"/>
                </swatches>
           </swatchList>
      </swatchLists>
