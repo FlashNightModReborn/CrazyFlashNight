@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-物品技能图标" itemID="67bdcba2-000001f1" linkageExportForAS="true" linkageIdentifier="素材库-物品技能图标" lastModified="1772295488" lastUniqueIdentifier="467">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-物品技能图标" itemID="67bdcba2-000001f1" linkageExportForAS="true" linkageIdentifier="素材库-物品技能图标" lastModified="1772301386" lastUniqueIdentifier="469">
   <timeline>
     <DOMTimeline name="素材库-物品技能图标" currentFrame="4">
       <layers>
@@ -2505,9 +2505,9 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="材料相关/图标-热能辐射管" centerPoint3DX="160.65" centerPoint3DY="337.45">
+                <DOMSymbolInstance libraryItemName="材料相关/图标-热能辐射管" selected="true" centerPoint3DX="160.65" centerPoint3DY="336.1">
                   <matrix>
-                    <Matrix tx="160.65" ty="337.45"/>
+                    <Matrix tx="160.65" ty="336.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2524,6 +2524,14 @@
                 <DOMSymbolInstance libraryItemName="材料相关/图标-环式棱栅折射阵列" centerPoint3DX="101.95" centerPoint3DY="336.35">
                   <matrix>
                     <Matrix tx="101.95" ty="336.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/图标-锁相谐振核心" centerPoint3DX="130.2" centerPoint3DY="336">
+                  <matrix>
+                    <Matrix tx="130.2" ty="336"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
