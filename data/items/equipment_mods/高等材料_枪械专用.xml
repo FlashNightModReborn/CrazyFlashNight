@@ -305,13 +305,21 @@
                       弹容+35%补偿(3发→4发), 每弹仓3目标即可超越发射器(约109-121%)
                       破击 vs 魔法差距取决于目标防御/抗性, 由穿透深度+弹容补回
                       恒定×1.45不随强化稀释, 零强化门槛, 匹配前期暴力定位
+                      [第五轮] 机制层全量增强(实验性, 不动数值层):
+                        + singleshoot=false (全自动射击)
+                        + reloadType=tube (逐发换弹, 消除整弹仓空窗)
+                        + criticalhit=满血暴击 (首发burst ×1.5)
+                        + provideTags=电力 (热堆自供电, 释放核心模块槽)
+                      动机: 建模仅计裸段伤害, 实测每段附加伤害(属性/技能触发)
+                        使多段命中发射器(3+2+2+2)远优于单段射线, 导致热能远弱于预期
+                        本轮为实验性全量增强, 收集实测数据后修正建模缺失乘区
 
          回本节点设计 (强化版 vs 旧统一pct=20%基线, 按 +5/+7/+9 三档):
            回本早 → 上限低;  回本晚 → 上限高
 
            射线       pct  mult  回本点   Lv1增益   Lv13增益  定位
            ─────────────────────────────────────────────────────────
-           热能         0   45   全等级恒定×1.45    破击前期暴力+35%弹容
+           热能         0   45   全等级恒定×1.45    破击前期暴力+35%弹容+满血暴击+全自动+供电
            磁暴        17    2   ~Lv5     -0.55%    +1.06%   泛用连锁
            光棱/光谱   14    4   Lv5      -1.20%    +2.07%   精准分裂 (RA2光棱=RA3光谱,同数值致敬)
            辉光        13    4   ~Lv7     -2.07%    +1.75%   超远覆盖
@@ -690,6 +698,9 @@
                 <damagetype>破击</damagetype>
                 <magictype>热</magictype>
                 <impact>100</impact>
+                <singleshoot>false</singleshoot>
+                <reloadType>tube</reloadType>
+                <criticalhit>满血暴击</criticalhit>
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
@@ -703,7 +714,8 @@
                 <weight>2.5</weight>
             </flat>
         </stats>
-        <description>发射器专用热辐射主炮,大型热堆反应器提供持续高温输出。超大弹仓与高功率输出弥补射线单段命中的先天劣势。</description>
+        <provideTags>电力</provideTags>
+        <description>发射器专用热辐射主炮。大型热堆反应器提供持续高温输出。具备骇人的远距穿透能力。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
