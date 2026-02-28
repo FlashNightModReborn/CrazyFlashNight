@@ -2,6 +2,7 @@
 import org.flashNight.arki.component.StatHandler.*;
 import org.flashNight.arki.unit.Action.Shoot.*;
 import org.flashNight.arki.unit.UnitUtil;
+import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 
 /**
  * 玩家信息提供者类
@@ -400,7 +401,8 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         if (!unit.手枪属性 || !unit.手枪属性.power) return 0;
 
         // 使用ShootInitCore的统一计算函数，确保与实际战斗逻辑一致
-        var weaponPower:Number = ShootInitCore.calculateWeaponPower(unit, "手枪", unit.手枪属性.power);
+        var isRay:Boolean = BulletTypeUtil.isRay(unit.手枪属性.bullet);
+        var weaponPower:Number = ShootInitCore.calculateWeaponPower(unit, "手枪", unit.手枪属性.power, isRay);
         var damageBonus:Number = unit.伤害加成 ? unit.伤害加成 : 0;
 
         // 计算毒伤害：max(基础毒 + 手枪毒, 淬毒)
@@ -420,7 +422,8 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         if (!unit.手枪2属性 || !unit.手枪2属性.power) return 0;
 
         // 使用ShootInitCore的统一计算函数，确保与实际战斗逻辑一致
-        var weaponPower:Number = ShootInitCore.calculateWeaponPower(unit, "手枪2", unit.手枪2属性.power);
+        var isRay:Boolean = BulletTypeUtil.isRay(unit.手枪2属性.bullet);
+        var weaponPower:Number = ShootInitCore.calculateWeaponPower(unit, "手枪2", unit.手枪2属性.power, isRay);
         var damageBonus:Number = unit.伤害加成 ? unit.伤害加成 : 0;
 
         // 计算毒伤害：max(基础毒 + 手枪2毒, 淬毒)
@@ -440,7 +443,8 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         if (!unit.长枪属性 || !unit.长枪属性.power) return 0;
 
         // 使用ShootInitCore的统一计算函数，确保与实际战斗逻辑一致
-        var weaponPower:Number = ShootInitCore.calculateWeaponPower(unit, "长枪", unit.长枪属性.power);
+        var isRay:Boolean = BulletTypeUtil.isRay(unit.长枪属性.bullet);
+        var weaponPower:Number = ShootInitCore.calculateWeaponPower(unit, "长枪", unit.长枪属性.power, isRay);
         var damageBonus:Number = unit.伤害加成 ? unit.伤害加成 : 0;
 
         // 计算毒伤害：max(基础毒 + 长枪毒, 淬毒)

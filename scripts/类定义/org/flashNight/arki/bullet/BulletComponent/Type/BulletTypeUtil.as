@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeData;
 import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter;
+import org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer;
 
 /**
  * BulletTypeUtil 子弹类型工具类
@@ -170,6 +171,22 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil {
         
         var flags:Number = BulletTypesetter.getFlags({ 子弹种类: bulletType });
         return (flags & FLAG_NORMAL) != 0;
+    }
+
+    /**
+     * 检查子弹类型是否为射线子弹。
+     *
+     * === 数据源说明 ===
+     * FLAG_RAY 由 AttributeLoader 根据 XML 中 <rayConfig> 节点存在性设置，
+     * 存储在 BulletInitializer.attributeMap 中，而非 BulletTypesetter 的类型标志。
+     * 因此本方法通过 BulletInitializer.getAttributeData 查询，而非标志位运算。
+     *
+     * @param bulletType:String 子弹种类字符串。
+     * @return Boolean 如果是射线子弹返回 true，否则返回 false。
+     */
+    public static function isRay(bulletType:String):Boolean {
+        var attr:Object = BulletInitializer.getAttributeData(bulletType);
+        return (attr != undefined && attr.rayConfig != undefined);
     }
 
     // ========== 调试和诊断工具 ==========

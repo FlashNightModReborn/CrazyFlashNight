@@ -5,6 +5,7 @@ import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.item.ItemUtil.*;
 import org.flashNight.arki.unit.Action.Shoot.*;
+import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 
 _root.主动战技函数 = {空手: {}, 兵器: {}, 长枪: {}};
 
@@ -577,7 +578,8 @@ _root.主动战技函数.长枪.调用射击发射其他弹药 = {初始化: fun
             prop.子弹威力 = ShootInitCore.calculateWeaponPower(
                 自机,
                 "长枪",
-                自机.其他子弹威力模式
+                自机.其他子弹威力模式,
+                BulletTypeUtil.isRay(自机.其他弹药类型)
             );
         } else if (自机.其他子弹威力模式 < 0) {
             // 模式2: 倍率模式 (基于武器原始威力的倍率,已经包含被动增幅)

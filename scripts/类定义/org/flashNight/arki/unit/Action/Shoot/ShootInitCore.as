@@ -403,9 +403,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
      * @param parentRef   父级引用（单位对象）
      * @param weaponType  武器类型（"长枪"、"手枪"、"手枪2"、"刀"）
      * @param basePower   武器基础威力（weaponData.power）
+     * @param isRay       可选，是否为射线子弹（默认 false）
      * @return 返回计算后的最终威力（不含伤害加成）
      */
-    public static function calculateWeaponPower(parentRef:Object, weaponType:String, basePower:Number):Number {
+    public static function calculateWeaponPower(parentRef:Object, weaponType:String, basePower:Number, isRay:Boolean):Number {
         var passiveSkills:Object = parentRef.被动技能;
 
         // 预生成武器类型判断结果
@@ -447,6 +448,14 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 var pistolBonus:Number = 0.10 + (impactLv - 1) * (0.20 - 0.10) / 9;
                 totalMultiplier += pistolBonus;
             }
+        }
+
+        // 枪械师被动技能的射线子弹火力加成：1级5%→10级25% 线性插值
+        if (isRay && passiveSkills && passiveSkills.枪械师 && passiveSkills.枪械师.启用) {
+            var gunslingerLv:Number = passiveSkills.枪械师.等级 || 1;
+            // 1级5%, 10级25%
+            var rayBonus:Number = 0.05 + (gunslingerLv - 1) * (0.25 - 0.05) / 9;
+            totalMultiplier += rayBonus;
         }
 
         // 最终计算：basePower * (1 + 倍率之和) + 固定加成
@@ -553,7 +562,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
         // 计算子弹威力（使用统一的武器威力计算函数）
         var basePower:Number = wd.子弹威力Base;
-        bulletProps.子弹威力 = calculateWeaponPower(parentRef, weaponType, basePower);
+        var bulletIsRay:Boolean = BulletTypeUtil.isRay(wd.子弹种类);
+        bulletProps.子弹威力 = calculateWeaponPower(parentRef, weaponType, basePower, bulletIsRay);
 
         // 获取武器类型标签（weapontype），用于判断是否为霰弹枪等特殊武器类型
         // weapontype 存储在武器数据对象中（如 长枪数据.weapontype），而非武器属性中

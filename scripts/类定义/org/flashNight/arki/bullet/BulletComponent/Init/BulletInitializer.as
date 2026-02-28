@@ -14,6 +14,16 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
     }
     
     /**
+     * 根据子弹种类名获取对应的属性数据（由 AttributeLoader 从 XML 解析）
+     *
+     * @param bulletType:String 子弹种类名称
+     * @return Object 属性数据对象（包含 rayConfig、additionalFlags 等），未找到返回 undefined
+     */
+    public static function getAttributeData(bulletType:String):Object {
+        return attributeMap[bulletType];
+    }
+
+    /**
      * 注册 InfoLoader 回调，获取子弹属性数据
      * 建议在游戏初始化阶段调用一次
      */
