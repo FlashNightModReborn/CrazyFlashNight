@@ -574,7 +574,7 @@
                 <vfxStyle>tesla</vfxStyle>
                 <vfxPreset>ra2_tesla</vfxPreset>
                 <chainDelay>2</chainDelay>
-                <damageFalloff>0.7</damageFalloff>
+                <damageFalloff>0.8</damageFalloff>
                 <chainRadius>200</chainRadius>
                 <primaryColor>0x00FFFF</primaryColor>
                 <secondaryColor>0xFFFFFF</secondaryColor>
@@ -715,7 +715,7 @@
                 <vfxStyle>spectrum</vfxStyle>
                 <vfxPreset>ra3_spectrum</vfxPreset>
                 <chainDelay>1</chainDelay>
-                <damageFalloff>0.65</damageFalloff>
+                <damageFalloff>0.60</damageFalloff>
                 <chainRadius>250</chainRadius>
                 <thickness>4</thickness>
                 <stripeCount>3</stripeCount>
@@ -798,7 +798,7 @@
             </rayConfig>
         </attribute>
     </bullet>
-    <!-- 强化版: pierce+远射程, 热辐射穿透+超远射程, pierce=6/falloff=0.90 -->
+    <!-- 强化版: pierce+远射程, 热辐射穿透+超远射程, pierce=6/falloff=1.00 -->
     <bullet>
         <name>热能射线-强化</name>
         <attribute>
@@ -809,7 +809,7 @@
                 <rayMode>pierce</rayMode>
                 <vfxStyle>thermal</vfxStyle>
                 <vfxPreset>thermal</vfxPreset>
-                <damageFalloff>0.90</damageFalloff>
+                <damageFalloff>1.00</damageFalloff>
                 <primaryColor>0xFF4400</primaryColor>
                 <secondaryColor>0xFFAA00</secondaryColor>
                 <thickness>5</thickness>
@@ -860,7 +860,7 @@
                 <rayMode>fork,pierce</rayMode>
                 <vfxStyle>vortex</vfxStyle>
                 <vfxPreset>vortex</vfxPreset>
-                <damageFalloff>0.75</damageFalloff>
+                <damageFalloff>0.70</damageFalloff>
                 <chainRadius>250</chainRadius>
                 <primaryColor>0x0088FF</primaryColor>
                 <secondaryColor>0x88DDFF</secondaryColor>
@@ -912,7 +912,7 @@
                 <rayMode>pierce</rayMode>
                 <vfxStyle>wave</vfxStyle>
                 <vfxPreset>ra3_wave</vfxPreset>
-                <damageFalloff>0.8</damageFalloff>
+                <damageFalloff>0.95</damageFalloff>
                 <primaryColor>0x0099FF</primaryColor>
                 <secondaryColor>0x77EEFF</secondaryColor>
                 <thickness>8</thickness>
@@ -963,7 +963,7 @@
                 <rayMode>chain,fork,pierce</rayMode>
                 <vfxStyle>plasma</vfxStyle>
                 <vfxPreset>plasma</vfxPreset>
-                <damageFalloff>0.75</damageFalloff>
+                <damageFalloff>0.85</damageFalloff>
                 <chainRadius>200</chainRadius>
                 <primaryColor>0x0088FF</primaryColor>
                 <secondaryColor>0x88EEFF</secondaryColor>

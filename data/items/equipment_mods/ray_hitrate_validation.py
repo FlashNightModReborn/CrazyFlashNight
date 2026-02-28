@@ -38,15 +38,15 @@ BULLET_Z_RANGE = 50  # |bulletZ - targetZ| < 50 才算命中
 
 # 射线参数 (bullets_cases.xml)
 RAY_CONFIGS = {
-    '热能': dict(rayLength=1200, pierceLimit=6,  chainRadius=None, falloff=0.90, modes=['pierce']),
-    '磁暴': dict(rayLength=900,  pierceLimit=10, chainRadius=200,  falloff=0.70, modes=['chain']),
+    '热能': dict(rayLength=1200, pierceLimit=6,  chainRadius=None, falloff=1.00, modes=['pierce']),
+    '磁暴': dict(rayLength=900,  pierceLimit=10, chainRadius=200,  falloff=0.80, modes=['chain']),
     '光棱': dict(rayLength=900,  pierceLimit=8,  chainRadius=300,  falloff=0.65, modes=['fork']),
-    '光谱': dict(rayLength=900,  pierceLimit=5,  chainRadius=250,  falloff=0.65, modes=['chain','fork']),
+    '光谱': dict(rayLength=900,  pierceLimit=5,  chainRadius=250,  falloff=0.60, modes=['chain','fork']),
     '辉光': dict(rayLength=1100, pierceLimit=5,  chainRadius=350,  falloff=0.60, modes=['fork']),
-    '涡旋': dict(rayLength=1000, pierceLimit=6,  chainRadius=250,  falloff=0.75, modes=['fork','pierce']),
+    '涡旋': dict(rayLength=1000, pierceLimit=6,  chainRadius=250,  falloff=0.70, modes=['fork','pierce']),
     '谐振波': dict(rayLength=900,  pierceLimit=6,  chainRadius=200,  falloff=0.70, modes=['chain','pierce']),
-    '等离子': dict(rayLength=1000, pierceLimit=4,  chainRadius=200,  falloff=0.75, modes=['chain','fork','pierce']),
-    '波能': dict(rayLength=1000, pierceLimit=6,  chainRadius=None, falloff=0.80, modes=['pierce']),
+    '等离子': dict(rayLength=1000, pierceLimit=4,  chainRadius=200,  falloff=0.85, modes=['chain','fork','pierce']),
+    '波能': dict(rayLength=1000, pierceLimit=6,  chainRadius=None, falloff=0.95, modes=['pierce']),
 }
 
 # 报告假设的命中率
@@ -449,14 +449,25 @@ def theoretical_segments(n_targets, aim, falloff, max_hits):
         s += aim * (falloff ** i)
     return s
 
-def empirical_segments(raw_hits, n_enemies, falloff):
-    """经验 segments: E[sum(falloff^i for i=0..H-1)]"""
+def empirical_segments(raw_hits, n_enemies, falloff, mode_type):
+    """
+    经验 segments: E[总伤害倍率之和]
+
+    注意：此处按 BulletQueueProcessor.as 的实际伤害衰减规则计算：
+    - pierce/chain: sum(falloff^i) (i=0..H-1)
+    - fork: 1 + (H-1)*falloff （fork 不做累积衰减）
+    """
     total_seg = 0.0
     total_w = 0.0
     for dist_name, _, dist_weight in DISTRIBUTIONS:
         counts = raw_hits[dist_name][n_enemies]
         for c in counts:
-            seg = sum(falloff**i for i in range(c))
+            if c <= 0:
+                seg = 0.0
+            elif mode_type == 'fork':
+                seg = 1.0 + (c - 1) * falloff
+            else:
+                seg = sum(falloff**i for i in range(c))
             total_seg += seg * dist_weight
             total_w += dist_weight
     return total_seg / total_w if total_w > 0 else 0
@@ -489,7 +500,7 @@ def main():
 
             for n in N_ENEMY_RANGE:
                 e_hits, p_ge, cond = compute_weighted_stats(raw_hits, n)
-                e_seg = empirical_segments(raw_hits, n, cfg['falloff'])
+                e_seg = empirical_segments(raw_hits, n, cfg['falloff'], mode_type)
                 t_seg = theoretical_segments(n, assumed_aim, cfg['falloff'], cfg['pierceLimit'])
                 err = (e_seg - t_seg) / t_seg * 100 if t_seg > 0 else 0
 
