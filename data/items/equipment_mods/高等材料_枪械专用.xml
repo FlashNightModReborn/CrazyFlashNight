@@ -316,7 +316,7 @@
            光棱/光谱   14    4   Lv5      -1.20%    +2.07%   精准分裂 (RA2光棱=RA3光谱,同数值致敬)
            辉光        13    4   ~Lv7     -2.07%    +1.75%   超远覆盖
            涡旋         8    7   ~Lv7     -3.70%    +3.04%   大面积撕裂
-           谐振波       8    7   ~Lv7     -3.70%    +3.04%   高精穿透连锁
+           谐振波       4    7   ~Lv10    -7.27%    +1.72%   无电力需求,电力解锁满血暴击×1.5
            等离子       2    9   ~Lv9     -7.35%    +2.94%   全能全模式
            波能         0   10   ~Lv9     -8.33%    +3.21%   极致后期
     -->
@@ -333,7 +333,7 @@
            辉光         5    4   ~Lv7     大判定
            波能         0    6   ~Lv9     零副属性高潜力
            涡旋         5    4   ~Lv7     超大判定
-           谐振波       5    4   ~Lv7     高潜力精准
+           谐振波       5    4   ~Lv7     无电力需求,电力解锁30%暴击(丢accuracy)
            等离子       2    5   ~Lv9     三维均衡
     -->
     <mod>
@@ -584,7 +584,6 @@
         <name>谐振波射线弹</name>
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
-        <requireTags>电力</requireTags>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法"/>
             <cond op="above" path="data.interval" value="200"/>
@@ -605,9 +604,16 @@
                 <power>4</power>
             </multiplier>
             <flat>
-                <accuracy>12</accuracy>  <!-- 命中期望伤害(L30): +2.71% -->
-                <weight>1</weight>
+                <weight>1</weight>  <!-- 无电力需求, 电力适配解锁暴击 -->
             </flat>
+            <!-- 电力适配：谐振腔在电力结构支持下激活暴击模块 -->
+            <tagSwitch>
+                <tag name="电力">
+                    <override>
+                        <criticalhit>30</criticalhit>
+                    </override>
+                </tag>
+            </tagSwitch>
         </stats>
         <description>便携式谐振编织器,化学能驱动的多频干涉模块。枪管长度不足以容纳完整干涉腔,仅输出三色编织光束,无法形成穿透连锁。</description>
         <tag>弹药</tag>
@@ -616,7 +622,6 @@
         <name>谐振波射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
-        <requireTags>电力</requireTags>
         <stats>
             <override>
                 <bullet>谐振波射线-强化</bullet>
@@ -627,16 +632,22 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
-                <power>8</power>
+                <power>4</power>
             </percentage>
             <multiplier>
                 <power>7</power>
             </multiplier>
             <flat>
-                <accuracy>15</accuracy>  <!-- 命中期望伤害(L30): +3.31% -->
-                <bulletsize>5</bulletsize>
-                <weight>2.5</weight>
+                <weight>2.5</weight>  <!-- 无电力需求, 电力适配解锁满血暴击 -->
             </flat>
+            <!-- 电力适配：全频锁相谐振腔在电力结构支持下解锁满血暴击 -->
+            <tagSwitch>
+                <tag name="电力">
+                    <override>
+                        <criticalhit>满血暴击</criticalhit>
+                    </override>
+                </tag>
+            </tagSwitch>
         </stats>
         <description>三频锁相谐振穿透核心,干涉提供稳定驻波。光束贯穿目标后沿路径逐节点触发连锁弹跳。</description>
         <tag>弹药</tag>
