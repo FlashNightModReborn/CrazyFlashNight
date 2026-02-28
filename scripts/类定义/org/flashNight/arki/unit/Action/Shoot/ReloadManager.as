@@ -325,12 +325,16 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                         // 标记本次换弹序列从主手开始（用于双枪换弹负担系统的手位解析）
                         that.dualReloadStartHand = "主手";
                         delete that._dualReloadFirstInitStartFrame;
+                        // 显式设置换弹标签，防止 finishReload 的 "换弹标签=false" 动态属性
+                        // 遮蔽时间轴上的换弹标签 MC，导致射击函数在换弹期间不被阻止
+                        that.换弹标签 = true;
                         that.gotoAndPlay("主手换弹匣");
                         return;
                     case 2: // 副手换弹
                         // 标记本次换弹序列从副手开始（用于双枪换弹负担系统的手位解析）
                         that.dualReloadStartHand = "副手";
                         delete that._dualReloadFirstInitStartFrame;
+                        that.换弹标签 = true;
                         that.gotoAndPlay("副手换弹匣");
                         return;
                     default: // 0: 不需要换弹
@@ -341,6 +345,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             } else {
                 that.dualReloadStartHand = "主手";
                 delete that._dualReloadFirstInitStartFrame;
+                that.换弹标签 = true;
                 that.gotoAndPlay("主手换弹匣");
             }
         };
