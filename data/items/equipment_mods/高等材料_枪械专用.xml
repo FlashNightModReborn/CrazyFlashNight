@@ -419,7 +419,7 @@
         <stats>
             <override>
                 <bullet>光棱射线</bullet>
-                <bulletrename>棱镜射线弹</bulletrename>
+                <bulletrename>棱镜射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
@@ -448,6 +448,7 @@
         <stats>
             <override>
                 <bullet>光棱射线-强化</bullet>
+                <bulletrename>棱镜折射束</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
@@ -480,6 +481,7 @@
         <stats>
             <override>
                 <bullet>辉光射线</bullet>
+                <bulletrename>微光射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
@@ -508,6 +510,7 @@
         <stats>
             <override>
                 <bullet>辉光射线-强化</bullet>
+                <bulletrename>辉光谐振射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
@@ -540,6 +543,7 @@
         <stats>
             <override>
                 <bullet>光谱射线</bullet>
+                <bulletrename>色散射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
@@ -568,6 +572,7 @@
         <stats>
             <override>
                 <bullet>光谱射线-强化</bullet>
+                <bulletrename>全谱色散射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
@@ -599,6 +604,7 @@
         <stats>
             <override>
                 <bullet>谐振波射线</bullet>
+                <bulletrename>驻波射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
@@ -633,6 +639,7 @@
         <stats>
             <override>
                 <bullet>谐振波射线-强化</bullet>
+                <bulletrename>谐振波射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
@@ -670,6 +677,7 @@
         <stats>
             <override>
                 <bullet>热能射线</bullet>
+                <bulletrename>红外射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>破击</damagetype>
                 <magictype>热</magictype>
@@ -694,6 +702,7 @@
         <stats>
             <override>
                 <bullet>热能射线-强化</bullet>
+                <bulletrename>热辐射束</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>破击</damagetype>
                 <magictype>热</magictype>
@@ -729,6 +738,7 @@
         <stats>
             <override>
                 <bullet>涡旋射线</bullet>
+                <bulletrename>螺旋射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
@@ -755,6 +765,7 @@
         <stats>
             <override>
                 <bullet>涡旋射线-强化</bullet>
+                <bulletrename>涡旋射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
@@ -786,6 +797,7 @@
         <stats>
             <override>
                 <bullet>波能射线</bullet>
+                <bulletrename>聚束射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
@@ -813,6 +825,7 @@
         <stats>
             <override>
                 <bullet>波能射线-强化</bullet>
+                <bulletrename>贯穿波束</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
@@ -844,6 +857,7 @@
         <stats>
             <override>
                 <bullet>等离子射线</bullet>
+                <bulletrename>离子射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>能</magictype>
@@ -873,6 +887,7 @@
         <stats>
             <override>
                 <bullet>等离子射线-强化</bullet>
+                <bulletrename>等离子射线</bulletrename>
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>能</magictype>
