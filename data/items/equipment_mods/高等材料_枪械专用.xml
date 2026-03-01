@@ -347,11 +347,12 @@
     <mod>
         <name>磁暴射线弹</name>
         <use>长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <requireTags>电力</requireTags>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法"/>
             <cond op="above" path="data.interval" value="200"/>
+            <cond op="is" path="data.split" value="1"/>
         </installCondition>
         <stats>
             <override>
@@ -382,6 +383,9 @@
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.split" value="1"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>磁暴射线-强化</bullet>
@@ -410,11 +414,12 @@
     <mod>
         <name>光棱射线弹</name>
         <use>长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <requireTags>电力</requireTags>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法"/>
-            <cond op="above" path="data.interval" value="200"/>
+            <cond op="above" path="data.interval" value="167"/>
+            <cond op="is" path="data.split" value="1"/>
         </installCondition>
         <stats>
             <override>
@@ -445,6 +450,9 @@
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.split" value="1"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>光棱射线-强化</bullet>
@@ -472,11 +480,11 @@
     <mod>
         <name>辉光射线弹</name>
         <use>长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
-        <requireTags>电力</requireTags>
+        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <installCondition>
-            <cond op="is" path="data.damagetype" value="魔法"/>
-            <cond op="above" path="data.interval" value="200"/>
+            <cond op="above" path="data.interval" value="167"/>
+            <cond op="atLeast" path="data.capacity" value="5"/>
+            <cond op="is" path="data.split" value="1"/>
         </installCondition>
         <stats>
             <override>
@@ -489,10 +497,11 @@
             </override>
             <percentage>
                 <diffusion>-90</diffusion>
+                <interval>50</interval>
                 <power>5</power>
             </percentage>
             <multiplier>
-                <power>4</power>
+                <power>-16</power>
             </multiplier>
             <flat>
                 <bulletsize>6</bulletsize>
@@ -507,6 +516,9 @@
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.split" value="1"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>辉光射线-强化</bullet>
@@ -534,11 +546,12 @@
     <mod>
         <name>光谱射线弹</name>
         <use>长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <requireTags>电力</requireTags>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法"/>
             <cond op="above" path="data.interval" value="200"/>
+            <cond op="is" path="data.split" value="1"/>
         </installCondition>
         <stats>
             <override>
@@ -569,6 +582,9 @@
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.split" value="1"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>光谱射线-强化</bullet>
@@ -596,10 +612,11 @@
     <mod>
         <name>谐振波射线弹</name>
         <use>长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法"/>
             <cond op="above" path="data.interval" value="200"/>
+            <cond op="is" path="data.split" value="1"/>
         </installCondition>
         <stats>
             <override>
@@ -636,6 +653,9 @@
         <name>谐振波射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
+        <installCondition>
+            <cond op="is" path="data.split" value="1"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>谐振波射线-强化</bullet>
@@ -670,9 +690,10 @@
     <mod>
         <name>热能射线弹</name>
         <use>长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <installCondition>
-            <cond op="above" path="data.interval" value="200"/>
+            <cond op="above" path="data.interval" value="267"/>
+            <cond op="is" path="data.split" value="1"/>
         </installCondition>
         <stats>
             <override>
@@ -699,6 +720,9 @@
         <name>热能射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
+        <installCondition>
+            <cond op="is" path="data.split" value="1"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>热能射线-强化</bullet>
@@ -730,10 +754,11 @@
     <mod>
         <name>涡旋射线弹</name>
         <use>长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法"/>
-            <cond op="above" path="data.interval" value="200"/>
+            <cond op="above" path="data.interval" value="267"/>
+            <cond op="is" path="data.split" value="1"/>
         </installCondition>
         <stats>
             <override>
@@ -762,6 +787,9 @@
         <name>涡旋射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
+        <installCondition>
+            <cond op="is" path="data.split" value="1"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>涡旋射线-强化</bullet>
@@ -788,11 +816,12 @@
     <mod>
         <name>波能射线弹</name>
         <use>长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <requireTags>电力</requireTags>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法"/>
-            <cond op="above" path="data.interval" value="200"/>
+            <cond op="above" path="data.interval" value="267"/>
+            <cond op="is" path="data.split" value="1"/>
         </installCondition>
         <stats>
             <override>
@@ -822,6 +851,9 @@
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.split" value="1"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>波能射线-强化</bullet>
@@ -848,11 +880,12 @@
     <mod>
         <name>等离子射线弹</name>
         <use>长枪</use>
-        <excludeWeapontype>发射器,近战,压制近战,压制机枪,霰弹枪,压制冲锋枪</excludeWeapontype>
+        <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <requireTags>电力</requireTags>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法"/>
-            <cond op="above" path="data.interval" value="200"/>
+            <cond op="above" path="data.interval" value="267"/>
+            <cond op="is" path="data.split" value="1"/>
         </installCondition>
         <stats>
             <override>
@@ -884,6 +917,9 @@
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
         <requireTags>电力</requireTags>
+        <installCondition>
+            <cond op="is" path="data.split" value="1"/>
+        </installCondition>
         <stats>
             <override>
                 <bullet>等离子射线-强化</bullet>
