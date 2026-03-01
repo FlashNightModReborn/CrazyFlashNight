@@ -322,59 +322,6 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         }
     }
 
-    // ========== 已搬迁方法的兼容性重定向 ==========
-    // 以下方法已搬迁到 BulletTypeUtil 类中，这里保留重定向以维护向后兼容性
-
-    /**
-     * === 已搬迁：重定向到 BulletTypeUtil ===
-     * 所有 is 系列查询方法已搬迁到 BulletTypeUtil 类中以减少 BulletTypesetter 的复杂度。
-     * 建议直接使用 BulletTypeUtil 中的对应方法以获得最佳性能。
-     */
-    
-    public static function isVertical(bulletType:String):Boolean {
-        return BulletTypeUtil.isVertical(bulletType);
-    }
-    
-    public static function isMelee(bulletType:String):Boolean {
-        return BulletTypeUtil.isMelee(bulletType);
-    }
-    
-    public static function isChain(bulletType:String):Boolean {
-        return BulletTypeUtil.isChain(bulletType);
-    }
-    
-    public static function isPierce(bulletType:String):Boolean {
-        return BulletTypeUtil.isPierce(bulletType);
-    }
-    
-    public static function isTransparency(bulletType:String):Boolean {
-        return BulletTypeUtil.isTransparency(bulletType);
-    }
-    
-    public static function isGrenade(bulletType:String):Boolean {
-        return BulletTypeUtil.isGrenade(bulletType);
-    }
-    
-    public static function isExplosive(bulletType:String):Boolean {
-        return BulletTypeUtil.isExplosive(bulletType);
-    }
-    
-    public static function isNormal(bulletType:String):Boolean {
-        return BulletTypeUtil.isNormal(bulletType);
-    }
-    
-    public static function flagsToString(flags:Number, useChinese:Boolean):String {
-        return BulletTypeUtil.flagsToString(flags, useChinese);
-    }
-    
-    public static function getTransparencyTypes():Array {
-        return BulletTypeUtil.getTransparencyTypes();
-    }
-    
-    public static function addTransparencyType(bulletType:String):Boolean {
-        return BulletTypeUtil.addTransparencyType(bulletType);
-    }
-
     /**
      * 清空缓存。
      * 

@@ -275,7 +275,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             var w:Object = weapons[i];
             
             // 计算子弹消耗系数
-            var cost:Number = BulletTypesetter.isVertical(w.data.bullet) ? w.data.split : 1;
+            var cost:Number = BulletTypeUtil.isVertical(w.data.bullet) ? w.data.split : 1;
             
             // 计算剩余子弹数
             var remaining:Number = w.capacity - w.shot;

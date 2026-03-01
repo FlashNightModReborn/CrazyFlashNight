@@ -14,7 +14,7 @@
  */
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
-import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter;
+import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
@@ -92,7 +92,7 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
         }
 
         // 3. 判断是否为点射武器（非多发弹匣）
-        var isNotMultiShot:Boolean = (data.bullet && BulletTypesetter.isVertical(data.bullet));
+        var isNotMultiShot:Boolean = (data.bullet && BulletTypeUtil.isVertical(data.bullet));
 
         // 4. 弹裂规范化（防护：使用 Number() 转换 + isNaN() 兜底）
         var splitValue:Number = Number(data.split);
