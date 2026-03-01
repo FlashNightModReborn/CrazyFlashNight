@@ -322,7 +322,7 @@
            热能         0   45   全等级恒定×1.45    破击前期暴力+35%弹容+满血暴击+全自动+供电
            磁暴        17    2   ~Lv5     -0.55%    +1.06%   泛用连锁
            光棱/光谱   14    4   Lv5      -1.20%    +2.07%   精准分裂 (RA2光棱=RA3光谱,同数值致敬)
-           辉光        13    4   ~Lv7     -2.07%    +1.75%   超远覆盖(发射器专用,需电力)
+           辉光        13  -41   特殊     per-ray恒负    三射线覆盖(split→3,满血暴击,全自动,逐发换弹,限魔法发射器)
            涡旋         8    7   ~Lv7     -3.70%    +3.04%   大面积撕裂
            谐振波       4    7   ~Lv10    -7.27%    +1.72%   无电力需求,电力解锁满血暴击×1.5
            等离子       2    9   ~Lv9     -7.35%    +2.94%   全能全模式
@@ -350,9 +350,9 @@
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <requireTags>电力</requireTags>
         <installCondition>
-            <cond op="is" path="data.damagetype" value="魔法"/>
-            <cond op="above" path="data.interval" value="200"/>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.damagetype" value="魔法" />
+            <cond op="above" path="data.interval" value="200" />
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -384,7 +384,7 @@
         <weapontype>发射器</weapontype>
         <requireTags>电力</requireTags>
         <installCondition>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -417,9 +417,9 @@
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <requireTags>电力</requireTags>
         <installCondition>
-            <cond op="is" path="data.damagetype" value="魔法"/>
-            <cond op="above" path="data.interval" value="167"/>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.damagetype" value="魔法" />
+            <cond op="above" path="data.interval" value="167" />
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -451,7 +451,7 @@
         <weapontype>发射器</weapontype>
         <requireTags>电力</requireTags>
         <installCondition>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -482,9 +482,9 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <installCondition>
-            <cond op="above" path="data.interval" value="167"/>
-            <cond op="atLeast" path="data.capacity" value="5"/>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="above" path="data.interval" value="167" />
+            <cond op="atLeast" path="data.capacity" value="5" />
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -515,9 +515,9 @@
         <name>辉光射线弹-强化</name>
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
-        <requireTags>电力</requireTags>
         <installCondition>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.damagetype" value="魔法" />
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -526,21 +526,24 @@
                 <muzzle>null</muzzle>
                 <damagetype>魔法</damagetype>
                 <magictype>波</magictype>
+                <singleshoot>false</singleshoot>
+                <reloadType>tube</reloadType>
+                <criticalhit>满血暴击</criticalhit>
                 <impact>100</impact>
+                <split>3</split>
             </override>
             <percentage>
-                <diffusion>-90</diffusion>
                 <power>13</power>
             </percentage>
             <multiplier>
-                <power>4</power>
+                <power>-41</power>
             </multiplier>
             <flat>
                 <bulletsize>8</bulletsize>
                 <weight>2.5</weight>
             </flat>
         </stats>
-        <description>大口径辉光增幅腔,聚焦透镜提供超远射程。满功率辉光谐振产生明亮金色光束,远距离大范围折射覆盖</description>
+        <description>三腔辉光谐振器,分束透镜激发多重光束,负载均衡输入的化学能维持稳定谐振,远距离大范围折射覆盖。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -549,9 +552,9 @@
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <requireTags>电力</requireTags>
         <installCondition>
-            <cond op="is" path="data.damagetype" value="魔法"/>
-            <cond op="above" path="data.interval" value="200"/>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.damagetype" value="魔法" />
+            <cond op="above" path="data.interval" value="200" />
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -583,7 +586,7 @@
         <weapontype>发射器</weapontype>
         <requireTags>电力</requireTags>
         <installCondition>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -614,9 +617,9 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <installCondition>
-            <cond op="is" path="data.damagetype" value="魔法"/>
-            <cond op="above" path="data.interval" value="200"/>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.damagetype" value="魔法" />
+            <cond op="above" path="data.interval" value="200" />
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -654,7 +657,7 @@
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
         <installCondition>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -692,8 +695,8 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <installCondition>
-            <cond op="above" path="data.interval" value="267"/>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="above" path="data.interval" value="267" />
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -721,7 +724,7 @@
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
         <installCondition>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -756,9 +759,9 @@
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <installCondition>
-            <cond op="is" path="data.damagetype" value="魔法"/>
-            <cond op="above" path="data.interval" value="267"/>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.damagetype" value="魔法" />
+            <cond op="above" path="data.interval" value="267" />
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -788,7 +791,7 @@
         <use>手枪,长枪</use>
         <weapontype>发射器</weapontype>
         <installCondition>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -819,9 +822,9 @@
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <requireTags>电力</requireTags>
         <installCondition>
-            <cond op="is" path="data.damagetype" value="魔法"/>
-            <cond op="above" path="data.interval" value="267"/>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.damagetype" value="魔法" />
+            <cond op="above" path="data.interval" value="267" />
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -852,7 +855,7 @@
         <weapontype>发射器</weapontype>
         <requireTags>电力</requireTags>
         <installCondition>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -883,9 +886,9 @@
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
         <requireTags>电力</requireTags>
         <installCondition>
-            <cond op="is" path="data.damagetype" value="魔法"/>
-            <cond op="above" path="data.interval" value="267"/>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.damagetype" value="魔法" />
+            <cond op="above" path="data.interval" value="267" />
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
@@ -918,7 +921,7 @@
         <weapontype>发射器</weapontype>
         <requireTags>电力</requireTags>
         <installCondition>
-            <cond op="is" path="data.split" value="1"/>
+            <cond op="is" path="data.split" value="1" />
         </installCondition>
         <stats>
             <override>
