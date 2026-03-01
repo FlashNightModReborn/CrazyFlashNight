@@ -408,6 +408,50 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 - 实现子弹类型的互斥机制
 - 平衡配件与武器的组合效果
 
+#### requireBulletTypes - 子弹类型要求
+**作用：** 要求装备的子弹属于指定类型之一，不满足则配件不能安装（与excludeBulletTypes相反）
+**检测时机：** 基于装备**计算后**的子弹类型（考虑已安装配件的效果）
+**错误码：** -512（当前弹药类型不满足此配件的要求）
+
+**支持的类型标识符：** 与 excludeBulletTypes 相同（pierce, melee, chain, grenade, explosive, normal, vertical, transparency）
+
+**逻辑：** OR要求 — 子弹匹配列表中**任意一种**类型即通过
+
+**示例：**
+```xml
+<!-- 穿甲弹头强化件：仅限已有穿刺子弹的武器安装 -->
+<mod>
+    <name>穿甲弹头强化件</name>
+    <use>手枪,长枪</use>
+    <requireBulletTypes>pierce</requireBulletTypes>
+    <stats>
+        <percentage>
+            <power>10</power>
+        </percentage>
+    </stats>
+</mod>
+```
+
+**多类型要求（满足任一即可）：**
+```xml
+<!-- 要求子弹为穿刺或爆炸类型 -->
+<requireBulletTypes>pierce,explosive</requireBulletTypes>
+```
+
+**与 excludeBulletTypes 的对比：**
+
+| 特性 | excludeBulletTypes | requireBulletTypes |
+|------|-------------------|-------------------|
+| **语义** | 排斥：匹配则**拒绝** | 要求：匹配则**通过** |
+| **逻辑** | OR排斥（任一命中→拒绝） | OR要求（任一命中→通过） |
+| **错误码** | -128 | -512 |
+| **用途** | 防止重复叠加同类能力 | 限定配件只能用于特定弹药的武器 |
+
+**设计用途：**
+- 让配件只能安装在使用特定弹药的武器上（如穿刺弹专用强化件）
+- 实现弹药类型的正向适配机制
+- 与excludeBulletTypes配合，精确控制配件与弹药的兼容性
+
 #### installCondition - 安装条件（数值层校验）
 
 **作用：** 基于装备的数值属性精准控制配件的安装资格
@@ -509,10 +553,11 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 ```
 1. use / weapontype        ← 类型层（装备大类/子类）
 2. requireTags / provideTags ← 结构层（插件依赖链）
-3. excludeBulletTypes       ← 子弹层（弹药互斥）
-4. installCondition         ← 数值层（属性精准控制）  ← 新增
+3. excludeBulletTypes       ← 子弹层（弹药排斥）
+4. requireBulletTypes       ← 子弹层（弹药要求）
+5. installCondition         ← 数值层（属性精准控制）
 ```
-检查顺序：类型 → 结构 → 子弹 → 数值，前面不通过则不会执行后面的检查。
+检查顺序：类型 → 结构 → 子弹排斥 → 子弹要求 → 数值，前面不通过则不会执行后面的检查。
 
 ---
 

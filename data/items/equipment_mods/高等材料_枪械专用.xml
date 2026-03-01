@@ -348,6 +348,7 @@
         <name>磁暴射线弹</name>
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <excludeBulletTypes>pierce</excludeBulletTypes>
         <requireTags>电力</requireTags>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法" />
@@ -415,6 +416,7 @@
         <name>光棱射线弹</name>
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <excludeBulletTypes>pierce</excludeBulletTypes>
         <requireTags>电力</requireTags>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法" />
@@ -481,6 +483,7 @@
         <name>辉光射线弹</name>
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <excludeBulletTypes>pierce</excludeBulletTypes>
         <installCondition>
             <cond op="above" path="data.interval" value="167" />
             <cond op="atLeast" path="data.capacity" value="5" />
@@ -550,6 +553,7 @@
         <name>光谱射线弹</name>
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <excludeBulletTypes>pierce</excludeBulletTypes>
         <requireTags>电力</requireTags>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法" />
@@ -616,6 +620,7 @@
         <name>谐振波射线弹</name>
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <excludeBulletTypes>pierce</excludeBulletTypes>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法" />
             <cond op="above" path="data.interval" value="200" />
@@ -694,6 +699,7 @@
         <name>热能射线弹</name>
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <excludeBulletTypes>pierce</excludeBulletTypes>
         <installCondition>
             <cond op="above" path="data.interval" value="267" />
             <cond op="is" path="data.split" value="1" />
@@ -758,6 +764,7 @@
         <name>涡旋射线弹</name>
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <excludeBulletTypes>pierce</excludeBulletTypes>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法" />
             <cond op="above" path="data.interval" value="267" />
@@ -820,6 +827,7 @@
         <name>波能射线弹</name>
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <excludeBulletTypes>pierce</excludeBulletTypes>
         <requireTags>电力</requireTags>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法" />
@@ -884,6 +892,7 @@
         <name>等离子射线弹</name>
         <use>长枪</use>
         <excludeWeapontype>发射器,近战,压制近战</excludeWeapontype>
+        <excludeBulletTypes>pierce</excludeBulletTypes>
         <requireTags>电力</requireTags>
         <installCondition>
             <cond op="is" path="data.damagetype" value="魔法" />

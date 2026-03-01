@@ -20,6 +20,12 @@ import org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer;
 class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil {
 
     /**
+     * is系列方法共享的查询对象，避免每次调用创建临时 { 子弹种类: x }
+     * 安全性：AS2单线程无重入风险，getFlags/calculateFlags只读不写此对象
+     */
+    private static var _q:Object = {};
+
+    /**
      * 透明子弹类型哈希表（单一数据源）
      * 遵循DRY原则：关于"哪些子弹是透明的"这一信息只在此处定义
      * 使用Object作为哈希表，O(1)查找性能，利用undefined的falsy特性
@@ -54,8 +60,8 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil {
         #include "../macros/FLAG_VERTICAL.as"  
         // 注入: var FLAG_VERTICAL:Number = 128;
         
-        var flags:Number = BulletTypesetter.getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_VERTICAL) != 0;
+        _q.子弹种类 = bulletType;
+        return (BulletTypesetter.getFlags(_q) & FLAG_VERTICAL) != 0;
     }
 
     /**
@@ -71,8 +77,8 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil {
         #include "../macros/FLAG_MELEE.as"  
         // 注入: var FLAG_MELEE:Number = 1;
         
-        var flags:Number = BulletTypesetter.getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_MELEE) != 0;
+        _q.子弹种类 = bulletType;
+        return (BulletTypesetter.getFlags(_q) & FLAG_MELEE) != 0;
     }
 
     /**
@@ -88,8 +94,8 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil {
         #include "../macros/FLAG_CHAIN.as"  
         // 注入: var FLAG_CHAIN:Number = 2;
         
-        var flags:Number = BulletTypesetter.getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_CHAIN) != 0;
+        _q.子弹种类 = bulletType;
+        return (BulletTypesetter.getFlags(_q) & FLAG_CHAIN) != 0;
     }
 
     /**
@@ -105,8 +111,8 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil {
         #include "../macros/FLAG_PIERCE.as"  
         // 注入: var FLAG_PIERCE:Number = 4;
         
-        var flags:Number = BulletTypesetter.getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_PIERCE) != 0;
+        _q.子弹种类 = bulletType;
+        return (BulletTypesetter.getFlags(_q) & FLAG_PIERCE) != 0;
     }
 
     /**
@@ -135,8 +141,8 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil {
         #include "../macros/FLAG_GRENADE.as"  
         // 注入: var FLAG_GRENADE:Number = 16;
         
-        var flags:Number = BulletTypesetter.getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_GRENADE) != 0;
+        _q.子弹种类 = bulletType;
+        return (BulletTypesetter.getFlags(_q) & FLAG_GRENADE) != 0;
     }
 
     /**
@@ -152,8 +158,8 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil {
         #include "../macros/FLAG_EXPLOSIVE.as"  
         // 注入: var FLAG_EXPLOSIVE:Number = 32;
         
-        var flags:Number = BulletTypesetter.getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_EXPLOSIVE) != 0;
+        _q.子弹种类 = bulletType;
+        return (BulletTypesetter.getFlags(_q) & FLAG_EXPLOSIVE) != 0;
     }
 
     /**
@@ -169,8 +175,8 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil {
         #include "../macros/FLAG_NORMAL.as"  
         // 注入: var FLAG_NORMAL:Number = 64;
         
-        var flags:Number = BulletTypesetter.getFlags({ 子弹种类: bulletType });
-        return (flags & FLAG_NORMAL) != 0;
+        _q.子弹种类 = bulletType;
+        return (BulletTypesetter.getFlags(_q) & FLAG_NORMAL) != 0;
     }
 
     /**

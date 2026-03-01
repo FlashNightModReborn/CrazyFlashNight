@@ -261,6 +261,7 @@ class org.flashNight.arki.item.EquipmentUtil {
         modAvailabilityResults[-64] = "该装备禁止安装此挂点类型的插件";
         modAvailabilityResults[-128] = "当前弹药与此配件不兼容";
         modAvailabilityResults[-256] = "装备属性不满足安装条件";
+        modAvailabilityResults[-512] = "当前弹药类型不满足此配件的要求";
     }
 
     // ==================== 进阶系统代理 ====================

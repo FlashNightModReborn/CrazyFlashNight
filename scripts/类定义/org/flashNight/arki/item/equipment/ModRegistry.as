@@ -132,6 +132,12 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             mod.excludeBulletTypeDict = buildDictFromList(mod.excludeBulletTypes);
         }
 
+        // 8.1. 处理requireBulletTypes（子弹类型要求）
+        // 要求装备的子弹至少匹配其中一种类型才能安装（与excludeBulletTypes相反）
+        if (mod.requireBulletTypes) {
+            mod.requireBulletTypeDict = buildDictFromList(mod.requireBulletTypes);
+        }
+
         // 8.5. 处理 installCondition（安装条件表达式）
         if (mod.installCondition) {
             mod.installCondList = processInstallCondition(mod.installCondition);
@@ -344,6 +350,7 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         _modAvailabilityResults[-64] = "该装备禁止安装此挂点类型的插件";
         _modAvailabilityResults[-128] = "当前弹药与此配件不兼容";
         _modAvailabilityResults[-256] = "装备属性不满足安装条件";
+        _modAvailabilityResults[-512] = "当前弹药类型不满足此配件的要求";
     }
 
     // ==================== 公共查询接口 ====================

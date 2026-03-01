@@ -634,6 +634,22 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       }
     }
 
+    // 显示子弹类型排斥
+    if(modData.excludeBulletTypeDict){
+      var excludeNames:Array = bulletTypeDictToNames(modData.excludeBulletTypeDict);
+      if(excludeNames.length > 0){
+        result.push("<font color='" + TooltipConstants.COL_ROUT + "'>" + TooltipConstants.LBL_EXCLUDE_BULLET_TYPES + "：</font>", excludeNames.join(", "), "<BR>");
+      }
+    }
+
+    // 显示子弹类型要求
+    if(modData.requireBulletTypeDict){
+      var requireNames:Array = bulletTypeDictToNames(modData.requireBulletTypeDict);
+      if(requireNames.length > 0){
+        result.push("<font color='" + TooltipConstants.COL_INSTALL_COND + "'>" + TooltipConstants.LBL_REQUIRE_BULLET_TYPES + "：</font>", requireNames.join(", "), "<BR>");
+      }
+    }
+
     // 显示安装条件（installCondition）
     if(modData.installCondList){
       var condLines:Array = buildInstallConditionText(modData.installCondList);
@@ -665,6 +681,24 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       result.push(modData.description.split("\r\n").join(TooltipFormatter.br()), TooltipFormatter.br());
     }
     return result;
+  }
+
+  // ==================== 子弹类型标识符转中文 ====================
+
+  /**
+   * 将子弹类型字典的键转为中文名称数组
+   * @param typeDict 子弹类型字典（键为英文标识符）
+   * @return 中文名称数组
+   */
+  private static function bulletTypeDictToNames(typeDict:Object):Array {
+    var names:Array = [];
+    var nameMap:Object = TooltipConstants.BULLET_TYPE_NAMES;
+    for(var key:String in typeDict){
+      if(ObjectUtil.isInternalKey(key)) continue;
+      var name:String = nameMap[key];
+      names.push(name ? name : key);
+    }
+    return names;
   }
 
   // ==================== installCondition 展示 ====================

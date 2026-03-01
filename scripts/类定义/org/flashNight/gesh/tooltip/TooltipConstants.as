@@ -130,9 +130,23 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_MOD_EXCLUDE_WEAPON_TYPE:String = "排除武器子类";
   public static var LBL_PROVIDE_TAGS:String = "提供结构";
   public static var LBL_REQUIRE_TAGS:String = "前置需求";
+  public static var LBL_EXCLUDE_BULLET_TYPES:String = "排斥弹药类型";
+  public static var LBL_REQUIRE_BULLET_TYPES:String = "要求弹药类型";
   public static var LBL_INSTALL_CONDITION:String = "安装条件";
   public static var LBL_INHERENT_TAGS:String = "固有结构";
   public static var LBL_BLOCKED_TAGS:String = "禁止挂点";
+
+  // 子弹类型标识符到中文名的映射
+  public static var BULLET_TYPE_NAMES:Object = {
+    pierce: "穿刺",
+    melee: "近战",
+    chain: "联弹",
+    grenade: "手雷",
+    explosive: "爆炸",
+    normal: "普通",
+    vertical: "纵向",
+    transparency: "透明"
+  };
 
   // ══════════════════════════════════════════════════════════════
   // 获取方式标签 (Obtain Methods Labels)

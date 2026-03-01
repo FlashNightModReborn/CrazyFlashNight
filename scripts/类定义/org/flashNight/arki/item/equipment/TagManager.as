@@ -219,6 +219,17 @@ class org.flashNight.arki.item.equipment.TagManager {
             }
         }
 
+        // 检查子弹类型要求（requireBulletTypes：要求至少匹配一种）
+        if (modData.requireBulletTypeDict && itemData.data && itemData.data.bullet) {
+            var rBulletType:String = itemData.data.bullet;
+            if (!checkBulletTypeRequirement(rBulletType, modData.requireBulletTypeDict)) {
+                if (_debugMode) {
+                    trace("[TagManager] 插件 '" + modName + "' 需要特定弹药类型，当前弹药 '" + rBulletType + "' 不满足");
+                }
+                return -512; // 弹药类型不满足要求
+            }
+        }
+
         // 检查安装条件（installCondition）
         if (modData.installCondList) {
             var condCheckData:Object = getConditionCheckData(modData.installCondList, item, itemData);
@@ -396,6 +407,21 @@ class org.flashNight.arki.item.equipment.TagManager {
                 }
             }
 
+            // 检查子弹类型要求（需要计算后的数据）
+            if (canUse && modData.requireBulletTypeDict) {
+                if (calculatedItemData == undefined) {
+                    calculatedItemData = item.getData();
+                }
+                if (calculatedItemData.data && calculatedItemData.data.bullet) {
+                    if (!checkBulletTypeRequirement(calculatedItemData.data.bullet, modData.requireBulletTypeDict)) {
+                        canUse = false;
+                        if (_debugMode) {
+                            trace("[TagManager] 过滤掉 '" + modName + "': 弹药类型不满足要求");
+                        }
+                    }
+                }
+            }
+
             // 检查安装条件（installCondition）
             if (canUse && modData.installCondList) {
                 var condCheckData:Object;
@@ -500,6 +526,60 @@ class org.flashNight.arki.item.equipment.TagManager {
         }
 
         return false;
+    }
+
+    /**
+     * 检查子弹类型是否满足要求（与排斥相反）
+     * @param bulletType 当前装备的子弹类型字符串
+     * @param requireDict 要求的子弹类型字典（键为类型标识符）
+     * @return 如果满足要求（至少匹配一种）返回true，否则返回false
+     * @private
+     */
+    private static function checkBulletTypeRequirement(bulletType:String, requireDict:Object):Boolean {
+        if (!bulletType || !requireDict) return true;
+
+        // 遍历要求字典，至少匹配一种即通过（OR逻辑）
+        for (var typeKey:String in requireDict) {
+            var isMatched:Boolean = false;
+
+            switch (typeKey) {
+                case "pierce":
+                    isMatched = BulletTypeUtil.isPierce(bulletType);
+                    break;
+                case "melee":
+                    isMatched = BulletTypeUtil.isMelee(bulletType);
+                    break;
+                case "chain":
+                    isMatched = BulletTypeUtil.isChain(bulletType);
+                    break;
+                case "grenade":
+                    isMatched = BulletTypeUtil.isGrenade(bulletType);
+                    break;
+                case "explosive":
+                    isMatched = BulletTypeUtil.isExplosive(bulletType);
+                    break;
+                case "normal":
+                    isMatched = BulletTypeUtil.isNormal(bulletType);
+                    break;
+                case "vertical":
+                    isMatched = BulletTypeUtil.isVertical(bulletType);
+                    break;
+                case "transparency":
+                    isMatched = BulletTypeUtil.isTransparency(bulletType);
+                    break;
+                default:
+                    if (_debugMode) {
+                        trace("[TagManager] 未知的子弹类型标识符: " + typeKey);
+                    }
+                    break;
+            }
+
+            if (isMatched) {
+                return true; // 匹配到一种即满足要求
+            }
+        }
+
+        return false; // 全不匹配，不满足要求
     }
 
     /**
