@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-幻影剑舞" itemID="6965fa98-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-幻影剑舞" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-幻影剑舞" itemID="6965fa98-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-幻影剑舞" lastModified="1772361892">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-幻影剑舞">
+    <DOMTimeline name="兵器攻击容器-幻影剑舞" currentFrame="34">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -213,7 +213,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#FF4F4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击点" color="#FF4F4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -638,7 +638,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -667,6 +667,10 @@ function 消弹()
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -734,6 +738,10 @@ function 消弹()
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
 	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+	}
 	
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -799,6 +807,10 @@ function 消弹()
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -866,6 +878,10 @@ function 消弹()
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
 	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+	}
 	
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -931,6 +947,10 @@ function 消弹()
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -998,6 +1018,10 @@ function 消弹()
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
 	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+	}
 	
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -1064,6 +1088,10 @@ function 消弹()
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
 	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+	}
 	
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -1107,7 +1135,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -1136,6 +1164,10 @@ function 消弹()
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1203,6 +1235,10 @@ function 消弹()
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
 	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+	}
 	
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -1268,6 +1304,10 @@ function 消弹()
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1335,6 +1375,10 @@ function 消弹()
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
 	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+	}
 	
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -1400,6 +1444,10 @@ function 消弹()
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1467,6 +1515,10 @@ function 消弹()
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
 	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+	}
 	
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -1532,6 +1584,10 @@ function 消弹()
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1599,6 +1655,10 @@ function 消弹()
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
 	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+	}
 	
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
@@ -1642,7 +1702,7 @@ function 消弹()
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-275" centerPoint3DY="70.85">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-275" centerPoint3DY="70.85">
                   <matrix>
                     <Matrix a="58.5083160400391" d="17.1866607666016" tx="85.75" ty="74.4"/>
                   </matrix>
@@ -1664,6 +1724,10 @@ function 消弹()
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
 		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -12527,8 +12591,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13264 7538[13108 7579 12945 7613!12945 7613[10795 8079 8289 7538!8289 7538[6506 7153 4543 6257!4543 6257[-179 4102 -3181 260!-3181 260[-6181 -3581 -5702 -6860!-5702 -6860[-5222 -10138 -1546 -10939!-1546 -10939[2137 -11735 6861 -9581
-!6861 -9581[11581 -7430 14581 -3586!14581 -3586[17583 257 17102 3536!17102 3536[16647 6669 13264 7538"/>
+!-1546 -10939[2137 -11735 6861 -9581!6861 -9581[11581 -7430 14581 -3586!14581 -3586[17583 257 17102 3536!17102 3536[16647 6669 13264 7538!13264 7538[13108 7579 12945 7613!12945 7613[10795 8079 8289 7538!8289 7538[6506 7153 4543 6257!4543
+ 6257[-179 4102 -3181 260!-3181 260[-6181 -3581 -5702 -6860!-5702 -6860[-5222 -10138 -1546 -10939"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -15742,7 +15806,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#669900" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="刀" color="#669900" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
