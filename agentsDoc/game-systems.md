@@ -27,11 +27,38 @@
 <!-- TODO: 补充事件系统的使用模式 -->
 
 ## 4. 计时器系统
-- **位置**：`scripts/类定义/org/flashNight/neur/Timer/`、`scripts/类定义/org/flashNight/neur/ScheduleTimer/`
-- **核心**：FrameTimer.as（帧计时器）、EnhancedCooldownWheel.as（冷却轮调度器）
-- **惯例**：AS2 原生 `setTimeout`/`setInterval` 可用但一般不使用，优先用帧计时器或 EnhancedCooldownWheel
+
+分层架构：
+
+| 层级 | 组件 | 位置 | 职责 |
+|------|------|------|------|
+| 帧驱动 | 事件总线 `"frameUpdate"` | 由 `ServerManager.as` 每帧 `publish` | 全局帧心跳源，各系统通过 `eventBus.subscribe("frameUpdate", ...)` 挂载 |
+| 轻量层 | `EnhancedCooldownWheel` | `neur/ScheduleTimer/EnhancedCooldownWheel.as` | 128 槽位时间轮 + 最小化 ID 管理 + 缓存闭包。最大延迟 **127 帧（约 4.2s@30FPS）** |
+| 重型层 | `TaskManager` + `CerberusScheduler` | `neur/ScheduleTimer/TaskManager.as` | 完整的任务调度框架。底层由 `CerberusScheduler`（三级时间轮 + 最小堆）驱动，最大延迟 60 分钟 |
+| 通信层 | `_root.帧计时器` | `scripts/通信/通信_fs_帧计时器.as` | TaskManager 的全局 API 封装，同时初始化 PerformanceScheduler（FPS 自适应系统） |
+
+- **禁用原生定时器**：AS2 原生 `setTimeout`/`setInterval` 基于真实时间（毫秒），但游戏默认无法跑满 30 帧，动画判定与帧动画深度耦合——真实时间驱动会导致逻辑与画面不同步。必须使用帧驱动的项目自建计时器
 - **审查文档**：`tools/TimerSystem_Review_Prompt_CN.md`
-<!-- TODO: 补充 FrameTimer 与 EnhancedCooldownWheel 的选用场景区分 -->
+
+### 选用决策
+
+**默认选 EnhancedCooldownWheel**（轻量、GC 友好）。仅在以下场景升级到 TaskManager：
+
+| 场景 | 选择 | 原因 |
+|------|------|------|
+| 短期延迟（≤127 帧 / ~4.2s） | EnhancedCooldownWheel | 缓存闭包零分配、惰性删除开销极低 |
+| 频繁创建/销毁的小任务（冷却、缓冲） | EnhancedCooldownWheel | 无重入处理开销，适合高频操作 |
+| 延迟超过 127 帧 | TaskManager | EnhancedCooldownWheel 的位运算会回环，结果不可预测 |
+| 需要生命周期自动清理（对象卸载时移除任务） | TaskManager（`addLifecycleTask`） | 通过 `EventCoordinator.addUnloadCallback` 防泄漏 |
+| 回调中需要修改其他任务（重入） | TaskManager | v1.8 完整重入契约：回调内可安全调用 `removeTask`/`delayTask` |
+| 需要暂停/恢复/动态延迟调整 | TaskManager（`delayTask`） | 支持累加延迟、暂停（`true`）、恢复 |
+
+### TaskManager 的"重型"体现
+
+- **多级数据结构**：CerberusScheduler 三层时间轮（150 帧 / 60s / 60min）+ 最小堆（超长延迟），加上 TaskManager 自身的 taskTable / zeroFrameTasks / 延迟移除队列 / 延迟重调度队列
+- **重入安全**（v1.7+）：分发期间的 `removeTask`/`delayTask` 走延迟物理删除 + 队列缓存，分发结束后统一处理，保证链表完整性
+- **Never-Early 保证**：毫秒→帧转换使用 ceiling bit-op（`_f + (_r > _f)`），绝不提前触发
+- **内存泄漏防护**：幽灵 ID 检测、unload 回调防重复注册、节点池回收
 
 ## 5. 摄像机系统
 - **位置**：`scripts/类定义/org/flashNight/arki/camera/`
@@ -85,7 +112,14 @@
 - `MicroBenchmark.as` / `MicroBenchmark.md` — 微基准测试框架
 - 各排序算法均有对应 `.md` 设计文档和 `*Test.as` 测试文件
 
-<!-- TODO: 补充各排序算法的选用场景区分（何时用 TimSort vs PDQSort vs 原生 Array.sort） -->
+**选用决策**：
+
+| 场景 | 推荐 | 原因 |
+|------|------|------|
+| 数据量极小（≤10-20 级） | 手动插入排序 | 避免与 C++ 层桥接（`Array.sort` 底层调用原生实现）的固定开销，纯 AS2 循环在小规模下更快 |
+| 数据可能有序或近似有序 | TimSort | 天然适应有序数据（O(n) 最优），稳定排序 |
+| 需要稳定排序 | TimSort | 项目中有多个稳定实现（NaturalMergeSort、InsertionSort 也是稳定的），但 TimSort 经过极限优化且成熟可靠，选它不会错 |
+| 原生 `Array.sort()` | **谨慎使用** | AS2 原生 sort 是朴素快排，有序/近似有序数据容易退化到 O(n²) 最差情况。理论上在数据确定随机且不需要稳定性时可用，但项目中目前**尚未找到**满足此条件的实际场景 |
 
 ## 10. 通用工具
 - **位置**：`scripts/类定义/org/flashNight/gesh/`

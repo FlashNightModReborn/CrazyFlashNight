@@ -130,8 +130,9 @@ if (!(data.items instanceof Array)) { data.items = [data.items]; }
 所有子节点递归解析为嵌套 Object，叶节点值自动做类型转换（`"100"` → `100`，`"true"` → `true`）。
 
 - **优点**：零配置，XML 结构直接映射为对象树，新增数据类型无需改解析代码，大幅简化数据装配
-- **缺点**：无 Schema 校验（结构错误静默产出错误对象）；自动类型转换可能误判（如编号 `"007"` 变为 `7`，纯数字字符串被转为 Number）
-- **对策**：对必须保持字符串的字段，在 XML 中使用非纯数字格式，或在消费侧显式 `String()` 转回
+- **缺点**：无 Schema 校验（结构错误静默产出错误对象）；自动类型转换可能误判（如编号 `"007"` 变为 `7`，纯数字字符串被转为 Number；`"true"`/`"false"` 不区分大小写转为 Boolean）
+- **Boolean 转换的隐患**：XML 中的 `<singleshoot>true</singleshoot>` 会被转为 Boolean `true`，但物品系统的 JSDoc 标注该字段为 Number 类型，缺省值为 `0`。当前消费侧仅在布尔上下文（`&&`）中使用，恰好能正常工作，但类型实际不一致（Boolean vs Number）。项目中已有 `fix_singleshoot.py` 批量修复武器单发/自动标记的脚本，说明此字段历史上出过配置问题
+- **对策**：对必须保持字符串的字段，在 XML 中使用非纯数字格式，或在消费侧显式 `String()` 转回；对布尔标志字段，消费侧应以 truthy/falsy 判断（而非 `=== true` 或 `=== 1`），以兼容 Boolean 和 Number 两种可能类型
 
 #### 数据目录结构
 

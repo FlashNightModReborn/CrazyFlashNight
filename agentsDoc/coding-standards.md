@@ -104,8 +104,7 @@
 
 ## 5. JSDoc 风格文档注释
 
-<!-- TODO: 从实际代码中提取典型的 JSDoc 示例作为模板 -->
-<!-- 参考文件：scripts/类定义/org/flashNight/arki/bullet/Factory/BulletFactory.as -->
+注释风格参照 JavaScript 最佳实践，随项目学习深入仍在持续演进。**新增代码应跟随所在文件的现有风格**，不要为了统一而大面积改写历史注释。
 
 ### 要求
 - 所有公开类和方法必须包含 JSDoc 风格注释（**中文撰写**）
@@ -120,7 +119,7 @@
 - 保持结构层次清晰
 - **注释保护**：通过代码处理 XML 进行数据迁移或批量修改时，必须检查 XML 中的中文注释是否被保留。许多 XML 解析器/序列化器会默认丢弃注释，需确保写回时注释完整
 - **列表字段归一化**：`XMLParser` 会将同名节点自动合并为数组，但**仅出现一次时返回单值而非数组**。消费侧对语义上「一定是列表」的字段，必须用 `XMLParser.configureDataAsArray()` 或 `if (!(x instanceof Array)) x = [x]` 归一化，不得假设其类型
-- **注意自动类型转换**：`XMLParser` 会将纯数字字符串自动转为 Number（`"007"` → `7`）、`"true"`/`"false"` 转为 Boolean。对必须保持字符串的字段（如编号、代码），在 XML 中避免纯数字格式，或在消费侧显式 `String()` 转回
+- **注意自动类型转换**：`XMLParser` 会将纯数字字符串自动转为 Number（`"007"` → `7`）、`"true"`/`"false"`（不区分大小写）转为 Boolean。对必须保持字符串的字段（如编号、代码），在 XML 中避免纯数字格式，或在消费侧显式 `String()` 转回。对布尔标志字段（如武器的 `<singleshoot>true</singleshoot>`），消费侧应以 truthy/falsy 判断，不要用 `=== true` 或 `=== 1`，因为缺省值可能是 Number `0` 而有值时是 Boolean `true`
 
 ## 7. Node.js 编码规范
 

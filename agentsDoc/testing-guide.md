@@ -6,16 +6,32 @@
 
 ## 1. AS2 测试框架
 
-### 核心模式：runAllTests()
-- 每个测试类提供 `runAllTests():Void` 入口方法
+### 核心模式：一句话启动
+- 每个测试类提供一个静态入口方法（如 `runAllTests()` 或 `runTests()`），可在 Flash IDE 帧脚本中**一行调用**启动全部测试
 - 测试类命名：`[ClassName]Test.as`
 - 测试方法命名：`test_方法名_预期结果`
-- 使用 `trace()` 输出测试结果
+- 使用 `trace()` 输出 PASS/FAIL 结果
+
+### 同名 .md 文件惯例
+- 测试类旁放置同名 `.md` 文件（如 `TimSort.md`），第一行记录启动语句，后面粘贴运行输出
+- 开发阶段作为测试记录使用；功能稳定后逐步升级为完整的设计文档（补充算法说明、基准数据、决策记录等）
+
+示例（`TimSort.md`）：
+```
+org.flashNight.naki.Sort.TimSortTest.runTests();
+
+Starting Enhanced TimSort Tests...
+=== 基础功能测试 ===
+PASS: 空数组测试
+PASS: 单元素数组测试
+...
+```
 
 ### 目录组织
 ```
 scripts/类定义/org/flashNight/[包名]/
 ├── SomeClass.as
+├── SomeClass.md          ← 启动语句 + 测试输出 → 后期升级为设计文档
 └── test/
     └── SomeClassTest.as
 ```
@@ -31,10 +47,13 @@ scripts/类定义/org/flashNight/[包名]/
 
 ## 2. Node.js 测试
 
-<!-- TODO: 确认 tools/Local Server/ 是否有现有测试，补充实际测试方法 -->
+**现状**：`tools/Local Server/` 无正式测试框架（无 mocha/jest 等依赖，无 test 脚本，无测试目录）。服务器早期编写较粗糙，验证依赖手动运行。
 
-- 服务器代码可直接运行验证
-- 使用 `node server.js` 启动后通过 HTTP 请求验证
+现有验证手段：
+- `node server.js` 启动后通过 HTTP 请求手动验证
+- `testPlaySound.js` — 独立的音频播放验证脚本
+- `/testConnection` 端点 — 连接健康检查（POST → `status=success`）
+- 各 controller 内有参数校验和错误处理，但非自动化测试
 
 ---
 
