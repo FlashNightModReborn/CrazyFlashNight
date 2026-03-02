@@ -90,7 +90,55 @@
 ## 10. 通用工具
 - **位置**：`scripts/类定义/org/flashNight/gesh/`
 - **内容**：数组工具、字符串解析（EvalParser）、算法实现
-<!-- TODO: 补充关键工具函数列表 -->
+
+### 子模块与关键类
+
+| 子目录 | 核心类 | 用途 |
+|--------|--------|------|
+| `array/` | `ArrayUtil` | ES6 风格数组方法：`forEach`、`map`、`filter`、`reduce`、`find`、`flat`、`groupBy`、`unique`、`shuffle`、`chunk`、`zip` 等 |
+| `array/` | `ArrayPool` | 数组对象池（继承 `LightObjectPool`），减少 GC 开销 |
+| `number/` | `NumberUtil` | 安全数值运算（`safeAdd`/`safeDivide`/`defaultIfNaN`）、`clamp`/`normalize`/`remap`/`wrap`、角度转换（`deg2rad`/`rad2deg`）、ES262 规范的 `toFixed` |
+| `string/` | `StringUtils` | HTML 实体编解码、字符转义、字符串压缩（LZW/RLE/Huffman/Hex16）、填充/裁剪/大小写转换 |
+| `string/` | `KMPMatcher` | KMP 模式匹配算法 |
+| `object/` | `ObjectUtil` | 深拷贝（带循环检测）、`deepEquals`、序列化/反序列化（JSON/Base64/FNTL/TOML/压缩格式） |
+| `func/` | `FunctionUtil` | 基于类型的函数重载分派 |
+| `func/` | `LazyValue` | 惰性求值 + 自优化缓存（首次调用计算，后续直接返回） |
+| `pratt/` | `PrattEvaluator` | Pratt 算法表达式求值引擎，支持变量绑定和内建函数（`min`/`max`/`clamp`/`abs`/`floor`/`ceil`/`round` 等），工厂方法 `createForBuffSystem()` 供 Buff 系统使用 |
+| `property/` | `PropertyAccessor` | 动态属性访问器，支持计算属性、校验和变更回调 |
+| `iterator/` | `IIterator` 接口 | 迭代器模式（`next`/`hasNext`/`reset`/`dispose`），实现类：`ArrayIterator`、`ObjectIterator`、`TreeSetMinimalIterator`、`OrderedMapMinimalIterator` |
+| `json/` | `JSONLoader` | 异步 JSON 文件加载器，支持 `"JSON"`/`"LiteJSON"`/`"FastJSON"` 三种解析器 |
+| `symbol/` | `Symbol` | UUID 唯一符号生成与全局注册表 |
+| `arguments/` | `ArgumentsUtil` | `arguments` 对象操作：`slice`/`toArray`/`forEach`/`map`/`reduce`/`combineArgs` |
+| `depth/` | `DepthManager` | AVL 树深度排序管理器（懒处理模式）——当前未投入使用（见第 8 节） |
+| `path/` | `PathManager` | 资源路径管理与环境检测（resource/browser/Steam） |
+| `text/` | `IntelligenceTextLoader` | 智能文本加载器（自动编码检测） |
+| `tooltip/` | `TooltipComposer` | 格式化提示文本合成，含 `SkillTooltipComposer` 技能专用子类 |
+| `toml/` | `TOMLParser` | TOML 格式解析器 |
+| `fntl/` | `FNTLParser` | FNTL（FlashNight Text Language）自定义数据格式解析器 |
+| `regexp/` | `RegExp` | 自定义正则表达式实现 |
+| `paint/` | `RendererVM` | 图形渲染指令虚拟机 |
+| `xml/` | — | XML 解析与操作工具 |
+
+### 高频使用示例
+
+```actionscript
+// 数组操作
+var evens:Array = ArrayUtil.filter(arr, function(x) { return x % 2 == 0; });
+var grouped:Object = ArrayUtil.groupBy(items, function(item) { return item.type; });
+
+// 安全数值
+var clamped:Number = NumberUtil.clamp(value, 0, 100);
+var safe:Number = NumberUtil.defaultIfNaN(parsed, 0);
+
+// 对象深拷贝与序列化
+var copy:Object = ObjectUtil.clone(original);
+var json:String = ObjectUtil.toJSON(data);
+
+// 表达式求值（Buff 系统等动态公式）
+var eval:PrattEvaluator = PrattEvaluator.createForBuffSystem();
+eval.setVariable("攻击力", 150);
+var result = eval.evaluate("攻击力 * 1.5 + 20");
+```
 
 ## 11. 小游戏系统
 - **位置**：`scripts/类定义/org/flashNight/hana/`
