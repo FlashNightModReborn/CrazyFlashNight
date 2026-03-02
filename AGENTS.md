@@ -2,7 +2,7 @@
 
 ## 项目概述
 
-闪客快打7佣兵帝国（CF7:ME）单机 MOD，AS2 + Flash CS6 技术栈，已获原作者 andylaw 授权。Agent 定位：全栈游戏开发协作者（编码/设计/数值/叙事/测试/文档）。
+闪客快打7佣兵帝国（CF7:ME）单机 MOD，AS2 + Flash CS6 技术栈，已获原作者 andylaw 授权。
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | 核心技术 | ActionScript 2.0 + Adobe Flash Professional CS6（Windows） |
 | 编译限制 | AS2 仅能通过 Flash CS6 GUI 编译，**Agent 当前无法执行编译验证** |
-| 辅助技术 | Node.js 14+（本地服务器）、PowerShell（自动化）— Agent 可直接运行验证 |
+| 辅助技术 | Node.js（本地服务器）、PowerShell（自动化）— Agent 可直接运行验证 |
 | 可直接修改并立即生效 | `data/`、`config/` 下的 XML 配置文件 |
 | SWF 文件 | Agent 不得手动编辑；提交规则见「版本控制备忘」 |
 | 终端编码 | Windows 默认 GBK，Agent 使用终端前执行 `chcp.com 65001 > /dev/null 2>&1` 切换 UTF-8 |
@@ -49,19 +49,17 @@
 
 `scripts/类定义/org/flashNight/` 七大包：
 
-| 包 | 职责 | 关键模块 |
-|----|------|----------|
-| **arki** | 游戏引擎核心 | bullet（子弹工厂）、component（Buff/伤害/护盾）、render（射线VFX）、camera、audio、collision、spatial、item、unit、scene、task |
-| **aven** | 协调与测试 | EventCoordinator（事件总线）、Promise（未完工）、Proxy、test（TestRunner/TestSuite/Assertions） |
-| **gesh** | 通用工具库（21 模块） | 高频：array、string、number、object、pratt、path、xml；详见 game-systems.md §10 |
-| **hana** | 独立小游戏仓库 | 作为资源 SWF 加载，库符号注入主文件运行时 |
-| **naki** | 数据结构与数学 | DataStructures（AVL/红黑树/BVH/图/堆/并查集/LRU/BigInt 等 35+ 类）、Sort（TimSort/PDQSort 等）、RandomNumberEngine（LCG/MT/PCG）、Cache、Interpolation、DP |
-| **neur** | 事件/控制/计时/状态机 | Event（EventDispatcher/EventBus）、ScheduleTimer（CooldownWheel/TaskManager/CerberusScheduler）、Controller（PID/卡尔曼滤波）、StateMachine、Tween、Server、Navigation、MarkovChain |
-| **sara** | 物理引擎 | primitives（粒子）、constraints（约束）、surfaces（表面碰撞）、composites（复合体/弹簧盒）、graphics |
+| 包 | 职责 |
+|----|------|
+| **arki** | 游戏引擎核心（子弹、Buff/伤害、射线VFX、摄像机、音频、碰撞、空间、物品、单位、场景、任务） |
+| **aven** | 协调与测试（EventCoordinator 事件总线、Proxy、测试框架） |
+| **gesh** | 通用工具库（21 模块：array/string/number/object/pratt/path/xml 等） |
+| **hana** | 小游戏资源仓库（库符号注入主文件运行时） |
+| **naki** | 数据结构与数学（45+ 数据结构类、排序、随机数引擎、缓存、插值、DP） |
+| **neur** | 事件/控制/计时/状态机（EventBus、计时器三级体系、PID/卡尔曼、Tween、导航） |
+| **sara** | 物理引擎（粒子、约束、表面碰撞、复合体） |
 
-各系统详细描述与选用决策见 [agentsDoc/game-systems.md](agentsDoc/game-systems.md)。
-
-关键设计模式：事件=总线 | 子弹=工厂 | 音频=接口抽象 | 深度管理器=AVL 树（未投入使用，性能未通过）
+各系统详细描述、模块枚举与选用决策见 [game-systems.md](agentsDoc/game-systems.md)。
 
 ---
 
@@ -87,5 +85,3 @@
 
 - **SWF 提交**：`scripts/asLoader.swf` 达到可用节点时可提交；其他资源 SWF 完成功能后再上传封档
 - **不提交**：大型二进制资源、`node_modules`
-- **分支策略**：重大修改建议创建功能分支
-- **Git 文档**：`0.说明文件与教程/github项目操作文档.txt`

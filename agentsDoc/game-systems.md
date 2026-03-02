@@ -72,7 +72,7 @@
 
 ## 9. 数据结构与算法
 - **位置**：`scripts/类定义/org/flashNight/naki/`
-- **内容**：DataStructures（AVL/红黑树/BVH/图/堆/并查集/LRU/BigInt 等 35+ 类）、RandomNumberEngine（LCG/MT/PCG）、Cache、Interpolation、DP、Sort
+- **内容**：DataStructures（AVL/红黑树/BVH/图/堆/并查集/LRU/BigInt 等 45+ 类）、RandomNumberEngine（LCG/MT/PCG）、Cache、Interpolation、DP、Sort
 
 ### 排序子系统（`naki/Sort/`）
 

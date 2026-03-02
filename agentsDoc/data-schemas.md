@@ -54,14 +54,16 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 
 ## 4. 数据目录结构
 
-| 目录 | 用途 | 修改生效方式 |
-|------|------|-------------|
-| `data/stages/` | 关卡定义 | 运行时加载，重启生效 |
-| `data/items/` | 物品配置 | 运行时加载，重启生效 |
-| `data/units/` | 单位数据 | 运行时加载，重启生效 |
-| `data/dialogues/` | 对话脚本 | 运行时加载，重启生效 |
-| `data/environment/` | 环境设置 | 运行时加载，重启生效 |
-| `config/` | 系统配置 | 运行时加载，重启生效 |
+以下目录均为**运行时加载，重启生效**：
+
+| 目录 | 用途 |
+|------|------|
+| `data/stages/` | 关卡定义 |
+| `data/items/` | 物品配置 |
+| `data/units/` | 单位数据 |
+| `data/dialogues/` | 对话脚本 |
+| `data/environment/` | 环境设置 |
+| `config/` | 系统配置 |
 
 `data/` 下大量 XML 文件，大多数采用 **list.xml 主从模式**：
 
@@ -118,6 +120,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 | `NpcDialogueLoader` | `data/dialogues/list.xml` | NPC 对话数据 |
 | `EquipmentConfigLoader` | `data/equipment/equipment_config.xml` | 装备配置 |
 | `EquipModListLoader` | `data/items/equipment_mods/list.xml` | 装备改造列表 |
+| `EquipModDataLoader` | `data/items/equipment_mods.xml` | 装备改造数据 |
 | `BulletsCasesLoader` | `data/items/bullets_cases.xml` | 弹药数据 |
 | `MissileConfigLoader` | `data/items/missileConfigs.xml` | 投射物配置 |
 | `HeroTitlesLoader` | `data/hero/hero_titles.xml` | 称号数据 |
@@ -125,11 +128,18 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 | `InformationDictionaryLoader` | `data/dictionaries/information_dictionary.xml` | 情报字典 |
 | `InfrastructureLoader` | `data/infrastructure/infrastructure.xml` | 基建定义 |
 | `SceneEnvironmentLoader` | `data/environment/scene_environment.xml` | 场景环境 |
+| `StageEnvironmentLoader` | `data/environment/stage_environment.xml` | 关卡环境 |
 | `WeatherSystemConfigLoader` | `config/WeatherSystemConfig.xml` | 天气系统 |
+| `PIDControllerConfigLoader` | `config/PIDControllerConfig.xml` | PID 控制器参数 |
 | `BGMListLoader` | `data/render/bgm_list.xml` | BGM 列表 |
 | `TrailStylesLoader` | `data/render/trail_styles.xml` | 拖尾样式 |
 | `InputCommandListXMLLoader` | `data/inputCommand/list.xml` | 操作指令定义 |
-| `StageXMLLoader` | `data/stages/*/stage.xml` | 关卡数据（`parseStageXMLNode`，支持 CaseSwitch 条件值） |
+| `InputCommandSetXMLLoader` | 动态路径（PathManager） | 单个 CommandSet 解析（指令/派生/分组） |
+| `InputCommandRuntimeConfigLoader` | `config/InputCommandRuntimeConfig.xml` | 指令 DFA 运行时参数 |
+| `StageInfoLoader` | `data/stages/list.xml`（级联子目录） | 关卡元信息（读 list.xml 后级联加载子目录） |
+| `DOMDocumentLoader` | `flashswf/UI/加载背景/DOMDocument.xml` | Flash 创作文件 DOM 结构 |
+
+> 另有 `BaseStageXMLLoader`（基类，按路径参数加载单个关卡 XML）和 `StageXMLLoader`（非单例工具类，位于 `gesh/xml/`，支持 CaseSwitch 条件值解析），不在上表中。
 
 ### 使用模式
 
