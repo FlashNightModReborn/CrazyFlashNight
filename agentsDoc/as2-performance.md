@@ -49,13 +49,17 @@
 | `as2环境下的缓存命中优化评估.md` | 缓存命中率优化策略 |
 | `异常兜底措施的性能评估与优化.md` | try-catch 的性能影响 |
 
-### 求值顺序与副作用（黑魔法）
+### AVM1 字节码与编译器行为
 | 文件 | 主题 |
 |------|------|
 | `scripts/类定义/org/flashNight/naki/Sort/evalorder.md` | AS2 求值顺序规则文档 |
 | `scripts/类定义/org/flashNight/naki/Sort/EvalOrderTest.as` | 求值顺序验证测试 |
+| `scripts/类定义/org/flashNight/naki/Sort/TimSort.as`（文件头注释）| AVM1 平台决策记录：偏移寻址、StoreRegister、隐式布尔转换 |
 
-> 注：`evalorder.md` 记录的是求值顺序本身的规则。副作用压行触发寄存器优化的性能收益来自长期工程实践验证，非单一基准测试。
+> 注：`evalorder.md` 记录的是求值顺序本身的规则。`TimSort.as` 文件头的"AS2/AVM1 平台决策记录"
+> 是目前项目中对 AVM1 字节码行为最详尽的实测总结，涵盖偏移寻址 vs 自增、StoreRegister 机制、
+> 隐式布尔转换快速路径等，均附有字节码反汇编验证。副作用压行触发寄存器优化的性能收益来自长期
+> 工程实践验证，非单一基准测试。
 
 ### 综合与工程
 | 文件 | 主题 |
@@ -67,23 +71,42 @@
 
 ## 2. 关键性能结论摘要
 
-<!-- TODO: 逐步从各篇笔记中提炼一行结论，填充此处 -->
 <!-- 格式：▸ [主题] — [关键结论] -->
+<!-- 持续补充：每次阅读优化随笔或深度优化代码时，在此追加一行摘要 -->
 
-> 此节在自优化环节中逐步填充。每次阅读优化随笔时，在此追加一行摘要。
+▸ **偏移寻址 vs 自增** — 批量拷贝用 `arr[d+k]...d+=4` 优于 `arr[d++]×4`。AVM1 中 `d++` 编译为 4 条字节码（read-dup-increment-store），`d+k` 仅 3 条（push-k-add），每 4 路展开净省 4 条指令。尾部余量仍用 `d++`（仅 0-3 次，不值得展开）。来源：`TimSort.as` 平台决策记录，实测 d++ 版本性能回退已确认
+
+▸ **StoreRegister 机制** — AVM1 编译器仅在**副作用语句**中生成 StoreRegister（store-without-pop，值留栈继续参与运算）。独立语句 `j--` 走 GetVariable/SetVariable 变量名查找路径，开销显著更高。因此 `arr[--j+2]=tmp` 优于分离的 `arr[j+1]=tmp; j--;`。根因：AVM1 时代 CPU 寄存器稀缺，编译器仅副作用上下文分配寄存器。来源：`TimSort.as` 平台决策记录 + `evalorder.md` 验证测试
+
+▸ **隐式布尔转换优于三元** — `compare(a,b)<=0` 返回 Boolean，AVM1 的 ActionSubtract 等算术指令内部硬连线 Boolean→Number 快速路径，比显式三元 `(cond ? 1 : 0)` 更快。勿尝试"装箱消除"优化。来源：`TimSort.as` 平台决策记录
+
+▸ **间接排序键预提取** — 当排序键需要通过函数调用或属性访问获取时，先提取到独立 Number 数组，用内联 `keys[X] OP keys[Y]` 替代 `compare(X,Y)` 函数调用，可获得 **38%~67% 性能提升**（全数据模式均受益）。来源：`TimSort.sortIndirect()` 基准测试
+
+▸ **哨兵搬运 + do-while** — 如果能预先确定首输出元素的归属（如合并前 pre-trim），可将 `while` 循环转为 `do-while`，省去入口条件检查。TimSort 合并阶段均使用此手法。来源：`TIMSORT_MERGE.as` P3 优化
+
+▸ **算法参数应随比较开销调整** — TimSort `sort()` 使用 MIN_GALLOP=9（函数调用比较，延迟进入 gallop 更优），`sortIndirect()` 使用 MIN_GALLOP=7（内联比较，更早进入 gallop 有利）。算法参数不能照搬教科书默认值，需根据平台实际比较开销做 benchmark 调优。来源：`TimSort.as` 两个入口的参数差异
+
+▸ **GC 阈值缓存策略** — 静态工作区跨调用复用减少 `new Array()` GC 压力；清理时大于阈值（如 256）释放防止引用泄漏，小于阈值保留复用。来源：`TimSort.as` _workspace 管理
+
+▸ **重入保护 + 安全降级** — 使用静态缓存的热路径组件需 `_inUse` 标志防重入 + `resetState()` 安全阀防异常后永久锁死 + trace 警告 + 降级到原生实现而非崩溃。来源：`TimSort.as` 重入保护机制
 
 ---
 
 ## 3. 优化决策快查表
 
-<!-- TODO: 从性能研究中继续提炼常用决策规则 -->
+<!-- 持续补充：每次发现新的优化决策规则时追加 -->
 
 | 场景 | 推荐方案 | 依据 |
 |------|----------|------|
-| 多步计算需要临时变量 | 利用副作用语句压行，触发 VM 使用寄存器加速 | `evalorder.md`：现代 CPU 寄存器充足，副作用压行比拆分为多条语句更快 |
+| 多步计算需要临时变量 | 利用副作用语句压行，触发 StoreRegister 寄存器快速路径 | `evalorder.md` + `TimSort.as` 平台决策：副作用上下文中 `--j` 走 StoreRegister（3 字节码），独立 `j--` 走 GetVariable/SetVariable 名查找路径（更慢） |
+| 批量数组拷贝 | 4 路展开 + **偏移寻址** `arr[d+k]...d+=4`，不用 `arr[d++]×4` | `TimSort.as` 平台决策：`d+k` = 3 字节码，`d++` = 4 字节码，每 4 路展开净省 4 条指令。尾部余量(len&3)仍用 `d++` |
+| 布尔值参与算术运算 | 直接使用比较结果（Boolean），不要用三元 `(cond ? 1 : 0)` 显式装箱 | `TimSort.as` 平台决策：AVM1 ActionSubtract 硬连线 Boolean→Number 快速路径 |
+| 按计算键排序 | 先提取键到独立 Number 数组，用内联 `keys[X] OP keys[Y]` 替代比较器函数调用 | `TimSort.sortIndirect()` 基准：38%~67% 提升 |
+| 循环首次迭代可保证执行 | 哨兵搬运（预移走一个确定元素）+ 转为 `do-while` 省去入口条件 | `TIMSORT_MERGE.as` P3 优化 |
 | 字符串拼接 | 裸 `+` 拼接，不用 `Array.join()` | `字符串性能评估.md` |
 | 取绝对值 | 位运算替代 `Math.abs()` | `对降低abs取绝对值操作开销的探索.md` |
 | 取整 | 位运算替代 `Math.floor()` | `对降低floor取整操作开销的探索.md` |
+| 热路径组件使用静态缓存 | 阈值释放策略（小缓存保留复用，大缓存释放防 GC 泄漏）+ `_inUse` 重入保护 + `resetState()` 安全阀 | `TimSort.as` 静态 workspace 管理 |
 
 ---
 

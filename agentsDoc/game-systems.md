@@ -58,7 +58,34 @@
 ## 9. 数据结构与算法
 - **位置**：`scripts/类定义/org/flashNight/naki/`
 - **内容**：高级矩阵运算、随机数引擎（LCG、MersenneTwister）、数据结构
-<!-- TODO: 补充各数据结构的使用场景 -->
+
+### 排序子系统（`naki/Sort/`）
+本项目最深度优化的基建之一，包含多种排序算法实现和完整基准测试体系：
+
+| 文件 | 算法 | 说明 |
+|------|------|------|
+| `TimSort.as` | TimSort（稳定） | **主力排序**。v3.3，包含 `sort()` 和 `sortIndirect()` 两个入口。文件头的"AS2/AVM1 平台决策记录"是项目中对 AVM1 字节码行为最详尽的实测总结 |
+| `PDQSort.as` | Pattern-Defeating QuickSort | 不稳定但对特定模式更快 |
+| `PowerSort.as` | PowerSort | 基于 power 的合并策略 |
+| `NaturalMergeSort.as` | Natural Merge Sort | 自然归并排序 |
+| `InsertionSort.as` | Insertion Sort | 小数组专用 |
+| `QuickSort.as` | QuickSort | 经典快排 |
+
+**关键优化技术**（均以 TimSort 为核心示范）：
+- **宏内联**：合并逻辑通过 `#include "../macros/TIMSORT_MERGE.as"` 内联，零函数调用开销
+- **间接排序**：`sortIndirect(arr, keys)` 预提取键数组，内联比较替代函数调用，38%~67% 提升
+- **AVM1 字节码调优**：偏移寻址 vs 自增、StoreRegister 副作用快速路径、隐式布尔转换
+- **GC 管理**：静态 workspace 跨调用复用 + 阈值释放策略
+- **重入保护**：`_inUse` + `resetState()` + 降级回退
+
+**辅助文件**：
+- `evalorder.md` — AVM1 求值顺序规则（50 个测试用例验证 LHS-first）
+- `EvalOrderTest.as` — 求值顺序验证测试
+- `TimSort.md` — 完整基准测试报告
+- `MicroBenchmark.as` / `MicroBenchmark.md` — 微基准测试框架
+- 各排序算法均有对应 `.md` 设计文档和 `*Test.as` 测试文件
+
+<!-- TODO: 补充各排序算法的选用场景区分（何时用 TimSort vs PDQSort vs 原生 Array.sort） -->
 
 ## 10. 通用工具
 - **位置**：`scripts/类定义/org/flashNight/gesh/`
