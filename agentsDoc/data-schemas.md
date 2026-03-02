@@ -83,7 +83,7 @@ data/config/                  → 运行时配置
 - `WeatherSystemConfig.xml` — 天气系统（昼夜循环、光照级别）
 
 **根目录配置**：
-- `config.toml` — 运行时配置（Flash 路径、SWF 路径等）
+- `./config.toml`（根目录）— 运行时配置（Flash 路径、SWF 路径等）。注意 `automation/config.toml` 是自动化脚本配置，二者用途不同
 - `config.xml` — 游戏主配置
 - `crossdomain.xml` — Flash 跨域策略
 
@@ -152,23 +152,7 @@ if (loader.isLoaded()) {
 
 ## 7. 各数据类型 Schema
 
-<!-- TODO: 逐步从实际 XML 文件中提取各类型的结构描述 -->
-<!-- 每种数据类型应包含：根元素、必要属性、子元素列表、示例片段 -->
-
-### stages（关卡）
-> 待填充
-
-### items（物品）
-> 待填充
-
-### units（单位）
-> 待填充
-
-### dialogues（对话）
-> 待填充
-
-### environment（环境）
-> 待填充
+<!-- TODO: 逐步填充 stages/items/units/dialogues/environment 的结构描述（根元素、必要属性、子元素、示例） -->
 
 ---
 

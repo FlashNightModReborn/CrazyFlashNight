@@ -7,7 +7,7 @@
 
 ## 0. 文件编码：UTF-8 with BOM（最高优先级）
 
-Flash CS6（AS2 最高支持版本）要求 `.as` 文件使用 **UTF-8 with BOM** 编码，**不支持普通 UTF-8**。BOM 头丢失会导致编译失败或中文乱码。
+`.as` 文件必须使用 **UTF-8 with BOM** 编码。BOM 头丢失会导致编译失败或中文乱码。
 
 ### Agent 操作 .as 文件的安全流程
 1. **新建文件**：先复制一个已有的 `.as` 文件，重命名，再修改内容（保留 BOM 头）
@@ -56,10 +56,8 @@ Flash CS6（AS2 最高支持版本）要求 `.as` 文件使用 **UTF-8 with BOM*
 ## 2. AS2 vs JavaScript 易混淆点
 
 ### 空值访问与判空
-- **AS2 非常宽容，不需要判空**。访问 `undefined.prop` 返回 `undefined` 而不会崩溃
-- 对于 `a.b.c.d` 链式访问，**直接一步到位**，不要逐级判空检查
-- 虚拟机已为宽容性付出了性能代价，额外的判空检查只会雪上加霜
-- **禁止**写出 `if (a != undefined && a.b != undefined && a.b.c != undefined)` 这种防御式代码
+- AS2 `undefined.prop` 返回 `undefined` 不崩溃。链式 `a.b.c.d` 直接访问，**禁止逐级判空**
+- **禁止**：`if (a != undefined && a.b != undefined && a.b.c != undefined)`
 
 ### 作用域与 this
 - AS2 `var` 有函数作用域（类似 JS），无 `let`/`const`
@@ -157,21 +155,20 @@ AS1/Flash 4 时代的运算符关键词在 AS2 中仍是**保留字**，用作�
 
 ## 4. 常见幻觉速查表
 
-| 幻觉写法 | 正确 AS2 写法 | 来源 |
-|-----------|--------------|------|
-| `addEventListener("click", handler)` | `mc.onPress = handler` | AS3 |
-| `new Sprite()` | `mc.createEmptyMovieClip(name, depth)` | AS3 |
-| `package { }` | 无，路径由目录结构决定 | AS3 |
-| `const X:int = 1` | `var X:Number = 1`（或 `static var`） | AS3/JS |
-| `array.push(...items)` | `array.push(item)` 逐个添加 | JS |
-| `for (var i of arr)` | `for (var i = 0; i < arr.length; i++)` | JS |
-| `for (var k in obj)` | 可用，遍历顺序**稳定**（见下文） | — |
-| `obj?.prop` | 直接 `obj.prop`（AS2 对 undefined 访问不崩溃，无需判空） | JS |
-| `JSON.parse(str)` | 自定义解析或 XML 解析 | JS |
-| `setTimeout`/`setInterval` | 可用但一般不用，优先用帧计时器或 `EnhancedCooldownWheel` | 惯例 |
-| `var gt:Number` / `obj.lt` | 避开 `eq ne lt gt le ge and or not add` 等 Flash 4 保留字 | AS1 遗留 |
-| `n.toFixed(2)` | `Math.round(n * 100) / 100` 或自定义函数 | JS |
-| `{"key": value}` 对象字面量 | `{key: value}` 键名不加引号；保留字/特殊键用 `obj["key"]` | JS 习惯 |
+| 幻觉写法 | 正确 AS2 写法 |
+|-----------|--------------|
+| `addEventListener("click", handler)` | `mc.onPress = handler` |
+| `new Sprite()` | `mc.createEmptyMovieClip(name, depth)` |
+| `package { }` | 无，路径由目录结构决定 |
+| `const X:int = 1` | `var X:Number = 1`（或 `static var`） |
+| `array.push(...items)` | `array.push(item)` 逐个添加 |
+| `for (var i of arr)` | `for (var i = 0; i < arr.length; i++)` |
+| `obj?.prop` | 直接 `obj.prop`（AS2 不崩溃） |
+| `JSON.parse(str)` | 自定义解析或 XML 解析 |
+| `setTimeout`/`setInterval` | 优先用帧计时器或 `EnhancedCooldownWheel` |
+| `var gt:Number` / `obj.lt` | 避开 Flash 4 保留字（§2 详述） |
+| `n.toFixed(2)` | `Math.round(n * 100) / 100` |
+| `{"key": value}` | `{key: value}`；保留字键用 `obj["key"]` |
 
 > 注：AVM1 性能相关的编码惯例（布尔转数值快速路径、StoreRegister 副作用压行、偏移寻址展开等）见 [as2-performance.md](as2-performance.md) 优化决策快查表。
 

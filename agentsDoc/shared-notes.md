@@ -13,19 +13,14 @@
 
 ## 2. 已知坑与临时 Workaround
 
-### ▸ [2026-03-02] Windows 终端中文乱码
+### ▸ [2026-03-02] Git 中文文件名显示
 
-Windows 默认 codepage 936 (GBK)，Agent 的 bash 环境以 UTF-8 解码，导致 `cmd.exe`/`powershell.exe` 输出中文乱码。Git Bash 内置命令不受影响。
-
-**修复**：
 ```bash
-# 每个 session 执行一次，切换 codepage 为 UTF-8
-chcp.com 65001 > /dev/null 2>&1
-# 每个 clone 执行一次，使 git 直接显示中文文件名
+# 每个 clone 执行一次，使 git 直接显示中文文件名（而非八进制转义）
 git config --local core.quotePath false
 ```
 
-均为 session/clone 级设置，不入库。可考虑通过 Agent 平台启动钩子自动执行。
+> 终端编码（chcp 65001）的规则已在 AGENTS.md 技术环境表中定义，此处不重复。
 
 ---
 

@@ -88,7 +88,7 @@
 | 有序/近似有序数据、需稳定排序 | TimSort | O(n) 最优，极限优化 |
 | 原生 `Array.sort()` | **谨慎** | 朴素快排，有序数据退化 O(n²) |
 
-## 10. 通用工具（gesh，22 个子模块）
+## 10. 通用工具（gesh，21 个子模块）
 - **位置**：`scripts/类定义/org/flashNight/gesh/`
 
 ### 高频子模块
@@ -105,10 +105,9 @@
 
 其他子模块：`func/`（FunctionUtil/LazyValue）、`property/`（PropertyAccessor）、`iterator/`（IIterator 系列）、`json/`（JSONLoader）、`symbol/`（Symbol UUID）、`arguments/`、`depth/`（DepthManager，未投入使用）、`text/`、`tooltip/`、`toml/`、`fntl/`、`regexp/`、`paint/`（RendererVM）— 按需查阅源码目录
 
-## 11. 小游戏系统（尚未投入使用）
+## 11. 小游戏系统（未投入使用）
 - **位置**：`scripts/类定义/org/flashNight/hana/`
-- **状态**：当前尚未投入使用
-- **定位**：作为资源文件存在，主要提供各类 AS 链接影片剪辑等资源。子 SWF 本身被视为一种资源文件，加载后其库符号注入主文件运行时环境，在主文件作用域内运行（详见架构文档「子 SWF 加载与通信」一节）
+- **定位**：作为资源文件存在，提供 AS 链接影片剪辑等资源。加载后库符号注入主文件运行时（详见 architecture.md「子 SWF 加载与通信」）
 
 ## 12. 关卡系统
 - **帧脚本**：`scripts/逻辑/关卡系统/`
