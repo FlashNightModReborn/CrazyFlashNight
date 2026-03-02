@@ -90,6 +90,20 @@
 
 ▸ **重入保护 + 安全降级** — 使用静态缓存的热路径组件需 `_inUse` 标志防重入 + `resetState()` 安全阀防异常后永久锁死 + trace 警告 + 降级到原生实现而非崩溃。来源：`TimSort.as` 重入保护机制
 
+▸ **属性索引缓存（var 包裹）** — AS2 中每次属性索引（`obj.prop`）都走哈希查找 + 作用域链遍历，开销远高于局部变量读取。**同一属性出现 2 次以上就值得 `var` 缓存**。典型模式：`var gameWorld:MovieClip = _root.gameworld;` 后续全部用 `gameWorld`。对嵌套属性（`_root.gameworld[bullet.发射者名]`）、数组元素（`areas.xMin`）同样适用。来源：`BulletQueueProcessor.as` processQueue() 大量实践（行 1680-1741），`分析 AS2 中对象属性的哈希函数实现.md`
+
+▸ **长类名 var 别名** — 项目类名普遍极长（如 `ColliderFactoryRegistry`、`BulletCancelQueueProcessor`），在热路径中应将类引用、静态方法、静态属性缓存到局部 `var`，同时缩短名称。例：`var Dodge:Object = DodgeHandler;` `var CFR:Object = ColliderFactoryRegistry;` `var PolyFactoryId:String = ColliderFactoryRegistry.PolygonFactory;`。既减少属性查找开销，又降低字节码中字符串常量的重复存储。来源：`BulletQueueProcessor.as` 行 1688-1694
+
+▸ **宏注入静态常量** — 通过 `#include "../macros/FLAG_CHAIN.as"` 将标志位等常量在编译期注入为文本替换，使其成为函数内的局部 `var` 定义。优于静态类属性（省去类名查找）和字面量硬编码（保留语义命名）。适用于位掩码、状态标志、阈值等不变量。组合常量可预计算：`var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;`。来源：`BulletQueueProcessor.as` 行 568-572、1670-1682
+
+▸ **变量声明提升到函数顶部** — 在大型热路径函数中，将所有 `var` 声明集中到函数入口（而非循环内部），避免 AVM1 对循环内 `var` 的重复初始化开销。来源：`BulletQueueProcessor.as` 行 1748-1835 统一声明区域
+
+▸ **静态对象复用（零分配热路径）** — 在同步处理保证安全的前提下，使用静态预分配对象在帧间复用：`_rayHitResult`（碰撞结果）、`_rayHitCtx`（命中上下文打包对象）。避免每次命中 `new Object()` 产生 GC 压力。来源：`BulletQueueProcessor.as` 行 119-130
+
+▸ **位运算编码紧凑状态** — 将多维状态（帧 ID + 队列 UID + 模式）编码为单个 Number：`token = (queueStamp << 2) | mode`，验证时 `(token >>> 2)` 解码。避免每个子弹分配 Object 存储状态。来源：`BulletQueueProcessor.as` cancelToken 编码（行 174-193）
+
+▸ **结构体数组（SoA）替代对象数组（AoS）** — 将对象数组拆为多个平行数组（`xMinArr`、`xMaxArr`、`yMinArr`…），紧密循环中按索引访问比逐对象属性查找更快，且对缓存更友好。来源：`BulletQueueProcessor.as` 消弹区域缓存（行 1711-1741）
+
 ---
 
 ## 3. 优化决策快查表
@@ -98,6 +112,9 @@
 
 | 场景 | 推荐方案 | 依据 |
 |------|----------|------|
+| 同一属性访问 ≥ 2 次 | `var local = obj.prop;` 缓存到局部变量 | 属性索引走哈希查找 + 作用域链，局部变量直接寄存器/栈访问。`BulletQueueProcessor.as` 全面实践 |
+| 类名极长（如 `ColliderFactoryRegistry`） | `var CFR:Object = ColliderFactoryRegistry;` 别名缓存类引用、方法、属性 | 减少属性查找 + 缩短字节码字符串常量。`BulletQueueProcessor.as:1688-1694` |
+| 位掩码/状态标志等不变量 | 通过 `#include` 宏注入为函数内局部 `var`，组合常量预计算 | 编译期文本替换，零运行时类名查找开销。`BulletQueueProcessor.as:1670-1682` |
 | 多步计算需要临时变量 | 利用副作用语句压行，触发 StoreRegister 寄存器快速路径 | `evalorder.md` + `TimSort.as` 平台决策：副作用上下文中 `--j` 走 StoreRegister（3 字节码），独立 `j--` 走 GetVariable/SetVariable 名查找路径（更慢） |
 | 批量数组拷贝 | 4 路展开 + **偏移寻址** `arr[d+k]...d+=4`，不用 `arr[d++]×4` | `TimSort.as` 平台决策：`d+k` = 3 字节码，`d++` = 4 字节码，每 4 路展开净省 4 条指令。尾部余量(len&3)仍用 `d++` |
 | 布尔值参与算术运算 | 直接使用比较结果（Boolean），不要用三元 `(cond ? 1 : 0)` 显式装箱 | `TimSort.as` 平台决策：AVM1 ActionSubtract 硬连线 Boolean→Number 快速路径 |
@@ -107,6 +124,10 @@
 | 取绝对值 | 位运算替代 `Math.abs()` | `对降低abs取绝对值操作开销的探索.md` |
 | 取整 | 位运算替代 `Math.floor()` | `对降低floor取整操作开销的探索.md` |
 | 热路径组件使用静态缓存 | 阈值释放策略（小缓存保留复用，大缓存释放防 GC 泄漏）+ `_inUse` 重入保护 + `resetState()` 安全阀 | `TimSort.as` 静态 workspace 管理 |
+| 大型热路径函数内的变量声明 | 所有 `var` 集中到函数入口，不在循环内部声明 | 避免 AVM1 循环内重复初始化。`BulletQueueProcessor.as:1748-1835` |
+| 帧间复用的临时数据（同步处理） | 静态预分配对象复用（`_rayHitResult`、`_rayHitCtx`），不 `new` | 零 GC 压力。`BulletQueueProcessor.as:119-130` |
+| 多维状态紧凑存储 | 位运算编码到单个 Number（`(id << N) \| mode`），避免分配 Object | `BulletQueueProcessor.as` cancelToken 编码 |
+| 紧密循环访问对象属性数组 | SoA 拆分：对象数组 → 多个平行基元数组，按索引访问 | `BulletQueueProcessor.as` 消弹区域缓存（行 1711-1741） |
 
 ---
 

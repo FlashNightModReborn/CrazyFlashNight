@@ -119,13 +119,66 @@
 - 添加中文注释说明参数用途
 - 保持结构层次清晰
 - **注释保护**：通过代码处理 XML 进行数据迁移或批量修改时，必须检查 XML 中的中文注释是否被保留。许多 XML 解析器/序列化器会默认丢弃注释，需确保写回时注释完整
+- **列表字段归一化**：`XMLParser` 会将同名节点自动合并为数组，但**仅出现一次时返回单值而非数组**。消费侧对语义上「一定是列表」的字段，必须用 `XMLParser.configureDataAsArray()` 或 `if (!(x instanceof Array)) x = [x]` 归一化，不得假设其类型
+- **注意自动类型转换**：`XMLParser` 会将纯数字字符串自动转为 Number（`"007"` → `7`）、`"true"`/`"false"` 转为 Boolean。对必须保持字符串的字段（如编号、代码），在 XML 中避免纯数字格式，或在消费侧显式 `String()` 转回
 
 ## 7. Node.js 编码规范
 
-<!-- TODO: 从 tools/Local Server/ 现有代码中提炼规范 -->
+> 以下为通用最佳实践，新增或重构服务端代码时应遵循。
 
-- 遵循 Express 项目常规约定
+### 项目结构
+
+```
+tools/Local Server/
+├── server.js              # 入口：HTTP + XMLSocket 启动
+├── routes/                # Express 路由定义
+├── controllers/           # 业务逻辑处理器（每种 task 一个文件）
+├── services/              # 基础服务（socketServer 等）
+└── package.json
+```
+
+- **职责分层**：路由（routes）只做请求分发，业务逻辑放 controllers，底层能力放 services
+- **每种 task 类型独立文件**：`controllers/evalTask.js`、`controllers/regexTask.js` 等，避免单文件膨胀
+
+### 命名约定
+
+- 文件名：camelCase — `evalTask.js`、`socketServer.js`
+- 变量/函数：camelCase — `handleRequest`、`socketPort`
+- 常量：UPPER_CASE — `MAX_TIMEOUT`、`DEFAULT_PORT`
+- 类/构造函数：PascalCase — `TaskRouter`
+
+### 编码风格
+
+- **严格模式**：文件顶部 `'use strict';`
+- **const 优先**：不变的绑定用 `const`，需重赋值才用 `let`，禁用 `var`
+- **模板字符串**：拼接字符串用模板字面量，不用 `+` 拼接
+- **箭头函数**：回调优先用箭头函数，需要 `this` 绑定时才用 `function`
+- **解构赋值**：从对象/数组中提取字段时使用解构
+
+### 错误处理
+
+- **统一响应格式**：所有响应遵循 `{ success: true/false, result/error }` 结构
+- **try-catch 包裹**：controller 中的业务逻辑用 try-catch 包裹，捕获后返回结构化错误
+- **不吞异常**：catch 块中必须记录日志或返回错误，禁止空 catch
+- **超时保护**：执行外部代码（如 `eval` 任务）必须设置超时，防止无限阻塞
+
+### 安全
+
+- **沙箱执行**：eval 任务使用 VM2 等沙箱，禁止直接 `eval()`
+- **输入校验**：校验 `task` 字段存在性和类型，未知 task 返回明确错误
+- **本地监听**：服务仅绑定 `localhost`，不暴露到外部网络
+
+### 日志
+
 - 使用 winston 进行结构化日志
+- 日志级别：`error` → 异常和故障，`warn` → 非预期但可恢复，`info` → 关键流程节点，`debug` → 开发调试
+- 日志中包含上下文（task 类型、端口号等），方便定位问题
+
+### 依赖管理
+
+- `package.json` 中锁定依赖版本（精确版本号或 `~` 补丁范围）
+- 新增依赖前评估必要性，能用 Node.js 内建模块解决的不引入第三方包
+- `node_modules/` 已 gitignore，部署前 `npm install`
 
 ## 8. 调试规范
 
