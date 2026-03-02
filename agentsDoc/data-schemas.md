@@ -63,7 +63,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 | `data/environment/` | 环境设置 | 运行时加载，重启生效 |
 | `config/` | 系统配置 | 运行时加载，重启生效 |
 
-`data/` 下约 387 个 XML 文件，大多数采用 **list.xml 主从模式**：
+`data/` 下大量 XML 文件，大多数采用 **list.xml 主从模式**：
 
 ```
 data/items/list.xml          → 引用 50 个分类文件（武器_刀_*.xml、防具_*.xml、消耗品_*.xml …）

@@ -71,11 +71,7 @@ Flash CS6（AS2 最高支持版本）要求 `.as` 文件使用 **UTF-8 with BOM*
 - `__proto__` 可访问和修改（本项目有原型链注入的性能研究）
 - AS2 的 `extends` 编译后等价于原型链设置
 - **用对象做字典时必须先断开原型链**（`obj.__proto__ = null`），否则 `for...in` 会遍历到原型属性，属性查找也会沿原型链上溯产生意外命中
-- **`for...in` 遍历顺序是稳定的**（Ruffle 项目验证的结论）：
-  1. 原型链属性优先枚举
-  2. 自身属性按**最后插入的最先枚举**（reverse insertion order）
-  3. DisplayObject 子对象按 depth 从高到低
-  4. 删除属性后顺序仍然稳定
+- **`for...in` 遍历顺序是稳定的**（Ruffle 项目验证）：原型链属性优先 → 自身属性按 reverse insertion order → DisplayObject 子对象按 depth 降序。删除属性后顺序仍稳定
 
 ### 对象字面量与键名
 - AS2 对象字面量的键名**不加引号**：`{name: "sword", damage: 10}`
@@ -176,9 +172,8 @@ AS1/Flash 4 时代的运算符关键词在 AS2 中仍是**保留字**，用作�
 | `var gt:Number` / `obj.lt` | 避开 `eq ne lt gt le ge and or not add` 等 Flash 4 保留字 | AS1 遗留 |
 | `n.toFixed(2)` | `Math.round(n * 100) / 100` 或自定义函数 | JS |
 | `{"key": value}` 对象字面量 | `{key: value}` 键名不加引号；保留字/特殊键用 `obj["key"]` | JS 习惯 |
-| `(cond ? 1 : 0)` 显式布尔转数值 | 直接使用比较结果参与算术运算，AVM1 硬连线 Boolean→Number 快速路径 | 现代语言习惯 |
-| 拆分 `arr[--j+2]=tmp` 为 `arr[j+1]=tmp; j--;` | 保持副作用合并写法，触发 AVM1 StoreRegister 寄存器快速路径 | "代码整洁"直觉 |
-| 批量拷贝用 `arr[d++]` | 4 路展开用偏移寻址 `arr[d+k]...d+=4`（3 vs 4 字节码/次） | 现代语言习惯 |
+
+> 注：AVM1 性能相关的编码惯例（布尔转数值快速路径、StoreRegister 副作用压行、偏移寻址展开等）见 [as2-performance.md](as2-performance.md) 优化决策快查表。
 
 ---
 

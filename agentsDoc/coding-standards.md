@@ -57,42 +57,13 @@
 
 3. **零 GC 导向**
    - 热路径零内存分配，避免触发 Flash GC 暂停导致掉帧
-   - 对象复用、池化、预分配
-   - 避免临时字符串拼接和临时对象创建
-   - **阈值缓存模式**（参考 `TimSort._workspace`）：
-     - 静态数组跨调用复用，避免反复 `new Array()`
-     - 清理时按阈值决策：小于阈值保留复用，大于阈值释放防止引用泄漏
-     ```actionscript
-     // 示例：TimSort 的 workspace 管理
-     private static var _workspace:Array = null;
-     private static var _wsLen:Number    = 0;
-     // 使用时：需求 <= 缓存大小则直接复用，否则新建并缓存
-     // 清理时：
-     if (_wsLen > 256) { _workspace = null; _wsLen = 0; }
-     // 小 workspace 保留供下次调用复用
-     ```
+   - 对象复用、池化、预分配；避免临时字符串拼接和临时对象创建
+   - **阈值缓存模式**（参考 `TimSort._workspace`）：静态数组跨调用复用；清理时 ≤ 阈值保留复用，> 阈值释放防引用泄漏
 
 4. **重入保护与安全降级**（适用于使用静态缓存的热路径组件）
-   - `_inUse` 标志防止重入破坏共享状态
-   - 检测到重入时 **降级**到原生实现而非崩溃，并 `trace()` 警告
-   - `resetState()` 安全阀：在帧初始化时调用，防止 `compare()` 异常导致 `_inUse` 永久锁死
-   ```actionscript
-   // 示例：TimSort 的重入保护
-   private static var _inUse:Boolean = false;
-   public static function resetState():Void { _inUse = false; }
-
-   public static function sort(arr:Array, cmp:Function):Array {
-       if (_inUse) {
-           trace("[TimSort] Warning: reentrant call detected, falling back");
-           arr.sort(cmp); // 降级到原生排序
-           return arr;
-       }
-       _inUse = true;
-       // ... 核心逻辑 ...
-       _inUse = false;
-       return arr;
-   }
-   ```
+   - `_inUse` 标志防止重入破坏共享状态；检测到重入时**降级**到原生实现并 `trace()` 警告
+   - `resetState()` 安全阀：帧初始化时调用，防止异常导致 `_inUse` 永久锁死
+   - 参考实现：`TimSort.as`
 
 ---
 
