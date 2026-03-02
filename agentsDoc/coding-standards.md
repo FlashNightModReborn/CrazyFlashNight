@@ -51,9 +51,7 @@
 
 ## 6. XML 配置文件规范
 
-- 4空格缩进，属性值双引号，中文注释说明参数用途
-- **注释保护**：代码处理 XML 时必须检查中文注释是否被保留（许多解析器/序列化器默认丢弃注释）
-- XMLParser 隐式行为（同名节点合并、自动类型转换）及对策详见 [agentsDoc/data-schemas.md](data-schemas.md)
+编写规范与 XMLParser 隐式行为详见 [data-schemas.md](data-schemas.md) §2-§3。
 
 ## 7. Node.js 编码规范
 
@@ -80,4 +78,4 @@ tools/Local Server/
 
 ## 8. 调试规范
 
-详见 [as2-anti-hallucination.md](as2-anti-hallucination.md) §3 调试章节。
+详见 [as2-anti-hallucination.md](as2-anti-hallucination.md) §3「调试」子节。

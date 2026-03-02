@@ -51,13 +51,13 @@
 
 | 包 | 职责 |
 |----|------|
-| **arki** | 游戏引擎核心（子弹、Buff/伤害、射线VFX、摄像机、音频、碰撞、空间、物品、单位、场景、任务） |
-| **aven** | 协调与测试（EventCoordinator 事件总线、Proxy、测试框架） |
+| **arki** | 游戏引擎核心（战斗/渲染/场景/物品/单位） |
+| **aven** | 协调与测试（EventCoordinator、Proxy、测试框架） |
 | **gesh** | 通用工具库（21 模块：array/string/number/object/pratt/path/xml 等） |
-| **hana** | 小游戏资源仓库（库符号注入主文件运行时） |
-| **naki** | 数据结构与数学（45+ 数据结构类、排序、随机数引擎、缓存、插值、DP） |
-| **neur** | 事件/控制/计时/状态机（EventBus、计时器三级体系、PID/卡尔曼、Tween、导航） |
-| **sara** | 物理引擎（粒子、约束、表面碰撞、复合体） |
+| **hana** | 小游戏资源（库符号注入主文件运行时） |
+| **naki** | 数据结构与数学（45+ 类、排序、随机数、缓存、插值） |
+| **neur** | 事件/控制/计时/状态机（EventBus、计时器三级体系、Tween、导航） |
+| **sara** | 物理引擎（粒子、约束、碰撞、复合体） |
 
 各系统详细描述、模块枚举与选用决策见 [game-systems.md](agentsDoc/game-systems.md)。
 
@@ -67,17 +67,16 @@
 
 > 按工作场景查找入口文档，具体文件路径见各 agentsDoc 文件内部。
 
-| 场景 | 入口文档 | 备注 |
-|------|----------|------|
-| AS2 编码/审查 | **[as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md)**（必读）、[as2-performance.md](agentsDoc/as2-performance.md)、[coding-standards.md](agentsDoc/coding-standards.md) | coding-standards §3 含双轨策略 |
-| 数值/物品设计 | [game-design.md](agentsDoc/game-design.md) | 公式表、数据文件路径见文档内 |
-| 战斗/子弹/Buff/事件 | [game-systems.md](agentsDoc/game-systems.md) | 含计时器选用决策、Review Prompt 索引 |
-| 关卡/环境/叙事 | [game-design.md](agentsDoc/game-design.md) | `data/stages/`、`data/dialogues/` |
-| XML 数据/服务器/测试 | [data-schemas.md](agentsDoc/data-schemas.md)、[architecture.md](agentsDoc/architecture.md)、[testing-guide.md](agentsDoc/testing-guide.md) | 服务器详情：`tools/Local Server/server.md` |
-| 自动化 | `automation/README.md` | |
-| 新增物品/单位 | `0.说明文件与教程/添加新物品和单位的详细基础教程宝宝可用.docx` | |
-| 项目架构 | [architecture.md](agentsDoc/architecture.md) | |
-| **会话收尾** | **[self-optimization.md](agentsDoc/self-optimization.md)**（必读） | 经验归档 → 更新文档 → 更新 MEMORY.md |
+| 场景 | 入口文档 |
+|------|----------|
+| AS2 编码/审查 | **[as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md)**（必读）、[as2-performance.md](agentsDoc/as2-performance.md)、[coding-standards.md](agentsDoc/coding-standards.md) |
+| 数值/物品/关卡设计 | [game-design.md](agentsDoc/game-design.md) |
+| 战斗/子弹/Buff/事件/计时器 | [game-systems.md](agentsDoc/game-systems.md) |
+| XML 数据/服务器/测试 | [data-schemas.md](agentsDoc/data-schemas.md)、[architecture.md](agentsDoc/architecture.md)、[testing-guide.md](agentsDoc/testing-guide.md) |
+| 自动化 | `automation/README.md` |
+| 新增物品/单位 | `0.说明文件与教程/添加新物品和单位的详细基础教程宝宝可用.docx` |
+| 项目架构 | [architecture.md](agentsDoc/architecture.md) |
+| **会话收尾** | **[self-optimization.md](agentsDoc/self-optimization.md)**（必读） |
 
 ---
 

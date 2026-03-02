@@ -47,9 +47,9 @@
 - 创建子 MC：`parentMC.createEmptyMovieClip("name", depth)`
 - 附加库元件：`parentMC.attachMovie("linkageId", "name", depth)`
 - 深度管理是手动的（本项目有基于 AVL 树的 DepthManager.as，但尚未投入使用，性能测试未通过）
-- **`gotoAndStop`/`gotoAndPlay` 会立即卸载当前帧的 MovieClip**。如果调用链处于即将被卸载的 MC 的 `onEnterFrame` 中，`gotoAndStop` 之后的代码**不会执行**——调用者的执行上下文被销毁了。这在现代语言中没有对应概念，极易踩坑
-  - 本项目的解决方案：状态切换作业机制（`__stateTransitionJob`），将 `gotoAndStop` 后需要执行的逻辑封装为作业对象，由状态改变函数在帧跳转后统一调度。参见 `scripts/引擎/引擎_fs_路由基础.as`
-  - **编码规则**：在 MovieClip 的 `onEnterFrame` 等回调中触发帧跳转时，不要在 `gotoAndStop` 之后写任何依赖当前 MC 存活的逻辑
+- **`gotoAndStop`/`gotoAndPlay` 会立即卸载当前帧的 MovieClip**，调用链处于被卸载 MC 的 `onEnterFrame` 中时，帧跳转后的代码**不会执行**（执行上下文被销毁）
+  - 本项目解决方案：`__stateTransitionJob` 作业机制，帧跳转后统一调度（参见 `scripts/引擎/引擎_fs_路由基础.as`）
+  - **编码规则**：帧跳转后不要写依赖当前 MC 存活的逻辑
 
 ---
 
@@ -78,21 +78,15 @@
 ### 不存在的语法/API
 <!-- TODO: 从实际编码经验中持续补充 -->
 - `===` / `!==` **存在**（勿误标为不存在）
-- `>=` / `<=` 实现为朴素的 `!(<)` / `!(>)`，**不是独立比较**。当涉及 NaN 时行为尤其危险：`NaN < x` 为 false，因此 `NaN >= x` 为 true。处理可能为 NaN 的值时必须先显式检查 `isNaN()`
-  - **反向利用**：正因为 `<` / `>` 对 NaN 和 undefined 均返回 false，可以用严格不等式**自然过滤掉无效值**，无需额外 `isNaN()` 检查。例如 `if (value > 0)` 在 value 为 NaN 或 undefined 时直接走 false 分支，比 `if (value >= 0)` 更安全（后者对 NaN 会意外通过）
-- `==` / `!=` 的隐式类型转换：`null == undefined` 为 true（与 JS 一致），因此 `if (x != null)` 可**同时排除 null 和 undefined** 两种空值，无需分开判断。这是比 `if (x != null && x != undefined)` 更简洁且惯用的写法
-- 无原生 `Array.forEach`/`map`/`filter`/`reduce`（需手写循环）。本项目 `org.flashNight.gesh.array.ArrayUtil` 提供了类似方法，**仅限测试套件中使用**，工程代码中不推荐（性能损耗不低）
-- 无原生 `JSON.parse`/`JSON.stringify`。本项目自实现了三套 JSON 解析器（均在 `scripts/类定义/` 下）：
-  - `JSON.as` — 通用版，功能完整
-  - `FastJSON.as` — 更快，带缓存（详见 `FastJSON.md`）
-  - `LiteJSON.as` — 当前使用，砍掉了工程确定不必要的功能以换取精简（详见 `LiteJSON.md`）
-  - `IJSON.as` — JSON 解析器接口
-- 无原生 `Promise`/`async`/`await`。本项目有自实现的 `org.flashNight.aven.Promise.Promise`，但**尚未完工**，暂勿使用
-- `try...catch...finally` 语法存在且可用，但**工程契约禁止在生产代码中使用**（性能损耗大，参阅 `scripts/优化随笔/异常兜底措施的性能评估与优化.md`）。测试套件中允许使用
-- 无模板字符串（`` ` ``），只能用 `+` 拼接。**不要用 `Array.join()` 替代**，实测远慢于裸 `+` 拼接（参阅 `scripts/优化随笔/字符串性能评估.md`）
-- 无 `Number.toFixed()`/`Number.toPrecision()`/`Number.toExponential()`。AS2 的 Number 没有这些格式化方法，需手写：`Math.round(x * 100) / 100` 或自定义格式化函数
-- 无解构赋值 `[a, b] = [1, 2]`
-- 无原生展开运算符 `...args`。本项目 `org.flashNight.gesh.arguments` 包有相关实现，但底层基建基本手写展开以保证性能
+- `>=`/`<=` 实现为 `!(<)`/`!(>)`，NaN 时行为危险：`NaN >= x` 为 true。**优先用 `>`/`<` 严格不等式**可自然过滤 NaN/undefined（返回 false），比 `>=`/`<=` 更安全
+- `null == undefined` 为 true（与 JS 一致），`if (x != null)` 可同时排除 null 和 undefined
+- 无原生 `Array.forEach`/`map`/`filter`/`reduce`（需手写循环）。`gesh.array.ArrayUtil` 提供类似方法，**仅限测试套件使用**
+- 无原生 `JSON.parse`/`JSON.stringify`。本项目三套实现（`scripts/类定义/` 下）：`JSON.as`（通用）、`FastJSON.as`（带缓存）、**`LiteJSON.as`**（当前使用，最精简）、`IJSON.as`（接口）
+- 无原生 `Promise`/`async`/`await`。`aven.Promise.Promise` 尚未完工，暂勿使用
+- `try...catch...finally` 存在但**生产代码禁用**（性能损耗大）。测试中允许
+- 无模板字符串，只能用 `+` 拼接（**不要用 `Array.join()`**，远慢于 `+`）
+- 无 `Number.toFixed()` 等，需手写：`Math.round(x * 100) / 100`
+- 无解构赋值、无原生展开运算符 `...args`
 
 ### Flash 4 遗留保留字（命名陷阱）
 
@@ -130,14 +124,13 @@ AS1/Flash 4 时代的运算符关键词在 AS2 中仍是**保留字**，用作�
 - `_global` 用于真正的全局变量
 
 ### 文件包含与宏
-- `#include "path/to/file.as"` — 预处理器指令，编译时文本替换
-- 与 `import` 不同，`#include` 是源码级别的内联
+- `#include "path/to/file.as"` — 预处理器指令，编译时源码级内联（非 `import`）
 - **宏文件位置**：`scripts/macros/`
-- **⚠ #include 路径基准**：路径是相对于 `.fla` 项目设置的类路径（本项目为 `scripts/`），**不是相对于当前 .as 文件**。因此无论 class 文件在包结构中的深度如何，引用宏都只需要一层 `../`，例如 `#include "../macros/SOME_MACRO.as"`。这是高频错误点，切勿按文件系统相对路径计算层级
+- **⚠ #include 路径基准**是 `.fla` 类路径（`scripts/`），**非当前文件路径**。引用宏统一用 `#include "../macros/XXX.as"`（一层 `../`），勿按文件系统层级计算
 
 ### 调试
-- **`trace()`**：发布设置勾选「省略 trace 语句」后编译产物**完全剔除**（零开销），可在热路径中自由使用。正式发布 SWF **必须确保该选项已开启**
-- **`_root.发布消息(...)`**（轻量）/ **`_root.服务器.发布服务器消息(...)`**（重量级服务器日志）：均支持无限参数自动拼接，但有运行时开销，热路径测试完毕后**必须注释掉**
+- **`trace()`**：发布设置勾选「省略 trace 语句」后零开销（编译产物完全剔除），可在热路径中自由使用
+- **`_root.发布消息(...)`**（轻量）/ **`_root.服务器.发布服务器消息(...)`**（服务器日志）：有运行时开销，热路径测试完毕后**必须注释掉**
 
 ---
 

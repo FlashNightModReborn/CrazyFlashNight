@@ -80,20 +80,10 @@
 | `computation` | `controllers/computationTask.js` | 数值计算任务 |
 | `audio` | `controllers/audioTask.js` | 音频控制（play/pause/stop/setVolume） |
 
-**HTTP 辅助通道**（调试日志批量上报）：
-```
-POST /logBatch  →  frame={帧号}&messages={msg1|msg2|msg3}
-```
-每帧最多发送一次，消息以 `|` 分隔，由 `ServerManager.sendMessageBuffer()` 管理缓冲区。
+**HTTP 辅助通道**：`POST /logBatch`（调试日志批量上报，每帧最多一次，`ServerManager.sendMessageBuffer()` 管理缓冲区）
 
 ### XML 数据加载
 
-数据加载体系（XMLParser 隐式行为、数据目录结构、专用加载器列表、使用模式）详见 [agentsDoc/data-schemas.md](data-schemas.md)。
+详见 [data-schemas.md](data-schemas.md)。
 
----
-
-## 3. 关键技术决策记录
-
-<!-- TODO: 在自优化环节中记录重要的架构决策及其原因 -->
-
-> 代码组织层次见 AGENTS.md 项目架构地图。此节在自优化环节中逐步填充架构决策。
+<!-- TODO: 在自优化环节中逐步填充「关键技术决策记录」 -->
