@@ -16,3 +16,4 @@
 - 修改 XML 数据文件时，保持现有格式和中文注释风格
 - 不要尝试编译 AS2 代码或启动 Flash CS6（当前无此能力）
 - 可以直接运行和测试 Node.js 服务器与 PowerShell 脚本
+- **终端编码**：调用 `cmd.exe`/`powershell.exe` 等 Windows 原生命令前，先执行 `chcp.com 65001 > /dev/null 2>&1` 切换至 UTF-8，否则中文输出会乱码

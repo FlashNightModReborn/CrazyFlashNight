@@ -49,7 +49,8 @@
 | 游戏系统理解 | `agentsDoc/game-systems.md` |
 | 游戏设计决策 | `agentsDoc/game-design.md` |
 | 数据结构发现 | `agentsDoc/data-schemas.md` |
-| 跨会话工作状态 | `MEMORY.md`（自动记忆） |
+| 跨 Agent 共享运营知识 | `agentsDoc/shared-notes.md` |
+| 会话级临时状态 | 各 Agent 平台私有记忆（见第 3 节） |
 
 ### 步骤 D：执行归档
 1. 打开目标文档
@@ -59,20 +60,36 @@
 
 ---
 
-## 3. MEMORY.md 更新规范
+## 3. 知识持久化：双轨机制
 
-MEMORY.md 用于跨会话持久记忆，存放在 `~/.claude/projects/[项目]/memory/MEMORY.md`。
+本项目有多个 Agent 协作（Claude Code、Codex、Kimi Code、Antigravity 等），知识持久化分为两条轨道：
 
-### 适合放入 MEMORY.md 的内容
-- 当前工作进度和未完成任务
-- 用户的个人偏好和工作习惯
-- 项目中已知的坑和临时 workaround
-- 频繁使用的文件路径快捷参考
+### 轨道 A：仓库内共享记忆 — `agentsDoc/shared-notes.md`
 
-### 不适合放入 MEMORY.md 的内容
-- 详细的技术文档（放 agentsDoc/）
+所有 Agent 均可读写，通过 Git 提交同步。适合放入：
+- 用户偏好和工作习惯
+- 已知的坑和临时 workaround
+- 高频操作备忘
+
+不适合放入：
+- 详细的技术文档（放 agentsDoc/ 对应主题文件）
 - 已在 AGENTS.md 或 CLAUDE.md 中记录的规则
 - 大段代码或配置
+- 会话级临时状态（见轨道 B）
+
+### 轨道 B：各平台私有记忆
+
+用于**会话级易腐数据**（当前工作进度、未完成任务等），不提交到仓库。各平台路径：
+
+| Agent 平台 | 私有记忆位置 |
+|-----------|-------------|
+| Claude Code | `~/.claude/projects/[项目]/memory/MEMORY.md` |
+| 其他平台 | 各自的会话记忆机制 |
+
+### 决策规则
+
+> 如果一条信息对**其他 Agent 实例也有用** → 轨道 A（shared-notes.md）
+> 如果只对**当前会话/当前 Agent** 有用 → 轨道 B（私有记忆）
 
 ---
 

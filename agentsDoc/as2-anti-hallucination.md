@@ -47,6 +47,9 @@ Flash CS6（AS2 最高支持版本）要求 `.as` 文件使用 **UTF-8 with BOM*
 - 创建子 MC：`parentMC.createEmptyMovieClip("name", depth)`
 - 附加库元件：`parentMC.attachMovie("linkageId", "name", depth)`
 - 深度管理是手动的（本项目有基于 AVL 树的 DepthManager.as，但尚未投入使用，性能测试未通过）
+- **`gotoAndStop`/`gotoAndPlay` 会立即卸载当前帧的 MovieClip**。如果调用链处于即将被卸载的 MC 的 `onEnterFrame` 中，`gotoAndStop` 之后的代码**不会执行**——调用者的执行上下文被销毁了。这在现代语言中没有对应概念，极易踩坑
+  - 本项目的解决方案：状态切换作业机制（`__stateTransitionJob`），将 `gotoAndStop` 后需要执行的逻辑封装为作业对象，由状态改变函数在帧跳转后统一调度。参见 `scripts/引擎/引擎_fs_路由基础.as`
+  - **编码规则**：在 MovieClip 的 `onEnterFrame` 等回调中触发帧跳转时，不要在 `gotoAndStop` 之后写任何依赖当前 MC 存活的逻辑
 
 ---
 
@@ -74,6 +77,17 @@ Flash CS6（AS2 最高支持版本）要求 `.as` 文件使用 **UTF-8 with BOM*
   3. DisplayObject 子对象按 depth 从高到低
   4. 删除属性后顺序仍然稳定
 
+### 对象字面量与键名
+- AS2 对象字面量的键名**不加引号**：`{name: "sword", damage: 10}`
+- 现代 JS 中常见的 `{"name": "sword"}` 写法在 AS2 中虽然不报错，但**不是惯用风格**，应避免
+- 当键名包含特殊字符、空格或与保留字冲突时，字面量语法无法直接声明，需改用括号记法动态赋值：
+  ```actionscript
+  var obj = {};
+  obj["lt"] = 5;        // 保留字作键名
+  obj["my-key"] = 10;   // 含连字符的键名
+  ```
+- 读取同理：`obj["lt"]` 可行，`obj.lt` 会被编译器解析为运算符而报错（详见「Flash 4 遗留保留字」一节）
+
 ### 不存在的语法/API
 <!-- TODO: 从实际编码经验中持续补充 -->
 - `===` / `!==` **存在**（勿误标为不存在）
@@ -87,8 +101,34 @@ Flash CS6（AS2 最高支持版本）要求 `.as` 文件使用 **UTF-8 with BOM*
 - 无原生 `Promise`/`async`/`await`。本项目有自实现的 `org.flashNight.aven.Promise.Promise`，但**尚未完工**，暂勿使用
 - `try...catch...finally` 语法存在且可用，但**工程契约禁止在生产代码中使用**（性能损耗大，参阅 `scripts/优化随笔/异常兜底措施的性能评估与优化.md`）。测试套件中允许使用
 - 无模板字符串（`` ` ``），只能用 `+` 拼接。**不要用 `Array.join()` 替代**，实测远慢于裸 `+` 拼接（参阅 `scripts/优化随笔/字符串性能评估.md`）
+- 无 `Number.toFixed()`/`Number.toPrecision()`/`Number.toExponential()`。AS2 的 Number 没有这些格式化方法，需手写：`Math.round(x * 100) / 100` 或自定义格式化函数
 - 无解构赋值 `[a, b] = [1, 2]`
 - 无原生展开运算符 `...args`。本项目 `org.flashNight.gesh.arguments` 包有相关实现，但底层基建基本手写展开以保证性能
+
+### Flash 4 遗留保留字（命名陷阱）
+
+AS1/Flash 4 时代的运算符关键词在 AS2 中仍是**保留字**，用作变量名、函数名、属性名会导致编译报错。这些词看起来像普通英文缩写，极易踩坑：
+
+**10 个运算符关键词**（全部小写）：
+
+| 保留字 | Flash 4 原义 | AS2 替代 |
+|--------|-------------|---------|
+| `eq` | 字符串相等 | `==` |
+| `ne` | 字符串不等 | `!=` |
+| `lt` | 字符串小于 | `<` |
+| `gt` | 字符串大于 | `>` |
+| `le` | 字符串小于等于 | `<=` |
+| `ge` | 字符串大于等于 | `>=` |
+| `and` | 逻辑与 | `&&` |
+| `or` | 逻辑或 | `\|\|` |
+| `not` | 逻辑非 | `!` |
+| `add` | 字符串拼接 | `+` |
+
+**2 个废弃语句关键词**：`tellTarget`、`ifFrameLoaded`
+
+**规避方式**：
+- 命名时避开上述 12 个词，如用 `greaterThan` / `lessThan` 代替 `gt` / `lt`
+- 括号记法 `obj["lt"]` 可绕过编译器（字符串字面量不被解析为运算符），但**点记法 `obj.lt` 会报错**
 
 ---
 
@@ -129,6 +169,9 @@ Flash CS6（AS2 最高支持版本）要求 `.as` 文件使用 **UTF-8 with BOM*
 | `obj?.prop` | 直接 `obj.prop`（AS2 对 undefined 访问不崩溃，无需判空） | JS |
 | `JSON.parse(str)` | 自定义解析或 XML 解析 | JS |
 | `setTimeout`/`setInterval` | 可用但一般不用，优先用帧计时器或 `EnhancedCooldownWheel` | 惯例 |
+| `var gt:Number` / `obj.lt` | 避开 `eq ne lt gt le ge and or not add` 等 Flash 4 保留字 | AS1 遗留 |
+| `n.toFixed(2)` | `Math.round(n * 100) / 100` 或自定义函数 | JS |
+| `{"key": value}` 对象字面量 | `{key: value}` 键名不加引号；保留字/特殊键用 `obj["key"]` | JS 习惯 |
 
 ---
 

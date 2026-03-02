@@ -18,7 +18,8 @@
 | 辅助技术 | Node.js 14+（本地服务器）、PowerShell（自动化） |
 | 可运行验证 | Node.js 服务器、PowerShell 脚本 |
 | 可直接修改并立即生效 | `data/`、`config/` 下的 XML 配置文件 |
-| 禁止修改 | 已编译的 SWF 文件 |
+| SWF 文件 | Agent 不得手动编辑；提交规则见「版本控制备忘」 |
+| 终端编码 | Windows 默认 GBK（codepage 936），Agent 使用终端前需切换至 UTF-8，详见 `agentsDoc/shared-notes.md` |
 
 ---
 
@@ -43,7 +44,7 @@
 ├── config/                     ✎ 系统配置（PID控制器/天气系统等）
 ├── tools/Local Server/         ✎ Node.js 本地服务器
 ├── automation/                 ✎ PowerShell 自动化脚本
-├── flashswf/                   ⊘ Flash 资源文件（需 Flash CS6 编辑）
+├── flashswf/                   ⚙ Flash 资源文件（人类通过 Flash CS6 编辑；Agent 只读）
 ├── agentsDoc/                  ✎ Agent 深度文档体系
 ├── 0.说明文件与教程/            ✎ 游戏设计文档和教程
 ├── docs/                       ✎ 技术审计文档
