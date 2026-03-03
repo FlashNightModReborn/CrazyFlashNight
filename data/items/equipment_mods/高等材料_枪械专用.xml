@@ -172,16 +172,19 @@
         <stats>
             <percentage>
                 <power>13</power>
-                <diffusion>-20</diffusion>
             </percentage>
             <useSwitch>
+                <!-- 近距离枪械：获得命中加成（散射不降低） -->
                 <use name="霰弹枪,近战,压制近战">
-                    <percentage>
-                        <diffusion>20</diffusion>
-                    </percentage>
                     <flat>
                         <accuracy>10</accuracy>  <!-- 命中期望伤害: +2.29% -->
                     </flat>
+                </use>
+                <!-- default：常规武器降低散射 -->
+                <use>
+                    <percentage>
+                        <diffusion>-20</diffusion>
+                    </percentage>
                 </use>
             </useSwitch>
             <!-- NOAH适配：高保真人机接口在NOAH结构支持下精度提升 -->
@@ -258,21 +261,23 @@
                 <bullet>次级穿刺子弹</bullet>
                 <bulletrename>常规穿甲弹</bulletrename>
             </merge>
-            <!-- 基础惩罚：(I + 50) × 1.2 -->
-            <flat>
-                <interval>50</interval>
-            </flat>
-            <percentage>
-                <interval>20</interval>
-            </percentage>
-            <!-- 机枪专用矫正：抵消基础公式，改为纯×2，统一损失50%射弹密度 -->
             <useSwitch>
+                <!-- 机枪专用矫正：抵消基础公式，改为纯×2，统一损失50%射弹密度 -->
                 <use name="机枪,压制机枪">
                     <flat>
                         <interval>-50</interval>
                     </flat>
                     <percentage>
                         <interval>80</interval>
+                    </percentage>
+                </use>
+                <!-- default：其他武器基础惩罚 (I + 50) × 1.2 -->
+                <use>
+                    <flat>
+                        <interval>50</interval>
+                    </flat>
+                    <percentage>
+                        <interval>20</interval>
                     </percentage>
                 </use>
             </useSwitch>

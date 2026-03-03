@@ -7,24 +7,29 @@
         <use>上装装备,下装装备,手部装备,刀</use>
         <stats>
             <useSwitch>
-                <use name="手部装备,刀">
+                <!-- 刀：收割能力+威力提升 -->
+                <use name="刀">
                     <override>
                         <slay>8</slay>
                     </override>
+                    <flat>
+                        <power>15</power>
+                    </flat>
                 </use>
-                <use name="上装装备,下装装备,手部装备">
+                <!-- 手部装备：收割能力+空手加成 -->
+                <use name="手部装备">
+                    <override>
+                        <slay>8</slay>
+                    </override>
                     <flat>
                         <punch>15</punch>
                     </flat>
                 </use>
-                <use name="上装装备,下装装备">
+                <!-- default：上装/下装，减轻重量+空手加成 -->
+                <use>
                     <flat>
+                        <punch>15</punch>
                         <weight>-1</weight>
-                    </flat>
-                </use>
-                <use name="刀">
-                    <flat>
-                        <power>15</power>
                     </flat>
                 </use>
             </useSwitch>
