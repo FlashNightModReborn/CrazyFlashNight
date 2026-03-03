@@ -90,17 +90,9 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 var label = TooltipConstants.PROPERTY_DICT[key];
                 if (!label) label = key;
 
-                var displayText:String;
-                if (mValue < 0) {
-                    // 负数：显示为倍率
-                    var multiplierValue = 1 + mValue;
-                    var displayValue = Math.round(multiplierValue * 100) / 100;
-                    displayText = "×" + displayValue;
-                } else {
-                    // 正数：显示为百分比
-                    var percentDisplay = Math.round(mValue * 100);
-                    displayText = "×+" + percentDisplay + "%";
-                }
+                // 统一显示为实际倍率（正负一致：×1.02 / ×0.59）
+                var factorValue = Math.round((1 + mValue) * 100) / 100;
+                var displayText:String = "×" + factorValue;
 
                 result.push(indent, "<FONT COLOR='" + TooltipConstants.COL_MULTIPLIER + "'>", label, " ", displayText, "</FONT> <FONT COLOR='" + TooltipConstants.COL_MULTIPLIER_HINT + "'>" + TooltipConstants.TAG_MULTIPLIER_ZONE + "</FONT><BR>");
             }
@@ -132,7 +124,10 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 // actiontype 是根层属性，也需要单独处理
                 // singleshoot 需要转换为全自动/半自动显示
                 // reloadType 需要转换为整匣换弹/逐发装填显示
-                if (key == "damagetype" || key == "magictype" || key == "silence" || key == "slay" || key == "actiontype" || key == "singleshoot" || key == "reloadType") continue;
+                // impact 需要转换（显示值 = 500/impact）
+                // bullet/bulletrename 需要组合显示展示名
+                // split 需要单独显示
+                if (key == "damagetype" || key == "magictype" || key == "silence" || key == "slay" || key == "actiontype" || key == "singleshoot" || key == "reloadType" || key == "impact" || key == "bullet" || key == "bulletrename" || key == "split") continue;
                 result.push(indent);
                 TooltipFormatter.statLine(result, "override", key, statsObj.override[key], null);
             }
@@ -208,6 +203,27 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 var reloadTypeDesc:String = (reloadTypeVal == "tube") ? TooltipConstants.TIP_RELOAD_TYPE_TUBE : TooltipConstants.TIP_RELOAD_TYPE_MAG;
                 result.push(indent, "<FONT COLOR='", TooltipConstants.COL_HL, "'>" + TooltipConstants.TAG_OVERRIDE + " </FONT>");
                 result.push(TooltipConstants.LBL_RELOAD_TYPE, " → ", reloadTypeDesc, "<BR>");
+            }
+            // 冲击力覆盖：转换为玩家可见值（500 / impact）
+            if (statsObj.override.impact != undefined) {
+                var impactRaw:Number = Number(statsObj.override.impact);
+                if (!isNaN(impactRaw) && impactRaw > 0) {
+                    result.push(indent, "<FONT COLOR='", TooltipConstants.COL_HL, "'>" + TooltipConstants.TAG_OVERRIDE + " </FONT>");
+                    result.push(TooltipConstants.LBL_IMPACT, " → ", Math.floor(500 / impactRaw), "<BR>");
+                }
+            }
+            // 子弹类型覆盖：优先使用 bulletrename 作为展示名
+            if (statsObj.override.bullet || statsObj.override.bulletrename) {
+                var bulletDisplay:String = statsObj.override.bulletrename
+                    ? statsObj.override.bulletrename
+                    : statsObj.override.bullet;
+                result.push(indent, "<FONT COLOR='", TooltipConstants.COL_HL, "'>" + TooltipConstants.TAG_OVERRIDE + " </FONT>");
+                result.push(TooltipConstants.LBL_BULLET_TYPE, " → ", bulletDisplay, "<BR>");
+            }
+            // 弹裂数覆盖
+            if (statsObj.override.split != undefined) {
+                result.push(indent, "<FONT COLOR='", TooltipConstants.COL_HL, "'>" + TooltipConstants.TAG_OVERRIDE + " </FONT>");
+                result.push(TooltipConstants.LBL_PELLET_COUNT, " → ", statsObj.override.split, "<BR>");
             }
         }
 

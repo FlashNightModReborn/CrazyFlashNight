@@ -729,6 +729,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     _pathNameMap["data.criticalhit"] = "暴击";
     _pathNameMap["data.bulletsize"] = "纵向范围";
     _pathNameMap["data.modslot"] = "插件槽";
+    _pathNameMap["data.split"] = "霰弹值";
     return _pathNameMap;
   }
 
@@ -742,7 +743,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       isNot: " ≠ ",
       above: " > ",
       atLeast: " ≥ ",
-      below: " < ",
+      below: " &lt; ",
       atMost: " ≤ ",
       oneOf: " ∈ ",
       noneOf: " ∉ ",
@@ -751,7 +752,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       exists: " 存在",
       missing: " 不存在"
     };
-    _opSymbolMap["is"] = " = ";
+    _opSymbolMap["is"] = " 为 ";
     return _opSymbolMap;
   }
 
@@ -784,24 +785,52 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
       }
 
       // 普通条件
-      var pathLabel:String = pathNames[cond.path] || cond.path;
-      var opSymbol:String = opSymbols[cond.op] || " " + cond.op + " ";
       var line:String;
 
-      if (cond.op == "exists" || cond.op == "missing") {
-        line = pathLabel + opSymbol;
-      } else if (cond.op == "range") {
-        line = pathLabel + " ∈ [" + cond.min + ", " + cond.max + "]";
-      } else if (cond.op == "oneOf" || cond.op == "noneOf") {
-        line = pathLabel + opSymbol + "{" + cond.value + "}";
+      // data.interval 特殊处理：转换为射速显示，运算符反转（间隔越大射速越低）
+      if (cond.path == "data.interval") {
+        var rateValue:Number = Math.floor(10000 / Number(cond.value)) * 0.1;
+        line = "射速" + reverseIntervalOp(cond.op) + rateValue + TooltipConstants.SUF_FIRE_RATE;
       } else {
-        line = pathLabel + opSymbol + cond.value;
+        var pathLabel:String = pathNames[cond.path] || cond.path;
+        var opSymbol:String = opSymbols[cond.op] || " " + cond.op + " ";
+        if (cond.op == "exists" || cond.op == "missing") {
+          line = pathLabel + opSymbol;
+        } else if (cond.op == "range") {
+          line = pathLabel + " ∈ [" + cond.min + ", " + cond.max + "]";
+        } else if (cond.op == "oneOf" || cond.op == "noneOf") {
+          line = pathLabel + opSymbol + "{" + cond.value + "}";
+        } else {
+          line = pathLabel + opSymbol + mapCondValue(cond.path, cond.value);
+        }
       }
 
       lines.push(line);
     }
 
     return lines;
+  }
+
+  /**
+   * 反转 interval 条件对应的射速运算符
+   * interval 与射速方向相反：interval 越大，射速越低
+   */
+  private static function reverseIntervalOp(op:String):String {
+    if (op == "above")   return " &lt; ";
+    if (op == "atLeast") return " ≤ ";
+    if (op == "below")   return " &gt; ";
+    if (op == "atMost")  return " ≥ ";
+    return " = ";
+  }
+
+  /**
+   * 将条件值映射为玩家可读的外部名称
+   */
+  private static function mapCondValue(path:String, value:String):String {
+    if (path == "data.damagetype" && value == TooltipConstants.TXT_MAGIC) {
+      return "属性";
+    }
+    return value;
   }
 
   /**
