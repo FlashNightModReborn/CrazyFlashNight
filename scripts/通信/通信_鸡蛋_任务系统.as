@@ -158,7 +158,12 @@ _root.FinishTask = function(index) {
         if (itemName == "金币" && _root.isChallengeMode())
             itemArray[i].value = Math.floor(itemValue * 0.5);
         // if(_root.isEasyMode()) itemArray[i].value = Math.floor(itemValue * 1.5);
-        rewardList.push([itemName, itemArray[i].value]);
+        // 如果有进阶信息，加入第三个元素
+        if(itemArray[i].tier != undefined) {
+            rewardList.push([itemName, itemArray[i].value, itemArray[i].tier]);
+        } else {
+            rewardList.push([itemName, itemArray[i].value]);
+        }
     }
     //获得奖励
     var result = org.flashNight.arki.item.ItemUtil.acquire(itemArray);

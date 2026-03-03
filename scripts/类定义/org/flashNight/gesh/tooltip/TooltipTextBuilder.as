@@ -420,8 +420,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 生成简介标题头（1:1 复刻 _root.注释文本.生成简介标题头） ===
-  public static function buildIntroHeader(baseItem:BaseItem, item:Object):Array {
-    var value = baseItem.value ? baseItem.value : 1;
+  public static function buildIntroHeader(baseItem:BaseItem, item:Object, externalValue:Object):Array {
+    var value = baseItem && baseItem.value ? baseItem.value : (externalValue ? externalValue : 1);
     var upgradeLevel = value.level ? value.level : 1;
 
     // 获取最终的 displayname（考虑进阶可能修改显示名称）
@@ -473,12 +473,12 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
 
 
-  public static function buildStats(baseItem:BaseItem, item:Object):Array {
+  public static function buildStats(baseItem:BaseItem, item:Object, externalValue:Object):Array {
     if(!item.data) return [];
     if (item.use === ItemUseTypes.POTION){
       return buildDrugStats(item);
     }else{
-      return buildEquipmentStats(baseItem, item);
+      return buildEquipmentStats(baseItem, item, externalValue);
     }
   }
 
@@ -488,8 +488,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 生成装备属性块（1:1 复刻 _root.注释文本.生成装备属性块） ===
-  public static function buildEquipmentStats(baseItem:BaseItem, item:Object):Array {
-    var value = baseItem.value ? baseItem.value : 1;
+  public static function buildEquipmentStats(baseItem:BaseItem, item:Object, externalValue:Object):Array {
+    var value = baseItem && baseItem.value ? baseItem.value : (externalValue ? externalValue : 1);
     var upgradeLevel = value.level ? value.level : 1;
 
     var data = TooltipDataSelector.getEquipmentData(item, value.tier);

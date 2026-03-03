@@ -27,7 +27,12 @@
 	{
 		_root.注释(150,_root.获得翻译("K点"));
 	}*/
-	_root.物品图标注释(物品名,1);
+	// 构造 value 对象，包含 level 和 tier
+	var valueObj = {level: 数量};
+	if(阶数 != undefined) {
+		valueObj.tier = 阶数;
+	}
+	_root.物品图标注释(物品名, valueObj);
 }
 on (rollOut) {
 	_root.注释结束();

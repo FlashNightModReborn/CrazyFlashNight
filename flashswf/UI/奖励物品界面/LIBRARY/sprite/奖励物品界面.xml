@@ -33,7 +33,7 @@ function 排列奖励块()
    {
       if(奖励品[_loc4_][0] != undefined)
       {
-         this.attachMovie("奖励物品-奖励物品显示块","奖励块" + _loc4_,this.getNextHighestDepth(),{_x:8,_y:_loc3_ * 32 + 30,物品名:奖励品[_loc4_][0],多语言物品名:_root.getItemData(奖励品[_loc4_][0]).displayname,数量:奖励品[_loc4_][1],数组id:_loc4_});
+         this.attachMovie("奖励物品-奖励物品显示块","奖励块" + _loc4_,this.getNextHighestDepth(),{_x:8,_y:_loc3_ * 32 + 30,物品名:奖励品[_loc4_][0],多语言物品名:_root.getItemData(奖励品[_loc4_][0]).displayname,数量:奖励品[_loc4_][1],阶数:奖励品[_loc4_][2],数组id:_loc4_});
          _loc3_ += 1;
       }
       _loc4_ += 1;

@@ -272,6 +272,7 @@ class org.flashNight.arki.item.ItemUtil{
 
     // 根据任务文件内的物品字符串生成itemRequirement
     // 支持 ## 语法表示数量需求（而非强化度需求）
+    // 支持 #阶数 格式指定装备进阶（如：白色中山上装#1#二阶）
     public static function getRequirementFromTask(itemArray:Array):Array{
         var newArray = new Array(itemArray.length);
         for(var i = 0; i < itemArray.length; i++){
@@ -288,11 +289,18 @@ class org.flashNight.arki.item.ItemUtil{
                 // 对于单个 #，保持原有逻辑（装备=强化度，非装备=数量）
             }
 
-            newArray[i] = {
+            var itemObj:Object = {
                 name: arr[0],
                 value: Number(arr[1]),
                 isQuantity: isQuantity  // 新增标记字段
             };
+            
+            // 解析进阶信息（arr[2] 表示进阶，如"二阶"、"三阶"等）
+            if(arr[2] != undefined && arr[2] != ""){
+                itemObj.tier = arr[2];
+            }
+            
+            newArray[i] = itemObj;
         }
         return newArray;
     }
@@ -462,7 +470,18 @@ class org.flashNight.arki.item.ItemUtil{
                     背包.getItem(indexFound).update(acquireLastUpdate); // 更新时间戳
                 } else {
                     // 没有同名物品，创建新物品并添加到空格子
-                    var newItem = BaseItem.create(req.name, req.value, acquireLastUpdate);
+                    var newItem:BaseItem;
+                    if(req.tier != undefined && ItemUtil.isEquipment(req.name)){
+                        // 有进阶信息，使用 createFromString 保留 tier
+                        var itemStr:String = req.name + "#" + req.value + "#" + req.tier;
+                        newItem = BaseItem.createFromString(itemStr);
+                        // createFromString 不会设置 lastUpdate，需要手动设置
+                        if(newItem != null){
+                            newItem.lastUpdate = acquireLastUpdate;
+                        }
+                    } else {
+                        newItem = BaseItem.create(req.name, req.value, acquireLastUpdate);
+                    }
                     背包.add(-1, newItem);
                 }
             } else {
@@ -471,7 +490,18 @@ class org.flashNight.arki.item.ItemUtil{
 
                 if(背包.isEmpty(bagIndex)){
                     // 如果该格子为空，添加新物品
-                    var newItem = BaseItem.create(req.name, req.value, acquireLastUpdate);
+                    var newItem:BaseItem;
+                    if(req.tier != undefined && ItemUtil.isEquipment(req.name)){
+                        // 有进阶信息，使用 createFromString 保留 tier
+                        var itemStr:String = req.name + "#" + req.value + "#" + req.tier;
+                        newItem = BaseItem.createFromString(itemStr);
+                        // createFromString 不会设置 lastUpdate，需要手动设置
+                        if(newItem != null){
+                            newItem.lastUpdate = acquireLastUpdate;
+                        }
+                    } else {
+                        newItem = BaseItem.create(req.name, req.value, acquireLastUpdate);
+                    }
                     背包.add(bagIndex, newItem);
                 } else {
                     // 已有物品更新数量和时间戳

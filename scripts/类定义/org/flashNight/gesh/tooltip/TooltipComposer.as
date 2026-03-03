@@ -111,11 +111,11 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * @param upgradeLevel:Number 强化等级（默认从 value.level 获取，最小值 1）
    * @return String 拼装后的 HTML 字符串
    */
-  public static function generateIntroPanelContent(baseItem:BaseItem, item:Object):String {
+  public static function generateIntroPanelContent(baseItem:BaseItem, item:Object, value:Object):String {
     var buffer:Array = [];
 
-    append(buffer, TooltipTextBuilder.buildIntroHeader(baseItem, item));
-    append(buffer, TooltipTextBuilder.buildStats(baseItem, item));
+    append(buffer, TooltipTextBuilder.buildIntroHeader(baseItem, item, value));
+    append(buffer, TooltipTextBuilder.buildStats(baseItem, item, value));
 
     // 如果是装备，显示固有标签和禁止标签信息
     if(item.type === "武器" || item.type === "防具"){

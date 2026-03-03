@@ -18,7 +18,7 @@ _root.物品图标注释 = function(name, value, baseItem) {
     var 描述文本:String = TooltipComposer.generateItemDescriptionText(itemData, baseItem);
 
     // 2) 简介面板文本（简介头 + 装备段）
-    var 简介文本:String = TooltipComposer.generateIntroPanelContent(baseItem, itemData);
+    var 简介文本:String = TooltipComposer.generateIntroPanelContent(baseItem, itemData, value);
 
     // _root.服务器.发布服务器消息("描述文本:" + StringUtils.htmlToPlainTextFast(描述文本));
     // _root.服务器.发布服务器消息("简介文本:" + StringUtils.htmlToPlainTextFast(简介文本));
