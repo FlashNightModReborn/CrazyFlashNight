@@ -41,9 +41,13 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
 
         for (var ucIdx = 0; ucIdx < useCases.length; ucIdx++) {
             var useCase = useCases[ucIdx];
-            if (!useCase.name) continue;
 
-            result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_FOR + " " + useCase.name + "：</font><BR>");
+            if (useCase._isDefault || !useCase.name) {
+                // default 分支：显示"其他情况"
+                result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_DEFAULT_BRANCH + "：</font><BR>");
+            } else {
+                result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_FOR + " " + useCase.name + "：</font><BR>");
+            }
 
             // 【新增】显示条件性 provideTags
             if (useCase.provideTagDict) {
@@ -241,6 +245,52 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
         if (statsObj.override && statsObj.override.damagetype) {
             result.push(indent);
             TooltipTextBuilder.quickBuildDamageType(result, statsObj.override);
+        }
+    }
+
+    /**
+     * 构建 bulletSwitch 的详细效果展示
+     *
+     * @param result:Array 输出缓冲区（就地修改）
+     * @param stats:Object 包含 bulletSwitch 的 stats 对象
+     * @return Void（直接修改 result）
+     */
+    public static function buildBulletSwitchDetailed(result:Array, stats:Object):Void {
+        if (!stats || !stats.bulletSwitch || !stats.bulletSwitch.bulletCases) {
+            return;
+        }
+
+        var bulletCases:Array = stats.bulletSwitch.bulletCases;
+        if (bulletCases.length == 0) {
+            return;
+        }
+
+        result.push("<font color='" + TooltipConstants.COL_BULLET_SWITCH + "'>" + TooltipConstants.LBL_BULLET_SWITCH_EFFECT + "</font><BR>");
+
+        for (var bcIdx:Number = 0; bcIdx < bulletCases.length; bcIdx++) {
+            var bulletCase:Object = bulletCases[bcIdx];
+
+            if (bulletCase._isDefault || !bulletCase.name) {
+                // default 分支：显示"其他情况"
+                result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_DEFAULT_BRANCH + "：</font><BR>");
+            } else {
+                // 将类型标识符翻译为中文显示
+                var displayNames:Array = [];
+                var names:Array = bulletCase.name.split(",");
+                for (var ni:Number = 0; ni < names.length; ni++) {
+                    var trimmed:String = names[ni];
+                    // 简单trim（去除首尾空格）
+                    while (trimmed.charAt(0) == " ") trimmed = trimmed.substr(1);
+                    while (trimmed.charAt(trimmed.length - 1) == " ") trimmed = trimmed.substr(0, trimmed.length - 1);
+                    var cnName:String = TooltipConstants.BULLET_TYPE_NAMES[trimmed];
+                    displayNames.push(cnName ? cnName : trimmed);
+                }
+
+                result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_BULLET_FOR + " " + displayNames.join("/") + " " + TooltipConstants.TIP_BULLET_SUFFIX + "：</font><BR>");
+            }
+
+            // 使用统一的属性块渲染方法（带缩进）
+            buildStatBlock(result, bulletCase, "  ");
         }
     }
 }

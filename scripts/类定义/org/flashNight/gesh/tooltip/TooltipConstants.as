@@ -29,6 +29,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var COL_TAG_SWITCH:String = "#88CCFF";   // tagSwitch结构加成（淡蓝）
   public static var COL_COND_PROVIDE:String = "#99FF99"; // 条件性provideTags（淡绿）
   public static var COL_INSTALL_COND:String = "#FFAA44"; // 安装条件（橙黄色）
+  public static var COL_BULLET_SWITCH:String = "#FF99CC"; // bulletSwitch弹药条件（淡粉）
 
   // ══════════════════════════════════════════════════════════════
   // 获取方式相关颜色 (Obtain Methods Colors)
@@ -75,6 +76,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_MOD_INFO:String = "【配件信息】";
   public static var LBL_USE_SWITCH_EFFECT:String = "【按装备类型追加效果】";
   public static var LBL_TAG_SWITCH_EFFECT:String = "【按结构标签追加效果】";
+  public static var LBL_BULLET_SWITCH_EFFECT:String = "【按弹药类型追加效果】";
   public static var LBL_COND_PROVIDE_TAGS:String = "条件性提供结构";
 
   // ══════════════════════════════════════════════════════════════
@@ -208,6 +210,9 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var TIP_OBTAIN_MORE:String = "个";  // 用于 "等X个" 的后缀
   public static var TIP_WHEN_HAS:String = "当存在";   // tagSwitch条件前缀
   public static var TIP_TAG_SUFFIX:String = "时";    // tagSwitch条件后缀
+  public static var TIP_BULLET_FOR:String = "对于";  // bulletSwitch条件前缀
+  public static var TIP_BULLET_SUFFIX:String = "类子弹"; // bulletSwitch条件后缀
+  public static var TIP_DEFAULT_BRANCH:String = "其他情况"; // Switch系统 default 分支标签
 
   // ══════════════════════════════════════════════════════════════
   // 药剂系统文案 (Drug Tooltip Labels)
@@ -307,6 +312,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
     velocity: "出膛速度",
     bulletsize: "纵向攻击范围",
     impact: "冲击力",
+    split: "弹丸数量",
     reloadPenalty: "换弹延迟",
     silence: "<FONT COLOR='" + COL_SILENCE + "'>消音效果</FONT>",
     // 额外加成
@@ -343,6 +349,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
     velocity: 15,
     bulletsize: 16,
     impact: 17,
+    split: 17.5,
     reloadPenalty: 18,
     silence: 19,
 

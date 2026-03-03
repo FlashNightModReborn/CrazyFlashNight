@@ -13,6 +13,8 @@
  */
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.EquipmentUtil;
+import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.equipment.ModRegistry;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
@@ -39,6 +41,10 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
 
         // 标题行
         result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_INSTALLED_MODS, value.mods.length, TooltipConstants.LBL_MOD_COUNT_SUFFIX + "：</font><BR>");
+
+        // 预取原始子弹类型（未含配件效果），供 bulletSwitch 摘要使用
+        var rawItemData:Object = baseItem ? ItemUtil.getItemData(baseItem.name) : null;
+        var baseBulletType:String = (rawItemData && rawItemData.data && rawItemData.data.bullet) ? rawItemData.data.bullet : "";
 
         // 迭代配件列表
         for (var i:Number = 0; i < value.mods.length; i++) {
@@ -248,6 +254,71 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
 
                 if (useSwitchHints.length > 0) {
                     result.push(" <font color='" + TooltipConstants.COL_USE_SWITCH + "'>[", useSwitchHints.join("; "), "]</font>");
+                }
+            }
+
+            // 显示bulletSwitch条件效果提示（仅显示匹配当前装备子弹类型的分支）
+            // 使用预取的原始子弹类型，与 EquipmentCalculator 的判定一致
+
+            if (modInfo && modInfo.stats && modInfo.stats.bulletSwitch && modInfo.stats.bulletSwitch.bulletCases) {
+                var matchedCases:Array = ModRegistry.matchBulletSwitchAll(modInfo, baseBulletType);
+
+                if (matchedCases && matchedCases.length > 0) {
+                    var bsHints:Array = [];
+                    for (var bci:Number = 0; bci < matchedCases.length; bci++) {
+                        var bCase:Object = matchedCases[bci];
+                        var bEffects:Array = [];
+
+                        // 检查override效果（如split）
+                        if (bCase.override) {
+                            for (var oKey:String in bCase.override) {
+                                if (ObjectUtil.isInternalKey(oKey)) continue;
+                                var oLabel:String = TooltipConstants.PROPERTY_DICT[oKey] || oKey;
+                                bEffects.push(oLabel + "→" + bCase.override[oKey]);
+                                break;
+                            }
+                        }
+
+                        // 检查percentage效果（如diffusion）
+                        if (bEffects.length == 0 && bCase.percentage) {
+                            for (var bpKey:String in bCase.percentage) {
+                                if (ObjectUtil.isInternalKey(bpKey)) continue;
+                                var bpVal:Number = Number(bCase.percentage[bpKey]);
+                                if (!isNaN(bpVal) && bpVal != 0) {
+                                    var bpPercent:Number = Math.round(bpVal * 100);
+                                    var bpSign:String = bpPercent > 0 ? "+" : "";
+                                    var bpLabel:String = TooltipConstants.PROPERTY_DICT[bpKey] || bpKey;
+                                    bEffects.push(bpLabel + bpSign + bpPercent + "%");
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (bEffects.length > 0) {
+                            // 判断是 default 分支还是命名分支
+                            var bLabel:String;
+                            if (bCase._isDefault || !bCase.name) {
+                                bLabel = TooltipConstants.TIP_DEFAULT_BRANCH;
+                            } else {
+                                // 翻译类型名
+                                var bNames:Array = bCase.name.split(",");
+                                var bDisplayNames:Array = [];
+                                for (var bni:Number = 0; bni < bNames.length; bni++) {
+                                    var bTrimmed:String = bNames[bni];
+                                    while (bTrimmed.charAt(0) == " ") bTrimmed = bTrimmed.substr(1);
+                                    while (bTrimmed.charAt(bTrimmed.length - 1) == " ") bTrimmed = bTrimmed.substr(0, bTrimmed.length - 1);
+                                    var bCnName:String = TooltipConstants.BULLET_TYPE_NAMES[bTrimmed];
+                                    bDisplayNames.push(bCnName ? bCnName : bTrimmed);
+                                }
+                                bLabel = bDisplayNames.join("/");
+                            }
+                            bsHints.push(bLabel + ":" + bEffects.join(","));
+                        }
+                    }
+
+                    if (bsHints.length > 0) {
+                        result.push(" <font color='" + TooltipConstants.COL_BULLET_SWITCH + "'>[", bsHints.join("; "), "]</font>");
+                    }
                 }
             }
 

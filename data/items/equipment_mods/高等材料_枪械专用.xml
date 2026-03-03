@@ -364,7 +364,6 @@
                 <impact>100</impact>
             </override>
             <percentage>
-                <diffusion>-90</diffusion>
                 <power>9</power>
             </percentage>
             <multiplier>
@@ -374,6 +373,14 @@
                 <bulletsize>4</bulletsize>
                 <weight>1</weight>
             </flat>
+            <bulletSwitch>
+                <bullet name="pierce">
+                    <override><split>2</split></override>
+                </bullet>
+                <bullet>
+                    <percentage><diffusion>-90</diffusion></percentage>
+                </bullet>
+            </bulletSwitch>
         </stats>
         <description>微型化特斯拉电弧模块,将完整线圈组压缩至弹药尺寸。受限于微型电容储能,仅能维持单目标低压电弧,无法形成连锁。</description>
         <tag>弹药</tag>
@@ -431,7 +438,6 @@
                 <impact>100</impact>
             </override>
             <percentage>
-                <diffusion>-90</diffusion>
                 <power>9</power>
             </percentage>
             <multiplier>
@@ -441,6 +447,14 @@
                 <accuracy>18</accuracy>  <!-- 极致精准路线: +3.93% 命中期望 -->
                 <weight>1</weight>
             </flat>
+            <bulletSwitch>
+                <bullet name="pierce">
+                    <override><split>2</split></override>
+                </bullet>
+                <bullet>
+                    <percentage><diffusion>-90</diffusion></percentage>
+                </bullet>
+            </bulletSwitch>
         </stats>
         <description>便携式折射棱镜组,利用弹药化学能激发光束。受限于枪管空间无法容纳完整棱镜阵列,仅输出单目标散焦光束。</description>
         <tag>弹药</tag>
@@ -496,7 +510,6 @@
                 <impact>100</impact>
             </override>
             <percentage>
-                <diffusion>-90</diffusion>
                 <interval>50</interval>
                 <power>5</power>
             </percentage>
@@ -507,6 +520,14 @@
                 <bulletsize>6</bulletsize>
                 <weight>1</weight>
             </flat>
+            <bulletSwitch>
+                <bullet name="pierce">
+                    <override><split>2</split></override>
+                </bullet>
+                <bullet>
+                    <percentage><diffusion>-90</diffusion></percentage>
+                </bullet>
+            </bulletSwitch>
         </stats>
         <description>便携式辉光谐振腔,化学能驱动的荧光激发器。腔体谐振条件不佳,仅能输出暗金色单目标光束。</description>
         <tag>弹药</tag>
@@ -566,7 +587,6 @@
                 <impact>100</impact>
             </override>
             <percentage>
-                <diffusion>-90</diffusion>
                 <power>9</power>
             </percentage>
             <multiplier>
@@ -576,6 +596,14 @@
                 <bulletsize>7</bulletsize>  <!-- 极致判定路线: 大范围覆盖 -->
                 <weight>1</weight>
             </flat>
+            <bulletSwitch>
+                <bullet name="pierce">
+                    <override><split>2</split></override>
+                </bullet>
+                <bullet>
+                    <percentage><diffusion>-90</diffusion></percentage>
+                </bullet>
+            </bulletSwitch>
         </stats>
         <description>便携式双频棱栅模块,化学能驱动的多波段发射器。受限口径仅能安装双层棱栅,无法触发完整色散连锁与分裂。</description>
         <tag>弹药</tag>
@@ -631,7 +659,6 @@
                 <impact>100</impact>
             </override>
             <percentage>
-                <diffusion>-90</diffusion>
                 <power>5</power>
             </percentage>
             <multiplier>
@@ -648,6 +675,14 @@
                     </override>
                 </tag>
             </tagSwitch>
+            <bulletSwitch>
+                <bullet name="pierce">
+                    <override><split>2</split></override>
+                </bullet>
+                <bullet>
+                    <percentage><diffusion>-90</diffusion></percentage>
+                </bullet>
+            </bulletSwitch>
         </stats>
         <description>便携式谐振编织器,化学能驱动的多频干涉模块。枪管长度不足以容纳完整干涉腔,仅输出三色编织光束,无法形成穿透连锁。</description>
         <tag>弹药</tag>
@@ -708,13 +743,20 @@
                 <impact>100</impact>
             </override>
             <percentage>
-                <diffusion>-90</diffusion>
                 <power>14</power>
             </percentage>
             <flat>
                 <bulletsize>4</bulletsize>
                 <weight>1</weight>
             </flat>
+            <bulletSwitch>
+                <bullet name="pierce">
+                    <override><split>2</split></override>
+                </bullet>
+                <bullet>
+                    <percentage><diffusion>-90</diffusion></percentage>
+                </bullet>
+            </bulletSwitch>
         </stats>
         <description>便携式热辐射聚焦器,化学能驱动的红外激发模块。仅能输出低频远红外,能量被目标表面大量吸收,无法贯穿。</description>
         <tag>弹药</tag>
@@ -773,7 +815,6 @@
                 <impact>100</impact>
             </override>
             <percentage>
-                <diffusion>-90</diffusion>
                 <power>5</power>
             </percentage>
             <multiplier>
@@ -782,6 +823,14 @@
             <flat>
                 <weight>1</weight>  <!-- 无电力需求, 无命中/判定加成 -->
             </flat>
+            <bulletSwitch>
+                <bullet name="pierce">
+                    <override><split>2</split></override>
+                </bullet>
+                <bullet>
+                    <percentage><diffusion>-90</diffusion></percentage>
+                </bullet>
+            </bulletSwitch>
         </stats>
         <description>便携式涡旋发生器,化学能驱动的磁约束螺旋模块。单级超导线圈磁约束场强度不足,仅输出淡蓝色单目标螺旋。</description>
         <tag>弹药</tag>
@@ -835,9 +884,6 @@
                 <magictype>波</magictype>
                 <impact>100</impact>
             </override>
-            <percentage>
-                <diffusion>-90</diffusion>
-            </percentage>
             <multiplier>
                 <power>6</power>
             </multiplier>
@@ -845,6 +891,14 @@
                 <bulletsize>6</bulletsize>
                 <weight>1</weight>
             </flat>
+            <bulletSwitch>
+                <bullet name="pierce">
+                    <override><split>2</split></override>
+                </bullet>
+                <bullet>
+                    <percentage><diffusion>-90</diffusion></percentage>
+                </bullet>
+            </bulletSwitch>
         </stats>
         <description>便携式波能聚焦器,化学能驱动的定向能量模块。蓄能不足,仅输出纤细单目标光矛,穿透深度有限。</description>
         <tag>弹药</tag>
@@ -900,7 +954,6 @@
                 <impact>100</impact>
             </override>
             <percentage>
-                <diffusion>-90</diffusion>
                 <power>2</power>
             </percentage>
             <multiplier>
@@ -911,6 +964,14 @@
                 <accuracy>5</accuracy>  <!-- 命中期望伤害(L30): +1.19% -->
                 <weight>1</weight>
             </flat>
+            <bulletSwitch>
+                <bullet name="pierce">
+                    <override><split>2</split></override>
+                </bullet>
+                <bullet>
+                    <percentage><diffusion>-90</diffusion></percentage>
+                </bullet>
+            </bulletSwitch>
         </stats>
         <description>便携式等离子约束环,化学能驱动的等离子激发模块，输出稀薄单目标等离子束。</description>
         <tag>弹药</tag>

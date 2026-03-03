@@ -95,9 +95,17 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
         var isNotMultiShot:Boolean = (data.bullet && BulletTypeUtil.isVertical(data.bullet));
 
         // 4. 弹裂规范化（防护：使用 Number() 转换 + isNaN() 兜底）
-        var splitValue:Number = Number(data.split);
-        if (isNaN(splitValue) || splitValue <= 1) {
-            splitValue = 1;
+        var baseSplit:Number = Number(data.split);
+        if (isNaN(baseSplit) || baseSplit <= 1) {
+            baseSplit = 1;
+        }
+        // 优先使用 equipData 中的 split（含 mod override 效果）
+        var splitValue:Number = baseSplit;
+        if (equipData && equipData.split != undefined) {
+            var eqSplit:Number = Number(equipData.split);
+            if (!isNaN(eqSplit) && eqSplit >= 1) {
+                splitValue = eqSplit;
+            }
         }
 
         // 5. 容量规范化
@@ -150,9 +158,15 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
         // 8. 子弹威力
         TooltipFormatter.upgradeLine(result, data, equipData, "power", TooltipConstants.LBL_BULLET_POWER, null);
 
-        // 9. 弹裂数量显示
-        if (splitValue > 1) {
-            result.push(isNotMultiShot ? TooltipConstants.LBL_BURST_COUNT : TooltipConstants.LBL_PELLET_COUNT, "：", splitValue, "<BR>");
+        // 9. 弹裂数量显示（支持 mod override 变化显示）
+        if (splitValue > 1 || baseSplit > 1) {
+            var splitLabel:String = isNotMultiShot ? TooltipConstants.LBL_BURST_COUNT : TooltipConstants.LBL_PELLET_COUNT;
+            if (equipData && splitValue != baseSplit) {
+                // mod 修改了弹裂数：高亮显示最终值 + 变化
+                result.push(splitLabel, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", splitValue, "</FONT> (", baseSplit, " → ", splitValue, ")<BR>");
+            } else {
+                result.push(splitLabel, "：", splitValue, "<BR>");
+            }
         }
 
         // 10. 射速显示（interval 防护：确保是有效数值且非零，显示插件修改贡献）

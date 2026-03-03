@@ -1,5 +1,6 @@
 ﻿import org.flashNight.gesh.string.StringUtils;
 import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.arki.item.equipment.TagManager;
 
 /**
  * ModRegistry - 配件注册表管理器
@@ -155,6 +156,9 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         // 12. 【新增】处理和优化tagSwitch（基于结构的条件加成）
         processTagSwitch(mod);
 
+        // 13. 处理和优化bulletSwitch（基于子弹类型的条件加成）
+        processBulletSwitch(mod);
+
         // 添加到注册表
         _modList.push(name);
         _modDict[name] = mod;
@@ -262,6 +266,9 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             // 为每个useCase预构建查找表（优化性能）
             if (useCase.name) {
                 useCase.lookupDict = buildDictFromList(useCase.name);
+            } else {
+                // 没有 name 的分支视为 default（兜底）分支
+                useCase._isDefault = true;
             }
 
             // 【新增】处理条件性 provideTags
@@ -321,6 +328,9 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             // name属性可以是逗号分隔的多个tag，满足任一即可触发
             if (tagCase.name) {
                 tagCase.lookupDict = buildDictFromList(tagCase.name);
+            } else {
+                // 没有 name 的分支视为 default（兜底）分支
+                tagCase._isDefault = true;
             }
 
             if (_debugMode) {
@@ -331,6 +341,63 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         // 保存处理后的数组形式
         tagSwitch.tagCases = tagCases;
         mod._tagSwitchProcessed = true;
+    }
+
+    /**
+     * 处理和优化 bulletSwitch（基于子弹类型的条件加成）
+     * 当宿主装备的子弹属于特定类型时，提供额外的 stats 加成
+     * @private
+     */
+    private static function processBulletSwitch(mod:Object):Void {
+        if (mod._bulletSwitchProcessed) return;
+        if (!mod.stats || !mod.stats.bulletSwitch) return;
+
+        var bulletSwitch:Object = mod.stats.bulletSwitch;
+
+        // 将bullet统一转换为数组
+        var bulletCases:Array;
+        if (bulletSwitch.bullet instanceof Array) {
+            bulletCases = bulletSwitch.bullet;
+        } else if (bulletSwitch.bullet) {
+            bulletCases = [bulletSwitch.bullet];
+        } else {
+            bulletCases = [];
+        }
+
+        // 处理每个bullet分支
+        for (var i:Number = 0; i < bulletCases.length; i++) {
+            var bulletCase:Object = bulletCases[i];
+
+            // 归一化percentage字段
+            if (bulletCase.percentage) {
+                for (var pKey:String in bulletCase.percentage) {
+                    bulletCase.percentage[pKey] *= 0.01;
+                }
+            }
+
+            // 归一化multiplier字段
+            if (bulletCase.multiplier) {
+                for (var mKey:String in bulletCase.multiplier) {
+                    bulletCase.multiplier[mKey] *= 0.01;
+                }
+            }
+
+            // 为每个bulletCase预构建查找表（优化性能）
+            if (bulletCase.name) {
+                bulletCase.lookupDict = buildDictFromList(bulletCase.name);
+            } else {
+                // 没有 name 的分支视为 default（兜底）分支
+                bulletCase._isDefault = true;
+            }
+
+            if (_debugMode) {
+                trace("[ModRegistry] bulletSwitch分支: 当子弹类型匹配 '" + bulletCase.name + "' 时触发加成");
+            }
+        }
+
+        // 保存处理后的数组形式
+        bulletSwitch.bulletCases = bulletCases;
+        mod._bulletSwitchProcessed = true;
     }
 
     /**
@@ -434,10 +501,19 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             return matched;
         }
 
+        // 收集 default 分支（无 name 属性的分支）
+        var defaults:Array = [];
+
         // 遍历所有useCase分支，收集所有匹配的
         for (var i:Number = 0; i < useCases.length; i++) {
             var useCase:Object = useCases[i];
             if (!useCase) continue;
+
+            // default 分支：仅在无命名分支命中时生效
+            if (useCase._isDefault) {
+                defaults.push(useCase);
+                continue;
+            }
 
             // 惰性构建 lookupDict：如果缺失则即时解析 name 字段
             // 这确保了动态注入或未经 loadModData 处理的 Mod 也能正常匹配
@@ -450,7 +526,9 @@ class org.flashNight.arki.item.equipment.ModRegistry {
                         trace("[ModRegistry] 惰性构建lookupDict: " + useCase.name);
                     }
                 } else {
-                    continue; // 没有 name 也没有 lookupDict，跳过
+                    defaults.push(useCase);
+                    useCase._isDefault = true;
+                    continue;
                 }
             }
 
@@ -469,6 +547,14 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             if (hit) {
                 matched.push(useCase);
             }
+        }
+
+        // 若无命名分支命中，回退到 default 分支
+        if (matched.length == 0 && defaults.length > 0) {
+            if (_debugMode) {
+                trace("[ModRegistry] useSwitch: 无命名分支命中，应用 " + defaults.length + " 个 default 分支");
+            }
+            return defaults;
         }
 
         return matched;
@@ -504,10 +590,19 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             return matched;
         }
 
+        // 收集 default 分支
+        var defaults:Array = [];
+
         // 遍历所有tagCase分支，收集所有匹配的
         for (var i:Number = 0; i < tagCases.length; i++) {
             var tagCase:Object = tagCases[i];
             if (!tagCase) continue;
+
+            // default 分支：仅在无命名分支命中时生效
+            if (tagCase._isDefault) {
+                defaults.push(tagCase);
+                continue;
+            }
 
             // 惰性构建 lookupDict
             var lookupDict:Object = tagCase.lookupDict;
@@ -519,6 +614,8 @@ class org.flashNight.arki.item.equipment.ModRegistry {
                         trace("[ModRegistry] 惰性构建tagSwitch lookupDict: " + tagCase.name);
                     }
                 } else {
+                    defaults.push(tagCase);
+                    tagCase._isDefault = true;
                     continue;
                 }
             }
@@ -538,6 +635,95 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             if (hit) {
                 matched.push(tagCase);
             }
+        }
+
+        // 若无命名分支命中，回退到 default 分支
+        if (matched.length == 0 && defaults.length > 0) {
+            if (_debugMode) {
+                trace("[ModRegistry] tagSwitch: 无命名分支命中，应用 " + defaults.length + " 个 default 分支");
+            }
+            return defaults;
+        }
+
+        return matched;
+    }
+
+    /**
+     * 匹配所有符合条件的 bulletSwitch 分支
+     * 基于装备当前的子弹类型进行匹配
+     * @param modData 配件数据
+     * @param bulletType 装备当前的子弹类型字符串
+     * @return 所有匹配的bulletCase数组，如果没有匹配返回空数组
+     */
+    public static function matchBulletSwitchAll(modData:Object, bulletType:String):Array {
+        var matched:Array = [];
+
+        if (!modData || !modData.stats || !modData.stats.bulletSwitch) {
+            return matched;
+        }
+
+        var bulletCases:Array = modData.stats.bulletSwitch.bulletCases;
+        if (!bulletCases || bulletCases.length == 0) {
+            return matched;
+        }
+
+        if (!bulletType) {
+            return matched;
+        }
+
+        // 收集 default 分支
+        var defaults:Array = [];
+
+        // 遍历所有bulletCase分支，收集所有匹配的
+        for (var i:Number = 0; i < bulletCases.length; i++) {
+            var bulletCase:Object = bulletCases[i];
+            if (!bulletCase) continue;
+
+            // default 分支：仅在无命名分支命中时生效
+            if (bulletCase._isDefault) {
+                defaults.push(bulletCase);
+                continue;
+            }
+
+            // 惰性构建 lookupDict
+            var lookupDict:Object = bulletCase.lookupDict;
+            if (!lookupDict) {
+                if (bulletCase.name) {
+                    lookupDict = buildDictFromList(bulletCase.name);
+                    bulletCase.lookupDict = lookupDict;
+                    if (_debugMode) {
+                        trace("[ModRegistry] 惰性构建bulletSwitch lookupDict: " + bulletCase.name);
+                    }
+                } else {
+                    defaults.push(bulletCase);
+                    bulletCase._isDefault = true;
+                    continue;
+                }
+            }
+
+            // 遍历 lookupDict 中的类型标识符，只要有一个匹配就命中
+            var hit:Boolean = false;
+            for (var typeKey:String in lookupDict) {
+                if (TagManager.checkBulletTypeMatch(bulletType, typeKey)) {
+                    hit = true;
+                    if (_debugMode) {
+                        trace("[ModRegistry] bulletSwitch匹配分支: '" + bulletCase.name + "' by type '" + typeKey + "'");
+                    }
+                    break;
+                }
+            }
+
+            if (hit) {
+                matched.push(bulletCase);
+            }
+        }
+
+        // 若无命名分支命中，回退到 default 分支
+        if (matched.length == 0 && defaults.length > 0) {
+            if (_debugMode) {
+                trace("[ModRegistry] bulletSwitch: 无命名分支命中，应用 " + defaults.length + " 个 default 分支");
+            }
+            return defaults;
         }
 
         return matched;

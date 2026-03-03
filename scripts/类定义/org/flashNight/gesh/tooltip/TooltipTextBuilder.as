@@ -672,6 +672,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     // 【新增】使用 TagSwitchStatsBuilder 显示 tagSwitch 结构条件加成
     TagSwitchStatsBuilder.buildDetailed(result, stats);
 
+    // 使用 UseSwitchStatsBuilder 显示 bulletSwitch 弹药类型条件效果
+    UseSwitchStatsBuilder.buildBulletSwitchDetailed(result, stats);
+
     if(modData.skill){
       result = result.concat(buildSkillInfo(modData.skill));
     }

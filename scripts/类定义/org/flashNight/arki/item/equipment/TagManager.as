@@ -474,6 +474,40 @@ class org.flashNight.arki.item.equipment.TagManager {
     }
 
     /**
+     * 检查子弹类型是否匹配指定的类型标识符
+     * 公共方法，供 checkBulletTypeExclusion/checkBulletTypeRequirement 以及
+     * ModRegistry.matchBulletSwitchAll 共用
+     * @param bulletType 子弹种类字符串（如"穿刺子弹"）
+     * @param typeKey 类型标识符（如"pierce"）
+     * @return 如果匹配返回true
+     */
+    public static function checkBulletTypeMatch(bulletType:String, typeKey:String):Boolean {
+        switch (typeKey) {
+            case "pierce":
+                return BulletTypeUtil.isPierce(bulletType);
+            case "melee":
+                return BulletTypeUtil.isMelee(bulletType);
+            case "chain":
+                return BulletTypeUtil.isChain(bulletType);
+            case "grenade":
+                return BulletTypeUtil.isGrenade(bulletType);
+            case "explosive":
+                return BulletTypeUtil.isExplosive(bulletType);
+            case "normal":
+                return BulletTypeUtil.isNormal(bulletType);
+            case "vertical":
+                return BulletTypeUtil.isVertical(bulletType);
+            case "transparency":
+                return BulletTypeUtil.isTransparency(bulletType);
+            default:
+                if (_debugMode) {
+                    trace("[TagManager] 未知的子弹类型标识符: " + typeKey);
+                }
+                return false;
+        }
+    }
+
+    /**
      * 检查子弹类型是否被排斥
      * @param bulletType 当前装备的子弹类型字符串
      * @param excludeDict 排斥的子弹类型字典（键为类型标识符）
@@ -483,44 +517,8 @@ class org.flashNight.arki.item.equipment.TagManager {
     private static function checkBulletTypeExclusion(bulletType:String, excludeDict:Object):Boolean {
         if (!bulletType || !excludeDict) return false;
 
-        // 遍历排斥字典中的每个类型标识符
         for (var typeKey:String in excludeDict) {
-            var isExcluded:Boolean = false;
-
-            // 根据类型标识符调用对应的检测方法
-            switch (typeKey) {
-                case "pierce":
-                    isExcluded = BulletTypeUtil.isPierce(bulletType);
-                    break;
-                case "melee":
-                    isExcluded = BulletTypeUtil.isMelee(bulletType);
-                    break;
-                case "chain":
-                    isExcluded = BulletTypeUtil.isChain(bulletType);
-                    break;
-                case "grenade":
-                    isExcluded = BulletTypeUtil.isGrenade(bulletType);
-                    break;
-                case "explosive":
-                    isExcluded = BulletTypeUtil.isExplosive(bulletType);
-                    break;
-                case "normal":
-                    isExcluded = BulletTypeUtil.isNormal(bulletType);
-                    break;
-                case "vertical":
-                    isExcluded = BulletTypeUtil.isVertical(bulletType);
-                    break;
-                case "transparency":
-                    isExcluded = BulletTypeUtil.isTransparency(bulletType);
-                    break;
-                default:
-                    if (_debugMode) {
-                        trace("[TagManager] 未知的子弹类型标识符: " + typeKey);
-                    }
-                    break;
-            }
-
-            if (isExcluded) {
+            if (checkBulletTypeMatch(bulletType, typeKey)) {
                 return true;
             }
         }
@@ -538,48 +536,13 @@ class org.flashNight.arki.item.equipment.TagManager {
     private static function checkBulletTypeRequirement(bulletType:String, requireDict:Object):Boolean {
         if (!bulletType || !requireDict) return true;
 
-        // 遍历要求字典，至少匹配一种即通过（OR逻辑）
         for (var typeKey:String in requireDict) {
-            var isMatched:Boolean = false;
-
-            switch (typeKey) {
-                case "pierce":
-                    isMatched = BulletTypeUtil.isPierce(bulletType);
-                    break;
-                case "melee":
-                    isMatched = BulletTypeUtil.isMelee(bulletType);
-                    break;
-                case "chain":
-                    isMatched = BulletTypeUtil.isChain(bulletType);
-                    break;
-                case "grenade":
-                    isMatched = BulletTypeUtil.isGrenade(bulletType);
-                    break;
-                case "explosive":
-                    isMatched = BulletTypeUtil.isExplosive(bulletType);
-                    break;
-                case "normal":
-                    isMatched = BulletTypeUtil.isNormal(bulletType);
-                    break;
-                case "vertical":
-                    isMatched = BulletTypeUtil.isVertical(bulletType);
-                    break;
-                case "transparency":
-                    isMatched = BulletTypeUtil.isTransparency(bulletType);
-                    break;
-                default:
-                    if (_debugMode) {
-                        trace("[TagManager] 未知的子弹类型标识符: " + typeKey);
-                    }
-                    break;
-            }
-
-            if (isMatched) {
-                return true; // 匹配到一种即满足要求
+            if (checkBulletTypeMatch(bulletType, typeKey)) {
+                return true;
             }
         }
 
-        return false; // 全不匹配，不满足要求
+        return false;
     }
 
     /**

@@ -37,10 +37,14 @@ class org.flashNight.gesh.tooltip.builder.TagSwitchStatsBuilder {
 
         for (var tcIdx:Number = 0; tcIdx < tagCases.length; tcIdx++) {
             var tagCase:Object = tagCases[tcIdx];
-            if (!tagCase.name) continue;
 
-            // 显示触发条件：当存在 [标签名] 时：
-            result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_WHEN_HAS + " " + tagCase.name + " " + TooltipConstants.TIP_TAG_SUFFIX + "：</font><BR>");
+            if (tagCase._isDefault || !tagCase.name) {
+                // default 分支：显示"其他情况"
+                result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_DEFAULT_BRANCH + "：</font><BR>");
+            } else {
+                // 显示触发条件：当存在 [标签名] 时：
+                result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.TIP_WHEN_HAS + " " + tagCase.name + " " + TooltipConstants.TIP_TAG_SUFFIX + "：</font><BR>");
+            }
 
             // 使用 UseSwitchStatsBuilder 的统一属性块渲染方法（带缩进）
             UseSwitchStatsBuilder.buildStatBlock(result, tagCase, "  ");

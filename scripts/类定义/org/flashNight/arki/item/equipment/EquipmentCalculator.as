@@ -148,7 +148,7 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
 
     /**
      * 累积配件的各种修改器（优化版本）
-     * 支持 useSwitch（基于装备类型）和 tagSwitch（基于结构标签）
+     * 支持 useSwitch（基于装备类型）、tagSwitch（基于结构标签）和 bulletSwitch（基于子弹类型）
      * @private
      */
     private static function accumulateModifiers(mods:Array, itemData:Object, modRegistry:Object):Object {
@@ -170,6 +170,9 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         // 收集所有 presentTags（装备固有 + 配件静态 + 配件条件性）
         // 这样 tagSwitch 可以基于完整的结构信息进行判断
         var presentTags:Object = TagManager.buildPresentTagsDict(mods, itemData, modRegistry);
+
+        // 提取子弹类型（用于 bulletSwitch 匹配）
+        var bulletType:String = (itemData.data && itemData.data.bullet) ? itemData.data.bullet : "";
 
         // 第二轮：遍历配件，累积修改器
         for (var i:Number = 0; i < mods.length; i++) {
@@ -196,6 +199,17 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
                 for (var tc:Number = 0; tc < matchedTagCases.length; tc++) {
                     applyStatsToAccumulators(
                         matchedTagCases[tc],
+                        adder, multiplier, overrider, merger, capper, multiplierZone
+                    );
+                }
+            }
+
+            // 4. 应用所有匹配的bulletSwitch分支（基于子弹类型的条件效果）
+            var matchedBulletCases:Array = ModRegistry.matchBulletSwitchAll(modInfo, bulletType);
+            if (matchedBulletCases && matchedBulletCases.length > 0) {
+                for (var bc:Number = 0; bc < matchedBulletCases.length; bc++) {
+                    applyStatsToAccumulators(
+                        matchedBulletCases[bc],
                         adder, multiplier, overrider, merger, capper, multiplierZone
                     );
                 }
