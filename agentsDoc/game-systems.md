@@ -1,6 +1,20 @@
 # 游戏系统索引
 
-> 各核心游戏系统的概述与入口文件索引。深入某个系统时先查阅此文档定位关键文件。
+---
+
+## 0. 核心代码库速查（org.flashNight 七大包）
+
+| 包 | 职责 |
+|----|------|
+| **arki** | 游戏引擎核心（战斗/渲染/场景/物品/单位） |
+| **aven** | 协调与测试（EventCoordinator、Proxy、测试框架） |
+| **gesh** | 通用工具库（array/string/number/object/pratt/path/xml 等） |
+| **hana** | 小游戏资源（库符号注入主文件运行时） |
+| **naki** | 数据结构与数学（排序、随机数、缓存、插值） |
+| **neur** | 事件/控制/计时/状态机（EventBus、计时器三级体系、Tween、导航） |
+| **sara** | 物理引擎（粒子、约束、碰撞、复合体） |
+
+核心类库路径：`scripts/类定义/org/flashNight/`
 
 ---
 
@@ -58,7 +72,7 @@
 
 ## 9. 数据结构与算法
 - **位置**：`scripts/类定义/org/flashNight/naki/`
-- **内容**：DataStructures（AVL/红黑树/BVH/图/堆/并查集/LRU/BigInt 等 45+ 类）、RandomNumberEngine（LCG/MT/PCG）、Cache、Interpolation、DP、Sort
+- **内容**：DataStructures（AVL/红黑树/BVH/图/堆/并查集/LRU/BigInt 等）、RandomNumberEngine（LCG/MT/PCG）、Cache、Interpolation、DP、Sort
 
 ### 排序子系统（`naki/Sort/`）
 
@@ -95,16 +109,3 @@
 - **帧脚本**：`scripts/逻辑/关卡系统/`
 - **数据**：`data/stages/`
 
----
-
-## 待补充
-
-<!-- 以下 TODO 统一管理，在自优化环节中逐步填充 -->
-- 子弹系统详细架构
-- Buff 系统计算流程
-- 事件系统使用模式
-- 摄像机系统描述
-- 音频系统架构
-- 物理引擎使用范围与限制
-- 深度管理性能瓶颈原因与优化方向
-- 关卡系统运行流程
