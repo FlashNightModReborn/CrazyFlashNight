@@ -163,6 +163,7 @@ function Phoenix()
               <Actionscript>
                 <script><![CDATA[if(this.已变身最后阶段){
 	this.变身控制块.temp_MovieFire.removeMovieClip();
+	this.火凤余烬.removeMovieClip();
 }else{
 	if(this.变身阶段 == 2){
 		this.已变身最后阶段 = true;
@@ -228,9 +229,9 @@ function Phoenix()
       _root.发布消息("涅槃重生……");
       _parent.已使用兴奋剂 = true;
       _parent.变身阶段 = 2;
-      temp_MovieFire = _parent.attachMovie("火凤余烬","火凤余烬",_parent.getNextHighestDepth(),{_xscale:100,_yscale:150});
-      temp_MovieFire.play();
-      temp_MovieFire.onEnterFrame = function()
+      this.temp_MovieFire = _parent.attachMovie("火凤余烬","火凤余烬",_parent.getNextHighestDepth(),{_xscale:100,_yscale:150});
+      this.temp_MovieFire.play();
+      this.temp_MovieFire.onEnterFrame = function()
       {
          if(this._currentFrame == this._totalFrames - 1)
          {
@@ -238,9 +239,7 @@ function Phoenix()
          }
          if(_parent._parent.hp <= 0 and _parent._parent.变身阶段 == 2)
          {
-            this.gotoAndPlay(this._totalFrames);
-            this.play();
-            delete this.onEnterFrame;
+            this.removeMovieClip();
          }
       };
    }
