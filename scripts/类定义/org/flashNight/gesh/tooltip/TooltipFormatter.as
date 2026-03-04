@@ -13,6 +13,38 @@ class org.flashNight.gesh.tooltip.TooltipFormatter {
   public static function br():String {
     return "<BR>";
   }
+
+  /**
+   * 将 XML 简介文本规范化为 HTML 片段。
+   * - 统一 \r\n / \n 换行为 <BR>
+   * - 去除每行行首的缩进空白（XML 格式化产生的多余空格/制表符）
+   */
+  public static function normalizeDescription(text:String):String {
+    var normalized:String = text.split("\r\n").join("\n");
+    var lines:Array = normalized.split("\n");
+    var result:String = "";
+    for (var i:Number = 0; i < lines.length; i++) {
+      var line:String = lines[i];
+      // 去除行首缩进空白（XML 格式化产生的多余空格/制表符）
+      var j:Number = 0;
+      while (j < line.length && (line.charAt(j) == " " || line.charAt(j) == "\t")) {
+        j++;
+      }
+      line = line.substring(j);
+      if (i == 0) {
+        result = line;
+      } else {
+        // 若该行已以 <BR> 开头（XML 中用 &lt;BR&gt; 写的显式分隔符），
+        // 则该 <BR> 本身就是分隔符，不再额外追加一个，避免产生双重换行空行。
+        if (line.substring(0, 4).toUpperCase() == "<BR>") {
+          result += line;
+        } else {
+          result += "<BR>" + line;
+        }
+      }
+    }
+    return result;
+  }
   
   public static function kv(label:String, val, suffix:String):String {
     if (suffix === undefined) suffix = "";

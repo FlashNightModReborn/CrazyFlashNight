@@ -48,7 +48,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
 
     if (description) {
-      result.push(description.split("\r\n").join(TooltipFormatter.br()), TooltipFormatter.br());
+      result.push(TooltipFormatter.normalizeDescription(description), TooltipFormatter.br());
     }
     return result;
   }
@@ -395,7 +395,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var result = [];
     if (!skill) return result;
     if (skill.description) {
-      result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_ACTIVE_SKILL + "</font>", skill.description, "<BR><font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_SKILL_INFO + "</font>");
+      result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_ACTIVE_SKILL + "</font>", TooltipFormatter.normalizeDescription(skill.description), "<BR><font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_SKILL_INFO + "</font>");
       if (skill.information) {
         result.push(skill.information);
       } else {
@@ -415,7 +415,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   // === 生成生命周期（1:1 复刻 _root.注释文本.生成生命周期） ===
   public static function buildLifecycleInfo(lc:Object):Array {
     var result = [];
-    if (lc && lc.description) result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_AFFIX_INFO + "</font>", lc.description, "<BR>");
+    if (lc && lc.description) result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_AFFIX_INFO + "</font>", TooltipFormatter.normalizeDescription(lc.description), "<BR>");
     return result;
   }
 
@@ -681,7 +681,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
     // 读取描述（如果有）
     if(typeof modData.description === "string"){
-      result.push(modData.description.split("\r\n").join(TooltipFormatter.br()), TooltipFormatter.br());
+      result.push(TooltipFormatter.normalizeDescription(modData.description), TooltipFormatter.br());
     }
     return result;
   }
