@@ -256,7 +256,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var BASE_SCALE:Number = 486.8;
   public static var BASE_OFFSET:Number = 7.5;
   public static var MIN_W:Number = 150;
-  public static var MAX_W:Number = 500;
+  public static var MAX_W:Number = 650;
   public static var TEXT_PAD:Number = 10;
   public static var BG_HEIGHT_OFFSET:Number = 20;
   public static var SPLIT_THRESHOLD:Number = 96;
@@ -264,6 +264,12 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var CHAR_CJK_WIDTH:Number = 8;
   public static var CHAR_LATIN_WIDTH:Number = 5;
   public static var CHAR_AVG_WIDTH:Number = 0.5;
+  // 主框体宽度估算：分布感知加权插值（smoothstep 均匀度 × lineBased + (1-均匀度) × totalBased）
+  // 均匀度 = meanLineScore / maxLineScore（实际均值/最大值比，自然落于 [0,1]）
+  //   均匀内容（MACSIV）：均值≈最大值 → 均匀度→1 → 偏最长行估算，保证段落不折行
+  //   稀疏内容（聚束射线弹：22短行+1长描述）：均值≪最大值 → 均匀度→0 → 偏总量估算，收紧冗余
+  // MAIN_CHAR_AVG_WIDTH：totalBased 的系数（下界锚点，偏保守）
+  public static var MAIN_CHAR_AVG_WIDTH:Number = 0.75;
 
   public static var OFFSET_X:Number = 0;
   public static var OFFSET_Y:Number = 0;
@@ -282,6 +288,18 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   // 智能显示策略常量
   public static var SMART_TOTAL_MULTIPLIER:Number = 2;    // 总长度阈值倍数
   public static var SMART_DESC_DIVISOR:Number = 2;        // 描述长度阈值除数
+
+  // 最长行宽度估算常量（用于双维度 estimateWidth 的行宽维度）
+  // LINE_WIDTH_SCALE：每单位 htmlMaxLineScore 对应的像素估算（ASCII ≈5px/unit，取保守上界）
+  public static var LINE_WIDTH_SCALE:Number = 5.5;
+  // LINE_GUTTER：行宽估算的整体边距补偿（左右各8px，含 TextField 2px内边距 + 额外安全余量）
+  public static var LINE_GUTTER:Number = 20;
+  // INTRO_MAX_W：简介面板允许的最大宽度（与 MAX_W=700 分离，避免双栏总宽爆表）
+  // 300px 上限：M202 类武器的插件变化行（如"装填形式：逐发装填 (整匣换弹 → 逐发装填)"）实测约 280px，
+  // 在 300px 内刚好不折行；图标右侧留白从 ~180px 压缩到 ~80px，视觉平衡更佳。
+  public static var INTRO_MAX_W:Number = 300;
+  // DUAL_PANEL_MARGIN：双栏同时可见时，总宽与屏幕宽之间保留的边距（两侧各 20px）
+  public static var DUAL_PANEL_MARGIN:Number = 40;
 
   // ══════════════════════════════════════════════════════════════
   // 属性名称字典 (Property Dictionary)

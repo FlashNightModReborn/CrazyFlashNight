@@ -315,6 +315,49 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
     }
 
     // ══════════════════════════════════════════════════════════════
+    // 文本宽度真实测量
+    // ══════════════════════════════════════════════════════════════
+
+    /**
+     * 利用实际 TextField 精确测量 HTML 内容中最长行的像素宽度。
+     *
+     * 原理：临时将 wordWrap 切为 false 并把字段展开至 9999px，
+     * 让 Flash 在无换行约束下完成内部排版，再读取 textWidth。
+     * 整个过程在同一 AS2 帧内同步完成，Flash 不会中间渲染，无视觉闪烁。
+     *
+     * @param htmlContent  待测量的 HTML 内容
+     * @param useIntroBox  true = 简介文本框；false = 主文本框
+     * @return 最长行像素宽度（含 TextField 4px 内边距），
+     *         TextField 不可用时返回 0（调用方应回退到评分估算）
+     */
+    public static function measureTextLineWidth(htmlContent:String, useIntroBox:Boolean):Number {
+        if (htmlContent == null || htmlContent == undefined || htmlContent == "") return 0;
+
+        var tf:MovieClip = useIntroBox ? getIntroTextBox() : getMainTextBox();
+        if (tf == null) return 0;
+
+        // 保存现有状态
+        var savedWordWrap:Boolean = tf.wordWrap;
+        var savedWidth:Number    = tf._width;
+        var savedHtml:String     = tf.htmlText;
+
+        // 临时展开：禁止换行 + 足够宽的容器，消除字段宽度对 textWidth 的干扰
+        tf.wordWrap = false;
+        tf._width   = 9999;
+        tf.htmlText = htmlContent;
+
+        // textWidth = 内容自然宽度（不含内边距）；+4 补偿 TextField 左右各 2px 内边距
+        var result:Number = tf.textWidth + 4;
+
+        // 恢复原状态
+        tf.wordWrap  = savedWordWrap;
+        tf._width    = savedWidth;
+        tf.htmlText  = savedHtml;
+
+        return result;
+    }
+
+    // ══════════════════════════════════════════════════════════════
     // 私有辅助方法
     // ══════════════════════════════════════════════════════════════
 

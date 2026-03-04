@@ -71,8 +71,8 @@ class org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer {
         // 6. 抗性块
         ResistanceBlockBuilder.build(result, baseItem, item, data, equipData);
 
-        // 7. 配件列表块
-        ModsBlockBuilder.build(result, baseItem, item, value);
+        // 注意：配件列表块已迁移至 TooltipComposer.generateItemDescriptionText（主框体）
+        // 这样配件的长行可以在自适应宽度的主框体中显示，不再撑开固定宽度的简介面板
 
         return result;
     }

@@ -91,7 +91,7 @@ class org.flashNight.gesh.tooltip.builder.CommonStatsBuilder {
             if (isOverridden) {
                 // 显示覆盖效果：新值（原值 → 新值）
                 result.push(TooltipConstants.LBL_ACTION, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalActionType, "</FONT>");
-                result.push(" <FONT COLOR='", TooltipConstants.COL_INFO, "'>(", originalActionType, " → ", finalActionType, ")</FONT><BR>");
+                result.push(" <FONT COLOR='", TooltipConstants.COL_INFO, "'>(←", originalActionType, ")</FONT><BR>");
             } else {
                 result.push(TooltipConstants.LBL_ACTION, "：", finalActionType, "<BR>");
             }

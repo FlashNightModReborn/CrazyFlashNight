@@ -53,7 +53,7 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
 
         if (equipData && finalSingleShoot != baseSingleShoot) {
             // 插件修改了射击模式，使用箭头形式显示变化
-            result.push(TooltipConstants.LBL_FIRE_MODE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalFireMode, "</FONT> (", baseFireMode, " → ", finalFireMode, ")<BR>");
+            result.push(TooltipConstants.LBL_FIRE_MODE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalFireMode, "</FONT> (←", baseFireMode, ")<BR>");
         } else {
             result.push(TooltipConstants.LBL_FIRE_MODE, "：", finalFireMode, "<BR>");
         }
@@ -72,7 +72,7 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
 
         if (equipData && finalReloadType != baseReloadType) {
             // 插件修改了装填形式，使用箭头形式显示变化
-            result.push(TooltipConstants.LBL_RELOAD_TYPE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalReloadDisplay, "</FONT> (", baseReloadDisplay, " → ", finalReloadDisplay, ")<BR>");
+            result.push(TooltipConstants.LBL_RELOAD_TYPE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalReloadDisplay, "</FONT> (←", baseReloadDisplay, ")<BR>");
         } else {
             result.push(TooltipConstants.LBL_RELOAD_TYPE, "：", finalReloadDisplay, "<BR>");
         }
@@ -85,7 +85,7 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
         if (finalBullet) {
             if (equipData && finalBullet != baseBullet) {
                 // 插件修改了子弹类型，使用箭头形式显示变化
-                result.push(TooltipConstants.LBL_BULLET_TYPE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalBullet, "</FONT> (", baseBullet, " → ", finalBullet, ")<BR>");
+                result.push(TooltipConstants.LBL_BULLET_TYPE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalBullet, "</FONT> (←", baseBullet, ")<BR>");
             } else {
                 result.push(TooltipConstants.LBL_BULLET_TYPE, "：", finalBullet, "<BR>");
             }
@@ -163,7 +163,7 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
             var splitLabel:String = isNotMultiShot ? TooltipConstants.LBL_BURST_COUNT : TooltipConstants.LBL_PELLET_COUNT;
             if (equipData && splitValue != baseSplit) {
                 // mod 修改了弹裂数：高亮显示最终值 + 变化
-                result.push(splitLabel, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", splitValue, "</FONT> (", baseSplit, " → ", splitValue, ")<BR>");
+                result.push(splitLabel, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", splitValue, "</FONT> (←", baseSplit, ")<BR>");
             } else {
                 result.push(splitLabel, "：", splitValue, "<BR>");
             }

@@ -61,6 +61,9 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                 result.push(" <font color='" + TooltipConstants.COL_INFO + "'>[", modInfo.tagValue, "]</font>");
             }
 
+            // 追踪是否有数值效果（用于决定覆写效果是否另起一行）
+            var hasNumericEffects:Boolean = false;
+
             // 显示配件提供的百分比增幅（汇总显示 - percentage用圆括号）
             if (modInfo && modInfo.stats && modInfo.stats.percentage) {
                 var enhancements:Array = [];
@@ -79,6 +82,7 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                 // 如果有增幅，显示在配件名后（圆括号表示加法合并乘区）
                 if (enhancements.length > 0) {
                     result.push(" <font color='" + TooltipConstants.COL_ENHANCE + "'>(", enhancements.join(", "), ")</font>");
+                    hasNumericEffects = true;
                 }
             }
 
@@ -109,15 +113,20 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                 // 如果有增幅，显示在配件名后（花括号表示独立乘区）
                 if (multiplierEnhancements.length > 0) {
                     result.push(" <font color='" + TooltipConstants.COL_MULTIPLIER + "'>{", multiplierEnhancements.join(", "), "}</font>");
+                    hasNumericEffects = true;
                 }
             }
+
+            // 收集覆写/条件效果（silence/fireMode/reloadType/useSwitch/bulletSwitch）
+            // 若同时存在数值效果，则另起一行显示，避免单行过长
+            var overrideEffectParts:Array = [];
 
             // 检查是否有消音属性，添加消音效果简短描述
             // 修复：从 modInfo.stats.override 读取，而不是 modInfo.override
             if (modInfo && modInfo.stats && modInfo.stats.override && modInfo.stats.override.silence) {
                 var silenceDesc:String = SilenceEffectBuilder.getShortDescription(modInfo.stats.override.silence);
                 if (silenceDesc != "") {
-                    result.push(" <font color='" + TooltipConstants.COL_SILENCE + "'>[", silenceDesc, "]</font>");
+                    overrideEffectParts.push(" <font color='" + TooltipConstants.COL_SILENCE + "'>[" + silenceDesc + "]</font>");
                 }
             }
 
@@ -125,14 +134,14 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
             if (modInfo && modInfo.stats && modInfo.stats.override && modInfo.stats.override.singleshoot != undefined) {
                 var singleshootVal:Boolean = (modInfo.stats.override.singleshoot == true || modInfo.stats.override.singleshoot == "true");
                 var fireModeDesc:String = singleshootVal ? TooltipConstants.TIP_FIRE_MODE_SEMI : TooltipConstants.TIP_FIRE_MODE_AUTO;
-                result.push(" <font color='" + TooltipConstants.COL_HL + "'>[", TooltipConstants.LBL_FIRE_MODE, ": ", fireModeDesc, "]</font>");
+                overrideEffectParts.push(" <font color='" + TooltipConstants.COL_HL + "'>[" + TooltipConstants.LBL_FIRE_MODE + ": " + fireModeDesc + "]</font>");
             }
 
             // 检查是否有装填形式修改属性（reloadType override）
             if (modInfo && modInfo.stats && modInfo.stats.override && modInfo.stats.override.reloadType != undefined) {
                 var reloadTypeVal:String = modInfo.stats.override.reloadType;
                 var reloadTypeDesc:String = (reloadTypeVal == "tube") ? TooltipConstants.TIP_RELOAD_TYPE_TUBE : TooltipConstants.TIP_RELOAD_TYPE_MAG;
-                result.push(" <font color='" + TooltipConstants.COL_HL + "'>[", TooltipConstants.LBL_RELOAD_TYPE, ": ", reloadTypeDesc, "]</font>");
+                overrideEffectParts.push(" <font color='" + TooltipConstants.COL_HL + "'>[" + TooltipConstants.LBL_RELOAD_TYPE + ": " + reloadTypeDesc + "]</font>");
             }
 
             // 显示useSwitch条件效果提示（仅显示匹配当前装备的条件）
@@ -253,7 +262,7 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                 }
 
                 if (useSwitchHints.length > 0) {
-                    result.push(" <font color='" + TooltipConstants.COL_USE_SWITCH + "'>[", useSwitchHints.join("; "), "]</font>");
+                    overrideEffectParts.push(" <font color='" + TooltipConstants.COL_USE_SWITCH + "'>[" + useSwitchHints.join("; ") + "]</font>");
                 }
             }
 
@@ -317,11 +326,18 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                     }
 
                     if (bsHints.length > 0) {
-                        result.push(" <font color='" + TooltipConstants.COL_BULLET_SWITCH + "'>[", bsHints.join("; "), "]</font>");
+                        overrideEffectParts.push(" <font color='" + TooltipConstants.COL_BULLET_SWITCH + "'>[" + bsHints.join("; ") + "]</font>");
                     }
                 }
             }
 
+            // 输出覆写/条件效果：有数值效果时另起一行（缩进4空格），无数值时接在同行末尾
+            if (overrideEffectParts.length > 0) {
+                if (hasNumericEffects) {
+                    result.push("<BR>    ");
+                }
+                result.push(overrideEffectParts.join(""));
+            }
             result.push("<BR>");
         }
     }

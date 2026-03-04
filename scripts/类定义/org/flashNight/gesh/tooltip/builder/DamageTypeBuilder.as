@@ -116,7 +116,7 @@ class org.flashNight.gesh.tooltip.builder.DamageTypeBuilder {
         // 输出带覆盖标记的行
         result.push("<FONT COLOR='", color, "'>", label, "：</FONT>");
         result.push("<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalDisplay, "</FONT>");
-        result.push(" <FONT COLOR='", TooltipConstants.COL_INFO, "'>(", baseDisplay, " → ", finalDisplay, ")</FONT><BR>");
+        result.push(" <FONT COLOR='", TooltipConstants.COL_INFO, "'>(←", baseDisplay, ")</FONT><BR>");
     }
 
     /**

@@ -36,77 +36,139 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         return totalLength > threshold * totalMultiplier && descLength > threshold / descDivisor;
     }
 
-    // === 估算文本宽度（使用 htmlLengthScore 智能计算） ===
+    // === 估算文本宽度（双维度：总量 + 最长行，取最大值） ===
+    //
+    // 维度1（总量）：内容越多 → 框越宽，减少换行层数
+    // 维度2（最长行）：保证最宽单行放得下，系数取保守上界（ASCII ≈5.5px/unit + gutter）
     public static function estimateWidth(html:String, minW:Number, maxW:Number):Number {
-        if (minW === undefined) {
-            minW = TooltipConstants.MIN_W;
-        }
-        if (maxW === undefined) {
-            maxW = TooltipConstants.MAX_W;
+        if (minW === undefined) minW = TooltipConstants.MIN_W;
+        if (maxW === undefined) maxW = TooltipConstants.MAX_W;
+
+        // 维度1：总量估算（原有逻辑不变）
+        var totalScore:Number = StringUtils.htmlLengthScore(html, null);
+        var totalBasedWidth:Number = totalScore * TooltipConstants.CHAR_AVG_WIDTH;
+
+        // 维度2：最长行估算（新增）
+        var maxLineScore:Number = StringUtils.htmlMaxLineScore(html, null);
+        var lineBasedWidth:Number = maxLineScore * TooltipConstants.LINE_WIDTH_SCALE
+                                  + TooltipConstants.LINE_GUTTER;
+
+        var widthEst:Number = Math.max(totalBasedWidth, lineBasedWidth);
+        return Math.max(minW, Math.min(widthEst, maxW));
+    }
+
+    // === 主框体宽度估算（分布感知：均匀度加权插值） ===
+    //
+    // 维度1（总量）：totalScore × MAIN_CHAR_AVG_WIDTH —— 按内容体量定宽，接受折行
+    // 维度2（最长行）：maxLineScore × LINE_WIDTH_SCALE —— 最长行不折行所需宽度
+    //
+    // 均匀度 = smoothstep(meanLineScore / maxLineScore)，自然落于 [0,1]
+    //   meanLineScore = totalScore / 实际行数（<BR> 计数）
+    //   均匀内容（MACSIV，各行等宽）：mean≈max → uniformity→1 → 偏最长行估算
+    //   稀疏内容（聚束射线弹，22短行+1长描述）：mean≪max → uniformity→0 → 偏总量估算
+    //
+    // 插值：finalW = lineBased × uniformity + totalBased × (1 - uniformity)
+    public static function estimateMainWidth(html:String, minW:Number, maxW:Number):Number {
+        if (minW === undefined) minW = TooltipConstants.MIN_W;
+        if (maxW === undefined) maxW = TooltipConstants.MAX_W;
+
+        var totalScore:Number = StringUtils.htmlLengthScore(html, null);
+        var maxLineScore:Number = StringUtils.htmlMaxLineScore(html, null);
+
+        var totalBased:Number = totalScore * TooltipConstants.MAIN_CHAR_AVG_WIDTH;
+
+        if (maxLineScore <= 0) {
+            // 无有效行（空文本）：退化为纯总量估算
+            return Math.max(minW, Math.min(totalBased, maxW));
         }
 
-        // 使用 htmlLengthScore 获取加权长度分数
-        var lengthScore:Number = StringUtils.htmlLengthScore(html, null);
-        // 乘以 CHAR_AVG_WIDTH 作为像素缩放系数
-        var widthEst:Number = lengthScore * TooltipConstants.CHAR_AVG_WIDTH;
+        var lineBased:Number = maxLineScore * TooltipConstants.LINE_WIDTH_SCALE
+                             + TooltipConstants.LINE_GUTTER;
+
+        // 实际均匀度 = meanLineScore / maxLineScore，自然落于 [0, 1]
+        // 通过 <BR> 计数得到实际行数，避免 lineEquiv 代理法在"多短行+1长行"情况下偏高
+        var lineCount:Number = html.split("<BR>").length;
+        if (lineCount < 1) lineCount = 1;
+        var meanScore:Number = totalScore / lineCount;
+        // Smoothstep（S 型曲线）：低均匀度端更强地倾向 totalBased（收紧多短行+1长行的稀疏内容）
+        var t:Number = Math.min(1, meanScore / maxLineScore);
+        var uniformity:Number = t * t * (3 - 2 * t);
+
+        var widthEst:Number = lineBased * uniformity + totalBased * (1 - uniformity);
         return Math.max(minW, Math.min(widthEst, maxW));
+    }
+
+    // === 精确测量并 clamp 宽度（优先 TextField 真实测量，降级到双维度估算） ===
+    //
+    // 真实测量在 AS2 同帧内同步完成，无视觉闪烁；
+    // TextField 不可用时（如初始化前）自动回退到评分估算。
+    public static function measureOrEstimateWidth(html:String, useIntroBox:Boolean, minW:Number, maxW:Number):Number {
+        if (minW === undefined) minW = TooltipConstants.MIN_W;
+        if (maxW === undefined) maxW = TooltipConstants.MAX_W;
+
+        var measured:Number = TooltipBridge.measureTextLineWidth(html, useIntroBox);
+        if (measured > 0) {
+            return Math.max(minW, Math.min(measured, maxW));
+        }
+        // 降级到双维度评分估算
+        return estimateWidth(html, minW, maxW);
     }
  
 
-    // === 应用简介布局（1:1 复刻 _root.注释布局.应用简介布局） ===
+    // === 应用简介布局 ===
     // 返回 { width:Number, heightOffset:Number }
-    public static function applyIntroLayout(itemType:String, target:MovieClip, background:MovieClip, text:MovieClip):Object {
+    //
+    // customWidth（可选）：调用方传入的期望宽度（来自真实测量或估算）。
+    //   装备/武器/技能/消耗品布局：X 轴（background._x / text._x / target._x）跟随 w；
+    //   Y 轴（text._y）与 bgHeightOffset 固定不变，与面板宽度完全解耦。
+    //   bgHeightOffset 始终 = BASE_NUM(200) + BG_HEIGHT_OFFSET(20) = 220，
+    //   覆盖图标区纵深，不随宽度变化，避免底部出现大块空白。
+    public static function applyIntroLayout(itemType:String, target:MovieClip, background:MovieClip, text:MovieClip, customWidth:Number):Object {
         var stringWidth:Number;
         var bgHeightOffset:Number;
-
 
         switch (itemType) {
             case ItemUseTypes.TYPE_WEAPON:
             case ItemUseTypes.TYPE_ARMOR:
             case ItemUseTypes.TYPE_SKILL:
             case ItemUseTypes.POTION:
-                stringWidth = TooltipConstants.BASE_NUM;
-                background._width = TooltipConstants.BASE_NUM;
-                background._x = -TooltipConstants.BASE_NUM;
+                // X 轴：取 customWidth 与 BASE_NUM 的较大值，不超过 INTRO_MAX_W
+                var w:Number = (customWidth != undefined && customWidth > TooltipConstants.BASE_NUM)
+                    ? Math.min(customWidth, TooltipConstants.INTRO_MAX_W)
+                    : TooltipConstants.BASE_NUM;
 
-                // 图标定位参数直接复刻 Flash 源文件中的变换矩阵
-                // 注释框.xml:23 物品图标定位: <Matrix a="4.86798" d="4.86798" tx="-192.5" ty="7.5"/>
-                // a/d = 4.86798 → 486.8% 缩放, tx = -192.5 ≈ -200 + 7.5
-                target._x = -TooltipConstants.BASE_NUM + TooltipConstants.BASE_OFFSET;
-                target._xscale = target._yscale = TooltipConstants.BASE_SCALE;
+                stringWidth       = w;
+                background._width = w;
+                background._x     = -w;                                    // X 动态锚点
 
-                text._x = -TooltipConstants.BASE_NUM;
-                // 装备布局使用固定的Y坐标(210),与 注释框.xml:39 中简介文本框的 ty="212" 对应
-                text._y = TooltipConstants.TEXT_Y_EQUIPMENT;
+                // 图标定位参数复刻 Flash 源文件变换矩阵；X 跟随 w，大小/Y 不变
+                // 注释框.xml:23  <Matrix a="4.86798" d="4.86798" tx="-192.5" ty="7.5"/>
+                target._x         = -w + TooltipConstants.BASE_OFFSET;     // X 跟随
+                target._xscale    = target._yscale = TooltipConstants.BASE_SCALE; // 大小固定
 
-                // 背景高度偏移 = 带宽(200) + 额外偏移(20)
-                // 装备布局优先保证足够的垂直空间来容纳图标和文本
-                bgHeightOffset = TooltipConstants.BASE_NUM + TooltipConstants.BG_HEIGHT_OFFSET;
+                text._x           = -w;                                    // X 跟随
+                text._y           = TooltipConstants.TEXT_Y_EQUIPMENT;     // Y 固定（210）
+
+                // ★ 关键：bgHeightOffset 固定为图标区高度基准，与 w 无关
+                // BASE_NUM(200) = 图标区纵深；BG_HEIGHT_OFFSET(20) = 底部留白
+                // 绑定到 w 会在 w>200 时凭空多出 (w-200) 的底部空白
+                bgHeightOffset    = TooltipConstants.BASE_NUM + TooltipConstants.BG_HEIGHT_OFFSET;
                 break;
 
             default:
                 var scaledWidth:Number = TooltipConstants.BASE_NUM * TooltipConstants.RATE;
 
-                stringWidth = scaledWidth;
+                stringWidth       = scaledWidth;
                 background._width = scaledWidth;
-                background._x = -scaledWidth;
+                background._x     = -scaledWidth;
 
-                // 紧凑布局下,图标位置和缩放也按 RATE(0.6) 等比缩放
-                // 保持与装备布局相同的相对位置关系
-                target._x = -scaledWidth + TooltipConstants.BASE_OFFSET * TooltipConstants.RATE;
-                target._xscale = target._yscale = TooltipConstants.BASE_SCALE * TooltipConstants.RATE;
+                target._x         = -scaledWidth + TooltipConstants.BASE_OFFSET * TooltipConstants.RATE;
+                target._xscale    = target._yscale = TooltipConstants.BASE_SCALE * TooltipConstants.RATE;
 
-                text._x = -scaledWidth;
-                // 重要：Y坐标基于简介带(intro band)的宽度计算
-                // 注释框素材采用右锚定、左扩展的布局(注册点在右边缘,简介带向左生长)
-                // 在 注释框.xml 中,简介文本框坐标为 x=-198, y=212
-                // 即 y ≈ TEXT_Y_BASE(10) + 宽度(200) = 210,保持文本垂直位置与带宽耦合
-                // 当 scaledWidth 改变时(如紧凑布局 120),Y 坐标同步调整为 10+120=130
-                text._y = TooltipConstants.TEXT_Y_BASE + scaledWidth;
-
-                // 紧凑布局的背景高度偏移 = 额外偏移(20) + 缩放后带宽(120)
-                // 注意:顺序与装备布局相反,优先保证基础偏移,再叠加缩放宽度
-                bgHeightOffset = TooltipConstants.BG_HEIGHT_OFFSET + TooltipConstants.RATE * TooltipConstants.BASE_NUM;
+                text._x           = -scaledWidth;
+                // 紧凑布局：Y 与带宽耦合（历史逻辑，该分支不参与自适应宽度）
+                text._y           = TooltipConstants.TEXT_Y_BASE + scaledWidth;
+                bgHeightOffset    = TooltipConstants.BG_HEIGHT_OFFSET + TooltipConstants.RATE * TooltipConstants.BASE_NUM;
                 break;
         }
 
@@ -185,10 +247,11 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
 
             var tips:MovieClip = TooltipBridge.getTooltipContainer();
 
-            // 使用指定的布局类型，默认为装备布局
+            // contentWidth 来自调用方（真实测量或估算），传入 applyIntroLayout 作为 customWidth
+            // 这样 background._x / text._x 在同一次调用中就以正确的宽度锚定，无需二次修正
             var layoutTypeToUse:String = layoutType ? layoutType : TooltipConstants.FRAME_EQUIPMENT;
-            var layout:Object = applyIntroLayout(layoutTypeToUse, target, background, text);
-            var stringWidth:Number = Math.max(contentWidth, layout.width);
+            var layout:Object = applyIntroLayout(layoutTypeToUse, target, background, text, contentWidth);
+            var stringWidth:Number = layout.width;
             var backgroundHeightOffset:Number = layout.heightOffset;
 
             // 显示注释文本

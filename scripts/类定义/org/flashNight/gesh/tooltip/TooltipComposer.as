@@ -27,6 +27,7 @@
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.tooltip.*;
+import org.flashNight.gesh.tooltip.builder.ModsBlockBuilder;
 import org.flashNight.gesh.string.StringUtils;
 
 /**
@@ -61,7 +62,9 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * - 合成材料
    * - 刀技乘数
    * - 战技信息
+   * - 配件列表（装备专属，主框体显示以支持自适应宽度）
    * - 生命周期
+   * - 获取方式
    *
    * @param item:Object 物品数据对象
    * @param baseItem:BaseItem 物品实例对象（可选，用于获取计算后的数据）
@@ -90,10 +93,19 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       }
 
       append(buffer, TooltipTextBuilder.buildSkillInfo(skillToDisplay));
+
+      // 配件列表放在主框体（描述区），而非简介面板：
+      // 主框体宽度自适应，可容纳长行；简介面板宽度有限（~200px），配件行在其中反复换行严重影响可读性。
+      if(baseItem) {
+        var modsBuffer:Array = [];
+        ModsBlockBuilder.build(modsBuffer, baseItem, item, baseItem.value);
+        append(buffer, modsBuffer);
+      }
+
       append(buffer, TooltipTextBuilder.buildLifecycleInfo(item.lifecyle));
     }
 
-    // 新增：添加获取方式信息（所有物品类型都显示，无来源时不显示区块）
+    // 获取方式信息（所有物品类型都显示，无来源时不显示区块）
     append(buffer, TooltipTextBuilder.buildObtainMethods(itemName));
 
     return buffer.join("");
@@ -207,28 +219,41 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    */
   public static function renderItemIcon(enable:Boolean, name:String, value:Object, introString:String, extraString:String, itemData:Object):Void {
     if (enable) {
-      // 如果传入了 itemData（已应用涂装覆盖），使用它；否则获取原始数据
       var data:Object = itemData ? itemData : ItemUtil.getItemData(name);
 
-      // 交给布局模块决定尺寸与偏移
-      var target:MovieClip = TooltipBridge.getIconTarget();
+      var target:MovieClip     = TooltipBridge.getIconTarget();
       var background:MovieClip = TooltipBridge.getIntroBackground();
-      var text:MovieClip = TooltipBridge.getIntroTextBox();
-      // 消耗品使用 use 字段区分具体类型（如药剂），其他使用 type 字段
-      var layoutType:String = (data.type == ItemUseTypes.TYPE_CONSUMABLE) ? data.use : data.type;
-      var layout:Object = TooltipLayout.applyIntroLayout(layoutType, target, background, text);
-      var stringWidth:Number = layout.width;
+      var text:MovieClip       = TooltipBridge.getIntroTextBox();
+      var layoutType:String    = (data.type == ItemUseTypes.TYPE_CONSUMABLE) ? data.use : data.type;
 
-      // 使用传入的简介文本；如有 extraString（短描述），并入简介面板
+      // ① 先构建完整内容文本（必须先于宽度测量）
       var introduction:String = introString ? introString : "";
-      if (extraString) {
-        introduction += "<BR>" + extraString;
+      if (extraString) introduction += "<BR>" + extraString;
+
+      // ② / ③ 计算简介面板宽度（双栏自适应 vs 单栏固定）
+      var mainBg:MovieClip = TooltipBridge.getMainBackground();
+      var measuredIntroW:Number;
+      if (mainBg && mainBg._visible) {
+        // 双栏模式：测量最长行宽度（确保武器属性行不折行），受 INTRO_MAX_W 限制
+        measuredIntroW = TooltipLayout.measureOrEstimateWidth(
+            introduction, true,
+            TooltipConstants.BASE_NUM,
+            TooltipConstants.INTRO_MAX_W
+        );
+        // 预算约束：防止简介+主框合计超出屏幕
+        var mainW:Number  = mainBg._width;
+        var budget:Number = Stage.width - TooltipConstants.DUAL_PANEL_MARGIN;
+        if (measuredIntroW + mainW > budget) {
+          measuredIntroW = Math.max(TooltipConstants.BASE_NUM, budget - mainW);
+        }
+      } else {
+        // 单栏模式（无主框）：固定 BASE_NUM 宽度，不随内容自适应
+        measuredIntroW = TooltipConstants.BASE_NUM;
       }
 
-      // 调用通用图标核心函数
-      TooltipLayout.renderIconTooltip(true, data.icon, introduction, stringWidth, layoutType);
+      // ④ 以计算好的宽度应用布局并渲染（applyIntroLayout 内部以此锚定 _x）
+      TooltipLayout.renderIconTooltip(true, data.icon, introduction, measuredIntroW, layoutType);
 
-      // 立刻把整体容器根据"简介背景"的实际边界回弹到屏幕可视区
       TooltipBridge.clampContainerByBg(background, 8);
     } else {
       TooltipLayout.renderIconTooltip(false);
@@ -257,7 +282,12 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
 
     if (needSplit) {
       // 长内容策略：分离显示
-      var calculatedWidth:Number = TooltipLayout.estimateWidth(descriptionText);
+      // 主框宽度：仅用总量估算（estimateMainWidth），不含最长行维度
+      // 避免砍刀类「段落长但内容稀疏」物品因单段超长而撑出过宽的框体
+      var calculatedWidth:Number = TooltipLayout.estimateMainWidth(descriptionText);
+      // 屏幕感知上限：确保双栏合计不超出 Stage 宽度（为简介面板保留 BASE_NUM + margin）
+      var screenMax:Number = Stage.width - TooltipConstants.BASE_NUM - TooltipConstants.DUAL_PANEL_MARGIN;
+      if (screenMax > TooltipConstants.MIN_W) calculatedWidth = Math.min(calculatedWidth, screenMax);
       TooltipLayout.showTooltip(calculatedWidth, descriptionText);
       renderItemIcon(true, name, value, introText, null, itemData);
     } else {
