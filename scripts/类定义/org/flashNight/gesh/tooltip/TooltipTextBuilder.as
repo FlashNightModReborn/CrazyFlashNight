@@ -406,7 +406,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         result.push("。");
       }
     } else {
-      result.push(skill);
+      result.push(TooltipFormatter.normalizeDescription(String(skill)));
     }
     result.push("<BR>");
     return result;

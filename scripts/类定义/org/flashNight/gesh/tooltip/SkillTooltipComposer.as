@@ -1,6 +1,7 @@
 ﻿import org.flashNight.gesh.tooltip.TooltipLayout;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipBridge;
+import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.ItemUseTypes;
 
 /**
@@ -36,6 +37,9 @@ class org.flashNight.gesh.tooltip.SkillTooltipComposer {
     public static function renderSkillTooltipSmart(skillName:String, introText:String, descriptionText:String):Void {
         // 保底清理
         TooltipLayout.hideTooltip();
+
+        // 规范化描述文本（处理 XML 缩进、\r\n / \n → <BR>）
+        if (descriptionText) descriptionText = TooltipFormatter.normalizeDescription(descriptionText);
 
         // 使用统一的智能分栏判定（技能目前不需要自定义 options，传 null 即可）
         var needSplit:Boolean = TooltipLayout.shouldSplitSmart(descriptionText, introText, null);
