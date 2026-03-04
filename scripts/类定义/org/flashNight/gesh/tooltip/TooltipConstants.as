@@ -294,7 +294,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LINE_WIDTH_SCALE:Number = 5.5;
   // LINE_GUTTER：行宽估算的整体边距补偿（左右各8px，含 TextField 2px内边距 + 额外安全余量）
   public static var LINE_GUTTER:Number = 20;
-  // INTRO_MAX_W：简介面板允许的最大宽度（与 MAX_W=700 分离，避免双栏总宽爆表）
+  // INTRO_MAX_W：简介面板允许的最大宽度（与 MAX_W=650 分离，避免双栏总宽爆表）
   // 300px 上限：M202 类武器的插件变化行（如"装填形式：逐发装填 (整匣换弹 → 逐发装填)"）实测约 280px，
   // 在 300px 内刚好不折行；图标右侧留白从 ~180px 压缩到 ~80px，视觉平衡更佳。
   public static var INTRO_MAX_W:Number = 300;

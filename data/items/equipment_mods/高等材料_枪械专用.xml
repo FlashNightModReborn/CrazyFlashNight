@@ -56,8 +56,10 @@
         <grantsWeapontype>突击步枪</grantsWeapontype>
         <provideTags>导轨平台,下导轨挂点,侧导轨挂点,瞄具挂点,扩展模组槽</provideTags>
         <detachPolicy>cascade</detachPolicy>
-        <description>
-            高级模块化导轨系统,提供全面的战术配件平台并将配件槽扩展至3个。支持所有类型的战术配件。使子类不为[突击步枪]的枪械可以安装对应子类的配件。对突击步枪额外提供NOAH与电力结构支持,使适配插件获得额外加成。</description>
+        <description>高级模块化导轨系统,提供全面的战术配件平台并将配件槽扩展至3个。
+        支持所有类型的战术配件。
+        使子类不为[突击步枪]的枪械可以安装对应子类的配件。
+        对突击步枪额外提供NOAH与电力结构支持,使适配插件获得额外加成。</description>
         <tag>导轨基座</tag>
     </mod>
 
@@ -80,7 +82,8 @@
                 </tag>
             </tagSwitch>
         </stats>
-        <description>AI辅助瞄具,对满血敌人造成暴击伤害,并提高精准度。在电力结构支持下解锁AI追踪功能,提升弹药判定范围。</description>
+        <description>AI辅助瞄具,对满血敌人造成暴击伤害,并提高精准度。
+        在电力结构支持下解锁AI追踪功能,提升弹药判定范围。</description>
         <tag>瞄具</tag>
     </mod>
 
@@ -107,7 +110,9 @@
                 </tag>
             </tagSwitch>
         </stats>
-        <description>消除枪口火光与射击声,远距离狙击不惊动目标。强化收割残血敌人的能力。在NOAH结构支持下额外提升威力。</description>
+        <description>消除枪口火光与射击声,远距离狙击不惊动目标。
+        强化收割残血敌人的能力。
+        在NOAH结构支持下额外提升威力。</description>
     </mod>
 
     <mod>
@@ -136,7 +141,10 @@
                 </tag>
             </tagSwitch>
         </stats>
-        <description>军规激光瞄准器,提供精确瞄准辅助。需要侧导轨支持,提升精准度与弹药尺寸。对霰弹枪额外大幅提升判定大小。在电力结构支持下额外提升精准度与弹药尺寸。</description>
+        <description>军规激光瞄准器,提供精确瞄准辅助。
+        需要侧导轨支持,提升精准度与弹药尺寸。
+        对霰弹枪额外大幅提升判定大小。
+        在电力结构支持下额外提升精准度与弹药尺寸。</description>
         <tag>侧导轨</tag>
     </mod>
 
@@ -160,7 +168,8 @@
                 </tag>
             </tagSwitch>
         </stats>
-        <description>扩容供弹系统,增加弹匣容量。在NOAH结构支持下优化换弹流程，减少换弹时间。</description>
+        <description>扩容供弹系统,增加弹匣容量。
+        在NOAH结构支持下优化换弹流程，减少换弹时间。</description>
         <tag>弹匣</tag>
     </mod>
 
@@ -199,7 +208,10 @@
                 </tag>
             </tagSwitch>
         </stats>
-        <description>人机工学握把,提升威力并改善射击稳定性。需要导轨系统支持。对常规武器降低扩散度,对近距离枪械获得命中加成。在NOAH结构支持下额外提升威力与精准度。</description>
+        <description>人机工学握把,提升威力并改善射击稳定性。
+        需要导轨系统支持。
+        对常规武器降低扩散度,对近距离枪械获得命中加成。
+        在NOAH结构支持下额外提升威力与精准度。</description>
         <tag>下导轨</tag>
     </mod>
 
@@ -230,7 +242,9 @@
                 </use>
             </useSwitch>
         </stats>
-        <description>跨平台自动循环转换模块,提升弹容但降低单发威力,并将装填形式转换为逐发换弹。对发射器类武器威力惩罚更为严重。对点射武器增益作用于射击轮数,适合狙击武器与发射器。</description>
+        <description>跨平台自动循环转换模块,提升弹容但降低单发威力,并将装填形式转换为逐发换弹。
+        对发射器类武器威力惩罚更为严重。
+        对点射武器增益作用于射击轮数,适合狙击武器与发射器。</description>
         <tag>枪机</tag>
     </mod>
     <mod>
@@ -387,7 +401,8 @@
                 </bullet>
             </bulletSwitch>
         </stats>
-        <description>微型化特斯拉电弧模块,将完整线圈组压缩至弹药尺寸。受限于微型电容储能,仅能维持单目标低压电弧,无法形成连锁。</description>
+        <description>微型化特斯拉电弧模块,将完整线圈组压缩至弹药尺寸。
+        受限于微型电容储能,仅能维持单目标低压电弧,无法形成连锁。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -420,7 +435,8 @@
                 <weight>2.5</weight>
             </flat>
         </stats>
-        <description>满压特斯拉线圈,利用弹仓空间容纳完整电容阵列。满功率放电产生高亮闪电,最多连锁弹跳10个目标。</description>
+        <description>满压特斯拉线圈,利用弹仓空间容纳完整电容阵列。
+        满功率放电产生高亮闪电,最多连锁弹跳10个目标。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -461,7 +477,8 @@
                 </bullet>
             </bulletSwitch>
         </stats>
-        <description>便携式折射棱镜组,利用弹药化学能激发光束。受限于枪管空间无法容纳完整棱镜阵列,仅输出单目标散焦光束。</description>
+        <description>便携式折射棱镜组,利用弹药化学能激发光束。
+        受限于枪管空间无法容纳完整棱镜阵列,仅输出单目标散焦光束。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -493,7 +510,8 @@
                 <weight>2.5</weight>
             </flat>
         </stats>
-        <description>全光谱棱镜阵列,精密校准的多面体折射腔。满功率激发产生明亮金色光束,最多分裂为8条折射光束。</description>
+        <description>全光谱棱镜阵列,精密校准的多面体折射腔。
+        满功率激发产生明亮金色光束,最多分裂为8条折射光束。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -534,7 +552,8 @@
                 </bullet>
             </bulletSwitch>
         </stats>
-        <description>便携式辉光谐振腔,化学能驱动的荧光激发器。腔体谐振条件不佳,仅能输出暗金色单目标光束。</description>
+        <description>便携式辉光谐振腔,化学能驱动的荧光激发器。
+        腔体谐振条件不佳,仅能输出暗金色单目标光束。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -610,7 +629,8 @@
                 </bullet>
             </bulletSwitch>
         </stats>
-        <description>便携式双频棱栅模块,化学能驱动的多波段发射器。受限口径仅能安装双层棱栅,无法触发完整色散连锁与分裂。</description>
+        <description>便携式双频棱栅模块,化学能驱动的多波段发射器。
+        受限口径仅能安装双层棱栅,无法触发完整色散连锁与分裂。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -642,7 +662,8 @@
                 <weight>2.5</weight>
             </flat>
         </stats>
-        <description>全谱色散引擎,精密对齐的多层棱栅阵列。全功率驱动下光束在目标间弹跳后继续分裂,覆盖整片战场。</description>
+        <description>全谱色散引擎,精密对齐的多层棱栅阵列。
+        全功率驱动下光束在目标间弹跳后继续分裂,覆盖整片战场。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -689,7 +710,8 @@
                 </bullet>
             </bulletSwitch>
         </stats>
-        <description>便携式谐振编织器,化学能驱动的多频干涉模块。枪管长度不足以容纳完整干涉腔,仅输出三色编织光束,无法形成穿透连锁。</description>
+        <description>便携式谐振编织器,化学能驱动的多频干涉模块。
+        枪管长度不足以容纳完整干涉腔,仅输出三色编织光束,无法形成穿透连锁。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -727,7 +749,8 @@
                 </tag>
             </tagSwitch>
         </stats>
-        <description>三频锁相谐振穿透核心,干涉提供稳定驻波。光束贯穿目标后沿路径逐节点触发连锁弹跳。</description>
+        <description>三频锁相谐振穿透核心,干涉提供稳定驻波。
+        光束贯穿目标后沿路径逐节点触发连锁弹跳。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -763,7 +786,8 @@
                 </bullet>
             </bulletSwitch>
         </stats>
-        <description>便携式热辐射聚焦器,化学能驱动的红外激发模块。仅能输出低频远红外,能量被目标表面大量吸收,无法贯穿。</description>
+        <description>便携式热辐射聚焦器,化学能驱动的红外激发模块。
+        仅能输出低频远红外,能量被目标表面大量吸收,无法贯穿。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -798,7 +822,9 @@
             </flat>
         </stats>
         <provideTags>电力</provideTags>
-        <description>发射器专用热辐射主炮。大型热堆反应器提供持续高温输出。具备骇人的远距穿透能力。</description>
+        <description>发射器专用热辐射主炮。
+        大型热堆反应器提供持续高温输出。
+        具备骇人的远距穿透能力。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -837,7 +863,8 @@
                 </bullet>
             </bulletSwitch>
         </stats>
-        <description>便携式涡旋发生器,化学能驱动的磁约束螺旋模块。单级超导线圈磁约束场强度不足,仅输出淡蓝色单目标螺旋。</description>
+        <description>便携式涡旋发生器,化学能驱动的磁约束螺旋模块。
+        单级超导线圈磁约束场强度不足,仅输出淡蓝色单目标螺旋。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -867,7 +894,8 @@
                 <weight>2.5</weight>  <!-- 无电力需求, 无命中/判定加成 -->
             </flat>
         </stats>
-        <description>多级涡旋撕裂炮,高强度磁约束场产生稳定螺旋。光束贯穿目标后沿路径逐节点触发分裂扩散。</description>
+        <description>多级涡旋撕裂炮,高强度磁约束场产生稳定螺旋。
+        光束贯穿目标后沿路径逐节点触发分裂扩散。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -905,7 +933,8 @@
                 </bullet>
             </bulletSwitch>
         </stats>
-        <description>便携式波能聚焦器,化学能驱动的定向能量模块。蓄能不足,仅输出纤细单目标光矛,穿透深度有限。</description>
+        <description>便携式波能聚焦器,化学能驱动的定向能量模块。
+        蓄能不足,仅输出纤细单目标光矛,穿透深度有限。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -936,7 +965,8 @@
                 <weight>2.5</weight>
             </flat>
         </stats>
-        <description>波能光矛主炮,大型蓄能电容提供高密度定向能量。光束连续贯穿最多6个目标。</description>
+        <description>波能光矛主炮,大型蓄能电容提供高密度定向能量。
+        光束连续贯穿最多6个目标。</description>
         <tag>弹药</tag>
     </mod>
     <mod>
@@ -1011,7 +1041,8 @@
                 <weight>2.5</weight>
             </flat>
         </stats>
-        <description>全态等离子武器系统,集成反应堆级约束场与三重作战模块。光束沿穿透路径逐节点触发连锁弹跳与分裂扩散。</description>
+        <description>全态等离子武器系统,集成反应堆级约束场与三重作战模块。
+        光束沿穿透路径逐节点触发连锁弹跳与分裂扩散。</description>
         <tag>弹药</tag>
     </mod>
 </root>
