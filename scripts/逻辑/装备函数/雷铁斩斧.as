@@ -6,6 +6,8 @@
     ref.frame = 1;
     ref.currentState = false; // false: actionTypeA, true: actionTypeB
     ref.frameMax = param.frameMax || 15;
+
+    ref.自机.兵器动作类型 = ref.actionTypeA;
 }; 
 
 _root.装备生命周期函数.雷铁斩斧周期 = function(ref:Object, param:Object) 
