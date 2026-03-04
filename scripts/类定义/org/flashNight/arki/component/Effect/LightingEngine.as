@@ -141,6 +141,12 @@ class org.flashNight.arki.component.Effect.LightingEngine {
             } else {
                 var transform:ColorTransform = ColorEngine.basicAdjustColor(target, params);
             }
+        } else {
+            if (useMatrixTransform) {
+                ColorEngine.adjustColor(target, null);
+            } else {
+                ColorEngine.basicAdjustColor(target, null);
+            }
         }
     }
 }

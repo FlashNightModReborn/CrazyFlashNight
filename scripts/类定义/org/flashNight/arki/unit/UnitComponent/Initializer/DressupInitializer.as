@@ -603,9 +603,15 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     public static function updateLifeCycles(__target:MovieClip):Void{
         var target:MovieClip = __target;
 
-        for (var id = target.生命周期函数列表.length; id > 0; --id) {
-            var 卸载对象 = target.生命周期函数列表[id];
-            卸载对象.动作(卸载对象.额外参数);
+        if (!target.生命周期函数列表) {
+            target.生命周期函数列表 = [];
+        }
+
+        for (var i:Number = target.生命周期函数列表.length - 1; i >= 0; --i) {
+            var 卸载对象:Object = target.生命周期函数列表[i];
+            if (卸载对象 && 卸载对象.动作) {
+                卸载对象.动作(卸载对象.额外参数);
+            }
         }
         target.生命周期函数列表.length = 0;
 

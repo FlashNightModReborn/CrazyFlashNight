@@ -233,15 +233,29 @@ _root.天气系统.设置当前天气 = function()
     var bus:EventBus = EventBus.getInstance();
     if(夜视仪.视觉情况)
     {
-        if(光照等级 <= 夜视仪.最大启动亮度 && 光照等级 >= 夜视仪.最小启动亮度)
-        {
-            视觉情况 = 夜视仪.视觉情况;
-            bus.publish("夜视仪启动", 光照等级);
+        // 防御性校验：避免换装/重初始化/卸载回调异常导致夜视仪注册遗留，从而“卡住”滤镜
+        if (夜视仪.装备类型 && 夜视仪.启用装备) {
+            var 控制对象:MovieClip = _root.gameworld ? _root.gameworld[_root.控制目标] : null;
+            if (控制对象) {
+                var 当前装备:Object = 控制对象[夜视仪.装备类型];
+                var 当前装备名:String = 当前装备 && 当前装备.name != undefined ? 当前装备.name : null;
+                if (当前装备名 !== 夜视仪.启用装备) {
+                    夜视仪 = this.夜视仪 = {};
+                }
+            }
         }
 
-        else
+        if(夜视仪.视觉情况)
         {
-            夜视仪 = this.夜视仪 = {};
+            if(光照等级 <= 夜视仪.最大启动亮度 && 光照等级 >= 夜视仪.最小启动亮度)
+            {
+                视觉情况 = 夜视仪.视觉情况;
+                bus.publish("夜视仪启动", 光照等级);
+            }
+            else
+            {
+                夜视仪 = this.夜视仪 = {};
+            }
         }
     }
 

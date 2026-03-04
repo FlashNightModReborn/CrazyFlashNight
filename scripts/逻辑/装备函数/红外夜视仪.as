@@ -22,17 +22,20 @@
 
     _root.常用工具函数.设置卸载回调(自机, function() {
         _root.天气系统.夜视仪 = {};
+        EventBus.getInstance().publish("WeatherUpdated");
     });    // 使用设置卸载回调函数
     var 卸载对象 = {动作:function(额外参数){
-                    _root.天气系统.夜视仪 = {};
-                   },
-                   额外参数:{}};
+                     _root.天气系统.夜视仪 = {};
+                     EventBus.getInstance().publish("WeatherUpdated");
+                    },
+                    额外参数:{}};
 
     反射对象.生命周期函数列表.push(卸载对象);
 
-    _root.天气系统.夜视仪 = 自机.红外夜视仪;
-
     var eventBus = EventBus.getInstance();
+    _root.天气系统.夜视仪 = 自机.红外夜视仪;
+    eventBus.publish("WeatherUpdated");
+
     // 使用标志位避免重复订阅
     if (!夜视仪.事件已订阅) {
         夜视仪.事件已订阅 = true;
