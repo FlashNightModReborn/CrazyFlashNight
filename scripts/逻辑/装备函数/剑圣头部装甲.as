@@ -95,23 +95,16 @@ _root.装备生命周期函数.剑圣头部装甲初始化 = function(ref:Object
         装备类型: ref.装备类型,
         进阶等级: tier
     };
-    _root.天气系统.夜视仪 = 视觉系统;
-    EventBus.getInstance().publish("WeatherUpdated");
+    function 注销夜视仪():Void {
+        _root.天气系统.注销夜视仪(视觉系统);
+    }
+
+    _root.天气系统.注册夜视仪(视觉系统);
 
     // ========== 生命周期卸载回调 ==========
-    var onUnitReInitialized:Function = function() {
-        // 玩家模板重新初始化时，重新注册夜视仪
-        _root.天气系统.夜视仪 = 视觉系统;
-        EventBus.getInstance().publish("WeatherUpdated");
-    };
-
     var 卸载对象:Object = {
         动作: function(额外参数) {
-            _root.天气系统.夜视仪 = {};
-            if (target.dispatcher) {
-                target.dispatcher.unsubscribe("UnitReInitialized", onUnitReInitialized, target);
-            }
-            EventBus.getInstance().publish("WeatherUpdated");
+            注销夜视仪();
         },
         额外参数: {}
     };
@@ -119,15 +112,8 @@ _root.装备生命周期函数.剑圣头部装甲初始化 = function(ref:Object
 
     // 同时设置target卸载回调（双重保障）
     _root.常用工具函数.设置卸载回调(target, function() {
-        _root.天气系统.夜视仪 = {};
-        if (target.dispatcher) {
-            target.dispatcher.unsubscribe("UnitReInitialized", onUnitReInitialized, target);
-        }
-        EventBus.getInstance().publish("WeatherUpdated");
+        注销夜视仪();
     });
-
-    // ========== 事件订阅 ==========
-    target.dispatcher.subscribe("UnitReInitialized", onUnitReInitialized, target);
 
     // 发布启动消息
     // _root.发布消息("剑圣视觉系统启动 - " + tier);

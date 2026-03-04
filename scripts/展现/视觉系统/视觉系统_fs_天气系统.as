@@ -5,6 +5,7 @@ import org.flashNight.arki.component.Effect.*;
 import org.flashNight.gesh.number.NumberUtil;
 
 _root.天气系统 = {};
+_root.天气系统.夜视仪 = {};
 //_root.开启昼夜系统 = true;
 
 _root.天气系统.初始化 = function(onComplete:Function, onError:Function):Void {
@@ -235,10 +236,12 @@ _root.天气系统.设置当前天气 = function()
     {
         // 防御性校验：避免换装/重初始化/卸载回调异常导致夜视仪注册遗留，从而“卡住”滤镜
         if (夜视仪.装备类型 && 夜视仪.启用装备) {
-            var 控制对象:MovieClip = _root.gameworld ? _root.gameworld[_root.控制目标] : null;
-            if (控制对象) {
+            var 控制对象:MovieClip = _root.gameworld[_root.控制目标];
+            if (!控制对象) {
+                夜视仪 = this.夜视仪 = {};
+            } else {
                 var 当前装备:Object = 控制对象[夜视仪.装备类型];
-                var 当前装备名:String = 当前装备 && 当前装备.name != undefined ? 当前装备.name : null;
+                var 当前装备名:String = 当前装备.name;
                 if (当前装备名 !== 夜视仪.启用装备) {
                     夜视仪 = this.夜视仪 = {};
                 }
@@ -324,6 +327,73 @@ _root.天气系统.防御性刷新场景单位天气状态 = function():Number {
     }
 
     return 刷新计数;
+};
+
+
+/**
+ * 请求刷新天气（合帧）
+ * - 用于装备换装等场景：同一帧内可能多次触发刷新请求，合并为下一帧执行一次 WeatherUpdated
+ * - 这样可以避免重复执行 LightingEngine.applyLighting 造成的浪费
+ */
+_root.天气系统.请求刷新 = function():Void {
+    var bus:EventBus = EventBus.getInstance();
+
+    // 帧计时器可能在极早期初始化阶段尚未就绪，兜底直接发布
+    if (!_root.帧计时器.添加或更新任务) {
+        bus.publish("WeatherUpdated");
+        return;
+    }
+
+    // interval=1(ms) -> ceil(1 * (FPS/1000)) ≈ 1 frame：保证下一帧执行，实现“合帧”
+    _root.帧计时器.添加或更新任务(this, "__WeatherSystem_RequestRefresh", function() {
+        EventBus.getInstance().publish("WeatherUpdated");
+    }, 1);
+};
+
+/**
+ * 夜视仪注册/注销（收口到天气系统）
+ * - 装备侧请调用：注册夜视仪(owner) / 注销夜视仪(owner)
+ * - 天气系统负责触发刷新（合帧）并在 WeatherUpdated 中做防御性兜底校验
+ */
+_root.天气系统.注册夜视仪 = function(owner:Object):Void {
+    this.夜视仪 = owner || {};
+    if (this.请求刷新) {
+        this.请求刷新();
+    } else {
+        EventBus.getInstance().publish("WeatherUpdated");
+    }
+};
+
+_root.天气系统.注销夜视仪 = function(owner:Object):Boolean {
+    var 当前夜视:Object = this.夜视仪;
+    if (!当前夜视.视觉情况) {
+        return false;
+    }
+
+    if (当前夜视 === owner) {
+        this.夜视仪 = {};
+        if (this.请求刷新) {
+            this.请求刷新();
+        } else {
+            EventBus.getInstance().publish("WeatherUpdated");
+        }
+        return true;
+    }
+
+    // 兼容：如果调用方没有拿到原对象引用，允许用装备标识进行匹配卸载
+    if (当前夜视.启用装备 != undefined && 当前夜视.装备类型 != undefined &&
+        owner.启用装备 != undefined && owner.装备类型 != undefined &&
+        当前夜视.启用装备 === owner.启用装备 && 当前夜视.装备类型 === owner.装备类型) {
+        this.夜视仪 = {};
+        if (this.请求刷新) {
+            this.请求刷新();
+        } else {
+            EventBus.getInstance().publish("WeatherUpdated");
+        }
+        return true;
+    }
+
+    return false;
 };
 
 

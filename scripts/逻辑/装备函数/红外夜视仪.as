@@ -1,6 +1,8 @@
 ﻿_root.装备生命周期函数.红外夜视仪初始化 = function(反射对象, 参数对象)
 {
     var 自机 = 反射对象.自机;
+    var 装备名称:String = 反射对象.装备名称;
+    var 装备类型:String = 反射对象.装备类型;
 
     if(_root.装备生命周期函数.移除非主角周期函数(反射对象))
     {
@@ -12,29 +14,30 @@
     夜视仪.视觉情况 = 参数对象.visual || "夜视仪";
     夜视仪.最小启动亮度 = 参数对象.min || 0;
     夜视仪.最大启动亮度 = 参数对象.max || 4;
-    夜视仪.启用装备 = 反射对象.装备名称;
-    夜视仪.装备类型 = 反射对象.装备类型;
+    夜视仪.启用装备 = 装备名称;
+    夜视仪.装备类型 = 装备类型;
 
     夜视仪.视觉影片剪辑 = 参数对象.visualMC || null;
 
     //_root.服务器.发布服务器消息(_root.常用工具函数.对象转JSON(自机, true));
     //_root.服务器.发布服务器消息(_root.常用工具函数.对象转JSON(夜视仪, true));
 
+    function 注销夜视仪():Void {
+        _root.天气系统.注销夜视仪(夜视仪);
+    }
+
     _root.常用工具函数.设置卸载回调(自机, function() {
-        _root.天气系统.夜视仪 = {};
-        EventBus.getInstance().publish("WeatherUpdated");
+        注销夜视仪();
     });    // 使用设置卸载回调函数
     var 卸载对象 = {动作:function(额外参数){
-                     _root.天气系统.夜视仪 = {};
-                     EventBus.getInstance().publish("WeatherUpdated");
+                     注销夜视仪();
                     },
                     额外参数:{}};
 
     反射对象.生命周期函数列表.push(卸载对象);
 
     var eventBus = EventBus.getInstance();
-    _root.天气系统.夜视仪 = 自机.红外夜视仪;
-    eventBus.publish("WeatherUpdated");
+    _root.天气系统.注册夜视仪(夜视仪);
 
     // 使用标志位避免重复订阅
     if (!夜视仪.事件已订阅) {
