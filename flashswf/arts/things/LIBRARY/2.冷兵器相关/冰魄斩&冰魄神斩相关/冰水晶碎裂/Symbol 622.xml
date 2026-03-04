@@ -25,46 +25,54 @@
             </DOMFrame>
             <DOMFrame index="2" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[var 子弹 = _root.子弹属性初始化(this.攻击点);
-子弹.声音 = "";
-子弹.霰弹值 = 1;
-子弹.子弹散射度 = 0;
-子弹.子弹种类 = "近战子弹";
-子弹.子弹威力 = _parent.空手攻击力;
-子弹.子弹速度 = 0;
-子弹.击中地图效果 = "";
-子弹.Z轴攻击范围 = 60;
-子弹.击倒率 = 1;
-子弹.击中后子弹的效果 = "";
-子弹.区域定位area = this.攻击点;
+                <script><![CDATA[var shooter = (_parent.shooter != undefined) ? _parent.shooter : _root.gameworld[_parent.发射者名];
+if (shooter != undefined) {
+   var 子弹 = _root.子弹属性初始化(this.攻击点, "近战子弹", shooter);
+   子弹.声音 = "";
+   子弹.霰弹值 = 1;
+   子弹.子弹散射度 = 0;
+   子弹.子弹威力 = (_parent.空手攻击力 != undefined) ? _parent.空手攻击力 : _parent.子弹威力;
+   子弹.子弹速度 = 0;
+   子弹.击中地图效果 = "";
+   子弹.Z轴攻击范围 = 60;
+   子弹.击倒率 = 1;
+   子弹.击中后子弹的效果 = "";
+   子弹.区域定位area = this.攻击点;
 
-_root.子弹区域shoot传递(子弹);]]></script>
+   _root.子弹区域shoot传递(子弹);
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="20" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[var 子弹 = _root.子弹属性初始化(this.攻击点);
-子弹.声音 = "";
-子弹.霰弹值 = 1;
-子弹.子弹散射度 = 0;
-子弹.子弹种类 = "近战子弹";
-子弹.子弹威力 = _parent.空手攻击力;
-子弹.子弹速度 = 0;
-子弹.击中地图效果 = "";
-子弹.Z轴攻击范围 = 60;
-子弹.击倒率 = 1;
-子弹.击中后子弹的效果 = "";
-子弹.区域定位area = this.攻击点;
+                <script><![CDATA[var shooter = (_parent.shooter != undefined) ? _parent.shooter : _root.gameworld[_parent.发射者名];
+if (shooter != undefined) {
+   var 子弹 = _root.子弹属性初始化(this.攻击点, "近战子弹", shooter);
+   子弹.声音 = "";
+   子弹.霰弹值 = 1;
+   子弹.子弹散射度 = 0;
+   子弹.子弹威力 = (_parent.空手攻击力 != undefined) ? _parent.空手攻击力 : _parent.子弹威力;
+   子弹.子弹速度 = 0;
+   子弹.击中地图效果 = "";
+   子弹.Z轴攻击范围 = 60;
+   子弹.击倒率 = 1;
+   子弹.击中后子弹的效果 = "";
+   子弹.区域定位area = this.攻击点;
 
-_root.子弹区域shoot传递(子弹);]]></script>
+   _root.子弹区域shoot传递(子弹);
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="24" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.帧计时器.注销目标缓存(_parent);
-_root.add2map(_parent,2);
+                <script><![CDATA[if (_root.帧计时器 != undefined && _root.帧计时器.注销目标缓存 != undefined) {
+   _root.帧计时器.注销目标缓存(_parent);
+}
+if (_root.add2map != undefined) {
+   _root.add2map(_parent, 2);
+}
 _parent.removeMovieClip();
 stop();
 ]]></script>
@@ -76,23 +84,7 @@ stop();
             </DOMFrame>
             <DOMFrame index="177" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.hp <= 0)
-{
-   if(_parent.已加经验值 != true)
-   {
-      if(_parent.是否为敌人 == true)
-      {
-         _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
-         _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
-         _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
-         _parent.计算经验值();
-      }
-      _parent.人物文字信息._visible = 0;
-      _root.add2map(_parent,2);
-      _parent.removeMovieClip();
-   }
-}
-stop();
+                <script><![CDATA[stop();
 ]]></script>
               </Actionscript>
               <elements/>
@@ -102,23 +94,7 @@ stop();
             </DOMFrame>
             <DOMFrame index="227" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.hp <= 0)
-{
-   if(_parent.已加经验值 != true)
-   {
-      if(_parent.是否为敌人 == true)
-      {
-         _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
-         _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
-         _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
-         _parent.计算经验值();
-      }
-      _parent.人物文字信息._visible = 0;
-      _root.add2map(_parent,2);
-      _parent.removeMovieClip();
-   }
-}
-stop();
+                <script><![CDATA[stop();
 ]]></script>
               </Actionscript>
               <elements/>
