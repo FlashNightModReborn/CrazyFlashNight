@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家buff界面素材/玩家buff界面" itemID="69a2b1f8-0000040c" lastModified="1772641679" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="玩家buff界面">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="玩家buff界面素材/buff详细图标" name="buff详细图标" centerPoint3DX="32.5" centerPoint3DY="32.5">
+                  <matrix>
+                    <Matrix tx="20" ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="玩家buff界面边框" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="玩家buff界面素材/玩家buff界面边框" centerPoint3DX="50.05" centerPoint3DY="19.5">
+                  <transformationPoint>
+                    <Point x="50.2" y="19.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter alpha="0.8" blurX="0" blurY="0" distance="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

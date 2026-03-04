@@ -1,19 +1,22 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="shape" itemID="65a6bb2a-00001374" isExpanded="true"/>
-          <DOMFolderItem name="sprite" itemID="6776444d-00001ef9" isExpanded="true"/>
+          <DOMFolderItem name="素材-buff详细图标" itemID="69a85c9c-0000077d" isExpanded="true"/>
+          <DOMFolderItem name="素材-新版人物文字信息" itemID="69a85b20-0000054a" isExpanded="true"/>
      </folders>
      <symbols>
-          <Include href="shape/Symbol 80.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000992" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 83.xml" loadImmediate="false" itemID="6577b699-00000994" lastModified="1742779592"/>
-          <Include href="sprite/盾槽条.xml" loadImmediate="false" itemID="694df36c-0000995a" lastModified="1766716746"/>
-          <Include href="sprite/刚体遮罩.xml" loadImmediate="false" itemID="65c9a9f5-0000062e" lastModified="1742803192"/>
-          <Include href="sprite/韧性条.xml" loadImmediate="false" itemID="65c9a44e-0000061e" lastModified="1742781415"/>
-          <Include href="sprite/新版人物文字信息.xml" itemID="65c9a1af-000005fc" lastModified="1742805873"/>
-          <Include href="sprite/血槽底.xml" loadImmediate="false" itemID="65c9a8c3-00000624" lastModified="1742782078"/>
-          <Include href="sprite/血槽韧性条.xml" loadImmediate="false" itemID="65c9a3a2-0000060a" lastModified="1766716755"/>
-          <Include href="被击闪光.xml" itemIcon="1" loadImmediate="false" itemID="67e20b6f-000001ec" lastModified="1742867350"/>
-          <Include href="残余血槽条.xml" itemIcon="1" loadImmediate="false" itemID="67dd3302-000003a4" lastModified="1742781214"/>
+          <Include href="素材-buff详细图标/buff边框.xml" loadImmediate="false" itemID="69a71e76-00000450" lastModified="1772627016"/>
+          <Include href="素材-buff详细图标/buff计时动画.xml" loadImmediate="false" itemID="69a7205e-00000462" lastModified="1772560518"/>
+          <Include href="素材-buff详细图标/buff开启动画.xml" loadImmediate="false" itemID="69a7209b-0000046d" lastModified="1772641566"/>
+          <Include href="素材-buff详细图标/buff详细图标.xml" itemID="69a85b92-0000054e" lastModified="1772641657"/>
+          <Include href="素材-新版人物文字信息/被击闪光.xml" itemIcon="1" loadImmediate="false" itemID="67e20b6f-000001ec" lastModified="1742867350"/>
+          <Include href="素材-新版人物文字信息/残余血槽条.xml" itemIcon="1" loadImmediate="false" itemID="67dd3302-000003a4" lastModified="1742781214"/>
+          <Include href="素材-新版人物文字信息/盾槽条.xml" loadImmediate="false" itemID="694df36c-0000995a" lastModified="1766716746"/>
+          <Include href="素材-新版人物文字信息/刚体遮罩.xml" loadImmediate="false" itemID="65c9a9f5-0000062e" lastModified="1742803192"/>
+          <Include href="素材-新版人物文字信息/韧性条.xml" loadImmediate="false" itemID="65c9a44e-0000061e" lastModified="1742781415"/>
+          <Include href="素材-新版人物文字信息/新版人物文字信息.xml" itemID="65c9a1af-000005fc" lastModified="1772641150"/>
+          <Include href="素材-新版人物文字信息/血槽底.xml" loadImmediate="false" itemID="65c9a8c3-00000624" lastModified="1742782078"/>
+          <Include href="素材-新版人物文字信息/血槽韧性条.xml" loadImmediate="false" itemID="65c9a3a2-0000060a" lastModified="1766716755"/>
+          <Include href="素材-新版人物文字信息/血量条.xml" loadImmediate="false" itemID="69a85b09-00000547" lastModified="1772641058"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -22,12 +25,20 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/新版人物文字信息" selected="true" centerPoint3DX="269.5" centerPoint3DY="199.95">
+                                        <DOMSymbolInstance libraryItemName="素材-新版人物文字信息/新版人物文字信息" centerPoint3DX="269.5" centerPoint3DY="199.95">
                                              <matrix>
                                                   <Matrix tx="264" ty="202.9"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="5.5" y="-2.85"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="素材-buff详细图标/buff详细图标" selected="true" centerPoint3DX="36" centerPoint3DY="30.95">
+                                             <matrix>
+                                                  <Matrix tx="32" ty="26.95"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="4" y="4"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -301,6 +312,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2311" publishTime="1772641621"/>
+          <PublishItem publishSize="2229" publishTime="1772641451"/>
           <PublishItem publishSize="1803" publishTime="1766716635"/>
           <PublishItem publishSize="1808" publishTime="1766716316"/>
           <PublishItem publishSize="1758" publishTime="1742869560"/>
@@ -319,7 +332,5 @@
           <PublishItem publishSize="1840" publishTime="1742782938"/>
           <PublishItem publishSize="1840" publishTime="1742782546"/>
           <PublishItem publishSize="1842" publishTime="1742782425"/>
-          <PublishItem publishSize="1841" publishTime="1742782321"/>
-          <PublishItem publishSize="1875" publishTime="1742782120"/>
      </publishHistory>
 </DOMDocument>

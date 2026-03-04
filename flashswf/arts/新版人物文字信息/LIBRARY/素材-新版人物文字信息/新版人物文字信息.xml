@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageExportForAS="true" linkageIdentifier="新版人物文字信息" lastModified="1742805873" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材-新版人物文字信息/新版人物文字信息" itemID="65c9a1af-000005fc" linkageExportForAS="true" linkageIdentifier="新版人物文字信息" lastModified="1772641150" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="新版人物文字信息" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -6,8 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[
-this._alpha = _root.天气系统.人物信息透明度;
+                <script><![CDATA[this._alpha = _root.天气系统.人物信息透明度;
 ]]></script>
               </Actionscript>
               <elements/>
@@ -21,7 +20,7 @@ this._alpha = _root.天气系统.人物信息透明度;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#99E2A2">
+        <DOMLayer name="称号文本框" color="#99E2A2" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -52,7 +51,7 @@ this._alpha = _root.天气系统.人物信息透明度;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#DA89AB">
+        <DOMLayer name="等级名字" color="#DA89AB" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -76,11 +75,11 @@ this._alpha = _root.天气系统.人物信息透明度;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#F48A15" current="true" isSelected="true">
+        <DOMLayer name="血槽韧性条" color="#F48A15" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/血槽韧性条" name="头顶血槽" selected="true" centerPoint3DX="21.7" centerPoint3DY="16.75">
+                <DOMSymbolInstance libraryItemName="素材-新版人物文字信息/血槽韧性条" name="头顶血槽" centerPoint3DX="21.7" centerPoint3DY="16.75">
                   <matrix>
                     <Matrix ty="14"/>
                   </matrix>

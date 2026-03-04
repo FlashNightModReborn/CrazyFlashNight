@@ -14,10 +14,12 @@ import org.flashNight.arki.component.Buff.Component.*;
 class org.flashNight.arki.component.Buff.Component.TimeLimitComponent
     implements IBuffComponent
 {
+    private var _total:Number;           // 总帧数
     private var _remain:Number;          // 剩余帧数
     private var _paused:Boolean;         // [v1.1] 暂停状态
 
     public function TimeLimitComponent(totalFrames:Number) {
+        _total  = totalFrames;
         _remain = totalFrames;
         _paused = false;
     }

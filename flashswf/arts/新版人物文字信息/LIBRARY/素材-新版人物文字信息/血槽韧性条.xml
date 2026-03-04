@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/血槽韧性条" itemID="65c9a3a2-0000060a" lastModified="1766716755" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材-新版人物文字信息/血槽韧性条" itemID="65c9a3a2-0000060a" lastModified="1766716755" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="血槽韧性条" currentFrame="3">
       <layers>
@@ -38,7 +38,7 @@ stop();
           <frames>
             <DOMFrame index="0" duration="301" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/盾槽条" name="盾槽条" centerPoint3DX="21.5" centerPoint3DY="1.3">
+                <DOMSymbolInstance libraryItemName="素材-新版人物文字信息/盾槽条" name="盾槽条" centerPoint3DX="21.5" centerPoint3DY="1.3">
                   <matrix>
                     <Matrix a="0.542831420898438" d="1.19998168945313" tx="-22.5" ty="0.15"/>
                   </matrix>
@@ -54,7 +54,7 @@ stop();
           <frames>
             <DOMFrame index="0" duration="300" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/韧性条" name="韧性条" blendMode="hardlight" centerPoint3DX="18.05" centerPoint3DY="4.7">
+                <DOMSymbolInstance libraryItemName="素材-新版人物文字信息/韧性条" name="韧性条" blendMode="hardlight" centerPoint3DX="18.05" centerPoint3DY="4.7">
                   <matrix>
                     <Matrix a="0.500045776367188" d="0.800003051757813" tx="-22.5" ty="3.85"/>
                   </matrix>
@@ -73,7 +73,7 @@ stop();
           <frames>
             <DOMFrame index="0" duration="300" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 83" name="血槽条" centerPoint3DX="21.5" centerPoint3DY="1.3">
+                <DOMSymbolInstance libraryItemName="素材-新版人物文字信息/血量条" name="血槽条" centerPoint3DX="21.5" centerPoint3DY="1.3">
                   <matrix>
                     <Matrix a="0.542831420898438" d="1.19998168945313" tx="-22.5" ty="0.15"/>
                   </matrix>
@@ -92,7 +92,7 @@ stop();
           <frames>
             <DOMFrame index="0" duration="300" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="残余血槽条" name="残余血槽条" blendMode="screen" centerPoint3DX="-22.5" centerPoint3DY="0.05">
+                <DOMSymbolInstance libraryItemName="素材-新版人物文字信息/残余血槽条" name="残余血槽条" blendMode="screen" centerPoint3DX="-22.5" centerPoint3DY="0.05">
                   <matrix>
                     <Matrix tx="-22.5" ty="0.05"/>
                   </matrix>
@@ -111,7 +111,7 @@ stop();
           <frames>
             <DOMFrame index="0" duration="300" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/血槽底" name="血槽底" cacheAsBitmap="true" blendMode="hardlight" centerPoint3DY="3.25">
+                <DOMSymbolInstance libraryItemName="素材-新版人物文字信息/血槽底" name="血槽底" cacheAsBitmap="true" blendMode="hardlight" centerPoint3DY="3.25">
                   <matrix>
                     <Matrix tx="-22.5" ty="0.25"/>
                   </matrix>
@@ -130,7 +130,7 @@ stop();
           <frames>
             <DOMFrame index="0" duration="300" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/刚体遮罩" name="刚体遮罩" centerPoint3DX="21.5" centerPoint3DY="4.7">
+                <DOMSymbolInstance libraryItemName="素材-新版人物文字信息/刚体遮罩" name="刚体遮罩" centerPoint3DX="21.5" centerPoint3DY="4.7">
                   <matrix>
                     <Matrix a="0.542831420898438" d="0.800003051757813" tx="-22.5" ty="3.85"/>
                   </matrix>
