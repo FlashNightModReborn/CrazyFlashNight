@@ -1696,55 +1696,35 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var stunTime:Number = _root.钝感硬直时间;
 
         // === 仅准备一次消弹区域缓存，供所有阵营复用 ===
-        var areas:Object = null;
-        var hasCZ:Boolean = BulletCancelQueueProcessor.hasActive();
+        // prepareIfActive()：无消弹时 O(1) 返回 false，有消弹时完成索引排序
+        // 直接引用 BulletCancelQueueProcessor 的 public 静态数组，消除中间 Object 分配
+        var hasCZ:Boolean = BulletCancelQueueProcessor.prepareIfActive();
 
-        // 消弹数组引用缓存（减少属性查找开销）
+        // 消弹 SoA 数组本地别名（减少跨类属性查找开销）
         // 各字段语义：
-        //   idxArr: 消弹区域索引数组
-        //   xMinArr/xMaxArr/yMinArr/yMaxArr: 消弹区域的AABB边界
-        //   shootZArr: 消弹区域的Z轴基准高度
-        //   zRangeArr: 消弹区域的Z轴有效范围
-        //   dirCodeArr: 方向过滤码（0=全向，1=向右，-1=向左）
-        //   isEnemyArr: 区域阵营标识（与bullet.是否为敌人比较，相同则跳过）
-        //   isBounceArr: 是否反弹模式
-        //   isPowerfulArr: 是否强力消弹（穿透弹会直接移除）
-        //   shooterArr: 反弹模式下的新发射者名称
-        var idxArr:Array, xMinArr:Array, xMaxArr:Array, yMinArr:Array, yMaxArr:Array;
-        var shootZArr:Array, zRangeArr:Array, dirCodeArr:Array, isEnemyArr:Array;
-        var isBounceArr:Array, isPowerfulArr:Array, shooterArr:Array;
-        // i变量声明移到碰撞检测变量区域，避免重复声明
+        //   idxArr:       消弹区域排序索引（按 xMin 升序）
+        //   xMinArr/xMaxArr/yMinArr/yMaxArr: 消弹区域 AABB（gameworld 坐标系）
+        //   shootZArr:    消弹区域的 Z 轴基准高度
+        //   zRangeArr:    消弹区域的 Z 轴有效范围
+        //   dirCodeArr:   方向过滤码（0=全向，1=向右，-1=向左）
+        //   isEnemyArr:   区域阵营标识（与 bullet.是否为敌人 比较，相同则跳过）
+        //   isBounceArr:  是否反弹模式
+        //   isPowerfulArr:是否强力消弹（穿透弹会直接移除）
+        //   shooterArr:   反弹模式下的新发射者名称
+        var idxArr:Array     = BulletCancelQueueProcessor.sortIdx;
+        var xMinArr:Array    = BulletCancelQueueProcessor.xMin;
+        var xMaxArr:Array    = BulletCancelQueueProcessor.xMax;
+        var yMinArr:Array    = BulletCancelQueueProcessor.yMin;
+        var yMaxArr:Array    = BulletCancelQueueProcessor.yMax;
+        var shootZArr:Array  = BulletCancelQueueProcessor.shootZ;
+        var zRangeArr:Array  = BulletCancelQueueProcessor.zRange;
+        var dirCodeArr:Array = BulletCancelQueueProcessor.dirCode;
+        var isEnemyArr:Array = BulletCancelQueueProcessor.isEnemy;
+        var isBounceArr:Array    = BulletCancelQueueProcessor.isBounce;
+        var isPowerfulArr:Array  = BulletCancelQueueProcessor.isPowerful;
+        var shooterArr:Array     = BulletCancelQueueProcessor.shooter;
 
-        var areaLen:Number = 0;  // 索引数组长度
-        if (hasCZ) {
-            BulletCancelQueueProcessor.prepareAreaCache();
-            areas = BulletCancelQueueProcessor.getAreaCacheRef();
-            if (!areas) {
-                hasCZ = false;
-            } else {
-                idxArr = areas.indices;
-                if (!idxArr) {
-                    hasCZ = false;
-                } else {
-                    areaLen = idxArr.length;
-                    if (areaLen == 0) {
-                        hasCZ = false;
-                    } else {
-                        xMinArr = areas.xMin;
-                        xMaxArr = areas.xMax;
-                        yMinArr = areas.yMin;
-                        yMaxArr = areas.yMax;
-                        shootZArr = areas.shootZ;
-                        zRangeArr = areas.zRange;
-                        dirCodeArr = areas.dirCode;
-                        isEnemyArr = areas.isEnemy;
-                        isBounceArr = areas.isBounce;
-                        isPowerfulArr = areas.isPowerful;
-                        shooterArr = areas.shooter;
-                    }
-                }
-            }
-        }
+        var areaLen:Number = hasCZ ? BulletCancelQueueProcessor.soaLen : 0;
 
         // ================================================================
         // 统一变量声明区域（性能热点优化：避免循环内重复var声明开销）
