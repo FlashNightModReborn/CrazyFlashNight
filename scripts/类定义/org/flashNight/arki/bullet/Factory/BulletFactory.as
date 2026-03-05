@@ -219,10 +219,15 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         var lifecycle:ILifecycle;
 
         // === 生命周期选择：基于位标志的快速分支 ===
-        // 按优先级排序：射线（FLAG_RAY 蕴含 FLAG_TRANSPARENCY，必须先判）> 单位子弹 > 近战 > 透明 > 普通
+        // 优先级顺序：射线 > 单位子弹 > 透明（含近战）> 近战 > 普通
+        //
+        // 设计约定：
+        // • FLAG_RAY 蕴含 FLAG_TRANSPARENCY（BulletTypesetter:199），必须在 isTransparent 前捕获
+        // • 近战子弹（近战子弹/近战联弹）也属于透明子弹（BulletTypeUtil.TRANSPARENCY_MAP），
+        //   走 TransparentBulletLifecycle（单帧检测后立即销毁），不应由 isMelee 分支拦截
+        // • MeleeBulletLifecycle 保留给"有 FLAG_MELEE 但非透明"的边缘情况（目前不存在）
         if (isRay) {
             // 射线子弹：单帧检测，使用 RayCollider
-            // 注意：FLAG_RAY 蕴含 FLAG_TRANSPARENCY（BulletTypesetter:199），必须在 isTransparent 前捕获
             lifecycle = TeslaRayLifecycle.BASIC;
         }
         else if (isUnitBullet) {
@@ -238,24 +243,27 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             bulletInstance.updateMovement = Delegate.create(ubMovement, ubMovement.updateMovement);
             bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
         }
-        else if (isMelee) {
-            lifecycle = MeleeBulletLifecycle.BASIC;
-        }
         else if (isTransparent) {
+            // 透明子弹（含近战子弹/近战联弹）：单帧检测后立即销毁
             lifecycle = TransparentBulletLifecycle.BASIC;
         }
         else {
-            // 普通子弹（含自定义运动类型）—— 频率仅次于透明和近战
-            lifecycle = NormalBulletLifecycle.BASIC;
+            if (isMelee) {
+                lifecycle = MeleeBulletLifecycle.BASIC;
+            }
+            else {
+                // 普通子弹（含自定义运动类型）
+                lifecycle = NormalBulletLifecycle.BASIC;
 
-            bulletInstance.xmov = velocity * Math.cos(angleRadians);
-            bulletInstance.ymov = velocity * Math.sin(angleRadians);
+                bulletInstance.xmov = velocity * Math.cos(angleRadians);
+                bulletInstance.ymov = velocity * Math.sin(angleRadians);
 
-            var movement:IMovement = MovementSystem.createMovementForBullet(
-                Obj.子弹种类, shooter, speedX, speedY, zyRatio, velocity, Obj._rotation
-            );
-            bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
-            bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
+                var movement:IMovement = MovementSystem.createMovementForBullet(
+                    Obj.子弹种类, shooter, speedX, speedY, zyRatio, velocity, Obj._rotation
+                );
+                bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
+                bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
+            }
         }
 
         // 绑定生命周期逻辑
