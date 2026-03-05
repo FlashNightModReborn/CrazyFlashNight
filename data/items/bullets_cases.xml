@@ -314,6 +314,12 @@
         <movement>
             <func>accelerated</func>
         </movement>
+        <attribute>
+            <unitBullet>
+                <hitPoint>1</hitPoint>
+                <hitEffect>火花</hitEffect>
+            </unitBullet>
+        </attribute>
     </bullet>
     <bullet>
         <name>重型火箭弹</name>

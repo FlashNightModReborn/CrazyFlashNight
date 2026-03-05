@@ -1911,6 +1911,23 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             // ---- 射弹预警门控：全局开关，O(1)布尔检查 ----
             hasTZ = BulletThreatScanProcessor.hasListeners();
 
+            // --- UnitBullet 诊断：目标缓存内容（调试完成后注释） ---
+            // if (key == "PLAYER" && len > 0 && (frameId % 30) == 0) {
+            //     var __ubDiag:String = "[UB Sweep] PLAYER targets=" + len;
+            //     for (var __di:Number = 0; __di < len; __di++) {
+            //         var __du:Object = unitMap[__di];
+            //         if (__du.element != undefined) {
+            //             var __da = __du.aabbCollider;
+            //             __ubDiag += " | EL:" + __du._name
+            //                 + " L=" + Math.round(__da.left) + " R=" + Math.round(__da.right)
+            //                 + " T=" + Math.round(__da.top) + " B=" + Math.round(__da.bottom)
+            //                 + " Z=" + Math.round(__du.Z轴坐标)
+            //                 + " hp=" + __du.hp;
+            //         }
+            //     }
+            //     _root.服务器.发布服务器消息(__ubDiag);
+            // }
+
             // --- 调试期单位池预检与清洗 ---
             if (false) {
                 var __pc:Object = __debugPrecheckAndCleanUnitArrays(unitMap, unitLeftKeys, unitRightKeys, key);
@@ -2117,11 +2134,36 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     for (unitIndex = startIndex; unitIndex < len && unitLeftKeys[unitIndex] <= Rb; ++unitIndex) {
                         hitTarget = unitMap[unitIndex];  // 只读取目标，延迟写入
 
-                        // Z 轴粗判（避免Math.abs函数调用开销）
-                        zOffset = bulletZOffset - hitTarget.Z轴坐标;
-                        if (zOffset >= bulletZRange || zOffset <= -bulletZRange) continue;
+                        // --- UnitBullet 碰撞诊断（调试完成后注释） ---
+                        // if (hitTarget.element != undefined && hitTarget.element === hitTarget) {
+                        //     unitArea = hitTarget.aabbCollider;
+                        //     zOffset = bulletZOffset - hitTarget.Z轴坐标;
+                        //     _root.服务器.发布服务器消息("[UB Col] bullet=" + bullet._name
+                        //         + " target=" + hitTarget._name
+                        //         + " bAABB=[" + Math.round(areaAABB.left) + "," + Math.round(areaAABB.right) + "," + Math.round(areaAABB.top) + "," + Math.round(areaAABB.bottom) + "]"
+                        //         + " uAABB=[" + Math.round(unitArea.left) + "," + Math.round(unitArea.right) + "," + Math.round(unitArea.top) + "," + Math.round(unitArea.bottom) + "]"
+                        //         + " zOff=" + Math.round(zOffset) + " zRange=" + bulletZRange
+                        //         + " uTop=" + Math.round(unitArea.top + zOffset) + " uBot=" + Math.round(unitArea.bottom + zOffset)
+                        //         + " Zpass=" + (!(zOffset >= bulletZRange || zOffset <= -bulletZRange))
+                        //         + " Xpass=" + (!(areaAABB.left >= unitArea.right))
+                        //         + " Ypass=" + (!(areaAABB.bottom <= (unitArea.top + zOffset) || areaAABB.top >= (unitArea.bottom + zOffset)))
+                        //     );
+                        // }
 
-                        if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true) {
+                        // Z 轴粗判（避免Math.abs函数调用开销）
+                        // UnitBullet（可拦截子弹）是飞行物，无有意义的地面Z坐标
+                        // 强制 zOffset=0 使碰撞纯2D，避免地面高度差导致的误判
+                        zOffset = bulletZOffset - hitTarget.Z轴坐标;
+                        if (hitTarget.element === hitTarget) {
+                            zOffset = 0;
+                        } else if (zOffset >= bulletZRange || zOffset <= -bulletZRange) {
+                            continue;
+                        }
+
+                        // hitTarget !== bullet: 防御性自碰撞剔除
+                        // UnitBullet 同时存在于 BulletQueue（作为子弹）和 TargetCache（作为单位），
+                        // 当前阵营路由已保证同阵营不交叉，但保留零开销指针比较作为安全兜底
+                        if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true && hitTarget !== bullet) {
                             unitArea = hitTarget.aabbCollider;
 
                             // 扫描线特化AABB宽相检测（全内联，依赖 ICollider C2 不变量）

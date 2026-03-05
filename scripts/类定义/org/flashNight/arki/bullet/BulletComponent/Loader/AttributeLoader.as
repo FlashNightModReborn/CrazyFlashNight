@@ -26,6 +26,7 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
         // === 宏展开：状态标志位常量（函数内局部变量） ===
         #include "../macros/STATE_GRENADE_XML.as"
         #include "../macros/FLAG_RAY.as"
+        #include "../macros/FLAG_UNIT_BULLET.as"
 
         var attributeNode:Object = data.attribute;
 
@@ -56,6 +57,19 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
                 attributeInfo.rayConfig = TeslaRayConfig.fromXML(attributeNode.rayConfig);
                 // 设置附加标志位（由 BulletInitializer 合并到 flags）
                 attributeInfo.additionalFlags = FLAG_RAY;
+            }
+
+            // === 可拦截单位子弹配置解析 ===
+            // 通过 <unitBullet> 节点配置子弹的单位属性（hitPoint、击中效果等）
+            // FLAG_UNIT_BULLET 与 FLAG_TRANSPARENCY / FLAG_RAY 互斥
+            if(attributeNode.unitBullet != undefined) {
+                var ubNode:Object = attributeNode.unitBullet;
+                attributeInfo.unitBulletConfig = {
+                    hitPoint:  Number(ubNode.hitPoint) || 3,
+                    hitEffect: (ubNode.hitEffect != undefined) ? String(ubNode.hitEffect) : "火花"
+                };
+                if(attributeInfo.additionalFlags == undefined) attributeInfo.additionalFlags = 0;
+                attributeInfo.additionalFlags |= FLAG_UNIT_BULLET;
             }
 
             // 仅当有预置状态位时才写入
