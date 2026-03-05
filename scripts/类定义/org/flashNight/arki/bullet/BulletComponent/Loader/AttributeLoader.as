@@ -65,8 +65,9 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
             if(attributeNode.unitBullet != undefined) {
                 var ubNode:Object = attributeNode.unitBullet;
                 attributeInfo.unitBulletConfig = {
-                    hitPoint:  Number(ubNode.hitPoint) || 3,
-                    hitEffect: (ubNode.hitEffect != undefined) ? String(ubNode.hitEffect) : "火花"
+                    hitPoint:   Number(ubNode.hitPoint) || 3,
+                    hitEffect:  (ubNode.hitEffect  != undefined) ? String(ubNode.hitEffect)  : "火花",
+                    zTolerance: (ubNode.zTolerance != undefined) ? Number(ubNode.zTolerance) : 0
                 };
                 if(attributeInfo.additionalFlags == undefined) attributeInfo.additionalFlags = 0;
                 attributeInfo.additionalFlags |= FLAG_UNIT_BULLET;

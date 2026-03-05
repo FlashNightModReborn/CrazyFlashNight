@@ -1666,11 +1666,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // FLAG_MELEE: 近战标志 - 触发硬直，不受消弹影响
         // FLAG_PIERCE: 穿透标志 - 可贯穿多个目标
         // FLAG_EXPLOSIVE: 爆炸标志 - 特殊终止处理
+        // FLAG_UNIT_BULLET: 可拦截单位子弹标志 - Z轴宽容判定
         // 标志位可叠加使用，如 FLAG_MELEE | FLAG_PIERCE 表示穿透近战弹
         #include "../macros/FLAG_CHAIN.as"
         #include "../macros/FLAG_MELEE.as"
         #include "../macros/FLAG_PIERCE.as"
         #include "../macros/FLAG_EXPLOSIVE.as"
+        #include "../macros/FLAG_UNIT_BULLET.as"
 
         // 实例状态标志位（用于硬直免疫检测和击中地图检测）
         #include "../macros/STATE_NO_STUN.as"
@@ -2154,7 +2156,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         // UnitBullet（可拦截子弹）使用宽容 effectiveRange = bulletZRange + zTolerance
                         // 解决飞行物 shootZ 与攻击子弹 bulletZOffset 存在小幅偏差时被误判跳过的问题
                         zOffset = bulletZOffset - hitTarget.Z轴坐标;
-                        #include "../macros/FLAG_UNIT_BULLET.as"
                         var effectiveRange:Number = ((hitTarget.flags & FLAG_UNIT_BULLET) != 0)
                             ? bulletZRange + (hitTarget.unitBulletZTolerance | 0)
                             : bulletZRange;
