@@ -75,6 +75,13 @@ class org.flashNight.arki.component.Buff.Component.TimeLimitComponent
     // =====================================================
 
     /**
+     * 获取总帧数
+     */
+    public function getTotal():Number {
+        return _total;
+    }
+
+    /**
      * 获取剩余帧数
      */
     public function getRemaining():Number {

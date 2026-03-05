@@ -54,6 +54,9 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
 
     // [Phase 0] 销毁标志，防止复用已销毁的实例
     private var _destroyed:Boolean;
+
+    // primaryTimer 缓存：O(1) 查询，attach/detach 时维护
+    private var _primaryTimer:TimeLimitComponent;
     
     /**
      * @param childBuffs Array.<PodBuff>  数值 Buff 模板列表
@@ -256,6 +259,11 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
                 comp.onDetach();
                 this._components.splice(i, 1);
 
+                // 同步 primaryTimer 缓存
+                if (this._primaryTimer == comp) {
+                    this._primaryTimer = null;
+                }
+
                 // [核心逻辑] 门控组件失败 → 终结宿主Buff
                 if (isGate) {
                     return false;
@@ -303,13 +311,16 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
     }
     
     /**
-     * 挂载所有组件
+     * 挂载所有组件，顺带建立 primaryTimer 缓存
      */
     private function _attachAllComponents():Void {
         for (var i:Number = 0; i < this._components.length; i++) {
             var comp:IBuffComponent = this._components[i];
             if (comp) {
                 comp.onAttach(this);
+                if (this._primaryTimer == null && (comp instanceof TimeLimitComponent)) {
+                    this._primaryTimer = TimeLimitComponent(comp);
+                }
             }
         }
     }
@@ -365,6 +376,9 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
         if (comp && this.isActive()) {
             this._components.push(comp);
             comp.onAttach(this);
+            if (this._primaryTimer == null && (comp instanceof TimeLimitComponent)) {
+                this._primaryTimer = TimeLimitComponent(comp);
+            }
         }
     }
     
@@ -387,6 +401,16 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
      */
     public function getPriority():Number {
         return this._priority;
+    }
+
+    /**
+     * 获取主计时器（第一个挂载的 TimeLimitComponent）
+     * UI 侧通过此接口读取 remain/total 渲染进度条，O(1)
+     * 多计时器场景只暴露第一个，其余忽略
+     * @return TimeLimitComponent 若无计时器或已销毁则返回 null
+     */
+    public function getPrimaryTimer():TimeLimitComponent {
+        return this._primaryTimer;
     }
     
     /**
@@ -414,6 +438,7 @@ class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
         this._childBuffs = null;
         // [v1.4] 移除 _injectedBuffIds 清理，已由 BuffManager 管理
         this._childBuffsValidCache = -1;
+        this._primaryTimer = null;
         this._currentState = STATE_INACTIVE;
 
         super.destroy();
