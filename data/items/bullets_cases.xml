@@ -145,6 +145,13 @@
                 <usePreLaunch>true</usePreLaunch>
             </param>
         </movement>
+        <attribute>
+            <unitBullet>
+                <hitPoint>10</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
+        </attribute>
     </bullet>
     <bullet>
         <name>无壳子弹</name>
@@ -323,34 +330,78 @@
         </attribute>
     </bullet>
     <bullet>
+        <name>冰水晶</name>
+        <attribute>
+            <unitBullet>
+                <hitPoint>1</hitPoint>
+                <zTolerance>30</zTolerance>
+            </unitBullet>
+        </attribute>
+    </bullet>
+    <bullet>
         <name>重型火箭弹</name>
         <movement>
             <func>accelerated</func>
         </movement>
+        <attribute>
+            <unitBullet>
+                <hitPoint>3</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
+        </attribute>
     </bullet>
     <bullet>
         <name>串联破甲火箭弹</name>
         <movement>
             <func>accelerated</func>
         </movement>
+        <attribute>
+            <unitBullet>
+                <hitPoint>3</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
+        </attribute>
     </bullet>
     <bullet>
         <name>核战斗部火箭弹</name>
         <movement>
             <func>accelerated</func>
         </movement>
+        <attribute>
+            <unitBullet>
+                <hitPoint>999</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
+        </attribute>
     </bullet>
     <bullet>
         <name>普通火箭弹</name>
         <movement>
             <func>accelerated</func>
         </movement>
+        <attribute>
+            <unitBullet>
+                <hitPoint>1</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
+        </attribute>
     </bullet>
     <bullet>
         <name>榴弹</name>
         <movement>
             <func>freeFall</func>
         </movement>
+        <attribute>
+            <unitBullet>
+                <hitPoint>1</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
+        </attribute>
     </bullet>
     <bullet>
         <name>爆炎手里剑</name>
@@ -359,6 +410,13 @@
         </movement>
         <attribute>
             <hitMark>灼烧弹坑</hitMark>
+        </attribute>
+        <attribute>
+            <unitBullet>
+                <hitPoint>1</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
         </attribute>
     </bullet>
     <bullet>

@@ -23,66 +23,11 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[/*
-冰水晶：既作为子弹素材生成，也必须作为“可被子弹击碎”的单位存在。
-因此需要进入目标缓存（注册/注销），但必须避免：
-1) swapDepths(this._y) 深度错乱导致特效消失
-2) 覆盖 Z轴坐标（子弹系统已提供 shootZ）导致判定异常
+冰水晶：由 UnitBulletLifecycle.bindLifecycle 全权接管单位管线。
+hp / 防御力 / 阵营 / 目标缓存注册 均由 UnitBulletLifecycle 完成，
+此处不重复执行，防止双重注册和覆盖 Z轴坐标。
 */
-
-根据等级初始数值 = _root.敌人函数.根据等级初始数值;
-状态改变 = _root.敌人函数.状态改变;
-动画完毕 = _root.敌人函数.动画完毕;
-计算经验值 = _root.敌人函数.计算经验值;
-
-hp_min = 100;
-hp_max = 200;
-速度_min = 0;
-速度_max = 0;
-空手攻击力_min = 100;
-空手攻击力_max = 300;
-被击硬直度_min = 1000;
-被击硬直度_max = 200;
-躲闪率_min = 100;
-躲闪率_max = 100;
-基本防御力_min = 70;
-基本防御力_max = 120;
-装备防御力 = 0;
-
-称号 = "";
-
-var shooter = (this.shooter != undefined) ? this.shooter : _root.gameworld[this.发射者名];
-
-// 补齐单位模板字段：避免身高/等级缺失导致缩放为0、数值异常
-if (this.身高 == undefined && shooter != undefined && shooter.身高 != undefined) {
-   this.身高 = shooter.身高;
-}
-if (this.等级 == undefined && shooter != undefined && shooter.等级 != undefined) {
-   this.等级 = shooter.等级;
-}
-
-// 安全缩放：身高缺失/转换异常时按100%
-var 身高转换值 = (this.身高 != undefined && _root.身高百分比转换 != undefined) ? _root.身高百分比转换(this.身高) : 100;
-if (!(身高转换值 > 0)) 身高转换值 = 100;
-this._xscale = 身高转换值;
-this._yscale = 身高转换值;
-myxscale = this._xscale;
-
-// 被动单位：不主动寻敌/攻击（仅用于承受子弹并碎裂）
-攻击目标 = "无";
-x轴攻击范围 = 0;
-y轴攻击范围 = 0;
-x轴保持距离 = 0;
-攻击欲望 = 0;
-攻击模式 = "空手";
-状态 = "空手站立";
-方向 = "右";
-格斗架势 = false;
-击中效果 = "火花";
-
-// 注册到目标缓存，使其可被子弹命中
-_root.帧计时器.注册目标缓存(this);
-根据等级初始数值(等级);
-动画完毕();
+stop();
 ]]></script>
               </Actionscript>
               <elements/>
@@ -103,9 +48,8 @@ _root.帧计时器.注册目标缓存(this);
             </DOMFrame>
             <DOMFrame index="23" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (_root.帧计时器 != undefined && _root.帧计时器.注销目标缓存 != undefined) {
-   _root.帧计时器.注销目标缓存(this);
-}
+                <script><![CDATA[// removeMovieClip 触发 UnitBulletLifecycle.bindSafeRemove 重写版：
+// 自动清理 TargetCache + dispatcher，不需要在此手工注销
 this.removeMovieClip();
 stop();
 ]]></script>
@@ -148,12 +92,7 @@ stop();
                     <script><![CDATA[onClipEvent(load){
    gotoAndPlay("a" + random(3));
 }
-onClipEvent(enterFrame){
-   if(_parent.hp <= 0)
-   {
-      _parent.gotoAndStop("血腥死");
-   }
-}
+// onKill 已直接调用 gotoAndPlay("消失")，子MC无需监听父级状态
 ]]></script>
                   </Actionscript>
                   <filters>
