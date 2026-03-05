@@ -77,10 +77,13 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.SearchForTargetCa
             }
 
             // 批量遍历（searchCache 为局部变量，帧结束后自动释放）
+            // FLAG_UNIT_BULLET 过滤：UnitBullet 是可拦截子弹单位，不应作为导弹/AI 的攻击目标
+            #include "../macros/FLAG_UNIT_BULLET.as"
             var endIndex:Number = Math.min(this._searchIndex + config.searchBatchSize, len);
             for (var i:Number = this._searchIndex; i < endIndex; i++) {
                 var potentialTarget:MovieClip = searchCache[i];
-                if (potentialTarget && potentialTarget.hp > 0) {
+                if (potentialTarget && potentialTarget.hp > 0
+                        && (potentialTarget.flags & FLAG_UNIT_BULLET) == 0) {
                     var dx:Number = potentialTarget._x - this.targetObject._x;
                     var dy:Number = potentialTarget._y - this.targetObject._y;
                     var dSq:Number = dx * dx + dy * dy;

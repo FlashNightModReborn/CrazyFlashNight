@@ -18,11 +18,14 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
  *
  * 初始化流程：
  * 1. super.bindLifecycle -> 子弹管线完全就绪（collider + damageManager + onEnterFrame + safeRemove）
- * 2. 设置 element 自引用 -> 使所有 if(target.element) 分支走地图元件逻辑
- * 3. BasicAttributeInitializer -> hp=9999999, 防御力=99999（不被 DamageCalculator 击穿）
+ * 2. 设置 element 自引用 -> 使 HitEventComponent / KillEventComponent 走地图元件分支
+ * 3. BasicAttributeInitializer.initializeWithoutPosition -> hp/防御力/击中效果等，Z轴坐标不被覆写
  * 3.5. 恢复发射者阵营 -> 跟随发射者而非 HOSTILE_NEUTRAL，自碰撞自然消除
- * 4. 覆盖 hitPoint -> 使用 XML 配置值控制实际击毁次数
+ * 3.6. 设置 NPC=true -> DamageCalculator 短路（不做完整伤害计算），hit 事件仍正常触发
+ * 3.7. 补 unitAIType -> initializeWithoutPosition 跳过了 initializePositionAndAI
+ * 4. 覆盖 hitPoint / zTolerance -> 使用 XML 配置值
  * 5. StaticInitializer.initializeUnit -> 注册到单位管线（TargetCache + EventInitializer）
+ * 5.5. 撤销 UpdateWheel 注册 -> EventInitializer 的 UpdateEventComponent 会做 swapDepths，对子弹无意义
  * 6. subscribeSingle 覆盖事件 -> 定制 hit/kill/death/UpdateEventComponent 处理器
  * 7. 恢复子弹帧状态 -> 撤销 BasicAttributeInitializer 的 gotoAndStop("正常")
  */
@@ -42,8 +45,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.UnitBulletLifecycle
 
     /**
      * 子弹销毁判定逻辑（重写）
-     * 飞行中的 UnitBullet 不使用 Z轴坐标 做地面碰撞判定，
-     * 仅检查射程和实际位置的碰撞层 hitTest。
+     * 恢复 Z轴坐标 语义的地面碰撞判定，对齐 NormalBulletLifecycle.checkMapCollision。
+     * 前提：Z轴坐标 由 BulletInitializer 设置为 shootZ，不再被 BasicAttributeInitializer 覆写。
      *
      * @param target:MovieClip 要检测的子弹对象
      * @return Boolean 是否需要销毁子弹
@@ -58,11 +61,12 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.UnitBulletLifecycle
         if (!shooter) {
             shooter = TargetCacheManager.findHero();
             if (!shooter) {
-                // 无发射者也无主角：仅检测碰撞层（用实际 _y 而非 Z轴坐标）
-                var hitOnly:Boolean = _root.collisionLayer.hitTest(target._x, target._y, true);
-                if (hitOnly) {
-                    target.stateFlags |= STATE_HIT_MAP;
-                }
+                // 无发射者也无主角：直接做地面碰撞检测
+                var Z0:Number = target.Z轴坐标;
+                var hitOnly:Boolean = (target._y > Z0)
+                    ? true
+                    : _root.collisionLayer.hitTest(target._x, Z0, true);
+                if (hitOnly) target.stateFlags |= STATE_HIT_MAP;
                 return hitOnly;
             }
         }
@@ -77,11 +81,13 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.UnitBulletLifecycle
             return true;
         }
 
-        // 飞行物地面碰撞：直接用 _y 做 hitTest，不检查 _y > Z轴坐标
-        var isCollidedWithMap:Boolean = _root.collisionLayer.hitTest(target._x, target._y, true);
-        if (isCollidedWithMap) {
-            target.stateFlags |= STATE_HIT_MAP;
-        }
+        // 地面碰撞：用 Z轴坐标（即 shootZ，未被 BasicAttributeInitializer 覆写）
+        // 语义与 NormalBulletLifecycle.checkMapCollision 一致
+        var Z:Number = target.Z轴坐标;
+        var isCollidedWithMap:Boolean = (target._y > Z)
+            ? true
+            : _root.collisionLayer.hitTest(target._x, Z, true);
+        if (isCollidedWithMap) target.stateFlags |= STATE_HIT_MAP;
         return isCollidedWithMap;
     }
 
@@ -97,37 +103,52 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.UnitBulletLifecycle
         super.bindLifecycle(target);
 
         // === 步骤2：设置 element 自引用 ===
-        // 使 HitEventComponent / KillEventComponent / UpdateEventComponent 走地图元件分支
+        // 使 HitEventComponent / KillEventComponent 走地图元件分支
         target.element = target;
 
-        // === 步骤3：初始化地图元件基础属性 ===
-        // BasicAttributeInitializer 会设置 是否为敌人=null(HOSTILE_NEUTRAL)
-        // 但我们需要跟随发射者阵营，所以初始化后立即恢复
-        BasicAttributeInitializer.initialize(target);
+        // === 步骤3：初始化地图元件基础属性（不覆写 Z轴坐标）===
+        // 使用 initializeWithoutPosition 替代 initialize，保留 BulletInitializer 设置的 shootZ
+        BasicAttributeInitializer.initializeWithoutPosition(target);
 
         // === 步骤3.5：恢复发射者阵营 ===
-        // 跟随发射者的阵营而非 HOSTILE_NEUTRAL，好处：
-        // 1. 降低心智负担（UnitBullet 阵营 = 发射者阵营）
+        // 跟随发射者的阵营：
+        // 1. 阵营缓存路由正确（敌方 UnitBullet 在 ENEMY 桶，玩家子弹可命中）
         // 2. 自碰撞自然消除（同阵营子弹不检测同阵营单位）
-        // 3. 阵营缓存路由正确（敌方 UnitBullet 在 ENEMY 桶，玩家子弹可命中）
         var shooter:MovieClip = _root.gameworld[target.发射者名];
         if (shooter) {
             target.是否为敌人 = shooter.是否为敌人;
         }
 
-        // === 步骤4：覆盖 hitPoint 为 XML 配置值 ===
+        // === 步骤3.6：设置 NPC=true ===
+        // DamageCalculator:99 的 hitTarget.NPC 守卫短路，跳过完整伤害计算
+        // 好处：hp=9999999 + 防御力=99999 的空转计算不再执行
+        // hit 事件（BulletQueueProcessor:2255）仍正常 publish，onHit 的 hitPoint-- 照常触发
+        target.NPC = true;
+
+        // === 步骤3.7：补 unitAIType ===
+        // initializeWithoutPosition 跳过了 initializePositionAndAI，需手动补充
+        target.unitAIType = "None";
+
+        // === 步骤4：覆盖 hitPoint 和 zTolerance 为 XML 配置值 ===
         var config:Object = target.unitBulletConfig;
         if (config) {
             target.hitPoint = config.hitPoint;
             target.hitPointMax = config.hitPoint;
             target.击中效果 = config.hitEffect;
+            // zTolerance：额外 zOffset 容忍值，用于宽容拦截判定（BulletQueueProcessor 读取）
+            target.unitBulletZTolerance = config.zTolerance || 0;
         }
 
         // === 步骤5：注册到单位管线 ===
-        // ComponentInitializer 跳过 aabbCollider 创建（line 11 守卫：已存在）
+        // ComponentInitializer 跳过 aabbCollider 创建（已存在）
         // EventInitializer 订阅 element 分支默认处理器
         // TargetCacheManager.addUnit 注册到目标缓存
         StaticInitializer.initializeUnit(target);
+
+        // === 步骤5.5：撤销 UpdateWheel 注册 ===
+        // EventInitializer 的 UpdateEventComponent 把 UnitBullet 注册到 unitUpdateWheel
+        // 会触发 swapDepths（深度排序），干扰子弹渲染；UnitBullet 深度由 gameworld 层级自然管理
+        _root.帧计时器.unitUpdateWheel.remove(target);
 
         // === 步骤6：用 subscribeSingle 覆盖需要定制的事件处理器 ===
         var d:EventDispatcher = target.dispatcher;
@@ -151,8 +172,9 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.UnitBulletLifecycle
         //     + " hitPoint=" + target.hitPoint
         //     + " Z=" + target.Z轴坐标
         //     + " _y=" + target._y
+        //     + " zTolerance=" + target.unitBulletZTolerance
+        //     + " NPC=" + target.NPC
         //     + " AABB=[" + aabb.left + "," + aabb.right + "," + aabb.top + "," + aabb.bottom + "]"
-        //     + " faction=" + FactionManager.getFactionFromUnit(target)
         // );
     }
 
@@ -194,14 +216,16 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.UnitBulletLifecycle
 
     /**
      * 受击事件处理
-     * DamageCalculator 已运行，hp 被扣但因极大值不会归零。
+     * DamageCalculator 因 NPC=true 已短路返回 NULL，hp 不变。
      * 只递减 hitPoint 做拦截判定。
+     * hitPoint 归零时：设 hp=0 并 publish kill，让 BulletQueueProcessor 的死亡判定
+     * 检测到 _killed=true（onKill 设置）后跳过重复 kill/death publish。
      */
     public static function onHit(target:MovieClip, shooter:MovieClip, bullet:MovieClip):Void {
         // _root.服务器.发布服务器消息("[UB Hit] " + target._name + " hitPoint=" + target.hitPoint + " by=" + bullet._name);
         target.hitPoint--;
         if (target.hitPoint <= 0) {
-            target.hp = 0;  // 手动归零，触发 BulletQueueProcessor 的死亡判定
+            target.hp = 0;  // 手动归零，使 BulletQueueProcessor line 2258 的死亡判定可见
             target.dispatcher.publish("kill", target);
         }
     }
@@ -209,6 +233,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.UnitBulletLifecycle
     /**
      * 击杀事件处理
      * 跳到"消失"帧播放消失/爆炸动画
+     * _killed=true 用作 BulletQueueProcessor 死亡判定的重复发布守卫
      */
     public static function onKill(target:MovieClip):Void {
         target.gotoAndPlay("消失");
@@ -227,7 +252,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.UnitBulletLifecycle
 
     /**
      * 帧更新事件处理
-     * 空操作：不做 swapDepths，不做渲染剔除
+     * 空操作：不做 swapDepths（UpdateWheel 已撤销），不做渲染剔除
      * Z 轴由 Movement 维护，深度由 gameworld 层级自然管理
      */
     public static function onUpdate(target:MovieClip):Void {
@@ -238,9 +263,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.UnitBulletLifecycle
         //         + " _x=" + Math.round(target._x)
         //         + " _y=" + Math.round(target._y)
         //         + " Z=" + Math.round(target.Z轴坐标)
-        //         + " area=" + (target.area != undefined)
-        //         + " AABB=[" + Math.round(aabb.left) + "," + Math.round(aabb.right) + "," + Math.round(aabb.top) + "," + Math.round(aabb.bottom) + "]"
         //         + " hp=" + target.hp
+        //         + " hitPoint=" + target.hitPoint
         //         + " _cur=" + target._currentframe
         //     );
         // }

@@ -79,6 +79,21 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BasicA
     }
     
     /**
+     * 初始化目标的基础属性（不覆写位置/Z轴坐标）
+     * 与 initialize() 相同，但跳过 initializePositionAndAI()。
+     * 专用于 UnitBullet 等已正确设置 Z轴坐标 的对象，防止飞行高度被 _y 覆写。
+     * 调用方负责手动补 unitAIType 等 initializePositionAndAI 原本负责的字段。
+     * @param target 要初始化的目标MovieClip
+     */
+    public static function initializeWithoutPosition(target:MovieClip):Void {
+        target.是否为敌人 = null;
+        BasicAttributeInitializer.initializeHitPoints(target);
+        BasicAttributeInitializer.initializeCombatAttributes(target);
+        BasicAttributeInitializer.initializeDisplayState(target);
+        // 不调用 initializePositionAndAI：Z轴坐标 由调用方保证正确
+    }
+
+    /**
      * 重置目标的战斗属性为默认值
      * @param target 要重置的目标MovieClip
      */

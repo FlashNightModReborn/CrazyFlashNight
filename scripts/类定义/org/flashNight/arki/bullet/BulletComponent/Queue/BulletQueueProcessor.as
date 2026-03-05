@@ -2151,12 +2151,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         // }
 
                         // Z 轴粗判（避免Math.abs函数调用开销）
-                        // UnitBullet（可拦截子弹）是飞行物，无有意义的地面Z坐标
-                        // 强制 zOffset=0 使碰撞纯2D，避免地面高度差导致的误判
+                        // UnitBullet（可拦截子弹）使用宽容 effectiveRange = bulletZRange + zTolerance
+                        // 解决飞行物 shootZ 与攻击子弹 bulletZOffset 存在小幅偏差时被误判跳过的问题
                         zOffset = bulletZOffset - hitTarget.Z轴坐标;
-                        if (hitTarget.element === hitTarget) {
-                            zOffset = 0;
-                        } else if (zOffset >= bulletZRange || zOffset <= -bulletZRange) {
+                        #include "../macros/FLAG_UNIT_BULLET.as"
+                        var effectiveRange:Number = ((hitTarget.flags & FLAG_UNIT_BULLET) != 0)
+                            ? bulletZRange + (hitTarget.unitBulletZTolerance | 0)
+                            : bulletZRange;
+                        if (zOffset >= effectiveRange || zOffset <= -effectiveRange) {
                             continue;
                         }
 
@@ -2255,7 +2257,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             targetDispatcher.publish("hit", hitTarget, shooter, bullet, collisionResult, damageResult);
 
                             // --- 死亡判定（内联展开） ---
-                            if (hitTarget.hp <= 0) {
+                            // _killed 守卫：防止 UnitBullet 的 onHit 已抢先 publish kill（onKill 设 _killed=true）
+                            // 导致主循环再次 publish kill/death + enemyKilled 的重复事件；
+                            // 同时阻断 enemyKilled 对 UnitBullet 的 killStats 膨胀（每枚 _name 不同会撑爆 byType）
+                            if (hitTarget.hp <= 0 && !hitTarget._killed) {
                                 // 直接使用预计算的布尔值判断事件名
                                 targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
                                 shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);

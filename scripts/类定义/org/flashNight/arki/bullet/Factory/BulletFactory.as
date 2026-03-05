@@ -219,12 +219,11 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         var lifecycle:ILifecycle;
 
         // === 生命周期选择：基于位标志的快速分支 ===
-        // 按频率排序：透明 > 近战 > 普通 > 单位子弹 > 射线
-        if (isTransparent) {
-            lifecycle = TransparentBulletLifecycle.BASIC;
-        }
-        else if (isMelee) {
-            lifecycle = MeleeBulletLifecycle.BASIC;
+        // 按优先级排序：射线（FLAG_RAY 蕴含 FLAG_TRANSPARENCY，必须先判）> 单位子弹 > 近战 > 透明 > 普通
+        if (isRay) {
+            // 射线子弹：单帧检测，使用 RayCollider
+            // 注意：FLAG_RAY 蕴含 FLAG_TRANSPARENCY（BulletTypesetter:199），必须在 isTransparent 前捕获
+            lifecycle = TeslaRayLifecycle.BASIC;
         }
         else if (isUnitBullet) {
             // 可拦截单位子弹：同时具备子弹运动和单位属性
@@ -239,9 +238,11 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             bulletInstance.updateMovement = Delegate.create(ubMovement, ubMovement.updateMovement);
             bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
         }
-        else if (isRay) {
-            // 射线子弹：单帧检测，使用 RayCollider
-            lifecycle = TeslaRayLifecycle.BASIC;
+        else if (isMelee) {
+            lifecycle = MeleeBulletLifecycle.BASIC;
+        }
+        else if (isTransparent) {
+            lifecycle = TransparentBulletLifecycle.BASIC;
         }
         else {
             // 普通子弹（含自定义运动类型）—— 频率仅次于透明和近战
