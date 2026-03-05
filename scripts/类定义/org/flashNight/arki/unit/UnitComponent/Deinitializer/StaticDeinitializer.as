@@ -49,6 +49,14 @@ class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
                 _root.gameworld.dispatcher.publish("UnitRemoved", target._name);
             }
 
+            // 先销毁 buffManager：clearAllBuffs 的 onDeactivate 回调可能通过 dispatcher 发事件，
+            // 需在 dispatcher 销毁前完成，以免回调打到已失效的 dispatcher。
+            if(target.buffManager)
+            {
+                target.buffManager.destroy();
+                target.buffManager = null;
+            }
+
             // 检查并销毁dispatcher以解除所有事件订阅
             if(target.dispatcher)
             {
