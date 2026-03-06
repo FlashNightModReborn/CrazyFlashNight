@@ -19,6 +19,7 @@
     ]
   },
   "include": [
+    "src/shared/**/*.ts",
     "src/renderer/**/*.ts",
     "src/renderer/**/*.tsx",
     "src/renderer/**/*.d.ts",

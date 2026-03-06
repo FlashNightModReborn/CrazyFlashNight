@@ -1,11 +1,13 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 
 import {
+  applyImportedBatchUpdates,
   buildBatchUpdatesPayload,
   createEditorRows,
   filterEditorRows,
   restoreAllRowsToOriginal,
   summarizeEditorRows,
+  summarizeEditorRowsByFile,
   updateRowStagedValue,
   type BatchPreviewReport
 } from "../src/renderer/editor-model";
@@ -13,8 +15,8 @@ import {
 const sampleReport: BatchPreviewReport = {
   projectConfigPath: "C:/repo/tools/cf7-balance-tool/project.json",
   generatedAt: "2026-03-06T04:06:59.242Z",
-  operations: 2,
-  changedValues: 2,
+  operations: 3,
+  changedValues: 3,
   files: [
     {
       sourceFile: "C:/repo/data/items/a.xml",
@@ -38,6 +40,22 @@ const sampleReport: BatchPreviewReport = {
           changed: true
         }
       ]
+    },
+    {
+      sourceFile: "C:/repo/data/items/b.xml",
+      outputFile: "C:/repo/tools/cf7-balance-tool/reports/b.xml",
+      writeMode: "mirrored-output",
+      updates: 1,
+      changedValues: 1,
+      changes: [
+        {
+          xmlPath: "root.item[0].data.weight",
+          beforeValue: "12",
+          afterValue: "10",
+          sourceLine: 18,
+          changed: true
+        }
+      ]
     }
   ]
 };
@@ -46,7 +64,7 @@ describe("createEditorRows", () => {
   it("creates editable rows from the preview report", () => {
     const rows = createEditorRows(sampleReport);
 
-    expect(rows).toHaveLength(2);
+    expect(rows).toHaveLength(3);
     expect(rows[0]).toMatchObject({
       xmlPath: "root.item[0].data.power",
       beforeValue: "40",
@@ -63,9 +81,29 @@ describe("summarizeEditorRows", () => {
 
     expect(summary).toEqual({
       files: 0,
-      operations: 2,
+      operations: 3,
       changedValues: 0
     });
+  });
+});
+
+describe("summarizeEditorRowsByFile", () => {
+  it("groups only staged changes by source file", () => {
+    let rows = createEditorRows(sampleReport);
+    rows = updateRowStagedValue(rows, rows[2]!.id, "12");
+
+    const summary = summarizeEditorRowsByFile(rows);
+
+    expect(summary).toHaveLength(1);
+    expect(summary[0]).toMatchObject({
+      sourceFile: "C:/repo/data/items/a.xml",
+      changedRows: 2,
+      totalRows: 2
+    });
+    expect(summary[0]?.changes.map((change) => change.xmlPath)).toEqual([
+      "root.item[0].data.power",
+      "root.item[0].data.interval"
+    ]);
   });
 });
 
@@ -91,7 +129,39 @@ describe("buildBatchUpdatesPayload", () => {
         filePath: "C:/repo/data/items/a.xml",
         xmlPath: "root.item[0].data.interval",
         value: "180"
+      },
+      {
+        filePath: "C:/repo/data/items/b.xml",
+        xmlPath: "root.item[0].data.weight",
+        value: "10"
       }
     ]);
+  });
+});
+describe("applyImportedBatchUpdates", () => {
+  it("matches payload rows by file path, xml path, and attribute", () => {
+    const rows = createEditorRows(sampleReport);
+    const result = applyImportedBatchUpdates(rows, [
+      {
+        filePath: "data/items/a.xml",
+        xmlPath: "root.item[0].data.power",
+        value: "61"
+      },
+      {
+        filePath: "C:\\repo\\data\\items\\b.xml",
+        xmlPath: "root.item[0].data.weight",
+        value: "9"
+      },
+      {
+        filePath: "data/items/missing.xml",
+        xmlPath: "root.item[0].data.power",
+        value: "77"
+      }
+    ]);
+
+    expect(result.matchedUpdates).toBe(2);
+    expect(result.unmatchedUpdates).toBe(1);
+    expect(result.rows[0]?.stagedValue).toBe("61");
+    expect(result.rows[2]?.stagedValue).toBe("9");
   });
 });

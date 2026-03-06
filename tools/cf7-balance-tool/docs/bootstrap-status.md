@@ -1,58 +1,63 @@
-# 褰撳墠钀藉湴鐘舵€?
-`tools/cf7-balance-tool` 褰撳墠宸茬粡鍙互浣滀负鏁板€煎钩琛″伐鍏风殑绗竴鐗堟妧鏈簳搴т娇鐢ㄣ€?
-## 宸查獙璇侊紙2026-03-06锛?
+# Bootstrap Status
+
+## 当前状态
+
+- `tools/cf7-balance-tool` 已完成 workspace 初始化、字段扫描、XML round-trip、批量 preview / batch-set 和 Electron 中文审阅台
+- 已接通导出 payload、刷新 preview、输出镜像 XML、导入外部 preview / payload、输出路径配置、产物历史
+- 当前原始 `data/` 不会被 renderer 直接改写，实际写出仍走 CLI 链路
+
+## 已验证（2026-03-06）
+
 - `npm install`
 - `npm run typecheck`
 - `npm test`
 - `npm run field-scan -- --project ./project.json --output ./reports/field-usage-report.json`
 - `npm run roundtrip-check -- --project ./project.json --output ./reports/roundtrip-report.json`
+- `npm run batch-preview -- --project ./project.json --input ./reports/batch-updates.sample.json --output ./reports/batch-preview-report.json --output-dir ./reports/batch-output`
 - `npm run batch-set -- --project ./project.json --input ./reports/batch-updates.sample.json --output ./reports/batch-set-report.json --output-dir ./reports/batch-output`
+- `npm run build --workspace @cf7-balance-tool/web`
+- 测试：7 个文件，29 个用例全部通过
 
-## 褰撳墠鑳藉姏闈?
-- `packages/core`锛氬瓧娈靛垎绫汇€佸叡浜绾︺€佸瓧娈垫敞鍐岃〃
-- `packages/xml-io`锛氶」鐩壂鎻忋€佸瓧娈垫姤鍛娿€乆ML round-trip 鏂囨。瀵硅薄銆侀」鐩骇 round-trip 鏍￠獙銆佹壒閲忔敼鍊艰緭鍑?- `packages/cli`锛歚project scan` / `project fields` / `project roundtrip-check` / `project batch-set` / `xml get` / `xml set`
-- `packages/web`锛欵lectron + React 涓枃浼樺厛澹筹紝鐩存帴娑堣垂瀛楁鎵弿鎶ュ憡
+## 当前能力
 
-## 褰撳墠鍩虹嚎
+- `packages/core`：字段分类、共享类型、报告辅助逻辑
+- `packages/xml-io`：XML 扫描、文档对象、round-trip 校验、batch preview / batch-set
+- `packages/cli`：`project scan` / `project fields` / `project roundtrip-check` / `project batch-preview` / `project batch-set` / `xml get` / `xml set`
+- `packages/web`：Electron + React 中文默认界面，已有可审阅 diff 、可编辑暂存值、产物状态、历史报告
 
-- 宸叉壂鎻?XML锛?9
-- 瀛楁鍚嶏細528
-- 瀛楁鍑虹幇娆℃暟锛?6854
-- 鏈垎绫诲瓧娈碉細394
-- 椤圭洰绾?round-trip 鏍￠獙锛?9 / 89 閫氳繃
+## 字段基线
 
-瀛楁鎵弿鍣ㄥ綋鍓嶄粛鏄瘝娉曟壂鎻忥紝閫傚悎瀛楁鐩樼偣鍜屾湭鐭ュ瓧娈垫敹鏁涳紱鐪熸鐨?XML 璇诲啓鑳藉姏宸茬粡鐢?`XmlDocument` 鎻愪緵锛屽苟宸叉帴鍏?CLI銆?
-## 甯哥敤鍛戒护
+- 扫描 XML：89
+- 字段名：528
+- 字段出现次数：36854
+- 未分类字段：394
+- round-trip 校验：89 / 89 通过
+
+## 常用命令
 
 ```bash
 npm install
 npm run typecheck
 npm test
-npm run project-scan -- --project ./project.json
 npm run field-scan -- --project ./project.json --output ./reports/field-usage-report.json
 npm run roundtrip-check -- --project ./project.json --output ./reports/roundtrip-report.json
-npm run batch-set -- --project ./project.json --input ./reports/batch-updates.sample.json --output ./reports/batch-set-report.json --output-dir ./reports/batch-output
-.\node_modules\.bin\tsx.cmd packages/cli/src/index.ts xml get --file ../../data/items/姝﹀櫒_鎵嬫灙_鍘嬪埗鏈烘灙.xml --path root.item[0].data.power
-.\node_modules\.bin\tsx.cmd packages/cli/src/index.ts xml set --file ../../data/items/姝﹀櫒_鎵嬫灙_鍘嬪埗鏈烘灙.xml --path root.item[1].data.power --value 55 --output ./reports/weapon-power-sample.xml
+npm run batch-preview -- --project ./project.json --input ./reports/manual-updates.generated.json --output ./reports/batch-preview-report.json --output-dir ./reports/batch-output
+npm run batch-set -- --project ./project.json --input ./reports/manual-updates.generated.json --output ./reports/batch-set-report.json --output-dir ./reports/batch-output
 npm run dev:web
 npm run dev:electron
 ```
 
-## 璺緞绾﹀畾
+## 规则提醒
 
-- `xmlPath` 鐨勯噸澶嶈妭鐐圭储寮曟槸 0-based锛屼緥濡傜涓€鎶婃鍣ㄦ槸 `root.item[0]`锛岀浜屾妸鏄?`root.item[1]`
-- `project batch-set` 鐨勭浉瀵?`filePath` 浼氬厛鎸夎緭鍏?JSON 鎵€鍦ㄧ洰褰曡В鏋愶紝鎵句笉鍒版椂鍐嶅洖閫€鍒?`project.json` 鎵€鍦ㄧ洰褰曡В鏋?- `project batch-set --output-dir` 浼氭寜椤圭洰鍏叡鏍归暅鍍忚緭鍑猴紝涓嶄細鏀瑰姩鍘熷 `data/` 鏂囦欢
+- `xmlPath` 重复节点索引是 0-based，例如 `root.item[0]`、`root.item[1]`
+- 相对 `filePath` 先按输入 JSON 所在目录解析，找不到再回退到 `project.json` 所在目录
+- `project batch-set --output-dir` 写出的是镜像目录树，不会覆盖原始 XML
 
-## 楠岃瘉浜х墿
+## 主要报告
 
-- 瀛楁鎶ュ憡锛歚reports/field-usage-report.json`
-- round-trip 鎶ュ憡锛歚reports/roundtrip-report.json`
-- 鎵归噺鏀瑰€艰緭鍏ユ牱渚嬶細`reports/batch-updates.sample.json`
-- 鎵归噺鏀瑰€兼姤鍛婏細`reports/batch-set-report.json`
-- 鎵归噺鏀瑰€艰緭鍑烘牱渚嬶細`reports/batch-output/data/items/姝﹀櫒_鎵嬫灙_鍘嬪埗鏈烘灙.xml`
-- 鍗曟枃浠舵敼鍊兼牱渚嬶細`reports/weapon-power-sample.xml`
-
-## 褰撳墠缂哄彛
-
-- 鍏紡妯″潡浠嶆槸鍗犱綅锛屽皻鏈繘鍏ユ鍣?鑽墏/缁忔祹鍏紡缈昏瘧
-- 鏈垎绫诲瓧娈典粛鏈?394 涓紝涓昏闆嗕腑鍦?`list.xml`銆乣hairstyle.xml`銆乣missileConfigs.xml` 鍜岄儴鍒嗘秷鑰楀搧鍏冩暟鎹?- Electron 杩樻病鏈夋帴 diff銆佹壒閲忕紪杈戣〃鏍笺€佹牎楠屾彁绀洪潰鏉?- CLI 鐜板湪宸茬粡鑳藉仛椤圭洰绾ф牎楠屽拰鎵归噺瀵煎嚭锛屼絾杩樻病鏈夊彉鏇撮瑙堝拰鍐茬獊妫€鏌
+- `reports/field-usage-report.json`
+- `reports/roundtrip-report.json`
+- `reports/manual-updates.generated.json`
+- `reports/batch-preview-report.json`
+- `reports/batch-set-report.json`
+- `reports/batch-output`

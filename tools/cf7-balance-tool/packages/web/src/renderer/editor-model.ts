@@ -1,4 +1,4 @@
-export type BatchPreviewWriteMode = "preview" | "in-place" | "mirrored-output";
+﻿export type BatchPreviewWriteMode = "preview" | "in-place" | "mirrored-output";
 
 export interface BatchPreviewChange {
   xmlPath: string;
@@ -53,6 +53,24 @@ export interface EditorSummary {
   changedValues: number;
 }
 
+export interface EditorFileDiffChange {
+  id: string;
+  xmlPath: string;
+  attribute?: string;
+  beforeValue: string;
+  stagedValue: string;
+  sourceLine: number;
+}
+
+export interface EditorFileDiffSummary {
+  sourceFile: string;
+  outputFile: string;
+  writeMode: BatchPreviewWriteMode;
+  totalRows: number;
+  changedRows: number;
+  changes: EditorFileDiffChange[];
+}
+
 export function createEditorRows(report: BatchPreviewReport): EditorRow[] {
   return report.files.flatMap((file, fileIndex) =>
     file.changes.map((change, changeIndex) => {
@@ -90,6 +108,55 @@ export function summarizeEditorRows(rows: EditorRow[]): EditorSummary {
     operations: rows.length,
     changedValues: changedRows.length
   };
+}
+
+export function summarizeEditorRowsByFile(rows: EditorRow[]): EditorFileDiffSummary[] {
+  const summaries = new Map<string, EditorFileDiffSummary>();
+
+  for (const row of rows) {
+    const existingSummary = summaries.get(row.sourceFile);
+    const summary =
+      existingSummary ??
+      {
+        sourceFile: row.sourceFile,
+        outputFile: row.outputFile,
+        writeMode: row.writeMode,
+        totalRows: 0,
+        changedRows: 0,
+        changes: []
+      };
+
+    summary.totalRows += 1;
+
+    if (isRowChanged(row)) {
+      summary.changedRows += 1;
+
+      const change: EditorFileDiffChange = {
+        id: row.id,
+        xmlPath: row.xmlPath,
+        beforeValue: row.beforeValue,
+        stagedValue: row.stagedValue,
+        sourceLine: row.sourceLine
+      };
+
+      if (row.attribute) {
+        change.attribute = row.attribute;
+      }
+
+      summary.changes.push(change);
+    }
+
+    if (!existingSummary) {
+      summaries.set(row.sourceFile, summary);
+    }
+  }
+
+  return Array.from(summaries.values())
+    .filter((summary) => summary.changedRows > 0)
+    .sort(
+      (left, right) =>
+        right.changedRows - left.changedRows || left.sourceFile.localeCompare(right.sourceFile)
+    );
 }
 
 export function filterEditorRows(
@@ -143,6 +210,54 @@ export function buildBatchUpdatesPayload(rows: EditorRow[]): BatchUpdatePayload[
   });
 }
 
+export function applyImportedBatchUpdates(
+  rows: EditorRow[],
+  updates: BatchUpdatePayload[]
+): {
+  rows: EditorRow[];
+  matchedUpdates: number;
+  unmatchedUpdates: number;
+} {
+  const candidates = new Map<string, number[]>();
+  const nextRows = rows.map((row) => ({ ...row }));
+  let matchedUpdates = 0;
+
+  nextRows.forEach((row, index) => {
+    const candidateKey = buildChangeKey(row.xmlPath, row.attribute);
+    const currentIndexes = candidates.get(candidateKey) ?? [];
+    currentIndexes.push(index);
+    candidates.set(candidateKey, currentIndexes);
+  });
+
+  for (const update of updates) {
+    const candidateIndexes = candidates.get(buildChangeKey(update.xmlPath, update.attribute));
+
+    if (!candidateIndexes) {
+      continue;
+    }
+
+    const matchedIndex = candidateIndexes.find((index) =>
+      filePathsMatch(nextRows[index]!.sourceFile, update.filePath)
+    );
+
+    if (matchedIndex === undefined) {
+      continue;
+    }
+
+    nextRows[matchedIndex] = {
+      ...nextRows[matchedIndex]!,
+      stagedValue: update.value
+    };
+    matchedUpdates += 1;
+  }
+
+  return {
+    rows: nextRows,
+    matchedUpdates,
+    unmatchedUpdates: updates.length - matchedUpdates
+  };
+}
+
 export function updateRowStagedValue(
   rows: EditorRow[],
   rowId: string,
@@ -192,4 +307,22 @@ export function restoreAllRowsToOriginal(rows: EditorRow[]): EditorRow[] {
     ...row,
     stagedValue: row.beforeValue
   }));
+}
+function buildChangeKey(xmlPath: string, attribute?: string): string {
+  return `${xmlPath}::${attribute ?? "text"}`;
+}
+
+function filePathsMatch(leftPath: string, rightPath: string): boolean {
+  const normalizedLeft = normalizeFilePath(leftPath);
+  const normalizedRight = normalizeFilePath(rightPath);
+
+  return (
+    normalizedLeft === normalizedRight ||
+    normalizedLeft.endsWith(`/${normalizedRight}`) ||
+    normalizedRight.endsWith(`/${normalizedLeft}`)
+  );
+}
+
+function normalizeFilePath(value: string): string {
+  return value.replaceAll("\\", "/").toLowerCase();
 }
