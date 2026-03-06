@@ -2,6 +2,8 @@
 
 > 闪客快打7佣兵帝国 (CF7:ME) 数值平衡管理工具
 > 直接读写游戏XML数据，内置从Excel翻译的平衡计算引擎
+>
+> 当前已初始化 **npm workspace** 骨架；实际可运行命令见 [docs/bootstrap-status.md](./docs/bootstrap-status.md)。
 
 ---
 
@@ -14,6 +16,7 @@
 | [CF7-BalanceTool-DocAudit-v1.md](./CF7-BalanceTool-DocAudit-v1.md) | **审计报告** - 文档准确性验证和修正建议 | 推荐 |
 | [docs/field-reference.md](./docs/field-reference.md) | **字段参考** - 全部70个字段的详细说明 | 开发参考 |
 | [docs/design-decisions.md](./docs/design-decisions.md) | **决策记录** - 关键设计决策(ADR) | 维护参考 |
+| [docs/bootstrap-status.md](./docs/bootstrap-status.md) | **当前落地状态** - 已验证命令、首轮扫描结果、已知缺口 | 开发入口 |
 
 ---
 
@@ -135,28 +138,28 @@ tools/cf7-balance-tool/
 
 ---
 
-## 快速开始 (规划中)
+## 快速开始 (当前骨架)
 
 ```bash
 # 进入目录
 cd tools/cf7-balance-tool
 
 # 安装依赖
-pnpm install
+npm install
 
-# 运行测试
-pnpm test
+# 类型检查 + 测试
+npm run typecheck
+npm test
 
-# CLI使用
-npx cf7-balance project open --items ../../data/items
-npx cf7-balance project list
-npx cf7-balance query --name "XM556-H-Stinger"
-npx cf7-balance calc --output report.json
+# 生成字段扫描报告
+npm run field-scan -- --project ./project.json --output ./reports/field-usage-report.json
 
-# 启动GUI
-pnpm dev
+# 启动 renderer shell
+npm run dev:web
+
+# 启动 Electron 主进程（需另开一个终端先跑 dev:web）
+npm run dev:electron
 ```
-
 ---
 
 ## 关键设计决策

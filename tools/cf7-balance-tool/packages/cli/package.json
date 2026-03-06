@@ -1,0 +1,22 @@
+{
+  "name": "@cf7-balance-tool/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "cf7-balance": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --pretty false",
+    "field-scan": "tsx src/index.ts project fields",
+    "project-scan": "tsx src/index.ts project scan",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@cf7-balance-tool/core": "0.1.0",
+    "@cf7-balance-tool/xml-io": "0.1.0"
+  }
+}
