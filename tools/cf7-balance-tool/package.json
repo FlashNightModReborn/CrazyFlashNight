@@ -18,6 +18,11 @@
     "roundtrip-check": "tsx packages/cli/src/index.ts project roundtrip-check",
     "batch-preview": "tsx packages/cli/src/index.ts project batch-preview",
     "batch-set": "tsx packages/cli/src/index.ts project batch-set",
+    "calibrate": "tsx packages/cli/src/index.ts calibrate",
+    "calc": "tsx packages/cli/src/index.ts calc",
+    "query": "tsx packages/cli/src/index.ts query",
+    "diff": "tsx packages/cli/src/index.ts diff",
+    "validate": "tsx packages/cli/src/index.ts validate",
     "dev:web": "npm run dev:renderer --workspace @cf7-balance-tool/web",
     "dev:electron": "npm run dev:electron --workspace @cf7-balance-tool/web"
   },

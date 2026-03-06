@@ -10,20 +10,37 @@
 
 - `npm install`
 - `npm run typecheck`
-- `npm test`
+- `npm test` — 15 文件，659 用例全部通过
 - `npm run field-scan -- --project ./project.json --output ./reports/field-usage-report.json`
 - `npm run roundtrip-check -- --project ./project.json --output ./reports/roundtrip-report.json`
 - `npm run batch-preview -- --project ./project.json --input ./reports/batch-updates.sample.json --output ./reports/batch-preview-report.json --output-dir ./reports/batch-output`
 - `npm run batch-set -- --project ./project.json --input ./reports/batch-updates.sample.json --output ./reports/batch-set-report.json --output-dir ./reports/batch-output`
+- `npm run calibrate -- --input ./baseline/baseline-extracted.json` — 462 项全部通过
+- `npm run calc -- weapons --input /tmp/test-weapon.json`
+- `npm run query -- weapons --input ./baseline/baseline-extracted.json --sort -averageDPS --limit 5`
+- `npm run diff -- weapons --input ./baseline/baseline-extracted.json --input2 ./baseline/baseline-extracted.json`
+- `npm run validate -- --input ./baseline/baseline-extracted.json`
 - `npm run build --workspace @cf7-balance-tool/web`
-- 测试：7 个文件，29 个用例全部通过
 
 ## 当前能力
 
-- `packages/core`：字段分类、共享类型、报告辅助逻辑
+- `packages/core`：字段分类、共享类型、报告辅助逻辑、8 大公式引擎（枪械/防具/近战/爆炸/伤害/经济/药剂/怪物）
 - `packages/xml-io`：XML 扫描、文档对象、round-trip 校验、batch preview / batch-set
-- `packages/cli`：`project scan` / `project fields` / `project roundtrip-check` / `project batch-preview` / `project batch-set` / `xml get` / `xml set`
+- `packages/cli`：`project scan` / `project fields` / `project roundtrip-check` / `project batch-preview` / `project batch-set` / `xml get` / `xml set` / `calibrate` / `calc` / `query` / `diff` / `validate`
 - `packages/web`：Electron + React 中文默认界面，已有可审阅 diff 、可编辑暂存值、产物状态、历史报告
+
+## 公式引擎
+
+| 模块 | 校准测试 | 覆盖列 |
+|------|----------|--------|
+| 枪械 (weapons) | 288 项 | 25 列（DPS/周期伤害/加权等） |
+| 防具 (armor) | 55 项 | 5 列（总分/法抗上限），含手套/项链变体 |
+| 近战 (melee) | 2 项 | 1 列（推荐锋利度） |
+| 爆炸 (explosives) | 1 项 | 1 列（推荐单发威力） |
+| 伤害 (damage) | 156 项 | 物理6列 + 魔法2列 |
+| 经济 (economy) | 12 项 | 装备定价/合成/副本收益 |
+| 药剂 (potions) | 56 项 | 8 列（强度/数值/价格） |
+| 怪物 (monsters) | 60 项 | 10 列（攻/防/HP/经验/金币） |
 
 ## 字段基线
 
@@ -39,10 +56,21 @@
 npm install
 npm run typecheck
 npm test
+
+# XML 操作
 npm run field-scan -- --project ./project.json --output ./reports/field-usage-report.json
 npm run roundtrip-check -- --project ./project.json --output ./reports/roundtrip-report.json
 npm run batch-preview -- --project ./project.json --input ./reports/manual-updates.generated.json --output ./reports/batch-preview-report.json --output-dir ./reports/batch-output
 npm run batch-set -- --project ./project.json --input ./reports/manual-updates.generated.json --output ./reports/batch-set-report.json --output-dir ./reports/batch-output
+
+# 公式引擎
+npm run calibrate -- --input ./baseline/baseline-extracted.json
+npm run calc -- weapons --input /tmp/weapon-input.json
+npm run query -- weapons --input ./baseline/baseline-extracted.json --sort -averageDPS --limit 10
+npm run diff -- weapons --input ./baseline/baseline-extracted.json --input2 ./baseline/modified.json
+npm run validate -- --input ./baseline/baseline-extracted.json
+
+# GUI
 npm run dev:web
 npm run dev:electron
 ```

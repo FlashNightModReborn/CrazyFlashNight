@@ -11,6 +11,7 @@ export default defineConfig({
   plugins: [react()],
   base: "./",
   resolve: {
+    conditions: ["development"],
     alias: {
       "@renderer": path.resolve(currentDir, "src/renderer")
     }
