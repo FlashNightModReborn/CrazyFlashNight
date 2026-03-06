@@ -1,0 +1,197 @@
+=== AVM1 Benchmark Results v7 ===
+player=WIN 11,2,202,228
+STD_TOTAL=2000000  GC_TOTAL=20000  STRUCT_TOTAL=400000  REPEATS=9  WARMUP=3
+timer_quantum=1.00ms
+bh_pre=0.00
+
+
+[ARITH / COMPARE / BITWISE]
+  noop_baseline: delta=-0.50ms  per-op=-0.3ns  rel=-0.01x  base=47.0  test=47.0  range=[-1.0,1.0]  BASELINE
+  add_int: delta=38.00ms  per-op=19.0ns  rel=1.00x  base=47.0  test=85.0  range=[36.0,41.0]  OK_CV=0.04
+  add_float: delta=64.00ms  per-op=32.0ns  rel=1.68x  base=47.0  test=111.0  range=[61.0,66.0]  OK_CV=0.02
+  sub_int: delta=40.00ms  per-op=20.0ns  rel=1.05x  base=47.0  test=87.0  range=[38.0,42.0]  OK_CV=0.03
+  mul_int: delta=40.00ms  per-op=20.0ns  rel=1.05x  base=46.0  test=86.0  range=[38.0,42.0]  OK_CV=0.03
+  div_int: delta=44.00ms  per-op=22.0ns  rel=1.16x  base=47.0  test=90.0  range=[40.0,45.0]  OK_CV=0.04
+  mod_int: delta=51.00ms  per-op=25.5ns  rel=1.34x  base=47.0  test=98.0  range=[49.0,52.0]  OK_CV=0.02
+  negate: delta=51.00ms  per-op=25.5ns  rel=1.34x  base=47.0  test=98.0  range=[50.0,53.0]  OK_CV=0.02
+  incr_post: delta=51.00ms  per-op=25.5ns  rel=1.34x  base=47.0  test=98.0  range=[49.0,52.0]  OK_CV=0.02
+  compound_addassign: delta=36.00ms  per-op=18.0ns  rel=0.95x  base=47.0  test=83.0  range=[36.0,36.0]  OK_CV=0.00
+  compound_expr: delta=131.00ms  per-op=21.8ns  rel=1.15x  base=47.0  test=178.0  range=[129.0,133.0]  OK_CV=0.01
+  const_fold: delta=2.00ms  per-op=1.0ns  rel=0.05x  base=47.0  test=49.0  range=[1.0,3.0]  NOISY_CV>0.37
+  bit_and: delta=40.00ms  per-op=20.0ns  rel=1.05x  base=46.0  test=88.0  range=[38.0,44.0]  OK_CV=0.05
+  bit_or: delta=42.00ms  per-op=21.0ns  rel=1.11x  base=47.0  test=88.0  range=[40.0,43.0]  OK_CV=0.03
+  bit_xor: delta=43.00ms  per-op=21.5ns  rel=1.13x  base=47.0  test=89.0  range=[40.0,44.0]  OK_CV=0.03
+  bit_not: delta=261.00ms  per-op=130.5ns  rel=6.87x  base=46.0  test=306.0  range=[256.0,262.0]  OK_CV=0.01
+  lshift: delta=41.00ms  per-op=20.5ns  rel=1.08x  base=46.0  test=87.0  range=[39.0,44.0]  OK_CV=0.04
+  rshift: delta=41.00ms  per-op=20.5ns  rel=1.08x  base=47.0  test=88.0  range=[36.0,44.0]  OK_CV=0.06
+  eq_num: delta=37.00ms  per-op=18.5ns  rel=0.97x  base=47.0  test=84.0  range=[33.0,40.0]  OK_CV=0.05
+  strict_eq: delta=39.00ms  per-op=19.5ns  rel=1.03x  base=47.0  test=87.0  range=[38.0,41.0]  OK_CV=0.03
+  lt_cmp: delta=39.00ms  per-op=19.5ns  rel=1.03x  base=46.0  test=86.0  range=[35.0,41.0]  OK_CV=0.05
+  gt_cmp: delta=41.00ms  per-op=20.5ns  rel=1.08x  base=47.0  test=88.0  range=[39.0,42.0]  OK_CV=0.02
+  eq_str_num: delta=212.00ms  per-op=106.0ns  rel=5.58x  base=46.0  test=259.0  range=[208.0,220.0]  OK_CV=0.02
+  strict_eq_str_num: delta=39.00ms  per-op=19.5ns  rel=1.03x  base=46.0  test=85.0  range=[37.0,39.0]  OK_CV=0.02
+  nan_add: delta=592.50ms  per-op=296.3ns  rel=15.59x  base=46.0  test=638.0  range=[588.0,599.0]  OK_CV=0.01
+  infinity_mul: delta=436.00ms  per-op=218.0ns  rel=11.47x  base=46.0  test=484.0  range=[432.0,447.0]  OK_CV=0.01
+
+[BRANCH / CONTROL / LOGIC]
+  if_true: delta=108.00ms  per-op=54.0ns  rel=2.84x  base=47.0  test=156.0  range=[106.0,113.0]  OK_CV=0.02
+  if_false: delta=87.00ms  per-op=43.5ns  rel=2.29x  base=47.0  test=135.0  range=[82.0,90.0]  OK_CV=0.03
+  logical_and_short: delta=71.00ms  per-op=35.5ns  rel=1.87x  base=46.0  test=118.0  range=[68.0,75.0]  OK_CV=0.03
+  logical_and_eval: delta=122.00ms  per-op=61.0ns  rel=3.21x  base=46.0  test=168.0  range=[120.0,130.0]  OK_CV=0.03
+  logical_or_short: delta=50.00ms  per-op=25.0ns  rel=1.32x  base=47.0  test=97.0  range=[48.0,50.0]  OK_CV=0.01
+  not_bool: delta=22.00ms  per-op=11.0ns  rel=0.58x  base=47.0  test=69.0  range=[21.0,24.0]  OK_CV=0.04
+  double_not: delta=54.00ms  per-op=27.0ns  rel=1.42x  base=47.0  test=99.0  range=[51.0,54.0]  OK_CV=0.02
+
+[ACCESS / MEMBER / ARRAY / CHAIN]
+  arr_read_var_5: delta=70.00ms  per-op=35.0ns  rel=1.84x  base=47.0  test=117.0  range=[69.0,70.0]  OK_CV=0.01
+  arr_read_var_100: delta=284.00ms  per-op=142.0ns  rel=7.47x  base=47.0  test=331.0  range=[276.0,296.0]  OK_CV=0.02
+  arr_read_var_1000: delta=290.00ms  per-op=145.0ns  rel=7.63x  base=47.0  test=337.0  range=[283.0,299.0]  OK_CV=0.02
+  arr_write_const: delta=106.00ms  per-op=53.0ns  rel=2.79x  base=46.0  test=152.0  range=[104.0,109.0]  OK_CV=0.01
+  arr_write_var: delta=101.00ms  per-op=50.5ns  rel=2.66x  base=46.0  test=146.0  range=[96.0,110.0]  OK_CV=0.05
+  arr_length: delta=68.00ms  per-op=34.0ns  rel=1.79x  base=47.0  test=114.0  range=[59.0,69.0]  OK_CV=0.05
+  obj_dot_hit: delta=292.00ms  per-op=146.0ns  rel=7.68x  base=46.0  test=337.0  range=[283.0,300.0]  OK_CV=0.02
+  obj_bracket_str: delta=286.00ms  per-op=143.0ns  rel=7.53x  base=47.0  test=332.0  range=[283.0,291.0]  OK_CV=0.01
+  obj_miss: delta=312.00ms  per-op=156.0ns  rel=8.21x  base=46.0  test=359.0  range=[309.0,317.0]  OK_CV=0.01
+  proto1_read: delta=303.00ms  per-op=151.5ns  rel=7.97x  base=46.0  test=350.0  range=[296.0,311.0]  OK_CV=0.01
+  proto2_read: delta=304.00ms  per-op=152.0ns  rel=8.00x  base=46.0  test=350.0  range=[298.0,313.0]  OK_CV=0.01
+  proto3_read: delta=301.00ms  per-op=150.5ns  rel=7.92x  base=47.0  test=349.0  range=[299.0,302.0]  OK_CV=0.00
+  member_set_existing: delta=302.00ms  per-op=151.0ns  rel=7.95x  base=47.0  test=348.0  range=[301.0,302.0]  OK_CV=0.00
+  member_set_newprop: delta=77.00ms  per-op=38.5ns  rel=2.03x  base=46.0  test=124.0  range=[72.0,79.0]  OK_CV=0.03
+  chain_depth2: delta=363.00ms  per-op=181.5ns  rel=9.55x  base=47.0  test=410.0  range=[362.0,366.0]  OK_CV=0.00
+  chain_depth3: delta=464.00ms  per-op=232.0ns  rel=12.21x  base=47.0  test=511.0  range=[462.0,466.0]  OK_CV=0.00
+  native_get_x: delta=357.00ms  per-op=178.5ns  rel=9.39x  base=47.0  test=404.0  range=[354.0,359.0]  OK_CV=0.00
+  native_set_x: delta=295.00ms  per-op=147.5ns  rel=7.76x  base=48.0  test=342.0  range=[290.0,296.0]  OK_CV=0.01
+  native_get_visible: delta=341.00ms  per-op=170.5ns  rel=8.97x  base=47.0  test=389.0  range=[337.0,350.0]  OK_CV=0.01
+
+[CALL / NEW / CLOSURE / ARGUMENTS]
+  call_empty: delta=2114.00ms  per-op=1057.0ns  rel=55.63x  base=47.0  test=2160.0  range=[2091.0,2133.0]  OK_CV=0.01
+  call_onearg: delta=943.00ms  per-op=471.5ns  rel=24.82x  base=46.0  test=990.0  range=[937.0,947.0]  OK_CV=0.00
+  call_twoargs: delta=994.00ms  per-op=497.0ns  rel=26.16x  base=46.0  test=1040.0  range=[992.0,997.0]  OK_CV=0.00
+  call_threeargs: delta=1081.00ms  per-op=540.5ns  rel=28.45x  base=47.0  test=1128.0  range=[1072.0,1090.0]  OK_CV=0.01
+  call_fiveargs: delta=1255.00ms  per-op=627.5ns  rel=33.03x  base=47.0  test=1302.0  range=[1249.0,1260.0]  OK_CV=0.00
+  call_method: delta=2688.50ms  per-op=1344.3ns  rel=70.75x  base=47.0  test=2736.0  range=[2679.0,2707.0]  OK_CV=0.00
+  call_method_ret: delta=2743.00ms  per-op=1371.5ns  rel=72.18x  base=46.0  test=2789.0  range=[2720.0,2756.0]  OK_CV=0.00
+  fn_call_onearg: delta=164.00ms  per-op=82.0ns  rel=4.32x  base=994.0  test=1160.0  range=[156.0,169.0]  OK_CV=0.02
+  fn_apply_cached: delta=228.00ms  per-op=114.0ns  rel=6.00x  base=991.0  test=1219.0  range=[222.0,234.0]  OK_CV=0.02
+  new_empty: delta=3165.00ms  per-op=1582.5ns  rel=83.29x  base=47.0  test=3212.0  range=[3138.0,3178.0]  OK_CV=0.00
+  new_simple: delta=1821.00ms  per-op=910.5ns  rel=47.92x  base=47.0  test=1868.0  range=[1814.0,1834.0]  OK_CV=0.00
+  closure_read: delta=2429.00ms  per-op=1214.5ns  rel=63.92x  base=47.0  test=2476.0  range=[2410.0,2451.0]  OK_CV=0.00
+  closure_deep2: delta=2407.00ms  per-op=1203.5ns  rel=63.34x  base=47.0  test=2453.0  range=[2396.0,2420.0]  OK_CV=0.00
+  arguments_length: delta=3024.00ms  per-op=1512.0ns  rel=79.58x  base=46.0  test=3072.0  range=[3015.0,3035.0]  OK_CV=0.00
+  arguments_read: delta=2572.00ms  per-op=1286.0ns  rel=67.68x  base=47.0  test=2619.0  range=[2557.0,2590.0]  OK_CV=0.00
+  proto_method: delta=1169.00ms  per-op=584.5ns  rel=30.76x  base=46.0  test=1216.0  range=[1164.0,1182.0]  OK_CV=0.00
+  instance_method: delta=1189.00ms  per-op=594.5ns  rel=31.29x  base=48.0  test=1235.0  range=[1185.0,1190.0]  OK_CV=0.00
+
+[STRING]
+  str_eq_hit: delta=39.00ms  per-op=19.5ns  rel=1.03x  base=46.0  test=85.0  range=[37.0,43.0]  OK_CV=0.05
+  str_eq_miss: delta=63.00ms  per-op=31.5ns  rel=1.66x  base=47.0  test=110.0  range=[61.0,66.0]  OK_CV=0.02
+  str_eq_long_hit: delta=234.00ms  per-op=117.0ns  rel=6.16x  base=47.0  test=280.0  range=[233.0,238.0]  OK_CV=0.01
+  str_concat_short: delta=108.50ms  per-op=54.3ns  rel=2.86x  base=47.0  test=156.0  range=[105.0,111.0]  OK_CV=0.02
+  str_concat_long: delta=108.00ms  per-op=54.0ns  rel=2.84x  base=46.0  test=154.0  range=[104.0,109.0]  OK_CV=0.02
+  str_length: delta=1146.00ms  per-op=573.0ns  rel=30.16x  base=47.0  test=1193.0  range=[1140.0,1153.0]  OK_CV=0.00
+  str_charat: delta=1376.00ms  per-op=688.0ns  rel=36.21x  base=47.0  test=1423.0  range=[1366.0,1381.0]  OK_CV=0.00
+  str_charcodeat: delta=1346.00ms  per-op=673.0ns  rel=35.42x  base=47.0  test=1393.0  range=[1322.0,1365.0]  OK_CV=0.01
+  str_indexof_short_hit: delta=1444.00ms  per-op=722.0ns  rel=38.00x  base=47.0  test=1491.0  range=[1421.0,1472.0]  OK_CV=0.01
+  str_indexof_short_miss: delta=1459.00ms  per-op=729.5ns  rel=38.39x  base=48.0  test=1510.0  range=[1443.0,1471.0]  OK_CV=0.01
+  str_substr: delta=1424.00ms  per-op=712.0ns  rel=37.47x  base=47.0  test=1471.0  range=[1413.0,1443.0]  OK_CV=0.01
+  str_split: delta=2995.00ms  per-op=1497.5ns  rel=78.82x  base=244.0  test=3236.0  range=[2985.0,2998.0]  OK_CV=0.00
+  str_tolower: delta=1381.00ms  per-op=690.5ns  rel=36.34x  base=47.0  test=1429.0  range=[1375.0,1416.0]  OK_CV=0.01
+  str_fromcharcode: delta=1552.00ms  per-op=776.0ns  rel=40.84x  base=47.0  test=1599.0  range=[1544.0,1559.0]  OK_CV=0.00
+
+[CONVERT / TYPE / TYPEOF / CAST]
+  to_number_str: delta=150.00ms  per-op=75.0ns  rel=3.95x  base=47.0  test=199.0  range=[143.0,153.0]  OK_CV=0.02
+  unary_plus: delta=0.00ms  per-op=0.0ns  rel=0.00x  base=45.0  test=45.0  range=[-1.0,1.0]  BASELINE
+  parseint_dec: delta=460.00ms  per-op=230.0ns  rel=12.11x  base=46.0  test=506.0  range=[453.0,468.0]  OK_CV=0.01
+  parseint_hex: delta=480.00ms  per-op=240.0ns  rel=12.63x  base=47.0  test=527.0  range=[473.0,486.0]  OK_CV=0.01
+  parsefloat: delta=491.00ms  per-op=245.5ns  rel=12.92x  base=47.0  test=538.0  range=[484.0,495.0]  OK_CV=0.01
+  to_string_num: delta=27.00ms  per-op=13.5ns  rel=0.71x  base=46.0  test=74.0  range=[25.0,29.0]  OK_CV=0.04
+  to_string_concat: delta=115.00ms  per-op=57.5ns  rel=3.03x  base=46.0  test=162.0  range=[111.0,116.0]  OK_CV=0.01
+  typeof_num: delta=22.00ms  per-op=11.0ns  rel=0.58x  base=47.0  test=68.0  range=[20.0,23.0]  OK_CV=0.04
+  typeof_undef: delta=22.00ms  per-op=11.0ns  rel=0.58x  base=46.0  test=68.0  range=[20.0,23.0]  OK_CV=0.04
+  instanceof_direct: delta=271.00ms  per-op=135.5ns  rel=7.13x  base=46.0  test=317.0  range=[263.0,279.0]  OK_CV=0.02
+  to_bool_num: delta=395.00ms  per-op=197.5ns  rel=10.39x  base=47.0  test=442.0  range=[392.0,408.0]  OK_CV=0.01
+  number_cast_num: delta=25.00ms  per-op=12.5ns  rel=0.66x  base=48.0  test=73.0  range=[24.0,26.0]  OK_CV=0.03
+  number_cast_obj: delta=2399.00ms  per-op=1199.5ns  rel=63.13x  base=46.0  test=2449.0  range=[2389.0,2418.0]  OK_CV=0.00
+  number_cast_bool: delta=29.00ms  per-op=14.5ns  rel=0.76x  base=47.0  test=75.0  range=[25.0,31.0]  OK_CV=0.07
+  number_cast_undef: delta=427.00ms  per-op=213.5ns  rel=11.24x  base=47.0  test=474.0  range=[424.0,429.0]  OK_CV=0.00
+  string_cast_bool: delta=170.00ms  per-op=85.0ns  rel=4.47x  base=46.0  test=217.0  range=[168.0,176.0]  OK_CV=0.01
+  typed_vs_untyped_read: delta=197.00ms  per-op=98.5ns  rel=5.18x  base=47.0  test=244.0  range=[195.0,198.0]  OK_CV=0.00
+
+[MATH / NATIVES / BIT-HACKS]
+  math_floor: delta=519.00ms  per-op=259.5ns  rel=13.66x  base=47.0  test=567.0  range=[516.0,525.0]  OK_CV=0.01
+  math_ceil: delta=527.00ms  per-op=263.5ns  rel=13.87x  base=46.0  test=573.0  range=[515.0,534.0]  OK_CV=0.01
+  math_round: delta=521.00ms  per-op=260.5ns  rel=13.71x  base=47.0  test=566.0  range=[516.0,527.0]  OK_CV=0.01
+  math_abs: delta=521.00ms  per-op=260.5ns  rel=13.71x  base=48.0  test=568.0  range=[512.0,535.0]  OK_CV=0.01
+  math_min: delta=533.00ms  per-op=266.5ns  rel=14.03x  base=47.0  test=581.0  range=[527.0,545.0]  OK_CV=0.01
+  math_max: delta=531.00ms  per-op=265.5ns  rel=13.97x  base=46.0  test=578.0  range=[519.0,541.0]  OK_CV=0.01
+  math_sqrt: delta=513.00ms  per-op=256.5ns  rel=13.50x  base=46.0  test=559.0  range=[507.0,522.0]  OK_CV=0.01
+  math_sin: delta=542.00ms  per-op=271.0ns  rel=14.26x  base=47.0  test=589.0  range=[538.0,545.0]  OK_CV=0.00
+  math_atan2: delta=598.00ms  per-op=299.0ns  rel=15.74x  base=47.0  test=643.0  range=[591.0,602.0]  OK_CV=0.01
+  math_random: delta=534.00ms  per-op=267.0ns  rel=14.05x  base=48.0  test=582.0  range=[526.0,544.0]  OK_CV=0.01
+  floor_bitor0: delta=59.00ms  per-op=29.5ns  rel=1.55x  base=48.0  test=107.0  range=[58.0,60.0]  OK_CV=0.01
+  floor_doubletilde: delta=562.00ms  per-op=281.0ns  rel=14.79x  base=47.0  test=609.0  range=[556.0,570.0]  OK_CV=0.01
+  abs_ternary: delta=116.00ms  per-op=58.0ns  rel=3.05x  base=47.0  test=165.0  range=[114.0,120.0]  OK_CV=0.02
+  min_ternary: delta=63.00ms  per-op=31.5ns  rel=1.66x  base=47.0  test=110.0  range=[60.0,64.0]  OK_CV=0.02
+  max_ternary: delta=86.50ms  per-op=43.3ns  rel=2.28x  base=48.0  test=134.0  range=[84.0,89.0]  OK_CV=0.02
+  cached_math_floor: delta=283.50ms  per-op=141.8ns  rel=7.46x  base=47.0  test=331.0  range=[282.0,286.0]  OK_CV=0.00
+  cached_math_sin: delta=293.00ms  per-op=146.5ns  rel=7.71x  base=46.0  test=338.0  range=[289.0,295.0]  OK_CV=0.01
+  clamp_mathminmax: delta=1134.00ms  per-op=283.5ns  rel=14.92x  base=47.0  test=1180.0  range=[1118.0,1139.0]  OK_CV=0.01
+  clamp_ternary: delta=163.00ms  per-op=40.8ns  rel=2.14x  base=47.0  test=210.0  range=[162.0,164.0]  OK_CV=0.00
+
+[SCOPE / MISC / UNDEFINED / TRY / EVAL]
+  local_read: delta=0.00ms  per-op=0.0ns  rel=0.00x  base=47.0  test=48.0  range=[-3.0,3.0]  BASELINE
+  global_read: delta=197.00ms  per-op=98.5ns  rel=5.18x  base=47.0  test=244.0  range=[194.0,199.0]  OK_CV=0.01
+  global_write: delta=191.00ms  per-op=95.5ns  rel=5.03x  base=47.0  test=239.0  range=[184.0,195.0]  OK_CV=0.02
+  root_read: delta=89.50ms  per-op=44.8ns  rel=2.36x  base=46.0  test=135.0  range=[85.0,93.0]  OK_CV=0.03
+  with_block: delta=830.00ms  per-op=415.0ns  rel=21.84x  base=47.0  test=877.0  range=[825.0,832.0]  OK_CV=0.00
+  delete_prop: delta=333.00ms  per-op=166.5ns  rel=8.76x  base=47.0  test=381.0  range=[329.0,336.0]  OK_CV=0.01
+  hasown_hit: delta=316.00ms  per-op=158.0ns  rel=8.32x  base=47.0  test=362.0  range=[307.0,332.0]  OK_CV=0.03
+  in_operator_hit: delta=1819.00ms  per-op=909.5ns  rel=47.87x  base=47.0  test=1867.0  range=[1793.0,1841.0]  OK_CV=0.01
+  isnan_fn: delta=367.00ms  per-op=183.5ns  rel=9.66x  base=47.0  test=416.0  range=[362.0,376.0]  OK_CV=0.01
+  isnan_selfne: delta=34.00ms  per-op=17.0ns  rel=0.89x  base=47.0  test=81.0  range=[31.0,35.0]  OK_CV=0.04
+  gettimer_call: delta=16.00ms  per-op=8.0ns  rel=0.42x  base=47.0  test=63.0  range=[14.0,20.0]  FAIR_CV=0.10
+  undef_eq_null: delta=45.00ms  per-op=22.5ns  rel=1.18x  base=48.0  test=93.0  range=[45.0,47.0]  OK_CV=0.02
+  undef_strict_eq: delta=33.00ms  per-op=16.5ns  rel=0.87x  base=47.0  test=80.0  range=[32.0,36.0]  OK_CV=0.04
+  try_noexcept: delta=32.00ms  per-op=80.0ns  rel=4.21x  base=13.0  test=45.0  range=[28.0,34.0]  OK_CV=0.05
+  try_except: delta=189.00ms  per-op=472.5ns  rel=24.87x  base=13.0  test=201.0  range=[187.0,191.0]  OK_CV=0.01
+  eval_varname: delta=87.00ms  per-op=217.5ns  rel=11.45x  base=13.0  test=100.0  range=[85.0,89.0]  OK_CV=0.01
+
+[ARRAY METHODS]
+  arr_push: delta=108.00ms  per-op=270.0ns  rel=14.21x  base=61.0  test=169.0  range=[105.0,109.0]  OK_CV=0.01
+  arr_pop: delta=76.00ms  per-op=190.0ns  rel=10.00x  base=87.0  test=162.0  range=[73.0,78.0]  OK_CV=0.02
+  arr_unshift: delta=390.00ms  per-op=975.0ns  rel=51.32x  base=46.0  test=436.0  range=[386.0,393.0]  OK_CV=0.01
+  arr_shift: delta=163.50ms  per-op=408.8ns  rel=21.51x  base=87.0  test=251.0  range=[161.0,166.0]  OK_CV=0.01
+  arr_splice_mid: delta=1692.00ms  per-op=4230.0ns  rel=222.63x  base=103.0  test=1795.0  range=[1684.0,1707.0]  OK_CV=0.00
+  arr_reverse: delta=1500.00ms  per-op=750.0ns  rel=39.47x  base=47.0  test=1548.0  range=[1496.0,1503.0]  OK_CV=0.00
+  arr_join: delta=993.00ms  per-op=496.5ns  rel=26.13x  base=47.0  test=1040.0  range=[975.0,1002.0]  OK_CV=0.01
+  arr_sort_5: delta=215.00ms  per-op=537.5ns  rel=28.29x  base=62.0  test=277.0  range=[212.0,224.0]  OK_CV=0.02
+  arr_concat: delta=3345.00ms  per-op=1672.5ns  rel=88.03x  base=47.0  test=3393.0  range=[3317.0,3356.0]  OK_CV=0.00
+  arr_slice_mid: delta=1512.00ms  per-op=756.0ns  rel=39.79x  base=47.0  test=1559.0  range=[1503.0,1531.0]  OK_CV=0.01
+  arr_length_clear: delta=26.00ms  per-op=65.0ns  rel=3.42x  base=62.0  test=89.0  range=[26.0,30.0]  OK_CV=0.06
+
+[GC HEAVY]
+  gc_apply_newarray: delta=12.00ms  per-op=600.0ns  rel=31.58x  base=12.0  test=24.0  range=[10.0,13.0]  OK_CV=0.07  [GC]
+  gc_new_object: delta=17.00ms  per-op=850.0ns  rel=44.74x  base=1.0  test=18.0  range=[17.0,19.0]  OK_CV=0.06  [GC]
+  gc_new_array: delta=12.00ms  per-op=600.0ns  rel=31.58x  base=0.0  test=12.0  range=[11.0,13.0]  OK_CV=0.06  [GC]
+  gc_obj_literal: delta=7.50ms  per-op=375.0ns  rel=19.74x  base=0.0  test=8.0  range=[6.0,9.0]  FAIR_CV=0.13  [GC]
+  gc_arr_literal: delta=15.00ms  per-op=750.0ns  rel=39.47x  base=1.0  test=15.0  range=[13.0,16.0]  OK_CV=0.06  [GC]
+  gc_arr_10elem: delta=34.00ms  per-op=1700.0ns  rel=89.47x  base=1.0  test=35.0  range=[34.0,36.0]  OK_CV=0.02  [GC]
+  gc_string_split: delta=31.00ms  per-op=1550.0ns  rel=81.58x  base=3.0  test=33.0  range=[29.0,32.0]  OK_CV=0.04  [GC]
+  gc_array_concat: delta=25.00ms  per-op=1250.0ns  rel=65.79x  base=0.0  test=25.0  range=[23.0,26.0]  OK_CV=0.05  [GC]
+  gc_string_concat_accum: delta=0.00ms  per-op=0.0ns  rel=0.00x  base=1.0  test=1.0  range=[0.0,3.0]  BASELINE  [GC]
+  gc_obj_5props: delta=12.00ms  per-op=600.0ns  rel=31.58x  base=1.0  test=13.0  range=[11.0,14.0]  OK_CV=0.10  [GC]
+
+[SPECIAL: for-in / switch / if-else / loops]
+  forin_5props: med=44.0ms  per-iter=2200.0ns  N=20000
+  forin_20props: med=41.0ms  per-iter=8200.0ns  N=5000
+  switch_5cases: med=88.0ms  per-op=176.0ns  N=500000
+  ifelse_5cases: med=79.0ms  per-op=158.0ns  N=500000
+  switch_10cases: med=180.0ms  per-op=360.0ns  N=500000
+  ifelse_10cases: med=163.0ms  per-op=326.0ns  N=500000
+  loop_while_dec: med=663.0ms  per-iter=331.5ns
+  loop_for_inc:   med=659.0ms  per-iter=329.5ns
+  loop_dowhile:   med=605.0ms  per-iter=302.5ns
+  loop_empty_while: med=219.0ms  per-iter=109.5ns
+
+bh_post=85068383.07
+=== END ===

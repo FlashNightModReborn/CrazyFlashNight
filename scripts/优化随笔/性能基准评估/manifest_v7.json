@@ -1,0 +1,1171 @@
+{
+  "generator": "bench_gen_v7.js",
+  "output": "BenchMain_v7.as",
+  "config": {
+    "STD_UNROLL": 100,
+    "STD_OUTER": 20000,
+    "GC_UNROLL": 50,
+    "GC_OUTER": 400,
+    "STRUCT_UNROLL": 10,
+    "STRUCT_OUTER": 40000,
+    "FORIN_UNROLL": 5,
+    "FORIN_OUTER": 4000,
+    "REPEATS": 9,
+    "WARMUP": 3,
+    "STD_TOTAL": 2000000,
+    "GC_TOTAL": 20000,
+    "STRUCT_TOTAL": 400000,
+    "FORIN_TOTAL": 20000
+  },
+  "benchmarks": [
+    {
+      "cat": "arith",
+      "name": "noop_baseline",
+      "desc": "b=a 自参照基线",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "add_int",
+      "desc": "b=a+1 (int)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "add_float",
+      "desc": "b=a+0.5 (float)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "sub_int",
+      "desc": "b=a-1",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "mul_int",
+      "desc": "b=a*3",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "div_int",
+      "desc": "b=a/2",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "mod_int",
+      "desc": "b=a%3",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "negate",
+      "desc": "b=-a",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "incr_post",
+      "desc": "c=b++",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "compound_addassign",
+      "desc": "b+=a",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "compound_expr",
+      "desc": "b=a*3+c*2",
+      "kind": "std",
+      "atomicOps": 3
+    },
+    {
+      "cat": "arith",
+      "name": "const_fold",
+      "desc": "b=3+4 常量折叠?",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "bit_and",
+      "desc": "b=a&0xFF",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "bit_or",
+      "desc": "b=a|1",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "bit_xor",
+      "desc": "b=a^1",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "bit_not",
+      "desc": "b=~a 单一取反",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "lshift",
+      "desc": "b=a<<2",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "rshift",
+      "desc": "b=a>>2",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "eq_num",
+      "desc": "a==1",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "strict_eq",
+      "desc": "a===1",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "lt_cmp",
+      "desc": "a<2",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "gt_cmp",
+      "desc": "a>0",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "eq_str_num",
+      "desc": "\"42\"==42 跨类型==",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "strict_eq_str_num",
+      "desc": "\"42\"===42 跨类型===",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "nan_add",
+      "desc": "NaN+1 (NaN传播)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "arith",
+      "name": "infinity_mul",
+      "desc": "Infinity*2",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "branch",
+      "name": "if_true",
+      "desc": "if(true) path",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "branch",
+      "name": "if_false",
+      "desc": "if(false) path",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "branch",
+      "name": "logical_and_short",
+      "desc": "false&&x 短路",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "branch",
+      "name": "logical_and_eval",
+      "desc": "true&&x 求值",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "branch",
+      "name": "logical_or_short",
+      "desc": "true||x 短路",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "branch",
+      "name": "not_bool",
+      "desc": "!a",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "branch",
+      "name": "double_not",
+      "desc": "!!a 强转布尔",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "arr_read_var_5",
+      "desc": "arr[idx] 5元素",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "arr_read_var_100",
+      "desc": "arr[idx] 100元素",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "arr_read_var_1000",
+      "desc": "arr[idx] 1000元素",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "arr_write_const",
+      "desc": "arr[2]=a",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "arr_write_var",
+      "desc": "arr[idx]=a",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "arr_length",
+      "desc": "arr.length",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "obj_dot_hit",
+      "desc": "o.x 点访问",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "obj_bracket_str",
+      "desc": "o[k] 变量键",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "obj_miss",
+      "desc": "o.notExist",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "proto1_read",
+      "desc": "原型链深度1",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "proto2_read",
+      "desc": "原型链深度2",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "proto3_read",
+      "desc": "原型链深度3",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "member_set_existing",
+      "desc": "o.x=a 已有属性",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "member_set_newprop",
+      "desc": "o.dyn=a 新属性",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "chain_depth2",
+      "desc": "a.b.x 链式2层",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "chain_depth3",
+      "desc": "a.b.c.x 链式3层",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "native_get_x",
+      "desc": "_mc._x",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "native_set_x",
+      "desc": "_mc._x=a",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "access",
+      "name": "native_get_visible",
+      "desc": "_mc._visible",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "call_empty",
+      "desc": "空函数调用",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "call_onearg",
+      "desc": "单参数调用",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "call_twoargs",
+      "desc": "双参数调用",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "call_threeargs",
+      "desc": "三参数调用",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "call_fiveargs",
+      "desc": "五参数调用",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "call_method",
+      "desc": "方法调用 o.m()",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "call_method_ret",
+      "desc": "方法调用有返回值",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "fn_call_onearg",
+      "desc": ".call(null,a)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "fn_apply_cached",
+      "desc": ".apply 复用args",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "new_empty",
+      "desc": "new EmptyCtor()",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "new_simple",
+      "desc": "new SimpleCtor()",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "closure_read",
+      "desc": "闭包变量读取",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "closure_deep2",
+      "desc": "2层嵌套闭包",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "arguments_length",
+      "desc": "arguments.length",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "arguments_read",
+      "desc": "arguments[0]",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "proto_method",
+      "desc": "原型方法调用",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "call",
+      "name": "instance_method",
+      "desc": "实例方法调用",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_eq_hit",
+      "desc": "s==\"hello\" 命中",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_eq_miss",
+      "desc": "s==\"world\" 未命中",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_eq_long_hit",
+      "desc": "50字符== 命中",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_concat_short",
+      "desc": "s+\"b\"",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_concat_long",
+      "desc": "50字符+短串",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_length",
+      "desc": "s.length",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_charat",
+      "desc": "s.charAt(3)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_charcodeat",
+      "desc": "s.charCodeAt(3)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_indexof_short_hit",
+      "desc": "短串indexOf命中",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_indexof_short_miss",
+      "desc": "短串indexOf未命中",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_substr",
+      "desc": "substr(2,4)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_split",
+      "desc": "split(\",\")",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_tolower",
+      "desc": "toLowerCase",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "string",
+      "name": "str_fromcharcode",
+      "desc": "String.fromCharCode(65)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "to_number_str",
+      "desc": "Number(\"42\")",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "unary_plus",
+      "desc": "+s 一元加",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "parseint_dec",
+      "desc": "parseInt(s)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "parseint_hex",
+      "desc": "parseInt(s,16)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "parsefloat",
+      "desc": "parseFloat(s)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "to_string_num",
+      "desc": "String(42)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "to_string_concat",
+      "desc": "\"\"+n",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "typeof_num",
+      "desc": "typeof(x) number",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "typeof_undef",
+      "desc": "typeof(x) undefined",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "instanceof_direct",
+      "desc": "o instanceof Ctor",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "to_bool_num",
+      "desc": "Boolean(1)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "number_cast_num",
+      "desc": "Number(n) noop",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "number_cast_obj",
+      "desc": "Number(obj) valueOf",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "number_cast_bool",
+      "desc": "Number(true)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "number_cast_undef",
+      "desc": "Number(undefined)→NaN",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "string_cast_bool",
+      "desc": "String(true)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "convert",
+      "name": "typed_vs_untyped_read",
+      "desc": "var a:Number vs var a 读取",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "math_floor",
+      "desc": "Math.floor(a)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "math_ceil",
+      "desc": "Math.ceil(a)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "math_round",
+      "desc": "Math.round(a)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "math_abs",
+      "desc": "Math.abs(a)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "math_min",
+      "desc": "Math.min(a,c)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "math_max",
+      "desc": "Math.max(a,c)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "math_sqrt",
+      "desc": "Math.sqrt(a)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "math_sin",
+      "desc": "Math.sin(a)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "math_atan2",
+      "desc": "Math.atan2(a,c)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "math_random",
+      "desc": "Math.random()",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "floor_bitor0",
+      "desc": "a|0 取整",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "floor_doubletilde",
+      "desc": "~~a 取整(双重按位非)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "abs_ternary",
+      "desc": "a<0?-a:a",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "min_ternary",
+      "desc": "a<c?a:c",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "max_ternary",
+      "desc": "a>c?a:c",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "cached_math_floor",
+      "desc": "缓存引用 mf(a)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "cached_math_sin",
+      "desc": "缓存引用 ms(a)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "math",
+      "name": "clamp_mathminmax",
+      "desc": "Math.min(Math.max(a,lo),hi)",
+      "kind": "std",
+      "atomicOps": 2
+    },
+    {
+      "cat": "math",
+      "name": "clamp_ternary",
+      "desc": "a<lo?lo:(a>hi?hi:a)",
+      "kind": "std",
+      "atomicOps": 2
+    },
+    {
+      "cat": "scope",
+      "name": "local_read",
+      "desc": "局部变量读",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "global_read",
+      "desc": "全局变量读",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "global_write",
+      "desc": "全局变量写",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "root_read",
+      "desc": "_root._root_var",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "with_block",
+      "desc": "with(o){b=x;}",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "delete_prop",
+      "desc": "delete o.tmp",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "hasown_hit",
+      "desc": "hasOwnProperty(\"x\")",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "in_operator_hit",
+      "desc": "\"x\" in o (helper)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "isnan_fn",
+      "desc": "isNaN(NaN)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "isnan_selfne",
+      "desc": "n!=n 替代isNaN",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "gettimer_call",
+      "desc": "getTimer()",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "undef_eq_null",
+      "desc": "x==null",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "undef_strict_eq",
+      "desc": "x===undefined",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "try_noexcept",
+      "desc": "try{...}catch 无异常",
+      "kind": "struct",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "try_except",
+      "desc": "try{throw}catch",
+      "kind": "struct",
+      "atomicOps": 1
+    },
+    {
+      "cat": "scope",
+      "name": "eval_varname",
+      "desc": "eval(\"_global_var\")",
+      "kind": "struct",
+      "atomicOps": 1
+    },
+    {
+      "cat": "array",
+      "name": "arr_push",
+      "desc": "arr.push(1)",
+      "kind": "struct",
+      "atomicOps": 1
+    },
+    {
+      "cat": "array",
+      "name": "arr_pop",
+      "desc": "arr.pop()",
+      "kind": "struct",
+      "atomicOps": 1
+    },
+    {
+      "cat": "array",
+      "name": "arr_unshift",
+      "desc": "arr.unshift(0)",
+      "kind": "struct",
+      "atomicOps": 1
+    },
+    {
+      "cat": "array",
+      "name": "arr_shift",
+      "desc": "arr.shift()",
+      "kind": "struct",
+      "atomicOps": 1
+    },
+    {
+      "cat": "array",
+      "name": "arr_splice_mid",
+      "desc": "arr.splice(2,1)",
+      "kind": "struct",
+      "atomicOps": 1
+    },
+    {
+      "cat": "array",
+      "name": "arr_reverse",
+      "desc": "arr.reverse()",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "array",
+      "name": "arr_join",
+      "desc": "arr.join(\",\")",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "array",
+      "name": "arr_sort_5",
+      "desc": "5元素 sort()",
+      "kind": "struct",
+      "atomicOps": 1
+    },
+    {
+      "cat": "array",
+      "name": "arr_concat",
+      "desc": "arr.concat([6,7])",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "array",
+      "name": "arr_slice_mid",
+      "desc": "arr.slice(1,3)",
+      "kind": "std",
+      "atomicOps": 1
+    },
+    {
+      "cat": "array",
+      "name": "arr_length_clear",
+      "desc": "arr.length=0 清空",
+      "kind": "struct",
+      "atomicOps": 1
+    },
+    {
+      "cat": "gc",
+      "name": "gc_apply_newarray",
+      "desc": "apply([1]) 每次new",
+      "kind": "gc",
+      "atomicOps": 1
+    },
+    {
+      "cat": "gc",
+      "name": "gc_new_object",
+      "desc": "new SimpleCtor()",
+      "kind": "gc",
+      "atomicOps": 1
+    },
+    {
+      "cat": "gc",
+      "name": "gc_new_array",
+      "desc": "new Array()",
+      "kind": "gc",
+      "atomicOps": 1
+    },
+    {
+      "cat": "gc",
+      "name": "gc_obj_literal",
+      "desc": "{x:1}",
+      "kind": "gc",
+      "atomicOps": 1
+    },
+    {
+      "cat": "gc",
+      "name": "gc_arr_literal",
+      "desc": "[1,2,3]",
+      "kind": "gc",
+      "atomicOps": 1
+    },
+    {
+      "cat": "gc",
+      "name": "gc_arr_10elem",
+      "desc": "[1..10] 10元素",
+      "kind": "gc",
+      "atomicOps": 1
+    },
+    {
+      "cat": "gc",
+      "name": "gc_string_split",
+      "desc": "split(\",\") GC",
+      "kind": "gc",
+      "atomicOps": 1
+    },
+    {
+      "cat": "gc",
+      "name": "gc_array_concat",
+      "desc": "concat([4,5]) GC",
+      "kind": "gc",
+      "atomicOps": 1
+    },
+    {
+      "cat": "gc",
+      "name": "gc_string_concat_accum",
+      "desc": "s+=x 累积",
+      "kind": "gc",
+      "atomicOps": 1
+    },
+    {
+      "cat": "gc",
+      "name": "gc_obj_5props",
+      "desc": "{a:1..e:5}",
+      "kind": "gc",
+      "atomicOps": 1
+    }
+  ],
+  "standardBenchCount": 146,
+  "gcBenchCount": 10,
+  "totalBenchCount": 156,
+  "categories": [
+    [
+      "arith",
+      "ARITH / COMPARE / BITWISE"
+    ],
+    [
+      "branch",
+      "BRANCH / CONTROL / LOGIC"
+    ],
+    [
+      "access",
+      "ACCESS / MEMBER / ARRAY / CHAIN"
+    ],
+    [
+      "call",
+      "CALL / NEW / CLOSURE / ARGUMENTS"
+    ],
+    [
+      "string",
+      "STRING"
+    ],
+    [
+      "convert",
+      "CONVERT / TYPE / TYPEOF / CAST"
+    ],
+    [
+      "math",
+      "MATH / NATIVES / BIT-HACKS"
+    ],
+    [
+      "scope",
+      "SCOPE / MISC / UNDEFINED / TRY / EVAL"
+    ],
+    [
+      "array",
+      "ARRAY METHODS"
+    ],
+    [
+      "gc",
+      "GC HEAVY"
+    ]
+  ],
+  "specialTests": [
+    "forin_5props",
+    "forin_20props",
+    "switch_5cases",
+    "ifelse_5cases",
+    "switch_10cases",
+    "ifelse_10cases",
+    "loop_while",
+    "loop_for",
+    "loop_dowhile",
+    "loop_empty_while"
+  ]
+}
