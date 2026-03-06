@@ -19,7 +19,14 @@ body {
   background: transparent;
 }
 
-code {
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+code,
+pre {
   font-family: Consolas, "Courier New", monospace;
 }
 
@@ -28,7 +35,7 @@ code {
 }
 
 .app-shell {
-  width: min(1320px, calc(100vw - 32px));
+  width: min(1360px, calc(100vw - 32px));
   margin: 0 auto;
   padding: 28px 0 40px;
 }
@@ -71,7 +78,7 @@ code {
 
 .lede {
   margin: 20px 0 0;
-  max-width: 56ch;
+  max-width: 60ch;
   color: rgba(244, 234, 223, 0.76);
   line-height: 1.75;
 }
@@ -131,15 +138,19 @@ code {
 }
 
 .module-topline,
-.field-card-topline {
+.field-card-topline,
+.detail-card-topline,
+.editor-row-topline {
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  align-items: baseline;
+  align-items: flex-start;
 }
 
 .module-topline h2,
-.field-card-topline h4 {
+.field-card-topline h4,
+.detail-card-topline strong,
+.editor-row-topline h4 {
   margin: 0;
 }
 
@@ -155,7 +166,8 @@ code {
 }
 
 .module-card p,
-.report-note {
+.report-note,
+.panel-caption {
   margin: 12px 0 0;
   color: rgba(244, 234, 223, 0.74);
   line-height: 1.6;
@@ -166,6 +178,10 @@ code {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
+}
+
+.content-grid-wide {
+  grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.95fr);
 }
 
 .content-grid-lower {
@@ -218,11 +234,18 @@ code {
   gap: 14px;
 }
 
-.metric-card {
-  padding: 16px;
+.metric-grid-compact {
+  margin-bottom: 18px;
+}
+
+.metric-card,
+.field-card,
+.editor-row-card,
+.detail-card {
+  padding: 16px 18px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 227, 194, 0.08);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .metric-card span {
@@ -238,17 +261,11 @@ code {
   color: #fff4e7;
 }
 
-.field-list {
+.field-list,
+.editor-row-list {
   margin-top: 18px;
   display: grid;
   gap: 14px;
-}
-
-.field-card {
-  padding: 16px 18px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 227, 194, 0.08);
-  background: rgba(255, 255, 255, 0.03);
 }
 
 .field-card-warning {
@@ -256,7 +273,9 @@ code {
   box-shadow: inset 0 0 0 1px rgba(246, 195, 127, 0.06);
 }
 
-.field-meta {
+.field-meta,
+.editor-row-meta,
+.detail-meta {
   margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -265,25 +284,191 @@ code {
   font-size: 0.86rem;
 }
 
-.field-sample {
+.field-sample,
+.editor-row-path,
+.detail-path {
   margin: 10px 0 0;
   color: rgba(244, 234, 223, 0.82);
   line-height: 1.6;
   word-break: break-all;
 }
 
-@media (max-width: 1100px) {
+.editor-toolbar {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.search-field,
+.toggle-field,
+.value-editor {
+  display: grid;
+  gap: 8px;
+}
+
+.search-field span,
+.value-editor span,
+.toggle-field span {
+  color: rgba(244, 234, 223, 0.72);
+  font-size: 0.86rem;
+}
+
+.search-field input,
+.value-editor input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 227, 194, 0.12);
+  background: rgba(9, 12, 16, 0.88);
+  color: #fff4e7;
+}
+
+.toggle-field {
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: start;
+  align-self: center;
+  gap: 10px;
+}
+
+.action-button,
+.mini-button {
+  padding: 11px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(143, 227, 216, 0.22);
+  background: rgba(143, 227, 216, 0.1);
+  color: #dffcf7;
+  cursor: pointer;
+}
+
+.action-button-ghost,
+.mini-button-ghost {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 227, 194, 0.12);
+  color: rgba(244, 234, 223, 0.88);
+}
+
+.editor-row-card {
+  cursor: pointer;
+}
+
+.editor-row-card-selected {
+  border-color: rgba(143, 227, 216, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(143, 227, 216, 0.12);
+}
+
+.status-pill {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+.status-pill-active {
+  background: rgba(143, 227, 216, 0.14);
+  color: #8fe3d8;
+}
+
+.status-pill-muted {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(244, 234, 223, 0.6);
+}
+
+.editor-value-grid,
+.detail-values {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.value-box {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 227, 194, 0.08);
+}
+
+.value-box label,
+.detail-values label {
+  display: block;
+  color: rgba(244, 234, 223, 0.56);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.value-box strong,
+.detail-values strong {
+  display: block;
+  margin-top: 8px;
+  color: #fff4e7;
+  font-size: 1rem;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.editor-row-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.detail-section {
+  margin-top: 18px;
+}
+
+.detail-section-header h4 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  color: #fff4e7;
+}
+
+.code-block {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(9, 12, 16, 0.88);
+  border: 1px solid rgba(255, 227, 194, 0.08);
+  color: #d8f8f2;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.6;
+}
+
+.code-block-payload {
+  max-height: 360px;
+  overflow: auto;
+}
+
+.empty-state {
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px dashed rgba(255, 227, 194, 0.16);
+  color: rgba(244, 234, 223, 0.68);
+  line-height: 1.6;
+}
+
+@media (max-width: 1180px) {
   .module-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .content-grid,
+  .content-grid-wide,
   .hero {
     grid-template-columns: 1fr;
   }
+
+  .editor-toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 760px) {
   .app-shell {
     width: min(100vw - 20px, 100%);
     padding-top: 20px;
@@ -301,7 +486,10 @@ code {
   }
 
   .module-grid,
-  .metric-grid {
+  .metric-grid,
+  .editor-toolbar,
+  .editor-value-grid,
+  .detail-values {
     grid-template-columns: 1fr;
   }
 
@@ -309,9 +497,10 @@ code {
     grid-template-columns: 1fr;
   }
 
+  .module-topline,
   .field-card-topline,
-  .module-topline {
+  .detail-card-topline,
+  .editor-row-topline {
     flex-direction: column;
-    align-items: flex-start;
   }
 }

@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 const rendererUrl = process.env.CF7_BALANCE_TOOL_RENDERER_URL;
+const windowTitle = "CF7 \u6570\u503c\u5e73\u8861\u5de5\u5177";
 
 function createMainWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
@@ -12,7 +13,7 @@ function createMainWindow(): BrowserWindow {
     minWidth: 1180,
     minHeight: 760,
     backgroundColor: "#120f0a",
-    title: "CF7 数值平衡工具",
+    title: windowTitle,
     webPreferences: {
       preload: path.resolve(currentDir, "preload.js")
     }

@@ -15,6 +15,9 @@
     "test:watch": "vitest",
     "field-scan": "tsx packages/cli/src/index.ts project fields",
     "project-scan": "tsx packages/cli/src/index.ts project scan",
+    "roundtrip-check": "tsx packages/cli/src/index.ts project roundtrip-check",
+    "batch-preview": "tsx packages/cli/src/index.ts project batch-preview",
+    "batch-set": "tsx packages/cli/src/index.ts project batch-set",
     "dev:web": "npm run dev:renderer --workspace @cf7-balance-tool/web",
     "dev:electron": "npm run dev:electron --workspace @cf7-balance-tool/web"
   },
