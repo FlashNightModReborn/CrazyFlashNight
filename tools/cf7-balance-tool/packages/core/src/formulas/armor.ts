@@ -14,6 +14,10 @@ export interface ArmorInput {
   magicDefence: number; // 法抗
   extraWeightLayers: number;
   type?: ArmorType;
+  /** 种类系数 (用于定价，默认1) */
+  categoryFactor?: number;
+  /** 伤害类型系数 (用于定价，默认1) */
+  damageTypeFactor?: number;
 }
 
 export interface ArmorOutput {
@@ -22,6 +26,8 @@ export interface ArmorOutput {
   weightedScore: number;  // 加权总分
   magicDefAvgCap: number; // 法抗均值上限
   magicDefMaxCap: number; // 法抗最高上限
+  recommendedGoldPrice: number;  // 推荐金币价格
+  recommendedKPointPrice: number; // 推荐K点价格
 }
 
 function penalize(value: number, threshold: number): number {
@@ -30,6 +36,8 @@ function penalize(value: number, threshold: number): number {
 
 export function computeArmorRow(input: ArmorInput): ArmorOutput {
   const type = input.type ?? "standard";
+  const catFactor = input.categoryFactor ?? 1;
+  const dtFactor = input.damageTypeFactor ?? 1;
 
   // 项链: 平衡总分不含重量
   const balanceScore = type === "necklace"
@@ -63,11 +71,18 @@ export function computeArmorRow(input: ArmorInput): ArmorOutput {
   const magicDefAvgCap = type === "necklace" ? 0 : 10 + input.level * 0.2;
   const magicDefMaxCap = type === "necklace" ? 0 : 25 + input.level * 0.2;
 
+  // 推荐价格
+  const dtMult = Math.pow(1.6, dtFactor - 1);
+  const recommendedGoldPrice = input.level * 2600 * Math.pow(1.6, input.extraWeightLayers) * catFactor * dtMult;
+  const recommendedKPointPrice = input.level * 90 * Math.pow(1.5, input.extraWeightLayers) * dtMult;
+
   return {
     currentScore,
     balanceScore,
     weightedScore,
     magicDefAvgCap,
     magicDefMaxCap,
+    recommendedGoldPrice,
+    recommendedKPointPrice,
   };
 }

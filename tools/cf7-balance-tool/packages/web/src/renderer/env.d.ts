@@ -41,7 +41,38 @@ declare global {
       saveBatchUpdates?: (updates: BatchUpdateRequest[]) => Promise<BridgeActionResponse>;
       runBatchPreview?: (updates: BatchUpdateRequest[]) => Promise<BridgeActionResponse>;
       runBatchSet?: (updates: BatchUpdateRequest[]) => Promise<BridgeActionResponse>;
+      getChangelog?: () => Promise<ChangelogEntry[]>;
+      runValidation?: () => Promise<ValidationReport>;
+      getFieldConfig?: () => Promise<FieldRegistryData>;
+      saveFieldConfig?: (config: FieldRegistryData) => Promise<{ saved: boolean }>;
     };
+  }
+
+  interface FieldRegistryData {
+    numericFields: string[];
+    numericSuffixes: string[];
+    stringFields: string[];
+    booleanFields: string[];
+    passthroughFields: string[];
+    nestedNumericFields: string[];
+    itemLevelFields: string[];
+    attributeFields: string[];
+    computedFields: string[];
+  }
+
+  interface ValidationIssue {
+    row: number;
+    name: string;
+    field: string;
+    value: number;
+    threshold: number;
+    severity: "warning" | "error";
+    message: string;
+  }
+
+  interface ValidationReport {
+    summary: { total: number; errors: number; warnings: number };
+    issues: ValidationIssue[];
   }
 }
 
@@ -85,6 +116,14 @@ interface OutputPathBridgeResponse {
   };
   history: ReportHistoryEntry[];
   previewReport?: unknown;
+}
+
+interface ChangelogEntry {
+  timestamp: string;
+  action: string;
+  inputFile: string;
+  summary: Record<string, unknown>;
+  outputDir: string | null;
 }
 
 interface BridgeActionResponse {

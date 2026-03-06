@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
+import XLSX from "xlsx";
 
 import {
   applyXmlBatchUpdates,
@@ -115,6 +116,16 @@ function main(): void {
     return;
   }
 
+  if (group === "import-excel") {
+    runImportExcel(args.slice(1));
+    return;
+  }
+
+  if (group === "export") {
+    runExport(args.slice(1));
+    return;
+  }
+
   printHelp();
   process.exitCode = 1;
 }
@@ -177,14 +188,28 @@ function runProjectBatchSet(args: string[]): void {
   const context = resolveBatchCommandContext(args);
   const result = applyXmlBatchUpdates(context.updates, context.batchOptions);
 
+  const options = parseOptions(args);
+
   emitJson(
     {
       projectConfigPath: context.projectConfigPath,
       inputPath: context.inputPath,
       ...result
     },
-    parseOptions(args).output
+    options.output
   );
+
+  // Append changelog entry
+  const changelogPath = path.resolve(context.projectRoot, "reports/changelog.jsonl");
+  appendChangelog(changelogPath, {
+    action: "batch-set",
+    inputFile: context.inputPath,
+    summary: {
+      total: context.updates.length,
+      applied: (result as { applied?: number }).applied ?? context.updates.length,
+    },
+    outputDir: options.outputDir ?? null,
+  });
 }
 
 function runXmlGet(args: string[]): void {
@@ -615,13 +640,21 @@ function runCalibrate(args: string[]): void {
     ["加权周期伤害", "weightedCycleDamage"], ["周期伤害系数", "cycleDamageCoeff"],
     ["平衡基础dps", "balanceBaseDPS"], ["旧平衡dps", "oldBalanceDPS"],
     ["周期dps", "cycleDPS"], ["周期dps系数", "cycleDPSCoeff"], ["dps总公式", "dpsFormula"],
+    ["推荐金币价格", "recommendedGoldPrice"], ["推荐K点价格", "recommendedKPointPrice"],
   ];
   const ARMOR_MAP: Array<[string, string]> = [
     ["当前总分", "currentScore"], ["平衡总分", "balanceScore"], ["加权总分", "weightedScore"],
     ["法抗均值上限", "magicDefAvgCap"], ["法抗最高上限", "magicDefMaxCap"],
+    ["推荐金币价格", "recommendedGoldPrice"], ["推荐K点价格", "recommendedKPointPrice"],
   ];
-  const MELEE_MAP: Array<[string, string]> = [["推荐锋利度", "recommendedSharpness"]];
-  const EXPLOSIVES_MAP: Array<[string, string]> = [["推荐单发威力", "recommendedPower"]];
+  const MELEE_MAP: Array<[string, string]> = [
+    ["推荐锋利度", "recommendedSharpness"],
+    ["推荐金币价格", "recommendedGoldPrice"], ["推荐K点价格", "recommendedKPointPrice"],
+  ];
+  const EXPLOSIVES_MAP: Array<[string, string]> = [
+    ["推荐单发威力", "recommendedPower"],
+    ["推荐金币价格", "recommendedGoldPrice"], ["推荐K点价格", "recommendedKPointPrice"],
+  ];
   const POTIONS_MAP: Array<[string, string]> = [
     ["恢复药强度", "recoveryStrength"], ["净化强度", "purifyStrength"],
     ["剧毒强度", "toxicStrength"], ["buff强度", "buffStrength"],
@@ -837,7 +870,7 @@ const BASELINE_CATEGORIES: Record<BaselineCategory, {
     columnMap: [
       ["伤害加成", "damageBonus"], ["剧毒", "poison"], ["单段伤害", "singleShotDamage"],
       ["周期伤害", "cycleDamage"], ["平均dps", "averageDPS"], ["平衡dps", "balanceDPS"],
-      ["加权dps", "weightedDPS"],
+      ["加权dps", "weightedDPS"], ["推荐金币价格", "recommendedGoldPrice"], ["推荐K点价格", "recommendedKPointPrice"],
     ],
   },
   armor: {
@@ -860,6 +893,7 @@ const BASELINE_CATEGORIES: Record<BaselineCategory, {
     columnMap: [
       ["当前总分", "currentScore"], ["平衡总分", "balanceScore"],
       ["加权总分", "weightedScore"], ["法抗均值上限", "magicDefAvgCap"],
+      ["推荐金币价格", "recommendedGoldPrice"], ["推荐K点价格", "recommendedKPointPrice"],
     ],
   },
   melee: {
@@ -872,7 +906,10 @@ const BASELINE_CATEGORIES: Record<BaselineCategory, {
       });
     },
     nameField: "C",
-    columnMap: [["推荐锋利度", "recommendedSharpness"]],
+    columnMap: [
+      ["推荐锋利度", "recommendedSharpness"],
+      ["推荐金币价格", "recommendedGoldPrice"], ["推荐K点价格", "recommendedKPointPrice"],
+    ],
   },
   explosives: {
     compute: (row) => {
@@ -884,7 +921,10 @@ const BASELINE_CATEGORIES: Record<BaselineCategory, {
       });
     },
     nameField: "C",
-    columnMap: [["推荐单发威力", "recommendedPower"]],
+    columnMap: [
+      ["推荐单发威力", "recommendedPower"],
+      ["推荐金币价格", "recommendedGoldPrice"], ["推荐K点价格", "recommendedKPointPrice"],
+    ],
   },
   potions: {
     compute: (row) => {
@@ -1215,6 +1255,154 @@ function validatePotionBalance(baseline: any, issues: ValidationIssue[]): void {
   }
 }
 
+// ─── import-excel command ───
+
+/** Sheet name → baseline category mapping */
+const SHEET_CATEGORY_MAP: Record<string, BaselineCategory> = {
+  "枪械": "weapons", "武器": "weapons", "weapons": "weapons",
+  "防具": "armor", "armor": "armor",
+  "近战": "melee", "melee": "melee",
+  "爆炸类": "explosives", "explosives": "explosives",
+  "药剂": "potions", "potions": "potions",
+  "怪物": "monsters", "monsters": "monsters",
+};
+
+function runImportExcel(args: string[]): void {
+  const options = parseOptions(args);
+  const inputPath = requireOption(options.input, "--input");
+  const absolutePath = path.resolve(process.cwd(), inputPath);
+
+  const workbook = XLSX.readFile(absolutePath);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const baseline: Record<string, any[]> = {};
+  let totalRows = 0;
+
+  for (const sheetName of workbook.SheetNames) {
+    const category = SHEET_CATEGORY_MAP[sheetName] ?? sheetName.toLowerCase();
+    const sheet = workbook.Sheets[sheetName];
+    if (!sheet) continue;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const jsonRows = XLSX.utils.sheet_to_json<Record<string, any>>(sheet);
+    if (jsonRows.length === 0) continue;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rows: any[] = [];
+    for (let i = 0; i < jsonRows.length; i++) {
+      const raw = jsonRows[i]!;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const input: Record<string, any> = {};
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const cached: Record<string, any> = {};
+
+      // Columns prefixed with "cached:" go to cached, else input
+      for (const [key, value] of Object.entries(raw as Record<string, unknown>)) {
+        if (key.startsWith("cached:")) {
+          cached[key.slice(7)] = value;
+        } else if (key === "_row") {
+          // preserve _row if in the sheet
+        } else {
+          input[key] = value;
+        }
+      }
+
+      rows.push({
+        _row: typeof raw["_row"] === "number" ? raw["_row"] : i + 2,
+        input,
+        cached,
+      });
+    }
+
+    baseline[category] = rows;
+    totalRows += rows.length;
+  }
+
+  process.stderr.write(
+    `Imported ${totalRows} rows from ${Object.keys(baseline).length} sheets\n`
+  );
+
+  emitJson(baseline, options.output);
+}
+
+// ─── export command ───
+
+function runExport(args: string[]): void {
+  const options = parseOptions(args);
+  const inputPath = requireOption(options.input, "--input");
+  const absolutePath = path.resolve(process.cwd(), inputPath);
+  const outputPath = requireOption(options.output, "--output");
+  const absoluteOutput = path.resolve(process.cwd(), outputPath);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rawBaseline = JSON.parse(fs.readFileSync(absolutePath, "utf8")) as Record<string, any[]>;
+
+  const ext = path.extname(absoluteOutput).toLowerCase();
+
+  if (ext === ".csv") {
+    exportCsv(rawBaseline, absoluteOutput);
+  } else {
+    exportExcel(rawBaseline, absoluteOutput);
+  }
+
+  process.stdout.write(`${absoluteOutput}\n`);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function flattenBaselineRow(row: any): Record<string, unknown> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const flat: Record<string, any> = { _row: row._row };
+  if (row.input) {
+    for (const [k, v] of Object.entries(row.input)) {
+      flat[k] = v;
+    }
+  }
+  if (row.cached) {
+    for (const [k, v] of Object.entries(row.cached)) {
+      flat[`cached:${k}`] = v;
+    }
+  }
+  return flat;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function exportExcel(baseline: Record<string, any[]>, outputPath: string): void {
+  const workbook = XLSX.utils.book_new();
+  let totalRows = 0;
+
+  for (const [category, rows] of Object.entries(baseline)) {
+    if (!Array.isArray(rows) || rows.length === 0) continue;
+    const flatRows = rows.map(flattenBaselineRow);
+    const sheet = XLSX.utils.json_to_sheet(flatRows);
+    XLSX.utils.book_append_sheet(workbook, sheet, category);
+    totalRows += rows.length;
+  }
+
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  XLSX.writeFile(workbook, outputPath);
+  process.stderr.write(`Exported ${totalRows} rows to Excel\n`);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function exportCsv(baseline: Record<string, any[]>, outputPath: string): void {
+  // For CSV, concatenate all categories with an extra "category" column
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const allRows: Record<string, any>[] = [];
+
+  for (const [category, rows] of Object.entries(baseline)) {
+    if (!Array.isArray(rows)) continue;
+    for (const row of rows) {
+      allRows.push({ category, ...flattenBaselineRow(row) });
+    }
+  }
+
+  const sheet = XLSX.utils.json_to_sheet(allRows);
+  const csv = XLSX.utils.sheet_to_csv(sheet);
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, csv, "utf8");
+  process.stderr.write(`Exported ${allRows.length} rows to CSV\n`);
+}
+
 function printHelp(): void {
   process.stdout.write(
     [
@@ -1233,6 +1421,8 @@ function printHelp(): void {
       "  query <category> --input <baseline.json> [--filter <expr>] [--sort <field>] [--limit <n>] [--output <file>]",
       "  diff <category> --input <baseline1.json> --input2 <baseline2.json> [--output <file>]",
       "  validate --input <baseline.json> [--output <file>]",
+      "  import-excel --input <file.xlsx> [--output <baseline.json>]",
+      "  export --input <baseline.json> --output <file.xlsx|file.csv>",
       "",
       "Formula categories (calc): weapons, armor, melee, explosives, potions, monsters,",
       "  physicalDamage, magicDamage, weaponPrice, armorPrice, synthesis, dungeonRewards",
@@ -1242,6 +1432,25 @@ function printHelp(): void {
       "Filter examples: --filter 'averageDPS>2000' --sort '-averageDPS' --limit 10",
     ].join("\n")
   );
+}
+
+// ─── changelog ───
+
+interface ChangelogEntry {
+  timestamp: string;
+  action: string;
+  inputFile: string;
+  summary: Record<string, unknown>;
+  outputDir: string | null;
+}
+
+function appendChangelog(changelogPath: string, entry: Omit<ChangelogEntry, "timestamp">): void {
+  const record: ChangelogEntry = {
+    timestamp: new Date().toISOString(),
+    ...entry,
+  };
+  fs.mkdirSync(path.dirname(changelogPath), { recursive: true });
+  fs.appendFileSync(changelogPath, JSON.stringify(record) + "\n", "utf8");
 }
 
 main();

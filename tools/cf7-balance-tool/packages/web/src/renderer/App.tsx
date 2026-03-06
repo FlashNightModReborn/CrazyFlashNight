@@ -20,7 +20,6 @@ import {
   restoreAllRowsToSuggested,
   restoreRowToOriginal,
   restoreRowToSuggested,
-  summarizeEditorRows,
   summarizeEditorRowsByFile,
   updateRowStagedValue,
   type BatchPreviewReport,
@@ -28,9 +27,17 @@ import {
   type EditorFileDiffSummary,
   type EditorRow
 } from "./editor-model";
+import { DataGrid, sortRows, type SortDir, type SortKey } from "./data-grid";
+import { ChangelogPanel } from "./changelog-panel";
+import { FormulaBar } from "./formula-bar";
 import { HistoryPanel } from "./history-panel";
 import { OutputPathPanel } from "./output-path-panel";
 import type { ReportHistoryEntry } from "./report-history";
+import { Sidebar } from "./sidebar";
+import { FieldConfigPanel } from "./field-config-panel";
+import { TierView } from "./tier-view";
+import { ValidationPanel } from "./validation-panel";
+import { useUndoRedo } from "./use-undo-redo";
 import {
   buildBatchCommandTemplate,
   DEFAULT_OUTPUT_PATH_SETTINGS,
@@ -287,7 +294,8 @@ export function App() {
       : TEXT.runtimePreview;
   const versions = window.cf7Balance?.versions;
   const [previewReport, setPreviewReport] = useState(initialPreviewReport);
-  const [editorRows, setEditorRows] = useState(initialEditorRows);
+  const editorHistory = useUndoRedo(initialEditorRows);
+  const editorRows = editorHistory.state;
   const [artifactState, setArtifactState] = useState<ArtifactState>();
   const [reportHistory, setReportHistory] = useState<ReportHistoryEntry[]>([]);
   const [outputPathState, setOutputPathState] = useState<OutputPathState>(defaultOutputPathState);
@@ -304,6 +312,14 @@ export function App() {
   const [busyAction, setBusyAction] = useState<"save" | "preview" | "apply" | null>(null);
   const [busyImportAction, setBusyImportAction] = useState<"preview" | "payload" | null>(null);
   const [busyOutputAction, setBusyOutputAction] = useState<"save" | "reset" | null>(null);
+  const [viewMode, setViewMode] = useState<"card" | "table">("table");
+  const [sortKey, setSortKey] = useState<SortKey>("file");
+  const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [batchReplaceVisible, setBatchReplaceVisible] = useState(false);
+  const [batchFindText, setBatchFindText] = useState("");
+  const [batchReplaceText, setBatchReplaceText] = useState("");
+  const [batchField, setBatchField] = useState<"staged" | "before">("staged");
   const deferredSearchText = useDeferredValue(searchText);
   const canSave = typeof window.cf7Balance?.saveBatchUpdates === "function";
   const canPreview = typeof window.cf7Balance?.runBatchPreview === "function";
@@ -321,6 +337,26 @@ export function App() {
   const canCopyPath =
     typeof navigator !== "undefined" && typeof navigator.clipboard?.writeText === "function";
   const hasBusyBridgeAction = busyAction !== null || busyImportAction !== null;
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === "z") {
+        if ((e.target as HTMLElement)?.tagName === "INPUT") return;
+        e.preventDefault();
+        editorHistory.undo();
+      }
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        (e.key === "y" || (e.shiftKey && e.key === "z" || e.key === "Z"))
+      ) {
+        if ((e.target as HTMLElement)?.tagName === "INPUT") return;
+        e.preventDefault();
+        editorHistory.redo();
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [editorHistory.undo, editorHistory.redo]);
 
   useEffect(() => {
     if (!canInspectArtifacts || !window.cf7Balance?.getArtifactState) {
@@ -403,11 +439,11 @@ export function App() {
     ? editorRows.filter((row) => row.sourceFile === selectedSourceFile)
     : editorRows;
   const filteredRows = filterEditorRows(scopedRows, deferredSearchText, showChangedOnly);
+  const sortedFilteredRows = viewMode === "table" ? sortRows(filteredRows, sortKey, sortDir) : filteredRows;
   const selectedRow =
     filteredRows.find((row) => row.id === selectedRowId) ??
     scopedRows.find((row) => row.id === selectedRowId) ??
     editorRows.find((row) => row.id === selectedRowId);
-  const editorSummary = summarizeEditorRows(editorRows);
   const visibleFileDiffs = selectedSourceFile
     ? fileDiffs.filter((summary) => summary.sourceFile === selectedSourceFile)
     : fileDiffs;
@@ -461,23 +497,43 @@ export function App() {
   }
 
   function handleRowValueChange(rowId: string, nextValue: string): void {
-    setEditorRows((currentRows) => updateRowStagedValue(currentRows, rowId, nextValue));
+    editorHistory.update((currentRows) => updateRowStagedValue(currentRows, rowId, nextValue));
   }
 
   function handleRestoreRowSuggested(rowId: string): void {
-    setEditorRows((currentRows) => restoreRowToSuggested(currentRows, rowId));
+    editorHistory.update((currentRows) => restoreRowToSuggested(currentRows, rowId));
   }
 
   function handleRestoreRowOriginal(rowId: string): void {
-    setEditorRows((currentRows) => restoreRowToOriginal(currentRows, rowId));
+    editorHistory.update((currentRows) => restoreRowToOriginal(currentRows, rowId));
   }
 
   function handleRestoreAllSuggested(): void {
-    setEditorRows((currentRows) => restoreAllRowsToSuggested(currentRows));
+    editorHistory.update((currentRows) => restoreAllRowsToSuggested(currentRows));
   }
 
   function handleRestoreAllOriginal(): void {
-    setEditorRows((currentRows) => restoreAllRowsToOriginal(currentRows));
+    editorHistory.update((currentRows) => restoreAllRowsToOriginal(currentRows));
+  }
+
+  function handleBatchReplace(): void {
+    if (!batchFindText) return;
+    editorHistory.update((currentRows) =>
+      currentRows.map((row) => {
+        const source = batchField === "before" ? row.beforeValue : row.stagedValue;
+        if (source !== batchFindText) return row;
+        return { ...row, stagedValue: batchReplaceText };
+      })
+    );
+  }
+
+  function handleSortChange(key: SortKey): void {
+    if (key === sortKey) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
   }
 
   function handleToggleSourceFile(sourceFile: string): void {
@@ -493,7 +549,7 @@ export function App() {
   function applyPreviewReport(nextReport: BatchPreviewReport): void {
     const nextRows = createEditorRows(nextReport);
     setPreviewReport(nextReport);
-    setEditorRows(nextRows);
+    editorHistory.reset(nextRows);
     setSelectedSourceFile(undefined);
     setSelectedRowId(nextRows[0]?.id);
   }
@@ -551,7 +607,7 @@ export function App() {
       }
 
       const appliedResult = applyImportedBatchUpdates(editorRows, result.updates);
-      setEditorRows(appliedResult.rows);
+      editorHistory.set(appliedResult.rows);
       setSelectedSourceFile(undefined);
       setActivityMessage(
         `${TEXT.importPayloadDone}: ${TEXT.matchedUpdates} ${formatNumber(
@@ -841,7 +897,14 @@ export function App() {
         </article>
       </section>
 
-      <section className="content-grid content-grid-wide">
+      <section className={`content-grid ${sidebarVisible ? "content-grid-with-sidebar" : "content-grid-wide"}`}>
+        {sidebarVisible && (
+          <Sidebar
+            rows={editorRows}
+            selectedFile={selectedSourceFile}
+            onSelectFile={setSelectedSourceFile}
+          />
+        )}
         <article className="panel">
           <div className="panel-header">
             <p>{TEXT.editorPanel}</p>
@@ -872,6 +935,89 @@ export function App() {
               {TEXT.resetOriginal}
             </button>
           </div>
+          <div className="editor-secondary-toolbar">
+            <div className="toolbar-group">
+              <button
+                className={`mini-button ${viewMode === "card" ? "mini-button-active" : "mini-button-ghost"}`}
+                onClick={() => setViewMode("card")}
+                type="button"
+              >
+                卡片
+              </button>
+              <button
+                className={`mini-button ${viewMode === "table" ? "mini-button-active" : "mini-button-ghost"}`}
+                onClick={() => setViewMode("table")}
+                type="button"
+              >
+                表格
+              </button>
+            </div>
+            <div className="toolbar-group">
+              <button
+                className="mini-button mini-button-ghost"
+                onClick={() => setSidebarVisible((v) => !v)}
+                type="button"
+              >
+                {sidebarVisible ? "隐藏侧栏" : "显示侧栏"}
+              </button>
+              <button
+                className="mini-button"
+                disabled={!editorHistory.canUndo}
+                onClick={editorHistory.undo}
+                type="button"
+              >
+                撤销
+              </button>
+              <button
+                className="mini-button"
+                disabled={!editorHistory.canRedo}
+                onClick={editorHistory.redo}
+                type="button"
+              >
+                重做
+              </button>
+              <button
+                className={`mini-button ${batchReplaceVisible ? "mini-button-active" : "mini-button-ghost"}`}
+                onClick={() => setBatchReplaceVisible((v) => !v)}
+                type="button"
+              >
+                批量替换
+              </button>
+            </div>
+          </div>
+          {batchReplaceVisible && (
+            <div className="batch-replace-bar">
+              <select
+                className="batch-replace-select"
+                value={batchField}
+                onChange={(e) => setBatchField(e.currentTarget.value as "staged" | "before")}
+              >
+                <option value="staged">匹配暂存值</option>
+                <option value="before">匹配原值</option>
+              </select>
+              <input
+                className="batch-replace-input"
+                value={batchFindText}
+                onChange={(e) => setBatchFindText(e.currentTarget.value)}
+                placeholder="查找值..."
+              />
+              <span className="batch-replace-arrow">→</span>
+              <input
+                className="batch-replace-input"
+                value={batchReplaceText}
+                onChange={(e) => setBatchReplaceText(e.currentTarget.value)}
+                placeholder="替换为..."
+              />
+              <button
+                className="mini-button"
+                disabled={!batchFindText}
+                onClick={handleBatchReplace}
+                type="button"
+              >
+                全部替换
+              </button>
+            </div>
+          )}
           <div className="scope-summary">
             <span>
               {selectedSourceFile
@@ -889,23 +1035,35 @@ export function App() {
             ) : null}
           </div>
 
-          <div className="editor-row-list">
-            {filteredRows.length === 0 ? (
-              <div className="empty-state">{TEXT.emptySelection}</div>
-            ) : (
-              filteredRows.map((row) => (
-                <EditorRowCard
-                  key={row.id}
-                  row={row}
-                  selected={row.id === selectedRowId}
-                  onSelect={() => setSelectedRowId(row.id)}
-                  onValueChange={handleRowValueChange}
-                  onRestoreSuggested={handleRestoreRowSuggested}
-                  onRestoreOriginal={handleRestoreRowOriginal}
-                />
-              ))
-            )}
-          </div>
+          {viewMode === "table" ? (
+            <DataGrid
+              rows={sortedFilteredRows}
+              selectedRowId={selectedRowId}
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSelect={setSelectedRowId}
+              onValueChange={handleRowValueChange}
+              onSortChange={handleSortChange}
+            />
+          ) : (
+            <div className="editor-row-list">
+              {filteredRows.length === 0 ? (
+                <div className="empty-state">{TEXT.emptySelection}</div>
+              ) : (
+                filteredRows.map((row) => (
+                  <EditorRowCard
+                    key={row.id}
+                    row={row}
+                    selected={row.id === selectedRowId}
+                    onSelect={() => setSelectedRowId(row.id)}
+                    onValueChange={handleRowValueChange}
+                    onRestoreSuggested={handleRestoreRowSuggested}
+                    onRestoreOriginal={handleRestoreRowOriginal}
+                  />
+                ))
+              )}
+            </div>
+          )}
         </article>
 
         <article className="panel">
@@ -1049,6 +1207,11 @@ export function App() {
             onRevealPath={handleRevealPath}
             onRefresh={refreshReportHistory}
           />
+          <ChangelogPanel />
+          <FormulaBar />
+          <ValidationPanel />
+          <TierView />
+          <FieldConfigPanel />
 
           <section className="detail-section">
             <div className="detail-section-header">
@@ -1148,6 +1311,13 @@ function EditorRowCard({
   onRestoreSuggested: (rowId: string) => void;
   onRestoreOriginal: (rowId: string) => void;
 }) {
+  const [localValue, setLocalValue] = useState(row.stagedValue);
+  const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    if (!editing) setLocalValue(row.stagedValue);
+  }, [row.stagedValue, editing]);
+
   return (
     <article
       className={`editor-row-card ${selected ? "editor-row-card-selected" : ""}`}
@@ -1180,8 +1350,26 @@ function EditorRowCard({
         <label className="value-editor" onClick={(event) => event.stopPropagation()}>
           <span>{TEXT.stagedLabel}</span>
           <input
-            value={row.stagedValue}
-            onChange={(event) => onValueChange(row.id, event.currentTarget.value)}
+            value={editing ? localValue : row.stagedValue}
+            onFocus={() => setEditing(true)}
+            onChange={(event) => setLocalValue(event.currentTarget.value)}
+            onBlur={() => {
+              setEditing(false);
+              if (localValue !== row.stagedValue) {
+                onValueChange(row.id, localValue);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") e.currentTarget.blur();
+              if (e.key === "Escape") {
+                setLocalValue(row.stagedValue);
+                setEditing(false);
+                e.currentTarget.blur();
+              }
+              if ((e.key === "z" || e.key === "y") && (e.ctrlKey || e.metaKey)) {
+                e.stopPropagation();
+              }
+            }}
           />
         </label>
       </div>

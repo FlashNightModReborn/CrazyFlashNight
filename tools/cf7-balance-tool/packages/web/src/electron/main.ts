@@ -132,6 +132,10 @@ function registerIpcHandlers(): void {
     async (event) => pickBatchUpdates(BrowserWindow.fromWebContents(event.sender) ?? undefined)
   );
   ipcMain.handle("cf7:reveal-path", async (_event, targetPath: string) => revealPath(targetPath));
+  ipcMain.handle("cf7:get-changelog", () => getChangelog());
+  ipcMain.handle("cf7:run-validation", () => runValidation());
+  ipcMain.handle("cf7:get-field-config", () => getFieldConfig());
+  ipcMain.handle("cf7:save-field-config", (_event, config: FieldRegistryData) => saveFieldConfig(config));
 
   ipcMain.handle("cf7:save-batch-updates", async (_event, updates: BatchUpdatePayload[]) =>
     saveBatchUpdates(updates)
@@ -835,6 +839,101 @@ function findToolRoot(startDir: string): string {
 
     currentPath = parentPath;
   }
+}
+
+interface ChangelogEntry {
+  timestamp: string;
+  action: string;
+  inputFile: string;
+  summary: Record<string, unknown>;
+  outputDir: string | null;
+}
+
+function getChangelog(limit = 50): ChangelogEntry[] {
+  const changelogPath = path.join(toolRoot, "reports", "changelog.jsonl");
+
+  if (!fs.existsSync(changelogPath)) {
+    return [];
+  }
+
+  const lines = fs.readFileSync(changelogPath, "utf8").split("\n").filter(Boolean);
+  const entries: ChangelogEntry[] = [];
+
+  for (const line of lines) {
+    try {
+      entries.push(JSON.parse(line) as ChangelogEntry);
+    } catch {
+      // skip malformed lines
+    }
+  }
+
+  return entries.reverse().slice(0, limit);
+}
+
+interface ValidationIssue {
+  row: number;
+  name: string;
+  field: string;
+  value: number;
+  threshold: number;
+  severity: "warning" | "error";
+  message: string;
+}
+
+interface ValidationReport {
+  summary: { total: number; errors: number; warnings: number };
+  issues: ValidationIssue[];
+}
+
+async function runValidation(): Promise<ValidationReport> {
+  const baselinePath = path.join(toolRoot, "baseline", "baseline-extracted.json");
+
+  if (!fs.existsSync(baselinePath)) {
+    return { summary: { total: 0, errors: 0, warnings: 0 }, issues: [] };
+  }
+
+  const outputPath = path.join(toolRoot, "reports", "validation-report.json");
+
+  await runCliCommand([
+    "validate",
+    "--input",
+    baselinePath,
+    "--output",
+    outputPath
+  ]);
+
+  return readJsonFile(outputPath) as ValidationReport;
+}
+
+interface FieldRegistryData {
+  numericFields: string[];
+  numericSuffixes: string[];
+  stringFields: string[];
+  booleanFields: string[];
+  passthroughFields: string[];
+  nestedNumericFields: string[];
+  itemLevelFields: string[];
+  attributeFields: string[];
+  computedFields: string[];
+}
+
+function getFieldConfig(): FieldRegistryData {
+  const configPath = path.join(toolRoot, "data", "field-config.json");
+  if (!fs.existsSync(configPath)) {
+    return {
+      numericFields: [], numericSuffixes: [], stringFields: [],
+      booleanFields: [], passthroughFields: [], nestedNumericFields: [],
+      itemLevelFields: [], attributeFields: [], computedFields: [],
+    };
+  }
+  return readJsonFile(configPath) as FieldRegistryData;
+}
+
+function saveFieldConfig(config: FieldRegistryData): { saved: boolean } {
+  const configPath = path.join(toolRoot, "data", "field-config.json");
+  fs.mkdirSync(path.dirname(configPath), { recursive: true });
+  fs.writeFileSync(configPath, JSON.stringify(config, null, 2), "utf8");
+  return { saved: true };
 }
 
 app.whenReady().then(() => {

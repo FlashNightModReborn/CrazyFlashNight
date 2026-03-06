@@ -33,6 +33,8 @@ export interface WeaponInput {
   impact: number;
   /** 额外加权层数 */
   extraWeightLayers: number;
+  /** 种类系数 (用于定价，默认1) */
+  categoryFactor?: number;
 }
 
 export interface WeaponOutput {
@@ -84,6 +86,10 @@ export interface WeaponOutput {
   oldBalanceDPS: number;
   /** DPS总公式 — 等于平均DPS */
   dpsFormula: number;
+  /** 推荐金币价格 */
+  recommendedGoldPrice: number;
+  /** 推荐K点价格 */
+  recommendedKPointPrice: number;
 }
 
 // ─── 子公式 ───
@@ -129,7 +135,7 @@ export function computeWeaponRow(input: WeaponInput): WeaponOutput {
     level, bulletPower: power, shootInterval: interval, magSize: cap,
     magPrice, weight, dualWieldFactor: dw, pierceFactor: pierce,
     damageTypeFactor: dmgType, shotgunValue: shotgun, impact: impactVal,
-    extraWeightLayers: extraWeight,
+    extraWeightLayers: extraWeight, categoryFactor: catFactor = 1,
   } = input;
 
   const denom = cycleDenom(interval, cap, dw);
@@ -231,6 +237,11 @@ export function computeWeaponRow(input: WeaponInput): WeaponOutput {
         + weight * 660 * (1 + level) / (25 * dmgType)) / denom)
     / Math.pow(1.5, dw - 1);
 
+  // ── 推荐价格 ──
+  const dtMult = Math.pow(1.6, dmgType - 1);
+  const recommendedGoldPrice = level * 3900 * Math.pow(1.6, extraWeight) * catFactor * dtMult / dw;
+  const recommendedKPointPrice = level * 120 * Math.pow(1.5, extraWeight) * catFactor * dtMult / dw;
+
   return {
     damageBonus: dmgBonus,
     poison: psn,
@@ -256,5 +267,7 @@ export function computeWeaponRow(input: WeaponInput): WeaponOutput {
     cycleDPSCoeff,
     oldBalanceDPS,
     dpsFormula: averageDPS,
+    recommendedGoldPrice,
+    recommendedKPointPrice,
   };
 }

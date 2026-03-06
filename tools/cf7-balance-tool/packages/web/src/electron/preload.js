@@ -15,6 +15,10 @@ contextBridge.exposeInMainWorld("cf7Balance", {
   revealPath: (targetPath) => ipcRenderer.invoke("cf7:reveal-path", targetPath),
   saveBatchUpdates: (updates) => ipcRenderer.invoke("cf7:save-batch-updates", updates),
   runBatchPreview: (updates) => ipcRenderer.invoke("cf7:run-batch-preview", updates),
-  runBatchSet: (updates) => ipcRenderer.invoke("cf7:run-batch-set", updates)
+  runBatchSet: (updates) => ipcRenderer.invoke("cf7:run-batch-set", updates),
+  getChangelog: () => ipcRenderer.invoke("cf7:get-changelog"),
+  runValidation: () => ipcRenderer.invoke("cf7:run-validation"),
+  getFieldConfig: () => ipcRenderer.invoke("cf7:get-field-config"),
+  saveFieldConfig: (config) => ipcRenderer.invoke("cf7:save-field-config", config)
 });
 

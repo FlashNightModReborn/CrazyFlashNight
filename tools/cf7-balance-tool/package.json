@@ -23,6 +23,8 @@
     "query": "tsx packages/cli/src/index.ts query",
     "diff": "tsx packages/cli/src/index.ts diff",
     "validate": "tsx packages/cli/src/index.ts validate",
+    "import-excel": "tsx packages/cli/src/index.ts import-excel",
+    "export": "tsx packages/cli/src/index.ts export",
     "dev:web": "npm run dev:renderer --workspace @cf7-balance-tool/web",
     "dev:electron": "npm run dev:electron --workspace @cf7-balance-tool/web"
   },
@@ -37,6 +39,7 @@
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
     "vite": "^6.2.0",
-    "vitest": "^3.0.8"
+    "vitest": "^3.0.8",
+    "xlsx": "^0.18.5"
   }
 }

@@ -9,6 +9,8 @@ export interface ExplosivesInput {
 
 export interface ExplosivesOutput {
   recommendedPower: number; // 推荐单发威力
+  recommendedGoldPrice: number;  // 推荐金币价格
+  recommendedKPointPrice: number; // 推荐K点价格
 }
 
 export function computeExplosivesRow(input: ExplosivesInput): ExplosivesOutput {
@@ -25,5 +27,9 @@ export function computeExplosivesRow(input: ExplosivesInput): ExplosivesOutput {
     ? raw
     : cap + 0.2 * cap * (1 - Math.exp(-(raw - cap) / cap));
 
-  return { recommendedPower };
+  // 爆炸类使用武器定价公式 (dualWieldFactor=1, categoryFactor=1, damageTypeFactor=1)
+  const recommendedGoldPrice = input.level * 3900 * Math.pow(1.6, input.weightLayers);
+  const recommendedKPointPrice = input.level * 120 * Math.pow(1.5, input.weightLayers);
+
+  return { recommendedPower, recommendedGoldPrice, recommendedKPointPrice };
 }
