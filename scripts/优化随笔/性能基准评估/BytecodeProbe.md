@@ -73,12 +73,43 @@ U11-base:0
 U11-test:0
 U12-onearg:42
 U15-true_df2_ret:1
+=== 探针组 V: chain_depth ===
+V-chain1:42
+V-chain2:10
+V-chain3:20
+=== 探针组 W: clamp ===
+W-maxsingle:3
+W-clampmath:7
+W-clamptern:7
+=== 探针组 X: native bridge ===
+X-fromchar:A
+X-pint_c:42
+X-keydown:false
+X-num_c:42
+X-isnan_c:false
+=== 探针组 Y: closure depth ===
+Y-readouter:100
+Y-readmid:50
+Y-readboth:150
+=== 探针组 Z: new ctor DF1/DF2 ===
+Z-benchempty:[object Object]
+Z-benchsimple:[object Object]
+Z-benchemptydf2:[object Object]
+=== 探针组 AA: fn call paths ===
+AA-direct:1
+AA-dotcall:1
+AA-apply:1
+=== 探针组 AB: member_set ===
+AB-existing:done
+AB-new:done
+AB-afterreset:done
 === BytecodeProbe 完成 ===
 
 
 
 
-ConstantPool "NaN", "NaN == NaN: ", "NaN != NaN: ", "NaN === NaN: ", "NaN !== NaN: ", "n == n: ", "n != n: ", "isNaN(n): ", "isNaN", "42", "_emptyFn", "_identityFn", "_gObj", "emptyMethod", "retMethod", "call", "_gVar", "x", "hello", "length", "Boolean", "", "Math", "floor", "_ProbeCtor0", "_ProbeCtor1", "captured", "outer", "mid", "_gArr100", "b", "message", "tmp", "hasOwnProperty", "a", "c", "parseInt", "3.14", "parseFloat", "_callU_decl_only_df1", "_callU_empty_df2", "_callU_empty_df1", "_callU_ret_df1", "_callU_ret_df2", "_callU_void_nosig", "y", "_pI", "=== BytecodeProbe: 运行所有探针防止 DCE ===", "A-and:", "probe_bit_and", "A-or:", "probe_bit_or", "A-xor:", "probe_bit_xor", "A-not:", "probe_bit_not", "A-or0:", "probe_bit_or_zero", "A-dtil:", "probe_double_tilde", "A-lsh:", "probe_lshift", "A-rsh:", "probe_rshift", "probe_nan_eq", "B-selfne:", "probe_isnan_selfne", "B-isnan:", "probe_isnan_fn", "C-uplus:", "probe_unary_plus", "C-numcast:", "probe_number_cast", "D-cfold:", "probe_const_fold", "D-varadd:", "probe_var_add", "D-cmul:", "probe_const_mul", "probe_call_void", "E-cassign:", "probe_call_assign", "probe_call_method", "E-cmret:", "probe_call_method_ret", "E-fncall:", "probe_fn_dot_call", "F-local:", "probe_local_read", "F-global:", "probe_global_read", "F-member:", "probe_member_read", "F-bracket:", "probe_bracket_read", "G-typed:", "probe_typed_local", "G-untyped:", "probe_untyped_local", "H-strlen:", "probe_str_length", "H-arrlen:", "probe_arr_length", "H-as1len:", "probe_str_length_as1", "I-boolcast:", "probe_boolean_cast", "I-dblnot:", "probe_double_not", "J-typeof:", "probe_typeof", "K-mfloor:", "probe_math_floor", "K-cfloor:", "probe_cached_floor", "L-sw5:", "probe_switch_5", "L-if5:", "probe_ifelse_5", "M-eq:", "probe_eq_same_type", "M-seq:", "probe_strict_eq_same", "M-eqx:", "probe_eq_cross_type", "M-seqx:", "probe_strict_eq_cross", "N-new0:", "probe_new_empty", "N-new1:", "probe_new_simple", "O-addi:", "probe_add_int", "O-addf:", "probe_add_float", "O-neg:", "probe_negate", "O-post:", "probe_incr_post", "_pClosure", "probe_closure_factory", "P-closure:", "P-arglen:", "probe_arguments_length", "P-argread:", "probe_arguments_read", "Q-arrlocal:", "probe_arr_local_read", "Q-arrglobal:", "probe_arr_global_read", "R-with:", "probe_with_block", "R-tryok:", "probe_try_noexcept", "R-tryex:", "probe_try_except", "probe_delete_prop", "S-hasown:", "probe_hasown", "S-forin:", "probe_forin", "T-pint:", "probe_parseint", "T-pfloat:", "probe_parsefloat", "T-strcast:", "probe_string_cast", "T-strconcat:", "probe_string_concat_cast", "=== 探针组 U: call_empty 异常诊断 ===", "probe_U1_void_df1", "probe_U2_void_df2", "U3-ret_df1:", "probe_U3_ret_df1", "U4-ret_df2:", "probe_U4_ret_df2", "U5-caller_df2:", "probe_U5_caller_df2_void_df1", "probe_U6_void_df2_1arg", "U7-ret_df2_1arg:", "probe_U7_ret_df2_1arg", "probe_U8_void_nosig", "probe_U9_df2_0args", "probe_U10_double_void", "U11-base:", "probe_U11_bench_base", "U11-test:", "probe_U11_bench_test", "U12-onearg:", "probe_U12_onearg_test", "probe_U13_decl_only", "probe_U14_true_df2", "U15-true_df2_ret:", "probe_U15_true_df2_ret", "=== BytecodeProbe 完成 ==="
+
+ConstantPool "NaN", "NaN == NaN: ", "NaN != NaN: ", "NaN === NaN: ", "NaN !== NaN: ", "n == n: ", "n != n: ", "isNaN(n): ", "isNaN", "42", "_emptyFn", "_identityFn", "_gObj", "emptyMethod", "retMethod", "call", "_gVar", "x", "hello", "length", "Boolean", "", "Math", "floor", "_ProbeCtor0", "_ProbeCtor1", "captured", "outer", "mid", "_gArr100", "b", "message", "tmp", "hasOwnProperty", "a", "c", "parseInt", "3.14", "parseFloat", "_callU_decl_only_df1", "_callU_empty_df2", "_callU_empty_df1", "_callU_ret_df1", "_callU_ret_df2", "_callU_void_nosig", "_pChain2", "inner", "_pChain3", "max", "min", "String", "fromCharCode", "_pParseInt", "Key", "isDown", "_pNumber", "_pIsNaN", "_ProbeBenchEmptyCtor", "_ProbeBenchSimpleCtor", "_ProbeBenchEmptyCtorDF2", "apply", "dyn", "y", "_pI", "Number", "=== BytecodeProbe: 运行所有探针防止 DCE ===", "A-and:", "probe_bit_and", "A-or:", "probe_bit_or", "A-xor:", "probe_bit_xor", "A-not:", "probe_bit_not", "A-or0:", "probe_bit_or_zero", "A-dtil:", "probe_double_tilde", "A-lsh:", "probe_lshift", "A-rsh:", "probe_rshift", "probe_nan_eq", "B-selfne:", "probe_isnan_selfne", "B-isnan:", "probe_isnan_fn", "C-uplus:", "probe_unary_plus", "C-numcast:", "probe_number_cast", "D-cfold:", "probe_const_fold", "D-varadd:", "probe_var_add", "D-cmul:", "probe_const_mul", "probe_call_void", "E-cassign:", "probe_call_assign", "probe_call_method", "E-cmret:", "probe_call_method_ret", "E-fncall:", "probe_fn_dot_call", "F-local:", "probe_local_read", "F-global:", "probe_global_read", "F-member:", "probe_member_read", "F-bracket:", "probe_bracket_read", "G-typed:", "probe_typed_local", "G-untyped:", "probe_untyped_local", "H-strlen:", "probe_str_length", "H-arrlen:", "probe_arr_length", "H-as1len:", "probe_str_length_as1", "I-boolcast:", "probe_boolean_cast", "I-dblnot:", "probe_double_not", "J-typeof:", "probe_typeof", "K-mfloor:", "probe_math_floor", "K-cfloor:", "probe_cached_floor", "L-sw5:", "probe_switch_5", "L-if5:", "probe_ifelse_5", "M-eq:", "probe_eq_same_type", "M-seq:", "probe_strict_eq_same", "M-eqx:", "probe_eq_cross_type", "M-seqx:", "probe_strict_eq_cross", "N-new0:", "probe_new_empty", "N-new1:", "probe_new_simple", "O-addi:", "probe_add_int", "O-addf:", "probe_add_float", "O-neg:", "probe_negate", "O-post:", "probe_incr_post", "_pClosure", "probe_closure_factory", "P-closure:", "P-arglen:", "probe_arguments_length", "P-argread:", "probe_arguments_read", "Q-arrlocal:", "probe_arr_local_read", "Q-arrglobal:", "probe_arr_global_read", "R-with:", "probe_with_block", "R-tryok:", "probe_try_noexcept", "R-tryex:", "probe_try_except", "probe_delete_prop", "S-hasown:", "probe_hasown", "S-forin:", "probe_forin", "T-pint:", "probe_parseint", "T-pfloat:", "probe_parsefloat", "T-strcast:", "probe_string_cast", "T-strconcat:", "probe_string_concat_cast", "=== 探针组 U: call_empty 异常诊断 ===", "probe_U1_void_df1", "probe_U2_void_df2", "U3-ret_df1:", "probe_U3_ret_df1", "U4-ret_df2:", "probe_U4_ret_df2", "U5-caller_df2:", "probe_U5_caller_df2_void_df1", "probe_U6_void_df2_1arg", "U7-ret_df2_1arg:", "probe_U7_ret_df2_1arg", "probe_U8_void_nosig", "probe_U9_df2_0args", "probe_U10_double_void", "U11-base:", "probe_U11_bench_base", "U11-test:", "probe_U11_bench_test", "U12-onearg:", "probe_U12_onearg_test", "probe_U13_decl_only", "probe_U14_true_df2", "U15-true_df2_ret:", "probe_U15_true_df2_ret", "=== 探针组 V: chain_depth ===", "V-chain1:", "probe_chain_depth1", "V-chain2:", "probe_chain_depth2", "V-chain3:", "probe_chain_depth3", "=== 探针组 W: clamp ===", "W-maxsingle:", "probe_math_max_single", "W-clampmath:", "probe_clamp_mathminmax", "W-clamptern:", "probe_clamp_ternary", "=== 探针组 X: native bridge ===", "X-fromchar:", "probe_native_fromcharcode", "X-pint_c:", "probe_native_parseint_cached", "X-keydown:", "probe_native_keyisdown", "X-num_c:", "probe_native_number_cached", "X-isnan_c:", "probe_native_isnan_cached", "=== 探针组 Y: closure depth ===", "_pClosureOuter", "probe_closure_read_outer", "_pClosureOuterInner", "Y-readouter:", "_pClosureMid", "probe_closure_read_mid", "_pClosureMidInner", "Y-readmid:", "_pClosureBoth", "probe_closure_read_both", "_pClosureBothInner", "Y-readboth:", "=== 探针组 Z: new ctor DF1/DF2 ===", "Z-benchempty:", "probe_new_bench_empty", "Z-benchsimple:", "probe_new_bench_simple", "Z-benchemptydf2:", "probe_new_bench_empty_df2", "=== 探针组 AA: fn call paths ===", "AA-direct:", "probe_fn_direct_call", "AA-dotcall:", "probe_fn_dot_call_v2", "AA-apply:", "probe_fn_dot_apply", "=== 探针组 AB: member_set ===", "probe_member_set_existing", "AB-existing:done", "probe_member_set_new", "AB-new:done", "probe_member_set_after_reset", "AB-afterreset:done", "=== BytecodeProbe 完成 ==="
 DefineFunction "_emptyFn", 0 {
 }
 DefineFunction2 "_identityFn", 1, 2, false, false, true, false, true, false, true, false, false, 1, "v" {
@@ -606,65 +637,65 @@ Push register1
 StoreRegister 0
 Push 0
 StrictEquals
-If loc1612
+If loc1b43
 Push register0, 1
 StrictEquals
-If loc161b
+If loc1b4c
 Push register0, 2
 StrictEquals
-If loc1624
+If loc1b55
 Push register0, 3
 StrictEquals
-If loc162d
+If loc1b5e
 Push register0, 4
 StrictEquals
-If loc1636
-Jump loc163f
-loc1612:Push 10
+If loc1b67
+Jump loc1b70
+loc1b43:Push 10
 Return
-loc161b:Push 20
+loc1b4c:Push 20
 Return
-loc1624:Push 30
+loc1b55:Push 30
 Return
-loc162d:Push 40
+loc1b5e:Push 40
 Return
-loc1636:Push 50
+loc1b67:Push 50
 Return
-loc163f:Push 0
+loc1b70:Push 0
 Return
 }
 DefineFunction2 "probe_ifelse_5", 1, 2, false, false, true, false, true, false, true, false, false, 1, "v" {
 Push register1, 0
 Equals2
 Not
-If loc1689
+If loc1bba
 Push 10
 Return
-loc1689:Push register1, 1
+loc1bba:Push register1, 1
 Equals2
 Not
-If loc16a6
+If loc1bd7
 Push 20
 Return
-loc16a6:Push register1, 2
+loc1bd7:Push register1, 2
 Equals2
 Not
-If loc16c3
+If loc1bf4
 Push 30
 Return
-loc16c3:Push register1, 3
+loc1bf4:Push register1, 3
 Equals2
 Not
-If loc16e0
+If loc1c11
 Push 40
 Return
-loc16e0:Push register1, 4
+loc1c11:Push register1, 4
 Equals2
 Not
-If loc16fd
+If loc1c2e
 Push 50
 Return
-loc16fd:Push 0
+loc1c2e:Push 0
 Return
 }
 DefineFunction2 "probe_eq_same_type", 0, 3, false, false, true, false, true, false, true, false, false {
@@ -960,10 +991,10 @@ StoreRegister 1
 Pop
 Push register2
 Enumerate2
-loc1e20:StoreRegister 0
+loc2351:StoreRegister 0
 Push null
 Equals2
-If loc1e48
+If loc2379
 Push register0
 StoreRegister 3
 Pop
@@ -971,8 +1002,8 @@ Push register1
 Increment
 StoreRegister 1
 Pop
-Jump loc1e20
-loc1e48:Push register1
+Jump loc2351
+loc2379:Push register1
 Return
 }
 DefineFunction2 "probe_parseint", 0, 3, false, false, true, false, true, false, true, false, false {
@@ -1186,6 +1217,357 @@ Pop
 Push register1
 Return
 }
+DefineFunction2 "probe_chain_depth1", 0, 2, false, false, true, false, true, false, true, false, false {
+Push 0
+StoreRegister 1
+Pop
+Push "_gObj"
+GetVariable
+Push "x"
+GetMember
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_chain_depth2", 0, 2, false, false, true, false, true, false, true, false, false {
+Push 0
+StoreRegister 1
+Pop
+Push "_pChain2"
+GetVariable
+Push "inner"
+GetMember
+Push "x"
+GetMember
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_chain_depth3", 0, 2, false, false, true, false, true, false, true, false, false {
+Push 0
+StoreRegister 1
+Pop
+Push "_pChain3"
+GetVariable
+Push "mid"
+GetMember
+Push "inner"
+GetMember
+Push "x"
+GetMember
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_math_max_single", 0, 4, false, false, true, false, true, false, true, false, false {
+Push 3
+StoreRegister 2
+Pop
+Push 0
+StoreRegister 3
+Pop
+Push 0
+StoreRegister 1
+Pop
+Push register3, register2, 2, "Math"
+GetVariable
+Push "max"
+CallMethod
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_clamp_mathminmax", 0, 5, false, false, true, false, true, false, true, false, false {
+Push 7
+StoreRegister 2
+Pop
+Push 0
+StoreRegister 3
+Pop
+Push 10
+StoreRegister 4
+Pop
+Push 0
+StoreRegister 1
+Pop
+Push register4, register3, register2, 2, "Math"
+GetVariable
+Push "max"
+CallMethod
+Push 2, "Math"
+GetVariable
+Push "min"
+CallMethod
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_clamp_ternary", 0, 5, false, false, true, false, true, false, true, false, false {
+Push 7
+StoreRegister 1
+Pop
+Push 0
+StoreRegister 3
+Pop
+Push 10
+StoreRegister 4
+Pop
+Push 0
+StoreRegister 2
+Pop
+Push register1, register3
+Less2
+If loc2c34
+Push register1, register4
+Greater
+If loc2c2a
+Push register1
+Jump loc2c2f
+loc2c2a:Push register4
+loc2c2f:Jump loc2c39
+loc2c34:Push register3
+loc2c39:StoreRegister 2
+Pop
+Push register2
+Return
+}
+DefineFunction2 "probe_native_fromcharcode", 0, 2, false, false, true, false, true, false, true, false, false {
+Push ""
+StoreRegister 1
+Pop
+Push 65, 1, "String"
+GetVariable
+Push "fromCharCode"
+CallMethod
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_native_parseint_cached", 0, 2, false, false, true, false, true, false, true, false, false {
+Push 0
+StoreRegister 1
+Pop
+Push "42", 1, "_pParseInt"
+CallFunction
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_native_keyisdown", 0, 2, false, false, true, false, true, false, true, false, false {
+Push false
+StoreRegister 1
+Pop
+Push 65, 1, "Key"
+GetVariable
+Push "isDown"
+CallMethod
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_native_number_cached", 0, 2, false, false, true, false, true, false, true, false, false {
+Push 0
+StoreRegister 1
+Pop
+Push "42", 1, "_pNumber"
+CallFunction
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_native_isnan_cached", 0, 2, false, false, true, false, true, false, true, false, false {
+Push false
+StoreRegister 1
+Pop
+Push 42, 1, "_pIsNaN"
+CallFunction
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_closure_read_outer", 0, 3, false, false, true, false, true, false, true, false, false {
+Push "outer", 100
+DefineLocal
+DefineFunction2 "", 0, 2, false, false, true, false, true, false, true, false, false {
+Push 50
+StoreRegister 1
+Pop
+DefineFunction "", 0 {
+Push "outer"
+GetVariable
+Return
+}
+Return
+}
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_closure_read_mid", 0, 3, false, false, true, false, true, false, true, false, false {
+Push 100
+StoreRegister 2
+Pop
+DefineFunction "", 0 {
+Push "mid", 50
+DefineLocal
+DefineFunction "", 0 {
+Push "mid"
+GetVariable
+Return
+}
+Return
+}
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_closure_read_both", 0, 2, false, false, true, false, true, false, true, false, false {
+Push "outer", 100
+DefineLocal
+DefineFunction "", 0 {
+Push "mid", 50
+DefineLocal
+DefineFunction "", 0 {
+Push "outer"
+GetVariable
+Push "mid"
+GetVariable
+Add2
+Return
+}
+Return
+}
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction "_ProbeBenchEmptyCtor", 0 {
+}
+DefineFunction2 "_ProbeBenchSimpleCtor", 0, 2, false, false, true, false, true, false, false, true, false {
+Push register1, "x", 1
+SetMember
+}
+DefineFunction2 "_ProbeBenchEmptyCtorDF2", 1, 3, false, false, true, false, true, false, true, false, false, 2, "d" {
+Push register2
+StoreRegister 1
+Pop
+}
+DefineFunction2 "probe_new_bench_empty", 0, 2, false, false, true, false, true, false, true, false, false {
+Push 0, "_ProbeBenchEmptyCtor"
+NewObject
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_new_bench_simple", 0, 2, false, false, true, false, true, false, true, false, false {
+Push 0, "_ProbeBenchSimpleCtor"
+NewObject
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_new_bench_empty_df2", 0, 2, false, false, true, false, true, false, true, false, false {
+Push 0, 1, "_ProbeBenchEmptyCtorDF2"
+NewObject
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_fn_direct_call", 0, 3, false, false, true, false, true, false, true, false, false {
+Push 1
+StoreRegister 2
+Pop
+Push 0
+StoreRegister 1
+Pop
+Push register2, 1, "_identityFn"
+CallFunction
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_fn_dot_call_v2", 0, 3, false, false, true, false, true, false, true, false, false {
+Push 1
+StoreRegister 2
+Pop
+Push 0
+StoreRegister 1
+Pop
+Push register2, null, 2, "_identityFn"
+GetVariable
+Push "call"
+CallMethod
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_fn_dot_apply", 0, 4, false, false, true, false, true, false, true, false, false {
+Push 1
+StoreRegister 3
+Pop
+Push 0
+StoreRegister 1
+Pop
+Push 1, 1
+InitArray
+StoreRegister 2
+Pop
+Push register2, null, 2, "_identityFn"
+GetVariable
+Push "apply"
+CallMethod
+StoreRegister 1
+Pop
+Push register1
+Return
+}
+DefineFunction2 "probe_member_set_existing", 0, 3, false, false, true, false, true, false, true, false, false {
+Push "x", 1, 1
+InitObject
+StoreRegister 1
+Pop
+Push register1, "x", 2
+SetMember
+}
+DefineFunction2 "probe_member_set_new", 0, 2, false, false, true, false, true, false, true, false, false {
+Push 0
+InitObject
+StoreRegister 1
+Pop
+Push register1, "dyn", 1
+SetMember
+}
+DefineFunction2 "probe_member_set_after_reset", 0, 2, false, false, true, false, true, false, true, false, false {
+Push 0
+InitObject
+StoreRegister 1
+Pop
+Push register1, "dyn", 1
+SetMember
+Push register1, "dyn"
+Delete
+Pop
+Push register1, "dyn", 2
+SetMember
+}
 Push "_gVar", 42
 DefineLocal
 Push "_gObj", "x", 42, "y", 0, 2
@@ -1212,12 +1594,12 @@ Push "_pI"
 DefineLocal2
 Push "_pI", 0
 SetVariable
-loc2514:Push "_pI"
+loc3322:Push "_pI"
 GetVariable
 Push 100
 Less2
 Not
-If loc254e
+If loc335c
 Push "_gArr100"
 GetVariable
 Push "_pI"
@@ -1229,8 +1611,29 @@ Push "_pI", "_pI"
 GetVariable
 Increment
 SetVariable
-Jump loc2514
-loc254e:Push "=== BytecodeProbe: 运行所有探针防止 DCE ==="
+Jump loc3322
+loc335c:Push "_pChain2", "inner", "x", 10, 1
+InitObject
+Push 1
+InitObject
+DefineLocal
+Push "_pChain3", "mid", "inner", "x", 20, 1
+InitObject
+Push 1
+InitObject
+Push 1
+InitObject
+DefineLocal
+Push "_pParseInt", "parseInt"
+GetVariable
+DefineLocal
+Push "_pNumber", "Number"
+GetVariable
+DefineLocal
+Push "_pIsNaN", "isNaN"
+GetVariable
+DefineLocal
+Push "=== BytecodeProbe: 运行所有探针防止 DCE ==="
 Trace
 Push "A-and:", 0, "probe_bit_and"
 CallFunction
@@ -1536,6 +1939,133 @@ Pop
 Push "U15-true_df2_ret:", 0, "probe_U15_true_df2_ret"
 CallFunction
 Add2
+Trace
+Push "=== 探针组 V: chain_depth ==="
+Trace
+Push "V-chain1:", 0, "probe_chain_depth1"
+CallFunction
+Add2
+Trace
+Push "V-chain2:", 0, "probe_chain_depth2"
+CallFunction
+Add2
+Trace
+Push "V-chain3:", 0, "probe_chain_depth3"
+CallFunction
+Add2
+Trace
+Push "=== 探针组 W: clamp ==="
+Trace
+Push "W-maxsingle:", 0, "probe_math_max_single"
+CallFunction
+Add2
+Trace
+Push "W-clampmath:", 0, "probe_clamp_mathminmax"
+CallFunction
+Add2
+Trace
+Push "W-clamptern:", 0, "probe_clamp_ternary"
+CallFunction
+Add2
+Trace
+Push "=== 探针组 X: native bridge ==="
+Trace
+Push "X-fromchar:", 0, "probe_native_fromcharcode"
+CallFunction
+Add2
+Trace
+Push "X-pint_c:", 0, "probe_native_parseint_cached"
+CallFunction
+Add2
+Trace
+Push "X-keydown:", 0, "probe_native_keyisdown"
+CallFunction
+Add2
+Trace
+Push "X-num_c:", 0, "probe_native_number_cached"
+CallFunction
+Add2
+Trace
+Push "X-isnan_c:", 0, "probe_native_isnan_cached"
+CallFunction
+Add2
+Trace
+Push "=== 探针组 Y: closure depth ==="
+Trace
+Push "_pClosureOuter", 0, "probe_closure_read_outer"
+CallFunction
+DefineLocal
+Push "_pClosureOuterInner", 0, "_pClosureOuter"
+CallFunction
+DefineLocal
+Push "Y-readouter:", 0, "_pClosureOuterInner"
+CallFunction
+Add2
+Trace
+Push "_pClosureMid", 0, "probe_closure_read_mid"
+CallFunction
+DefineLocal
+Push "_pClosureMidInner", 0, "_pClosureMid"
+CallFunction
+DefineLocal
+Push "Y-readmid:", 0, "_pClosureMidInner"
+CallFunction
+Add2
+Trace
+Push "_pClosureBoth", 0, "probe_closure_read_both"
+CallFunction
+DefineLocal
+Push "_pClosureBothInner", 0, "_pClosureBoth"
+CallFunction
+DefineLocal
+Push "Y-readboth:", 0, "_pClosureBothInner"
+CallFunction
+Add2
+Trace
+Push "=== 探针组 Z: new ctor DF1/DF2 ==="
+Trace
+Push "Z-benchempty:", 0, "probe_new_bench_empty"
+CallFunction
+Add2
+Trace
+Push "Z-benchsimple:", 0, "probe_new_bench_simple"
+CallFunction
+Add2
+Trace
+Push "Z-benchemptydf2:", 0, "probe_new_bench_empty_df2"
+CallFunction
+Add2
+Trace
+Push "=== 探针组 AA: fn call paths ==="
+Trace
+Push "AA-direct:", 0, "probe_fn_direct_call"
+CallFunction
+Add2
+Trace
+Push "AA-dotcall:", 0, "probe_fn_dot_call_v2"
+CallFunction
+Add2
+Trace
+Push "AA-apply:", 0, "probe_fn_dot_apply"
+CallFunction
+Add2
+Trace
+Push "=== 探针组 AB: member_set ==="
+Trace
+Push 0, "probe_member_set_existing"
+CallFunction
+Pop
+Push "AB-existing:done"
+Trace
+Push 0, "probe_member_set_new"
+CallFunction
+Pop
+Push "AB-new:done"
+Trace
+Push 0, "probe_member_set_after_reset"
+CallFunction
+Pop
+Push "AB-afterreset:done"
 Trace
 Push "=== BytecodeProbe 完成 ==="
 Trace

@@ -673,6 +673,233 @@ function probe_U12_onearg_test():Number {
 }
 
 // ============================================================
+// 探针组 V：链式属性访问（chain_depth atomicOps 校准）
+// 目的：确认 chain_depth2/3 的字节码条数，校准 atomicOps
+// ============================================================
+
+// 1层：o.x → 1次 GetMember
+function probe_chain_depth1():Number {
+    var b:Number = 0;
+    b = _gObj.x;
+    return b;
+}
+
+// 2层：o.inner.x → 预期 2次 GetMember
+var _pChain2:Object = {inner:{x:10}};
+function probe_chain_depth2():Number {
+    var b:Number = 0;
+    b = _pChain2.inner.x;
+    return b;
+}
+
+// 3层：o.mid.inner.x → 预期 3次 GetMember
+var _pChain3:Object = {mid:{inner:{x:20}}};
+function probe_chain_depth3():Number {
+    var b:Number = 0;
+    b = _pChain3.mid.inner.x;
+    return b;
+}
+
+// ============================================================
+// 探针组 W：clamp 复合路径（atomicOps 校准）
+// 目的：确认 Math.min(Math.max()) 的字节码条数
+// ============================================================
+
+// 单次 Math.max → GetVariable + GetMember + CallMethod
+function probe_math_max_single():Number {
+    var a:Number = 3;
+    var lo:Number = 0;
+    var b:Number = 0;
+    b = Math.max(a, lo);
+    return b;
+}
+
+// 复合 clamp → 两次 GetVariable + GetMember + CallMethod
+function probe_clamp_mathminmax():Number {
+    var a:Number = 7;
+    var lo:Number = 0;
+    var hi:Number = 10;
+    var b:Number = 0;
+    b = Math.min(Math.max(a, lo), hi);
+    return b;
+}
+
+// 三元 clamp → 纯字节码比较+跳转，无 native 调用
+function probe_clamp_ternary():Number {
+    var a:Number = 7;
+    var lo:Number = 0;
+    var hi:Number = 10;
+    var b:Number = 0;
+    b = (a < lo ? lo : (a > hi ? hi : a));
+    return b;
+}
+
+// ============================================================
+// 探针组 X：native 桥接开销对照（C++ glue cost 隔离）
+// 目的：对比不同 native API 的 CallMethod/CallFunction 路径
+// 验证 C++ 桥接是通用常数还是逐 API 变化
+// ============================================================
+
+// String.fromCharCode → GetVariable("String") + GetMember("fromCharCode") + CallMethod
+function probe_native_fromcharcode():String {
+    var b:String = "";
+    b = String.fromCharCode(65);
+    return b;
+}
+
+// parseInt → GetVariable("parseInt") + CallFunction（全局函数，非对象方法）
+// 注意：已有 probe_parseint，这里专门对照缓存版本
+var _pParseInt:Function = parseInt;
+function probe_native_parseint_cached():Number {
+    var b:Number = 0;
+    b = _pParseInt("42");
+    return b;
+}
+
+// Key.isDown → GetVariable("Key") + GetMember("isDown") + CallMethod
+// Flash 专有 native API，验证 Flash-specific dispatch 层
+function probe_native_keyisdown():Boolean {
+    var b:Boolean = false;
+    b = Key.isDown(65);
+    return b;
+}
+
+// Number() 全局函数 → CallFunction 路径
+// 已有 probe_number_cast，这里对照缓存版本
+var _pNumber:Function = Number;
+function probe_native_number_cached():Number {
+    var b:Number = 0;
+    b = _pNumber("42");
+    return b;
+}
+
+// isNaN() 全局函数 → CallFunction 路径
+var _pIsNaN:Function = isNaN;
+function probe_native_isnan_cached():Boolean {
+    var b:Boolean = false;
+    b = _pIsNaN(42);
+    return b;
+}
+
+// ============================================================
+// 探针组 Y：closure_deep2 语义验证
+// 目的：确认 benchmark 中 closure_deep2 实际读的是哪一层
+// ============================================================
+
+// 直接读 outer（2层跳跃）vs 读 mid（1层跳跃）
+function probe_closure_read_outer():Function {
+    var outer:Number = 100;
+    var inner:Function = function():Function {
+        var mid:Number = 50;
+        // 这个闭包跳过 mid，直接读 outer → 应有 2 层 GetVariable
+        return function():Number { return outer; };
+    };
+    return inner;
+}
+
+function probe_closure_read_mid():Function {
+    var outer:Number = 100;
+    var inner:Function = function():Function {
+        var mid:Number = 50;
+        // 这个闭包只读 mid → 1 层 GetVariable
+        return function():Number { return mid; };
+    };
+    return inner;
+}
+
+// 同时读 outer + mid（验证多变量捕获的字节码）
+function probe_closure_read_both():Function {
+    var outer:Number = 100;
+    var inner:Function = function():Function {
+        var mid:Number = 50;
+        return function():Number { return outer + mid; };
+    };
+    return inner;
+}
+
+// ============================================================
+// 探针组 Z：new 构造函数 DF1/DF2 对照（解决 new_empty > new_simple）
+// 目的：精确对比 bench 中使用的 _EmptyCtor (DF1) vs _SimpleCtor (DF2)
+// ============================================================
+
+// 模拟 bench 中的 _EmptyCtor：0参数空体 → 必然 DF1
+function _ProbeBenchEmptyCtor() {}
+
+// 模拟 bench 中的 _SimpleCtor：this.x=1 → DF2（this 被引用）
+function _ProbeBenchSimpleCtor() { this.x = 1; }
+
+// 模拟修复后的 DF2 空构造：参数被引用 → 强制 DF2
+function _ProbeBenchEmptyCtorDF2(d:Number) { var _:Number = d; }
+
+function probe_new_bench_empty():Object {
+    var o:Object = new _ProbeBenchEmptyCtor();
+    return o;
+}
+
+function probe_new_bench_simple():Object {
+    var o:Object = new _ProbeBenchSimpleCtor();
+    return o;
+}
+
+function probe_new_bench_empty_df2():Object {
+    var o:Object = new _ProbeBenchEmptyCtorDF2(0);
+    return o;
+}
+
+// ============================================================
+// 探针组 AA：fn_call_onearg base 异常诊断
+// 目的：验证 .call() 的字节码路径，解释 fn_call_onearg base 偏高
+// ============================================================
+
+// 普通调用 _identity_fn(a) → base 路径
+function probe_fn_direct_call():Number {
+    var a:Number = 1;
+    var b:Number = 0;
+    b = _identityFn(a);
+    return b;
+}
+
+// .call(null, a) 路径
+function probe_fn_dot_call_v2():Number {
+    var a:Number = 1;
+    var b:Number = 0;
+    b = _identityFn.call(null, a);
+    return b;
+}
+
+// .apply(null, [a]) 路径
+function probe_fn_dot_apply():Number {
+    var a:Number = 1;
+    var b:Number = 0;
+    var args:Array = [1];
+    b = _identityFn.apply(null, args);
+    return b;
+}
+
+// ============================================================
+// 探针组 AB：member_set 路径对比（resetEach 语义验证）
+// 目的：确认 o.dyn=a (新属性) vs o.x=a (已有属性) 的字节码差异
+// ============================================================
+
+function probe_member_set_existing():Void {
+    var o:Object = {x:1};
+    o.x = 2;
+}
+
+function probe_member_set_new():Void {
+    var o:Object = {};
+    o.dyn = 1;
+}
+
+// 带 delete 后重新赋值（模拟 resetEach 重建后的路径）
+function probe_member_set_after_reset():Void {
+    var o:Object = {};
+    o.dyn = 1;
+    delete o.dyn;
+    o.dyn = 2;
+}
+
+// ============================================================
 // 运行入口（确保所有函数不被 DCE）
 // ============================================================
 trace("=== BytecodeProbe: 运行所有探针防止 DCE ===");
@@ -757,5 +984,59 @@ trace("U12-onearg:" + probe_U12_onearg_test());
 probe_U13_decl_only();
 probe_U14_true_df2();
 trace("U15-true_df2_ret:" + probe_U15_true_df2_ret());
+
+// --- 探针组 V: 链式属性访问 ---
+trace("=== 探针组 V: chain_depth ===");
+trace("V-chain1:" + probe_chain_depth1());
+trace("V-chain2:" + probe_chain_depth2());
+trace("V-chain3:" + probe_chain_depth3());
+
+// --- 探针组 W: clamp 复合路径 ---
+trace("=== 探针组 W: clamp ===");
+trace("W-maxsingle:" + probe_math_max_single());
+trace("W-clampmath:" + probe_clamp_mathminmax());
+trace("W-clamptern:" + probe_clamp_ternary());
+
+// --- 探针组 X: native 桥接开销 ---
+trace("=== 探针组 X: native bridge ===");
+trace("X-fromchar:" + probe_native_fromcharcode());
+trace("X-pint_c:" + probe_native_parseint_cached());
+trace("X-keydown:" + probe_native_keyisdown());
+trace("X-num_c:" + probe_native_number_cached());
+trace("X-isnan_c:" + probe_native_isnan_cached());
+
+// --- 探针组 Y: closure 层级 ---
+trace("=== 探针组 Y: closure depth ===");
+var _pClosureOuter:Function = probe_closure_read_outer();
+var _pClosureOuterInner:Function = _pClosureOuter();
+trace("Y-readouter:" + _pClosureOuterInner());
+var _pClosureMid:Function = probe_closure_read_mid();
+var _pClosureMidInner:Function = _pClosureMid();
+trace("Y-readmid:" + _pClosureMidInner());
+var _pClosureBoth:Function = probe_closure_read_both();
+var _pClosureBothInner:Function = _pClosureBoth();
+trace("Y-readboth:" + _pClosureBothInner());
+
+// --- 探针组 Z: new 构造 DF1/DF2 ---
+trace("=== 探针组 Z: new ctor DF1/DF2 ===");
+trace("Z-benchempty:" + probe_new_bench_empty());
+trace("Z-benchsimple:" + probe_new_bench_simple());
+trace("Z-benchemptydf2:" + probe_new_bench_empty_df2());
+
+// --- 探针组 AA: fn_call 路径 ---
+trace("=== 探针组 AA: fn call paths ===");
+trace("AA-direct:" + probe_fn_direct_call());
+trace("AA-dotcall:" + probe_fn_dot_call_v2());
+trace("AA-apply:" + probe_fn_dot_apply());
+
+// --- 探针组 AB: member_set 路径 ---
+trace("=== 探针组 AB: member_set ===");
+probe_member_set_existing();
+trace("AB-existing:done");
+probe_member_set_new();
+trace("AB-new:done");
+probe_member_set_after_reset();
+trace("AB-afterreset:done");
+
 trace("=== BytecodeProbe 完成 ===");
 

@@ -30,6 +30,22 @@
  * D1. 实体批量更新（AOS vs SOA）
  * D2. 脏标记优化
  * D3. Math 方法缓存复合场景
+ *
+ * === v8.1 升级（基于 7 方 AI 交叉审阅 + 探针 V-AB 字节码验证）===
+ * E1. atomicOps 校正：chain_depth2/3(→2/3), proto2/3(→2/3)
+ * E2. new_empty: _EmptyCtor 从 DF1 改为 DF2（消除 DF1/DF2 混淆因素）
+ * E3. closure_deep2: 内层闭包改为读 outer（跨 2 层作用域链）
+ * E4. displayKind 字段：single/composite/expr 三级标注
+ * E5. qualityTag: BASELINE/FASTER 区分（原 delta<=0 统一为 BASELINE）
+ * E6. native 桥接对照组：fromCharCode/parseInt_cached/Key.isDown
+ * E7. 重命名：arr_read_var→arr_read_local, fn_call_onearg→fn_call_dotcall
+ *
+ * resetEach 语义说明：
+ * resetEach 在每个 outer 循环迭代的顶部执行一次，
+ * unroll 内的多次操作共享同一个 reset 后的状态。
+ * 对于 struct case (unroll=10)，第 2-10 次操作
+ * 可能操作"已被前序操作修改"的对象/数组。
+ * 这是有意设计——模拟真实热循环中的累积效应。
  */
 
 const fs = require('fs');
@@ -165,7 +181,8 @@ const benches = [
     base:'b=a;', test:'b=a*3+c*2;', finalize:'_bh += b;', atomicOps:3 },
 
   // v7 新增：常量折叠检测
-  { cat:'arith', name:'const_fold', desc:'b=3+4 常量折叠?',
+  // NOISE: delta≈0, CV>0.9, 仅证明编译器常量折叠生效。保留用于回归检测
+  { cat:'arith', name:'const_fold', desc:'b=3+4 常量折叠(NOISE预期)',
     init:['var b:Number=0;','var a:Number=7;'],
     base:'b=a;', test:'b=3+4;', finalize:'_bh += b;', atomicOps:1 },
 
@@ -242,25 +259,25 @@ const benches = [
   // ===================== BRANCH =====================
   { cat:'branch', name:'if_true', desc:'if(true) path',
     init:['var a:Boolean=true;','var b:Number=0;','var cst:Number=1;'],
-    base:'b=cst;', test:'if(a){b=1;}else{b=0;}', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'if(a){b=1;}else{b=0;}', finalize:'_bh += b;', atomicOps:1, displayKind:'expr' },
 
   { cat:'branch', name:'if_false', desc:'if(false) path',
     init:['var a:Boolean=false;','var b:Number=0;','var cst:Number=0;'],
-    base:'b=cst;', test:'if(a){b=1;}else{b=0;}', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'if(a){b=1;}else{b=0;}', finalize:'_bh += b;', atomicOps:1, displayKind:'expr' },
 
   // v7压缩: ternary_true/false 与 if_true/false 功能重叠，已删除
 
   { cat:'branch', name:'logical_and_short', desc:'false&&x 短路',
     init:['var a:Boolean=false;','var cst:Boolean=false;','var b:Boolean=false;'],
-    base:'b=cst;', test:'b=a&&true;', finalize:'_bh += (b?1:0);', atomicOps:1 },
+    base:'b=cst;', test:'b=a&&true;', finalize:'_bh += (b?1:0);', atomicOps:1, displayKind:'expr' },
 
   { cat:'branch', name:'logical_and_eval', desc:'true&&x 求值',
     init:['var a:Boolean=true;','var cst:Boolean=true;','var b:Boolean=false;'],
-    base:'b=cst;', test:'b=a&&true;', finalize:'_bh += (b?1:0);', atomicOps:1 },
+    base:'b=cst;', test:'b=a&&true;', finalize:'_bh += (b?1:0);', atomicOps:1, displayKind:'expr' },
 
   { cat:'branch', name:'logical_or_short', desc:'true||x 短路',
     init:['var a:Boolean=true;','var cst:Boolean=true;','var b:Boolean=false;'],
-    base:'b=cst;', test:'b=a||true;', finalize:'_bh += (b?1:0);', atomicOps:1 },
+    base:'b=cst;', test:'b=a||true;', finalize:'_bh += (b?1:0);', atomicOps:1, displayKind:'expr' },
 
   // v7压缩: logical_or_eval 与 logical_and_eval 同模式，已删除
 
@@ -280,11 +297,12 @@ const benches = [
     base:'b=cst;', test:'b=arr5[idx];', finalize:'_bh += b;', atomicOps:1 },
 
   // v8fix-A3: 用局部引用消除全局作用域查找税（v7 中 arr5=局部 vs arr100/1000=全局，差异含 ~95ns 作用域税）
-  { cat:'access', name:'arr_read_var_100', desc:'arr[idx] 100元素(局部引用)',
+  // v8.1fix: 重命名 arr_read_var → arr_read_local，消除"var=全局"误读
+  { cat:'access', name:'arr_read_local_100', desc:'arr[idx] 100元素(局部引用)',
     init:['var arr100:Array=_arr100;','var idx:Number=50;','var b:Number=0;','var cst:Number=50;'],
     base:'b=cst;', test:'b=arr100[idx];', finalize:'_bh += b;', atomicOps:1 },
 
-  { cat:'access', name:'arr_read_var_1000', desc:'arr[idx] 1000元素(局部引用)',
+  { cat:'access', name:'arr_read_local_1000', desc:'arr[idx] 1000元素(局部引用)',
     init:['var arr1000:Array=_arr1000;','var idx:Number=500;','var b:Number=0;','var cst:Number=500;'],
     base:'b=cst;', test:'b=arr1000[idx];', finalize:'_bh += b;', atomicOps:1 },
 
@@ -321,13 +339,14 @@ const benches = [
     init:['var b:Number=0;','var cst:Number=99;'],
     base:'b=cst;', test:'b=_obj_proto1.inherited_x;', finalize:'_bh += b;', atomicOps:1 },
 
+  // v8.1fix: atomicOps 校准——原型链每层一次 hash lookup
   { cat:'access', name:'proto2_read', desc:'原型链深度2',
     init:['var b:Number=0;','var cst:Number=77;'],
-    base:'b=cst;', test:'b=_obj_proto2.deep_x;', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'b=_obj_proto2.deep_x;', finalize:'_bh += b;', atomicOps:2, displayKind:'composite' },
 
   { cat:'access', name:'proto3_read', desc:'原型链深度3',
     init:['var b:Number=0;','var cst:Number=33;'],
-    base:'b=cst;', test:'b=_obj_proto3.very_deep_x;', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'b=_obj_proto3.very_deep_x;', finalize:'_bh += b;', atomicOps:3, displayKind:'composite' },
 
   { cat:'access', name:'member_set_existing', desc:'o.x=a 已有属性',
     init:['var a:Number=1;','var b:Number=0;'],
@@ -341,13 +360,14 @@ const benches = [
     resetEach:['o={};'],
     base:'b=a;', test:'o.dyn=a;', finalize:'_bh += (o.dyn==undefined?0:o.dyn)+b;', atomicOps:1 },
 
+  // v8.1fix: atomicOps 校准——探针V确认 depth2=2×GetMember, depth3=3×GetMember
   { cat:'access', name:'chain_depth2', desc:'a.b.x 链式2层',
     init:['var b:Number=0;','var cst:Number=10;'],
-    base:'b=cst;', test:'b=_chain2.inner.x;', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'b=_chain2.inner.x;', finalize:'_bh += b;', atomicOps:2, displayKind:'composite' },
 
   { cat:'access', name:'chain_depth3', desc:'a.b.c.x 链式3层',
     init:['var b:Number=0;','var cst:Number=20;'],
-    base:'b=cst;', test:'b=_chain3.mid.inner.x;', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'b=_chain3.mid.inner.x;', finalize:'_bh += b;', atomicOps:3, displayKind:'composite' },
 
   // native MC
   { cat:'access', name:'native_get_x', desc:'_mc._x',
@@ -392,19 +412,21 @@ const benches = [
 
   { cat:'call', name:'call_method_ret', desc:'方法调用有返回值',
     init:['var b:Number=0;','var cst:Number=42;'],
-    base:'b=cst;', test:'b=_obj_shallow.retMethod();', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'b=_obj_shallow.retMethod();', finalize:'_bh += b;', atomicOps:1, displayKind:'composite' },
 
-  { cat:'call', name:'fn_call_onearg', desc:'.call(null,a)',
+  // v8.1fix: 重命名+说明 base 含函数调用
+  { cat:'call', name:'fn_call_dotcall', desc:'.call(null,a) vs 直接调用(base含调用)',
     init:['var a:Number=1;','var b:Number=0;'],
-    base:'b=_identity_fn(a);', test:'b=_identity_fn.call(null,a);', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=_identity_fn(a);', test:'b=_identity_fn.call(null,a);', finalize:'_bh += b;', atomicOps:1, displayKind:'composite' },
 
   { cat:'call', name:'fn_apply_cached', desc:'.apply 复用args',
     init:['var a:Number=1;','var b:Number=0;','var args:Array=[1];'],
-    base:'b=_identity_fn(a);', test:'b=_identity_fn.apply(null,args);', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=_identity_fn(a);', test:'b=_identity_fn.apply(null,args);', finalize:'_bh += b;', atomicOps:1, displayKind:'composite' },
 
-  { cat:'call', name:'new_empty', desc:'new EmptyCtor()',
+  // v8.1fix: _EmptyCtor 改为 DF2，传参数 0
+  { cat:'call', name:'new_empty', desc:'new EmptyCtor(DF2)',
     init:['var o:Object;','var b:Number=0;','var cst:Number=0;'],
-    base:'b=cst;', test:'o=new _EmptyCtor();', finalize:'_bh += (o==undefined?0:1)+b;', atomicOps:1 },
+    base:'b=cst;', test:'o=new _EmptyCtor(0);', finalize:'_bh += (o==undefined?0:1)+b;', atomicOps:1 },
 
   { cat:'call', name:'new_simple', desc:'new SimpleCtor()',
     init:['var o:Object;','var b:Number=0;','var cst:Number=0;'],
@@ -414,7 +436,8 @@ const benches = [
     init:['var b:Number=0;','var cst:Number=42;'],
     base:'b=cst;', test:'b=_closure_reader();', finalize:'_bh += b;', atomicOps:1 },
 
-  { cat:'call', name:'closure_deep2', desc:'2层嵌套闭包',
+  // v8.1fix: 改为读 outer（跨2层作用域链）
+  { cat:'call', name:'closure_deep2', desc:'2层闭包读outer',
     init:['var b:Number=0;','var cst:Number=100;'],
     base:'b=cst;', test:'b=_closure_deep2();', finalize:'_bh += b;', atomicOps:1 },
 
@@ -663,15 +686,15 @@ const benches = [
 
   { cat:'math', name:'abs_ternary', desc:'a<0?-a:a',
     init:['var a:Number=-3;','var b:Number=0;','var cst:Number=3;'],
-    base:'b=cst;', test:'b=(a<0?-a:a);', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'b=(a<0?-a:a);', finalize:'_bh += b;', atomicOps:1, displayKind:'expr' },
 
   { cat:'math', name:'min_ternary', desc:'a<c?a:c',
     init:['var a:Number=3;','var c:Number=5;','var b:Number=0;','var cst:Number=3;'],
-    base:'b=cst;', test:'b=(a<c?a:c);', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'b=(a<c?a:c);', finalize:'_bh += b;', atomicOps:1, displayKind:'expr' },
 
   { cat:'math', name:'max_ternary', desc:'a>c?a:c',
     init:['var a:Number=3;','var c:Number=5;','var b:Number=0;','var cst:Number=5;'],
-    base:'b=cst;', test:'b=(a>c?a:c);', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'b=(a>c?a:c);', finalize:'_bh += b;', atomicOps:1, displayKind:'expr' },
 
   { cat:'math', name:'cached_math_floor', desc:'缓存引用 mf(a)',
     init:['var a:Number=3.7;','var b:Number=0;','var cst:Number=3;'],
@@ -683,11 +706,31 @@ const benches = [
 
   { cat:'math', name:'clamp_mathminmax', desc:'Math.min(Math.max(a,lo),hi)',
     init:['var a:Number=7;','var lo:Number=0;','var hi:Number=10;','var b:Number=0;','var cst:Number=7;'],
-    base:'b=cst;', test:'b=Math.min(Math.max(a,lo),hi);', finalize:'_bh += b;', atomicOps:2 },
+    base:'b=cst;', test:'b=Math.min(Math.max(a,lo),hi);', finalize:'_bh += b;', atomicOps:2, displayKind:'composite' },
 
   { cat:'math', name:'clamp_ternary', desc:'a<lo?lo:(a>hi?hi:a)',
     init:['var a:Number=7;','var lo:Number=0;','var hi:Number=10;','var b:Number=0;','var cst:Number=7;'],
-    base:'b=cst;', test:'b=(a<lo?lo:(a>hi?hi:a));', finalize:'_bh += b;', atomicOps:2 },
+    base:'b=cst;', test:'b=(a<lo?lo:(a>hi?hi:a));', finalize:'_bh += b;', atomicOps:2, displayKind:'expr' },
+
+  // ===================== NATIVE BRIDGE =====================
+  // v8.1: C++ 桥接开销对照（探针X确认字节码路径）
+  // 目的：对比不同 native API 的 CallMethod/CallFunction 路径
+  // 验证 C++ 桥接是通用常数 ~140ns 还是逐 API 变化
+
+  { cat:'native', name:'native_fromcharcode', desc:'String.fromCharCode(65)',
+    init:['var b:String="";','var cst:String="A";'],
+    base:'b=cst;', test:'b=String.fromCharCode(65);',
+    finalize:'_bh += b.length;', atomicOps:1 },
+
+  { cat:'native', name:'native_parseint_cached', desc:'缓存parseInt(s)',
+    init:['var b:Number=0;','var cst:Number=42;','var s:String="42";'],
+    base:'b=cst;', test:'b=_mpParseInt(s);',
+    finalize:'_bh += b;', atomicOps:1 },
+
+  { cat:'native', name:'native_keyisdown', desc:'Key.isDown(65)',
+    init:['var b:Boolean=false;','var cst:Boolean=false;'],
+    base:'b=cst;', test:'b=Key.isDown(65);',
+    finalize:'_bh += (b?1:0);', atomicOps:1 },
 
   // ===================== SCOPE =====================
   { cat:'scope', name:'local_read', desc:'局部变量读',
@@ -892,6 +935,7 @@ const categories = [
   ['string',  'STRING'],
   ['convert', 'CONVERT / TYPE / TYPEOF / CAST'],
   ['math',    'MATH / NATIVES / BIT-HACKS'],
+  ['native',  'NATIVE BRIDGE (C++ glue cost)'],
   ['scope',   'SCOPE / MISC / UNDEFINED / TRY / EVAL'],
   ['array',   'ARRAY METHODS'],
   ['gc',      'GC HEAVY']
@@ -917,9 +961,10 @@ function emitRunCalls(filterKind) {
   }).map(b => {
     const total = getTotal(b) * (b.atomicOps || 1);
     const isGC = (b.kind === 'gc') ? 'true' : 'false';
+    const dk = b.displayKind || 'single';
     return '    _results.push(_measurePair("' + b.cat + '", "' + b.name + '", "' +
            b.desc.replace(/"/g, '\\"') + '", base_' + b.name + ', test_' + b.name +
-           ', ' + total + ', ' + isGC + '));';
+           ', ' + total + ', ' + isGC + ', "' + dk + '"));';
   }).join('\n');
 }
 
@@ -1060,6 +1105,7 @@ const loopFns = [
   '    return getTimer() - t0;',
   '}',
   '',
+  '// loop_empty_while: 测量 while(i--){b=0;} 的纯循环开销（无累加）',
   'function bench_loop_empty_while():Number {',
   '    var t0:Number = getTimer();',
   '    var j:Number = ' + LOOP_REPEAT + ';',
@@ -1252,7 +1298,9 @@ const out = [
 'function _add3_fn(a:Number, b:Number, c:Number):Number { return a + b + c; }',
 'function _add5_fn(a:Number, b:Number, c:Number, d:Number, e:Number):Number { return a + b + c + d + e; }',
 'function _SimpleCtor() { this.x = 1; }',
-'function _EmptyCtor() {}',
+'// v8.1fix: _EmptyCtor 原为 DF1（空体），导致 new_empty(1556ns) > new_simple(906ns)',
+'// 修复为 DF2（参数被引用），消除 DF1/DF2 混淆因素',
+'function _EmptyCtor(d:Number) { var _:Number = d; }',
 '',
 'function _in_op(key:String, obj:Object):Boolean {',
 '    for (var k:String in obj) {',
@@ -1267,12 +1315,13 @@ const out = [
 '}',
 'var _closure_reader:Function = _makeClosureReader();',
 '',
-'// v8fix-A6: 改为真正的 2 层嵌套闭包（v7 与 closure_read 完全相同）',
+'// v8.1fix: 探针Y确认 GetVariable "outer" vs "mid" 字节码结构相同',
+'// 但运行时作用域链长度不同。改为读 outer 确保测量跨 2 层作用域链',
 'function _makeDeepClosure2():Function {',
 '    var outer:Number = 100;',
 '    var inner:Function = function():Function {',
-'        var mid:Number = outer + 1;',
-'        return function():Number { return mid; };',
+'        var mid:Number = 50;',
+'        return function():Number { return outer; };',
 '    };',
 '    return inner();',
 '}',
@@ -1280,6 +1329,7 @@ const out = [
 '',
 'var _mfloor:Function = Math.floor;',
 'var _msin:Function = Math.sin;',
+'var _mpParseInt:Function = parseInt;',
 '',
 'function _args_length_fn():Number { return arguments.length; }',
 'function _args_read_fn():Number { return Number(arguments[0]); }',
@@ -1379,7 +1429,8 @@ const out = [
 '',
 '// v7: 重命名为 _qualityTag 避免与 AS2 内置 _quality 属性冲突',
 'function _qualityTag(filtered:Array, deltaMed:Number, quantum:Number):String {',
-'    if (deltaMed <= 0) return "BASELINE";',
+'    if (deltaMed < 0) return "FASTER";',
+'    if (deltaMed == 0) return "BASELINE";',
 '    if (deltaMed < quantum * 2) return "NOISY<2q";',
 '    var avg:Number = _mean(filtered);',
 '    var sd:Number = _stddev(filtered, avg);',
@@ -1402,7 +1453,7 @@ const out = [
 '    return _median(diffs);',
 '}',
 '',
-'function _measurePair(cat:String, name:String, desc:String, baseFn:Function, testFn:Function, atomicTotal:Number, isGC:Boolean):Object {',
+'function _measurePair(cat:String, name:String, desc:String, baseFn:Function, testFn:Function, atomicTotal:Number, isGC:Boolean, displayKind:String):Object {',
 '    var baseRaw:Array = [];',
 '    var testRaw:Array = [];',
 '    var deltas:Array = [];',
@@ -1427,6 +1478,7 @@ const out = [
 '        deltaMin:_minNum(filtered), deltaMax:_maxNum(filtered),',
 '        perOpNs:perOpNs,',
 '        atomicTotal:atomicTotal, isGC:isGC,',
+'        displayKind:displayKind,',
 '        filtered:filtered',
 '    };',
 '}',
@@ -1486,6 +1538,7 @@ emitRunCalls('gc'),
 '                   "range=[" + _fmt(row.deltaMin,1) + "," + _fmt(row.deltaMax,1) + "]  " +',
 '                   q +',
 '                   (row.isGC ? "  [GC]" : "") +',
+'                   (row.displayKind != "single" ? "  [" + row.displayKind + "]" : "") +',
 '                   "\\n";',
 '        }',
 '    }',
@@ -1582,7 +1635,7 @@ const manifest = {
   generator: 'bench_gen_v8.js',
   output: 'BenchMain_v8.as',
   config: CFG,
-  benchmarks: benches.map(b => ({ cat: b.cat, name: b.name, desc: b.desc, kind: b.kind || 'std', atomicOps: b.atomicOps, opcode: b.opcode || '' })),
+  benchmarks: benches.map(b => ({ cat: b.cat, name: b.name, desc: b.desc, kind: b.kind || 'std', atomicOps: b.atomicOps, opcode: b.opcode || '', displayKind: b.displayKind || 'single' })),
   standardBenchCount: benches.filter(b => (b.kind || 'std') !== 'gc').length,
   gcBenchCount: benches.filter(b => b.kind === 'gc').length,
   totalBenchCount: benches.length,
