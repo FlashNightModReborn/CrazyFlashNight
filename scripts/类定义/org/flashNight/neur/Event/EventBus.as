@@ -125,8 +125,12 @@ class org.flashNight.neur.Event.EventBus {
         var scopeUID:String = (scope != null) ? String(Dictionary.getStaticUID(scope)) : "0";
         var comboUID:String = callbackUID + "|" + scopeUID;
 
-        // 去重
+        // 去重：检查 ids（普通订阅）和 onceCallbackMap（once 订阅）
         if (le_.ids[comboUID] !== undefined) {
+            return false;
+        }
+        var onceMap:Object = this.onceCallbackMap[eventName];
+        if (onceMap != null && onceMap[comboUID] !== undefined) {
             return false;
         }
 
@@ -171,12 +175,12 @@ class org.flashNight.neur.Event.EventBus {
             var scopeUID:String = (scope != null) ? String(Dictionary.getStaticUID(scope)) : "0";
             var comboUID:String = callbackUID + "|" + scopeUID;
 
-            // 检查是否是一次性订阅（需要查找 wrapped 的 comboUID）
+            // 检查是否是一次性订阅
             if (onceMapForEvent != null) {
                 var wrappedCombo:String = onceMapForEvent[comboUID];
                 if (wrappedCombo != null) {
-                    // 一次性订阅：实际存储用的是 wrappedComboUID
-                    removed = this._removeByCombo(eventName, le_, wrappedCombo, comboUID);
+                    // once 订阅：ids 中只有 wrappedComboUID
+                    removed = this._removeByCombo(eventName, le_, wrappedCombo);
                     delete onceMapForEvent[comboUID];
                     // 清理空的 onceMap
                     var hasOnce:Boolean = false;
@@ -186,13 +190,14 @@ class org.flashNight.neur.Event.EventBus {
                 }
             }
 
-            removed = this._removeByCombo(eventName, le_, comboUID, comboUID);
+            // 普通订阅
+            removed = this._removeByCombo(eventName, le_, comboUID);
         } else {
             // 兼容模式：删除该 callback 的所有订阅
             var prefix:String = callbackUID + "|";
             var idsRef:Object = le_.ids;
 
-            // 收集要删除的 comboUID（不能在遍历中修改）
+            // 收集普通订阅的 comboUID
             var toRemove:Array = [];
             var toRemoveCount:Number = 0;
             for (var uid:String in idsRef) {
@@ -201,22 +206,14 @@ class org.flashNight.neur.Event.EventBus {
                 }
             }
 
-            // 处理一次性订阅映射
+            // 收集 once 订阅的 wrappedComboUID（ids 中只有 wrapped 键）
             if (onceMapForEvent != null) {
                 for (var onceKey:String in onceMapForEvent) {
                     if (onceKey.indexOf(prefix) == 0) {
-                        // 这个原始 comboUID 对应的 wrapped comboUID 也需要删除
                         var wrappedKey:String = onceMapForEvent[onceKey];
-                        // 把 wrapped key 也加入删除列表（如果不在里面）
-                        if (idsRef[wrappedKey] !== undefined) {
-                            // 替换 toRemove 中的原始 key 为 wrapped key
-                            for (var ri:Number = 0; ri < toRemoveCount; ri++) {
-                                if (toRemove[ri] == onceKey) {
-                                    toRemove[ri] = wrappedKey;
-                                    break;
-                                }
-                            }
-                        }
+                        // wrappedKey 已经在 ids 中，可能已被上面收集（不会，因为 wrapped 的 prefix 不同）
+                        // 需要额外加入删除列表
+                        toRemove[toRemoveCount++] = wrappedKey;
                         delete onceMapForEvent[onceKey];
                     }
                 }
@@ -225,11 +222,9 @@ class org.flashNight.neur.Event.EventBus {
                 if (!hasOnce2) delete this.onceCallbackMap[eventName];
             }
 
-            // 从后往前删除（swap-and-pop 安全顺序）
-            // 先按索引降序排列，确保 swap-and-pop 不会破坏后续删除
-            // 但由于我们用 comboUID 查找索引，可以直接逐个删除
+            // 逐个删除
             for (var i:Number = 0; i < toRemoveCount; i++) {
-                if (this._removeByCombo(eventName, le_, toRemove[i], toRemove[i])) {
+                if (this._removeByCombo(eventName, le_, toRemove[i])) {
                     removed = true;
                 }
             }
@@ -241,13 +236,15 @@ class org.flashNight.neur.Event.EventBus {
     /**
      * [v3.0] 内部方法：通过 comboUID 移除单个订阅，使用 swap-and-pop
      *
+     * 不变量：ids 中每个数组槽位只有一个键（1:1 映射）
+     * 因此交换后只需更新一个键，可以 break
+     *
      * @param eventName 事件名称
      * @param le_ 该事件的监听器对象
      * @param comboUID 要删除的 comboUID（ids 中的键）
-     * @param cleanupUID 要从 ids 中额外清理的键（可能与 comboUID 不同，用于 once 映射）
      * @return Boolean 是否成功移除
      */
-    private function _removeByCombo(eventName:String, le_:Object, comboUID:String, cleanupUID:String):Boolean {
+    private function _removeByCombo(eventName:String, le_:Object, comboUID:String):Boolean {
         var idx:Number = le_.ids[comboUID];
         if (idx === undefined) {
             return false;
@@ -263,8 +260,7 @@ class org.flashNight.neur.Event.EventBus {
             fns[idx] = fns[lastIdx];
             scopes[idx] = scopes[lastIdx];
 
-            // 找到被交换元素的 comboUID 并更新其索引
-            // 需要遍历 ids 找到值为 lastIdx 的键
+            // 更新被交换元素的索引（1:1 不变量，只有一个键）
             for (var k:String in ids) {
                 if (ids[k] === lastIdx) {
                     ids[k] = idx;
@@ -281,9 +277,6 @@ class org.flashNight.neur.Event.EventBus {
 
         // 清理 ids
         delete ids[comboUID];
-        if (comboUID != cleanupUID) {
-            delete ids[cleanupUID];
-        }
         le_.count = lastIdx;
 
         // 清理空事件
@@ -678,19 +671,22 @@ class org.flashNight.neur.Event.EventBus {
             this.listeners[eventName] = le_;
         }
 
-        // 检查重复订阅
+        // 去重：检查 ids（普通订阅）和 onceCallbackMap（once 订阅）
         if (le_.ids[originalComboUID] !== undefined) {
+            return false;
+        }
+        var onceMapForEvent:Object = this.onceCallbackMap[eventName];
+        if (onceMapForEvent != null && onceMapForEvent[originalComboUID] !== undefined) {
             return false;
         }
 
         // 确保 onceMap 存在
-        var onceMapForEvent:Object = this.onceCallbackMap[eventName];
         if (onceMapForEvent == null) {
-            onceMapForEvent = this.onceCallbackMap[eventName] = {};
+            onceMapForEvent = new Object();
+            this.onceCallbackMap[eventName] = onceMapForEvent;
         }
 
         // [v3.0] 创建一次性包装器（不再用 Delegate，直接闭包）
-        // 包装器的 scope 绑定由 subscribe 内部的 fn.call(scope) 处理
         var wrappedOnceCallback:Function = function():Void {
             // 先退订再执行
             self.unsubscribe(eventName, originalCallback, scope);
@@ -700,26 +696,20 @@ class org.flashNight.neur.Event.EventBus {
                 owner.__onEventBusOnceFired(eventName, originalCallback, scope);
             }
 
-            // [v3.0] 直接用 apply 绑定 scope 并传递参数
-            // 注意：这里的 this 已经被 publish 中的 call(scope) 设置为正确的 scope
-            // 但为了安全起见仍使用闭包捕获的 scope
             originalCallback.apply(scope, arguments);
         };
 
         var wrappedCallbackUID:String = String(Dictionary.getStaticUID(wrappedOnceCallback));
         var wrappedComboUID:String = wrappedCallbackUID + "|" + scopeUID;
 
-        // 建立映射：originalComboUID -> wrappedComboUID
+        // 映射：originalComboUID -> wrappedComboUID（用于 unsubscribe 查找）
         onceMapForEvent[originalComboUID] = wrappedComboUID;
 
-        // [v3.0] 直接追加到并行数组
+        // ids 只存 wrappedComboUID（1:1 不变量）
         var idx:Number = le_.count;
         le_.fns[idx] = wrappedOnceCallback;
         le_.scopes[idx] = scope;
         le_.ids[wrappedComboUID] = idx;
-        // 也记录 originalComboUID 用于去重检查
-        // 但不指向数组索引，只用于存在性检查
-        le_.ids[originalComboUID] = idx;
         le_.count = idx + 1;
         return true;
     }
