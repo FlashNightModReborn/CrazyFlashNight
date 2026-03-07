@@ -4,6 +4,20 @@
 
 ---
 
+## 证据分层说明
+
+本文档严格区分三个可信度层次：
+
+| 层次 | 标签 | 证据基础 | 使用方式 |
+|------|------|---------|---------|
+| **Tier 1 · 硬规则** | `[T1]` | benchmark + BytecodeProbe 字节码双重确认 | 可直接全项目替换，无需额外验证 |
+| **Tier 2 · 工程策略** | `[T2]` | benchmark 证明了成本方向，但替代方案的全链路成本未被基准覆盖 | 按热点模块试点，先 profile 再改写 |
+| **Tier 3 · 实验策略** | `[T3]` | 数据不足、有已知反例、或 workload 不对称 | 仅供参考，不作为改写依据 |
+
+§1~§9 为数据与分析（标注可信度但不做规范性断言），§10 为分层编码指引，§12 为路线图。
+
+---
+
 ## 目录
 
 1. [AVM1 成本阶梯](#1-avm1-成本阶梯)
@@ -15,7 +29,7 @@
 7. [容器操作与 GC](#7-容器操作与-gc)
 8. [host/native 边界](#8-hostnative-边界)
 9. [AS2 特有陷阱](#9-as2-特有陷阱)
-10. [热路径编码规范 v1](#10-热路径编码规范-v1)
+10. [分层编码指引](#10-分层编码指引)
 11. [不应通用化的经验策略](#11-不应通用化的经验策略)
 12. [项目优化路线图](#12-项目优化路线图)
 13. [附录：完整基准数据](#13-附录完整基准数据)
@@ -375,7 +389,7 @@ arr.join:       ~495ns
 arr.length=0:    ~69ns   (清空)
 ```
 
-**splice 是最贵的单一容器操作(4231ns)**。用标记删除+定期压缩替代。
+**splice 是最贵的单一容器操作(4231ns)**。替代方案（标记删除+压缩、swap-with-last+pop）需按实际删除/遍历频率 profile 选择。
 
 ### 7.2 分配成本
 
@@ -387,7 +401,9 @@ new Array():     ~550ns
 [1..10]:        ~1750ns
 ```
 
-热路径禁止 `new`，使用对象池。清空数组用 `arr.length=0`(69ns) 而非 `arr=[]`(550ns+GC)。
+`new` 本身是极重操作。但"使用对象池"不是自动更优的替代——项目现有 ObjectPool.as 的 `getObject()` 链路包含 `resetFunc.apply(obj, arguments)`（apply+arguments，极重带）、`Delegate.create`（闭包）、`Array.prototype.slice.call`（三重极重操作）。**是否使用池需要全链路 profile，而非机械替换所有 `new`。**
+
+清空数组用 `arr.length=0`(69ns) 而非 `arr=[]`(550ns+GC)——这一点是 `[T1]` 硬规则。
 
 ---
 
@@ -428,63 +444,76 @@ n != n:      ~17ns  (但在 AS2 中始终返回 false！)
 
 ---
 
-## 10. 热路径编码规范 v1
+## 10. 分层编码指引
 
-### 访问
+### Tier 1 · 硬规则（可直接全项目执行）
 
-- **R01** 热循环中，外部变量首次使用前必须 `var local = xxx` 局部化
-- **R02** 链式访问 `a.b.c` 若在循环内使用 >=2 次，必须缓存中间对象
-- **R03** MovieClip 属性(`_x/_y/_visible` 等)批量读写前，缓存 MC 引用到局部变量
+> 每条均有 benchmark 数据 + BytecodeProbe 字节码双重确认。
 
-### 调用
+**访问**
 
-- **R04** 热路径中的**轻量 helper / 空构造函数 / 纯转发函数**必须确认触发 DF2（函数体中引用参数或使用局部变量）
-- **R05** 热路径禁止使用 `arguments` 对象。用显式参数
-- **R06** 热路径避免方法调用(`o.m()`)，优先缓存函数引用到局部变量后直接调用
-- **R07** 热路径禁止 `new`。使用对象池
+- **H01** 热循环中，外部变量首次使用前必须 `var local = xxx` 局部化
+- **H02** 链式访问 `a.b.c` 若在循环内使用 >=2 次，必须缓存中间对象
+- **H03** MovieClip 属性(`_x/_y/_visible` 等)批量读写前，缓存 MC 引用到局部变量
 
-### 字符串
+**字符串与类型转换**
 
-- **R08** 字符串长度一律用 `length(s)`，禁止 `s.length`
-- **R09** 热路径禁止反复 `split()`，一次 split 后缓存结果数组
-- **R10** 数字转换一律用 `Number(s)`，禁止 `+s`
+- **H04** 字符串长度一律用 `length(s)`(14ns)，禁止 `s.length`(580ns) — 41x 差距。注意：仅对字符串有效，数组长度仍用 `arr.length`
+- **H05** 数字转换一律用 `Number(s)`，**绝对禁止** `+s`（AS2 编译器 bug：不生成 ToNumber）
+- **H06** 布尔转换一律用 `!!x`(28ns)，禁止 `Boolean(x)`(193ns) — 7x 差距
+- **H07** NaN 检测用 `isNaN()`，禁止 `n != n`（AS2 中 NaN==NaN 为 true，n!=n 始终 false）
+- **H08** 热路径和可能跨类型的比较用 `===`（跨类型 `==` 贵 5.6x）。同类型差异仅 ~2ns，冷路径无需替换
 
-### 类型与比较
+**调用**
 
-- **R11** 热路径和可能跨类型的比较用 `===`；同类型冷路径 `==` 无需强制替换
-- **R12** 布尔转换一律用 `!!x`，禁止 `Boolean(x)`
-- **R13** NaN 检测用 `isNaN()`，禁止 `n != n`（AS2 中始终 false）
+- **H09** 热路径禁止使用 `arguments` 对象(1538ns)。用显式参数
+- **H10** 轻量 helper / 空 ctor / 纯转发函数必须确认触发 DF2（函数体中引用参数）。仅限函数体极轻时有意义
 
-### 数学
+**数学**
 
-- **R14** 热路径取整用 `(x|0)`（仅限已知正数或截断语义可接受时）；负数向下取整用缓存的 `Math.floor` 引用
-- **R15** 热路径 min/max/abs/clamp 用三元表达式，不用 `Math.min/max/abs`
-- **R16** 不能内联的 Math 方法(sin/cos/sqrt/atan2) 缓存引用：`var msin:Function = Math.sin;`
-- **R17** 禁止 `~~x` 取整（4 ops），用 `x|0`（1 op）
+- **H11** 不能内联的 Math(sin/cos/sqrt/atan2) 缓存引用：`var msin:Function = Math.sin;`（省~44%）
+- **H12** 禁止 `~~x` 取整(69ns, 4ops)，用 `x|0`(29ns, 1op)
+- **H13** 热路径取整用 `(x|0)` 替代 `Math.floor()` — 8.7x。⚠️ 前提：`x|0` 是截断(toward zero)，`-3.7|0 = -3` 而非 `-4`。仅限 x≥0 或截断语义可接受
+- **H14** 热路径 abs 用 `x<0?-x:x` 替代 `Math.abs()` — 4.3x。⚠️ 前提：已知输入为有限数值
+- **H15** 热路径 min/max/clamp 用三元表达式 — 6.3~8.5x。⚠️ 前提：仅限二元、已知有限数值
 
-### 控制流
+**控制流**
 
-- **R18** 热路径禁止 `for-in`。用预存键数组 + `while(i--)` 遍历
-- **R19** 热路径禁止 `with` 块
-- **R20** 热路径禁止 `try-catch` 包裹。异常处理放在外层
-- **R21** 逻辑短路：把最可能为 false 的条件放在 `&&` 左侧
+- **H16** 热路径禁止 `for-in`(2200~7800ns/iter)
+- **H17** 热路径禁止 `with`(409ns)
+- **H18** 热路径禁止 `try-catch` 包裹。异常处理放在外层
+- **H19** 逻辑短路：把最可能为 false 的条件放在 `&&` 左侧
 
-### 容器
+**容器**
 
-- **R22** 热路径禁止 `splice / concat / unshift`。删除用标记删除+定期压缩；队列用 head/tail index 或环形缓冲
-- **R23** 清空数组用 `arr.length = 0`(69ns)，不用 `arr = []`(550ns+GC)
+- **H20** 热路径禁止 `splice`(4231ns)/`concat`(1673ns)/`unshift`(973ns)
+- **H21** 清空数组用 `arr.length = 0`(69ns)，不用 `arr = []`(550ns+GC)
 
-### GC 与分配
+### Tier 2 · 工程策略（需先 profile 再试点）
 
-- **R24** 热路径禁止创建临时对象/数组字面量。复用预分配的静态对象
-- **R25** `apply` 的参数数组必须预分配复用，禁止每次 `apply([...])` 创建新数组
+> benchmark 证明了成本方向，但替代方案的全链路成本未被基准覆盖。
 
-### host/native 与生命周期
+**调用形态**
 
-- **R26** 热路径禁止 `delete` 驱动生命周期。用 active flag / null 置空 / freelist 替代
-- **R27** 热路径禁止依赖属性 miss(读取不存在的属性返回 undefined)作为控制流。预初始化所有可能读取的属性
-- **R28** 输入采样每帧集中读取一次到 snapshot；逻辑层只消费快照，不直接调 `Key.isDown`
-- **R29** 逻辑层不得直接频繁读写 `_mc`；统一走 view flush
+- **S01** 热路径中 `o.m()` 方法调用极贵(1340ns)。优化方向：减少调用次数或改 API 形态，**不是**简单缓存方法引用
+  - `var f = o.m; f()` 会丢 `this`——AS2 函数引用不携带 receiver。安全做法：(a) 仅限不依赖 `this` 的纯函数，或 (b) 先将方法重构为不依赖 receiver 的形态
+- **S02** `new` 本身 847~915ns（极重），但"使用对象池"不是自动更优
+  - 项目现有 ObjectPool.as 链路包含 apply+arguments+Delegate.create+Array.prototype.slice.call，全部落在文档定义的极重带。需全链路 profile 才能判断是否比直接 new 更优
+  - 轻量场景考虑手写 inline 池（无 apply/arguments/Delegate）
+
+**分配与 GC**
+
+- **S03** 热路径避免临时对象/数组字面量，复用预分配静态对象。管理成本（重入保护、生命周期）需按场景评估
+- **S04** `apply` 参数数组应预分配复用
+- **S05** `split()` 极贵(1499ns)且创建新数组，一次 split 后缓存结果
+
+**host/native 与生命周期**
+
+- **S06** 输入采样集中到每帧一次 snapshot(Key.isDown=417ns/次)。具体实现成本取决于采样量
+- **S07** 逻辑层批量读写 `_mc` 时(170ns/次)，统一走 view flush。单次读写场景 flush 层反而增加间接成本
+- **S08** 热路径避免 `delete` 驱动生命周期，优先 active flag / null 置空。注意：benchmark 的 `delete_prop`(166ns) 测的是简单属性删除，不代表实体容器删除成本
+- **S09** 实体列表避免 `splice` 删除(4231ns)。具体方案（标记删除+压缩、swap-with-last+pop、双缓冲）需按删除/遍历频率 profile
+- **S10** 属性 miss(158ns)有额外成本，频繁读取的属性应预初始化
 
 ---
 
@@ -502,41 +531,49 @@ n != n:      ~17ns  (但在 AS2 中始终返回 false！)
 | "switch vs if-else 要统一换" | 差异仅 ~13%，适合热状态机专题策略，不适合全项目风格 |
 | "typed vs untyped 会影响性能" | 运行时完全擦除，不影响性能，但类型标注的编译期检查价值仍存在 |
 | "字符串累加没问题" | `gc_string_concat_accum` 仍为 NOISY_CV>0.99，待真实 workload 验证 |
+| "对象池一定比 new 快" | 项目现有 ObjectPool.as 的 getObject/release 链路包含 apply+arguments+Delegate+slice，全部落在极重带。池是否比 new 更优需全链路 profile |
 
 ---
 
 ## 12. 项目优化路线图
 
-### P0 — 立即执行
+### P0 — Tier 1 硬规则全项目替换（可直接执行）
 
-1. **`s.length` → `length(s)`**（全项目，仅字符串上下文）— 41x 差距
-2. **`Boolean(x)` → `!!x`**（全项目）— 7x 差距
-3. **禁止 `+s`，用 `Number(s)`**（全项目）— 编译器 bug
-4. **热路径 `Math.floor/abs/min/max` → 内联表达式**（注意正负数语义）
-5. **不能内联的 `Math.sin/cos/atan2/sqrt` → 缓存引用**
-6. **战斗 tick `getTimer()` 插桩 profiling** — 定位 top-3 耗时阶段
-7. **将本文的编码规范(第10节)写入项目文档**
+1. **`s.length` → `length(s)`**（仅字符串上下文）— 41x 差距，零语义风险
+2. **`Boolean(x)` → `!!x`** — 7x 差距，零语义风险
+3. **`+s` → `Number(s)`** — 编译器 bug，零语义风险
+4. **`~~x` → `x|0`** — 2.4x 差距，同为截断语义
+5. **不能内联的 `Math.sin/cos/atan2/sqrt` → 缓存引用** — 44% 提升，零语义风险
+6. **将本文的编码指引(第10节)写入项目文档** ✓ 已完成（agentsDoc/as2-performance.md）
 
-### P1 — 短期
+### P0.5 — Tier 1 但有语义前提（逐函数审查后替换）
 
-1. 热路径成员访问局部别名化
-2. 输入采样集中化（InputSnapshot）
-3. DF2 强制审计（限轻量 helper/ctor）
-4. 热路径 `delete` 消除
-5. 热路径 `==` → `===`（仅跨类型场景）
+1. **热路径 `Math.floor` → `x|0`** — 需逐调用点确认 x≥0 或截断可接受
+2. **热路径 `Math.abs` → `x<0?-x:x`** — 需确认输入为有限数值
+3. **热路径 `Math.min/max` → 三元表达式** — 需确认二元、有限数值
+4. **热路径跨类型 `==` → `===`** — 需确认比较双方可能混类型
 
-### P2 — 中期
+### P1 — 先 profile 再试点（Tier 2 工程策略）
+
+1. **战斗 tick `getTimer()` 插桩 profiling** — 定位 top-3 耗时阶段
+2. 热路径成员访问局部别名化（按 profile 结果优先处理热点函数）
+3. DF2 审计（限轻量 helper/ctor，按调用频次排序）
+4. 方法调用形态优化（减少调用次数或改 API，不是缓存方法引用）
+5. 输入采样集中化（需设计 snapshot 方案，评估采样量）
+
+### P2 — 架构改造（Tier 2，需设计评审）
 
 1. Delegate/回调链收敛 → 固定签名分发器
 2. 解析器重构 → 单次前向扫描器
-3. 容器操作 → ring buffer / head-index
-4. 状态机 → stateId + flat context
+3. 容器策略优化 → ring buffer / head-index（按 workload 选方案）
+4. 热路径 `delete` 消除 → active flag / null 置空
 5. 属性 miss 预初始化
+6. ObjectPool.as 链路审计 → 评估是否需要无 apply/arguments 的轻量池
 
-### P3 — 长期
+### P3 — 长期 / 待验证（Tier 2~3）
 
-1. UI/MC flush 层 + dirty buffer
-2. 对象池扩展到全子系统
+1. UI/MC flush 层 + dirty buffer（仅批量读写场景受益）
+2. 状态机 → stateId + flat context
 3. NaN 防御体系全覆盖
 4. 配置解析预编译/二进制缓存
 
