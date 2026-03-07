@@ -24,7 +24,7 @@ class org.flashNight.neur.Server.XMLSocketClient {
         xmlSocket = new XMLSocket();
         xmlSocket.onConnect = Delegate.create1(this, onSocketConnect);
         xmlSocket.onData = Delegate.create1(this, onSocketData);
-        xmlSocket.onClose = Delegate.create0(this, onSocketClose);
+        xmlSocket.onClose = Delegate.create(this, onSocketClose);
 
         xmlSocket.connect(socketHost, socketPort);
     }
@@ -43,7 +43,7 @@ class org.flashNight.neur.Server.XMLSocketClient {
         trace("XMLSocket connection closed");
         isSocketConnected = false;
         // 尝试重新连接
-        setTimeout(Delegate.create0(this, reconnect), 1000);
+        setTimeout(Delegate.create(this, reconnect), 1000);
     }
 
     public function reconnect():Void {

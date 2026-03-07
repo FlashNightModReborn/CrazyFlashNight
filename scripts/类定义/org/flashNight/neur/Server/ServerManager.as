@@ -132,7 +132,7 @@ class org.flashNight.neur.Server.ServerManager {
         var MAX_DEPTH:Number = 1048575;
         
         frameClip = _root.createEmptyMovieClip("ServerManagerFrameClip", MAX_DEPTH);
-        frameClip.onEnterFrame = Delegate.create0(this, onEnterFrameHandler);
+        frameClip.onEnterFrame = Delegate.create(this, onEnterFrameHandler);
     }
 
     public function getAvailablePort():Void {
@@ -377,7 +377,7 @@ class org.flashNight.neur.Server.ServerManager {
         trace("XMLSocket connection closed");
         isSocketConnected = false; // 标记为未连接
         // 尝试重新连接
-        setTimeout(Delegate.create0(this, connectToSocket), 1000); // 1秒后重试连接
+        setTimeout(Delegate.create(this, connectToSocket), 1000); // 1秒后重试连接
     }
 
     // 发送消息的函数，检查是否已连接

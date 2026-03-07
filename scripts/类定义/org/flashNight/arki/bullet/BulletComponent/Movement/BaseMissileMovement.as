@@ -68,16 +68,16 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.BaseMissileMovement ex
     private function initDelegates():Void {
         // 为每个外部回调方法创建委托
         if (this.onInitializeMissile != null) {
-            this.onInitializeMissileDelegate = Delegate.create0(this, this.onInitializeMissile);
+            this.onInitializeMissileDelegate = Delegate.create(this, this.onInitializeMissile);
         }
         if (this.onSearchForTarget != null) {
-            this.onSearchForTargetDelegate = Delegate.create0(this, this.onSearchForTarget);
+            this.onSearchForTargetDelegate = Delegate.create(this, this.onSearchForTarget);
         }
         if (this.onTrackTarget != null) {
-            this.onTrackTargetDelegate = Delegate.create0(this, this.onTrackTarget);
+            this.onTrackTargetDelegate = Delegate.create(this, this.onTrackTarget);
         }
         if (this.onPreLaunchMove != null) {
-            this.onPreLaunchMoveDelegate = Delegate.create0(this, this.onPreLaunchMove);
+            this.onPreLaunchMoveDelegate = Delegate.create(this, this.onPreLaunchMove);
             // 为“是否完成”参数创建专用委托
             this.isPreLaunchCompleteDelegate = Delegate.createWithParams(this, this.onPreLaunchMove, ["isComplete"]);
         }

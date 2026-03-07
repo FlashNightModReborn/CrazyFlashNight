@@ -2,11 +2,19 @@
 
 ## 版本历史
 
+### v3.1 (2026-03) - 缓存隔离 + create0 淘汰
+- **[FIX]** 缓存键加入 arity 前缀（`"1:"`/`"2:"`/`"*:"`），防止不同 arity 的 wrapper 互相覆盖
+  - v3.0 中同一 (scope, method) 对若先由特化版本缓存，后续 `create` 会返回错误 arity wrapper
+  - 现在各 arity 版本使用独立缓存槽，同一 `__delegateCache` 对象中可安全共存
+- **[DEL]** 删除 `create0`：零参场景 AVM1 已优化空 `arguments` 构建，`create0` 实测 0.95x 性能倒退
+- **[FIX]** `BulletFactory.shouldDestroy` 绑定修正为 `create1`（调用方传入 `bullet` 参数）
+- **[FIX]** `ObjectPool.as` 的 `Delegate.create(this, releaseObject, newObj)` 修正为 `createWithParams`（第 3 参数被静默忽略的 BUG）
+- **[MIGRATE]** 热路径调用站点迁移：1参→`create1`，2参→`create2`，0参/可变→`create`
+
 ### v3.0 (2026-03) - 特化版本优化
-- **[PERF]** 新增 `create0`/`create1`/`create2` 特化方法，消除 wrapper 中 `arguments` 对象开销（~1538ns/次）
+- **[PERF]** 新增 `create1`/`create2` 特化方法，消除 wrapper 中 `arguments` 对象开销（~1538ns/次）
 - **[PERF]** 删除冗余 `init()` 调用，静态初始化器已足够
 - **[API]** `create()` 保持完全向后兼容，作为可变参数 fallback
-- **[CACHE]** 特化版本与 `create()` 共享同一 `__delegateCache`，同一 (scope, method) 组合首次使用的版本会被缓存
 
 ### v2.1 (2026-01) - 三方交叉审查修复
 - **[FIX]** `createWithParams` 的 `paramsUID` 添加长度前缀，修复缓存键碰撞风险
@@ -22,8 +30,8 @@
 - **[PERF]** 保持 O(1) 缓存查找性能
 
 ### 性能说明
-- `create0`/`create1`/`create2`：零 `arguments` 开销，适用于调用时参数数量已知且固定的场景
-- `create`：通用版本，通过 `arguments` 对象分发 0-5+ 参数，适用于参数数量不确定的场景（如 EventBus publish）
+- `create1`/`create2`：零 `arguments` 开销，适用于调用时参数数量已知（1-2个）的场景（1.69x/1.83x 加速）
+- `create`：通用版本，零参数时无额外开销（AVM1 优化空 arguments），可变参数场景的 fallback
 - 缓存键的生成是性能-稳定性的权衡
 - v2.1 通过添加长度前缀大幅降低了碰撞概率，但仍非完全零碰撞
 
@@ -50,30 +58,17 @@
 
 ## 4. 使用方法
 
-### 4.0 选择指南（v3.0+）
+### 4.0 选择指南（v3.1+）
 
 | 你知道调用时的参数数量吗？ | 推荐方法 | 典型场景 |
 |---------------------------|----------|----------|
-| 固定 0 参 | `create0` | 命令分发、定时回调、状态回调 |
-| 固定 1 参 | `create1` | 子弹更新、网络回调、对象池 |
+| 固定 0 参 | `create` | 命令分发、定时回调、状态回调（AVM1 优化零参 arguments） |
+| 固定 1 参 | `create1` | 子弹更新、网络回调、shouldDestroy |
 | 固定 2 参 | `create2` | 双参数事件、坐标回调 |
 | 不确定 / 可变 | `create` | EventBus 订阅、通用事件监听 |
 | 需要预绑定参数 | `createWithParams` | 参数在创建时已知且固定 |
 
-### 4.1 `create0(scope:Object, method:Function):Function` (v3.0+)
-
-创建一个零参数委托函数。wrapper 内部不访问 `arguments` 对象，直接执行 `method.call(scope)`。
-
-**性能优势**：相比 `create()` 返回的 wrapper，每次调用省去 ~1538ns 的 `arguments` 对象创建开销。
-
-**示例**：
-```as
-// RendererVM: 命令处理函数零参数调用
-commandMap["M"] = Delegate.create0(this, handleMoveTo);
-// handler() 调用时零参数，无 arguments 开销
-```
-
-### 4.2 `create1(scope:Object, method:Function):Function` (v3.0+)
+### 4.1 `create1(scope:Object, method:Function):Function` (v3.0+)
 
 创建一个单参数委托函数。wrapper 通过显式形参接收参数，不创建 `arguments` 对象。
 
@@ -84,7 +79,7 @@ bulletInstance.updateMovement = Delegate.create1(movement, movement.updateMoveme
 // 调用时: bulletInstance.updateMovement(deltaTime)
 ```
 
-### 4.3 `create2(scope:Object, method:Function):Function` (v3.0+)
+### 4.2 `create2(scope:Object, method:Function):Function` (v3.0+)
 
 创建一个双参数委托函数。
 
@@ -95,11 +90,11 @@ var onHit = Delegate.create2(this, this.handleHit);
 onHit(target, damage); // 无 arguments 开销
 ```
 
-### 4.4 `create(scope:Object, method:Function):Function`
+### 4.3 `create(scope:Object, method:Function):Function`
 
 创建一个通用委托函数，将指定的方法绑定到给定的作用域。支持 0-5+ 任意数量参数。
 
-**注意**：v3.0 起，当调用时参数数量已知时，优先使用 `create0`/`create1`/`create2` 以获得更好性能。`create()` 作为可变参数的 fallback 保留。
+**注意**：v3.1 起，当调用时参数数量为 1-2 个时，优先使用 `create1`/`create2` 以消除 `arguments` 开销。零参数和可变参数场景直接使用 `create()`（零参时 AVM1 已优化，无额外开销）。
 
 - `scope`：作为 `this` 绑定的对象。如果为 `null`，函数将在全局作用域执行。
 - `method`：需要在该作用域内执行的函数，必须为有效的函数引用，不能为 `null` 或 `undefined`。
@@ -143,25 +138,25 @@ AVM1 基准测试数据表明，`arguments` 对象的创建成本约为 **~1538n
 
 **问题**：v2.x 的 `create()` 返回的 wrapper 函数内部必须访问 `arguments` 对象来分发参数，即使调用时参数数量固定（如零参数），也要付出 ~1538ns 的代价。
 
-**解决方案**：v3.0 的 `create0`/`create1`/`create2` 特化版本的 wrapper 使用显式形参，完全不访问 `arguments`：
+**解决方案**：v3.0 的 `create1`/`create2` 特化版本的 wrapper 使用显式形参，完全不访问 `arguments`：
 
 ```as
-// create0 的 wrapper（零参数，无 arguments）
-var f = function() { return method.call(scope); };
-
-// create1 的 wrapper（单参数，通过形参 a 接收）
+// create1 的 wrapper（单参数，通过形参 a 接收，无 arguments）
 var f = function(a) { return method.call(scope, a); };
 
-// 对比 create() 的 wrapper（必须创建 arguments 对象）
+// create2 的 wrapper（双参数，通过形参 a,b 接收，无 arguments）
+var f = function(a, b) { return method.call(scope, a, b); };
+
+// 对比 create() 的 wrapper（有参数时必须创建 arguments 对象）
 var f = function() {
-    var len = arguments.length;  // ~1538ns 开销
-    if (len == 0) return method.call(scope);
+    var len = arguments.length;  // 有参数时 ~1538ns 开销
+    if (len == 0) return method.call(scope);  // 零参时 AVM1 已优化，无额外开销
     else if (len == 1) return method.call(scope, arguments[0]);
     // ...
 };
 ```
 
-**实测影响**：以 RendererVM 为例，每帧处理 ~1000 条命令时，每帧节省 ~1.5ms。
+**关键发现（v3.1）**：零参数调用时 AVM1 会优化空 `arguments` 的构建，`create0` 实测反而有 0.95x 性能倒退（额外的 `method.call(scope)` 闭包层反而比 `create()` 内联分发更慢），因此已删除。仅 1 参（1.69x）和 2 参（1.83x）有实际收益。
 
 ### 5.2 动态参数传递的预处理与优化
 
@@ -227,7 +222,7 @@ trace(delegateA1 === delegateA2); // 输出: true
 ## 7. 注意事项
 
 1. **参数预处理与缓存**：当相同的作用域和方法组合多次被调用时，`Delegate` 类会自动复用缓存的委托函数，避免重复创建新函数。确保参数是稳定的，以充分利用缓存机制。
-2. **性能敏感场景**（v3.0 更新）：当调用时参数数量已知且固定时，优先使用 `create0`/`create1`/`create2` 以消除 `arguments` 对象开销（~1538ns/次）。参数数量不确定时使用 `create`。参数在创建时就已固定的场景使用 `createWithParams`。
+2. **性能敏感场景**（v3.1 更新）：当调用时参数数量为 1-2 个时，优先使用 `create1`/`create2` 以消除 `arguments` 对象开销（1.69x/1.83x 加速）。零参数和可变参数场景使用 `create`（零参时 AVM1 已优化，无额外开销）。参数在创建时就已固定的场景使用 `createWithParams`。
 3. **作用域管理**：确保传递正确的 `scope` 参数，以保证回调函数内部 `this` 指向预期对象。`scope` 为 `null` 时，函数将在全局作用域执行。
 4. **内存管理**：
    - v2.0 起，缓存存储在 `scope` 对象的 `__delegateCache` 属性中，当 `scope` 被 GC 回收时缓存自动释放
@@ -242,14 +237,15 @@ trace(delegateA1 === delegateA2); // 输出: true
 | 缓存自动释放 | scope 被 GC 时其缓存自动释放（v2.0+） |
 | 参数隔离 | 不同 params 组合产生不同委托 |
 | UID 非枚举 | `__dictUID` 不会出现在 `for..in` 循环中 |
-| 缓存互通 | `create0`/`create1`/`create2`/`create` 共享同一缓存空间（v3.0+） |
-| 零 arguments 开销 | `create0`/`create1`/`create2` 的 wrapper 不创建 `arguments` 对象（v3.0+） |
+| 缓存隔离 | `create1`/`create2`/`create` 各自独立缓存槽，arity 前缀防止覆盖（v3.1+） |
+| 零 arguments 开销 | `create1`/`create2` 的 wrapper 不创建 `arguments` 对象（v3.0+） |
+| 零参无损 | `create()` 零参数调用时 AVM1 优化空 `arguments`，无额外开销（v3.1 验证） |
 
 | 不保证项 | 说明 |
 |----------|------|
 | 完全零碰撞 | `createWithParams` 的缓存键存在极低概率碰撞（当字符串参数包含 `\|` 时） |
 | 复杂对象参数 | 复杂嵌套对象作为 params 可能导致缓存策略失效 |
-| 特化版本参数校验 | `create0`/`create1`/`create2` 不检查 `method == null`，由调用方保证 |
+| 特化版本参数校验 | `create1`/`create2` 不检查 `method == null`，由调用方保证 |
 
 ---
 
@@ -334,12 +330,7 @@ Delegate 测试套件 v3.0
   [PASS] [v2.0] new delegate created after cache clear
   [PASS] [v2.0] new delegate works correctly
 
---- [v3.0] 特化版本测试 ---
-运行模块：[v3.0] create0 零参数特化测试
-  [PASS] [v3.0] create0 scope绑定零参调用
-  [PASS] [v3.0] create0 全局作用域零参调用
-  [PASS] [v3.0] create0 缓存命中返回同一委托
-  [PASS] [v3.0] create0 全局缓存命中
+--- [v3.1] 特化版本测试 ---
 运行模块：[v3.0] create1 单参数特化测试
   [PASS] [v3.0] create1 scope绑定单参调用
   [PASS] [v3.0] create1 全局作用域单参调用
@@ -350,32 +341,36 @@ Delegate 测试套件 v3.0
   [PASS] [v3.0] create2 scope绑定双参调用
   [PASS] [v3.0] create2 全局作用域双参调用
   [PASS] [v3.0] create2 缓存命中返回同一委托
-运行模块：[v3.0] 特化版本缓存共享测试
-  [PASS] [v3.0] create0 先创建可正常调用
-  [PASS] [v3.0] create0与create共享缓存
-  [PASS] [v3.0] clearScopeCache后create0重建委托
+运行模块：[v3.1] 特化版本缓存隔离测试
+  [PASS] [v3.1] create1与create2缓存隔离
+  [PASS] [v3.1] create1与create缓存隔离
+  [PASS] [v3.1] create2与create缓存隔离
+  [PASS] [v3.1] create1自身缓存命中
+  [PASS] [v3.1] create2自身缓存命中
+  [PASS] [v3.1] create自身缓存命中
+  [PASS] [v3.1] create1调用正确
+  [PASS] [v3.1] create2调用正确
+  [PASS] [v3.1] create通用版调用正确
+  [PASS] [v3.1] clearScopeCache后create1重建委托
 
 --- 性能测试 ---
 运行模块：性能测试
-  [PERF] create() 缓存命中: 52ms / 10000 ops (192308 ops/sec)
-  [PERF] create() 缓存未命中: 220ms / 10000 ops (45455 ops/sec)
-  [PERF] 委托调用: 206ms / 100000 ops (485437 ops/sec)
-  [PERF] createWithParams 缓存命中: 58ms / 10000 ops (172414 ops/sec)
-  [PERF] create0() 零参调用: 213ms / 100000 ops (469484 ops/sec)
-  [PERF] create()  零参调用: 212ms / 100000 ops (471698 ops/sec)
-  [PERF] create0 加速比: 1x
-  [PERF] create1() 单参调用: 135ms / 100000 ops (740741 ops/sec)
-  [PERF] create()  单参调用: 228ms / 100000 ops (438596 ops/sec)
-  [PERF] create1 加速比: 1.69x
-  [PERF] create2() 双参调用: 138ms / 100000 ops (724638 ops/sec)
-  [PERF] create()  双参调用: 253ms / 100000 ops (395257 ops/sec)
-  [PERF] create2 加速比: 1.83x
+  [PERF] create() 缓存命中: 56ms / 10000 ops (178571 ops/sec)
+  [PERF] create() 缓存未命中: 222ms / 10000 ops (45045 ops/sec)
+  [PERF] 委托调用: 202ms / 100000 ops (495050 ops/sec)
+  [PERF] createWithParams 缓存命中: 61ms / 10000 ops (163934 ops/sec)
+  [PERF] create1() 单参调用: 140ms / 100000 ops (714286 ops/sec)
+  [PERF] create()  单参调用: 235ms / 100000 ops (425532 ops/sec)
+  [PERF] create1 加速比: 1.68x
+  [PERF] create2() 双参调用: 143ms / 100000 ops (699301 ops/sec)
+  [PERF] create()  双参调用: 256ms / 100000 ops (390625 ops/sec)
+  [PERF] create2 加速比: 1.79x
 
 ========================================
 测试结果汇总
 ========================================
-总测试用例数: 61
-通过: 61 (100%)
+总测试用例数: 64
+通过: 64 (100%)
 失败: 0 (0%)
 
 ✓ 所有测试用例均通过！

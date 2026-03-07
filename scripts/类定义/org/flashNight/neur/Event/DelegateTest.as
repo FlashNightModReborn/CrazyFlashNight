@@ -75,12 +75,11 @@ class org.flashNight.neur.Event.DelegateTest {
         this.testScopeCacheIsolation();
         this.testClearScopeCache();
 
-        // [v3.0] 特化版本测试
-        trace("\n--- [v3.0] 特化版本测试 ---");
-        this.testCreate0();
+        // [v3.1] 特化版本测试
+        trace("\n--- [v3.1] 特化版本测试 ---");
         this.testCreate1();
         this.testCreate2();
-        this.testSpecializedCacheSharing();
+        this.testSpecializedCacheIsolation();
 
         // 性能测试
         trace("\n--- 性能测试 ---");
@@ -529,30 +528,6 @@ class org.flashNight.neur.Event.DelegateTest {
     // [v3.0] 特化版本测试
     // ======================
 
-    private function testCreate0():Void {
-        trace("运行模块：[v3.0] create0 零参数特化测试");
-
-        // 测试 scope != null
-        var scope:Object = { name: "Create0Scope" };
-        function zeroArgMethod():String { return this.name + " zero"; }
-
-        var d0:Function = Delegate.create0(scope, zeroArgMethod);
-        this.assertEquals("Create0Scope zero", d0(), "[v3.0] create0 scope绑定零参调用");
-
-        // 测试 scope == null
-        function globalZero():String { return "global zero"; }
-        var d0g:Function = Delegate.create0(null, globalZero);
-        this.assertEquals("global zero", d0g(), "[v3.0] create0 全局作用域零参调用");
-
-        // 测试缓存命中
-        var d0Again:Function = Delegate.create0(scope, zeroArgMethod);
-        this.assertTrue(d0 === d0Again, "[v3.0] create0 缓存命中返回同一委托", null);
-
-        // 测试全局缓存命中
-        var d0gAgain:Function = Delegate.create0(null, globalZero);
-        this.assertTrue(d0g === d0gAgain, "[v3.0] create0 全局缓存命中", null);
-    }
-
     private function testCreate1():Void {
         trace("运行模块：[v3.0] create1 单参数特化测试");
 
@@ -599,26 +574,42 @@ class org.flashNight.neur.Event.DelegateTest {
         this.assertTrue(d2 === d2Again, "[v3.0] create2 缓存命中返回同一委托", null);
     }
 
-    private function testSpecializedCacheSharing():Void {
-        trace("运行模块：[v3.0] 特化版本缓存共享测试");
+    private function testSpecializedCacheIsolation():Void {
+        trace("运行模块：[v3.1] 特化版本缓存隔离测试");
 
         var scope:Object = { val: "shared" };
         function sharedMethod():String { return this.val; }
 
-        // 先用 create0 创建
-        var d0:Function = Delegate.create0(scope, sharedMethod);
-        this.assertEquals("shared", d0(), "[v3.0] create0 先创建可正常调用");
-
-        // 再用 create 访问同一 scope+method，应命中缓存
+        // 不同 arity 的特化版本应使用独立缓存槽
+        var d1:Function = Delegate.create1(scope, sharedMethod);
+        var d2:Function = Delegate.create2(scope, sharedMethod);
         var dGeneric:Function = Delegate.create(scope, sharedMethod);
-        this.assertTrue(d0 === dGeneric, "[v3.0] create0与create共享缓存",
-            "d0 === dGeneric: " + (d0 === dGeneric));
 
-        // clearScopeCache 后两者都应重建
+        this.assertTrue(d1 !== d2, "[v3.1] create1与create2缓存隔离",
+            "d1 === d2: " + (d1 === d2));
+        this.assertTrue(d1 !== dGeneric, "[v3.1] create1与create缓存隔离",
+            "d1 === dGeneric: " + (d1 === dGeneric));
+        this.assertTrue(d2 !== dGeneric, "[v3.1] create2与create缓存隔离",
+            "d2 === dGeneric: " + (d2 === dGeneric));
+
+        // 各自的缓存命中应返回同一委托
+        var d1Again:Function = Delegate.create1(scope, sharedMethod);
+        var d2Again:Function = Delegate.create2(scope, sharedMethod);
+        var dGenericAgain:Function = Delegate.create(scope, sharedMethod);
+        this.assertTrue(d1 === d1Again, "[v3.1] create1自身缓存命中", null);
+        this.assertTrue(d2 === d2Again, "[v3.1] create2自身缓存命中", null);
+        this.assertTrue(dGeneric === dGenericAgain, "[v3.1] create自身缓存命中", null);
+
+        // 功能正确性：各版本调用结果一致
+        this.assertEquals("shared", d1("ignored"), "[v3.1] create1调用正确");
+        this.assertEquals("shared", d2("a", "b"), "[v3.1] create2调用正确");
+        this.assertEquals("shared", dGeneric(), "[v3.1] create通用版调用正确");
+
+        // clearScopeCache 后所有版本都应重建
         Delegate.clearScopeCache(scope);
-        var d0New:Function = Delegate.create0(scope, sharedMethod);
-        this.assertTrue(d0 !== d0New, "[v3.0] clearScopeCache后create0重建委托",
-            "d0 === d0New: " + (d0 === d0New));
+        var d1New:Function = Delegate.create1(scope, sharedMethod);
+        this.assertTrue(d1 !== d1New, "[v3.1] clearScopeCache后create1重建委托",
+            "d1 === d1New: " + (d1 === d1New));
     }
 
     // ======================
@@ -646,8 +637,7 @@ class org.flashNight.neur.Event.DelegateTest {
         // 性能测试 4: createWithParams 缓存性能
         this.perfTestCreateWithParams(iterations);
 
-        // [v3.0] 性能测试 5-7: 特化版本调用性能对比
-        this.perfTestCreate0Invocation(iterations * 10);
+        // [v3.1] 性能测试 5-6: 特化版本调用性能对比
         this.perfTestCreate1Invocation(iterations * 10);
         this.perfTestCreate2Invocation(iterations * 10);
     }
@@ -736,42 +726,6 @@ class org.flashNight.neur.Event.DelegateTest {
         var opsPerMs:Number = iterations / duration;
         trace("  [PERF] createWithParams 缓存命中: " + duration + "ms / " + iterations + " ops (" +
             Math.round(opsPerMs * 1000) + " ops/sec)");
-    }
-
-    /**
-     * [v3.0] 性能测试：create0 零参数调用 vs create 零参数调用
-     */
-    private function perfTestCreate0Invocation(iterations:Number):Void {
-        var scope:Object = { value: 0 };
-        function incrementMethod():Number { return ++this.value; }
-
-        // create0 版本
-        var delegate0:Function = Delegate.create0(scope, incrementMethod);
-        scope.value = 0;
-
-        var startTime:Number = getTimer();
-        for (var i:Number = 0; i < iterations; i++) {
-            delegate0();
-        }
-        var endTime:Number = getTimer();
-        var duration0:Number = endTime - startTime;
-
-        // create 版本（需要新 scope 避免缓存冲突）
-        var scope2:Object = { value: 0 };
-        var delegateGeneric:Function = Delegate.create(scope2, incrementMethod);
-
-        startTime = getTimer();
-        for (var j:Number = 0; j < iterations; j++) {
-            delegateGeneric();
-        }
-        endTime = getTimer();
-        var durationGeneric:Number = endTime - startTime;
-
-        trace("  [PERF] create0() 零参调用: " + duration0 + "ms / " + iterations + " ops (" +
-            Math.round(iterations / duration0 * 1000) + " ops/sec)");
-        trace("  [PERF] create()  零参调用: " + durationGeneric + "ms / " + iterations + " ops (" +
-            Math.round(iterations / durationGeneric * 1000) + " ops/sec)");
-        trace("  [PERF] create0 加速比: " + (Math.round(durationGeneric / duration0 * 100) / 100) + "x");
     }
 
     /**
