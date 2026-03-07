@@ -120,6 +120,8 @@ class org.flashNight.neur.Event.EventBusTest {
         this.testPublishSpecialized();
         this.testDirectScopeBinding();
         this.testSwapAndPopUnsubscribe();
+        this.testOnceResubscribeAfterUnsubscribe();
+        this.testSwapAndPopWithOnceElement();
 
         // [v2.2] let-it-crash 测试放在最后，因为它可能导致 _dispatchDepth 状态不一致
         this.testLetItCrashStrategy();
@@ -1657,6 +1659,98 @@ class org.flashNight.neur.Event.EventBusTest {
         // 验证事件已完全清理
         this.assert(this.eventBus["listeners"]["SWAP_POP_TEST"] == undefined,
             "[v3.0] swap-and-pop - event cleaned up after all unsubscribes");
+    }
+
+    /**
+     * [v3.0 回归测试] 验证 once 退订后可用同一 (callback, scope) 重新订阅
+     * 覆盖场景：once 的去重走 onceCallbackMap 而非 ids，退订后 onceCallbackMap 清理干净
+     */
+    private function testOnceResubscribeAfterUnsubscribe():Void {
+        this.resetFlags();
+        this.eventBus = EventBus.initialize();
+
+        var callCount:Number = 0;
+        var cb:Function = function():Void { callCount++; };
+        var sc:Object = {};
+        var evtName:String = "ONCE_RESUB_TEST";
+
+        // 订阅 once
+        var r1:Boolean = this.eventBus.subscribeOnce(evtName, cb, sc);
+        this.assert(r1 == true, "[v3.0] once-resub - first subscribeOnce succeeds");
+
+        // 退订（未触发）
+        var r2:Boolean = this.eventBus.unsubscribe(evtName, cb, sc);
+        this.assert(r2 == true, "[v3.0] once-resub - unsubscribe before fire succeeds");
+
+        // 用同一 (cb, scope) 重新订阅 once
+        var r3:Boolean = this.eventBus.subscribeOnce(evtName, cb, sc);
+        this.assert(r3 == true, "[v3.0] once-resub - re-subscribeOnce after unsubscribe succeeds");
+
+        // 触发一次
+        this.eventBus.publish0(evtName);
+        this.assert(callCount == 1, "[v3.0] once-resub - callback fires exactly once after re-subscribe");
+
+        // 再发布，once 已消耗
+        this.eventBus.publish0(evtName);
+        this.assert(callCount == 1, "[v3.0] once-resub - callback not fired again (once consumed)");
+
+        // 同一对再用普通 subscribe
+        var r4:Boolean = this.eventBus.subscribe(evtName, cb, sc);
+        this.assert(r4 == true, "[v3.0] once-resub - normal subscribe after once consumed succeeds");
+
+        this.eventBus.publish0(evtName);
+        this.assert(callCount == 2, "[v3.0] once-resub - normal subscribe fires correctly");
+
+        // 清理
+        this.eventBus.unsubscribe(evtName, cb, sc);
+    }
+
+    /**
+     * [v3.0 回归测试] 验证 swap-and-pop 中被交换到新位置的元素是 once 订阅时索引正确
+     * 场景：[normal_A, once_B, normal_C] 删除 A，C 换到 idx=0，B 不动
+     *        然后触发，B 应该执行一次并自动退订，C 继续存在
+     */
+    private function testSwapAndPopWithOnceElement():Void {
+        this.resetFlags();
+        this.eventBus = EventBus.initialize();
+
+        var callA:Number = 0;
+        var callB:Number = 0;
+        var callC:Number = 0;
+        var cbA:Function = function():Void { callA++; };
+        var cbB:Function = function():Void { callB++; };
+        var cbC:Function = function():Void { callC++; };
+
+        var scA:Object = {};
+        var scB:Object = {};
+        var scC:Object = {};
+        var evtName:String = "SWAP_ONCE_TEST";
+
+        // 构造 [cbA(normal), cbB(once), cbC(normal)]
+        this.eventBus.subscribe(evtName, cbA, scA);
+        this.eventBus.subscribeOnce(evtName, cbB, scB);
+        this.eventBus.subscribe(evtName, cbC, scC);
+
+        // 删除 cbA → swap cbC to idx=0, cbB stays at idx=1
+        this.eventBus.unsubscribe(evtName, cbA, scA);
+
+        // 发布第一次：cbB(once) 应触发并自动退订，cbC 应触发
+        this.eventBus.publish0(evtName);
+        this.assert(callA == 0, "[v3.0] swap-once - A not called after removal");
+        this.assert(callB == 1, "[v3.0] swap-once - B(once) fires on first publish");
+        this.assert(callC == 1, "[v3.0] swap-once - C fires on first publish");
+
+        // 发布第二次：只有 cbC 应触发（cbB 已消耗）
+        this.eventBus.publish0(evtName);
+        this.assert(callB == 1, "[v3.0] swap-once - B(once) not fired again");
+        this.assert(callC == 2, "[v3.0] swap-once - C fires on second publish");
+
+        // 清理
+        this.eventBus.unsubscribe(evtName, cbC, scC);
+
+        // 验证事件清理
+        this.assert(this.eventBus["listeners"][evtName] == undefined,
+            "[v3.0] swap-once - event cleaned up after all unsubscribes");
     }
 }
 

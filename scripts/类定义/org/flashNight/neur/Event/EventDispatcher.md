@@ -634,7 +634,7 @@ Assertion Passed: memoryLeakDetection: Callback should not be called after repea
 Assertion Passed: memoryLeakDetection: Callback should be called after final subscribe.
 --- 测试性能 ---
 Assertion Passed: performance: All 1000 callbacks should be called.
-Performance Test: Publishing event to 1000 subscribers took 3 ms.
+Performance Test: Publishing event to 1000 subscribers took 2 ms.
 === 测试结果 ===
 通过: 94 条
 失败: 0 条
@@ -687,4 +687,3 @@ Warning: publish called on a destroyed EventDispatcher.
 失败: 0 条
 所有扩展测试均通过。
 === EventDispatcherExtendedTest 结束 ===
-
