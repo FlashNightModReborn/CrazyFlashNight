@@ -184,28 +184,28 @@ Workflow failed!
 [PASS] Transitions reference released after destroy
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=33ms, Actions=37ms for 10000 operations
+Basic Performance: Transitions=22ms, Actions=27ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 48ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 31ms, 100 transitions in 0ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 19ms
+Frequent Transitions Performance: 5000 transitions in 14ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 10ms
+Complex Transition Performance: 1000 complex transitions in 4ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=0ms, Transition=0ms, Operation=0ms
-Size 50: Create=2ms, Transition=1ms, Operation=0ms
-Size 100: Create=2ms, Transition=2ms, Operation=0ms
-Size 500: Create=12ms, Transition=10ms, Operation=2ms
+Size 10: Create=1ms, Transition=0ms, Operation=0ms
+Size 50: Create=0ms, Transition=1ms, Operation=0ms
+Size 100: Create=1ms, Transition=1ms, Operation=0ms
+Size 500: Create=9ms, Transition=5ms, Operation=0ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---

@@ -520,30 +520,31 @@ var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
 [PASS] [v3.0] once-resub - normal subscribe after once consumed succeeds
 [PASS] [v3.0] once-resub - normal subscribe fires correctly
 [PASS] [v3.0] swap-once - A not called after removal
-[PASS] [v3.0] swap-once - B(once) fires on first publish
-[PASS] [v3.0] swap-once - C fires on first publish
-[PASS] [v3.0] swap-once - B(once) not fired again
-[PASS] [v3.0] swap-once - C fires on second publish
+[PASS] [v3.0] swap-once - B fires on first publish
+[PASS] [v3.0] swap-once - C(once) fires on first publish after being swapped
+[PASS] [v3.0] swap-once - B fires on second publish
+[PASS] [v3.0] swap-once - C(once) not fired again after auto-unsubscribe
+[PASS] [v3.0] swap-once - C can re-subscribeOnce after consumed
 [PASS] [v3.0] swap-once - event cleaned up after all unsubscribes
 [PASS] [v2.2 P1-1] let-it-crash - error callback was called
 [PASS] Test 7: EventBus handles high volume of subscriptions and publishes correctly
-[PERFORMANCE] Test 7: EventBus High Volume Subscriptions and Publish took 154 ms
+[PERFORMANCE] Test 7: EventBus High Volume Subscriptions and Publish took 156 ms
 [PASS] Test 8: EventBus handles high frequency publishes correctly
-[PERFORMANCE] Test 8: EventBus High Frequency Publish took 1182 ms
+[PERFORMANCE] Test 8: EventBus High Frequency Publish took 1181 ms
 [PASS] Test 9: EventBus handles concurrent subscriptions and publishes correctly
-[PERFORMANCE] Test 9: EventBus Concurrent Subscriptions and Publishes took 267 ms
+[PERFORMANCE] Test 9: EventBus Concurrent Subscriptions and Publishes took 268 ms
 [PASS] Test 10: EventBus handles mixed subscribe and unsubscribe operations correctly
-[PERFORMANCE] Test 10: EventBus Mixed Subscribe and Unsubscribe took 1093 ms
+[PERFORMANCE] Test 10: EventBus Mixed Subscribe and Unsubscribe took 1077 ms
 [PASS] Test 11: EventBus handles nested event publishes correctly
 [PERFORMANCE] Test 11: EventBus Nested Event Publish took 0 ms
 [PASS] Test 12: EventBus handles parallel event processing correctly
 [PERFORMANCE] Test 12: EventBus Parallel Event Processing took 773 ms
 [PASS] Test 13: EventBus handles long-running subscriptions and cleanups correctly
-[PERFORMANCE] Test 13: EventBus Long Running Subscriptions and Cleanups took 55 ms
+[PERFORMANCE] Test 13: EventBus Long Running Subscriptions and Cleanups took 54 ms
 [PASS] Test 14: EventBus handles complex argument passing correctly
 [PERFORMANCE] Test 14: EventBus Complex Argument Passing took 0 ms
 [PASS] Test 15: EventBus handles bulk subscriptions and unsubscriptions correctly
-[PERFORMANCE] Test 15: EventBus Bulk Subscribe and Unsubscribe took 1623 ms
+[PERFORMANCE] Test 15: EventBus Bulk Subscribe and Unsubscribe took 1641 ms
 All tests completed.
 
 

@@ -1706,9 +1706,12 @@ class org.flashNight.neur.Event.EventBusTest {
     }
 
     /**
-     * [v3.0 回归测试] 验证 swap-and-pop 中被交换到新位置的元素是 once 订阅时索引正确
-     * 场景：[normal_A, once_B, normal_C] 删除 A，C 换到 idx=0，B 不动
-     *        然后触发，B 应该执行一次并自动退订，C 继续存在
+     * [v3.0 回归测试] 验证 swap-and-pop 中 once 订阅被交换到新位置后索引仍然正确
+     *
+     * 场景：[normal_A, normal_B, once_C]（idx: 0,1,2）
+     * 删除 A → once_C 从 idx=2 被 swap 到 idx=0
+     * _removeByCombo 必须正确更新 once_C 的 wrappedComboUID 在 ids 中的索引
+     * 否则后续 once_C 触发时的自动 unsubscribe 会因陈旧索引失败
      */
     private function testSwapAndPopWithOnceElement():Void {
         this.resetFlags();
@@ -1726,26 +1729,31 @@ class org.flashNight.neur.Event.EventBusTest {
         var scC:Object = {};
         var evtName:String = "SWAP_ONCE_TEST";
 
-        // 构造 [cbA(normal), cbB(once), cbC(normal)]
+        // 构造 [cbA(normal@0), cbB(normal@1), cbC(once@2)]
         this.eventBus.subscribe(evtName, cbA, scA);
-        this.eventBus.subscribeOnce(evtName, cbB, scB);
-        this.eventBus.subscribe(evtName, cbC, scC);
+        this.eventBus.subscribe(evtName, cbB, scB);
+        this.eventBus.subscribeOnce(evtName, cbC, scC);
 
-        // 删除 cbA → swap cbC to idx=0, cbB stays at idx=1
+        // 删除 A → once_C 从尾部被 swap 到 idx=0，B 留在 idx=1
         this.eventBus.unsubscribe(evtName, cbA, scA);
 
-        // 发布第一次：cbB(once) 应触发并自动退订，cbC 应触发
+        // 发布第一次：cbC(once) 应触发并自动退订，cbB 应触发
         this.eventBus.publish0(evtName);
         this.assert(callA == 0, "[v3.0] swap-once - A not called after removal");
-        this.assert(callB == 1, "[v3.0] swap-once - B(once) fires on first publish");
-        this.assert(callC == 1, "[v3.0] swap-once - C fires on first publish");
+        this.assert(callB == 1, "[v3.0] swap-once - B fires on first publish");
+        this.assert(callC == 1, "[v3.0] swap-once - C(once) fires on first publish after being swapped");
 
-        // 发布第二次：只有 cbC 应触发（cbB 已消耗）
+        // 发布第二次：只有 cbB 应触发（cbC 已消耗并自动退订）
         this.eventBus.publish0(evtName);
-        this.assert(callB == 1, "[v3.0] swap-once - B(once) not fired again");
-        this.assert(callC == 2, "[v3.0] swap-once - C fires on second publish");
+        this.assert(callB == 2, "[v3.0] swap-once - B fires on second publish");
+        this.assert(callC == 1, "[v3.0] swap-once - C(once) not fired again after auto-unsubscribe");
+
+        // 验证 cbC 可以重新订阅（onceCallbackMap 已清理）
+        var resubOk:Boolean = this.eventBus.subscribeOnce(evtName, cbC, scC);
+        this.assert(resubOk == true, "[v3.0] swap-once - C can re-subscribeOnce after consumed");
 
         // 清理
+        this.eventBus.unsubscribe(evtName, cbB, scB);
         this.eventBus.unsubscribe(evtName, cbC, scC);
 
         // 验证事件清理
