@@ -4,13 +4,15 @@
 
 ## 0. 证据分层说明
 
-本文档严格区分三个可信度层次。**不同层次的结论有不同的使用方式**：
+本文档使用以下证据标签。**不同标签的结论有不同的使用方式**：
 
-| 层次 | 标签 | 证据基础 | 使用方式 |
+| 标签 | 含义 | 证据基础 | 使用方式 |
 |------|------|---------|---------|
-| **Tier 1 · 硬规则** | `[T1]` | benchmark + BytecodeProbe 字节码双重确认 | 可直接全项目替换，无需额外验证 |
-| **Tier 2 · 工程策略** | `[T2]` | benchmark 证明了成本方向，但替代方案的全链路成本未被基准覆盖 | 按热点模块试点，先 profile 再改写 |
-| **Tier 3 · 实验策略** | `[T3]` | 数据不足、有已知反例、或 workload 不对称 | 仅供参考，不作为改写依据 |
+| `[T1a]` | **硬规则 · 零前提** | benchmark + BytecodeProbe 双重确认，替换无语义风险 | 可全局搜改，无需逐调用点审查 |
+| `[T1b]` | **硬规则 · 有前提** | benchmark + BytecodeProbe 双重确认，但替换有值域/语义前提 | 逐调用点确认前提条件后替换 |
+| `[T2]` | **工程策略** | benchmark 证明了成本方向，但替代方案的全链路成本未被基准覆盖 | 按热点模块试点，先 profile 再改写 |
+| `[T3]` | **实验策略** | 数据不足、有已知反例、或 workload 不对称 | 仅供参考，不作为改写依据 |
+| `[P]` | **平台经验** | 字节码反汇编 / 项目实战验证，但非当前 benchmark 体系产出 | 可信，但证据源独立于 benchmark |
 
 ---
 
@@ -31,66 +33,84 @@
 
 ## 2. Tier 1 · 硬规则
 
-> 每条均有 benchmark 数据 + BytecodeProbe 字节码双重确认。可直接全项目执行。
+### 2a. 零前提（可全局搜改）
 
-### 访问
+> 每条均有 benchmark + BytecodeProbe 双重确认，替换无语义风险。
 
-- **H01** `[T1]` 热循环中，外部变量首次使用前必须 `var local = xxx` 局部化
+**访问**
+
+- **H01** `[T1a]` 热循环中，外部变量首次使用前必须 `var local = xxx` 局部化
   - 局部=register 直读(0ns) vs 全局=GetVariable(98ns) vs 成员=GetMember(144ns)
-- **H02** `[T1]` 链式访问 `a.b.c` 循环内使用 >=2 次，必须缓存中间对象
+- **H02** `[T1a]` 链式访问 `a.b.c` 循环内使用 >=2 次，必须缓存中间对象
   - 每多一层约 +80ns（chain_depth2=179ns, chain_depth3=230ns）
-- **H03** `[T1]` MovieClip 属性批量读写前，缓存 MC 引用到局部变量
+- **H03** `[T1a]` MovieClip 属性批量读写前，缓存 MC 引用到局部变量
 
-### 字符串与类型转换
+**字符串与类型转换**
 
-- **H04** `[T1]` 字符串长度一律用 `length(s)`(14ns)，禁止 `s.length`(580ns) — 41x 差距
+- **H04** `[T1a]` 字符串长度一律用 `length(s)`(14ns)，禁止 `s.length`(580ns) — 41x 差距
   - 字节码：`length(s)` → StringLength opcode；`s.length` → GetMember "length"
   - 注意：`length()` 仅对字符串有效，数组长度仍用 `arr.length`
-- **H05** `[T1]` 数字转换一律用 `Number(s)`，**绝对禁止** `+s`
+- **H05** `[T1a]` 数字转换一律用 `Number(s)`，**绝对禁止** `+s`
   - AS2 编译器 bug：`+s` 编译为 `Push s`（无 ToNumber），不做任何类型转换
-- **H06** `[T1]` 布尔转换一律用 `!!x`(28ns)，禁止 `Boolean(x)`(193ns) — 7x 差距
+- **H06** `[T1a]` 布尔转换一律用 `!!x`(28ns)，禁止 `Boolean(x)`(193ns) — 7x 差距
   - 字节码：`!!x` → Not, Not；`Boolean(x)` → CallFunction "Boolean"
-- **H07** `[T1]` NaN 检测用 `isNaN()`，禁止 `n != n`
+- **H07** `[T1a]` NaN 检测用 `isNaN()`，禁止 `n != n`
   - AS2 中 `NaN == NaN` 返回 true（违反 IEEE 754），`n != n` 始终 false
-- **H08** `[T1]` 热路径和可能跨类型的比较用 `===`（跨类型 `==` 贵 5.6x）
-  - 同类型差异仅 ~2ns，冷路径 `==` 无需强制替换
 
-### 调用
+**调用**
 
-- **H09** `[T1]` 热路径禁止 `arguments`，用显式参数
+- **H09** `[T1a]` 热路径禁止 `arguments`，用显式参数
   - arguments.length=1538ns，arguments 读取=1306ns
-- **H10** `[T1]` 轻量 helper / 空 ctor / 纯转发函数必须确认触发 DF2（函数体中引用参数）
-  - DF1=1079ns vs DF2=485ns(2.2x)。仅限函数体极轻的情况，实质逻辑时差异被稀释
 
-### 数学
+**数学**
 
-- **H11** `[T1]` 不能内联的 Math(sin/cos/sqrt/atan2) 缓存引用：`var msin:Function = Math.sin;`
+- **H11** `[T1a]` 不能内联的 Math(sin/cos/sqrt/atan2) 缓存引用：`var msin:Function = Math.sin;`
   - 直调 265ns → 缓存 147ns(省44%)
-- **H12** `[T1]` 禁止 `~~x` 取整(69ns, 4ops)，用 `x|0`(29ns, 1op)
+- **H12** `[T1a]` 禁止 `~~x` 取整(69ns, 4ops)，用 `x|0`(29ns, 1op)
 
-### 数学内联替换（有前提条件）
+**控制流**
 
-- **H13** `[T1]` 热路径取整用 `(x|0)`(29ns) 替代 `Math.floor()`(254ns) — **8.7x**
-  - ⚠️ **前提**：`x|0` 是截断(toward zero)，不是向下取整。`-3.7|0 = -3` 而非 `-4`。仅限：(a) 已知 x≥0，或 (b) 截断语义可接受。负数向下取整用缓存的 `Math.floor` 引用
-- **H14** `[T1]` 热路径 abs 用 `x<0?-x:x`(58ns) 替代 `Math.abs()`(249ns) — **4.3x**
-  - ⚠️ **前提**：对 NaN 输入行为不同（三元返回 NaN，Math.abs 也返回 NaN，但中间路径不同）。仅限已知输入为有限数值
-- **H15** `[T1]` 热路径 min/max/clamp 用三元表达式替代 `Math.min/max`
+- **H16** `[T1a]` 热路径禁止 `for-in`(2200~7800ns/iter)，用预存键数组 + `while(i--)`
+- **H17** `[T1a]` 热路径禁止 `with`(409ns)
+- **H18** `[T1a]` 热路径禁止 `try-catch` 包裹，异常处理放外层
+- **H19** `[T1a]` 逻辑短路：最可能 false 的条件放 `&&` 左侧
+
+**容器**
+
+- **H20** `[T1a]` 热路径禁止 `splice`(4231ns)/`concat`(1673ns)/`unshift`(973ns)
+  - 队列用 head/tail index 或环形缓冲
+- **H21** `[T1a]` 清空数组用 `arr.length=0`(69ns)，不用 `arr=[]`(550ns+GC)
+
+### 2b. 有前提（逐调用点审查后替换）
+
+> benchmark + BytecodeProbe 双重确认性能差距真实存在，但替换有值域/语义前提，不可全局搜改。
+
+**跨类型比较**
+
+- **H08** `[T1b]` 热路径和可能跨类型的比较用 `===`（跨类型 `==` 贵 5.6x）
+  - 同类型差异仅 ~2ns，冷路径 `==` 无需替换
+  - 前提：需确认该比较点确实可能出现混类型
+
+**DF2 审计**
+
+- **H10** `[T1b]` 轻量 helper / 空 ctor / 纯转发函数确认触发 DF2（函数体中引用参数）
+  - DF1=1079ns vs DF2=485ns(2.2x)
+  - 前提：仅限函数体极轻的情况。函数体有实质逻辑时差异被稀释，无需改动
+
+**数学内联替换**
+
+- **H13** `[T1b]` 热路径取整用 `(x|0)`(29ns) 替代 `Math.floor()`(254ns) — **8.7x**
+  - ⚠️ **前提（全部必须满足）**：
+    - (a) x 是有限数值（NaN|0 → 0，Infinity|0 → 0，静默吞掉异常值）
+    - (b) x 在 Int32 范围内（|x| < 2^31，超范围截断为错误值）
+    - (c) x≥0，或截断语义可接受（`x|0` 是 toward-zero 截断，`-3.7|0 = -3` 而非 `-4`）
+  - 不满足任一前提时，用缓存的 `Math.floor` 引用（142ns）
+- **H14** `[T1b]` 热路径 abs 用 `x<0?-x:x`(58ns) 替代 `Math.abs()`(249ns) — **4.3x**
+  - ⚠️ **前提**：输入为有限数值。NaN 输入时 `x<0` 为 false，返回原 NaN（行为碰巧一致，但依赖实现细节）
+- **H15** `[T1b]` 热路径 min/max/clamp 用三元表达式替代 `Math.min/max`
   - `a<b?a:b`(31ns) vs `Math.min(a,b)`(264ns) — **8.5x**
   - `a<lo?lo:(a>hi?hi:a)`(40ns) vs `Math.min(Math.max())`(274ns) — **6.8x**
-  - ⚠️ **前提**：仅限二元比较。NaN 输入时三元表达式可能返回 NaN 而非另一个操作数
-
-### 控制流
-
-- **H16** `[T1]` 热路径禁止 `for-in`(2200~7800ns/iter)，用预存键数组 + `while(i--)`
-- **H17** `[T1]` 热路径禁止 `with`(409ns)
-- **H18** `[T1]` 热路径禁止 `try-catch` 包裹，异常处理放外层
-- **H19** `[T1]` 逻辑短路：最可能 false 的条件放 `&&` 左侧
-
-### 容器
-
-- **H20** `[T1]` 热路径禁止 `splice`(4231ns)/`concat`(1673ns)/`unshift`(973ns)
-  - 队列用 head/tail index 或环形缓冲
-- **H21** `[T1]` 清空数组用 `arr.length=0`(69ns)，不用 `arr=[]`(550ns+GC)
+  - ⚠️ **前提**：仅限二元、已知有限数值。NaN 输入时三元返回 NaN 或另一个操作数（取决于比较顺序），与 Math.min/max 行为不同
 
 ---
 
@@ -152,32 +172,33 @@
 
 <!-- 持续补充：每次发现新的优化决策规则时追加 -->
 
-| 场景 | 推荐方案 | Tier | 关键原理 | 来源 |
+| 场景 | 推荐方案 | 标签 | 关键原理 | 来源 |
 |------|----------|------|----------|------|
-| 同一属性访问 ≥ 2 次 | `var local = obj.prop;` 缓存到局部变量 | T1 | 局部=register直读(0ns) vs 成员=GetMember(144ns) | 基准 `obj_dot_hit`、`BQP.as` |
-| 类名极长 | `var CFR:Object = ColliderFactoryRegistry;` 别名缓存 | T1 | 减少属性查找 + 缩短字节码字符串常量 | `BQP.as:1688-1694` |
-| 位掩码/状态标志等不变量 | `#include` 宏注入为函数内局部 `var`，组合常量预计算 | T1 | 编译期文本替换，零运行时类名查找 | `BQP.as:1670-1682` |
-| 多步计算临时变量 | 副作用语句压行（`arr[--j+2]=tmp`），触发 StoreRegister | T1 | AVM1 副作用上下文走 StoreRegister（3 字节码） | `TimSort.as` + `evalorder.md` |
-| 批量数组拷贝 | 4 路展开 + 偏移寻址 `arr[d+k]...d+=4` | T1 | `d+k` = 3 字节码，每 4 路净省 4 条指令 | `TimSort.as` 平台决策 |
-| 布尔参与算术 | 直接使用比较结果，不用 `(cond ? 1 : 0)` | T1 | AVM1 ActionSubtract 硬连线 Boolean→Number 快速路径 | `TimSort.as` 平台决策 |
-| 按计算键排序 | 预提取键到 Number 数组，内联比较 | T1 | 消除比较器函数调用开销(485ns/call) | `TimSort.sortIndirect()` |
+| 同一属性访问 ≥ 2 次 | `var local = obj.prop;` 缓存到局部变量 | T1a | 局部=register直读(0ns) vs 成员=GetMember(144ns) | 基准 `obj_dot_hit` |
+| 字符串长度 | `length(s)`(14ns)，不用 `s.length`(580ns) | T1a | StringLength opcode vs GetMember | 基准 `str_length_as1` |
+| 布尔转换 | `!!x`(28ns)，不用 `Boolean(x)`(193ns) | T1a | Not+Not vs CallFunction | 基准 `to_bool_doublenot` |
+| 数字转换 | `Number(s)`(76ns)，禁止 `+s`(不转换!) | T1a | AS2 编译器 bug | 基准 + BytecodeProbe |
+| NaN 检测 | `isNaN(n)`，禁止 `n!=n` | T1a | AS2 中 NaN==NaN=true | BytecodeProbe 探针 B |
+| 字符串拼接 | 裸 `+` 拼接(54ns)，不用 `Array.join()`(495ns) | T1a | join 走 CallMethod | `字符串性能评估.md` + 基准 |
+| Math.sin/cos 等 | `var ms:Function=Math.sin;` 缓存引用 | T1a | 直调 265ns → 缓存 147ns(省44%) | 基准 `cached_math_sin` |
+| 空函数/ctor 调用 | 确保触发 DF2（函数体引用参数） | T1b | DF1=1079ns vs DF2=485ns(2.2x)。前提：函数体极轻 | 基准 `call_empty_df1/df2` |
+| 队列操作 | head/tail index，避免 shift/unshift | T1a | shift=405ns, unshift=973ns, splice=4231ns | 基准 `arr_shift/unshift/splice` |
+| 取整 | `x\|0`(29ns)，不用 `Math.floor()`(254ns) | T1b | **前提：有限数值 + Int32 范围 + x≥0 或截断可接受** | 基准 `floor_bitor0` |
+| 取绝对值 | `x<0?-x:x`(58ns)，不用 `Math.abs()`(249ns) | T1b | **前提：已知有限数值输入** | 基准 `abs_ternary` |
+| clamp | `a<lo?lo:(a>hi?hi:a)`(40ns) | T1b | **前提：已知有限数值、仅二元** | 基准 `clamp_ternary` |
+| 跨类型比较 | `===` 替代 `==`（跨类型贵 5.6x） | T1b | 前提：确认该比较点可能混类型 | 基准 `eq_str_num` |
+| 类名极长 | `var CFR:Object = ColliderFactoryRegistry;` 别名缓存 | P | 减少属性查找 + 缩短字节码字符串常量 | `BQP.as:1688-1694` |
+| 位掩码/状态标志等不变量 | `#include` 宏注入为函数内局部 `var`，组合常量预计算 | P | 编译期文本替换，零运行时类名查找 | `BQP.as:1670-1682` |
+| 多步计算临时变量 | 副作用语句压行（`arr[--j+2]=tmp`），触发 StoreRegister | P | AVM1 副作用上下文走 StoreRegister（3 字节码） | `TimSort.as` + `evalorder.md` |
+| 批量数组拷贝 | 4 路展开 + 偏移寻址 `arr[d+k]...d+=4` | P | `d+k` = 3 字节码，每 4 路净省 4 条指令 | `TimSort.as` 平台决策 |
+| 布尔参与算术 | 直接使用比较结果，不用 `(cond ? 1 : 0)` | P | AVM1 ActionSubtract 硬连线 Boolean→Number 快速路径 | `TimSort.as` 平台决策 |
+| 按计算键排序 | 预提取键到 Number 数组，内联比较 | P | 消除比较器函数调用开销(485ns/call) | `TimSort.sortIndirect()` |
+| 大型函数变量声明 | 所有 `var` 集中到函数入口 | P | 避免 AVM1 循环内重复初始化 | `BQP.as:1748-1835` |
+| 多维状态紧凑存储 | 位运算编码到单个 Number（`(id << N) \| mode`） | P | 避免每实例分配 Object(900ns) | `BQP.as` cancelToken |
 | 循环首次迭代可保证执行 | 哨兵搬运 + `do-while` | T3 | do-while 305ns/iter vs while 336ns/iter，差异小 | `TIMSORT_MERGE.as` P3 |
-| 字符串拼接 | 裸 `+` 拼接(54ns)，不用 `Array.join()`(495ns) | T1 | join 走 CallMethod | `字符串性能评估.md` + 基准 |
-| 取绝对值 | `x<0?-x:x`(58ns)，不用 `Math.abs()`(249ns) | T1 | **前提：已知有限数值输入** | 基准 `abs_ternary` |
-| 取整 | `x\|0`(29ns)，不用 `Math.floor()`(254ns) | T1 | **前提：x≥0 或截断语义可接受** | 基准 `floor_bitor0` |
-| clamp | `a<lo?lo:(a>hi?hi:a)`(40ns) | T1 | **前提：已知有限数值输入，仅二元** | 基准 `clamp_ternary` |
-| 字符串长度 | `length(s)`(14ns)，不用 `s.length`(580ns) | T1 | StringLength opcode vs GetMember | 基准 `str_length_as1` |
-| 布尔转换 | `!!x`(28ns)，不用 `Boolean(x)`(193ns) | T1 | Not+Not vs CallFunction | 基准 `to_bool_doublenot` |
-| 数字转换 | `Number(s)`(76ns)，禁止 `+s`(不转换!) | T1 | AS2 编译器 bug | 基准 + BytecodeProbe |
-| NaN 检测 | `isNaN(n)`，禁止 `n!=n` | T1 | AS2 中 NaN==NaN=true | BytecodeProbe 探针 B |
-| 大型函数变量声明 | 所有 `var` 集中到函数入口 | T1 | 避免 AVM1 循环内重复初始化 | `BQP.as:1748-1835` |
-| 多维状态紧凑存储 | 位运算编码到单个 Number（`(id << N) \| mode`） | T1 | 避免每实例分配 Object(900ns) | `BQP.as` cancelToken |
-| 空函数/ctor 调用 | 确保触发 DF2（函数体引用参数） | T1 | DF1=1079ns vs DF2=485ns(2.2x) | 基准 `call_empty_df1/df2` |
-| 队列操作 | head/tail index，避免 shift/unshift | T1 | shift=405ns, unshift=973ns, splice=4231ns | 基准 `arr_shift/unshift/splice` |
 | 热路径静态缓存 | 阈值释放（≤256 保留，>256 释放）+ `_inUse` 重入保护 | T2 | 小缓存复用减 GC，大缓存释放防泄漏。全链路成本需 profile | `TimSort.as` workspace |
 | 帧间临时数据（同步） | 静态预分配对象复用 | T2 | new=847ns+GC压力。但管理成本需按场景评估 | `BQP.as:119-130` + 基准 |
 | 实体列表删除 | 标记删除+定期压缩 / swap-with-last+pop | T2 | splice=4231ns。具体方案需按删除/遍历频率 profile | 基准 `arr_splice` |
-| Math.sin/cos 等 | `var ms:Function=Math.sin;` 缓存引用 | T1 | 直调 265ns → 缓存 147ns(省44%) | 基准 `cached_math_sin` |
 | 输入采样 | 每帧集中读一次 snapshot | T2 | Key.isDown=417ns/次。具体实现成本取决于采样量 | 基准 `native_keyisdown` |
 | 紧密循环对象属性数组 | SoA 拆分：对象数组 → 多个平行基元数组 | T3 | benchmark workload 不对称（AOS 有局部别名） | `BQP.as:1711-1741` |
 
@@ -216,10 +237,12 @@
 
 ## 7. 使用说明
 
-- 编写性能敏感代码时，**先查 §2 Tier 1 硬规则**——这些可以直接执行
-- 做架构决策时，查 §3 Tier 2 工程策略——需先 profile 再决定
-- 做工程决策时，查 §5 快查表找对应场景，注意 Tier 标签
+- 编写性能敏感代码时，**先查 §2a T1a 硬规则**——这些可以直接全局搜改
+- §2b T1b 条目性能差距真实，但有值域/语义前提——逐调用点审查后替换
+- 做架构决策时，查 §3 T2 工程策略——需先 profile 再决定
+- 做工程决策时，查 §5 快查表找对应场景，注意标签列（T1a/T1b/T2/T3/P）
+- `[P]` 标签为平台经验（字节码验证/项目实战），可信但证据源独立于 benchmark
 - 需要详细数据支撑时，进入 `scripts/优化随笔/性能基准评估/AVM1性能基准总结与热路径编码规范.md` 阅读完整报告
 - 遇到前人研究的细分主题，查 §6 索引定位对应文档
-- **不要把 Tier 2/3 的结论当作全项目机械改写任务**
+- **不要把 T1b/T2/T3 的结论当作全项目机械改写任务**
 - 新的性能发现应按照 `agentsDoc/self-optimization.md` 流程归档
