@@ -35,10 +35,9 @@
                   <edges>
                     <Edge fillStyle1="1" edges="!17394 266S2|17677 549"/>
                     <Edge fillStyle1="1" strokeStyle="2" edges="!17677 549S2|551 549"/>
-                    <Edge fillStyle1="1" edges="!551 549S2|280 279"/>
-                    <Edge strokeStyle="2" edges="!280 279|-238 279"/>
-                    <Edge fillStyle1="1" edges="!280 279S2|267 266"/>
+                    <Edge fillStyle1="1" edges="!551 549S2|280 279!280 279|267 266"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!267 266S2|17394 266"/>
+                    <Edge strokeStyle="2" edges="!280 279|-238 279"/>
                   </edges>
                 </DOMShape>
               </elements>
