@@ -63,6 +63,9 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.testSubscribeOnceSubscriptionCleanup();
         this.testUnsubscribeRefCountOptimization();
 
+        // === [v3.0] 新增回归测试 ===
+        this.testPublishSpecialized();
+
         this.testMemoryLeakDetection();
         this.testPerformance();
         this.reportResults();
@@ -395,9 +398,10 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.dispatcher.publish(eventName);
 
         // 预期 callOrder:
-        // 第一次发布: callback1, callback2 (callback3 尚未订阅)
-        // 第二次发布: callback2, callback3 (callback1 已被移除)
-        var expectedOrder:Array = ["callback1", "callback2", "callback2", "callback3"];
+        // [v3.0] while(i--) 倒序执行，快照机制保证回调中的修改不影响当前 dispatch
+        // 第一次发布: callback2(idx=1先), callback1(idx=0后) (callback3 尚未订阅)
+        // 第二次发布: callback3(idx=1先), callback2(idx=0后) (callback1 已被移除)
+        var expectedOrder:Array = ["callback2", "callback1", "callback3", "callback2"];
         var isOrderCorrect:Boolean = true;
         if (callOrder.length !== expectedOrder.length) {
             isOrderCorrect = false;
@@ -1125,7 +1129,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
 
     /**
      * [v2.2 回归测试 P0-1] 验证 subscribeOnce 回调触发后订阅记录被正确清理
-     * 修复问题：之前 subscribeOnce 回调触发后，EventDispatcher.subscriptions 数组中仍残留记录
+     * 修复问题：之前 subscribeOnce 回调触发后，订阅记录仍残留
+     * [v3.0 更新] subscriptions 从 Object[] 改为并行数组，使用 _subCount 检查
      */
     private function testSubscribeOnceSubscriptionCleanup():Void {
         trace("--- [v2.2] 测试 subscribeOnce 订阅记录清理 ---");
@@ -1139,14 +1144,14 @@ class org.flashNight.neur.Event.EventDispatcherTest {
             callCount++;
         };
 
-        // 获取初始订阅数量
-        var initialSubscriptionCount:Number = this.dispatcher["subscriptions"].length;
+        // [v3.0] 获取初始订阅数量
+        var initialSubscriptionCount:Number = this.dispatcher["_subCount"];
 
         // 一次性订阅
         this.dispatcher.subscribeOnce(eventName, testCallback, scope);
 
         // 验证订阅已添加
-        var afterSubscribeCount:Number = this.dispatcher["subscriptions"].length;
+        var afterSubscribeCount:Number = this.dispatcher["_subCount"];
         this.assert(afterSubscribeCount == initialSubscriptionCount + 1,
             "[v2.2 P0-1] subscribeOnce-cleanup - subscription added");
 
@@ -1155,7 +1160,7 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.assert(callCount === 1, "[v2.2 P0-1] subscribeOnce-cleanup - callback called once");
 
         // [关键测试点] 验证订阅记录已被清理
-        var afterFireCount:Number = this.dispatcher["subscriptions"].length;
+        var afterFireCount:Number = this.dispatcher["_subCount"];
         this.assert(afterFireCount == initialSubscriptionCount,
             "[v2.2 P0-1] subscribeOnce-cleanup - subscription record cleaned after callback fired");
 
@@ -1339,5 +1344,60 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         } else {
             trace("所有测试均通过。");
         }
+    }
+
+    // ======================
+    // [v3.0] 回归测试 - publish 特化方法验证
+    // ======================
+
+    /**
+     * [v3.0 回归测试] 验证 publish0/publish1/publish2 特化方法
+     * 以及 publishGlobal0/publishGlobal1/publishGlobal2
+     */
+    private function testPublishSpecialized():Void {
+        trace("--- [v3.0] 测试 publish 特化方法 ---");
+        this.initializeDispatcher();
+
+        var result0:Boolean = false;
+        var result1:String = null;
+        var result2a:String = null;
+        var result2b:Number = 0;
+
+        var scope:Object = this;
+
+        var cb0:Function = function():Void { result0 = true; };
+        var cb1:Function = function(a):Void { result1 = a; };
+        var cb2:Function = function(a, b):Void { result2a = a; result2b = b; };
+
+        // 测试局部事件的特化发布
+        this.dispatcher.subscribe("p0Test", cb0, scope);
+        this.dispatcher.subscribe("p1Test", cb1, scope);
+        this.dispatcher.subscribe("p2Test", cb2, scope);
+
+        this.dispatcher.publish0("p0Test");
+        this.assert(result0 == true, "[v3.0] publish0 - local event callback called");
+
+        this.dispatcher.publish1("p1Test", "hello");
+        this.assert(result1 == "hello", "[v3.0] publish1 - local event single arg received");
+
+        this.dispatcher.publish2("p2Test", "world", 42);
+        this.assert(result2a == "world" && result2b == 42, "[v3.0] publish2 - local event dual args received");
+
+        // 测试全局事件的特化发布
+        var globalResult0:Boolean = false;
+        var globalResult1:String = null;
+        var globalCb0:Function = function():Void { globalResult0 = true; };
+        var globalCb1:Function = function(a):Void { globalResult1 = a; };
+
+        this.dispatcher.subscribeGlobal("gp0Test", globalCb0, scope);
+        this.dispatcher.subscribeGlobal("gp1Test", globalCb1, scope);
+
+        this.dispatcher.publishGlobal0("gp0Test");
+        this.assert(globalResult0 == true, "[v3.0] publishGlobal0 - callback called");
+
+        this.dispatcher.publishGlobal1("gp1Test", "global_hello");
+        this.assert(globalResult1 == "global_hello", "[v3.0] publishGlobal1 - single arg received");
+
+        this.cleanupDispatcher();
     }
 }

@@ -112,9 +112,14 @@ class org.flashNight.neur.Event.EventBusTest {
         // [v2.3.2] 新增回归测试 - 空字符串/null 事件名验证
         this.testEmptyEventNameRejection();
 
-        // [v2.3.3] 新增回归测试 - 严重问题修复验证
+        // [v2.3.3/v3.0] 大规模订阅正确性 + 栈清理验证
         this.testExpandPoolBoundaryFix();
         this.testForceResetDispatchDepthClearsStacks();
+
+        // [v3.0] 新增回归测试 - 结构性重构验证
+        this.testPublishSpecialized();
+        this.testDirectScopeBinding();
+        this.testSwapAndPopUnsubscribe();
 
         // [v2.2] let-it-crash 测试放在最后，因为它可能导致 _dispatchDepth 状态不一致
         this.testLetItCrashStrategy();
@@ -853,6 +858,7 @@ class org.flashNight.neur.Event.EventBusTest {
      * 修复问题：subscribeOnce 传递 originalCallback 给 unsubscribe
      * [v2.1 更新] 适配事件分桶结构: eventName -> { funcUID -> wrappedCallback }
      * [v2.3 更新] 适配 combo key: callbackUID + "|" + scopeUID
+     * [v3.0 更新] onceCallbackMap 值从 Function 改为 String(wrappedComboUID)
      */
     private function testOnceCallbackMapCleanup():Void {
         this.resetFlags();
@@ -870,7 +876,8 @@ class org.flashNight.neur.Event.EventBusTest {
         // 订阅一次性事件
         this.eventBus.subscribeOnce(eventName, onceCallback, scope);
 
-        // [v2.3] 获取 onceCallbackMap 的初始状态 - 使用 combo key: callbackUID + "|" + scopeUID
+        // [v3.0] 获取 onceCallbackMap 的初始状态
+        // 值类型从 Function 改为 String(wrappedComboUID)
         var mapBefore:Object = this.eventBus["onceCallbackMap"];
         var callbackUID:String = String(Dictionary.getStaticUID(onceCallback));
         var scopeUID:String = String(Dictionary.getStaticUID(scope));
@@ -881,7 +888,7 @@ class org.flashNight.neur.Event.EventBusTest {
         // 触发事件
         this.eventBus.publish(eventName);
 
-        // [v2.3] 验证 onceCallbackMap 已清理 - 检查事件分桶
+        // [v3.0] 验证 onceCallbackMap 已清理
         var mapAfter:Object = this.eventBus["onceCallbackMap"];
         var eventBucketAfter:Object = mapAfter[eventName];
         var hasMappingAfter:Boolean = (eventBucketAfter != null && eventBucketAfter[comboKey] != null);
@@ -1364,14 +1371,14 @@ class org.flashNight.neur.Event.EventBusTest {
     // ======================
 
     /**
-     * [v2.3.3 回归测试] 验证 expandPool() 边界错误已修复
-     * 修复问题：do..while 在 availSpaceTop==0 时仍执行一次，
-     * 导致新槽位索引被旧值覆盖，回调池被破坏
+     * [v2.3.3 回归测试] 大规模订阅正确性验证
+     * [v3.0 更新] pool/expandPool 已移除，改为并行数组直接存储
+     *   此测试仍然验证2048个不同 callback+scope 订阅的正确性
      *
      * 测试策略：
-     * 1. 创建超过初始容量(1024)的订阅，触发扩容
+     * 1. 创建 2048 个不同的 callback+scope 组合订阅
      * 2. 验证每个回调都能被正确触发
-     * 3. 验证退订后回调不再被调用（无串台）
+     * 3. 验证退订后回调不再被调用
      */
     private function testExpandPoolBoundaryFix():Void {
         this.resetFlags();
@@ -1474,13 +1481,19 @@ class org.flashNight.neur.Event.EventBusTest {
         var depthAfterReset:Number = this.eventBus["_dispatchDepth"];
         this.assert(depthAfterReset == 0, "[v2.3.3] forceReset-stacks - _dispatchDepth is 0 after reset");
 
-        // 验证栈数组已清空（通过检查 length）
+        // [v3.0] 验证栈数组已清空（_cbStack, _scStack, _argsStack）
         var cbStack:Array = this.eventBus["_cbStack"];
+        var scStack:Array = this.eventBus["_scStack"];
         var argsStack:Array = this.eventBus["_argsStack"];
         var stacksCleared:Boolean = true;
 
-        for (var i:Number = 0; i < cbStack.length; i++) {
+        var stackLen:Number = cbStack.length;
+        for (var i:Number = 0; i < stackLen; i++) {
             if (cbStack[i] != undefined && cbStack[i].length > 0) {
+                stacksCleared = false;
+                break;
+            }
+            if (scStack[i] != undefined && scStack[i].length > 0) {
                 stacksCleared = false;
                 break;
             }
@@ -1494,6 +1507,156 @@ class org.flashNight.neur.Event.EventBusTest {
         // 清理
         this.eventBus.unsubscribe("STACK_RESET_OUTER", outerCallback);
         this.eventBus.unsubscribe("STACK_RESET_INNER", innerCallback);
+    }
+
+    // ======================
+    // [v3.0] 回归测试 - 结构性重构验证
+    // ======================
+
+    /**
+     * [v3.0 回归测试] 验证 publish0/publish1/publish2 特化方法
+     * 验证零 arguments 路径的正确性
+     */
+    private function testPublishSpecialized():Void {
+        this.resetFlags();
+        this.eventBus = EventBus.initialize();
+
+        var result0:Boolean = false;
+        var result1:String = null;
+        var result2a:String = null;
+        var result2b:Number = 0;
+
+        var cb0:Function = function():Void {
+            result0 = true;
+        };
+        var cb1:Function = function(a):Void {
+            result1 = a;
+        };
+        var cb2:Function = function(a, b):Void {
+            result2a = a;
+            result2b = b;
+        };
+
+        var scope0:Object = {name: "s0"};
+        var scope1:Object = {name: "s1"};
+        var scope2:Object = {name: "s2"};
+
+        this.eventBus.subscribe("PUB0_TEST", cb0, scope0);
+        this.eventBus.subscribe("PUB1_TEST", cb1, scope1);
+        this.eventBus.subscribe("PUB2_TEST", cb2, scope2);
+
+        // 测试 publish0
+        this.eventBus.publish0("PUB0_TEST");
+        this.assert(result0 == true, "[v3.0] publish0 - zero-arg callback called");
+
+        // 测试 publish1
+        this.eventBus.publish1("PUB1_TEST", "hello");
+        this.assert(result1 == "hello", "[v3.0] publish1 - single-arg callback received correct value");
+
+        // 测试 publish2
+        this.eventBus.publish2("PUB2_TEST", "world", 42);
+        this.assert(result2a == "world" && result2b == 42, "[v3.0] publish2 - dual-arg callback received correct values");
+
+        // 清理
+        this.eventBus.unsubscribe("PUB0_TEST", cb0, scope0);
+        this.eventBus.unsubscribe("PUB1_TEST", cb1, scope1);
+        this.eventBus.unsubscribe("PUB2_TEST", cb2, scope2);
+    }
+
+    /**
+     * [v3.0 回归测试] 验证直接 scope 绑定（无 Delegate 包装）
+     * v3.0 去掉了 EventBus 内部的 Delegate.create，publish 时直接 fn.call(scope)
+     * 验证 this 指向正确
+     */
+    private function testDirectScopeBinding():Void {
+        this.resetFlags();
+        this.eventBus = EventBus.initialize();
+
+        var scopeA:Object = {name: "Alice", received: false};
+        var scopeB:Object = {name: "Bob", received: false};
+
+        // 直接传原始函数引用 + scope，不经过 Delegate
+        var rawCallback:Function = function():Void {
+            this.received = true;
+        };
+
+        this.eventBus.subscribe("SCOPE_BIND_TEST", rawCallback, scopeA);
+        this.eventBus.subscribe("SCOPE_BIND_TEST", rawCallback, scopeB);
+
+        this.eventBus.publish0("SCOPE_BIND_TEST");
+
+        this.assert(scopeA.received == true, "[v3.0] direct-scope - scopeA.received is true");
+        this.assert(scopeB.received == true, "[v3.0] direct-scope - scopeB.received is true");
+
+        // 精确退订 scopeA，scopeB 应该仍能触发
+        scopeA.received = false;
+        scopeB.received = false;
+        this.eventBus.unsubscribe("SCOPE_BIND_TEST", rawCallback, scopeA);
+        this.eventBus.publish0("SCOPE_BIND_TEST");
+
+        this.assert(scopeA.received == false, "[v3.0] direct-scope - scopeA not called after unsubscribe");
+        this.assert(scopeB.received == true, "[v3.0] direct-scope - scopeB still called");
+
+        // 清理
+        this.eventBus.unsubscribe("SCOPE_BIND_TEST", rawCallback, scopeB);
+    }
+
+    /**
+     * [v3.0 回归测试] 验证 swap-and-pop 删除的正确性
+     * 特别验证删除中间元素后数组完整性不被破坏
+     */
+    private function testSwapAndPopUnsubscribe():Void {
+        this.resetFlags();
+        this.eventBus = EventBus.initialize();
+
+        var results:Array = [0, 0, 0, 0, 0];
+
+        var cb0:Function = function():Void { results[0]++; };
+        var cb1:Function = function():Void { results[1]++; };
+        var cb2:Function = function():Void { results[2]++; };
+        var cb3:Function = function():Void { results[3]++; };
+        var cb4:Function = function():Void { results[4]++; };
+
+        var sc:Object = {};
+
+        this.eventBus.subscribe("SWAP_POP_TEST", cb0, sc);
+        this.eventBus.subscribe("SWAP_POP_TEST", cb1, sc);
+        this.eventBus.subscribe("SWAP_POP_TEST", cb2, sc);
+        this.eventBus.subscribe("SWAP_POP_TEST", cb3, sc);
+        this.eventBus.subscribe("SWAP_POP_TEST", cb4, sc);
+
+        // 删除中间元素 cb2
+        this.eventBus.unsubscribe("SWAP_POP_TEST", cb2, sc);
+
+        // 发布，应该只有 cb0, cb1, cb3, cb4 被调用
+        this.eventBus.publish0("SWAP_POP_TEST");
+
+        this.assert(results[0] == 1 && results[1] == 1 && results[2] == 0 && results[3] == 1 && results[4] == 1,
+            "[v3.0] swap-and-pop - middle element removed correctly");
+
+        // 再删除第一个元素 cb0
+        results = [0, 0, 0, 0, 0];
+        this.eventBus.unsubscribe("SWAP_POP_TEST", cb0, sc);
+        this.eventBus.publish0("SWAP_POP_TEST");
+
+        this.assert(results[0] == 0 && results[1] == 1 && results[3] == 1 && results[4] == 1,
+            "[v3.0] swap-and-pop - first element removed correctly");
+
+        // 删除最后一个元素 cb4
+        results = [0, 0, 0, 0, 0];
+        this.eventBus.unsubscribe("SWAP_POP_TEST", cb4, sc);
+        this.eventBus.publish0("SWAP_POP_TEST");
+
+        this.assert(results[1] == 1 && results[3] == 1 && results[4] == 0,
+            "[v3.0] swap-and-pop - last element removed correctly");
+
+        // 删除所有剩余
+        this.eventBus.unsubscribe("SWAP_POP_TEST", cb1, sc);
+        this.eventBus.unsubscribe("SWAP_POP_TEST", cb3, sc);
+
+        // 验证事件已完全清理
+        this.assert(this.eventBus["listeners"]["SWAP_POP_TEST"] == undefined,
+            "[v3.0] swap-and-pop - event cleaned up after all unsubscribes");
     }
 }
 

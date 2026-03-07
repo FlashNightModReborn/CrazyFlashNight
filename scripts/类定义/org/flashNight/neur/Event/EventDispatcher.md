@@ -2,41 +2,37 @@
 
 ## 版本历史
 
+### v3.0 (2026-03) - 性能重构
+- **[PERF]** 新增 `publish0/publish1/publish2` 特化方法，完全消除 `arguments` 开销
+  - 直接调用 EventBus.publish0/publish1/publish2，双层零 arguments
+  - H09: arguments.length=1538ns, arguments读取=1306ns
+- **[PERF]** 订阅记录从 `Object[] subscriptions` 改为并行数组 SoA 布局
+  - `_subEvents[]`/`_subCallbacks[]`/`_subScopes[]`/`_subFlags[]`
+  - 删除操作从 splice(4231ns) 改为 swap-and-pop(O(1))
+- **[PERF]** `publish()`的前3个参数分支直接路由到 `bus.publish0/1/2`
+- **[API]** 新增 `publishGlobal0/publishGlobal1/publishGlobal2` 特化方法
+- **[COMPAT]** 所有公共 API 签名不变
+
 ### v2.3.3 (2026-01) - 性能对齐
-- **[PERF]** `publish/publishGlobal` 参数展开从 10 扩展到 15，与 EventBus 对齐
-  - 避免 11-15 参数时退化为 apply + combineArgs
+- **[PERF]** `publish/publishGlobal` 参数展开从 10 扩展到 15
 
 ### v2.3.2 (2026-01) - 兼容性修复 + 参数验证
-- **[CRITICAL]** 所有公共方法拒绝 null/空字符串 eventName，防止意外行为
-- **[FIX]** `unsubscribe/unsubscribeGlobal` 当 scope 为 undefined 时使用兼容模式
-  - 修复：之前 scope === undefined 时无法匹配已记录的 subscriptions，导致退订失败
-- **[FIX]** 从后往前遍历 subscriptions，支持兼容模式下删除多个匹配项
+- **[CRITICAL]** 所有公共方法拒绝 null/空字符串 eventName
+- **[FIX]** `unsubscribe/unsubscribeGlobal` scope 为 undefined 时使用兼容模式
 
 ### v2.3 (2026-01) - 三方交叉审查综合修复
-- **[CRITICAL]** `subscribe/subscribeOnce/subscribeGlobal` 根据 EventBus 返回值条件记账，修复幽灵订阅问题
+- **[CRITICAL]** `subscribe/subscribeOnce/subscribeGlobal` 根据 EventBus 返回值条件记账
 - **[CRITICAL]** `subscribeSingle` 移除旧订阅时正确递减 eventNameRefCount
-- **[FIX]** `__onEventBusOnceFired` 更新签名以接收 scope 参数，匹配 EventBus v2.3 调用方式
-- **[FIX]** `unsubscribe` 调用 EventBus.unsubscribe 时传递 scope 参数
 
 ### v2.2 (2026-01) - 代码审查修复
-- **[CRITICAL]** `subscribeOnce` 回调触发后自动清理 `subscriptions` 数组中的订阅记录，修复内存泄漏
-- **[PERF]** `unsubscribe` 使用 `eventNameRefCount` 引用计数优化，从 O(n²) 降至 O(n)
-- **[FIX]** 实现 `__onEventBusOnceFired()` 回调接口，配合 EventBus v2.2 的 owner 机制
-- **[CONTRACT]** `subscriptions` 数组生命周期与实际订阅状态保持一致
-
-### v2.1 (2026-01) - 三方交叉审查修复
-- **[CRITICAL]** `publish()` 使用参数展开 (1-15) 替代 `apply+combineArgs`，显著提升热路径性能
-- **[PERF]** `destroy()` 简化为 O(n) 单循环，移除不必要的 `uniqueEventNames` 维护逻辑
-- **[CLEAN]** 移除冗余的参数合并开销
-
-### v2.0 (2026-01) - 代码审查修复
-- 修复销毁后重复调用的潜在问题
-- 优化订阅记录管理
+- **[CRITICAL]** `subscribeOnce` 回调触发后自动清理订阅记录
+- **[PERF]** `unsubscribe` 使用 `eventNameRefCount` 引用计数优化
 
 ### 契约说明
-- 回调执行顺序不保证（继承自 EventBus 的 `for..in` 枚举特性）
+- 回调执行顺序不保证（继承自 EventBus）
 - 调用方需确保 `callback` 和 `scope` 的有效性
 - **[v2.3]** 继承 EventBus 的 let-it-crash 策略：回调异常会直接抛出
+- **[v3.0]** 热路径优先使用 `publish0/publish1/publish2` 消除 arguments 开销
 
 ---
 
@@ -627,14 +623,20 @@ Assertion Passed: [v2.2 P1-2] refcount-optimize - ref count should be 2 after un
 Assertion Passed: [v2.2 P1-2] refcount-optimize - cache still exists with remaining subscriptions
 Assertion Passed: [v2.2 P1-2] refcount-optimize - cache cleaned when ref count reaches 0
 Assertion Passed: [v2.2 P1-2] refcount-optimize - no callbacks after all unsubscribed
+--- [v3.0] 测试 publish 特化方法 ---
+Assertion Passed: [v3.0] publish0 - local event callback called
+Assertion Passed: [v3.0] publish1 - local event single arg received
+Assertion Passed: [v3.0] publish2 - local event dual args received
+Assertion Passed: [v3.0] publishGlobal0 - callback called
+Assertion Passed: [v3.0] publishGlobal1 - single arg received
 --- 测试内存泄漏检测 ---
 Assertion Passed: memoryLeakDetection: Callback should not be called after repeated subscribe/unsubscribe.
 Assertion Passed: memoryLeakDetection: Callback should be called after final subscribe.
 --- 测试性能 ---
 Assertion Passed: performance: All 1000 callbacks should be called.
-Performance Test: Publishing event to 1000 subscribers took 5 ms.
+Performance Test: Publishing event to 1000 subscribers took 3 ms.
 === 测试结果 ===
-通过: 89 条
+通过: 94 条
 失败: 0 条
 所有测试均通过。
 === EventDispatcherTest 结束 ===
@@ -685,3 +687,4 @@ Warning: publish called on a destroyed EventDispatcher.
 失败: 0 条
 所有扩展测试均通过。
 === EventDispatcherExtendedTest 结束 ===
+

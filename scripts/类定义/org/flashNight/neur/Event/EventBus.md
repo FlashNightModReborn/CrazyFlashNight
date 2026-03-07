@@ -2,12 +2,23 @@
 
 ## 版本历史
 
+### v3.0 (2026-03) - 结构性性能重构
+- **[PERF]** listeners 从 `Object{comboUID:poolIndex}` 改为并行数组 `fns[]/scopes[]`
+  - 消除 publish 中的 `for..in` 枚举（H16: 2200~7800ns/iter → `while(i--)` ~35ns/iter）
+  - 回调执行变为确定性逆序（后订阅先执行），原契约已声明"顺序不保证"
+- **[PERF]** 去掉 `Delegate.create` 包装层，publish 时直接 `fn.call(scope, ...)`
+  - 消除闭包双重调用（~1235ns 闭包 + ~1340ns call → 单次 ~1340ns call）
+- **[PERF]** 去掉 `pool/availSpace` 对象池，改为直接数组存储
+  - subscribe 路径不再需要池分配/Delegate 创建
+- **[PERF]** unsubscribe 使用 swap-and-pop 替代线性查找删除（消除 splice 4231ns 开销）
+- **[PERF]** 新增 `publish0/publish1/publish2` 特化入口，完全消除 `arguments` 开销
+  - H09: arguments.length=1538ns, arguments读取=1306ns
+- **[COMPAT]** 外部 API 签名完全不变，对 EventDispatcher 和业务代码透明
+- **[COMPAT]** Delegate 缓存机制保留用于外部直接使用，EventBus 内部不再依赖
+
 ### v2.3.3 (2026-01) - 严重问题修复
-- **[CRITICAL]** `expandPool()` 修复 do..while 边界错误
-  - 问题：当 `availSpaceTop==0` 时（池满载触发扩容），复制旧空闲栈的 do..while 仍会执行一次
-  - 后果：新槽位索引被旧值覆盖，导致高负载下回调被覆盖、串台、退订失败
-  - 修复：改用 for 循环，copyEnd==0 时不执行；调整执行顺序，先复制再追加
-- **[FIX]** `forceResetDispatchDepth()` 增强：同时清空栈数组中的残留引用，避免异常后栈数组持有对象引用更久
+- **[CRITICAL]** `expandPool()` 修复 do..while 边界错误（v3.0 已移除 expandPool）
+- **[FIX]** `forceResetDispatchDepth()` 增强：同时清空栈数组中的残留引用
 
 ### v2.3.2 (2026-01) - 性能优化 + 参数验证
 - **[CRITICAL]** 所有公共方法拒绝 null/空字符串 eventName，防止意外行为
@@ -48,11 +59,12 @@
 - **[PERF]** `publish` 使用深度栈复用替代 `slice()`，减少 GC 压力
 
 ### 契约说明
-- **回调执行顺序不保证**：`for..in` 枚举 Object key 在 AS2 中无序
+- **[v3.0]** 回调执行顺序为确定性逆序（后订阅先执行），原契约声明"顺序不保证"
 - 调用方需确保 `callback` 和 `scope` 的有效性
 - **[v2.3]** `(callback, scope)` 组合唯一标识一个订阅，同 callback 不同 scope 可共存
 - **[v2.3]** 回调中的异常不再被捕获，会直接抛出（let-it-crash 策略，无 try/finally）
 - **[v2.3]** 不要在 publish 回调中调用 `destroy()`，会被拒绝执行并返回 false
+- **[v3.0]** EventBus 内部不再使用 Delegate.create 包装，scope 通过 `fn.call(scope)` 绑定
 
 ---
 
@@ -161,9 +173,19 @@ EventBus.instance.unsubscribe("PLAYER_JUMP", onPlayerJump);
 
 ---
 
-### 4.4 `publish(eventName:String, ...args):Void`
+### 4.4 `publish0/publish1/publish2` (v3.0)
 
-**功能**：发布事件，并将可变数量的参数传给所有订阅者。  
+```actionscript
+public function publish0(eventName:String):Void
+public function publish1(eventName:String, a1):Void
+public function publish2(eventName:String, a1, a2):Void
+```
+
+**功能**：零/单/双参数特化发布，完全不创建 `arguments` 对象。热路径优先使用。
+
+### 4.5 `publish(eventName:String, ...args):Void`
+
+**功能**：通用发布，支持可变数量参数（3+ 参数时使用）。  
 - `eventName`: 字符串类型，事件名称。  
 - `args`: 任意个数或类型的参数。
 
@@ -243,17 +265,21 @@ EventBus.instance.destroy();
 
 ## 5. 内部机制与优化
 
-### 5.1 回调池 (`pool`) 与可用索引 (`availSpace`)
+### 5.1 并行数组存储（v3.0）
 
-- 在构造时预先分配了一定大小（默认为 1024）的数组，所有回调函数会以索引的方式存储到 `pool` 中。  
-- 当有新的回调要加入时，会从 `availSpace` 弹出一个空闲索引来存储该回调；当取消订阅时，再把该索引推回 `availSpace`，供后续使用。  
-- **扩展容量**：当 `availSpace` 耗尽时，会自动调用 `expandPool` 进行容量倍增；并将旧池数据复制到新池中，保证大规模订阅时也能稳定运行。
+- **[v3.0]** 每个事件维护 `fns[]` 和 `scopes[]` 两个并行数组，以及 `ids{}` 哈希索引用于去重和退订
+- subscribe 时追加到数组末尾，O(1)
+- unsubscribe 使用 swap-and-pop，O(1) 删除（替代 v2.x 的 splice，H20: 4231ns）
+- publish 时使用 `while(i--)` 遍历数组（替代 v2.x 的 `for..in`，H16: 2200~7800ns/iter → ~35ns/iter）
+- **[v3.0]** 不再使用 `Delegate.create` 包装，publish 时直接 `fn.call(scope, ...)`
+  - 消除闭包调用层（~1235ns/回调），scope 绑定由 `call` 的第一个参数提供
 
 ### 5.2 参数展开与调用优化
 
-- **[v2.3+]** 对于常用的参数长度（0～15），`publish` / `publishWithParam` 中使用了**手动展开**方法调用，减少 `apply` 带来的性能损耗。
-- 当参数数量超过 15 个时，直接将参数数组传递给回调，不再使用 `Function.apply`（避免 slice() 分配开销）。
-- 在高频调用的场景下，这种"有针对性的手动展开"能够显著降低 CPU 开销。
+- **[v3.0]** 新增 `publish0/publish1/publish2` 特化入口，完全不创建 `arguments` 对象
+  - H09: arguments.length=1538ns, arguments读取=1306ns，特化版本零开销
+- 通用 `publish` 对 0-15 个参数使用**手动展开** `fn.call(scope, ...)` 调用
+- 当参数数量超过 15 个时，使用 `fn.apply(scope, args)`（极少数情况）
 
 ### 5.3 一次性订阅映射 (`onceCallbackMap`)
 
@@ -360,16 +386,17 @@ EventBus.instance.subscribeOnce("MISSION_COMPLETED", function() {
 |--------|------|
 | 订阅去重 | 同一 `(callback, scope)` 组合只能订阅一次同一事件，重复订阅返回 false |
 | 多 scope 共存 | 同一 callback 绑定不同 scope 可以分别订阅同一事件 |
-| 池自动扩容 | 订阅数超过当前容量时自动倍增扩容 |
 | 嵌套发布安全 | 回调中可以再次 `publish`，每层递归有独立栈 |
-| 参数展开优化 | 0-15 参数使用手动展开，避免 apply 开销 |
+| 参数展开优化 | 0-15 参数使用 `fn.call(scope, ...)` 手动展开，避免 apply 开销 |
 | eventName 验证 | null 或空字符串 eventName 被拒绝，不会导致内部状态异常 |
+| 直接 scope 绑定 | [v3.0] subscribe 时的 scope 参数在 publish 时通过 `fn.call(scope)` 绑定，无需 Delegate 包装 |
+| 零 arguments 特化 | [v3.0] `publish0/publish1/publish2` 不创建 arguments 对象 |
 
 ### 不保证项
 
 | 不保证项 | 说明 |
 |----------|------|
-| 回调执行顺序 | `for..in` 枚举无序，回调顺序不确定 |
+| 回调执行顺序 | [v3.0] 实际为确定性逆序（`while(i--)`），但契约不保证 |
 | 异常隔离 | let-it-crash 策略：一个回调抛异常会中断后续回调 |
 | 递归 destroy 安全 | 回调中调用 `destroy()` 会被拒绝并返回 false |
 
@@ -464,36 +491,42 @@ var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
 [PASS] [v2.3.2] empty eventName - subscribeOnce returns false
 [PASS] [v2.3.2] empty eventName - unsubscribe returns false
 [PASS] [v2.3.2] empty/null eventName - publish does not throw
-[EventBus] Pool expanded: 1024 -> 2048
 [PASS] [v2.3.3] expandPool-fix - all 2048 callbacks called once
 [PASS] [v2.3.3] expandPool-fix - no callbacks after unsubscribe (no slot corruption)
 [PASS] [v2.3.3] forceReset-stacks - nested publish occurred
 [PASS] [v2.3.3] forceReset-stacks - _dispatchDepth is 0 after reset
 [PASS] [v2.3.3] forceReset-stacks - stack arrays cleared
+[PASS] [v3.0] publish0 - zero-arg callback called
+[PASS] [v3.0] publish1 - single-arg callback received correct value
+[PASS] [v3.0] publish2 - dual-arg callback received correct values
+[PASS] [v3.0] direct-scope - scopeA.received is true
+[PASS] [v3.0] direct-scope - scopeB.received is true
+[PASS] [v3.0] direct-scope - scopeA not called after unsubscribe
+[PASS] [v3.0] direct-scope - scopeB still called
+[PASS] [v3.0] swap-and-pop - middle element removed correctly
+[PASS] [v3.0] swap-and-pop - first element removed correctly
+[PASS] [v3.0] swap-and-pop - last element removed correctly
+[PASS] [v3.0] swap-and-pop - event cleaned up after all unsubscribes
 [PASS] [v2.2 P1-1] let-it-crash - error callback was called
 [PASS] Test 7: EventBus handles high volume of subscriptions and publishes correctly
-[PERFORMANCE] Test 7: EventBus High Volume Subscriptions and Publish took 250 ms
+[PERFORMANCE] Test 7: EventBus High Volume Subscriptions and Publish took 160 ms
 [PASS] Test 8: EventBus handles high frequency publishes correctly
-[PERFORMANCE] Test 8: EventBus High Frequency Publish took 1322 ms
+[PERFORMANCE] Test 8: EventBus High Frequency Publish took 1188 ms
 [PASS] Test 9: EventBus handles concurrent subscriptions and publishes correctly
-[PERFORMANCE] Test 9: EventBus Concurrent Subscriptions and Publishes took 373 ms
+[PERFORMANCE] Test 9: EventBus Concurrent Subscriptions and Publishes took 269 ms
 [PASS] Test 10: EventBus handles mixed subscribe and unsubscribe operations correctly
-[PERFORMANCE] Test 10: EventBus Mixed Subscribe and Unsubscribe took 1753 ms
+[PERFORMANCE] Test 10: EventBus Mixed Subscribe and Unsubscribe took 1095 ms
 [PASS] Test 11: EventBus handles nested event publishes correctly
-[PERFORMANCE] Test 11: EventBus Nested Event Publish took 1 ms
+[PERFORMANCE] Test 11: EventBus Nested Event Publish took 0 ms
 [PASS] Test 12: EventBus handles parallel event processing correctly
-[PERFORMANCE] Test 12: EventBus Parallel Event Processing took 1238 ms
+[PERFORMANCE] Test 12: EventBus Parallel Event Processing took 770 ms
 [PASS] Test 13: EventBus handles long-running subscriptions and cleanups correctly
-[PERFORMANCE] Test 13: EventBus Long Running Subscriptions and Cleanups took 86 ms
+[PERFORMANCE] Test 13: EventBus Long Running Subscriptions and Cleanups took 53 ms
 [PASS] Test 14: EventBus handles complex argument passing correctly
 [PERFORMANCE] Test 14: EventBus Complex Argument Passing took 0 ms
-[EventBus] Pool expanded: 2048 -> 4096
-[EventBus] Pool expanded: 4096 -> 8192
-[EventBus] Pool expanded: 8192 -> 16384
-[EventBus] Pool expanded: 16384 -> 32768
-[EventBus] Pool expanded: 32768 -> 65536
 [PASS] Test 15: EventBus handles bulk subscriptions and unsubscriptions correctly
-[PERFORMANCE] Test 15: EventBus Bulk Subscribe and Unsubscribe took 2892 ms
+[PERFORMANCE] Test 15: EventBus Bulk Subscribe and Unsubscribe took 1601 ms
 All tests completed.
+
 
 ```

@@ -714,10 +714,10 @@ class org.flashNight.neur.Event.EventDispatcherExtendedTest {
         this.dispatcher.subscribe(eventName, cbRegular, scope);
         this.dispatcher.subscribeOnce(eventName, cbOnceToRemoveRegular, scope);
         this.log("OnceComplex: Scenario 1 Publish 1");
-        this.dispatcher.publish(eventName); // Should call regular, then onceRemover (which removes regular)
+        this.dispatcher.publish(eventName); // [v3.0] while(i--) 倒序: onceRemover 先于 regular
         this.log("OnceComplex: Scenario 1 Publish 2");
         this.dispatcher.publish(eventName); // Should call nothing (once is gone, regular was removed)
-        var expectedOrder1 = "regular,onceRemover";
+        var expectedOrder1 = "onceRemover,regular";
         this.assert(callOrder.join(",") === expectedOrder1, "OnceComplex: Scenario 1 - Call order incorrect. Expected '"+expectedOrder1+"', Got: '" + callOrder.join(",") + "'");
 
         // Cleanup between scenarios - important!
