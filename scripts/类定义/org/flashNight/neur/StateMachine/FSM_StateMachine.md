@@ -138,13 +138,7 @@ a.runTests();
 --- Test: Complex Workflow ---
 Initializing workflow...
 Processing...
-Retrying...
-Processing...
-Retrying...
-Processing...
-Retrying...
-Processing...
-Workflow failed!
+Workflow completed!
 [PASS] Workflow reached final state
 
 --- Test: State Chaining ---
@@ -153,7 +147,7 @@ Workflow failed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: B
+[PASS] Conditional branching led to valid path: C
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -184,28 +178,28 @@ Workflow failed!
 [PASS] Transitions reference released after destroy
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=22ms, Actions=27ms for 10000 operations
+Basic Performance: Transitions=21ms, Actions=25ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 31ms, 100 transitions in 0ms
+Many States Performance: Create 1000 states in 33ms, 100 transitions in 1ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 14ms
+Frequent Transitions Performance: 5000 transitions in 15ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 4ms
+Complex Transition Performance: 1000 complex transitions in 5ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
-Size 10: Create=1ms, Transition=0ms, Operation=0ms
+Size 10: Create=0ms, Transition=0ms, Operation=0ms
 Size 50: Create=0ms, Transition=1ms, Operation=0ms
 Size 100: Create=1ms, Transition=1ms, Operation=0ms
-Size 500: Create=9ms, Transition=5ms, Operation=0ms
+Size 500: Create=8ms, Transition=6ms, Operation=1ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -250,6 +244,7 @@ Size 500: Create=9ms, Transition=5ms, Operation=0ms
 [PASS] Duplicate start() is no-op
 
 --- Test: Proto-null statusDict — Object.prototype names as state names ---
+[FSM] Warning: State 'constructor' already registered, overwriting. Previous state instance will have stale superMachine/name/data references.
 [PASS] Proto-null: 'toString' accepted as state name
 [PASS] Proto-null: 'constructor' accepted as state name
 [PASS] Normal name 'Attack' works correctly

@@ -152,7 +152,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     private function _csInit(next:String):Void {
         var target:FSM_Status = this.statusDict[next];
         var cur:FSM_Status = this.activeState;
-        if (!(target instanceof FSM_Status) || target == cur) return;
+        if (target == null || target == cur) return;
         this.lastState = cur;
         this.activeState = target;
         this.actionCount = 0;
@@ -173,7 +173,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         var dict:Object = this.statusDict;
         var target:FSM_Status = dict[next];
         var cur:FSM_Status = this.activeState;
-        if (!(target instanceof FSM_Status) || target == cur) return;
+        if (target == null || target == cur) return;
 
         this.ChangeState = this._csPend;
         var maxChain:Number = 10;
@@ -192,7 +192,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             p = this._pending;
             if (p != null) {
                 var exitRedirect:FSM_Status = dict[p];
-                if (exitRedirect instanceof FSM_Status && exitRedirect != cur) {
+                if (exitRedirect != null && exitRedirect != cur) {
                     target = exitRedirect;
                     next = p;
                     chainCount++;
@@ -220,7 +220,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             } else {
                 break;
             }
-        } while ((target instanceof FSM_Status) && target != cur && chainCount < maxChain);
+        } while (target != null && target != cur && chainCount < maxChain);
 
         if (chainCount >= maxChain) {
             trace("[FSM] Warning: ChangeState chain reached limit (" + maxChain + "), possible oscillation. last=" + next);
@@ -262,16 +262,39 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         if (!cur) return;
 
         var trans:Transitions = this.transitions;
+        var gStore:Object = trans.gateLists;
+        var nStore:Object = trans.normalLists;
+        var statusRef:FSM_Status = trans.status;
         var maxTransitions:Number = 10;
         var transitionCount:Number = 0;
         var sn:String;
         var tn:String;
+        var rec:Object;
+        var ts:Array;
+        var fs:Array;
+        var as_:Array;
+        var len:Number;
+        var i:Number;
 
         do {
-            // Phase 1: Gate转换检查 - 门转换优先，立即生效
             sn = cur.name;
-            tn = trans.TransitGate(sn);
-            if (tn && tn != sn) {
+
+            // Phase 1: Gate转换检查（内联，省去 trans.TransitGate 方法调用）
+            tn = null;
+            rec = gStore[sn];
+            if (rec != null) {
+                ts = rec.t;
+                fs = rec.f;
+                as_ = rec.a;
+                len = ts.length;
+                for (i = 0; i < len; i++) {
+                    if (as_[i] && fs[i].call(statusRef, sn, ts[i])) {
+                        tn = ts[i];
+                        break;
+                    }
+                }
+            }
+            if (tn != null && tn != sn) {
                 this.ChangeState(tn);
                 if (this.activeState != cur) {
                     cur = this.activeState;
@@ -289,10 +312,22 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
                 continue;
             }
 
-            // Phase 3: Normal转换检查 - 基于动作结果的转换
-            // sn 仍有效：同一状态，name 不变
-            tn = trans.TransitNormal(sn);
-            if (tn && tn != sn) {
+            // Phase 3: Normal转换检查（内联，省去 trans.TransitNormal 方法调用）
+            tn = null;
+            rec = nStore[sn];
+            if (rec != null) {
+                ts = rec.t;
+                fs = rec.f;
+                as_ = rec.a;
+                len = ts.length;
+                for (i = 0; i < len; i++) {
+                    if (as_[i] && fs[i].call(statusRef, sn, ts[i])) {
+                        tn = ts[i];
+                        break;
+                    }
+                }
+            }
+            if (tn != null && tn != sn) {
                 this.ChangeState(tn);
                 if (this.activeState != cur) {
                     cur = this.activeState;
@@ -326,7 +361,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     public function ChangeState(next:String):Void {
         var target:FSM_Status = this.statusDict[next];
         var cur:FSM_Status = this.activeState;
-        if (!(target instanceof FSM_Status) || target == cur) return;
+        if (target == null || target == cur) return;
         this.lastState = cur;
         this.activeState = target;
         this.actionCount = 0;
@@ -355,8 +390,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     }
 
     public function hasStatus(name:String):Boolean {
-        var s:FSM_Status = this.statusDict[name];
-        return (s instanceof FSM_Status);
+        return this.statusDict[name] != null;
     }
 
     // ═══════ AddStatus ═══════
@@ -376,7 +410,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
             return;
         }
         var existing:FSM_Status = this.statusDict[name];
-        if (existing instanceof FSM_Status) {
+        if (existing != null) {
             trace("[FSM] Warning: State '" + name + "' already registered, overwriting. "
                 + "Previous state instance will have stale superMachine/name/data references.");
             if (existing == this.activeState) {
@@ -394,6 +428,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         state.name = name;
         if (!isNestedMachine) {
             state.data = this.data;
+            // P2 优化：叶子状态内联回调，消除 if + .call() 间接层
+            state.inlineCallbacks();
         }
 
         this.statusDict[name] = state;
@@ -522,13 +558,10 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         this._booted = false;
         this._started = false;
 
-        // 4. 销毁所有子状态（statusDict 已断开原型链，for-in 仅遍历自有属性；instanceof 作为冗余保险）
+        // 4. 销毁所有子状态（statusDict 已断开原型链，for-in 仅遍历自有属性）
         var dict:Object = this.statusDict;
         for (var statename:String in dict) {
-            var s:FSM_Status = dict[statename];
-            if (s instanceof FSM_Status) {
-                s.destroy();
-            }
+            dict[statename].destroy();
         }
 
         // 5. 清理转换表
