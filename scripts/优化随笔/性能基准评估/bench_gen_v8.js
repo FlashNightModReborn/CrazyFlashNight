@@ -1,25 +1,35 @@
 /**
- * bench_gen_v7.js — AVM1/AS2 性能基准测试生成器 v7
+ * bench_gen_v8.js — AVM1/AS2 性能基准测试生成器 v8
  *
- * v7 修复清单（基于 v6 实测数据）：
- * 1. _quality→_qualityTag：AS2 内置 _quality 属性遮蔽自定义函数（v3以来的bug）
- * 2. blackhole NaN 感染：nan_add/number_cast_undef 的 finalize 不再写入 NaN 到 _blackhole
- * 3. local_copy delta=0 → rel 除零：refNs fallback 改为使用 add_int 作为后备基准
- * 4. bit_not 128.5ns 异常高 → 新增 bit_not_assign (b=~b) 对照；确认 base 对称
- * 5. floor_doubletilde 276ns → 实际是两次按位非，AVM1 可能每次都做 Number→Int32→Number 转换
- *    → 保留作为"反模式"标注，新增 floor_int_cast 用 int() 做对照
- * 6. base 函数 60ms vs 47ms 不一致 → 统一所有 base 为 b=a 模式（确保 base 都读局部变量）
- *    部分 base 使用 b=0/b=false 常量赋值，改为读局部变量确保公平
- * 7. GC_OUTER 200→400（GC_TOTAL 10K→20K）提高 GC 测试信噪比
- * 8. arr_concat base 含 [6,7] 字面量创建 → base 改为等效的数组字面量赋值消耗
- * 9. 新增重要对照组：
- *    - 有类型 vs 无类型局部变量 (typed vs untyped)
- *    - local_copy 参照物修正：base=test=相同语句，测纯循环+赋值基线
- *    - 常量折叠检测：b=3+4 vs b=a+c (编译器是否折叠常量)
- *    - 空 while 循环（不含任何赋值，纯 overhead）
- *    - Array.length 设置 (arr.length=0 清空 vs delete)
- *    - 函数调用有返回值 vs 无返回值
- * 10. 输出改进：每条结果带 sampleCount + allDeltas 方便后处理
+ * v8 升级清单（基于 v7 实测 + BytecodeProbe 字节码反汇编 + 9 份 AI 交叉审阅）：
+ *
+ * === P0 修复（已确认的污染/错误测试）===
+ * A1. isnan_selfne: NaN!=NaN 在 AS2 始终 false（违反 IEEE 754），标注为反面教材
+ * A2. typed_vs_untyped_read: 原测试实际测 local vs global，改为真正的 typed vs untyped 局部变量对照
+ * A3. arr_read_var_100/1000: 全局数组引入 ~95ns 作用域查找税，改用局部引用消除污染
+ * A4. call_empty: _empty_fn 因 0 参数被编译为 DefineFunction（无寄存器），加 dummy 参数对齐 DefineFunction2
+ * A5. nan_add/infinity_mul: base 用 sink=a 不对称，统一为 b=a
+ * A6. closure_deep2: _makeDeepClosure2 实际与 closure_read 相同（1 层），改为真正 2 层嵌套
+ * A7. unary_plus: +s 不生成 ToNumber（AS2 编译器 bug），标注勿用
+ *
+ * === P1 新增对照组（字节码事实驱动）===
+ * B1. bit_not_xor: ~a = BitXor 0xFFFFFFFF，显式写法对照
+ * B2. str_length_as1: length(s) → StringLength opcode vs s.length → GetMember
+ * B3. call_empty_df1 vs df2: DefineFunction vs DefineFunction2 调用开销对照
+ * B4. new_empty_df1 vs df2: 构造函数版本对照
+ * B5. negate_subtract: -a = Push 0 + Subtract，显式写法对照
+ * B6. bool_doublenot_vs_cast: !!n (Not Not) vs Boolean(n) (CallFunction)
+ * B7. closure_vs_local: 闭包作用域链查找 vs 寄存器直读
+ *
+ * === P1 方法学改进 ===
+ * C1. 函数定义风格标注（DefineFunction vs DefineFunction2 由编译器自动选择）
+ * C2. atomicOps 根据字节码校正（bit_not=2, ~~a=4, negate=2, incr_post=3）
+ * C3. 输出增加 opcode 字段标注关键字节码路径
+ *
+ * === P2 实战微工作负载 ===
+ * D1. 实体批量更新（AOS vs SOA）
+ * D2. 脏标记优化
+ * D3. Math 方法缓存复合场景
  */
 
 const fs = require('fs');
@@ -133,11 +143,16 @@ const benches = [
 
   { cat:'arith', name:'negate', desc:'b=-a',
     init:['var a:Number=7;','var b:Number=0;'],
-    base:'b=a;', test:'b=-a;', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=a;', test:'b=-a;', finalize:'_bh += b;', atomicOps:2, opcode:'Push 0,Subtract' },
+
+  // v8-B5: -a 编译为 Push 0, Subtract（无原生 Negate），显式等价写法对照
+  { cat:'arith', name:'negate_explicit', desc:'b=0-a (-a等价)',
+    init:['var a:Number=7;','var b:Number=0;'],
+    base:'b=a;', test:'b=0-a;', finalize:'_bh += b;', atomicOps:1 },
 
   { cat:'arith', name:'incr_post', desc:'c=b++',
     init:['var b:Number=0;','var c:Number=0;'],
-    base:'c=b;', test:'c=b++;', finalize:'_bh += c+b;', atomicOps:1 },
+    base:'c=b;', test:'c=b++;', finalize:'_bh += c+b;', atomicOps:3 },  // v8fix-C2: atomicOps=3 (Push+Increment+StoreRegister)
 
   // v7压缩: incr_pre 与 incr_post 同量级，已删除
 
@@ -169,7 +184,12 @@ const benches = [
 
   { cat:'arith', name:'bit_not', desc:'b=~a 单一取反',
     init:['var a:Number=255;','var b:Number=0;'],
-    base:'b=a;', test:'b=~a;', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=a;', test:'b=~a;', finalize:'_bh += b;', atomicOps:2, opcode:'BitXor 0xFFFFFFFF' },
+
+  // v8-B1: ~a 编译为 BitXor 0xFFFFFFFF，显式写法对照验证成本一致
+  { cat:'arith', name:'bit_not_xor', desc:'b=a^0xFFFFFFFF (~a等价)',
+    init:['var a:Number=255;','var b:Number=0;'],
+    base:'b=a;', test:'b=a^0xFFFFFFFF;', finalize:'_bh += b;', atomicOps:1 },
 
   { cat:'arith', name:'lshift', desc:'b=a<<2',
     init:['var a:Number=1;','var b:Number=0;'],
@@ -209,14 +229,15 @@ const benches = [
     init:['var s:String="42";','var cst:Boolean=false;','var b:Boolean=false;'],
     base:'b=cst;', test:'b=(s===42);', finalize:'_bh += (b?1:0);', atomicOps:1 },
 
-  // NaN/Infinity — v7fix: AS2中NaN==NaN为true, b!=b无法检测NaN, 必须用isNaN()
+  // NaN/Infinity — v8fix-A5: base 统一为 b=a（v7 用 sink=a 不对称）
+  // AS2中NaN==NaN为true, b!=b无法检测NaN, 必须用isNaN()
   { cat:'arith', name:'nan_add', desc:'NaN+1 (NaN传播)',
-    init:['var a:Number=NaN;','var b:Number=0;','var sink:Number=0;'],
-    base:'sink=a;', test:'b=a+1;', finalize:'_bh += (isNaN(b)?1:0);', atomicOps:1 },
+    init:['var a:Number=NaN;','var b:Number=0;'],
+    base:'b=a;', test:'b=a+1;', finalize:'_bh += (isNaN(b)?1:0);', atomicOps:1 },
 
   { cat:'arith', name:'infinity_mul', desc:'Infinity*2',
-    init:['var a:Number=Infinity;','var b:Number=0;','var sink:Number=0;'],
-    base:'sink=a;', test:'b=a*2;', finalize:'_bh += (b>9999999?1:0);', atomicOps:1 },
+    init:['var a:Number=Infinity;','var b:Number=0;'],
+    base:'b=a;', test:'b=a*2;', finalize:'_bh += (b>9999999?1:0);', atomicOps:1 },
 
   // ===================== BRANCH =====================
   { cat:'branch', name:'if_true', desc:'if(true) path',
@@ -258,13 +279,14 @@ const benches = [
     init:['var arr5:Array=[1,2,3,4,5];','var idx:Number=2;','var b:Number=0;','var cst:Number=3;'],
     base:'b=cst;', test:'b=arr5[idx];', finalize:'_bh += b;', atomicOps:1 },
 
-  { cat:'access', name:'arr_read_var_100', desc:'arr[idx] 100元素',
-    init:['var idx:Number=50;','var b:Number=0;','var cst:Number=50;'],
-    base:'b=cst;', test:'b=_arr100[idx];', finalize:'_bh += b;', atomicOps:1 },
+  // v8fix-A3: 用局部引用消除全局作用域查找税（v7 中 arr5=局部 vs arr100/1000=全局，差异含 ~95ns 作用域税）
+  { cat:'access', name:'arr_read_var_100', desc:'arr[idx] 100元素(局部引用)',
+    init:['var arr100:Array=_arr100;','var idx:Number=50;','var b:Number=0;','var cst:Number=50;'],
+    base:'b=cst;', test:'b=arr100[idx];', finalize:'_bh += b;', atomicOps:1 },
 
-  { cat:'access', name:'arr_read_var_1000', desc:'arr[idx] 1000元素',
-    init:['var idx:Number=500;','var b:Number=0;','var cst:Number=500;'],
-    base:'b=cst;', test:'b=_arr1000[idx];', finalize:'_bh += b;', atomicOps:1 },
+  { cat:'access', name:'arr_read_var_1000', desc:'arr[idx] 1000元素(局部引用)',
+    init:['var arr1000:Array=_arr1000;','var idx:Number=500;','var b:Number=0;','var cst:Number=500;'],
+    base:'b=cst;', test:'b=arr1000[idx];', finalize:'_bh += b;', atomicOps:1 },
 
   { cat:'access', name:'arr_write_const', desc:'arr[2]=a',
     init:['var arr:Array=[0,0,0,0,0];','var a:Number=1;','var b:Number=0;'],
@@ -311,8 +333,12 @@ const benches = [
     init:['var a:Number=1;','var b:Number=0;'],
     base:'b=a;', test:'_obj_shallow.x=a;', finalize:'_bh += _obj_shallow.x+b;', atomicOps:1 },
 
-  { cat:'access', name:'member_set_newprop', desc:'o.dyn=a 新属性',
-    init:['var o:Object={};','var a:Number=1;','var b:Number=0;'],
+  // v8fix: 9/9报告标记无效——仅首次写入是"新属性"，后续2M次都是"已有属性"
+  // 改用 struct kind + resetEach 每次迭代重建对象
+  { cat:'access', name:'member_set_newprop', desc:'o.dyn=a 新属性(每迭代重建)',
+    kind:'struct',
+    init:['var o:Object;','var a:Number=1;','var b:Number=0;'],
+    resetEach:['o={};'],
     base:'b=a;', test:'o.dyn=a;', finalize:'_bh += (o.dyn==undefined?0:o.dyn)+b;', atomicOps:1 },
 
   { cat:'access', name:'chain_depth2', desc:'a.b.x 链式2层',
@@ -339,9 +365,10 @@ const benches = [
   // v7压缩: native_get_alpha 与 native_get_x 同类，已删除
 
   // ===================== CALL =====================
-  { cat:'call', name:'call_empty', desc:'空函数调用',
+  // v8fix-A4: _empty_fn 加 dummy 参数使其编译为 DefineFunction2，与其他 helper 对齐
+  { cat:'call', name:'call_empty', desc:'空函数调用(DF2)',
     init:['var b:Number=0;','var cst:Number=0;'],
-    base:'b=cst;', test:'_empty_fn();', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'_empty_fn(0);', finalize:'_bh += b;', atomicOps:1 },
 
   { cat:'call', name:'call_onearg', desc:'单参数调用',
     init:['var a:Number=1;','var b:Number=0;'],
@@ -399,6 +426,29 @@ const benches = [
     init:['var b:Number=0;','var cst:Number=0;'],
     base:'b=cst;', test:'b=_args_read_fn(42);', finalize:'_bh += b;', atomicOps:1 },
 
+  // v8-B3: DefineFunction(老式) vs DefineFunction2(寄存器优化) 调用开销对照
+  { cat:'call', name:'call_empty_df1', desc:'空函数DF1(无寄存器)',
+    init:['var b:Number=0;','var cst:Number=0;'],
+    base:'b=cst;', test:'_empty_df1();', finalize:'_bh += b;', atomicOps:1 },
+
+  { cat:'call', name:'call_empty_df2', desc:'空函数DF2(寄存器优化)',
+    init:['var b:Number=0;','var cst:Number=0;'],
+    base:'b=cst;', test:'_empty_df2(0);', finalize:'_bh += b;', atomicOps:1 },
+
+  // v8-B4: 构造函数 DefineFunction vs DefineFunction2 对照
+  { cat:'call', name:'new_empty_df1', desc:'new DF1构造函数',
+    init:['var o:Object;','var b:Number=0;','var cst:Number=0;'],
+    base:'b=cst;', test:'o=new _EmptyCtor_df1();', finalize:'_bh += (o==undefined?0:1)+b;', atomicOps:1 },
+
+  { cat:'call', name:'new_empty_df2', desc:'new DF2构造函数',
+    init:['var o:Object;','var b:Number=0;','var cst:Number=0;'],
+    base:'b=cst;', test:'o=new _EmptyCtor_df2(0);', finalize:'_bh += (o==undefined?0:1)+b;', atomicOps:1 },
+
+  // v8-B7: 闭包作用域链查找 vs 寄存器直读
+  { cat:'call', name:'closure_vs_local', desc:'闭包读取 vs 局部变量',
+    init:['var localVal:Number=42;','var b:Number=0;'],
+    base:'b=localVal;', test:'b=_closure_reader();', finalize:'_bh += b;', atomicOps:1 },
+
   { cat:'call', name:'proto_method', desc:'原型方法调用',
     init:['var b:Number=0;','var cst:Number=0;'],
     base:'b=cst;', test:'b=_obj_proto_method.getValue();', finalize:'_bh += b;', atomicOps:1 },
@@ -430,9 +480,14 @@ const benches = [
     init:['var s:String=_longStr50;','var r:String="";'],
     base:'r=s;', test:'r=s+"x";', finalize:'_bh += r.length;', atomicOps:1 },
 
-  { cat:'string', name:'str_length', desc:'s.length',
+  { cat:'string', name:'str_length', desc:'s.length (GetMember)',
     init:['var s:String="hello_world";','var b:Number=0;','var cst:Number=11;'],
-    base:'b=cst;', test:'b=s.length;', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'b=s.length;', finalize:'_bh += b;', atomicOps:1, opcode:'GetMember "length"' },
+
+  // v8-B2: length(s) → StringLength 专用 opcode，避免属性查找+String装箱
+  { cat:'string', name:'str_length_as1', desc:'length(s) (StringLength opcode)',
+    init:['var s:String="hello_world";','var b:Number=0;','var cst:Number=11;'],
+    base:'b=cst;', test:'b=length(s);', finalize:'_bh += b;', atomicOps:1, opcode:'StringLength' },
 
   { cat:'string', name:'str_charat', desc:'s.charAt(3)',
     init:['var s:String="hello_world";','var r:String="";','var cstR:String="l";'],
@@ -471,9 +526,10 @@ const benches = [
     init:['var s:String="42";','var b:Number=0;','var cst:Number=42;'],
     base:'b=cst;', test:'b=Number(s);', finalize:'_bh += b;', atomicOps:1 },
 
-  { cat:'convert', name:'unary_plus', desc:'+s 一元加',
+  // v8fix-A7: 字节码确认 +s 不生成 ToNumber（AS2编译器bug），保留作为反面教材
+  { cat:'convert', name:'unary_plus', desc:'+s 一元加(AS2无ToNumber,勿用!)',
     init:['var s:String="42";','var b:Number=0;','var cst:Number=42;'],
-    base:'b=cst;', test:'b=+s;', finalize:'_bh += Number(b);', atomicOps:1 },
+    base:'b=cst;', test:'b=+s;', finalize:'_bh += Number(b);', atomicOps:1, opcode:'Push(无ToNumber)' },
 
   { cat:'convert', name:'parseint_dec', desc:'parseInt(s)',
     init:['var s:String="42";','var b:Number=0;','var cst:Number=42;'],
@@ -511,9 +567,14 @@ const benches = [
 
   // v7压缩: instanceof_proto2 与 instanceof_direct 同模式，已删除
 
-  { cat:'convert', name:'to_bool_num', desc:'Boolean(1)',
+  { cat:'convert', name:'to_bool_num', desc:'Boolean(n) (CallFunction)',
     init:['var n:Number=1;','var cst:Boolean=true;','var b:Boolean=false;'],
-    base:'b=cst;', test:'b=Boolean(n);', finalize:'_bh += (b?1:0);', atomicOps:1 },
+    base:'b=cst;', test:'b=Boolean(n);', finalize:'_bh += (b?1:0);', atomicOps:1, opcode:'CallFunction "Boolean"' },
+
+  // v8-B6: !!n → Not Not（2条内联指令） vs Boolean(n) → CallFunction
+  { cat:'convert', name:'to_bool_doublenot', desc:'!!n (Not Not,内联)',
+    init:['var n:Number=1;','var cst:Boolean=true;','var b:Boolean=false;'],
+    base:'b=cst;', test:'b=!!n;', finalize:'_bh += (b?1:0);', atomicOps:1, opcode:'Not,Not' },
 
   // v7压缩: to_bool_doublenot 与 branch/double_not 重复，已删除
 
@@ -540,10 +601,11 @@ const benches = [
     init:['var t:Boolean=true;','var s:String="";','var cstR:String="true";'],
     base:'s=cstR;', test:'s=String(t);', finalize:'_bh += s.length;', atomicOps:1 },
 
-  // v7 新增：有类型 vs 无类型变量
-  { cat:'convert', name:'typed_vs_untyped_read', desc:'var a:Number vs var a 读取',
-    init:['var a:Number=42;','var b:Number=0;'],
-    base:'b=a;', test:'b=_untyped_42;', finalize:'_bh += b;', atomicOps:1 },
+  // v8fix-A2: 原测试 base=局部typed, test=全局untyped，实测 local vs global 而非 typed vs untyped
+  // 字节码确认：typed/untyped 局部变量编译为完全相同的字节码（类型擦除），delta 应趋近 0
+  { cat:'convert', name:'typed_vs_untyped_read', desc:'var a:Number vs var u (局部,类型擦除验证)',
+    init:['var a:Number=42;','var u=42;','var b:Number=0;'],
+    base:'b=a;', test:'b=u;', finalize:'_bh += b;', atomicOps:1 },
 
   // ===================== MATH =====================
   { cat:'math', name:'math_floor', desc:'Math.floor(a)',
@@ -595,9 +657,9 @@ const benches = [
 
   // v7压缩: floor_rshift0 与 floor_bitor0 同机制，已删除
 
-  { cat:'math', name:'floor_doubletilde', desc:'~~a 取整(双重按位非)',
+  { cat:'math', name:'floor_doubletilde', desc:'~~a 取整(2x BitXor 0xFFFFFFFF)',
     init:['var a:Number=3.7;','var b:Number=0;','var cst:Number=3;'],
-    base:'b=cst;', test:'b=~~a;', finalize:'_bh += b;', atomicOps:1 },
+    base:'b=cst;', test:'b=~~a;', finalize:'_bh += b;', atomicOps:4, opcode:'2x(BitXor 0xFFFFFFFF)' },
 
   { cat:'math', name:'abs_ternary', desc:'a<0?-a:a',
     init:['var a:Number=-3;','var b:Number=0;','var cst:Number=3;'],
@@ -668,8 +730,9 @@ const benches = [
     init:['var n:Number=NaN;','var cst:Boolean=true;','var b:Boolean=false;'],
     base:'b=cst;', test:'b=isNaN(n);', finalize:'_bh += (b?1:0);', atomicOps:1 },
 
-  { cat:'scope', name:'isnan_selfne', desc:'n!=n 替代isNaN',
-    init:['var n:Number=NaN;','var cst:Boolean=true;','var b:Boolean=false;'],
+  // v8fix-A1: AS2中 NaN!=NaN=false（违反IEEE754），此测试始终返回false，保留作为反面教材
+  { cat:'scope', name:'isnan_selfne', desc:'n!=n AS2始终false(反面教材)',
+    init:['var n:Number=NaN;','var cst:Boolean=false;','var b:Boolean=false;'],
     base:'b=cst;', test:'b=(n!=n);', finalize:'_bh += (b?1:0);', atomicOps:1 },
 
   { cat:'scope', name:'gettimer_call', desc:'getTimer()',
@@ -807,8 +870,11 @@ const benches = [
 
   // v7压缩: gc_array_slice 与 gc_array_concat 同模式，已删除
 
-  { cat:'gc', name:'gc_string_concat_accum', desc:'s+=x 累积',
-    kind:'gc', init:['var s:String="";','var x:String="ab";'],
+  // v8fix: 9/9报告标记无效——base O(1) vs test O(n²) 导致 delta=0ms 不可信
+  // 改用 resetEach 每次迭代重置字符串，使 base/test 均为 O(1) 单次拼接
+  { cat:'gc', name:'gc_string_concat_accum', desc:'s+=x 单次拼接(每迭代重置)',
+    kind:'gc', init:['var s:String;','var x:String="ab";'],
+    resetEach:['s="";'],
     base:'s=x;', test:'s+=x;',
     finalize:'_bh += s.length;', atomicOps:1 },
 
@@ -1008,16 +1074,115 @@ const loopFns = [
 ].join('\n');
 
 // ======================================================================
+// v8 新增：实战微工作负载
+// ======================================================================
+const MICRO_OUTER = 200;
+const MICRO_ENTITY_COUNT = 100;
+
+const microFns = [
+  // D1: 实体批量更新 — AOS (Array of Structs) vs SOA (Struct of Arrays)
+  '// v8-D1: 实体批量更新微工作负载',
+  'var _entities:Array = [];',
+  'var _px:Array = []; var _py:Array = []; var _vx:Array = []; var _vy:Array = [];',
+  'var _mi:Number;',
+  'for (_mi = 0; _mi < ' + MICRO_ENTITY_COUNT + '; _mi++) {',
+  '    _entities[_mi] = {x:_mi, y:_mi, vx:1, vy:0.5};',
+  '    _px[_mi] = _mi; _py[_mi] = _mi; _vx[_mi] = 1; _vy[_mi] = 0.5;',
+  '}',
+  '',
+  'function bench_micro_entity_aos():Number {',
+  '    var t0:Number = getTimer();',
+  '    var j:Number = ' + MICRO_OUTER + ';',
+  '    var e:Object;',
+  '    while (j--) {',
+  '        var i:Number = ' + MICRO_ENTITY_COUNT + ';',
+  '        while (i--) {',
+  '            e = _entities[i];',
+  '            e.x += e.vx; e.y += e.vy;',
+  '        }',
+  '    }',
+  '    _bh += _entities[0].x;',
+  '    return getTimer() - t0;',
+  '}',
+  '',
+  'function bench_micro_entity_soa():Number {',
+  '    var t0:Number = getTimer();',
+  '    var j:Number = ' + MICRO_OUTER + ';',
+  '    while (j--) {',
+  '        var i:Number = ' + MICRO_ENTITY_COUNT + ';',
+  '        while (i--) {',
+  '            _px[i] += _vx[i]; _py[i] += _vy[i];',
+  '        }',
+  '    }',
+  '    _bh += _px[0];',
+  '    return getTimer() - t0;',
+  '}',
+  '',
+  // D2: 脏标记优化
+  '// v8-D2: 脏标记优化微工作负载',
+  'function bench_micro_set_always():Number {',
+  '    var t0:Number = getTimer();',
+  '    var j:Number = ' + (MICRO_OUTER * 10) + ';',
+  '    var v:Number = 0;',
+  '    while (j--) {',
+  '        _mc._x = v;',
+  '    }',
+  '    _bh += _mc._x;',
+  '    return getTimer() - t0;',
+  '}',
+  '',
+  'function bench_micro_set_dirty():Number {',
+  '    var t0:Number = getTimer();',
+  '    var j:Number = ' + (MICRO_OUTER * 10) + ';',
+  '    var v:Number = 0;',
+  '    while (j--) {',
+  '        if (_mc._x != v) { _mc._x = v; }',
+  '    }',
+  '    _bh += _mc._x;',
+  '    return getTimer() - t0;',
+  '}',
+  '',
+  // D3: Math 方法缓存复合场景
+  '// v8-D3: Math 方法缓存复合场景',
+  'function bench_micro_math_direct():Number {',
+  '    var t0:Number = getTimer();',
+  '    var j:Number = ' + (MICRO_OUTER * 5) + ';',
+  '    var a:Number = 3.7;',
+  '    var angle:Number = 1.0;',
+  '    var b:Number = 0;',
+  '    while (j--) {',
+  '        b = Math.floor(a) + Math.sin(angle) * 10;',
+  '    }',
+  '    _bh += b;',
+  '    return getTimer() - t0;',
+  '}',
+  '',
+  'function bench_micro_math_cached():Number {',
+  '    var t0:Number = getTimer();',
+  '    var j:Number = ' + (MICRO_OUTER * 5) + ';',
+  '    var a:Number = 3.7;',
+  '    var angle:Number = 1.0;',
+  '    var b:Number = 0;',
+  '    while (j--) {',
+  '        b = _mfloor(a) + _msin(angle) * 10;',
+  '    }',
+  '    _bh += b;',
+  '    return getTimer() - t0;',
+  '}'
+].join('\n');
+
+// ======================================================================
 // ASSEMBLE OUTPUT
 // ======================================================================
+const microTotal = MICRO_OUTER;
 const forin20Total = Math.floor(CFG.FORIN_OUTER / 4) * CFG.FORIN_UNROLL;
 const switchTotal = SWITCH_OUTER * SWITCH_UNROLL;
 const loopTotal = LOOP_REPEAT * LOOP_INNER;
 
 const out = [
-'// BenchMain_v7.as  — 自动生成（bench_gen_v7.js）',
-'// AVM1/AS2 性能基准测试 v7',
-'// v7修复: _quality命名冲突→_qualityTag; NaN感染_bh; base对称化; GC信噪比',
+'// BenchMain_v8.as  — 自动生成（bench_gen_v8.js）',
+'// AVM1/AS2 性能基准测试 v8',
+'// v8升级: 字节码事实驱动修复+新对照组; atomicOps校正; DefineFunction版本对照; 微工作负载',
 '// 使用建议：Release 模式；独立空场景；关闭动画/网络；固定 FPS=60；同机重复3次',
 '',
 '// v7: 用 _bh 替代 _blackhole 避免长变量名占用字节',
@@ -1069,7 +1234,19 @@ const out = [
 'var _longStr50:String = "01234567890123456789012345678901234567890123456789";',
 'var _longStr50b:String = "X1234567890123456789012345678901234567890123456789";',
 '',
-'function _empty_fn():Void {}',
+'// v8fix-A4v2: 字节码确认——仅声明参数但不使用，编译器仍选DF1',
+'// 必须在函数体中引用参数才能强制 DefineFunction2',
+'function _empty_fn(d:Number):Void { var _:Number = d; }',
+'',
+'// v8-B3v2: DefineFunction（老式）vs DefineFunction2 对照',
+'// DF1: 0参数空体 → 必然 DefineFunction',
+'function _empty_df1():Void {}',
+'// DF2: 参数在函数体中被引用 → 强制 DefineFunction2',
+'function _empty_df2(d:Number):Void { var _:Number = d; }',
+'',
+'// v8-B4v2: 构造函数 DefineFunction vs DefineFunction2 对照',
+'function _EmptyCtor_df1() {}',
+'function _EmptyCtor_df2(d:Number) { var _:Number = d; }',
 'function _identity_fn(v:Number):Number { return v; }',
 'function _add_fn(a:Number, b:Number):Number { return a + b; }',
 'function _add3_fn(a:Number, b:Number, c:Number):Number { return a + b + c; }',
@@ -1090,9 +1267,14 @@ const out = [
 '}',
 'var _closure_reader:Function = _makeClosureReader();',
 '',
+'// v8fix-A6: 改为真正的 2 层嵌套闭包（v7 与 closure_read 完全相同）',
 'function _makeDeepClosure2():Function {',
 '    var outer:Number = 100;',
-'    return function():Number { return outer; };',
+'    var inner:Function = function():Function {',
+'        var mid:Number = outer + 1;',
+'        return function():Number { return mid; };',
+'    };',
+'    return inner();',
 '}',
 'var _closure_deep2:Function = _makeDeepClosure2();',
 '',
@@ -1263,8 +1445,10 @@ ifelse10Fn,
 '',
 loopFns,
 '',
+microFns,
+'',
 'function run_all():Void {',
-'    var out:String = "=== AVM1 Benchmark Results v7 ===\\n";',
+'    var out:String = "=== AVM1 Benchmark Results v8 ===\\n";',
 '    out += "player=" + getVersion() + "\\n";',
 '    out += "STD_TOTAL=' + CFG.STD_TOTAL + '  GC_TOTAL=' + CFG.GC_TOTAL + '  STRUCT_TOTAL=' + CFG.STRUCT_TOTAL + '  REPEATS=' + CFG.REPEATS + '  WARMUP=' + CFG.WARMUP + '\\n";',
 '    var timerQuantum:Number = _measureTimerQuantum(32);',
@@ -1354,6 +1538,31 @@ emitRunCalls('gc'),
 '    out += "  loop_empty_while: med=" + _fmt(_median(loopEWRaw),1) + "ms  per-iter=" + _fmt((_median(loopEWRaw)/' + loopTotal + ')*1000000,1) + "ns\\n";',
 '',
 '    if (typeof(_bh) != "number") trace("!!! TYPE after loop: typeof=" + typeof(_bh));',
+'',
+'    // v8 新增：微工作负载',
+'    out += "\\n[MICRO WORKLOADS]\\n";',
+'    var microAosRaw:Array = [];',
+'    var microSoaRaw:Array = [];',
+'    var microSetAlwaysRaw:Array = [];',
+'    var microSetDirtyRaw:Array = [];',
+'    var microMathDirectRaw:Array = [];',
+'    var microMathCachedRaw:Array = [];',
+'    for (fi = 0; fi < 5; fi++) {',
+'        microAosRaw.push(bench_micro_entity_aos());',
+'        microSoaRaw.push(bench_micro_entity_soa());',
+'        microSetAlwaysRaw.push(bench_micro_set_always());',
+'        microSetDirtyRaw.push(bench_micro_set_dirty());',
+'        microMathDirectRaw.push(bench_micro_math_direct());',
+'        microMathCachedRaw.push(bench_micro_math_cached());',
+'    }',
+'    out += "  entity_aos:    med=" + _fmt(_median(microAosRaw),1) + "ms\\n";',
+'    out += "  entity_soa:    med=" + _fmt(_median(microSoaRaw),1) + "ms\\n";',
+'    out += "  set_always:    med=" + _fmt(_median(microSetAlwaysRaw),1) + "ms\\n";',
+'    out += "  set_dirty:     med=" + _fmt(_median(microSetDirtyRaw),1) + "ms\\n";',
+'    out += "  math_direct:   med=" + _fmt(_median(microMathDirectRaw),1) + "ms\\n";',
+'    out += "  math_cached:   med=" + _fmt(_median(microMathCachedRaw),1) + "ms\\n";',
+'',
+'    if (typeof(_bh) != "number") trace("!!! TYPE after micro: typeof=" + typeof(_bh));',
 '    out += "\\nbh_post=" + _fmt(_bh, 2) + "\\n";',
 '    out += "=== END ===\\n";',
 '    trace(out);',
@@ -1364,23 +1573,23 @@ emitRunCalls('gc'),
 ].join('\n');
 
 // Write with BOM
-const outFile = path.join(OUT_DIR, 'BenchMain_v7.as');
+const outFile = path.join(OUT_DIR, 'BenchMain_v8.as');
 const bom = Buffer.from([0xEF, 0xBB, 0xBF]);
 const content = Buffer.from(out, 'utf8');
 fs.writeFileSync(outFile, Buffer.concat([bom, content]));
 
 const manifest = {
-  generator: 'bench_gen_v7.js',
-  output: 'BenchMain_v7.as',
+  generator: 'bench_gen_v8.js',
+  output: 'BenchMain_v8.as',
   config: CFG,
-  benchmarks: benches.map(b => ({ cat: b.cat, name: b.name, desc: b.desc, kind: b.kind || 'std', atomicOps: b.atomicOps })),
+  benchmarks: benches.map(b => ({ cat: b.cat, name: b.name, desc: b.desc, kind: b.kind || 'std', atomicOps: b.atomicOps, opcode: b.opcode || '' })),
   standardBenchCount: benches.filter(b => (b.kind || 'std') !== 'gc').length,
   gcBenchCount: benches.filter(b => b.kind === 'gc').length,
   totalBenchCount: benches.length,
   categories,
-  specialTests: ['forin_5props', 'forin_20props', 'switch_5cases', 'ifelse_5cases', 'switch_10cases', 'ifelse_10cases', 'loop_while', 'loop_for', 'loop_dowhile', 'loop_empty_while']
+  specialTests: ['forin_5props', 'forin_20props', 'switch_5cases', 'ifelse_5cases', 'switch_10cases', 'ifelse_10cases', 'loop_while', 'loop_for', 'loop_dowhile', 'loop_empty_while', 'micro_entity_aos', 'micro_entity_soa', 'micro_set_always', 'micro_set_dirty', 'micro_math_direct', 'micro_math_cached']
 };
-fs.writeFileSync(path.join(OUT_DIR, 'manifest_v7.json'), JSON.stringify(manifest, null, 2), 'utf8');
+fs.writeFileSync(path.join(OUT_DIR, 'manifest_v8.json'), JSON.stringify(manifest, null, 2), 'utf8');
 
 const lines = out.split('\n').length;
 const sizeKB = Math.round(Buffer.byteLength(out, 'utf8') / 1024);
