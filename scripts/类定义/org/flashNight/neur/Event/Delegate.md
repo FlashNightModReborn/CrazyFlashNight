@@ -255,10 +255,10 @@ Delegate 测试套件 v2.0
 
 --- 性能测试 ---
 运行模块：性能测试
-  [PERF] create() 缓存命中: 107ms / 10000 ops (93458 ops/sec)
-  [PERF] create() 缓存未命中: 288ms / 10000 ops (34722 ops/sec)
-  [PERF] 委托调用: 300ms / 100000 ops (333333 ops/sec)
-  [PERF] createWithParams 缓存命中: 125ms / 10000 ops (80000 ops/sec)
+  [PERF] create() 缓存命中: 78ms / 10000 ops (128205 ops/sec)
+  [PERF] create() 缓存未命中: 210ms / 10000 ops (47619 ops/sec)
+  [PERF] 委托调用: 215ms / 100000 ops (465116 ops/sec)
+  [PERF] createWithParams 缓存命中: 86ms / 10000 ops (116279 ops/sec)
 
 ========================================
 测试结果汇总
@@ -269,5 +269,7 @@ Delegate 测试套件 v2.0
 
 ✓ 所有测试用例均通过！
 ========================================
+
+
 
 ```
