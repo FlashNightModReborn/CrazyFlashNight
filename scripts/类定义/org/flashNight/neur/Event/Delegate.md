@@ -352,29 +352,36 @@ Delegate 测试套件 v3.0
   [PASS] [v3.1] create2调用正确
   [PASS] [v3.1] create通用版调用正确
   [PASS] [v3.1] clearScopeCache后create1重建委托
+  [PASS] [v3.1] 全局缓存 create1与create2隔离
+  [PASS] [v3.1] 全局缓存 create1与create隔离
+  [PASS] [v3.1] 全局缓存 create2与create隔离
+  [PASS] [v3.1] 全局缓存 create1命中
+  [PASS] [v3.1] 全局缓存 create2命中
+  [PASS] [v3.1] 全局缓存 create命中
 
 --- 性能测试 ---
 运行模块：性能测试
-  [PERF] create() 缓存命中: 56ms / 10000 ops (178571 ops/sec)
-  [PERF] create() 缓存未命中: 222ms / 10000 ops (45045 ops/sec)
-  [PERF] 委托调用: 202ms / 100000 ops (495050 ops/sec)
+  [PERF] create() 缓存命中: 55ms / 10000 ops (181818 ops/sec)
+  [PERF] create() 缓存未命中: 217ms / 10000 ops (46083 ops/sec)
+  [PERF] 委托调用: 206ms / 100000 ops (485437 ops/sec)
   [PERF] createWithParams 缓存命中: 61ms / 10000 ops (163934 ops/sec)
-  [PERF] create1() 单参调用: 140ms / 100000 ops (714286 ops/sec)
-  [PERF] create()  单参调用: 235ms / 100000 ops (425532 ops/sec)
-  [PERF] create1 加速比: 1.68x
-  [PERF] create2() 双参调用: 143ms / 100000 ops (699301 ops/sec)
+  [PERF] create1() 单参调用: 138ms / 100000 ops (724638 ops/sec)
+  [PERF] create()  单参调用: 246ms / 100000 ops (406504 ops/sec)
+  [PERF] create1 加速比: 1.78x
+  [PERF] create2() 双参调用: 136ms / 100000 ops (735294 ops/sec)
   [PERF] create()  双参调用: 256ms / 100000 ops (390625 ops/sec)
-  [PERF] create2 加速比: 1.79x
+  [PERF] create2 加速比: 1.88x
 
 ========================================
 测试结果汇总
 ========================================
-总测试用例数: 64
-通过: 64 (100%)
+总测试用例数: 70
+通过: 70 (100%)
 失败: 0 (0%)
 
 ✓ 所有测试用例均通过！
 ========================================
+
 
 
 

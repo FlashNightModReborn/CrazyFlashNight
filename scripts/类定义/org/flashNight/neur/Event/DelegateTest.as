@@ -610,6 +610,24 @@ class org.flashNight.neur.Event.DelegateTest {
         var d1New:Function = Delegate.create1(scope, sharedMethod);
         this.assertTrue(d1 !== d1New, "[v3.1] clearScopeCache后create1重建委托",
             "d1 === d1New: " + (d1 === d1New));
+
+        // --- scope == null 全局缓存隔离 ---
+        function globalShared():String { return "global"; }
+        var g1:Function = Delegate.create1(null, globalShared);
+        var g2:Function = Delegate.create2(null, globalShared);
+        var gGeneric:Function = Delegate.create(null, globalShared);
+
+        this.assertTrue(g1 !== g2, "[v3.1] 全局缓存 create1与create2隔离",
+            "g1 === g2: " + (g1 === g2));
+        this.assertTrue(g1 !== gGeneric, "[v3.1] 全局缓存 create1与create隔离",
+            "g1 === gGeneric: " + (g1 === gGeneric));
+        this.assertTrue(g2 !== gGeneric, "[v3.1] 全局缓存 create2与create隔离",
+            "g2 === gGeneric: " + (g2 === gGeneric));
+
+        // 全局缓存命中
+        this.assertTrue(g1 === Delegate.create1(null, globalShared), "[v3.1] 全局缓存 create1命中", null);
+        this.assertTrue(g2 === Delegate.create2(null, globalShared), "[v3.1] 全局缓存 create2命中", null);
+        this.assertTrue(gGeneric === Delegate.create(null, globalShared), "[v3.1] 全局缓存 create命中", null);
     }
 
     // ======================
