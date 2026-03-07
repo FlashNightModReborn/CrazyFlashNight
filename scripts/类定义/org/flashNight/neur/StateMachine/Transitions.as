@@ -40,8 +40,12 @@ class org.flashNight.neur.StateMachine.Transitions {
 
     public function Transitions(_status:FSM_Status) {
         this.status = _status;
-        this.gateLists = {};
-        this.normalLists = {};
+        var g:Object = {};
+        g.__proto__ = null;
+        this.gateLists = g;
+        var n:Object = {};
+        n.__proto__ = null;
+        this.normalLists = n;
     }
 
     /**
