@@ -27,26 +27,26 @@ class org.flashNight.gesh.paint.renderMachine.RendererVM {
     // 动态初始化命令映射，使用 Delegate 包装函数
     private function initializeCommandMap():Void {
         commandMap = {};
-        commandMap["M"] = Delegate.create(this, handleMoveTo);
-        commandMap["L"] = Delegate.create(this, handleLineTo);
-        commandMap["C"] = Delegate.create(this, handleCurveTo);
-        commandMap["R"] = Delegate.create(this, handleDrawRect);
-        commandMap["O"] = Delegate.create(this, handleDrawCircle);
-        commandMap["A"] = Delegate.create(this, handleDrawRoundRect);
-        commandMap["P"] = Delegate.create(this, handleDrawPolygon);
-        commandMap["S"] = Delegate.create(this, handleSetLineStyle);
-        commandMap["F"] = Delegate.create(this, handleBeginFill);
-        commandMap["G"] = Delegate.create(this, handleBeginGradientFill);
-        commandMap["B"] = Delegate.create(this, handleBeginBitmapFill);
-        commandMap["T"] = Delegate.create(this, handleSetColorTransform);
-        commandMap["Q"] = Delegate.create(this, handleSetAlpha);
-        commandMap["N"] = Delegate.create(this, handleSetBlendModeNormal);
-        commandMap["X"] = Delegate.create(this, handleSetBlendModeMultiply);
-        commandMap["D"] = Delegate.create(this, handleSetBlendModeAdd);
-        commandMap["U"] = Delegate.create(this, handleSetBlendModeSubtract);
-        commandMap["K"] = Delegate.create(this, handleClear);
-        commandMap["E"] = Delegate.create(this, handleEndFill);
-        commandMap[";"] = Delegate.create(this, handleEndCommand);
+        commandMap["M"] = Delegate.create0(this, handleMoveTo);
+        commandMap["L"] = Delegate.create0(this, handleLineTo);
+        commandMap["C"] = Delegate.create0(this, handleCurveTo);
+        commandMap["R"] = Delegate.create0(this, handleDrawRect);
+        commandMap["O"] = Delegate.create0(this, handleDrawCircle);
+        commandMap["A"] = Delegate.create0(this, handleDrawRoundRect);
+        commandMap["P"] = Delegate.create0(this, handleDrawPolygon);
+        commandMap["S"] = Delegate.create0(this, handleSetLineStyle);
+        commandMap["F"] = Delegate.create0(this, handleBeginFill);
+        commandMap["G"] = Delegate.create0(this, handleBeginGradientFill);
+        commandMap["B"] = Delegate.create0(this, handleBeginBitmapFill);
+        commandMap["T"] = Delegate.create0(this, handleSetColorTransform);
+        commandMap["Q"] = Delegate.create0(this, handleSetAlpha);
+        commandMap["N"] = Delegate.create0(this, handleSetBlendModeNormal);
+        commandMap["X"] = Delegate.create0(this, handleSetBlendModeMultiply);
+        commandMap["D"] = Delegate.create0(this, handleSetBlendModeAdd);
+        commandMap["U"] = Delegate.create0(this, handleSetBlendModeSubtract);
+        commandMap["K"] = Delegate.create0(this, handleClear);
+        commandMap["E"] = Delegate.create0(this, handleEndFill);
+        commandMap[";"] = Delegate.create0(this, handleEndCommand);
     }
 
     public function executeCommandStream(commandStream:String):Void {

@@ -77,7 +77,7 @@ class org.flashNight.sara.util.ObjectPool {
         }
 
         // 使用 Delegate 创建 recycle 方法，并绑定到当前对象池
-        var recycleDelegate:Function = Delegate.create(this, releaseObject, newObj);
+        var recycleDelegate:Function = Delegate.createWithParams(this, releaseObject, [newObj]);
         newObj.recycle = recycleDelegate;
 
         // 使用 _global.ASSetPropFlags 将 _pool 和 recycle 设置为不可枚举

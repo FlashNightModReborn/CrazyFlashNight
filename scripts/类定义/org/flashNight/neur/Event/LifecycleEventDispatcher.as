@@ -69,7 +69,7 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
         // 通过 EventCoordinator 添加 onUnload 回调
         this._unloadHandlerID = EventCoordinator.addUnloadCallback(
             target, 
-            Delegate.create(this, onTargetUnload)
+            Delegate.create0(this, onTargetUnload)
         );
     }
     

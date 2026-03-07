@@ -25,7 +25,7 @@ class org.flashNight.neur.Timer.FrameTimer {
         );
         // trace("创建FrameTimer控制影片剪辑：" + this._clip + " " + insName);
         // 绑定ENTER_FRAME事件
-        this._clip.onEnterFrame = Delegate.create(this, this.update);
+        this._clip.onEnterFrame = Delegate.create0(this, this.update);
     }
     
     /**

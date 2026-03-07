@@ -448,7 +448,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
             EnhancedCooldownWheel.I().removeTask(canvas.fadeTask);
         }
         // 绑定 onFadeUpdate 方法，添加渐隐任务（使用增强时间轮替换原帧计时器）
-        var callback:Function = Delegate.create(this, onFadeUpdate);
+        var callback:Function = Delegate.create1(this, onFadeUpdate);
         canvas.fadeTask = EnhancedCooldownWheel.I().addTask(callback, configObj.refreshInterval, shadowCount, canvas);
     }
     

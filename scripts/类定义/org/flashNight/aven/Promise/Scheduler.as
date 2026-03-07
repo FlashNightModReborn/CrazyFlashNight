@@ -28,7 +28,7 @@ class org.flashNight.aven.Promise.Scheduler {
         
         // 创建一个隐藏的影片剪辑来驱动 onEnterFrame
         this._clip = _root.createEmptyMovieClip("_promiseScheduler", _root.getNextHighestDepth());
-        this._clip.onEnterFrame = Delegate.create(this, this.processQueue);
+        this._clip.onEnterFrame = Delegate.create0(this, this.processQueue);
     }
     
     /**

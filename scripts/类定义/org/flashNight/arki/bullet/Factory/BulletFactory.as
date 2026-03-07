@@ -239,8 +239,8 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             var ubMovement:IMovement = MovementSystem.createMovementForBullet(
                 Obj.子弹种类, shooter, speedX, speedY, zyRatio, velocity, Obj._rotation
             );
-            bulletInstance.updateMovement = Delegate.create(ubMovement, ubMovement.updateMovement);
-            bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
+            bulletInstance.updateMovement = Delegate.create1(ubMovement, ubMovement.updateMovement);
+            bulletInstance.shouldDestroy = Delegate.create0(lifecycle, lifecycle.shouldDestroy);
         }
         else if (isTransparent) {
             // 透明子弹（含近战子弹/近战联弹）：单帧检测后立即销毁
@@ -256,8 +256,8 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             var movement:IMovement = MovementSystem.createMovementForBullet(
                 Obj.子弹种类, shooter, speedX, speedY, zyRatio, velocity, Obj._rotation
             );
-            bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
-            bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
+            bulletInstance.updateMovement = Delegate.create1(movement, movement.updateMovement);
+            bulletInstance.shouldDestroy = Delegate.create0(lifecycle, lifecycle.shouldDestroy);
         }
 
         // 绑定生命周期逻辑

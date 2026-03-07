@@ -55,7 +55,7 @@ class org.flashNight.neur.Event.DelegateTest {
     // 运行所有测试
     public function runAllTests():Void {
         trace("========================================");
-        trace("Delegate 测试套件 v2.0");
+        trace("Delegate 测试套件 v3.0");
         trace("========================================\n");
 
         // 功能测试
@@ -75,7 +75,14 @@ class org.flashNight.neur.Event.DelegateTest {
         this.testScopeCacheIsolation();
         this.testClearScopeCache();
 
-        // [v2.0] 性能测试
+        // [v3.0] 特化版本测试
+        trace("\n--- [v3.0] 特化版本测试 ---");
+        this.testCreate0();
+        this.testCreate1();
+        this.testCreate2();
+        this.testSpecializedCacheSharing();
+
+        // 性能测试
         trace("\n--- 性能测试 ---");
         this.runPerformanceTests();
 
@@ -519,6 +526,102 @@ class org.flashNight.neur.Event.DelegateTest {
     }
 
     // ======================
+    // [v3.0] 特化版本测试
+    // ======================
+
+    private function testCreate0():Void {
+        trace("运行模块：[v3.0] create0 零参数特化测试");
+
+        // 测试 scope != null
+        var scope:Object = { name: "Create0Scope" };
+        function zeroArgMethod():String { return this.name + " zero"; }
+
+        var d0:Function = Delegate.create0(scope, zeroArgMethod);
+        this.assertEquals("Create0Scope zero", d0(), "[v3.0] create0 scope绑定零参调用");
+
+        // 测试 scope == null
+        function globalZero():String { return "global zero"; }
+        var d0g:Function = Delegate.create0(null, globalZero);
+        this.assertEquals("global zero", d0g(), "[v3.0] create0 全局作用域零参调用");
+
+        // 测试缓存命中
+        var d0Again:Function = Delegate.create0(scope, zeroArgMethod);
+        this.assertTrue(d0 === d0Again, "[v3.0] create0 缓存命中返回同一委托", null);
+
+        // 测试全局缓存命中
+        var d0gAgain:Function = Delegate.create0(null, globalZero);
+        this.assertTrue(d0g === d0gAgain, "[v3.0] create0 全局缓存命中", null);
+    }
+
+    private function testCreate1():Void {
+        trace("运行模块：[v3.0] create1 单参数特化测试");
+
+        var scope:Object = { prefix: "Hello" };
+        function oneArgMethod(name:String):String { return this.prefix + " " + name; }
+
+        var d1:Function = Delegate.create1(scope, oneArgMethod);
+        this.assertEquals("Hello Alice", d1("Alice"), "[v3.0] create1 scope绑定单参调用");
+
+        // scope == null
+        function globalOne(x:Number):Number { return x * 2; }
+        var d1g:Function = Delegate.create1(null, globalOne);
+        this.assertEquals(42, d1g(21), "[v3.0] create1 全局作用域单参调用");
+
+        // 缓存命中
+        var d1Again:Function = Delegate.create1(scope, oneArgMethod);
+        this.assertTrue(d1 === d1Again, "[v3.0] create1 缓存命中返回同一委托", null);
+
+        // 边界值：传 null 参数
+        function nullArgMethod(arg):String { return "arg=" + arg; }
+        var d1n:Function = Delegate.create1(null, nullArgMethod);
+        this.assertEquals("arg=null", d1n(null), "[v3.0] create1 传null参数");
+
+        // 边界值：传 undefined
+        this.assertEquals("arg=undefined", d1n(undefined), "[v3.0] create1 传undefined参数");
+    }
+
+    private function testCreate2():Void {
+        trace("运行模块：[v3.0] create2 双参数特化测试");
+
+        var scope:Object = { op: "+" };
+        function twoArgMethod(a:Number, b:Number):String { return a + " " + this.op + " " + b; }
+
+        var d2:Function = Delegate.create2(scope, twoArgMethod);
+        this.assertEquals("3 + 5", d2(3, 5), "[v3.0] create2 scope绑定双参调用");
+
+        // scope == null
+        function globalTwo(a:String, b:String):String { return a + "|" + b; }
+        var d2g:Function = Delegate.create2(null, globalTwo);
+        this.assertEquals("foo|bar", d2g("foo", "bar"), "[v3.0] create2 全局作用域双参调用");
+
+        // 缓存命中
+        var d2Again:Function = Delegate.create2(scope, twoArgMethod);
+        this.assertTrue(d2 === d2Again, "[v3.0] create2 缓存命中返回同一委托", null);
+    }
+
+    private function testSpecializedCacheSharing():Void {
+        trace("运行模块：[v3.0] 特化版本缓存共享测试");
+
+        var scope:Object = { val: "shared" };
+        function sharedMethod():String { return this.val; }
+
+        // 先用 create0 创建
+        var d0:Function = Delegate.create0(scope, sharedMethod);
+        this.assertEquals("shared", d0(), "[v3.0] create0 先创建可正常调用");
+
+        // 再用 create 访问同一 scope+method，应命中缓存
+        var dGeneric:Function = Delegate.create(scope, sharedMethod);
+        this.assertTrue(d0 === dGeneric, "[v3.0] create0与create共享缓存",
+            "d0 === dGeneric: " + (d0 === dGeneric));
+
+        // clearScopeCache 后两者都应重建
+        Delegate.clearScopeCache(scope);
+        var d0New:Function = Delegate.create0(scope, sharedMethod);
+        this.assertTrue(d0 !== d0New, "[v3.0] clearScopeCache后create0重建委托",
+            "d0 === d0New: " + (d0 === d0New));
+    }
+
+    // ======================
     // 性能测试
     // ======================
 
@@ -542,6 +645,11 @@ class org.flashNight.neur.Event.DelegateTest {
 
         // 性能测试 4: createWithParams 缓存性能
         this.perfTestCreateWithParams(iterations);
+
+        // [v3.0] 性能测试 5-7: 特化版本调用性能对比
+        this.perfTestCreate0Invocation(iterations * 10);
+        this.perfTestCreate1Invocation(iterations * 10);
+        this.perfTestCreate2Invocation(iterations * 10);
     }
 
     /**
@@ -628,6 +736,112 @@ class org.flashNight.neur.Event.DelegateTest {
         var opsPerMs:Number = iterations / duration;
         trace("  [PERF] createWithParams 缓存命中: " + duration + "ms / " + iterations + " ops (" +
             Math.round(opsPerMs * 1000) + " ops/sec)");
+    }
+
+    /**
+     * [v3.0] 性能测试：create0 零参数调用 vs create 零参数调用
+     */
+    private function perfTestCreate0Invocation(iterations:Number):Void {
+        var scope:Object = { value: 0 };
+        function incrementMethod():Number { return ++this.value; }
+
+        // create0 版本
+        var delegate0:Function = Delegate.create0(scope, incrementMethod);
+        scope.value = 0;
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            delegate0();
+        }
+        var endTime:Number = getTimer();
+        var duration0:Number = endTime - startTime;
+
+        // create 版本（需要新 scope 避免缓存冲突）
+        var scope2:Object = { value: 0 };
+        var delegateGeneric:Function = Delegate.create(scope2, incrementMethod);
+
+        startTime = getTimer();
+        for (var j:Number = 0; j < iterations; j++) {
+            delegateGeneric();
+        }
+        endTime = getTimer();
+        var durationGeneric:Number = endTime - startTime;
+
+        trace("  [PERF] create0() 零参调用: " + duration0 + "ms / " + iterations + " ops (" +
+            Math.round(iterations / duration0 * 1000) + " ops/sec)");
+        trace("  [PERF] create()  零参调用: " + durationGeneric + "ms / " + iterations + " ops (" +
+            Math.round(iterations / durationGeneric * 1000) + " ops/sec)");
+        trace("  [PERF] create0 加速比: " + (Math.round(durationGeneric / duration0 * 100) / 100) + "x");
+    }
+
+    /**
+     * [v3.0] 性能测试：create1 单参数调用
+     */
+    private function perfTestCreate1Invocation(iterations:Number):Void {
+        var scope:Object = { sum: 0 };
+        function addMethod(n:Number):Void { this.sum += n; }
+
+        var delegate1:Function = Delegate.create1(scope, addMethod);
+        scope.sum = 0;
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            delegate1(1);
+        }
+        var endTime:Number = getTimer();
+        var duration1:Number = endTime - startTime;
+
+        // create 版本
+        var scope2:Object = { sum: 0 };
+        var delegateGeneric:Function = Delegate.create(scope2, addMethod);
+
+        startTime = getTimer();
+        for (var j:Number = 0; j < iterations; j++) {
+            delegateGeneric(1);
+        }
+        endTime = getTimer();
+        var durationGeneric:Number = endTime - startTime;
+
+        trace("  [PERF] create1() 单参调用: " + duration1 + "ms / " + iterations + " ops (" +
+            Math.round(iterations / duration1 * 1000) + " ops/sec)");
+        trace("  [PERF] create()  单参调用: " + durationGeneric + "ms / " + iterations + " ops (" +
+            Math.round(iterations / durationGeneric * 1000) + " ops/sec)");
+        trace("  [PERF] create1 加速比: " + (Math.round(durationGeneric / duration1 * 100) / 100) + "x");
+    }
+
+    /**
+     * [v3.0] 性能测试：create2 双参数调用
+     */
+    private function perfTestCreate2Invocation(iterations:Number):Void {
+        var scope:Object = { sum: 0 };
+        function addTwoMethod(a:Number, b:Number):Void { this.sum += a + b; }
+
+        var delegate2:Function = Delegate.create2(scope, addTwoMethod);
+        scope.sum = 0;
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            delegate2(1, 2);
+        }
+        var endTime:Number = getTimer();
+        var duration2:Number = endTime - startTime;
+
+        // create 版本
+        var scope2:Object = { sum: 0 };
+        var delegateGeneric:Function = Delegate.create(scope2, addTwoMethod);
+
+        startTime = getTimer();
+        for (var j:Number = 0; j < iterations; j++) {
+            delegateGeneric(1, 2);
+        }
+        endTime = getTimer();
+        var durationGeneric:Number = endTime - startTime;
+
+        trace("  [PERF] create2() 双参调用: " + duration2 + "ms / " + iterations + " ops (" +
+            Math.round(iterations / duration2 * 1000) + " ops/sec)");
+        trace("  [PERF] create()  双参调用: " + durationGeneric + "ms / " + iterations + " ops (" +
+            Math.round(iterations / durationGeneric * 1000) + " ops/sec)");
+        trace("  [PERF] create2 加速比: " + (Math.round(durationGeneric / duration2 * 100) / 100) + "x");
     }
 
     // 输出测试结果
