@@ -146,6 +146,10 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         this.testAddStatusOverwriteActiveStateDuringRuntime();
         this.testOnExitRedirectPlusOnEnterChainComposite();
 
+        // Batch 13 新增：reset() 安全性
+        this.testResetInOnActionPreventsOldTransitions();
+        this.testResetInOnEnterPreventsOldTransitions();
+
         // 最终报告
         this.printFinalReport();
     }
@@ -3983,6 +3987,120 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         machine.destroy();
     }
 
+    // ========== Batch 13: reset() 安全性 ==========
+
+    /**
+     * 场景：onAction 中调用 transitions.reset()，Phase 3 Normal 转换不应再触发旧规则。
+     *
+     * 设计：
+     *   A --[Normal]--> B （条件恒 true）
+     *   A.onAction 里调用 this.superMachine.transitions.reset()
+     *
+     * 预期：onAction 后 nStore 被刷新，Phase 3 不再命中旧 Normal 规则，
+     *        activeState 仍然是 A。
+     */
+    private function testResetInOnActionPreventsOldTransitions():Void {
+        trace("\n--- Test: reset() in onAction prevents old Normal transitions ---");
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        var transitionFired:Boolean = false;
+
+        // 状态 A：onAction 中 reset transitions
+        var stateA:FSM_Status = new FSM_Status(
+            function():Void {
+                // Phase 2: 清除所有转换规则
+                this.superMachine.transitions.reset();
+            },
+            null, null
+        );
+
+        // 状态 B：若到达此状态说明旧转换泄漏
+        var stateB:FSM_Status = new FSM_Status(
+            null,
+            function():Void {
+                transitionFired = true;
+            },
+            null
+        );
+
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+        machine.ChangeState("A");
+        machine.start();
+
+        // 添加 Normal 转换 A→B（恒 true）
+        machine.transitions.push("A", "B", function():Boolean { return true; }, false);
+
+        // 执行一帧 onAction
+        machine.onAction();
+
+        this.assert(machine.getActiveState() == stateA,
+                   "B13-1: activeState remains A after reset() in onAction");
+        this.assert(!transitionFired,
+                   "B13-2: B.onEnter never called — old Normal transition did not fire");
+
+        machine.destroy();
+    }
+
+    /**
+     * 场景：onEnter 中调用 transitions.reset()，随后 Phase 3 Normal 转换不应触发旧规则。
+     *
+     * 设计：
+     *   A --[Gate]--> B （条件恒 true，gate 在 Phase 1 触发）
+     *   B.onEnter 里调用 this.superMachine.transitions.reset()
+     *   原有 B --[Normal]--> C 不应再触发
+     *
+     * 预期：Gate 触发 A→B，B.onEnter 调用 reset()，_oaRun 的 continue 路径刷新缓存，
+     *        下一轮迭代 Phase 3 查不到 B→C 的 Normal 规则，activeState 停留在 B。
+     */
+    private function testResetInOnEnterPreventsOldTransitions():Void {
+        trace("\n--- Test: reset() in onEnter prevents old transitions in same frame ---");
+
+        var machine:FSM_StateMachine = new FSM_StateMachine(null, null, null);
+        var reachedC:Boolean = false;
+
+        var stateA:FSM_Status = new FSM_Status(null, null, null);
+
+        // 状态 B：onEnter 中 reset
+        var stateB:FSM_Status = new FSM_Status(
+            null,
+            function():Void {
+                this.superMachine.transitions.reset();
+            },
+            null
+        );
+
+        // 状态 C：不应到达
+        var stateC:FSM_Status = new FSM_Status(
+            null,
+            function():Void {
+                reachedC = true;
+            },
+            null
+        );
+
+        machine.AddStatus("A", stateA);
+        machine.AddStatus("B", stateB);
+        machine.AddStatus("C", stateC);
+        machine.ChangeState("A");
+        machine.start();
+
+        // Gate: A→B（恒 true）
+        machine.transitions.push("A", "B", function():Boolean { return true; }, true);
+        // Normal: B→C（恒 true）— 应在 reset 后失效
+        machine.transitions.push("B", "C", function():Boolean { return true; }, false);
+
+        // 执行一帧
+        machine.onAction();
+
+        this.assert(machine.getActiveState() == stateB,
+                   "B13-3: activeState is B after Gate A→B + reset in B.onEnter");
+        this.assert(!reachedC,
+                   "B13-4: C never reached — old Normal B→C cleared by reset()");
+
+        machine.destroy();
+    }
+
     // ========== 报告生成 ==========
 
     public function printFinalReport():Void {
@@ -4032,6 +4150,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachineTest {
         trace("  maxChain=10 limit hit verified");
         trace("  AddStatus overwrite activeState during runtime verified");
         trace("  onExit redirect + onEnter chain composite verified");
+        trace("  reset() in onAction prevents old Normal transitions verified");
+        trace("  reset() in onEnter prevents old transitions in same frame verified");
         trace("=============================");
     }
 }

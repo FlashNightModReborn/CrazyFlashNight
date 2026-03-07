@@ -138,7 +138,13 @@ a.runTests();
 --- Test: Complex Workflow ---
 Initializing workflow...
 Processing...
-Workflow completed!
+Retrying...
+Processing...
+Retrying...
+Processing...
+Retrying...
+Processing...
+Workflow failed!
 [PASS] Workflow reached final state
 
 --- Test: State Chaining ---
@@ -147,7 +153,7 @@ Workflow completed!
 [PASS] Chain ended correctly
 
 --- Test: Conditional Branching ---
-[PASS] Conditional branching led to valid path: C
+[PASS] Conditional branching led to valid path: B
 
 --- Test: StateMachine Composition ---
 [PASS] Login machine starts at login
@@ -178,28 +184,28 @@ Workflow completed!
 [PASS] Transitions reference released after destroy
 
 --- Test: Basic Performance ---
-Basic Performance: Transitions=21ms, Actions=25ms for 10000 operations
+Basic Performance: Transitions=24ms, Actions=27ms for 10000 operations
 [PASS] Transition performance acceptable
 [PASS] Action performance acceptable
 
 --- Test: Many States Performance ---
-Many States Performance: Create 1000 states in 33ms, 100 transitions in 1ms
+Many States Performance: Create 1000 states in 33ms, 100 transitions in 0ms
 [PASS] State creation scalable
 [PASS] State access scalable
 
 --- Test: Frequent Transitions Performance ---
-Frequent Transitions Performance: 5000 transitions in 15ms
+Frequent Transitions Performance: 5000 transitions in 14ms
 [PASS] Frequent transitions performance acceptable
 
 --- Test: Complex Transition Performance ---
-Complex Transition Performance: 1000 complex transitions in 5ms
+Complex Transition Performance: 1000 complex transitions in 6ms
 [PASS] Complex transition performance acceptable
 
 --- Test: Scalability Test ---
 Size 10: Create=0ms, Transition=0ms, Operation=0ms
-Size 50: Create=0ms, Transition=1ms, Operation=0ms
-Size 100: Create=1ms, Transition=1ms, Operation=0ms
-Size 500: Create=8ms, Transition=6ms, Operation=1ms
+Size 50: Create=1ms, Transition=0ms, Operation=0ms
+Size 100: Create=2ms, Transition=1ms, Operation=0ms
+Size 500: Create=7ms, Transition=7ms, Operation=0ms
 [PASS] Scalability performance acceptable across different sizes
 
 --- Test: Pause Gate Immediate Effect ---
@@ -494,8 +500,16 @@ Size 500: Create=8ms, Transition=6ms, Operation=1ms
 [PASS] T14: [3] D enters (final destination)
 [PASS] T14: lastState is C (state entered just before D)
 
+--- Test: reset() in onAction prevents old Normal transitions ---
+[PASS] B13-1: activeState remains A after reset() in onAction
+[PASS] B13-2: B.onEnter never called — old Normal transition did not fire
+
+--- Test: reset() in onEnter prevents old transitions in same frame ---
+[PASS] B13-3: activeState is B after Gate A→B + reset in B.onEnter
+[PASS] B13-4: C never reached — old Normal B→C cleared by reset()
+
 === FINAL FSM TEST REPORT ===
-Tests Passed: 302
+Tests Passed: 306
 Tests Failed: 0
 Success Rate: 100%
 🎉 ALL TESTS PASSED! FSM StateMachine implementation is robust and performant.
@@ -534,4 +548,6 @@ Success Rate: 100%
   maxChain=10 limit hit verified
   AddStatus overwrite activeState during runtime verified
   onExit redirect + onEnter chain composite verified
+  reset() in onAction prevents old Normal transitions verified
+  reset() in onEnter prevents old transitions in same frame verified
 =============================

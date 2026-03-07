@@ -152,7 +152,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     private function _csInit(next:String):Void {
         var target:FSM_Status = this.statusDict[next];
         var cur:FSM_Status = this.activeState;
-        if (target == null || target == cur) return;
+        if (!(target instanceof FSM_Status) || target == cur) return;
         this.lastState = cur;
         this.activeState = target;
         this.actionCount = 0;
@@ -173,7 +173,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         var dict:Object = this.statusDict;
         var target:FSM_Status = dict[next];
         var cur:FSM_Status = this.activeState;
-        if (target == null || target == cur) return;
+        if (!(target instanceof FSM_Status) || target == cur) return;
 
         this.ChangeState = this._csPend;
         var maxChain:Number = 10;
@@ -361,7 +361,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     public function ChangeState(next:String):Void {
         var target:FSM_Status = this.statusDict[next];
         var cur:FSM_Status = this.activeState;
-        if (target == null || target == cur) return;
+        if (!(target instanceof FSM_Status) || target == cur) return;
         this.lastState = cur;
         this.activeState = target;
         this.actionCount = 0;
@@ -390,7 +390,7 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
     }
 
     public function hasStatus(name:String):Boolean {
-        return this.statusDict[name] != null;
+        return this.statusDict[name] instanceof FSM_Status;
     }
 
     // ═══════ AddStatus ═══════

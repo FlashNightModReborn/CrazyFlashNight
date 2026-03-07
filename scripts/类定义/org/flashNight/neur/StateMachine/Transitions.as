@@ -123,10 +123,27 @@ class org.flashNight.neur.StateMachine.Transitions {
 
     /**
      * 重置所有转换规则
+     *
+     * 就地清空而非创建新对象：_oaRun 缓存了 gateLists/normalLists 引用，
+     * 若创建新对象会导致当帧缓存引用过期，旧规则仍被执行。
+     * 采用 length=0 截断并行数组：O(1) 且避免昂贵的 delete 操作。
+     * rec 对象保留（rec!=null 仍为 true），但 ts.length==0 使 for 循环直接跳过。
      */
     public function reset():Void {
-        this.gateLists = {};
-        this.normalLists = {};
+        var g:Object = this.gateLists;
+        for (var k:String in g) {
+            var gr:Object = g[k];
+            gr.t.length = 0;
+            gr.f.length = 0;
+            gr.a.length = 0;
+        }
+        var n:Object = this.normalLists;
+        for (var k2:String in n) {
+            var nr:Object = n[k2];
+            nr.t.length = 0;
+            nr.f.length = 0;
+            nr.a.length = 0;
+        }
     }
 
     /**
