@@ -1,25 +1,19 @@
 ﻿class LiteJSON implements IJSON{
-    private var parseFrameTypes:Array;
     private var parseFrameStates:Array;
     private var parseFrameRefs:Array;
-    private var parseFrameKeys:Array;
-    private var parseFrameIndices:Array;
+    private var parseFrameAux:Array;
     private var parseDigitValues:Array;
 
     /**
      * 构造函数
      */
     public function LiteJSON() {
-        this.parseFrameTypes = new Array(64);
-        this.parseFrameTypes.length = 0;
         this.parseFrameStates = new Array(64);
         this.parseFrameStates.length = 0;
         this.parseFrameRefs = new Array(64);
         this.parseFrameRefs.length = 0;
-        this.parseFrameKeys = new Array(64);
-        this.parseFrameKeys.length = 0;
-        this.parseFrameIndices = new Array(64);
-        this.parseFrameIndices.length = 0;
+        this.parseFrameAux = new Array(64);
+        this.parseFrameAux.length = 0;
         this.parseDigitValues = [];
         this.parseDigitValues["0"] = 0;
         this.parseDigitValues["1"] = 1;
@@ -254,27 +248,22 @@
         var chars:Array = text.split("");
         var at:Number = 0;
 
-        var FRAME_OBJECT:Number = 1;
-        var FRAME_ARRAY:Number = 2;
-
-        var STATE_OBJECT_KEY_OR_END:Number = 0;
-        var STATE_OBJECT_COLON:Number = 1;
-        var STATE_OBJECT_VALUE:Number = 2;
-        var STATE_OBJECT_COMMA_OR_END:Number = 3;
-
-        var STATE_ARRAY_VALUE_OR_END:Number = 0;
-        var STATE_ARRAY_COMMA_OR_END:Number = 1;
+        // 统一状态常量（types+states 合并，无需 frameType）
+        var S_OBJ_KEY_OR_END:Number = 1;
+        var S_OBJ_VALUE:Number = 2;
+        var S_OBJ_COMMA_OR_END:Number = 3;
+        var S_ARR_VALUE_OR_END:Number = 4;
+        var S_ARR_COMMA_OR_END:Number = 5;
 
         var TARGET_NONE:Number = 0;
         var TARGET_ROOT:Number = 1;
         var TARGET_OBJECT:Number = 2;
         var TARGET_ARRAY:Number = 3;
 
-        var stackTypes:Array = this.parseFrameTypes;
+        // 3 组并行数组（原 5 组：types+states→states, keys+indices→aux）
         var stackStates:Array = this.parseFrameStates;
         var stackRefs:Array = this.parseFrameRefs;
-        var stackKeys:Array = this.parseFrameKeys;
-        var stackIndices:Array = this.parseFrameIndices;
+        var stackAux:Array = this.parseFrameAux;
         var digitValues:Array = this.parseDigitValues;
         var stackPtr:Number = 0;
 
@@ -284,7 +273,6 @@
 
         var currentCh:String;
         var frameIndex:Number;
-        var frameType:Number;
         var frameState:Number;
         var frameRef;
         var object:Object;
@@ -304,6 +292,7 @@
         var fractionDigits:Number;
 
         while (!failed) {
+            // 跳过空白
             while (at < textLength) {
                 currentCh = chars[at];
                 if (currentCh > " ") {
@@ -326,137 +315,138 @@
                 break;
             } else {
                 frameIndex = stackPtr - 1;
-                frameType = stackTypes[frameIndex];
                 frameState = stackStates[frameIndex];
                 frameRef = stackRefs[frameIndex];
 
-                if (frameType === FRAME_OBJECT) {
-                    if (frameState === STATE_OBJECT_KEY_OR_END) {
-                        if (currentCh === "}") {
+                if (frameState === S_OBJ_KEY_OR_END) {
+                    if (currentCh === "}") {
+                        at++;
+                        stackPtr--;
+                        continue;
+                    }
+                    if (currentCh !== "\"") {
+                        failed = true;
+                        break;
+                    }
+
+                    // 解析 key 字符串
+                    stringValue = null;
+                    at++;
+                    segmentStart = at;
+                    while (at < textLength) {
+                        currentCh = chars[at];
+                        if (currentCh === "\"") {
+                            if (stringValue == null) {
+                                stringValue = text.substring(segmentStart, at);
+                            } else if (at > segmentStart) {
+                                stringValue += text.substring(segmentStart, at);
+                            }
                             at++;
-                            stackPtr--;
-                            continue;
-                        }
-                        if (currentCh !== "\"") {
-                            failed = true;
                             break;
                         }
-
-                        stringValue = null;
-                        at++;
-                        segmentStart = at;
-                        while (at < textLength) {
-                            currentCh = chars[at];
-                            if (currentCh === "\"") {
-                                if (stringValue == null) {
-                                    stringValue = text.substring(segmentStart, at);
-                                } else if (at > segmentStart) {
-                                    stringValue += text.substring(segmentStart, at);
-                                }
-                                at++;
+                        if (currentCh === "\\") {
+                            if (stringValue == null) {
+                                stringValue = "";
+                            }
+                            if (at > segmentStart) {
+                                stringValue += text.substring(segmentStart, at);
+                            }
+                            at++;
+                            if (at >= textLength) {
+                                failed = true;
                                 break;
                             }
-                            if (currentCh === "\\") {
-                                if (stringValue == null) {
-                                    stringValue = "";
-                                }
-                                if (at > segmentStart) {
-                                    stringValue += text.substring(segmentStart, at);
-                                }
-                                at++;
-                                if (at >= textLength) {
-                                    failed = true;
-                                    break;
-                                }
-
-                                currentCh = chars[at];
-                                if (currentCh === "\"") {
-                                    stringValue += "\"";
-                                } else if (currentCh === "\\") {
-                                    stringValue += "\\";
-                                } else if (currentCh === "/") {
-                                    stringValue += "/";
-                                } else if (currentCh === "n") {
-                                    stringValue += "\n";
-                                } else if (currentCh === "r") {
-                                    stringValue += "\r";
-                                } else if (currentCh === "t") {
-                                    stringValue += "\t";
-                                } else {
-                                    // \b \f \uXXXX 等不支持，直接输出原字符
-                                    stringValue += currentCh;
-                                }
-                                at++;
-                                segmentStart = at;
-                                continue;
+                            currentCh = chars[at];
+                            if (currentCh === "\"") {
+                                stringValue += "\"";
+                            } else if (currentCh === "\\") {
+                                stringValue += "\\";
+                            } else if (currentCh === "/") {
+                                stringValue += "/";
+                            } else if (currentCh === "n") {
+                                stringValue += "\n";
+                            } else if (currentCh === "r") {
+                                stringValue += "\r";
+                            } else if (currentCh === "t") {
+                                stringValue += "\t";
+                            } else {
+                                stringValue += currentCh;
                             }
                             at++;
+                            segmentStart = at;
+                            continue;
                         }
-                        if (at >= textLength && currentCh !== "\"") {
-                            failed = true;
-                            break;
-                        }
-
-                        stackKeys[frameIndex] = stringValue;
-                        stackStates[frameIndex] = STATE_OBJECT_COLON;
-                        continue;
+                        at++;
+                    }
+                    if (at >= textLength && currentCh !== "\"") {
+                        failed = true;
+                        break;
                     }
 
-                    if (frameState === STATE_OBJECT_COLON) {
-                        if (currentCh !== ":") {
-                            failed = true;
+                    stackAux[frameIndex] = stringValue;
+
+                    // colon 内联：跳空白 → 消费 ':' → 直接进入 VALUE 状态
+                    while (at < textLength) {
+                        currentCh = chars[at];
+                        if (currentCh > " ") {
                             break;
                         }
                         at++;
-                        stackStates[frameIndex] = STATE_OBJECT_VALUE;
+                    }
+                    if (at >= textLength || chars[at] !== ":") {
+                        failed = true;
+                        break;
+                    }
+                    at++;
+                    stackStates[frameIndex] = S_OBJ_VALUE;
+                    continue;
+
+                } else if (frameState === S_OBJ_VALUE) {
+                    targetKind = TARGET_OBJECT;
+                    targetObject = frameRef;
+                    targetKey = stackAux[frameIndex];
+                    stackStates[frameIndex] = S_OBJ_COMMA_OR_END;
+
+                } else if (frameState === S_OBJ_COMMA_OR_END) {
+                    if (currentCh === ",") {
+                        at++;
+                        stackStates[frameIndex] = S_OBJ_KEY_OR_END;
                         continue;
                     }
+                    if (currentCh === "}") {
+                        at++;
+                        stackPtr--;
+                        continue;
+                    }
+                    failed = true;
+                    break;
 
-                    if (frameState === STATE_OBJECT_VALUE) {
-                        targetKind = TARGET_OBJECT;
-                        targetObject = frameRef;
-                        targetKey = stackKeys[frameIndex];
-                        stackStates[frameIndex] = STATE_OBJECT_COMMA_OR_END;
-                    } else {
-                        if (currentCh === ",") {
-                            at++;
-                            stackStates[frameIndex] = STATE_OBJECT_KEY_OR_END;
-                            continue;
-                        }
-                        if (currentCh === "}") {
-                            at++;
-                            stackPtr--;
-                            continue;
-                        }
-                        failed = true;
-                        break;
+                } else if (frameState === S_ARR_VALUE_OR_END) {
+                    if (currentCh === "]") {
+                        at++;
+                        stackPtr--;
+                        continue;
                     }
+                    targetKind = TARGET_ARRAY;
+                    targetArray = frameRef;
+                    targetIndex = stackAux[frameIndex];
+                    stackAux[frameIndex] = targetIndex + 1;
+                    stackStates[frameIndex] = S_ARR_COMMA_OR_END;
+
                 } else {
-                    if (frameState === STATE_ARRAY_VALUE_OR_END) {
-                        if (currentCh === "]") {
-                            at++;
-                            stackPtr--;
-                            continue;
-                        }
-                        targetKind = TARGET_ARRAY;
-                        targetArray = frameRef;
-                        targetIndex = stackIndices[frameIndex];
-                        stackIndices[frameIndex] = targetIndex + 1;
-                        stackStates[frameIndex] = STATE_ARRAY_COMMA_OR_END;
-                    } else {
-                        if (currentCh === ",") {
-                            at++;
-                            stackStates[frameIndex] = STATE_ARRAY_VALUE_OR_END;
-                            continue;
-                        }
-                        if (currentCh === "]") {
-                            at++;
-                            stackPtr--;
-                            continue;
-                        }
-                        failed = true;
-                        break;
+                    // S_ARR_COMMA_OR_END
+                    if (currentCh === ",") {
+                        at++;
+                        stackStates[frameIndex] = S_ARR_VALUE_OR_END;
+                        continue;
                     }
+                    if (currentCh === "]") {
+                        at++;
+                        stackPtr--;
+                        continue;
+                    }
+                    failed = true;
+                    break;
                 }
             }
 
@@ -492,7 +482,6 @@
                             failed = true;
                             break;
                         }
-
                         currentCh = chars[at];
                         if (currentCh === "\"") {
                             stringValue += "\"";
@@ -507,7 +496,6 @@
                         } else if (currentCh === "t") {
                             stringValue += "\t";
                         } else {
-                            // \b \f \uXXXX 等不支持，直接输出原字符
                             stringValue += currentCh;
                         }
                         at++;
@@ -546,8 +534,7 @@
                     targetArray[targetIndex] = object;
                 }
 
-                stackTypes[stackPtr] = FRAME_OBJECT;
-                stackStates[stackPtr] = STATE_OBJECT_KEY_OR_END;
+                stackStates[stackPtr] = S_OBJ_KEY_OR_END;
                 stackRefs[stackPtr] = object;
                 stackPtr++;
                 continue;
@@ -566,10 +553,9 @@
                     targetArray[targetIndex] = array;
                 }
 
-                stackTypes[stackPtr] = FRAME_ARRAY;
-                stackStates[stackPtr] = STATE_ARRAY_VALUE_OR_END;
+                stackStates[stackPtr] = S_ARR_VALUE_OR_END;
                 stackRefs[stackPtr] = array;
-                stackIndices[stackPtr] = 0;
+                stackAux[stackPtr] = 0;
                 stackPtr++;
                 continue;
             }
@@ -630,7 +616,6 @@
                 if (currentCh === "0") {
                     numValue = 0;
                     at++;
-                    // currentCh 留在 "0"，下面用 at < textLength 判断是否还有后续字符
                 } else if (currentCh >= "1" && currentCh <= "9") {
                     numValue = digitValues[currentCh];
                     at++;
@@ -648,7 +633,6 @@
                 }
 
                 // 整数快速路径：仅当下一个字符是 '.' 时才进入浮点解析
-                // 科学计数法不支持（实际数据从未使用，由 JSON.as / FastJSON.as 兜底）
                 if (at < textLength && chars[at] === ".") {
                     at++;
                     fractionDigits = 0;
@@ -696,22 +680,16 @@
         }
 
         if (stackRefs.length > 256) {
-            this.parseFrameTypes = new Array(64);
-            this.parseFrameTypes.length = 0;
             this.parseFrameStates = new Array(64);
             this.parseFrameStates.length = 0;
             this.parseFrameRefs = new Array(64);
             this.parseFrameRefs.length = 0;
-            this.parseFrameKeys = new Array(64);
-            this.parseFrameKeys.length = 0;
-            this.parseFrameIndices = new Array(64);
-            this.parseFrameIndices.length = 0;
+            this.parseFrameAux = new Array(64);
+            this.parseFrameAux.length = 0;
         } else {
-            stackTypes.length = 0;
             stackStates.length = 0;
             stackRefs.length = 0;
-            stackKeys.length = 0;
-            stackIndices.length = 0;
+            stackAux.length = 0;
         }
 
         if (failed || !rootParsed) {
