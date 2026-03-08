@@ -506,8 +506,8 @@ class org.flashNight.gesh.json.JSONTest {
         this.assertEqual("JSON 特殊键名引号", 2, this.jsonParser.parse(this.jsonParser.stringify(specialKeys))["c\"d"]);
         this.assertEqual("FastJSON 特殊键名空格", 1, this.fastParser.parse(this.fastParser.stringify(specialKeys))["a b"]);
         this.assertEqual("FastJSON 特殊键名引号", 2, this.fastParser.parse(this.fastParser.stringify(specialKeys))["c\"d"]);
-        // LiteJSON: stringify 含 \" 的键名后 parse 失败
-        this.assertLiteJSONUndefined("LiteJSON 含引号键名往返失败", this.liteParser.stringify(specialKeys));
+        // LiteJSON: 不转义键名中的 "，产出结构性破坏的文本 → parse 返回 undefined
+        this.assertLiteJSONUndefined("LiteJSON 含引号键名不可表示", this.liteParser.stringify(specialKeys));
     }
 
     private function testStringifyFiltering():Void {
@@ -552,12 +552,16 @@ class org.flashNight.gesh.json.JSONTest {
         this.assert(liteEsc.indexOf("\\n") < 0, "LiteJSON stringify 不转义 \\n");
         this.assert(liteEsc.indexOf("\\t") < 0, "LiteJSON stringify 不转义 \\t");
         this.assert(liteEsc.indexOf("\\r") < 0, "LiteJSON stringify 不转义 \\r");
-        // \ 和 " 结构性转义 — 三套实现一致
-        this.forEachParser(function(parser:IJSON, name:String):Void {
-            var quoted:String = parser.stringify("\"\\\\");
-            self.assertContains(name + " stringify 引号转义", quoted, "\\\"");
-            self.assertContains(name + " stringify 反斜杠转义", quoted, "\\\\");
-        });
+        // \ 和 " 结构性转义 — JSON/FastJSON 一致
+        var jsonQuoted:String = this.jsonParser.stringify("\"\\");
+        this.assertContains("JSON stringify 引号转义", jsonQuoted, "\\\"");
+        this.assertContains("JSON stringify 反斜杠转义", jsonQuoted, "\\\\");
+        var fastQuoted:String = this.fastParser.stringify("\"\\");
+        this.assertContains("FastJSON stringify 引号转义", fastQuoted, "\\\"");
+        this.assertContains("FastJSON stringify 反斜杠转义", fastQuoted, "\\\\");
+        // LiteJSON 不做任何转义：\ 可透传（两端均不特殊处理），" 不可表示（破坏结构）
+        this.assertEqual("LiteJSON stringify \\ 透传往返", "\\", this.liteParser.parse(this.liteParser.stringify("\\")));
+        this.assertLiteJSONUndefined("LiteJSON 含引号值不可表示", this.liteParser.stringify("\""));
         this.assertContains("JSON stringify 含 \\b", this.jsonParser.stringify("\b\f"), "\\b");
         this.assertContains("JSON stringify 含 \\f", this.jsonParser.stringify("\b\f"), "\\f");
         this.assertContains("FastJSON stringify 含 \\b", this.fastParser.stringify("\b\f"), "\\b");

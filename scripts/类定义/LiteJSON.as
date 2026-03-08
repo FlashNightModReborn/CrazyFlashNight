@@ -36,12 +36,9 @@
     public function stringify(arg):String {
         var tv:String = typeof arg;
         if (tv === "string") {
-            var str:String = String(arg);
-            // 仅转义结构性字符 \ 和 "（与 parse 的 indexOf 扫描对齐，不处理控制字符）
-            if (str.indexOf("\\") < 0 && str.indexOf("\"") < 0) {
-                return "\"" + str + "\"";
-            }
-            return "\"" + str.split("\\").join("\\\\").split("\"").join("\\\"") + "\"";
+            // 不做任何转义：与 parse 的纯 indexOf('"') 扫描对齐
+            // 含 " 的字符串不可表示（会破坏结构），\ 可透传（两端均不特殊处理）
+            return "\"" + String(arg) + "\"";
         }
         if (tv === "number") {
             return isFinite(Number(arg)) ? String(arg) : "null";

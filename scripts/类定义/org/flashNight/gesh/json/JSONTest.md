@@ -14,9 +14,10 @@ new org.flashNight.gesh.json.JSONTest()
 ## 重点差异
 
 - `LiteJSON` 当前定位是无缓存、`parse` 优先的启动期解析器，为性能裁剪了部分 JSON 特性。
-- `LiteJSON.parse()` 不处理任何转义序列（`\n`、`\”`、`\\`、`\uXXXX` 等均原样保留含反斜杠的文本），遇 `\”` 会导致字符串提前闭合并返回 `undefined`。
-- `LiteJSON.stringify()` 仅转义结构性字符 `\` 和 `”`，不转义控制字符（`\n`、`\t`、`\r`、`\b`、`\f` 及其他 `< U+0020` 字符均原样输出）。
-- `LiteJSON` parse/stringify 对不含 `\`、`”` 及控制字符的字符串可正确往返；含控制字符的字符串也可往返（原样输出 + 原样读回），但输出不符合 JSON 规范。
+- `LiteJSON` 全链路零转义：`stringify()` 不做任何转义，`parse()` 不解释任何转义序列。
+- `\`（反斜杠）可透传往返：两端均不特殊处理，`parse(stringify(“\\”))` 正确返回 `\`。
+- `”`（双引号）不可表示：`”` 是字符串定界符，含 `”` 的字符串/键名会破坏结构，`parse` 返回 `undefined`。
+- 控制字符（`\n`、`\t`、`\r`、`\b`、`\f` 等）可透传往返（原样输出 + 原样读回），但输出不符合 JSON 规范。
 - `LiteJSON` 不支持科学记数法（`1e2` 等返回 `undefined`）。
 - `LiteJSON` 对非法输入不抛错，返回 `undefined`；拒绝根值后的 trailing token、尾逗号、未闭合结构等。
 - `FastJSON.parse()` 对同一字符串会返回同一对象引用。
