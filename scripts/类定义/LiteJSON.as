@@ -249,7 +249,6 @@
         var at:Number = 0;
 
         // 帧状态: 1=OBJ_KEY_OR_END  2=OBJ_COMMA_OR_END  3=ARR_VALUE_OR_END  4=ARR_COMMA_OR_END
-        // 写入目标: 0=NONE  1=ROOT  2=OBJECT  3=ARRAY
         // 3 组并行数组（原 5 组：types+states→states, keys+indices→aux）
         var stackStates:Array = this.parseFrameStates;
         var stackRefs:Array = this.parseFrameRefs;
@@ -257,9 +256,13 @@
         var digitValues:Array = this.parseDigitValues;
         var stackPtr:Number = 0;
 
+        // rootWrapper 统一写入：tRef[tKey] = value 覆盖 root/object/array 三路分支
+        var rootWrapper:Object = {};
+        rootWrapper.__proto__ = null;
         var rootParsed:Boolean = false;
-        var rootValue;
         var failed:Boolean = false;
+        var tRef:Object = rootWrapper;
+        var tKey = 0;
 
         var currentCh:String;
         var frameIndex:Number;
@@ -268,13 +271,6 @@
         var object:Object;
         var array:Array;
 
-        var targetKind:Number;
-        var targetObject:Object;
-        var targetArray:Array;
-        var targetKey:String;
-        var targetIndex:Number;
-
-        var stringValue:String;
         var segmentStart:Number;
         var numberStart:Number;
         var numValue:Number;
@@ -297,10 +293,9 @@
                 currentCh = "";
             }
 
-            targetKind = 0; // NONE
-
             if (!rootParsed) {
-                targetKind = 1; // ROOT
+                // tRef/tKey 已初始化为 rootWrapper/0
+                rootParsed = true;
             } else if (stackPtr === 0) {
                 break;
             } else {
@@ -319,22 +314,18 @@
                         break;
                     }
 
-                    // 解析 key 字符串 — 无转义快速扫描
+                    // 解析 key — indexOf 原生扫描
                     at++;
                     segmentStart = at;
-                    while (at < textLength && chars[at] !== "\"") {
-                        at++;
-                    }
-                    if (at >= textLength) {
+                    at = text.indexOf("\"", at);
+                    if (at < 0) {
                         failed = true;
                         break;
                     }
-                    stringValue = text.substring(segmentStart, at);
+                    stackAux[frameIndex] = text.substring(segmentStart, at);
                     at++;
 
-                    stackAux[frameIndex] = stringValue;
-
-                    // colon 内联：跳空白 → 消费 ':' → 直接进入 VALUE 状态
+                    // colon 内联：跳空白 → 消费 ':'
                     while (at < textLength) {
                         currentCh = chars[at];
                         if (currentCh > " ") {
@@ -348,7 +339,7 @@
                     }
                     at++;
 
-                    // value setup 内联：跳空白 → 设 target → 直落 value 解析
+                    // value setup：跳空白 → 设 target → 直落 value 解析
                     while (at < textLength) {
                         currentCh = chars[at];
                         if (currentCh > " ") {
@@ -361,9 +352,8 @@
                     } else {
                         currentCh = "";
                     }
-                    targetKind = 2; // OBJECT
-                    targetObject = frameRef;
-                    targetKey = stackAux[frameIndex];
+                    tRef = frameRef;
+                    tKey = stackAux[frameIndex];
                     stackStates[frameIndex] = 2; // OBJ_COMMA_OR_END
 
                 } else if (frameState === 2) { // OBJ_COMMA_OR_END
@@ -389,18 +379,16 @@
                         failed = true;
                         break;
                     }
+                    // 解析 key — indexOf 原生扫描
                     at++;
                     segmentStart = at;
-                    while (at < textLength && chars[at] !== "\"") {
-                        at++;
-                    }
-                    if (at >= textLength) {
+                    at = text.indexOf("\"", at);
+                    if (at < 0) {
                         failed = true;
                         break;
                     }
-                    stringValue = text.substring(segmentStart, at);
+                    stackAux[frameIndex] = text.substring(segmentStart, at);
                     at++;
-                    stackAux[frameIndex] = stringValue;
                     while (at < textLength) {
                         currentCh = chars[at];
                         if (currentCh > " ") {
@@ -425,9 +413,8 @@
                     } else {
                         currentCh = "";
                     }
-                    targetKind = 2; // OBJECT
-                    targetObject = frameRef;
-                    targetKey = stackAux[frameIndex];
+                    tRef = frameRef;
+                    tKey = stackAux[frameIndex];
 
                 } else if (frameState === 3) { // ARR_VALUE_OR_END
                     if (currentCh === "]") {
@@ -435,10 +422,9 @@
                         stackPtr--;
                         continue;
                     }
-                    targetKind = 3; // ARRAY
-                    targetArray = frameRef;
-                    targetIndex = stackAux[frameIndex];
-                    stackAux[frameIndex] = targetIndex + 1;
+                    tRef = frameRef;
+                    tKey = stackAux[frameIndex];
+                    stackAux[frameIndex] = tKey + 1;
                     stackStates[frameIndex] = 4; // ARR_COMMA_OR_END
 
                 } else {
@@ -458,10 +444,9 @@
                         } else {
                             currentCh = "";
                         }
-                        targetKind = 3; // ARRAY
-                        targetArray = frameRef;
-                        targetIndex = stackAux[frameIndex];
-                        stackAux[frameIndex] = targetIndex + 1;
+                        tRef = frameRef;
+                        tKey = stackAux[frameIndex];
+                        stackAux[frameIndex] = tKey + 1;
                         // 状态保持 4(ARR_COMMA_OR_END)，下轮直接判逗号/]
                     } else if (currentCh === "]") {
                         at++;
@@ -480,27 +465,16 @@
             }
 
             if (currentCh === "\"") {
-                // value 字符串 — 无转义快速扫描
+                // value 字符串 — indexOf 原生扫描
                 at++;
                 segmentStart = at;
-                while (at < textLength && chars[at] !== "\"") {
-                    at++;
-                }
-                if (at >= textLength) {
+                at = text.indexOf("\"", at);
+                if (at < 0) {
                     failed = true;
                     break;
                 }
-                stringValue = text.substring(segmentStart, at);
+                tRef[tKey] = text.substring(segmentStart, at);
                 at++;
-
-                if (targetKind === 1) { // ROOT
-                    rootValue = stringValue;
-                    rootParsed = true;
-                } else if (targetKind === 2) { // OBJECT
-                    targetObject[targetKey] = stringValue;
-                } else {
-                    targetArray[targetIndex] = stringValue;
-                }
                 continue;
             }
 
@@ -508,16 +482,7 @@
                 object = {};
                 object.__proto__ = null;
                 at++;
-
-                if (targetKind === 1) { // ROOT
-                    rootValue = object;
-                    rootParsed = true;
-                } else if (targetKind === 2) { // OBJECT
-                    targetObject[targetKey] = object;
-                } else {
-                    targetArray[targetIndex] = object;
-                }
-
+                tRef[tKey] = object;
                 stackStates[stackPtr] = 1; // OBJ_KEY_OR_END
                 stackRefs[stackPtr] = object;
                 stackPtr++;
@@ -527,16 +492,7 @@
             if (currentCh === "[") {
                 array = [];
                 at++;
-
-                if (targetKind === 1) { // ROOT
-                    rootValue = array;
-                    rootParsed = true;
-                } else if (targetKind === 2) { // OBJECT
-                    targetObject[targetKey] = array;
-                } else {
-                    targetArray[targetIndex] = array;
-                }
-
+                tRef[tKey] = array;
                 stackStates[stackPtr] = 3; // ARR_VALUE_OR_END
                 stackRefs[stackPtr] = array;
                 stackAux[stackPtr] = 0;
@@ -546,40 +502,19 @@
 
             if (currentCh === "t" && at + 3 < textLength && chars[at + 1] === "r" && chars[at + 2] === "u" && chars[at + 3] === "e") {
                 at += 4;
-                if (targetKind === 1) { // ROOT
-                    rootValue = true;
-                    rootParsed = true;
-                } else if (targetKind === 2) { // OBJECT
-                    targetObject[targetKey] = true;
-                } else {
-                    targetArray[targetIndex] = true;
-                }
+                tRef[tKey] = true;
                 continue;
             }
 
             if (currentCh === "f" && at + 4 < textLength && chars[at + 1] === "a" && chars[at + 2] === "l" && chars[at + 3] === "s" && chars[at + 4] === "e") {
                 at += 5;
-                if (targetKind === 1) { // ROOT
-                    rootValue = false;
-                    rootParsed = true;
-                } else if (targetKind === 2) { // OBJECT
-                    targetObject[targetKey] = false;
-                } else {
-                    targetArray[targetIndex] = false;
-                }
+                tRef[tKey] = false;
                 continue;
             }
 
             if (currentCh === "n" && at + 3 < textLength && chars[at + 1] === "u" && chars[at + 2] === "l" && chars[at + 3] === "l") {
                 at += 4;
-                if (targetKind === 1) { // ROOT
-                    rootValue = null;
-                    rootParsed = true;
-                } else if (targetKind === 2) { // OBJECT
-                    targetObject[targetKey] = null;
-                } else {
-                    targetArray[targetIndex] = null;
-                }
+                tRef[tKey] = null;
                 continue;
             }
 
@@ -637,14 +572,7 @@
                     numValue = -numValue;
                 }
 
-                if (targetKind === 1) { // ROOT
-                    rootValue = numValue;
-                    rootParsed = true;
-                } else if (targetKind === 2) { // OBJECT
-                    targetObject[targetKey] = numValue;
-                } else {
-                    targetArray[targetIndex] = numValue;
-                }
+                tRef[tKey] = numValue;
                 continue;
             }
 
@@ -679,7 +607,7 @@
         if (failed || !rootParsed) {
             return undefined;
         }
-        return rootValue;
+        return rootWrapper[0];
     }
 }
 
