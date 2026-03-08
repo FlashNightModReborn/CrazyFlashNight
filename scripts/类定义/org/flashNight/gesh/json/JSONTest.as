@@ -654,7 +654,8 @@ class org.flashNight.gesh.json.JSONTest {
         trace("\n--- 错误处理: 非法输入 ---");
         var badCases:Array = [
             {desc: "缺少冒号", input: "{\"a\" 1}", jsonErrors: true, fastThrows: true, liteUndefined: true},
-            {desc: "对象尾逗号", input: "{\"a\":1,}", jsonErrors: false, fastThrows: false, liteUndefined: false},
+            {desc: "对象尾逗号", input: "{\"a\":1,}", jsonErrors: false, fastThrows: false, liteUndefined: true, jsonExpected: 1, jsonExtract: function(v) { return v.a; }},
+            {desc: "数组尾逗号", input: "[1,]", jsonErrors: false, fastThrows: true, liteUndefined: true, jsonExpected: 1, jsonExtract: function(v) { return v[0]; }},
             {desc: "数组未闭合", input: "[1,2", jsonErrors: true, fastThrows: true, liteUndefined: true},
             {desc: "非法 Unicode", input: "\"\\u12G4\"", jsonErrors: true, fastThrows: true, liteUndefined: false}
         ];
@@ -667,14 +668,16 @@ class org.flashNight.gesh.json.JSONTest {
                 var tolerantJSON:JSON = new JSON(true);
                 var tolerantValue = tolerantJSON.parse(c.input);
                 this.assertEqual("JSON 容错: " + c.desc, 0, tolerantJSON.errors.length);
-                this.assertEqual("JSON 对象尾逗号仍保留已解析属性", 1, tolerantValue.a);
+                if (c.jsonExpected != undefined) {
+                    this.assertEqual("JSON " + c.desc + " 仍保留已解析值", c.jsonExpected, c.jsonExtract(tolerantValue));
+                }
             }
             if (c.fastThrows) {
                 this.assertFastJSONThrows("FastJSON 抛错: " + c.desc, c.input);
             } else {
                 var fastResult:Object = this.assertFastJSONNoThrow("FastJSON 容错: " + c.desc, c.input);
-                if (fastResult.ok) {
-                    this.assertEqual("FastJSON 对象尾逗号仍保留已解析属性", 1, fastResult.value.a);
+                if (fastResult.ok && c.jsonExpected != undefined) {
+                    this.assertEqual("FastJSON " + c.desc + " 仍保留已解析值", c.jsonExpected, c.jsonExtract(fastResult.value));
                 }
             }
             if (c.liteUndefined) {

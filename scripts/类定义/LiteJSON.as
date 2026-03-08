@@ -376,18 +376,67 @@
                     stackStates[frameIndex] = S_OBJ_COMMA_OR_END;
 
                 } else if (frameState === S_OBJ_COMMA_OR_END) {
-                    if (currentCh === ",") {
-                        at++;
-                        stackStates[frameIndex] = S_OBJ_KEY_OR_END;
-                        continue;
-                    }
                     if (currentCh === "}") {
                         at++;
                         stackPtr--;
                         continue;
                     }
-                    failed = true;
-                    break;
+                    if (currentCh !== ",") {
+                        failed = true;
+                        break;
+                    }
+                    // 内联：吃逗号 → 跳空白 → 解析 key → 吃冒号 → 设 target → 直落 value
+                    at++;
+                    while (at < textLength) {
+                        currentCh = chars[at];
+                        if (currentCh > " ") {
+                            break;
+                        }
+                        at++;
+                    }
+                    if (at >= textLength || chars[at] !== "\"") {
+                        failed = true;
+                        break;
+                    }
+                    at++;
+                    segmentStart = at;
+                    while (at < textLength && chars[at] !== "\"") {
+                        at++;
+                    }
+                    if (at >= textLength) {
+                        failed = true;
+                        break;
+                    }
+                    stringValue = text.substring(segmentStart, at);
+                    at++;
+                    stackAux[frameIndex] = stringValue;
+                    while (at < textLength) {
+                        currentCh = chars[at];
+                        if (currentCh > " ") {
+                            break;
+                        }
+                        at++;
+                    }
+                    if (at >= textLength || chars[at] !== ":") {
+                        failed = true;
+                        break;
+                    }
+                    at++;
+                    while (at < textLength) {
+                        currentCh = chars[at];
+                        if (currentCh > " ") {
+                            break;
+                        }
+                        at++;
+                    }
+                    if (at < textLength) {
+                        currentCh = chars[at];
+                    } else {
+                        currentCh = "";
+                    }
+                    targetKind = TARGET_OBJECT;
+                    targetObject = frameRef;
+                    targetKey = stackAux[frameIndex];
 
                 } else if (frameState === S_ARR_VALUE_OR_END) {
                     if (currentCh === "]") {
