@@ -285,6 +285,15 @@ class org.flashNight.gesh.json.JSONTest {
         this.assert(result.ok, desc);
     }
 
+    private function assertLiteJSONUndefined(desc:String, input:String):Void {
+        var lp:LiteJSON = new LiteJSON();
+        var result:Object = this.captureCall(function() {
+            return lp.parse(input);
+        });
+        this.assert(result.ok, desc + " 不应抛错");
+        this.assert(typeof result.value == "undefined", desc + " 应返回 undefined");
+    }
+
     private function assertFastJSONNoThrow(desc:String, input:String):Object {
         var fp:FastJSON = new FastJSON();
         var result:Object = this.captureCall(function() {
@@ -387,10 +396,13 @@ class org.flashNight.gesh.json.JSONTest {
             self.assertEqual(name + " \\/ 转义", "http://example.com", parser.parse("{\"url\":\"http:\\/\\/example.com\"}").url);
         });
         this.assertEqual("JSON Unicode \\u002C", "Hello,World", this.jsonParser.parse("{\"text\":\"Hello\\u002CWorld\"}").text);
+        this.assertEqual("LiteJSON Unicode \\u002C", "Hello,World", this.liteParser.parse("{\"text\":\"Hello\\u002CWorld\"}").text);
         this.assertEqual("FastJSON Unicode \\u002C", "Hello,World", this.fastParser.parse("{\"text\":\"Hello\\u002CWorld\"}").text);
         this.assertEqual("JSON 连续 Unicode", "Hi", this.jsonParser.parse("\"\\u0048\\u0069\""));
+        this.assertEqual("LiteJSON 连续 Unicode", "Hi", this.liteParser.parse("\"\\u0048\\u0069\""));
         this.assertEqual("FastJSON 连续 Unicode", "Hi", this.fastParser.parse("\"\\u0048\\u0069\""));
         this.assertEqual("JSON parse \\b\\f", "\b\f", this.jsonParser.parse("\"\\b\\f\""));
+        this.assertEqual("LiteJSON parse \\b\\f", "\b\f", this.liteParser.parse("\"\\b\\f\""));
         this.assertEqual("FastJSON parse \\b\\f", "\b\f", this.fastParser.parse("\"\\b\\f\""));
         this.forEachParser(function(parser:IJSON, name:String):Void {
             self.assertEqual(name + " 连续转义序列", "\n\t\r\\", parser.parse("\"\\n\\t\\r\\\\\""));
@@ -418,6 +430,7 @@ class org.flashNight.gesh.json.JSONTest {
             }
         });
         this.assertEqual("JSON parse 1e2", 100, this.jsonParser.parse("1e2"));
+        this.assertEqual("LiteJSON parse 1e2", 100, this.liteParser.parse("1e2"));
         this.assertEqual("FastJSON parse 1e2", 100, this.fastParser.parse("1e2"));
         var spaced:String = " \t\n\r{ \t\"a\" \n: \r1 , \"b\" : [ 2 , 3 ] } ";
         this.forEachParser(function(parser:IJSON, name:String):Void {
@@ -601,7 +614,8 @@ class org.flashNight.gesh.json.JSONTest {
         this.assertEqual("JSON 解析不完整指数 1e", 1, jsonValue);
         this.assertEqual("JSON 不完整指数 1e 不记录错误", 0, jsonP.errors.length);
 
-        this.assertEqual("LiteJSON 解析不完整指数 1e", 1, this.liteParser.parse("1e"));
+        this.assertLiteJSONUndefined("LiteJSON 拒绝不完整指数 1e", "1e");
+        this.assertLiteJSONUndefined("LiteJSON 拒绝缺失小数位 1.", "1.");
 
         var fastResult:Object = this.assertFastJSONNoThrow("FastJSON 接受不完整指数 1e", "1e");
         if (fastResult.ok) {
@@ -610,26 +624,26 @@ class org.flashNight.gesh.json.JSONTest {
     }
 
     private function testParserSpecificDifferences():Void {
-        trace("\n--- 差异: LiteJSON / FastJSON 已知行为 ---");
-        this.assertEqual("LiteJSON 不支持 Unicode 转义", "u0041u4E2D", this.liteParser.parse("\"\\u0041\\u4E2D\""));
-        this.assertEqual("LiteJSON 不支持 \\b\\f 还原", "bf", this.liteParser.parse("\"\\b\\f\""));
-        this.assertEqual("LiteJSON 不支持科学记数法", 1, this.liteParser.parse("1e2"));
-        this.assertEqual("LiteJSON 忽略根值后的 trailing token", 1, this.liteParser.parse("1xyz"));
+        trace("\n--- 差异: LiteJSON / FastJSON 当前行为 ---");
+        this.assertEqual("LiteJSON 支持 Unicode 转义", "A中", this.liteParser.parse("\"\\u0041\\u4E2D\""));
+        this.assertEqual("LiteJSON 支持 \\b\\f 还原", "\b\f", this.liteParser.parse("\"\\b\\f\""));
+        this.assertEqual("LiteJSON 支持科学记数法", 100, this.liteParser.parse("1e2"));
+        this.assertLiteJSONUndefined("LiteJSON 拒绝根值后的 trailing token", "1xyz");
         var jsonResult:Object = this.assertJSONHasErrors("JSON 记录 trailing token 错误", "{\"a\":1}xyz");
         this.assertEqual("JSON 仍保留已解析根对象", 1, jsonResult.value.a);
         this.assertFastJSONThrows("FastJSON trailing token 直接抛错", "{\"a\":1}xyz");
         var liteEncoded:String = this.liteParser.stringify("\b\f");
         this.assertEqual("LiteJSON stringify 输出 \\b\\f", "\"\\b\\f\"", liteEncoded);
-        this.assertEqual("LiteJSON parse 自身 stringify 后无法恢复 \\b\\f", "bf", this.liteParser.parse(liteEncoded));
+        this.assertEqual("LiteJSON parse 自身 stringify 后可恢复 \\b\\f", "\b\f", this.liteParser.parse(liteEncoded));
     }
 
     private function testErrorHandling():Void {
         trace("\n--- 错误处理: 非法输入 ---");
         var badCases:Array = [
-            {desc: "缺少冒号", input: "{\"a\" 1}", jsonErrors: true, fastThrows: true, liteSafe: true},
-            {desc: "对象尾逗号", input: "{\"a\":1,}", jsonErrors: false, fastThrows: false, liteSafe: true},
-            {desc: "数组未闭合", input: "[1,2", jsonErrors: true, fastThrows: true, liteSafe: false},
-            {desc: "非法 Unicode", input: "\"\\u12G4\"", jsonErrors: true, fastThrows: true, liteSafe: true}
+            {desc: "缺少冒号", input: "{\"a\" 1}", jsonErrors: true, fastThrows: true, liteUndefined: true},
+            {desc: "对象尾逗号", input: "{\"a\":1,}", jsonErrors: false, fastThrows: false, liteUndefined: false},
+            {desc: "数组未闭合", input: "[1,2", jsonErrors: true, fastThrows: true, liteUndefined: true},
+            {desc: "非法 Unicode", input: "\"\\u12G4\"", jsonErrors: true, fastThrows: true, liteUndefined: true}
         ];
         var i:Number = 0;
         while (i < badCases.length) {
@@ -650,10 +664,10 @@ class org.flashNight.gesh.json.JSONTest {
                     this.assertEqual("FastJSON 对象尾逗号仍保留已解析属性", 1, fastResult.value.a);
                 }
             }
-            if (c.liteSafe) {
-                this.assertLiteJSONNoThrow("LiteJSON 尝试容错: " + c.desc, c.input);
+            if (c.liteUndefined) {
+                this.assertLiteJSONUndefined("LiteJSON 拒绝非法输入: " + c.desc, c.input);
             } else {
-                this.note("LiteJSON 跳过: " + c.desc + "（已知 EOF 死循环风险）");
+                this.assertLiteJSONNoThrow("LiteJSON 当前容错: " + c.desc, c.input);
             }
             i++;
         }
@@ -683,6 +697,10 @@ class org.flashNight.gesh.json.JSONTest {
         var variantObjB:Object = this.liteParser.parse(variants[1]);
         this.assertEqual("benchmark 对象变体 A seed", 0, variantObjA.metadata.seed);
         this.assertEqual("benchmark 对象变体 B seed", 1, variantObjB.metadata.seed);
+        this.assertEqual("benchmark 对象变体 A items 长度", 6, variantObjA.items.length);
+        this.assertEqual("benchmark 对象变体 B items 长度", 6, variantObjB.items.length);
+        this.assertEqual("benchmark 对象变体 A 首项 id", 0, variantObjA.items[0].id);
+        this.assertEqual("benchmark 对象变体 A 首项 tags 长度", 2, variantObjA.items[0].tags.length);
         this.assertNotSameReference("benchmark 对象变体互不共享引用", variantObjA, variantObjB);
 
         var fastMiss:FastJSON = new FastJSON();
@@ -696,7 +714,7 @@ class org.flashNight.gesh.json.JSONTest {
         var strictParseB:FastJSON = new FastJSON();
         this.assertNotSameReference("FastJSON 严格冷启动 parse 不共享引用", strictParseA.parse(variants[0]), strictParseB.parse(variants[0]));
 
-        var strictObj:Object = this.liteParser.parse(variants[0]);
+        var strictObj:Object = {metadata: {seed: 0}, items: [1, 2], enabled: true};
         var strictStringifyA:FastJSON = new FastJSON();
         var strictBefore:String = strictStringifyA.stringify(strictObj);
         strictObj.metadata.seed = 77;
@@ -1251,9 +1269,9 @@ class org.flashNight.gesh.json.JSONTest {
         trace("  说明: FastJSON 失配 = 同实例不同对象；严冷 = 每次操作新建实例；热 = 同对象命中身份缓存。");
         trace("  冷路径: 使用有限对象变体循环并按批次聚合多次冷操作，避免缓存复用同时维持计时置信度。");
         var scales:Array = [
-            {items: 10, desc: "小(10项)", stringifyStart: 16, stringifyMax: 512, coldVariants: 128, coldBatch: 32, coldStart: 8, coldMaxIters: 4096, hotStart: 512, hotMax: 50000},
-            {items: 50, desc: "中(50项)", stringifyStart: 4, stringifyMax: 128, coldVariants: 128, coldBatch: 64, coldStart: 4, coldMaxIters: 2048, hotStart: 256, hotMax: 30000},
-            {items: 200, desc: "大(200项)", stringifyStart: 1, stringifyMax: 32, coldVariants: 32, coldBatch: 64, coldStart: 2, coldMaxIters: 1024, hotStart: 128, hotMax: 12000}
+            {items: 10, desc: "小(10项)", stringifyStart: 512, stringifyMax: 65536, coldVariants: 128, coldBatch: 32, coldStart: 8, coldMaxIters: 4096, hotStart: 512, hotMax: 50000},
+            {items: 50, desc: "中(50项)", stringifyStart: 256, stringifyMax: 32768, coldVariants: 128, coldBatch: 64, coldStart: 4, coldMaxIters: 2048, hotStart: 256, hotMax: 30000},
+            {items: 200, desc: "大(200项)", stringifyStart: 128, stringifyMax: 8192, coldVariants: 32, coldBatch: 64, coldStart: 2, coldMaxIters: 1024, hotStart: 128, hotMax: 12000}
         ];
         var repeats:Number = 5;
         var targetAdjustedMs:Number = 120;

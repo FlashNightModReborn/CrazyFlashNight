@@ -1,19 +1,36 @@
 ﻿class LiteJSON implements IJSON{
-    public var text:String;
-    public var ch:String = "";
-    public var at:Number = 0;
-
-    // 存储 text.length 的变量
-    private var textLength:Number = 0;
-    
-    // 字符数组缓存
-    private var charArray:Array;
+    private var parseFrameTypes:Array;
+    private var parseFrameStates:Array;
+    private var parseFrameRefs:Array;
+    private var parseFrameKeys:Array;
+    private var parseFrameIndices:Array;
+    private var parseDigitValues:Array;
 
     /**
      * 构造函数
      */
     public function LiteJSON() {
-        // 此简化版本无需初始化
+        this.parseFrameTypes = new Array(64);
+        this.parseFrameTypes.length = 0;
+        this.parseFrameStates = new Array(64);
+        this.parseFrameStates.length = 0;
+        this.parseFrameRefs = new Array(64);
+        this.parseFrameRefs.length = 0;
+        this.parseFrameKeys = new Array(64);
+        this.parseFrameKeys.length = 0;
+        this.parseFrameIndices = new Array(64);
+        this.parseFrameIndices.length = 0;
+        this.parseDigitValues = [];
+        this.parseDigitValues["0"] = 0;
+        this.parseDigitValues["1"] = 1;
+        this.parseDigitValues["2"] = 2;
+        this.parseDigitValues["3"] = 3;
+        this.parseDigitValues["4"] = 4;
+        this.parseDigitValues["5"] = 5;
+        this.parseDigitValues["6"] = 6;
+        this.parseDigitValues["7"] = 7;
+        this.parseDigitValues["8"] = 8;
+        this.parseDigitValues["9"] = 9;
     }
 
 
@@ -232,512 +249,632 @@
      * @return 解析后的 AS2 对象
      */
     public function parse(inputText:String) {
-        // 初始化解析器状态
-        this.text = inputText;
-        this.at = 0;
-        this.ch = " ";
-        this.textLength = this.text.length; // 将 length 缓存为局部变量
-        this.charArray = this.text.split(""); // 初始化字符数组
+        var text:String = inputText;
+        var textLength:Number = length(text);
+        var chars:Array = text.split("");
+        var at:Number = 0;
 
-        // 内联 next() 方法
-        if (this.at >= this.textLength) {
-            this.ch = "";
-        } else {
-            this.ch = this.charArray[this.at++];
-        }
+        var FRAME_OBJECT:Number = 1;
+        var FRAME_ARRAY:Number = 2;
 
-        // 定义堆栈类型常量（直接使用硬编码数值）
-        // 0: VALUE, 1: OBJECT_BEGIN, 2: ARRAY_BEGIN, 5: OBJECT_VALUE, 7: ARRAY_VALUE
-        var stackTypes:Array = new Array(512); // 预分配堆栈容量
-        var stackData:Array = new Array(512);
+        var STATE_OBJECT_KEY_OR_END:Number = 0;
+        var STATE_OBJECT_COLON:Number = 1;
+        var STATE_OBJECT_VALUE:Number = 2;
+        var STATE_OBJECT_COMMA_OR_END:Number = 3;
+
+        var STATE_ARRAY_VALUE_OR_END:Number = 0;
+        var STATE_ARRAY_COMMA_OR_END:Number = 1;
+
+        var TARGET_NONE:Number = 0;
+        var TARGET_ROOT:Number = 1;
+        var TARGET_OBJECT:Number = 2;
+        var TARGET_ARRAY:Number = 3;
+
+        var stackTypes:Array = this.parseFrameTypes;
+        var stackStates:Array = this.parseFrameStates;
+        var stackRefs:Array = this.parseFrameRefs;
+        var stackKeys:Array = this.parseFrameKeys;
+        var stackIndices:Array = this.parseFrameIndices;
+        var digitValues:Array = this.parseDigitValues;
         var stackPtr:Number = 0;
 
-        var numberStr:String;
-        var word:String;
-        var numValue:Number;
-        var currentCh:String = this.ch;
-        var currentAt:Number = this.at;
-        var currentTextLength:Number = this.textLength;
-        var currentCharArray:Array = this.charArray;
+        var rootParsed:Boolean = false;
+        var rootValue;
+        var failed:Boolean = false;
 
-        // 内联 white() 方法
-        while (currentCh <= " " && currentCh != "") {
-            if (currentAt >= currentTextLength) {
-                currentCh = "";
-            } else {
-                currentCh = currentCharArray[currentAt++];
-            }
-        }
-
-        // 初始化堆栈
-        stackTypes[stackPtr] = 0; // VALUE
-        stackData[stackPtr++] = null; // 初始值
-
-        var key:String;
+        var currentCh:String;
+        var frameIndex:Number;
+        var frameType:Number;
+        var frameState:Number;
+        var frameRef;
         var object:Object;
         var array:Array;
-        var tempValue;
-        var keyStrParts:Array;
-        var resultStrParts:Array;
-        var i:Number;
-        var len:Number;
 
-        while (stackPtr > 0) {
-            // 弹出堆栈顶部元素
-            stackPtr--;
-            var type:Number = stackTypes[stackPtr];
-            var data = stackData[stackPtr];
+        var targetKind:Number;
+        var targetObject:Object;
+        var targetArray:Array;
+        var targetKey:String;
+        var targetIndex:Number;
 
-            if (type === 0) { // VALUE
+        var stringValue:String;
+        var segmentStart:Number;
+        var hexValue:Number;
+        var numberStart:Number;
+        var numberStr:String;
+        var numValue:Number;
+        var isNegative:Boolean;
+        var fractionDigits:Number;
+        var exponentDigits:Number;
+        var manualIndex:Number;
+        var digitChar:String;
 
-                if (currentCh === "{") {
-                    object = {};
-                    // 内联 next() 方法
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
-                    } else {
-                        currentCh = currentCharArray[currentAt++];
-                    }
-                    // 内联 white() 方法
-                    while (currentCh <= " " && currentCh != "") {
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
-                    }
-                    if (currentCh == "}") {
-                        // 内联 next() 方法
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
-                        tempValue = object;
-                        continue;
-                    }
-                    // 推入对象开始状态
-                    stackTypes[stackPtr] = 1; // OBJECT_BEGIN
-                    stackData[stackPtr++] = object;
-                } else if (currentCh === "[") {
-                    array = [];
-                    // 内联 next() 方法
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
-                    } else {
-                        currentCh = currentCharArray[currentAt++];
-                    }
-                    // 内联 white() 方法
-                    while (currentCh <= " " && currentCh != "") {
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
-                    }
-                    if (currentCh == "]") {
-                        // 内联 next() 方法
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
+        var usedFrames:Number;
+        var cleanupIndex:Number;
 
-                        tempValue = array;
-                        continue;
-                    }
-                    // 推入数组开始状态
-                    stackTypes[stackPtr] = 2; // ARRAY_BEGIN
-                    stackData[stackPtr++] = array;
-                } else if (currentCh === "\"") {
-                    resultStrParts = [];
-                    // 内联 next() 方法，跳过开头的引号
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
-                    } else {
-                        currentCh = currentCharArray[currentAt++];
-                    }
-                    while (currentCh) {
-                        if (currentCh == "\"") {
-                            // 内联 next() 方法，跳过结尾的引号
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
+        while (!failed) {
+            while (at < textLength) {
+                currentCh = chars[at];
+                if (currentCh > " ") {
+                    break;
+                }
+                at++;
+            }
+
+            if (at < textLength) {
+                currentCh = chars[at];
+            } else {
+                currentCh = "";
+            }
+
+            targetKind = TARGET_NONE;
+
+            if (!rootParsed) {
+                targetKind = TARGET_ROOT;
+            } else if (stackPtr == 0) {
+                break;
+            } else {
+                frameIndex = stackPtr - 1;
+                frameType = stackTypes[frameIndex];
+                frameState = stackStates[frameIndex];
+                frameRef = stackRefs[frameIndex];
+
+                if (frameType === FRAME_OBJECT) {
+                    if (frameState === STATE_OBJECT_KEY_OR_END) {
+                        if (currentCh === "}") {
+                            at++;
+                            stackPtr--;
+                            continue;
+                        }
+                        if (currentCh !== "\"") {
+                            failed = true;
                             break;
                         }
-                        if (currentCh == "\\") {
-                            // 内联 next() 方法，处理转义字符
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                            switch (currentCh) {
-                                case "n":
-                                    resultStrParts.push("\n");
-                                    break;
-                                case "r":
-                                    resultStrParts.push("\r");
-                                    break;
-                                case "t":
-                                    resultStrParts.push("\t");
-                                    break;
-                                default:
-                                    resultStrParts.push(currentCh);
-                                    break;
-                            }
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                        } else {
-                            resultStrParts.push(currentCh);
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                        }
-                    }
-                    tempValue = resultStrParts.join("");
 
-                    continue;
-                } else if (currentCh === "-") {
-                    // 解析负数
-                    numberStr = "-";
-                    // 内联 next() 方法
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
+                        stringValue = null;
+                        at++;
+                        segmentStart = at;
+                        while (at < textLength) {
+                            currentCh = chars[at];
+                            if (currentCh === "\"") {
+                                if (stringValue == null) {
+                                    stringValue = text.substring(segmentStart, at);
+                                } else if (at > segmentStart) {
+                                    stringValue += text.substring(segmentStart, at);
+                                }
+                                at++;
+                                break;
+                            }
+                            if (currentCh === "\\") {
+                                if (stringValue == null) {
+                                    stringValue = "";
+                                }
+                                if (at > segmentStart) {
+                                    stringValue += text.substring(segmentStart, at);
+                                }
+                                at++;
+                                if (at >= textLength) {
+                                    failed = true;
+                                    break;
+                                }
+
+                                currentCh = chars[at];
+                                if (currentCh === "\"") {
+                                    stringValue += "\"";
+                                    at++;
+                                } else if (currentCh === "/") {
+                                    stringValue += "/";
+                                    at++;
+                                } else if (currentCh === "\\") {
+                                    stringValue += "\\";
+                                    at++;
+                                } else if (currentCh === "b") {
+                                    stringValue += "\b";
+                                    at++;
+                                } else if (currentCh === "f") {
+                                    stringValue += "\f";
+                                    at++;
+                                } else if (currentCh === "n") {
+                                    stringValue += "\n";
+                                    at++;
+                                } else if (currentCh === "r") {
+                                    stringValue += "\r";
+                                    at++;
+                                } else if (currentCh === "t") {
+                                    stringValue += "\t";
+                                    at++;
+                                } else if (currentCh === "u") {
+                                    if (at + 4 >= textLength) {
+                                        failed = true;
+                                        break;
+                                    }
+                                    hexValue = 0;
+                                    manualIndex = at + 1;
+                                    while (manualIndex < at + 5) {
+                                        digitChar = chars[manualIndex];
+                                        if (digitChar >= "0" && digitChar <= "9") {
+                                            hexValue = hexValue * 16 + (digitChar.charCodeAt(0) - 48);
+                                        } else if (digitChar >= "A" && digitChar <= "F") {
+                                            hexValue = hexValue * 16 + (digitChar.charCodeAt(0) - 55);
+                                        } else if (digitChar >= "a" && digitChar <= "f") {
+                                            hexValue = hexValue * 16 + (digitChar.charCodeAt(0) - 87);
+                                        } else {
+                                            failed = true;
+                                            break;
+                                        }
+                                        manualIndex++;
+                                    }
+                                    if (failed) {
+                                        break;
+                                    }
+                                    stringValue += String.fromCharCode(hexValue);
+                                    at += 5;
+                                } else {
+                                    failed = true;
+                                    break;
+                                }
+                                segmentStart = at;
+                                continue;
+                            }
+                            if (currentCh < " ") {
+                                failed = true;
+                                break;
+                            }
+                            at++;
+                        }
+                        if (failed) {
+                            break;
+                        }
+                        if (currentCh !== "\"") {
+                            failed = true;
+                            break;
+                        }
+
+                        stackKeys[frameIndex] = stringValue;
+                        stackStates[frameIndex] = STATE_OBJECT_COLON;
+                        continue;
+                    }
+
+                    if (frameState === STATE_OBJECT_COLON) {
+                        if (currentCh !== ":") {
+                            failed = true;
+                            break;
+                        }
+                        at++;
+                        stackStates[frameIndex] = STATE_OBJECT_VALUE;
+                        continue;
+                    }
+
+                    if (frameState === STATE_OBJECT_VALUE) {
+                        targetKind = TARGET_OBJECT;
+                        targetObject = frameRef;
+                        targetKey = stackKeys[frameIndex];
+                        stackStates[frameIndex] = STATE_OBJECT_COMMA_OR_END;
                     } else {
-                        currentCh = currentCharArray[currentAt++];
-                    }
-                    while (currentCh >= "0" && currentCh <= "9") {
-                        numberStr += currentCh;
-                        // 内联 next() 方法
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
+                        if (currentCh === ",") {
+                            at++;
+                            stackStates[frameIndex] = STATE_OBJECT_KEY_OR_END;
+                            continue;
                         }
-                    }
-                    if (currentCh == ".") {
-                        numberStr += ".";
-                        // 内联 next() 方法
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
+                        if (currentCh === "}") {
+                            at++;
+                            stackPtr--;
+                            continue;
                         }
-                        while (currentCh >= "0" && currentCh <= "9") {
-                            numberStr += currentCh;
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                        }
-                    }
-
-                    numValue = Number(numberStr);
-                    tempValue = numValue;
-
-                    continue;
-                } else if (currentCh >= "0" && currentCh <= "9") {
-                    // 解析正数
-                    numberStr = "";
-                    while (currentCh >= "0" && currentCh <= "9") {
-                        numberStr += currentCh;
-                        // 内联 next() 方法
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
-                    }
-                    if (currentCh == ".") {
-                        numberStr += ".";
-                        // 内联 next() 方法
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
-                        while (currentCh >= "0" && currentCh <= "9") {
-                            numberStr += currentCh;
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                        }
-                    }
-
-                    numValue = Number(numberStr);
-
-                    tempValue = numValue;
-                    continue;
-                } else if (currentCh >= "a" && currentCh <= "z") {
-                    // 解析字面量：true, false, null
-                    word = "";
-                    while (currentCh >= "a" && currentCh <= "z") {
-                        word += currentCh;
-                        // 内联 next() 方法
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
-                    }
-                    if (word == "true") {
-                        tempValue = true;
-                        continue;
-                    } else if (word == "false") {
-                        tempValue = false;
-                        continue;
-                    } else if (word == "null") {
-                        tempValue = null;
-                        continue;
-                    }
-                }
-            } else if (type === 1) { // OBJECT_BEGIN
-                object = data;
-                // 处理键值对
-                while (true) {
-                    // 内联 white() 方法
-                    while (currentCh <= " " && currentCh != "") {
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
-                    }
-                    if (currentCh == "}") {
-                        // 内联 next() 方法
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
-                        tempValue = object;
+                        failed = true;
                         break;
                     }
-
-                    // 解析键
-                    keyStrParts = [];
-                    // 内联 next() 方法，跳过开头的引号
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
+                } else {
+                    if (frameState === STATE_ARRAY_VALUE_OR_END) {
+                        if (currentCh === "]") {
+                            at++;
+                            stackPtr--;
+                            continue;
+                        }
+                        targetKind = TARGET_ARRAY;
+                        targetArray = frameRef;
+                        targetIndex = stackIndices[frameIndex];
+                        stackIndices[frameIndex] = targetIndex + 1;
+                        stackStates[frameIndex] = STATE_ARRAY_COMMA_OR_END;
                     } else {
-                        currentCh = currentCharArray[currentAt++];
+                        if (currentCh === ",") {
+                            at++;
+                            stackStates[frameIndex] = STATE_ARRAY_VALUE_OR_END;
+                            continue;
+                        }
+                        if (currentCh === "]") {
+                            at++;
+                            stackPtr--;
+                            continue;
+                        }
+                        failed = true;
+                        break;
                     }
-                    while (currentCh) {
-                        if (currentCh == "\"") {
-                            // 内联 next() 方法，跳过结尾的引号
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
+                }
+            }
+
+            if (at >= textLength) {
+                failed = true;
+                break;
+            }
+
+            if (currentCh === "\"") {
+                stringValue = null;
+                at++;
+                segmentStart = at;
+                while (at < textLength) {
+                    currentCh = chars[at];
+                    if (currentCh === "\"") {
+                        if (stringValue == null) {
+                            stringValue = text.substring(segmentStart, at);
+                        } else if (at > segmentStart) {
+                            stringValue += text.substring(segmentStart, at);
+                        }
+                        at++;
+                        break;
+                    }
+                    if (currentCh === "\\") {
+                        if (stringValue == null) {
+                            stringValue = "";
+                        }
+                        if (at > segmentStart) {
+                            stringValue += text.substring(segmentStart, at);
+                        }
+                        at++;
+                        if (at >= textLength) {
+                            failed = true;
                             break;
                         }
-                        if (currentCh == "\\") {
-                            // 内联 next() 方法，处理转义字符
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
+
+                        currentCh = chars[at];
+                        if (currentCh === "\"") {
+                            stringValue += "\"";
+                            at++;
+                        } else if (currentCh === "/") {
+                            stringValue += "/";
+                            at++;
+                        } else if (currentCh === "\\") {
+                            stringValue += "\\";
+                            at++;
+                        } else if (currentCh === "b") {
+                            stringValue += "\b";
+                            at++;
+                        } else if (currentCh === "f") {
+                            stringValue += "\f";
+                            at++;
+                        } else if (currentCh === "n") {
+                            stringValue += "\n";
+                            at++;
+                        } else if (currentCh === "r") {
+                            stringValue += "\r";
+                            at++;
+                        } else if (currentCh === "t") {
+                            stringValue += "\t";
+                            at++;
+                        } else if (currentCh === "u") {
+                            if (at + 4 >= textLength) {
+                                failed = true;
+                                break;
                             }
-                            switch (currentCh) {
-                                case "n":
-                                    keyStrParts.push("\n");
+                            hexValue = 0;
+                            manualIndex = at + 1;
+                            while (manualIndex < at + 5) {
+                                digitChar = chars[manualIndex];
+                                if (digitChar >= "0" && digitChar <= "9") {
+                                    hexValue = hexValue * 16 + (digitChar.charCodeAt(0) - 48);
+                                } else if (digitChar >= "A" && digitChar <= "F") {
+                                    hexValue = hexValue * 16 + (digitChar.charCodeAt(0) - 55);
+                                } else if (digitChar >= "a" && digitChar <= "f") {
+                                    hexValue = hexValue * 16 + (digitChar.charCodeAt(0) - 87);
+                                } else {
+                                    failed = true;
                                     break;
-                                case "r":
-                                    keyStrParts.push("\r");
-                                    break;
-                                case "t":
-                                    keyStrParts.push("\t");
-                                    break;
-                                default:
-                                    keyStrParts.push(currentCh);
-                                    break;
+                                }
+                                manualIndex++;
                             }
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
+                            if (failed) {
+                                break;
                             }
+                            stringValue += String.fromCharCode(hexValue);
+                            at += 5;
                         } else {
-                            keyStrParts.push(currentCh);
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
+                            failed = true;
+                            break;
                         }
+                        segmentStart = at;
+                        continue;
                     }
-                    key = keyStrParts.join("");
-
-                    // 内联 white() 方法
-                    while (currentCh <= " " && currentCh != "") {
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
+                    if (currentCh < " ") {
+                        failed = true;
+                        break;
                     }
-
-                    // 内联 next() 方法，跳过 ':'
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
-                    } else {
-                        currentCh = currentCharArray[currentAt++];
-                    }
-
-                    // 内联 white() 方法
-                    while (currentCh <= " " && currentCh != "") {
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
-                    }
-
-                    // 推入对象值状态
-                    stackTypes[stackPtr] = 5; // OBJECT_VALUE
-                    stackData[stackPtr++] = {object: object, key: key};
-
-                    // 推入值状态
-                    stackTypes[stackPtr] = 0; // VALUE
-                    stackData[stackPtr++] = null;
-                    break; // 跳出循环，等待值解析
+                    at++;
                 }
-            } else if (type === 5) { // OBJECT_VALUE
-                var objInfo = data;
-                object = objInfo.object;
-                key = objInfo.key;
-                object[key] = tempValue;
-
-                // 内联 white() 方法
-                while (currentCh <= " " && currentCh != "") {
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
-                    } else {
-                        currentCh = currentCharArray[currentAt++];
-                    }
+                if (failed) {
+                    break;
+                }
+                if (currentCh !== "\"") {
+                    failed = true;
+                    break;
                 }
 
-                if (currentCh == "}") {
-                    // 内联 next() 方法，跳过 '}'
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
-                    } else {
-                        currentCh = currentCharArray[currentAt++];
-                    }
-                    tempValue = object;
-                    continue;
-                }
-
-                // 内联 next() 方法，跳过 ','
-                if (currentAt >= currentTextLength) {
-                    currentCh = "";
+                if (targetKind === TARGET_ROOT) {
+                    rootValue = stringValue;
+                    rootParsed = true;
+                } else if (targetKind === TARGET_OBJECT) {
+                    targetObject[targetKey] = stringValue;
                 } else {
-                    currentCh = currentCharArray[currentAt++];
+                    targetArray[targetIndex] = stringValue;
                 }
+                continue;
+            }
 
-                // 内联 white() 方法
-                while (currentCh <= " " && currentCh != "") {
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
-                    } else {
-                        currentCh = currentCharArray[currentAt++];
-                    }
-                }
+            if (currentCh === "{") {
+                object = {};
+                object.__proto__ = null;
+                at++;
 
-                // 继续处理下一个键值对
-                // 推入对象开始状态
-                stackTypes[stackPtr] = 1; // OBJECT_BEGIN
-                stackData[stackPtr++] = object;
-            } else if (type === 2) { // ARRAY_BEGIN
-                array = data;
-
-                // 推入数组值状态
-                stackTypes[stackPtr] = 7; // ARRAY_VALUE
-                stackData[stackPtr++] = array;
-
-                // 推入值状态
-                stackTypes[stackPtr] = 0; // VALUE
-                stackData[stackPtr++] = null;
-            } else if (type === 7) { // ARRAY_VALUE
-                array = data;
-                array[array.length] = tempValue;
-
-                // 内联 white() 方法
-                while (currentCh <= " " && currentCh != "") {
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
-                    } else {
-                        currentCh = currentCharArray[currentAt++];
-                    }
-                }
-
-                if (currentCh == "]") {
-                    // 内联 next() 方法，跳过 ']'
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
-                    } else {
-                        currentCh = currentCharArray[currentAt++];
-                    }
-                    tempValue = array;
-                    continue;
-                }
-
-                // 内联 next() 方法，跳过 ','
-                if (currentAt >= currentTextLength) {
-                    currentCh = "";
+                if (targetKind === TARGET_ROOT) {
+                    rootValue = object;
+                    rootParsed = true;
+                } else if (targetKind === TARGET_OBJECT) {
+                    targetObject[targetKey] = object;
                 } else {
-                    currentCh = currentCharArray[currentAt++];
+                    targetArray[targetIndex] = object;
                 }
 
-                // 内联 white() 方法
-                while (currentCh <= " " && currentCh != "") {
-                    if (currentAt >= currentTextLength) {
-                        currentCh = "";
-                    } else {
-                        currentCh = currentCharArray[currentAt++];
+                stackTypes[stackPtr] = FRAME_OBJECT;
+                stackStates[stackPtr] = STATE_OBJECT_KEY_OR_END;
+                stackRefs[stackPtr] = object;
+                stackPtr++;
+                continue;
+            }
+
+            if (currentCh === "[") {
+                array = [];
+                at++;
+
+                if (targetKind === TARGET_ROOT) {
+                    rootValue = array;
+                    rootParsed = true;
+                } else if (targetKind === TARGET_OBJECT) {
+                    targetObject[targetKey] = array;
+                } else {
+                    targetArray[targetIndex] = array;
+                }
+
+                stackTypes[stackPtr] = FRAME_ARRAY;
+                stackStates[stackPtr] = STATE_ARRAY_VALUE_OR_END;
+                stackRefs[stackPtr] = array;
+                stackIndices[stackPtr] = 0;
+                stackPtr++;
+                continue;
+            }
+
+            if (currentCh === "t" && at + 3 < textLength && chars[at + 1] === "r" && chars[at + 2] === "u" && chars[at + 3] === "e") {
+                at += 4;
+                if (targetKind === TARGET_ROOT) {
+                    rootValue = true;
+                    rootParsed = true;
+                } else if (targetKind === TARGET_OBJECT) {
+                    targetObject[targetKey] = true;
+                } else {
+                    targetArray[targetIndex] = true;
+                }
+                continue;
+            }
+
+            if (currentCh === "f" && at + 4 < textLength && chars[at + 1] === "a" && chars[at + 2] === "l" && chars[at + 3] === "s" && chars[at + 4] === "e") {
+                at += 5;
+                if (targetKind === TARGET_ROOT) {
+                    rootValue = false;
+                    rootParsed = true;
+                } else if (targetKind === TARGET_OBJECT) {
+                    targetObject[targetKey] = false;
+                } else {
+                    targetArray[targetIndex] = false;
+                }
+                continue;
+            }
+
+            if (currentCh === "n" && at + 3 < textLength && chars[at + 1] === "u" && chars[at + 2] === "l" && chars[at + 3] === "l") {
+                at += 4;
+                if (targetKind === TARGET_ROOT) {
+                    rootValue = null;
+                    rootParsed = true;
+                } else if (targetKind === TARGET_OBJECT) {
+                    targetObject[targetKey] = null;
+                } else {
+                    targetArray[targetIndex] = null;
+                }
+                continue;
+            }
+
+            if (currentCh === "-" || (currentCh >= "0" && currentCh <= "9")) {
+                numberStart = at;
+                fractionDigits = 0;
+                exponentDigits = 0;
+                numberStr = null;
+                isNegative = false;
+
+                if (currentCh === "-") {
+                    isNegative = true;
+                    at++;
+                    if (at >= textLength) {
+                        failed = true;
+                        break;
                     }
                 }
 
-                // 推入数组值状态
-                stackTypes[stackPtr] = 7; // ARRAY_VALUE
-                stackData[stackPtr++] = array;
+                currentCh = chars[at];
+                if (currentCh === "0") {
+                    numValue = 0;
+                    at++;
+                    if (at < textLength) {
+                        currentCh = chars[at];
+                        if (currentCh >= "0" && currentCh <= "9") {
+                            failed = true;
+                            break;
+                        }
+                    }
+                } else if (currentCh >= "1" && currentCh <= "9") {
+                    numValue = digitValues[currentCh];
+                    at++;
+                    while (true) {
+                        if (at >= textLength) {
+                            break;
+                        }
+                        currentCh = chars[at];
+                        if (currentCh < "0" || currentCh > "9") {
+                            break;
+                        }
+                        numValue = numValue * 10 + digitValues[currentCh];
+                        at++;
+                    }
+                } else {
+                    failed = true;
+                    break;
+                }
 
-                // 推入值状态
-                stackTypes[stackPtr] = 0; // VALUE
-                stackData[stackPtr++] = null;
+                if (at < textLength && chars[at] === ".") {
+                    numberStr = text.substring(numberStart, at);
+                    numberStr += ".";
+                    at++;
+                    while (at < textLength) {
+                        currentCh = chars[at];
+                        if (currentCh < "0" || currentCh > "9") {
+                            break;
+                        }
+                        fractionDigits++;
+                        numberStr += currentCh;
+                        at++;
+                    }
+                    if (fractionDigits === 0) {
+                        failed = true;
+                        break;
+                    }
+                }
+
+                if (at < textLength) {
+                    currentCh = chars[at];
+                    if (currentCh === "e" || currentCh === "E") {
+                        if (numberStr == null) {
+                            numberStr = text.substring(numberStart, at);
+                        }
+                        numberStr += currentCh;
+                        at++;
+                        if (at < textLength) {
+                            currentCh = chars[at];
+                            if (currentCh === "+" || currentCh === "-") {
+                                numberStr += currentCh;
+                                at++;
+                            }
+                        }
+                        while (at < textLength) {
+                            currentCh = chars[at];
+                            if (currentCh < "0" || currentCh > "9") {
+                                break;
+                            }
+                            exponentDigits++;
+                            numberStr += currentCh;
+                            at++;
+                        }
+                        if (exponentDigits === 0) {
+                            failed = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (numberStr == null) {
+                    if (isNegative) {
+                        numValue = -numValue;
+                    }
+                } else {
+                    numValue = Number(numberStr);
+                }
+
+                if (isNaN(numValue)) {
+                    failed = true;
+                    break;
+                }
+
+                if (targetKind === TARGET_ROOT) {
+                    rootValue = numValue;
+                    rootParsed = true;
+                } else if (targetKind === TARGET_OBJECT) {
+                    targetObject[targetKey] = numValue;
+                } else {
+                    targetArray[targetIndex] = numValue;
+                }
+                continue;
+            }
+
+            failed = true;
+            break;
+        }
+
+        if (!failed) {
+            while (at < textLength) {
+                currentCh = chars[at];
+                if (currentCh > " ") {
+                    failed = true;
+                    break;
+                }
+                at++;
             }
         }
 
-
-        // 内联 white() 方法，确保解析结束后没有多余字符
-        while (this.ch <= " " && this.ch != "") {
-            // 内联 next() 方法
-            if (this.at >= this.textLength) {
-                this.ch = "";
-            } else {
-                this.ch = this.charArray[this.at++];
-            }
+        usedFrames = stackRefs.length;
+        cleanupIndex = 0;
+        while (cleanupIndex < usedFrames) {
+            stackRefs[cleanupIndex] = null;
+            stackKeys[cleanupIndex] = null;
+            cleanupIndex++;
         }
 
-        return tempValue;
+        if (usedFrames > 256) {
+            this.parseFrameTypes = new Array(64);
+            this.parseFrameTypes.length = 0;
+            this.parseFrameStates = new Array(64);
+            this.parseFrameStates.length = 0;
+            this.parseFrameRefs = new Array(64);
+            this.parseFrameRefs.length = 0;
+            this.parseFrameKeys = new Array(64);
+            this.parseFrameKeys.length = 0;
+            this.parseFrameIndices = new Array(64);
+            this.parseFrameIndices.length = 0;
+        } else {
+            stackTypes.length = 0;
+            stackStates.length = 0;
+            stackRefs.length = 0;
+            stackKeys.length = 0;
+            stackIndices.length = 0;
+        }
+
+        if (failed || !rootParsed) {
+            return undefined;
+        }
+        return rootValue;
     }
 }
 
