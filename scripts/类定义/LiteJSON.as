@@ -248,17 +248,8 @@
         var chars:Array = text.split("");
         var at:Number = 0;
 
-        // 统一状态常量（types+states 合并，无需 frameType）
-        var S_OBJ_KEY_OR_END:Number = 1;
-        var S_OBJ_COMMA_OR_END:Number = 2;
-        var S_ARR_VALUE_OR_END:Number = 3;
-        var S_ARR_COMMA_OR_END:Number = 4;
-
-        var TARGET_NONE:Number = 0;
-        var TARGET_ROOT:Number = 1;
-        var TARGET_OBJECT:Number = 2;
-        var TARGET_ARRAY:Number = 3;
-
+        // 帧状态: 1=OBJ_KEY_OR_END  2=OBJ_COMMA_OR_END  3=ARR_VALUE_OR_END  4=ARR_COMMA_OR_END
+        // 写入目标: 0=NONE  1=ROOT  2=OBJECT  3=ARRAY
         // 3 组并行数组（原 5 组：types+states→states, keys+indices→aux）
         var stackStates:Array = this.parseFrameStates;
         var stackRefs:Array = this.parseFrameRefs;
@@ -306,10 +297,10 @@
                 currentCh = "";
             }
 
-            targetKind = TARGET_NONE;
+            targetKind = 0; // NONE
 
             if (!rootParsed) {
-                targetKind = TARGET_ROOT;
+                targetKind = 1; // ROOT
             } else if (stackPtr === 0) {
                 break;
             } else {
@@ -317,7 +308,7 @@
                 frameState = stackStates[frameIndex];
                 frameRef = stackRefs[frameIndex];
 
-                if (frameState === S_OBJ_KEY_OR_END) {
+                if (frameState === 1) { // OBJ_KEY_OR_END
                     if (currentCh === "}") {
                         at++;
                         stackPtr--;
@@ -370,12 +361,12 @@
                     } else {
                         currentCh = "";
                     }
-                    targetKind = TARGET_OBJECT;
+                    targetKind = 2; // OBJECT
                     targetObject = frameRef;
                     targetKey = stackAux[frameIndex];
-                    stackStates[frameIndex] = S_OBJ_COMMA_OR_END;
+                    stackStates[frameIndex] = 2; // OBJ_COMMA_OR_END
 
-                } else if (frameState === S_OBJ_COMMA_OR_END) {
+                } else if (frameState === 2) { // OBJ_COMMA_OR_END
                     if (currentCh === "}") {
                         at++;
                         stackPtr--;
@@ -434,24 +425,24 @@
                     } else {
                         currentCh = "";
                     }
-                    targetKind = TARGET_OBJECT;
+                    targetKind = 2; // OBJECT
                     targetObject = frameRef;
                     targetKey = stackAux[frameIndex];
 
-                } else if (frameState === S_ARR_VALUE_OR_END) {
+                } else if (frameState === 3) { // ARR_VALUE_OR_END
                     if (currentCh === "]") {
                         at++;
                         stackPtr--;
                         continue;
                     }
-                    targetKind = TARGET_ARRAY;
+                    targetKind = 3; // ARRAY
                     targetArray = frameRef;
                     targetIndex = stackAux[frameIndex];
                     stackAux[frameIndex] = targetIndex + 1;
-                    stackStates[frameIndex] = S_ARR_COMMA_OR_END;
+                    stackStates[frameIndex] = 4; // ARR_COMMA_OR_END
 
                 } else {
-                    // S_ARR_COMMA_OR_END
+                    // 4: ARR_COMMA_OR_END
                     if (currentCh === ",") {
                         at++;
                         // 内联：跳空白 → 设 target → 直落 value 解析
@@ -467,11 +458,11 @@
                         } else {
                             currentCh = "";
                         }
-                        targetKind = TARGET_ARRAY;
+                        targetKind = 3; // ARRAY
                         targetArray = frameRef;
                         targetIndex = stackAux[frameIndex];
                         stackAux[frameIndex] = targetIndex + 1;
-                        // 状态保持 S_ARR_COMMA_OR_END，下轮直接判逗号/]
+                        // 状态保持 4(ARR_COMMA_OR_END)，下轮直接判逗号/]
                     } else if (currentCh === "]") {
                         at++;
                         stackPtr--;
@@ -502,10 +493,10 @@
                 stringValue = text.substring(segmentStart, at);
                 at++;
 
-                if (targetKind === TARGET_ROOT) {
+                if (targetKind === 1) { // ROOT
                     rootValue = stringValue;
                     rootParsed = true;
-                } else if (targetKind === TARGET_OBJECT) {
+                } else if (targetKind === 2) { // OBJECT
                     targetObject[targetKey] = stringValue;
                 } else {
                     targetArray[targetIndex] = stringValue;
@@ -518,16 +509,16 @@
                 object.__proto__ = null;
                 at++;
 
-                if (targetKind === TARGET_ROOT) {
+                if (targetKind === 1) { // ROOT
                     rootValue = object;
                     rootParsed = true;
-                } else if (targetKind === TARGET_OBJECT) {
+                } else if (targetKind === 2) { // OBJECT
                     targetObject[targetKey] = object;
                 } else {
                     targetArray[targetIndex] = object;
                 }
 
-                stackStates[stackPtr] = S_OBJ_KEY_OR_END;
+                stackStates[stackPtr] = 1; // OBJ_KEY_OR_END
                 stackRefs[stackPtr] = object;
                 stackPtr++;
                 continue;
@@ -537,16 +528,16 @@
                 array = [];
                 at++;
 
-                if (targetKind === TARGET_ROOT) {
+                if (targetKind === 1) { // ROOT
                     rootValue = array;
                     rootParsed = true;
-                } else if (targetKind === TARGET_OBJECT) {
+                } else if (targetKind === 2) { // OBJECT
                     targetObject[targetKey] = array;
                 } else {
                     targetArray[targetIndex] = array;
                 }
 
-                stackStates[stackPtr] = S_ARR_VALUE_OR_END;
+                stackStates[stackPtr] = 3; // ARR_VALUE_OR_END
                 stackRefs[stackPtr] = array;
                 stackAux[stackPtr] = 0;
                 stackPtr++;
@@ -555,10 +546,10 @@
 
             if (currentCh === "t" && at + 3 < textLength && chars[at + 1] === "r" && chars[at + 2] === "u" && chars[at + 3] === "e") {
                 at += 4;
-                if (targetKind === TARGET_ROOT) {
+                if (targetKind === 1) { // ROOT
                     rootValue = true;
                     rootParsed = true;
-                } else if (targetKind === TARGET_OBJECT) {
+                } else if (targetKind === 2) { // OBJECT
                     targetObject[targetKey] = true;
                 } else {
                     targetArray[targetIndex] = true;
@@ -568,10 +559,10 @@
 
             if (currentCh === "f" && at + 4 < textLength && chars[at + 1] === "a" && chars[at + 2] === "l" && chars[at + 3] === "s" && chars[at + 4] === "e") {
                 at += 5;
-                if (targetKind === TARGET_ROOT) {
+                if (targetKind === 1) { // ROOT
                     rootValue = false;
                     rootParsed = true;
-                } else if (targetKind === TARGET_OBJECT) {
+                } else if (targetKind === 2) { // OBJECT
                     targetObject[targetKey] = false;
                 } else {
                     targetArray[targetIndex] = false;
@@ -581,10 +572,10 @@
 
             if (currentCh === "n" && at + 3 < textLength && chars[at + 1] === "u" && chars[at + 2] === "l" && chars[at + 3] === "l") {
                 at += 4;
-                if (targetKind === TARGET_ROOT) {
+                if (targetKind === 1) { // ROOT
                     rootValue = null;
                     rootParsed = true;
-                } else if (targetKind === TARGET_OBJECT) {
+                } else if (targetKind === 2) { // OBJECT
                     targetObject[targetKey] = null;
                 } else {
                     targetArray[targetIndex] = null;
@@ -646,10 +637,10 @@
                     numValue = -numValue;
                 }
 
-                if (targetKind === TARGET_ROOT) {
+                if (targetKind === 1) { // ROOT
                     rootValue = numValue;
                     rootParsed = true;
-                } else if (targetKind === TARGET_OBJECT) {
+                } else if (targetKind === 2) { // OBJECT
                     targetObject[targetKey] = numValue;
                 } else {
                     targetArray[targetIndex] = numValue;

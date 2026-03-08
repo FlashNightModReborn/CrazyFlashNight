@@ -13,10 +13,10 @@ new org.flashNight.gesh.json.JSONTest()
 
 ## 重点差异
 
-- `LiteJSON` 当前定位是无缓存、`parse` 优先的启动期解析器。
-- `LiteJSON` 现已支持 `\uXXXX`、`\b`、`\f` 和科学记数法。
-- `LiteJSON` 对非法输入不抛错，返回 `undefined`，并拒绝根值后的 trailing token。
-- `LiteJSON` 当前仍保留“对象尾逗号可容错”的旧行为，这属于兼容性语义，不代表严格 JSON。
+- `LiteJSON` 当前定位是无缓存、`parse` 优先的启动期解析器，为性能裁剪了部分 JSON 特性。
+- `LiteJSON` 不处理任何转义序列（`\n`、`\”`、`\\`、`\uXXXX` 等均原样保留含反斜杠的文本），遇 `\”` 会导致字符串提前闭合并返回 `undefined`。
+- `LiteJSON` 不支持科学记数法（`1e2` 等返回 `undefined`）。
+- `LiteJSON` 对非法输入不抛错，返回 `undefined`；拒绝根值后的 trailing token、尾逗号、未闭合结构等。
 - `FastJSON.parse()` 对同一字符串会返回同一对象引用。
 - `FastJSON.stringify()` 对同一对象实例会命中身份缓存，可能返回旧字符串。
 - `FastJSON` 对“对象尾逗号”有容错行为，但对多数其他非法输入仍会抛错。
