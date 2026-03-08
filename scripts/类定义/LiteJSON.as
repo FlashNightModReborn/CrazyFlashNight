@@ -250,10 +250,9 @@
 
         // 统一状态常量（types+states 合并，无需 frameType）
         var S_OBJ_KEY_OR_END:Number = 1;
-        var S_OBJ_VALUE:Number = 2;
-        var S_OBJ_COMMA_OR_END:Number = 3;
-        var S_ARR_VALUE_OR_END:Number = 4;
-        var S_ARR_COMMA_OR_END:Number = 5;
+        var S_OBJ_COMMA_OR_END:Number = 2;
+        var S_ARR_VALUE_OR_END:Number = 3;
+        var S_ARR_COMMA_OR_END:Number = 4;
 
         var TARGET_NONE:Number = 0;
         var TARGET_ROOT:Number = 1;
@@ -398,10 +397,20 @@
                         break;
                     }
                     at++;
-                    stackStates[frameIndex] = S_OBJ_VALUE;
-                    continue;
 
-                } else if (frameState === S_OBJ_VALUE) {
+                    // value setup 内联：跳空白 → 设 target → 直落 value 解析
+                    while (at < textLength) {
+                        currentCh = chars[at];
+                        if (currentCh > " ") {
+                            break;
+                        }
+                        at++;
+                    }
+                    if (at < textLength) {
+                        currentCh = chars[at];
+                    } else {
+                        currentCh = "";
+                    }
                     targetKind = TARGET_OBJECT;
                     targetObject = frameRef;
                     targetKey = stackAux[frameIndex];
@@ -437,16 +446,32 @@
                     // S_ARR_COMMA_OR_END
                     if (currentCh === ",") {
                         at++;
-                        stackStates[frameIndex] = S_ARR_VALUE_OR_END;
-                        continue;
-                    }
-                    if (currentCh === "]") {
+                        // 内联：跳空白 → 设 target → 直落 value 解析
+                        while (at < textLength) {
+                            currentCh = chars[at];
+                            if (currentCh > " ") {
+                                break;
+                            }
+                            at++;
+                        }
+                        if (at < textLength) {
+                            currentCh = chars[at];
+                        } else {
+                            currentCh = "";
+                        }
+                        targetKind = TARGET_ARRAY;
+                        targetArray = frameRef;
+                        targetIndex = stackAux[frameIndex];
+                        stackAux[frameIndex] = targetIndex + 1;
+                        // 状态保持 S_ARR_COMMA_OR_END，下轮直接判逗号/]
+                    } else if (currentCh === "]") {
                         at++;
                         stackPtr--;
                         continue;
+                    } else {
+                        failed = true;
+                        break;
                     }
-                    failed = true;
-                    break;
                 }
             }
 
