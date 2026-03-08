@@ -17,13 +17,13 @@ class FastJSON implements IJSON {
     private var charArray:Array;
     
     // 缓存对象
-    private var parseCache:Object = {};         // 解析缓存
-    private var stringifyCache:Object = {};     // 序列化缓存
+    private var parseCache:Object;         // 解析缓存
+    private var stringifyCache:Object;     // 序列化缓存
     private var cacheMaxSize:Number = 1024;    // 缓存最大容量
 
     // 缓存键的插入顺序，用于FIFO清理
-    private var parseCacheKeys:Array = [];
-    private var stringifyCacheKeys:Array = [];
+    private var parseCacheKeys:Array;
+    private var stringifyCacheKeys:Array;
 
     // 缓存计数器
     private var parseCacheCount:Number = 0;
@@ -33,7 +33,21 @@ class FastJSON implements IJSON {
      * 构造函数
      */
     public function FastJSON() {
-        // 此简化版本无需初始化
+        this.text = "";
+        this.ch = "";
+        this.at = 0;
+        this.currentDepth = 0;
+        this.textLength = 0;
+        this.charArray = null;
+
+        this.parseCache = {};
+        this.parseCache.__proto__ = null;
+        this.stringifyCache = {};
+        this.stringifyCache.__proto__ = null;
+        this.parseCacheKeys = [];
+        this.stringifyCacheKeys = [];
+        this.parseCacheCount = 0;
+        this.stringifyCacheCount = 0;
     }
 
     /**

@@ -46,6 +46,7 @@ class org.flashNight.gesh.json.JSONTest {
         this.testParserSpecificDifferences();
         this.testErrorHandling();
         this.testCrossParserConsistency();
+        this.testBenchmarkWorkloadAssumptions();
 
         trace("\n---------- 正确性汇总 ----------");
         trace("通过: " + this.passCount + " / " + this.totalCount + "  失败: " + this.failCount);
@@ -672,6 +673,38 @@ class org.flashNight.gesh.json.JSONTest {
         this.assertDeepEqual("FastJSON -> LiteJSON 一致", testObj, this.liteParser.parse(fastStr));
     }
 
+    private function testBenchmarkWorkloadAssumptions():Void {
+        trace("\n--- benchmark: 负载自校验 ---");
+        var variants:Array = this.generateVariants(6, 4);
+        this.assertEqual("生成 benchmark 变体数量", 4, variants.length);
+        this.assert(variants[0] !== variants[1], "benchmark 相邻字符串变体不同");
+
+        var variantObjA:Object = this.liteParser.parse(variants[0]);
+        var variantObjB:Object = this.liteParser.parse(variants[1]);
+        this.assertEqual("benchmark 对象变体 A seed", 0, variantObjA.metadata.seed);
+        this.assertEqual("benchmark 对象变体 B seed", 1, variantObjB.metadata.seed);
+        this.assertNotSameReference("benchmark 对象变体互不共享引用", variantObjA, variantObjB);
+
+        var fastMiss:FastJSON = new FastJSON();
+        var missA:Object = fastMiss.parse(variants[0]);
+        var missB:Object = fastMiss.parse(variants[1]);
+        this.assertNotSameReference("FastJSON 失配路径不复用不同字符串的 parse 引用", missA, missB);
+        this.assertEqual("FastJSON 失配路径保留 A seed", 0, missA.metadata.seed);
+        this.assertEqual("FastJSON 失配路径保留 B seed", 1, missB.metadata.seed);
+
+        var strictParseA:FastJSON = new FastJSON();
+        var strictParseB:FastJSON = new FastJSON();
+        this.assertNotSameReference("FastJSON 严格冷启动 parse 不共享引用", strictParseA.parse(variants[0]), strictParseB.parse(variants[0]));
+
+        var strictObj:Object = this.liteParser.parse(variants[0]);
+        var strictStringifyA:FastJSON = new FastJSON();
+        var strictBefore:String = strictStringifyA.stringify(strictObj);
+        strictObj.metadata.seed = 77;
+        var strictStringifyB:FastJSON = new FastJSON();
+        var strictAfter:String = strictStringifyB.stringify(strictObj);
+        this.assert(strictBefore !== strictAfter, "FastJSON 严格冷启动 stringify 不复用旧缓存");
+    }
+
     private function generateBenchJSON(itemCount:Number, seed:Number):String {
         if (seed == undefined) {
             seed = 0;
@@ -838,6 +871,34 @@ class org.flashNight.gesh.json.JSONTest {
         return getTimer() - t0;
     }
 
+    private function timeFastParseStrictColdLoop(variants:Array, iterations:Number, batchSize:Number):Number {
+        var parser:FastJSON = null;
+        var sink:Object = null;
+        var vLen:Number = variants.length;
+        var idx:Number = 0;
+        var i:Number = 0;
+        var j:Number = 0;
+        if (batchSize == undefined || batchSize < 1) {
+            batchSize = 1;
+        }
+        var t0:Number = getTimer();
+        while (i < iterations) {
+            j = 0;
+            while (j < batchSize) {
+                parser = new FastJSON();
+                sink = parser.parse(variants[idx]);
+                idx++;
+                if (idx >= vLen) {
+                    idx = 0;
+                }
+                j++;
+            }
+            i++;
+        }
+        this.benchSink = sink;
+        return getTimer() - t0;
+    }
+
     private function timeFastParseHotLoop(parser:FastJSON, jsonStr:String, iterations:Number):Number {
         var sink:Object = null;
         var i:Number = 0;
@@ -892,6 +953,34 @@ class org.flashNight.gesh.json.JSONTest {
                 idx++;
                 if (idx >= vLen) {
                     parser = new FastJSON();
+                    idx = 0;
+                }
+                j++;
+            }
+            i++;
+        }
+        this.benchSink = sink;
+        return getTimer() - t0;
+    }
+
+    private function timeFastStringifyStrictColdLoop(objects:Array, iterations:Number, batchSize:Number):Number {
+        var parser:FastJSON = null;
+        var sink:String = "";
+        var vLen:Number = objects.length;
+        var idx:Number = 0;
+        var i:Number = 0;
+        var j:Number = 0;
+        if (batchSize == undefined || batchSize < 1) {
+            batchSize = 1;
+        }
+        var t0:Number = getTimer();
+        while (i < iterations) {
+            j = 0;
+            while (j < batchSize) {
+                parser = new FastJSON();
+                sink = parser.stringify(objects[idx]);
+                idx++;
+                if (idx >= vLen) {
                     idx = 0;
                 }
                 j++;
@@ -1089,8 +1178,8 @@ class org.flashNight.gesh.json.JSONTest {
 
     private function benchParseMultiScale():Void {
         trace("\n--- parse 性能基准（等价路径 + 基线扣除） ---");
-        trace("  说明: FastJSON 热路径代表缓存命中后的查表成本，不等于真实重新 parse。");
-        trace("  冷路径: 使用有限变体循环，变体耗尽后重建 FastJSON 实例，并按批次聚合多次冷操作以提高计时置信度。");
+        trace("  说明: FastJSON 失配 = 同实例不同 payload；严冷 = 每次操作新建实例；热 = 缓存命中。");
+        trace("  冷路径: 使用有限变体循环并按批次聚合多次冷操作，避免缓存复用同时维持计时置信度。");
         var scales:Array = [
             {items: 10, desc: "小(10项)", parseStart: 8, parseMax: 256, coldVariants: 128, coldBatch: 32, coldStart: 8, coldMaxIters: 4096, hotStart: 512, hotMax: 50000},
             {items: 50, desc: "中(50项)", parseStart: 2, parseMax: 96, coldVariants: 128, coldBatch: 64, coldStart: 4, coldMaxIters: 2048, hotStart: 256, hotMax: 30000},
@@ -1124,12 +1213,19 @@ class org.flashNight.gesh.json.JSONTest {
             }, targetAdjustedMs, 0, scale.parseStart, scale.parseMax, repeats, payloadChars, 1);
             this.reportBenchStats("LiteJSON:     ", liteStats);
 
-            var fastColdStats:Object = this.measureBenchStats(function(iterations:Number):Number {
+            var fastMissStats:Object = this.measureBenchStats(function(iterations:Number):Number {
                 return self.timeFastParseColdLoop(variants, iterations, scale.coldBatch);
             }, function(iterations:Number):Number {
                 return self.timeReadVariantLoop(variants, iterations, scale.coldBatch);
             }, coldTargetAdjustedMs, 120, scale.coldStart, scale.coldMaxIters, repeats, payloadChars, scale.coldBatch);
-            this.reportBenchStats("FastJSON(冷): ", fastColdStats);
+            this.reportBenchStats("FastJSON(失配): ", fastMissStats);
+
+            var fastStrictStats:Object = this.measureBenchStats(function(iterations:Number):Number {
+                return self.timeFastParseStrictColdLoop(variants, iterations, scale.coldBatch);
+            }, function(iterations:Number):Number {
+                return self.timeReadVariantLoop(variants, iterations, scale.coldBatch);
+            }, coldTargetAdjustedMs, 120, scale.coldStart, scale.coldMaxIters, repeats, payloadChars, scale.coldBatch);
+            this.reportBenchStats("FastJSON(严冷): ", fastStrictStats);
 
             var fpHot:FastJSON = new FastJSON();
             fpHot.parse(jsonStr);
@@ -1142,16 +1238,18 @@ class org.flashNight.gesh.json.JSONTest {
 
             trace("    --");
             this.reportRatio("JSON / LiteJSON = ", jsonStats, liteStats);
-            this.reportRatio("LiteJSON / FastJSON(冷) = ", liteStats, fastColdStats);
-            this.reportRatio("FastJSON 冷 / 热 = ", fastColdStats, fastHotStats);
+            this.reportRatio("LiteJSON / FastJSON(严冷) = ", liteStats, fastStrictStats);
+            this.reportRatio("FastJSON 严冷 / 失配 = ", fastStrictStats, fastMissStats);
+            this.reportRatio("FastJSON 失配 / 热 = ", fastMissStats, fastHotStats);
+            this.reportRatio("FastJSON 严冷 / 热 = ", fastStrictStats, fastHotStats);
             si++;
         }
     }
 
     private function benchStringifyMultiScale():Void {
         trace("\n--- stringify 性能基准（等价路径 + 基线扣除） ---");
-        trace("  说明: FastJSON 热路径代表对象身份缓存命中，不反映对象变更后的重序列化。");
-        trace("  冷路径: 使用有限对象变体循环，变体耗尽后重建 FastJSON 实例，并按批次聚合多次冷操作以提高计时置信度。");
+        trace("  说明: FastJSON 失配 = 同实例不同对象；严冷 = 每次操作新建实例；热 = 同对象命中身份缓存。");
+        trace("  冷路径: 使用有限对象变体循环并按批次聚合多次冷操作，避免缓存复用同时维持计时置信度。");
         var scales:Array = [
             {items: 10, desc: "小(10项)", stringifyStart: 16, stringifyMax: 512, coldVariants: 128, coldBatch: 32, coldStart: 8, coldMaxIters: 4096, hotStart: 512, hotMax: 50000},
             {items: 50, desc: "中(50项)", stringifyStart: 4, stringifyMax: 128, coldVariants: 128, coldBatch: 64, coldStart: 4, coldMaxIters: 2048, hotStart: 256, hotMax: 30000},
@@ -1187,12 +1285,19 @@ class org.flashNight.gesh.json.JSONTest {
             }, targetAdjustedMs, 0, scale.stringifyStart, scale.stringifyMax, repeats, payloadChars, 1);
             this.reportBenchStats("LiteJSON:     ", liteStats);
 
-            var fastColdStats:Object = this.measureBenchStats(function(iterations:Number):Number {
+            var fastMissStats:Object = this.measureBenchStats(function(iterations:Number):Number {
                 return self.timeFastStringifyColdLoop(objectVariants, iterations, scale.coldBatch);
             }, function(iterations:Number):Number {
                 return self.timeReadObjectVariantLoop(objectVariants, iterations, scale.coldBatch);
             }, coldTargetAdjustedMs, 120, scale.coldStart, scale.coldMaxIters, repeats, payloadChars, scale.coldBatch);
-            this.reportBenchStats("FastJSON(冷): ", fastColdStats);
+            this.reportBenchStats("FastJSON(失配): ", fastMissStats);
+
+            var fastStrictStats:Object = this.measureBenchStats(function(iterations:Number):Number {
+                return self.timeFastStringifyStrictColdLoop(objectVariants, iterations, scale.coldBatch);
+            }, function(iterations:Number):Number {
+                return self.timeReadObjectVariantLoop(objectVariants, iterations, scale.coldBatch);
+            }, coldTargetAdjustedMs, 120, scale.coldStart, scale.coldMaxIters, repeats, payloadChars, scale.coldBatch);
+            this.reportBenchStats("FastJSON(严冷): ", fastStrictStats);
 
             var fpHot:FastJSON = new FastJSON();
             fpHot.stringify(testObj);
@@ -1205,15 +1310,17 @@ class org.flashNight.gesh.json.JSONTest {
 
             trace("    --");
             this.reportRatio("JSON / LiteJSON = ", jsonStats, liteStats);
-            this.reportRatio("LiteJSON / FastJSON(冷) = ", liteStats, fastColdStats);
-            this.reportRatio("FastJSON 冷 / 热 = ", fastColdStats, fastHotStats);
+            this.reportRatio("LiteJSON / FastJSON(严冷) = ", liteStats, fastStrictStats);
+            this.reportRatio("FastJSON 严冷 / 失配 = ", fastStrictStats, fastMissStats);
+            this.reportRatio("FastJSON 失配 / 热 = ", fastMissStats, fastHotStats);
+            this.reportRatio("FastJSON 严冷 / 热 = ", fastStrictStats, fastHotStats);
             si++;
         }
     }
 
     private function benchFastJSONCache():Void {
         trace("\n--- FastJSON 缓存专项（中规模） ---");
-        trace("  说明: parse 热 = 同字符串同实例；stringify 热 = 同对象同实例。");
+        trace("  说明: 失配 = 同实例不同 payload；严冷 = 每次新实例；热 = 同 payload / 同对象命中缓存。");
         trace("  风险: parse 热共享对象引用；stringify 热可能返回旧缓存字符串。");
         var itemCount:Number = 50;
         var jsonStr:String = this.generateBenchJSON(itemCount, 0);
@@ -1226,8 +1333,14 @@ class org.flashNight.gesh.json.JSONTest {
         var coldBatch:Number = 64;
         var self:JSONTest = this;
 
-        var parseCold:Object = this.measureBenchStats(function(iterations:Number):Number {
+        var parseMiss:Object = this.measureBenchStats(function(iterations:Number):Number {
             return self.timeFastParseColdLoop(variants, iterations, coldBatch);
+        }, function(iterations:Number):Number {
+            return self.timeReadVariantLoop(variants, iterations, coldBatch);
+        }, coldTargetAdjustedMs, 120, 4, 2048, repeats, payloadChars, coldBatch);
+
+        var parseStrict:Object = this.measureBenchStats(function(iterations:Number):Number {
+            return self.timeFastParseStrictColdLoop(variants, iterations, coldBatch);
         }, function(iterations:Number):Number {
             return self.timeReadVariantLoop(variants, iterations, coldBatch);
         }, coldTargetAdjustedMs, 120, 4, 2048, repeats, payloadChars, coldBatch);
@@ -1240,8 +1353,14 @@ class org.flashNight.gesh.json.JSONTest {
             return self.timeReadStringLoop(jsonStr, iterations);
         }, targetAdjustedMs, 0, 256, 30000, repeats, payloadChars, 1);
 
-        var stringifyCold:Object = this.measureBenchStats(function(iterations:Number):Number {
+        var stringifyMiss:Object = this.measureBenchStats(function(iterations:Number):Number {
             return self.timeFastStringifyColdLoop(objectVariants, iterations, coldBatch);
+        }, function(iterations:Number):Number {
+            return self.timeReadObjectVariantLoop(objectVariants, iterations, coldBatch);
+        }, coldTargetAdjustedMs, 120, 4, 2048, repeats, payloadChars, coldBatch);
+
+        var stringifyStrict:Object = this.measureBenchStats(function(iterations:Number):Number {
+            return self.timeFastStringifyStrictColdLoop(objectVariants, iterations, coldBatch);
         }, function(iterations:Number):Number {
             return self.timeReadObjectVariantLoop(objectVariants, iterations, coldBatch);
         }, coldTargetAdjustedMs, 120, 4, 2048, repeats, payloadChars, coldBatch);
@@ -1256,13 +1375,19 @@ class org.flashNight.gesh.json.JSONTest {
         }, targetAdjustedMs, 0, 256, 30000, repeats, payloadChars, 1);
 
         trace("  parse");
-        this.reportBenchStats("冷: ", parseCold);
+        this.reportBenchStats("失配: ", parseMiss);
+        this.reportBenchStats("严冷: ", parseStrict);
         this.reportBenchStats("热: ", parseHot);
-        this.reportRatio("冷 / 热 = ", parseCold, parseHot);
+        this.reportRatio("严冷 / 失配 = ", parseStrict, parseMiss);
+        this.reportRatio("失配 / 热 = ", parseMiss, parseHot);
+        this.reportRatio("严冷 / 热 = ", parseStrict, parseHot);
 
         trace("  stringify");
-        this.reportBenchStats("冷: ", stringifyCold);
+        this.reportBenchStats("失配: ", stringifyMiss);
+        this.reportBenchStats("严冷: ", stringifyStrict);
         this.reportBenchStats("热: ", stringifyHot);
-        this.reportRatio("冷 / 热 = ", stringifyCold, stringifyHot);
+        this.reportRatio("严冷 / 失配 = ", stringifyStrict, stringifyMiss);
+        this.reportRatio("失配 / 热 = ", stringifyMiss, stringifyHot);
+        this.reportRatio("严冷 / 热 = ", stringifyStrict, stringifyHot);
     }
 }
