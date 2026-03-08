@@ -396,13 +396,13 @@ class org.flashNight.gesh.json.JSONTest {
             self.assertEqual(name + " \\/ 转义", "http://example.com", parser.parse("{\"url\":\"http:\\/\\/example.com\"}").url);
         });
         this.assertEqual("JSON Unicode \\u002C", "Hello,World", this.jsonParser.parse("{\"text\":\"Hello\\u002CWorld\"}").text);
-        this.assertEqual("LiteJSON Unicode \\u002C", "Hello,World", this.liteParser.parse("{\"text\":\"Hello\\u002CWorld\"}").text);
+        this.assertEqual("LiteJSON Unicode \\u002C fallback", "Hello" + "u002C" + "World", this.liteParser.parse("{\"text\":\"Hello\\u002CWorld\"}").text);
         this.assertEqual("FastJSON Unicode \\u002C", "Hello,World", this.fastParser.parse("{\"text\":\"Hello\\u002CWorld\"}").text);
         this.assertEqual("JSON 连续 Unicode", "Hi", this.jsonParser.parse("\"\\u0048\\u0069\""));
-        this.assertEqual("LiteJSON 连续 Unicode", "Hi", this.liteParser.parse("\"\\u0048\\u0069\""));
+        this.assertEqual("LiteJSON 连续 Unicode fallback", "u0048" + "u0069", this.liteParser.parse("\"\\u0048\\u0069\""));
         this.assertEqual("FastJSON 连续 Unicode", "Hi", this.fastParser.parse("\"\\u0048\\u0069\""));
         this.assertEqual("JSON parse \\b\\f", "\b\f", this.jsonParser.parse("\"\\b\\f\""));
-        this.assertEqual("LiteJSON parse \\b\\f", "\b\f", this.liteParser.parse("\"\\b\\f\""));
+        this.assertEqual("LiteJSON parse \\b\\f fallback", "bf", this.liteParser.parse("\"\\b\\f\""));
         this.assertEqual("FastJSON parse \\b\\f", "\b\f", this.fastParser.parse("\"\\b\\f\""));
         this.forEachParser(function(parser:IJSON, name:String):Void {
             self.assertEqual(name + " 连续转义序列", "\n\t\r\\", parser.parse("\"\\n\\t\\r\\\\\""));
@@ -430,7 +430,7 @@ class org.flashNight.gesh.json.JSONTest {
             }
         });
         this.assertEqual("JSON parse 1e2", 100, this.jsonParser.parse("1e2"));
-        this.assertEqual("LiteJSON parse 1e2", 100, this.liteParser.parse("1e2"));
+        this.assertLiteJSONUndefined("LiteJSON 不支持科学计数法 1e2", "1e2");
         this.assertEqual("FastJSON parse 1e2", 100, this.fastParser.parse("1e2"));
         var spaced:String = " \t\n\r{ \t\"a\" \n: \r1 , \"b\" : [ 2 , 3 ] } ";
         this.forEachParser(function(parser:IJSON, name:String):Void {
@@ -614,7 +614,7 @@ class org.flashNight.gesh.json.JSONTest {
         this.assertEqual("JSON 解析不完整指数 1e", 1, jsonValue);
         this.assertEqual("JSON 不完整指数 1e 不记录错误", 0, jsonP.errors.length);
 
-        this.assertLiteJSONUndefined("LiteJSON 拒绝不完整指数 1e", "1e");
+        this.assertLiteJSONUndefined("LiteJSON 拒绝 trailing 字母 1e", "1e");
         this.assertLiteJSONUndefined("LiteJSON 拒绝缺失小数位 1.", "1.");
 
         var fastResult:Object = this.assertFastJSONNoThrow("FastJSON 接受不完整指数 1e", "1e");
@@ -625,16 +625,18 @@ class org.flashNight.gesh.json.JSONTest {
 
     private function testParserSpecificDifferences():Void {
         trace("\n--- 差异: LiteJSON / FastJSON 当前行为 ---");
-        this.assertEqual("LiteJSON 支持 Unicode 转义", "A中", this.liteParser.parse("\"\\u0041\\u4E2D\""));
-        this.assertEqual("LiteJSON 支持 \\b\\f 还原", "\b\f", this.liteParser.parse("\"\\b\\f\""));
-        this.assertEqual("LiteJSON 支持科学记数法", 100, this.liteParser.parse("1e2"));
+        // LiteJSON 精简模式：不支持 \uXXXX \b \f 科学计数法（实际数据从未使用）
+        this.assertEqual("LiteJSON \\uXXXX fallback 输出原字符", "u0041" + "u4E2D", this.liteParser.parse("\"\\u0041\\u4E2D\""));
+        this.assertEqual("LiteJSON \\b\\f fallback 输出原字符", "bf", this.liteParser.parse("\"\\b\\f\""));
+        this.assertLiteJSONUndefined("LiteJSON 不支持科学记数法", "1e2");
         this.assertLiteJSONUndefined("LiteJSON 拒绝根值后的 trailing token", "1xyz");
         var jsonResult:Object = this.assertJSONHasErrors("JSON 记录 trailing token 错误", "{\"a\":1}xyz");
         this.assertEqual("JSON 仍保留已解析根对象", 1, jsonResult.value.a);
         this.assertFastJSONThrows("FastJSON trailing token 直接抛错", "{\"a\":1}xyz");
         var liteEncoded:String = this.liteParser.stringify("\b\f");
         this.assertEqual("LiteJSON stringify 输出 \\b\\f", "\"\\b\\f\"", liteEncoded);
-        this.assertEqual("LiteJSON parse 自身 stringify 后可恢复 \\b\\f", "\b\f", this.liteParser.parse(liteEncoded));
+        // LiteJSON parse 不还原 \b\f，输出原字符 "bf"
+        this.assertEqual("LiteJSON parse 自身 stringify 后 \\b\\f fallback", "bf", this.liteParser.parse(liteEncoded));
     }
 
     private function testErrorHandling():Void {
@@ -643,7 +645,7 @@ class org.flashNight.gesh.json.JSONTest {
             {desc: "缺少冒号", input: "{\"a\" 1}", jsonErrors: true, fastThrows: true, liteUndefined: true},
             {desc: "对象尾逗号", input: "{\"a\":1,}", jsonErrors: false, fastThrows: false, liteUndefined: false},
             {desc: "数组未闭合", input: "[1,2", jsonErrors: true, fastThrows: true, liteUndefined: true},
-            {desc: "非法 Unicode", input: "\"\\u12G4\"", jsonErrors: true, fastThrows: true, liteUndefined: true}
+            {desc: "非法 Unicode", input: "\"\\u12G4\"", jsonErrors: true, fastThrows: true, liteUndefined: false}
         ];
         var i:Number = 0;
         while (i < badCases.length) {

@@ -298,18 +298,10 @@
 
         var stringValue:String;
         var segmentStart:Number;
-        var hexValue:Number;
         var numberStart:Number;
-        var numberStr:String;
         var numValue:Number;
         var isNegative:Boolean;
         var fractionDigits:Number;
-        var exponentDigits:Number;
-        var manualIndex:Number;
-        var digitChar:String;
-
-        var usedFrames:Number;
-        var cleanupIndex:Number;
 
         while (!failed) {
             while (at < textLength) {
@@ -330,7 +322,7 @@
 
             if (!rootParsed) {
                 targetKind = TARGET_ROOT;
-            } else if (stackPtr == 0) {
+            } else if (stackPtr === 0) {
                 break;
             } else {
                 frameIndex = stackPtr - 1;
@@ -380,71 +372,27 @@
                                 currentCh = chars[at];
                                 if (currentCh === "\"") {
                                     stringValue += "\"";
-                                    at++;
-                                } else if (currentCh === "/") {
-                                    stringValue += "/";
-                                    at++;
                                 } else if (currentCh === "\\") {
                                     stringValue += "\\";
-                                    at++;
-                                } else if (currentCh === "b") {
-                                    stringValue += "\b";
-                                    at++;
-                                } else if (currentCh === "f") {
-                                    stringValue += "\f";
-                                    at++;
+                                } else if (currentCh === "/") {
+                                    stringValue += "/";
                                 } else if (currentCh === "n") {
                                     stringValue += "\n";
-                                    at++;
                                 } else if (currentCh === "r") {
                                     stringValue += "\r";
-                                    at++;
                                 } else if (currentCh === "t") {
                                     stringValue += "\t";
-                                    at++;
-                                } else if (currentCh === "u") {
-                                    if (at + 4 >= textLength) {
-                                        failed = true;
-                                        break;
-                                    }
-                                    hexValue = 0;
-                                    manualIndex = at + 1;
-                                    while (manualIndex < at + 5) {
-                                        digitChar = chars[manualIndex];
-                                        if (digitChar >= "0" && digitChar <= "9") {
-                                            hexValue = hexValue * 16 + (digitChar.charCodeAt(0) - 48);
-                                        } else if (digitChar >= "A" && digitChar <= "F") {
-                                            hexValue = hexValue * 16 + (digitChar.charCodeAt(0) - 55);
-                                        } else if (digitChar >= "a" && digitChar <= "f") {
-                                            hexValue = hexValue * 16 + (digitChar.charCodeAt(0) - 87);
-                                        } else {
-                                            failed = true;
-                                            break;
-                                        }
-                                        manualIndex++;
-                                    }
-                                    if (failed) {
-                                        break;
-                                    }
-                                    stringValue += String.fromCharCode(hexValue);
-                                    at += 5;
                                 } else {
-                                    failed = true;
-                                    break;
+                                    // \b \f \uXXXX 等不支持，直接输出原字符
+                                    stringValue += currentCh;
                                 }
+                                at++;
                                 segmentStart = at;
                                 continue;
                             }
-                            if (currentCh < " ") {
-                                failed = true;
-                                break;
-                            }
                             at++;
                         }
-                        if (failed) {
-                            break;
-                        }
-                        if (currentCh !== "\"") {
+                        if (at >= textLength && currentCh !== "\"") {
                             failed = true;
                             break;
                         }
@@ -548,71 +496,27 @@
                         currentCh = chars[at];
                         if (currentCh === "\"") {
                             stringValue += "\"";
-                            at++;
-                        } else if (currentCh === "/") {
-                            stringValue += "/";
-                            at++;
                         } else if (currentCh === "\\") {
                             stringValue += "\\";
-                            at++;
-                        } else if (currentCh === "b") {
-                            stringValue += "\b";
-                            at++;
-                        } else if (currentCh === "f") {
-                            stringValue += "\f";
-                            at++;
+                        } else if (currentCh === "/") {
+                            stringValue += "/";
                         } else if (currentCh === "n") {
                             stringValue += "\n";
-                            at++;
                         } else if (currentCh === "r") {
                             stringValue += "\r";
-                            at++;
                         } else if (currentCh === "t") {
                             stringValue += "\t";
-                            at++;
-                        } else if (currentCh === "u") {
-                            if (at + 4 >= textLength) {
-                                failed = true;
-                                break;
-                            }
-                            hexValue = 0;
-                            manualIndex = at + 1;
-                            while (manualIndex < at + 5) {
-                                digitChar = chars[manualIndex];
-                                if (digitChar >= "0" && digitChar <= "9") {
-                                    hexValue = hexValue * 16 + (digitChar.charCodeAt(0) - 48);
-                                } else if (digitChar >= "A" && digitChar <= "F") {
-                                    hexValue = hexValue * 16 + (digitChar.charCodeAt(0) - 55);
-                                } else if (digitChar >= "a" && digitChar <= "f") {
-                                    hexValue = hexValue * 16 + (digitChar.charCodeAt(0) - 87);
-                                } else {
-                                    failed = true;
-                                    break;
-                                }
-                                manualIndex++;
-                            }
-                            if (failed) {
-                                break;
-                            }
-                            stringValue += String.fromCharCode(hexValue);
-                            at += 5;
                         } else {
-                            failed = true;
-                            break;
+                            // \b \f \uXXXX 等不支持，直接输出原字符
+                            stringValue += currentCh;
                         }
+                        at++;
                         segmentStart = at;
                         continue;
                     }
-                    if (currentCh < " ") {
-                        failed = true;
-                        break;
-                    }
                     at++;
                 }
-                if (failed) {
-                    break;
-                }
-                if (currentCh !== "\"") {
+                if (at >= textLength && currentCh !== "\"") {
                     failed = true;
                     break;
                 }
@@ -711,9 +615,6 @@
 
             if (currentCh === "-" || (currentCh >= "0" && currentCh <= "9")) {
                 numberStart = at;
-                fractionDigits = 0;
-                exponentDigits = 0;
-                numberStr = null;
                 isNegative = false;
 
                 if (currentCh === "-") {
@@ -723,26 +624,17 @@
                         failed = true;
                         break;
                     }
+                    currentCh = chars[at];
                 }
 
-                currentCh = chars[at];
                 if (currentCh === "0") {
                     numValue = 0;
                     at++;
-                    if (at < textLength) {
-                        currentCh = chars[at];
-                        if (currentCh >= "0" && currentCh <= "9") {
-                            failed = true;
-                            break;
-                        }
-                    }
+                    // currentCh 留在 "0"，下面用 at < textLength 判断是否还有后续字符
                 } else if (currentCh >= "1" && currentCh <= "9") {
                     numValue = digitValues[currentCh];
                     at++;
-                    while (true) {
-                        if (at >= textLength) {
-                            break;
-                        }
+                    while (at < textLength) {
                         currentCh = chars[at];
                         if (currentCh < "0" || currentCh > "9") {
                             break;
@@ -755,67 +647,26 @@
                     break;
                 }
 
+                // 整数快速路径：仅当下一个字符是 '.' 时才进入浮点解析
+                // 科学计数法不支持（实际数据从未使用，由 JSON.as / FastJSON.as 兜底）
                 if (at < textLength && chars[at] === ".") {
-                    numberStr = text.substring(numberStart, at);
-                    numberStr += ".";
                     at++;
+                    fractionDigits = 0;
                     while (at < textLength) {
                         currentCh = chars[at];
                         if (currentCh < "0" || currentCh > "9") {
                             break;
                         }
                         fractionDigits++;
-                        numberStr += currentCh;
                         at++;
                     }
                     if (fractionDigits === 0) {
                         failed = true;
                         break;
                     }
-                }
-
-                if (at < textLength) {
-                    currentCh = chars[at];
-                    if (currentCh === "e" || currentCh === "E") {
-                        if (numberStr == null) {
-                            numberStr = text.substring(numberStart, at);
-                        }
-                        numberStr += currentCh;
-                        at++;
-                        if (at < textLength) {
-                            currentCh = chars[at];
-                            if (currentCh === "+" || currentCh === "-") {
-                                numberStr += currentCh;
-                                at++;
-                            }
-                        }
-                        while (at < textLength) {
-                            currentCh = chars[at];
-                            if (currentCh < "0" || currentCh > "9") {
-                                break;
-                            }
-                            exponentDigits++;
-                            numberStr += currentCh;
-                            at++;
-                        }
-                        if (exponentDigits === 0) {
-                            failed = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (numberStr == null) {
-                    if (isNegative) {
-                        numValue = -numValue;
-                    }
-                } else {
-                    numValue = Number(numberStr);
-                }
-
-                if (isNaN(numValue)) {
-                    failed = true;
-                    break;
+                    numValue = Number(text.substring(numberStart, at));
+                } else if (isNegative) {
+                    numValue = -numValue;
                 }
 
                 if (targetKind === TARGET_ROOT) {
@@ -844,15 +695,7 @@
             }
         }
 
-        usedFrames = stackRefs.length;
-        cleanupIndex = 0;
-        while (cleanupIndex < usedFrames) {
-            stackRefs[cleanupIndex] = null;
-            stackKeys[cleanupIndex] = null;
-            cleanupIndex++;
-        }
-
-        if (usedFrames > 256) {
+        if (stackRefs.length > 256) {
             this.parseFrameTypes = new Array(64);
             this.parseFrameTypes.length = 0;
             this.parseFrameStates = new Array(64);
