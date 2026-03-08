@@ -538,11 +538,22 @@ class org.flashNight.gesh.json.JSONTest {
     private function testStringifyEscapes():Void {
         trace("\n--- stringify: 转义与控制字符 ---");
         var self:JSONTest = this;
+        // JSON / FastJSON 转义控制字符
+        var jsonEsc:String = this.jsonParser.stringify("a\nb\tc\rd");
+        this.assertContains("JSON stringify 含 \\n", jsonEsc, "\\n");
+        this.assertContains("JSON stringify 含 \\t", jsonEsc, "\\t");
+        this.assertContains("JSON stringify 含 \\r", jsonEsc, "\\r");
+        var fastEsc:String = this.fastParser.stringify("a\nb\tc\rd");
+        this.assertContains("FastJSON stringify 含 \\n", fastEsc, "\\n");
+        this.assertContains("FastJSON stringify 含 \\t", fastEsc, "\\t");
+        this.assertContains("FastJSON stringify 含 \\r", fastEsc, "\\r");
+        // LiteJSON 不转义控制字符（与 parse 不处理转义序列对齐，原样输出）
+        var liteEsc:String = this.liteParser.stringify("a\nb\tc\rd");
+        this.assert(liteEsc.indexOf("\\n") < 0, "LiteJSON stringify 不转义 \\n");
+        this.assert(liteEsc.indexOf("\\t") < 0, "LiteJSON stringify 不转义 \\t");
+        this.assert(liteEsc.indexOf("\\r") < 0, "LiteJSON stringify 不转义 \\r");
+        // \ 和 " 结构性转义 — 三套实现一致
         this.forEachParser(function(parser:IJSON, name:String):Void {
-            var escaped:String = parser.stringify("a\nb\tc\rd");
-            self.assertContains(name + " stringify 含 \\n", escaped, "\\n");
-            self.assertContains(name + " stringify 含 \\t", escaped, "\\t");
-            self.assertContains(name + " stringify 含 \\r", escaped, "\\r");
             var quoted:String = parser.stringify("\"\\\\");
             self.assertContains(name + " stringify 引号转义", quoted, "\\\"");
             self.assertContains(name + " stringify 反斜杠转义", quoted, "\\\\");
@@ -553,7 +564,8 @@ class org.flashNight.gesh.json.JSONTest {
         this.assertContains("FastJSON stringify 含 \\f", this.fastParser.stringify("\b\f"), "\\f");
         var control:String = String.fromCharCode(1);
         this.assertContains("JSON stringify 控制字符转 \\u", this.jsonParser.stringify(control), "\\u0001");
-        this.assertContains("LiteJSON stringify 控制字符转 \\u", this.liteParser.stringify(control), "\\u0001");
+        // LiteJSON 不转义控制字符，原样输出
+        this.assert(this.liteParser.stringify(control).indexOf("\\u0001") < 0, "LiteJSON stringify 不转义控制字符");
         this.assertContains("FastJSON stringify 控制字符转 \\u", this.fastParser.stringify(control), "\\u0001");
     }
 
@@ -645,9 +657,10 @@ class org.flashNight.gesh.json.JSONTest {
         this.assertEqual("JSON 仍保留已解析根对象", 1, jsonResult.value.a);
         this.assertFastJSONThrows("FastJSON trailing token 直接抛错", "{\"a\":1}xyz");
         var liteEncoded:String = this.liteParser.stringify("\b\f");
-        this.assertEqual("LiteJSON stringify 输出 \\b\\f", "\"\\b\\f\"", liteEncoded);
-        // LiteJSON parse 不还原 \b\f，原样含反斜杠
-        this.assertEqual("LiteJSON parse 自身 stringify 后 \\b\\f raw", "\\b\\f", this.liteParser.parse(liteEncoded));
+        // LiteJSON 不转义控制字符，原样包裹引号
+        this.assertEqual("LiteJSON stringify 输出 \\b\\f raw", "\"\b\f\"", liteEncoded);
+        // round-trip: parse 读回原始控制字符
+        this.assertEqual("LiteJSON parse 自身 stringify 后 \\b\\f", "\b\f", this.liteParser.parse(liteEncoded));
     }
 
     private function testErrorHandling():Void {
@@ -1286,8 +1299,8 @@ class org.flashNight.gesh.json.JSONTest {
         trace("  冷路径: 使用有限对象变体循环并按批次聚合多次冷操作，避免缓存复用同时维持计时置信度。");
         var scales:Array = [
             {items: 10, desc: "小(10项)", stringifyStart: 512, stringifyMax: 65536, coldVariants: 128, coldBatch: 32, coldStart: 8, coldMaxIters: 4096, hotStart: 512, hotMax: 50000},
-            {items: 50, desc: "中(50项)", stringifyStart: 256, stringifyMax: 32768, coldVariants: 128, coldBatch: 64, coldStart: 4, coldMaxIters: 2048, hotStart: 256, hotMax: 30000},
-            {items: 200, desc: "大(200项)", stringifyStart: 128, stringifyMax: 8192, coldVariants: 32, coldBatch: 64, coldStart: 2, coldMaxIters: 1024, hotStart: 128, hotMax: 12000}
+            {items: 50, desc: "中(50项)", stringifyStart: 512, stringifyMax: 65536, coldVariants: 128, coldBatch: 64, coldStart: 4, coldMaxIters: 2048, hotStart: 256, hotMax: 30000},
+            {items: 200, desc: "大(200项)", stringifyStart: 512, stringifyMax: 131072, coldVariants: 32, coldBatch: 64, coldStart: 2, coldMaxIters: 1024, hotStart: 128, hotMax: 12000}
         ];
         var repeats:Number = 5;
         var targetAdjustedMs:Number = 120;

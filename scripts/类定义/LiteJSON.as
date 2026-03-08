@@ -34,207 +34,53 @@
      * @return LiteJSON 字符串
      */
     public function stringify(arg):String {
-        // 定义堆栈类型常量（直接使用硬编码数值）
-        // 0: VALUE, 1: KEY, 2: COMMA, 3: COLON, 4: END_OBJECT, 5: END_ARRAY
-
-        // 初始化结果字符串
-        var resultStr:String = "";
-
-        // 初始化手动管理的堆栈
-        var stackTypes:Array = new Array(64); // 预分配容量
-        var stackData:Array = new Array(64);
-        var stackPtr:Number = 0;
-
-        // 推入初始值（类型: VALUE = 0）
-        stackTypes[stackPtr] = 0; // VALUE
-        stackData[stackPtr++] = arg;
-
-        // 声明 propertyKeys 和 propertyValues
-        var propertyKeys:Array = [];
-        var propertyValues:Array = [];
-
-        // 主循环，替代递归
-        while (stackPtr > 0) {
-            // 弹出堆栈顶部元素
-            stackPtr--;
-            var type:Number = stackTypes[stackPtr];
-            var data:Object = stackData[stackPtr];
-
-            if (type === 0) { // VALUE
-                if (typeof data === "object") {
-                    if (data == null) {
-                        resultStr += "null";
-                    } else if (data instanceof Array) {
-                        var len:Number = data.length;
-                        resultStr += "[";
-                        if (len > 0) {
-                            // 推入结束标记（END_ARRAY = 5）
-                            stackTypes[stackPtr] = 5; // END_ARRAY
-                            stackData[stackPtr++] = null;
-                            // 倒序推入数组元素和逗号
-                            for (var i:Number = len - 1; i >= 0; i--) {
-                                if (i < len - 1) {
-                                    stackTypes[stackPtr] = 2; // COMMA
-                                    stackData[stackPtr++] = null;
-                                }
-                                stackTypes[stackPtr] = 0; // VALUE
-                                stackData[stackPtr++] = data[i];
-                            }
-                        } else {
-                            resultStr += "]";
-                        }
-                    } else {
-                        // 处理对象
-                    resultStr += "{";
-                    propertyKeys.length = 32;
-                    propertyValues.length = 32;
-
-                    var index:Number = 0;
-                    for (var key:String in data) {
-                        var value:Object = data[key];
-                        if (typeof value !== "undefined" && typeof value !== "function") {
-                            propertyKeys[index] = key;
-                            propertyValues[index] = value;
-                            index++;
-                        }
-                    }
-
-                    // Adjust length to match the number of added entries, if necessary.
-                    propertyKeys.length = index;
-                    propertyValues.length = index;
-
-                        var numKeys:Number = propertyKeys.length;
-                        if (numKeys > 0) {
-                            // 推入结束标记（END_OBJECT = 4）
-                            stackTypes[stackPtr] = 4; // END_OBJECT
-                            stackData[stackPtr++] = null;
-                            // 倒序推入键值对和逗号
-                            for (var k:Number = numKeys - 1; k >= 0; k--) {
-                                var propKey:String = propertyKeys[k];
-                                var propValue:Object = propertyValues[k];
-                                if (k < numKeys - 1) {
-                                    stackTypes[stackPtr] = 2; // COMMA
-                                    stackData[stackPtr++] = null;
-                                }
-                                // 推入值（VALUE = 0）
-                                stackTypes[stackPtr] = 0; // VALUE
-                                stackData[stackPtr++] = propValue;
-                                // 推入冒号（COLON = 3）
-                                stackTypes[stackPtr] = 3; // COLON
-                                stackData[stackPtr++] = null;
-                                // 推入键（KEY = 1）
-                                stackTypes[stackPtr] = 1; // KEY
-                                stackData[stackPtr++] = propKey;
-                            }
-                        } else {
-                            resultStr += "}";
-                        }
-                    }
-                } else if (typeof data === "string") {
-                    // 处理字符串并转义（优化部分）
-                    var str = data;
-                    var escStr:String = "\"";
-                    var chars:Array = str.split(""); // 使用 split("") 转换成字符数组
-                    var strLen:Number = chars.length;
-                    for (var si:Number = 0; si < strLen; si++) {
-                        var c:String = chars[si];
-                        if (c >= " ") {
-                            if (c === "\\" || c === "\"") {
-                                escStr += "\\" + c;
-                            } else {
-                                escStr += c;
-                            }
-                        } else {
-                            switch (c) {
-                                case "\b":
-                                    escStr += "\\b";
-                                    break;
-                                case "\f":
-                                    escStr += "\\f";
-                                    break;
-                                case "\n":
-                                    escStr += "\\n";
-                                    break;
-                                case "\r":
-                                    escStr += "\\r";
-                                    break;
-                                case "\t":
-                                    escStr += "\\t";
-                                    break;
-                                default:
-                                    var cc:Number = c.charCodeAt(0);
-                                    var hc:String = cc.toString(16);
-                                    while (hc.length < 4) {
-                                        hc = "0" + hc;
-                                    }
-                                    escStr += "\\u" + hc;
-                            }
-                        }
-                    }
-                    escStr += "\"";
-                    resultStr += escStr;
-                } else if (typeof data === "number") {
-                    resultStr += isFinite(data) ? String(data) : "null";
-                } else if (typeof data === "boolean") {
-                    resultStr += String(data);
+        var tv:String = typeof arg;
+        if (tv === "string") {
+            var str:String = String(arg);
+            // 仅转义结构性字符 \ 和 "（与 parse 的 indexOf 扫描对齐，不处理控制字符）
+            if (str.indexOf("\\") < 0 && str.indexOf("\"") < 0) {
+                return "\"" + str + "\"";
+            }
+            return "\"" + str.split("\\").join("\\\\").split("\"").join("\\\"") + "\"";
+        }
+        if (tv === "number") {
+            return isFinite(Number(arg)) ? String(arg) : "null";
+        }
+        if (tv === "boolean") {
+            return arg ? "true" : "false";
+        }
+        if (tv !== "object" || arg == null) {
+            return "null";
+        }
+        var r:String;
+        var i:Number;
+        if (arg instanceof Array) {
+            i = arg.length;
+            if (i === 0) return "[]";
+            r = "[" + this.stringify(arg[0]);
+            i = 1;
+            while (i < arg.length) {
+                r += "," + this.stringify(arg[i]);
+                i++;
+            }
+            return r + "]";
+        }
+        // 对象：for..in 内联处理，无需收集 keys 数组
+        var key:String;
+        var first:Boolean = true;
+        r = "{";
+        for (key in arg) {
+            tv = typeof arg[key];
+            if (tv !== "undefined" && tv !== "function") {
+                if (first) {
+                    first = false;
                 } else {
-                    resultStr += "null";
+                    r += ",";
                 }
-            } else if (type === 1) { // KEY
-                // 处理键并转义（优化部分）
-                var keyStr:String = "\"";
-                var keyVal:String = String(data);
-                var keyChars:Array = keyVal.split(""); // 使用 split("") 转换成字符数组
-                var keyLen:Number = keyChars.length;
-                for (var ki:Number = 0; ki < keyLen; ki++) {
-                    var kc:String = keyChars[ki];
-                    if (kc >= " ") {
-                        if (kc === "\\" || kc === "\"") {
-                            keyStr += "\\" + kc;
-                        } else {
-                            keyStr += kc;
-                        }
-                    } else {
-                        switch (kc) {
-                            case "\b":
-                                keyStr += "\\b";
-                                break;
-                            case "\f":
-                                keyStr += "\\f";
-                                break;
-                            case "\n":
-                                keyStr += "\\n";
-                                break;
-                            case "\r":
-                                keyStr += "\\r";
-                                break;
-                            case "\t":
-                                keyStr += "\\t";
-                                break;
-                            default:
-                                var kcc:Number = kc.charCodeAt(0);
-                                var khc:String = kcc.toString(16);
-                                while (khc.length < 4) {
-                                    khc = "0" + khc;
-                                }
-                                keyStr += "\\u" + khc;
-                        }
-                    }
-                }
-                keyStr += "\"";
-                resultStr += keyStr;
-            } else if (type === 2) { // COMMA
-                resultStr += ",";
-            } else if (type === 3) { // COLON
-                resultStr += ":";
-            } else if (type === 4) { // END_OBJECT
-                resultStr += "}";
-            } else if (type === 5) { // END_ARRAY
-                resultStr += "]";
+                r += "\"" + key + "\":" + this.stringify(arg[key]);
             }
         }
-
-        return resultStr;
+        return r + "}";
     }
 
     /**
@@ -423,8 +269,7 @@
                         continue;
                     }
                     tRef = frameRef;
-                    tKey = stackAux[frameIndex];
-                    stackAux[frameIndex] = tKey + 1;
+                    stackAux[frameIndex] = (tKey = stackAux[frameIndex]) + 1;
                     stackStates[frameIndex] = 4; // ARR_COMMA_OR_END
 
                 } else {
@@ -445,8 +290,7 @@
                             currentCh = "";
                         }
                         tRef = frameRef;
-                        tKey = stackAux[frameIndex];
-                        stackAux[frameIndex] = tKey + 1;
+                        stackAux[frameIndex] = (tKey = stackAux[frameIndex]) + 1;
                         // 状态保持 4(ARR_COMMA_OR_END)，下轮直接判逗号/]
                     } else if (currentCh === "]") {
                         at++;
@@ -466,15 +310,13 @@
 
             if (currentCh === "\"") {
                 // value 字符串 — indexOf 原生扫描
-                at++;
-                segmentStart = at;
+                segmentStart = ++at;
                 at = text.indexOf("\"", at);
                 if (at < 0) {
                     failed = true;
                     break;
                 }
-                tRef[tKey] = text.substring(segmentStart, at);
-                at++;
+                tRef[tKey] = text.substring(segmentStart, at++);
                 continue;
             }
 
@@ -484,8 +326,7 @@
                 at++;
                 tRef[tKey] = object;
                 stackStates[stackPtr] = 1; // OBJ_KEY_OR_END
-                stackRefs[stackPtr] = object;
-                stackPtr++;
+                stackRefs[stackPtr++] = object;
                 continue;
             }
 
@@ -495,8 +336,7 @@
                 tRef[tKey] = array;
                 stackStates[stackPtr] = 3; // ARR_VALUE_OR_END
                 stackRefs[stackPtr] = array;
-                stackAux[stackPtr] = 0;
-                stackPtr++;
+                stackAux[stackPtr++] = 0;
                 continue;
             }
 
