@@ -328,59 +328,18 @@
                         break;
                     }
 
-                    // 解析 key 字符串
-                    stringValue = null;
+                    // 解析 key 字符串 — 无转义快速扫描
                     at++;
                     segmentStart = at;
-                    while (at < textLength) {
-                        currentCh = chars[at];
-                        if (currentCh === "\"") {
-                            if (stringValue == null) {
-                                stringValue = text.substring(segmentStart, at);
-                            } else if (at > segmentStart) {
-                                stringValue += text.substring(segmentStart, at);
-                            }
-                            at++;
-                            break;
-                        }
-                        if (currentCh === "\\") {
-                            if (stringValue == null) {
-                                stringValue = "";
-                            }
-                            if (at > segmentStart) {
-                                stringValue += text.substring(segmentStart, at);
-                            }
-                            at++;
-                            if (at >= textLength) {
-                                failed = true;
-                                break;
-                            }
-                            currentCh = chars[at];
-                            if (currentCh === "\"") {
-                                stringValue += "\"";
-                            } else if (currentCh === "\\") {
-                                stringValue += "\\";
-                            } else if (currentCh === "/") {
-                                stringValue += "/";
-                            } else if (currentCh === "n") {
-                                stringValue += "\n";
-                            } else if (currentCh === "r") {
-                                stringValue += "\r";
-                            } else if (currentCh === "t") {
-                                stringValue += "\t";
-                            } else {
-                                stringValue += currentCh;
-                            }
-                            at++;
-                            segmentStart = at;
-                            continue;
-                        }
+                    while (at < textLength && chars[at] !== "\"") {
                         at++;
                     }
-                    if (at >= textLength && currentCh !== "\"") {
+                    if (at >= textLength) {
                         failed = true;
                         break;
                     }
+                    stringValue = text.substring(segmentStart, at);
+                    at++;
 
                     stackAux[frameIndex] = stringValue;
 
@@ -481,58 +440,18 @@
             }
 
             if (currentCh === "\"") {
-                stringValue = null;
+                // value 字符串 — 无转义快速扫描
                 at++;
                 segmentStart = at;
-                while (at < textLength) {
-                    currentCh = chars[at];
-                    if (currentCh === "\"") {
-                        if (stringValue == null) {
-                            stringValue = text.substring(segmentStart, at);
-                        } else if (at > segmentStart) {
-                            stringValue += text.substring(segmentStart, at);
-                        }
-                        at++;
-                        break;
-                    }
-                    if (currentCh === "\\") {
-                        if (stringValue == null) {
-                            stringValue = "";
-                        }
-                        if (at > segmentStart) {
-                            stringValue += text.substring(segmentStart, at);
-                        }
-                        at++;
-                        if (at >= textLength) {
-                            failed = true;
-                            break;
-                        }
-                        currentCh = chars[at];
-                        if (currentCh === "\"") {
-                            stringValue += "\"";
-                        } else if (currentCh === "\\") {
-                            stringValue += "\\";
-                        } else if (currentCh === "/") {
-                            stringValue += "/";
-                        } else if (currentCh === "n") {
-                            stringValue += "\n";
-                        } else if (currentCh === "r") {
-                            stringValue += "\r";
-                        } else if (currentCh === "t") {
-                            stringValue += "\t";
-                        } else {
-                            stringValue += currentCh;
-                        }
-                        at++;
-                        segmentStart = at;
-                        continue;
-                    }
+                while (at < textLength && chars[at] !== "\"") {
                     at++;
                 }
-                if (at >= textLength && currentCh !== "\"") {
+                if (at >= textLength) {
                     failed = true;
                     break;
                 }
+                stringValue = text.substring(segmentStart, at);
+                at++;
 
                 if (targetKind === TARGET_ROOT) {
                     rootValue = stringValue;

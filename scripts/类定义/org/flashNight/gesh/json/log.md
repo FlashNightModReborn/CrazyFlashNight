@@ -80,44 +80,36 @@ line2	tab
 ret, actual=line1
 line2	tab
 ret)
-[PASS] LiteJSON \n\t\r (expected=line1
-line2	tab
-ret, actual=line1
-line2	tab
-ret)
 [PASS] FastJSON \n\t\r (expected=line1
 line2	tab
 ret, actual=line1
 line2	tab
 ret)
+[PASS] LiteJSON \n\t\r raw (expected=line1\nline2\ttab\rret, actual=line1\nline2\ttab\rret)
 [PASS] JSON 反斜杠 (expected=C:\Users\test, actual=C:\Users\test)
 [PASS] JSON 引号转义 (expected=He said "hi", actual=He said "hi")
-[PASS] LiteJSON 反斜杠 (expected=C:\Users\test, actual=C:\Users\test)
-[PASS] LiteJSON 引号转义 (expected=He said "hi", actual=He said "hi")
 [PASS] FastJSON 反斜杠 (expected=C:\Users\test, actual=C:\Users\test)
 [PASS] FastJSON 引号转义 (expected=He said "hi", actual=He said "hi")
+[PASS] LiteJSON 含 \" 解析失败 不应抛错
+[PASS] LiteJSON 含 \" 解析失败 应返回 undefined
 [PASS] JSON \/ 转义 (expected=http://example.com, actual=http://example.com)
-[PASS] LiteJSON \/ 转义 (expected=http://example.com, actual=http://example.com)
 [PASS] FastJSON \/ 转义 (expected=http://example.com, actual=http://example.com)
+[PASS] LiteJSON \/ raw (expected=http:\/\/example.com, actual=http:\/\/example.com)
 [PASS] JSON Unicode \u002C (expected=Hello,World, actual=Hello,World)
-[PASS] LiteJSON Unicode \u002C fallback (expected=Hellou002CWorld, actual=Hellou002CWorld)
+[PASS] LiteJSON Unicode \u002C raw (expected=Hello\u002CWorld, actual=Hello\u002CWorld)
 [PASS] FastJSON Unicode \u002C (expected=Hello,World, actual=Hello,World)
 [PASS] JSON 连续 Unicode (expected=Hi, actual=Hi)
-[PASS] LiteJSON 连续 Unicode fallback (expected=u0048u0069, actual=u0048u0069)
+[PASS] LiteJSON 连续 Unicode raw (expected=\u0048\u0069, actual=\u0048\u0069)
 [PASS] FastJSON 连续 Unicode (expected=Hi, actual=Hi)
 [PASS] JSON parse \b\f (expected=, actual=)
-[PASS] LiteJSON parse \b\f fallback (expected=bf, actual=bf)
+[PASS] LiteJSON parse \b\f raw (expected=\b\f, actual=\b\f)
 [PASS] FastJSON parse \b\f (expected=, actual=)
 [PASS] JSON 连续转义序列 (expected=
 	
 \, actual=
 	
 \)
-[PASS] LiteJSON 连续转义序列 (expected=
-	
-\, actual=
-	
-\)
+[PASS] LiteJSON 连续转义序列 raw (expected=\n\t\r\\, actual=\n\t\r\\)
 [PASS] FastJSON 连续转义序列 (expected=
 	
 \, actual=
@@ -159,11 +151,12 @@ ret)
 
 --- parse: 边界行为 ---
 [PASS] JSON 空白字符串值 (expected=   , actual=   )
-[PASS] JSON 字符串含 JSON 语法 (expected={ "a": [1,2] }, actual={ "a": [1,2] })
 [PASS] LiteJSON 空白字符串值 (expected=   , actual=   )
-[PASS] LiteJSON 字符串含 JSON 语法 (expected={ "a": [1,2] }, actual={ "a": [1,2] })
 [PASS] FastJSON 空白字符串值 (expected=   , actual=   )
+[PASS] JSON 字符串含 JSON 语法 (expected={ "a": [1,2] }, actual={ "a": [1,2] })
 [PASS] FastJSON 字符串含 JSON 语法 (expected={ "a": [1,2] }, actual={ "a": [1,2] })
+[PASS] LiteJSON 含 \" 的字符串值 不应抛错
+[PASS] LiteJSON 含 \" 的字符串值 应返回 undefined
 [PASS] JSON 长字符串长度 (expected=800, actual=800)
 [PASS] JSON 重复键后者覆盖 (expected=2, actual=2)
 [PASS] LiteJSON 长字符串长度 (expected=800, actual=800)
@@ -222,10 +215,10 @@ ret)
 [PASS] FastJSON stringify 0 (expected=0, actual=0)
 [PASS] JSON 特殊键名空格 (expected=1, actual=1)
 [PASS] JSON 特殊键名引号 (expected=2, actual=2)
-[PASS] LiteJSON 特殊键名空格 (expected=1, actual=1)
-[PASS] LiteJSON 特殊键名引号 (expected=2, actual=2)
 [PASS] FastJSON 特殊键名空格 (expected=1, actual=1)
 [PASS] FastJSON 特殊键名引号 (expected=2, actual=2)
+[PASS] LiteJSON 含引号键名往返失败 不应抛错
+[PASS] LiteJSON 含引号键名往返失败 应返回 undefined
 
 --- stringify: undefined / function 过滤 ---
 [PASS] JSON 保留普通属性 (expected=1, actual=1)
@@ -326,8 +319,8 @@ ret)
 [PASS] FastJSON 解析不完整指数 1e (expected=1, actual=1)
 
 --- 差异: LiteJSON / FastJSON 当前行为 ---
-[PASS] LiteJSON \uXXXX fallback 输出原字符 (expected=u0041u4E2D, actual=u0041u4E2D)
-[PASS] LiteJSON \b\f fallback 输出原字符 (expected=bf, actual=bf)
+[PASS] LiteJSON \uXXXX raw 含反斜杠 (expected=\u0041\u4E2D, actual=\u0041\u4E2D)
+[PASS] LiteJSON \b\f raw 含反斜杠 (expected=\b\f, actual=\b\f)
 [PASS] LiteJSON 不支持科学记数法 不应抛错
 [PASS] LiteJSON 不支持科学记数法 应返回 undefined
 [PASS] LiteJSON 拒绝根值后的 trailing token 不应抛错
@@ -336,7 +329,7 @@ ret)
 [PASS] JSON 仍保留已解析根对象 (expected=1, actual=1)
 [PASS] FastJSON trailing token 直接抛错
 [PASS] LiteJSON stringify 输出 \b\f (expected="\b\f", actual="\b\f")
-[PASS] LiteJSON parse 自身 stringify 后 \b\f fallback (expected=bf, actual=bf)
+[PASS] LiteJSON parse 自身 stringify 后 \b\f raw (expected=\b\f, actual=\b\f)
 
 --- 错误处理: 非法输入 ---
 [PASS] JSON 记录错误: 缺少冒号 (errors=2)
@@ -381,7 +374,7 @@ ret)
 [PASS] FastJSON 严格冷启动 stringify 不复用旧缓存
 
 ---------- 正确性汇总 ----------
-通过: 322 / 322  失败: 0
+通过: 323 / 323  失败: 0
 
 ========== 性能基准 ==========
 
@@ -390,42 +383,42 @@ ret)
   冷路径: 使用有限变体循环并按批次聚合多次冷操作，避免缓存复用同时维持计时置信度。
 
   小(10项) | 895 字符
-    JSON:         3.275 ms/次 | 40 次/轮 | 中位总 131.00 ms | 0.26 MB/s | 波动 1.05x
-    LiteJSON:     0.766 ms/次 | 192 次/轮 | 中位总 147.00 ms | 1.11 MB/s | 波动 1.03x
-    FastJSON(失配): 1.078 ms/次 | 8 批/轮 x32 = 256 次 | 中位总 276.00 ms | 0.79 MB/s | 波动 1.02x
-    FastJSON(严冷): 1.070 ms/次 | 8 批/轮 x32 = 256 次 | 中位总 274.00 ms | 0.80 MB/s | 波动 1.02x
-    FastJSON(热): 3.20 us/次 | 50000 次/轮 | 中位总 160.00 ms | 266.73 MB/s | 波动 1.01x
+    JSON:         3.375 ms/次 | 40 次/轮 | 中位总 135.00 ms | 0.25 MB/s | 波动 1.05x
+    LiteJSON:     0.755 ms/次 | 192 次/轮 | 中位总 145.00 ms | 1.13 MB/s | 波动 1.03x
+    FastJSON(失配): 1.074 ms/次 | 8 批/轮 x32 = 256 次 | 中位总 275.00 ms | 0.79 MB/s | 波动 1.07x
+    FastJSON(严冷): 1.078 ms/次 | 8 批/轮 x32 = 256 次 | 中位总 276.00 ms | 0.79 MB/s | 波动 1.08x
+    FastJSON(热): 3.18 us/次 | 50000 次/轮 | 中位总 159.00 ms | 268.41 MB/s | 波动 1.03x
     --
-    JSON / LiteJSON = 4.28x
-    LiteJSON / FastJSON(严冷) = 0.72x
-    FastJSON 严冷 / 失配 = 0.99x
-    FastJSON 失配 / 热 = 336.91x
-    FastJSON 严冷 / 热 = 334.47x
+    JSON / LiteJSON = 4.47x
+    LiteJSON / FastJSON(严冷) = 0.70x
+    FastJSON 严冷 / 失配 = 1.00x
+    FastJSON 失配 / 热 = 337.80x
+    FastJSON 严冷 / 热 = 339.03x
 
   中(50项) | 4035 字符
-    JSON:         15.250 ms/次 | 8 次/轮 | 中位总 122.00 ms | 0.25 MB/s | 波动 1.08x
-    LiteJSON:     3.458 ms/次 | 48 次/轮 | 中位总 166.00 ms | 1.11 MB/s | 波动 1.14x
-    FastJSON(失配): 4.738 ms/次 | 4 批/轮 x64 = 256 次 | 中位总 1213.00 ms | 0.81 MB/s | 波动 1.02x
-    FastJSON(严冷): 4.719 ms/次 | 4 批/轮 x64 = 256 次 | 中位总 1208.00 ms | 0.82 MB/s | 波动 1.02x
-    FastJSON(热): 9.09 us/次 | 16384 次/轮 | 中位总 149.00 ms | 423.13 MB/s | 波动 1.03x
+    JSON:         14.600 ms/次 | 10 次/轮 | 中位总 146.00 ms | 0.26 MB/s | 波动 1.03x
+    LiteJSON:     3.417 ms/次 | 48 次/轮 | 中位总 164.00 ms | 1.13 MB/s | 波动 1.08x
+    FastJSON(失配): 4.719 ms/次 | 4 批/轮 x64 = 256 次 | 中位总 1208.00 ms | 0.82 MB/s | 波动 1.01x
+    FastJSON(严冷): 4.664 ms/次 | 4 批/轮 x64 = 256 次 | 中位总 1194.00 ms | 0.83 MB/s | 波动 1.01x
+    FastJSON(热): 9.28 us/次 | 14336 次/轮 | 中位总 133.00 ms | 414.78 MB/s | 波动 1.03x
     --
-    JSON / LiteJSON = 4.41x
+    JSON / LiteJSON = 4.27x
     LiteJSON / FastJSON(严冷) = 0.73x
-    FastJSON 严冷 / 失配 = 1.00x
-    FastJSON 失配 / 热 = 521.02x
-    FastJSON 严冷 / 热 = 518.87x
+    FastJSON 严冷 / 失配 = 0.99x
+    FastJSON 失配 / 热 = 508.63x
+    FastJSON 严冷 / 热 = 502.74x
 
   大(200项) | 16244 字符
-    JSON:         59.500 ms/次 | 4 次/轮 | 中位总 238.00 ms | 0.26 MB/s | 波动 1.02x
-    LiteJSON:     13.813 ms/次 | 16 次/轮 | 中位总 221.00 ms | 1.12 MB/s | 波动 1.04x
-    FastJSON(失配): 18.836 ms/次 | 2 批/轮 x64 = 128 次 | 中位总 2411.00 ms | 0.82 MB/s | 波动 1.01x
+    JSON:         59.000 ms/次 | 3 次/轮 | 中位总 177.00 ms | 0.26 MB/s | 波动 1.05x
+    LiteJSON:     13.438 ms/次 | 16 次/轮 | 中位总 215.00 ms | 1.15 MB/s | 波动 1.08x
+    FastJSON(失配): 18.688 ms/次 | 2 批/轮 x64 = 128 次 | 中位总 2392.00 ms | 0.83 MB/s | 波动 1.01x
     FastJSON(严冷): 18.711 ms/次 | 2 批/轮 x64 = 128 次 | 中位总 2395.00 ms | 0.83 MB/s | 波动 1.01x
     FastJSON(热): 31.25 us/次 | 4096 次/轮 | 中位总 128.00 ms | 495.73 MB/s | 波动 1.02x
     --
-    JSON / LiteJSON = 4.31x
-    LiteJSON / FastJSON(严冷) = 0.74x
-    FastJSON 严冷 / 失配 = 0.99x
-    FastJSON 失配 / 热 = 602.75x
+    JSON / LiteJSON = 4.39x
+    LiteJSON / FastJSON(严冷) = 0.72x
+    FastJSON 严冷 / 失配 = 1.00x
+    FastJSON 失配 / 热 = 598.00x
     FastJSON 严冷 / 热 = 598.75x
 
 --- stringify 性能基准（等价路径 + 基线扣除） ---
@@ -433,60 +426,60 @@ ret)
   冷路径: 使用有限对象变体循环并按批次聚合多次冷操作，避免缓存复用同时维持计时置信度。
 
   小(10项) | 约 895 输出字符
-    JSON:         0.98 us/次 | 65536 次/轮 | 中位总 64.00 ms | 874.02 MB/s | 波动 1.03x
-    LiteJSON:     3.97 us/次 | 32768 次/轮 | 中位总 130.00 ms | 215.14 MB/s | 波动 1.05x
-    FastJSON(失配): 7.42 us/次 | 1024 批/轮 x32 = 32768 次 | 中位总 243.00 ms | 115.10 MB/s | 波动 1.01x
-    FastJSON(严冷): 12.24 us/次 | 1024 批/轮 x32 = 32768 次 | 中位总 401.00 ms | 69.75 MB/s | 波动 1.01x
-    FastJSON(热): 2.90 us/次 | 50000 次/轮 | 中位总 145.00 ms | 294.32 MB/s | 波动 1.03x
+    JSON:         0.95 us/次 | 65536 次/轮 | 中位总 62.00 ms | 902.22 MB/s | 波动 1.08x
+    LiteJSON:     3.97 us/次 | 32768 次/轮 | 中位总 130.00 ms | 215.14 MB/s | 波动 1.04x
+    FastJSON(失配): 7.35 us/次 | 1024 批/轮 x32 = 32768 次 | 中位总 241.00 ms | 116.05 MB/s | 波动 1.05x
+    FastJSON(严冷): 12.24 us/次 | 1024 批/轮 x32 = 32768 次 | 中位总 401.00 ms | 69.75 MB/s | 波动 1.02x
+    FastJSON(热): 2.86 us/次 | 50000 次/轮 | 中位总 143.00 ms | 298.44 MB/s | 波动 1.04x
     --
-    JSON / LiteJSON = 0.25x
+    JSON / LiteJSON = 0.24x
     LiteJSON / FastJSON(严冷) = 0.32x
-    FastJSON 严冷 / 失配 = 1.65x
-    FastJSON 失配 / 热 = 2.56x
-    FastJSON 严冷 / 热 = 4.22x
+    FastJSON 严冷 / 失配 = 1.66x
+    FastJSON 失配 / 热 = 2.57x
+    FastJSON 严冷 / 热 = 4.28x
 
   中(50项) | 约 4035 输出字符
-    JSON:         0.98 us/次 | 32768 次/轮 | 中位总 32.00 ms | 3940.43 MB/s | 波动 1.25x
-    LiteJSON:     3.97 us/次 | 32768 次/轮 | 中位总 130.00 ms | 969.95 MB/s | 波动 1.06x
-    FastJSON(失配): 7.69 us/次 | 512 批/轮 x64 = 32768 次 | 中位总 252.00 ms | 500.37 MB/s | 波动 1.10x
-    FastJSON(严冷): 12.54 us/次 | 512 批/轮 x64 = 32768 次 | 中位总 411.00 ms | 306.80 MB/s | 波动 1.03x
-    FastJSON(热): 2.83 us/次 | 30000 次/轮 | 中位总 85.00 ms | 1358.14 MB/s | 波动 1.07x
+    JSON:         0.98 us/次 | 32768 次/轮 | 中位总 32.00 ms | 3940.43 MB/s | 波动 1.10x
+    LiteJSON:     4.03 us/次 | 32768 次/轮 | 中位总 132.00 ms | 955.26 MB/s | 波动 1.09x
+    FastJSON(失配): 7.63 us/次 | 512 批/轮 x64 = 32768 次 | 中位总 250.00 ms | 504.38 MB/s | 波动 1.04x
+    FastJSON(严冷): 12.66 us/次 | 512 批/轮 x64 = 32768 次 | 中位总 415.00 ms | 303.84 MB/s | 波动 1.03x
+    FastJSON(热): 2.80 us/次 | 30000 次/轮 | 中位总 84.00 ms | 1374.31 MB/s | 波动 1.13x
     --
-    JSON / LiteJSON = 0.25x
+    JSON / LiteJSON = 0.24x
     LiteJSON / FastJSON(严冷) = 0.32x
-    FastJSON 严冷 / 失配 = 1.63x
-    FastJSON 失配 / 热 = 2.71x
-    FastJSON 严冷 / 热 = 4.43x
+    FastJSON 严冷 / 失配 = 1.66x
+    FastJSON 失配 / 热 = 2.72x
+    FastJSON 严冷 / 热 = 4.52x
 
   大(200项) | 约 16244 输出字符
-    JSON:         低于计时分辨率 | 8192 次/轮 | 中位总 8.00 ms | 15863.28 MB/s | 波动 1.14x | 原始/基线 9.00/1.00 ms | 低置信度
-    LiteJSON:     3.91 us/次 | 8192 次/轮 | 中位总 32.00 ms | 3965.82 MB/s | 波动 1.03x
-    FastJSON(失配): 7.42 us/次 | 512 批/轮 x64 = 32768 次 | 中位总 243.00 ms | 2088.99 MB/s | 波动 1.07x
-    FastJSON(严冷): 12.49 us/次 | 384 批/轮 x64 = 24576 次 | 中位总 307.00 ms | 1240.13 MB/s | 波动 1.04x
-    FastJSON(热): 2.92 us/次 | 12000 次/轮 | 中位总 35.00 ms | 5311.37 MB/s | 波动 1.18x
+    JSON:         低于计时分辨率 | 8192 次/轮 | 中位总 8.00 ms | 15863.28 MB/s | 波动 1.29x | 原始/基线 9.00/1.00 ms | 低置信度
+    LiteJSON:     3.91 us/次 | 8192 次/轮 | 中位总 32.00 ms | 3965.82 MB/s | 波动 1.09x
+    FastJSON(失配): 7.66 us/次 | 512 批/轮 x64 = 32768 次 | 中位总 251.00 ms | 2022.41 MB/s | 波动 1.05x
+    FastJSON(严冷): 12.41 us/次 | 384 批/轮 x64 = 24576 次 | 中位总 305.00 ms | 1248.26 MB/s | 波动 1.03x
+    FastJSON(热): 2.83 us/次 | 12000 次/轮 | 中位总 34.00 ms | 5467.58 MB/s | 波动 1.18x
     --
     JSON / LiteJSON = n/a（低置信度）
     LiteJSON / FastJSON(严冷) = 0.31x
-    FastJSON 严冷 / 失配 = 1.68x
-    FastJSON 失配 / 热 = 2.54x
-    FastJSON 严冷 / 热 = 4.28x
+    FastJSON 严冷 / 失配 = 1.62x
+    FastJSON 失配 / 热 = 2.70x
+    FastJSON 严冷 / 热 = 4.38x
 
 --- FastJSON 缓存专项（中规模） ---
   说明: 失配 = 同实例不同 payload；严冷 = 每次新实例；热 = 同 payload / 同对象命中缓存。
   风险: parse 热共享对象引用；stringify 热可能返回旧缓存字符串。
   parse
-    失配: 4.824 ms/次 | 4 批/轮 x64 = 256 次 | 中位总 1235.00 ms | 0.80 MB/s | 波动 1.02x
-    严冷: 4.867 ms/次 | 4 批/轮 x64 = 256 次 | 中位总 1246.00 ms | 0.79 MB/s | 波动 1.02x
-    热: 9.07 us/次 | 14336 次/轮 | 中位总 130.00 ms | 424.35 MB/s | 波动 1.03x
-    严冷 / 失配 = 1.01x
-    失配 / 热 = 532.00x
-    严冷 / 热 = 536.74x
+    失配: 4.805 ms/次 | 4 批/轮 x64 = 256 次 | 中位总 1230.00 ms | 0.80 MB/s | 波动 1.03x
+    严冷: 4.895 ms/次 | 4 批/轮 x64 = 256 次 | 中位总 1253.00 ms | 0.79 MB/s | 波动 1.03x
+    热: 9.00 us/次 | 14336 次/轮 | 中位总 129.00 ms | 427.64 MB/s | 波动 1.02x
+    严冷 / 失配 = 1.02x
+    失配 / 热 = 533.95x
+    严冷 / 热 = 543.94x
   stringify
-    失配: 7.60 us/次 | 512 批/轮 x64 = 32768 次 | 中位总 249.00 ms | 506.40 MB/s | 波动 1.03x
-    严冷: 12.39 us/次 | 512 批/轮 x64 = 32768 次 | 中位总 406.00 ms | 310.58 MB/s | 波动 1.06x
-    热: 2.83 us/次 | 30000 次/轮 | 中位总 85.00 ms | 1358.14 MB/s | 波动 1.11x
-    严冷 / 失配 = 1.63x
-    失配 / 热 = 2.68x
-    严冷 / 热 = 4.37x
+    失配: 7.45 us/次 | 512 批/轮 x64 = 32768 次 | 中位总 244.00 ms | 516.78 MB/s | 波动 1.05x
+    严冷: 12.48 us/次 | 512 批/轮 x64 = 32768 次 | 中位总 409.00 ms | 308.30 MB/s | 波动 1.03x
+    热: 2.80 us/次 | 30000 次/轮 | 中位总 84.00 ms | 1374.31 MB/s | 波动 1.07x
+    严冷 / 失配 = 1.68x
+    失配 / 热 = 2.66x
+    严冷 / 热 = 4.46x
 
 ========== 测试结束 ==========

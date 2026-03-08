@@ -381,32 +381,38 @@ class org.flashNight.gesh.json.JSONTest {
 
     private function testParseEscapes():Void {
         trace("\n--- parse: 转义字符 ---");
-        var self:JSONTest = this;
+        // \n\t\r — JSON/FastJSON 正常转义，LiteJSON 无转义原样输出
         var escJSON:String = "{\"msg\":\"line1\\nline2\\ttab\\rret\"}";
-        this.forEachParser(function(parser:IJSON, name:String):Void {
-            self.assertEqual(name + " \\n\\t\\r", "line1\nline2\ttab\rret", parser.parse(escJSON).msg);
-        });
+        this.assertEqual("JSON \\n\\t\\r", "line1\nline2\ttab\rret", this.jsonParser.parse(escJSON).msg);
+        this.assertEqual("FastJSON \\n\\t\\r", "line1\nline2\ttab\rret", this.fastParser.parse(escJSON).msg);
+        this.assertEqual("LiteJSON \\n\\t\\r raw", "line1\\nline2\\ttab\\rret", this.liteParser.parse(escJSON).msg);
+        // \\ 和 \" — LiteJSON 遇 \" 字符串提前闭合导致整体失败
         var escJSON2:String = "{\"path\":\"C:\\\\Users\\\\test\",\"say\":\"He said \\\"hi\\\"\"}";
-        this.forEachParser(function(parser:IJSON, name:String):Void {
-            var r:Object = parser.parse(escJSON2);
-            self.assertEqual(name + " 反斜杠", "C:\\Users\\test", r.path);
-            self.assertEqual(name + " 引号转义", "He said \"hi\"", r.say);
-        });
-        this.forEachParser(function(parser:IJSON, name:String):Void {
-            self.assertEqual(name + " \\/ 转义", "http://example.com", parser.parse("{\"url\":\"http:\\/\\/example.com\"}").url);
-        });
+        this.assertEqual("JSON 反斜杠", "C:\\Users\\test", this.jsonParser.parse(escJSON2).path);
+        this.assertEqual("JSON 引号转义", "He said \"hi\"", this.jsonParser.parse(escJSON2).say);
+        this.assertEqual("FastJSON 反斜杠", "C:\\Users\\test", this.fastParser.parse(escJSON2).path);
+        this.assertEqual("FastJSON 引号转义", "He said \"hi\"", this.fastParser.parse(escJSON2).say);
+        this.assertLiteJSONUndefined("LiteJSON 含 \\\" 解析失败", escJSON2);
+        // \/ — LiteJSON 原样保留
+        var slashJSON:String = "{\"url\":\"http:\\/\\/example.com\"}";
+        this.assertEqual("JSON \\/ 转义", "http://example.com", this.jsonParser.parse(slashJSON).url);
+        this.assertEqual("FastJSON \\/ 转义", "http://example.com", this.fastParser.parse(slashJSON).url);
+        this.assertEqual("LiteJSON \\/ raw", "http:\\/\\/example.com", this.liteParser.parse(slashJSON).url);
+        // Unicode — LiteJSON 原样含反斜杠
         this.assertEqual("JSON Unicode \\u002C", "Hello,World", this.jsonParser.parse("{\"text\":\"Hello\\u002CWorld\"}").text);
-        this.assertEqual("LiteJSON Unicode \\u002C fallback", "Hello" + "u002C" + "World", this.liteParser.parse("{\"text\":\"Hello\\u002CWorld\"}").text);
+        this.assertEqual("LiteJSON Unicode \\u002C raw", "Hello\\u002CWorld", this.liteParser.parse("{\"text\":\"Hello\\u002CWorld\"}").text);
         this.assertEqual("FastJSON Unicode \\u002C", "Hello,World", this.fastParser.parse("{\"text\":\"Hello\\u002CWorld\"}").text);
         this.assertEqual("JSON 连续 Unicode", "Hi", this.jsonParser.parse("\"\\u0048\\u0069\""));
-        this.assertEqual("LiteJSON 连续 Unicode fallback", "u0048" + "u0069", this.liteParser.parse("\"\\u0048\\u0069\""));
+        this.assertEqual("LiteJSON 连续 Unicode raw", "\\u0048\\u0069", this.liteParser.parse("\"\\u0048\\u0069\""));
         this.assertEqual("FastJSON 连续 Unicode", "Hi", this.fastParser.parse("\"\\u0048\\u0069\""));
+        // \b\f — LiteJSON 原样含反斜杠
         this.assertEqual("JSON parse \\b\\f", "\b\f", this.jsonParser.parse("\"\\b\\f\""));
-        this.assertEqual("LiteJSON parse \\b\\f fallback", "bf", this.liteParser.parse("\"\\b\\f\""));
+        this.assertEqual("LiteJSON parse \\b\\f raw", "\\b\\f", this.liteParser.parse("\"\\b\\f\""));
         this.assertEqual("FastJSON parse \\b\\f", "\b\f", this.fastParser.parse("\"\\b\\f\""));
-        this.forEachParser(function(parser:IJSON, name:String):Void {
-            self.assertEqual(name + " 连续转义序列", "\n\t\r\\", parser.parse("\"\\n\\t\\r\\\\\""));
-        });
+        // 连续转义序列 — LiteJSON 原样含反斜杠
+        this.assertEqual("JSON 连续转义序列", "\n\t\r\\", this.jsonParser.parse("\"\\n\\t\\r\\\\\""));
+        this.assertEqual("LiteJSON 连续转义序列 raw", "\\n\\t\\r\\\\", this.liteParser.parse("\"\\n\\t\\r\\\\\""));
+        this.assertEqual("FastJSON 连续转义序列", "\n\t\r\\", this.fastParser.parse("\"\\n\\t\\r\\\\\""));
     }
 
     private function testParseNumbersAndWhitespace():Void {
@@ -445,8 +451,11 @@ class org.flashNight.gesh.json.JSONTest {
         var self:JSONTest = this;
         this.forEachParser(function(parser:IJSON, name:String):Void {
             self.assertEqual(name + " 空白字符串值", "   ", parser.parse("\"   \""));
-            self.assertEqual(name + " 字符串含 JSON 语法", "{ \"a\": [1,2] }", parser.parse("{\"v\":\"{ \\\"a\\\": [1,2] }\"}").v);
         });
+        // 字符串含 \" — JSON/FastJSON 正常，LiteJSON 因 \" 解析失败
+        this.assertEqual("JSON 字符串含 JSON 语法", "{ \"a\": [1,2] }", this.jsonParser.parse("{\"v\":\"{ \\\"a\\\": [1,2] }\"}").v);
+        this.assertEqual("FastJSON 字符串含 JSON 语法", "{ \"a\": [1,2] }", this.fastParser.parse("{\"v\":\"{ \\\"a\\\": [1,2] }\"}").v);
+        this.assertLiteJSONUndefined("LiteJSON 含 \\\" 的字符串值", "{\"v\":\"{ \\\"a\\\": [1,2] }\"}");
         var longStr:String = "\"" + this.createRepeatedString("abcd", 200) + "\"";
         this.forEachParser(function(parser:IJSON, name:String):Void {
             self.assertEqual(name + " 长字符串长度", 800, length(parser.parse(longStr)));
@@ -492,11 +501,13 @@ class org.flashNight.gesh.json.JSONTest {
         var specialKeys:Object = {};
         specialKeys["a b"] = 1;
         specialKeys["c\"d"] = 2;
-        this.forEachParser(function(parser:IJSON, name:String):Void {
-            var reparsed:Object = parser.parse(parser.stringify(specialKeys));
-            self.assertEqual(name + " 特殊键名空格", 1, reparsed["a b"]);
-            self.assertEqual(name + " 特殊键名引号", 2, reparsed["c\"d"]);
-        });
+        // JSON/FastJSON: stringify→parse 往返正常
+        this.assertEqual("JSON 特殊键名空格", 1, this.jsonParser.parse(this.jsonParser.stringify(specialKeys))["a b"]);
+        this.assertEqual("JSON 特殊键名引号", 2, this.jsonParser.parse(this.jsonParser.stringify(specialKeys))["c\"d"]);
+        this.assertEqual("FastJSON 特殊键名空格", 1, this.fastParser.parse(this.fastParser.stringify(specialKeys))["a b"]);
+        this.assertEqual("FastJSON 特殊键名引号", 2, this.fastParser.parse(this.fastParser.stringify(specialKeys))["c\"d"]);
+        // LiteJSON: stringify 含 \" 的键名后 parse 失败
+        this.assertLiteJSONUndefined("LiteJSON 含引号键名往返失败", this.liteParser.stringify(specialKeys));
     }
 
     private function testStringifyFiltering():Void {
@@ -625,9 +636,9 @@ class org.flashNight.gesh.json.JSONTest {
 
     private function testParserSpecificDifferences():Void {
         trace("\n--- 差异: LiteJSON / FastJSON 当前行为 ---");
-        // LiteJSON 精简模式：不支持 \uXXXX \b \f 科学计数法（实际数据从未使用）
-        this.assertEqual("LiteJSON \\uXXXX fallback 输出原字符", "u0041" + "u4E2D", this.liteParser.parse("\"\\u0041\\u4E2D\""));
-        this.assertEqual("LiteJSON \\b\\f fallback 输出原字符", "bf", this.liteParser.parse("\"\\b\\f\""));
+        // LiteJSON 精简模式：无转义处理，原样输出含反斜杠（实际数据从未使用转义）
+        this.assertEqual("LiteJSON \\uXXXX raw 含反斜杠", "\\u0041\\u4E2D", this.liteParser.parse("\"\\u0041\\u4E2D\""));
+        this.assertEqual("LiteJSON \\b\\f raw 含反斜杠", "\\b\\f", this.liteParser.parse("\"\\b\\f\""));
         this.assertLiteJSONUndefined("LiteJSON 不支持科学记数法", "1e2");
         this.assertLiteJSONUndefined("LiteJSON 拒绝根值后的 trailing token", "1xyz");
         var jsonResult:Object = this.assertJSONHasErrors("JSON 记录 trailing token 错误", "{\"a\":1}xyz");
@@ -635,8 +646,8 @@ class org.flashNight.gesh.json.JSONTest {
         this.assertFastJSONThrows("FastJSON trailing token 直接抛错", "{\"a\":1}xyz");
         var liteEncoded:String = this.liteParser.stringify("\b\f");
         this.assertEqual("LiteJSON stringify 输出 \\b\\f", "\"\\b\\f\"", liteEncoded);
-        // LiteJSON parse 不还原 \b\f，输出原字符 "bf"
-        this.assertEqual("LiteJSON parse 自身 stringify 后 \\b\\f fallback", "bf", this.liteParser.parse(liteEncoded));
+        // LiteJSON parse 不还原 \b\f，原样含反斜杠
+        this.assertEqual("LiteJSON parse 自身 stringify 后 \\b\\f raw", "\\b\\f", this.liteParser.parse(liteEncoded));
     }
 
     private function testErrorHandling():Void {
