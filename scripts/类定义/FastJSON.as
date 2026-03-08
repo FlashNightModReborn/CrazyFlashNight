@@ -513,6 +513,12 @@ class FastJSON implements IJSON {
                                         unicodeValue = unicodeValue * 16 + hexDigit;
                                     }
                                     resultStrParts.push(String.fromCharCode(unicodeValue));
+                                    // 内联 next()：读取 \uXXXX 后的下一个字符
+                                    if (currentAt >= currentTextLength) {
+                                        currentCh = "";
+                                    } else {
+                                        currentCh = currentCharArray[currentAt++];
+                                    }
                                     continue;
                                 default:
                                     resultStrParts.push(currentCh);
@@ -783,6 +789,12 @@ class FastJSON implements IJSON {
                                         unicodeValue = unicodeValue * 16 + hexDigit;
                                     }
                                     keyStrParts.push(String.fromCharCode(unicodeValue));
+                                    // 内联 next()：读取 \uXXXX 后的下一个字符
+                                    if (currentAt >= currentTextLength) {
+                                        currentCh = "";
+                                    } else {
+                                        currentCh = currentCharArray[currentAt++];
+                                    }
                                     continue;
                                 default:
                                     keyStrParts.push(currentCh);
