@@ -27,14 +27,12 @@ class org.flashNight.naki.RandomNumberEngine.SeededLinearCongruentialEngine exte
     // 使用线性同余生成器算法：Xn+1 = (a * Xn + c) % m
     // @return 下一个随机数
     public function next():Number {
-        seed = (a * seed + c) % m;
-        trace("SeededLinearCongruentialEngine next: " + seed);
-        return seed;
+        return seed = (a * seed + c) % m;
     }
-    
+
     // 生成一个 [0, 1) 区间内的随机浮点数
     // @return 0到1之间的随机浮点数
     public function nextFloat():Number {
-        return next() / m; // 确保结果在 [0, 1) 区间内
+        return (seed = (a * seed + c) % m) / m;
     }
 }

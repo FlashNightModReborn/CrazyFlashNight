@@ -1,5 +1,5 @@
 ﻿import org.flashNight.naki.Sort.*;
-import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
+import org.flashNight.naki.RandomNumberEngine.SeededLinearCongruentialEngine;
 
 /**
  * TimSortTest 增强版测试类
@@ -20,21 +20,20 @@ import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 class org.flashNight.naki.Sort.TimSortTest {
     
     // 可控的随机数生成器，确保测试结果可重现
-    private static var rng:LinearCongruentialEngine;
+    private static var rng:SeededLinearCongruentialEngine;
     
     // 初始化随机数生成器，设置固定种子以确保可重现性
     private static function initRNG():Void {
         if (rng == null) {
-            rng = LinearCongruentialEngine.getInstance();
-            rng.init(1664525, 1013904223, 4294967296, 12345); // 设置固定种子12345
+            rng = new SeededLinearCongruentialEngine(12345);
+            rng.init(1664525, 1013904223, 4294967296); // 设置固定种子12345
         }
     }
-    
+
     // 重置随机数生成器种子，确保每个测试从相同状态开始
     private static function resetRNG(seed:Number):Void {
-        if (rng != null) {
-            rng.init(1664525, 1013904223, 4294967296, seed);
-        }
+        rng = new SeededLinearCongruentialEngine(seed);
+        rng.init(1664525, 1013904223, 4294967296);
     }
 
     public static function runTests():Void {

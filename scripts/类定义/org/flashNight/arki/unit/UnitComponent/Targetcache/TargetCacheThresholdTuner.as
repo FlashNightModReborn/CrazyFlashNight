@@ -17,7 +17,7 @@
 // ============================================================================
 
 import org.flashNight.naki.Sort.TimSort;
-import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
+import org.flashNight.naki.RandomNumberEngine.SeededLinearCongruentialEngine;
 
 class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheThresholdTuner {
 
@@ -41,7 +41,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheThresholdTun
     private var dists:Array;
     private var seed:Number;
 
-    private var rng:LinearCongruentialEngine;
+    private var rng:SeededLinearCongruentialEngine;
 
     /** results[ti][si][di] = {ms, totalMs, iters, ok} */
     private var results:Array;
@@ -588,12 +588,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheThresholdTun
     // ==================== RNG ====================
 
     private function initRNG():Void {
-        this.rng = LinearCongruentialEngine.getInstance();
-        this.resetRNG(this.seed);
+        this.rng = new SeededLinearCongruentialEngine(this.seed);
+        this.rng.init(1664525, 1013904223, 4294967296);
     }
 
     private function resetRNG(s:Number):Void {
-        this.rng.init(1664525, 1013904223, 4294967296, s);
+        this.rng = new SeededLinearCongruentialEngine(s);
+        this.rng.init(1664525, 1013904223, 4294967296);
     }
 
     private function srand():Number {

@@ -61,7 +61,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     // @param n: 上限值（不包含）
     // @return 生成的随机整数
     public function random(n:Number):Number {
-        return Math.floor(nextFloat() * n);
+        return (nextFloat() * n) >> 0;
     }
 
     /**
@@ -234,7 +234,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     public function randomPick(options:Array) {
         if (!options || options.length == 0) return null;
         if (options.length == 1) return options[0];
-        return options[randomInteger(0, options.length - 1)];
+        return options[randomIntegerStrict(0, options.length - 1)];
     }
 
     /**
@@ -333,25 +333,23 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     // @param probabilityPercent: 成功率的百分比（0-100）
     // @return 是否发生成功事件
     public function successRate(probabilityPercent:Number):Boolean {
-        var randomValue:Number = nextFloat() * 100;
-        return randomValue <= probabilityPercent;
+        return nextFloat() * 100 <= probabilityPercent;
     }
 
     // 在指定范围内生成一个随机整数
+    // 入参应为整数，非整数输入的小数部分不会被完整舍去
     // @param min: 最小值
     // @param max: 最大值
     // @return 生成的随机整数
     public function randomInteger(min:Number, max:Number):Number {
-        return Math.floor(nextFloat() * (max - min + 1) + min);
+        return ((nextFloat() * (max - min + 1)) >> 0) + min;
     }
 
-    // 在指定范围内生成一个随机整数
-    // 入参必须为整数，严格模式下性能提升20%，非整数会导致小数部分不会被完整舍去
+    // randomInteger 的别名，保留向后兼容
     // @param min: 最小值
     // @param max: 最大值
     // @return 生成的随机整数
     public function randomIntegerStrict(min:Number, max:Number):Number {
-        // 使用位运算替代 Math.floor，提高性能
         return ((nextFloat() * (max - min + 1)) >> 0) + min;
     }
 
@@ -368,7 +366,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     // @return 生成的随机整数偏移
     public function randomOffset(range:Number):Number {
         // trace("range: " + range);
-        return Math.floor(nextFloat() * (range * 2 + 1)) - range;
+        return ((nextFloat() * (range * 2 + 1)) >> 0) - range;
     }
 
     // 在指定范围内生成一个随机浮点数偏移
@@ -393,7 +391,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         if (array.length == 0) {
             return null; // 如果数组为空，返回null
         }
-        var randomIndex:Number = randomInteger(0, array.length - 1); // 生成随机索引
+        var randomIndex:Number = randomIntegerStrict(0, array.length - 1); // 生成随机索引
         return array[randomIndex]; // 返回随机索引处的元素
     }
 
@@ -405,7 +403,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
             return; // 如果数组长度为0或1，无需打乱
         }
         for (var i:Number = 0; i < len; i++) {
-            var j:Number = randomInteger(i, len - 1);
+            var j:Number = randomIntegerStrict(i, len - 1);
             var temp:Object = array[i];
             array[i] = array[j];
             array[j] = temp;
@@ -437,7 +435,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
                 if (matchCount <= k) {
                     reservoir.push(element);
                 } else {
-                    var j:Number = this.randomInteger(0, matchCount - 1);
+                    var j:Number = this.randomIntegerStrict(0, matchCount - 1);
                     if (j < k) {
                         reservoir[j] = element;
                     }
@@ -489,7 +487,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     public function reservoirSample(stream:Array, k:Number):Array {
         var reservoir:Array = stream.slice(0, k);
         for (var i:Number = k; i < stream.length; i++) {
-            var j:Number = randomInteger(0, i);
+            var j:Number = randomIntegerStrict(0, i);
             if (j < k) {
                 reservoir[j] = stream[i];
             }
@@ -500,7 +498,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     // 生成一个随机颜色
     // @return 生成的随机颜色值
     public function randomColor():Number {
-        return randomInteger(0, 0xFFFFFF);
+        return randomIntegerStrict(0, 0xFFFFFF);
     }
 
     // 生成符合高斯分布的随机数（Irwin-Hall 3 近似）
@@ -597,7 +595,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         var chars:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         var str:String = "";
         for (var i:Number = 0; i < length; i++) {
-            str += chars.charAt(randomInteger(0, chars.length - 1));
+            str += chars.charAt(randomIntegerStrict(0, chars.length - 1));
         }
         return str;
     }
@@ -612,7 +610,7 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     // @param radius: 圆的半径
     // @return 圆内的随机点（包含x和y坐标）
     public function randomPointInCircle(radius:Number):Object {
-        var angle:Number = randomAngle();
+        var angle:Number = nextFloat() * 6.283185307179586;
         var distance:Number = Math.sqrt(nextFloat()) * radius;
         return { x: distance * Math.cos(angle), y: distance * Math.sin(angle) };
     }

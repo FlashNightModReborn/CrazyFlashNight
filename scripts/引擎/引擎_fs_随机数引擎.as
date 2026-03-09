@@ -6,8 +6,8 @@ _root.linearEngine = LinearCongruentialEngine.getInstance();
 _root.mersenneEngine = MersenneTwister.getInstance();
 
 PinkNoiseEngine.getInstance();
-// 初始化引擎，使用当前时间作为种子
-_root.linearEngine.init(1192433993, 1013904223, 4294967296, new Date().getTime());
+// LCG 常量已烧录，只需重置种子
+_root.linearEngine.setSeed(new Date().getTime());
 _root.mersenneEngine.initialize(new Date().getTime());
 
 // 绑定重置随机数种子的方法，使用自定义函数以处理复杂逻辑

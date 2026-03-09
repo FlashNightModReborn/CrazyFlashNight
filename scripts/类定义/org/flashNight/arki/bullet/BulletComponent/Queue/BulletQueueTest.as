@@ -8,7 +8,7 @@
 // ============================================================================
 
 import org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue;
-import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
+import org.flashNight.naki.RandomNumberEngine.SeededLinearCongruentialEngine;
  
 class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
 
@@ -28,7 +28,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
     private var assertFailed:Number;
 
     private var rngSeed:Number;
-    private var rng:LinearCongruentialEngine; // 可复现随机数引擎（LCG）
+    private var rng:SeededLinearCongruentialEngine; // 可复现随机数引擎（LCG）
 
     // -------------------- 主过程 --------------------
     private function _run(config:Object):Object {
@@ -345,14 +345,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueTest {
     // ========== 可复现 RNG（LCG）封装 ==========
     private function initRNG():Void {
         if (this.rng == null) {
-            this.rng = LinearCongruentialEngine.getInstance();
+            this.rng = new SeededLinearCongruentialEngine(12345);
             // 默认参数初始化（与其他测试保持一致的 m）
-            this.rng.init(1664525, 1013904223, 4294967296, 12345);
+            this.rng.init(1664525, 1013904223, 4294967296);
         }
     }
     private function resetRNG(seed:Number):Void {
-        if (this.rng == null) this.initRNG();
-        this.rng.init(1664525, 1013904223, 4294967296, seed);
+        this.rng = new SeededLinearCongruentialEngine(seed);
+        this.rng.init(1664525, 1013904223, 4294967296);
         this.rngSeed = seed; // 兼容旧字段（若有外部依赖调试）
     }
 

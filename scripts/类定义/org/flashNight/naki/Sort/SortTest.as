@@ -16,18 +16,16 @@
  * - 提高测试的可靠性和一致性
  */
 
-import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
+import org.flashNight.naki.RandomNumberEngine.SeededLinearCongruentialEngine;
 class org.flashNight.naki.Sort.SortTest {
     
     // 可控的随机数生成器，确保测试结果可重现
-    private var rng:LinearCongruentialEngine;
+    private var rng:SeededLinearCongruentialEngine;
     
     // 初始化随机数生成器，设置固定种子以确保可重现性
     private function initRNG(seed:Number):Void {
-        if (rng == null) {
-            rng = LinearCongruentialEngine.getInstance();
-        }
-        rng.init(1664525, 1013904223, 4294967296, seed);
+        rng = new SeededLinearCongruentialEngine(seed);
+        rng.init(1664525, 1013904223, 4294967296);
     }
     
     // 重置随机数生成器种子
