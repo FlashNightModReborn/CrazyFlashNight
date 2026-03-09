@@ -591,6 +591,87 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         return s;
     }
 
+    /**
+     * 生成匹配真实 data/items/防具_*.xml 结构的防具 XML。
+     * 防具比武器更重：额外有 skill(4子节点)、data_2/data_3/data_4 多阶强化。
+     * 结构: root > item > name/displayname/icon/type/use/actiontype/price/description/
+     *        skill(skillname,description,cd,mp) / data(8子) / data_2(4子) / data_3(5子) / data_4(5子)
+     * 每 item 约 9 直接子节点 + skill(4) + data(8) + data_2(4) + data_3(5) + data_4(5) ≈ 35 节点。
+     * 实际每项是否带 skill/data_N 按比例控制，模拟真实分布。
+     */
+    private function generateArmorItemXML(itemCount:Number, seed:Number):String {
+        if (seed == undefined) {
+            seed = 0;
+        }
+        var s:String = "<root>";
+        var i:Number = 0;
+        while (i < itemCount) {
+            var id:Number = i + seed;
+            s += "<item>";
+            s += "<name>armor_" + id + "</name>";
+            s += "<displayname>Armor " + id + "</displayname>";
+            s += "<icon>armor_" + id + "</icon>";
+            s += "<type>防具</type>";
+            s += "<use>手部装备</use>";
+            s += "<actiontype>强化</actiontype>";
+            s += "<price>" + ((i + 1) * 2000 + seed * 100) + "</price>";
+            s += "<description>这是防具 " + id + " 的描述文本</description>";
+            // skill 块（约 1/3 的 item 有 skill，匹配真实防具分布）
+            if (i % 3 == 0) {
+                s += "<skill>";
+                s += "<skillname>技能_" + id + "</skillname>";
+                s += "<description>技能 " + id + " 的详细描述说明文本</description>";
+                s += "<cd>" + (5000 + i * 500) + "</cd>";
+                s += "<mp>" + (i % 10 * 5) + "</mp>";
+                s += "</skill>";
+            }
+            // data 块（8 子节点）
+            s += "<data>";
+            s += "<level>" + (Math.floor(i / 5) + 1) + "</level>";
+            s += "<weight>" + (1 + i % 5) + "</weight>";
+            s += "<dressup>男变装-armor_" + id + "</dressup>";
+            s += "<hp>" + (i * 5) + "</hp>";
+            s += "<mp>" + (i * 3) + "</mp>";
+            s += "<punch>" + (20 + i * 2) + "</punch>";
+            s += "<damage>" + (i * 3) + "</damage>";
+            s += "<defence>" + (10 + i * 4) + "</defence>";
+            s += "</data>";
+            // data_2（约 1/2 的 item 有多阶强化）
+            if (i % 2 == 0) {
+                s += "<data_2>";
+                s += "<level>" + (Math.floor(i / 5) + 8) + "</level>";
+                s += "<hp>" + (i * 8) + "</hp>";
+                s += "<punch>" + (40 + i * 3) + "</punch>";
+                s += "<defence>" + (20 + i * 6) + "</defence>";
+                s += "</data_2>";
+            }
+            // data_3（约 1/3 的 item）
+            if (i % 3 == 0) {
+                s += "<data_3>";
+                s += "<level>" + (Math.floor(i / 5) + 15) + "</level>";
+                s += "<hp>" + (i * 10 + 25) + "</hp>";
+                s += "<mp>" + (i * 5 + 25) + "</mp>";
+                s += "<punch>" + (60 + i * 5) + "</punch>";
+                s += "<defence>" + (30 + i * 8) + "</defence>";
+                s += "</data_3>";
+            }
+            // data_4（约 1/6 的 item）
+            if (i % 6 == 0) {
+                s += "<data_4>";
+                s += "<level>" + (Math.floor(i / 5) + 25) + "</level>";
+                s += "<hp>" + (i * 12 + 30) + "</hp>";
+                s += "<mp>" + (i * 6 + 30) + "</mp>";
+                s += "<punch>" + (80 + i * 7) + "</punch>";
+                s += "<defence>" + (40 + i * 10) + "</defence>";
+                s += "</data_4>";
+            }
+            s += "</item>";
+            i++;
+        }
+        s += "</root>";
+        return s;
+    }
+
     // ========================================================================
     // 计时循环 —— 全流水线
     // ========================================================================
@@ -1337,7 +1418,28 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         this.assertEqual("真实结构首项 data.bullet", "普通子弹", realisticObj.item[0].data.bullet);
         this.assertEqual("真实结构首项 data.power", 30, realisticObj.item[0].data.power);
 
-        // 12. 深层嵌套 XML 验证
+        // 12. 防具结构 XML 验证（skill + multi-tier data）
+        var armorXml:String = this.generateArmorItemXML(6, 0);
+        var armorParsed:XML = new XML();
+        armorParsed.ignoreWhite = true;
+        armorParsed.parseXML(armorXml);
+        var armorObj:Object = XMLParser.parseXMLNode(armorParsed.firstChild);
+        this.assert(armorObj != null, "防具结构 XML 解析成功");
+        this.assert(armorObj.item instanceof Array, "防具结构: item 为数组");
+        this.assertEqual("防具结构 item 长度", 6, armorObj.item.length);
+        this.assertEqual("防具结构首项 name", "armor_0", armorObj.item[0].name);
+        this.assert(armorObj.item[0].skill != undefined, "防具结构首项有 skill（i%3==0）");
+        this.assertEqual("防具结构首项 skill.skillname", "技能_0", armorObj.item[0].skill.skillname);
+        this.assert(armorObj.item[0].data != undefined, "防具结构首项有 data");
+        this.assertEqual("防具结构首项 data.defence", 10, armorObj.item[0].data.defence);
+        this.assert(armorObj.item[0].data_2 != undefined, "防具结构首项有 data_2（i%2==0）");
+        this.assert(armorObj.item[0].data_3 != undefined, "防具结构首项有 data_3（i%3==0）");
+        this.assert(armorObj.item[0].data_4 != undefined, "防具结构首项有 data_4（i%6==0）");
+        // 第 1 项（i=1）不应有 skill/data_2/data_3/data_4
+        this.assert(armorObj.item[1].skill == undefined, "防具结构第2项无 skill（i%3!=0）");
+        this.assert(armorObj.item[1].data_2 == undefined, "防具结构第2项无 data_2（i%2!=0）");
+
+        // 13. 深层嵌套 XML 验证
         var deepXml:String = this.generateDeepXML(10);
         var deepParsed:XML = new XML();
         deepParsed.ignoreWhite = true;
@@ -1666,29 +1768,37 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
     }
 
     // ========================================================================
-    // 基准 4：启动语料基准（模拟真实初始化加载链路）
+    // 基准 4：解析器 CPU 基准（启动语料分布）
     // ========================================================================
     private function benchStartupCorpus():Void {
-        trace("\n--- 启动语料基准（模拟真实初始化加载链路） ---");
-        trace("  说明: 使用匹配真实 data/items/*.xml 结构的合成 XML，");
-        trace("        模拟 51 文件的 parseXML + parseXMLNode + concat 全流程。");
-        trace("        不含 IO/网络等待，仅度量 CPU 部分。");
+        trace("\n--- 解析器 CPU 基准（启动语料分布） ---");
+        trace("  说明: 度量 parseXML + parseXMLNode 的纯 CPU 成本，不含 IO/路径解析/回调/日志。");
+        trace("        使用合成 XML 模拟 data/items/ 下 50 文件的真实分布。");
+        trace("        武器类用 weapon 生成器（~25 节点/item），防具类用 armor 生成器（~35 节点/item）。");
+        trace("        结果为「解析器内部先改哪里」的依据，不等于端到端初始化耗时。");
 
         var self:XMLParser_Benchmark = this;
         var repeats:Number = 5;
         var targetMs:Number = 120;
 
-        // 真实分布近似（51 文件, 总 ~1.42 MB）:
-        //   小文件(<15KB):  ~15 个, 约 5 items/文件
-        //   中文件(15-50KB): ~25 个, 约 20 items/文件
-        //   大文件(50-100KB): ~8 个, 约 50 items/文件
-        //   超大文件(>100KB): ~3 个, 约 100 items/文件
+        // 真实分布（50 文件, ~1.32 MB, 1556 item）——基于静态统计 list.xml 所有子文件:
+        //   极小(1-5项):   7 文件, avg 2 items, 武器/消耗品零散小文件
+        //   小(6-15项):   17 文件, avg 10 items, 多数武器子类
+        //   中(16-30项):  15 文件, avg 22 items, 弹夹/药剂/刀剑主力
+        //   大(31-60项):   5 文件, avg 48 items, 手雷/食材/情报/突击步枪
+        //   超大(61-112项): 4 文件, avg 96 items, 收集品+防具(颈部/40+)
+        //     其中 2 文件为防具(深嵌套: skill+data_2/3/4)
+        //   巨型(184-250项): 2 文件, avg 217 items, 防具_0-19级/20-39级
         var fileProfiles:Array = [
-            {items: 5,   desc: "小(5项)",    count: 15},
-            {items: 20,  desc: "中(20项)",   count: 25},
-            {items: 50,  desc: "大(50项)",   count: 8},
-            {items: 100, desc: "超大(100项)", count: 3}
+            {items: 2,   desc: "极小(2项)",          count: 7,  gen: "weapon"},
+            {items: 10,  desc: "小(10项)",           count: 17, gen: "weapon"},
+            {items: 22,  desc: "中(22项)",           count: 15, gen: "weapon"},
+            {items: 48,  desc: "大(48项)",           count: 5,  gen: "weapon"},
+            {items: 96,  desc: "超大(96项,武器类)",   count: 2,  gen: "weapon"},
+            {items: 96,  desc: "超大(96项,防具类)",   count: 2,  gen: "armor"},
+            {items: 217, desc: "巨型(217项,防具类)",  count: 2,  gen: "armor"}
         ];
+        // 模型总计: 7x2+17x10+15x22+5x48+2x96+2x96+2x217 = 1572 items (真实 1556, 偏差 1%)
 
         var perFileCosts:Array = [];
         var concatArrays:Array = [];
@@ -1696,7 +1806,12 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         var fi:Number = 0;
         while (fi < fileProfiles.length) {
             var profile:Object = fileProfiles[fi];
-            var xmlStr:String = this.generateRealisticItemXML(profile.items, fi);
+            var xmlStr:String;
+            if (profile.gen == "armor") {
+                xmlStr = this.generateArmorItemXML(profile.items, fi);
+            } else {
+                xmlStr = this.generateRealisticItemXML(profile.items, fi);
+            }
             var payloadChars:Number = length(xmlStr);
 
             trace("\n  " + profile.desc + " | " + payloadChars + " 字符 | 模拟 " + profile.count + " 个文件");
@@ -1746,8 +1861,10 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         );
         this.reportBenchStats("concat累积: ", concatStats);
 
-        // 启动 CPU 时间估算
-        trace("\n  --- 启动期 CPU 时间估算（不含 IO） ---");
+        // 解析器 CPU 时间估算
+        trace("\n  --- 解析器 CPU 时间估算 ---");
+        trace("    注意: 仅含 parseXML + parseXMLNode，不含 IO/PathManager/日志/回调开销。");
+        trace("    真实初始化耗时 = 本值 + IO等待 + BaseXMLLoader开销 + ItemDataLoader串行调度。");
         var totalCpuMs:Number = 0;
         var allReliable:Boolean = true;
         var ei:Number = 0;
@@ -1771,9 +1888,9 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         }
         trace("    --");
         if (allReliable) {
-            trace("    估算启动期总 CPU: " + this.toFixed2(totalCpuMs) + " ms（纯解析+合并，不含IO）");
+            trace("    解析器纯 CPU 合计: " + this.toFixed2(totalCpuMs) + " ms（不含 IO 及框架开销）");
         } else {
-            trace("    估算启动期总 CPU: ~" + this.toFixed2(totalCpuMs) + " ms（含低置信度项，仅供参考）");
+            trace("    解析器纯 CPU 合计: ~" + this.toFixed2(totalCpuMs) + " ms（含低置信度项，仅供参考）");
         }
     }
 }
