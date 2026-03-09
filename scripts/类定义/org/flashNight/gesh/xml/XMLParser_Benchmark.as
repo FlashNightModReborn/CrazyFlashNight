@@ -459,6 +459,41 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
     }
 
     /**
+     * 收集 XMLNode 树中所有元素节点（nodeType == 1），
+     * 用于模拟 parseXMLNode 递归中每层都调用 isValidXML 的累积成本。
+     */
+    private function collectElementNodes(node:XMLNode, out:Array):Void {
+        if (node == null) return;
+        if (node.nodeType == 1) { // ELEMENT_NODE
+            out.push(node);
+        }
+        var i:Number = 0;
+        while (i < node.childNodes.length) {
+            this.collectElementNodes(node.childNodes[i], out);
+            i++;
+        }
+    }
+
+    /**
+     * 生成每个 item 都带 Description 的密集 XML（用于 Description 路径压力测试）。
+     */
+    private function generateDenseDescriptionXML(itemCount:Number, seed:Number):String {
+        if (seed == undefined) {
+            seed = 0;
+        }
+        var s:String = '<root><metadata version="1.0" count="' + itemCount + '" seed="' + seed + '"/>';
+        var i:Number = 0;
+        while (i < itemCount) {
+            s += '<item id="' + (i + seed) + '">';
+            s += '<Description>&lt;p&gt;Desc &amp; detail ' + i + '&lt;/p&gt;</Description>';
+            s += '</item>';
+            i++;
+        }
+        s += '</root>';
+        return s;
+    }
+
+    /**
      * 生成用于 convertDataType 微基准的值数组。
      */
     private function generateConvertValues(count:Number):Array {
@@ -732,14 +767,44 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
     // ========================================================================
 
     /**
-     * isValidXML 隔离计时。
+     * isValidXML 累积计时（模拟真实调用模式）。
+     * 真实 parseXMLNode 在每次递归入口都调用 isValidXML(node)，
+     * 而 isValidXML 本身又递归验证整个子树。
+     * 因此对 N 个元素节点的树，根节点验证 N 个，
+     * 每个子节点再验证其子树，总复杂度 O(N²)。
+     * 本方法模拟这个调用模式：对预收集的所有元素节点逐个调用 isValidXML。
      */
-    private function timeIsValidXMLLoop(node:XMLNode, iterations:Number):Number {
+    private function timeIsValidXMLCumulativeLoop(elementNodes:Array, iterations:Number):Number {
         var sink:Boolean = false;
+        var nodeCount:Number = elementNodes.length;
         var i:Number = 0;
         var t0:Number = getTimer();
         while (i < iterations) {
-            sink = XMLParser.isValidXML(node);
+            var n:Number = 0;
+            while (n < nodeCount) {
+                sink = XMLParser.isValidXML(elementNodes[n]);
+                n++;
+            }
+            i++;
+        }
+        this.benchSink = sink;
+        return getTimer() - t0;
+    }
+
+    /**
+     * isValidXML 累积基线：仅遍历节点数组。
+     */
+    private function timeIsValidXMLCumulativeBaseline(elementNodes:Array, iterations:Number):Number {
+        var sink:XMLNode = null;
+        var nodeCount:Number = elementNodes.length;
+        var i:Number = 0;
+        var t0:Number = getTimer();
+        while (i < iterations) {
+            var n:Number = 0;
+            while (n < nodeCount) {
+                sink = elementNodes[n];
+                n++;
+            }
             i++;
         }
         this.benchSink = sink;
@@ -863,6 +928,201 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
     }
 
     // ========================================================================
+    // 计时循环 —— Description 完整路径（getInnerText + decodeHTML）
+    // ========================================================================
+
+    /**
+     * Description 完整路径：模拟 parseXMLNode 行 74-75 的真实调用。
+     * getInnerText(childNode) 内部遍历子节点并调用 decodeHTML，
+     * 然后外层再调用一次 decodeHTML —— 即双重解码。
+     * 输入为含 Description 子节点的 XMLNode 数组。
+     */
+    private function timeDescriptionFullPathLoop(descNodes:Array, iterations:Number, batchSize:Number):Number {
+        var sink:String = "";
+        var vLen:Number = descNodes.length;
+        var idx:Number = 0;
+        var i:Number = 0;
+        var j:Number = 0;
+        if (batchSize == undefined || batchSize < 1) {
+            batchSize = 1;
+        }
+        var t0:Number = getTimer();
+        while (i < iterations) {
+            j = 0;
+            while (j < batchSize) {
+                // 模拟 XMLParser.as:74-75 的调用路径
+                var innerText:String = XMLParser.getInnerText(descNodes[idx]);
+                sink = StringUtils.decodeHTML(innerText);
+                idx++;
+                if (idx >= vLen) {
+                    idx = 0;
+                }
+                j++;
+            }
+            i++;
+        }
+        this.benchSink = sink;
+        return getTimer() - t0;
+    }
+
+    /**
+     * Description 完整路径基线：仅遍历节点数组。
+     */
+    private function timeDescriptionFullPathBaseline(descNodes:Array, iterations:Number, batchSize:Number):Number {
+        var sink:XMLNode = null;
+        var vLen:Number = descNodes.length;
+        var idx:Number = 0;
+        var i:Number = 0;
+        var j:Number = 0;
+        if (batchSize == undefined || batchSize < 1) {
+            batchSize = 1;
+        }
+        var t0:Number = getTimer();
+        while (i < iterations) {
+            j = 0;
+            while (j < batchSize) {
+                sink = descNodes[idx];
+                idx++;
+                if (idx >= vLen) {
+                    idx = 0;
+                }
+                j++;
+            }
+            i++;
+        }
+        this.benchSink = sink;
+        return getTimer() - t0;
+    }
+
+    // ========================================================================
+    // 计时循环 —— 属性迭代（for..in attributes + convertDataType）
+    // ========================================================================
+
+    /**
+     * 模拟 parseXMLNode 行 54-57：for (var attr in node.attributes) + convertDataType。
+     * 输入为含多属性的 XMLNode 数组。
+     */
+    private function timeAttributeIterationLoop(attrNodes:Array, iterations:Number, batchSize:Number):Number {
+        var sink:Object = null;
+        var vLen:Number = attrNodes.length;
+        var idx:Number = 0;
+        var i:Number = 0;
+        var j:Number = 0;
+        if (batchSize == undefined || batchSize < 1) {
+            batchSize = 1;
+        }
+        var t0:Number = getTimer();
+        while (i < iterations) {
+            j = 0;
+            while (j < batchSize) {
+                var node:XMLNode = attrNodes[idx];
+                var result:Object = {};
+                for (var attr:String in node.attributes) {
+                    result[attr] = XMLParser.convertDataType(node.attributes[attr]);
+                }
+                sink = result;
+                idx++;
+                if (idx >= vLen) {
+                    idx = 0;
+                }
+                j++;
+            }
+            i++;
+        }
+        this.benchSink = sink;
+        return getTimer() - t0;
+    }
+
+    /**
+     * 属性迭代基线：仅遍历节点数组 + 创建空对象。
+     */
+    private function timeAttributeIterationBaseline(attrNodes:Array, iterations:Number, batchSize:Number):Number {
+        var sink:Object = null;
+        var vLen:Number = attrNodes.length;
+        var idx:Number = 0;
+        var i:Number = 0;
+        var j:Number = 0;
+        if (batchSize == undefined || batchSize < 1) {
+            batchSize = 1;
+        }
+        var t0:Number = getTimer();
+        while (i < iterations) {
+            j = 0;
+            while (j < batchSize) {
+                sink = attrNodes[idx];
+                var dummy:Object = {};
+                idx++;
+                if (idx >= vLen) {
+                    idx = 0;
+                }
+                j++;
+            }
+            i++;
+        }
+        this.benchSink = sink;
+        return getTimer() - t0;
+    }
+
+    // ========================================================================
+    // 计时循环 —— 同名数组提升（result[name] 检查 + instanceof Array + push）
+    // ========================================================================
+
+    /**
+     * 模拟 parseXMLNode 行 93-104 的同名节点数组提升逻辑。
+     * 用预构造的 (nodeName, childValue) 对数组驱动，模拟真实的碰撞率。
+     * pairs 结构：[{name:String, value:Object}, ...]
+     */
+    private function timeArrayPromotionLoop(pairs:Array, iterations:Number):Number {
+        var sink:Object = null;
+        var pLen:Number = pairs.length;
+        var i:Number = 0;
+        var t0:Number = getTimer();
+        while (i < iterations) {
+            var result:Object = {};
+            var p:Number = 0;
+            while (p < pLen) {
+                var pair:Object = pairs[p];
+                var nodeName:String = pair.name;
+                var childValue:Object = pair.value;
+                if (result[nodeName] !== undefined) {
+                    if (!(result[nodeName] instanceof Array)) {
+                        result[nodeName] = [result[nodeName]];
+                    }
+                    result[nodeName].push(childValue);
+                } else {
+                    result[nodeName] = childValue;
+                }
+                p++;
+            }
+            sink = result;
+            i++;
+        }
+        this.benchSink = sink;
+        return getTimer() - t0;
+    }
+
+    /**
+     * 数组提升基线：仅遍历 pairs 数组。
+     */
+    private function timeArrayPromotionBaseline(pairs:Array, iterations:Number):Number {
+        var sink:Object = null;
+        var pLen:Number = pairs.length;
+        var i:Number = 0;
+        var t0:Number = getTimer();
+        while (i < iterations) {
+            var result:Object = {};
+            var p:Number = 0;
+            while (p < pLen) {
+                sink = pairs[p];
+                p++;
+            }
+            i++;
+        }
+        this.benchSink = sink;
+        return getTimer() - t0;
+    }
+
+    // ========================================================================
     // 负载自校验
     // ========================================================================
     private function testWorkloadAssumptions():Void {
@@ -901,11 +1161,13 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         var reparsed:Object = XMLParser.parseXMLNode(nodes[0]);
         this.assertEqual("预解析后重新 parseXMLNode 的 seed", 0, reparsed.metadata.seed);
 
-        // 4. Description 节点（HTML 实体）验证
+        // 4. Description 节点（HTML 实体）严格验证
+        // 真实路径：AS2 原生 XML 解析会将 &lt; 还原为 <，
+        // 然后 getInnerText 调用 decodeHTML，再外层再调 decodeHTML（双重解码）。
+        // 最终结果必须是完全解码的 "<p>Desc 0</p>"。
         this.assert(parsed0.item[0].Description != undefined, "首项有 Description");
-        // Description 含 HTML 实体，parseXMLNode 内部会 decodeHTML
         var desc:String = String(parsed0.item[0].Description);
-        this.assert(desc.indexOf("<p>") >= 0 || desc.indexOf("&lt;") >= 0, "Description 含已解码或原始 HTML");
+        this.assertEqual("Description 严格解码验证", "<p>Desc 0</p>", desc);
 
         // 5. convertDataType 值数组验证
         var values:Array = this.generateConvertValues(12);
@@ -918,7 +1180,52 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         this.assert(htmlStrs[0].indexOf("&lt;") >= 0, "含实体的 HTML 字符串正确");
         this.assert(htmlStrs[1].indexOf("&") < 0, "无实体的纯文本字符串正确");
 
-        // 7. 深层嵌套 XML 验证
+        // 7. collectElementNodes 验证
+        var elemNodes50:Array = [];
+        this.collectElementNodes(xml0.firstChild, elemNodes50);
+        this.assert(elemNodes50.length > 6, "collectElementNodes: 元素节点数 > item 数 (实际=" + elemNodes50.length + ")");
+        // 对一个 6 项 XML：root + metadata(自闭合) + 6*item + 6*tags + 12*tag + 若干 Description = 远多于 6
+        // 验证每个收集到的节点确实是元素节点
+        this.assert(elemNodes50[0].nodeType == 1, "collectElementNodes: 首节点为元素节点");
+
+        // 8. 密集 Description XML 验证
+        var denseXml:String = this.generateDenseDescriptionXML(4, 0);
+        var denseParsed:XML = new XML();
+        denseParsed.ignoreWhite = true;
+        denseParsed.parseXML(denseXml);
+        var denseObj:Object = XMLParser.parseXMLNode(denseParsed.firstChild);
+        this.assert(denseObj != null, "密集 Description XML 解析成功");
+        this.assert(denseObj.item instanceof Array, "密集 Description: item 为数组");
+        this.assertEqual("密集 Description 首项解码", "<p>Desc & detail 0</p>", String(denseObj.item[0].Description));
+
+        // 9. Description 子节点收集验证（供 timeDescriptionFullPathLoop 使用）
+        var descChildNodes:Array = [];
+        var di:Number = 0;
+        while (di < denseParsed.firstChild.childNodes.length) {
+            var dChild:XMLNode = denseParsed.firstChild.childNodes[di];
+            if (dChild.nodeName == "item") {
+                var ddi:Number = 0;
+                while (ddi < dChild.childNodes.length) {
+                    if (dChild.childNodes[ddi].nodeName == "Description") {
+                        descChildNodes.push(dChild.childNodes[ddi]);
+                    }
+                    ddi++;
+                }
+            }
+            di++;
+        }
+        this.assertEqual("Description 子节点收集数量", 4, descChildNodes.length);
+
+        // 10. 数组提升 pairs 验证
+        var testPairs:Array = [
+            {name: "tag", value: "t0"},
+            {name: "tag", value: "t1"},
+            {name: "tag", value: "t2"},
+            {name: "single", value: "only"}
+        ];
+        this.assertEqual("数组提升 pairs 长度", 4, testPairs.length);
+
+        // 12. 深层嵌套 XML 验证
         var deepXml:String = this.generateDeepXML(10);
         var deepParsed:XML = new XML();
         deepParsed.ignoreWhite = true;
@@ -1056,38 +1363,150 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
     // ========================================================================
     private function benchHotspotProfile():Void {
         trace("\n--- 热点剖析（微基准） ---");
-        trace("  说明: 对 isValidXML / convertDataType / decodeHTML 独立计时，");
-        trace("        定位 parseXMLNode 内部的时间分布。");
+        trace("  说明: 对 parseXMLNode 内部各热点独立计时，定位时间分布。");
+        trace("        isValidXML 使用累积模式（模拟递归中每层都调用的真实 O(N^2) 行为）。");
 
         var repeats:Number = 5;
         var targetMs:Number = 120;
         var self:XMLParser_Benchmark = this;
 
-        // --- isValidXML ---
-        trace("\n  isValidXML（50 项 XML 的根节点）");
+        // 公用：50 项 XML 预解析
         var xmlStr50:String = this.generateBenchXML(50, 0);
         var xmlPre50:XML = new XML();
         xmlPre50.ignoreWhite = true;
         xmlPre50.parseXML(xmlStr50);
         var node50:XMLNode = xmlPre50.firstChild;
 
-        var validStats:Object = this.measureBenchStats(
-            function(iterations:Number):Number { return self.timeIsValidXMLLoop(node50, iterations); },
-            function(iterations:Number):Number { return self.timeNodeReadBaseline(node50, iterations); },
-            targetMs, 0, 8, 2048, repeats, 0, 1
-        );
-        this.reportBenchStats("isValidXML:     ", validStats);
-
-        // parseXMLNode 总时间作参照
+        // parseXMLNode 总时间作参照（全局基准线）
         var nodeRef:Object = this.measureBenchStats(
             function(iterations:Number):Number { return self.timeParseXMLNodeLoop(node50, iterations); },
             function(iterations:Number):Number { return self.timeNodeReadBaseline(node50, iterations); },
             targetMs, 0, 4, 1024, repeats, 0, 1
         );
-        this.reportBenchStats("parseXMLNode:   ", nodeRef);
-        this.reportPhaseShare("isValidXML 占 parseXMLNode: ", validStats, nodeRef);
 
-        // --- convertDataType ---
+        // ================================================================
+        // 热点 1: isValidXML 累积成本
+        // ================================================================
+        trace("\n  isValidXML 累积成本（50 项，模拟递归调用模式）");
+        trace("    真实行为: parseXMLNode 每层递归入口调用 isValidXML(node)，");
+        trace("    而 isValidXML 自身递归验证整个子树 → 总复杂度 O(N^2)。");
+
+        var elemNodes:Array = [];
+        this.collectElementNodes(node50, elemNodes);
+        trace("    元素节点数: " + elemNodes.length);
+
+        var validCumulativeStats:Object = this.measureBenchStats(
+            function(iterations:Number):Number { return self.timeIsValidXMLCumulativeLoop(elemNodes, iterations); },
+            function(iterations:Number):Number { return self.timeIsValidXMLCumulativeBaseline(elemNodes, iterations); },
+            targetMs, 0, 2, 512, repeats, 0, 1
+        );
+        this.reportBenchStats("isValidXML(累积): ", validCumulativeStats);
+        this.reportBenchStats("parseXMLNode:     ", nodeRef);
+        this.reportPhaseShare("isValidXML 累积占 parseXMLNode: ", validCumulativeStats, nodeRef);
+
+        // ================================================================
+        // 热点 2: 属性迭代（for..in attributes + convertDataType）
+        // ================================================================
+        trace("\n  属性迭代（50 项 XML 的 item 节点，每节点 4 属性）");
+
+        // 收集所有 item 节点（它们各有 id/name/value/enabled 四个属性）
+        var itemNodes:Array = [];
+        var ci:Number = 0;
+        while (ci < node50.childNodes.length) {
+            if (node50.childNodes[ci].nodeName == "item") {
+                itemNodes.push(node50.childNodes[ci]);
+            }
+            ci++;
+        }
+        trace("    item 节点数: " + itemNodes.length);
+        var attrBatch:Number = itemNodes.length;
+
+        var attrStats:Object = this.measureBenchStats(
+            function(iterations:Number):Number { return self.timeAttributeIterationLoop(itemNodes, iterations, attrBatch); },
+            function(iterations:Number):Number { return self.timeAttributeIterationBaseline(itemNodes, iterations, attrBatch); },
+            targetMs, 120, 4, 4096, repeats, 0, attrBatch
+        );
+        this.reportBenchStats("属性迭代:         ", attrStats);
+
+        // ================================================================
+        // 热点 3: 同名节点数组提升
+        // ================================================================
+        trace("\n  同名节点数组提升（模拟 50 项 XML 的碰撞模式）");
+        trace("    模式: 50 个 item 同名 + tags/tag 同名 + 少量单出现节点。");
+
+        // 构造模拟 50 项解析中的 (nodeName, childValue) 序列
+        var promotionPairs:Array = [];
+        var pi:Number = 0;
+        while (pi < 50) {
+            promotionPairs.push({name: "item", value: {id: pi, name: "item_" + pi}});
+            pi++;
+        }
+        // 加入一些单出现节点
+        promotionPairs.push({name: "metadata", value: {version: "1.0"}});
+        promotionPairs.push({name: "config", value: {maxRetry: 3}});
+        trace("    pairs 数: " + promotionPairs.length);
+
+        var promotionStats:Object = this.measureBenchStats(
+            function(iterations:Number):Number { return self.timeArrayPromotionLoop(promotionPairs, iterations); },
+            function(iterations:Number):Number { return self.timeArrayPromotionBaseline(promotionPairs, iterations); },
+            targetMs, 0, 8, 4096, repeats, 0, 1
+        );
+        this.reportBenchStats("数组提升:         ", promotionStats);
+
+        // ================================================================
+        // 热点 4: Description 完整路径（getInnerText + 双重 decodeHTML）
+        // ================================================================
+        trace("\n  Description 完整路径（密集模式：每项都有 Description）");
+        trace("    真实路径: getInnerText(node) 内调 decodeHTML → 外层再调 decodeHTML（双重解码）。");
+
+        // 用密集 Description XML 生成 Description 子节点数组
+        var denseXmlStr:String = this.generateDenseDescriptionXML(50, 0);
+        var densePre:XML = new XML();
+        densePre.ignoreWhite = true;
+        densePre.parseXML(denseXmlStr);
+        var descNodes:Array = [];
+        var dri:Number = 0;
+        while (dri < densePre.firstChild.childNodes.length) {
+            var itemNode:XMLNode = densePre.firstChild.childNodes[dri];
+            if (itemNode.nodeName == "item") {
+                var drii:Number = 0;
+                while (drii < itemNode.childNodes.length) {
+                    if (itemNode.childNodes[drii].nodeName == "Description") {
+                        descNodes.push(itemNode.childNodes[drii]);
+                    }
+                    drii++;
+                }
+            }
+            dri++;
+        }
+        trace("    Description 节点数: " + descNodes.length);
+        var descBatch:Number = descNodes.length;
+
+        var descFullStats:Object = this.measureBenchStats(
+            function(iterations:Number):Number { return self.timeDescriptionFullPathLoop(descNodes, iterations, descBatch); },
+            function(iterations:Number):Number { return self.timeDescriptionFullPathBaseline(descNodes, iterations, descBatch); },
+            targetMs, 120, 4, 4096, repeats, 0, descBatch
+        );
+        this.reportBenchStats("Description全路径: ", descFullStats);
+
+        // 对比：单独 decodeHTML（同样的输入数量）
+        var descStrings:Array = [];
+        var dsi:Number = 0;
+        while (dsi < descNodes.length) {
+            descStrings[dsi] = "&lt;p&gt;Desc &amp; detail " + dsi + "&lt;/p&gt;";
+            dsi++;
+        }
+        var decodeOnlyStats:Object = this.measureBenchStats(
+            function(iterations:Number):Number { return self.timeDecodeHTMLLoop(descStrings, iterations, descBatch); },
+            function(iterations:Number):Number { return self.timeHTMLReadBaseline(descStrings, iterations, descBatch); },
+            targetMs, 120, 4, 4096, repeats, 0, descBatch
+        );
+        this.reportBenchStats("单独 decodeHTML:  ", decodeOnlyStats);
+        this.reportRatio("完整路径 / 单独 decodeHTML = ", descFullStats, decodeOnlyStats);
+
+        // ================================================================
+        // 热点 5: convertDataType（保留原基准作为参考）
+        // ================================================================
         trace("\n  convertDataType（240 值轮转）");
         var convertValues:Array = this.generateConvertValues(240);
         var convertBatch:Number = 60;
@@ -1097,50 +1516,23 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
             function(iterations:Number):Number { return self.timeConvertValueReadBaseline(convertValues, iterations, convertBatch); },
             targetMs, 120, 4, 4096, repeats, 0, convertBatch
         );
-        this.reportBenchStats("convertDataType: ", convertStats);
+        this.reportBenchStats("convertDataType:  ", convertStats);
 
-        // --- decodeHTML ---
-        trace("\n  StringUtils.decodeHTML（90 字符串轮转）");
-        var htmlStrings:Array = this.generateHTMLStrings(90);
-        var htmlBatch:Number = 30;
+        // ================================================================
+        // 汇总占比
+        // ================================================================
+        trace("\n  --- 各热点占 parseXMLNode 总耗时占比 ---");
+        this.reportBenchStats("parseXMLNode(参照): ", nodeRef);
+        this.reportPhaseShare("isValidXML(累积):  ", validCumulativeStats, nodeRef);
+        this.reportPhaseShare("属性迭代:          ", attrStats, nodeRef);
+        this.reportPhaseShare("数组提升:          ", promotionStats, nodeRef);
+        this.reportPhaseShare("Description全路径: ", descFullStats, nodeRef);
+        this.reportPhaseShare("convertDataType:   ", convertStats, nodeRef);
 
-        var decodeWithEntityStats:Object = this.measureBenchStats(
-            function(iterations:Number):Number { return self.timeDecodeHTMLLoop(htmlStrings, iterations, htmlBatch); },
-            function(iterations:Number):Number { return self.timeHTMLReadBaseline(htmlStrings, iterations, htmlBatch); },
-            targetMs, 120, 4, 4096, repeats, 0, htmlBatch
-        );
-        this.reportBenchStats("decodeHTML(混合): ", decodeWithEntityStats);
-
-        // 纯含实体字符串
-        var entityOnly:Array = [];
-        var ei:Number = 0;
-        while (ei < 90) {
-            entityOnly[ei] = "&lt;p&gt;Hello &amp; World " + ei + "&lt;/p&gt;";
-            ei++;
+        if (nodeRef.reliable && validCumulativeStats.reliable && attrStats.reliable && promotionStats.reliable) {
+            var accounted:Number = validCumulativeStats.perOpMs + attrStats.perOpMs + promotionStats.perOpMs;
+            var pct:Number = Math.round(accounted / nodeRef.perOpMs * 100);
+            trace("    已解释: " + pct + "% | 未解释（递归/对象创建/childNodes访问等）: " + (100 - pct) + "%");
         }
-        var decodeEntityOnlyStats:Object = this.measureBenchStats(
-            function(iterations:Number):Number { return self.timeDecodeHTMLLoop(entityOnly, iterations, htmlBatch); },
-            function(iterations:Number):Number { return self.timeHTMLReadBaseline(entityOnly, iterations, htmlBatch); },
-            targetMs, 120, 4, 4096, repeats, 0, htmlBatch
-        );
-        this.reportBenchStats("decodeHTML(纯实体): ", decodeEntityOnlyStats);
-
-        // 纯无实体字符串
-        var plainOnly:Array = [];
-        var pi:Number = 0;
-        while (pi < 90) {
-            plainOnly[pi] = "Just plain text number " + pi;
-            pi++;
-        }
-        var decodePlainOnlyStats:Object = this.measureBenchStats(
-            function(iterations:Number):Number { return self.timeDecodeHTMLLoop(plainOnly, iterations, htmlBatch); },
-            function(iterations:Number):Number { return self.timeHTMLReadBaseline(plainOnly, iterations, htmlBatch); },
-            targetMs, 120, 4, 4096, repeats, 0, htmlBatch
-        );
-        this.reportBenchStats("decodeHTML(纯文本): ", decodePlainOnlyStats);
-
-        trace("    --");
-        this.reportRatio("纯实体 / 纯文本 = ", decodeEntityOnlyStats, decodePlainOnlyStats);
-        trace("    （若比值 >> 1 则说明短路优化有价值）");
     }
 }
