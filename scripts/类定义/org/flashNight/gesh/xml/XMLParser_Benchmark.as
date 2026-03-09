@@ -1058,6 +1058,35 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         return getTimer() - t0;
     }
 
+    /**
+     * 旧版 unescapeHTML 隔离计时（O(L×30) 多遍扫描，供 fast 版本对比）。
+     */
+    private function timeUnescapeHTMLLoop(htmlStrings:Array, iterations:Number, batchSize:Number):Number {
+        var sink:String = "";
+        var vLen:Number = htmlStrings.length;
+        var idx:Number = 0;
+        var i:Number = 0;
+        var j:Number = 0;
+        if (batchSize == undefined || batchSize < 1) {
+            batchSize = 1;
+        }
+        var t0:Number = getTimer();
+        while (i < iterations) {
+            j = 0;
+            while (j < batchSize) {
+                sink = StringUtils.unescapeHTML(htmlStrings[idx]);
+                idx++;
+                if (idx >= vLen) {
+                    idx = 0;
+                }
+                j++;
+            }
+            i++;
+        }
+        this.benchSink = sink;
+        return getTimer() - t0;
+    }
+
     // ========================================================================
     // 计时循环 —— Description 当前路径（getInnerTextDecoded，单次解码）
     // ========================================================================
@@ -1804,6 +1833,32 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         );
         this.reportBenchStats("decodeHTML(DOM文本):", decodeOnlyStats);
         trace("    注意: DOM 文本不含实体，decodeHTML 近似 no-op；仅反映函数调用开销。");
+
+        // 真实实体字符串的 decodeHTML 对比：decodeHTMLFast vs 旧 unescapeHTML
+        trace("\n  decodeHTML 真实实体对比（含 &lt;/&gt;/&amp; 的字符串 x50）");
+        trace("    对比 decodeHTMLFast（单次扫描 O(L)）与旧 unescapeHTML（O(L×30)）。");
+        var entityStrings:Array = [];
+        var esi:Number = 0;
+        while (esi < 50) {
+            entityStrings[esi] = "&lt;p&gt;Desc &amp; detail " + esi + "&lt;/p&gt;";
+            esi++;
+        }
+        var entityBatch:Number = entityStrings.length;
+
+        var fastDecodeStats:Object = this.measureBenchStats(
+            function(iterations:Number):Number { return self.timeDecodeHTMLLoop(entityStrings, iterations, entityBatch); },
+            function(iterations:Number):Number { return self.timeHTMLReadBaseline(entityStrings, iterations, entityBatch); },
+            targetMs, 120, 4, 4096, repeats, 0, entityBatch
+        );
+        this.reportBenchStats("decodeHTMLFast:   ", fastDecodeStats);
+
+        var oldDecodeStats:Object = this.measureBenchStats(
+            function(iterations:Number):Number { return self.timeUnescapeHTMLLoop(entityStrings, iterations, entityBatch); },
+            function(iterations:Number):Number { return self.timeHTMLReadBaseline(entityStrings, iterations, entityBatch); },
+            targetMs, 120, 4, 4096, repeats, 0, entityBatch
+        );
+        this.reportBenchStats("unescapeHTML(旧):  ", oldDecodeStats);
+        this.reportRatio("旧 / 新 = ", oldDecodeStats, fastDecodeStats);
 
         // ================================================================
         // 热点 4（当前）: convertDataType（保留原基准作为参考）

@@ -604,12 +604,132 @@ class org.flashNight.gesh.string.StringUtils {
     }
     
     /**
-     * 反转义 HTML 实体（别名）
+     * 反转义 HTML 实体（别名）。
+     * 已切换到单次线性扫描实现（O(L) 替代 O(L×30)）。
      * @param str 要反转义的字符串
      * @return 反转义后的字符串
      */
     public static function decodeHTML(str:String):String {
-        return StringUtils.unescapeHTML(str);
+        return StringUtils.decodeHTMLFast(str);
+    }
+
+    // ─── decodeHTMLFast：单次线性扫描 HTML 实体解码 ───
+
+    /** 命名实体查找表（不含 & 和 ;），首次调用时从单例 htmlEntities 构建。 */
+    private static var _entityLookup:Object = null;
+
+    /** 构建命名实体查找表：将 "&amp;" → "&" 转换为 "amp" → "&"。 */
+    private static function initEntityLookup():Void {
+        _entityLookup = {};
+        var singleton:StringUtils = StringUtils.getInstance();
+        var src:Object = singleton.htmlEntities;
+        for (var key:String in src) {
+            // key 形如 "&amp;"，去掉首尾 & 和 ;
+            var name:String = key.substring(1, key.length - 1);
+            _entityLookup[name] = src[key];
+        }
+    }
+
+    /**
+     * 单次线性扫描 HTML 实体解码。
+     * 支持全部命名实体（与 unescapeHTML 相同的 30+ 条目）及 &#NNN; / &#xHH; 数字实体。
+     * 复杂度 O(L)，替代 unescapeHTML 的 O(L×N)。
+     *
+     * @param str 要解码的字符串
+     * @return 解码后的字符串
+     */
+    public static function decodeHTMLFast(str:String):String {
+        if (str == null || str == undefined) return str;
+
+        // 快速路径：无 & 则无需处理
+        var len:Number = str.length;
+        var ampIdx:Number = str.indexOf("&");
+        if (ampIdx < 0) return str;
+
+        // 确保查找表已初始化
+        if (_entityLookup == null) initEntityLookup();
+
+        var out:Array = [];
+        var lastCopy:Number = 0;  // 上次已拷贝到的位置
+        var i:Number = ampIdx;    // 从首个 & 开始扫描
+
+        // 先拷贝 & 之前的前缀
+        if (ampIdx > 0) {
+            out.push(str.substring(0, ampIdx));
+            lastCopy = ampIdx;
+        }
+
+        while (i < len) {
+            if (str.charCodeAt(i) != 38) { // 非 '&'
+                i++;
+                continue;
+            }
+
+            // 找 ';'，实体名最长约 10 字符
+            var semi:Number = i + 1;
+            var limit:Number = i + 12;
+            if (limit > len) limit = len;
+            while (semi < limit) {
+                if (str.charCodeAt(semi) == 59) break; // ';'
+                semi++;
+            }
+
+            if (semi < limit && str.charCodeAt(semi) == 59) {
+                var entityName:String = str.substring(i + 1, semi);
+                var decoded:String = null;
+
+                var firstChar:Number = entityName.charCodeAt(0);
+                if (firstChar == 35) { // '#' → 数字实体
+                    var secondChar:Number = entityName.charCodeAt(1);
+                    var numVal:Number = 0;
+                    var ni:Number;
+                    if (secondChar == 120 || secondChar == 88) { // 'x'/'X' → 十六进制
+                        ni = 2;
+                        var eLen:Number = entityName.length;
+                        while (ni < eLen) {
+                            var hc:Number = entityName.charCodeAt(ni);
+                            if (hc >= 48 && hc <= 57) numVal = numVal * 16 + (hc - 48);
+                            else if (hc >= 65 && hc <= 70) numVal = numVal * 16 + (hc - 55);
+                            else if (hc >= 97 && hc <= 102) numVal = numVal * 16 + (hc - 87);
+                            else break;
+                            ni++;
+                        }
+                        if (ni > 2) decoded = String.fromCharCode(numVal);
+                    } else { // 十进制
+                        ni = 1;
+                        eLen = entityName.length;
+                        while (ni < eLen) {
+                            var dc:Number = entityName.charCodeAt(ni);
+                            if (dc >= 48 && dc <= 57) { numVal = numVal * 10 + (dc - 48); ni++; }
+                            else break;
+                        }
+                        if (ni > 1) decoded = String.fromCharCode(numVal);
+                    }
+                } else {
+                    // 命名实体查找
+                    decoded = _entityLookup[entityName];
+                }
+
+                if (decoded != null) {
+                    // 拷贝 & 之前未拷贝的部分
+                    if (i > lastCopy) out.push(str.substring(lastCopy, i));
+                    out.push(decoded);
+                    i = semi + 1;
+                    lastCopy = i;
+                    continue;
+                }
+            }
+
+            // 不是合法实体，跳过这个 &
+            i++;
+        }
+
+        // 无任何替换发生
+        if (lastCopy == 0) return str;
+
+        // 拷贝剩余部分
+        if (lastCopy < len) out.push(str.substring(lastCopy, len));
+        return out.join("");
     }
 
     /**
