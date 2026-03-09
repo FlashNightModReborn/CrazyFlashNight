@@ -45,6 +45,7 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         this.benchPhaseBreakdown();
         this.benchParseMultiScale();
         this.benchHotspotProfile();
+        this.benchStartupCorpus();
 
         trace("\n========== 测试结束 ==========");
     }
@@ -539,6 +540,55 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
             i++;
         }
         return values;
+    }
+
+    /**
+     * 生成匹配真实 data/items/*.xml 结构的武器 XML。
+     * 结构: root > item(weapontype属性) > name/displayname/icon/type/use/price/description/data
+     *        data > level/weight/dressup/capacity/split/diffusion/interval/velocity/bullet/
+     *               sound/muzzle/bullethit/clipname/bulletsize/power/impact/reloadPenalty
+     * 每 item 约 8 直接子节点 + data 含 17 子节点 = 25 节点，全部唯一命名（无碰撞）。
+     */
+    private function generateRealisticItemXML(itemCount:Number, seed:Number):String {
+        if (seed == undefined) {
+            seed = 0;
+        }
+        var s:String = "<root>";
+        var i:Number = 0;
+        while (i < itemCount) {
+            var id:Number = i + seed;
+            s += '<item weapontype="手枪">';
+            s += "<name>weapon_" + id + "</name>";
+            s += "<displayname>Weapon " + id + "</displayname>";
+            s += "<icon>weapon_" + id + "</icon>";
+            s += "<type>武器</type>";
+            s += "<use>手枪</use>";
+            s += "<price>" + ((i + 1) * 1000 + seed * 100) + "</price>";
+            s += "<description>这是武器 " + id + " 的描述文本</description>";
+            s += "<data>";
+            s += "<level>" + (Math.floor(i / 3) + 1) + "</level>";
+            s += "<weight>1</weight>";
+            s += "<dressup>枪-手枪-weapon_" + id + "</dressup>";
+            s += "<capacity>" + (8 + i % 20) + "</capacity>";
+            s += "<split>1</split>";
+            s += "<diffusion>" + (2 + i % 5) + "</diffusion>";
+            s += "<interval>" + (100 + i * 10) + "</interval>";
+            s += "<velocity>" + (20 + i % 10) + "</velocity>";
+            s += "<bullet>普通子弹</bullet>";
+            s += "<sound>pistol_" + (i % 5) + ".wav</sound>";
+            s += "<muzzle>紧凑手枪枪火</muzzle>";
+            s += "<bullethit>火花</bullethit>";
+            s += "<clipname>手枪通用弹药</clipname>";
+            s += "<bulletsize>" + (25 + i % 10) + "</bulletsize>";
+            s += "<power>" + (30 + i * 5) + "</power>";
+            s += "<impact>" + (100 + i * 50) + "</impact>";
+            s += "<reloadPenalty>-15</reloadPenalty>";
+            s += "</data>";
+            s += "</item>";
+            i++;
+        }
+        s += "</root>";
+        return s;
     }
 
     // ========================================================================
@@ -1123,6 +1173,54 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
     }
 
     // ========================================================================
+    // 计时循环 —— concat 累积合并（模拟 ItemDataLoader.concat）
+    // ========================================================================
+
+    /**
+     * 模拟 ItemDataLoader.loadChildXmlFiles 的累积 concat 行为：
+     * combined = combined.concat(childData.item) 对 N 个文件串行执行。
+     * arrays 参数为预解析好的 item 数组列表。
+     */
+    private function timeConcatAccumulateLoop(arrays:Array, iterations:Number):Number {
+        var sink:Array = null;
+        var aLen:Number = arrays.length;
+        var i:Number = 0;
+        var t0:Number = getTimer();
+        while (i < iterations) {
+            var combined:Array = [];
+            var a:Number = 0;
+            while (a < aLen) {
+                combined = combined.concat(arrays[a]);
+                a++;
+            }
+            sink = combined;
+            i++;
+        }
+        this.benchSink = sink;
+        return getTimer() - t0;
+    }
+
+    /**
+     * concat 累积基线：仅遍历数组列表。
+     */
+    private function timeConcatAccumulateBaseline(arrays:Array, iterations:Number):Number {
+        var sink:Array = null;
+        var aLen:Number = arrays.length;
+        var i:Number = 0;
+        var t0:Number = getTimer();
+        while (i < iterations) {
+            var a:Number = 0;
+            while (a < aLen) {
+                sink = arrays[a];
+                a++;
+            }
+            i++;
+        }
+        this.benchSink = sink;
+        return getTimer() - t0;
+    }
+
+    // ========================================================================
     // 负载自校验
     // ========================================================================
     private function testWorkloadAssumptions():Void {
@@ -1224,6 +1322,20 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
             {name: "single", value: "only"}
         ];
         this.assertEqual("数组提升 pairs 长度", 4, testPairs.length);
+
+        // 11. 真实结构 XML 验证
+        var realisticXml:String = this.generateRealisticItemXML(3, 0);
+        var realisticParsed:XML = new XML();
+        realisticParsed.ignoreWhite = true;
+        realisticParsed.parseXML(realisticXml);
+        var realisticObj:Object = XMLParser.parseXMLNode(realisticParsed.firstChild);
+        this.assert(realisticObj != null, "真实结构 XML 解析成功");
+        this.assert(realisticObj.item instanceof Array, "真实结构: item 为数组");
+        this.assertEqual("真实结构 item 长度", 3, realisticObj.item.length);
+        this.assertEqual("真实结构首项 name", "weapon_0", realisticObj.item[0].name);
+        this.assert(realisticObj.item[0].data != undefined, "真实结构首项有 data");
+        this.assertEqual("真实结构首项 data.bullet", "普通子弹", realisticObj.item[0].data.bullet);
+        this.assertEqual("真实结构首项 data.power", 30, realisticObj.item[0].data.power);
 
         // 12. 深层嵌套 XML 验证
         var deepXml:String = this.generateDeepXML(10);
@@ -1431,19 +1543,36 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         // ================================================================
         // 热点 3: 同名节点数组提升
         // ================================================================
-        trace("\n  同名节点数组提升（模拟 50 项 XML 的碰撞模式）");
-        trace("    模式: 50 个 item 同名 + tags/tag 同名 + 少量单出现节点。");
+        trace("\n  同名节点数组提升（展平全树碰撞模式）");
+        trace("    模式: 根层 50 item 碰撞 + 50 item 各含 tags/Description +");
+        trace("          50 tags 各含 2 tag 碰撞。展平为单次循环测量总工作量。");
 
-        // 构造模拟 50 项解析中的 (nodeName, childValue) 序列
+        // 展平全树 (nodeName, childValue) 序列
+        // 根层: 50 item + metadata + config = 52 pairs
         var promotionPairs:Array = [];
         var pi:Number = 0;
         while (pi < 50) {
-            promotionPairs.push({name: "item", value: {id: pi, name: "item_" + pi}});
+            promotionPairs.push({name: "item", value: {id: pi}});
             pi++;
         }
-        // 加入一些单出现节点
         promotionPairs.push({name: "metadata", value: {version: "1.0"}});
         promotionPairs.push({name: "config", value: {maxRetry: 3}});
+        // 每个 item 层: tags + 可能的 Description = ~60 pairs
+        pi = 0;
+        while (pi < 50) {
+            promotionPairs.push({name: "tags", value: {tag: "t" + pi}});
+            if (pi % 5 == 0) {
+                promotionPairs.push({name: "Description", value: "Desc " + pi});
+            }
+            pi++;
+        }
+        // 每个 tags 层: 2 tag 碰撞 = 100 pairs
+        pi = 0;
+        while (pi < 50) {
+            promotionPairs.push({name: "tag", value: "t" + pi});
+            promotionPairs.push({name: "tag", value: "common"});
+            pi++;
+        }
         trace("    pairs 数: " + promotionPairs.length);
 
         var promotionStats:Object = this.measureBenchStats(
@@ -1529,10 +1658,122 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         this.reportPhaseShare("Description全路径: ", descFullStats, nodeRef);
         this.reportPhaseShare("convertDataType:   ", convertStats, nodeRef);
 
-        if (nodeRef.reliable && validCumulativeStats.reliable && attrStats.reliable && promotionStats.reliable) {
-            var accounted:Number = validCumulativeStats.perOpMs + attrStats.perOpMs + promotionStats.perOpMs;
+        if (nodeRef.reliable && validCumulativeStats.reliable && attrStats.reliable && promotionStats.reliable && descFullStats.reliable && convertStats.reliable) {
+            var accounted:Number = validCumulativeStats.perOpMs + attrStats.perOpMs + promotionStats.perOpMs + descFullStats.perOpMs + convertStats.perOpMs;
             var pct:Number = Math.round(accounted / nodeRef.perOpMs * 100);
             trace("    已解释: " + pct + "% | 未解释（递归/对象创建/childNodes访问等）: " + (100 - pct) + "%");
+        }
+    }
+
+    // ========================================================================
+    // 基准 4：启动语料基准（模拟真实初始化加载链路）
+    // ========================================================================
+    private function benchStartupCorpus():Void {
+        trace("\n--- 启动语料基准（模拟真实初始化加载链路） ---");
+        trace("  说明: 使用匹配真实 data/items/*.xml 结构的合成 XML，");
+        trace("        模拟 51 文件的 parseXML + parseXMLNode + concat 全流程。");
+        trace("        不含 IO/网络等待，仅度量 CPU 部分。");
+
+        var self:XMLParser_Benchmark = this;
+        var repeats:Number = 5;
+        var targetMs:Number = 120;
+
+        // 真实分布近似（51 文件, 总 ~1.42 MB）:
+        //   小文件(<15KB):  ~15 个, 约 5 items/文件
+        //   中文件(15-50KB): ~25 个, 约 20 items/文件
+        //   大文件(50-100KB): ~8 个, 约 50 items/文件
+        //   超大文件(>100KB): ~3 个, 约 100 items/文件
+        var fileProfiles:Array = [
+            {items: 5,   desc: "小(5项)",    count: 15},
+            {items: 20,  desc: "中(20项)",   count: 25},
+            {items: 50,  desc: "大(50项)",   count: 8},
+            {items: 100, desc: "超大(100项)", count: 3}
+        ];
+
+        var perFileCosts:Array = [];
+        var concatArrays:Array = [];
+
+        var fi:Number = 0;
+        while (fi < fileProfiles.length) {
+            var profile:Object = fileProfiles[fi];
+            var xmlStr:String = this.generateRealisticItemXML(profile.items, fi);
+            var payloadChars:Number = length(xmlStr);
+
+            trace("\n  " + profile.desc + " | " + payloadChars + " 字符 | 模拟 " + profile.count + " 个文件");
+
+            var stats:Object = this.measureBenchStats(
+                function(iterations:Number):Number { return self.timeFullPipelineLoop(xmlStr, iterations); },
+                function(iterations:Number):Number { return self.timeFullPipelineBaseline(xmlStr, iterations); },
+                targetMs, 0, 2, 256, repeats, payloadChars, 1
+            );
+            this.reportBenchStats("全流水线:  ", stats);
+
+            perFileCosts.push({perOpMs: stats.perOpMs, count: profile.count, chars: payloadChars, reliable: stats.reliable});
+
+            // 为 concat 基准准备模拟解析结果
+            var xml:XML = new XML();
+            xml.ignoreWhite = true;
+            xml.parseXML(xmlStr);
+            var parsed:Object = XMLParser.parseXMLNode(xml.firstChild);
+            var itemArray:Array;
+            if (parsed.item instanceof Array) {
+                itemArray = parsed.item;
+            } else {
+                itemArray = [parsed.item];
+            }
+            var ci:Number = 0;
+            while (ci < profile.count) {
+                concatArrays.push(itemArray);
+                ci++;
+            }
+
+            fi++;
+        }
+
+        // concat 累积合并基准
+        var totalItems:Number = 0;
+        var cai:Number = 0;
+        while (cai < concatArrays.length) {
+            totalItems += concatArrays[cai].length;
+            cai++;
+        }
+        trace("\n  Array.concat 累积合并（" + concatArrays.length + " 文件, " + totalItems + " 总物品）");
+
+        var concatStats:Object = this.measureBenchStats(
+            function(iterations:Number):Number { return self.timeConcatAccumulateLoop(concatArrays, iterations); },
+            function(iterations:Number):Number { return self.timeConcatAccumulateBaseline(concatArrays, iterations); },
+            targetMs, 0, 2, 512, repeats, 0, 1
+        );
+        this.reportBenchStats("concat累积: ", concatStats);
+
+        // 启动 CPU 时间估算
+        trace("\n  --- 启动期 CPU 时间估算（不含 IO） ---");
+        var totalCpuMs:Number = 0;
+        var allReliable:Boolean = true;
+        var ei:Number = 0;
+        while (ei < perFileCosts.length) {
+            var cost:Object = perFileCosts[ei];
+            var subtotal:Number = cost.perOpMs * cost.count;
+            totalCpuMs += subtotal;
+            if (!cost.reliable) {
+                allReliable = false;
+            }
+            trace("    " + fileProfiles[ei].desc + " x" + cost.count + ": "
+                + this.toFixed2(cost.perOpMs) + " ms/文件 x" + cost.count
+                + " = " + this.toFixed2(subtotal) + " ms");
+            ei++;
+        }
+        if (concatStats.reliable) {
+            totalCpuMs += concatStats.perOpMs;
+            trace("    concat: " + this.toFixed2(concatStats.perOpMs) + " ms");
+        } else {
+            allReliable = false;
+        }
+        trace("    --");
+        if (allReliable) {
+            trace("    估算启动期总 CPU: " + this.toFixed2(totalCpuMs) + " ms（纯解析+合并，不含IO）");
+        } else {
+            trace("    估算启动期总 CPU: ~" + this.toFixed2(totalCpuMs) + " ms（含低置信度项，仅供参考）");
         }
     }
 }
