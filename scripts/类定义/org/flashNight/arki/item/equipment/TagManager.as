@@ -84,10 +84,25 @@ class org.flashNight.arki.item.equipment.TagManager {
     public static function buildPresentTagsDict(mods:Array, itemData:Object, modRegistry:Object):Object {
         var presentTags:Object = {};
 
+        // 预扫描：收集已安装配件的 grantsUse
+        var grantedUses:Object = null;
+        if (mods) {
+            for (var pre:Number = 0; pre < mods.length; pre++) {
+                var preModInfo:Object = modRegistry[mods[pre]];
+                if (preModInfo && preModInfo.grantsUseDict) {
+                    if (!grantedUses) grantedUses = {};
+                    for (var gu:String in preModInfo.grantsUseDict) {
+                        grantedUses[gu] = true;
+                    }
+                }
+            }
+        }
+
         // 构建装备的 use/weapontype 查找表
         var useLookup:Object = ModRegistry.buildItemUseLookup(
             itemData.use || "",
-            itemData.weapontype || ""
+            itemData.weapontype || "",
+            grantedUses
         );
 
         // 1. 装备固有结构标签

@@ -692,4 +692,127 @@
         <reloadPenalty>17</reloadPenalty>
       </data>
     </item>
+  <item weapontype="大威力手枪">
+      <name>土制转管手枪</name>
+      <displayname>土制转管手枪</displayname>
+      <icon>土制转管手枪</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>3200</price>
+      <description>一支土制手枪，手感十分糟糕。</description>
+      <data>
+        <level>1</level>
+        <weight>2</weight>
+        <dressup>枪-手枪-土制转管手枪</dressup>
+        <capacity>4</capacity>
+        <split>1</split>
+        <diffusion>15</diffusion>
+        <interval>700</interval>
+        <singleshoot>true</singleshoot>
+        <velocity>35</velocity>
+        <bullet>普通子弹</bullet>
+        <sound>re_pistol_python.wav</sound>
+        <muzzle>枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>马格南手枪弹药</clipname>
+        <bulletsize>30</bulletsize>
+        <power>400</power>
+        <impact>50</impact>
+        <reloadType>tube</reloadType>
+        <reloadPenalty>17</reloadPenalty>
+      </data>
+    </item>
+  <item weapontype="大威力手枪">
+      <name>ashcore</name>
+      <displayname>ashcore</displayname>
+      <icon>ashcore</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>145600</price>
+      <description>铁枪会基于工业等离子切割设备逆向开发的便携式等离子武器。
+      武器代号来源于等离子核心将目标物质瞬间气化为灰烬的作用机制。
+      系统配备强化合金外壳和散热系统，侧面装有能量状态指示器用于监控等离子室充能水平。
+      具备优异的装甲穿透能力，但发射频率受热管理系统限制。</description>
+      <data>
+        <level>35</level>
+        <weight>3</weight>
+        <dressup>枪-手枪-ashcore</dressup>
+        <capacity>23</capacity>
+        <split>1</split>
+        <diffusion>3</diffusion>
+        <interval>1000</interval>
+        <singleshoot>true</singleshoot>
+        <velocity>50</velocity>
+        <bullet>等离子穿刺子弹</bullet>
+        <sound>re_pistol_m1911_2011.wav</sound>
+        <muzzle>铁枪能量弹枪火</muzzle>
+        <bullethit>能量火花</bullethit>
+        <clipname>能量电池</clipname>
+        <bulletsize>5</bulletsize>
+        <power>1400</power>
+        <impact>10</impact>
+        <damagetype>魔法</damagetype>
+        <magictype>能</magictype>
+        <reloadPenalty>17</reloadPenalty>
+      </data>
+    </item>
+  <item weapontype="大威力手枪">
+      <name>Ultrasonic wave</name>
+      <displayname>Ultrasonic wave</displayname>
+      <icon>Ultrasonic wave</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>160000</price>
+      <description>可定向发射超声波的能量武器</description>
+      <data>
+        <level>40</level>
+        <weight>2</weight>
+        <dressup>枪-手枪-Ultrasonic wave</dressup>
+        <capacity>4</capacity>
+        <split>1</split>
+        <diffusion>2</diffusion>
+        <interval>220</interval>
+        <singleshoot>true</singleshoot>
+        <velocity>10</velocity>
+        <bullet>声波</bullet>
+        <sound>m4a1_unsil-2.wav</sound>
+        <muzzle>枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>能量电池</clipname>
+        <bulletsize>20</bulletsize>
+        <power>500</power>
+        <impact>2</impact>
+        <reloadPenalty>17</reloadPenalty>
+      </data>
+    </item>
+  <item weapontype="大威力手枪">
+      <name>Ball Lightning</name>
+      <displayname>Ball Lightning</displayname>
+      <icon>Ball Lightning</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>160000</price>
+      <description>能量电池供电，可定向发射电球的能量武器</description>
+      <data>
+        <level>40</level>
+        <weight>2</weight>
+        <dressup>枪-手枪-Ball Lightning</dressup>
+        <capacity>4</capacity>
+        <split>1</split>
+        <diffusion>2</diffusion>
+        <interval>220</interval>
+        <singleshoot>true</singleshoot>
+        <velocity>10</velocity>
+        <bullet>新电球</bullet>
+        <bulletrename>电球</bulletrename>
+        <sound>m4a1_unsil-2.wav</sound>
+        <muzzle>枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>能量电池</clipname>
+        <bulletsize>20</bulletsize>
+        <power>500</power>
+        <impact>2</impact>
+        <reloadPenalty>17</reloadPenalty>
+      </data>
+    </item>
 </root>

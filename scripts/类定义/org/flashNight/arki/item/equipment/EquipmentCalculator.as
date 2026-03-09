@@ -163,8 +163,20 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         var itemUse:String = itemData.use || "";
         var itemWeaponType:String = itemData.weapontype || "";
 
+        // 预扫描：收集已安装配件的 grantsUse
+        var grantedUses:Object = null;
+        for (var pre:Number = 0; pre < mods.length; pre++) {
+            var preModInfo:Object = modRegistry[mods[pre]];
+            if (preModInfo && preModInfo.grantsUseDict) {
+                if (!grantedUses) grantedUses = {};
+                for (var gu:String in preModInfo.grantsUseDict) {
+                    grantedUses[gu] = true;
+                }
+            }
+        }
+
         // 【方案A实施】使用ModRegistry.buildItemUseLookup（单一真源）
-        var useLookup:Object = ModRegistry.buildItemUseLookup(itemUse, itemWeaponType);
+        var useLookup:Object = ModRegistry.buildItemUseLookup(itemUse, itemWeaponType, grantedUses);
 
         // 【重构】调用 TagManager.buildPresentTagsDict（单一真源）
         // 收集所有 presentTags（装备固有 + 配件静态 + 配件条件性）

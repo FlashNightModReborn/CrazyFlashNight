@@ -317,6 +317,39 @@ class org.flashNight.arki.item.EquipmentUtil {
             }
         }
 
+        // 收集所有已授予的装备类型池访问权（grantsUse）
+        var hasGrantedUses:Boolean = false;
+        var grantedUses:Object = {};
+        for(var gi:Number = 0; gi < mods.length; gi++) {
+            var grantMod:Object = modDict[mods[gi]];
+            if(grantMod && grantMod.grantsUseDict) {
+                for(var grantedUse:String in grantMod.grantsUseDict) {
+                    grantedUses[grantedUse] = true;
+                    hasGrantedUses = true;
+                }
+            }
+        }
+
+        // 如果有跨池授权，合并额外候选列表（去重）
+        if(hasGrantedUses) {
+            var candidateDict:Object = {};
+            for(var ui:Number = 0; ui < useList.length; ui++) {
+                candidateDict[useList[ui]] = true;
+            }
+            for(var grantedUseName:String in grantedUses) {
+                var extraPool:Array = modUseLists[grantedUseName];
+                if(extraPool) {
+                    for(var ei:Number = 0; ei < extraPool.length; ei++) {
+                        candidateDict[extraPool[ei]] = true;
+                    }
+                }
+            }
+            useList = [];
+            for(var candName:String in candidateDict) {
+                useList.push(candName);
+            }
+        }
+
         // 检查每个配件的武器类型要求 - 使用静态属性 modDict
         // 只对手枪和长枪考虑weapontype限制
         var checkWeaponType:Boolean = (rawItemData.use == "手枪" || rawItemData.use == "长枪");

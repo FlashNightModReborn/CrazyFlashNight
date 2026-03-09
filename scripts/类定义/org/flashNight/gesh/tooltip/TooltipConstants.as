@@ -137,6 +137,8 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_INSTALL_CONDITION:String = "安装条件";
   public static var LBL_INHERENT_TAGS:String = "固有结构";
   public static var LBL_BLOCKED_TAGS:String = "禁止挂点";
+  public static var LBL_MOD_GRANTS_USE:String = "扩展装备类型池";
+  public static var LBL_MOD_GRANTS_WEAPON_TYPE:String = "扩展武器子类";
 
   // 子弹类型标识符到中文名的映射
   public static var BULLET_TYPE_NAMES:Object = {

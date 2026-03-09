@@ -609,6 +609,14 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     if(modData.excludeWeapontype){
       result.push("<font color='" + TooltipConstants.COL_ROUT + "'>" + TooltipConstants.LBL_MOD_EXCLUDE_WEAPON_TYPE + "：</font>", modData.excludeWeapontype, "<BR>");
     }
+    // 显示授予的装备类型池访问（grantsUse）
+    if(modData.grantsUse){
+      result.push("<font color='" + TooltipConstants.COL_ENHANCE + "'>" + TooltipConstants.LBL_MOD_GRANTS_USE + "：</font>", modData.grantsUse, "<BR>");
+    }
+    // 显示授予的武器子类（grantsWeapontype）
+    if(modData.grantsWeapontype){
+      result.push("<font color='" + TooltipConstants.COL_ENHANCE + "'>" + TooltipConstants.LBL_MOD_GRANTS_WEAPON_TYPE + "：</font>", modData.grantsWeapontype, "<BR>");
+    }
 
     // 显示提供的结构标签
     if(modData.provideTagDict){

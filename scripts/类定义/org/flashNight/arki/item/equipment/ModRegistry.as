@@ -107,6 +107,11 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             mod.grantsWeapontypeDict = buildDictFromList(mod.grantsWeapontype);
         }
 
+        // 3.5. 处理grantsUse（授予的装备类型池访问权）
+        if (mod.grantsUse) {
+            mod.grantsUseDict = buildDictFromList(mod.grantsUse);
+        }
+
         // 4. 处理detachPolicy（拆卸策略）
         if (!mod.detachPolicy) {
             mod.detachPolicy = "single";
@@ -735,7 +740,7 @@ class org.flashNight.arki.item.equipment.ModRegistry {
      * @param itemWeaponType 装备的weapontype属性
      * @return 查找表对象
      */
-    public static function buildItemUseLookup(itemUse:String, itemWeaponType:String):Object {
+    public static function buildItemUseLookup(itemUse:String, itemWeaponType:String, grantedUses:Object):Object {
         var lookup:Object = {};
 
         // 添加use
@@ -756,6 +761,15 @@ class org.flashNight.arki.item.equipment.ModRegistry {
                 var trimmedWeapon:String = StringUtils.trim(weaponList[j]);
                 if (trimmedWeapon.length > 0 && !lookup[trimmedWeapon]) {
                     lookup[trimmedWeapon] = true;
+                }
+            }
+        }
+
+        // 添加grantsUse扩展的装备类型
+        if (grantedUses) {
+            for (var gu:String in grantedUses) {
+                if (!lookup[gu]) {
+                    lookup[gu] = true;
                 }
             }
         }
