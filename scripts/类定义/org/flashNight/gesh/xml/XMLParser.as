@@ -89,9 +89,26 @@ class org.flashNight.gesh.xml.XMLParser
             if (cType == 8) continue;
 
             // 特别处理 Description 和 MaterialDetail 节点（修复双重 decodeHTML）
+            // 同样需要数组提升，否则多个同名特殊节点会互相覆盖
             if (cType == 1 && (cName == "Description" || cName == "MaterialDetail"))
             {
-                result[cName] = getInnerTextDecoded(child);
+                var decoded:String = getInnerTextDecoded(child);
+                var existingSpec = result[cName];
+                if (existingSpec !== undefined)
+                {
+                    if (!(existingSpec instanceof Array))
+                    {
+                        result[cName] = [existingSpec, decoded];
+                    }
+                    else
+                    {
+                        existingSpec.push(decoded);
+                    }
+                }
+                else
+                {
+                    result[cName] = decoded;
+                }
                 continue;
             }
 
