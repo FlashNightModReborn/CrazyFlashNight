@@ -66,6 +66,8 @@
     <mod>
         <name>手枪卡宾转换套件</name>
         <use>手枪</use>
+        <weapontype>手枪</weapontype>
+        <provideTags>导轨平台,下导轨挂点,侧导轨挂点,瞄具挂点,扩展模组槽</provideTags>
         <grantsUse>长枪</grantsUse>
         <stats>
             <override>
@@ -74,13 +76,7 @@
             <flat>
                 <weight>2</weight>
             </flat>
-            <useSwitch>
-                <use name="手枪">
-                    <provideTags>导轨平台,下导轨挂点,瞄具挂点</provideTags>
-                </use>
-            </useSwitch>
         </stats>
-        <provideTags>卡宾框架</provideTags>
         <detachPolicy>cascade</detachPolicy>
         <description>微型卡宾转换套件，将手枪包裹在模块化卡宾框架中，大幅扩展配件兼容性。安装后可使用长枪类配件，但增加重量。</description>
         <tag>导轨基座</tag>
@@ -150,6 +146,7 @@
             <useSwitch>
                 <use name="霰弹枪">
                     <percentage>
+                        <accuracy>6</accuracy>
                         <bulletsize>50</bulletsize>
                     </percentage>
                 </use>
