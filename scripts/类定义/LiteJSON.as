@@ -101,7 +101,6 @@
 
         // rootWrapper 统一写入：tRef[tKey] = value 覆盖 root/object/array 三路分支
         var rootWrapper:Object = {};
-        rootWrapper.__proto__ = null;
         var rootParsed:Boolean = false;
         var failed:Boolean = false;
         var tRef:Object = rootWrapper;
@@ -318,8 +317,8 @@
             }
 
             if (currentCh === "{") {
+                // 保持普通 Object，避免把 proto-null 对象暴露给通用加载链。
                 object = {};
-                object.__proto__ = null;
                 at++;
                 tRef[tKey] = object;
                 stackStates[stackPtr] = 1; // OBJ_KEY_OR_END
