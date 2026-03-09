@@ -1612,7 +1612,8 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         var sumMs:Number = nativeStats.perOpMs + nodeStats.perOpMs;
         if (fullStats.reliable && nativeStats.reliable && nodeStats.reliable && fullStats.perOpMs > 0) {
             var overhead:Number = Math.round((fullStats.perOpMs - sumMs) / fullStats.perOpMs * 100);
-            trace("    分相加总 vs 全流水线偏差: " + overhead + "% (正常应 <10%)");
+            var note:String = (overhead > 15) ? " (偏高：含XML对象创建/GC等固定开销，绝对值参考趋势)" : "";
+            trace("    分相加总 vs 全流水线偏差: " + overhead + "%" + note);
         }
     }
 

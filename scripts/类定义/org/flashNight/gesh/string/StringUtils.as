@@ -694,7 +694,7 @@ class org.flashNight.gesh.string.StringUtils {
                             else break;
                             ni++;
                         }
-                        if (ni > 2) decoded = String.fromCharCode(numVal);
+                        if (ni > 2 && ni == eLen) decoded = String.fromCharCode(numVal);
                     } else { // 十进制
                         ni = 1;
                         eLen = entityName.length;
@@ -703,7 +703,7 @@ class org.flashNight.gesh.string.StringUtils {
                             if (dc >= 48 && dc <= 57) { numVal = numVal * 10 + (dc - 48); ni++; }
                             else break;
                         }
-                        if (ni > 1) decoded = String.fromCharCode(numVal);
+                        if (ni > 1 && ni == eLen) decoded = String.fromCharCode(numVal);
                     }
                 } else {
                     // 命名实体查找
@@ -1771,6 +1771,22 @@ runTest("encodeHTML('Use \"quotes\" and \'apostrophes\'')", "Use &quot;quotes&qu
 trace("----- 测试 decodeHTML 方法 -----");
 runTest("decodeHTML('&lt;span&gt;Test &amp; Check&lt;/span&gt;')", "<span>Test & Check</span>", StringUtils.decodeHTML("&lt;span&gt;Test &amp; Check&lt;/span&gt;"));
 runTest("decodeHTML('Use &quot;quotes&quot; and &apos;apostrophes&apos;')", 'Use "quotes" and \'apostrophes\'', StringUtils.decodeHTML("Use &quot;quotes&quot; and &apos;apostrophes&apos;"));
+
+// 24b. decodeHTMLFast 数字实体（合法 + 非法边界）
+trace("----- 测试 decodeHTMLFast 数字实体 -----");
+runTest("decodeHTMLFast &#65; → A", "A", StringUtils.decodeHTMLFast("&#65;"));
+runTest("decodeHTMLFast &#x41; → A", "A", StringUtils.decodeHTMLFast("&#x41;"));
+runTest("decodeHTMLFast &#X41; → A (大写X)", "A", StringUtils.decodeHTMLFast("&#X41;"));
+runTest("decodeHTMLFast &#169; → ©", String.fromCharCode(169), StringUtils.decodeHTMLFast("&#169;"));
+runTest("decodeHTMLFast &#xA9; → ©", String.fromCharCode(169), StringUtils.decodeHTMLFast("&#xA9;"));
+// 非法数字实体：含非法字符，应原样保留
+runTest("decodeHTMLFast &#12a; 非法→原样", "&#12a;", StringUtils.decodeHTMLFast("&#12a;"));
+runTest("decodeHTMLFast &#x41zz; 非法→原样", "&#x41zz;", StringUtils.decodeHTMLFast("&#x41zz;"));
+runTest("decodeHTMLFast &#abc; 非法→原样", "&#abc;", StringUtils.decodeHTMLFast("&#abc;"));
+// 混合：合法实体 + 非法实体共存
+runTest("decodeHTMLFast 混合合法/非法", "A&#12a;B", StringUtils.decodeHTMLFast("&#65;&#12a;&#66;"));
+// 无分号的 & 不处理
+runTest("decodeHTMLFast 裸&不处理", "a&b", StringUtils.decodeHTMLFast("a&b"));
 
 // 25. 测试单例模式
 trace("----- 测试单例模式 -----");

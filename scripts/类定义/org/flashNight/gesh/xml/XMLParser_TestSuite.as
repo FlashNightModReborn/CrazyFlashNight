@@ -969,9 +969,9 @@ class org.flashNight.gesh.xml.XMLParser_TestSuite {
         var innerExceptionNode:XMLNode = innerExceptionXML.firstChild;
 
         var innerExceptionResult:Object = XMLParser.parseStageXMLNode(innerExceptionNode);
-        // 整关级失败策略：内层异常导致顶层返回 null
-        _assert(innerExceptionResult == null || typeof(innerExceptionResult) == "object",
-            "内层CaseSwitch异常：顶层应返回null或降级对象");
+        // 整关级失败策略：内层异常必须导致顶层返回 null，不允许部分降级
+        _assert(innerExceptionResult == null,
+            "内层CaseSwitch异常：整关级失败策略要求顶层返回null");
 
         // 清理全局函数
         delete _global.throwingFunction;
