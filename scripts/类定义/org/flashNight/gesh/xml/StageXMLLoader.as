@@ -40,7 +40,16 @@ class org.flashNight.gesh.xml.StageXMLLoader
      */
     private function handleXMLLoad():Void
     {
-        this.parsedData = XMLParser.parseStageXMLNode(this.xml.firstChild);
+        var root:XMLNode = this.xml.firstChild;
+        if (root == null)
+        {
+            trace("[StageXMLLoader] Warning: XML loaded but has no root element");
+            this.parsedData = null;
+        }
+        else
+        {
+            this.parsedData = XMLParser.parseStageXMLNode(root);
+        }
         if (this.onLoadHandler != null)
         {
             this.onLoadHandler(this.parsedData);

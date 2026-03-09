@@ -63,9 +63,20 @@
 [PASS] 空 XML 字符串 → 返回 null
 [PASS] 纯空白 XML → 返回 null
 [PASS] 畸形 XML 不崩溃 (结果=partial)
+[PASS] convertDataType: 'true' → true
+[PASS] convertDataType: 'True' → true
+[PASS] convertDataType: 'TRUE' → true
+[PASS] convertDataType: 'false' → false
+[PASS] convertDataType: 'False' → false
+[PASS] convertDataType: 'FALSE' → false
+[PASS] convertDataType: 'tRue' → 保留字符串
+[PASS] convertDataType: 'FALSE ' → 尾空格保留字符串
+[PASS] convertDataType: '42' → 42
+[PASS] convertDataType: '' → 空字符串
+[PASS] convertDataType: 'hello' → 原字符串
 
 ---------- 自校验汇总 ----------
-通过: 55 / 55  失败: 0
+通过: 66 / 66  失败: 0
 
 ========== 性能基准 ==========
 
@@ -74,82 +85,91 @@
         独立度量，定位时间到底花在 C++ 还是 AS2。
 
   50 项 | 6007 字符
-    全流水线:      3.063 ms/次 | 64 次/轮 | 中位总 196.00 ms | 1.87 MB/s | 波动 1.05x
-    原生 parseXML: 0.146 ms/次 | 512 次/轮 | 中位总 75.00 ms | 39.11 MB/s | 波动 1.16x
-    parseXMLNode:  2.531 ms/次 | 64 次/轮 | 中位总 162.00 ms | 2.26 MB/s | 波动 1.04x
+    全流水线:      3.109 ms/次 | 64 次/轮 | 中位总 199.00 ms | 1.84 MB/s | 波动 1.04x
+    原生 parseXML: 0.146 ms/次 | 512 次/轮 | 中位总 75.00 ms | 39.11 MB/s | 波动 1.27x
+    parseXMLNode:  2.594 ms/次 | 64 次/轮 | 中位总 166.00 ms | 2.21 MB/s | 波动 1.03x
     --
-    原生占全流水线: 5% (0.146 / 3.063 ms)
-    parseXMLNode 占全流水线: 83% (2.531 / 3.063 ms)
-    分相加总 vs 全流水线偏差: 13% (正常应 <10%)
+    原生占全流水线: 5% (0.146 / 3.109 ms)
+    parseXMLNode 占全流水线: 83% (2.594 / 3.109 ms)
+    分相加总 vs 全流水线偏差: 12% (正常应 <10%)
 
 --- parseXMLNode 多规模基准（变体冷路径 + 基线扣除） ---
   说明: 使用不同 seed 的 XML 变体轮转，避免 AVM 内部可能的字符串缓存。
         分别度量全流水线与纯 parseXMLNode 阶段。
 
   小(10项) | 1283 字符 | 64 变体
-    全流水线(冷):   0.672 ms/次 | 16 批/轮 x32 = 512 次 | 中位总 344.00 ms | 1.82 MB/s | 波动 1.03x
-    parseXMLNode(冷): 0.549 ms/次 | 16 批/轮 x32 = 512 次 | 中位总 281.00 ms | 2.23 MB/s | 波动 1.03x
-    parseXMLNode(热): 0.531 ms/次 | 256 次/轮 | 中位总 136.00 ms | 2.30 MB/s | 波动 1.02x
+    全流水线(冷):   0.658 ms/次 | 16 批/轮 x32 = 512 次 | 中位总 337.00 ms | 1.86 MB/s | 波动 1.05x
+    parseXMLNode(冷): 0.539 ms/次 | 16 批/轮 x32 = 512 次 | 中位总 276.00 ms | 2.27 MB/s | 波动 1.03x
+    parseXMLNode(热): 0.535 ms/次 | 256 次/轮 | 中位总 137.00 ms | 2.29 MB/s | 波动 1.09x
     --
-    parseXMLNode 占全流水线: 82% (0.549 / 0.672 ms)
-    parseXMLNode 冷/热 = 1.03x
+    parseXMLNode 占全流水线: 82% (0.539 / 0.658 ms)
+    parseXMLNode 冷/热 = 1.01x
 
   中(50项) | 6007 字符 | 64 变体
-    全流水线(冷):   3.156 ms/次 | 4 批/轮 x32 = 128 次 | 中位总 404.00 ms | 1.82 MB/s | 波动 1.02x
-    parseXMLNode(冷): 2.711 ms/次 | 4 批/轮 x32 = 128 次 | 中位总 347.00 ms | 2.11 MB/s | 波动 1.03x
-    parseXMLNode(热): 2.708 ms/次 | 48 次/轮 | 中位总 130.00 ms | 2.12 MB/s | 波动 1.12x
+    全流水线(冷):   3.133 ms/次 | 4 批/轮 x32 = 128 次 | 中位总 401.00 ms | 1.83 MB/s | 波动 1.05x
+    parseXMLNode(冷): 2.734 ms/次 | 4 批/轮 x32 = 128 次 | 中位总 350.00 ms | 2.10 MB/s | 波动 1.04x
+    parseXMLNode(热): 2.750 ms/次 | 48 次/轮 | 中位总 132.00 ms | 2.08 MB/s | 波动 1.06x
     --
-    parseXMLNode 占全流水线: 86% (2.711 / 3.156 ms)
-    parseXMLNode 冷/热 = 1.00x
+    parseXMLNode 占全流水线: 87% (2.734 / 3.133 ms)
+    parseXMLNode 冷/热 = 0.99x
 
   大(200项) | 24176 字符 | 32 变体
-    全流水线(冷):   12.625 ms/次 | 2 批/轮 x16 = 32 次 | 中位总 404.00 ms | 1.83 MB/s | 波动 1.02x
-    parseXMLNode(冷): 11.781 ms/次 | 2 批/轮 x16 = 32 次 | 中位总 377.00 ms | 1.96 MB/s | 波动 1.04x
-    parseXMLNode(热): 11.563 ms/次 | 16 次/轮 | 中位总 185.00 ms | 1.99 MB/s | 波动 1.12x
+    全流水线(冷):   12.469 ms/次 | 2 批/轮 x16 = 32 次 | 中位总 399.00 ms | 1.85 MB/s | 波动 1.03x
+    parseXMLNode(冷): 11.500 ms/次 | 2 批/轮 x16 = 32 次 | 中位总 368.00 ms | 2.00 MB/s | 波动 1.02x
+    parseXMLNode(热): 11.563 ms/次 | 16 次/轮 | 中位总 185.00 ms | 1.99 MB/s | 波动 1.06x
     --
-    parseXMLNode 占全流水线: 93% (11.781 / 12.625 ms)
-    parseXMLNode 冷/热 = 1.02x
+    parseXMLNode 占全流水线: 92% (11.500 / 12.469 ms)
+    parseXMLNode 冷/热 = 0.99x
 
 --- 热点剖析（微基准） ---
-  说明: 对 parseXMLNode 内部各热点独立计时，定位时间分布。
-        isValidXML 使用累积模式（模拟递归中每层都调用的真实 O(N^2) 行为）。
-
-  isValidXML 累积成本（50 项，模拟递归调用模式）
-    真实行为: parseXMLNode 每层递归入口调用 isValidXML(node)，
-    而 isValidXML 自身递归验证整个子树 → 总复杂度 O(N^2)。
-    元素节点数: 213
-    isValidXML(累积): 2.188 ms/次 | 64 次/轮 | 中位总 140.00 ms | 波动 1.06x
-    parseXMLNode:     2.609 ms/次 | 64 次/轮 | 中位总 167.00 ms | 波动 1.04x
-    isValidXML 累积占 parseXMLNode: 84% (2.188 / 2.609 ms)
+  说明: 对 parseXMLNodeInner 内部各热点独立计时，定位时间分布。
+        Phase 1 优化后，isValidXML 已从递归中移除，Description 已改为单次解码。
 
   属性迭代（50 项 XML 的 item 节点，每节点 4 属性）
     item 节点数: 50
-    属性迭代:         13.85 us/次 | 192 批/轮 x50 = 9600 次 | 中位总 133.00 ms | 波动 1.12x
+    属性迭代:         13.65 us/次 | 192 批/轮 x50 = 9600 次 | 中位总 131.00 ms | 波动 1.05x
 
   同名节点数组提升（展平全树碰撞模式）
     模式: 根层 50 item 碰撞 + 50 item 各含 tags/Description +
           50 tags 各含 2 tag 碰撞。展平为单次循环测量总工作量。
     pairs 数: 212
-    数组提升:         0.188 ms/次 | 1024 次/轮 | 中位总 192.00 ms | 波动 1.02x
+    数组提升:         0.186 ms/次 | 1024 次/轮 | 中位总 190.00 ms | 波动 1.04x
 
-  Description 完整路径（密集模式：每项都有 Description）
-    真实路径: getInnerText(node) 内调 decodeHTML → 外层再调 decodeHTML（双重解码）。
+  Description 单次解码路径（密集模式：每项都有 Description）
+    当前路径: getInnerTextDecoded(node) 拼接子文本 + 单次 decodeHTML。
+    Phase 1 已修复双重解码问题。
     Description 节点数: 50
-    Description全路径: 0.203 ms/次 | 12 批/轮 x50 = 600 次 | 中位总 122.00 ms | 波动 1.02x
-    单独 decodeHTML:  0.119 ms/次 | 40 批/轮 x50 = 2000 次 | 中位总 238.00 ms | 波动 1.05x
-    完整路径 / 单独 decodeHTML = 1.71x
+    Description(当前): 0.102 ms/次 | 24 批/轮 x50 = 1200 次 | 中位总 122.00 ms | 波动 1.09x
+    单独 decodeHTML:  0.116 ms/次 | 40 批/轮 x50 = 2000 次 | 中位总 232.00 ms | 波动 1.03x
+    当前路径 / 单独 decodeHTML = 0.88x
 
   convertDataType（240 值轮转）
-    convertDataType:  2.80 us/次 | 768 批/轮 x60 = 46080 次 | 中位总 129.00 ms | 波动 1.05x
+    convertDataType:  2.82 us/次 | 768 批/轮 x60 = 46080 次 | 中位总 130.00 ms | 波动 1.05x
 
-  --- 各热点占 parseXMLNode 总耗时占比 ---
-    parseXMLNode(参照): 2.609 ms/次 | 64 次/轮 | 中位总 167.00 ms | 波动 1.04x
-    isValidXML(累积):  84% (2.188 / 2.609 ms)
-    属性迭代:          1% (0.014 / 2.609 ms)
-    数组提升:          7% (0.188 / 2.609 ms)
-    Description全路径: 8% (0.203 / 2.609 ms)
-    convertDataType:   0% (0.003 / 2.609 ms)
-    已解释: 99% | 未解释（递归/对象创建/childNodes访问等）: 1%
+  --- 各热点占 parseXMLNode 总耗时占比（当前实现） ---
+    parseXMLNode(参照): 2.531 ms/次 | 64 次/轮 | 中位总 162.00 ms | 波动 1.04x
+    属性迭代:          1% (0.014 / 2.531 ms)
+    数组提升:          7% (0.186 / 2.531 ms)
+    Description(当前): 4% (0.102 / 2.531 ms)
+    convertDataType:   0% (0.003 / 2.531 ms)
+    已解释: 12% | 未解释（递归/对象创建/childNodes访问等）: 88%
+
+  --- 历史参考：Phase 1 前的旧热点 ---
+    以下度量的是优化前的代码路径，供与 Phase 1 前基线对比。
+    当前 parseXMLNodeInner 已不再调用 isValidXML，Description 已改为单次解码。
+
+  isValidXML 累积成本（历史参考，50 项）
+    旧行为: parseXMLNode 每层递归入口调用 isValidXML(node) → O(N^2)。
+    当前: 已消除，内联 nodeName 检查 O(1)。
+    元素节点数: 213
+    isValidXML(累积,历史): 2.078 ms/次 | 64 次/轮 | 中位总 133.00 ms | 波动 1.06x
+    旧 isValidXML 占当前 parseXMLNode: 82% (2.078 / 2.531 ms)
+
+  Description 双重解码路径（历史参考）
+    旧行为: getInnerText(node) 内调 decodeHTML → 外层再调 decodeHTML。
+    当前: getInnerTextDecoded 单次解码。
+    Description(旧双重): 0.201 ms/次 | 24 批/轮 x50 = 1200 次 | 中位总 241.00 ms | 波动 1.01x
+    旧双重 / 当前单次 = 1.98x
 
 --- 解析器 CPU 基准（启动语料分布） ---
   说明: 度量 parseXML + parseXMLNode 的纯 CPU 成本，不含 IO/路径解析/回调/日志。
@@ -158,41 +178,41 @@
         结果为「解析器内部先改哪里」的依据，不等于端到端初始化耗时。
 
   极小(2项) | 1215 字符 | 模拟 7 个文件
-    全流水线:  0.359 ms/次 | 256 次/轮 | 中位总 92.00 ms | 3.22 MB/s | 波动 1.07x
+    全流水线:  0.348 ms/次 | 256 次/轮 | 中位总 89.00 ms | 3.33 MB/s | 波动 1.01x
 
   小(10项) | 6037 字符 | 模拟 17 个文件
-    全流水线:  1.775 ms/次 | 80 次/轮 | 中位总 142.00 ms | 3.24 MB/s | 波动 1.07x
+    全流水线:  1.700 ms/次 | 80 次/轮 | 中位总 136.00 ms | 3.39 MB/s | 波动 1.04x
 
   中(22项) | 13348 字符 | 模拟 15 个文件
-    全流水线:  3.813 ms/次 | 32 次/轮 | 中位总 122.00 ms | 3.34 MB/s | 波动 1.02x
+    全流水线:  3.750 ms/次 | 32 次/轮 | 中位总 120.00 ms | 3.39 MB/s | 波动 1.08x
 
   大(48项) | 29232 字符 | 模拟 5 个文件
-    全流水线:  8.375 ms/次 | 16 次/轮 | 中位总 134.00 ms | 3.33 MB/s | 波动 1.15x
+    全流水线:  8.250 ms/次 | 16 次/轮 | 中位总 132.00 ms | 3.38 MB/s | 波动 1.06x
 
   超大(96项,武器类) | 58567 字符 | 模拟 2 个文件
-    全流水线:  16.625 ms/次 | 8 次/轮 | 中位总 133.00 ms | 3.36 MB/s | 波动 1.02x
+    全流水线:  16.375 ms/次 | 8 次/轮 | 中位总 131.00 ms | 3.41 MB/s | 波动 1.09x
 
   超大(96项,防具类) | 47640 字符 | 模拟 2 个文件
-    全流水线:  15.800 ms/次 | 10 次/轮 | 中位总 158.00 ms | 2.88 MB/s | 波动 1.17x
+    全流水线:  15.125 ms/次 | 8 次/轮 | 中位总 121.00 ms | 3.00 MB/s | 波动 1.09x
 
   巨型(217项,防具类) | 109308 字符 | 模拟 2 个文件
-    全流水线:  36.500 ms/次 | 4 次/轮 | 中位总 146.00 ms | 2.86 MB/s | 波动 1.16x
+    全流水线:  34.750 ms/次 | 4 次/轮 | 中位总 139.00 ms | 3.00 MB/s | 波动 1.07x
 
   Array.concat 累积合并（50 文件, 1572 总物品）
-    concat累积: 2.917 ms/次 | 48 次/轮 | 中位总 140.00 ms | 波动 1.06x
+    concat累积: 2.813 ms/次 | 48 次/轮 | 中位总 135.00 ms | 波动 1.07x
 
   --- 解析器 CPU 时间估算 ---
     注意: 仅含 parseXML + parseXMLNode，不含 IO/PathManager/日志/回调开销。
     真实初始化耗时 = 本值 + IO等待 + BaseXMLLoader开销 + ItemDataLoader串行调度。
-    极小(2项) x7: 0.36 ms/文件 x7 = 2.52 ms
-    小(10项) x17: 1.78 ms/文件 x17 = 30.17 ms
-    中(22项) x15: 3.81 ms/文件 x15 = 57.19 ms
-    大(48项) x5: 8.38 ms/文件 x5 = 41.88 ms
-    超大(96项,武器类) x2: 16.63 ms/文件 x2 = 33.25 ms
-    超大(96项,防具类) x2: 15.80 ms/文件 x2 = 31.60 ms
-    巨型(217项,防具类) x2: 36.50 ms/文件 x2 = 73.00 ms
-    concat: 2.92 ms
+    极小(2项) x7: 0.35 ms/文件 x7 = 2.43 ms
+    小(10项) x17: 1.70 ms/文件 x17 = 28.90 ms
+    中(22项) x15: 3.75 ms/文件 x15 = 56.25 ms
+    大(48项) x5: 8.25 ms/文件 x5 = 41.25 ms
+    超大(96项,武器类) x2: 16.38 ms/文件 x2 = 32.75 ms
+    超大(96项,防具类) x2: 15.13 ms/文件 x2 = 30.25 ms
+    巨型(217项,防具类) x2: 34.75 ms/文件 x2 = 69.50 ms
+    concat: 2.81 ms
     --
-    解析器纯 CPU 合计: 272.52 ms（不含 IO 及框架开销）
+    解析器纯 CPU 合计: 264.15 ms（不含 IO 及框架开销）
 
 ========== 测试结束 ==========

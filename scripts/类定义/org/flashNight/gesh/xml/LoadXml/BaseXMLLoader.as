@@ -3,10 +3,14 @@ import org.flashNight.gesh.path.*;
 import org.flashNight.gesh.object.*;
 
 class org.flashNight.gesh.xml.LoadXml.BaseXMLLoader {
+
+    /** 调试开关：设为 true 启用 INFO/WARN/DEBUG 日志，false 仅输出 ERROR。 */
+    private static var _debug:Boolean = false;
+
     // 日志输出方法
     private static function log(message:String, level:String):Void {
         var formattedMessage:String = "[BaseXMLLoader] [" + level + "] " + message;
-        
+
         // 优先使用服务器日志
         if (_root["服务器"] != undefined && _root["服务器"]["发布服务器消息"] != undefined) {
             _root["服务器"]["发布服务器消息"](formattedMessage);
@@ -14,20 +18,23 @@ class org.flashNight.gesh.xml.LoadXml.BaseXMLLoader {
         // 同时使用 trace
         trace(formattedMessage);
     }
-    
+
     private static function logError(message:String):Void {
         log(message, "ERROR");
     }
-    
+
     private static function logWarn(message:String):Void {
+        if (!_debug) return;
         log(message, "WARN");
     }
-    
+
     private static function logInfo(message:String):Void {
+        if (!_debug) return;
         log(message, "INFO");
     }
-    
+
     private static function logDebug(message:String):Void {
+        if (!_debug) return;
         log(message, "DEBUG");
     }
     private var data:Object = null;

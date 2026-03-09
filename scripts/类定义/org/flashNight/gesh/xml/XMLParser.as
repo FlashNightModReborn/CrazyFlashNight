@@ -163,149 +163,159 @@ class org.flashNight.gesh.xml.XMLParser
      * @param node XMLNode 要解析的 关卡XML 节点。
      * @return Object 解析后的对象。如果解析失败，返回 null。
      */
-    public static function parseStageXMLNode(node:XMLNode):Object{
+    public static function parseStageXMLNode(node:XMLNode):Object
+    {
+        if (node == null) return null;
         try
         {
-            // 处理文本节点直接返回其值
-            if (node.nodeType == 3) // TEXT_NODE
-            {
-                return convertDataType(node.nodeValue);
-            }
-            else if (node.nodeType == 4) // CDATA_SECTION_NODE
-            {
-                return node.nodeValue;
-            }
-
-            // 现在，节点是元素节点，进行有效性检查
-            if (node == null || !isValidXML(node)) {
-                return null;
-            }
-
-            // 查找CaseSwitch节点
-            if(node.firstChild.nodeName === "CaseSwitch"){
-                var switchNode = node.firstChild;
-                // 读取要调用的目标函数expression与参数params
-                var expression = eval(switchNode.attributes.expression);
-                if(expression == null) return switchNode.attributes.expression;
-                var params = switchNode.attributes.params.split(",");
-                for(var i=0; i<params.length; i++){
-                    params[i] = convertDataType(params[i]);
-                }
-                // 执行目标函数并读取返回值
-                var switchResult;
-                if(params.length <= 1) switchResult = expression();
-                if(params.length == 1) switchResult = expression(params[0]);
-                else if(params.length == 2) switchResult = expression(params[0],params[1]);
-                else switchResult = expression.apply(null,params);
-                // 遍历CaseSwitch节点下的所有Case节点
-                for (var i:Number = 0; i < switchNode.childNodes.length; i++){
-                    var caseNode:XMLNode = switchNode.childNodes[i];
-                    var nodeName:String = caseNode.nodeName;
-                    if(nodeName !== "Case") continue;
-                    var casevalue = convertDataType(caseNode.attributes.casevalue);
-                    // 若检测成功，则以对应Case节点内的属性作为该节点的属性
-                    if(casevalue == switchResult || casevalue === "default"){
-                        // 若节点为文本节点（会被解析为带着casevalue属性与一个null子节点的节点），则返回子节点的文本值
-                        if(caseNode.hasChildNodes() && caseNode.firstChild.nodeName == null) return convertDataType(caseNode.firstChild.nodeValue);
-                        // 否则，返回整个节点的值
-                        else return parseStageXMLNode(caseNode);
-                    }
-                }
-                return null;
-            }
-
-            var result:Object = {};
-            
-            // 处理节点属性并进行类型转换
-            for (var attr:String in node.attributes)
-            {
-                result[attr] = convertDataType(node.attributes[attr]);
-            }
-
-            // 处理子节点
-            for (var i:Number = 0; i < node.childNodes.length; i++)
-            {
-                var childNode:XMLNode = node.childNodes[i];
-                var nodeName:String = childNode.nodeName;
-
-                // 跳过注释节点
-                if (childNode.nodeType == 8) // COMMENT_NODE
-                {
-                    continue;
-                }
-
-                // 特别处理 Description 和 MaterialDetail 节点
-                // if ((nodeName == "Description" || nodeName == "MaterialDetail") && childNode.nodeType == 1)
-                // {
-                //     var innerText:String = getInnerText(childNode);
-                //     result[nodeName] = StringUtils.decodeHTML(innerText);
-                //     continue;
-                // }
-
-                if (childNode.hasChildNodes())
-                {
-                    var childValue:Object;
-
-                    if (childNode.childNodes.length == 1 && childNode.firstChild.nodeType == 3)
-                    {
-                        childValue = convertDataType(childNode.firstChild.nodeValue);
-                    }
-                    else
-                    {
-                        childValue = parseStageXMLNode(childNode);
-                    }
-
-                    // 如果已经有同名节点，则转换为数组
-                    if (result[nodeName] !== undefined)
-                    {
-                        if (!(result[nodeName] instanceof Array))
-                        {
-                            result[nodeName] = [result[nodeName]];
-                        }
-                        result[nodeName].push(childValue);
-                    }
-                    else
-                    {
-                        result[nodeName] = childValue;
-                    }
-                }
-                else
-                {
-                    var nodeValue:Object;
-                    if(childNode.nodeValue != null){
-                        nodeValue = convertDataType(childNode.nodeValue);
-                    }else{
-                        // 子节点无值时若存在attributes则解析attributes，不存在则处理为空字符串
-                        var hasAttr = false;
-                        var attrs = {};
-                        for(var attr:String in childNode.attributes){
-                            hasAttr = true;
-                            attrs[attr] = convertDataType(childNode.attributes[attr]);
-                        }
-                        nodeValue = hasAttr ? attrs : "";
-                    }
-                    if (result[nodeName] !== undefined)
-                    {
-                        if (!(result[nodeName] instanceof Array))
-                        {
-                            result[nodeName] = [result[nodeName]];
-                        }
-                        result[nodeName].push(nodeValue);
-                    }
-                    else
-                    {
-                        result[nodeName] = nodeValue;
-                    }
-                }
-            }
-
-            return result;
+            return parseStageXMLNodeInner(node);
         }
         catch (e:Error)
         {
             trace("StageXMLParser.parseStageXMLNode Error: " + e.message);
             return null;
         }
+    }
+
+    /**
+     * 内部递归实现：无 try-catch，无 isValidXML 递归验证。
+     * 保留 CaseSwitch/eval/apply 语义。
+     *
+     * INV-1: nodeType 分派必须是函数体第一件事。
+     * INV-2: nodeName 有效性检查仅在 nodeType 分派之后执行。
+     */
+    private static function parseStageXMLNodeInner(node:XMLNode):Object
+    {
+        // ━━━ INV-1: nodeType 快速路径 ━━━
+        var nt:Number = node.nodeType;
+        if (nt == 3) return convertDataTypeFast(node.nodeValue);  // TEXT_NODE
+        if (nt == 4) return node.nodeValue;                        // CDATA
+        if (nt == 8) return undefined;                             // COMMENT
+
+        // ━━━ INV-2: 到达此处的只有元素节点 ━━━
+        var nn:String = node.nodeName;
+        if (nn == null || nn == undefined || nn == "") return null;
+
+        // ━━━ CaseSwitch 处理（Stage XML 特有语义） ━━━
+        var fc:XMLNode = node.firstChild;
+        if (fc != null && fc.nodeName === "CaseSwitch")
+        {
+            var switchNode:XMLNode = fc;
+            var swAttrs:Object = switchNode.attributes;  // H02
+            var expression = eval(swAttrs.expression);
+            if (expression == null) return swAttrs.expression;
+            var params = swAttrs.params.split(",");
+            var pi:Number = 0;
+            var pLen:Number = params.length;
+            while (pi < pLen) {
+                params[pi] = convertDataTypeFast(params[pi]);
+                pi++;
+            }
+            var switchResult;
+            if (pLen <= 1) switchResult = expression();
+            if (pLen == 1) switchResult = expression(params[0]);
+            else if (pLen == 2) switchResult = expression(params[0], params[1]);
+            else switchResult = expression.apply(null, params);
+
+            var swChildren:Array = switchNode.childNodes;  // H01+H02
+            var swLen:Number = swChildren.length;
+            var si:Number = 0;
+            while (si < swLen)
+            {
+                var caseNode:XMLNode = swChildren[si];
+                si++;
+                if (caseNode.nodeName !== "Case") continue;
+                var casevalue = convertDataTypeFast(caseNode.attributes.casevalue);
+                if (casevalue == switchResult || casevalue === "default")
+                {
+                    var caseCh:Array = caseNode.childNodes;
+                    if (caseCh.length > 0 && caseCh[0].nodeName == null) return convertDataTypeFast(caseCh[0].nodeValue);
+                    return parseStageXMLNodeInner(caseNode);
+                }
+            }
+            return null;
+        }
+
+        var result:Object = {};
+
+        // 属性处理：缓存 attributes 到局部 (H02)
+        var attrs:Object = node.attributes;
+        for (var attr:String in attrs)
+        {
+            result[attr] = convertDataTypeFast(attrs[attr]);
+        }
+
+        // 子节点处理：缓存 childNodes 和 length 到局部 (H01+H02)
+        var children:Array = node.childNodes;
+        var cLen:Number = children.length;
+        var i:Number = 0;
+
+        while (i < cLen)
+        {
+            var child:XMLNode = children[i];
+            var cType:Number = child.nodeType;    // H01
+            var cName:String = child.nodeName;    // H01
+            i++;
+
+            if (cType == 8) continue;             // COMMENT
+
+            var cChildren:Array = child.childNodes;   // H02
+            var ccLen:Number = cChildren.length;
+
+            var childValue:Object;
+
+            if (ccLen > 0)
+            {
+                if (ccLen == 1 && cChildren[0].nodeType == 3)
+                {
+                    childValue = convertDataTypeFast(cChildren[0].nodeValue);
+                }
+                else
+                {
+                    childValue = parseStageXMLNodeInner(child);
+                }
+            }
+            else
+            {
+                var cv:String = child.nodeValue;
+                if (cv != null)
+                {
+                    childValue = convertDataTypeFast(cv);
+                }
+                else
+                {
+                    var cAttrs:Object = child.attributes;  // H02
+                    var hasAttr:Boolean = false;
+                    var attrObj:Object = {};
+                    for (var a:String in cAttrs)
+                    {
+                        hasAttr = true;
+                        attrObj[a] = convertDataTypeFast(cAttrs[a]);
+                    }
+                    childValue = hasAttr ? attrObj : "";
+                }
+            }
+
+            // 数组提升：同名节点转为数组
+            var existing = result[cName];
+            if (existing !== undefined)
+            {
+                if (!(existing instanceof Array))
+                {
+                    result[cName] = [existing, childValue];
+                }
+                else
+                {
+                    existing.push(childValue);
+                }
+            }
+            else
+            {
+                result[cName] = childValue;
+            }
+        }
+
+        return result;
     }
 
     /**
