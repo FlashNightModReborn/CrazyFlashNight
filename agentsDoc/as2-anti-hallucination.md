@@ -11,6 +11,7 @@
 - **禁用 API**：无 `JSON.parse`（用 `LiteJSON`）、无 `setTimeout`（用帧计时器）、无 `Promise`、无模板字符串、无解构
 - **保留字陷阱**：`eq/ne/lt/gt/le/ge/and/or/not/add` 是保留字，命名避开，键名用 `obj["lt"]`
 - **字典对象**：仅限封闭内部字典可 `obj.__proto__ = null`；凡会泄露到模块边界的数据/配置对象保持普通 `Object`
+- **proto-null 判空**：对断原型对象禁用 `== null` / `!= null` / `== undefined` / `!= undefined`
 - **`try...catch`**：生产代码禁用（性能损耗大），测试中允许
 - **`#include` 路径**：基准是 `.fla` 类路径（`scripts/`），引用宏统一用 `#include "../macros/XXX.as"`
 
@@ -82,6 +83,7 @@
 - **仅当对象被当作内部字典/哈希表使用时，才断开原型链**（`obj.__proto__ = null`），否则 `for...in` 会遍历到原型属性，属性查找也会沿原型链上溯产生意外命中
 - **凡会泄露到模块边界的数据结果禁止默认断链**：包括 JSON 解析结果、配置对象、加载器返回值、跨模块传递对象；必须保持普通 `Object`，兼容 `:Object` 形参、`!= null`、`hasOwnProperty`、`constructor` 等工程约定
 - **需要 proto-null 字典时在消费端显式创建**，不要让解析器为所有对象统一断链；`LiteJSON.parse()` 返回普通对象
+- **`proto-null` 对象的 loose equality 会退化**：实测 `obj == null` 与 `obj == undefined` 都可能返回 `true`，但 `===` 仍正常，自有属性与 `for...in` 仍可用；详见 [AS2 中 proto-null 对象的相等性退化与工程边界](../scripts/优化随笔/AS2%20中%20proto-null%20对象的相等性退化与工程边界.md)
 - **`for...in` 遍历顺序是稳定的**（Ruffle 项目验证）：原型链属性优先 → 自身属性按 reverse insertion order → DisplayObject 子对象按 depth 降序。删除属性后顺序仍稳定
 
 ### 对象字面量与键名
