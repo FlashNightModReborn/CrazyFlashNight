@@ -1776,11 +1776,25 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         );
         this.reportBenchStats("Description(当前): ", descCurrentStats);
 
-        // 对比：单独 decodeHTML（同样的输入数量）
+        // 对比：单独 decodeHTML（使用从 DOM 节点提取的实际文本，保证输入等价）
+        // 注意：原生 parseXML 已将 &lt; → < 等实体还原，所以 DOM 内文本不含实体，
+        // decodeHTML 对这些文本是近似 no-op。这里度量的是 decodeHTML 函数本身的
+        // 调用开销下限，而非"含实体的真实替换成本"。
         var descStrings:Array = [];
         var dsi:Number = 0;
         while (dsi < descNodes.length) {
-            descStrings[dsi] = "&lt;p&gt;Desc &amp; detail " + dsi + "&lt;/p&gt;";
+            // 从 DOM 节点提取与 getInnerTextDecoded 相同的输入文本
+            var descChild:XMLNode = descNodes[dsi];
+            var extracted:String = "";
+            var eci:Number = 0;
+            while (eci < descChild.childNodes.length) {
+                var ec:XMLNode = descChild.childNodes[eci];
+                if (ec.nodeType == 3 || ec.nodeType == 4) {
+                    extracted += ec.nodeValue;
+                }
+                eci++;
+            }
+            descStrings[dsi] = extracted;
             dsi++;
         }
         var decodeOnlyStats:Object = this.measureBenchStats(
@@ -1788,8 +1802,8 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
             function(iterations:Number):Number { return self.timeHTMLReadBaseline(descStrings, iterations, descBatch); },
             targetMs, 120, 4, 4096, repeats, 0, descBatch
         );
-        this.reportBenchStats("单独 decodeHTML:  ", decodeOnlyStats);
-        this.reportRatio("当前路径 / 单独 decodeHTML = ", descCurrentStats, decodeOnlyStats);
+        this.reportBenchStats("decodeHTML(DOM文本):", decodeOnlyStats);
+        trace("    注意: DOM 文本不含实体，decodeHTML 近似 no-op；仅反映函数调用开销。");
 
         // ================================================================
         // 热点 4（当前）: convertDataType（保留原基准作为参考）

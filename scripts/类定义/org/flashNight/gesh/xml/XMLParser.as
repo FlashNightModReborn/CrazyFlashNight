@@ -159,7 +159,16 @@ class org.flashNight.gesh.xml.XMLParser
     }
 
     /**
-     * 解析给定的 关卡XML 节点并将其转换为对象。
+     * 解析给定的 关卡XML 节点并将其转换为对象（公共入口）。
+     * try-catch 仅包裹入口层，不参与递归调用。
+     *
+     * 【有意设计】整关级失败策略：
+     * CaseSwitch 内部使用 eval/apply 执行动态表达式，任何内层异常
+     * （表达式不存在、params 格式错误、被调函数抛异常等）都会被顶层
+     * catch 捕获并返回 null。这意味着一个坏节点会导致整关配置返回 null
+     * 而非部分解析。这是有意为之：关卡配置的完整性优先于容错性，
+     * 开发期通过 trace 日志提早暴露问题，发布时关卡文件不会被修改。
+     *
      * @param node XMLNode 要解析的 关卡XML 节点。
      * @return Object 解析后的对象。如果解析失败，返回 null。
      */
@@ -172,7 +181,13 @@ class org.flashNight.gesh.xml.XMLParser
         }
         catch (e:Error)
         {
-            trace("StageXMLParser.parseStageXMLNode Error: " + e.message);
+            // 输出 CaseSwitch 上下文信息以加速开发期定位
+            var diagInfo:String = "";
+            if (node.firstChild != null && node.firstChild.nodeName === "CaseSwitch") {
+                var swA:Object = node.firstChild.attributes;
+                diagInfo = " [expression=" + swA.expression + ", params=" + swA.params + "]";
+            }
+            trace("StageXMLParser.parseStageXMLNode Error: " + e.message + diagInfo);
             return null;
         }
     }

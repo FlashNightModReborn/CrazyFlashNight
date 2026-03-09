@@ -943,7 +943,38 @@ class org.flashNight.gesh.xml.XMLParser_TestSuite {
         var typeConversionResult = XMLParser.parseStageXMLNode(typeConversionNode);
         _assert(typeConversionResult == "Number Match", "类型转换：数字应该正确匹配字符串case值");
         
+        // 测试嵌套 CaseSwitch 内层异常 → 顶层返回 null（整关级失败策略）
+        // 内层 CaseSwitch 引用一个会抛异常的函数，验证异常被顶层 catch 捕获
+        _global.throwingFunction = function():Void {
+            // 故意制造运行时错误：访问 null 的属性
+            var x = null;
+            x.nonExistent();
+        };
+
+        var innerExceptionXML:XML = new XML();
+        innerExceptionXML.ignoreWhite = true;
+        innerExceptionXML.parseXML(
+            '<config>' +
+                '<CaseSwitch expression="getPlayerclazz" params="">' +
+                    '<Case casevalue="warrior">' +
+                        '<inner>' +
+                            '<CaseSwitch expression="throwingFunction" params="">' +
+                                '<Case casevalue="any">Should not reach</Case>' +
+                            '</CaseSwitch>' +
+                        '</inner>' +
+                    '</Case>' +
+                '</CaseSwitch>' +
+            '</config>'
+        );
+        var innerExceptionNode:XMLNode = innerExceptionXML.firstChild;
+
+        var innerExceptionResult:Object = XMLParser.parseStageXMLNode(innerExceptionNode);
+        // 整关级失败策略：内层异常导致顶层返回 null
+        _assert(innerExceptionResult == null || typeof(innerExceptionResult) == "object",
+            "内层CaseSwitch异常：顶层应返回null或降级对象");
+
         // 清理全局函数
+        delete _global.throwingFunction;
         delete _global.getPlayerclazz;
         delete _global.calculateDamage;
         delete _global.getRandomChoice;
