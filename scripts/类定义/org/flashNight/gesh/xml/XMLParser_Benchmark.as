@@ -1447,6 +1447,29 @@ class org.flashNight.gesh.xml.XMLParser_Benchmark {
         this.assert(deepParsed.firstChild != null, "深层嵌套 XML 解析成功");
         var deepObj:Object = XMLParser.parseXMLNode(deepParsed.firstChild);
         this.assert(deepObj != null, "深层嵌套 XML parseXMLNode 成功");
+
+        // 14. 负向回归：空/畸形 XML 不崩溃
+        var emptyResult:Object = XMLParser.parseXMLNode(null);
+        this.assert(emptyResult == null, "null 节点 → 返回 null");
+
+        var emptyXml:XML = new XML();
+        emptyXml.ignoreWhite = true;
+        emptyXml.parseXML("");
+        var emptyParsed:Object = XMLParser.parseXMLNode(emptyXml.firstChild);
+        this.assert(emptyParsed == null, "空 XML 字符串 → 返回 null");
+
+        var wsXml:XML = new XML();
+        wsXml.ignoreWhite = true;
+        wsXml.parseXML("   ");
+        var wsParsed:Object = XMLParser.parseXMLNode(wsXml.firstChild);
+        this.assert(wsParsed == null, "纯空白 XML → 返回 null");
+
+        var malXml:XML = new XML();
+        malXml.ignoreWhite = true;
+        malXml.parseXML("<Invalid><Tag></Invalid>");
+        // 畸形 XML 不应崩溃，结果可以是 null 或部分解析
+        var malResult:Object = XMLParser.parseXMLNode(malXml.firstChild);
+        this.assert(true, "畸形 XML 不崩溃 (结果=" + (malResult == null ? "null" : "partial") + ")");
     }
 
     // ========================================================================

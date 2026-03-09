@@ -25,121 +25,137 @@ class org.flashNight.gesh.xml.XMLParser
     }
 
     /**
-     * 解析给定的 XML 节点并将其转换为对象。
+     * 解析给定的 XML 节点并将其转换为对象（公共入口）。
+     * try-catch 仅包裹入口层，不参与递归调用。
      * @param node XMLNode 要解析的 XML 节点。
      * @return Object 解析后的对象。如果解析失败，返回 null。
      */
     public static function parseXMLNode(node:XMLNode):Object
     {
+        if (node == null) return null;
         try
         {
-            // 处理文本节点直接返回其值
-            if (node.nodeType == 3) // TEXT_NODE
-            {
-                return convertDataType(node.nodeValue);
-            }
-            else if (node.nodeType == 4) // CDATA_SECTION_NODE
-            {
-                return node.nodeValue;
-            }
-
-            // 现在，节点是元素节点，进行有效性检查
-            if (node == null || !isValidXML(node)) {
-                return null;
-            }
-
-            var result:Object = {};
-
-            // 处理节点属性并进行类型转换
-            for (var attr:String in node.attributes)
-            {
-                result[attr] = convertDataType(node.attributes[attr]);
-            }
-
-            // 处理子节点
-            for (var i:Number = 0; i < node.childNodes.length; i++)
-            {
-                var childNode:XMLNode = node.childNodes[i];
-                var nodeName:String = childNode.nodeName;
-
-                // 跳过注释节点
-                if (childNode.nodeType == 8) // COMMENT_NODE
-                {
-                    continue;
-                }
-
-                // 特别处理 Description 和 MaterialDetail 节点
-                if ((nodeName == "Description" || nodeName == "MaterialDetail") && childNode.nodeType == 1)
-                {
-                    var innerText:String = getInnerText(childNode);
-                    result[nodeName] = StringUtils.decodeHTML(innerText);
-                    continue;
-                }
-
-                if (childNode.hasChildNodes())
-                {
-                    var childValue:Object;
-
-                    if (childNode.childNodes.length == 1 && childNode.firstChild.nodeType == 3)
-                    {
-                        childValue = convertDataType(childNode.firstChild.nodeValue);
-                    }
-                    else
-                    {
-                        childValue = parseXMLNode(childNode);
-                    }
-
-                    // 如果已经有同名节点，则转换为数组
-                    if (result[nodeName] !== undefined)
-                    {
-                        if (!(result[nodeName] instanceof Array))
-                        {
-                            result[nodeName] = [result[nodeName]];
-                        }
-                        result[nodeName].push(childValue);
-                    }
-                    else
-                    {
-                        result[nodeName] = childValue;
-                    }
-                }
-                else
-                {
-                    var nodeValue:Object;
-                    if(childNode.nodeValue != null){
-                        nodeValue = convertDataType(childNode.nodeValue);
-                    }else{
-                        // 子节点无值时若存在attributes则解析attributes，不存在则处理为空字符串
-                        var hasAttr = false;
-                        var attrs = {};
-                        for(var attr:String in childNode.attributes){
-                            hasAttr = true;
-                            attrs[attr] = convertDataType(childNode.attributes[attr]);
-                        }
-                        nodeValue = hasAttr ? attrs : "";
-                    }
-                    if (result[nodeName] !== undefined)
-                    {
-                        if (!(result[nodeName] instanceof Array))
-                        {
-                            result[nodeName] = [result[nodeName]];
-                        }
-                        result[nodeName].push(nodeValue);
-                    }
-                    else
-                    {
-                        result[nodeName] = nodeValue;
-                    }
-                }
-            }
-
-            return result;
+            return parseXMLNodeInner(node);
         }
         catch (e:Error)
         {
             trace("XMLParser.parseXMLNode Error: " + e.message);
             return null;
         }
+    }
+
+    /**
+     * 内部递归实现：无 try-catch，无 isValidXML 递归验证。
+     *
+     * INV-1: nodeType 分派必须是函数体第一件事（TEXT/CDATA 的 nodeName 为 null，
+     *        若先检查 nodeName 会误杀合法文本节点）。
+     * INV-2: nodeName 有效性检查仅在 nodeType 分派之后执行，
+     *        此时能到达该行的只有元素节点。
+     */
+    private static function parseXMLNodeInner(node:XMLNode):Object
+    {
+        // ━━━ INV-1: nodeType 快速路径，必须在 nodeName 检查之前 ━━━
+        var nt:Number = node.nodeType;
+        if (nt == 3) return convertDataTypeFast(node.nodeValue);  // TEXT_NODE
+        if (nt == 4) return node.nodeValue;                        // CDATA
+        if (nt == 8) return undefined;                             // COMMENT
+
+        // ━━━ INV-2: 到达此处的只有元素节点，检查 nodeName 有效性 ━━━
+        var nn:String = node.nodeName;
+        if (nn == null || nn == undefined || nn == "") return null;
+
+        var result:Object = {};
+
+        // 属性处理：缓存 attributes 到局部 (H02)
+        var attrs:Object = node.attributes;
+        for (var attr:String in attrs)
+        {
+            result[attr] = convertDataTypeFast(attrs[attr]);
+        }
+
+        // 子节点处理：缓存 childNodes 和 length 到局部 (H01+H02)
+        var children:Array = node.childNodes;
+        var cLen:Number = children.length;
+        var i:Number = 0;
+
+        while (i < cLen)
+        {
+            var child:XMLNode = children[i];
+            var cType:Number = child.nodeType;    // H01: 缓存 nodeType
+            var cName:String = child.nodeName;    // H01: 缓存 nodeName
+            i++;
+
+            // 跳过注释节点
+            if (cType == 8) continue;
+
+            // 特别处理 Description 和 MaterialDetail 节点（修复双重 decodeHTML）
+            if (cType == 1 && (cName == "Description" || cName == "MaterialDetail"))
+            {
+                result[cName] = getInnerTextDecoded(child);
+                continue;
+            }
+
+            // 缓存子节点的 childNodes (H02)，替代 hasChildNodes()
+            var cChildren:Array = child.childNodes;
+            var ccLen:Number = cChildren.length;
+
+            var childValue:Object;
+
+            if (ccLen > 0)
+            {
+                // 单文本子节点快速路径
+                if (ccLen == 1 && cChildren[0].nodeType == 3)
+                {
+                    childValue = convertDataTypeFast(cChildren[0].nodeValue);
+                }
+                else
+                {
+                    childValue = parseXMLNodeInner(child);
+                }
+            }
+            else
+            {
+                // 无子节点
+                var cv:String = child.nodeValue;
+                if (cv != null)
+                {
+                    childValue = convertDataTypeFast(cv);
+                }
+                else
+                {
+                    // 子节点无值时若存在 attributes 则解析，不存在则为空字符串
+                    var cAttrs:Object = child.attributes;
+                    var hasAttr:Boolean = false;
+                    var attrObj:Object = {};
+                    for (var a:String in cAttrs)
+                    {
+                        hasAttr = true;
+                        attrObj[a] = convertDataTypeFast(cAttrs[a]);
+                    }
+                    childValue = hasAttr ? attrObj : "";
+                }
+            }
+
+            // 数组提升：同名节点转为数组
+            var existing = result[cName];
+            if (existing !== undefined)
+            {
+                if (!(existing instanceof Array))
+                {
+                    result[cName] = [existing, childValue];
+                }
+                else
+                {
+                    existing.push(childValue);
+                }
+            }
+            else
+            {
+                result[cName] = childValue;
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -294,8 +310,9 @@ class org.flashNight.gesh.xml.XMLParser
 
     /**
      * 从包含 HTML 标签的 XML 节点中提取内部文本内容。
+     * 注意：此方法内部调用 decodeHTML，返回已解码文本。保留供外部调用者使用。
      * @param node XMLNode 包含 HTML 标签的父节点。
-     * @return String 内部文本内容。
+     * @return String 内部文本内容（已解码 HTML 实体）。
      */
     public static function getInnerText(node:XMLNode):String
     {
@@ -312,23 +329,66 @@ class org.flashNight.gesh.xml.XMLParser
     }
 
     /**
+     * 内部使用：拼接子节点文本并进行单次 decodeHTML。
+     * 修复原 parseXMLNode 中 getInnerText + 外层 decodeHTML 导致的双重解码问题。
+     * @param node XMLNode 包含 HTML 标签的父节点。
+     * @return String 内部文本内容（仅解码一次）。
+     */
+    private static function getInnerTextDecoded(node:XMLNode):String
+    {
+        var out:String = "";
+        var ch:Array = node.childNodes;
+        var n:Number = ch.length;
+        var i:Number = 0;
+        while (i < n)
+        {
+            var c:XMLNode = ch[i];
+            var ct:Number = c.nodeType;
+            if (ct == 3 || ct == 4)
+            {
+                out += c.nodeValue;
+            }
+            i++;
+        }
+        return StringUtils.decodeHTML(out);
+    }
+
+    /**
      * 将字符串转换为适当的数据类型（数字、布尔值或字符串）。
+     * 保持公共签名兼容，内部转发到 convertDataTypeFast。
      * @param value String 要转换的字符串。
      * @return Object 转换后的数据。
      */
     public static function convertDataType(value:String):Object
     {
-        if (!isNaN(Number(value)))
+        return convertDataTypeFast(value);
+    }
+
+    /**
+     * 优化版类型转换：Number() 仅调用一次，避免 toLowerCase()。
+     * @param value String 要转换的字符串。
+     * @return Object 转换后的数据。
+     */
+    private static function convertDataTypeFast(value:String):Object
+    {
+        // Number() 只调用一次（原版调用 2 次）
+        var n:Number = Number(value);
+        // ⚠ 必须用 isNaN()，AS2 中 NaN == NaN 返回 true (H07)
+        if (!isNaN(n))
         {
-            return Number(value);
+            // 空字符串保护：Number("") == 0 不应转为数字
+            if (value != "") return n;
+            return value;
         }
-        else if (value.toLowerCase() == "true")
+        // 首字符快速排除，避免 toLowerCase() (~580ns/次)
+        var c0:Number = value.charCodeAt(0);
+        if (c0 == 116 || c0 == 84)       // 't' / 'T'
         {
-            return true;
+            if (value == "true" || value == "True" || value == "TRUE") return true;
         }
-        else if (value.toLowerCase() == "false")
+        else if (c0 == 102 || c0 == 70)  // 'f' / 'F'
         {
-            return false;
+            if (value == "false" || value == "False" || value == "FALSE") return false;
         }
         return value;
     }
