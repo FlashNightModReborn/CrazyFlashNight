@@ -1,34 +1,29 @@
-// test_publish.jsfl - 自动打开 TestLoader FLA 并发布（测试 trace）
-// 用法：Flash CS6 命令行执行或双击运行
+// test_publish.jsfl - 诊断版
+var cfgPath = fl.configURI + "Commands/flash_project_path.cfg";
+var projectURI = FLfile.read(cfgPath);
+projectURI = projectURI.replace(/[\r\n]+$/, "");
+var doneMarker = projectURI + "/scripts/publish_done.marker";
+var stepMarker = projectURI + "/scripts/publish_step.marker";
 
-// 获取 JSFL 所在目录（file:/// URI 格式）
-var jsflURI = fl.scriptURI;
-var scriptsDir = jsflURI.substring(0, jsflURI.lastIndexOf("/"));
+fl.trace("[step1] 配置读取OK");
+FLfile.write(stepMarker, "step1_config_ok");
 
-// TestLoader FLA 路径（XFL 格式）
-var xflDir = scriptsDir + "/TestLoader";
+fl.trace("[step2] 文档数: " + fl.documents.length);
+FLfile.write(stepMarker, "step2_docs_" + fl.documents.length);
 
-// 标记文件：发布完成后写入，供外部脚本检测
-var doneMarker = scriptsDir + "/publish_done.marker";
+var doc = fl.getDocumentDOM();
+fl.trace("[step3] 当前文档: " + (doc ? doc.name : "null"));
+FLfile.write(stepMarker, "step3_doc_" + (doc ? doc.name : "null"));
 
-// 检查是否已经打开
-var alreadyOpen = false;
-var docs = fl.documents;
-for (var i = 0; i < docs.length; i++) {
-	if (docs[i].pathURI && docs[i].pathURI.indexOf("TestLoader") >= 0) {
-		fl.setDocumentActive(docs[i]);
-		alreadyOpen = true;
-		break;
-	}
+if (doc) {
+	fl.trace("[step4] 准备发布...");
+	FLfile.write(stepMarker, "step4_before_publish");
+
+	doc.publish();
+
+	fl.trace("[step5] 发布完成");
+	FLfile.write(doneMarker, "publish_ok");
+	FLfile.write(stepMarker, "step5_done");
+} else {
+	FLfile.write(stepMarker, "step3_no_doc");
 }
-
-if (!alreadyOpen) {
-	fl.openDocument(xflDir);
-}
-
-// 发布
-fl.getDocumentDOM().publish();
-
-// 写入完成标记
-FLfile.write(doneMarker, "done");
-fl.trace("--- 发布完成 ---");

@@ -1,6 +1,12 @@
 {
   "permissions": {
     "allow": [
+      "Bash(*)",
+      "Edit(*)",
+      "Write(*)",
+      "Read(*)",
+      "Glob(*)",
+      "Grep(*)",
       "WebFetch(domain:andrewfray.wordpress.com)",
       "WebFetch(domain:kidscancode.org)"
     ]
