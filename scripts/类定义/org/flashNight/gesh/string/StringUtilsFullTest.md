@@ -14,16 +14,16 @@ tester.run();
 
 ```
 ===== StringUtilsFullTest =====
-[PERF] Baseline: str.length=142ms, length(str)=74ms (1.92x)
+[PERF] Baseline: str.length=116ms, length(str)=48ms (2.42x)
 
 [FUNC] Running tests...
 [FUNC] 20/20 tests passed
 
 [PERF] Method performance (20000 ops):
-  trim: 458ms
-  endsWith: 52ms
-  replaceAll: 210ms
-  reverse: 352ms
+  trim: 268ms
+  endsWith: 47ms
+  replaceAll: 206ms
+  reverse: 332ms
 
 [SUMMARY] 20/20 PASS
 ===== Test Complete =====
@@ -56,7 +56,10 @@ tester.run();
 
 ## 验证历史
 
-- **2026-03-10**: 20/20 功能测试通过，性能基准确认
-  - `length(str)` 比 `str.length` 快 **1.92x**
+- **2026-03-11**: 20/20 功能测试通过，trimLeft/trimRight 优化后重测
+  - `length(str)` 比 `str.length` 快 **2.42x**
+  - trim: 437ms → 268ms（-39%，消除循环内重复 length() 和 substring）
   - Flash CS6 + Flash Player 20
   - 100000次循环测试
+- **2026-03-10**: 初始基准，20/20 通过
+  - `length(str)` 比 `str.length` 快 **1.92x**

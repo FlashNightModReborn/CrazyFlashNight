@@ -1,4 +1,4 @@
-import org.flashNight.gesh.string.StringUtils;
+﻿import org.flashNight.gesh.string.StringUtils;
 
 /**
  * StringUtils 全覆盖测试套件

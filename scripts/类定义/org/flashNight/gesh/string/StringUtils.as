@@ -415,18 +415,31 @@ class org.flashNight.gesh.string.StringUtils {
     
     // 移除字符串左边的空白字符
     public static function trimLeft(str:String):String {
-        while (length(str) > 0 && (str.charAt(0) == " " || str.charAt(0) == "\t" || str.charAt(0) == "\n" || str.charAt(0) == "\r")) {
-            str = str.substring(1);
+        var i:Number = 0;
+        var len:Number = length(str);
+        while (i < len) {
+            var ch:String = str.charAt(i);
+            if (ch == " " || ch == "\t" || ch == "\n" || ch == "\r") {
+                i++;
+            } else {
+                break;
+            }
         }
-        return str;
+        return str.substring(i);
     }
     
     // 移除字符串右边的空白字符
     public static function trimRight(str:String):String {
-        while (length(str) > 0 && (str.charAt(length(str) - 1) == " " || str.charAt(length(str) - 1) == "\t" || str.charAt(length(str) - 1) == "\n" || str.charAt(length(str) - 1) == "\r")) {
-            str = str.substring(0, length(str) - 1);
+        var len:Number = length(str);
+        while (len > 0) {
+            var ch:String = str.charAt(len - 1);
+            if (ch == " " || ch == "\t" || ch == "\n" || ch == "\r") {
+                len--;
+            } else {
+                break;
+            }
         }
-        return str;
+        return str.substring(0, len);
     }
     
     // 将字符串重复指定次数
