@@ -44,15 +44,34 @@ set "COMMANDS_DIR=%LANG_DIR%\Configuration\Commands"
 
 :: ---- 4. 写入项目路径配置 ----
 :: 将 Windows 路径转换为 JSFL URI 格式: file:///C|/path/to/project
-set "URI_PATH=%PROJECT_DIR:\=/%"
-:: 替换盘符 C: → C|
-set "URI_PATH=file:///%URI_PATH::=|%"
-echo %URI_PATH%> "%COMMANDS_DIR%\flash_project_path.cfg"
+set "URI_PATH_FILE=%COMMANDS_DIR%\flash_project_path.cfg"
+powershell -NoProfile -Command "$project=$env:PROJECT_DIR -replace '\\','/'; $uri='file:///' + $project.Replace(':', [char]124); $enc=[Text.UTF8Encoding]::new($false); [IO.File]::WriteAllText($env:URI_PATH_FILE, $uri + [Environment]::NewLine, $enc)"
 echo [OK] 项目路径配置: %COMMANDS_DIR%\flash_project_path.cfg
 
-:: ---- 5. 复制 JSFL 到 Commands 目录 ----
-copy /y "%SCRIPT_DIR%\test_publish.jsfl" "%COMMANDS_DIR%\test_publish.jsfl" >nul
-echo [OK] JSFL 已部署: %COMMANDS_DIR%\test_publish.jsfl
+:: ---- 5. 部署 JSFL 到 Commands 目录 ----
+:: compile.jsfl 是动态加载器（固定不变），eval 加载 compile_action.jsfl
+:: 如果 Commands 目录下已有 compile.jsfl 则跳过（避免触发 CS6 缓存问题）
+if not exist "%COMMANDS_DIR%\compile.jsfl" (
+    (
+    echo // compile.jsfl - dynamic loader
+    echo var _cfg = fl.configURI + "Commands/flash_project_path.cfg";
+    echo var _proj = FLfile.read^(_cfg^);
+    echo if ^(_proj^) {
+    echo 	_proj = _proj.replace^(/[\r\n]+$/^, ""^);
+    echo 	var _script = _proj + "/scripts/compile_action.jsfl";
+    echo 	if ^(FLfile.exists^(_script^)^) {
+    echo 		eval^(FLfile.read^(_script^)^);
+    echo 	} else {
+    echo 		fl.trace^("[ERROR] not found: " + _script^);
+    echo 	}
+    echo } else {
+    echo 	fl.trace^("[ERROR] no project config"^);
+    echo }
+    ) > "%COMMANDS_DIR%\compile.jsfl"
+    echo [OK] compile.jsfl 已部署（新建）
+) else (
+    echo [OK] compile.jsfl 已存在（跳过，避免缓存问题）
+)
 
 :: ---- 6. 查找 Flash.exe ----
 set "FLASH_EXE="
@@ -122,6 +141,44 @@ if %errorlevel%==0 (
 ) else (
     echo [WARN] 计划任务创建失败，可能需要管理员权限
     echo        请以管理员身份运行此脚本
+)
+
+:: ---- 7b. 生成并导入 CompileTriggerTask ----
+set "TRIGGER_XML=%TEMP%\CompileTriggerTask_generated.xml"
+(
+echo ^<?xml version="1.0" encoding="UTF-16"?^>
+echo ^<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task"^>
+echo   ^<RegistrationInfo^>
+echo     ^<Description^>Trigger Flash CS6 compile via JSFL ^(elevated^)^</Description^>
+echo   ^</RegistrationInfo^>
+echo   ^<Triggers /^>
+echo   ^<Principals^>
+echo     ^<Principal id="Author"^>
+echo       ^<LogonType^>InteractiveToken^</LogonType^>
+echo       ^<RunLevel^>HighestAvailable^</RunLevel^>
+echo     ^</Principal^>
+echo   ^</Principals^>
+echo   ^<Settings^>
+echo     ^<MultipleInstancesPolicy^>IgnoreNew^</MultipleInstancesPolicy^>
+echo     ^<DisallowStartIfOnBatteries^>false^</DisallowStartIfOnBatteries^>
+echo     ^<StopIfGoingOnBatteries^>false^</StopIfGoingOnBatteries^>
+echo     ^<ExecutionTimeLimit^>PT30S^</ExecutionTimeLimit^>
+echo     ^<Enabled^>true^</Enabled^>
+echo   ^</Settings^>
+echo   ^<Actions Context="Author"^>
+echo     ^<Exec^>
+echo       ^<Command^>powershell.exe^</Command^>
+echo       ^<Arguments^>-ExecutionPolicy Bypass -WindowStyle Hidden -File "%SCRIPT_DIR%\trigger_compile.ps1"^</Arguments^>
+echo     ^</Exec^>
+echo   ^</Actions^>
+echo ^</Task^>
+) > "%TRIGGER_XML%"
+
+schtasks /create /tn "CompileTriggerTask" /xml "%TRIGGER_XML%" /f >nul 2>&1
+if %errorlevel%==0 (
+    echo [OK] 计划任务 CompileTriggerTask 已创建
+) else (
+    echo [WARN] CompileTriggerTask 创建失败，可能需要管理员权限
 )
 
 :skip_task

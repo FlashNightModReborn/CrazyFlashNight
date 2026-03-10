@@ -17,8 +17,8 @@ function main() {
 		FLfile.write(errorMarker, "no document open");
 		fl.trace("[compile] ERROR: no document");
 	} else {
-		fl.trace("[compile] publishing: " + doc.name);
-		doc.publish();
+		fl.trace("[compile] testMovie: " + doc.name);
+		doc.testMovie();
 		fl.trace("[compile] done");
 		FLfile.write(doneMarker, "ok");
 	}
