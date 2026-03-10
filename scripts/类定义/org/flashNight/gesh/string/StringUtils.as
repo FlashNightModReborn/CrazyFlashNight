@@ -103,7 +103,7 @@ class org.flashNight.gesh.string.StringUtils {
      * @return 压缩后的字符串（经过 16 进制编码）
      */
     public static function compress(input:String):String {
-        if (input == null || input.length == 0) {
+        if (input == null || length(input) == 0) {
             return "";
         }
 
@@ -130,7 +130,7 @@ class org.flashNight.gesh.string.StringUtils {
      * @return 解压缩后的原始字符串
      */
     public static function decompress(compressed:String):String {
-        if (compressed == null || compressed.length == 0) {
+        if (compressed == null || length(compressed) == 0) {
             return "";
         }
 
@@ -207,7 +207,7 @@ class org.flashNight.gesh.string.StringUtils {
             while ((matchResult = regex.exec(input)) != null) {
                 matches.push(matchResult[0]);
                 // 防止零宽匹配导致无限循环
-                if (matchResult[0].length == 0) {
+                if (length(matchResult[0]) == 0) {
                     regex.lastIndex++;
                 }
             }
@@ -272,7 +272,7 @@ class org.flashNight.gesh.string.StringUtils {
             var matchIndex:Number = matchResult.index;
             var matchStr:String = matchResult[0];
             result += input.substring(lastIndex, matchIndex) + replacement;
-            lastIndex = matchIndex + matchStr.length;
+            lastIndex = matchIndex + length(matchStr);
             
             // 如果没有设置全局标志 'g'，则只替换第一个匹配
             if (flags.indexOf('g') < 0) {
@@ -280,7 +280,7 @@ class org.flashNight.gesh.string.StringUtils {
             }
             
             // 防止零宽匹配导致无限循环
-            if (matchStr.length == 0) {
+            if (length(matchStr) == 0) {
                 lastIndex++;
             }
         }
@@ -313,10 +313,10 @@ class org.flashNight.gesh.string.StringUtils {
         while ((matchResult = regex.exec(input)) != null) {
             var matchIndex:Number = matchResult.index;
             result.push(input.substring(lastIndex, matchIndex));
-            lastIndex = matchIndex + matchResult[0].length;
+            lastIndex = matchIndex + length(matchResult[0]);
             
             // 防止零宽匹配导致无限循环
-            if (matchResult[0].length == 0) {
+            if (length(matchResult[0]) == 0) {
                 lastIndex++;
             }
         }
@@ -329,11 +329,11 @@ class org.flashNight.gesh.string.StringUtils {
         var result:String = "";
         var i:Number = 0;
 
-        while (i < str.length) {
+        while (i < length(str)) {
             var char:String = str.charAt(i);
             if (char == "\\") {
                 i++;
-                if (i >= str.length) {
+                if (i >= length(str)) {
                     // 不完整的转义序列，保留反斜杠
                     result += "\\";
                     break;
@@ -354,7 +354,7 @@ class org.flashNight.gesh.string.StringUtils {
                         break;
                     case "u":
                         // 处理 Unicode 转义序列 \uXXXX
-                        if (i + 4 < str.length) {
+                        if (i + 4 < length(str)) {
                             var unicodeSeq:String = str.substr(i + 1, 4);
                             var isValidUnicode:Boolean = true;
                             for (var j:Number = 0; j < 4; j++) {
@@ -405,7 +405,7 @@ class org.flashNight.gesh.string.StringUtils {
     // 检查字符串是否以指定子字符串结尾
     public static function endsWith(str:String, suffix:String):Boolean {
         var index:Number = str.lastIndexOf(suffix);
-        return index != -1 && index == str.length - suffix.length;
+        return index != -1 && index == length(str) - length(suffix);
     }
     
     // 移除字符串两端的空白字符
@@ -415,7 +415,7 @@ class org.flashNight.gesh.string.StringUtils {
     
     // 移除字符串左边的空白字符
     public static function trimLeft(str:String):String {
-        while (str.length > 0 && (str.charAt(0) == " " || str.charAt(0) == "\t" || str.charAt(0) == "\n" || str.charAt(0) == "\r")) {
+        while (length(str) > 0 && (str.charAt(0) == " " || str.charAt(0) == "\t" || str.charAt(0) == "\n" || str.charAt(0) == "\r")) {
             str = str.substring(1);
         }
         return str;
@@ -423,8 +423,8 @@ class org.flashNight.gesh.string.StringUtils {
     
     // 移除字符串右边的空白字符
     public static function trimRight(str:String):String {
-        while (str.length > 0 && (str.charAt(str.length - 1) == " " || str.charAt(str.length - 1) == "\t" || str.charAt(str.length - 1) == "\n" || str.charAt(str.length - 1) == "\r")) {
-            str = str.substring(0, str.length - 1);
+        while (length(str) > 0 && (str.charAt(length(str) - 1) == " " || str.charAt(length(str) - 1) == "\t" || str.charAt(length(str) - 1) == "\n" || str.charAt(length(str) - 1) == "\r")) {
+            str = str.substring(0, length(str) - 1);
         }
         return str;
     }
@@ -440,17 +440,17 @@ class org.flashNight.gesh.string.StringUtils {
     
     // 在字符串开头填充字符，直到字符串达到指定长度
     public static function padStart(str:String, targetLength:Number, padString:String):String {
-        if (padString.length == 0) return str; // 避免无限循环
-        var padCount:Number = Math.ceil((targetLength - str.length) / padString.length);
-        var padding:String = StringUtils.repeat(padString, padCount).substring(0, targetLength - str.length);
+        if (length(padString) == 0) return str; // 避免无限循环
+        var padCount:Number = Math.ceil((targetLength - length(str)) / length(padString));
+        var padding:String = StringUtils.repeat(padString, padCount).substring(0, targetLength - length(str));
         return padding + str;
     }
     
     // 在字符串末尾填充字符，直到字符串达到指定长度
     public static function padEnd(str:String, targetLength:Number, padString:String):String {
-        if (padString.length == 0) return str; // 避免无限循环
-        var padCount:Number = Math.ceil((targetLength - str.length) / padString.length);
-        var padding:String = StringUtils.repeat(padString, padCount).substring(0, targetLength - str.length);
+        if (length(padString) == 0) return str; // 避免无限循环
+        var padCount:Number = Math.ceil((targetLength - length(str)) / length(padString));
+        var padding:String = StringUtils.repeat(padString, padCount).substring(0, targetLength - length(str));
         return str + padding;
     }
     
@@ -458,7 +458,7 @@ class org.flashNight.gesh.string.StringUtils {
     public static function replaceAll(str:String, search:String, replacement:String):String {
         var result:String = "";
         var index:Number = 0;
-        var searchLength:Number = search.length;
+        var searchLength:Number = length(search);
         if (searchLength == 0) {
             // 如果 search 是空字符串，返回原字符串以避免无限循环
             return str;
@@ -474,7 +474,7 @@ class org.flashNight.gesh.string.StringUtils {
     // 反转字符串
     public static function reverse(str:String):String {
         var result:String = "";
-        for (var i:Number = str.length - 1; i >= 0; i--) {
+        for (var i:Number = length(str) - 1; i >= 0; i--) {
             result += str.charAt(i);
         }
         return result;
@@ -482,24 +482,24 @@ class org.flashNight.gesh.string.StringUtils {
     
     // 检查字符串是否为空或仅包含空白字符
     public static function isEmpty(str:String):Boolean {
-        return StringUtils.trim(str).length == 0;
+        return length(StringUtils.trim(str)) == 0;
     }
     
     // 计算子字符串在字符串中出现的次数
     public static function countOccurrences(str:String, substring:String):Number {
-        if (substring.length == 0) return 0;
+        if (length(substring) == 0) return 0;
         var count:Number = 0;
         var index:Number = str.indexOf(substring);
         while (index != -1) {
             count++;
-            index = str.indexOf(substring, index + substring.length);
+            index = str.indexOf(substring, index + length(substring));
         }
         return count;
     }
     
     // 将字符串的首字母大写，并将其余部分小写
     public static function capitalize(str:String):String {
-        if (str.length == 0) return str;
+        if (length(str) == 0) return str;
         return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
     }
     
@@ -507,7 +507,7 @@ class org.flashNight.gesh.string.StringUtils {
     public static function toTitleCase(str:String):String {
         var words:Array = str.split(" ");
         for (var i:Number = 0; i < words.length; i++) {
-            if (words[i].length > 0) {
+            if (length(words[i]) > 0) {
                 words[i] = StringUtils.capitalize(words[i]);
             }
         }
@@ -523,7 +523,7 @@ class org.flashNight.gesh.string.StringUtils {
     public static function substringBetween(str:String, start:String, end:String):String {
         var startIndex:Number = str.indexOf(start);
         if (startIndex == -1) return null;
-        startIndex += start.length;
+        startIndex += length(start);
         var endIndex:Number = str.indexOf(end, startIndex);
         if (endIndex == -1) return null;
         return str.substring(startIndex, endIndex);
@@ -544,7 +544,7 @@ class org.flashNight.gesh.string.StringUtils {
         var lowerStr:String = str.toLowerCase();
         var lowerSuffix:String = suffix.toLowerCase();
         var index:Number = lowerStr.lastIndexOf(lowerSuffix);
-        return index != -1 && index == str.length - suffix.length;
+        return index != -1 && index == length(str) - length(suffix);
     }
     
     /**
@@ -625,7 +625,7 @@ class org.flashNight.gesh.string.StringUtils {
         var src:Object = singleton.htmlEntities;
         for (var key:String in src) {
             // key 形如 "&amp;"，去掉首尾 & 和 ;
-            var name:String = key.substring(1, key.length - 1);
+            var name:String = key.substring(1, length(key) - 1);
             _entityLookup[name] = src[key];
         }
     }
@@ -642,7 +642,7 @@ class org.flashNight.gesh.string.StringUtils {
         if (str == null || str == undefined) return str;
 
         // 快速路径：无 & 则无需处理
-        var len:Number = str.length;
+        var len:Number = length(str);
         var ampIdx:Number = str.indexOf("&");
         if (ampIdx < 0) return str;
 
@@ -685,7 +685,7 @@ class org.flashNight.gesh.string.StringUtils {
                     var ni:Number;
                     if (secondChar == 120 || secondChar == 88) { // 'x'/'X' → 十六进制
                         ni = 2;
-                        var eLen:Number = entityName.length;
+                        var eLen:Number = length(entityName);
                         while (ni < eLen) {
                             var hc:Number = entityName.charCodeAt(ni);
                             if (hc >= 48 && hc <= 57) numVal = numVal * 16 + (hc - 48);
@@ -697,7 +697,7 @@ class org.flashNight.gesh.string.StringUtils {
                         if (ni > 2 && ni == eLen) decoded = String.fromCharCode(numVal);
                     } else { // 十进制
                         ni = 1;
-                        eLen = entityName.length;
+                        eLen = length(entityName);
                         while (ni < eLen) {
                             var dc:Number = entityName.charCodeAt(ni);
                             if (dc >= 48 && dc <= 57) { numVal = numVal * 10 + (dc - 48); ni++; }
@@ -739,7 +739,7 @@ class org.flashNight.gesh.string.StringUtils {
         if (input == null || input == undefined) return "";
 
         var s:String = String(input);
-        var len:Number = s.length;
+        var len:Number = length(s);
         var i:Number = 0;
         var out:Array = [];              // 片段累积，减少字符串拼接
         var ch:Number;
@@ -799,13 +799,13 @@ class org.flashNight.gesh.string.StringUtils {
                     var entity:String = s.substring(k, semi);
                     var decoded:String = null;
 
-                    if (entity.length > 0 && entity.charAt(0) == "#") {
+                    if (length(entity) > 0 && entity.charAt(0) == "#") {
                         // 数字实体
-                        if (entity.length > 1 && (entity.charAt(1) == "x" || entity.charAt(1) == "X")) {
+                        if (length(entity) > 1 && (entity.charAt(1) == "x" || entity.charAt(1) == "X")) {
                             // 十六进制
                             var v:Number = 0;
                             var idx:Number = 2;
-                            while (idx < entity.length) {
+                            while (idx < length(entity)) {
                                 var cc:Number = entity.charCodeAt(idx);
                                 if (cc >= 48 && cc <= 57) v = v * 16 + (cc - 48);
                                 else if (cc >= 65 && cc <= 70) v = v * 16 + (cc - 55);
@@ -818,7 +818,7 @@ class org.flashNight.gesh.string.StringUtils {
                             // 十进制
                             var v10:Number = 0;
                             var idx2:Number = 1;
-                            while (idx2 < entity.length) {
+                            while (idx2 < length(entity)) {
                                 var c2:Number = entity.charCodeAt(idx2);
                                 if (c2 >= 48 && c2 <= 57) { v10 = v10 * 10 + (c2 - 48); idx2++; }
                                 else break;
@@ -861,7 +861,7 @@ class org.flashNight.gesh.string.StringUtils {
         var prevSpace:Boolean = false;
         var nlCount:Number = 0;
 
-        var L:Number = raw.length;
+        var L:Number = length(raw);
         for (i = 0; i < L; i++) {
             var chs:String = raw.charAt(i);
             var code:Number = raw.charCodeAt(i);
@@ -931,11 +931,11 @@ class org.flashNight.gesh.string.StringUtils {
             if (dotIndex == -1) {
                 // 如果没有小数点，添加小数点
                 str += ".";
-                dotIndex = str.length - 1;
+                dotIndex = length(str) - 1;
             }
             
             // 计算当前小数位数
-            var currentDigits:Number = str.length - dotIndex - 1;
+            var currentDigits:Number = length(str) - dotIndex - 1;
             
             // 补零或截断
             if (currentDigits < digits) {
@@ -1022,7 +1022,7 @@ class org.flashNight.gesh.string.StringUtils {
                     }
                 }
             } else {
-                var currentDigits:Number = str.length - 1; // 总字符数减去小数点
+                var currentDigits:Number = length(str) - 1; // 总字符数减去小数点
                 if (currentDigits < precision) {
                     for (i = currentDigits; i < precision; i++) {
                         str += "0";
@@ -1039,16 +1039,16 @@ class org.flashNight.gesh.string.StringUtils {
             
             // 调整到指定精度
             var digits:String = str.split(".").join("");
-            if (digits.length < precision) {
+            if (length(digits) < precision) {
                 // 需要补零
                 var dotPosition:Number = str.indexOf(".");
                 if (dotPosition == -1) {
                     str += ".";
-                    for (i = digits.length; i < precision; i++) {
+                    for (i = length(digits); i < precision; i++) {
                         str += "0";
                     }
                 } else {
-                    for (i = digits.length; i < precision; i++) {
+                    for (i = length(digits); i < precision; i++) {
                         str += "0";
                     }
                 }
@@ -1089,7 +1089,7 @@ class org.flashNight.gesh.string.StringUtils {
         
         // 添加千位分隔符
         var result:String = "";
-        var len:Number = integerPart.length;
+        var len:Number = length(integerPart);
         for (var i:Number = 0; i < len; i++) {
             if (i > 0 && (len - i) % 3 == 0) {
                 result += separator;
@@ -1098,7 +1098,7 @@ class org.flashNight.gesh.string.StringUtils {
         }
         
         // 添加小数部分
-        if (decimalPart.length > 0) {
+        if (length(decimalPart) > 0) {
             result += decimalSeparator + decimalPart;
         }
         
@@ -1135,7 +1135,7 @@ class org.flashNight.gesh.string.StringUtils {
         }
 
         var s:String = String(input);
-        var len:Number = s.length;
+        var len:Number = length(s);
         var i:Number = 0;
         var lineScore:Number = 0;
         var maxScore:Number = 0;
@@ -1181,17 +1181,17 @@ class org.flashNight.gesh.string.StringUtils {
             if (semi >= len) return {code:-2, advance:1};
             var entity:String = s.substring(dk, semi);
             var eLower:String = entity.toLowerCase();
-            if (eLower.length > 0 && eLower.charAt(0) == "#") {
+            if (length(eLower) > 0 && eLower.charAt(0) == "#") {
                 var val:Number = 0;
-                if (eLower.length > 1 && eLower.charAt(1) == "x") {
-                    for (var dt:Number = 2; dt < eLower.length; dt++) {
+                if (length(eLower) > 1 && eLower.charAt(1) == "x") {
+                    for (var dt:Number = 2; dt < length(eLower); dt++) {
                         var dc:Number = eLower.charCodeAt(dt);
                         if      (dc >= 48 && dc <= 57)  val = val * 16 + (dc - 48);
                         else if (dc >= 97 && dc <= 102) val = val * 16 + (dc - 87);
                         else break;
                     }
                 } else {
-                    for (dt = 1; dt < eLower.length; dt++) {
+                    for (dt = 1; dt < length(eLower); dt++) {
                         dc = eLower.charCodeAt(dt);
                         if (dc >= 48 && dc <= 57) val = val * 10 + (dc - 48);
                         else break;
@@ -1309,7 +1309,7 @@ class org.flashNight.gesh.string.StringUtils {
         }
 
         var s:String = String(input);
-        var len:Number = s.length;
+        var len:Number = length(s);
         var i:Number = 0;
         var score:Number = 0;
 
@@ -1376,11 +1376,11 @@ class org.flashNight.gesh.string.StringUtils {
             var eLower:String = entity.toLowerCase();
 
             // 数字实体
-            if (eLower.length > 0 && eLower.charAt(0) == "#") {
+            if (length(eLower) > 0 && eLower.charAt(0) == "#") {
                 var val:Number = 0;
-                if (eLower.length > 1 && (eLower.charAt(1) == "x")) {
+                if (length(eLower) > 1 && (eLower.charAt(1) == "x")) {
                     // 十六进制
-                    for (var t:Number = 2; t < eLower.length; t++) {
+                    for (var t:Number = 2; t < length(eLower); t++) {
                         var cc:Number = eLower.charCodeAt(t);
                         if      (cc >= 48 && cc <= 57)  val = val * 16 + (cc - 48);
                         else if (cc >= 97 && cc <= 102) val = val * 16 + (cc - 87);
@@ -1388,7 +1388,7 @@ class org.flashNight.gesh.string.StringUtils {
                     }
                 } else {
                     // 十进制
-                    for (t = 1; t < eLower.length; t++) {
+                    for (t = 1; t < length(eLower); t++) {
                         cc = eLower.charCodeAt(t);
                         if (cc >= 48 && cc <= 57) val = val * 10 + (cc - 48);
                         else break;
