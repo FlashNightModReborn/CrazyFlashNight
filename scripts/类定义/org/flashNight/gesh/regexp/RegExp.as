@@ -108,12 +108,12 @@ class org.flashNight.gesh.regexp.RegExp {
      */
     public function exec(input:String):Array {
         if (this.ast == null) return null;
-        var inputLength:Number = input.length;
+        var inputLength:Number = length(input);
         var lastIndex:Number = this.global ? this.lastIndex : 0;
 
         for (var pos:Number = lastIndex; pos <= inputLength; pos++) {
             var captures:Array = initializeCaptures();
-            var result:Object = this.ast.match(input, pos, captures, this.ignoreCase);
+            var result:Object = this.ast.match(input, pos, captures, this.ignoreCase, this.multiline, this.dotAll);
             if (result.matched) {
                 captures[0] = input.substring(pos, result.position); // 整个匹配结果
                 captures.index = pos;

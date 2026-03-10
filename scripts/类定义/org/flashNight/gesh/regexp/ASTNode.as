@@ -92,26 +92,16 @@
                 break;
 
             case 'Sequence':
-                var seqPos:Number = position;
+                // 使用递归回溯匹配：当 Quantifier 子节点后的兄弟匹配失败时，
+                // 回退到 Quantifier 尝试下一个 count，实现跨兄弟回溯。
                 var seqCaptures:Array = captures.slice();
-                var seqMatched:Boolean = true;
-                
-                for (var si:Number = 0; si < this.children.length; si++) {
-                    var seqChild:ASTNode = this.children[si];
-                    var seqChildResult:Object = seqChild.match(input, seqPos, seqCaptures, ignoreCase, multiline, dotAll);
-                    if (!seqChildResult.matched) {
-                        seqMatched = false;
-                        break;
-                    }
-                    seqPos = seqChildResult.position;
-                }
-                
-                if (seqMatched) {
+                var seqResult:Object = matchSequenceFrom(input, position, this.children, 0, seqCaptures, ignoreCase, multiline, dotAll);
+                if (seqResult.matched) {
                     for (var sk:Number = 0; sk < seqCaptures.length; sk++) {
                         captures[sk] = seqCaptures[sk];
                     }
                     result.matched = true;
-                    result.position = seqPos;
+                    result.position = seqResult.position;
                 }
                 break;
 
@@ -361,9 +351,122 @@
                     result.position = position;
                 }
                 break;
+            default:
+                throw new Error("Unsupported ASTNode type: " + this.type);
         }
 
         return result;
+    }
+
+    /**
+     * 递归匹配 Sequence 的 children[idx..n]，支持 Quantifier 跨兄弟回溯。
+     * 当 Quantifier 后的剩余兄弟匹配失败时，回退到 Quantifier 尝试下一个 count。
+     */
+    private function matchSequenceFrom(input:String, pos:Number, children:Array, idx:Number,
+                                        captures:Array, ignoreCase:Boolean, multiline:Boolean, dotAll:Boolean):Object {
+        var inputLen:Number = length(input);
+
+        // 所有 children 已匹配完毕 → 成功
+        if (idx >= children.length) {
+            return { matched: true, position: pos };
+        }
+
+        var child:ASTNode = children[idx];
+
+        // ── 检测需要 count 枚举回溯的节点 ──
+        // 直接 Quantifier 或 Group 包装 Quantifier（如 ([\w.-]+)）
+        var qNode:ASTNode = null;
+        var groupNode:ASTNode = null;
+
+        if (child.type === 'Quantifier') {
+            qNode = child;
+        } else if (child.type === 'Group' && child.child != null && child.child.type === 'Quantifier') {
+            groupNode = child;
+            qNode = child.child;
+        }
+
+        if (qNode != null) {
+            if (qNode.child == null) {
+                throw new Error("Quantifier node has no child.");
+            }
+            var qMax:Number = Math.min(qNode.max, inputLen - pos);
+            var qMin:Number = qNode.min;
+
+            if (qNode.greedy) {
+                // 贪婪：从 max 向 min 尝试
+                for (var gc:Number = qMax; gc >= qMin; gc--) {
+                    var gPos:Number = pos;
+                    var gCap:Array = captures.slice();
+                    var gOk:Boolean = true;
+                    for (var gi:Number = 0; gi < gc; gi++) {
+                        var gm:Object = qNode.child.match(input, gPos, gCap, ignoreCase, multiline, dotAll);
+                        if (gm.matched && gm.position > gPos) {
+                            gPos = gm.position;
+                        } else {
+                            gOk = false;
+                            break;
+                        }
+                    }
+                    if (gOk) {
+                        // 如果是 Group 包装，设置捕获组
+                        if (groupNode != null && groupNode.capturing && groupNode.groupNumber > 0) {
+                            gCap[groupNode.groupNumber] = input.substring(pos, gPos);
+                        }
+                        var gRest:Object = matchSequenceFrom(input, gPos, children, idx + 1, gCap, ignoreCase, multiline, dotAll);
+                        if (gRest.matched) {
+                            for (var gk:Number = 0; gk < gCap.length; gk++) {
+                                captures[gk] = gCap[gk];
+                            }
+                            return gRest;
+                        }
+                    }
+                }
+            } else {
+                // 非贪婪：从 min 向 max 尝试
+                for (var nc:Number = qMin; nc <= qMax; nc++) {
+                    var nPos:Number = pos;
+                    var nCap:Array = captures.slice();
+                    var nOk:Boolean = true;
+                    for (var ni:Number = 0; ni < nc; ni++) {
+                        var nm:Object = qNode.child.match(input, nPos, nCap, ignoreCase, multiline, dotAll);
+                        if (nm.matched && nm.position > nPos) {
+                            nPos = nm.position;
+                        } else {
+                            nOk = false;
+                            break;
+                        }
+                    }
+                    if (nOk) {
+                        if (groupNode != null && groupNode.capturing && groupNode.groupNumber > 0) {
+                            nCap[groupNode.groupNumber] = input.substring(pos, nPos);
+                        }
+                        var nRest:Object = matchSequenceFrom(input, nPos, children, idx + 1, nCap, ignoreCase, multiline, dotAll);
+                        if (nRest.matched) {
+                            for (var nk:Number = 0; nk < nCap.length; nk++) {
+                                captures[nk] = nCap[nk];
+                            }
+                            return nRest;
+                        }
+                    }
+                }
+            }
+            return { matched: false, position: pos };
+        }
+
+        // ── 非 Quantifier 子节点：单次匹配后递归 ──
+        var cCap:Array = captures.slice();
+        var cResult:Object = child.match(input, pos, cCap, ignoreCase, multiline, dotAll);
+        if (!cResult.matched) {
+            return { matched: false, position: pos };
+        }
+        var restResult:Object = matchSequenceFrom(input, cResult.position, children, idx + 1, cCap, ignoreCase, multiline, dotAll);
+        if (restResult.matched) {
+            for (var ck:Number = 0; ck < cCap.length; ck++) {
+                captures[ck] = cCap[ck];
+            }
+            return restResult;
+        }
+        return { matched: false, position: pos };
     }
 
     private function charEquals(a:String, b:String, ignoreCase:Boolean):Boolean {

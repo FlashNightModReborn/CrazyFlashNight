@@ -1,225 +1,456 @@
 ### 正则表达式引擎使用指南
 
 #### 概述
-正则表达式（Regular Expressions，简称“正则”）是一种强大的文本匹配工具，可以通过特定的模式来搜索、验证、或操作字符串。在本指南中，我们将深入介绍如何使用 **org.flashNight.gesh.regexp** 提供的正则表达式类 (`RegExp`) 进行各种文本处理操作，详细讲解每个功能模块的用法、特性支持情况、实现细节，并配合实例说明如何在实际项目中高效地使用正则表达式。
 
-本指南将特别适用于不熟悉正则表达式的用户，通过详细分步的介绍，帮助理解其基础及进阶特性。
+**org.flashNight.gesh.regexp** 是一个纯 AS2 实现的正则表达式引擎，采用递归下降解析器生成 AST，再通过回溯 NFA 进行匹配。支持大部分常用正则语法，可在 Flash Player 8+ / AVM1 环境下运行。
+
+**架构**：`Parser`（词法/语法分析）→ `ASTNode`（AST 节点 + 匹配引擎）→ `RegExp`（用户接口）
 
 ---
 
 ### 目录
 
-1. **创建正则表达式对象**
-2. **字符匹配**
-   - 字符集与否定字符集
-   - 字符类
-3. **量词（Quantifiers）**
-   - 常见量词
-   - 非贪婪量词
-4. **分组与捕获**
-   - 捕获组与非捕获组
-5. **逻辑或操作符 (`|`)**
-6. **特殊字符与转义**
-7. **反向引用的基础支持**
-8. **常用正则表达式的实例**
-9. **调试与常见错误**
+1. [创建正则表达式对象](#1-创建正则表达式对象)
+2. [标志（Flags）](#2-标志flags)
+3. [字符匹配](#3-字符匹配)
+4. [量词（Quantifiers）](#4-量词quantifiers)
+5. [分组与捕获](#5-分组与捕获)
+6. [逻辑或操作符 `|`](#6-逻辑或操作符-)
+7. [锚点（Anchors）](#7-锚点anchors)
+8. [环视（Lookaround）](#8-环视lookaround)
+9. [单词边界](#9-单词边界)
+10. [反向引用](#10-反向引用)
+11. [特殊字符与转义](#11-特殊字符与转义)
+12. [String.prototype 注入方法](#12-stringprototype-注入方法)
+13. [常用正则表达式实例](#13-常用正则表达式实例)
+14. [回溯机制与性能](#14-回溯机制与性能)
+15. [调试与常见错误](#15-调试与常见错误)
+16. [特性支持总表](#16-特性支持总表)
 
 ---
 
 ### 1. 创建正则表达式对象
 
-在 **ActionScript 2 (AS2)** 中，使用 `RegExp` 类来创建正则表达式对象的语法如下：
-
 ```actionscript
+import org.flashNight.gesh.regexp.*;
+
 var regex:RegExp = new RegExp(pattern:String, flags:String);
 ```
 
-- **pattern**：定义了正则表达式的匹配模式，例如 `\d+` 表示匹配一个或多个数字。
-- **flags**：用于控制匹配行为的修饰符。常见的修饰符有：
-  - `i`：忽略大小写。
-  - `g`：全局匹配。
-  - `m`：多行匹配，`^` 和 `$` 匹配每行的开头和结尾。
+- **pattern**：正则表达式模式字符串（注意 AS2 字符串中 `\` 需要双写为 `\\`）
+- **flags**：修饰符组合字符串
 
 **示例**：
 ```actionscript
-var regex:RegExp = new RegExp("a*b", "i");
-trace(regex.test("Aaab"));  // 输出 true，忽略大小写匹配
+var regex:RegExp = new RegExp("\\d+", "gi");
 ```
 
 ---
 
-### 2. 字符匹配
+### 2. 标志（Flags）
 
-#### 2.1 字符集与否定字符集
-- **字符集**使用方括号 `[ ]` 来匹配集合内的任意字符，例如：
-  - `[a-z]` 匹配任意小写字母。
-  - `[0-9]` 匹配数字。
-
-```actionscript
-var regex:RegExp = new RegExp("[a-z]+", "");
-trace(regex.test("hello"));  // 输出 true
-```
-
-- **否定字符集**使用 `[^]` 来表示不匹配括号内的字符，例如：
-```actionscript
-var regex:RegExp = new RegExp("[^a-z]", "");
-trace(regex.test("1"));  // 输出 true，数字 1 不属于小写字母
-```
-
-#### 2.2 字符类
-- **\d**：匹配任意数字（`0-9`）。
-- **\w**：匹配字母、数字或下划线。
-- **\s**：匹配空白字符。
-
-```actionscript
-var regex:RegExp = new RegExp("\\d+", "");
-trace(regex.test("12345"));  // 输出 true
-```
-
----
-
-### 3. 量词（Quantifiers）
-
-量词用于定义前一个元素的重复次数：
-
-- **`*`**：匹配零次或多次。
-- **`+`**：匹配一次或多次。
-- **`?`**：匹配零次或一次。
-- **`{n}`**：匹配恰好 n 次。
-- **`{n,}`**：至少匹配 n 次。
-- **`{n,m}`**：匹配 n 到 m 次。
+| 标志 | 名称 | 说明 |
+|------|------|------|
+| `i` | ignoreCase | 忽略大小写匹配 |
+| `g` | global | 全局匹配，`exec()` 从 `lastIndex` 继续 |
+| `m` | multiline | 多行模式，`^` `$` 匹配行首/行尾（`\n` 分隔） |
+| `s` | dotAll | `.` 匹配包括换行符 `\n` 在内的所有字符 |
 
 **示例**：
 ```actionscript
-var regex:RegExp = new RegExp("a{3}", "");
-trace(regex.test("aaa"));  // 输出 true，正好三个 'a'
-```
+// 多行模式
+var re:RegExp = new RegExp("^abc", "m");
+re.test("xyz\nabc");  // true — ^ 匹配第二行行首
 
-#### 3.1 非贪婪量词
-正则表达式默认使用“贪婪匹配”，即尽可能多地匹配。通过在量词后加 `?` 可实现非贪婪匹配，尽可能少地匹配字符。
-
-**示例**：
-```actionscript
-var regex:RegExp = new RegExp("a+?", "");
-trace(regex.exec("aaa")[0]);  // 输出 'a'，只匹配一个 'a'
+// dotAll 模式
+var re2:RegExp = new RegExp("a.b", "s");
+re2.test("a\nb");  // true — . 匹配 \n
 ```
 
 ---
 
-### 4. 分组与捕获
+### 3. 字符匹配
 
-- **捕获组**：使用括号 `()` 进行分组，可提取匹配到的子字符串。
-- **非捕获组**：`(?: )` 用于只匹配而不捕获。
+#### 3.1 字面量字符
 
-**示例**：
+直接匹配字符本身。特殊字符需转义：`. ^ $ * + ? { } [ ] ( ) | \`
+
+#### 3.2 任意字符 `.`
+
+匹配除 `\n` 外的任意字符（开启 `s` 标志后匹配所有字符）。
+
+#### 3.3 字符集 `[...]`
+
 ```actionscript
-var regex:RegExp = new RegExp("(abc)(def)", "");
-var result:Array = regex.exec("abcdef");
-trace(result[1]);  // 输出 'abc'，第一个捕获组
-trace(result[2]);  // 输出 'def'，第二个捕获组
+var re:RegExp = new RegExp("[a-z]+", "");    // 小写字母
+var re2:RegExp = new RegExp("[A-Za-z0-9]", ""); // 字母数字
 ```
 
-#### 捕获组编号
-捕获组可以通过 `exec()` 方法返回的数组来提取，第一项为完整匹配，后续项为各个捕获组的内容。
+- 支持范围：`[a-z]`、`[0-9]`、`[\x30-\x39]`
+- 支持预定义类混用：`[\d\D]`、`[a\W]`
+- 否定字符集：`[^abc]` 匹配不在集合内的字符
 
----
+#### 3.4 预定义字符类
 
-### 5. 逻辑或操作符 `|`
+| 语法 | 说明 | 反义 |
+|------|------|------|
+| `\d` | 数字 `[0-9]` | `\D` |
+| `\w` | 单词字符 `[A-Za-z0-9_]` | `\W` |
+| `\s` | 空白符（空格、`\t`、`\n`、`\r`、`\f`、`\v`） | `\S` |
 
-使用 `|` 表示逻辑或，可匹配多个模式中的任意一个：
+在字符集内同样可用：`[\D]+` 匹配非数字字符串。
 
-```actionscript
-var regex:RegExp = new RegExp("a|b", "");
-trace(regex.test("a"));  // 输出 true
-trace(regex.test("b"));  // 输出 true
-trace(regex.test("c"));  // 输出 false
-```
-
----
-
-### 6. 特殊字符与转义
-
-正则表达式中有些字符具有特殊含义，如 `.`、`^`、`$`、`*`、`+` 等。如果要匹配这些字符本身，需要使用反斜杠 `\` 进行转义。
-
-- **`.`**：匹配除换行符外的任意字符。
-- **`\d`**：匹配任意数字。
-- **`\w`**：匹配字母、数字或下划线。
+#### 3.5 十六进制与 Unicode 转义
 
 ```actionscript
-var regex:RegExp = new RegExp("\\.", "");
-trace(regex.test("."));  // 输出 true，匹配点字符
+var re:RegExp = new RegExp("\\x41\\x42\\x43", "");  // 匹配 "ABC"
+var re2:RegExp = new RegExp("[\\x30-\\x39]+", "");   // 匹配数字（字符集内也支持）
+var re3:RegExp = new RegExp("\\u4e2d\\u6587", "");   // 匹配 "中文"
 ```
 
 ---
 
-### 7. 反向引用的基础支持
+### 4. 量词（Quantifiers）
 
-目前正则引擎对**反向引用**提供了基础支持，捕获组的内容可以在同一个正则表达式中再次被引用。
+#### 4.1 贪婪量词
 
-- 通过 `\1`、`\2` 等形式来引用之前的捕获组。
+| 语法 | 说明 |
+|------|------|
+| `*` | 0 次或多次 |
+| `+` | 1 次或多次 |
+| `?` | 0 次或 1 次 |
+| `{n}` | 恰好 n 次 |
+| `{n,}` | 至少 n 次 |
+| `{n,m}` | n 到 m 次（n ≤ m） |
+
+#### 4.2 非贪婪量词
+
+在量词后加 `?` 变为非贪婪，尽可能少匹配：
 
 ```actionscript
-var regex:RegExp = new RegExp("(a)\\1", "");
-trace(regex.test("aa"));  // 输出 true
+var re:RegExp = new RegExp("<.*?>", "");
+var m:Array = re.exec("<div>content</div>");
+trace(m[0]);  // "<div>" — 非贪婪，匹配最短
 ```
 
-**注意**：反向引用目前只做了基础支持，不能用于复杂生产环境。
+#### 4.3 回溯说明
+
+量词在 Sequence 中支持跨兄弟回溯。当贪婪量词消耗过多导致后续节点失败时，引擎自动减少匹配次数重试。对 `Group(Quantifier)` 结构（如 `([\w.-]+)`）同样有效。
 
 ---
 
-### 8. 常用正则表达式的实例
+### 5. 分组与捕获
 
-#### 8.1 匹配电子邮件地址
+#### 5.1 捕获组 `(...)`
 
 ```actionscript
-var regex:RegExp = new RegExp("[\\w.-]+@[\\w.-]+\\.\\w+", "");
-trace(regex.test("example@test.com"));  // 输出 true
+var re:RegExp = new RegExp("(\\d{4})-(\\d{2})-(\\d{2})", "");
+var m:Array = re.exec("2026-03-11");
+trace(m[0]);  // "2026-03-11" — 完整匹配
+trace(m[1]);  // "2026" — 捕获组 1
+trace(m[2]);  // "03"   — 捕获组 2
+trace(m[3]);  // "11"   — 捕获组 3
+trace(m.index); // 0    — 匹配起始位置
 ```
 
-#### 8.2 匹配电话号码
+#### 5.2 非捕获组 `(?:...)`
+
+只分组不捕获，不占用编号：
+
 ```actionscript
-var regex:RegExp = new RegExp("\\d{3}-\\d{3}-\\d{4}", "");
-trace(regex.test("123-456-7890"));  // 输出 true
+var re:RegExp = new RegExp("(?:abc)+", "");
+re.test("abcabc");  // true
 ```
 
-#### 8.3 匹配 URL
+#### 5.3 嵌套分组
+
 ```actionscript
-var regex:RegExp = new RegExp("https?://[\\w.-]+", "");
-trace(regex.test("http://example.com"));  // 输出 true
+var re:RegExp = new RegExp("(ab(c|d))+", "");
+re.test("abcabd");  // true
 ```
 
 ---
 
-### 9. 调试与常见错误
+### 6. 逻辑或操作符 `|`
 
-#### 9.1 量词错误
-当使用量词时，确保 `{n,m}` 中 `n <= m`，否则会导致无效量词错误。
-
-#### 9.2 转义符号
-确保在需要时正确使用 `\` 转义特殊字符，如 `.`、`$`、`^`。
-
-**示例**：
 ```actionscript
-var regex:RegExp = new RegExp("\\.", "");
-trace(regex.test("."));  // 输出 true
+var re:RegExp = new RegExp("cat|dog|bird", "");
+re.test("dog");  // true
+re.test("fish"); // false
 ```
 
-#### 9.3 反向引用问题
-反向引用目前只支持基础功能，复杂的模式可能无法正确匹配。
+支持在分组内使用：`(true|false)`
 
 ---
 
-### 总结
+### 7. 锚点（Anchors）
 
-本正则表达式引擎在 ActionScript 2 环境中提供了基础的正则功能，支持匹配、捕获、量词、字符集、逻辑或等基本操作，同时对反向引用有初步的支持。尽管如此，高级正则功能（如环视等）暂时未实现，且反向引用的使用在复杂场景中仍需谨慎。
+| 语法 | 说明 |
+|------|------|
+| `^` | 字符串/行首（`m` 标志下匹配 `\n` 后的位置） |
+| `$` | 字符串/行尾（`m` 标志下匹配 `\n` 前的位置） |
 
-通过合理地使用这些基础功能，可以显著提升文本处理的效率。在开发过程中，遇到正则匹配错误时，可以通过调试工具和常见错误排查表来辅助定位问题，逐步优化正则表达式的匹配效果。
+```actionscript
+var re:RegExp = new RegExp("^hello$", "");
+re.test("hello");       // true
+re.test("say hello");   // false
 
+// 多行模式
+var re2:RegExp = new RegExp("^abc$", "m");
+re2.test("xyz\nabc\n123");  // true
+```
 
+---
 
+### 8. 环视（Lookaround）
 
-### 10. 测试class的运行代码
+#### 8.1 正向前瞻 `(?=...)`
 
-import org.flashNight.gesh.regexp.RegExpTest;
+匹配位置后面是指定模式，不消耗字符：
+
+```actionscript
+var re:RegExp = new RegExp("foo(?=bar)", "");
+re.test("foobar");  // true
+re.test("foobaz");  // false
+```
+
+#### 8.2 负向前瞻 `(?!...)`
+
+匹配位置后面**不是**指定模式：
+
+```actionscript
+var re:RegExp = new RegExp("foo(?!bar)", "");
+re.test("foobaz");  // true
+re.test("foobar");  // false
+```
+
+#### 8.3 正向后顾 `(?<=...)`
+
+匹配位置前面是指定模式（**要求固定长度**）：
+
+```actionscript
+var re:RegExp = new RegExp("(?<=foo)bar", "");
+re.test("foobar");  // true
+re.test("bazbar");  // false
+```
+
+#### 8.4 负向后顾 `(?<!...)`
+
+匹配位置前面**不是**指定模式（**要求固定长度**）：
+
+```actionscript
+var re:RegExp = new RegExp("(?<!foo)bar", "");
+re.test("bazbar");  // true
+re.test("foobar");  // false
+```
+
+> **限制**：后顾断言要求模式为固定长度（不能包含 `*`、`+`、`{n,m}` 等可变量词）。
+
+---
+
+### 9. 单词边界
+
+| 语法 | 说明 |
+|------|------|
+| `\b` | 单词边界（`\w` 与 `\W` 之间，或字符串起止处） |
+| `\B` | 非单词边界 |
+
+```actionscript
+var re:RegExp = new RegExp("\\bword\\b", "");
+re.test("a word here");  // true
+re.test("awordhere");    // false
+re.test("word");         // true
+
+var re2:RegExp = new RegExp("\\bcat\\b", "");
+re2.test("concatenate"); // false — cat 两侧不是边界
+```
+
+---
+
+### 10. 反向引用
+
+通过 `\1`、`\2` 引用之前捕获组匹配的内容：
+
+```actionscript
+var re:RegExp = new RegExp("(a)\\1", "");
+re.test("aa");  // true
+re.test("ab");  // false
+```
+
+---
+
+### 11. 特殊字符与转义
+
+| 转义序列 | 匹配内容 |
+|----------|----------|
+| `\\` | 反斜杠 `\` |
+| `\.` | 点 `.` |
+| `\n` | 换行符 |
+| `\r` | 回车符 |
+| `\t` | 制表符 |
+| `\f` | 换页符 |
+| `\xHH` | 十六进制字符（如 `\x41` = `A`） |
+| `\uHHHH` | Unicode 字符（如 `\u4e2d` = `中`） |
+
+**注意**：AS2 字符串中 `\` 本身需要转义为 `\\`，因此模式中的 `\d` 要写成 `"\\d"`。
+
+---
+
+### 12. String.prototype 注入方法
+
+通过 `RegExp.injectMethods()` 可向 `String.prototype` 注入 4 个便捷方法：
+
+```actionscript
+RegExp.injectMethods();
+
+var str:Object = "Price: $12.50 and $8.99";
+var re:RegExp = new RegExp("\\d+\\.\\d+", "g");
+
+// regexp_match — 返回所有匹配结果数组
+var matches:Array = str.regexp_match(re);
+// ["12.50", "8.99"]
+
+// regexp_replace — 替换匹配内容
+var replaced:String = str.regexp_replace(re, "X");
+// "Price: $X and $X"
+
+// regexp_search — 返回第一个匹配的位置
+var pos:Number = str.regexp_search(re);
+// 8
+
+// regexp_split — 按匹配分割字符串
+var parts:Array = str.regexp_split(re);
+// ["Price: $", " and $", ""]
+
+RegExp.removeMethods();  // 使用完毕后移除
+```
+
+---
+
+### 13. 常用正则表达式实例
+
+#### 数字验证（含科学记数法）
+```actionscript
+var re:RegExp = new RegExp("^-?\\d+(\\.\\d+)?([eE][+-]?\\d+)?$", "");
+re.test("123");      // true
+re.test("-123.45");  // true
+re.test("1e10");     // true
+re.test("12a");      // false
+```
+
+#### ISO 日期时间
+```actionscript
+var re:RegExp = new RegExp("^\\d{4}-\\d{2}-\\d{2}[Tt ]\\d{2}:\\d{2}:\\d{2}", "");
+re.test("2024-10-09T08:30:00Z");  // true
+```
+
+#### 电子邮件
+```actionscript
+var re:RegExp = new RegExp("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", "");
+re.test("test@example.com");  // true
+```
+
+#### URL
+```actionscript
+var re:RegExp = new RegExp("^(https?:\\/\\/)?([\\w.-]+)\\.([a-z\\.]{2,6})([\\/\\w .-]*)*\\/?$", "i");
+re.test("https://www.example.com/path");  // true
+```
+
+#### 布尔值（忽略大小写）
+```actionscript
+var re:RegExp = new RegExp("^(true|false)$", "i");
+re.test("TRUE");  // true
+```
+
+---
+
+### 14. 回溯机制与性能
+
+#### 回溯架构
+
+引擎采用 NFA 回溯匹配。`matchSequenceFrom()` 方法实现 Sequence 节点的跨兄弟回溯：
+
+1. 遇到 Quantifier（或 Group 包装的 Quantifier），枚举匹配次数
+2. 贪婪模式从 max→min 递减尝试，非贪婪从 min→max 递增
+3. 每个次数下递归验证后续兄弟节点是否匹配成功
+4. 失败则回退到上一个 Quantifier 尝试下一个次数
+
+#### ReDoS 防护
+
+对于 `(a+)+b` 这类嵌套量词模式，当前引擎在 25 个 `a` 的输入上可在 <30ms 内快速失败。但更深层的嵌套仍可能导致指数级回溯，建议：
+- 避免 `(a*)*`、`(a+)+` 等嵌套量词
+- 优先使用具体的字符集 + 固定量词
+
+#### 性能参考（AVM1 环境）
+
+| 基准 | 典型耗时 |
+|------|----------|
+| 简单字面量匹配 | ~0.4ms/op |
+| 字符类匹配 | ~0.3ms/op |
+| 邮箱验证（复杂模式） | ~4.5ms/op |
+| 多捕获组 exec | ~0.1ms/op |
+| 全局匹配循环 | ~0.7ms/op |
+
+---
+
+### 15. 调试与常见错误
+
+#### 15.1 量词范围错误
+`{n,m}` 中 n 必须 ≤ m，否则解析阶段抛出异常。
+
+#### 15.2 转义遗漏
+AS2 字符串中 `\` 要写两次：`"\\d"` 而非 `"\d"`。常见遗漏：`\\.`、`\\\\`、`\\/`。
+
+#### 15.3 后顾断言长度限制
+`(?<=...)` 和 `(?<!...)` 内的模式必须为固定长度，不能使用 `*`、`+`、`{n,m}` 可变量词。
+
+#### 15.4 `exec()` 与 `lastIndex`
+使用 `g` 标志时，`exec()` 从 `lastIndex` 开始匹配。循环调用前应重置：`re.lastIndex = 0;`
+
+---
+
+### 16. 特性支持总表
+
+| 特性 | 状态 | 说明 |
+|------|------|------|
+| 字面量匹配 | ✅ | |
+| `.` 任意字符 | ✅ | 默认不匹配 `\n`，`s` 标志开启后匹配所有 |
+| 字符集 `[...]` / `[^...]` | ✅ | 含范围、预定义类、hex/unicode 转义 |
+| 预定义字符类 `\d\w\s\D\W\S` | ✅ | |
+| 量词 `* + ? {n} {n,} {n,m}` | ✅ | 贪婪 + 非贪婪 |
+| 分组 `()` / `(?:)` | ✅ | 捕获 + 非捕获 |
+| 交替 `\|` | ✅ | |
+| 锚点 `^ $` | ✅ | 支持多行模式 |
+| 正向前瞻 `(?=...)` | ✅ | |
+| 负向前瞻 `(?!...)` | ✅ | |
+| 正向后顾 `(?<=...)` | ✅ | 固定长度 |
+| 负向后顾 `(?<!...)` | ✅ | 固定长度 |
+| 单词边界 `\b` `\B` | ✅ | |
+| 反向引用 `\1` `\2` | ✅ | 基础支持 |
+| 十六进制转义 `\xHH` | ✅ | |
+| Unicode 转义 `\uHHHH` | ✅ | |
+| `i` 忽略大小写 | ✅ | |
+| `g` 全局匹配 | ✅ | |
+| `m` 多行模式 | ✅ | |
+| `s` dotAll 模式 | ✅ | |
+| Sequence 跨兄弟回溯 | ✅ | 贪婪/非贪婪量词 + Group 包装量词 |
+| 命名捕获组 `(?<name>...)` | ❌ | 待实现 |
+| 原子组 `(?>...)` | ❌ | 待实现 |
+| 占有量词 `a++` | ❌ | 待实现 |
+| ReDoS 记忆化 | ❌ | 待实现 |
+
+---
+
+### 运行测试
+
+```actionscript
+import org.flashNight.gesh.regexp.*;
 
 RegExpTest.runTests();
+```
+
+或通过 Flash CS6 自动化编译（详见 `scripts/FlashCS6自动化编译.md`）：
+
+```bash
+bash scripts/compile_test.sh
+```
