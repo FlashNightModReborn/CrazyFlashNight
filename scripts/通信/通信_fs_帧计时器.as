@@ -780,6 +780,8 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     _root.关卡结束界面._visible = false;
     // 清空打击数字批处理队列，避免跨场景残留
     HitNumberBatchProcessor.clear();
+    // 初始化打击数字对象池（场景级初始化，避免 spawn 热路径的 null 检查）
+    HitNumberSystem.initPool();
     // 重置射线视觉效果管理器，清理跨场景残留的射线
     RayVfxManager.reset();
     // 重置 TimSort 重入保护标志，防止 compare 异常后永久降级为 Array.sort()

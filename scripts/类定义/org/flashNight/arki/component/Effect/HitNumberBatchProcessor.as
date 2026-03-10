@@ -9,40 +9,42 @@
  *
  * 【核心优化】
  * - 节流决策从 O(N) 降至 O(1)：每帧仅执行一次节流判断，而非每个请求都判断
- * - 零分配设计：使用并行数组 + 长度计数，避免每次 enqueue 创建临时 Object
- * - 视野剔除复用：同一位置的多段伤害共享视野检查结果
- * - 负索引隔离：force 请求使用负索引存储，与普通请求完全隔离
- * - 帧末快速重置：负索引区域不清理引用，下帧覆盖写入，移除 O(forceLength) 的 delete 循环
+ * - 零分配设计：使用并行数组 + 长度计数，避免每次入队创建临时 Object
+ * - 延迟 HTML 构建：flush 先剔除/丢弃后，仅对存活项调用 buildHtml
+ * - 全局开关前置短路：开关关闭时跳过全部视野计算
  *
  * 【调用时序】
- * 1. 帧内任意时刻：业务代码调用 enqueue() 收集显示请求
+ * 1. 帧内任意时刻：DamageResult.triggerDisplay() 调用 enqueueRaw() 收集请求
  * 2. 帧末统一处理：frameEnd 事件触发 flush() 批量渲染
  * 3. 场景切换时：调用 clear() 清空队列
  *
  * 【线程/时序约束】
  * - 假定单线程环境，flush() 在帧末统一调用
- * - enqueue() 可在帧内任意时刻调用
+ * - enqueueRaw() 可在帧内任意时刻调用
  * - 静态工具类，所有 API 为 public static
  *
  * 【数据结构设计】
- * 使用负索引技巧将 force 请求与普通请求分离：
- * - 普通请求：索引 0, 1, 2, ... (_length - 1)
- * - force 请求：索引 -1, -2, -3, ... (-_forceLength)
+ * 使用并行数组 + 长度计数，正索引 [0, _length)。
+ * 所有请求统一受节流控制，视野外请求被剔除。
  *
- * 优势：
- * - force 请求无条件执行，不受任何节流限制
- * - 普通请求独立节流，不被 force 请求挤占配额
- * - flush 时先处理 force（负索引），再处理普通（正索引）
- * - 遍历起点清晰：从 -_forceLength 到 _length - 1
+ * 【packed 编码格式】（由 DamageResult.triggerDisplay 打包）
  *
- * 【语义说明】
- * - force（必然触发）参数：无条件显示，仅受视野剔除影响
- *   与旧 _root.打击数字特效 的"必然触发"语义完全一致
+ *   bits  0-8  (9 bits):  _efFlags 效果位掩码
+ *     bit 0 (1):    EF_CRUMBLE        — 溃
+ *     bit 1 (2):    EF_TOXIC          — 毒
+ *     bit 2 (4):    EF_EXECUTE        — 斩
+ *     bit 3 (8):    EF_DMG_TYPE_LABEL — 真/魔法属性标签
+ *     bit 4 (16):   EF_CRUSH_LABEL    — 破击属性标签
+ *     bit 5 (32):   EF_LIFESTEAL      — 吸血
+ *     bit 6 (64):   [保留]
+ *     bit 7 (128):  isEnemy           — EF_EXECUTE 颜色选择（敌/友）
+ *     bit 8 (256):  EF_SHIELD         — 护盾吸收
+ *   bit  9        (1 bit):  isMISS（闪避状态）
+ *   bits 10-17    (8 bits): damageSize（字体大小，0-255）
+ *   bits 18-21    (4 bits): colorId（颜色 ID，索引 COLOR_TABLE，0-10）
+ *   bits 22-30    (9 bits): [空闲，可用于未来扩展，如 force 标志]
  *
- * - 批处理路径尊重 _root.是否打击数字特效 全局开关
- *   当该开关为 false 时，普通请求全部丢弃，force 请求仍然显示
- *
- * @version 1.3
+ * @version 2.0 - 移除遗留 enqueue/force/负索引机制
  * @author FlashNight
  * ============================================================================
  */
@@ -53,22 +55,10 @@ import org.flashNight.arki.component.Effect.HitNumberSystem;
 class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
 
     // ========================================================================
-    // 并行数组存储（零分配设计 + 负索引隔离）
-    // ========================================================================
-    //
-    // 数据布局示意：
-    //   索引: ... -3  -2  -1  |  0   1   2  ...
-    //   类型:    force区域    |    普通区域
-    //
-    // - 普通请求写入正索引 [0, _length)
-    // - force 请求写入负索引 [-_forceLength, -1]
-    // - AS2 数组支持负索引，但不计入 length 属性
+    // 并行数组存储（零分配设计）
     // ========================================================================
 
-    /** 控制字符串数组（效果种类，如"暴击"、"能"等） */
-    private static var _ctrls:Array = [];
-
-    /** 显示值数组（数值或已格式化的 <font> 字符串） */
+    /** 显示值数组（伤害数值） */
     private static var _values:Array = [];
 
     /** X 坐标数组（世界坐标） */
@@ -76,10 +66,6 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
 
     /** Y 坐标数组（世界坐标） */
     private static var _ys:Array = [];
-
-    // ========================================================================
-    // raw 路径专用并行数组（延迟 HTML 构建）
-    // ========================================================================
 
     /** packed Number 数组（flags+colorId+size+dodge 编码） */
     private static var _packed:Array = [];
@@ -96,11 +82,8 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     /** 盾吸收值数组（无盾时为 0） */
     private static var _efShieldAbsorbs:Array = [];
 
-    /** 普通请求队列长度（正索引区域） */
+    /** 队列长度 */
     private static var _length:Number = 0;
-
-    /** force 请求队列长度（负索引区域，存储为正数，实际索引为 -1 到 -_forceLength） */
-    private static var _forceLength:Number = 0;
 
     // ========================================================================
     // 配置参数
@@ -142,22 +125,6 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     /** fontStart 懒缓存：key = (colorId << 8) | size → '<font color="X" size="Y">' */
     private static var _fontStartCache:Object = {};
 
-    /**
-     * 获取 fontStart 字符串（懒构建，首次拼接后缓存）
-     * @param colorId 颜色 ID（0-10）
-     * @param size    字体大小（0-255）
-     * @return 格式化的 font 开标签
-     */
-    private static function getFontStart(colorId:Number, size:Number):String {
-        var key:Number = (colorId << 8) | size;
-        var s:String = _fontStartCache[key];
-        if (s == undefined) {
-            s = '<font color="' + COLOR_TABLE[colorId] + '" size="' + size + '">';
-            _fontStartCache[key] = s;
-        }
-        return s;
-    }
-
     // ========================================================================
     // 私有构造函数（静态工具类）
     // ========================================================================
@@ -174,47 +141,10 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     // ========================================================================
 
     /**
-     * 将伤害数字显示请求加入队列
+     * 将伤害数字显示请求以原始数据形式加入队列（延迟 HTML 构建）
      *
-     * 此方法仅收集数据，不做任何节流判断或渲染操作。
-     * 所有决策延迟到 flush() 时统一处理。
-     *
-     * 【负索引隔离】
-     * - force=false：写入正索引 [0, _length)，受节流控制
-     * - force=true：写入负索引 [-_forceLength, -1]，无条件显示
-     *
-     * @param ctrl  控制字符串（效果种类），与旧 _root.打击数字特效 语义一致
-     * @param value 数值或已包含 <font> 的格式化字符串
-     * @param x     世界坐标 X
-     * @param y     世界坐标 Y
-     * @param force 是否无视节流强制显示（对应 _root.打击数字特效 的"必然触发"）
-     */
-    public static function enqueue(ctrl:String, value:Object, x:Number, y:Number, force:Boolean):Void {
-        var idx:Number;
-        if (force) {
-            // force 请求：写入负索引区域
-            // _forceLength: 1 -> idx = -1
-            // _forceLength: 2 -> idx = -2
-            ++_forceLength;
-            idx = -_forceLength;
-        } else {
-            // 普通请求：写入正索引区域
-            idx = _length;
-            ++_length;
-        }
-        _ctrls[idx] = ctrl;
-        _values[idx] = value;
-        _xs[idx] = x;
-        _ys[idx] = y;
-    }
-
-    /**
-     * 将伤害数字显示请求以原始数据形式加入队列（延迟 HTML 构建路径）
-     *
-     * 与 enqueue 的区别：不传入预格式化的 HTML，而是存储标量快照，
+     * 仅收集标量快照，不做任何节流判断或渲染操作。
      * flush 先剔除/丢弃后，仅对存活项调用 buildHtml 构建 HTML。
-     *
-     * 【注意】仅处理普通请求（damage 永远非 force），force 请求仍走 enqueue()。
      *
      * @param damage       伤害数值
      * @param packed       打包的离散状态（_efFlags | isMISS<<9 | size<<10 | colorId<<18）
@@ -247,37 +177,50 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
      * 帧末批量处理所有排队的显示请求
      *
      * 【处理流程】
-     * 1. 先处理 force 请求（负索引区域）：无条件显示，仅受视野剔除影响
-     * 2. 再处理普通请求（正索引区域）：受节流控制
+     * 1. 全局开关预读 + 短路（开关关闭 → 立即返回）
+     * 2. 视野剔除准备
+     * 3. 遍历队列：视野剔除 + 配额控制 + buildHtml + spawn
      *
-     * 【节流算法（仅对普通请求）】
-     * 1. 检查全局开关 _root.是否打击数字特效
-     * 2. 计算剩余容量 remaining = 上限 - 当前数量
-     * 3. 决策：
-     *    - remaining >= normalCount：全部显示
+     * 【节流算法】
+     * 1. 计算剩余容量 remaining = 上限 - 当前数量
+     * 2. 决策：
+     *    - remaining >= count：全部显示
      *    - remaining <= 0：全部丢弃
-     *    - 0 < remaining < normalCount：按队列顺序取前 remaining 个显示
+     *    - 0 < remaining < count：按队列顺序取前 remaining 个显示
      *
      * 【防御性处理】
+     * - _root.是否打击数字特效：由引擎常数保证初始化，无需 undefined 检查
      * - 若 _root.同屏打击数字特效上限 未初始化，使用 DEFAULT_CAPACITY (25)
      * - 若 _root.当前打击数字特效总数 未初始化，使用 DEFAULT_CURRENT (0)
      * - 若 _root.gameworld 不存在，直接清空队列返回
      *
      * 【调用时机】
-     * 应在 frameEnd 事件中调用，确保所有 enqueue 完成后统一处理。
+     * 应在 frameEnd 事件中调用，确保所有 enqueueRaw 完成后统一处理。
      */
     public static function flush():Void {
-        var nNormal:Number = _length;
-        var nForce:Number = _forceLength;
+        var n:Number = _length;
 
         // 空队列快速返回
-        if (nNormal == 0 && nForce == 0) return;
+        if (n == 0) return;
 
-        // === 阶段1：视野剔除准备 ===
-        var gameWorld:MovieClip = _root.gameworld;
+        var r:Object = _root;
+
+        // === 阶段1：全局开关预读 + 短路 ===
+        // r.是否打击数字特效 由引擎常数初始化为 true，存档/UI 只写 Boolean，无 undefined 可能
+        if (!r.是否打击数字特效) {
+            if (debugMode) {
+                r.服务器.发布服务器消息(
+                    "[HitNumberBatch] global:OFF, normal:" + n + " 全部丢弃"
+                );
+            }
+            __resetQueue();
+            return;
+        }
+
+        // === 阶段2：视野剔除准备 ===
+        var gameWorld:MovieClip = r.gameworld;
         if (!gameWorld) {
-            // 游戏世界不存在，完整清空队列后返回（可能是场景切换中）
-            __clearQueueFull();
+            __resetQueue();
             return;
         }
 
@@ -287,120 +230,68 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         var sw:Number = Stage.width;
         var sh:Number = Stage.height;
 
-        // 通过 HitNumberSystem.spawn 统一 API 入口
-        var forceShown:Number = 0;
-        var forceCulled:Number = 0;
+        // 获取全局控制参数（带防御性处理）
+        var capacityBase:Number = r.同屏打击数字特效上限;
+        if (isNaN(capacityBase) || capacityBase <= 0) {
+            capacityBase = DEFAULT_CAPACITY;
+        }
+
+        var current:Number = r.当前打击数字特效总数;
+        if (isNaN(current) || current < 0) {
+            current = DEFAULT_CURRENT;
+        }
+
+        var remaining:Number = capacityBase - current;
+        if (remaining < 0) remaining = 0;
+
+        // 计算显示配额
+        var quota:Number = (remaining >= n) ? n : remaining;
+
+        // === 阶段3：遍历队列 ===
+        var shown:Number = 0;
+        var culled:Number = 0;
+        var dropped:Number = 0;
         var i:Number;
         var x:Number;
         var y:Number;
         var locX:Number;
         var locY:Number;
 
-        // === 阶段2：处理 force 请求（负索引区域，无条件显示） ===
-        // 遍历索引：-nForce, -nForce+1, ..., -1
-        for (i = -nForce; i < 0; ++i) {
+        i = 0;
+        do {
             x = _xs[i];
             y = _ys[i];
 
-            // 视野剔除（force 请求也要剔除视野外的）
+            // 视野剔除
             locX = gx + x * sx;
             locY = gy + y * sx;
             if (locX < 0 || locX > sw || locY < 0 || locY > sh) {
-                ++forceCulled;
-                continue;
-            }
-
-            // 无条件显示 - 通过 HitNumberSystem 统一入口
-            HitNumberSystem.spawn(_ctrls[i], _values[i], x, y, true);
-            ++forceShown;
-        }
-
-        // === 阶段3：检查全局显示开关（仅影响普通请求） ===
-        var globalEnabled:Boolean = _root.是否打击数字特效;
-        // 防御性处理：undefined 视为 true（默认启用）
-        if (globalEnabled == undefined) {
-            globalEnabled = true;
-        }
-
-        var normalShown:Number = 0;
-        var normalCulled:Number = 0;
-        var normalDropped:Number = 0;
-
-        // === 阶段4：处理普通请求（正索引区域，受节流控制） ===
-        if (nNormal > 0 && globalEnabled) {
-            // 获取全局控制参数（带防御性处理）
-            var capacityBase:Number = _root.同屏打击数字特效上限;
-            if (isNaN(capacityBase) || capacityBase <= 0) {
-                capacityBase = DEFAULT_CAPACITY;
-            }
-
-            var current:Number = _root.当前打击数字特效总数;
-            if (isNaN(current) || current < 0) {
-                current = DEFAULT_CURRENT;
-            }
-
-            var remaining:Number = capacityBase - current;
-            if (remaining < 0) remaining = 0;
-
-            // 计算普通请求的显示配额
-            var normalQuota:Number;
-            if (remaining >= nNormal) {
-                normalQuota = nNormal;
+                ++culled;
+            } else if (shown < quota) {
+                // 配额内：构建 HTML 并渲染
+                var html:String = buildHtml(
+                    Number(_values[i]), _packed[i],
+                    _efTexts[i], _efEmojis[i],
+                    _efLifeSteals[i], _efShieldAbsorbs[i]
+                );
+                HitNumberSystem.spawn("", html, x, y);
+                ++shown;
             } else {
-                normalQuota = remaining;
+                // 配额已满，剩余项不再逐个遍历
+                dropped = n - shown - culled;
+                break;
             }
+        } while (++i < n);
 
-            // 遍历正索引区域
-            for (i = 0; i < nNormal; ++i) {
-                x = _xs[i];
-                y = _ys[i];
-
-                // 视野剔除
-                locX = gx + x * sx;
-                locY = gy + y * sx;
-                if (locX < 0 || locX > sw || locY < 0 || locY > sh) {
-                    ++normalCulled;
-                    continue;
-                }
-
-                // 检查配额
-                if (normalShown < normalQuota) {
-                    // 判断路径：_packed[i] !== undefined → raw 路径，否则旧路径
-                    var p:Number = _packed[i];
-                    if (p !== undefined) {
-                        // raw 路径：先剔除后构建 HTML，被丢弃的项零 HTML 成本
-                        var html:String = buildHtml(
-                            Number(_values[i]), p,
-                            _efTexts[i], _efEmojis[i],
-                            _efLifeSteals[i], _efShieldAbsorbs[i]
-                        );
-                        HitNumberSystem.spawn("", html, x, y, false);
-                    } else {
-                        // 旧路径：预格式化 HTML 直接渲染
-                        HitNumberSystem.spawn(_ctrls[i], _values[i], x, y, false);
-                    }
-                    ++normalShown;
-                } else {
-                    ++normalDropped;
-                }
-            }
-        } else if (nNormal > 0) {
-            // 全局开关关闭，普通请求全部丢弃
-            normalDropped = nNormal;
-        }
-
-        // === 阶段5：调试输出 ===
+        // === 阶段4：调试输出 ===
         if (debugMode) {
-            _root.服务器.发布服务器消息(
-                "[HitNumberBatch] force:" + forceShown + "/" + nForce +
-                "(剔除" + forceCulled + ")" +
-                " normal:" + normalShown + "/" + nNormal +
-                "(剔除" + normalCulled + ",丢弃" + normalDropped + ")" +
-                " global:" + (globalEnabled ? "ON" : "OFF")
+            r.服务器.发布服务器消息(
+                "[HitNumberBatch] shown:" + shown + "/" + n +
+                "(剔除" + culled + ",丢弃" + dropped + ")"
             );
         }
 
-        // === 阶段6：重置队列（快速路径，不清理负索引引用） ===
+        // === 阶段5：重置队列 ===
         __resetQueue();
     }
 
@@ -434,9 +325,14 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         var size:Number     = (packed >> 10) & 255; // bits 10-17
         var colorId:Number  = (packed >> 18) & 15;  // bits 18-21
 
-        // 构建主伤害数字
+        // 构建主伤害数字（fontStart 内联：避免热路径函数调用开销）
+        var key:Number = (colorId << 8) | size;
+        var fontStart:String = _fontStartCache[key];
+        if (fontStart == undefined) {
+            fontStart = '<font color="' + COLOR_TABLE[colorId] + '" size="' + size + '">';
+            _fontStartCache[key] = fontStart;
+        }
         // MISS 判断：全局 dodgeStatus=="MISS"（packed bit 9）或 单弹丸 damage<0（联弹分段建模）
-        var fontStart:String = getFontStart(colorId, size);
         var html:String;
         if (isMISS || damage < 0) {
             html = fontStart + "MISS" + FONT_END;
@@ -482,100 +378,33 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     }
 
     /**
-     * 内部方法：帧末快速重置队列（高频调用路径）
-     *
-     * 【优化策略】
-     * - 负索引区域：不清理引用，仅重置计数器。下帧 enqueue 时直接覆盖写入。
-     *   AS2 弱引用特性允许旧值被覆盖，不会导致内存泄漏。
-     * - 正索引区域：设置 length = 0 自动回收。
-     *
-     * 【性能收益】
-     * - 移除每帧 4 × forceLength 次 delete 操作
-     * - Boss 战等高 force 场景下显著降低 GC 压力
-     *
-     * 【注意】
-     * 场景切换时应调用 clear() 而非此方法，确保完全释放引用。
+     * 帧末快速重置队列
      */
     private static function __resetQueue():Void {
-        // 正索引区域：利用 length = 0 自动回收
-        _ctrls.length = 0;
         _values.length = 0;
         _xs.length = 0;
         _ys.length = 0;
-
-        // raw 路径并行数组
         _packed.length = 0;
         _efTexts.length = 0;
         _efEmojis.length = 0;
         _efLifeSteals.length = 0;
         _efShieldAbsorbs.length = 0;
-
-        // 重置计数器（负索引区域下帧覆盖写入，无需清理引用）
         _length = 0;
-        _forceLength = 0;
     }
 
     /**
-     * 内部方法：完整清空队列数据（低频调用路径）
-     *
-     * 【AS2 数组清理机制】
-     * AS2 Array 有两类成员：
-     * 1. 数组元素（正索引 0,1,2...）：由 length 属性管理
-     * 2. 普通属性（负索引 -1,-2... 或字符串键）：不受 length 影响
-     *
-     * 此方法遍历清理负索引引用，防止场景切换时内存泄漏。
-     */
-    private static function __clearQueueFull():Void {
-        // 清理负索引区域（force 请求）- 场景切换时必须清理
-        for (var i:Number = -_forceLength; i < 0; ++i) {
-            delete _ctrls[i];
-            delete _values[i];
-            delete _xs[i];
-            delete _ys[i];
-        }
-
-        // 清理正索引区域
-        _ctrls.length = 0;
-        _values.length = 0;
-        _xs.length = 0;
-        _ys.length = 0;
-
-        // raw 路径并行数组
-        _packed.length = 0;
-        _efTexts.length = 0;
-        _efEmojis.length = 0;
-        _efLifeSteals.length = 0;
-        _efShieldAbsorbs.length = 0;
-
-        // 重置计数器
-        _length = 0;
-        _forceLength = 0;
-    }
-
-    /**
-     * 清空队列（完整清理）
-     *
-     * 用于场景切换或游戏重启时调用，确保不会有残留请求。
-     * 此方法会遍历清理负索引引用，防止内存泄漏。
+     * 清空队列（场景切换/重启时调用）
      */
     public static function clear():Void {
-        __clearQueueFull();
+        __resetQueue();
     }
 
     /**
-     * 获取当前普通请求队列长度（调试用）
-     * @return 当前排队的普通请求数量
+     * 获取当前队列长度（调试用）
+     * @return 当前排队的请求数量
      */
     public static function getQueueLength():Number {
         return _length;
-    }
-
-    /**
-     * 获取当前 force 请求队列长度（调试用）
-     * @return 当前排队的 force 请求数量
-     */
-    public static function getForceQueueLength():Number {
-        return _forceLength;
     }
 
     /**
