@@ -98,6 +98,43 @@ class org.flashNight.gesh.regexp.Parser {
                 node = new ASTNode('PredefinedCharacterClass');
                 node.value = nextChar;
                 node = parseQuantifier(node);
+            } else if (nextChar == 'b' || nextChar == 'B') {
+                // 单词边界 \b 和非单词边界 \B
+                node = new ASTNode('WordBoundary');
+                node.value = nextChar; // 'b' 或 'B'
+                node = parseQuantifier(node);
+            } else if (nextChar == 'x') {
+                // \xHH: 两位十六进制表示的 ASCII 字符
+                var hex2:String = "";
+                if (this.index < this.length) hex2 += consume();
+                if (this.index < this.length) hex2 += consume();
+                if (hex2.length != 2) {
+                    throw new Error("Invalid hex escape: \\x" + hex2);
+                }
+                var charCode2:Number = parseInt(hex2, 16);
+                if (isNaN(charCode2)) {
+                    throw new Error("Invalid hex escape: \\x" + hex2);
+                }
+                node = new ASTNode('Literal');
+                node.value = String.fromCharCode(charCode2);
+                node = parseQuantifier(node);
+            } else if (nextChar == 'u') {
+                // \uHHHH: 四位十六进制表示的 Unicode 字符
+                var hex4:String = "";
+                if (this.index < this.length) hex4 += consume();
+                if (this.index < this.length) hex4 += consume();
+                if (this.index < this.length) hex4 += consume();
+                if (this.index < this.length) hex4 += consume();
+                if (hex4.length != 4) {
+                    throw new Error("Invalid unicode escape: \\u" + hex4);
+                }
+                var charCode4:Number = parseInt(hex4, 16);
+                if (isNaN(charCode4)) {
+                    throw new Error("Invalid unicode escape: \\u" + hex4);
+                }
+                node = new ASTNode('Literal');
+                node.value = String.fromCharCode(charCode4);
+                node = parseQuantifier(node);
             } else if (isDigit(nextChar)) {
                 // 处理回溯引用，如 \1, \2
                 var numberStr:String = nextChar;
@@ -198,7 +235,9 @@ class org.flashNight.gesh.regexp.Parser {
         }
         var chars:Array = [];
         while (this.index < this.length && peek() != ']') {
+            var startCharCode:Number = -1;
             var char:String = consume();
+            
             if (char == '\\') {
                 if (this.index >= this.length) {
                     throw new Error("Escape character '\\' in character class at end of pattern");
@@ -206,21 +245,32 @@ class org.flashNight.gesh.regexp.Parser {
                 var escapedCharInClass:String = consume();
                 if (escapedCharInClass == 'd') {
                     // 展开 \d 为 0-9
-                    for (var digit:Number = 48; digit <= 57; digit++) { // ASCII 0-9
+                    for (var digit:Number = 48; digit <= 57; digit++) {
                         chars.push(String.fromCharCode(digit));
                     }
                 } else if (escapedCharInClass == 'D') {
-                    // \D 在字符类中比较复杂，暂时简化处理
-                    chars.push(getEscapedChar(escapedCharInClass));
+                    // \D 在字符类中：匹配所有非数字字符
+                    for (var dCode:Number = 0; dCode <= 255; dCode++) {
+                        if (dCode < 48 || dCode > 57) {
+                            chars.push(String.fromCharCode(dCode));
+                        }
+                    }
                 } else if (escapedCharInClass == 'w') {
                     // 展开 \w 为 a-z, A-Z, 0-9, _
-                    for (var i:Number = 97; i <= 122; i++) chars.push(String.fromCharCode(i)); // a-z
-                    for (var j:Number = 65; j <= 90; j++) chars.push(String.fromCharCode(j));  // A-Z
-                    for (var k:Number = 48; k <= 57; k++) chars.push(String.fromCharCode(k));  // 0-9
+                    for (var i:Number = 97; i <= 122; i++) chars.push(String.fromCharCode(i));
+                    for (var j:Number = 65; j <= 90; j++) chars.push(String.fromCharCode(j));
+                    for (var k:Number = 48; k <= 57; k++) chars.push(String.fromCharCode(k));
                     chars.push('_');
                 } else if (escapedCharInClass == 'W') {
-                    // \W 在字符类中比较复杂，暂时简化处理
-                    chars.push(getEscapedChar(escapedCharInClass));
+                    // \W 在字符类中：匹配所有非单词字符
+                    for (var wCode:Number = 0; wCode <= 255; wCode++) {
+                        if (!((wCode >= 48 && wCode <= 57) ||
+                              (wCode >= 65 && wCode <= 90) ||
+                              (wCode >= 97 && wCode <= 122) ||
+                              wCode == 95)) {
+                            chars.push(String.fromCharCode(wCode));
+                        }
+                    }
                 } else if (escapedCharInClass == 's') {
                     // 展开 \s 为空白字符
                     chars.push(' ');
@@ -228,33 +278,92 @@ class org.flashNight.gesh.regexp.Parser {
                     chars.push('\r');
                     chars.push('\n');
                 } else if (escapedCharInClass == 'S') {
-                    // \S 在字符类中比较复杂，暂时简化处理
-                    chars.push(getEscapedChar(escapedCharInClass));
-                } else if (isSpecialChar(escapedCharInClass)) {
-                    chars.push(getEscapedChar(escapedCharInClass));
+                    // \S 在字符类中：匹配所有非空白字符
+                    for (var sCode:Number = 0; sCode <= 255; sCode++) {
+                        if (!(sCode == 32 || sCode == 9 || sCode == 10 ||
+                              sCode == 13 || sCode == 12 || sCode == 11)) {
+                            chars.push(String.fromCharCode(sCode));
+                        }
+                    }
+                } else if (escapedCharInClass == 'x') {
+                    // \xHH: 两位十六进制表示的 ASCII 字符（在字符类中）
+                    var hex2cls:String = "";
+                    if (this.index < this.length) hex2cls += consume();
+                    if (this.index < this.length) hex2cls += consume();
+                    if (hex2cls.length == 2) {
+                        startCharCode = parseInt(hex2cls, 16);
+                        if (!isNaN(startCharCode)) {
+                            chars.push(String.fromCharCode(startCharCode));
+                        }
+                    }
+                } else if (escapedCharInClass == 'u') {
+                    // \uHHHH: 四位十六进制表示的 Unicode 字符（在字符类中）
+                    var hex4cls:String = "";
+                    if (this.index < this.length) hex4cls += consume();
+                    if (this.index < this.length) hex4cls += consume();
+                    if (this.index < this.length) hex4cls += consume();
+                    if (this.index < this.length) hex4cls += consume();
+                    if (hex4cls.length == 4) {
+                        startCharCode = parseInt(hex4cls, 16);
+                        if (!isNaN(startCharCode)) {
+                            chars.push(String.fromCharCode(startCharCode));
+                        }
+                    }
                 } else {
-                    chars.push(getEscapedChar(escapedCharInClass));
+                    // 其他转义字符
+                    var escChar:String = getEscapedChar(escapedCharInClass);
+                    startCharCode = escChar.charCodeAt(0);
+                    chars.push(escChar);
                 }
-            } else if (peek() == '-' && this.index + 1 < this.length && this.pattern.charAt(this.index + 1) != ']') {
+            } else {
+                // 普通字符
+                startCharCode = char.charCodeAt(0);
+                chars.push(char);
+            }
+            
+            // 检查是否是范围
+            if (peek() == '-' && this.index + 1 < this.length && this.pattern.charAt(this.index + 1) != ']') {
                 consume(); // 跳过 '-'
-                var endChar:String = consume();
-                if (endChar == '\\') {
+                var endCharRaw:String = consume();
+                var endCode:Number;
+                
+                if (endCharRaw == '\\') {
                     if (this.index >= this.length) {
                         throw new Error("Escape character '\\' in character range at end of pattern");
                     }
-                    endChar = consume();
-                    endChar = getEscapedChar(endChar);
+                    var endEsc:String = consume();
+                    if (endEsc == 'x') {
+                        // \xHH 范围结束
+                        var endHex2:String = "";
+                        if (this.index < this.length) endHex2 += consume();
+                        if (this.index < this.length) endHex2 += consume();
+                        endCode = parseInt(endHex2, 16);
+                    } else if (endEsc == 'u') {
+                        // \uHHHH 范围结束
+                        var endHex4:String = "";
+                        if (this.index < this.length) endHex4 += consume();
+                        if (this.index < this.length) endHex4 += consume();
+                        if (this.index < this.length) endHex4 += consume();
+                        if (this.index < this.length) endHex4 += consume();
+                        endCode = parseInt(endHex4, 16);
+                    } else {
+                        endCode = getEscapedChar(endEsc).charCodeAt(0);
+                    }
+                } else {
+                    endCode = endCharRaw.charCodeAt(0);
                 }
-                var startCode:Number = char.charCodeAt(0);
-                var endCode:Number = endChar.charCodeAt(0);
-                if (startCode > endCode) {
-                    throw new Error("Invalid character range '" + char + "-" + endChar + "' in character class");
+                
+                // 使用 startCharCode 作为起始点
+                if (startCharCode >= 0 && !isNaN(endCode)) {
+                    if (startCharCode > endCode) {
+                        throw new Error("Invalid character range in character class");
+                    }
+                    // 移除最后添加的字符，用范围替换
+                    chars.pop();
+                    for (var code:Number = startCharCode; code <= endCode; code++) {
+                        chars.push(String.fromCharCode(code));
+                    }
                 }
-                for (var code:Number = startCode; code <= endCode; code++) {
-                    chars.push(String.fromCharCode(code));
-                }
-            } else {
-                chars.push(char);
             }
         }
         if (peek() != ']') {

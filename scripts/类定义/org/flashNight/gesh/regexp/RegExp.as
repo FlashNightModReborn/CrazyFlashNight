@@ -10,6 +10,7 @@ class org.flashNight.gesh.regexp.RegExp {
     private var ignoreCase:Boolean;
     private var global:Boolean;
     private var multiline:Boolean;
+    private var dotAll:Boolean;
     public var lastIndex:Number = 0; // 记录上一次匹配的结束位置
     private var totalGroups:Number; // 记录总捕获组数
 
@@ -24,6 +25,7 @@ class org.flashNight.gesh.regexp.RegExp {
         this.ignoreCase = flags.indexOf('i') >= 0;
         this.global = flags.indexOf('g') >= 0;
         this.multiline = flags.indexOf('m') >= 0;
+        this.dotAll = flags.indexOf('s') >= 0;
         this.lastIndex = 0;
         this.parse();
     }
@@ -50,27 +52,42 @@ class org.flashNight.gesh.regexp.RegExp {
 
 
         if (this.pattern.charAt(0) == '^') {
-            // 模式以 ^ 开头，必须从字符串起始位置匹配
-            var captures:Array = initializeCaptures();
-            var result:Object = this.ast.match(input, 0, captures, this.ignoreCase);
-            
-            if (!result.matched) {
-                return false;
+            // 模式以 ^ 开头
+            // multiline 模式下，需要从每行行首尝试匹配
+            var checkPositions:Array = [0];
+            if (this.multiline) {
+                for (var i:Number = 0; i < input.length; i++) {
+                    if (input.charAt(i) == '\n') {
+                        checkPositions.push(i + 1);
+                    }
+                }
             }
             
-            // 检查是否以 $ 结尾，如果是则需要匹配到字符串结尾
-            var endsWithDollar:Boolean = this.pattern.charAt(this.pattern.length - 1) == '$';
+            for (var idx:Number = 0; idx < checkPositions.length; idx++) {
+                var checkPos:Number = checkPositions[idx];
+                if (checkPos > input.length) continue;
+                var captures:Array = initializeCaptures();
+                var result:Object = this.ast.match(input, checkPos, captures, this.ignoreCase, this.multiline, this.dotAll);
             
-            if (endsWithDollar) {
-                return result.position == inputLength;
-            } else {
-                return true; // 不以$结尾的^开头模式，只需要匹配成功即可
+                if (!result.matched) {
+                    continue;
+                }
+                
+                // 检查是否以 $ 结尾，如果是则需要匹配到字符串结尾
+                var endsWithDollar:Boolean = this.pattern.charAt(this.pattern.length - 1) == '$';
+                
+                if (endsWithDollar) {
+                    if (result.position == inputLength) return true;
+                } else {
+                    return true; // 不以$结尾的^开头模式，只需要匹配成功即可
+                }
             }
+            return false;
         } else {
             // 遍历字符串中的每个位置进行匹配
             for (var pos:Number = 0; pos <= inputLength; pos++) {
                 var captures:Array = initializeCaptures();
-                var result:Object = this.ast.match(input, pos, captures, this.ignoreCase);
+                var result:Object = this.ast.match(input, pos, captures, this.ignoreCase, this.multiline, this.dotAll);
                 if (result.matched) {
                     if (!this.multiline) {
                         return true;

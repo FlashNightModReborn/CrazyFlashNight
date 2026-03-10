@@ -29,6 +29,22 @@ class org.flashNight.gesh.regexp.RegExpTest {
         runComplexProjectTests();
         trace("");
         
+        // 运行阶段0 Bug修复测试
+        runPhase0BugFixTests();
+        trace("");
+        
+        // 运行阶段1 基础语法扩展测试
+        runPhase1BasicExtensionTests();
+        trace("");
+        
+        // 运行阶段P 性能基准测试
+        runPerformanceBenchmarks();
+        trace("");
+        
+        // 运行阶段2 命名捕获组测试（暂时禁用）
+        // runPhase2NamedCaptureTests();
+        // trace("");
+        
         // 运行注入原型链测试
         runPrototypeInjectionTests();
         trace("");
@@ -273,6 +289,225 @@ class org.flashNight.gesh.regexp.RegExpTest {
         assertFalse("测试30：urlRegExp 匹配 'htp:/invalid-url'", urlRegExp.test("htp:/invalid-url") === true); // 预期为 false
         
         trace("========== 实战复杂项目测试结束 ==========");
+    }
+
+    /**
+     * 阶段0 Bug修复测试
+     */
+    public static function runPhase0BugFixTests():Void {
+        trace("========== 阶段0 Bug修复测试 ==========");
+        
+        // Bug 0-1: Multiline 模式下 ^ $ 应识别行边界
+        var re1:RegExp = new RegExp("^abc", "m");
+        assertTrue("Bug 0-1: /^abc/m 应匹配 'xyz\\nabc'", re1.test("xyz\nabc") === true);
+        assertFalse("Bug 0-1: /^abc/m 不应匹配 'xyzabc'", re1.test("xyzabc") === true);
+        
+        var re2:RegExp = new RegExp("abc$", "m");
+        assertTrue("Bug 0-1: /abc$/m 应匹配 'abc\\nxyz'", re2.test("abc\nxyz") === true);
+        assertFalse("Bug 0-1: /abc$/m 不应匹配 'abcxyz'", re2.test("abcxyz") === true);
+        
+        // 非 multiline 模式下 ^ $ 只匹配字符串起止
+        var re3:RegExp = new RegExp("^abc", "");
+        assertFalse("Bug 0-1: /^abc/ 不应匹配 'xyz\\nabc'", re3.test("xyz\nabc") === true);
+        
+        var re4:RegExp = new RegExp("abc$", "");
+        assertFalse("Bug 0-1: /abc$/ 不应匹配 'abc\\nxyz'", re4.test("abc\nxyz") === true);
+        
+        // Bug 0-2: 非贪婪量词应与后续模式协作
+        var re3:RegExp = new RegExp(".*?b", "");
+        var m3:Array = re3.exec("aab");
+        if (m3 != null) {
+            assertEquals("Bug 0-2: /.*?b/ 应匹配 'aab'", "aab", m3[0]);
+        } else {
+            assertTrue("Bug 0-2: /.*?b/ 未匹配 'aab'", false);
+        }
+        
+        var re4:RegExp = new RegExp("a+?b", "");
+        assertTrue("Bug 0-2: /a+?b/ 应匹配 'aab'", re4.test("aab") === true);
+        
+        var re5:RegExp = new RegExp("<.*?>", "");
+        var m5:Array = re5.exec("<div>content</div>");
+        if (m5 != null) {
+            assertEquals("Bug 0-2: /<.*?>/ 应匹配 '<div>'", "<div>", m5[0]);
+        } else {
+            assertTrue("Bug 0-2: /<.*?>/ 未匹配", false);
+        }
+        
+        // Bug 0-3: 字符类内 \D \W \S 处理
+        var re6:RegExp = new RegExp("[\\D]+", "");
+        assertTrue("Bug 0-3: /[\\D]+/ 应匹配 'abc'", re6.test("abc") === true);
+        assertFalse("Bug 0-3: /[\\D]+/ 不应匹配 '123'", re6.test("123") === true);
+        
+        var re7:RegExp = new RegExp("[a\\D]+", "");
+        assertTrue("Bug 0-3: /[a\\D]+/ 应匹配 'a!@#'", re7.test("a!@#") === true);
+        
+        var re8:RegExp = new RegExp("[\\d\\D]+", "");
+        assertTrue("Bug 0-3: /[\\d\\D]+/ 应匹配 'a1b2'", re8.test("a1b2") === true);
+        
+        trace("========== 阶段0 Bug修复测试结束 ==========");
+    }
+
+    /**
+     * 阶段1 基础语法扩展测试
+     */
+    public static function runPhase1BasicExtensionTests():Void {
+        trace("========== 阶段1 基础语法扩展测试 ==========");
+        
+        // 1-1: \b 和 \B 单词边界
+        var re1:RegExp = new RegExp("\\bword\\b", "");
+        assertTrue("1-1: /\\bword\\b/ 应匹配 'a word here'", re1.test("a word here") === true);
+        assertFalse("1-1: /\\bword\\b/ 不应匹配 'awordhere'", re1.test("awordhere") === true);
+        assertTrue("1-1: /\\bword\\b/ 应匹配 'word'", re1.test("word") === true);
+        
+        var re2:RegExp = new RegExp("\\bcat\\b", "");
+        var m2:Array = re2.exec("the cat sat");
+        if (m2 != null) {
+            assertEquals("1-1: /\\bcat\\b/ exec 匹配", "cat", m2[0]);
+        } else {
+            assertTrue("1-1: /\\bcat\\b/ exec 未匹配", false);
+        }
+        assertFalse("1-1: /\\bcat\\b/ 不应匹配 'concatenate'", re2.test("concatenate") === true);
+        
+        var re3:RegExp = new RegExp("\\B-\\B", "");
+        assertFalse("1-1: /\\B-\\B/ 不应匹配 'a-b'", re3.test("a-b") === true);
+        assertTrue("1-1: /\\B-\\B/ 应匹配 '--'", re3.test("--") === true);
+        
+        // 1-2: \xHH 和 \uHHHH 转义
+        var re4:RegExp = new RegExp("\\x41\\x42\\x43", "");
+        assertTrue("1-2: /\\x41\\x42\\x43/ 应匹配 'ABC'", re4.test("ABC") === true);
+        
+        var re5:RegExp = new RegExp("[\\x30-\\x39]+", "");
+        assertTrue("1-2: /[\\x30-\\x39]+/ 应匹配 '12345'", re5.test("12345") === true);
+        assertFalse("1-2: /[\\x30-\\x39]+/ 不应匹配 'abc'", re5.test("abc") === true);
+        
+        var re6:RegExp = new RegExp("\\u4e2d\\u6587", "");
+        assertTrue("1-2: /\\u4e2d\\u6587/ 应匹配 '中文'", re6.test("中文") === true);
+        
+        // 1-3: s (dotAll) 标志
+        var re7:RegExp = new RegExp("a.b", "");
+        assertFalse("1-3: /a.b/ 不应匹配 'a\\nb'", re7.test("a\nb") === true);
+        
+        var re8:RegExp = new RegExp("a.b", "s");
+        assertTrue("1-3: /a.b/s 应匹配 'a\\nb'", re8.test("a\nb") === true);
+        
+        trace("========== 阶段1 基础语法扩展测试结束 ==========");
+    }
+
+    /**
+     * 阶段P 性能基准测试
+     */
+    public static function runPerformanceBenchmarks():Void {
+        trace("========== 阶段P 性能基准测试 ==========");
+        
+        var startTime:Number;
+        var endTime:Number;
+        var elapsed:Number;
+        var i:Number;
+        var N:Number;
+        var re:RegExp;
+        var input:String;
+        var result:Boolean;
+        var match:Array;
+        
+        // 基准1：简单字面量匹配
+        re = new RegExp("hello", "");
+        input = "this is a test string with hello world in the middle";
+        N = 10000;
+        startTime = getTimer();
+        for (i = 0; i < N; i++) {
+            result = re.test(input);
+        }
+        endTime = getTimer();
+        elapsed = endTime - startTime;
+        trace("[PERF] 基准1-简单字面量: " + (elapsed/N) + "ms/op (" + N + " ops in " + elapsed + "ms)");
+        
+        // 基准2：字符类匹配
+        re = new RegExp("[a-zA-Z0-9]+", "");
+        input = "abc123DEF";
+        N = 5000;
+        startTime = getTimer();
+        for (i = 0; i < N; i++) {
+            result = re.test(input);
+        }
+        endTime = getTimer();
+        elapsed = endTime - startTime;
+        trace("[PERF] 基准2-字符类匹配: " + (elapsed/N) + "ms/op (" + N + " ops in " + elapsed + "ms)");
+        
+        // 基准3：复杂模式 - 邮箱验证
+        re = new RegExp("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", "");
+        input = "test@example.com";
+        N = 2000;
+        startTime = getTimer();
+        for (i = 0; i < N; i++) {
+            result = re.test(input);
+        }
+        endTime = getTimer();
+        elapsed = endTime - startTime;
+        trace("[PERF] 基准3-邮箱验证: " + (elapsed/N) + "ms/op (" + N + " ops in " + elapsed + "ms)");
+        
+        // 基准4：ReDoS 抗性 - (a+)+b
+        re = new RegExp("(a+)+b", "");
+        input = "aaaaaaaaaaaaaaaaaaaaaaaaa"; // 25个a，无b，应快速失败
+        startTime = getTimer();
+        result = re.test(input);
+        endTime = getTimer();
+        elapsed = endTime - startTime;
+        trace("[PERF] 基准4-ReDoS抗性(25a): " + elapsed + "ms (单次，应<1000ms)");
+        
+        // 基准5：captures 密集 - 多捕获组
+        re = new RegExp("(a)(b)(c)(d)(e)", "");
+        input = "abcde";
+        N = 3000;
+        startTime = getTimer();
+        for (i = 0; i < N; i++) {
+            match = re.exec(input);
+        }
+        endTime = getTimer();
+        elapsed = endTime - startTime;
+        trace("[PERF] 基准5-多捕获组: " + (elapsed/N) + "ms/op (" + N + " ops in " + elapsed + "ms)");
+        
+        // 基准6：全局匹配 - exec 循环
+        re = new RegExp("\\d+", "g");
+        input = "a1b22c333d4444";
+        N = 2000;
+        startTime = getTimer();
+        for (i = 0; i < N; i++) {
+            re.lastIndex = 0;
+            while ((match = re.exec(input)) != null) {
+                // 空循环体
+            }
+        }
+        endTime = getTimer();
+        elapsed = endTime - startTime;
+        trace("[PERF] 基准6-全局匹配循环: " + (elapsed/N) + "ms/op (" + N + " ops in " + elapsed + "ms)");
+        
+        trace("========== 阶段P 性能基准测试结束 ==========");
+    }
+
+    /**
+     * 阶段2 命名捕获组测试
+     */
+    public static function runPhase2NamedCaptureTests():Void {
+        trace("========== 阶段2 命名捕获组测试 ==========");
+        
+        // 2-1: (?<name>...) 命名捕获组
+        trace("Creating RegExp with named capture group...");
+        var re1:RegExp = new RegExp("(?<year>\\d+)", "");
+        trace("RegExp created, testing...");
+        var m1:Array = re1.exec("2026");
+        trace("Exec result: " + m1);
+        if (m1 != null) {
+            assertEquals("2-1: 编号引用 m[1]", "2026", m1[1]);
+            if (m1.groups != undefined) {
+                assertEquals("2-1: 命名引用 m.groups.year", "2026", m1.groups.year);
+            } else {
+                trace("2-1: groups 未定义");
+            }
+        } else {
+            assertTrue("2-1: 命名捕获组未匹配", false);
+        }
+        
+        trace("========== 阶段2 命名捕获组测试结束 ==========");
     }
 
     /**

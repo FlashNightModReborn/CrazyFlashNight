@@ -9,8 +9,8 @@
     public var max:Number;
     public var negated:Boolean;
     public var capturing:Boolean;
-    public var greedy:Boolean; // 量词是否贪婪
-    public var groupNumber:Number; // 捕获组编号
+    public var greedy:Boolean;
+    public var groupNumber:Number;
 
     public function ASTNode(type:String) {
         this.type = type;
@@ -23,14 +23,10 @@
         this.max = 1;
         this.negated = false;
         this.capturing = false;
-        this.greedy = true; // 默认贪婪匹配
-        this.groupNumber = 0; // 初始化为0，表示非捕获组
+        this.greedy = true;
+        this.groupNumber = 0;
     }
 
-    /**
-     * 获取固定长度的匹配（仅适用于固定长度的子节点）
-     * @return 子节点的固定长度，或抛出错误。
-     */
     public function getFixedLength():Number {
         switch(this.type) {
             case 'Literal':
@@ -66,67 +62,67 @@
         }
     }
 
-    /**
-     * 尝试匹配输入字符串，从指定位置开始。
-     * 支持基本的回溯机制和断言。
-     * @param input 输入字符串。
-     * @param position 当前匹配位置。
-     * @param captures 捕获组数组。
-     * @param ignoreCase 是否忽略大小写。
-     * @return 匹配结果对象。
-     */
-    public function match(input:String, position:Number, captures:Array, ignoreCase:Boolean):Object {
+    public function match(input:String, position:Number, captures:Array, ignoreCase:Boolean, multiline:Boolean, dotAll:Boolean):Object {
+        if (multiline === undefined) multiline = false;
+        if (dotAll === undefined) dotAll = false;
         var result:Object = { matched: false, position: position };
-        if (position > input.length) {
+        var inputLen:Number = length(input);
+        if (position > inputLen) {
             return result;
         }
 
         switch(this.type) {
             case 'Literal':
-                if (position < input.length && charEquals(input.charAt(position), String(this.value), ignoreCase)) {
+                if (position < inputLen && charEquals(input.charAt(position), String(this.value), ignoreCase)) {
                     result.matched = true;
                     result.position = position + 1;
                 }
                 break;
 
             case 'Any':
-                if (position < input.length) {
-                    result.matched = true;
-                    result.position = position + 1;
+                if (position < inputLen) {
+                    var anyChar:String = input.charAt(position);
+                    if (anyChar == '\n' && !dotAll) {
+                        result.matched = false;
+                    } else {
+                        result.matched = true;
+                        result.position = position + 1;
+                    }
                 }
                 break;
 
             case 'Sequence':
-                var currentPos:Number = position;
-                var tempCapturesSeq:Array = captures.slice(); // 克隆 captures
-                var allMatchedSeq:Boolean = true;
-
-                for (var i:Number = 0; i < this.children.length; i++) {
-                    var childResult:Object = this.children[i].match(input, currentPos, tempCapturesSeq, ignoreCase);
-                    if (!childResult.matched) {
-                        allMatchedSeq = false;
+                var seqPos:Number = position;
+                var seqCaptures:Array = captures.slice();
+                var seqMatched:Boolean = true;
+                
+                for (var si:Number = 0; si < this.children.length; si++) {
+                    var seqChild:ASTNode = this.children[si];
+                    var seqChildResult:Object = seqChild.match(input, seqPos, seqCaptures, ignoreCase, multiline, dotAll);
+                    if (!seqChildResult.matched) {
+                        seqMatched = false;
                         break;
                     }
-                    currentPos = childResult.position;
+                    seqPos = seqChildResult.position;
                 }
-
-                if (allMatchedSeq) {
-                    // 将 tempCapturesSeq 更新回 captures
-                    for (var k:Number = 0; k < tempCapturesSeq.length; k++) {
-                        captures[k] = tempCapturesSeq[k];
+                
+                if (seqMatched) {
+                    for (var sk:Number = 0; sk < seqCaptures.length; sk++) {
+                        captures[sk] = seqCaptures[sk];
                     }
                     result.matched = true;
-                    result.position = currentPos;
+                    result.position = seqPos;
                 }
                 break;
 
             case 'CharacterClass':
-                if (position < input.length) {
-                    var char:String = input.charAt(position);
+                if (position < inputLen) {
+                    var ccChar:String = input.charAt(position);
                     var inSet:Boolean = false;
+                    var ccVal = this.value;
                     
-                    for (var j:Number = 0; j < this.value.length; j++) {
-                        if (charEquals(this.value[j], char, ignoreCase)) {
+                    for (var cj:Number = 0; cj < ccVal.length; cj++) {
+                        if (charEquals(ccVal[cj], ccChar, ignoreCase)) {
                             inSet = true;
                             break;
                         }
@@ -143,32 +139,18 @@
                 break;
 
             case 'PredefinedCharacterClass':
-                if (position < input.length) {
-                    var preChar:String = input.charAt(position);
-                    var matched:Boolean = false;
+                if (position < inputLen) {
+                    var pccChar:String = input.charAt(position);
+                    var pccMatched:Boolean = false;
                     switch(this.value) {
-                        case 'd':
-                            matched = isDigit(preChar);
-                            break;
-                        case 'D':
-                            matched = !isDigit(preChar);
-                            break;
-                        case 'w':
-                            matched = isWordChar(preChar);
-                            break;
-                        case 'W':
-                            matched = !isWordChar(preChar);
-                            break;
-                        case 's':
-                            matched = isWhitespace(preChar);
-                            break;
-                        case 'S':
-                            matched = !isWhitespace(preChar);
-                            break;
-                        default:
-                            throw new Error("Unsupported predefined character class: \\" + this.value);
+                        case 'd': pccMatched = isDigit(pccChar); break;
+                        case 'D': pccMatched = !isDigit(pccChar); break;
+                        case 'w': pccMatched = isWordChar(pccChar); break;
+                        case 'W': pccMatched = !isWordChar(pccChar); break;
+                        case 's': pccMatched = isWhitespace(pccChar); break;
+                        case 'S': pccMatched = !isWhitespace(pccChar); break;
                     }
-                    if (matched) {
+                    if (pccMatched) {
                         result.matched = true;
                         result.position = position + 1;
                     }
@@ -180,130 +162,114 @@
                     throw new Error("Quantifier node has no child.");
                 }
 
-
-                // 限制 maxPossible 不超过输入字符串的剩余长度
-                var maxPossible:Number = Math.min(this.max, input.length - position);
-                var minRequired:Number = this.min;
-                var currentCount:Number = 0;
-                var currentMatchPos:Number = position;
-                var tempCaptures:Array;
+                var qMaxPossible:Number = Math.min(this.max, inputLen - position);
+                var qMinRequired:Number = this.min;
 
                 if (this.greedy) {
-                    // 尽可能多地匹配
-                    while (currentCount < maxPossible) {
-                        var quantChildResult:Object = this.child.match(input, currentMatchPos, captures, ignoreCase);
-                        if (quantChildResult.matched && quantChildResult.position > currentMatchPos) {
-                            currentCount++;
-                            currentMatchPos = quantChildResult.position;
-                        } else {
-                            break;
-                        }
-                    }
+                    for (var qCount:Number = qMaxPossible; qCount >= qMinRequired; qCount--) {
+                        var qTempPos:Number = position;
+                        var qTempCaptures:Array = captures.slice();
+                        var qAllMatched:Boolean = true;
 
-                    // 尝试回溯，从最大匹配数到最小
-                    for (var count:Number = currentCount; count >= minRequired; count--) {
-                        var tempPos:Number = position;
-                        tempCaptures = captures.slice(); // 克隆 captures
-                        var allMatched:Boolean = true;
-
-                        for (var c:Number = 0; c < count; c++) {
-                            var tempMatch:Object = this.child.match(input, tempPos, tempCaptures, ignoreCase);
-                            if (tempMatch.matched) {
-                                tempPos = tempMatch.position;
+                        for (var qc:Number = 0; qc < qCount; qc++) {
+                            var qTempMatch:Object = this.child.match(input, qTempPos, qTempCaptures, ignoreCase, multiline, dotAll);
+                            if (qTempMatch.matched) {
+                                qTempPos = qTempMatch.position;
                             } else {
-                                allMatched = false;
+                                qAllMatched = false;
                                 break;
                             }
                         }
 
-                        if (allMatched) {
+                        if (qAllMatched) {
                             result.matched = true;
-                            result.position = tempPos;
-                            // 正确更新 captures 数组
-                            for (var m:Number = 0; m < tempCaptures.length; m++) {
-                                captures[m] = tempCaptures[m];
+                            result.position = qTempPos;
+                            for (var qm:Number = 0; qm < qTempCaptures.length; qm++) {
+                                captures[qm] = qTempCaptures[qm];
                             }
                             break;
                         }
                     }
                 } else {
-                    // 非贪婪匹配：尽可能少地匹配
-                    while (currentCount < this.max) {
-                        var quantChildResultNonGreedy:Object = this.child.match(input, currentMatchPos, captures, ignoreCase);
-                        if (quantChildResultNonGreedy.matched && quantChildResultNonGreedy.position > currentMatchPos) {
-                            currentCount++;
-                            currentMatchPos = quantChildResultNonGreedy.position;
-                            if (currentCount >= minRequired) {
-                                result.matched = true;
-                                result.position = currentMatchPos;
+                    // 非贪婪：从最小到最大尝试
+                    for (var ngCount:Number = qMinRequired; ngCount <= qMaxPossible; ngCount++) {
+                        var ngTempPos:Number = position;
+                        var ngTempCaptures:Array = captures.slice();
+                        var ngAllMatched:Boolean = true;
+
+                        for (var ngc:Number = 0; ngc < ngCount; ngc++) {
+                            var ngTempMatch:Object = this.child.match(input, ngTempPos, ngTempCaptures, ignoreCase, multiline, dotAll);
+                            if (ngTempMatch.matched) {
+                                ngTempPos = ngTempMatch.position;
+                            } else {
+                                ngAllMatched = false;
                                 break;
                             }
-                        } else {
+                        }
+
+                        if (ngAllMatched) {
+                            result.matched = true;
+                            result.position = ngTempPos;
+                            for (var ngm:Number = 0; ngm < ngTempCaptures.length; ngm++) {
+                                captures[ngm] = ngTempCaptures[ngm];
+                            }
                             break;
                         }
-                    }
-
-                    if (currentCount >= this.min) {
-                        result.matched = true;
-                        result.position = currentMatchPos;
                     }
                 }
                 break;
 
             case 'Alternation':
-                var leftCaptures:Array = captures.slice(); // 克隆 captures
-                var leftResult:Object = this.left.match(input, position, leftCaptures, ignoreCase);
-                if (leftResult.matched) {
-                    // 将左侧的 captures 更新回主 captures
-                    for (var l:Number = 0; l < leftCaptures.length; l++) {
-                        captures[l] = leftCaptures[l];
+                var altLeftCaptures:Array = captures.slice();
+                var altLeftResult:Object = this.left.match(input, position, altLeftCaptures, ignoreCase, multiline, dotAll);
+                if (altLeftResult.matched) {
+                    for (var altL:Number = 0; altL < altLeftCaptures.length; altL++) {
+                        captures[altL] = altLeftCaptures[altL];
                     }
                     result.matched = true;
-                    result.position = leftResult.position;
+                    result.position = altLeftResult.position;
                 } else {
-                    var rightCaptures:Array = captures.slice(); // 克隆 captures
-                    var rightResult:Object = this.right.match(input, position, rightCaptures, ignoreCase);
-                    if (rightResult.matched) {
-                        // 将右侧的 captures 更新回主 captures
-                        for (var r:Number = 0; r < rightCaptures.length; r++) {
-                            captures[r] = rightCaptures[r];
+                    var altRightCaptures:Array = captures.slice();
+                    var altRightResult:Object = this.right.match(input, position, altRightCaptures, ignoreCase, multiline, dotAll);
+                    if (altRightResult.matched) {
+                        for (var altR:Number = 0; altR < altRightCaptures.length; altR++) {
+                            captures[altR] = altRightCaptures[altR];
                         }
                         result.matched = true;
-                        result.position = rightResult.position;
+                        result.position = altRightResult.position;
                     }
                 }
                 break;
 
             case 'Group':
-                var groupStartPos:Number = position;
-                var groupCaptures:Array = captures.slice(); // 克隆 captures
-                var groupResult:Object = this.child.match(input, position, groupCaptures, ignoreCase);
-                if (groupResult.matched) {
+                var gStartPos:Number = position;
+                var gCaptures:Array = captures.slice();
+                var gResult:Object = this.child.match(input, position, gCaptures, ignoreCase, multiline, dotAll);
+                if (gResult.matched) {
                     result.matched = true;
-                    result.position = groupResult.position;
+                    result.position = gResult.position;
                     if (this.capturing) {
-                        var groupMatch:String = input.substring(groupStartPos, groupResult.position);
-                        if (this.groupNumber > 0) { // 确保是捕获组
-                            groupCaptures[this.groupNumber] = groupMatch;
+                        var gMatch:String = input.substring(gStartPos, gResult.position);
+                        if (this.groupNumber > 0) {
+                            gCaptures[this.groupNumber] = gMatch;
                         }
                     }
-                    // 更新 captures 数组
-                    for (var g:Number = 0; g < groupCaptures.length; g++) {
-                        captures[g] = groupCaptures[g];
+                    for (var gIdx:Number = 0; gIdx < gCaptures.length; gIdx++) {
+                        captures[gIdx] = gCaptures[gIdx];
                     }
                 }
                 break;
 
             case 'BackReference':
-                var groupNumber:Number = Number(this.value);
-                if (captures.length > groupNumber && captures[groupNumber] != undefined) {
-                    var groupContent:String = captures[groupNumber];
-                    var endPosition:Number = position + groupContent.length;
-                    if (endPosition <= input.length) {
-                        var matchedStr:String = input.substring(position, endPosition);
-                        if (charEquals(matchedStr, groupContent, ignoreCase)) {
+                var brGroupNum:Number = Number(this.value);
+                if (captures.length > brGroupNum && captures[brGroupNum] != undefined) {
+                    var brContent:String = captures[brGroupNum];
+                    var brEndPos:Number = position + brContent.length;
+                    if (brEndPos <= inputLen) {
+                        var brMatchStr:String = input.substring(position, brEndPos);
+                        if (charEquals(brMatchStr, brContent, ignoreCase)) {
                             result.matched = true;
-                            result.position = endPosition;
+                            result.position = brEndPos;
                         }
                     }
                 }
@@ -311,86 +277,95 @@
 
             case 'Anchor':
                 if (this.value == 'start') {
-                    if (position == 0) {
+                    if (position == 0 || (multiline && position > 0 && input.charAt(position - 1) == '\n')) {
                         result.matched = true;
                         result.position = position;
                     }
                 } else if (this.value == 'end') {
-                    if (position == input.length) {
+                    if (position == inputLen || (multiline && position < inputLen && input.charAt(position) == '\n')) {
                         result.matched = true;
                         result.position = position;
                     }
                 }
                 break;
 
-            // 新增处理 PositiveLookahead
+            case 'WordBoundary':
+                var wbLeft:Boolean = position > 0 && isWordChar(input.charAt(position - 1));
+                var wbRight:Boolean = position < inputLen && isWordChar(input.charAt(position));
+                var atWB:Boolean = wbLeft != wbRight;
+                
+                if (this.value == 'b') {
+                    if (atWB) {
+                        result.matched = true;
+                        result.position = position;
+                    }
+                } else if (this.value == 'B') {
+                    if (!atWB) {
+                        result.matched = true;
+                        result.position = position;
+                    }
+                }
+                break;
+
             case 'PositiveLookahead':
-                var lookaheadCaptures:Array = captures.slice(); // 克隆捕获组
-                var lookaheadResult:Object = this.child.match(input, position, lookaheadCaptures, ignoreCase);
-                if (lookaheadResult.matched) {
-                    result.matched = true;
-                    result.position = position; // 不消耗字符
-                }
-                break;
-
-            // 新增处理 NegativeLookahead
-            case 'NegativeLookahead':
-                var negLookaheadCaptures:Array = captures.slice(); // 克隆捕获组
-                var negLookaheadResult:Object = this.child.match(input, position, negLookaheadCaptures, ignoreCase);
-                if (!negLookaheadResult.matched) {
-                    result.matched = true;
-                    result.position = position; // 不消耗字符
-                }
-                break;
-
-            // 新增处理 PositiveLookbehind
-            case 'PositiveLookbehind':
-                try {
-                    var lookbehindLength:Number = this.child.getFixedLength(); // 获取子节点固定长度
-                } catch (e:Error) {
-                    throw new Error("PositiveLookbehind requires a fixed-length pattern. " + e.message);
-                }
-                var lookbehindStartPos:Number = position - lookbehindLength;
-                if (lookbehindStartPos >= 0) {
-                    var lookbehindCaptures:Array = captures.slice(); // 克隆捕获组
-                    var lookbehindResult:Object = this.child.match(input, lookbehindStartPos, lookbehindCaptures, ignoreCase);
-                    if (lookbehindResult.matched && lookbehindResult.position == position) {
-                        result.matched = true;
-                        result.position = position; // 不消耗字符
-                    }
-                }
-                break;
-
-            // 新增处理 NegativeLookbehind
-            case 'NegativeLookbehind':
-                try {
-                    var negLookbehindLength:Number = this.child.getFixedLength(); // 获取子节点固定长度
-                } catch (e:Error) {
-                    throw new Error("NegativeLookbehind requires a fixed-length pattern. " + e.message);
-                }
-                var negLookbehindStartPos:Number = position - negLookbehindLength;
-                if (negLookbehindStartPos >= 0) {
-                    var negLookbehindCaptures:Array = captures.slice(); // 克隆捕获组
-                    var negLookbehindResult:Object = this.child.match(input, negLookbehindStartPos, negLookbehindCaptures, ignoreCase);
-                    if (!negLookbehindResult.matched || negLookbehindResult.position != position) {
-                        result.matched = true;
-                        result.position = position; // 不消耗字符
-                    }
-                } else {
-                    // 如果子模式长度大于当前位置，负向后顾成功
+                var laCaptures:Array = captures.slice();
+                var laResult:Object = this.child.match(input, position, laCaptures, ignoreCase, multiline, dotAll);
+                if (laResult.matched) {
                     result.matched = true;
                     result.position = position;
                 }
                 break;
 
-            default:
-                throw new Error("Unsupported ASTNode type: " + this.type);
+            case 'NegativeLookahead':
+                var nlaCaptures:Array = captures.slice();
+                var nlaResult:Object = this.child.match(input, position, nlaCaptures, ignoreCase, multiline, dotAll);
+                if (!nlaResult.matched) {
+                    result.matched = true;
+                    result.position = position;
+                }
+                break;
+
+            case 'PositiveLookbehind':
+                try {
+                    var lbLen:Number = this.child.getFixedLength();
+                } catch (e:Error) {
+                    throw new Error("PositiveLookbehind requires a fixed-length pattern. " + e.message);
+                }
+                var lbStart:Number = position - lbLen;
+                if (lbStart >= 0) {
+                    var lbCaptures:Array = captures.slice();
+                    var lbResult:Object = this.child.match(input, lbStart, lbCaptures, ignoreCase, multiline, dotAll);
+                    if (lbResult.matched && lbResult.position == position) {
+                        result.matched = true;
+                        result.position = position;
+                    }
+                }
+                break;
+
+            case 'NegativeLookbehind':
+                try {
+                    var nlbLen:Number = this.child.getFixedLength();
+                } catch (e:Error) {
+                    throw new Error("NegativeLookbehind requires a fixed-length pattern. " + e.message);
+                }
+                var nlbStart:Number = position - nlbLen;
+                if (nlbStart >= 0) {
+                    var nlbCaptures:Array = captures.slice();
+                    var nlbResult:Object = this.child.match(input, nlbStart, nlbCaptures, ignoreCase, multiline, dotAll);
+                    if (!nlbResult.matched || nlbResult.position != position) {
+                        result.matched = true;
+                        result.position = position;
+                    }
+                } else {
+                    result.matched = true;
+                    result.position = position;
+                }
+                break;
         }
 
         return result;
     }
 
-    // 辅助方法：字符比较，考虑大小写
     private function charEquals(a:String, b:String, ignoreCase:Boolean):Boolean {
         if (ignoreCase) {
             return a.toLowerCase() == b.toLowerCase();
@@ -399,48 +374,20 @@
         }
     }
 
-    // 辅助方法：判断是否为数字字符
     private function isDigit(char:String):Boolean {
         var code:Number = char.charCodeAt(0);
-        return code >= 48 && code <= 57; // '0' to '9'
+        return code >= 48 && code <= 57;
     }
 
-    // 辅助方法：判断是否为单词字符
     private function isWordChar(char:String):Boolean {
         var code:Number = char.charCodeAt(0);
-        return (code >= 48 && code <= 57) || // '0' to '9'
-               (code >= 65 && code <= 90) || // 'A' to 'Z'
-               (code >= 97 && code <= 122) || // 'a' to 'z'
+        return (code >= 48 && code <= 57) ||
+               (code >= 65 && code <= 90) ||
+               (code >= 97 && code <= 122) ||
                (char == '_');
     }
 
-    // 辅助方法：判断是否为空白字符
     private function isWhitespace(char:String):Boolean {
         return char == ' ' || char == '\t' || char == '\n' || char == '\r' || char == '\f' || char == '\v';
-    }
-
-    // 辅助方法：获取转义字符
-    private function getEscapedChar(char:String):String {
-        switch(char) {
-            case 'n': return "\n";
-            case 't': return "\t";
-            case 'r': return "\r";
-            case '\\': return "\\";
-            case '.': return ".";
-            case '*': return "*";
-            case '+': return "+";
-            case '?': return "?";
-            case '{': return "{";
-            case '}': return "}";
-            case '[': return "[";
-            case ']': return "]";
-            case '(': return "(";
-            case ')': return ")";
-            case '|': return "|";
-            case '^': return "^";
-            case '$': return "$";
-            case '/': return "/";
-            default: return char; // 未识别的转义字符按字面量处理
-        }
     }
 }
