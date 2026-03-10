@@ -32,18 +32,20 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
      * @param maxDistance 射线最大长度
      */
     public function RayCollider(origin:Vector, direction:Vector, maxDistance:Number) {
-        // AS2 要求 super() 必须是构造函数的第一条语句
-        // 先用临时值调用父类构造函数，后续再更新
         super(0, 0, 0, 0);
 
-        // 初始化内部射线
         _ray = new Ray(origin, direction, maxDistance);
-        // 根据射线的起点和终点计算包围盒并更新边界
-        var endpoint:Vector = _ray.getEndpoint();
-        this.left = Math.min(origin.x, endpoint.x);
-        this.right = Math.max(origin.x, endpoint.x);
-        this.top = Math.min(origin.y, endpoint.y);
-        this.bottom = Math.max(origin.y, endpoint.y);
+
+        // 内联终点计算 + 三元替代 Math.min/max (H15)
+        var r:Ray = _ray;
+        var ox:Number = r.origin.x;
+        var oy:Number = r.origin.y;
+        var ex:Number = ox + r.direction.x * maxDistance;
+        var ey:Number = oy + r.direction.y * maxDistance;
+        if (ox < ex) { this.left = ox; this.right = ex; }
+        else { this.left = ex; this.right = ox; }
+        if (oy < ey) { this.top = oy; this.bottom = ey; }
+        else { this.top = ey; this.bottom = oy; }
     }
 
     /**
@@ -61,19 +63,15 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
     public function setRay(origin:Vector, direction:Vector, maxDistance:Number):Void {
         var ox:Number = origin.x;
         var oy:Number = origin.y;
-        var dx:Number = direction.x;
-        var dy:Number = direction.y;
 
-        // 使用零分配快速版本
-        _ray.setToFast(ox, oy, dx, dy, maxDistance);
+        var r:Ray = _ray;
+        r.setToFast(ox, oy, direction.x, direction.y, maxDistance);
 
-        // 内联终点计算（使用归一化后的方向）
-        var ndx:Number = _ray.direction.x;
-        var ndy:Number = _ray.direction.y;
-        var ex:Number = ox + ndx * maxDistance;
-        var ey:Number = oy + ndy * maxDistance;
+        // 缓存 r.direction 避免重复 _ray 查找 (H02)
+        var dir:Vector = r.direction;
+        var ex:Number = ox + dir.x * maxDistance;
+        var ey:Number = oy + dir.y * maxDistance;
 
-        // 条件赋值替代 Math.min/max
         if (ox < ex) { this.left = ox; this.right = ex; }
         else { this.left = ex; this.right = ox; }
         if (oy < ey) { this.top = oy; this.bottom = ey; }
@@ -92,13 +90,13 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
      * @param maxDistance 射线最大长度
      */
     public function setRayFast(ox:Number, oy:Number, dx:Number, dy:Number, maxDistance:Number):Void {
-        _ray.setToFast(ox, oy, dx, dy, maxDistance);
+        var r:Ray = _ray;
+        r.setToFast(ox, oy, dx, dy, maxDistance);
 
-        // 内联终点计算（使用归一化后的方向）
-        var ndx:Number = _ray.direction.x;
-        var ndy:Number = _ray.direction.y;
-        var ex:Number = ox + ndx * maxDistance;
-        var ey:Number = oy + ndy * maxDistance;
+        // 缓存 r.direction 避免重复 _ray 查找 (H02)
+        var dir:Vector = r.direction;
+        var ex:Number = ox + dir.x * maxDistance;
+        var ey:Number = oy + dir.y * maxDistance;
 
         if (ox < ex) { this.left = ox; this.right = ex; }
         else { this.left = ex; this.right = ox; }
@@ -157,77 +155,57 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
         var otherAABB:AABB = other.getAABB(zOffset);
 
-        // ========== 有序分离快速检测 ==========
-        // 使用宽松比较 (<=/>= ) 与 AABBCollider 保持一致：边界恰好接触视为分离。
-        // 这避免了"擦边"情况进入 Slab 窄相的额外计算，且语义统一便于维护。
+        // ========== 宽相：有序分离快速检测 ==========
         var otherLeft:Number = otherAABB.left;
         var otherRight:Number = otherAABB.right;
         var otherTop:Number = otherAABB.top;
         var otherBottom:Number = otherAABB.bottom;
 
-        // 射线 AABB 完全在目标左侧 -> X轴有序分离
+        // 注：不缓存 CollisionResult 类引用——hit path 上 broadphase 的 return 全部跳过，
+        // 缓存是纯损耗。miss path 仅执行一次 GetVariable，与缓存开销相当。
         if (this.right <= otherLeft) return CollisionResult.ORDERFALSE;
-        // 射线 AABB 完全在目标右侧 -> 普通分离
         if (this.left >= otherRight) return CollisionResult.FALSE;
-        // 射线 AABB 完全在目标上方 -> Y轴有序分离
         if (this.bottom <= otherTop) return CollisionResult.YORDERFALSE;
-        // 射线 AABB 完全在目标下方 -> 普通分离
         if (this.top >= otherBottom) return CollisionResult.FALSE;
 
-        // 内联获取射线参数（避免属性访问开销）
-        var ox:Number = _ray.origin.x;
-        var oy:Number = _ray.origin.y;
-        var dx:Number = _ray.direction.x;
-        var dy:Number = _ray.direction.y;
-        var maxDist:Number = _ray.maxDistance;
-
-        // ========== 内联 Slab (Kay-Kajiya) 射线-AABB 相交检测 ==========
-        //
-        // 原理：将 AABB 视为 X/Y 两组平行平面（slab）的交集，
-        // 分别计算射线与每组平面的进入/离开参数 t，取交集。
-        //
-        // 注意：当 dx 或 dy 为 0 时（射线平行于某轴），
-        // 使用极大倒数 1e10 使得 t 值趋向 ±Infinity，
-        // 由后续 tMin/tMax 比较自然处理平行情况。
+        // ========== 窄相：内联 Slab (Kay-Kajiya) ==========
+        // 缓存 _ray 及子对象到局部变量，消除重复链式访问 (H01/H02)
+        var r:Ray = _ray;
+        var orig:Vector = r.origin;
+        var dir:Vector = r.direction;
+        var ox:Number = orig.x;
+        var oy:Number = orig.y;
+        var dx:Number = dir.x;
+        var dy:Number = dir.y;
+        var maxDist:Number = r.maxDistance;
 
         var invDx:Number = (dx != 0) ? (1.0 / dx) : 1e10;
         var invDy:Number = (dy != 0) ? (1.0 / dy) : 1e10;
 
-        // X 轴 slab 参数
         var t1x:Number = (otherLeft - ox) * invDx;
         var t2x:Number = (otherRight - ox) * invDx;
-        // 保证 t1x <= t2x（射线方向为负时交换）
         var tmp:Number;
         if (t1x > t2x) { tmp = t1x; t1x = t2x; t2x = tmp; }
 
-        // Y 轴 slab 参数
         var t1y:Number = (otherTop - oy) * invDy;
         var t2y:Number = (otherBottom - oy) * invDy;
         if (t1y > t2y) { tmp = t1y; t1y = t2y; t2y = tmp; }
 
-        // tMin = 射线进入 AABB 的参数（两轴进入参数取大）
-        // tMax = 射线离开 AABB 的参数（两轴离开参数取小）
         var tMin:Number = (t1x > t1y) ? t1x : t1y;
         var tMax:Number = (t2x < t2y) ? t2x : t2y;
 
-        // 相交判定：
-        // 1. tMin <= tMax: 两个 slab 有交集
-        // 2. tMax >= 0: AABB 不完全在射线起点后方
-        // 3. tMin <= maxDist: 入射点在射线有效长度内
         if (tMin > tMax || tMax < 0 || tMin > maxDist) {
             return CollisionResult.FALSE;
         }
 
         // clamp tEntry 到 [0, maxDist]
-        // tMin < 0 表示射线起点在 AABB 内部，此时入射点为起点
         var tEntry:Number = tMin;
         if (tEntry < 0) tEntry = 0;
 
-        // 精确入射点坐标（零分配）
         var entryX:Number = ox + dx * tEntry;
         var entryY:Number = oy + dy * tEntry;
 
-        // 复用 RayCollider 独立的静态 CollisionResult
+        // 复用静态 CollisionResult
         var collisionResult:CollisionResult = RayCollider.result;
         collisionResult.overlapCenter.x = entryX;
         collisionResult.overlapCenter.y = entryY;
@@ -243,15 +221,16 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
     public function updateFromTransparentBullet(bullet:Object):Void {
         var ox:Number = bullet._x;
         var oy:Number = bullet._y;
-        _ray.origin.x = ox;
-        _ray.origin.y = oy;
 
-        // 内联端点计算：endpoint = origin + direction * maxDistance
-        var dx:Number = _ray.direction.x;
-        var dy:Number = _ray.direction.y;
-        var maxDist:Number = _ray.maxDistance;
-        var ex:Number = ox + dx * maxDist;
-        var ey:Number = oy + dy * maxDist;
+        // 缓存 _ray 及子对象，消除重复链式访问 (H01/H02)
+        var r:Ray = _ray;
+        r.origin.x = ox;
+        r.origin.y = oy;
+
+        var dir:Vector = r.direction;
+        var maxDist:Number = r.maxDistance;
+        var ex:Number = ox + dir.x * maxDist;
+        var ey:Number = oy + dir.y * maxDist;
 
         if (ox < ex) { this.left = ox; this.right = ex; }
         else { this.left = ex; this.right = ox; }
@@ -268,14 +247,15 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
     public function updateFromBullet(bullet:MovieClip, detectionArea:MovieClip):Void {
         var ox:Number = bullet._x;
         var oy:Number = bullet._y;
-        _ray.origin.x = ox;
-        _ray.origin.y = oy;
 
-        var dx:Number = _ray.direction.x;
-        var dy:Number = _ray.direction.y;
-        var maxDist:Number = _ray.maxDistance;
-        var ex:Number = ox + dx * maxDist;
-        var ey:Number = oy + dy * maxDist;
+        var r:Ray = _ray;
+        r.origin.x = ox;
+        r.origin.y = oy;
+
+        var dir:Vector = r.direction;
+        var maxDist:Number = r.maxDistance;
+        var ex:Number = ox + dir.x * maxDist;
+        var ey:Number = oy + dir.y * maxDist;
 
         if (ox < ex) { this.left = ox; this.right = ex; }
         else { this.left = ex; this.right = ox; }
@@ -293,14 +273,15 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
         var unitRect:Object = unit.area.getRect(_root.gameworld);
         var ox:Number = (unitRect.xMin + unitRect.xMax) * 0.5;
         var oy:Number = (unitRect.yMin + unitRect.yMax) * 0.5;
-        _ray.origin.x = ox;
-        _ray.origin.y = oy;
 
-        var dx:Number = _ray.direction.x;
-        var dy:Number = _ray.direction.y;
-        var maxDist:Number = _ray.maxDistance;
-        var ex:Number = ox + dx * maxDist;
-        var ey:Number = oy + dy * maxDist;
+        var r:Ray = _ray;
+        r.origin.x = ox;
+        r.origin.y = oy;
+
+        var dir:Vector = r.direction;
+        var maxDist:Number = r.maxDistance;
+        var ex:Number = ox + dir.x * maxDist;
+        var ey:Number = oy + dir.y * maxDist;
 
         if (ox < ex) { this.left = ox; this.right = ex; }
         else { this.left = ex; this.right = ox; }
