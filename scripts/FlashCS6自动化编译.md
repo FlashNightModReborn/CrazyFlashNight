@@ -8,6 +8,8 @@ Agent（Claude Code）可从终端触发 Flash CS6 编译 AS2 代码并读取 tr
 
 ### 1. 环境配置（每台设备执行一次）
 
+**a) mm.cfg 配置**
+
 运行 `scripts/setup_flash_debug.bat`，或手动创建 `%USERPROFILE%\mm.cfg`：
 
 ```
@@ -16,6 +18,8 @@ TraceOutputFileEnable=1
 MaxWarnings=0
 ```
 
+**b) JSFL 脚本部署**
+
 将 JSFL 脚本复制到 Flash CS6 Commands 目录：
 
 ```
@@ -23,6 +27,18 @@ copy scripts\test_publish.jsfl "%LOCALAPPDATA%\Adobe\Flash CS6\<语言>\Configur
 ```
 
 > 语言目录示例：`zh_CN`、`en_US`，按实际安装语言确定。
+
+**c) UAC 绕过（创建计划任务）**
+
+Flash CS6 需要管理员权限运行，会弹 UAC。通过计划任务可绕过：
+
+1. Win+R 输入 `taskschd.msc` 打开任务计划程序
+2. 右侧「导入任务」，选择项目根目录下 `FlashCS6Task.xml`（或手动创建）
+3. 确认任务名为 `FlashCS6Task`，勾选「使用最高权限运行」，操作指向 Flash.exe
+
+之后 Agent 可通过 `powershell -Command "Start-ScheduledTask -TaskName 'FlashCS6Task'"` 无 UAC 启动。
+
+> **注意**：计划任务中路径含空格时，用 XML 导入方式创建，避免路径被截断。
 
 ### 2. 使用流程
 
@@ -80,6 +96,12 @@ Flash CS6 和 Flash Player 对含空格路径的支持很差：
 - `cmd.exe /c start` → 不可靠
 - 正确方式：`powershell -Command "Start-Process 'path'"`
 
+### UAC 弹窗
+- Flash CS6 需要管理员权限（注册表 `RUNASADMIN` 标记），每次启动弹 UAC
+- 去掉 `RUNASADMIN` → Flash CS6 直接无法运行
+- **正确方式**：创建 Windows 计划任务（`RunLevel=HighestAvailable`），通过 `Start-ScheduledTask` 触发
+- 注意：计划任务的 Action 路径含空格时，通过 XML 导入创建，否则路径会被截断
+
 ### JSFL API 注意事项
 - `fl.setDocumentActive()` → CS6 中不存在
 - `fl.documents[i].activate()` → CS6 中不存在
@@ -106,4 +128,5 @@ FLfile.write(markerFile, "done");
 - [ ] testMovie 弹出的 SWF 预览窗口需手动关闭（方案：publish + 独立 debug player，或 PowerShell 自动关窗口）
 - [ ] openDocument 含空格路径不可靠，当前需手动打开 TestLoader
 - [ ] 编译错误的捕获（AS2 语法错误是否写入 flashlog？需验证）
-- [ ] Flash CS6 全自动启动（依赖上述问题解决）
+- [x] ~~Flash CS6 全自动启动~~ → 已通过计划任务解决
+- [x] ~~UAC 弹窗~~ → 已通过计划任务解决
