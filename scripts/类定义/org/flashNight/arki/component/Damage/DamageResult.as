@@ -45,12 +45,6 @@ class org.flashNight.arki.component.Damage.DamageResult {
     public var displayCount:Number;
 
     /**
-     * 用于显示伤害的函数。
-     * @type {Function}
-     */
-    public var displayFunction:Function;
-
-    /**
      * 联弹分段躲闪：DodgeStateDamageHandle 对联弹提前退出的标记。
      * - true：表示本次联弹命中将由 MultiShotDamageHandle 执行分段躲闪建模（方案B）。
      * - false：表示走旧的全局 dodgeState 流程。
@@ -162,9 +156,6 @@ class org.flashNight.arki.component.Damage.DamageResult {
 
     /**
      * 重置所有属性为默认值。
-     *
-     * 【重要】displayFunction 现在使用 HitNumberSystem.effect 作为默认值，
-     * 解耦了对 _root.打击数字特效 的直接依赖。
      */
     public function reset():Void {
         this.totalDamageList = [];
@@ -173,7 +164,6 @@ class org.flashNight.arki.component.Damage.DamageResult {
         this.dodgeStatus = "";
         this.actualScatterUsed = 1;
         this.displayCount = 1;
-        this.displayFunction = HitNumberSystem.effect;
 
         // 联弹分段躲闪建模（方案B）相关字段重置
         this.deferChainDodgeState = false;
@@ -185,13 +175,18 @@ class org.flashNight.arki.component.Damage.DamageResult {
         this.scatterNormalDamage = 0;
         this.scatterBounceDamage = 0;
         this.scatterPenetrationDamage = 0;
+
+        // 延迟 HTML 构建字段重置
+        this._efFlags = 0;
+        this._dmgColorId = 0;
+        this._efText = null;
+        this._efEmoji = null;
+        this._efLifeSteal = 0;
+        this._efShieldAbsorb = 0;
     }
 
     /**
      * 获取可复用的 IMPACT 实例（用于计算复用，避免频繁创建对象）
-     *
-     * 【重要】displayFunction 现在使用 HitNumberSystem.effect 作为默认值，
-     * 解耦了对 _root.打击数字特效 的直接依赖。
      */
     public static function getIMPACT():DamageResult {
         var r:DamageResult = DamageResult.IMPACT;
@@ -203,7 +198,6 @@ class org.flashNight.arki.component.Damage.DamageResult {
         r.dodgeStatus = "";
         r.actualScatterUsed = 1;
         r.displayCount = 1;
-        r.displayFunction = HitNumberSystem.effect;
 
         // 延迟 HTML 构建：仅需重置位掩码和颜色 ID（槽值由 _efFlags 守护，无需重置）
         r._efFlags = 0;
@@ -225,7 +219,6 @@ class org.flashNight.arki.component.Damage.DamageResult {
         r.dodgeStatus = "";
         r.actualScatterUsed = 1;
         r.displayCount = 1;
-        r.displayFunction = HitNumberSystem.effect;
 
         // 联弹分段躲闪建模相关标记（计数/单段伤害不必清零：仅在 scatterModelEnabled 为 true 时被消费）
         r.deferChainDodgeState = false;
@@ -447,15 +440,12 @@ class org.flashNight.arki.component.Damage.DamageResult {
     /**
      * 触发伤害显示功能，将伤害值显示在指定的坐标位置。
      *
-     * 【批处理模式】
-     * 当 HitNumberBatchProcessor.enabled 为 true 时，伤害数字不会立即渲染，
-     * 而是加入批处理队列，在帧末统一处理。这样可以：
+     * 伤害数字不会立即渲染，而是以标量快照形式加入批处理队列，
+     * 在帧末由 HitNumberBatchProcessor.flush() 统一处理。
      * - 将节流决策从 O(N) 降至 O(1)
      * - 统一视野剔除，减少重复计算
      * - 更精确地控制同屏数字数量
-     *
-     * 【兼容模式】
-     * 当 HitNumberBatchProcessor.enabled 为 false 时，回退到旧的立即渲染模式。
+     * - 先剔除后构建 HTML，被丢弃的项零 HTML 成本
      *
      * @param {Number} targetX - 伤害显示的X坐标。
      * @param {Number} targetY - 伤害显示的Y坐标。
@@ -465,17 +455,12 @@ class org.flashNight.arki.component.Damage.DamageResult {
         var len:Number = list.length;
 
         if (len === 0) {
-            return; // 如果没有伤害值，直接返回
+            return;
         }
 
-        // 预打包标量快照（批处理和兼容模式共用）
+        // 预打包标量快照
         var efFlags:Number = this._efFlags;
-        var dmgSize:Number = this.damageSize | 0;
-        var colorId:Number = this._dmgColorId;
-        var isMISS:Number = (this.dodgeStatus == "MISS") ? 1 : 0;
-
-        // packed = _efFlags | (isMISS<<9) | (size<<10) | (colorId<<18)
-        var packed:Number = efFlags | (isMISS << 9) | (dmgSize << 10) | (colorId << 18);
+        var packed:Number = efFlags | (((this.dodgeStatus == "MISS") ? 1 : 0) << 9) | ((this.damageSize | 0) << 10) | (this._dmgColorId << 18);
 
         // 预取效果槽值（仅对应 flags 位为 1 时有意义）
         var efText:String = ((efFlags & 8) != 0 || (efFlags & 16) != 0) ? this._efText : null;
@@ -483,37 +468,17 @@ class org.flashNight.arki.component.Damage.DamageResult {
         var lifeSteal:Number = ((efFlags & 32) != 0) ? this._efLifeSteal : 0;
         var shieldAbsorb:Number = ((efFlags & 256) != 0) ? this._efShieldAbsorb : 0;
 
-        // 判断是否使用批处理模式
-        var useBatch:Boolean = HitNumberBatchProcessor.enabled;
-
-        if (useBatch) {
-            // ==================== 批处理 raw 路径 ====================
-            // 标量快照入队，延迟 HTML 构建到 flush 阶段（先剔除后构建）
-            var i:Number = 0;
-            do {
-                HitNumberBatchProcessor.enqueueRaw(
-                    list[i], packed,
-                    efText, efEmoji,
-                    lifeSteal, shieldAbsorb,
-                    targetX, targetY
-                );
-                i++;
-            } while (i < len);
-        } else {
-            // ==================== 兼容模式：立即渲染 ====================
-            // 复用 HitNumberBatchProcessor.buildHtml 共享 HTML 构建逻辑
-            var dispFn:Function = this.displayFunction;
-            var j:Number = 0;
-            do {
-                var html:String = HitNumberBatchProcessor.buildHtml(
-                    list[j], packed,
-                    efText, efEmoji,
-                    lifeSteal, shieldAbsorb
-                );
-                dispFn("", html, targetX, targetY);
-                j++;
-            } while (j < len);
-        }
+        // 标量快照入队，延迟 HTML 构建到 flush 阶段
+        var i:Number = 0;
+        do {
+            HitNumberBatchProcessor.enqueueRaw(
+                list[i], packed,
+                efText, efEmoji,
+                lifeSteal, shieldAbsorb,
+                targetX, targetY
+            );
+            i++;
+        } while (i < len);
     }
 
     /**
@@ -529,8 +494,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
         result += "  finalScatterValue: " + this.finalScatterValue + ",\n";
         result += "  dodgeStatus: " + this.dodgeStatus + ",\n";
         result += "  actualScatterUsed: " + this.actualScatterUsed + ",\n";
-        result += "  displayCount: " + this.displayCount + ",\n";
-        result += "  displayFunction: " + (this.displayFunction != null ? "[Function]" : "null") + "\n";
+        result += "  displayCount: " + this.displayCount + "\n";
         result += "}";
         return result;
     }

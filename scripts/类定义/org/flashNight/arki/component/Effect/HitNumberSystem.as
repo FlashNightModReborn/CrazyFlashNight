@@ -48,7 +48,7 @@ class org.flashNight.arki.component.Effect.HitNumberSystem {
      * 打击数字特效对外接口
      *
      * 对应原 _root.打击数字特效，所有外部调用应使用此方法。
-     * 根据 HitNumberBatchProcessor.enabled 决定走批处理还是直接渲染。
+     * 加入批处理队列，节流由 flush 统一处理。
      *
      * @param ctrl  控制字符串（效果种类，如"暴击"、"能"等）
      * @param value 数值或已格式化的字符串
@@ -57,28 +57,7 @@ class org.flashNight.arki.component.Effect.HitNumberSystem {
      * @param force 是否强制显示（必然触发）
      */
     public static function effect(ctrl:String, value:Object, x:Number, y:Number, force:Boolean):Void {
-        if (HitNumberBatchProcessor.enabled) {
-            // 批处理模式：加入队列，节流由 flush 统一处理
-            HitNumberBatchProcessor.enqueue(ctrl, value, x, y, force);
-        } else {
-            // 直接模式：自带节流逻辑
-            var gw:MovieClip = _root.gameworld;
-            if (!gw) return;
-
-            var sx:Number = gw._xscale * 0.01;
-            var locX:Number = gw._x + x * sx;
-            var locY:Number = gw._y + y * sx;
-
-            // 视野外剔除
-            if (locX < 0 || locX > Stage.width || locY < 0 || locY > Stage.height) {
-                return;
-            }
-
-            // 节流判断
-            if (_root.是否打击数字特效 && (_root.当前打击数字特效总数 <= _root.同屏打击数字特效上限 || _root.成功率(_root.同屏打击数字特效上限 / 5)) || force) {
-                spawn(ctrl, value, x, y, force);
-            }
-        }
+        HitNumberBatchProcessor.enqueue(ctrl, value, x, y, force);
     }
 
     /**

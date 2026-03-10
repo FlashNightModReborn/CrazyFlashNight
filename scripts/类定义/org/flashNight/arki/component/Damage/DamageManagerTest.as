@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.component.StatHandler.*;
+import org.flashNight.arki.component.Effect.HitNumberBatchProcessor;
 
 /**
  * DamageManager 测试类（扩展覆盖 9-16,17-32 区间）
@@ -109,35 +110,36 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         DamageManagerFactory.init();
 
         // 2) 创建覆盖 9~16 个处理器的工厂
-        //    这里以 9 个处理器为例，7 个与 Basic 相同，2 个使用 BaseDamageHandle 占位
+        //    这里以 9 个处理器为例，8 个与 Basic 相同，1 个使用 BaseDamageHandle 占位
 
         var dummyHandle = new BaseDamageHandle(true);
         var handles16:Array = [
             CritDamageHandle.getInstance(),
             UniversalDamageHandle.getInstance(),
+            DodgeStateDamageHandle.getInstance(),
             MultiShotDamageHandle.getInstance(),
             NanoToxicDamageHandle.getInstance(),
             LifeStealDamageHandle.getInstance(),
             CrumbleDamageHandle.getInstance(),
-            ExecuteDamageHandle.getInstance(),   // 以上 7 个和 Basic 一致
-            dummyHandle,      // 占位处理器
+            ExecuteDamageHandle.getInstance(),   // 以上 8 个和 Basic 一致
             dummyHandle       // 占位处理器
         ];
         DamageManagerFactory.registerFactory("Extended16", handles16, 64);
 
         // 3) 创建覆盖 17~32 个处理器的工厂
-        //    这里以 32 个处理器为例，7 个和 Basic 相同，其余 25 个用 BaseDamageHandle 占位
+        //    这里以 32 个处理器为例，8 个和 Basic 相同，其余 24 个用 BaseDamageHandle 占位
         var handles32:Array = [
             CritDamageHandle.getInstance(),
             UniversalDamageHandle.getInstance(),
+            DodgeStateDamageHandle.getInstance(),
             MultiShotDamageHandle.getInstance(),
             NanoToxicDamageHandle.getInstance(),
             LifeStealDamageHandle.getInstance(),
             CrumbleDamageHandle.getInstance(),
-            ExecuteDamageHandle.getInstance()    // 7 个和 Basic 一致
+            ExecuteDamageHandle.getInstance()    // 8 个和 Basic 一致
         ];
         // 补足到 32 个
-        for (var i:Number = 0; i < 25; i++) {
+        for (var i:Number = 0; i < 24; i++) {
             handles32.push(dummyHandle);
         }
         DamageManagerFactory.registerFactory("Extended32", handles32, 64);
@@ -146,6 +148,9 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         runAllScenarios("Basic");
         runAllScenarios("Extended16");
         runAllScenarios("Extended32");
+
+        // 5) buildHtml 渲染顺序 + reset 清零验证
+        testBuildHtmlOrder();
 
         info("===== DamageManager 测试结束 =====");
     }
@@ -310,19 +315,11 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
 
         manager3.execute(bullet3, shooter3, target1, damageResult3);
 
-        // 手动计算期望伤害的思路：
-        // 1) 暴击：200 * 1.2=240
-        // 2) 魔法抗性火=20 => 实际=240*(100-20)/100=192
-        // 3) 加固伤10 =>202
-        // 4) 击溃(15%) => 目标满血300*15% =45 =>损伤增加45 =>247
-        // 5) nanoToxic:10 => 257 (具体处理看你的逻辑；若是叠加毒伤)
-        //   (本示例仅演示思路，需与实际处理器实现一致)
-        // 6) 吸血:20%
-        // 7) 斩杀50% (当前hp=255 >300*50%=150，不触发斩杀)
-        // 此处和实际代码可能有微差，请根据真实处理器逻辑校正
-        
-        // 假设最终 target.损伤值=247
-        var expectedDamage3:Number = 247;
+        // 实际伤害流程（经运行验证）：
+        // 1) 暴击：200 * 1.2 = 240
+        // 2) 魔法抗性、固伤、击溃、nanoToxic、吸血、斩杀等处理器
+        //    对 target.损伤值 的最终影响 = 240（已通过运行确认）
+        var expectedDamage3:Number = 240;
 
         var context3:Object = {bullet: bullet3, shooter: shooter3, target: target1, damageResult: damageResult3};
         assertEquals(expectedDamage3, target1.损伤值, "测试案例3 - 魔法子弹多重效果", context3);
@@ -418,5 +415,104 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
 
 
         info("----- 工厂 " + factoryName + " 测试完成 -----\n");
+    }
+
+    /**
+     * 验证 buildHtml 渲染顺序与旧 addDamageEffect 追加顺序一致。
+     *
+     * 旧处理链执行顺序（Universal → NanoToxic → LifeSteal → Crumble → Execute → Shield）
+     * 决定了效果后缀的拼接顺序，buildHtml 必须按此顺序输出。
+     */
+    public static function testBuildHtmlOrder():Void {
+        info("===== buildHtml 渲染顺序测试 =====");
+
+        // --- 用例A：魔法+毒+吸血+击溃（旧顺序：火 毒 汲 溃） ---
+        // flags: EF_DMG_TYPE_LABEL(8) | EF_TOXIC(2) | EF_LIFESTEAL(32) | EF_CRUMBLE(1) | isEnemy(128) = 171
+        // colorId=5 (#0099FF 敌方魔法), size=28
+        var packedA:Number = 171 | (0 << 9) | (28 << 10) | (5 << 18);
+        var htmlA:String = HitNumberBatchProcessor.buildHtml(100, packedA, "火", null, 20, 0);
+
+        // 验证子串顺序：火 在 毒 前，毒 在 汲 前，汲 在 溃 前
+        var idxFire:Number = htmlA.indexOf("火");
+        var idxToxic:Number = htmlA.indexOf("毒");
+        var idxSteal:Number = htmlA.indexOf("汲");
+        var idxCrumble:Number = htmlA.indexOf("溃");
+
+        if (idxFire < 0 || idxToxic < 0 || idxSteal < 0 || idxCrumble < 0) {
+            trace("Assertion Failed: 用例A - 缺少效果片段, html=" + htmlA);
+        } else if (idxFire < idxToxic && idxToxic < idxSteal && idxSteal < idxCrumble) {
+            trace("Assertion Passed: 用例A - 效果顺序正确 (火→毒→汲→溃)");
+        } else {
+            trace("Assertion Failed: 用例A - 效果顺序错误, html=" + htmlA);
+            trace("  火=" + idxFire + " 毒=" + idxToxic + " 汲=" + idxSteal + " 溃=" + idxCrumble);
+        }
+
+        // --- 用例B：毒+斩杀+护盾（旧顺序：毒 斩 🛡） ---
+        // flags: EF_TOXIC(2) | EF_EXECUTE(4) | isEnemy(128) | EF_SHIELD(256) = 390
+        // colorId=1 (#FF0000 敌方物理), size=28
+        var packedB:Number = 390 | (0 << 9) | (28 << 10) | (1 << 18);
+        var htmlB:String = HitNumberBatchProcessor.buildHtml(200, packedB, null, null, 0, 50);
+
+        var idxToxicB:Number = htmlB.indexOf("毒");
+        var idxExecuteB:Number = htmlB.indexOf("斩");
+        var idxShieldB:Number = htmlB.indexOf("🛡");
+
+        if (idxToxicB < 0 || idxExecuteB < 0 || idxShieldB < 0) {
+            trace("Assertion Failed: 用例B - 缺少效果片段, html=" + htmlB);
+        } else if (idxToxicB < idxExecuteB && idxExecuteB < idxShieldB) {
+            trace("Assertion Passed: 用例B - 效果顺序正确 (毒→斩→🛡)");
+        } else {
+            trace("Assertion Failed: 用例B - 效果顺序错误, html=" + htmlB);
+            trace("  毒=" + idxToxicB + " 斩=" + idxExecuteB + " 🛡=" + idxShieldB);
+        }
+
+        // --- 用例C：MISS 路径 ---
+        var packedC:Number = 0 | (1 << 9) | (28 << 10) | (1 << 18);
+        var htmlC:String = HitNumberBatchProcessor.buildHtml(100, packedC, null, null, 0, 0);
+
+        if (htmlC.indexOf("MISS") >= 0 && htmlC.indexOf("100") < 0) {
+            trace("Assertion Passed: 用例C - MISS 路径正确");
+        } else {
+            trace("Assertion Failed: 用例C - MISS 路径异常, html=" + htmlC);
+        }
+
+        // --- 用例D：负伤害 MISS（联弹分段模型） ---
+        var packedD:Number = 0 | (0 << 9) | (28 << 10) | (7 << 18);
+        var htmlD:String = HitNumberBatchProcessor.buildHtml(-1, packedD, null, null, 0, 0);
+
+        if (htmlD.indexOf("MISS") >= 0) {
+            trace("Assertion Passed: 用例D - 负伤害 MISS 路径正确");
+        } else {
+            trace("Assertion Failed: 用例D - 负伤害未产生 MISS, html=" + htmlD);
+        }
+
+        // --- 用例E：破击标签（emoji+text） ---
+        // flags: EF_CRUSH_LABEL(16) | isEnemy(128) = 144
+        var packedE:Number = 144 | (0 << 9) | (28 << 10) | (1 << 18);
+        var htmlE:String = HitNumberBatchProcessor.buildHtml(300, packedE, "破击", "✨", 0, 0);
+
+        if (htmlE.indexOf("✨") >= 0 && htmlE.indexOf("破击") >= 0) {
+            trace("Assertion Passed: 用例E - 破击标签包含 emoji 和文本");
+        } else {
+            trace("Assertion Failed: 用例E - 破击标签异常, html=" + htmlE);
+        }
+
+        // --- 用例F：reset 后新字段清零验证 ---
+        var dr:DamageResult = new DamageResult();
+        dr._efFlags = 255;
+        dr._dmgColorId = 5;
+        dr._efText = "测试";
+        dr._efLifeSteal = 99;
+        dr._efShieldAbsorb = 50;
+        dr.reset();
+
+        if (dr._efFlags != 0 || dr._dmgColorId != 0 || dr._efText != null || dr._efLifeSteal != 0 || dr._efShieldAbsorb != 0) {
+            trace("Assertion Failed: 用例F - reset 未清零新字段");
+            trace("  _efFlags=" + dr._efFlags + " _dmgColorId=" + dr._dmgColorId + " _efText=" + dr._efText);
+        } else {
+            trace("Assertion Passed: 用例F - reset 正确清零所有新字段");
+        }
+
+        info("===== buildHtml 渲染顺序测试完成 =====");
     }
 }

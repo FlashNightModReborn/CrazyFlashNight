@@ -106,9 +106,6 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     // 配置参数
     // ========================================================================
 
-    /** 是否启用批处理器（全局开关，用于回退到立即渲染模式） */
-    public static var enabled:Boolean = true;
-
     /** 是否启用调试输出 */
     public static var debugMode:Boolean = false;
 
@@ -451,30 +448,31 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         // 无效果快速路径
         if (flags == 0) return html;
 
-        // 按固定顺序拼接效果片段
-        // bit 0: EF_CRUMBLE
-        if ((flags & 1) != 0) {
-            html += FRAG_CRUMBLE;
-        }
-        // bit 1: EF_TOXIC
-        if ((flags & 2) != 0) {
-            html += FRAG_TOXIC;
-        }
-        // bit 2: EF_EXECUTE（bit 7 isEnemy 选择颜色）
-        if ((flags & 4) != 0) {
-            html += ((flags & 128) != 0) ? FRAG_EXECUTE_ENEMY : FRAG_EXECUTE_ALLY;
-        }
-        // bit 3: EF_DMG_TYPE_LABEL（颜色 = damageColor，文本 = efText）
+        // 按处理链执行顺序拼接效果片段
+        // （Universal → NanoToxic → LifeSteal → Crumble → Execute → Shield）
+        // bit 3: EF_DMG_TYPE_LABEL（Universal - 颜色 = damageColor，文本 = efText）
         if ((flags & 8) != 0) {
             html += '<font color="' + COLOR_TABLE[colorId] + '" size="20"> ' + efText + FONT_END;
         }
-        // bit 4: EF_CRUSH_LABEL（固定色 #66bcf5，emoji + text）
+        // bit 4: EF_CRUSH_LABEL（Universal - 固定色 #66bcf5，emoji + text）
         if ((flags & 16) != 0) {
             html += FRAG_CRUSH_PRE + efEmoji + efText + FONT_END;
         }
-        // bit 5: EF_LIFESTEAL
+        // bit 1: EF_TOXIC（NanoToxic）
+        if ((flags & 2) != 0) {
+            html += FRAG_TOXIC;
+        }
+        // bit 5: EF_LIFESTEAL（LifeSteal）
         if ((flags & 32) != 0) {
             html += FRAG_LIFESTEAL_PRE + lifeSteal + FONT_END;
+        }
+        // bit 0: EF_CRUMBLE（Crumble）
+        if ((flags & 1) != 0) {
+            html += FRAG_CRUMBLE;
+        }
+        // bit 2: EF_EXECUTE（Execute - bit 7 isEnemy 选择颜色）
+        if ((flags & 4) != 0) {
+            html += ((flags & 128) != 0) ? FRAG_EXECUTE_ENEMY : FRAG_EXECUTE_ALLY;
         }
         // bit 8: EF_SHIELD
         if ((flags & 256) != 0) {

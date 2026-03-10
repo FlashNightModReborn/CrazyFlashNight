@@ -782,10 +782,6 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     HitNumberBatchProcessor.clear();
     // 重置射线视觉效果管理器，清理跨场景残留的射线
     RayVfxManager.reset();
-    // 重置 DamageResult 的 displayFunction 引用，确保类加载后引用正确
-    // 这是解耦 _root 依赖后的初始化保障
-    org.flashNight.arki.component.Damage.DamageResult.IMPACT.displayFunction = HitNumberSystem.effect;
-    org.flashNight.arki.component.Damage.DamageResult.NULL.displayFunction = HitNumberSystem.effect;
     // 重置 TimSort 重入保护标志，防止 compare 异常后永久降级为 Array.sort()
     org.flashNight.naki.Sort.TimSort.resetState();
 }, null);
