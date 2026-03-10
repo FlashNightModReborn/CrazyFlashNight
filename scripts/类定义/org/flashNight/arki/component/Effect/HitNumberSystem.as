@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.component.Effect.HitNumberBatchProcessor;
+import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
 /**
  * HitNumberSystem
@@ -10,8 +11,8 @@
  * 脚本文件变为纯薄封装层。
  *
  * 【公共 API】
- * - effect(): 对外接口，对应原 _root.打击数字特效，支持批处理和直接模式
- * - spawn(): 底层渲染，由 HitNumberBatchProcessor 或 effect() 调用
+ * - effect(): 对外接口，对应原 _root.打击数字特效，转发到批处理队列
+ * - spawn(): 底层渲染，由 HitNumberBatchProcessor.flush() 调用
  * - initPool(): 初始化对象池
  *
  * 【数据存储】
@@ -19,10 +20,10 @@
  *   - _root.gameworld.可用数字池（池存储）
  *   - _root.gameworld.打击伤害数字原型（原型存储）
  *   - _root.当前打击数字特效总数（权威计数，由 onUnload 减一）
- *   - _root.打击数字坐标偏离（坐标偏移量）
+ *   - POSITION_OFFSET（坐标偏移量）
  *
  * 【节流职责】
- * - effect(): 批处理模式走 enqueue，直接模式自带节流
+ * - effect(): 转发到 HitNumberBatchProcessor.enqueue()，节流由 flush 统一处理
  * - spawn(): 不做节流，由调用方负责
  *
  * @version 4.0 - 完整迁移
@@ -39,6 +40,12 @@ class org.flashNight.arki.component.Effect.HitNumberSystem {
 
     /** 库中的 MovieClip 链接名 */
     private static var LINKAGE_NAME:String = "打击伤害数字";
+
+    /** 坐标随机偏移量（像素） */
+    public static var POSITION_OFFSET:Number = 60;
+
+    /** 随机数引擎单例引用（避免每次调用 getInstance） */
+    private static var rng:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
 
     // ========================================================================
     // 公共 API
@@ -64,7 +71,7 @@ class org.flashNight.arki.component.Effect.HitNumberSystem {
      * 播放一次打击数字特效（底层渲染）
      *
      * 直接操作池逻辑，不做任何节流判断。
-     * 由 HitNumberBatchProcessor.flush() 或 effect() 调用。
+     * 由 HitNumberBatchProcessor.flush() 调用。
      *
      * @param ctrl  控制字符串（效果种类，如"暴击"、"能"等）
      * @param value 数值或已格式化的字符串
@@ -91,7 +98,7 @@ class org.flashNight.arki.component.Effect.HitNumberSystem {
     /**
      * 初始化对象池
      *
-     * 对应原 _root.初始化打击伤害数字池
+     * 初始化对象池（spawn() 内自动调用，外部一般无需手动调用）
      * 继续使用 _root.gameworld.可用数字池 存储，保持兼容性。
      *
      * @param poolSize 预创建的空闲特效数量
@@ -132,11 +139,11 @@ class org.flashNight.arki.component.Effect.HitNumberSystem {
     private static function acquireClip(ctrl:String, value:Object, x:Number, y:Number):MovieClip {
         var gw:MovieClip = _root.gameworld;
         var pool:Array = gw.可用数字池;
-        var offset:Number = _root.打击数字坐标偏离;
+        var offset:Number = POSITION_OFFSET;
 
         // 应用坐标偏移
-        x += _root.随机偏移(offset);
-        y += _root.随机偏移(offset);
+        x += rng.randomOffset(offset);
+        y += rng.randomOffset(offset);
 
         var clip:MovieClip;
 
@@ -214,15 +221,15 @@ class org.flashNight.arki.component.Effect.HitNumberSystem {
         var gw:MovieClip = _root.gameworld;
         var effectLayer:MovieClip = gw.效果;
         var depth:Number = effectLayer.getNextHighestDepth();
-        var offset:Number = _root.打击数字坐标偏离;
+        var offset:Number = POSITION_OFFSET;
 
         var clip:MovieClip = effectLayer.attachMovie(
             LINKAGE_NAME,
             LINKAGE_NAME + " " + depth,
             depth,
             {
-                _x: x + _root.随机偏移(offset),
-                _y: y + _root.随机偏移(offset),
+                _x: x + rng.randomOffset(offset),
+                _y: y + rng.randomOffset(offset),
                 数字: formatValue(value),
                 控制字符串: ctrl
             }
@@ -243,14 +250,11 @@ class org.flashNight.arki.component.Effect.HitNumberSystem {
      * @return 格式化后的字符串
      */
     private static function formatValue(value:Object):String {
-        // 字符串直接返回（已格式化的 <font> 标签等）
-        if (typeof(value) == "string" && String(value).length > 0) {
-            return String(value);
+        if (typeof(value) == "string") {
+            return (length(value) > 0) ? String(value) : "miss";
         }
-        // 数值转字符串，NaN 显示为 "miss"
-        if (isNaN(Number(value))) {
-            return "miss";
-        }
-        return String(Math.floor(Number(value)));
+        var n:Number = Number(value);
+        if (isNaN(n)) return "miss";
+        return String(n | 0);
     }
 }

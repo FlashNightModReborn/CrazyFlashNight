@@ -5,7 +5,7 @@
  *
  * 【系统概述】
  * 本类负责聚合每帧所有伤害数字显示请求，统一做节流和对象池使用决策，
- * 最终调用现有 _root.打击数字特效内部 完成渲染。
+ * 最终调用 HitNumberSystem.spawn() 完成渲染。
  *
  * 【核心优化】
  * - 节流决策从 O(N) 降至 O(1)：每帧仅执行一次节流判断，而非每个请求都判断
@@ -287,8 +287,7 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         var sw:Number = Stage.width;
         var sh:Number = Stage.height;
 
-        // 通过 HitNumberSystem 统一 API 入口，便于后续迁移
-        // 第一阶段：HitNumberSystem.spawn 内部只是代理到 _root.打击数字特效内部
+        // 通过 HitNumberSystem.spawn 统一 API 入口
         var forceShown:Number = 0;
         var forceCulled:Number = 0;
         var i:Number;
