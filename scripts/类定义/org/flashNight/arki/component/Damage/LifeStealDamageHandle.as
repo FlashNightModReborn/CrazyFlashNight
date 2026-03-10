@@ -102,10 +102,9 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
                 shooter.hp = shooterHP + healAmount;
             }
 
-            // 添加吸血效果描述
-            result.addDamageEffect(
-                '<font color="#bb00aa" size="15"> 汲:' + ((lifeStealAmount / actualScatterUsed) | 0).toString() + "</font>"
-            );
+            // 延迟 HTML 构建：位标记 + 吸血槽
+            result._efFlags |= 32; // EF_LIFESTEAL
+            result._efLifeSteal = (lifeStealAmount / actualScatterUsed) | 0;
         }
     }
 

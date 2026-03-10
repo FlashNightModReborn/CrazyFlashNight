@@ -34,9 +34,9 @@ class org.flashNight.arki.component.Damage.TrueDamageHandle extends BaseDamageHa
     }
 
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
-        var trueDamageColor:String = bullet.是否为敌人 ? "#660033" : "#4A0099";
-        result.setDamageColor(trueDamageColor);
-        result.addDamageEffect('<font color="' + trueDamageColor + '" size="20"> 真</font>');
+        result._dmgColorId = bullet.是否为敌人 ? 3 : 4; // 真伤：#660033 / #4A0099
+        result._efFlags |= (8 | (bullet.是否为敌人 ? 128 : 0)); // EF_DMG_TYPE_LABEL | isEnemy
+        result._efText = "真";
         target.损伤值 = bullet.破坏力;
     }
 

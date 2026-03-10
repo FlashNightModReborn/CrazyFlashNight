@@ -88,9 +88,8 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
         var lvl:Number = target.等级;
         var resistTbl:Object = target.魔法抗性;
         
-        // 先设定默认物理伤害颜色，避免在分支中重复设置
-        var defaultDamageColor:String = enemy ? "#FF0000" : "#FFCC00";
-        result.setDamageColor(defaultDamageColor);
+        // 先设定默认物理伤害颜色 ID，避免在分支中重复设置
+        result._dmgColorId = enemy ? 1 : 2; // #FF0000 / #FFCC00
         
         // ========== 第二阶段：物理伤害快速路径（最高频） ==========
         // 【关键优化】物理伤害是游戏中最常见的伤害类型，放在第一个分支
@@ -127,9 +126,11 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
                 var magicPart:Number = (power * rate) * (100 - rVal) / 100;
                 target.损伤值 = physPart + magicPart;
                 
-                // UI效果：只有发生混合伤害时才显示属性标识
+                // 延迟 HTML 构建：破击效果位标记 + 文本/emoji 槽
+                result._efFlags |= 16; // EF_CRUSH_LABEL
                 var emoji:String = isMagicTag ? "✨" : "☠";
-                result.addDamageEffect('<font color="#66bcf5" size="20"> ' + emoji + magicAttr + '</font>');
+                result._efEmoji = emoji;
+                result._efText = magicAttr;
             } else {
                 // 无匹配抗性，使用纯物理伤害
                 target.损伤值 = physPart;
@@ -142,17 +143,13 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
         // 通过三元表达式合并处理，避免额外的if分支，保持代码紧凑
         var isTrue:Boolean = (t == "真伤");
         
-        // 根据伤害类型和敌友关系设置颜色
-        var color:String = isTrue ? (enemy ? "#660033" : "#4A0099")    // 真伤：深紫色系
-                                : (enemy ? "#AC99FF" : "#0099FF");     // 魔法：蓝色系
-        result.setDamageColor(color);
+        // 根据伤害类型和敌友关系设置颜色 ID
+        result._dmgColorId = isTrue ? (enemy ? 3 : 4) : (enemy ? 5 : 6);
         
-        // 设置伤害类型标识的UI效果
+        // 延迟 HTML 构建：伤害类型标签位标记 + 文本槽
+        result._efFlags |= (8 | (enemy ? 128 : 0)); // EF_DMG_TYPE_LABEL | isEnemy
         var magicAttr2:String = bullet.魔法伤害属性 ? bullet.魔法伤害属性 : "能";
-        var effectHTML:String = isTrue
-            ? ('<font color="' + color + '" size="20"> 真</font>')      // 真伤显示"真"字
-            : ('<font color="' + color + '" size="20"> ' + magicAttr2 + '</font>');  // 魔法显示属性
-        result.addDamageEffect(effectHTML);
+        result._efText = isTrue ? "真" : magicAttr2;
         
         // 【关键优化】真伤早退：真伤无需计算抗性，直接使用破坏力
         if (isTrue) {

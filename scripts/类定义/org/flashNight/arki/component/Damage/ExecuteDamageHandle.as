@@ -122,11 +122,8 @@ class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamag
             // 目标血量归零
             target.hp = 0;
 
-            // 根据子弹的敌我属性值设置斩杀效果颜色
-            var executeColor:String = bullet.是否为敌人 ? '#660033' : '#4A0099';
-
-            // 添加斩杀效果描述
-            result.addDamageEffect('<font color="' + executeColor + '" size="20"> 斩</font>');
+            // 延迟 HTML 构建：位标记（EF_EXECUTE | isEnemy）
+            result._efFlags |= (4 | (bullet.是否为敌人 ? 128 : 0));
         }
     }
 

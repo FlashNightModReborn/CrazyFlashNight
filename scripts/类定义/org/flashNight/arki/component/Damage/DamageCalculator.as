@@ -169,9 +169,9 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
         // 如果护盾吸收了伤害，添加视觉反馈
         var absorbedDamage:Number = damageNumber - penetratingDamage;
         if (absorbedDamage > 0) {
-            // 护盾吸收效果：青色🛡标识
-            // 除以 actualScatterUsed 得到单发吸收量，因为 damageEffects 会附加到每个散射伤害数字上
-            damageResult.addDamageEffect('<font color="#00CED1" size="18"> 🛡' + ((absorbedDamage / actualScatterUsed) | 0) + '</font>');
+            // 延迟 HTML 构建：护盾效果位标记 + 吸收量槽
+            damageResult._efFlags |= 256; // EF_SHIELD
+            damageResult._efShieldAbsorb = (absorbedDamage / actualScatterUsed) | 0;
         }
 
         // 更新损伤值以反映护盾吸收后的实际伤害

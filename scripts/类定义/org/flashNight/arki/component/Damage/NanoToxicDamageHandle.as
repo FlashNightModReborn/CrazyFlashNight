@@ -118,8 +118,8 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
             target.损伤值 += nanoToxicAmount; // 更新目标的损伤值
             damageNumber = target.损伤值;
 
-            // 添加毒素效果描述
-            result.addDamageEffect('<font color="#66dd00" size="20"> 毒</font>');
+            // 延迟 HTML 构建：位标记
+            result._efFlags |= 2; // EF_TOXIC
 
             // 如果子弹具有毒素衰减属性且为近战检测，并且射击者的淬毒值大于 10，则减少射击者的淬毒值
             #include "../macros/FLAG_MELEE.as"

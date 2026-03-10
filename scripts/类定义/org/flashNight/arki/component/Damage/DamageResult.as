@@ -15,22 +15,10 @@ class org.flashNight.arki.component.Damage.DamageResult {
     public var totalDamageList:Array;
 
     /**
-     * 伤害显示的颜色。
-     * @type {String}
-     */
-    public var damageColor:String;
-
-    /**
      * 伤害显示的字体大小。
      * @type {Number}
      */
     public var damageSize:Number;
-
-    /**
-     * 伤害显示的附加效果。
-     * @type {String}
-     */
-    public var damageEffects:String;
 
     /**
      * 最终的散射值，用于计算伤害的散射效果。
@@ -119,6 +107,37 @@ class org.flashNight.arki.component.Damage.DamageResult {
      */
     public var scatterPenetrationDamage:Number;
 
+    // ==================== 延迟 HTML 构建：结构化效果字段 ====================
+
+    /**
+     * 效果位掩码（opt-in 写入）。
+     * bit 0 (1):   EF_CRUMBLE   — 溃
+     * bit 1 (2):   EF_TOXIC     — 毒
+     * bit 2 (4):   EF_EXECUTE   — 斩
+     * bit 3 (8):   EF_DMG_TYPE_LABEL — 真/魔法属性标签
+     * bit 4 (16):  EF_CRUSH_LABEL    — 破击属性标签
+     * bit 5 (32):  EF_LIFESTEAL      — 吸血
+     * bit 7 (128): isEnemy（用于 EF_EXECUTE 颜色选择）
+     * bit 8 (256): EF_SHIELD         — 护盾吸收
+     * @type {Number}
+     */
+    public var _efFlags:Number;
+
+    /** 属性文本（真/魔法/破击共用），仅 EF_DMG_TYPE_LABEL 或 EF_CRUSH_LABEL 置位时有效 */
+    public var _efText:String;
+
+    /** 破击 emoji（✨ 或 ☠），仅 EF_CRUSH_LABEL 置位时有效 */
+    public var _efEmoji:String;
+
+    /** 每弹吸血量，仅 EF_LIFESTEAL 置位时有效 */
+    public var _efLifeSteal:Number;
+
+    /** 每弹盾吸收量，仅 EF_SHIELD 置位时有效 */
+    public var _efShieldAbsorb:Number;
+
+    /** 颜色枚举 ID（0-10，索引 HitNumberBatchProcessor.COLOR_TABLE），由 Handle 直写 */
+    public var _dmgColorId:Number;
+
     /**
      * 静态实例，表示一个默认的伤害结果。
      * @type {DamageResult}
@@ -149,9 +168,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
      */
     public function reset():Void {
         this.totalDamageList = [];
-        this.damageColor = null;
         this.damageSize = 28;
-        this.damageEffects = "";
         this.finalScatterValue = 0;
         this.dodgeStatus = "";
         this.actualScatterUsed = 1;
@@ -181,14 +198,16 @@ class org.flashNight.arki.component.Damage.DamageResult {
 
         // 复用数组，避免频繁创建造成GC压力
         r.totalDamageList.length = 0;
-        r.damageColor = null;
         r.damageSize = 28;
-        r.damageEffects = "";
         r.finalScatterValue = 0;
         r.dodgeStatus = "";
         r.actualScatterUsed = 1;
         r.displayCount = 1;
         r.displayFunction = HitNumberSystem.effect;
+
+        // 延迟 HTML 构建：仅需重置位掩码和颜色 ID（槽值由 _efFlags 守护，无需重置）
+        r._efFlags = 0;
+        r._dmgColorId = 0;
 
         return r;
     }
@@ -201,9 +220,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
 
         // 复用数组，避免频繁创建造成GC压力
         r.totalDamageList.length = 0;
-        r.damageColor = null;
         r.damageSize = 28;
-        r.damageEffects = "";
         r.finalScatterValue = 0;
         r.dodgeStatus = "";
         r.actualScatterUsed = 1;
@@ -213,6 +230,10 @@ class org.flashNight.arki.component.Damage.DamageResult {
         // 联弹分段躲闪建模相关标记（计数/单段伤害不必清零：仅在 scatterModelEnabled 为 true 时被消费）
         r.deferChainDodgeState = false;
         r.scatterModelEnabled = false;
+
+        // 延迟 HTML 构建：仅需重置位掩码和颜色 ID
+        r._efFlags = 0;
+        r._dmgColorId = 0;
 
         return r;
     }
@@ -224,22 +245,6 @@ class org.flashNight.arki.component.Damage.DamageResult {
     public function addDamageValue(damage:Number):Void {
         var list = this.totalDamageList;
         list[list.length] = damage;
-    }
-
-    /**
-     * 设置伤害显示的颜色。
-     * @param {String} color - 伤害显示的颜色。
-     */
-    public function setDamageColor(color:String):Void {
-        this.damageColor = color;
-    }
-
-    /**
-     * 添加一个伤害效果到伤害效果字符串中。
-     * @param {String} effect - 要添加的伤害效果。
-     */
-    public function addDamageEffect(effect:String):Void {
-        this.damageEffects += effect;
     }
 
     /**
@@ -463,46 +468,52 @@ class org.flashNight.arki.component.Damage.DamageResult {
             return; // 如果没有伤害值，直接返回
         }
 
-        // 缓存常用属性到局部变量
-        var dmgColor:String = this.damageColor || "#FFFFFF"; // 提供默认颜色
-        // 用位运算替代 Math.floor（damageSize 为非负数时等价）
-        var dmgSize:Number = this.damageSize | 0; // 将字体大小设为整数
-        var dmgEffects:String = this.damageEffects;
-        var dodgeStatus:String = this.dodgeStatus;
+        // 预打包标量快照（批处理和兼容模式共用）
+        var efFlags:Number = this._efFlags;
+        var dmgSize:Number = this.damageSize | 0;
+        var colorId:Number = this._dmgColorId;
+        var isMISS:Number = (this.dodgeStatus == "MISS") ? 1 : 0;
 
-        // 预构建不变的字符串部分
-        var fontStart:String = '<font color="' + dmgColor + '" size="' + dmgSize + '">';
-        var fontEnd:String = '</font>';
+        // packed = _efFlags | (isMISS<<9) | (size<<10) | (colorId<<18)
+        var packed:Number = efFlags | (isMISS << 9) | (dmgSize << 10) | (colorId << 18);
+
+        // 预取效果槽值（仅对应 flags 位为 1 时有意义）
+        var efText:String = ((efFlags & 8) != 0 || (efFlags & 16) != 0) ? this._efText : null;
+        var efEmoji:String = ((efFlags & 16) != 0) ? this._efEmoji : null;
+        var lifeSteal:Number = ((efFlags & 32) != 0) ? this._efLifeSteal : 0;
+        var shieldAbsorb:Number = ((efFlags & 256) != 0) ? this._efShieldAbsorb : 0;
 
         // 判断是否使用批处理模式
         var useBatch:Boolean = HitNumberBatchProcessor.enabled;
 
-        var i:Number = 0;
-        do {
-            var damage:Number = list[i];
-            var displayNumber:String;
-
-            if (damage < 0) {
-                displayNumber = fontStart + 'MISS' + fontEnd;
-            } else {
-                // 使用位运算优化 Math.floor
-                var flooredDamage:Number = damage | 0;
-                displayNumber = fontStart + dodgeStatus + flooredDamage + fontEnd;
-            }
-
-            // 拼接伤害效果
-            var finalDisplay:String = displayNumber + dmgEffects;
-
-            if (useBatch) {
-                // 批处理模式：加入队列，帧末统一处理
-                HitNumberBatchProcessor.enqueue("", finalDisplay, targetX, targetY, false);
-            } else {
-                // 兼容模式：立即调用显示函数
-                this.displayFunction("", finalDisplay, targetX, targetY);
-            }
-
-            i++;
-        } while (i < len);
+        if (useBatch) {
+            // ==================== 批处理 raw 路径 ====================
+            // 标量快照入队，延迟 HTML 构建到 flush 阶段（先剔除后构建）
+            var i:Number = 0;
+            do {
+                HitNumberBatchProcessor.enqueueRaw(
+                    list[i], packed,
+                    efText, efEmoji,
+                    lifeSteal, shieldAbsorb,
+                    targetX, targetY
+                );
+                i++;
+            } while (i < len);
+        } else {
+            // ==================== 兼容模式：立即渲染 ====================
+            // 复用 HitNumberBatchProcessor.buildHtml 共享 HTML 构建逻辑
+            var dispFn:Function = this.displayFunction;
+            var j:Number = 0;
+            do {
+                var html:String = HitNumberBatchProcessor.buildHtml(
+                    list[j], packed,
+                    efText, efEmoji,
+                    lifeSteal, shieldAbsorb
+                );
+                dispFn("", html, targetX, targetY);
+                j++;
+            } while (j < len);
+        }
     }
 
     /**
@@ -512,9 +523,9 @@ class org.flashNight.arki.component.Damage.DamageResult {
     public function toString():String {
         var result:String = "DamageResult {\n";
         result += "  totalDamageList: " + this.totalDamageList.toString() + ",\n";
-        result += "  damageColor: " + this.damageColor + ",\n";
+        result += "  _dmgColorId: " + this._dmgColorId + ",\n";
         result += "  damageSize: " + this.damageSize + ",\n";
-        result += "  damageEffects: " + this.damageEffects + ",\n";
+        result += "  _efFlags: " + this._efFlags + ",\n";
         result += "  finalScatterValue: " + this.finalScatterValue + ",\n";
         result += "  dodgeStatus: " + this.dodgeStatus + ",\n";
         result += "  actualScatterUsed: " + this.actualScatterUsed + ",\n";

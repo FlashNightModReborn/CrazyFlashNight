@@ -77,6 +77,25 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     /** Y 坐标数组（世界坐标） */
     private static var _ys:Array = [];
 
+    // ========================================================================
+    // raw 路径专用并行数组（延迟 HTML 构建）
+    // ========================================================================
+
+    /** packed Number 数组（flags+colorId+size+dodge 编码） */
+    private static var _packed:Array = [];
+
+    /** 效果属性文本数组（魔法/破击属性文本，无效果时为 null） */
+    private static var _efTexts:Array = [];
+
+    /** 效果 emoji 数组（破击 emoji，无效果时为 null） */
+    private static var _efEmojis:Array = [];
+
+    /** 吸血值数组（无吸血时为 0） */
+    private static var _efLifeSteals:Array = [];
+
+    /** 盾吸收值数组（无盾时为 0） */
+    private static var _efShieldAbsorbs:Array = [];
+
     /** 普通请求队列长度（正索引区域） */
     private static var _length:Number = 0;
 
@@ -102,6 +121,45 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
 
     /** 默认当前计数（当 _root.当前打击数字特效总数 未初始化时使用） */
     private static var DEFAULT_CURRENT:Number = 0;
+
+    // ========================================================================
+    // 延迟 HTML 构建：颜色查表 + 静态片段缓存
+    // ========================================================================
+
+    /** 颜色 ID → 颜色字符串查表（索引即 _dmgColorId） */
+    public static var COLOR_TABLE:Array = [
+        "#FFFFFF", "#FF0000", "#FFCC00", "#660033", "#4A0099",
+        "#AC99FF", "#0099FF", "#7F0000", "#7F6A00", "#FF7F7F", "#FFE770"
+    ];
+
+    /** 预缓存的静态 HTML 片段（避免重复拼接） */
+    private static var FRAG_CRUMBLE:String       = '<font color="#FF3333" size="20"> 溃</font>';
+    private static var FRAG_TOXIC:String         = '<font color="#66dd00" size="20"> 毒</font>';
+    private static var FRAG_EXECUTE_ENEMY:String = '<font color="#660033" size="20"> 斩</font>';
+    private static var FRAG_EXECUTE_ALLY:String  = '<font color="#4A0099" size="20"> 斩</font>';
+    private static var FRAG_LIFESTEAL_PRE:String = '<font color="#bb00aa" size="15"> 汲:';
+    private static var FRAG_SHIELD_PRE:String    = '<font color="#00CED1" size="18"> 🛡';
+    private static var FRAG_CRUSH_PRE:String     = '<font color="#66bcf5" size="20"> ';
+    private static var FONT_END:String           = '</font>';
+
+    /** fontStart 懒缓存：key = (colorId << 8) | size → '<font color="X" size="Y">' */
+    private static var _fontStartCache:Object = {};
+
+    /**
+     * 获取 fontStart 字符串（懒构建，首次拼接后缓存）
+     * @param colorId 颜色 ID（0-10）
+     * @param size    字体大小（0-255）
+     * @return 格式化的 font 开标签
+     */
+    private static function getFontStart(colorId:Number, size:Number):String {
+        var key:Number = (colorId << 8) | size;
+        var s:String = _fontStartCache[key];
+        if (s == undefined) {
+            s = '<font color="' + COLOR_TABLE[colorId] + '" size="' + size + '">';
+            _fontStartCache[key] = s;
+        }
+        return s;
+    }
 
     // ========================================================================
     // 私有构造函数（静态工具类）
@@ -149,6 +207,41 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         }
         _ctrls[idx] = ctrl;
         _values[idx] = value;
+        _xs[idx] = x;
+        _ys[idx] = y;
+    }
+
+    /**
+     * 将伤害数字显示请求以原始数据形式加入队列（延迟 HTML 构建路径）
+     *
+     * 与 enqueue 的区别：不传入预格式化的 HTML，而是存储标量快照，
+     * flush 先剔除/丢弃后，仅对存活项调用 buildHtml 构建 HTML。
+     *
+     * 【注意】仅处理普通请求（damage 永远非 force），force 请求仍走 enqueue()。
+     *
+     * @param damage       伤害数值
+     * @param packed       打包的离散状态（_efFlags | isMISS<<9 | size<<10 | colorId<<18）
+     * @param efText       效果属性文本（可为 null）
+     * @param efEmoji      破击 emoji（可为 null）
+     * @param lifeSteal    吸血量（无则 0）
+     * @param shieldAbsorb 盾吸收量（无则 0）
+     * @param x            世界坐标 X
+     * @param y            世界坐标 Y
+     */
+    public static function enqueueRaw(
+        damage:Number, packed:Number,
+        efText:String, efEmoji:String,
+        lifeSteal:Number, shieldAbsorb:Number,
+        x:Number, y:Number
+    ):Void {
+        var idx:Number = _length;
+        ++_length;
+        _values[idx] = damage;
+        _packed[idx] = packed;
+        _efTexts[idx] = efText;
+        _efEmojis[idx] = efEmoji;
+        _efLifeSteals[idx] = lifeSteal;
+        _efShieldAbsorbs[idx] = shieldAbsorb;
         _xs[idx] = x;
         _ys[idx] = y;
     }
@@ -274,9 +367,22 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
                     continue;
                 }
 
-                // 检查配额 - 通过 HitNumberSystem 统一入口
+                // 检查配额
                 if (normalShown < normalQuota) {
-                    HitNumberSystem.spawn(_ctrls[i], _values[i], x, y, false);
+                    // 判断路径：_packed[i] !== undefined → raw 路径，否则旧路径
+                    var p:Number = _packed[i];
+                    if (p !== undefined) {
+                        // raw 路径：先剔除后构建 HTML，被丢弃的项零 HTML 成本
+                        var html:String = buildHtml(
+                            Number(_values[i]), p,
+                            _efTexts[i], _efEmojis[i],
+                            _efLifeSteals[i], _efShieldAbsorbs[i]
+                        );
+                        HitNumberSystem.spawn("", html, x, y, false);
+                    } else {
+                        // 旧路径：预格式化 HTML 直接渲染
+                        HitNumberSystem.spawn(_ctrls[i], _values[i], x, y, false);
+                    }
                     ++normalShown;
                 } else {
                     ++normalDropped;
@@ -303,6 +409,82 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     }
 
     /**
+     * 从 packed Number + 标量槽构建完整 HTML 字符串
+     *
+     * 仅在 flush 存活项上调用，被 culling/quota 丢弃的项永远不执行此函数。
+     *
+     * packed 编码：
+     *   bits 0-8:   _efFlags（9 bits）
+     *   bit  9:     isMISS
+     *   bits 10-17: damageSize（0-255）
+     *   bits 18-21: colorId（0-15）
+     *
+     * @param damage       伤害数值
+     * @param packed       打包的离散状态
+     * @param efText       效果属性文本（可为 null）
+     * @param efEmoji      破击 emoji（可为 null）
+     * @param lifeSteal    吸血量
+     * @param shieldAbsorb 盾吸收量
+     * @return 完整的 HTML 格式字符串
+     */
+    public static function buildHtml(
+        damage:Number, packed:Number,
+        efText:String, efEmoji:String,
+        lifeSteal:Number, shieldAbsorb:Number
+    ):String {
+        // 解包离散状态
+        var flags:Number    = packed & 511;         // bits 0-8
+        var isMISS:Boolean  = ((packed >> 9) & 1) != 0;
+        var size:Number     = (packed >> 10) & 255; // bits 10-17
+        var colorId:Number  = (packed >> 18) & 15;  // bits 18-21
+
+        // 构建主伤害数字
+        // MISS 判断：全局 dodgeStatus=="MISS"（packed bit 9）或 单弹丸 damage<0（联弹分段建模）
+        var fontStart:String = getFontStart(colorId, size);
+        var html:String;
+        if (isMISS || damage < 0) {
+            html = fontStart + "MISS" + FONT_END;
+        } else {
+            html = fontStart + (damage | 0) + FONT_END;
+        }
+
+        // 无效果快速路径
+        if (flags == 0) return html;
+
+        // 按固定顺序拼接效果片段
+        // bit 0: EF_CRUMBLE
+        if ((flags & 1) != 0) {
+            html += FRAG_CRUMBLE;
+        }
+        // bit 1: EF_TOXIC
+        if ((flags & 2) != 0) {
+            html += FRAG_TOXIC;
+        }
+        // bit 2: EF_EXECUTE（bit 7 isEnemy 选择颜色）
+        if ((flags & 4) != 0) {
+            html += ((flags & 128) != 0) ? FRAG_EXECUTE_ENEMY : FRAG_EXECUTE_ALLY;
+        }
+        // bit 3: EF_DMG_TYPE_LABEL（颜色 = damageColor，文本 = efText）
+        if ((flags & 8) != 0) {
+            html += '<font color="' + COLOR_TABLE[colorId] + '" size="20"> ' + efText + FONT_END;
+        }
+        // bit 4: EF_CRUSH_LABEL（固定色 #66bcf5，emoji + text）
+        if ((flags & 16) != 0) {
+            html += FRAG_CRUSH_PRE + efEmoji + efText + FONT_END;
+        }
+        // bit 5: EF_LIFESTEAL
+        if ((flags & 32) != 0) {
+            html += FRAG_LIFESTEAL_PRE + lifeSteal + FONT_END;
+        }
+        // bit 8: EF_SHIELD
+        if ((flags & 256) != 0) {
+            html += FRAG_SHIELD_PRE + shieldAbsorb + FONT_END;
+        }
+
+        return html;
+    }
+
+    /**
      * 内部方法：帧末快速重置队列（高频调用路径）
      *
      * 【优化策略】
@@ -323,6 +505,13 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         _values.length = 0;
         _xs.length = 0;
         _ys.length = 0;
+
+        // raw 路径并行数组
+        _packed.length = 0;
+        _efTexts.length = 0;
+        _efEmojis.length = 0;
+        _efLifeSteals.length = 0;
+        _efShieldAbsorbs.length = 0;
 
         // 重置计数器（负索引区域下帧覆盖写入，无需清理引用）
         _length = 0;
@@ -353,6 +542,13 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         _values.length = 0;
         _xs.length = 0;
         _ys.length = 0;
+
+        // raw 路径并行数组
+        _packed.length = 0;
+        _efTexts.length = 0;
+        _efEmojis.length = 0;
+        _efLifeSteals.length = 0;
+        _efShieldAbsorbs.length = 0;
 
         // 重置计数器
         _length = 0;

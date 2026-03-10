@@ -106,8 +106,8 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
 
         } 
 
-        // 在伤害结果中添加击溃效果的视觉提示
-        result.addDamageEffect('<font color="#FF3333" size="20"> 溃</font>');
+        // 延迟 HTML 构建：位标记
+        result._efFlags |= 1; // EF_CRUMBLE
         
     }
     // }

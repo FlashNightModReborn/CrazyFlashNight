@@ -93,7 +93,7 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         if (context.damageResult) {
             trace("  [DamageResult Info]");
             trace("    totalDamageList: " + context.damageResult.totalDamageList.join(", "));
-            trace("    damageEffects: " + context.damageResult.damageEffects);
+            trace("    _efFlags: " + context.damageResult._efFlags);
             trace("    finalScatterValue: " + context.damageResult.finalScatterValue);
             trace("    dodgeStatus: " + context.damageResult.dodgeStatus);
         }
@@ -263,8 +263,8 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         var context2:Object = {bullet: bullet2, shooter: shooter2, target: target1, damageResult: damageResult2};
         assertEquals(expectedDamage2, target1.损伤值, "测试案例2 - 真伤子弹伤害计算", context2);
 
-        // 断言 damageEffects 包含「真」
-        var hasTrueEffect2:Boolean = (damageResult2.damageEffects.indexOf("真") != -1);
+        // 断言 _efFlags 包含 EF_DMG_TYPE_LABEL (bit 3 = 8)
+        var hasTrueEffect2:Boolean = ((damageResult2._efFlags & 8) != 0);
         if (!hasTrueEffect2) {
             trace("Assertion Failed: 测试案例2 - 真伤特效未添加");
             logContext(context2);
@@ -327,11 +327,12 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         var context3:Object = {bullet: bullet3, shooter: shooter3, target: target1, damageResult: damageResult3};
         assertEquals(expectedDamage3, target1.损伤值, "测试案例3 - 魔法子弹多重效果", context3);
 
-        // 断言 damageEffects 包含「火」、「毒」、「汲」、「溃」
-        var hasMagicEffect3:Boolean = (damageResult3.damageEffects.indexOf("火") != -1);
-        var hasPoisonEffect3:Boolean = (damageResult3.damageEffects.indexOf("毒") != -1);
-        var hasLifeStealEffect3:Boolean = (damageResult3.damageEffects.indexOf("汲") != -1);
-        var hasCrumbleEffect3:Boolean = (damageResult3.damageEffects.indexOf("溃") != -1);
+        // 断言 _efFlags 包含：EF_DMG_TYPE_LABEL(8)、EF_TOXIC(2)、EF_LIFESTEAL(32)、EF_CRUMBLE(1)
+        var flags3:Number = damageResult3._efFlags;
+        var hasMagicEffect3:Boolean = ((flags3 & 8) != 0);   // EF_DMG_TYPE_LABEL
+        var hasPoisonEffect3:Boolean = ((flags3 & 2) != 0);  // EF_TOXIC
+        var hasLifeStealEffect3:Boolean = ((flags3 & 32) != 0); // EF_LIFESTEAL
+        var hasCrumbleEffect3:Boolean = ((flags3 & 1) != 0); // EF_CRUMBLE
 
         if (!hasMagicEffect3 || !hasPoisonEffect3 || !hasLifeStealEffect3 || !hasCrumbleEffect3) {
             trace("Assertion Failed: 测试案例3 - 魔法特效未完全添加");

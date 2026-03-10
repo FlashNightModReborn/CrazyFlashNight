@@ -277,9 +277,9 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
             // ========== 颜色选择 ==========
             // 无法逐段染色，取占比最高的命中分支作为整串颜色
             if (bounceCount >= penCount) {
-                result.setDamageColor(bullet.是否为敌人 ? "#7F0000" : "#7F6A00");
+                result._dmgColorId = bullet.是否为敌人 ? 7 : 8; // 跳弹
             } else {
-                result.setDamageColor(bullet.是否为敌人 ? "#FF7F7F" : "#FFE770");
+                result._dmgColorId = bullet.是否为敌人 ? 9 : 10; // 过穿
             }
 
             // ========== 近似缩放伤害数字大小 ==========

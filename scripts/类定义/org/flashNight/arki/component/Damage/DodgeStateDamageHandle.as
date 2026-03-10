@@ -95,15 +95,13 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
                 damageNumber = DamageResistanceHandler.bounceDamageCalculation(damageNumber, target.防御力);
                 damageSize *= 0.5 + 0.5 * damageNumber / target.损伤值;
                 target.损伤值 = damageNumber;
-                var jumpDamageColor:String = bullet.是否为敌人 ? "#7F0000" : "#7F6A00";
-                result.setDamageColor(jumpDamageColor);
+                result._dmgColorId = bullet.是否为敌人 ? 7 : 8; // 跳弹：#7F0000 / #7F6A00
                 break;
             case "过穿":
                 damageNumber = DamageResistanceHandler.penetrationDamageCalculation(damageNumber, target.防御力);
                 damageSize *= 0.5 + 0.5 * damageNumber / target.损伤值;
                 target.损伤值 = damageNumber;
-                var pierceDamageColor:String = bullet.是否为敌人 ? "#FF7F7F" : "#FFE770";
-                result.setDamageColor(pierceDamageColor);
+                result._dmgColorId = bullet.是否为敌人 ? 9 : 10; // 过穿：#FF7F7F / #FFE770
                 break;
             case "躲闪":
             case "直感":

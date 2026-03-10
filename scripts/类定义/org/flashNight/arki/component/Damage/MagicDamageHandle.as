@@ -39,12 +39,11 @@ class org.flashNight.arki.component.Damage.MagicDamageHandle extends BaseDamageH
         var targetResist:Object = target.魔法抗性;
         var targetLevel:Number = target.等级;
 
-        // ======= 优化颜色与特效处理 =======
-        var magicDamageColor:String = bullet.是否为敌人 ? "#AC99FF" : "#0099FF";
-        result.setDamageColor(magicDamageColor);
-
+        // ======= 颜色与特效处理（延迟 HTML 构建） =======
+        result._dmgColorId = bullet.是否为敌人 ? 5 : 6; // 魔法：#AC99FF / #0099FF
+        result._efFlags |= 8; // EF_DMG_TYPE_LABEL
         var magicDamageAttr:String = bulletMagicAttr ? bulletMagicAttr : "能";
-        result.addDamageEffect('<font color="' + magicDamageColor + '" size="20"> ' + magicDamageAttr + '</font>');
+        result._efText = magicDamageAttr;
 
         // ======= 优化抗性计算 =======
         var enemyMagicResist:Number;
