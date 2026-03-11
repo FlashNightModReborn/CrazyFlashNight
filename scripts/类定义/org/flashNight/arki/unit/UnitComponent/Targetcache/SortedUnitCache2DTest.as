@@ -108,7 +108,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
         testSnapshotSemanticsWithinCacheLifetime();
         testGridReconfigureRebuildsExistingCache();
         testAutoBoundsResizeOnDataChange();
+        testResetGridConfig();
+        testCrossQueryResultIsolation();
         testManagerEmpty2DResultSelfHeals();
+        testManagerEmpty2DIndependentReferences();
         testFilterFunction2D();
         testEmptyCache2D();
         testRebuildFromParallelArrays();
@@ -322,6 +325,85 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
         SortedUnitCache.configureGrid(0, 0, 1000, 600, 200, 200);
     }
 
+    private static function testResetGridConfig():Void {
+        trace("\n--- testResetGridConfig ---");
+        // 先显式配置
+        SortedUnitCache.configureGrid(0, 0, 1000, 600, 200, 200);
+        var cache:SortedUnitCache = buildCache([makeUnit(60, 100, 100)]);
+        var grid1:SpatialHashGrid = cache.getGrid();
+        var stats1:Object = grid1.getStats();
+        assertEquals("reset_before_cols", 5, stats1.cols, 0);
+
+        // 重置为自动模式
+        SortedUnitCache.resetGridConfig();
+        var grid2:SpatialHashGrid = cache.getGrid();
+        assertTrue("reset_gridRebuilt", grid1 != grid2);
+        // 自动模式下只有 1 个单位，边界很小，cell 数应该为 1
+        var stats2:Object = grid2.getStats();
+        assertEquals("reset_autoBounds_cols", 1, stats2.cols, 0);
+
+        // 恢复显式配置供后续测试
+        SortedUnitCache.configureGrid(0, 0, 1000, 600, 200, 200);
+    }
+
+    /**
+     * P0 测试：SortedUnitCache 层连续两次不同类型 2D 查询，第一次结果不应被覆盖。
+     * 模拟 AI 典型模式："先找敌人范围内目标，再查矩形区域友军"
+     */
+    private static function testCrossQueryResultIsolation():Void {
+        trace("\n--- testCrossQueryResultIsolation ---");
+        SortedUnitCache.configureGrid(0, 0, 1000, 600, 200, 200);
+
+        var units:Array = [];
+        units.push(makeUnit(50, 100, 100));
+        units.push(makeUnit(51, 200, 100));
+        units.push(makeUnit(52, 800, 500));
+        var cache:SortedUnitCache = buildCache(units);
+
+        // 第一次查询：circle 命中 2 个
+        var r1:Array = cache.queryCircle2D(150, 100, 150, null);
+        var r1Len:Number = r1.length;
+        assertEquals("cross_circle_before", 2, r1Len, 0);
+        var savedUnit:Object = r1[0];
+
+        // 第二次查询：rect 命中 1 个（不同区域）
+        var r2:Array = cache.queryRect2D(700, 400, 900, 600, null);
+        assertEquals("cross_rect", 1, r2.length, 0);
+
+        // 核心验证：第一次结果引用是否仍完好
+        assertEquals("cross_circle_afterRect", 2, r1.length, 0);
+        assertTrue("cross_circle_data_intact", r1[0] == savedUnit);
+    }
+
+    /**
+     * P0 测试：TargetCacheManager 返回的两个空结果不应是同一个引用，
+     * 否则调用方对其中一个的修改会影响另一个。
+     */
+    private static function testManagerEmpty2DIndependentReferences():Void {
+        trace("\n--- testManagerEmpty2DIndependentReferences ---");
+
+        var managerClass:Object = TargetCacheManager;
+        var providerKey:String = "_provider";
+        var originalProvider:Object = managerClass[providerKey];
+        managerClass[providerKey] = {
+            getCache: function(requestType:String, target:Object, interval:Number):Object {
+                return null;
+            }
+        };
+
+        var empty1:Array = TargetCacheManager.queryCircle2D(null, 1, "敌人", 0, 0, 100, null);
+        var empty2:Array = TargetCacheManager.queryRect2D(null, 1, "敌人", 0, 0, 10, 10, null);
+
+        // 两个空结果不应是同一引用
+        assertTrue("empty2d_independent_refs", empty1 != empty2);
+
+        // 修改其中一个不应影响另一个
+        empty1.push("pollution");
+        assertEquals("empty2d_no_cross_pollute", 0, empty2.length, 0);
+
+        managerClass[providerKey] = originalProvider;
+    }
+
     private static function testManagerEmpty2DResultSelfHeals():Void {
         trace("\n--- testManagerEmpty2DResultSelfHeals ---");
 
@@ -334,12 +416,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
             }
         };
 
+        // 每次空查询返回独立新数组，污染一个不影响后续
         var empty1:Array = TargetCacheManager.queryCircle2D(null, 1, "敌人", 0, 0, 100, null);
         assertEquals("manager_empty2d_initial", 0, empty1.length, 0);
         empty1.push("polluted");
 
         var empty2:Array = TargetCacheManager.queryRect2D(null, 1, "敌人", 0, 0, 10, 10, null);
-        assertEquals("manager_empty2d_selfHeal", 0, empty2.length, 0);
+        assertEquals("manager_empty2d_clean", 0, empty2.length, 0);
+        assertTrue("manager_empty2d_freshArray", empty1 != empty2);
 
         managerClass[providerKey] = originalProvider;
     }

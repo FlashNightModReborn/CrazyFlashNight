@@ -123,7 +123,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
 
     /**
      * 配置全局 2D 网格参数（通常在关卡加载时调用一次）
-     * 如不调用，_ensureGrid 会从当前数据自动推算边界
+     * 如不调用，_ensureGrid 会从当前数据自动推算边界。
+     * 传入 NaN 作为 originX/Y/width/height 可切换到自动边界模式。
      */
     public static function configureGrid(
         originX:Number, originY:Number,
@@ -139,17 +140,29 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         _gridConfigVersion++;
     }
 
+    /**
+     * 重置网格配置为自动边界模式（NaN 边界 + 默认 200x200 cell）。
+     * 适用于关卡卸载或需要恢复默认状态的场景。
+     */
+    public static function resetGridConfig():Void {
+        _gridOriginX = Number(undefined);
+        _gridOriginY = Number(undefined);
+        _gridWidth = Number(undefined);
+        _gridHeight = Number(undefined);
+        _gridCellW = 200;
+        _gridCellH = 200;
+        _gridConfigVersion++;
+    }
+
+    /** _resolveGridBounds 的静态复用输出上下文（避免实例字段膨胀） */
+    private static var _gbCtx:Object = { ox: 0, oy: 0, w: 100, h: 100, explicit: false };
+
     /** 懒建立的 2D 空间哈希网格实例（数据更新时标记脏，复用实例） */
     private var _grid:SpatialHashGrid;
     private var _gridVersion:Number = -1;
     /** 数据已更新但网格尚未 rebuild 的标记 */
     private var _gridDirty:Boolean = false;
-    /** 最近一次建格时解析出的几何参数；仅在隐式边界模式下用于判断是否需要重建实例 */
-    private var _gridResolvedOriginX:Number;
-    private var _gridResolvedOriginY:Number;
-    private var _gridResolvedWidth:Number;
-    private var _gridResolvedHeight:Number;
-    private var _gridResolvedUsesExplicitBounds:Boolean = false;
+    /** 上次建格时的几何参数，用于隐式边界模式下判断是否需要重建实例 */
     private var _gridBuiltOriginX:Number;
     private var _gridBuiltOriginY:Number;
     private var _gridBuiltWidth:Number;
@@ -1526,11 +1539,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         if (w < 1) w = 100;
         if (h < 1) h = 100;
 
-        this._gridResolvedOriginX = ox;
-        this._gridResolvedOriginY = oy;
-        this._gridResolvedWidth = w;
-        this._gridResolvedHeight = h;
-        this._gridResolvedUsesExplicitBounds = usesExplicit;
+        var ctx:Object = _gbCtx;
+        ctx.ox = ox;
+        ctx.oy = oy;
+        ctx.w = w;
+        ctx.h = h;
+        ctx.explicit = usesExplicit;
     }
 
     private function _ensureGrid():Void {
@@ -1545,31 +1559,28 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
             _resolveGridBounds();
         }
 
+        var ctx:Object = _gbCtx;
+
         if (!needNewGrid && this._gridDirty && !this._gridUsesExplicitBounds) {
             needNewGrid = (
-                this._gridResolvedOriginX != this._gridBuiltOriginX ||
-                this._gridResolvedOriginY != this._gridBuiltOriginY ||
-                this._gridResolvedWidth != this._gridBuiltWidth ||
-                this._gridResolvedHeight != this._gridBuiltHeight ||
-                this._gridResolvedUsesExplicitBounds != this._gridUsesExplicitBounds
+                ctx.ox != this._gridBuiltOriginX ||
+                ctx.oy != this._gridBuiltOriginY ||
+                ctx.w != this._gridBuiltWidth ||
+                ctx.h != this._gridBuiltHeight ||
+                ctx.explicit != this._gridUsesExplicitBounds
             );
         }
 
         if (needNewGrid) {
             this._grid = new SpatialHashGrid(
-                this._gridResolvedOriginX,
-                this._gridResolvedOriginY,
-                this._gridResolvedWidth,
-                this._gridResolvedHeight,
-                _gridCellW,
-                _gridCellH
+                ctx.ox, ctx.oy, ctx.w, ctx.h, _gridCellW, _gridCellH
             );
             this._gridVersion = _gridConfigVersion;
-            this._gridBuiltOriginX = this._gridResolvedOriginX;
-            this._gridBuiltOriginY = this._gridResolvedOriginY;
-            this._gridBuiltWidth = this._gridResolvedWidth;
-            this._gridBuiltHeight = this._gridResolvedHeight;
-            this._gridUsesExplicitBounds = this._gridResolvedUsesExplicitBounds;
+            this._gridBuiltOriginX = ctx.ox;
+            this._gridBuiltOriginY = ctx.oy;
+            this._gridBuiltWidth = ctx.w;
+            this._gridBuiltHeight = ctx.h;
+            this._gridUsesExplicitBounds = ctx.explicit;
         }
 
         // 数据脏或刚 new 的 grid → rebuild（复用已有 cell 数组）

@@ -72,6 +72,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGridTest {
         testCellBoundary();
         testNearestBoundaryInclusive();
         testSnapshotCoordinates();
+        testResultArrayIsolation();
+        testNaNQueryDefense();
         testLargeScale();
         testFilterFunction();
         testPerformanceBenchmark();
@@ -266,6 +268,66 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGridTest {
 
         assertEquals("snapshot_afterMove_oldPos", 1, g.queryCircle(100, 100, 20).length, 0);
         assertEquals("snapshot_afterMove_newPos", 0, g.queryCircle(500, 500, 20).length, 0);
+    }
+
+    /**
+     * P0 测试：连续两次不同类型查询，第一次结果不应被第二次覆盖。
+     * 暴露 _result 数组复用导致的跨查询数据覆盖 bug。
+     */
+    private static function testResultArrayIsolation():Void {
+        trace("\n--- testResultArrayIsolation ---");
+        var g:SpatialHashGrid = new SpatialHashGrid(0, 0, 1000, 600, 200, 200);
+
+        g.insert(makeUnit(1, 100, 100), 100, 100);
+        g.insert(makeUnit(2, 200, 100), 200, 100);
+        g.insert(makeUnit(3, 800, 500), 800, 500);
+
+        // 第一次查询：circle 命中 2 个
+        var r1:Array = g.queryCircle(150, 100, 150);
+        var r1Len:Number = r1.length;
+        assertEquals("isolation_circle_before", 2, r1Len, 0);
+
+        // 保存第一次结果的引用
+        var firstUnit:Object = r1[0];
+
+        // 第二次查询：rect 命中 1 个（不同区域）
+        var r2:Array = g.queryRect(700, 400, 900, 600);
+        assertEquals("isolation_rect", 1, r2.length, 0);
+
+        // 核心验证：第一次结果不应被第二次破坏
+        assertEquals("isolation_circle_after", 2, r1.length, 0);
+        assertTrue("isolation_circle_data_intact", r1[0] == firstUnit);
+    }
+
+    /**
+     * P2 测试：查询参数为 NaN 或 Infinity 时不应崩溃，应返回安全结果。
+     * 模拟单位被回收后坐标变为 undefined/NaN 的场景。
+     */
+    private static function testNaNQueryDefense():Void {
+        trace("\n--- testNaNQueryDefense ---");
+        var g:SpatialHashGrid = new SpatialHashGrid(0, 0, 400, 400, 100, 100);
+        g.insert(makeUnit(1, 200, 200), 200, 200);
+
+        // NaN 查询不应崩溃
+        var r1:Array = g.queryCircle(Number(undefined), 200, 100);
+        // NaN 坐标 → (NaN - ox) * invW | 0 = 0，所以 c0=c1=0，可能命中 cell[0]
+        // 关键是不崩溃，长度可能是 0 或 1
+        assertTrue("nan_circle_noCrash", r1 != null);
+
+        var r2:Array = g.queryRect(Number(undefined), 0, 400, 400);
+        assertTrue("nan_rect_noCrash", r2 != null);
+
+        var n1:Object = g.queryNearest(Number(undefined), 200, 100, null);
+        // 不崩溃即可，结果不做断言
+        assertTrue("nan_nearest_noCrash", true);
+
+        var c1:Number = g.countInCircle(Number(undefined), 200, 100);
+        assertTrue("nan_count_noCrash", !isNaN(c1));
+
+        // Infinity 半径：应不崩溃，返回所有单位
+        // (Infinity - ox) * invW | 0 在 AS2 中 = 0（NaN|0 = 0）
+        var r3:Array = g.queryCircle(200, 200, 1.0/0);
+        assertTrue("inf_circle_noCrash", r3 != null);
     }
 
     private static function testLargeScale():Void {

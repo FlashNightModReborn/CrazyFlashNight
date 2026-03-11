@@ -2,7 +2,7 @@
  * SpatialHashGrid - 2D spatial hash grid for 2.5D games
  * Flat array index: grid[col * rows + row]
  * Rebuild each frame: clear + rebuildFromUnits
- * Query result array reuse, zero high-frequency allocation
+ * Each query returns a fresh array; caller may hold the reference safely
  * Out-of-bounds coordinates auto-clamped
  *
  * @version 1.0
@@ -23,7 +23,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
     private var _units:Array;
     private var _xs:Array;
     private var _ys:Array;
-    private var _result:Array;
 
     /**
      * @param originX  Grid left X (typically Xmin)
@@ -54,7 +53,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         _xs = [];
         _ys = [];
         _unitCount = 0;
-        _result = [];
 
         var i:Number = _cellCount;
         while (--i >= 0) {
@@ -228,12 +226,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
 
     /**
      * Rectangle query. Returns units whose center is in [x1,x2] x [y1,y2].
-     * Result array is reused - consume before next query call.
+     * Returns a fresh array; caller may safely hold the reference.
      */
     public function queryRect(x1:Number, y1:Number, x2:Number, y2:Number,
                                filterFn:Function):Array {
-        var result:Array = _result;
-        result.length = 0;
+        var result:Array = [];
 
         var ox:Number = _originX;
         var oy:Number = _originY;
@@ -304,8 +301,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
      */
     public function queryCircle(cx:Number, cy:Number, radius:Number,
                                  filterFn:Function):Array {
-        var result:Array = _result;
-        result.length = 0;
+        var result:Array = [];
 
         if (radius <= 0) return result;
 

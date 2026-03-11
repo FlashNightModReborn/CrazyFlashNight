@@ -48,17 +48,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      */
     private static var _emptyResult:Object = { data: [], startIndex: 0 };
 
-    /** 2D 查询的空结果复用数组（调用方不得持有引用） */
-    private static var _empty2D:Array = [];
-
-    /**
-     * 安全返回空 2D 结果：重置长度，避免上次调用方污染泄漏到后续空查询
-     */
-    private static function _safeEmpty2D():Array {
-        _empty2D.length = 0;
-        return _empty2D;
-    }
-
     /**
      * 安全返回空结果：重置 _emptyResult 以防止上次调用方的污染泄漏
      * @return {Object} 重置后的空结果对象
@@ -1437,7 +1426,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         cx:Number, cy:Number, radius:Number, filterFn:Function
     ):Array {
         var cache:SortedUnitCache = _provider.getCache(requestType, target, interval);
-        return cache ? cache.queryCircle2D(cx, cy, radius, filterFn) : _safeEmpty2D();
+        return cache ? cache.queryCircle2D(cx, cy, radius, filterFn) : [];
     }
 
     /**
@@ -1449,7 +1438,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         x1:Number, y1:Number, x2:Number, y2:Number, filterFn:Function
     ):Array {
         var cache:SortedUnitCache = _provider.getCache(requestType, target, interval);
-        return cache ? cache.queryRect2D(x1, y1, x2, y2, filterFn) : _safeEmpty2D();
+        return cache ? cache.queryRect2D(x1, y1, x2, y2, filterFn) : [];
     }
 
     /**
