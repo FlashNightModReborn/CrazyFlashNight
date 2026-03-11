@@ -69,6 +69,17 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 编辑 `scripts/TestLoader.as`（Git 跟踪），再触发编译。
 `compile_action.jsfl` 通过 `eval()` 动态加载，修改后无需重启 Flash。
 
+补充约束：
+- `TestLoader.as` 适合作为 smoke test 入口，默认内容应尽量在数秒内结束并输出明确 trace
+- 编辑 `.as` 文件后应保持 **UTF-8 with BOM**
+- PowerShell 手动执行命令前先跑 `chcp.com 65001 | Out-Null`，否则中文输出容易乱码
+
+### 4. 快速套件与长耗时套件
+
+- `scripts/compile_test.ps1` 的轮询上限是 **30 秒**，适合快速回归
+- 如果把 `TestLoader.as` 临时切到长耗时测试（例如 `RegExpTest.runAllTests()` 含性能基准），当前工作站实测可达 **约 37 秒**
+- 长耗时场景下不要直接依赖 `compile_test.ps1` 的默认超时，应改用更长轮询脚本，或手动等待 `publish_done.marker` 与 `flashlog.txt`
+
 ## 关键文件
 
 ### 项目目录（Git 跟踪）
@@ -129,6 +140,19 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 - `publish()` 只编译 SWF，不运行，无 trace 输出
 - 当前使用 `testMovie()` 以获取 trace 调试信息
 
+### `publish_done.marker` 不等于 SWF 已成功运行
+- `compile_action.jsfl` 在 `doc.testMovie()` 返回后就会写入 `publish_done.marker`
+- 实际验证中，若 AS2 存在编译期静态类型错误，依然可能出现：
+  - `publish_done.marker` 已生成
+  - `scripts/compile_output.txt` 只有 `[compile] done`
+  - `%APPDATA%\Macromedia\Flash Player\Logs\flashlog.txt` 仍为 0 字节或没有新 trace
+- 结论：`publish_done.marker` 只能说明 **JSFL 已完成触发**，不能单独当作“编译并运行成功”的判据
+
+### `compile_output.txt` 的局限
+- `scripts/compile_output.txt` 保存的是 JSFL 通过 `fl.outputPanel.save()` 能拿到的 Output Panel 文本
+- 目前它不能稳定带回 Flash 编译器面板里的 AS2 错误详情
+- 遇到 “marker 成功但没有 trace” 时，应优先查看 Flash CS6 IDE 里的 **输出 / 编译器错误** 面板
+
 ## 跨设备同步
 
 1. `git pull` 获取最新代码
@@ -155,6 +179,20 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 4. **compile.jsfl 未部署**：检查 Commands 目录下是否存在
 5. **flash_project_path.cfg 路径错误**：`cat "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project_path.cfg"`，应为 `file:///C|/...` 格式
 
+### marker 已生成，但 `flashlog.txt` 为空
+
+1. 先看 Flash CS6 IDE 的 **输出 / 编译器错误** 面板，确认是否有 AS2 编译错误
+2. 检查 `scripts/compile_output.txt`；如果只有 `[compile] done`，不能据此判断 SWF 已成功运行
+3. 检查真实日志 `%APPDATA%\Macromedia\Flash Player\Logs\flashlog.txt` 的时间戳与长度是否刷新
+4. 确认 `scripts/TestLoader.as` 是否仍保留明确的 trace 入口
+5. 最近如果改过 `.as` 文件编码，确认文件仍为 **UTF-8 with BOM**
+
+### 长耗时测试被 `compile_test.ps1` 提前超时
+
+- 默认脚本只等 30 秒，超时不代表 Flash 停止工作
+- 性能基准或大套件请改用更长轮询
+- 推荐把 `TestLoader.as` 默认保持为 quick suite，只在需要时临时切换到 full suite
+
 ### setup 脚本计划任务创建失败
 
 - 必须**右键 → 以管理员身份运行**，普通权限下 `schtasks /create` 会静默失败
@@ -168,5 +206,5 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 
 ## 待解决
 
-- [ ] 编译错误捕获和返回（目前只有 error_marker 简单标记）
+- [ ] 编译错误捕获和返回（Flash 编译器错误目前不能稳定回传到自动化脚本）
 - [ ] testMovie 预览窗口自动关闭

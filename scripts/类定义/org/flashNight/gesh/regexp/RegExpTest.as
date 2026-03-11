@@ -11,6 +11,14 @@ class org.flashNight.gesh.regexp.RegExpTest {
     private static var failedTests:Number = 0;
     
     public static function runTests():Void {
+        runSuite(false);
+    }
+
+    public static function runAllTests():Void {
+        runSuite(true);
+    }
+
+    private static function runSuite(includeBenchmarks:Boolean):Void {
         trace("=====================================");
         trace("开始运行 RegExp 引擎测试...");
         trace("=====================================");
@@ -36,14 +44,20 @@ class org.flashNight.gesh.regexp.RegExpTest {
         // 运行阶段1 基础语法扩展测试
         runPhase1BasicExtensionTests();
         trace("");
-        
-        // 运行阶段P 性能基准测试
-        runPerformanceBenchmarks();
+
+        // 运行阶段2 命名捕获组测试
+        runPhase2NamedCaptureTests();
         trace("");
-        
-        // 运行阶段2 命名捕获组测试（暂时禁用）
-        // runPhase2NamedCaptureTests();
-        // trace("");
+
+        // 运行阶段3 API/语义回归测试
+        runPhase3ApiSemanticsTests();
+        trace("");
+
+        if (includeBenchmarks) {
+            // 运行阶段P 性能基准测试
+            runPerformanceBenchmarks();
+            trace("");
+        }
         
         // 运行注入原型链测试
         runPrototypeInjectionTests();
@@ -491,23 +505,104 @@ class org.flashNight.gesh.regexp.RegExpTest {
         trace("========== 阶段2 命名捕获组测试 ==========");
         
         // 2-1: (?<name>...) 命名捕获组
-        trace("Creating RegExp with named capture group...");
-        var re1:RegExp = new RegExp("(?<year>\\d+)", "");
-        trace("RegExp created, testing...");
-        var m1:Array = re1.exec("2026");
-        trace("Exec result: " + m1);
-        if (m1 != null) {
-            assertEquals("2-1: 编号引用 m[1]", "2026", m1[1]);
-            if (m1.groups != undefined) {
-                assertEquals("2-1: 命名引用 m.groups.year", "2026", m1.groups.year);
+        try {
+            var re1:RegExp = new RegExp("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", "");
+            var m1:Array = re1.exec("2026-03-11");
+            if (m1 != null) {
+                assertEquals("2-1: 编号引用 m[1]", "2026", m1[1]);
+                assertEquals("2-1: 编号引用 m[2]", "03", m1[2]);
+                assertEquals("2-1: 编号引用 m[3]", "11", m1[3]);
+                assertTrue("2-1: groups 对象存在", m1.groups != undefined);
+                if (m1.groups != undefined) {
+                    assertEquals("2-1: 命名引用 m.groups.year", "2026", m1.groups.year);
+                    assertEquals("2-1: 命名引用 m.groups.month", "03", m1.groups.month);
+                    assertEquals("2-1: 命名引用 m.groups.day", "11", m1.groups.day);
+                }
             } else {
-                trace("2-1: groups 未定义");
+                assertTrue("2-1: 命名捕获组未匹配", false);
             }
-        } else {
-            assertTrue("2-1: 命名捕获组未匹配", false);
+        } catch (e1:Error) {
+            assertTrue("2-1: 命名捕获组不应抛异常", false);
+        }
+
+        try {
+            var re2:RegExp = new RegExp("^(?<word>cat)$", "i");
+            assertTrue("2-2: 命名捕获组应支持 ignoreCase", re2.test("CAT") === true);
+        } catch (e2:Error) {
+            assertTrue("2-2: 命名捕获组 ignoreCase 不应抛异常", false);
         }
         
         trace("========== 阶段2 命名捕获组测试结束 ==========");
+    }
+
+    public static function runPhase3ApiSemanticsTests():Void {
+        trace("========== 阶段3 API/语义回归测试 ==========");
+
+        var re1:RegExp = new RegExp("^abc$", "m");
+        assertTrue("3-1: /^abc$/m 应匹配中间整行", re1.test("xyz\nabc\n123") === true);
+
+        var re2:RegExp = new RegExp("^$", "m");
+        assertTrue("3-1: /^$/m 应匹配空行", re2.test("a\n\nb") === true);
+
+        var re3:RegExp = new RegExp("^abc\\$", "");
+        assertTrue("3-2: /^abc\\$/ 应匹配 'abc$y' 的前缀", re3.test("abc$y") === true);
+
+        var re4:RegExp = new RegExp("a*", "g");
+        var z1:Array = re4.exec("b");
+        var z2:Array = re4.exec("b");
+        var z3:Array = re4.exec("b");
+        assertTrue("3-3: /a*/g 第1次 exec 应返回空匹配", z1 != null);
+        if (z1 != null) {
+            assertEquals("3-3: /a*/g 第1次 exec 匹配内容", "", z1[0]);
+            assertEquals("3-3: /a*/g 第1次 exec 索引", 0, z1.index);
+        }
+        assertTrue("3-3: /a*/g 第2次 exec 应推进到末尾", z2 != null);
+        if (z2 != null) {
+            assertEquals("3-3: /a*/g 第2次 exec 匹配内容", "", z2[0]);
+            assertEquals("3-3: /a*/g 第2次 exec 索引", 1, z2.index);
+        }
+        assertTrue("3-3: /a*/g 第3次 exec 应返回 null", z3 == null);
+
+        RegExp.injectMethods();
+
+        var zeroWidthStr:Object = "b";
+        var zeroMatches:Array = zeroWidthStr.regexp_match(new RegExp("a*", "g"));
+        assertTrue("3-4: regexp_match 应保留两个零宽匹配", zeroMatches != null && zeroMatches.length === 2);
+        if (zeroMatches != null && zeroMatches.length === 2) {
+            assertEquals("3-4: regexp_match 第1个零宽匹配", "", zeroMatches[0]);
+            assertEquals("3-4: regexp_match 第2个零宽匹配", "", zeroMatches[1]);
+        }
+
+        var csv:Object = "a,b,c";
+        var splitResult:Array = csv.regexp_split(new RegExp(",", ""));
+        assertTrue("3-5: regexp_split 非 g 模式也应拆分全部命中", splitResult != null && splitResult.length === 3);
+        if (splitResult != null && splitResult.length === 3) {
+            assertEquals("3-5: regexp_split 第1段", "a", splitResult[0]);
+            assertEquals("3-5: regexp_split 第2段", "b", splitResult[1]);
+            assertEquals("3-5: regexp_split 第3段", "c", splitResult[2]);
+        }
+
+        var isoDate:Object = "2026-03-11";
+        var numberedReplace:String = isoDate.regexp_replace(new RegExp("(\\d{4})-(\\d{2})-(\\d{2})", ""), "$2/$3/$1");
+        assertEquals("3-6: regexp_replace 应支持 $1/$2/$3", "03/11/2026", numberedReplace);
+
+        try {
+            var namedReplace:String = isoDate.regexp_replace(new RegExp("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", ""), "$<day>/$<month>/$<year>");
+            assertEquals("3-6: regexp_replace 应支持 $<name>", "11/03/2026", namedReplace);
+        } catch (e3:Error) {
+            assertTrue("3-6: 命名替换不应抛异常", false);
+        }
+
+        var escapedDollar:String = isoDate.regexp_replace(new RegExp("2026", ""), "$$YEAR");
+        assertEquals("3-6: regexp_replace 应支持 $$ 转义", "$YEAR-03-11", escapedDollar);
+
+        RegExp.removeMethods();
+
+        var re5:Object = new RegExp("abc", "im");
+        assertEquals("3-7: source 应暴露原始模式", "abc", re5.source);
+        assertEquals("3-7: flags 应暴露原始标志", "im", re5.flags);
+
+        trace("========== 阶段3 API/语义回归测试结束 ==========");
     }
 
     /**

@@ -7,6 +7,9 @@ function main() {
 	projectURI = projectURI.replace(/[\r\n]+$/, "");
 	var doneMarker = projectURI + "/scripts/publish_done.marker";
 	var errorMarker = projectURI + "/scripts/publish_error.marker";
+	var outputLog = projectURI + "/scripts/compile_output.txt";
+
+	fl.outputPanel.clear();
 
 	fl.trace("[compile] docs: " + fl.documents.length);
 
@@ -16,10 +19,12 @@ function main() {
 	if (!doc) {
 		FLfile.write(errorMarker, "no document open");
 		fl.trace("[compile] ERROR: no document");
+		fl.outputPanel.save(outputLog);
 	} else {
 		fl.trace("[compile] testMovie: " + doc.name);
 		doc.testMovie();
 		fl.trace("[compile] done");
+		fl.outputPanel.save(outputLog);
 		FLfile.write(doneMarker, "ok");
 	}
 }

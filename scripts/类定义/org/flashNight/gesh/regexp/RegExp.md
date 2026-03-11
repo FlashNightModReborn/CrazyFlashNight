@@ -6,6 +6,10 @@
 
 **架构**：`Parser`（词法/语法分析）→ `ASTNode`（AST 节点 + 匹配引擎）→ `RegExp`（用户接口）
 
+**架构边界**：
+- 优势：分组、断言、捕获结果、替换模板等 ECMAScript 风格语义都可以在现有 AST 框架内继续扩展
+- 约束：当前仍是回溯型引擎，最坏情况下仍可能出现灾难回溯；后顾断言只支持固定长度模式
+
 ---
 
 ### 目录
@@ -43,6 +47,15 @@ var regex:RegExp = new RegExp(pattern:String, flags:String);
 **示例**：
 ```actionscript
 var regex:RegExp = new RegExp("\\d+", "gi");
+```
+
+实例公开属性：
+
+```actionscript
+var re:RegExp = new RegExp("abc", "im");
+trace(re.source);    // "abc"
+trace(re.flags);     // "im"
+trace(re.lastIndex); // 0
 ```
 
 ---
@@ -169,6 +182,22 @@ var re:RegExp = new RegExp("(ab(c|d))+", "");
 re.test("abcabd");  // true
 ```
 
+#### 5.4 命名捕获组 `(?<name>...)`
+
+```actionscript
+var re:RegExp = new RegExp("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", "");
+var m:Array = re.exec("2026-03-11");
+
+trace(m[1]);           // "2026"
+trace(m.groups.year);  // "2026"
+trace(m.groups.month); // "03"
+trace(m.groups.day);   // "11"
+```
+
+- 命名组同时保留编号捕获和 `groups` 对象访问
+- `groups` 是普通 `Object`
+- 当前不主动拒绝重复组名；如果重复命名，`groups` 中后出现的同名键会覆盖前者，建议避免重复命名
+
 ---
 
 ### 6. 逻辑或操作符 `|`
@@ -277,6 +306,8 @@ re.test("aa");  // true
 re.test("ab");  // false
 ```
 
+> 当前只支持数字反向引用，不支持命名反向引用 `\k<name>`。
+
 ---
 
 ### 11. 特殊字符与转义
@@ -323,6 +354,33 @@ var parts:Array = str.regexp_split(re);
 // ["Price: $", " and $", ""]
 
 RegExp.removeMethods();  // 使用完毕后移除
+```
+
+补充语义：
+
+- `regexp_match()` 在 `g` 模式下会安全推进 `lastIndex`，不会因为零宽匹配卡死
+- `regexp_split()` 会内部克隆出带 `g` 标志的正则，因此即使传入的原始表达式没有 `g`，也会完成全部分割
+- `regexp_replace()` 当前支持以下替换模板：
+  - `$$`：字面量 `$`
+  - `$&`：整个匹配
+  - ``$` ``：匹配前缀
+  - `$'`：匹配后缀
+  - `$1`、`$2` ...：编号捕获组
+  - `$<name>`：命名捕获组
+
+示例：
+
+```actionscript
+RegExp.injectMethods();
+
+var iso:Object = "2026-03-11";
+var reDate:RegExp = new RegExp("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", "");
+
+trace(iso.regexp_replace(reDate, "$2/$3/$1"));             // "03/11/2026"
+trace(iso.regexp_replace(reDate, "$<day>/$<month>/$<year>")); // "11/03/2026"
+trace(iso.regexp_replace(new RegExp("2026", ""), "$$YEAR"));   // "$YEAR-03-11"
+
+RegExp.removeMethods();
 ```
 
 ---
@@ -377,19 +435,32 @@ re.test("TRUE");  // true
 
 #### ReDoS 防护
 
-对于 `(a+)+b` 这类嵌套量词模式，当前引擎在 25 个 `a` 的输入上可在 <30ms 内快速失败。但更深层的嵌套仍可能导致指数级回溯，建议：
+字符类节点会预构建 ASCII / Unicode 命中缓存，能够明显改善 `[a-zA-Z0-9]+` 这类高频字符集判断。
+
+对于 `(a+)+b` 这类嵌套量词模式，当前引擎在 25 个 `a` 的输入上实测约 **99ms** 单次失败，仍低于测试阈值，但更深层嵌套依然可能导致指数级回溯，建议：
 - 避免 `(a*)*`、`(a+)+` 等嵌套量词
 - 优先使用具体的字符集 + 固定量词
 
-#### 性能参考（AVM1 环境）
+#### 性能参考（当前仓库 TestLoader 基准实测）
 
-| 基准 | 典型耗时 |
+| 基准 | 实测耗时 |
 |------|----------|
-| 简单字面量匹配 | ~0.4ms/op |
-| 字符类匹配 | ~0.3ms/op |
-| 邮箱验证（复杂模式） | ~4.5ms/op |
-| 多捕获组 exec | ~0.1ms/op |
-| 全局匹配循环 | ~0.7ms/op |
+| 简单字面量匹配 | `1.3408ms/op` |
+| 字符类匹配 | `0.242ms/op` |
+| 邮箱验证（复杂模式） | `5.9215ms/op` |
+| ReDoS `(a+)+b`，25 个 `a` | `99ms` 单次 |
+| 多捕获组 exec | `0.3387ms/op` |
+| 全局匹配循环 | `2.638ms/op` |
+
+与本轮字符类缓存优化前的记录相比：
+
+- 字符类匹配：`0.5718ms/op` → `0.242ms/op`
+- 邮箱验证：`10.009ms/op` → `5.9215ms/op`
+
+仍需注意：
+
+- 简单字面量、密集 `exec()`、全局 `exec()` 循环并未同步变快
+- 主要热点仍在 `captures.slice()`、回溯分支复制和全局匹配状态维护
 
 ---
 
@@ -407,6 +478,16 @@ AS2 字符串中 `\` 要写两次：`"\\d"` 而非 `"\d"`。常见遗漏：`\\.`
 #### 15.4 `exec()` 与 `lastIndex`
 使用 `g` 标志时，`exec()` 从 `lastIndex` 开始匹配。循环调用前应重置：`re.lastIndex = 0;`
 
+#### 15.5 零宽全局匹配
+当前实现已对 `a*` 这类零宽全局匹配做推进保护，`exec()` / `regexp_match()` 不会因为空匹配陷入死循环。
+
+#### 15.6 当前未实现的常见语义
+- 命名反向引用 `\k<name>`
+- `regexp_replace()` 的函数回调替换
+- 类似 JavaScript `split` 的“把捕获组也插入结果数组”
+- 原子组 `(?>...)`、占有量词 `a++`
+- Unicode 属性类、内联 flag 组等更高级语法
+
 ---
 
 ### 16. 特性支持总表
@@ -419,7 +500,8 @@ AS2 字符串中 `\` 要写两次：`"\\d"` 而非 `"\d"`。常见遗漏：`\\.`
 | 预定义字符类 `\d\w\s\D\W\S` | ✅ | |
 | 量词 `* + ? {n} {n,} {n,m}` | ✅ | 贪婪 + 非贪婪 |
 | 分组 `()` / `(?:)` | ✅ | 捕获 + 非捕获 |
-| 交替 `\|` | ✅ | |
+| 命名捕获组 `(?<name>...)` | ✅ | `exec()` 结果带 `groups` 对象 |
+| 交替 `|` | ✅ | |
 | 锚点 `^ $` | ✅ | 支持多行模式 |
 | 正向前瞻 `(?=...)` | ✅ | |
 | 负向前瞻 `(?!...)` | ✅ | |
@@ -427,6 +509,9 @@ AS2 字符串中 `\` 要写两次：`"\\d"` 而非 `"\d"`。常见遗漏：`\\.`
 | 负向后顾 `(?<!...)` | ✅ | 固定长度 |
 | 单词边界 `\b` `\B` | ✅ | |
 | 反向引用 `\1` `\2` | ✅ | 基础支持 |
+| `source` / `flags` / `lastIndex` | ✅ | 公开实例属性 |
+| `regexp_replace()` 替换模板 | ✅ | 支持字面量 `$`、整个匹配、前后缀、编号组、命名组 |
+| `regexp_split()` 全量分割 | ✅ | 原始表达式即使无 `g` 也会内部克隆为全局模式 |
 | 十六进制转义 `\xHH` | ✅ | |
 | Unicode 转义 `\uHHHH` | ✅ | |
 | `i` 忽略大小写 | ✅ | |
@@ -434,7 +519,9 @@ AS2 字符串中 `\` 要写两次：`"\\d"` 而非 `"\d"`。常见遗漏：`\\.`
 | `m` 多行模式 | ✅ | |
 | `s` dotAll 模式 | ✅ | |
 | Sequence 跨兄弟回溯 | ✅ | 贪婪/非贪婪量词 + Group 包装量词 |
-| 命名捕获组 `(?<name>...)` | ❌ | 待实现 |
+| 命名反向引用 `\k<name>` | ❌ | 未实现 |
+| `regexp_replace()` 回调函数 | ❌ | 未实现 |
+| `split` 捕获组回填 | ❌ | 未实现 |
 | 原子组 `(?>...)` | ❌ | 待实现 |
 | 占有量词 `a++` | ❌ | 待实现 |
 | ReDoS 记忆化 | ❌ | 待实现 |
@@ -446,7 +533,8 @@ AS2 字符串中 `\` 要写两次：`"\\d"` 而非 `"\d"`。常见遗漏：`\\.`
 ```actionscript
 import org.flashNight.gesh.regexp.*;
 
-RegExpTest.runTests();
+RegExpTest.runTests();    // 快速回归
+RegExpTest.runAllTests(); // 含性能基准，Flash 自动化场景下可能超过 30 秒
 ```
 
 或通过 Flash CS6 自动化编译（详见 `scripts/FlashCS6自动化编译.md`）：

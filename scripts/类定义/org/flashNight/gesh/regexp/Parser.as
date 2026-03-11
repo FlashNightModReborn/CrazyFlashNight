@@ -6,6 +6,7 @@ class org.flashNight.gesh.regexp.Parser {
     private var length:Number;
     private var ignoreCase:Boolean;
     private var groupCount:Number;
+    private var groupNames:Array;
 
     public function Parser(pattern:String, flags:String) {
         this.pattern = pattern;
@@ -13,6 +14,7 @@ class org.flashNight.gesh.regexp.Parser {
         this.length = pattern.length;
         this.ignoreCase = flags.indexOf('i') >= 0;
         this.groupCount = 0;
+        this.groupNames = [];
     }
 
     /**
@@ -195,15 +197,28 @@ class org.flashNight.gesh.regexp.Parser {
                 node.capturing = false;
             } else if (peek() == '<') {
                 consume(); // 跳过 '<'
-                var lookbehindType:String = consume();
+                var lookbehindType:String = peek();
                 if (lookbehindType == '=') {
+                    consume();
                     node.type = 'PositiveLookbehind';
                 } else if (lookbehindType == '!') {
+                    consume();
                     node.type = 'NegativeLookbehind';
                 } else {
-                    throw new Error("Invalid group syntax '(?<" + lookbehindType + "' at position " + this.index);
+                    var groupName:String = parseGroupName();
+                    if (peek() != '>') {
+                        throw new Error("Unclosed named capture group at position " + this.index);
+                    }
+                    consume(); // 跳过 '>'
+                    node.capturing = true;
+                    this.groupCount += 1;
+                    node.groupNumber = this.groupCount;
+                    node.groupName = groupName;
+                    this.groupNames[this.groupCount] = groupName;
                 }
-                node.capturing = false;
+                if (node.type == 'PositiveLookbehind' || node.type == 'NegativeLookbehind') {
+                    node.capturing = false;
+                }
             } else {
                 throw new Error("Unsupported group syntax '(?" + peek() + "' at position " + this.index);
             }
@@ -371,6 +386,7 @@ class org.flashNight.gesh.regexp.Parser {
         }
         consume(); // 跳过 ']'
         node.value = chars;
+        node.buildCharacterClassCache();
         return node;
     }
 
@@ -461,6 +477,30 @@ class org.flashNight.gesh.regexp.Parser {
         return code >= 48 && code <= 57; // '0' to '9'
     }
 
+    private function parseGroupName():String {
+        var name:String = "";
+        if (this.index >= this.length || !isGroupNameStart(peek())) {
+            throw new Error("Invalid named capture group at position " + this.index);
+        }
+        name += consume();
+        while (this.index < this.length && peek() != '>') {
+            if (!isGroupNamePart(peek())) {
+                throw new Error("Invalid named capture group at position " + this.index);
+            }
+            name += consume();
+        }
+        return name;
+    }
+
+    private function isGroupNameStart(char:String):Boolean {
+        var code:Number = char.charCodeAt(0);
+        return (code >= 65 && code <= 90) || (code >= 97 && code <= 122) || code == 95;
+    }
+
+    private function isGroupNamePart(char:String):Boolean {
+        return isGroupNameStart(char) || isDigit(char);
+    }
+
     /**
      * 获取转义字符对应的字面量
      */
@@ -494,5 +534,9 @@ class org.flashNight.gesh.regexp.Parser {
      */
     public function getTotalGroups():Number {
         return this.groupCount;
+    }
+
+    public function getGroupNames():Array {
+        return this.groupNames;
     }
 }

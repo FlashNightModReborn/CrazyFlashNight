@@ -11,6 +11,11 @@
     public var capturing:Boolean;
     public var greedy:Boolean;
     public var groupNumber:Number;
+    public var groupName:String;
+    public var asciiMap:Array;
+    public var asciiFoldMap:Array;
+    public var unicodeMap:Object;
+    public var unicodeFoldMap:Object;
 
     public function ASTNode(type:String) {
         this.type = type;
@@ -25,6 +30,51 @@
         this.capturing = false;
         this.greedy = true;
         this.groupNumber = 0;
+        this.groupName = null;
+        this.asciiMap = null;
+        this.asciiFoldMap = null;
+        this.unicodeMap = null;
+        this.unicodeFoldMap = null;
+    }
+
+    public function buildCharacterClassCache():Void {
+        if (this.type != "CharacterClass" || this.value == null) {
+            return;
+        }
+
+        var asciiMap:Array = [];
+        var asciiFoldMap:Array = [];
+        var unicodeMap:Object = new Object();
+        var unicodeFoldMap:Object = new Object();
+        var chars = this.value;
+        var i:Number;
+        var entry:String;
+        var code:Number;
+        var lower:String;
+        var upper:String;
+
+        for (i = 0; i < chars.length; i++) {
+            entry = String(chars[i]);
+            code = entry.charCodeAt(0);
+            if (code < 256) {
+                asciiMap[code] = true;
+                asciiFoldMap[code] = true;
+
+                lower = entry.toLowerCase();
+                upper = entry.toUpperCase();
+                asciiFoldMap[lower.charCodeAt(0)] = true;
+                asciiFoldMap[upper.charCodeAt(0)] = true;
+            } else {
+                unicodeMap[entry] = true;
+                unicodeFoldMap[entry.toLowerCase()] = true;
+                unicodeFoldMap[entry.toUpperCase()] = true;
+            }
+        }
+
+        this.asciiMap = asciiMap;
+        this.asciiFoldMap = asciiFoldMap;
+        this.unicodeMap = unicodeMap;
+        this.unicodeFoldMap = unicodeFoldMap;
     }
 
     public function getFixedLength():Number {
@@ -109,12 +159,28 @@
                 if (position < inputLen) {
                     var ccChar:String = input.charAt(position);
                     var inSet:Boolean = false;
-                    var ccVal = this.value;
-                    
-                    for (var cj:Number = 0; cj < ccVal.length; cj++) {
-                        if (charEquals(ccVal[cj], ccChar, ignoreCase)) {
-                            inSet = true;
-                            break;
+                    var ccCode:Number = ccChar.charCodeAt(0);
+                    if (ignoreCase) {
+                        if (ccCode < 256 && this.asciiFoldMap != null) {
+                            inSet = this.asciiFoldMap[ccCode] === true;
+                        } else if (this.unicodeFoldMap != null) {
+                            inSet = this.unicodeFoldMap[ccChar.toLowerCase()] === true;
+                        }
+                    } else {
+                        if (ccCode < 256 && this.asciiMap != null) {
+                            inSet = this.asciiMap[ccCode] === true;
+                        } else if (this.unicodeMap != null) {
+                            inSet = this.unicodeMap[ccChar] === true;
+                        }
+                    }
+
+                    if (!inSet) {
+                        var ccVal = this.value;
+                        for (var cj:Number = 0; cj < ccVal.length; cj++) {
+                            if (charEquals(ccVal[cj], ccChar, ignoreCase)) {
+                                inSet = true;
+                                break;
+                            }
                         }
                     }
                     if (this.negated) {

@@ -4,237 +4,336 @@
  * RegExp 类实现了一个正则表达式引擎，用于在字符串中执行模式匹配、搜索和替换操作。
  */
 class org.flashNight.gesh.regexp.RegExp {
-    private var pattern:String;
-    private var flags:String;
+    public var source:String;
+    public var flags:String;
+
     private var ast:ASTNode;
     private var ignoreCase:Boolean;
     private var global:Boolean;
     private var multiline:Boolean;
     private var dotAll:Boolean;
-    public var lastIndex:Number = 0; // 记录上一次匹配的结束位置
-    private var totalGroups:Number; // 记录总捕获组数
+    private var totalGroups:Number;
+    private var groupNames:Array;
 
-    /**
-     * 构造函数，初始化 RegExp 实例。
-     * @param pattern 正则表达式模式字符串。
-     * @param flags 正则表达式标志，如 'i', 'g', 'm'。
-     */
+    public var lastIndex:Number = 0;
+
     public function RegExp(pattern:String, flags:String) {
-        this.pattern = pattern;
+        if (pattern == null) {
+            pattern = "";
+        }
+        if (flags == null) {
+            flags = "";
+        }
+
+        this.source = pattern;
         this.flags = flags;
-        this.ignoreCase = flags.indexOf('i') >= 0;
-        this.global = flags.indexOf('g') >= 0;
-        this.multiline = flags.indexOf('m') >= 0;
-        this.dotAll = flags.indexOf('s') >= 0;
+        this.ignoreCase = flags.indexOf("i") >= 0;
+        this.global = flags.indexOf("g") >= 0;
+        this.multiline = flags.indexOf("m") >= 0;
+        this.dotAll = flags.indexOf("s") >= 0;
+        this.totalGroups = 0;
+        this.groupNames = [];
         this.lastIndex = 0;
         this.parse();
     }
 
-    /**
-     * 解析正则表达式模式，生成 AST（抽象语法树）。
-     * @throws Error 如果解析失败。
-     */
     private function parse():Void {
-        var parser:Parser = new Parser(this.pattern, this.flags);
+        var parser:Parser = new Parser(this.source, this.flags);
         this.ast = parser.parse();
         this.totalGroups = parser.getTotalGroups();
+        this.groupNames = parser.getGroupNames();
     }
 
-    /**
-     * 测试输入字符串是否匹配正则表达式模式。
-     * @param input 输入字符串。
-     * @return 如果匹配返回 true，否则返回 false。
-     */
     public function test(input:String):Boolean {
-        if (this.ast == null) return false;
-        var inputLength:Number = input.length;
-        var startPos:Number = 0;
-
-
-        if (this.pattern.charAt(0) == '^') {
-            // 模式以 ^ 开头
-            // multiline 模式下，需要从每行行首尝试匹配
-            var checkPositions:Array = [0];
-            if (this.multiline) {
-                for (var i:Number = 0; i < input.length; i++) {
-                    if (input.charAt(i) == '\n') {
-                        checkPositions.push(i + 1);
-                    }
-                }
-            }
-            
-            for (var idx:Number = 0; idx < checkPositions.length; idx++) {
-                var checkPos:Number = checkPositions[idx];
-                if (checkPos > input.length) continue;
-                var captures:Array = initializeCaptures();
-                var result:Object = this.ast.match(input, checkPos, captures, this.ignoreCase, this.multiline, this.dotAll);
-            
-                if (!result.matched) {
-                    continue;
-                }
-                
-                // 检查是否以 $ 结尾，如果是则需要匹配到字符串结尾
-                var endsWithDollar:Boolean = this.pattern.charAt(this.pattern.length - 1) == '$';
-                
-                if (endsWithDollar) {
-                    if (result.position == inputLength) return true;
-                } else {
-                    return true; // 不以$结尾的^开头模式，只需要匹配成功即可
-                }
-            }
+        if (this.ast == null) {
             return false;
-        } else {
-            // 遍历字符串中的每个位置进行匹配
-            for (var pos:Number = 0; pos <= inputLength; pos++) {
-                var captures:Array = initializeCaptures();
-                var result:Object = this.ast.match(input, pos, captures, this.ignoreCase, this.multiline, this.dotAll);
-                if (result.matched) {
-                    if (!this.multiline) {
-                        return true;
-                    } else {
-                        // 在多行模式下，确保匹配符合行的边界
-                        return true;
+        }
+
+        var inputLength:Number = length(input);
+        var pos:Number;
+        var result:Object;
+
+        if (length(this.source) > 0 && this.source.charAt(0) == "^") {
+            result = this.ast.match(input, 0, initializeCaptures(), this.ignoreCase, this.multiline, this.dotAll);
+            if (result.matched) {
+                return true;
+            }
+
+            if (this.multiline) {
+                for (pos = 0; pos < inputLength; pos++) {
+                    if (input.charAt(pos) == "\n") {
+                        result = this.ast.match(input, pos + 1, initializeCaptures(), this.ignoreCase, this.multiline, this.dotAll);
+                        if (result.matched) {
+                            return true;
+                        }
                     }
                 }
             }
             return false;
         }
+
+        for (pos = 0; pos <= inputLength; pos++) {
+            result = this.ast.match(input, pos, initializeCaptures(), this.ignoreCase, this.multiline, this.dotAll);
+            if (result.matched) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    /**
-     * 执行正则表达式匹配，并返回匹配结果数组。
-     * @param input 输入字符串。
-     * @return 如果匹配成功，返回包含匹配结果和捕获组的数组；否则返回 null。
-     */
     public function exec(input:String):Array {
-        if (this.ast == null) return null;
-        var inputLength:Number = length(input);
-        var lastIndex:Number = this.global ? this.lastIndex : 0;
+        if (this.ast == null) {
+            return null;
+        }
 
-        for (var pos:Number = lastIndex; pos <= inputLength; pos++) {
-            var captures:Array = initializeCaptures();
-            var result:Object = this.ast.match(input, pos, captures, this.ignoreCase, this.multiline, this.dotAll);
+        var inputLength:Number = length(input);
+        var startIndex:Number = this.global ? this.lastIndex : 0;
+        var pos:Number;
+        var captures:Array;
+        var result:Object;
+        var endIndex:Number;
+        var nextIndex:Number;
+
+        for (pos = startIndex; pos <= inputLength; pos++) {
+            captures = initializeCaptures();
+            result = this.ast.match(input, pos, captures, this.ignoreCase, this.multiline, this.dotAll);
             if (result.matched) {
-                captures[0] = input.substring(pos, result.position); // 整个匹配结果
+                endIndex = result.position;
+                captures[0] = input.substring(pos, endIndex);
                 captures.index = pos;
                 captures.input = input;
+                captures.endIndex = endIndex;
+                applyNamedGroups(captures);
+
                 if (this.global) {
-                    this.lastIndex = result.position;
+                    nextIndex = endIndex;
+                    if (nextIndex == pos) {
+                        nextIndex = pos + 1;
+                    }
+                    if (nextIndex > inputLength + 1) {
+                        nextIndex = inputLength + 1;
+                    }
+                    this.lastIndex = nextIndex;
                 }
                 return captures;
             }
         }
 
         if (this.global) {
-            this.lastIndex = 0; // 重置 lastIndex
+            this.lastIndex = 0;
         }
         return null;
     }
 
-    /**
-     * 初始化捕获组数组，确保数组长度足够存储所有捕获组。
-     * @return 初始化后的捕获组数组。
-     */
     private function initializeCaptures():Array {
         var captures:Array = new Array(this.totalGroups + 1);
-        for (var i:Number = 0; i <= this.totalGroups; i++) {
+        var i:Number;
+        for (i = 0; i <= this.totalGroups; i++) {
             captures[i] = null;
         }
         return captures;
     }
 
-    /**
-     * 注入正则表达式相关方法到 String.prototype。
-     * 方法包括 regexp_match, regexp_replace, regexp_search, regexp_split。
-     */
+    private function applyNamedGroups(captures:Array):Void {
+        if (this.groupNames == null || this.groupNames.length == 0) {
+            return;
+        }
+
+        var groups:Object = new Object();
+        var hasNamedGroup:Boolean = false;
+        var i:Number;
+        var name:String;
+        for (i = 1; i < this.groupNames.length; i++) {
+            name = this.groupNames[i];
+            if (name != undefined && name != null && name != "") {
+                groups[name] = captures[i];
+                hasNamedGroup = true;
+            }
+        }
+
+        if (hasNamedGroup) {
+            captures.groups = groups;
+        }
+    }
+
     public static function injectMethods():Void {
-        // 注入 regexp_match 方法
         String.prototype.regexp_match = function(re:RegExp):Array {
             if (!(re instanceof RegExp)) {
                 return null;
             }
+
+            var input:String = String(this);
             var matches:Array = [];
-            re.lastIndex = 0;
             var match:Array;
-            while ((match = re.exec(this)) != null) {
+            re.lastIndex = 0;
+
+            while ((match = re.exec(input)) != null) {
                 matches.push(match[0]);
                 if (!re.global) {
-                    break;
-                }
-                // 防止无限循环：如果 lastIndex 没有推进，则跳出循环
-                if (match.index === re.lastIndex) {
                     break;
                 }
             }
             return matches.length > 0 ? matches : null;
         };
 
-        // 注入 regexp_replace 方法
         String.prototype.regexp_replace = function(re:RegExp, replacement:String):String {
             if (!(re instanceof RegExp)) {
-                return this;
+                return String(this);
             }
+
+            var input:String = String(this);
             var result:String = "";
             var lastPos:Number = 0;
             var match:Array;
+            var endIndex:Number;
             re.lastIndex = 0;
-            while ((match = re.exec(this)) != null) {
-                result += this.substring(lastPos, match.index) + replacement;
-                lastPos = re.lastIndex;
+
+            while ((match = re.exec(input)) != null) {
+                endIndex = match.endIndex != undefined ? Number(match.endIndex) : match.index + length(match[0]);
+                result += input.substring(lastPos, match.index);
+                result += RegExp.expandReplacement(replacement, match);
+                lastPos = endIndex;
+
                 if (!re.global) {
                     break;
                 }
-                // 防止无限循环
-                if (match.index === re.lastIndex) {
-                    break;
-                }
             }
-            result += this.substring(lastPos);
+
+            result += input.substring(lastPos);
             return result;
         };
 
-        // 注入 regexp_search 方法
         String.prototype.regexp_search = function(re:RegExp):Number {
             if (!(re instanceof RegExp)) {
                 return -1;
             }
+
+            var input:String = String(this);
             re.lastIndex = 0;
-            var match:Array = re.exec(this);
+            var match:Array = re.exec(input);
             return match ? match.index : -1;
         };
 
-        // 注入 regexp_split 方法
         String.prototype.regexp_split = function(re:RegExp, limit:Number):Array {
             if (!(re instanceof RegExp)) {
-                return this.split(re, limit);
+                return String(this).split(String(re), limit);
             }
             if (limit == undefined) {
                 limit = 9999;
             }
+
+            var input:String = String(this);
+            var splitRe:RegExp = RegExp.cloneWithGlobal(re);
             var result:Array = [];
             var lastPos:Number = 0;
             var match:Array;
-            re.lastIndex = 0;
-            while ((match = re.exec(this)) != null && result.length < limit - 1) {
-                result.push(this.substring(lastPos, match.index));
-                lastPos = re.lastIndex;
-                // 防止无限循环
-                if (match.index === re.lastIndex) {
-                    break;
-                }
+            var endIndex:Number;
+            splitRe.lastIndex = 0;
+
+            while ((match = splitRe.exec(input)) != null && result.length < limit - 1) {
+                result.push(input.substring(lastPos, match.index));
+                endIndex = match.endIndex != undefined ? Number(match.endIndex) : match.index + length(match[0]);
+                lastPos = endIndex;
             }
-            result.push(this.substring(lastPos));
+
+            result.push(input.substring(lastPos));
             return result;
         };
     }
 
-    /**
-     * 移除注入到 String.prototype 的正则表达式相关方法。
-     */
     public static function removeMethods():Void {
         delete String.prototype.regexp_match;
         delete String.prototype.regexp_replace;
         delete String.prototype.regexp_search;
         delete String.prototype.regexp_split;
+    }
+
+    private static function cloneWithGlobal(re:RegExp):RegExp {
+        return new RegExp(re.source, ensureFlag(re.flags, "g"));
+    }
+
+    private static function ensureFlag(flags:String, flag:String):String {
+        if (flags == null) {
+            flags = "";
+        }
+        if (flags.indexOf(flag) >= 0) {
+            return flags;
+        }
+        return flags + flag;
+    }
+
+    private static function expandReplacement(replacement:String, match:Array):String {
+        var result:String = "";
+        var replacementLength:Number = length(replacement);
+        var i:Number = 0;
+        var nextChar:String;
+        var digitToken:String;
+        var name:String;
+        var scanIndex:Number;
+        var endIndex:Number;
+
+        while (i < replacementLength) {
+            if (replacement.charAt(i) != "$" || i + 1 >= replacementLength) {
+                result += replacement.charAt(i);
+                i += 1;
+                continue;
+            }
+
+            nextChar = replacement.charAt(i + 1);
+            if (nextChar == "$") {
+                result += "$";
+                i += 2;
+            } else if (nextChar == "&") {
+                result += match[0];
+                i += 2;
+            } else if (nextChar == "`") {
+                result += match.input.substring(0, match.index);
+                i += 2;
+            } else if (nextChar == "'") {
+                endIndex = match.endIndex != undefined ? Number(match.endIndex) : match.index + length(match[0]);
+                result += match.input.substring(endIndex);
+                i += 2;
+            } else if (nextChar == "<") {
+                name = "";
+                scanIndex = i + 2;
+                while (scanIndex < replacementLength && replacement.charAt(scanIndex) != ">") {
+                    name += replacement.charAt(scanIndex);
+                    scanIndex += 1;
+                }
+                if (scanIndex < replacementLength && match.groups != undefined && match.groups[name] != undefined) {
+                    result += match.groups[name];
+                    i = scanIndex + 1;
+                } else {
+                    result += "$<";
+                    result += name;
+                    if (scanIndex < replacementLength && replacement.charAt(scanIndex) == ">") {
+                        result += ">";
+                        i = scanIndex + 1;
+                    } else {
+                        i = scanIndex;
+                    }
+                }
+            } else if (RegExp.isDigit(nextChar)) {
+                digitToken = nextChar;
+                i += 2;
+                while (i < replacementLength && RegExp.isDigit(replacement.charAt(i))) {
+                    digitToken += replacement.charAt(i);
+                    i += 1;
+                }
+                if (match[Number(digitToken)] != undefined && match[Number(digitToken)] != null) {
+                    result += match[Number(digitToken)];
+                }
+            } else {
+                result += "$";
+                i += 1;
+            }
+        }
+
+        return result;
+    }
+
+    private static function isDigit(char:String):Boolean {
+        var code:Number = char.charCodeAt(0);
+        return code >= 48 && code <= 57;
     }
 }
