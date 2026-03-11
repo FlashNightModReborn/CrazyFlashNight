@@ -10,6 +10,7 @@ $ProjectDir = Split-Path -Parent $ScriptDir
 $Marker = Join-Path $ScriptDir 'publish_done.marker'
 $ErrorMarker = Join-Path $ScriptDir 'publish_error.marker'
 $CompileOutput = Join-Path $ScriptDir 'compile_output.txt'
+$CompilerErrors = Join-Path $ScriptDir 'compiler_errors.txt'
 $FlashLog = Join-Path $env:APPDATA 'Macromedia\Flash Player\Logs\flashlog.txt'
 $LocalFlashLog = Join-Path $ScriptDir 'flashlog.txt'
 $LoaderFileName = 'cf7_compile_loader.jsfl'
@@ -187,6 +188,21 @@ for ($i = 1; $i -le 30; $i++) {
             }
         }
 
+        # 检查 Compiler Errors 面板输出
+        $hasCompileError = $false
+        if (Test-Path $CompilerErrors) {
+            $errContent = Get-Content -Path $CompilerErrors -Raw -Encoding UTF8
+            if ($errContent -and $errContent -notmatch '^\s*0 个错误' -and $errContent -notmatch '^\s*0 Errors') {
+                Write-Host '=== COMPILER ERRORS ==='
+                Write-Host $errContent
+                Write-Host '=== END COMPILER ERRORS ==='
+                $hasCompileError = $true
+            }
+        }
+
+        if ($hasCompileError) {
+            exit 1
+        }
         exit 0
     }
 

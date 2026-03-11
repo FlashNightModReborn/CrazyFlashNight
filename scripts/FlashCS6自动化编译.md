@@ -6,11 +6,12 @@ Agent（Claude Code）可从终端触发 Flash CS6 编译 AS2 代码并读取 tr
 
 ## 当前经验总结（2026-03-11）
 
-- 当前链路已能在本机完成“修改 `TestLoader.as` → 触发 Flash CS6 `testMovie()` → 拿到新鲜 trace / `compile_output.txt`”的自动化 smoke 验证
-- 当前最容易导致跨设备失效的不是代码本身，而是**旧环境残留**：旧版 `CompileTriggerTask`、旧 Loader、旧 `flash_project_path.cfg`、旧日志都会造成“看起来能跑，实际跑的是旧路径”
+- 当前链路已能在本机完成”修改 `TestLoader.as` → 触发 Flash CS6 `testMovie()` → 拿到新鲜 trace / `compile_output.txt` / `compiler_errors.txt`”的自动化 smoke 验证
+- **编译错误自动捕获**：`compile_action.jsfl` 使用 `fl.compilerErrors.save()` 将 Compiler Errors 面板保存到 `scripts/compiler_errors.txt`；`compile_test.ps1` 自动解析该文件，有错误时输出内容并 `exit 1`
+- **注意**：AS2 帧脚本中的类型错误、未声明变量不会产生编译错误（弱类型运行时报错）；只有语法错误和 class 文件类型错误才被捕获
+- 当前最容易导致跨设备失效的不是代码本身，而是**旧环境残留**：旧版 `CompileTriggerTask`、旧 Loader、旧 `flash_project_path.cfg`、旧日志都会造成”看起来能跑，实际跑的是旧路径”
 - `scripts/setup_compile_env.bat` 现在应被视为**清理环境 + 自检 + 自愈**入口，而不只是首次安装脚本；拉取自动化相关更新后应重新运行一次
-- 当前自动化验证仍应定义为**smoke 级**：新鲜 trace / 新鲜 `compile_output.txt` 才算有效信号，`publish_done.marker` 只能说明 JSFL 触发结束
-- 当前链路仍在迭代期；遇到无 trace、长耗时套件、编译器面板错误、UI 状态异常时，仍需回到 Flash IDE 做人工复核
+- 当前自动化验证仍应定义为**smoke 级**：新鲜 trace / 新鲜 `compile_output.txt` / `compiler_errors.txt` 才算有效信号，`publish_done.marker` 只能说明 JSFL 触发结束
 - PowerShell 5 环境下，含中文的 `.ps1` 脚本建议保持 **UTF-8 with BOM**，否则可能被系统本地编码误读，导致解析错误或乱码
 
 ## 架构
@@ -22,8 +23,9 @@ Agent → compile_test.sh (bash) 或 compile_test.ps1 (PowerShell)
       → cf7_compile_loader.jsfl  (Commands 目录，项目专用动态加载器)
         → compile_action.jsfl  (项目目录，实际编译逻辑，可随时修改)
           → doc.testMovie()  (Flash CS6 编译+运行)
+          → fl.compilerErrors.save()  (捕获 Compiler Errors 面板)
             → publish_done.marker  (完成标记)
-              ← 脚本检测到 marker，读取 flashlog.txt
+              ← 脚本检测到 marker，读取 flashlog.txt + compiler_errors.txt
 ```
 
 ## 快速开始

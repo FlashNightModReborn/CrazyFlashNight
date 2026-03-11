@@ -8,6 +8,7 @@ function main() {
 	var doneMarker = projectURI + "/scripts/publish_done.marker";
 	var errorMarker = projectURI + "/scripts/publish_error.marker";
 	var outputLog = projectURI + "/scripts/compile_output.txt";
+	var compilerErrorsLog = projectURI + "/scripts/compiler_errors.txt";
 
 	fl.outputPanel.clear();
 
@@ -25,6 +26,10 @@ function main() {
 		doc.testMovie();
 		fl.trace("[compile] done");
 		fl.outputPanel.save(outputLog);
+		// 捕获 Compiler Errors 面板内容
+		if (fl.compilerErrors) {
+			fl.compilerErrors.save(compilerErrorsLog);
+		}
 		FLfile.write(doneMarker, "ok");
 	}
 }

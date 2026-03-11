@@ -47,12 +47,14 @@ scripts/类定义/org/flashNight/[包名]/
 - Bash：`bash scripts/compile_test.sh`
 
 ### 成功判据
+- **编译错误检测**：`scripts/compiler_errors.txt` 由 `fl.compilerErrors.save()` 自动生成，包含 Compiler Errors 面板内容；有错误时脚本自动输出并 `exit 1`
 - 优先看**本次运行新鲜生成**的 `scripts/flashlog.txt` / `%APPDATA%\Macromedia\Flash Player\Logs\flashlog.txt`
 - 需要看 Output Panel 时，再核对 `scripts/compile_output.txt` 的刷新时间
 - `publish_done.marker` 只能说明 JSFL 触发流程走完，**不能单独代表 SWF 已成功编译并运行**
+- **注意**：AS2 帧脚本中的类型错误、未声明变量不会产生编译错误（弱类型，运行时才报错）；只有语法错误（括号不匹配、关键字误用等）和 class 文件中的类型错误才会被捕获
 
 ### 当前边界
-- 自动化链路仍在迭代期；遇到“marker 成功但没有 trace”时，仍需优先查看 Flash IDE 的输出 / 编译器错误面板
+- ~~遇到”marker 成功但没有 trace”时，仍需优先查看 Flash IDE 的编译器错误面板~~ → 现在 `compiler_errors.txt` 已自动捕获，但仍建议核对 IDE 面板确认完整性
 - 长耗时套件可能超过默认 30 秒轮询上限
 - 如果再次出现 UAC、旧日志未刷新、任务动作异常，先重新运行 `scripts/setup_compile_env.bat`
 - 对外表述应使用“已完成自动化 smoke 验证”或“已触发 Flash CS6 编译并拿到 trace”，不要在缺少新鲜日志或人工 IDE 复核时直接写“已编译通过”
@@ -74,3 +76,57 @@ scripts/类定义/org/flashNight/[包名]/
 
 - 核心类库新增/修改代码应有对应测试，覆盖正常路径和边界条件
 - 不强制 100% 覆盖率，优先关键路径
+
+---
+
+## 5. TDD 工作流约束
+
+### 适用范围
+- **强制**：`scripts/类定义/` 下的所有 `.as` class 文件（新增或修改公共 API 时必须先有测试）
+- **不受限**：帧脚本（展现/引擎/通信/逻辑）、`.fla`/`.xfl` 资产、XML 数据文件
+
+### 红-绿-重构循环
+1. **红**：先写失败测试，确认测试本身能检测到预期行为缺失
+2. **绿**：用最小实现让测试通过
+3. **重构**：在测试全绿的保护下优化实现，每步重构后重新编译验证
+
+### 回归保护规则
+- 修改已有 class 的公共方法签名或语义行为前，**必须先确认现有测试覆盖该行为**；如无覆盖，先补测试再改代码
+- 优化（性能/内存/池化等）属于重构阶段，必须在测试全绿后进行，每次优化后重新跑全套
+- 测试失败时禁止提交；如需临时跳过某条测试，必须在测试方法内用注释标注原因和预计修复时间
+
+### 测试编写要求
+- 测试必须有真实断言（`assert`/`assertEq`/`assertTrue`），禁止只 `trace` 不断言
+- 涉及对象池的测试：在 `resetPools()` 前捕获需要比较的值（池化对象会被后续分配覆盖）
+- 测试之间互不依赖：每个 `test_xxx` 方法自行 `resetPools()` / `initWithContainer()` / `reset()`
+- 噪声/随机分支测试：只变一个参数（隔离变量），用断言验证差异而非只打印
+
+### 编译验证
+- 使用 `bash scripts/compile_test.sh` 触发 Flash CS6 自动化编译
+- 以 `scripts/flashlog.txt` 中的 `[PASS]`/`[FAIL]` 输出为判据
+- 详见 §2 Flash CS6 自动化 smoke 验证
+
+---
+
+## 6. 测试日志归档
+
+### 目的
+保留测试运行历史，方便排查回归和追溯问题引入时间点。
+
+### 归档位置与格式
+- **同名 `.md` 文件**（已有惯例）：测试类旁的 `ClassName.md` 或 `ClassNameTest.md`
+  - 第一行：TestLoader 启动语句（如 `import ...Test; Test.runAllTests();`）
+  - 后续：粘贴最近一次完整测试输出（含 `[PASS]`/`[FAIL]` 和汇总行）
+  - 功能稳定后可追加设计说明，逐步升级为设计文档
+- **`scripts/flashlog.txt`**：自动化编译管线的最新一次运行日志（自动覆盖，不归档历史）
+- **`scripts/compile_output.txt`**：Flash CS6 Output Panel 的最新一次副本
+
+### 归档时机
+- 完成一轮 TDD 迭代（测试全绿 + 重构完成）后，将 flashlog.txt 中相关输出粘贴到对应 `.md` 文件
+- 发现并修复 bug 时，在 `.md` 文件中记录修复前后的测试输出对比（可选，推荐用于关键 bug）
+- 性能基准（bench 输出）也应归档到 `.md` 文件，作为优化前后的对比基线
+
+### 归档内容要求
+- 必须包含：日期、测试汇总行（`run=N, pass=N, fail=N`）、所有 `[FAIL]` 行的完整输出
+- 推荐包含：性能基准数据、关键修复的 before/after 对比
+- 不必包含：全部 `[PASS]` 行（汇总行已覆盖），除非需要追溯特定用例
