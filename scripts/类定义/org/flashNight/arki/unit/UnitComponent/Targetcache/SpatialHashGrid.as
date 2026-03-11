@@ -5,6 +5,11 @@
  * Query results come from 4 rotating reusable slots to avoid hot-path allocation
  * Out-of-bounds coordinates auto-clamped
  *
+ * Note: Units are indexed by their AABB center point, not full AABB extent.
+ * A query region that overlaps a unit's AABB but does not contain its center
+ * will NOT return that unit. For typical unit sizes (halfWidth < cellW/2)
+ * this has no practical impact; be aware when querying near large entities.
+ *
  * @version 1.0
  */
 class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
@@ -269,11 +274,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         if (c0 < 0) c0 = 0;
         else if (c0 > maxCol) c0 = maxCol;
         if (c1 < 0) c1 = 0;
-        if (c1 > maxCol) c1 = maxCol;
+        else if (c1 > maxCol) c1 = maxCol;
         if (r0 < 0) r0 = 0;
         else if (r0 > maxRow) r0 = maxRow;
         if (r1 < 0) r1 = 0;
-        if (r1 > maxRow) r1 = maxRow;
+        else if (r1 > maxRow) r1 = maxRow;
 
         var grid:Array = _grid;
         var hasFilter:Boolean = (filterFn != undefined && filterFn != null);
@@ -343,11 +348,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         if (c0 < 0) c0 = 0;
         else if (c0 > maxCol) c0 = maxCol;
         if (c1 < 0) c1 = 0;
-        if (c1 > maxCol) c1 = maxCol;
+        else if (c1 > maxCol) c1 = maxCol;
         if (r0 < 0) r0 = 0;
         else if (r0 > maxRow) r0 = maxRow;
         if (r1 < 0) r1 = 0;
-        if (r1 > maxRow) r1 = maxRow;
+        else if (r1 > maxRow) r1 = maxRow;
 
         var grid:Array = _grid;
         var hasFilter:Boolean = (filterFn != undefined && filterFn != null);
@@ -417,11 +422,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         if (c0 < 0) c0 = 0;
         else if (c0 > maxCol) c0 = maxCol;
         if (c1 < 0) c1 = 0;
-        if (c1 > maxCol) c1 = maxCol;
+        else if (c1 > maxCol) c1 = maxCol;
         if (r0 < 0) r0 = 0;
         else if (r0 > maxRow) r0 = maxRow;
         if (r1 < 0) r1 = 0;
-        if (r1 > maxRow) r1 = maxRow;
+        else if (r1 > maxRow) r1 = maxRow;
 
         var grid:Array = _grid;
         var hasFilter:Boolean = (filterFn != undefined && filterFn != null);
@@ -456,8 +461,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
                         dy = snapYs[idx] - cy;
                         d2 = dx * dx + dy * dy;
                         if (d2 <= bestDist2) {
-                            if (!hasFilter || filterFn(unit)) {
-                                if (bestUnit == null || d2 < bestDist2) {
+                            if (bestUnit == null || d2 < bestDist2) {
+                                if (!hasFilter || filterFn(unit)) {
                                     bestDist2 = d2;
                                     bestUnit = unit;
                                 }
@@ -497,11 +502,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         if (c0 < 0) c0 = 0;
         else if (c0 > maxCol) c0 = maxCol;
         if (c1 < 0) c1 = 0;
-        if (c1 > maxCol) c1 = maxCol;
+        else if (c1 > maxCol) c1 = maxCol;
         if (r0 < 0) r0 = 0;
         else if (r0 > maxRow) r0 = maxRow;
         if (r1 < 0) r1 = 0;
-        if (r1 > maxRow) r1 = maxRow;
+        else if (r1 > maxRow) r1 = maxRow;
 
         var grid:Array = _grid;
         var c:Number;

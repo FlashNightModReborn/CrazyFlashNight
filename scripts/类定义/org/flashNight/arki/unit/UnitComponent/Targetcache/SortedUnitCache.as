@@ -122,9 +122,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     private static var _gridConfigVersion:Number = 0;
 
     /**
-     * 配置全局 2D 网格参数（通常在关卡加载时调用一次）
-     * 如不调用，_ensureGrid 会从当前数据自动推算边界。
-     * 传入 NaN 作为 originX/Y/width/height 可切换到自动边界模式。
+     * 配置全局 2D 网格参数（通常在关卡加载时调用一次）。
+     * 如不调用，_ensureGrid 会从当前数据自动推算边界（O(N) 遍历 + 边界变化时重建 grid 实例）。
+     * 生产环境强烈建议在关卡加载时调用此方法，以避免隐式边界模式的额外开销。
+     * 传入 NaN 作为 originX/Y/width/height 可切换回自动边界模式。
      */
     public static function configureGrid(
         originX:Number, originY:Number,
@@ -154,7 +155,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         _gridConfigVersion++;
     }
 
-    /** _resolveGridBounds 的静态复用输出上下文（避免实例字段膨胀） */
+    /**
+     * _resolveGridBounds 的静态复用输出上下文（避免实例字段膨胀）。
+     * 重要约束：_resolveGridBounds() 写入后必须在同一调用链内由 _ensureGrid() 消费，
+     * 中间不得触发其他 SortedUnitCache 实例的 _ensureGrid()（即 filterFn 内禁止嵌套 2D 查询）。
+     */
     private static var _gbCtx:Object = { ox: 0, oy: 0, w: 100, h: 100, explicit: false };
 
     /** 懒建立的 2D 空间哈希网格实例（数据更新时标记脏，复用实例） */
