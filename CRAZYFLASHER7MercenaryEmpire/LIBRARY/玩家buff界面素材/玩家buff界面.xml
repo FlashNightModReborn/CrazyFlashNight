@@ -1,10 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家buff界面素材/玩家buff界面" itemID="69a2b1f8-0000040c" lastModified="1772641679" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家buff界面素材/玩家buff界面" itemID="69a2b1f8-0000040c" lastModified="1772729356" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="玩家buff界面">
       <layers>
         <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.UI系统.初始化玩家buff界面(this);]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

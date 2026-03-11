@@ -54,6 +54,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer 
 
         if (!target.buffManager || typeof target.buffManager.update != "function") {
             target.buffManager = createManager(target);
+
+            if(target._name === _root.控制目标){
+                /
+            }
             /*
 
             var podBuff:PodBuff = new PodBuff("hp", BuffCalculationType.ADD, 1500);

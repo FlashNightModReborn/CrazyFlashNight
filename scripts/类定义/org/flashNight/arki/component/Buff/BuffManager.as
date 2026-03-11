@@ -105,6 +105,7 @@
  */
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
+import org.flashNight.neur.Event.EventDispatcher;
 
 class org.flashNight.arki.component.Buff.BuffManager {
 
@@ -161,6 +162,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
     private var _onBuffAdded:Function;
     private var _onBuffRemoved:Function;
     private var _onPropertyChanged:Function;
+
+    // 事件分发器
+    public var eventDispatcher:EventDispatcher;
     
     /**
      * 构造函数
@@ -203,6 +207,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
             this._onBuffRemoved = callbacks.onBuffRemoved;
             this._onPropertyChanged = callbacks.onPropertyChanged;
         }
+
+        // 创建事件分发器
+        this.eventDispatcher = new EventDispatcher();
     }
     
     /**
@@ -362,6 +369,9 @@ class org.flashNight.arki.component.Buff.BuffManager {
         if (this._onBuffAdded) {
             this._onBuffAdded(finalId, buff);
         }
+        // 发布add事件
+        this.eventDispatcher.publish("add", finalId);
+
         return finalId;
     }
 
@@ -687,7 +697,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
         if (DEBUG && this._inUpdate) {
             trace("[BuffManager] 警告：update期间调用destroy可能导致状态不一致");
         }
-        // 先清所有Buff
+        // 销毁事件分发器
+        this.eventDispatcher.destroy();
+
+        // 清空所有Buff
         this.clearAllBuffs();
         
         // 将现存容器 finalize 成普通数据属性，并解除管理
@@ -1046,6 +1059,8 @@ class org.flashNight.arki.component.Buff.BuffManager {
         if (this._onBuffRemoved) {
             this._onBuffRemoved(podId, podBuff);
         }
+        // 发布remove事件
+        this.eventDispatcher.publish("remove", podId);
     }
 
     /**
@@ -1097,10 +1112,12 @@ class org.flashNight.arki.component.Buff.BuffManager {
         }
 
         // 触发回调（使用外部 ID，如果没有则使用内部 ID）
+        var callbackId:String = externalId != null ? externalId : metaBuff["getId"]();
         if (this._onBuffRemoved) {
-            var callbackId:String = externalId != null ? externalId : metaBuff["getId"]();
             this._onBuffRemoved(callbackId, metaBuff);
         }
+        // 发布remove事件
+        this.eventDispatcher.publish("remove", callbackId);
 
         this._markDirty();
     }
@@ -1845,5 +1862,20 @@ class org.flashNight.arki.component.Buff.BuffManager {
         }
 
         return removed;
+    }
+
+
+    /**
+     * 返回所有MetaBuff
+     */
+    public function getAllMetaBuffs():Array{
+        var metabuffs = [];
+        for(var i=0; i<this._buffs.length; i++){
+            var buff = this._buffs[i];
+            if(buff.isPod() === false){
+                metabuffs.push(buff);
+            }
+        }
+        return metabuffs;
     }
 }

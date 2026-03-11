@@ -204,3 +204,15 @@ _root.UI系统.初始化玩家信息界面 = function()
         }
     };
 }
+
+
+
+
+
+
+
+_root.UI系统.初始化玩家buff界面 = function(mc){
+    this.iconBar = new org.flashNight.arki.component.Buff.IconBar.DetailedIconBar(mc, mc.buff详细图标, 28);
+}
+
+
