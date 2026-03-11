@@ -2,7 +2,7 @@
 
 ## 概述
 
-Agent（Claude Code）可从终端触发 Flash CS6 编译 AS2 代码并读取 trace 输出。
+Agent（Claude Code）可从终端触发 Flash CS6 编译 AS2 代码并读取 trace 输出。还可截取 Flash CS6 窗口截图，利用多模态能力辅助 UI 排版与交互调试。
 
 ## 架构
 
@@ -93,6 +93,7 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 | `scripts/setup_compile_env.bat` | 一键环境配置（每台机器运行一次） |
 | `scripts/TestLoader/` | TestLoader XFL 工程 |
 | `scripts/TestLoader.as` | 测试用 AS2 源码（修改此文件改变测试内容） |
+| `scripts/capture_screenshot.ps1` | Agent 截取 Flash CS6 窗口截图（前置窗口 + CopyFromScreen） |
 
 ### 机器相关（gitignore）
 
@@ -103,6 +104,7 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 | `scripts/publish_error.marker` | 编译错误标记 |
 | `scripts/flashlog.txt` | Flash trace 输出副本 |
 | `scripts/TestLoader.swf` | 编译产物 |
+| `scripts/screenshot.png` | 窗口截图产物 |
 
 ### Commands 目录（部署到 Flash CS6 配置）
 
@@ -161,14 +163,6 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 
 所有机器相关文件（路径、环境变量）均由 setup 脚本自动生成，已加入 `.gitignore`。
 
-## 已解决
-
-- [x] Agent 全自动编译 → 计划任务 + JSFL eval
-- [x] JSFL 缓存 → eval 动态加载
-- [x] UAC 弹窗 → 计划任务
-- [x] 硬编码路径 → flash_project_path.cfg + setup 自动检测
-- [x] 跨设备同步 → setup_compile_env.bat 一键配置
-
 ## 故障排查
 
 ### 编译超时（30 秒无 marker）
@@ -203,6 +197,51 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 - Commands 目录下的 JSFL 被 Flash **启动时缓存**，修改不会自动生效
 - `compile_action.jsfl`（项目目录）是通过 `eval(FLfile.read())` 实时读取的，修改**立即生效**
 - 如果确实需要修改 Commands 目录下的 JSFL：新建文件，不要修改已有文件
+
+## IDE 窗口截图
+
+### 用途
+
+Agent 需要查看 Flash CS6 当前状态时（UI 排版检查、编译器错误面板、运行时画面），可截取整个 Flash 窗口。
+
+### 使用方式
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/capture_screenshot.ps1
+```
+
+截图保存到 `scripts/screenshot.png`，Agent 通过 Read 工具直接读取图片进行多模态分析。
+
+### 典型工作流
+
+```
+修改 UI 代码 → compile_test.ps1 编译运行
+  → capture_screenshot.ps1 截取 Flash 窗口
+    → Agent 读取 screenshot.png（多模态）
+      → 评估布局/间距/对齐/字体 → 给出修改建议 → 循环
+```
+
+### 技术细节
+
+- 使用 Win32 `SetForegroundWindow` + `CopyFromScreen`，先将 Flash 窗口前置再截取
+- Flash CS6 不响应 `PrintWindow` 消息（老程序），因此不能用后台截取方案
+- 截图时会短暂切换前台焦点到 Flash 窗口（约 500ms）
+- 需要 Flash CS6 正在运行（`Get-Process -Name Flash`）
+
+### 局限
+
+- 截图为整个 Flash CS6 IDE 窗口（含菜单栏、时间轴、面板等），不是纯 SWF 画面
+- testMovie 的预览子窗口在 IDE 内浮动显示，能在截图中看到
+- 窗口被最小化时会自动 Restore，但如果 Flash 被另一个全屏窗口完全覆盖可能截到切换瞬间
+
+## 已解决
+
+- [x] Agent 全自动编译 → 计划任务 + JSFL eval
+- [x] JSFL 缓存 → eval 动态加载
+- [x] UAC 弹窗 → 计划任务
+- [x] 硬编码路径 → flash_project_path.cfg + setup 自动检测
+- [x] 跨设备同步 → setup_compile_env.bat 一键配置
+- [x] IDE 窗口截图 → SetForegroundWindow + CopyFromScreen
 
 ## 待解决
 
