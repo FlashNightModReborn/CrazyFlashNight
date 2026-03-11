@@ -1,17 +1,38 @@
-param(
+﻿param(
   [ValidateSet("asloader","main","all")] [string]$Docs = "all",
-  [string]$CS6 = "C:\Program Files (x86)\Adobe\Adobe Flash CS6\Flash.exe"
+  [string]$CS6 = ""
 )
 
 $ErrorActionPreference = "Stop"
 $repoRoot = (Resolve-Path "$PSScriptRoot\..").Path
 $jsfl     = Join-Path $repoRoot "tools\jsfl\publish.jsfl"
 
-if (-not (Test-Path $CS6)) {
-  $alt = "C:\Program Files\Adobe\Adobe Flash CS6\Flash.exe"
-  if (Test-Path $alt) { $CS6 = $alt } else {
-    throw "找不到 Flash CS6：请用 -CS6 指定 Flash.exe 路径。"
+if (-not $CS6) {
+  try {
+    $task = Get-ScheduledTask -TaskName 'FlashCS6Task' -ErrorAction Stop
+    $taskAction = $task.Actions | Select-Object -First 1
+    if ($taskAction.Execute -and (Test-Path $taskAction.Execute)) {
+      $CS6 = $taskAction.Execute
+    }
+  } catch {
   }
+}
+
+if (-not $CS6) {
+  $defaults = @(
+    "C:\Program Files\Adobe\Adobe Flash CS6\Flash.exe",
+    "C:\Program Files (x86)\Adobe\Adobe Flash CS6\Flash.exe"
+  )
+  foreach ($candidate in $defaults) {
+    if (Test-Path $candidate) {
+      $CS6 = $candidate
+      break
+    }
+  }
+}
+
+if (-not $CS6 -or -not (Test-Path $CS6)) {
+  throw "找不到 Flash CS6：请先运行 scripts/setup_compile_env.bat，或手动传入 -CS6 <Flash.exe>。"
 }
 if (-not (Test-Path $jsfl)) { throw "缺少 JSFL: $jsfl" }
 

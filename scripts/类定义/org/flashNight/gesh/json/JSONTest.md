@@ -39,5 +39,6 @@ new org.flashNight.gesh.json.JSONTest()
 
 ## 运行限制
 
-- `.as` 只能在 Flash CS6 GUI 中编译验证。
-- Agent 这里只做静态修正，不声称“已编译通过”。
+- `.as` 的实际编译仍只能由 Flash CS6 GUI 完成。
+- 当前可借助 `scripts/compile_test.ps1` / `scripts/compile_test.sh` 做自动化 smoke 验证，但这条链路仍在迭代期。
+- 没有本次运行的新鲜 trace、`compile_output.txt` 或 IDE 面板复核时，不要笼统声称“已编译通过”。

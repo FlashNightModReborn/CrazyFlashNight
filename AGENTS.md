@@ -8,12 +8,12 @@
 
 ## 硬约束（最高优先级）
 
-- **编译限制**：AS2 仅能通过 Flash CS6 GUI 编译；Agent 无法执行编译验证（不要声称“已编译通过”）
+- **编译限制**：AS2 的实际编译仍只能由 Flash CS6 GUI 完成；在已运行 `scripts/setup_compile_env.bat`、已打开 TestLoader 的前提下，Agent 现可通过 `scripts/compile_test.ps1` / `scripts/compile_test.sh` 做**有限自动化 smoke 验证**并读取 trace / Output Panel 副本。**当前链路仍在迭代期**，不要把 `publish_done.marker` 单独当作成功依据；没有新鲜 trace、输出日志或 IDE 复核时，不要笼统声称“已编译通过”
 - **.as 编码**：必须 **UTF-8 with BOM**；新增/重建用“复制现有 `.as` → 改名”保留 BOM（见 [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) §0）
 - **SWF**：禁止手动编辑；提交规则见「版本控制备忘」
 - **终端编码**（PowerShell）：运行命令前先执行 `chcp.com 65001 | Out-Null` 避免 GBK 乱码
 - **可直接修改**：`data/`、`config/` 下 XML（重启生效）
-- **可直接运行验证**：`tools/Local Server/`（Node.js）、`automation/`（PowerShell）
+- **可直接运行验证**：`tools/Local Server/`（Node.js）、`automation/`（PowerShell）、`scripts/compile_test.ps1` / `scripts/compile_test.sh`（Flash 自动化 smoke，迭代中）
 
 ---
 
@@ -21,10 +21,10 @@
 
 | 场景 | 必读 | 按需 |
 |------|------|------|
-| AS2 编码/审查 | [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) | [coding-standards.md](agentsDoc/coding-standards.md)、[as2-performance.md](agentsDoc/as2-performance.md)、[game-systems.md](agentsDoc/game-systems.md) |
+| AS2 编码/审查 | [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) | [scripts/FlashCS6自动化编译.md](scripts/FlashCS6自动化编译.md)、[coding-standards.md](agentsDoc/coding-standards.md)、[as2-performance.md](agentsDoc/as2-performance.md)、[game-systems.md](agentsDoc/game-systems.md) |
 | 改 XML 数据/配置 | [data-schemas.md](agentsDoc/data-schemas.md) | [game-design.md](agentsDoc/game-design.md)、[testing-guide.md](agentsDoc/testing-guide.md) |
 | 本地服务器/通信 | [architecture.md](agentsDoc/architecture.md) | `tools/Local Server/server.md`、[testing-guide.md](agentsDoc/testing-guide.md) |
-| 自动化脚本 | `automation/README.md` | `start_game*.ps1`、`xml_fla.ps1` |
+| 自动化脚本 | `automation/README.md` | [scripts/FlashCS6自动化编译.md](scripts/FlashCS6自动化编译.md)、`start_game*.ps1`、`xml_fla.ps1` |
 | 新增物品/单位 | `0.说明文件与教程/添加新物品和单位的详细基础教程宝宝可用.docx` | [data-schemas.md](agentsDoc/data-schemas.md)、[game-design.md](agentsDoc/game-design.md) |
 | 会话收尾 | [self-optimization.md](agentsDoc/self-optimization.md) | [shared-notes.md](agentsDoc/shared-notes.md) |
 

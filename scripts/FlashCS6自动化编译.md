@@ -4,13 +4,22 @@
 
 Agent（Claude Code）可从终端触发 Flash CS6 编译 AS2 代码并读取 trace 输出。还可截取 Flash CS6 窗口截图，利用多模态能力辅助 UI 排版与交互调试。
 
+## 当前经验总结（2026-03-11）
+
+- 当前链路已能在本机完成“修改 `TestLoader.as` → 触发 Flash CS6 `testMovie()` → 拿到新鲜 trace / `compile_output.txt`”的自动化 smoke 验证
+- 当前最容易导致跨设备失效的不是代码本身，而是**旧环境残留**：旧版 `CompileTriggerTask`、旧 Loader、旧 `flash_project_path.cfg`、旧日志都会造成“看起来能跑，实际跑的是旧路径”
+- `scripts/setup_compile_env.bat` 现在应被视为**清理环境 + 自检 + 自愈**入口，而不只是首次安装脚本；拉取自动化相关更新后应重新运行一次
+- 当前自动化验证仍应定义为**smoke 级**：新鲜 trace / 新鲜 `compile_output.txt` 才算有效信号，`publish_done.marker` 只能说明 JSFL 触发结束
+- 当前链路仍在迭代期；遇到无 trace、长耗时套件、编译器面板错误、UI 状态异常时，仍需回到 Flash IDE 做人工复核
+- PowerShell 5 环境下，含中文的 `.ps1` 脚本建议保持 **UTF-8 with BOM**，否则可能被系统本地编码误读，导致解析错误或乱码
+
 ## 架构
 
 ```
 Agent → compile_test.sh (bash) 或 compile_test.ps1 (PowerShell)
   → Start-ScheduledTask 'CompileTriggerTask'  (绕过 UAC)
-    → cmd.exe /c start compile.jsfl  (计划任务直接打开 JSFL)
-      → compile.jsfl  (Commands 目录，eval 动态加载器，固定不变)
+    → cmd.exe /c start cf7_compile_loader.jsfl  (计划任务直接打开 JSFL)
+      → cf7_compile_loader.jsfl  (Commands 目录，项目专用动态加载器)
         → compile_action.jsfl  (项目目录，实际编译逻辑，可随时修改)
           → doc.testMovie()  (Flash CS6 编译+运行)
             → publish_done.marker  (完成标记)
@@ -26,13 +35,15 @@ Agent → compile_test.sh (bash) 或 compile_test.ps1 (PowerShell)
 **右键** `scripts/setup_compile_env.bat` → **以管理员身份运行**。
 
 自动完成：
+- 清理旧 marker / 旧日志 / 旧 shell 环境文件，避免残留结果干扰验证
 - 创建 `%USERPROFILE%\mm.cfg`（Flash debug 日志配置）
 - 检测 Flash CS6 语言目录
 - 写入项目路径配置 `flash_project_path.cfg` 到 Commands 目录
-- 部署 `compile.jsfl` 到 Commands 目录（已存在则跳过，避免缓存问题）
-- 查找 Flash.exe（常见路径自动检测 + 手动输入）
-- 创建两个计划任务：`FlashCS6Task`、`CompileTriggerTask`
+- 部署 `cf7_compile_loader.jsfl` 到 Commands 目录，并保留 `compile.jsfl` 兼容入口
+- 优先复用已有 `FlashCS6Task` 路径，找不到时再要求手动输入 `Flash.exe`
+- 覆盖修复两个计划任务：`FlashCS6Task`、`CompileTriggerTask`
 - 生成 `compile_env.sh`（shell 环境变量，机器相关，已 gitignore）
+- 对 `mm.cfg`、项目路径配置、Loader、计划任务动作做一次自检，失败直接报错
 
 > **重要**：必须以管理员身份运行，否则计划任务创建会静默失败。
 
@@ -50,11 +61,14 @@ Start-Process powershell -ArgumentList '-ExecutionPolicy Bypass -File C:\tmp\cre
 # 检查计划任务是否存在
 Get-ScheduledTask -TaskName 'CompileTriggerTask','FlashCS6Task' | Select TaskName, State
 # 检查 Commands 目录
-ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\compile.jsfl"
-ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project_path.cfg"
+Get-ChildItem "$env:LOCALAPPDATA\Adobe\Flash CS6" -Directory |
+  Where-Object { Test-Path (Join-Path $_.FullName 'Configuration\Commands\cf7_compile_loader.jsfl') } |
+  ForEach-Object {
+    Get-ChildItem (Join-Path $_.FullName 'Configuration\Commands') cf7_compile_loader.jsfl,flash_project_path.cfg
+  }
 ```
 
-> 所有路径均自动检测，无硬编码。Git 同步后在新机器上只需重新运行 setup。
+> 所有路径均自动检测。只要拉过自动化相关更新，就重新运行一次 setup，让脚本清理旧环境并修复任务定义。
 
 ### 2. 使用流程
 
@@ -89,8 +103,9 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 | `scripts/compile_test.sh` | Agent 编译入口（Bash 版，需 Git Bash） |
 | `scripts/compile_test.ps1` | Agent 编译入口（PowerShell 版，无需额外依赖） |
 | `scripts/compile_action.jsfl` | 实际编译逻辑（可随时修改，不需重启 Flash） |
-| `scripts/trigger_compile.ps1` | 管理员权限触发脚本（已弃用，计划任务直接用 cmd.exe 打开 JSFL） |
+| `scripts/trigger_compile.ps1` | 旧任务兼容触发脚本（内部已改为 `cmd /c start`，新环境不再直接依赖它） |
 | `scripts/setup_compile_env.bat` | 一键环境配置（每台机器运行一次） |
+| `scripts/setup_compile_env.ps1` | setup 的实际实现，负责清理、自检、自愈、任务重建 |
 | `scripts/TestLoader/` | TestLoader XFL 工程 |
 | `scripts/TestLoader.as` | 测试用 AS2 源码（修改此文件改变测试内容） |
 | `scripts/capture_screenshot.ps1` | Agent 截取 Flash CS6 窗口截图（前置窗口 + CopyFromScreen） |
@@ -110,7 +125,8 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 
 | 文件 | 用途 |
 |------|------|
-| `compile.jsfl` | 动态加载器（eval 执行 compile_action.jsfl） |
+| `cf7_compile_loader.jsfl` | 主动态加载器（计划任务直开） |
+| `compile.jsfl` | 兼容入口（仅为旧环境保留） |
 | `flash_project_path.cfg` | 项目路径（JSFL URI 格式） |
 
 ## 踩坑记录
@@ -120,7 +136,7 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 - **修改已有 JSFL** → Commands 菜单中执行的仍是缓存的旧内容，需**重启 Flash** 才生效
 - **新增 JSFL** → 通过文件关联（`Start-Process`/`cmd /c start`）打开可立即执行，**无需重启**
 - **绝不要修改已有的 Commands 目录 JSFL 文件来添加功能**，永远新建文件
-- **解决方案**：`compile.jsfl` 固定不变（部署后永不修改），用 `eval(FLfile.read())` 动态加载 `compile_action.jsfl`（位于项目目录，可随时修改，每次执行时实时读取）
+- **解决方案**：主入口改为项目专用的 `cf7_compile_loader.jsfl`，计划任务始终直开这个文件；旧环境如果还在走 `trigger_compile.ps1`，脚本也会回落到同一个 Loader
 
 ### fl.addEventListener 不支持 idle
 - CS6 报错「参数数目 1 无效」，"idle" 不在支持的事件类型中
@@ -134,8 +150,8 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 ### UAC 与权限
 - Flash CS6 需管理员权限，非管理员进程打开 JSFL 会弹 UAC
 - **解决方案**：计划任务（RunLevel=HighestAvailable）
-- 计划任务的 Action 必须用 `cmd.exe /c start "" "path\to\compile.jsfl"` 直接打开 JSFL
-- **不要**通过 PowerShell 脚本（trigger_compile.ps1）间接打开——`Start-Process` 和 `explorer.exe` 在计划任务环境中都无法可靠地将 JSFL 传递给运行中的 Flash 实例
+- 计划任务的 Action 必须用 `cmd.exe /c start "" "path\to\cf7_compile_loader.jsfl"` 直接打开 JSFL
+- `trigger_compile.ps1` 仅保留给旧任务做兼容包装；它内部也必须走 `cmd /c start`，不能再走 `explorer.exe`
 
 ### testMovie() vs publish()
 - `testMovie()` 编译+运行 SWF，产生 trace 输出，弹出预览窗口（再次调用自动关闭旧窗口）
@@ -155,6 +171,11 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 - 目前它不能稳定带回 Flash 编译器面板里的 AS2 错误详情
 - 遇到 “marker 成功但没有 trace” 时，应优先查看 Flash CS6 IDE 里的 **输出 / 编译器错误** 面板
 
+### 旧环境残留是当前第一风险
+- 这轮实测中，真正导致编译时再次弹 UAC 的根因是：机器里保留了旧版 `CompileTriggerTask`，动作仍指向 `trigger_compile.ps1 -> explorer.exe`
+- 结论：跨设备或跨版本同步后，**不要假设已有计划任务仍然正确**；应重新运行 setup，让它覆盖修复任务动作、Loader 和项目路径配置
+- 如果 `compile_test.ps1` 报 loader 缺失、日志未刷新、仍在走 legacy wrapper，优先怀疑环境漂移，而不是先怀疑 AS2 代码本身
+
 ## 跨设备同步
 
 1. `git pull` 获取最新代码
@@ -162,6 +183,8 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 3. 启动 Flash CS6，打开 TestLoader，即可使用
 
 所有机器相关文件（路径、环境变量）均由 setup 脚本自动生成，已加入 `.gitignore`。
+setup 默认会清掉旧日志、旧 marker、旧 shell 环境，并覆盖修复计划任务，避免“旧环境残留看起来像成功”。
+当前建议：只要自动化相关脚本有更新，就把 setup 当作升级步骤再跑一遍。
 
 ## 故障排查
 
@@ -170,8 +193,9 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 1. **Flash CS6 未运行或 TestLoader 未打开**：检查 `Get-Process -Name Flash`
 2. **计划任务不存在**：`Get-ScheduledTask -TaskName 'CompileTriggerTask'`，不存在则重新运行 setup
 3. **计划任务执行失败**：`(Get-ScheduledTaskInfo -TaskName 'CompileTriggerTask').LastTaskResult`，非 0 表示异常
-4. **compile.jsfl 未部署**：检查 Commands 目录下是否存在
-5. **flash_project_path.cfg 路径错误**：`cat "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project_path.cfg"`，应为 `file:///C|/...` 格式
+4. **Loader 未部署**：检查 Commands 目录下是否存在 `cf7_compile_loader.jsfl`
+5. **flash_project_path.cfg 路径错误**：重新运行 setup，或检查与当前项目对应的 Commands 目录里的 `flash_project_path.cfg`
+6. **仍然弹 UAC**：当前环境大概率还残留旧任务定义；重新运行 setup，`compile_test.ps1` 也会直接提示是否仍在走 legacy wrapper
 
 ### marker 已生成，但 `flashlog.txt` 为空
 
@@ -189,7 +213,7 @@ ls "$env:LOCALAPPDATA\Adobe\Flash CS6\zh_CN\Configuration\Commands\flash_project
 
 ### setup 脚本计划任务创建失败
 
-- 必须**右键 → 以管理员身份运行**，普通权限下 `schtasks /create` 会静默失败
+- 必须**右键 → 以管理员身份运行**，普通权限下任务注册会失败
 - 验证：`Get-ScheduledTask -TaskName 'CompileTriggerTask','FlashCS6Task'`
 
 ### JSFL 修改后不生效
