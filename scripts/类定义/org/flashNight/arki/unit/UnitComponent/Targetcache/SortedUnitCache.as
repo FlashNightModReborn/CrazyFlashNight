@@ -119,6 +119,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     private static var _gridHeight:Number;
     private static var _gridCellW:Number = 200;
     private static var _gridCellH:Number = 200;
+    private static var _gridConfigVersion:Number = 0;
 
     /**
      * 配置全局 2D 网格参数（通常在关卡加载时调用一次）
@@ -135,10 +136,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         _gridHeight = height;
         _gridCellW = cellW;
         _gridCellH = cellH;
+        _gridConfigVersion++;
     }
 
     /** 懒建立的 2D 空间哈希网格实例（数据更新时置 null） */
     private var _grid:Object;
+    private var _gridVersion:Number = -1;
 
     // ========================================================================
     // 构造函数
@@ -1218,6 +1221,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
 
         // 2D 网格失效（下次 2D 查询时懒重建）
         this._grid = null;
+        this._gridVersion = -1;
 
          // 重置查询缓存，因为数据已变化
          resetQueryCache();
@@ -1460,7 +1464,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      * 2. _root.Xmin/Xmax/Ymin/Ymax（StageManager 在关卡加载时设置）
      */
     private function _ensureGrid():Void {
-        if (this._grid != null) return;
+        if (this._grid != null && this._gridVersion == _gridConfigVersion) return;
 
         var ox:Number = _gridOriginX;
         var oy:Number = _gridOriginY;
@@ -1514,6 +1518,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         );
         g.rebuildFromParallelArrays(this.data, this.leftValues, this.rightValues);
         this._grid = g;
+        this._gridVersion = _gridConfigVersion;
     }
 
     /**

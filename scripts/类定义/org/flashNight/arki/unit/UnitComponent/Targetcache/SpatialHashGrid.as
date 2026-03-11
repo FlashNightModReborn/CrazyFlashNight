@@ -20,6 +20,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
     private var _cellCount:Number;
     private var _grid:Array;
     private var _unitCount:Number;
+    private var _units:Array;
+    private var _xs:Array;
+    private var _ys:Array;
     private var _pool:Array;
     private var _result:Array;
 
@@ -48,6 +51,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         _cellCount = _cols * _rows;
 
         _grid = new Array(_cellCount);
+        _units = [];
+        _xs = [];
+        _ys = [];
         _pool = [];
         _unitCount = 0;
         _result = [];
@@ -69,6 +75,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
             grid[i].length = 0;
             i++;
         }
+        _units.length = 0;
+        _xs.length = 0;
+        _ys.length = 0;
         _unitCount = 0;
     }
 
@@ -83,9 +92,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         if (row < 0) row = 0;
         else if (row >= _rows) row = _rows - 1;
 
+        var index:Number = _unitCount;
+        _units[index] = unit;
+        _xs[index] = x;
+        _ys[index] = y;
+
         var cell:Array = _grid[col * _rows + row];
-        cell[cell.length] = unit;
-        _unitCount++;
+        cell[cell.length] = index;
+        _unitCount = index + 1;
     }
 
     /**
@@ -103,6 +117,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         _unitCount = 0;
 
         var len:Number = units.length;
+        var snapUnits:Array = _units;
+        var snapXs:Array = _xs;
+        var snapYs:Array = _ys;
+        snapUnits.length = len;
+        snapXs.length = len;
+        snapYs.length = len;
         var invW:Number = _invCellW;
         var invH:Number = _invCellH;
         var ox:Number = _originX;
@@ -127,6 +147,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
             x = (aabb.left + aabb.right) * 0.5;
             y = unit.Z轴坐标;
 
+            snapUnits[j] = unit;
+            snapXs[j] = x;
+            snapYs[j] = y;
+
             col = ((x - ox) * invW) | 0;
             row = ((y - oy) * invH) | 0;
             if (col < 0) col = 0;
@@ -135,7 +159,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
             else if (row > maxRow) row = maxRow;
 
             cell = grid[col * rows + row];
-            cell[cell.length] = unit;
+            cell[cell.length] = j;
             j++;
         }
         _unitCount = len;
@@ -161,6 +185,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         _unitCount = 0;
 
         var len:Number = units.length;
+        var snapUnits:Array = _units;
+        var snapXs:Array = _xs;
+        var snapYs:Array = _ys;
+        snapUnits.length = len;
+        snapXs.length = len;
+        snapYs.length = len;
         var invW:Number = _invCellW;
         var invH:Number = _invCellH;
         var ox:Number = _originX;
@@ -180,6 +210,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
             x = (leftValues[j] + rightValues[j]) * 0.5;
             y = units[j].Z轴坐标;
 
+            snapUnits[j] = units[j];
+            snapXs[j] = x;
+            snapYs[j] = y;
+
             col = ((x - ox) * invW) | 0;
             row = ((y - oy) * invH) | 0;
             if (col < 0) col = 0;
@@ -188,7 +222,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
             else if (row > maxRow) row = maxRow;
 
             cell = grid[col * rows + row];
-            cell[cell.length] = units[j];
+            cell[cell.length] = j;
             j++;
         }
         _unitCount = len;
@@ -228,10 +262,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         var cell:Array;
         var cellLen:Number;
         var k:Number;
+        var idx:Number;
         var unit:Object;
-        var aabb:Object;
         var ux:Number;
         var uy:Number;
+        var snapUnits:Array = _units;
+        var snapXs:Array = _xs;
+        var snapYs:Array = _ys;
 
         c = c0;
         while (c <= c1) {
@@ -241,11 +278,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
                 cellLen = cell.length;
                 k = 0;
                 while (k < cellLen) {
-                    unit = cell[k];
-                    aabb = unit.aabbCollider;
-                    ux = (aabb.left + aabb.right) * 0.5;
-                    uy = unit.Z轴坐标;
+                    idx = cell[k];
+                    ux = snapXs[idx];
+                    uy = snapYs[idx];
                     if (ux >= x1 && ux <= x2 && uy >= y1 && uy <= y2) {
+                        unit = snapUnits[idx];
                         if (!hasFilter || filterFn(unit)) {
                             result[result.length] = unit;
                         }
@@ -296,10 +333,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         var cell:Array;
         var cellLen:Number;
         var k:Number;
+        var idx:Number;
         var unit:Object;
-        var aabb:Object;
         var dx:Number;
         var dy:Number;
+        var snapUnits:Array = _units;
+        var snapXs:Array = _xs;
+        var snapYs:Array = _ys;
 
         c = c0;
         while (c <= c1) {
@@ -309,11 +349,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
                 cellLen = cell.length;
                 k = 0;
                 while (k < cellLen) {
-                    unit = cell[k];
-                    aabb = unit.aabbCollider;
-                    dx = (aabb.left + aabb.right) * 0.5 - cx;
-                    dy = unit.Z轴坐标 - cy;
+                    idx = cell[k];
+                    dx = snapXs[idx] - cx;
+                    dy = snapYs[idx] - cy;
                     if (dx * dx + dy * dy <= r2) {
+                        unit = snapUnits[idx];
                         if (!hasFilter || filterFn(unit)) {
                             result[result.length] = unit;
                         }
@@ -364,11 +404,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         var cell:Array;
         var cellLen:Number;
         var k:Number;
+        var idx:Number;
         var unit:Object;
-        var aabb:Object;
         var dx:Number;
         var dy:Number;
         var d2:Number;
+        var snapUnits:Array = _units;
+        var snapXs:Array = _xs;
+        var snapYs:Array = _ys;
 
         c = c0;
         while (c <= c1) {
@@ -378,17 +421,19 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
                 cellLen = cell.length;
                 k = 0;
                 while (k < cellLen) {
-                    unit = cell[k];
+                    idx = cell[k];
+                    unit = snapUnits[idx];
                     k++;
                     if ((!hasExclude || unit != excludeUnit)) {
-                        aabb = unit.aabbCollider;
-                        dx = (aabb.left + aabb.right) * 0.5 - cx;
-                        dy = unit.Z轴坐标 - cy;
+                        dx = snapXs[idx] - cx;
+                        dy = snapYs[idx] - cy;
                         d2 = dx * dx + dy * dy;
-                        if (d2 < bestDist2) {
+                        if (d2 <= bestDist2) {
                             if (!hasFilter || filterFn(unit)) {
-                                bestDist2 = d2;
-                                bestUnit = unit;
+                                if (bestUnit == null || d2 < bestDist2) {
+                                    bestDist2 = d2;
+                                    bestUnit = unit;
+                                }
                             }
                         }
                     }
@@ -433,10 +478,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         var cell:Array;
         var cellLen:Number;
         var k:Number;
-        var unit:Object;
-        var aabb:Object;
+        var idx:Number;
         var dx:Number;
         var dy:Number;
+        var snapXs:Array = _xs;
+        var snapYs:Array = _ys;
 
         c = c0;
         while (c <= c1) {
@@ -446,10 +492,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
                 cellLen = cell.length;
                 k = 0;
                 while (k < cellLen) {
-                    unit = cell[k];
-                    aabb = unit.aabbCollider;
-                    dx = (aabb.left + aabb.right) * 0.5 - cx;
-                    dy = unit.Z轴坐标 - cy;
+                    idx = cell[k];
+                    dx = snapXs[idx] - cx;
+                    dy = snapYs[idx] - cy;
                     if (dx * dx + dy * dy <= r2) {
                         count++;
                     }

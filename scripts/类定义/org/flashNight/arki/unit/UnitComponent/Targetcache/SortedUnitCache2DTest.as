@@ -104,6 +104,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
         testQueryNearest2D();
         testCountInCircle2D();
         testGridInvalidation();
+        testSnapshotSemanticsWithinCacheLifetime();
+        testGridReconfigureRebuildsExistingCache();
         testFilterFunction2D();
         testEmptyCache2D();
         testRebuildFromParallelArrays();
@@ -128,7 +130,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
 
         // Grid should not exist yet (lazy)
         // We can't directly check _grid (private), but getGrid() should create it
-        var grid:SpatialHashGrid = cache.getGrid();
+        var grid:SpatialHashGrid = SpatialHashGrid(cache.getGrid());
         assertTrue("gridCreated", grid != null);
         assertEquals("gridUnitCount", 1, grid.getStats().unitCount, 0);
     }
@@ -237,6 +239,41 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
 
         // After update, grid should rebuild on next query with new data
         assertEquals("after_count", 3, cache.queryCircle2D(400, 400, 500, null).length, 0);
+    }
+
+    private static function testSnapshotSemanticsWithinCacheLifetime():Void {
+        trace("\n--- testSnapshotSemanticsWithinCacheLifetime ---");
+        SortedUnitCache.configureGrid(0, 0, 800, 800, 100, 100);
+
+        var mover:Object = makeUnit(20, 100, 100);
+        var cache:SortedUnitCache = buildCache([mover]);
+
+        assertEquals("snapshot_cache_beforeMove", 1, cache.queryCircle2D(100, 100, 20, null).length, 0);
+
+        mover.aabbCollider.left = 492;
+        mover.aabbCollider.right = 508;
+        mover.Z轴坐标 = 500;
+
+        assertEquals("snapshot_cache_oldPos", 1, cache.queryCircle2D(100, 100, 20, null).length, 0);
+        assertEquals("snapshot_cache_newPos", 0, cache.queryCircle2D(500, 500, 20, null).length, 0);
+    }
+
+    private static function testGridReconfigureRebuildsExistingCache():Void {
+        trace("\n--- testGridReconfigureRebuildsExistingCache ---");
+        SortedUnitCache.configureGrid(0, 0, 1000, 600, 200, 200);
+
+        var cache:SortedUnitCache = buildCache([makeUnit(30, 100, 100)]);
+        var grid1:SpatialHashGrid = SpatialHashGrid(cache.getGrid());
+        var stats1:Object = grid1.getStats();
+        assertEquals("reconfig_before_cols", 5, stats1.cols, 0);
+
+        SortedUnitCache.configureGrid(0, 0, 1000, 600, 100, 100);
+        var grid2:SpatialHashGrid = SpatialHashGrid(cache.getGrid());
+        var stats2:Object = grid2.getStats();
+
+        assertTrue("reconfig_gridRebuilt", grid1 != grid2);
+        assertEquals("reconfig_after_cols", 10, stats2.cols, 0);
+        assertEquals("reconfig_after_rows", 6, stats2.rows, 0);
     }
 
     private static function testFilterFunction2D():Void {

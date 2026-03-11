@@ -70,6 +70,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGridTest {
         testCountInCircle();
         testEdgeCases();
         testCellBoundary();
+        testNearestBoundaryInclusive();
+        testSnapshotCoordinates();
         testLargeScale();
         testFilterFunction();
         testPerformanceBenchmark();
@@ -237,6 +239,33 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGridTest {
 
         var r3:Array = g.queryRect(50, 0, 150, 100);
         assertEquals("boundary_cross", 2, r3.length, 0);
+    }
+
+    private static function testNearestBoundaryInclusive():Void {
+        trace("\n--- testNearestBoundaryInclusive ---");
+        var g:SpatialHashGrid = new SpatialHashGrid(0, 0, 400, 400, 100, 100);
+        var edge:Object = makeUnit(9, 200, 100);
+        g.insert(edge, 200, 100);
+
+        var nearest:Object = g.queryNearest(100, 100, 100, null);
+        assertTrue("nearest_onBoundaryIncluded", nearest == edge);
+    }
+
+    private static function testSnapshotCoordinates():Void {
+        trace("\n--- testSnapshotCoordinates ---");
+        var g:SpatialHashGrid = new SpatialHashGrid(0, 0, 800, 800, 100, 100);
+        var u:Object = makeUnit(10, 100, 100);
+        g.insert(u, 100, 100);
+
+        assertEquals("snapshot_beforeMove_oldPos", 1, g.queryCircle(100, 100, 20).length, 0);
+
+        // 模拟缓存有效期内单位实时坐标变化；网格查询应仍基于建格快照坐标
+        u.aabbCollider.left = 492;
+        u.aabbCollider.right = 508;
+        u.Z轴坐标 = 500;
+
+        assertEquals("snapshot_afterMove_oldPos", 1, g.queryCircle(100, 100, 20).length, 0);
+        assertEquals("snapshot_afterMove_newPos", 0, g.queryCircle(500, 500, 20).length, 0);
     }
 
     private static function testLargeScale():Void {
