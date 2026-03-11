@@ -144,6 +144,17 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     private var _gridVersion:Number = -1;
     /** 数据已更新但网格尚未 rebuild 的标记 */
     private var _gridDirty:Boolean = false;
+    /** 最近一次建格时解析出的几何参数；仅在隐式边界模式下用于判断是否需要重建实例 */
+    private var _gridResolvedOriginX:Number;
+    private var _gridResolvedOriginY:Number;
+    private var _gridResolvedWidth:Number;
+    private var _gridResolvedHeight:Number;
+    private var _gridResolvedUsesExplicitBounds:Boolean = false;
+    private var _gridBuiltOriginX:Number;
+    private var _gridBuiltOriginY:Number;
+    private var _gridBuiltWidth:Number;
+    private var _gridBuiltHeight:Number;
+    private var _gridUsesExplicitBounds:Boolean = false;
 
     // ========================================================================
     // 构造函数
@@ -1464,66 +1475,101 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      * 1. configureGrid 显式配置
      * 2. _root.Xmin/Xmax/Ymin/Ymax（StageManager 在关卡加载时设置）
      */
+    private function _resolveGridBounds():Void {
+        var ox:Number = _gridOriginX;
+        var oy:Number = _gridOriginY;
+        var w:Number = _gridWidth;
+        var h:Number = _gridHeight;
+        var usesExplicit:Boolean = !(isNaN(ox) || isNaN(oy) || isNaN(w) || isNaN(h));
+
+        if (!usesExplicit) {
+            var xMin:Number = _root.Xmin;
+            var xMax:Number = _root.Xmax;
+            var yMin:Number = _root.Ymin;
+            var yMax:Number = _root.Ymax;
+            if (!isNaN(xMin) && !isNaN(xMax) && !isNaN(yMin) && !isNaN(yMax)) {
+                ox = xMin;
+                oy = yMin;
+                w = xMax - xMin;
+                h = yMax - yMin;
+            } else {
+                var n:Number = this.data.length;
+                if (n == 0) {
+                    ox = 0;
+                    oy = 0;
+                    w = 100;
+                    h = 100;
+                } else {
+                    xMin = this.leftValues[0];
+                    xMax = this.rightValues[0];
+                    yMin = this.data[0].Z轴坐标;
+                    yMax = yMin;
+                    var i:Number = 1;
+                    while (i < n) {
+                        var lv:Number = this.leftValues[i];
+                        var rv:Number = this.rightValues[i];
+                        var yv:Number = this.data[i].Z轴坐标;
+                        if (lv < xMin) xMin = lv;
+                        if (rv > xMax) xMax = rv;
+                        if (yv < yMin) yMin = yv;
+                        if (yv > yMax) yMax = yv;
+                        i++;
+                    }
+                    ox = xMin - 10;
+                    oy = yMin - 10;
+                    w = (xMax - xMin) + 20;
+                    h = (yMax - yMin) + 20;
+                }
+            }
+        }
+
+        if (w < 1) w = 100;
+        if (h < 1) h = 100;
+
+        this._gridResolvedOriginX = ox;
+        this._gridResolvedOriginY = oy;
+        this._gridResolvedWidth = w;
+        this._gridResolvedHeight = h;
+        this._gridResolvedUsesExplicitBounds = usesExplicit;
+    }
+
     private function _ensureGrid():Void {
         // 快路径：grid 有效且配置未变且数据未脏
         if (this._grid != null && this._gridVersion == _gridConfigVersion && !this._gridDirty) return;
 
         // 配置版本变化 → 需要 new（网格参数变了，cell 布局不同）
         var configChanged:Boolean = (this._gridVersion != _gridConfigVersion);
+        var needNewGrid:Boolean = (configChanged || this._grid == null);
 
-        if (configChanged || this._grid == null) {
-            // 需要（重）建 grid 实例
-            var ox:Number = _gridOriginX;
-            var oy:Number = _gridOriginY;
-            var w:Number = _gridWidth;
-            var h:Number = _gridHeight;
+        if (needNewGrid || (this._gridDirty && !this._gridUsesExplicitBounds)) {
+            _resolveGridBounds();
+        }
 
-            // 未显式配置时，从 _root 全局地图边界读取
-            if (isNaN(ox) || isNaN(oy) || isNaN(w) || isNaN(h)) {
-                var xMin:Number = _root.Xmin;
-                var xMax:Number = _root.Xmax;
-                var yMin:Number = _root.Ymin;
-                var yMax:Number = _root.Ymax;
-                if (!isNaN(xMin) && !isNaN(xMax) && !isNaN(yMin) && !isNaN(yMax)) {
-                    ox = xMin;
-                    oy = yMin;
-                    w = xMax - xMin;
-                    h = yMax - yMin;
-                } else {
-                    // 兜底：从数据推算
-                    var n:Number = this.data.length;
-                    if (n == 0) {
-                        ox = 0; oy = 0; w = 100; h = 100;
-                    } else {
-                        xMin = this.leftValues[0];
-                        xMax = this.rightValues[0];
-                        yMin = this.data[0].Z轴坐标;
-                        yMax = yMin;
-                        var i:Number = 1;
-                        while (i < n) {
-                            var lv:Number = this.leftValues[i];
-                            var rv:Number = this.rightValues[i];
-                            var yv:Number = this.data[i].Z轴坐标;
-                            if (lv < xMin) xMin = lv;
-                            if (rv > xMax) xMax = rv;
-                            if (yv < yMin) yMin = yv;
-                            if (yv > yMax) yMax = yv;
-                            i++;
-                        }
-                        ox = xMin - 10;
-                        oy = yMin - 10;
-                        w = (xMax - xMin) + 20;
-                        h = (yMax - yMin) + 20;
-                    }
-                }
-                if (w < 1) w = 100;
-                if (h < 1) h = 100;
-            }
+        if (!needNewGrid && this._gridDirty && !this._gridUsesExplicitBounds) {
+            needNewGrid = (
+                this._gridResolvedOriginX != this._gridBuiltOriginX ||
+                this._gridResolvedOriginY != this._gridBuiltOriginY ||
+                this._gridResolvedWidth != this._gridBuiltWidth ||
+                this._gridResolvedHeight != this._gridBuiltHeight ||
+                this._gridResolvedUsesExplicitBounds != this._gridUsesExplicitBounds
+            );
+        }
 
+        if (needNewGrid) {
             this._grid = new SpatialHashGrid(
-                ox, oy, w, h, _gridCellW, _gridCellH
+                this._gridResolvedOriginX,
+                this._gridResolvedOriginY,
+                this._gridResolvedWidth,
+                this._gridResolvedHeight,
+                _gridCellW,
+                _gridCellH
             );
             this._gridVersion = _gridConfigVersion;
+            this._gridBuiltOriginX = this._gridResolvedOriginX;
+            this._gridBuiltOriginY = this._gridResolvedOriginY;
+            this._gridBuiltWidth = this._gridResolvedWidth;
+            this._gridBuiltHeight = this._gridResolvedHeight;
+            this._gridUsesExplicitBounds = this._gridResolvedUsesExplicitBounds;
         }
 
         // 数据脏或刚 new 的 grid → rebuild（复用已有 cell 数组）

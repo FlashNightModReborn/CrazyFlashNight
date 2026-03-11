@@ -249,8 +249,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         var r1:Number = ((y2 - oy) * invH) | 0;
 
         if (c0 < 0) c0 = 0;
+        else if (c0 > maxCol) c0 = maxCol;
+        if (c1 < 0) c1 = 0;
         if (c1 > maxCol) c1 = maxCol;
         if (r0 < 0) r0 = 0;
+        else if (r0 > maxRow) r0 = maxRow;
+        if (r1 < 0) r1 = 0;
         if (r1 > maxRow) r1 = maxRow;
 
         var grid:Array = _grid;
@@ -320,8 +324,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         var r1:Number = ((cy + radius - oy) * invH) | 0;
 
         if (c0 < 0) c0 = 0;
+        else if (c0 > maxCol) c0 = maxCol;
+        if (c1 < 0) c1 = 0;
         if (c1 > maxCol) c1 = maxCol;
         if (r0 < 0) r0 = 0;
+        else if (r0 > maxRow) r0 = maxRow;
+        if (r1 < 0) r1 = 0;
         if (r1 > maxRow) r1 = maxRow;
 
         var grid:Array = _grid;
@@ -390,8 +398,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         var r1:Number = ((cy + maxDist - oy) * invH) | 0;
 
         if (c0 < 0) c0 = 0;
+        else if (c0 > maxCol) c0 = maxCol;
+        if (c1 < 0) c1 = 0;
         if (c1 > maxCol) c1 = maxCol;
         if (r0 < 0) r0 = 0;
+        else if (r0 > maxRow) r0 = maxRow;
+        if (r1 < 0) r1 = 0;
         if (r1 > maxRow) r1 = maxRow;
 
         var grid:Array = _grid;
@@ -466,8 +478,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         var r1:Number = ((cy + radius - oy) * invH) | 0;
 
         if (c0 < 0) c0 = 0;
+        else if (c0 > maxCol) c0 = maxCol;
+        if (c1 < 0) c1 = 0;
         if (c1 > maxCol) c1 = maxCol;
         if (r0 < 0) r0 = 0;
+        else if (r0 > maxRow) r0 = maxRow;
+        if (r1 < 0) r1 = 0;
         if (r1 > maxRow) r1 = maxRow;
 
         var grid:Array = _grid;
