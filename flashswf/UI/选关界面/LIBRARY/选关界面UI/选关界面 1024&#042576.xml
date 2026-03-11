@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1770576801" lastUniqueIdentifier="241">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1773222931" lastUniqueIdentifier="242">
   <timeline>
-    <DOMTimeline name="选关界面 1024*576" currentFrame="11">
+    <DOMTimeline name="选关界面 1024*576" currentFrame="31">
       <layers>
         <DOMLayer name="Labels Layer" color="#5E5DCA">
           <frames>
@@ -230,7 +230,7 @@ gotoAndStop(_root.关卡地图帧值);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 118" color="#F7CA97" current="true" isSelected="true">
+        <DOMLayer name="Layer 118" color="#F7CA97">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -1071,7 +1071,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 120" color="#D8C265">
+        <DOMLayer name="Layer 120" color="#D8C265" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -2200,9 +2200,9 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="542.8" centerPoint3DY="413.2">
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="560.8" centerPoint3DY="453.2">
                   <matrix>
-                    <Matrix tx="291.8" ty="190.1"/>
+                    <Matrix tx="309.8" ty="230.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2215,9 +2215,9 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="434.3" centerPoint3DY="355.3">
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="434.3" centerPoint3DY="400.3">
                   <matrix>
-                    <Matrix tx="183.3" ty="132.2"/>
+                    <Matrix tx="183.3" ty="177.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2230,9 +2230,9 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3320" centerPoint3DX="302.25" centerPoint3DY="442.5">
+                <DOMSymbolInstance libraryItemName="选关界面UI/Symbol 3320" centerPoint3DX="265.05" centerPoint3DY="422.5">
                   <matrix>
-                    <Matrix tx="241" ty="423.5"/>
+                    <Matrix tx="203.8" ty="403.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2556,6 +2556,21 @@ on(rollOver){
                     <script><![CDATA[onClipEvent(load){
    this.配置关卡属性 = _root.配置关卡属性;
    this.配置关卡属性("同盟卸货站");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="563.95" centerPoint3DY="374.05">
+                  <matrix>
+                    <Matrix tx="312.95" ty="150.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("核电站");
 }
 ]]></script>
                   </Actionscript>
@@ -4412,7 +4427,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="25" duration="9" keyMode="9728">
               <elements>
-                <DOMBitmapInstance selected="true" libraryItemName="背景-禁区-topaz-enhance-1024w.png"/>
+                <DOMBitmapInstance libraryItemName="背景-禁区-topaz-enhance-1024w.png"/>
               </elements>
             </DOMFrame>
             <DOMFrame index="34" duration="12" keyMode="9728">
@@ -4433,7 +4448,7 @@ on(rollOut){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111!20480 -2111|20480 11442"/>
+                    <Edge fillStyle1="1" edges="!20480 -2111|20480 11442!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111"/>
                   </edges>
                 </DOMShape>
               </elements>

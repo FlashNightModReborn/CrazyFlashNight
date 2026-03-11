@@ -2933,4 +2933,75 @@
             <SpeedRate>8</SpeedRate>
         </Skybox>
     </Environment>
+    
+    
+    <Environment>
+        <BackgroundURL>核电站通路1.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1550</Xmax>
+        <Ymin>290</Ymin>
+        <Ymax>600</Ymax>
+        <Width>1550</Width>
+        <Height>600</Height>
+        <Collision>
+            <Point>1160,290</Point>
+            <Point>1550,290</Point>
+            <Point>1550,600</Point>
+        </Collision>
+        <Door>
+            <Index>1</Index>
+            <Direction>右</Direction>
+            <x0>1240</x0>
+            <y0>350</y0>
+            <x1>1460</x1>
+            <y1>450</y1>
+        </Door>
+        <SpaceCondition>室内</SpaceCondition>
+    </Environment>
+    <Environment>
+        <BackgroundURL>核电站通路2.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1800</Xmax>
+        <Ymin>280</Ymin>
+        <Ymax>550</Ymax>
+        <Width>1800</Width>
+        <Height>550</Height>
+        <Skybox>
+            <url>核电站冷却池远景.swf</url>
+            <SpeedRate>7</SpeedRate>
+        </Skybox>
+    </Environment>
+    <Environment>
+        <BackgroundURL>核电站通路3.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1800</Xmax>
+        <Ymin>280</Ymin>
+        <Ymax>550</Ymax>
+        <Width>1800</Width>
+        <Height>550</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>890</x0>
+            <y0>280</y0>
+            <x1>1056</x1>
+            <y1>300</y1>
+            <Identifier>关卡出口-核电站门</Identifier>
+        </Door>
+        <SpaceCondition>室内</SpaceCondition>
+    </Environment>
+    <Environment>
+        <BackgroundURL>核电站反应室冷却池.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1650</Xmax>
+        <Ymin>570</Ymin>
+        <Ymax>870</Ymax>
+        <Width>1650</Width>
+        <Height>850</Height>
+        <SpaceCondition>室内</SpaceCondition>
+    </Environment>
 </EnvironmentSettings>
