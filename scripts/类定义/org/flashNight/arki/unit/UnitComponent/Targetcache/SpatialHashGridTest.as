@@ -206,7 +206,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGridTest {
         }
 
         var c:Number = g.countInCircle(400, 300, 200);
-        assertEquals("countCircle200", 6, c, 1);
+        assertEquals("countCircle200", 5, c, 0);
         assertEquals("countCircleZero", 0, g.countInCircle(400, 300, 0), 0);
     }
 

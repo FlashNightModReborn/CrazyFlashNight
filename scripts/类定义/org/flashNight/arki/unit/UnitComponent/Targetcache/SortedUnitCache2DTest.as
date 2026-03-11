@@ -213,7 +213,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
         var cache:SortedUnitCache = buildCache(units);
 
         var c1:Number = cache.countInCircle2D(400, 300, 200);
-        assertEquals("count_circle200", 6, c1, 1);
+        assertEquals("count_circle200", 5, c1, 0);
 
         var c2:Number = cache.countInCircle2D(400, 300, 0);
         assertEquals("count_zero", 0, c2, 0);
