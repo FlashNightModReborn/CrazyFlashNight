@@ -119,6 +119,14 @@
           <Include href="gazer/元件素材/新屁股.xml" loadImmediate="false" itemID="6654b07e-0000025f" lastModified="1716826419"/>
           <Include href="Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1702098593"/>
           <Include href="Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1702098593"/>
+          <Include href="磁暴线圈.xml" loadImmediate="false" itemID="69b13498-00000728" lastModified="1773221024"/>
+          <Include href="磁暴线圈铁环内.xml" itemIcon="1" loadImmediate="false" itemID="69aee4a1-00000122" lastModified="1773069473"/>
+          <Include href="磁暴线圈铁环外.xml" itemIcon="1" loadImmediate="false" itemID="69aee4a7-00000126" lastModified="1773069479"/>
+          <Include href="磁暴线圈支撑侧.xml" itemIcon="1" loadImmediate="false" itemID="69aee2a1-00000103" lastModified="1773068961"/>
+          <Include href="磁暴线圈支撑零件.xml" itemIcon="1" loadImmediate="false" itemID="69aec0f4-00000075" lastModified="1773060340"/>
+          <Include href="磁暴线圈支撑零件2.xml" itemIcon="1" loadImmediate="false" itemID="69aec1ff-0000008c" lastModified="1773060827"/>
+          <Include href="磁暴线圈支撑正.xml" itemIcon="1" loadImmediate="false" itemID="69aec33e-000000a5" lastModified="1773068447"/>
+          <Include href="磁暴线圈中心.xml" itemIcon="1" loadImmediate="false" itemID="69aee2dd-00000111" lastModified="1773069021"/>
           <Include href="敌人-Gazer.xml" itemID="665b6b5e-000044ae" lastModified="1762183860"/>
           <Include href="敌人-Itinerant.xml" itemID="66a1374f-00000492" lastModified="1755702302"/>
           <Include href="敌人-Surveyor.xml" itemID="6652fae0-000012d7" lastModified="1755702531"/>
@@ -130,8 +138,8 @@
           <Include href="怪物通用模板/Symbol 25.xml" loadImmediate="false" itemID="65699d0d-0000008a" lastModified="1700331558"/>
           <Include href="怪物通用模板/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="65689e04-0000008f" lastModified="1701582054"/>
           <Include href="怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="6570b322-000003ec" lastModified="1701884437"/>
-          <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
           <Include href="怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
+          <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1716387345"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
@@ -501,7 +509,7 @@
                                                   <Point x="324.6" y="-89.2"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="敌人-Gazer" selected="true" centerPoint3DX="417.35" centerPoint3DY="267.9">
+                                        <DOMSymbolInstance libraryItemName="敌人-Gazer" centerPoint3DX="417.35" centerPoint3DY="267.9">
                                              <matrix>
                                                   <Matrix tx="92.75" ty="357.1"/>
                                              </matrix>
@@ -515,6 +523,14 @@
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="406.6" y="-89.2"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="磁暴线圈" centerPoint3DX="454" centerPoint3DY="106.15">
+                                             <matrix>
+                                                  <Matrix a="0.564453125" d="0.564453125" tx="390.4" ty="-41.2"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="112.7" y="261.05"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
