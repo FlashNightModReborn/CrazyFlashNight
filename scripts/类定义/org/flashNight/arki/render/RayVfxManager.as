@@ -111,18 +111,40 @@ class org.flashNight.arki.render.RayVfxManager {
     private static function ensureCircleLUT():Void {
         if (_ccCos != null) return;
         var seg:Number = 0.7853981633974483; // π/4
+        var mcos:Function = Math.cos; // H11: 缓存引用
+        var msin:Function = Math.sin;
         _ccCos = []; _ccSin = []; _ecCos = []; _ecSin = [];
         for (var i:Number = 0; i < 8; i++) {
             var midA:Number = (i + 0.5) * seg;
             var endA:Number = (i + 1) * seg;
-            _ccCos[i] = Math.cos(midA);  _ccSin[i] = Math.sin(midA);
-            _ecCos[i] = Math.cos(endA);  _ecSin[i] = Math.sin(endA);
+            _ccCos[i] = mcos(midA);  _ccSin[i] = msin(midA);
+            _ecCos[i] = mcos(endA);  _ecSin[i] = msin(endA);
         }
     }
 
     // ════════════════════════════════════════════════════════════════════════
     // 初始化
     // ════════════════════════════════════════════════════════════════════════
+
+    /**
+     * 使用指定容器初始化（供测试和外部系统使用）
+     *
+     * 允许调用方自行指定 VFX 绘制容器，而非依赖 ensureInitialized 的
+     * _root.gameworld 查找链。这对以下场景有价值：
+     * • 单元测试：在无 gameworld 的 TestLoader 中创建临时 MC
+     * • 外部系统：将射线渲染到自定义图层
+     *
+     * 如果已初始化，先执行 reset() 再重新初始化。
+     *
+     * @param mc 父级 MovieClip（将在其中创建 rayVfxContainer 子 MC）
+     */
+    public static function initWithContainer(mc:MovieClip):Void {
+        if (_initialized) reset();
+        _container = mc.createEmptyMovieClip("rayVfxContainer", mc.getNextHighestDepth());
+        _activeArcs = [];
+        _delayedSegments = [];
+        _initialized = true;
+    }
 
     /**
      * 确保渲染器已初始化
@@ -133,6 +155,7 @@ class org.flashNight.arki.render.RayVfxManager {
         var parent:MovieClip = _root.gameworld.效果;
         if (parent == null) parent = _root.gameworld.deadbody;
         if (parent == null) parent = _root.gameworld;
+        if (parent == null) parent = _root;
 
         _container = parent.createEmptyMovieClip("rayVfxContainer", parent.getNextHighestDepth());
         _activeArcs = [];
@@ -293,6 +316,13 @@ class org.flashNight.arki.render.RayVfxManager {
         return _renderCost;
     }
 
+    /**
+     * 获取当前延迟队列长度
+     */
+    public static function getDelayedCount():Number {
+        return _delayedSegments.length;
+    }
+
     // ════════════════════════════════════════════════════════════════════════
     // 内部方法：电弧创建与更新
     // ════════════════════════════════════════════════════════════════════════
@@ -348,6 +378,13 @@ class org.flashNight.arki.render.RayVfxManager {
         arc.fadeDuration = cfgNum(config, "fadeOutDuration", 3);
         arc.totalDuration = arc.visualDuration + arc.fadeDuration;
 
+        // 预缓存 flicker 参数（避免 updateActiveArcs 每帧 cfgNum 函数调用）
+        arc.flickerEnabled = (config != null && config.flickerEnabled === true);
+        if (arc.flickerEnabled) {
+            arc.flickerMin = cfgNum(config, "flickerMin", 70);
+            arc.flickerRange = cfgNum(config, "flickerMax", 100) - arc.flickerMin;
+        }
+
         // 首帧立即渲染
         renderArc(arc);
         _activeArcs.push(arc);
@@ -389,12 +426,9 @@ class org.flashNight.arki.render.RayVfxManager {
                 if (_currentLOD < 2) {
                     renderArc(arc);
                 }
-                // 随机爆闪（由 config.flickerEnabled 控制，默认仅 Tesla 开启）
-                var cfg:Object = arc.config;
-                if (cfg != null && cfg.flickerEnabled == true) {
-                    var fMin:Number = cfgNum(cfg, "flickerMin", 70);
-                    var fMax:Number = cfgNum(cfg, "flickerMax", 100);
-                    arc.mc._alpha = fMin + Math.random() * (fMax - fMin);
+                // 随机爆闪（使用 createArc 预缓存的参数，零函数调用开销）
+                if (arc.flickerEnabled) {
+                    arc.mc._alpha = arc.flickerMin + Math.random() * arc.flickerRange;
                 } else {
                     arc.mc._alpha = 100;
                 }
@@ -419,20 +453,28 @@ class org.flashNight.arki.render.RayVfxManager {
      */
     private static function updateLOD():Void {
         // 计算加权成本 (包含活跃 + 延迟队列)
-        _renderCost = 0;
-
+        // H01: 局部化数组引用，避免循环内静态成员查找
+        var arcs:Array = _activeArcs;
+        var delayed:Array = _delayedSegments;
+        var cost:Number = 0;
+        var n:Number = arcs.length;
+        var sc:Number;
         var i:Number;
-        for (i = 0; i < _activeArcs.length; i++) {
-            _renderCost += (_activeArcs[i].styleCost != undefined) ? _activeArcs[i].styleCost : 1.0;
+        for (i = 0; i < n; i++) {
+            sc = arcs[i].styleCost;
+            cost += (sc != undefined) ? sc : 1.0;
         }
-        for (i = 0; i < _delayedSegments.length; i++) {
-            _renderCost += (_delayedSegments[i].styleCost != undefined) ? _delayedSegments[i].styleCost : 1.0;
+        n = delayed.length;
+        for (i = 0; i < n; i++) {
+            sc = delayed[i].styleCost;
+            cost += (sc != undefined) ? sc : 1.0;
         }
+        _renderCost = cost;
 
         // 基于加权成本判定 LOD
-        if (_renderCost >= LOD_THRESHOLD_LOW) {
+        if (cost >= LOD_THRESHOLD_LOW) {
             _currentLOD = 2;
-        } else if (_renderCost >= LOD_THRESHOLD_MEDIUM) {
+        } else if (cost >= LOD_THRESHOLD_MEDIUM) {
             _currentLOD = 1;
         } else {
             _currentLOD = 0;
@@ -462,10 +504,10 @@ class org.flashNight.arki.render.RayVfxManager {
     // ════════════════════════════════════════════════════════════════════════
 
     /**
-     * 从 config 读取 Number 字段，null/NaN/undefined 返回默认值
+     * 从 config 读取 Number 字段，null/undefined 返回默认值
      *
-     * 利用 NaN != NaN 特性：AS2 中 Number(undefined) → NaN，
-     * 因此 (v == v) 同时排除 NaN 和 undefined。
+     * AS2 中 NaN == NaN 为 true（违反 IEEE 754），因此不能用
+     * v == v 技巧检测 NaN/undefined。改用 == undefined 判空。
      * config == null 时短路返回，避免 null[field] 异常。
      *
      * @param config 配置对象（可为 null）
@@ -475,8 +517,9 @@ class org.flashNight.arki.render.RayVfxManager {
      */
     public static function cfgNum(config:Object, field:String, def:Number):Number {
         if (config == null) return def;
-        var v:Number = config[field];
-        return (v == v) ? v : def;
+        var v = config[field];
+        if (v == undefined) return def;
+        return v;
     }
 
     /**
@@ -494,15 +537,16 @@ class org.flashNight.arki.render.RayVfxManager {
     }
 
     /**
-     * 从 SegmentMeta 读取 intensity，null/NaN 返回 1.0
+     * 从 SegmentMeta 读取 intensity，null/undefined 返回 1.0
      *
      * @param meta SegmentMeta 对象（可为 null）
      * @return intensity 值或 1.0
      */
     public static function cfgIntensity(meta:Object):Number {
         if (meta == null) return 1.0;
-        var v:Number = meta.intensity;
-        return (v == v) ? v : 1.0;
+        var v = meta.intensity;
+        if (v == undefined) return 1.0;
+        return v;
     }
 
     // ════════════════════════════════════════════════════════════════════════
@@ -621,8 +665,13 @@ class org.flashNight.arki.render.RayVfxManager {
         age:Number, phaseOffset:Number,
         ptsPerWave:Number, maxSegments:Number, noiseRatio:Number
     ):Array {
-        var dx:Number = arc.endX - arc.startX;
-        var dy:Number = arc.endY - arc.startY;
+        // H01: 局部化 arc 成员（消除循环内 GetMember 开销 ~150ns/次）
+        var sx:Number = arc.startX;
+        var sy:Number = arc.startY;
+        var ex:Number = arc.endX;
+        var ey:Number = arc.endY;
+        var dx:Number = ex - sx;
+        var dy:Number = ey - sy;
 
         var points:Array = poolArr();
 
@@ -633,51 +682,58 @@ class org.flashNight.arki.render.RayVfxManager {
 
         var step:Number = 1.0 / segmentCount;
         var margin:Number = 0.08;
+        var marginHigh:Number = 0.92; // 1.0 - margin，预计算避免循环内减法
         var hasNoise:Boolean = (noiseRatio > 0);
-        var TWO_PI:Number = 2 * Math.PI;
+        var TWO_PI:Number = 6.283185307179586; // 2π 直接常量，省一次乘法
 
-        for (var i:Number = 0; i <= segmentCount; i++) {
+        // H11: 缓存 Math.sin 引用（265ns→147ns，省 44%/次，循环 250 次累计 ~29μs）
+        var msin:Function = Math.sin;
+
+        // 预计算循环不变量
+        var distOverWL:Number = dist / waveLen;
+        var phaseBase:Number = age * waveSpeed;
+
+        // 噪声预计算（仅 Plasma 使用）
+        var noiseDistOverWL:Number;
+        var noisePhaseBase:Number;
+        if (hasNoise) {
+            noiseDistOverWL = dist / (waveLen * noiseRatio);
+            noisePhaseBase = phaseBase * 1.5;
+        }
+
+        // 起点（跳过循环首迭代的分支判断）
+        points[0] = pt(sx, sy, 0.0);
+
+        // 中间点：i=1..segmentCount-1，t 必在 (0,1) 开区间内
+        var pIdx:Number = 1;
+        for (var i:Number = 1; i < segmentCount; i++) {
             var t:Number = i * step;
 
-            var baseX:Number = arc.startX + dx * t;
-            var baseY:Number = arc.startY + dy * t;
+            // smoothstep 包络：两端衰减防止端点突变
+            var envelope:Number = 1.0;
+            if (t < margin) {
+                envelope = t / margin;
+            } else if (t > marginHigh) {
+                envelope = (1.0 - t) / margin;
+            }
+            envelope = envelope * envelope * (3 - 2 * envelope);
 
-            var offset:Number = 0;
+            var phase:Number = (t * distOverWL - phaseBase) * TWO_PI + phaseOffset;
+            var wave:Number = msin(phase);
 
-            if (t > 0.001 && t < 0.999) {
-                // smoothstep 包络
-                var envelope:Number = 1.0;
-                if (t < margin) {
-                    envelope = t / margin;
-                } else if (t > 1.0 - margin) {
-                    envelope = (1.0 - t) / margin;
-                }
-                envelope = envelope * envelope * (3 - 2 * envelope);
-
-                var phase:Number = (t * dist / waveLen - age * waveSpeed) * TWO_PI
-                    + phaseOffset;
-                var wave:Number = Math.sin(phase);
-
-                // 可选高频噪声叠加（Plasma 专用）
-                if (hasNoise) {
-                    var noisePhase:Number = (t * dist / (waveLen * noiseRatio) - age * waveSpeed * 1.5)
-                        * TWO_PI;
-                    wave += Math.sin(noisePhase) * 0.25;
-                }
-
-                offset = waveAmp * envelope * wave;
+            // 可选高频噪声叠加（Plasma 专用）
+            if (hasNoise) {
+                wave += msin((t * noiseDistOverWL - noisePhaseBase) * TWO_PI) * 0.25;
             }
 
-            if (t <= 0.001) {
-                points.push(pt(arc.startX, arc.startY, 0.0));
-            } else if (t >= 0.999) {
-                points.push(pt(arc.endX, arc.endY, 1.0));
-            } else {
-                points.push(pt(
-                    baseX + perpX * offset,
-                    baseY + perpY * offset, t));
-            }
+            var offset:Number = waveAmp * envelope * wave;
+            points[pIdx++] = pt(
+                sx + dx * t + perpX * offset,
+                sy + dy * t + perpY * offset, t);
         }
+
+        // 终点
+        points[pIdx] = pt(ex, ey, 1.0);
 
         return points;
     }
