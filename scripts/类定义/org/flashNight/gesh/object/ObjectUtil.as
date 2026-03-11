@@ -279,10 +279,9 @@ class org.flashNight.gesh.object.ObjectUtil {
     private static function movieClipToString(mc:MovieClip, seenObjects:Dictionary, depth:Number):String {
         var out:String = "{";
         var first:Boolean = true;
-
         function addKV(key:String, val:Object):Void {
             if (first) { first = false; } else { out += ", "; }
-            out += '"' + key + '": ' + ObjectUtil.toString(val, seenObjects, depth + 1);
+            out += '"' + key + '": ' + ObjectUtil.stringify(val, seenObjects, depth + 1);
         }
 
         // 1) 固定展示一些常用内建属性（不可枚举的也能拿到）
@@ -328,7 +327,7 @@ class org.flashNight.gesh.object.ObjectUtil {
      * @param depth (可选) 递归深度，防止无限递归
      * @return String 对象的字符串表示。
      */
-    public static function toString(obj:Object, seenObjects:Dictionary, depth:Number):String {
+    public static function stringify(obj:Object, seenObjects:Dictionary, depth:Number):String {
         var MAX_DEPTH:Number = 256;  // 设置最大递归深度
         var result:String = "";
 
@@ -367,7 +366,7 @@ class org.flashNight.gesh.object.ObjectUtil {
             result += "[";
             for (var i:Number = 0; i < obj.length; i++) {
                 if (i > 0) result += ", ";
-                result += toString(obj[i], seenObjects, depth + 1);  // 递归调用时增加深度
+                result += stringify(obj[i], seenObjects, depth + 1);  // 递归调用时增加深度
             }
             result += "]";
         }
@@ -386,7 +385,7 @@ class org.flashNight.gesh.object.ObjectUtil {
             for (var j:Number = 0; j < keys.length; j++) {
                 if (!isInternalKey(keys[j])) {
                     if (j > 0) result += ", ";
-                    result += '"' + keys[j] + '": ' + toString(obj[keys[j]], seenObjects, depth + 1);  // 递归调用时增加深度
+                    result += '"' + keys[j] + '": ' + stringify(obj[keys[j]], seenObjects, depth + 1);  // 递归调用时增加深度
                 }
             }
             result += "}";
@@ -847,13 +846,13 @@ trace("isSimple 方法测试完成。\n");
 // 4. 测试 toString 方法
 trace("测试 toString 方法...");
 var objC:Object = { name: "Test", age: 25 };
-trace("对象的字符串表示: " + ObjectUtil.toString(objC)); // 应输出 {"name": "Test", "age": 25}
+trace("对象的字符串表示: " + ObjectUtil.stringify(objC)); // 应输出 {"name": "Test", "age": 25}
 
 var nestedObj:Object = { name: "Nested", info: { city: "New York", zip: 10001 } };
-trace("嵌套对象的字符串表示: " + ObjectUtil.toString(nestedObj)); // 应输出 {"name": "Nested", "info": {"city": "New York", "zip": 10001}}
+trace("嵌套对象的字符串表示: " + ObjectUtil.stringify(nestedObj)); // 应输出 {"name": "Nested", "info": {"city": "New York", "zip": 10001}}
 
 var arrTest:Array = [1, 2, 3];
-trace("数组的字符串表示: " + ObjectUtil.toString(arrTest)); // 应输出 [1, 2, 3]
+trace("数组的字符串表示: " + ObjectUtil.stringify(arrTest)); // 应输出 [1, 2, 3]
 
 trace("toString 方法测试完成。\n");
 
@@ -862,7 +861,7 @@ trace("测试 copyProperties 方法...");
 var source:Object = { name: "Source", age: 30 };
 var destination:Object = {};
 ObjectUtil.copyProperties(source, destination);
-trace("目标对象内容: " + ObjectUtil.toString(destination)); // 应输出 {"name": "Source", "age": 30}
+trace("目标对象内容: " + ObjectUtil.stringify(destination)); // 应输出 {"name": "Source", "age": 30}
 
 trace("copyProperties 方法测试完成。\n");
 
@@ -882,7 +881,7 @@ trace("测试 merge 方法...");
 var target:Object = { name: "Target", age: 20 };
 var sourceMerge:Object = { age: 30, city: "New York" };
 var merged:Object = ObjectUtil.merge(target, sourceMerge);
-trace("合并后的对象: " + ObjectUtil.toString(merged)); // 应输出 {"name": "Target", "age": 30, "city": "New York"}
+trace("合并后的对象: " + ObjectUtil.stringify(merged)); // 应输出 {"name": "Target", "age": 30, "city": "New York"}
 
 trace("merge 方法测试完成。\n");
 
@@ -909,7 +908,7 @@ trace("toJSON 方法测试完成。\n");
 trace("测试 fromJSON 方法...");
 var jsonString:String = '{"name":"Test","age":25,"info":{"city":"New York"}}';
 var parsedObj:Object = ObjectUtil.fromJSON(jsonString);
-trace("解析后的对象: " + ObjectUtil.toString(parsedObj)); // 应输出 {"name": "Test", "age": 25, "info": {"city": "New York"}}
+trace("解析后的对象: " + ObjectUtil.stringify(parsedObj)); // 应输出 {"name": "Test", "age": 25, "info": {"city": "New York"}}
 
 var invalidJson:String = '{"name": "Test", "age": 25,'; // Invalid JSON string
 var invalidParsed:Object = ObjectUtil.fromJSON(invalidJson);
@@ -925,7 +924,7 @@ var base64String:String = ObjectUtil.toBase64(testObject, false);
 trace("Base64 编码结果: " + base64String); // 输出 Base64 编码结果
 
 var decodedObject:Object = ObjectUtil.fromBase64(base64String);
-trace("从 Base64 解析的对象: " + ObjectUtil.toString(decodedObject)); // 输出解码结果
+trace("从 Base64 解析的对象: " + ObjectUtil.stringify(decodedObject)); // 输出解码结果
 
 trace("对象是否一致: " + ObjectUtil.equals(testObject, decodedObject)); // 应该输出 true
 
@@ -983,7 +982,7 @@ var tomlData:String = 'title = "My Game"\n' +
 
 // 解析 TOML 字符串为对象
 var parsedTOMLObject:Object = ObjectUtil.fromTOML(tomlData);
-trace("解析后的 TOML 对象: " + ObjectUtil.toString(parsedTOMLObject)); // 应输出 {"title": "My Game", "isActive": true, "score": 1000, "items": ["sword", "shield", "potion"]}
+trace("解析后的 TOML 对象: " + ObjectUtil.stringify(parsedTOMLObject)); // 应输出 {"title": "My Game", "isActive": true, "score": 1000, "items": ["sword", "shield", "potion"]}
 
 // 测试无效 TOML 字符串的解析
 var invalidTOML:String = 'title = "My Game" isActive = true'; // Invalid TOML string
@@ -1013,7 +1012,7 @@ complexObj["database"] = {
 
 // 解析复杂 TOML 字符串为对象
 var parsedComplexTOMLObject:Object = ObjectUtil.fromTOML(complexToml);
-trace("解析后的复杂 TOML 对象: " + ObjectUtil.toString(parsedComplexTOMLObject)); // 应输出对应的对象结构
+trace("解析后的复杂 TOML 对象: " + ObjectUtil.stringify(parsedComplexTOMLObject)); // 应输出对应的对象结构
 
 trace("fromTOML 方法复杂 TOML 测试完成。\n");
 
@@ -1023,7 +1022,7 @@ var multilineToml:String = 'description = """\nThis is a multiline string.\nIt s
 
 // 解析多行字符串的 TOML 为对象
 var parsedMultilineTOMLObject:Object = ObjectUtil.fromTOML(multilineToml);
-trace("解析后的多行字符串 TOML 对象: " + ObjectUtil.toString(parsedMultilineTOMLObject)); // 应输出 { description: "This is a multiline string.\nIt spans multiple lines.\n" }
+trace("解析后的多行字符串 TOML 对象: " + ObjectUtil.stringify(parsedMultilineTOMLObject)); // 应输出 { description: "This is a multiline string.\nIt spans multiple lines.\n" }
 
 trace("fromTOML 方法多行字符串测试完成。\n");
 
@@ -1082,7 +1081,7 @@ trace(fntlSingleLine);
 // 使用 fromFNTL 方法解析单行 FNTL 字符串为对象
 var parsedObj:Object = ObjectUtil.fromFNTL(fntlSingleLine);
 trace("解析后的对象:");
-trace(ObjectUtil.toString(parsedObj));
+trace(ObjectUtil.stringify(parsedObj));
 
 
 */

@@ -104,7 +104,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
                             } else {
                                 this.current[key] = inlineTable[key];
                                 if (this.debug) {
-                                    trace("Added inline table key-value pair to current context: " + key + " = " + ObjectUtil.toString(inlineTable[key]));
+                                    trace("Added inline table key-value pair to current context: " + key + " = " + ObjectUtil.stringify(inlineTable[key]));
                                 }
                             }
                         }
@@ -152,7 +152,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
         }
 
         if (this.debug) {
-            trace("Parsing completed. Constructed Object: " + ObjectUtil.toString(this.root));
+            trace("Parsing completed. Constructed Object: " + ObjectUtil.stringify(this.root));
         }
         return this.root;
     }
@@ -267,7 +267,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
         }
 
         if (this.debug) {
-            trace("Parsed key-value pair, Key: " + key + ", Value: " + ObjectUtil.toString(value));
+            trace("Parsed key-value pair, Key: " + key + ", Value: " + ObjectUtil.stringify(value));
         }
 
         if (value !== undefined) { // 仅在值成功解析时设置键值对
@@ -561,7 +561,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
                 if (value !== undefined) {
                     array.push(value);
                     if (this.debug) {
-                        trace("Array element parsed: " + ObjectUtil.toString(value));
+                        trace("Array element parsed: " + ObjectUtil.stringify(value));
                     }
                     expectValue = false; // 解析值后，不再期待值，期待逗号
                 } else {
@@ -635,7 +635,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
                         }
                         table[key] = value;
                         if (this.debug) {
-                            trace("Inline table key-value pair: " + key + " = " + ObjectUtil.toString(value));
+                            trace("Inline table key-value pair: " + key + " = " + ObjectUtil.stringify(value));
                         }
                     } else {
                         this.error("Failed to parse value for key '" + key + "' in inline table", token);
@@ -800,7 +800,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
             } else {
                 this.current[key] = inlineTable[key];
                 if (this.debug) {
-                    trace("Added inline table key-value pair to current context: " + key + " = " + ObjectUtil.toString(inlineTable[key]));
+                    trace("Added inline table key-value pair to current context: " + key + " = " + ObjectUtil.stringify(inlineTable[key]));
                 }
             }
         }

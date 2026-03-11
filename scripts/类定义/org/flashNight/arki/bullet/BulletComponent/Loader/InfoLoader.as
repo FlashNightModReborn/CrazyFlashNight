@@ -58,7 +58,7 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.InfoLoader {
                 }
 
                 server.sendServerMessage("BulletsCasesLoader：bullets_cases.xml 加载成功！");
-                // server.sendServerMessage(ObjectUtil.toString(self));
+                // server.sendServerMessage(ObjectUtil.stringify(self));
 
                 // 清空回调队列
                 self.onLoadCallbacks = [];

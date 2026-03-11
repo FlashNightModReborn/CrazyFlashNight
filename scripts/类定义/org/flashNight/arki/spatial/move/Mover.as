@@ -655,7 +655,7 @@ class org.flashNight.arki.spatial.move.Mover {
             walkableStatus[direction] = Mover.isPointValid(targetX, targetY);
         }
 
-        // _root.服务器.发布服务器消息("getWalkableDirections " + ObjectUtil.toString(walkableStatus));
+        // _root.服务器.发布服务器消息("getWalkableDirections " + ObjectUtil.stringify(walkableStatus));
         
         // 返回包含所有方向可行性状态的对象
         return walkableStatus;

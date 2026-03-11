@@ -435,7 +435,7 @@ _root.初始化NPC = function(目标) {
         }
     }
 
-        // _root.服务器.发布服务器消息("NPC默认对话: " + ObjectUtil.toString(目标.默认对话));
+        // _root.服务器.发布服务器消息("NPC默认对话: " + ObjectUtil.stringify(目标.默认对话));
     if (目标.物品栏 == null)
         目标.物品栏 = _root.getNPCShop(目标.名字);
     if (目标.可学的技能 == null)

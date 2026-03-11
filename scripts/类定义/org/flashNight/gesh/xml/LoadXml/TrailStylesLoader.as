@@ -44,7 +44,7 @@ class org.flashNight.gesh.xml.LoadXml.TrailStylesLoader extends BaseXMLLoader {
                 }
             }
             this.styles = ts;
-            // _root.服务器.发布服务器消息("Parsed Styles: " + ObjectUtil.toString(ts)); // 调试输出
+            // _root.服务器.发布服务器消息("Parsed Styles: " + ObjectUtil.stringify(ts)); // 调试输出
             if (onLoadHandler != null) onLoadHandler(this.styles);
         }, function():Void {
             _root.服务器.发布服务器消息("TrailStylesLoader: 文件加载失败！");

@@ -95,7 +95,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
                 var value:Object = currentObject[key];
 
                 if (this.debug) {
-                    trace("Encoding key: " + key + ", Value: " + ObjectUtil.toString(value));
+                    trace("Encoding key: " + key + ", Value: " + ObjectUtil.stringify(value));
                 }
 
                 // 错误处理部分
@@ -899,7 +899,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
         while ((tok = lexer.getNextToken()) != null) {
             tokens.push(tok);
             if (this.debug) {
-                trace("Lexer Token: " + ObjectUtil.toString(tok));
+                trace("Lexer Token: " + ObjectUtil.stringify(tok));
             }
         }
         var parser:FNTLParser = new FNTLParser(tokens, tableStr, this.debug);
@@ -912,7 +912,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             return undefined;
         }
         if (this.debug) {
-            trace("Parsed inline table: " + ObjectUtil.toString(parsedTable));
+            trace("Parsed inline table: " + ObjectUtil.stringify(parsedTable));
         }
         return parsedTable;
     }

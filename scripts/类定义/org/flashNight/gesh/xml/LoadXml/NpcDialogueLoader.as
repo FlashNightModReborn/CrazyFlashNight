@@ -44,7 +44,7 @@ class org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader extends BaseXMLLoader {
         // 加载 list.xml 文件
         super.load(function(data:Object):Void {
             // trace("NpcDialogueLoader: list.xml 文件加载成功！");
-            // trace("NpcDialogueLoader: list.xml 数据 = " + ObjectUtil.toString(data));
+            // trace("NpcDialogueLoader: list.xml 数据 = " + ObjectUtil.stringify(data));
 
             if (!data || !data.items || !(data.items instanceof Array)) {
                 // trace("NpcDialogueLoader: list.xml 数据结构不正确！");
@@ -53,7 +53,7 @@ class org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader extends BaseXMLLoader {
             }
 
             var childXmlPaths:Array = data.items;
-            // trace("NpcDialogueLoader: 需要加载的子 XML 文件列表 = " + ObjectUtil.toString(childXmlPaths));
+            // trace("NpcDialogueLoader: 需要加载的子 XML 文件列表 = " + ObjectUtil.stringify(childXmlPaths));
 
             self.combinedData = {};
 
@@ -63,7 +63,7 @@ class org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader extends BaseXMLLoader {
                 super.data = self.combinedData;
 
                 // trace("NpcDialogueLoader: 所有子 XML 文件加载并合并成功！");
-                // trace("NpcDialogueLoader: 合并后的数据 = " + ObjectUtil.toString(self.combinedData));
+                // trace("NpcDialogueLoader: 合并后的数据 = " + ObjectUtil.stringify(self.combinedData));
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
             }, function():Void {
                 // trace("NpcDialogueLoader: 加载子 XML 文件失败！");
@@ -99,7 +99,7 @@ class org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader extends BaseXMLLoader {
 
         loader.load(function(childData:Object):Void {
             // trace("NpcDialogueLoader: 子 XML 文件加载成功 = " + xmlFilePath);
-            // trace("NpcDialogueLoader: 子 XML 数据 = " + ObjectUtil.toString(childData));
+            // trace("NpcDialogueLoader: 子 XML 数据 = " + ObjectUtil.stringify(childData));
 
             // 修复：新的XML文件结构中，childData直接就是根节点，包含Dialogues
             // 每个文件只有一个Dialogues节点（代表一个或多个NPC）
@@ -241,7 +241,7 @@ var npcDialogueLoader:NpcDialogueLoader = NpcDialogueLoader.getInstance();
 npcDialogueLoader.loadNpcDialogues(
     function(combinedData:Object):Void {
         trace("主程序：NPC对话数据加载成功！");
-        trace("合并后的数据: " + ObjectUtil.toString(combinedData));
+        trace("合并后的数据: " + ObjectUtil.stringify(combinedData));
         // 在此处处理合并后的NPC对话数据
         _root.NPC对话 = combinedData;
     },

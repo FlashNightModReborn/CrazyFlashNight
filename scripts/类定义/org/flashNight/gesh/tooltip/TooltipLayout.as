@@ -36,6 +36,43 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         return totalLength > threshold * totalMultiplier && descLength > threshold / descDivisor;
     }
 
+    /**
+     * 智能分栏判定 + 描述评分一次性计算（消除 renderItemTooltipSmart 中的重复扫描）。
+     *
+     * 返回 {needSplit:Boolean, descTotal:Number, descMaxLine:Number}
+     * 调用方可直接将 descTotal/descMaxLine 传入 estimateMainWidthFromScores 跳过二次扫描。
+     * 返回值复用静态对象 _splitResult，调用方需立即读取。
+     */
+    private static var _splitResult:Object = {needSplit: false, descTotal: 0, descMaxLine: 0};
+
+    public static function shouldSplitSmartWithScores(descriptionText:String, introText:String, options:Object):Object {
+        var out:Object = _splitResult;
+        var threshold:Number = (options && options.threshold != undefined)
+            ? options.threshold
+            : TooltipConstants.SPLIT_THRESHOLD;
+        var totalMultiplier:Number = (options && options.totalMultiplier != undefined)
+            ? options.totalMultiplier
+            : TooltipConstants.SMART_TOTAL_MULTIPLIER;
+        var descDivisor:Number = (options && options.descDivisor != undefined)
+            ? options.descDivisor
+            : TooltipConstants.SMART_DESC_DIVISOR;
+
+        // 描述文本：单次扫描同时拿到 total + maxLine
+        var descScores:Object = StringUtils.htmlScoresBoth(descriptionText, null);
+        var descTotal:Number = descScores.total;
+        var descMaxLine:Number = descScores.maxLine;
+
+        // intro 只需要 total
+        var introTotal:Number = StringUtils.htmlLengthScore(introText, null);
+
+        var totalLength:Number = descTotal + introTotal;
+
+        out.needSplit = totalLength > threshold * totalMultiplier && descTotal > threshold / descDivisor;
+        out.descTotal = descTotal;
+        out.descMaxLine = descMaxLine;
+        return out;
+    }
+
     // === 估算文本宽度（双维度：总量 + 最长行，取最大值） ===
     //
     // 维度1（总量）：内容越多 → 框越宽，减少换行层数
@@ -44,13 +81,9 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         if (minW === undefined) minW = TooltipConstants.MIN_W;
         if (maxW === undefined) maxW = TooltipConstants.MAX_W;
 
-        // 维度1：总量估算（原有逻辑不变）
-        var totalScore:Number = StringUtils.htmlLengthScore(html, null);
-        var totalBasedWidth:Number = totalScore * TooltipConstants.CHAR_AVG_WIDTH;
-
-        // 维度2：最长行估算（新增）
-        var maxLineScore:Number = StringUtils.htmlMaxLineScore(html, null);
-        var lineBasedWidth:Number = maxLineScore * TooltipConstants.LINE_WIDTH_SCALE
+        var scores:Object = StringUtils.htmlScoresBoth(html, null);
+        var totalBasedWidth:Number = scores.total * TooltipConstants.CHAR_AVG_WIDTH;
+        var lineBasedWidth:Number = scores.maxLine * TooltipConstants.LINE_WIDTH_SCALE
                                   + TooltipConstants.LINE_GUTTER;
 
         var widthEst:Number = Math.max(totalBasedWidth, lineBasedWidth);
@@ -72,25 +105,32 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         if (minW === undefined) minW = TooltipConstants.MIN_W;
         if (maxW === undefined) maxW = TooltipConstants.MAX_W;
 
-        var totalScore:Number = StringUtils.htmlLengthScore(html, null);
-        var maxLineScore:Number = StringUtils.htmlMaxLineScore(html, null);
+        var scores:Object = StringUtils.htmlScoresBoth(html, null);
+        return estimateMainWidthFromScores(scores.total, scores.maxLine, html, minW, maxW);
+    }
+
+    /**
+     * 从预计算的评分直接估算主框体宽度（避免重复扫描 HTML）。
+     * @param totalScore  htmlScoresBoth.total
+     * @param maxLineScore htmlScoresBoth.maxLine
+     * @param html 原始 HTML（仅用于 split("<BR>") 计算行数）
+     */
+    public static function estimateMainWidthFromScores(totalScore:Number, maxLineScore:Number, html:String, minW:Number, maxW:Number):Number {
+        if (minW === undefined) minW = TooltipConstants.MIN_W;
+        if (maxW === undefined) maxW = TooltipConstants.MAX_W;
 
         var totalBased:Number = totalScore * TooltipConstants.MAIN_CHAR_AVG_WIDTH;
 
         if (maxLineScore <= 0) {
-            // 无有效行（空文本）：退化为纯总量估算
             return Math.max(minW, Math.min(totalBased, maxW));
         }
 
         var lineBased:Number = maxLineScore * TooltipConstants.LINE_WIDTH_SCALE
                              + TooltipConstants.LINE_GUTTER;
 
-        // 实际均匀度 = meanLineScore / maxLineScore，自然落于 [0, 1]
-        // 通过 <BR> 计数得到实际行数，避免 lineEquiv 代理法在"多短行+1长行"情况下偏高
         var lineCount:Number = html.split("<BR>").length;
         if (lineCount < 1) lineCount = 1;
         var meanScore:Number = totalScore / lineCount;
-        // Smoothstep（S 型曲线）：低均匀度端更强地倾向 totalBased（收紧多短行+1长行的稀疏内容）
         var t:Number = Math.min(1, meanScore / maxLineScore);
         var uniformity:Number = t * t * (3 - 2 * t);
 

@@ -520,7 +520,7 @@ class org.flashNight.gesh.object.ObjectUtilTest {
     private function testToStringSimpleObject():Void {
         trace("\n--- Test: toString - Simple Object ---");
         var obj:Object = {name: "Test", value: 42};
-        var str:String = ObjectUtil.toString(obj, null, 0);
+        var str:String = ObjectUtil.stringify(obj, null, 0);
 
         this.assert(str.indexOf("name") != -1, "Contains name key");
         this.assert(str.indexOf("Test") != -1, "Contains name value");
@@ -530,7 +530,7 @@ class org.flashNight.gesh.object.ObjectUtilTest {
     private function testToStringNestedObject():Void {
         trace("\n--- Test: toString - Nested Object ---");
         var obj:Object = {outer: {inner: "value"}};
-        var str:String = ObjectUtil.toString(obj, null, 0);
+        var str:String = ObjectUtil.stringify(obj, null, 0);
 
         this.assert(str.indexOf("outer") != -1, "Contains outer key");
         this.assert(str.indexOf("inner") != -1, "Contains inner key");
@@ -539,7 +539,7 @@ class org.flashNight.gesh.object.ObjectUtilTest {
     private function testToStringArray():Void {
         trace("\n--- Test: toString - Array ---");
         var arr:Array = [1, 2, 3];
-        var str:String = ObjectUtil.toString(arr, null, 0);
+        var str:String = ObjectUtil.stringify(arr, null, 0);
 
         this.assert(str.indexOf("[") == 0, "Starts with [");
         this.assert(str.indexOf("1") != -1, "Contains first element");
@@ -550,7 +550,7 @@ class org.flashNight.gesh.object.ObjectUtilTest {
         var obj:Object = {name: "Root"};
         obj.self = obj;
 
-        var str:String = ObjectUtil.toString(obj, null, 0);
+        var str:String = ObjectUtil.stringify(obj, null, 0);
 
         this.assert(str.indexOf("[Circular]") != -1, "Circular reference marked");
     }
@@ -567,21 +567,21 @@ class org.flashNight.gesh.object.ObjectUtilTest {
 
         // 通过传入较高的初始 depth 值来测试 MAX_DEPTH 逻辑
         // MAX_DEPTH = 256，传入 250 意味着只能再递归 6 层就会触发限制
-        var str:String = ObjectUtil.toString(obj, null, 250);
+        var str:String = ObjectUtil.stringify(obj, null, 250);
         this.assert(str.indexOf("[Max Depth Reached]") != -1, "Max depth handled");
     }
 
     private function testToStringFunction():Void {
         trace("\n--- Test: toString - Function ---");
         var func:Function = function():Void {};
-        var str:String = ObjectUtil.toString(func, null, 0);
+        var str:String = ObjectUtil.stringify(func, null, 0);
 
         this.assert(str.indexOf("func:") == 0, "Function formatted with func: prefix");
     }
 
     private function testToStringNull():Void {
         trace("\n--- Test: toString - Null ---");
-        var str:String = ObjectUtil.toString(null, null, 0);
+        var str:String = ObjectUtil.stringify(null, null, 0);
         this.assert(str == "null", "Null converted to 'null' string");
     }
 
@@ -989,7 +989,7 @@ class org.flashNight.gesh.object.ObjectUtilTest {
         var cloned:Object = ObjectUtil.clone(empty);
         this.assert(ObjectUtil.size(cloned) == 0, "Empty object cloned");
 
-        var str:String = ObjectUtil.toString(empty, null, 0);
+        var str:String = ObjectUtil.stringify(empty, null, 0);
         this.assert(str == "{}", "Empty object toString is {}");
     }
 
@@ -1095,7 +1095,7 @@ class org.flashNight.gesh.object.ObjectUtilTest {
         var iterations:Number = 1000;
 
         var time:Number = this.measureTime(function() {
-            ObjectUtil.toString(obj, null, 0);
+            ObjectUtil.stringify(obj, null, 0);
         }, iterations);
 
         trace("ToString Performance: " + time + "ms for " + iterations + " iterations");

@@ -133,8 +133,8 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         inventory.add(4, { name:"AK47", value:{ level:7 } });
         inventory.add(1, { name:"牛肉罐头", value:2 });
         
-        var itemsStr:String = ObjectUtil.toString(inventory.getItems());
-        var indexesStr:String = ObjectUtil.toString(inventory.getIndexes());
+        var itemsStr:String = ObjectUtil.stringify(inventory.getItems());
+        var indexesStr:String = ObjectUtil.stringify(inventory.getIndexes());
         trace("After add: items: " + itemsStr);
         trace("After add: indexes: " + indexesStr);
         
@@ -147,8 +147,8 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         inventory.remove(1);
         inventory.remove(4);
 
-        itemsStr = ObjectUtil.toString(inventory.getItems());
-        indexesStr = ObjectUtil.toString(inventory.getIndexes());
+        itemsStr = ObjectUtil.stringify(inventory.getItems());
+        indexesStr = ObjectUtil.stringify(inventory.getIndexes());
         trace("After remove: items: " + itemsStr);
         trace("After remove: indexes: " + indexesStr);
         
@@ -176,7 +176,7 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         var firstVacancy:Number = inventory.getFirstVacancy();
         assert(firstVacancy == 4,
             "索引树缺项时应自动修复，首个空格应为 4",
-            "实际 firstVacancy: " + firstVacancy + ", items: " + ObjectUtil.toString(inventory.getItems()) + ", indexes: " + ObjectUtil.toString(inventory.getIndexes()));
+            "实际 firstVacancy: " + firstVacancy + ", items: " + ObjectUtil.stringify(inventory.getItems()) + ", indexes: " + ObjectUtil.stringify(inventory.getIndexes()));
     }
 
     /**
@@ -228,11 +228,11 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         var resultAcquire3:Boolean = ItemUtil.acquire(itemArray);
         assert(!resultAcquire3, 
             "添加 3 个物品，其中 1 个物品可叠加，应由于空间不足而添加失败", 
-            "acquire(array3) 返回 true，背包状态: " + ObjectUtil.toString(_root.物品栏.背包.getItems()));
+            "acquire(array3) 返回 true，背包状态: " + ObjectUtil.stringify(_root.物品栏.背包.getItems()));
 
         // 输出当前背包状态
-        var bpItemsStr:String = ObjectUtil.toString(_root.物品栏.背包.getItems());
-        var bpIndexesStr:String = ObjectUtil.toString(_root.物品栏.背包.getIndexes());
+        var bpItemsStr:String = ObjectUtil.stringify(_root.物品栏.背包.getItems());
+        var bpIndexesStr:String = ObjectUtil.stringify(_root.物品栏.背包.getIndexes());
         trace("背包状态 after acquire: items: " + bpItemsStr + ", indexes: " + bpIndexesStr);
 
         // 测试 submit——array4
@@ -245,7 +245,7 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         var resultSubmit1:Boolean = ItemUtil.submit(itemArray);
         assert(resultSubmit1, 
             "提交 3 个物品和 1 个材料", 
-            "submit(array4) 返回 false，背包状态: " + ObjectUtil.toString(_root.物品栏.背包.getItems()));
+            "submit(array4) 返回 false，背包状态: " + ObjectUtil.stringify(_root.物品栏.背包.getItems()));
 
         // 测试 submit——array5：应因物品不足而提交失败
         var array5:Array = [
@@ -256,10 +256,10 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         var resultSubmit2:Boolean = ItemUtil.submit(itemArray);
         assert(!resultSubmit2, 
             "提交 2 个物品，应由于物品不足而提交失败", 
-            "submit(array5) 返回 true，背包状态: " + ObjectUtil.toString(_root.物品栏.背包.getItems()));
+            "submit(array5) 返回 true，背包状态: " + ObjectUtil.stringify(_root.物品栏.背包.getItems()));
 
-        bpItemsStr = ObjectUtil.toString(_root.物品栏.背包.getItems());
-        bpIndexesStr = ObjectUtil.toString(_root.物品栏.背包.getIndexes());
+        bpItemsStr = ObjectUtil.stringify(_root.物品栏.背包.getItems());
+        bpIndexesStr = ObjectUtil.stringify(_root.物品栏.背包.getIndexes());
         trace("背包状态 after submit: items: " + bpItemsStr + ", indexes: " + bpIndexesStr);
     }
 
@@ -274,19 +274,19 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         var result1:Boolean = inventory.add(0, null);
         assert(!result1, 
             "不能添加 null 物品", 
-            "尝试添加 null, 当前 inventory: " + ObjectUtil.toString(inventory.getItems()));
+            "尝试添加 null, 当前 inventory: " + ObjectUtil.stringify(inventory.getItems()));
 
         // 2. 添加没有 name 字段的物品
         var result2:Boolean = inventory.add(0, { value: 10 });
         assert(!result2, 
             "物品没有 name 字段应被拒绝添加", 
-            "当前 inventory: " + ObjectUtil.toString(inventory.getItems()));
+            "当前 inventory: " + ObjectUtil.stringify(inventory.getItems()));
 
         // 3. 添加 value 为 null 的物品
         var result3:Boolean = inventory.add(0, { name:"不合法物品", value: null });
         assert(!result3, 
             "物品 value 为 null，应该被拒绝添加", 
-            "当前 inventory: " + ObjectUtil.toString(inventory.getItems()));
+            "当前 inventory: " + ObjectUtil.stringify(inventory.getItems()));
 
         // 4. 测试库存已满时的添加
         inventory.add(0, { name:"物品A", value:1 });
@@ -295,34 +295,34 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         var firstVacancy:Number = inventory.getFirstVacancy();
         assert(firstVacancy == -1, 
             "已占满，首个空格应为 -1", 
-            "实际 firstVacancy: " + firstVacancy + ", inventory: " + ObjectUtil.toString(inventory.getItems()));
+            "实际 firstVacancy: " + firstVacancy + ", inventory: " + ObjectUtil.stringify(inventory.getItems()));
 
         var result4:Boolean = inventory.add(3, { name:"物品D", value:4 });
         assert(!result4, 
             "超出容量的添加应失败", 
-            "尝试添加超出容量, inventory: " + ObjectUtil.toString(inventory.getItems()));
+            "尝试添加超出容量, inventory: " + ObjectUtil.stringify(inventory.getItems()));
 
         // 5. 移除不存在或越界的索引
         var removeResult1:Boolean = inventory.remove(10);
         assert(!removeResult1, 
             "移除 index 越界物品应失败", 
-            "remove(10) 后 inventory: " + ObjectUtil.toString(inventory.getItems()));
+            "remove(10) 后 inventory: " + ObjectUtil.stringify(inventory.getItems()));
         var removeResult2:Boolean = inventory.remove(-1);
         assert(!removeResult2, 
             "移除 index 负数物品应失败", 
-            "remove(-1) 后 inventory: " + ObjectUtil.toString(inventory.getItems()));
+            "remove(-1) 后 inventory: " + ObjectUtil.stringify(inventory.getItems()));
 
         // 6. 添加负数 value 的物品
         var addNeg:Boolean = inventory.add(1, { name:"负数物品", value:-5 });
         assert(!addNeg, 
             "负数 value 应判为不合法，添加失败", 
-            "尝试添加负数 value, inventory: " + ObjectUtil.toString(inventory.getItems()));
+            "尝试添加负数 value, inventory: " + ObjectUtil.stringify(inventory.getItems()));
 
         // 7. 添加 NaN value 的物品
         var addNaN:Boolean = inventory.add(1, { name:"NaN物品", value: parseFloat("abc") });
         assert(!addNaN, 
             "NaN value 应判为不合法，添加失败", 
-            "尝试添加 NaN value, inventory: " + ObjectUtil.toString(inventory.getItems()));
+            "尝试添加 NaN value, inventory: " + ObjectUtil.stringify(inventory.getItems()));
     }
 
     /**
@@ -348,12 +348,12 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         var keys:Array = inventory.searchKeys("AK47");
         assert(keys.length == 2, 
             "searchKeys('AK47') 返回应为 [0, 1] 共 2 个格子", 
-            "实际返回: " + ObjectUtil.toString(keys));
+            "实际返回: " + ObjectUtil.stringify(keys));
 
         var emptyKeys:Array = inventory.searchKeys("没有的物品");
         assert(emptyKeys.length == 0, 
             "searchKeys 对没有物品返回空数组", 
-            "实际返回: " + ObjectUtil.toString(emptyKeys));
+            "实际返回: " + ObjectUtil.stringify(emptyKeys));
 
         // 测试 addValue 增加数量
         inventory.addValue("0", 3);
@@ -367,7 +367,7 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         var item1:Object = inventory.getItem("1");
         assert(item1 == null, 
             "当物品 value <= 0 时应自动 remove", 
-            "item1: " + ObjectUtil.toString(item1));
+            "item1: " + ObjectUtil.stringify(item1));
     }
 
     /**
@@ -388,59 +388,59 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         var moveResult:Boolean = invA.move(invB, "1", "2");
         assert(moveResult, 
             "move 成功，匕首不受影响", 
-            "move(invA[1] -> invB[2]) 失败, invA: " + ObjectUtil.toString(invA.getItems()) + ", invB: " + ObjectUtil.toString(invB.getItems()));
+            "move(invA[1] -> invB[2]) 失败, invA: " + ObjectUtil.stringify(invA.getItems()) + ", invB: " + ObjectUtil.stringify(invB.getItems()));
         var itemInvB2:Object = invB.getItem("2");
         assert(itemInvB2 != null && itemInvB2.name == "普通hp药剂", 
             "目标格子应成功接收 普通hp药剂", 
-            "invB[2]: " + ObjectUtil.toString(itemInvB2));
+            "invB[2]: " + ObjectUtil.stringify(itemInvB2));
         assert(invA.getItem("1") == null, 
             "源格子应被清空", 
-            "invA[1]: " + ObjectUtil.toString(invA.getItem("1")));
+            "invA[1]: " + ObjectUtil.stringify(invA.getItem("1")));
 
         // 再次尝试移动到已占用的格子应失败
         var failMoveResult:Boolean = invA.move(invB, "0", "0");
         assert(!failMoveResult, 
             "move 到已占用格子应失败", 
-            "尝试 move(invA[0] -> invB[0]) 应失败, invB[0]: " + ObjectUtil.toString(invB.getItem("0")));
+            "尝试 move(invA[0] -> invB[0]) 应失败, invB[0]: " + ObjectUtil.stringify(invB.getItem("0")));
 
         // 2. merge 测试：将 invB[2] 的 hp药剂合并到 invB[0]
         var mergeResult:Boolean = invB.merge(invB, "2", "0");
         assert(mergeResult, 
             "merge 同名可叠加物品成功", 
-            "merge(invB[2] -> invB[0]) 失败, invB: " + ObjectUtil.toString(invB.getItems()));
+            "merge(invB[2] -> invB[0]) 失败, invB: " + ObjectUtil.stringify(invB.getItems()));
         var invB0:Object = invB.getItem("0");
         assert(invB0.value == 10, 
             "merge 后物品数量应累加为 10", 
             "invB[0].value: " + invB0.value);
         assert(invB.getItem("2") == null, 
             "merge 后源格子应被清空", 
-            "invB[2]: " + ObjectUtil.toString(invB.getItem("2")));
+            "invB[2]: " + ObjectUtil.stringify(invB.getItem("2")));
 
         // merge 不同物品应失败
         var failMerge:Boolean = invA.merge(invB, "0", "1");
         assert(!failMerge, 
             "merge 不同物品应失败", 
-            "尝试 merge(invA[0] 与 invB[1]) 应失败, invA[0]: " + ObjectUtil.toString(invA.getItem("0")) + ", invB[1]: " + ObjectUtil.toString(invB.getItem("1")));
+            "尝试 merge(invA[0] 与 invB[1]) 应失败, invA[0]: " + ObjectUtil.stringify(invA.getItem("0")) + ", invB[1]: " + ObjectUtil.stringify(invB.getItem("1")));
 
         // 3. swap 测试：交换 invA[0] 和 invB[1]
         var swapResult:Boolean = invA.swap(invB, "0", "1");
         assert(swapResult, 
             "swap 应该成功", 
-            "swap(invA[0] 与 invB[1]) 失败, invA: " + ObjectUtil.toString(invA.getItems()) + ", invB: " + ObjectUtil.toString(invB.getItems()));
+            "swap(invA[0] 与 invB[1]) 失败, invA: " + ObjectUtil.stringify(invA.getItems()) + ", invB: " + ObjectUtil.stringify(invB.getItems()));
         var invA0:Object = invA.getItem("0");
         var invB1:Object = invB.getItem("1");
         assert(invA0 != null && invA0.name == "牛肉罐头", 
             "swap 后 invA[0] 应变成牛肉罐头", 
-            "invA[0]: " + ObjectUtil.toString(invA0));
+            "invA[0]: " + ObjectUtil.stringify(invA0));
         assert(invB1 != null && invB1.name == "匕首", 
             "swap 后 invB[1] 应变成匕首", 
-            "invB[1]: " + ObjectUtil.toString(invB1));
+            "invB[1]: " + ObjectUtil.stringify(invB1));
 
         // swap 条件不足，应失败
         var failSwap:Boolean = invA.swap(invB, "1", "0");
         assert(!failSwap, 
             "swap 空格子或不存在物品应失败", 
-            "尝试 swap(invA[1] 与 invB[0]) 应失败, invA[1]: " + ObjectUtil.toString(invA.getItem("1")) + ", invB[0]: " + ObjectUtil.toString(invB.getItem("0")));
+            "尝试 swap(invA[1] 与 invB[0]) 应失败, invA[1]: " + ObjectUtil.stringify(invA.getItem("1")) + ", invB[0]: " + ObjectUtil.stringify(invB.getItem("0")));
     }
 
     /**
@@ -455,7 +455,7 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         emptyInv.rebuildOrder(null);
         assert(emptyInv.getIndexes().length == 0, 
             "空物品栏重建后应保持为空", 
-            "indexes: " + ObjectUtil.toString(emptyInv.getIndexes()));
+            "indexes: " + ObjectUtil.stringify(emptyInv.getIndexes()));
 
         // 场景2：无排序函数的致密化重建
         var sparseInv = new ArrayInventory(null, 5);

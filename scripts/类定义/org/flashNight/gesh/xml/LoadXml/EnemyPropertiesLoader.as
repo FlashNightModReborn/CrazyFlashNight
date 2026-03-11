@@ -44,7 +44,7 @@ class org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader extends BaseXMLLoade
         // 加载 list.xml 文件
         super.load(function(data:Object):Void {
             // trace("EnemyPropertiesLoader: list.xml 文件加载成功！");
-            // trace("EnemyPropertiesLoader: list.xml 数据 = " + ObjectUtil.toString(data));
+            // trace("EnemyPropertiesLoader: list.xml 数据 = " + ObjectUtil.stringify(data));
 
             if (!data || !data.items || !(data.items instanceof Array)) {
                 // trace("EnemyPropertiesLoader: list.xml 数据结构不正确！");
@@ -53,7 +53,7 @@ class org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader extends BaseXMLLoade
             }
 
             var childXmlPaths:Array = data.items;
-            // trace("EnemyPropertiesLoader: 需要加载的子 XML 文件列表 = " + ObjectUtil.toString(childXmlPaths));
+            // trace("EnemyPropertiesLoader: 需要加载的子 XML 文件列表 = " + ObjectUtil.stringify(childXmlPaths));
 
             self.combinedData = {};
 
@@ -63,7 +63,7 @@ class org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader extends BaseXMLLoade
                 super.data = self.combinedData;
 
                 // trace("EnemyPropertiesLoader: 所有子 XML 文件加载并合并成功！");
-                // trace("EnemyPropertiesLoader: 合并后的数据 = " + ObjectUtil.toString(self.combinedData));
+                // trace("EnemyPropertiesLoader: 合并后的数据 = " + ObjectUtil.stringify(self.combinedData));
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
             }, function():Void {
                 // trace("EnemyPropertiesLoader: 加载子 XML 文件失败！");
@@ -99,7 +99,7 @@ class org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader extends BaseXMLLoade
 
         loader.load(function(childData:Object):Void {
             // trace("EnemyPropertiesLoader: 子 XML 文件加载成功 = " + xmlFilePath);
-            // trace("EnemyPropertiesLoader: 子 XML 数据 = " + ObjectUtil.toString(childData));
+            // trace("EnemyPropertiesLoader: 子 XML 数据 = " + ObjectUtil.stringify(childData));
 
             // 假设 childData 包含多个敌人属性，直接合并到 combinedData 中
             for (var enemyName:String in childData) {
@@ -159,7 +159,7 @@ var enemyPropertiesLoader:EnemyPropertiesLoader = EnemyPropertiesLoader.getInsta
 enemyPropertiesLoader.loadEnemyProperties(
     function(combinedData:Object):Void {
         trace("主程序：敌人属性数据加载成功！");
-        trace("合并后的数据: " + ObjectUtil.toString(combinedData));
+        trace("合并后的数据: " + ObjectUtil.stringify(combinedData));
         // 在此处处理合并后的敌人属性数据
     },
     function():Void {

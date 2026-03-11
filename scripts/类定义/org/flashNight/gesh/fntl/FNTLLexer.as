@@ -181,7 +181,7 @@ class org.flashNight.gesh.fntl.FNTLLexer {
         if (this.tokenStack.length > 0) {
             var retToken:Object = this.tokenStack.pop();
             if (this.debug) {
-                trace("getNextToken: Returning token from stack - " + ObjectUtil.toString(retToken));
+                trace("getNextToken: Returning token from stack - " + ObjectUtil.stringify(retToken));
             }
             return retToken;
         }
@@ -712,7 +712,7 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             if (element !== undefined && element.type != "INVALID") { // 仅在成功解析值时添加到数组
                 array.push(element);
                 if (this.debug) {
-                    trace("readArray: Added element - " + ObjectUtil.toString(element));
+                    trace("readArray: Added element - " + ObjectUtil.stringify(element));
                 }
             }
 
@@ -948,7 +948,7 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                 table[key] = value;
                 
                 if (this.debug) {
-                    trace("parseTable: Added key-value pair - " + key + " = " + ObjectUtil.toString(value));
+                    trace("parseTable: Added key-value pair - " + key + " = " + ObjectUtil.stringify(value));
                 }
             } else if (nextToken.type == "TABLE_ARRAY" || nextToken.type == "TABLE_HEADER") {
                 // 遇到新表格开始的标记时，回退解析器位置并退出当前表格解析
@@ -975,7 +975,7 @@ class org.flashNight.gesh.fntl.FNTLLexer {
     private function ungetToken(token:Object):Void {
         this.tokenStack.push(token);
         if (this.debug) {
-            trace("ungetToken: Token pushed back - " + ObjectUtil.toString(token));
+            trace("ungetToken: Token pushed back - " + ObjectUtil.stringify(token));
         }
     }
 
@@ -1013,7 +1013,7 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             if (value !== undefined) { // 仅在成功解析值时添加到数组
                 array.push(value);
                 if (this.debug) {
-                    trace("parseArray: Added element - " + ObjectUtil.toString(value));
+                    trace("parseArray: Added element - " + ObjectUtil.stringify(value));
                 }
             } else {
                 this.error("Array element parsing failed", elementToken.line, elementToken.column);
@@ -1022,7 +1022,7 @@ class org.flashNight.gesh.fntl.FNTLLexer {
         }
 
         if (this.debug) {
-            trace("parseArray: Final array - " + ObjectUtil.toString(array));
+            trace("parseArray: Final array - " + ObjectUtil.stringify(array));
         }
 
         return array;
@@ -1043,7 +1043,7 @@ class org.flashNight.gesh.fntl.FNTLLexer {
         while ((tok = lexer.getNextToken()) != null) { // 正确处理 EOF
             tokens.push(tok);
             if (this.debug) {
-                trace("parseInlineTable: Token - " + ObjectUtil.toString(tok));
+                trace("parseInlineTable: Token - " + ObjectUtil.stringify(tok));
             }
         }
         var parser:FNTLParser = new FNTLParser(tokens, tableStr, this.debug);

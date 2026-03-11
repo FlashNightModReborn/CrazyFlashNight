@@ -188,6 +188,6 @@ class org.flashNight.gesh.json.LoadJson.BaseJSONLoader {
      * @return String String representation of the loaded data.
      */
     public function toString():String {
-        return ObjectUtil.toString(this.getData());
+        return ObjectUtil.stringify(this.getData());
     }
 }

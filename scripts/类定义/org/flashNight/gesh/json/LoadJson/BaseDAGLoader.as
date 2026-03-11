@@ -167,6 +167,6 @@ class org.flashNight.gesh.json.LoadJson.BaseDAGLoader {
      * @return String 原始 JSON 数据的字符串表示
      */
     public function toString():String {
-        return ObjectUtil.toString(this.data);
+        return ObjectUtil.stringify(this.data);
     }
 }

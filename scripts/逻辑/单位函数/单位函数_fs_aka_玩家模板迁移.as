@@ -1354,10 +1354,10 @@ _root.主角函数.获取佣兵装备属性 = function(id) {
 };
 
 _root.主角函数.初始化掉落物 = function() {
-    // _root.发布消息("初始化掉落物:" + this._name, ObjectUtil.toString(this.长枪), ObjectUtil.toString(this.手枪), ObjectUtil.toString(this.手枪2), ObjectUtil.toString(this.刀));
+    // _root.发布消息("初始化掉落物:" + this._name, ObjectUtil.stringify(this.长枪), ObjectUtil.stringify(this.手枪), ObjectUtil.stringify(this.手枪2), ObjectUtil.stringify(this.刀));
 
     if (this.掉落物 != null || this.不掉装备) {
-        // _root.发布消息(ObjectUtil.toString(this.掉落物));
+        // _root.发布消息(ObjectUtil.stringify(this.掉落物));
         return;
     }
     if (this.是否为敌人 == false) {

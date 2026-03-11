@@ -277,14 +277,14 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
     // 保底清理
     TooltipLayout.hideTooltip();
 
-    // 使用统一的智能分栏判定
-    var needSplit:Boolean = TooltipLayout.shouldSplitSmart(descriptionText, introText, options);
+    // 智能分栏判定 + 描述评分一次性计算（desc HTML 只扫描 1 次，而非原先的 3 次）
+    var splitInfo:Object = TooltipLayout.shouldSplitSmartWithScores(descriptionText, introText, options);
 
-    if (needSplit) {
+    if (splitInfo.needSplit) {
       // 长内容策略：分离显示
-      // 主框宽度：仅用总量估算（estimateMainWidth），不含最长行维度
-      // 避免砍刀类「段落长但内容稀疏」物品因单段超长而撑出过宽的框体
-      var calculatedWidth:Number = TooltipLayout.estimateMainWidth(descriptionText);
+      // 直接使用预计算的评分，跳过 estimateMainWidth 内部的重复扫描
+      var calculatedWidth:Number = TooltipLayout.estimateMainWidthFromScores(
+          splitInfo.descTotal, splitInfo.descMaxLine, descriptionText, undefined, undefined);
       // 屏幕感知上限：确保双栏合计不超出 Stage 宽度（为简介面板保留 BASE_NUM + margin）
       var screenMax:Number = Stage.width - TooltipConstants.BASE_NUM - TooltipConstants.DUAL_PANEL_MARGIN;
       if (screenMax > TooltipConstants.MIN_W) calculatedWidth = Math.min(calculatedWidth, screenMax);

@@ -274,7 +274,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         var maxItems:Number = Math.min(oldItems.length, this.capacity);
 
         if(_root.服务器 && typeof _root.服务器.发布服务器消息 == "function"){
-            _root.服务器.发布服务器消息(ObjectUtil.toString(oldItems));
+            _root.服务器.发布服务器消息(ObjectUtil.stringify(oldItems));
         }
         
         // 阶段2：排序处理（时间复杂度：O(n log n)）

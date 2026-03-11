@@ -74,7 +74,7 @@ class org.flashNight.gesh.toml.TOMLParser {
 
         var valueToken:Object = this.tokens[valuePos];
         var value:Object = this.parseValue(valueToken);
-        // trace("TOMLParser.handleKey: 解析键 '" + key + "' 的值: " + ObjectUtil.toString(value));
+        // trace("TOMLParser.handleKey: 解析键 '" + key + "' 的值: " + ObjectUtil.stringify(value));
 
         // 允许 null 值，不再将其视为错误
         this.current[key] = value;

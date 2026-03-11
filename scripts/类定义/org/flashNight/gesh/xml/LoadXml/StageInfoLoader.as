@@ -44,7 +44,7 @@ class org.flashNight.gesh.xml.LoadXml.StageInfoLoader extends BaseXMLLoader {
         // 加载 list.xml 文件
         super.load(function(data:Object):Void {
             // trace("StageInfoLoader: list.xml 文件加载成功！");
-            // trace("StageInfoLoader: list.xml 数据 = " + ObjectUtil.toString(data));
+            // trace("StageInfoLoader: list.xml 数据 = " + ObjectUtil.stringify(data));
 
             if (!data || !data.stages || !(data.stages instanceof Array)) {
                 // trace("StageInfoLoader: list.xml 数据结构不正确！");
@@ -53,7 +53,7 @@ class org.flashNight.gesh.xml.LoadXml.StageInfoLoader extends BaseXMLLoader {
             }
 
             var childXmlFolderPaths:Array = data.stages;
-            // trace("StageInfoLoader: 需要加载的子 XML 文件夹列表 = " + ObjectUtil.toString(childXmlFolderPaths));
+            // trace("StageInfoLoader: 需要加载的子 XML 文件夹列表 = " + ObjectUtil.stringify(childXmlFolderPaths));
 
             self.combinedData = {};
 
@@ -63,7 +63,7 @@ class org.flashNight.gesh.xml.LoadXml.StageInfoLoader extends BaseXMLLoader {
                 super.data = self.combinedData;
 
                 // trace("StageInfoLoader: 所有子 XML 文件加载并合并成功！");
-                // trace("StageInfoLoader: 合并后的数据 = " + ObjectUtil.toString(self.combinedData));
+                // trace("StageInfoLoader: 合并后的数据 = " + ObjectUtil.stringify(self.combinedData));
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
             }, function():Void {
                 // trace("StageInfoLoader: 加载子 XML 文件失败！");
@@ -99,7 +99,7 @@ class org.flashNight.gesh.xml.LoadXml.StageInfoLoader extends BaseXMLLoader {
 
         loader.load(function(childData:Object):Void {
             // trace("StageInfoLoader: 子 XML 文件加载成功 = " + xmlFilePath);
-            // trace("StageInfoLoader: 子 XML 数据 = " + ObjectUtil.toString(childData));
+            // trace("StageInfoLoader: 子 XML 数据 = " + ObjectUtil.stringify(childData));
 
             // 假设 childData.StageInfo 中的关卡信息，合并到 combinedData 中
             var infoList = childData.StageInfo;

@@ -102,6 +102,6 @@ class org.flashNight.gesh.xml.LoadXml.BaseStageXMLLoader {
     }
 
     public function toString():String {
-        return ObjectUtil.toString(this.getData());
+        return ObjectUtil.stringify(this.getData());
     }
 }

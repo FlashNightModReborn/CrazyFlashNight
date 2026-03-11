@@ -54,7 +54,7 @@ class org.flashNight.gesh.json.LoadJson.TaskTextLoader extends BaseXMLLoader {
             }
 
             var childJSONPaths:Array = data.text;
-            // trace("TaskTextLoader: 需要加载的子 JSON 文件列表 = " + ObjectUtil.toString(childJSONPaths));
+            // trace("TaskTextLoader: 需要加载的子 JSON 文件列表 = " + ObjectUtil.stringify(childJSONPaths));
 
             self.combinedData = {};
 
@@ -64,7 +64,7 @@ class org.flashNight.gesh.json.LoadJson.TaskTextLoader extends BaseXMLLoader {
                 super.data = self.combinedData;
 
                 // trace("TaskTextLoader: 所有子 JSON 文件加载并合并成功！");
-                // trace("TaskTextLoader: 合并后的数据 = " + ObjectUtil.toString(self.combinedData));
+                // trace("TaskTextLoader: 合并后的数据 = " + ObjectUtil.stringify(self.combinedData));
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
             }, function():Void {
                 // trace("TaskTextLoader: 加载子 JSON 文件失败！");
@@ -100,7 +100,7 @@ class org.flashNight.gesh.json.LoadJson.TaskTextLoader extends BaseXMLLoader {
 
         loader.load(function(childData:Object):Void {
             // trace("TaskTextLoader: 子 JSON 文件加载成功 = " + jsonFilePath);
-            // trace("TaskTextLoader: 子 JSON 数据 = " + ObjectUtil.toString(childData));
+            // trace("TaskTextLoader: 子 JSON 数据 = " + ObjectUtil.stringify(childData));
 
             // 将 childData 中的每个键合并到 combinedData 中
             for (var key in childData){

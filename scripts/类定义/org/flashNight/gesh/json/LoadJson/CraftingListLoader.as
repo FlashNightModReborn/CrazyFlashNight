@@ -54,7 +54,7 @@ class org.flashNight.gesh.json.LoadJson.CraftingListLoader extends BaseXMLLoader
             }
 
             var childJSONPaths:Array = data.list;
-            // trace("CraftingListLoader: 需要加载的子 JSON 文件列表 = " + ObjectUtil.toString(childJSONPaths));
+            // trace("CraftingListLoader: 需要加载的子 JSON 文件列表 = " + ObjectUtil.stringify(childJSONPaths));
 
             self.combinedData = {};
 
@@ -64,7 +64,7 @@ class org.flashNight.gesh.json.LoadJson.CraftingListLoader extends BaseXMLLoader
                 super.data = self.combinedData;
 
                 // trace("CraftingListLoader: 所有子 JSON 文件加载并合并成功！");
-                // trace("CraftingListLoader: 合并后的数据 = " + ObjectUtil.toString(self.combinedData));
+                // trace("CraftingListLoader: 合并后的数据 = " + ObjectUtil.stringify(self.combinedData));
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
             }, function():Void {
                 // trace("CraftingListLoader: 加载子 JSON 文件失败！");
@@ -100,7 +100,7 @@ class org.flashNight.gesh.json.LoadJson.CraftingListLoader extends BaseXMLLoader
 
         loader.load(function(childData:Object):Void {
             // trace("CraftingListLoader: 子 JSON 文件加载成功 = " + jsonFilePath);
-            // trace("CraftingListLoader: 子 JSON 数据 = " + ObjectUtil.toString(childData));
+            // trace("CraftingListLoader: 子 JSON 数据 = " + ObjectUtil.stringify(childData));
 
             // 将文件名作为键，合并到 combinedData 中
             self.combinedData[category] = childData;

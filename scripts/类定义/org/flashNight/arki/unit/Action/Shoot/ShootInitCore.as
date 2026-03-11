@@ -603,7 +603,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             bulletProps.消音策略 = ss;
             // _root.发布消息("为 " + weaponType + " 生成子弹属性时绑定消音策略");
         }
-        //_root.服务器.发布服务器消息(weaponType + " 子弹数据: " + ObjectUtil.toString(wd) + " 返回子弹数据: " + ObjectUtil.toString(bulletProps));
+        //_root.服务器.发布服务器消息(weaponType + " 子弹数据: " + ObjectUtil.stringify(wd) + " 返回子弹数据: " + ObjectUtil.stringify(bulletProps));
 
         return bulletProps;
     }
@@ -756,7 +756,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
         /*
         _root.服务器.发布服务器消息(target._name + " 初始化双枪系统 " + parentRef + " " + 
-        ObjectUtil.toString(config));
+        ObjectUtil.stringify(config));
         */
 
         // 调用通用初始化函数

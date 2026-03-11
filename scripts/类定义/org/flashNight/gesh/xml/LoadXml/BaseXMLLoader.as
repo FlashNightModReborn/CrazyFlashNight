@@ -176,7 +176,7 @@ class org.flashNight.gesh.xml.LoadXml.BaseXMLLoader {
     }
 
     public function toString():String {
-        return ObjectUtil.toString(this.getData());
+        return ObjectUtil.stringify(this.getData());
     }
 
     /**

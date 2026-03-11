@@ -58,6 +58,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.EnemyKil
         // 标记存档数据已变更
         _root.存档系统.dirtyMark = true;
 
-        // _root.服务器.发布服务器消息("[KillStats] ", typeKey ,ObjectUtil.toString(_root.killStats) );
+        // _root.服务器.发布服务器消息("[KillStats] ", typeKey ,ObjectUtil.stringify(_root.killStats) );
     }
 }

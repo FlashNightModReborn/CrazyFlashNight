@@ -54,7 +54,7 @@ class org.flashNight.gesh.json.LoadJson.TaskDataLoader extends BaseXMLLoader {
             }
 
             var childJSONPaths:Array = data.task;
-            // trace("TaskDataLoader: 需要加载的子 JSON 文件列表 = " + ObjectUtil.toString(childJSONPaths));
+            // trace("TaskDataLoader: 需要加载的子 JSON 文件列表 = " + ObjectUtil.stringify(childJSONPaths));
 
             self.combinedData = [];
 
@@ -64,7 +64,7 @@ class org.flashNight.gesh.json.LoadJson.TaskDataLoader extends BaseXMLLoader {
                 super.data = self.combinedData;
 
                 // trace("TaskDataLoader: 所有子 JSON 文件加载并合并成功！");
-                // trace("TaskDataLoader: 合并后的数据 = " + ObjectUtil.toString(self.combinedData));
+                // trace("TaskDataLoader: 合并后的数据 = " + ObjectUtil.stringify(self.combinedData));
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
             }, function():Void {
                 // trace("TaskDataLoader: 加载子 JSON 文件失败！");
@@ -100,7 +100,7 @@ class org.flashNight.gesh.json.LoadJson.TaskDataLoader extends BaseXMLLoader {
 
         loader.load(function(childData:Object):Void {
             // trace("TaskDataLoader: 子 JSON 文件加载成功 = " + jsonFilePath);
-            // trace("TaskDataLoader: 子 JSON 数据 = " + ObjectUtil.toString(childData));
+            // trace("TaskDataLoader: 子 JSON 数据 = " + ObjectUtil.stringify(childData));
 
             // 假设 childData.tasks 中的任务数据，合并到 combinedData 中
             self.combinedData = self.combinedData.concat(childData.tasks);

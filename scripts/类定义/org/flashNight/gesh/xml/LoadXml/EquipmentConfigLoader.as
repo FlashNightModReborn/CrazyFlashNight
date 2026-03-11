@@ -50,7 +50,7 @@ class org.flashNight.gesh.xml.LoadXml.EquipmentConfigLoader extends BaseXMLLoade
         // 调用基类的 load 方法
         super.load(function(data:Object):Void {
             trace("EquipmentConfigLoader: 文件加载成功！");
-            // trace("EquipmentConfigLoader: 原始数据 = " + ObjectUtil.toString(data));
+            // trace("EquipmentConfigLoader: 原始数据 = " + ObjectUtil.stringify(data));
 
             // 解析 LevelStatList
             var parsedData:Object = self.parseEquipmentConfig(data);
@@ -229,7 +229,7 @@ var equipconfig_loader:EquipmentConfigLoader = EquipmentConfigLoader.getInstance
 equipconfig_loader.loadEquipmentConfig(
     function(data:Object):Void {
         trace("主程序：装备配置数据加载成功！");
-        trace("配置数据: " + ObjectUtil.toString(data));
+        trace("配置数据: " + ObjectUtil.stringify(data));
         // 传递给 EquipmentUtil
         org.flashNight.arki.item.EquipmentUtil.loadEquipmentConfig(data);
     },

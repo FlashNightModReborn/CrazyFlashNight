@@ -30,7 +30,7 @@ class org.flashNight.gesh.xml.LoadXml.DOMDocumentLoader extends BaseXMLLoader {
     public function loadDOMDocument(onLoadHandler:Function, onErrorHandler:Function):Void {
         this.load(function(data:Object):Void {
             trace("DOMDocumentLoader: DOMDocument 文件加载成功！");
-            trace("Parsed DOMDocument Data: " + ObjectUtil.toString(data)); // 调试输出解析结果
+            trace("Parsed DOMDocument Data: " + ObjectUtil.stringify(data)); // 调试输出解析结果
             if (onLoadHandler != null) onLoadHandler(data);
         }, function():Void {
             trace("DOMDocumentLoader: DOMDocument 文件加载失败！");

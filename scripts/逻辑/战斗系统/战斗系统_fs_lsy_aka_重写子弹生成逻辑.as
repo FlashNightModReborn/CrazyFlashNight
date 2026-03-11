@@ -115,7 +115,7 @@ _root.子弹区域shoot传递 = function(Obj){
 
     // 创建子弹
     var bulletInstance = BulletFactory.createBullet(Obj, shooter, shootingAngle);
-    // _root.服务器.发布服务器消息(ObjectUtil.toString(bulletInstance));
+    // _root.服务器.发布服务器消息(ObjectUtil.stringify(bulletInstance));
 
     // 创建发射效果和音效
     var shootX:Number = Obj.shootX;

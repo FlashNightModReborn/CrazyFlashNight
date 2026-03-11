@@ -1123,389 +1123,294 @@ class org.flashNight.gesh.string.StringUtils {
         return result;
     }
 
-    /**
-     * 单次扫描求 HTML 文本各逻辑行中"最长行"的加权分数。
-     * 解析规则与 htmlLengthScore 完全一致（同套 readTagName / decodeEntity / isCJKWide）；
-     * br / p / div / li / ul / ol / h1-h6 / tr / table 等标签均视为换行点；
-     * 原生 \n / \r 同样触发行切换。
-     * @param input   HTML 字符串
-     * @param weights (可选) 权重表，与 htmlLengthScore 相同
-     * @return 最长行的加权分数（Number）
-     */
-    public static function htmlMaxLineScore(input:String, weights:Object):Number {
-        if (input == null || input == undefined) return 0;
+    // ══════════════════════════════════════════════════════════════
+    // HTML 评分：静态工具函数（提升出嵌套闭包，避免每次调用创建 Function 对象）
+    // ══════════════════════════════════════════════════════════════
 
-        var w:Object = {
-            ascii: 1,
-            latin1: 1,
-            cjkWide: 2,
-            emoji: 2,
-            whitespace: 0.5,
-            newline: 0
-        };
-        if (weights) {
-            for (var k:String in weights) w[k] = weights[k];
-        }
-
-        var s:String = String(input);
-        var len:Number = length(s);
-        var i:Number = 0;
-        var lineScore:Number = 0;
-        var maxScore:Number = 0;
-        var prevSpace:Boolean = false;
-
-        function isCJKWide(code:Number):Boolean {
-            if ((code >= 0x2E80 && code <= 0xA4CF)
-            || (code >= 0xAC00 && code <= 0xD7A3)
-            || (code >= 0xF900 && code <= 0xFAFF)
-            || (code >= 0xFE10 && code <= 0xFE6F)
-            || (code >= 0xFF00 && code <= 0xFF60)
-            || (code >= 0xFFE0 && code <= 0xFFE6)
-            || (code >= 0x3400 && code <= 0x9FFF))
-                return true;
-            return false;
-        }
-
-        function flushLine():Void {
-            if (lineScore > maxScore) maxScore = lineScore;
-            lineScore = 0;
-            prevSpace = false;
-        }
-
-        function addChar(code:Number, isNewline:Boolean, isSpace:Boolean):Void {
-            if (isNewline) { flushLine(); return; }
-            if (isSpace) {
-                if (!prevSpace) lineScore += w.whitespace;
-                prevSpace = true;
-                return;
-            }
-            prevSpace = false;
-            if (code < 0)                               { lineScore += w.emoji;   return; }
-            if (code <= 0x7F)                           { lineScore += w.ascii;   return; }
-            if (code <= 0xFF)                           { lineScore += w.latin1;  return; }
-            if (code >= 0xD800 && code <= 0xDBFF)       { lineScore += w.emoji;   return; }
-            lineScore += isCJKWide(code) ? w.cjkWide : w.latin1;
-        }
-
-        function decodeEntity(at:Number):Object {
-            var dk:Number = at + 1;
-            var semi:Number = dk;
-            while (semi < len && s.charAt(semi) != ";") semi++;
-            if (semi >= len) return {code:-2, advance:1};
-            var entity:String = s.substring(dk, semi);
-            var eLower:String = entity.toLowerCase();
-            if (length(eLower) > 0 && eLower.charAt(0) == "#") {
-                var val:Number = 0;
-                if (length(eLower) > 1 && eLower.charAt(1) == "x") {
-                    for (var dt:Number = 2; dt < length(eLower); dt++) {
-                        var dc:Number = eLower.charCodeAt(dt);
-                        if      (dc >= 48 && dc <= 57)  val = val * 16 + (dc - 48);
-                        else if (dc >= 97 && dc <= 102) val = val * 16 + (dc - 87);
-                        else break;
-                    }
-                } else {
-                    for (dt = 1; dt < length(eLower); dt++) {
-                        dc = eLower.charCodeAt(dt);
-                        if (dc >= 48 && dc <= 57) val = val * 10 + (dc - 48);
-                        else break;
-                    }
-                }
-                if (val > 0xFFFF) return {code:-1, advance:(semi - at + 1)};
-                return {code:val, advance:(semi - at + 1)};
-            }
-            if (eLower == "amp")  return {code:38,  advance:(semi - at + 1)};
-            if (eLower == "lt")   return {code:60,  advance:(semi - at + 1)};
-            if (eLower == "gt")   return {code:62,  advance:(semi - at + 1)};
-            if (eLower == "quot") return {code:34,  advance:(semi - at + 1)};
-            if (eLower == "apos") return {code:39,  advance:(semi - at + 1)};
-            if (eLower == "nbsp") return {code:32,  advance:(semi - at + 1)};
-            return {code:-2, advance:1};
-        }
-
-        function readTagName(at:Number):Object {
-            var j:Number = at + 1;
-            while (j < len) {
-                var c:Number = s.charCodeAt(j);
-                if (c == 32 || c == 9 || c == 10 || c == 13) j++; else break;
-            }
-            if (j < len && s.charAt(j) == "/") j++;
-            while (j < len) {
-                c = s.charCodeAt(j);
-                if (c == 32 || c == 9) j++; else break;
-            }
-            var start:Number = j;
-            while (j < len) {
-                c = s.charCodeAt(j);
-                if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || (c >= 48 && c <= 57)) j++;
-                else break;
-            }
-            var name:String = s.substring(start, j).toLowerCase();
-            while (j < len && s.charAt(j) != ">") j++;
-            if (j < len) j++;
-            return {name:name, jumpTo:j};
-        }
-
-        while (i < len) {
-            var code:Number = s.charCodeAt(i);
-
-            if (code == 60) { // '<'
-                var tag:Object = readTagName(i);
-                var tn:String = tag.name;
-                if (tn == "br" || tn == "p" || tn == "div" || tn == "li" || tn == "ul" || tn == "ol" ||
-                    tn == "h1" || tn == "h2" || tn == "h3" || tn == "h4" || tn == "h5" || tn == "h6" ||
-                    tn == "tr" || tn == "table" || tn == "thead" || tn == "tbody" || tn == "tfoot") {
-                    flushLine();
-                }
-                i = tag.jumpTo;
-                continue;
-            }
-
-            if (code == 38) { // '&'
-                var ent:Object = decodeEntity(i);
-                if (ent.code == -2) {
-                    addChar(38, false, false);
-                    i++;
-                } else {
-                    if (ent.code == 32) addChar(32, false, true);
-                    else if (ent.code == 10 || ent.code == 13) addChar(10, true, false);
-                    else if (ent.code == -1) addChar(-1, false, false);
-                    else addChar(Number(ent.code), false, false);
-                    i += ent.advance;
-                }
-                continue;
-            }
-
-            if (code == 10 || code == 13) { addChar(10, true, false); i++; continue; }
-            if (code == 9 || code == 32 || code == 160) { addChar(32, false, true); i++; continue; }
-
-            if (code >= 0xD800 && code <= 0xDBFF && i + 1 < len) {
-                var low:Number = s.charCodeAt(i + 1);
-                if (low >= 0xDC00 && low <= 0xDFFF) {
-                    addChar(-1, false, false);
-                    i += 2;
-                    continue;
-                }
-            }
-
-            addChar(code, false, false);
-            i++;
-        }
-
-        // 最后一行未被标签终止，手动 flush
-        if (lineScore > maxScore) maxScore = lineScore;
-        return maxScore;
+    /** 是否 CJK/全角宽字符 */
+    private static function _isCJKWide(code:Number):Boolean {
+        if ((code >= 0x2E80 && code <= 0xA4CF)
+        || (code >= 0xAC00 && code <= 0xD7A3)
+        || (code >= 0xF900 && code <= 0xFAFF)
+        || (code >= 0xFE10 && code <= 0xFE6F)
+        || (code >= 0xFF00 && code <= 0xFF60)
+        || (code >= 0xFFE0 && code <= 0xFFE6)
+        || (code >= 0x3400 && code <= 0x9FFF))
+            return true;
+        return false;
     }
 
+    /** 静态复用对象：decodeEntity 返回值 */
+    private static var _entResult:Object = {code: 0, advance: 0};
+    /** 静态复用对象：readTagName 返回值 */
+    private static var _tagResult:Object = {name: "", jumpTo: 0};
 
     /**
-     * 估算一段 HTML 文本的"长度系数"（不产出纯文本，单次扫描，无正则）
-     * @param input   HTML 字符串
-     * @param weights (可选) 权重表：
-     *   { ascii:1, latin1:1, cjkWide:2, emoji:2, whitespace:0.5, newline:0.5 }
-     * @return 加权长度（Number）
+     * 解析 HTML 实体，结果写入 _entResult（零分配）
+     * code: >=0 => BMP 码位, -1 => emoji/非BMP, -2 => 未识别
      */
-    public static function htmlLengthScore(input:String, weights:Object):Number {
-        if (input == null || input == undefined) return 0;
+    private static function _decodeEntity(s:String, at:Number, sLen:Number):Object {
+        var r:Object = _entResult;
+        var k:Number = at + 1;
+        var semi:Number = k;
+        while (semi < sLen && s.charAt(semi) != ";") semi++;
+        if (semi >= sLen) { r.code = -2; r.advance = 1; return r; }
 
-        // 默认权重
-        var w:Object = {
-            ascii: 1,
-            latin1: 1,
-            cjkWide: 2,
-            emoji: 2,
-            whitespace: 0.5,
-            newline: 0
-        };
-        // 覆盖默认权重
+        var entity:String = s.substring(k, semi);
+        var eLower:String = entity.toLowerCase();
+        var eLen:Number = length(eLower);
+        var adv:Number = semi - at + 1;
+
+        if (eLen > 0 && eLower.charAt(0) == "#") {
+            var val:Number = 0;
+            if (eLen > 1 && eLower.charAt(1) == "x") {
+                for (var t:Number = 2; t < eLen; t++) {
+                    var cc:Number = eLower.charCodeAt(t);
+                    if      (cc >= 48 && cc <= 57)  val = val * 16 + (cc - 48);
+                    else if (cc >= 97 && cc <= 102) val = val * 16 + (cc - 87);
+                    else break;
+                }
+            } else {
+                for (t = 1; t < eLen; t++) {
+                    cc = eLower.charCodeAt(t);
+                    if (cc >= 48 && cc <= 57) val = val * 10 + (cc - 48);
+                    else break;
+                }
+            }
+            if (val > 0xFFFF) { r.code = -1; r.advance = adv; return r; }
+            r.code = val; r.advance = adv; return r;
+        }
+
+        if (eLower == "amp")  { r.code = 38;  r.advance = adv; return r; }
+        if (eLower == "lt")   { r.code = 60;  r.advance = adv; return r; }
+        if (eLower == "gt")   { r.code = 62;  r.advance = adv; return r; }
+        if (eLower == "quot") { r.code = 34;  r.advance = adv; return r; }
+        if (eLower == "apos") { r.code = 39;  r.advance = adv; return r; }
+        if (eLower == "nbsp") { r.code = 32;  r.advance = adv; return r; }
+
+        r.code = -2; r.advance = 1; return r;
+    }
+
+    /**
+     * 读取 HTML 标签名（小写），结果写入 _tagResult（零分配）
+     */
+    private static function _readTagName(s:String, at:Number, sLen:Number):Object {
+        var r:Object = _tagResult;
+        var j:Number = at + 1;
+        var c:Number;
+        while (j < sLen) {
+            c = s.charCodeAt(j);
+            if (c == 32 || c == 9 || c == 10 || c == 13) j++; else break;
+        }
+        if (j < sLen && s.charAt(j) == "/") j++;
+        while (j < sLen) {
+            c = s.charCodeAt(j);
+            if (c == 32 || c == 9) j++; else break;
+        }
+        var start:Number = j;
+        while (j < sLen) {
+            c = s.charCodeAt(j);
+            if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || (c >= 48 && c <= 57)) j++;
+            else break;
+        }
+        r.name = s.substring(start, j).toLowerCase();
+        while (j < sLen && s.charAt(j) != ">") j++;
+        if (j < sLen) j++;
+        r.jumpTo = j;
+        return r;
+    }
+
+    /** 判断标签名是否为换行标签 */
+    private static function _isNewlineTag(tn:String):Boolean {
+        return tn == "br" || tn == "p" || tn == "div" || tn == "li" || tn == "ul" || tn == "ol" ||
+               tn == "h1" || tn == "h2" || tn == "h3" || tn == "h4" || tn == "h5" || tn == "h6" ||
+               tn == "tr" || tn == "table" || tn == "thead" || tn == "tbody" || tn == "tfoot";
+    }
+
+    /** 静态复用对象：htmlScoresBoth 返回值 */
+    private static var _scoresResult:Object = {total: 0, maxLine: 0};
+
+    // ══════════════════════════════════════════════════════════════
+    // 公开 API
+    // ══════════════════════════════════════════════════════════════
+
+    /**
+     * 单次扫描同时计算 htmlLengthScore 和 htmlMaxLineScore，消除重复扫描。
+     *
+     * 性能优化要点：
+     * - 嵌套函数提升为 static 方法 → 避免每次调用创建 5 个闭包（AS2 DF1 ~1040ns/个）
+     * - decodeEntity/readTagName 使用静态复用对象 → 消除热循环中的对象分配
+     * - 两个维度在同一次扫描中同时计算 → 调用方从 4 次扫描降为 1 次
+     *
+     * @param input   HTML 字符串
+     * @param weights (可选) 权重表
+     * @return {total:Number, maxLine:Number}（复用静态对象，调用方需立即读取）
+     */
+    public static function htmlScoresBoth(input:String, weights:Object):Object {
+        var out:Object = _scoresResult;
+        if (input == null || input == undefined) {
+            out.total = 0; out.maxLine = 0; return out;
+        }
+
+        // 权重（总量用 newline=0，行最大用 newline→flushLine）
+        var wAscii:Number    = 1;
+        var wLatin1:Number   = 1;
+        var wCjkWide:Number  = 2;
+        var wEmoji:Number    = 2;
+        var wSpace:Number    = 0.5;
+        var wNewline:Number  = 0;
         if (weights) {
-            for (var k:String in weights) w[k] = weights[k];
+            if (weights.ascii != undefined)      wAscii    = weights.ascii;
+            if (weights.latin1 != undefined)     wLatin1   = weights.latin1;
+            if (weights.cjkWide != undefined)    wCjkWide  = weights.cjkWide;
+            if (weights.emoji != undefined)      wEmoji    = weights.emoji;
+            if (weights.whitespace != undefined) wSpace    = weights.whitespace;
+            if (weights.newline != undefined)    wNewline  = weights.newline;
         }
 
         var s:String = String(input);
-        var len:Number = length(s);
+        var sLen:Number = length(s);
         var i:Number = 0;
-        var score:Number = 0;
 
-        // 折叠空白/换行（显示近似）
-        var prevSpace:Boolean = false;
-        var nlCount:Number = 0;
+        // 总量维度
+        var totalScore:Number = 0;
+        var prevSpaceT:Boolean = false;
+        var nlCountT:Number = 0;
 
-        // 工具：是否宽字符（粗略 CJK/全角）
-        function isCJKWide(code:Number):Boolean {
-            // 常见 CJK/全角/假名/兼容表意/标点等块
-            if ((code >= 0x2E80 && code <= 0xA4CF)  // 部首/注音/假名等
-            || (code >= 0xAC00 && code <= 0xD7A3)  // Hangul Syllables
-            || (code >= 0xF900 && code <= 0xFAFF)  // 兼容表意
-            || (code >= 0xFE10 && code <= 0xFE6F)  // 竖排标点/小体
-            || (code >= 0xFF00 && code <= 0xFF60)  // 全角字符
-            || (code >= 0xFFE0 && code <= 0xFFE6)  // 全角符号
-            || (code >= 0x3400 && code <= 0x9FFF)) // 统一表意
-                return true;
+        // 行最大维度
+        var lineScore:Number = 0;
+        var maxLineScore:Number = 0;
+        var prevSpaceL:Boolean = false;
 
-            // 半角片假名（FF61–FF9F）不算宽
-            return false;
-        }
-
-        // 工具：累加一个“字符”的权重（含空白/换行折叠）
-        function addCharWeight(code:Number, isNewline:Boolean, isSpace:Boolean):Void {
-            if (isNewline) {
-                if (nlCount < 2) score += w.newline;
-                nlCount++;
-                prevSpace = false;
-                return;
-            }
-            if (isSpace) {
-                if (!prevSpace) score += w.whitespace;
-                prevSpace = true;
-                nlCount = 0;
-                return;
-            }
-            nlCount = 0;
-            prevSpace = false;
-
-            if (code < 0) { // 例如大于 0xFFFF 的实体映射为“emoji”
-                score += w.emoji;
-                return;
-            }
-            if (code <= 0x7F) { score += w.ascii; return; }
-            if (code <= 0xFF) { score += w.latin1; return; }
-            if (code >= 0xD800 && code <= 0xDBFF) { // 代理对上半
-                score += w.emoji; // 粗略按 emoji 宽度
-                return;
-            }
-            // 宽字符 or 普通 BMP
-            score += isCJKWide(code) ? w.cjkWide : w.latin1;
-        }
-
-        // 工具：解析实体，返回(code, advance)
-        // code: >=0 => BMP 码位,  -1 => emoji/非BMP,  -2 => 未识别（按 '&' 原样）
-        function decodeEntity(at:Number):Object {
-            var k:Number = at + 1; // 跳过 '&'
-            var semi:Number = k;
-            while (semi < len && s.charAt(semi) != ";") semi++;
-            if (semi >= len) return {code:-2, advance:1}; // 没有 ';'，当普通字符
-
-            var entity:String = s.substring(k, semi);
-            var eLower:String = entity.toLowerCase();
-
-            // 数字实体
-            if (length(eLower) > 0 && eLower.charAt(0) == "#") {
-                var val:Number = 0;
-                if (length(eLower) > 1 && (eLower.charAt(1) == "x")) {
-                    // 十六进制
-                    for (var t:Number = 2; t < length(eLower); t++) {
-                        var cc:Number = eLower.charCodeAt(t);
-                        if      (cc >= 48 && cc <= 57)  val = val * 16 + (cc - 48);
-                        else if (cc >= 97 && cc <= 102) val = val * 16 + (cc - 87);
-                        else break;
-                    }
-                } else {
-                    // 十进制
-                    for (t = 1; t < length(eLower); t++) {
-                        cc = eLower.charCodeAt(t);
-                        if (cc >= 48 && cc <= 57) val = val * 10 + (cc - 48);
-                        else break;
-                    }
-                }
-                // 非 BMP 直接按 emoji 计分：返回 code=-1
-                if (val > 0xFFFF) return {code:-1, advance:(semi - at + 1)};
-                return {code:val, advance:(semi - at + 1)};
-            }
-
-            // 命名实体
-            if (eLower == "amp")   return {code:38,  advance:(semi - at + 1)};   // &
-            if (eLower == "lt")    return {code:60,  advance:(semi - at + 1)};   // <
-            if (eLower == "gt")    return {code:62,  advance:(semi - at + 1)};   // >
-            if (eLower == "quot")  return {code:34,  advance:(semi - at + 1)};   // "
-            if (eLower == "apos")  return {code:39,  advance:(semi - at + 1)};   // '
-            if (eLower == "nbsp")  return {code:32,  advance:(semi - at + 1)};   // space
-
-            return {code:-2, advance:1}; // 未识别：按 '&'
-        }
-
-        // 工具：读取标签名（小写），返回 {name, jumpTo}
-        function readTagName(at:Number):Object {
-            var j:Number = at + 1; // 跳过 '<'
-            // 跳空白
-            while (j < len) {
-                var c:Number = s.charCodeAt(j);
-                if (c == 32 || c == 9 || c == 10 || c == 13) j++; else break;
-            }
-            // 可选 '/'
-            if (j < len && s.charAt(j) == "/") j++;
-            // 再跳空白
-            while (j < len) {
-                c = s.charCodeAt(j);
-                if (c == 32 || c == 9) j++; else break;
-            }
-            // 采集[a-z0-9]
-            var start:Number = j;
-            while (j < len) {
-                c = s.charCodeAt(j);
-                if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || (c >= 48 && c <= 57)) j++;
-                else break;
-            }
-            var name:String = s.substring(start, j).toLowerCase();
-            // 快速跳到 '>'
-            while (j < len && s.charAt(j) != ">") j++;
-            if (j < len) j++; // 跳过 '>'
-            return {name:name, jumpTo:j};
-        }
-
-        // 主循环
-        while (i < len) {
+        while (i < sLen) {
             var code:Number = s.charCodeAt(i);
 
-            // 标签
-            if (code == 60) { // '<'
-                var tag:Object = readTagName(i);
-                var tn:String = tag.name;
-                if (tn == "br" || tn == "p" || tn == "div" || tn == "li" || tn == "ul" || tn == "ol" ||
-                    tn == "h1" || tn == "h2" || tn == "h3" || tn == "h4" || tn == "h5" || tn == "h6" ||
-                    tn == "tr" || tn == "table" || tn == "thead" || tn == "tbody" || tn == "tfoot") {
-                    addCharWeight(10, true, false); // newline
+            // HTML 标签
+            if (code == 60) {
+                var tag:Object = _readTagName(s, i, sLen);
+                if (_isNewlineTag(tag.name)) {
+                    // 总量：换行计分
+                    if (nlCountT < 2) totalScore += wNewline;
+                    nlCountT++; prevSpaceT = false;
+                    // 行最大：flush
+                    if (lineScore > maxLineScore) maxLineScore = lineScore;
+                    lineScore = 0; prevSpaceL = false;
                 }
                 i = tag.jumpTo;
                 continue;
             }
 
-            // 实体
-            if (code == 38) { // '&'
-                var ent:Object = decodeEntity(i);
-                if (ent.code == -2) {
-                    // 未识别实体，按普通 '&'
-                    addCharWeight(38, false, false);
+            // HTML 实体
+            if (code == 38) {
+                var ent:Object = _decodeEntity(s, i, sLen);
+                var ec:Number = ent.code;
+                if (ec == -2) {
+                    // 未识别，按 '&'
+                    nlCountT = 0; prevSpaceT = false;
+                    totalScore += wAscii;
+                    prevSpaceL = false;
+                    lineScore += wAscii;
                     i++;
                 } else {
-                    if (ent.code == 32) addCharWeight(32, false, true); // nbsp -> space
-                    else if (ent.code == 10 || ent.code == 13) addCharWeight(10, true, false);
-                    else if (ent.code == -1) addCharWeight(-1, false, false); // emoji-like
-                    else addCharWeight(Number(ent.code), false, false);
+                    if (ec == 32) {
+                        // nbsp → space
+                        if (!prevSpaceT) totalScore += wSpace;
+                        prevSpaceT = true; nlCountT = 0;
+                        if (!prevSpaceL) lineScore += wSpace;
+                        prevSpaceL = true;
+                    } else if (ec == 10 || ec == 13) {
+                        // newline entity
+                        if (nlCountT < 2) totalScore += wNewline;
+                        nlCountT++; prevSpaceT = false;
+                        if (lineScore > maxLineScore) maxLineScore = lineScore;
+                        lineScore = 0; prevSpaceL = false;
+                    } else if (ec == -1) {
+                        // emoji
+                        nlCountT = 0; prevSpaceT = false;
+                        totalScore += wEmoji;
+                        prevSpaceL = false;
+                        lineScore += wEmoji;
+                    } else {
+                        nlCountT = 0; prevSpaceT = false;
+                        prevSpaceL = false;
+                        var cw:Number;
+                        if (ec < 0) cw = wEmoji;
+                        else if (ec <= 0x7F) cw = wAscii;
+                        else if (ec <= 0xFF) cw = wLatin1;
+                        else if (ec >= 0xD800 && ec <= 0xDBFF) cw = wEmoji;
+                        else cw = _isCJKWide(ec) ? wCjkWide : wLatin1;
+                        totalScore += cw;
+                        lineScore += cw;
+                    }
                     i += ent.advance;
                 }
                 continue;
             }
 
-            // 换行/空白原生字符
-            if (code == 10 || code == 13) { addCharWeight(10, true, false); i++; continue; } // \n/\r
-            if (code == 9 || code == 32 || code == 160) { addCharWeight(32, false, true); i++; continue; } // \t/space/&nbsp;
+            // 原生换行
+            if (code == 10 || code == 13) {
+                if (nlCountT < 2) totalScore += wNewline;
+                nlCountT++; prevSpaceT = false;
+                if (lineScore > maxLineScore) maxLineScore = lineScore;
+                lineScore = 0; prevSpaceL = false;
+                i++; continue;
+            }
 
-            // 代理对（emoji等）
-            if (code >= 0xD800 && code <= 0xDBFF && i + 1 < len) {
+            // 原生空白
+            if (code == 9 || code == 32 || code == 160) {
+                if (!prevSpaceT) totalScore += wSpace;
+                prevSpaceT = true; nlCountT = 0;
+                if (!prevSpaceL) lineScore += wSpace;
+                prevSpaceL = true;
+                i++; continue;
+            }
+
+            // 代理对
+            if (code >= 0xD800 && code <= 0xDBFF && i + 1 < sLen) {
                 var low:Number = s.charCodeAt(i + 1);
                 if (low >= 0xDC00 && low <= 0xDFFF) {
-                    addCharWeight(-1, false, false); // 视作 emoji
-                    i += 2;
-                    continue;
+                    nlCountT = 0; prevSpaceT = false;
+                    totalScore += wEmoji;
+                    prevSpaceL = false;
+                    lineScore += wEmoji;
+                    i += 2; continue;
                 }
             }
 
             // 普通字符
-            addCharWeight(code, false, false);
+            nlCountT = 0; prevSpaceT = false;
+            prevSpaceL = false;
+            var charWeight:Number;
+            if (code <= 0x7F) charWeight = wAscii;
+            else if (code <= 0xFF) charWeight = wLatin1;
+            else charWeight = _isCJKWide(code) ? wCjkWide : wLatin1;
+            totalScore += charWeight;
+            lineScore += charWeight;
             i++;
         }
 
-        return score;
+        // flush 最后一行
+        if (lineScore > maxLineScore) maxLineScore = lineScore;
+
+        out.total = totalScore;
+        out.maxLine = maxLineScore;
+        return out;
+    }
+
+    /**
+     * 单次扫描求 HTML 文本各逻辑行中"最长行"的加权分数。
+     * 向后兼容包装，内部委托 htmlScoresBoth。
+     */
+    public static function htmlMaxLineScore(input:String, weights:Object):Number {
+        return htmlScoresBoth(input, weights).maxLine;
+    }
+
+    /**
+     * 估算一段 HTML 文本的"长度系数"。
+     * 向后兼容包装，内部委托 htmlScoresBoth。
+     */
+    public static function htmlLengthScore(input:String, weights:Object):Number {
+        return htmlScoresBoth(input, weights).total;
     }
 
 

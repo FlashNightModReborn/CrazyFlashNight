@@ -44,7 +44,7 @@ class org.flashNight.gesh.xml.LoadXml.ItemDataLoader extends BaseXMLLoader {
         // 加载 list.xml 文件
         super.load(function(data:Object):Void {
             // trace("ItemDataLoader: list.xml 文件加载成功！");
-            // trace("ItemDataLoader: list.xml 数据 = " + ObjectUtil.toString(data));
+            // trace("ItemDataLoader: list.xml 数据 = " + ObjectUtil.stringify(data));
 
             if (!data || !data.items || !(data.items instanceof Array)) {
                 // trace("ItemDataLoader: list.xml 数据结构不正确！");
@@ -53,7 +53,7 @@ class org.flashNight.gesh.xml.LoadXml.ItemDataLoader extends BaseXMLLoader {
             }
 
             var childXmlPaths:Array = data.items;
-            // trace("ItemDataLoader: 需要加载的子 XML 文件列表 = " + ObjectUtil.toString(childXmlPaths));
+            // trace("ItemDataLoader: 需要加载的子 XML 文件列表 = " + ObjectUtil.stringify(childXmlPaths));
 
             self.combinedData = [];
 
@@ -63,7 +63,7 @@ class org.flashNight.gesh.xml.LoadXml.ItemDataLoader extends BaseXMLLoader {
                 super.data = self.combinedData;
 
                 // trace("ItemDataLoader: 所有子 XML 文件加载并合并成功！");
-                // trace("ItemDataLoader: 合并后的数据 = " + ObjectUtil.toString(self.combinedData));
+                // trace("ItemDataLoader: 合并后的数据 = " + ObjectUtil.stringify(self.combinedData));
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
             }, function():Void {
                 // trace("ItemDataLoader: 加载子 XML 文件失败！");
@@ -99,7 +99,7 @@ class org.flashNight.gesh.xml.LoadXml.ItemDataLoader extends BaseXMLLoader {
 
         loader.load(function(childData:Object):Void {
             // trace("ItemDataLoader: 子 XML 文件加载成功 = " + xmlFilePath);
-            // trace("ItemDataLoader: 子 XML 数据 = " + ObjectUtil.toString(childData));
+            // trace("ItemDataLoader: 子 XML 数据 = " + ObjectUtil.stringify(childData));
 
             // 假设 childData.item 中的物品数据，合并到 combinedData 中
             self.combinedData = self.combinedData.concat(childData.item);

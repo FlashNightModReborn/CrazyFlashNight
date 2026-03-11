@@ -392,7 +392,7 @@ class org.flashNight.arki.item.ItemUtil{
             list.背包[vacancyList[i]] = nonMergeableList[i];
         }
 
-        // ServerManager.getInstance().sendServerMessage(ObjectUtil.toString(list));
+        // ServerManager.getInstance().sendServerMessage(ObjectUtil.stringify(list));
         return list;
     }
 

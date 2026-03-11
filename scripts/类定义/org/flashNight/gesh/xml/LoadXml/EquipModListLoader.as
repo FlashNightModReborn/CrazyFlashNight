@@ -44,7 +44,7 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
         // 加载 list.xml 文件
         super.load(function(data:Object):Void {
             trace("EquipModListLoader: list.xml 文件加载成功！");
-            // trace("EquipModListLoader: list.xml 数据 = " + ObjectUtil.toString(data));
+            // trace("EquipModListLoader: list.xml 数据 = " + ObjectUtil.stringify(data));
 
             if (!data || !data.items) {
                 trace("EquipModListLoader: list.xml 数据结构不正确！");
@@ -60,7 +60,7 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
                 // 如果是单个字符串，包装为数组
                 childXmlPaths = [data.items];
             }
-            trace("EquipModListLoader: 需要加载的子 XML 文件列表 = " + ObjectUtil.toString(childXmlPaths));
+            trace("EquipModListLoader: 需要加载的子 XML 文件列表 = " + ObjectUtil.stringify(childXmlPaths));
 
             self.combinedData = [];
 
@@ -108,7 +108,7 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
 
         loader.load(function(childData:Object):Void {
             trace("EquipModListLoader: 子 XML 文件加载成功 = " + xmlFilePath);
-            // trace("EquipModListLoader: 子 XML 数据 = " + ObjectUtil.toString(childData));
+            // trace("EquipModListLoader: 子 XML 数据 = " + ObjectUtil.stringify(childData));
 
             // 处理 childData.mod，可能是单个对象或数组
             if (childData.mod) {
