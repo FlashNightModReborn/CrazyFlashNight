@@ -7,8 +7,11 @@
       "Read(*)",
       "Glob(*)",
       "Grep(*)",
-      "WebFetch(domain:andrewfray.wordpress.com)",
-      "WebFetch(domain:kidscancode.org)"
+      "WebFetch(*)",
+      "WebSearch",
+      "Agent(*)",
+      "TodoWrite",
+      "NotebookEdit(*)"
     ]
   }
 }

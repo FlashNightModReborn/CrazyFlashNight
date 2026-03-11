@@ -16,6 +16,7 @@ if (-not $jsfl) {
 }
 
 Write-Host "[INFO] Opening: $jsfl"
-Start-Process $jsfl
+# 使用 explorer.exe 打开 JSFL，确保在交互式会话中执行
+explorer.exe $jsfl
 Write-Host "[OK] JSFL opened"
 exit 0
