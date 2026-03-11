@@ -139,9 +139,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         _gridConfigVersion++;
     }
 
-    /** 懒建立的 2D 空间哈希网格实例（数据更新时置 null） */
-    private var _grid:Object;
+    /** 懒建立的 2D 空间哈希网格实例（数据更新时标记脏，复用实例） */
+    private var _grid:SpatialHashGrid;
     private var _gridVersion:Number = -1;
+    /** 数据已更新但网格尚未 rebuild 的标记 */
+    private var _gridDirty:Boolean = false;
 
     // ========================================================================
     // 构造函数
@@ -1219,9 +1221,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         // 右边界键需要保持单调，供扫描线/二分使用
         rebuildRightMaxValues();
 
-        // 2D 网格失效（下次 2D 查询时懒重建）
-        this._grid = null;
-        this._gridVersion = -1;
+        // 2D 网格失效（下次 2D 查询时懒重建，但保留实例以复用内部数组）
+        this._gridDirty = true;
 
          // 重置查询缓存，因为数据已变化
          resetQueryCache();
@@ -1464,61 +1465,70 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      * 2. _root.Xmin/Xmax/Ymin/Ymax（StageManager 在关卡加载时设置）
      */
     private function _ensureGrid():Void {
-        if (this._grid != null && this._gridVersion == _gridConfigVersion) return;
+        // 快路径：grid 有效且配置未变且数据未脏
+        if (this._grid != null && this._gridVersion == _gridConfigVersion && !this._gridDirty) return;
 
-        var ox:Number = _gridOriginX;
-        var oy:Number = _gridOriginY;
-        var w:Number = _gridWidth;
-        var h:Number = _gridHeight;
+        // 配置版本变化 → 需要 new（网格参数变了，cell 布局不同）
+        var configChanged:Boolean = (this._gridVersion != _gridConfigVersion);
 
-        // 未显式配置时，从 _root 全局地图边界读取
-        if (isNaN(ox) || isNaN(oy) || isNaN(w) || isNaN(h)) {
-            var xMin:Number = _root.Xmin;
-            var xMax:Number = _root.Xmax;
-            var yMin:Number = _root.Ymin;
-            var yMax:Number = _root.Ymax;
-            if (!isNaN(xMin) && !isNaN(xMax) && !isNaN(yMin) && !isNaN(yMax)) {
-                ox = xMin;
-                oy = yMin;
-                w = xMax - xMin;
-                h = yMax - yMin;
-            } else {
-                // 兜底：从数据推算
-                var n:Number = this.data.length;
-                if (n == 0) {
-                    ox = 0; oy = 0; w = 100; h = 100;
+        if (configChanged || this._grid == null) {
+            // 需要（重）建 grid 实例
+            var ox:Number = _gridOriginX;
+            var oy:Number = _gridOriginY;
+            var w:Number = _gridWidth;
+            var h:Number = _gridHeight;
+
+            // 未显式配置时，从 _root 全局地图边界读取
+            if (isNaN(ox) || isNaN(oy) || isNaN(w) || isNaN(h)) {
+                var xMin:Number = _root.Xmin;
+                var xMax:Number = _root.Xmax;
+                var yMin:Number = _root.Ymin;
+                var yMax:Number = _root.Ymax;
+                if (!isNaN(xMin) && !isNaN(xMax) && !isNaN(yMin) && !isNaN(yMax)) {
+                    ox = xMin;
+                    oy = yMin;
+                    w = xMax - xMin;
+                    h = yMax - yMin;
                 } else {
-                    xMin = this.leftValues[0];
-                    xMax = this.rightValues[0];
-                    yMin = this.data[0].Z轴坐标;
-                    yMax = yMin;
-                    var i:Number = 1;
-                    while (i < n) {
-                        var lv:Number = this.leftValues[i];
-                        var rv:Number = this.rightValues[i];
-                        var yv:Number = this.data[i].Z轴坐标;
-                        if (lv < xMin) xMin = lv;
-                        if (rv > xMax) xMax = rv;
-                        if (yv < yMin) yMin = yv;
-                        if (yv > yMax) yMax = yv;
-                        i++;
+                    // 兜底：从数据推算
+                    var n:Number = this.data.length;
+                    if (n == 0) {
+                        ox = 0; oy = 0; w = 100; h = 100;
+                    } else {
+                        xMin = this.leftValues[0];
+                        xMax = this.rightValues[0];
+                        yMin = this.data[0].Z轴坐标;
+                        yMax = yMin;
+                        var i:Number = 1;
+                        while (i < n) {
+                            var lv:Number = this.leftValues[i];
+                            var rv:Number = this.rightValues[i];
+                            var yv:Number = this.data[i].Z轴坐标;
+                            if (lv < xMin) xMin = lv;
+                            if (rv > xMax) xMax = rv;
+                            if (yv < yMin) yMin = yv;
+                            if (yv > yMax) yMax = yv;
+                            i++;
+                        }
+                        ox = xMin - 10;
+                        oy = yMin - 10;
+                        w = (xMax - xMin) + 20;
+                        h = (yMax - yMin) + 20;
                     }
-                    ox = xMin - 10;
-                    oy = yMin - 10;
-                    w = (xMax - xMin) + 20;
-                    h = (yMax - yMin) + 20;
                 }
+                if (w < 1) w = 100;
+                if (h < 1) h = 100;
             }
-            if (w < 1) w = 100;
-            if (h < 1) h = 100;
+
+            this._grid = new SpatialHashGrid(
+                ox, oy, w, h, _gridCellW, _gridCellH
+            );
+            this._gridVersion = _gridConfigVersion;
         }
 
-        var g:SpatialHashGrid = new SpatialHashGrid(
-            ox, oy, w, h, _gridCellW, _gridCellH
-        );
-        g.rebuildFromParallelArrays(this.data, this.leftValues, this.rightValues);
-        this._grid = g;
-        this._gridVersion = _gridConfigVersion;
+        // 数据脏或刚 new 的 grid → rebuild（复用已有 cell 数组）
+        this._grid.rebuildFromParallelArrays(this.data, this.leftValues, this.rightValues);
+        this._gridDirty = false;
     }
 
     /**
@@ -1531,7 +1541,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      */
     public function queryCircle2D(cx:Number, cy:Number, radius:Number, filterFn:Function):Array {
         _ensureGrid();
-        return SpatialHashGrid(_grid).queryCircle(cx, cy, radius, filterFn);
+        return this._grid.queryCircle(cx, cy, radius, filterFn);
     }
 
     /**
@@ -1545,7 +1555,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      */
     public function queryRect2D(x1:Number, y1:Number, x2:Number, y2:Number, filterFn:Function):Array {
         _ensureGrid();
-        return SpatialHashGrid(_grid).queryRect(x1, y1, x2, y2, filterFn);
+        return this._grid.queryRect(x1, y1, x2, y2, filterFn);
     }
 
     /**
@@ -1559,7 +1569,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      */
     public function queryNearest2D(cx:Number, cy:Number, maxDist:Number, excludeUnit:Object, filterFn:Function):Object {
         _ensureGrid();
-        return SpatialHashGrid(_grid).queryNearest(cx, cy, maxDist, excludeUnit, filterFn);
+        return this._grid.queryNearest(cx, cy, maxDist, excludeUnit, filterFn);
     }
 
     /**
@@ -1571,14 +1581,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
      */
     public function countInCircle2D(cx:Number, cy:Number, radius:Number):Number {
         _ensureGrid();
-        return SpatialHashGrid(_grid).countInCircle(cx, cy, radius);
+        return this._grid.countInCircle(cx, cy, radius);
     }
 
     /**
      * 获取底层 2D 网格实例（高级用法）
      * @return SpatialHashGrid 实例（会触发懒建立）
      */
-    public function getGrid():Object {
+    public function getGrid():SpatialHashGrid {
         _ensureGrid();
         return this._grid;
     }

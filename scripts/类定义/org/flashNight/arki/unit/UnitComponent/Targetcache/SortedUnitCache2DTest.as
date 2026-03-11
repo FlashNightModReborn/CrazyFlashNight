@@ -130,7 +130,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
 
         // Grid should not exist yet (lazy)
         // We can't directly check _grid (private), but getGrid() should create it
-        var grid:SpatialHashGrid = SpatialHashGrid(cache.getGrid());
+        var grid:SpatialHashGrid = cache.getGrid();
         assertTrue("gridCreated", grid != null);
         assertEquals("gridUnitCount", 1, grid.getStats().unitCount, 0);
     }
@@ -220,6 +220,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
         // First query — builds grid
         assertEquals("before_count", 2, cache.countInCircle2D(150, 150, 200), 0);
 
+        // 记住 grid 引用，后续验证实例复用
+        var gridBefore:SpatialHashGrid = cache.getGrid();
+
         // Simulate data update (new data with 3 units)
         var newUnits:Array = [makeUnit(10, 300, 300), makeUnit(11, 400, 400), makeUnit(12, 500, 500)];
         newUnits.sort(function(a, b) {
@@ -239,6 +242,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
 
         // After update, grid should rebuild on next query with new data
         assertEquals("after_count", 3, cache.queryCircle2D(400, 400, 500, null).length, 0);
+
+        // P5 核心验证：数据更新后 grid 实例应被复用（同一引用），而非重新 new
+        var gridAfter:SpatialHashGrid = cache.getGrid();
+        assertTrue("gridInstanceReused", gridBefore == gridAfter);
     }
 
     private static function testSnapshotSemanticsWithinCacheLifetime():Void {
@@ -263,12 +270,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
         SortedUnitCache.configureGrid(0, 0, 1000, 600, 200, 200);
 
         var cache:SortedUnitCache = buildCache([makeUnit(30, 100, 100)]);
-        var grid1:SpatialHashGrid = SpatialHashGrid(cache.getGrid());
+        var grid1:SpatialHashGrid = cache.getGrid();
         var stats1:Object = grid1.getStats();
         assertEquals("reconfig_before_cols", 5, stats1.cols, 0);
 
         SortedUnitCache.configureGrid(0, 0, 1000, 600, 100, 100);
-        var grid2:SpatialHashGrid = SpatialHashGrid(cache.getGrid());
+        var grid2:SpatialHashGrid = cache.getGrid();
         var stats2:Object = grid2.getStats();
 
         assertTrue("reconfig_gridRebuilt", grid1 != grid2);
@@ -394,16 +401,23 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
         SortedUnitCache.configureGrid(50, 274, 1638, 366, 200, 200);
         var cache:SortedUnitCache = buildCache(units);
 
-        // First query triggers grid build
+        // 首次查询触发 grid 构建
+        cache.queryCircle2D(400, 300, 200, null);
+        var gridRef:SpatialHashGrid = cache.getGrid();
+
+        // 模拟 1000 次 invalidation + rebuild 循环
         var t0:Number = getTimer();
         var trials:Number = 1000;
         for (var q:Number = 0; q < trials; q++) {
-            // Simulate invalidation + rebuild cycle
             cache.updateData(cache.data, cache.nameIndex, cache.leftValues, cache.rightValues, q + 10);
             cache.queryCircle2D(400, 300, 200, null);
         }
         var lazyMs:Number = getTimer() - t0;
         trace("  [PERF] lazy rebuild+query x" + trials + ": " + lazyMs + "ms (" + (lazyMs / trials) + "ms/call)");
         assertTrue("lazyBuild<1ms", (lazyMs / trials) < 1);
+
+        // 验证全程 grid 实例未被重建（P5 核心优化）
+        var gridAfter:SpatialHashGrid = cache.getGrid();
+        assertTrue("gridReusedAcross1000Cycles", gridRef == gridAfter);
     }
 }

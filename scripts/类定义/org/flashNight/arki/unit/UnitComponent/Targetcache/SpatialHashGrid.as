@@ -23,7 +23,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
     private var _units:Array;
     private var _xs:Array;
     private var _ys:Array;
-    private var _pool:Array;
     private var _result:Array;
 
     /**
@@ -54,7 +53,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         _units = [];
         _xs = [];
         _ys = [];
-        _pool = [];
         _unitCount = 0;
         _result = [];
 
@@ -537,7 +535,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
             unitCount: _unitCount,
             nonEmptyCells: nonEmpty,
             maxCellSize: maxCellSize,
-            poolSize: _pool.length
+            fillRatio: (nonEmpty / _cellCount)
         };
     }
 }
