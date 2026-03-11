@@ -358,6 +358,12 @@ class org.flashNight.neur.Server.ServerManager {
 
         var response:Object = jsonParser.parse(data);
 
+        // 处理服务器推送的控制台命令
+        if (response.task == "console") {
+            handleConsoleCommand(response.command);
+            return;
+        }
+
         if (response.success) {
             if (response.task == "audio") {
                 // 处理音频任务的成功响应
@@ -370,6 +376,58 @@ class org.flashNight.neur.Server.ServerManager {
             // 处理错误信息
             trace("Task failed. Error: " + response.error);
         }
+    }
+
+    // 处理从服务器推送来的控制台命令
+    private function handleConsoleCommand(command:String):Void {
+        // 解码 %uXXXX 编码的非 ASCII 字符（由 Node 端编码以避免 UTF-8/GBK 不匹配）
+        command = unescape(command);
+        trace("[Console] Executing: " + command);
+
+        var result:String = "";
+
+        if (_root.cheatCode != undefined) {
+            // 临时拦截输出函数，收集命令产生的所有消息
+            var output:Array = [];
+            var origTip:Function = _root.最上层发布文字提示;
+            var origMsg:Function = _root.发布消息;
+
+            _root.最上层发布文字提示 = function(msg:String):Void {
+                output.push(msg);
+                if (origTip != undefined) {
+                    origTip.call(_root, msg);
+                }
+            };
+            _root.发布消息 = function(msg:String):Void {
+                output.push(msg);
+                if (origMsg != undefined) {
+                    origMsg.call(_root, msg);
+                }
+            };
+
+            // 执行命令
+            _root.cheatCode(command);
+
+            // 恢复原始函数
+            _root.最上层发布文字提示 = origTip;
+            _root.发布消息 = origMsg;
+
+            result = (output.length > 0) ? output.join("\n") : "OK";
+        } else {
+            result = "cheatCode not available";
+        }
+
+        trace("[Console] Result: " + result);
+
+        // 发送结果回服务器
+        var response:Object = new Object();
+        response.task = "console_result";
+        response.success = true;
+        response.command = command;
+        response.result = result;
+
+        var responseString:String = jsonParser.stringify(response);
+        sendSocketMessage(responseString);
     }
 
 

@@ -16,6 +16,7 @@ require('./utils/browserEnv');
 let portList = extractPorts();
 let usedPorts = new Set();
 let portIndex = 0;
+let retryCount = 0;
 const maxRetries = process.env.MAX_RETRIES || 5;
 
 // 初始化服务器变量
@@ -73,6 +74,28 @@ app.post('/logBatch', (req, res) => {
     } else {
         res.status(400).send('Frame or messages not received');
     }
+});
+
+// 控制台命令接口 - Agent 通过 HTTP 发送命令，服务器转发给 AS2 执行并返回结果
+app.post('/console', (req, res) => {
+    const command = req.body.command || req.query.command;
+    if (!command) {
+        return res.status(400).json({ success: false, error: 'No command provided' });
+    }
+
+    if (!socketServer) {
+        return res.status(503).json({ success: false, error: 'Socket server not started' });
+    }
+
+    const timeoutMs = parseInt(req.query.timeout) || 5000;
+
+    socketServer.sendConsoleCommand(command, timeoutMs)
+        .then((result) => {
+            res.json(result);
+        })
+        .catch((err) => {
+            res.status(500).json({ success: false, error: err.message });
+        });
 });
 
 // 连接测试接口
