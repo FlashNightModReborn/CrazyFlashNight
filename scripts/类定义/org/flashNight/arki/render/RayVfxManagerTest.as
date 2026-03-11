@@ -74,12 +74,10 @@ class org.flashNight.arki.render.RayVfxManagerTest {
         // 但 config["missing"] 返回 undefined，Number(undefined) 在 AS2 中是 NaN
         // cfgNum 的 (v == v) 在 AS2 中对 NaN 返回 true（因为 AS2 NaN==NaN=true）
         // 所以 undefined 字段会返回 NaN 而不是默认值... 让我们验证实际行为
-        var result:Number = RayVfxManager.cfgNum({}, "missing", 55);
-        // AS2: {} 的 "missing" 返回 undefined → var v:Number = undefined → NaN
-        // (NaN == NaN) 在 AS2 中为 true → 返回 NaN 而不是 55
-        // 但如果 AS2 编译器将 undefined 直接赋给 Number 类型...
-        // 这里我们记录实际行为而不是假设
-        trace("  [INFO] cfgNum({}, 'missing', 55) = " + result);
+        assertEq(55, RayVfxManager.cfgNum({}, "missing", 55), "cfgNum 空对象字段缺失");
+        // 字符串数值应被强转为 Number（外部系统可能传字符串）
+        assertEq(42, RayVfxManager.cfgNum({val: "42"}, "val", 0), "cfgNum 字符串强转");
+        assertEq(3.14, RayVfxManager.cfgNum({val: "3.14"}, "val", 0), "cfgNum 浮点字符串强转");
     }
 
     private static function test_cfgArr():Void {
@@ -328,22 +326,33 @@ class org.flashNight.arki.render.RayVfxManagerTest {
         RayVfxManager.resetPools();
 
         var arc:Object = {startX: 0, startY: 0, endX: 100, endY: 0};
-        // 有噪声 vs 无噪声应产生不同路径
+
+        // 只变 noiseRatio（其他参数完全相同），隔离噪声分支
         var pathClean:Array = RayVfxManager.generateSinePath(
             arc, 0, 1, 100, 15, 30, 0.1, 5, 0, 24, 250, 0);
+
+        // 在 resetPools 前捕获 clean 中点（池化对象会被后续调用覆盖）
+        var cleanLen:Number = pathClean.length;
+        var midIdx:Number = (cleanLen / 2) | 0;
+        var midCleanY:Number = pathClean[midIdx].y;
+
+        assertEq(0, pathClean[0].x, "clean 起点 x");
+
         RayVfxManager.resetPools();
         var pathNoisy:Array = RayVfxManager.generateSinePath(
-            arc, 0, 1, 100, 15, 30, 0.1, 5, 0, 12, 200, 0.3);
+            arc, 0, 1, 100, 15, 30, 0.1, 5, 0, 24, 250, 0.3);
 
-        // 两者都应有有效起止点
-        assertEq(0, pathClean[0].x, "clean 起点 x");
         assertEq(0, pathNoisy[0].x, "noisy 起点 x");
 
-        // 噪声路径与干净路径的中间点 Y 应不同
-        // （采样数和噪声都不同，所以几乎一定不同）
-        var midClean:Number = pathClean[(pathClean.length / 2) | 0].y;
-        var midNoisy:Number = pathNoisy[(pathNoisy.length / 2) | 0].y;
-        trace("  [INFO] midClean.y=" + midClean + " midNoisy.y=" + midNoisy);
+        // 相同采样参数 → 相同点数
+        assertEq(cleanLen, pathNoisy.length, "noise 不改变点数");
+
+        // 噪声叠加应导致中点 Y 值不同
+        var midNoisyY:Number = pathNoisy[midIdx].y;
+        var yDiff:Number = midCleanY - midNoisyY;
+        if (yDiff < 0) yDiff = -yDiff;
+        assertTrue(yDiff > 0.01,
+            "noise 改变中点 Y: clean=" + midCleanY + " noisy=" + midNoisyY + " diff=" + yDiff);
     }
 
     private static function test_generateSinePath_shortRay():Void {

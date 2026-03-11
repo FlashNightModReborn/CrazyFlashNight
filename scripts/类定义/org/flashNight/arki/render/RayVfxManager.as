@@ -155,7 +155,6 @@ class org.flashNight.arki.render.RayVfxManager {
         var parent:MovieClip = _root.gameworld.效果;
         if (parent == null) parent = _root.gameworld.deadbody;
         if (parent == null) parent = _root.gameworld;
-        if (parent == null) parent = _root;
 
         _container = parent.createEmptyMovieClip("rayVfxContainer", parent.getNextHighestDepth());
         _activeArcs = [];
@@ -519,7 +518,7 @@ class org.flashNight.arki.render.RayVfxManager {
         if (config == null) return def;
         var v = config[field];
         if (v == undefined) return def;
-        return v;
+        return Number(v);
     }
 
     /**
@@ -546,7 +545,7 @@ class org.flashNight.arki.render.RayVfxManager {
         if (meta == null) return 1.0;
         var v = meta.intensity;
         if (v == undefined) return 1.0;
-        return v;
+        return Number(v);
     }
 
     // ════════════════════════════════════════════════════════════════════════
