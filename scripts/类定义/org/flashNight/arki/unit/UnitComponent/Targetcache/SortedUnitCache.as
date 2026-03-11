@@ -14,8 +14,8 @@
 // - 性能优化：充分利用预缓存数据和算法优化
 // ============================================================================
 import org.flashNight.arki.unit.UnitComponent.Targetcache.AdaptiveThresholdOptimizer;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
-import org.flashNight.arki.component.Collider.*;
 
 class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
 
@@ -106,6 +106,39 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
     private var _resultMonotonic:Object;
     private var _resultRange:Array;
     private var _resultHP:Array;
+
+    // ========================================================================
+    // 2D 空间哈希网格（懒建立）
+    // ========================================================================
+
+    // 静态网格配置（由 configureGrid 设置，所有实例共享）
+    // 未配置时为 NaN，_ensureGrid 会从实际数据自动计算边界
+    private static var _gridOriginX:Number;
+    private static var _gridOriginY:Number;
+    private static var _gridWidth:Number;
+    private static var _gridHeight:Number;
+    private static var _gridCellW:Number = 200;
+    private static var _gridCellH:Number = 200;
+
+    /**
+     * 配置全局 2D 网格参数（通常在关卡加载时调用一次）
+     * 如不调用，_ensureGrid 会从当前数据自动推算边界
+     */
+    public static function configureGrid(
+        originX:Number, originY:Number,
+        width:Number, height:Number,
+        cellW:Number, cellH:Number
+    ):Void {
+        _gridOriginX = originX;
+        _gridOriginY = originY;
+        _gridWidth = width;
+        _gridHeight = height;
+        _gridCellW = cellW;
+        _gridCellH = cellH;
+    }
+
+    /** 懒建立的 2D 空间哈希网格实例（数据更新时置 null） */
+    private var _grid:Object;
 
     // ========================================================================
     // 构造函数
@@ -1183,6 +1216,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
         // 右边界键需要保持单调，供扫描线/二分使用
         rebuildRightMaxValues();
 
+        // 2D 网格失效（下次 2D 查询时懒重建）
+        this._grid = null;
+
          // 重置查询缓存，因为数据已变化
          resetQueryCache();
      }
@@ -1409,5 +1445,136 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
 
     public function toString():String {
         return "[SortedUnitCache: " + this.data.length + " units, frame " + this.lastUpdatedFrame + "]";
+    }
+
+    // ========================================================================
+    // 2D 空间查询 API（懒建立 SpatialHashGrid）
+    // ========================================================================
+
+    /**
+     * 确保 2D 网格已建立（懒建立：首次 2D 查询时才构建）
+     * 利用已有的 leftValues/rightValues 并行数组加速构建
+     *
+     * 边界来源优先级：
+     * 1. configureGrid 显式配置
+     * 2. _root.Xmin/Xmax/Ymin/Ymax（StageManager 在关卡加载时设置）
+     */
+    private function _ensureGrid():Void {
+        if (this._grid != null) return;
+
+        var ox:Number = _gridOriginX;
+        var oy:Number = _gridOriginY;
+        var w:Number = _gridWidth;
+        var h:Number = _gridHeight;
+
+        // 未显式配置时，从 _root 全局地图边界读取
+        if (isNaN(ox) || isNaN(oy) || isNaN(w) || isNaN(h)) {
+            var xMin:Number = _root.Xmin;
+            var xMax:Number = _root.Xmax;
+            var yMin:Number = _root.Ymin;
+            var yMax:Number = _root.Ymax;
+            if (!isNaN(xMin) && !isNaN(xMax) && !isNaN(yMin) && !isNaN(yMax)) {
+                ox = xMin;
+                oy = yMin;
+                w = xMax - xMin;
+                h = yMax - yMin;
+            } else {
+                // 兜底：从数据推算
+                var n:Number = this.data.length;
+                if (n == 0) {
+                    ox = 0; oy = 0; w = 100; h = 100;
+                } else {
+                    xMin = this.leftValues[0];
+                    xMax = this.rightValues[0];
+                    yMin = this.data[0].Z轴坐标;
+                    yMax = yMin;
+                    var i:Number = 1;
+                    while (i < n) {
+                        var lv:Number = this.leftValues[i];
+                        var rv:Number = this.rightValues[i];
+                        var yv:Number = this.data[i].Z轴坐标;
+                        if (lv < xMin) xMin = lv;
+                        if (rv > xMax) xMax = rv;
+                        if (yv < yMin) yMin = yv;
+                        if (yv > yMax) yMax = yv;
+                        i++;
+                    }
+                    ox = xMin - 10;
+                    oy = yMin - 10;
+                    w = (xMax - xMin) + 20;
+                    h = (yMax - yMin) + 20;
+                }
+            }
+            if (w < 1) w = 100;
+            if (h < 1) h = 100;
+        }
+
+        var g:SpatialHashGrid = new SpatialHashGrid(
+            ox, oy, w, h, _gridCellW, _gridCellH
+        );
+        g.rebuildFromParallelArrays(this.data, this.leftValues, this.rightValues);
+        this._grid = g;
+    }
+
+    /**
+     * 2D 圆形范围查询
+     * @param cx 圆心 X
+     * @param cy 圆心 Y
+     * @param radius 半径
+     * @param filterFn 可选过滤函数 function(unit):Boolean
+     * @return 匹配的单位数组
+     */
+    public function queryCircle2D(cx:Number, cy:Number, radius:Number, filterFn:Function):Array {
+        _ensureGrid();
+        return SpatialHashGrid(_grid).queryCircle(cx, cy, radius, filterFn);
+    }
+
+    /**
+     * 2D 矩形范围查询
+     * @param x1 左边界
+     * @param y1 上边界
+     * @param x2 右边界
+     * @param y2 下边界
+     * @param filterFn 可选过滤函数
+     * @return 匹配的单位数组
+     */
+    public function queryRect2D(x1:Number, y1:Number, x2:Number, y2:Number, filterFn:Function):Array {
+        _ensureGrid();
+        return SpatialHashGrid(_grid).queryRect(x1, y1, x2, y2, filterFn);
+    }
+
+    /**
+     * 2D 最近单位查询
+     * @param cx 查询点 X
+     * @param cy 查询点 Y
+     * @param maxDist 最大搜索距离
+     * @param excludeUnit 排除的单位（可选）
+     * @param filterFn 可选过滤函数
+     * @return 最近的单位，无结果返回 null
+     */
+    public function queryNearest2D(cx:Number, cy:Number, maxDist:Number, excludeUnit:Object, filterFn:Function):Object {
+        _ensureGrid();
+        return SpatialHashGrid(_grid).queryNearest(cx, cy, maxDist, excludeUnit, filterFn);
+    }
+
+    /**
+     * 2D 圆形范围计数
+     * @param cx 圆心 X
+     * @param cy 圆心 Y
+     * @param radius 半径
+     * @return 范围内的单位数量
+     */
+    public function countInCircle2D(cx:Number, cy:Number, radius:Number):Number {
+        _ensureGrid();
+        return SpatialHashGrid(_grid).countInCircle(cx, cy, radius);
+    }
+
+    /**
+     * 获取底层 2D 网格实例（高级用法）
+     * @return SpatialHashGrid 实例（会触发懒建立）
+     */
+    public function getGrid():Object {
+        _ensureGrid();
+        return this._grid;
     }
 }

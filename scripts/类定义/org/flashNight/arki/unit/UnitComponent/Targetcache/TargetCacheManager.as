@@ -22,7 +22,6 @@
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
-import org.flashNight.arki.component.Collider.*;
 
 class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
@@ -1394,6 +1393,138 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         return target;
     }
     
+    // ========================================================================
+    // 2D 空间查询 API（基于 SpatialHashGrid 懒建立）
+    // ========================================================================
+
+    /**
+     * 配置 2D 网格参数（地图加载时调用）
+     * 委托给 SortedUnitCache 的静态配置
+     */
+    public static function configureGrid(
+        originX:Number, originY:Number,
+        width:Number, height:Number,
+        cellW:Number, cellH:Number
+    ):Void {
+        SortedUnitCache.configureGrid(originX, originY, width, height, cellW, cellH);
+    }
+
+    /**
+     * 2D 圆形范围查询
+     * !! 返回值为复用数组，勿持有引用
+     * @param target       请求者单位（用于阵营判定）
+     * @param interval     缓存更新间隔
+     * @param requestType  "敌人"/"友军"/"全体"
+     * @param cx           圆心 X
+     * @param cy           圆心 Y（Z轴坐标）
+     * @param radius       半径
+     * @param filterFn     可选过滤函数 function(unit):Boolean
+     * @return {Array} 圆内单位数组
+     */
+    public static function queryCircle2D(
+        target:Object, interval:Number, requestType:String,
+        cx:Number, cy:Number, radius:Number, filterFn:Function
+    ):Array {
+        var cache:SortedUnitCache = _provider.getCache(requestType, target, interval);
+        return cache ? cache.queryCircle2D(cx, cy, radius, filterFn) : [];
+    }
+
+    /**
+     * 2D 矩形范围查询
+     * !! 返回值为复用数组，勿持有引用
+     */
+    public static function queryRect2D(
+        target:Object, interval:Number, requestType:String,
+        x1:Number, y1:Number, x2:Number, y2:Number, filterFn:Function
+    ):Array {
+        var cache:SortedUnitCache = _provider.getCache(requestType, target, interval);
+        return cache ? cache.queryRect2D(x1, y1, x2, y2, filterFn) : [];
+    }
+
+    /**
+     * 2D 最近邻查询
+     * @return {Object} 最近单位或 null
+     */
+    public static function queryNearest2D(
+        target:Object, interval:Number, requestType:String,
+        cx:Number, cy:Number, maxDist:Number,
+        excludeUnit:Object, filterFn:Function
+    ):Object {
+        var cache:SortedUnitCache = _provider.getCache(requestType, target, interval);
+        return cache ? cache.queryNearest2D(cx, cy, maxDist, excludeUnit, filterFn) : null;
+    }
+
+    /**
+     * 2D 圆内计数（零分配）
+     */
+    public static function countInCircle2D(
+        target:Object, interval:Number, requestType:String,
+        cx:Number, cy:Number, radius:Number
+    ):Number {
+        var cache:SortedUnitCache = _provider.getCache(requestType, target, interval);
+        return cache ? cache.countInCircle2D(cx, cy, radius) : 0;
+    }
+
+    // ========================================================================
+    // 2D 便捷方法（各类型专用，省略 requestType 参数）
+    // ========================================================================
+
+    /** 查找圆形范围内的敌人 */
+    public static function findEnemiesInCircle2D(
+        t:Object, interval:Number,
+        cx:Number, cy:Number, radius:Number, filterFn:Function
+    ):Array {
+        return queryCircle2D(t, interval, "敌人", cx, cy, radius, filterFn);
+    }
+
+    /** 查找圆形范围内的友军 */
+    public static function findAlliesInCircle2D(
+        t:Object, interval:Number,
+        cx:Number, cy:Number, radius:Number, filterFn:Function
+    ):Array {
+        return queryCircle2D(t, interval, "友军", cx, cy, radius, filterFn);
+    }
+
+    /** 查找圆形范围内的全体 */
+    public static function findAllInCircle2D(
+        t:Object, interval:Number,
+        cx:Number, cy:Number, radius:Number, filterFn:Function
+    ):Array {
+        return queryCircle2D(t, interval, "全体", cx, cy, radius, filterFn);
+    }
+
+    /** 2D 最近敌人 */
+    public static function findNearestEnemy2D(
+        t:Object, interval:Number,
+        cx:Number, cy:Number, maxDist:Number, filterFn:Function
+    ):Object {
+        return queryNearest2D(t, interval, "敌人", cx, cy, maxDist, null, filterFn);
+    }
+
+    /** 2D 最近友军 */
+    public static function findNearestAlly2D(
+        t:Object, interval:Number,
+        cx:Number, cy:Number, maxDist:Number, filterFn:Function
+    ):Object {
+        return queryNearest2D(t, interval, "友军", cx, cy, maxDist, null, filterFn);
+    }
+
+    /** 2D 圆内敌人计数 */
+    public static function countEnemiesInCircle2D(
+        t:Object, interval:Number,
+        cx:Number, cy:Number, radius:Number
+    ):Number {
+        return countInCircle2D(t, interval, "敌人", cx, cy, radius);
+    }
+
+    /** 2D 圆内友军计数 */
+    public static function countAlliesInCircle2D(
+        t:Object, interval:Number,
+        cx:Number, cy:Number, radius:Number
+    ):Number {
+        return countInCircle2D(t, interval, "友军", cx, cy, radius);
+    }
+
     // ========================================================================
     // 【重构兼容】更新缓存方法（保持向后兼容）
     // ========================================================================

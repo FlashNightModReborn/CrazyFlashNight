@@ -1,5 +1,5 @@
 ﻿import org.flashNight.sara.util.*;
-import org.flashNight.gesh.object.*
+import org.flashNight.gesh.object.*;
 import org.flashNight.arki.component.Collider.*;
 
 class org.flashNight.arki.component.Collider.CollisionResult {

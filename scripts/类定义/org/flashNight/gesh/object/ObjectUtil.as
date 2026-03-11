@@ -282,7 +282,7 @@ class org.flashNight.gesh.object.ObjectUtil {
 
         function addKV(key:String, val:Object):Void {
             if (first) { first = false; } else { out += ", "; }
-            out += '"' + key + '": ' + org.flashNight.gesh.object.ObjectUtil.toString(val, seenObjects, depth + 1);
+            out += '"' + key + '": ' + ObjectUtil.toString(val, seenObjects, depth + 1);
         }
 
         // 1) 固定展示一些常用内建属性（不可枚举的也能拿到）
