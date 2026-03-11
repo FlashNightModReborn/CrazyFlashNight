@@ -2,12 +2,14 @@
  * SpatialHashGrid - 2D spatial hash grid for 2.5D games
  * Flat array index: grid[col * rows + row]
  * Rebuild each frame: clear + rebuildFromUnits
- * Each query returns a fresh array; caller may hold the reference safely
+ * Query results come from 4 rotating reusable slots to avoid hot-path allocation
  * Out-of-bounds coordinates auto-clamped
  *
  * @version 1.0
  */
 class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
+
+    private static var _RESULT_SLOT_COUNT:Number = 4;
 
     private var _originX:Number;
     private var _originY:Number;
@@ -23,6 +25,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
     private var _units:Array;
     private var _xs:Array;
     private var _ys:Array;
+    private var _resultSlots:Array;
+    private var _resultSlotCursor:Number;
 
     /**
      * @param originX  Grid left X (typically Xmin)
@@ -53,11 +57,28 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         _xs = [];
         _ys = [];
         _unitCount = 0;
+        _resultSlots = [];
+        _resultSlotCursor = 0;
 
         var i:Number = _cellCount;
         while (--i >= 0) {
             _grid[i] = [];
         }
+
+        i = _RESULT_SLOT_COUNT;
+        while (--i >= 0) {
+            _resultSlots[i] = [];
+        }
+    }
+
+    private function _acquireResultSlot():Array {
+        var idx:Number = _resultSlotCursor;
+        var result:Array = _resultSlots[idx];
+        result.length = 0;
+        idx++;
+        if (idx >= _RESULT_SLOT_COUNT) idx = 0;
+        _resultSlotCursor = idx;
+        return result;
     }
 
     /**
@@ -226,11 +247,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
 
     /**
      * Rectangle query. Returns units whose center is in [x1,x2] x [y1,y2].
-     * Returns a fresh array; caller may safely hold the reference.
+     * Result comes from a rotating reusable slot; avoid holding it across many later queries.
      */
     public function queryRect(x1:Number, y1:Number, x2:Number, y2:Number,
                                filterFn:Function):Array {
-        var result:Array = [];
+        var result:Array = _acquireResultSlot();
 
         var ox:Number = _originX;
         var oy:Number = _originY;
@@ -301,7 +322,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
      */
     public function queryCircle(cx:Number, cy:Number, radius:Number,
                                  filterFn:Function):Array {
-        var result:Array = [];
+        var result:Array = _acquireResultSlot();
 
         if (radius <= 0) return result;
 

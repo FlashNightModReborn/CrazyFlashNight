@@ -73,6 +73,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGridTest {
         testNearestBoundaryInclusive();
         testSnapshotCoordinates();
         testResultArrayIsolation();
+        testResultSlotRotation();
         testNaNQueryDefense();
         testLargeScale();
         testFilterFunction();
@@ -271,8 +272,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGridTest {
     }
 
     /**
-     * P0 测试：连续两次不同类型查询，第一次结果不应被第二次覆盖。
-     * 暴露 _result 数组复用导致的跨查询数据覆盖 bug。
+     * P0 测试：连续两次查询，第一次结果不应被第二次覆盖。
+     * 结果应来自不同轮转槽位，而不是同一个共享数组。
      */
     private static function testResultArrayIsolation():Void {
         trace("\n--- testResultArrayIsolation ---");
@@ -297,6 +298,27 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGridTest {
         // 核心验证：第一次结果不应被第二次破坏
         assertEquals("isolation_circle_after", 2, r1.length, 0);
         assertTrue("isolation_circle_data_intact", r1[0] == firstUnit);
+        assertTrue("isolation_refs_differ_immediately", r1 != r2);
+    }
+
+    /**
+     * P1 测试：结果槽位应有限复用，而不是每次查询都 new Array。
+     * 当前设计固定为 4 个轮转槽位，第 5 次应复用第 1 次的引用。
+     */
+    private static function testResultSlotRotation():Void {
+        trace("\n--- testResultSlotRotation ---");
+        var g:SpatialHashGrid = new SpatialHashGrid(0, 0, 400, 400, 100, 100);
+        g.insert(makeUnit(1, 100, 100), 100, 100);
+
+        var r0:Array = g.queryCircle(100, 100, 20);
+        var r1:Array = g.queryCircle(100, 100, 20);
+        var r2:Array = g.queryCircle(100, 100, 20);
+        var r3:Array = g.queryCircle(100, 100, 20);
+        var r4:Array = g.queryCircle(100, 100, 20);
+
+        assertTrue("slot_rotation_first_two_distinct", r0 != r1);
+        assertTrue("slot_rotation_fourth_distinct", r2 != r3);
+        assertTrue("slot_rotation_wraps", r4 == r0);
     }
 
     /**
@@ -318,14 +340,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGridTest {
         assertTrue("nan_rect_noCrash", r2 != null);
 
         var n1:Object = g.queryNearest(Number(undefined), 200, 100, null);
-        // 不崩溃即可，结果不做断言
-        assertTrue("nan_nearest_noCrash", true);
+        assertTrue("nan_nearest_returnsNull", n1 == null);
 
         var c1:Number = g.countInCircle(Number(undefined), 200, 100);
-        assertTrue("nan_count_noCrash", !isNaN(c1));
+        assertEquals("nan_count_returns0", 0, c1, 0);
 
-        // Infinity 半径：应不崩溃，返回所有单位
-        // (Infinity - ox) * invW | 0 在 AS2 中 = 0（NaN|0 = 0）
+        // Infinity 半径：当前实现应至少返回可用结果，不崩溃。
         var r3:Array = g.queryCircle(200, 200, 1.0/0);
         assertTrue("inf_circle_noCrash", r3 != null);
     }

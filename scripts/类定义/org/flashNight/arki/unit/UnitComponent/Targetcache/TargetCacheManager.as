@@ -47,6 +47,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * 注意：调用方不得修改返回的 data 数组或持有引用
      */
     private static var _emptyResult:Object = { data: [], startIndex: 0 };
+    private static var _empty2DSlots:Array = [[], [], [], []];
+    private static var _empty2DSlotCursor:Number = 0;
 
     /**
      * 安全返回空结果：重置 _emptyResult 以防止上次调用方的污染泄漏
@@ -56,6 +58,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         _emptyResult.data.length = 0;
         _emptyResult.startIndex = 0;
         return _emptyResult;
+    }
+
+    private static function _acquireEmpty2DSlot():Array {
+        var idx:Number = _empty2DSlotCursor;
+        var result:Array = _empty2DSlots[idx];
+        result.length = 0;
+        idx++;
+        if (idx >= 4) idx = 0;
+        _empty2DSlotCursor = idx;
+        return result;
     }
 
     // ========================================================================
@@ -1411,7 +1423,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
     /**
      * 2D 圆形范围查询
-     * !! 返回值为复用数组，勿持有引用
+     * !! 返回值来自轮转复用槽位；允许跨紧邻的一两次查询保留，但不要长期持有
      * @param target       请求者单位（用于阵营判定）
      * @param interval     缓存更新间隔
      * @param requestType  "敌人"/"友军"/"全体"
@@ -1426,19 +1438,19 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         cx:Number, cy:Number, radius:Number, filterFn:Function
     ):Array {
         var cache:SortedUnitCache = _provider.getCache(requestType, target, interval);
-        return cache ? cache.queryCircle2D(cx, cy, radius, filterFn) : [];
+        return cache ? cache.queryCircle2D(cx, cy, radius, filterFn) : _acquireEmpty2DSlot();
     }
 
     /**
      * 2D 矩形范围查询
-     * !! 返回值为复用数组，勿持有引用
+     * !! 返回值来自轮转复用槽位；允许跨紧邻的一两次查询保留，但不要长期持有
      */
     public static function queryRect2D(
         target:Object, interval:Number, requestType:String,
         x1:Number, y1:Number, x2:Number, y2:Number, filterFn:Function
     ):Array {
         var cache:SortedUnitCache = _provider.getCache(requestType, target, interval);
-        return cache ? cache.queryRect2D(x1, y1, x2, y2, filterFn) : [];
+        return cache ? cache.queryRect2D(x1, y1, x2, y2, filterFn) : _acquireEmpty2DSlot();
     }
 
     /**

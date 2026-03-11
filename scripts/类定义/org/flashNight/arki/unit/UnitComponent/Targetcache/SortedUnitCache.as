@@ -1590,6 +1590,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
 
     /**
      * 2D 圆形范围查询
+     * 返回值来自底层网格的轮转复用槽位，不要长期持有。
      * @param cx 圆心 X
      * @param cy 圆心 Y
      * @param radius 半径
@@ -1603,6 +1604,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache {
 
     /**
      * 2D 矩形范围查询
+     * 返回值来自底层网格的轮转复用槽位，不要长期持有。
      * @param x1 左边界
      * @param y1 上边界
      * @param x2 右边界

@@ -112,6 +112,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
         testCrossQueryResultIsolation();
         testManagerEmpty2DResultSelfHeals();
         testManagerEmpty2DIndependentReferences();
+        testManagerEmpty2DSlotRotation();
         testFilterFunction2D();
         testEmptyCache2D();
         testRebuildFromParallelArrays();
@@ -373,6 +374,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
         // 核心验证：第一次结果引用是否仍完好
         assertEquals("cross_circle_afterRect", 2, r1.length, 0);
         assertTrue("cross_circle_data_intact", r1[0] == savedUnit);
+        assertTrue("cross_query_refs_differ_immediately", r1 != r2);
     }
 
     /**
@@ -416,14 +418,43 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache2DTest {
             }
         };
 
-        // 每次空查询返回独立新数组，污染一个不影响后续
+        // 连续空查询应落到不同结果槽位，污染一个不影响后续
         var empty1:Array = TargetCacheManager.queryCircle2D(null, 1, "敌人", 0, 0, 100, null);
         assertEquals("manager_empty2d_initial", 0, empty1.length, 0);
         empty1.push("polluted");
 
         var empty2:Array = TargetCacheManager.queryRect2D(null, 1, "敌人", 0, 0, 10, 10, null);
         assertEquals("manager_empty2d_clean", 0, empty2.length, 0);
-        assertTrue("manager_empty2d_freshArray", empty1 != empty2);
+        assertTrue("manager_empty2d_nextSlot", empty1 != empty2);
+
+        managerClass[providerKey] = originalProvider;
+    }
+
+    /**
+     * P1 测试：Manager 空结果也应走有限槽位复用，而不是每次 new 新数组。
+     * 当前设计固定为 4 个轮转槽位，第 5 次应复用第 1 次的引用。
+     */
+    private static function testManagerEmpty2DSlotRotation():Void {
+        trace("\n--- testManagerEmpty2DSlotRotation ---");
+
+        var managerClass:Object = TargetCacheManager;
+        var providerKey:String = "_provider";
+        var originalProvider:Object = managerClass[providerKey];
+        managerClass[providerKey] = {
+            getCache: function(requestType:String, target:Object, interval:Number):Object {
+                return null;
+            }
+        };
+
+        var r0:Array = TargetCacheManager.queryCircle2D(null, 1, "敌人", 0, 0, 100, null);
+        var r1:Array = TargetCacheManager.queryCircle2D(null, 1, "敌人", 0, 0, 100, null);
+        var r2:Array = TargetCacheManager.queryCircle2D(null, 1, "敌人", 0, 0, 100, null);
+        var r3:Array = TargetCacheManager.queryCircle2D(null, 1, "敌人", 0, 0, 100, null);
+        var r4:Array = TargetCacheManager.queryCircle2D(null, 1, "敌人", 0, 0, 100, null);
+
+        assertTrue("manager_empty2d_slot_distinct", r0 != r1);
+        assertTrue("manager_empty2d_slot_wraps", r4 == r0);
+        assertEquals("manager_empty2d_slot_wrap_clean", 0, r4.length, 0);
 
         managerClass[providerKey] = originalProvider;
     }
