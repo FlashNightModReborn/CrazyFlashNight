@@ -188,10 +188,18 @@
               <diffusion>0</diffusion>
               <bullet>诛神闪电</bullet>
               <velocity>0</velocity>
-              <bullethit />
               <range>300</range>
               <impact>1</impact>
             </bullet_0>
+            <bullet_1>
+              <sound />
+              <split>1</split>
+              <power>600%</power>
+              <diffusion>0</diffusion>
+              <bullet>磁暴射线-强化</bullet>
+              <velocity>0</velocity>
+              <impact>0</impact>
+            </bullet_1>
           </bullet>
         </attr_0>
       </lifecycle>

@@ -56,7 +56,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer 
             target.buffManager = createManager(target);
 
             if(target._name === _root.控制目标){
-                /
+                
             }
             /*
 

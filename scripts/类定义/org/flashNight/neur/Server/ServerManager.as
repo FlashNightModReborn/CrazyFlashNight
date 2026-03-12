@@ -264,6 +264,16 @@ class org.flashNight.neur.Server.ServerManager {
         }
     }
 
+    // 立即发送单条消息，绕过 messageBuffer/isSending，每次独立请求
+    // 用于调试：即使主线程随后冻结，OS 网络栈也会把请求发出去
+    public function sendImmediate(message:String):Void {
+        if (currentPort == null) return;
+        var lv:LoadVars = new LoadVars();
+        lv.messages = message;
+        lv.frame = currentFrame;
+        lv.sendAndLoad("http://localhost:" + currentPort + "/logBatch", new LoadVars(), "POST");
+    }
+
     // 发送积累的消息
     private function sendMessageBuffer():Void {
         if (currentPort == null) {

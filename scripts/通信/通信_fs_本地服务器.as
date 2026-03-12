@@ -31,6 +31,16 @@ _root.服务器.发布服务器消息 = function() {
 };
 _root.服务器.获得可用端口 = Delegate.create(_root.server, _root.server.getAvailablePort);
 
+// 立即发送：绕过帧缓冲，每条消息独立 HTTP 请求，冻结前的检查点也能送达
+_root.服务器.立即发送 = function() {
+    var msg:String = "";
+    for (var i = 0; i < arguments.length; i++) {
+        if (i > 0) msg += " ";
+        msg += arguments[i];
+    }
+    _root.server.sendImmediate(msg);
+};
+
 
 // 发送消息，通过旧接口
 _root.服务器.发布服务器消息("This is a test message.");

@@ -25,7 +25,7 @@ class org.flashNight.arki.component.Buff.IconBar.DetailedIconBar {
      * DetailedIconBar 构造函数
      */
     public function DetailedIconBar(_barMC:MovieClip, _iconProto:MovieClip, _padding:Number) {
-        this._barMC = barMC;
+        this.barMC = _barMC;
         this.iconProto = _iconProto;
 
         this.startX = _iconProto._x;
@@ -39,7 +39,7 @@ class org.flashNight.arki.component.Buff.IconBar.DetailedIconBar {
         this.buffIdDict = {};
     }
 
-    public function initialize(_manager:MovieClip):Void{
+    public function initialize(_manager:BuffManager):Void{
         return; // 写到一半 一会再写
 
         this.manager = _manager;
