@@ -143,41 +143,41 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
     }
 
     private static function test_GunStatsBuilder_fireMode():Void {
-        var f:Object = MockItemFactory.gun();
         var bi = MockItemFactory.mockBaseItem();
 
-        // singleshoot=false → 全自动
+        // singleshoot=false → 全自动（每次使用新 fixture 避免状态泄漏）
+        var fAuto:Object = MockItemFactory.gun();
         var result:Array = [];
-        GunStatsBuilder.build(result, bi, f.item, f.data, null);
+        GunStatsBuilder.build(result, bi, fAuto.item, fAuto.data, null);
         var joined:String = result.join("");
         assertContains(joined, TooltipConstants.TIP_FIRE_MODE_AUTO, "GunStats auto mode");
 
         // singleshoot=true → 半自动
-        f.data.singleshoot = true;
+        var fSemi:Object = MockItemFactory.gun();
+        fSemi.data.singleshoot = true;
         result = [];
-        GunStatsBuilder.build(result, bi, f.item, f.data, null);
+        GunStatsBuilder.build(result, bi, fSemi.item, fSemi.data, null);
         joined = result.join("");
         assertContains(joined, TooltipConstants.TIP_FIRE_MODE_SEMI, "GunStats semi mode");
-        f.data.singleshoot = false; // 还原
     }
 
     private static function test_GunStatsBuilder_reloadType():Void {
-        var f:Object = MockItemFactory.gun();
         var bi = MockItemFactory.mockBaseItem();
 
         // reloadType="clip" → 整匣换弹
+        var fClip:Object = MockItemFactory.gun();
         var result:Array = [];
-        GunStatsBuilder.build(result, bi, f.item, f.data, null);
+        GunStatsBuilder.build(result, bi, fClip.item, fClip.data, null);
         var joined:String = result.join("");
         assertContains(joined, TooltipConstants.TIP_RELOAD_TYPE_MAG, "GunStats mag reload");
 
         // reloadType="tube" → 逐发装填
-        f.data.reloadType = "tube";
+        var fTube:Object = MockItemFactory.gun();
+        fTube.data.reloadType = "tube";
         result = [];
-        GunStatsBuilder.build(result, bi, f.item, f.data, null);
+        GunStatsBuilder.build(result, bi, fTube.item, fTube.data, null);
         joined = result.join("");
         assertContains(joined, TooltipConstants.TIP_RELOAD_TYPE_TUBE, "GunStats tube reload");
-        f.data.reloadType = "clip"; // 还原
     }
 
     // === MeleeStatsBuilder ===

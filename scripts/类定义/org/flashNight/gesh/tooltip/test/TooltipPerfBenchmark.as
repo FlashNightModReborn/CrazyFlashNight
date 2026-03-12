@@ -30,6 +30,10 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         introTotal: 0
     };
 
+    // 缓存 HTML 字符串，避免每个 bench 函数重复构建
+    private static var _shortHtml:String = null;
+    private static var _longHtml:String = null;
+
     private static function assert(cond:Boolean, msg:String):Void {
         testsRun++;
         if (cond) { testsPassed++; trace("[PASS] " + msg); }
@@ -60,11 +64,37 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         return buf.join("");
     }
 
+    private static function getShortHtml():String {
+        if (_shortHtml == null) _shortHtml = buildShortHtml();
+        return _shortHtml;
+    }
+
+    private static function getLongHtml():String {
+        if (_longHtml == null) _longHtml = buildLongHtml();
+        return _longHtml;
+    }
+
+    /** 预热：触发所有被测函数的首次调用，消除类加载/初始化开销 */
+    private static function warmup():Void {
+        var s:String = getShortHtml();
+        var l:String = getLongHtml();
+        StringUtils.htmlScoresBoth(s, null);
+        StringUtils.htmlScoresBoth(l, null);
+        StringUtils.htmlScoresBoth(l, null, _scoreScratch);
+        TooltipLayout.shouldSplitSmartWithScores(l, s, null);
+        TooltipLayout.shouldSplitSmartWithScores(l, s, null, _splitScratch);
+        TooltipLayout.estimateMainWidth(l, undefined, undefined);
+        var sc:Object = StringUtils.htmlScoresBoth(l, null);
+        TooltipLayout.estimateMainWidthFromScores(sc.total, sc.maxLine, l, undefined, undefined);
+        TooltipLayout.estimateMainWidthFromMetrics(sc.total, sc.maxLine, sc.lineCount, undefined, undefined);
+    }
+
     public static function runAllTests():Void {
         testsRun = testsPassed = testsFailed = 0;
         trace("--- TooltipPerfBenchmark ---");
 
         TestDataBootstrap.init();
+        warmup();
 
         bench_htmlScoresBoth_short();
         bench_htmlScoresBoth_long();
@@ -78,7 +108,7 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
 
     // === htmlScoresBoth 短文本 ===
     private static function bench_htmlScoresBoth_short():Void {
-        var html:String = buildShortHtml();
+        var html:String = getShortHtml();
         var N:Number = 500;
 
         var t0:Number = getTimer();
@@ -97,7 +127,7 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
 
     // === htmlScoresBoth 长文本 ===
     private static function bench_htmlScoresBoth_long():Void {
-        var html:String = buildLongHtml();
+        var html:String = getLongHtml();
         var N:Number = 200;
 
         var t0:Number = getTimer();
@@ -114,7 +144,7 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
 
     // === 默认返回对象 vs 热路径 scratch 复用 ===
     private static function bench_htmlScoresBoth_new_vs_scratch():Void {
-        var html:String = buildLongHtml();
+        var html:String = getLongHtml();
         var N:Number = 200;
 
         // 默认路径：返回独立结果对象
@@ -142,8 +172,8 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
 
     // === shouldSplitSmartWithScores 基准 ===
     private static function bench_shouldSplitSmartWithScores():Void {
-        var desc:String = buildLongHtml();
-        var intro:String = buildShortHtml();
+        var desc:String = getLongHtml();
+        var intro:String = getShortHtml();
         var N:Number = 200;
 
         // 默认快照路径
@@ -170,7 +200,7 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
 
     // === estimateMainWidth 基准 ===
     private static function bench_estimateMainWidth():Void {
-        var html:String = buildLongHtml();
+        var html:String = getLongHtml();
         var N:Number = 200;
 
         // 旧路径：estimateMainWidth（内部重新扫描）
@@ -215,6 +245,9 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         var bi = MockItemFactory.mockBaseItem();
         var desc:String = TooltipComposer.generateItemDescriptionText(item, bi);
         var intro:String = TooltipComposer.generateIntroPanelContent(bi, item, bi.value);
+
+        // 预热渲染路径
+        TooltipComposer.renderItemTooltipSmart("测试军刀", {level: 1}, desc, intro, null, null);
 
         var N:Number = 100;
         var t0:Number = getTimer();

@@ -1330,14 +1330,77 @@ class org.flashNight.gesh.string.StringUtils {
         while (i < sLen) {
             var code:Number = s.charCodeAt(i);
 
-            // HTML 标签
+            // HTML 标签 — 内联快速路径 + 回退
             if (code == 60) {
+                // 快速路径：检测最常见的标签避免函数调用开销
+                // tooltip HTML 中 >95% 的标签是 <BR>、<B>、</B>、<FONT...>、</FONT>
+                var _c1:Number = s.charCodeAt(i + 1);
+
+                // <B... 开头（可能是 <BR> 或 <B>）
+                if (_c1 == 66 || _c1 == 98) {
+                    var _c2:Number = s.charCodeAt(i + 2);
+                    // <BR> 或 <br> — 换行标签
+                    if (_c2 == 82 || _c2 == 114) {
+                        var _c3:Number = s.charCodeAt(i + 3);
+                        if (_c3 == 62) {
+                            // <BR> 精确匹配
+                            if (nlCountT < 2) totalScore += wNewline;
+                            nlCountT++; prevSpaceT = false;
+                            if (lineScore > maxLineScore) maxLineScore = lineScore;
+                            lineScore = 0; prevSpaceL = false;
+                            lineCount++;
+                            i += 4; continue;
+                        }
+                        if (_c3 == 47 && s.charCodeAt(i + 4) == 62) {
+                            // <BR/> 自闭合
+                            if (nlCountT < 2) totalScore += wNewline;
+                            nlCountT++; prevSpaceT = false;
+                            if (lineScore > maxLineScore) maxLineScore = lineScore;
+                            lineScore = 0; prevSpaceL = false;
+                            lineCount++;
+                            i += 5; continue;
+                        }
+                        // <BR ...> 其他形式，扫描到 >
+                        var _j:Number = i + 3;
+                        while (_j < sLen && s.charCodeAt(_j) != 62) _j++;
+                        if (_j < sLen) _j++;
+                        if (nlCountT < 2) totalScore += wNewline;
+                        nlCountT++; prevSpaceT = false;
+                        if (lineScore > maxLineScore) maxLineScore = lineScore;
+                        lineScore = 0; prevSpaceL = false;
+                        lineCount++;
+                        i = _j; continue;
+                    }
+                    // <B> — 非换行标签
+                    if (_c2 == 62) { i += 3; continue; }
+                    // <B ...> 其他形式
+                    _j = i + 2;
+                    while (_j < sLen && s.charCodeAt(_j) != 62) _j++;
+                    if (_j < sLen) _j++;
+                    i = _j; continue;
+                }
+
+                // </...> 闭合标签 — tooltip 中不含换行闭合标签
+                if (_c1 == 47) {
+                    _j = i + 2;
+                    while (_j < sLen && s.charCodeAt(_j) != 62) _j++;
+                    if (_j < sLen) _j++;
+                    i = _j; continue;
+                }
+
+                // <FONT...> 或 <f...> — 非换行
+                if (_c1 == 70 || _c1 == 102) {
+                    _j = i + 2;
+                    while (_j < sLen && s.charCodeAt(_j) != 62) _j++;
+                    if (_j < sLen) _j++;
+                    i = _j; continue;
+                }
+
+                // 回退：不常见标签走完整解析
                 var tag:Object = _readTagInfo(s, i, sLen);
                 if (tag.isNewline) {
-                    // 总量：换行计分
                     if (nlCountT < 2) totalScore += wNewline;
                     nlCountT++; prevSpaceT = false;
-                    // 行最大：flush
                     if (lineScore > maxLineScore) maxLineScore = lineScore;
                     lineScore = 0; prevSpaceL = false;
                     lineCount++;
@@ -1425,13 +1488,19 @@ class org.flashNight.gesh.string.StringUtils {
                 }
             }
 
-            // 普通字符
+            // 普通字符 — 内联 CJK 判断避免函数调用开销
             nlCountT = 0; prevSpaceT = false;
             prevSpaceL = false;
             var charWeight:Number;
             if (code <= 0x7F) charWeight = wAscii;
             else if (code <= 0xFF) charWeight = wLatin1;
-            else charWeight = _isCJKWide(code) ? wCjkWide : wLatin1;
+            else if (code >= 0x2E80 && code <= 0xA4CF) charWeight = wCjkWide;
+            else if (code >= 0xAC00 && code <= 0xD7A3) charWeight = wCjkWide;
+            else if (code >= 0xF900 && code <= 0xFAFF) charWeight = wCjkWide;
+            else if (code >= 0xFE10 && code <= 0xFE6F) charWeight = wCjkWide;
+            else if (code >= 0xFF00 && code <= 0xFF60) charWeight = wCjkWide;
+            else if (code >= 0xFFE0 && code <= 0xFFE6) charWeight = wCjkWide;
+            else charWeight = wLatin1;
             totalScore += charWeight;
             lineScore += charWeight;
             i++;
