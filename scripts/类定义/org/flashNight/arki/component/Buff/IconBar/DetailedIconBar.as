@@ -40,6 +40,8 @@ class org.flashNight.arki.component.Buff.IconBar.DetailedIconBar {
     }
 
     public function initialize(_manager:MovieClip):Void{
+        return; // 写到一半 一会再写
+
         this.manager = _manager;
         this.activeIconList = [];
 
