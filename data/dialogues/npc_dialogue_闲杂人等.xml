@@ -1,33 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
     <Dialogues>
-        <Name>牛仔</Name>
-        <Dialogue id="0">
-            <SubDialogue id="0">
-                <Name>牛仔</Name>
-                <Title>？</Title>
-                <Char>牛仔</Char>
-                <Text>一段时间没来了，这里的装潢似乎还不错。</Text>
-            </SubDialogue>
-        </Dialogue>
-        <Dialogue id="1">
-            <SubDialogue id="0">
-                <Name>牛仔</Name>
-                <Title>？</Title>
-                <Char>牛仔</Char>
-                <Text>这里的椅子很破，不介意站着喝酒吧？否则，敌人来了我们说不定会一屁股坐在地上。</Text>
-            </SubDialogue>
-        </Dialogue>
-        <Dialogue id="2">
-            <SubDialogue id="0">
-                <Name>牛仔</Name>
-                <Title>？</Title>
-                <Char>牛仔</Char>
-                <Text>我一直觉得这里的氛围很适合我，只要不会有人突然进来跟我枪战。</Text>
-            </SubDialogue>
-        </Dialogue>
-    </Dialogues>
-    <Dialogues>
         <Name>吸特乐</Name>
         <Dialogue id="0">
             <SubDialogue id="0">
@@ -120,6 +93,265 @@
                 <Title>假肢店老板</Title>
                 <Char>假肢仙人</Char>
                 <Text>武器也是身体的延伸，给你这身装备也换套假肢？</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>幸存老兵</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>幸存老兵</Name>
+                <Title>猎人</Title>
+                <Char>幸存老兵</Char>
+                <Text>其实我也想过回去报仇，但我受了重伤，手也失去了一只，去了也是炮灰……</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>幸存老兵</Name>
+                <Title>猎人</Title>
+                <Char>幸存老兵</Char>
+                <Text>拜托了，替在任务中惨死的弟兄们报仇啊……</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>幸存老兵</Name>
+                <Title>猎人</Title>
+                <Char>幸存老兵</Char>
+                <Text>那些怪物太厉害了，即使身经百战的战士也可能成为它们的食物……</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>幸存老兵</Name>
+                <Title>猎人</Title>
+                <Char>幸存老兵</Char>
+                <Text>如果那片森林没有怪物占据的话，也许会是绝佳的宜居地。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>幸存老兵</Name>
+                <Title>猎人</Title>
+                <Char>幸存老兵</Char>
+                <Text>丧尸几近于无，数量多到可以磨成肉饼的各种昆虫，还有可以碾碎当做面粉的树皮，甚至还有可以食用的菌菇。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>幸存老兵</Name>
+                <Title>猎人</Title>
+                <Char>幸存老兵</Char>
+                <Text>和同伴在那里扎营生活的时间里，我们在末日里面第一次吃上了汉堡，可惜一切都已经……</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>前治安官</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>前治安官</Name>
+                <Title>警长</Title>
+                <Char>前治安官</Char>
+                <Text>不要叫我警长，那都是过去式了，我现在就是一个自由的战士！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>前治安官</Name>
+                <Title>警长</Title>
+                <Char>前治安官</Char>
+                <Text>要想击退僵尸群，团队必须要分工合作！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>前治安官</Name>
+                <Title>警长</Title>
+                <Char>前治安官</Char>
+                <Text>嘿，年轻人，加入我的小队吧，一起保卫我们的家园不受僵尸的侵袭！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>前治安官</Name>
+                <Title>警长</Title>
+                <Char>前治安官</Char>
+                <Text>大部分生物都在末日的时候伴随多数的人类一并灭亡，可害虫却依旧随处可见；不过也因此，我们废城前线的战士们也有了更多的食物来源。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>前治安官</Name>
+                <Title>警长</Title>
+                <Char>前治安官</Char>
+                <Text>从下水道口爬出的蟑螂，围绕于垃圾桶旁的老鼠，小巷里面对你虎视眈眈的野狗……</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>前治安官</Name>
+                <Title>警长</Title>
+                <Char>前治安官</Char>
+                <Text>不卫生？不安全？那又怎样？用火烤一烤有的吃就他妈的不错了。末日了还这么挑剔，你们A兵团过的都是什么神仙日子不成？</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>宝石线人</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>宝石线人</Name>
+                <Title>线人</Title>
+                <Char>宝石线人</Char>
+                <Text>军阀或者军警宪政派？他们不过是一丘之貉。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>宝石线人</Name>
+                <Title>线人</Title>
+                <Char>宝石线人</Char>
+                <Text>表面上各自敌对，这不过是因为分赃不均而已。他们都对不受公权力摆布的新经济体制恨之入骨。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>宝石线人</Name>
+                <Title>线人</Title>
+                <Char>宝石线人</Char>
+                <Text>强化石很重要，它可以充当几乎所有装备的强化道具。如果忽略了强化石的作用，那么加密货币体制显然会陷入窘境。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>宝石线人</Name>
+                <Title>线人</Title>
+                <Char>宝石线人</Char>
+                <Text>接受我的委托吧，狠狠揍那群军阀一顿！</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>lochan</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>lochan</Name>
+                <Title>谜之兔女郎</Title>
+                <Char>lochan</Char>
+                <Text>请问需要我做些什么吗？</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>lochan</Name>
+                <Title>谜之兔女郎</Title>
+                <Char>lochan</Char>
+                <Text>我并不是单纯的服务员···嘛，或许你看过我的作品。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>lochan</Name>
+                <Title>谜之兔女郎</Title>
+                <Char>lochan</Char>
+                <Text>不过，摆出跳舞姿势也是很累的，希望那些mmder更加善待我哦。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>soldier</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>平时这边特无聊，等僵尸来了又忙的要死，舒适度这块的上不去下不来卡在这了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>我觉得进探索队挺好，往底了说也不用在这站着等着僵尸来。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>哎呦，这也太累了吧这个。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>上次送货来的韭菜盒子还给我少了两块，那我缺的营养这块的谁给我补啊。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>没有公社，我们吃什么？</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>每天就是看着这破防线，偶尔有人路过买点制式装备，日子过得跟流水账似的。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>不过话说回来，我这儿的家伙把式，质量还是过得去的，童叟无欺。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="4">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>制式步枪、手枪什么的都有，价格公道。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="5">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>...观先生气度不凡，想必是行家里手，莫要带身破铜烂铁。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>我这边颇有些铁枪会的尖货，或不价廉，实在物美。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>于真正行家而言，此等利器，确是物有所值。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="6">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>最近僵尸群的活动越来越频繁了，打点精神起来！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="7">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>先生，此处反弓水格，磁煞冲位——在下做过通讯，这话您可以两种方式理解，随您。总之，在下这边有几样镇煞之物，破财免灾，价格公道，买了不亏。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="8">
+            <SubDialogue id="0">
+                <Name>soldier</Name>
+                <Title>站岗的</Title>
+                <Char>soldier</Char>
+                <Text>夜里值班，无线电偶尔会收到一些不在频段表上的东西。规律性很强，不像自然干扰。不过这年头什么都有可能，对吧？</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>
