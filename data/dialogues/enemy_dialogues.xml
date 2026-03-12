@@ -668,9 +668,24 @@
          <MaxIntention>2</MaxIntention>
       </Dialogue>
       <Dialogue>
-         <Text>教主谕令“巩固根基”，可黑龙堂把好钢都留着了。俺们总不能用信仰和泥巴打地基？</Text>
+         <Text>教主谕令”巩固根基”，可黑龙堂把好钢都留着了。俺们总不能用信仰和泥巴打地基？</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>俺爷爷说，祖上住的那片山里头，原来有个很大的……组织？他也说不清是什么。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>家里传下来一块铁片，上头的花纹细得很。散人看了说值老钱，但老一辈的不让卖，说是祖上留的东西。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>奶奶小时候见过穿白袍的人，说那些人做法事做到一半就不动了，跟睡着了似的。后来那些人都不见了，老人说是飞升了。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
       </Dialogue>
    </Group>
 
@@ -787,8 +802,18 @@
          <MinIntention>1</MinIntention>
          <MaxIntention>3</MaxIntention>
       </Dialogue>
+      <Dialogue>
+         <Text>降头师……你最好别用那个称呼，那是外面人叫的。我们会里对他们只有两个字：敬畏。教主说那不是某个人发明的本事，是传承"，传承自谁，他没讲，我们也不敢问。</Text>
+         <MinIntention>3</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>最难对付的从来不是外头的敌人。铁枪会就是这个道理——教里待过，知道我们的底细，偏偏不认教主的路。教主镇压他们是对的。这种人放出去，比军阀危险十倍，因为他们打的是你心里的东西。</Text>
+         <MinIntention>3</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
    </Group>
-   
+
    <!-- 摇滚对话 -->
    <Group>
       <Identity>狂野玫瑰成员</Identity>

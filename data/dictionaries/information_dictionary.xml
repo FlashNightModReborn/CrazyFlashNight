@@ -100,6 +100,7 @@
         <Information Value="1" PageKey="1_3"/>
         <Information Value="1" PageKey="1_4"/>
         <Information Value="1" PageKey="1_5"/>
+        <Information Value="1" PageKey="1_6"/>
     </Item>
     <Item>
         <Name>酒保线报：军阀内部形势</Name>
@@ -287,41 +288,80 @@
         <Information Value="1" PageKey="1"/>
         <Information Value="2" PageKey="2"/>
         <Information Value="3" PageKey="3"/>
+        <Information Value="4" PageKey="4"/>
+        <Information Value="5" PageKey="5"/>
     </Item>
     <Item>
         <Name>火凤堂徽章</Name>
         <Index>42</Index>
         <Information Value="1" PageKey="1"/>
         <Information Value="2" PageKey="2"/>
+        <Information Value="3" PageKey="3"/>
+        <Information Value="4" PageKey="4"/>
     </Item>
     <Item>
         <Name>黑龙堂徽章</Name>
         <Index>43</Index>
         <Information Value="1" PageKey="1"/>
         <Information Value="2" PageKey="2"/>
+        <Information Value="3" PageKey="3"/>
+        <Information Value="4" PageKey="4"/>
     </Item>
     <Item>
         <Name>翅虎令</Name>
         <Index>44</Index>
         <Information Value="1" PageKey="1"/>
         <Information Value="2" PageKey="2"/>
+        <Information Value="3" PageKey="3"/>
+        <Information Value="4" PageKey="4"/>
     </Item>
     <Item>
         <Name>火凤令</Name>
         <Index>45</Index>
         <Information Value="1" PageKey="1"/>
         <Information Value="2" PageKey="2"/>
+        <Information Value="3" PageKey="3"/>
     </Item>
     <Item>
         <Name>黑龙令</Name>
         <Index>46</Index>
         <Information Value="1" PageKey="1"/>
         <Information Value="2" PageKey="2"/>
+        <Information Value="3" PageKey="3"/>
+        <Information Value="4" PageKey="4"/>
     </Item>
     <Item>
         <Name>黑铁会信物</Name>
         <Index>47</Index>
         <Information Value="1" PageKey="1"/>
+        <Information Value="1" PageKey="2"/>
+    </Item>
+    <Item>
+        <Name>符线溯源笔记</Name>
+        <Index>48</Index>
+        <EncryptReplace>
+            <符应>██</符应>
+            <旧制管脉>██管脉</旧制管脉>
+            <节枢>██枢</节枢>
+        </EncryptReplace>
+        <EncryptCut>
+            <不是查不到的>------------------</不是查不到的>
+        </EncryptCut>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="1" PageKey="2"/>
+        <Information Value="1" PageKey="3" EncryptLevel="2"/>
+        <Information Value="1" PageKey="4"/>
+        <Information Value="1" PageKey="5" EncryptLevel="3"/>
+        <Information Value="1" PageKey="6" EncryptLevel="1"/>
+    </Item>
+    <Item>
+        <Name>旧世残篇：西南自治区概况</Name>
+        <Index>49</Index>
+        <Information Value="1" PageKey="1"/>
+        <Information Value="1" PageKey="2"/>
+        <Information Value="1" PageKey="3"/>
+        <Information Value="1" PageKey="4"/>
+        <Information Value="1" PageKey="5"/>
     </Item>
     <Item>
         <Name>基础家常菜配方</Name>

@@ -56,6 +56,22 @@
                 <Text>前任外交部长实在太诡异了，和翅虎堂主的长相几乎一模一样。莫非是亲兄弟吗？</Text>
             </SubDialogue>
         </Dialogue>
+        <Dialogue id="6">
+            <SubDialogue id="0">
+                <Name>黑铁会外交部长</Name>
+                <Title>线人</Title>
+                <Char>黑铁会外交部长#思考</Char>
+                <Text>教主对旧世留下来的东西态度很奇怪。我在外面什么改造人没见过，但教主身边……这不一样。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="7">
+            <SubDialogue id="0">
+                <Name>黑铁会外交部长</Name>
+                <Title>线人</Title>
+                <Char>黑铁会外交部长#严肃</Char>
+                <Text>驻地那位的来路，大家心里都有数，没什么好避讳的。但最近气息变了。他最近在紧张什么，这倒值得留意。</Text>
+            </SubDialogue>
+        </Dialogue>
     </Dialogues>
     <Dialogues>
         <Name>翅虎</Name>
@@ -111,6 +127,26 @@
                 <Title>堂主</Title>
                 <Char>翅虎</Char>
                 <Text>不要看火凤那副样子，她只是……过于纯粹。炽热，纯粹，没有任何杂念。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>翅虎</Name>
+                <Title>堂主</Title>
+                <Char>翅虎</Char>
+                <Text>情报工作的本分是整理事实，不做判断。关于仪护法的情况，事实已呈报教主，判断由教主定夺。你不需要知道具体内容。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>翅虎</Name>
+                <Title>堂主</Title>
+                <Char>翅虎</Char>
+                <Text>我只提醒你一点：我们对敌人的了解，有时候比对自己人还清楚。教主对此心中有数。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>翅虎</Name>
+                <Title>堂主</Title>
+                <Char>翅虎</Char>
+                <Text>有些东西不是查不到，是得分清这是好事，还是坏事，不只是事实。</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>
@@ -239,6 +275,26 @@
                 <Text>门道问翅虎，我只管守家铸铁，他净干些在墙根底下挖洞的活儿，各做各的。</Text>
             </SubDialogue>
         </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>黑龙</Name>
+                <Title>堂主</Title>
+                <Char>黑龙</Char>
+                <Text>死了太多人了，总得有人顶上去。伐毛洗髓，方能成器。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>黑龙</Name>
+                <Title>堂主</Title>
+                <Char>黑龙</Char>
+                <Text>就是植入的经脉有时候嗡嗡响。嗡就嗡，管它呢，不影响砍人。</Text>
+            </SubDialogue>            
+            <SubDialogue id="2">
+                <Name>黑龙</Name>
+                <Title>堂主</Title>
+                <Char>黑龙</Char>
+                <Text>倒是听说外头盗贼用的战纹就是拿我这个改的，就没我的劲大。</Text>
+            </SubDialogue>
+        </Dialogue>
     </Dialogues>
     <Dialogues>
         <Name>黑铁</Name>
@@ -354,6 +410,40 @@
                 <Title>教主</Title>
                 <Char>黑铁</Char>
                 <Text>疗其筋骨，安其魂魄；孤予之生，亦可予之死。此戒，谨记之。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="6">
+            <SubDialogue id="0">
+                <Name>黑铁</Name>
+                <Title>教主</Title>
+                <Char>黑铁</Char>
+                <Text>天下利器，铸成之日便非凡铁。玄非铁之变，乃铁中有志存焉。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>黑铁</Name>
+                <Title>教主</Title>
+                <Char>黑铁</Char>
+                <Text>此剑有余响，非风声，非剑鸣——乃回声也。汝知其从何处来否？</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>黑铁</Name>
+                <Title>教主</Title>
+                <Char>黑铁</Char>
+                <Text>汝若持之，静听，或可闻其所言。能听者，自有缘法。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="7">
+            <SubDialogue id="0">
+                <Name>黑铁</Name>
+                <Title>教主</Title>
+                <Char>黑铁</Char>
+                <Text>昔祖辈之地大治，仓廪实而知礼节，民不识饥寒。彼时之器，非此时之器所能比。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>黑铁</Name>
+                <Title>教主</Title>
+                <Char>黑铁</Char>
+                <Text>后有变，通天地之理者一夕而隐。飞升耶？遁世耶？无人知矣。吾辈所守者，非遗物也，乃遗志。</Text>
             </SubDialogue>
         </Dialogue>
     </Dialogues>
