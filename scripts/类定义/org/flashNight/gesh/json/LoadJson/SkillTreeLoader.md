@@ -15,7 +15,7 @@ loader.loadAll(
 
         trace("技能信息加载完成！");
         
-        trace(ObjectUtil.toString(result));
+        trace(ObjectUtil.stringify(result));
 
     },
     function(error:String):Void {

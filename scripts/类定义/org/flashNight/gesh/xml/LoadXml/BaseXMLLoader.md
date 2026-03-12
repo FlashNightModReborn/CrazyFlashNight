@@ -304,7 +304,7 @@ class org.flashNight.gesh.xml.LoadXml.WeaponsLoader extends BaseXMLLoader {
     public function loadWeapons(onLoadHandler:Function, onErrorHandler:Function):Void {
         this.load(function(data:Object):Void {
             trace("WeaponsLoader: 文件加载成功！");
-            trace("Parsed Data: " + ObjectUtil.toString(data)); // 调试输出解析结果
+            trace("Parsed Data: " + ObjectUtil.stringify(data)); // 调试输出解析结果
             if (onLoadHandler != null) onLoadHandler(data);
         }, function():Void {
             trace("WeaponsLoader: 文件加载失败！");
@@ -390,7 +390,7 @@ class org.flashNight.gesh.xml.LoadXml.BulletsCasesLoader extends BaseXMLLoader {
     public function loadBulletsCases(onLoadHandler:Function, onErrorHandler:Function):Void {
         this.load(function(data:Object):Void {
             trace("BulletsCasesLoader: 文件加载成功！");
-            trace("Parsed Data: " + ObjectUtil.toString(data)); // 调试输出解析结果
+            trace("Parsed Data: " + ObjectUtil.stringify(data)); // 调试输出解析结果
             if (onLoadHandler != null) onLoadHandler(data);
         }, function():Void {
             trace("BulletsCasesLoader: 文件加载失败！");
