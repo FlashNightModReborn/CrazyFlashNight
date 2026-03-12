@@ -216,7 +216,15 @@
                         <Level>32</Level>
                         <x>500</x>
                         <y>440</y>
-                        <Parameters>称号:翅虎堂司暗</Parameters>
+                        <Parameters>
+                            <掉落物>
+                                <名字>符线溯源笔记</名字>
+                                <概率>100</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                            <称号>翅虎堂司暗</称号>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种64</Type>
