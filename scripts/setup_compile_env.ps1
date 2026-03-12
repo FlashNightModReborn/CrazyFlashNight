@@ -142,18 +142,78 @@ function Remove-PathIfExists {
     }
 }
 
+function Resolve-FlashExeCandidate {
+    param([string]$Candidate)
+
+    if (-not $Candidate) {
+        return $null
+    }
+
+    $trimmed = $Candidate.Trim()
+    if (-not $trimmed) {
+        return $null
+    }
+
+    $normalized = [Environment]::ExpandEnvironmentVariables($trimmed.Trim('"'))
+    $variants = @($normalized)
+
+    if (Test-Path $normalized -PathType Container) {
+        $variants += (Join-Path $normalized 'Flash.exe')
+    }
+
+    foreach ($variant in $variants) {
+        if (Test-Path $variant -PathType Leaf) {
+            return (Resolve-Path $variant).Path
+        }
+    }
+
+    return $null
+}
+
+function Find-FlashExeFromCommonRoots {
+    $roots = @(
+        (Join-Path $env:USERPROFILE 'Downloads')
+        (Join-Path $env:USERPROFILE 'Desktop')
+        (Join-Path $env:USERPROFILE 'Documents')
+    )
+
+    foreach ($root in $roots) {
+        if (-not (Test-Path $root -PathType Container)) {
+            continue
+        }
+
+        $matches = @(Get-ChildItem -Path $root -Filter 'Flash.exe' -File -Recurse -ErrorAction SilentlyContinue | Where-Object {
+            $_.FullName -match 'Adobe Flash CS6'
+        })
+
+        if ($matches.Count -gt 0) {
+            $best = $matches | Sort-Object FullName | Select-Object -First 1
+            return $best.FullName
+        }
+    }
+
+    return $null
+}
+
 function Resolve-FlashExe {
     param([string]$Candidate)
 
-    if ($Candidate -and (Test-Path $Candidate)) {
-        return (Resolve-Path $Candidate).Path
+    $resolvedCandidate = Resolve-FlashExeCandidate -Candidate $Candidate
+    if ($resolvedCandidate) {
+        Write-Host ('[HEAL] 使用传入的 Flash.exe 路径: {0}' -f $resolvedCandidate)
+        return $resolvedCandidate
     }
 
     try {
         $task = Get-ScheduledTask -TaskName 'FlashCS6Task' -ErrorAction Stop
         $taskAction = $task.Actions | Select-Object -First 1
-        if ($taskAction.Execute -and (Test-Path $taskAction.Execute)) {
-            return (Resolve-Path $taskAction.Execute).Path
+        $resolvedFromTask = Resolve-FlashExeCandidate -Candidate $taskAction.Execute
+        if ($resolvedFromTask) {
+            Write-Host ('[HEAL] 使用现有 FlashCS6Task 路径: {0}' -f $resolvedFromTask)
+            return $resolvedFromTask
+        }
+        if ($taskAction.Execute) {
+            Write-Host ('[WARN] 现有 FlashCS6Task 路径无效，忽略: {0}' -f $taskAction.Execute)
         }
     } catch {
     }
@@ -168,10 +228,17 @@ function Resolve-FlashExe {
         }
     }
 
+    $discovered = Find-FlashExeFromCommonRoots
+    if ($discovered) {
+        Write-Host ('[HEAL] 在常见目录中发现 Flash.exe: {0}' -f $discovered)
+        return (Resolve-Path $discovered).Path
+    }
+
     Write-Host '[INFO] 未能自动定位 Flash.exe。'
     $manual = Read-Host '请输入 Flash.exe 的完整路径'
-    if ($manual -and (Test-Path $manual)) {
-        return (Resolve-Path $manual).Path
+    $resolvedManual = Resolve-FlashExeCandidate -Candidate $manual
+    if ($resolvedManual) {
+        return $resolvedManual
     }
 
     throw '未找到 Flash.exe，请重新运行 setup 并提供有效路径。'

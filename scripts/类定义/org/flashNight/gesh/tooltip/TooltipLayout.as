@@ -5,6 +5,15 @@ import org.flashNight.gesh.string.StringUtils;
 
 class org.flashNight.gesh.tooltip.TooltipLayout {
 
+    private static var _scoreScratch:Object = {total: 0, maxLine: 0, lineCount: 0};
+    private static var _splitScratch:Object = {
+        needSplit: false,
+        descTotal: 0,
+        descMaxLine: 0,
+        descLineCount: 0,
+        introTotal: 0
+    };
+
     // === 智能分栏判定 ===
 
     /**
@@ -20,33 +29,18 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
      * @return Boolean 是否采用"分离显示"（true = 长内容分栏；false = 短内容合并）
      */
     public static function shouldSplitSmart(descriptionText:String, introText:String, options:Object):Boolean {
-        var threshold:Number = (options && options.threshold != undefined)
-            ? options.threshold
-            : TooltipConstants.SPLIT_THRESHOLD;
-        var totalMultiplier:Number = (options && options.totalMultiplier != undefined)
-            ? options.totalMultiplier
-            : TooltipConstants.SMART_TOTAL_MULTIPLIER;
-        var descDivisor:Number = (options && options.descDivisor != undefined)
-            ? options.descDivisor
-            : TooltipConstants.SMART_DESC_DIVISOR;
-
-        var descLength:Number = StringUtils.htmlLengthScore(descriptionText, null);
-        var totalLength:Number = descLength + StringUtils.htmlLengthScore(introText, null);
-
-        return totalLength > threshold * totalMultiplier && descLength > threshold / descDivisor;
+        return shouldSplitSmartWithScores(descriptionText, introText, options, _splitScratch).needSplit;
     }
 
     /**
      * 智能分栏判定 + 描述评分一次性计算（消除 renderItemTooltipSmart 中的重复扫描）。
      *
-     * 返回 {needSplit:Boolean, descTotal:Number, descMaxLine:Number}
+     * 返回 {needSplit:Boolean, descTotal:Number, descMaxLine:Number, descLineCount:Number, introTotal:Number}
      * 调用方可直接将 descTotal/descMaxLine 传入 estimateMainWidthFromScores 跳过二次扫描。
-     * 返回值复用静态对象 _splitResult，调用方需立即读取。
+     * 若传入 out，则结果写回该对象，供热路径复用。
      */
-    private static var _splitResult:Object = {needSplit: false, descTotal: 0, descMaxLine: 0};
-
-    public static function shouldSplitSmartWithScores(descriptionText:String, introText:String, options:Object):Object {
-        var out:Object = _splitResult;
+    public static function shouldSplitSmartWithScores(descriptionText:String, introText:String, options:Object, out:Object):Object {
+        if (out == undefined || out == null) out = {};
         var threshold:Number = (options && options.threshold != undefined)
             ? options.threshold
             : TooltipConstants.SPLIT_THRESHOLD;
@@ -58,18 +52,21 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
             : TooltipConstants.SMART_DESC_DIVISOR;
 
         // 描述文本：单次扫描同时拿到 total + maxLine
-        var descScores:Object = StringUtils.htmlScoresBoth(descriptionText, null);
+        var descScores:Object = StringUtils.htmlScoresBoth(descriptionText, null, _scoreScratch);
         var descTotal:Number = descScores.total;
         var descMaxLine:Number = descScores.maxLine;
+        var descLineCount:Number = descScores.lineCount;
 
         // intro 只需要 total
-        var introTotal:Number = StringUtils.htmlLengthScore(introText, null);
+        var introTotal:Number = StringUtils.htmlScoresBoth(introText, null, _scoreScratch).total;
 
         var totalLength:Number = descTotal + introTotal;
 
         out.needSplit = totalLength > threshold * totalMultiplier && descTotal > threshold / descDivisor;
         out.descTotal = descTotal;
         out.descMaxLine = descMaxLine;
+        out.descLineCount = descLineCount;
+        out.introTotal = introTotal;
         return out;
     }
 
@@ -81,7 +78,7 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         if (minW === undefined) minW = TooltipConstants.MIN_W;
         if (maxW === undefined) maxW = TooltipConstants.MAX_W;
 
-        var scores:Object = StringUtils.htmlScoresBoth(html, null);
+        var scores:Object = StringUtils.htmlScoresBoth(html, null, _scoreScratch);
         var totalBasedWidth:Number = scores.total * TooltipConstants.CHAR_AVG_WIDTH;
         var lineBasedWidth:Number = scores.maxLine * TooltipConstants.LINE_WIDTH_SCALE
                                   + TooltipConstants.LINE_GUTTER;
@@ -105,17 +102,14 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         if (minW === undefined) minW = TooltipConstants.MIN_W;
         if (maxW === undefined) maxW = TooltipConstants.MAX_W;
 
-        var scores:Object = StringUtils.htmlScoresBoth(html, null);
-        return estimateMainWidthFromScores(scores.total, scores.maxLine, html, minW, maxW);
+        var scores:Object = StringUtils.htmlScoresBoth(html, null, _scoreScratch);
+        return estimateMainWidthFromMetrics(scores.total, scores.maxLine, scores.lineCount, minW, maxW);
     }
 
     /**
-     * 从预计算的评分直接估算主框体宽度（避免重复扫描 HTML）。
-     * @param totalScore  htmlScoresBoth.total
-     * @param maxLineScore htmlScoresBoth.maxLine
-     * @param html 原始 HTML（仅用于 split("<BR>") 计算行数）
+     * 从预计算的评分与逻辑行数直接估算主框体宽度。
      */
-    public static function estimateMainWidthFromScores(totalScore:Number, maxLineScore:Number, html:String, minW:Number, maxW:Number):Number {
+    public static function estimateMainWidthFromMetrics(totalScore:Number, maxLineScore:Number, lineCount:Number, minW:Number, maxW:Number):Number {
         if (minW === undefined) minW = TooltipConstants.MIN_W;
         if (maxW === undefined) maxW = TooltipConstants.MAX_W;
 
@@ -128,14 +122,23 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         var lineBased:Number = maxLineScore * TooltipConstants.LINE_WIDTH_SCALE
                              + TooltipConstants.LINE_GUTTER;
 
-        var lineCount:Number = html.split("<BR>").length;
-        if (lineCount < 1) lineCount = 1;
+        if (lineCount == undefined || isNaN(lineCount) || lineCount < 1) lineCount = 1;
         var meanScore:Number = totalScore / lineCount;
         var t:Number = Math.min(1, meanScore / maxLineScore);
         var uniformity:Number = t * t * (3 - 2 * t);
 
         var widthEst:Number = lineBased * uniformity + totalBased * (1 - uniformity);
         return Math.max(minW, Math.min(widthEst, maxW));
+    }
+
+    /**
+     * 从预计算的评分直接估算主框体宽度（避免重复扫描 HTML）。
+     * @param totalScore  htmlScoresBoth.total
+     * @param maxLineScore htmlScoresBoth.maxLine
+     * @param html 原始 HTML（仅用于兼容旧调用方估算行数）
+     */
+    public static function estimateMainWidthFromScores(totalScore:Number, maxLineScore:Number, html:String, minW:Number, maxW:Number):Number {
+        return estimateMainWidthFromMetrics(totalScore, maxLineScore, StringUtils.htmlLogicalLineCount(html), minW, maxW);
     }
 
     // === 精确测量并 clamp 宽度（优先 TextField 真实测量，降级到双维度估算） ===

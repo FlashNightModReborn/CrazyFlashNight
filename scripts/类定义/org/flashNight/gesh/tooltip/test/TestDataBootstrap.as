@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.gesh.object.ObjectUtil;
 
 /**
  * TestDataBootstrap - 同步数据注入
@@ -9,9 +10,40 @@ import org.flashNight.arki.item.ItemUtil;
  */
 class org.flashNight.gesh.tooltip.test.TestDataBootstrap {
     private static var _initialized:Boolean = false;
+    private static var _fixtureConfig:Object = null;
+    private static var _fixtureItems:Array = null;
+    private static var _stateStack:Array = [];
 
     public static function init():Void {
         if (_initialized) return;
+        applyFixture();
+    }
+
+    public static function beginSandbox():Void {
+        _stateStack.push(captureState());
+        applyFixture();
+    }
+
+    public static function endSandbox():Void {
+        if (_stateStack.length <= 0) {
+            _initialized = false;
+            return;
+        }
+        restoreState(_stateStack.pop());
+    }
+
+    public static function runIsolated(runner:Function):Void {
+        beginSandbox();
+        runner();
+        endSandbox();
+    }
+
+    public static function isReady():Boolean {
+        return _initialized;
+    }
+
+    private static function ensureFixtureBuilt():Void {
+        if (_fixtureConfig != null && _fixtureItems != null) return;
 
         // 1. 注入 EquipmentConfig（对齐 data/equipment/equipment_config.xml 结构）
         // AS2 对象字面量不支持中文 key，需动态赋值
@@ -22,17 +54,17 @@ class org.flashNight.gesh.tooltip.test.TestDataBootstrap {
         tierToMat["data_2"] = "二阶复合防御组件";
         var defaultTier:Object = {};
         defaultTier["二阶"] = {level: 12, defence: 80};
-        EquipmentUtil.loadEquipmentConfig({
+        _fixtureConfig = {
             levelStatList: [1, 1, 1.06, 1.14, 1.24, 1.36, 1.5, 1.66, 1.84, 2.04, 2.26, 2.5, 2.76],
             decimalPropDict: {weight: 1, rout: 1, vampirism: 1},
             tierNameToKeyDict: tierNameToKey,
             tierToMaterialDict: tierToMat,
             defaultTierDataDict: defaultTier,
             tierDataList: ["data_2", "data_3"]
-        });
+        };
 
         // 2. 注入物品数据（最小代表性集合，对齐仓库 XML 结构）
-        var items:Array = [
+        _fixtureItems = [
             // 弹夹（GunStatsBuilder.build L38-39 需要 ItemUtil.getItemData(clipname)）
             {name: "手枪通用弹药", displayname: "手枪通用弹药",
              type: "消耗品", use: "弹夹", price: 50,
@@ -69,11 +101,56 @@ class org.flashNight.gesh.tooltip.test.TestDataBootstrap {
              type: "收集品", use: "情报", price: 0, maxvalue: 1,
              description: "情报描述"}
         ];
-        ItemUtil.loadItemData(items);
+    }
+
+    private static function applyFixture():Void {
+        ensureFixtureBuilt();
+        EquipmentUtil.loadEquipmentConfig(ObjectUtil.cloneFast(_fixtureConfig));
+        ItemUtil.loadItemData(ObjectUtil.cloneFast(_fixtureItems));
         _initialized = true;
     }
 
-    public static function isReady():Boolean {
-        return _initialized;
+    private static function captureState():Object {
+        var state:Object = {};
+        state.equipmentConfig = {
+            levelStatList: ObjectUtil.cloneFast(EquipmentUtil.levelStatList),
+            decimalPropDict: ObjectUtil.cloneFast(EquipmentUtil.decimalPropDict),
+            tierNameToKeyDict: ObjectUtil.cloneFast(EquipmentUtil.tierNameToKeyDict),
+            tierToMaterialDict: ObjectUtil.cloneFast(EquipmentUtil.tierToMaterialDict),
+            defaultTierDataDict: ObjectUtil.cloneFast(EquipmentUtil.defaultTierDataDict)
+        };
+        state.itemDataArray = (ItemUtil.itemDataArray != undefined && ItemUtil.itemDataArray != null)
+            ? ObjectUtil.cloneFast(ItemUtil.itemDataArray)
+            : null;
+        return state;
+    }
+
+    private static function restoreState(state:Object):Void {
+        if (state == null) {
+            _initialized = false;
+            return;
+        }
+
+        EquipmentUtil.loadEquipmentConfig(state.equipmentConfig);
+
+        if (state.itemDataArray != null) {
+            ItemUtil.loadItemData(state.itemDataArray);
+        } else {
+            ItemUtil.itemDataDict = null;
+            ItemUtil.itemDataArray = null;
+            ItemUtil.itemNamesByID = null;
+            ItemUtil.maxID = null;
+            ItemUtil.equipmentDict = null;
+            ItemUtil.materialDict = null;
+            ItemUtil.informationMaxValueDict = null;
+            ItemUtil.multiTierDict = null;
+            _root.物品属性列表 = null;
+            _root.物品属性数组 = null;
+            _root.id物品名对应表 = null;
+            _root.物品最大id = null;
+            _root.物品总数 = 0;
+        }
+
+        _initialized = false;
     }
 }

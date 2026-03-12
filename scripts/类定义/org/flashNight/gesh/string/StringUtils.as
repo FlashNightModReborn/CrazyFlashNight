@@ -1142,8 +1142,8 @@ class org.flashNight.gesh.string.StringUtils {
 
     /** 静态复用对象：decodeEntity 返回值 */
     private static var _entResult:Object = {code: 0, advance: 0};
-    /** 静态复用对象：readTagName 返回值 */
-    private static var _tagResult:Object = {name: "", jumpTo: 0};
+    /** 静态复用对象：标签扫描返回值 */
+    private static var _tagResult:Object = {isNewline: false, jumpTo: 0};
 
     /**
      * 解析 HTML 实体，结果写入 _entResult（零分配）
@@ -1191,10 +1191,15 @@ class org.flashNight.gesh.string.StringUtils {
         r.code = -2; r.advance = 1; return r;
     }
 
+    /** ASCII 小写化（仅处理 A-Z） */
+    private static function _asciiLower(code:Number):Number {
+        return (code >= 65 && code <= 90) ? (code + 32) : code;
+    }
+
     /**
-     * 读取 HTML 标签名（小写），结果写入 _tagResult（零分配）
+     * 扫描 HTML 标签，返回是否为逻辑换行标签以及跳转位置（零分配）
      */
-    private static function _readTagName(s:String, at:Number, sLen:Number):Object {
+    private static function _readTagInfo(s:String, at:Number, sLen:Number):Object {
         var r:Object = _tagResult;
         var j:Number = at + 1;
         var c:Number;
@@ -1202,7 +1207,7 @@ class org.flashNight.gesh.string.StringUtils {
             c = s.charCodeAt(j);
             if (c == 32 || c == 9 || c == 10 || c == 13) j++; else break;
         }
-        if (j < sLen && s.charAt(j) == "/") j++;
+        if (j < sLen && s.charCodeAt(j) == 47) j++;
         while (j < sLen) {
             c = s.charCodeAt(j);
             if (c == 32 || c == 9) j++; else break;
@@ -1213,9 +1218,47 @@ class org.flashNight.gesh.string.StringUtils {
             if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || (c >= 48 && c <= 57)) j++;
             else break;
         }
-        r.name = s.substring(start, j).toLowerCase();
-        while (j < sLen && s.charAt(j) != ">") j++;
+        var nameLen:Number = j - start;
+        var isNewline:Boolean = false;
+        var c0:Number;
+        var c1:Number;
+        var c2:Number;
+        var c3:Number;
+        var c4:Number;
+
+        if (nameLen == 1) {
+            c0 = _asciiLower(s.charCodeAt(start));
+            isNewline = (c0 == 112);
+        } else if (nameLen == 2) {
+            c0 = _asciiLower(s.charCodeAt(start));
+            c1 = _asciiLower(s.charCodeAt(start + 1));
+            isNewline = (c0 == 98 && c1 == 114) ||
+                        (c0 == 108 && c1 == 105) ||
+                        (c0 == 117 && c1 == 108) ||
+                        (c0 == 111 && c1 == 108) ||
+                        (c0 == 116 && c1 == 114) ||
+                        (c0 == 104 && c1 >= 49 && c1 <= 54);
+        } else if (nameLen == 3) {
+            c0 = _asciiLower(s.charCodeAt(start));
+            c1 = _asciiLower(s.charCodeAt(start + 1));
+            c2 = _asciiLower(s.charCodeAt(start + 2));
+            isNewline = (c0 == 100 && c1 == 105 && c2 == 118);
+        } else if (nameLen == 5) {
+            c0 = _asciiLower(s.charCodeAt(start));
+            c1 = _asciiLower(s.charCodeAt(start + 1));
+            c2 = _asciiLower(s.charCodeAt(start + 2));
+            c3 = _asciiLower(s.charCodeAt(start + 3));
+            c4 = _asciiLower(s.charCodeAt(start + 4));
+            isNewline =
+                (c0 == 116 && c1 == 97 && c2 == 98 && c3 == 108 && c4 == 101) ||
+                (c0 == 116 && c1 == 104 && c2 == 101 && c3 == 97 && c4 == 100) ||
+                (c0 == 116 && c1 == 98 && c2 == 111 && c3 == 100 && c4 == 121) ||
+                (c0 == 116 && c1 == 102 && c2 == 111 && c3 == 111 && c4 == 116);
+        }
+
+        while (j < sLen && s.charCodeAt(j) != 62) j++;
         if (j < sLen) j++;
+        r.isNewline = isNewline;
         r.jumpTo = j;
         return r;
     }
@@ -1227,8 +1270,8 @@ class org.flashNight.gesh.string.StringUtils {
                tn == "tr" || tn == "table" || tn == "thead" || tn == "tbody" || tn == "tfoot";
     }
 
-    /** 静态复用对象：htmlScoresBoth 返回值 */
-    private static var _scoresResult:Object = {total: 0, maxLine: 0};
+    /** 供兼容包装复用的评分对象，避免 wrapper 额外分配 */
+    private static var _scoresScratch:Object = {total: 0, maxLine: 0, lineCount: 0};
 
     // ══════════════════════════════════════════════════════════════
     // 公开 API
@@ -1244,12 +1287,13 @@ class org.flashNight.gesh.string.StringUtils {
      *
      * @param input   HTML 字符串
      * @param weights (可选) 权重表
-     * @return {total:Number, maxLine:Number}（复用静态对象，调用方需立即读取）
+     * @param out (可选) 输出对象；传入后将原地写入，便于热路径复用
+     * @return {total:Number, maxLine:Number, lineCount:Number}
      */
-    public static function htmlScoresBoth(input:String, weights:Object):Object {
-        var out:Object = _scoresResult;
+    public static function htmlScoresBoth(input:String, weights:Object, out:Object):Object {
+        if (out == undefined || out == null) out = {};
         if (input == null || input == undefined) {
-            out.total = 0; out.maxLine = 0; return out;
+            out.total = 0; out.maxLine = 0; out.lineCount = 0; return out;
         }
 
         // 权重（总量用 newline=0，行最大用 newline→flushLine）
@@ -1271,6 +1315,7 @@ class org.flashNight.gesh.string.StringUtils {
         var s:String = String(input);
         var sLen:Number = length(s);
         var i:Number = 0;
+        var lineCount:Number = 1;
 
         // 总量维度
         var totalScore:Number = 0;
@@ -1287,14 +1332,15 @@ class org.flashNight.gesh.string.StringUtils {
 
             // HTML 标签
             if (code == 60) {
-                var tag:Object = _readTagName(s, i, sLen);
-                if (_isNewlineTag(tag.name)) {
+                var tag:Object = _readTagInfo(s, i, sLen);
+                if (tag.isNewline) {
                     // 总量：换行计分
                     if (nlCountT < 2) totalScore += wNewline;
                     nlCountT++; prevSpaceT = false;
                     // 行最大：flush
                     if (lineScore > maxLineScore) maxLineScore = lineScore;
                     lineScore = 0; prevSpaceL = false;
+                    lineCount++;
                 }
                 i = tag.jumpTo;
                 continue;
@@ -1324,6 +1370,7 @@ class org.flashNight.gesh.string.StringUtils {
                         nlCountT++; prevSpaceT = false;
                         if (lineScore > maxLineScore) maxLineScore = lineScore;
                         lineScore = 0; prevSpaceL = false;
+                        lineCount++;
                     } else if (ec == -1) {
                         // emoji
                         nlCountT = 0; prevSpaceT = false;
@@ -1353,6 +1400,7 @@ class org.flashNight.gesh.string.StringUtils {
                 nlCountT++; prevSpaceT = false;
                 if (lineScore > maxLineScore) maxLineScore = lineScore;
                 lineScore = 0; prevSpaceL = false;
+                lineCount++;
                 i++; continue;
             }
 
@@ -1394,6 +1442,7 @@ class org.flashNight.gesh.string.StringUtils {
 
         out.total = totalScore;
         out.maxLine = maxLineScore;
+        out.lineCount = lineCount;
         return out;
     }
 
@@ -1402,7 +1451,7 @@ class org.flashNight.gesh.string.StringUtils {
      * 向后兼容包装，内部委托 htmlScoresBoth。
      */
     public static function htmlMaxLineScore(input:String, weights:Object):Number {
-        return htmlScoresBoth(input, weights).maxLine;
+        return htmlScoresBoth(input, weights, _scoresScratch).maxLine;
     }
 
     /**
@@ -1410,7 +1459,45 @@ class org.flashNight.gesh.string.StringUtils {
      * 向后兼容包装，内部委托 htmlScoresBoth。
      */
     public static function htmlLengthScore(input:String, weights:Object):Number {
-        return htmlScoresBoth(input, weights).total;
+        return htmlScoresBoth(input, weights, _scoresScratch).total;
+    }
+
+    /**
+     * 统计 HTML/纯文本中的逻辑行数。
+     * 规则与 htmlScoresBoth 的换行识别保持一致，供预计算评分后的宽度估算复用。
+     */
+    public static function htmlLogicalLineCount(input:String):Number {
+        if (input == null || input == undefined) return 1;
+
+        var s:String = String(input);
+        var sLen:Number = length(s);
+        if (sLen == 0) return 1;
+
+        var i:Number = 0;
+        var lineCount:Number = 1;
+
+        while (i < sLen) {
+            var code:Number = s.charCodeAt(i);
+
+            if (code == 60) {
+                var tag:Object = _readTagInfo(s, i, sLen);
+                if (tag.isNewline) lineCount++;
+                i = tag.jumpTo;
+                continue;
+            }
+
+            if (code == 38) {
+                var ent:Object = _decodeEntity(s, i, sLen);
+                if (ent.code == 10 || ent.code == 13) lineCount++;
+                i += ent.advance;
+                continue;
+            }
+
+            if (code == 10 || code == 13) lineCount++;
+            i++;
+        }
+
+        return lineCount;
     }
 
 

@@ -53,6 +53,14 @@ import org.flashNight.gesh.string.StringUtils;
  */
 class org.flashNight.gesh.tooltip.TooltipComposer {
 
+  private static var _renderSplitScratch:Object = {
+    needSplit: false,
+    descTotal: 0,
+    descMaxLine: 0,
+    descLineCount: 0,
+    introTotal: 0
+  };
+
   // ──────────────── 基础段拼装 ────────────────
 
   /**
@@ -278,13 +286,13 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
     TooltipLayout.hideTooltip();
 
     // 智能分栏判定 + 描述评分一次性计算（desc HTML 只扫描 1 次，而非原先的 3 次）
-    var splitInfo:Object = TooltipLayout.shouldSplitSmartWithScores(descriptionText, introText, options);
+    var splitInfo:Object = TooltipLayout.shouldSplitSmartWithScores(descriptionText, introText, options, _renderSplitScratch);
 
     if (splitInfo.needSplit) {
       // 长内容策略：分离显示
       // 直接使用预计算的评分，跳过 estimateMainWidth 内部的重复扫描
-      var calculatedWidth:Number = TooltipLayout.estimateMainWidthFromScores(
-          splitInfo.descTotal, splitInfo.descMaxLine, descriptionText, undefined, undefined);
+      var calculatedWidth:Number = TooltipLayout.estimateMainWidthFromMetrics(
+          splitInfo.descTotal, splitInfo.descMaxLine, splitInfo.descLineCount, undefined, undefined);
       // 屏幕感知上限：确保双栏合计不超出 Stage 宽度（为简介面板保留 BASE_NUM + margin）
       var screenMax:Number = Stage.width - TooltipConstants.BASE_NUM - TooltipConstants.DUAL_PANEL_MARGIN;
       if (screenMax > TooltipConstants.MIN_W) calculatedWidth = Math.min(calculatedWidth, screenMax);

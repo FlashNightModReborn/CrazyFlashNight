@@ -21,6 +21,14 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
     private static var testsRun:Number = 0;
     private static var testsPassed:Number = 0;
     private static var testsFailed:Number = 0;
+    private static var _scoreScratch:Object = {total: 0, maxLine: 0, lineCount: 0};
+    private static var _splitScratch:Object = {
+        needSplit: false,
+        descTotal: 0,
+        descMaxLine: 0,
+        descLineCount: 0,
+        introTotal: 0
+    };
 
     private static function assert(cond:Boolean, msg:String):Void {
         testsRun++;
@@ -60,7 +68,7 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
 
         bench_htmlScoresBoth_short();
         bench_htmlScoresBoth_long();
-        bench_htmlScoresBoth_vs_separate();
+        bench_htmlScoresBoth_new_vs_scratch();
         bench_shouldSplitSmartWithScores();
         bench_estimateMainWidth();
         bench_renderItemTooltipSmart();
@@ -104,36 +112,32 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         assert(r.maxLine > 0, "bench long: maxLine > 0");
     }
 
-    // === 合并 vs 分开调用对比 ===
-    private static function bench_htmlScoresBoth_vs_separate():Void {
+    // === 默认返回对象 vs 热路径 scratch 复用 ===
+    private static function bench_htmlScoresBoth_new_vs_scratch():Void {
         var html:String = buildLongHtml();
         var N:Number = 200;
 
-        // 合并调用
+        // 默认路径：返回独立结果对象
         var t0:Number = getTimer();
         for (var i:Number = 0; i < N; i++) {
             StringUtils.htmlScoresBoth(html, null);
         }
-        var combinedMs:Number = getTimer() - t0;
+        var newObjectMs:Number = getTimer() - t0;
 
-        // 分开调用（旧路径：2 次独立扫描）
+        // 热路径：复用输出对象，避免额外分配
         var t1:Number = getTimer();
         for (var j:Number = 0; j < N; j++) {
-            StringUtils.htmlLengthScore(html, null);
-            StringUtils.htmlMaxLineScore(html, null);
+            StringUtils.htmlScoresBoth(html, null, _scoreScratch);
         }
-        var separateMs:Number = getTimer() - t1;
+        var scratchMs:Number = getTimer() - t1;
 
-        trace("  combined x" + N + " = " + combinedMs + "ms vs separate x" + N + " = " + separateMs + "ms");
+        trace("  htmlScoresBoth new x" + N + " = " + newObjectMs + "ms vs scratch x" + N + " = " + scratchMs + "ms");
 
-        // 合并路径现在是委托调用，不应明显更慢
-        // （旧的 separate 其实每次调用 htmlScoresBoth 再取一个字段，overhead 约 2x）
-        // 验证一致性
-        var combined:Object = StringUtils.htmlScoresBoth(html, null);
-        var sepTotal:Number = StringUtils.htmlLengthScore(html, null);
-        var sepMaxLine:Number = StringUtils.htmlMaxLineScore(html, null);
-        assert(combined.total == sepTotal, "bench consistency: total matches");
-        assert(combined.maxLine == sepMaxLine, "bench consistency: maxLine matches");
+        var fresh:Object = StringUtils.htmlScoresBoth(html, null);
+        var scratch:Object = StringUtils.htmlScoresBoth(html, null, _scoreScratch);
+        assert(fresh.total == scratch.total, "bench htmlScoresBoth: total matches scratch");
+        assert(fresh.maxLine == scratch.maxLine, "bench htmlScoresBoth: maxLine matches scratch");
+        assert(fresh.lineCount == scratch.lineCount, "bench htmlScoresBoth: lineCount matches scratch");
     }
 
     // === shouldSplitSmartWithScores 基准 ===
@@ -142,26 +146,26 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         var intro:String = buildShortHtml();
         var N:Number = 200;
 
-        // 新路径：WithScores
+        // 默认快照路径
         var t0:Number = getTimer();
         for (var i:Number = 0; i < N; i++) {
             TooltipLayout.shouldSplitSmartWithScores(desc, intro, null);
         }
         var newMs:Number = getTimer() - t0;
 
-        // 旧路径：shouldSplitSmart（不返回评分，后续需重新扫描）
+        // 热路径：复用输出对象
         var t1:Number = getTimer();
         for (var j:Number = 0; j < N; j++) {
-            TooltipLayout.shouldSplitSmart(desc, intro, null);
+            TooltipLayout.shouldSplitSmartWithScores(desc, intro, null, _splitScratch);
         }
-        var oldMs:Number = getTimer() - t1;
+        var scratchMs:Number = getTimer() - t1;
 
-        trace("  shouldSplitSmartWithScores x" + N + " = " + newMs + "ms vs shouldSplitSmart x" + N + " = " + oldMs + "ms");
+        trace("  shouldSplitSmartWithScores new x" + N + " = " + newMs + "ms vs scratch x" + N + " = " + scratchMs + "ms");
 
-        // 验证结果一致
         var newResult:Object = TooltipLayout.shouldSplitSmartWithScores(desc, intro, null);
-        var oldResult:Boolean = TooltipLayout.shouldSplitSmart(desc, intro, null);
-        assert(newResult.needSplit == oldResult, "bench split: results consistent");
+        var scratchResult:Object = TooltipLayout.shouldSplitSmartWithScores(desc, intro, null, _splitScratch);
+        assert(newResult.needSplit == scratchResult.needSplit, "bench split: needSplit consistent");
+        assert(newResult.descLineCount == scratchResult.descLineCount, "bench split: lineCount consistent");
     }
 
     // === estimateMainWidth 基准 ===
@@ -176,7 +180,7 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         }
         var oldMs:Number = getTimer() - t0;
 
-        // 新路径：预计算评分 + estimateMainWidthFromScores
+        // 兼容路径：预计算评分 + HTML 行数扫描
         var scores:Object = StringUtils.htmlScoresBoth(html, null);
         var st:Number = scores.total;
         var sm:Number = scores.maxLine;
@@ -184,14 +188,23 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         for (var j:Number = 0; j < N; j++) {
             TooltipLayout.estimateMainWidthFromScores(st, sm, html, undefined, undefined);
         }
-        var newMs:Number = getTimer() - t1;
+        var compatMs:Number = getTimer() - t1;
 
-        trace("  estimateMainWidth x" + N + " = " + oldMs + "ms vs fromScores x" + N + " = " + newMs + "ms");
+        // 最优路径：total/maxLine/lineCount 全部预计算
+        var lineCount:Number = scores.lineCount;
+        var t2:Number = getTimer();
+        for (var k:Number = 0; k < N; k++) {
+            TooltipLayout.estimateMainWidthFromMetrics(st, sm, lineCount, undefined, undefined);
+        }
+        var metricsMs:Number = getTimer() - t2;
 
-        // 结果一致
+        trace("  estimateMainWidth x" + N + " = " + oldMs + "ms vs fromScores x" + N + " = " + compatMs + "ms vs fromMetrics x" + N + " = " + metricsMs + "ms");
+
         var oldW:Number = TooltipLayout.estimateMainWidth(html, undefined, undefined);
-        var newW:Number = TooltipLayout.estimateMainWidthFromScores(st, sm, html, undefined, undefined);
-        assert(oldW == newW, "bench mainWidth: results match");
+        var compatW:Number = TooltipLayout.estimateMainWidthFromScores(st, sm, html, undefined, undefined);
+        var metricsW:Number = TooltipLayout.estimateMainWidthFromMetrics(st, sm, lineCount, undefined, undefined);
+        assert(oldW == compatW, "bench mainWidth: compat matches");
+        assert(oldW == metricsW, "bench mainWidth: metrics matches");
     }
 
     // === 端到端：renderItemTooltipSmart 基准 ===
