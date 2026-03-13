@@ -78,8 +78,11 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     /** 默认残影数量（当调用接口时若未传入 shadowCount 则使用该值） */
     private var _defaultShadowCount:Number;
     
-    /** 存储所有参与渐隐动画的画布（便于后续统一处理） */
-    private var _fadingCanvases:Array;
+    /** 复用的渐隐回调，避免每次取画布都创建新委托 */
+    private var _fadeCallback:Function;
+
+    /** drawShapes 用的合并点 scratch，保留原有绘制语义但避免 concat 分配 */
+    private var _mergedPointsScratch:Array;
 
     // ==================== 构造函数 ====================
     
@@ -89,7 +92,8 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     public function VectorAfterimageRenderer() {
         _defaultShadowCount = DEFAULT_SHADOW_COUNT;
         _config = {};
-        _fadingCanvases = [];
+        _fadeCallback = Delegate.create1(this, onFadeUpdate);
+        _mergedPointsScratch = [];
         
         // 预先计算默认配置参数
         var frameDuration:Number = EnhancedCooldownWheel.I().每帧毫秒;
@@ -136,6 +140,8 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
                     EnhancedCooldownWheel.I().removeTask(this.fadeTask);
                 }
                 this._visible = false;
+                this.blendMode = "normal";
+                this._configKey = null;
                 if (this.clear != undefined) {
                     this.clear();
                 }
@@ -202,13 +208,24 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         var canvas:MovieClip = getAvailableCanvas(shadowCount);
         setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
         
-        // 合并所有形状的点集
-        var mergedPoints:Array = [];
-        
+        // 保留既有“合并后一次闭合”的绘制语义，仅移除 concat 带来的分配开销
+        var mergedPoints:Array = _mergedPointsScratch;
+        var writeIndex:Number = 0;
         var i:Number = 0;
+        var shape:Array;
+        var j:Number;
+        var shapeLen:Number;
         do {
-            mergedPoints = mergedPoints.concat(shapes[i]);
+            shape = shapes[i];
+            if (shape != undefined) {
+                shapeLen = shape.length;
+                for (j = 0; j < shapeLen; j++) {
+                    mergedPoints[writeIndex] = shape[j];
+                    writeIndex++;
+                }
+            }
         } while (++i < len);
+        mergedPoints.length = writeIndex;
         
         renderShape(canvas, mergedPoints, fillColor, fillAlpha);
     }
@@ -386,8 +403,6 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         _currentCanvasByConfig = {};
         // 重新初始化对象池
         initCanvasPool();
-        // 清空渐隐画布集合
-        _fadingCanvases = [];
     }
     
     /**
@@ -410,10 +425,9 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
             return _currentCanvasByConfig[key];
         }
         var canvas:MovieClip = _canvasPool.getObject();
-        initializeCanvas(canvas, shadowCount);
+        initializeCanvas(canvas, shadowCount, "normal");
         canvas._configKey = key;
         _currentCanvasByConfig[key] = canvas;
-        _fadingCanvases.push(canvas);
         return canvas;
     }
 
@@ -429,11 +443,9 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
             return _currentCanvasByConfig[key];
         }
         var canvas:MovieClip = _canvasPool.getObject();
-        initializeCanvas(canvas, shadowCount);
-        canvas.blendMode = "add";
+        initializeCanvas(canvas, shadowCount, "add");
         canvas._configKey = key;
         _currentCanvasByConfig[key] = canvas;
-        _fadingCanvases.push(canvas);
         return canvas;
     }
     
@@ -442,11 +454,12 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      * @param canvas 目标 MovieClip 画布对象
      * @param shadowCount 指定的残影数量配置
      */
-    private function initializeCanvas(canvas:MovieClip, shadowCount:Number):Void {
+    private function initializeCanvas(canvas:MovieClip, shadowCount:Number, blendMode:String):Void {
         canvas._visible = true;
         canvas._alpha = BASE_ALPHA;
         canvas.cycleCount = 0;
         canvas.shadowCount = shadowCount;
+        canvas.blendMode = (blendMode == undefined) ? "normal" : blendMode;
         
         // 获取或生成当前残影配置参数
         var configObj:Object = _config[shadowCount];
@@ -469,8 +482,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
             EnhancedCooldownWheel.I().removeTask(canvas.fadeTask);
         }
         // 绑定 onFadeUpdate 方法，添加渐隐任务（使用增强时间轮替换原帧计时器）
-        var callback:Function = Delegate.create1(this, onFadeUpdate);
-        canvas.fadeTask = EnhancedCooldownWheel.I().addTask(callback, configObj.refreshInterval, shadowCount, canvas);
+        canvas.fadeTask = EnhancedCooldownWheel.I().addTask(_fadeCallback, configObj.refreshInterval, shadowCount, canvas);
     }
     
     /**
@@ -510,7 +522,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         if (_currentCanvasByConfig[canvas._configKey] == canvas) {
             _currentCanvasByConfig[canvas._configKey] = null;
         }
-        if (_canvasPool.isPoolFull()) {
+        if (!_canvasPool.isPoolFull()) {
             _canvasPool.releaseObject(canvas);
         } else {
             canvas.__isDestroyed = true;
@@ -542,14 +554,16 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         var len:Number = points.length;
         if (len < 2) return;
         canvas.beginFill(fillColor || 0, fillAlpha || 100);
-        var i:Number = 1;
         var tempPoint:Vector = points[0];
         canvas.moveTo(tempPoint.x, tempPoint.y);
-        do {
-            tempPoint = points[i % len];
+        var i:Number = 1;
+        while (i < len) {
+            tempPoint = points[i];
             canvas.lineTo(tempPoint.x, tempPoint.y);
             i++;
-        } while (i <= len);
+        }
+        tempPoint = points[0];
+        canvas.lineTo(tempPoint.x, tempPoint.y);
         canvas.endFill();
     }
     

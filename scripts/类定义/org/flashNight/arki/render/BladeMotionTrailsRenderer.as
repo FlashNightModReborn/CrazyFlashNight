@@ -31,6 +31,11 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
     // --- 静态复用对象，避免每帧 GC 分配 ---
     private static var _tipPt:Object  = {x: 0, y: 0};
     private static var _basePt:Object = {x: 0, y: 0};
+    private static var _clipScratch:Array = [];
+    private static var _rectScratch:Array = [];
+    private static var _clipXScratch:Array = [];
+    private static var _clipYScratch:Array = [];
+    private static var _trailScratch:Array = [];
 
     private function BladeMotionTrailsRenderer() {
     }
@@ -70,7 +75,7 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
      * @param map           目标坐标系参考对象
      * @param maxPositions  最大采样刀口数
      * @param trail         输出数组，接收 {edge1:Vector, edge2:Vector}
-     * @param validIndexes  输出数组，接收有效刀口序号
+     * @returns             有效刀口序号拼接的 bladeId；无有效刀口时返回 null
      */
     /** 膨胀系数上限（安全封顶，正常武器通常不会触及） */
     private static var EDGE_SPREAD:Number = 2.5;
@@ -100,119 +105,134 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
      */
     private static function _sampleBladeEdges(
         mc:MovieClip, map:MovieClip, maxPositions:Number,
-        trail:Array, validIndexes:Array
-    ):Void {
+        trail:Array
+    ):String {
         var tipPt:Object  = _tipPt;
         var basePt:Object = _basePt;
+        var clips:Array = _clipScratch;
+        var localRects:Array = _rectScratch;
+        var clipX:Array = _clipXScratch;
+        var clipY:Array = _clipYScratch;
+        var sqrt:Function = Math.sqrt;
         var current:MovieClip;
         var rect:Object;
         var cx:Number, cy:Number;
+        var centerPX:Number, centerPY:Number;
         var e1x:Number, e1y:Number;
+        var spread:Number;
+        var bladeId:String = "";
 
         // ==== Phase 1: 收集有效刀口位置 ====
-        var clips:Array = [];
-        var localRects:Array = [];
         var n:Number = 0;
+        var minBladeX:Number = 1e8;
+        var maxBladeX:Number = -1e8;
+        var minBladeY:Number = 1e8;
+        var maxBladeY:Number = -1e8;
+        var lo:Number, hi:Number;
 
         for (var i:Number = 1; i <= maxPositions; i++) {
             current = mc["刀口位置" + i];
             if (current && current._x != undefined) {
-                validIndexes.push(i);
+                bladeId += String(i);
                 clips[n] = current;
-                localRects[n] = current.getRect(current);
+                clipX[n] = current._x;
+                clipY[n] = current._y;
+                rect = current.getRect(current);
+                localRects[n] = rect;
+
+                lo = clipX[n] + rect.xMin;
+                hi = clipX[n] + rect.xMax;
+                if (lo < minBladeX) minBladeX = lo;
+                if (hi > maxBladeX) maxBladeX = hi;
+
+                lo = clipY[n] + rect.yMin;
+                hi = clipY[n] + rect.yMax;
+                if (lo < minBladeY) minBladeY = lo;
+                if (hi > maxBladeY) maxBladeY = hi;
                 n++;
             }
         }
-        if (n == 0) return;
+        if (n == 0) return null;
+        clips.length = n;
+        localRects.length = n;
+        clipX.length = n;
+        clipY.length = n;
 
-        // ==== Phase 2: 自适应膨胀系数 ====
-        var spreads:Array = [];
+        // ==== Phase 2 + 3: 计算膨胀系数并采样 ====
         var maxSpread:Number = EDGE_SPREAD;
         var minSpread:Number = MIN_SPREAD;
+        var expandLeft:Number, expandRight:Number;
+        var expandUp:Number, expandDown:Number;
+        var sLeft:Number, sRight:Number;
+        var sUp:Number, sDown:Number;
+        var hw:Number, hh:Number;
+        var naturalHD:Number;
+        var dx:Number, dy:Number, dist:Number, nearDist:Number;
         var j:Number;
-
-        // --- 2A: 刀身自然范围（各位置碰撞箱 spread=1 的父空间 Y 并集）---
-        var minBladeY:Number = 1e8;
-        var maxBladeY:Number = -1e8;
-        var lo:Number, hi:Number;
+        var k:Number = 0;
         for (j = 0; j < n; j++) {
+            current = clips[j];
             rect = localRects[j];
-            lo = clips[j]._y + rect.yMin;
-            hi = clips[j]._y + rect.yMax;
-            if (lo < minBladeY) minBladeY = lo;
-            if (hi > maxBladeY) maxBladeY = hi;
-        }
 
-        // --- 2B: 相邻间距约束（黄金比例填充）---
-        // spread = halfNeighborDist / naturalHalfDiag * φ
-        // φ ≈ 0.618：膨胀到间隙的 61.8%，留出 38.2% 负空间暗示运动感。
-        // 对角线综合 X/Y 两轴贡献，几何上匹配对角采样方向。
-        if (n == 1) {
-            spreads[0] = maxSpread;
-        } else {
-            rect = localRects[0];
-            var hw:Number = (rect.xMax - rect.xMin) * 0.5;
-            var hh:Number = (rect.yMax - rect.yMin) * 0.5;
-            var naturalHD:Number = Math.sqrt(hw * hw + hh * hh);
-
-            if (naturalHD < 0.1) {
-                for (j = 0; j < n; j++) spreads[j] = maxSpread;
+            // --- 2B: 相邻间距约束（黄金比例填充）---
+            if (n == 1) {
+                spread = maxSpread;
             } else {
-                var dx:Number, dy:Number, dist:Number, nearDist:Number, s:Number;
-                for (j = 0; j < n; j++) {
+                hw = (rect.xMax - rect.xMin) * 0.5;
+                hh = (rect.yMax - rect.yMin) * 0.5;
+                naturalHD = sqrt(hw * hw + hh * hh);
+                if (naturalHD < 0.1) {
+                    spread = maxSpread;
+                } else {
                     nearDist = 1e8;
                     if (j > 0) {
-                        dx = clips[j]._x - clips[j - 1]._x;
-                        dy = clips[j]._y - clips[j - 1]._y;
-                        dist = Math.sqrt(dx * dx + dy * dy);
+                        dx = clipX[j] - clipX[j - 1];
+                        dy = clipY[j] - clipY[j - 1];
+                        dist = sqrt(dx * dx + dy * dy);
                         if (dist < nearDist) nearDist = dist;
                     }
                     if (j < n - 1) {
-                        dx = clips[j + 1]._x - clips[j]._x;
-                        dy = clips[j + 1]._y - clips[j]._y;
-                        dist = Math.sqrt(dx * dx + dy * dy);
+                        dx = clipX[j + 1] - clipX[j];
+                        dy = clipY[j + 1] - clipY[j];
+                        dist = sqrt(dx * dx + dy * dy);
                         if (dist < nearDist) nearDist = dist;
                     }
-                    s = (nearDist * 0.5) / naturalHD * FILL_RATIO;
-                    if (s > maxSpread) s = maxSpread;
-                    spreads[j] = s;
+                    spread = (nearDist * 0.5) / naturalHD * FILL_RATIO;
+                    if (spread > maxSpread) spread = maxSpread;
                 }
             }
-        }
 
-        // --- 2C: 刀身范围约束（限制膨胀不超出自然边界）---
-        var centerPY:Number, expandUp:Number, expandDown:Number;
-        var sUp:Number, sDown:Number;
-        for (j = 0; j < n; j++) {
-            rect = localRects[j];
+            // --- 2C: 刀身范围约束（限制膨胀不超出自然边界并集）---
             cy = (rect.yMin + rect.yMax) * 0.5;
-            centerPY = clips[j]._y + cy;
+            cx = (rect.xMin + rect.xMax) * 0.5;
+            centerPX = clipX[j] + cx;
+            centerPY = clipY[j] + cy;
+
+            expandLeft = cx - rect.xMin;
+            if (expandLeft > 0.1) {
+                sLeft = (centerPX - minBladeX) / expandLeft;
+                if (sLeft < spread) spread = sLeft;
+            }
+            expandRight = rect.xMax - cx;
+            if (expandRight > 0.1) {
+                sRight = (maxBladeX - centerPX) / expandRight;
+                if (sRight < spread) spread = sRight;
+            }
 
             // 向 yMax（刀口方向）的膨胀不超过刀身上界
             expandUp = rect.yMax - cy;
             if (expandUp > 0.1) {
                 sUp = (maxBladeY - centerPY) / expandUp;
-                if (sUp < spreads[j]) spreads[j] = sUp;
+                if (sUp < spread) spread = sUp;
             }
             // 向 yMin（刀柄方向）的膨胀不超过刀身下界
             expandDown = cy - rect.yMin;
             if (expandDown > 0.1) {
                 sDown = (centerPY - minBladeY) / expandDown;
-                if (sDown < spreads[j]) spreads[j] = sDown;
+                if (sDown < spread) spread = sDown;
             }
             // 最终下限
-            if (spreads[j] < minSpread) spreads[j] = minSpread;
-        }
-
-        // ==== Phase 3: 按自适应系数采样边缘 ====
-        var spread:Number;
-        for (var k:Number = 0; k < n; k++) {
-            current = clips[k];
-            rect = localRects[k];
-            spread = spreads[k];
-
-            cx = (rect.xMin + rect.xMax) * 0.5;
-            cy = (rect.yMin + rect.yMax) * 0.5;
+            if (spread < minSpread) spread = minSpread;
 
             // 刀口侧：从中心向 (xMin, yMax) 方向扩展
             tipPt.x = cx + (rect.xMin - cx) * spread;
@@ -228,11 +248,17 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
             current.localToGlobal(basePt);
             map.globalToLocal(basePt);
 
-            trail.push({
-                edge1: new Vector(e1x, e1y),
-                edge2: new Vector(basePt.x, basePt.y)
-            });
+            var edge:Object = trail[k];
+            if (edge == undefined) {
+                edge = {};
+                trail[k] = edge;
+            }
+            edge.edge1 = new Vector(e1x, e1y);
+            edge.edge2 = new Vector(basePt.x, basePt.y);
+            k++;
         }
+        trail.length = k;
+        return bladeId;
     }
 
     // ---------------------------
@@ -242,34 +268,35 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
     /** 高性能：localToGlobal 精确采样，5个刀口位置 */
     private static function processBladeTrailHigh(target:MovieClip, mc:MovieClip, style:String):Void {
         var map:MovieClip = _root.gameworld.deadbody;
-        var trail:Array = [];
-        var validIndexes:Array = [];
+        var trail:Array = _trailScratch;
+        var bladeId:String;
 
-        _sampleBladeEdges(mc, map, 5, trail, validIndexes);
-        if (trail.length == 0) return;
+        bladeId = _sampleBladeEdges(mc, map, 5, trail);
+        if (bladeId == null) return;
 
-        var key:String = target._name + target.version + validIndexes.join("");
+        var key:String = target._name + target.version + bladeId;
         TrailRenderer.getInstance().addTrailData(key, trail, style);
     }
 
     /** 中性能：localToGlobal 精确采样，4个刀口位置 */
     private static function processBladeTrailMedium(target:MovieClip, mc:MovieClip, style:String):Void {
         var map:MovieClip = _root.gameworld.deadbody;
-        var trail:Array = [];
-        var validIndexes:Array = [];
+        var trail:Array = _trailScratch;
+        var bladeId:String;
 
-        _sampleBladeEdges(mc, map, 4, trail, validIndexes);
-        if (trail.length == 0) return;
+        bladeId = _sampleBladeEdges(mc, map, 4, trail);
+        if (bladeId == null) return;
 
-        var key:String = target._name + target.version + validIndexes.join("");
+        var key:String = target._name + target.version + bladeId;
         TrailRenderer.getInstance().addTrailData(key, trail, style);
     }
 
     /** 低性能：getRect 包围盒采样，3个刀口位置，最低开销 */
     private static function processBladeTrailLow(target:MovieClip, mc:MovieClip, style:String):Void {
         var map:MovieClip = _root.gameworld.deadbody;
-        var trail:Array = [];
-        var validIndexes:Array = [];
+        var trail:Array = _trailScratch;
+        var bladeId:String = "";
+        var n:Number = 0;
 
         var current:MovieClip;
         var rect:Object;
@@ -277,17 +304,22 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
         for (var i:Number = 1; i <= 3; i++) {
             current = mc["刀口位置" + i];
             if (current && current._x != undefined) {
-                validIndexes.push(i);
+                bladeId += String(i);
                 rect = current.getRect(map);
-                trail.push({
-                    edge1: new Vector(rect.xMin, rect.yMax),
-                    edge2: new Vector(rect.xMax, rect.yMin)
-                });
+                var edge:Object = trail[n];
+                if (edge == undefined) {
+                    edge = {};
+                    trail[n] = edge;
+                }
+                edge.edge1 = new Vector(rect.xMin, rect.yMax);
+                edge.edge2 = new Vector(rect.xMax, rect.yMin);
+                n++;
             }
         }
 
-        if (trail.length > 0) {
-            var key:String = target._name + target.version + validIndexes.join("");
+        if (n > 0) {
+            trail.length = n;
+            var key:String = target._name + target.version + bladeId;
             TrailRenderer.getInstance().addTrailData(key, trail, style);
         }
     }

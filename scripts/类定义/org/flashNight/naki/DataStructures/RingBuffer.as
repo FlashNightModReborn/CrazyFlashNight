@@ -242,14 +242,26 @@ class org.flashNight.naki.DataStructures.RingBuffer  {
      * @return 顺序数组；若队列为空则返回空数组
      */
     public function toArray():Array {
-        var arr:Array = [];
+        return this.copyToArray([]);
+    }
+
+    /**
+     * 将队列内容拷贝到指定数组（从最早到最新）。
+     * @param out 复用目标数组；若为空则创建新数组
+     * @return 返回填充后的目标数组
+     */
+    public function copyToArray(out:Array):Array {
+        if (out == null) out = [];
         var s:Number = this._size;
-        if (s == 0) return arr;
+        out.length = s;
+        if (s == 0) return out;
         var cap:Number = this._capacity;
+        var buf:Array = this._buffer;
+        var head:Number = this._head;
         for (var i:Number = 0; i < s; i++) {
-            arr.push(this._buffer[(this._head + i) % cap]);
+            out[i] = buf[(head + i) % cap];
         }
-        return arr;
+        return out;
     }
 
     /**
@@ -257,16 +269,26 @@ class org.flashNight.naki.DataStructures.RingBuffer  {
      * @return 逆序数组；若队列为空则返回空数组
      */
     public function toReversedArray():Array {
-        var arr:Array = [];
+        return this.copyToReversedArray([]);
+    }
+
+    /**
+     * 将队列内容逆序拷贝到指定数组（从最新到最旧）。
+     * @param out 复用目标数组；若为空则创建新数组
+     * @return 返回填充后的目标数组
+     */
+    public function copyToReversedArray(out:Array):Array {
+        if (out == null) out = [];
         var s:Number = this._size;
-        if (s == 0) return arr;
+        out.length = s;
+        if (s == 0) return out;
         var cap:Number = this._capacity;
-        // 从最新数据开始反向遍历
+        var buf:Array = this._buffer;
+        var cursor:Number = this._cursor;
         for (var i:Number = 0; i < s; i++) {
-            var idx:Number = (this._cursor - 1 - i + cap) % cap;
-            arr.push(this._buffer[idx]);
+            out[i] = buf[(cursor - 1 - i + cap) % cap];
         }
-        return arr;
+        return out;
     }
 
     

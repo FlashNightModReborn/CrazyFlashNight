@@ -83,6 +83,18 @@ class org.flashNight.arki.render.TrailRenderer
     /** 样式管理器引用（单例） */
     private var _styleManager:TrailStyleManager;
 
+    /** 增强渲染复用的 scratch 缓冲，减少热路径 GC 分配 */
+    private var _scratchMidX:Array;
+    private var _scratchMidY:Array;
+    private var _scratchPolyX:Array;
+    private var _scratchPolyY:Array;
+    private var _scratchEdge1:Array;
+    private var _scratchEdge2:Array;
+    private var _scratchSrcEdge1:Array;
+    private var _scratchSrcEdge2:Array;
+    private var _scratchSubsample:Array;
+    private var _scratchInUse:Boolean;
+
     // --------------------------
     // 构造函数
     // --------------------------
@@ -93,6 +105,16 @@ class org.flashNight.arki.render.TrailRenderer
     {
         _trackRecords = {};
         _styleManager = TrailStyleManager.getInstance();
+        _scratchMidX = [];
+        _scratchMidY = [];
+        _scratchPolyX = [];
+        _scratchPolyY = [];
+        _scratchEdge1 = [];
+        _scratchEdge2 = [];
+        _scratchSrcEdge1 = [];
+        _scratchSrcEdge2 = [];
+        _scratchSubsample = [];
+        _scratchInUse = false;
         setQuality(_quality); // 根据默认画质初始化阈值
     }
 
@@ -136,7 +158,7 @@ class org.flashNight.arki.render.TrailRenderer
         // 低画质采样：每 2 个点保留 1 个
         if (quality == 3 && len > 0)
         {
-            edgeArray = _subsampleEdges(edgeArray, 2);
+            edgeArray = _subsampleEdges(edgeArray, 2, _scratchSubsample);
             len       = edgeArray.length;
         }
         if (len == 0) return;
@@ -213,60 +235,55 @@ class org.flashNight.arki.render.TrailRenderer
     {
         // 高画质走增强渲染路径（分段alpha + 宽度渐变 + 多层叠加 + additive blend）
         if (_quality <= 1) {
-            _renderTrailsEnhanced(record, edgeArray, styleName, currentFrame);
+            _renderTrailsEnhanced(record, edgeArray, styleName);
             return;
         }
 
         var quality:Number  = _quality;
         var alphaValue:Number = (quality == 3) ? 50 : 100;
+        var shouldSmooth:Boolean = (currentFrame % quality == 0);
 
-        var mixedPolygons:Array   = [];
         var simplePolygons:Array  = [];
+        var edge1:Array = [];
+        var edge2:Array = [];
 
         var len:Number = edgeArray.length;
         var i:Number   = 0;
         do
         {
             var traj:Object   = record[i];
-            var edge1:Array   = traj.edge1.toArray();
-            var edge2:Array   = traj.edge2.toArray().reverse();
+            traj.edge1.copyToArray(edge1);
+            traj.edge2.copyToReversedArray(edge2);
+            var edge1Len:Number = edge1.length;
+            var edge2Len:Number = edge2.length;
 
-            if (edge1.length < 2 || edge2.length < 2) continue;
+            if (edge1Len < 2 || edge2Len < 2) continue;
 
             // 视画质做平滑
-            if (quality <= 1 || currentFrame % quality == 0)
+            if (shouldSmooth)
             {
-                if (quality <= 1)
-                {
-                    SmoothingUtil.catmullRomSmooth(traj.edge1);
-                    SmoothingUtil.catmullRomSmooth(traj.edge2);
-                }
-                else
-                {
-                    SmoothingUtil.simpleSmooth(traj.edge1);
-                    SmoothingUtil.simpleSmooth(traj.edge2);
-                }
-                edge1 = traj.edge1.toArray();
-                edge2 = traj.edge2.toArray().reverse();
+                SmoothingUtil.simpleSmooth(traj.edge1);
+                SmoothingUtil.simpleSmooth(traj.edge2);
+                traj.edge1.copyToArray(edge1);
+                traj.edge2.copyToReversedArray(edge2);
+                edge1Len = edge1.length;
+                edge2Len = edge2.length;
             }
 
             var poly:Array = [];
-            poly = poly.concat(edge1);
-            poly = poly.concat(edge2);
-            if (poly.length >= 3) poly.push(poly[0]); // 闭合
+            var p:Number = 0;
+            var j:Number;
+            for (j = 0; j < edge1Len; j++) poly[p++] = edge1[j];
+            for (j = 0; j < edge2Len; j++) poly[p++] = edge2[j];
+            if (p > 2) poly[p] = poly[0]; // 闭合
 
-            if (poly.length >= 3)
+            if (p > 2)
             {
-                if (quality <= 1) mixedPolygons.push(poly);
-                else              simplePolygons.push(poly);
+                simplePolygons.push(poly);
             }
         } while (++i < len);
 
         // ----------- 批量绘制 -----------
-        if (mixedPolygons.length > 0)
-        {
-            _drawMixedTrailBatch(mixedPolygons, alphaValue, styleName);
-        }
         if (simplePolygons.length > 0)
         {
             _drawSimpleTrailBatch(simplePolygons, styleName, alphaValue);
@@ -292,24 +309,51 @@ class org.flashNight.arki.render.TrailRenderer
      *   - Additive 叠加使中心自然最亮、边缘柔和衰减，不干扰样式配色
      *   - 法线重建：按轨迹切线法线方向重建 edge 宽度，消除挥刀角度退化
      */
-    private function _renderTrailsEnhanced(record:Object, edgeArray:Array, styleName:String, currentFrame:Number):Void
+    private function _renderTrailsEnhanced(record:Object, edgeArray:Array, styleName:String):Void
     {
         var quality:Number = _quality;
+        var highQuality:Boolean = (quality == 0);
         var style:Object   = _styleManager.getStyle(styleName);
         var len:Number     = edgeArray.length;
         var fillColor:Number   = style.color;
-        var fillOpacity:Number = style.fillOpacity;
+        var outerFillAlpha:Number = style.fillOpacity * 0.3;
+        var innerFillAlpha:Number = style.fillOpacity * 0.6;
+        var outerLineAlpha:Number = style.lineOpacity * 0.14;
 
         // 获取 additive blend 画布
-        var shadowCount:Number = (quality == 0) ? 5 : 3;
+        var shadowCount:Number = highQuality ? 5 : 3;
         var canvas:MovieClip = VectorAfterimageRenderer.instance.getAdditiveCanvas(shadowCount);
+        var sqrt:Function = Math.sqrt;
+        var midx:Array, midy:Array, ptx:Array, pty:Array, drawE1:Array, drawE2:Array, srcE1:Array, srcE2:Array;
+        var useSharedScratch:Boolean = !_scratchInUse;
+
+        if (useSharedScratch) {
+            _scratchInUse = true;
+            midx = _scratchMidX;
+            midy = _scratchMidY;
+            ptx = _scratchPolyX;
+            pty = _scratchPolyY;
+            drawE1 = _scratchEdge1;
+            drawE2 = _scratchEdge2;
+            srcE1 = _scratchSrcEdge1;
+            srcE2 = _scratchSrcEdge2;
+        } else {
+            midx = [];
+            midy = [];
+            ptx = [];
+            pty = [];
+            drawE1 = [];
+            drawE2 = [];
+            srcE1 = [];
+            srcE2 = [];
+        }
 
         var i:Number = 0;
         do {
             var traj:Object = record[i];
 
             // 平滑
-            if (quality == 0) {
+            if (highQuality) {
                 SmoothingUtil.catmullRomSmooth(traj.edge1);
                 SmoothingUtil.catmullRomSmooth(traj.edge2);
             } else {
@@ -317,25 +361,27 @@ class org.flashNight.arki.render.TrailRenderer
                 SmoothingUtil.simpleSmooth(traj.edge2);
             }
 
-            var e1:Array = traj.edge1.toArray();
-            var e2:Array = traj.edge2.toArray();
-            var histLen:Number = e1.length;
+            traj.edge1.copyToArray(srcE1);
+            traj.edge2.copyToArray(srcE2);
+            var histLen:Number = srcE1.length;
             if (histLen < 2) continue;
 
             // 按轨迹切线法线重建 edge 宽度，消除角度退化
-            _rebuildPerpEdges(e1, e2, histLen);
+            _rebuildPerpEdges(srcE1, srcE2, histLen, midx, midy, drawE1, drawE2, sqrt);
 
             // 外扩辉光层：全采样宽度，低 alpha
             // additive blend 下多帧画布叠加会累积亮度，alpha 需远低于 normal blend
-            canvas.lineStyle(style.lineWidth, style.lineColor, style.lineOpacity * 0.14);
-            _drawTaperedTrail(canvas, e1, e2, histLen, fillColor, fillOpacity * 0.3, 0.3, 1.0);
+            canvas.lineStyle(style.lineWidth, style.lineColor, outerLineAlpha);
+            _drawTaperedTrail(canvas, drawE1, drawE2, midx, midy, histLen, fillColor, outerFillAlpha, 0.3, 1.0, ptx, pty);
 
             // 核心层：收窄，适度 alpha，additive 叠加自然趋亮
-            if (quality == 0) {
+            if (highQuality) {
                 canvas.lineStyle(0, 0, 0);
-                _drawTaperedTrail(canvas, e1, e2, histLen, fillColor, fillOpacity * 0.6, 0.1, 0.5);
+                _drawTaperedTrail(canvas, drawE1, drawE2, midx, midy, histLen, fillColor, innerFillAlpha, 0.1, 0.5, ptx, pty);
             }
         } while (++i < len);
+
+        if (useSharedScratch) _scratchInUse = false;
     }
 
     /**
@@ -350,31 +396,42 @@ class org.flashNight.arki.render.TrailRenderer
      * 效果：无论挥刀角度如何，edge 宽度始终垂直于运动方向，不会退化。
      * 开销：1 次 sqrt（halfDiag）+ histLen 次 sqrt（切线归一化），quality 0 下约 7 次/刀口。
      *
-     * @param e1      edge1 历史点数组（元素将被原地替换）
-     * @param e2      edge2 历史点数组（元素将被原地替换）
+     * @param srcE1   edge1 历史点数组（原始历史，不直接修改）
+     * @param srcE2   edge2 历史点数组（原始历史，不直接修改）
      * @param histLen 历史帧数
      */
-    private function _rebuildPerpEdges(e1:Array, e2:Array, histLen:Number):Void
+    private function _rebuildPerpEdges(
+        srcE1:Array, srcE2:Array, histLen:Number,
+        midx:Array, midy:Array, outE1:Array, outE2:Array, sqrt:Function
+    ):Void
     {
         var s:Number, edx:Number, edy:Number;
+        var p1:Object, p2:Object;
 
         // ---- 计算 halfDiag：取各帧 edge 距离的最大值 ----
         var maxDistSq:Number = 0;
         for (s = 0; s < histLen; s++) {
-            edx = e1[s].x - e2[s].x;
-            edy = e1[s].y - e2[s].y;
+            p1 = srcE1[s];
+            p2 = srcE2[s];
+            edx = p1.x - p2.x;
+            edy = p1.y - p2.y;
             var dSq:Number = edx * edx + edy * edy;
             if (dSq > maxDistSq) maxDistSq = dSq;
+            midx[s] = (p1.x + p2.x) * 0.5;
+            midy[s] = (p1.y + p2.y) * 0.5;
         }
-        var hd:Number = Math.sqrt(maxDistSq) * 0.5;
-        if (hd < 1) return; // 对角线过短，无需重建
+        midx.length = histLen;
+        midy.length = histLen;
 
-        // ---- 预计算中点（flat 数组，避免对象分配）----
-        var midx:Array = [];
-        var midy:Array = [];
-        for (s = 0; s < histLen; s++) {
-            midx.push((e1[s].x + e2[s].x) * 0.5);
-            midy.push((e1[s].y + e2[s].y) * 0.5);
+        var hd:Number = sqrt(maxDistSq) * 0.5;
+        if (hd < 1) {
+            for (s = 0; s < histLen; s++) {
+                outE1[s] = srcE1[s];
+                outE2[s] = srcE2[s];
+            }
+            outE1.length = histLen;
+            outE2.length = histLen;
+            return;
         }
 
         // ---- 按切线法线方向重建 edge1/edge2 ----
@@ -388,7 +445,7 @@ class org.flashNight.arki.render.TrailRenderer
                 tx = midx[s] - midx[s - 1];
                 ty = midy[s] - midy[s - 1];
             }
-            tlen = Math.sqrt(tx * tx + ty * ty);
+            tlen = sqrt(tx * tx + ty * ty);
 
             if (tlen > 0.5) {
                 // 法线 = 切线逆时针旋转 90°，归一化后乘 halfDiag
@@ -396,13 +453,29 @@ class org.flashNight.arki.render.TrailRenderer
                 py = (tx / tlen) * hd;
             } else {
                 // 切线过短（近乎静止）→ 保留原始 edge 方向
-                px = e1[s].x - midx[s];
-                py = e1[s].y - midy[s];
+                p1 = srcE1[s];
+                px = p1.x - midx[s];
+                py = p1.y - midy[s];
             }
 
-            e1[s] = { x: midx[s] + px, y: midy[s] + py };
-            e2[s] = { x: midx[s] - px, y: midy[s] - py };
+            p1 = outE1[s];
+            if (p1 == undefined) {
+                p1 = {x: 0, y: 0};
+                outE1[s] = p1;
+            }
+            p2 = outE2[s];
+            if (p2 == undefined) {
+                p2 = {x: 0, y: 0};
+                outE2[s] = p2;
+            }
+
+            p1.x = midx[s] + px;
+            p1.y = midy[s] + py;
+            p2.x = midx[s] - px;
+            p2.y = midy[s] - py;
         }
+        outE1.length = histLen;
+        outE2.length = histLen;
     }
 
     /**
@@ -422,39 +495,39 @@ class org.flashNight.arki.render.TrailRenderer
      * @param taperMax  最新帧宽度比例 (0-1)
      */
     private function _drawTaperedTrail(
-        canvas:MovieClip, e1:Array, e2:Array, histLen:Number,
-        color:Number, alpha:Number, taperMin:Number, taperMax:Number
+        canvas:MovieClip, e1:Array, e2:Array, midx:Array, midy:Array, histLen:Number,
+        color:Number, alpha:Number, taperMin:Number, taperMax:Number,
+        ptx:Array, pty:Array
     ):Void
     {
         var taperRange:Number = taperMax - taperMin;
         var invHist:Number = (histLen > 1) ? 1.0 / (histLen - 1) : 1;
         var totalPts:Number = histLen * 2;
 
-        // 预计算渐变后的顶点坐标（flat 数组，避免 GC 分配）
-        var ptx:Array = [];
-        var pty:Array = [];
         var s:Number, f:Number, tap:Number;
-        var mx:Number, my:Number;
+        var p:Object;
 
         // Edge1 正序（最旧→最新）
         for (s = 0; s < histLen; s++) {
             f = s * invHist;
             tap = taperMin + f * taperRange;
-            mx = (e1[s].x + e2[s].x) * 0.5;
-            my = (e1[s].y + e2[s].y) * 0.5;
-            ptx.push(mx + (e1[s].x - mx) * tap);
-            pty.push(my + (e1[s].y - my) * tap);
+            p = e1[s];
+            ptx[s] = midx[s] + (p.x - midx[s]) * tap;
+            pty[s] = midy[s] + (p.y - midy[s]) * tap;
         }
 
         // Edge2 逆序（最新→最旧）
+        var writeIndex:Number = histLen;
         for (s = histLen - 1; s >= 0; s--) {
             f = s * invHist;
             tap = taperMin + f * taperRange;
-            mx = (e1[s].x + e2[s].x) * 0.5;
-            my = (e1[s].y + e2[s].y) * 0.5;
-            ptx.push(mx + (e2[s].x - mx) * tap);
-            pty.push(my + (e2[s].y - my) * tap);
+            p = e2[s];
+            ptx[writeIndex] = midx[s] + (p.x - midx[s]) * tap;
+            pty[writeIndex] = midy[s] + (p.y - midy[s]) * tap;
+            writeIndex++;
         }
+        ptx.length = totalPts;
+        pty.length = totalPts;
 
         if (totalPts < 3) return;
 
@@ -523,10 +596,15 @@ class org.flashNight.arki.render.TrailRenderer
     // --------------------------
     // 私有工具：采样算法
     // --------------------------
-    private function _subsampleEdges(edges:Array, factor:Number):Array
+    private function _subsampleEdges(edges:Array, factor:Number, out:Array):Array
     {
-        var out:Array = [];
-        for (var i:Number=0; i<edges.length; i+=factor) out.push(edges[i]);
+        if (out == null) out = [];
+        var writeIndex:Number = 0;
+        for (var i:Number = 0; i < edges.length; i += factor) {
+            out[writeIndex] = edges[i];
+            writeIndex++;
+        }
+        out.length = writeIndex;
         return out;
     }
 
