@@ -92,7 +92,9 @@
 
 ### 不存在的语法/API
 - `===` / `!==` **存在**（勿误标为不存在）
-- `>=`/`<=` 实现为 `!(<)`/`!(>)`，NaN 时行为危险：`NaN >= x` 为 true。**优先用 `>`/`<` 严格不等式**可自然过滤 NaN/undefined（返回 false），比 `>=`/`<=` 更安全
+- `>=`/`<=` 实现为 `!(<)`/`!(>)`，NaN 时行为危险：`NaN >= x` 为 true（因为 `NaN < x` 返回 **undefined** 而非 false，`!(undefined)` = true）。**优先用 `>`/`<` 严格不等式**可自然过滤 NaN（返回 undefined→falsy），比 `>=`/`<=` 更安全。**`while(i <= NaN)` 会死循环！**
+- `NaN == NaN`（同一变量）返回 **true**（违反 IEEE 754）。`x != x` 不能用作 NaN 检测。用 `isNaN(x)` 或 `(x - x) != 0`（后者同时检测 Infinity，且性能更优~39ns vs ~184ns）
+- `Number(null)` / `Number("")` / `Number(" ")` 返回 **NaN**（标准 JS 返回 0），`isNaN(null)` 返回 true
 - `null == undefined` 为 true（与 JS 一致），`if (x != null)` 可同时排除 null 和 undefined
 - 无原生 `Array.forEach`/`map`/`filter`/`reduce`（需手写循环）。`gesh.array.ArrayUtil` 提供类似方法，**仅限测试套件使用**
 - 无原生 `JSON.parse`/`JSON.stringify`。本项目三套实现（`scripts/类定义/` 下）：`JSON.as`（通用）、`FastJSON.as`（带缓存）、**`LiteJSON.as`**（当前使用，最精简）、`IJSON.as`（接口）

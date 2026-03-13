@@ -118,8 +118,8 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
         var end:Vector   = rawData[len - 1].mid;
         var d:Vector = end.minusNew(start);
         var dLen:Number = d.magnitude();
-        if(dLen == 0) {
-            d = new Vector(1, 0); // 防止零向量情况
+        if(!(dLen > 0)) {
+            d = new Vector(1, 0); // 防止零向量/NaN 情况（NaN==0 为 false，!(NaN>0) 为 true）
             dLen = 1;
         }
         var unitAxis:Vector = d.multNew(1 / dLen); // 中轴单位向量
@@ -197,8 +197,8 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
                 mid = p0.plusNew(p1).multNew(0.5);
                 direction = p1.minusNew(p0);
                 dist = direction.magnitude();
-                if(dist == 0) {
-                    direction = new Vector(1, 0); // 防止零向量情况
+                if(!(dist > 0)) {
+                    direction = new Vector(1, 0); // 防止零向量/NaN 情况
                     dist = 1;
                 }
                 direction = direction.multNew(1 / dist); // 单位化方向向量

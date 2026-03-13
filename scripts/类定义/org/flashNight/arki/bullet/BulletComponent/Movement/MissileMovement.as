@@ -156,6 +156,8 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
         
         // 8. 限制最大速度
         var newSpeed:Number = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+        // NaN 守卫：vx/vy 为 NaN 时 newSpeed=NaN，归零防止 NaN 传播
+        if (!(newSpeed > 0)) newSpeed = 0;
         if (newSpeed > this.maxSpeed) {
             var scale:Number = this.maxSpeed / newSpeed;
             this.vx *= scale;

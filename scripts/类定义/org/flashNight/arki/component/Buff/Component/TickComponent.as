@@ -98,8 +98,10 @@ class org.flashNight.arki.component.Buff.Component.TickComponent implements IBuf
      * @return Boolean    组件是否继续存活
      */
     public function update(host:IBuff, deltaFrames:Number):Boolean {
-        // 如果已标记完成
-        if (_counter < 0) {
+        // 完成标记（_counter < 0）或 NaN 输入均直接退出
+        // NaN 守卫前置：在加法前拦截，避免感染 _counter
+        // AS2 中 NaN >= _interval 始终为 true → 死循环（H07b）
+        if (_counter < 0 || (deltaFrames - deltaFrames) != 0) {
             return false;
         }
 

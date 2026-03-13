@@ -308,9 +308,9 @@ b = msin(angle);  // ~147ns 而非 ~265ns
 | 操作 | Math.xxx | 内联替代 | 加速比 | 语义差异 |
 |------|---------|---------|-------|---------|
 | 取整 | `Math.floor(x)` 254ns | `(x\|0)` 29ns | **8.7x** | ToInt32 截断(toward zero)：(a) 负数 `-3.7\|0=-3` 非 `-4`，(b) NaN\|0→0，Infinity\|0→0，(c) \|x\|≥2^31 截断为错误值 |
-| 绝对值 | `Math.abs(x)` 249ns | `x<0?-x:x` 58ns | **4.3x** | 对 NaN 行为不同 |
-| 最小值 | `Math.min(a,b)` 264ns | `a<b?a:b` 31ns | **8.5x** | 仅限二元 |
-| 最大值 | `Math.max(a,b)` 264ns | `a>b?a:b` 42ns | **6.3x** | 仅限二元 |
+| 绝对值 | `Math.abs(x)` 249ns | `x<0?-x:x` 58ns | **4.3x** | NaN 时：Math.abs→NaN；三元→NaN（AS2 中 `NaN<0` 返回 undefined→falsy，走 else 分支返回 NaN）。**行为一致** |
+| 最小值 | `Math.min(a,b)` 264ns | `a<b?a:b` 31ns | **8.5x** | 仅限二元。NaN 时：Math.min→NaN；三元→b（`NaN<b` 为 undefined→falsy，返回 b）。**行为不同** |
+| 最大值 | `Math.max(a,b)` 264ns | `a>b?a:b` 42ns | **6.3x** | 仅限二元。NaN 时：Math.max→NaN；三元→b（`NaN>b` 为 undefined→falsy，返回 b）。**行为不同** |
 | clamp | `Math.min(Math.max(a,lo),hi)` 274ns | `a<lo?lo:(a>hi?hi:a)` 40ns | **6.8x** | — |
 
 **`~~x` 取整(69ns) 比 `x|0`(29ns) 贵 2.4x** `[T1a]`，字节码确认 `~~x` = 2×(BitXor 0xFFFFFFFF) = 4 ops。两者语义相同（均为 ToInt32），纯粹是指令数差异。
@@ -330,6 +330,12 @@ infinity_mul:  ~218ns  (Infinity*2)
 ```
 
 远高于普通算术(~20ns)。一旦 NaN 进入热循环，所有后续运算都在高成本区。
+
+**AS2 NaN 的额外危险**（实测确认，详见 [AS2_NaN陷阱总结.md](AS2_NaN陷阱总结.md)）：
+- `NaN > x` / `NaN < x` 返回 **undefined**（非标准的 false），导致 `>=`/`<=` 对 NaN 返回 true
+- `while(i <= NaN)` / `while(i >= NaN)` → **死循环**
+- 性能+安全复合风险：NaN 感染后不仅每步运算贵 15x，还可能触发死循环
+- **零代价检测**：`(x - x) != 0`（~39ns）比 `isNaN()`（184ns）快 4.7x
 
 ---
 
@@ -430,26 +436,34 @@ getTimer():       ~8ns   (原生 opcode，不是函数调用)
 
 native API 成本差异大，不是统一常数。`getTimer()` 极便宜，可自由用于计时。
 
-### isNaN — AS2 特殊行为
+### isNaN — AS2 特殊行为与零代价替代
 
 ```
-isNaN(n):   ~184ns  (CallFunction)
-n != n:      ~17ns  (但在 AS2 中始终返回 false！)
+isNaN(n):       ~184ns  (CallFunction)
+n != n:          ~17ns  (但在 AS2 中始终返回 false！禁用！)
+(n - n) != 0:   ~39ns  (1 减法 + 1 比较，可靠，同时检测 Infinity)
 ```
 
-**AS2 中 `NaN == NaN` 返回 true（违反 IEEE 754）**。探针确认 `NaN != NaN = false`。**必须用 `isNaN()` 检测 NaN，禁止 `n != n`。**
+**AS2 中 `NaN == NaN`（同一变量）返回 true（违反 IEEE 754）**。AVM1 对同一寄存器的 NaN 做了引用级比较短路。`n != n` 始终返回 false，**禁止用作 NaN 检测**。
+
+**NaN 与 `>` / `<` 返回 undefined（非 false）**：`NaN > 42` → undefined，`NaN < 42` → undefined。在布尔上下文中 undefined 等价 falsy，表面行为与标准一致，但这导致 `>=`（实现为 `!(<)`）和 `<=`（实现为 `!(!)`）对 NaN **始终返回 true**：`NaN >= 42` → `!(undefined)` → true。**这会导致 `while (i <= NaN)` 死循环。**
+
+**热路径推荐 `(n - n) != 0`**：比 `isNaN()` 快约 4.7x，且同时检测 Infinity。详见 [AS2_NaN陷阱总结.md](AS2_NaN陷阱总结.md) §三。
 
 ---
 
 ## 9. AS2 特有陷阱
 
-详见 [AS2_NaN陷阱总结.md](AS2_NaN陷阱总结.md)。核心要点：
+详见 [AS2_NaN陷阱总结.md](AS2_NaN陷阱总结.md)（完全行为手册，含 17 组实测数据）。核心要点：
 
 1. **`+s` 不转换类型**：编译器 bug，`+s` 对 String 返回原 String
 2. **NaN 级联感染**：一旦 `_bh` 被 NaN 污染，所有后续累加永久 NaN
 3. **Array.pop()/shift() 返回 Object**：显式类型声明会编译错误
-4. **NaN == NaN = true**：AS2 违反 IEEE 754，`n != n` 不能检测 NaN
-5. **typeof 优先于 isNaN**：`isNaN("123")` 返回 false，typeof 能区分类型
+4. **NaN == NaN = true（同变量）**：AS2 违反 IEEE 754，`n != n` 不能检测 NaN。用 `(n-n)!=0` 或 `isNaN(n)`
+5. **`>` / `<` 对 NaN 返回 undefined**：非标准返回值，导致 `>=`/`<=` 对 NaN 始终为 true（死循环根因）
+6. **`Number(null)` / `Number("")` / `Number(" ")` 返回 NaN**：标准 JS 中返回 0，AS2 特有陷阱
+7. **`isNaN(null)` 返回 true**：标准 JS 中返回 false（因 AS2 的 `Number(null)=NaN`）
+8. **循环中 `<=` / `>=` 与 NaN 值会死循环**：`while(i <= NaN)` 永远为 true。只用 `<` / `>` 严格不等式可安全避免
 
 ---
 
@@ -470,7 +484,8 @@ n != n:      ~17ns  (但在 AS2 中始终返回 false！)
 - **H04** `[T1a]` 字符串长度一律用 `length(s)`(14ns)，禁止 `s.length`(580ns) — 41x 差距。注意：仅对字符串有效，数组长度仍用 `arr.length`
 - **H05** `[T1a]` 数字转换一律用 `Number(s)`，**绝对禁止** `+s`（AS2 编译器 bug：不生成 ToNumber）
 - **H06** `[T1a]` 布尔转换一律用 `!!x`(28ns)，禁止 `Boolean(x)`(193ns) — 7x 差距
-- **H07** `[T1a]` NaN 检测用 `isNaN()`，禁止 `n != n`（AS2 中 NaN==NaN 为 true，n!=n 始终 false）
+- **H07** `[T1a]` NaN 检测禁止 `n != n`（AS2 中同变量 NaN==NaN 为 true）。冷路径用 `isNaN(n)`(184ns)；热路径用 `(n - n) != 0`(~39ns，同时检测 Infinity)
+- **H07b** `[T1a]` 循环条件涉及可能为 NaN 的变量时，禁用 `<=` / `>=`（NaN 时始终为 true → 死循环）。用 `<` / `>` 严格不等式，或在循环前用 `(x-x)!=0` 守卫
 
 **调用**
 
@@ -602,12 +617,19 @@ n != n:      ~17ns  (但在 AS2 中始终返回 false！)
 5. 属性 miss 预初始化
 6. ObjectPool.as 链路审计 → 评估是否需要无 apply/arguments 的轻量池
 
+### P1.5 — NaN 防御体系（已有实测数据，可立即推进）
+
+> 2026-03-13 已完成 AS2 NaN 完全行为测试，确认三大致命偏差（自等性/undefined返回值/>=<=始终true）。
+
+1. **基建层零代价 NaN 守卫**：Ray.as、RayCollider.as、BladeMotionTrailsRenderer.as 的零向量/NaN 守卫修复（0性能代价）
+2. **HP 除法短路保护**：SortedUnitCache(8处)、TargetCacheManager(1处) 的 `maxhp > 0 &&` 前置（0性能代价，短路反而省除法）
+3. **热路径循环 `<=`/`>=` 审计**：排查所有 `while(x <= y)` / `while(x >= y)` 模式，评估 NaN 死循环风险
+
 ### P3 — 长期 / 待验证（Tier 2~3）
 
 1. UI/MC flush 层 + dirty buffer（仅批量读写场景受益）
 2. 状态机 → stateId + flat context
-3. NaN 防御体系全覆盖
-4. 配置解析预编译/二进制缓存
+3. 配置解析预编译/二进制缓存
 
 ---
 

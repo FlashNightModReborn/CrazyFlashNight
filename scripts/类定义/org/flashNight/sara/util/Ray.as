@@ -72,9 +72,9 @@ class org.flashNight.sara.util.Ray {
             this.direction.x = dx * invLen;
             this.direction.y = dy * invLen;
         } else {
-            // 零向量保持不变
-            this.direction.x = dx;
-            this.direction.y = dy;
+            // 零向量/NaN 时回退到单位方向，避免下游除零或 NaN 传播
+            this.direction.x = 1;
+            this.direction.y = 0;
         }
 
         this.maxDistance = maxDist;

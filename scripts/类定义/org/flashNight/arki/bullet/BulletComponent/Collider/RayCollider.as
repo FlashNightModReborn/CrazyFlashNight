@@ -194,7 +194,9 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
         var tMin:Number = (t1x > t1y) ? t1x : t1y;
         var tMax:Number = (t2x < t2y) ? t2x : t2y;
 
-        if (tMin > tMax || tMax < 0 || tMin > maxDist) {
+        // NaN 守卫：NaN 进入 slab 算法时所有比较返回 false，误判命中
+        // (tMin - tMin) != 0 零代价检测 NaN/Infinity（H07）
+        if ((tMin - tMin) != 0 || tMin > tMax || tMax < 0 || tMin > maxDist) {
             return CollisionResult.FALSE;
         }
 

@@ -54,8 +54,12 @@
   - AS2 编译器 bug：`+s` 编译为 `Push s`（无 ToNumber），不做任何类型转换
 - **H06** `[T1a]` 布尔转换一律用 `!!x`(28ns)，禁止 `Boolean(x)`(193ns) — 7x 差距
   - 字节码：`!!x` → Not, Not；`Boolean(x)` → CallFunction "Boolean"
-- **H07** `[T1a]` NaN 检测用 `isNaN()`，禁止 `n != n`
-  - AS2 中 `NaN == NaN` 返回 true（违反 IEEE 754），`n != n` 始终 false
+- **H07** `[T1a]` NaN 检测禁止 `n != n`（AS2 中同变量 `NaN == NaN` 返回 true，违反 IEEE 754）
+  - 冷路径用 `isNaN(n)`(184ns)；热路径用 `(n - n) != 0`(~39ns，4.7x 更快，同时检测 Infinity)
+  - `x != x` 在 AS2 中对同一变量始终返回 false，不同变量的 NaN 之间才返回 true
+- **H07b** `[T1a]` 循环条件涉及可能为 NaN 的变量时，禁用 `<=` / `>=`
+  - AS2 中 `NaN >= x` 始终为 true（因为 `NaN < x` 返回 **undefined** 而非 false，`!(undefined)` = true）
+  - **`while(i <= NaN)` 会死循环！** 用 `<` / `>` 严格不等式，或在循环前用 `(x-x)!=0` 守卫
 
 **调用**
 
@@ -110,11 +114,11 @@
     - (c) x≥0，或截断语义可接受（`x|0` 是 toward-zero 截断，`-3.7|0 = -3` 而非 `-4`）
   - 不满足任一前提时，用缓存的 `Math.floor` 引用（142ns）
 - **H14** `[T1b]` 热路径 abs 用 `x<0?-x:x`(58ns) 替代 `Math.abs()`(249ns) — **4.3x**
-  - ⚠️ **前提**：输入为有限数值。NaN 输入时 `x<0` 为 false，返回原 NaN（行为碰巧一致，但依赖实现细节）
+  - ⚠️ **前提**：输入为有限数值。NaN 输入时 AS2 中 `NaN<0` 返回 undefined→falsy，走 else 返回原 NaN——**行为与 Math.abs(NaN)→NaN 一致**
 - **H15** `[T1b]` 热路径 min/max/clamp 用三元表达式替代 `Math.min/max`
   - `a<b?a:b`(31ns) vs `Math.min(a,b)`(264ns) — **8.5x**
   - `a<lo?lo:(a>hi?hi:a)`(40ns) vs `Math.min(Math.max())`(274ns) — **6.8x**
-  - ⚠️ **前提**：仅限二元、已知有限数值。NaN 输入时三元返回 NaN 或另一个操作数（取决于比较顺序），与 Math.min/max 行为不同
+  - ⚠️ **前提**：仅限二元、已知有限数值。**NaN 行为不同**：Math.min(NaN,5)→NaN，三元 `NaN<5?NaN:5` → 5（`NaN<5` 返回 undefined→falsy，走 else 返回 b）
 
 ---
 
@@ -182,7 +186,8 @@
 | 字符串长度 | `length(s)`(14ns)，不用 `s.length`(580ns) | T1a | StringLength opcode vs GetMember | 基准 `str_length_as1` |
 | 布尔转换 | `!!x`(28ns)，不用 `Boolean(x)`(193ns) | T1a | Not+Not vs CallFunction | 基准 `to_bool_doublenot` |
 | 数字转换 | `Number(s)`(76ns)，禁止 `+s`(不转换!) | T1a | AS2 编译器 bug | 基准 + BytecodeProbe |
-| NaN 检测 | `isNaN(n)`，禁止 `n!=n` | T1a | AS2 中 NaN==NaN=true | BytecodeProbe 探针 B |
+| NaN 检测 | 冷路径 `isNaN(n)`(184ns)；热路径 `(n-n)!=0`(~39ns)。禁止 `n!=n` | T1a | AS2 中同变量 NaN==NaN=true；`(n-n)!=0` 同时检测 Infinity | 实测 + BytecodeProbe |
+| NaN 安全循环 | 循环条件用 `<`/`>` 严格不等式，禁用 `<=`/`>=` | T1a | AS2 中 `NaN>=x` 始终为 true → 死循环 | 实测 2026-03-13 |
 | 字符串拼接 | 裸 `+` 拼接(54ns)，不用 `Array.join()`(495ns) | T1a | join 走 CallMethod | `字符串性能评估.md` + 基准 |
 | Math.sin/cos 等 | `var ms:Function=Math.sin;` 缓存引用 | T1a | 直调 265ns → 缓存 147ns(省44%) | 基准 `cached_math_sin` |
 | 空函数/ctor 调用 | 确保触发 DF2（函数体引用参数） | T1b | DF1=1079ns vs DF2=485ns(2.2x)。前提：函数体极轻 | 基准 `call_empty_df1/df2` |
@@ -216,7 +221,7 @@
 
 **AVM1 基准与字节码**（2026-03，基于 bench_gen_v8 + BytecodeProbe）：
 - `性能基准评估/AVM1性能基准总结与热路径编码规范.md` — **综合总结，首读此文**
-- `性能基准评估/AS2_NaN陷阱总结.md` — NaN 感染与防御
+- `性能基准评估/AS2_NaN陷阱总结.md` — **AS2 NaN 完全行为手册**（17 组实测，含三大 IEEE 754 致命偏差）
 - `性能基准评估/BytecodeProbe.md` — JPEXS P-code 反汇编记录
 - `性能基准评估/BytecodeProbe_Guide.md` — 反汇编操作指南
 - `性能基准评估/codex.md` / `gpt5.4pro.md` — 外部交叉审阅报告

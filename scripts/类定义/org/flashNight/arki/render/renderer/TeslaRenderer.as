@@ -173,6 +173,8 @@ class org.flashNight.arki.render.renderer.TeslaRenderer {
         var dx:Number = arc.endX - arc.startX;
         var dy:Number = arc.endY - arc.startY;
         var totalDist:Number = Math.sqrt(dx * dx + dy * dy);
+        // 零距离/NaN 守卫：render() 有 dist==0 检查但 generateSpindlePath 独立调用
+        if (!(totalDist > 0)) return RayVfxManager.poolArr();
         var perpX:Number = -dy / totalDist;
         var perpY:Number = dx / totalDist;
 
