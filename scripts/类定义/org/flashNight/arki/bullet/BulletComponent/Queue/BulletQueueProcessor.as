@@ -654,6 +654,48 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             ctx.Damage = Damage;
             ctx.FX = FX;
 
+            // ---- Lockon 目标解析 ----
+            // 【契约】lockonTarget 由武器层通过 TargetCacheManager 选靶，
+            //  缓存已保证 hp>0 且 防止无限飞!=true。此处不重复校验（契约大于防护）。
+            //  若 aabbCollider 为 null → AABB 算术产生 NaN → lockonDistSq 比较失败
+            //  → isLockon 保持 false → 自然 fallback 到几何模式（AS2 NaN 比较返回 falsy）。
+            var lockonTarget:MovieClip = bullet.lockonTarget;
+            var isLockon:Boolean = false;
+            var lockonHitX:Number;
+            var lockonHitY:Number;
+            var lockonTEntry:Number;
+
+            if (lockonTarget != null) {
+                var ltAABB:AABBCollider = lockonTarget.aabbCollider;
+                lockonHitX = (ltAABB.left + ltAABB.right) * 0.5;
+                lockonHitY = (ltAABB.top + ltAABB.bottom) * 0.5;
+                var lockonDirX:Number = lockonHitX - rayOriginX;
+                var lockonDirY:Number = lockonHitY - rayOriginY;
+                var lockonDistSq:Number = lockonDirX * lockonDirX + lockonDirY * lockonDirY;
+                if (lockonDistSq > 0.001) {
+                    isLockon = true;
+                    lockonTEntry = Math.sqrt(lockonDistSq);
+                    // 更新 RayCollider 方向（用于 pierce 几何扫描）
+                    // setRayFast 内部归一化方向 + 重算 AABB bounds
+                    // areaAABB 编译期类型 AABBCollider，运行时实际 RayCollider 子类
+                    // 索引记法绕过编译期方法检查
+                    areaAABB["setRayFast"](rayOriginX, rayOriginY,
+                        lockonDirX, lockonDirY, config.rayLength || 900);
+                    // 重算窗口边界
+                    rayLeft = areaAABB.left;
+                    rayRight = areaAABB.right;
+                    lo = bsearchScanStart(unitRightMax, unitLen, rayLeft);
+                }
+            }
+
+            // 预计算射线角度（VFX 终点用），非 lockon 时值等于原 bullet._rotation * DEG_TO_RAD
+            var resolvedRayAngle:Number = isLockon
+                ? Math.atan2(lockonDirY, lockonDirX)
+                : (bullet._rotation * DEG_TO_RAD);
+
+            // lockon 距离衰减乘数（武器层设置，默认 1 = 无衰减）
+            var lockonDmgMult:Number = (isLockon && bullet.lockonDmgMult) ? bullet.lockonDmgMult : 1;
+
             // ================================================================
             // 组合模式：多个能力位同时置位时走此分支（isCombo）
             // hasPierce → per-node 管道（逐穿透节点触发 chain/fork）
@@ -711,6 +753,34 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             comboAllHits[cInsPos] = cNewHit;
                             comboAllLen++;
                         }
+                    }
+                }
+
+                // ---- Lockon 注入（combo pierce）----
+                if (isLockon) {
+                    var ltFoundA:Boolean = false;
+                    for (var lti:Number = 0; lti < comboAllLen; lti++) {
+                        if (comboAllHits[lti].target == lockonTarget) {
+                            ltFoundA = true;
+                            break;
+                        }
+                    }
+                    if (!ltFoundA) {
+                        if (comboAllHits == null) comboAllHits = [];
+                        var ltInsPos:Number = comboAllLen;
+                        for (var ltk:Number = comboAllLen - 1; ltk >= 0; ltk--) {
+                            if (comboAllHits[ltk].tEntry > lockonTEntry) {
+                                comboAllHits[ltk + 1] = comboAllHits[ltk];
+                                ltInsPos = ltk;
+                            } else break;
+                        }
+                        comboAllHits[ltInsPos] = {
+                            target: lockonTarget,
+                            hitX: lockonHitX, hitY: lockonHitY,
+                            tEntry: lockonTEntry,
+                            zOffset: bulletZOffset - lockonTarget.Z轴坐标
+                        };
+                        comboAllLen++;
                     }
                 }
 
@@ -897,7 +967,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     } // end per-node loop
 
                     // ══════ pierce VFX segment：一条覆盖全射线 ══════
-                    var rayAngle:Number = bullet._rotation * DEG_TO_RAD;
+                    var rayAngle:Number = resolvedRayAngle;
                     var rayLength:Number = (config != null && !isNaN(config.rayLength))
                         ? config.rayLength : 900;
                     var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
@@ -927,7 +997,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                 } else {
                     // per-node 未命中：射线打到最远处
-                    var rayAngle:Number = bullet._rotation * DEG_TO_RAD;
+                    var rayAngle:Number = resolvedRayAngle;
                     var rayLength:Number = (config != null && !isNaN(config.rayLength))
                         ? config.rayLength : 900;
                     var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
@@ -973,6 +1043,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             comboNearestHitY = cr0.overlapCenter.y;
                         }
                     }
+                }
+
+                // ---- Lockon 覆盖（combo no-pierce）----
+                if (isLockon && comboNearestTarget != lockonTarget) {
+                    comboNearestTarget = lockonTarget;
+                    comboNearestHitX = lockonHitX;
+                    comboNearestHitY = lockonHitY;
+                    comboNearestTEntry = lockonTEntry;
                 }
 
                 if (comboNearestTarget != null) {
@@ -1150,7 +1228,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                 } else {
                     // per-phase 未命中：射线打到最远处
-                    var rayAngle:Number = bullet._rotation * DEG_TO_RAD;
+                    var rayAngle:Number = resolvedRayAngle;
                     var rayLength:Number = (config != null && !isNaN(config.rayLength))
                         ? config.rayLength : 900;
                     var rayEndX:Number = rayOriginX + Math.cos(rayAngle) * rayLength;
@@ -1223,6 +1301,47 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     }
                 }
 
+                // ---- Lockon 注入（pure pierce）----
+                if (isLockon) {
+                    var ltFoundP:Boolean = false;
+                    for (var ltpi:Number = 0; ltpi < pLen; ltpi++) {
+                        if (pierceHits[ltpi].target == lockonTarget) {
+                            ltFoundP = true;
+                            break;
+                        }
+                    }
+                    if (!ltFoundP) {
+                        var ltpInsPos:Number = pLen;
+                        if (pLen >= pierceLimit) {
+                            if (lockonTEntry < pierceHits[pLen - 1].tEntry) {
+                                ltpInsPos = pLen - 1;
+                                for (var ltpk:Number = pLen - 2; ltpk >= 0; ltpk--) {
+                                    if (pierceHits[ltpk].tEntry > lockonTEntry) {
+                                        pierceHits[ltpk + 1] = pierceHits[ltpk];
+                                        ltpInsPos = ltpk;
+                                    } else break;
+                                }
+                            } else {
+                                ltpInsPos = pLen - 1;
+                            }
+                        } else {
+                            for (var ltpk:Number = pLen - 1; ltpk >= 0; ltpk--) {
+                                if (pierceHits[ltpk].tEntry > lockonTEntry) {
+                                    pierceHits[ltpk + 1] = pierceHits[ltpk];
+                                    ltpInsPos = ltpk;
+                                } else break;
+                            }
+                            pLen++;
+                        }
+                        pierceHits[ltpInsPos] = {
+                            target: lockonTarget,
+                            hitX: lockonHitX, hitY: lockonHitY,
+                            tEntry: lockonTEntry,
+                            zOffset: bulletZOffset - lockonTarget.Z轴坐标
+                        };
+                    }
+                }
+
                 if (pLen > 0) {
                     var pDmgMult:Number = 1.0;
 
@@ -1258,7 +1377,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     }
 
                     // 穿透射线视觉
-                    var rayAngle:Number = bullet._rotation * DEG_TO_RAD;
+                    var rayAngle:Number = resolvedRayAngle;
                     var rayLength:Number = config.rayLength || 900;
                     var rayEndX:Number;
                     var rayEndY:Number;
@@ -1295,7 +1414,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                 } else {
                     // 穿透射线未命中：电弧打到最远处
-                    rayAngle = bullet._rotation * DEG_TO_RAD;
+                    rayAngle = resolvedRayAngle;
                     rayLength = (config != null && !isNaN(config.rayLength)) ? config.rayLength : 900;
                     rayEndX = rayOriginX + Math.cos(rayAngle) * rayLength;
                     rayEndY = rayOriginY + Math.sin(rayAngle) * rayLength;
@@ -1346,6 +1465,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     }
                 }
 
+                // ---- Lockon 覆盖（single/chain/fork）----
+                if (isLockon) {
+                    rayNearestTarget = lockonTarget;
+                    rayNearestHitX = lockonHitX;
+                    rayNearestHitY = lockonHitY;
+                    rayNearestTEntry = lockonTEntry;
+                }
+
                 // ---- 主命中处理 ----
                 if (rayNearestTarget != null) {
                     hitTarget = rayNearestTarget;
@@ -1363,12 +1490,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     if (bullet.击中时触发函数) bullet.击中时触发函数();
 
                     settleRayHit(ctx, hitTarget,
-                        rayNearestHitX, rayNearestHitY, 1, rayNearestTEntry);
+                        rayNearestHitX, rayNearestHitY, lockonDmgMult, rayNearestTEntry);
                     // 构建主命中 SegmentMeta
                     var mainMeta:Object = {
                         segmentKind: "main",
                         hitIndex: 0,
-                        intensity: 1.0,
+                        intensity: lockonDmgMult,
                         isHit: true
                     };
                     RayVfxManager.spawn(rayOriginX, rayOriginY, rayNearestHitX, rayNearestHitY, config, mainMeta);
@@ -1390,7 +1517,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         var chainRadius:Number = config.chainRadius;
                         var chainFalloff:Number = config.damageFalloff;
                         var chainRadiusSq:Number = chainRadius * chainRadius;
-                        var chainDmgMult:Number = chainFalloff; // 第一次弹跳已经衰减
+                        var chainDmgMult:Number = lockonDmgMult * chainFalloff; // 主命中衰减 × 弹跳衰减
 
                         // 已命中目标集合（防重复弹跳）
                         var chainVisited:Object = {};
@@ -1574,7 +1701,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                 } else {
                     // 射线未命中：电弧打到最远处
-                    rayAngle = bullet._rotation * DEG_TO_RAD;
+                    rayAngle = resolvedRayAngle;
                     rayLength = (config != null && !isNaN(config.rayLength))
                         ? config.rayLength : 900;
                     rayEndX = rayOriginX + Math.cos(rayAngle) * rayLength;

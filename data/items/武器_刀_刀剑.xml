@@ -175,6 +175,8 @@
               <probability>3</probability>
               <threshold>120</threshold>
               <output>20</output>
+              <raySearchDistance>600</raySearchDistance>
+              <falloffMin>0.6</falloffMin>
             </initParam>
           </init>
           <cycle>
@@ -198,6 +200,7 @@
               <diffusion>0</diffusion>
               <bullet>磁暴射线-强化</bullet>
               <velocity>0</velocity>
+              <range>300</range>
               <impact>0</impact>
             </bullet_1>
           </bullet>
