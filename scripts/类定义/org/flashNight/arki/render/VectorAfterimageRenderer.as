@@ -405,13 +405,34 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      * @return 已初始化的 MovieClip 画布
      */
     private function getAvailableCanvas(shadowCount:Number):MovieClip {
-        if (_currentCanvasByConfig[shadowCount] != undefined && _currentCanvasByConfig[shadowCount] != null) {
-            return _currentCanvasByConfig[shadowCount];
+        var key:String = String(shadowCount);
+        if (_currentCanvasByConfig[key] != undefined && _currentCanvasByConfig[key] != null) {
+            return _currentCanvasByConfig[key];
         }
         var canvas:MovieClip = _canvasPool.getObject();
         initializeCanvas(canvas, shadowCount);
-        _currentCanvasByConfig[shadowCount] = canvas;
-        // 添加到渐隐管理数组中（便于全局统一管理）
+        canvas._configKey = key;
+        _currentCanvasByConfig[key] = canvas;
+        _fadingCanvases.push(canvas);
+        return canvas;
+    }
+
+    /**
+     * 获取 additive blend 模式画布，自动参与渐隐回收。
+     * 与 normal 画布使用独立 key 命名空间，互不干扰。
+     * @param shadowCount 残影数量配置
+     */
+    public function getAdditiveCanvas(shadowCount:Number):MovieClip {
+        if (shadowCount == undefined) shadowCount = _defaultShadowCount;
+        var key:String = "add_" + shadowCount;
+        if (_currentCanvasByConfig[key] != undefined && _currentCanvasByConfig[key] != null) {
+            return _currentCanvasByConfig[key];
+        }
+        var canvas:MovieClip = _canvasPool.getObject();
+        initializeCanvas(canvas, shadowCount);
+        canvas.blendMode = "add";
+        canvas._configKey = key;
+        _currentCanvasByConfig[key] = canvas;
         _fadingCanvases.push(canvas);
         return canvas;
     }
@@ -459,8 +480,8 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     private function onFadeUpdate(canvas:MovieClip):Void {
         var configObj:Object = _config[canvas.shadowCount];
         // 若为首次渐隐，解除当前活跃画布绑定，允许后续继续使用新画布
-        if (canvas.cycleCount == 0 && _currentCanvasByConfig[canvas.shadowCount] == canvas) {
-            _currentCanvasByConfig[canvas.shadowCount] = null;
+        if (canvas.cycleCount == 0 && _currentCanvasByConfig[canvas._configKey] == canvas) {
+            _currentCanvasByConfig[canvas._configKey] = null;
         }
         canvas.cycleCount++;
         // 如果达到指定次数或透明度过低，则回收画布
@@ -486,8 +507,8 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
             canvas.clear();
         }
         // 移除当前活跃画布绑定
-        if (_currentCanvasByConfig[canvas.shadowCount] == canvas) {
-            _currentCanvasByConfig[canvas.shadowCount] = null;
+        if (_currentCanvasByConfig[canvas._configKey] == canvas) {
+            _currentCanvasByConfig[canvas._configKey] = null;
         }
         if (_canvasPool.isPoolFull()) {
             _canvasPool.releaseObject(canvas);

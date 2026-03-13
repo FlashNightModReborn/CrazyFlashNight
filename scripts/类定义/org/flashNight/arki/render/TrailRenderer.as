@@ -110,8 +110,8 @@ class org.flashNight.arki.render.TrailRenderer
 
         switch (q)
         {
-            case 0: _movementThresholdSqr = 3  * 3;  _maxFrames = 5; break;
-            case 1: _movementThresholdSqr = 5  * 5;  _maxFrames = 4; break;
+            case 0: _movementThresholdSqr = 5  * 5;  _maxFrames = 8; break;
+            case 1: _movementThresholdSqr = 6  * 6;  _maxFrames = 6; break;
             case 2: _movementThresholdSqr = 8  * 8;  _maxFrames = 3; break;
             case 3: _movementThresholdSqr = 10 * 10; _maxFrames = 2; break;
             default:_movementThresholdSqr = 5  * 5;  _maxFrames = 3;
@@ -211,6 +211,12 @@ class org.flashNight.arki.render.TrailRenderer
     // --------------------------
     private function _renderTrails(record:Object, edgeArray:Array, styleName:String, currentFrame:Number):Void
     {
+        // 高画质走增强渲染路径（分段alpha + 宽度渐变 + 多层叠加 + additive blend）
+        if (_quality <= 1) {
+            _renderTrailsEnhanced(record, edgeArray, styleName, currentFrame);
+            return;
+        }
+
         var quality:Number  = _quality;
         var alphaValue:Number = (quality == 3) ? 50 : 100;
 
@@ -265,6 +271,211 @@ class org.flashNight.arki.render.TrailRenderer
         {
             _drawSimpleTrailBatch(simplePolygons, styleName, alphaValue);
         }
+    }
+
+    // --------------------------
+    // 增强渲染：单一填充多边形 + 宽度渐变 + 多层叠加
+    // --------------------------
+
+    /**
+     * 增强渲染路径 (quality 0-1)
+     *
+     * 与旧版分段四边形不同，本方法为每个刀口位置构建单一闭合多边形
+     * （edge1 正序 + edge2 逆序），一次 beginFill/endFill 覆盖整个挥刀弧面。
+     *
+     * 特性：
+     *   - 单一闭合多边形填充，视觉饱满度与旧方案一致
+     *   - 宽度渐变（Taper）：最旧帧收窄，最新帧全宽
+     *   - curveTo 平滑曲线（复用 drawMixedShape 的首尾直线+中间曲线模式）
+     *   - Additive blend 画布，叠加产生辉光
+     *   - 双层同色渲染：外扩辉光层(宽、低alpha) + 核心层(窄、高alpha)
+     *   - Additive 叠加使中心自然最亮、边缘柔和衰减，不干扰样式配色
+     *   - 法线重建：按轨迹切线法线方向重建 edge 宽度，消除挥刀角度退化
+     */
+    private function _renderTrailsEnhanced(record:Object, edgeArray:Array, styleName:String, currentFrame:Number):Void
+    {
+        var quality:Number = _quality;
+        var style:Object   = _styleManager.getStyle(styleName);
+        var len:Number     = edgeArray.length;
+        var fillColor:Number   = style.color;
+        var fillOpacity:Number = style.fillOpacity;
+
+        // 获取 additive blend 画布
+        var shadowCount:Number = (quality == 0) ? 5 : 3;
+        var canvas:MovieClip = VectorAfterimageRenderer.instance.getAdditiveCanvas(shadowCount);
+
+        var i:Number = 0;
+        do {
+            var traj:Object = record[i];
+
+            // 平滑
+            if (quality == 0) {
+                SmoothingUtil.catmullRomSmooth(traj.edge1);
+                SmoothingUtil.catmullRomSmooth(traj.edge2);
+            } else {
+                SmoothingUtil.simpleSmooth(traj.edge1);
+                SmoothingUtil.simpleSmooth(traj.edge2);
+            }
+
+            var e1:Array = traj.edge1.toArray();
+            var e2:Array = traj.edge2.toArray();
+            var histLen:Number = e1.length;
+            if (histLen < 2) continue;
+
+            // 按轨迹切线法线重建 edge 宽度，消除角度退化
+            _rebuildPerpEdges(e1, e2, histLen);
+
+            // 外扩辉光层：全采样宽度，低 alpha
+            // additive blend 下多帧画布叠加会累积亮度，alpha 需远低于 normal blend
+            canvas.lineStyle(style.lineWidth, style.lineColor, style.lineOpacity * 0.14);
+            _drawTaperedTrail(canvas, e1, e2, histLen, fillColor, fillOpacity * 0.3, 0.3, 1.0);
+
+            // 核心层：收窄，适度 alpha，additive 叠加自然趋亮
+            if (quality == 0) {
+                canvas.lineStyle(0, 0, 0);
+                _drawTaperedTrail(canvas, e1, e2, histLen, fillColor, fillOpacity * 0.6, 0.1, 0.5);
+            }
+        } while (++i < len);
+    }
+
+    /**
+     * 按轨迹切线法线方向重建 edge1/edge2，消除挥刀角度导致的宽度退化。
+     *
+     * 原理：
+     *   1. 计算每帧 edge1-edge2 中点 → 得到轨迹曲线
+     *   2. 相邻中点差分 → 切线方向 → 逆时针旋转90° → 法线方向
+     *   3. 取 edge1-edge2 距离的最大值作为 halfDiag（旋转不变量）
+     *   4. 沿法线方向 ±halfDiag 放置新 edge1/edge2
+     *
+     * 效果：无论挥刀角度如何，edge 宽度始终垂直于运动方向，不会退化。
+     * 开销：1 次 sqrt（halfDiag）+ histLen 次 sqrt（切线归一化），quality 0 下约 7 次/刀口。
+     *
+     * @param e1      edge1 历史点数组（元素将被原地替换）
+     * @param e2      edge2 历史点数组（元素将被原地替换）
+     * @param histLen 历史帧数
+     */
+    private function _rebuildPerpEdges(e1:Array, e2:Array, histLen:Number):Void
+    {
+        var s:Number, edx:Number, edy:Number;
+
+        // ---- 计算 halfDiag：取各帧 edge 距离的最大值 ----
+        var maxDistSq:Number = 0;
+        for (s = 0; s < histLen; s++) {
+            edx = e1[s].x - e2[s].x;
+            edy = e1[s].y - e2[s].y;
+            var dSq:Number = edx * edx + edy * edy;
+            if (dSq > maxDistSq) maxDistSq = dSq;
+        }
+        var hd:Number = Math.sqrt(maxDistSq) * 0.5;
+        if (hd < 1) return; // 对角线过短，无需重建
+
+        // ---- 预计算中点（flat 数组，避免对象分配）----
+        var midx:Array = [];
+        var midy:Array = [];
+        for (s = 0; s < histLen; s++) {
+            midx.push((e1[s].x + e2[s].x) * 0.5);
+            midy.push((e1[s].y + e2[s].y) * 0.5);
+        }
+
+        // ---- 按切线法线方向重建 edge1/edge2 ----
+        var tx:Number, ty:Number, tlen:Number, px:Number, py:Number;
+        for (s = 0; s < histLen; s++) {
+            // 切线：前向差分；末帧用后向差分
+            if (s < histLen - 1) {
+                tx = midx[s + 1] - midx[s];
+                ty = midy[s + 1] - midy[s];
+            } else {
+                tx = midx[s] - midx[s - 1];
+                ty = midy[s] - midy[s - 1];
+            }
+            tlen = Math.sqrt(tx * tx + ty * ty);
+
+            if (tlen > 0.5) {
+                // 法线 = 切线逆时针旋转 90°，归一化后乘 halfDiag
+                px = (-ty / tlen) * hd;
+                py = (tx / tlen) * hd;
+            } else {
+                // 切线过短（近乎静止）→ 保留原始 edge 方向
+                px = e1[s].x - midx[s];
+                py = e1[s].y - midy[s];
+            }
+
+            e1[s] = { x: midx[s] + px, y: midy[s] + py };
+            e2[s] = { x: midx[s] - px, y: midy[s] - py };
+        }
+    }
+
+    /**
+     * 绘制带宽度渐变的闭合多边形轨迹。
+     *
+     * 构建路径：tapered_edge1[0→n] + tapered_edge2[n→0]，
+     * 首尾段用 lineTo，中间段用 curveTo 平滑。
+     * 顶点坐标存入 flat 数组（ptx/pty）避免对象分配。
+     *
+     * @param canvas    目标画布
+     * @param e1        edge1 历史点数组（index 0=最旧, last=最新）
+     * @param e2        edge2 历史点数组
+     * @param histLen   历史帧数
+     * @param color     填充色
+     * @param alpha     填充 alpha (0-100)
+     * @param taperMin  最旧帧宽度比例 (0-1)
+     * @param taperMax  最新帧宽度比例 (0-1)
+     */
+    private function _drawTaperedTrail(
+        canvas:MovieClip, e1:Array, e2:Array, histLen:Number,
+        color:Number, alpha:Number, taperMin:Number, taperMax:Number
+    ):Void
+    {
+        var taperRange:Number = taperMax - taperMin;
+        var invHist:Number = (histLen > 1) ? 1.0 / (histLen - 1) : 1;
+        var totalPts:Number = histLen * 2;
+
+        // 预计算渐变后的顶点坐标（flat 数组，避免 GC 分配）
+        var ptx:Array = [];
+        var pty:Array = [];
+        var s:Number, f:Number, tap:Number;
+        var mx:Number, my:Number;
+
+        // Edge1 正序（最旧→最新）
+        for (s = 0; s < histLen; s++) {
+            f = s * invHist;
+            tap = taperMin + f * taperRange;
+            mx = (e1[s].x + e2[s].x) * 0.5;
+            my = (e1[s].y + e2[s].y) * 0.5;
+            ptx.push(mx + (e1[s].x - mx) * tap);
+            pty.push(my + (e1[s].y - my) * tap);
+        }
+
+        // Edge2 逆序（最新→最旧）
+        for (s = histLen - 1; s >= 0; s--) {
+            f = s * invHist;
+            tap = taperMin + f * taperRange;
+            mx = (e1[s].x + e2[s].x) * 0.5;
+            my = (e1[s].y + e2[s].y) * 0.5;
+            ptx.push(mx + (e2[s].x - mx) * tap);
+            pty.push(my + (e2[s].y - my) * tap);
+        }
+
+        if (totalPts < 3) return;
+
+        // 绘制闭合多边形：首尾直线，中间 curveTo 平滑
+        var last:Number = totalPts - 2;
+        var cpx:Number, cpy:Number;
+        var j:Number;
+
+        canvas.beginFill(color, alpha);
+        canvas.moveTo(ptx[0], pty[0]);
+        canvas.lineTo(ptx[1], pty[1]);
+
+        for (j = 1; j < last; j++) {
+            cpx = (ptx[j] + ptx[j + 1]) * 0.5;
+            cpy = (pty[j] + pty[j + 1]) * 0.5;
+            canvas.curveTo(ptx[j], pty[j], cpx, cpy);
+        }
+
+        canvas.lineTo(ptx[totalPts - 1], pty[totalPts - 1]);
+        canvas.lineTo(ptx[0], pty[0]);
+        canvas.endFill();
     }
 
     // --------------------------
