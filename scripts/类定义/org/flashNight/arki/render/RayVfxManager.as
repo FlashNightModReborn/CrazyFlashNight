@@ -516,9 +516,9 @@ class org.flashNight.arki.render.RayVfxManager {
     /**
      * 从 config 读取 Number 字段，null/undefined/NaN/Infinity 返回默认值
      *
-     * AS2 中 NaN == NaN 为 true（违反 IEEE 754），因此不能用
-     * v == v 技巧检测 NaN/undefined。改用 == undefined 判空。
-     * config == null 时短路返回，避免 null[field] 异常。
+     * AS2 中 NaN == NaN 为 true（违反 IEEE 754），不能用 v == v 检测 NaN。
+     * 流程：config==null 短路 → == undefined 判空 → Number(v) 转换
+     *       → isFiniteNumber() 过滤 NaN/Infinity（利用 (n-n)==0 零代价检测）
      *
      * @param config 配置对象（可为 null）
      * @param field  字段名
