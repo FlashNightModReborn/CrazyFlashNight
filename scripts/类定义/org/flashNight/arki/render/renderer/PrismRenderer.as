@@ -83,7 +83,7 @@ class org.flashNight.arki.render.renderer.PrismRenderer {
         var dx:Number = arc.endX - arc.startX;
         var dy:Number = arc.endY - arc.startY;
         var dist:Number = Math.sqrt(dx * dx + dy * dy);
-        if (dist == 0) return;
+        if (!(dist > 0)) return;
 
         // ★ 核心1：能量频闪 ── shimmerAmp 控制粗细/亮度的随机脉冲
         //   模拟高能光束的不稳定输出（"滋滋"感），而非路径弯曲

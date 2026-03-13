@@ -81,7 +81,7 @@ class org.flashNight.arki.render.renderer.RadianceRenderer {
         var dx:Number = arc.endX - arc.startX;
         var dy:Number = arc.endY - arc.startY;
         var dist:Number = Math.sqrt(dx * dx + dy * dy);
-        if (dist == 0) return;
+        if (!(dist > 0)) return;
 
         // 垂直方向向量（用于微扰偏移）
         var perpX:Number = -dy / dist;

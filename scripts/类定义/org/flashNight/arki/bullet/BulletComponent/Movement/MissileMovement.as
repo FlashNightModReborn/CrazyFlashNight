@@ -68,9 +68,32 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
                 this.config[key] = DEFAULT_CONFIG[key];
             }
         }
-        
+
+        var dragCoefficient:Number = Number(this.config.dragCoefficient);
+        if ((dragCoefficient - dragCoefficient) != 0) {
+            dragCoefficient = DEFAULT_CONFIG.dragCoefficient;
+        }
+        this.config.dragCoefficient = dragCoefficient;
+
+        var navigationRatio:Number = Number(this.config.navigationRatio);
+        if ((navigationRatio - navigationRatio) != 0) {
+            navigationRatio = DEFAULT_CONFIG.navigationRatio;
+        }
+        this.config.navigationRatio = navigationRatio;
+
+        var angleCorrection:Number = Number(this.config.angleCorrection);
+        if ((angleCorrection - angleCorrection) != 0) {
+            angleCorrection = DEFAULT_CONFIG.angleCorrection;
+        }
+        this.config.angleCorrection = angleCorrection;
+
         // 设置转向速度
-        this._rotationSpeed = this.config.rotationSpeed;
+        var rotationSpeed:Number = Number(this.config.rotationSpeed);
+        if ((rotationSpeed - rotationSpeed) != 0) {
+            rotationSpeed = DEFAULT_CONFIG.rotationSpeed;
+        }
+        this.config.rotationSpeed = rotationSpeed;
+        this._rotationSpeed = rotationSpeed;
     }
     
     /**
@@ -94,6 +117,23 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
      */
     public function updateMovement(target:MovieClip):Void 
     {
+        if ((target._x - target._x) != 0) {
+            target._x = 0;
+        }
+        var targetY:Number = target._y;
+        if ((targetY - targetY) != 0) {
+            targetY = 0;
+            target._y = 0;
+        }
+        if ((target._rotation - target._rotation) != 0) {
+            target._rotation = 0;
+        }
+        var targetPlaneZ:Number = target.Z轴坐标;
+        if ((targetPlaneZ - targetPlaneZ) != 0) {
+            targetPlaneZ = targetY;
+            target.Z轴坐标 = targetPlaneZ;
+        }
+
         // 确保 targetObject 引用正确
         this.targetObject = target;
         
@@ -103,7 +143,11 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
         ++frame;
 
         if(frame === 1) {
-            target.zOffset = target.Z轴坐标 - target._y;
+            targetPlaneZ = target.Z轴坐标;
+            if ((targetPlaneZ - targetPlaneZ) != 0) {
+                targetPlaneZ = target._y;
+            }
+            target.zOffset = targetPlaneZ - target._y;
         } else if(frame >= 150) {
             target.shouldDestroy = function() {
                 return true;
@@ -112,16 +156,36 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
         
         // ========== 向量化物理计算开始 ==========
         
+        var vx:Number = this.vx;
+        if ((vx - vx) != 0) vx = 0;
+        var vy:Number = this.vy;
+        if ((vy - vy) != 0) vy = 0;
+        var desiredAngularVelocity:Number = this.desiredAngularVelocity;
+        if ((desiredAngularVelocity - desiredAngularVelocity) != 0) desiredAngularVelocity = 0;
+        var rotationAngle:Number = this.rotationAngle;
+        if ((rotationAngle - rotationAngle) != 0) {
+            rotationAngle = target._rotation;
+            if ((rotationAngle - rotationAngle) != 0) rotationAngle = 0;
+        }
+        var acceleration:Number = this.acceleration;
+        if ((acceleration - acceleration) != 0) acceleration = 0;
+        var maxSpeed:Number = this.maxSpeed;
+        if ((maxSpeed - maxSpeed) != 0 || maxSpeed < 0) maxSpeed = 0;
+        var rotationSpeed:Number = this._rotationSpeed;
+        if ((rotationSpeed - rotationSpeed) != 0) rotationSpeed = DEFAULT_CONFIG.rotationSpeed;
+        var dragCoefficient:Number = this.config.dragCoefficient;
+        if ((dragCoefficient - dragCoefficient) != 0) dragCoefficient = DEFAULT_CONFIG.dragCoefficient;
+
         // 1. 当前状态
-        var currentSpeed:Number = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-        var currentAngle:Number = Math.atan2(this.vy, this.vx);
+        var currentSpeed:Number = Math.sqrt(vx * vx + vy * vy);
+        var currentAngle:Number = Math.atan2(vy, vx);
         
         // 2. 计算法向加速度（转向力）
-        var maxTurnRateRad:Number = this._rotationSpeed * Math.PI / 180;
+        var maxTurnRateRad:Number = rotationSpeed * Math.PI / 180;
         var normalAccel:Number = maxTurnRateRad * currentSpeed; // 最大法向加速度
         
         // 使用期望的角速度计算转向力
-        var turnForce:Number = this.desiredAngularVelocity * currentSpeed;
+        var turnForce:Number = desiredAngularVelocity * currentSpeed;
         turnForce = Math.max(Math.min(turnForce, normalAccel), -normalAccel);
         
         // 3. 计算法向力的方向
@@ -131,55 +195,74 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
         // 4. 计算推力（切向力）
         var thrustX:Number = 0;
         var thrustY:Number = 0;
-        if (currentSpeed < this.maxSpeed) {
+        if (currentSpeed < maxSpeed) {
             var forwardDirX:Number = Math.cos(currentAngle);
             var forwardDirY:Number = Math.sin(currentAngle);
-            thrustX = forwardDirX * this.acceleration;
-            thrustY = forwardDirY * this.acceleration;
+            thrustX = forwardDirX * acceleration;
+            thrustY = forwardDirY * acceleration;
         }
         
         // 5. 计算阻力（与速度平方成正比）
-        var dragCoefficient:Number = this.config.dragCoefficient;
         var speedSquared:Number = currentSpeed * currentSpeed;
-        var dragX:Number = -this.vx * dragCoefficient * speedSquared;
-        var dragY:Number = -this.vy * dragCoefficient * speedSquared;
+        var dragX:Number = -vx * dragCoefficient * speedSquared;
+        var dragY:Number = -vy * dragCoefficient * speedSquared;
         
         // 6. 转弯产生的额外阻力（模拟攻角影响）
-        var turnAngle:Number = Math.abs(this.desiredAngularVelocity);
+        var turnAngle:Number = Math.abs(desiredAngularVelocity);
         var inducedDragFactor:Number = 1 + Math.sin(turnAngle) * 2; // 转弯时阻力增加
         dragX *= inducedDragFactor;
         dragY *= inducedDragFactor;
         
         // 7. 更新速度向量
-        this.vx += thrustX + normalDirX * turnForce + dragX;
-        this.vy += thrustY + normalDirY * turnForce + dragY;
+        vx += thrustX + normalDirX * turnForce + dragX;
+        vy += thrustY + normalDirY * turnForce + dragY;
         
         // 8. 限制最大速度
-        var newSpeed:Number = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-        // NaN 守卫：vx/vy 为 NaN 时 newSpeed=NaN，归零防止 NaN 传播
-        if (!(newSpeed > 0)) newSpeed = 0;
-        if (newSpeed > this.maxSpeed) {
-            var scale:Number = this.maxSpeed / newSpeed;
-            this.vx *= scale;
-            this.vy *= scale;
-            newSpeed = this.maxSpeed;
+        var newSpeed:Number = Math.sqrt(vx * vx + vy * vy);
+        if ((newSpeed - newSpeed) != 0 || !(newSpeed > 0)) {
+            vx = 0;
+            vy = 0;
+            newSpeed = 0;
+        } else if (newSpeed > maxSpeed) {
+            var scale:Number = maxSpeed / newSpeed;
+            vx *= scale;
+            vy *= scale;
+            newSpeed = maxSpeed;
         }
         
         // ========== 更新导弹状态 ==========
         
         // 更新速度和角度
+        this.vx = vx;
+        this.vy = vy;
+        this.desiredAngularVelocity = desiredAngularVelocity;
+        this.rotationAngle = rotationAngle;
+        this.acceleration = acceleration;
+        this.maxSpeed = maxSpeed;
+        this._rotationSpeed = rotationSpeed;
+        this.config.dragCoefficient = dragCoefficient;
         this.speed = newSpeed;
         if(this.lockRotation) {
             this.lockRotation = false;
         } else {
-            this.rotationAngle += this.desiredAngularVelocity * 180 / Math.PI;
-            target._x += this.vx;
-            target._y += this.vy;
+            rotationAngle += desiredAngularVelocity * 180 / Math.PI;
+            if ((rotationAngle - rotationAngle) != 0) rotationAngle = 0;
+            target._x += vx;
+            target._y += vy;
         }
         
         // 更新位置和显示
-        target._rotation = this.rotationAngle;
-        target.Z轴坐标 = target._y + (target.yOffset || target.zOffset);
+        this.rotationAngle = rotationAngle;
+        target._rotation = rotationAngle;
+
+        var visualOffset:Number = target.yOffset;
+        if ((visualOffset - visualOffset) != 0 || !visualOffset) {
+            visualOffset = target.zOffset;
+        }
+        if ((visualOffset - visualOffset) != 0) {
+            visualOffset = 0;
+        }
+        target.Z轴坐标 = target._y + visualOffset;
     }
 
     /**
@@ -195,6 +278,9 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
      */
     public function setDesiredAngularVelocity(angularVelocity:Number):Void 
     {
+        if ((angularVelocity - angularVelocity) != 0) {
+            angularVelocity = 0;
+        }
         this.desiredAngularVelocity = angularVelocity;
     }
 }

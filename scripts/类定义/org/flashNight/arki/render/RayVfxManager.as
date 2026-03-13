@@ -108,6 +108,10 @@ class org.flashNight.arki.render.RayVfxManager {
     private static var _ecCos:Array = null;
     private static var _ecSin:Array = null;
 
+    private static function isFiniteNumber(value:Number):Boolean {
+        return ((value - value) == 0);
+    }
+
     private static function ensureCircleLUT():Void {
         if (_ccCos != null) return;
         var seg:Number = 0.7853981633974483; // π/4
@@ -182,6 +186,11 @@ class org.flashNight.arki.render.RayVfxManager {
     public static function spawn(startX:Number, startY:Number,
                                   endX:Number, endY:Number,
                                   config:TeslaRayConfig, meta:Object):Void {
+        if (!isFiniteNumber(startX) || !isFiniteNumber(startY) ||
+            !isFiniteNumber(endX) || !isFiniteNumber(endY)) {
+            return;
+        }
+
         ensureInitialized();
 
         // 构建默认 meta
@@ -334,8 +343,10 @@ class org.flashNight.arki.render.RayVfxManager {
                                        config:TeslaRayConfig, meta:Object):Void {
         // 应用场景坐标偏移
         var offset:Object = SceneCoordinateManager.effectOffset;
-        var offsetX:Number = (offset != null && offset.x != undefined) ? offset.x : 0;
-        var offsetY:Number = (offset != null && offset.y != undefined) ? offset.y : 0;
+        var offsetX:Number = (offset != null && offset.x != undefined) ? Number(offset.x) : 0;
+        var offsetY:Number = (offset != null && offset.y != undefined) ? Number(offset.y) : 0;
+        if (!isFiniteNumber(offsetX)) offsetX = 0;
+        if (!isFiniteNumber(offsetY)) offsetY = 0;
 
         var arcId:Number = _arcIdCounter++;
         var arcMc:MovieClip = _container.createEmptyMovieClip("arc_" + arcId, _container.getNextHighestDepth());
@@ -503,7 +514,7 @@ class org.flashNight.arki.render.RayVfxManager {
     // ════════════════════════════════════════════════════════════════════════
 
     /**
-     * 从 config 读取 Number 字段，null/undefined 返回默认值
+     * 从 config 读取 Number 字段，null/undefined/NaN/Infinity 返回默认值
      *
      * AS2 中 NaN == NaN 为 true（违反 IEEE 754），因此不能用
      * v == v 技巧检测 NaN/undefined。改用 == undefined 判空。
@@ -518,7 +529,8 @@ class org.flashNight.arki.render.RayVfxManager {
         if (config == null) return def;
         var v = config[field];
         if (v == undefined) return def;
-        return Number(v);
+        var n:Number = Number(v);
+        return isFiniteNumber(n) ? n : def;
     }
 
     /**
@@ -536,7 +548,7 @@ class org.flashNight.arki.render.RayVfxManager {
     }
 
     /**
-     * 从 SegmentMeta 读取 intensity，null/undefined 返回 1.0
+     * 从 SegmentMeta 读取 intensity，null/undefined/NaN/Infinity 返回 1.0
      *
      * @param meta SegmentMeta 对象（可为 null）
      * @return intensity 值或 1.0
@@ -545,7 +557,8 @@ class org.flashNight.arki.render.RayVfxManager {
         if (meta == null) return 1.0;
         var v = meta.intensity;
         if (v == undefined) return 1.0;
-        return Number(v);
+        var n:Number = Number(v);
+        return isFiniteNumber(n) ? n : 1.0;
     }
 
     // ════════════════════════════════════════════════════════════════════════
@@ -749,7 +762,9 @@ class org.flashNight.arki.render.RayVfxManager {
      */
     public static function drawCircle(mc:MovieClip, cx:Number, cy:Number,
                                        radius:Number, color:Number, alpha:Number):Void {
-        if (radius <= 0 || alpha <= 0) return;
+        if (!isFiniteNumber(cx) || !isFiniteNumber(cy)) return;
+        if (!isFiniteNumber(radius) || !isFiniteNumber(alpha)) return;
+        if (!(radius > 0) || !(alpha > 0)) return;
 
         ensureCircleLUT();
 

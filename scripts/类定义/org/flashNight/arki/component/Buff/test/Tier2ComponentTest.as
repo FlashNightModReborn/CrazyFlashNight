@@ -54,6 +54,8 @@ class org.flashNight.arki.component.Buff.test.Tier2ComponentTest {
         testTickMaxLimit();
         testTickTriggerOnAttach();
         testTickWithMetaBuff();
+        testTickNaNBoundaryIsolation();
+        testTickNaNCounterFailClosed();
 
         trace("\n--- EventListenerComponent Tests (Real EventDispatcher) ---");
         testEventListenerBasic();
@@ -359,6 +361,64 @@ class org.flashNight.arki.component.Buff.test.Tier2ComponentTest {
             passTest();
         } catch (e) {
             failTest("Tick+MetaBuff test failed: " + e.message);
+        }
+    }
+
+    private static function testTickNaNBoundaryIsolation():Void {
+        startTest("Tick NaN Boundary Isolation");
+
+        try {
+            var mockTarget:Object = {hp: 100};
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+            var tickComp:TickComponent = new TickComponent(
+                30,
+                function(host:IBuff, count:Number, ctx:Object):Void {
+                    ctx.target.hp -= 10;
+                },
+                0,
+                {target: mockTarget},
+                false
+            );
+            var metaBuff:MetaBuff = new MetaBuff([], [tickComp], 0);
+            manager.addBuff(metaBuff, "nan_guard");
+
+            manager.update(Number(undefined));
+            assert(mockTarget.hp == 100, "NaN delta should be ignored at BuffManager boundary");
+            assert(manager.getDebugInfo().metaBuffs == 1, "MetaBuff should remain active after NaN delta");
+
+            manager.update(30);
+            assert(mockTarget.hp == 90, "Valid update after NaN boundary should still tick normally");
+
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Tick NaN boundary test failed: " + e.message);
+        }
+    }
+
+    private static function testTickNaNCounterFailClosed():Void {
+        startTest("Tick NaN Counter Fail Closed");
+
+        try {
+            var tickCount:Number = 0;
+            var tickComp:TickComponent = new TickComponent(
+                10,
+                function(host:IBuff, count:Number, ctx:Object):Void {
+                    tickCount = count;
+                },
+                0,
+                null,
+                false
+            );
+
+            tickComp["_counter"] = Number(undefined);
+            var alive:Boolean = tickComp.update(null, 1);
+            assert(alive == false, "Dirty NaN counter should fail closed");
+            assert(tickCount == 0, "Dirty NaN counter should not fire tick callback");
+
+            passTest();
+        } catch (e) {
+            failTest("Tick NaN counter fail-closed test failed: " + e.message);
         }
     }
 

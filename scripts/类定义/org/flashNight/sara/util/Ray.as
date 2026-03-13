@@ -30,21 +30,19 @@ class org.flashNight.sara.util.Ray {
      * @param maxDistance 射线的最大长度
      */
     public function Ray(origin:Vector, direction:Vector, maxDistance:Number) {
-        this.origin = origin.clone();
-        this.direction = direction.clone().normalize();
-        this.maxDistance = maxDistance;
+        this.origin = new Vector(0, 0);
+        this.direction = new Vector(0, 0);
+        this.setToFast(origin.x, origin.y, direction.x, direction.y, maxDistance);
     }
 
     /**
-     * 设置射线的属性（安全版本，克隆输入向量）。
+     * 设置射线的属性（安全版本，按值拷贝输入向量）。
      * @param origin 新的起点
      * @param direction 新的方向（传入后会单位化）
      * @param maxDistance 新的最大长度
      */
     public function setTo(origin:Vector, direction:Vector, maxDistance:Number):Void {
-        this.origin = origin.clone();
-        this.direction = direction.clone().normalize();
-        this.maxDistance = maxDistance;
+        this.setToFast(origin.x, origin.y, direction.x, direction.y, maxDistance);
     }
 
     /**
@@ -66,14 +64,14 @@ class org.flashNight.sara.util.Ray {
         this.origin.y = oy;
 
         // 内联归一化
-        var len:Number = Math.sqrt(dx * dx + dy * dy);
-        if (len > 0) {
-            var invLen:Number = 1 / len;
+        var lenSq:Number = dx * dx + dy * dy;
+        if ((lenSq - lenSq) == 0 && lenSq > 0) {
+            var invLen:Number = 1 / Math.sqrt(lenSq);
             this.direction.x = dx * invLen;
             this.direction.y = dy * invLen;
         } else {
-            // 零向量/NaN 时回退到单位方向，避免下游除零或 NaN 传播
-            this.direction.x = 1;
+            // 零向量或非法方向都退化为静止点，避免伪造出错误射线
+            this.direction.x = 0;
             this.direction.y = 0;
         }
 

@@ -32,6 +32,8 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayColliderTest {
         testConstructorNegativeDirection();
         testSetRay();
         testSetRayFast();
+        testSetRayFast_ZeroVectorPreservesPoint();
+        testSetRayFast_NaNDirectionSafeMiss();
         testGetAABB();
         testCheckCollision_Hit();
         testCheckCollision_Miss();
@@ -129,6 +131,39 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayColliderTest {
         assertEqual("right", 35, rc.right);
         assertEqual("top", 10, rc.top);
         assertEqual("bottom", 50, rc.bottom);
+    }
+
+    private function testSetRayFast_ZeroVectorPreservesPoint():Void {
+        trace(">>> testSetRayFast_ZeroVectorPreservesPoint");
+        var rc:RayCollider = new RayCollider(
+            new Vector(0, 0), new Vector(1, 0), 10
+        );
+        rc.setRayFast(10, 20, 0, 0, 50);
+        assertEqual("left", 10, rc.left);
+        assertEqual("right", 10, rc.right);
+        assertEqual("top", 20, rc.top);
+        assertEqual("bottom", 20, rc.bottom);
+
+        var target:AABBCollider = new AABBCollider(0, 30, 10, 40);
+        var cr:CollisionResult = rc.checkCollision(target, 0);
+        assertBool("zero vector still behaves as point ray", true, cr.isColliding);
+        assertEqual("zero vector tEntry=0", 0, cr.tEntry);
+    }
+
+    private function testSetRayFast_NaNDirectionSafeMiss():Void {
+        trace(">>> testSetRayFast_NaNDirectionSafeMiss");
+        var rc:RayCollider = new RayCollider(
+            new Vector(0, 0), new Vector(1, 0), 10
+        );
+        rc.setRayFast(0, 0, Number(undefined), 1, 50);
+        assertEqual("left", 0, rc.left);
+        assertEqual("right", 0, rc.right);
+        assertEqual("top", 0, rc.top);
+        assertEqual("bottom", 0, rc.bottom);
+
+        var target:AABBCollider = new AABBCollider(-10, 10, -10, 10);
+        var cr:CollisionResult = rc.checkCollision(target, 0);
+        assertBool("NaN direction becomes safe miss", false, cr.isColliding);
     }
 
     private function testGetAABB():Void {

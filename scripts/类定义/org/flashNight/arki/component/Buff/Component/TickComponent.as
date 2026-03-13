@@ -98,14 +98,19 @@ class org.flashNight.arki.component.Buff.Component.TickComponent implements IBuf
      * @return Boolean    组件是否继续存活
      */
     public function update(host:IBuff, deltaFrames:Number):Boolean {
-        // 完成标记（_counter < 0）或 NaN 输入均直接退出
-        // NaN 守卫前置：在加法前拦截，避免感染 _counter
-        // AS2 中 NaN >= _interval 始终为 true → 死循环（H07b）
-        if (_counter < 0 || (deltaFrames - deltaFrames) != 0) {
+        // 热路径契约：
+        // - deltaFrames 由 BuffManager.update() 在边界统一守卫
+        // - _interval / _maxTicks 由构造函数与 setter 保证为合法值
+        // 这里只保留 _counter 的 fail-closed 兜底，防止历史脏值触发 NaN >= x 死循环（H07b）
+        if (_counter < 0) {
             return false;
         }
 
         _counter += deltaFrames;
+        if ((_counter - _counter) != 0) {
+            _counter = -1;
+            return false;
+        }
 
         // 支持一帧内触发多次（处理大deltaFrames或小interval的情况）
         while (_counter >= _interval) {

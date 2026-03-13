@@ -12,6 +12,7 @@ import org.flashNight.sara.util.*;
 class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AABBCollider implements ICollider {
     // 内部存储射线对象
     private var _ray:Ray;
+    private var _isValid:Boolean;
 
     /**
      * 静态 AABB 缓存，用于 getAABB() 返回值复用
@@ -33,19 +34,38 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
      */
     public function RayCollider(origin:Vector, direction:Vector, maxDistance:Number) {
         super(0, 0, 0, 0);
+        _ray = new Ray(new Vector(0, 0), new Vector(0, 0), 0);
+        _isValid = true;
+        setRay(origin, direction, maxDistance);
+    }
 
-        _ray = new Ray(origin, direction, maxDistance);
+    private function _setPointBounds(ox:Number, oy:Number):Void {
+        this.left = ox;
+        this.right = ox;
+        this.top = oy;
+        this.bottom = oy;
+    }
 
-        // 内联终点计算 + 三元替代 Math.min/max (H15)
+    private function _setInvalidState(ox:Number, oy:Number):Void {
         var r:Ray = _ray;
-        var ox:Number = r.origin.x;
-        var oy:Number = r.origin.y;
-        var ex:Number = ox + r.direction.x * maxDistance;
-        var ey:Number = oy + r.direction.y * maxDistance;
-        if (ox < ex) { this.left = ox; this.right = ex; }
-        else { this.left = ex; this.right = ox; }
-        if (oy < ey) { this.top = oy; this.bottom = ey; }
-        else { this.top = ey; this.bottom = oy; }
+
+        if ((ox - ox) != 0) {
+            ox = r.origin.x;
+            if ((ox - ox) != 0) ox = 0;
+        }
+        if ((oy - oy) != 0) {
+            oy = r.origin.y;
+            if ((oy - oy) != 0) oy = 0;
+        }
+
+        r.origin.x = ox;
+        r.origin.y = oy;
+        r.direction.x = 0;
+        r.direction.y = 0;
+        r.maxDistance = 0;
+
+        _setPointBounds(ox, oy);
+        _isValid = false;
     }
 
     /**
@@ -61,21 +81,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
      * @param maxDistance 新的射线最大长度
      */
     public function setRay(origin:Vector, direction:Vector, maxDistance:Number):Void {
-        var ox:Number = origin.x;
-        var oy:Number = origin.y;
-
-        var r:Ray = _ray;
-        r.setToFast(ox, oy, direction.x, direction.y, maxDistance);
-
-        // 缓存 r.direction 避免重复 _ray 查找 (H02)
-        var dir:Vector = r.direction;
-        var ex:Number = ox + dir.x * maxDistance;
-        var ey:Number = oy + dir.y * maxDistance;
-
-        if (ox < ex) { this.left = ox; this.right = ex; }
-        else { this.left = ex; this.right = ox; }
-        if (oy < ey) { this.top = oy; this.bottom = ey; }
-        else { this.top = ey; this.bottom = oy; }
+        setRayFast(origin.x, origin.y, direction.x, direction.y, maxDistance);
     }
 
     /**
@@ -90,8 +96,16 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
      * @param maxDistance 射线最大长度
      */
     public function setRayFast(ox:Number, oy:Number, dx:Number, dy:Number, maxDistance:Number):Void {
+        if ((ox - ox) != 0 || (oy - oy) != 0 ||
+            (dx - dx) != 0 || (dy - dy) != 0 ||
+            (maxDistance - maxDistance) != 0) {
+            _setInvalidState(ox, oy);
+            return;
+        }
+
         var r:Ray = _ray;
         r.setToFast(ox, oy, dx, dy, maxDistance);
+        _isValid = true;
 
         // 缓存 r.direction 避免重复 _ray 查找 (H02)
         var dir:Vector = r.direction;
@@ -153,6 +167,8 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
      *         否则返回 CollisionResult.FALSE / ORDERFALSE / YORDERFALSE
      */
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
+        if (!_isValid) return CollisionResult.FALSE;
+
         var otherAABB:AABB = other.getAABB(zOffset);
 
         // ========== 宽相：有序分离快速检测 ==========
@@ -223,11 +239,19 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
     public function updateFromTransparentBullet(bullet:Object):Void {
         var ox:Number = bullet._x;
         var oy:Number = bullet._y;
+        if ((ox - ox) != 0 || (oy - oy) != 0) {
+            _setInvalidState(ox, oy);
+            return;
+        }
 
         // 缓存 _ray 及子对象，消除重复链式访问 (H01/H02)
         var r:Ray = _ray;
         r.origin.x = ox;
         r.origin.y = oy;
+        if (!_isValid) {
+            _setPointBounds(ox, oy);
+            return;
+        }
 
         var dir:Vector = r.direction;
         var maxDist:Number = r.maxDistance;
@@ -249,10 +273,18 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
     public function updateFromBullet(bullet:MovieClip, detectionArea:MovieClip):Void {
         var ox:Number = bullet._x;
         var oy:Number = bullet._y;
+        if ((ox - ox) != 0 || (oy - oy) != 0) {
+            _setInvalidState(ox, oy);
+            return;
+        }
 
         var r:Ray = _ray;
         r.origin.x = ox;
         r.origin.y = oy;
+        if (!_isValid) {
+            _setPointBounds(ox, oy);
+            return;
+        }
 
         var dir:Vector = r.direction;
         var maxDist:Number = r.maxDistance;
@@ -275,10 +307,18 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider extends AA
         var unitRect:Object = unit.area.getRect(_root.gameworld);
         var ox:Number = (unitRect.xMin + unitRect.xMax) * 0.5;
         var oy:Number = (unitRect.yMin + unitRect.yMax) * 0.5;
+        if ((ox - ox) != 0 || (oy - oy) != 0) {
+            _setInvalidState(ox, oy);
+            return;
+        }
 
         var r:Ray = _ray;
         r.origin.x = ox;
         r.origin.y = oy;
+        if (!_isValid) {
+            _setPointBounds(ox, oy);
+            return;
+        }
 
         var dir:Vector = r.direction;
         var maxDist:Number = r.maxDistance;

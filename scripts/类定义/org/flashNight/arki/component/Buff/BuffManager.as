@@ -515,6 +515,10 @@ class org.flashNight.arki.component.Buff.BuffManager {
             if (DEBUG) trace("[BuffManager] 警告：检测到update重入，已忽略");
             return;
         }
+        if ((deltaFrames - deltaFrames) != 0) {
+            if (DEBUG) trace("[BuffManager] 警告：update收到非法deltaFrames，已忽略");
+            return;
+        }
 
         this._inUpdate = true;
         this._updateCounter++;

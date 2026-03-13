@@ -79,7 +79,7 @@ class org.flashNight.arki.render.renderer.ConvergenceRenderer {
         var dx:Number = arc.endX - arc.startX;
         var dy:Number = arc.endY - arc.startY;
         var dist:Number = Math.sqrt(dx * dx + dy * dy);
-        if (dist == 0) return;
+        if (!(dist > 0)) return;
 
         var dirX:Number  = dx / dist;
         var dirY:Number  = dy / dist;

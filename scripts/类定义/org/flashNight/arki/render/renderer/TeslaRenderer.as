@@ -80,7 +80,7 @@ class org.flashNight.arki.render.renderer.TeslaRenderer {
         var dx:Number = arc.endX - arc.startX;
         var dy:Number = arc.endY - arc.startY;
         var dist:Number = Math.sqrt(dx * dx + dy * dy);
-        if (dist == 0) return;
+        if (!(dist > 0)) return;
 
         // 路径收集器
         var pathsToDraw:Array = RayVfxManager.poolArr();

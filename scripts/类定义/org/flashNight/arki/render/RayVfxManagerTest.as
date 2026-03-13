@@ -69,12 +69,9 @@ class org.flashNight.arki.render.RayVfxManagerTest {
         assertEq(10, RayVfxManager.cfgNum({other: 1}, "val", 10), "cfgNum 字段不存在");
         // config 为 null → 默认值
         assertEq(7, RayVfxManager.cfgNum(null, "val", 7), "cfgNum null config");
-        // 字段为 undefined → 默认值（AS2: Number(undefined) = NaN, NaN != NaN... 但 AS2 中 NaN==NaN=true）
-        // 实际 cfgNum 用 v == v 检查，AS2 中 NaN==NaN 为 true，所以 NaN 会通过
-        // 但 config["missing"] 返回 undefined，Number(undefined) 在 AS2 中是 NaN
-        // cfgNum 的 (v == v) 在 AS2 中对 NaN 返回 true（因为 AS2 NaN==NaN=true）
-        // 所以 undefined 字段会返回 NaN 而不是默认值... 让我们验证实际行为
         assertEq(55, RayVfxManager.cfgNum({}, "missing", 55), "cfgNum 空对象字段缺失");
+        assertEq(12, RayVfxManager.cfgNum({val: Number(undefined)}, "val", 12), "cfgNum NaN 回退默认值");
+        assertEq(13, RayVfxManager.cfgNum({val: 1.0/0}, "val", 13), "cfgNum Infinity 回退默认值");
         // 字符串数值应被强转为 Number（外部系统可能传字符串）
         assertEq(42, RayVfxManager.cfgNum({val: "42"}, "val", 0), "cfgNum 字符串强转");
         assertEq(3.14, RayVfxManager.cfgNum({val: "3.14"}, "val", 0), "cfgNum 浮点字符串强转");
@@ -102,6 +99,8 @@ class org.flashNight.arki.render.RayVfxManagerTest {
         assertEq(0, RayVfxManager.cfgIntensity({intensity: 0}), "cfgIntensity 零值不回退");
         assertEq(1.0, RayVfxManager.cfgIntensity(null), "cfgIntensity null meta");
         assertEq(1.0, RayVfxManager.cfgIntensity({}), "cfgIntensity 字段不存在");
+        assertEq(1.0, RayVfxManager.cfgIntensity({intensity: Number(undefined)}), "cfgIntensity NaN 回退");
+        assertEq(1.0, RayVfxManager.cfgIntensity({intensity: 1.0/0}), "cfgIntensity Infinity 回退");
     }
 
     // ════════════════════════════════════════════════════════════════════
@@ -425,6 +424,26 @@ class org.flashNight.arki.render.RayVfxManagerTest {
         RayVfxManager.reset();
     }
 
+    private static function test_spawnRejectsInvalidCoordinates():Void {
+        trace("--- spawn rejects invalid coordinates ---");
+        RayVfxManager.initWithContainer(_root);
+
+        var cfg:TeslaRayConfig = new TeslaRayConfig();
+        cfg.chainDelay = 0;
+        cfg.visualDuration = 3;
+        cfg.fadeOutDuration = 1;
+
+        RayVfxManager.spawn(Number(undefined), 0, 100, 0, cfg, null);
+        assertEq(0, RayVfxManager.getActiveCount(), "NaN startX 不生成电弧");
+        assertEq(0, RayVfxManager.getDelayedCount(), "NaN startX 不进入延迟队列");
+
+        RayVfxManager.spawn(0, 0, 1.0/0, 0, cfg, null);
+        assertEq(0, RayVfxManager.getActiveCount(), "Infinity endX 不生成电弧");
+        assertEq(0, RayVfxManager.getDelayedCount(), "Infinity endX 不进入延迟队列");
+
+        RayVfxManager.reset();
+    }
+
     private static function test_fadeAlpha():Void {
         trace("--- fade alpha ---");
         RayVfxManager.initWithContainer(_root);
@@ -732,6 +751,7 @@ class org.flashNight.arki.render.RayVfxManagerTest {
         // 5. 生命周期
         test_lifecycle();
         test_multipleArcs();
+        test_spawnRejectsInvalidCoordinates();
         test_fadeAlpha();
 
         // 6. LOD 管理

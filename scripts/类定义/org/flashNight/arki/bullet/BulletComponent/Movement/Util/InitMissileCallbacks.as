@@ -25,18 +25,30 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.InitMissileCallba
                                 angleDegrees:Number,
                                 config:Object):Function {
         return function():Void {
+            var initialSpeedRatio:Number = Number(config.initialSpeedRatio);
+            if ((initialSpeedRatio - initialSpeedRatio) != 0) initialSpeedRatio = 0;
+            var rotationSpeed:Number = Number(config.rotationSpeed);
+            if ((rotationSpeed - rotationSpeed) != 0) rotationSpeed = 0;
+            var acceleration:Number = Number(config.acceleration);
+            if ((acceleration - acceleration) != 0) acceleration = 0;
+            var maxSpeed:Number = velocity;
+            if ((maxSpeed - maxSpeed) != 0 || maxSpeed < 0) maxSpeed = 0;
+            var initialAngle:Number = angleDegrees;
+            if ((initialAngle - initialAngle) != 0) initialAngle = 0;
+
             // 根据配置设置初始速度
-            this.speed = velocity * config.initialSpeedRatio;
+            this.speed = maxSpeed * initialSpeedRatio;
+            if ((this.speed - this.speed) != 0 || this.speed < 0) this.speed = 0;
             // 存储发射者的名字
             this.shooter = shooter._name;
             // 设置初始旋转角度（度数）
-            this.rotationAngle = angleDegrees;
+            this.rotationAngle = initialAngle;
             // 使用配置中的旋转速度
-            this._rotationSpeed = config.rotationSpeed;
+            this._rotationSpeed = rotationSpeed;
             // 设置最大速度
-            this.maxSpeed = velocity;
+            this.maxSpeed = maxSpeed;
             // 使用配置中的加速度
-            this.acceleration = config.acceleration;
+            this.acceleration = acceleration;
             
             // 初始化搜索相关的内部状态变量
             this._searchIndex = 0;                       
@@ -45,7 +57,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.InitMissileCallba
             this._minDistanceSoFar = Infinity;
             
             // 初始化速度向量（新增）
-            var radians:Number = angleDegrees * Math.PI / 180;
+            var radians:Number = initialAngle * Math.PI / 180;
             this.vx = this.speed * Math.cos(radians);
             this.vy = this.speed * Math.sin(radians);
             

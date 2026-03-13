@@ -75,6 +75,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGridTest {
         testResultArrayIsolation();
         testResultSlotRotation();
         testNaNQueryDefense();
+        testNaNInsertAndRebuildDefense();
         testLargeScale();
         testFilterFunction();
         testPerformanceBenchmark();
@@ -330,14 +331,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGridTest {
         var g:SpatialHashGrid = new SpatialHashGrid(0, 0, 400, 400, 100, 100);
         g.insert(makeUnit(1, 200, 200), 200, 200);
 
-        // NaN 查询不应崩溃
         var r1:Array = g.queryCircle(Number(undefined), 200, 100);
-        // NaN 坐标 → (NaN - ox) * invW | 0 = 0，所以 c0=c1=0，可能命中 cell[0]
-        // 关键是不崩溃，长度可能是 0 或 1
-        assertTrue("nan_circle_noCrash", r1 != null);
+        assertEquals("nan_circle_empty", 0, r1.length, 0);
 
         var r2:Array = g.queryRect(Number(undefined), 0, 400, 400);
-        assertTrue("nan_rect_noCrash", r2 != null);
+        assertEquals("nan_rect_empty", 0, r2.length, 0);
 
         var n1:Object = g.queryNearest(Number(undefined), 200, 100, null);
         assertTrue("nan_nearest_returnsNull", n1 == null);
@@ -345,9 +343,32 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGridTest {
         var c1:Number = g.countInCircle(Number(undefined), 200, 100);
         assertEquals("nan_count_returns0", 0, c1, 0);
 
-        // Infinity 半径：当前实现应至少返回可用结果，不崩溃。
         var r3:Array = g.queryCircle(200, 200, 1.0/0);
-        assertTrue("inf_circle_noCrash", r3 != null);
+        assertEquals("inf_circle_empty", 0, r3.length, 0);
+    }
+
+    private static function testNaNInsertAndRebuildDefense():Void {
+        trace("\n--- testNaNInsertAndRebuildDefense ---");
+        var g:SpatialHashGrid = new SpatialHashGrid(0, 0, 400, 400, 100, 100);
+
+        g.insert(makeUnit(1, 100, 100), Number(undefined), 100);
+        assertEquals("nan_insert_ignored", 0, g.getStats().unitCount, 0);
+
+        var units:Array = [];
+        units.push(makeUnit(10, 50, 50));
+        units.push(makeUnit(11, 150, 150));
+        units[1].Z轴坐标 = Number(undefined);
+        g.rebuildFromUnits(units);
+        assertEquals("rebuild_skips_nan_units", 1, g.getStats().unitCount, 0);
+        assertEquals("rebuild_valid_unit_kept", 1, g.queryRect(0, 0, 400, 400).length, 0);
+
+        var units2:Array = [];
+        units2.push(makeUnit(20, 80, 80));
+        units2.push(makeUnit(21, 180, 180));
+        var leftValues:Array = [72, Number(undefined)];
+        var rightValues:Array = [88, 188];
+        g.rebuildFromParallelArrays(units2, leftValues, rightValues);
+        assertEquals("parallel_rebuild_skips_nan_values", 1, g.getStats().unitCount, 0);
     }
 
     private static function testLargeScale():Void {

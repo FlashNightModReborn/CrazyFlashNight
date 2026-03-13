@@ -86,6 +86,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         return result;
     }
 
+    private function _isFiniteNumber(value:Number):Boolean {
+        return ((value - value) == 0);
+    }
+
     /**
      * Clear all cells. O(cellCount)
      */
@@ -107,6 +111,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
      * Insert a unit at (x, y).
      */
     public function insert(unit:Object, x:Number, y:Number):Void {
+        if (!_isFiniteNumber(x) || !_isFiniteNumber(y)) return;
+
         var col:Number = ((x - _originX) * _invCellW) | 0;
         var row:Number = ((y - _originY) * _invCellH) | 0;
         if (col < 0) col = 0;
@@ -155,6 +161,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         var maxRow:Number = rows - 1;
 
         var j:Number = 0;
+        var outIndex:Number = 0;
         var unit:Object;
         var aabb:Object;
         var x:Number;
@@ -165,13 +172,25 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
 
         while (j < len) {
             unit = units[j];
+            if (unit == null) {
+                j++;
+                continue;
+            }
             aabb = unit.aabbCollider;
+            if (aabb == null) {
+                j++;
+                continue;
+            }
             x = (aabb.left + aabb.right) * 0.5;
             y = unit.Z轴坐标;
+            if (!_isFiniteNumber(x) || !_isFiniteNumber(y)) {
+                j++;
+                continue;
+            }
 
-            snapUnits[j] = unit;
-            snapXs[j] = x;
-            snapYs[j] = y;
+            snapUnits[outIndex] = unit;
+            snapXs[outIndex] = x;
+            snapYs[outIndex] = y;
 
             col = ((x - ox) * invW) | 0;
             row = ((y - oy) * invH) | 0;
@@ -181,10 +200,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
             else if (row > maxRow) row = maxRow;
 
             cell = grid[col * rows + row];
-            cell[cell.length] = j;
+            cell[cell.length] = outIndex;
+            outIndex++;
             j++;
         }
-        _unitCount = len;
+        snapUnits.length = outIndex;
+        snapXs.length = outIndex;
+        snapYs.length = outIndex;
+        _unitCount = outIndex;
     }
 
     /**
@@ -222,6 +245,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         var maxRow:Number = rows - 1;
 
         var j:Number = 0;
+        var outIndex:Number = 0;
         var x:Number;
         var y:Number;
         var col:Number;
@@ -229,12 +253,20 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
         var cell:Array;
 
         while (j < len) {
+            if (units[j] == null) {
+                j++;
+                continue;
+            }
             x = (leftValues[j] + rightValues[j]) * 0.5;
             y = units[j].Z轴坐标;
+            if (!_isFiniteNumber(x) || !_isFiniteNumber(y)) {
+                j++;
+                continue;
+            }
 
-            snapUnits[j] = units[j];
-            snapXs[j] = x;
-            snapYs[j] = y;
+            snapUnits[outIndex] = units[j];
+            snapXs[outIndex] = x;
+            snapYs[outIndex] = y;
 
             col = ((x - ox) * invW) | 0;
             row = ((y - oy) * invH) | 0;
@@ -244,10 +276,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
             else if (row > maxRow) row = maxRow;
 
             cell = grid[col * rows + row];
-            cell[cell.length] = j;
+            cell[cell.length] = outIndex;
+            outIndex++;
             j++;
         }
-        _unitCount = len;
+        snapUnits.length = outIndex;
+        snapXs.length = outIndex;
+        snapYs.length = outIndex;
+        _unitCount = outIndex;
     }
 
     /**
@@ -257,6 +293,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
     public function queryRect(x1:Number, y1:Number, x2:Number, y2:Number,
                                filterFn:Function):Array {
         var result:Array = _acquireResultSlot();
+        if (!_isFiniteNumber(x1) || !_isFiniteNumber(y1) ||
+            !_isFiniteNumber(x2) || !_isFiniteNumber(y2)) {
+            return result;
+        }
 
         var ox:Number = _originX;
         var oy:Number = _originY;
@@ -328,8 +368,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
     public function queryCircle(cx:Number, cy:Number, radius:Number,
                                  filterFn:Function):Array {
         var result:Array = _acquireResultSlot();
-
-        if (radius <= 0) return result;
+        if (!_isFiniteNumber(cx) || !_isFiniteNumber(cy) ||
+            !_isFiniteNumber(radius) || !(radius > 0)) return result;
 
         var r2:Number = radius * radius;
         var ox:Number = _originX;
@@ -401,7 +441,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
      */
     public function queryNearest(cx:Number, cy:Number, maxDist:Number,
                                   excludeUnit:Object, filterFn:Function):Object {
-        if (maxDist <= 0) return null;
+        if (!_isFiniteNumber(cx) || !_isFiniteNumber(cy) ||
+            !_isFiniteNumber(maxDist) || !(maxDist > 0)) return null;
 
         var bestDist2:Number = maxDist * maxDist;
         var bestUnit:Object = null;
@@ -482,7 +523,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid {
      * Count units in circle. Faster than queryCircle().length.
      */
     public function countInCircle(cx:Number, cy:Number, radius:Number):Number {
-        if (radius <= 0) return 0;
+        if (!_isFiniteNumber(cx) || !_isFiniteNumber(cy) ||
+            !_isFiniteNumber(radius) || !(radius > 0)) return 0;
 
         var count:Number = 0;
         var r2:Number = radius * radius;
