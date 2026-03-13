@@ -564,7 +564,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     private static function processRayBullets():Void {
         var count:Number = _rayBullets.length;
         if (count == 0) return;
-        _root.服务器.立即发送("[RAY-0] processRayBullets 入口 count=" + count);
+        // _root.服务器.立即发送("[RAY-0] processRayBullets 入口 count=" + count);
 
         // === 宏展开：标志位常量 ===
         #include "../macros/STATE_FRIENDLY_FIRE.as"
@@ -1386,7 +1386,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     if (rayMode == "chain" && bulletPierceLimit > 1) {
                         // bulletPierceLimit - 1 = 弹跳次数（主命中已消耗1个名额）
                         var chainMaxBounces:Number = bulletPierceLimit - 1;
-                        _root.服务器.立即发送("[RAY-C0] chain开始 maxBounces=" + chainMaxBounces + " unitLen=" + unitLen);
+                        // _root.服务器.立即发送("[RAY-C0] chain开始 maxBounces=" + chainMaxBounces + " unitLen=" + unitLen);
                         var chainRadius:Number = config.chainRadius;
                         var chainFalloff:Number = config.damageFalloff;
                         var chainRadiusSq:Number = chainRadius * chainRadius;
@@ -1402,7 +1402,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         var prevChainZ:Number = rayNearestTarget.Z轴坐标;
 
                         for (var ci:Number = 0; ci < chainMaxBounces; ci++) {
-                            _root.服务器.立即发送("[RAY-C" + (ci+1) + "] bounce prevX=" + prevChainX + " prevY=" + prevChainY);
+                            // _root.服务器.立即发送("[RAY-C" + (ci+1) + "] bounce prevX=" + prevChainX + " prevY=" + prevChainY);
                             // 从当前命中点搜索最近未命中目标
                             var searchLeft:Number = prevChainX - chainRadius;
                             var searchRight:Number = prevChainX + chainRadius;
@@ -1470,7 +1470,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             prevChainZ = chainBestTarget.Z轴坐标;
                             chainDmgMult *= chainFalloff;
                         }
-                        _root.服务器.立即发送("[RAY-CE] chain结束");
+                        // _root.服务器.立即发送("[RAY-CE] chain结束");
 
                     // ========================================================
                     // fork 模式：光棱折射 —— 从命中点搜索附近目标定向折射

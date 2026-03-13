@@ -84,6 +84,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     private static var _p_buffName:String;
     private static var _p_maxDist:Number;
     private static var _p_innerFilter:Function;
+    private static var _p_point2DZ:Number;
+    private static var _p_point2DZRange:Number;
+    private static var _p_point2DInnerFilter:Function;
 
     /** 低血量过滤器（血量 < 50%） */
     private static function _fn_lowHP(u:Object, target:Object, distance:Number):Boolean {
@@ -118,6 +121,15 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     /** 距离限制过滤器（读取 _p_maxDist 和 _p_innerFilter 参数槽） */
     private static function _fn_distanceFilter(u:Object, t:Object, distance:Number):Boolean {
         return distance <= _p_maxDist && _p_innerFilter(u, t, distance);
+    }
+
+    /** 定点 2D 过滤器（读取 _p_point2DZ / _p_point2DZRange / _p_point2DInnerFilter 参数槽） */
+    private static function _fn_point2DFilter(u:Object):Boolean {
+        var zDiff:Number = _p_point2DZ - u.Z轴坐标;
+        if (!(zDiff < _p_point2DZRange && zDiff > -_p_point2DZRange)) {
+            return false;
+        }
+        return _p_point2DInnerFilter == undefined ? true : _p_point2DInnerFilter(u);
     }
 
     // ========================================================================
@@ -1519,6 +1531,63 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         cx:Number, cy:Number, maxDist:Number, filterFn:Function
     ):Object {
         return queryNearest2D(t, interval, "友军", cx, cy, maxDist, null, filterFn);
+    }
+
+    /**
+     * 定点 2D 最近邻查询（额外附带 Z 轴范围门控）
+     * 适用于“以某个打击点为圆心，优先选择实际可命中的最近目标”的场景。
+     *
+     * @param target     请求单位（用于获取缓存）
+     * @param interval   缓存更新间隔
+     * @param requestType 请求类型："敌人"、"友军"、"全体"
+     * @param cx         查询点 X
+     * @param cz         查询点 Z（映射到 2D 查询的 Y 轴）
+     * @param maxDist    最大 2D 搜索距离
+     * @param zRange     额外 Z 轴门控范围；<=0 时退化为普通 2D 最近邻
+     * @param filterFn   可选附加过滤函数 function(unit):Boolean
+     * @return 最近的匹配单位，无结果返回 null
+     */
+    public static function findNearestTargetAtPoint2D(
+        target:Object, interval:Number, requestType:String,
+        cx:Number, cz:Number, maxDist:Number,
+        zRange:Number, filterFn:Function
+    ):Object {
+        if (!(zRange > 0)) {
+            return queryNearest2D(target, interval, requestType, cx, cz, maxDist, null, filterFn);
+        }
+
+        _p_point2DZ = cz;
+        _p_point2DZRange = zRange;
+        _p_point2DInnerFilter = filterFn;
+
+        return queryNearest2D(target, interval, requestType, cx, cz, maxDist, null, _fn_point2DFilter);
+    }
+
+    /** 定点 2D 最近敌人（带 Z 轴门控） */
+    public static function findNearestEnemyAtPoint2D(
+        t:Object, interval:Number,
+        cx:Number, cz:Number, maxDist:Number,
+        zRange:Number, filterFn:Function
+    ):Object {
+        return findNearestTargetAtPoint2D(t, interval, "敌人", cx, cz, maxDist, zRange, filterFn);
+    }
+
+    /** 定点 2D 最近友军（带 Z 轴门控） */
+    public static function findNearestAllyAtPoint2D(
+        t:Object, interval:Number,
+        cx:Number, cz:Number, maxDist:Number,
+        zRange:Number, filterFn:Function
+    ):Object {
+        return findNearestTargetAtPoint2D(t, interval, "友军", cx, cz, maxDist, zRange, filterFn);
+    }
+
+    /** 定点 2D 最近全体（带 Z 轴门控） */
+    public static function findNearestAllAtPoint2D(
+        t:Object, interval:Number,
+        cx:Number, cz:Number, maxDist:Number,
+        zRange:Number, filterFn:Function
+    ):Object {
+        return findNearestTargetAtPoint2D(t, interval, "全体", cx, cz, maxDist, zRange, filterFn);
     }
 
     /** 2D 圆内敌人计数 */
