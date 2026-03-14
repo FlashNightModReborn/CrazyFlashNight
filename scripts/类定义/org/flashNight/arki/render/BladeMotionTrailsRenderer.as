@@ -36,6 +36,7 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
     private static var _clipXScratch:Array = [];
     private static var _clipYScratch:Array = [];
     private static var _trailScratch:Array = [];
+    private static var _pairDistSqScratch:Array = [];
 
     private function BladeMotionTrailsRenderer() {
     }
@@ -83,6 +84,8 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
     private static var MIN_SPREAD:Number = 0.3;
     /** 间隙填充比（黄金比例 φ ≈ 0.618：膨胀到间隙的 61.8%，留 38.2% 负空间） */
     private static var FILL_RATIO:Number = 0.618;
+    /** FILL_RATIO * 0.5 预计算，供平方域 sqrt 合并使用 */
+    private static var HALF_FILL_RATIO:Number = 0.309;
 
     /**
      * 自适应膨胀采样：三阶段流程
@@ -101,7 +104,7 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
      * Phase 3 — 按自适应系数执行 localToGlobal 边缘采样
      *
      * 前提：刀口位置MC为纯平移变换（无旋缩），局部尺寸≈父空间尺寸。
-     * 额外开销：≤ n-1 次 sqrt + 少量算术，零额外 localToGlobal。
+     * 额外开销：n 次 sqrt（预计算成对距离平方 + 平方域合并，从 3n 降至 n），零额外 localToGlobal。
      */
     private static function _sampleBladeEdges(
         mc:MovieClip, map:MovieClip, maxPositions:Number,
@@ -134,19 +137,22 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
             current = mc["刀口位置" + i];
             if (current && current._x != undefined) {
                 bladeId += String(i);
+                // H03: MC 属性批量读取后缓存，避免重复 native 访问(~170ns/次)
+                var px:Number = current._x;
+                var py:Number = current._y;
                 clips[n] = current;
-                clipX[n] = current._x;
-                clipY[n] = current._y;
+                clipX[n] = px;
+                clipY[n] = py;
                 rect = current.getRect(current);
                 localRects[n] = rect;
 
-                lo = clipX[n] + rect.xMin;
-                hi = clipX[n] + rect.xMax;
+                lo = px + rect.xMin;
+                hi = px + rect.xMax;
                 if (lo < minBladeX) minBladeX = lo;
                 if (hi > maxBladeX) maxBladeX = hi;
 
-                lo = clipY[n] + rect.yMin;
-                hi = clipY[n] + rect.yMax;
+                lo = py + rect.yMin;
+                hi = py + rect.yMax;
                 if (lo < minBladeY) minBladeY = lo;
                 if (hi > maxBladeY) maxBladeY = hi;
                 n++;
@@ -158,93 +164,110 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
         clipX.length = n;
         clipY.length = n;
 
-        // ==== Phase 2 + 3: 计算膨胀系数并采样 ====
+        // ==== 预计算相邻成对距离平方（消除主循环 sqrt）====
+        var pairDistSq:Array = _pairDistSqScratch;
         var maxSpread:Number = EDGE_SPREAD;
         var minSpread:Number = MIN_SPREAD;
+        var hw:Number, hh:Number;
+        var dx:Number, dy:Number;
+        var j:Number;
+
+        if (n > 1) {
+            var prevPX:Number = clipX[0];
+            var prevPY:Number = clipY[0];
+            for (j = 1; j < n; j++) {
+                var curPX:Number = clipX[j];
+                var curPY:Number = clipY[j];
+                dx = curPX - prevPX;
+                dy = curPY - prevPY;
+                pairDistSq[j - 1] = dx * dx + dy * dy;
+                prevPX = curPX;
+                prevPY = curPY;
+            }
+            pairDistSq.length = n - 1;
+        }
+
+        // ==== Phase 2 + 3: 计算膨胀系数并采样 ====
         var expandLeft:Number, expandRight:Number;
         var expandUp:Number, expandDown:Number;
         var sLeft:Number, sRight:Number;
         var sUp:Number, sDown:Number;
-        var hw:Number, hh:Number;
-        var naturalHD:Number;
-        var dx:Number, dy:Number, dist:Number, nearDist:Number;
-        var j:Number;
+        // H01: rect 字段缓存到局部变量（每字段 GetMember ~144ns，每位置访问 2~4 次）
+        var rxMin:Number, rxMax:Number, ryMin:Number, ryMax:Number;
         var k:Number = 0;
         for (j = 0; j < n; j++) {
             current = clips[j];
             rect = localRects[j];
+            rxMin = rect.xMin;
+            rxMax = rect.xMax;
+            ryMin = rect.yMin;
+            ryMax = rect.yMax;
 
-            // --- 2B: 相邻间距约束（黄金比例填充）---
+            // --- 2B: 相邻间距约束（平方域运算，1 次 sqrt 替代 3 次）---
             if (n == 1) {
                 spread = maxSpread;
             } else {
-                hw = (rect.xMax - rect.xMin) * 0.5;
-                hh = (rect.yMax - rect.yMin) * 0.5;
-                naturalHD = sqrt(hw * hw + hh * hh);
-                if (naturalHD < 0.1) {
+                hw = (rxMax - rxMin) * 0.5;
+                hh = (ryMax - ryMin) * 0.5;
+                var hdSq:Number = hw * hw + hh * hh;
+                if (hdSq < 0.01) {
                     spread = maxSpread;
                 } else {
-                    nearDist = 1e8;
+                    // 取最近相邻距离平方（预计算，零 sqrt）
+                    var nearDistSq:Number = 1e16;
                     if (j > 0) {
-                        dx = clipX[j] - clipX[j - 1];
-                        dy = clipY[j] - clipY[j - 1];
-                        dist = sqrt(dx * dx + dy * dy);
-                        if (dist < nearDist) nearDist = dist;
+                        var leftSq:Number = pairDistSq[j - 1];
+                        if (leftSq < nearDistSq) nearDistSq = leftSq;
                     }
                     if (j < n - 1) {
-                        dx = clipX[j + 1] - clipX[j];
-                        dy = clipY[j + 1] - clipY[j];
-                        dist = sqrt(dx * dx + dy * dy);
-                        if (dist < nearDist) nearDist = dist;
+                        var rightSq:Number = pairDistSq[j];
+                        if (rightSq < nearDistSq) nearDistSq = rightSq;
                     }
-                    spread = (nearDist * 0.5) / naturalHD * FILL_RATIO;
+                    // sqrt(nearDistSq) * 0.5 / sqrt(hdSq) * φ
+                    // = sqrt(nearDistSq / hdSq) * (0.5 * φ)  — 合并 3 次 sqrt 为 1 次
+                    spread = sqrt(nearDistSq / hdSq) * HALF_FILL_RATIO;
                     if (spread > maxSpread) spread = maxSpread;
                 }
             }
 
             // --- 2C: 刀身范围约束（限制膨胀不超出自然边界并集）---
-            cy = (rect.yMin + rect.yMax) * 0.5;
-            cx = (rect.xMin + rect.xMax) * 0.5;
+            cy = (ryMin + ryMax) * 0.5;
+            cx = (rxMin + rxMax) * 0.5;
             centerPX = clipX[j] + cx;
             centerPY = clipY[j] + cy;
 
-            expandLeft = cx - rect.xMin;
+            expandLeft = cx - rxMin;
             if (expandLeft > 0.1) {
                 sLeft = (centerPX - minBladeX) / expandLeft;
                 if (sLeft < spread) spread = sLeft;
             }
-            expandRight = rect.xMax - cx;
+            expandRight = rxMax - cx;
             if (expandRight > 0.1) {
                 sRight = (maxBladeX - centerPX) / expandRight;
                 if (sRight < spread) spread = sRight;
             }
-
-            // 向 yMax（刀口方向）的膨胀不超过刀身上界
-            expandUp = rect.yMax - cy;
+            expandUp = ryMax - cy;
             if (expandUp > 0.1) {
                 sUp = (maxBladeY - centerPY) / expandUp;
                 if (sUp < spread) spread = sUp;
             }
-            // 向 yMin（刀柄方向）的膨胀不超过刀身下界
-            expandDown = cy - rect.yMin;
+            expandDown = cy - ryMin;
             if (expandDown > 0.1) {
                 sDown = (centerPY - minBladeY) / expandDown;
                 if (sDown < spread) spread = sDown;
             }
-            // 最终下限
             if (spread < minSpread) spread = minSpread;
 
-            // 刀口侧：从中心向 (xMin, yMax) 方向扩展
-            tipPt.x = cx + (rect.xMin - cx) * spread;
-            tipPt.y = cy + (rect.yMax - cy) * spread;
+            // Phase 3: 按自适应系数采样边缘
+            tipPt.x = cx + (rxMin - cx) * spread;
+            tipPt.y = cy + (ryMax - cy) * spread;
             current.localToGlobal(tipPt);
             map.globalToLocal(tipPt);
             e1x = tipPt.x;
             e1y = tipPt.y;
 
-            // 刀柄侧：从中心向 (xMax, yMin) 方向扩展
-            basePt.x = cx + (rect.xMax - cx) * spread;
-            basePt.y = cy + (rect.yMin - cy) * spread;
+            basePt.x = cx + (rxMax - cx) * spread;
+            basePt.y = cy + (ryMin - cy) * spread;
             current.localToGlobal(basePt);
             map.globalToLocal(basePt);
 

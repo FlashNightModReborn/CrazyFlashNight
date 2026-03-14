@@ -316,6 +316,9 @@ class org.flashNight.arki.render.TrailRenderer
         var style:Object   = _styleManager.getStyle(styleName);
         var len:Number     = edgeArray.length;
         var fillColor:Number   = style.color;
+        // H01: style 成员在 do-while 循环内使用，预缓存到局部(GetMember ~144ns/次)
+        var lineWidth:Number   = style.lineWidth;
+        var lineColor:Number   = style.lineColor;
         var outerFillAlpha:Number = style.fillOpacity * 0.3;
         var innerFillAlpha:Number = style.fillOpacity * 0.6;
         var outerLineAlpha:Number = style.lineOpacity * 0.14;
@@ -371,7 +374,7 @@ class org.flashNight.arki.render.TrailRenderer
 
             // 外扩辉光层：全采样宽度，低 alpha
             // additive blend 下多帧画布叠加会累积亮度，alpha 需远低于 normal blend
-            canvas.lineStyle(style.lineWidth, style.lineColor, outerLineAlpha);
+            canvas.lineStyle(lineWidth, lineColor, outerLineAlpha);
             _drawTaperedTrail(canvas, drawE1, drawE2, midx, midy, histLen, fillColor, outerFillAlpha, 0.3, 1.0, ptx, pty);
 
             // 核心层：收窄，适度 alpha，additive 叠加自然趋亮
@@ -436,26 +439,29 @@ class org.flashNight.arki.render.TrailRenderer
 
         // ---- 按切线法线方向重建 edge1/edge2 ----
         var tx:Number, ty:Number, tlen:Number, px:Number, py:Number;
+        // H01: midx[s]/midy[s] 每轮访问 3~4 次(~35ns/次)，缓存到局部
+        var mx:Number, my:Number;
+        var lastS:Number = histLen - 1;
         for (s = 0; s < histLen; s++) {
+            mx = midx[s];
+            my = midy[s];
             // 切线：前向差分；末帧用后向差分
-            if (s < histLen - 1) {
-                tx = midx[s + 1] - midx[s];
-                ty = midy[s + 1] - midy[s];
+            if (s < lastS) {
+                tx = midx[s + 1] - mx;
+                ty = midy[s + 1] - my;
             } else {
-                tx = midx[s] - midx[s - 1];
-                ty = midy[s] - midy[s - 1];
+                tx = mx - midx[s - 1];
+                ty = my - midy[s - 1];
             }
             tlen = sqrt(tx * tx + ty * ty);
 
             if (tlen > 0.5) {
-                // 法线 = 切线逆时针旋转 90°，归一化后乘 halfDiag
                 px = (-ty / tlen) * hd;
                 py = (tx / tlen) * hd;
             } else {
-                // 切线过短（近乎静止）→ 保留原始 edge 方向
                 p1 = srcE1[s];
-                px = p1.x - midx[s];
-                py = p1.y - midy[s];
+                px = p1.x - mx;
+                py = p1.y - my;
             }
 
             p1 = outE1[s];
@@ -469,10 +475,10 @@ class org.flashNight.arki.render.TrailRenderer
                 outE2[s] = p2;
             }
 
-            p1.x = midx[s] + px;
-            p1.y = midy[s] + py;
-            p2.x = midx[s] - px;
-            p2.y = midy[s] - py;
+            p1.x = mx + px;
+            p1.y = my + py;
+            p2.x = mx - px;
+            p2.y = my - py;
         }
         outE1.length = histLen;
         outE2.length = histLen;
@@ -506,14 +512,18 @@ class org.flashNight.arki.render.TrailRenderer
 
         var s:Number, f:Number, tap:Number;
         var p:Object;
+        // H01: midx[s]/midy[s] 每轮 2 次访问，缓存到局部
+        var mx:Number, my:Number;
 
         // Edge1 正序（最旧→最新）
         for (s = 0; s < histLen; s++) {
             f = s * invHist;
             tap = taperMin + f * taperRange;
             p = e1[s];
-            ptx[s] = midx[s] + (p.x - midx[s]) * tap;
-            pty[s] = midy[s] + (p.y - midy[s]) * tap;
+            mx = midx[s];
+            my = midy[s];
+            ptx[s] = mx + (p.x - mx) * tap;
+            pty[s] = my + (p.y - my) * tap;
         }
 
         // Edge2 逆序（最新→最旧）
@@ -522,8 +532,10 @@ class org.flashNight.arki.render.TrailRenderer
             f = s * invHist;
             tap = taperMin + f * taperRange;
             p = e2[s];
-            ptx[writeIndex] = midx[s] + (p.x - midx[s]) * tap;
-            pty[writeIndex] = midy[s] + (p.y - midy[s]) * tap;
+            mx = midx[s];
+            my = midy[s];
+            ptx[writeIndex] = mx + (p.x - mx) * tap;
+            pty[writeIndex] = my + (p.y - my) * tap;
             writeIndex++;
         }
         ptx.length = totalPts;
@@ -532,18 +544,24 @@ class org.flashNight.arki.render.TrailRenderer
         if (totalPts < 3) return;
 
         // 绘制闭合多边形：首尾直线，中间 curveTo 平滑
+        // 滑动窗口：缓存当前点坐标，每轮减少 2 次数组读取
         var last:Number = totalPts - 2;
-        var cpx:Number, cpy:Number;
         var j:Number;
 
         canvas.beginFill(color, alpha);
         canvas.moveTo(ptx[0], pty[0]);
-        canvas.lineTo(ptx[1], pty[1]);
 
+        var curX:Number = ptx[1];
+        var curY:Number = pty[1];
+        canvas.lineTo(curX, curY);
+
+        var nextX:Number, nextY:Number;
         for (j = 1; j < last; j++) {
-            cpx = (ptx[j] + ptx[j + 1]) * 0.5;
-            cpy = (pty[j] + pty[j + 1]) * 0.5;
-            canvas.curveTo(ptx[j], pty[j], cpx, cpy);
+            nextX = ptx[j + 1];
+            nextY = pty[j + 1];
+            canvas.curveTo(curX, curY, (curX + nextX) * 0.5, (curY + nextY) * 0.5);
+            curX = nextX;
+            curY = nextY;
         }
 
         canvas.lineTo(ptx[totalPts - 1], pty[totalPts - 1]);
@@ -554,26 +572,6 @@ class org.flashNight.arki.render.TrailRenderer
     // --------------------------
     // 私有工具：绘制封装
     // --------------------------
-    private function _drawMixedTrailBatch(polys:Array, alphaVal:Number, styleName:String):Void
-    {
-        if (polys.length == 0) return;
-
-        var style:Object  = _styleManager.getStyle(styleName);
-        var fillAlpha:Number = style.fillOpacity * (alphaVal / 100);
-        var lineAlpha:Number = style.lineOpacity * (alphaVal / 100);
-
-        VectorAfterimageRenderer.instance.drawMixedShapes(
-            polys,
-            style.color,
-            style.lineColor,
-            style.lineWidth,
-            fillAlpha,
-            lineAlpha,
-            true,   // 闭合
-            5       // 残影数量示例
-        );
-    }
-
     private function _drawSimpleTrailBatch(polys:Array, styleName:String, alphaVal:Number):Void
     {
         if (polys.length == 0) return;
