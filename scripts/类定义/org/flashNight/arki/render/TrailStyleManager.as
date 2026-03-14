@@ -122,16 +122,14 @@ class org.flashNight.arki.render.TrailStyleManager
     public function getStyle(styleName:String):Object
     {
         var s:Object = _styles[styleName] != undefined ? _styles[styleName] : _styles["预设"];
-        // 惰性合并：外部 XML 加载的样式可能缺少新增字段
-        // 直接写回原对象：幂等、零 GC、后续调用直接跳过
-        if (s.leadOffset == undefined) {
-            var d:Object = _defaultStyle;
-            s.leadOffset  = d.leadOffset;
-            s.lagOffset   = d.lagOffset;
-            s.outerScale  = d.outerScale;
-            s.innerScale  = d.innerScale;
-            s.tailFade    = d.tailFade;
-        }
+        // 惰性合并：每个字段独立 backfill，防止 partial override 留下 undefined
+        // 例如 updateStyle("x", {leadOffset:0.2}) 不应导致 lagOffset 等为 undefined → NaN
+        var d:Object = _defaultStyle;
+        if (s.leadOffset == undefined)  s.leadOffset  = d.leadOffset;
+        if (s.lagOffset == undefined)   s.lagOffset   = d.lagOffset;
+        if (s.outerScale == undefined)  s.outerScale  = d.outerScale;
+        if (s.innerScale == undefined)  s.innerScale  = d.innerScale;
+        if (s.tailFade == undefined)    s.tailFade    = d.tailFade;
         return s;
     }
 

@@ -35,13 +35,20 @@ class org.flashNight.gesh.xml.LoadXml.TrailStylesLoader extends BaseXMLLoader {
             var ts:Object = {};
             for (var Key:String in s) {
                 var st:Object = s[Key];
-                ts[st.name] = {
+                var entry:Object = {
                     color: st.color,
                     lineColor: st.lineColor,
                     lineWidth: st.lineWidth,
                     fillOpacity: st.fillOpacity,
                     lineOpacity: st.lineOpacity
-                }
+                };
+                // P1 几何增强字段（可选，XML 中未定义时不设置，由 getStyle 惰性 backfill）
+                if (st.leadOffset != undefined) entry.leadOffset = Number(st.leadOffset);
+                if (st.lagOffset != undefined)  entry.lagOffset  = Number(st.lagOffset);
+                if (st.outerScale != undefined) entry.outerScale = Number(st.outerScale);
+                if (st.innerScale != undefined) entry.innerScale = Number(st.innerScale);
+                if (st.tailFade != undefined)   entry.tailFade   = Number(st.tailFade);
+                ts[st.name] = entry;
             }
             this.styles = ts;
             // _root.服务器.发布服务器消息("Parsed Styles: " + ObjectUtil.stringify(ts)); // 调试输出

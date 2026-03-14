@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <trailStyles>
+    <!-- ============================================================
+         P1 几何增强字段说明：
+           leadOffset  前缘切向前冲（hd 比例），正值 = 冲击感
+           lagOffset   后缘切向拖曳（hd 比例），负值 = 拖尾感
+           outerScale  外边缘(刀口侧)缩放，>1 更宽
+           innerScale  内边缘(刀柄侧)缩放，<1 更窄 = 更锐利
+           tailFade    尾部 alpha 衰减 0-1，0 = 无衰减
+         所有 P1 字段可选，缺省时自动 backfill 默认值（零效果）。
+         ============================================================ -->
+
+    <!-- ═══════ 基础 ═══════ -->
     <style name="预设">
         <color>0xFFFFFF</color>
         <lineColor>0xFFFFFF</lineColor>
         <lineWidth>2</lineWidth>
         <fillOpacity>100</fillOpacity>
         <lineOpacity>100</lineOpacity>
+        <leadOffset>0.04</leadOffset>
+        <tailFade>0.15</tailFade>
     </style>
+
+    <!-- ═══════ 电感切割刃 四态 [需测试] ═══════ -->
     <style name="白色蓝框">
         <color>0xFFFFFF</color>
         <lineColor>0x4FB6FF</lineColor>
         <lineWidth>2</lineWidth>
         <fillOpacity>50</fillOpacity>
         <lineOpacity>50</lineOpacity>
-    </style>
-    <style name="红色透明">
-        <color>0xFF6666</color>
-        <lineColor>0xFF6666</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>50</fillOpacity>
-        <lineOpacity>50</lineOpacity>
-    </style>
-    <style name="蓝色魅影">
-        <color>0x4DE6FF</color>
-        <lineColor>0x4FB6FF</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>50</fillOpacity>
-        <lineOpacity>50</lineOpacity>
+        <leadOffset>0.06</leadOffset>
+        <tailFade>0.25</tailFade>
     </style>
     <style name="蓝色幽灵">
         <color>0x74EBFF</color>
@@ -34,41 +37,39 @@
         <lineWidth>2</lineWidth>
         <fillOpacity>25</fillOpacity>
         <lineOpacity>25</lineOpacity>
+        <innerScale>0.95</innerScale>
+        <tailFade>0.35</tailFade>
     </style>
-    <style name="金色余辉">
-        <color>0xFFE066</color>
-        <lineColor>0xFFAA00</lineColor>
+    <style name="蓝色魅影">
+        <color>0x4DE6FF</color>
+        <lineColor>0x4FB6FF</lineColor>
         <lineWidth>2</lineWidth>
-        <fillOpacity>60</fillOpacity>
-        <lineOpacity>80</lineOpacity>
+        <fillOpacity>50</fillOpacity>
+        <lineOpacity>50</lineOpacity>
+        <outerScale>1.15</outerScale>
+        <leadOffset>0.10</leadOffset>
+        <tailFade>0.20</tailFade>
     </style>
-    <style name="紫电残影">
-        <color>0xBB66FF</color>
-        <lineColor>0x9933FF</lineColor>
+    <style name="红色透明">
+        <color>0xFF6666</color>
+        <lineColor>0xFF6666</lineColor>
         <lineWidth>2</lineWidth>
-        <fillOpacity>40</fillOpacity>
-        <lineOpacity>70</lineOpacity>
+        <fillOpacity>50</fillOpacity>
+        <lineOpacity>50</lineOpacity>
+        <outerScale>1.20</outerScale>
+        <innerScale>0.90</innerScale>
+        <tailFade>0.40</tailFade>
     </style>
-    <style name="烈焰残焰">
-        <color>0xFF2200</color>
-        <lineColor>0xFF2200</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>40</fillOpacity>
-        <lineOpacity>60</lineOpacity>
-    </style>
+
+    <!-- ═══════ 刀剑类 [需测试: 冰蓝碎光, 粉光幻影] ═══════ -->
     <style name="冰蓝碎光">
         <color>0xD9EEF0</color>
         <lineColor>0xA2E9F0</lineColor>
         <lineWidth>2</lineWidth>
         <fillOpacity>20</fillOpacity>
         <lineOpacity>40</lineOpacity>
-    </style>
-    <style name="黑夜虚影">
-        <color>0x222222</color>
-        <lineColor>0x444444</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>30</fillOpacity>
-        <lineOpacity>40</lineOpacity>
+        <innerScale>0.90</innerScale>
+        <tailFade>0.30</tailFade>
     </style>
     <style name="粉光幻影">
         <color>0xFFB7E8</color>
@@ -76,104 +77,54 @@
         <lineWidth>2</lineWidth>
         <fillOpacity>50</fillOpacity>
         <lineOpacity>60</lineOpacity>
+        <leadOffset>0.04</leadOffset>
+        <tailFade>0.30</tailFade>
     </style>
+
+    <!-- ═══════ 短兵 [需测试: 翠绿疾影] ═══════ -->
     <style name="翠绿疾影">
         <color>0xA6FFA6</color>
         <lineColor>0x33CC33</lineColor>
         <lineWidth>2</lineWidth>
         <fillOpacity>35</fillOpacity>
         <lineOpacity>70</lineOpacity>
+        <leadOffset>0.08</leadOffset>
+        <innerScale>0.90</innerScale>
+        <tailFade>0.20</tailFade>
     </style>
-    <style name="灰白残像">
-        <color>0xCCCCCC</color>
-        <lineColor>0xAAAAAA</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>40</fillOpacity>
-        <lineOpacity>60</lineOpacity>
-    </style>
-    <style name="幽红幻刃">
-        <color>0xFF0000</color>
-        <lineColor>0xFF0000</lineColor>
-        <lineWidth>0.5</lineWidth>
-        <fillOpacity>40</fillOpacity>
-        <lineOpacity>45</lineOpacity>
-    </style>
-    <style name="光翼尾痕">
-        <color>0xFFFFFF</color>
-        <lineColor>0xE6E6FF</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>80</fillOpacity>
-        <lineOpacity>90</lineOpacity>
-    </style>
-    <style name="金属残影">
-        <color>0xCCCCCC</color>
-        <lineColor>0x999999</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>60</fillOpacity>
-        <lineOpacity>80</lineOpacity>
-    </style>
-    <style name="烈日金焰">
-        <color>0xFFDD00</color>
-        <lineColor>0xFF9900</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>70</fillOpacity>
-        <lineOpacity>90</lineOpacity>
-    </style>
-    <style name="翠影风舞">
-        <color>0xA0FFB0</color>
-        <lineColor>0x40CC80</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>50</fillOpacity>
-        <lineOpacity>60</lineOpacity>
-    </style>
-    <style name="末日虚光">
-        <color>0x330033</color>
-        <lineColor>0x990099</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>35</fillOpacity>
-        <lineOpacity>50</lineOpacity>
-    </style>
-    <style name="晨曦暖光">
-        <color>0xFFEEBB</color>
-        <lineColor>0xFFCC88</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>70</fillOpacity>
-        <lineOpacity>85</lineOpacity>
-    </style>
-    <style name="星河流影">
-        <color>0x99AAFF</color>
-        <lineColor>0x6677CC</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>45</fillOpacity>
-        <lineOpacity>60</lineOpacity>
-    </style>
+
+    <!-- ═══════ 直剑 [需测试: 薄暮幽蓝, 烈焰残焰] ═══════ -->
     <style name="薄暮幽蓝">
         <color>0x6571F0</color>
         <lineColor>0x6600FF</lineColor>
         <lineWidth>2</lineWidth>
         <fillOpacity>55</fillOpacity>
         <lineOpacity>40</lineOpacity>
+        <leadOffset>0.05</leadOffset>
+        <tailFade>0.25</tailFade>
     </style>
-    <style name="樱霞碎梦">
-        <color>0xFF99AA</color>
-        <lineColor>0xDD7788</lineColor>
+    <style name="烈焰残焰">
+        <color>0xFF2200</color>
+        <lineColor>0xFF2200</lineColor>
         <lineWidth>2</lineWidth>
-        <fillOpacity>55</fillOpacity>
-        <lineOpacity>70</lineOpacity>
+        <fillOpacity>40</fillOpacity>
+        <lineOpacity>60</lineOpacity>
+        <outerScale>1.20</outerScale>
+        <leadOffset>0.08</leadOffset>
+        <tailFade>0.35</tailFade>
     </style>
-    <style name="银月流光">
-        <color>0xDDDDFF</color>
-        <lineColor>0xBBBBEE</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>65</fillOpacity>
-        <lineOpacity>80</lineOpacity>
-    </style>
-    <style name="幽海深蓝">
-        <color>0x335588</color>
-        <lineColor>0x113366</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>30</fillOpacity>
-        <lineOpacity>50</lineOpacity>
+
+    <!-- ═══════ 狂野类 [需测试: 幽红幻刃, 落日鎏金] ═══════ -->
+    <style name="幽红幻刃">
+        <color>0xFF0000</color>
+        <lineColor>0xFF0000</lineColor>
+        <lineWidth>0.5</lineWidth>
+        <fillOpacity>40</fillOpacity>
+        <lineOpacity>45</lineOpacity>
+        <outerScale>1.25</outerScale>
+        <innerScale>0.85</innerScale>
+        <leadOffset>0.05</leadOffset>
+        <tailFade>0.30</tailFade>
     </style>
     <style name="落日鎏金">
         <color>0xFFBB55</color>
@@ -181,34 +132,52 @@
         <lineWidth>2</lineWidth>
         <fillOpacity>75</fillOpacity>
         <lineOpacity>90</lineOpacity>
+        <outerScale>1.15</outerScale>
+        <leadOffset>0.06</leadOffset>
+        <tailFade>0.25</tailFade>
     </style>
+
+    <!-- ═══════ 长枪 [需测试: 极光幻舞] ═══════ -->
     <style name="极光幻舞">
         <color>0x66FFEE</color>
         <lineColor>0x22CCBB</lineColor>
         <lineWidth>2</lineWidth>
         <fillOpacity>50</fillOpacity>
         <lineOpacity>65</lineOpacity>
+        <leadOffset>0.06</leadOffset>
+        <tailFade>0.25</tailFade>
     </style>
-    <style name="暗紫星辰">
-        <color>0x553377</color>
-        <lineColor>0x331155</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>35</fillOpacity>
-        <lineOpacity>45</lineOpacity>
-    </style>
-    <style name="青岚之影">
-        <color>0x77DDBB</color>
-        <lineColor>0x449988</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>55</fillOpacity>
-        <lineOpacity>70</lineOpacity>
-    </style>
-    <style name="霜雪微光">
-        <color>0xE0F8FF</color>
-        <lineColor>0xA0C8DD</lineColor>
+
+    <!-- ═══════ 以下为未投入使用的样式（不影响现有武器，可自由调整） ═══════ -->
+
+    <!-- 暖色系 -->
+    <style name="金色余辉">
+        <color>0xFFE066</color>
+        <lineColor>0xFFAA00</lineColor>
         <lineWidth>2</lineWidth>
         <fillOpacity>60</fillOpacity>
-        <lineOpacity>75</lineOpacity>
+        <lineOpacity>80</lineOpacity>
+        <leadOffset>0.05</leadOffset>
+        <tailFade>0.30</tailFade>
+    </style>
+    <style name="烈日金焰">
+        <color>0xFFDD00</color>
+        <lineColor>0xFF9900</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>70</fillOpacity>
+        <lineOpacity>90</lineOpacity>
+        <outerScale>1.15</outerScale>
+        <leadOffset>0.07</leadOffset>
+        <tailFade>0.30</tailFade>
+    </style>
+    <style name="晨曦暖光">
+        <color>0xFFEEBB</color>
+        <lineColor>0xFFCC88</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>70</fillOpacity>
+        <lineOpacity>85</lineOpacity>
+        <leadOffset>0.04</leadOffset>
+        <tailFade>0.20</tailFade>
     </style>
     <style name="琥珀流焰">
         <color>0xFFAA33</color>
@@ -216,13 +185,63 @@
         <lineWidth>2</lineWidth>
         <fillOpacity>70</fillOpacity>
         <lineOpacity>85</lineOpacity>
+        <outerScale>1.10</outerScale>
+        <leadOffset>0.06</leadOffset>
+        <tailFade>0.30</tailFade>
     </style>
-    <style name="迷雾淡灰">
-        <color>0xAABBCC</color>
-        <lineColor>0x8899AA</lineColor>
+
+    <!-- 紫色系 -->
+    <style name="紫电残影">
+        <color>0xBB66FF</color>
+        <lineColor>0x9933FF</lineColor>
         <lineWidth>2</lineWidth>
         <fillOpacity>40</fillOpacity>
-        <lineOpacity>55</lineOpacity>
+        <lineOpacity>70</lineOpacity>
+        <outerScale>1.10</outerScale>
+        <innerScale>0.85</innerScale>
+        <leadOffset>0.08</leadOffset>
+        <tailFade>0.25</tailFade>
+    </style>
+    <style name="末日虚光">
+        <color>0x330033</color>
+        <lineColor>0x990099</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>35</fillOpacity>
+        <lineOpacity>50</lineOpacity>
+        <outerScale>1.15</outerScale>
+        <innerScale>0.85</innerScale>
+        <tailFade>0.45</tailFade>
+    </style>
+    <style name="暗紫星辰">
+        <color>0x553377</color>
+        <lineColor>0x331155</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>35</fillOpacity>
+        <lineOpacity>45</lineOpacity>
+        <outerScale>1.10</outerScale>
+        <innerScale>0.90</innerScale>
+        <tailFade>0.40</tailFade>
+    </style>
+
+    <!-- 蓝色系 -->
+    <style name="星河流影">
+        <color>0x99AAFF</color>
+        <lineColor>0x6677CC</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>45</fillOpacity>
+        <lineOpacity>60</lineOpacity>
+        <leadOffset>0.05</leadOffset>
+        <tailFade>0.30</tailFade>
+    </style>
+    <style name="幽海深蓝">
+        <color>0x335588</color>
+        <lineColor>0x113366</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>30</fillOpacity>
+        <lineOpacity>50</lineOpacity>
+        <outerScale>1.10</outerScale>
+        <innerScale>0.90</innerScale>
+        <tailFade>0.35</tailFade>
     </style>
     <style name="苍穹天青">
         <color>0x55AAFF</color>
@@ -230,6 +249,19 @@
         <lineWidth>2</lineWidth>
         <fillOpacity>45</fillOpacity>
         <lineOpacity>65</lineOpacity>
+        <leadOffset>0.05</leadOffset>
+        <tailFade>0.20</tailFade>
+    </style>
+
+    <!-- 绿色系 -->
+    <style name="翠影风舞">
+        <color>0xA0FFB0</color>
+        <lineColor>0x40CC80</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>50</fillOpacity>
+        <lineOpacity>60</lineOpacity>
+        <leadOffset>0.05</leadOffset>
+        <tailFade>0.25</tailFade>
     </style>
     <style name="碧影翡翠">
         <color>0x44FF99</color>
@@ -237,7 +269,98 @@
         <lineWidth>2</lineWidth>
         <fillOpacity>50</fillOpacity>
         <lineOpacity>70</lineOpacity>
+        <leadOffset>0.06</leadOffset>
+        <innerScale>0.90</innerScale>
+        <tailFade>0.20</tailFade>
     </style>
+    <style name="青岚之影">
+        <color>0x77DDBB</color>
+        <lineColor>0x449988</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>55</fillOpacity>
+        <lineOpacity>70</lineOpacity>
+        <leadOffset>0.04</leadOffset>
+        <tailFade>0.30</tailFade>
+    </style>
+
+    <!-- 粉/樱色系 -->
+    <style name="樱霞碎梦">
+        <color>0xFF99AA</color>
+        <lineColor>0xDD7788</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>55</fillOpacity>
+        <lineOpacity>70</lineOpacity>
+        <innerScale>0.95</innerScale>
+        <tailFade>0.30</tailFade>
+    </style>
+
+    <!-- 白/银/灰色系 -->
+    <style name="光翼尾痕">
+        <color>0xFFFFFF</color>
+        <lineColor>0xE6E6FF</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>80</fillOpacity>
+        <lineOpacity>90</lineOpacity>
+        <outerScale>1.10</outerScale>
+        <leadOffset>0.06</leadOffset>
+        <tailFade>0.15</tailFade>
+    </style>
+    <style name="银月流光">
+        <color>0xDDDDFF</color>
+        <lineColor>0xBBBBEE</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>65</fillOpacity>
+        <lineOpacity>80</lineOpacity>
+        <leadOffset>0.04</leadOffset>
+        <tailFade>0.20</tailFade>
+    </style>
+    <style name="金属残影">
+        <color>0xCCCCCC</color>
+        <lineColor>0x999999</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>60</fillOpacity>
+        <lineOpacity>80</lineOpacity>
+        <outerScale>1.05</outerScale>
+        <tailFade>0.20</tailFade>
+    </style>
+    <style name="灰白残像">
+        <color>0xCCCCCC</color>
+        <lineColor>0xAAAAAA</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>40</fillOpacity>
+        <lineOpacity>60</lineOpacity>
+        <tailFade>0.25</tailFade>
+    </style>
+    <style name="霜雪微光">
+        <color>0xE0F8FF</color>
+        <lineColor>0xA0C8DD</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>60</fillOpacity>
+        <lineOpacity>75</lineOpacity>
+        <innerScale>0.95</innerScale>
+        <tailFade>0.25</tailFade>
+    </style>
+    <style name="迷雾淡灰">
+        <color>0xAABBCC</color>
+        <lineColor>0x8899AA</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>40</fillOpacity>
+        <lineOpacity>55</lineOpacity>
+        <tailFade>0.35</tailFade>
+    </style>
+
+    <!-- 暗色系 -->
+    <style name="黑夜虚影">
+        <color>0x222222</color>
+        <lineColor>0x444444</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>30</fillOpacity>
+        <lineOpacity>40</lineOpacity>
+        <innerScale>0.90</innerScale>
+        <tailFade>0.45</tailFade>
+    </style>
+
+    <!-- 特殊效果 -->
     <style name="爪豪闪光">
         <color>0xFFFF33</color>
         <lineColor>0xFFD700</lineColor>
@@ -245,13 +368,18 @@
         <fillOpacity>90</fillOpacity>
         <lineOpacity>70</lineOpacity>
         <shadowCount>40</shadowCount>
+        <outerScale>1.20</outerScale>
+        <leadOffset>0.10</leadOffset>
+        <tailFade>0.15</tailFade>
     </style>
     <style name="科技白蓝光">
-        <color>0xFFFFFF</color>        <!-- 内部主色：能量核心白 -->
-        <lineColor>0x4EC9FF</lineColor>        <!-- 边缘发光色：偏电蓝/青蓝，和护手色呼应 -->
-        <lineWidth>3</lineWidth>        <!-- 略微粗一些，突出轮廓感 -->
-        <fillOpacity>80</fillOpacity>        <!-- 让能量感更明显 -->
-        <lineOpacity>70</lineOpacity>        <!-- 发光外轮廓稍弱，避免抢镜 -->
+        <color>0xFFFFFF</color>
+        <lineColor>0x4EC9FF</lineColor>
+        <lineWidth>3</lineWidth>
+        <fillOpacity>80</fillOpacity>
+        <lineOpacity>70</lineOpacity>
+        <leadOffset>0.06</leadOffset>
+        <tailFade>0.20</tailFade>
     </style>
 
 </trailStyles>

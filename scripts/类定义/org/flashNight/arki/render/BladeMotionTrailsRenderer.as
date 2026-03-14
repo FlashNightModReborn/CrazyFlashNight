@@ -290,15 +290,19 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
             if (spreadX < minSpread) spreadX = minSpread;
             if (spreadY < minSpread) spreadY = minSpread;
 
-            // Phase 3: 各向异性采样——X/Y 轴使用独立 spread
-            tipPt.x = cx + (rxMin - cx) * spreadX;
+            // Phase 3: 沿刀身主轴（Y方向）采样，X 居中
+            // 刀口-刀柄方向约定为 Y 轴（yMax=刀口, yMin=刀柄）。
+            // 之前取对角线 (rxMin,ryMax)↔(rxMax,ryMin) 导致 edge 方向偏转 ~45°，
+            // 多刀口间因 X 偏移不同导致"不在同一基准线"。
+            // 现在 X 居中，edge1-edge2 方向 = 纯 Y 轴 = 实际刀身方向。
+            tipPt.x = cx;
             tipPt.y = cy + (ryMax - cy) * spreadY;
             current.localToGlobal(tipPt);
             map.globalToLocal(tipPt);
             e1x = tipPt.x;
             e1y = tipPt.y;
 
-            basePt.x = cx + (rxMax - cx) * spreadX;
+            basePt.x = cx;
             basePt.y = cy + (ryMin - cy) * spreadY;
             current.localToGlobal(basePt);
             map.globalToLocal(basePt);

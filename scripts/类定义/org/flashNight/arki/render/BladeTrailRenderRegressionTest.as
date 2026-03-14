@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.render.BladeMotionTrailsRenderer;
 import org.flashNight.arki.render.TrailRenderer;
+import org.flashNight.arki.render.TrailStyleManager;
 import org.flashNight.arki.render.VectorAfterimageRenderer;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 
@@ -98,6 +99,12 @@ class org.flashNight.arki.render.BladeTrailRenderRegressionTest {
         EnhancedCooldownWheel.I().reset();
     }
 
+    /** 确保帧计时器存在并推进，使 _ensureCache 每次测试都刷新缓存 */
+    private static function advanceFrameTimer():Void {
+        if (_root.帧计时器 == undefined) _root.帧计时器 = {当前帧数: 0};
+        _root.帧计时器.当前帧数 = (_root.帧计时器.当前帧数 || 0) + 1;
+    }
+
     private static function testBladeSpreadClampedOnBothAxes():Void {
         trace("--- testBladeSpreadClampedOnBothAxes ---");
         var deadbody:MovieClip = ensureDeadbody();
@@ -128,6 +135,8 @@ class org.flashNight.arki.render.BladeTrailRenderRegressionTest {
             }
         };
 
+        // 推进帧计时器，确保 _ensureCache 刷新（消除顺序依赖）
+        advanceFrameTimer();
         BladeMotionTrailsRenderer.setPerformanceLevel(BladeMotionTrailsRenderer.PERFORMANCE_LEVEL_HIGH);
         BladeMotionTrailsRenderer.processBladeTrail(target, holder, "blade_style");
 
@@ -138,16 +147,12 @@ class org.flashNight.arki.render.BladeTrailRenderRegressionTest {
         assertEqString("blade_style", String(captured.style), "style passthrough");
 
         var mid:Object = captured.trail[1];
-        // 各向异性 spread 后 X 仍受边界约束（窄轴），Y 可膨胀（宽轴）
-        // X 方向：所有刀口在 x=0，边界 0~10，spreadX 被约束
-        assertEq(0, mid.edge1.x, "mid edge1 x stays inside left bound");
-        assertEq(10, mid.edge2.x, "mid edge2 x stays inside right bound");
+        // Y轴采样后 edge1.x == edge2.x == cx 的全局坐标（X 居中，不在对角线）
+        // blade2 在 x=0，rect cx=5，所以全局 X ≈ 5
+        assertEq(5, mid.edge1.x, "mid edge1 x centered (y-axis sampling)");
+        assertEq(5, mid.edge2.x, "mid edge2 x centered (y-axis sampling)");
         // Y 方向：中间刀口远离边界，spreadY 可保持 Phase 2B 值
-        // Phase 2B spread = sqrt(nearDistSq/hdSq) * HALF_FILL_RATIO
-        // nearDistSq = 40^2 = 1600, hdSq = 5^2+5^2 = 50
-        // spread = sqrt(32) * 0.309 ≈ 1.748
-        // spreadY ≈ 1.748: tipPt.y = 5 + (10-5)*1.748 = 13.74 → global = 40+13.74 = 53.74
-        // 验证 Y 膨胀超出原始 rect 边界（即 spreadY > 1）
+        // spreadY ≈ 1.748: tipPt.y = 5 + 5*1.748 = 13.74 → global = 40+13.74 = 53.74
         assertTrue(mid.edge1.y > 50, "mid edge1 y expanded beyond rect (y=" + mid.edge1.y + ")");
         assertTrue(mid.edge2.y < 40, "mid edge2 y expanded beyond rect (y=" + mid.edge2.y + ")");
 
@@ -199,9 +204,7 @@ class org.flashNight.arki.render.BladeTrailRenderRegressionTest {
             setQuality: function(level) {}
         };
 
-        // 强制刷新帧级缓存：推进帧计时器使 _ensureCache 重新读取
-        if (_root.帧计时器 == undefined) _root.帧计时器 = {当前帧数: 0};
-        _root.帧计时器.当前帧数 = (_root.帧计时器.当前帧数 || 0) + 1;
+        advanceFrameTimer();
         BladeMotionTrailsRenderer.setPerformanceLevel(BladeMotionTrailsRenderer.PERFORMANCE_LEVEL_HIGH);
         BladeMotionTrailsRenderer.processBladeTrail(target, holder, "spread_test");
 
@@ -240,6 +243,89 @@ class org.flashNight.arki.render.BladeTrailRenderRegressionTest {
         target.removeMovieClip();
     }
 
+    /**
+     * 验证 slot cache 在画质切换时不丢刀口。
+     * LOW(3) → HIGH(5) → LOW(3)：缓存固定 5 槽，循环上界由 maxPositions 控制。
+     */
+    private static function testSlotCacheQualitySwitch():Void {
+        trace("--- testSlotCacheQualitySwitch ---");
+        var deadbody:MovieClip = ensureDeadbody();
+        var holder:MovieClip = deadbody.createEmptyMovieClip(nextName("slotHolder_"), deadbody.getNextHighestDepth());
+        var target:MovieClip;
+        var trailClass = TrailRenderer;
+        var originalTrailInstance = trailClass["_instance"];
+
+        if (_root.bladeTrailTarget != undefined && _root.bladeTrailTarget.removeMovieClip != undefined) {
+            _root.bladeTrailTarget.removeMovieClip();
+        }
+        target = _root.createEmptyMovieClip("bladeTrailTarget", _root.getNextHighestDepth());
+        target.version = "_v1";
+
+        // 5 个刀口位置
+        makeBladeNode(holder, bladeSlotName(1), 0, 0);
+        makeBladeNode(holder, bladeSlotName(2), 0, 30);
+        makeBladeNode(holder, bladeSlotName(3), 0, 60);
+        makeBladeNode(holder, bladeSlotName(4), 0, 90);
+        makeBladeNode(holder, bladeSlotName(5), 0, 120);
+
+        var captured:Object = {};
+        trailClass["_instance"] = {
+            addTrailData: function(key, trail, style) {
+                captured.trail = trail;
+                captured.count = trail.length;
+            },
+            setQuality: function(level) {}
+        };
+
+        // LOW 先缓存 slot（maxPositions=3）
+        advanceFrameTimer();
+        BladeMotionTrailsRenderer.setPerformanceLevel(BladeMotionTrailsRenderer.PERFORMANCE_LEVEL_LOW);
+        BladeMotionTrailsRenderer.processBladeTrail(target, holder, "s");
+        assertEq(3, captured.count, "LOW samples 3 blades");
+
+        // 切到 HIGH（maxPositions=5）—— 缓存的 5 槽数组应让 4/5 号刀口可见
+        advanceFrameTimer();
+        BladeMotionTrailsRenderer.setPerformanceLevel(BladeMotionTrailsRenderer.PERFORMANCE_LEVEL_HIGH);
+        BladeMotionTrailsRenderer.processBladeTrail(target, holder, "s");
+        assertEq(5, captured.count, "HIGH sees all 5 after LOW cached slots");
+
+        // 切回 LOW
+        advanceFrameTimer();
+        BladeMotionTrailsRenderer.setPerformanceLevel(BladeMotionTrailsRenderer.PERFORMANCE_LEVEL_LOW);
+        BladeMotionTrailsRenderer.processBladeTrail(target, holder, "s");
+        assertEq(3, captured.count, "LOW still samples 3 after HIGH");
+
+        trailClass["_instance"] = originalTrailInstance;
+        holder.removeMovieClip();
+        target.removeMovieClip();
+    }
+
+    /**
+     * 验证 partial style override 不产生 NaN。
+     * updateStyle 只设部分 P1 字段时，getStyle 应对缺失字段独立 backfill。
+     */
+    private static function testPartialStyleOverrideNoNaN():Void {
+        trace("--- testPartialStyleOverrideNoNaN ---");
+        var mgr:TrailStyleManager = TrailStyleManager.getInstance();
+        // 只设 leadOffset，不设其他 P1 字段
+        mgr.updateStyle("partial_test", {color: 0xFF0000, lineColor: 0xFF0000, lineWidth: 1, fillOpacity: 80, lineOpacity: 80, leadOffset: 0.2});
+        var s:Object = mgr.getStyle("partial_test");
+
+        // 所有 P1 字段必须有值（非 undefined / 非 NaN）
+        assertTrue(s.leadOffset == 0.2, "leadOffset preserved: " + s.leadOffset);
+        assertTrue(s.lagOffset == 0, "lagOffset backfilled: " + s.lagOffset);
+        assertTrue(s.outerScale == 1, "outerScale backfilled: " + s.outerScale);
+        assertTrue(s.innerScale == 1, "innerScale backfilled: " + s.innerScale);
+        assertTrue(s.tailFade == 0, "tailFade backfilled: " + s.tailFade);
+
+        // 模拟渲染计算：不应产生 NaN
+        var hd:Number = 10;
+        var loh:Number = s.leadOffset * hd;
+        var lah:Number = s.lagOffset * hd;
+        var testVal:Number = 5 + (10 - 5) * s.outerScale + loh;
+        assertTrue(!isNaN(testVal), "offset computation produces valid number: " + testVal);
+    }
+
     public static function runAllTests():Void {
         testsRun = 0;
         testsPassed = 0;
@@ -249,6 +335,8 @@ class org.flashNight.arki.render.BladeTrailRenderRegressionTest {
         testCanvasPoolReuseAndBlendReset();
         testBladeSpreadClampedOnBothAxes();
         testMiddleBladeSpreadWiderThanEdges();
+        testSlotCacheQualitySwitch();
+        testPartialStyleOverrideNoNaN();
         trace("===== BladeTrailRenderRegressionTest END: run=" + testsRun
             + ", pass=" + testsPassed + ", fail=" + testsFailed + " =====");
 
