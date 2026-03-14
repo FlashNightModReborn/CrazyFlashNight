@@ -1,151 +1,39 @@
-﻿import org.flashNight.neur.Event.*;
-import org.flashNight.naki.Interpolation.*;
-import org.flashNight.gesh.xml.LoadXml.WeatherSystemConfigLoader;
-import org.flashNight.arki.component.Effect.*;
-import org.flashNight.gesh.number.NumberUtil;
+﻿/**
+ * 视觉系统_fs_天气系统.as — 兼容垫片
+ *
+ * 核心逻辑已迁移至 org.flashNight.arki.weather.WeatherSystem（class 化单例）。
+ * 本帧脚本负责：
+ * 1. 创建单例并触发异步初始化
+ * 2. 挂载 _root.天气系统 兼容引用
+ * 3. 挂中文方法别名（class 内部英文命名）
+ * 4. 保留 _root.配置环境信息() 工具函数（依赖 _root 工具函数，暂不迁移）
+ */
+import org.flashNight.arki.weather.*;
 
-_root.天气系统 = {};
-_root.天气系统.夜视仪 = {};
-//_root.开启昼夜系统 = true;
+// ==================== 创建单例 + 初始化 ====================
 
-_root.天气系统.初始化 = function(onComplete:Function, onError:Function):Void {
-    // 获取 XML 加载器实例
-    var configLoader:WeatherSystemConfigLoader = WeatherSystemConfigLoader.getInstance();
+var ws:WeatherSystem = WeatherSystem.getInstance();
+ws.initialize();
+_root.天气系统 = ws;
 
-    // 保存当前实例引用
-    var self = this;
+// ==================== 中文方法别名 ====================
+// class 内部为英文方法名，此处挂中文别名保持外部兼容
+// 直接赋值实例方法引用，_root.天气系统.xxx() 调用时 this 指向 ws（同一对象），绑定正确
 
-    // 加载配置文件
-    configLoader.load(
-        // 成功加载配置文件
-        function(data:Object):Void {
-            // 解析 GeneralParameters
-            var params:Object = data.GeneralParameters;
+ws.初始化 = ws.initialize;
+ws.获得当前时间 = ws.getCurrentTime;
+ws.获得当前光照等级 = ws.getCurrentLightLevel;
+ws.设置当前天气 = ws.updateWeather;
+ws.配置环境 = ws.configureEnvironment;
+ws.请求刷新 = ws.requestRefresh;
+ws.防御性刷新场景单位天气状态 = ws.defensiveRefreshUnits;
+ws.注册夜视仪 = ws.registerNightVision;
+ws.注销夜视仪 = ws.unregisterNightVision;
 
-            // 设置基础参数
-            self.昼夜长度 = params.DayLength;
-            self.小时帧数 = params.HourFrames;
-            self.光照等级更新阈值 = params.LightUpdateThreshold;
-            self.使用滤镜渲染 = params.UseFilterRendering;
-            self.开启昼夜系统 = params.EnableDayNightCycle;
-            self.暂停昼夜系统 = params.PauseDayNightCycle;
-            self.时间倍率启动等级 = params.TimeMultiplierStartLevel;
-            self.金币时间倍率 = params.CoinTimeMultiplier;
-            self.金币时间最大倍率 = params.CoinTimeMaxMultiplier;
-            self.经验时间倍率 = params.ExpTimeMultiplier;
-            self.经验时间最大倍率 = params.ExpTimeMaxMultiplier;
-            self.人物信息透明度 = params.CharacterInfoOpacity;
-            self.天气情况 = params.WeatherCondition;
-            self.空间情况 = params.SpaceCondition;
-            self.视觉情况 = params.VisualCondition;
-            self.当前时间 = params.CurrentTime;
-            self.当前帧数 = params.CurrentFrame;
-            self.光照等级最大值 = params.MaxLight;
-            self.光照等级最小值 = params.MinLight;
-            self.最大光照 = self.光照等级最大值;
-            self.最小光照 = self.光照等级最小值;
-            self.无限过图环境信息 = params.InfiniteMapEnvironmentInfo == "null" ? null : params.InfiniteMapEnvironmentInfo;
+// ==================== _root.配置环境信息() ====================
+// 保留在帧脚本中：依赖 _root.配置数据为数组、_root.解析背景元素 等 _root 工具函数
+// Phase 2 迁移至 EnvironmentConfig 类方法
 
-            // 解析光照等级
-            var lightLevels:Array = data.LightLevels.Hour;
-            self.昼夜光照 = [];
-            for (var i:Number = 0; i < 24; i++) {
-                self.昼夜光照[i] = lightLevels[i];
-            }
-
-            // 设置当前光照等级
-            self.当前光照等级 = self.昼夜光照[self.当前时间];
-
-            trace("天气系统配置已加载成功！");
-            // 执行完成回调
-            if (onComplete != undefined) {
-                onComplete();
-            }
-        },
-
-        // 加载配置失败
-        function():Void {
-            trace("天气系统配置加载失败，使用默认配置！");
-
-            // 使用默认值初始化（兼容旧逻辑）
-            self.昼夜长度 = 15 * 60 * 30;// 一天15分钟
-            self.小时帧数 = self.昼夜长度 / 24;
-            self.光照等级更新阈值 = 0.1;
-            self.使用滤镜渲染 = false;
-            self.开启昼夜系统 = true;
-            self.暂停昼夜系统 = false;
-            self.时间倍率启动等级 = 2.5;
-            self.金币时间倍率 = 1;
-            self.金币时间最大倍率 = 2;
-            self.经验时间倍率 = 1;
-            self.经验时间最大倍率 = 2;
-            self.人物信息透明度 = 100;
-            self.天气情况 = "正常";
-            self.空间情况 = "室外";
-            self.视觉情况 = "光照";
-            self.当前时间 = 6;
-            self.当前帧数 = 0;
-            self.昼夜光照 = [0, 0, 1, 4, 7, 7, 7, 7, 7, 7, 7, 7, 9, 7, 7, 7, 7, 7, 7, 4, 1, 0, 0, 0];
-            self.当前光照等级 = self.昼夜光照[self.当前时间];
-            self.光照等级最大值 = 9;
-            self.光照等级最小值 = 0;
-            self.最大光照 = self.光照等级最大值;
-            self.最小光照 = self.光照等级最小值;
-            self.无限过图环境信息 = null;
-
-            trace("默认配置已应用！");
-            // 执行失败回调
-            if (onError != undefined) {
-                onError();
-            }
-        }
-    );
-};
-_root.天气系统.初始化();
-_root.天气系统.获得当前时间 = function()
-{
-    if(!this.开启昼夜系统) return 7;
-    if(this.暂停昼夜系统) return this.当前时间;
-    var 帧数 = _root.帧计时器.当前帧数;
-    this.当前时间 = (this.当前时间 + (帧数 - this.当前帧数) / this.小时帧数) % 24;
-    this.当前帧数 = 帧数;
-    return this.当前时间;
-};
-
-//默认配置
-_root.天气系统.默认环境配置 = {
-    地址: "gk20_2_BG.swf",//背景swf的地址
-    //地图尺寸
-    对齐原点: false,
-    Xmin: 50,
-    Xmax: 1750,
-    Ymin: 330,
-    Ymax: 600,
-    背景长: 1750,
-    背景高: 600,
-    //后景信息
-    地平线高度: 200,
-    后景: null,
-    禁用天空: false,
-    //天气信息
-    天气情况: "正常",//后续或许可以随机天气，或者指定下雨沙尘暴
-    空间情况: "室外",//决定是否启用天空盒
-    视觉情况: "光照",//决定使用的色彩引擎方案
-    最大光照: 8,
-    最小光照: 4,
-    //背景元素
-    背景元素: null,
-    //无限过图参数
-    门: null,
-    地图碰撞箱: null,
-    左侧出生线: null,
-    右侧出生线: null,
-    //基地场景额外数据
-    佣兵刷新数据: null,
-    BGM: null
-};
-
-//目前关卡和基地场景的环境配置没有太大区别。后续可将该函数拆成两个分别对关卡和基地场景应用
 _root.配置环境信息 = function(当前配置, 默认配置):Object{
 	if(!当前配置) return null;
 	var 环境信息:Object = {};
@@ -181,247 +69,12 @@ _root.配置环境信息 = function(当前配置, 默认配置):Object{
 	}else{
 		环境信息.门 = 默认配置.门;
 	}
-	// 环境信息.门朝向 = 当前配置.DoorDirection ? 当前配置.DoorDirection : 默认配置.门朝向; //弃用
 	环境信息.地图碰撞箱 = 当前配置.Collision ? _root.配置数据为数组(当前配置.Collision) : 默认配置.地图碰撞箱;
 	环境信息.左侧出生线 = 当前配置.LeftSpawnLine ? 当前配置.LeftSpawnLine : 默认配置.左侧出生线;
 	环境信息.右侧出生线 = 当前配置.RightSpawnLine ? 当前配置.RightSpawnLine : 默认配置.右侧出生线;
 	//基地场景额外数据
 	环境信息.佣兵刷新数据 = 当前配置.MercenaryRefresh ? 当前配置.MercenaryRefresh : 默认配置.佣兵刷新数据;
-    环境信息.BGM = 当前配置.BGM ? 当前配置.BGM : 默认配置.BGM;
+	环境信息.BGM = 当前配置.BGM ? 当前配置.BGM : 默认配置.BGM;
 
 	return 环境信息;
 }
-
-
-_root.天气系统.配置环境 = function (环境信息) {
-    if(this.无限过图环境信息){
-        环境信息 = this.无限过图环境信息;
-        this.无限过图环境信息 = null;
-    }
-    if (环境信息.天气情况) this.天气情况 = 环境信息.天气情况;
-    if (环境信息.空间情况) this.空间情况 = 环境信息.空间情况;
-    if (环境信息.视觉情况) this.视觉情况 = 环境信息.视觉情况;
-    if (环境信息.最大光照 != undefined) this.最大光照 = 环境信息.最大光照;
-    if (环境信息.最小光照 != undefined) this.最小光照 = 环境信息.最小光照;
-}
-
-_root.天气系统.获得当前光照等级 = function(){
-    var 时间 = this.获得当前时间();
-    var 光照等级 = 0;
-    if((时间 < 4 && 时间 > 1) || (时间 < 13 && 时间 > 11) || (时间 < 21 && 时间 > 18)){
-        var baseLevel = Math.floor(时间);
-        var nextLevel = Math.ceil(时间);
-        光照等级 = Interpolatior.linear(时间, baseLevel, nextLevel, this.昼夜光照[baseLevel], this.昼夜光照[nextLevel]);
-    }else if((时间 <= 11 && 时间 >= 4) || (时间 <= 18 && 时间 >= 13)){
-        光照等级 = 7;
-    }
-    
-    if(光照等级 > this.最大光照){
-        光照等级 = this.最大光照;
-    }else if(光照等级 < this.最小光照){
-        光照等级 = this.最小光照;
-    }
-    
-    if(Math.abs(光照等级 - this.当前光照等级) > this.光照等级更新阈值 || !this.当前光照等级) this.当前光照等级 = 光照等级;
-    return this.当前光照等级;
-};
-
-_root.天气系统.设置当前天气 = function()
-{
-    var 光照等级 = this.获得当前光照等级();
-    var 视觉情况 = this.视觉情况;
-    var 夜视仪 = this.夜视仪;
-    var bus:EventBus = EventBus.getInstance();
-    if(夜视仪.视觉情况)
-    {
-        // 防御性校验：避免换装/重初始化/卸载回调异常导致夜视仪注册遗留，从而“卡住”滤镜
-        if (夜视仪.装备类型 && 夜视仪.启用装备) {
-            var 控制对象:MovieClip = _root.gameworld[_root.控制目标];
-            if (!控制对象) {
-                夜视仪 = this.夜视仪 = {};
-            } else {
-                var 当前装备:Object = 控制对象[夜视仪.装备类型];
-                var 当前装备名:String = 当前装备.name;
-                if (当前装备名 !== 夜视仪.启用装备) {
-                    夜视仪 = this.夜视仪 = {};
-                }
-            }
-        }
-
-        if(夜视仪.视觉情况)
-        {
-            if(光照等级 <= 夜视仪.最大启动亮度 && 光照等级 >= 夜视仪.最小启动亮度)
-            {
-                视觉情况 = 夜视仪.视觉情况;
-                bus.publish("夜视仪启动", 光照等级);
-            }
-            else
-            {
-                夜视仪 = this.夜视仪 = {};
-            }
-        }
-    }
-
-    //_root.服务器.发布服务器消息(_root.常用工具函数.对象转JSON(夜视仪));
-    if(光照等级 <= this.时间倍率启动等级 && !夜视仪.视觉情况)
-    {
-        bus.publish("WeatherTimeRateUpdated", 光照等级);
-    }
-    else
-    {
-        if(this.金币时间倍率 !== 1) {
-            this.金币时间倍率 = 1;
-            this.经验时间倍率 = 1;
-            this.人物信息透明度 = 100;
-
-            // 白天切换时也发布事件，确保所有单位同步更新
-            // 解决竞态条件：避免在切换时刻初始化的单位使用错误的透明度
-            if(!_root.gameworld.__updatedWeatherTimeRate) {
-                bus.publish("WeatherTimeRateUpdated", 光照等级);
-                // 设置 `__updatedWeatherTimeRate` 为不可枚举
-                _root.gameworld.__updatedWeatherTimeRate = true;
-                _global.ASSetPropFlags(_root.gameworld, ["__updatedWeatherTimeRate"], 1, false);
-            }
-
-        }
-    }
-
-    LightingEngine.applyLighting(_root.gameworld, 光照等级, 视觉情况, this.使用滤镜渲染);
-    //_root.服务器.发布服务器消息(光照等级 + " : " + this.最大光照 + " : " + this.最小光照 + " " + 视觉情况);
-    //_root.服务器.发布服务器消息(this.金币时间倍率);
-    //
-    LightingEngine.applyLighting(_root.天空盒, 光照等级, 视觉情况, false);
-    // switch(this.空间情况)
-    // {
-    //     case "室外":_root.色彩引擎.根据光照调整颜色(_root.天空盒, 光照等级, 视觉情况, false);break;
-    //     case "室内":
-    //     default: break;
-    // }
-};
-
-/**
- * 防御性刷新：刷新场景中所有单位的天气相关状态（如信息框透明度）
- * 用于场景切换时确保所有单位同步天气状态
- * 解决单位初始化顺序可能早于天气事件发布的问题
- *
- * @return Number 返回刷新的单位数量
- */
-_root.天气系统.防御性刷新场景单位天气状态 = function():Number {
-    var gameworld:MovieClip = _root.gameworld;
-    if(!gameworld) {
-        return 0;
-    }
-
-    var 刷新计数 = 0;
-    var 人物信息透明度 = this.人物信息透明度;
-
-    for(var each in gameworld) {
-        var unit:MovieClip = gameworld[each];
-        if(unit && unit.hp > 0) {
-            var ic:MovieClip = unit.新版人物文字信息 || unit.人物文字信息;
-            if(ic) {
-                ic._alpha = 人物信息透明度;
-                刷新计数++;
-            }
-        }
-    }
-
-    return 刷新计数;
-};
-
-
-/**
- * 请求刷新天气（合帧）
- * - 用于装备换装等场景：同一帧内可能多次触发刷新请求，合并为下一帧执行一次 WeatherUpdated
- * - 这样可以避免重复执行 LightingEngine.applyLighting 造成的浪费
- */
-_root.天气系统.请求刷新 = function():Void {
-    var bus:EventBus = EventBus.getInstance();
-
-    // 帧计时器可能在极早期初始化阶段尚未就绪，兜底直接发布
-    if (!_root.帧计时器.添加或更新任务) {
-        bus.publish("WeatherUpdated");
-        return;
-    }
-
-    // interval=1(ms) -> ceil(1 * (FPS/1000)) ≈ 1 frame：保证下一帧执行，实现“合帧”
-    _root.帧计时器.添加或更新任务(this, "__WeatherSystem_RequestRefresh", function() {
-        EventBus.getInstance().publish("WeatherUpdated");
-    }, 1);
-};
-
-/**
- * 夜视仪注册/注销（收口到天气系统）
- * - 装备侧请调用：注册夜视仪(owner) / 注销夜视仪(owner)
- * - 天气系统负责触发刷新（合帧）并在 WeatherUpdated 中做防御性兜底校验
- */
-_root.天气系统.注册夜视仪 = function(owner:Object):Void {
-    this.夜视仪 = owner || {};
-    if (this.请求刷新) {
-        this.请求刷新();
-    } else {
-        EventBus.getInstance().publish("WeatherUpdated");
-    }
-};
-
-_root.天气系统.注销夜视仪 = function(owner:Object):Boolean {
-    var 当前夜视:Object = this.夜视仪;
-    if (!当前夜视.视觉情况) {
-        return false;
-    }
-
-    if (当前夜视 === owner) {
-        this.夜视仪 = {};
-        if (this.请求刷新) {
-            this.请求刷新();
-        } else {
-            EventBus.getInstance().publish("WeatherUpdated");
-        }
-        return true;
-    }
-
-    // 兼容：如果调用方没有拿到原对象引用，允许用装备标识进行匹配卸载
-    if (当前夜视.启用装备 != undefined && 当前夜视.装备类型 != undefined &&
-        owner.启用装备 != undefined && owner.装备类型 != undefined &&
-        当前夜视.启用装备 === owner.启用装备 && 当前夜视.装备类型 === owner.装备类型) {
-        this.夜视仪 = {};
-        if (this.请求刷新) {
-            this.请求刷新();
-        } else {
-            EventBus.getInstance().publish("WeatherUpdated");
-        }
-        return true;
-    }
-
-    return false;
-};
-
-
-EventBus.getInstance().subscribe("WeatherUpdated", _root.天气系统.设置当前天气, _root.天气系统);
-
-EventBus.getInstance().subscribe("WeatherTimeRateUpdated", function(光照等级) {
-    // _root.发布消息("WeatherTimeRateUpdated:" + 光照等级)
-    this.金币时间倍率 = NumberUtil.clamp(
-        Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.金币时间最大倍率, 1),
-        1,
-        this.金币时间最大倍率
-    );
-    this.经验时间倍率 = NumberUtil.clamp(
-        Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.经验时间最大倍率, 1),
-        1,
-        this.经验时间最大倍率
-    );
-    this.人物信息透明度 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, 0, 100);
-
-    // _root.发布消息(光照等级, this.时间倍率启动等级, this.金币时间倍率, this.经验时间倍率, this.人物信息透明度)
-}, _root.天气系统);
-
-EventBus.getInstance().subscribe("SceneChanged", function() {
-	var bus:EventBus = EventBus.getInstance();
-	var 光照等级 = this.获得当前光照等级();
-	bus.publish("WeatherTimeRateUpdated", 光照等级);
-
-	// 防御性兜底：确保场景中已存在的单位也能同步天气状态
-	// 这解决了单位初始化顺序可能早于WeatherTimeRateUpdated事件发布的问题
-	this.防御性刷新场景单位天气状态();
-}, _root.天气系统); // 地图变动时，重新初始化子弹池
