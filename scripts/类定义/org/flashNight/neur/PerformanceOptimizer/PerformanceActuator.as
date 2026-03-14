@@ -4,6 +4,8 @@ import org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem;
 import org.flashNight.arki.render.TrailRenderer;
 import org.flashNight.arki.render.ClipFrameRenderer;
 import org.flashNight.arki.render.BladeMotionTrailsRenderer;
+import org.flashNight.arki.render.WeatherParticleRenderer;
+import org.flashNight.arki.render.SkyboxRenderer;
 
 /**
  * PerformanceActuator - 性能执行器/作动器
@@ -144,6 +146,8 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
         if (env.TrailRenderer == undefined) env.TrailRenderer = TrailRenderer;
         if (env.ClipFrameRenderer == undefined) env.ClipFrameRenderer = ClipFrameRenderer;
         if (env.BladeMotionTrailsRenderer == undefined) env.BladeMotionTrailsRenderer = BladeMotionTrailsRenderer;
+        if (env.WeatherParticleRenderer == undefined) env.WeatherParticleRenderer = WeatherParticleRenderer;
+        if (env.SkyboxRenderer == undefined) env.SkyboxRenderer = SkyboxRenderer;
         this._env = env;
     }
 
@@ -236,10 +240,12 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 this._host.offsetTolerance = 80;
         }
 
-        // 渲染器联动调整（与工作版本一致）
+        // 渲染器联动调整
         this._env.TrailRenderer.getInstance().setQuality(level);
         this._env.ClipFrameRenderer.setPerformanceLevel(level);
         this._env.BladeMotionTrailsRenderer.setPerformanceLevel(level);
+        this._env.WeatherParticleRenderer.setPerformanceLevel(level);
+        this._env.SkyboxRenderer.setPerformanceLevel(level);
     }
 
     public function setHost(host:Object):Void { this._host = host; }

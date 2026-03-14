@@ -3,6 +3,7 @@ import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.weather.WeatherSystem;
+import org.flashNight.arki.weather.EnvironmentConfig;
 import org.flashNight.neur.Event.EventBus;
 
 /**
@@ -94,15 +95,16 @@ class org.flashNight.arki.scene.StageManager {
         var bglist = basicInfo.Background.split("/");
         var url = bglist[bglist.length - 1];
 
-        environment = ObjectUtil.clone(WeatherSystem.getInstance().stageEnvSettings[url]);
+        var envConfig:EnvironmentConfig = WeatherSystem.getInstance().getEnvConfig();
+        environment = envConfig.getStageEnv(url);
         if (!environment) {
-            environment = ObjectUtil.clone(WeatherSystem.getInstance().stageEnvSettings.Default);
+            environment = envConfig.getStageEnvDefault();
         }
         //配置关卡环境参数
         if (basicInfo.Environment) {
-            environment = _root.配置环境信息(basicInfo.Environment, environment);
+            environment = EnvironmentConfig.parseEnvironmentInfo(basicInfo.Environment, environment);
         }
-        WeatherSystem.getInstance().infiniteMapEnvInfo = environment;
+        envConfig.setInfiniteMapEnvInfo(environment);
 
         if (environment.对齐原点) {
             gameworld.背景._x = 0;

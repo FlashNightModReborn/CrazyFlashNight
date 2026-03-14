@@ -853,49 +853,41 @@ _root.加载并配置发型库 = function(xml文件地址:String):Void
 };
 
 _root.配置关卡环境数据 = function(data:Object):Void {
+	var envConfig:EnvironmentConfig = WeatherSystem.getInstance().getEnvConfig();
 	var 关卡环境设置 = {};
 	var environmentNodes:Array = data.Environment;
 	// 默认配置
-	var 默认配置 = WeatherSystem.getInstance().defaultEnvConfig;
+	var 默认配置 = envConfig.getDefaultEnvConfig();
 	关卡环境设置.Default = 默认配置;//把默认配置也存入环境设置
 	for (var i:Number = 0; i < environmentNodes.length; i++){
 		var 环境信息:Object = {};
 		var child_Nodes:Array = environmentNodes[i];
 		if(!child_Nodes.BackgroundURL) continue;
-		
-		关卡环境设置[child_Nodes.BackgroundURL] = _root.配置环境信息(child_Nodes, 默认配置);// 使用 URL 作为键存储环境信息
+
+		关卡环境设置[child_Nodes.BackgroundURL] = EnvironmentConfig.parseEnvironmentInfo(child_Nodes, 默认配置);
 	}
-	WeatherSystem.getInstance().stageEnvSettings = 关卡环境设置;
+	envConfig.setStageEnvSettings(关卡环境设置);
 };
 
 _root.配置场景环境数据 = function(data:Object):Void {
+	var envConfig:EnvironmentConfig = WeatherSystem.getInstance().getEnvConfig();
 	var 场景环境设置 = {};
 	var environmentNodes:Array = data.Environment;
 	// 默认配置
-	var 默认配置 = WeatherSystem.getInstance().defaultEnvConfig;
+	var 默认配置 = envConfig.getDefaultEnvConfig();
 	场景环境设置.Default = 默认配置;//把默认配置也存入环境设置
 	for (var i:Number = 0; i < environmentNodes.length; i++){
 		var 环境信息:Object = {};
 		var child_Nodes:Array = environmentNodes[i];
 		if(!child_Nodes.BackgroundURL) continue;
-		
-		场景环境设置[child_Nodes.BackgroundURL] = _root.配置环境信息(child_Nodes, 默认配置);// 使用 URL 作为键存储环境信息
+
+		场景环境设置[child_Nodes.BackgroundURL] = EnvironmentConfig.parseEnvironmentInfo(child_Nodes, 默认配置);
 	}
-	WeatherSystem.getInstance().sceneEnvSettings = 场景环境设置;
+	envConfig.setSceneEnvSettings(场景环境设置);
 };
 
 
-_root.解析背景元素 = function(背景元素数据:Array):Object{
-	var len = 背景元素数据.length;
-	if(len <= 0) return null;
-	for(var i = 0; i < len; i++){
-		if(!背景元素数据[i].name) 背景元素数据[i].name = "element"+i;
-		背景元素数据[i].x = Number(背景元素数据[i].x);
-		背景元素数据[i].y = Number(背景元素数据[i].y);
-		if(!背景元素数据[i].depth) 背景元素数据[i].depth = null;
-	}
-	return 背景元素数据;
-}
+// _root.解析背景元素 已迁移至 EnvironmentConfig.parseBackgroundElements
 
 
 _root.色彩引擎 = {};

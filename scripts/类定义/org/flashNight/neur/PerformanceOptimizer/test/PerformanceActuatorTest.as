@@ -42,6 +42,8 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         var trailRenderer:Object = { getInstance: function():Object { return trailInstance; } };
         var clipFrameRenderer:Object = { level: null, setPerformanceLevel: function(v):Void { this.level = v; } };
         var bladeRenderer:Object = { level: null, setPerformanceLevel: function(v):Void { this.level = v; } };
+        var weatherParticleRenderer:Object = { level: null, setPerformanceLevel: function(v):Void { this.level = v; } };
+        var skyboxRenderer:Object = { level: null, setPerformanceLevel: function(v):Void { this.level = v; } };
 
         var env:Object = {
             root: root,
@@ -50,7 +52,9 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
             ShellSystem: shellSystem,
             TrailRenderer: trailRenderer,
             ClipFrameRenderer: clipFrameRenderer,
-            BladeMotionTrailsRenderer: bladeRenderer
+            BladeMotionTrailsRenderer: bladeRenderer,
+            WeatherParticleRenderer: weatherParticleRenderer,
+            SkyboxRenderer: skyboxRenderer
         };
 
         var host:Object = { offsetTolerance: null };
@@ -73,6 +77,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(root.UI系统.经济面板动效 == true, "L0 UI动效=true");
         out += line(host.offsetTolerance == 10, "L0 offsetTolerance=10");
         out += line(trailInstance.q == 0 && clipFrameRenderer.level == 0 && bladeRenderer.level == 0, "L0 渲染器档位=0");
+        out += line(weatherParticleRenderer.level == 0 && skyboxRenderer.level == 0, "L0 天气渲染器档位=0");
 
         // Level 1
         resetCalls(displayList);
@@ -91,6 +96,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(root.UI系统.经济面板动效 == true, "L1 UI动效=true");
         out += line(host.offsetTolerance == 30, "L1 offsetTolerance=30");
         out += line(trailInstance.q == 1 && clipFrameRenderer.level == 1 && bladeRenderer.level == 1, "L1 渲染器档位=1");
+        out += line(weatherParticleRenderer.level == 1 && skyboxRenderer.level == 1, "L1 天气渲染器档位=1");
 
         // Level 2
         resetCalls(displayList);
@@ -105,6 +111,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(root.UI系统.经济面板动效 == false, "L2 UI动效=false");
         out += line(host.offsetTolerance == 50, "L2 offsetTolerance=50");
         out += line(trailInstance.q == 2 && clipFrameRenderer.level == 2 && bladeRenderer.level == 2, "L2 渲染器档位=2");
+        out += line(weatherParticleRenderer.level == 2 && skyboxRenderer.level == 2, "L2 天气渲染器档位=2");
 
         // Level 3 (default)
         resetCalls(displayList);
@@ -118,6 +125,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(displayList.pauseCalled, "L3 显示列表暂停播放");
         out += line(host.offsetTolerance == 80, "L3 offsetTolerance=80");
         out += line(trailInstance.q == 3 && clipFrameRenderer.level == 3 && bladeRenderer.level == 3, "L3 渲染器档位=3");
+        out += line(weatherParticleRenderer.level == 3 && skyboxRenderer.level == 3, "L3 天气渲染器档位=3");
 
         return out;
     }

@@ -422,7 +422,7 @@ _root.跳转地图 = function(跳转帧){
 	_root.NPC对话_ensureLoaded(null, null);
 	_root.佣兵配置_ensureLoaded(null, null);
 	// 检索环境xml中是否存在对应的基地地图或外部地图
-	if(WeatherSystem.getInstance().sceneEnvSettings[_root.关卡标志] != null){
+	if(WeatherSystem.getInstance().getEnvConfig().hasSceneEnv(_root.关卡标志)){
 		// 通过关卡标志是否有"地图-"前缀来区分基地/外部地图
 		跳转帧 = _root.关卡标志.indexOf("地图-") === 0 ? "外部地图" : "基地地图";
 	}

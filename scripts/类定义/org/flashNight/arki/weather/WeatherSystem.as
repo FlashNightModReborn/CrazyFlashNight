@@ -11,11 +11,14 @@
  * @class WeatherSystem
  */
 import org.flashNight.arki.weather.NightVisionManager;
+import org.flashNight.arki.weather.EnvironmentConfig;
 import org.flashNight.arki.component.Effect.LightingEngine;
 import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.xml.LoadXml.WeatherSystemConfigLoader;
 import org.flashNight.naki.Interpolation.Interpolatior;
 import org.flashNight.gesh.number.NumberUtil;
+import org.flashNight.arki.render.WeatherParticleRenderer;
+import org.flashNight.arki.render.SkyboxRenderer;
 
 class org.flashNight.arki.weather.WeatherSystem {
 
@@ -36,6 +39,7 @@ class org.flashNight.arki.weather.WeatherSystem {
     // ==================== 内部管理器 ====================
 
     private var _nightVisionMgr:NightVisionManager;
+    private var _envConfig:EnvironmentConfig;
     private var _initialized:Boolean;
 
     // ==================== 公共属性（带类型声明，编译期可检查） ====================
@@ -69,11 +73,8 @@ class org.flashNight.arki.weather.WeatherSystem {
     public var spaceCondition:String;
     public var visualCondition:String;
 
-    // ---- 环境配置数据（Object 字典，保持引用语义） ----
-    public var stageEnvSettings:Object;
-    public var sceneEnvSettings:Object;
-    public var defaultEnvConfig:Object;
-    public var infiniteMapEnvInfo:Object;
+    // ---- 环境配置数据（委托给 EnvironmentConfig） ----
+    // 已迁移至 _envConfig，通过 getEnvConfig() 访问
 
     // ==================== SWF 资产兼容桥接 ====================
 
@@ -120,6 +121,7 @@ class org.flashNight.arki.weather.WeatherSystem {
 
     private function WeatherSystem() {
         this._nightVisionMgr = new NightVisionManager();
+        this._envConfig = new EnvironmentConfig();
         this._initialized = false;
 
         // ---- 昼夜周期默认值 ----
@@ -151,27 +153,6 @@ class org.flashNight.arki.weather.WeatherSystem {
         this.spaceCondition = "室外";
         this.visualCondition = "光照";
 
-        // ---- 环境配置数据 ----
-        this.stageEnvSettings = undefined;
-        this.sceneEnvSettings = undefined;
-        this.infiniteMapEnvInfo = null;
-
-        // 中文键名：与 _root.配置环境信息() 及环境 XML 数据结构保持一致
-        this.defaultEnvConfig = {
-            地址: "gk20_2_BG.swf",
-            对齐原点: false,
-            Xmin: 50, Xmax: 1750,
-            Ymin: 330, Ymax: 600,
-            背景长: 1750, 背景高: 600,
-            地平线高度: 200,
-            后景: null, 禁用天空: false,
-            天气情况: "正常", 空间情况: "室外", 视觉情况: "光照",
-            最大光照: 8, 最小光照: 4,
-            背景元素: null,
-            门: null, 地图碰撞箱: null,
-            左侧出生线: null, 右侧出生线: null,
-            佣兵刷新数据: null, BGM: null
-        };
     }
 
     // ==================== 初始化 ====================
@@ -190,6 +171,10 @@ class org.flashNight.arki.weather.WeatherSystem {
             bus.subscribe("WeatherUpdated", this.updateWeather, this);
             bus.subscribe("WeatherTimeRateUpdated", this._onTimeRateUpdated, this);
             bus.subscribe("SceneChanged", this._onSceneChanged, this);
+
+            // 初始化天气渲染器（订阅 frameEnd 实现逐帧更新）
+            WeatherParticleRenderer.initialize();
+            SkyboxRenderer.initialize();
         }
 
         var configLoader:WeatherSystemConfigLoader = WeatherSystemConfigLoader.getInstance();
@@ -223,7 +208,8 @@ class org.flashNight.arki.weather.WeatherSystem {
                 self.minLightLevel = params.MinLight;
                 self.maxLight = self.maxLightLevel;
                 self.minLight = self.minLightLevel;
-                self.infiniteMapEnvInfo = params.InfiniteMapEnvironmentInfo == "null" ? null : params.InfiniteMapEnvironmentInfo;
+                var infMapEnv:Object = params.InfiniteMapEnvironmentInfo == "null" ? null : params.InfiniteMapEnvironmentInfo;
+                self._envConfig.setInfiniteMapEnvInfo(infMapEnv);
 
                 var lightLevels:Array = data.LightLevels.Hour;
                 self.dayNightLightLevels = [];
@@ -245,6 +231,16 @@ class org.flashNight.arki.weather.WeatherSystem {
                 }
             }
         );
+    }
+
+    // ==================== 环境配置访问 ====================
+
+    /**
+     * 获取环境配置管理器。
+     * @return EnvironmentConfig
+     */
+    public function getEnvConfig():EnvironmentConfig {
+        return this._envConfig;
     }
 
     // ==================== 核心方法 ====================
@@ -322,6 +318,9 @@ class org.flashNight.arki.weather.WeatherSystem {
         // 应用光照渲染
         LightingEngine.applyLighting(_root.gameworld, lightLevel, vc, this.useFilterRendering);
         LightingEngine.applyLighting(_root.天空盒, lightLevel, vc, false);
+
+        // 更新天空盒目标色（低频驱动，逐帧 lerp 由渲染器自行完成）
+        SkyboxRenderer.setTimeAndWeather(this.currentTime, this.weatherCondition);
     }
 
     /**
@@ -329,15 +328,62 @@ class org.flashNight.arki.weather.WeatherSystem {
      * @param envInfo 环境信息对象
      */
     public function configureEnvironment(envInfo:Object):Void {
-        if (this.infiniteMapEnvInfo) {
-            envInfo = this.infiniteMapEnvInfo;
-            this.infiniteMapEnvInfo = null;
+        var override:Object = this._envConfig.consumeInfiniteMapEnvInfo();
+        if (override != null) {
+            envInfo = override;
         }
         if (envInfo.天气情况) this.weatherCondition = envInfo.天气情况;
         if (envInfo.空间情况) this.spaceCondition = envInfo.空间情况;
         if (envInfo.视觉情况) this.visualCondition = envInfo.视觉情况;
         if (envInfo.最大光照 != undefined) this.maxLight = envInfo.最大光照;
         if (envInfo.最小光照 != undefined) this.minLight = envInfo.最小光照;
+
+        // ---- 天空盒渲染器：室内/禁用天空判定 ----
+        var skyDisabled:Boolean = (this.spaceCondition == "室内") || (envInfo.禁用天空 == true);
+        SkyboxRenderer.setSkyEnabled(!skyDisabled);
+
+        // ---- 天气粒子渲染器 ----
+        if (skyDisabled) {
+            // 室内/禁用天空：关闭粒子
+            WeatherParticleRenderer.setWeather("none", 0);
+        } else {
+            var wc:String = this.weatherCondition;
+            var intensity:Number = envInfo.天气强度 != undefined ? envInfo.天气强度 : 0.5;
+            if (wc == "雨") {
+                WeatherParticleRenderer.setWeather("rain", intensity);
+            } else if (wc == "雪") {
+                WeatherParticleRenderer.setWeather("snow", intensity);
+            } else if (wc == "沙尘") {
+                WeatherParticleRenderer.setWeather("dust", intensity);
+            } else if (envInfo.允许随机天气 == true) {
+                // 随机天气：每次进入场景重掷
+                _randomizeWeather(intensity);
+            } else {
+                WeatherParticleRenderer.setWeather("none", 0);
+            }
+        }
+
+        // ---- 天空盒色调：设置目标值，逐帧 lerp 平滑过渡 ----
+        SkyboxRenderer.setTimeAndWeather(this.currentTime, this.weatherCondition);
+    }
+
+    /**
+     * 随机掷骰决定天气（室外 + 允许随机天气 场景）。
+     */
+    private function _randomizeWeather(intensity:Number):Void {
+        var roll:Number = Math.random() * 100;
+        if (roll < 20) {
+            WeatherParticleRenderer.setWeather("rain", intensity);
+            this.weatherCondition = "雨";
+        } else if (roll < 25) {
+            WeatherParticleRenderer.setWeather("snow", intensity);
+            this.weatherCondition = "雪";
+        } else if (roll < 30) {
+            WeatherParticleRenderer.setWeather("dust", intensity);
+            this.weatherCondition = "沙尘";
+        } else {
+            WeatherParticleRenderer.setWeather("none", 0);
+        }
     }
 
     /**
@@ -428,8 +474,11 @@ class org.flashNight.arki.weather.WeatherSystem {
      */
     public function _onSceneChanged():Void {
         // 场景切换时清除夜视仪注册，防止跨场景残留
-        // （旧代码依赖 onUnload 回调，但 removeMovieClip 后生命周期列表不再被遍历）
         this._nightVisionMgr.clear();
+
+        // 清理天气渲染器状态
+        WeatherParticleRenderer.dispose();
+        SkyboxRenderer.dispose();
 
         var bus:EventBus = EventBus.getInstance();
         var lightLevel:Number = this.getCurrentLightLevel();

@@ -30,7 +30,7 @@ class org.flashNight.arki.scene.StageInfo {
     public static function parseBasicInfo(data):Object{
         var info = data.BasicInformation;
 		if(info.Environment.Default === true){
-			info.Environment = WeatherSystem.getInstance().stageEnvSettings.Default;
+			info.Environment = WeatherSystem.getInstance().getEnvConfig().getDefaultEnvConfig();
 		}
         return info;
     }

@@ -103,7 +103,7 @@ _root.贴背景图 = function(){
 
 _root.配置场景环境信息 = function(){
 	var 游戏世界 = _root.gameworld;
-	var 环境信息 = WeatherSystem.getInstance().sceneEnvSettings[_root.关卡标志];
+	var 环境信息 = WeatherSystem.getInstance().getEnvConfig().getSceneEnv(_root.关卡标志);
 	//显示场景名称
 	_root.场景名称文本.text = _root.关卡标志.split("地图-").join("");
 	//寻找出生点，但似乎由于异步原因没有生效
@@ -167,7 +167,7 @@ _root.加载场景背景 = function (动画名){
 	背景层.attachMovie("外部动画加载壳mc","外部动画加载壳mc",背景层.getNextHighestDepth());
 	var list = 动画名.split("/")
 	var url = list[list.length-1];
-	var 环境配置 = WeatherSystem.getInstance().stageEnvSettings[url];	
+	var 环境配置 = WeatherSystem.getInstance().getEnvConfig().getStageEnv(url);
 	_root.服务器.发布服务器消息("加载场景背景 " + url + " " + _root.格式化对象为字符串(环境配置));
 	if(环境配置) {
 		WeatherSystem.getInstance().configureEnvironment(环境配置);
