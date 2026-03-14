@@ -60,7 +60,13 @@ class org.flashNight.arki.render.TrailStyleManager
         lineColor: 0xFFFFFF,
         lineWidth: 2,
         fillOpacity: 100,
-        lineOpacity: 100
+        lineOpacity: 100,
+        // P1 几何增强字段 —— 中性默认值 = 现有行为不变
+        leadOffset: 0,      // 前缘切向偏移（hd 的比例因子）
+        lagOffset: 0,       // 后缘切向偏移
+        outerScale: 1.0,    // 外边缘法向缩放
+        innerScale: 1.0,    // 内边缘法向缩放
+        tailFade: 0          // 尾部 alpha 衰减因子 (0-1)
     };
 
     // --------------------------
@@ -115,7 +121,18 @@ class org.flashNight.arki.render.TrailStyleManager
      */
     public function getStyle(styleName:String):Object
     {
-        return _styles[styleName] != undefined ? _styles[styleName] : _styles["预设"];
+        var s:Object = _styles[styleName] != undefined ? _styles[styleName] : _styles["预设"];
+        // 惰性合并：外部 XML 加载的样式可能缺少新增字段
+        // 直接写回原对象：幂等、零 GC、后续调用直接跳过
+        if (s.leadOffset == undefined) {
+            var d:Object = _defaultStyle;
+            s.leadOffset  = d.leadOffset;
+            s.lagOffset   = d.lagOffset;
+            s.outerScale  = d.outerScale;
+            s.innerScale  = d.innerScale;
+            s.tailFade    = d.tailFade;
+        }
+        return s;
     }
 
     /**

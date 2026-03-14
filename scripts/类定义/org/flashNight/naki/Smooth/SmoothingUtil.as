@@ -38,6 +38,15 @@ class org.flashNight.naki.Smooth.SmoothingUtil
     private static var MIN_DISTANCE:Number = 0.0001;
 
     // --------------------------
+    // 静态 scratch 数组 —— 避免每次调用分配新数组 [H21]
+    // --------------------------
+    private static var _ptsWrapScratch:Array = [];
+    private static var _distSqScratch:Array = [];
+    private static var _tensionScratch:Array = [];
+    private static var _newPtsScratch:Array = [];
+    private static var _simpleScratch:Array = [];
+
+    // --------------------------
     // 构造函数 (Constructor)
     // --------------------------
     /**
@@ -78,9 +87,9 @@ class org.flashNight.naki.Smooth.SmoothingUtil
             return;
         }
 
-        // 创建一个新数组来存储平滑后的点，避免原地修改影响后续计算
-        // (Create a new array to store smoothed points to avoid in-place modification affecting subsequent calculations)
-        var smoothedPts:Array = [];
+        // 复用静态 scratch 数组，避免每次调用分配新数组 [H21]
+        _simpleScratch.length = 0;
+        var smoothedPts:Array = _simpleScratch;
         // 第一个点保持不变 (Keep the first point unchanged)
         smoothedPts.push(pts[0]);
 
@@ -149,6 +158,7 @@ class org.flashNight.naki.Smooth.SmoothingUtil
         var tensionedDistances:Array; // 存储距离的 tension 次幂 (Stores distance^tension)
         var distSq:Number;        // 临时距离平方 (Temporary squared distance)
         var dist:Number;          // 临时距离 (Temporary distance)
+        var dx:Number, dy:Number; // [P0-1a] 内联 _distSq 用临时差值
         var t01:Number, t12:Number, t23:Number; // 相邻点张力距离 t_ij = dist(pi, pj)^tension
         var invT01:Number, invT12:Number, invT23:Number; // 张力距离的倒数 (Inverse of tensioned distances) - 优化除法
         var t01t12:Number, t12t23:Number; // 张力距离之和 (Sum of tensioned distances)
@@ -172,49 +182,58 @@ class org.flashNight.naki.Smooth.SmoothingUtil
         if (tension == undefined || isNaN(tension)) {
              tension = 0.5; // Centripetal Catmull-Rom as default
         }
-        // 张力为0时，退化为线性插值，但此算法不直接处理，可能导致除零。
-        // Tension = 0 degenerates to linear interpolation, but this algorithm doesn't handle it directly, may cause division by zero.
-        // 通常 tension 取值范围 (0, 1]. Common tension range is (0, 1].
+        // [H11] 缓存 Math 引用，避免每次 GetVariable("Math")+GetMember
+        var mSqrt:Function = Math.sqrt;
+        var mPow:Function = Math.pow;
+        // [P0-1b] tension=0.5 快速路径标记：pow(dist,0.5) = sqrt(dist) = sqrt(sqrt(distSq))
+        var isCentripetal:Boolean = (tension === 0.5);
 
         pts = ring.toArray();
         n = pts.length;
 
         // 点数少于4个无法进行 Catmull-Rom 插值 (Cannot perform Catmull-Rom with less than 4 points)
         if (n < 4) {
-            // trace("Warning: CatmullRomSmooth requires at least 4 points. Skipping.");
             return;
         }
 
-        // 1. 创建首尾环绕的点数组 (Create wrapped points array)
+        // 1. 创建首尾环绕的点数组 [H21] 复用静态 scratch 数组
         //    [p(n-1), p0, p1, ..., p(n-1), p0]
-        ptsWrap = [];
-        ptsWrap.push(pts[n - 1]); // 添加最后一个点到开头 (Add last point to the beginning)
+        ptsWrap = _ptsWrapScratch;
+        ptsWrap[0] = pts[n - 1];
         for (k = 0; k < n; k++) {
-            ptsWrap.push(pts[k]); // 添加原始点 (Add original points)
+            ptsWrap[k + 1] = pts[k];
         }
-        ptsWrap.push(pts[0]); // 添加第一个点到末尾 (Add first point to the end)
-        wrapN = ptsWrap.length; // n + 2
+        ptsWrap[n + 1] = pts[0];
+        wrapN = n + 2;
+        ptsWrap.length = wrapN;
 
-        // 2. 预计算相邻点距离的平方和张力距离 (Pre-calculate squared distances and tensioned distances)
-        distancesSq = [];
-        tensionedDistances = [];
-        for (k = 0; k < wrapN - 1; k++) {
+        // 2. 预计算相邻点距离的平方和张力距离 [H21] 复用 scratch 数组
+        distancesSq = _distSqScratch;
+        tensionedDistances = _tensionScratch;
+        var edgeCount:Number = wrapN - 1;
+        for (k = 0; k < edgeCount; k++) {
             p0 = ptsWrap[k];
             p1 = ptsWrap[k + 1];
-            distSq = _distSq(p0, p1); // 计算距离平方 (Calculate squared distance)
+            // [P0-1a] 内联 _distSq，省去 ~485ns/次函数调用开销
+            dx = p0.x - p1.x;
+            dy = p0.y - p1.y;
+            distSq = dx * dx + dy * dy;
 
             if (distSq < MIN_DISTANCE_SQ) {
-                // 如果点重合或非常接近，使用一个很小的距离避免除零
-                // (If points coincide or are very close, use a tiny distance to avoid division by zero)
-                dist = MIN_DISTANCE;
-                tensionedDistances.push(Math.pow(dist, tension));
+                // [P0-1b] 快速路径：MIN_DISTANCE^0.5 = sqrt(0.0001) = 0.01
+                tensionedDistances[k] = isCentripetal ? 0.01 : mPow(MIN_DISTANCE, tension);
             } else {
-                // 只有在需要实际距离时才开方 (Only take sqrt if needed for tension calculation)
-                dist = Math.sqrt(distSq);
-                tensionedDistances.push(Math.pow(dist, tension));
+                if (isCentripetal) {
+                    // [P0-1b] pow(sqrt(distSq), 0.5) = sqrt(sqrt(distSq)) = distSq^0.25
+                    tensionedDistances[k] = mSqrt(mSqrt(distSq));
+                } else {
+                    tensionedDistances[k] = mPow(mSqrt(distSq), tension);
+                }
             }
-            distancesSq.push(distSq); // 存储平方距离可能在其他地方有用 (Storing squared distance might be useful elsewhere)
+            distancesSq[k] = distSq;
         }
+        distancesSq.length = edgeCount;
+        tensionedDistances.length = edgeCount;
 
         // 3. 预计算 H 基函数系数 (Pre-calculate H basis function coefficients)
         //    针对固定的插值步长 t = 0.25 和 t = 0.75
@@ -243,12 +262,9 @@ class org.flashNight.naki.Smooth.SmoothingUtil
         h4_2 =       t3 -       t2;       // 0.140625
 
 
-        // 4. 主循环：遍历每个原始线段 (p1, p2) 并插值 (Main loop: Iterate through each original segment (p1, p2) and interpolate)
-        newPts = [];
-        // 循环范围对应原始点索引 k = 0 到 n-1
-        // The loop range corresponds to original point indices k = 0 to n-1
-        // 在 ptsWrap 中的索引 i = 1 到 n (即 wrapN - 2)
-        // Indices in ptsWrap are i = 1 to n (which is wrapN - 2)
+        // 4. 主循环：遍历每个原始线段 (p1, p2) 并插值 [H21] 复用 scratch 数组
+        newPts = _newPtsScratch;
+        var wi:Number = 0; // newPts 写入索引
         for (i = 1; i < wrapN - 2; i++)
         {
             // 4.1 获取当前段所需的四个控制点 (Get the four control points for the current segment)
@@ -305,25 +321,24 @@ class org.flashNight.naki.Smooth.SmoothingUtil
             //     (Interpolate using pre-calculated H coefficients and unrolled loop)
             //     P(t) = H1(t)*P1 + H2(t)*P2 + H3(t)*M1 + H4(t)*M2
 
-            // 插值点 1 (t = 0.25) (Interpolated point 1)
+            // 插值点 1 (t = 0.25) — 必须创建新对象（引用会存入 RingBuffer，不可池化）
             nx1 = h1_1 * p1x + h2_1 * p2x + h3_1 * m1x + h4_1 * m2x;
             ny1 = h1_1 * p1y + h2_1 * p2y + h3_1 * m1y + h4_1 * m2y;
-            newPts.push({x: nx1, y: ny1});
+            newPts[wi] = {x: nx1, y: ny1};
+            wi++;
 
-            // 插值点 2 (t = 0.75) (Interpolated point 2)
+            // 插值点 2 (t = 0.75)
             nx2 = h1_2 * p1x + h2_2 * p2x + h3_2 * m1x + h4_2 * m2x;
             ny2 = h1_2 * p1y + h2_2 * p2y + h3_2 * m1y + h4_2 * m2y;
-            newPts.push({x: nx2, y: ny2});
+            newPts[wi] = {x: nx2, y: ny2};
+            wi++;
         }
 
-        // 5. 使用新生成的点重置 RingBuffer (Reset the RingBuffer with the newly generated points)
-        //    注意：新点集的数量大约是原始点数的两倍
-        //    (Note: The number of points in the new set is approximately twice the original number)
-        if (newPts.length > 0) {
+        // 5. 使用新生成的点重置 RingBuffer
+        if (wi > 0) {
+            newPts.length = wi;
             ring.reset(newPts);
         }
-        // else: 如果原始点数 < 4，newPts 会是空的，这里不需要重置
-        // (If original points < 4, newPts will be empty, no reset needed here)
     }
 
     /**

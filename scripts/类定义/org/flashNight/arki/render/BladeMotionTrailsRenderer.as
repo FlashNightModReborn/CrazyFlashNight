@@ -9,7 +9,7 @@ import org.flashNight.sara.util.*;
  * 三档性能实现：
  *   - HIGH:   localToGlobal 精确采样，5个刀口位置，保留旋转弧线
  *   - MEDIUM: localToGlobal 精确采样，4个刀口位置
- *   - LOW:    getRect 包围盒采样，3个刀口位置（最低开销）
+ *   - LOW:    localToGlobal 精确采样，3个刀口位置（保留旋转信息，仅减少采样点）
  *
  * localToGlobal 方案保留碰撞箱旋转信息：挥刀时 edge1(刀口侧) 划过大弧、
  * edge2(刀柄侧) 划过小弧，天然形成从宽到窄的弧形刀光，而非等宽飘带。
@@ -37,6 +37,29 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
     private static var _clipYScratch:Array = [];
     private static var _trailScratch:Array = [];
     private static var _pairDistSqScratch:Array = [];
+
+    // --- [P0-4] 帧级引用缓存 ---
+    private static var _mapCache:MovieClip;
+    private static var _rendererCache:Object;
+    private static var _cacheFrame:Number = -1;
+
+    private static function _ensureCache():Void {
+        var f:Number = _root.帧计时器.当前帧数;
+        if (f !== _cacheFrame) {
+            _mapCache = _root.gameworld.deadbody;
+            _rendererCache = TrailRenderer.getInstance();
+            _cacheFrame = f;
+        }
+    }
+
+    // --- [P0-3] 刀口 slot 引用缓存（固定 5 槽，不随画质截断） ---
+    private static function _getSlots(mc:MovieClip):Array {
+        var s:Array = mc.__bsl;
+        if (s != undefined) return s;
+        s = [mc.刀口位置1, mc.刀口位置2, mc.刀口位置3, mc.刀口位置4, mc.刀口位置5];
+        mc.__bsl = s;
+        return s;
+    }
 
     private function BladeMotionTrailsRenderer() {
     }
@@ -133,10 +156,12 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
         var maxBladeY:Number = -1e8;
         var lo:Number, hi:Number;
 
-        for (var i:Number = 1; i <= maxPositions; i++) {
-            current = mc["刀口位置" + i];
+        // [P0-3] 使用缓存的 slot 引用数组，消除每帧字符串拼接
+        var slots:Array = _getSlots(mc);
+        for (var i:Number = 0; i < maxPositions; i++) {
+            current = slots[i];
             if (current && current._x != undefined) {
-                bladeId += String(i);
+                bladeId += String(i + 1);
                 // H03: MC 属性批量读取后缓存，避免重复 native 访问(~170ns/次)
                 var px:Number = current._x;
                 var py:Number = current._y;
@@ -230,44 +255,51 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
                 }
             }
 
-            // --- 2C: 刀身范围约束（限制膨胀不超出自然边界并集）---
+            // --- 2C: 刀身范围约束（各向异性：X/Y 轴独立约束）---
+            // 武器刀口通常沿 Y 轴(刀口-刀柄)排列，X 方向极窄。
+            // 单一 spread 会导致 X 轴紧约束压制 Y 轴膨胀，
+            // 使中间刀口无法获得应有的黄金比例间隙填充。
             cy = (ryMin + ryMax) * 0.5;
             cx = (rxMin + rxMax) * 0.5;
             centerPX = clipX[j] + cx;
             centerPY = clipY[j] + cy;
 
+            var spreadX:Number = spread;
+            var spreadY:Number = spread;
+
             expandLeft = cx - rxMin;
             if (expandLeft > 0.1) {
                 sLeft = (centerPX - minBladeX) / expandLeft;
-                if (sLeft < spread) spread = sLeft;
+                if (sLeft < spreadX) spreadX = sLeft;
             }
             expandRight = rxMax - cx;
             if (expandRight > 0.1) {
                 sRight = (maxBladeX - centerPX) / expandRight;
-                if (sRight < spread) spread = sRight;
+                if (sRight < spreadX) spreadX = sRight;
             }
             expandUp = ryMax - cy;
             if (expandUp > 0.1) {
                 sUp = (maxBladeY - centerPY) / expandUp;
-                if (sUp < spread) spread = sUp;
+                if (sUp < spreadY) spreadY = sUp;
             }
             expandDown = cy - ryMin;
             if (expandDown > 0.1) {
                 sDown = (centerPY - minBladeY) / expandDown;
-                if (sDown < spread) spread = sDown;
+                if (sDown < spreadY) spreadY = sDown;
             }
-            if (spread < minSpread) spread = minSpread;
+            if (spreadX < minSpread) spreadX = minSpread;
+            if (spreadY < minSpread) spreadY = minSpread;
 
-            // Phase 3: 按自适应系数采样边缘
-            tipPt.x = cx + (rxMin - cx) * spread;
-            tipPt.y = cy + (ryMax - cy) * spread;
+            // Phase 3: 各向异性采样——X/Y 轴使用独立 spread
+            tipPt.x = cx + (rxMin - cx) * spreadX;
+            tipPt.y = cy + (ryMax - cy) * spreadY;
             current.localToGlobal(tipPt);
             map.globalToLocal(tipPt);
             e1x = tipPt.x;
             e1y = tipPt.y;
 
-            basePt.x = cx + (rxMax - cx) * spread;
-            basePt.y = cy + (ryMin - cy) * spread;
+            basePt.x = cx + (rxMax - cx) * spreadX;
+            basePt.y = cy + (ryMin - cy) * spreadY;
             current.localToGlobal(basePt);
             map.globalToLocal(basePt);
 
@@ -276,8 +308,10 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
                 edge = {};
                 trail[k] = edge;
             }
-            edge.edge1 = new Vector(e1x, e1y);
-            edge.edge2 = new Vector(basePt.x, basePt.y);
+            // [P0-5] 对象字面量替代 new Vector (~350ns vs ~847ns)
+            // 下游只访问 .x/.y，AS2 类型声明为软提示，兼容
+            edge.edge1 = {x: e1x, y: e1y};
+            edge.edge2 = {x: basePt.x, y: basePt.y};
             k++;
         }
         trail.length = k;
@@ -290,60 +324,36 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
 
     /** 高性能：localToGlobal 精确采样，5个刀口位置 */
     private static function processBladeTrailHigh(target:MovieClip, mc:MovieClip, style:String):Void {
-        var map:MovieClip = _root.gameworld.deadbody;
+        _ensureCache();
         var trail:Array = _trailScratch;
-        var bladeId:String;
-
-        bladeId = _sampleBladeEdges(mc, map, 5, trail);
+        var bladeId:String = _sampleBladeEdges(mc, _mapCache, 5, trail);
         if (bladeId == null) return;
 
         var key:String = target._name + target.version + bladeId;
-        TrailRenderer.getInstance().addTrailData(key, trail, style);
+        _rendererCache.addTrailData(key, trail, style);
     }
 
     /** 中性能：localToGlobal 精确采样，4个刀口位置 */
     private static function processBladeTrailMedium(target:MovieClip, mc:MovieClip, style:String):Void {
-        var map:MovieClip = _root.gameworld.deadbody;
+        _ensureCache();
         var trail:Array = _trailScratch;
-        var bladeId:String;
-
-        bladeId = _sampleBladeEdges(mc, map, 4, trail);
+        var bladeId:String = _sampleBladeEdges(mc, _mapCache, 4, trail);
         if (bladeId == null) return;
 
         var key:String = target._name + target.version + bladeId;
-        TrailRenderer.getInstance().addTrailData(key, trail, style);
+        _rendererCache.addTrailData(key, trail, style);
     }
 
-    /** 低性能：getRect 包围盒采样，3个刀口位置，最低开销 */
+    /** 低性能：localToGlobal 精确采样，3个刀口位置
+     *  [P1-3] 重排：保留 localToGlobal 路径（保持旋转信息），仅减少采样点数
+     *  原 getRect(map) 方案丢失旋转信息导致几何断崖 */
     private static function processBladeTrailLow(target:MovieClip, mc:MovieClip, style:String):Void {
-        var map:MovieClip = _root.gameworld.deadbody;
+        _ensureCache();
         var trail:Array = _trailScratch;
-        var bladeId:String = "";
-        var n:Number = 0;
+        var bladeId:String = _sampleBladeEdges(mc, _mapCache, 3, trail);
+        if (bladeId == null) return;
 
-        var current:MovieClip;
-        var rect:Object;
-
-        for (var i:Number = 1; i <= 3; i++) {
-            current = mc["刀口位置" + i];
-            if (current && current._x != undefined) {
-                bladeId += String(i);
-                rect = current.getRect(map);
-                var edge:Object = trail[n];
-                if (edge == undefined) {
-                    edge = {};
-                    trail[n] = edge;
-                }
-                edge.edge1 = new Vector(rect.xMin, rect.yMax);
-                edge.edge2 = new Vector(rect.xMax, rect.yMin);
-                n++;
-            }
-        }
-
-        if (n > 0) {
-            trail.length = n;
-            var key:String = target._name + target.version + bladeId;
-            TrailRenderer.getInstance().addTrailData(key, trail, style);
-        }
+        var key:String = target._name + target.version + bladeId;
+        _rendererCache.addTrailData(key, trail, style);
     }
 }

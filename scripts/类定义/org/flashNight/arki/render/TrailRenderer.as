@@ -322,6 +322,15 @@ class org.flashNight.arki.render.TrailRenderer
         var outerFillAlpha:Number = style.fillOpacity * 0.3;
         var innerFillAlpha:Number = style.fillOpacity * 0.6;
         var outerLineAlpha:Number = style.lineOpacity * 0.14;
+        // [P1-2] 几何增强参数缓存（默认值时 needOffset=false，零额外开销）
+        var outerScale:Number  = style.outerScale;
+        var innerScale:Number  = style.innerScale;
+        var leadOff:Number     = style.leadOffset;
+        var lagOff:Number      = style.lagOffset;
+        // [P2-1] 头尾 alpha 分段参数
+        var tailFade:Number    = style.tailFade;
+        // Ribbon Trail: needOffset 标记是否需要 scale/offset 后处理
+        var needOffset:Boolean = (leadOff !== 0 || lagOff !== 0 || outerScale !== 1 || innerScale !== 1);
 
         // 获取 additive blend 画布
         var shadowCount:Number = highQuality ? 5 : 3;
@@ -369,18 +378,95 @@ class org.flashNight.arki.render.TrailRenderer
             var histLen:Number = srcE1.length;
             if (histLen < 2) continue;
 
-            // 按轨迹切线法线重建 edge 宽度，消除角度退化
-            _rebuildPerpEdges(srcE1, srcE2, histLen, midx, midy, drawE1, drawE2, sqrt);
+            // ---- Ribbon Trail：直接使用平滑后的边缘位置 ----
+            // 每帧的 edge1-edge2 向量天然编码刀身实际角度（经 localToGlobal），
+            // 平滑已保证帧间连续性，无需从轨迹切线重建方向。
+            var s:Number;
+            var p1e:Object, p2e:Object;
+            for (s = 0; s < histLen; s++) {
+                p1e = srcE1[s]; p2e = srcE2[s];
+                midx[s] = (p1e.x + p2e.x) * 0.5;
+                midy[s] = (p1e.y + p2e.y) * 0.5;
+            }
+            midx.length = histLen;
+            midy.length = histLen;
 
-            // 外扩辉光层：全采样宽度，低 alpha
-            // additive blend 下多帧画布叠加会累积亮度，alpha 需远低于 normal blend
+            // 默认直接使用平滑后边缘（零额外开销）
+            var eA:Array = srcE1;
+            var eB:Array = srcE2;
+
+            if (needOffset) {
+                // 有 outerScale/innerScale/leadOffset/lagOffset 时：
+                // 保持实际刀身方向，仅缩放边缘距离 + 沿轨迹切线偏移
+                var maxDSq:Number = 0;
+                var edx:Number, edy:Number, dSq:Number;
+                for (s = 0; s < histLen; s++) {
+                    edx = srcE1[s].x - srcE2[s].x;
+                    edy = srcE1[s].y - srcE2[s].y;
+                    dSq = edx * edx + edy * edy;
+                    if (dSq > maxDSq) maxDSq = dSq;
+                }
+                var hd:Number = sqrt(maxDSq) * 0.5;
+                var loh:Number = leadOff * hd;
+                var lah:Number = lagOff * hd;
+                var lastS:Number = histLen - 1;
+                var tx:Number, ty:Number, tlen:Number;
+                var tNx:Number = 0, tNy:Number = 0;
+                var mx:Number, my:Number, invTl:Number;
+
+                for (s = 0; s < histLen; s++) {
+                    mx = midx[s]; my = midy[s];
+                    p1e = srcE1[s]; p2e = srcE2[s];
+
+                    if (s < lastS) {
+                        tx = midx[s + 1] - mx; ty = midy[s + 1] - my;
+                    } else {
+                        tx = mx - midx[s - 1]; ty = my - midy[s - 1];
+                    }
+                    tlen = sqrt(tx * tx + ty * ty);
+                    if (tlen > 0.5) {
+                        invTl = 1.0 / tlen;
+                        tNx = tx * invTl; tNy = ty * invTl;
+                    } else {
+                        tNx = 0; tNy = 0;
+                    }
+
+                    var o1:Object = drawE1[s];
+                    if (o1 == undefined) { o1 = {x: 0, y: 0}; drawE1[s] = o1; }
+                    var o2:Object = drawE2[s];
+                    if (o2 == undefined) { o2 = {x: 0, y: 0}; drawE2[s] = o2; }
+
+                    // 沿实际刀身方向缩放 + 沿轨迹切线偏移
+                    o1.x = mx + (p1e.x - mx) * outerScale + tNx * loh;
+                    o1.y = my + (p1e.y - my) * outerScale + tNy * loh;
+                    o2.x = mx + (p2e.x - mx) * innerScale + tNx * lah;
+                    o2.y = my + (p2e.y - my) * innerScale + tNy * lah;
+                }
+                drawE1.length = histLen;
+                drawE2.length = histLen;
+                eA = drawE1;
+                eB = drawE2;
+            }
+
+            // 外扩辉光层
             canvas.lineStyle(lineWidth, lineColor, outerLineAlpha);
-            _drawTaperedTrail(canvas, drawE1, drawE2, midx, midy, histLen, fillColor, outerFillAlpha, 0.3, 1.0, ptx, pty);
+            if (tailFade > 0 && histLen >= 4) {
+                var splitIdx:Number = (histLen * 0.4) | 0;
+                if (splitIdx < 2) splitIdx = 2;
+                _drawTaperedTrailRange(canvas, eA, eB, midx, midy,
+                    histLen, 0, splitIdx, fillColor, outerFillAlpha * (1 - tailFade),
+                    0.3, 1.0, ptx, pty);
+                _drawTaperedTrailRange(canvas, eA, eB, midx, midy,
+                    histLen, splitIdx - 1, histLen, fillColor, outerFillAlpha,
+                    0.3, 1.0, ptx, pty);
+            } else {
+                _drawTaperedTrail(canvas, eA, eB, midx, midy, histLen, fillColor, outerFillAlpha, 0.3, 1.0, ptx, pty);
+            }
 
-            // 核心层：收窄，适度 alpha，additive 叠加自然趋亮
+            // 核心层
             if (highQuality) {
                 canvas.lineStyle(0, 0, 0);
-                _drawTaperedTrail(canvas, drawE1, drawE2, midx, midy, histLen, fillColor, innerFillAlpha, 0.1, 0.5, ptx, pty);
+                _drawTaperedTrail(canvas, eA, eB, midx, midy, histLen, fillColor, innerFillAlpha, 0.1, 0.5, ptx, pty);
             }
         } while (++i < len);
 
@@ -405,7 +491,8 @@ class org.flashNight.arki.render.TrailRenderer
      */
     private function _rebuildPerpEdges(
         srcE1:Array, srcE2:Array, histLen:Number,
-        midx:Array, midy:Array, outE1:Array, outE2:Array, sqrt:Function
+        midx:Array, midy:Array, outE1:Array, outE2:Array, sqrt:Function,
+        outerScale:Number, innerScale:Number, leadOff:Number, lagOff:Number
     ):Void
     {
         var s:Number, edx:Number, edy:Number;
@@ -437,8 +524,15 @@ class org.flashNight.arki.render.TrailRenderer
             return;
         }
 
+        // [P1-2] 快速路径判断：默认参数时跳过偏移计算
+        var needOffset:Boolean = (leadOff !== 0 || lagOff !== 0 || outerScale !== 1 || innerScale !== 1);
+        // 预计算切向偏移的缩放量（循环不变量）
+        var loh:Number = leadOff * hd;
+        var lah:Number = lagOff * hd;
+
         // ---- 按切线法线方向重建 edge1/edge2 ----
         var tx:Number, ty:Number, tlen:Number, px:Number, py:Number;
+        var tNx:Number = 0, tNy:Number = 0; // 单位切线（用于偏移计算）
         // H01: midx[s]/midy[s] 每轮访问 3~4 次(~35ns/次)，缓存到局部
         var mx:Number, my:Number;
         var lastS:Number = histLen - 1;
@@ -456,9 +550,14 @@ class org.flashNight.arki.render.TrailRenderer
             tlen = sqrt(tx * tx + ty * ty);
 
             if (tlen > 0.5) {
-                px = (-ty / tlen) * hd;
-                py = (tx / tlen) * hd;
+                var invTlen:Number = 1.0 / tlen;
+                tNx = tx * invTlen;
+                tNy = ty * invTlen;
+                px = -tNy * hd;
+                py = tNx * hd;
             } else {
+                tNx = 0;
+                tNy = 0;
                 p1 = srcE1[s];
                 px = p1.x - mx;
                 py = p1.y - my;
@@ -475,10 +574,17 @@ class org.flashNight.arki.render.TrailRenderer
                 outE2[s] = p2;
             }
 
-            p1.x = mx + px;
-            p1.y = my + py;
-            p2.x = mx - px;
-            p2.y = my - py;
+            if (needOffset) {
+                p1.x = mx + px * outerScale + tNx * loh;
+                p1.y = my + py * outerScale + tNy * loh;
+                p2.x = mx - px * innerScale + tNx * lah;
+                p2.y = my - py * innerScale + tNy * lah;
+            } else {
+                p1.x = mx + px;
+                p1.y = my + py;
+                p2.x = mx - px;
+                p2.y = my - py;
+            }
         }
         outE1.length = histLen;
         outE2.length = histLen;
@@ -545,6 +651,84 @@ class org.flashNight.arki.render.TrailRenderer
 
         // 绘制闭合多边形：首尾直线，中间 curveTo 平滑
         // 滑动窗口：缓存当前点坐标，每轮减少 2 次数组读取
+        var last:Number = totalPts - 2;
+        var j:Number;
+
+        canvas.beginFill(color, alpha);
+        canvas.moveTo(ptx[0], pty[0]);
+
+        var curX:Number = ptx[1];
+        var curY:Number = pty[1];
+        canvas.lineTo(curX, curY);
+
+        var nextX:Number, nextY:Number;
+        for (j = 1; j < last; j++) {
+            nextX = ptx[j + 1];
+            nextY = pty[j + 1];
+            canvas.curveTo(curX, curY, (curX + nextX) * 0.5, (curY + nextY) * 0.5);
+            curX = nextX;
+            curY = nextY;
+        }
+
+        canvas.lineTo(ptx[totalPts - 1], pty[totalPts - 1]);
+        canvas.lineTo(ptx[0], pty[0]);
+        canvas.endFill();
+    }
+
+    /**
+     * [P2-1] 绘制历史帧子范围的锥形多边形。
+     * taper 因子仍按全局 histLen 计算，保证分段与不分段时几何一致。
+     *
+     * @param startIdx  子范围起始索引（含）
+     * @param endIdx    子范围结束索引（不含）
+     */
+    private function _drawTaperedTrailRange(
+        canvas:MovieClip, e1:Array, e2:Array, midx:Array, midy:Array,
+        histLen:Number, startIdx:Number, endIdx:Number,
+        color:Number, alpha:Number, taperMin:Number, taperMax:Number,
+        ptx:Array, pty:Array
+    ):Void
+    {
+        var rangeLen:Number = endIdx - startIdx;
+        if (rangeLen < 2) return;
+
+        var taperRange:Number = taperMax - taperMin;
+        var invHist:Number = (histLen > 1) ? 1.0 / (histLen - 1) : 1;
+        var totalPts:Number = rangeLen * 2;
+
+        var s:Number, f:Number, tap:Number, ri:Number;
+        var p:Object;
+        var mx:Number, my:Number;
+
+        // Edge1 正序（startIdx → endIdx-1）
+        ri = 0;
+        for (s = startIdx; s < endIdx; s++) {
+            f = s * invHist; // 全局 taper 因子
+            tap = taperMin + f * taperRange;
+            p = e1[s];
+            mx = midx[s];
+            my = midy[s];
+            ptx[ri] = mx + (p.x - mx) * tap;
+            pty[ri] = my + (p.y - my) * tap;
+            ri++;
+        }
+
+        // Edge2 逆序（endIdx-1 → startIdx）
+        for (s = endIdx - 1; s >= startIdx; s--) {
+            f = s * invHist;
+            tap = taperMin + f * taperRange;
+            p = e2[s];
+            mx = midx[s];
+            my = midy[s];
+            ptx[ri] = mx + (p.x - mx) * tap;
+            pty[ri] = my + (p.y - my) * tap;
+            ri++;
+        }
+        ptx.length = totalPts;
+        pty.length = totalPts;
+
+        if (totalPts < 3) return;
+
         var last:Number = totalPts - 2;
         var j:Number;
 
