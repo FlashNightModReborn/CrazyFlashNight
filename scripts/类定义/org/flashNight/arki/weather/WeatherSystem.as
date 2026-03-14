@@ -156,6 +156,7 @@ class org.flashNight.arki.weather.WeatherSystem {
         this.sceneEnvSettings = undefined;
         this.infiniteMapEnvInfo = null;
 
+        // 中文键名：与 _root.配置环境信息() 及环境 XML 数据结构保持一致
         this.defaultEnvConfig = {
             地址: "gk20_2_BG.swf",
             对齐原点: false,
@@ -277,11 +278,7 @@ class org.flashNight.arki.weather.WeatherSystem {
             level = 7;
         }
 
-        if (level > this.maxLight) {
-            level = this.maxLight;
-        } else if (level < this.minLight) {
-            level = this.minLight;
-        }
+        level = NumberUtil.clamp(level, this.minLight, this.maxLight);
 
         if (Math.abs(level - this.currentLightLevel) > this.lightUpdateThreshold || !this.currentLightLevel) {
             this.currentLightLevel = level;
@@ -296,9 +293,6 @@ class org.flashNight.arki.weather.WeatherSystem {
         var lightLevel:Number = this.getCurrentLightLevel();
         var vc:String = this.visualCondition;
         var bus:EventBus = EventBus.getInstance();
-
-
-
         // 夜视仪校验
         var controlTarget:MovieClip = _root.gameworld[_root.控制目标];
         var nvVisual:String = this._nightVisionMgr.validate(lightLevel, controlTarget);

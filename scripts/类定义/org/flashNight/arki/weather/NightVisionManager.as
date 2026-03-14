@@ -6,8 +6,9 @@
  *
  * 设计要点：
  * - 区分"注册态"（_registered）和"激活态"（_active）
- *   注册态 = 装备已穿戴，仅 unregister() 可清除
- *   激活态 = 当前光照在有效范围内，随光照变化自动切换
+ *   注册态 = 装备已穿戴，通过 unregister() 或 validate() 防御性校验清除
+ *   （validate 发现装备槽已变更时会清除注册，等效于隐式 unregister）
+ *   激活态 = 当前光照在有效范围内，随光照变化自动切换（不影响注册态）
  * - 解决旧代码的三个 Bug：
  *   Bug1: 嵌套 subscribeOnce 泄漏 → 装备侧不再管理事件链
  *   Bug2: 亮度越界永久清除 → validate() 只切换 _active，不清除 _registered

@@ -12,8 +12,9 @@ _root.关卡回调函数.新手练习场_1 = function(){
 
 _root.关卡回调函数.AVP_重设光照 = function(最大光照, 最小光照){
 	if(_root.难度等级 >= 2){
-		WeatherSystem.getInstance().infiniteMapEnvInfo.最大光照 = 最大光照;
-		WeatherSystem.getInstance().infiniteMapEnvInfo.最小光照 = 最小光照;
+		var envInfo:Object = WeatherSystem.getInstance().infiniteMapEnvInfo;
+		envInfo.最大光照 = 最大光照;
+		envInfo.最小光照 = 最小光照;
 	}
 }
 

@@ -76,6 +76,13 @@
 - AS2 方法中 `this` 指向调用者，但回调中 `this` 容易丢失
 - 绑定 `this` 的方式：`org.flashNight.neur.Event.Delegate` 可用，但实践中闭包更常用（`var self = this;`）
 
+### 帧脚本闭包陷阱（asLoader 架构）
+- 帧脚本通过 `#include` 注入 asLoader 的 as链接影片剪辑，加载完成后该 MovieClip 被 `removeMovieClip()` 移除
+- **移除后帧脚本的 activation object 被回收**，闭包捕获的所有局部变量变为 `undefined`
+- **禁止**：在帧脚本中创建需要持久存在的闭包（`addProperty` / `setTimeout` / `EventBus` 回调）并捕获局部变量
+- **正确做法**：将需要持久闭包的逻辑放在 class 方法中（class 方法的 activation object 独立于 MovieClip 生命周期），帧脚本只做同步初始化调用
+- 示例：`ws.setupLegacyBridge()` 在 class 方法内用 `var self = this` 创建 `addProperty` 闭包，而非在帧脚本中用局部变量 `ws` 创建
+
 ### 原型链
 - AS2 类底层基于原型链继承
 - `__proto__` 可访问和修改（本项目有原型链注入的性能研究）

@@ -6,12 +6,12 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WeatherUpdater {
     {
         // 使用返回函数绕开class无法使用this的限制
         // as2会对固定闭包实例化，因此重复创建的性能问题不大
+        // 缓存单例引用：闭包按单位数 N 执行，避免 N 次 getInstance() 调用
+        var ws:WeatherSystem = WeatherSystem.getInstance();
         return function():Void {
             var ic:MovieClip = this.新版人物文字信息 || this.人物文字信息;
 
-            // 先记录天气系统状态用于调试
-
-            var targetAlpha:Number = WeatherSystem.getInstance().characterInfoOpacity;
+            var targetAlpha:Number = ws.characterInfoOpacity;
             /*
             var 光照等级 = _root.天气系统.获得当前光照等级();
             var 启动等级 = _root.天气系统.时间倍率启动等级;

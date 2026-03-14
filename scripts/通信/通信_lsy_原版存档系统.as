@@ -25,6 +25,7 @@ _root.存档系统.初始化收集品栏 = function(){
     }
 }
 _root.存档系统.存储设置 = function(){
+    var ws:WeatherSystem = WeatherSystem.getInstance();
     return {
         setGlobalVolume:_root.soundEffectManager.getGlobalVolume(),
         setBGMVolume:_root.soundEffectManager.getBGMVolume(),
@@ -34,9 +35,9 @@ _root.存档系统.存储设置 = function(){
         是否打击数字特效:_root.是否打击数字特效,
         cameraZoomToggle:_root.cameraZoomToggle,
         basicZoomScale:_root.basicZoomScale,
-        开启昼夜系统:WeatherSystem.getInstance().enableDayNightCycle,
-        暂停昼夜系统:WeatherSystem.getInstance().pauseDayNightCycle,
-        使用滤镜渲染:WeatherSystem.getInstance().useFilterRendering,
+        开启昼夜系统:ws.enableDayNightCycle,
+        暂停昼夜系统:ws.pauseDayNightCycle,
+        使用滤镜渲染:ws.useFilterRendering,
         立绘类型:_root.立绘类型
     }
 }
@@ -54,9 +55,10 @@ _root.存档系统.读取设置 = function(设置){
     if(设置.是否阴影 || 设置.是否阴影  === false) _root.是否阴影 = 设置.是否阴影;
     if(设置.是否视觉元素 || 设置.是否视觉元素  === false) _root.是否视觉元素 = 设置.是否视觉元素;
     if(设置.是否打击数字特效 || 设置.是否打击数字特效  === false) _root.是否打击数字特效 = 设置.是否打击数字特效;
-    if(设置.开启昼夜系统 || 设置.开启昼夜系统  === false) WeatherSystem.getInstance().enableDayNightCycle = 设置.开启昼夜系统;
-    if(设置.暂停昼夜系统 || 设置.暂停昼夜系统  === false) WeatherSystem.getInstance().pauseDayNightCycle = 设置.暂停昼夜系统;
-    if(设置.使用滤镜渲染 || 设置.使用滤镜渲染  === false) WeatherSystem.getInstance().useFilterRendering = 设置.使用滤镜渲染;
+    var ws:WeatherSystem = WeatherSystem.getInstance();
+    if(设置.开启昼夜系统 || 设置.开启昼夜系统  === false) ws.enableDayNightCycle = 设置.开启昼夜系统;
+    if(设置.暂停昼夜系统 || 设置.暂停昼夜系统  === false) ws.pauseDayNightCycle = 设置.暂停昼夜系统;
+    if(设置.使用滤镜渲染 || 设置.使用滤镜渲染  === false) ws.useFilterRendering = 设置.使用滤镜渲染;
     if(设置.立绘类型) _root.立绘类型 = 设置.立绘类型;
 }
 
