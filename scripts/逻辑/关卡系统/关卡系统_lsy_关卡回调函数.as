@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.scene.*;
+import org.flashNight.arki.weather.*;
 // import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 _root.关卡回调函数 = new Object();
@@ -11,8 +12,8 @@ _root.关卡回调函数.新手练习场_1 = function(){
 
 _root.关卡回调函数.AVP_重设光照 = function(最大光照, 最小光照){
 	if(_root.难度等级 >= 2){
-		_root.天气系统.无限过图环境信息.最大光照 = 最大光照;
-		_root.天气系统.无限过图环境信息.最小光照 = 最小光照;
+		WeatherSystem.getInstance().infiniteMapEnvInfo.最大光照 = 最大光照;
+		WeatherSystem.getInstance().infiniteMapEnvInfo.最小光照 = 最小光照;
 	}
 }
 

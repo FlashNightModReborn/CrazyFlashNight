@@ -1,4 +1,6 @@
-﻿/**
+﻿import org.flashNight.arki.weather.*;
+
+/**
  * 剑圣头部装甲 - 装备生命周期函数
  *
  * 进阶等级效果（视觉增强系统）：
@@ -96,10 +98,10 @@ _root.装备生命周期函数.剑圣头部装甲初始化 = function(ref:Object
         进阶等级: tier
     };
     function 注销夜视仪():Void {
-        _root.天气系统.注销夜视仪(视觉系统);
+        WeatherSystem.getInstance().unregisterNightVision(视觉系统);
     }
 
-    _root.天气系统.注册夜视仪(视觉系统);
+    WeatherSystem.getInstance().registerNightVision(视觉系统);
 
     // ========== 生命周期卸载回调 ==========
     // 只保留生命周期函数列表（装备系统标准机制）
@@ -173,7 +175,7 @@ _root.装备生命周期函数.剑圣头部装甲周期 = function(ref:Object) {
     }
 
     // 检查当前光照等级是否在有效范围内
-    var 当前光照:Number = _root.天气系统.当前光照等级;
+    var 当前光照:Number = WeatherSystem.getInstance().currentLightLevel;
     if (当前光照 > ref.最大启动亮度) {
         // 光照太亮，不需要高亮
         ref.当前目标 = null;

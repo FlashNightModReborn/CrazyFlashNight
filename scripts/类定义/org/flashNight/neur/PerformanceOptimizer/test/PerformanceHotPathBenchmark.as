@@ -176,7 +176,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark 
      */
     private static function bench_visualization_updateDraw():String {
         var light:Array = buildLight();
-        var weather:Object = { 当前时间: 8.5, 昼夜光照: light };
+        var weather:Object = { currentTime: 8.5, dayNightLightLevels: light };
 
         var viz:FPSVisualization = new FPSVisualization(24, 30, weather);
         var canvas = makeCanvasNoOp();
@@ -259,7 +259,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark 
         var root:Object = {
             _quality: "HIGH",
             发布消息: function(msg:String):Void {},
-            天气系统: { 当前时间: 0, 昼夜光照: buildLight() },
+            天气系统: { currentTime: 0, dayNightLightLevels: buildLight() },
             玩家信息界面: { 性能帧率显示器: { 帧率数字: { text: null }, 画布: canvas } },
             显示列表: { 预设任务ID: "TASK", 继续播放: function() {}, 暂停播放: function() {} },
             UI系统: { 经济面板动效: true }
@@ -290,7 +290,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark 
             面积系数: 0,
             同屏打击数字特效上限: 0,
             发射效果上限: 0,
-            天气系统: { 光照等级更新阈值: 0 },
+            天气系统: { lightUpdateThreshold: 0 },
             显示列表: { 预设任务ID: "TASK", 继续播放: function() {}, 暂停播放: function() {} },
             UI系统: { 经济面板动效: true }
         };

@@ -1,4 +1,6 @@
-﻿class org.flashNight.arki.unit.UnitComponent.Updater.WeatherUpdater {
+﻿import org.flashNight.arki.weather.WeatherSystem;
+
+class org.flashNight.arki.unit.UnitComponent.Updater.WeatherUpdater {
 
     public static function getUpdater():Function
     {
@@ -9,7 +11,7 @@
 
             // 先记录天气系统状态用于调试
 
-            var targetAlpha:Number = _root.天气系统.人物信息透明度;
+            var targetAlpha:Number = WeatherSystem.getInstance().characterInfoOpacity;
             /*
             var 光照等级 = _root.天气系统.获得当前光照等级();
             var 启动等级 = _root.天气系统.时间倍率启动等级;

@@ -10,6 +10,7 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.camera.*;
 import org.flashNight.arki.scene.*;
 import org.flashNight.arki.collision.CollisionLayerRenderer;
+import org.flashNight.arki.weather.*;
 
 
 _root.add2map = _root.add2map2 = DeathEffectRenderer.renderCorpse;
@@ -65,19 +66,19 @@ _root.贴背景图 = function(){
 	// if(_root.无限过图模式) _root.配置无限过图背景参数(); //弃用
 	var 游戏世界 = _root.gameworld;
 	var 背景层 = 游戏世界.背景;
-	var 天气系统 = _root.天气系统;
+	var 天气系统:WeatherSystem = WeatherSystem.getInstance();
 
 	if(背景层 != null && !背景层.已更新环境配置){
 		if(_root.天空盒){
-			天气系统.空间情况 = "室外";
-			天气系统.视觉情况 = "光照";
-			天气系统.最大光照 = 9;
-			天气系统.最小光照 = 0;
+			天气系统.spaceCondition = "室外";
+			天气系统.visualCondition = "光照";
+			天气系统.maxLight = 9;
+			天气系统.minLight = 0;
 		}else{
-			天气系统.空间情况 = "室内";
-			天气系统.视觉情况 = "灯光";
-			天气系统.最大光照 = 8;
-			天气系统.最小光照 = 5;		
+			天气系统.spaceCondition = "室内";
+			天气系统.visualCondition = "灯光";
+			天气系统.maxLight = 8;
+			天气系统.minLight = 5;
 		}
 	}
 
@@ -102,7 +103,7 @@ _root.贴背景图 = function(){
 
 _root.配置场景环境信息 = function(){
 	var 游戏世界 = _root.gameworld;
-	var 环境信息 = _root.天气系统.场景环境设置[_root.关卡标志];
+	var 环境信息 = WeatherSystem.getInstance().sceneEnvSettings[_root.关卡标志];
 	//显示场景名称
 	_root.场景名称文本.text = _root.关卡标志.split("地图-").join("");
 	//寻找出生点，但似乎由于异步原因没有生效
@@ -128,7 +129,7 @@ _root.配置场景环境信息 = function(){
 		SceneManager.getInstance().addBodyLayers(游戏世界.背景长, 游戏世界.背景高);
 
 		//配置天气和后景
-		_root.天气系统.配置环境(环境信息);
+		WeatherSystem.getInstance().configureEnvironment(环境信息);
 		_root.加载后景(环境信息);
 		// 配置碰撞箱
 		var collision = 环境信息.Collision || 环境信息.地图碰撞箱 || null
@@ -147,10 +148,10 @@ _root.配置场景环境信息 = function(){
 			else _root.soundEffectManager.playBGM(环境信息.BGM, true, null);
 		}
 	}else{
-		天气系统.空间情况 = "室外";
-		天气系统.视觉情况 = "光照";
-		天气系统.最大光照 = 9;
-		天气系统.最小光照 = 0;
+		天气系统.spaceCondition = "室外";
+		天气系统.visualCondition = "光照";
+		天气系统.maxLight = 9;
+		天气系统.minLight = 0;
 		SceneManager.getInstance().addBodyLayers(2880, 1000);
 	}
 	_global.ASSetPropFlags(游戏世界, ["面积系数","出生点列表"], 1, false);
@@ -166,10 +167,10 @@ _root.加载场景背景 = function (动画名){
 	背景层.attachMovie("外部动画加载壳mc","外部动画加载壳mc",背景层.getNextHighestDepth());
 	var list = 动画名.split("/")
 	var url = list[list.length-1];
-	var 环境配置 = _root.天气系统.关卡环境设置[url];	
+	var 环境配置 = WeatherSystem.getInstance().stageEnvSettings[url];	
 	_root.服务器.发布服务器消息("加载场景背景 " + url + " " + _root.格式化对象为字符串(环境配置));
 	if(环境配置) {
-		_root.天气系统.配置环境(环境配置);
+		WeatherSystem.getInstance().configureEnvironment(环境配置);
 		背景层.已更新环境配置 = true;
 	}
 	游戏世界.场景背景url = "flashswf/backgrounds/" + url;

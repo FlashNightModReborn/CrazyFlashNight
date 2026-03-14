@@ -18,7 +18,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.FPSVisualizationTest {
         for (var i:Number = 0; i < 24; i++) {
             light.push(i % 9);
         }
-        var weather:Object = { 当前时间: 10.5, 昼夜光照: light };
+        var weather:Object = { currentTime: 10.5, dayNightLightLevels: light };
 
         var viz:FPSVisualization = new FPSVisualization(4, 30, weather);
         viz.updateData(25);

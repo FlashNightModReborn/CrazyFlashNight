@@ -4,35 +4,20 @@
  * 核心逻辑已迁移至 org.flashNight.arki.weather.WeatherSystem（class 化单例）。
  * 本帧脚本负责：
  * 1. 创建单例并触发异步初始化
- * 2. 挂载 _root.天气系统 兼容引用
- * 3. 挂中文方法别名（class 内部英文命名）
- * 4. 保留 _root.配置环境信息() 工具函数（依赖 _root 工具函数，暂不迁移）
+ * 2. 挂载 _root.天气系统 最低兼容引用
+ * 3. 保留 _root.配置环境信息() 工具函数（依赖 _root 工具函数，暂不迁移）
  */
 import org.flashNight.arki.weather.*;
 
 // ==================== 创建单例 + 初始化 ====================
 
 var ws:WeatherSystem = WeatherSystem.getInstance();
+ws.setupLegacyBridge();
 ws.initialize();
 _root.天气系统 = ws;
 
-// ==================== 中文方法别名 ====================
-// class 内部为英文方法名，此处挂中文别名保持外部兼容
-// 直接赋值实例方法引用，_root.天气系统.xxx() 调用时 this 指向 ws（同一对象），绑定正确
-
-ws.初始化 = ws.initialize;
-ws.获得当前时间 = ws.getCurrentTime;
-ws.获得当前光照等级 = ws.getCurrentLightLevel;
-ws.设置当前天气 = ws.updateWeather;
-ws.配置环境 = ws.configureEnvironment;
-ws.请求刷新 = ws.requestRefresh;
-ws.防御性刷新场景单位天气状态 = ws.defensiveRefreshUnits;
-ws.注册夜视仪 = ws.registerNightVision;
-ws.注销夜视仪 = ws.unregisterNightVision;
-
 // ==================== _root.配置环境信息() ====================
 // 保留在帧脚本中：依赖 _root.配置数据为数组、_root.解析背景元素 等 _root 工具函数
-// Phase 2 迁移至 EnvironmentConfig 类方法
 
 _root.配置环境信息 = function(当前配置, 默认配置):Object{
 	if(!当前配置) return null;

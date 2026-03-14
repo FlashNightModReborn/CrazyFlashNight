@@ -1,4 +1,6 @@
-﻿_root.装备生命周期函数.红外夜视仪初始化 = function(反射对象, 参数对象)
+﻿import org.flashNight.arki.weather.*;
+
+_root.装备生命周期函数.红外夜视仪初始化 = function(反射对象, 参数对象)
 {
     var 自机 = 反射对象.自机;
     var 装备名称:String = 反射对象.装备名称;
@@ -23,7 +25,7 @@
     //_root.服务器.发布服务器消息(_root.常用工具函数.对象转JSON(夜视仪, true));
 
     function 注销夜视仪():Void {
-        _root.天气系统.注销夜视仪(夜视仪);
+        WeatherSystem.getInstance().unregisterNightVision(夜视仪);
     }
 
     // 卸载回调：只保留生命周期函数列表（装备系统标准机制）
@@ -35,7 +37,7 @@
     反射对象.生命周期函数列表.push(卸载对象);
 
     // 注册夜视仪到天气系统
-    _root.天气系统.注册夜视仪(夜视仪);
+    WeatherSystem.getInstance().registerNightVision(夜视仪);
 
     // 装备即提示（与旧行为一致：不依赖光照等级）
     _root.发布消息("红外夜视仪启动");

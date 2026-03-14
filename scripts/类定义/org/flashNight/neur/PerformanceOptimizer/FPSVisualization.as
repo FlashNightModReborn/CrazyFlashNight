@@ -34,7 +34,7 @@ class org.flashNight.neur.PerformanceOptimizer.FPSVisualization {
      * 构造函数
      * @param bufferLength:Number 历史窗口长度（工作版本默认24）
      * @param frameRate:Number 标称帧率（通常30）
-     * @param weatherSystem:Object 天气系统（需要提供 当前时间 与 昼夜光照[24]）
+     * @param weatherSystem:Object 天气系统（需要提供 currentTime 与 dayNightLightLevels[24]）
      */
     public function FPSVisualization(bufferLength:Number, frameRate:Number, weatherSystem:Object) {
         this._bufferLength = (isNaN(bufferLength) || bufferLength <= 0) ? 24 : bufferLength;
@@ -83,14 +83,14 @@ class org.flashNight.neur.PerformanceOptimizer.FPSVisualization {
             this._fpsDiff = currentMax - currentMin;
         }
 
-        // 光照数据处理（保持工作版本逻辑）
-        if (this._weatherSystem != null && this._weatherSystem.当前时间 != undefined) {
-            var startHour:Number = Math.floor(this._weatherSystem.当前时间);
+        // 光照数据处理
+        if (this._weatherSystem != null && this._weatherSystem.currentTime != undefined) {
+            var startHour:Number = Math.floor(this._weatherSystem.currentTime);
             if (this._currentHour !== startHour) {
                 this._lightLevelData = [];
                 this._currentHour = startHour;
                 for (var i:Number = 0; i < this._bufferLength; i++) {
-                    this._lightLevelData.push(this._weatherSystem.昼夜光照[(startHour + i) % 24]);
+                    this._lightLevelData.push(this._weatherSystem.dayNightLightLevels[(startHour + i) % 24]);
                 }
             }
         }

@@ -30,7 +30,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
             面积系数: null,
             同屏打击数字特效上限: null,
             发射效果上限: null,
-            天气系统: { 光照等级更新阈值: null },
+            天气系统: { lightUpdateThreshold: null },
             显示列表: displayList,
             UI系统: { 经济面板动效: null }
         };
@@ -66,7 +66,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(root.同屏打击数字特效上限 == 25, "L0 同屏打击数字特效上限=25");
         out += line(deathRenderer.isEnabled == true && deathRenderer.enableCulling == false, "L0 DeathEffectRenderer启用且不剔除");
         out += line(root._quality == "HIGH", "L0 quality恢复预设(HIGH)");
-        out += line(root.天气系统.光照等级更新阈值 == 0.1, "L0 光照阈值=0.1");
+        out += line(root.天气系统.lightUpdateThreshold == 0.1, "L0 光照阈值=0.1");
         out += line(shellSystem.limit == 25, "L0 shellLimit=25");
         out += line(root.发射效果上限 == 15, "L0 发射效果上限=15");
         out += line(displayList.continueCalled && displayList.continueArg == "TASK", "L0 显示列表继续播放");
@@ -84,7 +84,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(root.同屏打击数字特效上限 == 15, "L1 同屏打击数字特效上限=15");
         out += line(deathRenderer.isEnabled == true && deathRenderer.enableCulling == true, "L1 DeathEffectRenderer启用且剔除");
         out += line(root._quality == "MEDIUM", "L1 quality=MEDIUM(预设非LOW)");
-        out += line(root.天气系统.光照等级更新阈值 == 0.2, "L1 光照阈值=0.2");
+        out += line(root.天气系统.lightUpdateThreshold == 0.2, "L1 光照阈值=0.2");
         out += line(shellSystem.limit == 12, "L1 shellLimit=12");
         out += line(root.发射效果上限 == 10, "L1 发射效果上限=10");
         out += line(displayList.continueCalled && !displayList.pauseCalled, "L1 显示列表继续播放");
@@ -99,7 +99,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(effectSystem.isDeathEffect == false, "L2 isDeathEffect=false");
         out += line(root.面积系数 == 600000, "L2 面积系数=600000");
         out += line(root._quality == "LOW", "L2 quality=LOW");
-        out += line(root.天气系统.光照等级更新阈值 == 0.5, "L2 光照阈值=0.5");
+        out += line(root.天气系统.lightUpdateThreshold == 0.5, "L2 光照阈值=0.5");
         out += line(shellSystem.limit == 12, "L2 shellLimit=12");
         out += line(displayList.pauseCalled && displayList.pauseArg == "TASK", "L2 显示列表暂停播放");
         out += line(root.UI系统.经济面板动效 == false, "L2 UI动效=false");
@@ -112,7 +112,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(effectSystem.maxEffectCount == 0, "L3 maxEffectCount=0");
         out += line(effectSystem.maxScreenEffectCount == 5, "L3 maxScreenEffectCount=5");
         out += line(root.面积系数 == 3000000, "L3 面积系数=3000000");
-        out += line(root.天气系统.光照等级更新阈值 == 1, "L3 光照阈值=1");
+        out += line(root.天气系统.lightUpdateThreshold == 1, "L3 光照阈值=1");
         out += line(shellSystem.limit == 10, "L3 shellLimit=10");
         out += line(root.发射效果上限 == 0, "L3 发射效果上限=0");
         out += line(displayList.pauseCalled, "L3 显示列表暂停播放");

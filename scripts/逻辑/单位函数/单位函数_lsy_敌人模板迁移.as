@@ -7,6 +7,7 @@ import org.flashNight.arki.unit.*;
 import org.flashNight.naki.RandomNumberEngine.*
 import org.flashNight.neur.ScheduleTimer.*;
 import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.weather.*;
 
 //容纳敌人函数的对象
 _root.敌人函数 = new Object();
@@ -55,7 +56,7 @@ _root.敌人函数.获取线性插值经验值 = function(target, list:Array) {
         return;
     }
 
-    // 1) 选择用于插值/外推的“段”索引 i（使用线段 [i, i+1]）
+    // 1) 选择用于插值/外推的"段"索引 i（使用线段 [i, i+1]）
     var i:Number;
     if (level <= Number(list[0].level)) {
         // 低于最小 level：用首段斜率外推
@@ -118,7 +119,7 @@ _root.敌人函数.获取线性插值经验值 = function(target, list:Array) {
         }
     }
 
-    // 4) 使用所选“段”的斜率进行插值/外推
+    // 4) 使用所选"段"的斜率进行插值/外推
     target.最小经验值 = _root.常用工具函数.线性插值(
         1, x0, x1, y0, y1
     );
@@ -268,7 +269,7 @@ _root.敌人函数.随机掉钱 = function() {
     // 使用 LinearCongruentialEngine 的 randomCheck 方法进行概率检查
     // randomCheck(n) 等价于 random(n) === 0，但性能更好
     if (!this.不掉钱 && LinearCongruentialEngine.instance.randomCheck(_root.打怪掉钱机率)) {
-        var 金币时间倍率 = _root.天气系统.金币时间倍率;
+        var 金币时间倍率 = WeatherSystem.getInstance().coinTimeMultiplier;
         //_root.发布消息("金币时间倍率" + 金币时间倍率);
         var 昼夜爆金币 = this.hp满血值 * 金币时间倍率 / 5;
 
@@ -285,7 +286,7 @@ _root.敌人函数.计算经验值 = function() {
     this.随机掉钱();
     this.掉落物判定();
 
-    var 经验时间倍率 = _root.天气系统.经验时间倍率;
+    var 经验时间倍率 = WeatherSystem.getInstance().expTimeMultiplier;
 
     //_root.发布消息("经验时间倍率" + 经验时间倍率);
     _root.经验值计算(this.最小经验值 * 经验时间倍率, this.最大经验值 * 经验时间倍率, this.等级, _root.最大等级);

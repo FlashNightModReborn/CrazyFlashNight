@@ -1,4 +1,6 @@
-﻿// 当 XML 加载完成时触发的函数
+﻿import org.flashNight.arki.weather.*;
+
+// 当 XML 加载完成时触发的函数
 // _root.关卡数据缓存 = [];
 
 _root.配置数据为数组 = function(输入){
@@ -854,7 +856,7 @@ _root.配置关卡环境数据 = function(data:Object):Void {
 	var 关卡环境设置 = {};
 	var environmentNodes:Array = data.Environment;
 	// 默认配置
-	var 默认配置 = _root.天气系统.默认环境配置;
+	var 默认配置 = WeatherSystem.getInstance().defaultEnvConfig;
 	关卡环境设置.Default = 默认配置;//把默认配置也存入环境设置
 	for (var i:Number = 0; i < environmentNodes.length; i++){
 		var 环境信息:Object = {};
@@ -863,14 +865,14 @@ _root.配置关卡环境数据 = function(data:Object):Void {
 		
 		关卡环境设置[child_Nodes.BackgroundURL] = _root.配置环境信息(child_Nodes, 默认配置);// 使用 URL 作为键存储环境信息
 	}
-	_root.天气系统.关卡环境设置 = 关卡环境设置;
+	WeatherSystem.getInstance().stageEnvSettings = 关卡环境设置;
 };
 
 _root.配置场景环境数据 = function(data:Object):Void {
 	var 场景环境设置 = {};
 	var environmentNodes:Array = data.Environment;
 	// 默认配置
-	var 默认配置 = _root.天气系统.默认环境配置;
+	var 默认配置 = WeatherSystem.getInstance().defaultEnvConfig;
 	场景环境设置.Default = 默认配置;//把默认配置也存入环境设置
 	for (var i:Number = 0; i < environmentNodes.length; i++){
 		var 环境信息:Object = {};
@@ -879,7 +881,7 @@ _root.配置场景环境数据 = function(data:Object):Void {
 		
 		场景环境设置[child_Nodes.BackgroundURL] = _root.配置环境信息(child_Nodes, 默认配置);// 使用 URL 作为键存储环境信息
 	}
-	_root.天气系统.场景环境设置 = 场景环境设置;
+	WeatherSystem.getInstance().sceneEnvSettings = 场景环境设置;
 };
 
 

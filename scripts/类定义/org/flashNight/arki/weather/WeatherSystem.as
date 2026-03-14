@@ -5,8 +5,8 @@
  * 天气系统主控制器（单例），管理昼夜周期、光照计算、夜视仪集成、
  * 经济倍率、环境配置等。
  *
- * 从帧脚本 _root.天气系统 精确复刻迁移而来。
- * 垫片中通过 _root.天气系统 = WeatherSystem.getInstance() 保持兼容。
+ * 从帧脚本 _root.天气系统 迁移而来，所有属性和方法均使用英文命名。
+ * 垫片中通过 _root.天气系统 = WeatherSystem.getInstance() 保持最低兼容。
  *
  * @class WeatherSystem
  */
@@ -17,21 +17,16 @@ import org.flashNight.gesh.xml.LoadXml.WeatherSystemConfigLoader;
 import org.flashNight.naki.Interpolation.Interpolatior;
 import org.flashNight.gesh.number.NumberUtil;
 
-dynamic class org.flashNight.arki.weather.WeatherSystem {
+class org.flashNight.arki.weather.WeatherSystem {
 
     // ==================== 单例 ====================
 
     private static var _instance:WeatherSystem;
 
-    /**
-     * 获取单例实例。
-     * 首次调用后用函数替换优化（同 HorizontalScroller 模式）。
-     */
     public static function getInstance():WeatherSystem {
         if (!_instance) {
             _instance = new WeatherSystem();
         }
-        // 函数替换：后续调用直接返回缓存实例
         WeatherSystem.getInstance = function():WeatherSystem {
             return _instance;
         };
@@ -43,81 +38,139 @@ dynamic class org.flashNight.arki.weather.WeatherSystem {
     private var _nightVisionMgr:NightVisionManager;
     private var _initialized:Boolean;
 
-    // ==================== 构造函数 ====================
+    // ==================== 公共属性（带类型声明，编译期可检查） ====================
+
+    // ---- 昼夜周期 ----
+    public var dayLength:Number;
+    public var hourFrames:Number;
+    public var lightUpdateThreshold:Number;
+    public var useFilterRendering:Boolean;
+    public var enableDayNightCycle:Boolean;
+    public var pauseDayNightCycle:Boolean;
+    public var timeMultiplierStartLevel:Number;
+    public var currentTime:Number;
+    public var currentFrame:Number;
+    public var dayNightLightLevels:Array;
+    public var currentLightLevel:Number;
+    public var maxLightLevel:Number;
+    public var minLightLevel:Number;
+    public var maxLight:Number;
+    public var minLight:Number;
+
+    // ---- 经济倍率 ----
+    public var coinTimeMultiplier:Number;
+    public var coinTimeMaxMultiplier:Number;
+    public var expTimeMultiplier:Number;
+    public var expTimeMaxMultiplier:Number;
+    public var characterInfoOpacity:Number;
+
+    // ---- 天气/环境 ----
+    public var weatherCondition:String;
+    public var spaceCondition:String;
+    public var visualCondition:String;
+
+    // ---- 环境配置数据（Object 字典，保持引用语义） ----
+    public var stageEnvSettings:Object;
+    public var sceneEnvSettings:Object;
+    public var defaultEnvConfig:Object;
+    public var infiniteMapEnvInfo:Object;
+
+    // ==================== SWF 资产兼容桥接 ====================
 
     /**
-     * 构造函数：初始化全部属性为默认值。
-     * 属性名保持中文，与旧 _root.天气系统.xxx 外部访问完全一致。
+     * 为不可修改的 SWF 资产建立中文属性名→英文属性名的 addProperty 桥接。
+     * 必须在 class 方法内执行（而非帧脚本），因为 AS2 帧脚本的 activation object
+     * 在帧结束后被回收，闭包捕获的局部变量会变成 undefined。
+     * class 方法中的 this 由 EventBus/调用方绑定，始终有效。
      */
+    public function setupLegacyBridge():Void {
+        var self:WeatherSystem = this;
+        // 睡觉界面.swf: 读写 当前时间
+        this.addProperty("当前时间",
+            function():Number { return self.currentTime; },
+            function(v:Number):Void { self.currentTime = v; });
+        // 新版人物文字信息.swf / things0: 只读 人物信息透明度
+        this.addProperty("人物信息透明度",
+            function():Number { return self.characterInfoOpacity; },
+            null);
+        // 柜员女僵尸.swf: 只读 金币/经验时间倍率
+        this.addProperty("金币时间倍率",
+            function():Number { return self.coinTimeMultiplier; },
+            null);
+        this.addProperty("经验时间倍率",
+            function():Number { return self.expTimeMultiplier; },
+            null);
+        // FPSVisualization (addProperty 方式兼容旧 mock)
+        this.addProperty("昼夜光照",
+            function():Array { return self.dayNightLightLevels; },
+            null);
+        // 系统设置UI.swf: 读写 开启/暂停/滤镜
+        this.addProperty("开启昼夜系统",
+            function():Boolean { return self.enableDayNightCycle; },
+            function(v:Boolean):Void { self.enableDayNightCycle = v; });
+        this.addProperty("暂停昼夜系统",
+            function():Boolean { return self.pauseDayNightCycle; },
+            function(v:Boolean):Void { self.pauseDayNightCycle = v; });
+        this.addProperty("使用滤镜渲染",
+            function():Boolean { return self.useFilterRendering; },
+            function(v:Boolean):Void { self.useFilterRendering = v; });
+    }
+
+    // ==================== 构造函数 ====================
+
     private function WeatherSystem() {
         this._nightVisionMgr = new NightVisionManager();
         this._initialized = false;
 
-        // ---- 昼夜周期 ----
-        this.昼夜长度 = 15 * 60 * 30;  // 一天15分钟
-        this.小时帧数 = this.昼夜长度 / 24;
-        this.光照等级更新阈值 = 0.1;
-        this.使用滤镜渲染 = false;
-        this.开启昼夜系统 = true;
-        this.暂停昼夜系统 = false;
-        this.时间倍率启动等级 = 2.5;
-        this.当前时间 = 6;
-        this.当前帧数 = 0;
-        this.昼夜光照 = [0, 0, 1, 4, 7, 7, 7, 7, 7, 7, 7, 7, 9, 7, 7, 7, 7, 7, 7, 4, 1, 0, 0, 0];
-        this.当前光照等级 = this.昼夜光照[this.当前时间];
-        this.光照等级最大值 = 9;
-        this.光照等级最小值 = 0;
-        this.最大光照 = this.光照等级最大值;
-        this.最小光照 = this.光照等级最小值;
+        // ---- 昼夜周期默认值 ----
+        this.dayLength = 15 * 60 * 30;
+        this.hourFrames = this.dayLength / 24;
+        this.lightUpdateThreshold = 0.1;
+        this.useFilterRendering = false;
+        this.enableDayNightCycle = true;
+        this.pauseDayNightCycle = false;
+        this.timeMultiplierStartLevel = 2.5;
+        this.currentTime = 6;
+        this.currentFrame = 0;
+        this.dayNightLightLevels = [0, 0, 1, 4, 7, 7, 7, 7, 7, 7, 7, 7, 9, 7, 7, 7, 7, 7, 7, 4, 1, 0, 0, 0];
+        this.currentLightLevel = this.dayNightLightLevels[this.currentTime];
+        this.maxLightLevel = 9;
+        this.minLightLevel = 0;
+        this.maxLight = this.maxLightLevel;
+        this.minLight = this.minLightLevel;
 
-        // ---- 经济倍率 ----
-        this.金币时间倍率 = 1;
-        this.金币时间最大倍率 = 2;
-        this.经验时间倍率 = 1;
-        this.经验时间最大倍率 = 2;
-        this.人物信息透明度 = 100;
+        // ---- 经济倍率默认值 ----
+        this.coinTimeMultiplier = 1;
+        this.coinTimeMaxMultiplier = 2;
+        this.expTimeMultiplier = 1;
+        this.expTimeMaxMultiplier = 2;
+        this.characterInfoOpacity = 100;
 
-        // ---- 天气/环境 ----
-        this.天气情况 = "正常";
-        this.空间情况 = "室外";
-        this.视觉情况 = "光照";
+        // ---- 天气/环境默认值 ----
+        this.weatherCondition = "正常";
+        this.spaceCondition = "室外";
+        this.visualCondition = "光照";
 
-        // ---- 环境配置数据（直接存为实例属性，保持引用语义） ----
-        this.关卡环境设置 = undefined;
-        this.场景环境设置 = undefined;
-        this.无限过图环境信息 = null;
+        // ---- 环境配置数据 ----
+        this.stageEnvSettings = undefined;
+        this.sceneEnvSettings = undefined;
+        this.infiniteMapEnvInfo = null;
 
-        // ---- 默认环境配置 ----
-        this.默认环境配置 = {
+        this.defaultEnvConfig = {
             地址: "gk20_2_BG.swf",
             对齐原点: false,
-            Xmin: 50,
-            Xmax: 1750,
-            Ymin: 330,
-            Ymax: 600,
-            背景长: 1750,
-            背景高: 600,
+            Xmin: 50, Xmax: 1750,
+            Ymin: 330, Ymax: 600,
+            背景长: 1750, 背景高: 600,
             地平线高度: 200,
-            后景: null,
-            禁用天空: false,
-            天气情况: "正常",
-            空间情况: "室外",
-            视觉情况: "光照",
-            最大光照: 8,
-            最小光照: 4,
+            后景: null, 禁用天空: false,
+            天气情况: "正常", 空间情况: "室外", 视觉情况: "光照",
+            最大光照: 8, 最小光照: 4,
             背景元素: null,
-            门: null,
-            地图碰撞箱: null,
-            左侧出生线: null,
-            右侧出生线: null,
-            佣兵刷新数据: null,
-            BGM: null
+            门: null, 地图碰撞箱: null,
+            左侧出生线: null, 右侧出生线: null,
+            佣兵刷新数据: null, BGM: null
         };
-
-        // ---- 夜视仪兼容属性 ----
-        // 外部代码可能直接读 _root.天气系统.夜视仪
-        // 保持为空对象以兼容旧代码的 if(夜视仪.视觉情况) 判断
-        this.夜视仪 = {};
     }
 
     // ==================== 初始化 ====================
@@ -130,7 +183,6 @@ dynamic class org.flashNight.arki.weather.WeatherSystem {
      * @param onError    加载失败回调
      */
     public function initialize(onComplete:Function, onError:Function):Void {
-        // 注册 EventBus 订阅（仅首次）
         if (!this._initialized) {
             this._initialized = true;
             var bus:EventBus = EventBus.getInstance();
@@ -139,7 +191,6 @@ dynamic class org.flashNight.arki.weather.WeatherSystem {
             bus.subscribe("SceneChanged", this._onSceneChanged, this);
         }
 
-        // 异步加载 XML 配置
         var configLoader:WeatherSystemConfigLoader = WeatherSystemConfigLoader.getInstance();
         var self:WeatherSystem = this;
 
@@ -147,35 +198,38 @@ dynamic class org.flashNight.arki.weather.WeatherSystem {
             function(data:Object):Void {
                 var params:Object = data.GeneralParameters;
 
-                self.昼夜长度 = params.DayLength;
-                self.小时帧数 = params.HourFrames;
-                self.光照等级更新阈值 = params.LightUpdateThreshold;
-                self.使用滤镜渲染 = params.UseFilterRendering;
-                self.开启昼夜系统 = params.EnableDayNightCycle;
-                self.暂停昼夜系统 = params.PauseDayNightCycle;
-                self.时间倍率启动等级 = params.TimeMultiplierStartLevel;
-                self.金币时间倍率 = params.CoinTimeMultiplier;
-                self.金币时间最大倍率 = params.CoinTimeMaxMultiplier;
-                self.经验时间倍率 = params.ExpTimeMultiplier;
-                self.经验时间最大倍率 = params.ExpTimeMaxMultiplier;
-                self.人物信息透明度 = params.CharacterInfoOpacity;
-                self.天气情况 = params.WeatherCondition;
-                self.空间情况 = params.SpaceCondition;
-                self.视觉情况 = params.VisualCondition;
-                self.当前时间 = params.CurrentTime;
-                self.当前帧数 = params.CurrentFrame;
-                self.光照等级最大值 = params.MaxLight;
-                self.光照等级最小值 = params.MinLight;
-                self.最大光照 = self.光照等级最大值;
-                self.最小光照 = self.光照等级最小值;
-                self.无限过图环境信息 = params.InfiniteMapEnvironmentInfo == "null" ? null : params.InfiniteMapEnvironmentInfo;
+                self.dayLength = params.DayLength;
+                self.hourFrames = params.HourFrames;
+                self.lightUpdateThreshold = params.LightUpdateThreshold;
+                // XML 解析可能返回字符串 "true"/"false"，必须强转 boolean
+                // 否则 "false"（非空字符串）在 if() 中为 truthy，会冻结时间
+                // 且系统设置 UI 复选框用 == true/false 严格比较，字符串不匹配会导致按钮失效
+                self.useFilterRendering = (params.UseFilterRendering === true || params.UseFilterRendering === "true");
+                self.enableDayNightCycle = (params.EnableDayNightCycle === true || params.EnableDayNightCycle === "true");
+                self.pauseDayNightCycle = (params.PauseDayNightCycle === true || params.PauseDayNightCycle === "true");
+                self.timeMultiplierStartLevel = params.TimeMultiplierStartLevel;
+                self.coinTimeMultiplier = params.CoinTimeMultiplier;
+                self.coinTimeMaxMultiplier = params.CoinTimeMaxMultiplier;
+                self.expTimeMultiplier = params.ExpTimeMultiplier;
+                self.expTimeMaxMultiplier = params.ExpTimeMaxMultiplier;
+                self.characterInfoOpacity = params.CharacterInfoOpacity;
+                self.weatherCondition = params.WeatherCondition;
+                self.spaceCondition = params.SpaceCondition;
+                self.visualCondition = params.VisualCondition;
+                self.currentTime = params.CurrentTime;
+                self.currentFrame = params.CurrentFrame;
+                self.maxLightLevel = params.MaxLight;
+                self.minLightLevel = params.MinLight;
+                self.maxLight = self.maxLightLevel;
+                self.minLight = self.minLightLevel;
+                self.infiniteMapEnvInfo = params.InfiniteMapEnvironmentInfo == "null" ? null : params.InfiniteMapEnvironmentInfo;
 
                 var lightLevels:Array = data.LightLevels.Hour;
-                self.昼夜光照 = [];
+                self.dayNightLightLevels = [];
                 for (var i:Number = 0; i < 24; i++) {
-                    self.昼夜光照[i] = lightLevels[i];
+                    self.dayNightLightLevels[i] = lightLevels[i];
                 }
-                self.当前光照等级 = self.昼夜光照[self.当前时间];
+                self.currentLightLevel = self.dayNightLightLevels[self.currentTime];
 
                 trace("天气系统配置已加载成功！");
                 if (onComplete != undefined) {
@@ -184,7 +238,6 @@ dynamic class org.flashNight.arki.weather.WeatherSystem {
             },
             function():Void {
                 trace("天气系统配置加载失败，使用默认配置！");
-                // 默认值已在构造函数中设置，无需重复
                 trace("默认配置已应用！");
                 if (onError != undefined) {
                     onError();
@@ -200,12 +253,12 @@ dynamic class org.flashNight.arki.weather.WeatherSystem {
      * @return 当前时间（浮点数）
      */
     public function getCurrentTime():Number {
-        if (!this.开启昼夜系统) return 7;
-        if (this.暂停昼夜系统) return this.当前时间;
+        if (!this.enableDayNightCycle) return 7;
+        if (this.pauseDayNightCycle) return this.currentTime;
         var frameCount:Number = _root.帧计时器.当前帧数;
-        this.当前时间 = (this.当前时间 + (frameCount - this.当前帧数) / this.小时帧数) % 24;
-        this.当前帧数 = frameCount;
-        return this.当前时间;
+        this.currentTime = (this.currentTime + (frameCount - this.currentFrame) / this.hourFrames) % 24;
+        this.currentFrame = frameCount;
+        return this.currentTime;
     }
 
     /**
@@ -219,57 +272,50 @@ dynamic class org.flashNight.arki.weather.WeatherSystem {
         if ((time < 4 && time > 1) || (time < 13 && time > 11) || (time < 21 && time > 18)) {
             var baseIdx:Number = Math.floor(time);
             var nextIdx:Number = Math.ceil(time);
-            level = Interpolatior.linear(time, baseIdx, nextIdx, this.昼夜光照[baseIdx], this.昼夜光照[nextIdx]);
+            level = Interpolatior.linear(time, baseIdx, nextIdx, this.dayNightLightLevels[baseIdx], this.dayNightLightLevels[nextIdx]);
         } else if ((time <= 11 && time >= 4) || (time <= 18 && time >= 13)) {
             level = 7;
         }
 
-        if (level > this.最大光照) {
-            level = this.最大光照;
-        } else if (level < this.最小光照) {
-            level = this.最小光照;
+        if (level > this.maxLight) {
+            level = this.maxLight;
+        } else if (level < this.minLight) {
+            level = this.minLight;
         }
 
-        if (Math.abs(level - this.当前光照等级) > this.光照等级更新阈值 || !this.当前光照等级) {
-            this.当前光照等级 = level;
+        if (Math.abs(level - this.currentLightLevel) > this.lightUpdateThreshold || !this.currentLightLevel) {
+            this.currentLightLevel = level;
         }
-        return this.当前光照等级;
+        return this.currentLightLevel;
     }
 
     /**
      * 更新天气状态（WeatherUpdated 事件 handler）。
-     * 计算光照、校验夜视仪、应用光照渲染、发布经济倍率事件。
      */
     public function updateWeather():Void {
         var lightLevel:Number = this.getCurrentLightLevel();
-        var visualCondition:String = this.视觉情况;
+        var vc:String = this.visualCondition;
         var bus:EventBus = EventBus.getInstance();
 
-        // 夜视仪校验（委托给 NightVisionManager）
+
+
+        // 夜视仪校验
         var controlTarget:MovieClip = _root.gameworld[_root.控制目标];
         var nvVisual:String = this._nightVisionMgr.validate(lightLevel, controlTarget);
-        var nvRegistered:Object = this._nightVisionMgr.getRegistered();
-
-        // 同步兼容属性 _root.天气系统.夜视仪
-        if (nvRegistered != null) {
-            this.夜视仪 = nvRegistered;
-        } else {
-            this.夜视仪 = {};
-        }
 
         if (nvVisual != null) {
-            visualCondition = nvVisual;
+            vc = nvVisual;
             bus.publish("夜视仪启动", lightLevel);
         }
 
         // 经济倍率逻辑
-        if (lightLevel <= this.时间倍率启动等级 && nvVisual == null) {
+        if (lightLevel <= this.timeMultiplierStartLevel && nvVisual == null) {
             bus.publish("WeatherTimeRateUpdated", lightLevel);
         } else {
-            if (this.金币时间倍率 !== 1) {
-                this.金币时间倍率 = 1;
-                this.经验时间倍率 = 1;
-                this.人物信息透明度 = 100;
+            if (this.coinTimeMultiplier !== 1) {
+                this.coinTimeMultiplier = 1;
+                this.expTimeMultiplier = 1;
+                this.characterInfoOpacity = 100;
 
                 if (!_root.gameworld.__updatedWeatherTimeRate) {
                     bus.publish("WeatherTimeRateUpdated", lightLevel);
@@ -280,8 +326,8 @@ dynamic class org.flashNight.arki.weather.WeatherSystem {
         }
 
         // 应用光照渲染
-        LightingEngine.applyLighting(_root.gameworld, lightLevel, visualCondition, this.使用滤镜渲染);
-        LightingEngine.applyLighting(_root.天空盒, lightLevel, visualCondition, false);
+        LightingEngine.applyLighting(_root.gameworld, lightLevel, vc, this.useFilterRendering);
+        LightingEngine.applyLighting(_root.天空盒, lightLevel, vc, false);
     }
 
     /**
@@ -289,20 +335,19 @@ dynamic class org.flashNight.arki.weather.WeatherSystem {
      * @param envInfo 环境信息对象
      */
     public function configureEnvironment(envInfo:Object):Void {
-        if (this.无限过图环境信息) {
-            envInfo = this.无限过图环境信息;
-            this.无限过图环境信息 = null;
+        if (this.infiniteMapEnvInfo) {
+            envInfo = this.infiniteMapEnvInfo;
+            this.infiniteMapEnvInfo = null;
         }
-        if (envInfo.天气情况) this.天气情况 = envInfo.天气情况;
-        if (envInfo.空间情况) this.空间情况 = envInfo.空间情况;
-        if (envInfo.视觉情况) this.视觉情况 = envInfo.视觉情况;
-        if (envInfo.最大光照 != undefined) this.最大光照 = envInfo.最大光照;
-        if (envInfo.最小光照 != undefined) this.最小光照 = envInfo.最小光照;
+        if (envInfo.天气情况) this.weatherCondition = envInfo.天气情况;
+        if (envInfo.空间情况) this.spaceCondition = envInfo.空间情况;
+        if (envInfo.视觉情况) this.visualCondition = envInfo.视觉情况;
+        if (envInfo.最大光照 != undefined) this.maxLight = envInfo.最大光照;
+        if (envInfo.最小光照 != undefined) this.minLight = envInfo.最小光照;
     }
 
     /**
      * 请求刷新天气（合帧）。
-     * 同一帧内多次请求合并为下一帧执行一次 WeatherUpdated。
      */
     public function requestRefresh():Void {
         var bus:EventBus = EventBus.getInstance();
@@ -328,7 +373,7 @@ dynamic class org.flashNight.arki.weather.WeatherSystem {
         }
 
         var count:Number = 0;
-        var opacity:Number = this.人物信息透明度;
+        var opacity:Number = this.characterInfoOpacity;
 
         for (var each:String in gameworld) {
             var unit:MovieClip = gameworld[each];
@@ -346,20 +391,11 @@ dynamic class org.flashNight.arki.weather.WeatherSystem {
 
     // ==================== 夜视仪接口 ====================
 
-    /**
-     * 注册夜视仪（委托给 NightVisionManager）。
-     * @param owner 夜视仪配置对象
-     */
     public function registerNightVision(owner:Object):Void {
         this._nightVisionMgr.register(owner);
         this.requestRefresh();
     }
 
-    /**
-     * 注销夜视仪（委托给 NightVisionManager）。
-     * @param owner 夜视仪配置对象
-     * @return Boolean 是否成功注销
-     */
     public function unregisterNightVision(owner:Object):Boolean {
         var result:Boolean = this._nightVisionMgr.unregister(owner);
         if (result) {
@@ -368,31 +404,39 @@ dynamic class org.flashNight.arki.weather.WeatherSystem {
         return result;
     }
 
+    /**
+     * 获取夜视仪管理器实例（供高级用途）。
+     * @return NightVisionManager
+     */
+    public function getNightVisionManager():NightVisionManager {
+        return this._nightVisionMgr;
+    }
+
     // ==================== EventBus 命名回调 ====================
 
-    /**
-     * WeatherTimeRateUpdated 事件回调。
-     * 计算金币/经验倍率和信息透明度。
-     */
     public function _onTimeRateUpdated(lightLevel:Number):Void {
-        this.金币时间倍率 = NumberUtil.clamp(
-            Interpolatior.linear(lightLevel, 0, this.时间倍率启动等级, this.金币时间最大倍率, 1),
+        this.coinTimeMultiplier = NumberUtil.clamp(
+            Interpolatior.linear(lightLevel, 0, this.timeMultiplierStartLevel, this.coinTimeMaxMultiplier, 1),
             1,
-            this.金币时间最大倍率
+            this.coinTimeMaxMultiplier
         );
-        this.经验时间倍率 = NumberUtil.clamp(
-            Interpolatior.linear(lightLevel, 0, this.时间倍率启动等级, this.经验时间最大倍率, 1),
+        this.expTimeMultiplier = NumberUtil.clamp(
+            Interpolatior.linear(lightLevel, 0, this.timeMultiplierStartLevel, this.expTimeMaxMultiplier, 1),
             1,
-            this.经验时间最大倍率
+            this.expTimeMaxMultiplier
         );
-        this.人物信息透明度 = Interpolatior.linear(lightLevel, 0, this.时间倍率启动等级, 0, 100);
+        this.characterInfoOpacity = Interpolatior.linear(lightLevel, 0, this.timeMultiplierStartLevel, 0, 100);
     }
 
     /**
      * SceneChanged 事件回调。
-     * 场景切换时重新计算光照和同步单位状态。
+     * 场景切换时清理夜视仪注册、重新计算光照、同步单位状态。
      */
     public function _onSceneChanged():Void {
+        // 场景切换时清除夜视仪注册，防止跨场景残留
+        // （旧代码依赖 onUnload 回调，但 removeMovieClip 后生命周期列表不再被遍历）
+        this._nightVisionMgr.clear();
+
         var bus:EventBus = EventBus.getInstance();
         var lightLevel:Number = this.getCurrentLightLevel();
         bus.publish("WeatherTimeRateUpdated", lightLevel);

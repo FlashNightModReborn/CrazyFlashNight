@@ -1,5 +1,5 @@
 ﻿import org.flashNight.arki.scene.StageEvent;
-
+import org.flashNight.arki.weather.WeatherSystem;
 import org.flashNight.gesh.object.ObjectUtil;
 
 /**
@@ -30,7 +30,7 @@ class org.flashNight.arki.scene.StageInfo {
     public static function parseBasicInfo(data):Object{
         var info = data.BasicInformation;
 		if(info.Environment.Default === true){
-			info.Environment = _root.天气系统.关卡环境设置.Default;
+			info.Environment = WeatherSystem.getInstance().stageEnvSettings.Default;
 		}
         return info;
     }

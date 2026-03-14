@@ -169,7 +169,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 deathRenderer.isEnabled = true;
                 deathRenderer.enableCulling = false;
                 root._quality = this._presetQuality;
-                root.天气系统.光照等级更新阈值 = 0.1;
+                root.天气系统.lightUpdateThreshold = 0.1;
                 shellSystem.setMaxShellCountLimit(25);
                 root.发射效果上限 = 15;
                 root.显示列表.继续播放(root.显示列表.预设任务ID);
@@ -189,7 +189,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 deathRenderer.isEnabled = true;
                 deathRenderer.enableCulling = true;
                 root._quality = (this._presetQuality === 'LOW') ? this._presetQuality : 'MEDIUM';
-                root.天气系统.光照等级更新阈值 = 0.2;
+                root.天气系统.lightUpdateThreshold = 0.2;
                 shellSystem.setMaxShellCountLimit(12);
                 root.发射效果上限 = 10;
                 root.显示列表.继续播放(root.显示列表.预设任务ID);
@@ -207,7 +207,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 root.同屏打击数字特效上限 = 12;
                 deathRenderer.isEnabled = false;
                 deathRenderer.enableCulling = true;
-                root.天气系统.光照等级更新阈值 = 0.5;
+                root.天气系统.lightUpdateThreshold = 0.5;
                 root._quality = 'LOW';
                 shellSystem.setMaxShellCountLimit(12);
                 root.发射效果上限 = 5;
@@ -226,7 +226,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 root.同屏打击数字特效上限 = 10;
                 deathRenderer.isEnabled = false;
                 deathRenderer.enableCulling = true;
-                root.天气系统.光照等级更新阈值 = 1;
+                root.天气系统.lightUpdateThreshold = 1;
                 root._quality = 'LOW';
                 shellSystem.setMaxShellCountLimit(10);
                 root.发射效果上限 = 0;
