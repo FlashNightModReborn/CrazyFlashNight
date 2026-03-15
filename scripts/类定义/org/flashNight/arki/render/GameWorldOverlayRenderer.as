@@ -57,6 +57,9 @@ class org.flashNight.arki.render.GameWorldOverlayRenderer {
     /** 静态复用 Matrix */
     private static var _gradMatrix:Object;
 
+    /** H11: Math.sin 缓存引用（脉冲每帧调用） */
+    private static var _msin:Function = Math.sin;
+
     // ==================== 脉冲闪烁 ====================
 
     private static var _pulseEnabled:Boolean = false;
@@ -173,35 +176,37 @@ class org.flashNight.arki.render.GameWorldOverlayRenderer {
     public static function update():Void {
         if (!_perfEnabled) return;
 
-        // 脉冲模式：用 sin 调制目标 alpha，保持 dirty 常驻
+        // 脉冲模式：用 sin 调制目标 alpha
         if (_pulseEnabled) {
-            _targetAlpha = _pulseMin + (_pulseMax - _pulseMin) * (0.5 + 0.5 * Math.sin(_pulsePhase));
+            _targetAlpha = _pulseMin + (_pulseMax - _pulseMin) * (0.5 + 0.5 * _msin(_pulsePhase));
             _pulsePhase += _pulseSpeed;
             _dirty = true;
         }
 
-        if (!_dirty) return;
+        // lerp current → target（仅在颜色未收敛时执行）
+        if (_dirty) {
+            var speed:Number = _lerpSpeed;
+            _currentR += (_targetR - _currentR) * speed;
+            _currentG += (_targetG - _currentG) * speed;
+            _currentB += (_targetB - _currentB) * speed;
+            _currentAlpha += (_targetAlpha - _currentAlpha) * speed;
 
-        // lerp current → target
-        var speed:Number = _lerpSpeed;
-        _currentR += (_targetR - _currentR) * speed;
-        _currentG += (_targetG - _currentG) * speed;
-        _currentB += (_targetB - _currentB) * speed;
-        _currentAlpha += (_targetAlpha - _currentAlpha) * speed;
-
-        // 收敛检测
-        var dr:Number = _targetR - _currentR;
-        var dg:Number = _targetG - _currentG;
-        var db:Number = _targetB - _currentB;
-        var da:Number = _targetAlpha - _currentAlpha;
-        if (dr * dr + dg * dg + db * db + da * da < 1) {
-            _currentR = _targetR;
-            _currentG = _targetG;
-            _currentB = _targetB;
-            _currentAlpha = _targetAlpha;
-            _dirty = false;
+            // 收敛检测
+            var dr:Number = _targetR - _currentR;
+            var dg:Number = _targetG - _currentG;
+            var db:Number = _targetB - _currentB;
+            var da:Number = _targetAlpha - _currentAlpha;
+            if (dr * dr + dg * dg + db * db + da * da < 1) {
+                _currentR = _targetR;
+                _currentG = _targetG;
+                _currentB = _targetB;
+                _currentAlpha = _targetAlpha;
+                _dirty = false;
+            }
         }
 
+        // 重绘：只要 overlay 可见就每帧执行（跟随相机滚动）
+        // _dirty 仅控制颜色 lerp，不控制重绘频率
         _redraw();
     }
 
@@ -214,19 +219,21 @@ class org.flashNight.arki.render.GameWorldOverlayRenderer {
         var gw:MovieClip = _root.gameworld;
         if (!gw) return;
         if (!_container || _container._parent == undefined) {
-            // depth 32769：在天气粒子层(32768)之上，被 UI 自然遮盖
             _container = gw.createEmptyMovieClip("__gwOverlay", 32769);
             _global.ASSetPropFlags(gw, ["__gwOverlay"], 1, false);
         }
 
+        // H01: 容器引用局部化（后续 10+ 次 Drawing API 调用）
+        var c:MovieClip = _container;
+
         if (a <= 0.5) {
-            _container._visible = false;
-            _container.clear();
+            c._visible = false;
+            c.clear();
             return;
         }
 
-        _container._visible = true;
-        _container.clear();
+        c._visible = true;
+        c.clear();
 
         // 计算可视区域（gameworld 本地坐标系）
         var gwScale:Number = gw._xscale / 100;
@@ -246,7 +253,7 @@ class org.flashNight.arki.render.GameWorldOverlayRenderer {
         var w:Number = x1 - x0;
         var h:Number = y1 - y0;
 
-        if (_mode == "radial") {
+        if (_mode === "radial") {
             // 径向光源：中心亮（alpha*1.8）→ 边缘暗（alpha*0.3）
             // 产生"光源照射"感而非均匀色块
             if (!_gradMatrix) _gradMatrix = new flash.geom.Matrix();
@@ -254,15 +261,15 @@ class org.flashNight.arki.render.GameWorldOverlayRenderer {
             var centerA:Number = a * 1.8;
             if (centerA > 100) centerA = 100;
             var edgeA:Number = a * 0.3;
-            _container.beginGradientFill("radial", [color, color], [centerA, edgeA], [0, 255], _gradMatrix);
+            c.beginGradientFill("radial", [color, color], [centerA, edgeA], [0, 255], _gradMatrix);
         } else {
-            _container.beginFill(color, a);
+            c.beginFill(color, a);
         }
-        _container.moveTo(x0, y0);
-        _container.lineTo(x1, y0);
-        _container.lineTo(x1, y1);
-        _container.lineTo(x0, y1);
-        _container.lineTo(x0, y0);
-        _container.endFill();
+        c.moveTo(x0, y0);
+        c.lineTo(x1, y0);
+        c.lineTo(x1, y1);
+        c.lineTo(x0, y1);
+        c.lineTo(x0, y0);
+        c.endFill();
     }
 }

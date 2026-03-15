@@ -6,6 +6,7 @@ import org.flashNight.arki.render.ClipFrameRenderer;
 import org.flashNight.arki.render.BladeMotionTrailsRenderer;
 import org.flashNight.arki.render.WeatherParticleRenderer;
 import org.flashNight.arki.render.SkyboxRenderer;
+import org.flashNight.arki.render.GameWorldOverlayRenderer;
 
 /**
  * PerformanceActuator - 性能执行器/作动器
@@ -148,6 +149,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
         if (env.BladeMotionTrailsRenderer == undefined) env.BladeMotionTrailsRenderer = BladeMotionTrailsRenderer;
         if (env.WeatherParticleRenderer == undefined) env.WeatherParticleRenderer = WeatherParticleRenderer;
         if (env.SkyboxRenderer == undefined) env.SkyboxRenderer = SkyboxRenderer;
+        if (env.GameWorldOverlayRenderer == undefined) env.GameWorldOverlayRenderer = GameWorldOverlayRenderer;
         this._env = env;
     }
 
@@ -246,6 +248,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
         this._env.BladeMotionTrailsRenderer.setPerformanceLevel(level);
         this._env.WeatherParticleRenderer.setPerformanceLevel(level);
         this._env.SkyboxRenderer.setPerformanceLevel(level);
+        this._env.GameWorldOverlayRenderer.setPerformanceLevel(level);
     }
 
     public function setHost(host:Object):Void { this._host = host; }

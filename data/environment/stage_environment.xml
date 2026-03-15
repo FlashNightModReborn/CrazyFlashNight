@@ -1762,6 +1762,8 @@
         <VisualCondition>光照</VisualCondition>
         <MaxIllumination>0</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+        <!-- 翅虎堂Boss战：寒铁肃杀，铁灰烟雾弥漫 -->
+        <Preset>寒铁</Preset>
     </Environment>
     <Environment>
         <BackgroundURL>hthhftnb_1_BG.swf</BackgroundURL>
@@ -2368,6 +2370,8 @@
         </Door>
         <MaxIllumination>2</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+        <!-- B-1区：应急电源微弱照明，特战感染者从深处涌入 -->
+        <Preset>工业警报</Preset>
     </Environment>
     <Environment>
         <BackgroundURL>堕落城下水道过道2.swf</BackgroundURL>
@@ -2381,6 +2385,8 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>0</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+        <!-- B-2区：线路熔毁全黑，腐蚀性酸液弥漫，鼠群出没 -->
+        <Preset>腐蚀</Preset>
         <Instances>
             <Instance>
                 <url>flashswf/backgrounds/elements/下水道过道护栏.swf</url>
@@ -2540,6 +2546,8 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>5</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+        <!-- 安保警戒区：治安部队第7分队驻守过的大厅 -->
+        <Preset>工业警报</Preset>
         <Collision>
             <Point>1080,342</Point>
             <Point>1200,342</Point>
@@ -2566,6 +2574,20 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>5</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+        <!-- 仓库B区：γ-ECHO等储存罐泄漏 + 废弃工业应急灯 -->
+        <ParticleType>fog</ParticleType>
+        <ParticleIntensity>0.5</ParticleIntensity>
+        <Overlay>
+            <R>180</R>
+            <G>140</G>
+            <B>30</B>
+            <Alpha>12</Alpha>
+            <Mode>radial</Mode>
+            <Pulse>true</Pulse>
+            <PulseSpeed>0.05</PulseSpeed>
+            <PulseMin>3</PulseMin>
+            <PulseMax>18</PulseMax>
+        </Overlay>
         <Collision>
             <Point>135,221</Point>
             <Point>507,221</Point>
@@ -2750,6 +2772,7 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>1</MaxIllumination>
         <MinIllumination>1</MinIllumination>
+        <Preset>毒气</Preset>
         <Collision>
             <Point>1600,230</Point>
             <Point>1600,600</Point>
@@ -2777,6 +2800,7 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>1</MaxIllumination>
         <MinIllumination>1</MinIllumination>
+        <Preset>医疗警报</Preset>
         <Collision>
             <Point>320,230</Point>
             <Point>320,290</Point>

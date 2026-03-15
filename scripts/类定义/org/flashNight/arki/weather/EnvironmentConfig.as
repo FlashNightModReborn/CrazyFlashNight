@@ -206,7 +206,12 @@ class org.flashNight.arki.weather.EnvironmentConfig {
 
         // 室内外通用粒子（覆盖天气推导）
         info.粒子类型 = rawConfig.ParticleType != undefined ? rawConfig.ParticleType : undefined;
-        info.粒子强度 = !isNaN(rawConfig.ParticleIntensity) ? Number(rawConfig.ParticleIntensity) : undefined;
+        // 未填写强度时：如果指定了粒子类型则给默认值 0.5，否则保持 undefined
+        if (!isNaN(rawConfig.ParticleIntensity)) {
+            info.粒子强度 = Number(rawConfig.ParticleIntensity);
+        } else if (info.粒子类型 != undefined) {
+            info.粒子强度 = 0.5;
+        }
 
         // gameworld 色调叠加（室内氛围灯光等）
         if (rawConfig.Overlay) {
@@ -286,16 +291,58 @@ class org.flashNight.arki.weather.EnvironmentConfig {
                 rawConfig.WeatherIntensity = (p == "雨") ? 0.8 : (p == "雪") ? 0.7 : 0.5;
             }
         } else if (p == "毒气") {
-            // 室内毒气：大尺寸软边雾气 + 绿色色调
             if (rawConfig.ParticleType == undefined) rawConfig.ParticleType = "fog";
             if (rawConfig.ParticleIntensity == undefined) rawConfig.ParticleIntensity = 0.8;
-            if (rawConfig.Overlay == undefined) {
-                rawConfig.Overlay = {R:20, G:160, B:40, Alpha:18};
-            }
+            _mergeOverlayDefaults(rawConfig, {R:20, G:160, B:40, Alpha:18});
         } else if (p == "警报") {
-            // 室内红色警报：径向光源 + 高对比脉冲
-            if (rawConfig.Overlay == undefined) {
-                rawConfig.Overlay = {R:220, G:40, B:20, Alpha:18, Mode:"radial", Pulse:true, PulseSpeed:0.1, PulseMin:3, PulseMax:28};
+            // 通用红色警报：军事/安保设施
+            _mergeOverlayDefaults(rawConfig, {R:220, G:40, B:20, Alpha:18, Mode:"radial", Pulse:true, PulseSpeed:0.1, PulseMin:3, PulseMax:28});
+        } else if (p == "医疗警报") {
+            // 医疗紧急：偏品红的生物危害灯光，节奏稍快（心电监护仪感）
+            _mergeOverlayDefaults(rawConfig, {R:200, G:30, B:80, Alpha:16, Mode:"radial", Pulse:true, PulseSpeed:0.12, PulseMin:4, PulseMax:24});
+        } else if (p == "工业警报") {
+            // 工业警示：琥珀色/橙黄，节奏缓慢沉重（废弃设施应急灯）
+            _mergeOverlayDefaults(rawConfig, {R:220, G:160, B:30, Alpha:14, Mode:"radial", Pulse:true, PulseSpeed:0.05, PulseMin:3, PulseMax:20});
+        } else if (p == "腐蚀") {
+            // 下水道/酸液环境：暗黄绿色雾气 + 低沉的污浊色调
+            if (rawConfig.ParticleType == undefined) rawConfig.ParticleType = "fog";
+            if (rawConfig.ParticleIntensity == undefined) rawConfig.ParticleIntensity = 0.5;
+            _mergeOverlayDefaults(rawConfig, {R:80, G:100, B:20, Alpha:15});
+        } else if (p == "伏击") {
+            // 暗杀/伏击场景：冷钢蓝径向光源，玩家被"聚光"，敌人藏于暗处
+            // 高 alpha 因为此预设用于 MaxIllumination≈0 的极暗场景
+            _mergeOverlayDefaults(rawConfig, {R:15, G:20, B:100, Alpha:22, Mode:"radial", Pulse:true, PulseSpeed:0.03, PulseMin:10, PulseMax:28});
+        } else if (p == "鸿门宴") {
+            // 武侠·设局伏杀：暗红烛火色，烛焰明灭般脉冲，请君入瓮的杀机
+            _mergeOverlayDefaults(rawConfig, {R:110, G:28, B:12, Alpha:18, Mode:"radial", Pulse:true, PulseSpeed:0.02, PulseMin:10, PulseMax:24});
+        } else if (p == "寒铁") {
+            // 武侠·黑铁压迫：亮钢灰色光泽 + 刀痕撕裂粒子
+            if (rawConfig.ParticleType == undefined) rawConfig.ParticleType = "slash";
+            if (rawConfig.ParticleIntensity == undefined) rawConfig.ParticleIntensity = 0.6;
+            _mergeOverlayDefaults(rawConfig, {R:140, G:135, B:150, Alpha:22, Mode:"radial", Pulse:true, PulseSpeed:0.03, PulseMin:12, PulseMax:28});
+        } else if (p == "血月") {
+            // 武侠·满堂杀气：深绛红径向光，如血晕开的杀场氛围
+            _mergeOverlayDefaults(rawConfig, {R:100, G:12, B:18, Alpha:20, Mode:"radial", Pulse:true, PulseSpeed:0.03, PulseMin:10, PulseMax:26});
+        } else if (p == "檀烟") {
+            // 武侠·古铜熏香：帮派堂口香炉缭绕，沉稳古朴的暖铜色调
+            _mergeOverlayDefaults(rawConfig, {R:85, G:60, B:22, Alpha:16, Mode:"radial", Pulse:true, PulseSpeed:0.015, PulseMin:8, PulseMax:20});
+        }
+    }
+
+    /**
+     * 字段级合并 Overlay 预设值。
+     * rawConfig.Overlay 中已有的子字段保留，缺失的从 defaults 补填。
+     * 支持部分覆盖：<Overlay><Alpha>30</Alpha></Overlay> 只覆写 Alpha，
+     * 其余字段（R/G/B/Mode/Pulse 等）沿用预设值。
+     */
+    private static function _mergeOverlayDefaults(rawConfig:Object, defaults:Object):Void {
+        if (rawConfig.Overlay == undefined) {
+            rawConfig.Overlay = defaults;
+        } else {
+            for (var key:String in defaults) {
+                if (rawConfig.Overlay[key] == undefined) {
+                    rawConfig.Overlay[key] = defaults[key];
+                }
             }
         }
     }

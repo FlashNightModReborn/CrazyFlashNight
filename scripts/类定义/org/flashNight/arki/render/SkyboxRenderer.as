@@ -252,17 +252,19 @@ class org.flashNight.arki.render.SkyboxRenderer {
      *   因为 gameworld 和天空盒共享相同的缩放比例，相机偏移在推导中抵消。
      */
     private static function _redrawGradient():Void {
-        if (!_gradientLayer) return;
+        // H01: 容器引用局部化（后续 10+ 次 Drawing API 调用）
+        var gl:MovieClip = _gradientLayer;
+        if (!gl) return;
 
         var a:Number = _currentAlpha;
         if (a <= 0.5) {
-            _gradientLayer._visible = false;
-            _gradientLayer.clear();
+            gl._visible = false;
+            gl.clear();
             return;
         }
 
-        _gradientLayer._visible = true;
-        _gradientLayer.clear();
+        gl._visible = true;
+        gl.clear();
 
         var r:Number = Math.round(_currentR);
         var g:Number = Math.round(_currentG);
@@ -273,7 +275,7 @@ class org.flashNight.arki.render.SkyboxRenderer {
         var sh:Number = Stage.height;
 
         // 天空盒有缩放和 _y 偏移，将屏幕矩形转换到天空盒本地坐标系
-        var parent:MovieClip = _gradientLayer._parent;
+        var parent:MovieClip = gl._parent;
         var skyScale:Number = parent._yscale / 100;
         if (skyScale < 0.01) skyScale = 1;
         var invScale:Number = 1 / skyScale;
@@ -307,12 +309,12 @@ class org.flashNight.arki.render.SkyboxRenderer {
         // 天空区域：半透明色调叠加（仅覆盖 默认天空 范围内、地面以上）
         // 不需要额外的黑色遮挡层：默认天空 在未被渐变叠加时的自然外观是可接受的
         // （所有非天气地图已验证），色块的根因是渐变画到了不该画的区域
-        _gradientLayer.beginFill(color, a);
-        _gradientLayer.moveTo(skyLeft, drawTop);
-        _gradientLayer.lineTo(skyRight, drawTop);
-        _gradientLayer.lineTo(skyRight, drawBottom);
-        _gradientLayer.lineTo(skyLeft, drawBottom);
-        _gradientLayer.lineTo(skyLeft, drawTop);
-        _gradientLayer.endFill();
+        gl.beginFill(color, a);
+        gl.moveTo(skyLeft, drawTop);
+        gl.lineTo(skyRight, drawTop);
+        gl.lineTo(skyRight, drawBottom);
+        gl.lineTo(skyLeft, drawBottom);
+        gl.lineTo(skyLeft, drawTop);
+        gl.endFill();
     }
 }

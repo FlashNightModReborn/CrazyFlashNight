@@ -26,8 +26,11 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
     /** 是否激活 */
     private static var _active:Boolean = false;
 
-    /** 天气类型 "rain" | "snow" | "dust" | "none" */
+    /** 天气类型 "rain" | "snow" | "dust" | "fog" | "slash" | "none" */
     private static var _type:String = "none";
+
+    /** fog/smoke 共享物理标志（避免多处 || 判断） */
+    private static var _isFogPhysics:Boolean = false;
 
     /** 天气强度 0.0~1.0 */
     private static var _intensity:Number = 0;
@@ -75,7 +78,7 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
         var lv:Number = _performanceLevel;
         if (_type == "snow") return MAX_SNOW_BY_LEVEL[lv];
         if (_type == "dust") return MAX_DUST_BY_LEVEL[lv];
-        if (_type == "fog") return MAX_FOG_BY_LEVEL[lv];
+        if (_isFogPhysics || _type === "slash") return MAX_FOG_BY_LEVEL[lv];
         return MAX_RAIN_BY_LEVEL[lv];
     }
 
@@ -139,6 +142,7 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
         _count = 0;
         _spCount = 0;
         _type = "none";
+        _isFogPhysics = false;
         _intensity = 0;
         _container = null; // gameworld 销毁后引用失效，下次 update 重建
         _hasBounds = false;
@@ -186,6 +190,7 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
             return;
         }
         _type = type;
+        _isFogPhysics = (type === "fog");
         _intensity = intensity;
         // 不立即激活，等待 activateWithBounds() 调用
         _count = 0;
@@ -274,7 +279,7 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
             // 雪花摆动 / 雾气浮动
             if (_type == "snow") {
                 _px[i] += _sinLUT[(_life[i] & (SIN_LUT_SIZE - 1))] * 0.5;
-            } else if (_type == "fog") {
+            } else if (_isFogPhysics) {
                 // 水平 + 垂直正弦摆动，周期错开，产生有机漂浮感
                 _px[i] += _sinLUT[(_life[i] & (SIN_LUT_SIZE - 1))] * 0.8;
                 _py[i] += _sinLUT[((_life[i] + 16) & (SIN_LUT_SIZE - 1))] * 0.4;
@@ -285,8 +290,8 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
             // 每个粒子有自己的落地 Y（基于纵深）
             var particleGroundY:Number = groundYmin + _depth[i] * (groundYmax - groundYmin);
 
-            // 到达地面 → 生成溅射（仅雨）；fog 不碰地面，自由漂浮
-            if (_type != "fog" && _py[i] >= particleGroundY) {
+            // 到达地面 → 生成溅射（仅雨）；fog/slash 不碰地面
+            if (!_isFogPhysics && _type !== "slash" && _py[i] >= particleGroundY) {
                 if (_type == "rain" && _spCount < MAX_SPLASHES) {
                     _spX[_spCount] = _px[i];
                     _spY[_spCount] = particleGroundY;
@@ -342,9 +347,9 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
 
         while (_count < targetCount && spawnPerFrame > 0) {
             _spawn(_count, viewLeft, viewRight, viewTop);
-            // fog：始终在可视区域内生成（气团弥漫空间，不从天上落下）
+            // fog/slash：始终在可视区域内生成（不从天上落下）
             // 其他类型：仅初始填充时散布
-            if (_type == "fog") {
+            if (_isFogPhysics || _type === "slash") {
                 _py[_count] = viewTop + Math.random() * (viewBottom - viewTop);
             } else if (scatterFill) {
                 _py[_count] = viewTop + Math.random() * (viewBottom - viewTop);
@@ -365,8 +370,10 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
             _renderSnow();
         } else if (_type == "dust") {
             _renderDust();
-        } else if (_type == "fog") {
+        } else if (_type === "fog") {
             _renderFog();
+        } else if (_type === "slash") {
+            _renderSmoke();
         }
     }
 
@@ -399,8 +406,19 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
             _vy[idx] = (2 + Math.random() * 3) * scale;
             _life[idx] = 90 + Math.floor(Math.random() * 50);
             _size[idx] = (1.5 + Math.random() * 2) * scale;
-        } else if (_type == "fog") {
-            // 气团：大尺寸、可感知的漂移、上下浮动、长寿命
+        } else if (_type === "slash") {
+            // 刀痕：快速定向飞行、短寿命，vx/vy 即为刀锋方向
+            // 随机方向但偏斜角（避免纯水平/垂直，不像刀痕）
+            var baseAngle:Number = (Math.random() * 2.5 + 0.3);
+            if (Math.random() < 0.5) baseAngle = -baseAngle;
+            var spd:Number = (3 + Math.random() * 4) * scale;
+            _vx[idx] = spd * baseAngle / 3;
+            _vy[idx] = spd * (1 - Math.abs(baseAngle) / 3);
+            if (Math.random() < 0.5) _vy[idx] = -_vy[idx];
+            _life[idx] = 25 + Math.floor(Math.random() * 20);
+            _size[idx] = (20 + Math.random() * 30) * scale;
+        } else if (_isFogPhysics) {
+            // 气团（fog）：大尺寸、可感知的漂移、上下浮动、长寿命
             _vx[idx] = (-1.2 + Math.random() * 2.4) * scale;
             _vy[idx] = (-0.6 + Math.random() * 1.2) * scale;
             _life[idx] = 150 + Math.floor(Math.random() * 100);
@@ -473,29 +491,135 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
      */
     private static function _renderFog():Void {
         if (!_gradMatrix) _gradMatrix = new flash.geom.Matrix();
+        // H01: 循环内静态变量局部化（_container 7次/粒子 × 55粒子 = 385次查找）
+        var c:MovieClip = _container;
         var m:Object = _gradMatrix;
+        var n:Number = _count;
+        var px:Array = _px;
+        var py:Array = _py;
+        var sz:Array = _size;
+        var lf:Array = _life;
+        var dp:Array = _depth;
         var fogColor:Number = 0xAADDAA;
-        _container.lineStyle();
-        for (var i:Number = 0; i < _count; i++) {
-            var x:Number = _px[i];
-            var y:Number = _py[i];
-            var r:Number = _size[i];
+        c.lineStyle();
+        for (var i:Number = 0; i < n; i++) {
+            var x:Number = px[i];
+            var y:Number = py[i];
+            var r:Number = sz[i];
             // 生命周期淡入淡出
-            var lifeRatio:Number = _life[i] / 200;
+            var lifeRatio:Number = lf[i] / 200;
             var fadeAlpha:Number = 1;
             if (lifeRatio > 0.8) fadeAlpha = (1 - lifeRatio) * 5;
             if (lifeRatio < 0.3) fadeAlpha = lifeRatio * 3.33;
-            var alpha:Number = (8 + _depth[i] * 12) * fadeAlpha;
+            var alpha:Number = (8 + dp[i] * 12) * fadeAlpha;
             // 径向渐变：中心 alpha → 边缘 0，产生自然的气团扩散感
             var d2:Number = r * 2;
             m.createGradientBox(d2, d2, 0, x - r, y - r);
-            _container.beginGradientFill("radial", [fogColor, fogColor], [alpha, 0], [0, 255], m);
-            _container.moveTo(x + r, y);
-            _container.curveTo(x + r, y + r, x, y + r);
-            _container.curveTo(x - r, y + r, x - r, y);
-            _container.curveTo(x - r, y - r, x, y - r);
-            _container.curveTo(x + r, y - r, x + r, y);
-            _container.endFill();
+            c.beginGradientFill("radial", [fogColor, fogColor], [alpha, 0], [0, 255], m);
+            c.moveTo(x + r, y);
+            c.curveTo(x + r, y + r, x, y + r);
+            c.curveTo(x - r, y + r, x - r, y);
+            c.curveTo(x - r, y - r, x, y - r);
+            c.curveTo(x + r, y - r, x + r, y);
+            c.endFill();
+        }
+    }
+
+    /**
+     * 渲染寒铁刀痕：沿运动方向的撕裂线段。
+     *
+     * 模型：粒子位置 = 刀锋前端（head），尾迹沿运动反方向延伸。
+     * 生命周期三阶段：
+     *   撕开(0~25%)：head 前进，tail 不动 → 线段从0伸长到满
+     *   停留(25~55%)：head+tail 同速前进 → 满长度滑行
+     *   愈合(55~100%)：head 停止，tail 追上 → 线段从满收缩到0
+     *
+     * 方向直接由 vx/vy 决定，视觉与运动完全一致。
+     */
+    private static function _renderSmoke():Void {
+        var c:MovieClip = _container;
+        var n:Number = _count;
+        var px:Array = _px;
+        var py:Array = _py;
+        var sz:Array = _size;
+        var lf:Array = _life;
+        var dp:Array = _depth;
+        var vx:Array = _vx;
+        var vy:Array = _vy;
+
+        for (var i:Number = 0; i < n; i++) {
+            var life:Number = lf[i];
+            // 还原总寿命：spawn 时 life = 25 + random(20)，size 无关
+            var maxLife:Number = 45; // 取中值近似
+            var t:Number = 1 - (life / maxLife);
+            if (t < 0) t = 0;
+            if (t > 1) t = 1;
+
+            // ---- 方向单位向量（从 vx/vy 推导） ----
+            var mvx:Number = vx[i];
+            var mvy:Number = vy[i];
+            var speed:Number = Math.sqrt(mvx * mvx + mvy * mvy);
+            if (speed < 0.01) continue;
+            var invSpd:Number = 1 / speed;
+            var dirX:Number = mvx * invSpd;
+            var dirY:Number = mvy * invSpd;
+
+            // ---- 刀痕满长度（由 size 决定） ----
+            var fullLen:Number = sz[i];
+
+            // ---- 三阶段 head/tail 偏移 ----
+            var headOff:Number; // head 沿方向的前进偏移
+            var tailOff:Number; // tail 沿方向的前进偏移（0 = 起点）
+
+            if (t < 0.25) {
+                // 撕开：head 线性前进，tail 留在起点
+                headOff = (t / 0.25) * fullLen;
+                tailOff = 0;
+            } else if (t < 0.55) {
+                // 停留：head 和 tail 同步前进（等速滑行）
+                var slide:Number = (t - 0.25) / 0.3;
+                headOff = fullLen + slide * fullLen * 0.5;
+                tailOff = slide * fullLen * 0.5;
+            } else {
+                // 愈合：head 减速停止，tail 加速追上
+                var heal:Number = (t - 0.55) / 0.45;
+                headOff = fullLen * 1.5;
+                tailOff = fullLen * 0.5 + heal * fullLen;
+            }
+
+            // 可见长度
+            var visLen:Number = headOff - tailOff;
+            if (visLen < 1) continue;
+
+            // ---- 坐标（以粒子当前位置为锚点） ----
+            var hx:Number = px[i] + dirX * headOff;
+            var hy:Number = py[i] + dirY * headOff;
+            var tx:Number = px[i] + dirX * tailOff;
+            var ty:Number = py[i] + dirY * tailOff;
+
+            // ---- alpha：撕开时快升，愈合时淡出 ----
+            var alpha:Number;
+            if (t < 0.15) {
+                alpha = (t / 0.15) * (18 + dp[i] * 25);
+            } else if (t < 0.55) {
+                alpha = 18 + dp[i] * 25;
+            } else {
+                alpha = (1 - (t - 0.55) / 0.45) * (18 + dp[i] * 25);
+            }
+            if (alpha < 1) continue;
+
+            // ---- 线宽：撕开瞬间粗，之后细化 ----
+            var w:Number = 0.6 + dp[i] * 1.2;
+            if (t < 0.15) w *= 2;
+            else if (t < 0.25) w *= 1.5;
+
+            // 冷钢色
+            var bright:Number = 0x88 + dp[i] * 0x44;
+            var color:Number = (bright << 16) | (bright << 8) | (bright + 0x15);
+
+            c.lineStyle(w, color, alpha);
+            c.moveTo(tx, ty);
+            c.lineTo(hx, hy);
         }
     }
 
