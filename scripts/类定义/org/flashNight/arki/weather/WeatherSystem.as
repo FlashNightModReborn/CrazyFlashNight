@@ -19,6 +19,7 @@ import org.flashNight.naki.Interpolation.Interpolatior;
 import org.flashNight.gesh.number.NumberUtil;
 import org.flashNight.arki.render.WeatherParticleRenderer;
 import org.flashNight.arki.render.SkyboxRenderer;
+import org.flashNight.arki.render.GameWorldOverlayRenderer;
 
 class org.flashNight.arki.weather.WeatherSystem {
 
@@ -176,6 +177,7 @@ class org.flashNight.arki.weather.WeatherSystem {
             // 初始化天气渲染器（订阅 frameEnd 实现逐帧更新）
             WeatherParticleRenderer.initialize();
             SkyboxRenderer.initialize();
+            GameWorldOverlayRenderer.initialize();
         }
 
         var configLoader:WeatherSystemConfigLoader = WeatherSystemConfigLoader.getInstance();
@@ -343,34 +345,56 @@ class org.flashNight.arki.weather.WeatherSystem {
         var skyDisabled:Boolean = (this.spaceCondition == "室内") || (envInfo.禁用天空 == true);
         SkyboxRenderer.setSkyEnabled(!skyDisabled);
 
-        // ---- 天气粒子渲染器 ----
-        if (skyDisabled) {
-            // 室内/禁用天空：关闭粒子
-            WeatherParticleRenderer.setWeather("none", 0);
-        } else {
-            var wc:String = this.weatherCondition;
-            var intensity:Number = envInfo.天气强度 != undefined ? envInfo.天气强度 : 0.5;
-            if (wc == "雨") {
-                WeatherParticleRenderer.setWeather("rain", intensity);
-            } else if (wc == "雪") {
-                WeatherParticleRenderer.setWeather("snow", intensity);
-            } else if (wc == "沙尘") {
-                WeatherParticleRenderer.setWeather("dust", intensity);
-            } else if (envInfo.允许随机天气 == true) {
-                // 随机天气：每次进入场景重掷
-                _randomizeWeather(intensity);
-            } else {
-                WeatherParticleRenderer.setWeather("none", 0);
+        // ---- 天气粒子渲染器（室内外均可用） ----
+        // 优先使用 envInfo.粒子类型（显式指定，室内外通用）
+        // 未指定时，室外从 天气情况 推导，室内默认关闭
+        var particleType:String = envInfo.粒子类型;
+        var particleIntensity:Number = envInfo.粒子强度;
+        if (particleType == undefined) {
+            if (!skyDisabled) {
+                // 室外：从天气情况推导粒子类型
+                var wc:String = this.weatherCondition;
+                var defaultIntensity:Number = envInfo.天气强度 != undefined ? envInfo.天气强度 : 0.5;
+                if (wc == "雨") {
+                    particleType = "rain"; particleIntensity = defaultIntensity;
+                } else if (wc == "雪") {
+                    particleType = "snow"; particleIntensity = defaultIntensity;
+                } else if (wc == "沙尘") {
+                    particleType = "dust"; particleIntensity = defaultIntensity;
+                } else if (envInfo.允许随机天气 == true) {
+                    _randomizeWeather(defaultIntensity);
+                    particleType = null; // _randomizeWeather 已内部调用 setWeather
+                }
             }
+        }
+        // 分发到粒子渲染器（_randomizeWeather 路径已自行处理，跳过）
+        if (particleType != undefined) {
+            WeatherParticleRenderer.setWeather(particleType, particleIntensity);
+        } else if (particleType == undefined && envInfo.允许随机天气 != true) {
+            WeatherParticleRenderer.setWeather("none", 0);
+        }
+
+        // ---- gameworld 色调叠加（室内外均可用） ----
+        var overlay:Object = envInfo.色调叠加;
+        if (overlay != undefined && overlay != null) {
+            GameWorldOverlayRenderer.setOverlay(overlay.r, overlay.g, overlay.b, overlay.alpha);
+            if (overlay.mode != undefined) {
+                GameWorldOverlayRenderer.setMode(overlay.mode);
+            }
+            if (overlay.pulse) {
+                GameWorldOverlayRenderer.setPulse(true, overlay.pulseSpeed, overlay.pulseMin, overlay.pulseMax);
+            }
+        } else {
+            GameWorldOverlayRenderer.clearOverlay();
         }
 
         // ---- 天空盒色调：设置目标值，逐帧 lerp 平滑过渡 ----
-        SkyboxRenderer.setTimeAndWeather(this.currentTime, this.weatherCondition);
-
-        // ---- 地面裁切：渐变层不超过地面，防止地面下方出现色块 ----
-        var groundY:Number = _root.Ymax;
-        if (!isNaN(groundY) && groundY > 0) {
-            SkyboxRenderer.setGroundY(groundY);
+        if (!skyDisabled) {
+            SkyboxRenderer.setTimeAndWeather(this.currentTime, this.weatherCondition);
+            var groundY:Number = _root.Ymax;
+            if (!isNaN(groundY) && groundY > 0) {
+                SkyboxRenderer.setGroundY(groundY);
+            }
         }
     }
 
@@ -500,6 +524,7 @@ class org.flashNight.arki.weather.WeatherSystem {
         // 清理天气渲染器状态
         WeatherParticleRenderer.dispose();
         SkyboxRenderer.dispose();
+        GameWorldOverlayRenderer.dispose();
 
         var bus:EventBus = EventBus.getInstance();
         var lightLevel:Number = this.getCurrentLightLevel();

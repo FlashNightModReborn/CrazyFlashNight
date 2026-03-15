@@ -67,12 +67,15 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
     private static var MAX_SNOW_BY_LEVEL:Array = [400, 250, 120, 0];
     // 沙尘：圆点，中等开销
     private static var MAX_DUST_BY_LEVEL:Array = [60, 40, 20, 0];
+    // 雾气/毒气：径向渐变大圆，高数量低单粒子alpha，靠叠加产生密度
+    private static var MAX_FOG_BY_LEVEL:Array = [55, 35, 18, 0];
 
     /** 获取当前天气类型在当前性能等级下的最大粒子数 */
     private static function _getMaxParticles():Number {
         var lv:Number = _performanceLevel;
         if (_type == "snow") return MAX_SNOW_BY_LEVEL[lv];
         if (_type == "dust") return MAX_DUST_BY_LEVEL[lv];
+        if (_type == "fog") return MAX_FOG_BY_LEVEL[lv];
         return MAX_RAIN_BY_LEVEL[lv];
     }
 
@@ -268,9 +271,13 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
             _py[i] += _vy[i];
             _life[i]--;
 
-            // 雪花摆动
+            // 雪花摆动 / 雾气浮动
             if (_type == "snow") {
                 _px[i] += _sinLUT[(_life[i] & (SIN_LUT_SIZE - 1))] * 0.5;
+            } else if (_type == "fog") {
+                // 水平 + 垂直正弦摆动，周期错开，产生有机漂浮感
+                _px[i] += _sinLUT[(_life[i] & (SIN_LUT_SIZE - 1))] * 0.8;
+                _py[i] += _sinLUT[((_life[i] + 16) & (SIN_LUT_SIZE - 1))] * 0.4;
             }
 
             var remove:Boolean = false;
@@ -278,8 +285,8 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
             // 每个粒子有自己的落地 Y（基于纵深）
             var particleGroundY:Number = groundYmin + _depth[i] * (groundYmax - groundYmin);
 
-            // 到达地面 → 生成溅射（仅雨）
-            if (_py[i] >= particleGroundY) {
+            // 到达地面 → 生成溅射（仅雨）；fog 不碰地面，自由漂浮
+            if (_type != "fog" && _py[i] >= particleGroundY) {
                 if (_type == "rain" && _spCount < MAX_SPLASHES) {
                     _spX[_spCount] = _px[i];
                     _spY[_spCount] = particleGroundY;
@@ -335,8 +342,11 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
 
         while (_count < targetCount && spawnPerFrame > 0) {
             _spawn(_count, viewLeft, viewRight, viewTop);
-            // 散布模式：随机分布在整个可视高度，并给随机的已消耗生命
-            if (scatterFill) {
+            // fog：始终在可视区域内生成（气团弥漫空间，不从天上落下）
+            // 其他类型：仅初始填充时散布
+            if (_type == "fog") {
+                _py[_count] = viewTop + Math.random() * (viewBottom - viewTop);
+            } else if (scatterFill) {
                 _py[_count] = viewTop + Math.random() * (viewBottom - viewTop);
                 _life[_count] = Math.floor(Math.random() * _life[_count]);
                 if (_life[_count] < 2) _life[_count] = 2;
@@ -355,6 +365,8 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
             _renderSnow();
         } else if (_type == "dust") {
             _renderDust();
+        } else if (_type == "fog") {
+            _renderFog();
         }
     }
 
@@ -387,6 +399,12 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
             _vy[idx] = (2 + Math.random() * 3) * scale;
             _life[idx] = 90 + Math.floor(Math.random() * 50);
             _size[idx] = (1.5 + Math.random() * 2) * scale;
+        } else if (_type == "fog") {
+            // 气团：大尺寸、可感知的漂移、上下浮动、长寿命
+            _vx[idx] = (-1.2 + Math.random() * 2.4) * scale;
+            _vy[idx] = (-0.6 + Math.random() * 1.2) * scale;
+            _life[idx] = 150 + Math.floor(Math.random() * 100);
+            _size[idx] = (30 + Math.random() * 35) * scale;
         } else {
             _vx[idx] = (-0.5 + Math.random() * 1) * scale;
             _vy[idx] = (0.5 + Math.random() * 1.5) * scale;
@@ -437,6 +455,41 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
             var r:Number = _size[i];
             var alpha:Number = 30 + _depth[i] * 45;
             _container.beginFill(0xFFFFFF, alpha);
+            _container.moveTo(x + r, y);
+            _container.curveTo(x + r, y + r, x, y + r);
+            _container.curveTo(x - r, y + r, x - r, y);
+            _container.curveTo(x - r, y - r, x, y - r);
+            _container.curveTo(x + r, y - r, x + r, y);
+            _container.endFill();
+        }
+    }
+
+    /** 静态复用的 Matrix 实例，避免每帧 new */
+    private static var _gradMatrix:Object;
+
+    /**
+     * 渲染雾气/毒气：径向渐变实现中心实、边缘虚的软边云团。
+     * 颜色为中性灰白，由 GameWorldOverlayRenderer 叠加提供色调。
+     */
+    private static function _renderFog():Void {
+        if (!_gradMatrix) _gradMatrix = new flash.geom.Matrix();
+        var m:Object = _gradMatrix;
+        var fogColor:Number = 0xAADDAA;
+        _container.lineStyle();
+        for (var i:Number = 0; i < _count; i++) {
+            var x:Number = _px[i];
+            var y:Number = _py[i];
+            var r:Number = _size[i];
+            // 生命周期淡入淡出
+            var lifeRatio:Number = _life[i] / 200;
+            var fadeAlpha:Number = 1;
+            if (lifeRatio > 0.8) fadeAlpha = (1 - lifeRatio) * 5;
+            if (lifeRatio < 0.3) fadeAlpha = lifeRatio * 3.33;
+            var alpha:Number = (8 + _depth[i] * 12) * fadeAlpha;
+            // 径向渐变：中心 alpha → 边缘 0，产生自然的气团扩散感
+            var d2:Number = r * 2;
+            m.createGradientBox(d2, d2, 0, x - r, y - r);
+            _container.beginGradientFill("radial", [fogColor, fogColor], [alpha, 0], [0, 255], m);
             _container.moveTo(x + r, y);
             _container.curveTo(x + r, y + r, x, y + r);
             _container.curveTo(x - r, y + r, x - r, y);

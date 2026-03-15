@@ -170,6 +170,11 @@ class org.flashNight.arki.weather.EnvironmentConfig {
     public static function parseEnvironmentInfo(rawConfig:Object, defaults:Object):Object {
         if (!rawConfig) return null;
 
+        // 预设展开：简单名称 → 完整配置（个别字段可覆盖预设值）
+        if (rawConfig.Preset != undefined) {
+            _expandPreset(rawConfig);
+        }
+
         var info:Object = {};
 
         info.地址 = rawConfig.BackgroundURL;
@@ -198,6 +203,26 @@ class org.flashNight.arki.weather.EnvironmentConfig {
         // 天气粒子扩展字段
         info.允许随机天气 = rawConfig.AllowRandomWeather == "true" ? true : defaults.允许随机天气;
         info.天气强度 = !isNaN(rawConfig.WeatherIntensity) ? Number(rawConfig.WeatherIntensity) : defaults.天气强度;
+
+        // 室内外通用粒子（覆盖天气推导）
+        info.粒子类型 = rawConfig.ParticleType != undefined ? rawConfig.ParticleType : undefined;
+        info.粒子强度 = !isNaN(rawConfig.ParticleIntensity) ? Number(rawConfig.ParticleIntensity) : undefined;
+
+        // gameworld 色调叠加（室内氛围灯光等）
+        if (rawConfig.Overlay) {
+            var ov:Object = rawConfig.Overlay;
+            info.色调叠加 = {
+                r: !isNaN(ov.R) ? Number(ov.R) : 0,
+                g: !isNaN(ov.G) ? Number(ov.G) : 0,
+                b: !isNaN(ov.B) ? Number(ov.B) : 0,
+                alpha: !isNaN(ov.Alpha) ? Number(ov.Alpha) : 0,
+                mode: ov.Mode != undefined ? ov.Mode : "flat",
+                pulse: (ov.Pulse == "true" || ov.Pulse == true),
+                pulseSpeed: !isNaN(ov.PulseSpeed) ? Number(ov.PulseSpeed) : 0.08,
+                pulseMin: !isNaN(ov.PulseMin) ? Number(ov.PulseMin) : 5,
+                pulseMax: !isNaN(ov.PulseMax) ? Number(ov.PulseMax) : 20
+            };
+        }
 
         // 背景元素
         info.背景元素 = rawConfig.Instances ? parseBackgroundElements(ObjectUtil.toArray(rawConfig.Instances.Instance)) : defaults.背景元素;
@@ -242,5 +267,36 @@ class org.flashNight.arki.weather.EnvironmentConfig {
             if (!elemData[i].depth) elemData[i].depth = null;
         }
         return elemData;
+    }
+
+    // ==================== 预设系统 ====================
+
+    /**
+     * 将 Preset 名称展开为 rawConfig 上的具体字段。
+     * 仅填充 rawConfig 中未定义的字段，个别字段可覆盖预设值。
+     * @param rawConfig XML 解析后的配置对象（就地修改）
+     */
+    private static function _expandPreset(rawConfig:Object):Void {
+        var p:String = rawConfig.Preset;
+
+        if (p == "雨" || p == "雪" || p == "沙尘") {
+            // 室外天气快捷方式
+            if (rawConfig.WeatherCondition == undefined) rawConfig.WeatherCondition = p;
+            if (rawConfig.WeatherIntensity == undefined) {
+                rawConfig.WeatherIntensity = (p == "雨") ? 0.8 : (p == "雪") ? 0.7 : 0.5;
+            }
+        } else if (p == "毒气") {
+            // 室内毒气：大尺寸软边雾气 + 绿色色调
+            if (rawConfig.ParticleType == undefined) rawConfig.ParticleType = "fog";
+            if (rawConfig.ParticleIntensity == undefined) rawConfig.ParticleIntensity = 0.8;
+            if (rawConfig.Overlay == undefined) {
+                rawConfig.Overlay = {R:20, G:160, B:40, Alpha:18};
+            }
+        } else if (p == "警报") {
+            // 室内红色警报：径向光源 + 高对比脉冲
+            if (rawConfig.Overlay == undefined) {
+                rawConfig.Overlay = {R:220, G:40, B:20, Alpha:18, Mode:"radial", Pulse:true, PulseSpeed:0.1, PulseMin:3, PulseMax:28};
+            }
+        }
     }
 }
