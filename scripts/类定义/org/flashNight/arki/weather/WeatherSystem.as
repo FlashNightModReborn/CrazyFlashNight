@@ -171,6 +171,7 @@ class org.flashNight.arki.weather.WeatherSystem {
             bus.subscribe("WeatherUpdated", this.updateWeather, this);
             bus.subscribe("WeatherTimeRateUpdated", this._onTimeRateUpdated, this);
             bus.subscribe("SceneChanged", this._onSceneChanged, this);
+            bus.subscribe("SceneReady", this._onSceneReady, this);
 
             // 初始化天气渲染器（订阅 frameEnd 实现逐帧更新）
             WeatherParticleRenderer.initialize();
@@ -365,6 +366,12 @@ class org.flashNight.arki.weather.WeatherSystem {
 
         // ---- 天空盒色调：设置目标值，逐帧 lerp 平滑过渡 ----
         SkyboxRenderer.setTimeAndWeather(this.currentTime, this.weatherCondition);
+
+        // ---- 地面裁切：渐变层不超过地面，防止地面下方出现色块 ----
+        var groundY:Number = _root.Ymax;
+        if (!isNaN(groundY) && groundY > 0) {
+            SkyboxRenderer.setGroundY(groundY);
+        }
     }
 
     /**
@@ -466,6 +473,20 @@ class org.flashNight.arki.weather.WeatherSystem {
             this.expTimeMaxMultiplier
         );
         this.characterInfoOpacity = Interpolatior.linear(lightLevel, 0, this.timeMultiplierStartLevel, 0, 100);
+    }
+
+    /**
+     * SceneReady 事件回调。
+     * 碰撞箱和场景元素就绪后，将地图边界传入粒子渲染器并激活。
+     */
+    public function _onSceneReady():Void {
+        var xmin:Number = _root.Xmin;
+        var xmax:Number = _root.Xmax;
+        var ymin:Number = _root.Ymin;
+        var ymax:Number = _root.Ymax;
+        if (!isNaN(xmin) && !isNaN(xmax) && !isNaN(ymin) && !isNaN(ymax)) {
+            WeatherParticleRenderer.activateWithBounds(xmin, xmax, ymin, ymax);
+        }
     }
 
     /**

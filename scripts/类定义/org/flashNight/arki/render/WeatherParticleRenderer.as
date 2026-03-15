@@ -80,6 +80,17 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
     private static var BASE_W:Number = 800;
     private static var BASE_H:Number = 600;
 
+    // ==================== 地图边界约束 ====================
+
+    /** 地图边界（世界坐标，已含余量） */
+    private static var _bndLeft:Number;
+    private static var _bndRight:Number;
+    private static var _bndBottom:Number;
+    private static var _hasBounds:Boolean = false;
+
+    /** 边界余量像素（部分地图碰撞箱较小，需额外扩展） */
+    private static var BOUNDS_MARGIN:Number = 150;
+
     /** 当前帧的缩放补偿（渲染时用于保持屏幕视觉大小恒定） */
     private static var _renderScale:Number = 1;
 
@@ -127,6 +138,7 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
         _type = "none";
         _intensity = 0;
         _container = null; // gameworld 销毁后引用失效，下次 update 重建
+        _hasBounds = false;
     }
 
     /**
@@ -136,11 +148,16 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
     public static function setPerformanceLevel(level:Number):Void {
         _performanceLevel = level;
         if (level >= 3) {
+            // L3：暂停渲染但不清除天气状态（_type/_intensity 保留）
             _active = false;
             _count = 0;
             _spCount = 0;
             if (_container) _container.clear();
         } else {
+            // 从 L3 恢复：如果之前有天气设置，重新激活
+            if (!_active && _type != "none" && _intensity > 0) {
+                _active = true;
+            }
             var maxP:Number = _getMaxParticles();
             if (_count > maxP) _count = maxP;
         }
@@ -150,6 +167,8 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
 
     /**
      * 设置天气类型和强度。
+     * 仅存储参数，不立即激活粒子。需在 SceneReady 后调用
+     * activateWithBounds() 传入地图边界才会开始渲染。
      * @param type "rain" | "snow" | "dust" | "none"
      * @param intensity 0.0~1.0
      */
@@ -165,9 +184,28 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
         }
         _type = type;
         _intensity = intensity;
-        _active = true;
+        // 不立即激活，等待 activateWithBounds() 调用
         _count = 0;
         _spCount = 0;
+    }
+
+    /**
+     * 设置地图边界并激活粒子系统。
+     * 在 SceneReady 事件后调用，此时碰撞箱已绘制完毕。
+     * 内部自动添加 BOUNDS_MARGIN(150px) 余量，应对碰撞箱偏小的地图。
+     * @param xmin 地图左边界（_root.Xmin）
+     * @param xmax 地图右边界（_root.Xmax）
+     * @param ymin 地图上边界（_root.Ymin）
+     * @param ymax 地图下边界（_root.Ymax）
+     */
+    public static function activateWithBounds(xmin:Number, xmax:Number, ymin:Number, ymax:Number):Void {
+        _bndLeft = xmin - BOUNDS_MARGIN;
+        _bndRight = xmax + BOUNDS_MARGIN;
+        _bndBottom = ymax + BOUNDS_MARGIN;
+        _hasBounds = true;
+        if (_type != "none" && _intensity > 0) {
+            _active = true;
+        }
     }
 
     // ==================== 逐帧更新 ====================
@@ -202,6 +240,13 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
         var viewTop:Number = -gwy - MARGIN;
         var viewRight:Number = -gwx + viewW + MARGIN;
         var viewBottom:Number = -gwy + viewH;
+
+        // 地图边界裁切：粒子不超出碰撞箱 + 余量范围
+        if (_hasBounds) {
+            if (viewLeft < _bndLeft) viewLeft = _bndLeft;
+            if (viewRight > _bndRight) viewRight = _bndRight;
+            if (viewBottom > _bndBottom) viewBottom = _bndBottom;
+        }
 
         // 地面 Y 范围（2.5D 纵深：Ymin=远处，Ymax=近处）
         var groundYmin:Number = _root.Ymin;

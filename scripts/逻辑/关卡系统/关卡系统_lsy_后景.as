@@ -104,10 +104,12 @@ _root.加载后景 = function(环境信息){
 
 EventBus.getInstance().subscribe("SceneChanged", function()
 {
-	
+
 	var bgLayer:MovieClip = _root.天空盒;
 	var gameWorld = _root.gameworld;
-	bgLayer._y = gameWorld._y + bgLayer.地平线高度;
+	// 地平线高度需按天空盒缩放比例调整（天空盒与 gameworld 共享缩放）
+	var scaledHorizon:Number = bgLayer.地平线高度 * (bgLayer._yscale / 100);
+	bgLayer._y = gameWorld._y + scaledHorizon;
 	var backgroundList = bgLayer.bgParallaxList;
 	var currentFrame = _root.帧计时器.当前帧数;
 	var worldX:Number = gameWorld._x;

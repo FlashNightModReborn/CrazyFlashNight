@@ -508,6 +508,9 @@ class org.flashNight.arki.camera.HorizontalScroller {
         this.bgLayer._xscale = this.bgLayer._yscale = pct;
         ZoomController.setCurrentScale(_root.basicZoomScale);
 
+        // 缩放后必须同步天空盒 Y 位置（地平线高度需按缩放比例调整）
+        // 否则天空盒位置会残留 _root.加载后景 中设置的未缩放值
+        this.bgLayer._y = this.gameWorld._y + this.horizonHeight * _root.basicZoomScale;
 
         // _root.发布消息(bgWidth,bgHeight,enableParallax,enableCameraZoom,horizonHeight);
         

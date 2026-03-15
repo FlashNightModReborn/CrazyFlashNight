@@ -46,10 +46,12 @@ class org.flashNight.arki.render.SkyboxRenderer {
     /** 是否需要重绘（current !== target） */
     private static var _dirty:Boolean = false;
 
+    /** 地面 Y 坐标（root 空间），渐变层不绘制到此值以下，0 = 未设置 */
+    private static var _groundY:Number = 0;
+
     // ==================== 屏幕尺寸 ====================
 
-    private static var SCREEN_W:Number = 800;
-    private static var SCREEN_H:Number = 600;
+    // 屏幕尺寸：不再硬编码，_redrawGradient 中直接读 Stage.width/height
 
     // ==================== 时段色彩表 ====================
     // 每项: [hour, R, G, B, alpha]
@@ -92,10 +94,20 @@ class org.flashNight.arki.render.SkyboxRenderer {
         _currentR = 0; _currentG = 0; _currentB = 0; _currentAlpha = 0;
         _targetR = 0; _targetG = 0; _targetB = 0; _targetAlpha = 0;
         _dirty = false;
+        _groundY = 0;
         if (_gradientLayer) {
             _gradientLayer.clear();
             _gradientLayer._visible = false;
         }
+    }
+
+    /**
+     * 设置地面 Y 坐标（root 空间），渐变层不会绘制到此值以下。
+     * 由 WeatherSystem.configureEnvironment 调用，防止地面下方出现色块。
+     * @param y root 空间的地面 Y 坐标（通常为 _root.Ymax）
+     */
+    public static function setGroundY(y:Number):Void {
+        _groundY = y;
     }
 
     /**
@@ -231,6 +243,13 @@ class org.flashNight.arki.render.SkyboxRenderer {
 
     /**
      * 用 beginFill 绘制纯色半透明矩形覆盖天空盒区域。
+     *
+     * 坐标空间说明：
+     *   渐变层在天空盒本地坐标系中绘制。天空盒有缩放（_yscale）和位移（_y），
+     *   需将屏幕可见区域转换到天空盒本地空间。
+     *
+     *   地面 Y 在天空盒本地空间 = Ymax - 地平线高度（与缩放/相机位置无关），
+     *   因为 gameworld 和天空盒共享相同的缩放比例，相机偏移在推导中抵消。
      */
     private static function _redrawGradient():Void {
         if (!_gradientLayer) return;
@@ -250,12 +269,50 @@ class org.flashNight.arki.render.SkyboxRenderer {
         var b:Number = Math.round(_currentB);
         var color:Number = (r << 16) | (g << 8) | b;
 
+        var sw:Number = Stage.width;
+        var sh:Number = Stage.height;
+
+        // 天空盒有缩放和 _y 偏移，将屏幕矩形转换到天空盒本地坐标系
+        var parent:MovieClip = _gradientLayer._parent;
+        var skyScale:Number = parent._yscale / 100;
+        if (skyScale < 0.01) skyScale = 1;
+        var invScale:Number = 1 / skyScale;
+
+        var drawTop:Number = -parent._y * invScale;
+        var drawRight:Number = sw * invScale;
+        var screenBottom:Number = (sh - parent._y) * invScale;
+        var drawBottom:Number = screenBottom;
+
+        // 地面裁切：渐变不绘制到地面以下
+        // 推导：地面在天空盒本地空间的 Y = Ymax - 地平线高度
+        // （gameworld 和天空盒共享缩放比例，相机偏移抵消）
+        if (_groundY > 0) {
+            var horizonH:Number = parent.地平线高度;
+            if (isNaN(horizonH)) horizonH = 0;
+            var groundLocal:Number = _groundY - horizonH;
+            if (groundLocal < drawBottom) drawBottom = groundLocal;
+        }
+
+        // 使用 默认天空 资产的实际边界确定渲染范围
+        // 比 gameworld.背景长 推算更准确，直接反映需要遮挡的内容边界
+        var sky:MovieClip = parent.默认天空;
+        var skyLeft:Number = 0;
+        var skyRight:Number = drawRight;
+        if (sky && sky._visible) {
+            var rect:Object = sky.getRect(parent);
+            if (rect.xMin > 0) skyLeft = rect.xMin;
+            if (rect.xMax < drawRight) skyRight = rect.xMax;
+        }
+
+        // 天空区域：半透明色调叠加（仅覆盖 默认天空 范围内、地面以上）
+        // 不需要额外的黑色遮挡层：默认天空 在未被渐变叠加时的自然外观是可接受的
+        // （所有非天气地图已验证），色块的根因是渐变画到了不该画的区域
         _gradientLayer.beginFill(color, a);
-        _gradientLayer.moveTo(0, 0);
-        _gradientLayer.lineTo(SCREEN_W, 0);
-        _gradientLayer.lineTo(SCREEN_W, SCREEN_H);
-        _gradientLayer.lineTo(0, SCREEN_H);
-        _gradientLayer.lineTo(0, 0);
+        _gradientLayer.moveTo(skyLeft, drawTop);
+        _gradientLayer.lineTo(skyRight, drawTop);
+        _gradientLayer.lineTo(skyRight, drawBottom);
+        _gradientLayer.lineTo(skyLeft, drawBottom);
+        _gradientLayer.lineTo(skyLeft, drawTop);
         _gradientLayer.endFill();
     }
 }
