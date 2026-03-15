@@ -235,6 +235,7 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         var metricsW:Number = TooltipLayout.estimateMainWidthFromMetrics(st, sm, lineCount, undefined, undefined);
         assert(oldW == compatW, "bench mainWidth: compat matches");
         assert(oldW == metricsW, "bench mainWidth: metrics matches");
+        assert(metricsMs < 50, "bench fromMetrics: < 50ms for " + N + " iterations");
     }
 
     // === 端到端：renderItemTooltipSmart 基准 ===

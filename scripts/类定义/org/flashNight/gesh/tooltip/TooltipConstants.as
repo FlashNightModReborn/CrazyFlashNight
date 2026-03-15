@@ -303,6 +303,15 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   // DUAL_PANEL_MARGIN：双栏同时可见时，总宽与屏幕宽之间保留的边距（两侧各 20px）
   public static var DUAL_PANEL_MARGIN:Number = 40;
 
+  // sqrt 公式宽度估算参数（由 TooltipWidthDiagnostic Phase 2/3 校准）
+  // W = sqrt(r × totalScore × PIX_PER_UNIT × LINE_HEIGHT)
+  // r = RATIO_MIN + smoothstep(totalScore / RATIO_SCORE_CAP) × (RATIO_MAX - RATIO_MIN)
+  public static var PIX_PER_UNIT:Number = 6.0;       // score 单位到像素的系数（CJK 混排实测均值）
+  public static var LINE_HEIGHT:Number = 15;          // TextField 单行像素高（mock 精确测量）
+  public static var RATIO_MIN:Number = 0.618;         // 短内容目标 W/H 比（黄金比例）
+  public static var RATIO_MAX:Number = 1.5;           // 长内容目标 W/H 比
+  public static var RATIO_SCORE_CAP:Number = 300;     // r 过渡曲线满刻度 totalScore（sweep 第 1 轮确认 300 优于 400）
+
   // ══════════════════════════════════════════════════════════════
   // 属性名称字典 (Property Dictionary)
   // ══════════════════════════════════════════════════════════════

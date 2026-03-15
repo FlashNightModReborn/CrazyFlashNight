@@ -108,27 +108,37 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
 
     /**
      * 从预计算的评分与逻辑行数直接估算主框体宽度。
+     *
+     * sqrt 公式：W = sqrt(r × totalScore × PIX_PER_UNIT × LINE_HEIGHT)
+     * 其中 r 由 RATIO_MIN 经 smoothstep 渐变到 RATIO_MAX，
+     * 以 totalScore / RATIO_SCORE_CAP 为插值参数。
+     *
+     * 短内容 → r≈0.618（黄金比例，纵向） → 宽度适中
+     * 长内容 → r≈1.5（横向）              → 宽度增大但受 maxLine 约束
+     *
+     * 上界 clamp：min(sqrtW, maxLineW) 防止宽于最长行所需像素。
      */
     public static function estimateMainWidthFromMetrics(totalScore:Number, maxLineScore:Number, lineCount:Number, minW:Number, maxW:Number):Number {
         if (minW === undefined) minW = TooltipConstants.MIN_W;
         if (maxW === undefined) maxW = TooltipConstants.MAX_W;
 
-        var totalBased:Number = totalScore * TooltipConstants.MAIN_CHAR_AVG_WIDTH;
+        if (totalScore <= 0) return minW;
 
-        if (maxLineScore <= 0) {
-            return Math.max(minW, Math.min(totalBased, maxW));
+        // smoothstep 插值 r：短内容偏纵向（0.618），长内容偏横向（1.5）
+        var t:Number = totalScore / TooltipConstants.RATIO_SCORE_CAP;
+        if (t > 1) t = 1;
+        var ss:Number = t * t * (3 - 2 * t);
+        var r:Number = TooltipConstants.RATIO_MIN + ss * (TooltipConstants.RATIO_MAX - TooltipConstants.RATIO_MIN);
+
+        var sqrtW:Number = Math.sqrt(r * totalScore * TooltipConstants.PIX_PER_UNIT * TooltipConstants.LINE_HEIGHT);
+
+        // maxLine 约束：宽度不超过最长行所需像素 + 边距
+        if (maxLineScore > 0) {
+            var maxLineW:Number = maxLineScore * TooltipConstants.PIX_PER_UNIT + TooltipConstants.LINE_GUTTER;
+            if (sqrtW > maxLineW) sqrtW = maxLineW;
         }
 
-        var lineBased:Number = maxLineScore * TooltipConstants.LINE_WIDTH_SCALE
-                             + TooltipConstants.LINE_GUTTER;
-
-        if (lineCount == undefined || isNaN(lineCount) || lineCount < 1) lineCount = 1;
-        var meanScore:Number = totalScore / lineCount;
-        var t:Number = Math.min(1, meanScore / maxLineScore);
-        var uniformity:Number = t * t * (3 - 2 * t);
-
-        var widthEst:Number = lineBased * uniformity + totalBased * (1 - uniformity);
-        return Math.max(minW, Math.min(widthEst, maxW));
+        return Math.max(minW, Math.min(sqrtW, maxW));
     }
 
     /**
