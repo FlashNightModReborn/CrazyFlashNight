@@ -332,42 +332,41 @@ class org.flashNight.gesh.tooltip.test.TooltipLayoutTest {
         MockTooltipContainer.teardown();
     }
 
-    // initW > maxW 时，balanceWidth 必须在 maxW 范围内保证行数合规
-    // 关键回归：initW 下 ≤32 行但 maxW 下可能 >32 行
+    // initW > maxW 且在 maxW 下可解时，balanced 后行数必须 ≤ 32
+    // 确定性用例：先断言 effectiveMaxLines ≤ 32，再验证 balanced 后仍 ≤ 32
     private static function test_balanceWidth_initW_exceeds_maxW():Void {
         MockTooltipContainer.install();
-        // 构造内容：在宽宽度下行数合规，在窄宽度下可能溢出
+        // 夹具：8 行短文本，在 wideInitW=500 下每行不换行（8 行），
+        // 在 narrowMax=300 下部分行换行但总行数仍 ≤ 32（可解）
         var html:String = "";
-        for (var i:Number = 0; i < 20; i++) {
-            html += "这是第" + i + "行有一定长度的内容文本用来测试宽度约束<BR>";
+        for (var i:Number = 0; i < 8; i++) {
+            html += "第" + i + "行中等长度的测试内容文本<BR>";
         }
-        // 模拟 initW > maxW 的场景（如窄分辨率下 effectiveMax 较小）
-        var narrowMax:Number = 200;
+        var narrowMax:Number = 300;
         var wideInitW:Number = 500;
 
-        var balanced:Number = TooltipLayout.balanceWidth(wideInitW, html, narrowMax);
-
-        // balanced 不应超过 narrowMax
-        assert(balanced <= narrowMax,
-            "initW>maxW: balanced(" + Math.round(balanced) + ") <= maxW(" + narrowMax + ")");
-
-        // 在 balanced 宽度下测量真实行数
+        // 前置断言：确认夹具在 narrowMax 下确实可解
         var tf:Object = TooltipBridge.getMainTextBox();
         tf.wordWrap = true;
         tf.htmlText = html;
-        var lines:Number = TooltipBridge.measureRenderedLines(balanced, false);
+        var effectiveMaxLines:Number = TooltipBridge.measureRenderedLines(narrowMax, false);
+        assert(effectiveMaxLines > 0 && effectiveMaxLines <= TooltipConstants.MAX_RENDERED_LINES,
+            "initW>maxW fixture: effectiveMaxLines=" + effectiveMaxLines + " <= 32 (narrowMax=" + narrowMax + ")");
 
-        // 如果可解（narrowMax 下 ≤32 行），balanced 下也应 ≤32
-        var maxWLines:Number = TooltipBridge.measureRenderedLines(narrowMax, false);
-        if (maxWLines > 0 && maxWLines <= TooltipConstants.MAX_RENDERED_LINES) {
-            assert(lines > 0 && lines <= TooltipConstants.MAX_RENDERED_LINES,
-                "initW>maxW solvable: lines=" + lines + " <= " + TooltipConstants.MAX_RENDERED_LINES
-                + " (balanced=" + Math.round(balanced) + " maxW=" + narrowMax + ")");
-        } else {
-            // 不可解：熔断行为，balanced 应 <= narrowMax（已被入口钳制）
-            trace("  [INFO] initW>maxW unsolvable: maxWLines=" + maxWLines
-                + " balanced=" + Math.round(balanced));
-        }
+        // 核心测试
+        var balanced:Number = TooltipLayout.balanceWidth(wideInitW, html, narrowMax);
+
+        // balanced 不应超过 narrowMax（入口钳制 + modeB shrink-to-fit）
+        assert(balanced <= narrowMax,
+            "initW>maxW: balanced(" + Math.round(balanced) + ") <= maxW(" + narrowMax + ")");
+
+        // balanced 后的真实行数 ≤ 32
+        tf.wordWrap = true;
+        tf.htmlText = html;
+        var balancedLines:Number = TooltipBridge.measureRenderedLines(balanced, false);
+        assert(balancedLines > 0 && balancedLines <= TooltipConstants.MAX_RENDERED_LINES,
+            "initW>maxW: balancedLines=" + balancedLines + " <= 32 (W=" + Math.round(balanced) + ")");
+
         MockTooltipContainer.teardown();
     }
 

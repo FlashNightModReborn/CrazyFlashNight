@@ -703,8 +703,8 @@ class org.flashNight.gesh.tooltip.test.TooltipWidthDiagnostic {
             var initLines:Number = TooltipBridge.measureRenderedLines(initW, false);
 
             // 测量 effectiveMax 下的行数（判定可解性，对齐运行时上限）
-            var maxWLines:Number = TooltipBridge.measureRenderedLines(effectiveMax, false);
-            var solvable:Boolean = (maxWLines >= 0 && maxWLines <= maxL);
+            var effectiveMaxLines:Number = TooltipBridge.measureRenderedLines(effectiveMax, false);
+            var solvable:Boolean = (effectiveMaxLines >= 0 && effectiveMaxLines <= maxL);
 
             // 调用 balanceWidth
             var balW:Number = TooltipLayout.balanceWidth(initW, si.desc, effectiveMax);
@@ -740,7 +740,7 @@ class org.flashNight.gesh.tooltip.test.TooltipWidthDiagnostic {
                 initL: initLines,
                 balW: Math.round(balW),
                 balL: balLines,
-                maxWL: maxWLines,
+                maxWL: effectiveMaxLines,
                 solvable: solvable
             });
         }
