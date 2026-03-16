@@ -28,16 +28,15 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="!105 539[#6A.AC #1FC.1E 107.5 477"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!107.5 477[#6B.E #1D7.C1 108 466.5!108 466.5[#74.84 #6E.2F 234 16"/>
-                    <Edge fillStyle1="2" edges="!234 16[309 149 354 489"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!354 489[#14E.32 #237.23 317 646"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="!317 646[#136.A9 #2A3.64 304.5 705"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!304.5 705[#FD.24 #3C0.06 230 1223"/>
-                    <Edge fillStyle1="1" edges="!230 1223[83 1260 0 1178"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!0 1178[#59.74 #35B.31 105 539"/>
-                    <Edge fillStyle0="3" fillStyle1="1" edges="!105 539[#B4.36 #295.75 304.5 705"/>
                     <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!107.5 477[#BA.37 #25C.46 317 646"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!317 646[#14E.32 #237.23 354 489"/>
+                    <Edge fillStyle0="2" edges="!354 489[309 149 234 16"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!234 16[#74.84 #6E.2F 108 466.5!108 466.5[#6B.E #1D7.C1 107.5 477"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!105 539[#B4.36 #295.75 304.5 705"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!304.5 705[#136.A9 #2A3.64 317 646"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!105 539[#6A.AC #1FC.1E 107.5 477"/>
+                    <Edge fillStyle1="1" edges="!230 1223[83 1260 0 1178"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!0 1178[#59.74 #35B.31 105 539!304.5 705[#FD.24 #3C0.06 230 1223"/>
                   </edges>
                 </DOMShape>
               </elements>
