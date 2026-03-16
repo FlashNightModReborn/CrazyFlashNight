@@ -313,4 +313,36 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       TooltipBridge.setVisibility("mainBg", false);
     }
   }
+
+  // ──────────────── 强化/进阶入口（P2b） ────────────────
+
+  /**
+   * 强化预览文本（强化面板专用，返回 HTML 字符串）
+   * 注意：不渲染到注释框——调用方拼接到自身面板 TextField
+   *
+   * @param itemData:Object 物品数据对象
+   * @param level:Number 目标强化等级
+   * @return String 强化属性变化的 HTML 文本
+   */
+  public static function renderEnhancementPreview(itemData:Object, level:Number):String {
+    var lines:Array = TooltipTextBuilder.buildEnhancementStats(itemData, level);
+    return lines.join("");
+  }
+
+  /**
+   * 进阶信息注释（工作台面板专用，渲染到注释框）
+   * 等价于原 _root.注释(宽度, list.join("")) 调用
+   *
+   * @param equipDisplayName:String 装备显示名
+   * @param itemName:String 物品名
+   * @param tierName:String 阶名
+   * @param tierData:Object 阶数据
+   * @param width:Number 显示宽度（可选，默认 BASE_NUM=200）
+   */
+  public static function renderTierInfoTooltip(equipDisplayName:String, itemName:String, tierName:String, tierData:Object, width:Number):Void {
+    var lines:Array = TooltipTextBuilder.buildTierInfo(equipDisplayName, itemName, tierName, tierData);
+    if (lines.length == 0) return;
+    if (width == undefined) width = TooltipConstants.BASE_NUM;
+    TooltipLayout.showTooltip(width, lines.join(""));
+  }
 }

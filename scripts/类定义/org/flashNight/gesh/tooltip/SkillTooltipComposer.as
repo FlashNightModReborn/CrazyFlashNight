@@ -41,12 +41,25 @@ class org.flashNight.gesh.tooltip.SkillTooltipComposer {
         // 规范化描述文本（处理 XML 缩进、\r\n / \n → <BR>）
         if (descriptionText) descriptionText = TooltipFormatter.normalizeDescription(descriptionText);
 
-        // 使用统一的智能分栏判定（技能目前不需要自定义 options，传 null 即可）
-        var needSplit:Boolean = TooltipLayout.shouldSplitSmart(descriptionText, introText, null);
+        // 智能分栏判定 + 描述评分一次性计算（对齐 TooltipComposer.renderItemTooltipSmart 的三级链路）
+        var splitInfo:Object = TooltipLayout.shouldSplitSmartWithScores(
+            descriptionText, introText, null, null);
 
-        if (needSplit) {
+        if (splitInfo.needSplit) {
             // 长内容策略：分离显示（主框体 + 图标面板）
-            var calculatedWidth:Number = TooltipLayout.estimateWidth(descriptionText);
+            // Stage 1: sqrt 模型估算初始宽度（复用 splitInfo 评分，避免重复扫描）
+            var calculatedWidth:Number = TooltipLayout.estimateMainWidthFromMetrics(
+                splitInfo.descTotal, splitInfo.descMaxLine, splitInfo.descLineCount,
+                undefined, undefined);
+            // Stage 2: 屏幕感知上限（为简介面板保留 BASE_NUM + margin）
+            var screenMax:Number = Stage.width - TooltipConstants.BASE_NUM
+                                 - TooltipConstants.DUAL_PANEL_MARGIN;
+            var effectiveMax:Number = (screenMax > TooltipConstants.MIN_W)
+                ? Math.min(TooltipConstants.MAX_W, screenMax)
+                : TooltipConstants.MAX_W;
+            // Stage 3: 高度约束 + 紧缩贴合（modeA 二分 / modeB shrink-to-fit）
+            calculatedWidth = TooltipLayout.balanceWidth(calculatedWidth, descriptionText, effectiveMax);
+            calculatedWidth = Math.min(calculatedWidth, effectiveMax);
             TooltipLayout.showTooltip(calculatedWidth, descriptionText);
             TooltipLayout.renderIconTooltip(true, skillName, introText, TooltipConstants.BASE_NUM, ItemUseTypes.TYPE_SKILL);
         } else {

@@ -52,6 +52,9 @@ class org.flashNight.gesh.tooltip.test.TooltipIntegrationTest {
         test_renderItemTooltipSmart_merge();
         test_SkillTooltipComposer_split();
         test_SkillTooltipComposer_merge();
+        test_renderEnhancementPreview_melee();
+        test_renderEnhancementPreview_invalid_level();
+        test_renderTierInfoTooltip_renders();
 
         trace("--- TooltipIntegrationTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
     }
@@ -203,6 +206,37 @@ class org.flashNight.gesh.tooltip.test.TooltipIntegrationTest {
         // 合并模式：主框体不可见
         var mainBg:MovieClip = TooltipBridge.getMainBackground();
         assert(mainBg._visible == false, "SkillComposer merge: mainBg hidden");
+        MockTooltipContainer.teardown();
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // P2b: Composer 封装入口测试
+    // ══════════════════════════════════════════════════════════════
+
+    private static function test_renderEnhancementPreview_melee():Void {
+        var fixture = MockItemFactory.meleeWeapon();
+        // buildEnhancementStats 期望 itemData 包含 .data 和 .use 属性
+        var itemData = fixture.item;
+        itemData.data = fixture.data;
+        var result:String = TooltipComposer.renderEnhancementPreview(itemData, 5);
+        assert(result.length > 0, "renderEnhancementPreview melee: non-empty (len=" + result.length + ")");
+    }
+
+    private static function test_renderEnhancementPreview_invalid_level():Void {
+        var fixture = MockItemFactory.meleeWeapon();
+        var itemData = fixture.item;
+        itemData.data = fixture.data;
+        var result:String = TooltipComposer.renderEnhancementPreview(itemData, NaN);
+        assert(result.length == 0, "renderEnhancementPreview NaN level: empty result (len=" + result.length + ")");
+    }
+
+    private static function test_renderTierInfoTooltip_renders():Void {
+        MockTooltipContainer.install();
+        var tierData = {force: 5, damage: 3};
+        TooltipComposer.renderTierInfoTooltip("测试军刀", "测试军刀", "墨冰", tierData, 200);
+        var tf = TooltipBridge.getMainTextBox();
+        assert(tf.htmlText.length > 0, "renderTierInfoTooltip: main text has content");
+        TooltipLayout.hideTooltip();
         MockTooltipContainer.teardown();
     }
 }

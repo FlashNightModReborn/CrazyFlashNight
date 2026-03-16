@@ -13,6 +13,8 @@ import org.flashNight.gesh.tooltip.builder.ResistanceBlockBuilder;
 import org.flashNight.gesh.tooltip.builder.SlayEffectBuilder;
 import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
 import org.flashNight.gesh.tooltip.builder.drug.DrugTooltipComposer;
+import org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder;
+import org.flashNight.gesh.tooltip.builder.ModStatBuilder;
 
 /**
  * BuilderContractTest - Builder 结构性契约测试
@@ -69,6 +71,8 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         test_SlayEffectBuilder();
         test_SilenceEffectBuilder();
         test_DrugTooltipComposer_null();
+        test_ObtainMethodsBuilder_no_index();
+        test_ModStatBuilder_unknown_item();
 
         trace("--- BuilderContractTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
     }
@@ -337,5 +341,19 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
 
         var r3:Array = DrugTooltipComposer.compose({data: {}});
         assert(r3.length == 0, "DrugComposer {data:{}} returns []");
+    }
+
+    // === P3a: 提取后的独立 builder 契约测试 ===
+
+    private static function test_ObtainMethodsBuilder_no_index():Void {
+        // 索引未构建时应返回空数组
+        var result:Array = ObtainMethodsBuilder.build("不存在的物品");
+        assert(result.length == 0, "ObtainMethodsBuilder no index: empty result");
+    }
+
+    private static function test_ModStatBuilder_unknown_item():Void {
+        // 未知物品名应返回空数组
+        var result:Array = ModStatBuilder.build("完全不存在的配件名");
+        assert(result.length == 0, "ModStatBuilder unknown item: empty result");
     }
 }

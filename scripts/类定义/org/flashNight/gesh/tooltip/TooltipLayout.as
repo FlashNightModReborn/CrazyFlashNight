@@ -206,11 +206,11 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
             // === 极限探针 ===
             var maxWLines:Number = TooltipBridge.measureRenderedLines(maxW, false);
             if (maxWLines > TooltipConstants.MAX_RENDERED_LINES) {
-                // 不可解：即使 maxW 也放不下，熔断返回 initW
+                // 不可解：即使 maxW 也放不下，熔断返回 maxW（更宽=更少溢出行）
                 tf.wordWrap = savedWordWrap;
                 tf._width = savedWidth;
                 tf.htmlText = savedHtml;
-                return initW;
+                return maxW;
             }
 
             // === modeA 二分：找 lines <= MAX_RENDERED_LINES 的最小宽度 ===
@@ -469,7 +469,7 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         target._height = target.textHeight + TooltipConstants.TEXT_PAD;
 
         // 使用定位逻辑处理注释框定位
-        positionTooltip(tips, background, _root._xmouse, _root._ymouse);
+        positionTooltip(tips, background, TooltipBridge.getMouseX(), TooltipBridge.getMouseY());
 
         // 对主框体也应用边界回弹保护
         if (frameType != TooltipConstants.FRAME_INTRO) {

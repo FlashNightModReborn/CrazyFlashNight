@@ -417,6 +417,47 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
         return Math.round((tf.textHeight - _h1) / _lineGap) + 1;
     }
 
+    // ══════════════════════════════════════════════════════════════
+    // _root 全局数据网关（收口 _root 直接访问）
+    // ══════════════════════════════════════════════════════════════
+
+    /** 鼠标 X 坐标 */
+    public static function getMouseX():Number { return _root._xmouse; }
+
+    /** 鼠标 Y 坐标 */
+    public static function getMouseY():Number { return _root._ymouse; }
+
+    /**
+     * 获取合成数据（替代直接访问 _root.改装清单对象）
+     * @param key 合成键名
+     * @return 合成数据对象，不存在时返回 null
+     */
+    public static function getSynthesisData(key:String):Object {
+        if (!_root.改装清单对象) return null;
+        return _root.改装清单对象[key];
+    }
+
+    /**
+     * 获取敌人显示名（替代直接访问 _root.敌人属性表）
+     * @param enemyType 敌人类型标识
+     * @return 显示名称，不存在时回退到 enemyType
+     */
+    public static function getEnemyDisplayName(enemyType:String):String {
+        if (!_root.敌人属性表 || !_root.敌人属性表[enemyType]) return enemyType;
+        var props:Object = _root.敌人属性表[enemyType];
+        return props.displayname ? props.displayname : enemyType;
+    }
+
+    /**
+     * 调试日志输出（替代直接访问 _root.服务器）
+     * @param msg 日志消息
+     */
+    public static function debugLog(msg:String):Void {
+        if (_root.服务器 && _root.服务器.发布服务器消息) {
+            _root.服务器.发布服务器消息(msg);
+        }
+    }
+
     /** 重置校准状态（测试用） */
     public static function resetCalibration():Void {
         _calibrated = false;

@@ -1092,7 +1092,7 @@ _root.物品UI函数.计算强化装备等级 = function(目标等级){
 	var color = 强化石持有数 >= 强化石需要个数 ? "#33FF33" : "#FF3333";
 	this.强化详情文字.htmlText = "需要强化石： <FONT COLOR='" + color + "'>" + 强化石需要个数 + " / " + 强化石持有数 + "<FONT><BR>";
 	if(强化石节省个数 > 0) this.强化详情文字.htmlText += "铁匠被动技能已节省 " + 强化石节省个数 + " 个<BR>";
-	this.强化详情文字.htmlText += org.flashNight.gesh.tooltip.TooltipTextBuilder.buildEnhancementStats(this.当前物品图标.itemData, 目标等级).join("");
+	this.强化详情文字.htmlText += org.flashNight.gesh.tooltip.TooltipComposer.renderEnhancementPreview(this.当前物品图标.itemData, 目标等级);
 	//
 	this.目标强化等级 = 目标等级;
 	this.强化石需要个数 = 强化石需要个数;
@@ -1300,10 +1300,7 @@ _root.物品UI函数.初始化插件改装界面 = function(){
 			var tierName = EquipmentUtil.tierMaterialToNameDict[this.name];
 			var tierKey = EquipmentUtil.materialToTierDict[this.name];
 			var tierData = ItemUtil.getItemData(panel.当前物品.name)[tierKey];
-			var list = org.flashNight.gesh.tooltip.TooltipTextBuilder.buildTierInfo(panel.当前物品显示名字, this.name, tierName, tierData);
-			if(list.length > 0){
-				_root.注释(200, list.join(""));
-			}
+			org.flashNight.gesh.tooltip.TooltipComposer.renderTierInfoTooltip(panel.当前物品显示名字, this.name, tierName, tierData, 200);
 		}else if(panel.选中的槽位 === 2){
 			var avail = panel.modAvailabilityDict[this.name]
 			if(avail === 1){

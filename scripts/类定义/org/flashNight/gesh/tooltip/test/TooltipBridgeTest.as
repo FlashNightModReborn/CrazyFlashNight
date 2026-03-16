@@ -31,6 +31,10 @@ class org.flashNight.gesh.tooltip.test.TooltipBridgeTest {
         test_measureTextLineWidth();
         test_ensureIconAboveIntroBg();
         test_clampContainerByBg();
+        test_getMouseX_returns_number();
+        test_getSynthesisData_null_safe();
+        test_getEnemyDisplayName_fallback();
+        test_debugLog_null_safe();
         test_teardown();
 
         trace("--- TooltipBridgeTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
@@ -188,6 +192,42 @@ class org.flashNight.gesh.tooltip.test.TooltipBridgeTest {
         var right:Number = c._x + bg._x + bg._width;
         assert(right <= Stage.width, "clampContainer right edge within screen");
         MockTooltipContainer.teardown();
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // P2a: _root 网关方法测试
+    // ══════════════════════════════════════════════════════════════
+
+    private static function test_getMouseX_returns_number():Void {
+        var x:Number = TooltipBridge.getMouseX();
+        assert(typeof x == "number", "getMouseX returns number: " + typeof x);
+    }
+
+    private static function test_getSynthesisData_null_safe():Void {
+        // 确保 _root.改装清单对象 不存在时返回 null
+        var saved = _root.改装清单对象;
+        _root.改装清单对象 = undefined;
+        var result = TooltipBridge.getSynthesisData("不存在的物品");
+        assert(result == null, "getSynthesisData null safe: " + result);
+        _root.改装清单对象 = saved;
+    }
+
+    private static function test_getEnemyDisplayName_fallback():Void {
+        // 确保 _root.敌人属性表 不存在时回退到入参
+        var saved = _root.敌人属性表;
+        _root.敌人属性表 = undefined;
+        var name:String = TooltipBridge.getEnemyDisplayName("测试兵种");
+        assert(name == "测试兵种", "getEnemyDisplayName fallback: " + name);
+        _root.敌人属性表 = saved;
+    }
+
+    private static function test_debugLog_null_safe():Void {
+        // 确保 _root.服务器 不存在时不崩溃
+        var saved = _root.服务器;
+        _root.服务器 = undefined;
+        TooltipBridge.debugLog("测试消息");
+        assert(true, "debugLog null safe: no crash");
+        _root.服务器 = saved;
     }
 
     private static function test_teardown():Void {

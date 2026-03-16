@@ -8,6 +8,7 @@ import org.flashNight.gesh.tooltip.test.TooltipIntegrationTest;
 import org.flashNight.gesh.tooltip.test.TooltipLayoutTest;
 import org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark;
 import org.flashNight.gesh.tooltip.test.TooltipRegressionTest;
+import org.flashNight.gesh.tooltip.test.SkillTooltipComposerTest;
 import org.flashNight.gesh.tooltip.test.TestDataBootstrap;
 
 /**
@@ -49,6 +50,8 @@ class org.flashNight.gesh.tooltip.test.TooltipTestSuite {
         collectStats(TooltipLayoutTest);
         TestDataBootstrap.runIsolated(TooltipIntegrationTest.runAllTests);
         collectStats(TooltipIntegrationTest);
+        SkillTooltipComposerTest.runAllTests();
+        collectStats(SkillTooltipComposerTest);
 
         if (includeBenchmarks) {
             TestDataBootstrap.runIsolated(TooltipPerfBenchmark.runAllTests);

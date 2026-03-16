@@ -58,6 +58,7 @@ class org.flashNight.gesh.tooltip.test.TooltipLayoutTest {
         test_measureRenderedLines_basic();
         test_balanceWidth_modeA();
         test_balanceWidth_modeA_unsolvable();
+        test_balanceWidth_fuse_returns_maxW_not_initW();
         test_balanceWidth_modeB_shrinkToFit();
         test_balanceWidth_initW_exceeds_maxW();
         test_balanceWidth_fallback();
@@ -307,8 +308,21 @@ class org.flashNight.gesh.tooltip.test.TooltipLayoutTest {
         var initW:Number = 300;
         var balanced:Number = TooltipLayout.balanceWidth(initW, html, TooltipConstants.MAX_W);
 
-        // 不可解时应熔断返回 initW，不强推到 MAX_W
-        assertEq(initW, balanced, "modeA_unsolvable: 熔断返回 initW=" + initW + " got=" + Math.round(balanced));
+        // 不可解时应熔断返回 maxW（更宽=更少溢出行），而非 initW
+        assertEq(TooltipConstants.MAX_W, balanced, "modeA_unsolvable: 熔断返回 maxW=" + TooltipConstants.MAX_W + " got=" + Math.round(balanced));
+        MockTooltipContainer.teardown();
+    }
+
+    private static function test_balanceWidth_fuse_returns_maxW_not_initW():Void {
+        MockTooltipContainer.install();
+        // 构造 50 个硬换行，无论宽度都超 32 行
+        var html:String = "";
+        for (var i:Number = 0; i < 50; i++) {
+            html += "行" + i + "<BR>";
+        }
+        // 自定义 maxW=400 以验证熔断使用参数 maxW 而非常量 MAX_W
+        var balanced:Number = TooltipLayout.balanceWidth(200, html, 400);
+        assertEq(400, balanced, "fuse_returns_maxW: 熔断应返回 maxW=400 got=" + Math.round(balanced));
         MockTooltipContainer.teardown();
     }
 
