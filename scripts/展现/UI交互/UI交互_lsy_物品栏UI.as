@@ -1418,8 +1418,15 @@ _root.物品UI函数.刷新插件信息 = function(){
 		// 配件槽满了，选择进阶槽
 		this.选择槽位_进阶();
 		this.槽位选择按钮_进阶._visible = true;
+	} else {
+		// 所有槽位都不可用（配件满+进阶已装/不可用），隐藏翻页和材料面板
+		this.选中的槽位 = 0;
+		this.插件当前页 = 0;
+		this.插件总页数 = 1;
+		this.插件改装当前页数._visible = false;
+		this.btn1._visible = false;
+		this.btn2._visible = false;
 	}
-	// 否则保持未选择状态（选中的槽位 = 0）
 }
 
 _root.物品UI函数.选择槽位_进阶 = function(){
