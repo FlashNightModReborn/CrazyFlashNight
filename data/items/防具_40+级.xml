@@ -948,7 +948,7 @@
     <icon>远古忍者鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <price>1</price>
+    <price>200000</price>
     <description>最新试验级诺亚兵器的白色战甲，战斗力非凡。</description>
     <data>
       <level>50</level>
@@ -970,7 +970,7 @@
     <icon>远古忍者腿甲</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <price>1</price>
+    <price>200000</price>
     <description>最新试验级诺亚兵器的白色战甲，战斗力非凡。</description>
     <data>
       <level>50</level>
@@ -992,7 +992,7 @@
     <icon>远古忍者手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <price>1</price>
+    <price>200000</price>
     <description>最新试验级诺亚兵器的白色战甲，战斗力非凡。</description>
     <data>
       <level>50</level>
@@ -1014,7 +1014,7 @@
     <icon>远古忍者甲</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <price>1</price>
+    <price>200000</price>
     <description>最新试验级诺亚兵器的白色战甲，战斗力非凡。</description>
     <data>
       <level>50</level>
@@ -1031,12 +1031,35 @@
     </data>
   </item>
   <item>
+    <name>远古忍者盔</name>
+    <displayname>试验忍者盔</displayname>
+    <icon>远古忍者盔</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <price>200000</price>
+    <description>最新试验级诺亚兵器的白色战甲，战斗力非凡。</description>
+    <helmet>true</helmet>
+    <data>
+      <level>50</level>
+      <weight>3</weight>
+      <dressup>男变装-远古忍者盔</dressup>
+      <hp>350</hp>
+      <mp>300</mp>
+      <damage>60</damage>
+      <knifepower>60</knifepower>
+      <defence>600</defence>
+      <magicdefence>
+        <基础>10</基础>
+      </magicdefence>
+    </data>
+  </item>
+  <item>
     <name>诛神战鞋</name>
     <displayname>奇美拉战鞋</displayname>
     <icon>诛神战鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <price>1</price>
+    <price>300000</price>
     <description>融入了不同世界技术的奇异造型的装备。</description>
     <data>
       <level>50</level>
@@ -1054,7 +1077,7 @@
     <icon>诛神腿甲</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <price>1</price>
+    <price>300000</price>
     <description>融入了不同世界技术的奇异造型的装备。</description>
     <data>
       <level>50</level>
@@ -1076,7 +1099,7 @@
     <type>防具</type>
     <use>手部装备</use>
     <actiontype>强化</actiontype>
-    <price>1</price>
+    <price>300000</price>
     <description>融入了不同世界技术的奇异造型的装备。</description>
     <data>
       <level>50</level>
@@ -1094,7 +1117,7 @@
     <icon>诛神胸甲</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <price>1</price>
+    <price>300000</price>
     <description>融入了不同世界技术的奇异造型的装备。</description>
     <data>
       <level>50</level>
@@ -1115,7 +1138,7 @@
     <icon>诛神头盔</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <price>1</price>
+    <price>300000</price>
     <description>融入了不同世界技术的奇异造型的装备。</description>
     <data>
       <level>50</level>
@@ -1128,35 +1151,12 @@
     </data>
   </item>
   <item>
-    <name>远古忍者盔</name>
-    <displayname>试验忍者盔</displayname>
-    <icon>远古忍者盔</icon>
-    <type>防具</type>
-    <use>头部装备</use>
-    <price>10</price>
-    <description>最新试验级诺亚兵器的白色战甲，战斗力非凡。</description>
-    <helmet>true</helmet>
-    <data>
-      <level>50</level>
-      <weight>3</weight>
-      <dressup>男变装-远古忍者盔</dressup>
-      <hp>350</hp>
-      <mp>300</mp>
-      <damage>60</damage>
-      <knifepower>60</knifepower>
-      <defence>600</defence>
-      <magicdefence>
-        <基础>10</基础>
-      </magicdefence>
-    </data>
-  </item>
-  <item>
     <name>黄金骑士牙狼战鞋</name>
     <displayname>黄金骑士牙狼战鞋</displayname>
     <icon>牙狼铠战鞋</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <price>1</price>
+    <price>1000000</price>
     <description>来自卡加利的恩赐，仿造传说中的黄金骑士铸造的一身神圣铠甲</description>
     <data>
       <level>60</level>
@@ -1174,7 +1174,7 @@
     <icon>牙狼铠腿甲</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <price>1</price>
+    <price>1000000</price>
     <description>来自卡加利的恩赐，仿造传说中的黄金骑士铸造的一身神圣铠甲</description>
     <data>
       <level>60</level>
@@ -1193,7 +1193,7 @@
     <type>防具</type>
     <use>手部装备</use>
     <actiontype>强化</actiontype>
-    <price>1</price>
+    <price>1000000</price>
     <description>来自卡加利的恩赐，仿造传说中的黄金骑士铸造的一身神圣铠甲</description>
     <data>
       <level>60</level>
@@ -1211,7 +1211,7 @@
     <icon>牙狼铠胸甲</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <price>1</price>
+    <price>1000000</price>
     <description>来自卡加利的恩赐，仿造传说中的黄金骑士铸造的一身神圣铠甲</description>
     <data>
       <level>60</level>
@@ -1229,7 +1229,7 @@
     <icon>牙狼铠头盔</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <price>1</price>
+    <price>1000000</price>
     <description>来自卡加利的恩赐，仿造传说中的黄金骑士铸造的一身神圣铠甲</description>
     <helmet>true</helmet>
     <data>
