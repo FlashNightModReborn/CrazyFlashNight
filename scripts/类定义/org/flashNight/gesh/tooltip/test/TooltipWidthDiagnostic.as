@@ -57,6 +57,7 @@ class org.flashNight.gesh.tooltip.test.TooltipWidthDiagnostic {
                 phase5_sqrtFormulaWithRealData();
                 phase6_currentVsSqrtWithRealData();
                 phase7_configSweep(splitItems);
+                phase8_heightAnalysis(splitItems);
 
                 MockTooltipContainer.teardown();
                 trace("=== END TooltipWidthDiagnostic ===");
@@ -642,6 +643,137 @@ class org.flashNight.gesh.tooltip.test.TooltipWidthDiagnostic {
             var curW:Number = TooltipLayout.estimateMainWidthFromMetrics(tc.total, tc.maxLine, tc.lines, undefined, undefined);
             trace("  " + tc.label + " | r=" + (Math.round(r * 100) / 100) + " sqrtW=" + Math.round(sqW) + " curW=" + Math.round(curW));
         }
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // Phase 8: 高度约束与 balanceWidth 效果分析
+    // ══════════════════════════════════════════════════════════════
+
+    /**
+     * 对全部 split 物品分析高度约束效果：
+     * - 比较 initW→initLines vs balancedW→balancedLines
+     * - 分可解/不可解两类统计
+     * - 输出 top 20 明细 + 汇总表
+     */
+    private static function phase8_heightAnalysis(splitItems:Array):Void {
+        trace("");
+        trace("--- Phase 8: Height & Balance Analysis ---");
+
+        var tf:Object = TooltipBridge.getMainTextBox();
+        var n:Number = splitItems.length;
+        if (n == 0) { trace("  No split items!"); return; }
+
+        var maxL:Number = TooltipConstants.MAX_RENDERED_LINES;
+        var maxW:Number = TooltipConstants.MAX_W;
+
+        // 统计变量
+        var overflowBefore:Number = 0;  // initW 下超 32 行的数量
+        var overflowAfter:Number = 0;   // balancedW 下超 32 行的数量
+        var solvableCount:Number = 0;   // 可解（maxW 下 ≤32 行）
+        var unsolvableCount:Number = 0; // 不可解（maxW 下仍 >32 行）
+        var solvableOverflowAfter:Number = 0; // 可解但 balance 后仍溢出（应为 0）
+        var modeACount:Number = 0;      // modeA 触发次数
+        var modeBCount:Number = 0;      // modeB 触发次数
+        var totalShrink:Number = 0;     // modeB 总收缩像素
+        var maxLinesBefore:Number = 0;
+        var maxLinesAfter:Number = 0;
+        var worstBefore:String = "";
+        var worstAfter:String = "";
+
+        // 明细收集（按 initLines 降序取 top 20）
+        var details:Array = [];
+
+        for (var i:Number = 0; i < n; i++) {
+            var si:Object = splitItems[i];
+            var initW:Number = TooltipLayout.estimateMainWidthFromMetrics(
+                si.dT, si.dM, si.dL, undefined, undefined);
+
+            // 设置内容（仅一次）
+            tf.wordWrap = true;
+            tf.htmlText = si.desc;
+
+            // 测量 initW 下的行数
+            var initLines:Number = TooltipBridge.measureRenderedLines(initW, false);
+
+            // 测量 maxW 下的行数（判定可解性）
+            var maxWLines:Number = TooltipBridge.measureRenderedLines(maxW, false);
+            var solvable:Boolean = (maxWLines >= 0 && maxWLines <= maxL);
+
+            // 调用 balanceWidth
+            var balW:Number = TooltipLayout.balanceWidth(initW, si.desc, maxW);
+
+            // 测量 balancedW 下的行数
+            tf.wordWrap = true;
+            tf.htmlText = si.desc;
+            var balLines:Number = TooltipBridge.measureRenderedLines(balW, false);
+
+            // 统计
+            if (initLines > maxL) overflowBefore++;
+            if (balLines > maxL) overflowAfter++;
+
+            if (solvable) {
+                solvableCount++;
+                if (balLines > maxL) solvableOverflowAfter++;
+            } else {
+                unsolvableCount++;
+            }
+
+            if (initLines > maxL && balLines <= maxL) modeACount++;
+            if (initLines <= maxL && balW < initW) {
+                modeBCount++;
+                totalShrink += (initW - balW);
+            }
+
+            if (initLines > maxLinesBefore) { maxLinesBefore = initLines; worstBefore = si.name; }
+            if (balLines > maxLinesAfter) { maxLinesAfter = balLines; worstAfter = si.name; }
+
+            details.push({
+                name: si.name,
+                initW: Math.round(initW),
+                initL: initLines,
+                balW: Math.round(balW),
+                balL: balLines,
+                maxWL: maxWLines,
+                solvable: solvable
+            });
+        }
+
+        // 按 initLines 降序排序
+        details.sort(function(a, b) { return b.initL - a.initL; });
+
+        // 输出 top 20 明细
+        var showCount:Number = Math.min(n, 20);
+        trace("  Top " + showCount + " by initLines:");
+        trace("  name | initW initL | balW balL | maxWL | solvable | delta");
+        for (var j:Number = 0; j < showCount; j++) {
+            var d:Object = details[j];
+            var delta:Number = d.balW - d.initW;
+            trace("  " + d.name
+                + " | " + d.initW + " " + d.initL
+                + " | " + d.balW + " " + d.balL
+                + " | " + d.maxWL
+                + " | " + (d.solvable ? "Y" : "N")
+                + " | " + (delta >= 0 ? "+" : "") + delta);
+        }
+
+        // 汇总
+        trace("");
+        trace("  === Summary (n=" + n + ") ===");
+        trace("  Overflow before: " + overflowBefore + "/" + n
+            + " (" + Math.round(overflowBefore / n * 100) + "%)");
+        trace("  Overflow after:  " + overflowAfter + "/" + n
+            + " (" + Math.round(overflowAfter / n * 100) + "%)");
+        trace("  Solvable: " + solvableCount + " | Unsolvable: " + unsolvableCount);
+        trace("  Solvable overflow after balance: " + solvableOverflowAfter
+            + " (should be 0)");
+        trace("  ModeA triggered: " + modeACount
+            + " | ModeB triggered: " + modeBCount);
+        if (modeBCount > 0) {
+            trace("  ModeB avg shrink: "
+                + Math.round(totalShrink / modeBCount) + "px");
+        }
+        trace("  Max lines before: " + maxLinesBefore + " (" + worstBefore + ")");
+        trace("  Max lines after:  " + maxLinesAfter + " (" + worstAfter + ")");
     }
 
     private static function phase6_currentVsSqrt():Void {

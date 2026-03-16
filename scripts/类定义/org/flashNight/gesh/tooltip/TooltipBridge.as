@@ -358,6 +358,73 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
     }
 
     // ══════════════════════════════════════════════════════════════
+    // 行数测量（高度约束用）
+    // ══════════════════════════════════════════════════════════════
+
+    private static var _calibrated:Boolean = false;
+    private static var _h1:Number = 0;       // 单行 textHeight 基准
+    private static var _lineGap:Number = 15; // 行间距（h2-h1）
+
+    /**
+     * 运行时校准行高参数。
+     * 使用主文本框测量单行/双行 textHeight，提取 h1 和 lineGap。
+     * 首次调用 measureRenderedLines 时自动触发（lazy init）。
+     */
+    public static function calibrateLineMetrics():Void {
+        var tf:MovieClip = getMainTextBox();
+        if (tf == null) return;
+
+        var savedWordWrap:Boolean = tf.wordWrap;
+        var savedWidth:Number = tf._width;
+        var savedHtml:String = tf.htmlText;
+
+        tf.wordWrap = false;
+        tf._width = 9999;
+        tf.htmlText = "A";
+        _h1 = tf.textHeight;
+        tf.htmlText = "A<BR>B";
+        _lineGap = tf.textHeight - _h1;
+
+        tf.wordWrap = savedWordWrap;
+        tf._width = savedWidth;
+        tf.htmlText = savedHtml;
+
+        _calibrated = true;
+    }
+
+    /**
+     * 测量当前 htmlText 在指定宽度下的渲染行数。
+     *
+     * 前置条件：tf.htmlText 已由调用方赋值。
+     * 本方法只修改 tf._width，不重新赋值 htmlText（避免 DOM thrashing）。
+     *
+     * 公式：round((textHeight - h1) / lineGap) + 1
+     *   1行: (h1-h1)/gap+1 = 1
+     *   N行: ((N-1)*gap)/gap+1 = N
+     *
+     * @param targetWidth 目标 TextField 宽度
+     * @param useIntroBox true=简介文本框，false=主文本框
+     * @return 渲染行数，TextField 不可用或校准失败返回 -1
+     */
+    public static function measureRenderedLines(targetWidth:Number, useIntroBox:Boolean):Number {
+        if (!_calibrated) calibrateLineMetrics();
+        if (_lineGap <= 0) return -1;
+
+        var tf:MovieClip = useIntroBox ? getIntroTextBox() : getMainTextBox();
+        if (tf == null) return -1;
+
+        tf._width = targetWidth;
+        return Math.round((tf.textHeight - _h1) / _lineGap) + 1;
+    }
+
+    /** 重置校准状态（测试用） */
+    public static function resetCalibration():Void {
+        _calibrated = false;
+        _h1 = 0;
+        _lineGap = 15;
+    }
+
+    // ══════════════════════════════════════════════════════════════
     // 私有辅助方法
     // ══════════════════════════════════════════════════════════════
 

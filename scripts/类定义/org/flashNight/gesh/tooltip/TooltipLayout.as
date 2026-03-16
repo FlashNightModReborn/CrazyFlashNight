@@ -132,6 +132,10 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
 
         var sqrtW:Number = Math.sqrt(r * totalScore * TooltipConstants.PIX_PER_UNIT * TooltipConstants.LINE_HEIGHT);
 
+        // P0 安全网：高度下限宽度，避免估算器给出明显不可能压住高度的初值
+        var wFloor:Number = totalScore * TooltipConstants.PIX_PER_UNIT / TooltipConstants.MAX_RENDERED_LINES;
+        if (sqrtW < wFloor) sqrtW = wFloor;
+
         // maxLine 约束：宽度不超过最长行所需像素 + 边距
         if (maxLineScore > 0) {
             var maxLineW:Number = maxLineScore * TooltipConstants.PIX_PER_UNIT + TooltipConstants.LINE_GUTTER;
@@ -149,6 +153,97 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
      */
     public static function estimateMainWidthFromScores(totalScore:Number, maxLineScore:Number, html:String, minW:Number, maxW:Number):Number {
         return estimateMainWidthFromMetrics(totalScore, maxLineScore, StringUtils.htmlLogicalLineCount(html), minW, maxW);
+    }
+
+    /**
+     * 二分搜索宽度平衡（高度约束 + shrink-to-fit）。
+     *
+     * modeA：渲染行 > MAX_RENDERED_LINES 时，在 [initW, maxW] 搜索
+     *        使行数 <= MAX_RENDERED_LINES 的最小宽度。
+     *        极限探针：若 maxW 下仍超标，熔断返回 initW。
+     * modeB：渲染行 <= MAX_RENDERED_LINES 时，O(1) shrink-to-fit
+     *        读取 textWidth 紧缩到实际内容宽度。
+     *
+     * 性能关键：htmlText 全局仅赋值一次，循环内只改 _width。
+     *
+     * @param initW 初始估算宽度
+     * @param html  HTML 内容
+     * @param maxW  宽度上限
+     * @return 优化后的宽度
+     */
+    public static function balanceWidth(initW:Number, html:String, maxW:Number):Number {
+        if (maxW === undefined) maxW = TooltipConstants.MAX_W;
+
+        var tf:MovieClip = TooltipBridge.getMainTextBox();
+        if (tf == null) return initW;
+
+        // 保存状态
+        var savedWordWrap:Boolean = tf.wordWrap;
+        var savedWidth:Number = tf._width;
+        var savedHtml:String = tf.htmlText;
+
+        // ★ htmlText 全局仅赋值一次
+        tf.wordWrap = true;
+        tf.htmlText = html;
+
+        // 测量初始行数
+        var initLines:Number = TooltipBridge.measureRenderedLines(initW, false);
+        if (initLines <= 1 || initLines < 0) {
+            tf.wordWrap = savedWordWrap;
+            tf._width = savedWidth;
+            tf.htmlText = savedHtml;
+            return initW;
+        }
+
+        var result:Number;
+
+        if (initLines > TooltipConstants.MAX_RENDERED_LINES) {
+            // === 极限探针 ===
+            var maxWLines:Number = TooltipBridge.measureRenderedLines(maxW, false);
+            if (maxWLines > TooltipConstants.MAX_RENDERED_LINES) {
+                // 不可解：即使 maxW 也放不下，熔断返回 initW
+                tf.wordWrap = savedWordWrap;
+                tf._width = savedWidth;
+                tf.htmlText = savedHtml;
+                return initW;
+            }
+
+            // === modeA 二分：找 lines <= MAX_RENDERED_LINES 的最小宽度 ===
+            var lo:Number = initW;
+            var hi:Number = maxW;
+            var prevLines:Number = -1;
+            var iter:Number = 0;
+            while (hi - lo > TooltipConstants.BALANCE_PRECISION
+                   && iter < TooltipConstants.BALANCE_MAX_ITER) {
+                var mid:Number = Math.floor((lo + hi) / 2);
+                var midLines:Number = TooltipBridge.measureRenderedLines(mid, false);
+                // 台阶感知早停
+                if (midLines == prevLines && midLines <= TooltipConstants.MAX_RENDERED_LINES) {
+                    hi = mid;
+                    break;
+                }
+                prevLines = midLines;
+                if (midLines <= TooltipConstants.MAX_RENDERED_LINES) {
+                    hi = mid;
+                } else {
+                    lo = mid + 1;
+                }
+                iter++;
+            }
+            result = hi;
+        } else {
+            // === modeB O(1) shrink-to-fit ===
+            tf._width = initW;
+            var tightW:Number = tf.textWidth + 4; // +4 补 TextField 左右 2px 内边距
+            result = Math.max(TooltipConstants.MIN_W, Math.min(tightW, initW));
+        }
+
+        // 恢复状态
+        tf.wordWrap = savedWordWrap;
+        tf._width = savedWidth;
+        tf.htmlText = savedHtml;
+
+        return result;
     }
 
     // === 精确测量并 clamp 宽度（优先 TextField 真实测量，降级到双维度估算） ===

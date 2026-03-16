@@ -54,6 +54,14 @@ class org.flashNight.gesh.tooltip.test.TooltipLayoutTest {
         test_estimateMainWidth_maxClamp();
         test_fromMetrics_matches_fromScores();
 
+        // 高度约束测试（balanceWidth + measureRenderedLines）
+        test_measureRenderedLines_basic();
+        test_balanceWidth_modeA();
+        test_balanceWidth_modeA_unsolvable();
+        test_balanceWidth_modeB_shrinkToFit();
+        test_balanceWidth_fallback();
+        test_balanceWidth_pluginHeavy();
+
         trace("--- TooltipLayoutTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
     }
 
@@ -243,5 +251,146 @@ class org.flashNight.gesh.tooltip.test.TooltipLayoutTest {
         var fromScores:Number = TooltipLayout.estimateMainWidthFromScores(scores.total, scores.maxLine, html, undefined, undefined);
         var fromMetrics:Number = TooltipLayout.estimateMainWidthFromMetrics(scores.total, scores.maxLine, scores.lineCount, undefined, undefined);
         assertEq(fromScores, fromMetrics, "fromMetrics matches fromScores");
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // 高度约束测试（balanceWidth + measureRenderedLines）
+    // ══════════════════════════════════════════════════════════════
+
+    private static function test_measureRenderedLines_basic():Void {
+        MockTooltipContainer.install();
+        var tf:Object = TooltipBridge.getMainTextBox();
+        tf.htmlText = "A<BR>B<BR>C";
+        var lines:Number = TooltipBridge.measureRenderedLines(9999, false);
+        assert(lines == 3, "measureRenderedLines: 3-line content → " + lines);
+
+        // 窄宽度应产生更多渲染行（wordWrap 触发）
+        tf.htmlText = "这是一段较长的中文文本用来测试窄宽度下的自动换行行为";
+        var wideLines:Number = TooltipBridge.measureRenderedLines(500, false);
+        var narrowLines:Number = TooltipBridge.measureRenderedLines(100, false);
+        assert(narrowLines > wideLines, "measureRenderedLines: narrow(" + narrowLines + ") > wide(" + wideLines + ")");
+        MockTooltipContainer.teardown();
+    }
+
+    private static function test_balanceWidth_modeA():Void {
+        MockTooltipContainer.install();
+        // 构造可解内容：15 个 <BR> 行 + 每行足够长，使 MIN_W 下 wordWrap 到 40+ 行
+        // 而在 MAX_W=650 下每行不换行（15 行 ≤ 32）
+        var html:String = "";
+        for (var i:Number = 0; i < 15; i++) {
+            html += "这是第" + i + "行较长的内容文本用来测试自动换行行为的效果<BR>";
+        }
+        var initW:Number = TooltipConstants.MIN_W;
+        var balanced:Number = TooltipLayout.balanceWidth(initW, html, TooltipConstants.MAX_W);
+
+        // balanced 应扩宽
+        assert(balanced >= initW, "modeA: balanced(" + Math.round(balanced) + ") >= initW(" + initW + ")");
+
+        // 验证渲染行数 <= MAX_RENDERED_LINES
+        var tf:Object = TooltipBridge.getMainTextBox();
+        tf.wordWrap = true;
+        tf.htmlText = html;
+        var lines:Number = TooltipBridge.measureRenderedLines(balanced, false);
+        assert(lines > 0 && lines <= TooltipConstants.MAX_RENDERED_LINES,
+            "modeA: lines=" + lines + " <= " + TooltipConstants.MAX_RENDERED_LINES);
+        MockTooltipContainer.teardown();
+    }
+
+    private static function test_balanceWidth_modeA_unsolvable():Void {
+        MockTooltipContainer.install();
+        // 构造 >35 个硬换行，即使 MAX_W 也装不下 32 行
+        var html:String = "";
+        for (var i:Number = 0; i < 40; i++) {
+            html += "行" + i + "<BR>";
+        }
+        var initW:Number = 300;
+        var balanced:Number = TooltipLayout.balanceWidth(initW, html, TooltipConstants.MAX_W);
+
+        // 不可解时应熔断返回 initW，不强推到 MAX_W
+        assertEq(initW, balanced, "modeA_unsolvable: 熔断返回 initW=" + initW + " got=" + Math.round(balanced));
+        MockTooltipContainer.teardown();
+    }
+
+    private static function test_balanceWidth_modeB_shrinkToFit():Void {
+        MockTooltipContainer.install();
+        // 3 行均匀内容 + 很宽的初始宽度
+        var html:String = "均匀行内容第一行<BR>均匀行内容第二行<BR>均匀行内容第三行";
+        var initW:Number = 400;
+        var balanced:Number = TooltipLayout.balanceWidth(initW, html, TooltipConstants.MAX_W);
+
+        // balanced 应收窄（shrink-to-fit）
+        assert(balanced <= initW, "modeB: balanced(" + Math.round(balanced) + ") <= initW(" + initW + ")");
+
+        // 行数不应增加
+        var tf:Object = TooltipBridge.getMainTextBox();
+        tf.htmlText = html;
+        var initLines:Number = TooltipBridge.measureRenderedLines(initW, false);
+        var balancedLines:Number = TooltipBridge.measureRenderedLines(balanced, false);
+        assert(balancedLines <= initLines,
+            "modeB: lines preserved (" + balancedLines + " <= " + initLines + ")");
+        MockTooltipContainer.teardown();
+    }
+
+    private static function test_balanceWidth_fallback():Void {
+        // 显式 stub 掉 _root.注释框 使 TextField 不可用
+        var saved = _root.注释框;
+        _root.注释框 = undefined;
+
+        var w:Number = TooltipLayout.balanceWidth(300, "测试内容", TooltipConstants.MAX_W);
+        assertEq(300, w, "balanceWidth fallback: returns initW=" + Math.round(w));
+
+        // 恢复容器 + 重置校准（后续测试会用新的 MockTooltipContainer）
+        _root.注释框 = saved;
+        TooltipBridge.resetCalibration();
+    }
+
+    private static function test_balanceWidth_pluginHeavy():Void {
+        MockTooltipContainer.install();
+        // 模拟插件密集装备：描述 + 10个配件 + 获取方式
+        var html:String = "基础描述文本，这是一段中等长度的武器说明。<BR>";
+        html += "<font color='#FFCC00'>【主动战技】</font>消耗强化石发动毁灭性攻击。<BR>";
+        html += "<font color='#FFCC00'>【战技信息】</font>冷却30秒，消耗100MP。<BR>";
+        html += "<font color='#FFCC00'>已安装10个配件：</font><BR>";
+        for (var i:Number = 0; i < 10; i++) {
+            html += "  • 配件" + i + " <font color='#FFCC00'>[强化效果]</font> (+5%威力, +3%暴击)<BR>";
+        }
+        html += "<font color='#FFCC00'>【获取方式】</font><BR>";
+        html += "<font color='#99CCFF'>合成：</font>高级武器分类 ($50000)<BR>";
+        html += "<font color='#99FF99'>商店：</font>NPC_A、NPC_B、NPC_C<BR>";
+        html += "<font color='#FFFF99'>关卡：</font>1-3、2-5、3-7<BR>";
+        html += "<font color='#FF99CC'>掉落：</font>精英敌人A、精英敌人B<BR>";
+
+        var sc:Object = StringUtils.htmlScoresBoth(html, null);
+        var initW:Number = TooltipLayout.estimateMainWidthFromMetrics(
+            sc.total, sc.maxLine, sc.lineCount, undefined, undefined);
+
+        // balanceWidth 内部会进行完整的行数测量与约束
+        // 如果 modeA 触发：balanced 应扩宽到行数 ≤ 32
+        // 如果 modeB 触发：balanced 应 shrink-to-fit（行数本就 ≤ 32）
+        // 无论哪种，balanced 应在 [MIN_W, MAX_W] 范围内
+        var balanced:Number = TooltipLayout.balanceWidth(initW, html, TooltipConstants.MAX_W);
+
+        assert(balanced >= TooltipConstants.MIN_W,
+            "pluginHeavy: W=" + Math.round(balanced) + " >= MIN_W");
+        assert(balanced <= TooltipConstants.MAX_W,
+            "pluginHeavy: W=" + Math.round(balanced) + " <= MAX_W");
+
+        // 验证 balanceWidth 内部测量有效（通过 showTooltip 模拟验证）
+        // 直接测量行数：在 balanceWidth 返回后，用 showTooltip 的方式验证
+        var tf:Object = TooltipBridge.getMainTextBox();
+        if (tf != null) {
+            tf.wordWrap = true;
+            tf.htmlText = html;
+            tf._width = balanced;
+            var lines:Number = TooltipBridge.measureRenderedLines(balanced, false);
+            assert(lines > 0 && lines <= TooltipConstants.MAX_RENDERED_LINES,
+                "pluginHeavy: lines=" + lines + " <= " + TooltipConstants.MAX_RENDERED_LINES
+                + " (W=" + Math.round(balanced) + ")");
+        } else {
+            // Mock TextField 不可用时，至少验证 balanceWidth 没有崩溃
+            trace("  [WARN] pluginHeavy: tf unavailable after balanceWidth, skipping line count check");
+            assert(balanced == initW, "pluginHeavy: fallback to initW when tf unavailable");
+        }
+        MockTooltipContainer.teardown();
     }
 }

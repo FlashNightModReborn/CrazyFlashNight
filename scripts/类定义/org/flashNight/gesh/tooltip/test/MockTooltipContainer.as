@@ -10,6 +10,7 @@ class org.flashNight.gesh.tooltip.test.MockTooltipContainer {
 
     public static function install():Void {
         _saved = _root.注释框;
+        delete _root.注释框;
         var c:MovieClip = _root.createEmptyMovieClip("注释框", MOCK_DEPTH);
 
         // 子 MC — 深度对齐 XML 资产层级
@@ -38,7 +39,10 @@ class org.flashNight.gesh.tooltip.test.MockTooltipContainer {
 
     public static function teardown():Void {
         _root.注释框.removeMovieClip();
-        if (_saved != undefined) _root.注释框 = _saved;
+        delete _root.注释框;
+        if (_saved != undefined && _saved != null) {
+            _root.注释框 = _saved;
+        }
         _saved = undefined;
     }
 }

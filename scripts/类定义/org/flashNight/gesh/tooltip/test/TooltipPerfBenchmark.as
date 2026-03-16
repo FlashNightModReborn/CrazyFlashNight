@@ -101,6 +101,7 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         bench_htmlScoresBoth_new_vs_scratch();
         bench_shouldSplitSmartWithScores();
         bench_estimateMainWidth();
+        bench_balanceWidth();
         bench_renderItemTooltipSmart();
 
         trace("--- TooltipPerfBenchmark: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
@@ -236,6 +237,33 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         assert(oldW == compatW, "bench mainWidth: compat matches");
         assert(oldW == metricsW, "bench mainWidth: metrics matches");
         assert(metricsMs < 50, "bench fromMetrics: < 50ms for " + N + " iterations");
+    }
+
+    // === balanceWidth 基准 ===
+    private static function bench_balanceWidth():Void {
+        MockTooltipContainer.install();
+
+        var html:String = getLongHtml();
+        var sc:Object = StringUtils.htmlScoresBoth(html, null);
+        var initW:Number = TooltipLayout.estimateMainWidthFromMetrics(
+            sc.total, sc.maxLine, sc.lineCount, undefined, undefined);
+
+        // 预热
+        TooltipLayout.balanceWidth(initW, html, undefined);
+
+        var N:Number = 50;
+        var t0:Number = getTimer();
+        for (var i:Number = 0; i < N; i++) {
+            TooltipLayout.balanceWidth(initW, html, undefined);
+        }
+        var elapsed:Number = getTimer() - t0;
+        trace("  balanceWidth x" + N + " = " + elapsed + "ms (" + (Math.round(elapsed / N * 100) / 100) + " ms/call)");
+
+        // 性能守卫：每次 balanceWidth 应 < 50ms（modeA 最多 8 次 relayout + 极限探针）
+        // 基准机实测 ~21ms/call（含 modeA 二分），开发机约 0.3ms/call（modeB O(1)）
+        assert(elapsed / N < 50, "bench balanceWidth: < 50ms/call (" + (Math.round(elapsed / N * 100) / 100) + "ms)");
+
+        MockTooltipContainer.teardown();
     }
 
     // === 端到端：renderItemTooltipSmart 基准 ===

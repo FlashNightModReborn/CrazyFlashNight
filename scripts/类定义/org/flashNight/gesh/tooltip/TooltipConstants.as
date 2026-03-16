@@ -312,6 +312,11 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var RATIO_MAX:Number = 1.5;           // 长内容目标 W/H 比
   public static var RATIO_SCORE_CAP:Number = 300;     // r 过渡曲线满刻度 totalScore（sweep 第 1 轮确认 300 优于 400）
 
+  // 高度约束参数（balanceWidth 二分搜索 + shrink-to-fit）
+  public static var MAX_RENDERED_LINES:Number = 32;   // 渲染行上限（实测屏幕 33 行，留 1 行余量）
+  public static var BALANCE_MAX_ITER:Number = 8;      // 二分搜索最大迭代次数
+  public static var BALANCE_PRECISION:Number = 2;     // 二分搜索收敛精度（像素）
+
   // ══════════════════════════════════════════════════════════════
   // 属性名称字典 (Property Dictionary)
   // ══════════════════════════════════════════════════════════════

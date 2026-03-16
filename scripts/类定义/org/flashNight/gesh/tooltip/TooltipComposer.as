@@ -295,7 +295,12 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
           splitInfo.descTotal, splitInfo.descMaxLine, splitInfo.descLineCount, undefined, undefined);
       // 屏幕感知上限：确保双栏合计不超出 Stage 宽度（为简介面板保留 BASE_NUM + margin）
       var screenMax:Number = Stage.width - TooltipConstants.BASE_NUM - TooltipConstants.DUAL_PANEL_MARGIN;
-      if (screenMax > TooltipConstants.MIN_W) calculatedWidth = Math.min(calculatedWidth, screenMax);
+      var effectiveMax:Number = (screenMax > TooltipConstants.MIN_W)
+          ? Math.min(TooltipConstants.MAX_W, screenMax)
+          : TooltipConstants.MAX_W;
+      // 高度约束 + 紧缩贴合（modeA 二分 / modeB shrink-to-fit）
+      calculatedWidth = TooltipLayout.balanceWidth(calculatedWidth, descriptionText, effectiveMax);
+      calculatedWidth = Math.min(calculatedWidth, effectiveMax);
       TooltipLayout.showTooltip(calculatedWidth, descriptionText);
       renderItemIcon(true, name, value, introText, null, itemData);
     } else {
