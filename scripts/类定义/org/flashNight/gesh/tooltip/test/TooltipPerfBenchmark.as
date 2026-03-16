@@ -248,19 +248,29 @@ class org.flashNight.gesh.tooltip.test.TooltipPerfBenchmark {
         var initW:Number = TooltipLayout.estimateMainWidthFromMetrics(
             sc.total, sc.maxLine, sc.lineCount, undefined, undefined);
 
+        // 使用与运行时一致的 effectiveMax
+        var screenMax:Number = Stage.width - TooltipConstants.BASE_NUM - TooltipConstants.DUAL_PANEL_MARGIN;
+        var effectiveMax:Number = (screenMax > TooltipConstants.MIN_W)
+            ? Math.min(TooltipConstants.MAX_W, screenMax)
+            : TooltipConstants.MAX_W;
+
         // 预热
-        TooltipLayout.balanceWidth(initW, html, undefined);
+        TooltipLayout.balanceWidth(initW, html, effectiveMax);
 
         var N:Number = 50;
         var t0:Number = getTimer();
         for (var i:Number = 0; i < N; i++) {
-            TooltipLayout.balanceWidth(initW, html, undefined);
+            TooltipLayout.balanceWidth(initW, html, effectiveMax);
         }
         var elapsed:Number = getTimer() - t0;
         trace("  balanceWidth x" + N + " = " + elapsed + "ms (" + (Math.round(elapsed / N * 100) / 100) + " ms/call)");
 
-        // 性能守卫：每次 balanceWidth 应 < 50ms（modeA 最多 8 次 relayout + 极限探针）
-        // 基准机实测 ~21ms/call（含 modeA 二分），开发机约 0.3ms/call（modeB O(1)）
+        // 性能守卫：每次 balanceWidth 应 < 50ms
+        //
+        // getLongHtml() 含 43 个 <BR> 硬换行 → 必走不可解熔断路径（2 次 relayout）。
+        // 主要耗时来自 htmlText 赋值触发 Flash 样式树重建（含大量 <font> 标签），
+        // 而非二分搜索本身。实际游戏物品通常 15-26 行，走 modeB O(1) 快路径。
+        // 基准机（9代i7）实测 ~22ms/call，开发机（13代i9）按 CPU 差距预估 ~12ms/call。
         assert(elapsed / N < 50, "bench balanceWidth: < 50ms/call (" + (Math.round(elapsed / N * 100) / 100) + "ms)");
 
         MockTooltipContainer.teardown();

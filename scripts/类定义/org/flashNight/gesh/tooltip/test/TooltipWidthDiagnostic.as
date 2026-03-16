@@ -664,13 +664,20 @@ class org.flashNight.gesh.tooltip.test.TooltipWidthDiagnostic {
         if (n == 0) { trace("  No split items!"); return; }
 
         var maxL:Number = TooltipConstants.MAX_RENDERED_LINES;
-        var maxW:Number = TooltipConstants.MAX_W;
+
+        // 使用与运行时一致的 effectiveMax（对齐 TooltipComposer.renderItemTooltipSmart）
+        var screenMax:Number = Stage.width - TooltipConstants.BASE_NUM - TooltipConstants.DUAL_PANEL_MARGIN;
+        var effectiveMax:Number = (screenMax > TooltipConstants.MIN_W)
+            ? Math.min(TooltipConstants.MAX_W, screenMax)
+            : TooltipConstants.MAX_W;
+        trace("  effectiveMax=" + effectiveMax + " (Stage.width=" + Stage.width
+            + " screenMax=" + screenMax + " MAX_W=" + TooltipConstants.MAX_W + ")");
 
         // 统计变量
         var overflowBefore:Number = 0;  // initW 下超 32 行的数量
         var overflowAfter:Number = 0;   // balancedW 下超 32 行的数量
-        var solvableCount:Number = 0;   // 可解（maxW 下 ≤32 行）
-        var unsolvableCount:Number = 0; // 不可解（maxW 下仍 >32 行）
+        var solvableCount:Number = 0;   // 可解（effectiveMax 下 ≤32 行）
+        var unsolvableCount:Number = 0; // 不可解（effectiveMax 下仍 >32 行）
         var solvableOverflowAfter:Number = 0; // 可解但 balance 后仍溢出（应为 0）
         var modeACount:Number = 0;      // modeA 触发次数
         var modeBCount:Number = 0;      // modeB 触发次数
@@ -695,12 +702,12 @@ class org.flashNight.gesh.tooltip.test.TooltipWidthDiagnostic {
             // 测量 initW 下的行数
             var initLines:Number = TooltipBridge.measureRenderedLines(initW, false);
 
-            // 测量 maxW 下的行数（判定可解性）
-            var maxWLines:Number = TooltipBridge.measureRenderedLines(maxW, false);
+            // 测量 effectiveMax 下的行数（判定可解性，对齐运行时上限）
+            var maxWLines:Number = TooltipBridge.measureRenderedLines(effectiveMax, false);
             var solvable:Boolean = (maxWLines >= 0 && maxWLines <= maxL);
 
             // 调用 balanceWidth
-            var balW:Number = TooltipLayout.balanceWidth(initW, si.desc, maxW);
+            var balW:Number = TooltipLayout.balanceWidth(initW, si.desc, effectiveMax);
 
             // 测量 balancedW 下的行数
             tf.wordWrap = true;

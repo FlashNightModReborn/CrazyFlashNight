@@ -174,6 +174,11 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
     public static function balanceWidth(initW:Number, html:String, maxW:Number):Number {
         if (maxW === undefined) maxW = TooltipConstants.MAX_W;
 
+        // ★ 入口钳制：确保所有测量在真实渲染宽度范围内
+        // 防止 initW > maxW 时 modeB 在过宽的宽度上判定"行数合规"，
+        // 但最终被调用方裁到 maxW 后行数重新溢出
+        if (initW > maxW) initW = maxW;
+
         var tf:MovieClip = TooltipBridge.getMainTextBox();
         if (tf == null) return initW;
 
@@ -186,7 +191,7 @@ class org.flashNight.gesh.tooltip.TooltipLayout {
         tf.wordWrap = true;
         tf.htmlText = html;
 
-        // 测量初始行数
+        // 测量初始行数（在钳制后的 initW 下）
         var initLines:Number = TooltipBridge.measureRenderedLines(initW, false);
         if (initLines <= 1 || initLines < 0) {
             tf.wordWrap = savedWordWrap;

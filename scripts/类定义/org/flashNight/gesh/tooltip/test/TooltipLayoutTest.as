@@ -59,6 +59,7 @@ class org.flashNight.gesh.tooltip.test.TooltipLayoutTest {
         test_balanceWidth_modeA();
         test_balanceWidth_modeA_unsolvable();
         test_balanceWidth_modeB_shrinkToFit();
+        test_balanceWidth_initW_exceeds_maxW();
         test_balanceWidth_fallback();
         test_balanceWidth_pluginHeavy();
 
@@ -328,6 +329,45 @@ class org.flashNight.gesh.tooltip.test.TooltipLayoutTest {
         var balancedLines:Number = TooltipBridge.measureRenderedLines(balanced, false);
         assert(balancedLines <= initLines,
             "modeB: lines preserved (" + balancedLines + " <= " + initLines + ")");
+        MockTooltipContainer.teardown();
+    }
+
+    // initW > maxW 时，balanceWidth 必须在 maxW 范围内保证行数合规
+    // 关键回归：initW 下 ≤32 行但 maxW 下可能 >32 行
+    private static function test_balanceWidth_initW_exceeds_maxW():Void {
+        MockTooltipContainer.install();
+        // 构造内容：在宽宽度下行数合规，在窄宽度下可能溢出
+        var html:String = "";
+        for (var i:Number = 0; i < 20; i++) {
+            html += "这是第" + i + "行有一定长度的内容文本用来测试宽度约束<BR>";
+        }
+        // 模拟 initW > maxW 的场景（如窄分辨率下 effectiveMax 较小）
+        var narrowMax:Number = 200;
+        var wideInitW:Number = 500;
+
+        var balanced:Number = TooltipLayout.balanceWidth(wideInitW, html, narrowMax);
+
+        // balanced 不应超过 narrowMax
+        assert(balanced <= narrowMax,
+            "initW>maxW: balanced(" + Math.round(balanced) + ") <= maxW(" + narrowMax + ")");
+
+        // 在 balanced 宽度下测量真实行数
+        var tf:Object = TooltipBridge.getMainTextBox();
+        tf.wordWrap = true;
+        tf.htmlText = html;
+        var lines:Number = TooltipBridge.measureRenderedLines(balanced, false);
+
+        // 如果可解（narrowMax 下 ≤32 行），balanced 下也应 ≤32
+        var maxWLines:Number = TooltipBridge.measureRenderedLines(narrowMax, false);
+        if (maxWLines > 0 && maxWLines <= TooltipConstants.MAX_RENDERED_LINES) {
+            assert(lines > 0 && lines <= TooltipConstants.MAX_RENDERED_LINES,
+                "initW>maxW solvable: lines=" + lines + " <= " + TooltipConstants.MAX_RENDERED_LINES
+                + " (balanced=" + Math.round(balanced) + " maxW=" + narrowMax + ")");
+        } else {
+            // 不可解：熔断行为，balanced 应 <= narrowMax（已被入口钳制）
+            trace("  [INFO] initW>maxW unsolvable: maxWLines=" + maxWLines
+                + " balanced=" + Math.round(balanced));
+        }
         MockTooltipContainer.teardown();
     }
 
