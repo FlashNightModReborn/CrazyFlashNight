@@ -58,7 +58,9 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         test_CommonStatsBuilder_gun();
         test_GunStatsBuilder();
         test_GunStatsBuilder_fireMode();
+        test_GunStatsBuilder_fireMode_mod_shows_arrow();
         test_GunStatsBuilder_reloadType();
+        test_GunStatsBuilder_reloadType_mod_shows_arrow();
         test_MeleeStatsBuilder();
         test_GrenadeStatsBuilder();
         test_GrenadeStatsBuilder_zeroPower();
@@ -149,12 +151,12 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
     private static function test_GunStatsBuilder_fireMode():Void {
         var bi = MockItemFactory.mockBaseItem();
 
-        // singleshoot=false → 全自动（每次使用新 fixture 避免状态泄漏）
+        // singleshoot=false → 全自动：默认值不显示（R1 信息密度优化）
         var fAuto:Object = MockItemFactory.gun();
         var result:Array = [];
         GunStatsBuilder.build(result, bi, fAuto.item, fAuto.data, null);
         var joined:String = result.join("");
-        assertContains(joined, TooltipConstants.TIP_FIRE_MODE_AUTO, "GunStats auto mode");
+        assertNotContains(joined, TooltipConstants.LBL_FIRE_MODE, "GunStats auto mode hidden");
 
         // singleshoot=true → 半自动
         var fSemi:Object = MockItemFactory.gun();
@@ -168,12 +170,12 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
     private static function test_GunStatsBuilder_reloadType():Void {
         var bi = MockItemFactory.mockBaseItem();
 
-        // reloadType="clip" → 整匣换弹
+        // reloadType="clip" → 整匣换弹：默认值不显示（R1 信息密度优化）
         var fClip:Object = MockItemFactory.gun();
         var result:Array = [];
         GunStatsBuilder.build(result, bi, fClip.item, fClip.data, null);
         var joined:String = result.join("");
-        assertContains(joined, TooltipConstants.TIP_RELOAD_TYPE_MAG, "GunStats mag reload");
+        assertNotContains(joined, TooltipConstants.LBL_RELOAD_TYPE, "GunStats mag reload hidden");
 
         // reloadType="tube" → 逐发装填
         var fTube:Object = MockItemFactory.gun();
@@ -182,6 +184,29 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         GunStatsBuilder.build(result, bi, fTube.item, fTube.data, null);
         joined = result.join("");
         assertContains(joined, TooltipConstants.TIP_RELOAD_TYPE_TUBE, "GunStats tube reload");
+    }
+
+    // R1: 配件修改默认值属性时应显示箭头格式
+    private static function test_GunStatsBuilder_fireMode_mod_shows_arrow():Void {
+        var bi = MockItemFactory.mockBaseItem();
+        var f:Object = MockItemFactory.gun(); // singleshoot=false (全自动)
+        var equipData:Object = {singleshoot: true}; // 配件改为半自动
+        var result:Array = [];
+        GunStatsBuilder.build(result, bi, f.item, f.data, equipData);
+        var joined:String = result.join("");
+        assertContains(joined, TooltipConstants.TIP_FIRE_MODE_SEMI, "GunStats mod auto→semi shows semi");
+        assertContains(joined, TooltipConstants.TIP_FIRE_MODE_AUTO, "GunStats mod auto→semi shows base auto");
+    }
+
+    private static function test_GunStatsBuilder_reloadType_mod_shows_arrow():Void {
+        var bi = MockItemFactory.mockBaseItem();
+        var f:Object = MockItemFactory.gun(); // reloadType="clip" (整匣换弹)
+        var equipData:Object = {reloadType: "tube"}; // 配件改为逐发装填
+        var result:Array = [];
+        GunStatsBuilder.build(result, bi, f.item, f.data, equipData);
+        var joined:String = result.join("");
+        assertContains(joined, TooltipConstants.TIP_RELOAD_TYPE_TUBE, "GunStats mod clip→tube shows tube");
+        assertContains(joined, TooltipConstants.TIP_RELOAD_TYPE_MAG, "GunStats mod clip→tube shows base mag");
     }
 
     // === MeleeStatsBuilder ===

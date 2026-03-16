@@ -362,8 +362,13 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
     // ══════════════════════════════════════════════════════════════
 
     private static var _calibrated:Boolean = false;
-    private static var _h1:Number = 0;       // 单行 textHeight 基准
-    private static var _lineGap:Number = 15; // 行间距（h2-h1）
+    private static var _h1:Number = 0;       // 主文本框单行 textHeight 基准
+    private static var _lineGap:Number = 15; // 主文本框行间距（h2-h1）
+
+    // R3: 简介文本框专用校准参数（字体/leading 可能与主文本框不同）
+    private static var _introCal:Boolean = false;
+    private static var _introH1:Number = 0;
+    private static var _introLineGap:Number = 15;
 
     /**
      * 运行时校准行高参数。
@@ -393,6 +398,32 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
     }
 
     /**
+     * 运行时校准简介文本框行高参数。
+     * 与 calibrateLineMetrics 对称，使用简介文本框测量。
+     */
+    public static function calibrateIntroLineMetrics():Void {
+        var tf:MovieClip = getIntroTextBox();
+        if (tf == null) return;
+
+        var savedWordWrap:Boolean = tf.wordWrap;
+        var savedWidth:Number = tf._width;
+        var savedHtml:String = tf.htmlText;
+
+        tf.wordWrap = false;
+        tf._width = 9999;
+        tf.htmlText = "A";
+        _introH1 = tf.textHeight;
+        tf.htmlText = "A<BR>B";
+        _introLineGap = tf.textHeight - _introH1;
+
+        tf.wordWrap = savedWordWrap;
+        tf._width = savedWidth;
+        tf.htmlText = savedHtml;
+
+        _introCal = true;
+    }
+
+    /**
      * 测量当前 htmlText 在指定宽度下的渲染行数。
      *
      * 前置条件：tf.htmlText 已由调用方赋值。
@@ -407,12 +438,19 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
      * @return 渲染行数，TextField 不可用或校准失败返回 -1
      */
     public static function measureRenderedLines(targetWidth:Number, useIntroBox:Boolean):Number {
+        if (useIntroBox) {
+            // R3: 简介文本框使用独立校准参数
+            if (!_introCal) calibrateIntroLineMetrics();
+            if (_introLineGap <= 0) return -1;
+            var itf:MovieClip = getIntroTextBox();
+            if (itf == null) return -1;
+            itf._width = targetWidth;
+            return Math.round((itf.textHeight - _introH1) / _introLineGap) + 1;
+        }
         if (!_calibrated) calibrateLineMetrics();
         if (_lineGap <= 0) return -1;
-
-        var tf:MovieClip = useIntroBox ? getIntroTextBox() : getMainTextBox();
+        var tf:MovieClip = getMainTextBox();
         if (tf == null) return -1;
-
         tf._width = targetWidth;
         return Math.round((tf.textHeight - _h1) / _lineGap) + 1;
     }
@@ -458,11 +496,14 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
         }
     }
 
-    /** 重置校准状态（测试用） */
+    /** 重置校准状态（测试用，同时重置主框+简介框） */
     public static function resetCalibration():Void {
         _calibrated = false;
         _h1 = 0;
         _lineGap = 15;
+        _introCal = false;
+        _introH1 = 0;
+        _introLineGap = 15;
     }
 
     // ══════════════════════════════════════════════════════════════

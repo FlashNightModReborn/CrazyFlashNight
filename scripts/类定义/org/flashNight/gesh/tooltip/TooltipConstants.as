@@ -316,6 +316,8 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var MAX_RENDERED_LINES:Number = 32;   // 渲染行上限（实测屏幕 33 行，留 1 行余量）
   public static var BALANCE_MAX_ITER:Number = 8;      // 二分搜索最大迭代次数
   public static var BALANCE_PRECISION:Number = 2;     // 二分搜索收敛精度（像素）
+  // R3: 合并模式简介面板最大渲染行数（超出时强制分栏）
+  public static var MERGE_MAX_INTRO_LINES:Number = 20;
 
   // ══════════════════════════════════════════════════════════════
   // 属性名称字典 (Property Dictionary)

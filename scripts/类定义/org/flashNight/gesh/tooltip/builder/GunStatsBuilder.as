@@ -51,11 +51,14 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
         var baseFireMode:String = baseSingleShoot ? TooltipConstants.TIP_FIRE_MODE_SEMI : TooltipConstants.TIP_FIRE_MODE_AUTO;
         var finalFireMode:String = finalSingleShoot ? TooltipConstants.TIP_FIRE_MODE_SEMI : TooltipConstants.TIP_FIRE_MODE_AUTO;
 
-        if (equipData && finalSingleShoot != baseSingleShoot) {
-            // 插件修改了射击模式，使用箭头形式显示变化
-            result.push(TooltipConstants.LBL_FIRE_MODE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalFireMode, "</FONT> (←", baseFireMode, ")<BR>");
-        } else {
-            result.push(TooltipConstants.LBL_FIRE_MODE, "：", finalFireMode, "<BR>");
+        // R1: 仅在非默认值（半自动）或配件修改时显示
+        if (baseSingleShoot || (equipData && equipData.singleshoot != undefined && finalSingleShoot != baseSingleShoot)) {
+            if (equipData && finalSingleShoot != baseSingleShoot) {
+                // 插件修改了射击模式，使用箭头形式显示变化
+                result.push(TooltipConstants.LBL_FIRE_MODE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalFireMode, "</FONT> (←", baseFireMode, ")<BR>");
+            } else {
+                result.push(TooltipConstants.LBL_FIRE_MODE, "：", finalFireMode, "<BR>");
+            }
         }
 
         // 1.6 装填形式显示（整匣换弹/逐发装填，支持插件修改显示）
@@ -70,11 +73,15 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
         var baseReloadDisplay:String = (baseReloadType == "tube") ? TooltipConstants.TIP_RELOAD_TYPE_TUBE : TooltipConstants.TIP_RELOAD_TYPE_MAG;
         var finalReloadDisplay:String = (finalReloadType == "tube") ? TooltipConstants.TIP_RELOAD_TYPE_TUBE : TooltipConstants.TIP_RELOAD_TYPE_MAG;
 
-        if (equipData && finalReloadType != baseReloadType) {
-            // 插件修改了装填形式，使用箭头形式显示变化
-            result.push(TooltipConstants.LBL_RELOAD_TYPE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalReloadDisplay, "</FONT> (←", baseReloadDisplay, ")<BR>");
-        } else {
-            result.push(TooltipConstants.LBL_RELOAD_TYPE, "：", finalReloadDisplay, "<BR>");
+        // R1: 仅在非默认值（逐发装填）或配件修改时显示
+        var baseIsTube:Boolean = (baseReloadType == "tube");
+        if (baseIsTube || (equipData && equipData.reloadType != undefined && finalReloadType != baseReloadType)) {
+            if (equipData && finalReloadType != baseReloadType) {
+                // 插件修改了装填形式，使用箭头形式显示变化
+                result.push(TooltipConstants.LBL_RELOAD_TYPE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalReloadDisplay, "</FONT> (←", baseReloadDisplay, ")<BR>");
+            } else {
+                result.push(TooltipConstants.LBL_RELOAD_TYPE, "：", finalReloadDisplay, "<BR>");
+            }
         }
 
         // 2. 子弹类型显示（支持重命名，显示插件修改贡献）

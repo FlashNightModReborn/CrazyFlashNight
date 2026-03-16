@@ -55,6 +55,8 @@ class org.flashNight.gesh.tooltip.test.TooltipIntegrationTest {
         test_renderEnhancementPreview_melee();
         test_renderEnhancementPreview_invalid_level();
         test_renderTierInfoTooltip_renders();
+        test_introPanel_width_fixed_200();
+        test_merge_overflow_forces_split();
 
         trace("--- TooltipIntegrationTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
     }
@@ -236,6 +238,70 @@ class org.flashNight.gesh.tooltip.test.TooltipIntegrationTest {
         TooltipComposer.renderTierInfoTooltip("测试军刀", "测试军刀", "墨冰", tierData, 200);
         var tf = TooltipBridge.getMainTextBox();
         assert(tf.htmlText.length > 0, "renderTierInfoTooltip: main text has content");
+        TooltipLayout.hideTooltip();
+        MockTooltipContainer.teardown();
+    }
+
+    // R2: 简介面板宽度固定为 BASE_NUM=200，即使双栏模式
+    // 验证方式：直接在 renderItemIcon 调用前后检查 applyIntroLayout 的 background._x 锚点
+    private static function test_introPanel_width_fixed_200():Void {
+        MockTooltipContainer.install();
+        // 构造足够长的描述触发分栏
+        var longDesc:String = "";
+        for (var i:Number = 0; i < 30; i++) longDesc += "长描述第" + i + "行<BR>";
+        // 简介面板包含长行（测试旧逻辑下会触发宽度扩展）
+        var intro:String = "<B>超长武器名称</B><BR>武器    手枪<BR>$10000<BR>";
+        intro += "武器类型：狙击步枪<BR>等级限制：50<BR>重量：15kg<BR>";
+        intro += "使用弹夹：能量电池<BR>子弹类型：驻波射线<BR>弹夹容量：6<BR>";
+        intro += "子弹威力：3526<BR>射速：0.7发/秒<BR>冲击力：500<BR>";
+
+        TooltipComposer.renderItemTooltipSmart("测试手枪", {tier: "墨冰", level: 1}, longDesc, intro, null, null);
+
+        // 验证双栏模式
+        var mainBg:MovieClip = TooltipBridge.getMainBackground();
+        assert(mainBg._visible == true, "introPanel_fixed: dual-panel active");
+
+        // 验证 background._x == -BASE_NUM（applyIntroLayout 将 bg 锚到 -w）
+        var introBg:MovieClip = TooltipBridge.getIntroBackground();
+        var expectedX:Number = -TooltipConstants.BASE_NUM;
+        var xDiff:Number = introBg._x - expectedX;
+        if (xDiff < 0) xDiff = -xDiff;
+        assert(xDiff < 2, "introPanel_fixed: introBg._x=" + Math.round(introBg._x) + " ~= " + expectedX);
+
+        TooltipLayout.hideTooltip();
+        MockTooltipContainer.teardown();
+    }
+
+    // R3: 合并后溢出强制分栏
+    // 夹具：intro ~10 行 + desc ~12 行短行 → 合并后 > 20 行
+    // 但评分不触发原有分栏判定（desc 分数低于阈值）
+    private static function test_merge_overflow_forces_split():Void {
+        MockTooltipContainer.install();
+
+        // intro: ~10 行属性（评分适中）
+        var intro:String = "<B>测试武器</B><BR>武器    手枪<BR>$10000<BR>";
+        intro += "等级限制：39<BR>重量：10kg<BR>使用弹夹：电池<BR>";
+        intro += "子弹类型：普通<BR>弹夹容量：12<BR>子弹威力：80<BR>";
+        intro += "射速：5发/秒<BR>";
+
+        // desc: 短行内容（每行 ~4 字，评分低）
+        // 确保 descTotal < SPLIT_THRESHOLD/2 = 48
+        var desc:String = "";
+        for (var i:Number = 0; i < 12; i++) {
+            desc += "行" + i + "<BR>";
+        }
+
+        // 前置断言：评分判定应为 merge
+        var splitInfo:Object = TooltipLayout.shouldSplitSmartWithScores(desc, intro, null, null);
+        assert(splitInfo.needSplit == false, "merge_overflow: score-based needSplit=false (descTotal=" + splitInfo.descTotal + ")");
+
+        // 渲染
+        TooltipComposer.renderItemTooltipSmart("测试手枪", {tier: null, level: 1}, desc, intro, null, null);
+
+        // 核心断言：主框体可见 = 溢出 fallback 将 desc 分到主框
+        var mainBg:MovieClip = TooltipBridge.getMainBackground();
+        assert(mainBg._visible == true, "merge_overflow: forced split (mainBg visible)");
+
         TooltipLayout.hideTooltip();
         MockTooltipContainer.teardown();
     }

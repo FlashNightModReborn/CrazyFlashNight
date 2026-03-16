@@ -35,6 +35,7 @@ class org.flashNight.gesh.tooltip.test.TooltipBridgeTest {
         test_getSynthesisData_null_safe();
         test_getEnemyDisplayName_fallback();
         test_debugLog_null_safe();
+        test_measureRenderedLines_intro_basic();
         test_teardown();
 
         trace("--- TooltipBridgeTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
@@ -228,6 +229,17 @@ class org.flashNight.gesh.tooltip.test.TooltipBridgeTest {
         TooltipBridge.debugLog("测试消息");
         assert(true, "debugLog null safe: no crash");
         _root.服务器 = saved;
+    }
+
+    // R3 前置：简介文本框行高校准后的行数测量
+    private static function test_measureRenderedLines_intro_basic():Void {
+        MockTooltipContainer.install();
+        TooltipBridge.resetCalibration();
+        var itf = TooltipBridge.getIntroTextBox();
+        itf.htmlText = "A<BR>B<BR>C";
+        var lines:Number = TooltipBridge.measureRenderedLines(9999, true);
+        assert(lines == 3, "measureRenderedLines intro: 3-line content → " + lines);
+        MockTooltipContainer.teardown();
     }
 
     private static function test_teardown():Void {

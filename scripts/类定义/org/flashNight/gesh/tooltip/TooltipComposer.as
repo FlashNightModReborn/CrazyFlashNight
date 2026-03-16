@@ -238,26 +238,9 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       var introduction:String = introString ? introString : "";
       if (extraString) introduction += "<BR>" + extraString;
 
-      // ② / ③ 计算简介面板宽度（双栏自适应 vs 单栏固定）
-      var mainBg:MovieClip = TooltipBridge.getMainBackground();
-      var measuredIntroW:Number;
-      if (mainBg && mainBg._visible) {
-        // 双栏模式：测量最长行宽度（确保武器属性行不折行），受 INTRO_MAX_W 限制
-        measuredIntroW = TooltipLayout.measureOrEstimateWidth(
-            introduction, true,
-            TooltipConstants.BASE_NUM,
-            TooltipConstants.INTRO_MAX_W
-        );
-        // 预算约束：防止简介+主框合计超出屏幕
-        var mainW:Number  = mainBg._width;
-        var budget:Number = Stage.width - TooltipConstants.DUAL_PANEL_MARGIN;
-        if (measuredIntroW + mainW > budget) {
-          measuredIntroW = Math.max(TooltipConstants.BASE_NUM, budget - mainW);
-        }
-      } else {
-        // 单栏模式（无主框）：固定 BASE_NUM 宽度，不随内容自适应
-        measuredIntroW = TooltipConstants.BASE_NUM;
-      }
+      // ② R2: 简介面板始终使用固定宽度，不随内容自适应
+      // 避免图标左移导致的视觉断裂；换行损失由条目压缩（R1）补偿
+      var measuredIntroW:Number = TooltipConstants.BASE_NUM;
 
       // ④ 以计算好的宽度应用布局并渲染（applyIntroLayout 内部以此锚定 _x）
       TooltipLayout.renderIconTooltip(true, data.icon, introduction, measuredIntroW, layoutType);
@@ -305,12 +288,44 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       renderItemIcon(true, name, value, introText, null, itemData);
     } else {
       // 短内容策略：合并显示
-      renderItemIcon(true, name, value, introText, descriptionText, itemData);
+      // ★ R3: 溢出检查——intro+desc 合并后若超过行数上限，回退到分栏
+      var mergedForCheck:String = introText;
+      if (descriptionText && descriptionText.length > 0) {
+          mergedForCheck = introText + "<BR>" + descriptionText;
+      }
+      // 先测量 intro 单独行数（判断 split 后是否能解决溢出）
+      TooltipBridge.setTextContent("intro", introText);
+      var introOnlyLines:Number = TooltipBridge.measureRenderedLines(
+          TooltipConstants.BASE_NUM, true);
+      // 再测量合并后行数
+      TooltipBridge.setTextContent("intro", mergedForCheck);
+      var mergedLines:Number = TooltipBridge.measureRenderedLines(
+          TooltipConstants.BASE_NUM, true);
 
-      // 隐藏主框体
-      TooltipBridge.setTextContent("main", "");
-      TooltipBridge.setVisibility("main", false);
-      TooltipBridge.setVisibility("mainBg", false);
+      if (introOnlyLines <= TooltipConstants.MERGE_MAX_INTRO_LINES
+          && mergedLines > TooltipConstants.MERGE_MAX_INTRO_LINES) {
+          // 溢出且 split 能解决：desc 移到主框后 intro 回落到 ≤ 20 行
+          // splitInfo 在第 289 行声明（函数作用域），此处可安全访问
+          var fallbackW:Number = TooltipLayout.estimateMainWidthFromMetrics(
+              splitInfo.descTotal, splitInfo.descMaxLine, splitInfo.descLineCount,
+              undefined, undefined);
+          var screenMax:Number = Stage.width - TooltipConstants.BASE_NUM
+                               - TooltipConstants.DUAL_PANEL_MARGIN;
+          var effectiveMax:Number = (screenMax > TooltipConstants.MIN_W)
+              ? Math.min(TooltipConstants.MAX_W, screenMax)
+              : TooltipConstants.MAX_W;
+          fallbackW = TooltipLayout.balanceWidth(fallbackW, descriptionText, effectiveMax);
+          fallbackW = Math.min(fallbackW, effectiveMax);
+          TooltipLayout.showTooltip(fallbackW, descriptionText);
+          renderItemIcon(true, name, value, introText, null, itemData);
+      } else {
+          // 未溢出或 split 无法解决：正常合并显示
+          renderItemIcon(true, name, value, introText, descriptionText, itemData);
+          // 隐藏主框体
+          TooltipBridge.setTextContent("main", "");
+          TooltipBridge.setVisibility("main", false);
+          TooltipBridge.setVisibility("mainBg", false);
+      }
     }
   }
 
