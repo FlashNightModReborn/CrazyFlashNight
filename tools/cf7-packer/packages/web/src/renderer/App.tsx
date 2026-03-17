@@ -296,7 +296,7 @@ export default function App() {
           </section>
           {hasPreview && (
             <section className="section treemap-inline-section">
-              <TreemapChart files={previewFiles} layers={layerNames} />
+              <TreemapChart files={previewFiles} layers={layerNames} onExcluded={loadPreview} />
             </section>
           )}
         </div>
@@ -315,7 +315,7 @@ export default function App() {
                 onClick={() => setDetailTab("diff")}>⚡ 差异对比</button>
             </div>
             <div className="detail-body">
-              {detailTab === "tree" && hasPreview && <FileTreePanel files={previewFiles} layerFilter={expandedLayer} />}
+              {detailTab === "tree" && hasPreview && <FileTreePanel files={previewFiles} layerFilter={expandedLayer} onExcluded={loadPreview} />}
               {detailTab === "diff" && (
                 <DiffPanel
                   tags={tags}

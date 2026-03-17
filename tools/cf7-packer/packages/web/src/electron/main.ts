@@ -4,9 +4,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { parseDocument, Scalar } from "yaml";
 import { loadConfig, PackerEngine, collect, filterFiles, enrichWithSize, diffFilterResults } from "@cf7-packer/core";
 import type { PackConfig, PackerLogEvent, PackerProgressEvent, DiffResult } from "@cf7-packer/core";
-import type { PackerRunOptions, PackerConfigSummary, PreviewFilesResult, PreviewFilesOptions, DiffOptions, BuildSfxOptions } from "../shared/ipc-types.js";
+import type { PackerRunOptions, PackerConfigSummary, PreviewFilesResult, PreviewFilesOptions, DiffOptions, BuildSfxOptions, ExcludeRequest, ExcludeResult } from "../shared/ipc-types.js";
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 const rendererUrl = process.env.CF7_PACKER_RENDERER_URL;
@@ -16,6 +17,7 @@ const configPath = path.join(toolRoot, "pack.config.yaml");
 
 let mainWindow: BrowserWindow | null = null;
 let engine: PackerEngine | null = null;
+let engineRunning = false;
 
 function findToolRoot(startDir: string): string {
   let dir = path.resolve(startDir);
@@ -129,6 +131,9 @@ function registerIpcHandlers(): void {
   });
 
   ipcMain.handle("cf7-packer:run", async (_event, opts: PackerRunOptions) => {
+    if (engineRunning) throw new Error("打包正在运行中，请等待完成或取消");
+    engineRunning = true;
+
     const config = getConfig();
 
     if (opts.tag) {
@@ -158,6 +163,7 @@ function registerIpcHandlers(): void {
       });
     } finally {
       engine = null;
+      engineRunning = false;
     }
   });
 
@@ -168,12 +174,14 @@ function registerIpcHandlers(): void {
   ipcMain.handle("cf7-packer:open-file", async (_event, relativePath: string) => {
     const config = getConfig();
     const fullPath = path.resolve(config.source.repoRoot, relativePath);
+    if (!fullPath.startsWith(path.resolve(config.source.repoRoot))) return; // 路径穿越防护
     if (fs.existsSync(fullPath)) await shell.openPath(fullPath);
   });
 
   ipcMain.handle("cf7-packer:reveal-file", async (_event, relativePath: string) => {
     const config = getConfig();
     const fullPath = path.resolve(config.source.repoRoot, relativePath);
+    if (!fullPath.startsWith(path.resolve(config.source.repoRoot))) return; // 路径穿越防护
     if (fs.existsSync(fullPath)) shell.showItemInFolder(fullPath);
   });
 
@@ -183,14 +191,23 @@ function registerIpcHandlers(): void {
     const packOutput = opts.packOutput.replace(/\\/g, "/");
 
     // 定位 Git Bash（避免命中 WSL 的 bash）
-    const gitBashCandidates = [
-      "C:\\Program Files\\Git\\usr\\bin\\bash.exe",
-      "C:\\Program Files (x86)\\Git\\usr\\bin\\bash.exe",
-      "C:\\Git\\usr\\bin\\bash.exe"
-    ];
     let bashExe = "bash";
-    for (const candidate of gitBashCandidates) {
-      if (fs.existsSync(candidate)) { bashExe = candidate; break; }
+    // 优先通过 where 查找 Git 安装路径下的 bash
+    try {
+      const whereOutput = execFileSync("where", ["bash.exe"], { encoding: "utf8", timeout: 5000 });
+      const gitBash = whereOutput.trim().split("\n").map((l) => l.trim())
+        .find((l) => l.toLowerCase().includes("git") && !l.toLowerCase().includes("wsl"));
+      if (gitBash && fs.existsSync(gitBash)) bashExe = gitBash;
+    } catch { /* where 失败，回退到硬编码列表 */ }
+    if (bashExe === "bash") {
+      const gitBashCandidates = [
+        "C:\\Program Files\\Git\\usr\\bin\\bash.exe",
+        "C:\\Program Files (x86)\\Git\\usr\\bin\\bash.exe",
+        "C:\\Git\\usr\\bin\\bash.exe"
+      ];
+      for (const candidate of gitBashCandidates) {
+        if (fs.existsSync(candidate)) { bashExe = candidate; break; }
+      }
     }
 
     // 确保 Git 的 coreutils 在 PATH 中
@@ -277,6 +294,127 @@ function registerIpcHandlers(): void {
       }
     }
   });
+
+  ipcMain.handle("cf7-packer:exclude-file", async (_event, req: ExcludeRequest): Promise<ExcludeResult> => {
+    try {
+      const config = getConfig();
+      const filePath = req.filePath.replace(/\\/g, "/");
+
+      // 安全检查：路径不能包含 .. 逃逸
+      if (filePath.includes("..")) {
+        return { success: false, pattern: "", layerName: "", error: "路径包含非法字符" };
+      }
+
+      // 找到匹配的 layer
+      let matchedLayerName = "";
+      let excludePattern = "";
+
+      if (req.layer) {
+        const layer = config.layers.find((l) => l.name === req.layer);
+        if (layer) {
+          matchedLayerName = layer.name;
+          const prefix = (layer.source === "." || layer.source === "./") ? "" : normalizePrefix(layer.source);
+          const relPath = prefix ? filePath.slice(prefix.length) : filePath;
+          excludePattern = req.isDir ? relPath + "/**" : relPath;
+        }
+      }
+
+      if (!matchedLayerName) {
+        for (const layer of config.layers) {
+          const isRoot = layer.source === "." || layer.source === "./";
+          const prefix = isRoot ? "" : normalizePrefix(layer.source);
+          if (!isRoot && !filePath.startsWith(prefix)) continue;
+          matchedLayerName = layer.name;
+          const relPath = prefix ? filePath.slice(prefix.length) : filePath;
+          excludePattern = req.isDir ? relPath + "/**" : relPath;
+          break;
+        }
+      }
+
+      if (!matchedLayerName) {
+        matchedLayerName = "__global__";
+        excludePattern = req.isDir ? filePath + "/**" : filePath;
+      }
+
+      // 构造带引号的 YAML Scalar，保持配置风格一致
+      function quotedScalar(value: string): Scalar {
+        const s = new Scalar(value);
+        s.type = "QUOTE_DOUBLE";
+        return s;
+      }
+
+      // 用 yaml Document API 写入，保留注释
+      const yamlContent = fs.readFileSync(configPath, "utf8");
+      const doc = parseDocument(yamlContent);
+
+      if (matchedLayerName === "__global__") {
+        const globalExclude = doc.get("globalExclude") as any;
+        if (!globalExclude) {
+          doc.set("globalExclude", [excludePattern]);
+        } else {
+          globalExclude.add(quotedScalar(excludePattern));
+        }
+      } else {
+        const docLayers = doc.get("layers") as any;
+        if (docLayers?.items) {
+          for (const layerNode of docLayers.items) {
+            if (layerNode.get("name") === matchedLayerName) {
+              const excludeArr = layerNode.get("exclude") as any;
+              if (!excludeArr) {
+                layerNode.set("exclude", [excludePattern]);
+              } else {
+                excludeArr.add(quotedScalar(excludePattern));
+              }
+              break;
+            }
+          }
+        }
+      }
+
+      fs.writeFileSync(configPath, doc.toString(), "utf8");
+
+      // 发送日志到渲染器
+      const action = req.deleteFromDisk ? "删除并排除" : "排除";
+      sendToRenderer("cf7-packer:log", {
+        layer: matchedLayerName === "__global__" ? "global" : matchedLayerName,
+        level: "info",
+        message: `${action}: ${filePath} → exclude: "${excludePattern}"`
+      } satisfies PackerLogEvent);
+
+      // 如果需要删除文件
+      if (req.deleteFromDisk) {
+        const fullPath = path.resolve(config.source.repoRoot, req.filePath);
+        const realPath = path.resolve(fullPath);
+        const realRepoRoot = path.resolve(config.source.repoRoot);
+        if (!realPath.startsWith(realRepoRoot)) {
+          return { success: false, pattern: excludePattern, layerName: matchedLayerName, error: "路径超出仓库范围" };
+        }
+        if (fs.existsSync(fullPath)) {
+          const stat = fs.statSync(fullPath);
+          fs.rmSync(fullPath, { recursive: true, force: true });
+          sendToRenderer("cf7-packer:log", {
+            layer: matchedLayerName === "__global__" ? "global" : matchedLayerName,
+            level: "warn",
+            message: `已从磁盘删除: ${filePath}${stat.isDirectory() ? " (目录)" : ""}`
+          } satisfies PackerLogEvent);
+        }
+      }
+
+      return { success: true, pattern: excludePattern, layerName: matchedLayerName };
+    } catch (err) {
+      sendToRenderer("cf7-packer:log", {
+        layer: "system", level: "error",
+        message: `排除操作失败: ${String(err)}`
+      } satisfies PackerLogEvent);
+      return { success: false, pattern: "", layerName: "", error: String(err) };
+    }
+  });
+}
+
+function normalizePrefix(source: string): string {
+  let s = source.replace(/\\/g, "/");
+  if (!s.endsWith("/")) s += "/";
+  return s;
 }
 
 app.whenReady().then(() => {

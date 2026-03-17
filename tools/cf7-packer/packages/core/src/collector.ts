@@ -54,7 +54,7 @@ function gitLsTree(repoRoot: string, tag: string, signal?: AbortSignal): Promise
   return new Promise((resolve, reject) => {
     const child = execFile(
       "git",
-      ["ls-tree", "-r", "--name-only", tag],
+      ["ls-tree", "-r", "--name-only", "--", tag],
       { cwd: repoRoot, maxBuffer: 50 * 1024 * 1024, signal },
       (error, stdout) => {
         if (error) {

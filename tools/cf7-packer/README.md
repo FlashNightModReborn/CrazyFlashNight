@@ -4,14 +4,9 @@
 
 ## 快速开始
 
-```bash
-cd tools/cf7-packer
-npm install          # 首次使用
-```
-
 ### GUI（推荐）
 
-首次运行会自动安装依赖、下载 Electron 并构建渲染器。
+首次运行会自动安装依赖、下载 Electron 并构建渲染器，无需手动操作。
 
 | 平台 | 启动方式 |
 |------|---------|
@@ -20,9 +15,20 @@ npm install          # 首次使用
 
 支持 macOS Intel / Apple Silicon (M1+) 和 Linux x64。
 
+GUI 功能：
+- Treemap 可视化查看文件分布，支持逐层下钻
+- 文件树浏览 + 搜索过滤
+- 右键菜单：打开文件 / 在资源管理器中显示 / **排除文件** / **删除并排除**
+- 排除操作会自动写入 `pack.config.yaml` 对应层级的 `exclude` 规则
+- 差异对比：对比任意两个 git tag 的打包结果差异
+- 打包后可一键构建 SFX 自解压安装包
+
 ### CLI
 
 ```bash
+cd tools/cf7-packer
+npm install          # 首次使用（GUI 模式无需手动执行）
+
 # 预览（不复制文件，只统计）
 npm run pack:dry-run
 
@@ -53,17 +59,17 @@ npm run list-tags
 | worktree | 文件系统递归扫描 | 日常打包（包含未提交的新文件） |
 | git-tag | `git ls-tree` | 精确还原历史版本 |
 
-### 层级概览（基于 2.71 分析）
+### 层级概览
 
-| 层级 | 规则 | 2.71 文件数 |
-|------|------|------------|
-| data/ | 全量复制 | 372 |
-| scripts/ | 排除测试/编译工具 | ~1400 |
-| flashswf/ | 只留编译后 .swf + 运行时资源 | ~700 |
-| sounds/ | 排除版权音乐 | 685 |
-| config/ | 全量复制 | 3 |
-| root-files | 指定 .exe/.swf/config.xml 等 | 6 |
-| root-dirs | 字体、教程文件夹 | ~24 |
+| 层级 | 规则 |
+|------|------|
+| data/ | 全量复制（XML 配置） |
+| scripts/ | 仅 asLoader.swf（运行时加载器） |
+| flashswf/ | 编译后 .swf + 运行时资源（排除 XFL 源工程、.fla） |
+| sounds/ | 音效 SWF + BGM（排除版权音乐） |
+| config/ | 全量复制 |
+| root-files | .exe / .swf / config.xml 等根目录文件 |
+| root-dirs | 字体、教程文件夹 |
 
 ## 架构
 

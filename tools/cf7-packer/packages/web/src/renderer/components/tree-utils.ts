@@ -100,7 +100,7 @@ export interface SunburstNode {
   name: string;
   value?: number;
   children?: SunburstNode[];
-  layer?: string;
+  layer?: string | undefined;
 }
 
 export function buildSunburstData(entries: FileEntry[]): SunburstNode {

@@ -39,6 +39,26 @@ export interface BuildSfxOptions {
   unityDataDir?: string | undefined;
 }
 
+export interface ExcludeRequest {
+  /** 相对于 repoRoot 的文件/目录路径 */
+  filePath: string;
+  /** 是否是目录 */
+  isDir: boolean;
+  /** layer hint（文件节点携带，目录可能为空） */
+  layer?: string | undefined;
+  /** 是否同时从磁盘删除 */
+  deleteFromDisk: boolean;
+}
+
+export interface ExcludeResult {
+  success: boolean;
+  /** 添加的排除模式 */
+  pattern: string;
+  /** 添加到哪个 layer（或 "__global__"） */
+  layerName: string;
+  error?: string | undefined;
+}
+
 export interface PackerIpcApi {
   runtime: string;
   loadConfig: () => Promise<PackerConfigSummary>;
@@ -52,6 +72,7 @@ export interface PackerIpcApi {
   revealFile: (relativePath: string) => Promise<void>;
   pickOutputDir: (currentPath?: string) => Promise<{ canceled: boolean; path?: string }>;
   revealOutput: (targetPath: string) => Promise<void>;
+  excludeFile: (req: ExcludeRequest) => Promise<ExcludeResult>;
   onLog: (callback: (event: PackerLogEvent) => void) => () => void;
   onProgress: (callback: (event: PackerProgressEvent) => void) => () => void;
 }

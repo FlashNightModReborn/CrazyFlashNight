@@ -568,6 +568,8 @@ body {
   word-break: break-all;
 }
 .ctx-menu-path:hover { background: transparent; }
+.ctx-menu-danger { color: #e74c3c; }
+.ctx-menu-danger:hover { background: #c0392b; color: #fff; }
 .ctx-menu-divider {
   height: 1px;
   background: #334;

@@ -1,10 +1,11 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import type { FileEntry } from "../../shared/ipc-types.js";
+import type { FileEntry, ExcludeRequest } from "../../shared/ipc-types.js";
 import { buildTree, formatSize, type TreeNode } from "./tree-utils.js";
 
 interface Props {
   files: FileEntry[];
   layerFilter: string | null;
+  onExcluded?: () => void;
 }
 
 interface ContextMenu {
@@ -13,12 +14,12 @@ interface ContextMenu {
   node: TreeNode;
 }
 
-export default function FileTreePanel({ files, layerFilter }: Props) {
+export default function FileTreePanel({ files, layerFilter, onExcluded }: Props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // 防抖搜索
   useEffect(() => {
@@ -71,6 +72,27 @@ export default function FileTreePanel({ files, layerFilter }: Props) {
     setContextMenu(null);
   }, [contextMenu]);
 
+  const doExclude = useCallback(async (deleteFromDisk: boolean) => {
+    if (!contextMenu) return;
+    const api = window.cf7Packer;
+    if (!api) return;
+    const node = contextMenu.node;
+    const req: ExcludeRequest = {
+      filePath: node.fullPath,
+      isDir: node.isDir,
+      layer: node.layer,
+      deleteFromDisk
+    };
+    setContextMenu(null);
+    const result = await api.excludeFile(req);
+    if (result.success) {
+      onExcluded?.();
+    }
+  }, [contextMenu, onExcluded]);
+
+  const handleExclude = useCallback(() => { void doExclude(false); }, [doExclude]);
+  const handleDeleteAndExclude = useCallback(() => { void doExclude(true); }, [doExclude]);
+
   const totalFiles = layerFilter ? files.filter((f) => f.layer === layerFilter).length : files.length;
 
   return (
@@ -120,6 +142,13 @@ export default function FileTreePanel({ files, layerFilter }: Props) {
           </div>
           <div className="ctx-menu-item" onClick={handleReveal}>
             📁 在资源管理器中显示
+          </div>
+          <div className="ctx-menu-divider" />
+          <div className="ctx-menu-item" onClick={handleExclude}>
+            🚫 {contextMenu.node.isDir ? "排除此文件夹" : "排除此文件"}
+          </div>
+          <div className="ctx-menu-item ctx-menu-danger" onClick={handleDeleteAndExclude}>
+            🗑️ 删除并排除
           </div>
           <div className="ctx-menu-divider" />
           <div className="ctx-menu-item ctx-menu-path">{contextMenu.node.fullPath}</div>
