@@ -42,6 +42,9 @@ export class PackerEngine extends EventEmitter<PackerEngineEvents> {
 
   /** 全流水线运行 */
   async run(opts: Omit<PackerOptions, "signal">): Promise<PackResult> {
+    if (this.running) {
+      throw new Error("PackerEngine 正在运行中，请等待完成或 cancel() 后再调用 run()");
+    }
     this.abortController = new AbortController();
     const { signal } = this.abortController;
 

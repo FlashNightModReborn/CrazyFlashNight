@@ -13,6 +13,9 @@ source:
 output:
   dir: "./output/{version}"
   clean: true
+  minify:
+    enabled: true
+    extensions: [".json", ".xml"]
 
 layers:
   - name: data
@@ -22,28 +25,11 @@ layers:
     exclude: []
 
   - name: scripts
-    description: "AS2 脚本"
+    description: "运行时脚本（仅 asLoader，源码不打包）"
     source: "scripts/"
-    include: ["**/*"]
-    exclude:
-      - "TestLoader/**"
-      - "TestLoader.as"
-      - "TestLoader.swf"
-      - "tools/**"
-      - "compile_*"
-      - "FlashCS6自动化编译.md"
-      - "capture_screenshot.ps1"
-      - "macros/**"
-      - "run_test.bat"
-      - "setup_compile_env.*"
-      - "setup_flash_debug.bat"
-      - "test.fla"
-      - "test.swf"
-      - "test_*.jsfl"
-      - "trigger_compile.ps1"
-      - "view_flashlog.bat"
-      - "**/*Test.as"
-      - "**/*Test.swf"
+    include:
+      - "asLoader.swf"
+    exclude: []
 
   - name: flashswf
     description: "编译后的 SWF 与运行时资源（排除 XFL 源工程）"
@@ -79,9 +65,15 @@ layers:
       - "**/*.fla"
 
   - name: sounds
-    description: "音效与音乐"
+    description: "音效 SWF + DOMDocument 元数据 + BGM 音乐"
     source: "sounds/"
-    include: ["**/*"]
+    include:
+      # 运行时音效（SWF 内嵌音频，DOMDocument 提供 linkageIdentifier 映射）
+      - "*.swf"
+      - "*/DOMDocument.xml"
+      # BGM 配置与音乐文件
+      - "bgm_list.xml"
+      - "**/*.mp3"
     exclude:
       - "阿卡music/**"
 
@@ -95,10 +87,12 @@ layers:
     description: "根目录可执行文件与配置"
     source: "."
     include:
+      - "CRAZYFLASHER7MercenaryEmpire.bat"
       - "CRAZYFLASHER7MercenaryEmpire.exe"
       - "CRAZYFLASHER7MercenaryEmpire.swf"
       - "Adobe Flash Player 20.exe"
       - "config.xml"
+      - "config.toml"
       - "LICENSE"
       - "README.md"
     exclude: []

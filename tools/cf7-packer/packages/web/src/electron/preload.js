@@ -6,8 +6,13 @@ contextBridge.exposeInMainWorld("cf7Packer", {
 
   loadConfig: () => ipcRenderer.invoke("cf7-packer:load-config"),
   getTags: () => ipcRenderer.invoke("cf7-packer:get-tags"),
+  previewFiles: (opts) => ipcRenderer.invoke("cf7-packer:preview-files", opts),
+  diffFiles: (opts) => ipcRenderer.invoke("cf7-packer:diff-files", opts),
   run: (opts) => ipcRenderer.invoke("cf7-packer:run", opts),
+  buildSfx: (opts) => ipcRenderer.invoke("cf7-packer:build-sfx", opts),
   cancel: () => ipcRenderer.invoke("cf7-packer:cancel"),
+  openFile: (relativePath) => ipcRenderer.invoke("cf7-packer:open-file", relativePath),
+  revealFile: (relativePath) => ipcRenderer.invoke("cf7-packer:reveal-file", relativePath),
   pickOutputDir: (currentPath) => ipcRenderer.invoke("cf7-packer:pick-output-dir", currentPath),
   revealOutput: (targetPath) => ipcRenderer.invoke("cf7-packer:reveal-output", targetPath),
 

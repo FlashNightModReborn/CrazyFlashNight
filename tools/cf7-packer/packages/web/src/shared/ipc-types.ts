@@ -1,4 +1,4 @@
-import type { PackResult, PackerLogEvent, PackerProgressEvent, LayerSummary } from "@cf7-packer/core";
+import type { PackResult, PackerLogEvent, PackerProgressEvent, LayerSummary, FileEntry, DiffResult } from "@cf7-packer/core";
 
 export interface PackerRunOptions {
   dryRun: boolean;
@@ -15,16 +15,45 @@ export interface PackerConfigSummary {
   outputDir: string;
 }
 
+export interface PreviewFilesResult {
+  included: FileEntry[];
+  excluded: FileEntry[];
+  layers: LayerSummary[];
+  unmatchedCount: number;
+}
+
+export interface PreviewFilesOptions {
+  tag?: string | undefined;
+}
+
+export interface DiffOptions {
+  /** baseline tag（null = 当前工作区） */
+  baseTag?: string | null | undefined;
+  /** target tag（null = 当前工作区） */
+  targetTag?: string | null | undefined;
+}
+
+export interface BuildSfxOptions {
+  version: string;
+  packOutput: string;
+  unityDataDir?: string | undefined;
+}
+
 export interface PackerIpcApi {
   runtime: string;
   loadConfig: () => Promise<PackerConfigSummary>;
   getTags: () => Promise<string[]>;
+  previewFiles: (opts?: PreviewFilesOptions) => Promise<PreviewFilesResult>;
+  diffFiles: (opts: DiffOptions) => Promise<DiffResult>;
   run: (opts: PackerRunOptions) => Promise<PackResult>;
+  buildSfx: (opts: BuildSfxOptions) => Promise<{ success: boolean; outputPath?: string; error?: string }>;
   cancel: () => Promise<void>;
+  openFile: (relativePath: string) => Promise<void>;
+  revealFile: (relativePath: string) => Promise<void>;
   pickOutputDir: (currentPath?: string) => Promise<{ canceled: boolean; path?: string }>;
   revealOutput: (targetPath: string) => Promise<void>;
   onLog: (callback: (event: PackerLogEvent) => void) => () => void;
   onProgress: (callback: (event: PackerProgressEvent) => void) => () => void;
 }
 
-export type { PackResult, PackerLogEvent, PackerProgressEvent, LayerSummary };
+export type { PackResult, PackerLogEvent, PackerProgressEvent, LayerSummary, FileEntry, DiffResult };

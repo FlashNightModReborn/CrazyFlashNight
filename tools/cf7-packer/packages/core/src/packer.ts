@@ -1,7 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFile } from "node:child_process";
-import type { FilterResult, PackerOptions, PackResult, LayerSummary, PackConfig } from "./types.js";
+import type { FilterResult, PackerOptions, PackResult, LayerSummary, PackConfig, MinifyConfig } from "./types.js";
+import { minifyByExtension } from "./minify.js";
 
 /**
  * 执行打包：将 filter 结果中的 included 文件复制到输出目录。
@@ -21,6 +22,8 @@ export async function pack(
   const tag = config.source.tag;
 
   const resolvedOutputDir = path.resolve(outputDir);
+  const minify = config.output.minify;
+  const minifyExts = new Set(minify?.enabled ? minify.extensions : []);
 
   if (!dryRun) {
     if (clean && fs.existsSync(resolvedOutputDir)) {
@@ -63,18 +66,35 @@ export async function pack(
 
       if (isGitTag && tag) {
         // 从 git tag 提取文件内容
-        const content = await gitShowFile(repoRoot, tag, entry.path, signal);
+        let content = await gitShowFile(repoRoot, tag, entry.path, signal);
         if (signal?.aborted) {
           cancelled = true;
           break;
+        }
+        const ext = path.extname(entry.path).toLowerCase();
+        if (minifyExts.has(ext)) {
+          const minified = minifyByExtension(content.toString("utf8"), ext);
+          if (minified !== null) content = Buffer.from(minified, "utf8");
         }
         fs.writeFileSync(destPath, content);
         totalSize += content.length;
       } else {
         const srcPath = path.join(repoRoot, entry.path);
-        fs.copyFileSync(srcPath, destPath);
-        const stat = fs.statSync(destPath);
-        totalSize += stat.size;
+        const ext = path.extname(entry.path).toLowerCase();
+        if (minifyExts.has(ext)) {
+          const raw = fs.readFileSync(srcPath, "utf8");
+          const minified = minifyByExtension(raw, ext);
+          if (minified !== null) {
+            fs.writeFileSync(destPath, minified, "utf8");
+            totalSize += Buffer.byteLength(minified, "utf8");
+          } else {
+            fs.copyFileSync(srcPath, destPath);
+            totalSize += fs.statSync(destPath).size;
+          }
+        } else {
+          fs.copyFileSync(srcPath, destPath);
+          totalSize += fs.statSync(destPath).size;
+        }
       }
       copiedFiles++;
     } catch (err) {

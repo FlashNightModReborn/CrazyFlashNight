@@ -10,6 +10,14 @@ export interface LayerRule {
   exclude: string[];
 }
 
+/** 致密化配置 */
+export interface MinifyConfig {
+  /** 是否启用 */
+  enabled: boolean;
+  /** 要致密化的文件后缀（默认 [".json", ".xml"]） */
+  extensions: string[];
+}
+
 /** 打包配置（对应 pack.config.yaml） */
 export interface PackConfig {
   version: number;
@@ -25,6 +33,7 @@ export interface PackConfig {
   output: {
     dir: string;
     clean: boolean;
+    minify?: MinifyConfig | undefined;
   };
   layers: LayerRule[];
   globalExclude: string[];

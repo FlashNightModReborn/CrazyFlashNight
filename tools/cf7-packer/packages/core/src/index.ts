@@ -3,6 +3,7 @@
 export type {
   LayerRule,
   PackConfig,
+  MinifyConfig,
   FileEntry,
   LayerSummary,
   CollectorResult,
@@ -23,3 +24,5 @@ export { collect } from "./collector.js";
 export { pack } from "./packer.js";
 export { PackerEngine } from "./engine.js";
 export { diffFilterResults } from "./diff.js";
+export { enrichWithSize } from "./enrich.js";
+export { minifyJson, minifyXml, minifyByExtension } from "./minify.js";

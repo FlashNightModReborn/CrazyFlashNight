@@ -1,7 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import type { PackerConfigSummary, PackResult, PackerLogEvent, PackerProgressEvent, LayerSummary } from "../shared/ipc-types.js";
+import type {
+  PackerConfigSummary, PackResult, PackerLogEvent,
+  PackerProgressEvent, LayerSummary, FileEntry, DiffResult
+} from "../shared/ipc-types.js";
+import FileTreePanel from "./components/FileTreePanel.js";
+import TreemapChart from "./components/TreemapChart.js";
+import DiffPanel from "./components/DiffPanel.js";
 
 type AppStatus = "idle" | "running" | "cancelled" | "done" | "error";
+type DetailTab = "tree" | "diff";
 
 interface LogEntry {
   id: number;
@@ -25,9 +32,20 @@ export default function App() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [progress, setProgress] = useState<PackerProgressEvent | null>(null);
 
+  // 文件浏览状态
+  const [previewFiles, setPreviewFiles] = useState<FileEntry[]>([]);
+  const [expandedLayer, setExpandedLayer] = useState<string | null>(null);
+  const [detailTab, setDetailTab] = useState<DetailTab>("tree");
+  const [loadingPreview, setLoadingPreview] = useState(false);
+
+  // 打包选项
+  const [buildSfxAfterPack, setBuildSfxAfterPack] = useState(false);
+  const [sfxVersion, setSfxVersion] = useState("");
+  const [unityDataDir, setUnityDataDir] = useState("");
+  const [sfxBuilding, setSfxBuilding] = useState(false);
+
   const logEndRef = useRef<HTMLDivElement>(null);
 
-  // 初始化
   useEffect(() => {
     if (!api) return;
     void api.loadConfig().then((cfg) => {
@@ -40,7 +58,6 @@ export default function App() {
     });
   }, [api]);
 
-  // 订阅日志和进度
   useEffect(() => {
     if (!api) return;
     const offLog = api.onLog((event) => {
@@ -52,10 +69,28 @@ export default function App() {
     return () => { offLog(); offProgress(); };
   }, [api]);
 
-  // 自动滚动日志
   useEffect(() => {
     logEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [logs]);
+
+  const loadPreview = useCallback(async () => {
+    if (!api || loadingPreview) return;
+    setLoadingPreview(true);
+    try {
+      const preview = await api.previewFiles(
+        sourceMode === "git-tag" ? { tag: selectedTag } : undefined
+      );
+      setPreviewFiles(preview.included);
+      setLayers(preview.layers);
+    } catch (err) {
+      setLogs((prev) => [...prev, {
+        id: ++logId,
+        event: { layer: "system", level: "error", message: `预览失败: ${String(err)}` }
+      }]);
+    } finally {
+      setLoadingPreview(false);
+    }
+  }, [api, loadingPreview, sourceMode, selectedTag]);
 
   const runPack = useCallback(async (dryRun: boolean) => {
     if (!api || status === "running") return;
@@ -70,7 +105,6 @@ export default function App() {
         tag: sourceMode === "git-tag" ? selectedTag : undefined,
         outputDir: outputDir || undefined
       });
-
       setResult(packResult);
       setLayers(packResult.layers);
 
@@ -81,6 +115,23 @@ export default function App() {
       } else {
         setStatus("done");
       }
+      // 干跑后自动加载预览
+      if (dryRun && previewFiles.length === 0) {
+        void loadPreview();
+      }
+      // 实际打包后自动构建 SFX
+      if (!dryRun && buildSfxAfterPack && !packResult.cancelled && packResult.errors.length === 0) {
+        setSfxBuilding(true);
+        setLogs((prev) => [...prev, { id: ++logId, event: { layer: "sfx", level: "info", message: "开始构建自解压安装包..." } }]);
+        const ver = sfxVersion || "update";
+        const sfxRes = await api.buildSfx({ version: ver, packOutput: packResult.outputDir, unityDataDir: unityDataDir || undefined });
+        if (sfxRes.success) {
+          setLogs((prev) => [...prev, { id: ++logId, event: { layer: "sfx", level: "info", message: `SFX 构建完成: ${sfxRes.outputPath ?? ""}` } }]);
+        } else {
+          setLogs((prev) => [...prev, { id: ++logId, event: { layer: "sfx", level: "error", message: `SFX 构建失败: ${sfxRes.error ?? ""}` } }]);
+        }
+        setSfxBuilding(false);
+      }
     } catch (err) {
       setLogs((prev) => [...prev, {
         id: ++logId,
@@ -88,24 +139,16 @@ export default function App() {
       }]);
       setStatus("error");
     }
-  }, [api, status, sourceMode, selectedTag, outputDir]);
+  }, [api, status, sourceMode, selectedTag, outputDir, previewFiles.length, loadPreview]);
 
-  const handleCancel = useCallback(() => {
-    api?.cancel();
-  }, [api]);
-
+  const handleCancel = useCallback(() => { api?.cancel(); }, [api]);
   const handleReveal = useCallback(() => {
-    if (result?.outputDir) {
-      void api?.revealOutput(result.outputDir);
-    }
+    if (result?.outputDir) void api?.revealOutput(result.outputDir);
   }, [api, result]);
-
   const handlePickDir = useCallback(async () => {
     if (!api) return;
     const picked = await api.pickOutputDir(outputDir || undefined);
-    if (!picked.canceled && picked.path) {
-      setOutputDir(picked.path);
-    }
+    if (!picked.canceled && picked.path) setOutputDir(picked.path);
   }, [api, outputDir]);
 
   if (!isElectron) {
@@ -119,128 +162,103 @@ export default function App() {
 
   const isRunning = status === "running";
   const progressPercent = progress && progress.total > 0
-    ? Math.round((progress.current / progress.total) * 100)
-    : 0;
+    ? Math.round((progress.current / progress.total) * 100) : 0;
+  const hasPreview = previewFiles.length > 0;
+  const layerNames = layers.map((l) => l.name);
 
   return (
     <div className="app">
-      {/* 标题栏 */}
       <header className="header">
         <h1>CF7 发行打包工具</h1>
         {config && <span className="config-name">{config.name}</span>}
       </header>
 
-      {/* 来源选择 */}
       <section className="section source-section">
         <div className="source-toggle">
           <label>
-            <input
-              type="radio"
-              name="source"
-              checked={sourceMode === "worktree"}
-              onChange={() => setSourceMode("worktree")}
-              disabled={isRunning}
-            />
+            <input type="radio" name="source" checked={sourceMode === "worktree"}
+              onChange={() => setSourceMode("worktree")} disabled={isRunning} />
             工作区
           </label>
           <label>
-            <input
-              type="radio"
-              name="source"
-              checked={sourceMode === "git-tag"}
-              onChange={() => setSourceMode("git-tag")}
-              disabled={isRunning}
-            />
+            <input type="radio" name="source" checked={sourceMode === "git-tag"}
+              onChange={() => setSourceMode("git-tag")} disabled={isRunning} />
             Git 标签
           </label>
           {sourceMode === "git-tag" && (
-            <select
-              value={selectedTag}
-              onChange={(e) => setSelectedTag(e.target.value)}
-              disabled={isRunning}
-            >
-              {tags.map((tag) => (
-                <option key={tag} value={tag}>{tag}</option>
-              ))}
+            <select value={selectedTag} onChange={(e) => setSelectedTag(e.target.value)} disabled={isRunning}>
+              {tags.map((tag) => <option key={tag} value={tag}>{tag}</option>)}
             </select>
           )}
         </div>
         <div className="output-row">
           <label>输出:</label>
-          <input
-            type="text"
-            value={outputDir}
-            onChange={(e) => setOutputDir(e.target.value)}
-            placeholder="./output/{version}"
-            disabled={isRunning}
-          />
+          <input type="text" value={outputDir} onChange={(e) => setOutputDir(e.target.value)}
+            placeholder="./output/{version}" disabled={isRunning} />
           <button onClick={handlePickDir} disabled={isRunning} className="btn-small">浏览</button>
+        </div>
+        <div className="sfx-options-row">
+          <label className="sfx-label">
+            <input type="checkbox" checked={buildSfxAfterPack} onChange={(e) => setBuildSfxAfterPack(e.target.checked)} disabled={isRunning} />
+            打包后自动构建安装包
+          </label>
+          {buildSfxAfterPack && <>
+            <input type="text" value={sfxVersion} onChange={(e) => setSfxVersion(e.target.value)}
+              placeholder="版本号 (如 2.72)" className="sfx-input" disabled={isRunning} />
+            <input type="text" value={unityDataDir} onChange={(e) => setUnityDataDir(e.target.value)}
+              placeholder="Unity _Data 目录 (可选)" className="sfx-input sfx-input-wide" disabled={isRunning} />
+          </>}
         </div>
       </section>
 
-      {/* 层级预览 */}
-      {layers.length > 0 && (
-        <section className="section layer-section">
-          <h2>层级统计</h2>
-          <table className="layer-table">
-            <thead>
-              <tr><th>层级</th><th>文件数</th><th>排除</th></tr>
-            </thead>
-            <tbody>
-              {layers.map((l) => (
-                <tr key={l.name}>
-                  <td>{l.name}</td>
-                  <td className="num">{l.includedCount}</td>
-                  <td className="num excluded">{l.excludedCount > 0 ? l.excludedCount : ""}</td>
-                </tr>
-              ))}
-              <tr className="total-row">
-                <td>合计</td>
-                <td className="num">{layers.reduce((s, l) => s + l.includedCount, 0)}</td>
-                <td className="num excluded">{layers.reduce((s, l) => s + l.excludedCount, 0)}</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      )}
-
-      {/* 操作按钮 */}
       <section className="section action-section">
         <div className="action-buttons">
-          <button
-            onClick={() => void runPack(true)}
-            disabled={isRunning}
-            className="btn btn-preview"
-          >
+          <button onClick={() => void runPack(true)} disabled={isRunning} className="btn btn-preview">
             ▶ 预览（干跑）
           </button>
-          <button
-            onClick={() => void runPack(false)}
-            disabled={isRunning}
-            className="btn btn-execute"
-          >
+          <button onClick={() => void runPack(false)} disabled={isRunning} className="btn btn-execute">
             ▶▶ 执行打包
           </button>
-          {isRunning && (
-            <button onClick={handleCancel} className="btn btn-cancel">
-              ✕ 取消
+          {!hasPreview && !isRunning && (
+            <button onClick={() => void loadPreview()} disabled={loadingPreview} className="btn btn-browse">
+              {loadingPreview ? "加载中..." : "📂 浏览文件"}
             </button>
           )}
+          {isRunning && (
+            <button onClick={handleCancel} className="btn btn-cancel">✕ 取消</button>
+          )}
         </div>
-
-        {/* 进度条 */}
         {isRunning && progress && progress.total > 0 && (
           <div className="progress-bar-container">
             <div className="progress-bar" style={{ width: `${progressPercent}%` }} />
             <span className="progress-text">{progressPercent}% {progress.current}/{progress.total}</span>
           </div>
         )}
-
-        {/* 状态提示 */}
         {status === "done" && result && (
           <div className="status-done">
             打包完成: {result.copiedFiles} 文件, {formatSize(result.totalSize)}, 耗时 {result.duration}ms
             <button onClick={handleReveal} className="btn-small">打开输出目录</button>
+            {!result.cancelled && result.mode === "execute" && (
+              <button
+                className="btn-small"
+                disabled={sfxBuilding}
+                onClick={async () => {
+                  if (!api) return;
+                  setSfxBuilding(true);
+                  setLogs((prev) => [...prev, { id: ++logId, event: { layer: "sfx", level: "info", message: "开始构建自解压安装包..." } }]);
+                  const ver = sfxVersion || "update";
+                  const res = await api.buildSfx({ version: ver, packOutput: result.outputDir, unityDataDir: unityDataDir || undefined });
+                  if (res.success) {
+                    setLogs((prev) => [...prev, { id: ++logId, event: { layer: "sfx", level: "info", message: `SFX 构建完成: ${res.outputPath ?? ""}` } }]);
+                  } else {
+                    setLogs((prev) => [...prev, { id: ++logId, event: { layer: "sfx", level: "error", message: `SFX 构建失败: ${res.error ?? ""}` } }]);
+                  }
+                  setSfxBuilding(false);
+                }}
+              >
+                {sfxBuilding ? "构建中..." : "📦 构建安装包"}
+              </button>
+            )}
           </div>
         )}
         {status === "cancelled" && (
@@ -251,21 +269,75 @@ export default function App() {
         )}
       </section>
 
-      {/* 日志 */}
-      <section className="section log-section">
-        <h2>日志</h2>
-        <div className="log-panel">
-          {logs.map((entry) => (
-            <div
-              key={entry.id}
-              className={`log-line log-${entry.event.level}`}
-            >
-              [{entry.event.level.toUpperCase()}] {entry.event.layer}: {entry.event.message}
-            </div>
-          ))}
-          <div ref={logEndRef} />
+      {layers.length > 0 && (
+        <div className="layer-sunburst-split">
+          <section className="section layer-section">
+            <h2>层级统计 {hasPreview && <span className="layer-hint">（点击行查看详情）</span>}</h2>
+            <table className="layer-table">
+              <thead><tr><th>层级</th><th>文件数</th><th>排除</th></tr></thead>
+              <tbody>
+                {layers.map((l) => (
+                  <tr key={l.name}
+                    className={`${hasPreview ? "layer-clickable" : ""} ${expandedLayer === l.name ? "layer-active" : ""}`}
+                    onClick={() => { if (!hasPreview) return; setExpandedLayer(expandedLayer === l.name ? null : l.name); setDetailTab("tree"); }}>
+                    <td>{l.name}</td>
+                    <td className="num">{l.includedCount}</td>
+                    <td className="num excluded">{l.excludedCount > 0 ? l.excludedCount : ""}</td>
+                  </tr>
+                ))}
+                <tr className={`total-row ${hasPreview ? "layer-clickable" : ""} ${expandedLayer === null && hasPreview ? "layer-active" : ""}`}
+                  onClick={() => { if (hasPreview) { setExpandedLayer(null); setDetailTab("tree"); } }}>
+                  <td>合计</td>
+                  <td className="num">{layers.reduce((s, l) => s + l.includedCount, 0)}</td>
+                  <td className="num excluded">{layers.reduce((s, l) => s + l.excludedCount, 0)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+          {hasPreview && (
+            <section className="section treemap-inline-section">
+              <TreemapChart files={previewFiles} layers={layerNames} />
+            </section>
+          )}
         </div>
-      </section>
+      )}
+
+      {/* 下半区：详情面板（左）+ 日志（右）左右分栏 */}
+      <div className="bottom-split">
+        {(hasPreview || tags.length > 0) && (
+          <section className="section detail-section">
+            <div className="detail-tabs">
+              {hasPreview && (
+                <button className={`detail-tab ${detailTab === "tree" ? "active" : ""}`}
+                  onClick={() => setDetailTab("tree")}>📁 文件树</button>
+              )}
+              <button className={`detail-tab ${detailTab === "diff" ? "active" : ""}`}
+                onClick={() => setDetailTab("diff")}>⚡ 差异对比</button>
+            </div>
+            <div className="detail-body">
+              {detailTab === "tree" && hasPreview && <FileTreePanel files={previewFiles} layerFilter={expandedLayer} />}
+              {detailTab === "diff" && (
+                <DiffPanel
+                  tags={tags}
+                  onDiff={async (baseTag, targetTag) => api!.diffFiles({ baseTag, targetTag })}
+                />
+              )}
+            </div>
+          </section>
+        )}
+
+        <section className="section log-section">
+          <h2>日志</h2>
+          <div className="log-panel">
+            {logs.map((entry) => (
+              <div key={entry.id} className={`log-line log-${entry.event.level}`}>
+                [{entry.event.level.toUpperCase()}] {entry.event.layer}: {entry.event.message}
+              </div>
+            ))}
+            <div ref={logEndRef} />
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

@@ -21,7 +21,11 @@ const packConfigSchema = z.object({
   }),
   output: z.object({
     dir: z.string().min(1),
-    clean: z.boolean().default(true)
+    clean: z.boolean().default(true),
+    minify: z.object({
+      enabled: z.boolean().default(false),
+      extensions: z.array(z.string()).default([".json", ".xml"])
+    }).optional()
   }),
   layers: z.array(layerRuleSchema).min(1),
   globalExclude: z.array(z.string()).default([])

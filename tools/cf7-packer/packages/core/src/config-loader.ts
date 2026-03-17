@@ -27,7 +27,11 @@ function buildConfig(parsed: ReturnType<typeof packConfigSchema.parse>, resolved
     },
     output: {
       dir: parsed.output.dir,
-      clean: parsed.output.clean
+      clean: parsed.output.clean,
+      minify: parsed.output.minify ? {
+        enabled: parsed.output.minify.enabled,
+        extensions: parsed.output.minify.extensions
+      } : undefined
     },
     layers: parsed.layers.map(buildLayerRule),
     globalExclude: parsed.globalExclude

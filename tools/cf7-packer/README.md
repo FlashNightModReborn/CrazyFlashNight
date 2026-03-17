@@ -11,7 +11,14 @@ npm install          # 首次使用
 
 ### GUI（推荐）
 
-双击 `launch.bat`，首次运行会自动下载 Electron 并构建渲染器。
+首次运行会自动安装依赖、下载 Electron 并构建渲染器。
+
+| 平台 | 启动方式 |
+|------|---------|
+| Windows | 双击 `launch.bat` |
+| macOS / Linux | `chmod +x launch.sh && ./launch.sh` |
+
+支持 macOS Intel / Apple Silicon (M1+) 和 Linux x64。
 
 ### CLI
 
