@@ -504,6 +504,20 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/医院电梯处.swf</Background>
         </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>330</x>
+                <y>290</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <掉落物>
+                        <名字>抗生素</名字>
+                        <最小数量>20</最小数量>
+                        <最大数量>30</最大数量>
+                    </掉落物>
+                </Parameters>
+            </Instance>
+        </Instances>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
