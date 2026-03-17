@@ -1,0 +1,120 @@
+# CF7-Packer 打包配置
+# 基于 2.71 整包精确分析得出的规则
+
+version: 1
+meta:
+  name: "闪客快打7重置计划"
+
+source:
+  mode: worktree
+  tag: null
+  repoRoot: "../../"
+
+output:
+  dir: "./output/{version}"
+  clean: true
+
+layers:
+  - name: data
+    description: "游戏数据（XML 配置）"
+    source: "data/"
+    include: ["**/*"]
+    exclude: []
+
+  - name: scripts
+    description: "AS2 脚本"
+    source: "scripts/"
+    include: ["**/*"]
+    exclude:
+      - "TestLoader/**"
+      - "TestLoader.as"
+      - "TestLoader.swf"
+      - "tools/**"
+      - "compile_*"
+      - "FlashCS6自动化编译.md"
+      - "capture_screenshot.ps1"
+      - "macros/**"
+      - "run_test.bat"
+      - "setup_compile_env.*"
+      - "setup_flash_debug.bat"
+      - "test.fla"
+      - "test.swf"
+      - "test_*.jsfl"
+      - "trigger_compile.ps1"
+      - "view_flashlog.bat"
+      - "**/*Test.as"
+      - "**/*Test.swf"
+
+  - name: flashswf
+    description: "编译后的 SWF 与运行时资源（排除 XFL 源工程）"
+    source: "flashswf/"
+    include:
+      - "**/*.swf"
+      - "**/*.png"
+      - "**/*.flv"
+      - "**/*.html"
+      - "portraits/**/*.xml"
+    exclude:
+      # 非运行时目录
+      - "unused/**"
+      - "miniGames/**"
+      - "ComicTool/**"
+      - "Langrage/**"
+      # XFL 项目展开结构（LIBRARY/ 子目录中的 .png 等资源）
+      - "**/LIBRARY/**"
+      - "**/META-INF/**"
+      # arts/ 下只保留 new/ 目录和根级 .swf
+      - "arts/things0/**"
+      - "arts/things1/**"
+      - "arts/things2/**"
+      - "arts/things3/**"
+      - "arts/things4/**"
+      - "arts/things5/**"
+      - "arts/things切割/**"
+      - "arts/renew/**"
+      - "arts/原版素材库-子弹/**"
+      - "arts/新版人物文字信息/**"
+      - "arts/素材库-物品技能图标/**"
+      # 其他排除
+      - "**/*.fla"
+
+  - name: sounds
+    description: "音效与音乐"
+    source: "sounds/"
+    include: ["**/*"]
+    exclude:
+      - "阿卡music/**"
+
+  - name: config
+    description: "运行时配置"
+    source: "config/"
+    include: ["**/*"]
+    exclude: []
+
+  - name: root-files
+    description: "根目录可执行文件与配置"
+    source: "."
+    include:
+      - "CRAZYFLASHER7MercenaryEmpire.exe"
+      - "CRAZYFLASHER7MercenaryEmpire.swf"
+      - "Adobe Flash Player 20.exe"
+      - "config.xml"
+      - "LICENSE"
+      - "README.md"
+    exclude: []
+
+  - name: root-dirs
+    description: "根目录文件夹（字体、教程）"
+    source: "."
+    include:
+      - "闪7重置版字体/**"
+      - "0.说明文件与教程/**"
+    exclude: []
+
+globalExclude:
+  - "**/.DS_Store"
+  - "**/Thumbs.db"
+  - "**/*.bak"
+
+# music/ 不打包（音乐包独立外置），后续需要时加一个 layer 即可
+# externalAssets（Unity 外壳）暂不支持，后续再加

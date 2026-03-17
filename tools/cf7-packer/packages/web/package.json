@@ -1,0 +1,18 @@
+{
+  "name": "@cf7-packer/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.electron.json --pretty false && node -e \"require('fs').copyFileSync('src/electron/preload.js','dist/electron/preload.js')\"",
+    "typecheck": "tsc -p tsconfig.json --pretty false && tsc -p tsconfig.electron.json --pretty false",
+    "dev:renderer": "vite --host 127.0.0.1",
+    "dev:electron": "tsx src/electron/main.ts",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@cf7-packer/core": "0.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

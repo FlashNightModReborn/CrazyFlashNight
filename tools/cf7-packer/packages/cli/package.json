@@ -1,0 +1,19 @@
+{
+  "name": "@cf7-packer/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "cf7-packer": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --pretty false",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@cf7-packer/core": "0.1.0"
+  }
+}
