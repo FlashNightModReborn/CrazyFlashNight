@@ -58,7 +58,10 @@ export class PackerEngine extends EventEmitter<PackerEngineEvents> {
       }
 
       this.log("collector", "info", `枚举完成: ${collected.fileCount} 个文件`);
-      this.emitProgress("collect", collected.fileCount, collected.fileCount);
+      this.emitProgress("collect", collected.fileCount, collected.fileCount, undefined, {
+        label: "枚举文件",
+        detail: `共发现 ${collected.fileCount} 个文件`
+      });
 
       // 2. Filter
       this.log("filter", "info", "开始过滤...");
@@ -79,13 +82,20 @@ export class PackerEngine extends EventEmitter<PackerEngineEvents> {
         this.log("filter", "info", `${filtered.unmatchedCount} 个文件不匹配任何层级`);
       }
 
-      this.emitProgress("filter", filtered.included.length, filtered.included.length);
+      this.emitProgress("filter", filtered.included.length, filtered.included.length, undefined, {
+        label: "过滤规则",
+        detail: `保留 ${filtered.included.length} 个文件`
+      });
 
       // 3. Pack
       const mode = opts.dryRun ? "预览" : "打包";
       this.log("packer", "info", `开始${mode}... 共 ${filtered.included.length} 个文件`);
 
-      const result = await pack(filtered, this.config, { ...opts, signal });
+      const result = await pack(filtered, this.config, {
+        ...opts,
+        signal,
+        onProgress: (event) => this.emit("progress", event)
+      });
 
       if (result.cancelled) {
         this.log("packer", "warn", `用户取消，已完成 ${result.copiedFiles}/${result.totalFiles}`);
@@ -96,8 +106,6 @@ export class PackerEngine extends EventEmitter<PackerEngineEvents> {
       if (result.errors.length > 0) {
         this.log("packer", "error", `${result.errors.length} 个文件处理失败`);
       }
-
-      this.emitProgress("pack", result.copiedFiles, result.totalFiles);
 
       return result;
     } finally {
@@ -132,10 +140,25 @@ export class PackerEngine extends EventEmitter<PackerEngineEvents> {
     this.emit("log", { layer, level, message });
   }
 
-  private emitProgress(phase: PackerProgressEvent["phase"], current: number, total: number, filePath?: string): void {
+  private emitProgress(
+    phase: PackerProgressEvent["phase"],
+    current: number,
+    total: number,
+    filePath?: string,
+    extras?: Omit<PackerProgressEvent, "phase" | "current" | "total" | "path">
+  ): void {
     const event: PackerProgressEvent = { phase, current, total };
     if (filePath !== undefined) {
       event.path = filePath;
+    }
+    if (extras?.label !== undefined) {
+      event.label = extras.label;
+    }
+    if (extras?.detail !== undefined) {
+      event.detail = extras.detail;
+    }
+    if (extras?.etaMs !== undefined) {
+      event.etaMs = extras.etaMs;
     }
     this.emit("progress", event);
   }

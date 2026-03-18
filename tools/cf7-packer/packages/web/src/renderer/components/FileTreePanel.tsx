@@ -5,6 +5,7 @@ import { buildTree, formatSize, type TreeNode } from "./tree-utils.js";
 interface Props {
   files: FileEntry[];
   layerFilter: string | null;
+  focusPath?: string | null;
   onExcluded?: () => void;
 }
 
@@ -14,7 +15,7 @@ interface ContextMenu {
   node: TreeNode;
 }
 
-export default function FileTreePanel({ files, layerFilter, onExcluded }: Props) {
+export default function FileTreePanel({ files, layerFilter, focusPath = null, onExcluded }: Props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
@@ -29,14 +30,22 @@ export default function FileTreePanel({ files, layerFilter, onExcluded }: Props)
   }, [searchQuery]);
 
   // 先按层过滤，再按搜索词过滤
-  const filteredFiles = useMemo(() => {
+  const scopedFiles = useMemo(() => {
     let result = layerFilter ? files.filter((f) => f.layer === layerFilter) : files;
+    if (focusPath) {
+      result = result.filter((f) => isPathWithinScope(f.path, focusPath));
+    }
+    return result;
+  }, [files, focusPath, layerFilter]);
+
+  const filteredFiles = useMemo(() => {
+    let result = scopedFiles;
     if (debouncedQuery.length >= 2) {
       const q = debouncedQuery.toLowerCase();
       result = result.filter((f) => f.path.toLowerCase().includes(q));
     }
     return result;
-  }, [files, layerFilter, debouncedQuery]);
+  }, [debouncedQuery, scopedFiles]);
 
   const tree = useMemo(() => buildTree(filteredFiles), [filteredFiles]);
 
@@ -93,12 +102,13 @@ export default function FileTreePanel({ files, layerFilter, onExcluded }: Props)
   const handleExclude = useCallback(() => { void doExclude(false); }, [doExclude]);
   const handleDeleteAndExclude = useCallback(() => { void doExclude(true); }, [doExclude]);
 
-  const totalFiles = layerFilter ? files.filter((f) => f.layer === layerFilter).length : files.length;
+  const totalFiles = scopedFiles.length;
+  const scopeLabel = focusPath ?? layerFilter ?? "全部";
 
   return (
     <div className="file-tree-panel">
       <div className="file-tree-header">
-        <span>{layerFilter ?? "全部"}</span>
+        <span className="file-tree-scope" title={scopeLabel}>{scopeLabel}</span>
         <div className="file-tree-search">
           <input
             type="text"
@@ -130,6 +140,7 @@ export default function FileTreePanel({ files, layerFilter, onExcluded }: Props)
               onContextMenu={handleContextMenu}
               searchQuery={debouncedQuery}
               defaultExpanded={debouncedQuery.length >= 2}
+              focusPath={focusPath ?? null}
             />
           ))
         )}
@@ -158,22 +169,25 @@ export default function FileTreePanel({ files, layerFilter, onExcluded }: Props)
   );
 }
 
-function TreeNodeView({ node, depth, onContextMenu, searchQuery, defaultExpanded }: {
+function TreeNodeView({ node, depth, onContextMenu, searchQuery, defaultExpanded, focusPath }: {
   node: TreeNode; depth: number;
   onContextMenu: (e: React.MouseEvent, node: TreeNode) => void;
   searchQuery: string;
   defaultExpanded: boolean;
+  focusPath?: string | null;
 }) {
-  const [expanded, setExpanded] = useState(defaultExpanded || depth < 1);
+  const isFocusBranch = Boolean(focusPath) && isPathWithinScope(focusPath!, node.fullPath);
+  const isFocusedNode = Boolean(focusPath) && node.fullPath === focusPath;
+  const [expanded, setExpanded] = useState(defaultExpanded || depth < 1 || isFocusBranch);
 
   // 搜索时自动展开
   useEffect(() => {
-    if (defaultExpanded) setExpanded(true);
-  }, [defaultExpanded]);
+    if (defaultExpanded || isFocusBranch) setExpanded(true);
+  }, [defaultExpanded, isFocusBranch]);
 
   if (!node.isDir) {
     return (
-      <div className="tree-file" style={{ paddingLeft: `${depth * 16 + 20}px` }}
+      <div className={`tree-file ${isFocusedNode ? "tree-focused" : ""}`} style={{ paddingLeft: `${depth * 16 + 20}px` }}
         onContextMenu={(e) => onContextMenu(e, node)}>
         <span className="tree-icon">📄</span>
         <span className="tree-name">
@@ -186,7 +200,7 @@ function TreeNodeView({ node, depth, onContextMenu, searchQuery, defaultExpanded
 
   return (
     <div className="tree-dir-group">
-      <div className="tree-dir" style={{ paddingLeft: `${depth * 16 + 4}px` }}
+      <div className={`tree-dir ${isFocusedNode ? "tree-focused" : ""}`} style={{ paddingLeft: `${depth * 16 + 4}px` }}
         onClick={() => setExpanded(!expanded)}
         onContextMenu={(e) => onContextMenu(e, node)}>
         <span className="tree-toggle">{expanded ? "▼" : "▶"}</span>
@@ -197,7 +211,7 @@ function TreeNodeView({ node, depth, onContextMenu, searchQuery, defaultExpanded
       </div>
       {expanded && node.children.map((child) => (
         <TreeNodeView key={child.fullPath || child.name} node={child} depth={depth + 1}
-          onContextMenu={onContextMenu} searchQuery={searchQuery} defaultExpanded={defaultExpanded} />
+          onContextMenu={onContextMenu} searchQuery={searchQuery} defaultExpanded={defaultExpanded} focusPath={focusPath ?? null} />
       ))}
     </div>
   );
@@ -213,4 +227,8 @@ function highlightMatch(text: string, query: string): React.ReactNode {
       {text.slice(idx + query.length)}
     </>
   );
+}
+
+function isPathWithinScope(path: string, scopePath: string): boolean {
+  return path === scopePath || path.startsWith(`${scopePath}/`);
 }

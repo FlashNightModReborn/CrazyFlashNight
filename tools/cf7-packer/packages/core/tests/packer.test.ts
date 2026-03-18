@@ -111,4 +111,72 @@ describe("packer", () => {
     expect(result.cancelled).toBe(true);
     expect(result.copiedFiles).toBeLessThan(result.totalFiles);
   });
+
+  it("fills estimated layer size in pack result", async () => {
+    const outputDir = path.join(getTempDir(), "output");
+    const filterResult = makeFilterResult(["package.json"]);
+
+    const result = await pack(filterResult, makeConfig(), {
+      dryRun: false,
+      outputDir,
+      clean: true
+    });
+
+    expect(result.layers[0]?.estimatedSize).toBeGreaterThan(0);
+  });
+
+  it("emits staged pack progress with detail updates", async () => {
+    const outputDir = path.join(getTempDir(), "output");
+    const filterResult = makeFilterResult(["package.json", "vitest.config.ts"]);
+    const progressEvents: Array<{ current: number; total: number; label?: string; detail?: string }> = [];
+
+    await pack(filterResult, makeConfig(), {
+      dryRun: false,
+      outputDir,
+      clean: true,
+      onProgress: (event) => {
+        progressEvents.push({
+          current: event.current,
+          total: event.total,
+          label: event.label,
+          detail: event.detail
+        });
+      }
+    });
+
+    expect(progressEvents[0]).toMatchObject({
+      current: 0,
+      total: 2,
+      label: "复制打包文件"
+    });
+    expect(progressEvents.at(-1)).toMatchObject({
+      current: 2,
+      total: 2,
+      detail: "vitest.config.ts"
+    });
+  });
+
+  it.skipIf(process.platform === "win32")("preserves executable bits for worktree files", async () => {
+    const repoRoot = path.join(getTempDir(), "repo");
+    fs.mkdirSync(repoRoot, { recursive: true });
+    const scriptPath = path.join(repoRoot, "run.sh");
+    fs.writeFileSync(scriptPath, "#!/usr/bin/env bash\necho ok\n", "utf8");
+    fs.chmodSync(scriptPath, 0o755);
+
+    const outputDir = path.join(getTempDir(), "output");
+    const config: PackConfig = {
+      ...makeConfig(),
+      source: { mode: "worktree", repoRoot }
+    };
+    const filterResult = makeFilterResult(["run.sh"]);
+
+    await pack(filterResult, config, {
+      dryRun: false,
+      outputDir,
+      clean: true
+    });
+
+    const mode = fs.statSync(path.join(outputDir, "run.sh")).mode & 0o777;
+    expect(mode & 0o111).not.toBe(0);
+  });
 });

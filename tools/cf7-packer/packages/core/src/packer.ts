@@ -1,8 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFile } from "node:child_process";
-import type { FilterResult, PackerOptions, PackResult, LayerSummary, PackConfig, MinifyConfig } from "./types.js";
+import type { FilterResult, PackerOptions, PackResult, LayerSummary, PackConfig } from "./types.js";
 import { minifyByExtension } from "./minify.js";
+import { applyEstimatedSizes } from "./summary.js";
 
 /**
  * 执行打包：将 filter 结果中的 included 文件复制到输出目录。
@@ -16,7 +17,7 @@ export async function pack(
   options: PackerOptions
 ): Promise<PackResult> {
   const startTime = Date.now();
-  const { dryRun, outputDir, clean, signal } = options;
+  const { dryRun, outputDir, clean, signal, onProgress } = options;
   const repoRoot = config.source.repoRoot;
   const isGitTag = config.source.mode === "git-tag";
   const tag = config.source.tag;
@@ -36,6 +37,17 @@ export async function pack(
   let copiedFiles = 0;
   let totalSize = 0;
   let cancelled = false;
+  const packedEntries = new Map<string, number>();
+  const progressLabel = dryRun ? "预览打包内容" : "复制打包文件";
+  let lastProgressEmitAt = 0;
+
+  onProgress?.({
+    phase: "pack",
+    current: 0,
+    total: filterResult.included.length,
+    label: progressLabel,
+    detail: `共 ${filterResult.included.length} 个文件`
+  });
 
   for (const entry of filterResult.included) {
     if (signal?.aborted) {
@@ -49,11 +61,15 @@ export async function pack(
         try {
           const stat = fs.statSync(path.join(repoRoot, entry.path));
           totalSize += stat.size;
+          packedEntries.set(entry.path, stat.size);
         } catch {
           // 文件不可读，跳过大小统计
         }
       }
       copiedFiles++;
+      emitPackProgress(onProgress, progressLabel, startTime, copiedFiles, filterResult.included.length, entry.path, () => lastProgressEmitAt, (value) => {
+        lastProgressEmitAt = value;
+      });
       continue;
     }
 
@@ -78,32 +94,49 @@ export async function pack(
         }
         fs.writeFileSync(destPath, content);
         totalSize += content.length;
+        packedEntries.set(entry.path, content.length);
       } else {
         const srcPath = path.join(repoRoot, entry.path);
         const ext = path.extname(entry.path).toLowerCase();
+        const srcStat = fs.statSync(srcPath);
         if (minifyExts.has(ext)) {
           const raw = fs.readFileSync(srcPath, "utf8");
           const minified = minifyByExtension(raw, ext);
           if (minified !== null) {
             fs.writeFileSync(destPath, minified, "utf8");
+            fs.chmodSync(destPath, srcStat.mode);
             totalSize += Buffer.byteLength(minified, "utf8");
+            packedEntries.set(entry.path, Buffer.byteLength(minified, "utf8"));
           } else {
             fs.copyFileSync(srcPath, destPath);
+            fs.chmodSync(destPath, srcStat.mode);
             totalSize += fs.statSync(destPath).size;
+            packedEntries.set(entry.path, fs.statSync(destPath).size);
           }
         } else {
           fs.copyFileSync(srcPath, destPath);
+          fs.chmodSync(destPath, srcStat.mode);
           totalSize += fs.statSync(destPath).size;
+          packedEntries.set(entry.path, fs.statSync(destPath).size);
         }
       }
       copiedFiles++;
+      emitPackProgress(onProgress, progressLabel, startTime, copiedFiles, filterResult.included.length, entry.path, () => lastProgressEmitAt, (value) => {
+        lastProgressEmitAt = value;
+      });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       errors.push({ path: entry.path, error: message });
     }
   }
 
-  const layers: LayerSummary[] = filterResult.layers.map((l) => ({ ...l }));
+  const layers: LayerSummary[] = applyEstimatedSizes(
+    filterResult.layers.map((l) => ({ ...l })),
+    filterResult.included.map((entry) => ({
+      ...entry,
+      size: packedEntries.get(entry.path)
+    }))
+  );
 
   return {
     mode: dryRun ? "dry-run" : "execute",
@@ -141,5 +174,41 @@ function gitShowFile(repoRoot: string, tag: string, filePath: string, signal?: A
       const onAbort = () => child.kill();
       signal.addEventListener("abort", onAbort, { once: true });
     }
+  });
+}
+
+function estimateProgressEtaMs(startedAtMs: number, completed: number, total: number): number | undefined {
+  if (completed <= 0 || total <= completed) return undefined;
+  const elapsed = Date.now() - startedAtMs;
+  if (elapsed <= 0) return undefined;
+  const avgPerUnit = elapsed / completed;
+  return Math.max(0, Math.round(avgPerUnit * (total - completed)));
+}
+
+function emitPackProgress(
+  onProgress: PackerOptions["onProgress"],
+  label: string,
+  startedAtMs: number,
+  current: number,
+  total: number,
+  path: string,
+  getLastEmitAt: () => number,
+  setLastEmitAt: (value: number) => void
+): void {
+  if (!onProgress) return;
+
+  const now = Date.now();
+  const shouldEmit = current === total || current === 1 || now - getLastEmitAt() >= 80;
+  if (!shouldEmit) return;
+
+  setLastEmitAt(now);
+  onProgress({
+    phase: "pack",
+    current,
+    total,
+    path,
+    label,
+    detail: path,
+    etaMs: estimateProgressEtaMs(startedAtMs, current, total)
   });
 }

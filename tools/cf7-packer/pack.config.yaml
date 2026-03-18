@@ -15,13 +15,13 @@ output:
   clean: true
   minify:
     enabled: true
-    extensions: [".json", ".xml"]
+    extensions: [ ".json", ".xml" ]
 
 layers:
   - name: data
     description: "游戏数据（XML 配置）"
     source: "data/"
-    include: ["**/*"]
+    include: [ "**/*" ]
     exclude: []
 
   - name: scripts
@@ -63,6 +63,7 @@ layers:
       - "arts/素材库-物品技能图标/**"
       # 其他排除
       - "**/*.fla"
+      - "arts/原版素材库-子弹_横向拖尾联弹.swf"
 
   - name: sounds
     description: "音效 SWF + DOMDocument 元数据 + BGM 音乐"
@@ -80,7 +81,7 @@ layers:
   - name: config
     description: "运行时配置"
     source: "config/"
-    include: ["**/*"]
+    include: [ "**/*" ]
     exclude: []
 
   - name: root-files

@@ -4,8 +4,19 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { parseDocument, Scalar } from "yaml";
-import { loadConfig, PackerEngine, collect, filterFiles, enrichWithSize, diffFilterResults } from "@cf7-packer/core";
+import {
+  loadConfig,
+  PackerEngine,
+  collect,
+  filterFiles,
+  enrichWithSize,
+  diffFilterResults,
+  applyEstimatedSizes,
+  applyExcludeMutation,
+  resolveOutputDir,
+  normalizeRepoRelativePath,
+  isPathInsideRoot
+} from "@cf7-packer/core";
 import type { PackConfig, PackerLogEvent, PackerProgressEvent, DiffResult } from "@cf7-packer/core";
 import type { PackerRunOptions, PackerConfigSummary, PreviewFilesResult, PreviewFilesOptions, DiffOptions, BuildSfxOptions, ExcludeRequest, ExcludeResult } from "../shared/ipc-types.js";
 
@@ -105,7 +116,7 @@ function registerIpcHandlers(): void {
     return {
       included: filtered.included,
       excluded: filtered.excluded,
-      layers: filtered.layers,
+      layers: applyEstimatedSizes(filtered.layers, filtered.included),
       unmatchedCount: filtered.unmatchedCount
     };
   });
@@ -142,8 +153,8 @@ function registerIpcHandlers(): void {
     }
 
     const outputDir = opts.outputDir
-      ? path.resolve(opts.outputDir)
-      : path.resolve(toolRoot, config.output.dir);
+      ? resolveOutputDir(config, configPath, opts.outputDir)
+      : resolveOutputDir(config, configPath);
 
     engine = new PackerEngine(config);
 
@@ -173,61 +184,80 @@ function registerIpcHandlers(): void {
 
   ipcMain.handle("cf7-packer:open-file", async (_event, relativePath: string) => {
     const config = getConfig();
-    const fullPath = path.resolve(config.source.repoRoot, relativePath);
-    if (!fullPath.startsWith(path.resolve(config.source.repoRoot))) return; // 路径穿越防护
+    const normalizedPath = normalizeRepoRelativePath(relativePath);
+    const fullPath = path.resolve(config.source.repoRoot, normalizedPath);
+    if (!isPathInsideRoot(config.source.repoRoot, fullPath)) return; // 路径穿越防护
     if (fs.existsSync(fullPath)) await shell.openPath(fullPath);
   });
 
   ipcMain.handle("cf7-packer:reveal-file", async (_event, relativePath: string) => {
     const config = getConfig();
-    const fullPath = path.resolve(config.source.repoRoot, relativePath);
-    if (!fullPath.startsWith(path.resolve(config.source.repoRoot))) return; // 路径穿越防护
+    const normalizedPath = normalizeRepoRelativePath(relativePath);
+    const fullPath = path.resolve(config.source.repoRoot, normalizedPath);
+    if (!isPathInsideRoot(config.source.repoRoot, fullPath)) return; // 路径穿越防护
     if (fs.existsSync(fullPath)) shell.showItemInFolder(fullPath);
   });
 
   ipcMain.handle("cf7-packer:build-sfx", async (_event, opts: BuildSfxOptions) => {
     const { spawn } = await import("node:child_process");
+    const isWindows = process.platform === "win32";
     const sfxScript = path.join(toolRoot, "sfx", "build-sfx.sh").replace(/\\/g, "/");
-    const packOutput = opts.packOutput.replace(/\\/g, "/");
+    const packOutput = isWindows ? opts.packOutput.replace(/\\/g, "/") : opts.packOutput;
 
-    // 定位 Git Bash（避免命中 WSL 的 bash）
+    // Windows 下定位 Git Bash；Unix 直接使用系统 bash。
     let bashExe = "bash";
-    // 优先通过 where 查找 Git 安装路径下的 bash
-    try {
-      const whereOutput = execFileSync("where", ["bash.exe"], { encoding: "utf8", timeout: 5000 });
-      const gitBash = whereOutput.trim().split("\n").map((l) => l.trim())
-        .find((l) => l.toLowerCase().includes("git") && !l.toLowerCase().includes("wsl"));
-      if (gitBash && fs.existsSync(gitBash)) bashExe = gitBash;
-    } catch { /* where 失败，回退到硬编码列表 */ }
-    if (bashExe === "bash") {
-      const gitBashCandidates = [
-        "C:\\Program Files\\Git\\usr\\bin\\bash.exe",
-        "C:\\Program Files (x86)\\Git\\usr\\bin\\bash.exe",
-        "C:\\Git\\usr\\bin\\bash.exe"
-      ];
-      for (const candidate of gitBashCandidates) {
-        if (fs.existsSync(candidate)) { bashExe = candidate; break; }
+    if (isWindows) {
+      try {
+        const whereOutput = execFileSync("where", ["bash.exe"], { encoding: "utf8", timeout: 5000 });
+        const gitBash = whereOutput.trim().split("\n").map((l) => l.trim())
+          .find((l) => l.toLowerCase().includes("git") && !l.toLowerCase().includes("wsl"));
+        if (gitBash && fs.existsSync(gitBash)) bashExe = gitBash;
+      } catch { /* where 失败，回退到硬编码列表 */ }
+      if (bashExe === "bash") {
+        const gitBashCandidates = [
+          "C:\\Program Files\\Git\\usr\\bin\\bash.exe",
+          "C:\\Program Files (x86)\\Git\\usr\\bin\\bash.exe",
+          "C:\\Git\\usr\\bin\\bash.exe"
+        ];
+        for (const candidate of gitBashCandidates) {
+          if (fs.existsSync(candidate)) { bashExe = candidate; break; }
+        }
       }
     }
 
-    // 确保 Git 的 coreutils 在 PATH 中
-    const gitDir = path.dirname(path.dirname(bashExe));
-    const gitBinDirs = [
-      path.join(gitDir, "usr", "bin"),
-      path.join(gitDir, "bin"),
-      path.join(gitDir, "..", "..", "bin")
-    ].filter((d) => fs.existsSync(d)).map((d) => d.replace(/\\/g, "/"));
-    const env = { ...process.env, PATH: gitBinDirs.join(";") + ";" + (process.env.PATH ?? "") };
+    const env = { ...process.env };
+    if (isWindows && bashExe !== "bash") {
+      const gitDir = path.dirname(path.dirname(bashExe));
+      const gitBinDirs = [
+        path.join(gitDir, "usr", "bin"),
+        path.join(gitDir, "bin"),
+        path.join(gitDir, "..", "..", "bin")
+      ].filter((d) => fs.existsSync(d));
+      const existingPath = env.PATH ?? "";
+      env.PATH = [...gitBinDirs, existingPath].filter(Boolean).join(path.delimiter);
+    }
 
     // 通过环境变量传递路径（避免 Windows CreateProcess 吃掉花括号）
     env.CF7_SFX_VERSION = opts.version;
     env.CF7_SFX_PACK_OUTPUT = packOutput;
-    if (opts.unityDataDir) env.CF7_SFX_UNITY_DATA = opts.unityDataDir.replace(/\\/g, "/");
+    if (opts.unityDataDir) {
+      env.CF7_SFX_UNITY_DATA = isWindows ? opts.unityDataDir.replace(/\\/g, "/") : opts.unityDataDir;
+    }
 
     return new Promise<{ success: boolean; outputPath?: string; error?: string }>((resolve) => {
       const child = spawn(bashExe, [sfxScript], { cwd: toolRoot, env });
       let stdout = "";
       let stderr = "";
+      const sfxStartedAt = Date.now();
+      let lastSfxProgress = -1;
+
+      sendToRenderer("cf7-packer:progress", {
+        phase: "sfx",
+        current: 0,
+        total: 100,
+        label: "构建安装包",
+        detail: "准备压缩资源"
+      } satisfies PackerProgressEvent);
 
       child.stdout.on("data", (chunk: Buffer) => {
         const text = chunk.toString("utf8");
@@ -236,10 +266,17 @@ function registerIpcHandlers(): void {
         const pctMatch = text.match(/(\d+)%/);
         if (pctMatch) {
           const pct = parseInt(pctMatch[1]!, 10);
-          sendToRenderer("cf7-packer:log", {
-            layer: "sfx", level: "info",
-            message: `压缩中... ${pct}%`
-          } satisfies PackerLogEvent);
+          if (pct !== lastSfxProgress) {
+            lastSfxProgress = pct;
+            sendToRenderer("cf7-packer:progress", {
+              phase: "sfx",
+              current: pct,
+              total: 100,
+              label: "构建安装包",
+              detail: "7-Zip 压缩中",
+              etaMs: estimateEtaMs(sfxStartedAt, pct, 100)
+            } satisfies PackerProgressEvent);
+          }
         }
         // 转发其他阶段信息
         for (const line of text.split("\n")) {
@@ -259,8 +296,16 @@ function registerIpcHandlers(): void {
         if (code !== 0) {
           resolve({ success: false, error: (stderr || stdout).slice(-500) });
         } else {
+          sendToRenderer("cf7-packer:progress", {
+            phase: "sfx",
+            current: 100,
+            total: 100,
+            label: "构建安装包",
+            detail: "安装包构建完成"
+          } satisfies PackerProgressEvent);
           const match = stdout.match(/构建完成:\s*(\S+)/);
-          resolve({ success: true, outputPath: match?.[1]?.trim() });
+          const outputPath = match?.[1]?.trim();
+          resolve(outputPath ? { success: true, outputPath } : { success: true });
         }
       });
 
@@ -298,109 +343,38 @@ function registerIpcHandlers(): void {
   ipcMain.handle("cf7-packer:exclude-file", async (_event, req: ExcludeRequest): Promise<ExcludeResult> => {
     try {
       const config = getConfig();
-      const filePath = req.filePath.replace(/\\/g, "/");
-
-      // 安全检查：路径不能包含 .. 逃逸
-      if (filePath.includes("..")) {
-        return { success: false, pattern: "", layerName: "", error: "路径包含非法字符" };
-      }
-
-      // 找到匹配的 layer
-      let matchedLayerName = "";
-      let excludePattern = "";
-
-      if (req.layer) {
-        const layer = config.layers.find((l) => l.name === req.layer);
-        if (layer) {
-          matchedLayerName = layer.name;
-          const prefix = (layer.source === "." || layer.source === "./") ? "" : normalizePrefix(layer.source);
-          const relPath = prefix ? filePath.slice(prefix.length) : filePath;
-          excludePattern = req.isDir ? relPath + "/**" : relPath;
-        }
-      }
-
-      if (!matchedLayerName) {
-        for (const layer of config.layers) {
-          const isRoot = layer.source === "." || layer.source === "./";
-          const prefix = isRoot ? "" : normalizePrefix(layer.source);
-          if (!isRoot && !filePath.startsWith(prefix)) continue;
-          matchedLayerName = layer.name;
-          const relPath = prefix ? filePath.slice(prefix.length) : filePath;
-          excludePattern = req.isDir ? relPath + "/**" : relPath;
-          break;
-        }
-      }
-
-      if (!matchedLayerName) {
-        matchedLayerName = "__global__";
-        excludePattern = req.isDir ? filePath + "/**" : filePath;
-      }
-
-      // 构造带引号的 YAML Scalar，保持配置风格一致
-      function quotedScalar(value: string): Scalar {
-        const s = new Scalar(value);
-        s.type = "QUOTE_DOUBLE";
-        return s;
-      }
-
-      // 用 yaml Document API 写入，保留注释
       const yamlContent = fs.readFileSync(configPath, "utf8");
-      const doc = parseDocument(yamlContent);
-
-      if (matchedLayerName === "__global__") {
-        const globalExclude = doc.get("globalExclude") as any;
-        if (!globalExclude) {
-          doc.set("globalExclude", [excludePattern]);
-        } else {
-          globalExclude.add(quotedScalar(excludePattern));
-        }
-      } else {
-        const docLayers = doc.get("layers") as any;
-        if (docLayers?.items) {
-          for (const layerNode of docLayers.items) {
-            if (layerNode.get("name") === matchedLayerName) {
-              const excludeArr = layerNode.get("exclude") as any;
-              if (!excludeArr) {
-                layerNode.set("exclude", [excludePattern]);
-              } else {
-                excludeArr.add(quotedScalar(excludePattern));
-              }
-              break;
-            }
-          }
-        }
-      }
-
-      fs.writeFileSync(configPath, doc.toString(), "utf8");
+      const { content, result } = applyExcludeMutation(yamlContent, config, req);
+      fs.writeFileSync(configPath, content, "utf8");
 
       // 发送日志到渲染器
       const action = req.deleteFromDisk ? "删除并排除" : "排除";
       sendToRenderer("cf7-packer:log", {
-        layer: matchedLayerName === "__global__" ? "global" : matchedLayerName,
+        layer: result.layerName === "__global__" ? "global" : result.layerName,
         level: "info",
-        message: `${action}: ${filePath} → exclude: "${excludePattern}"`
+        message: result.alreadyPresent
+          ? `${action}: ${result.normalizedPath} 已存在 exclude: "${result.pattern}"`
+          : `${action}: ${result.normalizedPath} → exclude: "${result.pattern}"`
       } satisfies PackerLogEvent);
 
       // 如果需要删除文件
       if (req.deleteFromDisk) {
-        const fullPath = path.resolve(config.source.repoRoot, req.filePath);
-        const realPath = path.resolve(fullPath);
-        const realRepoRoot = path.resolve(config.source.repoRoot);
-        if (!realPath.startsWith(realRepoRoot)) {
-          return { success: false, pattern: excludePattern, layerName: matchedLayerName, error: "路径超出仓库范围" };
+        const fullPath = path.resolve(config.source.repoRoot, result.normalizedPath);
+        if (!isPathInsideRoot(config.source.repoRoot, fullPath)) {
+          return { success: false, pattern: result.pattern, layerName: result.layerName, error: "路径超出仓库范围" };
         }
         if (fs.existsSync(fullPath)) {
           const stat = fs.statSync(fullPath);
           fs.rmSync(fullPath, { recursive: true, force: true });
           sendToRenderer("cf7-packer:log", {
-            layer: matchedLayerName === "__global__" ? "global" : matchedLayerName,
+            layer: result.layerName === "__global__" ? "global" : result.layerName,
             level: "warn",
-            message: `已从磁盘删除: ${filePath}${stat.isDirectory() ? " (目录)" : ""}`
+            message: `已从磁盘删除: ${result.normalizedPath}${stat.isDirectory() ? " (目录)" : ""}`
           } satisfies PackerLogEvent);
         }
       }
 
-      return { success: true, pattern: excludePattern, layerName: matchedLayerName };
+      return { success: true, pattern: result.pattern, layerName: result.layerName };
     } catch (err) {
       sendToRenderer("cf7-packer:log", {
         layer: "system", level: "error",
@@ -411,10 +385,12 @@ function registerIpcHandlers(): void {
   });
 }
 
-function normalizePrefix(source: string): string {
-  let s = source.replace(/\\/g, "/");
-  if (!s.endsWith("/")) s += "/";
-  return s;
+function estimateEtaMs(startedAtMs: number, current: number, total: number): number | undefined {
+  if (current <= 0 || total <= current) return undefined;
+  const elapsed = Date.now() - startedAtMs;
+  if (elapsed <= 0) return undefined;
+  const avgPerUnit = elapsed / current;
+  return Math.max(0, Math.round(avgPerUnit * (total - current)));
 }
 
 app.whenReady().then(() => {

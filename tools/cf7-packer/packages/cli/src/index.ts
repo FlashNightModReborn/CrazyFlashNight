@@ -3,7 +3,7 @@
 import path from "node:path";
 import fs from "node:fs";
 import { execFileSync } from "node:child_process";
-import { loadConfig, PackerEngine, collect, filterFiles, diffFilterResults } from "@cf7-packer/core";
+import { loadConfig, PackerEngine, collect, filterFiles, diffFilterResults, resolveOutputDir } from "@cf7-packer/core";
 import type { PackerLogEvent } from "@cf7-packer/core";
 
 const args = process.argv.slice(2);
@@ -50,8 +50,8 @@ async function runPack(): Promise<void> {
   }
 
   const resolvedOutput = outputDir
-    ? path.resolve(outputDir)
-    : path.resolve(path.dirname(configPath), config.output.dir);
+    ? resolveOutputDir(config, configPath, outputDir)
+    : resolveOutputDir(config, configPath);
 
   const engine = new PackerEngine(config);
 

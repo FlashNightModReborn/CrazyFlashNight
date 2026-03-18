@@ -61,4 +61,14 @@ describe("collector", () => {
     // 中止后应该返回很少或没有文件
     expect(result.fileCount).toBeLessThan(5);
   });
+
+  it("git-tag mode: can enumerate files from HEAD", async () => {
+    const config = makeConfig("git-tag", "HEAD");
+    const result = await collect(config);
+
+    expect(result.source).toBe("git-tag");
+    expect(result.tag).toBe("HEAD");
+    expect(result.fileCount).toBeGreaterThan(10);
+    expect(result.files).toContain("pack.config.yaml");
+  });
 });

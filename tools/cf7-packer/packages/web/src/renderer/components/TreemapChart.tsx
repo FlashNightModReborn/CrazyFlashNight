@@ -1,12 +1,34 @@
-import { useRef, useEffect, useMemo, useState, useCallback } from "react";
+import { useRef, useEffect, useLayoutEffect, useMemo, useState, useCallback } from "react";
 import * as d3 from "d3";
 import type { FileEntry, ExcludeRequest } from "../../shared/ipc-types.js";
 import { buildSunburstData, formatSize, type SunburstNode } from "./tree-utils.js";
+import {
+  buildScopeBreadcrumbs,
+} from "./scope-utils.js";
+import {
+  resolveTooltipPlacement,
+  resolveTreemapResizeState,
+  sameTreemapSize,
+  sanitizeTreemapSize,
+  type TreemapSize
+} from "./treemap-utils.js";
+import type { MotionLevel } from "./motion-utils.js";
 
 interface Props {
   files: FileEntry[];
   layers: string[];
   onExcluded?: () => void;
+  isLayoutResizing?: boolean;
+  isLayoutSettling?: boolean;
+  motionLevel?: MotionLevel;
+  motionDurationMs?: number;
+  focusPath?: string | null;
+  activeLayer?: string | null;
+  canNavigateUp?: boolean;
+  onFocusPathChange?: (path: string | null, layer: string | null) => void;
+  onNavigate?: (path: string | null, layer: string | null) => void;
+  onNavigateUp?: () => void;
+  onResetScope?: () => void;
 }
 
 interface CtxMenuState {
@@ -29,16 +51,49 @@ const LAYER_PALETTE: Record<string, string> = {
 
 type HNode = d3.HierarchyRectangularNode<SunburstNode>;
 
-export default function TreemapChart({ files, layers, onExcluded }: Props) {
+export default function TreemapChart({
+  files,
+  layers,
+  onExcluded,
+  isLayoutResizing = false,
+  isLayoutSettling = false,
+  motionLevel = "light",
+  motionDurationMs = 140,
+  focusPath = null,
+  activeLayer = null,
+  canNavigateUp = false,
+  onFocusPathChange,
+  onNavigate,
+  onNavigateUp,
+  onResetScope
+}: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; lines: string[] } | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{ left: number; top: number } | null>(null);
   const [ctxMenu, setCtxMenu] = useState<CtxMenuState | null>(null);
   const [currentRoot, setCurrentRoot] = useState<HNode | null>(null);
   // 追踪下钻路径：copy() 会重置 depth/parent，所以需要独立维护完整路径前缀
   const [zoomPrefix, setZoomPrefix] = useState("");
-  const [size, setSize] = useState({ w: 600, h: 300 });
+  const [size, setSize] = useState<TreemapSize>({ w: 600, h: 300 });
+  const sizeRef = useRef<TreemapSize>({ w: 600, h: 300 });
+  const pendingSizeRef = useRef<TreemapSize>({ w: 600, h: 300 });
+  const isLayoutResizingRef = useRef(false);
+  const resizeFrameRef = useRef<number | null>(null);
+  const tooltipFrameRef = useRef<number | null>(null);
+  const chartMotionTimerRef = useRef<number | null>(null);
+  const hasAnimatedOnceRef = useRef(false);
+  const [isChartRefreshing, setIsChartRefreshing] = useState(false);
+
+  useEffect(() => {
+    sizeRef.current = size;
+  }, [size]);
+
+  useEffect(() => {
+    isLayoutResizingRef.current = isLayoutResizing ?? false;
+  }, [isLayoutResizing]);
 
   const data = useMemo(() => buildSunburstData(files), [files]);
 
@@ -47,6 +102,20 @@ export default function TreemapChart({ files, layers, onExcluded }: Props) {
       .sum((d) => d.value ?? 0)
       .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
   }, [data]);
+
+  useEffect(() => {
+    if (!focusPath) {
+      setCurrentRoot(null);
+      setZoomPrefix("");
+      return;
+    }
+
+    const node = findHierarchyNodeByPath(hierarchy, focusPath);
+    if (!node || !node.children) return;
+
+    setCurrentRoot(node as HNode);
+    setZoomPrefix(focusPath);
+  }, [focusPath, hierarchy]);
 
   // hierarchy 变化时（数据刷新），尝试恢复下钻位置
   useEffect(() => {
@@ -73,14 +142,136 @@ export default function TreemapChart({ files, layers, onExcluded }: Props) {
   useEffect(() => {
     const el = wrapperRef.current;
     if (!el) return;
+    const commitObservedSize = (width: number, height: number) => {
+      const observed = sanitizeTreemapSize(width, height);
+      if (!observed) return;
+
+      const nextState = resolveTreemapResizeState({
+        currentSize: sizeRef.current,
+        pendingSize: pendingSizeRef.current,
+        observedSize: observed,
+        isLayoutResizing: isLayoutResizingRef.current
+      });
+
+      pendingSizeRef.current = nextState.pendingSize;
+      if (nextState.shouldCommit) {
+        sizeRef.current = nextState.size;
+        setSize((prev) => sameTreemapSize(prev, nextState.size) ? prev : nextState.size);
+      }
+    };
+
     const ro = new ResizeObserver((entries) => {
       const { width, height } = entries[0]!.contentRect;
-      if (width > 0 && height > 0) setSize({ w: width, h: height });
+      if (resizeFrameRef.current !== null) {
+        cancelAnimationFrame(resizeFrameRef.current);
+      }
+      resizeFrameRef.current = requestAnimationFrame(() => {
+        resizeFrameRef.current = null;
+        commitObservedSize(width, height);
+      });
     });
     ro.observe(el);
     const rect = el.getBoundingClientRect();
-    if (rect.width > 0 && rect.height > 0) setSize({ w: rect.width, h: rect.height });
-    return () => ro.disconnect();
+    commitObservedSize(rect.width, rect.height);
+    return () => {
+      ro.disconnect();
+      if (resizeFrameRef.current !== null) {
+        cancelAnimationFrame(resizeFrameRef.current);
+        resizeFrameRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const nextState = resolveTreemapResizeState({
+      currentSize: sizeRef.current,
+      pendingSize: pendingSizeRef.current,
+      observedSize: null,
+      isLayoutResizing: isLayoutResizing ?? false
+    });
+    pendingSizeRef.current = nextState.pendingSize;
+    if (nextState.shouldCommit) {
+      sizeRef.current = nextState.size;
+      setSize((prev) => sameTreemapSize(prev, nextState.size) ? prev : nextState.size);
+    }
+  }, [isLayoutResizing]);
+
+  const updateTooltipPlacement = useCallback(() => {
+    if (!tooltip || !tooltipRef.current || !wrapperRef.current) {
+      setTooltipPosition(null);
+      return;
+    }
+
+    const wrapperRect = wrapperRef.current.getBoundingClientRect();
+    const tooltipRect = tooltipRef.current.getBoundingClientRect();
+    setTooltipPosition(resolveTooltipPlacement(
+      { x: tooltip.x, y: tooltip.y },
+      { width: tooltipRect.width, height: tooltipRect.height },
+      { width: wrapperRect.width, height: wrapperRect.height }
+    ));
+  }, [tooltip]);
+
+  useLayoutEffect(() => {
+    updateTooltipPlacement();
+  }, [size, tooltip, updateTooltipPlacement]);
+
+  useEffect(() => {
+    if (!tooltip || !tooltipRef.current) return;
+
+    const observer = new ResizeObserver(() => {
+      if (tooltipFrameRef.current !== null) {
+        cancelAnimationFrame(tooltipFrameRef.current);
+      }
+      tooltipFrameRef.current = requestAnimationFrame(() => {
+        tooltipFrameRef.current = null;
+        updateTooltipPlacement();
+      });
+    });
+
+    observer.observe(tooltipRef.current);
+    return () => {
+      observer.disconnect();
+      if (tooltipFrameRef.current !== null) {
+        cancelAnimationFrame(tooltipFrameRef.current);
+        tooltipFrameRef.current = null;
+      }
+    };
+  }, [tooltip, updateTooltipPlacement]);
+
+  useEffect(() => {
+    if (motionDurationMs <= 0) {
+      setIsChartRefreshing(false);
+      hasAnimatedOnceRef.current = true;
+      return;
+    }
+
+    if (!hasAnimatedOnceRef.current) {
+      hasAnimatedOnceRef.current = true;
+      return;
+    }
+
+    if (chartMotionTimerRef.current !== null) {
+      window.clearTimeout(chartMotionTimerRef.current);
+    }
+
+    setIsChartRefreshing(true);
+    chartMotionTimerRef.current = window.setTimeout(() => {
+      chartMotionTimerRef.current = null;
+      setIsChartRefreshing(false);
+    }, motionDurationMs);
+  }, [currentRoot, hierarchy, motionDurationMs, size, zoomPrefix]);
+
+  useEffect(() => {
+    return () => {
+      if (chartMotionTimerRef.current !== null) {
+        window.clearTimeout(chartMotionTimerRef.current);
+        chartMotionTimerRef.current = null;
+      }
+      if (tooltipFrameRef.current !== null) {
+        cancelAnimationFrame(tooltipFrameRef.current);
+        tooltipFrameRef.current = null;
+      }
+    };
   }, []);
 
   // 右键菜单：点击外部关闭
@@ -184,8 +375,14 @@ export default function TreemapChart({ files, layers, onExcluded }: Props) {
     function handleZoomIn(node: d3.HierarchyNode<SunburstNode>) {
       // 先计算该节点的完整路径，再设为下钻前缀
       const nodePath = fullPath(node);
+      const nodeLayer = getNodeLayer(node) ?? null;
       setCurrentRoot(node as any);
       setZoomPrefix(nodePath);
+      onFocusPathChange?.(nodePath, nodeLayer);
+    }
+
+    function handleNodeSelection(node: d3.HierarchyNode<SunburstNode>) {
+      onFocusPathChange?.(fullPath(node), getNodeLayer(node) ?? null);
     }
 
     // treemap 布局
@@ -233,6 +430,10 @@ export default function TreemapChart({ files, layers, onExcluded }: Props) {
 
       const group = sel.append("g").attr("clip-path", `url(#${clipId})`);
       const baseColor = getColor(c);
+      const layerMatch = !activeLayer || getNodeLayer(c) === activeLayer;
+      if (!zoomPrefix) {
+        group.attr("opacity", layerMatch ? 1 : 0.32);
+      }
 
       group.append("rect")
         .attr("x", c.x0).attr("y", c.y0)
@@ -242,7 +443,13 @@ export default function TreemapChart({ files, layers, onExcluded }: Props) {
         .attr("stroke-width", 1)
         .attr("rx", 2)
         .style("cursor", c.children ? "pointer" : "default")
-        .on("click", () => { if (c.children) handleZoomIn(c); })
+        .on("click", () => {
+          if (c.children) {
+            handleZoomIn(c);
+            return;
+          }
+          handleNodeSelection(c);
+        })
         .on("contextmenu", (event) => openCtxMenu(event, c))
         .on("mouseenter", (event) => {
           const sz = formatSize(c.value ?? 0);
@@ -286,7 +493,13 @@ export default function TreemapChart({ files, layers, onExcluded }: Props) {
             .attr("stroke-width", 0.5)
             .attr("rx", 1)
             .style("cursor", leaf.children ? "pointer" : "default")
-            .on("click", () => { if (leaf.children) handleZoomIn(leaf); })
+            .on("click", () => {
+              if (leaf.children) {
+                handleZoomIn(leaf);
+                return;
+              }
+              handleNodeSelection(leaf);
+            })
             .on("contextmenu", (event) => openCtxMenu(event, leaf))
             .on("mouseenter", (event) => {
               const sz = formatSize(l.value ?? 0);
@@ -315,20 +528,68 @@ export default function TreemapChart({ files, layers, onExcluded }: Props) {
       }
     }
 
-  }, [currentRoot, hierarchy, size, zoomPrefix]);
+  }, [activeLayer, currentRoot, hierarchy, onFocusPathChange, size, zoomPrefix]);
 
   const root = currentRoot ?? hierarchy;
-  const isZoomed = currentRoot !== null;
+  const breadcrumbs = useMemo(() => buildScopeBreadcrumbs(focusPath, activeLayer), [activeLayer, focusPath]);
+  const treemapWrapperClassName = [
+    "treemap-svg-wrapper",
+    `treemap-motion-${motionLevel}`,
+    isLayoutResizing ? "treemap-state-resizing" : "",
+    isLayoutSettling ? "treemap-state-settling" : "",
+    isChartRefreshing ? "treemap-state-refreshing" : ""
+  ].filter(Boolean).join(" ");
 
   return (
     <div className="treemap-container">
       <div className="treemap-toolbar">
-        {isZoomed && (
-          <button className="btn-small" onClick={() => {
-            setCurrentRoot(null);
-            setZoomPrefix("");
-          }}>← 返回顶层</button>
-        )}
+        <div className="treemap-toolbar-nav">
+          <div className="scope-actions treemap-scope-actions">
+            <button type="button" className="btn-small" onClick={onNavigateUp} disabled={!canNavigateUp}>上一级</button>
+            <button
+              type="button"
+              className="btn-small"
+              onClick={() => {
+                setCurrentRoot(null);
+                setZoomPrefix("");
+                if (onResetScope) {
+                  onResetScope();
+                } else {
+                  onFocusPathChange?.(null, null);
+                }
+              }}
+              disabled={!canNavigateUp}
+            >
+              返回顶层
+            </button>
+          </div>
+          <div className="scope-breadcrumbs treemap-breadcrumbs" aria-label="当前浏览范围">
+            {breadcrumbs.map((crumb, index) => (
+              <div key={`${crumb.label}-${crumb.path ?? "root"}-${index}`} className="scope-crumb-group">
+                {index > 0 && <span className="scope-separator">/</span>}
+                <button
+                  type="button"
+                  className={`scope-crumb ${crumb.active ? "active" : ""}`}
+                  onClick={() => {
+                    if (onNavigate) {
+                      onNavigate(crumb.path, crumb.layer);
+                    } else {
+                      onFocusPathChange?.(crumb.path, crumb.layer);
+                    }
+                    if (!crumb.path) {
+                      setCurrentRoot(null);
+                      setZoomPrefix("");
+                    }
+                  }}
+                  disabled={crumb.active}
+                  title={crumb.label}
+                >
+                  {crumb.label}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="sunburst-legend">
           {layers.map((l) => (
             <span key={l} className="sunburst-legend-item">
@@ -339,10 +600,17 @@ export default function TreemapChart({ files, layers, onExcluded }: Props) {
         </div>
         <span className="treemap-total">{formatSize(root.value ?? 0)}</span>
       </div>
-      <div className="treemap-svg-wrapper" ref={wrapperRef}>
+      <div className={treemapWrapperClassName} ref={wrapperRef}>
         <svg ref={svgRef} className="treemap-svg" preserveAspectRatio="none" />
         {tooltip && !ctxMenu && (
-          <div className="sunburst-tooltip" style={{ left: tooltip.x + 14, top: tooltip.y - 14 }}>
+          <div
+            ref={tooltipRef}
+            className="sunburst-tooltip"
+            style={{
+              left: tooltipPosition?.left ?? tooltip.x + 14,
+              top: tooltipPosition?.top ?? tooltip.y - 14
+            }}
+          >
             {tooltip.lines.map((line, i) => (
               <div key={i} className={i === 0 ? "sunburst-tooltip-path" : ""}>{line}</div>
             ))}
@@ -378,4 +646,19 @@ function truncText(text: string, maxWidth: number, fontSize: number): string {
   const maxChars = Math.floor(maxWidth / charWidth);
   if (text.length <= maxChars) return text;
   return text.slice(0, Math.max(1, maxChars - 1)) + "…";
+}
+
+function findHierarchyNodeByPath(
+  hierarchy: d3.HierarchyNode<SunburstNode>,
+  path: string
+): d3.HierarchyNode<SunburstNode> | null {
+  if (!path) return hierarchy;
+
+  let node: d3.HierarchyNode<SunburstNode> = hierarchy;
+  for (const segment of path.split("/")) {
+    const child = node.children?.find((candidate) => candidate.data.name === segment);
+    if (!child) return null;
+    node = child;
+  }
+  return node;
 }

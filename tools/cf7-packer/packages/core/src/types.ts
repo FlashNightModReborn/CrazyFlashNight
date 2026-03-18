@@ -80,6 +80,7 @@ export interface PackerOptions {
   outputDir: string;
   clean: boolean;
   signal?: AbortSignal | undefined;
+  onProgress?: ((event: PackerProgressEvent) => void) | undefined;
 }
 
 /** Packer 结果 */
@@ -111,8 +112,11 @@ export interface PackerLogEvent {
 
 /** 进度事件 */
 export interface PackerProgressEvent {
-  phase: "collect" | "filter" | "pack";
+  phase: "collect" | "filter" | "pack" | "sfx";
   current: number;
   total: number;
   path?: string | undefined;
+  label?: string | undefined;
+  detail?: string | undefined;
+  etaMs?: number | undefined;
 }

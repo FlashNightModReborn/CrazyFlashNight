@@ -26,3 +26,7 @@ export { PackerEngine } from "./engine.js";
 export { diffFilterResults } from "./diff.js";
 export { enrichWithSize } from "./enrich.js";
 export { minifyJson, minifyXml, minifyByExtension } from "./minify.js";
+export { applyEstimatedSizes } from "./summary.js";
+export { resolveOutputDir, renderOutputDirTemplate, sanitizePathToken } from "./output-path.js";
+export { normalizeRepoRelativePath, normalizeLayerSource, isPathInsideRoot } from "./path-utils.js";
+export { applyExcludeMutation, resolveExcludeMutation } from "./config-editor.js";

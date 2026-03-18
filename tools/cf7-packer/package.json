@@ -9,11 +9,12 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build -w @cf7-packer/core && npm run build -w @cf7-packer/cli && npm run build -w @cf7-packer/web",
     "typecheck": "tsc -b packages/core packages/cli --pretty false && npm run typecheck --workspace @cf7-packer/web",
     "test": "vitest run",
     "test:watch": "vitest",
     "prebuild:core": "npm run build -w @cf7-packer/core",
+    "ensure:runtime": "node scripts/ensure-runtime.mjs",
     "pack:dry-run": "npm run prebuild:core && tsx packages/cli/src/index.ts pack --dry-run",
     "pack": "npm run prebuild:core && tsx packages/cli/src/index.ts pack",
     "validate-config": "npm run prebuild:core && tsx packages/cli/src/index.ts validate-config",
