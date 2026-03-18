@@ -5,7 +5,12 @@
   "type": "module",
   "scripts": {
     "prebuild": "npm run build -w @cf7-packer/core",
-    "build": "vite build && tsc -p tsconfig.electron.json --pretty false && node -e \"require('fs').copyFileSync('src/electron/preload.js','dist/electron/preload.js')\" && npx esbuild src/electron/main.ts --bundle --platform=node --format=cjs --outfile=dist/electron/main.cjs --external:electron --banner:js=\"const __import_meta_url = require('url').pathToFileURL(__filename).href;\" --define:import.meta.url=__import_meta_url",
+    "build": "npm run build:renderer && npm run build:electron",
+    "build:renderer": "vite build",
+    "build:electron:types": "tsc -p tsconfig.electron.json --pretty false",
+    "build:electron:bundle": "npx esbuild src/electron/main.ts --bundle --platform=node --format=cjs --outfile=dist/electron/main.cjs --external:electron --banner:js=\"const __import_meta_url = require('url').pathToFileURL(__filename).href;\" --define:import.meta.url=__import_meta_url",
+    "build:electron:preload": "node -e \"require('fs').copyFileSync('src/electron/preload.js','dist/electron/preload.js')\"",
+    "build:electron": "npm run build:electron:types && npm run build:electron:bundle && npm run build:electron:preload",
     "typecheck": "tsc -p tsconfig.json --pretty false && tsc -p tsconfig.electron.json --pretty false",
     "dev:renderer": "vite --host 127.0.0.1",
     "dev:electron": "tsx src/electron/main.ts",

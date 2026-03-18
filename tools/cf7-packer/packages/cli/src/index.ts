@@ -2,15 +2,38 @@
 
 import path from "node:path";
 import fs from "node:fs";
+import { parseArgs } from "node:util";
 import { execFileSync } from "node:child_process";
-import { loadConfig, withSourceOverride, PackerEngine, collect, filterFiles, diffFilterResults, getModifiedPathsBetweenTags, resolveOutputDir, formatSize } from "@cf7-packer/core";
+import {
+  loadConfig, withSourceOverride, PackerEngine, collect, filterFiles,
+  diffFilterResults, getModifiedPathsBetweenTags, resolveOutputDir, formatSize,
+  OutputDirNotOwnedError
+} from "@cf7-packer/core";
 import type { PackerLogEvent } from "@cf7-packer/core";
 
-const args = process.argv.slice(2);
-const command = args[0] ?? "help";
+const VERSION = "0.1.0";
+
+const { values: flags, positionals } = parseArgs({
+  args: process.argv.slice(2),
+  options: {
+    config: { type: "string" },
+    tag: { type: "string" },
+    output: { type: "string" },
+    base: { type: "string" },
+    target: { type: "string" },
+    "dry-run": { type: "boolean", default: false },
+    "force-clean": { type: "boolean", default: false },
+    all: { type: "boolean", default: false },
+    version: { type: "boolean", short: "V", default: false },
+    help: { type: "boolean", short: "h", default: false }
+  },
+  allowPositionals: true,
+  strict: true
+});
+
+const command = positionals[0] ?? (flags.version ? "--version" : flags.help ? "help" : "help");
 
 function findDefaultConfig(): string {
-  // 从 cli 包向上查找 pack.config.yaml
   let dir = path.resolve(import.meta.dirname, "../../..");
   for (let i = 0; i < 5; i++) {
     const candidate = path.join(dir, "pack.config.yaml");
@@ -20,26 +43,17 @@ function findDefaultConfig(): string {
   throw new Error("找不到 pack.config.yaml，请用 --config 指定");
 }
 
-function getArg(name: string): string | undefined {
-  const idx = args.indexOf(name);
-  if (idx === -1 || idx + 1 >= args.length) return undefined;
-  return args[idx + 1];
-}
-
-function hasFlag(name: string): boolean {
-  return args.includes(name);
-}
-
 function formatLog(event: PackerLogEvent): string {
   const prefix = event.level === "error" ? "[ERROR]" : event.level === "warn" ? "[WARN]" : "[INFO]";
   return `${prefix} ${event.layer}: ${event.message}`;
 }
 
 async function runPack(): Promise<void> {
-  const configPath = getArg("--config") ?? findDefaultConfig();
-  const dryRun = hasFlag("--dry-run");
-  const tag = getArg("--tag");
-  const outputDir = getArg("--output");
+  const configPath = flags.config ?? findDefaultConfig();
+  const dryRun = flags["dry-run"]!;
+  const tag = flags.tag;
+  const outputDir = flags.output;
+  const forceClean = flags["force-clean"]!;
 
   const config = withSourceOverride(loadConfig(configPath), tag ? { tag } : undefined);
 
@@ -59,20 +73,31 @@ async function runPack(): Promise<void> {
     }
   });
 
-  // Ctrl+C 优雅取消
   process.on("SIGINT", () => {
     console.log("\n正在取消...");
     engine.cancel();
   });
 
-  const result = await engine.run({
-    dryRun,
-    outputDir: resolvedOutput,
-    clean: config.output.clean
-  });
+  let result;
+  try {
+    result = await engine.run({
+      dryRun,
+      outputDir: resolvedOutput,
+      clean: config.output.clean,
+      forceClean
+    });
+  } catch (err) {
+    if (err instanceof OutputDirNotOwnedError) {
+      console.error(`\n[X] ${err.message}`);
+      console.error("    使用 --force-clean 可跳过此检查。");
+      process.exitCode = 1;
+      return;
+    }
+    throw err;
+  }
 
   if (result.mode !== "dry-run") {
-    console.log(""); // 换行（清掉进度条）
+    console.log("");
   }
 
   console.log(`\n=== ${dryRun ? "预览" : "打包"}结果 ===`);
@@ -101,7 +126,7 @@ async function runPack(): Promise<void> {
 }
 
 function runValidateConfig(): void {
-  const configPath = getArg("--config") ?? findDefaultConfig();
+  const configPath = flags.config ?? findDefaultConfig();
   try {
     const config = loadConfig(configPath);
     console.log(`配置有效: ${configPath}`);
@@ -116,7 +141,7 @@ function runValidateConfig(): void {
 }
 
 function runListTags(): void {
-  const configPath = getArg("--config") ?? findDefaultConfig();
+  const configPath = flags.config ?? findDefaultConfig();
   const config = loadConfig(configPath);
 
   try {
@@ -136,9 +161,10 @@ function runListTags(): void {
 }
 
 async function runDiff(): Promise<void> {
-  const configPath = getArg("--config") ?? findDefaultConfig();
-  const baseTag = getArg("--base");
-  const targetTag = getArg("--target");
+  const configPath = flags.config ?? findDefaultConfig();
+  const baseTag = flags.base;
+  const targetTag = flags.target;
+  const showAll = flags.all!;
 
   if (!baseTag || !targetTag) {
     console.error("diff 命令需要 --base 和 --target 两个 tag");
@@ -149,8 +175,8 @@ async function runDiff(): Promise<void> {
 
   console.log(`比较 [${baseTag}] vs [${targetTag}]...`);
 
-  const baseConfig = { ...config, source: { ...config.source, mode: "git-tag" as const, tag: baseTag } };
-  const targetConfig = { ...config, source: { ...config.source, mode: "git-tag" as const, tag: targetTag } };
+  const baseConfig = withSourceOverride(config, { tag: baseTag });
+  const targetConfig = withSourceOverride(config, { tag: targetTag });
 
   const [baseCollected, targetCollected] = await Promise.all([
     collect(baseConfig),
@@ -160,7 +186,6 @@ async function runDiff(): Promise<void> {
   const baseFiltered = filterFiles(baseCollected.files, baseConfig);
   const targetFiltered = filterFiles(targetCollected.files, targetConfig);
 
-  // 内容变更检测（tag ↔ tag）
   let modifiedPaths: Set<string> | undefined;
   try {
     modifiedPaths = await getModifiedPathsBetweenTags(config.source.repoRoot, baseTag, targetTag);
@@ -169,6 +194,7 @@ async function runDiff(): Promise<void> {
   }
 
   const diff = diffFilterResults(baseFiltered, targetFiltered, modifiedPaths);
+  const limit = showAll ? Infinity : 50;
 
   console.log(`\n=== Diff: [${baseTag}] → [${targetTag}] ===`);
   console.log(`新增: ${diff.added.length} 文件`);
@@ -176,35 +202,48 @@ async function runDiff(): Promise<void> {
   console.log(`修改: ${diff.modified.length} 文件`);
   console.log(`不变: ${diff.unchanged} 文件`);
 
-  if (diff.added.length > 0 && diff.added.length <= 50) {
+  if (diff.added.length > 0 && diff.added.length <= limit) {
     console.log("\n新增文件:");
     for (const f of diff.added) console.log(`  + ${f}`);
+  } else if (diff.added.length > limit) {
+    console.log(`\n新增文件（显示前 ${limit} 个，使用 --all 查看全部）:`);
+    for (const f of diff.added.slice(0, limit)) console.log(`  + ${f}`);
   }
-  if (diff.removed.length > 0 && diff.removed.length <= 50) {
+  if (diff.removed.length > 0 && diff.removed.length <= limit) {
     console.log("\n删除文件:");
     for (const f of diff.removed) console.log(`  - ${f}`);
+  } else if (diff.removed.length > limit) {
+    console.log(`\n删除文件（显示前 ${limit} 个，使用 --all 查看全部）:`);
+    for (const f of diff.removed.slice(0, limit)) console.log(`  - ${f}`);
   }
-  if (diff.modified.length > 0 && diff.modified.length <= 50) {
+  if (diff.modified.length > 0 && diff.modified.length <= limit) {
     console.log("\n修改文件:");
     for (const f of diff.modified) console.log(`  ~ ${f}`);
+  } else if (diff.modified.length > limit) {
+    console.log(`\n修改文件（显示前 ${limit} 个，使用 --all 查看全部）:`);
+    for (const f of diff.modified.slice(0, limit)) console.log(`  ~ ${f}`);
   }
 }
 
 function printHelp(): void {
-  console.log(`cf7-packer — CF7 发行打包工具
+  console.log(`cf7-packer v${VERSION} — CF7 发行打包工具
 
 用法:
-  cf7-packer pack [--dry-run] [--config path] [--output dir] [--tag tag]
-  cf7-packer diff --base <tag> --target <tag> [--config path]
+  cf7-packer pack [--dry-run] [--config path] [--output dir] [--tag tag] [--force-clean]
+  cf7-packer diff --base <tag> --target <tag> [--config path] [--all]
   cf7-packer validate-config [--config path]
   cf7-packer list-tags [--config path]
   cf7-packer help
 
 选项:
-  --dry-run     只统计，不实际复制
-  --config      指定 pack.config.yaml 路径
-  --output      覆盖输出目录
-  --tag         使用指定 git tag 的文件快照
+  --dry-run       只统计，不实际复制
+  --config        指定 pack.config.yaml 路径
+  --output        覆盖输出目录
+  --tag           使用指定 git tag 的文件快照
+  --force-clean   强制清理未标记的输出目录
+  --all           显示全部 diff 文件（不截断）
+  -V, --version   显示版本号
+  -h, --help      显示帮助信息
 `);
 }
 
@@ -224,8 +263,10 @@ async function main(): Promise<void> {
       break;
     case "help":
     case "--help":
-    case "-h":
       printHelp();
+      break;
+    case "--version":
+      console.log(`cf7-packer v${VERSION}`);
       break;
     default:
       console.error(`未知命令: ${command}`);

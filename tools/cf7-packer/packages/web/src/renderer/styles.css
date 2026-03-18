@@ -458,7 +458,7 @@ body.is-resizing {
   min-width: 0;
 }
 
-/* Detail panel (tree / search / sunburst) */
+/* Detail panel (tree / diff) */
 .detail-section {
   display: flex;
   flex-direction: column;
@@ -581,69 +581,7 @@ body.is-resizing {
 .tree-meta { color: #666; font-size: 10px; margin-left: 8px; flex-shrink: 0; }
 .tree-size { color: #556; font-size: 10px; margin-left: 8px; flex-shrink: 0; min-width: 60px; text-align: right; }
 
-/* File search */
-.file-search {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-.file-search-input-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
-  border-bottom: 1px solid #223;
-}
-.file-search-icon { font-size: 13px; flex-shrink: 0; }
-.file-search-input {
-  flex: 1;
-  background: #0a0e1a;
-  color: #e0e0e0;
-  border: 1px solid #334;
-  border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 12px;
-  outline: none;
-}
-.file-search-input:focus { border-color: #2980b9; }
-.file-search-clear {
-  background: none;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  font-size: 13px;
-}
-.file-search-results {
-  flex: 1;
-  overflow-y: auto;
-  background: #0a0e1a;
-  border-radius: 0 0 4px 4px;
-  padding: 4px 0;
-}
-.file-search-count {
-  padding: 4px 10px;
-  font-size: 11px;
-  color: #666;
-}
-.file-search-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 3px 10px;
-  font-size: 11px;
-  font-family: "Cascadia Code", "Consolas", monospace;
-}
-.file-search-item:hover { background: #141e30; }
-.file-search-layer {
-  padding: 1px 6px;
-  border-radius: 3px;
-  font-size: 10px;
-  color: #fff;
-  flex-shrink: 0;
-  font-family: "Segoe UI", system-ui, sans-serif;
-}
-.file-search-path { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.file-search-size { color: #556; flex-shrink: 0; min-width: 60px; text-align: right; }
+/* File search highlight (reused by FileTreePanel) */
 .file-search-highlight { background: #e67e22; color: #000; border-radius: 2px; padding: 0 1px; }
 
 /* Diff */
@@ -702,19 +640,7 @@ body.is-resizing {
 .diff-file-modified { color: #f39c12; }
 .diff-no-changes { color: #666; padding: 12px; text-align: center; }
 
-/* Sunburst */
-.sunburst-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-.sunburst-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 4px 8px;
-  flex-shrink: 0;
-}
+/* Sunburst legend (shared with TreemapChart) */
 .sunburst-legend {
   display: flex;
   gap: 10px;
@@ -732,15 +658,6 @@ body.is-resizing {
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
-}
-.sunburst-svg-wrapper {
-  flex: 1;
-  position: relative;
-  min-height: 0;
-}
-.sunburst-svg {
-  width: 100%;
-  height: 100%;
 }
 .sunburst-tooltip {
   position: absolute;
