@@ -6,6 +6,7 @@ import type { FilterResult, PackerOptions, PackResult, LayerSummary, PackConfig 
 import { OutputDirNotOwnedError } from "./types.js";
 import { isPathInsideRoot } from "./path-utils.js";
 import { getTagBlobInfo } from "./content-hash.js";
+import { validateGitRef, validateGitPath } from "./git-utils.js";
 import { minifyByExtension } from "./minify.js";
 import { applyEstimatedSizes } from "./summary.js";
 import { estimateEtaMs } from "./format.js";
@@ -47,20 +48,27 @@ export function validateOutputDir(outputDir: string, repoRoot: string): void {
  * 仅在 !dryRun 时调用。
  */
 function prepareOutputDir(resolvedOutputDir: string, clean: boolean, forceClean: boolean): void {
-  if (clean && fs.existsSync(resolvedOutputDir)) {
+  const dirExisted = fs.existsSync(resolvedOutputDir);
+
+  if (clean && dirExisted) {
     const markerPath = path.join(resolvedOutputDir, OUTPUT_DIR_MARKER);
     if (!fs.existsSync(markerPath) && !forceClean) {
       throw new OutputDirNotOwnedError(resolvedOutputDir);
     }
     fs.rmSync(resolvedOutputDir, { recursive: true, force: true });
   }
+
   fs.mkdirSync(resolvedOutputDir, { recursive: true });
-  // 写入标记文件
-  fs.writeFileSync(
-    path.join(resolvedOutputDir, OUTPUT_DIR_MARKER),
-    `created=${new Date().toISOString()}\n`,
-    "utf8"
-  );
+
+  // 仅在目录是本次新建或经过 clean 后才写标记。
+  // 不对已存在的非 clean 目录写标记，防止静默领养。
+  if (!dirExisted || clean) {
+    fs.writeFileSync(
+      path.join(resolvedOutputDir, OUTPUT_DIR_MARKER),
+      `created=${new Date().toISOString()}\n`,
+      "utf8"
+    );
+  }
 }
 
 /**
@@ -230,6 +238,8 @@ export async function pack(
 }
 
 function gitShowFile(repoRoot: string, tag: string, filePath: string, signal?: AbortSignal): Promise<Buffer> {
+  validateGitRef(tag);
+  validateGitPath(filePath);
   return new Promise((resolve, reject) => {
     const child = execFile(
       "git",

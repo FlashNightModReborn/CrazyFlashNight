@@ -55,7 +55,7 @@ export class PackerEngine extends EventEmitter<PackerEngineEvents> {
       const collected = await this.collectInternal(signal);
 
       if (signal.aborted) {
-        return this.cancelledResult(opts.outputDir);
+        return this.cancelledResult(opts.outputDir, opts.dryRun);
       }
 
       this.log("collector", "info", `枚举完成: ${collected.fileCount} 个文件`);
@@ -69,7 +69,7 @@ export class PackerEngine extends EventEmitter<PackerEngineEvents> {
       const filtered = this.filterInternal(collected);
 
       if (signal.aborted) {
-        return this.cancelledResult(opts.outputDir);
+        return this.cancelledResult(opts.outputDir, opts.dryRun);
       }
 
       for (const layer of filtered.layers) {
@@ -164,9 +164,9 @@ export class PackerEngine extends EventEmitter<PackerEngineEvents> {
     this.emit("progress", event);
   }
 
-  private cancelledResult(outputDir: string): PackResult {
+  private cancelledResult(outputDir: string, dryRun: boolean): PackResult {
     return {
-      mode: "execute",
+      mode: dryRun ? "dry-run" : "execute",
       cancelled: true,
       totalFiles: 0,
       copiedFiles: 0,

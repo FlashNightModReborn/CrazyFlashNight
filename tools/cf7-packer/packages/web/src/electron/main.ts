@@ -393,8 +393,9 @@ function registerIpcHandlers(): void {
             label: "构建安装包",
             detail: "安装包构建完成"
           } satisfies PackerProgressEvent);
-          const match = stdout.match(/构建完成:\s*(.+?)(?:\s*\(|$)/);
-          const outputPath = match?.[1]?.trim();
+          // 贪婪匹配路径，最后一个 " (" 后跟的是大小标注如 "(12M)"
+          const match = stdout.match(/构建完成:\s*(.+)\s+\(/);
+          const outputPath = (match?.[1] ?? stdout.match(/构建完成:\s*(.+)/)?.[1])?.trim();
           resolve(outputPath ? { success: true, outputPath } : { success: true });
         }
       });

@@ -233,6 +233,41 @@ describe("packer", () => {
     expect(fs.existsSync(path.join(outputDir, "package.json"))).toBe(true);
   });
 
+  it("clean:false does NOT write marker to pre-existing directory", async () => {
+    const outputDir = path.join(getTempDir(), "output");
+    fs.mkdirSync(outputDir, { recursive: true });
+    fs.writeFileSync(path.join(outputDir, "keep.txt"), "should survive");
+
+    const filterResult = makeFilterResult(["package.json"]);
+    await pack(filterResult, makeConfig(), {
+      dryRun: false,
+      outputDir,
+      clean: false
+    });
+
+    // 旧文件应保留
+    expect(fs.existsSync(path.join(outputDir, "keep.txt"))).toBe(true);
+    // 新文件应被写入
+    expect(fs.existsSync(path.join(outputDir, "package.json"))).toBe(true);
+    // 标记不应被写入（不能静默领养已有目录）
+    expect(fs.existsSync(path.join(outputDir, OUTPUT_DIR_MARKER))).toBe(false);
+  });
+
+  it("clean:false writes marker when directory is newly created", async () => {
+    const outputDir = path.join(getTempDir(), "fresh-output");
+    // 目录不存在
+
+    const filterResult = makeFilterResult(["package.json"]);
+    await pack(filterResult, makeConfig(), {
+      dryRun: false,
+      outputDir,
+      clean: false
+    });
+
+    // 新目录应有标记（本工具创建的）
+    expect(fs.existsSync(path.join(outputDir, OUTPUT_DIR_MARKER))).toBe(true);
+  });
+
   it.skipIf(process.platform === "win32")("preserves executable bits for worktree files", async () => {
     const repoRoot = path.join(getTempDir(), "repo");
     fs.mkdirSync(repoRoot, { recursive: true });
