@@ -144,6 +144,13 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api]);
 
+  // Auto-switch to config tab when tree tab has nothing to show
+  useEffect(() => {
+    if (detailTab === "tree" && previewFiles.length === 0) {
+      setDetailTab("config");
+    }
+  }, [detailTab, previewFiles.length, setDetailTab]);
+
   // External config change auto-sync
   useEffect(() => {
     if (!api?.onConfigChanged) return;

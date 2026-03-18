@@ -163,7 +163,21 @@ describe("useConfigEditor", () => {
     expect(result.current.rawYaml).toBe("local\n"); // preserved
   });
 
-  it("R14: internal mutated event → unconditional reload even when dirty", async () => {
+  it("R14: internal mutated + not dirty → auto reload", async () => {
+    const { result } = renderHook(() =>
+      useConfigEditor(mock.api, onSaveAndRefresh)
+    );
+    await act(async () => {});
+    expect(result.current.isDirty).toBe(false);
+
+    mock.setDiskContent("after-exclude: true\n");
+    await act(async () => { mock.fireConfigMutated(); });
+
+    expect(result.current.rawYaml).toBe("after-exclude: true\n");
+    expect(result.current.isDirty).toBe(false);
+  });
+
+  it("R14: internal mutated + dirty → conflict flag, preserves draft", async () => {
     const { result } = renderHook(() =>
       useConfigEditor(mock.api, onSaveAndRefresh)
     );
@@ -173,11 +187,12 @@ describe("useConfigEditor", () => {
     expect(result.current.isDirty).toBe(true);
 
     mock.setDiskContent("after-exclude: true\n");
-    await act(async () => { mock.fireConfigMutated(); });
+    act(() => { mock.fireConfigMutated(); });
 
-    // Should have reloaded regardless of dirty state
-    expect(result.current.rawYaml).toBe("after-exclude: true\n");
-    expect(result.current.isDirty).toBe(false);
+    // Draft preserved, conflict shown — NOT silently overwritten
+    expect(result.current.rawYaml).toBe("user edits\n");
+    expect(result.current.isDirty).toBe(true);
+    expect(result.current.hasExternalConflict).toBe(true);
   });
 
   it("loadFromDisk resets all state", async () => {

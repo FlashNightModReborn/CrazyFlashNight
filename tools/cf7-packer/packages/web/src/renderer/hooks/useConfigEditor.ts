@@ -91,13 +91,17 @@ export function useConfigEditor(
   }, [api, isDirty, loadFromDisk]);
 
   // Internal mutation listener (R14: right-click exclude etc.)
-  // Unconditional reload — same app, user expects ConfigPanel to sync
+  // Same dirty-awareness as external changes — don't silently overwrite drafts
   useEffect(() => {
     if (!api?.onConfigMutated) return;
     return api.onConfigMutated(() => {
-      void loadFromDisk();
+      if (isDirty) {
+        setHasExternalConflict(true);
+      } else {
+        void loadFromDisk();
+      }
     });
-  }, [api, loadFromDisk]);
+  }, [api, isDirty, loadFromDisk]);
 
   return {
     rawYaml,
