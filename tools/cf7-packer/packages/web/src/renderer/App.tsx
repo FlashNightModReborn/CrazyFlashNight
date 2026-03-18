@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import type { CSSProperties } from "react";
 import type {
   PackerConfigSummary, PackerProgressEvent, LayerSummary, FileEntry
 } from "../shared/ipc-types.js";
 import FileTreePanel from "./components/FileTreePanel.js";
 import DiffPanel from "./components/DiffPanel.js";
+import ConfigPanel from "./components/ConfigPanel.js";
 import ResizeHandle from "./components/ResizeHandle.js";
 import Header from "./components/Header.js";
 import ControlPanel from "./components/ControlPanel.js";
@@ -75,20 +76,83 @@ export default function App() {
   // Event listeners + auto-scroll
   const { logEndRef } = usePackerEvents(api, logs, setLogs, setProgress, motionLevel);
 
-  // Load config + tags
-  useEffect(() => {
+  // R13: request token for concurrent fullReload cancellation
+  const reloadTokenRef = useRef(0);
+
+  // Unified reload: config + tags + preview (R2, R3, R9, R11, R13)
+  const fullReload = useCallback(async () => {
     if (!api) return;
-    void api.loadConfig().then((cfg) => {
-      setConfig(cfg);
-      setOutputDir(cfg.outputDir);
-    });
-    void api.getTags().then((t) => {
-      setTags(t);
-      if (t.length > 0) setSelectedTag(t[t.length - 1]!);
-    });
+    const token = ++reloadTokenRef.current;
+
+    const [cfg, newTags] = await Promise.all([
+      api.loadConfig(),
+      api.getTags()
+    ]);
+    if (reloadTokenRef.current !== token) return; // R13: stale
+
+    setConfig(cfg);
+    setTags(newTags);
+    setSourceMode(cfg.mode);
+    setOutputDir(cfg.outputDir);
+
+    // R9: strict tag validation — no silent fallback
+    if (cfg.mode === "git-tag") {
+      const cfgTag = cfg.tag ?? "";
+      if (!cfgTag || !newTags.includes(cfgTag)) {
+        setSelectedTag(cfgTag);
+        setPreviewFiles([]);
+        setLayers([]);
+        setLogs(prev => [...prev, {
+          id: nextLogId(),
+          event: {
+            layer: "system", level: "warn",
+            message: cfgTag
+              ? `配置指定的 tag "${cfgTag}" 不在当前仓库中，预览已清空`
+              : `git-tag 模式未指定 tag，预览已清空`
+          }
+        }]);
+        return;
+      }
+      setSelectedTag(cfgTag);
+    } else {
+      if (newTags.length > 0 && !newTags.includes(selectedTag)) {
+        setSelectedTag(newTags[newTags.length - 1]!);
+      }
+    }
+
+    // R2: refresh preview
+    if (reloadTokenRef.current !== token) return;
+    try {
+      const preview = await api.previewFiles(
+        cfg.mode === "git-tag" ? { tag: cfg.tag! } : undefined
+      );
+      if (reloadTokenRef.current !== token) return;
+      setPreviewFiles(preview.included);
+      setLayers(preview.layers);
+    } catch (err) {
+      if (reloadTokenRef.current !== token) return;
+      setLogs(prev => [...prev, {
+        id: nextLogId(),
+        event: { layer: "system", level: "error", message: `预览刷新失败: ${String(err)}` }
+      }]);
+    }
+  }, [api, selectedTag, setLogs]);
+
+  // R11: first-screen uses fullReload instead of separate useEffects
+  useEffect(() => {
+    void fullReload();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api]);
 
-  // Preview loading
+  // External config change auto-sync
+  useEffect(() => {
+    if (!api?.onConfigChanged) return;
+    return api.onConfigChanged(() => {
+      void fullReload();
+    });
+  }, [api, fullReload]);
+
+  // Preview loading (kept for lightweight refresh, e.g. after exclude)
   const loadPreview = useCallback(async () => {
     if (!api || loadingPreview) return;
     setLoadingPreview(true);
@@ -172,6 +236,7 @@ export default function App() {
         motionPreference={motionPreference}
         onMotionChange={setMotionPreference}
         onResetLayout={handleResetLayout}
+        onForceReload={() => void fullReload()}
       />
 
       <div className="control-shell" ref={controlShellRef}>
@@ -287,6 +352,8 @@ export default function App() {
               )}
               <button className={`detail-tab ${detailTab === "diff" ? "active" : ""}`}
                 onClick={() => setDetailTab("diff")}>⚡ 差异对比</button>
+              <button className={`detail-tab ${detailTab === "config" ? "active" : ""}`}
+                onClick={() => setDetailTab("config")}>⚙ 配置</button>
             </div>
             <div className="detail-body">
               {detailTab === "tree" && hasPreview && (
@@ -301,6 +368,13 @@ export default function App() {
                 <DiffPanel
                   tags={tags}
                   onDiff={async (baseTag, targetTag) => api!.diffFiles({ baseTag, targetTag })}
+                />
+              )}
+              {detailTab === "config" && (
+                <ConfigPanel
+                  api={api}
+                  onSaveAndRefresh={fullReload}
+                  isRunning={isRunning}
                 />
               )}
             </div>

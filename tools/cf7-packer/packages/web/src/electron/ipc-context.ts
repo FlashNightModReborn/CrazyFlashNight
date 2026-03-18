@@ -1,4 +1,5 @@
 import type { BrowserWindow } from "electron";
+import type { FSWatcher } from "node:fs";
 import type { PackConfig, PackerEngine } from "@cf7-packer/core";
 
 /**
@@ -16,4 +17,9 @@ export interface IpcContext {
   engine: PackerEngine | null;
   engineRunning: boolean;
   readonly knownOutputDirs: Set<string>;
+
+  /** 配置文件 watcher（由 ipc-watch-handler 设置，will-quit 时清理） */
+  configWatcher?: FSWatcher | undefined;
+  /** 上次自写配置文件的时间戳，用于 watcher 自写抑制（R1） */
+  lastConfigWriteAt: number;
 }

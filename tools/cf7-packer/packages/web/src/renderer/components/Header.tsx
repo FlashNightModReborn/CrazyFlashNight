@@ -12,9 +12,10 @@ interface HeaderProps {
   motionPreference: MotionLevel;
   onMotionChange: (level: MotionLevel) => void;
   onResetLayout: () => void;
+  onForceReload?: () => void;
 }
 
-export default function Header({ config, motionPreference, onMotionChange, onResetLayout }: HeaderProps) {
+export default function Header({ config, motionPreference, onMotionChange, onResetLayout, onForceReload }: HeaderProps) {
   return (
     <header className="header">
       <div className="header-title-group">
@@ -38,6 +39,11 @@ export default function Header({ config, motionPreference, onMotionChange, onRes
             ))}
           </div>
         </div>
+        {onForceReload && (
+          <button className="btn-small" onClick={onForceReload} title="强制重载配置和预览">
+            重载
+          </button>
+        )}
         <button className="btn-small" onClick={onResetLayout}>重置布局</button>
       </div>
     </header>

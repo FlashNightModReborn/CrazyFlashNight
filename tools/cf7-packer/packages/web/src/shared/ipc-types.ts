@@ -61,6 +61,32 @@ export interface ExcludeResult {
   error?: string | undefined;
 }
 
+/** 原始 YAML 配置内容（配置编辑器用） */
+export interface RawConfigResult {
+  content: string;
+  /** 单调递增版本号，每次磁盘读取后递增 */
+  version: number;
+}
+
+/** 配置保存请求 */
+export interface SaveConfigRequest {
+  /** 原始 YAML 文本，由后端校验后写盘 */
+  content: string;
+}
+
+/** 配置保存结果 */
+export interface SaveConfigResult {
+  success: boolean;
+  /** Zod 校验错误（success=false 时） */
+  errors?: Array<{ path: string; message: string }>;
+}
+
+/** 配置变更推送事件 */
+export interface ConfigChangedEvent {
+  /** 新版本号 */
+  version: number;
+}
+
 export interface PackerIpcApi {
   runtime: string;
   loadConfig: () => Promise<PackerConfigSummary>;
@@ -76,8 +102,16 @@ export interface PackerIpcApi {
   revealOutput: (targetPath: string) => Promise<void>;
   confirmDelete: (filePath: string, isDir: boolean) => Promise<boolean>;
   excludeFile: (req: ExcludeRequest) => Promise<ExcludeResult>;
+  /** 读取 pack.config.yaml 原始文本 */
+  readRawConfig: () => Promise<RawConfigResult>;
+  /** 校验并保存配置到磁盘 */
+  saveConfig: (req: SaveConfigRequest) => Promise<SaveConfigResult>;
   onLog: (callback: (event: PackerLogEvent) => void) => () => void;
   onProgress: (callback: (event: PackerProgressEvent) => void) => () => void;
+  /** 外部修改检测（fs.watch 触发） */
+  onConfigChanged: (callback: (event: ConfigChangedEvent) => void) => () => void;
+  /** 内部修改通知（如右键排除），ConfigPanel 应无条件重载，不走冲突逻辑 */
+  onConfigMutated: (callback: (event: ConfigChangedEvent) => void) => () => void;
 }
 
 export type { PackResult, PackerLogEvent, PackerProgressEvent, LayerSummary, FileEntry, DiffResult };

@@ -111,5 +111,7 @@ globalExclude:
   - "**/Thumbs.db"
   - "**/*.bak"
 
+# 当前已支持打包工具内手动编辑
+
 # music/ 不打包（音乐包独立外置），后续需要时加一个 layer 即可
 # externalAssets（Unity 外壳）暂不支持，后续再加

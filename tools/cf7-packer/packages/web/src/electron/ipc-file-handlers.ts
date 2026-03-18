@@ -10,6 +10,7 @@ import {
 import type { PackerLogEvent } from "@cf7-packer/core";
 import type { ExcludeRequest, ExcludeResult } from "../shared/ipc-types.js";
 import type { IpcContext } from "./ipc-context.js";
+import { writeConfigToDisk, nextConfigVersion } from "./ipc-watch-handler.js";
 
 export function registerFileHandlers(ctx: IpcContext): void {
   ipcMain.handle("cf7-packer:open-file", async (_event, relativePath: string) => {
@@ -83,7 +84,10 @@ export function registerFileHandlers(ctx: IpcContext): void {
       const config = ctx.getConfig();
       const yamlContent = fs.readFileSync(ctx.configPath, "utf8");
       const { content, result } = applyExcludeMutation(yamlContent, config, req);
-      fs.writeFileSync(ctx.configPath, content, "utf8");
+      writeConfigToDisk(ctx, content);
+
+      // R14: 通知 ConfigPanel 内部修改已发生（不走 watcher 冲突逻辑）
+      ctx.sendToRenderer("cf7-packer:config-mutated", { version: nextConfigVersion() });
 
       const action = req.deleteFromDisk ? "删除并排除" : "排除";
       ctx.sendToRenderer("cf7-packer:log", {

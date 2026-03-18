@@ -17,6 +17,8 @@ contextBridge.exposeInMainWorld("cf7Packer", {
   revealOutput: (targetPath) => ipcRenderer.invoke("cf7-packer:reveal-output", targetPath),
   confirmDelete: (filePath, isDir) => ipcRenderer.invoke("cf7-packer:confirm-delete", filePath, isDir),
   excludeFile: (req) => ipcRenderer.invoke("cf7-packer:exclude-file", req),
+  readRawConfig: () => ipcRenderer.invoke("cf7-packer:read-raw-config"),
+  saveConfig: (req) => ipcRenderer.invoke("cf7-packer:save-config", req),
 
   onLog: (callback) => {
     const handler = (_event, data) => callback(data);
@@ -27,5 +29,15 @@ contextBridge.exposeInMainWorld("cf7Packer", {
     const handler = (_event, data) => callback(data);
     ipcRenderer.on("cf7-packer:progress", handler);
     return () => ipcRenderer.removeListener("cf7-packer:progress", handler);
+  },
+  onConfigChanged: (callback) => {
+    const handler = (_event, data) => callback(data);
+    ipcRenderer.on("cf7-packer:config-changed", handler);
+    return () => ipcRenderer.removeListener("cf7-packer:config-changed", handler);
+  },
+  onConfigMutated: (callback) => {
+    const handler = (_event, data) => callback(data);
+    ipcRenderer.on("cf7-packer:config-mutated", handler);
+    return () => ipcRenderer.removeListener("cf7-packer:config-mutated", handler);
   }
 });

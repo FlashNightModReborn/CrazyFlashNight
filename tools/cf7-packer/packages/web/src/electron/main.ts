@@ -8,6 +8,7 @@ import type { IpcContext } from "./ipc-context.js";
 import { registerConfigHandlers } from "./ipc-config-handlers.js";
 import { registerPackHandlers } from "./ipc-pack-handlers.js";
 import { registerFileHandlers } from "./ipc-file-handlers.js";
+import { registerWatchHandlers, stopWatchHandlers } from "./ipc-watch-handler.js";
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 const rendererUrl = process.env.CF7_PACKER_RENDERER_URL;
@@ -66,15 +67,19 @@ function createIpcContext(): IpcContext {
     },
     engine: null,
     engineRunning: false,
-    knownOutputDirs: new Set<string>()
+    knownOutputDirs: new Set<string>(),
+    lastConfigWriteAt: 0
   };
 }
 
+let ctx: IpcContext | null = null;
+
 app.whenReady().then(() => {
-  const ctx = createIpcContext();
+  ctx = createIpcContext();
   registerConfigHandlers(ctx);
   registerPackHandlers(ctx);
   registerFileHandlers(ctx);
+  registerWatchHandlers(ctx);
   createMainWindow();
 
   app.on("activate", () => {
@@ -82,6 +87,11 @@ app.whenReady().then(() => {
       createMainWindow();
     }
   });
+});
+
+// R4: watcher 清理绑定 will-quit 而非 window-all-closed，macOS 下窗口关闭后 app 仍存活
+app.on("will-quit", () => {
+  if (ctx) stopWatchHandlers(ctx);
 });
 
 app.on("window-all-closed", () => {

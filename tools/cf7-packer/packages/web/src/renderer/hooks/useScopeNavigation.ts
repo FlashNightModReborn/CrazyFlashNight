@@ -7,7 +7,7 @@ import {
   resolveLayerScopePath
 } from "../components/scope-utils.js";
 
-export type DetailTab = "tree" | "diff";
+export type DetailTab = "tree" | "diff" | "config";
 
 export function useScopeNavigation(
   previewFiles: FileEntry[],
