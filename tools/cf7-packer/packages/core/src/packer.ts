@@ -5,8 +5,10 @@ import { execFile } from "node:child_process";
 import type { FilterResult, PackerOptions, PackResult, LayerSummary, PackConfig } from "./types.js";
 import { OutputDirNotOwnedError } from "./types.js";
 import { isPathInsideRoot } from "./path-utils.js";
+import { getTagBlobInfo } from "./content-hash.js";
 import { minifyByExtension } from "./minify.js";
 import { applyEstimatedSizes } from "./summary.js";
+import { estimateEtaMs } from "./format.js";
 
 const OUTPUT_DIR_MARKER = ".cf7-packer-output";
 
@@ -89,6 +91,20 @@ export async function pack(
     prepareOutputDir(resolvedOutputDir, clean, forceClean ?? false);
   }
 
+  // git-tag 模式下预取文件大小（单次 git ls-tree -rl）
+  let gitBlobSizes: Map<string, number> | undefined;
+  if (isGitTag && tag) {
+    try {
+      const blobInfo = await getTagBlobInfo(repoRoot, tag, signal);
+      gitBlobSizes = new Map<string, number>();
+      for (const [p, info] of blobInfo) {
+        gitBlobSizes.set(p, info.size);
+      }
+    } catch {
+      // 获取失败不阻塞打包
+    }
+  }
+
   const errors: Array<{ path: string; error: string }> = [];
   let copiedFiles = 0;
   let totalSize = 0;
@@ -113,7 +129,13 @@ export async function pack(
 
     if (dryRun) {
       // dry-run: 统计文件大小
-      if (!isGitTag) {
+      if (isGitTag && gitBlobSizes) {
+        const size = gitBlobSizes.get(entry.path);
+        if (size !== undefined) {
+          totalSize += size;
+          packedEntries.set(entry.path, size);
+        }
+      } else if (!isGitTag) {
         try {
           const stat = fs.statSync(path.join(repoRoot, entry.path));
           totalSize += stat.size;
@@ -166,14 +188,14 @@ export async function pack(
           } else {
             fs.copyFileSync(srcPath, destPath);
             fs.chmodSync(destPath, srcStat.mode);
-            totalSize += fs.statSync(destPath).size;
-            packedEntries.set(entry.path, fs.statSync(destPath).size);
+            totalSize += srcStat.size;
+            packedEntries.set(entry.path, srcStat.size);
           }
         } else {
           fs.copyFileSync(srcPath, destPath);
           fs.chmodSync(destPath, srcStat.mode);
-          totalSize += fs.statSync(destPath).size;
-          packedEntries.set(entry.path, fs.statSync(destPath).size);
+          totalSize += srcStat.size;
+          packedEntries.set(entry.path, srcStat.size);
         }
       }
       copiedFiles++;
@@ -233,14 +255,6 @@ function gitShowFile(repoRoot: string, tag: string, filePath: string, signal?: A
   });
 }
 
-function estimateProgressEtaMs(startedAtMs: number, completed: number, total: number): number | undefined {
-  if (completed <= 0 || total <= completed) return undefined;
-  const elapsed = Date.now() - startedAtMs;
-  if (elapsed <= 0) return undefined;
-  const avgPerUnit = elapsed / completed;
-  return Math.max(0, Math.round(avgPerUnit * (total - completed)));
-}
-
 function emitPackProgress(
   onProgress: PackerOptions["onProgress"],
   label: string,
@@ -265,6 +279,6 @@ function emitPackProgress(
     path,
     label,
     detail: path,
-    etaMs: estimateProgressEtaMs(startedAtMs, current, total)
+    etaMs: estimateEtaMs(startedAtMs, current, total)
   });
 }

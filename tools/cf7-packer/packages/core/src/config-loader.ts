@@ -72,3 +72,15 @@ export function parseConfig(raw: unknown, configDir: string): PackConfig {
 
   return buildConfig(parsed, resolvedRepoRoot);
 }
+
+/**
+ * 返回 config 的浅拷贝，source 替换为指定 tag 的 git-tag 模式。
+ * 不修改原对象。
+ */
+export function withSourceOverride(config: PackConfig, opts?: { tag?: string }): PackConfig {
+  if (!opts?.tag) return config;
+  return {
+    ...config,
+    source: { ...config.source, mode: "git-tag" as const, tag: opts.tag }
+  };
+}

@@ -20,7 +20,9 @@ import {
   resolveOutputDir,
   normalizeRepoRelativePath,
   isPathInsideRoot,
-  OutputDirNotOwnedError
+  OutputDirNotOwnedError,
+  estimateEtaMs,
+  withSourceOverride
 } from "@cf7-packer/core";
 import type { PackConfig, PackerLogEvent, PackerProgressEvent, DiffResult } from "@cf7-packer/core";
 import type { PackerRunOptions, PackerConfigSummary, PreviewFilesResult, PreviewFilesOptions, DiffOptions, BuildSfxOptions, ExcludeRequest, ExcludeResult } from "../shared/ipc-types.js";
@@ -33,6 +35,7 @@ const configPath = path.join(toolRoot, "pack.config.yaml");
 
 let mainWindow: BrowserWindow | null = null;
 let engine: PackerEngine | null = null;
+const knownOutputDirs = new Set<string>();
 let engineRunning = false;
 
 function findToolRoot(startDir: string): string {
@@ -108,16 +111,25 @@ function registerIpcHandlers(): void {
   });
 
   ipcMain.handle("cf7-packer:preview-files", async (_event, opts?: PreviewFilesOptions): Promise<PreviewFilesResult> => {
-    const config = getConfig();
-    if (opts?.tag !== undefined && opts.tag !== null) {
-      if (!opts.tag) throw new Error("git-tag 模式需要指定非空的 tag 名称");
-      config.source.mode = "git-tag";
-      config.source.tag = opts.tag;
+    if (opts?.tag !== undefined && opts.tag !== null && !opts.tag) {
+      throw new Error("git-tag 模式需要指定非空的 tag 名称");
     }
+    const config = withSourceOverride(getConfig(), opts?.tag ? { tag: opts.tag } : undefined);
     const collected = await collect(config);
     const filtered = filterFiles(collected.files, config);
     if (config.source.mode === "worktree") {
       enrichWithSize(filtered.included, config.source.repoRoot);
+    } else if (config.source.mode === "git-tag" && config.source.tag) {
+      // git-tag 模式：批量获取文件大小
+      try {
+        const blobInfo = await getTagBlobInfo(config.source.repoRoot, config.source.tag);
+        for (const entry of filtered.included) {
+          const info = blobInfo.get(entry.path);
+          if (info) entry.size = info.size;
+        }
+      } catch {
+        // 获取失败不阻塞预览
+      }
     }
     return {
       included: filtered.included,
@@ -132,13 +144,9 @@ function registerIpcHandlers(): void {
     const repoRoot = config.source.repoRoot;
 
     async function collectFiltered(tag: string | null | undefined) {
-      const cfg = getConfig();
-      if (tag) {
-        cfg.source.mode = "git-tag";
-        cfg.source.tag = tag;
-      } else {
-        cfg.source.mode = "worktree";
-      }
+      const cfg = tag
+        ? withSourceOverride(getConfig(), { tag })
+        : getConfig();
       const collected = await collect(cfg);
       return filterFiles(collected.files, cfg);
     }
@@ -186,13 +194,10 @@ function registerIpcHandlers(): void {
   ipcMain.handle("cf7-packer:run", async (_event, opts: PackerRunOptions) => {
     if (engineRunning) throw new Error("打包正在运行中，请等待完成或取消");
 
-    const config = getConfig();
-
-    if (opts.tag !== undefined && opts.tag !== null) {
-      if (!opts.tag) throw new Error("git-tag 模式需要指定非空的 tag 名称");
-      config.source.mode = "git-tag";
-      config.source.tag = opts.tag;
+    if (opts.tag !== undefined && opts.tag !== null && !opts.tag) {
+      throw new Error("git-tag 模式需要指定非空的 tag 名称");
     }
+    const config = withSourceOverride(getConfig(), opts.tag ? { tag: opts.tag } : undefined);
 
     const outputDir = opts.outputDir
       ? resolveOutputDir(config, configPath, opts.outputDir)
@@ -213,12 +218,16 @@ function registerIpcHandlers(): void {
       });
 
       try {
-        return await engine.run({
+        const packResult = await engine.run({
           dryRun: opts.dryRun,
           outputDir,
           clean: config.output.clean,
           forceClean
         });
+        if (!packResult.cancelled && packResult.outputDir) {
+          knownOutputDirs.add(packResult.outputDir);
+        }
+        return packResult;
       } finally {
         engine = null;
         engineRunning = false;
@@ -384,7 +393,7 @@ function registerIpcHandlers(): void {
             label: "构建安装包",
             detail: "安装包构建完成"
           } satisfies PackerProgressEvent);
-          const match = stdout.match(/构建完成:\s*(\S+)/);
+          const match = stdout.match(/构建完成:\s*(.+?)(?:\s*\(|$)/);
           const outputPath = match?.[1]?.trim();
           resolve(outputPath ? { success: true, outputPath } : { success: true });
         }
@@ -411,6 +420,9 @@ function registerIpcHandlers(): void {
 
   ipcMain.handle("cf7-packer:reveal-output", async (_event, targetPath: string) => {
     const resolved = path.resolve(targetPath);
+    // 路径限制：只允许打开已知的输出目录及其子路径
+    const isAllowed = [...knownOutputDirs].some(dir => isPathInsideRoot(dir, resolved));
+    if (!isAllowed) return;
     if (fs.existsSync(resolved)) {
       const stats = fs.statSync(resolved);
       if (stats.isDirectory()) {
@@ -481,14 +493,6 @@ function registerIpcHandlers(): void {
       return { success: false, pattern: "", layerName: "", error: String(err) };
     }
   });
-}
-
-function estimateEtaMs(startedAtMs: number, current: number, total: number): number | undefined {
-  if (current <= 0 || total <= current) return undefined;
-  const elapsed = Date.now() - startedAtMs;
-  if (elapsed <= 0) return undefined;
-  const avgPerUnit = elapsed / current;
-  return Math.max(0, Math.round(avgPerUnit * (total - current)));
 }
 
 app.whenReady().then(() => {

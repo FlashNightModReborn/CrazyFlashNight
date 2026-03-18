@@ -11,6 +11,7 @@ import type {
 import { collect } from "./collector.js";
 import { filterFiles } from "./filter.js";
 import { pack } from "./packer.js";
+import { formatSize } from "./format.js";
 
 export interface PackerEngineEvents {
   log: [event: PackerLogEvent];
@@ -176,11 +177,4 @@ export class PackerEngine extends EventEmitter<PackerEngineEvents> {
       errors: []
     };
   }
-}
-
-function formatSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
 }

@@ -110,7 +110,15 @@ if [ "$BUILD_MODE" = "windows" ]; then
   echo "  压缩中（这可能需要几分钟）..."
   (cd "$STAGING" && "$SEVENZIP" a -t7z -mx=5 -r -bsp1 "$ARCHIVE" .)
 
-  # 7. 生成安装 bat
+  # 6b. 如果 7z.sfx 模块存在，生成真正的单文件自解压 exe
+  if [ -n "$SFX_MODULE" ] && [ -f "$SFX_MODULE" ]; then
+    SFX_EXE="$OUTPUT_DIR/CF7_${VERSION}_Setup.exe"
+    echo "  拼接 SFX 自解压包..."
+    cat "$SFX_MODULE" "$SFX_DIR/sfx-config.txt" "$ARCHIVE" > "$SFX_EXE"
+    echo "  SFX: $SFX_EXE"
+  fi
+
+  # 7. 生成安装 bat（用于无 SFX 模块时的 data.7z 分发）
   cat > "$OUTPUT_DIR/安装更新.bat" << 'BATEOF'
 @echo off
 chcp 65001 >nul 2>&1
@@ -138,19 +146,13 @@ if exist "C:\Program Files\7-Zip\7z.exe" set "SEVENZIP=C:\Program Files\7-Zip\7z
 if exist "C:\Program Files (x86)\7-Zip\7z.exe" set "SEVENZIP=C:\Program Files (x86)\7-Zip\7z.exe"
 
 if not defined SEVENZIP (
-    echo [!] 未检测到 7-Zip，正在使用 PowerShell 解压...
-    echo     这可能需要较长时间，建议安装 7-Zip 以获得更好的体验。
+    echo [X] 未检测到 7-Zip。本安装包使用 7z 格式压缩，需要 7-Zip 解压。
     echo.
-    mkdir "%EXTRACT_DIR%" 2>nul
-    powershell -Command "$ProgressPreference='SilentlyContinue'; Expand-Archive -Path '%ARCHIVE%' -DestinationPath '%EXTRACT_DIR%' -Force" 2>nul
-    if errorlevel 1 (
-        echo [X] PowerShell 解压失败。请安装 7-Zip 后重试:
-        echo     https://www.7-zip.org/
-        echo.
-        pause
-        exit /b 1
-    )
-    goto run_install
+    echo     请安装 7-Zip 后重试:
+    echo     https://www.7-zip.org/
+    echo.
+    pause
+    exit /b 1
 )
 
 echo  正在解压更新文件...

@@ -16,9 +16,19 @@ export function minifyXml(content: string): string {
   // 保护 CDATA 段
   const cdataSlots: string[] = [];
   let protected_ = content.replace(/<!\[CDATA\[[\s\S]*?\]\]>/g, (match) => {
+    const placeholder = `__CDATA_${cdataSlots.length}__`;
+    // 碰撞检测：占位符已存在于原文时直接返回原内容（不致密化）
+    if (content.includes(placeholder)) {
+      return match; // 标记碰撞，后续检测
+    }
     cdataSlots.push(match);
-    return `__CDATA_${cdataSlots.length - 1}__`;
+    return placeholder;
   });
+
+  // 碰撞检测：如果有 CDATA 段未被替换（占位符碰撞），回退返回原内容
+  if (/<!\[CDATA\[/.test(protected_)) {
+    return content;
+  }
 
   // 去除标签之间的纯空白
   protected_ = protected_.replace(/>\s+</g, "><");

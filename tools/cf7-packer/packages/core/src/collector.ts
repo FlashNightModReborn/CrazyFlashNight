@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFile } from "node:child_process";
 import type { CollectorResult, PackConfig } from "./types.js";
+import { validateGitRef } from "./git-utils.js";
 
 /** worktree 模式下硬编码排除的目录名 */
 const HARDCODED_EXCLUDE_DIRS = new Set([
@@ -92,6 +93,7 @@ export async function collect(config: PackConfig, signal?: AbortSignal): Promise
     if (!tag) {
       throw new Error("git-tag 模式需要指定 tag 名称");
     }
+    validateGitRef(tag);
     const files = await gitLsTree(repoRoot, tag, signal);
     return {
       files,

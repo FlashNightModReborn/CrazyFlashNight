@@ -3,7 +3,7 @@
 import path from "node:path";
 import fs from "node:fs";
 import { execFileSync } from "node:child_process";
-import { loadConfig, PackerEngine, collect, filterFiles, diffFilterResults, getModifiedPathsBetweenTags, resolveOutputDir } from "@cf7-packer/core";
+import { loadConfig, withSourceOverride, PackerEngine, collect, filterFiles, diffFilterResults, getModifiedPathsBetweenTags, resolveOutputDir, formatSize } from "@cf7-packer/core";
 import type { PackerLogEvent } from "@cf7-packer/core";
 
 const args = process.argv.slice(2);
@@ -41,13 +41,7 @@ async function runPack(): Promise<void> {
   const tag = getArg("--tag");
   const outputDir = getArg("--output");
 
-  const config = loadConfig(configPath);
-
-  // CLI 覆盖
-  if (tag) {
-    config.source.mode = "git-tag";
-    config.source.tag = tag;
-  }
+  const config = withSourceOverride(loadConfig(configPath), tag ? { tag } : undefined);
 
   const resolvedOutput = outputDir
     ? resolveOutputDir(config, configPath, outputDir)
@@ -212,13 +206,6 @@ function printHelp(): void {
   --output      覆盖输出目录
   --tag         使用指定 git tag 的文件快照
 `);
-}
-
-function formatSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
 }
 
 async function main(): Promise<void> {

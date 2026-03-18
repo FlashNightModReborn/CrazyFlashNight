@@ -1,4 +1,5 @@
 import { execFile } from "node:child_process";
+import { validateGitRef } from "./git-utils.js";
 
 /**
  * 从 git ls-tree -rl 输出中解析文件的 object hash 和大小。
@@ -11,6 +12,7 @@ export function getTagBlobInfo(
   tag: string,
   signal?: AbortSignal
 ): Promise<Map<string, { hash: string; size: number }>> {
+  validateGitRef(tag);
   return new Promise((resolve, reject) => {
     const child = execFile(
       "git",
@@ -103,6 +105,8 @@ export function getModifiedPathsBetweenTags(
   targetTag: string,
   signal?: AbortSignal
 ): Promise<Set<string>> {
+  validateGitRef(baseTag);
+  validateGitRef(targetTag);
   return new Promise((resolve, reject) => {
     const child = execFile(
       "git",
