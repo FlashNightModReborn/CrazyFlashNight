@@ -79,8 +79,20 @@ export interface PackerOptions {
   dryRun: boolean;
   outputDir: string;
   clean: boolean;
+  /** 跳过输出目录标记检查，由调用方负责确认。不可绕过路径安全校验。 */
+  forceClean?: boolean | undefined;
   signal?: AbortSignal | undefined;
   onProgress?: ((event: PackerProgressEvent) => void) | undefined;
+}
+
+/** 输出目录非本工具创建时抛出，调用方可捕获后提示用户确认 */
+export class OutputDirNotOwnedError extends Error {
+  readonly dir: string;
+  constructor(dir: string) {
+    super(`目标目录非本工具创建，拒绝清理: ${dir}（缺少 .cf7-packer-output 标记）`);
+    this.name = "OutputDirNotOwnedError";
+    this.dir = dir;
+  }
 }
 
 /** Packer 结果 */

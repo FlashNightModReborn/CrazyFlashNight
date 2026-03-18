@@ -4,6 +4,8 @@ export interface PackerRunOptions {
   dryRun: boolean;
   tag?: string | undefined;
   outputDir?: string | undefined;
+  /** 跳过输出目录标记检查（调用方已确认）。不可绕过路径安全校验。 */
+  forceClean?: boolean | undefined;
 }
 
 export interface PackerConfigSummary {
@@ -72,6 +74,7 @@ export interface PackerIpcApi {
   revealFile: (relativePath: string) => Promise<void>;
   pickOutputDir: (currentPath?: string) => Promise<{ canceled: boolean; path?: string }>;
   revealOutput: (targetPath: string) => Promise<void>;
+  confirmDelete: (filePath: string, isDir: boolean) => Promise<boolean>;
   excludeFile: (req: ExcludeRequest) => Promise<ExcludeResult>;
   onLog: (callback: (event: PackerLogEvent) => void) => () => void;
   onProgress: (callback: (event: PackerProgressEvent) => void) => () => void;

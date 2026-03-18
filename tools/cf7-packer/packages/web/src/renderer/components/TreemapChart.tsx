@@ -302,6 +302,11 @@ export default function TreemapChart({
     if (!ctxMenu) return;
     const api = window.cf7Packer;
     if (!api) return;
+    // 删除操作需要二次确认
+    if (deleteFromDisk) {
+      const confirmed = await api.confirmDelete(ctxMenu.path, ctxMenu.isDir);
+      if (!confirmed) { setCtxMenu(null); return; }
+    }
     const req: ExcludeRequest = {
       filePath: ctxMenu.path,
       isDir: ctxMenu.isDir,

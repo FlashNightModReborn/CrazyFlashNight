@@ -383,6 +383,8 @@ export default function App() {
   }
 
   const isRunning = status === "running";
+  const isTagModeWithoutTag = sourceMode === "git-tag" && !selectedTag;
+  const cannotExecute = isRunning || isTagModeWithoutTag;
   const progressPercent = progress && progress.total > 0
     ? Math.round((progress.current / progress.total) * 100) : 0;
   const hasPreview = previewFiles.length > 0;
@@ -491,13 +493,15 @@ export default function App() {
             <span className="panel-hint">可与左侧同栏显示，节省垂直空间</span>
           </div>
           <div className="action-buttons">
-            <button onClick={() => void runPack(true)} disabled={isRunning} className="btn btn-preview">
+            <button onClick={() => void runPack(true)} disabled={cannotExecute} className="btn btn-preview"
+              title={isTagModeWithoutTag ? "请先选择 Git 标签" : undefined}>
               ▶ 预览（干跑）
             </button>
-            <button onClick={() => void runPack(false)} disabled={isRunning} className="btn btn-execute">
+            <button onClick={() => void runPack(false)} disabled={cannotExecute} className="btn btn-execute"
+              title={isTagModeWithoutTag ? "请先选择 Git 标签" : undefined}>
               ▶▶ 执行打包
             </button>
-            {!hasPreview && !isRunning && (
+            {!hasPreview && !isRunning && !isTagModeWithoutTag && (
               <button onClick={() => void loadPreview()} disabled={loadingPreview} className="btn btn-browse">
                 {loadingPreview ? "加载中..." : "📂 浏览文件"}
               </button>

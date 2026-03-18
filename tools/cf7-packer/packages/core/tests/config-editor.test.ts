@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { applyExcludeMutation, resolveExcludeMutation } from "../src/config-editor.js";
+import path from "node:path";
+import { applyExcludeMutation, resolveExcludeMutation, prepareExcludeAction } from "../src/config-editor.js";
 import type { PackConfig } from "../src/types.js";
 
 function makeConfig(): PackConfig {
@@ -92,5 +93,35 @@ describe("config-editor", () => {
       filePath: "../secrets.txt",
       isDir: false
     })).toThrow("路径不能包含 ..");
+  });
+});
+
+describe("prepareExcludeAction", () => {
+  const repoRoot = path.resolve(import.meta.dirname, "../../..");
+
+  it("returns shouldDelete true for valid path with deleteFromDisk", () => {
+    const result = prepareExcludeAction(repoRoot, "data/items/weapon.xml", true);
+    expect(result.shouldDelete).toBe(true);
+    expect(result.normalizedPath).toBe("data/items/weapon.xml");
+    expect(result.fullPath).toBe(path.resolve(repoRoot, "data/items/weapon.xml"));
+    expect(result.error).toBeUndefined();
+  });
+
+  it("returns shouldDelete false when not requesting deletion", () => {
+    const result = prepareExcludeAction(repoRoot, "data/items/weapon.xml", false);
+    expect(result.shouldDelete).toBe(false);
+    expect(result.error).toBeUndefined();
+  });
+
+  it("rejects path traversal with ..", () => {
+    const result = prepareExcludeAction(repoRoot, "../etc/passwd", true);
+    expect(result.shouldDelete).toBe(false);
+    expect(result.error).toBe("路径无效");
+  });
+
+  it("rejects absolute paths", () => {
+    const result = prepareExcludeAction(repoRoot, "/etc/passwd", true);
+    expect(result.shouldDelete).toBe(false);
+    expect(result.error).toBe("路径无效");
   });
 });

@@ -1,6 +1,7 @@
+import path from "node:path";
 import { Scalar, parseDocument } from "yaml";
 import type { PackConfig, LayerRule } from "./types.js";
-import { normalizeLayerSource, normalizeRepoRelativePath } from "./path-utils.js";
+import { normalizeLayerSource, normalizeRepoRelativePath, isPathInsideRoot } from "./path-utils.js";
 
 export interface ExcludeTarget {
   filePath: string;
@@ -147,4 +148,44 @@ export function applyExcludeMutation(configContent: string, config: PackConfig, 
   }
 
   throw new Error(`配置文件中找不到 layer: ${result.layerName}`);
+}
+
+export interface PrepareExcludeActionResult {
+  /** 是否应删除磁盘文件 */
+  shouldDelete: boolean;
+  /** 解析后的绝对路径 */
+  fullPath: string;
+  /** 规范化后的相对路径 */
+  normalizedPath: string;
+  /** 错误信息（shouldDelete 为 false 时可能携带） */
+  error?: string | undefined;
+}
+
+/**
+ * 纯函数：判断排除+删除操作的合法性。
+ * 不执行任何 IO，不修改配置。由 main.ts handler 调用后决定是否弹确认框和执行删除。
+ */
+export function prepareExcludeAction(
+  repoRoot: string,
+  filePath: string,
+  deleteFromDisk: boolean
+): PrepareExcludeActionResult {
+  let normalizedPath: string;
+  try {
+    normalizedPath = normalizeRepoRelativePath(filePath);
+  } catch {
+    return { shouldDelete: false, fullPath: "", normalizedPath: "", error: "路径无效" };
+  }
+
+  const fullPath = path.resolve(repoRoot, normalizedPath);
+
+  if (!isPathInsideRoot(repoRoot, fullPath)) {
+    return { shouldDelete: false, fullPath, normalizedPath, error: "路径超出仓库范围" };
+  }
+
+  return {
+    shouldDelete: deleteFromDisk,
+    fullPath,
+    normalizedPath
+  };
 }

@@ -13,9 +13,11 @@ import {
   diffFilterResults,
   applyEstimatedSizes,
   applyExcludeMutation,
+  prepareExcludeAction,
   resolveOutputDir,
   normalizeRepoRelativePath,
-  isPathInsideRoot
+  isPathInsideRoot,
+  OutputDirNotOwnedError
 } from "@cf7-packer/core";
 import type { PackConfig, PackerLogEvent, PackerProgressEvent, DiffResult } from "@cf7-packer/core";
 import type { PackerRunOptions, PackerConfigSummary, PreviewFilesResult, PreviewFilesOptions, DiffOptions, BuildSfxOptions, ExcludeRequest, ExcludeResult } from "../shared/ipc-types.js";
@@ -104,7 +106,8 @@ function registerIpcHandlers(): void {
 
   ipcMain.handle("cf7-packer:preview-files", async (_event, opts?: PreviewFilesOptions): Promise<PreviewFilesResult> => {
     const config = getConfig();
-    if (opts?.tag) {
+    if (opts?.tag !== undefined && opts.tag !== null) {
+      if (!opts.tag) throw new Error("git-tag 模式需要指定非空的 tag 名称");
       config.source.mode = "git-tag";
       config.source.tag = opts.tag;
     }
@@ -143,11 +146,11 @@ function registerIpcHandlers(): void {
 
   ipcMain.handle("cf7-packer:run", async (_event, opts: PackerRunOptions) => {
     if (engineRunning) throw new Error("打包正在运行中，请等待完成或取消");
-    engineRunning = true;
 
     const config = getConfig();
 
-    if (opts.tag) {
+    if (opts.tag !== undefined && opts.tag !== null) {
+      if (!opts.tag) throw new Error("git-tag 模式需要指定非空的 tag 名称");
       config.source.mode = "git-tag";
       config.source.tag = opts.tag;
     }
@@ -156,25 +159,64 @@ function registerIpcHandlers(): void {
       ? resolveOutputDir(config, configPath, opts.outputDir)
       : resolveOutputDir(config, configPath);
 
-    engine = new PackerEngine(config);
+    let forceClean = opts.forceClean ?? false;
 
-    engine.on("log", (event: PackerLogEvent) => {
-      sendToRenderer("cf7-packer:log", event);
-    });
+    async function runEngine(): ReturnType<PackerEngine["run"]> {
+      engineRunning = true;
+      engine = new PackerEngine(config);
 
-    engine.on("progress", (event: PackerProgressEvent) => {
-      sendToRenderer("cf7-packer:progress", event);
-    });
+      engine.on("log", (event: PackerLogEvent) => {
+        sendToRenderer("cf7-packer:log", event);
+      });
+
+      engine.on("progress", (event: PackerProgressEvent) => {
+        sendToRenderer("cf7-packer:progress", event);
+      });
+
+      try {
+        return await engine.run({
+          dryRun: opts.dryRun,
+          outputDir,
+          clean: config.output.clean,
+          forceClean
+        });
+      } finally {
+        engine = null;
+        engineRunning = false;
+      }
+    }
 
     try {
-      return await engine.run({
-        dryRun: opts.dryRun,
-        outputDir,
-        clean: config.output.clean
-      });
-    } finally {
-      engine = null;
-      engineRunning = false;
+      return await runEngine();
+    } catch (err) {
+      if (err instanceof OutputDirNotOwnedError && mainWindow) {
+        const result = await dialog.showMessageBox(mainWindow, {
+          type: "warning",
+          buttons: ["取消", "确认清理"],
+          defaultId: 0,
+          cancelId: 0,
+          title: "输出目录确认",
+          message: "目标目录非本工具创建",
+          detail: `路径: ${err.dir}\n\n该目录缺少打包工具标记文件，继续将清空该目录。确认继续？`
+        });
+        if (result.response === 1) {
+          forceClean = true;
+          return await runEngine();
+        }
+        // 用户取消
+        return {
+          mode: "execute" as const,
+          cancelled: true,
+          totalFiles: 0,
+          copiedFiles: 0,
+          totalSize: 0,
+          layers: [],
+          outputDir,
+          duration: 0,
+          errors: []
+        };
+      }
+      throw err;
     }
   });
 
@@ -340,6 +382,23 @@ function registerIpcHandlers(): void {
     }
   });
 
+  ipcMain.handle("cf7-packer:confirm-delete", async (_event, filePath: string, isDir: boolean): Promise<boolean> => {
+    if (!mainWindow) return false;
+    const detail = isDir
+      ? `将递归删除目录 "${filePath}" 及其所有内容，并添加排除规则。\n此操作不可撤销。`
+      : `将删除文件 "${filePath}" 并添加排除规则。\n此操作不可撤销。`;
+    const result = await dialog.showMessageBox(mainWindow, {
+      type: "warning",
+      buttons: ["取消", "确认删除"],
+      defaultId: 0,
+      cancelId: 0,
+      title: "确认删除",
+      message: "确定要删除并排除？",
+      detail
+    });
+    return result.response === 1;
+  });
+
   ipcMain.handle("cf7-packer:exclude-file", async (_event, req: ExcludeRequest): Promise<ExcludeResult> => {
     try {
       const config = getConfig();
@@ -357,19 +416,19 @@ function registerIpcHandlers(): void {
           : `${action}: ${result.normalizedPath} → exclude: "${result.pattern}"`
       } satisfies PackerLogEvent);
 
-      // 如果需要删除文件
+      // 如果需要删除文件，使用 prepareExcludeAction 做安全校验
       if (req.deleteFromDisk) {
-        const fullPath = path.resolve(config.source.repoRoot, result.normalizedPath);
-        if (!isPathInsideRoot(config.source.repoRoot, fullPath)) {
-          return { success: false, pattern: result.pattern, layerName: result.layerName, error: "路径超出仓库范围" };
+        const prepared = prepareExcludeAction(config.source.repoRoot, req.filePath, true);
+        if (prepared.error) {
+          return { success: false, pattern: result.pattern, layerName: result.layerName, error: prepared.error };
         }
-        if (fs.existsSync(fullPath)) {
-          const stat = fs.statSync(fullPath);
-          fs.rmSync(fullPath, { recursive: true, force: true });
+        if (prepared.shouldDelete && fs.existsSync(prepared.fullPath)) {
+          const stat = fs.statSync(prepared.fullPath);
+          fs.rmSync(prepared.fullPath, { recursive: true, force: true });
           sendToRenderer("cf7-packer:log", {
             layer: result.layerName === "__global__" ? "global" : result.layerName,
             level: "warn",
-            message: `已从磁盘删除: ${result.normalizedPath}${stat.isDirectory() ? " (目录)" : ""}`
+            message: `已从磁盘删除: ${prepared.normalizedPath}${stat.isDirectory() ? " (目录)" : ""}`
           } satisfies PackerLogEvent);
         }
       }

@@ -86,6 +86,11 @@ export default function FileTreePanel({ files, layerFilter, focusPath = null, on
     const api = window.cf7Packer;
     if (!api) return;
     const node = contextMenu.node;
+    // 删除操作需要二次确认
+    if (deleteFromDisk) {
+      const confirmed = await api.confirmDelete(node.fullPath, node.isDir);
+      if (!confirmed) { setContextMenu(null); return; }
+    }
     const req: ExcludeRequest = {
       filePath: node.fullPath,
       isDir: node.isDir,

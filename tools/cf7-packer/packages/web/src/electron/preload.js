@@ -15,6 +15,7 @@ contextBridge.exposeInMainWorld("cf7Packer", {
   revealFile: (relativePath) => ipcRenderer.invoke("cf7-packer:reveal-file", relativePath),
   pickOutputDir: (currentPath) => ipcRenderer.invoke("cf7-packer:pick-output-dir", currentPath),
   revealOutput: (targetPath) => ipcRenderer.invoke("cf7-packer:reveal-output", targetPath),
+  confirmDelete: (filePath, isDir) => ipcRenderer.invoke("cf7-packer:confirm-delete", filePath, isDir),
   excludeFile: (req) => ipcRenderer.invoke("cf7-packer:exclude-file", req),
 
   onLog: (callback) => {

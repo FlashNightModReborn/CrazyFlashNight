@@ -1,9 +1,65 @@
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { execFile } from "node:child_process";
 import type { FilterResult, PackerOptions, PackResult, LayerSummary, PackConfig } from "./types.js";
+import { OutputDirNotOwnedError } from "./types.js";
+import { isPathInsideRoot } from "./path-utils.js";
 import { minifyByExtension } from "./minify.js";
 import { applyEstimatedSizes } from "./summary.js";
+
+const OUTPUT_DIR_MARKER = ".cf7-packer-output";
+
+/**
+ * 校验输出目录安全性。此校验无论 forceClean 如何，一律执行，不可跳过。
+ */
+export function validateOutputDir(outputDir: string, repoRoot: string): void {
+  const resolved = path.resolve(outputDir);
+  const resolvedRepo = path.resolve(repoRoot);
+
+  // 拒绝: 系统根目录
+  const root = path.parse(resolved).root;
+  if (resolved === root) {
+    throw new Error(`输出目录不能是系统根目录: ${resolved}`);
+  }
+
+  // 拒绝: 用户主目录
+  const home = path.resolve(os.homedir());
+  if (resolved === home) {
+    throw new Error(`输出目录不能是用户主目录: ${resolved}`);
+  }
+
+  // 拒绝: outputDir 等于 repoRoot
+  if (resolved === resolvedRepo) {
+    throw new Error(`输出目录不能等于仓库根目录: ${resolved}`);
+  }
+
+  // 拒绝: outputDir 是 repoRoot 的祖先（即 repoRoot 在 outputDir 内部）
+  if (isPathInsideRoot(resolved, resolvedRepo)) {
+    throw new Error(`输出目录不能包含仓库根目录: ${resolved}`);
+  }
+}
+
+/**
+ * 处理 clean 逻辑: 标记文件检查 + 清理 + 创建。
+ * 仅在 !dryRun 时调用。
+ */
+function prepareOutputDir(resolvedOutputDir: string, clean: boolean, forceClean: boolean): void {
+  if (clean && fs.existsSync(resolvedOutputDir)) {
+    const markerPath = path.join(resolvedOutputDir, OUTPUT_DIR_MARKER);
+    if (!fs.existsSync(markerPath) && !forceClean) {
+      throw new OutputDirNotOwnedError(resolvedOutputDir);
+    }
+    fs.rmSync(resolvedOutputDir, { recursive: true, force: true });
+  }
+  fs.mkdirSync(resolvedOutputDir, { recursive: true });
+  // 写入标记文件
+  fs.writeFileSync(
+    path.join(resolvedOutputDir, OUTPUT_DIR_MARKER),
+    `created=${new Date().toISOString()}\n`,
+    "utf8"
+  );
+}
 
 /**
  * 执行打包：将 filter 结果中的 included 文件复制到输出目录。
@@ -17,7 +73,7 @@ export async function pack(
   options: PackerOptions
 ): Promise<PackResult> {
   const startTime = Date.now();
-  const { dryRun, outputDir, clean, signal, onProgress } = options;
+  const { dryRun, outputDir, clean, forceClean, signal, onProgress } = options;
   const repoRoot = config.source.repoRoot;
   const isGitTag = config.source.mode === "git-tag";
   const tag = config.source.tag;
@@ -26,11 +82,11 @@ export async function pack(
   const minify = config.output.minify;
   const minifyExts = new Set(minify?.enabled ? minify.extensions : []);
 
+  // 安全校验（无论 dryRun/forceClean 均执行）
+  validateOutputDir(resolvedOutputDir, repoRoot);
+
   if (!dryRun) {
-    if (clean && fs.existsSync(resolvedOutputDir)) {
-      fs.rmSync(resolvedOutputDir, { recursive: true, force: true });
-    }
-    fs.mkdirSync(resolvedOutputDir, { recursive: true });
+    prepareOutputDir(resolvedOutputDir, clean, forceClean ?? false);
   }
 
   const errors: Array<{ path: string; error: string }> = [];

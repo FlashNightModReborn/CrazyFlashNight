@@ -2,8 +2,11 @@ import { describe, it, expect, afterEach } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import { pack } from "../src/packer.js";
+import { pack, validateOutputDir } from "../src/packer.js";
+import { OutputDirNotOwnedError } from "../src/types.js";
 import type { FilterResult, PackConfig, FileEntry, LayerSummary } from "../src/types.js";
+
+const OUTPUT_DIR_MARKER = ".cf7-packer-output";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 
@@ -79,9 +82,10 @@ describe("packer", () => {
     expect(fs.existsSync(path.join(outputDir, "vitest.config.ts"))).toBe(true);
   });
 
-  it("execute mode: clean option removes existing output", async () => {
+  it("execute mode: clean option removes existing owned output", async () => {
     const outputDir = path.join(getTempDir(), "output");
     fs.mkdirSync(outputDir, { recursive: true });
+    fs.writeFileSync(path.join(outputDir, OUTPUT_DIR_MARKER), "created=test\n");
     fs.writeFileSync(path.join(outputDir, "stale.txt"), "should be removed");
 
     const filterResult = makeFilterResult(["package.json"]);
@@ -93,6 +97,8 @@ describe("packer", () => {
 
     expect(fs.existsSync(path.join(outputDir, "stale.txt"))).toBe(false);
     expect(fs.existsSync(path.join(outputDir, "package.json"))).toBe(true);
+    // 标记文件应被重新创建
+    expect(fs.existsSync(path.join(outputDir, OUTPUT_DIR_MARKER))).toBe(true);
   });
 
   it("respects AbortSignal: stops mid-copy", async () => {
@@ -154,6 +160,77 @@ describe("packer", () => {
       total: 2,
       detail: "vitest.config.ts"
     });
+  });
+
+  // ── 输出目录安全校验 ──
+
+  it("validateOutputDir: rejects outputDir equal to repoRoot", () => {
+    expect(() => validateOutputDir(REPO_ROOT, REPO_ROOT)).toThrow("不能等于仓库根目录");
+  });
+
+  it("validateOutputDir: rejects outputDir that contains repoRoot", () => {
+    const parent = path.dirname(REPO_ROOT);
+    expect(() => validateOutputDir(parent, REPO_ROOT)).toThrow("不能包含仓库根目录");
+  });
+
+  it("validateOutputDir: rejects system root", () => {
+    const root = path.parse(REPO_ROOT).root;
+    expect(() => validateOutputDir(root, REPO_ROOT)).toThrow("系统根目录");
+  });
+
+  it("validateOutputDir: rejects user home directory", () => {
+    expect(() => validateOutputDir(os.homedir(), REPO_ROOT)).toThrow("用户主目录");
+  });
+
+  it("validateOutputDir: accepts valid output path", () => {
+    const validDir = path.join(os.tmpdir(), "cf7-test-output");
+    expect(() => validateOutputDir(validDir, REPO_ROOT)).not.toThrow();
+  });
+
+  it("clean: throws OutputDirNotOwnedError for unmarked directory without forceClean", async () => {
+    const outputDir = path.join(getTempDir(), "output");
+    fs.mkdirSync(outputDir, { recursive: true });
+    fs.writeFileSync(path.join(outputDir, "some-file.txt"), "data");
+
+    const filterResult = makeFilterResult(["package.json"]);
+    await expect(pack(filterResult, makeConfig(), {
+      dryRun: false,
+      outputDir,
+      clean: true
+    })).rejects.toThrow(OutputDirNotOwnedError);
+  });
+
+  it("clean: forceClean bypasses marker check for unmarked directory", async () => {
+    const outputDir = path.join(getTempDir(), "output");
+    fs.mkdirSync(outputDir, { recursive: true });
+    fs.writeFileSync(path.join(outputDir, "some-file.txt"), "data");
+
+    const filterResult = makeFilterResult(["package.json"]);
+    const result = await pack(filterResult, makeConfig(), {
+      dryRun: false,
+      outputDir,
+      clean: true,
+      forceClean: true
+    });
+
+    expect(result.copiedFiles).toBe(1);
+    expect(fs.existsSync(path.join(outputDir, "some-file.txt"))).toBe(false);
+    // 标记文件应被写入
+    expect(fs.existsSync(path.join(outputDir, OUTPUT_DIR_MARKER))).toBe(true);
+  });
+
+  it("clean: creates marker when output directory does not exist", async () => {
+    const outputDir = path.join(getTempDir(), "new-output");
+    const filterResult = makeFilterResult(["package.json"]);
+
+    await pack(filterResult, makeConfig(), {
+      dryRun: false,
+      outputDir,
+      clean: true
+    });
+
+    expect(fs.existsSync(path.join(outputDir, OUTPUT_DIR_MARKER))).toBe(true);
+    expect(fs.existsSync(path.join(outputDir, "package.json"))).toBe(true);
   });
 
   it.skipIf(process.platform === "win32")("preserves executable bits for worktree files", async () => {
