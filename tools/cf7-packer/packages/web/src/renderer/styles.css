@@ -687,6 +687,7 @@ body.is-resizing {
 .diff-stat { cursor: pointer; user-select: none; }
 .diff-added-stat { color: #2ecc71; }
 .diff-removed-stat { color: #e74c3c; }
+.diff-modified-stat { color: #f39c12; }
 .diff-unchanged-stat { color: #888; cursor: default; }
 .diff-file-list { padding: 4px 0; }
 .diff-file {
@@ -698,6 +699,7 @@ body.is-resizing {
 .diff-file:hover { background: #141e30; }
 .diff-file-added { color: #2ecc71; }
 .diff-file-removed { color: #e74c3c; }
+.diff-file-modified { color: #f39c12; }
 .diff-no-changes { color: #666; padding: 12px; text-align: center; }
 
 /* Sunburst */

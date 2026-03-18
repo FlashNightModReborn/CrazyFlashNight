@@ -238,7 +238,8 @@ export default function App() {
       }]);
       setStatus("error");
     }
-  }, [api, status, sourceMode, selectedTag, outputDir, previewFiles.length, loadPreview]);
+  }, [api, status, sourceMode, selectedTag, outputDir, previewFiles.length, loadPreview,
+      buildSfxAfterPack, sfxVersion, unityDataDir]);
 
   const handleCancel = useCallback(() => { api?.cancel(); }, [api]);
   const handleReveal = useCallback(() => {

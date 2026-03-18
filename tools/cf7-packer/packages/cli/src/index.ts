@@ -3,7 +3,7 @@
 import path from "node:path";
 import fs from "node:fs";
 import { execFileSync } from "node:child_process";
-import { loadConfig, PackerEngine, collect, filterFiles, diffFilterResults, resolveOutputDir } from "@cf7-packer/core";
+import { loadConfig, PackerEngine, collect, filterFiles, diffFilterResults, getModifiedPathsBetweenTags, resolveOutputDir } from "@cf7-packer/core";
 import type { PackerLogEvent } from "@cf7-packer/core";
 
 const args = process.argv.slice(2);
@@ -90,12 +90,14 @@ async function runPack(): Promise<void> {
 
   if (result.cancelled) {
     console.log("状态: 已取消");
+    process.exitCode = 130;
   }
   if (result.errors.length > 0) {
     console.log(`错误: ${result.errors.length} 个`);
     for (const err of result.errors.slice(0, 10)) {
       console.log(`  - ${err.path}: ${err.error}`);
     }
+    process.exitCode = 1;
   }
 
   console.log("\n层级统计:");
@@ -164,11 +166,20 @@ async function runDiff(): Promise<void> {
   const baseFiltered = filterFiles(baseCollected.files, baseConfig);
   const targetFiltered = filterFiles(targetCollected.files, targetConfig);
 
-  const diff = diffFilterResults(baseFiltered, targetFiltered);
+  // 内容变更检测（tag ↔ tag）
+  let modifiedPaths: Set<string> | undefined;
+  try {
+    modifiedPaths = await getModifiedPathsBetweenTags(config.source.repoRoot, baseTag, targetTag);
+  } catch {
+    // 检测失败不阻塞
+  }
+
+  const diff = diffFilterResults(baseFiltered, targetFiltered, modifiedPaths);
 
   console.log(`\n=== Diff: [${baseTag}] → [${targetTag}] ===`);
   console.log(`新增: ${diff.added.length} 文件`);
   console.log(`删除: ${diff.removed.length} 文件`);
+  console.log(`修改: ${diff.modified.length} 文件`);
   console.log(`不变: ${diff.unchanged} 文件`);
 
   if (diff.added.length > 0 && diff.added.length <= 50) {
@@ -178,6 +189,10 @@ async function runDiff(): Promise<void> {
   if (diff.removed.length > 0 && diff.removed.length <= 50) {
     console.log("\n删除文件:");
     for (const f of diff.removed) console.log(`  - ${f}`);
+  }
+  if (diff.modified.length > 0 && diff.modified.length <= 50) {
+    console.log("\n修改文件:");
+    for (const f of diff.modified) console.log(`  ~ ${f}`);
   }
 }
 

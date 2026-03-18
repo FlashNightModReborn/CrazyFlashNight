@@ -13,6 +13,7 @@ export default function DiffPanel({ tags, onDiff }: Props) {
   const [loading, setLoading] = useState(false);
   const [showAdded, setShowAdded] = useState(true);
   const [showRemoved, setShowRemoved] = useState(true);
+  const [showModified, setShowModified] = useState(true);
 
   const handleDiff = useCallback(async () => {
     setLoading(true);
@@ -61,6 +62,11 @@ export default function DiffPanel({ tags, onDiff }: Props) {
             <span className="diff-stat diff-removed-stat" onClick={() => setShowRemoved(!showRemoved)}>
               -{result.removed.length} 删除
             </span>
+            {result.modified.length > 0 && (
+              <span className="diff-stat diff-modified-stat" onClick={() => setShowModified(!showModified)}>
+                ~{result.modified.length} 修改
+              </span>
+            )}
             <span className="diff-stat diff-unchanged-stat">
               {result.unchanged} 不变
             </span>
@@ -69,10 +75,13 @@ export default function DiffPanel({ tags, onDiff }: Props) {
             {showAdded && result.added.map((f) => (
               <div key={f} className="diff-file diff-file-added">+ {f}</div>
             ))}
+            {showModified && result.modified.map((f) => (
+              <div key={f} className="diff-file diff-file-modified">~ {f}</div>
+            ))}
             {showRemoved && result.removed.map((f) => (
               <div key={f} className="diff-file diff-file-removed">- {f}</div>
             ))}
-            {result.added.length === 0 && result.removed.length === 0 && (
+            {result.added.length === 0 && result.removed.length === 0 && result.modified.length === 0 && (
               <div className="diff-file diff-no-changes">无差异</div>
             )}
           </div>

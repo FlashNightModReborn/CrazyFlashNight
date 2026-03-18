@@ -31,4 +31,5 @@ export { applyEstimatedSizes } from "./summary.js";
 export { resolveOutputDir, renderOutputDirTemplate, sanitizePathToken } from "./output-path.js";
 export { normalizeRepoRelativePath, normalizeLayerSource, isPathInsideRoot } from "./path-utils.js";
 export { applyExcludeMutation, resolveExcludeMutation, prepareExcludeAction } from "./config-editor.js";
+export { getTagBlobInfo, getWorktreeBlobHashes, getModifiedPathsBetweenTags } from "./content-hash.js";
 export type { PrepareExcludeActionResult } from "./config-editor.js";

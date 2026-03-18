@@ -112,6 +112,8 @@ export interface PackResult {
 export interface DiffResult {
   added: string[];
   removed: string[];
+  /** 路径相同但内容变化的文件 */
+  modified: string[];
   unchanged: number;
 }
 

@@ -14,6 +14,9 @@ import {
   applyEstimatedSizes,
   applyExcludeMutation,
   prepareExcludeAction,
+  getTagBlobInfo,
+  getWorktreeBlobHashes,
+  getModifiedPathsBetweenTags,
   resolveOutputDir,
   normalizeRepoRelativePath,
   isPathInsideRoot,
@@ -125,6 +128,9 @@ function registerIpcHandlers(): void {
   });
 
   ipcMain.handle("cf7-packer:diff-files", async (_event, opts: DiffOptions): Promise<DiffResult> => {
+    const config = getConfig();
+    const repoRoot = config.source.repoRoot;
+
     async function collectFiltered(tag: string | null | undefined) {
       const cfg = getConfig();
       if (tag) {
@@ -141,7 +147,40 @@ function registerIpcHandlers(): void {
       collectFiltered(opts.baseTag),
       collectFiltered(opts.targetTag)
     ]);
-    return diffFilterResults(baseline, target);
+
+    // 检测内容变更
+    let modifiedPaths: Set<string> | undefined;
+    const baseIsTag = !!opts.baseTag;
+    const targetIsTag = !!opts.targetTag;
+
+    try {
+      if (baseIsTag && targetIsTag) {
+        // tag ↔ tag: 单次 git diff --name-only
+        modifiedPaths = await getModifiedPathsBetweenTags(repoRoot, opts.baseTag!, opts.targetTag!);
+      } else if (baseIsTag !== targetIsTag) {
+        // tag ↔ worktree: 比较 object hash
+        const tag = baseIsTag ? opts.baseTag! : opts.targetTag!;
+        const tagInfo = await getTagBlobInfo(repoRoot, tag);
+        // 找 common 路径
+        const baselineSet = new Set(baseline.included.map(f => f.path));
+        const targetSet = new Set(target.included.map(f => f.path));
+        const commonPaths = [...baselineSet].filter(p => targetSet.has(p));
+        const worktreeHashes = await getWorktreeBlobHashes(repoRoot, commonPaths);
+        modifiedPaths = new Set<string>();
+        for (const p of commonPaths) {
+          const tagHash = tagInfo.get(p)?.hash;
+          const wtHash = worktreeHashes.get(p);
+          if (tagHash && wtHash && tagHash !== wtHash) {
+            modifiedPaths.add(p);
+          }
+        }
+      }
+      // worktree ↔ worktree: 无 content 检测，退化为纯路径比较
+    } catch {
+      // 内容检测失败不阻塞，退化为纯路径 diff
+    }
+
+    return diffFilterResults(baseline, target, modifiedPaths);
   });
 
   ipcMain.handle("cf7-packer:run", async (_event, opts: PackerRunOptions) => {
