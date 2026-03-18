@@ -58,8 +58,16 @@ describe("validateGitPath", () => {
     expect(() => validateGitPath("-evil.txt")).toThrow("以 - 开头");
   });
 
-  it("rejects path containing ..", () => {
-    expect(() => validateGitPath("../etc/passwd")).toThrow("含 ..");
+  it("rejects path with .. as path segment (directory traversal)", () => {
+    expect(() => validateGitPath("../etc/passwd")).toThrow("含 .. 路径段");
+    expect(() => validateGitPath("foo/../bar")).toThrow("含 .. 路径段");
+    expect(() => validateGitPath("foo/..")).toThrow("含 .. 路径段");
+  });
+
+  it("accepts filenames containing .. as substring (not traversal)", () => {
+    expect(() => validateGitPath("foo..bar.txt")).not.toThrow();
+    expect(() => validateGitPath("data/v2..3-changelog.xml")).not.toThrow();
+    expect(() => validateGitPath("release...notes")).not.toThrow();
   });
 
   it("rejects path with NUL", () => {

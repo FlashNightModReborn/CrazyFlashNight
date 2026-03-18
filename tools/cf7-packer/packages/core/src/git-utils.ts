@@ -38,8 +38,9 @@ export function validateGitPath(filePath: string): void {
   if (filePath.startsWith("-")) {
     throw new Error(`不安全的 git 路径（以 - 开头）: "${filePath}"`);
   }
-  if (filePath.includes("..")) {
-    throw new Error(`不安全的 git 路径（含 ..）: "${filePath}"`);
+  // 只拒绝 ".." 作为完整路径段（目录穿越），不拒绝文件名中的 ".."（如 foo..bar.txt）
+  if (/(^|\/)\.\.(\/|$)/.test(filePath)) {
+    throw new Error(`不安全的 git 路径（含 .. 路径段）: "${filePath}"`);
   }
   if (/[\x00]/.test(filePath)) {
     throw new Error(`不安全的 git 路径（含 NUL）: "${filePath}"`);
