@@ -23,6 +23,14 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# 净化 VERSION：去除路径分隔符和 .. 防止目录穿越
+VERSION="${VERSION//\//}"
+VERSION="${VERSION//\\/}"
+VERSION="${VERSION//../}"
+if [ -z "$VERSION" ]; then
+  VERSION="update"
+fi
+
 # 自动检测 pack output
 if [ -z "$PACK_OUTPUT" ]; then
   # 找最新的 output 子目录

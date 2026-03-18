@@ -8,8 +8,9 @@ import { fileURLToPath } from "node:url";
 const toolRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const requireFromTool = createRequire(path.join(toolRoot, "package.json"));
 
+// electron 二进制由 launch.bat 独立下载到 %TEMP%，不依赖 node_modules/electron/dist
+// 这里只检查 JS 依赖（构建和运行时所需的 npm 包）
 const requiredModules = [
-  "electron",
   "vite",
   "esbuild",
   "react",
