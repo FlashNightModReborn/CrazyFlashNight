@@ -39,7 +39,7 @@ export default function App() {
 
   const [previewFiles, setPreviewFiles] = useState<FileEntry[]>([]);
   const [expandedLayer, setExpandedLayer] = useState<string | null>(null);
-  const [detailTab, setDetailTab] = useState<DetailTab>("tree");
+  const [detailTab, setDetailTab] = useState<DetailTab>("config");
   const [loadingPreview, setLoadingPreview] = useState(false);
 
   const [buildSfxAfterPack, setBuildSfxAfterPack] = useState(false);
@@ -144,12 +144,14 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api]);
 
-  // Auto-switch to config tab when tree tab has nothing to show
+  // Auto-switch to tree tab once preview data first arrives
+  const firstPreviewDone = useRef(false);
   useEffect(() => {
-    if (detailTab === "tree" && previewFiles.length === 0) {
-      setDetailTab("config");
+    if (previewFiles.length > 0 && !firstPreviewDone.current) {
+      firstPreviewDone.current = true;
+      setDetailTab("tree");
     }
-  }, [detailTab, previewFiles.length, setDetailTab]);
+  }, [previewFiles.length, setDetailTab]);
 
   // External config change auto-sync
   useEffect(() => {

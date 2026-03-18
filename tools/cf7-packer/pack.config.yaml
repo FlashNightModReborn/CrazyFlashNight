@@ -75,8 +75,7 @@ layers:
       # BGM 配置与音乐文件
       - "bgm_list.xml"
       - "**/*.mp3"
-    exclude:
-      - "阿卡music/**"
+    exclude: []
 
   - name: config
     description: "运行时配置"

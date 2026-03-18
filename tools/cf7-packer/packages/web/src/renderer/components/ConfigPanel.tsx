@@ -14,9 +14,11 @@ interface ConfigPanelProps {
 export default function ConfigPanel({ api, onSaveAndRefresh, isRunning }: ConfigPanelProps) {
   const [editorMode, setEditorMode] = useState<EditorMode>("basic");
   const {
-    rawYaml, isDirty, hasExternalConflict, errors, loading,
+    rawYaml, isDirty, conflictSource, errors, loading,
     loadFromDisk, saveAndRefresh, setRawYaml, dismissConflict
   } = useConfigEditor(api, onSaveAndRefresh);
+
+  const isInternal = conflictSource === "internal";
 
   return (
     <div className="config-panel">
@@ -58,14 +60,24 @@ export default function ConfigPanel({ api, onSaveAndRefresh, isRunning }: Config
         </div>
       </div>
 
-      {hasExternalConflict && (
-        <div className="config-conflict-bar">
-          <span>配置文件已被外部修改</span>
+      {conflictSource && (
+        <div className={`config-conflict-bar ${isInternal ? "config-conflict-internal" : ""}`}>
+          <span>
+            {isInternal
+              ? "你刚才的操作（如排除文件）已修改了配置文件"
+              : "配置文件已被外部修改"}
+          </span>
           <button className="btn-small" onClick={() => void loadFromDisk()}>
-            重新加载
+            {isInternal ? "加载最新版本" : "重新加载"}
           </button>
-          <button className="btn-small" onClick={dismissConflict}>
-            保留本地修改
+          <button
+            className="btn-small"
+            onClick={dismissConflict}
+            title={isInternal
+              ? "保留你正在编辑的内容，刚才的排除操作结果将在你下次保存时被覆盖"
+              : "保留你正在编辑的内容，磁盘上的修改将在你下次保存时被覆盖"}
+          >
+            保留编辑中的内容
           </button>
         </div>
       )}

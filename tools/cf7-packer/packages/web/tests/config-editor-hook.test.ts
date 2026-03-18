@@ -126,10 +126,10 @@ describe("useConfigEditor", () => {
 
     expect(result.current.rawYaml).toBe("externally: changed\n");
     expect(result.current.isDirty).toBe(false);
-    expect(result.current.hasExternalConflict).toBe(false);
+    expect(result.current.conflictSource).toBeNull();
   });
 
-  it("external change + dirty → conflict flag, no auto reload", async () => {
+  it("external change + dirty → conflict source 'external', no auto reload", async () => {
     const { result } = renderHook(() =>
       useConfigEditor(mock.api, onSaveAndRefresh)
     );
@@ -141,7 +141,7 @@ describe("useConfigEditor", () => {
     const callsBefore = (mock.api.readRawConfig as ReturnType<typeof vi.fn>).mock.calls.length;
     act(() => { mock.fireConfigChanged(); });
 
-    expect(result.current.hasExternalConflict).toBe(true);
+    expect(result.current.conflictSource).toBe("external");
     // Should NOT have reloaded from disk
     expect((mock.api.readRawConfig as ReturnType<typeof vi.fn>).mock.calls.length).toBe(callsBefore);
     // Local content preserved
@@ -156,10 +156,10 @@ describe("useConfigEditor", () => {
 
     act(() => { result.current.setRawYaml("local\n"); });
     act(() => { mock.fireConfigChanged(); });
-    expect(result.current.hasExternalConflict).toBe(true);
+    expect(result.current.conflictSource).toBe("external");
 
     act(() => { result.current.dismissConflict(); });
-    expect(result.current.hasExternalConflict).toBe(false);
+    expect(result.current.conflictSource).toBeNull();
     expect(result.current.rawYaml).toBe("local\n"); // preserved
   });
 
@@ -192,7 +192,7 @@ describe("useConfigEditor", () => {
     // Draft preserved, conflict shown — NOT silently overwritten
     expect(result.current.rawYaml).toBe("user edits\n");
     expect(result.current.isDirty).toBe(true);
-    expect(result.current.hasExternalConflict).toBe(true);
+    expect(result.current.conflictSource).toBe("internal");
   });
 
   it("loadFromDisk resets all state", async () => {
@@ -207,14 +207,14 @@ describe("useConfigEditor", () => {
     // Force a conflict
     act(() => { mock.fireConfigChanged(); });
     expect(result.current.isDirty).toBe(true);
-    expect(result.current.hasExternalConflict).toBe(true);
+    expect(result.current.conflictSource).toBe("external");
 
     mock.setDiskContent("fresh: content\n");
     await act(async () => { await result.current.loadFromDisk(); });
 
     expect(result.current.rawYaml).toBe("fresh: content\n");
     expect(result.current.isDirty).toBe(false);
-    expect(result.current.hasExternalConflict).toBe(false);
+    expect(result.current.conflictSource).toBeNull();
     expect(result.current.errors).toHaveLength(0);
   });
 });

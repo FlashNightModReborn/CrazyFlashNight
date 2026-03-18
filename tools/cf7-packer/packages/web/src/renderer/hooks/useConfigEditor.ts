@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { PackerIpcApi, SaveConfigResult } from "../../shared/ipc-types.js";
 
+export type ConflictSource = "external" | "internal" | null;
+
 export interface UseConfigEditorResult {
   rawYaml: string;
   isDirty: boolean;
-  hasExternalConflict: boolean;
+  conflictSource: ConflictSource;
   errors: Array<{ path: string; message: string }>;
   loading: boolean;
   loadFromDisk: () => Promise<void>;
@@ -20,7 +22,7 @@ export function useConfigEditor(
   const [rawYaml, setRawYamlState] = useState("");
   const [savedYaml, setSavedYaml] = useState("");
   const [isDirty, setIsDirty] = useState(false);
-  const [hasExternalConflict, setHasExternalConflict] = useState(false);
+  const [conflictSource, setConflictSource] = useState<ConflictSource>(null);
   const [errors, setErrors] = useState<Array<{ path: string; message: string }>>([]);
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +38,7 @@ export function useConfigEditor(
       setRawYamlState(result.content);
       setSavedYaml(result.content);
       setIsDirty(false);
-      setHasExternalConflict(false);
+      setConflictSource(null);
       setErrors([]);
     } finally {
       if (mountedRef.current) setLoading(false);
@@ -56,7 +58,7 @@ export function useConfigEditor(
       setErrors([]);
       setSavedYaml(rawYaml);
       setIsDirty(false);
-      setHasExternalConflict(false);
+      setConflictSource(null);
       await onSaveAndRefresh();
     } finally {
       if (mountedRef.current) setLoading(false);
@@ -70,7 +72,7 @@ export function useConfigEditor(
   }, []);
 
   const dismissConflict = useCallback(() => {
-    setHasExternalConflict(false);
+    setConflictSource(null);
   }, []);
 
   // Initial load
@@ -83,7 +85,7 @@ export function useConfigEditor(
     if (!api?.onConfigChanged) return;
     return api.onConfigChanged(() => {
       if (isDirty) {
-        setHasExternalConflict(true);
+        setConflictSource("external");
       } else {
         void loadFromDisk();
       }
@@ -91,12 +93,12 @@ export function useConfigEditor(
   }, [api, isDirty, loadFromDisk]);
 
   // Internal mutation listener (R14: right-click exclude etc.)
-  // Same dirty-awareness as external changes — don't silently overwrite drafts
+  // Same dirty-awareness — don't silently overwrite drafts
   useEffect(() => {
     if (!api?.onConfigMutated) return;
     return api.onConfigMutated(() => {
       if (isDirty) {
-        setHasExternalConflict(true);
+        setConflictSource("internal");
       } else {
         void loadFromDisk();
       }
@@ -106,7 +108,7 @@ export function useConfigEditor(
   return {
     rawYaml,
     isDirty,
-    hasExternalConflict,
+    conflictSource,
     errors,
     loading,
     loadFromDisk,
