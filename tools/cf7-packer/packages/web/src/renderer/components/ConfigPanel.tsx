@@ -1,5 +1,9 @@
+import { useState } from "react";
 import { useConfigEditor } from "../hooks/useConfigEditor.js";
+import BasicEditor from "./BasicEditor.js";
 import type { PackerIpcApi } from "../../shared/ipc-types.js";
+
+type EditorMode = "basic" | "advanced";
 
 interface ConfigPanelProps {
   api: PackerIpcApi | undefined;
@@ -8,6 +12,7 @@ interface ConfigPanelProps {
 }
 
 export default function ConfigPanel({ api, onSaveAndRefresh, isRunning }: ConfigPanelProps) {
+  const [editorMode, setEditorMode] = useState<EditorMode>("basic");
   const {
     rawYaml, isDirty, hasExternalConflict, errors, loading,
     loadFromDisk, saveAndRefresh, setRawYaml, dismissConflict
@@ -17,6 +22,20 @@ export default function ConfigPanel({ api, onSaveAndRefresh, isRunning }: Config
     <div className="config-panel">
       <div className="config-toolbar">
         <div className="config-toolbar-left">
+          <div className="config-mode-toggle" role="group" aria-label="编辑模式">
+            <button
+              className={`config-mode-btn ${editorMode === "basic" ? "active" : ""}`}
+              onClick={() => setEditorMode("basic")}
+            >
+              基础
+            </button>
+            <button
+              className={`config-mode-btn ${editorMode === "advanced" ? "active" : ""}`}
+              onClick={() => setEditorMode("advanced")}
+            >
+              高级
+            </button>
+          </div>
           {isDirty && <span className="config-dirty-badge">* 未保存</span>}
           {loading && <span className="config-loading">加载中...</span>}
         </div>
@@ -62,13 +81,21 @@ export default function ConfigPanel({ api, onSaveAndRefresh, isRunning }: Config
         </div>
       )}
 
-      <textarea
-        className="config-editor"
-        value={rawYaml}
-        onChange={(e) => setRawYaml(e.target.value)}
-        spellCheck={false}
-        disabled={loading}
-      />
+      {editorMode === "basic" ? (
+        <BasicEditor
+          rawYaml={rawYaml}
+          onChange={setRawYaml}
+          disabled={loading}
+        />
+      ) : (
+        <textarea
+          className="config-editor"
+          value={rawYaml}
+          onChange={(e) => setRawYaml(e.target.value)}
+          spellCheck={false}
+          disabled={loading}
+        />
+      )}
     </div>
   );
 }

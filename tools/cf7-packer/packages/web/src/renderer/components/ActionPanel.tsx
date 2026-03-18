@@ -47,19 +47,20 @@ export default function ActionPanel({
     <section className="section action-section control-pane motion-surface">
       <div className="panel-title-row">
         <h2>执行操作</h2>
-        <span className="panel-hint">可与左侧同栏显示，节省垂直空间</span>
+        <span className="panel-hint">先预览确认，再执行打包</span>
       </div>
       <div className="action-buttons">
         <button onClick={() => onRunPack(true)} disabled={cannotExecute} className="btn btn-preview"
-          title={isTagModeWithoutTag ? "请先选择 Git 标签" : undefined}>
+          title={isTagModeWithoutTag ? "请先选择 Git 标签" : "只扫描和统计，不复制文件，用来确认打包范围是否正确"}>
           ▶ 预览（干跑）
         </button>
         <button onClick={() => onRunPack(false)} disabled={cannotExecute} className="btn btn-execute"
-          title={isTagModeWithoutTag ? "请先选择 Git 标签" : undefined}>
+          title={isTagModeWithoutTag ? "请先选择 Git 标签" : "实际复制文件到输出目录，完成后可直接发布"}>
           ▶▶ 执行打包
         </button>
         {!hasPreview && !isRunning && !isTagModeWithoutTag && (
-          <button onClick={onLoadPreview} disabled={loadingPreview} className="btn btn-browse">
+          <button onClick={onLoadPreview} disabled={loadingPreview} className="btn btn-browse"
+            title="快速查看哪些文件会被打包，不执行任何操作">
             {loadingPreview ? "加载中..." : "📂 浏览文件"}
           </button>
         )}

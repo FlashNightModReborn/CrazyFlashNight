@@ -36,30 +36,33 @@ export default function DiffPanel({ tags, onDiff }: Props) {
     <div className="diff-panel">
       <div className="diff-controls">
         <div className="diff-select-group">
-          <label>基线:</label>
+          <label title="对比的起点——旧版本">基线:</label>
           <select value={baseTag} onChange={(e) => setBaseTag(e.target.value)}>
             {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
-        <span className="diff-arrow">→</span>
+        <span className="diff-arrow" title="从基线到目标，查看有什么变化">→</span>
         <div className="diff-select-group">
-          <label>目标:</label>
+          <label title="对比的终点——新版本或当前文件">目标:</label>
           <select value={targetTag} onChange={(e) => setTargetTag(e.target.value)}>
             {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
-        <button className="btn-small" onClick={() => void handleDiff()} disabled={loading}>
+        <button className="btn-small" onClick={() => void handleDiff()} disabled={loading}
+          title="对比两个版本之间文件的增删改情况">
           {loading ? "对比中..." : "执行对比"}
         </button>
       </div>
 
       {result && (
         <div className="diff-result">
-          <div className="diff-summary">
-            <span className="diff-stat diff-added-stat" onClick={() => setShowAdded(!showAdded)}>
+          <div className="diff-summary" title="点击颜色标签可显示/隐藏对应类别">
+            <span className="diff-stat diff-added-stat" onClick={() => setShowAdded(!showAdded)}
+              title="目标版本中新出现的文件">
               +{result.added.length} 新增
             </span>
-            <span className="diff-stat diff-removed-stat" onClick={() => setShowRemoved(!showRemoved)}>
+            <span className="diff-stat diff-removed-stat" onClick={() => setShowRemoved(!showRemoved)}
+              title="目标版本中被删除的文件">
               -{result.removed.length} 删除
             </span>
             {result.modified.length > 0 && (

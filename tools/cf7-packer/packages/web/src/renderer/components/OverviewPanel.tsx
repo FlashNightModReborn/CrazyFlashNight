@@ -59,10 +59,15 @@ export default function OverviewPanel({
         className="section layer-section motion-surface motion-split-pane"
         style={{ flexBasis: `${layerSplit * 100}%`, flexGrow: 0, flexShrink: 0 }}
       >
-        <h2>层级统计 {hasPreview && <span className="layer-hint">（点击行查看详情）</span>}</h2>
+        <h2>层级统计 {hasPreview && <span className="layer-hint">（点击行可筛选文件树和图表）</span>}</h2>
         <div className="layer-table-wrapper">
           <table className="layer-table">
-            <thead><tr><th>层级</th><th>文件数</th><th>排除</th><th>估算大小</th></tr></thead>
+            <thead><tr>
+              <th title="配置中定义的文件分组">层级</th>
+              <th title="该层包含的文件数量">文件数</th>
+              <th title="被排除规则过滤掉的文件数量">排除</th>
+              <th title="所有文件大小的总和（预估值）">估算大小</th>
+            </tr></thead>
             <tbody>
               {layers.map((l) => (
                 <tr key={l.name}

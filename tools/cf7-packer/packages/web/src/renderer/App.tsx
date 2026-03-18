@@ -153,16 +153,20 @@ export default function App() {
   }, [api, fullReload]);
 
   // Preview loading (kept for lightweight refresh, e.g. after exclude)
+  // Shares reloadTokenRef with fullReload — last caller wins, stale results discarded
   const loadPreview = useCallback(async () => {
     if (!api || loadingPreview) return;
+    const token = ++reloadTokenRef.current;
     setLoadingPreview(true);
     try {
       const preview = await api.previewFiles(
         sourceMode === "git-tag" ? { tag: selectedTag } : undefined
       );
+      if (reloadTokenRef.current !== token) return;
       setPreviewFiles(preview.included);
       setLayers(preview.layers);
     } catch (err) {
+      if (reloadTokenRef.current !== token) return;
       setLogs((prev) => [...prev, {
         id: nextLogId(),
         event: { layer: "system", level: "error", message: `预览失败: ${String(err)}` }
@@ -226,7 +230,6 @@ export default function App() {
   const cannotExecute = isRunning || isTagModeWithoutTag;
   const hasPreview = previewFiles.length > 0;
   const showOverview = layers.length > 0;
-  const showDetail = hasPreview || tags.length > 0;
   const hasActiveScope = Boolean(selectedScopeLayer || selectedScopePath);
 
   return (
@@ -340,11 +343,10 @@ export default function App() {
         )}
 
         <div className="bottom-split" ref={bottomSplitRef}>
-          {showDetail && (
-            <section
-              className="section detail-section motion-surface motion-split-pane"
-              style={{ flexBasis: `${detailSplit * 100}%`, flexGrow: 0, flexShrink: 0 }}
-            >
+          <section
+            className="section detail-section motion-surface motion-split-pane"
+            style={{ flexBasis: `${detailSplit * 100}%`, flexGrow: 0, flexShrink: 0 }}
+          >
             <div className="detail-tabs">
               {hasPreview && (
                 <button className={`detail-tab ${detailTab === "tree" ? "active" : ""}`}
@@ -370,31 +372,29 @@ export default function App() {
                   onDiff={async (baseTag, targetTag) => api!.diffFiles({ baseTag, targetTag })}
                 />
               )}
-              {detailTab === "config" && (
+              {/* ConfigPanel always mounted to preserve editor draft state across tab switches */}
+              <div style={{ display: detailTab === "config" ? "contents" : "none" }}>
                 <ConfigPanel
                   api={api}
                   onSaveAndRefresh={fullReload}
                   isRunning={isRunning}
                 />
-              )}
+              </div>
             </div>
-            </section>
-          )}
-          {showDetail && (
-            <ResizeHandle
-              orientation="vertical"
-              title="拖动调整文件树与日志宽度"
-              isActive={activeResizeHandle === "detail"}
-              onStartResize={(clientX, clientY) => beginResize(clientX, clientY, {
-                handleId: "detail",
-                container: bottomSplitRef,
-                axis: "x",
-                min: 0.52,
-                max: 0.88,
-                setValue: setDetailSplit
-              })}
-            />
-          )}
+          </section>
+          <ResizeHandle
+            orientation="vertical"
+            title="拖动调整文件树与日志宽度"
+            isActive={activeResizeHandle === "detail"}
+            onStartResize={(clientX, clientY) => beginResize(clientX, clientY, {
+              handleId: "detail",
+              container: bottomSplitRef,
+              axis: "x",
+              min: 0.52,
+              max: 0.88,
+              setValue: setDetailSplit
+            })}
+          />
 
           <LogPanel logs={logs} logEndRef={logEndRef} />
         </div>

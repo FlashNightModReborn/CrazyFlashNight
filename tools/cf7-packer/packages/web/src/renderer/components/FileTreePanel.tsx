@@ -113,20 +113,21 @@ export default function FileTreePanel({ files, layerFilter, focusPath = null, on
   return (
     <div className="file-tree-panel">
       <div className="file-tree-header">
-        <span className="file-tree-scope" title={scopeLabel}>{scopeLabel}</span>
+        <span className="file-tree-scope" title={`当前范围: ${scopeLabel}（点击上方层级统计可切换）`}>{scopeLabel}</span>
         <div className="file-tree-search">
           <input
             type="text"
-            placeholder="搜索文件..."
+            placeholder="输入文件名搜索..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="file-tree-search-input"
+            title="输入至少 2 个字符开始搜索，匹配文件路径中任意位置"
           />
           {searchQuery && (
             <button className="file-tree-search-clear" onClick={() => setSearchQuery("")}>✕</button>
           )}
         </div>
-        <span className="file-tree-count">
+        <span className="file-tree-count" title="右键文件或文件夹可打开、排除或删除">
           {debouncedQuery.length >= 2
             ? `${tree.fileCount} / ${totalFiles} 文件`
             : `${tree.fileCount} 个文件, ${formatSize(tree.size)}`
@@ -135,7 +136,7 @@ export default function FileTreePanel({ files, layerFilter, focusPath = null, on
       </div>
       <div className="file-tree-body">
         {tree.fileCount === 0 ? (
-          <div className="file-tree-empty">{debouncedQuery ? "无匹配文件" : "无文件"}</div>
+          <div className="file-tree-empty">{debouncedQuery ? "无匹配文件" : "无文件（请先执行预览）"}</div>
         ) : (
           tree.children.map((child) => (
             <TreeNodeView
