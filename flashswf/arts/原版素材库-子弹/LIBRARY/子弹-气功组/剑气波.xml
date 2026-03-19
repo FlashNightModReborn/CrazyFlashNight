@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/剑气波" itemID="690e085d-000010d3" linkageExportForAS="true" linkageIdentifier="剑气波" lastModified="1773865751" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-气功组/剑气波" itemID="690e085d-000010d3" linkageExportForAS="true" linkageIdentifier="剑气波" lastModified="1762611132" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="剑气波">
+    <DOMTimeline name="剑气波" currentFrame="23">
       <layers>
-        <DOMLayer name="Labels Layer" color="#D43C7C" locked="true">
+        <DOMLayer name="Labels Layer" color="#D43C7C">
           <frames>
             <DOMFrame index="0" duration="24" keyMode="9728">
               <elements/>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#FBB32D" locked="true">
+        <DOMLayer name="Script Layer" color="#FBB32D">
           <frames>
             <DOMFrame index="0" duration="24" keyMode="9728">
               <Actionscript>
@@ -38,7 +38,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#4E75CC" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#4E75CC" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -62,7 +62,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="12" centerPoint3DY="-26.9">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="12" centerPoint3DY="-26.9">
                   <matrix>
                     <Matrix a="5.06878662109375" d="2.93035888671875" tx="-0.5" ty="-39.4"/>
                   </matrix>
@@ -165,17 +165,35 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#FCE2A8" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="24" keyMode="9728">
+            <DOMFrame index="0" duration="23" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="子弹-气功组/超气功波/蓝色扩散波/蓝色扩散波" symbolType="graphic" firstFrame="2" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/月牙刀光" centerPoint3DX="-2.1" centerPoint3DY="7">
                   <matrix>
-                    <Matrix a="0.608810424804688" d="0.608810424804688" tx="110" ty="18"/>
+                    <Matrix a="0.705093383789063" c="-0.365707397460938" d="0.422592163085938" tx="-24.8" ty="2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="255" blueOffset="255" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/月牙刀光" centerPoint3DX="-2.1" centerPoint3DY="7">
+                  <matrix>
+                    <Matrix a="0.705093383789063" c="-0.365707397460938" d="0.422592163085938" tx="-24.8" ty="2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0" redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="255" blueOffset="255" greenOffset="255"/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -184,7 +202,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#CD7C67" locked="true">
+        <DOMLayer name="Sound Layer 0" color="#CD7C67">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>

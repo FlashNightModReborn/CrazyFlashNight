@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-剑气释放" itemID="6958f3c4-00003690" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-剑气释放" lastModified="1773918679" lastUniqueIdentifier="4136">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-剑气释放" itemID="6958f3c4-00003690" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-剑气释放" lastModified="1769694923" lastUniqueIdentifier="4136">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-剑气释放" currentFrame="5">
+    <DOMTimeline name="兵器攻击容器-剑气释放" currentFrame="12">
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
@@ -113,14 +113,14 @@ _parent.UpdateSmallState("剑气释放中");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="394.3" centerPoint3DY="-142.25">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="394.3" centerPoint3DY="-142.25">
                   <matrix>
                     <Matrix a="17.1313629150391" d="7.18408203125" tx="423.1" ty="-13.85"/>
                   </matrix>
@@ -133,10 +133,10 @@ _parent.UpdateSmallState("剑气释放中");]]></script>
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 3;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "剑气波";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1.5 + _parent._parent.内力 * 1;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
 	if (_parent._parent.mp攻击加成)
 	{
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成 * 1;
@@ -600,7 +600,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#8E8EAF" locked="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#8E8EAF" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
