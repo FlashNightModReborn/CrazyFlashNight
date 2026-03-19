@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-飞沙走石" itemID="695a4279-000014b2" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-飞沙走石" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-飞沙走石" itemID="695a4279-000014b2" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-飞沙走石" lastModified="1773917436">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-飞沙走石" currentFrame="8">
+    <DOMTimeline name="兵器攻击容器-飞沙走石" currentFrame="4">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -113,14 +113,14 @@ _parent.UpdateSmallState("飞沙走石中");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="400.15" centerPoint3DY="124.9">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="400.15" centerPoint3DY="124.9">
                   <matrix>
                     <Matrix a="17.1313629150391" d="6.68292236328125" tx="428.95" ty="258.95"/>
                   </matrix>
@@ -298,7 +298,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

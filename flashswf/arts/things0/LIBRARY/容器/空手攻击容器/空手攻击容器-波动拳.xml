@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-波动拳" itemID="6963b380-0000111d" linkageExportForAS="true" linkageIdentifier="空手攻击容器-波动拳" lastModified="1771960383" lastUniqueIdentifier="840">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-波动拳" itemID="6963b380-0000111d" linkageExportForAS="true" linkageIdentifier="空手攻击容器-波动拳" lastModified="1773918325" lastUniqueIdentifier="840">
   <timeline>
-    <DOMTimeline name="空手攻击容器-波动拳" currentFrame="10">
+    <DOMTimeline name="空手攻击容器-波动拳" currentFrame="6">
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -45,14 +45,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#73BC75" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#73BC75" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="394.3" centerPoint3DY="-241.85">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="394.3" centerPoint3DY="-241.85">
                   <matrix>
                     <Matrix a="7.40716552734375" d="6.3651123046875" tx="301.75" ty="-103.4"/>
                   </matrix>
@@ -68,7 +68,7 @@
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "波动拳";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 + _parent._parent.内力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 + _parent._parent.内力 ;
 	子弹属性.子弹速度 = 20;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 50;
@@ -116,7 +116,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#4FB28F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#4FB28F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
