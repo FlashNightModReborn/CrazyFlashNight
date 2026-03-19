@@ -133,6 +133,18 @@ if [ "$BUILD_MODE" = "windows" ]; then
   echo "  压缩中（这可能需要几分钟）..."
   (cd "$STAGING" && "$SEVENZIP" a -t7z -mx=5 -r -bsp1 "$ARCHIVE" .)
 
+  # 6.5. 将 7z.exe + 7z.dll 复制到产物目录，使用户无需安装 7-Zip 即可解压
+  SEVENZIP_DIR="$(dirname "$SEVENZIP")"
+  BUNDLED_7Z=false
+  if [ -f "$SEVENZIP_DIR/7z.exe" ] && [ -f "$SEVENZIP_DIR/7z.dll" ]; then
+    cp "$SEVENZIP_DIR/7z.exe" "$OUTPUT_DIR/"
+    cp "$SEVENZIP_DIR/7z.dll" "$OUTPUT_DIR/"
+    BUNDLED_7Z=true
+    echo "  已捆绑 7z.exe + 7z.dll 到产物目录"
+  else
+    echo "  [!] 未找到 7z.dll，产物将依赖用户系统安装的 7-Zip"
+  fi
+
   # 7. 生成安装 bat（data.7z + bat 分发，无需签名，不触发智能应用控制）
   cat > "$OUTPUT_DIR/安装更新.bat" << 'BATEOF'
 @echo off
@@ -158,13 +170,18 @@ if not defined ARCHIVE (
     exit /b 1
 )
 
-REM 查找 7z
+REM 查找 7z：优先同目录自带的 7z.exe，再找系统安装
 set "SEVENZIP="
-if exist "C:\Program Files\7-Zip\7z.exe" set "SEVENZIP=C:\Program Files\7-Zip\7z.exe"
-if exist "C:\Program Files (x86)\7-Zip\7z.exe" set "SEVENZIP=C:\Program Files (x86)\7-Zip\7z.exe"
+if exist "%SCRIPT_DIR%7z.exe" (
+    set "SEVENZIP=%SCRIPT_DIR%7z.exe"
+) else if exist "C:\Program Files\7-Zip\7z.exe" (
+    set "SEVENZIP=C:\Program Files\7-Zip\7z.exe"
+) else if exist "C:\Program Files (x86)\7-Zip\7z.exe" (
+    set "SEVENZIP=C:\Program Files (x86)\7-Zip\7z.exe"
+)
 
 if not defined SEVENZIP (
-    echo [X] 未检测到 7-Zip。本安装包使用 7z 格式压缩，需要 7-Zip 解压。
+    echo [X] 未检测到 7-Zip，且安装包中未附带 7z.exe。
     echo.
     echo     请安装 7-Zip 后重试:
     echo     https://www.7-zip.org/

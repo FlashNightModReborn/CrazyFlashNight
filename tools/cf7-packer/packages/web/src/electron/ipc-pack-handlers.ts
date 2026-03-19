@@ -7,7 +7,8 @@ import {
   resolveOutputDir,
   OutputDirNotOwnedError,
   estimateEtaMs,
-  withSourceOverride
+  withSourceOverride,
+  isPathInsideRoot
 } from "@cf7-packer/core";
 import type { PackerLogEvent, PackerProgressEvent } from "@cf7-packer/core";
 import type { PackerRunOptions, BuildSfxOptions } from "../shared/ipc-types.js";
@@ -99,6 +100,27 @@ export function registerPackHandlers(ctx: IpcContext): void {
     // 白名单校验 version：仅允许字母、数字、中文、点、连字符、下划线、空格
     if (opts.version && !/^[\w.\-\u4e00-\u9fff ]+$/.test(opts.version)) {
       return { success: false, error: `版本名含非法字符: "${opts.version}"（仅允许字母、数字、中文、点、连字符、下划线、空格）` };
+    }
+
+    // 校验 packOutput 必须在已知输出目录或 toolRoot/output 内
+    const resolvedPackOutput = path.resolve(opts.packOutput);
+    const outputBase = path.resolve(ctx.toolRoot, "output");
+    const packOutputAllowed =
+      isPathInsideRoot(outputBase, resolvedPackOutput) ||
+      [...ctx.knownOutputDirs].some(dir => isPathInsideRoot(dir, resolvedPackOutput));
+    if (!packOutputAllowed) {
+      return { success: false, error: `packOutput 路径不在允许范围内: "${opts.packOutput}"` };
+    }
+
+    // 校验 unityDataDir（如果提供）必须在 repoRoot 或内置 assets 目录内
+    if (opts.unityDataDir) {
+      const resolvedUnityData = path.resolve(opts.unityDataDir);
+      const config = ctx.getConfig();
+      const assetsDir = path.resolve(ctx.toolRoot, "assets");
+      if (!isPathInsideRoot(config.source.repoRoot, resolvedUnityData) &&
+          !isPathInsideRoot(assetsDir, resolvedUnityData)) {
+        return { success: false, error: `unityDataDir 路径不在允许范围内: "${opts.unityDataDir}"` };
+      }
     }
 
     const { spawn } = await import("node:child_process");
@@ -202,8 +224,13 @@ export function registerPackHandlers(ctx: IpcContext): void {
             detail: "安装包构建完成"
           } satisfies PackerProgressEvent);
           const match = stdout.match(/构建完成:\s*(.+)\s+\(/);
-          const outputPath = (match?.[1] ?? stdout.match(/构建完成:\s*(.+)/)?.[1])?.trim();
+          let outputPath = (match?.[1] ?? stdout.match(/构建完成:\s*(.+)/)?.[1])?.trim();
           if (outputPath) {
+            // Git Bash 输出 /c/Users/... 格式，Windows 的 path.resolve 会误解为 C:\c\Users\...
+            // 需要转换为 C:/Users/... 格式
+            if (isWindows) {
+              outputPath = outputPath.replace(/^\/([a-zA-Z])\//, "$1:/");
+            }
             // 将 SFX 输出路径及其所在目录加入已知输出目录，使 revealOutput 可用
             const resolved = path.resolve(outputPath);
             ctx.knownOutputDirs.add(resolved);

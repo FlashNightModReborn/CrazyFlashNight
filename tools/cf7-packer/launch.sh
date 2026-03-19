@@ -29,6 +29,15 @@ NPM_EXE="$TOOL_ROOT/node_modules/electron/dist/$ELECTRON_BIN_NAME"
 MIRROR_URL="https://cdn.npmmirror.com/binaries/electron/v${ELECTRON_VER}/electron-v${ELECTRON_VER}-${PLATFORM}.zip"
 GITHUB_URL="https://github.com/electron/electron/releases/download/v${ELECTRON_VER}/electron-v${ELECTRON_VER}-${PLATFORM}.zip"
 
+# SHA256 checksums from official Electron SHASUMS256.txt
+declare -A ELECTRON_SHA256=(
+  ["win32-x64"]="b87b2d6167845ece1d373eb37f5ce49868a07ec90203de44b6bd415d6c673c6d"
+  ["darwin-x64"]="48a426bb5df999dd46c0700261a1a7f572b17581c4c0d1c28afade5ae600cdc9"
+  ["darwin-arm64"]="2fe3a3cfad607a8c1627f6f2bb9834f959c665ef575b663206db11929634b92f"
+  ["linux-x64"]="368d155a2189e1056d111d334b712779e77066fce1f5ab935b22c4ef544eaa29"
+)
+EXPECTED_SHA256="${ELECTRON_SHA256[$PLATFORM]}"
+
 # ═══ 阶段 1: npm 依赖 + 构建产物 ═══
 node scripts/ensure-runtime.mjs
 
@@ -95,6 +104,28 @@ else
         ELECTRON_DIST="$TOOL_ROOT/node_modules/electron/dist"
       fi
     fi
+  fi
+
+  # 校验 SHA256
+  if [ "$download_ok" = true ] && [ -f "$ZIP_PATH" ]; then
+    echo "    校验 SHA256..."
+    if command -v sha256sum &>/dev/null; then
+      ACTUAL_SHA256=$(sha256sum "$ZIP_PATH" | awk '{print $1}')
+    elif command -v shasum &>/dev/null; then
+      ACTUAL_SHA256=$(shasum -a 256 "$ZIP_PATH" | awk '{print $1}')
+    else
+      echo "    [!] 未找到 sha256sum 或 shasum，跳过校验"
+      ACTUAL_SHA256="$EXPECTED_SHA256"
+    fi
+    if [ "$ACTUAL_SHA256" != "$EXPECTED_SHA256" ]; then
+      echo "[X] SHA256 校验失败！"
+      echo "    期望: $EXPECTED_SHA256"
+      echo "    实际: $ACTUAL_SHA256"
+      echo "    下载文件可能已损坏或被篡改。"
+      rm -f "$ZIP_PATH"
+      exit 1
+    fi
+    echo "    校验通过。"
   fi
 
   # 从 zip 解压

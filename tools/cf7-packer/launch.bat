@@ -13,6 +13,7 @@ set "CACHE_DIR=%TEMP%\cf7-electron-v%ELECTRON_VER%"
 set "CACHE_EXE=!CACHE_DIR!\dist\electron.exe"
 set "NPM_EXE=!TOOL_ROOT!node_modules\electron\dist\electron.exe"
 
+set "EXPECTED_SHA256=b87b2d6167845ece1d373eb37f5ce49868a07ec90203de44b6bd415d6c673c6d"
 set "MIRROR_URL=https://cdn.npmmirror.com/binaries/electron/v%ELECTRON_VER%/electron-v%ELECTRON_VER%-win32-x64.zip"
 set "GITHUB_URL=https://github.com/electron/electron/releases/download/v%ELECTRON_VER%/electron-v%ELECTRON_VER%-win32-x64.zip"
 
@@ -111,6 +112,20 @@ echo     Then re-run launch.bat.
 goto :fail
 
 :download_done
+
+:: === Phase 3.5: verify checksum ===
+echo     Verifying SHA256 checksum...
+for /f "delims=" %%H in ('certutil -hashfile "!ZIP_PATH!" SHA256 ^| findstr /r "^[0-9a-f]"') do set "ACTUAL_SHA256=%%H"
+set "ACTUAL_SHA256=!ACTUAL_SHA256: =!"
+if /i not "!ACTUAL_SHA256!"=="!EXPECTED_SHA256!" (
+    echo [X] SHA256 checksum mismatch!
+    echo     Expected: !EXPECTED_SHA256!
+    echo     Actual:   !ACTUAL_SHA256!
+    echo     The downloaded file may be corrupted or tampered with.
+    del "!ZIP_PATH!" 2>nul
+    goto :fail
+)
+echo     Checksum OK.
 
 :: === Phase 4: extract ===
 echo     Extracting...
