@@ -259,7 +259,12 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 var rMP:Number = that[remainingMagProp];
 
                 // 使用状态管理器的决策 API 判断是否应该换弹
-                if (stateManager.shouldAutoReloadOnEmpty(isHeroControlled, hasImpactChain, rMP)) {
+                // 枪械师战术换弹：0弹匣但回收池够免费换弹时也允许自动换弹
+                if (stateManager.shouldAutoReloadOnEmpty(isHeroControlled, hasImpactChain, rMP)
+                    || (isHeroControlled && rMP <= 0
+                        && parentRef[weaponType + "属性"].reloadType != "tube"
+                        && parentRef.被动技能.枪械师 && parentRef.被动技能.枪械师.启用
+                        && ReloadManager.canTacticalFreeReload(parentRef, weaponType, parentRef.被动技能.枪械师.等级 || 1))) {
                     that.开始换弹();
                 }
                 // 弹夹已空，无论是否换弹都不能继续射击

@@ -4,6 +4,7 @@ import org.flashNight.naki.DataStructures.*;
 import org.flashNight.neur.Event.*;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
+import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 
 class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
@@ -275,7 +276,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 检查弹匣是否打空
         if (core[attackMode].value.shot >= core[magazineCapName]) {
             // 若剩余弹匣>0 或非控制目标，触发换弹
-            if (protagonist.剩余弹匣数 > 0 || _root.控制目标 != core._name) {
+            // 枪械师战术换弹：0弹匣但回收池够免费换弹时也允许自动换弹
+            if (protagonist.剩余弹匣数 > 0 || _root.控制目标 != core._name
+                || (core[attackMode + "属性"].reloadType != "tube"
+                    && core.被动技能.枪械师 && core.被动技能.枪械师.启用
+                    && ReloadManager.canTacticalFreeReload(core, attackMode, core.被动技能.枪械师.等级 || 1))) {
                 protagonist.开始换弹();
             }
             return;

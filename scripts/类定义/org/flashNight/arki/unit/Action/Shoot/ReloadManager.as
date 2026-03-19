@@ -521,10 +521,12 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
                 // canFinish 因另一手无弹匣而返回 true 时，检查另一手是否可以战术免费换弹
                 // 如果可以，不提前结束，让动画继续到另一手
+                // tube 类型不参与战术换弹（reloadCount 含义不同）
                 if (canFinish && gs && gs.启用) {
                     var otherType:String = (handPrefix == "主手") ? "手枪2" : "手枪";
                     var otherNeedsReload:Boolean = (handPrefix == "主手") ? !stateManager.subIsFull : !stateManager.mainIsFull;
                     if (otherNeedsReload
+                        && parentRef[otherType + "属性"].reloadType != "tube"
                         && ReloadManager.canTacticalFreeReload(parentRef, otherType, gs.等级 || 1)) {
                         canFinish = false;
                     }
