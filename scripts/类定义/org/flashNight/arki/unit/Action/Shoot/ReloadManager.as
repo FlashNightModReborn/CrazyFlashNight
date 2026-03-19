@@ -126,6 +126,61 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
  *   3. 调整 savedFrames 公式时，需同步考虑固定帧的锚定效应
  *
  * ============================================================================
+ * 战术换弹（枪械师被动 - 弹药回收）
+ * ============================================================================
+ *
+ * 一、机制概述
+ * ----------------------------------------------------------------------------
+ * 非tube类型武器换弹时，回收旧弹匣中未使用的弹药到 reloadCount 池。
+ * 当 reloadCount >= capacity 时，下次换弹免费（不消耗弹匣）。
+ * 仅在枪械师被动技能启用时生效。
+ *
+ * 二、核心公式
+ * ----------------------------------------------------------------------------
+ * 回收率 = 0.5 + (level - 1) * 0.5 / 9
+ *   - 1级: 50%    10级: 100%
+ *
+ * 回收量 = floor(remaining * 回收率)
+ *   remaining = capacity - shot（旧弹匣剩余弹药）
+ *
+ * reloadCount 理论上界 = 2×(capacity-1)，无需显式上限检查
+ *
+ * 三、数值示例（30发弹匣，打5发换弹）
+ * ----------------------------------------------------------------------------
+ *   | 等级 | 回收率 | 回收量 | 每N次换弹免费1次 | 弹匣节省率 |
+ *   |------|--------|--------|------------------|-----------|
+ *   | 1级  | 50%    | 12发   | 每3次免费1次     | 33%       |
+ *   | 5级  | 72%    | 18发   | 每2次免费1次     | 50%       |
+ *   | 10级 | 100%   | 25发   | 每6次免费5次     | 83%       |
+ *
+ * 四、与tube逐发换弹的关系
+ * ----------------------------------------------------------------------------
+ * tube类型武器的 reloadCount 用于逐发填充进度，与战术换弹互斥：
+ *   - tube类型：reloadCount = 门禁逐发消耗的换弹额度（原有机制）
+ *   - 非tube类型：reloadCount = 战术换弹累积的回收弹药（新机制）
+ * 两者共用同一字段但路径完全分离，不会冲突。
+ *
+ * 五、触发链路
+ * ----------------------------------------------------------------------------
+ * startReload → 入口检查（有弹匣 → 正常 / 无弹匣 + canTacticalFreeReload → 放行）
+ *     ↓
+ * reloadMagazine（单武器）/ createHandReloadFunction（双枪）→ _applyTacticalRecovery
+ *     ├─ 回收率 × 剩余弹药 → 累积到 reloadCount
+ *     ├─ reloadCount >= capacity → 免费换弹（shot=0，reloadCount -= capacity）
+ *     └─ reloadCount < capacity → 正常消耗弹匣（reloadCount 保留继续累积）
+ *
+ * createDualGunReloadStartFunction:
+ *     decideReloadHand=0（无弹匣）→ 兜底检查 canTacticalFreeReload → 有则进入换弹
+ *
+ * createHandReloadFunction（双枪 canFinish 判定后）:
+ *     canFinish=true 时 → 追加检查另一手是否可 canTacticalFreeReload → 可则继续换弹
+ *
+ * 安全守卫:
+ *     - tube 类型不参与战术换弹（双枪兜底入口过滤）
+ *     - createHandReloadFunction 的正常路径在 singleSubmit 前检查弹匣存在性
+ *     - 场景切换时清零 reloadCount（关卡系统_lsy_场景转换.as）
+ *
+ * ============================================================================
  */
 class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
     
@@ -161,6 +216,17 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             if (ItemUtil.singleContain(target.使用弹匣名称, 1) != null) {
                 target.换弹标签 = true;
                 target.gotoAndPlay("换弹匣");
+                return;
+            }
+
+            // 枪械师战术换弹：无弹匣但回收弹药够一整匣，允许免费换弹
+            // tube类型走逐发换弹机制，不参与战术换弹
+            if (reloadType != "tube"
+                && parentRef.被动技能.枪械师
+                && parentRef.被动技能.枪械师.启用
+                && ReloadManager.canTacticalFreeReload(parentRef, attackMode, parentRef.被动技能.枪械师.等级 || 1)) {
+                target.换弹标签 = true;
+                target.gotoAndPlay("换弹匣");
             }
         } else {
             // AI角色直接进入换弹状态
@@ -183,12 +249,23 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
         var attackMode:String = parentRef.攻击模式;
 
-        // 重置射击次数
-        parentRef[attackMode].value.shot = 0;
-
         // 检查是否为玩家控制的角色
         if (parentRef === TargetCacheManager.findHero()) {
-            // 消耗一个弹匣
+            var weaponValue:Object = parentRef[attackMode].value;
+            var capacity:Number = parentRef[attackMode + "弹匣容量"];
+
+            // 枪械师战术换弹：回收未用弹药
+            var gs:Object = parentRef.被动技能.枪械师;
+            if (gs && gs.启用
+                && ReloadManager._applyTacticalRecovery(weaponValue, capacity, gs.等级 || 1)) {
+                // 免费换弹完成（shot已重置，reloadCount已扣减）
+                parentRef.当前弹夹副武器已发射数 = 0;
+                ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
+                return;
+            }
+
+            // 正常换弹：重置射击次数，消耗弹匣
+            weaponValue.shot = 0;
             ItemUtil.singleSubmit(target.使用弹匣名称, 1);
 
             // 更新剩余弹匣数
@@ -204,6 +281,9 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
             // 刷新UI显示
             ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
+        } else {
+            // AI角色：直接重置射击次数
+            parentRef[attackMode].value.shot = 0;
         }
     }
     
@@ -337,7 +417,31 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                         that.换弹标签 = true;
                         that.gotoAndPlay("副手换弹匣");
                         return;
-                    default: // 0: 不需要换弹
+                    default: // 0: 不需要换弹（弹匣不足）
+                        // 枪械师战术换弹兜底：无弹匣但回收弹药够免费换弹
+                        // tube 类型走逐发机制，不参与战术换弹
+                        var gs:Object = parentRef.被动技能.枪械师;
+                        if (gs && gs.启用) {
+                            var gsLv:Number = gs.等级 || 1;
+                            if (!stateManager.mainIsFull
+                                && parentRef.手枪属性.reloadType != "tube"
+                                && ReloadManager.canTacticalFreeReload(parentRef, "手枪", gsLv)) {
+                                that.dualReloadStartHand = "主手";
+                                delete that._dualReloadFirstInitStartFrame;
+                                that.换弹标签 = true;
+                                that.gotoAndPlay("主手换弹匣");
+                                return;
+                            }
+                            if (!stateManager.subIsFull
+                                && parentRef.手枪2属性.reloadType != "tube"
+                                && ReloadManager.canTacticalFreeReload(parentRef, "手枪2", gsLv)) {
+                                that.dualReloadStartHand = "副手";
+                                delete that._dualReloadFirstInitStartFrame;
+                                that.换弹标签 = true;
+                                that.gotoAndPlay("副手换弹匣");
+                                return;
+                            }
+                        }
                         delete that.dualReloadStartHand;
                         delete that._dualReloadFirstInitStartFrame;
                         that.gotoAndPlay("换弹结束");
@@ -376,43 +480,117 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 return;
             }
 
-            // 重置射击次数
-            parentRef[weaponType].value.shot = 0;
-
             if (parentRef === TargetCacheManager.findHero()) {
-                // 使用弹匣
-                ItemUtil.singleSubmit(that[magNameProp], 1);
-                
+                var weaponValue:Object = parentRef[weaponType].value;
+                var capacity:Number = parentRef[weaponType + "弹匣容量"];
+
+                // 枪械师战术换弹：回收未用弹药
+                var gs:Object = parentRef.被动技能.枪械师;
+                var isFreeReload:Boolean = (gs && gs.启用)
+                    && ReloadManager._applyTacticalRecovery(weaponValue, capacity, gs.等级 || 1);
+
+                if (!isFreeReload) {
+                    // 正常换弹：重置射击次数，消耗弹匣
+                    weaponValue.shot = 0;
+                    // 安全守卫：通过战术兜底进入但回收不足时，确认弹匣存在再消耗
+                    if (ItemUtil.singleContain(that[magNameProp], 1) != null) {
+                        ItemUtil.singleSubmit(that[magNameProp], 1);
+                    }
+                }
+
                 // 更新弹匣数量（两把枪都需要更新）
                 that.主手剩余弹匣数 = ItemUtil.getTotal(that.主手使用弹匣名称);
                 that.副手剩余弹匣数 = ItemUtil.getTotal(that.副手使用弹匣名称);
-                
-                // 检查弹匣耗尽
-                if (that[handPrefix + "剩余弹匣数"] === 0) {
+
+                if (!isFreeReload && that[handPrefix + "剩余弹匣数"] === 0) {
                     rootRef.发布消息("弹匣耗尽！");
                 }
-                
-                // 更新物品与显示
+
                 ReloadManager.updateAmmoDisplay(that, parentRef, rootRef);
-                
-                // 更新武器状态
                 stateManager.updateState();
 
-                var passiveSkills:Object = parentRef.被动技能;
-                var hasImpactChain:Boolean = Boolean(passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用);
-                
-                // 使用状态管理器检查是否可以结束换弹
+                var hasImpactChain:Boolean = !!(parentRef.被动技能.冲击连携 && parentRef.被动技能.冲击连携.启用);
+
+                // 检查是否可以结束换弹
+                var canFinish:Boolean;
                 if (handPrefix == "主手") {
-                    if (stateManager.canFinishMainHandReload(that.主手剩余弹匣数, that.副手剩余弹匣数, hasImpactChain)) {
-                        that.gotoAndPlay("换弹结束");
-                    }
+                    canFinish = stateManager.canFinishMainHandReload(that.主手剩余弹匣数, that.副手剩余弹匣数, hasImpactChain);
                 } else {
-                    if (stateManager.canFinishSubHandReload(that.主手剩余弹匣数, that.副手剩余弹匣数, hasImpactChain)) {
-                        that.gotoAndPlay("换弹结束");
+                    canFinish = stateManager.canFinishSubHandReload(that.主手剩余弹匣数, that.副手剩余弹匣数, hasImpactChain);
+                }
+
+                // canFinish 因另一手无弹匣而返回 true 时，检查另一手是否可以战术免费换弹
+                // 如果可以，不提前结束，让动画继续到另一手
+                if (canFinish && gs && gs.启用) {
+                    var otherType:String = (handPrefix == "主手") ? "手枪2" : "手枪";
+                    var otherNeedsReload:Boolean = (handPrefix == "主手") ? !stateManager.subIsFull : !stateManager.mainIsFull;
+                    if (otherNeedsReload
+                        && ReloadManager.canTacticalFreeReload(parentRef, otherType, gs.等级 || 1)) {
+                        canFinish = false;
                     }
                 }
+
+                if (canFinish) {
+                    that.gotoAndPlay("换弹结束");
+                }
+            } else {
+                // AI角色：直接重置射击次数
+                parentRef[weaponType].value.shot = 0;
             }
         };
+    }
+
+    // ============================================================
+    // 枪械师战术换弹 (Tactical Reload System)
+    // ============================================================
+    //
+    // 回收率公式（内联使用，不单独抽方法）：
+    //   rate = 0.5 + (level - 1) * 0.5 / 9    // 1级50%, 10级100%
+    //   recovered = floor((capacity - shot) * rate)
+
+    /**
+     * 预判某武器是否可以通过战术换弹获得免费换弹
+     * 用于 startReload / createDualGunReloadStartFunction 的入口检查
+     *
+     * @param parentRef 父级引用
+     * @param weaponType 武器类型索引（如 "长枪"、"手枪"、"手枪2"）
+     * @param gunslingerLevel 枪械师等级 (1-10)
+     * @return 是否可以免费换弹
+     */
+    public static function canTacticalFreeReload(parentRef:Object, weaponType:String, gunslingerLevel:Number):Boolean {
+        var wv:Object = parentRef[weaponType].value;
+        var capacity:Number = parentRef[weaponType + "弹匣容量"];
+        var remaining:Number = capacity - wv.shot;
+        var recovered:Number = Math.floor(remaining * (0.5 + (gunslingerLevel - 1) * 0.5 / 9));
+        var rc:Number = Number(wv.reloadCount);
+        if (isNaN(rc) || rc < 0) rc = 0;
+        return (rc + recovered) >= capacity;
+    }
+
+    /**
+     * 执行战术换弹回收逻辑
+     * 回收旧弹匣剩余弹药 → reloadCount >= capacity 时免费换弹
+     *
+     * @param weaponValue 武器 value 对象（含 shot、reloadCount）
+     * @param capacity 弹匣容量
+     * @param gunslingerLevel 枪械师等级
+     * @return true = 免费换弹已完成（shot已重置），false = 需正常消耗弹匣
+     */
+    private static function _applyTacticalRecovery(weaponValue:Object, capacity:Number, gunslingerLevel:Number):Boolean {
+        var remaining:Number = capacity - weaponValue.shot;
+        var recovered:Number = Math.floor(remaining * (0.5 + (gunslingerLevel - 1) * 0.5 / 9));
+        var rc:Number = Number(weaponValue.reloadCount);
+        if (isNaN(rc) || rc < 0) rc = 0;
+        rc += recovered;
+
+        if (rc >= capacity) {
+            weaponValue.reloadCount = rc - capacity;
+            weaponValue.shot = 0;
+            return true;
+        }
+
+        weaponValue.reloadCount = rc;
+        return false;
     }
 
     // ============================================================

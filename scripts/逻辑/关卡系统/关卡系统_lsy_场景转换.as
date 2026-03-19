@@ -445,6 +445,7 @@ _root.场景转换函数.场景切换时补充玩家弹药 = function(){
 		var item = 装备栏.getItem(keys[i]);
 		if(item.value.level > 0){
 			item.value.shot = 0;
+			item.value.reloadCount = 0;
 		}
 	}
 }
