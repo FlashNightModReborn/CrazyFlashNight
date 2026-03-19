@@ -112,6 +112,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 缓存常用全局对象和属性引用
         var root:Object = _root;
         var man:Object  = core.man;
+
+        // 防御：换弹期间不允许射击任务抢时间轴
+        if (man.换弹标签) return false;
+
         var controlTarget:Object = root.控制目标;
 
         // 利用 Dictionary.getStaticUID 为 params 建立或获取缓存配置
@@ -542,6 +546,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         chainProp:String,
         releasedProp:String
     ):Void {
+        // 防御：换弹期间停止连射链
+        if (core.man.换弹标签) {
+            delete core[chainProp];
+            return;
+        }
         // 检查按键是否仍被按住
         if (!core[params.actionFlagName]) {
             // 按键已释放，标记并停止连射
@@ -616,6 +625,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         chainProp:String,
         releasedProp:String
     ):Void {
+        // 防御：换弹期间停止连射链
+        if (target.换弹标签) {
+            delete core[chainProp];
+            return;
+        }
         // 检查按键是否仍被按住
         if (!core[actionFlagName]) {
             // 按键已释放，标记并停止连射

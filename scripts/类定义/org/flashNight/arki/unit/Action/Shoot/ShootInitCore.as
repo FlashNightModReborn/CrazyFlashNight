@@ -87,6 +87,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         
         // ReloadManager 相关函数
         target.开始换弹 = function() {
+            // 清理射击循环/连射链/半自动锁等帧计时器任务，
+            // 防止换弹期间射击任务继续抢时间轴导致 finishReload 不执行
+            ShootCore.cleanup(parentRef);
             ReloadManager.startReload(target, parentRef, rootRef);
         };
         
