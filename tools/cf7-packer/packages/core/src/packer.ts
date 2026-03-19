@@ -244,7 +244,7 @@ function gitShowFile(repoRoot: string, tag: string, filePath: string, signal?: A
     const child = execFile(
       "git",
       ["show", `${tag}:${filePath}`],
-      { cwd: repoRoot, maxBuffer: 50 * 1024 * 1024, encoding: "buffer" as unknown as string, signal },
+      { cwd: repoRoot, maxBuffer: 50 * 1024 * 1024, encoding: "buffer" as unknown as string, signal, timeout: 60_000 },
       (error, stdout) => {
         if (error) {
           if (signal?.aborted) {

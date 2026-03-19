@@ -89,19 +89,23 @@ echo "  总文件数: $FILE_COUNT"
 if [ "$BUILD_MODE" = "windows" ]; then
   # ── Windows: 7z SFX ──
 
-  # 5. 定位 7z
+  # 5. 定位 7z（优先 PATH，再 fallback 硬编码路径）
   SEVENZIP=""
   SFX_MODULE=""
-  for base in "/c/Program Files/7-Zip" "/c/Program Files (x86)/7-Zip" \
-              "C:/Program Files/7-Zip" "C:/Program Files (x86)/7-Zip"; do
-    if [ -f "$base/7z.exe" ]; then
-      SEVENZIP="$base/7z.exe"
-      SFX_MODULE="$base/7z.sfx"
-      break
-    fi
-  done
-  if [ -z "$SEVENZIP" ]; then
-    SEVENZIP=$(which 7z 2>/dev/null || true)
+  SEVENZIP=$(which 7z 2>/dev/null || true)
+  if [ -n "$SEVENZIP" ]; then
+    # 从 PATH 找到的 7z，尝试定位同目录下的 7z.sfx
+    SFX_MODULE="$(dirname "$SEVENZIP")/7z.sfx"
+    if [ ! -f "$SFX_MODULE" ]; then SFX_MODULE=""; fi
+  else
+    for base in "/c/Program Files/7-Zip" "/c/Program Files (x86)/7-Zip" \
+                "C:/Program Files/7-Zip" "C:/Program Files (x86)/7-Zip"; do
+      if [ -f "$base/7z.exe" ]; then
+        SEVENZIP="$base/7z.exe"
+        SFX_MODULE="$base/7z.sfx"
+        break
+      fi
+    done
   fi
   if [ -z "$SEVENZIP" ]; then
     echo "[X] 未找到 7-Zip。请安装 7-Zip。"

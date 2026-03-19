@@ -18,7 +18,10 @@ const packConfigSchema = z.object({
     mode: z.enum(["worktree", "git-tag"]),
     tag: z.string().nullable().optional().default(null),
     repoRoot: z.string().min(1)
-  }),
+  }).refine(
+    (s) => s.mode !== "git-tag" || (s.tag != null && s.tag.length > 0),
+    { message: "git-tag 模式必须指定非空 tag" }
+  ),
   output: z.object({
     dir: z.string().min(1),
     clean: z.boolean().default(true),

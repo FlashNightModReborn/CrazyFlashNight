@@ -17,7 +17,7 @@ export function getTagBlobInfo(
     const child = execFile(
       "git",
       ["ls-tree", "-rl", tag],
-      { cwd: repoRoot, maxBuffer: 50 * 1024 * 1024, signal },
+      { cwd: repoRoot, maxBuffer: 50 * 1024 * 1024, signal, timeout: 60_000 },
       (error, stdout) => {
         if (error) {
           if (signal?.aborted) { resolve(new Map()); return; }
@@ -68,7 +68,7 @@ export function getWorktreeBlobHashes(
     const child = execFile(
       "git",
       ["hash-object", "--stdin-paths"],
-      { cwd: repoRoot, maxBuffer: 50 * 1024 * 1024, signal },
+      { cwd: repoRoot, maxBuffer: 50 * 1024 * 1024, signal, timeout: 60_000 },
       (error, stdout) => {
         if (error) {
           if (signal?.aborted) { resolve(new Map()); return; }
@@ -111,7 +111,7 @@ export function getModifiedPathsBetweenTags(
     const child = execFile(
       "git",
       ["diff", "--name-only", baseTag, targetTag],
-      { cwd: repoRoot, maxBuffer: 50 * 1024 * 1024, signal },
+      { cwd: repoRoot, maxBuffer: 50 * 1024 * 1024, signal, timeout: 60_000 },
       (error, stdout) => {
         if (error) {
           if (signal?.aborted) { resolve(new Set()); return; }

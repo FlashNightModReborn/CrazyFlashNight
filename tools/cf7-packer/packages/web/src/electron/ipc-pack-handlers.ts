@@ -96,6 +96,11 @@ export function registerPackHandlers(ctx: IpcContext): void {
   });
 
   ipcMain.handle("cf7-packer:build-sfx", async (_event, opts: BuildSfxOptions) => {
+    // 白名单校验 version：仅允许字母、数字、中文、点、连字符、下划线、空格
+    if (opts.version && !/^[\w.\-\u4e00-\u9fff ]+$/.test(opts.version)) {
+      return { success: false, error: `版本名含非法字符: "${opts.version}"（仅允许字母、数字、中文、点、连字符、下划线、空格）` };
+    }
+
     const { spawn } = await import("node:child_process");
     const isWindows = process.platform === "win32";
     const sfxScript = path.join(ctx.toolRoot, "sfx", "build-sfx.sh").replace(/\\/g, "/");

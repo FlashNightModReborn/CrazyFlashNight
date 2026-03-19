@@ -8,7 +8,7 @@
 const DANGEROUS_REF_PATTERNS = [
   /^$/,               // 空字符串
   /^\s*$/,            // 纯空白
-  /^-/,               // 以 - 开头（会被 git 解析为选项）
+  /^-/,               // 以 - 开头（会被 git 解析为选项，含 -- 双横线）
   /\.\./,             // 含 ..（range 表达式注入如 tag1..tag2）
   // eslint-disable-next-line no-control-regex
   /[\x00-\x1f]/       // 含控制字符
