@@ -8,6 +8,9 @@ set +B  # 禁用 brace expansion，防止路径中的 {version} 被展开
 TOOL_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SFX_DIR="$TOOL_ROOT/sfx"
 
+# 内置 Unity _Data 资源路径（工具自带 Assembly-CSharp.dll）
+BUILTIN_UNITY_DATA="$TOOL_ROOT/assets/CrazyFlasher7StandAloneStarter_Data"
+
 # 优先从环境变量读取（Electron 用环境变量避免 Windows CreateProcess 转义问题）
 # 命令行参数可覆盖
 VERSION="${CF7_SFX_VERSION:-update}"
@@ -39,6 +42,11 @@ if [ -z "$PACK_OUTPUT" ]; then
     echo "[X] 未找到打包输出目录。请先运行 npm run pack 或指定 --pack-output。"
     exit 1
   fi
+fi
+
+# 未指定外部 Unity _Data 时，自动使用内置资源
+if [ -z "$UNITY_DATA" ] && [ -d "$BUILTIN_UNITY_DATA" ]; then
+  UNITY_DATA="$BUILTIN_UNITY_DATA"
 fi
 
 echo "=== CF7 SFX 构建 ==="

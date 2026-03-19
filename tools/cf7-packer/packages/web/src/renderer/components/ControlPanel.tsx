@@ -70,8 +70,8 @@ export default function ControlPanel({
             placeholder="版本号 (如 2.72)" className="sfx-input" disabled={isRunning}
             title="安装包文件名中的版本号" />
           <input type="text" value={unityDataDir} onChange={(e) => onUnityDataDirChange(e.target.value)}
-            placeholder="Unity _Data 目录 (可选)" className="sfx-input sfx-input-wide" disabled={isRunning}
-            title="如果项目包含 Unity 资源，指定 _Data 目录路径" />
+            placeholder="Unity _Data 目录 (已内置，留空即可)" className="sfx-input sfx-input-wide" disabled={isRunning}
+            title="留空使用内置 Assembly-CSharp.dll；填写则覆盖内置资源" />
         </>}
       </div>
     </section>
