@@ -203,6 +203,12 @@ export function registerPackHandlers(ctx: IpcContext): void {
           } satisfies PackerProgressEvent);
           const match = stdout.match(/构建完成:\s*(.+)\s+\(/);
           const outputPath = (match?.[1] ?? stdout.match(/构建完成:\s*(.+)/)?.[1])?.trim();
+          if (outputPath) {
+            // 将 SFX 输出路径及其所在目录加入已知输出目录，使 revealOutput 可用
+            const resolved = path.resolve(outputPath);
+            ctx.knownOutputDirs.add(resolved);
+            ctx.knownOutputDirs.add(path.dirname(resolved));
+          }
           resolve(outputPath ? { success: true, outputPath } : { success: true });
         }
       });

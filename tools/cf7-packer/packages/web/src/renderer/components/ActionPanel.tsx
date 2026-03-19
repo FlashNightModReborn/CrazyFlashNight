@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { PackerIpcApi, PackResult, PackerProgressEvent } from "../../shared/ipc-types.js";
 import type { AppStatus } from "../hooks/usePackExecution.js";
 import { nextLogId, type LogEntry } from "../hooks/usePackerEvents.js";
@@ -32,6 +33,7 @@ export default function ActionPanel({
   onRunPack, onLoadPreview, onCancel, onReveal,
   setSfxBuilding, setLogs, setProgress
 }: ActionPanelProps) {
+  const [sfxOutputPath, setSfxOutputPath] = useState<string | null>(null);
   const progressPercent = progress && progress.total > 0
     ? Math.round((progress.current / progress.total) * 100) : 0;
   const showProgressPanel = Boolean(progress && progress.total > 0 && (isRunning || sfxBuilding));
@@ -103,6 +105,7 @@ export default function ActionPanel({
                 const res = await api.buildSfx({ version: ver, packOutput: result.outputDir, unityDataDir: unityDataDir || undefined });
                 if (res.success) {
                   setLogs((prev) => [...prev, { id: nextLogId(), event: { layer: "sfx", level: "info", message: `SFX 构建完成: ${res.outputPath ?? ""}` } }]);
+                  setSfxOutputPath(res.outputPath ?? null);
                 } else {
                   setLogs((prev) => [...prev, { id: nextLogId(), event: { layer: "sfx", level: "error", message: `SFX 构建失败: ${res.error ?? ""}` } }]);
                 }
@@ -110,6 +113,12 @@ export default function ActionPanel({
               }}
             >
               {sfxBuilding ? "构建中..." : "📦 构建安装包"}
+            </button>
+          )}
+          {sfxOutputPath && !sfxBuilding && (
+            <button className="btn-small" onClick={() => api?.revealOutput(sfxOutputPath)}
+              title={sfxOutputPath}>
+              打开安装包
             </button>
           )}
         </div>

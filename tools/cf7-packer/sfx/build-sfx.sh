@@ -99,18 +99,12 @@ if [ "$BUILD_MODE" = "windows" ]; then
 
   # 5. 定位 7z（优先 PATH，再 fallback 硬编码路径）
   SEVENZIP=""
-  SFX_MODULE=""
   SEVENZIP=$(which 7z 2>/dev/null || true)
-  if [ -n "$SEVENZIP" ]; then
-    # 从 PATH 找到的 7z，尝试定位同目录下的 7z.sfx
-    SFX_MODULE="$(dirname "$SEVENZIP")/7z.sfx"
-    if [ ! -f "$SFX_MODULE" ]; then SFX_MODULE=""; fi
-  else
+  if [ -z "$SEVENZIP" ]; then
     for base in "/c/Program Files/7-Zip" "/c/Program Files (x86)/7-Zip" \
                 "C:/Program Files/7-Zip" "C:/Program Files (x86)/7-Zip"; do
       if [ -f "$base/7z.exe" ]; then
         SEVENZIP="$base/7z.exe"
-        SFX_MODULE="$base/7z.sfx"
         break
       fi
     done
@@ -122,23 +116,24 @@ if [ "$BUILD_MODE" = "windows" ]; then
   fi
   echo "  7z: $SEVENZIP"
 
+  # SFX 模块：优先使用工具自带的 7zSD.sfx（安装器模块，支持 RunProgram）
+  # 7zSD.sfx 会解压到临时目录并自动执行 bootstrap.bat → install.ps1
+  # 系统自带的 7z.sfx 只是普通解压对话框，不支持自动安装
+  SFX_MODULE="$SFX_DIR/7zSD.sfx"
+  if [ ! -f "$SFX_MODULE" ]; then
+    echo "  [!] 工具目录未找到 7zSD.sfx，SFX 安装包将不可用"
+    SFX_MODULE=""
+  fi
+
   # 6. 压缩（带进度）
   OUTPUT_DIR="$TOOL_ROOT/output/CF7_${VERSION}"
   mkdir -p "$OUTPUT_DIR"
-  ARCHIVE="$OUTPUT_DIR/data.7z"
+  ARCHIVE="$OUTPUT_DIR/CF7_${VERSION}.7z"
   rm -f "$ARCHIVE"
   echo "  压缩中（这可能需要几分钟）..."
   (cd "$STAGING" && "$SEVENZIP" a -t7z -mx=5 -r -bsp1 "$ARCHIVE" .)
 
-  # 6b. 如果 7z.sfx 模块存在，生成真正的单文件自解压 exe
-  if [ -n "$SFX_MODULE" ] && [ -f "$SFX_MODULE" ]; then
-    SFX_EXE="$OUTPUT_DIR/CF7_${VERSION}_Setup.exe"
-    echo "  拼接 SFX 自解压包..."
-    cat "$SFX_MODULE" "$SFX_DIR/sfx-config.txt" "$ARCHIVE" > "$SFX_EXE"
-    echo "  SFX: $SFX_EXE"
-  fi
-
-  # 7. 生成安装 bat（用于无 SFX 模块时的 data.7z 分发）
+  # 7. 生成安装 bat（data.7z + bat 分发，无需签名，不触发智能应用控制）
   cat > "$OUTPUT_DIR/安装更新.bat" << 'BATEOF'
 @echo off
 chcp 65001 >nul 2>&1
@@ -150,11 +145,14 @@ echo  ===========================================
 echo.
 
 set "SCRIPT_DIR=%~dp0"
-set "ARCHIVE=%SCRIPT_DIR%data.7z"
 set "EXTRACT_DIR=%TEMP%\cf7-update-%RANDOM%"
 
-if not exist "%ARCHIVE%" (
-    echo [X] 找不到 data.7z，请确保安装更新.bat与data.7z在同一目录。
+REM 自动查找同目录下的 .7z 文件
+set "ARCHIVE="
+for %%f in ("%SCRIPT_DIR%*.7z") do set "ARCHIVE=%%f"
+
+if not defined ARCHIVE (
+    echo [X] 未找到 .7z 压缩包，请确保安装更新.bat与压缩包在同一目录。
     echo.
     pause
     exit /b 1

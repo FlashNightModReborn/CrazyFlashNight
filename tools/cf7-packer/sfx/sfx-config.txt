@@ -1,4 +1,5 @@
 ;!@Install@!UTF-8!
-Title="闪客快打7重置计划 更新"
-RunProgram="%%T\\bootstrap.bat"
+Title="闪客快打7重置计划 更新安装"
+BeginPrompt="即将安装闪客快打7重置计划更新，是否继续？"
+RunProgram="bootstrap.bat"
 ;!@InstallEnd@!
