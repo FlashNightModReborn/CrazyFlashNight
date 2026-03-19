@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { PackerIpcApi, PackResult, PackerProgressEvent } from "../../shared/ipc-types.js";
 import type { AppStatus } from "../hooks/usePackExecution.js";
 import { nextLogId, type LogEntry } from "../hooks/usePackerEvents.js";
@@ -22,6 +21,8 @@ interface ActionPanelProps {
   onCancel: () => void;
   onReveal: () => void;
   setSfxBuilding: React.Dispatch<React.SetStateAction<boolean>>;
+  sfxOutputPath: string | null;
+  setSfxOutputPath: React.Dispatch<React.SetStateAction<string | null>>;
   setLogs: React.Dispatch<React.SetStateAction<LogEntry[]>>;
   setProgress: React.Dispatch<React.SetStateAction<PackerProgressEvent | null>>;
 }
@@ -31,9 +32,8 @@ export default function ActionPanel({
   hasPreview, loadingPreview, sfxBuilding, sfxVersion, unityDataDir,
   progress,
   onRunPack, onLoadPreview, onCancel, onReveal,
-  setSfxBuilding, setLogs, setProgress
+  setSfxBuilding, sfxOutputPath, setSfxOutputPath, setLogs, setProgress
 }: ActionPanelProps) {
-  const [sfxOutputPath, setSfxOutputPath] = useState<string | null>(null);
   const progressPercent = progress && progress.total > 0
     ? Math.round((progress.current / progress.total) * 100) : 0;
   const showProgressPanel = Boolean(progress && progress.total > 0 && (isRunning || sfxBuilding));

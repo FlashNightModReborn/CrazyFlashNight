@@ -170,10 +170,12 @@ if not defined ARCHIVE (
     exit /b 1
 )
 
-REM 查找 7z：优先同目录自带的 7z.exe，再找系统安装
+REM 查找 7z：同目录 → 上一层目录 → 系统安装
 set "SEVENZIP="
 if exist "%SCRIPT_DIR%7z.exe" (
     set "SEVENZIP=%SCRIPT_DIR%7z.exe"
+) else if exist "%SCRIPT_DIR%..\7z.exe" (
+    set "SEVENZIP=%SCRIPT_DIR%..\7z.exe"
 ) else if exist "C:\Program Files\7-Zip\7z.exe" (
     set "SEVENZIP=C:\Program Files\7-Zip\7z.exe"
 ) else if exist "C:\Program Files (x86)\7-Zip\7z.exe" (
@@ -181,10 +183,10 @@ if exist "%SCRIPT_DIR%7z.exe" (
 )
 
 if not defined SEVENZIP (
-    echo [X] 未检测到 7-Zip，且安装包中未附带 7z.exe。
+    echo [X] 未找到解压工具。
     echo.
-    echo     请安装 7-Zip 后重试:
-    echo     https://www.7-zip.org/
+    echo     日期文件夹里应该有 7z.exe 和 7z.dll，
+    echo     如果被删了或移走了，回网盘重新下载整个日期文件夹。
     echo.
     pause
     exit /b 1

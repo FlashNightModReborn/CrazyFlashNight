@@ -31,6 +31,7 @@ export function usePackExecution(options: UsePackExecutionOptions) {
   const [status, setStatus] = useState<AppStatus>("idle");
   const [result, setResult] = useState<PackResult | null>(null);
   const [sfxBuilding, setSfxBuilding] = useState(false);
+  const [sfxOutputPath, setSfxOutputPath] = useState<string | null>(null);
 
   const runPack = useCallback(async (dryRun: boolean) => {
     if (!api || status === "running") return;
@@ -38,6 +39,7 @@ export function usePackExecution(options: UsePackExecutionOptions) {
     setLogs([]);
     setProgress(null);
     setResult(null);
+    setSfxOutputPath(null);
 
     try {
       const packResult = await api.run({
@@ -68,6 +70,7 @@ export function usePackExecution(options: UsePackExecutionOptions) {
         const sfxRes = await api.buildSfx({ version: ver, packOutput: packResult.outputDir, unityDataDir: unityDataDir || undefined });
         if (sfxRes.success) {
           setLogs((prev) => [...prev, { id: nextLogId(), event: { layer: "sfx", level: "info", message: `SFX 构建完成: ${sfxRes.outputPath ?? ""}` } }]);
+          setSfxOutputPath(sfxRes.outputPath ?? null);
         } else {
           setLogs((prev) => [...prev, { id: nextLogId(), event: { layer: "sfx", level: "error", message: `SFX 构建失败: ${sfxRes.error ?? ""}` } }]);
         }
@@ -85,5 +88,5 @@ export function usePackExecution(options: UsePackExecutionOptions) {
 
   const handleCancel = useCallback(() => { api?.cancel(); }, [api]);
 
-  return { status, result, sfxBuilding, setSfxBuilding, runPack, handleCancel };
+  return { status, result, sfxBuilding, setSfxBuilding, sfxOutputPath, setSfxOutputPath, runPack, handleCancel };
 }

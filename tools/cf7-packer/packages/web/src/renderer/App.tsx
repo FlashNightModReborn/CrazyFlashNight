@@ -178,7 +178,7 @@ export default function App() {
   }, [api, loadingPreview, sourceMode, selectedTag, setLogs]);
 
   // Pack execution
-  const { status, result, sfxBuilding, setSfxBuilding, runPack, handleCancel } = usePackExecution({
+  const { status, result, sfxBuilding, setSfxBuilding, sfxOutputPath, setSfxOutputPath, runPack, handleCancel } = usePackExecution({
     api, sourceMode, selectedTag, outputDir,
     buildSfxAfterPack, sfxVersion, unityDataDir,
     previewFilesCount: previewFiles.length,
@@ -293,6 +293,8 @@ export default function App() {
           onCancel={handleCancel}
           onReveal={handleReveal}
           setSfxBuilding={setSfxBuilding}
+          sfxOutputPath={sfxOutputPath}
+          setSfxOutputPath={setSfxOutputPath}
           setLogs={setLogs}
           setProgress={setProgress}
         />
