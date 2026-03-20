@@ -389,10 +389,10 @@ class org.flashNight.gesh.depth.DepthManagerTest {
         var newClip:MovieClip = testContainer.createEmptyMovieClip(poolName, testContainer.getNextHighestDepth());
         dm.updateDepth(newClip, 600);
         dm.flush();
-        assertTrue(dm.size() == 1, "同名复用后 size 应为 1");
-        assertTrue(dm.getDepth(newClip) != undefined, "新 MC 应成功注册");
+        var reuseOk1:Boolean = assertTrue(dm.size() == 1, "同名复用后 size 应为 1");
+        var reuseOk2:Boolean = assertTrue(dm.getDepth(newClip) != undefined, "新 MC 应成功注册");
         newClip.removeMovieClip();
-        record("同名MC复用", dm.size() == 1 || dm.getDepth(newClip) != undefined);
+        record("同名MC复用", reuseOk1 && reuseOk2);
     }
 
     // ═══════════════════════════════════════════
@@ -516,11 +516,12 @@ class org.flashNight.gesh.depth.DepthManagerTest {
         dm.flush();
 
         // testClips[0] 应有新深度
-        assertTrue(dm.getDepth(testClips[0]) != d0Before, "re-feed 的实体深度应变化");
-        // testClips[1] 应保持 -1（失效态，不触发 swapDepths）——getDepth 返回 _curD = -1
+        var rfOk1:Boolean = assertTrue(dm.getDepth(testClips[0]) != undefined, "re-feed 的实体应有有效深度");
+        // testClips[1] 未 re-feed → calibrate 将 _curD/_targetD 置为 -1 哨兵
+        // getDepth 对 -1 返回 undefined（内部哨兵不对外暴露）
         var d1After:Number = dm.getDepth(testClips[1]);
-        assertTrue(d1After == -1, "未 re-feed 的实体深度应为 -1（失效态）");
-        record("场景切换(部分re-feed)", d1After == -1);
+        var rfOk2:Boolean = assertTrue(d1After == undefined, "未 re-feed 的实体 getDepth 应返回 undefined");
+        record("场景切换(部分re-feed)", rfOk1 && rfOk2);
     }
 
     // ═══════════════════════════════════════════

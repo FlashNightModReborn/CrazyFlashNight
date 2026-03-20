@@ -214,14 +214,21 @@ class org.flashNight.gesh.depth.DepthManager {
     }
 
     /**
-     * 查询实体当前生效的深度值
-     * @return flush 后的实际深度，未注册返回 undefined
+     * 查询管理器最近一次 flush 写入显示列表的深度值
+     *
+     * 返回值语义：
+     *   - 有效深度值：最近 flush 成功写入的深度
+     *   - undefined：未注册，或已注册但 calibrate 后尚未 re-feed + flush
+     *     （此时 MC 仍停在显示列表旧深度，但管理器不保证该值）
      */
     public function getDepth(mc:MovieClip):Number {
         if (!mc) return undefined;
         var idx:Number = _idxMap[mc._name];
         if (idx == undefined) return undefined;
-        return _curD[idx];
+        var d:Number = _curD[idx];
+        // -1 是内部哨兵（未 flush / calibrate 后待定），对外暴露为 undefined
+        if (d == -1) return undefined;
+        return d;
     }
 
     /** 当前注册实体数 */
@@ -271,8 +278,11 @@ class org.flashNight.gesh.depth.DepthManager {
      * 使用 _names[idx]（注册快照）清理 _idxMap，因为 MC 销毁后 _mcs[idx]._name 为 undefined
      */
     private function _evict(idx:Number):Void {
-        // S08: 避免 delete 修改哈希结构，用 undefined 置空（语义等价：_idxMap[name] == undefined）
-        _idxMap[_names[idx]] = undefined;
+        // 用 delete 而非 tombstone（= undefined）：
+        // tombstone 会让 _idxMap 键空间在高 churn 场景下无限增长，
+        // 降低后续 for-in（如果有）和哈希查找性能。
+        // delete 166ns 在 evict 路径上可接受（evict 只在 MC 销毁/移除时触发，非每帧热路径）。
+        delete _idxMap[_names[idx]];
         // 手动栈写入替代 push（1340ns → 35ns）
         _freeIDs[_freeCount++] = _ids[idx];
 
