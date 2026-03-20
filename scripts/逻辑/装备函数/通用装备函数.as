@@ -198,16 +198,35 @@ _root.装备生命周期函数.通用变形初始化 = function(reflector:Object
         triggerFuncParam: { toggleProperty: "通用变形中" }
     };
 
-    //【4】如果配置了提前执行更新动作，则执行之
-    if (p.updateloadExecution) {
+    //【4】从 value 恢复 toggle 状态，或执行预设切换
+    var _wv:Object = reflector.自机[reflector.装备类型].value;
+    var _tfp:Object = p.updateFuncParam ? p.updateFuncParam.triggerFuncParam : undefined;
+    if (_tfp && _wv[_tfp.toggleProperty] != undefined) {
+        // 已有持久化状态 → 瞬时恢复完成态
+        reflector.自机[_tfp.toggleProperty] = _wv[_tfp.toggleProperty];
+        // 恢复实例标签（等价 通用变形触发函数 L298-299）
+        if (_tfp.toggleInstanceLabel != undefined) {
+            reflector[_tfp.toggleInstanceLabel] = _wv[_tfp.toggleProperty]
+                ? _tfp.trueInstance : _tfp.falseInstance;
+        }
+        // 恢复动画帧到终态/初态，避免变形动画重播
+        reflector.currentFrame = _wv[_tfp.toggleProperty]
+            ? reflector.animationDuration : 1;
+        // 重新同步视觉帧（覆盖 L178-180 的 gotoAndStop(1)）
+        var _tgt:MovieClip = reflector.自机[reflector.config.instanceContainer][reflector.animationTarget];
+        _tgt.gotoAndStop(reflector.currentFrame);
+    } else if (p.updateloadExecution) {
+        // 首次初始化（value 无记录），执行预设切换次数
         for (var i:Number = Number(p.updateloadExecution); i > 0; i--) {
             _root.装备生命周期函数[p.updateFuncParam.triggerFunc](reflector, p.updateFuncParam.triggerFuncParam);
         }
     }
 };
 
-// 全局参数存储
-_root.装备生命周期函数.globalParams = {};
+// 辅助函数：从 value 读取持久化值，未定义时用 fallback
+_root.装备生命周期函数.读取持久值 = function(wv:Object, key:String, fallback) {
+    return (wv[key] != undefined) ? wv[key] : fallback;
+};
 
 //【5】通用变形周期：处理动画帧变化
 _root.装备生命周期函数.通用变形周期 = function(reflector:Object, paramObj:Object) {
@@ -278,14 +297,11 @@ _root.装备生命周期函数.自机状态更新 = function(reflector:Object, f
 };
 
 
-//【8】反转自机属性：切换某个属性，区分主角与非主角，主角属性使用全局空间以持久化
+//【8】反转自机属性：切换某个属性，状态持久化到 item.value
 _root.装备生命周期函数.反转自机属性 = function(reflector:Object, funcParam:Object) {
-    if (reflector.是否为主角) {
-        _root.装备生命周期函数.globalParams[funcParam.toggleProperty] = !_root.装备生命周期函数.globalParams[funcParam.toggleProperty];
-        reflector.自机[funcParam.toggleProperty] = _root.装备生命周期函数.globalParams[funcParam.toggleProperty];
-    } else {
-        reflector.自机[funcParam.toggleProperty] = !reflector.自机[funcParam.toggleProperty];
-    }
+    var wv:Object = reflector.自机[reflector.装备类型].value;
+    wv[funcParam.toggleProperty] = !wv[funcParam.toggleProperty];
+    reflector.自机[funcParam.toggleProperty] = wv[funcParam.toggleProperty];
 };
 
 //【9】通用变形触发函数：调用反转属性，并根据状态切换实例

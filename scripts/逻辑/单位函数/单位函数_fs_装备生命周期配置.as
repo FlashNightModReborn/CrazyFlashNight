@@ -254,7 +254,7 @@ _root.装备生命周期函数.获得身高修正比 = function(反射对象)
 
 _root.装备生命周期函数.获得身高修正比.toString = function(){return "_root.装备生命周期函数.获得身高修正比";}
 
-_root.装备生命周期函数.全局参数 = {}; //用于跨图传参
+// 全局参数已迁移至 item.value 持久化，不再需要
 
 _root.主角函数.完成生命周期函数装载 = function()
 {

@@ -115,42 +115,35 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
         }
     };
 
-    // 全局主角同步（场景切换后恢复形态）
-    if (ref.是否为主角) {
-        var key:String = ref.标签名 + ref.初始化函数;
-        // 确保全局参数对象存在
-        if (!_root.装备生命周期函数.全局参数) {
-            _root.装备生命周期函数.全局参数 = {};
-        }
-        if (!_root.装备生命周期函数.全局参数[key]) {
-            _root.装备生命周期函数.全局参数[key] = {};
-        }
-        var gl:Object = _root.装备生命周期函数.全局参数[key];
-        ref.globalData = gl;
+    // 从 item.value 恢复形态状态
+    var wv:Object = ref.自机[ref.装备类型].value;
+    var _rv = _root.装备生命周期函数.读取持久值;
+    ref.weaponValue = wv;
 
-        // 恢复保存的形态（仅视觉，不计数）
-        if (gl.保存形态) {
-            _root.装备生命周期函数.光剑天秤切换到形态(ref, gl.保存形态, true);
-        }
+    // 恢复保存的形态（仅视觉，不计数）
+    if (wv.保存形态) {
+        _root.装备生命周期函数.光剑天秤切换到形态(ref, wv.保存形态, true);
+    }
 
-        // ─────────────────────────────────────────────────────────────────
-        // 过图恢复：注入之前 buff 累计值的一半
-        // ─────────────────────────────────────────────────────────────────
-        if (gl.保存伤害累计 != undefined || gl.保存防御累计 != undefined) {
-            var 恢复伤害:Number = Math.floor((gl.保存伤害累计 || 0) / 2);
-            var 恢复防御:Number = Math.floor((gl.保存防御累计 || 0) / 2);
+    // ─────────────────────────────────────────────────────────────────
+    // 过图/读档恢复：注入之前 buff 累计值的一半
+    // ─────────────────────────────────────────────────────────────────
+    if (wv.保存伤害累计 != undefined || wv.保存防御累计 != undefined) {
+        var 恢复伤害:Number = Math.floor((_rv(wv, "保存伤害累计", 0)) / 2);
+        var 恢复防御:Number = Math.floor((_rv(wv, "保存防御累计", 0)) / 2);
 
-            if (恢复伤害 != 0 || 恢复防御 != 0) {
-                ref.天秤伤害累计 = 恢复伤害;
-                ref.天秤防御累计 = 恢复防御;
-                // 使用全局参数标记待恢复状态（避免 ref 对象不一致问题）
-                gl.pendingBuffRestore = true;
-                _root.发布消息("天秤余力延续，保留一半属性加成：威力" + 恢复伤害 + "，防御" + 恢复防御);
-            }
-
-            // 清除保存的累计值（只恢复一次）
-            delete gl.保存伤害累计;
-            delete gl.保存防御累计;
+        if (恢复伤害 != 0 || 恢复防御 != 0) {
+            ref.天秤伤害累计 = 恢复伤害;
+            ref.天秤防御累计 = 恢复防御;
+            wv.pendingBuffRestore = true;
+            // 立即覆写为衰减后的值（不 delete），防止 init→首周期间存档丢失累计值
+            wv.保存伤害累计 = 恢复伤害;
+            wv.保存防御累计 = 恢复防御;
+            _root.发布消息("天秤余力延续，保留一半属性加成：威力" + 恢复伤害 + "，防御" + 恢复防御);
+        } else {
+            // 衰减至 0，清理
+            delete wv.保存伤害累计;
+            delete wv.保存防御累计;
         }
     }
 
@@ -250,26 +243,22 @@ _root.装备生命周期函数.光剑天秤周期 = function(ref:Object, param:O
     var target:MovieClip = ref.自机;
     var currentFrame:Number = _root.帧计时器.当前帧数;
 
-    // 0. 主角专用：延迟恢复 buff + 持续同步累计值
-    if (ref.是否为主角) {
-        var key:String = ref.标签名 + ref.初始化函数;
-        var gl:Object = _root.装备生命周期函数.全局参数[key];
+    // 0. 延迟恢复 buff + 持续同步累计值到 item.value
+    {
+        var wv:Object = ref.weaponValue;
 
-        // 0.1 延迟恢复 buff（过图后首帧执行）
-        if (gl && gl.pendingBuffRestore) {
-            delete gl.pendingBuffRestore;
-            if (!ref.globalData) {
-                ref.globalData = gl;
-            }
+        // 0.1 延迟恢复 buff（过图/读档后首帧执行）
+        if (wv && wv.pendingBuffRestore) {
+            delete wv.pendingBuffRestore;
             if (target.buffManager) {
                 _root.装备生命周期函数.光剑天秤更新Buff(ref);
             }
         }
 
-        // 0.2 持续同步累计值到全局参数（确保过图时能保存）
-        if (gl && (ref.天秤伤害累计 != 0 || ref.天秤防御累计 != 0)) {
-            gl.保存伤害累计 = ref.天秤伤害累计;
-            gl.保存防御累计 = ref.天秤防御累计;
+        // 0.2 持续同步累计值到 item.value（确保过图/存档时能保存）
+        if (wv && (ref.天秤伤害累计 != 0 || ref.天秤防御累计 != 0)) {
+            wv.保存伤害累计 = ref.天秤伤害累计;
+            wv.保存防御累计 = ref.天秤防御累计;
         }
     }
 
@@ -420,9 +409,9 @@ _root.装备生命周期函数.光剑天秤切换到形态 = function(ref:Object
 
     _root.发布消息("光剑天秤类型切换为[" + formName + "]");
 
-    // 保存武器类型到全局参数（主角专用，用于场景切换后恢复）
-    if (ref.globalData) {
-        ref.globalData.保存形态 = formName;
+    // 保存武器类型到 item.value（用于场景切换/存档后恢复）
+    if (ref.weaponValue) {
+        ref.weaponValue.保存形态 = formName;
     }
 };
 
@@ -525,12 +514,12 @@ _root.装备生命周期函数.光剑天秤战技重置 = function(ref:Object):V
     var currentForm:String = ref.当前形态;
 
     // ─────────────────────────────────────────────────────────────────────
-    // 【重要】立即保存累计值到全局参数（用于过图恢复一半）
+    // 【重要】立即保存累计值到 item.value（用于过图/存档恢复一半）
     // 必须在清空前保存，且要在动画开始前保存（防止过图时动画未完成）
     // ─────────────────────────────────────────────────────────────────────
-    if (ref.globalData) {
-        ref.globalData.保存伤害累计 = ref.天秤伤害累计;
-        ref.globalData.保存防御累计 = ref.天秤防御累计;
+    if (ref.weaponValue) {
+        ref.weaponValue.保存伤害累计 = ref.天秤伤害累计;
+        ref.weaponValue.保存防御累计 = ref.天秤防御累计;
     }
 
     if (currentForm == "默认形态") {

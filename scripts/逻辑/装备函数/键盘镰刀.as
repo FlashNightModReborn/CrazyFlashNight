@@ -59,21 +59,16 @@
         ref.initialXScale = target.刀_引用._xscale;
     }
 
-    // 同步主角武器形态状态（使用全局参数持久化）
-    if (ref.是否为主角) {
-        var key:String = ref.标签名 + ref.初始化函数;
-        if (!_root.装备生命周期函数.全局参数[key]) {
-            _root.装备生命周期函数.全局参数[key] = {};
-        }
-        var gl:Object = _root.装备生命周期函数.全局参数[key];
-        ref.weaponMode = gl.weaponMode || "镰刀";
-        ref.globalParam = gl;
-        if (ref.weaponMode == "键盘") {
-            target.刀属性.power = ref.baseDamage * ref.keyboardDamageMultiplier;
-        }
-        // 根据当前武器形态设置动作模组
-        target.兵器动作类型 = (ref.weaponMode == "镰刀") ? ref.actionTypeScythe : ref.actionTypeKeyboard;
+    // 从 item.value 恢复武器形态
+    var wv:Object = ref.自机[ref.装备类型].value;
+    ref.weaponMode = wv.weaponMode || "镰刀";
+    ref.weaponValue = wv;
+    wv.weaponMode = ref.weaponMode;
+    if (ref.weaponMode == "键盘") {
+        target.刀属性.power = ref.baseDamage * ref.keyboardDamageMultiplier;
     }
+    // 根据当前武器形态设置动作模组
+    target.兵器动作类型 = (ref.weaponMode == "镰刀") ? ref.actionTypeScythe : ref.actionTypeKeyboard;
 
     // 初始化动画帧
     if (ref.animFrame == undefined) {
@@ -313,8 +308,8 @@ _root.装备生命周期函数.键盘镰刀切换武器形态 = function(ref:Obj
 
     _root.发布消息("键盘武器类型切换为[" + ref.weaponMode + "]");
 
-    // 保存武器类型到全局参数
-    if (ref.globalParam) ref.globalParam.weaponMode = ref.weaponMode;
+    // 保存武器类型到 item.value
+    if (ref.weaponValue) ref.weaponValue.weaponMode = ref.weaponMode;
 
     // 重新装载战技
     if (ref.装载战技) ref.装载战技(ref.获取目标战技());

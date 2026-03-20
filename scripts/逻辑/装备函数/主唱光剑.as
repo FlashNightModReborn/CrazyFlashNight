@@ -26,18 +26,13 @@
        ref.weaponMode = "光剑";
    }
 
-   // 同步主角武器形态状态（使用全局参数持久化）
-   if (ref.是否为主角) {
-       var key:String = ref.标签名 + ref.初始化函数;
-       if (!_root.装备生命周期函数.全局参数[key]) {
-           _root.装备生命周期函数.全局参数[key] = {};
-       }
-       var gl:Object = _root.装备生命周期函数.全局参数[key];
-       ref.weaponMode = gl.weaponMode || "光剑";
-       ref.globalParam = gl;
-       if (ref.weaponMode == "话筒支架") {
-           target.刀属性.power = ref.baseDamage * 0.8;
-       }
+   // 从 item.value 恢复武器形态
+   var wv:Object = ref.自机[ref.装备类型].value;
+   ref.weaponMode = wv.weaponMode || "光剑";
+   ref.weaponValue = wv;
+   wv.weaponMode = ref.weaponMode;
+   if (ref.weaponMode == "话筒支架") {
+       target.刀属性.power = ref.baseDamage * 0.8;
    }
 
    // 根据当前武器形态设置动作模组
@@ -202,8 +197,8 @@ _root.装备生命周期函数.主唱光剑切换武器形态 = function(ref:Obj
 
    _root.发布消息("话筒支架武器类型切换为[" + ref.weaponMode + "]");
 
-   // 保存武器类型到全局参数
-   if (ref.globalParam) ref.globalParam.weaponMode = ref.weaponMode;
+   // 保存武器类型到 item.value
+   if (ref.weaponValue) ref.weaponValue.weaponMode = ref.weaponMode;
 };
 
 // 动画控制函数 - 负责决定动画状态

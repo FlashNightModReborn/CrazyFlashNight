@@ -26,23 +26,13 @@ _root.装备生命周期函数.双面雷神初始化 = function(ref:Object, para
     ref.sniperSound = param.sound2 || "apwersound.wav";  // 狙击音效
     ref.sniperSplit = param.split2 || 1;           // 狙击霰弹值
 
-    /* ---------- 5. 全局主角同步 ---------- */
-    if (ref.是否为主角) {
-        var key = ref.标签名 + ref.初始化函数;
-        // 确保全局参数对象存在
-        if (!_root.装备生命周期函数.全局参数) {
-            _root.装备生命周期函数.全局参数 = {};
-        }
-        if (!_root.装备生命周期函数.全局参数[key]) {
-            _root.装备生命周期函数.全局参数[key] = {};
-        }
-        var gl = _root.装备生命周期函数.全局参数[key];
-        ref.isSniperMode = gl.isSniperMode || false;
-        ref.currentFrame = ref.isSniperMode ? ref.SNIPER_END : ref.RIFLE_END;
-        ref.globalData = gl;
-        // 确保全局数据同步
-        gl.isSniperMode = ref.isSniperMode;
-    }
+    /* ---------- 5. 从 item.value 恢复形态状态 ---------- */
+    var wv:Object = ref.自机[ref.装备类型].value;
+    var _rv = _root.装备生命周期函数.读取持久值;
+    ref.isSniperMode = _rv(wv, "isSniperMode", false);
+    ref.currentFrame = ref.isSniperMode ? ref.SNIPER_END : ref.RIFLE_END;
+    ref.weaponValue  = wv;
+    wv.isSniperMode  = ref.isSniperMode;
 
     /* ---------- 6. 射击事件监听 ---------- */
     target.dispatcher.subscribe("长枪射击", function() {
@@ -140,8 +130,8 @@ _root.装备生命周期函数.双面雷神周期 = function(ref:Object) {
                 ref.isSniperMode = true;
                 // 停在结束帧，不再跳回起始帧
                 // 此时 currentFrame 已经是 SNIPER_END
-                if (ref.是否为主角 && ref.globalData) {
-                    ref.globalData.isSniperMode = true;
+                if (ref.weaponValue) {
+                    ref.weaponValue.isSniperMode = true;
                 }
             }
         } else {                               // 狙击→步枪（减帧）
@@ -151,8 +141,8 @@ _root.装备生命周期函数.双面雷神周期 = function(ref:Object) {
                 ref.isTransforming = false;
                 ref.isSniperMode = false;
                 // 同理，停在 RIFLE_END
-                if (ref.是否为主角 && ref.globalData) {
-                    ref.globalData.isSniperMode = false;
+                if (ref.weaponValue) {
+                    ref.weaponValue.isSniperMode = false;
                 }
             }
         }

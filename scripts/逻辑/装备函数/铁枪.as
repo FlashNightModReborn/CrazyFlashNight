@@ -34,17 +34,12 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
             labelObject: null};
     var data = ref.fsm.data;
 
-    // —— 主角全局形态同步
-    if (data.isPlayer)
-    {
-        var key = ref.标签名 + ref.初始化函数;
-        if (!_root.装备生命周期函数.全局参数[key]) {
-            _root.装备生命周期函数.全局参数[key] = {};
-        }
-        var gl = _root.装备生命周期函数.全局参数[key];
-        data.unmaykr化 = gl.unmaykr化 || false;
-        data.labelObject = gl;
-    }
+    // —— 从 item.value 恢复形态状态
+    var wv:Object = ref.自机[ref.装备类型].value;
+    var _rv = _root.装备生命周期函数.读取持久值;
+    data.unmaykr化 = _rv(wv, "unmaykr化", false);
+    data.weaponValue = wv;
+    wv.unmaykr化 = data.unmaykr化;
     // —— 初始帧
     data.currentFrame = data.unmaykr化 ? CONFIG.FRAMES.UNMAYKR.start : CONFIG.FRAMES.BFG.start;
 
@@ -94,9 +89,9 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
             {
                 d.isTransforming = false;
                 d.unmaykr化 = d.transformTargetShape;
-                if (d.isPlayer)
+                if (d.weaponValue)
                 {
-                    d.labelObject.unmaykr化 = d.unmaykr化;
+                    d.weaponValue.unmaykr化 = d.unmaykr化;
                 }
                 var nf = d.unmaykr化 ? d.config.FRAMES.UNMAYKR : d.config.FRAMES.BFG;
                 d.currentFrame = nf.start;

@@ -37,23 +37,13 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
     ref.TARGET_SEARCH_INTERVAL = param.targetSearchInterval || 10;    // 搜索间隔(帧)
     ref.ENEMY_SEARCH_DISTANCE = param.enemySearchDistance || 5;      // 敌人搜索距离
 
-    /* ---------- 5. 全局主角同步 ---------- */
-    if (ref.是否为主角) {
-        var key = ref.标签名 + ref.初始化函数;
-        // 确保全局参数对象存在
-        if (!_root.装备生命周期函数.全局参数) {
-            _root.装备生命周期函数.全局参数 = {};
-        }
-        if (!_root.装备生命周期函数.全局参数[key]) {
-            _root.装备生命周期函数.全局参数[key] = {};
-        }
-        var gl = _root.装备生命周期函数.全局参数[key];
-        ref.isRocketMode  = gl.isRocketMode || false;
-        ref.currentFrame  = ref.isRocketMode ? ref.ROCKET_START : ref.RIFLE_START;
-        ref.globalData    = gl;
-        // 确保全局数据同步
-        gl.isRocketMode = ref.isRocketMode;
-    }
+    /* ---------- 5. 从 item.value 恢复形态状态 ---------- */
+    var wv:Object = ref.自机[ref.装备类型].value;
+    var _rv = _root.装备生命周期函数.读取持久值;
+    ref.isRocketMode = _rv(wv, "isRocketMode", false);
+    ref.currentFrame = ref.isRocketMode ? ref.ROCKET_START : ref.RIFLE_START;
+    ref.weaponValue  = wv;
+    wv.isRocketMode  = ref.isRocketMode;
 
     /* ---------- 5. 射击事件监听 ---------- */
     target.dispatcher.subscribe("长枪射击", function () {
@@ -240,8 +230,8 @@ _root.装备生命周期函数.G1111周期 = function (ref)
         if (ref.isTransforming) {
             ref.isTransforming = false;
             ref.isRocketMode   = ref.transformToRock;
-            if (ref.是否为主角 && ref.globalData)
-                ref.globalData.isRocketMode = ref.isRocketMode;
+            if (ref.weaponValue)
+                ref.weaponValue.isRocketMode = ref.isRocketMode;
         }
         
         // 设置射击状态并跳转到第一帧
@@ -265,8 +255,8 @@ _root.装备生命周期函数.G1111周期 = function (ref)
                 ref.isTransforming = false;
                 ref.isRocketMode   = true;
                 ref.currentFrame   = ref.ROCKET_START;
-                if (ref.是否为主角 && ref.globalData)
-                    ref.globalData.isRocketMode = true;
+                if (ref.weaponValue)
+                    ref.weaponValue.isRocketMode = true;
             }
         } else {                             // 导弹→步枪（减帧）
             if (ref.currentFrame > ref.TRANSFORM_START) {
@@ -275,8 +265,8 @@ _root.装备生命周期函数.G1111周期 = function (ref)
                 ref.isTransforming = false;
                 ref.isRocketMode   = false;
                 ref.currentFrame   = ref.RIFLE_START;
-                if (ref.是否为主角 && ref.globalData)
-                    ref.globalData.isRocketMode = false;
+                if (ref.weaponValue)
+                    ref.weaponValue.isRocketMode = false;
             }
         }
 
