@@ -29,7 +29,8 @@ class org.flashNight.gesh.depth.DepthManager {
     private var _idxMap:Object;   // mc._name → idx（proto-null 字典）
 
     // ── ID 管理 ──
-    private var _freeIDs:Array;   // 回收的 entityID 栈
+    private var _freeIDs:Array;   // 回收的 entityID 栈（手动索引，避免 push/pop 的 1340ns 方法调用税）
+    private var _freeCount:Number;// _freeIDs 栈顶指针
     private var _nextID:Number;   // 下一个未用 ID
 
     // ── Twip Trick 参数 ──
@@ -41,6 +42,9 @@ class org.flashNight.gesh.depth.DepthManager {
     private var _yMin:Number;
     private var _yMax:Number;
     private var _calibrated:Boolean;
+
+    // ── 生命周期 ──
+    private var _unloadID:String; // addUnloadCallback 返回的监听器 ID，dispose 时解绑
 
     /**
      * 构造函数
@@ -60,6 +64,7 @@ class org.flashNight.gesh.depth.DepthManager {
         _N = maxEntities;
         _count = 0;
         _nextID = 0;
+        _freeCount = 0;
         _calibrated = false;
 
         _mcs = new Array(maxEntities);
@@ -67,15 +72,15 @@ class org.flashNight.gesh.depth.DepthManager {
         _ids = new Array(maxEntities);
         _curD = new Array(maxEntities);
         _targetD = new Array(maxEntities);
-        _freeIDs = [];
+        _freeIDs = new Array(maxEntities);
 
         var map:Object = {};
         map.__proto__ = null;
         _idxMap = map;
 
-        // 容器卸载时自动清理
+        // 容器卸载时自动清理（保存 handlerID 供 dispose 解绑）
         var self:DepthManager = this;
-        EventCoordinator.addUnloadCallback(container, function():Void {
+        _unloadID = EventCoordinator.addUnloadCallback(container, function():Void {
             self.dispose();
         });
     }
@@ -105,10 +110,12 @@ class org.flashNight.gesh.depth.DepthManager {
         _yMin = yMin;
         _yMax = yMax;
         _calibrated = true;
-        // 强制下次 flush 全量更新
+        // 强制下次 flush 全量更新；同时失效 _targetD 防止旧场景深度值被误用
+        // 未被 re-feed 的实体在 flush 时 _targetD == _curD == -1，跳过 swapDepths
         var i:Number = _count;
         while (i--) {
             _curD[i] = -1;
+            _targetD[i] = -1;
         }
         return true;
     }
@@ -131,6 +138,13 @@ class org.flashNight.gesh.depth.DepthManager {
         var name:String = mc._name;
         var idx:Number = _idxMap[name];
 
+        // 同名 MC 复用检测：对象池回收旧 MC 后以同名新建，idxMap 命中但 _mcs[idx] 是旧引用
+        // 成本：一次数组读（35ns）+ 一次引用比较（~0ns），可忽略
+        if (idx != undefined && _mcs[idx] !== mc) {
+            _evict(idx);      // 清理旧槽位
+            idx = undefined;  // 落入下方注册分支
+        }
+
         if (idx == undefined) {
             // 自动注册
             if (_count >= _N) return false; // 容量满
@@ -139,8 +153,8 @@ class org.flashNight.gesh.depth.DepthManager {
             _mcs[idx] = mc;
             _names[idx] = name;
             _idxMap[name] = idx;
-            if (_freeIDs.length > 0) {
-                _ids[idx] = _freeIDs.pop();
+            if (_freeCount > 0) {
+                _ids[idx] = _freeIDs[--_freeCount];
             } else {
                 _ids[idx] = _nextID++;
             }
@@ -224,14 +238,20 @@ class org.flashNight.gesh.depth.DepthManager {
         }
         _count = 0;
         _nextID = 0;
-        _freeIDs.length = 0;
+        _freeCount = 0;
+        // 重建 proto-null 字典（比逐个置 undefined 更干净，clear 非热路径）
         var map:Object = {};
         map.__proto__ = null;
         _idxMap = map;
     }
 
-    /** 释放所有资源（容器卸载时自动调用） */
+    /** 释放所有资源（容器卸载时自动调用，手动调用时解绑 onUnload 防止泄漏） */
     public function dispose():Void {
+        // 解绑 onUnload 回调，防止 dispose 后旧闭包继续持有已废弃实例
+        if (_unloadID != undefined && _container != undefined) {
+            EventCoordinator.removeEventListener(_container, "onUnload", _unloadID);
+            _unloadID = undefined;
+        }
         clear();
         _container = null;
         _mcs = null;
@@ -251,8 +271,10 @@ class org.flashNight.gesh.depth.DepthManager {
      * 使用 _names[idx]（注册快照）清理 _idxMap，因为 MC 销毁后 _mcs[idx]._name 为 undefined
      */
     private function _evict(idx:Number):Void {
-        delete _idxMap[_names[idx]];
-        _freeIDs.push(_ids[idx]);
+        // S08: 避免 delete 修改哈希结构，用 undefined 置空（语义等价：_idxMap[name] == undefined）
+        _idxMap[_names[idx]] = undefined;
+        // 手动栈写入替代 push（1340ns → 35ns）
+        _freeIDs[_freeCount++] = _ids[idx];
 
         var last:Number = _count - 1;
         _count = last;

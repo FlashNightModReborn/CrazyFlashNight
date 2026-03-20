@@ -375,6 +375,24 @@ class org.flashNight.gesh.depth.DepthManagerTest {
         assertTrue(dm.getDepth(testClips[0]) != undefined, "存活实体应保持");
         assertTrue(dm.getDepth(testClips[1]) != undefined, "存活实体应保持");
         record("惰性剔除", dm.size() == 2);
+
+        // 同名 MC 复用（对象池场景）：销毁旧 MC → 同名新建 → updateDepth 应正确注册新 MC
+        resetDM();
+        var poolName:String = "pooled_unit";
+        var oldClip:MovieClip = testContainer.createEmptyMovieClip(poolName, testContainer.getNextHighestDepth());
+        dm.updateDepth(oldClip, 400);
+        dm.flush();
+        assertTrue(dm.size() == 1, "注册旧 MC 后 size=1");
+
+        // 模拟对象池回收：外部销毁旧 MC，立即以同名创建新 MC（flush 之前）
+        oldClip.removeMovieClip();
+        var newClip:MovieClip = testContainer.createEmptyMovieClip(poolName, testContainer.getNextHighestDepth());
+        dm.updateDepth(newClip, 600);
+        dm.flush();
+        assertTrue(dm.size() == 1, "同名复用后 size 应为 1");
+        assertTrue(dm.getDepth(newClip) != undefined, "新 MC 应成功注册");
+        newClip.removeMovieClip();
+        record("同名MC复用", dm.size() == 1 || dm.getDepth(newClip) != undefined);
     }
 
     // ═══════════════════════════════════════════
@@ -482,7 +500,27 @@ class org.flashNight.gesh.depth.DepthManagerTest {
             i++;
         }
         assertTrue(monotone, "新场景下排序应单调");
-        record("场景切换", ok && monotone);
+        record("场景切换(全量re-feed)", ok && monotone);
+
+        // re-calibrate 后不全量 re-feed：未 re-feed 的实体不应触发 swapDepths
+        resetDM();
+        dm.updateDepth(testClips[0], 300);
+        dm.updateDepth(testClips[1], 500);
+        dm.flush();
+        var d0Before:Number = dm.getDepth(testClips[0]);
+        var d1Before:Number = dm.getDepth(testClips[1]);
+
+        dm.calibrate(500, 950);
+        // 只 re-feed testClips[0]，不 re-feed testClips[1]
+        dm.updateDepth(testClips[0], 600);
+        dm.flush();
+
+        // testClips[0] 应有新深度
+        assertTrue(dm.getDepth(testClips[0]) != d0Before, "re-feed 的实体深度应变化");
+        // testClips[1] 应保持 -1（失效态，不触发 swapDepths）——getDepth 返回 _curD = -1
+        var d1After:Number = dm.getDepth(testClips[1]);
+        assertTrue(d1After == -1, "未 re-feed 的实体深度应为 -1（失效态）");
+        record("场景切换(部分re-feed)", d1After == -1);
     }
 
     // ═══════════════════════════════════════════
