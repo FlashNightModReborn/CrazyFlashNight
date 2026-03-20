@@ -132,14 +132,17 @@ class org.flashNight.gesh.depth.DepthManager {
      */
     public function updateDepth(mc:MovieClip, targetY:Number):Boolean {
         if (!mc || !_calibrated) return false;
-        if (mc._parent == undefined) return false;  // stale MC 防护
         if ((targetY - targetY) != 0) return false; // NaN guard (H07)
 
+        // 活着的 MC 的 _name 必为非空 String（AS2 创建时强制指定）；
+        // 仅 removeMovieClip 后的 stale 引用返回 undefined（引用本身仍 truthy，通过 !mc）。
+        // 所以此检查等价于 stale MC 防护，同时取得 idxMap 查找键，省一次额外 native 属性读。
         var name:String = mc._name;
+        if (name == undefined) return false;
         var idx:Number = _idxMap[name];
 
-        // 同名 MC 复用检测：对象池回收旧 MC 后以同名新建，idxMap 命中但 _mcs[idx] 是旧引用
-        // 成本：一次数组读（35ns）+ 一次引用比较（~0ns），可忽略
+        // 同名异引用检测：覆盖"销毁+同名重建"的池模式（idxMap 命中但 _mcs[idx] 是旧引用）。
+        // 隐藏/显示复用模式下引用不变，此分支不进入。不支持"改名复用"（_name 是身份键）。
         if (idx != undefined && _mcs[idx] !== mc) {
             _evict(idx);      // 清理旧槽位
             idx = undefined;  // 落入下方注册分支
@@ -148,29 +151,25 @@ class org.flashNight.gesh.depth.DepthManager {
         if (idx == undefined) {
             // 自动注册
             if (_count >= _N) return false; // 容量满
-            idx = _count;
-            _count++;
-            _mcs[idx] = mc;
+            _mcs[idx = _count++] = mc;
             _names[idx] = name;
             _idxMap[name] = idx;
-            if (_freeCount > 0) {
-                _ids[idx] = _freeIDs[--_freeCount];
-            } else {
-                _ids[idx] = _nextID++;
-            }
+            _ids[idx] = (_freeCount > 0) ? _freeIDs[--_freeCount] : _nextID++;
             _curD[idx] = -1; // 强制首次 flush
         }
 
-        // clamp Y 到标定范围（保护不变量 2：深度始终在带内）
+        // clamp Y 到标定范围（防御性，正常流中 enforceScreenBounds 已保证 Y ∈ [yMin, yMax]）
+        // 放在 updateDepth 而非 flush：updateDepth 是入口守卫，flush 是纯热路径不做校验
         var y:Number = targetY;
-        if (y < _yMin) {
-            y = _yMin;
-        } else if (y > _yMax) {
-            y = _yMax;
+        var lo:Number = _yMin;
+        if (y < lo) {
+            y = lo;
+        } else {
+            var hi:Number = _yMax;
+            if (y > hi) y = hi;
         }
-
-        // Twip Trick 核心公式
-        _targetD[idx] = _bandLow + (((y - _yMin) * _S) | 0) * _N + _ids[idx];
+        // 存 clamped Y；公式延迟到 flush()，用局部缓存的成员变量统一计算
+        _targetD[idx] = y;
         return true;
     }
 
@@ -179,24 +178,36 @@ class org.flashNight.gesh.depth.DepthManager {
      * 包含惰性剔除：检测已销毁的 MC 并自动清理
      */
     public function flush():Void {
+        // H01: 成员变量局部化——循环内从 0ns 寄存器读而非 144ns GetMember
         var mcs:Array = _mcs;
         var curD:Array = _curD;
-        var tgtD:Array = _targetD;
-        var i:Number = 0;
+        var tgtY:Array = _targetD; // 现在存裸 Y 值
+        var ids:Array = _ids;
+        var bl:Number = _bandLow;
+        var ym:Number = _yMin;
+        var s:Number = _S;
+        var n:Number = _N;
+        var i:Number = -1;
+        var y:Number, d:Number;
+
         // 正序遍历 + 手动递增：evict 后不 i++，重检 swap-and-pop 搬入的元素
-        while (i < _count) {
+        while (++i < _count) {
             if (mcs[i]._name == undefined) {
                 _evict(i);
-                // 不递增 i：_evict 将末尾搬到 i，需要重检
-                // 若 evict 的是末尾元素，_count-- 后 i >= _count，循环自然结束
                 continue;
             }
-            var d:Number = tgtD[i];
-            if (d !== curD[i]) {
+
+            // Y 已在 updateDepth 入口 clamp 过，此处信任存入值
+            // -1 哨兵（calibrate 后未 re-feed）→ 跳过
+            if ((y = tgtY[i]) == -1) {
+                i++;
+                continue;
+            }
+
+            if ((d = bl + (((y - ym) * s) | 0) * n + ids[i]) !== curD[i]) {
                 mcs[i].swapDepths(d);
                 curD[i] = d;
             }
-            i++;
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿import org.flashNight.gesh.depth.*;
+import org.flashNight.naki.RandomNumberEngine.*;
 
 /**
  * @class DepthManagerTest
@@ -31,13 +32,18 @@ class org.flashNight.gesh.depth.DepthManagerTest {
     private var warmupIter:Number;
     private var perfIter:Number;
 
+    // 预生成随机数据（SeededLCG，可复现）
+    private var _randDepths:Array; // swapDepths 用：1000-2000 范围的整数深度
+    private var _randYs:Array;     // DepthManager 用：200-800 范围的 Y 值
+    private var _randLen:Number;   // 数组长度
+
     public function DepthManagerTest() {
         totalTests = 0;
         passedTests = 0;
         failedTests = 0;
         clipCount = 50;
-        warmupIter = 5;
-        perfIter = 20;
+        warmupIter = 50;
+        perfIter = 2000;
     }
 
     // ═══════════════════════════════════════════
@@ -531,12 +537,29 @@ class org.flashNight.gesh.depth.DepthManagerTest {
     private function runPerformanceTests():Void {
         printHeader("性能测试");
 
+        // 预生成随机数据：固定种子 42，两组测试使用相同随机序列
+        var rng:SeededLinearCongruentialEngine = new SeededLinearCongruentialEngine(42);
+        _randLen = clipCount * 100; // 5000 个随机数，循环复用
+        _randDepths = new Array(_randLen);
+        _randYs = new Array(_randLen);
+        var k:Number = _randLen;
+        while (k--) {
+            var r:Number = rng.nextFloat();
+            _randDepths[k] = 1000 + ((r * 1000) | 0);  // 整数深度 [1000, 2000)
+            _randYs[k] = 200 + ((r * 600) | 0);         // Y 值 [200, 800)
+        }
+        printLog("预生成随机数据: " + _randLen + " 个 (种子=42, 可复现)");
+
         warmupEnvironment();
 
         var swapTime:Number = testSwapDepthsPerformance();
         var dmTime:Number = testDepthManagerPerformance();
 
         comparePerformance(swapTime, dmTime);
+
+        // 释放
+        _randDepths = null;
+        _randYs = null;
     }
 
     private function warmupEnvironment():Void {
@@ -569,68 +592,87 @@ class org.flashNight.gesh.depth.DepthManagerTest {
     }
 
     private function testSwapDepthsPerformance():Number {
-        printLog("测试原生 swapDepths 性能...");
-        var total:Number = 0;
+        printLog("测试原生 swapDepths 性能 (" + perfIter + " 迭代)...");
+        // 预重置深度
+        var j:Number = clipCount;
+        while (j--) testClips[j].swapDepths(j + 100);
+        // 预生成随机深度（排除随机源开销，保证可复现）
+        var randDepths:Array = _randDepths;
+        // 计时
+        var clips:Array = testClips;
+        var n:Number = clipCount;
+        var t0:Number = getTimer();
         var iter:Number = perfIter;
+        var ri:Number = 0;
         while (iter--) {
-            // 重置深度
-            var j:Number = clipCount;
-            while (j--) testClips[j].swapDepths(j + 100);
-            var t0:Number = getTimer();
-            j = clipCount;
+            j = n;
             while (j--) {
-                testClips[j].swapDepths(1000 + ((Math.random() * 1000) | 0));
+                clips[j].swapDepths(randDepths[ri++]);
+                if (ri >= _randLen) ri = 0;
             }
-            total += getTimer() - t0;
         }
-        var avg:Number = total / perfIter;
-        printLog("原生 swapDepths 平均耗时: " + avg + " 毫秒");
-        return avg;
+        var total:Number = getTimer() - t0;
+        var avgUs:Number = Math.round(total * 1000 / perfIter);
+        printLog("原生 swapDepths: 总 " + total + "ms / " + perfIter + " 迭代 = " + avgUs + " μs/帧");
+        return total;
     }
 
     private function testDepthManagerPerformance():Number {
-        printLog("测试 DepthManager 性能...");
-        var total:Number = 0;
+        printLog("测试 DepthManager 性能（稳态，" + perfIter + " 迭代）...");
+        // 先注册所有实体（不计入计时）
+        resetDM();
+        var j:Number = clipCount;
+        while (j--) {
+            dm.updateDepth(testClips[j], 200 + j * 10);
+        }
+        dm.flush();
+
+        // 预生成随机 Y（同一份随机数据，与 swapDepths 测试公平对比）
+        var randYs:Array = _randYs;
+        var clips:Array = testClips;
+        var n:Number = clipCount;
+        // 计时
+        var t0:Number = getTimer();
         var iter:Number = perfIter;
+        var ri:Number = 0;
         while (iter--) {
-            resetDM();
-            var t0:Number = getTimer();
-            var j:Number = clipCount;
+            j = n;
             while (j--) {
-                dm.updateDepth(testClips[j], 200 + ((Math.random() * 600) | 0));
+                dm.updateDepth(clips[j], randYs[ri++]);
+                if (ri >= _randLen) ri = 0;
             }
             dm.flush();
-            total += getTimer() - t0;
         }
-        var avg:Number = total / perfIter;
-        printLog("DepthManager 平均耗时: " + avg + " 毫秒");
-        return avg;
+        var total:Number = getTimer() - t0;
+        var avgUs:Number = Math.round(total * 1000 / perfIter);
+        printLog("DepthManager: 总 " + total + "ms / " + perfIter + " 迭代 = " + avgUs + " μs/帧（稳态）");
+        return total;
     }
 
-    private function comparePerformance(swapTime:Number, dmTime:Number):Void {
-        printLog("性能比较结果:");
-        var diff:Number = dmTime - swapTime;
-        var pct:Number;
-        if (swapTime > 0) {
-            pct = (diff / swapTime) * 100;
+    private function comparePerformance(swapTotal:Number, dmTotal:Number):Void {
+        var swapUs:Number = Math.round(swapTotal * 1000 / perfIter);
+        var dmUs:Number = Math.round(dmTotal * 1000 / perfIter);
+        var ratio:Number = Math.round(dmUs * 100 / swapUs) / 100;
+        var overhead:Number = Math.round((dmTotal - swapTotal) * 1000 / swapTotal) / 10;
+
+        printLog("────── 性能对比（" + perfIter + " 迭代，" + clipCount + " 实体） ──────");
+        printLog("  裸 swapDepths : " + swapUs + " μs/帧");
+        printLog("  DepthManager  : " + dmUs + " μs/帧");
+        printLog("  倍率          : " + ratio + "x");
+        printLog("  开销          : " + overhead + "%");
+
+        if (overhead < 10) {
+            printLog("√ 开销 <10%，可以上线");
+        } else if (overhead < 50) {
+            printLog("△ 开销 " + overhead + "%，需根据场景评估");
         } else {
-            pct = 0;
+            printLog("× 开销 " + overhead + "%，需进一步优化");
         }
 
-        printLog("上线建议:");
-        if (pct < 10) {
-            printLog("√ 深度管理器性能表现良好 (开销 <10%)，可以上线");
-        } else if (pct < 50) {
-            printLog("△ 深度管理器有一定性能开销 (" + ((pct * 10) | 0) / 10 + "%)，需根据场景评估");
-        } else {
-            printLog("× 深度管理器性能开销较大 (" + ((pct * 10) | 0) / 10 + "%)，需进一步优化");
-        }
-
-        // 与旧方案对比
-        printLog("旧方案基线: 27.15ms (543x swapDepths)");
-        printLog("新方案: " + dmTime + "ms");
-        if (dmTime < 27.15) {
-            printLog("√ 新方案优于旧方案");
+        // 旧方案对比（基线数据来自 Step 0：20 迭代 × 50 实体）
+        printLog("旧方案基线: 27.15ms/20迭代 ≈ 1358 μs/帧");
+        if (dmUs < 1358) {
+            printLog("√ 新方案优于旧方案 (" + Math.round(1358 / dmUs) + "x 加速)");
         } else {
             printLog("× 新方案未达到优化目标");
         }
