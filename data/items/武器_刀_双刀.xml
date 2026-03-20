@@ -73,11 +73,11 @@
     <item>
       <name>黑煞</name>
       <displayname>黑煞</displayname>
-      <icon>血瀑大剑</icon>
+      <icon>黑煞</icon>
       <type>武器</type>
       <use>刀</use>
       <actiontype>双刀</actiontype>
-      <price>195000</price>
+      <price>421000</price>
       <description>“铸剑师”黑煞，“十鬼”之首，可以同时使用多把武器。</description>
       <skill>
         <skillname>深冲利刺</skillname>
@@ -87,13 +87,14 @@
       </skill>
       <data>
         <level>40</level>
-        <weight>8</weight>
+        <weight>15</weight>
         <dressup>刀-血瀑大剑</dressup>
         <dressup2>刀-光玉的剑</dressup2>
-        <power>425</power>
-        <hp>0</hp>
-        <mp>0</mp>
+        <power>533</power>
+        <hp>20</hp>
+        <mp>100</mp>
         <defence>0</defence>
+        <vampirism>5</vampirism>
         <bladeCount>3</bladeCount>
       </data>
     </item>
