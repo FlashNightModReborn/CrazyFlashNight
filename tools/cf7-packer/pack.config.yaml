@@ -22,7 +22,7 @@ layers:
     description: "游戏数据（XML 配置）"
     source: "data/"
     include: [ "**/*" ]
-    exclude: []
+    exclude: [ rag/*, task/agent_tasks.json, task/text/agent_text.json ]
 
   - name: scripts
     description: "运行时脚本（仅 asLoader，源码不打包）"
