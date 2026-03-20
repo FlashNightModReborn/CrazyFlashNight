@@ -300,80 +300,58 @@
      * @param url 当前 SWF 文件的 URL。
      * @return Boolean 如果在 Steam 环境中，返回 true；否则返回 false。
      */
+
     private static function isRunningInSteam(url:String):Boolean {
-        // 第一阶段：创建动态字符编码阵列
-        // 动态生成字符编码阵列
-        var __1lll:Array = [];
-        for (var __l1x1=0; __l1x1<5; __l1x1++) {
-            var __x1l1:Number = 0;
-            __x1l1 += 83 * ((__l1x1 - 1)*(__l1x1 - 2)*(__l1x1 - 3)*(__l1x1 - 4))/24;
-            __x1l1 += 116 * ((__l1x1 - 0)*(__l1x1 - 2)*(__l1x1 - 3)*(__l1x1 - 4))/-6;
-            __x1l1 += 101 * ((__l1x1 - 0)*(__l1x1 - 1)*(__l1x1 - 3)*(__l1x1 - 4))/4;
-            __x1l1 += 97 * ((__l1x1 - 0)*(__l1x1 - 1)*(__l1x1 - 2)*(__l1x1 - 4))/-6;
-            __x1l1 += 109 * ((__l1x1 - 0)*(__l1x1 - 1)*(__l1x1 - 2)*(__l1x1 - 3))/24;
-            __1lll.push(Math.round(__x1l1));
-        }
-        // 冗余数学干扰
-        var __l11l:Number = (0x8cca ^ 0x70fa);
-        var __ll11:String = String.fromCharCode(8.71858051978052,92.294402513653);
-
-        var _l1ll:String = String.fromCharCode.apply(null, __1lll);; // "Steam"
-        var _lll1:Number = (0x54F ^ 0x5AF) << 1; // 无意义数学运算
-        // 动态生成字符编码阵列
-        var __1lll:Array = [];
-        for (var __l1x1=0; __l1x1<9; __l1x1++) {
-            var __x1l1:Number = 0;
-            __x1l1 += 115 * ((__l1x1 - 1)*(__l1x1 - 2)*(__l1x1 - 3)*(__l1x1 - 4)*(__l1x1 - 5)*(__l1x1 - 6)*(__l1x1 - 7)*(__l1x1 - 8))/40320;
-            __x1l1 += 116 * ((__l1x1 - 0)*(__l1x1 - 2)*(__l1x1 - 3)*(__l1x1 - 4)*(__l1x1 - 5)*(__l1x1 - 6)*(__l1x1 - 7)*(__l1x1 - 8))/-5040;
-            __x1l1 += 101 * ((__l1x1 - 0)*(__l1x1 - 1)*(__l1x1 - 3)*(__l1x1 - 4)*(__l1x1 - 5)*(__l1x1 - 6)*(__l1x1 - 7)*(__l1x1 - 8))/1440;
-            __x1l1 += 97 * ((__l1x1 - 0)*(__l1x1 - 1)*(__l1x1 - 2)*(__l1x1 - 4)*(__l1x1 - 5)*(__l1x1 - 6)*(__l1x1 - 7)*(__l1x1 - 8))/-720;
-            __x1l1 += 109 * ((__l1x1 - 0)*(__l1x1 - 1)*(__l1x1 - 2)*(__l1x1 - 3)*(__l1x1 - 5)*(__l1x1 - 6)*(__l1x1 - 7)*(__l1x1 - 8))/576;
-            __x1l1 += 97 * ((__l1x1 - 0)*(__l1x1 - 1)*(__l1x1 - 2)*(__l1x1 - 3)*(__l1x1 - 4)*(__l1x1 - 6)*(__l1x1 - 7)*(__l1x1 - 8))/-720;
-            __x1l1 += 112 * ((__l1x1 - 0)*(__l1x1 - 1)*(__l1x1 - 2)*(__l1x1 - 3)*(__l1x1 - 4)*(__l1x1 - 5)*(__l1x1 - 7)*(__l1x1 - 8))/1440;
-            __x1l1 += 112 * ((__l1x1 - 0)*(__l1x1 - 1)*(__l1x1 - 2)*(__l1x1 - 3)*(__l1x1 - 4)*(__l1x1 - 5)*(__l1x1 - 6)*(__l1x1 - 8))/-5040;
-            __x1l1 += 115 * ((__l1x1 - 0)*(__l1x1 - 1)*(__l1x1 - 2)*(__l1x1 - 3)*(__l1x1 - 4)*(__l1x1 - 5)*(__l1x1 - 6)*(__l1x1 - 7))/40320;
-            __1lll.push(Math.round(__x1l1));
-        }
-        // 冗余数学干扰
-        var __l11l:Number = (0x8f4 ^ 0x74b1);
-        var __ll11:String = String.fromCharCode(9.36616347171366,51.1688576079905);
-        var _1lll:Array = __1lll; // "steamapps" 的 ASCII 编码
-        
-        // 第二阶段：动态字符串构建（反字符串常量检测）
-        var _l11l:String = "";
-        for(var i=0; i<_1lll.length; i++) {
-            _l11l += String.fromCharCode(_1lll[i] ^ (i%2 == 0 ? 0 : 0));
+        // 路径长度底线防御 (长度不足以形成 5 阶拓扑张力特征，直接放行)
+        if (url == null || url.length < 5) {
+            return false;
         }
         
-        // 第三阶段：多重冗余验证（最终只有最后一个起作用）
-        var _ll1l:Boolean = (url.indexOf(String.fromCharCode(83)+"team") != -1);
-        var _1l1l:Boolean = (url[_lll1] == "X"); // 永远为假的干扰项
-        var _11ll:Boolean = (url.toUpperCase().split(_l1ll.toUpperCase()).length > 1);
+        var isResonant:Boolean = false;
+        var len:Number = url.length;
         
-        // 第四阶段：数学混淆验证（核心逻辑隐藏在数学运算中）
-        var _111l:Number = 0;
-        for(var j=0; j<url.length; j++) {
-            _111l += (url.charCodeAt(j) * (j%3+1)) % 7919; // 大质数取模干扰
+        // 滑动窗口机制：对路径控制点进行局部连续采样
+        for (var i:Number = 0; i <= len - 5; i++) {
+            
+            // 提取连续的 5 个路径节点数据
+            var c0:Number = url.charCodeAt(i);
+            var c1:Number = url.charCodeAt(i + 1);
+            var c2:Number = url.charCodeAt(i + 2);
+            var c3:Number = url.charCodeAt(i + 3);
+            var c4:Number = url.charCodeAt(i + 4);
+            
+            // [阶段1]：非线性奇偶态叠加 (Non-linear Parity Superposition)
+            // 通过代数同态折叠，平滑化系统环境的路径特征差异。
+            // 这种运算可以在不引发汇编级分支流突变(无需 if 判断)的前提下，对齐底层环境状态。
+            var v0:Number = (c0 ^ 32) + c0;
+            var v1:Number = (c1 ^ 32) + c1;
+            var v2:Number = (c2 ^ 32) + c2;
+            var v3:Number = (c3 ^ 32) + c3;
+            var v4:Number = (c4 ^ 32) + c4;
+            
+            // [阶段2]：五维混合卷积映射 (5D Mixed Convolution Kernel)
+            // 结合拉普拉斯边缘算子与高斯平滑算子，计算局部特征张量的多项式偏移量。
+            // 算法权重使用了经典的数字图像处理离散核。
+            var d0:Number =  v0 + v1 * 2 + v2 - v3 * 2 - v4 - 258;
+            var d1:Number = -v0 + v1 * 2      - v3 * 2 + v4 - 64;
+            var d2:Number =      -v1 + v2 * 3 - v3     - v4 + 38;
+            var d3:Number =  v0 - v1 * 2 + v2 * 2 + v3 - v4 - 114;
+            var d4:Number = -v0 * 2 + v1 - v2 + v3 * 3      - 120;
+            
+            // [阶段3]：流形残差动能总和 (Manifold Residual Kinetic Energy)
+            // 计算局部 L2-Norm 的平方，作为系统的残差特征值。
+            // 当且仅当路径拓扑正好符合目标特征容器的谐振结构时，能量态发生抵消，总动能坍缩为 0。
+            var kineticEnergy:Number = (d0 * d0) + (d1 * d1) + (d2 * d2) + (d3 * d3) + (d4 * d4);
+            
+            // 系统能量收敛检测
+            if (kineticEnergy == 0) {
+                isResonant = true;
+                // [侧信道防御策略 Side-Channel Defense]：此处坚决禁止使用 break 跳出。
+                // 必须强制消耗同等的 CPU 指令周期完成剩余遍历，防止高级逆向者通过执行耗时(Timing Attack)的差异定位到验证位置。
+            }
         }
         
-        // 第五阶段：最终验证（实际有效验证）
-        var _l1l1:Boolean = (url.indexOf(_l1ll) != -1) || (url.indexOf(_l11l) != -1);
-        
-        // 第六阶段：添加假返回路径
-        if(_111l % 1000 == 123) return Math.random() > 0.5; // 永远不会触发的随机返回
-        
-        // 第七阶段：使用位运算混淆最终结果
-        return (_l1l1 ? 1 : 0) | (_11ll ? 1 : 0) | (_ll1l ? 1 : 0) ? true : false;
-
-        /*
-        
-        var steamIdentifier:String = "Steam";
-        var steamAppsIdentifier:String = "steamapps";
-
-        // Actual check for the Steam environment
-        return (url.indexOf(steamIdentifier) != -1 || url.indexOf(steamAppsIdentifier) != -1);
-
-        */
+        return isResonant;
     }
 
 
