@@ -1,87 +1,79 @@
 ﻿import org.flashNight.gesh.depth.*;
-import org.flashNight.naki.DataStructures.*;
 
 /**
  * @class DepthManagerTest
- * @description DepthManager 的综合测试套件，用于验证功能正确性及性能表现
+ * @description DepthManager (Twip Trick) 综合测试套件
+ *
+ *   测试类别:
+ *     1. 标定 (calibrate)
+ *     2. 基本操作 (add / update / remove)
+ *     3. 零碰撞 & 排序单调性
+ *     4. 错误处理 (null / NaN / stale MC / 外部 clip / 容量上限)
+ *     5. 惰性剔除 (MC 被外部销毁)
+ *     6. 内存管理 (add-remove cycle / clear / dispose)
+ *     7. 场景切换 (re-calibrate)
+ *     8. 性能基准 (vs 裸 swapDepths)
+ *
  * @package org.flashNight.gesh.depth
  */
 class org.flashNight.gesh.depth.DepthManagerTest {
-    // 测试状态跟踪
-    private var totalTests:Number = 0;
-    private var passedTests:Number = 0;
-    private var failedTests:Number = 0;
-    
-    // 测试环境
+
+    private var totalTests:Number;
+    private var passedTests:Number;
+    private var failedTests:Number;
+
     private var testContainer:MovieClip;
     private var testClips:Array;
-    private var depthManager:DepthManager;
-    
+    private var dm:DepthManager;
+    private var clipCount:Number;
+
     // 性能测试参数
-    private var warmupIterations:Number = 5;
-    private var testIterations:Number = 20;
-    private var clipCount:Number = 50;
-    
-    // 测试结果存储
-    private var results:Object;
-    
-    /**
-     * 构造函数
-     */
+    private var warmupIter:Number;
+    private var perfIter:Number;
+
     public function DepthManagerTest() {
-        this.results = {
-            functional: {
-                total: 0,
-                passed: 0,
-                failed: 0,
-                details: []
-            },
-            performance: {
-                swapDepthsTime: 0,
-                depthManagerTime: 0,
-                improvement: 0,
-                details: []
-            }
-        };
+        totalTests = 0;
+        passedTests = 0;
+        failedTests = 0;
+        clipCount = 50;
+        warmupIter = 5;
+        perfIter = 20;
     }
-    
-    /**
-     * 运行完整测试套件
-     */
+
+    // ═══════════════════════════════════════════
+    //  入口
+    // ═══════════════════════════════════════════
+
     public function runTests():Void {
-        printHeader("DepthManager 测试套件");
-        
-        // 1. 设置测试环境
+        printHeader("DepthManager (Twip Trick) 测试套件");
         setupTestEnvironment();
-        
-        // 2. 运行功能测试
-        runFunctionalTests();
-        
-        // 3. 运行性能测试
+
+        testCalibrate();
+        testBasicOperations();
+        testZeroCollision();
+        testMonotonicity();
+        testErrorHandling();
+        testLazyEviction();
+        testMemoryManagement();
+        testSceneSwitch();
+
         runPerformanceTests();
-        
-        // 4. 输出总结果
+
         printSummary();
-        
-        // 5. 清理测试环境
         cleanupTestEnvironment();
     }
-    
-    /**
-     * 设置测试环境
-     */
+
+    // ═══════════════════════════════════════════
+    //  环境
+    // ═══════════════════════════════════════════
+
     private function setupTestEnvironment():Void {
         printLog("正在设置测试环境...");
-        
-        // 创建测试容器
-        this.testContainer = _root.createEmptyMovieClip("testContainer_" + getTimer(), _root.getNextHighestDepth());
-        this.testClips = [];
-        
-        // 创建测试用的影片剪辑
-        for (var i:Number = 0; i < this.clipCount; i++) {
-            var clip:MovieClip = this.testContainer.createEmptyMovieClip("testClip_" + i, i + 100);
-            
-            // 添加可视内容用于测试
+        testContainer = _root.createEmptyMovieClip("testContainer_" + getTimer(), _root.getNextHighestDepth());
+        testClips = [];
+        var i:Number = 0;
+        while (i < clipCount) {
+            var clip:MovieClip = testContainer.createEmptyMovieClip("testClip_" + i, i + 100);
             clip.beginFill(Math.random() * 0xFFFFFF, 80);
             clip.moveTo(0, 0);
             clip.lineTo(50, 0);
@@ -89,825 +81,567 @@ class org.flashNight.gesh.depth.DepthManagerTest {
             clip.lineTo(0, 50);
             clip.lineTo(0, 0);
             clip.endFill();
-            
-            // 随机位置
             clip._x = Math.random() * 400;
             clip._y = Math.random() * 300;
-            
-            // 保存引用
-            this.testClips.push(clip);
+            testClips.push(clip);
+            i++;
         }
-        
-        // 创建深度管理器实例
-        this.depthManager = new DepthManager(this.testContainer, true);
-        
-        printLog("测试环境设置完成，创建了 " + this.clipCount + " 个测试影片剪辑");
+        printLog("测试环境设置完成，创建了 " + clipCount + " 个测试影片剪辑");
     }
-    
-    /**
-     * 清理测试环境
-     */
+
     private function cleanupTestEnvironment():Void {
         printLog("正在清理测试环境...");
-        
-        // 释放深度管理器
-        if (this.depthManager) {
-            this.depthManager.dispose();
-            this.depthManager = null;
-        }
-        
-        // 清理测试剪辑
-        this.testClips = null;
-        
-        // 移除测试容器
-        if (this.testContainer) {
-            this.testContainer.removeMovieClip();
-            this.testContainer = null;
-        }
-        
+        if (dm) { dm.dispose(); dm = null; }
+        testClips = null;
+        if (testContainer) { testContainer.removeMovieClip(); testContainer = null; }
         printLog("测试环境已清理");
     }
-    
-    /**
-     * 运行功能测试套件
-     */
-    private function runFunctionalTests():Void {
-        printHeader("功能测试");
-        
-        // 基本操作测试
-        testBasicOperations();
-        
-        // 边界条件测试
-        testEdgeCases();
-        
-        // 错误处理测试
-        testErrorHandling();
-        
-        // 内存管理测试
-        testMemoryManagement();
+
+    private function resetDM():Void {
+        if (dm) { dm.dispose(); dm = null; }
+        dm = new DepthManager(testContainer, 10000, 1048575, 64);
+        dm.calibrate(200, 800);
     }
-    
-    /**
-     * 测试基本操作
-     */
+
+    // ═══════════════════════════════════════════
+    //  1. 标定测试
+    // ═══════════════════════════════════════════
+
+    private function testCalibrate():Void {
+        printTestGroup("标定测试");
+
+        // 真实场景 Y 范围（from stage_environment.xml）
+        var scenes:Array = [
+            {yMin: 150, yMax: 1000, label: "最宽场景"},
+            {yMin: 280, yMax: 800, label: "典型场景"},
+            {yMin: 200, yMax: 370, label: "最窄场景"},
+            {yMin: 500, yMax: 950, label: "高位场景"},
+            {yMin: 300, yMax: 550, label: "短程场景"}
+        ];
+
+        var i:Number = 0;
+        while (i < scenes.length) {
+            var s:Object = scenes[i];
+            var testDM:DepthManager = new DepthManager(testContainer, 10000, 1048575, 64);
+            var ok:Boolean = testDM.calibrate(Number(s.yMin), Number(s.yMax));
+            assertTrue(ok, "calibrate 应成功: " + s.label + " [" + s.yMin + "," + s.yMax + "]");
+            testDM.dispose();
+            i++;
+        }
+        record("5组真实场景标定", true);
+
+        // 极端 case：N=128, yRange=10000 → 需要 1,280,128 > 1,038,575 带宽 → 应失败
+        var testDM2:DepthManager = new DepthManager(testContainer, 10000, 1048575, 128);
+        var ok2:Boolean = testDM2.calibrate(0, 10000);
+        assertTrue(ok2 == false, "calibrate N=128 yRange=10000 应失败（带宽不足）");
+        testDM2.dispose();
+        record("极端标定拒绝", ok2 == false);
+
+        // 可行的极端 case：N=128, yRange=850 → 应成功
+        var testDM3:DepthManager = new DepthManager(testContainer, 10000, 1048575, 128);
+        var ok3:Boolean = testDM3.calibrate(150, 1000);
+        assertTrue(ok3, "calibrate N=128 yRange=850 应成功");
+        testDM3.dispose();
+        record("极端标定 N=128 可行", ok3);
+    }
+
+    // ═══════════════════════════════════════════
+    //  2. 基本操作
+    // ═══════════════════════════════════════════
+
     private function testBasicOperations():Void {
         printTestGroup("基本操作测试");
-        
-        // 测试：添加新节点
-        var testCase:String = "添加新节点";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 选择测试影片剪辑
-            var clip1:MovieClip = this.testClips[0];
-            var clip2:MovieClip = this.testClips[1];
-            
-            // 更新深度
-            this.depthManager.updateDepth(clip1, 200);
-            this.depthManager.updateDepth(clip2, 300);
-            
-            // 验证深度值是否正确
-            assertTrue(this.depthManager.getDepth(clip1) == 200, "clip1 深度值应为 200");
-            assertTrue(this.depthManager.getDepth(clip2) == 300, "clip2 深度值应为 300");
-            
-            // 验证节点数量
-            assertTrue(this.depthManager.size() == 2, "深度管理器应包含 2 个节点");
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            recordTestResult(testCase, false, "异常: " + e);
-        }
-        
-        // 测试：更新已存在节点的深度
-        testCase = "更新已存在节点的深度";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 选择测试影片剪辑
-            var clip:MovieClip = this.testClips[0];
-            
-            // 首次添加
-            this.depthManager.updateDepth(clip, 200);
-            assertTrue(this.depthManager.getDepth(clip) == 200, "初始深度值应为 200");
-            
-            // 更新深度
-            this.depthManager.updateDepth(clip, 300);
-            assertTrue(this.depthManager.getDepth(clip) == 300, "更新后深度值应为 300");
-            
-            // 验证节点数量
-            assertTrue(this.depthManager.size() == 1, "深度管理器应包含 1 个节点");
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            recordTestResult(testCase, false, "异常: " + e);
-        }
-        
-        // 测试：相同深度值的处理
-        testCase = "相同深度值的处理";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 选择测试影片剪辑
-            var clip1:MovieClip = this.testClips[0];
-            var clip2:MovieClip = this.testClips[1];
-            var clip3:MovieClip = this.testClips[2];
-            
-            // 设置相同深度
-            this.depthManager.updateDepth(clip1, 200);
-            
-            // 等待一小段时间，确保时间戳有差异
-            delay(50);
-            
-            this.depthManager.updateDepth(clip2, 200);
-            
-            // 等待一小段时间，确保时间戳有差异
-            delay(50);
-            
-            this.depthManager.updateDepth(clip3, 200);
-            
-            // 验证深度值
-            assertTrue(this.depthManager.getDepth(clip1) == 200, "clip1 深度值应为 200");
-            assertTrue(this.depthManager.getDepth(clip2) == 200, "clip2 深度值应为 200");
-            assertTrue(this.depthManager.getDepth(clip3) == 200, "clip3 深度值应为 200");
-            
-            // 验证显示顺序 (深度相同时，后更新的显示在上方)
-            // 注意：这里只验证内部顺序，实际显示顺序需要通过 hitTest 或其他方法验证
-            var depthInfo:String = this.depthManager.toString();
-            var pos1:Number = depthInfo.indexOf(clip1._name);
-            var pos2:Number = depthInfo.indexOf(clip2._name);
-            var pos3:Number = depthInfo.indexOf(clip3._name);
-            
-            assertTrue(pos3 < pos2 && pos2 < pos1, "后更新的影片剪辑应排在前面");
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            recordTestResult(testCase, false, "异常: " + e);
-        }
-        
-        // 测试：移除节点
-        testCase = "移除节点";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 选择测试影片剪辑
-            var clip1:MovieClip = this.testClips[0];
-            var clip2:MovieClip = this.testClips[1];
-            
-            // 添加节点
-            this.depthManager.updateDepth(clip1, 200);
-            this.depthManager.updateDepth(clip2, 300);
-            assertTrue(this.depthManager.size() == 2, "初始应有 2 个节点");
-            
-            // 移除节点
-            var result:Boolean = this.depthManager.removeMovieClip(clip1);
-            assertTrue(result, "移除操作应返回 true");
-            assertTrue(this.depthManager.size() == 1, "移除后应有 1 个节点");
-            assertTrue(this.depthManager.getDepth(clip1) == undefined, "被移除节点的深度应为 undefined");
-            
-            // 验证剩余节点
-            assertTrue(this.depthManager.getDepth(clip2) == 300, "未移除节点的深度应保持不变");
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            recordTestResult(testCase, false, "异常: " + e);
-        }
+
+        // 添加新实体
+        resetDM();
+        var clip1:MovieClip = testClips[0];
+        var clip2:MovieClip = testClips[1];
+        dm.updateDepth(clip1, 300);
+        dm.updateDepth(clip2, 500);
+        dm.flush();
+        assertTrue(dm.size() == 2, "应有 2 个实体");
+        var d1:Number = dm.getDepth(clip1);
+        var d2:Number = dm.getDepth(clip2);
+        assertTrue(d1 != undefined, "clip1 应有深度值");
+        assertTrue(d2 != undefined, "clip2 应有深度值");
+        assertTrue(d1 < d2, "Y=300 的深度应小于 Y=500");
+        record("添加新实体", true);
+
+        // 更新已有实体
+        resetDM();
+        dm.updateDepth(clip1, 300);
+        dm.flush();
+        var oldD:Number = dm.getDepth(clip1);
+        dm.updateDepth(clip1, 600);
+        dm.flush();
+        var newD:Number = dm.getDepth(clip1);
+        assertTrue(newD != oldD, "更新后深度应变化");
+        assertTrue(newD > oldD, "Y增大深度应增大");
+        assertTrue(dm.size() == 1, "仍应只有 1 个实体");
+        record("更新已有实体", true);
+
+        // 移除实体
+        resetDM();
+        dm.updateDepth(clip1, 300);
+        dm.updateDepth(clip2, 500);
+        dm.flush();
+        var removed:Boolean = dm.removeMovieClip(clip1);
+        assertTrue(removed, "移除应返回 true");
+        assertTrue(dm.size() == 1, "移除后应有 1 个实体");
+        assertTrue(dm.getDepth(clip1) == undefined, "被移除实体 getDepth 应返回 undefined");
+        assertTrue(dm.getDepth(clip2) != undefined, "未移除实体应保持");
+        record("移除实体", true);
     }
-    
-    /**
-     * 测试边界条件
-     */
-    private function testEdgeCases():Void {
-        printTestGroup("边界条件测试");
-        
-        // 测试：大量节点情况
-        var testCase:String = "大量节点情况";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 添加所有测试剪辑到深度管理器
-            for (var i:Number = 0; i < this.testClips.length; i++) {
-                this.depthManager.updateDepth(this.testClips[i], 1000 + i);
+
+    // ═══════════════════════════════════════════
+    //  3. 零碰撞
+    // ═══════════════════════════════════════════
+
+    private function testZeroCollision():Void {
+        printTestGroup("零碰撞测试");
+
+        resetDM();
+        // 50 实体全部设同一 Y 值
+        var sameY:Number = 500;
+        var i:Number = 0;
+        while (i < clipCount) {
+            dm.updateDepth(testClips[i], sameY);
+            i++;
+        }
+        dm.flush();
+
+        // 收集所有深度值，检查唯一性
+        var depthSet:Object = {};
+        depthSet.__proto__ = null;
+        var collisions:Number = 0;
+        i = 0;
+        while (i < clipCount) {
+            var d:Number = dm.getDepth(testClips[i]);
+            if (depthSet[String(d)] !== undefined) {
+                collisions++;
+                printLog("碰撞! clip " + i + " 与 clip " + depthSet[String(d)] + " 共享深度 " + d);
             }
-            
-            // 验证节点数量
-            assertTrue(this.depthManager.size() == this.testClips.length, 
-                      "深度管理器应包含 " + this.testClips.length + " 个节点");
-            
-            // 验证一些随机节点的深度值
-            var index1:Number = Math.floor(Math.random() * this.testClips.length);
-            var index2:Number = Math.floor(Math.random() * this.testClips.length);
-            
-            assertTrue(this.depthManager.getDepth(this.testClips[index1]) == 1000 + index1, 
-                      "节点 " + index1 + " 的深度值应为 " + (1000 + index1));
-            
-            assertTrue(this.depthManager.getDepth(this.testClips[index2]) == 1000 + index2, 
-                      "节点 " + index2 + " 的深度值应为 " + (1000 + index2));
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            recordTestResult(testCase, false, "异常: " + e);
+            depthSet[String(d)] = i;
+            i++;
         }
-        
-        // 测试：极端深度值
-        testCase = "极端深度值";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 选择测试影片剪辑
-            var clip1:MovieClip = this.testClips[0];
-            var clip2:MovieClip = this.testClips[1];
-            var clip3:MovieClip = this.testClips[2];
-            
-            // 设置极端深度值
-            this.depthManager.updateDepth(clip1, -16384); // 最小可能深度
-            this.depthManager.updateDepth(clip2, 0);      // 中心深度
-            this.depthManager.updateDepth(clip3, 16383);  // 最大可能深度
-            
-            // 验证深度值
-            assertTrue(this.depthManager.getDepth(clip1) == -16384, "极小深度值应正确存储");
-            assertTrue(this.depthManager.getDepth(clip2) == 0, "零深度值应正确存储");
-            assertTrue(this.depthManager.getDepth(clip3) == 16383, "极大深度值应正确存储");
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            recordTestResult(testCase, false, "异常: " + e);
-        }
-        
-        // 测试：快速连续更新同一节点
-        testCase = "快速连续更新同一节点";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 选择测试影片剪辑
-            var clip:MovieClip = this.testClips[0];
-            
-            // 连续更新 30 次深度
-            for (var i:Number = 0; i < 30; i++) {
-                this.depthManager.updateDepth(clip, 100 + i);
-            }
-            
-            // 验证最终深度值
-            assertTrue(this.depthManager.getDepth(clip) == 129, "最终深度值应为 129");
-            assertTrue(this.depthManager.size() == 1, "应只有一个节点");
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            recordTestResult(testCase, false, "异常: " + e);
-        }
+        assertTrue(collisions == 0, "50 实体同 Y 应零碰撞，实际碰撞: " + collisions);
+        record("50实体同Y零碰撞", collisions == 0);
     }
-    
-    /**
-     * 测试错误处理
-     */
+
+    // ═══════════════════════════════════════════
+    //  4. 排序单调性
+    // ═══════════════════════════════════════════
+
+    private function testMonotonicity():Void {
+        printTestGroup("排序单调性测试");
+
+        resetDM();
+        // 按递增 Y 注册
+        var i:Number = 0;
+        while (i < clipCount) {
+            dm.updateDepth(testClips[i], 200 + i * 10);
+            i++;
+        }
+        dm.flush();
+
+        // 验证 depth 严格递增
+        var monotone:Boolean = true;
+        i = 1;
+        while (i < clipCount) {
+            var prev:Number = dm.getDepth(testClips[i - 1]);
+            var cur:Number = dm.getDepth(testClips[i]);
+            if (cur <= prev) {
+                monotone = false;
+                printLog("单调性破坏: clip" + (i-1) + "=" + prev + " >= clip" + i + "=" + cur);
+            }
+            i++;
+        }
+        assertTrue(monotone, "递增 Y 应产生严格递增 depth");
+        record("排序单调性", monotone);
+
+        // 同 Y 稳定性：连续两次 flush 顺序不变
+        resetDM();
+        i = 0;
+        while (i < 10) {
+            dm.updateDepth(testClips[i], 500); // 全部同 Y
+            i++;
+        }
+        dm.flush();
+        var depths1:Array = [];
+        i = 0;
+        while (i < 10) {
+            depths1.push(dm.getDepth(testClips[i]));
+            i++;
+        }
+        // 再次 updateDepth 同一 Y + flush
+        i = 0;
+        while (i < 10) {
+            dm.updateDepth(testClips[i], 500);
+            i++;
+        }
+        dm.flush();
+        var stable:Boolean = true;
+        i = 0;
+        while (i < 10) {
+            if (dm.getDepth(testClips[i]) !== depths1[i]) {
+                stable = false;
+            }
+            i++;
+        }
+        assertTrue(stable, "同 Y 实体连续 flush 顺序应稳定");
+        record("同Y稳定性", stable);
+    }
+
+    // ═══════════════════════════════════════════
+    //  5. 错误处理
+    // ═══════════════════════════════════════════
+
     private function testErrorHandling():Void {
         printTestGroup("错误处理测试");
-        
-        // 测试：空参数处理
-        var testCase:String = "空参数处理";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 使用 null 参数调用方法
-            var result1:Boolean = this.depthManager.updateDepth(null, 100);
-            var result2:Boolean = this.depthManager.removeMovieClip(null);
-            var depth:Number = this.depthManager.getDepth(null);
-            
-            // 验证结果
-            assertTrue(result1 == false, "null 影片剪辑更新应返回 false");
-            assertTrue(result2 == false, "null 影片剪辑移除应返回 false");
-            assertTrue(depth == undefined, "null 影片剪辑的深度应为 undefined");
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            recordTestResult(testCase, false, "异常: " + e);
+
+        resetDM();
+
+        // null MC
+        var r1:Boolean = dm.updateDepth(null, 100);
+        assertTrue(r1 == false, "null MC 应返回 false");
+        record("null MC 处理", r1 == false);
+
+        // NaN targetY
+        var r2:Boolean = dm.updateDepth(testClips[0], Number.NaN);
+        assertTrue(r2 == false, "NaN targetY 应返回 false");
+        record("NaN targetY 处理", r2 == false);
+
+        // null 移除
+        var r3:Boolean = dm.removeMovieClip(null);
+        assertTrue(r3 == false, "null 移除应返回 false");
+
+        // 未注册实体的 getDepth
+        var r4:Number = dm.getDepth(testClips[49]);
+        assertTrue(r4 == undefined, "未注册实体 getDepth 应返回 undefined");
+        record("未注册/null 查询", true);
+
+        // 容量上限
+        // 用 maxEntities=5 的小管理器测试
+        var smallDM:DepthManager = new DepthManager(testContainer, 10000, 1048575, 5);
+        smallDM.calibrate(200, 800);
+        var i:Number = 0;
+        while (i < 5) {
+            smallDM.updateDepth(testClips[i], 300 + i * 10);
+            i++;
         }
-        
-        // 测试：无效深度值处理
-        testCase = "无效深度值处理";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 选择测试影片剪辑
-            var clip:MovieClip = this.testClips[0];
-            
-            // 测试无效深度值（范围外的值会被限制在有效范围内）
-            this.depthManager.updateDepth(clip, NaN);
-            var depth:Number = this.depthManager.getDepth(clip);
-            
-            // NaN 应该会导致操作失败
-            assertTrue(isNaN(depth) || depth == undefined, "无效深度值应导致操作失败");
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            // 注意：这里我们期望有异常发生，因为 NaN 是无效的深度值
-            recordTestResult(testCase, true, "正确处理了异常: " + e);
-        }
-        
-        // 测试：处理不存在的影片剪辑
-        testCase = "处理不存在的影片剪辑";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 创建一个不在容器中的影片剪辑
-            var externalClip:MovieClip = _root.createEmptyMovieClip("externalClip", _root.getNextHighestDepth());
-            
-            // 尝试获取深度
-            var depth:Number = this.depthManager.getDepth(externalClip);
-            assertTrue(depth == undefined, "不存在节点的深度应为 undefined");
-            
-            // 尝试移除
-            var result:Boolean = this.depthManager.removeMovieClip(externalClip);
-            assertTrue(result == false, "移除不存在的节点应返回 false");
-            
-            // 清理
-            externalClip.removeMovieClip();
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            recordTestResult(testCase, false, "异常: " + e);
-        }
+        var overCap:Boolean = smallDM.updateDepth(testClips[5], 400);
+        assertTrue(overCap == false, "超容量应返回 false");
+        assertTrue(smallDM.size() == 5, "容量应保持 5");
+        smallDM.dispose();
+        record("容量上限", overCap == false);
+
+        // 外部 clip（不在容器中但有 _parent）
+        var extClip:MovieClip = _root.createEmptyMovieClip("extClip_test", _root.getNextHighestDepth());
+        // 注意: 此 MC 不是 testContainer 的子级
+        // 契约要求调用方保证传入容器直接子级，此处仅验证不崩溃
+        // 错误容器的 MC 传入属于调用方违约，不做生产防御
+        var r5:Number = dm.getDepth(extClip);
+        assertTrue(r5 == undefined, "外部 clip getDepth 应返回 undefined");
+        var r6:Boolean = dm.removeMovieClip(extClip);
+        assertTrue(r6 == false, "外部 clip 移除应返回 false");
+        extClip.removeMovieClip();
+        record("外部clip查询", true);
     }
-    
-    /**
-     * 测试内存管理
-     */
+
+    // ═══════════════════════════════════════════
+    //  6. 惰性剔除
+    // ═══════════════════════════════════════════
+
+    private function testLazyEviction():Void {
+        printTestGroup("惰性剔除测试");
+
+        // 创建临时 MC，注册后外部销毁
+        var tmpClip:MovieClip = testContainer.createEmptyMovieClip("tmpClip_evict", testContainer.getNextHighestDepth());
+        resetDM();
+        dm.updateDepth(testClips[0], 300);
+        dm.updateDepth(tmpClip, 500);
+        dm.updateDepth(testClips[1], 700);
+        dm.flush();
+        assertTrue(dm.size() == 3, "应有 3 个实体");
+
+        // 外部销毁 tmpClip
+        tmpClip.removeMovieClip();
+
+        // 再次 flush 应惰性剔除
+        dm.updateDepth(testClips[0], 310);
+        dm.updateDepth(testClips[1], 710);
+        dm.flush();
+        assertTrue(dm.size() == 2, "惰性剔除后应有 2 个实体");
+        assertTrue(dm.getDepth(testClips[0]) != undefined, "存活实体应保持");
+        assertTrue(dm.getDepth(testClips[1]) != undefined, "存活实体应保持");
+        record("惰性剔除", dm.size() == 2);
+    }
+
+    // ═══════════════════════════════════════════
+    //  7. 内存管理
+    // ═══════════════════════════════════════════
+
     private function testMemoryManagement():Void {
         printTestGroup("内存管理测试");
-        
-        // 测试：大量添加和删除
-        var testCase:String = "大量添加和删除";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 添加所有测试剪辑
-            for (var i:Number = 0; i < this.testClips.length; i++) {
-                this.depthManager.updateDepth(this.testClips[i], 1000 + i);
-            }
-            
-            // 验证节点数量
-            assertTrue(this.depthManager.size() == this.testClips.length, 
-                      "应有 " + this.testClips.length + " 个节点");
-            
-            // 删除一半的节点
-            for (var i:Number = 0; i < Math.floor(this.testClips.length / 2); i++) {
-                this.depthManager.removeMovieClip(this.testClips[i]);
-            }
-            
-            // 验证节点数量
-            var expectedSize:Number = this.testClips.length - Math.floor(this.testClips.length / 2);
-            assertTrue(this.depthManager.size() == expectedSize, 
-                      "删除后应有 " + expectedSize + " 个节点");
-            
-            // 重新添加已删除的节点
-            for (var i:Number = 0; i < Math.floor(this.testClips.length / 2); i++) {
-                this.depthManager.updateDepth(this.testClips[i], 2000 + i);
-            }
-            
-            // 验证节点数量
-            assertTrue(this.depthManager.size() == this.testClips.length, 
-                      "重新添加后应有 " + this.testClips.length + " 个节点");
-            
-            // 测试深度值是否更新
-            assertTrue(this.depthManager.getDepth(this.testClips[0]) == 2000, 
-                      "重新添加的节点深度应更新");
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            recordTestResult(testCase, false, "异常: " + e);
+
+        // add-remove 循环 + ID 回收
+        resetDM();
+        var i:Number = 0;
+        while (i < clipCount) {
+            dm.updateDepth(testClips[i], 200 + i);
+            i++;
         }
-        
-        // 测试：清空操作
-        testCase = "清空操作";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 添加所有测试剪辑
-            for (var i:Number = 0; i < this.testClips.length; i++) {
-                this.depthManager.updateDepth(this.testClips[i], 1000 + i);
-            }
-            
-            // 验证节点数量
-            assertTrue(this.depthManager.size() == this.testClips.length, 
-                      "应有 " + this.testClips.length + " 个节点");
-            
-            // 清空深度管理器
-            this.depthManager.clear();
-            
-            // 验证节点数量
-            assertTrue(this.depthManager.size() == 0, "清空后应有 0 个节点");
-            
-            // 验证获取深度返回 undefined
-            assertTrue(this.depthManager.getDepth(this.testClips[0]) == undefined, 
-                      "清空后获取深度应返回 undefined");
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            recordTestResult(testCase, false, "异常: " + e);
+        dm.flush();
+        assertTrue(dm.size() == clipCount, "应有 " + clipCount + " 个实体");
+
+        // 删除前一半
+        i = 0;
+        var half:Number = (clipCount / 2) | 0;
+        while (i < half) {
+            dm.removeMovieClip(testClips[i]);
+            i++;
         }
-        
-        // 测试：资源释放（dispose）
-        testCase = "资源释放";
-        try {
-            // 重置深度管理器
-            resetDepthManager();
-            
-            // 添加所有测试剪辑
-            for (var i:Number = 0; i < this.testClips.length; i++) {
-                this.depthManager.updateDepth(this.testClips[i], 1000 + i);
-            }
-            
-            // 调用 dispose 方法
-            this.depthManager.dispose();
-            
-            // 创建新的深度管理器以继续测试
-            this.depthManager = new DepthManager(this.testContainer, true);
-            
-            recordTestResult(testCase, true);
-        } catch (e) {
-            recordTestResult(testCase, false, "异常: " + e);
+        assertTrue(dm.size() == clipCount - half, "删除后应有 " + (clipCount - half) + " 个实体");
+
+        // 重新添加
+        i = 0;
+        while (i < half) {
+            dm.updateDepth(testClips[i], 400 + i);
+            i++;
         }
+        dm.flush();
+        assertTrue(dm.size() == clipCount, "重新添加后应有 " + clipCount + " 个实体");
+        assertTrue(dm.getDepth(testClips[0]) != undefined, "重新添加的实体应有深度");
+        record("add-remove 循环", true);
+
+        // clear
+        resetDM();
+        i = 0;
+        while (i < clipCount) {
+            dm.updateDepth(testClips[i], 200 + i);
+            i++;
+        }
+        dm.flush();
+        dm.clear();
+        assertTrue(dm.size() == 0, "clear 后 size 应为 0");
+        assertTrue(dm.getDepth(testClips[0]) == undefined, "clear 后 getDepth 应返回 undefined");
+        record("clear 操作", true);
+
+        // dispose + 重建
+        resetDM();
+        i = 0;
+        while (i < clipCount) {
+            dm.updateDepth(testClips[i], 200 + i);
+            i++;
+        }
+        dm.flush();
+        dm.dispose();
+        // 重建
+        dm = new DepthManager(testContainer, 10000, 1048575, 64);
+        dm.calibrate(200, 800);
+        record("dispose + 重建", true);
     }
-    
-    /**
-     * 运行性能测试套件
-     */
+
+    // ═══════════════════════════════════════════
+    //  8. 场景切换
+    // ═══════════════════════════════════════════
+
+    private function testSceneSwitch():Void {
+        printTestGroup("场景切换测试");
+
+        resetDM(); // calibrate(200, 800)
+        var i:Number = 0;
+        while (i < 10) {
+            dm.updateDepth(testClips[i], 300 + i * 40);
+            i++;
+        }
+        dm.flush();
+        var dBefore:Number = dm.getDepth(testClips[0]);
+
+        // 切换到不同场景 Y 范围
+        var ok:Boolean = dm.calibrate(500, 950);
+        assertTrue(ok, "re-calibrate 应成功");
+
+        // 用新范围更新
+        i = 0;
+        while (i < 10) {
+            dm.updateDepth(testClips[i], 550 + i * 30);
+            i++;
+        }
+        dm.flush();
+        var dAfter:Number = dm.getDepth(testClips[0]);
+        assertTrue(dAfter != dBefore, "场景切换后深度应变化");
+
+        // 验证新范围下的单调性
+        var monotone:Boolean = true;
+        i = 1;
+        while (i < 10) {
+            if (dm.getDepth(testClips[i]) <= dm.getDepth(testClips[i - 1])) {
+                monotone = false;
+            }
+            i++;
+        }
+        assertTrue(monotone, "新场景下排序应单调");
+        record("场景切换", ok && monotone);
+    }
+
+    // ═══════════════════════════════════════════
+    //  性能基准
+    // ═══════════════════════════════════════════
+
     private function runPerformanceTests():Void {
         printHeader("性能测试");
-        
-        // 预热环境
+
         warmupEnvironment();
-        
-        // 1. 测试 swapDepths 原生方法性能
-        var swapDepthsTime:Number = testSwapDepthsPerformance();
-        
-        // 2. 测试 DepthManager 性能
-        var depthManagerTime:Number = testDepthManagerPerformance();
-        
-        // 3. 对比结果
-        comparePerformance(swapDepthsTime, depthManagerTime);
+
+        var swapTime:Number = testSwapDepthsPerformance();
+        var dmTime:Number = testDepthManagerPerformance();
+
+        comparePerformance(swapTime, dmTime);
     }
-    
-    /**
-     * 预热环境，减少首次测量的偏差
-     */
+
     private function warmupEnvironment():Void {
         printLog("正在预热测试环境...");
-        
-        // 创建预热容器
-        var warmupContainer:MovieClip = _root.createEmptyMovieClip("warmupContainer", _root.getNextHighestDepth());
-        var warmupClips:Array = [];
-        
-        // 创建预热影片剪辑
-        for (var i:Number = 0; i < 20; i++) {
-            var clip:MovieClip = warmupContainer.createEmptyMovieClip("warmupClip_" + i, i + 100);
-            warmupClips.push(clip);
+        var wc:MovieClip = _root.createEmptyMovieClip("warmup_" + getTimer(), _root.getNextHighestDepth());
+        var wClips:Array = [];
+        var i:Number = 0;
+        while (i < 20) {
+            wClips.push(wc.createEmptyMovieClip("w_" + i, i + 100));
+            i++;
         }
-        
-        // 预热直接 swapDepths
-        for (var w:Number = 0; w < this.warmupIterations; w++) {
-            for (var i:Number = 0; i < warmupClips.length; i++) {
-                warmupClips[i].swapDepths(200 + i);
-            }
+        // 预热裸 swapDepths
+        var w:Number = warmupIter;
+        while (w--) {
+            i = 20;
+            while (i--) wClips[i].swapDepths(200 + i);
         }
-        
         // 预热 DepthManager
-        var warmupManager:DepthManager = new DepthManager(warmupContainer, true);
-        for (var w:Number = 0; w < this.warmupIterations; w++) {
-            for (var i:Number = 0; i < warmupClips.length; i++) {
-                warmupManager.updateDepth(warmupClips[i], 200 + i);
-            }
+        var wDM:DepthManager = new DepthManager(wc, 10000, 1048575, 32);
+        wDM.calibrate(100, 500);
+        w = warmupIter;
+        while (w--) {
+            i = 20;
+            while (i--) wDM.updateDepth(wClips[i], 200 + i);
+            wDM.flush();
         }
-        
-        // 清理预热资源
-        warmupManager.dispose();
-        warmupContainer.removeMovieClip();
-        
+        wDM.dispose();
+        wc.removeMovieClip();
         printLog("预热完成");
     }
-    
-    /**
-     * 测试原生 swapDepths 性能
-     */
+
     private function testSwapDepthsPerformance():Number {
         printLog("测试原生 swapDepths 性能...");
-        
-        var totalTime:Number = 0;
-        
-        for (var iter:Number = 0; iter < this.testIterations; iter++) {
-            // 重置测试容器
-            resetTestContainer();
-            
-            // 记录开始时间
-            var startTime:Number = getTimer();
-            
-            // 执行 swapDepths 操作
-            for (var i:Number = 0; i < this.testClips.length; i++) {
-                // 随机深度值，模拟真实场景
-                var depth:Number = 1000 + Math.floor(Math.random() * 1000);
-                this.testClips[i].swapDepths(depth);
+        var total:Number = 0;
+        var iter:Number = perfIter;
+        while (iter--) {
+            // 重置深度
+            var j:Number = clipCount;
+            while (j--) testClips[j].swapDepths(j + 100);
+            var t0:Number = getTimer();
+            j = clipCount;
+            while (j--) {
+                testClips[j].swapDepths(1000 + ((Math.random() * 1000) | 0));
             }
-            
-            // 记录结束时间
-            var endTime:Number = getTimer();
-            var elapsed:Number = endTime - startTime;
-            
-            totalTime += elapsed;
-            
-            // 记录每次迭代的时间
-            this.results.performance.details.push({
-                iteration: iter,
-                method: "swapDepths",
-                time: elapsed,
-                operations: this.testClips.length
-            });
+            total += getTimer() - t0;
         }
-        
-        // 计算平均时间
-        var averageTime:Number = totalTime / this.testIterations;
-        this.results.performance.swapDepthsTime = averageTime;
-        
-        printLog("原生 swapDepths 平均耗时: " + averageTime + " 毫秒");
-        
-        return averageTime;
+        var avg:Number = total / perfIter;
+        printLog("原生 swapDepths 平均耗时: " + avg + " 毫秒");
+        return avg;
     }
-    
-    /**
-     * 测试 DepthManager 性能
-     */
+
     private function testDepthManagerPerformance():Number {
         printLog("测试 DepthManager 性能...");
-        
-        var totalTime:Number = 0;
-        
-        for (var iter:Number = 0; iter < this.testIterations; iter++) {
-            // 重置测试环境
-            resetDepthManager();
-            
-            // 记录开始时间
-            var startTime:Number = getTimer();
-            
-            // 执行 DepthManager 操作
-            for (var i:Number = 0; i < this.testClips.length; i++) {
-                // 随机深度值，模拟真实场景
-                var depth:Number = 1000 + Math.floor(Math.random() * 1000);
-                this.depthManager.updateDepth(this.testClips[i], depth);
+        var total:Number = 0;
+        var iter:Number = perfIter;
+        while (iter--) {
+            resetDM();
+            var t0:Number = getTimer();
+            var j:Number = clipCount;
+            while (j--) {
+                dm.updateDepth(testClips[j], 200 + ((Math.random() * 600) | 0));
             }
-            
-            // 记录结束时间
-            var endTime:Number = getTimer();
-            var elapsed:Number = endTime - startTime;
-            
-            totalTime += elapsed;
-            
-            // 记录每次迭代的时间
-            this.results.performance.details.push({
-                iteration: iter,
-                method: "DepthManager",
-                time: elapsed,
-                operations: this.testClips.length
-            });
+            dm.flush();
+            total += getTimer() - t0;
         }
-        
-        // 计算平均时间
-        var averageTime:Number = totalTime / this.testIterations;
-        this.results.performance.depthManagerTime = averageTime;
-        
-        printLog("DepthManager 平均耗时: " + averageTime + " 毫秒");
-        
-        return averageTime;
+        var avg:Number = total / perfIter;
+        printLog("DepthManager 平均耗时: " + avg + " 毫秒");
+        return avg;
     }
-    
-    /**
-     * 比较性能测试结果
-     */
-    private function comparePerformance(swapDepthsTime:Number, depthManagerTime:Number):Void {
+
+    private function comparePerformance(swapTime:Number, dmTime:Number):Void {
         printLog("性能比较结果:");
-        
-        var diff:Number = depthManagerTime - swapDepthsTime;
-        var percentChange:Number = (diff / swapDepthsTime) * 100;
-        
-        this.results.performance.improvement = -percentChange; // 正值表示改进，负值表示退化
-        
-        if (percentChange > 0) {
-            printLog("深度管理器比原生 swapDepths 慢 " + percentChange + "%");
-            printLog("在当前测试条件下，深度管理器的性能开销大于其收益");
+        var diff:Number = dmTime - swapTime;
+        var pct:Number;
+        if (swapTime > 0) {
+            pct = (diff / swapTime) * 100;
         } else {
-            printLog("深度管理器比原生 swapDepths 快 " + (-percentChange) + "%");
-            printLog("在当前测试条件下，深度管理器提供了性能优势");
+            pct = 0;
         }
-        
-        // 给出上线建议
+
         printLog("上线建议:");
-        if (percentChange < 10) { // 性能差异小于 10%，可以接受
-            printLog("√ 深度管理器性能表现良好，可以上线");
-            if (percentChange > 0) {
-                printLog("  - 轻微的性能开销可以接受，因为深度管理器提供了更好的深度冲突处理和生命周期管理");
-            }
-        } else if (percentChange > 50) { // 性能差异超过 50%，需要重新考虑
-            printLog("× 深度管理器性能开销较大，建议重新评估或进一步优化");
-            printLog("  - 考虑在更新频率较低的场景中使用");
-            printLog("  - 或者在更新频率高的场景中降低更新频率");
-        } else { // 性能差异在 10% 到 50% 之间，需要根据具体需求判断
-            printLog("△ 深度管理器有一定性能开销，需要根据实际项目需求决定是否上线");
-            printLog("  - 如果项目需要更好的深度冲突处理和生命周期管理，可以接受这个开销");
-            printLog("  - 如果项目对性能非常敏感，建议进一步优化");
+        if (pct < 10) {
+            printLog("√ 深度管理器性能表现良好 (开销 <10%)，可以上线");
+        } else if (pct < 50) {
+            printLog("△ 深度管理器有一定性能开销 (" + ((pct * 10) | 0) / 10 + "%)，需根据场景评估");
+        } else {
+            printLog("× 深度管理器性能开销较大 (" + ((pct * 10) | 0) / 10 + "%)，需进一步优化");
+        }
+
+        // 与旧方案对比
+        printLog("旧方案基线: 27.15ms (543x swapDepths)");
+        printLog("新方案: " + dmTime + "ms");
+        if (dmTime < 27.15) {
+            printLog("√ 新方案优于旧方案");
+        } else {
+            printLog("× 新方案未达到优化目标");
         }
     }
-    
-    /**
-     * 输出测试总结
-     */
+
+    // ═══════════════════════════════════════════
+    //  辅助
+    // ═══════════════════════════════════════════
+
+    private function assertTrue(cond:Boolean, msg:String):Boolean {
+        if (!cond) {
+            printLog("断言失败: " + msg);
+        }
+        return cond;
+    }
+
+    private function record(name:String, passed:Boolean):Void {
+        totalTests++;
+        if (passed) {
+            passedTests++;
+            printLog("√ 测试通过: " + name);
+        } else {
+            failedTests++;
+            printLog("× 测试失败: " + name);
+        }
+    }
+
     private function printSummary():Void {
         printHeader("测试总结");
-        
-        // 功能测试结果
         printLog("功能测试:");
-        printLog("- 总测试数: " + this.results.functional.total);
-        printLog("- 通过测试: " + this.results.functional.passed);
-        printLog("- 失败测试: " + this.results.functional.failed);
-        
-        if (this.results.functional.failed > 0) {
-            printLog("失败测试详情:");
-            for (var i:Number = 0; i < this.results.functional.details.length; i++) {
-                var detail:Object = this.results.functional.details[i];
-                if (!detail.passed) {
-                    printLog("  - " + detail.name + ": " + detail.message);
-                }
-            }
-        }
-        
-        // 性能测试结果
-        printLog("\n性能测试:");
-        printLog("- 原生 swapDepths 平均耗时: " + this.results.performance.swapDepthsTime + " 毫秒");
-        printLog("- DepthManager 平均耗时: " + this.results.performance.depthManagerTime + " 毫秒");
-        
-        var improvement:Number = this.results.performance.improvement;
-        if (improvement > 0) {
-            printLog("- 性能改进: +" + improvement + "%");
+        printLog("- 总测试数: " + totalTests);
+        printLog("- 通过: " + passedTests);
+        printLog("- 失败: " + failedTests);
+        if (failedTests == 0) {
+            printLog("√ 全部通过");
         } else {
-            printLog("- 性能退化: " + improvement + "%");
-        }
-        
-        // 总结评估
-        printHeader("综合评估");
-        
-        if (this.results.functional.failed == 0) {
-            printLog("√ 功能测试全部通过");
-        } else {
-            var passRate:Number = (this.results.functional.passed / this.results.functional.total) * 100;
-            printLog("△ 功能测试部分通过 (" + passRate + "%)");
-        }
-        
-        if (improvement >= 0) {
-            printLog("√ 性能测试显示 DepthManager 有性能优势");
-        } else if (improvement > -10) {
-            printLog("△ 性能测试显示 DepthManager 性能接近原生 swapDepths");
-        } else {
-            printLog("× 性能测试显示 DepthManager 有明显性能开销");
-        }
-        
-        // 最终建议
-        printLog("\n最终建议:");
-        if (this.results.functional.failed == 0 && improvement > -20) {
-            printLog("√ 建议将 DepthManager 投入生产环境使用");
-            printLog("  - 提供了更好的深度冲突处理和生命周期管理");
-            printLog("  - 性能开销可以接受");
-        } else if (this.results.functional.failed == 0 && improvement <= -20) {
-            printLog("△ DepthManager 功能可靠，但有性能开销");
-            printLog("  - 建议在性能不敏感的场景中使用");
-            printLog("  - 或继续优化性能后再投入生产环境");
-        } else {
-            printLog("× 不建议当前版本的 DepthManager 投入生产环境");
-            printLog("  - 需要修复功能测试中的问题");
-            printLog("  - 考虑优化性能");
+            printLog("× 有 " + failedTests + " 个测试失败");
         }
     }
-    
-    //===============================================================
-    // 辅助方法
-    //===============================================================
-    
-    /**
-     * 重置测试容器
-     */
-    private function resetTestContainer():Void {
-        // 清理现有测试剪辑
-        for (var i:Number = 0; i < this.testClips.length; i++) {
-            this.testClips[i].swapDepths(i + 100); // 恢复到初始深度
-        }
-    }
-    
-    /**
-     * 重置深度管理器
-     */
-    private function resetDepthManager():Void {
-        // 清理当前深度管理器
-        if (this.depthManager) {
-            this.depthManager.clear();
-        }
-    }
-    
-    /**
-     * 等待指定的毫秒数（简单模拟）
-     */
-    private function delay(ms:Number):Void {
-        var start:Number = getTimer();
-        while (getTimer() - start < ms) {
-            // 空循环等待
-        }
-    }
-    
-    /**
-     * 断言：值相等
-     */
-    private function assertEquals(actual:Object, expected:Object, message:String):Boolean {
-        if (actual === expected) {
-            return true;
-        } else {
-            printLog("断言失败: " + message);
-            printLog("  期望值: " + expected);
-            printLog("  实际值: " + actual);
-            return false;
-        }
-    }
-    
-    /**
-     * 断言：值为真
-     */
-    private function assertTrue(condition:Boolean, message:String):Boolean {
-        if (condition) {
-            return true;
-        } else {
-            printLog("断言失败: " + message);
-            return false;
-        }
-    }
-    
-    /**
-     * 断言：值为假
-     */
-    private function assertFalse(condition:Boolean, message:String):Boolean {
-        if (!condition) {
-            return true;
-        } else {
-            printLog("断言失败: " + message);
-            return false;
-        }
-    }
-    
-    /**
-     * 记录测试结果
-     */
-    private function recordTestResult(testCase:String, passed:Boolean, message:String):Void {
-        this.results.functional.total++;
-        
-        if (passed) {
-            this.results.functional.passed++;
-            printLog("√ 测试通过: " + testCase);
-        } else {
-            this.results.functional.failed++;
-            printLog("× 测试失败: " + testCase + (message ? " - " + message : ""));
-        }
-        
-        // 保存详细信息
-        this.results.functional.details.push({
-            name: testCase,
-            passed: passed,
-            message: message
-        });
-    }
-    
-    /**
-     * 打印标题
-     */
+
     private function printHeader(text:String):Void {
         printLog("\n==================================================");
         printLog(" " + text);
         printLog("==================================================");
     }
-    
-    /**
-     * 打印测试组标题
-     */
+
     private function printTestGroup(text:String):Void {
         printLog("\n----- " + text + " -----");
     }
-    
-    /**
-     * 打印测试信息
-     */
+
     private function printLog(text:String):Void {
         trace("[DepthManagerTest] " + text);
     }

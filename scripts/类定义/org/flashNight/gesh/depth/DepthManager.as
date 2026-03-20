@@ -1,312 +1,270 @@
-﻿import org.flashNight.gesh.depth.*;
-import org.flashNight.naki.DataStructures.*;
-
-import org.flashNight.neur.Event.*;
-import org.flashNight.aven.Coordinator.*;
+﻿import org.flashNight.aven.Coordinator.*;
 
 /**
  * @class DepthManager
- * @description 基于 AVL 树的影片剪辑深度管理器
- *   负责高效管理 MovieClip 的深度排序，支持按需更新与惰性处理
+ * @description 基于 Twip Trick 模运算的战斗单位深度管理器
+ *
+ *   核心公式: depth = bandLow + (int((Y - yMin) * S) * N) + entityID
+ *   其中 entityID ∈ [0, N-1] 唯一，保证 depth % N == entityID → 零内部碰撞
+ *
+ *   契约:
+ *   - 专用于战斗场景中单位的 Y 轴深度排序，不管理任意深度值
+ *   - 同 Y 实体按 entityID（注册顺序）排序，非时间戳——保证帧间稳定无闪烁
+ *   - 调用方必须保证传入 MC 是绑定容器的直接子级（热路径不做 _parent === _container 检查）
+ *   - 容量有限：超过 maxEntities 时 updateDepth 返回 false
+ *
  * @package org.flashNight.gesh.depth
  */
 class org.flashNight.gesh.depth.DepthManager {
-    /** 关联的父容器 */
-    private var container:MovieClip;
-    
-    /** 基于AVL树的深度排序集合 */
-    private var depthTree:TreeSet;
-    
-    /** 影片剪辑名称到节点的映射表 */
-    private var mcNodeMap:Object;
-    
-    /** 最近一次执行的标记 */
-    private var lastProcessed:Number;
-    
-    /** 脏节点计数器 */
-    private var dirtyCount:Number;
-    
-    /** 是否启用了对相同深度值的处理 */
-    private var handleDuplicateDepths:Boolean;
-    
-    /** 深度管理器的唯一ID（用于调试） */
-    private var managerID:String;
-    
-    /** 深度管理器ID计数器 */
-    private static var idCounter:Number = 0;
-    
+
+    // ── 平行数组（SoA） ──
+    private var _mcs:Array;       // [idx] → MovieClip
+    private var _names:Array;     // [idx] → mc._name 注册快照（MC 销毁后仍可清理 _idxMap）
+    private var _ids:Array;       // [idx] → entityID (0..N-1)
+    private var _curD:Array;      // [idx] → 上次 flush 已应用的深度
+    private var _targetD:Array;   // [idx] → 本帧计算的目标深度
+    private var _count:Number;    // 当前注册实体数
+
+    // ── 查找 ──
+    private var _idxMap:Object;   // mc._name → idx（proto-null 字典）
+
+    // ── ID 管理 ──
+    private var _freeIDs:Array;   // 回收的 entityID 栈
+    private var _nextID:Number;   // 下一个未用 ID
+
+    // ── Twip Trick 参数 ──
+    private var _container:MovieClip;
+    private var _bandLow:Number;
+    private var _bandHigh:Number;
+    private var _S:Number;        // 量化比例
+    private var _N:Number;        // 最大实体数
+    private var _yMin:Number;
+    private var _yMax:Number;
+    private var _calibrated:Boolean;
+
     /**
      * 构造函数
-     * @param container 父容器，所有被管理的MovieClip都应是其子级
-     * @param handleDuplicateDepths 是否自动处理相同深度值的冲突（默认为true）
+     * @param container  父容器（所有受管 MC 必须是其直接子级）
+     * @param bandLow    深度带下界（默认 10000，高于时间轴原生层级）
+     * @param bandHigh   深度带上界（默认 1048575，Flash 最大深度）
+     * @param maxEntities 容量上限（默认 64）
      */
-    public function DepthManager(container:MovieClip, handleDuplicateDepths:Boolean) {
-        this.container = container;
-        this.mcNodeMap = {};
-        this.lastProcessed = getTimer();
-        this.dirtyCount = 0;
-        this.managerID = "DM" + (idCounter++);
-        
-        if (handleDuplicateDepths == undefined) {
-            handleDuplicateDepths = true;
-        }
-        this.handleDuplicateDepths = handleDuplicateDepths;
-        
-        // 初始化深度树，配置比较函数
-        this.depthTree = new TreeSet(createCompareFunction());
-        
-        // 绑定容器卸载事件，确保正确清理资源
-        EventCoordinator.addUnloadCallback(container, this.dispose);
-        
-        // 记录日志
-        trace("[DepthManager] " + this.managerID + " 已创建，关联容器: " + container._name);
+    public function DepthManager(container:MovieClip, bandLow:Number, bandHigh:Number, maxEntities:Number) {
+        if (bandLow == undefined) bandLow = 10000;
+        if (bandHigh == undefined) bandHigh = 1048575;
+        if (maxEntities == undefined) maxEntities = 64;
+
+        _container = container;
+        _bandLow = bandLow;
+        _bandHigh = bandHigh;
+        _N = maxEntities;
+        _count = 0;
+        _nextID = 0;
+        _calibrated = false;
+
+        _mcs = new Array(maxEntities);
+        _names = new Array(maxEntities);
+        _ids = new Array(maxEntities);
+        _curD = new Array(maxEntities);
+        _targetD = new Array(maxEntities);
+        _freeIDs = [];
+
+        var map:Object = {};
+        map.__proto__ = null;
+        _idxMap = map;
+
+        // 容器卸载时自动清理
+        var self:DepthManager = this;
+        EventCoordinator.addUnloadCallback(container, function():Void {
+            self.dispose();
+        });
     }
-    
+
     /**
-     * 创建深度比较函数
-     * 比较顺序：
-     *   1. 首先按深度值升序排列
-     *   2. 当深度值相同时，按时间戳降序排列（后更新的显示在上层）
-     * @return 比较函数
+     * 标定 Y 范围（场景切换时调用）
+     * calibrate 可能自动扩展 bandHigh 以容纳 yRange × N
+     * @return 是否标定成功（false 表示参数不可满足，调用方需减少 maxEntities）
      */
-    private function createCompareFunction():Function {
-        var handleDuplicates:Boolean = this.handleDuplicateDepths;
-        
-        return function(a:DepthNode, b:DepthNode):Number {
-            // 首先按深度值比较
-            var depthDiff:Number = a.depth - b.depth;
-            
-            if (depthDiff != 0) {
-                return depthDiff; // 深度不同，返回差值
-            }
-            
-            // 深度相同时的处理逻辑
-            if (handleDuplicates) {
-                // 时间戳降序，确保后更新的显示在上方
-                return b.timestamp - a.timestamp;
-            }
-            
-            // 不处理深度冲突时，保持原有顺序
-            return 0;
-        };
-    }
-    
-    /**
-     * 更新影片剪辑的深度值
-     * 主要逻辑：
-     *   1. 若节点不存在，则创建并添加到树中
-     *   2. 若节点存在但深度改变，则从树中移除并重新插入
-     *   3. 标记节点为脏，增加脏节点计数
-     *   4. 处理实际深度更新（可能触发AVL树重平衡）
-     * 
-     * @param mc 要更新深度的影片剪辑
-     * @param targetDepth 目标深度值
-     * @return 深度是否发生变化
-     */
-    public function updateDepth(mc:MovieClip, targetDepth:Number):Boolean {
-        if (!mc || targetDepth == undefined) {
-            trace("[DepthManager] " + this.managerID + " 更新深度失败: 无效参数");
-            return false;
-        }
-        
-        var mcName:String = mc._name;
-        var node:DepthNode = this.mcNodeMap[mcName];
-        var depthChanged:Boolean = false;
-        
-        // 检查节点是否存在
-        if (node == undefined) {
-            // 创建新节点并添加到树中
-            node = new DepthNode(mc, targetDepth);
-            this.mcNodeMap[mcName] = node;
-            this.depthTree.add(node);
-            this.dirtyCount++;
-            
-            trace("[DepthManager] " + this.managerID + " 添加新节点: " + mcName + " 深度: " + targetDepth);
-            depthChanged = true;
-        } else {
-            // 更新现有节点
-            var oldDepth:Number = node.depth;
-            
-            // 检查深度是否变化
-            if (node.updateDepth(targetDepth)) {
-                // 深度发生变化，需要重新排序
-                this.depthTree.remove(node);
-                this.depthTree.add(node);
-                this.dirtyCount++;
-                
-                trace("[DepthManager] " + this.managerID + " 更新节点: " + mcName + 
-                      " 深度从 " + oldDepth + " 变为 " + targetDepth);
-                depthChanged = true;
-            } else if (this.handleDuplicateDepths) {
-                // 深度未变，但更新时间戳以处理相同深度的优先级
-                node.setTimestamp(getTimer());
-                node.isDirty = true;
-                this.dirtyCount++;
-                
-                // 仅当启用处理重复深度时才需要重新排序
-                this.depthTree.remove(node);
-                this.depthTree.add(node);
-                
-                trace("[DepthManager] " + this.managerID + " 更新节点时间戳: " + mcName);
-                depthChanged = true;
+    public function calibrate(yMin:Number, yMax:Number):Boolean {
+        var yRange:Number = yMax - yMin;
+        if (yRange < 1) yRange = 1;
+        var bandSpan:Number = _bandHigh - _bandLow;
+        var s:Number = ((bandSpan - _N + 1) / (yRange * _N)) | 0;
+        if (s < 1) {
+            // 尝试自动扩展 bandHigh
+            var needed:Number = _bandLow + yRange * _N + _N - 1;
+            if (needed <= 1048575) {
+                _bandHigh = needed;
+                s = 1;
+            } else {
+                _calibrated = false;
+                return false;
             }
         }
-        
-        // 立即处理深度更新
-        if (depthChanged) {
-            processDepthUpdates();
+        _S = s;
+        _yMin = yMin;
+        _yMax = yMax;
+        _calibrated = true;
+        // 强制下次 flush 全量更新
+        var i:Number = _count;
+        while (i--) {
+            _curD[i] = -1;
         }
-        
-        return depthChanged;
+        return true;
     }
-    
+
     /**
-     * 处理所有待更新的深度
-     * 该方法执行实际的 swapDepths 操作，应在更新后立即调用
+     * 更新实体的目标 Y 坐标（自动注册新实体）
+     *
+     * 契约: mc._parent === _container（调用方保证，热路径不检查）
+     * 错误容器的 MC 传入属于调用方违约，不做生产防御。
+     *
+     * @param mc      要排序的影片剪辑
+     * @param targetY 目标 Y 坐标
+     * @return 是否成功
      */
-    public function processDepthUpdates():Void {
-        if (this.dirtyCount <= 0) {
-            return; // 没有待更新的节点
-        }
-        
-        var currentTime:Number = getTimer();
-        // 获取排序后的所有节点
-        var sortedNodes:Array = this.depthTree.toArray();
-        var processedCount:Number = 0;
-        
-        // 遍历所有节点并应用深度更新
-        for (var i:Number = 0; i < sortedNodes.length; i++) {
-            var node:DepthNode = sortedNodes[i];
-            
-            // 只处理脏节点
-            if (node.needsUpdate()) {
-                // 计算实际使用的深度值
-                var actualDepth:Number = node.depth;
-                
-                // 使用 swapDepths 更新显示深度
-                try {
-                    node.mc.swapDepths(actualDepth);
-                    node.resetDirty();
-                    processedCount++;
-                } catch (e) {
-                    trace("[DepthManager] " + this.managerID + " 深度更新失败: " + 
-                          node.mc._name + " 错误: " + e);
-                }
+    public function updateDepth(mc:MovieClip, targetY:Number):Boolean {
+        if (!mc || !_calibrated) return false;
+        if (mc._parent == undefined) return false;  // stale MC 防护
+        if ((targetY - targetY) != 0) return false; // NaN guard (H07)
+
+        var name:String = mc._name;
+        var idx:Number = _idxMap[name];
+
+        if (idx == undefined) {
+            // 自动注册
+            if (_count >= _N) return false; // 容量满
+            idx = _count;
+            _count++;
+            _mcs[idx] = mc;
+            _names[idx] = name;
+            _idxMap[name] = idx;
+            if (_freeIDs.length > 0) {
+                _ids[idx] = _freeIDs.pop();
+            } else {
+                _ids[idx] = _nextID++;
             }
+            _curD[idx] = -1; // 强制首次 flush
         }
-        
-        // 更新脏节点计数
-        this.dirtyCount -= processedCount;
-        this.lastProcessed = currentTime;
-        
-        trace("[DepthManager] " + this.managerID + " 处理了 " + 
-              processedCount + " 个深度更新，耗时: " + (getTimer() - currentTime) + "ms");
+
+        // clamp Y 到标定范围（保护不变量 2：深度始终在带内）
+        var y:Number = targetY;
+        if (y < _yMin) {
+            y = _yMin;
+        } else if (y > _yMax) {
+            y = _yMax;
+        }
+
+        // Twip Trick 核心公式
+        _targetD[idx] = _bandLow + (((y - _yMin) * _S) | 0) * _N + _ids[idx];
+        return true;
     }
-    
+
     /**
-     * 移除指定影片剪辑的深度管理
+     * 批量执行 swapDepths（每帧调用一次）
+     * 包含惰性剔除：检测已销毁的 MC 并自动清理
+     */
+    public function flush():Void {
+        var mcs:Array = _mcs;
+        var curD:Array = _curD;
+        var tgtD:Array = _targetD;
+        var i:Number = 0;
+        // 正序遍历 + 手动递增：evict 后不 i++，重检 swap-and-pop 搬入的元素
+        while (i < _count) {
+            if (mcs[i]._name == undefined) {
+                _evict(i);
+                // 不递增 i：_evict 将末尾搬到 i，需要重检
+                // 若 evict 的是末尾元素，_count-- 后 i >= _count，循环自然结束
+                continue;
+            }
+            var d:Number = tgtD[i];
+            if (d !== curD[i]) {
+                mcs[i].swapDepths(d);
+                curD[i] = d;
+            }
+            i++;
+        }
+    }
+
+    /**
+     * 注销实体
      * @param mc 要移除的影片剪辑
      * @return 是否成功移除
      */
     public function removeMovieClip(mc:MovieClip):Boolean {
         if (!mc) return false;
-        
-        var mcName:String = mc._name;
-        var node:DepthNode = this.mcNodeMap[mcName];
-        
-        if (node != undefined) {
-            // 从树中移除节点
-            this.depthTree.remove(node);
-            delete this.mcNodeMap[mcName];
-            
-            if (node.needsUpdate()) {
-                this.dirtyCount--;
-            }
-            
-            trace("[DepthManager] " + this.managerID + " 已移除节点: " + mcName);
-            return true;
-        }
-        
-        return false;
+        var idx:Number = _idxMap[mc._name];
+        if (idx == undefined) return false;
+        _evict(idx);
+        return true;
     }
-    
+
     /**
-     * 获取指定影片剪辑的当前深度值
-     * @param mc 影片剪辑
-     * @return 当前深度值，如果未找到则返回 undefined
+     * 查询实体当前生效的深度值
+     * @return flush 后的实际深度，未注册返回 undefined
      */
     public function getDepth(mc:MovieClip):Number {
         if (!mc) return undefined;
-        
-        var node:DepthNode = this.mcNodeMap[mc._name];
-        return node ? node.depth : undefined;
+        var idx:Number = _idxMap[mc._name];
+        if (idx == undefined) return undefined;
+        return _curD[idx];
     }
-    
-    /**
-     * 获取当前管理的影片剪辑数量
-     * @return 管理的影片剪辑数量
-     */
+
+    /** 当前注册实体数 */
     public function size():Number {
-        return this.depthTree.size();
+        return _count;
     }
-    
-    /**
-     * 获取当前等待处理的脏节点数量
-     * @return 脏节点数量
-     */
-    public function getDirtyCount():Number {
-        return this.dirtyCount;
-    }
-    
-    /**
-     * 清空所有深度管理数据
-     */
+
+    /** 清空所有管理数据（保留标定参数） */
     public function clear():Void {
-        // 重置所有数据结构
-        this.mcNodeMap = {};
-        this.depthTree = new TreeSet(createCompareFunction());
-        this.dirtyCount = 0;
-        
-        trace("[DepthManager] " + this.managerID + " 已清空所有数据");
-    }
-    
-    /**
-     * 释放资源并清理引用
-     * 当容器被卸载时将自动调用此方法
-     */
-    public function dispose():Void {
-        trace("[DepthManager] " + this.managerID + " 开始销毁...");
-        
-        // 清理所有引用
-        this.clear();
-        this.container = null;
-        this.depthTree = null;
-        this.mcNodeMap = null;
-        
-        trace("[DepthManager] " + this.managerID + " 已销毁");
-    }
-    
-    /**
-     * 获取所有管理的影片剪辑及其深度值的字符串表示
-     * 主要用于调试目的
-     * @return 描述所有深度关系的字符串
-     */
-    public function toString():String {
-        var result:String = "[DepthManager " + this.managerID + "]\n";
-        result += "容器: " + (this.container ? this.container._name : "已销毁") + "\n";
-        result += "节点数量: " + this.depthTree.size() + "\n";
-        result += "待更新数量: " + this.dirtyCount + "\n";
-        
-        var nodes:Array = this.depthTree.toArray();
-        result += "深度列表:\n";
-        
-        for (var i:Number = 0; i < nodes.length; i++) {
-            var node:DepthNode = nodes[i];
-            result += "  " + node.mc._name + " (深度: " + node.depth + 
-                     ", 时间戳: " + node.timestamp + 
-                     ", 状态: " + (node.isDirty ? "脏" : "清洁") + ")\n";
+        var i:Number = _count;
+        while (i--) {
+            _mcs[i] = null;
+            _names[i] = null;
         }
-        
-        return result;
+        _count = 0;
+        _nextID = 0;
+        _freeIDs.length = 0;
+        var map:Object = {};
+        map.__proto__ = null;
+        _idxMap = map;
+    }
+
+    /** 释放所有资源（容器卸载时自动调用） */
+    public function dispose():Void {
+        clear();
+        _container = null;
+        _mcs = null;
+        _names = null;
+        _ids = null;
+        _curD = null;
+        _targetD = null;
+        _freeIDs = null;
+        _idxMap = null;
+        _calibrated = false;
+    }
+
+    // ── 私有方法 ──
+
+    /**
+     * 惰性剔除：swap-and-pop 移除指定槽位
+     * 使用 _names[idx]（注册快照）清理 _idxMap，因为 MC 销毁后 _mcs[idx]._name 为 undefined
+     */
+    private function _evict(idx:Number):Void {
+        delete _idxMap[_names[idx]];
+        _freeIDs.push(_ids[idx]);
+
+        var last:Number = _count - 1;
+        _count = last;
+        if (idx !== last) {
+            _mcs[idx] = _mcs[last];
+            _names[idx] = _names[last];
+            _ids[idx] = _ids[last];
+            _curD[idx] = _curD[last];
+            _targetD[idx] = _targetD[last];
+            _idxMap[_names[idx]] = idx;
+        }
+        _mcs[last] = null;
+        _names[last] = null;
     }
 }
