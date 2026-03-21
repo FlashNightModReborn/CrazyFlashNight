@@ -103,23 +103,29 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
 
         var overlapRatio:Number = manager.overlapRatio;
         var isNormalNonTransparent:Boolean = (bullet.flags & RELEVANT_BITS_MASK) == EXPECTED_STATE;
-        // 临时用的防御，仅在测试路径使用
-        var hasDeferredSnapshot:Boolean = (bullet.__dfScatterBase != undefined);
+
+        // 影子记账检测：原位位编码方案
+        // 编码格式：bullet.霰弹值 = -((S₀ << 16) | available)
+        // 甄别：sc < -65535（NaN < x → undefined → falsy，安全；用 < 不用 <= 规避 AS2 NaN 陷阱）
+        var sc:Number = bullet.霰弹值;                    // H01: 局部化缓存，1 次哈希查找
+        var isShadow:Boolean = (sc < -65535);             // ~29ns 算术比较，替代 ~158ns 属性 miss 检查
 
         // DodgeStateDamageHandle 若提前退出，会设置该标记：联弹需要在此处做分段躲闪建模（方案B）
         var useSegmentDodgeModel:Boolean = (result.deferChainDodgeState === true);
 
-        // 获取霰弹值（根据是否有影子记账选择数据源）
-        var currentScatter:Number, scatterBase:Number, scatterForCalc:Number;
+        // 获取霰弹值：位解码 或 直接读取
+        var currentScatter:Number, scatterForCalc:Number;
+        var baseSc:Number, available:Number;
 
-        if (hasDeferredSnapshot && isNormalNonTransparent) {
-            // 影子记账模式：BulletQueueProcessor已保证数据有效
-            scatterBase = bullet.__dfScatterBase;
-            scatterForCalc = scatterBase;
-
+        if (isShadow) {
+            // 影子记账模式：从编码负值中解码 base 和 available
+            var state:Number = -sc;                       // 取负还原为正数
+            baseSc = state >>> 16;                        // 高16位 = S₀（基准值）
+            available = state & 0xFFFF;                   // 低16位 = 剩余可用值
+            scatterForCalc = baseSc;                      // INV-5: 用解码基准值估算期望伤害
         } else {
-            // 直接模式：使用当前霰弹值
-            currentScatter = bullet.霰弹值 || 0;
+            // 直接模式：使用当前霰弹值（未经编码的正数或0）
+            currentScatter = sc > 0 ? sc : 0;             // 用缓存的 sc，不重读属性
             scatterForCalc = currentScatter;
         }
 
@@ -187,33 +193,30 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         var ceilC:Number = (C > (C >> 0)) ? (C >> 0) + 1 : (C >> 0);
 
         // 计算实际消耗
-        var availableScatter:Number;
-        if (hasDeferredSnapshot && isNormalNonTransparent) {
-            // 影子记账模式：从基准值减去已累计的消耗
-            availableScatter = scatterBase - (bullet.__dfScatterPending || 0);
-            if (availableScatter < 0) availableScatter = 0;
-        } else {
-            availableScatter = currentScatter;
-        }
+        var availableScatter:Number = isShadow ? available : currentScatter;
         var actualScatterUsed:Number = availableScatter < ceilC ? availableScatter : ceilC;
 
         // 向上取整避免0段
         if (actualScatterUsed < 1) actualScatterUsed = 1;
 
         // 更新霰弹值
-        if (hasDeferredSnapshot && isNormalNonTransparent) {
-            // 影子记账更新：累加消耗并计算剩余值
-            bullet.__dfScatterPending = (bullet.__dfScatterPending || 0) + actualScatterUsed;
-            var remaining:Number = scatterBase - bullet.__dfScatterPending;
-            if (remaining < 0) remaining = 0;
-            result.finalScatterValue = remaining;
+        if (isShadow && isNormalNonTransparent) {
+            // 影子记账：扣减可用值并重新编码写回（1 次哈希写入）
+            available -= actualScatterUsed;
+            if (available < 0) available = 0;
+            bullet.霰弹值 = -((baseSc << 16) | available);
+            result.finalScatterValue = available;
+        } else if (isShadow) {
+            // 影子模式下的非普通子弹（穿刺/透明）：不消耗，不编码
+            result.finalScatterValue = available;
         } else if (isNormalNonTransparent) {
-            // 直接更新
-            bullet.霰弹值 = currentScatter - actualScatterUsed;
-            if (bullet.霰弹值 < 0) bullet.霰弹值 = 0;
-            result.finalScatterValue = bullet.霰弹值;
+            // 直接模式：扣减并写回正数
+            currentScatter -= actualScatterUsed;
+            if (currentScatter < 0) currentScatter = 0;
+            bullet.霰弹值 = currentScatter;
+            result.finalScatterValue = currentScatter;
         } else {
-            // 非普通子弹不消耗霰弹值
+            // 非普通子弹且非影子模式：不消耗
             result.finalScatterValue = currentScatter;
         }
 

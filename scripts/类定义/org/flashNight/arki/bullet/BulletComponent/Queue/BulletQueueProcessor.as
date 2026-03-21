@@ -2576,81 +2576,82 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     }
 
     /**
-     * 初始化延迟霰弹值提交机制（私有热点路径方法）
+     * 初始化影子记账：原位位编码方案（私有热点路径方法）
      *
-     * 【核心不变式】影子记账窗口内的契约保证：
-     * 1. 初始化后，bullet.霰弹值 不会被队列外系统直接修改
-     * 2. MultiShotDamageHandle 只通过 __dfScatterPending 累加消耗
-     * 3. 实际剩余霰弹值始终可由 (__dfScatterBase - __dfScatterPending) 计算
-     * 4. 窗口结束时由 __commitDeferScatter 统一回填 bullet.霰弹值
+     * 【编码格式】
+     * bullet.霰弹值 = -((S₀ << 16) | S₀)
+     *   高16位 = S₀（基准值，窗口内不变，用于伤害公式的期望估算）
+     *   低16位 = available（剩余可用值，每次命中递减）
+     *   取负 = 影子模式标记（有效霰弹值恒为正，负值无歧义）
      *
-     * 【两属性方案说明】
-     * - __dfScatterBase: 基准值（快照），窗口内不变
-     * - __dfScatterPending: 累计消耗量，每次命中递增
+     * 【甄别阈值】sc < -65535
+     *   S₀ ≥ 1 时编码值 ≤ -65537（因 (1<<16)|any ≥ 65536，取负 ≤ -65536）
+     *   使用 < 而非 <=：规避 AS2 的 NaN <= x 恒 true 陷阱
+     *   NaN < -65535 → undefined → falsy：天然安全
      *
-     * 历史优化：原三属性方案包含 __dfScatterShadow（动态剩余值），
-     * 因改为"完整保留基准值计算伤害"后变为冗余，已简化为按需计算。
+     * 【核心契约】（热路径零防御，以下契约必须严格遵守）
+     *
+     * C1: 霰弹值值域保证（Init 前置条件）
+     *   bullet.霰弹值 在进入影子窗口前必须为正整数且 ≤ 32767
+     *   责任方：BulletFactory / BulletInitializer / 装备函数
+     *   违约后果：高位溢出导致 >>> 16 解码错误
+     *   审计基线：当前最大值 ~80（G1111），远低于上限
+     *
+     * C2: 窗口内独占写入
+     *   影子窗口内，仅 MultiShotDamageHandle 和 __commitDeferScatter 可写入 bullet.霰弹值
+     *   责任方：所有命中事件订阅者、击中时触发函数、DamageHandle 链
+     *   违约后果：外部写入正数覆盖编码值 → commit 不触发 → 消耗静默丢失
+     *   审计确认（2026-03）：击中时触发函数仅发射新子弹；hit/enemyKilled 订阅者
+     *     不读写 bullet.霰弹值；kill/death 事件参数中无 bullet
+     *   防御建议：新增订阅者需读散射信息时，从 damageResult.finalScatterValue 获取
+     *
+     * C3: 窗口内裸读语义（原位编码新增契约）
+     *   除 MultiShotDamageHandle 外的代码读取 bullet.霰弹值 将得到编码负数
+     *   已知裸读点：DamageCalculator 行 124（调试模式方差检查）
+     *     生产环境 !_root.调试模式 短路，不执行裸读 → 无影响
+     *     调试模式读到负数 → 联弹方差被抑制 → 可接受
+     *   防御建议：未来若需读散射值，从 damageResult 或 handler 内部解码获取
+     *
+     * C4: 编码不可跨帧持久化
+     *   commit 必须在同帧内执行，编码值不可残留到下一帧
+     *   保证：processQueue 双出口（正常路径 + 早退路径）均有 commit 守卫
+     *   违约后果：下帧读到编码负数 → 伤害计算全面崩溃
      *
      * 【调用约束】
-     * - 仅在 processQueue 主循环内调用（BulletQueueProcessor.as:748）
-     * - 调用时 bullet 已从 sortedArr[bulletIndex] 获取，保证非空
-     * - 移除 null 检查以优化热点路径性能
+     * - 仅在 processQueue 主循环内调用
+     * - 调用时 bullet 保证非空
      *
      * @param bullet 子弹对象（保证非空）
      */
     private static function __initDeferScatter(bullet:Object):Void {
-        var initialValue:Number = (bullet.霰弹值 != undefined) ? Number(bullet.霰弹值) : 0;
-        bullet.__dfScatterBase = initialValue;
-        bullet.__dfScatterPending = 0;
+        var s0:Number = bullet.霰弹值;
+        if (s0 > 0) {
+            // C1 防御性 clamp：唯一允许的运行时守卫
+            if (s0 > 32767) s0 = 32767;
+            // 高16位存基准值，低16位存可用值（初始相等），整体取负标记影子模式
+            bullet.霰弹值 = -((s0 << 16) | s0);
+        }
     }
 
     /**
-     * 提交延迟霰弹值并清理临时属性（私有热点路径方法）
+     * 提交影子记账：解码并回写最终可用值（私有热点路径方法）
      *
-     * 【竞态边界条件与安全性保证】
-     *
-     * 1. 直接回填策略（简化版本）：
-     *    - 当前实现：bullet.霰弹值 = (baseValue - pending)
-     *    - 旧版实现：bullet.霰弹值 = min(currentValue, baseValue - pending)
-     *    - 简化理由：队列不变式保证窗口内 bullet.霰弹值 不被外部修改
-     *
-     * 2. 竞态安全性分析：
-     *    当前代码检索结果显示，影子记账窗口内写入 bullet.霰弹值 的路径：
-     *    - BulletQueueProcessor.as:741  消弹路径设置为1（此时skipUnits=true，不进入影子记账）
-     *    - MultiShotDamageHandle.as:147  仅在非影子记账分支（直接模式）写入
-     *    因此窗口内无并发写入，直接回填安全。
-     *
-     * 3. 未来扩展防御建议（当前不需要）：
-     *    若未来在队列窗口内引入异步降低霰弹值的系统（如debuff），
-     *    应考虑恢复 min(currentValue, nextValue) 逻辑或重构为事件驱动。
-     *
-     * 4. 性能收益：
-     *    相比旧版 min 逻辑，减少：
-     *    - 1次 bullet.霰弹值 属性读取（哈希查找）
-     *    - 1次 isNaN 判定
-     *    - 1次分支判断
-     *    在高命中率场景下累积效果明显（~0.5-2%帧耗优化）。
+     * 从编码负值中提取低16位（available），写回 bullet.霰弹值 为正数。
+     * 零 delete 操作：不创建/删除任何动态属性，避免哈希表结构变异。
      *
      * 【调用约束】
-     * - 仅在 processQueue 主循环内调用（BulletQueueProcessor.as:778, 917）
-     * - 调用时 bullet 与 __initDeferScatter 使用同一变量，保证非空
-     * - 移除 null 检查以优化热点路径性能
+     * - 仅在 processQueue 主循环内调用（正常路径 + 早退路径）
+     * - 调用时 bullet 保证非空
      *
      * @param bullet 子弹对象（保证非空）
      */
     private static function __commitDeferScatter(bullet:Object):Void {
-        var baseValue:Number = (bullet.__dfScatterBase != undefined) ? Number(bullet.__dfScatterBase) : NaN;
-        var pending:Number = (bullet.__dfScatterPending != undefined) ? Number(bullet.__dfScatterPending) : 0;
-        if (!isNaN(baseValue) && pending > 0) {
-            var nextValue:Number = baseValue - pending;
-            if (nextValue < 0) {
-                nextValue = 0;
-            }
-            // 信任队列不变式：窗口内无外部修改 bullet.霰弹值，直接回填
-            bullet.霰弹值 = nextValue;
+        var sc:Number = bullet.霰弹值;
+        // 甄别：sc < -65535 表示处于影子模式（NaN < x → falsy，安全）
+        if (sc < -65535) {
+            // 提取低16位 = 最终剩余可用值，回写为正数
+            bullet.霰弹值 = (-sc) & 0xFFFF;
         }
-        delete bullet.__dfScatterBase;
-        delete bullet.__dfScatterPending;
     }
     // ------------------------------------------------------------------------
     // 调试辅助：单位池预检与清洗（仅调试模式调用）

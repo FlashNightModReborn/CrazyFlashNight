@@ -118,11 +118,8 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
         // 使用 (shooter.伤害加成 | 0) 来确保伤害加成为整数（按位或操作符会隐式转换非数值为0）
         bullet.破坏力 = bullet.子弹威力 + (shooter.伤害加成 | 0);
         
-        // 计算伤害波动系数：
-        // 若非调试模式或子弹霰弹值大于1，则通过随机数使破坏力在 0.85 到 1.15 倍之间波动；
-        // 否则波动系数为1（不做波动处理）。
-        var damageVariance:Number = bullet.破坏力 * ((!_root.调试模式 || bullet.霰弹值 > 1) ? 
-        (PinkNoiseEngine.instance.randomFluctuation(15)) : 1);
+        // 伤害波动：破坏力在 0.85~1.15 倍之间随机波动
+        var damageVariance:Number = bullet.破坏力 * PinkNoiseEngine.instance.randomFluctuation(15);
         
         // 计算百分比伤害：若子弹的百分比伤害属性大于0，则根据目标血量计算百分比伤害，否则为0
         var percentageDamage:Number;
