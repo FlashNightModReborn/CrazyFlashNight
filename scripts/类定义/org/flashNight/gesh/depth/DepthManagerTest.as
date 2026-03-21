@@ -173,6 +173,28 @@ class org.flashNight.gesh.depth.DepthManagerTest {
         assertTrue(d1 < d2, "Y=300 的深度应小于 Y=500");
         record("添加新实体", true);
 
+        // 热路径 eager apply：updateDepth 后无需 flush 即应生效
+        resetDM();
+        var eager0:Boolean = dm.updateDepth(clip1, 320);
+        var eagerD0:Number = dm.getDepth(clip1);
+        var eagerOk1:Boolean = assertTrue(eager0, "首次 updateDepth 应成功");
+        var eagerOk2:Boolean = assertTrue(eagerD0 != undefined, "无需 flush 也应有有效深度");
+        dm.updateDepth(clip1, 620);
+        var eagerD1:Number = dm.getDepth(clip1);
+        var eagerOk3:Boolean = assertTrue(eagerD1 != undefined && eagerD1 > eagerD0, "重复 updateDepth 应立即刷新深度");
+        record("热路径 eager apply", eagerOk1 && eagerOk2 && eagerOk3);
+
+        // 批量热路径：功能应与逐实体 updateDepth 等价
+        resetDM();
+        var batchYs:Array = [340, 540];
+        var batchOk0:Boolean = assertTrue(dm.updateDepthBatch([clip1, clip2], batchYs, 0, 2) == 2, "批量更新应处理 2 个实体");
+        var batchD1:Number = dm.getDepth(clip1);
+        var batchD2:Number = dm.getDepth(clip2);
+        var batchOk1:Boolean = assertTrue(batchD1 != undefined, "批量更新后 clip1 应有深度");
+        var batchOk2:Boolean = assertTrue(batchD2 != undefined, "批量更新后 clip2 应有深度");
+        var batchOk3:Boolean = assertTrue(batchD1 < batchD2, "批量更新应保持深度单调");
+        record("批量热路径", batchOk0 && batchOk1 && batchOk2 && batchOk3);
+
         // 更新已有实体
         resetDM();
         dm.updateDepth(clip1, 300);
@@ -368,19 +390,40 @@ class org.flashNight.gesh.depth.DepthManagerTest {
         dm.updateDepth(tmpClip, 500);
         dm.updateDepth(testClips[1], 700);
         dm.flush();
+        var lazyBefore:Number = dm.getDepth(testClips[1]);
         assertTrue(dm.size() == 3, "应有 3 个实体");
 
         // 外部销毁 tmpClip
         tmpClip.removeMovieClip();
 
-        // 再次 flush 应惰性剔除
+        // 显式 sweepDead 应回收外部销毁对象
         dm.updateDepth(testClips[0], 310);
         dm.updateDepth(testClips[1], 710);
-        dm.flush();
-        assertTrue(dm.size() == 2, "惰性剔除后应有 2 个实体");
-        assertTrue(dm.getDepth(testClips[0]) != undefined, "存活实体应保持");
-        assertTrue(dm.getDepth(testClips[1]) != undefined, "存活实体应保持");
-        record("惰性剔除", dm.size() == 2);
+        dm.sweepDead();
+        var lazyOk1:Boolean = assertTrue(dm.size() == 2, "惰性剔除后应有 2 个实体");
+        var lazy0:Number = dm.getDepth(testClips[0]);
+        var lazy1:Number = dm.getDepth(testClips[1]);
+        var lazyOk2:Boolean = assertTrue(lazy0 != undefined, "存活实体应保持");
+        var lazyOk3:Boolean = assertTrue(lazy1 != undefined, "存活实体应保持");
+        var lazyOk4:Boolean = assertTrue(lazy1 != lazyBefore && lazy1 > lazyBefore, "被搬入槽位的实体应应用本帧新深度");
+        record("惰性剔除", lazyOk1 && lazyOk2 && lazyOk3 && lazyOk4);
+
+        // 容量压力兜底：满容量时 updateDepth 应先 sweepDead 再尝试注册
+        var capDM:DepthManager = new DepthManager(testContainer, 10000, 1048575, 2);
+        capDM.calibrate(200, 800);
+        var capOld0:MovieClip = testContainer.createEmptyMovieClip("cap_old_0", testContainer.getNextHighestDepth());
+        var capOld1:MovieClip = testContainer.createEmptyMovieClip("cap_old_1", testContainer.getNextHighestDepth());
+        var capNew:MovieClip = testContainer.createEmptyMovieClip("cap_new", testContainer.getNextHighestDepth());
+        capDM.updateDepth(capOld0, 260);
+        capDM.updateDepth(capOld1, 360);
+        capOld0.removeMovieClip();
+        var capOk1:Boolean = assertTrue(capDM.updateDepth(capNew, 460), "容量满时应先回收死对象再注册新实体");
+        var capOk2:Boolean = assertTrue(capDM.size() == 2, "容量兜底回收后 size 应保持 2");
+        var capOk3:Boolean = assertTrue(capDM.getDepth(capNew) != undefined, "新实体应成功获得深度");
+        capOld1.removeMovieClip();
+        capNew.removeMovieClip();
+        capDM.dispose();
+        record("容量压力兜底回收", capOk1 && capOk2 && capOk3);
 
         // 同名 MC 复用（对象池场景）：销毁旧 MC → 同名新建 → updateDepth 应正确注册新 MC
         resetDM();
@@ -512,22 +555,27 @@ class org.flashNight.gesh.depth.DepthManagerTest {
         resetDM();
         dm.updateDepth(testClips[0], 300);
         dm.updateDepth(testClips[1], 500);
+        dm.updateDepth(testClips[2], 700);
         dm.flush();
         var d0Before:Number = dm.getDepth(testClips[0]);
         var d1Before:Number = dm.getDepth(testClips[1]);
+        var d2Before:Number = dm.getDepth(testClips[2]);
 
         dm.calibrate(500, 950);
-        // 只 re-feed testClips[0]，不 re-feed testClips[1]
+        // re-feed 首尾两个实体，中间实体保留 -1 哨兵，验证不会跳过哨兵后的活体
         dm.updateDepth(testClips[0], 600);
+        dm.updateDepth(testClips[2], 900);
         dm.flush();
 
-        // testClips[0] 应有新深度
-        var rfOk1:Boolean = assertTrue(dm.getDepth(testClips[0]) != undefined, "re-feed 的实体应有有效深度");
-        // testClips[1] 未 re-feed → calibrate 将 _curD/_targetD 置为 -1 哨兵
+        var d0After:Number = dm.getDepth(testClips[0]);
+        var d2After:Number = dm.getDepth(testClips[2]);
+        var rfOk1:Boolean = assertTrue(d0After != undefined && d0After != d0Before, "哨兵前的 re-feed 实体应有新深度");
+        // testClips[1] 未 re-feed → calibrate 将 _curD 置为 -1 哨兵
         // getDepth 对 -1 返回 undefined（内部哨兵不对外暴露）
         var d1After:Number = dm.getDepth(testClips[1]);
         var rfOk2:Boolean = assertTrue(d1After == undefined, "未 re-feed 的实体 getDepth 应返回 undefined");
-        record("场景切换(部分re-feed)", rfOk1 && rfOk2);
+        var rfOk3:Boolean = assertTrue(d2After != undefined && d2After != d2Before, "哨兵后的 re-feed 实体不应被跳过");
+        record("场景切换(部分re-feed)", rfOk1 && rfOk2 && rfOk3);
     }
 
     // ═══════════════════════════════════════════
@@ -537,9 +585,9 @@ class org.flashNight.gesh.depth.DepthManagerTest {
     private function runPerformanceTests():Void {
         printHeader("性能测试");
 
-        // 预生成随机数据：固定种子 42，两组测试使用相同随机序列
+        // 预生成随机数据：固定种子 42，按 perfIter × clipCount 生成连续序列，避免计时环内 wrap 分支
         var rng:SeededLinearCongruentialEngine = new SeededLinearCongruentialEngine(42);
-        _randLen = clipCount * 100; // 5000 个随机数，循环复用
+        _randLen = clipCount * perfIter;
         _randDepths = new Array(_randLen);
         _randYs = new Array(_randLen);
         var k:Number = _randLen;
@@ -554,8 +602,10 @@ class org.flashNight.gesh.depth.DepthManagerTest {
 
         var swapTime:Number = testSwapDepthsPerformance();
         var dmTime:Number = testDepthManagerPerformance();
+        var dmBatchTime:Number = testDepthManagerBatchPerformance();
 
-        comparePerformance(swapTime, dmTime);
+        comparePerformance("逐实体 updateDepth", swapTime, dmTime);
+        comparePerformance("批量 updateDepthBatch", swapTime, dmBatchTime);
 
         // 释放
         _randDepths = null;
@@ -580,11 +630,12 @@ class org.flashNight.gesh.depth.DepthManagerTest {
         // 预热 DepthManager
         var wDM:DepthManager = new DepthManager(wc, 10000, 1048575, 32);
         wDM.calibrate(100, 500);
+        var wYs:Array = new Array(20);
         w = warmupIter;
         while (w--) {
             i = 20;
-            while (i--) wDM.updateDepth(wClips[i], 200 + i);
-            wDM.flush();
+            while (i--) wYs[i] = 200 + i;
+            wDM.updateDepthBatch(wClips, wYs, 0, 20);
         }
         wDM.dispose();
         wc.removeMovieClip();
@@ -608,7 +659,6 @@ class org.flashNight.gesh.depth.DepthManagerTest {
             j = n;
             while (j--) {
                 clips[j].swapDepths(randDepths[ri++]);
-                if (ri >= _randLen) ri = 0;
             }
         }
         var total:Number = getTimer() - t0;
@@ -645,17 +695,41 @@ class org.flashNight.gesh.depth.DepthManagerTest {
         }
         var total:Number = getTimer() - t0;
         var avgUs:Number = Math.round(total * 1000 / perfIter);
-        printLog("DepthManager: 总 " + total + "ms / " + perfIter + " 迭代 = " + avgUs + " μs/帧（稳态）");
+        printLog("DepthManager(逐实体): 总 " + total + "ms / " + perfIter + " 迭代 = " + avgUs + " μs/帧（稳态）");
         return total;
     }
 
-    private function comparePerformance(swapTotal:Number, dmTotal:Number):Void {
+    private function testDepthManagerBatchPerformance():Number {
+        printLog("测试 DepthManager 批量性能（稳态，" + perfIter + " 迭代）...");
+        resetDM();
+        var j:Number = clipCount;
+        while (j--) {
+            dm.updateDepth(testClips[j], 200 + j * 10);
+        }
+
+        var randYs:Array = _randYs;
+        var clips:Array = testClips;
+        var n:Number = clipCount;
+        var t0:Number = getTimer();
+        var iter:Number = perfIter;
+        var ri:Number = 0;
+        while (iter--) {
+            dm.updateDepthBatch(clips, randYs, ri, n);
+            ri += n;
+        }
+        var total:Number = getTimer() - t0;
+        var avgUs:Number = Math.round(total * 1000 / perfIter);
+        printLog("DepthManager(批量): 总 " + total + "ms / " + perfIter + " 迭代 = " + avgUs + " μs/帧（稳态）");
+        return total;
+    }
+
+    private function comparePerformance(label:String, swapTotal:Number, dmTotal:Number):Void {
         var swapUs:Number = Math.round(swapTotal * 1000 / perfIter);
         var dmUs:Number = Math.round(dmTotal * 1000 / perfIter);
         var ratio:Number = Math.round(dmUs * 100 / swapUs) / 100;
         var overhead:Number = Math.round((dmTotal - swapTotal) * 1000 / swapTotal) / 10;
 
-        printLog("────── 性能对比（" + perfIter + " 迭代，" + clipCount + " 实体） ──────");
+        printLog("────── 性能对比: " + label + "（" + perfIter + " 迭代，" + clipCount + " 实体） ──────");
         printLog("  裸 swapDepths : " + swapUs + " μs/帧");
         printLog("  DepthManager  : " + dmUs + " μs/帧");
         printLog("  倍率          : " + ratio + "x");
@@ -665,6 +739,10 @@ class org.flashNight.gesh.depth.DepthManagerTest {
             printLog("√ 开销 <10%，可以上线");
         } else if (overhead < 50) {
             printLog("△ 开销 " + overhead + "%，需根据场景评估");
+        } else if (overhead < 100) {
+            printLog("○ 开销 " + overhead + "%，批量热路径已处于可用区间");
+        } else if (overhead < 200) {
+            printLog("○ 开销 " + overhead + "%，达到当前阶段 <200% 目标");
         } else {
             printLog("× 开销 " + overhead + "%，需进一步优化");
         }

@@ -21,8 +21,8 @@ class org.flashNight.gesh.depth.DepthManager {
     private var _mcs:Array;       // [idx] → MovieClip
     private var _names:Array;     // [idx] → mc._name 注册快照（MC 销毁后仍可清理 _idxMap）
     private var _ids:Array;       // [idx] → entityID (0..N-1)
-    private var _curD:Array;      // [idx] → 上次 flush 已应用的深度
-    private var _targetD:Array;   // [idx] → 本帧计算的目标深度
+    private var _baseD:Array;     // [idx] → _bandLow + entityID（预折叠常量，减少热路径成员读取）
+    private var _curD:Array;      // [idx] → 最近一次已应用的深度
     private var _count:Number;    // 当前注册实体数
 
     // ── 查找 ──
@@ -70,8 +70,8 @@ class org.flashNight.gesh.depth.DepthManager {
         _mcs = new Array(maxEntities);
         _names = new Array(maxEntities);
         _ids = new Array(maxEntities);
+        _baseD = new Array(maxEntities);
         _curD = new Array(maxEntities);
-        _targetD = new Array(maxEntities);
         _freeIDs = new Array(maxEntities);
 
         var map:Object = {};
@@ -110,12 +110,11 @@ class org.flashNight.gesh.depth.DepthManager {
         _yMin = yMin;
         _yMax = yMax;
         _calibrated = true;
-        // 强制下次 flush 全量更新；同时失效 _targetD 防止旧场景深度值被误用
-        // 未被 re-feed 的实体在 flush 时 _targetD == _curD == -1，跳过 swapDepths
+        // 失效当前已知深度；未 re-feed 的实体对外表现为 undefined，
+        // 调用方重新 updateDepth 后会立即应用新深度。
         var i:Number = _count;
         while (i--) {
             _curD[i] = -1;
-            _targetD[i] = -1;
         }
         return true;
     }
@@ -134,81 +133,139 @@ class org.flashNight.gesh.depth.DepthManager {
         if (!mc || !_calibrated) return false;
         if ((targetY - targetY) != 0) return false; // NaN guard (H07)
 
-        // 活着的 MC 的 _name 必为非空 String（AS2 创建时强制指定）；
-        // 仅 removeMovieClip 后的 stale 引用返回 undefined（引用本身仍 truthy，通过 !mc）。
-        // 所以此检查等价于 stale MC 防护，同时取得 idxMap 查找键，省一次额外 native 属性读。
-        var name:String = mc._name;
-        if (name == undefined) return false;
-        var idx:Number = _idxMap[name];
+        // 热路径优先走 MC 自带槽位缓存，避免每帧 _name → _idxMap 查找。
+        // 契约：同一 MC 同时只被一个 DepthManager 管理；同名重建仍走下方 name-map 回退路径。
+        var idx:Number = mc["__dmIdx"];
+        if (idx == undefined || _mcs[idx] !== mc) {
+            // 活着的 MC 的 _name 必为非空 String（AS2 创建时强制指定）；
+            // 仅 removeMovieClip 后的 stale 引用返回 undefined（引用本身仍 truthy，通过 !mc）。
+            // 所以此检查等价于 stale MC 防护，同时取得 idxMap 查找键。
+            var name:String = mc._name;
+            if (name == undefined) return false;
+            idx = _idxMap[name];
 
-        // 同名异引用检测：覆盖"销毁+同名重建"的池模式（idxMap 命中但 _mcs[idx] 是旧引用）。
-        // 隐藏/显示复用模式下引用不变，此分支不进入。不支持"改名复用"（_name 是身份键）。
-        if (idx != undefined && _mcs[idx] !== mc) {
-            _evict(idx);      // 清理旧槽位
-            idx = undefined;  // 落入下方注册分支
-        }
+            // 同名异引用检测：覆盖"销毁+同名重建"的池模式（idxMap 命中但 _mcs[idx] 是旧引用）。
+            if (idx != undefined && _mcs[idx] !== mc) {
+                _evict(idx);
+                idx = undefined;
+            }
 
-        if (idx == undefined) {
-            // 自动注册
-            if (_count >= _N) return false; // 容量满
-            _mcs[idx = _count++] = mc;
-            _names[idx] = name;
-            _idxMap[name] = idx;
-            _ids[idx] = (_freeCount > 0) ? _freeIDs[--_freeCount] : _nextID++;
-            _curD[idx] = -1; // 强制首次 flush
+            if (idx == undefined) {
+                // 自动注册；容量已满时先做一次非热路径死对象回收兜底
+                if (_count >= _N) {
+                    _sweepDead();
+                    if (_count >= _N) return false;
+                }
+                _mcs[idx = _count++] = mc;
+                _names[idx] = name;
+                _idxMap[name] = idx;
+                var id:Number = (_freeCount > 0) ? _freeIDs[--_freeCount] : _nextID++;
+                _ids[idx] = id;
+                _baseD[idx] = _bandLow + id;
+                _curD[idx] = -1; // 强制首次应用
+            }
+            mc["__dmIdx"] = idx;
         }
 
         // clamp Y 到标定范围（防御性，正常流中 enforceScreenBounds 已保证 Y ∈ [yMin, yMax]）
         // 放在 updateDepth 而非 flush：updateDepth 是入口守卫，flush 是纯热路径不做校验
-        var y:Number = targetY;
         var lo:Number = _yMin;
-        if (y < lo) {
-            y = lo;
-        } else {
-            var hi:Number = _yMax;
-            if (y > hi) y = hi;
+        var hi:Number = _yMax;
+        var y:Number = (targetY < lo) ? lo : ((targetY > hi) ? hi : targetY);
+        var d:Number = (((y - lo) * _S) | 0) * _N + _baseD[idx];
+        if (d !== _curD[idx]) {
+            mc.swapDepths(d);
+            _curD[idx] = d;
         }
-        // 存 clamped Y；公式延迟到 flush()，用局部缓存的成员变量统一计算
-        _targetD[idx] = y;
         return true;
     }
 
     /**
-     * 批量执行 swapDepths（每帧调用一次）
-     * 包含惰性剔除：检测已销毁的 MC 并自动清理
+     * 批量更新实体深度。
+     * 设计目的：把 50 次 updateDepth 方法调用税压缩为 1 次，供稳态主循环使用。
+     *
+     * @param mcs    MovieClip 数组，使用前 count 个元素
+     * @param ys     Y 数组，从 yOffset 开始连续读取 count 个值
+     * @param yOffset ys 起始偏移
+     * @param count  处理实体数
+     * @return 成功处理的实体数
      */
-    public function flush():Void {
-        // H01: 成员变量局部化——循环内从 0ns 寄存器读而非 144ns GetMember
-        var mcs:Array = _mcs;
-        var curD:Array = _curD;
-        var tgtY:Array = _targetD; // 现在存裸 Y 值
+    public function updateDepthBatch(mcs:Array, ys:Array, yOffset:Number, count:Number):Number {
+        if (!_calibrated) return 0;
+
+        var managed:Array = _mcs;
+        var names:Array = _names;
         var ids:Array = _ids;
-        var bl:Number = _bandLow;
-        var ym:Number = _yMin;
+        var baseD:Array = _baseD;
+        var curD:Array = _curD;
+        var idxMap:Object = _idxMap;
+        var lo:Number = _yMin;
+        var hi:Number = _yMax;
         var s:Number = _S;
         var n:Number = _N;
-        var i:Number = -1;
-        var y:Number, d:Number;
+        var i:Number = 0;
+        var yi:Number = yOffset;
+        var end:Number = yOffset + count;
+        var updated:Number = 0;
+        var mc:MovieClip, idx:Number, name:String, y:Number, d:Number, id:Number;
 
-        // 正序遍历 + 手动递增：evict 后不 i++，重检 swap-and-pop 搬入的元素
-        while (++i < _count) {
-            if (mcs[i]._name == undefined) {
-                _evict(i);
-                continue;
+        while (yi < end) {
+            mc = mcs[i++];
+            y = ys[yi++];
+            if (!mc) continue;
+            if ((y - y) != 0) continue; // NaN guard
+
+            idx = mc["__dmIdx"];
+            if (idx == undefined) {
+                name = mc._name;
+                if (name == undefined) continue;
+                idx = idxMap[name];
+
+                if (idx != undefined && managed[idx] !== mc) {
+                    _evict(idx);
+                    idx = undefined;
+                }
+
+                if (idx == undefined) {
+                    if (_count >= _N) {
+                        _sweepDead();
+                        if (_count >= _N) continue;
+                    }
+                    managed[idx = _count++] = mc;
+                    names[idx] = name;
+                    idxMap[name] = idx;
+                    id = (_freeCount > 0) ? _freeIDs[--_freeCount] : _nextID++;
+                    ids[idx] = id;
+                    baseD[idx] = _bandLow + id;
+                    curD[idx] = -1;
+                }
+                mc["__dmIdx"] = idx;
             }
 
-            // Y 已在 updateDepth 入口 clamp 过，此处信任存入值
-            // -1 哨兵（calibrate 后未 re-feed）→ 跳过
-            if ((y = tgtY[i]) == -1) {
-                i++;
-                continue;
+            y = (y < lo) ? lo : ((y > hi) ? hi : y);
+            d = (((y - lo) * s) | 0) * n + baseD[idx];
+            if (d !== curD[idx]) {
+                mc.swapDepths(d);
+                curD[idx] = d;
             }
-
-            if ((d = bl + (((y - ym) * s) | 0) * n + ids[i]) !== curD[i]) {
-                mcs[i].swapDepths(d);
-                curD[i] = d;
-            }
+            updated++;
         }
+        return updated;
+    }
+
+    /**
+     * 兼容保留：steady-state 热路径已在 updateDepth 中立即应用深度。
+     * flush 不再承担每帧惰性剔除，避免为所有实体支付 native 属性检测税。
+     */
+    public function flush():Void {
+    }
+
+    /**
+     * 显式回收被外部 removeMovieClip 销毁的实体。
+     * 非热路径调用：场景维护、容量压力兜底、或对象池批量回收后统一调用。
+     */
+    public function sweepDead():Void {
+        _sweepDead();
     }
 
     /**
@@ -225,11 +282,11 @@ class org.flashNight.gesh.depth.DepthManager {
     }
 
     /**
-     * 查询管理器最近一次 flush 写入显示列表的深度值
+     * 查询管理器最近一次成功写入显示列表的深度值
      *
      * 返回值语义：
-     *   - 有效深度值：最近 flush 成功写入的深度
-     *   - undefined：未注册，或已注册但 calibrate 后尚未 re-feed + flush
+     *   - 有效深度值：最近一次 updateDepth 成功写入的深度
+     *   - undefined：未注册，或已注册但 calibrate 后尚未 re-feed
      *     （此时 MC 仍停在显示列表旧深度，但管理器不保证该值）
      */
     public function getDepth(mc:MovieClip):Number {
@@ -251,6 +308,7 @@ class org.flashNight.gesh.depth.DepthManager {
     public function clear():Void {
         var i:Number = _count;
         while (i--) {
+            if (_mcs[i] != null) _mcs[i]["__dmIdx"] = undefined;
             _mcs[i] = null;
             _names[i] = null;
         }
@@ -275,8 +333,8 @@ class org.flashNight.gesh.depth.DepthManager {
         _mcs = null;
         _names = null;
         _ids = null;
+        _baseD = null;
         _curD = null;
-        _targetD = null;
         _freeIDs = null;
         _idxMap = null;
         _calibrated = false;
@@ -293,6 +351,7 @@ class org.flashNight.gesh.depth.DepthManager {
         // tombstone 会让 _idxMap 键空间在高 churn 场景下无限增长，
         // 降低后续 for-in（如果有）和哈希查找性能。
         // delete 166ns 在 evict 路径上可接受（evict 只在 MC 销毁/移除时触发，非每帧热路径）。
+        if (_mcs[idx] != null) _mcs[idx]["__dmIdx"] = undefined;
         delete _idxMap[_names[idx]];
         // 手动栈写入替代 push（1340ns → 35ns）
         _freeIDs[_freeCount++] = _ids[idx];
@@ -303,11 +362,28 @@ class org.flashNight.gesh.depth.DepthManager {
             _mcs[idx] = _mcs[last];
             _names[idx] = _names[last];
             _ids[idx] = _ids[last];
+            _baseD[idx] = _baseD[last];
             _curD[idx] = _curD[last];
-            _targetD[idx] = _targetD[last];
+            _mcs[idx]["__dmIdx"] = idx;
             _idxMap[_names[idx]] = idx;
         }
         _mcs[last] = null;
         _names[last] = null;
+    }
+
+    /**
+     * 正序遍历 + swap-and-pop：evict 后不递增 i，重检搬入元素。
+     * 只做死对象回收，不承担每帧排序。
+     */
+    private function _sweepDead():Void {
+        var mcs:Array = _mcs;
+        var i:Number = 0;
+        while (i < _count) {
+            if (mcs[i]._name == undefined) {
+                _evict(i);
+                continue;
+            }
+            i++;
+        }
     }
 }
