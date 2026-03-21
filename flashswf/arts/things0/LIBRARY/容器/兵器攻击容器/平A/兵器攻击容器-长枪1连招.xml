@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招" itemID="69646d02-00000da3" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长枪1连招" lastModified="1770412842">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招" itemID="69646d02-00000da3" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长枪1连招" lastModified="1774114445">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-长枪1连招">
+    <DOMTimeline name="兵器攻击容器-长枪1连招" currentFrame="78">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -347,7 +347,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -360,7 +360,7 @@ function 长枪旋击(击倒率)
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	_parent.攻击时可斜向改变移动方向(1);
+	_parent.攻击移动(1,5);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -380,7 +380,7 @@ function 长枪旋击(击倒率)
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	_parent.攻击时斜向移动(5,25);
+	_parent.攻击时移动(5,25);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -400,7 +400,7 @@ function 长枪旋击(击倒率)
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	_parent.攻击时可斜向改变移动方向(1);
+	_parent.攻击时移动(1,5);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -441,7 +441,7 @@ function 长枪旋击(击倒率)
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	_parent.攻击时可斜向改变移动方向(1);
+	_parent.攻击时移动(1,5);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -485,7 +485,7 @@ function 长枪旋击(击倒率)
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	_parent.攻击时可斜向改变移动方向(1);
+	_parent.攻击时移动(1,5);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -505,7 +505,7 @@ function 长枪旋击(击倒率)
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	_parent.攻击时可斜向改变移动方向(1);
+	_parent.攻击时移动(1,5);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -537,7 +537,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -646,7 +646,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
             <DOMFrame index="73" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-142.7" centerPoint3DY="-236.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-142.7" centerPoint3DY="-236.8">
                   <matrix>
                     <Matrix tx="-155.2" ty="-249.3"/>
                   </matrix>
@@ -1331,12 +1331,12 @@ function 长枪旋击(击倒率)
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="
-!-10413 4986[-9565 6295 -8133 7185!-8133 7185[-5565 8780 -2619 8092!-2619 8092[324 7404 1920 4836!1920 4836[3517 2266 2829 -678!2829 -678[2579 -1750 2079 -2644"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="
-!2079 -2644|-10413 4986"/>
                     <Edge fillStyle0="2" edges="
 !2079 -2644[1230 -3952 -201 -4842!-201 -4842[-2769 -6438 -5713 -5751!-5713 -5751[-8658 -5063 -10254 -2493!-10254 -2493[-11850 75 -11163 3019!-11163 3019[-10912 4090 -10413 4986"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-10413 4986|2079 -2644"/>
+                    <Edge fillStyle0="1" edges="
+!-10413 4986[-9565 6295 -8133 7185!-8133 7185[-5565 8780 -2619 8092!-2619 8092[324 7404 1920 4836!1920 4836[3517 2266 2829 -678!2829 -678[2579 -1750 2079 -2644"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -5908,7 +5908,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-85.35" centerPoint3DY="-69.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-85.35" centerPoint3DY="-69.85">
                   <matrix>
                     <Matrix a="0.18548583984375" b="-0.791717529296875" c="0.791717529296875" d="0.18548583984375" tx="-41.25" ty="-34.5"/>
                   </matrix>
@@ -5919,7 +5919,7 @@ function 长枪旋击(击倒率)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="0.25" centerPoint3DY="-36.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="0.25" centerPoint3DY="-36.9">
                   <matrix>
                     <Matrix a="0.736007690429688" b="0.32208251953125" c="-0.32208251953125" d="0.736007690429688" tx="27.55" ty="-15.75"/>
                   </matrix>
