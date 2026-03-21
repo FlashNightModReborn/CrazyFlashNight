@@ -1,5 +1,6 @@
 ﻿import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
+import org.flashNight.gesh.depth.DepthManager;
 
 /**
 SceneManager.as
@@ -33,14 +34,35 @@ class org.flashNight.arki.scene.SceneManager {
         if(gameworld.地图 == null) gameworld.createEmptyMovieClip("地图", -2);
         // 附加子弹层，层级在所有人物之下
         if(gameworld.子弹区域 == null) gameworld.createEmptyMovieClip("子弹区域", -1);
-        // 附加效果层，层级在所有人物之上
-        if(gameworld.效果 == null) gameworld.createEmptyMovieClip("效果", 32767);
+        // 附加效果层，层级在 DM 管理区和创建暂存区之上
+        if(gameworld.效果 == null) gameworld.createEmptyMovieClip("效果", 1048000);
 
         // 创建事件分发器
         gameworld.dispatcher = new LifecycleEventDispatcher(gameworld);
 
+        // ── 重写 getNextHighestDepth ──
+        // 计数器 900000-999999（创建暂存区），避开 Twip 深度范围(0-870655) 和 UnitBullet 域(1000000+)
+        // 所有新建 gw 子级在此创建后，同帧被 DM.updateDepth 移到 Twip 深度
+        var _gwDC:Number = 900000;
+        gameworld.getNextHighestDepth = function():Number {
+            var d:Number = _gwDC++;
+            if (_gwDC >= 1000000) _gwDC = 900000;
+            return d;
+        };
+
+        // ── 创建 DepthManager ──
+        if (DepthManager.instance) DepthManager.instance.dispose();
+        DepthManager.instance = new DepthManager(gameworld, 0, 1048575, 256);
+        // 用当前可用边界标定（非战斗场景帧脚本已设 Ymin/Ymax；战斗场景在 StageManager 中精确覆盖）
+        var ym:Number = _root.Ymin;
+        var yM:Number = _root.Ymax;
+        DepthManager.instance.calibrate(
+            isNaN(ym) ? 0 : ym,
+            isNaN(yM) ? 1200 : yM
+        );
+
         // 将上述属性设置为不可枚举
-        _global.ASSetPropFlags(gameworld, ["效果", "子弹区域", "地图", "dispatcher"], 1, false);
+        _global.ASSetPropFlags(gameworld, ["效果", "子弹区域", "地图", "dispatcher", "getNextHighestDepth"], 1, false);
 
         // 发布场景切换事件
         _root.帧计时器.eventBus.publish("SceneChanged");
@@ -73,6 +95,12 @@ class org.flashNight.arki.scene.SceneManager {
                 gameworld.deadbody.layers[2].dispose();
             }
             gameworld.deadbody.layers = null;
+        }
+
+        // 销毁 DepthManager（onUnload 回调也会触发 dispose，这里显式调用确保先于 removeMovieClip）
+        if (DepthManager.instance) {
+            DepthManager.instance.dispose();
+            DepthManager.instance = null;
         }
 
         gameworld.swapDepths(_root.getNextHighestDepth());
@@ -131,7 +159,12 @@ class org.flashNight.arki.scene.SceneManager {
         }
         inst._x = info.x;
         inst._y = info.y;
-        inst.swapDepths(isNaN(info.Depth) ? info.y : info.Depth);
+        // Y 排序实例走 DepthManager；显式 Depth 配置的固定装饰物保持原样
+        if (isNaN(info.Depth)) {
+            DepthManager.instance.updateDepth(inst, info.y);
+        } else {
+            inst.swapDepths(info.Depth);
+        }
         if (info.Parameters) ObjectUtil.cloneParameters(inst, info.Parameters);
         return inst;
     }

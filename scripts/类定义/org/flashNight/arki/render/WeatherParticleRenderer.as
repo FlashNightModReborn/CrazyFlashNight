@@ -5,7 +5,7 @@
  * 天气粒子渲染器 - 在 gameworld 内使用 Drawing API 渲染雨/雪/沙尘粒子。
  *
  * 设计要点：
- * - 容器挂在 gameworld 内前景深度（32768），被 UI 自然遮盖
+ * - 容器挂在 gameworld 内前景深度（1048200），在效果层(1048000)之上，被 UI 自然遮盖
  * - 粒子使用世界空间坐标，跟随场景卷屏
  * - 生成区域根据当前可视窗口 + 卷屏偏移动态计算
  * - 雨滴到达地面（Ymax 附近）时生成溅射效果
@@ -228,8 +228,8 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
         var gw:MovieClip = _root.gameworld;
         if (!gw) return;
         if (!_container || _container._parent == undefined) {
-            // 前景深度 32768，在效果层(32767)之上，被 UI 自然遮盖
-            _container = gw.createEmptyMovieClip("__weatherParticles", 32768);
+            // 前景深度 1048200，在效果层(1048000)之上，被 UI 自然遮盖
+            _container = gw.createEmptyMovieClip("__weatherParticles", 1048200);
             _global.ASSetPropFlags(gw, ["__weatherParticles"], 1, false);
         }
 

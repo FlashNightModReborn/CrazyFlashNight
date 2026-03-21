@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.*;
+import org.flashNight.gesh.depth.DepthManager;
 /**
  * 显示控制组件 - 负责控制地图元件的显示相关属性
  */
@@ -33,7 +34,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Displa
      */
     public static function adjustDepthByPosition(target:MovieClip):Void {
         if (target && target._y !== undefined) {
-            target.swapDepths(target._y);
+            DepthManager.instance.updateDepth(target, target._y);
         }
     }
     

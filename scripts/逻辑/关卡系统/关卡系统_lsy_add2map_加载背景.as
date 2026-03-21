@@ -11,6 +11,7 @@ import org.flashNight.arki.camera.*;
 import org.flashNight.arki.scene.*;
 import org.flashNight.arki.collision.CollisionLayerRenderer;
 import org.flashNight.arki.weather.*;
+import org.flashNight.gesh.depth.*;
 
 
 _root.add2map = _root.add2map2 = DeathEffectRenderer.renderCorpse;
@@ -122,6 +123,8 @@ _root.配置场景环境信息 = function(){
 		_root.Xmin = 环境信息.Xmin;
 		_root.Ymax = 环境信息.Ymax;
 		_root.Ymin = 环境信息.Ymin;
+		// 用精确场景边界标定深度管理器
+		DepthManager.instance.calibrate(_root.Ymin, _root.Ymax);
 		游戏世界.背景长 = 环境信息.背景长;
 		游戏世界.背景高 = 环境信息.背景高;
 
@@ -153,6 +156,8 @@ _root.配置场景环境信息 = function(){
 		天气系统.maxLight = 9;
 		天气系统.minLight = 0;
 		SceneManager.getInstance().addBodyLayers(2880, 1000);
+		// 无环境信息时用 EnvironmentConfig 默认值标定
+		DepthManager.instance.calibrate(330, 600);
 	}
 	_global.ASSetPropFlags(游戏世界, ["面积系数","出生点列表"], 1, false);
 

@@ -5,6 +5,7 @@ import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.weather.WeatherSystem;
 import org.flashNight.arki.weather.EnvironmentConfig;
 import org.flashNight.neur.Event.EventBus;
+import org.flashNight.gesh.depth.DepthManager;
 
 /**
 StageManager 管理关卡的基础行为。
@@ -114,6 +115,8 @@ class org.flashNight.arki.scene.StageManager {
         _root.Xmin = environment.Xmin;
         _root.Ymax = environment.Ymax;
         _root.Ymin = environment.Ymin;
+        // 用精确场景边界覆盖 initGameWorld 的默认标定
+        DepthManager.instance.calibrate(_root.Ymin, _root.Ymax);
         gameworld.背景长 = environment.背景长;
         gameworld.背景高 = environment.背景高;
         
@@ -142,7 +145,7 @@ class org.flashNight.arki.scene.StageManager {
             var door1inst = sceneManager.addInstance(门1数据, "Door1Instance");
             door1inst._x = (门1数据.x1 + 门1数据.x0) * 0.5;
             door1inst._y = (门1数据.y1 + 门1数据.y0) * 0.5;
-            door1inst.swapDepths(door1inst._y);
+            DepthManager.instance.updateDepth(door1inst, door1inst._y);
         }
         gameworld.允许通行 = false;
         gameworld.关卡结束 = false;

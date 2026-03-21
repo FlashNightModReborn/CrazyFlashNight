@@ -22,7 +22,7 @@ class org.flashNight.arki.corpse.CorpseStampSystem {
     /** @private {String} 印章影片剪辑在 gameworld 上的实例名 */
     private static var STAMP_MC_NAME:String = "global_corpseStampMC";
     /** @private {Number} 印章影片剪辑在 gameworld 上的深度，设置较高以避免遮挡 */
-    private static var STAMP_MC_DEPTH:Number = 30000;
+    private static var STAMP_MC_DEPTH:Number = 1048100;
 
     // ------------------ 私有静态变量 ------------------
 

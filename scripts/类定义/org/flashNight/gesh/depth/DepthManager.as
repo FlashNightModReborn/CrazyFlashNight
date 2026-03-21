@@ -8,7 +8,7 @@
  *   其中 entityID ∈ [0, N-1] 唯一，保证 depth % N == entityID → 零内部碰撞
  *
  *   契约:
- *   - 专用于战斗场景中单位的 Y 轴深度排序，不管理任意深度值
+ *   - 管理 gameworld 直接子级中所有参与 Y 轴排序的对象（单位、元件、拾取物等）
  *   - 同 Y 实体按 entityID（注册顺序）排序，非时间戳——保证帧间稳定无闪烁
  *   - 调用方必须保证传入 MC 是绑定容器的直接子级（热路径不做 _parent === _container 检查）
  *   - 容量有限：超过 maxEntities 时 updateDepth 返回 false
@@ -16,6 +16,9 @@
  * @package org.flashNight.gesh.depth
  */
 class org.flashNight.gesh.depth.DepthManager {
+
+    /** 全局单例，由 SceneManager.initGameWorld 创建/销毁 */
+    public static var instance:DepthManager;
 
     // ── 平行数组（SoA） ──
     private var _mcs:Array;       // [idx] → MovieClip
@@ -49,14 +52,14 @@ class org.flashNight.gesh.depth.DepthManager {
     /**
      * 构造函数
      * @param container  父容器（所有受管 MC 必须是其直接子级）
-     * @param bandLow    深度带下界（默认 10000，高于时间轴原生层级）
+     * @param bandLow    深度带下界（默认 0）
      * @param bandHigh   深度带上界（默认 1048575，Flash 最大深度）
-     * @param maxEntities 容量上限（默认 64）
+     * @param maxEntities 容量上限（默认 256）
      */
     public function DepthManager(container:MovieClip, bandLow:Number, bandHigh:Number, maxEntities:Number) {
-        if (bandLow == undefined) bandLow = 10000;
+        if (bandLow == undefined) bandLow = 0;
         if (bandHigh == undefined) bandHigh = 1048575;
-        if (maxEntities == undefined) maxEntities = 64;
+        if (maxEntities == undefined) maxEntities = 256;
 
         _container = container;
         _bandLow = bandLow;
@@ -277,6 +280,8 @@ class org.flashNight.gesh.depth.DepthManager {
         if (!mc) return false;
         var idx:Number = _idxMap[mc._name];
         if (idx == undefined) return false;
+        // 引用比对：同名异引用（外部 clip / stale 引用）不得误删受管对象
+        if (_mcs[idx] !== mc) return false;
         _evict(idx);
         return true;
     }
@@ -293,6 +298,8 @@ class org.flashNight.gesh.depth.DepthManager {
         if (!mc) return undefined;
         var idx:Number = _idxMap[mc._name];
         if (idx == undefined) return undefined;
+        // 引用比对：同名异引用返回 undefined 而非被管对象的深度
+        if (_mcs[idx] !== mc) return undefined;
         var d:Number = _curD[idx];
         // -1 是内部哨兵（未 flush / calibrate 后待定），对外暴露为 undefined
         if (d == -1) return undefined;

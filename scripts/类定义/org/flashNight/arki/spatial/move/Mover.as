@@ -4,6 +4,7 @@ import org.flashNight.arki.spatial.move.*;
 import org.flashNight.arki.spatial.transform.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.component.Effect.*;
+import org.flashNight.gesh.depth.DepthManager;
 
 /*
  * Mover 类 - 2D 与 2.5D 移动逻辑处理
@@ -142,7 +143,8 @@ class org.flashNight.arki.spatial.move.Mover {
         if (!_root.collisionLayer.hitTest(entity._x + vx, entity.Z轴坐标 + vy, true)) {
             if (vx === 0) {
                 // 垂直移动：更新 Z轴 和 _y 坐标，并调整显示层次
-                entity.swapDepths(entity._y = (entity.Z轴坐标 += vy));
+                entity._y = (entity.Z轴坐标 += vy);
+                DepthManager.instance.updateDepth(entity, entity._y);
             } else {
                 // 水平移动：仅更新 _x 坐标
                 entity._x += vx;
@@ -187,20 +189,9 @@ class org.flashNight.arki.spatial.move.Mover {
             // 若为垂直方向移动（"上" 或 "下"），则处理跳跃/高度变化逻辑
             if (dy | dz) {
                 // 更新垂直轴坐标并调整显示层次（性能关键路径）
-                entity.swapDepths(
-                    // 使用逗号运算符合并多步操作，确保执行顺序和参数传递
-                    (
-                        // [步骤1] 更新实体的 Z轴坐标，并累加 dz 到起始Y
-                        //  - 先计算 Z轴坐标: 自增 dy
-                        //  - 逗号运算符返回 dz，因此起始Y += dz
-                        entity.起始Y += (entity.Z轴坐标 += dy, dz), 
-
-                        // [步骤2] 更新实体的 _y 坐标（垂直位置）
-                        //  - 此处 dy 是垂直偏移量，_y 是显示对象的实际坐标
-                        //  - 逗号运算符最终返回 entity._y 的新值，作为 swapDepths 参数
-                        entity._y += dy
-                    )
-                );
+                // 最小拆分：保留逗号运算符赋值，仅将 swapDepths 替换为 DM.updateDepth
+                var _newY:Number = (entity.起始Y += (entity.Z轴坐标 += dy, dz), entity._y += dy);
+                DepthManager.instance.updateDepth(entity, _newY);
 
                 // _root.发布消息(entity.起始Y)
 
@@ -278,7 +269,8 @@ class org.flashNight.arki.spatial.move.Mover {
             if (stepY !== 0) {
                 // 垂直移动：更新 Z轴、_y 坐标以及显示层次
                 entity.Z轴坐标 = targetZ;
-                entity.swapDepths(entity._y = targetZ);
+                entity._y = targetZ;
+                DepthManager.instance.updateDepth(entity, entity._y);
             } else {
                 // 水平移动：仅更新 _x 坐标
                 entity._x = targetX;
@@ -357,8 +349,8 @@ class org.flashNight.arki.spatial.move.Mover {
                 entity._y = targetZ;
                 entity.起始Y = prev起始Y + stepZ * i;
                 
-                // 调整显示层次，使用与原方法相同的逻辑
-                entity.swapDepths(entity._y);
+                // 调整显示层次
+                DepthManager.instance.updateDepth(entity, entity._y);
             } else {
                 // 水平移动：仅更新 _x 坐标
                 entity._x = targetX;
@@ -429,8 +421,8 @@ class org.flashNight.arki.spatial.move.Mover {
         entity._y += finalVec.y;
         entity.aabbCollider.updateFromUnitArea(entity);
 
-        // 7. 调整显示层次，确保实体正确显示
-        entity.swapDepths(entity._y);
+        // 7. 调整显示层次
+        DepthManager.instance.updateDepth(entity, entity._y);
     }
 
     /**
@@ -555,7 +547,7 @@ class org.flashNight.arki.spatial.move.Mover {
                 if (entity.aabbCollider && entity.aabbCollider.updateFromUnitArea) {
                     entity.aabbCollider.updateFromUnitArea(entity);
                 }
-                entity.swapDepths(entity._y);
+                DepthManager.instance.updateDepth(entity, entity._y);
                 return true;
             }
         }
@@ -576,7 +568,7 @@ class org.flashNight.arki.spatial.move.Mover {
                     if (entity.aabbCollider && entity.aabbCollider.updateFromUnitArea) {
                         entity.aabbCollider.updateFromUnitArea(entity);
                     }
-                    entity.swapDepths(entity._y);
+                    DepthManager.instance.updateDepth(entity, entity._y);
                     return true;
                 }
 
@@ -621,7 +613,7 @@ class org.flashNight.arki.spatial.move.Mover {
 
         // 更新碰撞箱并调整显示深度
         entity.aabbCollider.updateFromUnitArea(entity);
-        entity.swapDepths(entity._y);
+        DepthManager.instance.updateDepth(entity, entity._y);
     }
 
     /**

@@ -4,6 +4,7 @@ import org.flashNight.arki.unit.UnitComponent.Updater.*;
 import org.flashNight.arki.component.StatHandler.*;
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
+import org.flashNight.gesh.depth.DepthManager;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEventComponent {
 
@@ -114,7 +115,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
     public static function onMapElementUpdate(target:MovieClip):Void {
         // —— 地图元素也做渲染剔除 ——
         applyVisibilityCulling(target);
-        target.swapDepths(target._y);
+        DepthManager.instance.updateDepth(target, target._y);
     }
 
     public static function onTauntMapElementUpdate(target:MovieClip):Void {

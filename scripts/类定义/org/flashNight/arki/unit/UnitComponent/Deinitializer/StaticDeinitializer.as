@@ -2,6 +2,7 @@
 
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.component.Shield.*;
+import org.flashNight.gesh.depth.DepthManager;
 
 class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
 {
@@ -21,6 +22,8 @@ class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
             }
             
             TargetCacheManager.removeUnit(target);
+            // 从深度管理器注销，回收 entityID
+            DepthManager.instance.removeMovieClip(target);
             // 卸载ai组件
             target.unitAI.destroy();
 

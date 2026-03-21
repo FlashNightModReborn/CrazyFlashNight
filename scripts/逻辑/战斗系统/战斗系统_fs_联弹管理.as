@@ -1,5 +1,6 @@
 ﻿import org.flashNight.sara.util.*;
 import org.flashNight.arki.spatial.move.*;
+import org.flashNight.gesh.depth.*;
 _root.单元体计数 = 0;
 
 _root.创建单元体 = function(子弹:MovieClip, 子弹种类:String) {
@@ -113,7 +114,9 @@ _root.联弹系统.爆炸联弹消失 = function(clip:MovieClip):Void {
             var 爆炸:MovieClip = _root.gameworld.attachMovie("联弹爆炸", "explosion" + i, _root.gameworld.getNextHighestDepth());
             爆炸._x = point.x;
             爆炸._y = point.y;
-            
+            // 纳入深度管理器，正确参与 Y 排序
+            DepthManager.instance.updateDepth(爆炸, point.y);
+
             // 回收该单元体
             _root.回收单元体(单元体);
         }

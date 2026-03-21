@@ -695,8 +695,7 @@ _root.初始化敌人模板 = function() {
     this._yscale = 身高转换值;
     myxscale = this._xscale;
     this.Z轴坐标 = this._y;
-    // 使用 LinearCongruentialEngine 的 random 方法生成 [0, 9] 的随机偏移
-    this.swapDepths(this._y + LinearCongruentialEngine.instance.random(10));
+    // swapDepths 已由 DepthManager 在 StaticInitializer.initializeUnit 中统一处理
 
     var areaHeight:Number = this.area._height * this._yscale;
     areaHeight = !isNaN(areaHeight) ? areaHeight : 136;

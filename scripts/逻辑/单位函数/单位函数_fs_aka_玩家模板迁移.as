@@ -2223,7 +2223,7 @@ _root.初始化玩家模板 = function() {
     this._xscale = 身高转换值;
     this._yscale = 身高转换值;
     myxscale = this._xscale;
-    this.swapDepths(this._y + random(10) - 5);
+    // swapDepths 已由 DepthManager 在 StaticInitializer.initializeUnit 中统一处理
 
     被动技能 = {};
     if (_root.控制目标 != this._name) {
@@ -2721,7 +2721,7 @@ _root.初始化佣兵NPC模板 = function() {
     this._xscale = 身高转换值;
     this._yscale = 身高转换值;
     myxscale = this._xscale;
-    this.swapDepths(this._y + random(10) - 5);
+    // swapDepths 已由 DepthManager 在 StaticInitializer.initializeUnit 中统一处理
 
     //状态机类型为佣兵NPC
     this.unitAIType = "Mecenary";

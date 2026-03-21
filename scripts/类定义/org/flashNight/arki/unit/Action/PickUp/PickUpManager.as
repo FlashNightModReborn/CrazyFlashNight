@@ -3,6 +3,7 @@
  */
 
 import org.flashNight.neur.Event.*;
+import org.flashNight.gesh.depth.DepthManager;
 import org.flashNight.aven.Coordinator.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
@@ -193,6 +194,8 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             parameterObject
         );
         
+        // 纳入深度管理器，正确参与 Y 排序
+        DepthManager.instance.updateDepth(pickupItem, pickupItem._y);
         pickupItem.焦点高亮框.gotoAndPlay(
             LinearCongruentialEngine.instance.randomInteger(1, 59));
         

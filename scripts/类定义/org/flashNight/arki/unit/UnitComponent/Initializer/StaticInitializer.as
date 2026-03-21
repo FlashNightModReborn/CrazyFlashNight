@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.naki.DataStructures.*;
 import org.flashNight.neur.Event.*;
+import org.flashNight.gesh.depth.DepthManager;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.gesh.arguments.*;
@@ -24,6 +25,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
     public static function initializeUnit(target:MovieClip):Void {
         // 排除从非gameworld召唤出的单位
         if(target._parent !== _root.gameworld) return;
+
+        // 出生 seed：立即注册进深度管理器，将创建暂存深度替换为 Twip 深度
+        DepthManager.instance.updateDepth(target, target._y);
 
         // 如果单位是第一次创建，此时不存在事件分发器
         // 如果单位是重初始化，则就会播报UnitReInitialized事件

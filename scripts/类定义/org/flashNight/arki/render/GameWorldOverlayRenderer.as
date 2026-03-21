@@ -6,7 +6,7 @@
  *
  * 与 SkyboxRenderer 的区别：
  * - SkyboxRenderer 挂在 _root.天空盒（gameworld 后面），室内不可见
- * - 本渲染器挂在 gameworld 内部（depth 32769，在天气粒子之上），室内外均可用
+ * - 本渲染器挂在 gameworld 内部（depth 1048300，在天气粒子之上），室内外均可用
  *
  * 设计要点：
  * - 半透明色块覆盖当前可视区域，逐帧跟随相机
@@ -22,7 +22,7 @@ class org.flashNight.arki.render.GameWorldOverlayRenderer {
 
     // ==================== 渲染层 ====================
 
-    /** 叠加层容器（gameworld 内，depth 32769） */
+    /** 叠加层容器（gameworld 内，depth 1048300） */
     private static var _container:MovieClip;
 
     // ==================== 颜色状态 ====================
@@ -219,7 +219,7 @@ class org.flashNight.arki.render.GameWorldOverlayRenderer {
         var gw:MovieClip = _root.gameworld;
         if (!gw) return;
         if (!_container || _container._parent == undefined) {
-            _container = gw.createEmptyMovieClip("__gwOverlay", 32769);
+            _container = gw.createEmptyMovieClip("__gwOverlay", 1048300);
             _global.ASSetPropFlags(gw, ["__gwOverlay"], 1, false);
         }
 
