@@ -97,14 +97,18 @@ class org.flashNight.arki.scene.SceneManager {
             gameworld.deadbody.layers = null;
         }
 
-        // 销毁 DepthManager（onUnload 回调也会触发 dispose，这里显式调用确保先于 removeMovieClip）
+        // 显式 dispose DepthManager：清空内部数据，解绑 onUnload 回调。
+        // 注意：instance = null 必须在 removeMovieClip 之后。
+        // 原因：removeMovieClip 会级联触发子级 onUnload → StaticDeinitializer.deInitializeUnit
+        // → DepthManager.instance.removeMovieClip(target)。若 instance 已 null 则空引用。
+        // dispose 后内部数据已清空，子级的 removeMovieClip 调用会安全 return false。
         if (DepthManager.instance) {
             DepthManager.instance.dispose();
-            DepthManager.instance = null;
         }
 
         gameworld.swapDepths(_root.getNextHighestDepth());
         gameworld.removeMovieClip();
+        DepthManager.instance = null;
         gameworld = null;
     }
 

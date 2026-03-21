@@ -34,7 +34,7 @@ class org.flashNight.gesh.depth.DepthManagerTest {
         totalTests = 0;
         passedTests = 0;
         failedTests = 0;
-        clipCount = 50;
+        clipCount = 256;
         warmupIter = 50;
         perfIter = 2000;
     }
@@ -101,7 +101,7 @@ class org.flashNight.gesh.depth.DepthManagerTest {
 
     private function resetDM():Void {
         if (dm) { dm.dispose(); dm = null; }
-        dm = new DepthManager(testContainer, 10000, 1048575, 64);
+        dm = new DepthManager(testContainer, 10000, 1048575, 256);
         dm.calibrate(200, 800);
     }
 
@@ -144,8 +144,14 @@ class org.flashNight.gesh.depth.DepthManagerTest {
         td3.dispose();
         record("极端标定 N=128 可行", assertTrue(ok3, "N=128 yRange=850 应成功") && ok3);
 
+        // 生产容量：N=256 yRange=850（bandLow=0 → S=4）
+        var td3b:DepthManager = new DepthManager(testContainer, 0, 1048575, 256);
+        var ok3b:Boolean = td3b.calibrate(150, 1000);
+        td3b.dispose();
+        record("生产容量 N=256 可行", assertTrue(ok3b, "N=256 bandLow=0 yRange=850 应成功") && ok3b);
+
         // 反向 calibrate(800, 200) — yRange 为负，应当退化为 yRange=1 后仍成功
-        var td4:DepthManager = new DepthManager(testContainer, 10000, 1048575, 64);
+        var td4:DepthManager = new DepthManager(testContainer, 10000, 1048575, 256);
         var ok4:Boolean = td4.calibrate(800, 200);
         // calibrate 内部 yRange = yMax - yMin，若 <1 则 clamp 到 1
         // S = floor((bandSpan - N + 1) / (1 * N)) 必定 >> 1，应成功
