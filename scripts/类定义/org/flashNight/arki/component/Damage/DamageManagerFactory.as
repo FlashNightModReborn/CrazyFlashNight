@@ -347,11 +347,10 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var handles:Array = _handles;
         var conditionalIndices:Array = _conditionalHandlerIndices;
         var len:Number = conditionalIndices.length;
-
+        var index:Number;
         var i:Number = 0;
         do {
-            var index:Number = conditionalIndices[i];
-            if (handles[index].canHandle(bullet)) {
+            if (handles[index = conditionalIndices[i]].canHandle(bullet)) {
                 bitmask |= (1 << index);
             }
         } while (++i < len);
@@ -363,8 +362,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var bitmask:Number = this._skipCheckBitmask;
         var index:Number;
 
-        index = this._conditionalHandlerIndices[0];
-        if (this._handles[index].canHandle(bullet))
+        if (this._handles[index = this._conditionalHandlerIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -376,11 +374,9 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -392,14 +388,11 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -411,17 +404,13 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -433,20 +422,15 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -458,23 +442,17 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -486,26 +464,19 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -517,29 +488,21 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -551,32 +514,23 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -588,35 +542,25 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -628,38 +572,27 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -671,41 +604,29 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -717,44 +638,31 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -766,47 +674,33 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -818,50 +712,35 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -873,53 +752,37 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -931,56 +794,39 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -992,59 +838,41 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -1056,62 +884,43 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -1123,65 +932,45 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -1193,68 +982,47 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[20];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[20]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -1266,71 +1034,49 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[20];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[20]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[21];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[21]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -1342,74 +1088,51 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[20];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[20]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[21];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[21]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[22];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[22]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -1421,77 +1144,53 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[20];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[20]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[21];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[21]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[22];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[22]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[23];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[23]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -1503,80 +1202,55 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[20];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[20]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[21];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[21]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[22];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[22]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[23];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[23]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[24];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[24]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -1588,83 +1262,57 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[20];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[20]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[21];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[21]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[22];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[22]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[23];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[23]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[24];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[24]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[25];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[25]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -1676,86 +1324,59 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[20];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[20]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[21];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[21]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[22];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[22]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[23];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[23]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[24];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[24]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[25];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[25]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[26];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[26]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -1767,89 +1388,61 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[20];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[20]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[21];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[21]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[22];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[22]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[23];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[23]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[24];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[24]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[25];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[25]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[26];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[26]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[27];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[27]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -1861,92 +1454,63 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[20];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[20]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[21];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[21]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[22];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[22]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[23];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[23]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[24];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[24]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[25];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[25]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[26];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[26]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[27];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[27]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[28];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[28]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -1958,95 +1522,65 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[20];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[20]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[21];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[21]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[22];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[22]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[23];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[23]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[24];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[24]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[25];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[25]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[26];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[26]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[27];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[27]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[28];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[28]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[29];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[29]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -2058,98 +1592,67 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[20];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[20]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[21];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[21]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[22];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[22]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[23];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[23]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[24];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[24]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[25];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[25]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[26];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[26]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[27];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[27]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[28];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[28]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[29];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[29]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[30];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[30]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
@@ -2161,101 +1664,69 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[0]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[1];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[1]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[2];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[2]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[3];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[3]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[4];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[4]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[5];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[5]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[6];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[6]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[7];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[7]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[8];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[8]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[9];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[9]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[10];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[10]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[11];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[11]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[12];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[12]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[13];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[13]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[14];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[14]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[15];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[15]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[16];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[16]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[17];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[17]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[18];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[18]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[19];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[19]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[20];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[20]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[21];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[21]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[22];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[22]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[23];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[23]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[24];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[24]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[25];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[25]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[26];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[26]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[27];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[27]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[28];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[28]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[29];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[29]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[30];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[30]].canHandle(bullet))
             bitmask |= (1 << index);
-        index = conditionalIndices[31];
-        if (handles[index].canHandle(bullet))
+        if (handles[index = conditionalIndices[31]].canHandle(bullet))
             bitmask |= (1 << index);
 
         return this._resolve(bitmask);
