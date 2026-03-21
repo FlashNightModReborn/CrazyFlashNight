@@ -2607,9 +2607,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      *
      * C3: 窗口内裸读语义（原位编码新增契约）
      *   除 MultiShotDamageHandle 外的代码读取 bullet.霰弹值 将得到编码负数
-     *   已知裸读点：DamageCalculator 行 124（调试模式方差检查）
-     *     生产环境 !_root.调试模式 短路，不执行裸读 → 无影响
-     *     调试模式读到负数 → 联弹方差被抑制 → 可接受
+     *   已知裸读点：无（2026-03 移除 DamageCalculator 调试方差分支后，窗口内零裸读）
      *   防御建议：未来若需读散射值，从 damageResult 或 handler 内部解码获取
      *
      * C4: 编码不可跨帧持久化

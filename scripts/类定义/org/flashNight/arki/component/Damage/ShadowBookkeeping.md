@@ -127,7 +127,7 @@ BulletQueueProcessor.processQueue()
 
 | 文件 | 角色 | 说明 |
 |------|------|------|
-| `arki/component/Damage/DamageCalculator.as` | 伤害计算入口 | 行 124 裸读 `bullet.霰弹值 > 1`（调试模式方差，生产短路。契约 C3 备注） |
+| `arki/component/Damage/DamageCalculator.as` | 伤害计算入口 | 不读 `bullet.霰弹值`（2026-03 移除调试方差分支后零裸读） |
 | `arki/component/Damage/DamageResult.as` | 结果容器 | `finalScatterValue` 存储解码后的剩余值，供外部读取 |
 | `arki/component/Damage/DamageManager.as` | 执行调度器 | 调用 handler 链，传递 `overlapRatio`/`dodgeState`，不读霰弹值 |
 | `arki/component/Damage/DamageManagerFactory.as` | 工厂 | 通过 `canHandle` 位掩码过滤，决定 MultiShotDamageHandle 是否参与 |
