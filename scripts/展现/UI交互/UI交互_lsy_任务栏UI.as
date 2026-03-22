@@ -165,14 +165,15 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 		for (var i = 0; i < items.length; i++){
 			var itemArr = items[i].split("#");
 
-			_root.帧计时器.添加单次任务(function(count) {
+			_root.帧计时器.添加单次任务(function(count, itemArr) {
 				var 物品图标 = 物品展示框.attachMovie("物品图标","物品图标" + count, count);
 				物品图标._x = 10 + count * 20;
 				物品图标._y = 10;
 				物品图标._xscale = 物品图标._yscale = 75;
 				物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
 				物品需求图标.iconList.push(物品图标);
-			},(i + 1) * 500, i);
+			},(i + 1) * 100, i, itemArr);
+			//间隔从500减到了100
 		}
 		if(items.length == 1){
 			var itemArr = items[0].split("#");
