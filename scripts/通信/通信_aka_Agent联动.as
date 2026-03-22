@@ -111,6 +111,7 @@ _root.agent.注册同步轮询 = function():Void {
     }
 };
 _root.agent.启动外部RAG工具 = function():Void {
+    _root.最上层发布文字提示("正在启动通讯终端，请稍后……");
     // 退出全屏模式，确保浏览器窗口能正常弹出
     fscommand("fullscreen", "false");
     // 使用fscommand执行fscommand目录下的代理启动器
