@@ -66,9 +66,10 @@
 - **位置**：`scripts/类定义/org/flashNight/sara/`
 - **功能**：粒子系统、物理约束、表面碰撞检测
 
-## 8. 深度管理（未投入使用）
-- **核心文件**：DepthManager.as（基于 AVL 树），性能测试未通过
-- **审查文档**：`tools/BalancedTreeSystem_Review_Prompt_CN.md`
+## 8. 深度管理（已投入使用）
+- **位置**：`scripts/类定义/org/flashNight/gesh/depth/`
+- **核心**：DepthManager.as — Twip Trick 模运算 Y 排序，swapDepths 劫持透明接入
+- **测试**：DepthManagerTest.as（30 功能 + 性能基准）
 
 ## 9. 数据结构与算法
 - **位置**：`scripts/类定义/org/flashNight/naki/`

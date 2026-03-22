@@ -58,7 +58,7 @@
 - AS2 核心显示对象是 `MovieClip`
 - 创建子 MC：`parentMC.createEmptyMovieClip("name", depth)`
 - 附加库元件：`parentMC.attachMovie("linkageId", "name", depth)`
-- 深度管理是手动的（本项目有基于 AVL 树的 DepthManager.as，但尚未投入使用，性能测试未通过）
+- 深度管理由 `DepthManager.as`（Twip Trick 模运算）统一管理，已全面投入使用。核心公式 `depth = bandLow + int((Y-yMin)*S)*N + entityID`，零碰撞保证。帧脚本的 `swapDepths` 被劫持到 `DepthManager.updateDepth`，调用方无需手动管理深度
 - **`gotoAndStop`/`gotoAndPlay` 会立即卸载当前帧的 MovieClip**，调用链处于被卸载 MC 的 `onEnterFrame` 中时，帧跳转后的代码**不会执行**（执行上下文被销毁）
   - 本项目解决方案：`__stateTransitionJob` 作业机制，帧跳转后统一调度（参见 `scripts/引擎/引擎_fs_路由基础.as`）
   - **编码规则**：帧跳转后不要写依赖当前 MC 存活的逻辑

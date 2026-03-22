@@ -10,10 +10,11 @@
 
 - **编译限制**：AS2 的实际编译仍只能由 Flash CS6 GUI 完成；在已运行 `scripts/setup_compile_env.bat`、已打开 TestLoader 的前提下，Agent 现可通过 `scripts/compile_test.ps1` / `scripts/compile_test.sh` 做**有限自动化 smoke 验证**并读取 trace / Output Panel 副本。**当前链路仍在迭代期**，不要把 `publish_done.marker` 单独当作成功依据；没有新鲜 trace、输出日志或 IDE 复核时，不要笼统声称“已编译通过”
 - **.as 编码**：必须 **UTF-8 with BOM**；新增/重建用“复制现有 `.as` → 改名”保留 BOM（见 [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) §0）
-- **SWF**：禁止手动编辑；提交规则见「版本控制备忘」
+- **SWF**：禁止手动编辑；`scripts/asLoader.swf` 达到可用节点时可提交，其他 SWF 完成功能后封档上传
 - **终端编码**（PowerShell）：运行命令前先执行 `chcp.com 65001 | Out-Null` 避免 GBK 乱码
 - **可直接修改**：`data/`、`config/` 下 XML（重启生效）
 - **可直接运行验证**：`tools/Local Server/`（Node.js）、`automation/`（PowerShell）、`scripts/compile_test.ps1` / `scripts/compile_test.sh`（Flash 自动化 smoke，迭代中）
+- **不提交**：大型二进制资源、`node_modules`
 
 ---
 
@@ -52,10 +53,3 @@
 ├── 0.说明文件与教程/            ✎ 设计文档与教程
 └── docs/                       ✎ 技术审计文档
 ```
-
----
-
-## 版本控制备忘
-
-- **SWF 提交**：`scripts/asLoader.swf` 达到可用节点时可提交；其他 SWF 完成功能后封档上传
-- **不提交**：大型二进制资源、`node_modules`
