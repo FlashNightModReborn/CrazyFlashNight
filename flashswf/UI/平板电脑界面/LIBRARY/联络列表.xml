@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联络列表" itemID="670b3884-000003a8" lastModified="1752334315" lastUniqueIdentifier="20">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联络列表" itemID="670b3884-000003a8" lastModified="1774206071" lastUniqueIdentifier="26">
   <timeline>
     <DOMTimeline name="联络列表">
       <layers>
@@ -25,6 +25,14 @@ function 刷新NPC列表()
 		this["列表" + this.npcindex].初始化(NPC列表[this.npcindex]);
 		this.npcindex++;
 	};
+}
+if (_root.agent.npc_state_db_exists)
+{
+	this.终端通信按钮._visible = true;
+}
+else
+{
+	this.终端通信按钮._visible = false;
 }
 
 刷新NPC列表();]]></script>
@@ -59,6 +67,38 @@ function 刷新NPC列表()
                   <transformationPoint>
                     <Point x="31.25" y="10.7"/>
                   </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="透明按钮" name="终端通信按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="0.631866455078125" d="0.515579223632813" tx="210.8" ty="240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[
+on (release) {
+	_root.agent.启动外部RAG工具();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="终端通信文字" blendMode="add" centerPoint3DX="242.05" centerPoint3DY="250.05">
+                  <matrix>
+                    <Matrix tx="210.8" ty="240.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.25" y="10.7"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_root.agent.npc_state_db_exists)
+	{
+		this._visible = true;
+	}else{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

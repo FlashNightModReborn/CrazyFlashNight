@@ -111,15 +111,11 @@ _root.agent.注册同步轮询 = function():Void {
     }
 };
 _root.agent.启动外部RAG工具 = function():Void {
-    PathManager.initialize(null);
-    if (!PathManager.isEnvironmentValid()) {
-        return;
-    }
-    var batPath:String = PathManager.resolvePath(_root.agent.REL_LAUNCH_BAT);
-    if (batPath == null) {
-        return;
-    }
-    getURL(batPath, "_blank");
+    // 退出全屏模式，确保浏览器窗口能正常弹出
+    fscommand("fullscreen", "false");
+    // 使用fscommand执行fscommand目录下的代理启动器
+    // fscommand("exec")只能在独立Flash Player中工作，且只能执行fscommand子目录中的文件
+    fscommand("exec", "launch_rag.bat");
 };
 
 _root.agent.检测npc状态库文件();

@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="450" height="300" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" viewAngle3D="46.1401038835498" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#CCCCCC" width="450" height="300" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" viewAngle3D="46.1401038835498" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="WPlogo" itemID="66c43bc6-00000f9c"/>
           <DOMFolderItem name="材料大全" itemID="673b5b30-00001a7b" isExpanded="true"/>
@@ -113,7 +113,7 @@
           <Include href="联络/联络图标文字.xml" loadImmediate="false" itemID="66fbc3c2-00004c30" lastModified="1727775682"/>
           <Include href="联络/联络图标文字透明.xml" loadImmediate="false" itemID="66fbc3c6-00004c31" lastModified="1727775686"/>
           <Include href="联络/联络图标整体.xml" loadImmediate="false" itemID="66fbc3d1-00004c32" lastModified="1727788078"/>
-          <Include href="联络列表.xml" loadImmediate="false" itemID="670b3884-000003a8" lastModified="1752334315"/>
+          <Include href="联络列表.xml" loadImmediate="false" itemID="670b3884-000003a8" lastModified="1774206071"/>
           <Include href="面板/背景.xml" loadImmediate="false" itemID="66c4b4a3-000019a4" lastModified="1724167762"/>
           <Include href="面板/平板整体UI背景.xml" loadImmediate="false" itemID="66c498c2-000016d9" lastModified="1724165872"/>
           <Include href="面板/平板整体UI大圆.xml" loadImmediate="false" itemID="66c496bd-000016ad" lastModified="1724165463"/>
@@ -149,7 +149,7 @@
           <Include href="面板/平板整体UI右下线框.xml" loadImmediate="false" itemID="66c4b3e7-00001990" lastModified="1724167143"/>
           <Include href="面板/平板整体UI圆点.xml" loadImmediate="false" itemID="66c4aa9c-000017aa" lastModified="1724164764"/>
           <Include href="面板/平板整体UI中心球2.xml" loadImmediate="false" itemID="66c4b3a4-0000198b" lastModified="1724167076"/>
-          <Include href="平板背景.xml" loadImmediate="false" itemID="66f84083-0000036b" lastModified="1756804189"/>
+          <Include href="平板背景.xml" loadImmediate="false" itemID="66f84083-0000036b" lastModified="1774204962"/>
           <Include href="平板背景空闲.xml" loadImmediate="false" itemID="66fd03a6-0000584f" lastModified="1728151356"/>
           <Include href="平板电脑界面.xml" itemID="6700bfa9-00000943" lastModified="1752334074"/>
           <Include href="通用UI-滑动按钮栏/按钮-单元体.xml" loadImmediate="false" itemID="67690685-000002e3" lastModified="1734938306"/>
@@ -213,6 +213,7 @@
           <Include href="悬停/悬停补间/补间 14.xml" itemIcon="1" loadImmediate="false" itemID="66fc33dd-00005651" lastModified="1727804381"/>
           <Include href="悬停/悬停补间/悬停引导线.xml" loadImmediate="false" itemID="66fc3323-00005649" lastModified="1727804195"/>
           <Include href="悬停/悬停补间/引导线2.xml" loadImmediate="false" itemID="66fc36b7-0000565d" lastModified="1727805183"/>
+          <Include href="终端通信文字.xml" loadImmediate="false" itemID="69c03895-0000617e" lastModified="1774205118"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -533,6 +534,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="179229" publishTime="1774205528"/>
+          <PublishItem publishSize="179145" publishTime="1774205424"/>
           <PublishItem publishSize="179145" publishTime="1756804286"/>
           <PublishItem publishSize="179123" publishTime="1755331915"/>
           <PublishItem publishSize="179135" publishTime="1755331771"/>
@@ -551,7 +554,5 @@
           <PublishItem publishSize="178270" publishTime="1752384165"/>
           <PublishItem publishSize="178274" publishTime="1752383844"/>
           <PublishItem publishSize="178272" publishTime="1752383723"/>
-          <PublishItem publishSize="176916" publishTime="1752333747"/>
-          <PublishItem publishSize="176916" publishTime="1752333451"/>
      </publishHistory>
 </DOMDocument>

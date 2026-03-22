@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="平板背景" itemID="66f84083-0000036b" lastModified="1756804189" lastUniqueIdentifier="282">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="平板背景" itemID="66f84083-0000036b" lastModified="1774204962" lastUniqueIdentifier="283">
   <timeline>
-    <DOMTimeline name="平板背景" currentFrame="102">
+    <DOMTimeline name="平板背景" currentFrame="54">
       <layers>
         <DOMLayer name="标识" color="#808080" autoNamed="false">
           <frames>
@@ -308,7 +308,7 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="联络界面商店内容" color="#9933CC" autoNamed="false">
+        <DOMLayer name="联络界面商店内容" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements/>
@@ -327,7 +327,7 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
             <DOMFrame index="54" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="联络列表" blendMode="add" centerPoint3DX="92" centerPoint3DY="80">
+                <DOMSymbolInstance libraryItemName="联络列表" selected="true" blendMode="add" centerPoint3DX="92" centerPoint3DY="80">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -375,7 +375,7 @@ _parent.关闭界面();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="材料大全界面内容" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="材料大全界面内容" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
