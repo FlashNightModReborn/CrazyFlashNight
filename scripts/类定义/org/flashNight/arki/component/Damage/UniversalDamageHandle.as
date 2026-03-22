@@ -3,75 +3,58 @@ import org.flashNight.arki.component.StatHandler.*;
 
 /**
  * UniversalDamageHandle 类用于处理通用伤害以及躲闪状态的处理器。
- * - 完全复制原有脚本的逻辑，确保功能一致。
- * - 后续可进行优化，如减少重复代码、提高性能等。
+ *
+ * 【控制流设计】
+ * 正向频率分派：破击 → 魔法 → 真伤 → 物理(fallback)
+ * 基于最优线性搜索定理，特殊伤害按运行时频率降序排列（破击 > 魔法 > 真伤）。
+ * 破击最高频：装备模组系统让任何武器都能通过插件获得破击伤害类型。
+ * 物理作为 catch-all fallback（覆盖 undefined/"物理"/空字符串/任何未知类型）。
+ *
+ * 【惰性求值】
+ * 顶部仅预取所有路径共用的 t/power/enemy 三个基元变量。
+ * target.防御力/魔法抗性/等级 延迟到各分支内部按需读取，
+ * 物理路径（最高频）完全不触碰魔法抗性和等级的 GetMember 开销。
+ *
+ * 【数学优化】
+ * 魔法抗性软上限代数化简：
+ *   原式 95+(rv-95)/11 > 100 等价于 rv > 150
+ *   95+(rv-95)/11 通分化简为 (rv+950)/11
+ * 消除重复除法与加减运算。
+ *
+ * 【内联策略】
+ * defenseDamageRatio 内联为 300/(def+300)：省去 ClassName.staticMethod() 调用税 ~1340ns。
+ * 原始公式定义于 DamageResistanceHandler.defenseDamageRatio，修改时需同步。
+ * isMagicDamageType 缓存为静态函数引用：从方法调用 ~1340ns 降至函数调用 ~485ns。
+ *
+ * 【取整策略】
+ * 所有伤害值不在此处取整，统一交给后续工序处理。
  */
 class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
     // ========== 单例实例 ==========
     public static var instance:UniversalDamageHandle = new UniversalDamageHandle();
 
-    /**
-     * 构造函数。
-     * 初始化时设置 skipCheck 为 true，表示始终处理伤害和躲闪状态。
-     */
+    // ========== 静态函数引用缓存 ==========
+    // 缓存 isMagicDamageType 到局部函数引用，消除方法调用的类名查找税
+    // 方法调用 ~1340ns → 函数调用 ~485ns [T2 S01]
+    private static var _isMagicType:Function = MagicDamageTypes.isMagicDamageType;
+
     public function UniversalDamageHandle() {
         this.skipCheck = true;
     }
 
-    /**
-     * 获取 UniversalDamageHandle 的单例实例 (闭包优化)。
-     */
+    /** 获取单例实例（饿汉式，直接返回） */
     public static function getInstance():UniversalDamageHandle {
-        if (instance == null) {
-            instance = new UniversalDamageHandle();
-            getInstance = function():UniversalDamageHandle {
-                return instance;
-            };
-        }
         return instance;
     }
 
-    /**
-     * 始终返回 true，表示可处理所有子弹。
-     */
     public function canHandle(bullet:Object):Boolean {
         return true;
     }
 
     /**
-     * 处理子弹伤害的核心方法 - 高性能优化版本
-     * 
-     * 【设计原理】
-     * 本方法基于"频率导向的分支优化"设计，将最常见的物理伤害放在第一个分支，
-     * 通过早退机制实现均摊O(1)复杂度。后续分支按伤害类型频率排序：破击 > 魔法 > 真伤。
-     * 
-     * 【执行流程概览】
-     * 1. 预取变量，减少对象属性访问开销
-     * 2. 设置默认物理伤害颜色
-     * 3. 物理伤害快速路径（1次if + 早退）
-     * 4. 非物理伤害二分路由（破击 vs 魔法/真伤）
-     * 5. 每个分支内部避免无效计算，按需执行
-     * 
-     * 【性能优化策略】
-     * - 分支预测友好：最频繁路径分支数最少
-     * - 早退机制：避免不必要的后续计算
-     * - 内联优化：用三元表达式替代函数调用（AS2环境友好）
-     * - 零无效计算：每个分支只执行必要的操作
-     * - 变量预取：减少点链操作和重复对象属性访问
-     * 
-     * 【伤害类型处理详解】
-     * 物理伤害：defense_ratio计算，不取整
-     * 破击伤害：检查目标是否有匹配的魔法抗性
-     *   - 有抗性：物理部分 + 魔法部分的混合伤害，显示属性标识
-     *   - 无抗性：回退为纯物理伤害，不显示属性标识
-     * 魔法伤害：按属性抗性 > 基础抗性 > 默认抗性的优先级计算
-     * 真实伤害：无视所有抗性，直接使用破坏力数值
-     * 
-     * 【取整策略】
-     * 所有伤害值计算结果均不在此处取整，统一交给后续工序处理，
-     * 以保持数值精度和计算的一致性。
-     * 
+     * 处理子弹伤害的核心方法
+     *
      * @param bullet  子弹对象，包含伤害类型、破坏力、魔法伤害属性等
      * @param shooter 射击者对象
      * @param target  目标对象，包含防御力、等级、魔法抗性等
@@ -79,105 +62,102 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
      * @param result  伤害结果对象，用于设置颜色和特效
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
-        // ========== 第一阶段：变量预取与初始化 ==========
-        // 预取本地变量，避免重复的对象属性访问，在AS2解释执行环境中性能提升明显
+        // ========== 阶段一：最小预取（所有路径共用） ==========
         var t:String = bullet.伤害类型;
-        var enemy:Boolean = bullet.是否为敌人;
         var power:Number = bullet.破坏力;
-        var def:Number = target.防御力;
-        var lvl:Number = target.等级;
-        var resistTbl:Object = target.魔法抗性;
-        
-        // 先设定默认物理伤害颜色 ID，避免在分支中重复设置
-        result._dmgColorId = enemy ? 1 : 2; // #FF0000 / #FFCC00
-        
-        // ========== 第二阶段：物理伤害快速路径（最高频） ==========
-        // 【关键优化】物理伤害是游戏中最常见的伤害类型，放在第一个分支
-        // 仅需1次复合条件判断即可确定，然后立即早退，实现O(1)复杂度
-        if (t != "真伤" && t != "魔法" && t != "破击") {
-            // 物理伤害计算：破坏力 × 防御比率，不取整交给后续工序
-            target.损伤值 = power * DamageResistanceHandler.defenseDamageRatio(def);
-            return; // 早退，避免后续所有计算
-        }
-        
-        // ========== 第三阶段：非物理伤害二分路由 ==========
-        // 剩余的三种伤害类型按频率分为两组：破击 vs (魔法+真伤)
+        var enemy:Boolean = bullet.是否为敌人;
+
+        // ========== 阶段二：正向频率分派 ==========
+        // 特殊伤害按频率降序：破击 > 魔法 > 真伤
+        // 破击最高频：装备模组系统让任何武器都能通过插件获得破击伤害类型
+
+        // ---------- 破击伤害（特殊伤害中最高频，混合物理+魔法） ----------
         if (t == "破击") {
-            // ---------- 破击伤害：混合物理+魔法机制 ----------
-            // 破击伤害的核心逻辑：检查目标是否具有与子弹魔法属性匹配的抗性
-            var magicAttr:String = bullet.魔法伤害属性 ? bullet.魔法伤害属性 : "能";
-            var rValRaw:Number = resistTbl[magicAttr];
-            
-            // 【业务逻辑关键】根据抗性存在性和属性类型确定混合比率
-            // 魔法类属性：0.1倍率，非魔法标签：0.5倍率，无抗性：0倍率（回退纯物理）
-            var isMagicTag:Boolean = MagicDamageTypes.isMagicDamageType(magicAttr);
-            var rate:Number = (rValRaw != undefined) ? (isMagicTag ? 0.1 : 0.5) : 0;
-            
-            // 计算物理伤害部分（始终存在）
-            var physPart:Number = power * DamageResistanceHandler.defenseDamageRatio(def);
-            
-            // 【性能优化】只在需要混合伤害时才计算抗性值和魔法部分
-            if (rate > 0) {
-                // 抗性值处理：用嵌套三元表达式替代Math.min/max函数调用
+            result._dmgColorId = enemy ? 1 : 2;
+
+            var mAttr2:String = bullet.魔法伤害属性;
+            if (!mAttr2) mAttr2 = "能";
+
+            // AS2 安全穿透：undefined[key] → undefined，无需预检 resistTbl
+            var rValRaw = target.魔法抗性[mAttr2];
+
+            // 内联 defenseDamageRatio: 300/(def+300)，省去方法调用税 ~1340ns
+            var physPart:Number = power * 300 / (target.防御力 + 300);
+
+            // 关键剪枝：仅在抗性存在时才查询魔法属性类型
+            if (rValRaw != undefined) {
+                // 使用缓存的函数引用，避免 ClassName.method() 调用税
+                var isMagicTag:Boolean = _isMagicType(mAttr2);
+                var rate:Number = isMagicTag ? 0.1 : 0.5;
                 var rVal:Number = Number(rValRaw);
-                rVal = isNaN(rVal) ? 20 : (rVal < -1000 ? -1000 : (rVal > 100 ? 100 : rVal));
-                
-                // 计算魔法伤害部分并合成最终伤害
-                var magicPart:Number = (power * rate) * (100 - rVal) / 100;
-                target.损伤值 = physPart + magicPart;
-                
-                // 延迟 HTML 构建：破击效果位标记 + 文本/emoji 槽
+                rVal = ((rVal - rVal) != 0) ? 20
+                    : (rVal < -1000 ? -1000
+                    : (rVal > 100 ? 100
+                    : rVal));
+
+                target.损伤值 = physPart + (power * rate) * (100 - rVal) / 100;
+
                 result._efFlags |= 16; // EF_CRUSH_LABEL
-                var emoji:String = isMagicTag ? "✨" : "☠";
-                result._efEmoji = emoji;
-                result._efText = magicAttr;
+                result._efEmoji = isMagicTag ? "✨" : "☠";
+                result._efText = mAttr2;
             } else {
-                // 无匹配抗性，使用纯物理伤害
+                // 无匹配抗性，退化为纯物理
                 target.损伤值 = physPart;
             }
-            return; // 早退，避免后续计算
+            return;
         }
-        
-        // ========== 第四阶段：魔法与真伤合并处理 ==========
-        // 【设计决策】魔法伤害和真伤在UI表现上不同，但计算流程相似
-        // 通过三元表达式合并处理，避免额外的if分支，保持代码紧凑
-        var isTrue:Boolean = (t == "真伤");
-        
-        // 根据伤害类型和敌友关系设置颜色 ID
-        result._dmgColorId = isTrue ? (enemy ? 3 : 4) : (enemy ? 5 : 6);
-        
-        // 延迟 HTML 构建：伤害类型标签位标记 + 文本槽
-        result._efFlags |= (8 | (enemy ? 128 : 0)); // EF_DMG_TYPE_LABEL | isEnemy
-        var magicAttr2:String = bullet.魔法伤害属性 ? bullet.魔法伤害属性 : "能";
-        result._efText = isTrue ? "真" : magicAttr2;
-        
-        // 【关键优化】真伤早退：真伤无需计算抗性，直接使用破坏力
-        if (isTrue) {
+
+        // ---------- 魔法伤害 ----------
+        if (t == "魔法") {
+            result._dmgColorId = enemy ? 5 : 6;
+            result._efFlags |= enemy ? 136 : 8; // 常量折叠: 8 | 128 = 136
+
+            var mAttr3:String = bullet.魔法伤害属性;
+            result._efText = mAttr3 ? mAttr3 : "能";
+
+            // 惰性求值：仅魔法路径读取抗性表（单次查表，每个 key 最多查一次）
+            var resistTbl:Object = target.魔法抗性;
+            var rvRaw = mAttr3 ? resistTbl[mAttr3] : undefined;
+            if (rvRaw == undefined) {
+                rvRaw = resistTbl["基础"];
+            }
+
+            var rv:Number;
+            if (rvRaw != undefined) {
+                rv = Number(rvRaw);
+            } else {
+                // 终极惰性：等级仅在无任何抗性数据时才读取
+                rv = 10 + target.等级 / 2;
+            }
+
+            // NaN 极速守卫 [T1a H07] + 代数化简的软上限夹取
+            // 原式: rv > 95 ? (95+(rv-95)/11 > 100 ? 100 : 95+(rv-95)/11) : rv
+            // 化简: 95+(rv-95)/11 > 100 等价于 rv > 150; 95+(rv-95)/11 = (rv+950)/11
+            rv = ((rv - rv) != 0) ? 20
+                : (rv < -1000 ? -1000
+                : (rv > 150 ? 100
+                : (rv > 95 ? (rv + 950) / 11
+                : rv)));
+
+            target.损伤值 = power * (100 - rv) / 100;
+            return;
+        }
+
+        // ---------- 真实伤害（无需任何抗性计算，极简路径） ----------
+        if (t == "真伤") {
+            result._dmgColorId = enemy ? 3 : 4;
+            result._efFlags |= enemy ? 136 : 8;
+            result._efText = "真";
             target.损伤值 = power;
             return;
         }
-        
-        // ---------- 魔法伤害抗性计算（只有魔法伤害执行到这里） ----------
-        // 【抗性优先级】专属属性抗性 > 基础抗性 > 默认抗性(10+等级/2)
-        var magicAttr3:String = bullet.魔法伤害属性;
-        var rv:Number;
-        
-        // 优先查找专属属性抗性
-        if (magicAttr3 && resistTbl && (resistTbl[magicAttr3] || resistTbl[magicAttr3] == 0)) {
-            rv = resistTbl[magicAttr3];
-        } else {
-            // 回退到基础抗性或默认值
-            rv = (resistTbl && (resistTbl["基础"] || resistTbl["基础"] == 0)) 
-                ? resistTbl["基础"] 
-                : (10 + lvl / 2);
-        }
-        
-        // 【数值校验】使用三元表达式实现范围夹取，避免函数调用开销
-        rv = isNaN(rv) ? 20 : (rv < -1000 ? -1000 : (rv > 95 ? (95 + (rv - 95) / 11 > 100 ? 100 : 95 + (rv - 95) / 11 ) : rv));
-        
-        // 魔法伤害最终计算：破坏力 × (100 - 抗性值) / 100
-        // 不取整，交给后续工序统一处理
-        target.损伤值 = power * (100 - rv) / 100;
+
+        // ---------- 物理伤害（fallback，运行时最高频） ----------
+        // catch-all：未定义/"物理"/空字符串/任何未知类型均走此路径
+        result._dmgColorId = enemy ? 1 : 2;
+        // 内联 DamageResistanceHandler.defenseDamageRatio: 300/(def+300)
+        // 省去 ClassName.staticMethod() 调用税 ~1340ns
+        target.损伤值 = power * 300 / (target.防御力 + 300);
     }
 
     public function toString():String {
