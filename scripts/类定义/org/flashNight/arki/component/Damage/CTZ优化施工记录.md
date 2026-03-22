@@ -115,6 +115,77 @@ return function(bitmask:Number):DamageManager {
 
 ---
 
+## 技术储备：LUT 直查 vs Mod37 合并的最优性分析（2026-03-22）
+
+### 问题提出
+
+Mod37 合并在"纯 modulo 压缩族"里已证明最优（有限枚举：32-bit 最小可行模数 = 37）。
+但在更大的家族——"先 isolate LSB，再单次表查"——中，存在另一成员：
+
+- **方案 A（LUT 合并）**：`key = lsb`，直接 `hlut[lsb]`
+- **方案 B（Mod37 合并）**：`key = lsb % 37`，需先 Modulo 再 `hlut[key]`
+
+两者都只需一次 GetMember，但 B 比 A 多一条 `Push 37` + `Modulo`。
+
+### P-code 循环体对比
+
+**LUT 合并**（6 条取值指令）：
+```
+GetVariable "hlut"
+Push register1, 0, register1
+Subtract / BitAnd          ← lsb = bitmask & (-bitmask)
+GetMember                  ← hlut[lsb] → handler（直达）
+```
+
+**Mod37 合并**（8 条取值指令）：
+```
+GetVariable "hlut"
+Push register1, 0, register1
+Subtract / BitAnd          ← lsb = bitmask & (-bitmask)
+Push 37 / Modulo           ← 额外 2 条
+GetMember                  ← hlut[lsb%37] → handler
+```
+
+### 实验数据（第 5 轮，TestLoader 闭包热路径基准）
+
+| 位宽 | LUT合并 (ns/op) | Mod37合并 (ns/op) | 差值 | LUT 快 |
+|------|-----------------|-------------------|------|--------|
+| 8-bit | 1058.8 | 1102.9 | 44.1 | 4.0% |
+| 16-bit | 810.8 | 831.1 | 20.3 | 2.4% |
+| 32-bit | 790.5 | 795.2 | 4.7 | 0.6% |
+
+LUT 合并在所有位宽上一致略快，差距随 popcount 增大而收窄。
+
+### 与 AVM1 基准数据的交叉分析
+
+来自 `AVM1性能基准总结与热路径编码规范.md` 的成本数据：
+
+| 操作 | 耗时 | 基准来源 |
+|------|------|---------|
+| mod_int（Modulo 指令） | ~26ns | 附录 §13 |
+| arr_read（Array 整数索引 GetMember） | ~35ns | §2.5 |
+| obj_dot_hit（GetVariable + GetMember） | ~144ns | §2.2 |
+
+**理论预测**：Mod37 的 key ∈ [0,36] 走 Array 整数索引（~35ns），LUT 的 key 为大整数走 Object 字符串键路径（预期 ~144ns）。按此推算 Mod37 应每次迭代快 ~83ns。
+
+**实测矛盾**：LUT 合并反而略快。说明 AVM1 对数值型 Object 键可能有优化路径，不走完整的 toString → hash → 查找，实际 GetMember 成本远低于 obj_dot_hit 基准值。
+
+### 基准盲区
+
+`obj_dot_hit: ~144ns` 包含了 `GetVariable`（~98ns scope chain）+ `GetMember`，而闭包中两个方案的 `GetVariable "hlut"` 成本相同。真正差异只在纯 GetMember 的 key 类型路径上，该项未被当前基准体系孤立覆盖。
+
+### 结论与决策
+
+1. **纯 modulo 族最优性已证**：32-bit 最小可行模数 = 37（有限枚举确认）
+2. **全家族最优性不成立**：LUT 合并指令数更少且实测略快，Mod37 不是指令数最小方案
+3. **工程决策：维持 Mod37 合并**，理由：
+   - 性能差距极小（0.6%-4%），在实际 DamageManager 热路径中被函数调用 + `new DamageManager` 开销稀释
+   - Mod37 的 key 空间紧凑（37 slot Array），语义清晰，bit31 处理自然
+   - LUT 直查需要 Object 稀疏存储，key 可读性差（调试时看到 key=1073741824 不如 key=25 直观）
+4. **待补测**：孤立基准 `obj[largeIntKey]` vs `arr[smallIntKey]` 的纯 GetMember 成本差，可解释实测与理论预测的矛盾
+
+---
+
 ## 影响范围
 
 - `createEvaluator` 是 `private` 方法，仅在构造函数中调用一次
