@@ -36,12 +36,6 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
      * @return CrumbleDamageHandle 单例实例
      */
     public static function getInstance():CrumbleDamageHandle {
-        if (instance == null) {
-            instance = new CrumbleDamageHandle();
-            getInstance = function():CrumbleDamageHandle {
-                return instance;
-            };
-        }
         return instance;
     }
 

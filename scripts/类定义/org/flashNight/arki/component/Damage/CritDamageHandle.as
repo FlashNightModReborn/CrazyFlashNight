@@ -30,12 +30,6 @@ class org.flashNight.arki.component.Damage.CritDamageHandle extends BaseDamageHa
      * @return CritDamageHandle 单例实例
      */
     public static function getInstance():CritDamageHandle {
-        if (instance == null) {
-            instance = new CritDamageHandle();
-            getInstance = function():CritDamageHandle {
-                return instance;
-            };
-        }
         return instance;
     }
 

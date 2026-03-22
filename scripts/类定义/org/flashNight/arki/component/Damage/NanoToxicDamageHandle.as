@@ -38,12 +38,6 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
      * @return NanoToxicDamageHandle 单例实例
      */
     public static function getInstance():NanoToxicDamageHandle {
-        if (instance == null) {
-            instance = new NanoToxicDamageHandle();
-            getInstance = function():NanoToxicDamageHandle {
-                return instance;
-            };
-        }
         return instance;
     }
 

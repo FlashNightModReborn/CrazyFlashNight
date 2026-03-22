@@ -29,12 +29,6 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
      * @return DodgeStateDamageHandle 单例实例
      */
     public static function getInstance():DodgeStateDamageHandle {
-        if (instance == null) {
-            instance = new DodgeStateDamageHandle();
-            getInstance = function():DodgeStateDamageHandle {
-                return instance;
-            };
-        }
         return instance;
     }
 
@@ -90,18 +84,42 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
         }
         // ==================== 联弹分段建模结束 ====================
 
+        // 默认路径快速通道（最高频：dodgeState 为空字符串）
+        // 避免进入 switch 的 5 次字符串比较（AS2 switch 编译为顺序 if-else）
+        if (dodgeState == "") {
+            damageNumber = (damageNumber > 1) ? (damageNumber | 0) : 1;
+            target.损伤值 = damageNumber;
+            _root.受击变红(120, target);
+            if (target.受击反制) {
+                target.受击反制(damageNumber, bullet);
+            }
+            result.damageSize = damageSize;
+            return;
+        }
+
+        // 特殊躲闪状态路由
+        var def:Number;
+        var t:Number;
         switch (dodgeState) {
             case "跳弹":
-                damageNumber = DamageResistanceHandler.bounceDamageCalculation(damageNumber, target.防御力);
+                // 内联 DamageResistanceHandler.bounceDamageCalculation
+                // 原式: max(floor(damage - defense/5), 1)
+                def = target.防御力;
+                t = (damageNumber - (def / 5)) | 0;
+                damageNumber = (t < 1) ? 1 : t;
                 damageSize *= 0.5 + 0.5 * damageNumber / target.损伤值;
                 target.损伤值 = damageNumber;
-                result._dmgColorId = bullet.是否为敌人 ? 7 : 8; // 跳弹：#7F0000 / #7F6A00
+                result._dmgColorId = bullet.是否为敌人 ? 7 : 8;
                 break;
             case "过穿":
-                damageNumber = DamageResistanceHandler.penetrationDamageCalculation(damageNumber, target.防御力);
+                // 内联 DamageResistanceHandler.penetrationDamageCalculation
+                // 原式: max(floor(damage * 300/(defense+300)), 1)
+                def = target.防御力;
+                t = (damageNumber * 300 / (def + 300)) >> 0;
+                damageNumber = (t < 1) ? 1 : t;
                 damageSize *= 0.5 + 0.5 * damageNumber / target.损伤值;
                 target.损伤值 = damageNumber;
-                result._dmgColorId = bullet.是否为敌人 ? 9 : 10; // 过穿：#FF7F7F / #FFE770
+                result._dmgColorId = bullet.是否为敌人 ? 9 : 10;
                 break;
             case "躲闪":
             case "直感":
@@ -126,11 +144,10 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
                 }
                 break;
             default:
-                // 内联展开 Math.max 和 Math.floor
-                damageNumber = (damageNumber > 1) ? (damageNumber | 0) : 1; // 相当于 Math.max(Math.floor(damageNumber), 1)
+                damageNumber = (damageNumber > 1) ? (damageNumber | 0) : 1;
                 target.损伤值 = damageNumber;
                 _root.受击变红(120, target);
-                if(target.受击反制){
+                if (target.受击反制) {
                     target.受击反制(damageNumber, bullet);
                 }
         }

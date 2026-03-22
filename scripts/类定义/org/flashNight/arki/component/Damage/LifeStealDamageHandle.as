@@ -38,12 +38,6 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
      * @return LifeStealDamageHandle 单例实例
      */
     public static function getInstance():LifeStealDamageHandle {
-        if (instance == null) {
-            instance = new LifeStealDamageHandle();
-            getInstance = function():LifeStealDamageHandle {
-                return instance;
-            };
-        }
         return instance;
     }
 

@@ -42,12 +42,6 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
      * @return MultiShotDamageHandle 单例实例
      */
     public static function getInstance():MultiShotDamageHandle {
-        if (instance == null) {
-            instance = new MultiShotDamageHandle();
-            getInstance = function():MultiShotDamageHandle {
-                return instance;
-            };
-        }
         return instance;
     }
 

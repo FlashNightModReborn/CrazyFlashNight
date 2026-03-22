@@ -44,12 +44,6 @@ class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamag
      * @return ExecuteDamageHandle 单例实例
      */
     public static function getInstance():ExecuteDamageHandle {
-        if (instance == null) {
-            instance = new ExecuteDamageHandle();
-            getInstance = function():ExecuteDamageHandle {
-                return instance;
-            };
-        }
         return instance;
     }
 
@@ -57,13 +51,13 @@ class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamag
 
     /**
      * 判断子弹是否具有斩杀属性。
-     * - 如果子弹对象包含斩杀属性（bullet.斩杀 != null），则返回 true。
+     * - 只有斩杀值大于 0 时才需要进入处理器。
      *
      * @param bullet 子弹对象
      * @return Boolean 如果子弹具有斩杀属性则返回 true，否则返回 false
      */
     public function canHandle(bullet:Object):Boolean {
-        return (bullet.斩杀 != null);
+        return (bullet.斩杀 > 0);
     }
 
     /**
@@ -86,45 +80,34 @@ class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamag
      * @param result  伤害结果对象
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
-        // 计算斩杀阈值
-        var executeThreshold:Number = target.hp满血值 * bullet.斩杀 / 100;
-
-        // 计算扣血后的剩余血量
-        var remainingHp:Number = target.hp - target.损伤值;
-
-        // 如果扣血后的剩余血量低于斩杀阈值，检查是否能触发斩杀
-        if (remainingHp < executeThreshold) {
-            // 获取目标护盾
-            var shield:IShield = target.shield;
-            var shieldStrength:Number = shield.getStrength();
-
-            // 护盾强度检查：子弹威力必须超过护盾强度才能触发斩杀
-            // 这确保了高强度护盾能有效阻止斩杀效果
-            if (bullet.子弹威力 <= shieldStrength) {
-                return; // 护盾强度足以阻挡，斩杀失败
-            }
-
-            // ===== 斩杀生效 =====
-
-            // 将护盾当前容量计入损伤值（击穿护盾造成的"伤害"）
-            var shieldCapacity:Number = shield.getCapacity();
-            if (shieldCapacity > 0) {
-                target.损伤值 += shieldCapacity;
-                // 清空护盾，防止后续 DamageCalculator 中的护盾吸收
-                shield.consumeCapacity(shieldCapacity);
-            }
-
-            // 将目标剩余血量计入损伤值
-            if (remainingHp > 0) {
-                target.损伤值 += remainingHp;
-            }
-
-            // 目标血量归零
-            target.hp = 0;
-
-            // 延迟 HTML 构建：位标记（EF_EXECUTE | isEnemy）
-            result._efFlags |= (4 | (bullet.是否为敌人 ? 128 : 0));
+        var executeValue:Number = bullet.斩杀;
+        if (!(executeValue > 0)) {
+            return;
         }
+
+        var remainingHp:Number = target.hp - target.损伤值;
+        if (!(remainingHp < (target.hp满血值 * executeValue / 100))) {
+            return;
+        }
+
+        var shield:IShield = target.shield;
+        var shieldStrength:Number = shield.getStrength();
+        if (bullet.子弹威力 <= shieldStrength) {
+            return;
+        }
+
+        var shieldCapacity:Number = shield.getCapacity();
+        if (shieldCapacity > 0) {
+            target.损伤值 += shieldCapacity;
+            shield.consumeCapacity(shieldCapacity);
+        }
+
+        if (remainingHp > 0) {
+            target.损伤值 += remainingHp;
+        }
+
+        target.hp = 0;
+        result._efFlags |= (bullet.是否为敌人 ? 132 : 4);
     }
 
     /**
