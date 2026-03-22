@@ -29,6 +29,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         // 出生 seed：立即注册进深度管理器，将创建暂存深度替换为 Twip 深度
         DepthManager.instance.updateDepth(target, target._y);
 
+        // 劫持 swapDepths：将帧脚本的原生调用重定向到 DepthManager
+        target.swapDepths = function(y:Number):Void {
+            DepthManager.instance.updateDepth(this, y);
+        };
+
         // 如果单位是第一次创建，此时不存在事件分发器
         // 如果单位是重初始化，则就会播报UnitReInitialized事件
         target.dispatcher.publish("UnitReInitialized", target);

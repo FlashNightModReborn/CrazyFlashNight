@@ -20,6 +20,9 @@ class org.flashNight.gesh.depth.DepthManager {
     /** 全局单例，由 SceneManager.initGameWorld 创建/销毁 */
     public static var instance:DepthManager;
 
+    /** 原生 swapDepths 引用，绕过实例级劫持 */
+    private static var _nativeSD:Function = MovieClip.prototype.swapDepths;
+
     // ── 平行数组（SoA） ──
     private var _mcs:Array;       // [idx] → MovieClip
     private var _names:Array;     // [idx] → mc._name 注册快照（MC 销毁后仍可清理 _idxMap）
@@ -177,7 +180,7 @@ class org.flashNight.gesh.depth.DepthManager {
         var y:Number = (targetY < lo) ? lo : ((targetY > hi) ? hi : targetY);
         var d:Number = (((y - lo) * _S) | 0) * _N + _baseD[idx];
         if (d !== _curD[idx]) {
-            mc.swapDepths(d);
+            _nativeSD.call(mc, d);
             _curD[idx] = d;
         }
         return true;
@@ -248,7 +251,7 @@ class org.flashNight.gesh.depth.DepthManager {
             y = (y < lo) ? lo : ((y > hi) ? hi : y);
             d = (((y - lo) * s) | 0) * n + baseD[idx];
             if (d !== curD[idx]) {
-                mc.swapDepths(d);
+                _nativeSD.call(mc, d);
                 curD[idx] = d;
             }
             updated++;

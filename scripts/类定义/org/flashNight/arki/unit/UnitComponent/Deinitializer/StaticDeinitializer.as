@@ -24,6 +24,8 @@ class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
             TargetCacheManager.removeUnit(target);
             // 从深度管理器注销，回收 entityID
             DepthManager.instance.removeMovieClip(target);
+            // 清理 swapDepths 劫持，恢复原生方法
+            delete target.swapDepths;
             // 卸载ai组件
             target.unitAI.destroy();
 
