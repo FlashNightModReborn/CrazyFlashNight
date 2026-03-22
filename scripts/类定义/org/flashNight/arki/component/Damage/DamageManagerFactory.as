@@ -256,82 +256,60 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     }
 
     /**
-     * 创建 evaluator 函数，根据处理器数量进行优化。
+     * 创建 evaluator 函数——统一 Modulo 37 合并方案。
      *
-     * Evaluator 函数用于根据位掩码生成对应的 DamageManager 实例。
-     * 该方法根据处理器的数量（<=8 或 <=32）选择不同的实现方式，以提高性能。
+     * ### 算法原理
+     * 利用 37 为素数的性质：对任意 i ∈ {0,...,31}，(2^i) % 37 两两不同。
+     * 工厂创建时预合并查找表 hlut[(1<<i)%37] = h[i]，运行时单次 GetMember 直接
+     * 拿到 handler 引用，省去 CTZ→索引→h[索引] 的两级查找。
      *
-     * ### 数理原理解析
-     * 1. **位掩码到处理器的映射逻辑**:
-     *    - 位掩码 `bitmask` 的每个置位（set bit）对应一个处理器。
-     *    - 通过遍历所有置位（从最低有效位到最高），提取对应处理器索引。
+     * **P-code 循环体仅 8 条指令**：
+     *   GetVariable "hlut" → Push bitmask,0,bitmask → Subtract → BitAnd
+     *   → Push 37 → Modulo → GetMember → (赋值到 handles)
      *
-     * 2. **分支优化策略**:
-     *    - **当处理器数量 ≤8 时**：使用位掩码分段和条件位移优化索引计算。
-     *      - `temp = bitmask & -bitmask`：提取最低有效位（LSB）的值（如 `0b1000` → 8）。
-     *      - 通过比较 LSB 的值分段处理（高位段 ≥16 和低位段 <16）：
-     *        - **高位段**（16/32/64）: 映射到数组后4个位置，通过位移压缩索引范围。
-     *          - `(temp >= 64) && (temp >>=6)`：若 ≥64 则右移6位（等价于除以64），否则保持原值。
-     *          - 计算结果为 `4 + 2 * (是否≥64) + (是否≥32)`，将 64→4, 32→5, 16→6, 8→7。
-     *        - **低位段**（1/2/4/8）: 映射到数组前4个位置。
-     *          - 类似逻辑：`2 * (是否≥4) + (是否≥2)`，将 4→2, 2→3, 1→0（由 `temp >=2` 为 false）。
-     *    - **当处理器数量 >8 时**：使用对数计算位索引。
-     *      - `Math.log(bitmask & -bitmask) * 1.4426950408889634`：
-     *        - `bitmask & -bitmask` 提取最低有效位值（如 8 → 0b1000）。
-     *        - `Math.log(x)` 计算自然对数，乘以 `1/ln(2)`（≈1.442695）转换为以2为底的对数。
-     *        - 结果等价于 `log2(x)`，直接得到位的索引（如 8 → log2(8)=3 → 索引3）。
+     * ### 修改依据
+     * 详见同目录 CTZ优化施工记录.md，基于 4 轮实验。
+     *
+     * ### 关键优势
+     * - **统一实现**：消除 hlen<=8 / hlen<32 / hlen==32 三分支，一个闭包通吃
+     * - **bit31 安全**：(-2147483648) % 37 = -22，Object 键自动字符串化，无符号问题
+     * - **实测性能**：相比旧方案 8-bit 加速 1.50×，16-bit 加速 1.60×，32-bit 加速 1.62×
      *
      * ### 输入掩码强制要求
-     * - **掩码必须非0**：由于 `do...while` 循环至少执行一次，若 `bitmask=0`：
-     *   - 首次循环 `temp = 0`，索引计算会越界或访问 `h[NaN]`，导致运行时错误。
-     * - 调用方需确保传入的 `bitmask` 至少有一个置位（即非0）。
+     * - **掩码必须非0**：do...while 至少执行一次，bitmask=0 会导致 hlut[0%37]=hlut[0]=undefined
+     * - 调用方需确保传入的 bitmask 至少有一个置位
      *
      * @param h 处理器数组（索引对应位掩码位置）
      * @return 优化后的 evaluator 函数
      */
     private function createEvaluator(h:Array):Function {
         var hlen:Number = h.length;
-        if (hlen <= 8) {
-            return function(bitmask:Number):DamageManager {
-                var handles:Array = [];
-                var temp:Number;
-                var len:Number = 0;
-                do {
-                    handles[len++] = h[6 - (((!((temp = bitmask & -bitmask) >= 16 && (temp >>= 4)) << 1) + !(temp >= 4 && (temp >>= 2))) << 1) + (temp >= 2)];
-
-                } while ((bitmask &= (bitmask - 1)) != 0); // 清除最低有效位，继续循环
-                return new DamageManager(handles);
-            };
-        } else if (hlen < 32) {
-            return function(bitmask:Number):DamageManager {
-                var handles:Array = [];
-                var len:Number = 0;
-                do {
-                    // 通过 log2(LSB) 计算位索引（如 8 → log2(8)=3 → 索引3）
-                    handles[len++] = h[(Math.log(bitmask & -bitmask) * 1.4426950408889634 + 0.5) | 0];
-                } while ((bitmask &= (bitmask - 1)) != 0); // 清除最低有效位，继续循环
-                return new DamageManager(handles);
-            };
-        } else if (hlen == 32) { 
-            return function(bitmask:Number):DamageManager {
-                var handles:Array = [];
-                var len:Number = 0;
-                var index:Number = 0;
-
-                // 遍历每一位，从最低位（0）到第31位
-                while (bitmask != 0 && index < 32) {
-                    if ((bitmask & 1) != 0) {
-                        handles[len++] = h[index];
-                    }
-                    bitmask = bitmask >>> 1; // 无符号右移，避免符号位扩展
-                    index++;
-                }
-
-                return new DamageManager(handles);
-            };
-        } else {
+        if (hlen > 32) {
             throw new Error("超过32位支持");
         }
+
+        // 预合并查找表：hlut[(1<<i)%37] = h[i]
+        // 单次 GetMember 直接拿到 handler，省去 CTZ→index→h[index] 的两级查找
+        //
+        // Array(37) 预分配：正数哈希（0-36）走数组索引快路径（~35ns），
+        // bit31 的 -22 作为字符串属性存储（Array 继承 Object），同样正确
+        //
+        // 不提升为静态变量：每个工厂的 handler 实例不同，hlut 内容无法共享；
+        // 且仅在构造时创建一次（工厂是单例），一次性 ~550ns 开销可忽略
+        var hlut:Array = new Array(37);
+        var i:Number;
+        for (i = 0; i < hlen; i++) {
+            hlut[(1 << i) % 37] = h[i];
+        }
+
+        return function(bitmask:Number):DamageManager {
+            var handles:Array = [];
+            var len:Number = 0;
+            do {
+                handles[len++] = hlut[(bitmask & (-bitmask)) % 37];
+            } while ((bitmask &= (bitmask - 1)) != 0);
+            return new DamageManager(handles);
+        };
     }
 
     /**

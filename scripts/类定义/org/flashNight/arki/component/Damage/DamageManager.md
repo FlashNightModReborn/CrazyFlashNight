@@ -16,7 +16,7 @@ Assertion Passed: 测试案例2 - 真伤特效检查
 Assertion Passed: 测试案例3 - 魔法子弹多重效果
 Assertion Passed: 测试案例3 - 魔法特效检查
 [INFO] 性能测试（Basic 工厂）：执行 10000 次伤害结算
-性能测试（Basic）：执行 10000 次伤害结算，总耗时 422 毫秒，平均每次 0.0422 毫秒。
+性能测试（Basic）：执行 10000 次伤害结算，总耗时 226 毫秒，平均每次 0.0226 毫秒。
 [INFO] ----- 工厂 Basic 测试完成 -----
 
 [INFO] ----- 开始测试工厂: Extended16 -----
@@ -29,7 +29,7 @@ Assertion Passed: 测试案例2 - 真伤特效检查
 Assertion Passed: 测试案例3 - 魔法子弹多重效果
 Assertion Passed: 测试案例3 - 魔法特效检查
 [INFO] 性能测试（Extended16 工厂）：执行 10000 次伤害结算
-性能测试（Extended16）：执行 10000 次伤害结算，总耗时 466 毫秒，平均每次 0.0466 毫秒。
+性能测试（Extended16）：执行 10000 次伤害结算，总耗时 245 毫秒，平均每次 0.0245 毫秒。
 [INFO] ----- 工厂 Extended16 测试完成 -----
 
 [INFO] ----- 开始测试工厂: Extended32 -----
@@ -42,7 +42,7 @@ Assertion Passed: 测试案例2 - 真伤特效检查
 Assertion Passed: 测试案例3 - 魔法子弹多重效果
 Assertion Passed: 测试案例3 - 魔法特效检查
 [INFO] 性能测试（Extended32 工厂）：执行 10000 次伤害结算
-性能测试（Extended32）：执行 10000 次伤害结算，总耗时 1508 毫秒，平均每次 0.1508 毫秒。
+性能测试（Extended32）：执行 10000 次伤害结算，总耗时 819 毫秒，平均每次 0.0819 毫秒。
 [INFO] ----- 工厂 Extended32 测试完成 -----
 
 [INFO] ===== buildHtml 渲染顺序测试 =====
