@@ -290,6 +290,25 @@ class org.flashNight.gesh.depth.DepthManager {
     }
 
     /**
+     * 安装 swapDepths 劫持：将 mc.swapDepths 重定向到 updateDepth，
+     * 使帧脚本中的原生 swapDepths 调用走 DepthManager 统一管线。
+     * 非热路径，仅在单位初始化时调用一次。
+     */
+    public function installHijack(mc:MovieClip):Void {
+        mc.swapDepths = function(y:Number):Void {
+            DepthManager.instance.updateDepth(this, y);
+        };
+    }
+
+    /**
+     * 移除 swapDepths 劫持，恢复原型链上的原生方法。
+     * 非热路径，仅在单位反初始化时调用。
+     */
+    public function removeHijack(mc:MovieClip):Void {
+        delete mc.swapDepths;
+    }
+
+    /**
      * 查询管理器最近一次成功写入显示列表的深度值
      *
      * 返回值语义：
