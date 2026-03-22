@@ -648,91 +648,125 @@ org.flashNight.naki.Sort.PDQSortTest.runTests();
 
 ```output
 
+=== PDQSort v2.0 Test Suite ===
+Time: Sun Mar 22 22:19:52 GMT+0800 2026
 =================================================================
-Starting AS2-Optimized PDQSort Tests...
+PDQSort v2.0 Comprehensive Test Suite
 =================================================================
 
 --- Basic Functionality Tests ---
-PASS: Empty Array Test
-PASS: Single Element Test
-PASS: Two Elements (Reverse) Test
-PASS: Two Elements (Sorted) Test
-PASS: Two Elements (Equal) Test
-PASS: Already Sorted Array Test
-PASS: Reverse Sorted Array Test
-PASS: Random Array Test
-PASS: Duplicate Elements Test
-PASS: All Same Elements Test
+PASS: Empty Array
+PASS: Single Element
+PASS: Two Elements (Reverse)
+PASS: Two Elements (Sorted)
+PASS: Two Elements (Equal)
+PASS: Three Elements (All Permutations) - All 6 permutations correct
+PASS: Already Sorted
+PASS: Reverse Sorted
+PASS: Random Array
+PASS: Duplicate Elements
+PASS: All Same Elements
+PASS: Negative Numbers
+PASS: Large Range
 
 --- Boundary Case Tests ---
-PASS: Small Arrays Test - All sizes 3-35 sorted correctly
-PASS: Mixed Types Test - Mixed types should sort correctly
-PASS: Moderate Array Test (1000 elements) - Moderate array sorted correctly in 19ms
-PASS: Extreme Duplicates Test - All duplicate arrays handled correctly
+PASS: Threshold Boundary Sizes - All sizes around threshold correct
+PASS: Mixed Types Test - Mixed types with comparator correct
+PASS: Moderate Array (1000) - Sorted in 4ms
+PASS: Extreme Duplicates - All duplicate arrays handled correctly
 
 --- Algorithm-Specific Tests ---
-PASS: Insertion Sort Threshold Test - Threshold behavior correct
-PASS: Three-Way Partitioning Test - Many duplicates handled correctly
-PASS: Ordered Detection Test - All ordered scenarios handled correctly
-PASS: Pivot Selection Test
+PASS: Insertion Sort Threshold - Threshold behavior correct
+PASS: Three-Way Partitioning - Many duplicates handled correctly
+PASS: Ordered Detection - All ordered scenarios handled correctly
+PASS: Pivot Selection
+PASS: Heapsort Fallback - Organ pipe triggers fallback and sorts correctly
 
 --- Data Type Tests ---
-PASS: String Array Test
-PASS: Object Array Test - Objects sorted by age correctly
-PASS: Mixed Data Types Test - Mixed types sorted correctly
-PASS: Custom Objects Test - Objects sorted by priority correctly
+PASS: String Array
+PASS: Object Array - Objects sorted by age correctly
+PASS: Mixed Data Types - Mixed types sorted correctly
+PASS: Custom Objects - Objects sorted by priority correctly
 
 --- Compare Function Tests ---
-PASS: Custom Compare Function Test - Case-insensitive sorting works
-PASS: Reverse Compare Function Test
-PASS: Complex Compare Function Test - Multi-level sorting works
-PASS: Null Compare Function Test
+PASS: Case-Insensitive Compare - Case-insensitive sorting works
+PASS: Reverse Compare
+PASS: Multi-Level Compare - Multi-level sorting works
+PASS: Null Compare Function
 
---- Stability Tests ---
-PASS: Consistent Results Test - Multiple sorts produce identical results
-PASS: In-Place Sorting Test - Sorts in place correctly
-PASS: Idempotency Test - Sorting sorted array doesn't change it
+--- Consistency Tests ---
+PASS: Consistent Results - Multiple sorts produce identical results
+PASS: In-Place Sorting - Returns same array reference
+PASS: Idempotency - Sorting sorted array doesn't change it
+
+--- Adversarial Input Tests ---
+PASS: Organ Pipe (500) - Sorted correctly
+PASS: Saw Tooth (500, period=10) - Sorted correctly
+PASS: Alternating Two Values (500) - Sorted correctly
+PASS: Three Values Random (1000) - Sorted correctly
+PASS: Mostly Equal + Outliers - Sorted correctly
+PASS: Sorted + Tail Perturbation - Sorted correctly
+PASS: Large Organ Pipe (10000) - Sorted in 72ms
+PASS: Organ Pipe (comparator path) - Sorted correctly
+
+--- sortIndirect Tests ---
+PASS: sortIndirect Basic - Indices sorted by keys
+PASS: sortIndirect Empty - Empty array handled
+PASS: sortIndirect Single - Single element handled
+PASS: sortIndirect Already Sorted - No change needed
+PASS: sortIndirect Reverse - Reversed correctly
+PASS: sortIndirect Duplicates - Duplicate keys handled correctly
+PASS: sortIndirect Medium (1000) - Sorted in 7ms
+PASS: sortIndirect Large (5000) - Sorted in 45ms
 
 --- Light Stress Tests ---
-PASS: Medium Size Arrays Test - All distributions handled correctly
-PASS: Worst Case Scenarios Test - All worst cases handled correctly
-PASS: Repeated Sorting Test - 5 iterations completed successfully
+PASS: Stress Test (10000) - All distributions correct
+PASS: Repeated Sorting - 5 iterations consistent
 
---- Performance Tests ---
+--- Performance Benchmarks ---
+Format: PDQSort(null) / PDQSort(cmp) / TimSort(cmp) / Array.sort(NUMERIC) ms
 
-Testing size: 100
-  random: 1ms (correct: true)
-  sorted: 0ms (correct: true)
-  reverse: 0ms (correct: true)
-  duplicates: 0ms (correct: true)
+  Size: 100
+    random      :     0 /     1 /     1 /     0
+    sorted      :     0 /     0 /     0 /     0
+    reverse     :     0 /     0 /     0 /     0
+    duplicates  :     0 /     0 /     1 /     0
+    organPipe   :     0 /     1 /     0 /     0
+    fewUnique   :     0 /     0 /     1 /     0
 
-Testing size: 1000
-  random: 18ms (correct: true)
-  sorted: 1ms (correct: true)
-  reverse: 2ms (correct: true)
-  duplicates: 4ms (correct: true)
+  Size: 1000
+    random      :     5 /     9 /    11 /     1
+    sorted      :     1 /     1 /     1 /     6
+    reverse     :     1 /     1 /     0 /     6
+    duplicates  :     1 /     2 /     8 /     2
+    organPipe   :     6 /    11 /     2 /     0
+    fewUnique   :     1 /     3 /     9 /     1
 
-Testing size: 3000
-  random: 71ms (correct: true)
-  sorted: 3ms (correct: true)
-  reverse: 4ms (correct: true)
-  duplicates: 12ms (correct: true)
+  Size: 5000
+    random      :    29 /    63 /    62 /     2
+    sorted      :     2 /     4 /     4 /   144
+    reverse     :     4 /     5 /     4 /   142
+    duplicates  :     4 /     9 /    42 /    30
+    organPipe   :    31 /    66 /     9 /     3
+    fewUnique   :     6 /    13 /    49 /    15
 
-Testing size: 10000
-  random: 265ms (correct: true)
-  sorted: 10ms (correct: true)
-  reverse: 12ms (correct: true)
-  duplicates: 39ms (correct: true)
+  Size: 10000
+    random      :    62 /   135 /   139 /     5
+    sorted      :     5 /     9 /     7 /   588
+    reverse     :     7 /    11 /     9 /   578
+    duplicates  :     7 /    20 /    88 /   117
+    organPipe   :    71 /   152 /    19 /     7
+    fewUnique   :    13 /    27 /   100 /    60
 
 =================================================================
 TEST SUMMARY
 =================================================================
-Total Tests: 32
-Passed: 32
-Failed: 0
+Total: 51  Passed: 51  Failed: 0
 Success Rate: 100%
-🎉 ALL TESTS PASSED! 🎉
+ALL TESTS PASSED!
 =================================================================
+=== END TEST ===
+[compile] done
 
 
 ```
