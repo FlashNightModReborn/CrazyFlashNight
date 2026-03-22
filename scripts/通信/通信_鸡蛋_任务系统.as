@@ -1,5 +1,79 @@
 ﻿import org.flashNight.arki.task.*;
 
+import org.flashNight.gesh.json.LoadJson.*;
+
+
+ //从磁盘重新读取 data/task 与 data/task/text，并写回 TaskUtil。可选 onSuccess / onError。若正在执行中会忽略新的请求（避免重复点击叠加载）。
+_root.重新加载任务数据 = function(onSuccess:Function, onError:Function):Void {
+    if (_root._taskReloadBusy == true) {
+        _root.发布消息("重新加载任务数据：已在执行中，跳过");
+        return;
+    }
+    _root._taskReloadBusy = true;
+
+    var taskDone:Boolean = false;
+    var textDone:Boolean = false;
+    var taskData:Object = null;
+    var textData:Object = null;
+    var failed:Boolean = false;
+
+    function doneBusy():Void {
+        _root._taskReloadBusy = false;
+    }
+
+    function tryFinish():Void {
+        if (failed) {
+            return;
+        }
+        if (!taskDone || !textDone) {
+            return;
+        }
+        TaskUtil.ParseTaskData(taskData, textData);
+        _root.检查任务数据完整性();
+        _root.发布消息("任务数据已重新加载");
+        doneBusy();
+        if (onSuccess != undefined) {
+            onSuccess();
+        }
+    }
+
+    function fail():Void {
+        if (failed) {
+            return;
+        }
+        failed = true;
+        trace("重新加载任务数据失败");
+        _root.发布消息("任务数据重新加载失败");
+        doneBusy();
+        if (onError != undefined) {
+            onError();
+        }
+    }
+
+    TaskDataLoader.getInstance().reload(
+        function(data:Object):Void {
+            taskData = data;
+            taskDone = true;
+            tryFinish();
+        },
+        fail
+    );
+
+    TaskTextLoader.getInstance().reload(
+        function(data:Object):Void {
+            textData = data;
+            textDone = true;
+            tryFinish();
+        },
+        fail
+    );
+};
+
+// ExternalInterface：若宿主（浏览器/部分壳）对 SWF 暴露了 JS 桥，外部可 call("reloadTaskData") 触发重新加载；独立播放器常不可用。
+if (flash.external.ExternalInterface.available) {
+    flash.external.ExternalInterface.addCallback("reloadTaskData", _root, _root.重新加载任务数据);
+}
+
 _root.LoadPCTasks = function() {
     var saveData = SharedObject.getLocal(_root.savePath);
     _root.tasks_to_do = saveData.data.tasks_to_do;
