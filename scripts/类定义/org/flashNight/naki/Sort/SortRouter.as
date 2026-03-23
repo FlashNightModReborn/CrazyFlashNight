@@ -4,12 +4,12 @@ import org.flashNight.naki.Sort.TimSort;
 /**
  * SortRouter — 自适应排序路由器
  *
- * v3 把旧版“全量 O(n) 扫描再决策”改成两层：
+ * v3 把旧版"全量 O(n) 扫描再决策"改成两层：
  *   1. 32 点顺序采样：估计是否接近单调
  *   2. 32 点互素步长采样：估计 cardinality，避免周期别名
  *   3. 只有命中高单调嫌疑时，才做一次 O(n) 深扫确认
  *
- * 目标不是识别所有“略慢于 IntroSort”的输入，而是用更低的扫描税，
+ * 目标不是识别所有"略慢于 IntroSort"的输入，而是用更低的扫描税，
  * 拦住最容易把 native 拖进 O(n^2) 的极端输入，并减少对明显安全流量的误杀。
  */
 class org.flashNight.naki.Sort.SortRouter {
@@ -24,6 +24,12 @@ class org.flashNight.naki.Sort.SortRouter {
     private static var FULL_SCAN_TINY_ANTI_THRESHOLD:Number = 4;
     private static var FULL_SCAN_LONG_RUN_PERCENT:Number = 98;
     private static var FULL_SCAN_LONG_RUN_ANTI_THRESHOLD:Number = 32;
+
+    // Stage A-3: near-sorted 支线
+    // 当采样显示中高单调度(0.90-0.97)且 cardinality 高时触发
+    // 用违规计数(带 early exit)确认是否真的 near-sorted
+    private static var NEAR_SORTED_GATE:Number = 0.90;
+    private static var NEAR_SORTED_VIOL_RATIO:Number = 0.05; // 反方向对 < 5% → INTRO
 
     /**
      * 自适应排序 — null 比较器走路由，非 null 走 TimSort
@@ -61,7 +67,7 @@ class org.flashNight.naki.Sort.SortRouter {
         var prev:Number;
 
         // ------------------------------------------------------------
-        // Stage A-1: 顺序采样，快速估计“是否接近单调”
+        // Stage A-1: 顺序采样，快速估计"是否接近单调"
         // ------------------------------------------------------------
         var sAsc:Number = 0;
         var sDesc:Number = 0;
@@ -118,6 +124,34 @@ class org.flashNight.naki.Sort.SortRouter {
         if (sEq == 0 && sampleOrder == 1) {
             return ROUTE_INTRO;
         }
+        // ------------------------------------------------------------
+        // Stage A-3: near-sorted 支线（高单调 + 高 cardinality）
+        // 用违规计数替代全量深扫，带 early exit
+        // 对 random: 不进入(sampleOrder≈0.50)
+        // 对 nearSorted5%: early exit 后放行 native
+        // 对 nearSorted1%: 完整计数后路由 intro
+        // ------------------------------------------------------------
+        // 仅对升序主导方向触发：
+        // native 在 nearSorted(asc) 1% 上退化 (48ms)
+        // 但 native 在 nearReverse(desc) 1% 上不退化 (16ms)
+        // 原因推测：native pivot 选择策略对逆序相对友好
+        if (sAsc > sDesc && sampleOrder >= NEAR_SORTED_GATE && uniq > LOW_CARDINALITY_THRESHOLD) {
+            var violMax:Number = Math.floor(n * NEAR_SORTED_VIOL_RATIO);
+            var violCnt:Number = 0;
+            prev = arr[0];
+            for (i = 1; i < n; i++) {
+                if (arr[i] < prev) {
+                    violCnt++;
+                    if (violCnt > violMax) break;
+                }
+                prev = arr[i];
+            }
+            if (violCnt <= violMax) {
+                return ROUTE_INTRO;
+            }
+            // 违规太多 → 不是 near-sorted，继续正常流程
+        }
+
         if (sampleOrder < SAMPLE_ORDER_DEEP_SCAN_THRESHOLD) {
             return ROUTE_NATIVE;
         }

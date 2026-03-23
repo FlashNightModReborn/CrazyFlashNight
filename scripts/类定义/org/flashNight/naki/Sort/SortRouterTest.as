@@ -169,6 +169,12 @@ class org.flashNight.naki.Sort.SortRouterTest {
         assertRoute("sawTooth20", 10000, SortRouter.ROUTE_INTRO);
         assertRoute("pushFront", 10000, SortRouter.ROUTE_INTRO);
         assertRoute("pushBack", 10000, SortRouter.ROUTE_INTRO);
+
+        // near-sorted 支线：nearSorted1% 路由 INTRO，nearSorted5% 放行 NATIVE
+        assertRoute("nearSorted1", 10000, SortRouter.ROUTE_INTRO);
+        assertRoute("nearSorted5", 10000, SortRouter.ROUTE_NATIVE);
+        // nearReverse1% 放行 NATIVE（native 对逆序近排序不退化）
+        assertRoute("nearReverse1", 10000, SortRouter.ROUTE_NATIVE);
     }
 
     // ==================================================================
