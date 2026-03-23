@@ -17,6 +17,8 @@ PromiseAPlusTest.main();
 [PASS] static-allSettled-empty
 [PASS] executor-throw-after-resolve
 [PASS] resolve-thenable-unwrap
+[PASS] resolve-proto-null-thenable
+[PASS] resolve-proto-null-thenable-reject
 [PASS] multiple-then-a
 [PASS] multiple-then-b
 [PASS] multiple-then-c
@@ -41,9 +43,14 @@ PromiseAPlusTest.main();
 [PASS] 2.3.3.3.1-recursive-thenable
 [PASS] 2.3.3.4-then-not-function
 [PASS] 2.3.3.2-then-getter-throws
+[PASS] 2.3.3-this-binding
 [PASS] 2.3.3-then-getter-once-value
 [PASS] 2.3.3-then-getter-once-count
+[PASS] 2.3.3-throw-before-settle
 [PASS] 2.3.3-throw-after-resolve
+[PASS] 2.3.3-throw-after-reject
+[PASS] 2.3.3-proto-null-thenable
+[PASS] 2.3.3-proto-null-thenable-reject
 [PASS] 2.3.4-number
 [PASS] 2.3.4-string
 [PASS] 2.3.4-boolean
@@ -92,6 +99,6 @@ PromiseAPlusTest.main();
 [PASS] late-then-fired
 
 ========================================
-  Test Results: 85/85 passed, 0 failed
+  Test Results: 92/92 passed, 0 failed
   ALL PASSED
 ========================================

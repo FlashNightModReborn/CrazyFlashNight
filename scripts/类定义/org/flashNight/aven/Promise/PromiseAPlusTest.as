@@ -21,6 +21,22 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
     private static var _reported:Boolean = false;
     private static var _timerSeq:Number = 0;
 
+    /** 创建断原型 thenable，覆盖 AS2 proto-null 判空陷阱 */
+    private static function createProtoNullThenable(
+        shouldReject:Boolean, payload:Object
+    ):Object {
+        var thenable:Object = {};
+        thenable.__proto__ = null;
+        thenable["then"] = function(resolvePromise:Function, rejectPromise:Function):Void {
+            if (shouldReject) {
+                rejectPromise(payload);
+            } else {
+                resolvePromise(payload);
+            }
+        };
+        return thenable;
+    }
+
     /** 断言工具 */
     private static function assert(testName:String, condition:Boolean, detail:String):Void {
         _total++;
@@ -83,8 +99,12 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
         test_2_3_1_cycleDetection();
         test_2_3_2_promiseAdoption();
         test_2_3_3_thenableHandling();
+        test_2_3_3_thenCalledWithThis();
         test_2_3_3_thenGetterAccessedOnce();
+        test_2_3_3_throwBeforeResolveRejects();
         test_2_3_3_throwAfterResolveIgnored();
+        test_2_3_3_throwAfterRejectIgnored();
+        test_2_3_3_protoNullThenable();
         test_2_3_4_plainValueResolve();
         test_staticAll();
         test_staticAllRejects();
@@ -96,6 +116,7 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
         test_executorThrowAfterResolveIgnored();
         test_chainResolutionTiming();
         test_resolveWithThenable();
+        test_resolveWithProtoNullThenable();
         test_selfResolutionInExecutorRejects();
         test_multipleThensOnSamePromise();
         test_longChain();
@@ -480,6 +501,22 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
         );
     }
 
+    /** 2.3.3.3: then 应以 x 作为 this 调用 */
+    private static function test_2_3_3_thenCalledWithThis():Void {
+        var thenable:Object = {
+            marker: "self",
+            then: function(resolvePromise:Function, rejectPromise:Function):Void {
+                resolvePromise(this.marker);
+            }
+        };
+
+        Promise.resolve("seed").then(function(v:Object):Object {
+            return thenable;
+        }).then(function(v:Object):Void {
+            assert("2.3.3-this-binding", v == "self", "got: " + v);
+        });
+    }
+
     /** 2.3.3.1/2.3.3.2: then 属性应只读取一次 */
     private static function test_2_3_3_thenGetterAccessedOnce():Void {
         var getterState:Object = {count: 0};
@@ -500,6 +537,25 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
         });
     }
 
+    /** 2.3.3.3.4: then 在 settle 前抛异常，应以该异常 reject */
+    private static function test_2_3_3_throwBeforeResolveRejects():Void {
+        Promise.resolve("seed").then(function(v:Object):Object {
+            return {
+                then: function(resolvePromise:Function, rejectPromise:Function):Void {
+                    throw new Error("throw-before-settle");
+                }
+            };
+        }).then(
+            function(v:Object):Void {
+                assert("2.3.3-throw-before-settle", false, "should not fulfill");
+            },
+            function(r:Object):Void {
+                assert("2.3.3-throw-before-settle",
+                    r.message == "throw-before-settle", "got: " + r);
+            }
+        );
+    }
+
     /** 2.3.3.3.3: resolvePromise 已调用后，再抛异常必须被忽略 */
     private static function test_2_3_3_throwAfterResolveIgnored():Void {
         Promise.resolve("seed").then(function(v:Object):Object {
@@ -515,6 +571,47 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
             },
             function(r:Object):Void {
                 assert("2.3.3-throw-after-resolve", false, "should ignore late throw: " + r);
+            }
+        );
+    }
+
+    /** 2.3.3.3.3: rejectPromise 已调用后，再抛异常必须被忽略 */
+    private static function test_2_3_3_throwAfterRejectIgnored():Void {
+        Promise.resolve("seed").then(function(v:Object):Object {
+            return {
+                then: function(resolvePromise:Function, rejectPromise:Function):Void {
+                    rejectPromise("rejected-before-throw");
+                    throw new Error("late-throw-after-reject");
+                }
+            };
+        }).then(
+            function(v:Object):Void {
+                assert("2.3.3-throw-after-reject", false, "should not fulfill");
+            },
+            function(r:Object):Void {
+                assert("2.3.3-throw-after-reject",
+                    r == "rejected-before-throw", "got: " + r);
+            }
+        );
+    }
+
+    /** 2.3.3: proto-null thenable 也必须被识别并解包 */
+    private static function test_2_3_3_protoNullThenable():Void {
+        Promise.resolve("seed").then(function(v:Object):Object {
+            return createProtoNullThenable(false, "proto-null-fulfilled");
+        }).then(function(v:Object):Void {
+            assert("2.3.3-proto-null-thenable", v == "proto-null-fulfilled", "got: " + v);
+        });
+
+        Promise.resolve("seed").then(function(v:Object):Object {
+            return createProtoNullThenable(true, "proto-null-rejected");
+        }).then(
+            function(v:Object):Void {
+                assert("2.3.3-proto-null-thenable-reject", false, "should not fulfill");
+            },
+            function(r:Object):Void {
+                assert("2.3.3-proto-null-thenable-reject",
+                    r == "proto-null-rejected", "got: " + r);
             }
         );
     }
@@ -719,6 +816,27 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
             assert("resolve-thenable-unwrap", isUnwrapped,
                 isUnwrapped ? "" : "thenable not unwrapped, got object with then");
         });
+    }
+
+    /** 生产入口也必须解包 proto-null thenable */
+    private static function test_resolveWithProtoNullThenable():Void {
+        Promise.resolve(createProtoNullThenable(false, "proto-null-in-resolve"))
+            .then(function(v:Object):Void {
+                assert("resolve-proto-null-thenable",
+                    v == "proto-null-in-resolve", "got: " + v);
+            });
+
+        new Promise(function(resolve:Function, reject:Function):Void {
+            resolve(createProtoNullThenable(true, "proto-null-reason"));
+        }).then(
+            function(v:Object):Void {
+                assert("resolve-proto-null-thenable-reject", false, "should not fulfill");
+            },
+            function(r:Object):Void {
+                assert("resolve-proto-null-thenable-reject",
+                    r == "proto-null-reason", "got: " + r);
+            }
+        );
     }
 
     /** 生产安全：executor 暴露的 resolve 若收到自身 promise，不应永久 pending */

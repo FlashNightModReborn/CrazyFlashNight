@@ -50,7 +50,7 @@ class org.flashNight.aven.Promise.Promise {
             }
 
             // 处理 thenable（包括 Promise 实例和含 then 方法的普通对象）
-            if (value != null && (typeof(value) == "object" || typeof(value) == "function")) {
+            if (Promise.isReferenceLike(value)) {
                 // 注意：不能用 instanceof Promise 排除，因为需要处理通用 thenable
                 var thenProp:Object = undefined;
                 try {
@@ -240,6 +240,22 @@ class org.flashNight.aven.Promise.Promise {
     }
 
     /**
+     * AS2 中 proto-null 对象对 `!= null` 的 loose equality 会退化，
+     * 这里显式筛掉原始值，只要还能承载属性访问，就允许参与 thenable 检测。
+     */
+    private static function isReferenceLike(value:Object):Boolean {
+        if (value === null) {
+            return false;
+        }
+
+        var valueType:String = typeof(value);
+        return valueType != "undefined"
+            && valueType != "number"
+            && valueType != "string"
+            && valueType != "boolean";
+    }
+
+    /**
      * 核心函数：根据 x 的类型和值，解析返回的新 Promise 状态
      * @param promise2 then 返回的新 Promise
      * @param x        onFulfilled 或 onRejected 的返回值
@@ -255,7 +271,7 @@ class org.flashNight.aven.Promise.Promise {
         }
 
         // 如果 x 是对象或函数，可能是一个 Thenable
-        if (x != null && (typeof(x) == "object" || isFunction(x))) {
+        if (Promise.isReferenceLike(x)) {
             var called:Boolean = false;
             try {
                 var thenProp:Object = x["then"];
