@@ -265,14 +265,13 @@ class org.flashNight.naki.Sort.NativeSortProfile {
     }
 
     // ==================================================================
-    // 精简扫描 + 路由模拟
+    // 当前路由器模拟
     // ==================================================================
     public static function runRoutingSim():Void {
         trace("=================================================================");
         trace("Sort Router Simulation (size=10000)");
         trace("=================================================================");
-        trace("Lean scan v2: asc/desc/eq counts + 64-sample cardinality estimate");
-        trace("Route: cardinality<=20 OR orderRatio>0.95 -> IntroSort, else -> Native");
+        trace("SortRouter v3: sample-order + coprime-cardinality + selective deep scan");
         trace("");
 
         var sz:Number = 10000;
@@ -288,7 +287,7 @@ class org.flashNight.naki.Sort.NativeSortProfile {
             "pushFront", "pushBack"
         ];
 
-        // 先测量精简扫描成本
+        // 先测量路由决策成本
         resetRng();
         var randArr:Array = new Array(sz);
         var ii:Number;
@@ -298,44 +297,29 @@ class org.flashNight.naki.Sort.NativeSortProfile {
         var scanReps:Number = 10;
         for (var sr:Number = 0; sr < scanReps; sr++) {
             var sst:Number = getTimer();
-            leanScan(randArr, sz);
+            SortRouter.classifyNumeric(randArr);
             scanCost += getTimer() - sst;
         }
-        trace("Lean scan cost (n=10000, random): " + (Math.round(scanCost / scanReps * 100) / 100) + "ms");
+        trace("Route classify cost (n=10000, random): " + (Math.round(scanCost / scanReps * 100) / 100) + "ms");
         trace("");
 
         trace(padR("distribution", 18) + "  " + padL("Router", 7) + "  " + padL("Native", 7) + "  " + padL("Intro", 7)
-            + "  route  asc%  desc%  eq%  card");
+            + "  route");
 
         for (var di:Number = 0; di < dists.length; di++) {
             var dist:String = dists[di];
             resetRng();
             var master:Array = generateArray(sz, dist);
 
-            // 扫描决策
-            var scanResult:Array = leanScan(master, sz);
-            var ascR:Number = scanResult[0];
-            var descR:Number = scanResult[1];
-            var eqR:Number = scanResult[2];
-            var card:Number = scanResult[3];
-            var orderR:Number = (ascR > descR) ? ascR : descR;
-            var useNative:Boolean = (card > 20) && (orderR <= 0.95);
+            var route:String = SortRouter.classifyNumeric(master);
+            var routeShort:String = (route === SortRouter.ROUTE_NATIVE) ? "NAT" : "INT";
 
             // 路由排序计时
             var tRouter:Number = 0;
             for (var r:Number = 0; r < REPEATS; r++) {
                 var a0:Array = master.slice();
                 var st:Number = getTimer();
-                // 扫描
-                var sr2:Array = leanScan(a0, sz);
-                var aR:Number = sr2[0]; var dR:Number = sr2[1];
-                var card2:Number = sr2[3];
-                var oR:Number = (aR > dR) ? aR : dR;
-                if (card2 <= 20 || oR > 0.95) {
-                    IntroSort.sort(a0, null);
-                } else {
-                    a0.sort(Array.NUMERIC);
-                }
+                SortRouter.sort(a0, null);
                 tRouter += getTimer() - st;
             }
 
@@ -360,76 +344,17 @@ class org.flashNight.naki.Sort.NativeSortProfile {
             var avgRouter:Number = Math.round(tRouter / REPEATS);
             var avgNat:Number = Math.round(tNat / REPEATS);
             var avgIntro:Number = Math.round(tIntro / REPEATS);
-            var route:String = useNative ? "NAT" : "INT";
 
             trace(padR(dist, 18) + "  "
                 + padL(String(avgRouter), 7) + "  "
                 + padL(String(avgNat), 7) + "  "
                 + padL(String(avgIntro), 7) + "  "
-                + padR(route, 5) + " "
-                + padL(String(Math.round(ascR * 100)), 4) + "% "
-                + padL(String(Math.round(descR * 100)), 4) + "% "
-                + padL(String(Math.round(eqR * 100)), 4) + "% "
-                + padL(String(card), 4));
+                + padR(routeShort, 5));
         }
 
         trace("\n=================================================================");
         trace("Router wins if its time <= min(Native, IntroSort) + scan overhead");
         trace("=================================================================");
-    }
-
-    /**
-     * 精简风险扫描 v2 — 单次遍历 O(n)
-     * 同时计算：有序度(asc/desc) + 相邻等值率 + 采样 cardinality
-     * 返回 [ascRatio, descRatio, eqRatio, sampleCardinality]
-     *
-     * cardinality 采样：每隔 stride 取一个值存入小数组，
-     * 用 O(k^2) 去重计数，k=64 时成本约 64*64=4096 次比较（微不足道）
-     */
-    private static function leanScan(arr:Array, n:Number):Array {
-        var ascCnt:Number = 0;
-        var descCnt:Number = 0;
-        var eqCnt:Number = 0;
-        var prev:Number = arr[0];
-        var cur:Number;
-        var total:Number = n - 1;
-
-        // cardinality 采样：采 64 个等距样本
-        var SAMPLE_K:Number = 64;
-        var stride:Number = n / SAMPLE_K;
-        if (stride < 1) stride = 1;
-        var samples:Array = new Array(SAMPLE_K);
-        var sIdx:Number = 0;
-        var nextSample:Number = 0;
-
-        for (var i:Number = 0; i < n; i++) {
-            cur = arr[i];
-            if (i > 0) {
-                if (cur > prev) { ascCnt++; }
-                else if (cur < prev) { descCnt++; }
-                else { eqCnt++; }
-            }
-            // 采样
-            if (i >= nextSample && sIdx < SAMPLE_K) {
-                samples[sIdx] = cur;
-                sIdx++;
-                nextSample += stride;
-            }
-            prev = cur;
-        }
-
-        // O(k^2) 去重计数
-        var uniq:Number = 0;
-        for (i = 0; i < sIdx; i++) {
-            var dup:Boolean = false;
-            var sv:Number = samples[i];
-            for (var j:Number = 0; j < i; j++) {
-                if (samples[j] === sv) { dup = true; break; }
-            }
-            if (!dup) uniq++;
-        }
-
-        return [ascCnt / total, descCnt / total, eqCnt / total, uniq];
     }
 
     // ==================================================================

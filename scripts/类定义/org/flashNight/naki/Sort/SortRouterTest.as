@@ -5,6 +5,7 @@
  *
  * 覆盖：
  * - 正确性：20 种分布 × 排序结果验证
+ * - 路由决策：锁定几个高信号输入的预期路径
  * - 交叉验证：vs IntroSort(null) 结果一致
  * - 性能基准：Router vs Native vs IntroSort vs PDQSort
  * - 小数组路径：n=0..63 边界
@@ -35,6 +36,7 @@ class org.flashNight.naki.Sort.SortRouterTest {
         runCorrectnessTests();
         runSmallArrayTests();
         runComparatorTests();
+        runRoutingDecisionTests();
         runCrossValidation();
         runPerformanceTests();
 
@@ -50,6 +52,7 @@ class org.flashNight.naki.Sort.SortRouterTest {
         runCorrectnessTests();
         runSmallArrayTests();
         runComparatorTests();
+        runRoutingDecisionTests();
 
         printSummary();
     }
@@ -148,6 +151,24 @@ class org.flashNight.naki.Sort.SortRouterTest {
         };
         SortRouter.sort(strArr, strCmp);
         assertTrue(strArr[0] === "apple" && strArr[1] === "apricot" && strArr[4] === "date", "cmp-strings");
+    }
+
+    // ==================================================================
+    // 路由决策测试
+    // ==================================================================
+    private static function runRoutingDecisionTests():Void {
+        trace("\n--- Route Decision Tests ---");
+
+        assertRoute("random", 10000, SortRouter.ROUTE_NATIVE);
+        assertRoute("organPipe", 10000, SortRouter.ROUTE_NATIVE);
+        assertRoute("sawTooth100", 10000, SortRouter.ROUTE_NATIVE);
+        assertRoute("sorted", 10000, SortRouter.ROUTE_INTRO);
+        assertRoute("reverse", 10000, SortRouter.ROUTE_INTRO);
+        assertRoute("allEqual", 10000, SortRouter.ROUTE_INTRO);
+        assertRoute("twoValues", 10000, SortRouter.ROUTE_INTRO);
+        assertRoute("sawTooth20", 10000, SortRouter.ROUTE_INTRO);
+        assertRoute("pushFront", 10000, SortRouter.ROUTE_INTRO);
+        assertRoute("pushBack", 10000, SortRouter.ROUTE_INTRO);
     }
 
     // ==================================================================
@@ -356,6 +377,20 @@ class org.flashNight.naki.Sort.SortRouterTest {
             failedTests++;
         } else {
             trace("PASS: " + name);
+            passedTests++;
+        }
+    }
+
+    private static function assertRoute(dist:String, sz:Number, expected:String):Void {
+        totalTests++;
+        resetRng();
+        var arr:Array = generateArray(sz, dist);
+        var actual:String = SortRouter.classifyNumeric(arr);
+        if (actual !== expected) {
+            trace("FAIL: route:" + dist + " - expected " + expected + ", got " + actual);
+            failedTests++;
+        } else {
+            trace("PASS: route:" + dist + " -> " + actual);
             passedTests++;
         }
     }
