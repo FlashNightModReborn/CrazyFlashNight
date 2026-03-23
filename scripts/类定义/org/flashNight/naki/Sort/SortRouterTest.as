@@ -72,6 +72,7 @@ class org.flashNight.naki.Sort.SortRouterTest {
             "nearSorted1", "nearSorted5", "nearSorted10",
             "nearReverse1", "nearReverse5",
             "sortedTailRand", "sortedMidRand",
+            "descPlateaus",
             "pushFront", "pushBack"
         ];
 
@@ -180,6 +181,8 @@ class org.flashNight.naki.Sort.SortRouterTest {
         // 不做硬断言 — 路由方向取决于采样命中率
         assertRoute("sortedTailRand", 10000, SortRouter.ROUTE_NATIVE);
         assertRoute("sortedMidRand", 10000, SortRouter.ROUTE_NATIVE);
+        // desc-dominant 平台结构：cardinality > 20 但 native O(n²)
+        assertRoute("descPlateaus", 10000, SortRouter.ROUTE_INTRO);
     }
 
     // ==================================================================
@@ -199,8 +202,11 @@ class org.flashNight.naki.Sort.SortRouterTest {
         // sortedMidRand: 必须 8/8 NATIVE
         assertStableRoute("sortedMidRand", 10000, seeds, SortRouter.ROUTE_NATIVE, 8);
 
+        // descPlateaus: 必须 8/8 INTRO（sEq 守卫阻拦 desc 短路，desc Stage B 拦截）
+        assertStableRoute("descPlateaus", 10000, seeds, SortRouter.ROUTE_INTRO, 8);
+
         // nearReverse1: 不稳定是已知性质（perfect-sample 概率性捕获）
-        // 断言：至少 4/8 NATIVE（desc-dominant 短路兜底，非 perfect-sample 路径必走 NATIVE）
+        // 非 perfect-sample 路径走 desc 短路 → NATIVE（sEq ≤ 2）
         assertMinRouteCount("nearReverse1", 10000, seeds, SortRouter.ROUTE_NATIVE, 4);
     }
 
@@ -293,6 +299,7 @@ class org.flashNight.naki.Sort.SortRouterTest {
             "nearSorted1", "nearSorted5", "nearSorted10",
             "nearReverse1", "nearReverse5",
             "sortedTailRand", "sortedMidRand",
+            "descPlateaus",
             "pushFront", "pushBack"
         ];
 
@@ -404,6 +411,15 @@ class org.flashNight.naki.Sort.SortRouterTest {
             for (i = 0; i < seg; i++) arr[i] = i;
             for (i = seg; i < seg + mid; i++) arr[i] = rand() % (sz * 2);
             for (i = seg + mid; i < sz; i++) arr[i] = i;
+        } else if (dist === "descPlateaus") {
+            // 25 个降序值，每个重复 sz/25 次
+            // cardinality=25 > 20 (过 A-2), 但 native 在此上 O(n²)
+            var plateauSize:Number = Math.floor(sz / 25);
+            var valIdx:Number = 0;
+            for (i = 0; i < sz; i++) {
+                arr[i] = 25 - Math.floor(i / plateauSize);
+                if (arr[i] < 1) arr[i] = 1;
+            }
         } else if (dist === "pushFront") {
             arr[0] = sz;
             for (i = 1; i < sz; i++) arr[i] = i;

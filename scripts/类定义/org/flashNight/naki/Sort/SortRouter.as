@@ -178,27 +178,41 @@ class org.flashNight.naki.Sort.SortRouter {
         }
 
         // ------------------------------------------------------------
-        // desc-dominant 短路：native 对近逆序不退化（实测 16ms）。
-        // 纯逆序已被 perfect-sample 拦截（sampleOrder=1.0→INTRO），
-        // 走到这里的 desc-dominant 必然有 1+ 采样违规 → 近逆序 → native 安全。
-        // 跳过 Stage B 深扫，避免白缴 3-5ms O(n) 扫描税。
+        // desc-dominant 处理
+        //
+        // sEq <= 2: 高 cardinality 近逆序（nearReverse1% 典型）。
+        //   native 实测不退化 (16ms)，直接放行，跳过深扫。
+        //   纯逆序已被 perfect-sample 拦截。
+        //
+        // sEq > 2: 有平台结构（如 25 值 × 400 重复, 降序排列）。
+        //   native 在此类输入上 O(n²) 退化，必须进入 desc 方向 Stage B。
+        //   计数升序对（少数方向），antiCnt ≤ 32 → INTRO。
         // ------------------------------------------------------------
         if (sDesc >= sAsc) {
-            return ROUTE_NATIVE;
+            if (sEq <= 2) {
+                return ROUTE_NATIVE;
+            }
+            // desc-dominant + 平台结构 → desc 方向 Stage B
+            var antiCntD:Number = 0;
+            var antiLimitD:Number = STAGE_B_ANTI_LIMIT;
+            prev = arr[0];
+            for (i = 1; i < n; i++) {
+                if (arr[i] > prev) {
+                    if (++antiCntD > antiLimitD) {
+                        return ROUTE_NATIVE;
+                    }
+                }
+                prev = arr[i];
+            }
+            return ROUTE_INTRO;
         }
 
         // ------------------------------------------------------------
-        // Stage B: 升序主导深扫（简化版）
+        // Stage B: 升序主导深扫
         //
-        // 仅计数少数方向对 (descending pairs) + early exit。
-        // antiCnt ≤ STAGE_B_ANTI_LIMIT(32) → 几乎纯升序 → INTRO
+        // 计数 desc 对（少数方向）+ early exit。
+        // antiCnt ≤ 32 → 几乎纯升序 → native O(n²) 风险 → INTRO
         // antiCnt > 32 → early exit → 足够混乱 → NATIVE
-        //
-        // 相比旧版（7 变量 + 3 条件 + 无 early exit）：
-        // - 循环体只有 1 个比较 + 1 个计数器
-        // - early exit 使 sortedTailRand 等在尾部扰动区快速退出
-        // - eqCnt 条件已被 A-2(cardinality) + sEq 修复覆盖
-        // - longRun 条件被 antiCnt ≤ 32 统一覆盖
         // ------------------------------------------------------------
         var antiCnt:Number = 0;
         var antiLimit:Number = STAGE_B_ANTI_LIMIT;
