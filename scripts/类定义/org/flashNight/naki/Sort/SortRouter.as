@@ -180,16 +180,17 @@ class org.flashNight.naki.Sort.SortRouter {
         // ------------------------------------------------------------
         // desc-dominant 处理
         //
-        // sEq <= 2: 高 cardinality 近逆序（nearReverse1% 典型）。
-        //   native 实测不退化 (16ms)，直接放行，跳过深扫。
-        //   纯逆序已被 perfect-sample 拦截。
+        // uniq == SAMPLE_K: 采样 32 值全唯一 → 无平台结构证据。
+        //   数学保证：对任意 K < SAMPLE_K 的平台输入，鸽巢原理
+        //   保证 uniq ≤ K < SAMPLE_K，必被拦截。
+        //   仅当真实 cardinality ≥ SAMPLE_K 时才可能 uniq == SAMPLE_K。
+        //   nearReverse1% (cardinality≈10000) → native 安全，直接放行。
         //
-        // sEq > 2: 有平台结构（如 25 值 × 400 重复, 降序排列）。
-        //   native 在此类输入上 O(n²) 退化，必须进入 desc 方向 Stage B。
-        //   计数升序对（少数方向），antiCnt ≤ 32 → INTRO。
+        // uniq < SAMPLE_K: 采样存在碰撞 → 可能有平台结构。
+        //   进入 desc 方向 Stage B 深扫确认。
         // ------------------------------------------------------------
         if (sDesc >= sAsc) {
-            if (sEq <= 2) {
+            if (uniq == SAMPLE_K) {
                 return ROUTE_NATIVE;
             }
             // desc-dominant + 平台结构 → desc 方向 Stage B

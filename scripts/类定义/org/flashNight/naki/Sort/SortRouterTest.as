@@ -72,7 +72,7 @@ class org.flashNight.naki.Sort.SortRouterTest {
             "nearSorted1", "nearSorted5", "nearSorted10",
             "nearReverse1", "nearReverse5",
             "sortedTailRand", "sortedMidRand",
-            "descPlateaus",
+            "descPlateaus", "descPlateaus30", "descPlateaus31",
             "pushFront", "pushBack"
         ];
 
@@ -181,8 +181,11 @@ class org.flashNight.naki.Sort.SortRouterTest {
         // 不做硬断言 — 路由方向取决于采样命中率
         assertRoute("sortedTailRand", 10000, SortRouter.ROUTE_NATIVE);
         assertRoute("sortedMidRand", 10000, SortRouter.ROUTE_NATIVE);
-        // desc-dominant 平台结构：cardinality > 20 但 native O(n²)
+        // desc-dominant 平台族：cardinality > 20 但 native O(n²)
+        // uniq < SAMPLE_K (鸽巢原理) → desc Stage B → INTRO
         assertRoute("descPlateaus", 10000, SortRouter.ROUTE_INTRO);
+        assertRoute("descPlateaus30", 10000, SortRouter.ROUTE_INTRO);
+        assertRoute("descPlateaus31", 10000, SortRouter.ROUTE_INTRO);
     }
 
     // ==================================================================
@@ -202,8 +205,10 @@ class org.flashNight.naki.Sort.SortRouterTest {
         // sortedMidRand: 必须 8/8 NATIVE
         assertStableRoute("sortedMidRand", 10000, seeds, SortRouter.ROUTE_NATIVE, 8);
 
-        // descPlateaus: 必须 8/8 INTRO（sEq 守卫阻拦 desc 短路，desc Stage B 拦截）
+        // descPlateaus 族：K<SAMPLE_K 鸽巢保证 uniq<32 → 必走 desc Stage B → INTRO
         assertStableRoute("descPlateaus", 10000, seeds, SortRouter.ROUTE_INTRO, 8);
+        assertStableRoute("descPlateaus30", 10000, seeds, SortRouter.ROUTE_INTRO, 8);
+        assertStableRoute("descPlateaus31", 10000, seeds, SortRouter.ROUTE_INTRO, 8);
 
         // nearReverse1: 不稳定是已知性质（perfect-sample 概率性捕获）
         // 非 perfect-sample 路径走 desc 短路 → NATIVE（sEq ≤ 2）
@@ -299,7 +304,7 @@ class org.flashNight.naki.Sort.SortRouterTest {
             "nearSorted1", "nearSorted5", "nearSorted10",
             "nearReverse1", "nearReverse5",
             "sortedTailRand", "sortedMidRand",
-            "descPlateaus",
+            "descPlateaus", "descPlateaus30", "descPlateaus31",
             "pushFront", "pushBack"
         ];
 
@@ -412,12 +417,25 @@ class org.flashNight.naki.Sort.SortRouterTest {
             for (i = seg; i < seg + mid; i++) arr[i] = rand() % (sz * 2);
             for (i = seg + mid; i < sz; i++) arr[i] = i;
         } else if (dist === "descPlateaus") {
-            // 25 个降序值，每个重复 sz/25 次
-            // cardinality=25 > 20 (过 A-2), 但 native 在此上 O(n²)
+            // 25 个降序值，每个重复 sz/25 次 (plateau=400, 远大于采样步长312)
             var plateauSize:Number = Math.floor(sz / 25);
-            var valIdx:Number = 0;
             for (i = 0; i < sz; i++) {
                 arr[i] = 25 - Math.floor(i / plateauSize);
+                if (arr[i] < 1) arr[i] = 1;
+            }
+        } else if (dist === "descPlateaus30") {
+            // 30 个降序值，每个重复 sz/30 次 (plateau≈333, 接近采样步长312)
+            // 旧守卫 sEq<=2 在此失效 — 连续采样几乎总跨平台边界
+            plateauSize = Math.floor(sz / 30);
+            for (i = 0; i < sz; i++) {
+                arr[i] = 30 - Math.floor(i / plateauSize);
+                if (arr[i] < 1) arr[i] = 1;
+            }
+        } else if (dist === "descPlateaus31") {
+            // 31 个降序值 (plateau≈322) — 鸽巢原理极限：32 采样 31 值 → 必有碰撞
+            plateauSize = Math.floor(sz / 31);
+            for (i = 0; i < sz; i++) {
+                arr[i] = 31 - Math.floor(i / plateauSize);
                 if (arr[i] < 1) arr[i] = 1;
             }
         } else if (dist === "pushFront") {
