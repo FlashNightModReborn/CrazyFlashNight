@@ -1,7 +1,15 @@
 ﻿/**
  * org.flashNight.aven.Promise.Promise
- * 
- * 一个符合 Promises/A+ 规范的 Promise 类在 ActionScript 2 中的实现示例。
+ *
+ * ActionScript 2 实现的 Promises/A+ 规范 Promise。
+ *
+ * 修复记录 (2026-03):
+ *   [FIX] AS2 不支持 IIFE — 移除所有 (function(){})() 模式
+ *   [FIX] _resolve/_reject 中的双重 asyncCall — 回调已在 then 内部异步化，
+ *         _resolve/_reject 直接同步调用即可
+ *   [FIX] _resolve 增加通用 thenable 解包 — 符合 Promises/A+ §2.3.3
+ *   [FIX] Promise.all/race/allSettled 中的 IIFE 替换为静态辅助方法
+ *   [PERF] Scheduler 改为排空队列模式 — 同一帧内解析整条链
  */
 import org.flashNight.aven.Promise.Scheduler;
 import org.flashNight.neur.Event.*;
@@ -10,7 +18,7 @@ class org.flashNight.aven.Promise.Promise {
     private var _state:String;         // "pending", "fulfilled", or "rejected"
     private var _value:Object;         // fulfill 时的返回值
     private var _reason:Object;        // reject 时的错误原因
-    private var _onFulfilledCallbacks:Array; 
+    private var _onFulfilledCallbacks:Array;
     private var _onRejectedCallbacks:Array;
 
     // _resolve 和 _reject 使用私有方法缓存，以减少闭包开销
@@ -19,7 +27,7 @@ class org.flashNight.aven.Promise.Promise {
 
     /**
      * 构造函数
-     * @param executor  执行器函数，形如 (resolve, reject) => {}
+     * @param executor  执行器函数，形如 function(resolve, reject) {}
      */
     public function Promise(executor:Function) {
         this._state = "pending";
@@ -33,51 +41,81 @@ class org.flashNight.aven.Promise.Promise {
         // --------------------- 内部 resolve 函数 ---------------------
         this._resolve = function(value:Object):Void {
             // 状态只能从 pending 转到 fulfilled
-            if (self._state === "pending") {
-                // 处理 thenable
-                if (value instanceof Promise) {
-                    // 若返回值本身是个 Promise，需等待它 resolve/reject
-                    value.then(self._resolve, self._reject);
+            if (self._state !== "pending") return;
+
+            // 生产安全：禁止 promise 解析为其自身，否则会永久 pending
+            if (value === self) {
+                self._reject(new Error("TypeError: Promise cannot resolve itself"));
+                return;
+            }
+
+            // 处理 thenable（包括 Promise 实例和含 then 方法的普通对象）
+            if (value != null && (typeof(value) == "object" || typeof(value) == "function")) {
+                // 注意：不能用 instanceof Promise 排除，因为需要处理通用 thenable
+                var thenProp:Object = undefined;
+                try {
+                    thenProp = value["then"];
+                } catch (e:Object) {
+                    // getter 抛出异常，直接 reject
+                    self._reject(e);
                     return;
                 }
-
-                self._state = "fulfilled";
-                self._value = value;
-
-                // 异步执行所有 onFulfilled 回调
-                var callbacks:Array = self._onFulfilledCallbacks;
-                self._onFulfilledCallbacks = null;
-                self._onRejectedCallbacks = null;
-
-                for (var i:Number = 0; i < callbacks.length; i++) {
-                    (function(cb:Function, val:Object):Void {
-                        asyncCall(function():Void {
-                            cb(val);
-                        });
-                    })(callbacks[i], value);
+                if (typeof(thenProp) == "function") {
+                    // 是 thenable，递归解析
+                    var called:Boolean = false;
+                    try {
+                        thenProp.call(
+                            value,
+                            function(y:Object):Void {
+                                if (called) return;
+                                called = true;
+                                self._resolve(y);
+                            },
+                            function(r:Object):Void {
+                                if (called) return;
+                                called = true;
+                                self._reject(r);
+                            }
+                        );
+                    } catch (e2:Object) {
+                        if (!called) {
+                            called = true;
+                            self._reject(e2);
+                        }
+                    }
+                    return;
                 }
+            }
+
+            self._state = "fulfilled";
+            self._value = value;
+
+            // 直接同步调用所有 onFulfilled 回调
+            // （回调是 then() 中的 fulfilled 包装器，内部已有 asyncCall 保证异步）
+            var callbacks:Array = self._onFulfilledCallbacks;
+            self._onFulfilledCallbacks = null;
+            self._onRejectedCallbacks = null;
+
+            for (var i:Number = 0; i < callbacks.length; i++) {
+                callbacks[i](value);
             }
         };
 
         // --------------------- 内部 reject 函数 ---------------------
         this._reject = function(reason:Object):Void {
             // 状态只能从 pending 转到 rejected
-            if (self._state === "pending") {
-                self._state = "rejected";
-                self._reason = reason;
+            if (self._state !== "pending") return;
 
-                // 异步执行所有 onRejected 回调
-                var callbacks:Array = self._onRejectedCallbacks;
-                self._onFulfilledCallbacks = null;
-                self._onRejectedCallbacks = null;
+            self._state = "rejected";
+            self._reason = reason;
 
-                for (var i:Number = 0; i < callbacks.length; i++) {
-                    (function(cb:Function, rsn:Object):Void {
-                        asyncCall(function():Void {
-                            cb(rsn);
-                        });
-                    })(callbacks[i], reason);
-                }
+            // 直接同步调用所有 onRejected 回调
+            var callbacks:Array = self._onRejectedCallbacks;
+            self._onFulfilledCallbacks = null;
+            self._onRejectedCallbacks = null;
+
+            for (var i:Number = 0; i < callbacks.length; i++) {
+                callbacks[i](reason);
             }
         };
 
@@ -163,6 +201,38 @@ class org.flashNight.aven.Promise.Promise {
         return this.then(null, onRejected);
     }
 
+    /**
+     * finally 方法（AS2 中 finally 为关键词，改为 onFinally）
+     *
+     * 无论 fulfilled 或 rejected 均调用 callback。
+     * callback 不接收任何参数，其返回值被忽略（除非抛出异常或返回 rejected Promise，
+     * 此时新的异常/拒因将覆盖原结果）。原始 value/reason 透传给下游。
+     *
+     * @param callback 无参回调
+     * @return 新的 Promise
+     */
+    public function onFinally(callback:Function):Promise {
+        var isFunc:Boolean = (typeof(callback) == "function");
+        return this.then(
+            function(value:Object):Object {
+                if (isFunc) {
+                    return Promise.resolve(callback()).then(function():Object {
+                        return value;
+                    });
+                }
+                return value;
+            },
+            function(reason:Object):Object {
+                if (isFunc) {
+                    return Promise.resolve(callback()).then(function():Object {
+                        return Promise.reject(reason);
+                    });
+                }
+                return Promise.reject(reason);
+            }
+        );
+    }
+
     /* ------------------- 工具与静态方法 ------------------- */
 
     private static function isFunction(obj:Object):Boolean {
@@ -176,7 +246,7 @@ class org.flashNight.aven.Promise.Promise {
      * @param resolve2 promise2 的 resolve
      * @param reject2  promise2 的 reject
      */
-    private static function resolvePromise(promise2:Promise, x:Object, 
+    private static function resolvePromise(promise2:Promise, x:Object,
                                           resolve2:Function, reject2:Function):Void {
         // 防止循环引用
         if (promise2 === x) {
@@ -188,16 +258,16 @@ class org.flashNight.aven.Promise.Promise {
         if (x != null && (typeof(x) == "object" || isFunction(x))) {
             var called:Boolean = false;
             try {
-                var then:Object = x["then"];
-                if (isFunction(then)) {
+                var thenProp:Object = x["then"];
+                if (isFunction(thenProp)) {
                     // 如果是 Thenable，对其进行递归解析
-                    then.call(
-                        x, 
+                    thenProp.call(
+                        x,
                         function(y:Object):Void {
                             if (called) return;
                             called = true;
                             resolvePromise(promise2, y, resolve2, reject2);
-                        }, 
+                        },
                         function(r:Object):Void {
                             if (called) return;
                             called = true;
@@ -238,8 +308,12 @@ class org.flashNight.aven.Promise.Promise {
 
     /**
      * Promise.resolve
+     * 若 value 已是 Promise 实例，直接返回（避免多余包装与解包开销）
      */
     public static function resolve(value:Object):Promise {
+        if (value instanceof Promise) {
+            return Promise(value);
+        }
         return new Promise(function(resolve:Function, reject:Function):Void {
             resolve(value);
         });
@@ -256,40 +330,48 @@ class org.flashNight.aven.Promise.Promise {
 
     /**
      * Promise.all
+     * 使用静态辅助方法替代 IIFE 来捕获循环变量
      */
     public static function all(promises:Array):Promise {
         return new Promise(function(resolve:Function, reject:Function):Void {
             if (promises.length == 0) {
-                trace("[Promise.all] 空数组，立即返回 []");
                 resolve([]);
                 return;
             }
 
+            var total:Number = promises.length;
+            // 用对象包装可变状态，闭包间共享
+            var state:Object = {completed: 0, rejected: false};
             var results:Array = [];
-            var completed:Number = 0;
-            var hasRejected:Boolean = false;
 
-            for (var i:Number = 0; i < promises.length; i++) {
-                (function(index:Number):Void {
-                    // 保证每个元素都能被当成 Promise 处理
-                    Promise.resolve(promises[index]).then(
-                        function(value:Object):Void {
-                            if (hasRejected) return;
-                            results[index] = value;
-                            completed++;
-                            if (completed === promises.length) {
-                                resolve(results);
-                            }
-                        },
-                        function(reason:Object):Void {
-                            if (hasRejected) return;
-                            hasRejected = true;
-                            reject(reason);
-                        }
-                    );
-                })(i);
+            for (var i:Number = 0; i < total; i++) {
+                Promise._allHelper(promises[i], i, results, resolve, reject,
+                                   total, state);
             }
         });
+    }
+
+    /** Promise.all 的循环辅助（替代 IIFE，捕获 index） */
+    private static function _allHelper(
+        promise:Object, index:Number, results:Array,
+        resolve:Function, reject:Function,
+        total:Number, state:Object
+    ):Void {
+        Promise.resolve(promise).then(
+            function(value:Object):Void {
+                if (state.rejected) return;
+                results[index] = value;
+                state.completed++;
+                if (state.completed === total) {
+                    resolve(results);
+                }
+            },
+            function(reason:Object):Void {
+                if (state.rejected) return;
+                state.rejected = true;
+                reject(reason);
+            }
+        );
     }
 
     /**
@@ -298,59 +380,66 @@ class org.flashNight.aven.Promise.Promise {
     public static function race(promises:Array):Promise {
         return new Promise(function(resolve:Function, reject:Function):Void {
             if (promises.length == 0) {
-                trace("[Promise.race] 空数组，不会触发 resolve 或 reject");
-                // 根据 Promises/A+ 规范，空数组的 race 不会触发任何状态改变
+                // 根据规范，空数组的 race 永远 pending
                 return;
             }
             for (var i:Number = 0; i < promises.length; i++) {
-                (function(p:Promise):Void {
-                    Promise.resolve(p).then(
-                        function(value:Object):Void {
-                            resolve(value);
-                        },
-                        function(reason:Object):Void {
-                            reject(reason);
-                        }
-                    );
-                })(promises[i]);
+                // 不需要 IIFE，因为闭包只捕获 resolve/reject（不依赖 i）
+                Promise.resolve(promises[i]).then(
+                    function(value:Object):Void {
+                        resolve(value);
+                    },
+                    function(reason:Object):Void {
+                        reject(reason);
+                    }
+                );
             }
         });
     }
 
     /**
      * Promise.allSettled
+     * 使用静态辅助方法替代 IIFE
      */
     public static function allSettled(promises:Array):Promise {
         return new Promise(function(resolve:Function, reject:Function):Void {
             if (promises.length == 0) {
-                trace("[Promise.allSettled] 空数组，立即返回 []");
                 resolve([]);
                 return;
             }
 
+            var total:Number = promises.length;
+            var state:Object = {completed: 0};
             var results:Array = [];
-            var completed:Number = 0;
-            for (var i:Number = 0; i < promises.length; i++) {
-                (function(index:Number):Void {
-                    Promise.resolve(promises[index]).then(
-                        function(value:Object):Void {
-                            results[index] = { status: "fulfilled", value: value };
-                            completed++;
-                            if (completed === promises.length) {
-                                resolve(results);
-                            }
-                        },
-                        function(reason:Object):Void {
-                            results[index] = { status: "rejected", reason: reason };
-                            completed++;
-                            if (completed === promises.length) {
-                                resolve(results);
-                            }
-                        }
-                    );
-                })(i);
+
+            for (var i:Number = 0; i < total; i++) {
+                Promise._allSettledHelper(promises[i], i, results, resolve,
+                                          total, state);
             }
         });
+    }
+
+    /** Promise.allSettled 的循环辅助（替代 IIFE，捕获 index） */
+    private static function _allSettledHelper(
+        promise:Object, index:Number, results:Array,
+        resolve:Function, total:Number, state:Object
+    ):Void {
+        Promise.resolve(promise).then(
+            function(value:Object):Void {
+                results[index] = { status: "fulfilled", value: value };
+                state.completed++;
+                if (state.completed === total) {
+                    resolve(results);
+                }
+            },
+            function(reason:Object):Void {
+                results[index] = { status: "rejected", reason: reason };
+                state.completed++;
+                if (state.completed === total) {
+                    resolve(results);
+                }
+            }
+        );
     }
 
     /* ================== 模拟异步函数 ================== */

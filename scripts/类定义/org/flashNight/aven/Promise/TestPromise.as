@@ -1,6 +1,8 @@
 ﻿import org.flashNight.aven.Promise.*;
 import org.flashNight.neur.Event.*;
 
+import org.flashNight.aven.Promise.PromiseAPlusTest;
+
 /**
  * org.flashNight.aven.Promise.TestPromise
  * 
@@ -9,6 +11,9 @@ import org.flashNight.neur.Event.*;
  */
 class org.flashNight.aven.Promise.TestPromise {
     public static function main():Void {
+        trace("[TestPromise] Delegating to PromiseAPlusTest.main()");
+        PromiseAPlusTest.main();
+        return;
         
         // ============【 1. 基本功能测试 】====================================
         
@@ -374,21 +379,7 @@ class org.flashNight.aven.Promise.TestPromise {
         // 3.7 大量异步操作测试（简单演示，验证状态是否正常）
         var bigBatch:Array = [];
         for (var i:Number = 0; i < 5; i++) {
-            (function(index:Number):Void {
-                bigBatch.push(
-                    new Promise(function(resolve:Function, reject:Function):Void {
-                        var r:Number = Math.floor(Math.random() * 100);
-                        var timerID:Number = setInterval(function():Void {
-                            clearInterval(timerID);
-                            if (r < 90) {
-                                resolve("Batch " + index + " resolved with r=" + r);
-                            } else {
-                                reject("Batch " + index + " rejected with r=" + r);
-                            }
-                        }, r + 100); // 随机延迟
-                    })
-                );
-            })(i);
+            bigBatch.push(TestPromise.createBigBatchPromise(i));
         }
         Promise.all(bigBatch).then(function(values:Array):Void {
             trace("[bigBatch] all resolved: " + values);
@@ -407,5 +398,19 @@ class org.flashNight.aven.Promise.TestPromise {
 
         // ============【 测试入口结束 】========================================
 
+    }
+
+    private static function createBigBatchPromise(index:Number):Promise {
+        return new Promise(function(resolve:Function, reject:Function):Void {
+            var r:Number = Math.floor(Math.random() * 100);
+            var timerID:Number = setInterval(function():Void {
+                clearInterval(timerID);
+                if (r < 90) {
+                    resolve("Batch " + index + " resolved with r=" + r);
+                } else {
+                    reject("Batch " + index + " rejected with r=" + r);
+                }
+            }, r + 100);
+        });
     }
 }
