@@ -1,19 +1,13 @@
 ﻿/**
- * 增强版 SortTest 类 - 
- * 位于 org.flashNight.naki.Sort 包下
- * 提供全面的排序算法性能评估和分析功能
- * 
- * 修复内容：
- * 1. 复杂度分析函数的数学计算错误
- * 2. 统计函数中的NaN和Infinity问题
- * 3. AS2兼容性问题（移除Array.reduce等ES6方法）
- * 4. 稳定性测试的准确性
- * 5. 边界情况处理
- * 
- * 改进说明：
+ * 增强版 SortTest 类 - 排序算法全面对比套件
+ *
+ * 覆盖算法：InsertionSort, PDQSort, IntroSort, QuickSort, AdaptiveSort,
+ *           TimSort, NaturalMergeSort, PowerSort, SortRouter, BuiltInSort
+ *
+ * 结构性优化：
+ * - maxSize 机制：O(n²) 算法（InsertionSort, BuiltInSort）自动跳过超限规模，
+ *   避免在 sorted/reverse/allSame 等退化分布上卡死（BuiltInSort n=10000 退化 600ms+）
  * - 使用 LinearCongruentialEngine 替代 Math.random()，确保测试结果可重现
- * - 通过固定种子消除随机性带来的数据波动
- * - 提高测试的可靠性和一致性
  */
 
 import org.flashNight.naki.RandomNumberEngine.SeededLinearCongruentialEngine;
@@ -56,15 +50,22 @@ class org.flashNight.naki.Sort.SortTest {
     private var stabilityResults:Object;
     
     // 排序方法定义
+    // maxSize: 超过此规模的基准测试自动跳过，防止 O(n²) 算法在大规模上卡死
+    //   - InsertionSort: O(n²)，n>1000 时数秒级
+    //   - BuiltInSort: native Array.sort(NUMERIC) 在 sorted/reverse/allSame/duplicates 上 O(n²)，
+    //     n=10000 时可达 600ms+ 单次。设 3000 上限避免测试超时。
+    //   - 其余 O(n log n) 算法无上限
     private var sortMethods:Array = [
-        { name: "InsertionSort",     sort: org.flashNight.naki.Sort.InsertionSort.sort,      expectedComplexity: "O(n²)" },
-        { name: "PDQSort",           sort: org.flashNight.naki.Sort.PDQSort.sort,            expectedComplexity: "O(n log n)" },
-        { name: "QuickSort",         sort: org.flashNight.naki.Sort.QuickSort.sort,          expectedComplexity: "O(n log n)" },
-        { name: "AdaptiveSort",      sort: org.flashNight.naki.Sort.QuickSort.adaptiveSort,  expectedComplexity: "O(n log n)" },
-        { name: "TimSort",           sort: org.flashNight.naki.Sort.TimSort.sort,            expectedComplexity: "O(n log n)" },
-        { name: "NaturalMergeSort",  sort: org.flashNight.naki.Sort.NaturalMergeSort.sort,   expectedComplexity: "O(n log n)" },
-        { name: "PowerSort",         sort: org.flashNight.naki.Sort.PowerSort.sort,          expectedComplexity: "O(n log n)" },
-        { name: "BuiltInSort",       sort: builtInSort,                                      expectedComplexity: "O(n log n)" }
+        { name: "InsertionSort",     sort: org.flashNight.naki.Sort.InsertionSort.sort,      expectedComplexity: "O(n²)",       maxSize: 1000 },
+        { name: "PDQSort",           sort: org.flashNight.naki.Sort.PDQSort.sort,            expectedComplexity: "O(n log n)",  maxSize: 0 },
+        { name: "IntroSort",        sort: org.flashNight.naki.Sort.IntroSort.sort,           expectedComplexity: "O(n log n)",  maxSize: 0 },
+        { name: "QuickSort",         sort: org.flashNight.naki.Sort.QuickSort.sort,          expectedComplexity: "O(n log n)",  maxSize: 0 },
+        { name: "AdaptiveSort",      sort: org.flashNight.naki.Sort.QuickSort.adaptiveSort,  expectedComplexity: "O(n log n)",  maxSize: 0 },
+        { name: "TimSort",           sort: org.flashNight.naki.Sort.TimSort.sort,            expectedComplexity: "O(n log n)",  maxSize: 0 },
+        { name: "NaturalMergeSort",  sort: org.flashNight.naki.Sort.NaturalMergeSort.sort,   expectedComplexity: "O(n log n)",  maxSize: 0 },
+        { name: "PowerSort",         sort: org.flashNight.naki.Sort.PowerSort.sort,          expectedComplexity: "O(n log n)",  maxSize: 0 },
+        { name: "SortRouter",       sort: org.flashNight.naki.Sort.SortRouter.sort,          expectedComplexity: "O(n log n)",  maxSize: 0 },
+        { name: "BuiltInSort",       sort: builtInSort,                                      expectedComplexity: "O(n log n)",  maxSize: 3000 }
     ];
     
     /**
@@ -365,11 +366,18 @@ class org.flashNight.naki.Sort.SortTest {
         
         for (var i:Number = 0; i < sortMethods.length; i++) {
             var m:Object = sortMethods[i];
+
+            // maxSize 保护：跳过超限的算法×规模组合
+            if (m.maxSize > 0 && size > m.maxSize) {
+                trace("  " + m.name + " 跳过 (maxSize=" + m.maxSize + ")");
+                continue;
+            }
+
             var totalTime:Number = 0;
             var minT:Number = Infinity;
             var maxT:Number = 0;
             var succ:Number = 0;
-            
+
             for (var run:Number = 0; run < testConfig.testIterations; run++) {
                 var arr:Array = copyArray(baseData);
                 var t0:Number = getTimer();
@@ -377,7 +385,7 @@ class org.flashNight.naki.Sort.SortTest {
                     var out:Array = m.sort(arr, null);
                     var t1:Number = getTimer();
                     // 验证
-                    var exp:Array = copyArray(baseData); 
+                    var exp:Array = copyArray(baseData);
                     exp.sort(Array.NUMERIC);
                     if (arraysEqual(out, exp, null)) {
                         var dt:Number = Math.max(0, t1 - t0); // 确保时间非负
@@ -390,7 +398,7 @@ class org.flashNight.naki.Sort.SortTest {
                     trace("  " + m.name + " 运行时错误: " + e.message);
                 }
             }
-            
+
             if (succ > 0) {
                 var avgT:Number = totalTime / succ;
                 // 存储
@@ -430,6 +438,10 @@ class org.flashNight.naki.Sort.SortTest {
             
             for (var j:Number = 0; j < sortMethods.length; j++) {
                 var m:Object = sortMethods[j];
+                if (m.maxSize > 0 && data.length > m.maxSize) {
+                    trace("  " + m.name + " 跳过 (maxSize=" + m.maxSize + ")");
+                    continue;
+                }
                 var t0:Number = getTimer();
                 try {
                     var out:Array = m.sort(copyArray(data), null);
@@ -1282,7 +1294,7 @@ class org.flashNight.naki.Sort.SortTest {
      * @return 最佳原地排序算法名称
      */
     private function findBestForMemory():String {
-        var inPlaceAlgorithms:Array = ["PDQSort", "QuickSort", "AdaptiveSort"];
+        var inPlaceAlgorithms:Array = ["PDQSort", "IntroSort", "QuickSort", "AdaptiveSort"];
         var bestAlg:String = inPlaceAlgorithms[0];
         var bestScore:Number = Infinity;
 
