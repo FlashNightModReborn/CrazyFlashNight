@@ -24,10 +24,10 @@ class org.flashNight.naki.Sort.SortRouter {
     // perfect-sample 吃掉 1.0 后最大值仅 0.9677 < 0.97，Stage B 永不可达。
     // 降到 0.93 使 1-2 个采样违规 (30/31, 29/31) 能进入 Stage B。
     private static var SAMPLE_ORDER_DEEP_SCAN_THRESHOLD:Number = 0.93;
-    private static var FULL_SCAN_EQ_RATIO_SCALE:Number = 4;
-    private static var FULL_SCAN_TINY_ANTI_THRESHOLD:Number = 4;
-    private static var FULL_SCAN_LONG_RUN_PERCENT:Number = 98;
-    private static var FULL_SCAN_LONG_RUN_ANTI_THRESHOLD:Number = 32;
+    // Stage B: 简化为 antiCnt 计数 + early exit
+    // antiCnt ≤ 此阈值 → 几乎纯单调 → native O(n²) 风险 → INTRO
+    // antiCnt > 此阈值 → 足够混乱 → native 安全 → NATIVE (early exit)
+    private static var STAGE_B_ANTI_LIMIT:Number = 32;
 
     // Stage A-3: near-sorted 双端探针
     // 用 O(PROBE_LEN) 探测首尾两段是否都有稀疏违规
@@ -178,53 +178,40 @@ class org.flashNight.naki.Sort.SortRouter {
         }
 
         // ------------------------------------------------------------
-        // Stage B: 只对高单调嫌疑输入做深扫确认
+        // desc-dominant 短路：native 对近逆序不退化（实测 16ms）。
+        // 纯逆序已被 perfect-sample 拦截（sampleOrder=1.0→INTRO），
+        // 走到这里的 desc-dominant 必然有 1+ 采样违规 → 近逆序 → native 安全。
+        // 跳过 Stage B 深扫，避免白缴 3-5ms O(n) 扫描税。
         // ------------------------------------------------------------
-        var ascCnt:Number = 0;
-        var descCnt:Number = 0;
-        var eqCnt:Number = 0;
-        var maxAscRun:Number = 1;
-        var maxDescRun:Number = 1;
-        var curAscRun:Number = 1;
-        var curDescRun:Number = 1;
-        var total:Number = n - 1;
+        if (sDesc >= sAsc) {
+            return ROUTE_NATIVE;
+        }
 
+        // ------------------------------------------------------------
+        // Stage B: 升序主导深扫（简化版）
+        //
+        // 仅计数少数方向对 (descending pairs) + early exit。
+        // antiCnt ≤ STAGE_B_ANTI_LIMIT(32) → 几乎纯升序 → INTRO
+        // antiCnt > 32 → early exit → 足够混乱 → NATIVE
+        //
+        // 相比旧版（7 变量 + 3 条件 + 无 early exit）：
+        // - 循环体只有 1 个比较 + 1 个计数器
+        // - early exit 使 sortedTailRand 等在尾部扰动区快速退出
+        // - eqCnt 条件已被 A-2(cardinality) + sEq 修复覆盖
+        // - longRun 条件被 antiCnt ≤ 32 统一覆盖
+        // ------------------------------------------------------------
+        var antiCnt:Number = 0;
+        var antiLimit:Number = STAGE_B_ANTI_LIMIT;
         prev = arr[0];
         for (i = 1; i < n; i++) {
-            cur = arr[i];
-            if (cur > prev) {
-                ascCnt++;
-                curAscRun++;
-                if (curDescRun > maxDescRun) maxDescRun = curDescRun;
-                curDescRun = 1;
-            } else if (cur < prev) {
-                descCnt++;
-                curDescRun++;
-                if (curAscRun > maxAscRun) maxAscRun = curAscRun;
-                curAscRun = 1;
-            } else {
-                eqCnt++;
-                if (curAscRun > maxAscRun) maxAscRun = curAscRun;
-                if (curDescRun > maxDescRun) maxDescRun = curDescRun;
-                curAscRun = 1;
-                curDescRun = 1;
+            if (arr[i] < prev) {
+                if (++antiCnt > antiLimit) {
+                    return ROUTE_NATIVE;
+                }
             }
-            prev = cur;
+            prev = arr[i];
         }
-        if (curAscRun > maxAscRun) maxAscRun = curAscRun;
-        if (curDescRun > maxDescRun) maxDescRun = curDescRun;
-
-        var antiCnt:Number = (ascCnt < descCnt) ? ascCnt : descCnt;
-        var dominantRun:Number = (ascCnt >= descCnt) ? maxAscRun : maxDescRun;
-
-        if ((eqCnt * FULL_SCAN_EQ_RATIO_SCALE >= total)
-            || (antiCnt <= FULL_SCAN_TINY_ANTI_THRESHOLD)
-            || ((dominantRun * 100 >= n * FULL_SCAN_LONG_RUN_PERCENT)
-                && (antiCnt <= FULL_SCAN_LONG_RUN_ANTI_THRESHOLD))) {
-            return ROUTE_INTRO;
-        }
-
-        return ROUTE_NATIVE;
+        return ROUTE_INTRO;
     }
 
     private static function gcd(a:Number, b:Number):Number {

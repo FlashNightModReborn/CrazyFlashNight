@@ -37,6 +37,7 @@ class org.flashNight.naki.Sort.SortRouterTest {
         runSmallArrayTests();
         runComparatorTests();
         runRoutingDecisionTests();
+        runMultiSeedStabilityTests();
         runCrossValidation();
         runPerformanceTests();
 
@@ -53,6 +54,7 @@ class org.flashNight.naki.Sort.SortRouterTest {
         runSmallArrayTests();
         runComparatorTests();
         runRoutingDecisionTests();
+        runMultiSeedStabilityTests();
 
         printSummary();
     }
@@ -171,12 +173,79 @@ class org.flashNight.naki.Sort.SortRouterTest {
         assertRoute("pushBack", 10000, SortRouter.ROUTE_INTRO);
 
         // near-sorted 双端探针支线
-        assertRoute("nearSorted1", 10000, SortRouter.ROUTE_INTRO); // 8/8 seeds stable
+        assertRoute("nearSorted1", 10000, SortRouter.ROUTE_INTRO);
         assertRoute("nearSorted5", 10000, SortRouter.ROUTE_NATIVE);
-        // nearReverse1% 路由不稳定(perfect-sample 路径, 5/8 NAT)，不做硬断言
-        // sortedTailRand / sortedMidRand 必须稳定在 NATIVE
-        assertRoute("sortedTailRand", 10000, SortRouter.ROUTE_NATIVE); // 8/8 seeds stable
-        assertRoute("sortedMidRand", 10000, SortRouter.ROUTE_NATIVE); // 8/8 seeds stable
+        // nearReverse1%: perfect-sample 捷径概率性吃掉（~55% INTRO, ~45% NATIVE）
+        // desc-dominant 短路确保非 perfect-sample 的路径直达 NATIVE（无深扫税）
+        // 不做硬断言 — 路由方向取决于采样命中率
+        assertRoute("sortedTailRand", 10000, SortRouter.ROUTE_NATIVE);
+        assertRoute("sortedMidRand", 10000, SortRouter.ROUTE_NATIVE);
+    }
+
+    // ==================================================================
+    // 多 seed 稳定性测试（自动化保护）
+    // ==================================================================
+    private static function runMultiSeedStabilityTests():Void {
+        trace("\n--- Multi-Seed Stability Tests ---");
+
+        var seeds:Array = [12345, 54321, 99999, 77777, 31415, 271828, 141421, 173205];
+
+        // nearSorted1: 必须 8/8 INTRO（核心拦截目标）
+        assertStableRoute("nearSorted1", 10000, seeds, SortRouter.ROUTE_INTRO, 8);
+
+        // sortedTailRand: 必须 8/8 NATIVE（常见模式，不可误判）
+        assertStableRoute("sortedTailRand", 10000, seeds, SortRouter.ROUTE_NATIVE, 8);
+
+        // sortedMidRand: 必须 8/8 NATIVE
+        assertStableRoute("sortedMidRand", 10000, seeds, SortRouter.ROUTE_NATIVE, 8);
+
+        // nearReverse1: 不稳定是已知性质（perfect-sample 概率性捕获）
+        // 断言：至少 4/8 NATIVE（desc-dominant 短路兜底，非 perfect-sample 路径必走 NATIVE）
+        assertMinRouteCount("nearReverse1", 10000, seeds, SortRouter.ROUTE_NATIVE, 4);
+    }
+
+    /**
+     * 断言 dist 在所有 seeds 上都路由到 expected。
+     * minCount = seeds.length 表示要求完全稳定。
+     */
+    private static function assertStableRoute(dist:String, sz:Number,
+            seeds:Array, expected:String, minCount:Number):Void {
+        totalTests++;
+        var count:Number = 0;
+        for (var si:Number = 0; si < seeds.length; si++) {
+            _seed = seeds[si];
+            var arr:Array = generateArray(sz, dist);
+            if (SortRouter.classifyNumeric(arr) === expected) count++;
+        }
+        if (count >= minCount) {
+            trace("PASS: stability:" + dist + " -> " + expected + " " + count + "/" + seeds.length);
+            passedTests++;
+        } else {
+            trace("FAIL: stability:" + dist + " -> " + expected + " only " + count + "/" + seeds.length + " (need " + minCount + ")");
+            failedTests++;
+        }
+    }
+
+    /**
+     * 断言 dist 在至少 minCount 个 seeds 上路由到 expected。
+     * 用于已知不稳定的分布（如 nearReverse1）。
+     */
+    private static function assertMinRouteCount(dist:String, sz:Number,
+            seeds:Array, expected:String, minCount:Number):Void {
+        totalTests++;
+        var count:Number = 0;
+        for (var si:Number = 0; si < seeds.length; si++) {
+            _seed = seeds[si];
+            var arr:Array = generateArray(sz, dist);
+            if (SortRouter.classifyNumeric(arr) === expected) count++;
+        }
+        if (count >= minCount) {
+            trace("PASS: minRoute:" + dist + " -> " + expected + " " + count + "/" + seeds.length + " (>=" + minCount + ")");
+            passedTests++;
+        } else {
+            trace("FAIL: minRoute:" + dist + " -> " + expected + " only " + count + "/" + seeds.length + " (need >=" + minCount + ")");
+            failedTests++;
+        }
     }
 
     // ==================================================================
