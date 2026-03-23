@@ -1,0 +1,385 @@
+﻿import org.flashNight.naki.Sort.*;
+
+/**
+ * SortRouterTest - 路由排序正确性 + 性能验证
+ *
+ * 覆盖：
+ * - 正确性：20 种分布 × 排序结果验证
+ * - 交叉验证：vs IntroSort(null) 结果一致
+ * - 性能基准：Router vs Native vs IntroSort vs PDQSort
+ * - 小数组路径：n=0..63 边界
+ * - 比较器路径：走 TimSort
+ */
+class org.flashNight.naki.Sort.SortRouterTest {
+
+    private static var totalTests:Number = 0;
+    private static var passedTests:Number = 0;
+    private static var failedTests:Number = 0;
+
+    // LCG
+    private static var _seed:Number;
+    private static function resetRng():Void { _seed = 12345; }
+    private static function rand():Number {
+        return (_seed = (_seed * 1664525 + 1013904223) % 4294967296);
+    }
+
+    // ==================================================================
+    // 主入口
+    // ==================================================================
+    public static function runTests():Void {
+        totalTests = 0; passedTests = 0; failedTests = 0;
+        trace("=================================================================");
+        trace("SortRouter Test Suite");
+        trace("=================================================================");
+
+        runCorrectnessTests();
+        runSmallArrayTests();
+        runComparatorTests();
+        runCrossValidation();
+        runPerformanceTests();
+
+        printSummary();
+    }
+
+    public static function runQuickTests():Void {
+        totalTests = 0; passedTests = 0; failedTests = 0;
+        trace("=================================================================");
+        trace("SortRouter Quick Tests");
+        trace("=================================================================");
+
+        runCorrectnessTests();
+        runSmallArrayTests();
+        runComparatorTests();
+
+        printSummary();
+    }
+
+    // ==================================================================
+    // 正确性测试：20 种分布 × n=10000
+    // ==================================================================
+    private static function runCorrectnessTests():Void {
+        trace("\n--- Correctness Tests (n=10000) ---");
+
+        var dists:Array = [
+            "random", "sorted", "reverse", "allEqual",
+            "twoValues", "threeValues", "fewUnique5", "fewUnique10",
+            "organPipe", "sawTooth20", "sawTooth100",
+            "nearSorted1", "nearSorted5", "nearSorted10",
+            "nearReverse1", "nearReverse5",
+            "sortedTailRand", "sortedMidRand",
+            "pushFront", "pushBack"
+        ];
+
+        var sz:Number = 10000;
+        for (var di:Number = 0; di < dists.length; di++) {
+            var dist:String = dists[di];
+            resetRng();
+            var arr:Array = generateArray(sz, dist);
+            SortRouter.sort(arr, null);
+            assertSorted(arr, "correctness:" + dist);
+        }
+    }
+
+    // ==================================================================
+    // 小数组边界
+    // ==================================================================
+    private static function runSmallArrayTests():Void {
+        trace("\n--- Small Array Tests ---");
+
+        assertSortedResult([], "empty");
+        assertSortedResult([1], "single");
+        assertSortedResult([2, 1], "two-reverse");
+        assertSortedResult([1, 2], "two-sorted");
+        assertSortedResult([5, 5], "two-equal");
+
+        // 三元素全排列
+        var perms:Array = [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]];
+        var allOk:Boolean = true;
+        for (var p:Number = 0; p < perms.length; p++) {
+            var s:Array = perms[p].slice();
+            SortRouter.sort(s, null);
+            if (s[0] !== 1 || s[1] !== 2 || s[2] !== 3) { allOk = false; break; }
+        }
+        assertTrue(allOk, "three-all-perms");
+
+        // 阈值边界 n=32, 63, 64, 65
+        var thresholds:Array = [32, 63, 64, 65, 100];
+        for (var ti:Number = 0; ti < thresholds.length; ti++) {
+            var n:Number = thresholds[ti];
+            resetRng();
+            var arr:Array = new Array(n);
+            for (var i:Number = 0; i < n; i++) arr[i] = rand() % (n * 2);
+            SortRouter.sort(arr, null);
+            assertSorted(arr, "threshold-n=" + n);
+        }
+    }
+
+    // ==================================================================
+    // 比较器路径 → TimSort
+    // ==================================================================
+    private static function runComparatorTests():Void {
+        trace("\n--- Comparator Path Tests ---");
+
+        var cmp:Function = function(a, b):Number { return a - b; };
+        resetRng();
+        var arr:Array = new Array(1000);
+        for (var i:Number = 0; i < 1000; i++) arr[i] = rand() % 2000;
+        SortRouter.sort(arr, cmp);
+        assertSorted(arr, "cmp-random-1000");
+
+        // 逆序比较器
+        var cmpDesc:Function = function(a, b):Number { return b - a; };
+        resetRng();
+        arr = new Array(500);
+        for (i = 0; i < 500; i++) arr[i] = rand() % 1000;
+        SortRouter.sort(arr, cmpDesc);
+        var descOk:Boolean = true;
+        for (i = 1; i < arr.length; i++) {
+            if (arr[i - 1] < arr[i]) { descOk = false; break; }
+        }
+        assertTrue(descOk, "cmp-desc-500");
+
+        // 字符串排序
+        var strArr:Array = ["banana", "apple", "cherry", "date", "apricot"];
+        var strCmp:Function = function(a, b):Number {
+            if (a < b) return -1;
+            if (a > b) return 1;
+            return 0;
+        };
+        SortRouter.sort(strArr, strCmp);
+        assertTrue(strArr[0] === "apple" && strArr[1] === "apricot" && strArr[4] === "date", "cmp-strings");
+    }
+
+    // ==================================================================
+    // 交叉验证 vs IntroSort
+    // ==================================================================
+    private static function runCrossValidation():Void {
+        trace("\n--- Cross-Validation vs IntroSort ---");
+
+        var dists:Array = ["random", "sorted", "reverse", "allEqual", "twoValues",
+            "fewUnique5", "organPipe", "nearSorted1", "pushFront"];
+        var sz:Number = 5000;
+
+        for (var di:Number = 0; di < dists.length; di++) {
+            var dist:String = dists[di];
+            resetRng();
+            var a1:Array = generateArray(sz, dist);
+            resetRng();
+            var a2:Array = generateArray(sz, dist);
+
+            SortRouter.sort(a1, null);
+            IntroSort.sort(a2, null);
+
+            var match:Boolean = true;
+            for (var i:Number = 0; i < sz; i++) {
+                if (a1[i] !== a2[i]) { match = false; break; }
+            }
+            assertTrue(match, "cross:" + dist);
+        }
+    }
+
+    // ==================================================================
+    // 性能基准
+    // ==================================================================
+    private static function runPerformanceTests():Void {
+        trace("\n--- Performance Benchmarks ---");
+        trace("Format: Router / Native / IntroSort / PDQSort (ms, avg of 3)");
+
+        var sz:Number = 10000;
+        var REPEATS:Number = 3;
+
+        var dists:Array = [
+            "random", "sorted", "reverse", "allEqual",
+            "twoValues", "threeValues", "fewUnique5", "fewUnique10",
+            "organPipe", "sawTooth20", "sawTooth100",
+            "nearSorted1", "nearSorted5", "nearSorted10",
+            "nearReverse1", "nearReverse5",
+            "sortedTailRand", "sortedMidRand",
+            "pushFront", "pushBack"
+        ];
+
+        trace(padR("distribution", 18) + "  " + padL("Router", 7) + "  " + padL("Native", 7) + "  " + padL("Intro", 7) + "  " + padL("PDQ", 7));
+
+        for (var di:Number = 0; di < dists.length; di++) {
+            var dist:String = dists[di];
+            resetRng();
+            var master:Array = generateArray(sz, dist);
+
+            var tRouter:Number = 0;
+            for (var r:Number = 0; r < REPEATS; r++) {
+                var a0:Array = master.slice();
+                var st:Number = getTimer();
+                SortRouter.sort(a0, null);
+                tRouter += getTimer() - st;
+            }
+
+            var tNat:Number = 0;
+            for (r = 0; r < REPEATS; r++) {
+                var a1:Array = master.slice();
+                st = getTimer();
+                a1.sort(Array.NUMERIC);
+                tNat += getTimer() - st;
+            }
+
+            var tIntro:Number = 0;
+            for (r = 0; r < REPEATS; r++) {
+                var a2:Array = master.slice();
+                st = getTimer();
+                IntroSort.sort(a2, null);
+                tIntro += getTimer() - st;
+            }
+
+            var tPdq:Number = 0;
+            for (r = 0; r < REPEATS; r++) {
+                var a3:Array = master.slice();
+                st = getTimer();
+                PDQSort.sort(a3, null);
+                tPdq += getTimer() - st;
+            }
+
+            trace(padR(dist, 18) + "  "
+                + padL(String(Math.round(tRouter / REPEATS)), 7) + "  "
+                + padL(String(Math.round(tNat / REPEATS)), 7) + "  "
+                + padL(String(Math.round(tIntro / REPEATS)), 7) + "  "
+                + padL(String(Math.round(tPdq / REPEATS)), 7));
+        }
+    }
+
+    // ==================================================================
+    // 数据生成（与 NativeSortProfile 一致）
+    // ==================================================================
+    private static function generateArray(sz:Number, dist:String):Array {
+        var arr:Array = new Array(sz);
+        var i:Number, j:Number, tmp:Number, half:Number, k:Number, v:Number;
+
+        if (dist === "random") {
+            for (i = 0; i < sz; i++) arr[i] = rand() % (sz * 2);
+        } else if (dist === "sorted") {
+            for (i = 0; i < sz; i++) arr[i] = i;
+        } else if (dist === "reverse") {
+            for (i = 0; i < sz; i++) arr[i] = sz - i;
+        } else if (dist === "allEqual") {
+            for (i = 0; i < sz; i++) arr[i] = 42;
+        } else if (dist === "twoValues") {
+            for (i = 0; i < sz; i++) arr[i] = i % 2;
+        } else if (dist === "threeValues") {
+            for (i = 0; i < sz; i++) arr[i] = i % 3;
+        } else if (dist === "fewUnique5") {
+            for (i = 0; i < sz; i++) arr[i] = rand() % 5;
+        } else if (dist === "fewUnique10") {
+            for (i = 0; i < sz; i++) arr[i] = rand() % 10;
+        } else if (dist === "organPipe") {
+            half = sz >> 1;
+            for (i = 0; i < half; i++) arr[i] = i;
+            for (i = half; i < sz; i++) arr[i] = sz - 1 - i;
+        } else if (dist === "sawTooth20") {
+            for (i = 0; i < sz; i++) arr[i] = i % 20;
+        } else if (dist === "sawTooth100") {
+            for (i = 0; i < sz; i++) arr[i] = i % 100;
+        } else if (dist === "nearSorted1") {
+            for (i = 0; i < sz; i++) arr[i] = i;
+            k = Math.max(1, Math.round(sz * 0.01));
+            for (i = 0; i < k; i++) { j = rand() % sz; tmp = rand() % sz; v = arr[j]; arr[j] = arr[tmp]; arr[tmp] = v; }
+        } else if (dist === "nearSorted5") {
+            for (i = 0; i < sz; i++) arr[i] = i;
+            k = Math.max(1, Math.round(sz * 0.05));
+            for (i = 0; i < k; i++) { j = rand() % sz; tmp = rand() % sz; v = arr[j]; arr[j] = arr[tmp]; arr[tmp] = v; }
+        } else if (dist === "nearSorted10") {
+            for (i = 0; i < sz; i++) arr[i] = i;
+            k = Math.max(1, Math.round(sz * 0.10));
+            for (i = 0; i < k; i++) { j = rand() % sz; tmp = rand() % sz; v = arr[j]; arr[j] = arr[tmp]; arr[tmp] = v; }
+        } else if (dist === "nearReverse1") {
+            for (i = 0; i < sz; i++) arr[i] = sz - i;
+            k = Math.max(1, Math.round(sz * 0.01));
+            for (i = 0; i < k; i++) { j = rand() % sz; tmp = rand() % sz; v = arr[j]; arr[j] = arr[tmp]; arr[tmp] = v; }
+        } else if (dist === "nearReverse5") {
+            for (i = 0; i < sz; i++) arr[i] = sz - i;
+            k = Math.max(1, Math.round(sz * 0.05));
+            for (i = 0; i < k; i++) { j = rand() % sz; tmp = rand() % sz; v = arr[j]; arr[j] = arr[tmp]; arr[tmp] = v; }
+        } else if (dist === "sortedTailRand") {
+            var cutoff:Number = Math.round(sz * 0.9);
+            for (i = 0; i < cutoff; i++) arr[i] = i;
+            for (i = cutoff; i < sz; i++) arr[i] = rand() % (sz * 2);
+        } else if (dist === "sortedMidRand") {
+            var seg:Number = Math.round(sz * 0.45);
+            var mid:Number = sz - seg - seg;
+            for (i = 0; i < seg; i++) arr[i] = i;
+            for (i = seg; i < seg + mid; i++) arr[i] = rand() % (sz * 2);
+            for (i = seg + mid; i < sz; i++) arr[i] = i;
+        } else if (dist === "pushFront") {
+            arr[0] = sz;
+            for (i = 1; i < sz; i++) arr[i] = i;
+        } else if (dist === "pushBack") {
+            for (i = 0; i < sz - 1; i++) arr[i] = i + 1;
+            arr[sz - 1] = 0;
+        } else {
+            for (i = 0; i < sz; i++) arr[i] = rand() % (sz * 2);
+        }
+        return arr;
+    }
+
+    // ==================================================================
+    // 工具函数
+    // ==================================================================
+    private static function assertSorted(arr:Array, name:String):Void {
+        totalTests++;
+        for (var i:Number = 1; i < arr.length; i++) {
+            if (arr[i - 1] > arr[i]) {
+                trace("FAIL: " + name + " - not sorted at [" + i + "]: " + arr[i-1] + " > " + arr[i]);
+                failedTests++;
+                return;
+            }
+        }
+        trace("PASS: " + name);
+        passedTests++;
+    }
+
+    private static function assertSortedResult(input:Array, name:String):Void {
+        totalTests++;
+        var arr:Array = input.slice();
+        SortRouter.sort(arr, null);
+        for (var i:Number = 1; i < arr.length; i++) {
+            if (arr[i - 1] > arr[i]) {
+                trace("FAIL: " + name + " - not sorted at [" + i + "]");
+                failedTests++;
+                return;
+            }
+        }
+        trace("PASS: " + name);
+        passedTests++;
+    }
+
+    private static function assertTrue(cond:Boolean, name:String):Void {
+        totalTests++;
+        if (!cond) {
+            trace("FAIL: " + name);
+            failedTests++;
+        } else {
+            trace("PASS: " + name);
+            passedTests++;
+        }
+    }
+
+    private static function padR(s:String, w:Number):String {
+        while (length(s) < w) s += " ";
+        return s;
+    }
+
+    private static function padL(s:String, w:Number):String {
+        while (length(s) < w) s = " " + s;
+        return s;
+    }
+
+    private static function printSummary():Void {
+        trace("\n=================================================================");
+        trace("TEST SUMMARY");
+        trace("=================================================================");
+        trace("Total: " + totalTests + "  Passed: " + passedTests + "  Failed: " + failedTests);
+        if (failedTests === 0) {
+            trace("ALL TESTS PASSED!");
+        } else {
+            trace(failedTests + " test(s) FAILED.");
+        }
+        trace("=================================================================");
+    }
+}
