@@ -78,6 +78,8 @@ class org.flashNight.naki.Sort.SortRouter {
         var sAsc:Number = 0;
         var sDesc:Number = 0;
         var sEq:Number = 0;
+        var turns:Number = 0;
+        var dir:Number = 0; // 0=初始, 1=升, -1=降
         var bias:Number = (n * 3) >> 3; // Math.floor(n*3/8)
 
         for (i = 0; i < SAMPLE_K; i++) {
@@ -86,9 +88,17 @@ class org.flashNight.naki.Sort.SortRouter {
 
             cur = arr[idx];
             if (i > 0) {
-                if (cur > prev) sAsc++;
-                else if (cur < prev) sDesc++;
-                else sEq++;
+                if (cur > prev) {
+                    sAsc++;
+                    if (dir == -1) turns++;
+                    dir = 1;
+                } else if (cur < prev) {
+                    sDesc++;
+                    if (dir == 1) turns++;
+                    dir = -1;
+                } else {
+                    sEq++;
+                }
             }
             prev = cur;
         }
@@ -123,6 +133,27 @@ class org.flashNight.naki.Sort.SortRouter {
 
         if (uniq <= LOW_CARDINALITY_THRESHOLD) {
             return ROUTE_INTRO;
+        }
+
+        // ------------------------------------------------------------
+        // Stage A-1.5: 宏观拐点熔断 (Mountain 防御)
+        //
+        // turns ≤ 1 且 uniq == SAMPLE_K 且端点不对称:
+        //   宏观上只有 0-1 个单调方向切换 + 采样全唯一。
+        //   需区分 Mountain（dangerous）和 organPipe/Valley（safe）：
+        //   - Mountain [1..5000,10000,9999..5001]: 端点差 5000 → 不对称
+        //   - organPipe [0..4999,4999..0]: 端点差 0 → 对称
+        //   - Valley [5000..0..4999]: 端点差 1 → 对称
+        //   native 在对称结构（organPipe/Valley）上安全 (7ms)，
+        //   在非对称结构（Mountain）上灾难 (622ms)。
+        // ------------------------------------------------------------
+        if (turns <= 1 && uniq == SAMPLE_K) {
+            var endGap:Number = arr[0] - arr[n - 1];
+            if (endGap < 0) endGap = -endGap;
+            // 端点差 > n/64: 非对称 → Mountain 类结构 → 危险
+            if (endGap > (n >> 6)) {
+                return ROUTE_INTRO;
+            }
         }
 
         var samplePairs:Number = SAMPLE_K - 1;
