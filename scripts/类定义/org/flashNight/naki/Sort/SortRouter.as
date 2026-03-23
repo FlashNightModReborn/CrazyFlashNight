@@ -19,17 +19,23 @@ class org.flashNight.naki.Sort.SortRouter {
     private static var SMALL_THRESHOLD:Number = 64;
     private static var SAMPLE_K:Number = 32;
     private static var LOW_CARDINALITY_THRESHOLD:Number = 20;
-    private static var SAMPLE_ORDER_DEEP_SCAN_THRESHOLD:Number = 0.97;
+    // 修复：旧值 0.97 导致 Stage B 死代码。
+    // 31 对采样的离散值域: 31/31=1.0, 30/31=0.9677, 29/31=0.935...
+    // perfect-sample 吃掉 1.0 后最大值仅 0.9677 < 0.97，Stage B 永不可达。
+    // 降到 0.93 使 1-2 个采样违规 (30/31, 29/31) 能进入 Stage B。
+    private static var SAMPLE_ORDER_DEEP_SCAN_THRESHOLD:Number = 0.93;
     private static var FULL_SCAN_EQ_RATIO_SCALE:Number = 4;
     private static var FULL_SCAN_TINY_ANTI_THRESHOLD:Number = 4;
     private static var FULL_SCAN_LONG_RUN_PERCENT:Number = 98;
     private static var FULL_SCAN_LONG_RUN_ANTI_THRESHOLD:Number = 32;
 
-    // Stage A-3: near-sorted 支线
-    // 当采样显示中高单调度(0.90-0.97)且 cardinality 高时触发
-    // 用违规计数(带 early exit)确认是否真的 near-sorted
+    // Stage A-3: near-sorted 双端探针
+    // 用 O(PROBE_LEN) 探测首尾两段是否都有稀疏违规
+    // 只有「两端都有且都稀疏」才判 near-sorted
+    // sortedTailRand 首段 0 违规 → 不触发；sortedMidRand 同理
     private static var NEAR_SORTED_GATE:Number = 0.90;
-    private static var NEAR_SORTED_VIOL_RATIO:Number = 0.05; // 反方向对 < 5% → INTRO
+    private static var NEAR_SORTED_PROBE_LEN:Number = 256;
+    private static var NEAR_SORTED_PROBE_MAX_VIOL:Number = 8; // 每端最多 8 个违规
 
     /**
      * 自适应排序 — null 比较器走路由，非 null 走 TimSort
@@ -72,10 +78,10 @@ class org.flashNight.naki.Sort.SortRouter {
         var sAsc:Number = 0;
         var sDesc:Number = 0;
         var sEq:Number = 0;
-        var bias:Number = Math.floor(n * 3 / 8);
+        var bias:Number = (n * 3) >> 3; // Math.floor(n*3/8)
 
         for (i = 0; i < SAMPLE_K; i++) {
-            idx = Math.floor((i * n + bias) / SAMPLE_K);
+            idx = (i * n + bias) >> 5; // Math.floor((i*n+bias)/32), 安全: i*n+bias < 2^31 for n≤16M
             if (idx >= n) idx = n - 1;
 
             cur = arr[idx];
@@ -90,7 +96,7 @@ class org.flashNight.naki.Sort.SortRouter {
         // ------------------------------------------------------------
         // Stage A-2: 互素步长采样 cardinality，避免固定 stride 共振
         // ------------------------------------------------------------
-        var step:Number = Math.floor(n / SAMPLE_K) + 1;
+        var step:Number = (n >> 5) + 1; // Math.floor(n/32)+1
         while (gcd(step, n) != 1) step++;
 
         var sampleVals:Array = new Array(SAMPLE_K);
@@ -120,36 +126,51 @@ class org.flashNight.naki.Sort.SortRouter {
         }
 
         var samplePairs:Number = SAMPLE_K - 1;
-        var sampleOrder:Number = (sAsc > sDesc) ? (sAsc / samplePairs) : (sDesc / samplePairs);
+        // 修复：sEq 不是反单调信号，等值对应计入单调度。
+        // 否则"有序+少量重复值"会被 sEq 拉低 sampleOrder 误判为安全。
+        var sampleOrder:Number = (sAsc > sDesc)
+            ? ((sAsc + sEq) / samplePairs)
+            : ((sDesc + sEq) / samplePairs);
         if (sEq == 0 && sampleOrder == 1) {
             return ROUTE_INTRO;
         }
         // ------------------------------------------------------------
-        // Stage A-3: near-sorted 支线（高单调 + 高 cardinality）
-        // 用违规计数替代全量深扫，带 early exit
-        // 对 random: 不进入(sampleOrder≈0.50)
-        // 对 nearSorted5%: early exit 后放行 native
-        // 对 nearSorted1%: 完整计数后路由 intro
+        // Stage A-3: near-sorted 双端探针
+        //
+        // 仅对升序主导触发（native 对近逆序不退化）。
+        // 探测首尾各 PROBE_LEN 对：若两端都出现少量违规（≤ MAX_VIOL），
+        // 说明乱序是均匀散布的 near-sorted；否则乱序集中在局部
+        // （sortedTailRand / sortedMidRand），放行 native。
+        //
+        // 成本：O(PROBE_LEN * 2) = O(512) ≈ 0.02ms，不依赖 n。
         // ------------------------------------------------------------
-        // 仅对升序主导方向触发：
-        // native 在 nearSorted(asc) 1% 上退化 (48ms)
-        // 但 native 在 nearReverse(desc) 1% 上不退化 (16ms)
-        // 原因推测：native pivot 选择策略对逆序相对友好
         if (sAsc > sDesc && sampleOrder >= NEAR_SORTED_GATE && uniq > LOW_CARDINALITY_THRESHOLD) {
-            var violMax:Number = Math.floor(n * NEAR_SORTED_VIOL_RATIO);
-            var violCnt:Number = 0;
+            var probeLen:Number = NEAR_SORTED_PROBE_LEN;
+            if (probeLen > (n >> 2)) probeLen = n >> 2; // 不超过 n/4
+            var maxV:Number = NEAR_SORTED_PROBE_MAX_VIOL;
+
+            // 探测首段 [0, probeLen)
+            var headV:Number = 0;
             prev = arr[0];
-            for (i = 1; i < n; i++) {
-                if (arr[i] < prev) {
-                    violCnt++;
-                    if (violCnt > violMax) break;
-                }
+            for (i = 1; i < probeLen; i++) {
+                if (arr[i] < prev) headV++;
                 prev = arr[i];
             }
-            if (violCnt <= violMax) {
-                return ROUTE_INTRO;
+
+            // 首段有稀疏违规才继续探测尾段
+            if (headV > 0 && headV <= maxV) {
+                // 探测尾段 [n - probeLen, n)
+                var tailV:Number = 0;
+                var tailStart:Number = n - probeLen;
+                prev = arr[tailStart];
+                for (i = tailStart + 1; i < n; i++) {
+                    if (arr[i] < prev) tailV++;
+                    prev = arr[i];
+                }
+                if (tailV > 0 && tailV <= maxV) {
+                    return ROUTE_INTRO;
+                }
             }
-            // 违规太多 → 不是 near-sorted，继续正常流程
         }
 
         if (sampleOrder < SAMPLE_ORDER_DEEP_SCAN_THRESHOLD) {
