@@ -147,6 +147,23 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
         test_resolveNullInChain();
         test_multipleOnRejected();
 
+        // --- Phase 3: 生产健壮性强化测试 ---
+        test_catchRecoverWithFulfilledPromise();
+        test_onRejectedReturnsUndefined();
+        test_handlerReturnsFunction();
+        test_allWithThenables();
+        test_raceAllSyncValues();
+        test_thenNoArgs();
+        test_onFinallyNonFunction();
+        test_nestedThenInsideThen();
+        test_deferredForkTwoChains();
+        test_superLongChain100();
+        test_resolveNoArg();
+        test_rejectInOnFulfilledChain();
+        test_catchThenFinally();
+        test_allSingleReject();
+        test_raceWithThenable();
+
         // --- 帧计数器，等待异步测试完成后输出汇总 ---
         _clip = _root.createEmptyMovieClip("_promiseTestTimer", _root.getNextHighestDepth());
         _clip.onEnterFrame = function():Void {
@@ -1311,5 +1328,270 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
             assert("multi-reject-a", results.a == "shared-err", "a=" + results.a);
             assert("multi-reject-b", results.b == "shared-err", "b=" + results.b);
         });
+    }
+
+    // ================================================================
+    // Phase 3: 生产健壮性强化测试
+    // ================================================================
+
+    /** P3-1: onRejected 返回 fulfilled Promise → 下游应 fulfill（不是继续 reject） */
+    private static function test_catchRecoverWithFulfilledPromise():Void {
+        Promise.reject("original-err")
+            .then(null, function(r:Object):Object {
+                return Promise.resolve("catch-recovered");
+            })
+            .then(
+                function(v:Object):Void {
+                    assert("catch-recover-fulfilled", v == "catch-recovered", "got: " + v);
+                },
+                function(r:Object):Void {
+                    assert("catch-recover-fulfilled", false, "should fulfill, not reject: " + r);
+                }
+            );
+    }
+
+    /** P3-2: onRejected 返回 undefined（无 return）→ 下游应 fulfill with undefined */
+    private static function test_onRejectedReturnsUndefined():Void {
+        Promise.reject("some-err")
+            .then(null, function(r:Object):Void {
+                // 不 return 任何值
+            })
+            .then(
+                function(v:Object):Void {
+                    assert("reject-handler-undefined",
+                        typeof(v) == "undefined", "got: " + typeof(v) + " " + v);
+                },
+                function(r:Object):Void {
+                    assert("reject-handler-undefined", false,
+                        "should fulfill with undefined, not reject: " + r);
+                }
+            );
+    }
+
+    /** P3-3: handler 返回 Function 对象（typeof "function"，过 isReferenceLike）→ 应直接传递 */
+    private static function test_handlerReturnsFunction():Void {
+        var myFunc:Function = function():String { return "hello"; };
+        Promise.resolve(1).then(function(v:Object):Object {
+            return myFunc;
+        }).then(function(v:Object):Void {
+            assert("handler-returns-function",
+                typeof(v) == "function" && v === myFunc,
+                "got typeof: " + typeof(v));
+        });
+    }
+
+    /** P3-4: Promise.all 接收 thenable（非 Promise 实例）*/
+    private static function test_allWithThenables():Void {
+        var thenable1:Object = {
+            then: function(res:Function, rej:Function):Void { res("t1"); }
+        };
+        var thenable2:Object = {
+            then: function(res:Function, rej:Function):Void { res("t2"); }
+        };
+
+        Promise.all([thenable1, Promise.resolve("p1"), thenable2]).then(
+            function(values:Array):Void {
+                var ok:Boolean = values.length == 3
+                    && values[0] == "t1"
+                    && values[1] == "p1"
+                    && values[2] == "t2";
+                assert("all-with-thenables", ok,
+                    "[0]=" + values[0] + " [1]=" + values[1] + " [2]=" + values[2]);
+            },
+            function(r:Object):Void {
+                assert("all-with-thenables", false, "should not reject: " + r);
+            }
+        );
+    }
+
+    /** P3-5: Promise.race 全同步立即值 */
+    private static function test_raceAllSyncValues():Void {
+        Promise.race([Promise.resolve("first"), Promise.resolve("second"), Promise.resolve("third")])
+            .then(function(v:Object):Void {
+                assert("race-all-sync", v == "first", "got: " + v);
+            });
+    }
+
+    /** P3-6: then() 无参数调用 → value/reason 应穿透 */
+    private static function test_thenNoArgs():Void {
+        Promise.resolve("no-arg-val").then().then(function(v:Object):Void {
+            assert("then-no-args-fulfill", v == "no-arg-val", "got: " + v);
+        });
+
+        Promise.reject("no-arg-err").then().then(null, function(r:Object):Void {
+            assert("then-no-args-reject", r == "no-arg-err", "got: " + r);
+        });
+    }
+
+    /** P3-7: onFinally 传入非函数参数 → value 应透传 */
+    private static function test_onFinallyNonFunction():Void {
+        Promise.resolve("fin-passthrough")
+            .onFinally(Function(42))
+            .then(function(v:Object):Void {
+                assert("finally-non-func-fulfill", v == "fin-passthrough", "got: " + v);
+            });
+
+        Promise.reject("fin-err-passthrough")
+            .onFinally(Function(null))
+            .then(null, function(r:Object):Void {
+                assert("finally-non-func-reject", r == "fin-err-passthrough", "got: " + r);
+            });
+    }
+
+    /** P3-8: 嵌套 then — handler 内部创建新 Promise 链并返回 */
+    private static function test_nestedThenInsideThen():Void {
+        Promise.resolve("outer")
+            .then(function(v:Object):Object {
+                return Promise.resolve("inner-start")
+                    .then(function(iv:Object):Object {
+                        return iv + "-step1";
+                    })
+                    .then(function(iv:Object):Object {
+                        return iv + "-step2";
+                    });
+            })
+            .then(function(v:Object):Void {
+                assert("nested-then-inside-then",
+                    v == "inner-start-step1-step2", "got: " + v);
+            });
+    }
+
+    /** P3-9: deferred promise 分叉出两条独立链，各自独立解析 */
+    private static function test_deferredForkTwoChains():Void {
+        var deferred:Object = {};
+        var p:Promise = new Promise(function(resolve:Function, reject:Function):Void {
+            deferred.resolve = resolve;
+        });
+
+        var results:Object = {chainA: null, chainB: null};
+
+        // Chain A: 加工
+        p.then(function(v:Object):Object {
+            return String(v) + "-A";
+        }).then(function(v:Object):Void {
+            results.chainA = v;
+        });
+
+        // Chain B: 不同加工
+        p.then(function(v:Object):Object {
+            return String(v) + "-B";
+        }).then(function(v:Object):Void {
+            results.chainB = v;
+        });
+
+        // 稍后 resolve
+        Promise.resolve(null).then(function(v:Object):Void {
+            deferred.resolve("root");
+        });
+
+        afterFrames(4, function():Void {
+            assert("fork-chain-A", results.chainA == "root-A", "A=" + results.chainA);
+            assert("fork-chain-B", results.chainB == "root-B", "B=" + results.chainB);
+        });
+    }
+
+    /** P3-10: 100 步超长链压力测试 */
+    private static function test_superLongChain100():Void {
+        var p:Promise = Promise.resolve(0);
+        for (var i:Number = 0; i < 100; i++) {
+            p = p.then(function(v:Object):Object {
+                return Number(v) + 1;
+            });
+        }
+        p.then(function(v:Object):Void {
+            assert("super-long-chain-100", v == 100, "got: " + v);
+        });
+    }
+
+    /** P3-11: Promise.resolve() 无参数 → fulfill with undefined */
+    private static function test_resolveNoArg():Void {
+        Promise.resolve().then(function(v:Object):Void {
+            assert("resolve-no-arg",
+                typeof(v) == "undefined", "got: " + typeof(v) + " " + v);
+        });
+    }
+
+    /** P3-12: onFulfilled 中 throw → 跳过后续 onFulfilled → 被远处 onCatch 捕获 */
+    private static function test_rejectInOnFulfilledChain():Void {
+        var skipped:Object = {value: false};
+
+        Promise.resolve("start")
+            .then(function(v:Object):Object {
+                throw new Error("mid-chain-error");
+                return null;
+            })
+            .then(function(v:Object):Object {
+                skipped.value = true;
+                return "should-not-reach";
+            })
+            .then(function(v:Object):Object {
+                skipped.value = true;
+                return "also-should-not-reach";
+            })
+            .onCatch(function(r:Object):Object {
+                return "caught-" + r.message;
+            })
+            .then(function(v:Object):Void {
+                assert("reject-skip-fulfill-chain", skipped.value == false,
+                    "intermediate handlers were called");
+                assert("reject-far-catch", v == "caught-mid-chain-error", "got: " + v);
+            });
+    }
+
+    /** P3-13: catch → then → finally 完整生产链 */
+    private static function test_catchThenFinally():Void {
+        var log:Object = {entries: ""};
+
+        Promise.reject("init-err")
+            .onCatch(function(r:Object):Object {
+                log.entries += "C";
+                return "recovered";
+            })
+            .then(function(v:Object):Object {
+                log.entries += "T";
+                return v + "-processed";
+            })
+            .onFinally(function():Void {
+                log.entries += "F";
+            })
+            .then(function(v:Object):Void {
+                assert("catch-then-finally-order", log.entries == "CTF",
+                    "got: " + log.entries);
+                assert("catch-then-finally-value",
+                    v == "recovered-processed", "got: " + v);
+            });
+    }
+
+    /** P3-14: Promise.all 单个 rejected → 应 reject */
+    private static function test_allSingleReject():Void {
+        Promise.all([Promise.reject("solo-fail")]).then(
+            function(v:Object):Void {
+                assert("all-single-reject", false, "should not fulfill");
+            },
+            function(r:Object):Void {
+                assert("all-single-reject", r == "solo-fail", "got: " + r);
+            }
+        );
+    }
+
+    /** P3-15: Promise.race 含 thenable */
+    private static function test_raceWithThenable():Void {
+        var slowThenable:Object = {
+            then: function(res:Function, rej:Function):Void {
+                var tid:Number = setInterval(function():Void {
+                    clearInterval(tid);
+                    res("slow-thenable");
+                }, 200);
+            }
+        };
+
+        Promise.race([slowThenable, Promise.resolve("fast-promise")]).then(
+            function(v:Object):Void {
+                assert("race-with-thenable", v == "fast-promise", "got: " + v);
+            },
+            function(r:Object):Void {
+                assert("race-with-thenable", false, "should not reject: " + r);
+            }
+        );
     }
 }

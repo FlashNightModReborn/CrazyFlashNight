@@ -28,6 +28,7 @@ PromiseAPlusTest.main();
 [PASS] deep-thenable-resolve
 [PASS] multi-reject-a
 [PASS] multi-reject-b
+[PASS] resolve-no-arg
 [PASS] 2.2.1-fulfill-passthrough
 [PASS] 2.2.1-reject-passthrough
 [PASS] 2.2.6-fulfilled-order
@@ -67,6 +68,15 @@ PromiseAPlusTest.main();
 [PASS] large-batch-all
 [PASS] race-immediate-wins
 [PASS] null-in-chain
+[PASS] reject-handler-undefined
+[PASS] handler-returns-function
+[PASS] all-with-thenables
+[PASS] race-all-sync
+[PASS] then-no-args-fulfill
+[PASS] then-no-args-reject
+[PASS] finally-non-func-fulfill
+[PASS] all-single-reject
+[PASS] race-with-thenable
 [PASS] static-all-order
 [PASS] static-race-first-settled
 [PASS] 2.2.7.1-chain-values
@@ -79,26 +89,36 @@ PromiseAPlusTest.main();
 [PASS] re-reject-from-catch
 [PASS] all-first-reject-wins
 [PASS] nested-all
+[PASS] catch-recover-fulfilled
+[PASS] finally-non-func-reject
 [PASS] finally-fulfilled-called
 [PASS] finally-fulfilled-value
 [PASS] finally-rejected-called
 [PASS] finally-rejected-reason
 [PASS] complex-recovery
+[PASS] nested-then-inside-then
+[PASS] reject-skip-fulfill-chain
+[PASS] reject-far-catch
 [PASS] chain-timing-value
 [PASS] chain-timing-frames
+[PASS] catch-then-finally-order
+[PASS] catch-then-finally-value
 [PASS] long-chain-10
-[PASS] safety-scheduler-recovery-fires
+[PASS] super-long-chain-100
 [PASS] async-thenable
 [PASS] finally-async-order
 [PASS] finally-async-value
+[PASS] fork-chain-A
+[PASS] fork-chain-B
+[PASS] safety-scheduler-recovery-fires
+[PASS] 2.3.2-adopt-pending
 [PASS] safety-self-resolution-no-hang
 [PASS] static-race-empty-pending
 [PASS] thenable-never-settles
-[PASS] 2.3.2-adopt-pending
 [PASS] late-then-value
 [PASS] late-then-fired
 
 ========================================
-  Test Results: 92/92 passed, 0 failed
+  Test Results: 112/112 passed, 0 failed
   ALL PASSED
 ========================================
