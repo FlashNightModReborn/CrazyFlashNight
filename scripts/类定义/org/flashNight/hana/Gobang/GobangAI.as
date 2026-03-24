@@ -3,6 +3,7 @@ import org.flashNight.hana.Gobang.GobangEval;
 import org.flashNight.hana.Gobang.GobangMinmax;
 import org.flashNight.hana.Gobang.GobangConfig;
 import org.flashNight.hana.Gobang.GobangShape;
+import org.flashNight.hana.Gobang.GobangBook;
 
 class org.flashNight.hana.Gobang.GobangAI {
     private var _board:GobangBoard;
@@ -106,53 +107,38 @@ class org.flashNight.hana.Gobang.GobangAI {
             }
         }
 
-        // 开局阶段信息不足，优先走稳健浅搜
+        // 候选数限制（按棋局阶段）
         if (pieces < 4) {
-            depth = 2;
             if (pl > 8) pl = 8;
         } else if (pieces < 10) {
-            depth = 2;
             if (pl > 10) pl = 10;
         } else if (pieces < 18 && pl > 12) {
             pl = 12;
         }
 
-        // 低预算优先保证宿主负载和战术可信度，不追求“伪深搜”
+        // 帧预算：常态 depth=6（看 3 步己方走法，识别冲四陷阱），战术加深到 8
         if (frameBudgetMs <= 8) {
-            depth = 2;
-            if (pl > 6) pl = 6;
-            enableVCT = false;
+            if (depth > 6) depth = 6;
+            if (pl > 8) pl = 8;
+            // 战术条件加深到 8
             if (urgentFourMoves !== null && urgentFourMoves.length > 0 && urgentFourMoves.length <= 4) {
-                depth = 6;
-                if (pl > 3) pl = 3;
+                depth = 8;
+                if (pl > 4) pl = 4;
                 if (pieces >= 8) enableVCT = true;
             } else if (urgentThreeMoves !== null && urgentThreeMoves.length > 0 && urgentThreeMoves.length <= 6) {
-                depth = 4;
+                depth = 8;
                 if (pl > 4) pl = 4;
-            } else if (pieces >= 6) {
-                var tacticalMoves8:Array = _eval.getMoves(_aiRole, 0, false, false);
-                if (tacticalMoves8.length > 0 && tacticalMoves8.length <= 3) {
-                    depth = 4;
-                    if (pl > 4) pl = 4;
-                }
             }
         } else if (frameBudgetMs <= 16) {
-            depth = 2;
-            if (pl > 8) pl = 8;
-            enableVCT = false;
+            if (depth > 6) depth = 6;
+            if (pl > 10) pl = 10;
             if (urgentFourMoves !== null && urgentFourMoves.length > 0 && urgentFourMoves.length <= 6) {
-                depth = 6;
+                depth = 8;
                 if (pl > 4) pl = 4;
                 if (pieces >= 8) enableVCT = true;
             } else if (urgentThreeMoves !== null && urgentThreeMoves.length > 0 && urgentThreeMoves.length <= 8) {
-                depth = 4;
+                depth = 6;
                 if (pl > 6) pl = 6;
-            } else if (pieces >= 6) {
-                var tacticalMoves16:Array = _eval.getMoves(_aiRole, 0, false, false);
-                if (tacticalMoves16.length > 0 && tacticalMoves16.length <= 4) {
-                    depth = 4;
-                    if (pl > 6) pl = 6;
-                }
             }
         }
 
@@ -509,6 +495,10 @@ class org.flashNight.hana.Gobang.GobangAI {
         var h:Array = _board.history;
         var n:Number = h.length;
         var c:Number = Math.floor(_board.size / 2);
+
+        // 优先查开局库（8 折对称匹配）
+        var bookMove:Object = GobangBook.lookup(h, n);
+        if (bookMove !== null) return bookMove;
 
         if (n === 0) return {x: c, y: c};
 

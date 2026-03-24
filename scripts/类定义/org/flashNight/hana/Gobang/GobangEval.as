@@ -20,8 +20,8 @@ class org.flashNight.hana.Gobang.GobangEval {
     // 候选前沿：只遍历当前活跃空位，避免 getMoves 全盘扫描
     private var _frontierCount:Array; // [flat] 邻近棋子数
     private var _frontierIndex:Array; // [flat] 在 _frontierList 中的位置，-1=不活跃
-    private var _frontierList:Array;  // [flat, ...]
-    private var _frontierTop:Number;
+    public var _frontierList:Array;   // [flat, ...] — Minmax 覆盖数排序需要访问
+    public var _frontierTop:Number;
 
     // 方向表
     private static var allDirs:Array = [[0, 1], [1, 0], [1, 1], [1, -1]];
@@ -853,8 +853,11 @@ class org.flashNight.hana.Gobang.GobangEval {
         var result:Array = [];
         var limit:Number = GobangConfig.pointsLimit;
         if (limit < 1) limit = 1;
+        var isRoot:Boolean = (depth === 0);
         // 深层搜索适度衰减候选数，过激截断会直接伤棋力
-        if (depth >= 4 && limit > 10) limit = 10;
+        if (depth >= 5 && limit > 4) limit = 4;
+        else if (depth >= 3 && limit > 6) limit = 6;
+        else if (depth >= 2 && limit > 8) limit = 8;
         var bs:Array = blackScores;
         var ws:Array = whiteScores;
         var atk:Array = role === 1 ? bs : ws;
@@ -932,68 +935,61 @@ class org.flashNight.hana.Gobang.GobangEval {
             }
             if (hasFive) continue;
 
-            // FOUR/BLOCK_FOUR 或 双活三 强制手：直接缩小根分支
-            // 双活三检测：单方向各为 THREE(3)，≥2 个方向则为必杀型
+            // FOUR/BLOCK_FOUR 或 双活三 强制手检测
             var atkThrees:Number = 0;
             if (a0 === 3) atkThrees++;
             if (a1 === 3) atkThrees++;
             if (a2 === 3) atkThrees++;
             if (a3 === 3) atkThrees++;
-            var atkMajorDirs:Number = 0;
-            if (a0 >= 3 || a0 === 40) atkMajorDirs++;
-            if (a1 >= 3 || a1 === 40) atkMajorDirs++;
-            if (a2 >= 3 || a2 === 40) atkMajorDirs++;
-            if (a3 >= 3 || a3 === 40) atkMajorDirs++;
             var defThrees:Number = 0;
             if (d0 === 3) defThrees++;
             if (d1 === 3) defThrees++;
             if (d2 === 3) defThrees++;
             if (d3 === 3) defThrees++;
-            var defMajorDirs:Number = 0;
-            if (d0 >= 3 || d0 === 40) defMajorDirs++;
-            if (d1 >= 3 || d1 === 40) defMajorDirs++;
-            if (d2 >= 3 || d2 === 40) defMajorDirs++;
-            if (d3 >= 3 || d3 === 40) defMajorDirs++;
-            var edgeMargin:Boolean = (i <= 1 || j <= 1 || i >= sz - 2 || j >= sz - 2);
-            var pseudoAtkFour:Boolean = (attackMax === 40 && edgeMargin && atkMajorDirs <= 1 && atkThrees === 0);
-            var pseudoDefFour:Boolean = (defendMax === 40 && edgeMargin && defMajorDirs <= 1 && defThrees === 0);
-            var exactTier:Number = 0;
-            var exactPriority:Number = 0;
             var isFourMove:Boolean = (attackMax === 4 || defendMax === 4
-                || atkThrees >= 2 || defThrees >= 2
-                || (attackMax === 40 && !pseudoAtkFour)
-                || (defendMax === 40 && !pseudoDefFour));
-            if (onlyFour || onlyThree) {
-                if (!exactOppStateReady) {
-                    oppImmediateWins = countImmediateWins(-role, TRUE_THREAT_LIMIT);
-                    if (oppImmediateWins === 0) {
-                        oppTrueFourMoves = countTrueFourMoves(-role, TRUE_THREAT_LIMIT);
-                    }
-                    exactOppStateReady = true;
-                }
-                analyzeExactUrgentMove(i, j, role, attackMax, atkThrees,
-                    oppImmediateWins, oppTrueFourMoves);
-                exactTier = _exactUrgentTier;
-                exactPriority = _exactUrgentPriority;
-                if (onlyFour) {
-                    if (exactTier < 3) continue;
+                || atkThrees >= 2 || defThrees >= 2);
+
+            // 非根层(depth>0)：跳过所有重量级分析(bridge/exact/coverage)，纯 shape-score 快速路径
+            if (isRoot) {
+                var atkMajorDirs:Number = 0;
+                if (a0 >= 3 || a0 === 40) atkMajorDirs++;
+                if (a1 >= 3 || a1 === 40) atkMajorDirs++;
+                if (a2 >= 3 || a2 === 40) atkMajorDirs++;
+                if (a3 >= 3 || a3 === 40) atkMajorDirs++;
+                var defMajorDirs:Number = 0;
+                if (d0 >= 3 || d0 === 40) defMajorDirs++;
+                if (d1 >= 3 || d1 === 40) defMajorDirs++;
+                if (d2 >= 3 || d2 === 40) defMajorDirs++;
+                if (d3 >= 3 || d3 === 40) defMajorDirs++;
+                var edgeMargin:Boolean = (i <= 1 || j <= 1 || i >= sz - 2 || j >= sz - 2);
+                var pseudoAtkFour:Boolean = (attackMax === 40 && edgeMargin && atkMajorDirs <= 1 && atkThrees === 0);
+                var pseudoDefFour:Boolean = (defendMax === 40 && edgeMargin && defMajorDirs <= 1 && defThrees === 0);
+                if ((attackMax === 40 && !pseudoAtkFour) || (defendMax === 40 && !pseudoDefFour)) {
                     isFourMove = true;
-                } else if (onlyThree) {
-                    if (exactTier < 2) continue;
-                    if (onlyThree) isFourMove = true;
                 }
+                // exact 过滤仅根层 VCT 模式
+                if (onlyFour || onlyThree) {
+                    if (!exactOppStateReady) {
+                        oppImmediateWins = countImmediateWins(-role, TRUE_THREAT_LIMIT);
+                        if (oppImmediateWins === 0) {
+                            oppTrueFourMoves = countTrueFourMoves(-role, TRUE_THREAT_LIMIT);
+                        }
+                        exactOppStateReady = true;
+                    }
+                    analyzeExactUrgentMove(i, j, role, attackMax, atkThrees,
+                        oppImmediateWins, oppTrueFourMoves);
+                    if (onlyFour && _exactUrgentTier < 3) continue;
+                    if (onlyThree && _exactUrgentTier < 2) continue;
+                    isFourMove = true;
+                }
+            } else {
+                // 内部节点：简化的 BLOCK_FOUR 判定（不做 edge pseudo 校验）
+                if (attackMax === 40 || defendMax === 40) isFourMove = true;
             }
-            if (attackMax === 4 || defendMax === 4) {
-                exactPriority = 3000000;
-            } else if (atkThrees >= 2 || defThrees >= 2) {
-                exactPriority = 2000000;
-            } else if ((attackMax === 40 && !pseudoAtkFour) || (defendMax === 40 && !pseudoDefFour)) {
-                exactPriority = 1000000;
-            }
-            var coverageBonus:Number = getThreatCoverageBonus(atkMajorDirs, atkThrees, defMajorDirs, defThrees);
+
             if (isFourMove) {
                 var majorFour:Number = attackScore > defendScore ? attackScore : defendScore;
-                var fourKey:Number = attackScore + defendScore + majorFour + exactPriority + coverageBonus;
+                var fourKey:Number = attackScore + defendScore + majorFour;
                 if (!hasFour) {
                     result.length = 0;
                     hasFour = true;
@@ -1014,16 +1010,16 @@ class org.flashNight.hana.Gobang.GobangEval {
             }
             if (hasFour) continue;
 
-            // 长布局桥接/远端延伸：只参与候选排序，不污染增量总分热路径
-            var bridgeAtk:Number = 0;
-            var bridgeDef:Number = 0;
-            if (maxS < 4) {
-                bridgeAtk = computeBridgePotential(i, j, role);
-                bridgeDef = computeBridgePotential(i, j, -role) >> 1;
-            }
-            // 评分：优先保留攻守兼备位，长布局下给桥接延伸一点额外权重
+            // 评分：shape-score + 单活三堵点加权（确保不被覆盖排序淹没）
             var major:Number = attackScore > defendScore ? attackScore : defendScore;
-            var sortKey:Number = attackScore + defendScore + major + bridgeAtk + bridgeDef + coverageBonus;
+            var threeBoost:Number = 0;
+            if (defThrees >= 1) threeBoost += 8000;  // 堵对手活三
+            if (atkThrees >= 1) threeBoost += 4000;   // 自己成活三
+            var sortKey:Number = attackScore + defendScore + major + threeBoost;
+            if (isRoot && maxS < 4) {
+                sortKey += computeBridgePotential(i, j, role)
+                         + (computeBridgePotential(i, j, -role) >> 1);
+            }
             var resultLen:Number = result.length;
             var tail:Array = resultLen > 0 ? result[resultLen - 1] : null;
             var tailBetter:Boolean = (tail !== null && (sortKey > tail[2]

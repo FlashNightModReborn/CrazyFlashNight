@@ -347,6 +347,99 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         return {x: best.x, y: best.y, score: best.score, nodes: _nodeCount, timedOut: _timedOut};
     }
 
+    // 对手回复覆盖数重排序：走了这手后对手还剩多少 THREE+ 威胁方向
+    // 覆盖更多威胁的走法排前面 — 解决"局部强手 vs 全局拆骨架"问题
+    private function rerankByCoverage(moves:Array, role:Number, maxEval:Number):Void {
+        if (moves.length < 2 || _eval.history.length < 6) return;
+        var opp:Number = -role;
+        var sz:Number = _board.size;
+        // 先测量当前对手威胁基线（即使为 0 也继续——按己方新建威胁排序）
+        var baseThreatCount:Number = countThreats(opp);
+
+        // 对每个候选计算覆盖得分
+        var scores:Array = [];
+        for (var i:Number = 0; i < moves.length; i++) {
+            var mx:Number = moves[i][0];
+            var my:Number = moves[i][1];
+            _board.put(mx, my, role);
+            _eval.move(mx, my, role);
+            var remainThreats:Number = countThreats(opp);
+            var ownThreats:Number = countThreats(role);
+            var ownFours:Number = countFoursOrFives(role);
+            var oppFours:Number = countFoursOrFives(opp);
+            _eval.undo(mx, my);
+            _board.undo();
+            // 覆盖数 = 防守优先（消灭威胁 ×300）+ 进攻（己方威胁 ×60）- 残留惩罚
+            var eliminated:Number = baseThreatCount - remainThreats;
+            var coverage:Number = eliminated * 300 + ownThreats * 60 - remainThreats * 150;
+            if (ownFours > 0) coverage += 1000000; // 己方活四必杀
+            if (oppFours > 0) coverage -= 500000;  // 对手仍有活四→极危险
+            scores[i] = coverage;
+        }
+
+        // 按覆盖数降序插入排序（稳定排序保持原有 eval-score 次序）
+        for (var j:Number = 1; j < moves.length; j++) {
+            var jScore:Number = scores[j];
+            var jMove:Array = moves[j];
+            var k:Number = j - 1;
+            while (k >= 0 && scores[k] < jScore) {
+                moves[k + 1] = moves[k];
+                scores[k + 1] = scores[k];
+                k--;
+            }
+            moves[k + 1] = jMove;
+            scores[k + 1] = jScore;
+        }
+    }
+
+    // 快速统计 FOUR/FIVE 方向数（活四、冲四、五连）
+    private function countFoursOrFives(role:Number):Number {
+        var sc:Array = role === 1 ? _eval.shapeCache[0] : _eval.shapeCache[1];
+        var sc0:Array = sc[0]; var sc1:Array = sc[1]; var sc2:Array = sc[2]; var sc3:Array = sc[3];
+        var brd:Array = _eval.board;
+        var sz:Number = _board.size;
+        var frontier:Array = _eval._frontierList;
+        var frontierTop:Number = _eval._frontierTop;
+        var count:Number = 0;
+        for (var fi:Number = 0; fi < frontierTop; fi++) {
+            var fp:Number = frontier[fi];
+            var i:Number = (fp / sz) | 0;
+            var j:Number = fp - i * sz;
+            if (brd[i + 1][j + 1] !== 0) continue;
+            var s0:Number = sc0[i][j]; var s1:Number = sc1[i][j];
+            var s2:Number = sc2[i][j]; var s3:Number = sc3[i][j];
+            // FOUR=4, FIVE=5, BLOCK_FOUR=40, BLOCK_FIVE=50
+            if (s0 === 4 || s0 === 5 || s0 === 40 || s0 === 50) count++;
+            if (s1 === 4 || s1 === 5 || s1 === 40 || s1 === 50) count++;
+            if (s2 === 4 || s2 === 5 || s2 === 40 || s2 === 50) count++;
+            if (s3 === 4 || s3 === 5 || s3 === 40 || s3 === 50) count++;
+            if (count > 0) return count; // 有一个就够了
+        }
+        return count;
+    }
+
+    // 快速统计指定角色的 THREE+ 威胁方向总数
+    private function countThreats(role:Number):Number {
+        var sc:Array = role === 1 ? _eval.shapeCache[0] : _eval.shapeCache[1];
+        var sc0:Array = sc[0]; var sc1:Array = sc[1]; var sc2:Array = sc[2]; var sc3:Array = sc[3];
+        var brd:Array = _eval.board;
+        var sz:Number = _board.size;
+        var frontier:Array = _eval._frontierList;
+        var frontierTop:Number = _eval._frontierTop;
+        var count:Number = 0;
+        for (var fi:Number = 0; fi < frontierTop; fi++) {
+            var fp:Number = frontier[fi];
+            var i:Number = (fp / sz) | 0;
+            var j:Number = fp - i * sz;
+            if (brd[i + 1][j + 1] !== 0) continue;
+            if (sc0[i][j] >= 3) count++;
+            if (sc1[i][j] >= 3) count++;
+            if (sc2[i][j] >= 3) count++;
+            if (sc3[i][j] >= 3) count++;
+        }
+        return count;
+    }
+
     // rootLimit: >0 时截断根候选到前 N 个（短名单深搜核心）
     private function searchFixedDepth(role:Number, depth:Number,
             onlyThree:Boolean, onlyFour:Boolean,
@@ -362,8 +455,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             if (_board.board[center][center] === 0 && !hasMove(moves, center, center)) {
                 moves.push([center, center]);
             }
-            if (_board.history.length >= 10 && moves.length >= 4) {
-                mergeBridgeMoves(moves, role, 3, 2);
+            // 根候选覆盖数重排序 — pieces>=6 即启用（早期布局同样需要多路覆盖）
+            if (_eval.history.length >= 6 && moves.length >= 3) {
+                rerankByCoverage(moves, role, 0);
             }
         }
         if (!moves.length) {
@@ -428,8 +522,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             if (_board.board[center][center] === 0 && !hasMove(_asyncMoves, center, center)) {
                 _asyncMoves.push([center, center]);
             }
-            if (_board.history.length >= 10 && _asyncMoves.length >= 4) {
-                mergeBridgeMoves(_asyncMoves, _asyncRole, 3, 2);
+            // 根候选覆盖数重排序 — pieces>=6 即启用
+            if (_eval.history.length >= 6 && _asyncMoves.length >= 3) {
+                rerankByCoverage(_asyncMoves, _asyncRole, 0);
             }
         }
         _asyncMoveIndex = 0;
