@@ -120,42 +120,107 @@
     // 零分配版本：返回 shape Number（不返回 selfCount，调用者不使用）
     public static function getShapeFast(board:Array, x:Number, y:Number,
             offsetX:Number, offsetY:Number, role:Number):Number {
-        if (board[x + offsetX + 1][y + offsetY + 1] === 0
-            && board[x - offsetX + 1][y - offsetY + 1] === 0
-            && board[x + 2 * offsetX + 1][y + 2 * offsetY + 1] === 0
-            && board[x - 2 * offsetX + 1][y - 2 * offsetY + 1] === 0) {
+        var brd:Array = board;
+        var px:Number = x + 1;
+        var py:Number = y + 1;
+        var off2X:Number = offsetX + offsetX;
+        var off2Y:Number = offsetY + offsetY;
+        if (brd[px + offsetX][py + offsetY] === 0
+            && brd[px - offsetX][py - offsetY] === 0
+            && brd[px + off2X][py + off2Y] === 0
+            && brd[px - off2X][py - off2Y] === 0) {
             return NONE;
         }
 
-        countShape(board, x, y, -offsetX, -offsetY, role, 0); // left → _l*
-        countShape(board, x, y, offsetX, offsetY, role, 1);    // right → _r*
+        var opponent:Number = -role;
+        var lTotal:Number = 0;
+        var lNoEmpty:Number = 0;
+        var lOneEmpty:Number = 0;
+        var lSide:Number = 0;
+        var rTotal:Number = 0;
+        var rNoEmpty:Number = 0;
+        var rOneEmpty:Number = 0;
+        var rSide:Number = 0;
+        var innerEmpty:Number;
+        var tempEmpty:Number;
+        var sideEmpty:Number;
+        var cx:Number;
+        var cy:Number;
+        var cur:Number;
+        var i:Number;
 
-        var totalLength:Number = _lTotal + _rTotal + 1;
+        innerEmpty = 0;
+        tempEmpty = 0;
+        sideEmpty = 0;
+        cx = px - offsetX;
+        cy = py - offsetY;
+        for (i = 1; i <= 5; i++) {
+            cur = brd[cx][cy];
+            cx -= offsetX;
+            cy -= offsetY;
+            if (cur === 2 || cur === opponent) break;
+            if (cur === role) {
+                sideEmpty = 0;
+                if (tempEmpty) { innerEmpty += tempEmpty; tempEmpty = 0; }
+                if (innerEmpty === 0) { lNoEmpty++; lOneEmpty++; }
+                else if (innerEmpty === 1) { lOneEmpty++; }
+            }
+            lTotal++;
+            if (cur === 0) { tempEmpty++; sideEmpty++; }
+            if (sideEmpty >= 2) break;
+        }
+        lSide = sideEmpty;
+        if (!innerEmpty) lOneEmpty = 0;
+
+        innerEmpty = 0;
+        tempEmpty = 0;
+        sideEmpty = 0;
+        cx = px + offsetX;
+        cy = py + offsetY;
+        for (i = 1; i <= 5; i++) {
+            cur = brd[cx][cy];
+            cx += offsetX;
+            cy += offsetY;
+            if (cur === 2 || cur === opponent) break;
+            if (cur === role) {
+                sideEmpty = 0;
+                if (tempEmpty) { innerEmpty += tempEmpty; tempEmpty = 0; }
+                if (innerEmpty === 0) { rNoEmpty++; rOneEmpty++; }
+                else if (innerEmpty === 1) { rOneEmpty++; }
+            }
+            rTotal++;
+            if (cur === 0) { tempEmpty++; sideEmpty++; }
+            if (sideEmpty >= 2) break;
+        }
+        rSide = sideEmpty;
+        if (!innerEmpty) rOneEmpty = 0;
+
+        var totalLength:Number = lTotal + rTotal + 1;
         if (totalLength < 5) return NONE;
 
-        var noEmptySelf:Number = _lNoEmpty + _rNoEmpty + 1;
-        var leftOneE:Number = _lOneEmpty + _rNoEmpty;
-        var rightOneE:Number = _lNoEmpty + _rOneEmpty;
+        var noEmptySelf:Number = lNoEmpty + rNoEmpty + 1;
+        var leftOneE:Number = lOneEmpty + rNoEmpty;
+        var rightOneE:Number = lNoEmpty + rOneEmpty;
         var oneEmptySelf:Number = (leftOneE > rightOneE ? leftOneE : rightOneE) + 1;
 
         if (noEmptySelf >= 5) {
-            return (_rSide > 0 && _lSide > 0) ? FIVE : BLOCK_FIVE;
+            return (rSide > 0 && lSide > 0) ? FIVE : BLOCK_FIVE;
         }
         if (noEmptySelf === 4) {
-            if ((_rSide >= 1 || _rOneEmpty > _rNoEmpty)
-                && (_lSide >= 1 || _lOneEmpty > _lNoEmpty)) {
+            if ((rSide >= 1 || rOneEmpty > rNoEmpty)
+                && (lSide >= 1 || lOneEmpty > lNoEmpty)) {
                 return FOUR;
             }
-            if (!(_rSide === 0 && _lSide === 0)) return BLOCK_FOUR;
+            if (!(rSide === 0 && lSide === 0)) return BLOCK_FOUR;
         }
         if (oneEmptySelf === 4) return BLOCK_FOUR;
         if (noEmptySelf === 3) {
-            return ((_rSide >= 2 && _lSide >= 1) || (_rSide >= 1 && _lSide >= 2)) ? THREE : BLOCK_THREE;
+            return ((rSide >= 2 && lSide >= 1) || (rSide >= 1 && lSide >= 2)) ? THREE : BLOCK_THREE;
         }
         if (oneEmptySelf === 3) {
-            return (_rSide >= 1 && _lSide >= 1) ? THREE : BLOCK_THREE;
+            return (rSide >= 1 && lSide >= 1) ? THREE : BLOCK_THREE;
         }
         if ((noEmptySelf === 2 || oneEmptySelf === 2) && totalLength > 5) return TWO;
         return NONE;
     }
-}
+}

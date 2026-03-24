@@ -73,10 +73,11 @@ class org.flashNight.hana.Gobang.GobangGame {
         _instId = _counter;
         _host = host;
 
+        var explicitBudget:Boolean = (config != null && config.frameBudget > 0);
+
         CELL = (config != null && config.cell > 0) ? config.cell : 28;
         BOARD_SIZE = 15;
         MARGIN = (config != null && config.margin != undefined) ? config.margin : 20;
-        FRAME_BUDGET = (config != null && config.frameBudget > 0) ? config.frameBudget : 16;
         LINE_COLOR = 0x333333;
         BG_COLOR = 0xDEB887;
         BLACK_COLOR = 0x111111;
@@ -87,6 +88,9 @@ class org.flashNight.hana.Gobang.GobangGame {
 
         _difficulty = (config != null && config.difficulty != undefined) ? config.difficulty : 80;
         _aiRole = (config != null && config.aiRole != undefined) ? config.aiRole : -1;
+        FRAME_BUDGET = explicitBudget
+            ? config.frameBudget
+            : 8;
 
         _lastMoveX = -1;
         _lastMoveY = -1;
@@ -282,7 +286,7 @@ class org.flashNight.hana.Gobang.GobangGame {
         _frameCount = 0;
         _lastStepResult = null;
         _candidateMc.clear();
-        _ai.aiMoveStart();
+        _ai.aiMoveStart(FRAME_BUDGET);
         _updateStatus("AI \u601D\u8003\u4E2D...");
         var self:GobangGame = this;
         _rootMc.onEnterFrame = function() {

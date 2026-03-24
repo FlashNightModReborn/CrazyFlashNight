@@ -46,6 +46,7 @@ class org.flashNight.hana.Gobang.GobangTest {
         testEval();
         testMinmax();
         testAI();
+        testAsyncAI();
 
         trace("=== Results: " + _passed + " passed, " + _failed + " failed ===");
     }
@@ -64,6 +65,8 @@ class org.flashNight.hana.Gobang.GobangTest {
         testEval();
         testMinmax();
         testAI();
+        testAsyncAI();
+        runBenchmark();
 
         trace("=== Results: " + _passed + " passed, " + _failed + " failed ===");
     }
@@ -556,6 +559,69 @@ class org.flashNight.hana.Gobang.GobangTest {
         assert(ai3.getDifficulty() === 100, "AI setDifficulty");
     }
 
+    private static function testAsyncAI():Void {
+        trace("--- testAsyncAI ---");
+
+        // Test 1: 黑棋开局库直接走天元
+        var ai0:GobangAI = new GobangAI(1, 100);
+        assert(ai0.aiMoveStart() === true, "Async AI opening start succeeds");
+        var openResult:Object = ai0.aiMoveStep(1);
+        assert(openResult.done === true, "Async AI opening finishes immediately");
+        assert(openResult.phaseLabel === "opening", "Async AI opening phase");
+        assert(openResult.x === 7 && openResult.y === 7, "Async AI opening move is center");
+
+        // Test 2: 中局异步搜索可在有限步数内完成，防止每帧重启导致卡死
+        var board:GobangBoard = new GobangBoard(15, 1);
+        var eval:GobangEval = new GobangEval(15);
+        var setup:Array = [
+            [7,7,1], [6,6,-1], [7,8,1], [6,7,-1], [7,9,1],
+            [8,8,-1], [6,8,1], [8,7,-1], [5,7,1], [8,6,-1]
+        ];
+        for (var si:Number = 0; si < setup.length; si++) {
+            board.put(setup[si][0], setup[si][1], setup[si][2]);
+            eval.move(setup[si][0], setup[si][1], setup[si][2]);
+        }
+        var mm:GobangMinmax = new GobangMinmax(board, eval);
+        mm.searchStart(1, 4, false);
+        var frames:Number = 0;
+        var stepResult:Object = null;
+        var start:Number = getTimer();
+        while (frames < 90) {
+            stepResult = mm.step(8);
+            frames++;
+            if (stepResult.done) break;
+        }
+        var elapsed:Number = getTimer() - start;
+        assert(stepResult !== null && stepResult.done === true,
+               "Async Minmax finishes within 90 steps (frames=" + frames + ")");
+        assert(stepResult.nodes > 0, "Async Minmax visits nodes: " + stepResult.nodes);
+        assert(stepResult.x >= 0 && stepResult.x < 15 && stepResult.y >= 0 && stepResult.y < 15,
+               "Async Minmax returns valid move (" + stepResult.x + "," + stepResult.y + ")");
+        trace("[INFO] Async Minmax smoke(8ms): " + elapsed + "ms, steps=" + frames
+              + ", phase=" + stepResult.phaseLabel + ", nodes=" + stepResult.nodes);
+
+        // Test 3: AI 低预算异步入口可完成，不依赖高帧预算
+        var aiLow:GobangAI = new GobangAI(-1, 100);
+        aiLow.playerMove(7, 7);
+        aiLow.aiMove(); // 开局库应答
+        aiLow.playerMove(7, 8);
+        assert(aiLow.aiMoveStart(8) === true, "Async AI low-budget start succeeds");
+        frames = 0;
+        start = getTimer();
+        while (frames < 120) {
+            stepResult = aiLow.aiMoveStep(8);
+            frames++;
+            if (stepResult.done) break;
+        }
+        elapsed = getTimer() - start;
+        assert(stepResult !== null && stepResult.done === true,
+               "Async AI low-budget finishes within 120 steps (frames=" + frames + ")");
+        assert(stepResult.x >= 0 && stepResult.x < 15 && stepResult.y >= 0 && stepResult.y < 15,
+               "Async AI low-budget returns valid move (" + stepResult.x + "," + stepResult.y + ")");
+        trace("[INFO] Async AI smoke(8ms): " + elapsed + "ms, steps=" + frames
+              + ", phase=" + stepResult.phaseLabel + ", nodes=" + stepResult.nodes);
+    }
+
     // ===== 性能基准测试 =====
     public static function runBenchmark():Void {
         trace("=== Gobang Performance Benchmark ===");
@@ -671,6 +737,13 @@ class org.flashNight.hana.Gobang.GobangTest {
         t1 = getTimer();
         trace("negamax depth=2 noVCT: " + (t1 - t0) + "ms, nodes=" + result.nodes + " (" + ((t1 - t0) * 1000 / result.nodes) + "us/node)");
 
+        // --- Bench 9b: 完整 negamax depth=4 (若超时则应回退到上一次完成深度) ---
+        t0 = getTimer();
+        var result4:Object = mm.search(-1, 4, false);
+        t1 = getTimer();
+        trace("negamax depth=4 noVCT: " + (t1 - t0) + "ms, nodes=" + result4.nodes
+              + ", timedOut=" + result4.timedOut + ", move=(" + result4.x + "," + result4.y + ")");
+
         // --- Bench 10: _shapeScore 内联版 vs getRealShapeScore ---
         REPS = 10000;
         var shapes:Array = [0, 2, 3, 30, 40, 4, 5, 50, 44, 43, 33, 22];
@@ -684,6 +757,42 @@ class org.flashNight.hana.Gobang.GobangTest {
         t1 = getTimer();
         trace("getRealShapeScore x" + (REPS * 12) + ": " + (t1 - t0) + "ms (" + ((t1 - t0) * 1000 / (REPS * 12)) + "us/call)");
 
+        // --- Bench 11: 异步 Minmax 在 8ms/16ms 预算下的端到端耗时 ---
+        var board2:GobangBoard = new GobangBoard(15, 1);
+        var eval2:GobangEval = new GobangEval(15);
+        for (mi = 0; mi < moves.length; mi++) {
+            board2.put(moves[mi][0], moves[mi][1], moves[mi][2]);
+            eval2.move(moves[mi][0], moves[mi][1], moves[mi][2]);
+        }
+        var mmAsync:GobangMinmax = new GobangMinmax(board2, eval2);
+        mmAsync.searchStart(-1, 4, false);
+        var perfFrames:Number = 0;
+        var perfStep:Object;
+        t0 = getTimer();
+        while (perfFrames < 120) {
+            perfStep = mmAsync.step(8);
+            perfFrames++;
+            if (perfStep.done) break;
+        }
+        t1 = getTimer();
+        trace("async Minmax 8ms budget: " + (t1 - t0) + "ms total, steps=" + perfFrames
+              + ", phase=" + perfStep.phaseLabel + ", nodes=" + perfStep.nodes
+              + ", move=(" + perfStep.x + "," + perfStep.y + ")");
+
+        var mmAsync2:GobangMinmax = new GobangMinmax(board2, eval2);
+        mmAsync2.searchStart(-1, 4, false);
+        perfFrames = 0;
+        t0 = getTimer();
+        while (perfFrames < 120) {
+            perfStep = mmAsync2.step(16);
+            perfFrames++;
+            if (perfStep.done) break;
+        }
+        t1 = getTimer();
+        trace("async Minmax 16ms budget: " + (t1 - t0) + "ms total, steps=" + perfFrames
+              + ", phase=" + perfStep.phaseLabel + ", nodes=" + perfStep.nodes
+              + ", move=(" + perfStep.x + "," + perfStep.y + ")");
+
         trace("=== Benchmark Done ===");
     }
-}
+}

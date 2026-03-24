@@ -7,6 +7,8 @@ import org.flashNight.hana.Gobang.GobangConfig;
 class org.flashNight.hana.Gobang.GobangMinmax {
     private static var MAX:Number = 1000000000;
     private static var ONLY_THREE_THRESHOLD:Number = 6;
+    private static var DEFAULT_BUDGET_MS:Number = 3000;
+    private static var TIME_CHECK_MASK:Number = 7;
 
     private var _board:GobangBoard;
     private var _eval:GobangEval;
@@ -17,243 +19,395 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     private var _budgetMs:Number;
 
     // 异步搜索状态
-    // phase: 0=IDLE, 1=VCT, 2=MINMAX, 3=COUNTER_VCT, 4=DONE
     private var _asyncPhase:Number;
     private var _asyncRole:Number;
     private var _asyncMaxDepth:Number;
     private var _asyncEnableVCT:Boolean;
     private var _asyncBestResult:Object;
-    private var _asyncVCTResult:Array;
-    private var _asyncMMResult:Array;
     private var _asyncTotalNodes:Number;
     private var _asyncCurrentDepth:Number;
     private var _asyncDone:Boolean;
+    private var _asyncVCTStartTime:Number;
+    private var _asyncLastCompletedDepth:Number;
+    private var _asyncMoves:Array;
+    private var _asyncMoveIndex:Number;
+    private var _asyncTargetDepth:Number;
+    private var _asyncOnlyThree:Boolean;
+    private var _asyncOnlyFour:Boolean;
+    private var _asyncAlpha:Number;
+    private var _asyncBeta:Number;
+    private var _asyncWorkingBestScore:Number;
+    private var _asyncWorkingBestX:Number;
+    private var _asyncWorkingBestY:Number;
 
-    // 根层进度追踪（negamax cDepth===0 时写入）
+    // 根层进度追踪（1-based）
     private var _rootMoveIdx:Number;
     private var _rootMoveTotal:Number;
-    private var _asyncVCTStartTime:Number; // VCT 开始时间（跨帧累计）
 
     public function GobangMinmax(board:GobangBoard, eval:GobangEval) {
         _board = board;
         _eval = eval;
-        _cache = new GobangCache(100000);
+        _cache = new GobangCache(60000);
         _nodeCount = 0;
         _timedOut = false;
-        _budgetMs = 3000;
+        _budgetMs = DEFAULT_BUDGET_MS;
         _asyncPhase = 0;
         _asyncDone = true;
         _asyncTotalNodes = 0;
+        _asyncLastCompletedDepth = 0;
+        _asyncMoves = null;
+        _asyncMoveIndex = 0;
+        _asyncTargetDepth = 0;
+        _asyncOnlyThree = false;
+        _asyncOnlyFour = false;
+        _asyncAlpha = -MAX;
+        _asyncBeta = MAX;
+        _asyncWorkingBestScore = -MAX;
+        _asyncWorkingBestX = -1;
+        _asyncWorkingBestY = -1;
         _rootMoveIdx = 0;
         _rootMoveTotal = 0;
     }
 
-    // ===== 同步搜索（保留兼容） =====
-    public function search(role:Number, maxDepth:Number, enableVCT:Boolean):Object {
-        if (maxDepth === undefined) maxDepth = GobangConfig.searchDepth;
-        if (enableVCT === undefined) enableVCT = true;
+    private function normalizeDepth(depth:Number):Number {
+        if (depth === undefined || depth < 2) depth = 2;
+        if ((depth & 1) !== 0) depth--;
+        if (depth < 2) depth = 2;
+        return depth;
+    }
+
+    private function hasMove(moves:Array, x:Number, y:Number):Boolean {
+        for (var i:Number = 0; i < moves.length; i++) {
+            if (moves[i][0] === x && moves[i][1] === y) return true;
+        }
+        return false;
+    }
+
+    private function promoteMove(moves:Array, x:Number, y:Number):Void {
+        if (x < 0 || y < 0) return;
+        for (var i:Number = 0; i < moves.length; i++) {
+            if (moves[i][0] === x && moves[i][1] === y) {
+                if (i === 0) return;
+                var tmp:Array = moves[0];
+                moves[0] = moves[i];
+                moves[i] = tmp;
+                return;
+            }
+        }
+    }
+
+    private function beginTimedSearch(budgetMs:Number):Void {
+        _budgetMs = budgetMs;
+        _startTime = getTimer();
         _nodeCount = 0;
         _timedOut = false;
-        _budgetMs = 3000;
-        _startTime = getTimer();
+    }
 
-        // 棋子 < 8 时无算杀可能
-        if (enableVCT && _eval.history.length < 8) enableVCT = false;
+    // ===== 同步搜索 =====
 
-        if (!enableVCT) {
-            var result:Array = negamax(role, maxDepth, 0, -MAX, MAX, false, false);
-            return {x: result[1], y: result[2], score: result[0], nodes: _nodeCount, timedOut: _timedOut};
-        }
+    public function search(role:Number, maxDepth:Number, enableVCT:Boolean):Object {
+        maxDepth = normalizeDepth(maxDepth === undefined ? GobangConfig.searchDepth : maxDepth);
+        if (enableVCT === undefined) enableVCT = true;
 
-        var vctDepth:Number = maxDepth + 4;
-
-        // 1. 先看自己有没有算杀
-        var vctResult:Array = negamax(role, vctDepth, 0, -MAX, MAX, true, false);
-        if (vctResult[0] >= GobangShape.FIVE_SCORE) {
-            return {x: vctResult[1], y: vctResult[2], score: vctResult[0], nodes: _nodeCount, timedOut: _timedOut};
-        }
-
-        // 2. 普通 minimax
+        _nodeCount = 0;
         _timedOut = false;
-        var mmResult:Array = negamax(role, maxDepth, 0, -MAX, MAX, false, false);
-        var mmValue:Number = mmResult[0];
-        var mmX:Number = mmResult[1];
-        var mmY:Number = mmResult[2];
+        _budgetMs = DEFAULT_BUDGET_MS;
+        _startTime = getTimer();
+        _rootMoveIdx = 0;
+        _rootMoveTotal = 0;
 
-        if (mmX < 0) {
-            return {x: mmX, y: mmY, score: mmValue, nodes: _nodeCount, timedOut: _timedOut};
-        }
+        var best:Object = {x: -1, y: -1, score: _eval.evaluate(role), timedOut: false};
+        var prefX:Number = -1;
+        var prefY:Number = -1;
 
-        // 3. 检查对手反杀：走完自己的最优步后，对手是否有算杀
-        _board.put(mmX, mmY, role);
-        _eval.move(mmX, mmY, role);
-        var rev:Object = _board.reverse();
-        var revBoard:GobangBoard = GobangBoard(rev.board);
-        var revEval:GobangEval = GobangEval(rev.eval);
-        var revMM:GobangMinmax = new GobangMinmax(revBoard, revEval);
-        revMM._startTime = _startTime;
-        revMM._timedOut = _timedOut;
-        var counterVCT:Array = revMM.negamax(role, vctDepth, 0, -MAX, MAX, true, false);
-        _eval.undo(mmX, mmY);
-        _board.undo();
-
-        if (mmValue < GobangShape.FIVE_SCORE && counterVCT[0] >= GobangShape.FIVE_SCORE) {
-            // 对手有反杀，检查不走棋时对手是否同样有杀
-            var rev2:Object = _board.reverse();
-            var rev2Board:GobangBoard = GobangBoard(rev2.board);
-            var rev2Eval:GobangEval = GobangEval(rev2.eval);
-            var rev2MM:GobangMinmax = new GobangMinmax(rev2Board, rev2Eval);
-            rev2MM._startTime = _startTime;
-            rev2MM._timedOut = _timedOut;
-            var counterVCT2:Array = rev2MM.negamax(role, vctDepth, 0, -MAX, MAX, true, false);
-            // 如果走棋后对手杀棋没有变长，说明走错了，用对手的杀棋走法来防守
-            if (counterVCT[1] >= 0 && counterVCT[1] < 15 && counterVCT2[0] >= GobangShape.FIVE_SCORE) {
-                return {x: counterVCT[1], y: counterVCT[2], score: mmValue, nodes: _nodeCount, timedOut: _timedOut};
+        if (enableVCT && _eval.history.length >= 8) {
+            var vct:Object = searchFixedDepth(role, maxDepth + 4, true, false, -1, -1);
+            if (vct.x >= 0) {
+                best = vct;
+                prefX = vct.x;
+                prefY = vct.y;
+            }
+            if (!vct.timedOut && vct.score >= GobangShape.FIVE_SCORE) {
+                return {x: vct.x, y: vct.y, score: vct.score, nodes: _nodeCount, timedOut: _timedOut};
+            }
+            if (_timedOut) {
+                return {x: best.x, y: best.y, score: best.score, nodes: _nodeCount, timedOut: true};
             }
         }
 
-        return {x: mmX, y: mmY, score: mmValue, nodes: _nodeCount, timedOut: _timedOut};
+        for (var depth:Number = 2; depth <= maxDepth; depth += 2) {
+            var cur:Object = searchFixedDepth(role, depth, false, false, prefX, prefY);
+            if (cur.x >= 0) {
+                best = cur;
+                prefX = cur.x;
+                prefY = cur.y;
+            }
+            if (_timedOut || cur.score >= GobangShape.FIVE_SCORE) break;
+        }
+
+        return {x: best.x, y: best.y, score: best.score, nodes: _nodeCount, timedOut: _timedOut};
     }
 
-    // 通用 negamax — onlyThree/onlyFour 控制 VCT/VCF 模式
+    private function searchFixedDepth(role:Number, depth:Number,
+            onlyThree:Boolean, onlyFour:Boolean,
+            preferredX:Number, preferredY:Number):Object {
+        _rootMoveIdx = 0;
+        _rootMoveTotal = 0;
+
+        var moves:Array = _eval.getMoves(role, 0, onlyThree, onlyFour);
+        if (!onlyThree && !onlyFour) {
+            var center:Number = Math.floor(_board.size / 2);
+            if (_board.board[center][center] === 0 && !hasMove(moves, center, center)) {
+                moves.push([center, center]);
+            }
+        }
+        if (!moves.length) {
+            return {x: -1, y: -1, score: _eval.evaluate(role), timedOut: _timedOut};
+        }
+
+        var prev:Object = _cache.get(_board.hash());
+        if (preferredX >= 0) promoteMove(moves, preferredX, preferredY);
+        if (prev !== null && prev.role === role && prev.onlyThree === onlyThree && prev.onlyFour === onlyFour) {
+            promoteMove(moves, prev.moveX, prev.moveY);
+        }
+
+        var alpha:Number = -MAX;
+        var beta:Number = MAX;
+        var bestScore:Number = -MAX;
+        var bestX:Number = -1;
+        var bestY:Number = -1;
+
+        _rootMoveTotal = moves.length;
+        for (var i:Number = 0; i < moves.length; i++) {
+            if (getTimer() - _startTime > _budgetMs) {
+                _timedOut = true;
+                break;
+            }
+            _rootMoveIdx = i + 1;
+            var mx:Number = moves[i][0];
+            var my:Number = moves[i][1];
+            _board.put(mx, my, role);
+            _eval.move(mx, my, role);
+            var child:Array = negamax(-role, depth - 1, 1, -beta, -alpha, onlyThree, onlyFour);
+            var currentValue:Number = -child[0];
+            _eval.undo(mx, my);
+            _board.undo();
+
+            if (bestX < 0 || currentValue > bestScore) {
+                bestScore = currentValue;
+                bestX = mx;
+                bestY = my;
+            }
+            if (currentValue > alpha) alpha = currentValue;
+            if (_timedOut || alpha >= beta || currentValue >= GobangShape.FIVE_SCORE) break;
+        }
+
+        if (bestX < 0) {
+            bestScore = _eval.evaluate(role);
+        }
+        return {x: bestX, y: bestY, score: bestScore, timedOut: _timedOut};
+    }
+
+    private function initAsyncRootSearch(depth:Number, onlyThree:Boolean, onlyFour:Boolean):Boolean {
+        _asyncTargetDepth = depth;
+        _asyncOnlyThree = onlyThree;
+        _asyncOnlyFour = onlyFour;
+        _asyncMoves = _eval.getMoves(_asyncRole, 0, onlyThree, onlyFour);
+        if (!onlyThree && !onlyFour) {
+            var center:Number = Math.floor(_board.size / 2);
+            if (_board.board[center][center] === 0 && !hasMove(_asyncMoves, center, center)) {
+                _asyncMoves.push([center, center]);
+            }
+        }
+        _asyncMoveIndex = 0;
+        _asyncAlpha = -MAX;
+        _asyncBeta = MAX;
+        _asyncWorkingBestScore = -MAX;
+        _asyncWorkingBestX = -1;
+        _asyncWorkingBestY = -1;
+        _rootMoveIdx = 0;
+        _rootMoveTotal = _asyncMoves.length;
+
+        if (!_asyncMoves.length) return false;
+
+        var prev:Object = _cache.get(_board.hash());
+        if (_asyncBestResult.x >= 0) {
+            promoteMove(_asyncMoves, _asyncBestResult.x, _asyncBestResult.y);
+        }
+        if (prev !== null && prev.role === _asyncRole
+                && prev.onlyThree === onlyThree && prev.onlyFour === onlyFour) {
+            promoteMove(_asyncMoves, prev.moveX, prev.moveY);
+        }
+        return true;
+    }
+
+    private function stepAsyncRootSearch(frameBudgetMs:Number):Object {
+        beginTimedSearch(frameBudgetMs);
+
+        while (_asyncMoveIndex < _asyncMoves.length) {
+            if (getTimer() - _startTime > _budgetMs) {
+                _timedOut = true;
+                break;
+            }
+
+            _rootMoveIdx = _asyncMoveIndex + 1;
+            var mx:Number = _asyncMoves[_asyncMoveIndex][0];
+            var my:Number = _asyncMoves[_asyncMoveIndex][1];
+            _board.put(mx, my, _asyncRole);
+            _eval.move(mx, my, _asyncRole);
+            var child:Array = negamax(-_asyncRole, _asyncTargetDepth - 1, 1,
+                    -_asyncBeta, -_asyncAlpha, _asyncOnlyThree, _asyncOnlyFour);
+            var currentValue:Number = -child[0];
+            _eval.undo(mx, my);
+            _board.undo();
+            _asyncMoveIndex++;
+
+            if (!_timedOut) {
+                if (_asyncWorkingBestX < 0 || currentValue > _asyncWorkingBestScore) {
+                    _asyncWorkingBestScore = currentValue;
+                    _asyncWorkingBestX = mx;
+                    _asyncWorkingBestY = my;
+                }
+                if (currentValue > _asyncAlpha) _asyncAlpha = currentValue;
+                if (_asyncAlpha >= _asyncBeta || currentValue >= GobangShape.FIVE_SCORE) {
+                    _asyncMoveIndex = _asyncMoves.length;
+                    break;
+                }
+            } else if (_asyncWorkingBestX < 0) {
+                _asyncWorkingBestScore = currentValue;
+                _asyncWorkingBestX = mx;
+                _asyncWorkingBestY = my;
+                break;
+            } else {
+                break;
+            }
+        }
+
+        var finished:Boolean = (_asyncMoveIndex >= _asyncMoves.length);
+        if (finished && _asyncWorkingBestX >= 0) {
+            _asyncBestResult = {
+                x: _asyncWorkingBestX,
+                y: _asyncWorkingBestY,
+                score: _asyncWorkingBestScore
+            };
+            _asyncLastCompletedDepth = _asyncTargetDepth;
+            _asyncMoves = null;
+        }
+
+        var showX:Number = finished ? _asyncBestResult.x : _asyncWorkingBestX;
+        var showY:Number = finished ? _asyncBestResult.y : _asyncWorkingBestY;
+        var showScore:Number = finished ? _asyncBestResult.score : _asyncWorkingBestScore;
+        if (showX < 0 && _asyncBestResult.x >= 0) {
+            showX = _asyncBestResult.x;
+            showY = _asyncBestResult.y;
+            showScore = _asyncBestResult.score;
+        }
+        return {
+            done: finished,
+            x: showX,
+            y: showY,
+            score: showScore,
+            timedOut: _timedOut
+        };
+    }
+
+    // 通用 negamax（无节点内迭代加深）
     // result: [value, moveX, moveY]
-    private function negamax(role:Number, depth:Number, cDepth:Number,
+    private function negamax(role:Number, depthLeft:Number, cDepth:Number,
             alpha:Number, beta:Number, onlyThree:Boolean, onlyFour:Boolean):Array {
         _nodeCount++;
-        // 每 100 节点检查一次时间预算
-        if ((_nodeCount & 63) === 0) {
+        if (_budgetMs <= 32 || (_nodeCount & TIME_CHECK_MASK) === 0) {
             if (getTimer() - _startTime > _budgetMs) {
                 _timedOut = true;
             }
         }
 
-        if (cDepth >= depth || _board.isGameOver() || _timedOut) {
+        if (depthLeft <= 0 || _board.isGameOver() || _timedOut) {
             var winner:Number = _board.getWinner();
             var score:Number;
             if (winner !== 0) {
-                score = GobangShape.FIVE_SCORE * winner * role;
+                score = (GobangShape.FIVE_SCORE - cDepth) * winner * role;
             } else {
                 score = _eval.evaluate(role);
             }
             return [score, -1, -1];
         }
 
-        // 缓存查询
         var hash:String = _board.hash();
         var prev:Object = _cache.get(hash);
-        if (prev !== null && prev.role === role) {
-            var absVal:Number = prev.value;
-            if (absVal < 0) absVal = -absVal;
-            if (absVal >= GobangShape.FIVE_SCORE || prev.depth >= depth - cDepth) {
-                if (prev.onlyThree === onlyThree && prev.onlyFour === onlyFour) {
-                    return [prev.value, prev.moveX, prev.moveY];
-                }
-            }
+        if (prev !== null
+                && prev.role === role
+                && prev.onlyThree === onlyThree
+                && prev.onlyFour === onlyFour
+                && prev.depth >= depthLeft) {
+            return [prev.value, prev.moveX, prev.moveY];
         }
 
-        var value:Number = -MAX;
-        var bestX:Number = -1;
-        var bestY:Number = -1;
-
-        // 获取走法 — VCT/VCF 模式传递过滤参数
         var useOnlyThree:Boolean = onlyThree || cDepth > ONLY_THREE_THRESHOLD;
         var moves:Array = _eval.getMoves(role, cDepth, useOnlyThree, onlyFour);
-
-        // 添加中心点（仅普通搜索）
-        if (cDepth === 0 && !onlyThree && !onlyFour) {
-            var center:Number = Math.floor(_board.size / 2);
-            if (_board.board[center][center] === 0) {
-                moves.push([center, center]);
-            }
-        }
-
         if (!moves.length) {
             return [_eval.evaluate(role), -1, -1];
         }
-
-        // 根层记录总走法数
-        if (cDepth === 0) {
-            _rootMoveTotal = moves.length;
+        if (prev !== null) {
+            promoteMove(moves, prev.moveX, prev.moveY);
         }
 
-        // 迭代加深
-        for (var d:Number = cDepth + 1; d <= depth; d++) {
-            if (d % 2 !== 0) continue;
-            var breakAll:Boolean = false;
-            for (var i:Number = 0; i < moves.length; i++) {
-                // 根层记录当前进度
-                if (cDepth === 0) {
-                    _rootMoveIdx = i;
-                }
-                var mx:Number = moves[i][0];
-                var my:Number = moves[i][1];
-                _board.put(mx, my, role);
-                _eval.move(mx, my, role);
-                var child:Array = negamax(-role, d, cDepth + 1, -beta, -alpha, onlyThree, onlyFour);
-                var currentValue:Number = -child[0];
-                _eval.undo(mx, my);
-                _board.undo();
+        var bestScore:Number = -MAX;
+        var bestX:Number = -1;
+        var bestY:Number = -1;
 
-                if (_timedOut) {
-                    if (bestX === -1) { bestX = mx; bestY = my; value = currentValue; }
-                    return [value, bestX, bestY];
-                }
+        for (var i:Number = 0; i < moves.length; i++) {
+            var mx:Number = moves[i][0];
+            var my:Number = moves[i][1];
+            _board.put(mx, my, role);
+            _eval.move(mx, my, role);
+            var child:Array = negamax(-role, depthLeft - 1, cDepth + 1, -beta, -alpha, onlyThree, onlyFour);
+            var currentValue:Number = -child[0];
+            _eval.undo(mx, my);
+            _board.undo();
 
-                if (currentValue >= GobangShape.FIVE_SCORE || d === depth) {
-                    if (currentValue > value) {
-                        value = currentValue;
-                        bestX = mx;
-                        bestY = my;
-                    }
-                }
-                if (value > alpha) alpha = value;
-                if (alpha >= GobangShape.FIVE_SCORE) {
-                    breakAll = true;
-                    break;
-                }
-                if (alpha >= beta) break;
+            if (bestX < 0 || currentValue > bestScore) {
+                bestScore = currentValue;
+                bestX = mx;
+                bestY = my;
             }
-            if (breakAll) break;
+            if (currentValue > alpha) alpha = currentValue;
+            if (_timedOut || alpha >= beta || currentValue >= GobangShape.FIVE_SCORE) break;
         }
 
-        // 缓存
-        if (cDepth < ONLY_THREE_THRESHOLD || onlyThree || onlyFour) {
-            if (!prev || prev.depth < depth - cDepth) {
-                _cache.put(hash, {
-                    depth: depth - cDepth,
-                    value: value,
-                    moveX: bestX,
-                    moveY: bestY,
-                    role: role,
-                    onlyThree: onlyThree,
-                    onlyFour: onlyFour
-                });
-            }
+        if (!_timedOut && bestX >= 0 && (cDepth < ONLY_THREE_THRESHOLD || onlyThree || onlyFour)) {
+            _cache.put(hash, {
+                depth: depthLeft,
+                value: bestScore,
+                moveX: bestX,
+                moveY: bestY,
+                role: role,
+                onlyThree: onlyThree,
+                onlyFour: onlyFour
+            });
         }
 
-        return [value, bestX, bestY];
+        return [bestScore, bestX, bestY];
     }
 
     // ===== 异步分帧搜索 API =====
 
-    // 开始异步搜索（不阻塞，需要反复调用 step）
     public function searchStart(role:Number, maxDepth:Number, enableVCT:Boolean):Void {
-        if (maxDepth === undefined) maxDepth = GobangConfig.searchDepth;
-        if (enableVCT === undefined) enableVCT = true;
         _asyncRole = role;
-        _asyncMaxDepth = maxDepth;
-        // 棋子 < 8 时无算杀可能，跳过 VCT 直接进 MINMAX
-        var pieceCount:Number = _eval.history.length;
-        var useVCT:Boolean = enableVCT && pieceCount >= 8;
-        _asyncEnableVCT = useVCT;
-        _asyncPhase = useVCT ? 1 : 2;
+        _asyncMaxDepth = normalizeDepth(maxDepth === undefined ? GobangConfig.searchDepth : maxDepth);
+        _asyncEnableVCT = (enableVCT === undefined ? true : enableVCT) && _eval.history.length >= 8;
+        _asyncPhase = _asyncEnableVCT ? 1 : 2;
         _asyncDone = false;
         _asyncTotalNodes = 0;
+        _asyncCurrentDepth = 2;
+        _asyncBestResult = {x: -1, y: -1, score: _eval.evaluate(role)};
         _asyncVCTStartTime = getTimer();
-        _asyncBestResult = {x: -1, y: -1, score: 0};
-        _asyncVCTResult = null;
-        _asyncMMResult = null;
-        _asyncCurrentDepth = 2; // 从 depth=2 开始迭代
+        _asyncLastCompletedDepth = 0;
+        _asyncMoves = null;
+        _asyncMoveIndex = 0;
+        _asyncTargetDepth = 0;
+        _rootMoveIdx = 0;
+        _rootMoveTotal = 0;
     }
 
     // 每帧调用，返回 {done, phase, x, y, score, nodes, phaseLabel, rootIdx, rootTotal}
@@ -265,75 +419,72 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                     rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
         }
 
-        _budgetMs = frameBudgetMs;
-        _startTime = getTimer();
-        _nodeCount = 0;
-        _timedOut = false;
-
         if (_asyncPhase === 1) {
-            // VCT 搜索（节点上限熔断：累计超 5000 节点无算杀则放弃）
-            var vctDepth:Number = _asyncMaxDepth + 4;
-            var vr:Array = negamax(_asyncRole, vctDepth, 0, -MAX, MAX, true, false);
-            _asyncTotalNodes += _nodeCount;
-            if (vr[0] >= GobangShape.FIVE_SCORE) {
-                _asyncBestResult = {x: vr[1], y: vr[2], score: vr[0]};
-                _asyncDone = true;
-                return {done: true, phase: 1, x: vr[1], y: vr[2], score: vr[0],
-                        nodes: _asyncTotalNodes, phaseLabel: "vct_win",
-                        rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+            if (_asyncMoves === null) {
+                if (!initAsyncRootSearch(_asyncMaxDepth + 4, true, false)) {
+                    _asyncPhase = 2;
+                    _asyncMoves = null;
+                }
             }
-            // 放弃 VCT 条件：搜索完成 || 累计超 3 秒 || 超 3000 节点
-            var vctElapsed:Number = getTimer() - _asyncVCTStartTime;
-            if (!_timedOut || vctElapsed > 3000 || _asyncTotalNodes > 3000) {
+            if (_asyncPhase === 1) {
+                var vct:Object = stepAsyncRootSearch(frameBudgetMs);
+                _asyncTotalNodes += _nodeCount;
+                if (vct.done && vct.score >= GobangShape.FIVE_SCORE) {
+                    _asyncDone = true;
+                    return {done: true, phase: 1, x: _asyncBestResult.x, y: _asyncBestResult.y, score: _asyncBestResult.score,
+                            nodes: _asyncTotalNodes, phaseLabel: "vct_win",
+                            rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+                }
+                if (!vct.done) {
+                    return {done: false, phase: 1, x: vct.x, y: vct.y, score: vct.score,
+                            nodes: _asyncTotalNodes, phaseLabel: "vct",
+                            rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+                }
                 _asyncPhase = 2;
-                _asyncCurrentDepth = 2;
             }
-            return {done: false, phase: 1, x: -1, y: -1, score: 0,
-                    nodes: _asyncTotalNodes, phaseLabel: "vct",
-                    rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
         }
 
         if (_asyncPhase === 2) {
-            // MINMAX 渐进加深 — 每帧搜索当前 _asyncCurrentDepth
+            if (_asyncMoves === null) {
+                var curDepth:Number = _asyncCurrentDepth;
+                if (!initAsyncRootSearch(curDepth, false, false)) {
+                    _asyncDone = true;
+                    return {done: true, phase: 2, x: -1, y: -1, score: _eval.evaluate(_asyncRole),
+                            nodes: _asyncTotalNodes, phaseLabel: "no_move",
+                            rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+                }
+            }
             var curD:Number = _asyncCurrentDepth;
-            var mr:Array = negamax(_asyncRole, curD, 0, -MAX, MAX, false, false);
+            var mr:Object = stepAsyncRootSearch(frameBudgetMs);
             _asyncTotalNodes += _nodeCount;
 
-            // 更新最优结果
-            if (mr[1] >= 0) {
-                _asyncBestResult = {x: mr[1], y: mr[2], score: mr[0]};
-            }
-
-            if (mr[0] >= GobangShape.FIVE_SCORE) {
-                // 找到必胜，不需要更深
-                _asyncPhase = _asyncEnableVCT ? 3 : 4;
-                if (_asyncPhase === 4) _asyncDone = true;
-                return {done: _asyncDone, phase: 2, x: mr[1], y: mr[2], score: mr[0],
+            if (mr.done && _asyncBestResult.x >= 0 && _asyncBestResult.score >= GobangShape.FIVE_SCORE) {
+                _asyncDone = true;
+                return {done: true, phase: 2, x: _asyncBestResult.x, y: _asyncBestResult.y, score: _asyncBestResult.score,
                         nodes: _asyncTotalNodes, phaseLabel: "minmax_win",
                         rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
             }
 
-            if (!_timedOut) {
-                if (curD >= _asyncMaxDepth) {
-                    _asyncPhase = _asyncEnableVCT ? 3 : 4;
-                    if (_asyncPhase === 4) _asyncDone = true;
-                } else {
-                    _asyncCurrentDepth = curD + 2;
-                }
+            if (!mr.done) {
+                return {done: false, phase: 2, x: mr.x, y: mr.y,
+                        score: mr.score, nodes: _asyncTotalNodes,
+                        phaseLabel: "minmax_d" + curD,
+                        rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
             }
-            return {done: _asyncDone, phase: 2, x: _asyncBestResult.x, y: _asyncBestResult.y,
+
+            if (curD >= _asyncMaxDepth) {
+                _asyncDone = true;
+                var label:String = (_asyncLastCompletedDepth > 0) ? ("minmax_d" + _asyncLastCompletedDepth) : "done";
+                return {done: true, phase: 2, x: _asyncBestResult.x, y: _asyncBestResult.y,
+                        score: _asyncBestResult.score, nodes: _asyncTotalNodes, phaseLabel: label,
+                        rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+            }
+
+            _asyncCurrentDepth = curD + 2;
+            _asyncMoves = null;
+            return {done: false, phase: 2, x: _asyncBestResult.x, y: _asyncBestResult.y,
                     score: _asyncBestResult.score, nodes: _asyncTotalNodes,
                     phaseLabel: "minmax_d" + curD,
-                    rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
-        }
-
-        if (_asyncPhase === 3) {
-            // AS2 性能约束：跳过反杀检测（reverse + VCT 开销太大）
-            // 直接使用 minimax 的结果
-            _asyncPhase = 4;
-            _asyncDone = true;
-            return {done: true, phase: 3, x: _asyncBestResult.x, y: _asyncBestResult.y,
-                    score: _asyncBestResult.score, nodes: _asyncTotalNodes, phaseLabel: "counter",
                     rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
         }
 
@@ -346,4 +497,4 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     public function isAsyncDone():Boolean {
         return _asyncDone;
     }
-}
+}

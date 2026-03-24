@@ -5,11 +5,15 @@ class org.flashNight.hana.Gobang.GobangCache {
     private var _queue:Array;
     private var _size:Number;
     private var _capacity:Number;
+    private var _head:Number;
+    private var _tail:Number;
 
     public function GobangCache(capacity:Number) {
         if (capacity === undefined) capacity = 100000;
         _capacity = capacity;
         _size = 0;
+        _head = 0;
+        _tail = 0;
         _data = {};
         _data.__proto__ = null;
         _queue = [];
@@ -24,13 +28,22 @@ class org.flashNight.hana.Gobang.GobangCache {
 
     public function put(key, value):Void {
         if (!GobangConfig.enableCache) return;
-        if (_size >= _capacity) {
-            var oldKey = _queue.shift();
-            delete _data[oldKey];
-            _size--;
+        if (_data[key] !== undefined) {
+            _data[key] = value;
+            return;
         }
-        if (_data[key] === undefined) {
-            _queue.push(key);
+        if (_capacity <= 0) return;
+
+        if (_size >= _capacity) {
+            var oldKey = _queue[_head];
+            delete _data[oldKey];
+            _queue[_head] = key;
+            _head++;
+            if (_head >= _capacity) _head = 0;
+        } else {
+            _queue[_tail] = key;
+            _tail++;
+            if (_tail >= _capacity) _tail = 0;
             _size++;
         }
         _data[key] = value;
@@ -40,4 +53,4 @@ class org.flashNight.hana.Gobang.GobangCache {
         if (!GobangConfig.enableCache) return false;
         return _data[key] !== undefined;
     }
-}
+}

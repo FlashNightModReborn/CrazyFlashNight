@@ -13,6 +13,8 @@ class org.flashNight.hana.Gobang.GobangEval {
 
     // 方向表
     private static var allDirs:Array = [[0, 1], [1, 0], [1, 1], [1, -1]];
+    private static var dirtyMap:Array = null;
+    private static var dirtyMapSize:Number = 0;
 
     public function GobangEval(size:Number) {
         if (size === undefined) size = 15;
@@ -20,6 +22,7 @@ class org.flashNight.hana.Gobang.GobangEval {
         history = [];
         _totalBlack = 0;
         _totalWhite = 0;
+        initDirtyMap(size);
 
         // 初始化 padded board
         board = [];
@@ -73,50 +76,67 @@ class org.flashNight.hana.Gobang.GobangEval {
 
         // 更新 padded board
         board[x + 1][y + 1] = role;
-        updatePoint(x, y);
+        updatePointMove(x, y);
         history.push([x * size + y, role]);
     }
 
     public function undo(x:Number, y:Number):Void {
         board[x + 1][y + 1] = 0;
-        updatePoint(x, y);
+        updatePointUndo(x, y);
         history.pop();
     }
 
-    private function updatePoint(x:Number, y:Number):Void {
-        var brd:Array = board;
+    private static function initDirtyMap(size:Number):Void {
+        if (dirtyMap !== null && dirtyMapSize === size) return;
+        dirtyMapSize = size;
+        dirtyMap = [];
+        for (var x:Number = 0; x < size; x++) {
+            dirtyMap[x] = [];
+            for (var y:Number = 0; y < size; y++) {
+                var flat:Array = [];
+                for (var di:Number = 0; di < 4; di++) {
+                    var dv:Array = allDirs[di];
+                    var ox:Number = dv[0];
+                    var oy:Number = dv[1];
+                    for (var step:Number = 1; step < 5; step++) {
+                        var nx:Number = x + step * ox;
+                        var ny:Number = y + step * oy;
+                        if (nx >= 0 && nx < size && ny >= 0 && ny < size) {
+                            flat.push(nx, ny, ox, oy);
+                        }
+                        nx = x - step * ox;
+                        ny = y - step * oy;
+                        if (nx >= 0 && nx < size && ny >= 0 && ny < size) {
+                            flat.push(nx, ny, -ox, -oy);
+                        }
+                    }
+                }
+                dirtyMap[x][y] = flat;
+            }
+        }
+    }
+
+    private function updatePointMove(x:Number, y:Number):Void {
+        updateDirtyNeighbors(x, y);
+    }
+
+    private function updatePointUndo(x:Number, y:Number):Void {
         updateSinglePoint(x, y, 1, -1, -1);
         updateSinglePoint(x, y, -1, -1, -1);
+        updateDirtyNeighbors(x, y);
+    }
 
-        var ad:Array = allDirs;
-        for (var di:Number = 0; di < 4; di++) {
-            var dv:Array = ad[di];
-            var ox:Number = dv[0];
-            var oy:Number = dv[1];
-            // 正方向
-            var nx:Number = x + 1 + ox;
-            var ny:Number = y + 1 + oy;
-            for (var step:Number = 1; step < 5; step++) {
-                var cv:Number = brd[nx][ny];
-                if (cv === 2) break;       // 边界
-                if (cv === 0) {
-                    updateSinglePoint(nx - 1, ny - 1, 1, ox, oy);
-                    updateSinglePoint(nx - 1, ny - 1, -1, ox, oy);
-                }
-                nx += ox; ny += oy;
-            }
-            // 反方向
-            nx = x + 1 - ox;
-            ny = y + 1 - oy;
-            for (var step2:Number = 1; step2 < 5; step2++) {
-                var cv2:Number = brd[nx][ny];
-                if (cv2 === 2) break;
-                if (cv2 === 0) {
-                    updateSinglePoint(nx - 1, ny - 1, 1, -ox, -oy);
-                    updateSinglePoint(nx - 1, ny - 1, -1, -ox, -oy);
-                }
-                nx -= ox; ny -= oy;
-            }
+    private function updateDirtyNeighbors(x:Number, y:Number):Void {
+        var brd:Array = board;
+        var flat:Array = dirtyMap[x][y];
+        for (var i:Number = 0; i < flat.length; i += 4) {
+            var nx:Number = flat[i];
+            var ny:Number = flat[i + 1];
+            if (brd[nx + 1][ny + 1] !== 0) continue;
+            var ox:Number = flat[i + 2];
+            var oy:Number = flat[i + 3];
+            updateSinglePoint(nx, ny, 1, ox, oy);
+            updateSinglePoint(nx, ny, -1, ox, oy);
         }
     }
 
@@ -144,8 +164,6 @@ class org.flashNight.hana.Gobang.GobangEval {
         var bx:Number = x + 1;
         var by:Number = y + 1;
         if (brd[bx][by] !== 0) return;
-
-        brd[bx][by] = role;
 
         // 内联 roleIndex: role===1 ? 0 : 1
         var ri:Number = role === 1 ? 0 : 1;
@@ -209,8 +227,6 @@ class org.flashNight.hana.Gobang.GobangEval {
             }
         }
 
-        brd[bx][by] = 0;
-
         if (role === 1) {
             _totalBlack += score - blackScores[x][y];
             blackScores[x][y] = score;
@@ -229,36 +245,45 @@ class org.flashNight.hana.Gobang.GobangEval {
         var brd:Array = board;
         var sz:Number = size;
         var sc:Array = shapeCache;
-        var hLen:Number = history.length;
         var result:Array = [];
-        // 阈值：onlyFour 只要 4+5 级，onlyThree 要 3+4+5 级
-        var minShape:Number = onlyFour ? 4 : (onlyThree ? 3 : 0);
-
-        var rIdx0:Number = role === 1 ? 0 : 1;
-        var rIdx1:Number = 1 - rIdx0;
-        // 使用 blackScores+whiteScores 做排序键（已有增量计算）
+        var limit:Number = GobangConfig.pointsLimit;
+        if (limit < 1) limit = 1;
         var bs:Array = blackScores;
         var ws:Array = whiteScores;
+        var atk:Array = role === 1 ? bs : ws;
+        var def:Array = role === 1 ? ws : bs;
         var hasFive:Boolean = false;
+        var sc0:Array = sc[0];
+        var sc1:Array = sc[1];
 
         for (var i:Number = 0; i < sz; i++) {
             if (brd[i + 1] === undefined) continue;
             for (var j:Number = 0; j < sz; j++) {
                 if (brd[i + 1][j + 1] !== 0) continue;
+                var attackScore:Number = atk[i][j];
+                var defendScore:Number = def[i][j];
+                if (attackScore === 0 && defendScore === 0) continue;
 
                 // 快速检查：该位置有没有任何棋型
                 var maxS:Number = 0;
-                for (var ri2:Number = 0; ri2 < 2; ri2++) {
-                    var s0:Number = sc[ri2][0][i][j];
-                    var s1:Number = sc[ri2][1][i][j];
-                    var s2:Number = sc[ri2][2][i][j];
-                    var s3:Number = sc[ri2][3][i][j];
-                    if (s0 > maxS) maxS = s0;
-                    if (s1 > maxS) maxS = s1;
-                    if (s2 > maxS) maxS = s2;
-                    if (s3 > maxS) maxS = s3;
-                }
+                var s0:Number = sc0[0][i][j];
+                var s1:Number = sc0[1][i][j];
+                var s2:Number = sc0[2][i][j];
+                var s3:Number = sc0[3][i][j];
+                var s4:Number = sc1[0][i][j];
+                var s5:Number = sc1[1][i][j];
+                var s6:Number = sc1[2][i][j];
+                var s7:Number = sc1[3][i][j];
+                if (s0 > maxS) maxS = s0;
+                if (s1 > maxS) maxS = s1;
+                if (s2 > maxS) maxS = s2;
+                if (s3 > maxS) maxS = s3;
+                if (s4 > maxS) maxS = s4;
+                if (s5 > maxS) maxS = s5;
+                if (s6 > maxS) maxS = s6;
+                if (s7 > maxS) maxS = s7;
                 if (!maxS) continue;
+
                 // FIVE/BLOCK_FIVE（值 5 或 50）最高优先
                 if (maxS === 5 || maxS === 50) {
                     if (!hasFive) { result.length = 0; hasFive = true; }
@@ -267,25 +292,31 @@ class org.flashNight.hana.Gobang.GobangEval {
                 }
                 if (hasFive) continue; // 已有五连，跳过非五连
 
-                // 过滤：onlyFour 只要 FOUR(4)/BLOCK_FOUR(40)+
                 if (onlyFour && maxS < 4) continue;
-                // onlyThree 只要 THREE(3)/BLOCK_FOUR(40)/FOUR(4)+
                 if (onlyThree && maxS < 3) continue;
 
-                // 分数排序键：两方分数之和
-                var sortKey:Number = bs[i][j] + ws[i][j];
-                result.push([i, j, sortKey]);
+                // 评分：优先兼顾本方进攻和对方威胁，避免排序回调开销
+                var major:Number = attackScore > defendScore ? attackScore : defendScore;
+                var sortKey:Number = attackScore + defendScore + major;
+                var resultLen:Number = result.length;
+                if (resultLen < limit || sortKey > result[resultLen - 1][2]) {
+                    var insertAt:Number = resultLen;
+                    if (insertAt >= limit) insertAt = limit - 1;
+                    while (insertAt > 0 && sortKey > result[insertAt - 1][2]) {
+                        if (insertAt < limit) {
+                            result[insertAt] = result[insertAt - 1];
+                        }
+                        insertAt--;
+                    }
+                    result[insertAt] = [i, j, sortKey];
+                    if (resultLen < limit) {
+                        result.length = resultLen + 1;
+                    }
+                }
             }
         }
 
         if (hasFive) return result;
-
-        // 按分数降序排序
-        result.sort(function(a, b) { return b[2] - a[2]; });
-
-        // 截断到 pointsLimit
-        var limit:Number = GobangConfig.pointsLimit;
-        if (result.length > limit) result.length = limit;
 
         // 清除排序键
         for (var ci:Number = 0; ci < result.length; ci++) {
@@ -293,4 +324,4 @@ class org.flashNight.hana.Gobang.GobangEval {
         }
         return result;
     }
-}
+}
