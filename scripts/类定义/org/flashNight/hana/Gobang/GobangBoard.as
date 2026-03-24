@@ -1,4 +1,5 @@
 ﻿import org.flashNight.hana.Gobang.GobangZobrist;
+import org.flashNight.hana.Gobang.GobangEval;
 
 class org.flashNight.hana.Gobang.GobangBoard {
     public var size:Number;
@@ -49,56 +50,56 @@ class org.flashNight.hana.Gobang.GobangBoard {
         return true;
     }
 
+    // 预分配方向数组（避免每次 isWin 创建）
+    private static var WIN_DX:Array = [1, 0, 1, 1];
+    private static var WIN_DY:Array = [0, 1, 1, -1];
+
     public function isWin(x:Number, y:Number, r:Number):Boolean {
-        // Check 4 directions: horizontal, vertical, diagonal, anti-diagonal
-        var dirs:Array = [[1, 0], [0, 1], [1, 1], [1, -1]];
+        var brd:Array = board;
+        var sz:Number = size;
         for (var d:Number = 0; d < 4; d++) {
-            var dx:Number = dirs[d][0];
-            var dy:Number = dirs[d][1];
+            var dx:Number = WIN_DX[d];
+            var dy:Number = WIN_DY[d];
             var count:Number = 1;
-            // Forward
-            for (var k:Number = 1; k < 5; k++) {
-                var nx:Number = x + dx * k;
-                var ny:Number = y + dy * k;
-                if (nx < 0 || nx >= size || ny < 0 || ny >= size) break;
-                if (board[nx][ny] !== r) break;
-                count++;
-            }
-            // Backward
-            for (var k2:Number = 1; k2 < 5; k2++) {
-                var nx2:Number = x - dx * k2;
-                var ny2:Number = y - dy * k2;
-                if (nx2 < 0 || nx2 >= size || ny2 < 0 || ny2 >= size) break;
-                if (board[nx2][ny2] !== r) break;
-                count++;
-            }
+            var nx:Number; var ny:Number;
+            nx = x + dx; ny = y + dy;
+            while (nx >= 0 && nx < sz && ny >= 0 && ny < sz && brd[nx][ny] === r) { count++; nx += dx; ny += dy; }
+            nx = x - dx; ny = y - dy;
+            while (nx >= 0 && nx < sz && ny >= 0 && ny < sz && brd[nx][ny] === r) { count++; nx -= dx; ny -= dy; }
             if (count >= 5) return true;
         }
         return false;
     }
 
+    // O(1) — 只检查最后一手
     public function getWinner():Number {
-        for (var i:Number = 0; i < size; i++) {
-            for (var j:Number = 0; j < size; j++) {
-                if (board[i][j] !== 0) {
-                    if (isWin(i, j, board[i][j])) return board[i][j];
-                }
-            }
-        }
+        if (history.length === 0) return 0;
+        var last:Object = history[history.length - 1];
+        if (isWin(last.i, last.j, last.role)) return last.role;
         return 0;
     }
 
     public function isGameOver():Boolean {
+        if (history.length === 0) return false;
         if (getWinner() !== 0) return true;
-        for (var i:Number = 0; i < size; i++) {
-            for (var j:Number = 0; j < size; j++) {
-                if (board[i][j] === 0) return false;
-            }
-        }
-        return true;
+        // 棋盘满了才是平局（225 步）
+        return history.length >= size * size;
     }
 
     public function hash():String {
         return zobrist.toKey();
+    }
+
+    // 创建反转棋盘：黑白互换，用于检测对手是否有算杀
+    public function reverse():Object {
+        var newBoard:GobangBoard = new GobangBoard(size, -firstRole);
+        var newEval:GobangEval = new GobangEval(size);
+        for (var i:Number = 0; i < history.length; i++) {
+            var h:Object = history[i];
+            var swappedRole:Number = -h.role;
+            newBoard.put(h.i, h.j, swappedRole);
+            newEval.move(h.i, h.j, swappedRole);
+        }
+        return {board: newBoard, eval: newEval};
     }
 }

@@ -64,135 +64,98 @@
         return 3;
     }
 
-    // board 是 padded board: (size+2)x(size+2), 边界值=2
-    // x,y 是非 padded 坐标 (0..size-1)
-    // getShapeFast 内部使用 board[x+1+offset] 索引
-    // 返回 [shape, selfCount]
-    private static function countShape(board:Array, x:Number, y:Number,
-            offsetX:Number, offsetY:Number, role:Number):Object {
-        var opponent:Number = -role;
-        var innerEmptyCount:Number = 0;
-        var tempEmptyCount:Number = 0;
-        var selfCount:Number = 0;
-        var totalLength:Number = 0;
-        var sideEmptyCount:Number = 0;
-        var noEmptySelfCount:Number = 0;
-        var OneEmptySelfCount:Number = 0;
+    // ===== 零分配 countShape：结果写入静态字段 =====
+    // 左侧 countShape 结果
+    private static var _lSelf:Number;
+    private static var _lTotal:Number;
+    private static var _lNoEmpty:Number;
+    private static var _lOneEmpty:Number;
+    private static var _lSide:Number;
+    // 右侧 countShape 结果
+    private static var _rSelf:Number;
+    private static var _rTotal:Number;
+    private static var _rNoEmpty:Number;
+    private static var _rOneEmpty:Number;
+    private static var _rSide:Number;
 
+    // 写入 _l* 或 _r* 静态字段，isRight: 0=左, 1=右
+    private static function countShape(board:Array, x:Number, y:Number,
+            offsetX:Number, offsetY:Number, role:Number, isRight:Number):Void {
+        var opponent:Number = -role;
+        var innerEmpty:Number = 0;
+        var tempEmpty:Number = 0;
+        var self:Number = 0;
+        var total:Number = 0;
+        var sideEmpty:Number = 0;
+        var noEmpty:Number = 0;
+        var oneEmpty:Number = 0;
+
+        var cx:Number = x + offsetX + 1;
+        var cy:Number = y + offsetY + 1;
         for (var i:Number = 1; i <= 5; i++) {
-            var nx:Number = x + i * offsetX + 1;
-            var ny:Number = y + i * offsetY + 1;
-            var cur:Number = board[nx][ny];
-            if (cur === 2 || cur === opponent) {
-                break;
-            }
+            var cur:Number = board[cx][cy];
+            cx += offsetX;
+            cy += offsetY;
+            if (cur === 2 || cur === opponent) break;
             if (cur === role) {
-                selfCount++;
-                sideEmptyCount = 0;
-                if (tempEmptyCount) {
-                    innerEmptyCount += tempEmptyCount;
-                    tempEmptyCount = 0;
-                }
-                if (innerEmptyCount === 0) {
-                    noEmptySelfCount++;
-                    OneEmptySelfCount++;
-                } else if (innerEmptyCount === 1) {
-                    OneEmptySelfCount++;
-                }
+                self++;
+                sideEmpty = 0;
+                if (tempEmpty) { innerEmpty += tempEmpty; tempEmpty = 0; }
+                if (innerEmpty === 0) { noEmpty++; oneEmpty++; }
+                else if (innerEmpty === 1) { oneEmpty++; }
             }
-            totalLength++;
-            if (cur === 0) {
-                tempEmptyCount++;
-                sideEmptyCount++;
-            }
-            if (sideEmptyCount >= 2) {
-                break;
-            }
+            total++;
+            if (cur === 0) { tempEmpty++; sideEmpty++; }
+            if (sideEmpty >= 2) break;
         }
-        if (!innerEmptyCount) OneEmptySelfCount = 0;
-        return {
-            selfCount: selfCount,
-            totalLength: totalLength,
-            noEmptySelfCount: noEmptySelfCount,
-            OneEmptySelfCount: OneEmptySelfCount,
-            innerEmptyCount: innerEmptyCount,
-            sideEmptyCount: sideEmptyCount
-        };
+        if (!innerEmpty) oneEmpty = 0;
+
+        if (isRight) {
+            _rSelf = self; _rTotal = total; _rNoEmpty = noEmpty; _rOneEmpty = oneEmpty; _rSide = sideEmpty;
+        } else {
+            _lSelf = self; _lTotal = total; _lNoEmpty = noEmpty; _lOneEmpty = oneEmpty; _lSide = sideEmpty;
+        }
     }
 
-    // 快速棋型检测（翻译自上游 shape.js getShapeFast）
-    // board: padded (size+2)x(size+2), x/y: 非padded 坐标
-    // 返回 Array [shape, selfCount]
+    // 零分配版本：返回 shape Number（不返回 selfCount，调用者不使用）
     public static function getShapeFast(board:Array, x:Number, y:Number,
-            offsetX:Number, offsetY:Number, role:Number):Array {
-        // 快速跳过：四个相邻位置都为空则无棋型
+            offsetX:Number, offsetY:Number, role:Number):Number {
         if (board[x + offsetX + 1][y + offsetY + 1] === 0
             && board[x - offsetX + 1][y - offsetY + 1] === 0
             && board[x + 2 * offsetX + 1][y + 2 * offsetY + 1] === 0
             && board[x - 2 * offsetX + 1][y - 2 * offsetY + 1] === 0) {
-            return [NONE, 1];
+            return NONE;
         }
 
-        var selfCount:Number = 1;
-        var totalLength:Number = 1;
-        var shape:Number = NONE;
-        var leftEmpty:Number = 0;
-        var rightEmpty:Number = 0;
-        var noEmptySelfCount:Number = 1;
-        var OneEmptySelfCount:Number = 1;
+        countShape(board, x, y, -offsetX, -offsetY, role, 0); // left → _l*
+        countShape(board, x, y, offsetX, offsetY, role, 1);    // right → _r*
 
-        var left:Object = countShape(board, x, y, -offsetX, -offsetY, role);
-        var right:Object = countShape(board, x, y, offsetX, offsetY, role);
+        var totalLength:Number = _lTotal + _rTotal + 1;
+        if (totalLength < 5) return NONE;
 
-        selfCount = left.selfCount + right.selfCount + 1;
-        totalLength = left.totalLength + right.totalLength + 1;
-        noEmptySelfCount = left.noEmptySelfCount + right.noEmptySelfCount + 1;
-        var leftOneEmpty:Number = left.OneEmptySelfCount + right.noEmptySelfCount;
-        var rightOneEmpty:Number = left.noEmptySelfCount + right.OneEmptySelfCount;
-        OneEmptySelfCount = (leftOneEmpty > rightOneEmpty ? leftOneEmpty : rightOneEmpty) + 1;
-        rightEmpty = right.sideEmptyCount;
-        leftEmpty = left.sideEmptyCount;
+        var noEmptySelf:Number = _lNoEmpty + _rNoEmpty + 1;
+        var leftOneE:Number = _lOneEmpty + _rNoEmpty;
+        var rightOneE:Number = _lNoEmpty + _rOneEmpty;
+        var oneEmptySelf:Number = (leftOneE > rightOneE ? leftOneE : rightOneE) + 1;
 
-        if (totalLength < 5) return [shape, selfCount];
-
-        // five
-        if (noEmptySelfCount >= 5) {
-            if (rightEmpty > 0 && leftEmpty > 0) {
-                return [FIVE, selfCount];
-            } else {
-                return [BLOCK_FIVE, selfCount];
+        if (noEmptySelf >= 5) {
+            return (_rSide > 0 && _lSide > 0) ? FIVE : BLOCK_FIVE;
+        }
+        if (noEmptySelf === 4) {
+            if ((_rSide >= 1 || _rOneEmpty > _rNoEmpty)
+                && (_lSide >= 1 || _lOneEmpty > _lNoEmpty)) {
+                return FOUR;
             }
+            if (!(_rSide === 0 && _lSide === 0)) return BLOCK_FOUR;
         }
-        if (noEmptySelfCount === 4) {
-            if ((rightEmpty >= 1 || right.OneEmptySelfCount > right.noEmptySelfCount)
-                && (leftEmpty >= 1 || left.OneEmptySelfCount > left.noEmptySelfCount)) {
-                return [FOUR, selfCount];
-            } else if (!(rightEmpty === 0 && leftEmpty === 0)) {
-                return [BLOCK_FOUR, selfCount];
-            }
+        if (oneEmptySelf === 4) return BLOCK_FOUR;
+        if (noEmptySelf === 3) {
+            return ((_rSide >= 2 && _lSide >= 1) || (_rSide >= 1 && _lSide >= 2)) ? THREE : BLOCK_THREE;
         }
-        if (OneEmptySelfCount === 4) {
-            return [BLOCK_FOUR, selfCount];
+        if (oneEmptySelf === 3) {
+            return (_rSide >= 1 && _lSide >= 1) ? THREE : BLOCK_THREE;
         }
-        // three
-        if (noEmptySelfCount === 3) {
-            if ((rightEmpty >= 2 && leftEmpty >= 1) || (rightEmpty >= 1 && leftEmpty >= 2)) {
-                return [THREE, selfCount];
-            } else {
-                return [BLOCK_THREE, selfCount];
-            }
-        }
-        if (OneEmptySelfCount === 3) {
-            if (rightEmpty >= 1 && leftEmpty >= 1) {
-                return [THREE, selfCount];
-            } else {
-                return [BLOCK_THREE, selfCount];
-            }
-        }
-        if ((noEmptySelfCount === 2 || OneEmptySelfCount === 2) && totalLength > 5) {
-            shape = TWO;
-        }
-
-        return [shape, selfCount];
+        if ((noEmptySelf === 2 || oneEmptySelf === 2) && totalLength > 5) return TWO;
+        return NONE;
     }
 }

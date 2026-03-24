@@ -6,6 +6,8 @@ class org.flashNight.hana.Gobang.GobangEval {
     public var board:Array;        // padded (size+2)x(size+2), border=2
     public var blackScores:Array;  // [size][size]
     public var whiteScores:Array;  // [size][size]
+    private var _totalBlack:Number; // 增量总分
+    private var _totalWhite:Number;
     public var shapeCache:Array;   // [2][4][size][size] — roleIdx, direction, x, y
     public var history:Array;      // [[position, role], ...]
 
@@ -16,6 +18,8 @@ class org.flashNight.hana.Gobang.GobangEval {
         if (size === undefined) size = 15;
         this.size = size;
         history = [];
+        _totalBlack = 0;
+        _totalWhite = 0;
 
         // 初始化 padded board
         board = [];
@@ -62,6 +66,8 @@ class org.flashNight.hana.Gobang.GobangEval {
             shapeCache[ri][d][x][y] = 0;
             shapeCache[ori][d][x][y] = 0;
         }
+        _totalBlack -= blackScores[x][y];
+        _totalWhite -= whiteScores[x][y];
         blackScores[x][y] = 0;
         whiteScores[x][y] = 0;
 
@@ -78,280 +84,213 @@ class org.flashNight.hana.Gobang.GobangEval {
     }
 
     private function updatePoint(x:Number, y:Number):Void {
-        updateSinglePoint(x, y, 1, undefined);
-        updateSinglePoint(x, y, -1, undefined);
+        var brd:Array = board;
+        updateSinglePoint(x, y, 1, -1, -1);
+        updateSinglePoint(x, y, -1, -1, -1);
 
+        var ad:Array = allDirs;
         for (var di:Number = 0; di < 4; di++) {
-            var ox:Number = allDirs[di][0];
-            var oy:Number = allDirs[di][1];
-            for (var sign:Number = -1; sign <= 1; sign += 2) {
-                var reachEdge:Boolean = false;
-                for (var step:Number = 1; step <= 5; step++) {
-                    for (var roleIter:Number = 0; roleIter < 2; roleIter++) {
-                        var role:Number = roleIter === 0 ? 1 : -1;
-                        var nx:Number = x + sign * step * ox + 1;
-                        var ny:Number = y + sign * step * oy + 1;
-                        if (board[nx][ny] === 2) {
-                            reachEdge = true;
-                            break;
-                        } else if (board[nx][ny] === -role) {
-                            continue;
-                        } else if (board[nx][ny] === 0) {
-                            var dir:Array = [sign * ox, sign * oy];
-                            updateSinglePoint(nx - 1, ny - 1, role, dir);
-                        }
-                    }
-                    if (reachEdge) break;
+            var dv:Array = ad[di];
+            var ox:Number = dv[0];
+            var oy:Number = dv[1];
+            // 正方向
+            var nx:Number = x + 1 + ox;
+            var ny:Number = y + 1 + oy;
+            for (var step:Number = 1; step < 5; step++) {
+                var cv:Number = brd[nx][ny];
+                if (cv === 2) break;       // 边界
+                if (cv === 0) {
+                    updateSinglePoint(nx - 1, ny - 1, 1, ox, oy);
+                    updateSinglePoint(nx - 1, ny - 1, -1, ox, oy);
                 }
+                nx += ox; ny += oy;
+            }
+            // 反方向
+            nx = x + 1 - ox;
+            ny = y + 1 - oy;
+            for (var step2:Number = 1; step2 < 5; step2++) {
+                var cv2:Number = brd[nx][ny];
+                if (cv2 === 2) break;
+                if (cv2 === 0) {
+                    updateSinglePoint(nx - 1, ny - 1, 1, -ox, -oy);
+                    updateSinglePoint(nx - 1, ny - 1, -1, -ox, -oy);
+                }
+                nx -= ox; ny -= oy;
             }
         }
     }
 
-    private function updateSinglePoint(x:Number, y:Number, role:Number, direction):Void {
-        if (board[x + 1][y + 1] !== 0) return;
+    // dirOx/dirOy: 指定只更新一个方向 (-1,-1 = 全部4方向)
+    // 内联 getRealShapeScore — 消除函数调用开销(485ns→0)
+    private static function _shapeScore(s:Number):Number {
+        // 按频率排序：TWO 最多，BLOCK_THREE 次之...
+        if (s === 2) return 10;       // TWO → ONE_SCORE
+        if (s === 30) return 15;      // BLOCK_THREE → BLOCK_TWO_SCORE
+        if (s === 3) return 100;      // THREE → TWO_SCORE
+        if (s === 40) return 150;     // BLOCK_FOUR → BLOCK_THREE_SCORE
+        if (s === 5) return 100000;   // FIVE → FOUR_SCORE
+        if (s === 50) return 1500;    // BLOCK_FIVE → BLOCK_FOUR_SCORE
+        if (s === 4) return 1000;     // FOUR → THREE_SCORE
+        if (s === 44) return 1000;    // FOUR_FOUR → THREE_SCORE
+        if (s === 43) return 1000;    // FOUR_THREE → THREE_SCORE
+        if (s === 33) return 5000;    // THREE_THREE → THREE_THREE_SCORE/10
+        if (s === 22) return 20;      // TWO_TWO → TWO_TWO_SCORE/10
+        return 0;
+    }
 
-        // 临时放子
-        board[x + 1][y + 1] = role;
+    private function updateSinglePoint(x:Number, y:Number, role:Number, dirOx:Number, dirOy:Number):Void {
+        // 局部变量缓存（AVM1: 局部=0ns vs 成员=144ns）
+        var brd:Array = board;
+        var bx:Number = x + 1;
+        var by:Number = y + 1;
+        if (brd[bx][by] !== 0) return;
 
-        var ri:Number = GobangConfig.roleIndex(role);
+        brd[bx][by] = role;
+
+        // 内联 roleIndex: role===1 ? 0 : 1
+        var ri:Number = role === 1 ? 0 : 1;
         var sc:Array = shapeCache[ri];
-        var directions:Array;
+        var hasSingleDir:Boolean = (dirOx !== -1);
+        var scx0:Array = sc[0][x];
+        var scx1:Array = sc[1][x];
+        var scx2:Array = sc[2][x];
+        var scx3:Array = sc[3][x];
 
-        if (direction !== undefined) {
-            directions = [direction];
+        // 内联 direction2index 清除缓存
+        if (hasSingleDir) {
+            var dirIdx:Number;
+            if (dirOx === 0) dirIdx = 0;
+            else if (dirOy === 0) dirIdx = 1;
+            else if (dirOx === dirOy) dirIdx = 2;
+            else dirIdx = 3;
+            sc[dirIdx][x][y] = 0;
         } else {
-            directions = allDirs;
-        }
-
-        // 先清除待更新方向的缓存
-        for (var ci:Number = 0; ci < directions.length; ci++) {
-            var dox:Number = directions[ci][0];
-            var doy:Number = directions[ci][1];
-            sc[GobangShape.direction2index(dox, doy)][x][y] = GobangShape.NONE;
+            scx0[y] = 0; scx1[y] = 0; scx2[y] = 0; scx3[y] = 0;
         }
 
         var score:Number = 0;
-        var blockfourCount:Number = 0;
-        var threeCount:Number = 0;
-        var twoCount:Number = 0;
+        var bfc:Number = 0;
+        var thc:Number = 0;
+        var twc:Number = 0;
+        var es:Number;
 
-        // 先累加已有（未被清除的）方向的分值
-        for (var ei:Number = 0; ei < 4; ei++) {
-            var existingShape:Number = sc[ei][x][y];
-            if (existingShape > GobangShape.NONE) {
-                score += GobangShape.getRealShapeScore(existingShape);
-                if (existingShape === GobangShape.BLOCK_FOUR) blockfourCount++;
-                if (existingShape === GobangShape.THREE) threeCount++;
-                if (existingShape === GobangShape.TWO) twoCount++;
+        // 累加已有方向分值（内联 _shapeScore）
+        es = scx0[y]; if (es) { score += _shapeScore(es); if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
+        es = scx1[y]; if (es) { score += _shapeScore(es); if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
+        es = scx2[y]; if (es) { score += _shapeScore(es); if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
+        es = scx3[y]; if (es) { score += _shapeScore(es); if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
+
+        // 计算新方向棋型
+        var gsf:Function = GobangShape.getShapeFast;
+        if (hasSingleDir) {
+            var sh:Number = gsf(brd, x, y, dirOx, dirOy, role);
+            if (sh) {
+                sc[dirIdx][x][y] = sh;
+                if (sh === 40) bfc++; if (sh === 3) thc++; if (sh === 2) twc++;
+                if (bfc >= 2) sh = 44;
+                else if (bfc && thc) sh = 43;
+                else if (thc >= 2) sh = 33;
+                else if (twc >= 2) sh = 22;
+                score += _shapeScore(sh);
+            }
+        } else {
+            var ad:Array = allDirs;
+            for (var ni:Number = 0; ni < 4; ni++) {
+                var dv:Array = ad[ni];
+                var sh2:Number = gsf(brd, x, y, dv[0], dv[1], role);
+                if (!sh2) continue;
+                sc[ni][x][y] = sh2;
+                if (sh2 === 40) bfc++; if (sh2 === 3) thc++; if (sh2 === 2) twc++;
+                if (bfc >= 2) sh2 = 44;
+                else if (bfc && thc) sh2 = 43;
+                else if (thc >= 2) sh2 = 33;
+                else if (twc >= 2) sh2 = 22;
+                score += _shapeScore(sh2);
             }
         }
 
-        // 计算新方向的棋型
-        for (var ni:Number = 0; ni < directions.length; ni++) {
-            var nox:Number = directions[ni][0];
-            var noy:Number = directions[ni][1];
-            var intDir:Number = GobangShape.direction2index(nox, noy);
-            var result:Array = GobangShape.getShapeFast(board, x, y, nox, noy, role);
-            var shape:Number = result[0];
-            if (!shape) continue;
-            // 缓存单个棋型
-            sc[intDir][x][y] = shape;
-            if (shape === GobangShape.BLOCK_FOUR) blockfourCount++;
-            if (shape === GobangShape.THREE) threeCount++;
-            if (shape === GobangShape.TWO) twoCount++;
-            // 检测复合棋型
-            if (blockfourCount >= 2) {
-                shape = GobangShape.FOUR_FOUR;
-            } else if (blockfourCount && threeCount) {
-                shape = GobangShape.FOUR_THREE;
-            } else if (threeCount >= 2) {
-                shape = GobangShape.THREE_THREE;
-            } else if (twoCount >= 2) {
-                shape = GobangShape.TWO_TWO;
-            }
-            score += GobangShape.getRealShapeScore(shape);
-        }
-
-        // 移除临时棋子
-        board[x + 1][y + 1] = 0;
+        brd[bx][by] = 0;
 
         if (role === 1) {
+            _totalBlack += score - blackScores[x][y];
             blackScores[x][y] = score;
         } else {
+            _totalWhite += score - whiteScores[x][y];
             whiteScores[x][y] = score;
         }
     }
 
     public function evaluate(role:Number):Number {
-        var blackScore:Number = 0;
-        var whiteScore:Number = 0;
-        for (var i:Number = 0; i < size; i++) {
-            for (var j:Number = 0; j < size; j++) {
-                blackScore += blackScores[i][j];
-                whiteScore += whiteScores[i][j];
-            }
-        }
-        return role === 1 ? blackScore - whiteScore : whiteScore - blackScore;
+        return role === 1 ? _totalBlack - _totalWhite : _totalWhite - _totalBlack;
     }
 
-    // M1 简化版 getMoves — 不含 VCT/VCF
-    public function getMoves(role:Number, depth:Number):Array {
-        var points:Object = getPoints(role, depth);
-        return movesFromPoints(points);
-    }
-
-    private function getPoints(role:Number, depth:Number):Object {
-        // 收集所有棋型的点位
-        var points:Object = {};
-        points.__proto__ = null;
-        // 初始化每种棋型的点集
-        var shapeKeys:Array = [GobangShape.FIVE, GobangShape.BLOCK_FIVE, GobangShape.FOUR,
-            GobangShape.FOUR_FOUR, GobangShape.FOUR_THREE, GobangShape.THREE_THREE,
-            GobangShape.BLOCK_FOUR, GobangShape.THREE, GobangShape.BLOCK_THREE,
-            GobangShape.TWO_TWO, GobangShape.TWO, GobangShape.NONE];
-        for (var ki:Number = 0; ki < shapeKeys.length; ki++) {
-            points[shapeKeys[ki]] = {};
-            points[shapeKeys[ki]].__proto__ = null;
-        }
-
-        var lastPoints:Array = [];
+    // 轻量 getMoves — 单次遍历，单数组收集，按分数排序截断
+    public function getMoves(role:Number, depth:Number, onlyThree:Boolean, onlyFour:Boolean):Array {
+        var brd:Array = board;
+        var sz:Number = size;
+        var sc:Array = shapeCache;
         var hLen:Number = history.length;
-        var startIdx:Number = hLen - 4;
-        if (startIdx < 0) startIdx = 0;
-        for (var hi:Number = startIdx; hi < hLen; hi++) {
-            lastPoints.push(history[hi][0]);
-        }
+        var result:Array = [];
+        // 阈值：onlyFour 只要 4+5 级，onlyThree 要 3+4+5 级
+        var minShape:Number = onlyFour ? 4 : (onlyThree ? 3 : 0);
 
-        var roles:Array = [role, -role];
-        for (var ri:Number = 0; ri < 2; ri++) {
-            var r:Number = roles[ri];
-            var rIdx:Number = GobangConfig.roleIndex(r);
-            for (var i:Number = 0; i < size; i++) {
-                for (var j:Number = 0; j < size; j++) {
-                    if (board[i + 1][j + 1] !== 0) continue;
-                    var fourCount:Number = 0;
-                    var blockFourCount:Number = 0;
-                    var threeCount:Number = 0;
-                    for (var d:Number = 0; d < 4; d++) {
-                        var shape:Number = shapeCache[rIdx][d][i][j];
-                        if (!shape) continue;
-                        var point:Number = i * size + j;
-                        // depth > 2 时低价值棋型需在 lastPoints 连线上
-                        if (depth > 2 && (shape === GobangShape.TWO || shape === GobangShape.TWO_TWO
-                            || shape === GobangShape.BLOCK_THREE)) {
-                            if (!hasInLine(point, lastPoints)) continue;
-                        }
-                        points[shape][point] = true;
-                        if (shape === GobangShape.FOUR) fourCount++;
-                        else if (shape === GobangShape.BLOCK_FOUR) blockFourCount++;
-                        else if (shape === GobangShape.THREE) threeCount++;
-                        var unionShape:Number = 0;
-                        if (fourCount >= 2) unionShape = GobangShape.FOUR_FOUR;
-                        else if (blockFourCount && threeCount) unionShape = GobangShape.FOUR_THREE;
-                        else if (threeCount >= 2) unionShape = GobangShape.THREE_THREE;
-                        if (unionShape) {
-                            points[unionShape][point] = true;
-                        }
-                    }
+        var rIdx0:Number = role === 1 ? 0 : 1;
+        var rIdx1:Number = 1 - rIdx0;
+        // 使用 blackScores+whiteScores 做排序键（已有增量计算）
+        var bs:Array = blackScores;
+        var ws:Array = whiteScores;
+        var hasFive:Boolean = false;
+
+        for (var i:Number = 0; i < sz; i++) {
+            if (brd[i + 1] === undefined) continue;
+            for (var j:Number = 0; j < sz; j++) {
+                if (brd[i + 1][j + 1] !== 0) continue;
+
+                // 快速检查：该位置有没有任何棋型
+                var maxS:Number = 0;
+                for (var ri2:Number = 0; ri2 < 2; ri2++) {
+                    var s0:Number = sc[ri2][0][i][j];
+                    var s1:Number = sc[ri2][1][i][j];
+                    var s2:Number = sc[ri2][2][i][j];
+                    var s3:Number = sc[ri2][3][i][j];
+                    if (s0 > maxS) maxS = s0;
+                    if (s1 > maxS) maxS = s1;
+                    if (s2 > maxS) maxS = s2;
+                    if (s3 > maxS) maxS = s3;
                 }
-            }
-        }
-        return points;
-    }
-
-    private function hasInLine(point:Number, lastPoints:Array):Boolean {
-        var px:Number = Math.floor(point / size);
-        var py:Number = point % size;
-        for (var i:Number = 0; i < lastPoints.length; i++) {
-            var lx:Number = Math.floor(lastPoints[i] / size);
-            var ly:Number = lastPoints[i] % size;
-            var dx:Number = px - lx;
-            var dy:Number = py - ly;
-            if (dx < 0) dx = -dx;
-            if (dy < 0) dy = -dy;
-            if (dx === 0 || dy === 0 || dx === dy) {
-                if (dx <= GobangConfig.inLineDistance && dy <= GobangConfig.inLineDistance) {
-                    return true;
+                if (!maxS) continue;
+                // FIVE/BLOCK_FIVE（值 5 或 50）最高优先
+                if (maxS === 5 || maxS === 50) {
+                    if (!hasFive) { result.length = 0; hasFive = true; }
+                    result.push([i, j]);
+                    continue;
                 }
+                if (hasFive) continue; // 已有五连，跳过非五连
+
+                // 过滤：onlyFour 只要 FOUR(4)/BLOCK_FOUR(40)+
+                if (onlyFour && maxS < 4) continue;
+                // onlyThree 只要 THREE(3)/BLOCK_FOUR(40)/FOUR(4)+
+                if (onlyThree && maxS < 3) continue;
+
+                // 分数排序键：两方分数之和
+                var sortKey:Number = bs[i][j] + ws[i][j];
+                result.push([i, j, sortKey]);
             }
         }
-        return false;
-    }
 
-    private function movesFromPoints(points:Object):Array {
-        // 优先级: FIVE > FOUR > FOUR_FOUR > FOUR_THREE > THREE_THREE > BLOCK_FOUR+THREE > rest
-        var fives:Object = points[GobangShape.FIVE];
-        var blockFives:Object = points[GobangShape.BLOCK_FIVE];
-        var fiveKeys:Array = objectKeys(fives);
-        var blockFiveKeys:Array = objectKeys(blockFives);
-        if (fiveKeys.length || blockFiveKeys.length) {
-            return positionsToMoves(fiveKeys.concat(blockFiveKeys));
-        }
+        if (hasFive) return result;
 
-        var fours:Object = points[GobangShape.FOUR];
-        var blockFours:Object = points[GobangShape.BLOCK_FOUR];
-        var fourKeys:Array = objectKeys(fours);
-        if (fourKeys.length) {
-            return positionsToMoves(fourKeys.concat(objectKeys(blockFours)));
-        }
+        // 按分数降序排序
+        result.sort(function(a, b) { return b[2] - a[2]; });
 
-        var fourFours:Object = points[GobangShape.FOUR_FOUR];
-        var ffKeys:Array = objectKeys(fourFours);
-        if (ffKeys.length) {
-            return positionsToMoves(ffKeys.concat(objectKeys(blockFours)));
-        }
+        // 截断到 pointsLimit
+        var limit:Number = GobangConfig.pointsLimit;
+        if (result.length > limit) result.length = limit;
 
-        var threes:Object = points[GobangShape.THREE];
-        var fourThrees:Object = points[GobangShape.FOUR_THREE];
-        var ftKeys:Array = objectKeys(fourThrees);
-        if (ftKeys.length) {
-            return positionsToMoves(ftKeys.concat(objectKeys(blockFours)).concat(objectKeys(threes)));
+        // 清除排序键
+        for (var ci:Number = 0; ci < result.length; ci++) {
+            result[ci].length = 2;
         }
-        var threeThrees:Object = points[GobangShape.THREE_THREE];
-        var ttKeys:Array = objectKeys(threeThrees);
-        if (ttKeys.length) {
-            return positionsToMoves(ttKeys.concat(objectKeys(blockFours)).concat(objectKeys(threes)));
-        }
-
-        // 没有高优先级棋型，收集剩余
-        var blockThrees:Object = points[GobangShape.BLOCK_THREE];
-        var twoTwos:Object = points[GobangShape.TWO_TWO];
-        var twos:Object = points[GobangShape.TWO];
-        var all:Array = objectKeys(blockFours).concat(objectKeys(threes))
-            .concat(objectKeys(blockThrees)).concat(objectKeys(twoTwos))
-            .concat(objectKeys(twos));
-        // 去重
-        var seen:Object = {};
-        seen.__proto__ = null;
-        var unique:Array = [];
-        for (var i:Number = 0; i < all.length && unique.length < GobangConfig.pointsLimit; i++) {
-            if (seen[all[i]] === undefined) {
-                seen[all[i]] = true;
-                unique.push(all[i]);
-            }
-        }
-        return positionsToMoves(unique);
-    }
-
-    private function objectKeys(obj:Object):Array {
-        var keys:Array = [];
-        for (var k:String in obj) {
-            keys.push(Number(k));
-        }
-        return keys;
-    }
-
-    private function positionsToMoves(positions:Array):Array {
-        // 去重
-        var seen:Object = {};
-        seen.__proto__ = null;
-        var moves:Array = [];
-        for (var i:Number = 0; i < positions.length; i++) {
-            var p:Number = positions[i];
-            if (seen[p] !== undefined) continue;
-            seen[p] = true;
-            moves.push([Math.floor(p / size), p % size]);
-        }
-        return moves;
+        return result;
     }
 }
