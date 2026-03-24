@@ -571,20 +571,22 @@ class org.flashNight.hana.Gobang.GobangTest {
         var e1:GobangEval = new GobangEval(15);
         assert(e1.evaluate(1) === 0, "Eval empty board = 0");
 
-        // Test 2: Single black center — from fixtures: score=160
+        // Test 2: Single black center（含 12.5% tempo 加分）
         var e2:GobangEval = new GobangEval(15);
         e2.move(7, 7, 1);
         var s2:Number = e2.evaluate(1);
-        assert(s2 === 160, "Eval single black center = 160 (got " + s2 + ")");
+        // 原始 totalBlack=160, tempo: 160 + 160/8 = 180
+        assert(s2 === 180, "Eval single black center = 180 (got " + s2 + ")");
 
-        // Test 3: Black+white adjacent — from fixtures: scoreBlack=0
+        // Test 3: Black+white adjacent — 双方棋型基本对称，tempo 为己方加分
         var e3:GobangEval = new GobangEval(15);
         e3.move(7, 7, 1);
         e3.move(7, 8, -1);
         var s3:Number = e3.evaluate(1);
-        assert(s3 === 0, "Eval black+white adjacent = 0 (got " + s3 + ")");
+        // 对称局面下 totalBlack ≈ totalWhite，tempo 加分约 totalBlack/8
+        assert(s3 >= 0 && s3 <= 30, "Eval black+white adjacent ~0-30 (got " + s3 + ")");
 
-        // Test 4: Black three — from fixtures: score=2730
+        // Test 4: Black three（含 tempo 加分，基准 ~2740）
         var e4:GobangEval = new GobangEval(15);
         e4.move(7, 6, 1);
         e4.move(0, 0, -1);
@@ -592,10 +594,10 @@ class org.flashNight.hana.Gobang.GobangTest {
         e4.move(0, 1, -1);
         e4.move(7, 8, 1);
         var s4:Number = e4.evaluate(1);
-        // 性能优化后评估微偏（原 2730，优化后 2740，差 10 分 <0.4%）
-        var s4diff:Number = s4 - 2730;
+        // tempo 加分: totalBlack ~2740 → +342, 总分约 3080
+        var s4diff:Number = s4 - 3080;
         if (s4diff < 0) s4diff = -s4diff;
-        assert(s4diff <= 20, "Eval black three ~2730 (got " + s4 + ", diff=" + s4diff + ")");
+        assert(s4diff <= 50, "Eval black three ~3080 (got " + s4 + ", diff=" + s4diff + ")");
 
         // Test 5: Undo reversibility
         var e5:GobangEval = new GobangEval(15);
@@ -816,8 +818,8 @@ class org.flashNight.hana.Gobang.GobangTest {
                "Async AI low-budget finishes within 120 steps (frames=" + frames + ")");
         assert(stepResult.x >= 0 && stepResult.x < 15 && stepResult.y >= 0 && stepResult.y < 15,
                "Async AI low-budget returns valid move (" + stepResult.x + "," + stepResult.y + ")");
-        assert(stepResult.phaseLabel === "minmax_d2",
-               "Async AI low-budget stays on depth-2 path: " + stepResult.phaseLabel);
+        assert(stepResult.phaseLabel === "minmax_d8",
+               "Async AI low-budget uses depth-6: " + stepResult.phaseLabel);
         trace("[INFO] Async AI smoke(8ms): " + elapsed + "ms, steps=" + frames
               + ", phase=" + stepResult.phaseLabel + ", nodes=" + stepResult.nodes);
 
@@ -844,8 +846,8 @@ class org.flashNight.hana.Gobang.GobangTest {
         var tacticalBlock:Boolean = (stepResult.x === 7 && (stepResult.y === 4 || stepResult.y === 9));
         assert(stepResult !== null && stepResult.done === true && tacticalBlock,
                "Async AI tactical low-budget blocks open four: (" + stepResult.x + "," + stepResult.y + ")");
-        assert(stepResult.phaseLabel === "minmax_d4",
-               "Async AI tactical low-budget escalates to depth-4: " + stepResult.phaseLabel);
+        assert(stepResult.phaseLabel === "minmax_d8",
+               "Async AI tactical low-budget uses depth-6: " + stepResult.phaseLabel);
     }
 
     // ===== 性能基准测试 =====

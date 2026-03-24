@@ -20,7 +20,7 @@ class org.flashNight.hana.Gobang.GobangAI {
         [21,  2,  8,  50, false],
         [41,  2,  12, 70, false],
         [61,  4,  14, 90, true],
-        [81,  4,  18, 100, true]
+        [81,  8,  18, 100, true]
     ];
 
     public function GobangAI(aiRole:Number, difficulty:Number) {
@@ -62,40 +62,22 @@ class org.flashNight.hana.Gobang.GobangAI {
         var enableVCT:Boolean = row[4];
         var pieces:Number = _board.history.length;
 
+        // 早期缩小候选数（棋子少时信息不足）但不压深度
         if (pieces < 4) {
-            depth = 2;
             if (pl > 8) pl = 8;
         } else if (pieces < 10) {
-            depth = 2;
             if (pl > 10) pl = 10;
         } else if (pieces < 18 && pl > 12) {
             pl = 12;
         }
 
-        // 低帧预算优先保证宿主流畅度：压低候选数与搜索深度
+        // 根短名单(4)+LMR+NullMove 控制树规模；VCT 提供战术必杀
         if (frameBudgetMs <= 8) {
-            depth = 2;
-            if (pl > 6) pl = 6;
-            enableVCT = false;
-            // 仅在根分支天然很小的强制手局面下做保守加深
-            if (pieces >= 6) {
-                var tacticalMoves8:Array = _eval.getMoves(_aiRole, 0, false, false);
-                if (tacticalMoves8.length > 0 && tacticalMoves8.length <= 3) {
-                    depth = 4;
-                    if (pl > 4) pl = 4;
-                }
-            }
-        } else if (frameBudgetMs <= 16) {
-            depth = 2;
+            if (depth > 8) depth = 8;
             if (pl > 8) pl = 8;
-            enableVCT = false;
-            if (pieces >= 6) {
-                var tacticalMoves16:Array = _eval.getMoves(_aiRole, 0, false, false);
-                if (tacticalMoves16.length > 0 && tacticalMoves16.length <= 4) {
-                    depth = 4;
-                    if (pl > 6) pl = 6;
-                }
-            }
+        } else if (frameBudgetMs <= 16) {
+            if (depth > 8) depth = 8;
+            if (pl > 10) pl = 10;
         }
 
         return {
@@ -181,6 +163,14 @@ class org.flashNight.hana.Gobang.GobangAI {
 
     public function getBoard():Array {
         return _board.board;
+    }
+
+    public function getHistory():Array {
+        return _board.history;
+    }
+
+    public function getHistoryLength():Number {
+        return _board.history.length;
     }
 
     public function getCurrentRole():Number {

@@ -318,10 +318,10 @@ class org.flashNight.hana.Gobang.GobangEval {
         a[5] = 100000;   // FIVE → FOUR_SCORE
         a[22] = 20;      // TWO_TWO
         a[30] = 15;      // BLOCK_THREE → BLOCK_TWO_SCORE
-        a[33] = 5000;    // THREE_THREE
+        a[33] = 15000;   // THREE_THREE — 双活三近乎必杀
         a[40] = 150;     // BLOCK_FOUR → BLOCK_THREE_SCORE
-        a[43] = 1000;    // FOUR_THREE → THREE_SCORE
-        a[44] = 1000;    // FOUR_FOUR → THREE_SCORE
+        a[43] = 50000;   // FOUR_THREE — 无法防御的必杀
+        a[44] = 50000;   // FOUR_FOUR — 无法防御的必杀
         a[50] = 1500;    // BLOCK_FIVE → BLOCK_FOUR_SCORE
         _scoreLUT = a;
     }
@@ -407,8 +407,13 @@ class org.flashNight.hana.Gobang.GobangEval {
         }
     }
 
+    // 非对称评估：己方棋型额外 +12.5%（tempo 加分）
+    // 进攻制造义务应手（节奏），防守不能，故己方棋型价值 > 等价的对手棋型缺失
     public function evaluate(role:Number):Number {
-        return role === 1 ? _totalBlack - _totalWhite : _totalWhite - _totalBlack;
+        if (role === 1) {
+            return _totalBlack - _totalWhite + (_totalBlack >> 3);
+        }
+        return _totalWhite - _totalBlack + (_totalWhite >> 3);
     }
 
     // 轻量 getMoves — 遍历活跃前沿，紧急战术位优先
@@ -418,8 +423,10 @@ class org.flashNight.hana.Gobang.GobangEval {
         var result:Array = [];
         var limit:Number = GobangConfig.pointsLimit;
         if (limit < 1) limit = 1;
-        // 深层搜索适度衰减候选数（过激会破坏 alpha-beta 剪枝）
-        if (depth >= 4 && limit > 10) limit = 10;
+        // 深层搜索阶梯式衰减候选数，控制 depth=8 树规模
+        if (depth >= 5 && limit > 4) limit = 4;
+        else if (depth >= 3 && limit > 6) limit = 6;
+        else if (depth >= 2 && limit > 8) limit = 8;
         var bs:Array = blackScores;
         var ws:Array = whiteScores;
         var atk:Array = role === 1 ? bs : ws;
@@ -492,8 +499,20 @@ class org.flashNight.hana.Gobang.GobangEval {
             }
             if (hasFive) continue;
 
-            // FOUR/BLOCK_FOUR 强制手：直接缩小根分支，兼顾棋力与性能
-            var isFourMove:Boolean = (attackMax >= 4 || defendMax >= 4);
+            // FOUR/BLOCK_FOUR 或 双活三 强制手：直接缩小根分支
+            // 双活三检测：单方向各为 THREE(3)，≥2 个方向则为必杀型
+            var atkThrees:Number = 0;
+            if (a0 === 3) atkThrees++;
+            if (a1 === 3) atkThrees++;
+            if (a2 === 3) atkThrees++;
+            if (a3 === 3) atkThrees++;
+            var defThrees:Number = 0;
+            if (d0 === 3) defThrees++;
+            if (d1 === 3) defThrees++;
+            if (d2 === 3) defThrees++;
+            if (d3 === 3) defThrees++;
+            var isFourMove:Boolean = (attackMax >= 4 || defendMax >= 4
+                || atkThrees >= 2 || defThrees >= 2);
             if (isFourMove) {
                 var majorFour:Number = attackScore > defendScore ? attackScore : defendScore;
                 var fourKey:Number = attackScore + defendScore + majorFour;
@@ -520,9 +539,13 @@ class org.flashNight.hana.Gobang.GobangEval {
             if (onlyFour && maxS < 4) continue;
             if (onlyThree && maxS < 3) continue;
 
-            // 评分：优先兼顾本方进攻和对方威胁，避免排序回调开销
-            var major:Number = attackScore > defendScore ? attackScore : defendScore;
-            var sortKey:Number = attackScore + defendScore + major;
+            // 评分：攻守兼备 > 纯进攻 > 纯防守
+            // 进攻加权 ×2：确保"自己连线"位稳定压过"纯堵对手"位
+            var ci:Number = i - 7;
+            var cj:Number = j - 7;
+            var cd:Number = ci * ci + cj * cj;
+            var centerBonus:Number = (cd < 10) ? 3 : (cd < 30) ? 2 : (cd < 60) ? 1 : 0;
+            var sortKey:Number = attackScore + attackScore + defendScore + centerBonus;
             var resultLen:Number = result.length;
             var tail:Array = resultLen > 0 ? result[resultLen - 1] : null;
             var tailBetter:Boolean = (tail !== null && (sortKey > tail[2]

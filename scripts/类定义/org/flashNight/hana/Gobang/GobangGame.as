@@ -22,6 +22,7 @@ class org.flashNight.hana.Gobang.GobangGame {
     private var _piecesMc:MovieClip;
     private var _candidateMc:MovieClip;
     private var _hoverMc:MovieClip;
+    private var _labelsMc:MovieClip;
     private var _statusMc:MovieClip;
     private var _hitMc:MovieClip;
 
@@ -113,10 +114,11 @@ class org.flashNight.hana.Gobang.GobangGame {
         _drawBoard(_boardMc, boardPixel);
 
         _piecesMc = _rootMc.createEmptyMovieClip("pieces", 2);
-        _candidateMc = _rootMc.createEmptyMovieClip("candidate", 3);
-        _hoverMc = _rootMc.createEmptyMovieClip("hover", 4);
+        _labelsMc = _rootMc.createEmptyMovieClip("labels", 3);
+        _candidateMc = _rootMc.createEmptyMovieClip("candidate", 4);
+        _hoverMc = _rootMc.createEmptyMovieClip("hover", 5);
 
-        _hitMc = _rootMc.createEmptyMovieClip("hit", 5);
+        _hitMc = _rootMc.createEmptyMovieClip("hit", 6);
         _hitMc.beginFill(0x000000, 0);
         _hitMc.moveTo(MARGIN - CELL / 2, MARGIN - CELL / 2);
         _hitMc.lineTo(MARGIN + boardPixel + CELL / 2, MARGIN - CELL / 2);
@@ -125,7 +127,7 @@ class org.flashNight.hana.Gobang.GobangGame {
         _hitMc.endFill();
 
         // 状态栏：棋盘底部叠加半透明条
-        _statusMc = _rootMc.createEmptyMovieClip("status", 6);
+        _statusMc = _rootMc.createEmptyMovieClip("status", 7);
         var barH:Number = 52;
         var barY:Number = MARGIN + boardPixel + CELL / 2 - barH;
         var barX:Number = MARGIN - CELL / 2;
@@ -465,9 +467,24 @@ class org.flashNight.hana.Gobang.GobangGame {
 
     private function _renderAll():Void {
         _piecesMc.clear();
+        // 清除落子序号文本
+        while (_labelsMc.getNextHighestDepth() > 0) {
+            _labelsMc["lbl" + (_labelsMc.getNextHighestDepth() - 1)].removeTextField();
+        }
+
         var bd:Array = _ai.getBoard();
+        var hist:Array = _ai.getHistory();
+        var histLen:Number = _ai.getHistoryLength();
         var r:Number = CELL * 0.42;
 
+        // 构建坐标→手数映射
+        var orderMap:Object = {};
+        for (var h:Number = 0; h < histLen; h++) {
+            var he:Object = hist[h];
+            orderMap[he.i + "_" + he.j] = h + 1;
+        }
+
+        var lblIdx:Number = 0;
         for (var i:Number = 0; i < BOARD_SIZE; i++) {
             for (var j:Number = 0; j < BOARD_SIZE; j++) {
                 if (bd[i][j] === 0) continue;
@@ -475,6 +492,7 @@ class org.flashNight.hana.Gobang.GobangGame {
                 var py:Number = MARGIN + i * CELL;
                 var isBlack:Boolean = (bd[i][j] === 1);
 
+                // 阴影
                 _piecesMc.beginFill(0x000000, 20);
                 _drawCircle(_piecesMc, px + 2, py + 2, r);
                 _piecesMc.endFill();
@@ -497,10 +515,31 @@ class org.flashNight.hana.Gobang.GobangGame {
                     _piecesMc.endFill();
                 }
 
+                // 最后一手红点
                 if (i === _lastMoveX && j === _lastMoveY) {
                     _piecesMc.beginFill(LAST_MOVE_COLOR, 100);
                     _drawCircle(_piecesMc, px, py, 3);
                     _piecesMc.endFill();
+                }
+
+                // 落子序号
+                var moveNum:Number = orderMap[i + "_" + j];
+                if (moveNum > 0) {
+                    var lblName:String = "lbl" + lblIdx;
+                    var tw:Number = CELL - 4;
+                    var th:Number = CELL - 4;
+                    _labelsMc.createTextField(lblName, lblIdx, px - tw / 2, py - th / 2, tw, th);
+                    var lf:TextField = _labelsMc[lblName];
+                    var lfmt:TextFormat = new TextFormat();
+                    lfmt.font = "Arial";
+                    lfmt.bold = true;
+                    lfmt.size = (moveNum < 10) ? 10 : (moveNum < 100) ? 9 : 8;
+                    lfmt.color = isBlack ? 0xFFFFFF : 0x000000;
+                    lfmt.align = "center";
+                    lf.setNewTextFormat(lfmt);
+                    lf.selectable = false;
+                    lf.text = String(moveNum);
+                    lblIdx++;
                 }
             }
         }

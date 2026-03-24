@@ -9,6 +9,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     private static var ONLY_THREE_THRESHOLD:Number = 6;
     private static var DEFAULT_BUDGET_MS:Number = 3000;
     private static var TIME_CHECK_MASK:Number = 7;
+    // 根候选短名单：depth>=4 时只深搜前 N 个根走法
+    private static var ROOT_SHORTLIST:Number = 4;
 
     private var _board:GobangBoard;
     private var _eval:GobangEval;
@@ -113,6 +115,20 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         }
     }
 
+    // promote 到指定位置（不覆盖更前的条目）
+    private function promoteMoveAt(moves:Array, x:Number, y:Number, pos:Number):Void {
+        if (x < 0 || y < 0 || pos >= moves.length) return;
+        for (var i:Number = pos; i < moves.length; i++) {
+            if (moves[i][0] === x && moves[i][1] === y) {
+                if (i === pos) return;
+                var tmp:Array = moves[pos];
+                moves[pos] = moves[i];
+                moves[i] = tmp;
+                return;
+            }
+        }
+    }
+
     private function beginTimedSearch(budgetMs:Number):Void {
         _budgetMs = budgetMs;
         _startTime = getTimer();
@@ -138,8 +154,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         var prefX:Number = -1;
         var prefY:Number = -1;
 
+        // VCT 阶段（不限根候选）
         if (enableVCT && _eval.history.length >= 8) {
-            var vct:Object = searchFixedDepth(role, maxDepth + 4, true, false, -1, -1);
+            var vct:Object = searchFixedDepth(role, maxDepth + 4, true, false, -1, -1, -MAX, MAX, 0);
             if (vct.x >= 0) {
                 best = vct;
                 prefX = vct.x;
@@ -153,8 +170,21 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             }
         }
 
+        // 迭代加深 + 根短名单 + aspiration windows
         for (var depth:Number = 2; depth <= maxDepth; depth += 2) {
-            var cur:Object = searchFixedDepth(role, depth, false, false, prefX, prefY);
+            var rootLim:Number = (depth >= 4) ? ROOT_SHORTLIST : 0;
+            var iAlpha:Number = -MAX;
+            var iBeta:Number = MAX;
+            // Aspiration: depth>=4 且上一轮有有效分数
+            if (depth >= 4 && best.score > -MAX / 2 && best.score < MAX / 2) {
+                iAlpha = best.score - 500;
+                iBeta = best.score + 500;
+            }
+            var cur:Object = searchFixedDepth(role, depth, false, false, prefX, prefY, iAlpha, iBeta, rootLim);
+            // Aspiration 失败 → 全窗口重搜
+            if (!_timedOut && (cur.score <= iAlpha || cur.score >= iBeta)) {
+                cur = searchFixedDepth(role, depth, false, false, prefX, prefY, -MAX, MAX, rootLim);
+            }
             if (cur.x >= 0) {
                 best = cur;
                 prefX = cur.x;
@@ -166,9 +196,12 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         return {x: best.x, y: best.y, score: best.score, nodes: _nodeCount, timedOut: _timedOut};
     }
 
+    // rootLimit: >0 时截断根候选到前 N 个（短名单深搜核心）
     private function searchFixedDepth(role:Number, depth:Number,
             onlyThree:Boolean, onlyFour:Boolean,
-            preferredX:Number, preferredY:Number):Object {
+            preferredX:Number, preferredY:Number,
+            initAlpha:Number, initBeta:Number,
+            rootLimit:Number):Object {
         _rootMoveIdx = 0;
         _rootMoveTotal = 0;
 
@@ -189,8 +222,13 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             promoteMove(moves, prev.moveX, prev.moveY);
         }
 
-        var alpha:Number = -MAX;
-        var beta:Number = MAX;
+        // 根候选短名单：depth>=4 非 VCT 时截断
+        if (rootLimit > 0 && !onlyThree && !onlyFour && moves.length > rootLimit) {
+            moves.length = rootLimit;
+        }
+
+        var alpha:Number = initAlpha;
+        var beta:Number = initBeta;
         var bestScore:Number = -MAX;
         var bestX:Number = -1;
         var bestY:Number = -1;
@@ -244,9 +282,11 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _asyncWorkingBestX = -1;
         _asyncWorkingBestY = -1;
         _rootMoveIdx = 0;
-        _rootMoveTotal = _asyncMoves.length;
 
-        if (!_asyncMoves.length) return false;
+        if (!_asyncMoves.length) {
+            _rootMoveTotal = 0;
+            return false;
+        }
 
         var prev:Object = _cache.get(_board.hash());
         if (_asyncBestResult.x >= 0) {
@@ -256,6 +296,19 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 && prev.onlyThree === onlyThree && prev.onlyFour === onlyFour) {
             promoteMove(_asyncMoves, prev.moveX, prev.moveY);
         }
+
+        // 根候选短名单：depth>=4 非 VCT 时截断
+        if (depth >= 4 && !onlyThree && !onlyFour && _asyncMoves.length > ROOT_SHORTLIST) {
+            _asyncMoves.length = ROOT_SHORTLIST;
+        }
+
+        // Aspiration: depth>=4 且上一轮有有效分数
+        if (depth >= 4 && _asyncBestResult.score > -MAX / 2 && _asyncBestResult.score < MAX / 2) {
+            _asyncAlpha = _asyncBestResult.score - 500;
+            _asyncBeta = _asyncBestResult.score + 500;
+        }
+
+        _rootMoveTotal = _asyncMoves.length;
         return true;
     }
 
@@ -329,7 +382,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         };
     }
 
-    // negamax with PVS + killer moves — 返回 Void，结果写入 _nmS/_nmX/_nmY
+    // ===== negamax + Null Move + LMR + Killer =====
     private function negamax(role:Number, depthLeft:Number, cDepth:Number,
             alpha:Number, beta:Number, onlyThree:Boolean, onlyFour:Boolean):Void {
         _nodeCount++;
@@ -350,7 +403,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             return;
         }
 
-        // 缓存查询 — 转置表对浅层同样重要（避免重复搜索同一局面）
+        // 缓存查询
         var hash:String = _board.hash();
         var prev:Object = _cache.get(hash);
         if (prev !== null
@@ -362,6 +415,18 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             return;
         }
 
+        // ===== Null Move Pruning =====
+        // 给对手一个"白送手"，若仍 >= beta 则当前局面极优，直接剪枝
+        // 条件：深度足够、非 VCT 搜索、非赢棋附近
+        if (depthLeft >= 4 && !onlyThree && !onlyFour && beta < GobangShape.FIVE_SCORE) {
+            // R=2 reduction: search at depthLeft - 3 (skip 1 + reduce 2)
+            negamax(-role, depthLeft - 3, cDepth + 1, -beta, -(beta - 1), false, false);
+            if (-_nmS >= beta && !_timedOut) {
+                _nmS = beta; _nmX = -1; _nmY = -1;
+                return;
+            }
+        }
+
         var useOnlyThree:Boolean = onlyThree || cDepth > ONLY_THREE_THRESHOLD;
         var moves:Array = _eval.getMoves(role, cDepth, useOnlyThree, onlyFour);
         if (!moves.length) {
@@ -369,21 +434,44 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             return;
         }
 
-        // Move ordering: cache move first（killer moves 暂不启用 — 当前走法排序下反而破坏剪枝）
+        // Move ordering: cache move → killer (位置 1，保留 eval-best 在位置 0)
         if (prev !== null) {
             promoteMove(moves, prev.moveX, prev.moveY);
         }
         var kBase:Number = cDepth + cDepth;
+        if (kBase < 24 && moves.length > 1) {
+            var k0:Number = _killers[kBase];
+            if (k0 >= 0) {
+                var k0y:Number = k0 % 15;
+                var k0x:Number = (k0 - k0y) / 15;
+                promoteMoveAt(moves, k0x, k0y, 1);
+            }
+        }
 
         var bestScore:Number = -MAX;
         var bestX:Number = -1;
         var bestY:Number = -1;
+        // LMR 条件：深度足够 且 非 VCT
+        var useLMR:Boolean = (depthLeft >= 3 && !onlyThree && !onlyFour);
 
         for (var i:Number = 0; i < moves.length; i++) {
             var mx:Number = moves[i][0];
             var my:Number = moves[i][1];
             _board.put(mx, my, role);
             _eval.move(mx, my, role);
+
+            // ===== Late Move Reduction =====
+            // 排名第 4+ 的走法先做浅搜（depth-2），若不超过 alpha 则跳过
+            if (useLMR && i >= 3) {
+                negamax(-role, depthLeft - 2, cDepth + 1, -(alpha + 1), -alpha, onlyThree, onlyFour);
+                if (-_nmS <= alpha || _timedOut) {
+                    _eval.undo(mx, my);
+                    _board.undo();
+                    continue;
+                }
+                // 浅搜超过 alpha → 需要全深度重搜（落入下方）
+            }
+
             negamax(-role, depthLeft - 1, cDepth + 1, -beta, -alpha, onlyThree, onlyFour);
             var currentValue:Number = -_nmS;
             _eval.undo(mx, my);
@@ -396,7 +484,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             }
             if (currentValue > alpha) alpha = currentValue;
             if (_timedOut || alpha >= beta || currentValue >= GobangShape.FIVE_SCORE) {
-                // 记录 killer move（仅 cutoff 且非超时）
+                // 记录 killer move
                 if (alpha >= beta && !_timedOut && kBase < 24) {
                     var flatK:Number = mx * 15 + my;
                     if (_killers[kBase] !== flatK) {
