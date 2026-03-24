@@ -1,0 +1,22 @@
+{
+  "name": "cf7-sort-fuzzer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "phase0": "tsx scripts/phase0-probe.ts",
+    "fuzz": "tsx scripts/fuzz.ts",
+    "harness-gen": "tsx scripts/harness-gen.ts",
+    "parse-trace": "tsx scripts/parse-trace.ts",
+    "train": "tsx scripts/train.ts",
+    "validate": "tsx scripts/validate.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.8"
+  }
+}
