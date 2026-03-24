@@ -793,6 +793,44 @@ class org.flashNight.hana.Gobang.GobangTest {
               + ", phase=" + perfStep.phaseLabel + ", nodes=" + perfStep.nodes
               + ", move=(" + perfStep.x + "," + perfStep.y + ")");
 
+        // --- Bench 12: 20 颗棋密集局面 depth=4 ---
+        var board3:GobangBoard = new GobangBoard(15, 1);
+        var eval3:GobangEval = new GobangEval(15);
+        var denseMoves:Array = [
+            [7,7,1], [6,6,-1], [7,8,1], [6,7,-1], [7,9,1],
+            [8,8,-1], [6,8,1], [8,7,-1], [5,7,1], [8,6,-1],
+            [5,8,1], [9,7,-1], [4,7,1], [9,8,-1], [7,6,1],
+            [8,9,-1], [6,9,1], [5,6,-1], [8,5,1], [9,9,-1]
+        ];
+        for (mi = 0; mi < denseMoves.length; mi++) {
+            board3.put(denseMoves[mi][0], denseMoves[mi][1], denseMoves[mi][2]);
+            eval3.move(denseMoves[mi][0], denseMoves[mi][1], denseMoves[mi][2]);
+        }
+        var mmDense:GobangMinmax = new GobangMinmax(board3, eval3);
+        t0 = getTimer();
+        var resultDense:Object = mmDense.search(-1, 4, false);
+        t1 = getTimer();
+        trace("dense 20-piece depth=4: " + (t1 - t0) + "ms, nodes=" + resultDense.nodes
+              + ", move=(" + resultDense.x + "," + resultDense.y + ")");
+
+        // --- Bench 13: undo 一致性压力测试（10 层 move+undo 回滚） ---
+        var evalStress:GobangEval = new GobangEval(15);
+        evalStress.move(7, 7, 1);
+        var scoreAfterFirst:Number = evalStress.evaluate(1);
+        var stressSeq:Array = [
+            [6,6,-1],[7,8,1],[6,7,-1],[7,9,1],
+            [8,8,-1],[6,8,1],[8,7,-1],[5,7,1],[8,6,-1]
+        ];
+        for (i = 0; i < stressSeq.length; i++) {
+            evalStress.move(stressSeq[i][0], stressSeq[i][1], stressSeq[i][2]);
+        }
+        for (i = stressSeq.length - 1; i >= 0; i--) {
+            evalStress.undo(stressSeq[i][0], stressSeq[i][1]);
+        }
+        var scoreAfterUndo:Number = evalStress.evaluate(1);
+        assert(scoreAfterFirst === scoreAfterUndo,
+               "Undo stress 10-deep: score " + scoreAfterFirst + " === " + scoreAfterUndo);
+
         trace("=== Benchmark Done ===");
     }
 }

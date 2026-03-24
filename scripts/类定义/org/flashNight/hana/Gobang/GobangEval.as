@@ -11,6 +11,12 @@ class org.flashNight.hana.Gobang.GobangEval {
     public var shapeCache:Array;   // [2][4][size][size] — roleIdx, direction, x, y
     public var history:Array;      // [[position, role], ...]
 
+    // Save/Restore undo 栈 — 消除 undo 重计算开销
+    private var _undoStack:Array;
+    private var _undoTop:Number;
+    private var _undoMarks:Array;
+    private var _undoMarkTop:Number;
+
     // 方向表
     private static var allDirs:Array = [[0, 1], [1, 0], [1, 1], [1, -1]];
     private static var dirtyMap:Array = null;
@@ -23,6 +29,7 @@ class org.flashNight.hana.Gobang.GobangEval {
         _totalBlack = 0;
         _totalWhite = 0;
         initDirtyMap(size);
+        _initScoreLUT();
 
         // 初始化 padded board
         board = [];
@@ -45,6 +52,12 @@ class org.flashNight.hana.Gobang.GobangEval {
             }
         }
 
+        // 初始化 undo 栈（最大深度 20 × 每层 ~240 值 = 4800）
+        _undoStack = new Array(5000);
+        _undoTop = 0;
+        _undoMarks = new Array(24);
+        _undoMarkTop = 0;
+
         // 初始化 shapeCache: [roleIdx][direction][x][y]
         shapeCache = [];
         for (var ri:Number = 0; ri < 2; ri++) {
@@ -62,27 +75,121 @@ class org.flashNight.hana.Gobang.GobangEval {
     }
 
     public function move(x:Number, y:Number, role:Number):Void {
-        var ri:Number = GobangConfig.roleIndex(role);
-        var ori:Number = GobangConfig.roleIndex(-role);
-        // 清除该位置的缓存
-        for (var d:Number = 0; d < 4; d++) {
-            shapeCache[ri][d][x][y] = 0;
-            shapeCache[ori][d][x][y] = 0;
-        }
-        _totalBlack -= blackScores[x][y];
-        _totalWhite -= whiteScores[x][y];
-        blackScores[x][y] = 0;
-        whiteScores[x][y] = 0;
+        var ri:Number = role === 1 ? 0 : 1;
+        var ori:Number = 1 - ri;
+        var sc:Array = shapeCache;
+        var st:Array = _undoStack;
+        var top:Number = _undoTop;
+        var bs:Array = blackScores;
+        var ws:Array = whiteScores;
+
+        // 压入标记
+        _undoMarks[_undoMarkTop++] = top;
+
+        // 保存总分（2 值）
+        st[top] = _totalBlack; st[top + 1] = _totalWhite; top += 2;
+
+        // 保存 (x,y) 棋型缓存（8 值）+ 分数（2 值）
+        st[top] = sc[0][0][x][y]; st[top + 1] = sc[0][1][x][y];
+        st[top + 2] = sc[0][2][x][y]; st[top + 3] = sc[0][3][x][y];
+        st[top + 4] = sc[1][0][x][y]; st[top + 5] = sc[1][1][x][y];
+        st[top + 6] = sc[1][2][x][y]; st[top + 7] = sc[1][3][x][y];
+        st[top + 8] = bs[x][y]; st[top + 9] = ws[x][y];
+        top += 10;
+
+        // 清除 (x,y) 棋型和分数
+        sc[ri][0][x][y] = 0; sc[ri][1][x][y] = 0;
+        sc[ri][2][x][y] = 0; sc[ri][3][x][y] = 0;
+        sc[ori][0][x][y] = 0; sc[ori][1][x][y] = 0;
+        sc[ori][2][x][y] = 0; sc[ori][3][x][y] = 0;
+        _totalBlack -= bs[x][y];
+        _totalWhite -= ws[x][y];
+        bs[x][y] = 0;
+        ws[x][y] = 0;
 
         // 更新 padded board
         board[x + 1][y + 1] = role;
-        updatePointMove(x, y);
+
+        // 保存 + 更新 dirty neighbors
+        var brd:Array = board;
+        var flat:Array = dirtyMap[x][y];
+        var flen:Number = flat.length;
+        for (var i:Number = 0; i < flen; i += 4) {
+            var nx:Number = flat[i];
+            var ny:Number = flat[i + 1];
+            if (brd[nx + 1][ny + 1] !== 0) continue;
+            var ox:Number = flat[i + 2];
+            var oy:Number = flat[i + 3];
+            // 内联 direction2index
+            var dirIdx:Number;
+            if (ox === 0) dirIdx = 0;
+            else if (oy === 0) dirIdx = 1;
+            else if (ox === oy) dirIdx = 2;
+            else dirIdx = 3;
+            // 快速跳过：新旧棋型均为 NONE → 无需更新
+            var px:Number = nx + 1;
+            var py:Number = ny + 1;
+            if (brd[px + ox][py + oy] === 0
+                && brd[px - ox][py - oy] === 0
+                && brd[px + ox + ox][py + oy + oy] === 0
+                && brd[px - ox - ox][py - oy - oy] === 0
+                && sc[0][dirIdx][nx][ny] === 0
+                && sc[1][dirIdx][nx][ny] === 0) {
+                continue;
+            }
+            // 保存: nx, ny, dirIdx, 两角色棋型, 两角色分数
+            st[top] = nx; st[top + 1] = ny; st[top + 2] = dirIdx;
+            st[top + 3] = sc[0][dirIdx][nx][ny];
+            st[top + 4] = sc[1][dirIdx][nx][ny];
+            st[top + 5] = bs[nx][ny];
+            st[top + 6] = ws[nx][ny];
+            top += 7;
+            // 执行更新
+            updateSinglePoint(nx, ny, 1, ox, oy);
+            updateSinglePoint(nx, ny, -1, ox, oy);
+        }
+
+        _undoTop = top;
         history.push([x * size + y, role]);
     }
 
+    // 快速 undo — 从保存栈恢复，零 getShapeFast 调用
     public function undo(x:Number, y:Number):Void {
         board[x + 1][y + 1] = 0;
-        updatePointUndo(x, y);
+
+        var st:Array = _undoStack;
+        var top:Number = _undoTop;
+        var mark:Number = _undoMarks[--_undoMarkTop];
+        var sc:Array = shapeCache;
+        var bs:Array = blackScores;
+        var ws:Array = whiteScores;
+
+        // 逆序恢复 dirty neighbors（每条 7 值，头部 12 值为 (x,y) 和总分）
+        var headerEnd:Number = mark + 12;
+        while (top > headerEnd) {
+            top -= 7;
+            var nx:Number = st[top];
+            var ny:Number = st[top + 1];
+            var dIdx:Number = st[top + 2];
+            sc[0][dIdx][nx][ny] = st[top + 3];
+            sc[1][dIdx][nx][ny] = st[top + 4];
+            bs[nx][ny] = st[top + 5];
+            ws[nx][ny] = st[top + 6];
+        }
+
+        // 恢复 (x,y) 棋型缓存和分数
+        sc[0][0][x][y] = st[mark + 2]; sc[0][1][x][y] = st[mark + 3];
+        sc[0][2][x][y] = st[mark + 4]; sc[0][3][x][y] = st[mark + 5];
+        sc[1][0][x][y] = st[mark + 6]; sc[1][1][x][y] = st[mark + 7];
+        sc[1][2][x][y] = st[mark + 8]; sc[1][3][x][y] = st[mark + 9];
+        bs[x][y] = st[mark + 10];
+        ws[x][y] = st[mark + 11];
+
+        // 恢复总分
+        _totalBlack = st[mark];
+        _totalWhite = st[mark + 1];
+
+        _undoTop = mark;
         history.pop();
     }
 
@@ -116,47 +223,28 @@ class org.flashNight.hana.Gobang.GobangEval {
         }
     }
 
-    private function updatePointMove(x:Number, y:Number):Void {
-        updateDirtyNeighbors(x, y);
-    }
-
-    private function updatePointUndo(x:Number, y:Number):Void {
-        updateSinglePoint(x, y, 1, -1, -1);
-        updateSinglePoint(x, y, -1, -1, -1);
-        updateDirtyNeighbors(x, y);
-    }
-
-    private function updateDirtyNeighbors(x:Number, y:Number):Void {
-        var brd:Array = board;
-        var flat:Array = dirtyMap[x][y];
-        for (var i:Number = 0; i < flat.length; i += 4) {
-            var nx:Number = flat[i];
-            var ny:Number = flat[i + 1];
-            if (brd[nx + 1][ny + 1] !== 0) continue;
-            var ox:Number = flat[i + 2];
-            var oy:Number = flat[i + 3];
-            updateSinglePoint(nx, ny, 1, ox, oy);
-            updateSinglePoint(nx, ny, -1, ox, oy);
-        }
+    // 分值查找表 — 按棋型值(0-50)直接索引，消除函数调用 + if 链开销
+    private static var _scoreLUT:Array = null;
+    private static function _initScoreLUT():Void {
+        if (_scoreLUT !== null) return;
+        var a:Array = new Array(51);
+        var i:Number = 50;
+        while (i >= 0) { a[i] = 0; i--; }
+        a[2] = 10;       // TWO → ONE_SCORE
+        a[3] = 100;      // THREE → TWO_SCORE
+        a[4] = 1000;     // FOUR → THREE_SCORE
+        a[5] = 100000;   // FIVE → FOUR_SCORE
+        a[22] = 20;      // TWO_TWO
+        a[30] = 15;      // BLOCK_THREE → BLOCK_TWO_SCORE
+        a[33] = 5000;    // THREE_THREE
+        a[40] = 150;     // BLOCK_FOUR → BLOCK_THREE_SCORE
+        a[43] = 1000;    // FOUR_THREE → THREE_SCORE
+        a[44] = 1000;    // FOUR_FOUR → THREE_SCORE
+        a[50] = 1500;    // BLOCK_FIVE → BLOCK_FOUR_SCORE
+        _scoreLUT = a;
     }
 
     // dirOx/dirOy: 指定只更新一个方向 (-1,-1 = 全部4方向)
-    // 内联 getRealShapeScore — 消除函数调用开销(485ns→0)
-    private static function _shapeScore(s:Number):Number {
-        // 按频率排序：TWO 最多，BLOCK_THREE 次之...
-        if (s === 2) return 10;       // TWO → ONE_SCORE
-        if (s === 30) return 15;      // BLOCK_THREE → BLOCK_TWO_SCORE
-        if (s === 3) return 100;      // THREE → TWO_SCORE
-        if (s === 40) return 150;     // BLOCK_FOUR → BLOCK_THREE_SCORE
-        if (s === 5) return 100000;   // FIVE → FOUR_SCORE
-        if (s === 50) return 1500;    // BLOCK_FIVE → BLOCK_FOUR_SCORE
-        if (s === 4) return 1000;     // FOUR → THREE_SCORE
-        if (s === 44) return 1000;    // FOUR_FOUR → THREE_SCORE
-        if (s === 43) return 1000;    // FOUR_THREE → THREE_SCORE
-        if (s === 33) return 5000;    // THREE_THREE → THREE_THREE_SCORE/10
-        if (s === 22) return 20;      // TWO_TWO → TWO_TWO_SCORE/10
-        return 0;
-    }
 
     private function updateSinglePoint(x:Number, y:Number, role:Number, dirOx:Number, dirOy:Number):Void {
         // 局部变量缓存（AVM1: 局部=0ns vs 成员=144ns）
@@ -191,12 +279,13 @@ class org.flashNight.hana.Gobang.GobangEval {
         var thc:Number = 0;
         var twc:Number = 0;
         var es:Number;
+        var lut:Array = _scoreLUT;
 
-        // 累加已有方向分值（内联 _shapeScore）
-        es = scx0[y]; if (es) { score += _shapeScore(es); if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
-        es = scx1[y]; if (es) { score += _shapeScore(es); if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
-        es = scx2[y]; if (es) { score += _shapeScore(es); if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
-        es = scx3[y]; if (es) { score += _shapeScore(es); if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
+        // 累加已有方向分值（LUT 直接索引，消除函数调用）
+        es = scx0[y]; if (es) { score += lut[es]; if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
+        es = scx1[y]; if (es) { score += lut[es]; if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
+        es = scx2[y]; if (es) { score += lut[es]; if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
+        es = scx3[y]; if (es) { score += lut[es]; if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
 
         // 计算新方向棋型
         var gsf:Function = GobangShape.getShapeFast;
@@ -209,7 +298,7 @@ class org.flashNight.hana.Gobang.GobangEval {
                 else if (bfc && thc) sh = 43;
                 else if (thc >= 2) sh = 33;
                 else if (twc >= 2) sh = 22;
-                score += _shapeScore(sh);
+                score += lut[sh];
             }
         } else {
             var ad:Array = allDirs;
@@ -223,7 +312,7 @@ class org.flashNight.hana.Gobang.GobangEval {
                 else if (bfc && thc) sh2 = 43;
                 else if (thc >= 2) sh2 = 33;
                 else if (twc >= 2) sh2 = 22;
-                score += _shapeScore(sh2);
+                score += lut[sh2];
             }
         }
 
@@ -248,6 +337,8 @@ class org.flashNight.hana.Gobang.GobangEval {
         var result:Array = [];
         var limit:Number = GobangConfig.pointsLimit;
         if (limit < 1) limit = 1;
+        // 深层搜索适度衰减候选数（过激会破坏 alpha-beta 剪枝）
+        if (depth >= 4 && limit > 10) limit = 10;
         var bs:Array = blackScores;
         var ws:Array = whiteScores;
         var atk:Array = role === 1 ? bs : ws;

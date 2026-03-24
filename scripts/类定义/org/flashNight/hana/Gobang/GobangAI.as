@@ -72,15 +72,14 @@ class org.flashNight.hana.Gobang.GobangAI {
             pl = 12;
         }
 
-        // 低帧预算优先保证宿主流畅度：压低候选数与搜索深度
+        // 低帧预算：允许 depth=4 以保持棋力（优化后可在帧预算内完成）
         if (frameBudgetMs <= 8) {
-            depth = 2;
-            if (pl > 6) pl = 6;
+            if (depth > 4) depth = 4;
+            if (pl > 10) pl = 10;
             enableVCT = false;
         } else if (frameBudgetMs <= 16) {
-            depth = 2;
-            if (pl > 8) pl = 8;
-            enableVCT = false;
+            if (depth > 4) depth = 4;
+            if (pl > 12) pl = 12;
         }
 
         return {
