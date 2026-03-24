@@ -1,4 +1,33 @@
-﻿import org.flashNight.naki.Sort.*;
+/**
+ * 生成边界样本多 seed × 多 rep benchmark harness
+ *
+ * 测量三条链路:
+ *   native_total  = arr.sort(Array.NUMERIC)
+ *   intro_total   = IntroSort.sort(arr, null)
+ *   router_total  = SortRouter.sort(arr, null)  // classify + chosen_sort
+ *
+ * 输出格式:
+ *   [BORDER:dist:seed:rep] native=X intro=Y router=Z
+ */
+
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { writeAS2 } from "../src/flash/as2-writer.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const PROJECT_ROOT = resolve(__dirname, "../../../");
+
+const PROBE_PATH = resolve(
+  PROJECT_ROOT,
+  "scripts/类定义/org/flashNight/naki/Sort/SortProbe.as"
+);
+
+const SEEDS = [12345, 54321, 99999, 77777, 31415, 271828, 141421, 173205];
+const REPS = 3;
+const DISTS = ["sawTooth20", "nearSorted1", "fewUnique10"];
+
+const SOURCE = `import org.flashNight.naki.Sort.*;
 
 class org.flashNight.naki.Sort.SortProbe {
 
@@ -10,13 +39,13 @@ class org.flashNight.naki.Sort.SortProbe {
 
     public static function run():Void {
         trace("=================================================================");
-        trace("Border Sample Benchmark: 8 seeds x 3 reps");
+        trace("Border Sample Benchmark: 8 seeds x ${REPS} reps");
         trace("Metrics: native / intro / router (ms)");
         trace("=================================================================");
 
         var sz:Number = 10000;
-        var seeds:Array = [12345, 54321, 99999, 77777, 31415, 271828, 141421, 173205];
-        var dists:Array = ["sawTooth20", "nearSorted1", "fewUnique10"];
+        var seeds:Array = [${SEEDS.join(", ")}];
+        var dists:Array = [${DISTS.map(d => `"${d}"`).join(", ")}];
 
         for (var di:Number = 0; di < dists.length; di++) {
             var dist:String = dists[di];
@@ -26,7 +55,7 @@ class org.flashNight.naki.Sort.SortProbe {
             for (var si:Number = 0; si < seeds.length; si++) {
                 var seed:Number = seeds[si];
 
-                for (var rep:Number = 0; rep < 3; rep++) {
+                for (var rep:Number = 0; rep < ${REPS}; rep++) {
                     // Native
                     setSeed(seed);
                     var master:Array = generateArray(sz, dist);
@@ -75,3 +104,7 @@ class org.flashNight.naki.Sort.SortProbe {
         return arr;
     }
 }
+`;
+
+writeAS2(PROBE_PATH, SOURCE);
+console.log(`Border benchmark harness written (${DISTS.length} dists × ${SEEDS.length} seeds × ${REPS} reps = ${DISTS.length * SEEDS.length * REPS} measurements)`);
