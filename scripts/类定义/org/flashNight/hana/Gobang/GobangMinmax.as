@@ -9,9 +9,25 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     private static var ONLY_THREE_THRESHOLD:Number = 6;
     private static var DEFAULT_BUDGET_MS:Number = 3000;
     private static var TIME_CHECK_MASK:Number = 7;
-    // 根候选短名单：depth>=4 时只深搜前 N 个根走法
-    private static var ROOT_SHORTLIST:Number = 4;
-
+    private static var LEAF_TSS_HINT_RADIUS:Number = 3;
+    private static var LEAF_TSS_MAX_PLY:Number = 5;
+    private static var LEAF_TSS_ATTACK_CAP:Number = 3;
+    private static var LEAF_TSS_DEFENSE_CAP:Number = 4;
+    private static var LEAF_TSS_DEFENSE_SCAN_LIMIT:Number = 6;
+    private static var LEAF_TSS_NODE_CAP:Number = 40;
+    private static var LEAF_TSS_SCORE:Number = 2000000;
+    private static var BRIDGE_PROBE_MIN_HISTORY:Number = 10;
+    private static var BRIDGE_PROBE_DEPTH:Number = 4;
+    private static var BRIDGE_PROBE_POINTS_LIMIT:Number = 4;
+    private static var BRIDGE_PROBE_DEEP_DEPTH:Number = 6;
+    private static var BRIDGE_PROBE_DEEP_POINTS_LIMIT:Number = 3;
+    private static var BRIDGE_PROBE_URGENT_FOUR_LIMIT:Number = 2;
+    private static var BRIDGE_PROBE_URGENT_LIMIT:Number = 2;
+    private static var BRIDGE_PROBE_MIN_SCORE:Number = 18;
+    private static var BRIDGE_PROBE_ATTACK_WEIGHT:Number = 4;
+    private static var BRIDGE_PROBE_DEF_WEIGHT:Number = 3;
+    private static var BRIDGE_PROBE_DEEP_MIN_BIAS:Number = 80;
+    private static var BRIDGE_PROBE_DEEP_MAX_MOVES:Number = 2;
     private var _board:GobangBoard;
     private var _eval:GobangEval;
     private var _cache:GobangCache;
@@ -47,8 +63,11 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     private var _asyncAlpha:Number;
     private var _asyncBeta:Number;
     private var _asyncWorkingBestScore:Number;
+    private var _asyncWorkingBestRawScore:Number;
     private var _asyncWorkingBestX:Number;
     private var _asyncWorkingBestY:Number;
+    private var _asyncBridgeBaseDepth:Number;
+    private var _tssBudget:Number;
 
     // 根层进度追踪（1-based）
     private var _rootMoveIdx:Number;
@@ -76,8 +95,11 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _asyncAlpha = -MAX;
         _asyncBeta = MAX;
         _asyncWorkingBestScore = -MAX;
+        _asyncWorkingBestRawScore = -MAX;
         _asyncWorkingBestX = -1;
         _asyncWorkingBestY = -1;
+        _asyncBridgeBaseDepth = 0;
+        _tssBudget = 0;
         _rootMoveIdx = 0;
         _rootMoveTotal = 0;
     }
@@ -129,6 +151,136 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         }
     }
 
+    private function mergeBridgeMoves(moves:Array, role:Number, limit:Number, insertPos:Number):Void {
+        if (limit === undefined || limit < 1) limit = 1;
+        if (insertPos === undefined || insertPos < 0) insertPos = 0;
+        var bridges:Array = _eval.getBridgeMoves(role, limit);
+        for (var i:Number = 0; i < bridges.length; i++) {
+            var bx:Number = bridges[i][0];
+            var by:Number = bridges[i][1];
+            if (insertPos > moves.length) insertPos = moves.length;
+
+            var foundAt:Number = -1;
+            for (var mi:Number = 0; mi < moves.length; mi++) {
+                if (moves[mi][0] === bx && moves[mi][1] === by) {
+                    foundAt = mi;
+                    break;
+                }
+            }
+
+            if (foundAt >= 0) {
+                if (foundAt > insertPos) {
+                    var mv:Array = moves[foundAt];
+                    while (foundAt > insertPos) {
+                        moves[foundAt] = moves[foundAt - 1];
+                        foundAt--;
+                    }
+                    moves[insertPos] = mv;
+                }
+            } else {
+                var tail:Number = moves.length;
+                moves[tail] = [bx, by];
+                while (tail > insertPos) {
+                    moves[tail] = moves[tail - 1];
+                    tail--;
+                }
+                moves[insertPos] = [bx, by];
+            }
+            insertPos++;
+        }
+    }
+
+    private function appendUniqueMove(moves:Array, x:Number, y:Number):Void {
+        if (x < 0 || y < 0 || hasMove(moves, x, y)) return;
+        moves[moves.length] = [x, y];
+    }
+
+    private function getBridgeProbeBias(role:Number, x:Number, y:Number):Number {
+        _board.put(x, y, role);
+        _eval.move(x, y, role);
+        var bias:Number = 0;
+        var atk:Array = _eval.getBridgeMoves(role, 1, true);
+        if (atk.length > 0) {
+            bias += atk[0][2] * BRIDGE_PROBE_ATTACK_WEIGHT;
+        }
+        var def:Array = _eval.getBridgeMoves(-role, 1, true);
+        if (def.length > 0) {
+            bias -= def[0][2] * BRIDGE_PROBE_DEF_WEIGHT;
+        }
+        _eval.undo(x, y);
+        _board.undo();
+        return bias;
+    }
+
+    private function collectBridgeProbeMoves(role:Number, baseX:Number, baseY:Number):Array {
+        var moves:Array = [];
+        moves[moves.length] = [baseX, baseY, getBridgeProbeBias(role, baseX, baseY), 0];
+
+        var urgentFour:Array = _eval.getMoves(role, 0, false, true);
+        if (urgentFour.length > 0 && urgentFour.length <= 4) {
+            for (var fi:Number = 0; fi < urgentFour.length && fi < BRIDGE_PROBE_URGENT_FOUR_LIMIT; fi++) {
+                if (!hasMove(moves, urgentFour[fi][0], urgentFour[fi][1])) {
+                    moves[moves.length] = [urgentFour[fi][0], urgentFour[fi][1],
+                        getBridgeProbeBias(role, urgentFour[fi][0], urgentFour[fi][1]), 2];
+                }
+            }
+            if (moves.length >= 2) {
+                return moves;
+            }
+        }
+
+        var urgent:Array = _eval.getMoves(role, 0, true, false);
+        if (urgent.length > 0 && urgent.length <= 4) {
+            for (var ui:Number = 0; ui < urgent.length && ui < BRIDGE_PROBE_URGENT_LIMIT; ui++) {
+                if (!hasMove(moves, urgent[ui][0], urgent[ui][1])) {
+                    moves[moves.length] = [urgent[ui][0], urgent[ui][1],
+                        getBridgeProbeBias(role, urgent[ui][0], urgent[ui][1]), 1];
+                }
+            }
+            if (moves.length >= 2) {
+                return moves;
+            }
+        }
+
+        var atk:Array = _eval.getBridgeMoves(role, 2, true);
+        for (var ai:Number = 0; ai < atk.length; ai++) {
+            if (atk[ai][2] >= BRIDGE_PROBE_MIN_SCORE) {
+                if (!hasMove(moves, atk[ai][0], atk[ai][1])) {
+                    moves[moves.length] = [atk[ai][0], atk[ai][1], getBridgeProbeBias(role, atk[ai][0], atk[ai][1]), 0];
+                }
+                break;
+            }
+        }
+
+        var def:Array = _eval.getBridgeMoves(-role, 2, true);
+        for (var di:Number = 0; di < def.length; di++) {
+            if (def[di][2] >= BRIDGE_PROBE_MIN_SCORE) {
+                if (!hasMove(moves, def[di][0], def[di][1])) {
+                    moves[moves.length] = [def[di][0], def[di][1], getBridgeProbeBias(role, def[di][0], def[di][1]), 0];
+                }
+                break;
+            }
+        }
+
+        return moves.length >= 2 ? moves : null;
+    }
+
+    private function chooseBridgeProbeDepth(moves:Array):Number {
+        if (moves === null || moves.length < 2) return BRIDGE_PROBE_DEPTH;
+        if (moves.length > BRIDGE_PROBE_DEEP_MAX_MOVES) return BRIDGE_PROBE_DEPTH;
+
+        var maxBias:Number = 0;
+        for (var i:Number = 0; i < moves.length; i++) {
+            if (moves[i].length > 3 && moves[i][3] === 2) {
+                return BRIDGE_PROBE_DEEP_DEPTH;
+            }
+            var bias:Number = moves[i][2];
+            if (bias < 0) bias = -bias;
+            if (bias > maxBias) maxBias = bias;
+        }
+        return maxBias >= BRIDGE_PROBE_DEEP_MIN_BIAS ? BRIDGE_PROBE_DEEP_DEPTH : BRIDGE_PROBE_DEPTH;
+    }
+
     private function beginTimedSearch(budgetMs:Number):Void {
         _budgetMs = budgetMs;
         _startTime = getTimer();
@@ -170,9 +322,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             }
         }
 
-        // 迭代加深 + 根短名单 + aspiration windows
+        // 迭代加深 + aspiration windows
         for (var depth:Number = 2; depth <= maxDepth; depth += 2) {
-            var rootLim:Number = (depth >= 4) ? ROOT_SHORTLIST : 0;
             var iAlpha:Number = -MAX;
             var iBeta:Number = MAX;
             // Aspiration: depth>=4 且上一轮有有效分数
@@ -180,10 +331,10 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 iAlpha = best.score - 500;
                 iBeta = best.score + 500;
             }
-            var cur:Object = searchFixedDepth(role, depth, false, false, prefX, prefY, iAlpha, iBeta, rootLim);
+            var cur:Object = searchFixedDepth(role, depth, false, false, prefX, prefY, iAlpha, iBeta, 0);
             // Aspiration 失败 → 全窗口重搜
             if (!_timedOut && (cur.score <= iAlpha || cur.score >= iBeta)) {
-                cur = searchFixedDepth(role, depth, false, false, prefX, prefY, -MAX, MAX, rootLim);
+                cur = searchFixedDepth(role, depth, false, false, prefX, prefY, -MAX, MAX, 0);
             }
             if (cur.x >= 0) {
                 best = cur;
@@ -211,6 +362,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             if (_board.board[center][center] === 0 && !hasMove(moves, center, center)) {
                 moves.push([center, center]);
             }
+            if (_board.history.length >= 10 && moves.length >= 4) {
+                mergeBridgeMoves(moves, role, 3, 2);
+            }
         }
         if (!moves.length) {
             return {x: -1, y: -1, score: _eval.evaluate(role), timedOut: _timedOut};
@@ -222,7 +376,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             promoteMove(moves, prev.moveX, prev.moveY);
         }
 
-        // 根候选短名单：depth>=4 非 VCT 时截断
+        // 可选根短名单：仅在明确启用时截断
         if (rootLimit > 0 && !onlyThree && !onlyFour && moves.length > rootLimit) {
             moves.length = rootLimit;
         }
@@ -274,11 +428,15 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             if (_board.board[center][center] === 0 && !hasMove(_asyncMoves, center, center)) {
                 _asyncMoves.push([center, center]);
             }
+            if (_board.history.length >= 10 && _asyncMoves.length >= 4) {
+                mergeBridgeMoves(_asyncMoves, _asyncRole, 3, 2);
+            }
         }
         _asyncMoveIndex = 0;
         _asyncAlpha = -MAX;
         _asyncBeta = MAX;
         _asyncWorkingBestScore = -MAX;
+        _asyncWorkingBestRawScore = -MAX;
         _asyncWorkingBestX = -1;
         _asyncWorkingBestY = -1;
         _rootMoveIdx = 0;
@@ -297,11 +455,6 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             promoteMove(_asyncMoves, prev.moveX, prev.moveY);
         }
 
-        // 根候选短名单：depth>=4 非 VCT 时截断
-        if (depth >= 4 && !onlyThree && !onlyFour && _asyncMoves.length > ROOT_SHORTLIST) {
-            _asyncMoves.length = ROOT_SHORTLIST;
-        }
-
         // Aspiration: depth>=4 且上一轮有有效分数
         if (depth >= 4 && _asyncBestResult.score > -MAX / 2 && _asyncBestResult.score < MAX / 2) {
             _asyncAlpha = _asyncBestResult.score - 500;
@@ -312,8 +465,47 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         return true;
     }
 
+    private function initAsyncCandidateSearch(depth:Number, moves:Array):Boolean {
+        if (moves === null || moves.length === 0) {
+            _rootMoveTotal = 0;
+            return false;
+        }
+        _asyncTargetDepth = depth;
+        _asyncOnlyThree = false;
+        _asyncOnlyFour = false;
+        _asyncMoves = moves;
+        _asyncMoveIndex = 0;
+        _asyncAlpha = -MAX;
+        _asyncBeta = MAX;
+        _asyncWorkingBestScore = -MAX;
+        _asyncWorkingBestRawScore = -MAX;
+        _asyncWorkingBestX = -1;
+        _asyncWorkingBestY = -1;
+        _rootMoveIdx = 0;
+        _rootMoveTotal = _asyncMoves.length;
+        return true;
+    }
+
+    private function tryStartAsyncBridgeProbe():Boolean {
+        if (_asyncMaxDepth !== 2
+                || _asyncLastCompletedDepth !== 2
+                || _asyncBestResult.x < 0
+                || _asyncEnableVCT
+                || _eval.history.length < BRIDGE_PROBE_MIN_HISTORY) {
+            return false;
+        }
+
+        var probeMoves:Array = collectBridgeProbeMoves(_asyncRole, _asyncBestResult.x, _asyncBestResult.y);
+        if (probeMoves === null) return false;
+
+        _asyncBridgeBaseDepth = _asyncLastCompletedDepth;
+        _asyncPhase = 3;
+        return initAsyncCandidateSearch(chooseBridgeProbeDepth(probeMoves), probeMoves);
+    }
+
     private function stepAsyncRootSearch(frameBudgetMs:Number):Object {
         beginTimedSearch(frameBudgetMs);
+        var useBridgeBias:Boolean = (_asyncPhase === 3);
 
         while (_asyncMoveIndex < _asyncMoves.length) {
             if (getTimer() - _startTime > _budgetMs) {
@@ -329,23 +521,29 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             negamax(-_asyncRole, _asyncTargetDepth - 1, 1,
                     -_asyncBeta, -_asyncAlpha, _asyncOnlyThree, _asyncOnlyFour);
             var currentValue:Number = -_nmS;
+            var compareValue:Number = currentValue;
+            if (useBridgeBias && _asyncMoves[_asyncMoveIndex].length > 2) {
+                compareValue += _asyncMoves[_asyncMoveIndex][2];
+            }
             _eval.undo(mx, my);
             _board.undo();
             _asyncMoveIndex++;
 
             if (!_timedOut) {
-                if (_asyncWorkingBestX < 0 || currentValue > _asyncWorkingBestScore) {
-                    _asyncWorkingBestScore = currentValue;
+                if (_asyncWorkingBestX < 0 || compareValue > _asyncWorkingBestScore) {
+                    _asyncWorkingBestScore = compareValue;
+                    _asyncWorkingBestRawScore = currentValue;
                     _asyncWorkingBestX = mx;
                     _asyncWorkingBestY = my;
                 }
-                if (currentValue > _asyncAlpha) _asyncAlpha = currentValue;
-                if (_asyncAlpha >= _asyncBeta || currentValue >= GobangShape.FIVE_SCORE) {
+                if (!useBridgeBias && currentValue > _asyncAlpha) _asyncAlpha = currentValue;
+                if ((!useBridgeBias && _asyncAlpha >= _asyncBeta) || currentValue >= GobangShape.FIVE_SCORE) {
                     _asyncMoveIndex = _asyncMoves.length;
                     break;
                 }
             } else if (_asyncWorkingBestX < 0) {
-                _asyncWorkingBestScore = currentValue;
+                _asyncWorkingBestScore = compareValue;
+                _asyncWorkingBestRawScore = currentValue;
                 _asyncWorkingBestX = mx;
                 _asyncWorkingBestY = my;
                 break;
@@ -359,7 +557,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             _asyncBestResult = {
                 x: _asyncWorkingBestX,
                 y: _asyncWorkingBestY,
-                score: _asyncWorkingBestScore
+                score: _asyncWorkingBestRawScore
             };
             _asyncLastCompletedDepth = _asyncTargetDepth;
             _asyncMoves = null;
@@ -367,7 +565,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
 
         var showX:Number = finished ? _asyncBestResult.x : _asyncWorkingBestX;
         var showY:Number = finished ? _asyncBestResult.y : _asyncWorkingBestY;
-        var showScore:Number = finished ? _asyncBestResult.score : _asyncWorkingBestScore;
+        var showScore:Number = finished ? _asyncBestResult.score : _asyncWorkingBestRawScore;
         if (showX < 0 && _asyncBestResult.x >= 0) {
             showX = _asyncBestResult.x;
             showY = _asyncBestResult.y;
@@ -382,7 +580,196 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         };
     }
 
-    // ===== negamax + Null Move + LMR + Killer =====
+    private function hasLeafTSSHint():Boolean {
+        var h:Array = _board.history;
+        var hLen:Number = h.length;
+        if (hLen === 0) return false;
+
+        var last:Object = h[hLen - 1];
+        var lx:Number = last.i;
+        var ly:Number = last.j;
+        var minX:Number = lx - LEAF_TSS_HINT_RADIUS;
+        var maxX:Number = lx + LEAF_TSS_HINT_RADIUS;
+        var minY:Number = ly - LEAF_TSS_HINT_RADIUS;
+        var maxY:Number = ly + LEAF_TSS_HINT_RADIUS;
+        var sz:Number = _board.size;
+        if (minX < 0) minX = 0;
+        if (minY < 0) minY = 0;
+        if (maxX >= sz) maxX = sz - 1;
+        if (maxY >= sz) maxY = sz - 1;
+
+        var brd:Array = _board.board;
+        var bShape:Array = _eval.shapeCache[0];
+        var wShape:Array = _eval.shapeCache[1];
+        for (var x:Number = minX; x <= maxX; x++) {
+            var row:Array = brd[x];
+            var b0:Array = bShape[0][x];
+            var b1:Array = bShape[1][x];
+            var b2:Array = bShape[2][x];
+            var b3:Array = bShape[3][x];
+            var w0:Array = wShape[0][x];
+            var w1:Array = wShape[1][x];
+            var w2:Array = wShape[2][x];
+            var w3:Array = wShape[3][x];
+            for (var y:Number = minY; y <= maxY; y++) {
+                if (row[y] !== 0) continue;
+
+                var bTwos:Number = 0;
+                var sh:Number = b0[y];
+                if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
+                if (sh === 2) bTwos++;
+                sh = b1[y];
+                if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
+                if (sh === 2) bTwos++;
+                sh = b2[y];
+                if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
+                if (sh === 2) bTwos++;
+                sh = b3[y];
+                if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
+                if (sh === 2) bTwos++;
+                if (bTwos >= 2) return true;
+
+                var wTwos:Number = 0;
+                sh = w0[y];
+                if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
+                if (sh === 2) wTwos++;
+                sh = w1[y];
+                if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
+                if (sh === 2) wTwos++;
+                sh = w2[y];
+                if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
+                if (sh === 2) wTwos++;
+                sh = w3[y];
+                if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
+                if (sh === 2) wTwos++;
+                if (wTwos >= 2) return true;
+            }
+        }
+        return false;
+    }
+
+    private function getTSSDefenseMoves(role:Number):Array {
+        var origPL:Number = GobangConfig.pointsLimit;
+        GobangConfig.pointsLimit = LEAF_TSS_DEFENSE_SCAN_LIMIT;
+        var moves:Array = _eval.getMoves(role, 0, false, false);
+        GobangConfig.pointsLimit = origPL;
+        return moves;
+    }
+
+    private function probeThreatWin(attackerRole:Number, turnRole:Number, plyLeft:Number):Boolean {
+        if (_timedOut || plyLeft <= 0 || _tssBudget <= 0) return false;
+        _tssBudget--;
+        if ((_tssBudget & TIME_CHECK_MASK) === 0 && getTimer() - _startTime > _budgetMs) {
+            _timedOut = true;
+            return false;
+        }
+
+        if (_board.isGameOver()) {
+            return _board.getWinner() === attackerRole;
+        }
+
+        var moves:Array;
+        var i:Number;
+        if (turnRole === attackerRole) {
+            moves = _eval.getThreatMoves(attackerRole, 3, LEAF_TSS_ATTACK_CAP);
+            if (!moves.length && plyLeft >= 4) {
+                moves = _eval.getThreatMoves(attackerRole, 2, 2);
+            }
+            if (!moves.length) return false;
+            for (i = 0; i < moves.length; i++) {
+                var ax:Number = moves[i][0];
+                var ay:Number = moves[i][1];
+                _board.put(ax, ay, turnRole);
+                _eval.move(ax, ay, turnRole);
+                var canForce:Boolean;
+                if (_board.isGameOver()) {
+                    canForce = (_board.getWinner() === attackerRole);
+                } else {
+                    canForce = probeThreatWin(attackerRole, -turnRole, plyLeft - 1);
+                }
+                _eval.undo(ax, ay);
+                _board.undo();
+                if (canForce) return true;
+            }
+            return false;
+        }
+
+        moves = getTSSDefenseMoves(turnRole);
+        if (!moves.length) return false;
+        if (moves.length > LEAF_TSS_DEFENSE_CAP) return false;
+        for (i = 0; i < moves.length; i++) {
+            var dx:Number = moves[i][0];
+            var dy:Number = moves[i][1];
+            _board.put(dx, dy, turnRole);
+            _eval.move(dx, dy, turnRole);
+            var defends:Boolean;
+            if (_board.isGameOver()) {
+                defends = (_board.getWinner() === attackerRole);
+            } else {
+                defends = probeThreatWin(attackerRole, -turnRole, plyLeft - 1);
+            }
+            _eval.undo(dx, dy);
+            _board.undo();
+            if (!defends) return false;
+        }
+        return true;
+    }
+
+    private function probeLeafTSS(role:Number, cDepth:Number, baseScore:Number):Number {
+        // 轻量 TSS 只挂在真正的深搜叶子，避免拖慢浅层主链路
+        if (cDepth < 6 || _board.history.length < 10 || !hasLeafTSSHint()) {
+            return baseScore;
+        }
+
+        _tssBudget = LEAF_TSS_NODE_CAP;
+        if (probeThreatWin(role, role, LEAF_TSS_MAX_PLY)) {
+            return LEAF_TSS_SCORE - cDepth;
+        }
+
+        _tssBudget = LEAF_TSS_NODE_CAP;
+        if (probeThreatWin(-role, role, LEAF_TSS_MAX_PLY)) {
+            return cDepth - LEAF_TSS_SCORE;
+        }
+        return baseScore;
+    }
+
+    public function probeTSS(role:Number, maxPly:Number):Boolean {
+        if (maxPly === undefined || maxPly < 1) maxPly = LEAF_TSS_MAX_PLY;
+        if (!hasLeafTSSHint()) return false;
+        _tssBudget = LEAF_TSS_NODE_CAP;
+        return probeThreatWin(role, _board.role, maxPly);
+    }
+
+    public function probeTSSWithBudget(role:Number, maxPly:Number, budgetMs:Number):Boolean {
+        if (maxPly === undefined || maxPly < 1) maxPly = LEAF_TSS_MAX_PLY;
+        if (budgetMs === undefined || budgetMs < 1) budgetMs = DEFAULT_BUDGET_MS;
+        if (!hasLeafTSSHint()) return false;
+
+        var savedBudget:Number = _budgetMs;
+        var savedStart:Number = _startTime;
+        var savedTimedOut:Boolean = _timedOut;
+        var savedNodeCount:Number = _nodeCount;
+        var savedTssBudget:Number = _tssBudget;
+
+        _budgetMs = budgetMs;
+        _startTime = getTimer();
+        _timedOut = false;
+        _nodeCount = 0;
+        _tssBudget = LEAF_TSS_NODE_CAP;
+
+        var forced:Boolean = probeThreatWin(role, _board.role, maxPly);
+        var timedOut:Boolean = _timedOut;
+
+        _budgetMs = savedBudget;
+        _startTime = savedStart;
+        _timedOut = savedTimedOut;
+        _nodeCount = savedNodeCount;
+        _tssBudget = savedTssBudget;
+
+        return forced && !timedOut;
+    }
+
+    // ===== negamax + LMR + Killer + leaf TSS =====
     private function negamax(role:Number, depthLeft:Number, cDepth:Number,
             alpha:Number, beta:Number, onlyThree:Boolean, onlyFour:Boolean):Void {
         _nodeCount++;
@@ -397,7 +784,11 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             if (winner !== 0) {
                 _nmS = (GobangShape.FIVE_SCORE - cDepth) * winner * role;
             } else {
-                _nmS = _eval.evaluate(role);
+                var leafScore:Number = _eval.evaluate(role);
+                if (!_timedOut && depthLeft <= 0) {
+                    leafScore = probeLeafTSS(role, cDepth, leafScore);
+                }
+                _nmS = leafScore;
             }
             _nmX = -1; _nmY = -1;
             return;
@@ -413,18 +804,6 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 && prev.depth >= depthLeft) {
             _nmS = prev.value; _nmX = prev.moveX; _nmY = prev.moveY;
             return;
-        }
-
-        // ===== Null Move Pruning =====
-        // 给对手一个"白送手"，若仍 >= beta 则当前局面极优，直接剪枝
-        // 条件：深度足够、非 VCT 搜索、非赢棋附近
-        if (depthLeft >= 4 && !onlyThree && !onlyFour && beta < GobangShape.FIVE_SCORE) {
-            // R=2 reduction: search at depthLeft - 3 (skip 1 + reduce 2)
-            negamax(-role, depthLeft - 3, cDepth + 1, -beta, -(beta - 1), false, false);
-            if (-_nmS >= beta && !_timedOut) {
-                _nmS = beta; _nmX = -1; _nmY = -1;
-                return;
-            }
         }
 
         var useOnlyThree:Boolean = onlyThree || cDepth > ONLY_THREE_THRESHOLD;
@@ -451,8 +830,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         var bestScore:Number = -MAX;
         var bestX:Number = -1;
         var bestY:Number = -1;
-        // LMR 条件：深度足够 且 非 VCT
-        var useLMR:Boolean = (depthLeft >= 3 && !onlyThree && !onlyFour);
+        // LMR 只留在更深、更靠后的 quiet move，避免过早错杀防守手
+        var useLMR:Boolean = (depthLeft >= 5 && !onlyThree && !onlyFour);
 
         for (var i:Number = 0; i < moves.length; i++) {
             var mx:Number = moves[i][0];
@@ -461,8 +840,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             _eval.move(mx, my, role);
 
             // ===== Late Move Reduction =====
-            // 排名第 4+ 的走法先做浅搜（depth-2），若不超过 alpha 则跳过
-            if (useLMR && i >= 3) {
+            // 排名更靠后的走法先做浅搜（depth-2），若不超过 alpha 则跳过
+            if (useLMR && i >= 4) {
                 negamax(-role, depthLeft - 2, cDepth + 1, -(alpha + 1), -alpha, onlyThree, onlyFour);
                 if (-_nmS <= alpha || _timedOut) {
                     _eval.undo(mx, my);
@@ -530,6 +909,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _asyncTargetDepth = 0;
         _rootMoveIdx = 0;
         _rootMoveTotal = 0;
+        _asyncBridgeBaseDepth = 0;
         _resetKillers();
     }
 
@@ -596,6 +976,11 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             }
 
             if (curD >= _asyncMaxDepth) {
+                if (tryStartAsyncBridgeProbe()) {
+                    return {done: false, phase: 3, x: _asyncBestResult.x, y: _asyncBestResult.y,
+                            score: _asyncBestResult.score, nodes: _asyncTotalNodes, phaseLabel: "bridgeprobe_init",
+                            rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+                }
                 _asyncDone = true;
                 var label:String = (_asyncLastCompletedDepth > 0) ? ("minmax_d" + _asyncLastCompletedDepth) : "done";
                 return {done: true, phase: 2, x: _asyncBestResult.x, y: _asyncBestResult.y,
@@ -608,6 +993,31 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             return {done: false, phase: 2, x: _asyncBestResult.x, y: _asyncBestResult.y,
                     score: _asyncBestResult.score, nodes: _asyncTotalNodes,
                     phaseLabel: "minmax_d" + curD,
+                    rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+        }
+
+        if (_asyncPhase === 3) {
+            var origPL:Number = GobangConfig.pointsLimit;
+            var probePL:Number = (_asyncTargetDepth >= BRIDGE_PROBE_DEEP_DEPTH)
+                ? BRIDGE_PROBE_DEEP_POINTS_LIMIT
+                : BRIDGE_PROBE_POINTS_LIMIT;
+            if (origPL > probePL) {
+                GobangConfig.pointsLimit = probePL;
+            }
+            var bp:Object = stepAsyncRootSearch(frameBudgetMs);
+            GobangConfig.pointsLimit = origPL;
+            _asyncTotalNodes += _nodeCount;
+
+            if (!bp.done) {
+                return {done: false, phase: 3, x: bp.x, y: bp.y, score: bp.score,
+                        nodes: _asyncTotalNodes, phaseLabel: "bridgeprobe_d" + _asyncTargetDepth,
+                        rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+            }
+
+            _asyncDone = true;
+            return {done: true, phase: 3, x: _asyncBestResult.x, y: _asyncBestResult.y,
+                    score: _asyncBestResult.score, nodes: _asyncTotalNodes,
+                    phaseLabel: "bridgeprobe_d" + _asyncTargetDepth,
                     rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
         }
 

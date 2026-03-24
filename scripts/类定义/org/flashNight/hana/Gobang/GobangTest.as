@@ -332,6 +332,18 @@ class org.flashNight.hana.Gobang.GobangTest {
         return true;
     }
 
+    private static function sameMoveSet(a:Array, b:Array):Boolean {
+        if (a.length !== b.length) return false;
+        var seen:Object = {};
+        for (var i:Number = 0; i < a.length; i++) {
+            seen[a[i][0] + "_" + a[i][1]] = true;
+        }
+        for (var j:Number = 0; j < b.length; j++) {
+            if (seen[b[j][0] + "_" + b[j][1]] !== true) return false;
+        }
+        return true;
+    }
+
     // 全盘扫描对照组：用于验证 frontier getMoves 不改变行为
     private static function getMovesSlow(eval:GobangEval, role:Number, depth:Number, onlyThree:Boolean, onlyFour:Boolean):Array {
         var brd:Array = eval.board;
@@ -408,10 +420,40 @@ class org.flashNight.hana.Gobang.GobangTest {
                 }
                 if (hasFive) continue;
 
-                var isFourMove:Boolean = (attackMax >= 4 || defendMax >= 4);
+                var atkThrees:Number = 0;
+                if (a0 === 3) atkThrees++;
+                if (a1 === 3) atkThrees++;
+                if (a2 === 3) atkThrees++;
+                if (a3 === 3) atkThrees++;
+                var atkMajorDirs:Number = 0;
+                if (a0 >= 3 || a0 === 40) atkMajorDirs++;
+                if (a1 >= 3 || a1 === 40) atkMajorDirs++;
+                if (a2 >= 3 || a2 === 40) atkMajorDirs++;
+                if (a3 >= 3 || a3 === 40) atkMajorDirs++;
+                var defThrees:Number = 0;
+                if (d0 === 3) defThrees++;
+                if (d1 === 3) defThrees++;
+                if (d2 === 3) defThrees++;
+                if (d3 === 3) defThrees++;
+                var defMajorDirs:Number = 0;
+                if (d0 >= 3 || d0 === 40) defMajorDirs++;
+                if (d1 >= 3 || d1 === 40) defMajorDirs++;
+                if (d2 >= 3 || d2 === 40) defMajorDirs++;
+                if (d3 >= 3 || d3 === 40) defMajorDirs++;
+                var edgeMargin:Boolean = (i <= 1 || j <= 1 || i >= sz - 2 || j >= sz - 2);
+                var pseudoAtkFour:Boolean = (attackMax === 40 && edgeMargin && atkMajorDirs <= 1 && atkThrees === 0);
+                var pseudoDefFour:Boolean = (defendMax === 40 && edgeMargin && defMajorDirs <= 1 && defThrees === 0);
+                var isFourMove:Boolean = (attackMax === 4 || defendMax === 4
+                    || atkThrees >= 2 || defThrees >= 2
+                    || (attackMax === 40 && !pseudoAtkFour)
+                    || (defendMax === 40 && !pseudoDefFour));
                 if (isFourMove) {
                     var majorFour:Number = attackScore > defendScore ? attackScore : defendScore;
-                    var fourKey:Number = attackScore + defendScore + majorFour;
+                    var exactPriority:Number = 0;
+                    if (attackMax === 4 || defendMax === 4) exactPriority = 3000000;
+                    else if (atkThrees >= 2 || defThrees >= 2) exactPriority = 2000000;
+                    else if ((attackMax === 40 && !pseudoAtkFour) || (defendMax === 40 && !pseudoDefFour)) exactPriority = 1000000;
+                    var fourKey:Number = attackScore + defendScore + majorFour + exactPriority;
                     if (!hasFour) {
                         result.length = 0;
                         hasFour = true;
@@ -571,22 +613,20 @@ class org.flashNight.hana.Gobang.GobangTest {
         var e1:GobangEval = new GobangEval(15);
         assert(e1.evaluate(1) === 0, "Eval empty board = 0");
 
-        // Test 2: Single black center（含 12.5% tempo 加分）
+        // Test 2: Single black center
         var e2:GobangEval = new GobangEval(15);
         e2.move(7, 7, 1);
         var s2:Number = e2.evaluate(1);
-        // 原始 totalBlack=160, tempo: 160 + 160/8 = 180
-        assert(s2 === 180, "Eval single black center = 180 (got " + s2 + ")");
+        assert(s2 === 160, "Eval single black center = 160 (got " + s2 + ")");
 
-        // Test 3: Black+white adjacent — 双方棋型基本对称，tempo 为己方加分
+        // Test 3: Black+white adjacent
         var e3:GobangEval = new GobangEval(15);
         e3.move(7, 7, 1);
         e3.move(7, 8, -1);
         var s3:Number = e3.evaluate(1);
-        // 对称局面下 totalBlack ≈ totalWhite，tempo 加分约 totalBlack/8
-        assert(s3 >= 0 && s3 <= 30, "Eval black+white adjacent ~0-30 (got " + s3 + ")");
+        assert(s3 === 0, "Eval black+white adjacent = 0 (got " + s3 + ")");
 
-        // Test 4: Black three（含 tempo 加分，基准 ~2740）
+        // Test 4: Black three（双 TWO 协同分会把这类进攻骨架明显抬高）
         var e4:GobangEval = new GobangEval(15);
         e4.move(7, 6, 1);
         e4.move(0, 0, -1);
@@ -594,10 +634,9 @@ class org.flashNight.hana.Gobang.GobangTest {
         e4.move(0, 1, -1);
         e4.move(7, 8, 1);
         var s4:Number = e4.evaluate(1);
-        // tempo 加分: totalBlack ~2740 → +342, 总分约 3080
-        var s4diff:Number = s4 - 3080;
+        var s4diff:Number = s4 - 3340;
         if (s4diff < 0) s4diff = -s4diff;
-        assert(s4diff <= 50, "Eval black three ~3080 (got " + s4 + ", diff=" + s4diff + ")");
+        assert(s4diff <= 80, "Eval black three ~3340 (got " + s4 + ", diff=" + s4diff + ")");
 
         // Test 5: Undo reversibility
         var e5:GobangEval = new GobangEval(15);
@@ -636,9 +675,12 @@ class org.flashNight.hana.Gobang.GobangTest {
         for (var i7:Number = 0; i7 < seq7.length; i7++) {
             e7.move(seq7[i7][0], seq7[i7][1], seq7[i7][2]);
         }
+        var oldPointsLimit:Number = GobangConfig.pointsLimit;
+        GobangConfig.pointsLimit = 225;
         var fast7:Array = e7.getMoves(1, 0, false, false);
         var slow7:Array = getMovesSlow(e7, 1, 0, false, false);
-        assert(sameMoves(fast7, slow7), "Eval frontier getMoves matches slow scan");
+        GobangConfig.pointsLimit = oldPointsLimit;
+        assert(sameMoveSet(fast7, slow7), "Eval frontier getMoves keeps slow-scan move set");
 
         // Test 8: 冲四局面只保留强制手
         var e8:GobangEval = new GobangEval(15);
@@ -654,6 +696,78 @@ class org.flashNight.hana.Gobang.GobangTest {
             && ((urgent[0][0] === 7 && urgent[0][1] === 4) || (urgent[0][0] === 7 && urgent[0][1] === 9))
             && ((urgent[1][0] === 7 && urgent[1][1] === 4) || (urgent[1][0] === 7 && urgent[1][1] === 9));
         assert(urgentOK, "Eval urgent-four pruning returns only blocks");
+
+        // Test 9: 双 TWO 协同分应明显高于单 TWO
+        var e9a:GobangEval = new GobangEval(15);
+        e9a.move(7, 6, 1);
+        var singleTwoScore:Number = e9a.blackScores[7][7];
+        var e9b:GobangEval = new GobangEval(15);
+        e9b.move(7, 6, 1);
+        e9b.move(6, 7, 1);
+        var comboTwoScore:Number = e9b.blackScores[7][7];
+        assert(comboTwoScore >= singleTwoScore + 50,
+               "Eval TWO synergy bonus raises combo potential: " + comboTwoScore + " vs " + singleTwoScore);
+
+        // Test 10: 桥接潜力应抬高长布局延伸点（体现在候选排序）
+        var e10:GobangEval = new GobangEval(15);
+        e10.move(7, 5, 1);
+        e10.move(7, 8, 1);
+        var bridgeMoves:Array = e10.getMoves(1, 0, false, false);
+        var bridgeTop:Boolean = false;
+        for (var bi:Number = 0; bi < bridgeMoves.length && bi < 3; bi++) {
+            if (bridgeMoves[bi][0] === 7 && (bridgeMoves[bi][1] === 6 || bridgeMoves[bi][1] === 7)) {
+                bridgeTop = true;
+                break;
+            }
+        }
+        assert(bridgeTop, "Eval bridge potential keeps line-link move in top-3");
+
+        // Test 11: 复杂长布局里，边角伪冲四不应被当成真实 urgent-four
+        var e11:GobangEval = new GobangEval(15);
+        var seq11:Array = [
+            [7,5,1], [0,0,-1], [7,9,1], [0,14,-1],
+            [5,7,1], [14,0,-1], [9,7,1], [1,12,-1],
+            [14,14,1], [12,1,-1], [14,13,1]
+        ];
+        for (var i11:Number = 0; i11 < seq11.length; i11++) {
+            e11.move(seq11[i11][0], seq11[i11][1], seq11[i11][2]);
+        }
+        var pseudoUrgent:Array = e11.getMoves(-1, 0, false, true);
+        var pseudoThreats:Array = e11.getThreatMoves(1, 4, 4);
+        var noEdgePseudo:Boolean = true;
+        for (var pui:Number = 0; pui < pseudoUrgent.length; pui++) {
+            if (pseudoUrgent[pui][0] === 14 && (pseudoUrgent[pui][1] === 11 || pseudoUrgent[pui][1] === 12)) {
+                noEdgePseudo = false;
+                break;
+            }
+        }
+        assert(noEdgePseudo, "Eval exact urgent-four filter removes edge pseudo threats");
+        assert(pseudoThreats.length === 0,
+               "Eval exact threat moves reject pseudo major threats (count=" + pseudoThreats.length + ")");
+
+        // Test 12: 双路防守局面里，应优先选择能同时拆两路的中心点
+        var e12:GobangEval = new GobangEval(15);
+        var seq12:Array = [
+            [7,5,1], [0,0,-1], [7,9,1], [0,14,-1],
+            [5,7,1], [14,0,-1], [9,7,1], [1,12,-1],
+            [14,14,1], [12,1,-1], [14,13,1]
+        ];
+        for (var i12:Number = 0; i12 < seq12.length; i12++) {
+            e12.move(seq12[i12][0], seq12[i12][1], seq12[i12][2]);
+        }
+        var coverMoves:Array = e12.getMoves(-1, 0, false, false);
+        var centerPresent:Boolean = false;
+        for (var ci12:Number = 0; ci12 < coverMoves.length; ci12++) {
+            if (coverMoves[ci12][0] === 7 && coverMoves[ci12][1] === 7) {
+                centerPresent = true;
+                break;
+            }
+        }
+        var noEdgeHijack:Boolean = !(coverMoves[0][0] === 14 && (coverMoves[0][1] === 11 || coverMoves[0][1] === 12));
+        assert(noEdgeHijack,
+               "Eval multi-threat coverage no longer gets hijacked by edge pseudo threat: (" + coverMoves[0][0] + "," + coverMoves[0][1] + ")");
+        assert(centerPresent,
+               "Eval multi-threat coverage keeps center defense in candidate set");
     }
 
     private static function testMinmax():Void {
@@ -714,6 +828,36 @@ class org.flashNight.hana.Gobang.GobangTest {
         var r4:Object = mm4.search(1, 2, true);
         var elapsed:Number = getTimer() - t0;
         assert(r4.x >= 0 && r4.x < 15, "Minmax+VCT depth=2: (" + r4.x + "," + r4.y + ") score=" + r4.score + " " + elapsed + "ms");
+
+        // Test 5: 轻量 TSS 能识别 open-three 诱发的短算杀
+        var b5:GobangBoard = new GobangBoard(15, 1);
+        var ev5:GobangEval = new GobangEval(15);
+        b5.put(7, 6, 1); ev5.move(7, 6, 1);
+        b5.put(0, 0, -1); ev5.move(0, 0, -1);
+        b5.put(7, 7, 1); ev5.move(7, 7, 1);
+        b5.put(0, 1, -1); ev5.move(0, 1, -1);
+        b5.put(7, 8, 1); ev5.move(7, 8, 1);
+        b5.put(0, 2, -1); ev5.move(0, 2, -1);
+        var mm5:GobangMinmax = new GobangMinmax(b5, ev5);
+        assert(mm5.probeTSS(1, 5) === true, "Minmax TSS probe detects black forcing line");
+        assert(mm5.probeTSS(-1, 5) === false, "Minmax TSS probe rejects white forcing line");
+
+        // Test 6: 带独立小预算的 TSS probe 可用于甄别“挡住当前手后是否仍有连续威胁”
+        var b6:GobangBoard = new GobangBoard(15, 1);
+        var ev6:GobangEval = new GobangEval(15);
+        b6.put(7, 6, 1); ev6.move(7, 6, 1);
+        b6.put(0, 0, -1); ev6.move(0, 0, -1);
+        b6.put(7, 7, 1); ev6.move(7, 7, 1);
+        b6.put(0, 1, -1); ev6.move(0, 1, -1);
+        b6.put(7, 8, 1); ev6.move(7, 8, 1);
+        var mm6:GobangMinmax = new GobangMinmax(b6, ev6);
+        b6.put(7, 5, -1); ev6.move(7, 5, -1);
+        assert(mm6.probeTSSWithBudget(1, 5, 6) === false,
+               "Minmax budgeted TSS probe clears forcing line after endpoint defense");
+        ev6.undo(7, 5); b6.undo();
+        b6.put(6, 6, -1); ev6.move(6, 6, -1);
+        assert(mm6.probeTSSWithBudget(1, 5, 6) === true,
+               "Minmax budgeted TSS probe still sees forcing line after irrelevant move");
     }
 
     private static function testAI():Void {
@@ -818,8 +962,8 @@ class org.flashNight.hana.Gobang.GobangTest {
                "Async AI low-budget finishes within 120 steps (frames=" + frames + ")");
         assert(stepResult.x >= 0 && stepResult.x < 15 && stepResult.y >= 0 && stepResult.y < 15,
                "Async AI low-budget returns valid move (" + stepResult.x + "," + stepResult.y + ")");
-        assert(stepResult.phaseLabel === "minmax_d8",
-               "Async AI low-budget uses depth-6: " + stepResult.phaseLabel);
+        assert(stepResult.phaseLabel === "minmax_d2",
+               "Async AI low-budget stays on depth-2 path: " + stepResult.phaseLabel);
         trace("[INFO] Async AI smoke(8ms): " + elapsed + "ms, steps=" + frames
               + ", phase=" + stepResult.phaseLabel + ", nodes=" + stepResult.nodes);
 
@@ -846,8 +990,99 @@ class org.flashNight.hana.Gobang.GobangTest {
         var tacticalBlock:Boolean = (stepResult.x === 7 && (stepResult.y === 4 || stepResult.y === 9));
         assert(stepResult !== null && stepResult.done === true && tacticalBlock,
                "Async AI tactical low-budget blocks open four: (" + stepResult.x + "," + stepResult.y + ")");
-        assert(stepResult.phaseLabel === "minmax_d8",
-               "Async AI tactical low-budget uses depth-6: " + stepResult.phaseLabel);
+        assert(stepResult.phaseLabel.indexOf("minmax_d4") === 0 || stepResult.phaseLabel.indexOf("minmax_d6") === 0,
+               "Async AI tactical low-budget escalates to tactical depth: " + stepResult.phaseLabel);
+
+        // Test 5: 低预算下，对手 open-three 也应触发保守加深并优先防守
+        var aiThree:GobangAI = new GobangAI(-1, 100);
+        var aiThreeObj:Object = aiThree;
+        var boardThree:GobangBoard = aiThreeObj["_board"];
+        var evalThree:GobangEval = aiThreeObj["_eval"];
+        var threeSeq:Array = [
+            [7,6,1], [0,0,-1], [7,7,1], [0,1,-1], [7,8,1]
+        ];
+        for (var thi:Number = 0; thi < threeSeq.length; thi++) {
+            boardThree.put(threeSeq[thi][0], threeSeq[thi][1], threeSeq[thi][2]);
+            evalThree.move(threeSeq[thi][0], threeSeq[thi][1], threeSeq[thi][2]);
+        }
+        assert(aiThree.aiMoveStart(8) === true, "Async AI open-three defense start succeeds");
+        frames = 0;
+        while (frames < 120) {
+            stepResult = aiThree.aiMoveStep(8);
+            frames++;
+            if (stepResult.done) break;
+        }
+        var threeBlock:Boolean = (stepResult.x === 7 && (stepResult.y === 5 || stepResult.y === 9));
+        assert(stepResult !== null && stepResult.done === true && threeBlock,
+               "Async AI open-three defense blocks at endpoint: (" + stepResult.x + "," + stepResult.y + ")");
+        assert(stepResult.phaseLabel === "minmax_d4" || stepResult.phaseLabel.indexOf("bridgeprobe_d") === 0,
+               "Async AI open-three defense escalates beyond d2: " + stepResult.phaseLabel);
+
+        // Test 6: 长布局下，低预算异步路径也应优先考虑桥接延伸手
+        var aiBridge:GobangAI = new GobangAI(1, 100);
+        var aiBridgeObj:Object = aiBridge;
+        var boardBridge:GobangBoard = aiBridgeObj["_board"];
+        var evalBridge:GobangEval = aiBridgeObj["_eval"];
+        var bridgeSeq:Array = [
+            [7,5,1], [0,0,-1], [7,9,1], [0,1,-1],
+            [5,7,1], [1,0,-1], [9,7,1], [1,1,-1],
+            [10,10,1], [2,2,-1]
+        ];
+        for (var bri:Number = 0; bri < bridgeSeq.length; bri++) {
+            boardBridge.put(bridgeSeq[bri][0], bridgeSeq[bri][1], bridgeSeq[bri][2]);
+            evalBridge.move(bridgeSeq[bri][0], bridgeSeq[bri][1], bridgeSeq[bri][2]);
+        }
+        assert(aiBridge.aiMoveStart(8) === true, "Async AI strategic low-budget start succeeds");
+        frames = 0;
+        while (frames < 120) {
+            stepResult = aiBridge.aiMoveStep(8);
+            frames++;
+            if (stepResult.done) break;
+        }
+        assert(stepResult !== null && stepResult.done === true,
+               "Async AI strategic low-budget finishes within 120 steps (frames=" + frames + ")");
+        assert(stepResult.x === 7 && stepResult.y === 7,
+               "Async AI strategic low-budget prefers bridge center: (" + stepResult.x + "," + stepResult.y + ")");
+        assert(stepResult.phaseLabel === "minmax_d4"
+               || stepResult.phaseLabel.indexOf("bridgeprobe_d") === 0
+               || stepResult.phaseLabel.indexOf("minmax_d4_bridge") === 0
+               || stepResult.phaseLabel.indexOf("minmax_d6_bridge") === 0,
+               "Async AI strategic low-budget keeps strategic refinement: " + stepResult.phaseLabel);
+        trace("[INFO] Async AI strategic low-budget: (" + stepResult.x + "," + stepResult.y + ")"
+              + ", phase=" + stepResult.phaseLabel + ", nodes=" + stepResult.nodes
+              + ", root=" + stepResult.rootIdx + "/" + stepResult.rootTotal);
+
+        // Test 7: 低预算下也应优先拆对手的长布局桥接点
+        var aiBridgeDef:GobangAI = new GobangAI(-1, 100);
+        var aiBridgeDefObj:Object = aiBridgeDef;
+        var boardBridgeDef:GobangBoard = aiBridgeDefObj["_board"];
+        var evalBridgeDef:GobangEval = aiBridgeDefObj["_eval"];
+        var bridgeDefSeq:Array = [
+            [7,5,1], [0,0,-1], [7,9,1], [0,14,-1],
+            [5,7,1], [14,0,-1], [9,7,1], [1,12,-1],
+            [14,14,1], [12,1,-1], [14,13,1]
+        ];
+        for (var bdi:Number = 0; bdi < bridgeDefSeq.length; bdi++) {
+            boardBridgeDef.put(bridgeDefSeq[bdi][0], bridgeDefSeq[bdi][1], bridgeDefSeq[bdi][2]);
+            evalBridgeDef.move(bridgeDefSeq[bdi][0], bridgeDefSeq[bdi][1], bridgeDefSeq[bdi][2]);
+        }
+        assert(aiBridgeDef.aiMoveStart(8) === true, "Async AI defensive bridge start succeeds");
+        frames = 0;
+        while (frames < 140) {
+            stepResult = aiBridgeDef.aiMoveStep(8);
+            frames++;
+            if (stepResult.done) break;
+        }
+        assert(stepResult !== null && stepResult.done === true,
+               "Async AI defensive bridge finishes within 140 steps (frames=" + frames + ")");
+        assert(stepResult.x === 7 && stepResult.y === 7,
+               "Async AI defensive bridge blocks opponent center: (" + stepResult.x + "," + stepResult.y + ")");
+        assert(stepResult.phaseLabel.indexOf("minmax_d4") === 0 || stepResult.phaseLabel.indexOf("minmax_d6") === 0
+               || stepResult.phaseLabel.indexOf("bridgeprobe_d") === 0,
+               "Async AI defensive bridge marks bridge refinement: " + stepResult.phaseLabel);
+        trace("[INFO] Async AI defensive bridge: (" + stepResult.x + "," + stepResult.y + ")"
+              + ", phase=" + stepResult.phaseLabel + ", nodes=" + stepResult.nodes
+              + ", root=" + stepResult.rootIdx + "/" + stepResult.rootTotal);
     }
 
     // ===== 性能基准测试 =====

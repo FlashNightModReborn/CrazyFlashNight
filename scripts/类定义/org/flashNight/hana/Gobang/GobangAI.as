@@ -22,6 +22,33 @@ class org.flashNight.hana.Gobang.GobangAI {
         [61,  4,  14, 90, true],
         [81,  8,  18, 100, true]
     ];
+    private static var STRATEGIC_REFINE_MIN_HISTORY:Number = 10;
+    private static var STRATEGIC_REFINE_MARGIN:Number = 48;
+    private static var STRATEGIC_BRIDGE_MIN_SCORE:Number = 18;
+    private static var STRATEGIC_BRIDGE_WEIGHT:Number = 2;
+    private static var STRATEGIC_BLOCK_BRIDGE_WEIGHT:Number = 3;
+    private static var STRATEGIC_FUTURE_WEIGHT:Number = 4;
+    private static var STRATEGIC_FUTURE_DEF_WEIGHT:Number = 3;
+    private static var THREAT_REFINE_MIN_HISTORY:Number = 6;
+    private static var THREAT_REFINE_MARGIN:Number = 24;
+    private static var THREAT_REFINE_PLY:Number = 5;
+    private static var THREAT_REFINE_DEEP_PLY:Number = 7;
+    private static var THREAT_TRIGGER_PROBE_BUDGET_MS:Number = 4;
+    private static var THREAT_REFINE_PROBE_BUDGET_MS:Number = 6;
+    private static var THREAT_REFINE_FORCE_LOSS_PENALTY:Number = 4000000;
+    private static var THREAT_REFINE_FOUR_PENALTY:Number = 250000;
+    private static var THREAT_REFINE_THREE_PENALTY:Number = 24000;
+    private static var THREAT_REFINE_FOUR_BONUS:Number = 16;
+    private static var THREAT_REFINE_THREE_BONUS:Number = 8;
+    private static var THREAT_REFINE_DEF_BRIDGE_WEIGHT:Number = 4;
+    private static var THREAT_REFINE_OWN_BRIDGE_WEIGHT:Number = 4;
+    private static var THREAT_REFINE_OPP_BRIDGE_WEIGHT:Number = 24;
+    private static var THREAT_REFINE_OPP_BRIDGE_SECOND_WEIGHT:Number = 12;
+    private static var THREAT_REFINE_DANGEROUS_BRIDGE_SCORE:Number = 32;
+    private static var THREAT_REFINE_DANGEROUS_BRIDGE_PENALTY:Number = 120000;
+    private static var THREAT_REFINE_MULTI_BRIDGE_PENALTY:Number = 60000;
+    private static var THREAT_REFINE_MAJOR_THREAT_PENALTY:Number = 36000;
+    private static var THREAT_REFINE_MULTI_THREAT_PENALTY:Number = 90000;
 
     public function GobangAI(aiRole:Number, difficulty:Number) {
         if (aiRole === undefined) aiRole = -1;
@@ -61,23 +88,72 @@ class org.flashNight.hana.Gobang.GobangAI {
         var pl:Number = row[2];
         var enableVCT:Boolean = row[4];
         var pieces:Number = _board.history.length;
+        var urgentFourMoves:Array = null;
+        var urgentThreeMoves:Array = null;
+        if (pieces >= 5) {
+            var hasForcedThreat:Boolean = _minmax.probeTSSWithBudget(-_aiRole, THREAT_REFINE_PLY,
+                THREAT_TRIGGER_PROBE_BUDGET_MS);
+            var opponentThreatMoves:Array = _eval.getThreatMoves(-_aiRole, 3, 2);
+            if (hasForcedThreat) {
+                urgentFourMoves = _eval.getMoves(_aiRole, 0, false, true);
+            } else {
+                urgentFourMoves = [];
+            }
+            if (opponentThreatMoves.length > 0) {
+                urgentThreeMoves = _eval.getMoves(_aiRole, 0, true, false);
+            } else {
+                urgentThreeMoves = [];
+            }
+        }
 
-        // 早期缩小候选数（棋子少时信息不足）但不压深度
+        // 开局阶段信息不足，优先走稳健浅搜
         if (pieces < 4) {
+            depth = 2;
             if (pl > 8) pl = 8;
         } else if (pieces < 10) {
+            depth = 2;
             if (pl > 10) pl = 10;
         } else if (pieces < 18 && pl > 12) {
             pl = 12;
         }
 
-        // 根短名单(4)+LMR+NullMove 控制树规模；VCT 提供战术必杀
+        // 低预算优先保证宿主负载和战术可信度，不追求“伪深搜”
         if (frameBudgetMs <= 8) {
-            if (depth > 8) depth = 8;
-            if (pl > 8) pl = 8;
+            depth = 2;
+            if (pl > 6) pl = 6;
+            enableVCT = false;
+            if (urgentFourMoves !== null && urgentFourMoves.length > 0 && urgentFourMoves.length <= 4) {
+                depth = 6;
+                if (pl > 3) pl = 3;
+                if (pieces >= 8) enableVCT = true;
+            } else if (urgentThreeMoves !== null && urgentThreeMoves.length > 0 && urgentThreeMoves.length <= 6) {
+                depth = 4;
+                if (pl > 4) pl = 4;
+            } else if (pieces >= 6) {
+                var tacticalMoves8:Array = _eval.getMoves(_aiRole, 0, false, false);
+                if (tacticalMoves8.length > 0 && tacticalMoves8.length <= 3) {
+                    depth = 4;
+                    if (pl > 4) pl = 4;
+                }
+            }
         } else if (frameBudgetMs <= 16) {
-            if (depth > 8) depth = 8;
-            if (pl > 10) pl = 10;
+            depth = 2;
+            if (pl > 8) pl = 8;
+            enableVCT = false;
+            if (urgentFourMoves !== null && urgentFourMoves.length > 0 && urgentFourMoves.length <= 6) {
+                depth = 6;
+                if (pl > 4) pl = 4;
+                if (pieces >= 8) enableVCT = true;
+            } else if (urgentThreeMoves !== null && urgentThreeMoves.length > 0 && urgentThreeMoves.length <= 8) {
+                depth = 4;
+                if (pl > 6) pl = 6;
+            } else if (pieces >= 6) {
+                var tacticalMoves16:Array = _eval.getMoves(_aiRole, 0, false, false);
+                if (tacticalMoves16.length > 0 && tacticalMoves16.length <= 4) {
+                    depth = 4;
+                    if (pl > 6) pl = 6;
+                }
+            }
         }
 
         return {
@@ -124,6 +200,245 @@ class org.flashNight.hana.Gobang.GobangAI {
         return {x: finalX, y: finalY};
     }
 
+    private function _scoreStrategicCandidate(x:Number, y:Number):Number {
+        _board.put(x, y, _aiRole);
+        _eval.move(x, y, _aiRole);
+
+        var score:Number = _eval.evaluate(_aiRole);
+        var own:Array = _eval.getBridgeMoves(_aiRole, 1, true);
+        if (own.length > 0) {
+            score += own[0][2] * STRATEGIC_FUTURE_WEIGHT;
+        }
+        var opp:Array = _eval.getBridgeMoves(-_aiRole, 1, true);
+        if (opp.length > 0) {
+            score -= opp[0][2] * STRATEGIC_FUTURE_DEF_WEIGHT;
+        }
+
+        _eval.undo(x, y);
+        _board.undo();
+        return score;
+    }
+
+    private function _appendStrategicCandidate(candidates:Array, x:Number, y:Number, bonus:Number):Void {
+        if (x < 0 || y < 0) return;
+        for (var i:Number = 0; i < candidates.length; i++) {
+            if (candidates[i][0] === x && candidates[i][1] === y) {
+                if (bonus > candidates[i][2]) candidates[i][2] = bonus;
+                return;
+            }
+        }
+        candidates[candidates.length] = [x, y, bonus];
+    }
+
+    private function _refineStrategicMove(params:Object, result:Object):Object {
+        if (params === null || result === null || result.x < 0) return result;
+        if (params.searchDepth > 6 || params.enableVCT || _board.history.length < STRATEGIC_REFINE_MIN_HISTORY) {
+            return result;
+        }
+
+        var candidates:Array = [];
+        var atk:Array = _eval.getBridgeMoves(_aiRole, 3, true);
+        var def:Array = _eval.getBridgeMoves(-_aiRole, 4, true);
+        for (var ai:Number = 0; ai < atk.length; ai++) {
+            if (atk[ai][2] >= STRATEGIC_BRIDGE_MIN_SCORE) {
+                _appendStrategicCandidate(candidates, atk[ai][0], atk[ai][1], atk[ai][2] * STRATEGIC_BRIDGE_WEIGHT);
+            }
+        }
+        for (var di:Number = 0; di < def.length; di++) {
+            if (def[di][2] >= STRATEGIC_BRIDGE_MIN_SCORE) {
+                _appendStrategicCandidate(candidates, def[di][0], def[di][1], def[di][2] * STRATEGIC_BLOCK_BRIDGE_WEIGHT);
+            }
+        }
+        if (!candidates.length) return result;
+
+        var bestX:Number = result.x;
+        var bestY:Number = result.y;
+        var bestSearchScore:Number = result.score;
+        var bestStrategicScore:Number = _scoreStrategicCandidate(bestX, bestY);
+        var changed:Boolean = false;
+
+        for (var i:Number = 0; i < candidates.length; i++) {
+            var bx:Number = candidates[i][0];
+            var by:Number = candidates[i][1];
+            if (bx === bestX && by === bestY) continue;
+
+            var strategicScore:Number = _scoreStrategicCandidate(bx, by) + candidates[i][2];
+            if (strategicScore > bestStrategicScore + STRATEGIC_REFINE_MARGIN) {
+                bestStrategicScore = strategicScore;
+                bestX = bx;
+                bestY = by;
+                bestSearchScore = strategicScore;
+                changed = true;
+            }
+        }
+
+        if (!changed) return result;
+        var refined:Object = {};
+        for (var k:String in result) {
+            refined[k] = result[k];
+        }
+        refined.x = bestX;
+        refined.y = bestY;
+        refined.score = bestSearchScore;
+        if (result.phaseLabel !== undefined) {
+            refined.phaseLabel = String(result.phaseLabel) + "_bridge";
+        }
+        return refined;
+    }
+
+    private function _scoreThreatDefenseCandidate(x:Number, y:Number, bonus:Number,
+            probePly:Number, probeBudgetMs:Number):Object {
+        _board.put(x, y, _aiRole);
+        _eval.move(x, y, _aiRole);
+
+        var actualProbePly:Number = probePly;
+        var score:Number = _eval.evaluate(_aiRole) + bonus;
+        var ownBridge:Array = _eval.getBridgeMoves(_aiRole, 1, true);
+        if (ownBridge.length > 0) {
+            score += ownBridge[0][2] * THREAT_REFINE_OWN_BRIDGE_WEIGHT;
+        }
+        var oppBridge:Array = _eval.getBridgeMoves(-_aiRole, 2, true);
+        if (oppBridge.length > 0) {
+            score -= oppBridge[0][2] * THREAT_REFINE_OPP_BRIDGE_WEIGHT;
+            if (oppBridge[0][2] >= THREAT_REFINE_DANGEROUS_BRIDGE_SCORE) {
+                score -= THREAT_REFINE_DANGEROUS_BRIDGE_PENALTY;
+                actualProbePly = THREAT_REFINE_DEEP_PLY;
+            }
+            if (oppBridge.length > 1) {
+                score -= oppBridge[1][2] * THREAT_REFINE_OPP_BRIDGE_SECOND_WEIGHT;
+                if (oppBridge[1][2] >= THREAT_REFINE_DANGEROUS_BRIDGE_SCORE) {
+                    score -= THREAT_REFINE_MULTI_BRIDGE_PENALTY;
+                    actualProbePly = THREAT_REFINE_DEEP_PLY;
+                }
+            }
+        }
+
+        var oppThreatMoves:Array = _eval.getThreatMoves(-_aiRole, 3, 4);
+        if (oppThreatMoves.length > 0) {
+            score -= oppThreatMoves.length * THREAT_REFINE_MAJOR_THREAT_PENALTY;
+            if (oppThreatMoves.length >= 2) {
+                score -= THREAT_REFINE_MULTI_THREAT_PENALTY;
+                actualProbePly = THREAT_REFINE_DEEP_PLY;
+            }
+        }
+
+        var oppOnlyFour:Array = _eval.getMoves(-_aiRole, 0, false, true);
+        if (oppOnlyFour.length > 0) {
+            score -= THREAT_REFINE_FOUR_PENALTY + oppOnlyFour.length * 512;
+            actualProbePly = THREAT_REFINE_DEEP_PLY;
+        } else {
+            var oppOnlyThree:Array = _eval.getMoves(-_aiRole, 0, true, false);
+            if (oppOnlyThree.length > 0 && oppOnlyThree.length <= 6) {
+                score -= oppOnlyThree.length * THREAT_REFINE_THREE_PENALTY;
+            }
+        }
+
+        var forcedLoss:Boolean = _minmax.probeTSSWithBudget(-_aiRole, actualProbePly, probeBudgetMs);
+        if (forcedLoss) {
+            score -= THREAT_REFINE_FORCE_LOSS_PENALTY;
+        }
+
+        _eval.undo(x, y);
+        _board.undo();
+        return {score: score, forcedLoss: forcedLoss};
+    }
+
+    private function _refineThreatDefenseMove(params:Object, result:Object):Object {
+        if (params === null || result === null || result.x < 0) return result;
+        if (_board.history.length < THREAT_REFINE_MIN_HISTORY || params.searchDepth > 6) {
+            return result;
+        }
+
+        var urgentFour:Array = [];
+        if (_minmax.probeTSSWithBudget(-_aiRole, THREAT_REFINE_PLY, THREAT_TRIGGER_PROBE_BUDGET_MS)) {
+            urgentFour = _eval.getMoves(_aiRole, 0, false, true);
+        }
+        var urgentThree:Array = [];
+        if (_eval.getThreatMoves(-_aiRole, 3, 2).length > 0) {
+            urgentThree = _eval.getMoves(_aiRole, 0, true, false);
+        }
+        var defBridge:Array = _eval.getBridgeMoves(-_aiRole, 3, true);
+        var hasUrgentFour:Boolean = (urgentFour.length > 0 && urgentFour.length <= 6);
+        var hasUrgentThree:Boolean = (urgentThree.length > 0 && urgentThree.length <= 6);
+        var hasDefBridge:Boolean = false;
+        for (var bi:Number = 0; bi < defBridge.length; bi++) {
+            if (defBridge[bi][2] >= STRATEGIC_BRIDGE_MIN_SCORE) {
+                hasDefBridge = true;
+                break;
+            }
+        }
+        if (!hasUrgentFour && !hasUrgentThree && !hasDefBridge) {
+            return result;
+        }
+
+        var candidates:Array = [];
+        _appendStrategicCandidate(candidates, result.x, result.y, 0);
+
+        if (hasUrgentFour) {
+            for (var fi:Number = 0; fi < urgentFour.length && fi < 3; fi++) {
+                _appendStrategicCandidate(candidates, urgentFour[fi][0], urgentFour[fi][1], THREAT_REFINE_FOUR_BONUS);
+            }
+        }
+        if (hasUrgentThree && !hasDefBridge) {
+            for (var ti:Number = 0; ti < urgentThree.length && ti < 2; ti++) {
+                _appendStrategicCandidate(candidates, urgentThree[ti][0], urgentThree[ti][1], THREAT_REFINE_THREE_BONUS);
+            }
+        }
+        if (hasDefBridge) {
+            for (var di:Number = 0; di < defBridge.length; di++) {
+                if (defBridge[di][2] < STRATEGIC_BRIDGE_MIN_SCORE) continue;
+                _appendStrategicCandidate(candidates, defBridge[di][0], defBridge[di][1],
+                    defBridge[di][2] * THREAT_REFINE_DEF_BRIDGE_WEIGHT);
+            }
+        }
+        if (candidates.length < 2) return result;
+
+        var probePly:Number = hasUrgentFour ? THREAT_REFINE_DEEP_PLY : THREAT_REFINE_PLY;
+        var bestX:Number = result.x;
+        var bestY:Number = result.y;
+        var bestInfo:Object = _scoreThreatDefenseCandidate(bestX, bestY, candidates[0][2],
+            probePly, THREAT_REFINE_PROBE_BUDGET_MS);
+        var changed:Boolean = false;
+
+        for (var i:Number = 0; i < candidates.length; i++) {
+            var cx:Number = candidates[i][0];
+            var cy:Number = candidates[i][1];
+            if (cx === bestX && cy === bestY) continue;
+
+            var info:Object = _scoreThreatDefenseCandidate(cx, cy, candidates[i][2],
+                probePly, THREAT_REFINE_PROBE_BUDGET_MS);
+            if (bestInfo.forcedLoss && !info.forcedLoss) {
+                bestInfo = info;
+                bestX = cx;
+                bestY = cy;
+                changed = true;
+                continue;
+            }
+            if (!bestInfo.forcedLoss && info.forcedLoss) {
+                continue;
+            }
+            if (info.score > bestInfo.score + THREAT_REFINE_MARGIN) {
+                bestInfo = info;
+                bestX = cx;
+                bestY = cy;
+                changed = true;
+            }
+        }
+
+        if (!changed) return result;
+        var refined:Object = {};
+        for (var k:String in result) {
+            refined[k] = result[k];
+        }
+        refined.x = bestX;
+        refined.y = bestY;
+        refined.score = bestInfo.score;
+        if (result.phaseLabel !== undefined) {
+            refined.phaseLabel = String(result.phaseLabel) + "_threat";
+        }
+        return refined;
+    }
+
     public function aiMove():Object {
         if (_board.role !== _aiRole) return null;
         if (_board.isGameOver()) return null;
@@ -144,6 +459,9 @@ class org.flashNight.hana.Gobang.GobangAI {
             GobangConfig.pointsLimit = origPL;
             return null;
         }
+
+        result = _refineStrategicMove(params, result);
+        result = _refineThreatDefenseMove(params, result);
 
         var move:Object = _applyDifficultyDrop(params, result.x, result.y, result.score);
         GobangConfig.pointsLimit = origPL;
@@ -280,6 +598,9 @@ class org.flashNight.hana.Gobang.GobangAI {
             return {done: true, x: -1, y: -1, score: 0, phaseLabel: "no_move",
                     nodes: stepResult.nodes, rootIdx: stepResult.rootIdx, rootTotal: stepResult.rootTotal};
         }
+
+        stepResult = _refineStrategicMove(_asyncParams, stepResult);
+        stepResult = _refineThreatDefenseMove(_asyncParams, stepResult);
 
         var move:Object = _applyDifficultyDrop(_asyncParams, stepResult.x, stepResult.y, stepResult.score);
         _board.put(move.x, move.y, _aiRole);

@@ -27,6 +27,18 @@ class org.flashNight.hana.Gobang.GobangEval {
     private static var allDirs:Array = [[0, 1], [1, 0], [1, 1], [1, -1]];
     private static var dirtyMap:Array = null;
     private static var dirtyMapSize:Number = 0;
+    private static var TWO_COMBO_BONUS:Number = 50;
+    private static var BRIDGE_SIDE_BONUS:Number = 8;
+    private static var BRIDGE_LINK_BONUS:Number = 12;
+    private static var BRIDGE_SPAN_BONUS:Number = 8;
+    private static var TRUE_THREAT_LIMIT:Number = 2;
+    private static var EXACT_URGENT_OPP_WIN_PENALTY:Number = 300000;
+    private static var EXACT_URGENT_OPP_TRUE_FOUR_PENALTY:Number = 90000;
+    private static var EXACT_URGENT_OWN_WIN_BONUS:Number = 20000;
+    private static var EXACT_URGENT_OWN_TRUE_FOUR_BONUS:Number = 4000;
+    private static var EXACT_URGENT_MULTI_COVER_BONUS:Number = 30000;
+    private var _exactUrgentTier:Number;
+    private var _exactUrgentPriority:Number;
 
     public function GobangEval(size:Number) {
         if (size === undefined) size = 15;
@@ -326,6 +338,242 @@ class org.flashNight.hana.Gobang.GobangEval {
         _scoreLUT = a;
     }
 
+    private function computeBridgePotential(x:Number, y:Number, role:Number):Number {
+        var brd:Array = board;
+        var px:Number = x + 1;
+        var py:Number = y + 1;
+        var opp:Number = -role;
+        var ad:Array = allDirs;
+        var totalBonus:Number = 0;
+
+        for (var di:Number = 0; di < 4; di++) {
+            var dv:Array = ad[di];
+            var ox:Number = dv[0];
+            var oy:Number = dv[1];
+
+            var lNearest:Number = 0;
+            var lFarthest:Number = 0;
+            var lCount:Number = 0;
+            var cx:Number = px - ox;
+            var cy:Number = py - oy;
+            for (var ls:Number = 1; ls <= 4; ls++) {
+                var cur:Number = brd[cx][cy];
+                if (cur === 2 || cur === opp) break;
+                if (cur === role) {
+                    lCount++;
+                    if (lNearest === 0) lNearest = ls;
+                    lFarthest = ls;
+                }
+                cx -= ox;
+                cy -= oy;
+            }
+
+            var rNearest:Number = 0;
+            var rFarthest:Number = 0;
+            var rCount:Number = 0;
+            cx = px + ox;
+            cy = py + oy;
+            for (var rs:Number = 1; rs <= 4; rs++) {
+                cur = brd[cx][cy];
+                if (cur === 2 || cur === opp) break;
+                if (cur === role) {
+                    rCount++;
+                    if (rNearest === 0) rNearest = rs;
+                    rFarthest = rs;
+                }
+                cx += ox;
+                cy += oy;
+            }
+
+            var dirBonus:Number = 0;
+            var totalStones:Number = lCount + rCount;
+            if (totalStones === 0) continue;
+
+            if (lNearest > 0 && rNearest > 0) {
+                dirBonus += BRIDGE_LINK_BONUS;
+                if (lNearest + rNearest <= 4) dirBonus += BRIDGE_LINK_BONUS;
+                if (lFarthest + rFarthest + 1 >= 6) dirBonus += BRIDGE_SPAN_BONUS;
+                if (totalStones >= 3) dirBonus += BRIDGE_SIDE_BONUS;
+            } else {
+                var near:Number = lNearest > 0 ? lNearest : rNearest;
+                var far:Number = lFarthest > 0 ? lFarthest : rFarthest;
+                if (near === 2) dirBonus += BRIDGE_SIDE_BONUS;
+                else if (near === 3) dirBonus += (BRIDGE_SIDE_BONUS >> 1);
+                if (totalStones >= 2 && far >= 3) dirBonus += (BRIDGE_SIDE_BONUS - 2);
+            }
+            totalBonus += dirBonus;
+        }
+
+        return totalBonus;
+    }
+
+    private function countImmediateWins(role:Number, limit:Number):Number {
+        if (limit === undefined || limit < 1) limit = 1;
+        var brd:Array = board;
+        var sz:Number = size;
+        var frontier:Array = _frontierList;
+        var frontierTop:Number = _frontierTop;
+        var atkShape:Array = role === 1 ? shapeCache[0] : shapeCache[1];
+        var atk0:Array = atkShape[0];
+        var atk1:Array = atkShape[1];
+        var atk2:Array = atkShape[2];
+        var atk3:Array = atkShape[3];
+        var wins:Number = 0;
+
+        for (var fi:Number = 0; fi < frontierTop; fi++) {
+            var flatPos:Number = frontier[fi];
+            var i:Number = flatPos / sz;
+            i = i | 0;
+            var j:Number = flatPos - i * sz;
+            if (brd[i + 1][j + 1] !== 0) continue;
+
+            var a0:Number = atk0[i][j];
+            var a1:Number = atk1[i][j];
+            var a2:Number = atk2[i][j];
+            var a3:Number = atk3[i][j];
+            if (a0 === 5 || a0 === 50 || a1 === 5 || a1 === 50
+                || a2 === 5 || a2 === 50 || a3 === 5 || a3 === 50) {
+                wins++;
+                if (wins >= limit) return wins;
+            }
+        }
+        return wins;
+    }
+
+    private function countTrueFourMoves(role:Number, limit:Number):Number {
+        if (limit === undefined || limit < 1) limit = 1;
+        var brd:Array = board;
+        var sz:Number = size;
+        var frontier:Array = _frontierList;
+        var frontierTop:Number = _frontierTop;
+        var atk:Array = role === 1 ? blackScores : whiteScores;
+        var atkShape:Array = role === 1 ? shapeCache[0] : shapeCache[1];
+        var atk0:Array = atkShape[0];
+        var atk1:Array = atkShape[1];
+        var atk2:Array = atkShape[2];
+        var atk3:Array = atkShape[3];
+        var count:Number = 0;
+
+        for (var fi:Number = 0; fi < frontierTop; fi++) {
+            var flatPos:Number = frontier[fi];
+            var i:Number = flatPos / sz;
+            i = i | 0;
+            var j:Number = flatPos - i * sz;
+            if (brd[i + 1][j + 1] !== 0) continue;
+            if (atk[i][j] === 0) continue;
+
+            var a0:Number = atk0[i][j];
+            var a1:Number = atk1[i][j];
+            var a2:Number = atk2[i][j];
+            var a3:Number = atk3[i][j];
+            if (a0 === 5 || a0 === 50 || a1 === 5 || a1 === 50
+                || a2 === 5 || a2 === 50 || a3 === 5 || a3 === 50) {
+                count++;
+                if (count >= limit) return count;
+                continue;
+            }
+
+            var attackMax:Number = a0;
+            if (a1 > attackMax) attackMax = a1;
+            if (a2 > attackMax) attackMax = a2;
+            if (a3 > attackMax) attackMax = a3;
+            var atkThrees:Number = 0;
+            if (a0 === 3) atkThrees++;
+            if (a1 === 3) atkThrees++;
+            if (a2 === 3) atkThrees++;
+            if (a3 === 3) atkThrees++;
+            if (attackMax < 3 && atkThrees < 2) continue;
+
+            move(i, j, role);
+            var wins:Number = countImmediateWins(role, 1);
+            undo(i, j);
+            if (wins > 0) {
+                count++;
+                if (count >= limit) return count;
+            }
+        }
+        return count;
+    }
+
+    private function getExactAttackThreatTier(x:Number, y:Number, role:Number,
+            attackMax:Number, atkThrees:Number):Number {
+        if (attackMax === 5 || attackMax === 50) return 4;
+        if (attackMax < 3 && atkThrees < 2) return 0;
+
+        move(x, y, role);
+        var tier:Number = 0;
+        if (countImmediateWins(role, 1) > 0) {
+            tier = 3;
+        } else if (countTrueFourMoves(role, TRUE_THREAT_LIMIT) >= TRUE_THREAT_LIMIT) {
+            tier = 2;
+        }
+        undo(x, y);
+        return tier;
+    }
+
+    private function analyzeExactUrgentMove(x:Number, y:Number, role:Number,
+            attackMax:Number, atkThrees:Number,
+            oppImmediateWins:Number, oppTrueFourMoves:Number):Void {
+        move(x, y, role);
+
+        var ownImmediateWins:Number = 0;
+        var ownTrueFourMoves:Number = 0;
+        var oppRemainWins:Number = 0;
+        var oppRemainTrueFourMoves:Number = 0;
+        var tier:Number = 0;
+        if (attackMax === 5 || attackMax === 50) {
+            ownImmediateWins = 1;
+            tier = 4;
+        } else {
+            ownImmediateWins = countImmediateWins(role, TRUE_THREAT_LIMIT);
+            if (ownImmediateWins > 0) {
+                tier = 3;
+            } else {
+                ownTrueFourMoves = countTrueFourMoves(role, TRUE_THREAT_LIMIT);
+                if (ownTrueFourMoves >= TRUE_THREAT_LIMIT) {
+                    tier = 2;
+                }
+            }
+        }
+
+        oppRemainWins = countImmediateWins(-role, TRUE_THREAT_LIMIT);
+        if (oppRemainWins === 0) {
+            oppRemainTrueFourMoves = countTrueFourMoves(-role, TRUE_THREAT_LIMIT);
+        }
+
+        if (oppImmediateWins > 0) {
+            if (oppRemainWins === 0 && tier < 3) {
+                tier = 3;
+            }
+        } else if (oppTrueFourMoves > 0) {
+            if (oppRemainWins === 0 && oppRemainTrueFourMoves === 0 && tier < 2) {
+                tier = 2;
+            }
+        }
+
+        var priority:Number = tier * 1000000
+            - oppRemainWins * EXACT_URGENT_OPP_WIN_PENALTY
+            - oppRemainTrueFourMoves * EXACT_URGENT_OPP_TRUE_FOUR_PENALTY
+            + ownImmediateWins * EXACT_URGENT_OWN_WIN_BONUS
+            + ownTrueFourMoves * EXACT_URGENT_OWN_TRUE_FOUR_BONUS;
+        if (oppImmediateWins + oppTrueFourMoves >= 2 && oppRemainWins + oppRemainTrueFourMoves === 0) {
+            priority += EXACT_URGENT_MULTI_COVER_BONUS;
+        }
+        _exactUrgentTier = tier;
+        _exactUrgentPriority = priority;
+        undo(x, y);
+    }
+
+    private function getThreatCoverageBonus(atkMajorDirs:Number, atkThrees:Number,
+            defMajorDirs:Number, defThrees:Number):Number {
+        var bonus:Number = defMajorDirs * 12000 + defThrees * 8000
+            + atkMajorDirs * 4000 + atkThrees * 2500;
+        if (defMajorDirs >= 2) bonus += 24000;
+        if (defThrees >= 2) bonus += 12000;
+        if (atkMajorDirs >= 2) bonus += 8000;
+        return bonus;
+    }
+
     // dirOx/dirOy: 指定只更新一个方向 (-1,-1 = 全部4方向)
 
     private function updateSinglePoint(x:Number, y:Number, role:Number, dirOx:Number, dirOy:Number):Void {
@@ -357,6 +605,7 @@ class org.flashNight.hana.Gobang.GobangEval {
         }
 
         var score:Number = 0;
+        var comboBonus:Number = 0;
         var bfc:Number = 0;
         var thc:Number = 0;
         var twc:Number = 0;
@@ -398,6 +647,12 @@ class org.flashNight.hana.Gobang.GobangEval {
             }
         }
 
+        // 组合潜力：同一点两条 TWO 协同意味着后续更容易转化为双三/冲四
+        if (twc >= 2) {
+            comboBonus = (twc - 1) * TWO_COMBO_BONUS;
+            score += comboBonus;
+        }
+
         if (role === 1) {
             _totalBlack += score - blackScores[x][y];
             blackScores[x][y] = score;
@@ -407,13 +662,188 @@ class org.flashNight.hana.Gobang.GobangEval {
         }
     }
 
-    // 非对称评估：己方棋型额外 +12.5%（tempo 加分）
-    // 进攻制造义务应手（节奏），防守不能，故己方棋型价值 > 等价的对手棋型缺失
     public function evaluate(role:Number):Number {
-        if (role === 1) {
-            return _totalBlack - _totalWhite + (_totalBlack >> 3);
+        return role === 1 ? _totalBlack - _totalWhite : _totalWhite - _totalBlack;
+    }
+
+    // Threat-only moves：仅保留本方能直接制造威胁的走法，供轻量 TSS 使用
+    public function getThreatMoves(role:Number, minShape:Number, limit:Number):Array {
+        if (minShape === undefined || minShape < 2) minShape = 2;
+        if (limit === undefined || limit < 1) limit = 1;
+
+        var brd:Array = board;
+        var sz:Number = size;
+        var frontier:Array = _frontierList;
+        var frontierTop:Number = _frontierTop;
+        var atk:Array = role === 1 ? blackScores : whiteScores;
+        var atkShape:Array = role === 1 ? shapeCache[0] : shapeCache[1];
+        var atk0:Array = atkShape[0];
+        var atk1:Array = atkShape[1];
+        var atk2:Array = atkShape[2];
+        var atk3:Array = atkShape[3];
+        var result:Array = [];
+        var hasFive:Boolean = false;
+        var hasMajor:Boolean = false;
+
+        for (var fi:Number = 0; fi < frontierTop; fi++) {
+            var flatPos:Number = frontier[fi];
+            var i:Number = flatPos / sz;
+            i = i | 0;
+            var j:Number = flatPos - i * sz;
+            if (brd[i + 1][j + 1] !== 0) continue;
+
+            var attackScore:Number = atk[i][j];
+            if (attackScore === 0) continue;
+
+            var a0:Number = atk0[i][j];
+            var a1:Number = atk1[i][j];
+            var a2:Number = atk2[i][j];
+            var a3:Number = atk3[i][j];
+            var attackMax:Number = a0;
+            if (a1 > attackMax) attackMax = a1;
+            if (a2 > attackMax) attackMax = a2;
+            if (a3 > attackMax) attackMax = a3;
+
+            var atkThrees:Number = 0;
+            if (a0 === 3) atkThrees++;
+            if (a1 === 3) atkThrees++;
+            if (a2 === 3) atkThrees++;
+            if (a3 === 3) atkThrees++;
+            var atkTwos:Number = 0;
+            if (a0 === 2) atkTwos++;
+            if (a1 === 2) atkTwos++;
+            if (a2 === 2) atkTwos++;
+            if (a3 === 2) atkTwos++;
+
+            var threatTier:Number = 0;
+            if (attackMax === 5 || attackMax === 50) {
+                threatTier = 4;
+            } else if (attackMax === 4) {
+                threatTier = 3;
+            } else if ((minShape >= 4 && attackMax >= 3) || attackMax === 40 || atkThrees >= 2) {
+                threatTier = getExactAttackThreatTier(i, j, role, attackMax, atkThrees);
+            } else if (attackMax >= 3) {
+                threatTier = 2;
+            } else if (minShape <= 2 && atkTwos >= 2) {
+                threatTier = 1;
+            }
+            if (threatTier === 0) continue;
+
+            if (threatTier < minShape - 1) continue;
+
+            if (threatTier >= 4) {
+                if (!hasFive) {
+                    result.length = 0;
+                    hasFive = true;
+                    hasMajor = false;
+                }
+                var fiveLen:Number = result.length;
+                var fiveAt:Number = fiveLen;
+                while (fiveAt > 0) {
+                    var prevFive:Array = result[fiveAt - 1];
+                    var prevFiveFlat:Number = prevFive[0] * sz + prevFive[1];
+                    if (flatPos > prevFiveFlat) break;
+                    result[fiveAt] = prevFive;
+                    fiveAt--;
+                }
+                result[fiveAt] = [i, j];
+                continue;
+            }
+            if (hasFive) continue;
+
+            if (threatTier >= 3) {
+                if (!hasMajor) {
+                    result.length = 0;
+                    hasMajor = true;
+                }
+            } else if (hasMajor) {
+                continue;
+            }
+
+            var sortKey:Number = threatTier * 100000 + attackScore;
+            var resultLen:Number = result.length;
+            var tail:Array = resultLen > 0 ? result[resultLen - 1] : null;
+            var tailBetter:Boolean = (tail !== null && (sortKey > tail[2]
+                || (sortKey === tail[2] && flatPos < tail[0] * sz + tail[1])));
+            if (resultLen < limit || tailBetter) {
+                var insertAt:Number = resultLen;
+                if (insertAt >= limit) insertAt = limit - 1;
+                while (insertAt > 0) {
+                    var prev:Array = result[insertAt - 1];
+                    var prevKey:Number = prev[2];
+                    var prevFlat:Number = prev[0] * sz + prev[1];
+                    if (sortKey < prevKey) break;
+                    if (sortKey === prevKey && flatPos > prevFlat) break;
+                    if (insertAt < limit) {
+                        result[insertAt] = prev;
+                    }
+                    insertAt--;
+                }
+                result[insertAt] = [i, j, sortKey];
+                if (resultLen < limit) {
+                    result.length = resultLen + 1;
+                }
+            }
         }
-        return _totalWhite - _totalBlack + (_totalWhite >> 3);
+
+        for (var ri:Number = 0; ri < result.length; ri++) {
+            result[ri].length = 2;
+        }
+        return result;
+    }
+
+    public function getBridgeMoves(role:Number, limit:Number, keepScore:Boolean):Array {
+        if (limit === undefined || limit < 1) limit = 1;
+        if (keepScore === undefined) keepScore = false;
+        var brd:Array = board;
+        var sz:Number = size;
+        var frontier:Array = _frontierList;
+        var frontierTop:Number = _frontierTop;
+        var result:Array = [];
+
+        for (var fi:Number = 0; fi < frontierTop; fi++) {
+            var flatPos:Number = frontier[fi];
+            var i:Number = flatPos / sz;
+            i = i | 0;
+            var j:Number = flatPos - i * sz;
+            if (brd[i + 1][j + 1] !== 0) continue;
+
+            var bridgeAtk:Number = computeBridgePotential(i, j, role);
+            var bridgeDef:Number = computeBridgePotential(i, j, -role) >> 1;
+            var sortKey:Number = bridgeAtk + bridgeDef;
+            if (sortKey <= 0) continue;
+
+            var resultLen:Number = result.length;
+            var tail:Array = resultLen > 0 ? result[resultLen - 1] : null;
+            var tailBetter:Boolean = (tail !== null && (sortKey > tail[2]
+                || (sortKey === tail[2] && flatPos < tail[0] * sz + tail[1])));
+            if (resultLen < limit || tailBetter) {
+                var insertAt:Number = resultLen;
+                if (insertAt >= limit) insertAt = limit - 1;
+                while (insertAt > 0) {
+                    var prev:Array = result[insertAt - 1];
+                    var prevKey:Number = prev[2];
+                    var prevFlat:Number = prev[0] * sz + prev[1];
+                    if (sortKey < prevKey) break;
+                    if (sortKey === prevKey && flatPos > prevFlat) break;
+                    if (insertAt < limit) {
+                        result[insertAt] = prev;
+                    }
+                    insertAt--;
+                }
+                result[insertAt] = [i, j, sortKey];
+                if (resultLen < limit) {
+                    result.length = resultLen + 1;
+                }
+            }
+        }
+
+        if (!keepScore) {
+            for (var ri:Number = 0; ri < result.length; ri++) {
+                result[ri].length = 2;
+            }
+        }
+        return result;
     }
 
     // 轻量 getMoves — 遍历活跃前沿，紧急战术位优先
@@ -423,10 +853,8 @@ class org.flashNight.hana.Gobang.GobangEval {
         var result:Array = [];
         var limit:Number = GobangConfig.pointsLimit;
         if (limit < 1) limit = 1;
-        // 深层搜索阶梯式衰减候选数，控制 depth=8 树规模
-        if (depth >= 5 && limit > 4) limit = 4;
-        else if (depth >= 3 && limit > 6) limit = 6;
-        else if (depth >= 2 && limit > 8) limit = 8;
+        // 深层搜索适度衰减候选数，过激截断会直接伤棋力
+        if (depth >= 4 && limit > 10) limit = 10;
         var bs:Array = blackScores;
         var ws:Array = whiteScores;
         var atk:Array = role === 1 ? bs : ws;
@@ -445,6 +873,9 @@ class org.flashNight.hana.Gobang.GobangEval {
         var hasFour:Boolean = false;
         var frontier:Array = _frontierList;
         var frontierTop:Number = _frontierTop;
+        var exactOppStateReady:Boolean = false;
+        var oppImmediateWins:Number = 0;
+        var oppTrueFourMoves:Number = 0;
 
         for (var fi:Number = 0; fi < frontierTop; fi++) {
             var flatPos:Number = frontier[fi];
@@ -477,6 +908,8 @@ class org.flashNight.hana.Gobang.GobangEval {
 
             var maxS:Number = attackMax > defendMax ? attackMax : defendMax;
             if (!maxS) continue;
+            if (onlyFour && maxS < 4) continue;
+            if (onlyThree && maxS < 3) continue;
 
             // FIVE/BLOCK_FIVE（值 5 或 50）最高优先
             if (attackMax === 5 || attackMax === 50 || defendMax === 5 || defendMax === 50) {
@@ -506,16 +939,61 @@ class org.flashNight.hana.Gobang.GobangEval {
             if (a1 === 3) atkThrees++;
             if (a2 === 3) atkThrees++;
             if (a3 === 3) atkThrees++;
+            var atkMajorDirs:Number = 0;
+            if (a0 >= 3 || a0 === 40) atkMajorDirs++;
+            if (a1 >= 3 || a1 === 40) atkMajorDirs++;
+            if (a2 >= 3 || a2 === 40) atkMajorDirs++;
+            if (a3 >= 3 || a3 === 40) atkMajorDirs++;
             var defThrees:Number = 0;
             if (d0 === 3) defThrees++;
             if (d1 === 3) defThrees++;
             if (d2 === 3) defThrees++;
             if (d3 === 3) defThrees++;
-            var isFourMove:Boolean = (attackMax >= 4 || defendMax >= 4
-                || atkThrees >= 2 || defThrees >= 2);
+            var defMajorDirs:Number = 0;
+            if (d0 >= 3 || d0 === 40) defMajorDirs++;
+            if (d1 >= 3 || d1 === 40) defMajorDirs++;
+            if (d2 >= 3 || d2 === 40) defMajorDirs++;
+            if (d3 >= 3 || d3 === 40) defMajorDirs++;
+            var edgeMargin:Boolean = (i <= 1 || j <= 1 || i >= sz - 2 || j >= sz - 2);
+            var pseudoAtkFour:Boolean = (attackMax === 40 && edgeMargin && atkMajorDirs <= 1 && atkThrees === 0);
+            var pseudoDefFour:Boolean = (defendMax === 40 && edgeMargin && defMajorDirs <= 1 && defThrees === 0);
+            var exactTier:Number = 0;
+            var exactPriority:Number = 0;
+            var isFourMove:Boolean = (attackMax === 4 || defendMax === 4
+                || atkThrees >= 2 || defThrees >= 2
+                || (attackMax === 40 && !pseudoAtkFour)
+                || (defendMax === 40 && !pseudoDefFour));
+            if (onlyFour || onlyThree) {
+                if (!exactOppStateReady) {
+                    oppImmediateWins = countImmediateWins(-role, TRUE_THREAT_LIMIT);
+                    if (oppImmediateWins === 0) {
+                        oppTrueFourMoves = countTrueFourMoves(-role, TRUE_THREAT_LIMIT);
+                    }
+                    exactOppStateReady = true;
+                }
+                analyzeExactUrgentMove(i, j, role, attackMax, atkThrees,
+                    oppImmediateWins, oppTrueFourMoves);
+                exactTier = _exactUrgentTier;
+                exactPriority = _exactUrgentPriority;
+                if (onlyFour) {
+                    if (exactTier < 3) continue;
+                    isFourMove = true;
+                } else if (onlyThree) {
+                    if (exactTier < 2) continue;
+                    if (onlyThree) isFourMove = true;
+                }
+            }
+            if (attackMax === 4 || defendMax === 4) {
+                exactPriority = 3000000;
+            } else if (atkThrees >= 2 || defThrees >= 2) {
+                exactPriority = 2000000;
+            } else if ((attackMax === 40 && !pseudoAtkFour) || (defendMax === 40 && !pseudoDefFour)) {
+                exactPriority = 1000000;
+            }
+            var coverageBonus:Number = getThreatCoverageBonus(atkMajorDirs, atkThrees, defMajorDirs, defThrees);
             if (isFourMove) {
                 var majorFour:Number = attackScore > defendScore ? attackScore : defendScore;
-                var fourKey:Number = attackScore + defendScore + majorFour;
+                var fourKey:Number = attackScore + defendScore + majorFour + exactPriority + coverageBonus;
                 if (!hasFour) {
                     result.length = 0;
                     hasFour = true;
@@ -536,16 +1014,16 @@ class org.flashNight.hana.Gobang.GobangEval {
             }
             if (hasFour) continue;
 
-            if (onlyFour && maxS < 4) continue;
-            if (onlyThree && maxS < 3) continue;
-
-            // 评分：攻守兼备 > 纯进攻 > 纯防守
-            // 进攻加权 ×2：确保"自己连线"位稳定压过"纯堵对手"位
-            var ci:Number = i - 7;
-            var cj:Number = j - 7;
-            var cd:Number = ci * ci + cj * cj;
-            var centerBonus:Number = (cd < 10) ? 3 : (cd < 30) ? 2 : (cd < 60) ? 1 : 0;
-            var sortKey:Number = attackScore + attackScore + defendScore + centerBonus;
+            // 长布局桥接/远端延伸：只参与候选排序，不污染增量总分热路径
+            var bridgeAtk:Number = 0;
+            var bridgeDef:Number = 0;
+            if (maxS < 4) {
+                bridgeAtk = computeBridgePotential(i, j, role);
+                bridgeDef = computeBridgePotential(i, j, -role) >> 1;
+            }
+            // 评分：优先保留攻守兼备位，长布局下给桥接延伸一点额外权重
+            var major:Number = attackScore > defendScore ? attackScore : defendScore;
+            var sortKey:Number = attackScore + defendScore + major + bridgeAtk + bridgeDef + coverageBonus;
             var resultLen:Number = result.length;
             var tail:Array = resultLen > 0 ? result[resultLen - 1] : null;
             var tailBetter:Boolean = (tail !== null && (sortKey > tail[2]
