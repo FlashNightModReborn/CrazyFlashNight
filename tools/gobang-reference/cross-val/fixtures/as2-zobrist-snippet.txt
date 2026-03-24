@@ -1,0 +1,25 @@
+// Auto-generated Zobrist test sequences
+// Format: [seqIdx][stepIdx] = {x, y, role, hashHi, hashLo}
+// Sequence 1
+// step 0: put(7,7,1) -> hi=-1997706752, lo=1434201600
+// step 1: put(7,8,-1) -> hi=-1160976896, lo=1742205312
+// step 2: put(8,7,1) -> hi=-1864417792, lo=1408793088
+// step 3: put(6,7,-1) -> hi=1449372160, lo=491868672
+// step 4: put(7,6,1) -> hi=-1173952512, lo=1938920960
+// Sequence 2
+// step 0: put(0,0,1) -> hi=-443475623, lo=1860427776
+// step 1: put(14,14,-1) -> hi=1197470553, lo=1386892800
+// step 2: put(1,1,1) -> hi=-328335527, lo=-2041958912
+// step 3: put(13,13,-1) -> hi=1381746777, lo=1544129024
+// Sequence 3
+// step 0: put(0,14,1) -> hi=-961336320, lo=-1462599680
+// step 1: put(14,0,-1) -> hi=-1720398336, lo=2136139008
+// step 2: put(0,0,1) -> hi=2095437657, lo=296813824
+// Sequence 4
+// step 0: put(5,5,1) -> hi=1299534592, lo=-251748864
+// step 1: put(6,6,-1) -> hi=341284864, lo=-288143360
+// step 2: put(5,5,1) -> hi=1495452416, lo=506320384
+// step 3: put(6,6,-1) -> hi=0, lo=0
+// Sequence 5
+// step 0: put(3,3,1) -> hi=1297912320, lo=739677440
+// step 1: put(3,3,1) -> hi=0, lo=0

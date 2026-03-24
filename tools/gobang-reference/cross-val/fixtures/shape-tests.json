@@ -1,0 +1,134 @@
+[
+  {
+    "name": "FIVE horizontal",
+    "x": 7,
+    "y": 7,
+    "ox": 0,
+    "oy": 1,
+    "role": 1,
+    "shape": 5,
+    "expected": 5,
+    "pass": true
+  },
+  {
+    "name": "BLOCK_FIVE at edge",
+    "x": 0,
+    "y": 2,
+    "ox": 0,
+    "oy": 1,
+    "role": 1,
+    "shape": 50,
+    "expected": 50,
+    "pass": true
+  },
+  {
+    "name": "FOUR open",
+    "x": 7,
+    "y": 7,
+    "ox": 0,
+    "oy": 1,
+    "role": 1,
+    "shape": 4,
+    "expected": 4,
+    "pass": true
+  },
+  {
+    "name": "BLOCK_FOUR one side blocked",
+    "x": 7,
+    "y": 7,
+    "ox": 0,
+    "oy": 1,
+    "role": 1,
+    "shape": 40,
+    "expected": 40,
+    "pass": true
+  },
+  {
+    "name": "THREE open",
+    "x": 7,
+    "y": 7,
+    "ox": 0,
+    "oy": 1,
+    "role": 1,
+    "shape": 3,
+    "expected": 3,
+    "pass": true
+  },
+  {
+    "name": "BLOCK_THREE",
+    "x": 7,
+    "y": 6,
+    "ox": 0,
+    "oy": 1,
+    "role": 1,
+    "shape": 30,
+    "expected": 30,
+    "pass": true
+  },
+  {
+    "name": "TWO open",
+    "x": 7,
+    "y": 7,
+    "ox": 0,
+    "oy": 1,
+    "role": 1,
+    "shape": 2,
+    "expected": 2,
+    "pass": true
+  },
+  {
+    "name": "NONE isolated",
+    "x": 7,
+    "y": 7,
+    "ox": 0,
+    "oy": 1,
+    "role": 1,
+    "shape": 0,
+    "expected": 0,
+    "pass": true
+  },
+  {
+    "name": "THREE vertical",
+    "x": 6,
+    "y": 7,
+    "ox": 1,
+    "oy": 0,
+    "role": 1,
+    "shape": 3,
+    "expected": 3,
+    "pass": true
+  },
+  {
+    "name": "FOUR diagonal",
+    "x": 5,
+    "y": 5,
+    "ox": 1,
+    "oy": 1,
+    "role": 1,
+    "shape": 4,
+    "expected": 4,
+    "pass": true
+  },
+  {
+    "name": "BLOCK_FOUR white",
+    "x": 7,
+    "y": 7,
+    "ox": 0,
+    "oy": 1,
+    "role": -1,
+    "shape": 40,
+    "expected": 40,
+    "pass": true
+  },
+  {
+    "name": "THREE anti-diagonal",
+    "x": 6,
+    "y": 8,
+    "ox": 1,
+    "oy": -1,
+    "role": 1,
+    "shape": 3,
+    "expected": 3,
+    "pass": true
+  }
+]
