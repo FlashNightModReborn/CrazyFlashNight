@@ -72,14 +72,30 @@ class org.flashNight.hana.Gobang.GobangAI {
             pl = 12;
         }
 
-        // 低帧预算：允许 depth=4 以保持棋力（优化后可在帧预算内完成）
+        // 低帧预算优先保证宿主流畅度：压低候选数与搜索深度
         if (frameBudgetMs <= 8) {
-            if (depth > 4) depth = 4;
-            if (pl > 10) pl = 10;
+            depth = 2;
+            if (pl > 6) pl = 6;
             enableVCT = false;
+            // 仅在根分支天然很小的强制手局面下做保守加深
+            if (pieces >= 6) {
+                var tacticalMoves8:Array = _eval.getMoves(_aiRole, 0, false, false);
+                if (tacticalMoves8.length > 0 && tacticalMoves8.length <= 3) {
+                    depth = 4;
+                    if (pl > 4) pl = 4;
+                }
+            }
         } else if (frameBudgetMs <= 16) {
-            if (depth > 4) depth = 4;
-            if (pl > 12) pl = 12;
+            depth = 2;
+            if (pl > 8) pl = 8;
+            enableVCT = false;
+            if (pieces >= 6) {
+                var tacticalMoves16:Array = _eval.getMoves(_aiRole, 0, false, false);
+                if (tacticalMoves16.length > 0 && tacticalMoves16.length <= 4) {
+                    depth = 4;
+                    if (pl > 6) pl = 6;
+                }
+            }
         }
 
         return {

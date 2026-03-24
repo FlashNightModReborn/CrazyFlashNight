@@ -295,6 +295,21 @@ class org.flashNight.hana.Gobang.GobangTest {
             b7.put(0, f, 1);
         }
         assert(b7.isWin(0, 3, 1) === false, "Board isWin: 4 in a row is not win");
+
+        // Test 11: getWinner/undo 缓存一致性
+        var b8:GobangBoard = new GobangBoard(15, 1);
+        b8.put(7, 5, 1);
+        b8.put(0, 0, -1);
+        b8.put(7, 6, 1);
+        b8.put(0, 1, -1);
+        b8.put(7, 7, 1);
+        b8.put(0, 2, -1);
+        b8.put(7, 8, 1);
+        b8.put(0, 3, -1);
+        b8.put(7, 9, 1);
+        assert(b8.getWinner() === 1, "Board cached winner detects five");
+        b8.undo();
+        assert(b8.getWinner() === 0 && b8.isGameOver() === false, "Board cached winner clears after undo");
     }
 
     // 创建 padded board (SIZE+2)x(SIZE+2), 边界=2
@@ -307,6 +322,152 @@ class org.flashNight.hana.Gobang.GobangTest {
             }
         }
         return b;
+    }
+
+    private static function sameMoves(a:Array, b:Array):Boolean {
+        if (a.length !== b.length) return false;
+        for (var i:Number = 0; i < a.length; i++) {
+            if (a[i][0] !== b[i][0] || a[i][1] !== b[i][1]) return false;
+        }
+        return true;
+    }
+
+    // 全盘扫描对照组：用于验证 frontier getMoves 不改变行为
+    private static function getMovesSlow(eval:GobangEval, role:Number, depth:Number, onlyThree:Boolean, onlyFour:Boolean):Array {
+        var brd:Array = eval.board;
+        var sz:Number = eval.size;
+        var result:Array = [];
+        var limit:Number = GobangConfig.pointsLimit;
+        if (limit < 1) limit = 1;
+        if (depth >= 4 && limit > 10) limit = 10;
+
+        var bs:Array = eval.blackScores;
+        var ws:Array = eval.whiteScores;
+        var atk:Array = role === 1 ? bs : ws;
+        var def:Array = role === 1 ? ws : bs;
+        var atkShape:Array = role === 1 ? eval.shapeCache[0] : eval.shapeCache[1];
+        var defShape:Array = role === 1 ? eval.shapeCache[1] : eval.shapeCache[0];
+        var atk0:Array = atkShape[0];
+        var atk1:Array = atkShape[1];
+        var atk2:Array = atkShape[2];
+        var atk3:Array = atkShape[3];
+        var def0:Array = defShape[0];
+        var def1:Array = defShape[1];
+        var def2:Array = defShape[2];
+        var def3:Array = defShape[3];
+        var hasFive:Boolean = false;
+        var hasFour:Boolean = false;
+
+        for (var i:Number = 0; i < sz; i++) {
+            for (var j:Number = 0; j < sz; j++) {
+                if (brd[i + 1][j + 1] !== 0) continue;
+
+                var attackScore:Number = atk[i][j];
+                var defendScore:Number = def[i][j];
+                if (attackScore === 0 && defendScore === 0) continue;
+
+                var a0:Number = atk0[i][j];
+                var a1:Number = atk1[i][j];
+                var a2:Number = atk2[i][j];
+                var a3:Number = atk3[i][j];
+                var d0:Number = def0[i][j];
+                var d1:Number = def1[i][j];
+                var d2:Number = def2[i][j];
+                var d3:Number = def3[i][j];
+
+                var attackMax:Number = a0;
+                if (a1 > attackMax) attackMax = a1;
+                if (a2 > attackMax) attackMax = a2;
+                if (a3 > attackMax) attackMax = a3;
+                var defendMax:Number = d0;
+                if (d1 > defendMax) defendMax = d1;
+                if (d2 > defendMax) defendMax = d2;
+                if (d3 > defendMax) defendMax = d3;
+                var curFlat:Number = i * sz + j;
+
+                var maxS:Number = attackMax > defendMax ? attackMax : defendMax;
+                if (!maxS) continue;
+
+                if (attackMax === 5 || attackMax === 50 || defendMax === 5 || defendMax === 50) {
+                    if (!hasFive) {
+                        result.length = 0;
+                        hasFive = true;
+                        hasFour = false;
+                    }
+                    var fiveLen:Number = result.length;
+                    var fiveAt:Number = fiveLen;
+                    while (fiveAt > 0) {
+                        var prevFive:Array = result[fiveAt - 1];
+                        var prevFiveFlat:Number = prevFive[0] * sz + prevFive[1];
+                        if (curFlat > prevFiveFlat) break;
+                        result[fiveAt] = prevFive;
+                        fiveAt--;
+                    }
+                    result[fiveAt] = [i, j];
+                    continue;
+                }
+                if (hasFive) continue;
+
+                var isFourMove:Boolean = (attackMax >= 4 || defendMax >= 4);
+                if (isFourMove) {
+                    var majorFour:Number = attackScore > defendScore ? attackScore : defendScore;
+                    var fourKey:Number = attackScore + defendScore + majorFour;
+                    if (!hasFour) {
+                        result.length = 0;
+                        hasFour = true;
+                    }
+                    var fourLen:Number = result.length;
+                    var fourAt:Number = fourLen;
+                    while (fourAt > 0) {
+                        var prevFour:Array = result[fourAt - 1];
+                        var prevFourKey:Number = prevFour[2];
+                        var prevFourFlat:Number = prevFour[0] * sz + prevFour[1];
+                        if (fourKey < prevFourKey) break;
+                        if (fourKey === prevFourKey && curFlat > prevFourFlat) break;
+                        result[fourAt] = prevFour;
+                        fourAt--;
+                    }
+                    result[fourAt] = [i, j, fourKey];
+                    continue;
+                }
+                if (hasFour) continue;
+
+                if (onlyFour && maxS < 4) continue;
+                if (onlyThree && maxS < 3) continue;
+
+                var major:Number = attackScore > defendScore ? attackScore : defendScore;
+                var sortKey:Number = attackScore + defendScore + major;
+                var resultLen:Number = result.length;
+                var tail:Array = resultLen > 0 ? result[resultLen - 1] : null;
+                var tailBetter:Boolean = (tail !== null && (sortKey > tail[2]
+                    || (sortKey === tail[2] && curFlat < tail[0] * sz + tail[1])));
+                if (resultLen < limit || tailBetter) {
+                    var insertAt:Number = resultLen;
+                    if (insertAt >= limit) insertAt = limit - 1;
+                    while (insertAt > 0) {
+                        var prev:Array = result[insertAt - 1];
+                        var prevKey:Number = prev[2];
+                        var prevFlat:Number = prev[0] * sz + prev[1];
+                        if (sortKey < prevKey) break;
+                        if (sortKey === prevKey && curFlat > prevFlat) break;
+                        if (insertAt < limit) {
+                            result[insertAt] = prev;
+                        }
+                        insertAt--;
+                    }
+                    result[insertAt] = [i, j, sortKey];
+                    if (resultLen < limit) {
+                        result.length = resultLen + 1;
+                    }
+                }
+            }
+        }
+
+        if (hasFive) return result;
+        for (var k:Number = 0; k < result.length; k++) {
+            result[k].length = 2;
+        }
+        return result;
     }
 
     // 在 padded board 上放棋子 (非padded坐标)
@@ -440,10 +601,19 @@ class org.flashNight.hana.Gobang.GobangTest {
         var e5:GobangEval = new GobangEval(15);
         e5.move(7, 7, 1);
         var s5a:Number = e5.evaluate(1);
+        var baseMoves:Array = e5.getMoves(-1, 0, false, false);
+        var baseCount:Number = baseMoves.length;
+        var baseX:Number = baseMoves[0][0];
+        var baseY:Number = baseMoves[0][1];
         e5.move(6, 6, -1);
         e5.undo(6, 6);
         var s5b:Number = e5.evaluate(1);
         assert(s5a === s5b, "Eval undo reversible: " + s5a + " === " + s5b);
+        var undoMoves:Array = e5.getMoves(-1, 0, false, false);
+        assert(baseCount === undoMoves.length
+               && baseX === undoMoves[0][0]
+               && baseY === undoMoves[0][1],
+               "Eval undo preserves move ordering: (" + baseX + "," + baseY + ")");
 
         // Test 6: getMoves returns valid moves
         var e6:GobangEval = new GobangEval(15);
@@ -454,6 +624,34 @@ class org.flashNight.hana.Gobang.GobangTest {
         var mx:Number = moves[0][0];
         var my:Number = moves[0][1];
         assert(mx >= 0 && mx < 15 && my >= 0 && my < 15, "Eval getMoves valid coords: " + mx + "," + my);
+
+        // Test 7: frontier getMoves 与全盘扫描结果一致
+        var e7:GobangEval = new GobangEval(15);
+        var seq7:Array = [
+            [7,7,1], [6,6,-1], [7,8,1], [6,7,-1], [7,9,1],
+            [8,8,-1], [6,8,1], [8,7,-1], [5,7,1], [8,6,-1]
+        ];
+        for (var i7:Number = 0; i7 < seq7.length; i7++) {
+            e7.move(seq7[i7][0], seq7[i7][1], seq7[i7][2]);
+        }
+        var fast7:Array = e7.getMoves(1, 0, false, false);
+        var slow7:Array = getMovesSlow(e7, 1, 0, false, false);
+        assert(sameMoves(fast7, slow7), "Eval frontier getMoves matches slow scan");
+
+        // Test 8: 冲四局面只保留强制手
+        var e8:GobangEval = new GobangEval(15);
+        e8.move(7, 5, 1);
+        e8.move(0, 0, -1);
+        e8.move(7, 6, 1);
+        e8.move(0, 1, -1);
+        e8.move(7, 7, 1);
+        e8.move(0, 2, -1);
+        e8.move(7, 8, 1);
+        var urgent:Array = e8.getMoves(-1, 0, false, false);
+        var urgentOK:Boolean = (urgent.length === 2)
+            && ((urgent[0][0] === 7 && urgent[0][1] === 4) || (urgent[0][0] === 7 && urgent[0][1] === 9))
+            && ((urgent[1][0] === 7 && urgent[1][1] === 4) || (urgent[1][0] === 7 && urgent[1][1] === 9));
+        assert(urgentOK, "Eval urgent-four pruning returns only blocks");
     }
 
     private static function testMinmax():Void {
@@ -618,8 +816,36 @@ class org.flashNight.hana.Gobang.GobangTest {
                "Async AI low-budget finishes within 120 steps (frames=" + frames + ")");
         assert(stepResult.x >= 0 && stepResult.x < 15 && stepResult.y >= 0 && stepResult.y < 15,
                "Async AI low-budget returns valid move (" + stepResult.x + "," + stepResult.y + ")");
+        assert(stepResult.phaseLabel === "minmax_d2",
+               "Async AI low-budget stays on depth-2 path: " + stepResult.phaseLabel);
         trace("[INFO] Async AI smoke(8ms): " + elapsed + "ms, steps=" + frames
               + ", phase=" + stepResult.phaseLabel + ", nodes=" + stepResult.nodes);
+
+        // Test 4: 低预算下，强制手小分支局面允许保守加深到 depth=4
+        var aiTac:GobangAI = new GobangAI(-1, 100);
+        var aiObj:Object = aiTac;
+        var boardTac:GobangBoard = aiObj["_board"];
+        var evalTac:GobangEval = aiObj["_eval"];
+        var tacSeq:Array = [
+            [7,5,1], [0,0,-1], [7,6,1], [0,1,-1],
+            [7,7,1], [0,2,-1], [7,8,1]
+        ];
+        for (var ti:Number = 0; ti < tacSeq.length; ti++) {
+            boardTac.put(tacSeq[ti][0], tacSeq[ti][1], tacSeq[ti][2]);
+            evalTac.move(tacSeq[ti][0], tacSeq[ti][1], tacSeq[ti][2]);
+        }
+        assert(aiTac.aiMoveStart(8) === true, "Async AI tactical low-budget start succeeds");
+        frames = 0;
+        while (frames < 60) {
+            stepResult = aiTac.aiMoveStep(8);
+            frames++;
+            if (stepResult.done) break;
+        }
+        var tacticalBlock:Boolean = (stepResult.x === 7 && (stepResult.y === 4 || stepResult.y === 9));
+        assert(stepResult !== null && stepResult.done === true && tacticalBlock,
+               "Async AI tactical low-budget blocks open four: (" + stepResult.x + "," + stepResult.y + ")");
+        assert(stepResult.phaseLabel === "minmax_d4",
+               "Async AI tactical low-budget escalates to depth-4: " + stepResult.phaseLabel);
     }
 
     // ===== 性能基准测试 =====

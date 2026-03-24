@@ -9,13 +9,19 @@ class org.flashNight.hana.Gobang.GobangEval {
     private var _totalBlack:Number; // 增量总分
     private var _totalWhite:Number;
     public var shapeCache:Array;   // [2][4][size][size] — roleIdx, direction, x, y
-    public var history:Array;      // [[position, role], ...]
+    public var history:Array;      // 仅用于记录手数（供搜索阶段判断）
 
     // Save/Restore undo 栈 — 消除 undo 重计算开销
     private var _undoStack:Array;
     private var _undoTop:Number;
     private var _undoMarks:Array;
     private var _undoMarkTop:Number;
+
+    // 候选前沿：只遍历当前活跃空位，避免 getMoves 全盘扫描
+    private var _frontierCount:Array; // [flat] 邻近棋子数
+    private var _frontierIndex:Array; // [flat] 在 _frontierList 中的位置，-1=不活跃
+    private var _frontierList:Array;  // [flat, ...]
+    private var _frontierTop:Number;
 
     // 方向表
     private static var allDirs:Array = [[0, 1], [1, 0], [1, 1], [1, -1]];
@@ -57,6 +63,17 @@ class org.flashNight.hana.Gobang.GobangEval {
         _undoTop = 0;
         _undoMarks = new Array(24);
         _undoMarkTop = 0;
+
+        // 初始化候选前沿
+        var cellCount:Number = size * size;
+        _frontierCount = new Array(cellCount);
+        _frontierIndex = new Array(cellCount);
+        _frontierList = new Array(cellCount);
+        _frontierTop = 0;
+        for (var fi:Number = 0; fi < cellCount; fi++) {
+            _frontierCount[fi] = 0;
+            _frontierIndex[fi] = -1;
+        }
 
         // 初始化 shapeCache: [roleIdx][direction][x][y]
         shapeCache = [];
@@ -109,6 +126,7 @@ class org.flashNight.hana.Gobang.GobangEval {
 
         // 更新 padded board
         board[x + 1][y + 1] = role;
+        updateFrontierMove(x, y);
 
         // 保存 + 更新 dirty neighbors
         var brd:Array = board;
@@ -150,12 +168,13 @@ class org.flashNight.hana.Gobang.GobangEval {
         }
 
         _undoTop = top;
-        history.push([x * size + y, role]);
+        history[history.length] = 1;
     }
 
     // 快速 undo — 从保存栈恢复，零 getShapeFast 调用
     public function undo(x:Number, y:Number):Void {
         board[x + 1][y + 1] = 0;
+        updateFrontierUndo(x, y);
 
         var st:Array = _undoStack;
         var top:Number = _undoTop;
@@ -190,7 +209,7 @@ class org.flashNight.hana.Gobang.GobangEval {
         _totalWhite = st[mark + 1];
 
         _undoTop = mark;
-        history.pop();
+        history.length--;
     }
 
     private static function initDirtyMap(size:Number):Void {
@@ -220,6 +239,69 @@ class org.flashNight.hana.Gobang.GobangEval {
                 }
                 dirtyMap[x][y] = flat;
             }
+        }
+    }
+
+    private function frontierAdd(flat:Number):Void {
+        if (_frontierIndex[flat] >= 0) return;
+        _frontierIndex[flat] = _frontierTop;
+        _frontierList[_frontierTop] = flat;
+        _frontierTop++;
+    }
+
+    private function frontierRemove(flat:Number):Void {
+        var idx:Number = _frontierIndex[flat];
+        if (idx < 0) return;
+        _frontierTop--;
+        var tailFlat:Number = _frontierList[_frontierTop];
+        if (idx < _frontierTop) {
+            _frontierList[idx] = tailFlat;
+            _frontierIndex[tailFlat] = idx;
+        }
+        _frontierIndex[flat] = -1;
+    }
+
+    private function updateFrontierMove(x:Number, y:Number):Void {
+        var flatCenter:Number = x * size + y;
+        frontierRemove(flatCenter);
+
+        var brd:Array = board;
+        var counts:Array = _frontierCount;
+        var flat:Array = dirtyMap[x][y];
+        var sz:Number = size;
+        for (var i:Number = 0; i < flat.length; i += 4) {
+            var nx:Number = flat[i];
+            var ny:Number = flat[i + 1];
+            var nFlat:Number = nx * sz + ny;
+            var nextCount:Number = counts[nFlat] + 1;
+            counts[nFlat] = nextCount;
+            if (nextCount === 1 && brd[nx + 1][ny + 1] === 0) {
+                frontierAdd(nFlat);
+            }
+        }
+    }
+
+    private function updateFrontierUndo(x:Number, y:Number):Void {
+        var brd:Array = board;
+        var counts:Array = _frontierCount;
+        var flat:Array = dirtyMap[x][y];
+        var sz:Number = size;
+        for (var i:Number = 0; i < flat.length; i += 4) {
+            var nx:Number = flat[i];
+            var ny:Number = flat[i + 1];
+            var nFlat:Number = nx * sz + ny;
+            var nextCount:Number = counts[nFlat] - 1;
+            counts[nFlat] = nextCount;
+            if (nextCount === 0 && brd[nx + 1][ny + 1] === 0) {
+                frontierRemove(nFlat);
+            }
+        }
+
+        var flatCenter:Number = x * sz + y;
+        if (counts[flatCenter] > 0) {
+            frontierAdd(flatCenter);
+        } else {
+            frontierRemove(flatCenter);
         }
     }
 
@@ -329,11 +411,10 @@ class org.flashNight.hana.Gobang.GobangEval {
         return role === 1 ? _totalBlack - _totalWhite : _totalWhite - _totalBlack;
     }
 
-    // 轻量 getMoves — 单次遍历，单数组收集，按分数排序截断
+    // 轻量 getMoves — 遍历活跃前沿，紧急战术位优先
     public function getMoves(role:Number, depth:Number, onlyThree:Boolean, onlyFour:Boolean):Array {
         var brd:Array = board;
         var sz:Number = size;
-        var sc:Array = shapeCache;
         var result:Array = [];
         var limit:Number = GobangConfig.pointsLimit;
         if (limit < 1) limit = 1;
@@ -343,71 +424,137 @@ class org.flashNight.hana.Gobang.GobangEval {
         var ws:Array = whiteScores;
         var atk:Array = role === 1 ? bs : ws;
         var def:Array = role === 1 ? ws : bs;
+        var atkShape:Array = role === 1 ? shapeCache[0] : shapeCache[1];
+        var defShape:Array = role === 1 ? shapeCache[1] : shapeCache[0];
+        var atk0:Array = atkShape[0];
+        var atk1:Array = atkShape[1];
+        var atk2:Array = atkShape[2];
+        var atk3:Array = atkShape[3];
+        var def0:Array = defShape[0];
+        var def1:Array = defShape[1];
+        var def2:Array = defShape[2];
+        var def3:Array = defShape[3];
         var hasFive:Boolean = false;
-        var sc0:Array = sc[0];
-        var sc1:Array = sc[1];
+        var hasFour:Boolean = false;
+        var frontier:Array = _frontierList;
+        var frontierTop:Number = _frontierTop;
 
-        for (var i:Number = 0; i < sz; i++) {
-            if (brd[i + 1] === undefined) continue;
-            for (var j:Number = 0; j < sz; j++) {
-                if (brd[i + 1][j + 1] !== 0) continue;
-                var attackScore:Number = atk[i][j];
-                var defendScore:Number = def[i][j];
-                if (attackScore === 0 && defendScore === 0) continue;
+        for (var fi:Number = 0; fi < frontierTop; fi++) {
+            var flatPos:Number = frontier[fi];
+            var i:Number = flatPos / sz;
+            i = i | 0;
+            var j:Number = flatPos - i * sz;
+            if (brd[i + 1][j + 1] !== 0) continue;
 
-                // 快速检查：该位置有没有任何棋型
-                var maxS:Number = 0;
-                var s0:Number = sc0[0][i][j];
-                var s1:Number = sc0[1][i][j];
-                var s2:Number = sc0[2][i][j];
-                var s3:Number = sc0[3][i][j];
-                var s4:Number = sc1[0][i][j];
-                var s5:Number = sc1[1][i][j];
-                var s6:Number = sc1[2][i][j];
-                var s7:Number = sc1[3][i][j];
-                if (s0 > maxS) maxS = s0;
-                if (s1 > maxS) maxS = s1;
-                if (s2 > maxS) maxS = s2;
-                if (s3 > maxS) maxS = s3;
-                if (s4 > maxS) maxS = s4;
-                if (s5 > maxS) maxS = s5;
-                if (s6 > maxS) maxS = s6;
-                if (s7 > maxS) maxS = s7;
-                if (!maxS) continue;
+            var attackScore:Number = atk[i][j];
+            var defendScore:Number = def[i][j];
+            if (attackScore === 0 && defendScore === 0) continue;
 
-                // FIVE/BLOCK_FIVE（值 5 或 50）最高优先
-                if (maxS === 5 || maxS === 50) {
-                    if (!hasFive) { result.length = 0; hasFive = true; }
-                    result.push([i, j]);
-                    continue;
+            var a0:Number = atk0[i][j];
+            var a1:Number = atk1[i][j];
+            var a2:Number = atk2[i][j];
+            var a3:Number = atk3[i][j];
+            var d0:Number = def0[i][j];
+            var d1:Number = def1[i][j];
+            var d2:Number = def2[i][j];
+            var d3:Number = def3[i][j];
+
+            var attackMax:Number = a0;
+            if (a1 > attackMax) attackMax = a1;
+            if (a2 > attackMax) attackMax = a2;
+            if (a3 > attackMax) attackMax = a3;
+            var defendMax:Number = d0;
+            if (d1 > defendMax) defendMax = d1;
+            if (d2 > defendMax) defendMax = d2;
+            if (d3 > defendMax) defendMax = d3;
+
+            var maxS:Number = attackMax > defendMax ? attackMax : defendMax;
+            if (!maxS) continue;
+
+            // FIVE/BLOCK_FIVE（值 5 或 50）最高优先
+            if (attackMax === 5 || attackMax === 50 || defendMax === 5 || defendMax === 50) {
+                if (!hasFive) {
+                    result.length = 0;
+                    hasFive = true;
+                    hasFour = false;
                 }
-                if (hasFive) continue; // 已有五连，跳过非五连
+                var fiveLen:Number = result.length;
+                var fiveAt:Number = fiveLen;
+                while (fiveAt > 0) {
+                    var prevFive:Array = result[fiveAt - 1];
+                    var prevFiveFlat:Number = prevFive[0] * sz + prevFive[1];
+                    if (flatPos > prevFiveFlat) break;
+                    result[fiveAt] = prevFive;
+                    fiveAt--;
+                }
+                result[fiveAt] = [i, j];
+                continue;
+            }
+            if (hasFive) continue;
 
-                if (onlyFour && maxS < 4) continue;
-                if (onlyThree && maxS < 3) continue;
+            // FOUR/BLOCK_FOUR 强制手：直接缩小根分支，兼顾棋力与性能
+            var isFourMove:Boolean = (attackMax >= 4 || defendMax >= 4);
+            if (isFourMove) {
+                var majorFour:Number = attackScore > defendScore ? attackScore : defendScore;
+                var fourKey:Number = attackScore + defendScore + majorFour;
+                if (!hasFour) {
+                    result.length = 0;
+                    hasFour = true;
+                }
+                var fourLen:Number = result.length;
+                var fourAt:Number = fourLen;
+                while (fourAt > 0) {
+                    var prevFour:Array = result[fourAt - 1];
+                    var prevFourKey:Number = prevFour[2];
+                    var prevFourFlat:Number = prevFour[0] * sz + prevFour[1];
+                    if (fourKey < prevFourKey) break;
+                    if (fourKey === prevFourKey && flatPos > prevFourFlat) break;
+                    result[fourAt] = prevFour;
+                    fourAt--;
+                }
+                result[fourAt] = [i, j, fourKey];
+                continue;
+            }
+            if (hasFour) continue;
 
-                // 评分：优先兼顾本方进攻和对方威胁，避免排序回调开销
-                var major:Number = attackScore > defendScore ? attackScore : defendScore;
-                var sortKey:Number = attackScore + defendScore + major;
-                var resultLen:Number = result.length;
-                if (resultLen < limit || sortKey > result[resultLen - 1][2]) {
-                    var insertAt:Number = resultLen;
-                    if (insertAt >= limit) insertAt = limit - 1;
-                    while (insertAt > 0 && sortKey > result[insertAt - 1][2]) {
-                        if (insertAt < limit) {
-                            result[insertAt] = result[insertAt - 1];
-                        }
-                        insertAt--;
+            if (onlyFour && maxS < 4) continue;
+            if (onlyThree && maxS < 3) continue;
+
+            // 评分：优先兼顾本方进攻和对方威胁，避免排序回调开销
+            var major:Number = attackScore > defendScore ? attackScore : defendScore;
+            var sortKey:Number = attackScore + defendScore + major;
+            var resultLen:Number = result.length;
+            var tail:Array = resultLen > 0 ? result[resultLen - 1] : null;
+            var tailBetter:Boolean = (tail !== null && (sortKey > tail[2]
+                || (sortKey === tail[2] && flatPos < tail[0] * sz + tail[1])));
+            if (resultLen < limit || tailBetter) {
+                var insertAt:Number = resultLen;
+                if (insertAt >= limit) insertAt = limit - 1;
+                while (insertAt > 0) {
+                    var prev:Array = result[insertAt - 1];
+                    var prevKey:Number = prev[2];
+                    var prevFlat:Number = prev[0] * sz + prev[1];
+                    if (sortKey < prevKey) break;
+                    if (sortKey === prevKey && flatPos > prevFlat) break;
+                    if (insertAt < limit) {
+                        result[insertAt] = prev;
                     }
-                    result[insertAt] = [i, j, sortKey];
-                    if (resultLen < limit) {
-                        result.length = resultLen + 1;
-                    }
+                    insertAt--;
+                }
+                result[insertAt] = [i, j, sortKey];
+                if (resultLen < limit) {
+                    result.length = resultLen + 1;
                 }
             }
         }
 
         if (hasFive) return result;
+        if (hasFour) {
+            for (var fi2:Number = 0; fi2 < result.length; fi2++) {
+                result[fi2].length = 2;
+            }
+            return result;
+        }
 
         // 清除排序键
         for (var ci:Number = 0; ci < result.length; ci++) {

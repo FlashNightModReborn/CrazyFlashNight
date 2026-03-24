@@ -8,6 +8,9 @@ class org.flashNight.hana.Gobang.GobangBoard {
     public var role:Number;       // current role to play
     public var history:Array;     // [{i, j, role}, ...]
     public var zobrist:GobangZobrist;
+    private var _historyTop:Number;
+    private var _winner:Number;
+    private var _winnerStack:Array;
 
     // 上游 board.js 在内部包含 padding（+2 边界），但 getShapeFast 需要
     // 我们的 board 维持纯净 15x15，padding 在 Shape/Eval 中处理
@@ -19,6 +22,9 @@ class org.flashNight.hana.Gobang.GobangBoard {
         this.firstRole = firstRole;
         this.role = firstRole;
         this.history = [];
+        this._historyTop = 0;
+        this._winner = 0;
+        this._winnerStack = [];
         this.zobrist = new GobangZobrist(size);
 
         // Initialize board
@@ -35,17 +41,33 @@ class org.flashNight.hana.Gobang.GobangBoard {
         if (r === undefined) r = role;
         if (board[i][j] !== 0) return false;
         board[i][j] = r;
-        history.push({i: i, j: j, role: r});
+        _winnerStack[_historyTop] = _winner;
+        var entry:Object = history[_historyTop];
+        if (entry === undefined) {
+            history[_historyTop] = {i: i, j: j, role: r};
+        } else {
+            entry.i = i;
+            entry.j = j;
+            entry.role = r;
+        }
+        _historyTop++;
+        history.length = _historyTop;
+        if (_winner === 0 && isWin(i, j, r)) {
+            _winner = r;
+        }
         zobrist.togglePiece(i, j, r);
         role *= -1;
         return true;
     }
 
     public function undo():Boolean {
-        if (history.length === 0) return false;
-        var last:Object = history.pop();
+        if (_historyTop === 0) return false;
+        _historyTop--;
+        var last:Object = history[_historyTop];
+        history.length = _historyTop;
         board[last.i][last.j] = 0;
         role = last.role;
+        _winner = _winnerStack[_historyTop];
         zobrist.togglePiece(last.i, last.j, last.role);
         return true;
     }
@@ -73,17 +95,14 @@ class org.flashNight.hana.Gobang.GobangBoard {
 
     // O(1) — 只检查最后一手
     public function getWinner():Number {
-        if (history.length === 0) return 0;
-        var last:Object = history[history.length - 1];
-        if (isWin(last.i, last.j, last.role)) return last.role;
-        return 0;
+        return _winner;
     }
 
     public function isGameOver():Boolean {
-        if (history.length === 0) return false;
-        if (getWinner() !== 0) return true;
+        if (_historyTop === 0) return false;
+        if (_winner !== 0) return true;
         // 棋盘满了才是平局（225 步）
-        return history.length >= size * size;
+        return _historyTop >= size * size;
     }
 
     public function hash():String {
@@ -94,7 +113,7 @@ class org.flashNight.hana.Gobang.GobangBoard {
     public function reverse():Object {
         var newBoard:GobangBoard = new GobangBoard(size, -firstRole);
         var newEval:GobangEval = new GobangEval(size);
-        for (var i:Number = 0; i < history.length; i++) {
+        for (var i:Number = 0; i < _historyTop; i++) {
             var h:Object = history[i];
             var swappedRole:Number = -h.role;
             newBoard.put(h.i, h.j, swappedRole);
@@ -102,4 +121,4 @@ class org.flashNight.hana.Gobang.GobangBoard {
         }
         return {board: newBoard, eval: newEval};
     }
-}
+}
