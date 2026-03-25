@@ -270,7 +270,7 @@ class org.flashNight.hana.Gobang.GobangAI {
         if (absScore >= REFINE_SKIP_SCORE) return result;
         // 对手有 THREE+ 威胁时，信任搜索的防守判断，不覆盖
         if (_opponentHasUrgentThreat()) return result;
-        if (params.searchDepth > 6 || params.enableVCT || _board.history.length < STRATEGIC_REFINE_MIN_HISTORY) {
+        if (params.searchDepth >= 6 || params.enableVCT || _board.history.length < STRATEGIC_REFINE_MIN_HISTORY) {
             return result;
         }
 
@@ -389,7 +389,7 @@ class org.flashNight.hana.Gobang.GobangAI {
         if (absScore2 >= REFINE_SKIP_SCORE) return result;
         // 对手有 THREE+ 威胁时，信任搜索的防守判断，不覆盖
         if (_opponentHasUrgentThreat()) return result;
-        if (_board.history.length < THREAT_REFINE_MIN_HISTORY || params.searchDepth > 6) {
+        if (_board.history.length < THREAT_REFINE_MIN_HISTORY || params.searchDepth >= 6) {
             return result;
         }
 
