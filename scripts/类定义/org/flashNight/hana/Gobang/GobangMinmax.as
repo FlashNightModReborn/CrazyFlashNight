@@ -724,10 +724,12 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             var secX:Number = _asyncSecondX;
             var secY:Number = _asyncSecondY;
             var secScore:Number = _asyncSecondRawScore;
+            var secInherited:Boolean = false;
             if (secX < 0 && _asyncBestResult.secondX !== undefined && _asyncBestResult.secondX >= 0) {
                 secX = _asyncBestResult.secondX;
                 secY = _asyncBestResult.secondY;
                 secScore = _asyncBestResult.secondScore;
+                secInherited = true;
             }
             _asyncBestResult = {
                 x: _asyncWorkingBestX,
@@ -735,7 +737,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 score: _asyncWorkingBestRawScore,
                 secondX: secX,
                 secondY: secY,
-                secondScore: secScore
+                secondScore: secScore,
+                secondInherited: secInherited
             };
             _asyncLastCompletedDepth = _asyncTargetDepth;
             _asyncMoves = null;
@@ -1462,7 +1465,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                     score: _asyncBestResult.score, nodes: _asyncTotalNodes, phaseLabel: doneLabel,
                     rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal,
                     secondX: _asyncBestResult.secondX, secondY: _asyncBestResult.secondY,
-                    secondScore: _asyncBestResult.secondScore};
+                    secondScore: _asyncBestResult.secondScore,
+                    secondInherited: _asyncBestResult.secondInherited};
         }
 
         if (_asyncPhase === 1) {
@@ -1486,7 +1490,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                             nodes: _asyncTotalNodes, phaseLabel: "vct_win",
                             rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal,
                             secondX: _asyncBestResult.secondX, secondY: _asyncBestResult.secondY,
-                            secondScore: _asyncBestResult.secondScore};
+                            secondScore: _asyncBestResult.secondScore,
+                    secondInherited: _asyncBestResult.secondInherited};
                 }
                 if (!vct.done) {
                     return {done: false, phase: 1, x: vct.x, y: vct.y, score: vct.score,
@@ -1521,7 +1526,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                         nodes: _asyncTotalNodes, phaseLabel: "minmax_win",
                         rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal,
                         secondX: _asyncBestResult.secondX, secondY: _asyncBestResult.secondY,
-                        secondScore: _asyncBestResult.secondScore};
+                        secondScore: _asyncBestResult.secondScore,
+                    secondInherited: _asyncBestResult.secondInherited};
             }
 
             if (!mr.done) {
@@ -1543,7 +1549,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                         score: _asyncBestResult.score, nodes: _asyncTotalNodes, phaseLabel: label,
                         rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal,
                         secondX: _asyncBestResult.secondX, secondY: _asyncBestResult.secondY,
-                        secondScore: _asyncBestResult.secondScore};
+                        secondScore: _asyncBestResult.secondScore,
+                    secondInherited: _asyncBestResult.secondInherited};
             }
 
             _asyncCurrentDepth = curD + 2;
@@ -1578,7 +1585,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                     phaseLabel: "bridgeprobe_d" + _asyncTargetDepth,
                     rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal,
                     secondX: _asyncBestResult.secondX, secondY: _asyncBestResult.secondY,
-                    secondScore: _asyncBestResult.secondScore};
+                    secondScore: _asyncBestResult.secondScore,
+                    secondInherited: _asyncBestResult.secondInherited};
         }
 
         _asyncDone = true;

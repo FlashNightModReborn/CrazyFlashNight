@@ -17,6 +17,7 @@ class org.flashNight.hana.Gobang.GobangAI {
 
     // 对局决策日志 — 每步 AI 决策的关键信息，gameOver 时输出
     private var _moveLog:Array;
+    private var _moveNodes:Array;  // 并行数组：每步节点数，undo 时同步弹出
     private var _totalNodesAllMoves:Number;
 
     // 难度映射表 [difficulty 下限, searchDepth, pointsLimit, 最优走法概率(%), enableVCT]
@@ -74,6 +75,7 @@ class org.flashNight.hana.Gobang.GobangAI {
         _openingMove = null;
         _asyncParams = null;
         _moveLog = [];
+        _moveNodes = [];
         _totalNodesAllMoves = 0;
     }
 
@@ -182,9 +184,9 @@ class org.flashNight.hana.Gobang.GobangAI {
         return {x: options[pickIdx][0], y: options[pickIdx][1]};
     }
 
-    // 难度降级安全阈值：score >= 此值的走法是战术强制手，不允许 drop
-    // 覆盖：PreSearch P1-P4（≥9999996）、TSS 必杀（2000000）、搜索确认必杀
-    private static var DROP_PROTECT_THRESHOLD:Number = 1000000;
+    // 难度降级安全阈值：与 REFINE_SKIP_SCORE 对齐
+    // |score| >= 50K = 搜索确认的战术优势（THREE_THREE/FOUR/TSS/FIVE），不允许 drop
+    private static var DROP_PROTECT_THRESHOLD:Number = 50000;
 
     private function _applyDifficultyDrop(params:Object, bestX:Number, bestY:Number, score:Number):Object {
         var finalX:Number = bestX;
@@ -520,7 +522,10 @@ class org.flashNight.hana.Gobang.GobangAI {
         var last:Object = _board.history[_board.history.length - 1];
         // 如果撤销的是 AI 的棋，同步回退日志和累积节点
         if (last.role === _aiRole && _moveLog.length > 0) {
-            _moveLog.length = _moveLog.length - 1;
+            var idx:Number = _moveLog.length - 1;
+            _totalNodesAllMoves -= _moveNodes[idx];
+            _moveLog.length = idx;
+            _moveNodes.length = idx;
         }
         _eval.undo(last.i, last.j);
         _board.undo();
@@ -669,10 +674,11 @@ class org.flashNight.hana.Gobang.GobangAI {
             + " d=" + cDepth
             + " " + stepResult.phaseLabel
             + " n=" + stepResult.nodes;
-        // top2
+        // top2（标记继承来源：inherited = 来自上一轮迭代加深，非本轮搜索）
         if (stepResult.secondX !== undefined && stepResult.secondX >= 0) {
             logEntry += " top2=(" + stepResult.secondX + "," + stepResult.secondY
                 + "," + stepResult.secondScore + ")";
+            if (stepResult.secondInherited === true) logEntry += "[inherited]";
         } else {
             logEntry += " top2=none";
         }
@@ -682,6 +688,7 @@ class org.flashNight.hana.Gobang.GobangAI {
         }
         if (threatBlocked) logEntry += " [refine_blocked]";
         _moveLog[_moveLog.length] = logEntry;
+        _moveNodes[_moveNodes.length] = stepResult.nodes;
         _totalNodesAllMoves += stepResult.nodes;
 
         _asyncParams = null;
@@ -690,7 +697,8 @@ class org.flashNight.hana.Gobang.GobangAI {
                 phaseLabel: stepResult.phaseLabel, nodes: stepResult.nodes,
                 rootIdx: stepResult.rootIdx, rootTotal: stepResult.rootTotal,
                 secondX: stepResult.secondX, secondY: stepResult.secondY,
-                secondScore: stepResult.secondScore};
+                secondScore: stepResult.secondScore,
+                secondInherited: stepResult.secondInherited};
     }
 
     // 输出完整对局决策日志（在 gameOver 时调用）
