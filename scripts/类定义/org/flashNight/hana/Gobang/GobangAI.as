@@ -15,6 +15,9 @@ class org.flashNight.hana.Gobang.GobangAI {
     private var _openingMove:Object;
     private var _asyncParams:Object;
 
+    // 对局决策日志 — 每步 AI 决策的关键信息，gameOver 时输出
+    private var _moveLog:Array;
+
     // 难度映射表 [difficulty 下限, searchDepth, pointsLimit, 最优走法概率(%), enableVCT]
     private static var DIFFICULTY_TABLE:Array = [
         [0,   2,  5,  30, false],
@@ -67,6 +70,7 @@ class org.flashNight.hana.Gobang.GobangAI {
         _minmax = new GobangMinmax(_board, _eval);
         _openingMove = null;
         _asyncParams = null;
+        _moveLog = [];
     }
 
     public function setDifficulty(d:Number):Void {
@@ -118,10 +122,10 @@ class org.flashNight.hana.Gobang.GobangAI {
             pl = 12;
         }
 
-        // 帧预算：常态 depth=6（看 3 步己方走法，识别冲四陷阱），战术加深到 8
+        // 帧预算：常态 depth=6（看 3 步己方），pl=6 控制分支因子以确保 d=6 完成
         if (frameBudgetMs <= 8) {
             if (depth > 6) depth = 6;
-            if (pl > 8) pl = 8;
+            if (pl > 6) pl = 6;
             // 战术条件加深到 8
             if (urgentFourMoves !== null && urgentFourMoves.length > 0 && urgentFourMoves.length <= 4) {
                 depth = 8;
@@ -218,9 +222,41 @@ class org.flashNight.hana.Gobang.GobangAI {
         candidates[candidates.length] = [x, y, bonus];
     }
 
+    // 检测对手是否有紧急 THREE+ 威胁（有任何 frontier 位置在任意方向有 THREE/FOUR/FIVE）
+    private function _opponentHasUrgentThreat():Boolean {
+        var oppRole:Number = -_aiRole;
+        var ori:Number = oppRole === 1 ? 0 : 1;
+        var sc:Array = _eval.shapeCache[ori];
+        var sc0:Array = sc[0]; var sc1:Array = sc[1];
+        var sc2:Array = sc[2]; var sc3:Array = sc[3];
+        var brd:Array = _eval.board;
+        var sz:Number = _eval.size;
+        var frontier:Array = _eval._frontierList;
+        var top:Number = _eval._frontierTop;
+        for (var fi:Number = 0; fi < top; fi++) {
+            var fp:Number = frontier[fi];
+            var cx:Number = (fp / sz) | 0;
+            var cy:Number = fp - cx * sz;
+            if (brd[cx + 1][cy + 1] !== 0) continue;
+            // THREE=3, FOUR=4, FIVE=5, BLOCK_FOUR=40, BLOCK_FIVE=50
+            if (sc0[cx][cy] === 3 || sc0[cx][cy] === 4 || sc0[cx][cy] === 5 ||
+                sc0[cx][cy] === 40 || sc0[cx][cy] === 50) return true;
+            if (sc1[cx][cy] === 3 || sc1[cx][cy] === 4 || sc1[cx][cy] === 5 ||
+                sc1[cx][cy] === 40 || sc1[cx][cy] === 50) return true;
+            if (sc2[cx][cy] === 3 || sc2[cx][cy] === 4 || sc2[cx][cy] === 5 ||
+                sc2[cx][cy] === 40 || sc2[cx][cy] === 50) return true;
+            if (sc3[cx][cy] === 3 || sc3[cx][cy] === 4 || sc3[cx][cy] === 5 ||
+                sc3[cx][cy] === 40 || sc3[cx][cy] === 50) return true;
+        }
+        return false;
+    }
+
     private function _refineStrategicMove(params:Object, result:Object):Object {
         if (params === null || result === null || result.x < 0) return result;
-        if (result.score >= REFINE_SKIP_SCORE) return result;
+        var absScore:Number = result.score >= 0 ? result.score : -result.score;
+        if (absScore >= REFINE_SKIP_SCORE) return result;
+        // 对手有 THREE+ 威胁时，信任搜索的防守判断，不覆盖
+        if (_opponentHasUrgentThreat()) return result;
         if (params.searchDepth > 6 || params.enableVCT || _board.history.length < STRATEGIC_REFINE_MIN_HISTORY) {
             return result;
         }
@@ -262,6 +298,8 @@ class org.flashNight.hana.Gobang.GobangAI {
         }
 
         if (!changed) return result;
+        trace("[REFINE_STRATEGIC] search=" + result.x + "," + result.y + " score=" + result.score
+            + " -> refined=" + bestX + "," + bestY + " score=" + bestSearchScore);
         var refined:Object = {};
         for (var k:String in result) {
             refined[k] = result[k];
@@ -334,7 +372,10 @@ class org.flashNight.hana.Gobang.GobangAI {
 
     private function _refineThreatDefenseMove(params:Object, result:Object):Object {
         if (params === null || result === null || result.x < 0) return result;
-        if (result.score >= REFINE_SKIP_SCORE) return result;
+        var absScore2:Number = result.score >= 0 ? result.score : -result.score;
+        if (absScore2 >= REFINE_SKIP_SCORE) return result;
+        // 对手有 THREE+ 威胁时，信任搜索的防守判断，不覆盖
+        if (_opponentHasUrgentThreat()) return result;
         if (_board.history.length < THREAT_REFINE_MIN_HISTORY || params.searchDepth > 6) {
             return result;
         }
@@ -416,6 +457,8 @@ class org.flashNight.hana.Gobang.GobangAI {
         }
 
         if (!changed) return result;
+        trace("[REFINE_THREAT] search=" + result.x + "," + result.y + " score=" + result.score
+            + " -> refined=" + bestX + "," + bestY + " score=" + bestInfo.score);
         var refined:Object = {};
         for (var k:String in result) {
             refined[k] = result[k];
@@ -600,10 +643,31 @@ class org.flashNight.hana.Gobang.GobangAI {
         _board.put(move.x, move.y, _aiRole);
         _eval.move(move.x, move.y, _aiRole);
         GobangConfig.pointsLimit = origPL;
+
+        // 记录决策日志
+        var moveNum:Number = _board.history.length;
+        var threatBlocked:Boolean = _opponentHasUrgentThreat();
+        var logEntry:String = "#" + moveNum
+            + " (" + move.x + "," + move.y + ")"
+            + " s=" + stepResult.score
+            + " " + stepResult.phaseLabel
+            + " n=" + stepResult.nodes;
+        if (threatBlocked) logEntry += " [refine_blocked]";
+        _moveLog[_moveLog.length] = logEntry;
+
         _asyncParams = null;
 
         return {done: true, x: move.x, y: move.y, score: stepResult.score,
                 phaseLabel: stepResult.phaseLabel, nodes: stepResult.nodes,
                 rootIdx: stepResult.rootIdx, rootTotal: stepResult.rootTotal};
+    }
+
+    // 输出完整对局决策日志（在 gameOver 时调用）
+    public function dumpMoveLog():Void {
+        trace("=== AI Decision Log (" + _moveLog.length + " moves) ===");
+        for (var i:Number = 0; i < _moveLog.length; i++) {
+            trace(_moveLog[i]);
+        }
+        trace("=== End Log ===");
     }
 }

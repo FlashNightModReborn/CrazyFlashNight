@@ -433,6 +433,8 @@ class org.flashNight.hana.Gobang.GobangGame {
             msg = "\u5E73\u5C40\uFF01";
         }
         _updateStatus(msg + "\n\u70B9\u51FB\"\u65B0\u6E38\u620F\"\u91CD\u6765");
+        // 输出完整 AI 决策日志
+        _ai.dumpMoveLog();
     }
 
     private function _onBoardHover():Void {

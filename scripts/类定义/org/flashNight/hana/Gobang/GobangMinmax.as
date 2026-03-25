@@ -320,6 +320,13 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _resetKillers();
         _resetHistory();
 
+        // 预搜索：确定性战术走法直接返回，跳过搜索
+        var tactical:Object = _preSearchTactical(role);
+        if (tactical !== null) {
+            return {x: tactical.x, y: tactical.y, score: tactical.score,
+                    nodes: 0, timedOut: false, phaseLabel: tactical.tag};
+        }
+
         var best:Object = {x: -1, y: -1, score: _eval.evaluate(role), timedOut: false};
         var prefX:Number = -1;
         var prefY:Number = -1;
@@ -768,6 +775,44 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         return moves;
     }
 
+    // 防守得利检测：防守方落子后是否有成五点（FIVE shape），且攻方没有
+    // 前提：调用前防守方已在棋盘上落子
+    // 返回 true = 防守方有成五点且攻方没有 → 防守方必赢
+    private function _defenderHasFiveShape(defRole:Number, atkRole:Number):Boolean {
+        var dri:Number = defRole === 1 ? 0 : 1;
+        var ari:Number = atkRole === 1 ? 0 : 1;
+        var dsc:Array = _eval.shapeCache[dri];
+        var asc:Array = _eval.shapeCache[ari];
+        var brd:Array = _eval.board;
+        var sz:Number = _eval.size;
+        var frontier:Array = _eval._frontierList;
+        var top:Number = _eval._frontierTop;
+        var defHasFive:Boolean = false;
+        for (var fi:Number = 0; fi < top; fi++) {
+            var fp:Number = frontier[fi];
+            var cx:Number = (fp / sz) | 0;
+            var cy:Number = fp - cx * sz;
+            if (brd[cx + 1][cy + 1] !== 0) continue;
+            // 攻方有成五 → 攻方先手可先连五，不触发早退
+            if (asc[0][cx][cy] === 5 || asc[0][cx][cy] === 50 ||
+                asc[1][cx][cy] === 5 || asc[1][cx][cy] === 50 ||
+                asc[2][cx][cy] === 5 || asc[2][cx][cy] === 50 ||
+                asc[3][cx][cy] === 5 || asc[3][cx][cy] === 50) {
+                return false;
+            }
+            // 防守方有成五
+            if (!defHasFive) {
+                if (dsc[0][cx][cy] === 5 || dsc[0][cx][cy] === 50 ||
+                    dsc[1][cx][cy] === 5 || dsc[1][cx][cy] === 50 ||
+                    dsc[2][cx][cy] === 5 || dsc[2][cx][cy] === 50 ||
+                    dsc[3][cx][cy] === 5 || dsc[3][cx][cy] === 50) {
+                    defHasFive = true;
+                }
+            }
+        }
+        return defHasFive;
+    }
+
     private function probeThreatWin(attackerRole:Number, turnRole:Number, plyLeft:Number):Boolean {
         if (_timedOut || plyLeft <= 0 || _tssBudget <= 0) return false;
         _tssBudget--;
@@ -817,6 +862,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             var defends:Boolean;
             if (_board.isGameOver()) {
                 defends = (_board.getWinner() === attackerRole);
+            } else if (_defenderHasFiveShape(turnRole, attackerRole)) {
+                defends = false; // 防守方有成五点且攻方没有 → 防守方必赢
             } else {
                 defends = probeThreatWin(attackerRole, -turnRole, plyLeft - 1);
             }
@@ -827,7 +874,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         return true;
     }
 
-    // 非叶节点 VCF 探针：用 shapeCache 前置过滤，逐个测试 FOUR 级候选
+    // 非叶节点 VCT 探针：检测 FOUR 级 VCF 和 多方向 THREE 的双活三/四三设置
     private function probeVCFAtNode(role:Number):Boolean {
         var sc:Array = role === 1 ? _eval.shapeCache[0] : _eval.shapeCache[1];
         var brd:Array = _eval.board;
@@ -840,14 +887,25 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             var cx:Number = (fp / sz) | 0;
             var cy:Number = fp - cx * sz;
             if (brd[cx + 1][cy + 1] !== 0) continue;
-            var maxS:Number = 0;
-            var s0:Number = sc[0][cx][cy]; if (s0 > maxS) maxS = s0;
-            var s1:Number = sc[1][cx][cy]; if (s1 > maxS) maxS = s1;
-            var s2:Number = sc[2][cx][cy]; if (s2 > maxS) maxS = s2;
-            var s3:Number = sc[3][cx][cy]; if (s3 > maxS) maxS = s3;
-            if (maxS === 4 || maxS === 40 || maxS === 5 || maxS === 50) {
+            var s0:Number = sc[0][cx][cy];
+            var s1:Number = sc[1][cx][cy];
+            var s2:Number = sc[2][cx][cy];
+            var s3:Number = sc[3][cx][cy];
+            var maxS:Number = s0;
+            if (s1 > maxS) maxS = s1;
+            if (s2 > maxS) maxS = s2;
+            if (s3 > maxS) maxS = s3;
+            // FOUR/BLOCK_FOUR：VCF 候选
+            var isFour:Boolean = (maxS === 4 || maxS === 40);
+            // 双活三潜力：2+ 方向有 THREE → 落子即成双活三/四三
+            var threeCount:Number = 0;
+            if (s0 === 3) threeCount++;
+            if (s1 === 3) threeCount++;
+            if (s2 === 3) threeCount++;
+            if (s3 === 3) threeCount++;
+            if (isFour || threeCount >= 2) {
                 candidates.push(cx, cy);
-                if (candidates.length >= 6) break; // 最多 3 个候选 (3*2=6)
+                if (candidates.length >= 8) break; // 最多 4 个候选 (4*2=8)
             }
         }
         if (candidates.length === 0) return false;
@@ -863,8 +921,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 win = (_board.getWinner() === role);
             } else {
                 var savedBudget:Number = _tssBudget;
-                _tssBudget = 15;
-                win = probeThreatWin(role, -role, 4);
+                _tssBudget = 20;
+                win = probeThreatWin(role, -role, 5);
                 _tssBudget = savedBudget;
             }
             _eval.undo(mx, my);
@@ -876,6 +934,119 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             }
         }
         return false;
+    }
+
+    // Solver 风格预搜索：只处理确定性战术走法
+    // P1 成五 > P2 防五 > P3 己方活四 > P4a 防对手活四 > P4b 防对手双三
+    private function _preSearchTactical(role:Number):Object {
+        var opp:Number = -role;
+        var sz:Number = _eval.size;
+        var brd:Array = _eval.board;
+        var mri:Number = role === 1 ? 0 : 1;
+        var ori:Number = opp === 1 ? 0 : 1;
+        var mySC:Array = _eval.shapeCache[mri];
+        var ms0:Array = mySC[0]; var ms1:Array = mySC[1];
+        var ms2:Array = mySC[2]; var ms3:Array = mySC[3];
+        var opSC:Array = _eval.shapeCache[ori];
+        var os0:Array = opSC[0]; var os1:Array = opSC[1];
+        var os2:Array = opSC[2]; var os3:Array = opSC[3];
+        var frontier:Array = _eval._frontierList;
+        var top:Number = _eval._frontierTop;
+
+        var opFiveCount:Number = 0;
+        var opFiveX:Number = -1; var opFiveY:Number = -1;
+        var myLiveFourX:Number = -1; var myLiveFourY:Number = -1;
+        var opLiveFourCount:Number = 0;
+        var opLiveFourX:Number = -1; var opLiveFourY:Number = -1;
+        var opComboCount:Number = 0;
+        var opComboX:Number = -1; var opComboY:Number = -1;
+
+        for (var fi:Number = 0; fi < top; fi++) {
+            var fp:Number = frontier[fi];
+            var cx:Number = (fp / sz) | 0;
+            var cy:Number = fp - cx * sz;
+            if (brd[cx + 1][cy + 1] !== 0) continue;
+
+            // P1: 己方成五 → 最高优先级，直接返回
+            if (ms0[cx][cy] === 5 || ms0[cx][cy] === 50 ||
+                ms1[cx][cy] === 5 || ms1[cx][cy] === 50 ||
+                ms2[cx][cy] === 5 || ms2[cx][cy] === 50 ||
+                ms3[cx][cy] === 5 || ms3[cx][cy] === 50) {
+                return {x: cx, y: cy, score: GobangShape.FIVE_SCORE, tag: "P1_myFive"};
+            }
+
+            // P2: 对手成五 → 计数所有成五点
+            if (os0[cx][cy] === 5 || os0[cx][cy] === 50 ||
+                os1[cx][cy] === 5 || os1[cx][cy] === 50 ||
+                os2[cx][cy] === 5 || os2[cx][cy] === 50 ||
+                os3[cx][cy] === 5 || os3[cx][cy] === 50) {
+                opFiveCount++;
+                if (opFiveCount === 1) { opFiveX = cx; opFiveY = cy; }
+                if (opFiveCount >= 2) break;
+            }
+
+            // P3: 己方活四
+            if (myLiveFourX < 0) {
+                if (ms0[cx][cy] === 4 || ms1[cx][cy] === 4 ||
+                    ms2[cx][cy] === 4 || ms3[cx][cy] === 4) {
+                    myLiveFourX = cx; myLiveFourY = cy;
+                }
+            }
+
+            // P4a: 对手活四（shape=4，两个成五点，无法防守）
+            if (opLiveFourCount < 2) {
+                if (os0[cx][cy] === 4 || os1[cx][cy] === 4 ||
+                    os2[cx][cy] === 4 || os3[cx][cy] === 4) {
+                    opLiveFourCount++;
+                    if (opLiveFourCount === 1) { opLiveFourX = cx; opLiveFourY = cy; }
+                }
+            }
+
+            // P4b: 对手复合威胁点检测
+            // 双冲四(FOUR_FOUR): 2+ 方向 BLOCK_FOUR(40) → 不可防
+            // 冲四活三(FOUR_THREE): BLOCK_FOUR(40) + THREE(3) → 不可防
+            // 双活三(THREE_THREE): 2+ 方向 THREE(3) → 近乎不可防
+            if (opComboCount < 2) {
+                var obc:Number = 0; // BLOCK_FOUR count
+                var otc:Number = 0; // THREE count
+                if (os0[cx][cy] === 40) obc++; else if (os0[cx][cy] === 3) otc++;
+                if (os1[cx][cy] === 40) obc++; else if (os1[cx][cy] === 3) otc++;
+                if (os2[cx][cy] === 40) obc++; else if (os2[cx][cy] === 3) otc++;
+                if (os3[cx][cy] === 40) obc++; else if (os3[cx][cy] === 3) otc++;
+                // 双冲四 / 冲四活三 / 双活三 — 任一组合即为致命复合威胁
+                if (obc >= 2 || (obc >= 1 && otc >= 1) || otc >= 2) {
+                    opComboCount++;
+                    if (opComboCount === 1) { opComboX = cx; opComboY = cy; }
+                }
+            }
+        }
+
+        // P2: 防五
+        if (opFiveCount === 1) {
+            return {x: opFiveX, y: opFiveY, score: GobangShape.FIVE_SCORE - 1, tag: "P2_blockFive"};
+        }
+        if (opFiveCount >= 2) {
+            return null;
+        }
+
+        // P3: 己方活四
+        if (myLiveFourX >= 0) {
+            return {x: myLiveFourX, y: myLiveFourY, score: GobangShape.FIVE_SCORE - 2, tag: "P3_myFour"};
+        }
+
+        // P4a: 防对手活四
+        if (opLiveFourCount >= 1) {
+            return {x: opLiveFourX, y: opLiveFourY, score: GobangShape.FIVE_SCORE - 3,
+                    tag: "P4a_blockFour(" + opLiveFourCount + ")"};
+        }
+
+        // P4_combo: 防复合威胁
+        if (opComboCount >= 1) {
+            return {x: opComboX, y: opComboY, score: GobangShape.FIVE_SCORE - 4,
+                    tag: "P4combo(" + opComboCount + ")"};
+        }
+
+        return null;
     }
 
     private function probeLeafTSS(role:Number, cDepth:Number, baseScore:Number):Number {
@@ -1153,20 +1324,35 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _asyncBridgeBaseDepth = 0;
         _resetKillers();
         _resetHistory();
+
+        // 预搜索：确定性战术走法直接完成
+        var tactical:Object = _preSearchTactical(role);
+        if (tactical !== null) {
+            _asyncBestResult = {x: tactical.x, y: tactical.y, score: tactical.score,
+                                phaseLabel: tactical.tag};
+            _asyncDone = true;
+        }
     }
 
     // 每帧调用，返回 {done, phase, x, y, score, nodes, phaseLabel, rootIdx, rootTotal}
     public function step(frameBudgetMs:Number):Object {
         if (frameBudgetMs === undefined) frameBudgetMs = 40;
         if (_asyncDone) {
+            var doneLabel:String = (_asyncBestResult.phaseLabel !== undefined)
+                ? _asyncBestResult.phaseLabel : "done";
             return {done: true, phase: 4, x: _asyncBestResult.x, y: _asyncBestResult.y,
-                    score: _asyncBestResult.score, nodes: _asyncTotalNodes, phaseLabel: "done",
+                    score: _asyncBestResult.score, nodes: _asyncTotalNodes, phaseLabel: doneLabel,
                     rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
         }
 
         if (_asyncPhase === 1) {
-            if (_asyncMoves === null) {
-                if (!initAsyncRootSearch(_asyncMaxDepth + 4, true, false)) {
+            // VCT 时间上限：最多消耗 24ms（约 3 帧），把预算留给常规搜索
+            if (getTimer() - _asyncVCTStartTime > 24) {
+                _asyncPhase = 2;
+                _asyncMoves = null;
+            }
+            if (_asyncPhase === 1 && _asyncMoves === null) {
+                if (!initAsyncRootSearch(_asyncMaxDepth + 2, true, false)) {
                     _asyncPhase = 2;
                     _asyncMoves = null;
                 }
@@ -1202,6 +1388,10 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             var curD:Number = _asyncCurrentDepth;
             var mr:Object = stepAsyncRootSearch(frameBudgetMs);
             _asyncTotalNodes += _nodeCount;
+            if (mr.done) {
+                trace("[DEPTH] d=" + curD + " done, lastCompleted=" + _asyncLastCompletedDepth
+                    + " maxDepth=" + _asyncMaxDepth + " best=(" + _asyncBestResult.x + "," + _asyncBestResult.y + ")");
+            }
 
             if (mr.done && _asyncBestResult.x >= 0 && _asyncBestResult.score >= GobangShape.FIVE_SCORE) {
                 _asyncDone = true;
