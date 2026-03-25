@@ -28,6 +28,10 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     private static var BRIDGE_PROBE_DEF_WEIGHT:Number = 3;
     private static var BRIDGE_PROBE_DEEP_MIN_BIAS:Number = 80;
     private static var BRIDGE_PROBE_DEEP_MAX_MOVES:Number = 2;
+    // TT bound type flags
+    private static var TT_EXACT:Number = 0;
+    private static var TT_LOWER:Number = 1;  // fail-high, 值是下界
+    private static var TT_UPPER:Number = 2;  // fail-low, 值是上界
     private var _board:GobangBoard;
     private var _eval:GobangEval;
     private var _cache:GobangCache;
@@ -43,6 +47,11 @@ class org.flashNight.hana.Gobang.GobangMinmax {
 
     // Killer move heuristic — 每深度2个槽位，存 flat index (x*15+y)
     private var _killers:Array;
+    // History Heuristic — beta 截断成功计数，flat index = x*15+y
+    private var _history:Array;
+    // VCF 探针首手记录
+    private var _vcfFirstX:Number;
+    private var _vcfFirstY:Number;
 
     // 异步搜索状态
     private var _asyncPhase:Number;
@@ -83,6 +92,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _nmS = 0; _nmX = -1; _nmY = -1;
         _killers = new Array(24);
         _resetKillers();
+        _history = new Array(225);
+        _resetHistory();
         _asyncPhase = 0;
         _asyncDone = true;
         _asyncTotalNodes = 0;
@@ -108,6 +119,12 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         var k:Array = _killers;
         var i:Number = 23;
         while (i >= 0) { k[i] = -1; i--; }
+    }
+
+    private function _resetHistory():Void {
+        var h:Array = _history;
+        var i:Number = 224;
+        while (i >= 0) { h[i] = 0; i--; }
     }
 
     private function normalizeDepth(depth:Number):Number {
@@ -301,6 +318,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _rootMoveIdx = 0;
         _rootMoveTotal = 0;
         _resetKillers();
+        _resetHistory();
 
         var best:Object = {x: -1, y: -1, score: _eval.evaluate(role), timedOut: false};
         var prefX:Number = -1;
@@ -350,15 +368,15 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     // 对手回复覆盖数重排序：走了这手后对手还剩多少 THREE+ 威胁方向
     // 覆盖更多威胁的走法排前面 — 解决"局部强手 vs 全局拆骨架"问题
     private function rerankByCoverage(moves:Array, role:Number, maxEval:Number):Void {
-        if (moves.length < 2 || _eval.history.length < 6) return;
+        if (moves.length < 3 || _eval.history.length < 6) return;
         var opp:Number = -role;
-        var sz:Number = _board.size;
-        // 先测量当前对手威胁基线（即使为 0 也继续——按己方新建威胁排序）
+        // 只对前 topN 个候选做 move/undo 统计（控制开销）
+        var topN:Number = 5;
+        if (topN > moves.length) topN = moves.length;
         var baseThreatCount:Number = countThreats(opp);
 
-        // 对每个候选计算覆盖得分
         var scores:Array = [];
-        for (var i:Number = 0; i < moves.length; i++) {
+        for (var i:Number = 0; i < topN; i++) {
             var mx:Number = moves[i][0];
             var my:Number = moves[i][1];
             _board.put(mx, my, role);
@@ -369,16 +387,15 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             var oppFours:Number = countFoursOrFives(opp);
             _eval.undo(mx, my);
             _board.undo();
-            // 覆盖数 = 防守优先（消灭威胁 ×300）+ 进攻（己方威胁 ×60）- 残留惩罚
             var eliminated:Number = baseThreatCount - remainThreats;
             var coverage:Number = eliminated * 300 + ownThreats * 60 - remainThreats * 150;
-            if (ownFours > 0) coverage += 1000000; // 己方活四必杀
-            if (oppFours > 0) coverage -= 500000;  // 对手仍有活四→极危险
+            if (ownFours > 0) coverage += 1000000;
+            if (oppFours > 0) coverage -= 500000;
             scores[i] = coverage;
         }
 
-        // 按覆盖数降序插入排序（稳定排序保持原有 eval-score 次序）
-        for (var j:Number = 1; j < moves.length; j++) {
+        // 只对前 topN 做稳定排序
+        for (var j:Number = 1; j < topN; j++) {
             var jScore:Number = scores[j];
             var jMove:Array = moves[j];
             var k:Number = j - 1;
@@ -810,20 +827,88 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         return true;
     }
 
+    // 非叶节点 VCF 探针：用 shapeCache 前置过滤，逐个测试 FOUR 级候选
+    private function probeVCFAtNode(role:Number):Boolean {
+        var sc:Array = role === 1 ? _eval.shapeCache[0] : _eval.shapeCache[1];
+        var brd:Array = _eval.board;
+        var sz:Number = _eval.size;
+        var frontier:Array = _eval._frontierList;
+        var top:Number = _eval._frontierTop;
+        var candidates:Array = [];
+        for (var fi:Number = 0; fi < top; fi++) {
+            var fp:Number = frontier[fi];
+            var cx:Number = (fp / sz) | 0;
+            var cy:Number = fp - cx * sz;
+            if (brd[cx + 1][cy + 1] !== 0) continue;
+            var maxS:Number = 0;
+            var s0:Number = sc[0][cx][cy]; if (s0 > maxS) maxS = s0;
+            var s1:Number = sc[1][cx][cy]; if (s1 > maxS) maxS = s1;
+            var s2:Number = sc[2][cx][cy]; if (s2 > maxS) maxS = s2;
+            var s3:Number = sc[3][cx][cy]; if (s3 > maxS) maxS = s3;
+            if (maxS === 4 || maxS === 40 || maxS === 5 || maxS === 50) {
+                candidates.push(cx, cy);
+                if (candidates.length >= 6) break; // 最多 3 个候选 (3*2=6)
+            }
+        }
+        if (candidates.length === 0) return false;
+
+        var cLen:Number = candidates.length;
+        for (var i:Number = 0; i < cLen; i += 2) {
+            var mx:Number = candidates[i];
+            var my:Number = candidates[i + 1];
+            _board.put(mx, my, role);
+            _eval.move(mx, my, role);
+            var win:Boolean = false;
+            if (_board.isGameOver()) {
+                win = (_board.getWinner() === role);
+            } else {
+                var savedBudget:Number = _tssBudget;
+                _tssBudget = 15;
+                win = probeThreatWin(role, -role, 4);
+                _tssBudget = savedBudget;
+            }
+            _eval.undo(mx, my);
+            _board.undo();
+            if (win && !_timedOut) {
+                _vcfFirstX = mx;
+                _vcfFirstY = my;
+                return true;
+            }
+        }
+        return false;
+    }
+
     private function probeLeafTSS(role:Number, cDepth:Number, baseScore:Number):Number {
-        // 轻量 TSS 只挂在真正的深搜叶子，避免拖慢浅层主链路
-        if (cDepth < 6 || _board.history.length < 10 || !hasLeafTSSHint()) {
+        // 轻量 TSS：cDepth>=4 即可触发（原为 6），浅层使用更小 budget
+        if (cDepth < 4 || _board.history.length < 10 || !hasLeafTSSHint()) {
             return baseScore;
         }
+        var cap:Number = (cDepth < 6) ? 20 : LEAF_TSS_NODE_CAP;
 
-        _tssBudget = LEAF_TSS_NODE_CAP;
+        _tssBudget = cap;
         if (probeThreatWin(role, role, LEAF_TSS_MAX_PLY)) {
-            return LEAF_TSS_SCORE - cDepth;
+            var winScore:Number = LEAF_TSS_SCORE - cDepth;
+            // 显式缓存：叶节点不走 negamax 的 TT 存储路径
+            // depth 用 ONLY_THREE_THRESHOLD（depthLeft 语义，常规搜索总可命中）
+            _cache.put(_board.hash(), {
+                depth: ONLY_THREE_THRESHOLD, value: winScore,
+                moveX: -1, moveY: -1,
+                role: role, onlyThree: false, onlyFour: false,
+                flag: TT_EXACT
+            });
+            return winScore;
         }
 
-        _tssBudget = LEAF_TSS_NODE_CAP;
+        _tssBudget = cap;
         if (probeThreatWin(-role, role, LEAF_TSS_MAX_PLY)) {
-            return cDepth - LEAF_TSS_SCORE;
+            var lossScore:Number = cDepth - LEAF_TSS_SCORE;
+            _cache.put(_board.hash(), {
+                depth: ONLY_THREE_THRESHOLD, value: lossScore,
+                moveX: -1, moveY: -1,
+                role: role, onlyThree: false, onlyFour: false,
+                flag: TT_EXACT
+            });
+            return lossScore;
         }
         return baseScore;
     }
@@ -889,7 +974,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             return;
         }
 
-        // 缓存查询
+        // 缓存查询（含 bound type 判断）
         var hash:String = _board.hash();
         var prev:Object = _cache.get(hash);
         if (prev !== null
@@ -897,14 +982,34 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 && prev.onlyThree === onlyThree
                 && prev.onlyFour === onlyFour
                 && prev.depth >= depthLeft) {
-            _nmS = prev.value; _nmX = prev.moveX; _nmY = prev.moveY;
-            return;
+            var ttFlag:Number = prev.flag;
+            var ttVal:Number = prev.value;
+            if (ttFlag === TT_EXACT
+                || (ttFlag === TT_LOWER && ttVal >= beta)
+                || (ttFlag === TT_UPPER && ttVal <= alpha)) {
+                _nmS = ttVal; _nmX = prev.moveX; _nmY = prev.moveY;
+                return;
+            }
+            // flag 不匹配：只用 TT move 做排序，不用 value
         }
 
         var useOnlyThree:Boolean = onlyThree || cDepth > ONLY_THREE_THRESHOLD;
         var moves:Array = _eval.getMoves(role, cDepth, useOnlyThree, onlyFour);
         if (!moves.length) {
             _nmS = _eval.evaluate(role); _nmX = -1; _nmY = -1;
+            return;
+        }
+        // 单候选快速路径：forced move 直接递归，跳过排序和循环开销
+        if (moves.length === 1) {
+            var fx:Number = moves[0][0];
+            var fy:Number = moves[0][1];
+            _board.put(fx, fy, role);
+            _eval.move(fx, fy, role);
+            negamax(-role, depthLeft - 1, cDepth + 1, -beta, -alpha, onlyThree, onlyFour);
+            _nmS = -_nmS;
+            _eval.undo(fx, fy);
+            _board.undo();
+            _nmX = fx; _nmY = fy;
             return;
         }
 
@@ -921,7 +1026,31 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 promoteMoveAt(moves, k0x, k0y, 1);
             }
         }
+        // History heuristic 排序：对 pos 2+ 的走法按历史截断成功次数降序
+        if (moves.length > 2) {
+            var hArr:Array = _history;
+            for (var si:Number = 3; si < moves.length; si++) {
+                var siMove:Array = moves[si];
+                var siKey:Number = hArr[siMove[0] * 15 + siMove[1]];
+                var sk:Number = si - 1;
+                while (sk >= 2 && hArr[moves[sk][0] * 15 + moves[sk][1]] < siKey) {
+                    moves[sk + 1] = moves[sk];
+                    sk--;
+                }
+                moves[sk + 1] = siMove;
+            }
+        }
+        // 非叶节点 VCF 探针：depthLeft>=3 且已深入 2 层以上才触发
+        if (depthLeft >= 3 && cDepth >= 2 && !_timedOut) {
+            if (probeVCFAtNode(role)) {
+                _nmS = LEAF_TSS_SCORE - cDepth;
+                _nmX = _vcfFirstX;
+                _nmY = _vcfFirstY;
+                return;
+            }
+        }
 
+        var origAlpha:Number = alpha;
         var bestScore:Number = -MAX;
         var bestX:Number = -1;
         var bestY:Number = -1;
@@ -943,10 +1072,18 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                     _board.undo();
                     continue;
                 }
-                // 浅搜超过 alpha → 需要全深度重搜（落入下方）
+                // 浅搜超过 alpha → 需要全深度重搜
             }
 
-            negamax(-role, depthLeft - 1, cDepth + 1, -beta, -alpha, onlyThree, onlyFour);
+            // ===== PVS: 非第一手用 zero-window 先探 =====
+            if (i > 0) {
+                negamax(-role, depthLeft - 1, cDepth + 1, -(alpha + 1), -alpha, onlyThree, onlyFour);
+                if (-_nmS > alpha && -_nmS < beta && !_timedOut) {
+                    negamax(-role, depthLeft - 1, cDepth + 1, -beta, -alpha, onlyThree, onlyFour);
+                }
+            } else {
+                negamax(-role, depthLeft - 1, cDepth + 1, -beta, -alpha, onlyThree, onlyFour);
+            }
             var currentValue:Number = -_nmS;
             _eval.undo(mx, my);
             _board.undo();
@@ -959,19 +1096,27 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             if (currentValue > alpha) alpha = currentValue;
             if (_timedOut || alpha >= beta || currentValue >= GobangShape.FIVE_SCORE) {
                 // 记录 killer move
-                if (alpha >= beta && !_timedOut && kBase < 24) {
-                    var flatK:Number = mx * 15 + my;
-                    if (_killers[kBase] !== flatK) {
-                        _killers[kBase + 1] = _killers[kBase];
-                        _killers[kBase] = flatK;
+                if (alpha >= beta && !_timedOut) {
+                    // killer move 更新
+                    if (kBase < 24) {
+                        var flatK:Number = mx * 15 + my;
+                        if (_killers[kBase] !== flatK) {
+                            _killers[kBase + 1] = _killers[kBase];
+                            _killers[kBase] = flatK;
+                        }
                     }
+                    // history heuristic 更新
+                    _history[mx * 15 + my] += depthLeft * depthLeft;
                 }
                 break;
             }
         }
 
-        // 缓存存储
+        // 缓存存储（含 bound type）
         if (!_timedOut && bestX >= 0 && (cDepth < ONLY_THREE_THRESHOLD || onlyThree || onlyFour)) {
+            var storeFlag:Number = TT_EXACT;
+            if (bestScore <= origAlpha) storeFlag = TT_UPPER;
+            else if (bestScore >= beta) storeFlag = TT_LOWER;
             _cache.put(hash, {
                 depth: depthLeft,
                 value: bestScore,
@@ -979,7 +1124,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 moveY: bestY,
                 role: role,
                 onlyThree: onlyThree,
-                onlyFour: onlyFour
+                onlyFour: onlyFour,
+                flag: storeFlag
             });
         }
 
@@ -1006,6 +1152,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _rootMoveTotal = 0;
         _asyncBridgeBaseDepth = 0;
         _resetKillers();
+        _resetHistory();
     }
 
     // 每帧调用，返回 {done, phase, x, y, score, nodes, phaseLabel, rootIdx, rootTotal}

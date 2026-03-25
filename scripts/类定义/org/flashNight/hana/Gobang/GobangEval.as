@@ -17,6 +17,25 @@ class org.flashNight.hana.Gobang.GobangEval {
     private var _undoMarks:Array;
     private var _undoMarkTop:Number;
 
+    // 中心偏向权重表（root 层 sortKey 用，避免 evaluate 对称抵消）
+    private static var _posWeight:Array;
+    private static var _posWeightReady:Boolean = false;
+    private static function _initPosWeight(sz:Number):Void {
+        if (_posWeightReady) return;
+        _posWeight = new Array(sz);
+        var center:Number = (sz - 1) >> 1;
+        for (var i:Number = 0; i < sz; i++) {
+            _posWeight[i] = new Array(sz);
+            for (var j:Number = 0; j < sz; j++) {
+                var dx:Number = i - center; if (dx < 0) dx = -dx;
+                var dy:Number = j - center; if (dy < 0) dy = -dy;
+                var dist:Number = dx > dy ? dx : dy;
+                _posWeight[i][j] = (center - dist) * 2;
+            }
+        }
+        _posWeightReady = true;
+    }
+
     // 候选前沿：只遍历当前活跃空位，避免 getMoves 全盘扫描
     private var _frontierCount:Array; // [flat] 邻近棋子数
     private var _frontierIndex:Array; // [flat] 在 _frontierList 中的位置，-1=不活跃
@@ -48,6 +67,7 @@ class org.flashNight.hana.Gobang.GobangEval {
         _totalWhite = 0;
         initDirtyMap(size);
         _initScoreLUT();
+        _initPosWeight(size);
 
         // 初始化 padded board
         board = [];
@@ -1018,7 +1038,8 @@ class org.flashNight.hana.Gobang.GobangEval {
             var sortKey:Number = attackScore + defendScore + major + threeBoost;
             if (isRoot && maxS < 4) {
                 sortKey += computeBridgePotential(i, j, role)
-                         + (computeBridgePotential(i, j, -role) >> 1);
+                         + (computeBridgePotential(i, j, -role) >> 1)
+                         + _posWeight[i][j];
             }
             var resultLen:Number = result.length;
             var tail:Array = resultLen > 0 ? result[resultLen - 1] : null;

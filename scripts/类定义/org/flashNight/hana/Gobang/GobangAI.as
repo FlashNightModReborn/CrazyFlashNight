@@ -23,6 +23,8 @@ class org.flashNight.hana.Gobang.GobangAI {
         [61,  4,  14, 90, true],
         [81,  8,  18, 100, true]
     ];
+    // 搜索分超过此阈值时跳过 refine（TSS/VCF 必胜 >= 2M，正常 eval < 100K）
+    private static var REFINE_SKIP_SCORE:Number = 1000000;
     private static var STRATEGIC_REFINE_MIN_HISTORY:Number = 10;
     private static var STRATEGIC_REFINE_MARGIN:Number = 48;
     private static var STRATEGIC_BRIDGE_MIN_SCORE:Number = 18;
@@ -218,6 +220,7 @@ class org.flashNight.hana.Gobang.GobangAI {
 
     private function _refineStrategicMove(params:Object, result:Object):Object {
         if (params === null || result === null || result.x < 0) return result;
+        if (result.score >= REFINE_SKIP_SCORE) return result;
         if (params.searchDepth > 6 || params.enableVCT || _board.history.length < STRATEGIC_REFINE_MIN_HISTORY) {
             return result;
         }
@@ -331,6 +334,7 @@ class org.flashNight.hana.Gobang.GobangAI {
 
     private function _refineThreatDefenseMove(params:Object, result:Object):Object {
         if (params === null || result === null || result.x < 0) return result;
+        if (result.score >= REFINE_SKIP_SCORE) return result;
         if (_board.history.length < THREAT_REFINE_MIN_HISTORY || params.searchDepth > 6) {
             return result;
         }

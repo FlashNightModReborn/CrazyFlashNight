@@ -28,7 +28,12 @@ class org.flashNight.hana.Gobang.GobangCache {
 
     public function put(key, value):Void {
         if (!GobangConfig.enableCache) return;
-        if (_data[key] !== undefined) {
+        var existing = _data[key];
+        if (existing !== undefined) {
+            // depth 优先：新旧都带 depth 时，浅搜不覆盖深搜结果
+            if (existing.depth !== undefined && value.depth !== undefined) {
+                if (value.depth < existing.depth) return;
+            }
             _data[key] = value;
             return;
         }
