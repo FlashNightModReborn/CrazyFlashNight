@@ -17,6 +17,7 @@ class org.flashNight.hana.Gobang.GobangAI {
 
     // 对局决策日志 — 每步 AI 决策的关键信息，gameOver 时输出
     private var _moveLog:Array;
+    private var _totalNodesAllMoves:Number;
 
     // 难度映射表 [difficulty 下限, searchDepth, pointsLimit, 最优走法概率(%), enableVCT]
     private static var DIFFICULTY_TABLE:Array = [
@@ -26,8 +27,10 @@ class org.flashNight.hana.Gobang.GobangAI {
         [61,  4,  14, 90, true],
         [81,  8,  18, 100, true]
     ];
-    // 搜索分超过此阈值时跳过 refine（TSS/VCF 必胜 >= 2M，正常 eval < 100K）
-    private static var REFINE_SKIP_SCORE:Number = 1000000;
+    // 搜索分超过此阈值时跳过 refine — refine 的静态惩罚系统不能推翻搜索的战术结论
+    // 50000 ≈ THREE_THREE_SCORE：双活三以上的战术优势由搜索树确认，不允许覆盖
+    // 覆盖范围：THREE_THREE(50K)、FOUR(100K)、TSS必杀(2M)、FIVE(10M)
+    private static var REFINE_SKIP_SCORE:Number = 50000;
     private static var STRATEGIC_REFINE_MIN_HISTORY:Number = 10;
     private static var STRATEGIC_REFINE_MARGIN:Number = 48;
     private static var STRATEGIC_BRIDGE_MIN_SCORE:Number = 18;
@@ -71,6 +74,7 @@ class org.flashNight.hana.Gobang.GobangAI {
         _openingMove = null;
         _asyncParams = null;
         _moveLog = [];
+        _totalNodesAllMoves = 0;
     }
 
     public function setDifficulty(d:Number):Void {
@@ -122,10 +126,12 @@ class org.flashNight.hana.Gobang.GobangAI {
             pl = 12;
         }
 
-        // 帧预算：常态 depth=6（看 3 步己方），pl=6 控制分支因子以确保 d=6 完成
+        // 帧预算：常态 depth=6，pl=8 平衡深度与宽度
+        // pl=6→8：实测搜索树极窄（avg ~30 nodes/d6），额外 2 候选不会超时
+        // 但能避免关键防守手被排除在候选外（回归：#22 pl=6 漏掉最优手）
         if (frameBudgetMs <= 8) {
             if (depth > 6) depth = 6;
-            if (pl > 6) pl = 6;
+            if (pl > 8) pl = 8;
             // 战术条件加深到 8
             if (urgentFourMoves !== null && urgentFourMoves.length > 0 && urgentFourMoves.length <= 4) {
                 depth = 8;
@@ -176,10 +182,15 @@ class org.flashNight.hana.Gobang.GobangAI {
         return {x: options[pickIdx][0], y: options[pickIdx][1]};
     }
 
+    // 难度降级安全阈值：score >= 此值的走法是战术强制手，不允许 drop
+    // 覆盖：PreSearch P1-P4（≥9999996）、TSS 必杀（2000000）、搜索确认必杀
+    private static var DROP_PROTECT_THRESHOLD:Number = 1000000;
+
     private function _applyDifficultyDrop(params:Object, bestX:Number, bestY:Number, score:Number):Object {
         var finalX:Number = bestX;
         var finalY:Number = bestY;
-        if (params.bestProb < 100 && score < GobangShape.FIVE_SCORE) {
+        var absScore:Number = score >= 0 ? score : -score;
+        if (params.bestProb < 100 && absScore < DROP_PROTECT_THRESHOLD) {
             var roll:Number = Math.random() * 100;
             if (roll >= params.bestProb) {
                 var alt:Object = _pickAlternativeMove(bestX, bestY);
@@ -507,6 +518,10 @@ class org.flashNight.hana.Gobang.GobangAI {
     public function undo():Boolean {
         if (_board.history.length === 0) return false;
         var last:Object = _board.history[_board.history.length - 1];
+        // 如果撤销的是 AI 的棋，同步回退日志和累积节点
+        if (last.role === _aiRole && _moveLog.length > 0) {
+            _moveLog.length = _moveLog.length - 1;
+        }
         _eval.undo(last.i, last.j);
         _board.undo();
         return true;
@@ -647,19 +662,35 @@ class org.flashNight.hana.Gobang.GobangAI {
         // 记录决策日志
         var moveNum:Number = _board.history.length;
         var threatBlocked:Boolean = _opponentHasUrgentThreat();
+        var cDepth:Number = _minmax.getCompletedDepth();
         var logEntry:String = "#" + moveNum
             + " (" + move.x + "," + move.y + ")"
             + " s=" + stepResult.score
+            + " d=" + cDepth
             + " " + stepResult.phaseLabel
             + " n=" + stepResult.nodes;
+        // top2
+        if (stepResult.secondX !== undefined && stepResult.secondX >= 0) {
+            logEntry += " top2=(" + stepResult.secondX + "," + stepResult.secondY
+                + "," + stepResult.secondScore + ")";
+        } else {
+            logEntry += " top2=none";
+        }
+        // 难度降级标注
+        if (move.x !== stepResult.x || move.y !== stepResult.y) {
+            logEntry += " [drop:(" + stepResult.x + "," + stepResult.y + ")]";
+        }
         if (threatBlocked) logEntry += " [refine_blocked]";
         _moveLog[_moveLog.length] = logEntry;
+        _totalNodesAllMoves += stepResult.nodes;
 
         _asyncParams = null;
 
         return {done: true, x: move.x, y: move.y, score: stepResult.score,
                 phaseLabel: stepResult.phaseLabel, nodes: stepResult.nodes,
-                rootIdx: stepResult.rootIdx, rootTotal: stepResult.rootTotal};
+                rootIdx: stepResult.rootIdx, rootTotal: stepResult.rootTotal,
+                secondX: stepResult.secondX, secondY: stepResult.secondY,
+                secondScore: stepResult.secondScore};
     }
 
     // 输出完整对局决策日志（在 gameOver 时调用）
@@ -668,6 +699,17 @@ class org.flashNight.hana.Gobang.GobangAI {
         for (var i:Number = 0; i < _moveLog.length; i++) {
             trace(_moveLog[i]);
         }
-        trace("=== End Log ===");
+        // 统计摘要
+        var st:Object = _minmax.getStats();
+        var avgNodes:Number = 0;
+        if (_moveLog.length > 0 && _totalNodesAllMoves > 0) {
+            avgNodes = Math.round(_totalNodesAllMoves / _moveLog.length);
+        }
+        trace("=== AI Stats ===");
+        trace("TT: hits=" + st.ttHits + " miss_flag=" + st.ttMissFlag + " shallow=" + st.ttShallow);
+        trace("VCF: probes=" + st.vcfProbes + " hits=" + st.vcfHits + " skipped=" + st.vcfSkipped);
+        trace("PreSearch: " + st.preSearch);
+        trace("Moves: " + _moveLog.length + ", Avg nodes: " + avgNodes);
+        trace("=== End Stats ===");
     }
 }

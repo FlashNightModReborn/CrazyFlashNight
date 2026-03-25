@@ -32,6 +32,13 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     private static var TT_EXACT:Number = 0;
     private static var TT_LOWER:Number = 1;  // fail-high, 值是下界
     private static var TT_UPPER:Number = 2;  // fail-low, 值是上界
+    // VCF 门控常量
+    private static var VCF_TIME_RATIO:Number = 0.6;
+    private static var VCF_BUDGET_BASE:Number = 8;
+    private static var VCF_BUDGET_PER_DEPTH:Number = 4;
+    private static var VCF_BUDGET_MAX:Number = 40;
+    private static var VCF_PLY_BASE:Number = 3;
+    private static var VCF_PLY_MAX:Number = 7;
     private var _board:GobangBoard;
     private var _eval:GobangEval;
     private var _cache:GobangCache;
@@ -78,6 +85,23 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     private var _asyncBridgeBaseDepth:Number;
     private var _tssBudget:Number;
 
+    // VCF 门控深度提示
+    private var _vcfDepthHint:Number;
+
+    // 统计计数器（整局累积，resetStats 重置）
+    private var _statTTHits:Number;
+    private var _statTTMissFlag:Number;
+    private var _statVCFProbes:Number;
+    private var _statVCFHits:Number;
+    private var _statVCFSkipped:Number;
+    private var _statPreSearch:Number;
+    private var _statTTShallow:Number;
+
+    // top2 追踪
+    private var _asyncSecondRawScore:Number;
+    private var _asyncSecondX:Number;
+    private var _asyncSecondY:Number;
+
     // 根层进度追踪（1-based）
     private var _rootMoveIdx:Number;
     private var _rootMoveTotal:Number;
@@ -111,8 +135,13 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _asyncWorkingBestY = -1;
         _asyncBridgeBaseDepth = 0;
         _tssBudget = 0;
+        _vcfDepthHint = 0;
+        _asyncSecondRawScore = -MAX;
+        _asyncSecondX = -1;
+        _asyncSecondY = -1;
         _rootMoveIdx = 0;
         _rootMoveTotal = 0;
+        resetStats();
     }
 
     private function _resetKillers():Void {
@@ -323,6 +352,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         // 预搜索：确定性战术走法直接返回，跳过搜索
         var tactical:Object = _preSearchTactical(role);
         if (tactical !== null) {
+            _statPreSearch++;
             return {x: tactical.x, y: tactical.y, score: tactical.score,
                     nodes: 0, timedOut: false, phaseLabel: tactical.tag};
         }
@@ -558,6 +588,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _asyncWorkingBestRawScore = -MAX;
         _asyncWorkingBestX = -1;
         _asyncWorkingBestY = -1;
+        _asyncSecondRawScore = -MAX;
+        _asyncSecondX = -1;
+        _asyncSecondY = -1;
         _rootMoveIdx = 0;
 
         if (!_asyncMoves.length) {
@@ -600,6 +633,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _asyncWorkingBestRawScore = -MAX;
         _asyncWorkingBestX = -1;
         _asyncWorkingBestY = -1;
+        _asyncSecondRawScore = -MAX;
+        _asyncSecondX = -1;
+        _asyncSecondY = -1;
         _rootMoveIdx = 0;
         _rootMoveTotal = _asyncMoves.length;
         return true;
@@ -650,10 +686,20 @@ class org.flashNight.hana.Gobang.GobangMinmax {
 
             if (!_timedOut) {
                 if (_asyncWorkingBestX < 0 || compareValue > _asyncWorkingBestScore) {
+                    // 旧 best 降为 second — 只在非 bridgeBias 阶段记录（bridgeprobe 排序含 bias，与 raw score 不可比）
+                    if (_asyncWorkingBestX >= 0 && !useBridgeBias) {
+                        _asyncSecondRawScore = _asyncWorkingBestRawScore;
+                        _asyncSecondX = _asyncWorkingBestX;
+                        _asyncSecondY = _asyncWorkingBestY;
+                    }
                     _asyncWorkingBestScore = compareValue;
                     _asyncWorkingBestRawScore = currentValue;
                     _asyncWorkingBestX = mx;
                     _asyncWorkingBestY = my;
+                } else if (!useBridgeBias && currentValue > _asyncSecondRawScore) {
+                    _asyncSecondRawScore = currentValue;
+                    _asyncSecondX = mx;
+                    _asyncSecondY = my;
                 }
                 if (!useBridgeBias && currentValue > _asyncAlpha) _asyncAlpha = currentValue;
                 if ((!useBridgeBias && _asyncAlpha >= _asyncBeta) || currentValue >= GobangShape.FIVE_SCORE) {
@@ -673,10 +719,23 @@ class org.flashNight.hana.Gobang.GobangMinmax {
 
         var finished:Boolean = (_asyncMoveIndex >= _asyncMoves.length);
         if (finished && _asyncWorkingBestX >= 0) {
+            // 当本轮无 second 但上轮有时，继承上轮的 second
+            // 典型场景：d=6 有多个候选产生 second，d=8 战术加深只 1 个候选
+            var secX:Number = _asyncSecondX;
+            var secY:Number = _asyncSecondY;
+            var secScore:Number = _asyncSecondRawScore;
+            if (secX < 0 && _asyncBestResult.secondX !== undefined && _asyncBestResult.secondX >= 0) {
+                secX = _asyncBestResult.secondX;
+                secY = _asyncBestResult.secondY;
+                secScore = _asyncBestResult.secondScore;
+            }
             _asyncBestResult = {
                 x: _asyncWorkingBestX,
                 y: _asyncWorkingBestY,
-                score: _asyncWorkingBestRawScore
+                score: _asyncWorkingBestRawScore,
+                secondX: secX,
+                secondY: secY,
+                secondScore: secScore
             };
             _asyncLastCompletedDepth = _asyncTargetDepth;
             _asyncMoves = null;
@@ -874,6 +933,31 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         return true;
     }
 
+    // VCF 门控：当前角色是否在 frontier 上有 THREE/FOUR/FIVE/BLOCK_FOUR/BLOCK_FIVE 级威胁
+    // 显式枚举，排除 BLOCK_THREE(30) 等非战术形状
+    private function _hasThreePlusThreat(role:Number):Boolean {
+        var sc:Array = role === 1 ? _eval.shapeCache[0] : _eval.shapeCache[1];
+        var brd:Array = _eval.board;
+        var sz:Number = _eval.size;
+        var frontier:Array = _eval._frontierList;
+        var top:Number = _eval._frontierTop;
+        for (var fi:Number = 0; fi < top; fi++) {
+            var fp:Number = frontier[fi];
+            var cx:Number = (fp / sz) | 0;
+            var cy:Number = fp - cx * sz;
+            if (brd[cx + 1][cy + 1] !== 0) continue;
+            var s0:Number = sc[0][cx][cy];
+            if (s0 === 3 || s0 === 4 || s0 === 5 || s0 === 40 || s0 === 50) return true;
+            var s1:Number = sc[1][cx][cy];
+            if (s1 === 3 || s1 === 4 || s1 === 5 || s1 === 40 || s1 === 50) return true;
+            var s2:Number = sc[2][cx][cy];
+            if (s2 === 3 || s2 === 4 || s2 === 5 || s2 === 40 || s2 === 50) return true;
+            var s3:Number = sc[3][cx][cy];
+            if (s3 === 3 || s3 === 4 || s3 === 5 || s3 === 40 || s3 === 50) return true;
+        }
+        return false;
+    }
+
     // 非叶节点 VCT 探针：检测 FOUR 级 VCF 和 多方向 THREE 的双活三/四三设置
     private function probeVCFAtNode(role:Number):Boolean {
         var sc:Array = role === 1 ? _eval.shapeCache[0] : _eval.shapeCache[1];
@@ -921,8 +1005,12 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 win = (_board.getWinner() === role);
             } else {
                 var savedBudget:Number = _tssBudget;
-                _tssBudget = 20;
-                win = probeThreatWin(role, -role, 5);
+                var vcfBudget:Number = VCF_BUDGET_BASE + _vcfDepthHint * VCF_BUDGET_PER_DEPTH;
+                if (vcfBudget > VCF_BUDGET_MAX) vcfBudget = VCF_BUDGET_MAX;
+                _tssBudget = vcfBudget;
+                var vcfPly:Number = VCF_PLY_BASE + (_vcfDepthHint >> 1);
+                if (vcfPly > VCF_PLY_MAX) vcfPly = VCF_PLY_MAX;
+                win = probeThreatWin(role, -role, vcfPly);
                 _tssBudget = savedBudget;
             }
             _eval.undo(mx, my);
@@ -1145,26 +1233,41 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             return;
         }
 
-        // 缓存查询（含 bound type 判断）
+        // 缓存查询（含 bound type 判断 + 迭代加深 depth slack）
         var hash:String = _board.hash();
+        var useOnlyThree:Boolean = onlyThree || cDepth > ONLY_THREE_THRESHOLD;
         var prev:Object = _cache.get(hash);
         if (prev !== null
                 && prev.role === role
-                && prev.onlyThree === onlyThree
-                && prev.onlyFour === onlyFour
-                && prev.depth >= depthLeft) {
+                && prev.onlyThree === useOnlyThree
+                && prev.onlyFour === onlyFour) {
             var ttFlag:Number = prev.flag;
             var ttVal:Number = prev.value;
-            if (ttFlag === TT_EXACT
-                || (ttFlag === TT_LOWER && ttVal >= beta)
-                || (ttFlag === TT_UPPER && ttVal <= alpha)) {
-                _nmS = ttVal; _nmX = prev.moveX; _nmY = prev.moveY;
-                return;
+            if (prev.depth >= depthLeft) {
+                // 完全匹配：depth 足够，可做截断
+                if (ttFlag === TT_EXACT
+                    || (ttFlag === TT_LOWER && ttVal >= beta)
+                    || (ttFlag === TT_UPPER && ttVal <= alpha)) {
+                    _statTTHits++;
+                    _nmS = ttVal; _nmX = prev.moveX; _nmY = prev.moveY;
+                    return;
+                }
+                // flag 不匹配：只用 TT move 做排序，不用 value
+                _statTTMissFlag++;
+            } else if (prev.depth >= depthLeft - 2) {
+                // 浅层匹配（迭代加深跨轮）：只用边界收窄 alpha-beta 窗口，不做截断
+                _statTTShallow++;
+                // LOWER 边界 = 下界估计：可以尝试收紧 alpha
+                if (ttFlag === TT_LOWER && ttVal > alpha) alpha = ttVal;
+                // UPPER 边界 = 上界估计：可以尝试收紧 beta
+                if (ttFlag === TT_UPPER && ttVal < beta) beta = ttVal;
+                if (alpha >= beta) {
+                    _statTTHits++;
+                    _nmS = ttVal; _nmX = prev.moveX; _nmY = prev.moveY;
+                    return;
+                }
             }
-            // flag 不匹配：只用 TT move 做排序，不用 value
         }
-
-        var useOnlyThree:Boolean = onlyThree || cDepth > ONLY_THREE_THRESHOLD;
         var moves:Array = _eval.getMoves(role, cDepth, useOnlyThree, onlyFour);
         if (!moves.length) {
             _nmS = _eval.evaluate(role); _nmX = -1; _nmY = -1;
@@ -1211,13 +1314,24 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 moves[sk + 1] = siMove;
             }
         }
-        // 非叶节点 VCF 探针：depthLeft>=3 且已深入 2 层以上才触发
+        // 非叶节点 VCT 探针：depthLeft>=3 且已深入 2 层以上，两级门控
         if (depthLeft >= 3 && cDepth >= 2 && !_timedOut) {
-            if (probeVCFAtNode(role)) {
-                _nmS = LEAF_TSS_SCORE - cDepth;
-                _nmX = _vcfFirstX;
-                _nmY = _vcfFirstY;
-                return;
+            // Gate 1: 时间门控 — 已用 >60% 预算则跳过，保留预算给主搜索
+            if (getTimer() - _startTime > _budgetMs * VCF_TIME_RATIO) {
+                _statVCFSkipped++;
+            // Gate 2: 威胁门控 — 当前角色无 THREE+ 级 shape 则无着力点
+            } else if (!_hasThreePlusThreat(role)) {
+                _statVCFSkipped++;
+            } else {
+                _statVCFProbes++;
+                _vcfDepthHint = depthLeft;
+                if (probeVCFAtNode(role)) {
+                    _statVCFHits++;
+                    _nmS = LEAF_TSS_SCORE - cDepth;
+                    _nmX = _vcfFirstX;
+                    _nmY = _vcfFirstY;
+                    return;
+                }
             }
         }
 
@@ -1284,7 +1398,10 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         }
 
         // 缓存存储（含 bound type）
-        if (!_timedOut && bestX >= 0 && (cDepth < ONLY_THREE_THRESHOLD || onlyThree || onlyFour)) {
+        // 存储 useOnlyThree（实际走法生成模式）而非参数 onlyThree
+        // 这保证 cDepth>6 强制 THREE-only 的条目不会被普通查询错误匹配
+        // 从而可以安全移除 cDepth < ONLY_THREE_THRESHOLD 守卫
+        if (!_timedOut && bestX >= 0) {
             var storeFlag:Number = TT_EXACT;
             if (bestScore <= origAlpha) storeFlag = TT_UPPER;
             else if (bestScore >= beta) storeFlag = TT_LOWER;
@@ -1294,7 +1411,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 moveX: bestX,
                 moveY: bestY,
                 role: role,
-                onlyThree: onlyThree,
+                onlyThree: useOnlyThree,
                 onlyFour: onlyFour,
                 flag: storeFlag
             });
@@ -1328,6 +1445,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         // 预搜索：确定性战术走法直接完成
         var tactical:Object = _preSearchTactical(role);
         if (tactical !== null) {
+            _statPreSearch++;
             _asyncBestResult = {x: tactical.x, y: tactical.y, score: tactical.score,
                                 phaseLabel: tactical.tag};
             _asyncDone = true;
@@ -1342,7 +1460,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 ? _asyncBestResult.phaseLabel : "done";
             return {done: true, phase: 4, x: _asyncBestResult.x, y: _asyncBestResult.y,
                     score: _asyncBestResult.score, nodes: _asyncTotalNodes, phaseLabel: doneLabel,
-                    rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+                    rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal,
+                    secondX: _asyncBestResult.secondX, secondY: _asyncBestResult.secondY,
+                    secondScore: _asyncBestResult.secondScore};
         }
 
         if (_asyncPhase === 1) {
@@ -1364,7 +1484,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                     _asyncDone = true;
                     return {done: true, phase: 1, x: _asyncBestResult.x, y: _asyncBestResult.y, score: _asyncBestResult.score,
                             nodes: _asyncTotalNodes, phaseLabel: "vct_win",
-                            rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+                            rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal,
+                            secondX: _asyncBestResult.secondX, secondY: _asyncBestResult.secondY,
+                            secondScore: _asyncBestResult.secondScore};
                 }
                 if (!vct.done) {
                     return {done: false, phase: 1, x: vct.x, y: vct.y, score: vct.score,
@@ -1397,7 +1519,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 _asyncDone = true;
                 return {done: true, phase: 2, x: _asyncBestResult.x, y: _asyncBestResult.y, score: _asyncBestResult.score,
                         nodes: _asyncTotalNodes, phaseLabel: "minmax_win",
-                        rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+                        rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal,
+                        secondX: _asyncBestResult.secondX, secondY: _asyncBestResult.secondY,
+                        secondScore: _asyncBestResult.secondScore};
             }
 
             if (!mr.done) {
@@ -1417,7 +1541,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 var label:String = (_asyncLastCompletedDepth > 0) ? ("minmax_d" + _asyncLastCompletedDepth) : "done";
                 return {done: true, phase: 2, x: _asyncBestResult.x, y: _asyncBestResult.y,
                         score: _asyncBestResult.score, nodes: _asyncTotalNodes, phaseLabel: label,
-                        rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+                        rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal,
+                        secondX: _asyncBestResult.secondX, secondY: _asyncBestResult.secondY,
+                        secondScore: _asyncBestResult.secondScore};
             }
 
             _asyncCurrentDepth = curD + 2;
@@ -1450,16 +1576,37 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             return {done: true, phase: 3, x: _asyncBestResult.x, y: _asyncBestResult.y,
                     score: _asyncBestResult.score, nodes: _asyncTotalNodes,
                     phaseLabel: "bridgeprobe_d" + _asyncTargetDepth,
-                    rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+                    rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal,
+                    secondX: _asyncBestResult.secondX, secondY: _asyncBestResult.secondY,
+                    secondScore: _asyncBestResult.secondScore};
         }
 
         _asyncDone = true;
         return {done: true, phase: 4, x: _asyncBestResult.x, y: _asyncBestResult.y,
                 score: _asyncBestResult.score, nodes: _asyncTotalNodes, phaseLabel: "done",
-                rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal};
+                rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal,
+                secondX: _asyncBestResult.secondX, secondY: _asyncBestResult.secondY,
+                secondScore: _asyncBestResult.secondScore};
     }
 
     public function isAsyncDone():Boolean {
         return _asyncDone;
+    }
+
+    public function resetStats():Void {
+        _statTTHits = 0; _statTTMissFlag = 0;
+        _statVCFProbes = 0; _statVCFHits = 0; _statVCFSkipped = 0;
+        _statPreSearch = 0; _statTTShallow = 0;
+    }
+
+    public function getStats():Object {
+        return {ttHits: _statTTHits, ttMissFlag: _statTTMissFlag,
+                vcfProbes: _statVCFProbes, vcfHits: _statVCFHits,
+                vcfSkipped: _statVCFSkipped, preSearch: _statPreSearch,
+                ttShallow: _statTTShallow};
+    }
+
+    public function getCompletedDepth():Number {
+        return _asyncLastCompletedDepth;
     }
 }

@@ -1160,6 +1160,71 @@ class org.flashNight.hana.Gobang.GobangTest {
         var rJ:Object = mmJ.search(-1, 4, false);
         assert(rJ.x === 6 && rJ.y === 5,
                "Minmax exact-game blocks row5 FOUR at (6,5): (" + rJ.x + "," + rJ.y + ")");
+
+        // Test: VCF 门控 — 验证门控机制生效（skipped > 0 证明代码路径被执行）
+        // 注：深搜过程中 AI 试探性走子可能创建 THREE+ 形状导致部分 probe 通过门控
+        // 因此只验证 skipped > 0（门控有效），不要求 probes === 0
+        var bNoThreat:GobangBoard = new GobangBoard(15, 1);
+        var evNoThreat:GobangEval = new GobangEval(15);
+        bNoThreat.put(7, 7, 1); evNoThreat.move(7, 7, 1);
+        bNoThreat.put(0, 0, -1); evNoThreat.move(0, 0, -1);
+        bNoThreat.put(7, 9, 1); evNoThreat.move(7, 9, 1);
+        bNoThreat.put(14, 14, -1); evNoThreat.move(14, 14, -1);
+        var mmNoThreat:GobangMinmax = new GobangMinmax(bNoThreat, evNoThreat);
+        mmNoThreat.search(-1, 6, false);
+        var stNoThreat:Object = mmNoThreat.getStats();
+        assert(stNoThreat.vcfSkipped > 0,
+               "VCF gate: skipped > 0 confirms gate reached: " + stNoThreat.vcfSkipped);
+        assert(stNoThreat.vcfSkipped > stNoThreat.vcfProbes,
+               "VCF gate: more skips than probes in sparse board: skip="
+               + stNoThreat.vcfSkipped + " probe=" + stNoThreat.vcfProbes);
+        trace("[INFO] VCF gate test: probes=" + stNoThreat.vcfProbes
+            + " skipped=" + stNoThreat.vcfSkipped);
+
+        // Test: TT 缓存在迭代加深中产生复用（回归测试：修复前全局 0 命中）
+        // 构造安静中盘局面（无 preSearch 触发），depth=6 迭代加深验证 TT 复用
+        // 双方各 5 子分散放置，不构成 THREE+ 连线，迫使完整搜索
+        var bTT:GobangBoard = new GobangBoard(15, 1);
+        var evTT:GobangEval = new GobangEval(15);
+        var ttSetup:Array = [
+            [7,7,1], [5,5,-1], [8,9,1], [9,5,-1], [5,8,1],
+            [10,7,-1], [9,9,1], [6,10,-1], [4,6,1], [8,4,-1]
+        ];
+        for (var tti:Number = 0; tti < ttSetup.length; tti++) {
+            bTT.put(ttSetup[tti][0], ttSetup[tti][1], ttSetup[tti][2]);
+            evTT.move(ttSetup[tti][0], ttSetup[tti][1], ttSetup[tti][2]);
+        }
+        var mmTT:GobangMinmax = new GobangMinmax(bTT, evTT);
+        mmTT.search(-1, 6, false);
+        var stTT:Object = mmTT.getStats();
+        // 验证 TT 被有效利用：完全命中 + 浅层收窄 + flag 不匹配 三者之和 > 0
+        var ttTotal:Number = stTT.ttHits + stTT.ttShallow + stTT.ttMissFlag;
+        assert(ttTotal > 0,
+               "TT iterative deepening: cache utilized (hits=" + stTT.ttHits
+               + " shallow=" + stTT.ttShallow + " missFlag=" + stTT.ttMissFlag + ")");
+        trace("[INFO] TT regression: hits=" + stTT.ttHits + " shallow=" + stTT.ttShallow
+            + " missFlag=" + stTT.ttMissFlag);
+
+        // Test: 对局复盘 — 开局 3 手后 AI（白方）的应对
+        // 黑: (7,8)(6,8)(5,8) 垂直三连 → AI 必须在纵向堵截
+        var bGame:GobangBoard = new GobangBoard(15, 1);
+        var evGame:GobangEval = new GobangEval(15);
+        bGame.put(7, 8, 1); evGame.move(7, 8, 1);   // 黑1
+        bGame.put(7, 7, -1); evGame.move(7, 7, -1);  // 白2 天元
+        bGame.put(6, 8, 1); evGame.move(6, 8, 1);    // 黑3
+        bGame.put(8, 7, -1); evGame.move(8, 7, -1);  // 白4（原局实际走法）
+        bGame.put(5, 8, 1); evGame.move(5, 8, 1);    // 黑5 → 垂直三连 (5,8)(6,8)(7,8)
+        // 白方应在 (4,8) 或 (8,8) 堵截纵向三连
+        var mmGame:GobangMinmax = new GobangMinmax(bGame, evGame);
+        var rGame:Object = mmGame.search(-1, 6, false);
+        var gx:Number = rGame.x;
+        var gy:Number = rGame.y;
+        // 合理防守：堵三连两端 (4,8)/(8,8) 或紧邻位
+        var onColumn8:Boolean = (gy === 8);
+        var nearThree:Boolean = (gx <= 5 || gx >= 7);
+        assert(onColumn8 && nearThree,
+               "Opening defense: blocks vertical three on col 8: ("
+               + gx + "," + gy + ")");
     }
 
     private static function testAI():Void {
@@ -1203,6 +1268,59 @@ class org.flashNight.hana.Gobang.GobangTest {
         // Test 8: setDifficulty works
         ai3.setDifficulty(100);
         assert(ai3.getDifficulty() === 100, "AI setDifficulty");
+
+        // Test 9: difficulty=30 不 drop 战术强制手（回归：P4combo 被 drop 导致输棋）
+        // 直接操控棋盘构造对手双三局面，白方四角分散不构成威胁
+        // difficulty=30 → bestProb=30%，旧代码 70% 概率 drop
+        var dropOK:Boolean = true;
+        for (var di:Number = 0; di < 10; di++) {
+            var aiDrop:GobangAI = new GobangAI(-1, 30);
+            var aiDropObj:Object = aiDrop;
+            var bDrop:GobangBoard = aiDropObj["_board"];
+            var eDrop:GobangEval = aiDropObj["_eval"];
+            // 黑棋水平 (7,6)(7,8) + 垂直 (6,7)(8,7)，(7,7)=双三交叉
+            // 白棋四角远离，不构成任何威胁
+            bDrop.put(7, 6, 1); eDrop.move(7, 6, 1);
+            bDrop.put(0, 0, -1); eDrop.move(0, 0, -1);
+            bDrop.put(7, 8, 1); eDrop.move(7, 8, 1);
+            bDrop.put(14, 0, -1); eDrop.move(14, 0, -1);
+            bDrop.put(6, 7, 1); eDrop.move(6, 7, 1);
+            bDrop.put(0, 14, -1); eDrop.move(0, 14, -1);
+            bDrop.put(8, 7, 1); eDrop.move(8, 7, 1);
+            // 7 子后 role=-1（白方），aiMove 走完整流程含 drop
+            var rDrop:Object = aiDrop.aiMove();
+            if (rDrop === null || rDrop.x !== 7 || rDrop.y !== 7) {
+                dropOK = false;
+                break;
+            }
+        }
+        assert(dropOK, "Difficulty drop: tactical forced move never dropped at d=30");
+
+        // Test 10: refine 不覆盖搜索确认的高分战术走法（回归：score=100825 被覆盖为 -231806）
+        // 构造白方有活四机会的局面，搜索应返回高分（>= 50000）
+        // refine 不应覆盖为低分走法
+        var aiRef:GobangAI = new GobangAI(-1, 100);
+        var aiRefObj:Object = aiRef;
+        var bRef:GobangBoard = aiRefObj["_board"];
+        var eRef:GobangEval = aiRefObj["_eval"];
+        // 白方 (7,7)(7,8)(7,9) 三连 + 黑方分散不构成紧急威胁
+        bRef.put(6, 5, 1); eRef.move(6, 5, 1);
+        bRef.put(7, 7, -1); eRef.move(7, 7, -1);
+        bRef.put(6, 6, 1); eRef.move(6, 6, 1);
+        bRef.put(7, 8, -1); eRef.move(7, 8, -1);
+        bRef.put(10, 3, 1); eRef.move(10, 3, 1);
+        bRef.put(7, 9, -1); eRef.move(7, 9, -1);
+        bRef.put(10, 10, 1); eRef.move(10, 10, 1);
+        bRef.put(8, 6, -1); eRef.move(8, 6, -1);
+        bRef.put(3, 10, 1); eRef.move(3, 10, 1);
+        bRef.put(6, 10, -1); eRef.move(6, 10, -1);
+        bRef.put(3, 3, 1); eRef.move(3, 3, 1);
+        // 白方 (7,7)(7,8)(7,9) 三连 + (8,6)(6,10) 支撑
+        // 搜索应找到扩展三连的高分手（如 (7,6) 或 (7,10)）
+        var rRef:Object = aiRef.aiMove();
+        assert(rRef !== null && rRef.score > 0,
+               "Refine skip: AI with three-in-row gets positive score: " + rRef.score
+               + " at (" + rRef.x + "," + rRef.y + ")");
     }
 
     private static function testAsyncAI():Void {
@@ -1246,6 +1364,18 @@ class org.flashNight.hana.Gobang.GobangTest {
         trace("[INFO] Async Minmax smoke(8ms): " + elapsed + "ms, steps=" + frames
               + ", phase=" + stepResult.phaseLabel + ", nodes=" + stepResult.nodes);
 
+        // Test 2b: getStats 返回有效计数器
+        var stats:Object = mm.getStats();
+        assert(stats.ttHits !== undefined, "getStats has ttHits");
+        assert(stats.vcfProbes !== undefined, "getStats has vcfProbes");
+        assert(stats.vcfSkipped !== undefined, "getStats has vcfSkipped");
+        assert(stats.preSearch !== undefined, "getStats has preSearch");
+        assert(stats.ttHits >= 0, "ttHits non-negative: " + stats.ttHits);
+        assert(stats.vcfProbes + stats.vcfSkipped >= 0, "VCF counters valid");
+        trace("[INFO] Stats: TT=" + stats.ttHits + "/" + stats.ttMissFlag
+            + " VCF=" + stats.vcfProbes + "/" + stats.vcfHits + "/" + stats.vcfSkipped
+            + " Pre=" + stats.preSearch);
+
         // Test 3: AI 低预算异步入口可完成，不依赖高帧预算
         var aiLow:GobangAI = new GobangAI(-1, 100);
         aiLow.playerMove(7, 7);
@@ -1268,6 +1398,13 @@ class org.flashNight.hana.Gobang.GobangTest {
                "Async AI low-budget uses minmax: " + stepResult.phaseLabel);
         trace("[INFO] Async AI smoke(8ms): " + elapsed + "ms, steps=" + frames
               + ", phase=" + stepResult.phaseLabel + ", nodes=" + stepResult.nodes);
+
+        // Test 3b: completedDepth 和 top2 字段透传（使用低预算搜索结果，非 preSearch 路径）
+        var aiLowObj:Object = aiLow;
+        var mmLow:GobangMinmax = aiLowObj["_minmax"];
+        assert(mmLow.getCompletedDepth() >= 2,
+               "completedDepth >= 2 after minmax: " + mmLow.getCompletedDepth());
+        assert(stepResult.secondX !== undefined, "step result has secondX field");
 
         // Test 4: 低预算下，强制手小分支局面允许保守加深到 depth=4
         var aiTac:GobangAI = new GobangAI(-1, 100);
