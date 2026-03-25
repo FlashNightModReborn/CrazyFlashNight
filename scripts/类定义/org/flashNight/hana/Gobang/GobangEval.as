@@ -344,17 +344,17 @@ class org.flashNight.hana.Gobang.GobangEval {
         var a:Array = new Array(51);
         var i:Number = 50;
         while (i >= 0) { a[i] = 0; i--; }
-        a[2] = 10;       // TWO → ONE_SCORE
-        a[3] = 100;      // THREE → TWO_SCORE
-        a[4] = 1000;     // FOUR → THREE_SCORE
-        a[5] = 100000;   // FIVE → FOUR_SCORE
-        a[22] = 20;      // TWO_TWO
-        a[30] = 15;      // BLOCK_THREE → BLOCK_TWO_SCORE
-        a[33] = 15000;   // THREE_THREE — 双活三近乎必杀
-        a[40] = 150;     // BLOCK_FOUR → BLOCK_THREE_SCORE
-        a[43] = 50000;   // FOUR_THREE — 无法防御的必杀
-        a[44] = 50000;   // FOUR_FOUR — 无法防御的必杀
-        a[50] = 1500;    // BLOCK_FIVE → BLOCK_FOUR_SCORE
+        a[2] = 15;       // TWO（was 10）— 略增早期空间控制权重
+        a[3] = 200;      // THREE（was 100）— 活三威胁翻倍，减少 horizon deflation
+        a[4] = 1000;     // FOUR — 不变
+        a[5] = 100000;   // FIVE — 不变
+        a[22] = 80;      // TWO_TWO（was 20）— 交叉二连是双三前驱，大幅提升
+        a[30] = 60;      // BLOCK_THREE（was 15）— 单调性: 必须 > TWO×2=30
+        a[33] = 15000;   // THREE_THREE — 不变，双活三近乎必杀
+        a[40] = 450;     // BLOCK_FOUR（was 150）— 单调性: 必须 > THREE×2=400
+        a[43] = 50000;   // FOUR_THREE — 不变，无法防御的必杀
+        a[44] = 50000;   // FOUR_FOUR — 不变，无法防御的必杀
+        a[50] = 100000;  // BLOCK_FIVE（was 1500）— 胜着就是胜着
         _scoreLUT = a;
     }
 

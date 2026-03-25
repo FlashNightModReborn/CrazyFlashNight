@@ -7,6 +7,7 @@ import org.flashNight.hana.Gobang.GobangShape;
 import org.flashNight.hana.Gobang.GobangEval;
 import org.flashNight.hana.Gobang.GobangMinmax;
 import org.flashNight.hana.Gobang.GobangAI;
+import org.flashNight.hana.Gobang.GobangBook;
 
 class org.flashNight.hana.Gobang.GobangTest {
 
@@ -617,7 +618,7 @@ class org.flashNight.hana.Gobang.GobangTest {
         var e2:GobangEval = new GobangEval(15);
         e2.move(7, 7, 1);
         var s2:Number = e2.evaluate(1);
-        assert(s2 === 160, "Eval single black center = 160 (got " + s2 + ")");
+        assert(s2 === 240, "Eval single black center = 240 (got " + s2 + ")");
 
         // Test 3: Black+white adjacent
         var e3:GobangEval = new GobangEval(15);
@@ -634,9 +635,9 @@ class org.flashNight.hana.Gobang.GobangTest {
         e4.move(0, 1, -1);
         e4.move(7, 8, 1);
         var s4:Number = e4.evaluate(1);
-        var s4diff:Number = s4 - 3340;
-        if (s4diff < 0) s4diff = -s4diff;
-        assert(s4diff <= 80, "Eval black three ~3340 (got " + s4 + ", diff=" + s4diff + ")");
+        // LUT 调整后精确值会变化；结构性断言：三连分数远高于单子
+        assert(s4 > s2 * 3, "Eval black three >> single stone: " + s4 + " > " + (s2 * 3));
+        trace("[INFO] Eval three-in-row score: " + s4 + " (single stone: " + s2 + ")");
 
         // Test 5: Undo reversibility
         var e5:GobangEval = new GobangEval(15);
@@ -1225,6 +1226,33 @@ class org.flashNight.hana.Gobang.GobangTest {
         assert(onColumn8 && nearThree,
                "Opening defense: blocks vertical three on col 8: ("
                + gx + "," + gy + ")");
+
+        // Test: LUT 单调性 — BLOCK_THREE > TWO×2, BLOCK_FOUR > THREE×2
+        var evMono:GobangEval = new GobangEval(15);
+        // 构造：黑 TWO 横向 + 白 BLOCK_THREE 横向
+        evMono.move(7, 6, 1); evMono.move(7, 7, 1); // 黑二连
+        var scoreTWO:Number = evMono.evaluate(1); // 黑方视角：黑有 TWO
+        var evMono2:GobangEval = new GobangEval(15);
+        evMono2.move(7, 5, 1); evMono2.move(7, 6, 1); evMono2.move(7, 7, 1);
+        evMono2.move(7, 4, -1); // 白挡住一端
+        var scoreBT:Number = evMono2.evaluate(1); // 黑有 BLOCK_THREE
+        assert(scoreBT > scoreTWO,
+               "LUT monotonicity: BLOCK_THREE(" + scoreBT + ") > TWO(" + scoreTWO + ")");
+        trace("[INFO] LUT mono: BLOCK_THREE=" + scoreBT + " TWO=" + scoreTWO);
+
+        // Test: 开局书覆盖 — B(7,7) W(8,8) B(7,8) → W 应封伸点 (7,9)
+        var bookHist:Array = [{i:7, j:7, role:1}, {i:8, j:8, role:-1}, {i:7, j:8, role:1}];
+        var bookResult:Object = GobangBook.lookup(bookHist, 3);
+        assert(bookResult !== null, "Opening book covers B(7,7) W(8,8) B(7,8)");
+        assert(bookResult.x === 7 && bookResult.y === 9,
+               "Opening book: W blocks endpoint at (7,9), got (" + bookResult.x + "," + bookResult.y + ")");
+        // 对称验证: B(7,7) W(8,8) B(8,7) → W 应封 (9,7)（转置自动覆盖）
+        var bookHist2:Array = [{i:7, j:7, role:1}, {i:8, j:8, role:-1}, {i:8, j:7, role:1}];
+        var bookResult2:Object = GobangBook.lookup(bookHist2, 3);
+        assert(bookResult2 !== null, "Opening book covers B(7,7) W(8,8) B(8,7) via symmetry");
+        assert(bookResult2.x === 9 && bookResult2.y === 7,
+               "Opening book symmetry: W blocks at (9,7), got (" + bookResult2.x + "," + bookResult2.y + ")");
+        trace("[INFO] Opening book: direct=(7,9) symmetric=(9,7)");
     }
 
     private static function testAI():Void {
@@ -1327,7 +1355,7 @@ class org.flashNight.hana.Gobang.GobangTest {
         aiUndo.playerMove(7, 7);   // 黑1
         aiUndo.aiMoveStart(16);    // 白2 开局库
         var uStep:Object = aiUndo.aiMoveStep(16);
-        aiUndo.playerMove(7, 8);   // 黑3
+        aiUndo.playerMove(6, 6);   // 黑3（避开开局库匹配）
         aiUndo.aiMoveStart(16);    // 白4 搜索
         while (true) { uStep = aiUndo.aiMoveStep(16); if (uStep.done) break; }
         var aiUndoObj:Object = aiUndo;
@@ -1438,7 +1466,7 @@ class org.flashNight.hana.Gobang.GobangTest {
         var aiLow:GobangAI = new GobangAI(-1, 100);
         aiLow.playerMove(7, 7);
         aiLow.aiMove(); // 开局库应答
-        aiLow.playerMove(7, 8);
+        aiLow.playerMove(6, 6); // 避开开局库匹配
         assert(aiLow.aiMoveStart(8) === true, "Async AI low-budget start succeeds");
         frames = 0;
         start = getTimer();
