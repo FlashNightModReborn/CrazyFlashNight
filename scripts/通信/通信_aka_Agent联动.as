@@ -98,6 +98,7 @@ _root.agent.轮询同步状态 = function():Void {
                 _root.最上层发布文字提示("已接收终端任务数据！");
             },
             function():Void {
+                r.last_task_publish_version = fileVer;
                 _root.最上层发布文字提示("任务数据更新失败！");
             }
         );
