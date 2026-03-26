@@ -21,12 +21,13 @@ class org.flashNight.hana.Gobang.GobangAI {
     private var _totalNodesAllMoves:Number;
 
     // 难度映射表 [difficulty 下限, searchDepth, pointsLimit, 最优走法概率(%), enableVCT]
+    // 2026-03-26: 一维化后节点吞吐提升，d=8 每手仅 ~50 nodes，提升高难度档深度
     private static var DIFFICULTY_TABLE:Array = [
         [0,   2,  5,  30, false],
         [21,  2,  8,  50, false],
-        [41,  2,  12, 70, false],
-        [61,  4,  14, 90, true],
-        [81,  8,  18, 100, true]
+        [41,  4,  12, 70, false],
+        [61,  6,  16, 90, true],
+        [81,  10, 20, 100, true]
     ];
     // 搜索分超过此阈值时跳过 refine — refine 的静态惩罚系统不能推翻搜索的战术结论
     // 50000 ≈ THREE_THREE_SCORE：双活三以上的战术优势由搜索树确认，不允许覆盖
@@ -128,31 +129,29 @@ class org.flashNight.hana.Gobang.GobangAI {
             pl = 12;
         }
 
-        // 帧预算：常态 depth=6，pl=8 平衡深度与宽度
-        // pl=6→8：实测搜索树极窄（avg ~30 nodes/d6），额外 2 候选不会超时
-        // 但能避免关键防守手被排除在候选外（回归：#22 pl=6 漏掉最优手）
+        // 帧预算动态深度（2026-03-26 一维化后实测：d=8 每手 ~50 nodes，8ms 完全够用）
         if (frameBudgetMs <= 8) {
-            if (depth > 6) depth = 6;
-            if (pl > 8) pl = 8;
-            // 战术条件加深到 8
+            if (depth > 8) depth = 8;
+            if (pl > 10) pl = 10;
+            // 战术条件加深到 10
             if (urgentFourMoves !== null && urgentFourMoves.length > 0 && urgentFourMoves.length <= 4) {
-                depth = 8;
-                if (pl > 4) pl = 4;
+                depth = 10;
+                if (pl > 6) pl = 6;
                 if (pieces >= 8) enableVCT = true;
             } else if (urgentThreeMoves !== null && urgentThreeMoves.length > 0 && urgentThreeMoves.length <= 6) {
-                depth = 8;
-                if (pl > 4) pl = 4;
+                depth = 10;
+                if (pl > 6) pl = 6;
             }
         } else if (frameBudgetMs <= 16) {
-            if (depth > 6) depth = 6;
-            if (pl > 10) pl = 10;
+            if (depth > 8) depth = 8;
+            if (pl > 12) pl = 12;
             if (urgentFourMoves !== null && urgentFourMoves.length > 0 && urgentFourMoves.length <= 6) {
-                depth = 8;
-                if (pl > 4) pl = 4;
+                depth = 10;
+                if (pl > 6) pl = 6;
                 if (pieces >= 8) enableVCT = true;
             } else if (urgentThreeMoves !== null && urgentThreeMoves.length > 0 && urgentThreeMoves.length <= 8) {
-                depth = 6;
-                if (pl > 6) pl = 6;
+                depth = 8;
+                if (pl > 8) pl = 8;
             }
         }
 
@@ -540,6 +539,10 @@ class org.flashNight.hana.Gobang.GobangAI {
     public function getBoard():Array {
         return _board.board;
     }
+
+    public function getBoardRef():GobangBoard { return _board; }
+    public function getEvalRef():GobangEval { return _eval; }
+    public function getMinmaxRef():GobangMinmax { return _minmax; }
 
     public function getHistory():Array {
         return _board.history;

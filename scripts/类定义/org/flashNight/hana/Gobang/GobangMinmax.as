@@ -33,7 +33,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     private static var TT_LOWER:Number = 1;  // fail-high, 值是下界
     private static var TT_UPPER:Number = 2;  // fail-low, 值是上界
     // VCF 门控常量
-    private static var VCF_TIME_RATIO:Number = 0.6;
+    private static var VCF_TIME_RATIO:Number = 0.8; // 2026-03-26: 0.6→0.8，一维化后每节点更快，给VCF更多时间窗
     private static var VCF_BUDGET_BASE:Number = 8;
     private static var VCF_BUDGET_PER_DEPTH:Number = 4;
     private static var VCF_BUDGET_MAX:Number = 40;

@@ -5,7 +5,19 @@ const handleEvalTask = require('../controllers/evalTask');
 const handleRegexTask = require('../controllers/regexTask');
 const handleComputationTask = require('../controllers/computationTask');
 const handleAudioTask = require('../controllers/audioTask');
+const { handleGomokuTask } = require('../controllers/gomokuTask');
 
+// 统一注入 callId：确保 success/error 路径都回传 callId
+function wrapResponse(resultString, parsedMessage) {
+    if (parsedMessage && parsedMessage.callId !== undefined) {
+        try {
+            const obj = JSON.parse(resultString);
+            obj.callId = parsedMessage.callId;
+            return JSON.stringify(obj);
+        } catch (e) { /* keep original */ }
+    }
+    return resultString;
+}
 
 const policyResponse = '<cross-domain-policy><allow-access-from domain="*" to-ports="*" /></cross-domain-policy>\0';
 
@@ -82,12 +94,32 @@ class SocketServer {
                         // Not JSON or not console_result, proceed normally
                     }
 
-                    // Process message
-                    const result = this.processSocketMessage(message);
+                    // Process message (sync or async)
+                    let parsedMsg = null;
+                    try { parsedMsg = JSON.parse(message); } catch (e) { /* handled in processSocketMessage */ }
 
-                    // Send result back to AS2 client, append null terminator
-                    socket.write(result + '\0');
-                    logger.info('Sent response to AS2 client: ' + result);
+                    const resultOrPromise = this.processSocketMessage(message);
+
+                    if (resultOrPromise && typeof resultOrPromise.then === 'function') {
+                        // Async task (e.g. gomoku_eval)
+                        resultOrPromise
+                            .then(r => {
+                                const wrapped = wrapResponse(r, parsedMsg);
+                                socket.write(wrapped + '\0');
+                                logger.info('Sent async response to AS2 client: ' + wrapped);
+                            })
+                            .catch(err => {
+                                const errResp = JSON.stringify({ success: false, error: err.message });
+                                const wrapped = wrapResponse(errResp, parsedMsg);
+                                socket.write(wrapped + '\0');
+                                logger.error('Async task error: ' + err.message);
+                            });
+                    } else if (resultOrPromise) {
+                        // Sync task
+                        const wrapped = wrapResponse(resultOrPromise, parsedMsg);
+                        socket.write(wrapped + '\0');
+                        logger.info('Sent response to AS2 client: ' + wrapped);
+                    }
                 });
             });
 
@@ -146,6 +178,11 @@ class SocketServer {
                 return handleComputationTask(payload, extra);
             case 'audio':
                 return handleAudioTask(payload);
+            case 'gomoku_eval':
+                // 返回 Promise，由上层 async 路径处理
+                return handleGomokuTask(payload).then(result =>
+                    JSON.stringify({ success: true, task: 'gomoku_eval', result: result })
+                );
             default:
                 return JSON.stringify({ success: false, error: 'Unknown task type' });
         }        

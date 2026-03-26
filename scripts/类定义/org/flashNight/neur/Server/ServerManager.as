@@ -34,6 +34,11 @@ class org.flashNight.neur.Server.ServerManager {
     // JSON parser instance
     private var jsonParser:FastJSON;
 
+    // Callback 路由（用于异步任务结果分发）
+    private var _callIdCounter:Number;
+    private var _pendingCallbacks:Object;  // {String(callId): {cb:Function, frame:Number}}
+    private static var CALLBACK_TIMEOUT_FRAMES:Number = 600; // 20秒 @30fps
+
     // 构造函数
     public function ServerManager() {
         if (instance != null) {
@@ -56,6 +61,10 @@ class org.flashNight.neur.Server.ServerManager {
 
         // Initialize JSON parser
         jsonParser = new FastJSON(); // 传入 true 以启用宽容模式
+
+        // Callback 路由初始化
+        _callIdCounter = 0;
+        _pendingCallbacks = {};
     }
 
     // 获取单例实例
@@ -262,6 +271,17 @@ class org.flashNight.neur.Server.ServerManager {
         if (!isSending && messageBuffer.length > 0 && currentPort != null && !hasSentThisFrame) {
             sendMessageBuffer();
         }
+
+        // 每 60 帧扫描一次超时的 pending callback（~2秒@30fps）
+        if (currentFrame % 60 === 0) {
+            for (var k:String in _pendingCallbacks) {
+                var e:Object = _pendingCallbacks[k];
+                if (currentFrame - e.frame > CALLBACK_TIMEOUT_FRAMES) {
+                    delete _pendingCallbacks[k];
+                    e.cb({success: false, error: "callback timeout"});
+                }
+            }
+        }
     }
 
     // 立即发送单条消息，绕过 messageBuffer/isSending，每次独立请求
@@ -374,6 +394,17 @@ class org.flashNight.neur.Server.ServerManager {
             return;
         }
 
+        // Callback 路由：有 callId 的响应分发到注册的回调
+        if (response.callId !== undefined) {
+            var cbKey:String = String(response.callId);
+            var cbEntry:Object = _pendingCallbacks[cbKey];
+            if (cbEntry != undefined) {
+                delete _pendingCallbacks[cbKey];
+                cbEntry.cb(response);
+                return;
+            }
+        }
+
         if (response.success) {
             if (response.task == "audio") {
                 // 处理音频任务的成功响应
@@ -444,6 +475,11 @@ class org.flashNight.neur.Server.ServerManager {
     public function onSocketClose():Void {
         trace("XMLSocket connection closed");
         isSocketConnected = false; // 标记为未连接
+        // 清理所有 pending callback（断线后不会再收到响应）
+        for (var k:String in _pendingCallbacks) {
+            _pendingCallbacks[k].cb({success: false, error: "socket closed"});
+        }
+        _pendingCallbacks = {};
         // 尝试重新连接
         setTimeout(Delegate.create(this, connectToSocket), 1000); // 1秒后重试连接
     }
@@ -478,6 +514,31 @@ class org.flashNight.neur.Server.ServerManager {
         sendSocketMessage(messageString);
     }
 
+    // 发送带回调的任务：响应通过 callId 路由回 callback
+    public function sendTaskWithCallback(taskType:String, payload:Object, extra:Object,
+                                          callback:Function):Void {
+        var callId:Number = _callIdCounter++;
+        var message:Object = new Object();
+        message.task = taskType;
+        message.payload = payload;
+        message.callId = callId;
+        if (extra != null) {
+            message.extra = extra;
+        }
+
+        var messageString:String = jsonParser.stringify(message);
+        if (messageString == null) {
+            callback({success: false, error: "stringify failed"});
+            return;
+        }
+        if (!isSocketConnected) {
+            callback({success: false, error: "socket not connected"});
+            return;
+        }
+
+        _pendingCallbacks[String(callId)] = {cb: callback, frame: currentFrame};
+        sendSocketMessage(messageString);
+    }
 
     // 具体任务执行函数
 

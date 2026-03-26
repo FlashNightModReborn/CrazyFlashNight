@@ -11,6 +11,9 @@ const fs = require('fs');
 // 引入模拟的浏览器环境
 require('./utils/browserEnv');
 
+// Rapfi 引擎桥接（五子棋战术训练用）
+const { shutdown: shutdownGomoku } = require('./controllers/gomokuTask');
+
 
 // 提取端口列表和最大重试次数，支持环境变量配置
 let portList = extractPorts();
@@ -177,8 +180,15 @@ function startServer() {
 }
 
 // 平滑关闭
-function gracefulShutdown() {
+async function gracefulShutdown() {
     logger.info('Shutting down servers gracefully...');
+    // 先关闭 Rapfi 子进程
+    try {
+        await shutdownGomoku();
+        logger.info('Rapfi process shut down');
+    } catch (e) {
+        logger.warn('Rapfi shutdown error: ' + e.message);
+    }
     if (server) {
         server.close(() => {
             logger.info('Closed HTTP server');
