@@ -3,7 +3,7 @@ import org.flashNight.hana.Gobang.GobangEval;
 
 class org.flashNight.hana.Gobang.GobangBoard {
     public var size:Number;
-    public var board:Array;       // [size][size], 0=empty, 1=black, -1=white
+    public var board:Array;       // [size*size] flat, 0=empty, 1=black, -1=white
     public var firstRole:Number;
     public var role:Number;       // current role to play
     public var history:Array;     // [{i, j, role}, ...]
@@ -11,6 +11,9 @@ class org.flashNight.hana.Gobang.GobangBoard {
     private var _historyTop:Number;
     private var _winner:Number;
     private var _winnerStack:Array;
+
+    // 棋盘尺寸常量（冻结为 15 路）
+    private static var SZ:Number = 15;
 
     // 上游 board.js 在内部包含 padding（+2 边界），但 getShapeFast 需要
     // 我们的 board 维持纯净 15x15，padding 在 Shape/Eval 中处理
@@ -27,20 +30,15 @@ class org.flashNight.hana.Gobang.GobangBoard {
         this._winnerStack = [];
         this.zobrist = new GobangZobrist(size);
 
-        // Initialize board
-        board = [];
-        for (var i:Number = 0; i < size; i++) {
-            board[i] = [];
-            for (var j:Number = 0; j < size; j++) {
-                board[i][j] = 0;
-            }
-        }
+        // Initialize board (flat 1D array)
+        board = new Array(225);
+        for (var i:Number = 0; i < 225; i++) board[i] = 0;
     }
 
     public function put(i:Number, j:Number, r:Number):Boolean {
         if (r === undefined) r = role;
-        if (board[i][j] !== 0) return false;
-        board[i][j] = r;
+        if (board[i * SZ + j] !== 0) return false;
+        board[i * SZ + j] = r;
         _winnerStack[_historyTop] = _winner;
         var entry:Object = history[_historyTop];
         if (entry === undefined) {
@@ -65,7 +63,7 @@ class org.flashNight.hana.Gobang.GobangBoard {
         _historyTop--;
         var last:Object = history[_historyTop];
         history.length = _historyTop;
-        board[last.i][last.j] = 0;
+        board[last.i * SZ + last.j] = 0;
         role = last.role;
         _winner = _winnerStack[_historyTop];
         zobrist.togglePiece(last.i, last.j, last.role);
@@ -85,9 +83,9 @@ class org.flashNight.hana.Gobang.GobangBoard {
             var count:Number = 1;
             var nx:Number; var ny:Number;
             nx = x + dx; ny = y + dy;
-            while (nx >= 0 && nx < sz && ny >= 0 && ny < sz && brd[nx][ny] === r) { count++; nx += dx; ny += dy; }
+            while (nx >= 0 && nx < sz && ny >= 0 && ny < sz && brd[nx * SZ + ny] === r) { count++; nx += dx; ny += dy; }
             nx = x - dx; ny = y - dy;
-            while (nx >= 0 && nx < sz && ny >= 0 && ny < sz && brd[nx][ny] === r) { count++; nx -= dx; ny -= dy; }
+            while (nx >= 0 && nx < sz && ny >= 0 && ny < sz && brd[nx * SZ + ny] === r) { count++; nx -= dx; ny -= dy; }
             if (count >= 5) return true;
         }
         return false;

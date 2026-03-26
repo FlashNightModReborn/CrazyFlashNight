@@ -90,12 +90,11 @@
         var noEmpty:Number = 0;
         var oneEmpty:Number = 0;
 
-        var cx:Number = x + offsetX + 1;
-        var cy:Number = y + offsetY + 1;
+        var dFlat:Number = offsetX * 17 + offsetY;
+        var pos:Number = (x + 1) * 17 + (y + 1) + dFlat;
         for (var i:Number = 1; i <= 5; i++) {
-            var cur:Number = board[cx][cy];
-            cx += offsetX;
-            cy += offsetY;
+            var cur:Number = board[pos];
+            pos += dFlat;
             if (cur === 2 || cur === opponent) break;
             if (cur === role) {
                 self++;
@@ -121,14 +120,13 @@
     public static function getShapeFast(board:Array, x:Number, y:Number,
             offsetX:Number, offsetY:Number, role:Number):Number {
         var brd:Array = board;
-        var px:Number = x + 1;
-        var py:Number = y + 1;
-        var off2X:Number = offsetX + offsetX;
-        var off2Y:Number = offsetY + offsetY;
-        if (brd[px + offsetX][py + offsetY] === 0
-            && brd[px - offsetX][py - offsetY] === 0
-            && brd[px + off2X][py + off2Y] === 0
-            && brd[px - off2X][py - off2Y] === 0) {
+        var pFlat:Number = (x + 1) * 17 + (y + 1);
+        var dFlat:Number = offsetX * 17 + offsetY;
+        var d2Flat:Number = dFlat + dFlat;
+        if (brd[pFlat + dFlat] === 0
+            && brd[pFlat - dFlat] === 0
+            && brd[pFlat + d2Flat] === 0
+            && brd[pFlat - d2Flat] === 0) {
             return NONE;
         }
 
@@ -144,20 +142,17 @@
         var innerEmpty:Number;
         var tempEmpty:Number;
         var sideEmpty:Number;
-        var cx:Number;
-        var cy:Number;
+        var pos:Number;
         var cur:Number;
         var i:Number;
 
         innerEmpty = 0;
         tempEmpty = 0;
         sideEmpty = 0;
-        cx = px - offsetX;
-        cy = py - offsetY;
+        pos = pFlat - dFlat;
         for (i = 1; i <= 5; i++) {
-            cur = brd[cx][cy];
-            cx -= offsetX;
-            cy -= offsetY;
+            cur = brd[pos];
+            pos -= dFlat;
             if (cur === 2 || cur === opponent) break;
             if (cur === role) {
                 sideEmpty = 0;
@@ -175,12 +170,10 @@
         innerEmpty = 0;
         tempEmpty = 0;
         sideEmpty = 0;
-        cx = px + offsetX;
-        cy = py + offsetY;
+        pos = pFlat + dFlat;
         for (i = 1; i <= 5; i++) {
-            cur = brd[cx][cy];
-            cx += offsetX;
-            cy += offsetY;
+            cur = brd[pos];
+            pos += dFlat;
             if (cur === 2 || cur === opponent) break;
             if (cur === role) {
                 sideEmpty = 0;

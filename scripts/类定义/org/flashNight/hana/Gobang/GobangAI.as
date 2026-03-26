@@ -187,12 +187,17 @@ class org.flashNight.hana.Gobang.GobangAI {
     // 难度降级安全阈值：与 REFINE_SKIP_SCORE 对齐
     // |score| >= 50K = 搜索确认的战术优势（THREE_THREE/FOUR/TSS/FIVE），不允许 drop
     private static var DROP_PROTECT_THRESHOLD:Number = 50000;
+    // 劣势保护阈值：score <= -DROP_LOSING_THRESHOLD 时禁止 drop
+    // 已经明显劣势的局面下随机换着只会加速失败
+    private static var DROP_LOSING_THRESHOLD:Number = 1500;
 
     private function _applyDifficultyDrop(params:Object, bestX:Number, bestY:Number, score:Number):Object {
         var finalX:Number = bestX;
         var finalY:Number = bestY;
         var absScore:Number = score >= 0 ? score : -score;
-        if (params.bestProb < 100 && absScore < DROP_PROTECT_THRESHOLD) {
+        // 保护条件：战术局面(|score|>=50K)或已明显劣势(score<=-1500)时不 drop
+        if (params.bestProb < 100 && absScore < DROP_PROTECT_THRESHOLD
+            && score > -DROP_LOSING_THRESHOLD) {
             var roll:Number = Math.random() * 100;
             if (roll >= params.bestProb) {
                 var alt:Object = _pickAlternativeMove(bestX, bestY);
@@ -239,9 +244,8 @@ class org.flashNight.hana.Gobang.GobangAI {
     private function _opponentHasUrgentThreat():Boolean {
         var oppRole:Number = -_aiRole;
         var ori:Number = oppRole === 1 ? 0 : 1;
-        var sc:Array = _eval.shapeCache[ori];
-        var sc0:Array = sc[0]; var sc1:Array = sc[1];
-        var sc2:Array = sc[2]; var sc3:Array = sc[3];
+        var sc:Array = _eval.shapeCache;
+        var oriBase:Number = ori * 900;
         var brd:Array = _eval.board;
         var sz:Number = _eval.size;
         var frontier:Array = _eval._frontierList;
@@ -250,16 +254,17 @@ class org.flashNight.hana.Gobang.GobangAI {
             var fp:Number = frontier[fi];
             var cx:Number = (fp / sz) | 0;
             var cy:Number = fp - cx * sz;
-            if (brd[cx + 1][cy + 1] !== 0) continue;
+            if (brd[(cx + 1) * 17 + (cy + 1)] !== 0) continue;
+            var cxy:Number = cx * 15 + cy;
             // THREE=3, FOUR=4, FIVE=5, BLOCK_FOUR=40, BLOCK_FIVE=50
-            if (sc0[cx][cy] === 3 || sc0[cx][cy] === 4 || sc0[cx][cy] === 5 ||
-                sc0[cx][cy] === 40 || sc0[cx][cy] === 50) return true;
-            if (sc1[cx][cy] === 3 || sc1[cx][cy] === 4 || sc1[cx][cy] === 5 ||
-                sc1[cx][cy] === 40 || sc1[cx][cy] === 50) return true;
-            if (sc2[cx][cy] === 3 || sc2[cx][cy] === 4 || sc2[cx][cy] === 5 ||
-                sc2[cx][cy] === 40 || sc2[cx][cy] === 50) return true;
-            if (sc3[cx][cy] === 3 || sc3[cx][cy] === 4 || sc3[cx][cy] === 5 ||
-                sc3[cx][cy] === 40 || sc3[cx][cy] === 50) return true;
+            var v0:Number = sc[oriBase + cxy];
+            if (v0 === 3 || v0 === 4 || v0 === 5 || v0 === 40 || v0 === 50) return true;
+            var v1:Number = sc[oriBase + 225 + cxy];
+            if (v1 === 3 || v1 === 4 || v1 === 5 || v1 === 40 || v1 === 50) return true;
+            var v2:Number = sc[oriBase + 450 + cxy];
+            if (v2 === 3 || v2 === 4 || v2 === 5 || v2 === 40 || v2 === 50) return true;
+            var v3:Number = sc[oriBase + 675 + cxy];
+            if (v3 === 3 || v3 === 4 || v3 === 5 || v3 === 40 || v3 === 50) return true;
         }
         return false;
     }
@@ -595,7 +600,7 @@ class org.flashNight.hana.Gobang.GobangAI {
             if (adx <= 1 && ady <= 1) {
                 var nx:Number = myX - dx;
                 var ny:Number = myY - dy;
-                if (nx >= 0 && nx < _board.size && ny >= 0 && ny < _board.size && _board.board[nx][ny] === 0) {
+                if (nx >= 0 && nx < _board.size && ny >= 0 && ny < _board.size && _board.board[nx * 15 + ny] === 0) {
                     return {x: nx, y: ny};
                 }
             }

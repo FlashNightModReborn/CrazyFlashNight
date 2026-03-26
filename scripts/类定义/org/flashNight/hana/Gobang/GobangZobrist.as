@@ -3,9 +3,12 @@ import org.flashNight.hana.Gobang.GobangConfig;
 
 class org.flashNight.hana.Gobang.GobangZobrist {
     private var _size:Number;
-    private var _table:Array;  // [size][size][2] each {hi, lo}
+    private var _table:Array;  // [(i*SZ+j)*2+r] each {hi, lo}, length=450
     private var _hashHi:Number;
     private var _hashLo:Number;
+
+    // 棋盘尺寸常量（冻结为 15 路）
+    private static var SZ:Number = 15;
 
     public function GobangZobrist(size:Number) {
         _size = size;
@@ -16,21 +19,20 @@ class org.flashNight.hana.Gobang.GobangZobrist {
 
     private function _initTable():Void {
         var rng:SeededLinearCongruentialEngine = new SeededLinearCongruentialEngine(42);
-        _table = [];
+        _table = new Array(450);
         for (var i:Number = 0; i < _size; i++) {
-            _table[i] = [];
             for (var j:Number = 0; j < _size; j++) {
-                _table[i][j] = [];
+                var idx:Number = (i * SZ + j) * 2;
                 // roleIndex 0 = black (role=1), roleIndex 1 = white (role=-1)
-                _table[i][j][0] = {hi: rng.next(), lo: rng.next()};
-                _table[i][j][1] = {hi: rng.next(), lo: rng.next()};
+                _table[idx] = {hi: rng.next(), lo: rng.next()};
+                _table[idx + 1] = {hi: rng.next(), lo: rng.next()};
             }
         }
     }
 
     public function togglePiece(x:Number, y:Number, role:Number):Void {
         var ri:Number = GobangConfig.roleIndex(role);
-        var entry:Object = _table[x][y][ri];
+        var entry:Object = _table[(x * SZ + y) * 2 + ri];
         _hashHi = _hashHi ^ entry.hi;
         _hashLo = _hashLo ^ entry.lo;
     }

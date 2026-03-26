@@ -114,7 +114,7 @@ class org.flashNight.hana.Gobang.GobangTest {
         for (var i:Number = 0; i < 15 && count < 20; i++) {
             for (var j:Number = 0; j < 15 && count < 20; j++) {
                 for (var r:Number = 0; r < 2 && count < 20; r++) {
-                    var key:String = String(tbl[i][j][r].hi) + "_" + String(tbl[i][j][r].lo);
+                    var key:String = String(tbl[(i * 15 + j) * 2 + r].hi) + "_" + String(tbl[(i * 15 + j) * 2 + r].lo);
                     if (seen[key] !== undefined) {
                         dupes++;
                     }
@@ -214,12 +214,12 @@ class org.flashNight.hana.Gobang.GobangTest {
 
         // Test 1: Empty board
         var b:GobangBoard = new GobangBoard(15, 1);
-        assert(b.board[7][7] === 0, "Board init: center is empty");
+        assert(b.board[7 * 15 + 7] === 0, "Board init: center is empty");
         assert(b.role === 1, "Board init: first role is black");
 
         // Test 2: put and role switch
         b.put(7, 7, 1);
-        assert(b.board[7][7] === 1, "Board put: black at center");
+        assert(b.board[7 * 15 + 7] === 1, "Board put: black at center");
         assert(b.role === -1, "Board put: role switches to white");
 
         // Test 3: cannot put on occupied
@@ -227,7 +227,7 @@ class org.flashNight.hana.Gobang.GobangTest {
 
         // Test 4: undo
         b.undo();
-        assert(b.board[7][7] === 0, "Board undo: center cleared");
+        assert(b.board[7 * 15 + 7] === 0, "Board undo: center cleared");
         assert(b.role === 1, "Board undo: role restored to black");
 
         // Test 5: hash after undo = initial hash
@@ -313,14 +313,13 @@ class org.flashNight.hana.Gobang.GobangTest {
         assert(b8.getWinner() === 0 && b8.isGameOver() === false, "Board cached winner clears after undo");
     }
 
-    // 创建 padded board (SIZE+2)x(SIZE+2), 边界=2
+    // 创建 padded board 1D [17*17=289], 边界=2
     private static function makePaddedBoard():Array {
-        var b:Array = [];
-        for (var i:Number = 0; i < 17; i++) {
-            b[i] = [];
-            for (var j:Number = 0; j < 17; j++) {
-                b[i][j] = (i === 0 || j === 0 || i === 16 || j === 16) ? 2 : 0;
-            }
+        var b:Array = new Array(289);
+        for (var bi:Number = 0; bi < 289; bi++) {
+            var bx:Number = (bi / 17) | 0;
+            var by:Number = bi - bx * 17;
+            b[bi] = (bx === 0 || by === 0 || bx === 16 || by === 16) ? 2 : 0;
         }
         return b;
     }
@@ -358,35 +357,28 @@ class org.flashNight.hana.Gobang.GobangTest {
         var ws:Array = eval.whiteScores;
         var atk:Array = role === 1 ? bs : ws;
         var def:Array = role === 1 ? ws : bs;
-        var atkShape:Array = role === 1 ? eval.shapeCache[0] : eval.shapeCache[1];
-        var defShape:Array = role === 1 ? eval.shapeCache[1] : eval.shapeCache[0];
-        var atk0:Array = atkShape[0];
-        var atk1:Array = atkShape[1];
-        var atk2:Array = atkShape[2];
-        var atk3:Array = atkShape[3];
-        var def0:Array = defShape[0];
-        var def1:Array = defShape[1];
-        var def2:Array = defShape[2];
-        var def3:Array = defShape[3];
+        var sc:Array = eval.shapeCache;
+        var atkBase:Number = (role === 1) ? 0 : 900;
+        var defBase:Number = (role === 1) ? 900 : 0;
         var hasFive:Boolean = false;
         var hasFour:Boolean = false;
 
         for (var i:Number = 0; i < sz; i++) {
             for (var j:Number = 0; j < sz; j++) {
-                if (brd[i + 1][j + 1] !== 0) continue;
+                if (brd[(i + 1) * 17 + (j + 1)] !== 0) continue;
 
-                var attackScore:Number = atk[i][j];
-                var defendScore:Number = def[i][j];
+                var ij:Number = i * 15 + j;
+                var attackScore:Number = atk[ij];
+                var defendScore:Number = def[ij];
                 if (attackScore === 0 && defendScore === 0) continue;
-
-                var a0:Number = atk0[i][j];
-                var a1:Number = atk1[i][j];
-                var a2:Number = atk2[i][j];
-                var a3:Number = atk3[i][j];
-                var d0:Number = def0[i][j];
-                var d1:Number = def1[i][j];
-                var d2:Number = def2[i][j];
-                var d3:Number = def3[i][j];
+                var a0:Number = sc[atkBase + ij];
+                var a1:Number = sc[atkBase + 225 + ij];
+                var a2:Number = sc[atkBase + 450 + ij];
+                var a3:Number = sc[atkBase + 675 + ij];
+                var d0:Number = sc[defBase + ij];
+                var d1:Number = sc[defBase + 225 + ij];
+                var d2:Number = sc[defBase + 450 + ij];
+                var d3:Number = sc[defBase + 675 + ij];
 
                 var attackMax:Number = a0;
                 if (a1 > attackMax) attackMax = a1;
@@ -515,7 +507,7 @@ class org.flashNight.hana.Gobang.GobangTest {
 
     // 在 padded board 上放棋子 (非padded坐标)
     private static function placeOnPadded(b:Array, x:Number, y:Number, role:Number):Void {
-        b[x + 1][y + 1] = role;
+        b[(x + 1) * 17 + (y + 1)] = role;
     }
 
     private static function assertShape(b:Array, x:Number, y:Number, ox:Number, oy:Number,
@@ -701,11 +693,11 @@ class org.flashNight.hana.Gobang.GobangTest {
         // Test 9: 双 TWO 协同分应明显高于单 TWO
         var e9a:GobangEval = new GobangEval(15);
         e9a.move(7, 6, 1);
-        var singleTwoScore:Number = e9a.blackScores[7][7];
+        var singleTwoScore:Number = e9a.blackScores[7 * 15 + 7];
         var e9b:GobangEval = new GobangEval(15);
         e9b.move(7, 6, 1);
         e9b.move(6, 7, 1);
-        var comboTwoScore:Number = e9b.blackScores[7][7];
+        var comboTwoScore:Number = e9b.blackScores[7 * 15 + 7];
         assert(comboTwoScore >= singleTwoScore + 50,
                "Eval TWO synergy bonus raises combo potential: " + comboTwoScore + " vs " + singleTwoScore);
 
@@ -1276,7 +1268,7 @@ class org.flashNight.hana.Gobang.GobangTest {
         // Test 4: Reset
         ai.reset();
         assert(ai.getCurrentRole() === 1, "AI reset: role is black");
-        assert(ai.getBoard()[7][7] === 0, "AI reset: board clear");
+        assert(ai.getBoard()[7 * 15 + 7] === 0, "AI reset: board clear");
 
         // Test 5: Cannot call aiMove when not AI's turn
         assert(ai.aiMove() === null, "AI aiMove when not AI turn returns null");

@@ -4,8 +4,8 @@ import org.flashNight.hana.Gobang.GobangConfig;
 class org.flashNight.hana.Gobang.GobangEval {
     public var size:Number;
     public var board:Array;        // padded (size+2)x(size+2), border=2
-    public var blackScores:Array;  // [size][size]
-    public var whiteScores:Array;  // [size][size]
+    public var blackScores:Array;  // [size*size] flat, index = x*SZ+y
+    public var whiteScores:Array;  // [size*size] flat, index = x*SZ+y
     private var _totalBlack:Number; // 增量总分
     private var _totalWhite:Number;
     public var shapeCache:Array;   // [2][4][size][size] — roleIdx, direction, x, y
@@ -22,15 +22,14 @@ class org.flashNight.hana.Gobang.GobangEval {
     private static var _posWeightReady:Boolean = false;
     private static function _initPosWeight(sz:Number):Void {
         if (_posWeightReady) return;
-        _posWeight = new Array(sz);
+        _posWeight = new Array(sz * sz);
         var center:Number = (sz - 1) >> 1;
         for (var i:Number = 0; i < sz; i++) {
-            _posWeight[i] = new Array(sz);
             for (var j:Number = 0; j < sz; j++) {
                 var dx:Number = i - center; if (dx < 0) dx = -dx;
                 var dy:Number = j - center; if (dy < 0) dy = -dy;
                 var dist:Number = dx > dy ? dx : dy;
-                _posWeight[i][j] = (center - dist) * 2;
+                _posWeight[i * sz + j] = (center - dist) * 2;
             }
         }
         _posWeightReady = true;
@@ -41,6 +40,12 @@ class org.flashNight.hana.Gobang.GobangEval {
     private var _frontierIndex:Array; // [flat] 在 _frontierList 中的位置，-1=不活跃
     public var _frontierList:Array;   // [flat, ...] — Minmax 覆盖数排序需要访问
     public var _frontierTop:Number;
+
+    // 棋盘尺寸常量（冻结为 15 路标准五子棋）
+    private static var SZ:Number = 15;
+    private static var PADDED:Number = 17;     // SZ + 2（含哨兵边界）
+    private static var SC_DIR:Number = 225;    // SZ * SZ，shapeCache 单方向平面大小
+    private static var SC_ROLE:Number = 900;   // 4 * SC_DIR，shapeCache 单角色平面大小
 
     // 方向表
     private static var allDirs:Array = [[0, 1], [1, 0], [1, 1], [1, -1]];
@@ -69,26 +74,18 @@ class org.flashNight.hana.Gobang.GobangEval {
         _initScoreLUT();
         _initPosWeight(size);
 
-        // 初始化 padded board
-        board = [];
-        for (var i:Number = 0; i < size + 2; i++) {
-            board[i] = [];
-            for (var j:Number = 0; j < size + 2; j++) {
-                board[i][j] = (i === 0 || j === 0 || i === size + 1 || j === size + 1) ? 2 : 0;
-            }
+        // 初始化 padded board（1D 扁平数组，索引 = x*PADDED+y）
+        board = new Array(289);
+        for (var bi:Number = 0; bi < 289; bi++) {
+            var bx2:Number = (bi / PADDED) | 0;
+            var by2:Number = bi - bx2 * PADDED;
+            board[bi] = (bx2 === 0 || by2 === 0 || bx2 === 16 || by2 === 16) ? 2 : 0;
         }
 
-        // 初始化分数数组
-        blackScores = [];
-        whiteScores = [];
-        for (var si:Number = 0; si < size; si++) {
-            blackScores[si] = [];
-            whiteScores[si] = [];
-            for (var sj:Number = 0; sj < size; sj++) {
-                blackScores[si][sj] = 0;
-                whiteScores[si][sj] = 0;
-            }
-        }
+        // 初始化分数数组（1D 扁平，索引 = x*SZ+y）
+        blackScores = new Array(225);
+        whiteScores = new Array(225);
+        for (var si:Number = 0; si < 225; si++) { blackScores[si] = 0; whiteScores[si] = 0; }
 
         // 初始化 undo 栈（最大深度 20 × 每层 ~240 值 = 4800）
         _undoStack = new Array(5000);
@@ -107,20 +104,9 @@ class org.flashNight.hana.Gobang.GobangEval {
             _frontierIndex[fi] = -1;
         }
 
-        // 初始化 shapeCache: [roleIdx][direction][x][y]
-        shapeCache = [];
-        for (var ri:Number = 0; ri < 2; ri++) {
-            shapeCache[ri] = [];
-            for (var d:Number = 0; d < 4; d++) {
-                shapeCache[ri][d] = [];
-                for (var ci:Number = 0; ci < size; ci++) {
-                    shapeCache[ri][d][ci] = [];
-                    for (var cj:Number = 0; cj < size; cj++) {
-                        shapeCache[ri][d][ci][cj] = GobangShape.NONE;
-                    }
-                }
-            }
-        }
+        // 初始化 shapeCache: 一维 [ri*900 + di*225 + x*15 + y]
+        shapeCache = new Array(1800);
+        for (var sci:Number = 0; sci < 1800; sci++) shapeCache[sci] = 0;
     }
 
     public function move(x:Number, y:Number, role:Number):Void {
@@ -139,35 +125,39 @@ class org.flashNight.hana.Gobang.GobangEval {
         st[top] = _totalBlack; st[top + 1] = _totalWhite; top += 2;
 
         // 保存 (x,y) 棋型缓存（8 值）+ 分数（2 值）
-        st[top] = sc[0][0][x][y]; st[top + 1] = sc[0][1][x][y];
-        st[top + 2] = sc[0][2][x][y]; st[top + 3] = sc[0][3][x][y];
-        st[top + 4] = sc[1][0][x][y]; st[top + 5] = sc[1][1][x][y];
-        st[top + 6] = sc[1][2][x][y]; st[top + 7] = sc[1][3][x][y];
-        st[top + 8] = bs[x][y]; st[top + 9] = ws[x][y];
+        var xy:Number = x * SZ + y;
+        st[top] = sc[xy]; st[top + 1] = sc[SC_DIR + xy];
+        st[top + 2] = sc[450 + xy]; st[top + 3] = sc[675 + xy];
+        st[top + 4] = sc[SC_ROLE + xy]; st[top + 5] = sc[SC_ROLE + SC_DIR + xy];
+        st[top + 6] = sc[SC_ROLE + 450 + xy]; st[top + 7] = sc[SC_ROLE + 675 + xy];
+        st[top + 8] = bs[xy]; st[top + 9] = ws[xy];
         top += 10;
 
         // 清除 (x,y) 棋型和分数
-        sc[ri][0][x][y] = 0; sc[ri][1][x][y] = 0;
-        sc[ri][2][x][y] = 0; sc[ri][3][x][y] = 0;
-        sc[ori][0][x][y] = 0; sc[ori][1][x][y] = 0;
-        sc[ori][2][x][y] = 0; sc[ori][3][x][y] = 0;
-        _totalBlack -= bs[x][y];
-        _totalWhite -= ws[x][y];
-        bs[x][y] = 0;
-        ws[x][y] = 0;
+        var riBase:Number = ri * SC_ROLE;
+        var oriBase:Number = ori * SC_ROLE;
+        sc[riBase + xy] = 0; sc[riBase + SC_DIR + xy] = 0;
+        sc[riBase + 450 + xy] = 0; sc[riBase + 675 + xy] = 0;
+        sc[oriBase + xy] = 0; sc[oriBase + SC_DIR + xy] = 0;
+        sc[oriBase + 450 + xy] = 0; sc[oriBase + 675 + xy] = 0;
+        _totalBlack -= bs[xy];
+        _totalWhite -= ws[xy];
+        bs[xy] = 0;
+        ws[xy] = 0;
 
         // 更新 padded board
-        board[x + 1][y + 1] = role;
+        board[(x + 1) * PADDED + (y + 1)] = role;
         updateFrontierMove(x, y);
 
         // 保存 + 更新 dirty neighbors
         var brd:Array = board;
-        var flat:Array = dirtyMap[x][y];
+        var flat:Array = dirtyMap[xy];
         var flen:Number = flat.length;
         for (var i:Number = 0; i < flen; i += 4) {
             var nx:Number = flat[i];
             var ny:Number = flat[i + 1];
-            if (brd[nx + 1][ny + 1] !== 0) continue;
+            var pFlat:Number = (nx + 1) * PADDED + (ny + 1);
+            if (brd[pFlat] !== 0) continue;
             var ox:Number = flat[i + 2];
             var oy:Number = flat[i + 3];
             // 内联 direction2index
@@ -177,22 +167,23 @@ class org.flashNight.hana.Gobang.GobangEval {
             else if (ox === oy) dirIdx = 2;
             else dirIdx = 3;
             // 快速跳过：新旧棋型均为 NONE → 无需更新
-            var px:Number = nx + 1;
-            var py:Number = ny + 1;
-            if (brd[px + ox][py + oy] === 0
-                && brd[px - ox][py - oy] === 0
-                && brd[px + ox + ox][py + oy + oy] === 0
-                && brd[px - ox - ox][py - oy - oy] === 0
-                && sc[0][dirIdx][nx][ny] === 0
-                && sc[1][dirIdx][nx][ny] === 0) {
+            var dFlat:Number = ox * PADDED + oy;
+            var nxy:Number = nx * SZ + ny;
+            if (brd[pFlat + dFlat] === 0
+                && brd[pFlat - dFlat] === 0
+                && brd[pFlat + dFlat + dFlat] === 0
+                && brd[pFlat - dFlat - dFlat] === 0
+                && sc[dirIdx * SC_DIR + nxy] === 0
+                && sc[SC_ROLE + dirIdx * SC_DIR + nxy] === 0) {
                 continue;
             }
             // 保存: nx, ny, dirIdx, 两角色棋型, 两角色分数
+            var nOff:Number = dirIdx * SC_DIR + nxy;
             st[top] = nx; st[top + 1] = ny; st[top + 2] = dirIdx;
-            st[top + 3] = sc[0][dirIdx][nx][ny];
-            st[top + 4] = sc[1][dirIdx][nx][ny];
-            st[top + 5] = bs[nx][ny];
-            st[top + 6] = ws[nx][ny];
+            st[top + 3] = sc[nOff];
+            st[top + 4] = sc[SC_ROLE + nOff];
+            st[top + 5] = bs[nxy];
+            st[top + 6] = ws[nxy];
             top += 7;
             // 执行更新
             updateSinglePoint(nx, ny, 1, ox, oy);
@@ -205,7 +196,7 @@ class org.flashNight.hana.Gobang.GobangEval {
 
     // 快速 undo — 从保存栈恢复，零 getShapeFast 调用
     public function undo(x:Number, y:Number):Void {
-        board[x + 1][y + 1] = 0;
+        board[(x + 1) * PADDED + (y + 1)] = 0;
         updateFrontierUndo(x, y);
 
         var st:Array = _undoStack;
@@ -222,19 +213,22 @@ class org.flashNight.hana.Gobang.GobangEval {
             var nx:Number = st[top];
             var ny:Number = st[top + 1];
             var dIdx:Number = st[top + 2];
-            sc[0][dIdx][nx][ny] = st[top + 3];
-            sc[1][dIdx][nx][ny] = st[top + 4];
-            bs[nx][ny] = st[top + 5];
-            ws[nx][ny] = st[top + 6];
+            var nxy:Number = nx * SZ + ny;
+            var nOff:Number = dIdx * SC_DIR + nxy;
+            sc[nOff] = st[top + 3];
+            sc[SC_ROLE + nOff] = st[top + 4];
+            bs[nxy] = st[top + 5];
+            ws[nxy] = st[top + 6];
         }
 
         // 恢复 (x,y) 棋型缓存和分数
-        sc[0][0][x][y] = st[mark + 2]; sc[0][1][x][y] = st[mark + 3];
-        sc[0][2][x][y] = st[mark + 4]; sc[0][3][x][y] = st[mark + 5];
-        sc[1][0][x][y] = st[mark + 6]; sc[1][1][x][y] = st[mark + 7];
-        sc[1][2][x][y] = st[mark + 8]; sc[1][3][x][y] = st[mark + 9];
-        bs[x][y] = st[mark + 10];
-        ws[x][y] = st[mark + 11];
+        var xy:Number = x * SZ + y;
+        sc[xy] = st[mark + 2]; sc[SC_DIR + xy] = st[mark + 3];
+        sc[450 + xy] = st[mark + 4]; sc[675 + xy] = st[mark + 5];
+        sc[SC_ROLE + xy] = st[mark + 6]; sc[SC_ROLE + SC_DIR + xy] = st[mark + 7];
+        sc[SC_ROLE + 450 + xy] = st[mark + 8]; sc[SC_ROLE + 675 + xy] = st[mark + 9];
+        bs[x * SZ + y] = st[mark + 10];
+        ws[x * SZ + y] = st[mark + 11];
 
         // 恢复总分
         _totalBlack = st[mark];
@@ -247,9 +241,8 @@ class org.flashNight.hana.Gobang.GobangEval {
     private static function initDirtyMap(size:Number):Void {
         if (dirtyMap !== null && dirtyMapSize === size) return;
         dirtyMapSize = size;
-        dirtyMap = [];
+        dirtyMap = new Array(size * size);
         for (var x:Number = 0; x < size; x++) {
-            dirtyMap[x] = [];
             for (var y:Number = 0; y < size; y++) {
                 var flat:Array = [];
                 for (var di:Number = 0; di < 4; di++) {
@@ -269,7 +262,7 @@ class org.flashNight.hana.Gobang.GobangEval {
                         }
                     }
                 }
-                dirtyMap[x][y] = flat;
+                dirtyMap[x * size + y] = flat;
             }
         }
     }
@@ -299,7 +292,7 @@ class org.flashNight.hana.Gobang.GobangEval {
 
         var brd:Array = board;
         var counts:Array = _frontierCount;
-        var flat:Array = dirtyMap[x][y];
+        var flat:Array = dirtyMap[flatCenter];
         var sz:Number = size;
         for (var i:Number = 0; i < flat.length; i += 4) {
             var nx:Number = flat[i];
@@ -307,7 +300,7 @@ class org.flashNight.hana.Gobang.GobangEval {
             var nFlat:Number = nx * sz + ny;
             var nextCount:Number = counts[nFlat] + 1;
             counts[nFlat] = nextCount;
-            if (nextCount === 1 && brd[nx + 1][ny + 1] === 0) {
+            if (nextCount === 1 && brd[(nx + 1) * PADDED + (ny + 1)] === 0) {
                 frontierAdd(nFlat);
             }
         }
@@ -316,7 +309,7 @@ class org.flashNight.hana.Gobang.GobangEval {
     private function updateFrontierUndo(x:Number, y:Number):Void {
         var brd:Array = board;
         var counts:Array = _frontierCount;
-        var flat:Array = dirtyMap[x][y];
+        var flat:Array = dirtyMap[x * size + y];
         var sz:Number = size;
         for (var i:Number = 0; i < flat.length; i += 4) {
             var nx:Number = flat[i];
@@ -324,7 +317,7 @@ class org.flashNight.hana.Gobang.GobangEval {
             var nFlat:Number = nx * sz + ny;
             var nextCount:Number = counts[nFlat] - 1;
             counts[nFlat] = nextCount;
-            if (nextCount === 0 && brd[nx + 1][ny + 1] === 0) {
+            if (nextCount === 0 && brd[(nx + 1) * PADDED + (ny + 1)] === 0) {
                 frontierRemove(nFlat);
             }
         }
@@ -360,8 +353,6 @@ class org.flashNight.hana.Gobang.GobangEval {
 
     private function computeBridgePotential(x:Number, y:Number, role:Number):Number {
         var brd:Array = board;
-        var px:Number = x + 1;
-        var py:Number = y + 1;
         var opp:Number = -role;
         var ad:Array = allDirs;
         var totalBonus:Number = 0;
@@ -374,35 +365,33 @@ class org.flashNight.hana.Gobang.GobangEval {
             var lNearest:Number = 0;
             var lFarthest:Number = 0;
             var lCount:Number = 0;
-            var cx:Number = px - ox;
-            var cy:Number = py - oy;
+            var pos:Number = (x + 1) * PADDED + (y + 1);
+            var dFlat2:Number = ox * PADDED + oy;
+            var cpos:Number = pos - dFlat2;
             for (var ls:Number = 1; ls <= 4; ls++) {
-                var cur:Number = brd[cx][cy];
+                var cur:Number = brd[cpos];
                 if (cur === 2 || cur === opp) break;
                 if (cur === role) {
                     lCount++;
                     if (lNearest === 0) lNearest = ls;
                     lFarthest = ls;
                 }
-                cx -= ox;
-                cy -= oy;
+                cpos -= dFlat2;
             }
 
             var rNearest:Number = 0;
             var rFarthest:Number = 0;
             var rCount:Number = 0;
-            cx = px + ox;
-            cy = py + oy;
+            cpos = pos + dFlat2;
             for (var rs:Number = 1; rs <= 4; rs++) {
-                cur = brd[cx][cy];
+                cur = brd[cpos];
                 if (cur === 2 || cur === opp) break;
                 if (cur === role) {
                     rCount++;
                     if (rNearest === 0) rNearest = rs;
                     rFarthest = rs;
                 }
-                cx += ox;
-                cy += oy;
+                cpos += dFlat2;
             }
 
             var dirBonus:Number = 0;
@@ -433,11 +422,8 @@ class org.flashNight.hana.Gobang.GobangEval {
         var sz:Number = size;
         var frontier:Array = _frontierList;
         var frontierTop:Number = _frontierTop;
-        var atkShape:Array = role === 1 ? shapeCache[0] : shapeCache[1];
-        var atk0:Array = atkShape[0];
-        var atk1:Array = atkShape[1];
-        var atk2:Array = atkShape[2];
-        var atk3:Array = atkShape[3];
+        var sc:Array = shapeCache;
+        var atkBase:Number = (role === 1) ? 0 : SC_ROLE;
         var wins:Number = 0;
 
         for (var fi:Number = 0; fi < frontierTop; fi++) {
@@ -445,12 +431,13 @@ class org.flashNight.hana.Gobang.GobangEval {
             var i:Number = flatPos / sz;
             i = i | 0;
             var j:Number = flatPos - i * sz;
-            if (brd[i + 1][j + 1] !== 0) continue;
+            if (brd[(i + 1) * PADDED + (j + 1)] !== 0) continue;
 
-            var a0:Number = atk0[i][j];
-            var a1:Number = atk1[i][j];
-            var a2:Number = atk2[i][j];
-            var a3:Number = atk3[i][j];
+            var ij:Number = i * SZ + j;
+            var a0:Number = sc[atkBase + ij];
+            var a1:Number = sc[atkBase + SC_DIR + ij];
+            var a2:Number = sc[atkBase + 450 + ij];
+            var a3:Number = sc[atkBase + 675 + ij];
             if (a0 === 5 || a0 === 50 || a1 === 5 || a1 === 50
                 || a2 === 5 || a2 === 50 || a3 === 5 || a3 === 50) {
                 wins++;
@@ -467,11 +454,8 @@ class org.flashNight.hana.Gobang.GobangEval {
         var frontier:Array = _frontierList;
         var frontierTop:Number = _frontierTop;
         var atk:Array = role === 1 ? blackScores : whiteScores;
-        var atkShape:Array = role === 1 ? shapeCache[0] : shapeCache[1];
-        var atk0:Array = atkShape[0];
-        var atk1:Array = atkShape[1];
-        var atk2:Array = atkShape[2];
-        var atk3:Array = atkShape[3];
+        var sc:Array = shapeCache;
+        var atkBase:Number = (role === 1) ? 0 : SC_ROLE;
         var count:Number = 0;
 
         for (var fi:Number = 0; fi < frontierTop; fi++) {
@@ -479,13 +463,13 @@ class org.flashNight.hana.Gobang.GobangEval {
             var i:Number = flatPos / sz;
             i = i | 0;
             var j:Number = flatPos - i * sz;
-            if (brd[i + 1][j + 1] !== 0) continue;
-            if (atk[i][j] === 0) continue;
-
-            var a0:Number = atk0[i][j];
-            var a1:Number = atk1[i][j];
-            var a2:Number = atk2[i][j];
-            var a3:Number = atk3[i][j];
+            if (brd[(i + 1) * PADDED + (j + 1)] !== 0) continue;
+            var ij:Number = i * SZ + j;
+            if (atk[ij] === 0) continue;
+            var a0:Number = sc[atkBase + ij];
+            var a1:Number = sc[atkBase + SC_DIR + ij];
+            var a2:Number = sc[atkBase + 450 + ij];
+            var a3:Number = sc[atkBase + 675 + ij];
             if (a0 === 5 || a0 === 50 || a1 === 5 || a1 === 50
                 || a2 === 5 || a2 === 50 || a3 === 5 || a3 === 50) {
                 count++;
@@ -599,18 +583,14 @@ class org.flashNight.hana.Gobang.GobangEval {
     private function updateSinglePoint(x:Number, y:Number, role:Number, dirOx:Number, dirOy:Number):Void {
         // 局部变量缓存（AVM1: 局部=0ns vs 成员=144ns）
         var brd:Array = board;
-        var bx:Number = x + 1;
-        var by:Number = y + 1;
-        if (brd[bx][by] !== 0) return;
+        if (brd[(x + 1) * PADDED + (y + 1)] !== 0) return;
 
         // 内联 roleIndex: role===1 ? 0 : 1
         var ri:Number = role === 1 ? 0 : 1;
-        var sc:Array = shapeCache[ri];
+        var sc:Array = shapeCache;
+        var scBase:Number = ri * SC_ROLE;
+        var xOff:Number = x * SZ + y;
         var hasSingleDir:Boolean = (dirOx !== -1);
-        var scx0:Array = sc[0][x];
-        var scx1:Array = sc[1][x];
-        var scx2:Array = sc[2][x];
-        var scx3:Array = sc[3][x];
 
         // 内联 direction2index 清除缓存
         if (hasSingleDir) {
@@ -619,9 +599,12 @@ class org.flashNight.hana.Gobang.GobangEval {
             else if (dirOy === 0) dirIdx = 1;
             else if (dirOx === dirOy) dirIdx = 2;
             else dirIdx = 3;
-            sc[dirIdx][x][y] = 0;
+            sc[scBase + dirIdx * SC_DIR + xOff] = 0;
         } else {
-            scx0[y] = 0; scx1[y] = 0; scx2[y] = 0; scx3[y] = 0;
+            sc[scBase + xOff] = 0;
+            sc[scBase + SC_DIR + xOff] = 0;
+            sc[scBase + 450 + xOff] = 0;
+            sc[scBase + 675 + xOff] = 0;
         }
 
         var score:Number = 0;
@@ -633,17 +616,17 @@ class org.flashNight.hana.Gobang.GobangEval {
         var lut:Array = _scoreLUT;
 
         // 累加已有方向分值（LUT 直接索引，消除函数调用）
-        es = scx0[y]; if (es) { score += lut[es]; if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
-        es = scx1[y]; if (es) { score += lut[es]; if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
-        es = scx2[y]; if (es) { score += lut[es]; if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
-        es = scx3[y]; if (es) { score += lut[es]; if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
+        es = sc[scBase + xOff]; if (es) { score += lut[es]; if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
+        es = sc[scBase + SC_DIR + xOff]; if (es) { score += lut[es]; if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
+        es = sc[scBase + 450 + xOff]; if (es) { score += lut[es]; if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
+        es = sc[scBase + 675 + xOff]; if (es) { score += lut[es]; if (es === 40) bfc++; if (es === 3) thc++; if (es === 2) twc++; }
 
         // 计算新方向棋型
         var gsf:Function = GobangShape.getShapeFast;
         if (hasSingleDir) {
             var sh:Number = gsf(brd, x, y, dirOx, dirOy, role);
             if (sh) {
-                sc[dirIdx][x][y] = sh;
+                sc[scBase + dirIdx * SC_DIR + xOff] = sh;
                 if (sh === 40) bfc++; if (sh === 3) thc++; if (sh === 2) twc++;
                 if (bfc >= 2) sh = 44;
                 else if (bfc && thc) sh = 43;
@@ -657,7 +640,7 @@ class org.flashNight.hana.Gobang.GobangEval {
                 var dv:Array = ad[ni];
                 var sh2:Number = gsf(brd, x, y, dv[0], dv[1], role);
                 if (!sh2) continue;
-                sc[ni][x][y] = sh2;
+                sc[scBase + ni * SC_DIR + xOff] = sh2;
                 if (sh2 === 40) bfc++; if (sh2 === 3) thc++; if (sh2 === 2) twc++;
                 if (bfc >= 2) sh2 = 44;
                 else if (bfc && thc) sh2 = 43;
@@ -674,11 +657,11 @@ class org.flashNight.hana.Gobang.GobangEval {
         }
 
         if (role === 1) {
-            _totalBlack += score - blackScores[x][y];
-            blackScores[x][y] = score;
+            _totalBlack += score - blackScores[xOff];
+            blackScores[xOff] = score;
         } else {
-            _totalWhite += score - whiteScores[x][y];
-            whiteScores[x][y] = score;
+            _totalWhite += score - whiteScores[xOff];
+            whiteScores[xOff] = score;
         }
     }
 
@@ -695,12 +678,9 @@ class org.flashNight.hana.Gobang.GobangEval {
         var sz:Number = size;
         var frontier:Array = _frontierList;
         var frontierTop:Number = _frontierTop;
-        var atk:Array = role === 1 ? blackScores : whiteScores;
-        var atkShape:Array = role === 1 ? shapeCache[0] : shapeCache[1];
-        var atk0:Array = atkShape[0];
-        var atk1:Array = atkShape[1];
-        var atk2:Array = atkShape[2];
-        var atk3:Array = atkShape[3];
+        var atkScores:Array = role === 1 ? blackScores : whiteScores;
+        var sc:Array = shapeCache;
+        var atkBase:Number = (role === 1) ? 0 : SC_ROLE;
         var result:Array = [];
         var hasFive:Boolean = false;
         var hasMajor:Boolean = false;
@@ -710,15 +690,15 @@ class org.flashNight.hana.Gobang.GobangEval {
             var i:Number = flatPos / sz;
             i = i | 0;
             var j:Number = flatPos - i * sz;
-            if (brd[i + 1][j + 1] !== 0) continue;
+            if (brd[(i + 1) * PADDED + (j + 1)] !== 0) continue;
 
-            var attackScore:Number = atk[i][j];
+            var ij:Number = i * SZ + j;
+            var attackScore:Number = atkScores[ij];
             if (attackScore === 0) continue;
-
-            var a0:Number = atk0[i][j];
-            var a1:Number = atk1[i][j];
-            var a2:Number = atk2[i][j];
-            var a3:Number = atk3[i][j];
+            var a0:Number = sc[atkBase + ij];
+            var a1:Number = sc[atkBase + SC_DIR + ij];
+            var a2:Number = sc[atkBase + 450 + ij];
+            var a3:Number = sc[atkBase + 675 + ij];
             var attackMax:Number = a0;
             if (a1 > attackMax) attackMax = a1;
             if (a2 > attackMax) attackMax = a2;
@@ -826,7 +806,7 @@ class org.flashNight.hana.Gobang.GobangEval {
             var i:Number = flatPos / sz;
             i = i | 0;
             var j:Number = flatPos - i * sz;
-            if (brd[i + 1][j + 1] !== 0) continue;
+            if (brd[(i + 1) * PADDED + (j + 1)] !== 0) continue;
 
             var bridgeAtk:Number = computeBridgePotential(i, j, role);
             var bridgeDef:Number = computeBridgePotential(i, j, -role) >> 1;
@@ -878,20 +858,15 @@ class org.flashNight.hana.Gobang.GobangEval {
         if (depth >= 5 && limit > 4) limit = 4;
         else if (depth >= 3 && limit > 6) limit = 6;
         else if (depth >= 2 && limit > 8) limit = 8;
+        // root 层膨胀收集，后续补算 bridge 后截断回 limit
+        var effectiveLimit:Number = isRoot ? (limit + 8) : limit;
         var bs:Array = blackScores;
         var ws:Array = whiteScores;
         var atk:Array = role === 1 ? bs : ws;
         var def:Array = role === 1 ? ws : bs;
-        var atkShape:Array = role === 1 ? shapeCache[0] : shapeCache[1];
-        var defShape:Array = role === 1 ? shapeCache[1] : shapeCache[0];
-        var atk0:Array = atkShape[0];
-        var atk1:Array = atkShape[1];
-        var atk2:Array = atkShape[2];
-        var atk3:Array = atkShape[3];
-        var def0:Array = defShape[0];
-        var def1:Array = defShape[1];
-        var def2:Array = defShape[2];
-        var def3:Array = defShape[3];
+        var sc:Array = shapeCache;
+        var atkBase:Number = (role === 1) ? 0 : SC_ROLE;
+        var defBase:Number = (role === 1) ? SC_ROLE : 0;
         var hasFive:Boolean = false;
         var hasFour:Boolean = false;
         var frontier:Array = _frontierList;
@@ -905,20 +880,20 @@ class org.flashNight.hana.Gobang.GobangEval {
             var i:Number = flatPos / sz;
             i = i | 0;
             var j:Number = flatPos - i * sz;
-            if (brd[i + 1][j + 1] !== 0) continue;
+            if (brd[(i + 1) * PADDED + (j + 1)] !== 0) continue;
 
-            var attackScore:Number = atk[i][j];
-            var defendScore:Number = def[i][j];
+            var ij:Number = i * SZ + j;
+            var attackScore:Number = atk[ij];
+            var defendScore:Number = def[ij];
             if (attackScore === 0 && defendScore === 0) continue;
-
-            var a0:Number = atk0[i][j];
-            var a1:Number = atk1[i][j];
-            var a2:Number = atk2[i][j];
-            var a3:Number = atk3[i][j];
-            var d0:Number = def0[i][j];
-            var d1:Number = def1[i][j];
-            var d2:Number = def2[i][j];
-            var d3:Number = def3[i][j];
+            var a0:Number = sc[atkBase + ij];
+            var a1:Number = sc[atkBase + SC_DIR + ij];
+            var a2:Number = sc[atkBase + 450 + ij];
+            var a3:Number = sc[atkBase + 675 + ij];
+            var d0:Number = sc[defBase + ij];
+            var d1:Number = sc[defBase + SC_DIR + ij];
+            var d2:Number = sc[defBase + 450 + ij];
+            var d3:Number = sc[defBase + 675 + ij];
 
             var attackMax:Number = a0;
             if (a1 > attackMax) attackMax = a1;
@@ -1036,31 +1011,26 @@ class org.flashNight.hana.Gobang.GobangEval {
             if (defThrees >= 1) threeBoost += 8000;  // 堵对手活三
             if (atkThrees >= 1) threeBoost += 4000;   // 自己成活三
             var sortKey:Number = attackScore + defendScore + major + threeBoost;
-            if (isRoot && maxS < 4) {
-                sortKey += computeBridgePotential(i, j, role)
-                         + (computeBridgePotential(i, j, -role) >> 1)
-                         + _posWeight[i][j];
-            }
             var resultLen:Number = result.length;
             var tail:Array = resultLen > 0 ? result[resultLen - 1] : null;
             var tailBetter:Boolean = (tail !== null && (sortKey > tail[2]
                 || (sortKey === tail[2] && flatPos < tail[0] * sz + tail[1])));
-            if (resultLen < limit || tailBetter) {
+            if (resultLen < effectiveLimit || tailBetter) {
                 var insertAt:Number = resultLen;
-                if (insertAt >= limit) insertAt = limit - 1;
+                if (insertAt >= effectiveLimit) insertAt = effectiveLimit - 1;
                 while (insertAt > 0) {
                     var prev:Array = result[insertAt - 1];
                     var prevKey:Number = prev[2];
                     var prevFlat:Number = prev[0] * sz + prev[1];
                     if (sortKey < prevKey) break;
                     if (sortKey === prevKey && flatPos > prevFlat) break;
-                    if (insertAt < limit) {
+                    if (insertAt < effectiveLimit) {
                         result[insertAt] = prev;
                     }
                     insertAt--;
                 }
                 result[insertAt] = [i, j, sortKey];
-                if (resultLen < limit) {
+                if (resultLen < effectiveLimit) {
                     result.length = resultLen + 1;
                 }
             }
@@ -1072,6 +1042,30 @@ class org.flashNight.hana.Gobang.GobangEval {
                 result[fi2].length = 2;
             }
             return result;
+        }
+
+        // Phase 2: root 层补算 bridge + posWeight，重排后截断
+        if (isRoot && result.length > 0) {
+            var pw:Array = _posWeight;
+            for (var bi:Number = 0; bi < result.length; bi++) {
+                var rm:Array = result[bi];
+                rm[2] += computeBridgePotential(rm[0], rm[1], role)
+                       + (computeBridgePotential(rm[0], rm[1], -role) >> 1)
+                       + pw[rm[0] * SZ + rm[1]];
+            }
+            // 重排（插入排序，size ≤ effectiveLimit ≈ 26）
+            for (var si:Number = 1; si < result.length; si++) {
+                var item:Array = result[si];
+                var itemKey:Number = item[2];
+                var sp:Number = si - 1;
+                while (sp >= 0 && result[sp][2] < itemKey) {
+                    result[sp + 1] = result[sp];
+                    sp--;
+                }
+                result[sp + 1] = item;
+            }
+            // 截断到真实 limit
+            if (result.length > limit) result.length = limit;
         }
 
         // 清除排序键

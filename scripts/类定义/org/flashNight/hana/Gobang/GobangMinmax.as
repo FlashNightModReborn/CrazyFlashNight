@@ -448,8 +448,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
 
     // 快速统计 FOUR/FIVE 方向数（活四、冲四、五连）
     private function countFoursOrFives(role:Number):Number {
-        var sc:Array = role === 1 ? _eval.shapeCache[0] : _eval.shapeCache[1];
-        var sc0:Array = sc[0]; var sc1:Array = sc[1]; var sc2:Array = sc[2]; var sc3:Array = sc[3];
+        var sc:Array = _eval.shapeCache;
+        var base:Number = (role === 1 ? 0 : 1) * 900;
         var brd:Array = _eval.board;
         var sz:Number = _board.size;
         var frontier:Array = _eval._frontierList;
@@ -459,9 +459,10 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             var fp:Number = frontier[fi];
             var i:Number = (fp / sz) | 0;
             var j:Number = fp - i * sz;
-            if (brd[i + 1][j + 1] !== 0) continue;
-            var s0:Number = sc0[i][j]; var s1:Number = sc1[i][j];
-            var s2:Number = sc2[i][j]; var s3:Number = sc3[i][j];
+            if (brd[(i + 1) * 17 + (j + 1)] !== 0) continue;
+            var idx:Number = base + i * 15 + j;
+            var s0:Number = sc[idx]; var s1:Number = sc[idx + 225];
+            var s2:Number = sc[idx + 450]; var s3:Number = sc[idx + 675];
             // FOUR=4, FIVE=5, BLOCK_FOUR=40, BLOCK_FIVE=50
             if (s0 === 4 || s0 === 5 || s0 === 40 || s0 === 50) count++;
             if (s1 === 4 || s1 === 5 || s1 === 40 || s1 === 50) count++;
@@ -474,8 +475,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
 
     // 快速统计指定角色的 THREE+ 威胁方向总数
     private function countThreats(role:Number):Number {
-        var sc:Array = role === 1 ? _eval.shapeCache[0] : _eval.shapeCache[1];
-        var sc0:Array = sc[0]; var sc1:Array = sc[1]; var sc2:Array = sc[2]; var sc3:Array = sc[3];
+        var sc:Array = _eval.shapeCache;
+        var base:Number = (role === 1 ? 0 : 1) * 900;
         var brd:Array = _eval.board;
         var sz:Number = _board.size;
         var frontier:Array = _eval._frontierList;
@@ -485,11 +486,12 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             var fp:Number = frontier[fi];
             var i:Number = (fp / sz) | 0;
             var j:Number = fp - i * sz;
-            if (brd[i + 1][j + 1] !== 0) continue;
-            if (sc0[i][j] >= 3) count++;
-            if (sc1[i][j] >= 3) count++;
-            if (sc2[i][j] >= 3) count++;
-            if (sc3[i][j] >= 3) count++;
+            if (brd[(i + 1) * 17 + (j + 1)] !== 0) continue;
+            var idx:Number = base + i * 15 + j;
+            if (sc[idx] >= 3) count++;
+            if (sc[idx + 225] >= 3) count++;
+            if (sc[idx + 450] >= 3) count++;
+            if (sc[idx + 675] >= 3) count++;
         }
         return count;
     }
@@ -506,7 +508,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         var moves:Array = _eval.getMoves(role, 0, onlyThree, onlyFour);
         if (!onlyThree && !onlyFour) {
             var center:Number = Math.floor(_board.size / 2);
-            if (_board.board[center][center] === 0 && !hasMove(moves, center, center)) {
+            if (_board.board[center * 15 + center] === 0 && !hasMove(moves, center, center)) {
                 moves.push([center, center]);
             }
             // 根候选覆盖数重排序 — pieces>=6 即启用（早期布局同样需要多路覆盖）
@@ -573,7 +575,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _asyncMoves = _eval.getMoves(_asyncRole, 0, onlyThree, onlyFour);
         if (!onlyThree && !onlyFour) {
             var center:Number = Math.floor(_board.size / 2);
-            if (_board.board[center][center] === 0 && !hasMove(_asyncMoves, center, center)) {
+            if (_board.board[center * 15 + center] === 0 && !hasMove(_asyncMoves, center, center)) {
                 _asyncMoves.push([center, center]);
             }
             // 根候选覆盖数重排序 — pieces>=6 即启用
@@ -780,47 +782,39 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         if (maxY >= sz) maxY = sz - 1;
 
         var brd:Array = _board.board;
-        var bShape:Array = _eval.shapeCache[0];
-        var wShape:Array = _eval.shapeCache[1];
+        var sc:Array = _eval.shapeCache;
         for (var x:Number = minX; x <= maxX; x++) {
-            var row:Array = brd[x];
-            var b0:Array = bShape[0][x];
-            var b1:Array = bShape[1][x];
-            var b2:Array = bShape[2][x];
-            var b3:Array = bShape[3][x];
-            var w0:Array = wShape[0][x];
-            var w1:Array = wShape[1][x];
-            var w2:Array = wShape[2][x];
-            var w3:Array = wShape[3][x];
+            var bOff:Number = x * 15;
+            var wOff:Number = 900 + x * 15;
             for (var y:Number = minY; y <= maxY; y++) {
-                if (row[y] !== 0) continue;
+                if (brd[x * 15 + y] !== 0) continue;
 
                 var bTwos:Number = 0;
-                var sh:Number = b0[y];
+                var sh:Number = sc[bOff + y];
                 if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
                 if (sh === 2) bTwos++;
-                sh = b1[y];
+                sh = sc[bOff + y + 225];
                 if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
                 if (sh === 2) bTwos++;
-                sh = b2[y];
+                sh = sc[bOff + y + 450];
                 if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
                 if (sh === 2) bTwos++;
-                sh = b3[y];
+                sh = sc[bOff + y + 675];
                 if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
                 if (sh === 2) bTwos++;
                 if (bTwos >= 2) return true;
 
                 var wTwos:Number = 0;
-                sh = w0[y];
+                sh = sc[wOff + y];
                 if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
                 if (sh === 2) wTwos++;
-                sh = w1[y];
+                sh = sc[wOff + y + 225];
                 if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
                 if (sh === 2) wTwos++;
-                sh = w2[y];
+                sh = sc[wOff + y + 450];
                 if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
                 if (sh === 2) wTwos++;
-                sh = w3[y];
+                sh = sc[wOff + y + 675];
                 if (sh === 3 || sh === 4 || sh === 40 || sh === 5 || sh === 50) return true;
                 if (sh === 2) wTwos++;
                 if (wTwos >= 2) return true;
@@ -841,10 +835,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     // 前提：调用前防守方已在棋盘上落子
     // 返回 true = 防守方有成五点且攻方没有 → 防守方必赢
     private function _defenderHasFiveShape(defRole:Number, atkRole:Number):Boolean {
-        var dri:Number = defRole === 1 ? 0 : 1;
-        var ari:Number = atkRole === 1 ? 0 : 1;
-        var dsc:Array = _eval.shapeCache[dri];
-        var asc:Array = _eval.shapeCache[ari];
+        var sc:Array = _eval.shapeCache;
+        var dBase:Number = (defRole === 1 ? 0 : 1) * 900;
+        var aBase:Number = (atkRole === 1 ? 0 : 1) * 900;
         var brd:Array = _eval.board;
         var sz:Number = _eval.size;
         var frontier:Array = _eval._frontierList;
@@ -854,20 +847,22 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             var fp:Number = frontier[fi];
             var cx:Number = (fp / sz) | 0;
             var cy:Number = fp - cx * sz;
-            if (brd[cx + 1][cy + 1] !== 0) continue;
+            if (brd[(cx + 1) * 17 + (cy + 1)] !== 0) continue;
+            var aIdx:Number = aBase + cx * 15 + cy;
             // 攻方有成五 → 攻方先手可先连五，不触发早退
-            if (asc[0][cx][cy] === 5 || asc[0][cx][cy] === 50 ||
-                asc[1][cx][cy] === 5 || asc[1][cx][cy] === 50 ||
-                asc[2][cx][cy] === 5 || asc[2][cx][cy] === 50 ||
-                asc[3][cx][cy] === 5 || asc[3][cx][cy] === 50) {
+            if (sc[aIdx] === 5 || sc[aIdx] === 50 ||
+                sc[aIdx + 225] === 5 || sc[aIdx + 225] === 50 ||
+                sc[aIdx + 450] === 5 || sc[aIdx + 450] === 50 ||
+                sc[aIdx + 675] === 5 || sc[aIdx + 675] === 50) {
                 return false;
             }
             // 防守方有成五
             if (!defHasFive) {
-                if (dsc[0][cx][cy] === 5 || dsc[0][cx][cy] === 50 ||
-                    dsc[1][cx][cy] === 5 || dsc[1][cx][cy] === 50 ||
-                    dsc[2][cx][cy] === 5 || dsc[2][cx][cy] === 50 ||
-                    dsc[3][cx][cy] === 5 || dsc[3][cx][cy] === 50) {
+                var dIdx:Number = dBase + cx * 15 + cy;
+                if (sc[dIdx] === 5 || sc[dIdx] === 50 ||
+                    sc[dIdx + 225] === 5 || sc[dIdx + 225] === 50 ||
+                    sc[dIdx + 450] === 5 || sc[dIdx + 450] === 50 ||
+                    sc[dIdx + 675] === 5 || sc[dIdx + 675] === 50) {
                     defHasFive = true;
                 }
             }
@@ -939,7 +934,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     // VCF 门控：当前角色是否在 frontier 上有 THREE/FOUR/FIVE/BLOCK_FOUR/BLOCK_FIVE 级威胁
     // 显式枚举，排除 BLOCK_THREE(30) 等非战术形状
     private function _hasThreePlusThreat(role:Number):Boolean {
-        var sc:Array = role === 1 ? _eval.shapeCache[0] : _eval.shapeCache[1];
+        var sc:Array = _eval.shapeCache;
+        var base:Number = (role === 1 ? 0 : 1) * 900;
         var brd:Array = _eval.board;
         var sz:Number = _eval.size;
         var frontier:Array = _eval._frontierList;
@@ -948,14 +944,15 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             var fp:Number = frontier[fi];
             var cx:Number = (fp / sz) | 0;
             var cy:Number = fp - cx * sz;
-            if (brd[cx + 1][cy + 1] !== 0) continue;
-            var s0:Number = sc[0][cx][cy];
+            if (brd[(cx + 1) * 17 + (cy + 1)] !== 0) continue;
+            var idx:Number = base + cx * 15 + cy;
+            var s0:Number = sc[idx];
             if (s0 === 3 || s0 === 4 || s0 === 5 || s0 === 40 || s0 === 50) return true;
-            var s1:Number = sc[1][cx][cy];
+            var s1:Number = sc[idx + 225];
             if (s1 === 3 || s1 === 4 || s1 === 5 || s1 === 40 || s1 === 50) return true;
-            var s2:Number = sc[2][cx][cy];
+            var s2:Number = sc[idx + 450];
             if (s2 === 3 || s2 === 4 || s2 === 5 || s2 === 40 || s2 === 50) return true;
-            var s3:Number = sc[3][cx][cy];
+            var s3:Number = sc[idx + 675];
             if (s3 === 3 || s3 === 4 || s3 === 5 || s3 === 40 || s3 === 50) return true;
         }
         return false;
@@ -963,7 +960,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
 
     // 非叶节点 VCT 探针：检测 FOUR 级 VCF 和 多方向 THREE 的双活三/四三设置
     private function probeVCFAtNode(role:Number):Boolean {
-        var sc:Array = role === 1 ? _eval.shapeCache[0] : _eval.shapeCache[1];
+        var sc:Array = _eval.shapeCache;
+        var base:Number = (role === 1 ? 0 : 1) * 900;
         var brd:Array = _eval.board;
         var sz:Number = _eval.size;
         var frontier:Array = _eval._frontierList;
@@ -973,11 +971,12 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             var fp:Number = frontier[fi];
             var cx:Number = (fp / sz) | 0;
             var cy:Number = fp - cx * sz;
-            if (brd[cx + 1][cy + 1] !== 0) continue;
-            var s0:Number = sc[0][cx][cy];
-            var s1:Number = sc[1][cx][cy];
-            var s2:Number = sc[2][cx][cy];
-            var s3:Number = sc[3][cx][cy];
+            if (brd[(cx + 1) * 17 + (cy + 1)] !== 0) continue;
+            var idx:Number = base + cx * 15 + cy;
+            var s0:Number = sc[idx];
+            var s1:Number = sc[idx + 225];
+            var s2:Number = sc[idx + 450];
+            var s3:Number = sc[idx + 675];
             var maxS:Number = s0;
             if (s1 > maxS) maxS = s1;
             if (s2 > maxS) maxS = s2;
@@ -1033,14 +1032,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         var opp:Number = -role;
         var sz:Number = _eval.size;
         var brd:Array = _eval.board;
-        var mri:Number = role === 1 ? 0 : 1;
-        var ori:Number = opp === 1 ? 0 : 1;
-        var mySC:Array = _eval.shapeCache[mri];
-        var ms0:Array = mySC[0]; var ms1:Array = mySC[1];
-        var ms2:Array = mySC[2]; var ms3:Array = mySC[3];
-        var opSC:Array = _eval.shapeCache[ori];
-        var os0:Array = opSC[0]; var os1:Array = opSC[1];
-        var os2:Array = opSC[2]; var os3:Array = opSC[3];
+        var sc:Array = _eval.shapeCache;
+        var mBase:Number = (role === 1 ? 0 : 1) * 900;
+        var oBase:Number = (opp === 1 ? 0 : 1) * 900;
         var frontier:Array = _eval._frontierList;
         var top:Number = _eval._frontierTop;
 
@@ -1056,21 +1050,24 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             var fp:Number = frontier[fi];
             var cx:Number = (fp / sz) | 0;
             var cy:Number = fp - cx * sz;
-            if (brd[cx + 1][cy + 1] !== 0) continue;
+            if (brd[(cx + 1) * 17 + (cy + 1)] !== 0) continue;
+            var xyOff:Number = cx * 15 + cy;
+            var mIdx:Number = mBase + xyOff;
+            var oIdx:Number = oBase + xyOff;
 
             // P1: 己方成五 → 最高优先级，直接返回
-            if (ms0[cx][cy] === 5 || ms0[cx][cy] === 50 ||
-                ms1[cx][cy] === 5 || ms1[cx][cy] === 50 ||
-                ms2[cx][cy] === 5 || ms2[cx][cy] === 50 ||
-                ms3[cx][cy] === 5 || ms3[cx][cy] === 50) {
+            if (sc[mIdx] === 5 || sc[mIdx] === 50 ||
+                sc[mIdx + 225] === 5 || sc[mIdx + 225] === 50 ||
+                sc[mIdx + 450] === 5 || sc[mIdx + 450] === 50 ||
+                sc[mIdx + 675] === 5 || sc[mIdx + 675] === 50) {
                 return {x: cx, y: cy, score: GobangShape.FIVE_SCORE, tag: "P1_myFive"};
             }
 
             // P2: 对手成五 → 计数所有成五点
-            if (os0[cx][cy] === 5 || os0[cx][cy] === 50 ||
-                os1[cx][cy] === 5 || os1[cx][cy] === 50 ||
-                os2[cx][cy] === 5 || os2[cx][cy] === 50 ||
-                os3[cx][cy] === 5 || os3[cx][cy] === 50) {
+            if (sc[oIdx] === 5 || sc[oIdx] === 50 ||
+                sc[oIdx + 225] === 5 || sc[oIdx + 225] === 50 ||
+                sc[oIdx + 450] === 5 || sc[oIdx + 450] === 50 ||
+                sc[oIdx + 675] === 5 || sc[oIdx + 675] === 50) {
                 opFiveCount++;
                 if (opFiveCount === 1) { opFiveX = cx; opFiveY = cy; }
                 if (opFiveCount >= 2) break;
@@ -1078,16 +1075,16 @@ class org.flashNight.hana.Gobang.GobangMinmax {
 
             // P3: 己方活四
             if (myLiveFourX < 0) {
-                if (ms0[cx][cy] === 4 || ms1[cx][cy] === 4 ||
-                    ms2[cx][cy] === 4 || ms3[cx][cy] === 4) {
+                if (sc[mIdx] === 4 || sc[mIdx + 225] === 4 ||
+                    sc[mIdx + 450] === 4 || sc[mIdx + 675] === 4) {
                     myLiveFourX = cx; myLiveFourY = cy;
                 }
             }
 
             // P4a: 对手活四（shape=4，两个成五点，无法防守）
             if (opLiveFourCount < 2) {
-                if (os0[cx][cy] === 4 || os1[cx][cy] === 4 ||
-                    os2[cx][cy] === 4 || os3[cx][cy] === 4) {
+                if (sc[oIdx] === 4 || sc[oIdx + 225] === 4 ||
+                    sc[oIdx + 450] === 4 || sc[oIdx + 675] === 4) {
                     opLiveFourCount++;
                     if (opLiveFourCount === 1) { opLiveFourX = cx; opLiveFourY = cy; }
                 }
@@ -1100,10 +1097,12 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             if (opComboCount < 2) {
                 var obc:Number = 0; // BLOCK_FOUR count
                 var otc:Number = 0; // THREE count
-                if (os0[cx][cy] === 40) obc++; else if (os0[cx][cy] === 3) otc++;
-                if (os1[cx][cy] === 40) obc++; else if (os1[cx][cy] === 3) otc++;
-                if (os2[cx][cy] === 40) obc++; else if (os2[cx][cy] === 3) otc++;
-                if (os3[cx][cy] === 40) obc++; else if (os3[cx][cy] === 3) otc++;
+                var ov0:Number = sc[oIdx]; var ov1:Number = sc[oIdx + 225];
+                var ov2:Number = sc[oIdx + 450]; var ov3:Number = sc[oIdx + 675];
+                if (ov0 === 40) obc++; else if (ov0 === 3) otc++;
+                if (ov1 === 40) obc++; else if (ov1 === 3) otc++;
+                if (ov2 === 40) obc++; else if (ov2 === 3) otc++;
+                if (ov3 === 40) obc++; else if (ov3 === 3) otc++;
                 // 双冲四 / 冲四活三 / 双活三 — 任一组合即为致命复合威胁
                 if (obc >= 2 || (obc >= 1 && otc >= 1) || otc >= 2) {
                     opComboCount++;

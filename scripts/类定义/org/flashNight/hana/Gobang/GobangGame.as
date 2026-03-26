@@ -152,8 +152,11 @@ class org.flashNight.hana.Gobang.GobangGame {
         tf.wordWrap = true;
 
         var self:GobangGame = this;
-        _createButton("btnNew", MARGIN + boardPixel + 15, MARGIN, 60, self, "_newGame");
-        _createButton("btnUndo", MARGIN + boardPixel + 15, MARGIN + 35, 60, self, "_undoMove");
+        var btnX:Number = MARGIN + boardPixel + 15;
+        _createButton("btnNew", btnX, MARGIN, 60, self, "_newGame");
+        _createButton("btnUndo", btnX, MARGIN + 35, 60, self, "_undoMove");
+        _createButton("btnDUp", btnX, MARGIN + 80, 60, self, "_diffUp");
+        _createButton("btnDDn", btnX, MARGIN + 115, 60, self, "_diffDown");
 
         _hitMc.onPress = function() { self._onBoardClick(); };
         _hitMc.onMouseMove = function() { self._onBoardHover(); };
@@ -178,11 +181,10 @@ class org.flashNight.hana.Gobang.GobangGame {
         fmt.align = "center";
         tf.setNewTextFormat(fmt);
         tf.selectable = false;
-        if (name === "btnNew") {
-            tf.text = "\u65B0\u6E38\u620F";
-        } else {
-            tf.text = "\u6094\u68CB";
-        }
+        if (name === "btnNew") tf.text = "\u65B0\u6E38\u620F";
+        else if (name === "btnUndo") tf.text = "\u6094\u68CB";
+        else if (name === "btnDUp") tf.text = "\u96BE\u5EA6+";
+        else if (name === "btnDDn") tf.text = "\u96BE\u5EA6-";
         btn.onPress = function() { scope[method](); };
     }
 
@@ -230,6 +232,22 @@ class org.flashNight.hana.Gobang.GobangGame {
     }
 
     // ===== 游戏流程 =====
+
+    private function _diffUp():Void {
+        if (_difficulty < 100) {
+            _difficulty += 20;
+            if (_difficulty > 100) _difficulty = 100;
+        }
+        _updateStatus("\u96BE\u5EA6\u8C03\u6574\u4E3A " + _difficulty + "\uFF0C\u65B0\u5C40\u751F\u6548");
+    }
+
+    private function _diffDown():Void {
+        if (_difficulty > 0) {
+            _difficulty -= 20;
+            if (_difficulty < 0) _difficulty = 0;
+        }
+        _updateStatus("\u96BE\u5EA6\u8C03\u6574\u4E3A " + _difficulty + "\uFF0C\u65B0\u5C40\u751F\u6548");
+    }
 
     private function _newGame():Void {
         // 强制停止可能正在进行的 AI 思考
@@ -446,7 +464,7 @@ class org.flashNight.hana.Gobang.GobangGame {
         if (pos === null) return;
 
         var bd:Array = _ai.getBoard();
-        if (bd[pos.x][pos.y] !== 0) return;
+        if (bd[pos.x * 15 + pos.y] !== 0) return;
 
         var px:Number = MARGIN + pos.y * CELL;
         var py:Number = MARGIN + pos.x * CELL;
@@ -489,10 +507,10 @@ class org.flashNight.hana.Gobang.GobangGame {
         var lblIdx:Number = 0;
         for (var i:Number = 0; i < BOARD_SIZE; i++) {
             for (var j:Number = 0; j < BOARD_SIZE; j++) {
-                if (bd[i][j] === 0) continue;
+                if (bd[i * 15 + j] === 0) continue;
                 var px:Number = MARGIN + j * CELL;
                 var py:Number = MARGIN + i * CELL;
-                var isBlack:Boolean = (bd[i][j] === 1);
+                var isBlack:Boolean = (bd[i * 15 + j] === 1);
 
                 // 阴影
                 _piecesMc.beginFill(0x000000, 20);
