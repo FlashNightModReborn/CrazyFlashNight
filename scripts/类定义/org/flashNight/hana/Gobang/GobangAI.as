@@ -27,7 +27,7 @@ class org.flashNight.hana.Gobang.GobangAI {
         [21,  2,  8,  50, false],
         [41,  4,  12, 70, false],
         [61,  6,  16, 90, true],
-        [81,  10, 20, 100, true]
+        [81,  10, 25, 100, true] // R11: pl 20→25 扩大候选
     ];
     // 搜索分超过此阈值时跳过 refine — refine 的静态惩罚系统不能推翻搜索的战术结论
     // 50000 ≈ THREE_THREE_SCORE：双活三以上的战术优势由搜索树确认，不允许覆盖
@@ -44,6 +44,14 @@ class org.flashNight.hana.Gobang.GobangAI {
     private static var THREAT_REFINE_MARGIN:Number = 24;
     private static var THREAT_REFINE_PLY:Number = 5;
     private static var THREAT_REFINE_DEEP_PLY:Number = 7;
+
+    // TSS 验证: TSS 声称必杀时，用禁 TSS 的浅层搜索确认
+    private static var TSS_VERIFY_DEPTH:Number = 4;    // 验证搜索深度
+    private static var TSS_SCORE_MIN:Number = 1500000;  // TSS 分数下界
+    private static var TSS_SCORE_MAX:Number = 5000000;  // TSS 分数上界（低于 FIVE_SCORE）
+    private static var TSS_VERIFY_THRESHOLD:Number = -200; // 对手浅搜分 > 此值则 TSS 可疑
+    // P4 校准: 预搜索强制防守走法(P4a/P4b)的分数虚高(≈FIVE_SCORE)，需校准为真实评估
+    private static var P4_CALIBRATE_DEPTH:Number = 4;  // 校准搜索深度
     private static var THREAT_TRIGGER_PROBE_BUDGET_MS:Number = 4;
     private static var THREAT_REFINE_PROBE_BUDGET_MS:Number = 6;
     private static var THREAT_REFINE_FORCE_LOSS_PENALTY:Number = 4000000;
@@ -266,6 +274,83 @@ class org.flashNight.hana.Gobang.GobangAI {
             if (v3 === 3 || v3 === 4 || v3 === 5 || v3 === 40 || v3 === 50) return true;
         }
         return false;
+    }
+
+    /**
+     * TSS 验证: 当搜索返回 TSS 级别分数时，用禁 TSS 的浅层搜索验证。
+     * 原理: TSS 假设对手总是响应威胁，但对手可以走反威胁打断序列。
+     *       验证搜索从对手视角评估——如果对手不觉得自己在输，TSS 是虚假的。
+     */
+    private function _verifyTSSResult(result:Object):Object {
+        if (result === null || result.x < 0) return result;
+        var s:Number = result.score;
+        // 只验证 TSS 范围的正分（AI 认为自己赢）
+        if (s < TSS_SCORE_MIN || s > TSS_SCORE_MAX) return result;
+
+        // 临时走这一手
+        _board.put(result.x, result.y, _aiRole);
+        _eval.move(result.x, result.y, _aiRole);
+
+        // 从对手角度搜索（禁用 VCT/TSS 以避免递归误判）
+        var opp:Number = -_aiRole;
+        var verifyResult:Object = _minmax.search(opp, TSS_VERIFY_DEPTH, false);
+
+        // 撤销临时走子
+        _eval.undo(result.x, result.y);
+        _board.undo();
+
+        // 判定: 对手浅搜的分数（从对手视角）如果 > 阈值，说明对手有好的应手
+        // verifyResult.score 是对手视角的分数（正=对手好）
+        var oppScore:Number = verifyResult.score;
+
+        if (oppScore > TSS_VERIFY_THRESHOLD) {
+            // TSS 虚假正向！对手有好的反击手段
+            // 降级分数: 用验证搜索的评估替代 TSS 虚假分数
+            var degraded:Number = -oppScore; // 翻转为 AI 视角
+            trace("[TSS_VERIFY] REJECTED: move=(" + result.x + "," + result.y
+                + ") tss_score=" + s + " opp_score=" + oppScore
+                + " degraded=" + degraded);
+            result.score = degraded;
+            result.phaseLabel = result.phaseLabel + "_tssRejected";
+        } else {
+            trace("[TSS_VERIFY] CONFIRMED: move=(" + result.x + "," + result.y
+                + ") tss_score=" + s + " opp_score=" + oppScore);
+        }
+        return result;
+    }
+
+    /**
+     * 防守校准: P2/P4a/P4b 返回 ≈FIVE_SCORE 的虚假高分，
+     * 但这只是被迫防守，不代表局面好。做浅层搜索获取真实位置评估。
+     * 走法本身不变（强制的），只修正分数供日志和 mismatch 检测使用。
+     */
+    private function _calibratePreSearchScore(result:Object):Object {
+        if (result === null || result.x < 0) return result;
+        var tag:String = result.phaseLabel;
+        if (tag === undefined) tag = result.tag;
+        if (tag === undefined) return result;
+        // 校准所有防守性预搜索走法（P2/P4a/P4b）
+        // P1_myFive（赢棋）和 P3_myFour（己方活四→必赢）分数合理，不需要校准
+        var isDefensive:Boolean = (tag.indexOf("P2_blockFive") === 0
+            || tag.indexOf("P4a_blockFour") === 0
+            || tag.indexOf("P4combo") === 0);
+        if (!isDefensive) return result;
+
+        // 走这手强制防守，然后从对手视角搜索评估真实局面
+        _board.put(result.x, result.y, _aiRole);
+        _eval.move(result.x, result.y, _aiRole);
+        var opp:Number = -_aiRole;
+        var verifyResult:Object = _minmax.search(opp, P4_CALIBRATE_DEPTH, false);
+        _eval.undo(result.x, result.y);
+        _board.undo();
+
+        // 对手视角分数翻转为 AI 视角
+        var realScore:Number = -verifyResult.score;
+        trace("[DEF_CALIBRATE] " + tag + " move=(" + result.x + "," + result.y
+            + ") raw=" + result.score + " calibrated=" + realScore);
+        result.score = realScore;
+        result.phaseLabel = tag + "_cal";
+        return result;
     }
 
     private function _refineStrategicMove(params:Object, result:Object):Object {
@@ -510,6 +595,8 @@ class org.flashNight.hana.Gobang.GobangAI {
             return null;
         }
 
+        result = _verifyTSSResult(result);
+        result = _calibratePreSearchScore(result);
         result = _refineStrategicMove(params, result);
         result = _refineThreatDefenseMove(params, result);
 
@@ -663,6 +750,11 @@ class org.flashNight.hana.Gobang.GobangAI {
             return {done: true, x: -1, y: -1, score: 0, phaseLabel: "no_move",
                     nodes: stepResult.nodes, rootIdx: stepResult.rootIdx, rootTotal: stepResult.rootTotal};
         }
+
+        // TSS 验证: 如果搜索返回 TSS 级别分数，验证是否为虚假正向
+        stepResult = _verifyTSSResult(stepResult);
+        // P4 校准: 强制防守走法的分数膨胀修正
+        stepResult = _calibratePreSearchScore(stepResult);
 
         stepResult = _refineStrategicMove(_asyncParams, stepResult);
         stepResult = _refineThreatDefenseMove(_asyncParams, stepResult);

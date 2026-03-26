@@ -157,22 +157,51 @@ Agent 可以全自动执行以下循环：
 **单轮耗时**：~1 分钟（编译 30s + Trainer 20s + 分析 10s）
 **每 30 分钟可以跑 ~20 轮迭代**
 
-## 当前基线 (2026-03-26)
+## 当前基线 (2026-03-26 R19)
 
 ```
-Total: 20 | Local AI: 18/20 (90%) | Rapfi: 18/20 (90%)
-  must_block:   5/5 (100%)
-  defense:      8/8 (100%)
+Total: 44 | Run: 42 | Skipped: 2 (opening book)
+Local AI accuracy: 39/42 (93%)
+Rapfi accuracy:    41/42 (98%)
+  must_block:   7/7 (100%)
+  defense:     14/15 (93%)
   double_three: 2/2 (100%)
   vcf:          2/2 (100%)
-  tactical:     1/1 (100%)
-  mid_game:     0/2 (0%)    ← 主要弱点
+  vcf_defense:  2/2 (100%)
+  gap_four:     2/2 (100%)
+  tactical:     6/6 (100%)
+  mid_game:     4/6 (67%)    ← 改善中（0%→67%）
+  opening:      2/2 skipped (book覆盖)
 ```
 
-**已知弱点**：
-1. mid_game 分类 0/2 — 复杂中盘判断力不足
-2. VCF gate 测试 FAIL（2/147）— 一维化后搜索路径变化导致 VCF 门槛未被触发
-3. 实际对局中 difficulty drop 在劣势局面下仍可能触发（已加 DROP_LOSING_THRESHOLD=1500 保护）
+**18轮自动化迭代成果**：
+- 题库: 20→44 题（+24），覆盖 9 个分类
+- 准确率: 88%→93%（+5pp）
+- mid_game: 0/2→4/6（从0%到67%）
+- 开局库: 1109→1111 entries（+4 Rapfi 验证补丁）
+- P3 门控: 对手有活三时跳过己方冲四，交给搜索引擎
+- LUT 单调性链完整验证
+
+**剩余 3 个 FAIL（不可通过参数调优解决）**：
+1. `mid_complex_diagonal` — P4a 截获的已输局面（对手双活四）
+2. `mid_p3_should_not_rush` — P4a 截获（对手有活四，必须堵）
+3. `def_diag_two_two_block` — 深度不足（d=10 vs Rapfi d=35）
+
+**参数变更汇总**（vs 初始值）：
+| 参数 | 初始 | 优化后 | 原因 |
+|------|------|--------|------|
+| TWO | 10 | 20 | 空间控制（修复 mid_multi_threat） |
+| THREE | 100 | 400 | 活三威胁感知（核心改进） |
+| BLOCK_THREE | 15 | 100 | 防守意识（>TWO×2=40 单调性） |
+| TWO_TWO | 20 | 150 | 交叉二连识别 |
+| BLOCK_FOUR | 150 | 900 | 防守权重（>THREE×2=800 单调性） |
+| BLOCK_FIVE | 1500 | 100000 | 胜着等同 FIVE |
+| BRIDGE_SIDE | 8 | 12 | 连接评估 |
+| BRIDGE_LINK | 12 | 18 | 连接评估 |
+| BRIDGE_SPAN | 8 | 12 | 跨度评估 |
+| posWeight | ×2 | ×4 | 中心偏好 |
+| pointsLimit(d100) | 20 | 25 | 候选数扩展 |
+| P3 门控 | 无 | opThreeCount===0 | 避免复杂局面误判 |
 
 ## 性能优化历史
 

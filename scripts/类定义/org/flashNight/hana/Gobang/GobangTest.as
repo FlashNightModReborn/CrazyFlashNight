@@ -610,7 +610,7 @@ class org.flashNight.hana.Gobang.GobangTest {
         var e2:GobangEval = new GobangEval(15);
         e2.move(7, 7, 1);
         var s2:Number = e2.evaluate(1);
-        assert(s2 === 240, "Eval single black center = 240 (got " + s2 + ")");
+        assert(s2 === 320, "Eval single black center = 320 (got " + s2 + ")");
 
         // Test 3: Black+white adjacent
         var e3:GobangEval = new GobangEval(15);

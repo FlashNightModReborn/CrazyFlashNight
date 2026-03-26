@@ -29,7 +29,7 @@ class org.flashNight.hana.Gobang.GobangEval {
                 var dx:Number = i - center; if (dx < 0) dx = -dx;
                 var dy:Number = j - center; if (dy < 0) dy = -dy;
                 var dist:Number = dx > dy ? dx : dy;
-                _posWeight[i * sz + j] = (center - dist) * 2;
+                _posWeight[i * sz + j] = (center - dist) * 5; // R28: ×4→×5 中心偏好
             }
         }
         _posWeightReady = true;
@@ -52,9 +52,9 @@ class org.flashNight.hana.Gobang.GobangEval {
     private static var dirtyMap:Array = null;
     private static var dirtyMapSize:Number = 0;
     private static var TWO_COMBO_BONUS:Number = 50;
-    private static var BRIDGE_SIDE_BONUS:Number = 8;
-    private static var BRIDGE_LINK_BONUS:Number = 12;
-    private static var BRIDGE_SPAN_BONUS:Number = 8;
+    private static var BRIDGE_SIDE_BONUS:Number = 16; // R27: 12→16
+    private static var BRIDGE_LINK_BONUS:Number = 18;
+    private static var BRIDGE_SPAN_BONUS:Number = 12;
     private static var TRUE_THREAT_LIMIT:Number = 2;
     private static var EXACT_URGENT_OPP_WIN_PENALTY:Number = 300000;
     private static var EXACT_URGENT_OPP_TRUE_FOUR_PENALTY:Number = 90000;
@@ -337,17 +337,21 @@ class org.flashNight.hana.Gobang.GobangEval {
         var a:Array = new Array(51);
         var i:Number = 50;
         while (i >= 0) { a[i] = 0; i--; }
-        a[2] = 15;       // TWO（was 10）— 略增早期空间控制权重
-        a[3] = 200;      // THREE（was 100）— 活三威胁翻倍，减少 horizon deflation
-        a[4] = 1000;     // FOUR — 不变
-        a[5] = 100000;   // FIVE — 不变
-        a[22] = 80;      // TWO_TWO（was 20）— 交叉二连是双三前驱，大幅提升
-        a[30] = 60;      // BLOCK_THREE（was 15）— 单调性: 必须 > TWO×2=30
-        a[33] = 15000;   // THREE_THREE — 不变，双活三近乎必杀
-        a[40] = 450;     // BLOCK_FOUR（was 150）— 单调性: 必须 > THREE×2=400
-        a[43] = 50000;   // FOUR_THREE — 不变，无法防御的必杀
-        a[44] = 50000;   // FOUR_FOUR — 不变，无法防御的必杀
-        a[50] = 100000;  // BLOCK_FIVE（was 1500）— 胜着就是胜着
+        // 2026-03-26 自动化调优结果（18轮迭代，Rapfi 验证）
+        // 单调性链: TWO(20)×2=40 < BLOCK_THREE(100) < TWO_TWO(150)
+        //   < THREE(400)×2=800 < BLOCK_FOUR(900) < FOUR(1000)×2=2000
+        //   < THREE_THREE(15000) < FOUR_THREE/FOUR_FOUR(50000) < FIVE/BLOCK_FIVE(100000)
+        a[2] = 20;       // TWO — 早期空间控制
+        a[3] = 440;      // THREE — 活三威胁 (R14: 400→440, 保持 BF(900)>440×2=880)
+        a[4] = 1200;     // FOUR — 活四 (R20: 1000→1200)
+        a[5] = 100000;   // FIVE — 成五
+        a[22] = 180;     // TWO_TWO — 交叉二连 (R15: 150→180)
+        a[30] = 120;     // BLOCK_THREE — 堵活三 (R9: 100→120 防守意识)
+        a[33] = 18000;   // THREE_THREE — 双活三 (R22: 15000→18000)
+        a[40] = 1000;    // BLOCK_FOUR — 堵活四 (R21: 900→1000)
+        a[43] = 60000;   // FOUR_THREE — 冲四活三 (R26: 50000→60000)
+        a[44] = 60000;   // FOUR_FOUR — 双冲四 (R26: 50000→60000)
+        a[50] = 100000;  // BLOCK_FIVE — 胜着
         _scoreLUT = a;
     }
 

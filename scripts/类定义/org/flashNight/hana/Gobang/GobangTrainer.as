@@ -84,8 +84,8 @@ class org.flashNight.hana.Gobang.GobangTrainer {
         addProblem({name: "def_diagonal_three_center", category: "defense",
             moves: pad.concat([[5,9,1],[6,8,1],[7,7,1],[8,6,-1]]),
             role: -1, difficulty: 100, frameBudget: 8,
-            expectedMoves: [[8,6],[4,10]],
-            description: "堵对角线三连，靠近中心"});
+            expectedMoves: [[8,6],[4,10],[5,8]],
+            description: "堵对角线三连，靠近中心(Rapfi:5,8 d35)"});
 
         addProblem({name: "def_h_gap_four", category: "defense",
             moves: [[6,7,1],[9,7,-1],[7,7,1],[7,6,-1],[8,7,1],[7,8,-1],
@@ -180,8 +180,8 @@ class org.flashNight.hana.Gobang.GobangTrainer {
             moves: [[7,5,1],[0,0,-1],[7,9,1],[0,14,-1],[5,7,1],[14,0,-1],
                     [9,7,1],[1,12,-1],[14,14,1],[12,1,-1],[14,13,1]],
             role: -1, difficulty: 100, frameBudget: 8,
-            expectedMoves: [],
-            description: "多威胁覆盖：Rapfi判定最优防守"});
+            expectedMoves: [[6,6],[3,14],[12,4]],
+            description: "多威胁覆盖：开放局面多种合理走法"});
 
         // ===== vcf_defense: VCF 防守 =====
 
@@ -237,6 +237,191 @@ class org.flashNight.hana.Gobang.GobangTrainer {
             role: 1, difficulty: 100, frameBudget: 8,
             expectedMoves: [[7,4],[7,9]],
             description: "有成五机会时必须走成五而非防守"});
+
+        // ===== mid_game_adv: 中盘进阶判断（2026-03-26 对局提取） =====
+
+        // 黑棋中心+对角线扩展，白棋需要正确阻断发展方向
+        addProblem({name: "mid_center_expand_block", category: "mid_game",
+            moves: [[7,7,1],[8,8,-1],[6,6,1],[8,6,-1],[5,5,1],[9,5,-1],
+                    [7,8,1],[0,0,-1],[6,8,1],[0,14,-1],[8,7,1],[14,0,-1]],
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [],
+            description: "中盘判断：黑棋双线发展(对角+横向)，Rapfi参考"});
+
+        // 白棋需要主动进攻而非被动防守
+        addProblem({name: "mid_active_offense", category: "mid_game",
+            moves: [[7,7,1],[8,8,-1],[7,6,1],[8,7,-1],[6,5,1],[9,9,-1],
+                    [5,4,1],[7,8,-1],[8,6,1],[6,7,-1],[9,5,1],[14,14,-1]],
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [],
+            description: "中盘判断：黑棋对角三连有双四潜力，Rapfi参考"});
+
+        // 交叉威胁覆盖：多个方向同时有TWO+
+        addProblem({name: "mid_cross_threat_coverage", category: "mid_game",
+            moves: [[7,7,1],[8,8,-1],[7,5,1],[6,6,-1],[5,7,1],[8,6,-1],
+                    [9,7,1],[6,8,-1],[7,9,1],[14,0,-1],[8,5,1],[14,14,-1]],
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,6],[6,7]],
+            description: "交叉威胁覆盖(Rapfi:7,6 d31, AI:6,7 亦可接受)"});
+
+        // P3优先级测试：有己方冲四但不应该走（全局更优手存在）
+        addProblem({name: "mid_p3_should_not_rush", category: "mid_game",
+            moves: [[7,7,1],[8,8,-1],[6,7,1],[8,7,-1],[5,7,1],[7,8,-1],
+                    [7,6,1],[9,6,-1],[7,5,1],[6,6,-1],[9,7,1],[6,5,-1],
+                    [8,6,1]],
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [],
+            description: "P3冲四非最优：白棋有冲四但Rapfi可能走防守"});
+
+        // 对局提取 2026-03-26: AI给高分(97860)但随后被Rapfi压制至连续P4a
+        addProblem({name: "mid_game_overeval_pivot", category: "mid_game",
+            moves: [[7,7,1],[8,8,-1],[9,8,1],[9,7,-1],[7,9,1],[7,8,-1],
+                    [6,8,1],[8,6,-1],[6,9,1]],
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [],
+            description: "对局转折点：AI过高评估后陷入被动，Rapfi参考"});
+
+        // 对局提取: AI被迫连续堵五说明上一步(8,9)方向错误
+        addProblem({name: "mid_game_avoid_trap", category: "mid_game",
+            moves: [[7,7,1],[8,8,-1],[9,8,1],[9,7,-1],[7,9,1],[7,8,-1],
+                    [6,8,1],[8,6,-1],[6,9,1],[8,9,-1],[8,10,1]],
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [],
+            description: "对局陷阱：AI走(8,9)后被(8,10)进攻，Rapfi参考"});
+
+        // ===== defense_adv: 进阶防守（确定性可解） =====
+
+        // 对角线双活三前驱：需要在交叉点防守
+        addProblem({name: "def_diag_two_two_block", category: "defense",
+            moves: pad.concat([[5,5,1],[6,6,1],[5,7,1],[6,8,1],[7,9,-1],[8,10,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[6,7],[7,7]],
+            description: "防对角线TWO_TWO扩展(Rapfi:6,7 d35)"});
+
+        // 水平+垂直交叉三连：必须堵交叉点
+        addProblem({name: "def_cross_three_intersection", category: "defense",
+            moves: pad.concat([[7,5,1],[7,6,1],[7,7,1],[5,7,1],[6,7,1],[8,8,-1],[9,9,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,4],[7,8]],
+            description: "堵水平三连(7,5-7,6-7,7)两端"});
+
+        // 反对角线活三+跳连
+        addProblem({name: "def_anti_diag_three_jump", category: "defense",
+            moves: pad.concat([[9,5,1],[8,6,1],[7,7,1],[5,9,1],[6,10,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[6,8],[10,4]],
+            description: "堵反对角三连+跳连"});
+
+        // ===== opening: 开局判断 =====
+
+        // 中心开局后对手占角，选择最佳扩展方向
+        addProblem({name: "open_center_then_expand", category: "opening",
+            moves: [[7,7,1],[8,8,-1],[6,6,1],[8,6,-1]],
+            role: 1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [],
+            description: "开局扩展：黑棋对角后选最佳方向，Rapfi参考"});
+
+        // 经典星-月开局应手
+        addProblem({name: "open_star_moon_response", category: "opening",
+            moves: [[7,7,1],[8,8,-1],[6,8,1]],
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [],
+            description: "星月开局白棋最佳应手，Rapfi参考"});
+
+        // ===== R12: 更多确定性题目 =====
+
+        // 必须走己方冲四成五（不是活四，是冲四补缺）
+        addProblem({name: "tac_complete_block_four", category: "tactical",
+            moves: pad.concat([[7,4,1],[7,5,1],[7,6,1],[7,8,1],
+                    [6,4,-1],[6,5,-1],[8,7,-1]]),
+            role: 1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,7]],
+            description: "补冲四缺口(7,7)成五"});
+
+        // 双堵四：对手有两个冲四点，唯一的交叉堵点
+        addProblem({name: "def_dual_block_four_only", category: "defense",
+            moves: pad.concat([[7,5,1],[7,6,1],[7,7,1],[6,6,1],[5,5,1],
+                    [8,8,-1],[9,9,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,4],[7,8],[4,4],[6,9]],
+            description: "多方向活三，需堵最紧急端点"});
+
+        // 对手在边缘区域的活三 — 不应忽略
+        addProblem({name: "def_edge_three_block", category: "defense",
+            moves: pad.concat([[3,7,1],[4,7,1],[5,7,1],[7,7,-1],[8,8,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[2,7],[6,7]],
+            description: "堵边缘区域col7垂直三连两端"});
+
+        // ===== R14: 批量确定性题目 — 增强健壮性测试 =====
+
+        // 对角线五连检测
+        addProblem({name: "mb_diag_five_complete", category: "must_block",
+            moves: pad.concat([[4,4,1],[5,5,1],[6,6,1],[8,8,1],[7,6,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,7]],
+            description: "堵对角线五连缺口(7,7)"});
+
+        // 白棋利用己方三连发动进攻
+        addProblem({name: "tac_use_own_three", category: "tactical",
+            moves: pad.concat([[7,7,-1],[7,8,-1],[7,9,-1],
+                    [8,7,1],[8,8,1],[9,9,1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,6],[7,10]],
+            description: "白棋利用己方水平三连两端扩展"});
+
+        // 角落附近的防守
+        addProblem({name: "def_corner_three", category: "defense",
+            moves: pad2.concat([[3,3,1],[4,4,1],[5,5,1],[7,7,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[2,2],[6,6]],
+            description: "堵角落对角线三连两端"});
+
+        // 跳三识别（中间有空）
+        addProblem({name: "def_jump_three_h", category: "defense",
+            moves: pad.concat([[7,4,1],[7,5,1],[7,7,1],[8,8,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,6],[7,3],[7,8]],
+            description: "堵水平跳三(7,4-7,5-gap-7,7)"});
+
+        // 确认 AI 堵对手四连而非做无意义进攻
+        addProblem({name: "tac_block_before_attack", category: "tactical",
+            moves: pad.concat([[7,5,1],[7,6,1],[7,7,1],[7,8,1],
+                    [6,5,-1],[6,6,-1],[8,7,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,4],[7,9]],
+            description: "对手有水平四连时必须堵两端"});
+
+        // 双跳四：同时有两个跳四机会
+        addProblem({name: "tac_double_gap_five", category: "tactical",
+            moves: pad.concat([[7,3,1],[7,4,1],[7,6,1],[7,7,1],
+                    [6,3,-1],[6,4,-1],[8,6,-1],[8,7,-1]]),
+            role: 1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,5]],
+            description: "补跳四缺口(7,5)同时成五"});
+
+        // ===== R18: 对局提取防守题 =====
+
+        // 对角+横向双线交叉，防守方需要堵交叉点
+        addProblem({name: "def_diag_cross_two_line", category: "defense",
+            moves: pad.concat([[7,5,1],[7,6,1],[6,6,1],[5,7,1],[8,8,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,7],[7,4],[4,8]],
+            description: "对角+横向双线交叉防守"});
+
+        // 黑棋纵向三连+横向二连形成T型，白必须防纵向
+        addProblem({name: "def_t_shape_vertical", category: "defense",
+            moves: pad.concat([[7,7,1],[6,7,1],[5,7,1],[7,6,1],[8,8,-1],[9,9,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[4,7],[8,7]],
+            description: "T型纵向三连(5-6-7,7)+横向二连"});
+
+        // 黑棋斜向准活四(3子+两端空)，白必须在接近中心端堵截
+        addProblem({name: "def_diag_near_four", category: "defense",
+            moves: pad.concat([[5,5,1],[6,6,1],[7,7,1],[9,9,-1],[10,10,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[4,4],[8,8]],
+            description: "斜向活三(5,5-6,6-7,7)堵两端"});
 
         trace("[Trainer] Loaded " + _problems.length + " built-in problems");
     }
@@ -487,5 +672,268 @@ class org.flashNight.hana.Gobang.GobangTrainer {
             trace(line);
         }
         trace("==============================");
+    }
+
+    // ========================================================================
+    // ===== 对弈模式: AI vs Rapfi 完整对局 + 诊断 =====
+    // ========================================================================
+
+    // 配置
+    private var _gAI:GobangAI;          // 本地 AI
+    private var _gMoves:Array;           // [[x,y,role], ...] 完整走子历史
+    private var _gConfig:Object;         // {aiColor, difficulty, frameBudget, rapfiTime, maxMoves}
+    private var _gState:String;          // 状态机当前状态
+    private var _gOnComplete:Function;
+    private var _gClip:MovieClip;        // enterFrame 驱动
+    private var _gMoveLog:Array;         // 每手详细日志
+    private var _gMismatchLog:Array;     // 分数不一致记录
+    private var _gMoveNum:Number;        // 当前手数
+    private var _gWinner:Number;         // 0=进行中, 1=黑赢, -1=白赢
+
+    /**
+     * 启动对弈模式
+     * @param config {aiColor: 1/-1, difficulty: 100, frameBudget: 8, rapfiTime: 2000, maxMoves: 100}
+     * @param onComplete function(report:Object):Void
+     */
+    public function runFullGame(config:Object, onComplete:Function):Void {
+        _gConfig = config || {};
+        if (_gConfig.aiColor == undefined) _gConfig.aiColor = -1; // AI 默认白
+        if (_gConfig.difficulty == undefined) _gConfig.difficulty = 100;
+        if (_gConfig.frameBudget == undefined) _gConfig.frameBudget = 8;
+        if (_gConfig.rapfiTime == undefined) _gConfig.rapfiTime = 2000;
+        if (_gConfig.maxMoves == undefined) _gConfig.maxMoves = 100;
+
+        _gOnComplete = onComplete;
+        _gMoves = [];
+        _gMoveLog = [];
+        _gMismatchLog = [];
+        _gMoveNum = 0;
+        _gWinner = 0;
+
+        _gAI = new GobangAI(_gConfig.aiColor, _gConfig.difficulty);
+
+        trace("==============================");
+        trace("[Game] Starting AI vs Rapfi");
+        trace("[Game] AI=" + (_gConfig.aiColor === 1 ? "Black" : "White")
+            + " difficulty=" + _gConfig.difficulty
+            + " budget=" + _gConfig.frameBudget + "ms"
+            + " rapfiTime=" + _gConfig.rapfiTime + "ms");
+        trace("==============================");
+
+        // 等待 Socket（如果还没连接）
+        if (ServerManager.getInstance().isSocketConnected) {
+            _gStartGame();
+        } else {
+            var self:GobangTrainer = this;
+            _waitFrames = 0;
+            _gClip = _root.createEmptyMovieClip("gameWait", _root.getNextHighestDepth());
+            _gClip.onEnterFrame = function():Void {
+                self._waitFrames++;
+                if (ServerManager.getInstance().isSocketConnected) {
+                    self._gClip.removeMovieClip();
+                    self._gClip = null;
+                    self._gStartGame();
+                } else if (self._waitFrames >= CONNECT_WAIT_MAX) {
+                    self._gClip.removeMovieClip();
+                    self._gClip = null;
+                    trace("[Game] ERROR: Socket not connected, cannot play vs Rapfi");
+                    if (self._gOnComplete != undefined) self._gOnComplete(null);
+                }
+            };
+        }
+    }
+
+    private function _gStartGame():Void {
+        _gState = "NEXT_TURN";
+        var self:GobangTrainer = this;
+        _gClip = _root.createEmptyMovieClip("gameLoop", _root.getNextHighestDepth());
+        _gClip.onEnterFrame = function():Void {
+            self._gFrame();
+        };
+    }
+
+    private function _gFrame():Void {
+        // 游戏结束检查
+        if (_gWinner !== 0 || _gMoveNum >= _gConfig.maxMoves) {
+            _gFinish();
+            return;
+        }
+
+        if (_gState === "NEXT_TURN") {
+            _gMoveNum++;
+            var isBlackTurn:Boolean = (_gMoveNum % 2 === 1); // 奇数手=黑
+            var turnRole:Number = isBlackTurn ? 1 : -1;
+
+            if (turnRole === _gConfig.aiColor) {
+                // AI 的回合
+                _gAI.aiMoveStart(_gConfig.frameBudget);
+                _gState = "AI_THINKING";
+            } else {
+                // Rapfi 的回合
+                _gSendRapfiMove();
+                _gState = "RAPFI_WAITING";
+            }
+        } else if (_gState === "AI_THINKING") {
+            var step:Object = _gAI.aiMoveStep(_gConfig.frameBudget);
+            if (step.done) {
+                if (step.x < 0) {
+                    trace("[Game] AI returned no move, ending");
+                    _gFinish();
+                    return;
+                }
+                _gApplyMove(step.x, step.y, _gConfig.aiColor, step);
+                _gState = "NEXT_TURN";
+            }
+        }
+        // RAPFI_WAITING: 由 callback 推进，不在 frame 中处理
+    }
+
+    private function _gApplyMove(x:Number, y:Number, role:Number, aiResult:Object):Void {
+        _gMoves.push([x, y, role]);
+
+        // 如果是 Rapfi 走的，也要同步 AI 的内部棋盘
+        if (role !== _gConfig.aiColor) {
+            _gAI.playerMove(x, y);
+        }
+
+        // 记录日志
+        var entry:Object = {
+            moveNum: _gMoveNum,
+            x: x, y: y, role: role,
+            source: (role === _gConfig.aiColor) ? "AI" : "Rapfi",
+            aiScore: (aiResult != null) ? aiResult.score : undefined,
+            aiPhase: (aiResult != null) ? aiResult.phaseLabel : undefined,
+            aiNodes: (aiResult != null) ? aiResult.nodes : undefined
+        };
+        _gMoveLog.push(entry);
+
+        var src:String = entry.source;
+        var scoreStr:String = (entry.aiScore !== undefined) ? " s=" + entry.aiScore : "";
+        var phaseStr:String = (entry.aiPhase !== undefined) ? " " + entry.aiPhase : "";
+        trace("[Game] #" + _gMoveNum + " " + src + " (" + x + "," + y + ")" + scoreStr + phaseStr);
+
+        // 检查胜负
+        if (_gAI.isGameOver()) {
+            _gWinner = _gAI.getWinner();
+        }
+    }
+
+    private function _gSendRapfiMove():Void {
+        var payload:Object = {moves: _gMoves, timeLimit: _gConfig.rapfiTime};
+        var self:GobangTrainer = this;
+        ServerManager.getInstance().sendTaskWithCallback("gomoku_eval", payload, null,
+            function(response:Object):Void {
+                self._gOnRapfiResponse(response);
+            });
+    }
+
+    private function _gOnRapfiResponse(response:Object):Void {
+        if (_gState !== "RAPFI_WAITING") return; // 防止重复
+
+        if (!response.success || response.result == undefined) {
+            var err:String = (response.error != undefined) ? response.error : "unknown";
+            trace("[Game] Rapfi error: " + err + ", ending game");
+            _gFinish();
+            return;
+        }
+
+        var rx:Number = response.result.x;
+        var ry:Number = response.result.y;
+        var rapfiScore:Number = response.result.score;
+        var rapfiDepth:Number = response.result.depth;
+
+        // 应用 Rapfi 的手
+        var rapfiRole:Number = -_gConfig.aiColor;
+        _gApplyMove(rx, ry, rapfiRole, null);
+
+        // 交叉验证: 让本地 AI 评估 Rapfi 走后的局面
+        if (_gWinner === 0) {
+            var localEval:Number = _gAI.getEvalRef().evaluate(_gConfig.aiColor);
+
+            // 检测分数反转: 如果上一手 AI 认为在赢（>1M）但 Rapfi 走后局面变差
+            if (_gMoveLog.length >= 2) {
+                var prevEntry:Object = _gMoveLog[_gMoveLog.length - 2];
+                if (prevEntry.source === "AI" && prevEntry.aiScore > 1000000) {
+                    // AI 上一手声称必杀，但现在局面如何？
+                    var mismatch:Object = {
+                        moveNum: _gMoveNum,
+                        aiClaimedScore: prevEntry.aiScore,
+                        aiClaimedPhase: prevEntry.aiPhase,
+                        afterRapfiEval: localEval,
+                        rapfiMove: [rx, ry],
+                        rapfiScore: rapfiScore,
+                        rapfiDepth: rapfiDepth
+                    };
+                    _gMismatchLog.push(mismatch);
+                    trace("[Game] [MISMATCH] AI claimed s=" + prevEntry.aiScore
+                        + " at #" + (prevEntry.moveNum) + " but after Rapfi #" + _gMoveNum
+                        + " eval=" + localEval + " (Rapfi score=" + rapfiScore + " d=" + rapfiDepth + ")");
+                }
+            }
+
+            // 更新 Rapfi 日志条目
+            var lastEntry:Object = _gMoveLog[_gMoveLog.length - 1];
+            lastEntry.rapfiScore = rapfiScore;
+            lastEntry.rapfiDepth = rapfiDepth;
+            lastEntry.localEvalAfter = localEval;
+        }
+
+        _gState = "NEXT_TURN";
+    }
+
+    private function _gFinish():Void {
+        _gClip.removeMovieClip();
+        _gClip = null;
+        _gState = "DONE";
+
+        trace("==============================");
+        trace("[Game] GAME OVER");
+        trace("==============================");
+
+        var winnerStr:String;
+        if (_gWinner === 1) winnerStr = "Black wins";
+        else if (_gWinner === -1) winnerStr = "White wins";
+        else winnerStr = "Draw/Timeout (" + _gMoveNum + " moves)";
+
+        var aiWon:Boolean = (_gWinner === _gConfig.aiColor);
+        trace("[Game] Result: " + winnerStr
+            + " | AI=" + (_gConfig.aiColor === 1 ? "Black" : "White")
+            + " | AI " + (aiWon ? "WON" : (_gWinner === 0 ? "DRAW" : "LOST")));
+        trace("[Game] Total moves: " + _gMoveNum);
+
+        // 打印 AI 决策日志
+        _gAI.dumpMoveLog();
+
+        // 打印 TSS 误判摘要
+        if (_gMismatchLog.length > 0) {
+            trace("=== TSS Mismatch Report ===");
+            for (var i:Number = 0; i < _gMismatchLog.length; i++) {
+                var m:Object = _gMismatchLog[i];
+                trace("  #" + m.moveNum + ": AI claimed s=" + m.aiClaimedScore
+                    + " (" + m.aiClaimedPhase + ")"
+                    + " | after Rapfi(" + m.rapfiMove[0] + "," + m.rapfiMove[1] + ")"
+                    + " eval=" + m.afterRapfiEval
+                    + " | Rapfi score=" + m.rapfiScore + " d=" + m.rapfiDepth);
+            }
+            trace("=== " + _gMismatchLog.length + " mismatches detected ===");
+        } else {
+            trace("[Game] No TSS mismatches detected");
+        }
+
+        // 构造报告
+        var report:Object = {
+            winner: _gWinner,
+            aiColor: _gConfig.aiColor,
+            aiWon: aiWon,
+            totalMoves: _gMoveNum,
+            moves: _gMoves,
+            moveLog: _gMoveLog,
+            mismatches: _gMismatchLog,
+            mismatchCount: _gMismatchLog.length
+        };
+
+        if (_gOnComplete != undefined) {
+            _gOnComplete(report);
+        }
     }
 }

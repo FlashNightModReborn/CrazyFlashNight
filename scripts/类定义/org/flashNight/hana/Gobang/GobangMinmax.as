@@ -10,16 +10,16 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     private static var DEFAULT_BUDGET_MS:Number = 3000;
     private static var TIME_CHECK_MASK:Number = 7;
     private static var LEAF_TSS_HINT_RADIUS:Number = 3;
-    private static var LEAF_TSS_MAX_PLY:Number = 5;
-    private static var LEAF_TSS_ATTACK_CAP:Number = 3;
-    private static var LEAF_TSS_DEFENSE_CAP:Number = 4;
+    private static var LEAF_TSS_MAX_PLY:Number = 6; // R11: 5→6 加深叶节点TSS
+    private static var LEAF_TSS_ATTACK_CAP:Number = 4; // R13: 3→4 更多攻击走法
+    private static var LEAF_TSS_DEFENSE_CAP:Number = 5; // R13: 4→5 更多防守走法
     private static var LEAF_TSS_DEFENSE_SCAN_LIMIT:Number = 6;
     private static var LEAF_TSS_NODE_CAP:Number = 40;
     private static var LEAF_TSS_SCORE:Number = 2000000;
     private static var BRIDGE_PROBE_MIN_HISTORY:Number = 10;
     private static var BRIDGE_PROBE_DEPTH:Number = 4;
     private static var BRIDGE_PROBE_POINTS_LIMIT:Number = 4;
-    private static var BRIDGE_PROBE_DEEP_DEPTH:Number = 6;
+    private static var BRIDGE_PROBE_DEEP_DEPTH:Number = 8; // R16: 6→8 bridge深搜加深
     private static var BRIDGE_PROBE_DEEP_POINTS_LIMIT:Number = 3;
     private static var BRIDGE_PROBE_URGENT_FOUR_LIMIT:Number = 2;
     private static var BRIDGE_PROBE_URGENT_LIMIT:Number = 2;
@@ -38,7 +38,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     private static var VCF_BUDGET_PER_DEPTH:Number = 4;
     private static var VCF_BUDGET_MAX:Number = 40;
     private static var VCF_PLY_BASE:Number = 3;
-    private static var VCF_PLY_MAX:Number = 7;
+    private static var VCF_PLY_MAX:Number = 9; // R17: 7→9 VCF更深搜索
     private var _board:GobangBoard;
     private var _eval:GobangEval;
     private var _cache:GobangCache;
@@ -1045,6 +1045,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         var opLiveFourX:Number = -1; var opLiveFourY:Number = -1;
         var opComboCount:Number = 0;
         var opComboX:Number = -1; var opComboY:Number = -1;
+        var opThreeCount:Number = 0; // R3: 对手活三计数，用于 P3 门控
 
         for (var fi:Number = 0; fi < top; fi++) {
             var fp:Number = frontier[fi];
@@ -1090,6 +1091,12 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                 }
             }
 
+            // R3: 对手活三计数（shape=3 在任一方向）
+            if (sc[oIdx] === 3 || sc[oIdx + 225] === 3 ||
+                sc[oIdx + 450] === 3 || sc[oIdx + 675] === 3) {
+                opThreeCount++;
+            }
+
             // P4b: 对手复合威胁点检测
             // 双冲四(FOUR_FOUR): 2+ 方向 BLOCK_FOUR(40) → 不可防
             // 冲四活三(FOUR_THREE): BLOCK_FOUR(40) + THREE(3) → 不可防
@@ -1120,7 +1127,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         }
 
         // P3: 己方活四
-        if (myLiveFourX >= 0) {
+        // R3 门控: 对手有活三时跳过 P3，交给搜索引擎评估全局最优
+        if (myLiveFourX >= 0 && opThreeCount === 0) {
             return {x: myLiveFourX, y: myLiveFourY, score: GobangShape.FIVE_SCORE - 2, tag: "P3_myFour"};
         }
 
