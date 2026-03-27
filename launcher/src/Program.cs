@@ -2,6 +2,7 @@
 // C# 5 语法
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -119,9 +120,36 @@ class Program
 
         LogManager.Log("[Guardian] Bus ready: HTTP=" + httpPort + " Socket=" + socketPort);
 
+        // === 快捷键拦截（独立进程，永不超时）===
+
+        string guardExe = Path.Combine(projectRoot, "hotkey_guard.exe");
+        Process guardProc = null;
+        if (File.Exists(guardExe))
+        {
+            try
+            {
+                ProcessStartInfo gsi = new ProcessStartInfo();
+                gsi.FileName = guardExe;
+                gsi.Arguments = Process.GetCurrentProcess().Id.ToString();
+                gsi.UseShellExecute = false;
+                gsi.CreateNoWindow = true;
+                guardProc = Process.Start(gsi);
+                LogManager.Log("[Guardian] HotkeyGuard started, PID=" + guardProc.Id);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Guardian] HotkeyGuard failed: " + ex.Message);
+            }
+        }
+        else
+        {
+            LogManager.Log("[Guardian] hotkey_guard.exe not found, shortcuts not blocked");
+        }
+
         // === 守护进程核心 ===
 
         WindowManager windowManager = new WindowManager();
+
         ProcessManager processManager = new ProcessManager(
             config.FlashPlayerPath, config.SwfPath);
 

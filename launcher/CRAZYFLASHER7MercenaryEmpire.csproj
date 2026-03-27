@@ -9,6 +9,7 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <RootNamespace>CF7Launcher</RootNamespace>
     <NoWin32Manifest>true</NoWin32Manifest>
+    <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

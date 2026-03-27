@@ -9,7 +9,6 @@ namespace CF7Launcher.Guardian
 {
     public class GuardianForm : Form
     {
-        // ── Win32 API ──
         [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
 
@@ -19,41 +18,42 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
 
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
         private const uint MOD_CONTROL = 0x0002;
         private const int WM_HOTKEY = 0x0312;
         private const uint KEYEVENTF_KEYUP = 0x0002;
 
-        // 热键 ID
-        private const int HK_BASE = 0xCF00;
+        // RegisterHotKey ID（仅 Guardian 自身动作）
+        private const int HK_CTRL_F = 0xCF01;
+        private const int HK_CTRL_Q = 0xCF02;
         private const int HK_ESC = 0xCF10;
-        private static readonly Keys[] HotkeyKeys = { Keys.Q, Keys.W, Keys.R, Keys.F, Keys.P, Keys.O };
+
+        // 工具栏按钮键
+        private static readonly Keys[] AllHotkeyKeys = { Keys.Q, Keys.W, Keys.R, Keys.F, Keys.P, Keys.O };
 
         private NotifyIcon _trayIcon;
         private ContextMenuStrip _trayMenu;
         private TextBox _logBox;
         private Panel _flashPanel;
 
-        // 工具栏
         private Panel _toolbar;
         private FlowLayoutPanel _hotkeyPanel;
         private bool _hotkeysExpanded;
 
-        // 底部日志
         private Panel _logBar;
         private TextBox _searchBox;
         private int _searchPos;
         private bool _logVisible;
         private int _logBarH = 180;
 
-        // 全屏
         private bool _isFullscreen;
         private Rectangle _savedBounds;
         private FormBorderStyle _savedBorderStyle;
 
-        // 热键
         private bool _hotkeysRegistered;
 
-        // Flash 进程监控
         private Process _flashProcess;
         private System.Windows.Forms.Timer _exitWatchdog;
 
@@ -65,7 +65,7 @@ namespace CF7Launcher.Guardian
         {
             InitializeComponent();
             SetupTrayIcon();
-            SetupHotkeyPolling();
+            SetupHotkeys();
             LogManager.Init(this, _logBox);
         }
 
@@ -113,7 +113,7 @@ namespace CF7Launcher.Guardian
             _logBar.Visible = false;
             _logBar.BackColor = Color.FromArgb(20, 20, 22);
 
-            // 拖拽手柄（日志面板顶部 4px 横条）
+            // 拖拽手柄
             Panel dragHandle = new Panel();
             dragHandle.Dock = DockStyle.Top;
             dragHandle.Height = 4;
@@ -183,9 +183,9 @@ namespace CF7Launcher.Guardian
             _logBox.ForeColor = Color.FromArgb(160, 160, 160);
             _logBox.BorderStyle = BorderStyle.None;
             _logBox.WordWrap = false;
-            _logBox.HideSelection = false; // 搜索高亮始终可见
+            _logBox.HideSelection = false;
 
-            // _logBar 子控件添加顺序：Fill 先加（最高 z-order → 最后布局 → 填充剩余）
+            // Fill 先加（最高 z-order → 最后布局）
             _logBar.Controls.Add(_logBox);
             _logBar.Controls.Add(searchBar);
             _logBar.Controls.Add(dragHandle);
@@ -211,16 +211,16 @@ namespace CF7Launcher.Guardian
                 "Q \u9000\u51FA",  "W \u5173\u95ED",  "R \u91CD\u7F6E",
                 "F \u5168\u5C4F",  "P \u622A\u56FE",  "O \u6253\u5F00"
             };
-            for (int i = 0; i < HotkeyKeys.Length; i++)
+            for (int i = 0; i < AllHotkeyKeys.Length; i++)
             {
                 Button hkBtn = CreateToolbarButton(labels[i], 66, uiFont);
                 hkBtn.Margin = new Padding(1, 0, 1, 0);
-                Keys captured = HotkeyKeys[i];
+                Keys captured = AllHotkeyKeys[i];
                 hkBtn.Click += delegate { HandleButtonClick(captured); };
                 _hotkeyPanel.Controls.Add(hkBtn);
             }
 
-            // 工具栏子控件顺序：Fill 先加
+            // Fill 先加
             _toolbar.Controls.Add(_hotkeyPanel);
 
             Button menuBtn = CreateToolbarButton("\u2630", 28, uiFont);
@@ -267,13 +267,11 @@ namespace CF7Launcher.Guardian
         }
 
         // ============================================================
-        //  RegisterHotKey（替代低级钩子）
+        //  热键：仅注册 Guardian 自身动作（Ctrl+F 全屏、Ctrl+Q 退出）
+        //  Flash SA 的原生快捷键由 WindowManager.SetMenu(null) 从源头禁用
         // ============================================================
 
-        /// <summary>
-        /// Handle 创建后一次性注册，退出时才注销。不做前台轮询。
-        /// </summary>
-        private void SetupHotkeyPolling()
+        private void SetupHotkeys()
         {
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
             t.Interval = 200;
@@ -290,22 +288,17 @@ namespace CF7Launcher.Guardian
         private void DoRegisterHotkeys()
         {
             if (_hotkeysRegistered) return;
-            int ok = 0;
-            for (int i = 0; i < HotkeyKeys.Length; i++)
-            {
-                bool result = RegisterHotKey(this.Handle, HK_BASE + i, MOD_CONTROL, (uint)HotkeyKeys[i]);
-                if (result) ok++;
-                else LogManager.Log("[Hotkey] FAILED Ctrl+" + HotkeyKeys[i]
-                    + " err=" + Marshal.GetLastWin32Error());
-            }
+            bool f = RegisterHotKey(this.Handle, HK_CTRL_F, MOD_CONTROL, (uint)Keys.F);
+            bool q = RegisterHotKey(this.Handle, HK_CTRL_Q, MOD_CONTROL, (uint)Keys.Q);
             _hotkeysRegistered = true;
-            LogManager.Log("[Hotkey] Registered " + ok + "/" + HotkeyKeys.Length);
+            LogManager.Log("[Hotkey] Ctrl+F=" + f + " Ctrl+Q=" + q);
         }
 
         private void DoUnregisterHotkeys()
         {
-            for (int i = 0; i < HotkeyKeys.Length; i++)
-                UnregisterHotKey(this.Handle, HK_BASE + i);
+            if (!_hotkeysRegistered) return;
+            UnregisterHotKey(this.Handle, HK_CTRL_F);
+            UnregisterHotKey(this.Handle, HK_CTRL_Q);
             UnregisterHotKey(this.Handle, HK_ESC);
             _hotkeysRegistered = false;
         }
@@ -315,15 +308,14 @@ namespace CF7Launcher.Guardian
             if (m.Msg == WM_HOTKEY)
             {
                 int id = m.WParam.ToInt32();
-                if (id == HK_ESC)
+                if (id == HK_ESC || id == HK_CTRL_F)
                 {
                     ToggleFullscreen();
                     return;
                 }
-                int idx = id - HK_BASE;
-                if (idx >= 0 && idx < HotkeyKeys.Length)
+                if (id == HK_CTRL_Q)
                 {
-                    HandleHotkeyFromSystem(HotkeyKeys[idx]);
+                    ForceExit();
                     return;
                 }
             }
@@ -331,18 +323,8 @@ namespace CF7Launcher.Guardian
         }
 
         // ============================================================
-        //  热键处理
+        //  工具栏按钮
         // ============================================================
-
-        private void HandleHotkeyFromSystem(Keys key)
-        {
-            switch (key)
-            {
-                case Keys.F: ToggleFullscreen(); break;
-                case Keys.Q: ForceExit(); break;
-                // W/R/P/O：仅拦截，不转发（由系统消费，Flash 已收不到）
-            }
-        }
 
         private void HandleButtonClick(Keys key)
         {
@@ -356,17 +338,13 @@ namespace CF7Launcher.Guardian
 
         private void SendKeyToFlash(Keys key)
         {
-            int idx = Array.IndexOf(HotkeyKeys, key);
-            if (idx >= 0)
-                UnregisterHotKey(this.Handle, HK_BASE + idx);
+            if (_windowManager != null && _windowManager.FlashHwnd != IntPtr.Zero)
+                SetForegroundWindow(_windowManager.FlashHwnd);
 
             keybd_event((byte)Keys.ControlKey, 0, 0, UIntPtr.Zero);
             keybd_event((byte)key, 0, 0, UIntPtr.Zero);
             keybd_event((byte)key, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
             keybd_event((byte)Keys.ControlKey, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
-
-            if (idx >= 0)
-                RegisterHotKey(this.Handle, HK_BASE + idx, MOD_CONTROL, (uint)key);
 
             LogManager.Log("[Input] Sent Ctrl+" + key + " to Flash");
         }
@@ -413,7 +391,7 @@ namespace CF7Launcher.Guardian
         }
 
         // ============================================================
-        //  日志面板
+        //  日志
         // ============================================================
 
         private void ToggleLog()
@@ -448,8 +426,6 @@ namespace CF7Launcher.Guardian
 
                 if (idx >= 0)
                 {
-                    // 不转移焦点——搜索框保持焦点以便连续 Enter
-                    // HideSelection=false 确保高亮始终可见
                     _logBox.SelectionStart = idx;
                     _logBox.SelectionLength = query.Length;
                     _logBox.ScrollToCaret();

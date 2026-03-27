@@ -200,17 +200,13 @@ namespace CF7Launcher.Bus
 
             // 编码非 ASCII 为 %uXXXX
             string safeCommand = EscapeForAS2(command);
-
-            // 推送到 AS2
             string msg = "{\"task\":\"console\",\"command\":\"" + EscapeJsonString(safeCommand) + "\"}";
-            _socketServer.PushToClient(msg);
 
-            // FIFO 等待结果
+            // 先入队再发送——防止 AS2 极速回复时 ResolveConsoleResult 找不到 entry
             ConsoleEntry entry = new ConsoleEntry();
             entry.Done = new ManualResetEvent(false);
             entry.Result = null;
 
-            // 5 秒超时
             entry.TimeoutTimer = new Timer(delegate
             {
                 entry.Result = "{\"success\":false,\"error\":\"Console command timed out\"}";
@@ -221,6 +217,9 @@ namespace CF7Launcher.Bus
             {
                 _pendingConsole.Enqueue(entry);
             }
+
+            // 入队完成后再推送到 AS2
+            _socketServer.PushToClient(msg);
 
             // 等待 AS2 返回或超时
             entry.Done.WaitOne(6000);
@@ -283,7 +282,9 @@ namespace CF7Launcher.Bus
             {
                 if (pair.StartsWith(prefix))
                 {
-                    return Uri.UnescapeDataString(pair.Substring(prefix.Length));
+                    // application/x-www-form-urlencoded: + 代表空格，%XX 代表其他字符
+                    string raw = pair.Substring(prefix.Length).Replace('+', ' ');
+                    return Uri.UnescapeDataString(raw);
                 }
             }
             return null;

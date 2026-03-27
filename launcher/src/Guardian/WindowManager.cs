@@ -37,6 +37,15 @@ namespace CF7Launcher.Guardian
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool IsWindow(IntPtr hWnd);
 
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetMenu(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern bool SetMenu(IntPtr hWnd, IntPtr hMenu);
+
+        [DllImport("user32.dll")]
+        private static extern bool DestroyMenu(IntPtr hMenu);
+
         private const int GWL_STYLE = -16;
         private const int WS_CAPTION = 0x00C00000;
         private const int WS_THICKFRAME = 0x00040000;
@@ -113,6 +122,17 @@ namespace CF7Launcher.Guardian
             style = style & ~WS_CAPTION & ~WS_THICKFRAME & ~WS_BORDER;
             style = style | WS_CHILD;
             SetWindowLong(_flashHwnd, GWL_STYLE, style);
+
+            // 移除 Flash SA 的菜单栏——釜底抽薪。
+            // Flash 的 Ctrl+F/Q/W/O/P 全部是菜单加速器，移除菜单后加速器表失效，
+            // 这些快捷键从源头消失，不需要任何钩子或热键拦截。
+            IntPtr hMenu = GetMenu(_flashHwnd);
+            if (hMenu != IntPtr.Zero)
+            {
+                SetMenu(_flashHwnd, IntPtr.Zero);
+                DestroyMenu(hMenu);
+                LogManager.Log("[WindowManager] Flash menu removed (accelerators disabled)");
+            }
 
             // 设置父窗口
             SetParent(_flashHwnd, _hostPanel.Handle);
