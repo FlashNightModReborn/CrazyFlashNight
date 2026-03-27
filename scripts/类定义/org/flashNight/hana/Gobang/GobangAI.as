@@ -52,6 +52,10 @@ class org.flashNight.hana.Gobang.GobangAI {
     private static var TSS_VERIFY_THRESHOLD:Number = -200; // 对手浅搜分 > 此值则 TSS 可疑
     // P4 校准: 预搜索强制防守走法(P4a/P4b)的分数虚高(≈FIVE_SCORE)，需校准为真实评估
     private static var P4_CALIBRATE_DEPTH:Number = 4;  // 校准搜索深度
+    private static var P4_MULTI_REVIEW_DEPTH:Number = 8;
+    private static var P4_MULTI_REVIEW_MARGIN:Number = 8;
+    private static var P4_MULTI_REVIEW_ROOT_LIMIT:Number = 5;
+    private static var P4_MULTI_REVIEW_TIE_DEPTH:Number = 10;
     private static var THREAT_TRIGGER_PROBE_BUDGET_MS:Number = 4;
     private static var THREAT_REFINE_PROBE_BUDGET_MS:Number = 6;
     private static var THREAT_REFINE_FORCE_LOSS_PENALTY:Number = 4000000;
@@ -59,6 +63,9 @@ class org.flashNight.hana.Gobang.GobangAI {
     private static var THREAT_REFINE_THREE_PENALTY:Number = 24000;
     private static var THREAT_REFINE_FOUR_BONUS:Number = 16;
     private static var THREAT_REFINE_THREE_BONUS:Number = 8;
+    private static var THREAT_REFINE_BLOCK_THREE_DIR_BONUS:Number = 600;
+    private static var THREAT_REFINE_BLOCK_TWO_DIR_BONUS:Number = 280;
+    private static var THREAT_REFINE_MULTI_BLOCK_DIR_BONUS:Number = 220;
     private static var THREAT_REFINE_DEF_BRIDGE_WEIGHT:Number = 4;
     private static var THREAT_REFINE_OWN_BRIDGE_WEIGHT:Number = 4;
     private static var THREAT_REFINE_OPP_BRIDGE_WEIGHT:Number = 24;
@@ -68,6 +75,16 @@ class org.flashNight.hana.Gobang.GobangAI {
     private static var THREAT_REFINE_MULTI_BRIDGE_PENALTY:Number = 60000;
     private static var THREAT_REFINE_MAJOR_THREAT_PENALTY:Number = 36000;
     private static var THREAT_REFINE_MULTI_THREAT_PENALTY:Number = 90000;
+    private static var THREAT_SOURCE_RESULT:Number = 1;
+    private static var THREAT_SOURCE_URGENT_FOUR:Number = 2;
+    private static var THREAT_SOURCE_URGENT_THREE:Number = 4;
+    private static var THREAT_SOURCE_DEF_BRIDGE:Number = 8;
+    private static var THREAT_SOURCE_ROOT:Number = 16;
+    private static var PIVOT_REFINE_MIN_HISTORY:Number = 8;
+    private static var PIVOT_REFINE_MAX_HISTORY:Number = 12;
+    private static var PIVOT_REFINE_ROOT_LIMIT:Number = 20;
+    private static var PIVOT_REFINE_DEPTH:Number = 6;
+    private static var PIVOT_REFINE_MARGIN:Number = 24;
 
     public function GobangAI(aiRole:Number, difficulty:Number) {
         if (aiRole === undefined) aiRole = -1;
@@ -236,15 +253,17 @@ class org.flashNight.hana.Gobang.GobangAI {
         return score;
     }
 
-    private function _appendStrategicCandidate(candidates:Array, x:Number, y:Number, bonus:Number):Void {
+    private function _appendStrategicCandidate(candidates:Array, x:Number, y:Number, bonus:Number, sourceMask:Number):Void {
         if (x < 0 || y < 0) return;
+        if (sourceMask === undefined) sourceMask = 0;
         for (var i:Number = 0; i < candidates.length; i++) {
             if (candidates[i][0] === x && candidates[i][1] === y) {
                 if (bonus > candidates[i][2]) candidates[i][2] = bonus;
+                candidates[i][3] |= sourceMask;
                 return;
             }
         }
-        candidates[candidates.length] = [x, y, bonus];
+        candidates[candidates.length] = [x, y, bonus, sourceMask];
     }
 
     // 检测对手是否有紧急 THREE+ 威胁（有任何 frontier 位置在任意方向有 THREE/FOUR/FIVE）
@@ -316,6 +335,153 @@ class org.flashNight.hana.Gobang.GobangAI {
             trace("[TSS_VERIFY] CONFIRMED: move=(" + result.x + "," + result.y
                 + ") tss_score=" + s + " opp_score=" + oppScore);
         }
+        return result;
+    }
+
+    private function _scoreReviewedP4Candidate(x:Number, y:Number):Object {
+        _board.put(x, y, _aiRole);
+        _eval.move(x, y, _aiRole);
+
+        var ownThreats:Array = _eval.getThreatMoves(_aiRole, 3, 8);
+        var oppThreats:Array = _eval.getThreatMoves(-_aiRole, 3, 8);
+        var oppFourMoves:Array = _eval.getMoves(-_aiRole, 0, false, true);
+        var verifyResult:Object = _minmax.search(-_aiRole, P4_MULTI_REVIEW_DEPTH, false);
+        var score:Number = -verifyResult.score;
+        var phase:String = verifyResult.phaseLabel;
+
+        _eval.undo(x, y);
+        _board.undo();
+        return {
+            score: score,
+            phase: phase,
+            ownThreats: ownThreats.length,
+            oppThreats: oppThreats.length,
+            oppFourMoves: oppFourMoves.length
+        };
+    }
+
+    private function _scoreReviewedP4CandidateTieBreak(x:Number, y:Number):Object {
+        _board.put(x, y, _aiRole);
+        _eval.move(x, y, _aiRole);
+        var verifyResult:Object = _minmax.search(-_aiRole, P4_MULTI_REVIEW_TIE_DEPTH, true);
+        _eval.undo(x, y);
+        _board.undo();
+        return {
+            score: -verifyResult.score,
+            phase: verifyResult.phaseLabel
+        };
+    }
+
+    private function _reviewMultiBlockFourMove(result:Object):Object {
+        if (result === null || result.x < 0) return result;
+
+        var tag:String = result.phaseLabel;
+        if (tag === undefined) tag = result.tag;
+        if (tag === undefined || tag.indexOf("P4a_blockFour(") !== 0) {
+            return result;
+        }
+
+        var liveFourCount:Number = (result.liveFourCount !== undefined)
+            ? Number(result.liveFourCount)
+            : 0;
+        if (liveFourCount < 2) return result;
+
+        var bestX:Number = result.x;
+        var bestY:Number = result.y;
+        var reviewCandidates:Array = result.candidates;
+        if (reviewCandidates != undefined && reviewCandidates.length > 0) {
+            var candidateStr:String = "";
+            for (var ci:Number = 0; ci < reviewCandidates.length; ci++) {
+                if (ci > 0) candidateStr += "|";
+                candidateStr += "(" + reviewCandidates[ci][0] + "," + reviewCandidates[ci][1] + ")";
+            }
+            trace("[P4_REVIEW] " + tag + " options=" + candidateStr);
+        }
+        var bestInfo:Object = _scoreReviewedP4Candidate(bestX, bestY);
+        trace("[P4_REVIEW] " + tag + " candidate=(" + bestX + "," + bestY
+            + ") score=" + bestInfo.score + " opp=" + bestInfo.phase
+            + " ownT=" + bestInfo.ownThreats
+            + " oppT=" + bestInfo.oppThreats
+            + " opp4=" + bestInfo.oppFourMoves);
+        var oppPhase:String = bestInfo.phase;
+        if (oppPhase === undefined
+            || (oppPhase.indexOf("P4a_blockFour") !== 0
+                && oppPhase.indexOf("P4combo") !== 0
+                && oppPhase.indexOf("P2_blockFive") !== 0)) {
+            return result;
+        }
+
+        var rootMoves:Array = _minmax.collectRootMoves(_aiRole, P4_MULTI_REVIEW_ROOT_LIMIT);
+        var chosenX:Number = bestX;
+        var chosenY:Number = bestY;
+        var chosenScore:Number = bestInfo.score;
+        var chosenPhase:String = bestInfo.phase;
+        var chosenTie:Object = null;
+        for (var ri:Number = 0; ri < rootMoves.length; ri++) {
+            var mv:Array = rootMoves[ri];
+            var altX:Number = mv[0];
+            var altY:Number = mv[1];
+            if (altX === bestX && altY === bestY) continue;
+
+            var altInfo:Object = _scoreReviewedP4Candidate(altX, altY);
+            trace("[P4_REVIEW] " + tag + " alt=(" + altX + "," + altY
+                + ") score=" + altInfo.score + " opp=" + altInfo.phase
+                + " ownT=" + altInfo.ownThreats
+                + " oppT=" + altInfo.oppThreats
+                + " opp4=" + altInfo.oppFourMoves);
+            var clearlyBetter:Boolean = altInfo.score > chosenScore + P4_MULTI_REVIEW_MARGIN;
+            var tieBetter:Boolean = (altInfo.score >= chosenScore - P4_MULTI_REVIEW_MARGIN
+                && altInfo.oppFourMoves < bestInfo.oppFourMoves);
+            if (!tieBetter && altInfo.score >= chosenScore - P4_MULTI_REVIEW_MARGIN
+                    && altInfo.oppFourMoves === bestInfo.oppFourMoves) {
+                if (altInfo.oppThreats < bestInfo.oppThreats) {
+                    tieBetter = true;
+                } else if (altInfo.oppThreats === bestInfo.oppThreats
+                        && altInfo.ownThreats > bestInfo.ownThreats) {
+                    tieBetter = true;
+                }
+            }
+            if (!clearlyBetter && !tieBetter
+                    && altInfo.score >= chosenScore - P4_MULTI_REVIEW_MARGIN
+                    && altInfo.oppFourMoves === bestInfo.oppFourMoves
+                    && altInfo.oppThreats === bestInfo.oppThreats
+                    && altInfo.ownThreats === bestInfo.ownThreats) {
+                if (chosenTie == null) {
+                    chosenTie = _scoreReviewedP4CandidateTieBreak(chosenX, chosenY);
+                    trace("[P4_REVIEW] " + tag + " deep=(" + chosenX + "," + chosenY
+                        + ") score=" + chosenTie.score + " opp=" + chosenTie.phase);
+                }
+                var altTie:Object = _scoreReviewedP4CandidateTieBreak(altX, altY);
+                trace("[P4_REVIEW] " + tag + " deep=(" + altX + "," + altY
+                    + ") score=" + altTie.score + " opp=" + altTie.phase);
+                if (altTie.score > chosenTie.score) {
+                    tieBetter = true;
+                    chosenTie = altTie;
+                } else if (altTie.score === chosenTie.score) {
+                    tieBetter = true;
+                    chosenTie = altTie;
+                }
+            }
+            if (clearlyBetter || tieBetter) {
+                chosenX = altX;
+                chosenY = altY;
+                chosenScore = altInfo.score;
+                chosenPhase = altInfo.phase;
+                bestInfo = altInfo;
+            }
+        }
+
+        if (chosenX === bestX && chosenY === bestY) {
+            return result;
+        }
+
+        trace("[P4_REVIEW] " + tag + " move=(" + result.x + "," + result.y
+            + ") -> (" + chosenX + "," + chosenY + ") score=" + chosenScore
+            + " opp=" + chosenPhase);
+        result.x = chosenX;
+        result.y = chosenY;
+        result.score = chosenScore;
+        result.phaseLabel = tag + "_review";
         return result;
     }
 
@@ -415,13 +581,50 @@ class org.flashNight.hana.Gobang.GobangAI {
         return refined;
     }
 
+    private function _getThreatBlockProfile(x:Number, y:Number):Object {
+        var idx:Number = x * 15 + y;
+        var sc:Array = _eval.shapeCache;
+        var oppBase:Number = (_aiRole === 1) ? 900 : 0;
+        var blockThreeDirs:Number = 0;
+        var blockTwoDirs:Number = 0;
+        var s0:Number = sc[oppBase + idx];
+        var s1:Number = sc[oppBase + 225 + idx];
+        var s2:Number = sc[oppBase + 450 + idx];
+        var s3:Number = sc[oppBase + 675 + idx];
+        if (s0 === 3 || s0 === 30 || s0 === 4 || s0 === 40) blockThreeDirs++;
+        else if (s0 === 2 || s0 === 22) blockTwoDirs++;
+        if (s1 === 3 || s1 === 30 || s1 === 4 || s1 === 40) blockThreeDirs++;
+        else if (s1 === 2 || s1 === 22) blockTwoDirs++;
+        if (s2 === 3 || s2 === 30 || s2 === 4 || s2 === 40) blockThreeDirs++;
+        else if (s2 === 2 || s2 === 22) blockTwoDirs++;
+        if (s3 === 3 || s3 === 30 || s3 === 4 || s3 === 40) blockThreeDirs++;
+        else if (s3 === 2 || s3 === 22) blockTwoDirs++;
+        return {blockThreeDirs: blockThreeDirs, blockTwoDirs: blockTwoDirs};
+    }
+
+    private function _isThreatDefenseAnchor(sourceMask:Number, blockInfo:Object):Boolean {
+        if ((sourceMask & (THREAT_SOURCE_URGENT_FOUR | THREAT_SOURCE_URGENT_THREE | THREAT_SOURCE_DEF_BRIDGE)) !== 0) {
+            return true;
+        }
+        return (blockInfo.blockThreeDirs > 0 || blockInfo.blockTwoDirs >= 2);
+    }
+
     private function _scoreThreatDefenseCandidate(x:Number, y:Number, bonus:Number,
             probePly:Number, probeBudgetMs:Number):Object {
+        var blockInfo:Object = _getThreatBlockProfile(x, y);
+        var blockThreeDirs:Number = blockInfo.blockThreeDirs;
+        var blockTwoDirs:Number = blockInfo.blockTwoDirs;
+
         _board.put(x, y, _aiRole);
         _eval.move(x, y, _aiRole);
 
         var actualProbePly:Number = probePly;
         var score:Number = _eval.evaluate(_aiRole) + bonus;
+        score += blockThreeDirs * THREAT_REFINE_BLOCK_THREE_DIR_BONUS;
+        score += blockTwoDirs * THREAT_REFINE_BLOCK_TWO_DIR_BONUS;
+        if (blockThreeDirs + blockTwoDirs >= 3) {
+            score += THREAT_REFINE_MULTI_BLOCK_DIR_BONUS;
+        }
         var ownBridge:Array = _eval.getBridgeMoves(_aiRole, 1, true);
         if (ownBridge.length > 0) {
             score += ownBridge[0][2] * THREAT_REFINE_OWN_BRIDGE_WEIGHT;
@@ -442,7 +645,7 @@ class org.flashNight.hana.Gobang.GobangAI {
             }
         }
 
-        var oppThreatMoves:Array = _eval.getThreatMoves(-_aiRole, 3, 4);
+        var oppThreatMoves:Array = _eval.getThreatMoves(-_aiRole, 3, 6);
         if (oppThreatMoves.length > 0) {
             score -= oppThreatMoves.length * THREAT_REFINE_MAJOR_THREAT_PENALTY;
             if (oppThreatMoves.length >= 2) {
@@ -472,15 +675,134 @@ class org.flashNight.hana.Gobang.GobangAI {
         return {score: score, forcedLoss: forcedLoss};
     }
 
+    private function _getRootCandidateProfile(x:Number, y:Number):Object {
+        var idx:Number = x * 15 + y;
+        var sc:Array = _eval.shapeCache;
+        var atkBase:Number = (_aiRole === 1) ? 0 : 900;
+        var defBase:Number = (_aiRole === 1) ? 900 : 0;
+        var a0:Number = sc[atkBase + idx];
+        var a1:Number = sc[atkBase + 225 + idx];
+        var a2:Number = sc[atkBase + 450 + idx];
+        var a3:Number = sc[atkBase + 675 + idx];
+        var d0:Number = sc[defBase + idx];
+        var d1:Number = sc[defBase + 225 + idx];
+        var d2:Number = sc[defBase + 450 + idx];
+        var d3:Number = sc[defBase + 675 + idx];
+        var attackMax:Number = a0;
+        if (a1 > attackMax) attackMax = a1;
+        if (a2 > attackMax) attackMax = a2;
+        if (a3 > attackMax) attackMax = a3;
+        var defendMax:Number = d0;
+        if (d1 > defendMax) defendMax = d1;
+        if (d2 > defendMax) defendMax = d2;
+        if (d3 > defendMax) defendMax = d3;
+        return {attackMax: attackMax, defendMax: defendMax};
+    }
+
+    private function _getPivotPressureTier(oppPhase:String):Number {
+        if (oppPhase == undefined) return 0;
+        if (oppPhase.indexOf("P2_blockFive") === 0) return 5;
+        if (oppPhase.indexOf("P4a_blockFour(2)") === 0) return 4;
+        if (oppPhase.indexOf("P4combo") === 0) return 4;
+        if (oppPhase.indexOf("P4a_blockFour(1)") === 0) return 3;
+        if (oppPhase.indexOf("P1_myFive") === 0) return -5;
+        if (oppPhase.indexOf("P3_myFour") === 0) return -4;
+        if (oppPhase.indexOf("minmax_win") === 0 || oppPhase.indexOf("vct_win") === 0) return -6;
+        return 0;
+    }
+
+    private function _scorePivotCandidate(x:Number, y:Number):Object {
+        var strategic:Number = _scoreStrategicCandidate(x, y);
+        _board.put(x, y, _aiRole);
+        _eval.move(x, y, _aiRole);
+        var verify:Object = _minmax.search(-_aiRole, PIVOT_REFINE_DEPTH, false);
+        _eval.undo(x, y);
+        _board.undo();
+        var verifyScore:Number = -verify.score;
+        var oppPhase:String = verify.phaseLabel;
+        return {
+            strategic: strategic,
+            verifyScore: verifyScore,
+            oppPhase: oppPhase,
+            pressureTier: _getPivotPressureTier(oppPhase)
+        };
+    }
+
+    private function _refinePivotMove(params:Object, result:Object):Object {
+        if (params == null || result == null || result.x < 0) return result;
+        var tag:String = result.phaseLabel;
+        if (tag == undefined || tag.indexOf("minmax_d8") !== 0) return result;
+        if (_board.history.length < PIVOT_REFINE_MIN_HISTORY
+                || _board.history.length > PIVOT_REFINE_MAX_HISTORY) {
+            return result;
+        }
+
+        var currentProfile:Object = _getRootCandidateProfile(result.x, result.y);
+        if (currentProfile.attackMax < 3 || currentProfile.defendMax < 3) {
+            return result;
+        }
+
+        var rootMoves:Array = _minmax.collectExpandedRootMoves(_aiRole, PIVOT_REFINE_ROOT_LIMIT);
+        var bestX:Number = result.x;
+        var bestY:Number = result.y;
+        var bestInfo:Object = _scorePivotCandidate(bestX, bestY);
+        var changed:Boolean = false;
+
+        for (var i:Number = 0; i < rootMoves.length; i++) {
+            var cx:Number = rootMoves[i][0];
+            var cy:Number = rootMoves[i][1];
+            if (cx === bestX && cy === bestY) continue;
+
+            var profile:Object = _getRootCandidateProfile(cx, cy);
+            if (profile.attackMax !== 3 || profile.defendMax !== 0) continue;
+
+            var info:Object = _scorePivotCandidate(cx, cy);
+            var betterTier:Boolean = (info.pressureTier > bestInfo.pressureTier);
+            var betterScore:Boolean = (info.pressureTier === bestInfo.pressureTier
+                && info.verifyScore > bestInfo.verifyScore + PIVOT_REFINE_MARGIN);
+            var betterStrategic:Boolean = (info.pressureTier === bestInfo.pressureTier
+                && info.verifyScore >= bestInfo.verifyScore - PIVOT_REFINE_MARGIN
+                && info.strategic > bestInfo.strategic + PIVOT_REFINE_MARGIN);
+            if (!betterTier && !betterScore && !betterStrategic) continue;
+
+            bestX = cx;
+            bestY = cy;
+            bestInfo = info;
+            changed = true;
+        }
+
+        if (!changed || (bestX === result.x && bestY === result.y)) return result;
+        trace("[REFINE_PIVOT] search=" + result.x + "," + result.y + " score=" + result.score
+            + " -> refined=" + bestX + "," + bestY + " d" + PIVOT_REFINE_DEPTH
+            + "=" + bestInfo.verifyScore + " opp=" + bestInfo.oppPhase);
+        var refined:Object = {};
+        for (var k:String in result) {
+            refined[k] = result[k];
+        }
+        refined.x = bestX;
+        refined.y = bestY;
+        refined.score = bestInfo.verifyScore;
+        refined.phaseLabel = String(result.phaseLabel) + "_pivot";
+        return refined;
+    }
+
     private function _refineThreatDefenseMove(params:Object, result:Object):Object {
         if (params === null || result === null || result.x < 0) return result;
         var absScore2:Number = result.score >= 0 ? result.score : -result.score;
         if (absScore2 >= REFINE_SKIP_SCORE) return result;
-        // 对手有 THREE+ 威胁时，信任搜索的防守判断，不覆盖
-        if (_opponentHasUrgentThreat()) return result;
-        if (_board.history.length < THREAT_REFINE_MIN_HISTORY || params.searchDepth >= 6) {
-            return result;
-        }
+        var tag:String = result.phaseLabel;
+        if (tag == undefined) tag = result.tag;
+        var isPreSearchDefense:Boolean = (tag != undefined
+            && (tag.indexOf("P2_blockFive") === 0
+                || tag.indexOf("P4a_blockFour") === 0
+                || tag.indexOf("P4combo") === 0));
+        var hasBoardUrgentThreat:Boolean = _opponentHasUrgentThreat();
+        var allowDeepThreatRefine:Boolean = (params.searchDepth >= 10
+            && hasBoardUrgentThreat && !isPreSearchDefense);
+        // 预搜索强制手保持优先；深搜(minmax_d*)结果允许再做一次局部防守确认
+        if (hasBoardUrgentThreat && (isPreSearchDefense || params.searchDepth < 6)) return result;
+        if (_board.history.length < THREAT_REFINE_MIN_HISTORY) return result;
+        if (params.searchDepth >= 6 && !allowDeepThreatRefine) return result;
 
         var urgentFour:Array = [];
         if (_minmax.probeTSSWithBudget(-_aiRole, THREAT_REFINE_PLY, THREAT_TRIGGER_PROBE_BUDGET_MS)) {
@@ -494,34 +816,44 @@ class org.flashNight.hana.Gobang.GobangAI {
         var hasUrgentFour:Boolean = (urgentFour.length > 0 && urgentFour.length <= 6);
         var hasUrgentThree:Boolean = (urgentThree.length > 0 && urgentThree.length <= 6);
         var hasDefBridge:Boolean = false;
+        var hasStrongDefBridge:Boolean = false;
         for (var bi:Number = 0; bi < defBridge.length; bi++) {
             if (defBridge[bi][2] >= STRATEGIC_BRIDGE_MIN_SCORE) {
                 hasDefBridge = true;
-                break;
+            }
+            if (defBridge[bi][2] >= THREAT_REFINE_DANGEROUS_BRIDGE_SCORE) {
+                hasStrongDefBridge = true;
             }
         }
         if (!hasUrgentFour && !hasUrgentThree && !hasDefBridge) {
             return result;
         }
-
         var candidates:Array = [];
-        _appendStrategicCandidate(candidates, result.x, result.y, 0);
+        _appendStrategicCandidate(candidates, result.x, result.y, 0, THREAT_SOURCE_RESULT);
 
         if (hasUrgentFour) {
             for (var fi:Number = 0; fi < urgentFour.length && fi < 3; fi++) {
-                _appendStrategicCandidate(candidates, urgentFour[fi][0], urgentFour[fi][1], THREAT_REFINE_FOUR_BONUS);
+                _appendStrategicCandidate(candidates, urgentFour[fi][0], urgentFour[fi][1],
+                    THREAT_REFINE_FOUR_BONUS, THREAT_SOURCE_URGENT_FOUR);
             }
         }
         if (hasUrgentThree && !hasDefBridge) {
             for (var ti:Number = 0; ti < urgentThree.length && ti < 2; ti++) {
-                _appendStrategicCandidate(candidates, urgentThree[ti][0], urgentThree[ti][1], THREAT_REFINE_THREE_BONUS);
+                _appendStrategicCandidate(candidates, urgentThree[ti][0], urgentThree[ti][1],
+                    THREAT_REFINE_THREE_BONUS, THREAT_SOURCE_URGENT_THREE);
             }
         }
         if (hasDefBridge) {
             for (var di:Number = 0; di < defBridge.length; di++) {
                 if (defBridge[di][2] < STRATEGIC_BRIDGE_MIN_SCORE) continue;
                 _appendStrategicCandidate(candidates, defBridge[di][0], defBridge[di][1],
-                    defBridge[di][2] * THREAT_REFINE_DEF_BRIDGE_WEIGHT);
+                    defBridge[di][2] * THREAT_REFINE_DEF_BRIDGE_WEIGHT, THREAT_SOURCE_DEF_BRIDGE);
+            }
+        }
+        if (allowDeepThreatRefine || hasUrgentFour || hasUrgentThree || hasStrongDefBridge || candidates.length < 2) {
+            var rootMoves:Array = _minmax.collectRootMoves(_aiRole, 5);
+            for (var ri:Number = 0; ri < rootMoves.length; ri++) {
+                _appendStrategicCandidate(candidates, rootMoves[ri][0], rootMoves[ri][1], 0, THREAT_SOURCE_ROOT);
             }
         }
         if (candidates.length < 2) return result;
@@ -529,6 +861,8 @@ class org.flashNight.hana.Gobang.GobangAI {
         var probePly:Number = hasUrgentFour ? THREAT_REFINE_DEEP_PLY : THREAT_REFINE_PLY;
         var bestX:Number = result.x;
         var bestY:Number = result.y;
+        var bestBlockInfo:Object = _getThreatBlockProfile(bestX, bestY);
+        var bestIsAnchor:Boolean = _isThreatDefenseAnchor(THREAT_SOURCE_RESULT, bestBlockInfo);
         var bestInfo:Object = _scoreThreatDefenseCandidate(bestX, bestY, candidates[0][2],
             probePly, THREAT_REFINE_PROBE_BUDGET_MS);
         var changed:Boolean = false;
@@ -537,13 +871,36 @@ class org.flashNight.hana.Gobang.GobangAI {
             var cx:Number = candidates[i][0];
             var cy:Number = candidates[i][1];
             if (cx === bestX && cy === bestY) continue;
+            var sourceMask:Number = candidates[i][3];
+            var candidateBlockInfo:Object = _getThreatBlockProfile(cx, cy);
+            var isAnchorCandidate:Boolean = _isThreatDefenseAnchor(sourceMask, candidateBlockInfo);
+            var isRootOnly:Boolean = ((sourceMask & THREAT_SOURCE_ROOT) !== 0
+                && (sourceMask & (THREAT_SOURCE_RESULT | THREAT_SOURCE_URGENT_FOUR
+                    | THREAT_SOURCE_URGENT_THREE | THREAT_SOURCE_DEF_BRIDGE)) === 0);
+            if (isRootOnly) {
+                if (!isAnchorCandidate) {
+                    continue;
+                }
+            }
 
             var info:Object = _scoreThreatDefenseCandidate(cx, cy, candidates[i][2],
                 probePly, THREAT_REFINE_PROBE_BUDGET_MS);
+            if (!bestIsAnchor && isAnchorCandidate) {
+                bestInfo = info;
+                bestX = cx;
+                bestY = cy;
+                bestIsAnchor = true;
+                changed = true;
+                continue;
+            }
+            if (bestIsAnchor && !isAnchorCandidate) {
+                continue;
+            }
             if (bestInfo.forcedLoss && !info.forcedLoss) {
                 bestInfo = info;
                 bestX = cx;
                 bestY = cy;
+                bestIsAnchor = isAnchorCandidate;
                 changed = true;
                 continue;
             }
@@ -554,6 +911,7 @@ class org.flashNight.hana.Gobang.GobangAI {
                 bestInfo = info;
                 bestX = cx;
                 bestY = cy;
+                bestIsAnchor = isAnchorCandidate;
                 changed = true;
             }
         }
@@ -596,7 +954,9 @@ class org.flashNight.hana.Gobang.GobangAI {
         }
 
         result = _verifyTSSResult(result);
+        result = _reviewMultiBlockFourMove(result);
         result = _calibratePreSearchScore(result);
+        result = _refinePivotMove(params, result);
         result = _refineStrategicMove(params, result);
         result = _refineThreatDefenseMove(params, result);
 
@@ -753,8 +1113,10 @@ class org.flashNight.hana.Gobang.GobangAI {
 
         // TSS 验证: 如果搜索返回 TSS 级别分数，验证是否为虚假正向
         stepResult = _verifyTSSResult(stepResult);
+        stepResult = _reviewMultiBlockFourMove(stepResult);
         // P4 校准: 强制防守走法的分数膨胀修正
         stepResult = _calibratePreSearchScore(stepResult);
+        stepResult = _refinePivotMove(_asyncParams, stepResult);
 
         stepResult = _refineStrategicMove(_asyncParams, stepResult);
         stepResult = _refineThreatDefenseMove(_asyncParams, stepResult);

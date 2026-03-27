@@ -33,6 +33,77 @@ class org.flashNight.hana.Gobang.GobangTrainer {
         }
     }
 
+    private function _transformPoints(points:Array, swapXY:Boolean, dx:Number, dy:Number):Array {
+        var out:Array = [];
+        for (var i:Number = 0; i < points.length; i++) {
+            var src:Array = points[i];
+            var x:Number = src[0];
+            var y:Number = src[1];
+            var nx:Number = swapXY ? y : x;
+            var ny:Number = swapXY ? x : y;
+            nx += dx;
+            ny += dy;
+            if (src.length > 2) {
+                out.push([nx, ny, src[2]]);
+            } else {
+                out.push([nx, ny]);
+            }
+        }
+        return out;
+    }
+
+    private function _sameMove(ax:Number, ay:Number, bx:Number, by:Number):Boolean {
+        return ax === bx && ay === by;
+    }
+
+    private function _isRapfiDivergence(result:Object):Boolean {
+        if (result == null || result.rapfiMove == null) return false;
+        if (!result.localPass || result.rapfiPass) return false;
+        return !_sameMove(result.localMove.x, result.localMove.y,
+            result.rapfiMove.x, result.rapfiMove.y);
+    }
+
+    public function filterProblemsByName(filter:String):Void {
+        if (filter == undefined || filter === "") return;
+
+        var allow:Object = {};
+        var prefixes:Array = [];
+        var parts:Array = String(filter).split(",");
+        var requested:Number = 0;
+        for (var i:Number = 0; i < parts.length; i++) {
+            var raw:String = String(parts[i]);
+            var name:String = _trim(raw);
+            if (name.length === 0) continue;
+            if (name.charAt(name.length - 1) === "*") {
+                prefixes.push(name.substring(0, name.length - 1));
+            } else {
+                allow[name] = true;
+            }
+            requested++;
+        }
+        if (requested <= 0) return;
+
+        var filtered:Array = [];
+        for (var j:Number = 0; j < _problems.length; j++) {
+            var problem:Object = _problems[j];
+            var matched:Boolean = (allow[problem.name] === true);
+            if (!matched) {
+                for (var pi:Number = 0; pi < prefixes.length; pi++) {
+                    if (String(problem.name).indexOf(prefixes[pi]) === 0) {
+                        matched = true;
+                        break;
+                    }
+                }
+            }
+            if (matched) {
+                filtered.push(problem);
+            }
+        }
+        trace("[Trainer] Problem filter=" + filter
+            + " -> " + filtered.length + "/" + _problems.length);
+        _problems = filtered;
+    }
+
     // ===== 内置题库 =====
 
     public function loadBuiltinProblems():Void {
@@ -81,11 +152,26 @@ class org.flashNight.hana.Gobang.GobangTrainer {
 
         // ===== defense: 中盘防守 =====
 
+        var defDiagonalThreeCenterBaseMoves:Array = pad.concat([[5,9,1],[6,8,1],[7,7,1],[8,6,-1]]);
+        var defDiagonalThreeCenterClusterMoves:Array = [[4,10],[5,8]];
+
         addProblem({name: "def_diagonal_three_center", category: "defense",
-            moves: pad.concat([[5,9,1],[6,8,1],[7,7,1],[8,6,-1]]),
+            moves: defDiagonalThreeCenterBaseMoves,
             role: -1, difficulty: 100, frameBudget: 8,
             expectedMoves: [[8,6],[4,10],[5,8]],
             description: "堵对角线三连，靠近中心(Rapfi:5,8 d35)"});
+
+        addProblem({name: "def_diagonal_three_center_shift", category: "defense",
+            moves: _transformPoints(defDiagonalThreeCenterBaseMoves, false, 1, 1),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[5,11],[6,9],[7,10]],
+            description: "回归簇：中心对角三连平移变体"});
+
+        addProblem({name: "def_diagonal_three_center_mirror", category: "defense",
+            moves: _transformPoints(defDiagonalThreeCenterBaseMoves, true, 0, 0),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[11,3],[10,4],[8,5]],
+            description: "回归簇：中心对角三连主对角镜像"});
 
         addProblem({name: "def_h_gap_four", category: "defense",
             moves: [[6,7,1],[9,7,-1],[7,7,1],[7,6,-1],[8,7,1],[7,8,-1],
@@ -274,12 +360,27 @@ class org.flashNight.hana.Gobang.GobangTrainer {
             description: "P3冲四非最优：白棋有冲四但Rapfi可能走防守"});
 
         // 对局提取 2026-03-26: AI给高分(97860)但随后被Rapfi压制至连续P4a
+        var midGamePivotBaseMoves:Array = [[7,7,1],[8,8,-1],[9,8,1],[9,7,-1],[7,9,1],[7,8,-1],
+                    [6,8,1],[8,6,-1],[6,9,1]];
+        var midGamePivotExpected:Array = [[10,8]];
+
         addProblem({name: "mid_game_overeval_pivot", category: "mid_game",
-            moves: [[7,7,1],[8,8,-1],[9,8,1],[9,7,-1],[7,9,1],[7,8,-1],
-                    [6,8,1],[8,6,-1],[6,9,1]],
+            moves: midGamePivotBaseMoves,
             role: -1, difficulty: 100, frameBudget: 8,
             expectedMoves: [],
             description: "对局转折点：AI过高评估后陷入被动，Rapfi参考"});
+
+        addProblem({name: "mid_game_overeval_pivot_shift", category: "mid_game",
+            moves: _transformPoints(midGamePivotBaseMoves, false, 1, 1),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: _transformPoints(midGamePivotExpected, false, 1, 1),
+            description: "回归簇：pivot 平移变体，继续要求命中拐点"});
+
+        addProblem({name: "mid_game_overeval_pivot_mirror", category: "mid_game",
+            moves: _transformPoints(midGamePivotBaseMoves, true, 0, 0),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: _transformPoints(midGamePivotExpected, true, 0, 0),
+            description: "回归簇：pivot 主对角镜像变体"});
 
         // 对局提取: AI被迫连续堵五说明上一步(8,9)方向错误
         addProblem({name: "mid_game_avoid_trap", category: "mid_game",
@@ -635,6 +736,23 @@ class org.flashNight.hana.Gobang.GobangTrainer {
         return s;
     }
 
+    private function _trim(s:String):String {
+        if (s == undefined) return "";
+        var start:Number = 0;
+        var end:Number = s.length;
+        while (start < end) {
+            var c1:Number = s.charCodeAt(start);
+            if (c1 !== 32 && c1 !== 9 && c1 !== 13 && c1 !== 10) break;
+            start++;
+        }
+        while (end > start) {
+            var c2:Number = s.charCodeAt(end - 1);
+            if (c2 !== 32 && c2 !== 9 && c2 !== 13 && c2 !== 10) break;
+            end--;
+        }
+        return s.substring(start, end);
+    }
+
     private function printReport():Void {
         var totalRun:Number = _results.length;
         var totalLocalPass:Number = 0;
@@ -670,6 +788,21 @@ class org.flashNight.hana.Gobang.GobangTrainer {
                 line += " | rapfi " + s.rapfiPass + "/" + (s.total - s.rapfiError);
             }
             trace(line);
+        }
+        var rapfiDiffCount:Number = 0;
+        for (var j:Number = 0; j < _results.length; j++) {
+            if (_isRapfiDivergence(_results[j])) rapfiDiffCount++;
+        }
+        if (rapfiDiffCount > 0) {
+            trace("--- Rapfi divergence watch (" + rapfiDiffCount + ") ---");
+            for (var k:Number = 0; k < _results.length; k++) {
+                var r:Object = _results[k];
+                if (!_isRapfiDivergence(r)) continue;
+                trace("[Trainer] [RAPFI_DIFF] " + r.name
+                    + " | Local:(" + r.localMove.x + "," + r.localMove.y + ") " + r.localMove.phase
+                    + " | Rapfi:(" + r.rapfiMove.x + "," + r.rapfiMove.y + ")"
+                    + " | Expected:" + _movesToString(r.expectedMoves));
+            }
         }
         trace("==============================");
     }

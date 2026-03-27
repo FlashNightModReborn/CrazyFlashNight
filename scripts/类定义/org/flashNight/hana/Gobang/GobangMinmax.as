@@ -105,6 +105,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
     // 根层进度追踪（1-based）
     private var _rootMoveIdx:Number;
     private var _rootMoveTotal:Number;
+    private var _skipMultiLiveFourP4a:Boolean;
 
     public function GobangMinmax(board:GobangBoard, eval:GobangEval) {
         _board = board;
@@ -141,6 +142,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         _asyncSecondY = -1;
         _rootMoveIdx = 0;
         _rootMoveTotal = 0;
+        _skipMultiLiveFourP4a = false;
         resetStats();
     }
 
@@ -354,7 +356,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         if (tactical !== null) {
             _statPreSearch++;
             return {x: tactical.x, y: tactical.y, score: tactical.score,
-                    nodes: 0, timedOut: false, phaseLabel: tactical.tag};
+                    nodes: 0, timedOut: false, phaseLabel: tactical.tag,
+                    liveFourCount: tactical.liveFourCount, candidates: tactical.candidates};
         }
 
         var best:Object = {x: -1, y: -1, score: _eval.evaluate(role), timedOut: false};
@@ -400,6 +403,39 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         }
 
         return {x: best.x, y: best.y, score: best.score, nodes: _nodeCount, timedOut: _timedOut};
+    }
+
+    public function searchSkipMultiP4a(role:Number, maxDepth:Number, enableVCT:Boolean):Object {
+        var saved:Boolean = _skipMultiLiveFourP4a;
+        _skipMultiLiveFourP4a = true;
+        var result:Object = search(role, maxDepth, enableVCT);
+        _skipMultiLiveFourP4a = saved;
+        return result;
+    }
+
+    public function collectRootMoves(role:Number, limit:Number):Array {
+        if (limit === undefined || limit < 1) limit = 8;
+        var moves:Array = _eval.getMoves(role, 0, false, false);
+        var center:Number = Math.floor(_board.size / 2);
+        if (_board.board[center * 15 + center] === 0 && !hasMove(moves, center, center)) {
+            moves.push([center, center]);
+        }
+        if (_eval.history.length >= 6 && moves.length >= 3) {
+            rerankByCoverage(moves, role, 0);
+        }
+        if (moves.length > limit) moves.length = limit;
+        return moves;
+    }
+
+    public function collectExpandedRootMoves(role:Number, limit:Number):Array {
+        if (limit === undefined || limit < 1) limit = 8;
+        var origPL:Number = GobangConfig.pointsLimit;
+        if (GobangConfig.pointsLimit < limit) {
+            GobangConfig.pointsLimit = limit;
+        }
+        var moves:Array = collectRootMoves(role, limit);
+        GobangConfig.pointsLimit = origPL;
+        return moves;
     }
 
     // 对手回复覆盖数重排序：走了这手后对手还剩多少 THREE+ 威胁方向
@@ -1043,6 +1079,7 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         var myLiveFourX:Number = -1; var myLiveFourY:Number = -1;
         var opLiveFourCount:Number = 0;
         var opLiveFourX:Number = -1; var opLiveFourY:Number = -1;
+        var opLiveFourMoves:Array = [];
         var opComboCount:Number = 0;
         var opComboX:Number = -1; var opComboY:Number = -1;
         var opThreeCount:Number = 0; // R3: 对手活三计数，用于 P3 门控
@@ -1088,6 +1125,9 @@ class org.flashNight.hana.Gobang.GobangMinmax {
                     sc[oIdx + 450] === 4 || sc[oIdx + 675] === 4) {
                     opLiveFourCount++;
                     if (opLiveFourCount === 1) { opLiveFourX = cx; opLiveFourY = cy; }
+                    if (opLiveFourMoves.length < 4) {
+                        opLiveFourMoves[opLiveFourMoves.length] = [cx, cy];
+                    }
                 }
             }
 
@@ -1133,9 +1173,11 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         }
 
         // P4a: 防对手活四
-        if (opLiveFourCount >= 1) {
+        if (opLiveFourCount >= 1 && !(_skipMultiLiveFourP4a && opLiveFourCount >= 2)) {
             return {x: opLiveFourX, y: opLiveFourY, score: GobangShape.FIVE_SCORE - 3,
-                    tag: "P4a_blockFour(" + opLiveFourCount + ")"};
+                    tag: "P4a_blockFour(" + opLiveFourCount + ")",
+                    liveFourCount: opLiveFourCount,
+                    candidates: opLiveFourMoves};
         }
 
         // P4_combo: 防复合威胁
@@ -1457,7 +1499,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
         if (tactical !== null) {
             _statPreSearch++;
             _asyncBestResult = {x: tactical.x, y: tactical.y, score: tactical.score,
-                                phaseLabel: tactical.tag};
+                                phaseLabel: tactical.tag,
+                                liveFourCount: tactical.liveFourCount, candidates: tactical.candidates};
             _asyncDone = true;
         }
     }
@@ -1471,6 +1514,8 @@ class org.flashNight.hana.Gobang.GobangMinmax {
             return {done: true, phase: 4, x: _asyncBestResult.x, y: _asyncBestResult.y,
                     score: _asyncBestResult.score, nodes: _asyncTotalNodes, phaseLabel: doneLabel,
                     rootIdx: _rootMoveIdx, rootTotal: _rootMoveTotal,
+                    liveFourCount: _asyncBestResult.liveFourCount,
+                    candidates: _asyncBestResult.candidates,
                     secondX: _asyncBestResult.secondX, secondY: _asyncBestResult.secondY,
                     secondScore: _asyncBestResult.secondScore,
                     secondInherited: _asyncBestResult.secondInherited};
