@@ -30,6 +30,13 @@ namespace CF7Launcher.Guardian
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetParent(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool IsWindow(IntPtr hWnd);
+
         private const int GWL_STYLE = -16;
         private const int WS_CAPTION = 0x00C00000;
         private const int WS_THICKFRAME = 0x00040000;
@@ -37,6 +44,7 @@ namespace CF7Launcher.Guardian
         private const int WS_CHILD = 0x40000000;
 
         private uint _flashProcessId;
+        private uint _guardianProcessId;
         private IntPtr _flashHwnd;
         private Panel _hostPanel;
 
@@ -46,6 +54,7 @@ namespace CF7Launcher.Guardian
         {
             if (flashProcess != null)
                 _flashProcessId = (uint)flashProcess.Id;
+            _guardianProcessId = (uint)Process.GetCurrentProcess().Id;
         }
 
         /// <summary>
@@ -112,9 +121,55 @@ namespace CF7Launcher.Guardian
             ResizeFlashToPanel();
 
             // Panel 大小变化时自动调整
-            _hostPanel.Resize += delegate { ResizeFlashToPanel(); };
+            _hostPanel.Resize -= OnHostPanelResize;
+            _hostPanel.Resize += OnHostPanelResize;
+
+            // 启动嵌入监控定时器（检测全屏等操作导致的脱离）
+            StartEmbedWatchdog();
 
             LogManager.Log("[WindowManager] Flash window embedded");
+        }
+
+        private void OnHostPanelResize(object sender, EventArgs e)
+        {
+            ResizeFlashToPanel();
+        }
+
+        private System.Windows.Forms.Timer _watchdog;
+
+        /// <summary>
+        /// 每 500ms 检测 Flash 窗口是否脱离嵌入（全屏切换会破坏 SetParent 关系），
+        /// 发现脱离后自动重新嵌入。
+        /// </summary>
+        private void StartEmbedWatchdog()
+        {
+            if (_watchdog != null) return;
+
+            _watchdog = new System.Windows.Forms.Timer();
+            _watchdog.Interval = 500;
+            _watchdog.Tick += delegate
+            {
+                if (_flashHwnd == IntPtr.Zero || _hostPanel == null)
+                    return;
+
+                // Flash 窗口已销毁（进程退出），停止监控
+                if (!IsWindow(_flashHwnd))
+                {
+                    _flashHwnd = IntPtr.Zero;
+                    _watchdog.Stop();
+                    LogManager.Log("[WindowManager] Flash window destroyed, watchdog stopped");
+                    return;
+                }
+
+                IntPtr currentParent = GetParent(_flashHwnd);
+                if (currentParent != _hostPanel.Handle)
+                {
+                    // Flash 窗口脱离了嵌入（全屏切换等），重新嵌入
+                    LogManager.Log("[WindowManager] Flash window detached, re-embedding...");
+                    DoEmbed();
+                }
+            };
+            _watchdog.Start();
         }
 
         public void ResizeFlashToPanel()
@@ -127,16 +182,15 @@ namespace CF7Launcher.Guardian
 
         public bool IsFlashForeground()
         {
-            if (_flashProcessId == 0)
-                return false;
-
             IntPtr hwnd = GetForegroundWindow();
             if (hwnd == IntPtr.Zero)
                 return false;
 
             uint pid;
             GetWindowThreadProcessId(hwnd, out pid);
-            return pid == _flashProcessId;
+            // Flash 独立运行时 pid == Flash PID；嵌入后 pid == Guardian PID
+            return (pid == _flashProcessId && _flashProcessId != 0)
+                || (pid == _guardianProcessId && _guardianProcessId != 0);
         }
     }
 }

@@ -18,10 +18,12 @@ namespace CF7Launcher.Bus
         private TcpClient _client;
         private NetworkStream _stream;
         private Thread _acceptThread;
-        private Thread _readThread;
         private volatile bool _running;
         private readonly MessageRouter _router;
-        private readonly object _writeLock = new object();
+        private readonly object _clientLock = new object();
+
+        // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换
+        private int _generation;
 
         public int Port { get; private set; }
         public bool HasClient { get { return _client != null && _client.Connected; } }
@@ -63,15 +65,28 @@ namespace CF7Launcher.Bus
                     TcpClient client = _listener.AcceptTcpClient();
                     LogManager.Log("[XmlSocket] Client connected");
 
-                    // 关闭旧连接
-                    CloseClient();
+                    int gen;
+                    lock (_clientLock)
+                    {
+                        // 关闭旧连接
+                        CloseClientLocked();
 
-                    _client = client;
-                    _stream = client.GetStream();
+                        _generation++;
+                        gen = _generation;
+                        _client = client;
+                        _stream = client.GetStream();
+                    }
 
-                    _readThread = new Thread(ReadLoop);
-                    _readThread.IsBackground = true;
-                    _readThread.Start();
+                    // 捕获本地引用，ReadLoop 只操作自己的 client/stream
+                    TcpClient localClient = client;
+                    NetworkStream localStream = _stream;
+
+                    Thread readThread = new Thread(delegate()
+                    {
+                        ReadLoop(localClient, localStream, gen);
+                    });
+                    readThread.IsBackground = true;
+                    readThread.Start();
                 }
                 catch (SocketException)
                 {
@@ -85,16 +100,16 @@ namespace CF7Launcher.Bus
             }
         }
 
-        private void ReadLoop()
+        private void ReadLoop(TcpClient localClient, NetworkStream localStream, int gen)
         {
             StringBuilder buffer = new StringBuilder();
             byte[] readBuf = new byte[8192];
 
             try
             {
-                while (_running && _stream != null)
+                while (_running)
                 {
-                    int bytesRead = _stream.Read(readBuf, 0, readBuf.Length);
+                    int bytesRead = localStream.Read(readBuf, 0, readBuf.Length);
                     if (bytesRead == 0)
                         break;
 
@@ -128,7 +143,19 @@ namespace CF7Launcher.Bus
             }
 
             LogManager.Log("[XmlSocket] Client disconnected");
-            CloseClient();
+
+            // 只有当自己仍是当前连接时才清理共享字段
+            lock (_clientLock)
+            {
+                if (_generation == gen)
+                {
+                    CloseClientLocked();
+                }
+            }
+
+            // 始终关闭自己的本地引用
+            try { localStream.Close(); } catch { }
+            try { localClient.Close(); } catch { }
         }
 
         private void HandleMessage(string message)
@@ -154,9 +181,9 @@ namespace CF7Launcher.Bus
 
         public void Send(string data)
         {
-            lock (_writeLock)
+            lock (_clientLock)
             {
-                if (_stream == null || !_client.Connected)
+                if (_stream == null || _client == null || !_client.Connected)
                     return;
 
                 try
@@ -180,7 +207,10 @@ namespace CF7Launcher.Bus
             Send(json + "\0");
         }
 
-        private void CloseClient()
+        /// <summary>
+        /// 必须在 _clientLock 内调用。
+        /// </summary>
+        private void CloseClientLocked()
         {
             if (_stream != null)
             {
@@ -202,7 +232,10 @@ namespace CF7Launcher.Bus
                 try { _listener.Stop(); } catch { }
                 _listener = null;
             }
-            CloseClient();
+            lock (_clientLock)
+            {
+                CloseClientLocked();
+            }
             LogManager.Log("[XmlSocket] Stopped");
         }
     }

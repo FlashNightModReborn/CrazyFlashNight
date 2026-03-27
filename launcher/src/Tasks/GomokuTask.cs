@@ -112,35 +112,53 @@ namespace CF7Launcher.Tasks
                 _engine.StandardInput.Write(board.ToString());
                 _engine.StandardInput.Flush();
 
-                // 读取结果
+                // 读取结果（带硬超时保护）
                 int bestX = -1, bestY = -1;
                 int score = 0, depth = 0;
                 string pv = "";
 
-                DateTime deadline = DateTime.Now.AddMilliseconds(timeLimit + 2000);
-
-                while (DateTime.Now < deadline)
+                int hardTimeout = timeLimit + 3000;
+                // 超时后强杀引擎，确保 ReadLine 不会永远阻塞
+                Timer killTimer = new Timer(delegate
                 {
-                    string line = ReadLineWithTimeout(deadline);
-                    if (line == null) break;
+                    LogManager.Log("[Gomoku] Hard timeout reached, killing engine");
+                    KillEngine();
+                }, null, hardTimeout, Timeout.Infinite);
 
-                    line = line.Trim();
-                    if (line.StartsWith("MESSAGE"))
+                try
+                {
+                    while (true)
                     {
-                        // 解析 MESSAGE Depth X | Eval YYY | ...
-                        ParseMessageLine(line, ref depth, ref score, ref pv);
-                    }
-                    else if (line.Contains(",") && !line.StartsWith("MESSAGE"))
-                    {
-                        // 最终走法: x,y
-                        string[] parts = line.Split(',');
-                        if (parts.Length >= 2)
+                        string line = null;
+                        try
                         {
-                            int.TryParse(parts[0].Trim(), out bestX);
-                            int.TryParse(parts[1].Trim(), out bestY);
+                            if (_engine == null || _engine.HasExited) break;
+                            line = _engine.StandardOutput.ReadLine();
                         }
-                        break;
+                        catch { break; }
+
+                        if (line == null) break;
+                        line = line.Trim();
+
+                        if (line.StartsWith("MESSAGE"))
+                        {
+                            ParseMessageLine(line, ref depth, ref score, ref pv);
+                        }
+                        else if (line.Contains(",") && !line.StartsWith("MESSAGE"))
+                        {
+                            string[] parts = line.Split(',');
+                            if (parts.Length >= 2)
+                            {
+                                int.TryParse(parts[0].Trim(), out bestX);
+                                int.TryParse(parts[1].Trim(), out bestY);
+                            }
+                            break;
+                        }
                     }
+                }
+                finally
+                {
+                    killTimer.Dispose();
                 }
 
                 JObject result = new JObject();
@@ -183,29 +201,6 @@ namespace CF7Launcher.Tasks
                 }
             }
             catch { }
-        }
-
-        private string ReadLineWithTimeout(DateTime deadline)
-        {
-            while (DateTime.Now < deadline)
-            {
-                if (_engine == null || _engine.HasExited)
-                    return null;
-
-                // 非阻塞检查（Peek 返回 -1 表示无数据）
-                // StandardOutput.Peek 不可用于 Process，改用异步读取
-                // 简化：使用阻塞 ReadLine + 超时杀进程
-                try
-                {
-                    // ReadLine 会阻塞，但引擎应该快速响应
-                    return _engine.StandardOutput.ReadLine();
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-            return null;
         }
 
         private void EnsureEngine()

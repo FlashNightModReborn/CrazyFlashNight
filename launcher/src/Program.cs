@@ -53,10 +53,9 @@ class Program
         string exePath = typeof(Program).Assembly.Location;
         string projectRoot = Path.GetDirectoryName(exePath);
 
-        // 创建 Guardian 窗口（默认隐藏，托盘图标可唤出）
+        // 创建 Guardian 窗口
         GuardianForm form = new GuardianForm();
 
-        // 从此刻起所有日志走 LogManager
         LogManager.Log("[Guardian] Project root: " + projectRoot);
 
         // 读配置
@@ -82,21 +81,24 @@ class Program
         PortAllocator portAlloc = new PortAllocator();
         MessageRouter router = new MessageRouter();
 
-        // 端口顺序：先 HTTP 再 XMLSocket（与 Node.js 版一致）
         int httpPort = portAlloc.ClaimPort();
 
         XmlSocketServer socketServer = new XmlSocketServer(router);
         int socketPort = portAlloc.ClaimPort();
         if (socketPort < 0 || !socketServer.Start(socketPort))
         {
-            LogManager.Log("[Guardian] WARNING: XMLSocket server failed to start");
-            socketPort = 0;
+            ShowError("XMLSocket server failed to start.\nNo available port found.");
+            socketServer.Dispose();
+            return 1;
         }
 
         HttpApiServer httpServer = new HttpApiServer(socketPort, projectRoot, socketServer);
         if (httpPort < 0 || !httpServer.Start(httpPort))
         {
-            LogManager.Log("[Guardian] WARNING: HTTP server failed to start");
+            ShowError("HTTP server failed to start on port " + httpPort + ".\nAnother instance may be running.");
+            socketServer.Dispose();
+            httpServer.Dispose();
+            return 1;
         }
 
         router.OnConsoleResult += delegate(string json)
@@ -120,22 +122,14 @@ class Program
         // === 守护进程核心 ===
 
         WindowManager windowManager = new WindowManager();
-        KeyboardHook keyboardHook = new KeyboardHook(windowManager);
         ProcessManager processManager = new ProcessManager(
             config.FlashPlayerPath, config.SwfPath);
 
-        if (!keyboardHook.Install())
-        {
-            LogManager.Log("[Guardian] WARNING: Keyboard hook failed");
-        }
-
-        // 绑定 WindowManager，让按钮可以向 Flash 发送按键
         form.BindWindowManager(windowManager);
 
         if (!processManager.Start())
         {
             ShowError("Failed to start Flash Player.");
-            keyboardHook.Dispose();
             socketServer.Dispose();
             httpServer.Dispose();
             gomokuTask.Dispose();
@@ -144,11 +138,17 @@ class Program
 
         windowManager.TrackProcess(processManager.FlashProcess);
 
+        // Flash 退出双重检测：Process.Exited 事件 + 定时器后备
+        form.TrackFlashProcess(processManager.FlashProcess);
+        processManager.OnFlashExited += delegate
+        {
+            form.ForceExit();
+        };
+
         // 在后台线程等待 Flash 窗口出现并嵌入
-        System.Threading.ThreadPool.QueueUserWorkItem(delegate
+        ThreadPool.QueueUserWorkItem(delegate
         {
             windowManager.EmbedFlashWindow(processManager.FlashProcess, form.FlashHostPanel);
-            // 嵌入后显示主窗口
             form.BeginInvoke(new Action(delegate
             {
                 form.Show();
@@ -156,21 +156,13 @@ class Program
             }));
         });
 
-        // Flash 退出时关闭应用
-        processManager.OnFlashExited += delegate
-        {
-            form.ForceExit();
-        };
-
         LogManager.Log("[Guardian] All systems ready. Flash is running.");
 
-        // 消息循环（GuardianForm 提供消息泵 + 托盘图标）
-        // 窗口默认不显示，双击托盘图标可打开日志
+        // 消息循环
         Application.Run(form);
 
         // 清理
         LogManager.Log("[Guardian] Shutting down...");
-        keyboardHook.Dispose();
         processManager.Dispose();
         gomokuTask.Dispose();
         socketServer.Dispose();

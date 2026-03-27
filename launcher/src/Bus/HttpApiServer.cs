@@ -141,6 +141,13 @@ namespace CF7Launcher.Bus
 
         private void HandleGetSocketPort(HttpListenerContext ctx)
         {
+            if (_socketPort <= 0)
+            {
+                ctx.Response.StatusCode = 503;
+                ctx.Response.ContentType = "application/x-www-form-urlencoded";
+                WriteResponse(ctx, "error=socket_server_unavailable");
+                return;
+            }
             ctx.Response.ContentType = "application/x-www-form-urlencoded";
             WriteResponse(ctx, "socketPort=" + _socketPort);
         }
@@ -157,16 +164,38 @@ namespace CF7Launcher.Bus
         private void HandleConsole(HttpListenerContext ctx)
         {
             string body = ReadBody(ctx);
-            // body 是 JSON: {"command": "..."}
             string command = "";
-            try
+
+            // 兼容 JSON 和 form-encoded 两种格式
+            // JSON: {"command": "..."}
+            // Form: command=...  或  command=...&other=...
+            // Query string: /console?command=...
+            string queryCommand = ctx.Request.QueryString["command"];
+            if (queryCommand != null)
             {
-                Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse(body);
-                command = obj.Value<string>("command") ?? "";
+                command = queryCommand;
             }
-            catch
+            else
             {
-                command = body;
+                string trimmed = body.Trim();
+                if (trimmed.StartsWith("{"))
+                {
+                    // JSON 格式
+                    try
+                    {
+                        Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse(trimmed);
+                        command = obj.Value<string>("command") ?? "";
+                    }
+                    catch
+                    {
+                        command = trimmed;
+                    }
+                }
+                else
+                {
+                    // form-encoded 格式: command=xxx&...
+                    command = ParseFormValue(trimmed, "command") ?? trimmed;
+                }
             }
 
             // 编码非 ASCII 为 %uXXXX
@@ -240,6 +269,24 @@ namespace CF7Launcher.Bus
                     sb.Append(c);
             }
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// 从 form-encoded body 中提取指定 key 的值（兼容旧 curl -d "command=xxx" 调用）。
+        /// </summary>
+        private static string ParseFormValue(string body, string key)
+        {
+            if (string.IsNullOrEmpty(body)) return null;
+            string prefix = key + "=";
+            string[] pairs = body.Split('&');
+            foreach (string pair in pairs)
+            {
+                if (pair.StartsWith(prefix))
+                {
+                    return Uri.UnescapeDataString(pair.Substring(prefix.Length));
+                }
+            }
+            return null;
         }
 
         private static string EscapeJsonString(string s)
