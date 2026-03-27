@@ -137,7 +137,7 @@ $beforeLength = if (Test-Path $FlashLog) { (Get-Item $FlashLog).Length } else { 
 $startTime = Get-Date
 
 try {
-    [System.IO.File]::WriteAllText($OptionsFile, (New-OptionsContent -ModeName $Mode -ProblemNames $Problems), [System.Text.Encoding]::ASCII)
+    [System.IO.File]::WriteAllText($OptionsFile, (New-OptionsContent -ModeName $Mode -ProblemNames $Problems), [System.Text.UTF8Encoding]::new($false))
 
     $compileOutput = (& $CompileScript *>&1 | Out-String)
     $compileExit = $LASTEXITCODE

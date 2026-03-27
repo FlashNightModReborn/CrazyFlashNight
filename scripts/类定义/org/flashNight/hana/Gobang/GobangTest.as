@@ -1399,6 +1399,77 @@ class org.flashNight.hana.Gobang.GobangTest {
             || (inhResult.secondX === undefined);
         assert(hasField || inhResult.secondInherited === false || inhResult.secondInherited === true,
                "Inherited top2: secondInherited field flows through step()");
+
+        // === Test 13: collectRootMoves 返回合理候选 ===
+        var bRoot:GobangBoard = new GobangBoard(15, 1);
+        var eRoot:GobangEval = new GobangEval(15);
+        bRoot.put(7, 7, 1); eRoot.move(7, 7, 1);
+        bRoot.put(8, 8, -1); eRoot.move(8, 8, -1);
+        bRoot.put(6, 6, 1); eRoot.move(6, 6, 1);
+        bRoot.put(9, 9, -1); eRoot.move(9, 9, -1);
+        var mmRoot:GobangMinmax = new GobangMinmax(bRoot, eRoot);
+        var rootMoves:Array = mmRoot.collectRootMoves(1, 8);
+        assert(rootMoves.length > 0, "collectRootMoves: non-empty: " + rootMoves.length);
+        assert(rootMoves.length <= 8, "collectRootMoves: respects limit: " + rootMoves.length);
+        // 所有候选必须在棋盘内且为空位
+        for (var rmi:Number = 0; rmi < rootMoves.length; rmi++) {
+            var rmx:Number = rootMoves[rmi][0];
+            var rmy:Number = rootMoves[rmi][1];
+            assert(rmx >= 0 && rmx < 15 && rmy >= 0 && rmy < 15,
+                   "collectRootMoves[" + rmi + "] in bounds: (" + rmx + "," + rmy + ")");
+            assert(bRoot.board[rmx * 15 + rmy] === 0,
+                   "collectRootMoves[" + rmi + "] is empty: (" + rmx + "," + rmy + ")");
+        }
+        trace("[INFO] collectRootMoves: " + rootMoves.length + " candidates");
+
+        // === Test 14: collectExpandedRootMoves 候选数 >= collectRootMoves ===
+        var expandedMoves:Array = mmRoot.collectExpandedRootMoves(1, 12);
+        assert(expandedMoves.length >= rootMoves.length,
+               "collectExpandedRootMoves >= collectRootMoves: "
+               + expandedMoves.length + " >= " + rootMoves.length);
+        trace("[INFO] collectExpandedRootMoves: " + expandedMoves.length + " candidates");
+
+        // === Test 15: collectRootMoves + searchSkipMultiP4a 基本功能 ===
+        // searchSkipMultiP4a 应能正常完成搜索（无崩溃，返回有效走法）
+        var bSkip:GobangBoard = new GobangBoard(15, 1);
+        var eSkip:GobangEval = new GobangEval(15);
+        bSkip.put(7, 7, 1); eSkip.move(7, 7, 1);
+        bSkip.put(8, 8, -1); eSkip.move(8, 8, -1);
+        bSkip.put(6, 6, 1); eSkip.move(6, 6, 1);
+        bSkip.put(9, 9, -1); eSkip.move(9, 9, -1);
+        bSkip.put(5, 5, 1); eSkip.move(5, 5, 1);
+        bSkip.put(10, 10, -1); eSkip.move(10, 10, -1);
+        var mmSkip:GobangMinmax = new GobangMinmax(bSkip, eSkip);
+        var rSkip:Object = mmSkip.searchSkipMultiP4a(1, 4, false);
+        assert(rSkip !== null && rSkip.x >= 0,
+               "searchSkipMultiP4a: returns valid move: (" + rSkip.x + "," + rSkip.y + ")");
+        trace("[INFO] searchSkipMultiP4a: (" + rSkip.x + "," + rSkip.y + ") score=" + rSkip.score);
+
+        // === Test 16: _preSearchTactical 返回 liveFourCount + candidates ===
+        // 通过 GobangAI 异步路径间接测试（step() 透传这些字段）
+        var aiP4:GobangAI = new GobangAI(-1, 100);
+        // 用 playerMove 交替放棋，确保 role 正确
+        aiP4.playerMove(7, 5);  // B1
+        aiP4.playerMove(3, 3);  // AI 被绕过 — 直接操控内部
+        var aiP4Obj:Object = aiP4;
+        var bP4:GobangBoard = aiP4Obj["_board"];
+        var eP4:GobangEval = aiP4Obj["_eval"];
+        // 手动构造黑棋活四 (7,5 已放)
+        bP4.put(7, 6, 1); eP4.move(7, 6, 1);
+        bP4.put(0, 0, -1); eP4.move(0, 0, -1);
+        bP4.put(7, 7, 1); eP4.move(7, 7, 1);
+        bP4.put(0, 2, -1); eP4.move(0, 2, -1);
+        bP4.put(7, 8, 1); eP4.move(7, 8, 1);
+        bP4.put(0, 4, -1); eP4.move(0, 4, -1);
+        // 此时黑 (7,5)(7,6)(7,7)(7,8) 四连，轮到白方
+        // 强制白方走 — 通过 minmax 的 search 检测 P4a 并验证透传
+        var mmP4:GobangMinmax = aiP4Obj["_minmax"];
+        var rP4:Object = mmP4.search(-1, 4, false);
+        assert(rP4 !== null && rP4.x >= 0, "P4a search: returns valid move");
+        trace("[INFO] P4a search: (" + rP4.x + "," + rP4.y
+              + ") phase=" + rP4.phaseLabel
+              + " lfc=" + rP4.liveFourCount
+              + " cands=" + ((rP4.candidates != undefined) ? rP4.candidates.length : "none"));
     }
 
     private static function testAsyncAI():Void {

@@ -457,10 +457,8 @@ class org.flashNight.hana.Gobang.GobangAI {
                 if (altTie.score > chosenTie.score) {
                     tieBetter = true;
                     chosenTie = altTie;
-                } else if (altTie.score === chosenTie.score) {
-                    tieBetter = true;
-                    chosenTie = altTie;
                 }
+                // score 相同时保留先出现的候选（不偏向后面的）
             }
             if (clearlyBetter || tieBetter) {
                 chosenX = altX;

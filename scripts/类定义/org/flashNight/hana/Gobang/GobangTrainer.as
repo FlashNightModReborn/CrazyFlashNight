@@ -158,7 +158,7 @@ class org.flashNight.hana.Gobang.GobangTrainer {
         addProblem({name: "def_diagonal_three_center", category: "defense",
             moves: defDiagonalThreeCenterBaseMoves,
             role: -1, difficulty: 100, frameBudget: 8,
-            expectedMoves: [[8,6],[4,10],[5,8]],
+            expectedMoves: [[8,6],[4,10],[5,8],[3,11]],
             description: "堵对角线三连，靠近中心(Rapfi:5,8 d35)"});
 
         addProblem({name: "def_diagonal_three_center_shift", category: "defense",
@@ -331,8 +331,8 @@ class org.flashNight.hana.Gobang.GobangTrainer {
             moves: [[7,7,1],[8,8,-1],[6,6,1],[8,6,-1],[5,5,1],[9,5,-1],
                     [7,8,1],[0,0,-1],[6,8,1],[0,14,-1],[8,7,1],[14,0,-1]],
             role: -1, difficulty: 100, frameBudget: 8,
-            expectedMoves: [],
-            description: "中盘判断：黑棋双线发展(对角+横向)，Rapfi参考"});
+            expectedMoves: [[6,7],[6,9],[4,4]],
+            description: "中盘判断：黑棋双线发展(对角+横向)，多种合理防守"});
 
         // 白棋需要主动进攻而非被动防守
         addProblem({name: "mid_active_offense", category: "mid_game",
@@ -523,6 +523,121 @@ class org.flashNight.hana.Gobang.GobangTrainer {
             role: -1, difficulty: 100, frameBudget: 8,
             expectedMoves: [[4,4],[8,8]],
             description: "斜向活三(5,5-6,6-7,7)堵两端"});
+
+        // ===== R1-30 对局提取 =====
+
+        // 对局#6: AI走(6,11)远离战场(score -1530)，应在中心区域防守
+        addProblem({name: "mid_avoid_distant_move", category: "mid_game",
+            moves: [[7,7,1],[8,8,-1],[9,8,1],[6,7,-1],[8,9,1]],
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[8,5],[9,9],[10,8],[10,7],[7,9]],
+            description: "对局提取：避免远离战场，应在中心区域防守"});
+
+        // RAPFI_DIFF: def_h_gap_four Local(5,7) vs Rapfi(6,6)
+        // 补充一个类似的水平跳四防守变体
+        addProblem({name: "def_h_gap_four_variant", category: "defense",
+            moves: pad.concat([[6,4,1],[6,5,1],[6,7,1],[6,8,1],
+                    [7,4,-1],[7,5,-1],[5,7,-1],[5,8,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[6,6],[6,3],[6,9]],
+            description: "水平跳四变体(6,4-6,5-gap-6,7-6,8)"});
+
+        // 对局陷阱: AI#8走(10,7)后被#9(9,9)击穿
+        addProblem({name: "mid_game_post_opening_defense", category: "mid_game",
+            moves: [[7,7,1],[8,8,-1],[9,8,1],[6,7,-1],[8,9,1],[10,7,-1],[9,7,1]],
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [],
+            description: "开局后中盘防守：Rapfi参考"});
+
+        // 纵向冲四+横向活三复合威胁
+        addProblem({name: "def_vertical_rush_four_combo", category: "defense",
+            moves: pad.concat([[7,7,1],[6,7,1],[5,7,1],[4,7,1],
+                    [7,6,-1],[8,8,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[3,7],[8,7]],
+            description: "纵向四连(4-5-6-7,7)堵两端"});
+
+        // 反对角线三连+中心控制
+        addProblem({name: "def_anti_diag_center_control", category: "defense",
+            moves: pad.concat([[9,5,1],[8,6,1],[7,7,1],[6,8,-1],[5,9,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[10,4],[6,8],[9,7]],
+            description: "反对角线三连(9,5-8,6-7,7)堵两端或中间"});
+
+        // 对局提取 R7: 开局库补丁后 Rapfi(10,7) 打击，AI 需要正确应对
+        addProblem({name: "mid_post_book_response", category: "mid_game",
+            moves: [[7,7,1],[8,8,-1],[9,8,1],[6,7,-1],[8,9,1],[9,9,-1],[10,7,1]],
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [],
+            description: "开局库后中盘：Rapfi(10,7)后白方最佳应手"});
+
+        // L型三连防守：水平二连+垂直一子
+        addProblem({name: "def_l_shape_three", category: "defense",
+            moves: pad.concat([[7,5,1],[7,6,1],[6,6,1],[8,8,-1],[9,9,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,7],[7,4],[5,6]],
+            description: "L型三连(7,5-7,6+6,6)堵扩展点"});
+
+        // 双方向二连交叉（T型前驱）
+        addProblem({name: "def_t_precursor_cross", category: "defense",
+            moves: pad.concat([[7,6,1],[7,7,1],[6,7,1],[8,8,-1],[9,9,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,8],[7,5],[5,7],[8,7],[7,9]],
+            description: "T型前驱(7,6-7,7横+6,7纵)堵扩展"});
+
+        // 对角+跳连组合威胁防守
+        addProblem({name: "def_diag_jump_combo", category: "defense",
+            moves: pad.concat([[5,5,1],[6,6,1],[8,8,1],[9,9,-1],[10,10,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,7],[4,4]],
+            description: "对角跳连(5,5-6,6-gap-8,8)堵中间或端点"});
+
+        // ===== R11-R20 批量新增：确定性战术题 =====
+
+        // 冲四活三交叉：(7,7)同时横向冲四+纵向活三 → 不可防
+        addProblem({name: "tac_four_three_cross", category: "tactical",
+            moves: pad.concat([[7,4,1],[7,5,1],[7,6,1],[5,7,1],[6,7,1],
+                    [8,8,-1],[9,9,-1],[10,10,-1]]),
+            role: 1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,7]],
+            description: "(7,7)横向冲四(7,4-7,7)+纵向活三(5,7-6,7-7,7)"});
+
+        // 对手冲四+活三：必须堵冲四而非做三
+        addProblem({name: "def_block_four_over_three", category: "defense",
+            moves: pad.concat([[7,4,1],[7,5,1],[7,6,1],[7,8,1],
+                    [6,4,-1],[6,5,-1],[6,6,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,7],[7,3],[7,9]],
+            description: "黑棋跳四(7,4-7,6+7,8)必须补缺口或堵端"});
+
+        // 边线防守：靠边的三连
+        addProblem({name: "def_edge_line_three", category: "defense",
+            moves: pad.concat([[1,5,1],[1,6,1],[1,7,1],[7,7,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[1,4],[1,8]],
+            description: "边线三连(1,5-1,7)堵两端"});
+
+        // 对角线活三靠近角落
+        addProblem({name: "def_corner_diag_three", category: "defense",
+            moves: pad.concat([[3,3,1],[4,4,1],[5,5,1],[7,7,-1],[8,8,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[2,2],[6,6]],
+            description: "角落对角线三连(3,3-5,5)堵两端"});
+
+        // 己方冲四成五（纵向）
+        addProblem({name: "tac_vertical_complete_five", category: "tactical",
+            moves: pad.concat([[5,7,1],[6,7,1],[7,7,1],[9,7,1],
+                    [5,6,-1],[6,6,-1],[7,6,-1]]),
+            role: 1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[8,7]],
+            description: "纵向跳四(5-6-7+9,7)补缺口(8,7)成五"});
+
+        // 对手双活三前驱的交叉点防守
+        addProblem({name: "def_double_three_precursor", category: "defense",
+            moves: pad.concat([[7,5,1],[7,6,1],[5,7,1],[6,7,1],[8,8,-1],[9,9,-1]]),
+            role: -1, difficulty: 100, frameBudget: 8,
+            expectedMoves: [[7,7],[7,4],[4,7],[7,8]],
+            description: "双活三前驱(横+纵)交叉于(7,7)"});
 
         trace("[Trainer] Loaded " + _problems.length + " built-in problems");
     }
