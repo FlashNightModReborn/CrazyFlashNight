@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <OutputType>WinExe</OutputType>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>CRAZYFLASHER7MercenaryEmpire</AssemblyName>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <RootNamespace>CF7Launcher</RootNamespace>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="ClearScript.Core">
+      <HintPath>packages\Microsoft.ClearScript.Core.7.4.5\lib\net45\ClearScript.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ClearScript.V8">
+      <HintPath>packages\Microsoft.ClearScript.V8.7.4.5\lib\net45\ClearScript.V8.dll</HintPath>
+    </Reference>
+    <Reference Include="ClearScript.V8.ICUData">
+      <HintPath>packages\Microsoft.ClearScript.V8.ICUData.7.4.5\lib\netstandard1.0\ClearScript.V8.ICUData.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\Program.cs" />
+    <Compile Include="src\Config\AppConfig.cs" />
+    <Compile Include="src\Guardian\ProcessManager.cs" />
+    <Compile Include="src\Guardian\WindowManager.cs" />
+    <Compile Include="src\Guardian\KeyboardHook.cs" />
+    <Compile Include="src\Guardian\GuardianForm.cs" />
+    <Compile Include="src\Guardian\LogManager.cs" />
+    <Compile Include="src\Bus\PortAllocator.cs" />
+    <Compile Include="src\Bus\FlashPolicyHandler.cs" />
+    <Compile Include="src\Bus\MessageRouter.cs" />
+    <Compile Include="src\Bus\XmlSocketServer.cs" />
+    <Compile Include="src\Bus\HttpApiServer.cs" />
+    <Compile Include="src\Tasks\EvalTask.cs" />
+    <Compile Include="src\Tasks\RegexTask.cs" />
+    <Compile Include="src\Tasks\ComputationTask.cs" />
+    <Compile Include="src\Tasks\GomokuTask.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

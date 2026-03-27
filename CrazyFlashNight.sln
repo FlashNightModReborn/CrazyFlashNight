@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "launcher", "launcher", "{740C5202-8AD2-6D86-0CA9-F95B1A2D697C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRAZYFLASHER7MercenaryEmpire", "launcher\CRAZYFLASHER7MercenaryEmpire.csproj", "{EA92712C-5BD7-5CBD-65D6-4C025025A871}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA92712C-5BD7-5CBD-65D6-4C025025A871}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA92712C-5BD7-5CBD-65D6-4C025025A871}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA92712C-5BD7-5CBD-65D6-4C025025A871}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA92712C-5BD7-5CBD-65D6-4C025025A871}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EA92712C-5BD7-5CBD-65D6-4C025025A871} = {740C5202-8AD2-6D86-0CA9-F95B1A2D697C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4BA21E2F-EF84-4016-9E63-3C26F532563A}
+	EndGlobalSection
+EndGlobal

@@ -1,42 +1,25 @@
-# 获取当前脚本所在的目录 (automation directory)
+# ============================================================
+# CF7:ME 一键启动脚本
+# 启动守护进程 EXE（内含 Flash Player 启动 + V8 总线）
+# ============================================================
+
 $scriptDirectory = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
+$projectRoot = Split-Path -Parent $scriptDirectory
 
-# 启动游戏的脚本路径 (ensure it's relative to the automation folder)
-$startGameScript = "$scriptDirectory\start_game.ps1"
+$guardianExe = Join-Path $projectRoot "CRAZYFLASHER7MercenaryEmpire.exe"
 
-# 启动服务器的脚本路径 (ensure it's relative to the automation folder)
-$startServerScript = "$scriptDirectory\start_server.ps1"
-
-# 检查启动游戏的脚本是否存在
-if (-not (Test-Path $startGameScript)) {
-    Write-Host "Error: Game startup script not found at $startGameScript"
+if (-not (Test-Path $guardianExe)) {
+    Write-Host "[Error] Guardian EXE not found: $guardianExe"
+    Write-Host "Please run launcher\build.ps1 first."
     exit 1
 }
 
-# 检查启动服务器的脚本是否存在
-if (-not (Test-Path $startServerScript)) {
-    Write-Host "Error: Server startup script not found at $startServerScript"
-    exit 1
-}
-
-# 启动游戏
-Write-Host "Starting the game..."
+Write-Host "Starting CF7:ME Guardian..."
 try {
-    Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$startGameScript`"" -NoNewWindow
-    Write-Host "Game started successfully."
+    Start-Process -FilePath $guardianExe -WorkingDirectory $projectRoot -NoNewWindow
+    Write-Host "Guardian started successfully."
+    Write-Host "(Flash Player + V8 Bus are managed by the guardian process)"
 } catch {
-    Write-Host "Failed to start the game. Please check the game startup script."
+    Write-Host "Failed to start guardian: $_"
     exit 1
 }
-
-# 启动服务器
-Write-Host "Starting the server..."
-try {
-    Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$startServerScript`"" -NoNewWindow
-    Write-Host "Server started successfully."
-} catch {
-    Write-Host "Failed to start the server. Please check the server startup script."
-    exit 1
-}
-
-Write-Host "Both the game and server have been started successfully."

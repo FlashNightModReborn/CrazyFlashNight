@@ -1,0 +1,73 @@
+# ============================================================
+# CF7:ME Guardian Process - Build Script
+# 构建守护进程并复制产物到项目根目录
+# ============================================================
+
+$ErrorActionPreference = "Stop"
+
+$launcherDir = $PSScriptRoot
+$projectRoot = Split-Path -Parent $launcherDir
+$msbuild = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe"
+$nuget = Join-Path $launcherDir "tools\nuget.exe"
+$binDir = Join-Path $launcherDir "bin\Release"
+
+Write-Host "=== CF7:ME Guardian Build ===" -ForegroundColor Cyan
+Write-Host "  Project Root: $projectRoot"
+Write-Host "  Launcher Dir: $launcherDir"
+Write-Host ""
+
+# Step 1: NuGet restore
+Write-Host "[Step 1/4] NuGet restore..." -ForegroundColor Yellow
+$packagesConfig = Join-Path $launcherDir "packages.config"
+$packagesDir = Join-Path $launcherDir "packages"
+& $nuget restore $packagesConfig -PackagesDirectory $packagesDir -Verbosity quiet
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] NuGet restore failed." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  NuGet restore OK." -ForegroundColor Green
+
+# Step 2: MSBuild
+Write-Host "[Step 2/4] MSBuild compile..." -ForegroundColor Yellow
+$csproj = Join-Path $launcherDir "CRAZYFLASHER7MercenaryEmpire.csproj"
+& $msbuild $csproj "-p:Configuration=Release" -verbosity:minimal
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] MSBuild failed." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  MSBuild OK." -ForegroundColor Green
+
+# Step 3: Copy managed artifacts to project root
+Write-Host "[Step 3/4] Copy managed DLLs..." -ForegroundColor Yellow
+$managedFiles = @(
+    "CRAZYFLASHER7MercenaryEmpire.exe",
+    "ClearScript.Core.dll",
+    "ClearScript.V8.dll",
+    "ClearScript.V8.ICUData.dll",
+    "Newtonsoft.Json.dll"
+)
+foreach ($f in $managedFiles) {
+    $src = Join-Path $binDir $f
+    if (Test-Path $src) {
+        Copy-Item $src $projectRoot -Force
+        Write-Host "  Copied: $f"
+    } else {
+        Write-Host "  [WARN] Not found: $src" -ForegroundColor Yellow
+    }
+}
+
+# Step 4: Copy native V8 DLL
+Write-Host "[Step 4/4] Copy native V8 DLL..." -ForegroundColor Yellow
+$nativeSrc = Join-Path $launcherDir `
+    "packages\Microsoft.ClearScript.V8.Native.win-x64.7.4.5\runtimes\win-x64\native\ClearScriptV8.win-x64.dll"
+if (Test-Path $nativeSrc) {
+    Copy-Item $nativeSrc $projectRoot -Force
+    Write-Host "  Copied: ClearScriptV8.win-x64.dll"
+} else {
+    Write-Host "  [FAIL] Native DLL not found: $nativeSrc" -ForegroundColor Red
+    exit 1
+}
+
+Write-Host ""
+Write-Host "=== Build Complete ===" -ForegroundColor Green
+Write-Host "  Output: $projectRoot\CRAZYFLASHER7MercenaryEmpire.exe"
