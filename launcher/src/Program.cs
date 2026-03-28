@@ -173,9 +173,17 @@ class Program
             form.ForceExit();
         };
 
+        // GPU 锐化暂时禁用（显示管线待完善），Flash 正常嵌入
+        // float sharpness = config.GpuSharpeningEnabled ? config.Sharpness : 0f;
+
         // 在后台线程等待 Flash 窗口出现并嵌入
         ThreadPool.QueueUserWorkItem(delegate
         {
+            if (config.GpuSharpeningEnabled)
+            {
+                LogManager.Log("[Guardian] GPU mode skipped: strict single-window capture path is not viable yet");
+            }
+
             windowManager.EmbedFlashWindow(processManager.FlashProcess, form.FlashHostPanel);
             form.BeginInvoke(new Action(delegate
             {

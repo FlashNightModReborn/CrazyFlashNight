@@ -84,17 +84,37 @@ layers:
     exclude: []
 
   - name: root-files
-    description: "根目录可执行文件与配置"
+    description: "根目录可执行文件、DLL 与配置"
     source: "."
     include:
-      - "CRAZYFLASHER7MercenaryEmpire.bat"
+      # Guardian 启动器 + 快捷键拦截辅助进程
       - "CRAZYFLASHER7MercenaryEmpire.exe"
+      - "hotkey_guard.exe"
+      # ClearScript V8 引擎（eval/regex task 依赖）
+      - "ClearScript.Core.dll"
+      - "ClearScript.V8.dll"
+      - "ClearScript.V8.ICUData.dll"
+      - "ClearScriptV8.win-x64.dll"
+      # JSON 序列化
+      - "Newtonsoft.Json.dll"
+      # Flash Player + SWF
       - "CRAZYFLASHER7MercenaryEmpire.swf"
       - "Adobe Flash Player 20.exe"
+      # 配置
       - "config.xml"
       - "config.toml"
       - "LICENSE"
       - "README.md"
+    exclude: []
+
+  - name: rapfi
+    description: "Rapfi 五子棋引擎（GomokuTask 依赖）"
+    source: "tools/rapfi/"
+    include:
+      - "pbrain-rapfi-windows-avx2.exe"
+      - "config.toml"
+      - "*.bin"
+      - "*.bin.lz4"
     exclude: []
 
   - name: root-dirs

@@ -29,6 +29,18 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI">
+      <HintPath>packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11">
+      <HintPath>packages\SharpDX.Direct3D11.4.2.0\lib\net45\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.D3DCompiler">
+      <HintPath>packages\SharpDX.D3DCompiler.4.2.0\lib\net45\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Program.cs" />
@@ -43,6 +55,10 @@
     <Compile Include="src\Bus\MessageRouter.cs" />
     <Compile Include="src\Bus\XmlSocketServer.cs" />
     <Compile Include="src\Bus\HttpApiServer.cs" />
+    <Compile Include="src\Render\RenderNativeMethods.cs" />
+<Compile Include="src\Render\CasShaderBytecode.cs" />
+    <Compile Include="src\Render\GpuRenderer.cs" />
+    <Compile Include="src\Render\D3DPanel.cs" />
     <Compile Include="src\Tasks\EvalTask.cs" />
     <Compile Include="src\Tasks\RegexTask.cs" />
     <Compile Include="src\Tasks\ComputationTask.cs" />

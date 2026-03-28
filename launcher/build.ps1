@@ -44,7 +44,11 @@ $managedFiles = @(
     "ClearScript.Core.dll",
     "ClearScript.V8.dll",
     "ClearScript.V8.ICUData.dll",
-    "Newtonsoft.Json.dll"
+    "Newtonsoft.Json.dll",
+    "SharpDX.dll",
+    "SharpDX.DXGI.dll",
+    "SharpDX.Direct3D11.dll",
+    "SharpDX.D3DCompiler.dll"
 )
 foreach ($f in $managedFiles) {
     $src = Join-Path $binDir $f

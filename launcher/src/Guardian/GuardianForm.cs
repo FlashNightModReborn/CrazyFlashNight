@@ -1,9 +1,12 @@
 using System;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using System.Diagnostics;
+using CF7Launcher.Config;
+using CF7Launcher.Render;
 
 namespace CF7Launcher.Guardian
 {
@@ -21,9 +24,47 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        [DllImport("user32.dll")]
+        private static extern bool PostMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        private static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
         private const uint MOD_CONTROL = 0x0002;
         private const int WM_HOTKEY = 0x0312;
         private const uint KEYEVENTF_KEYUP = 0x0002;
+        private const int WM_KEYDOWN = 0x0100;
+        private const int WM_KEYUP = 0x0101;
+        private const int WM_CHAR = 0x0102;
+        private const int WM_SYSKEYDOWN = 0x0104;
+        private const int WM_SYSKEYUP = 0x0105;
+        private const int WM_MOUSEMOVE = 0x0200;
+        private const int WM_LBUTTONDOWN = 0x0201;
+        private const int WM_LBUTTONUP = 0x0202;
+        private const int WM_LBUTTONDBLCLK = 0x0203;
+        private const int WM_RBUTTONDOWN = 0x0204;
+        private const int WM_RBUTTONUP = 0x0205;
+        private const int WM_RBUTTONDBLCLK = 0x0206;
+        private const int WM_MBUTTONDOWN = 0x0207;
+        private const int WM_MBUTTONUP = 0x0208;
+        private const int WM_MBUTTONDBLCLK = 0x0209;
+        private const int WM_MOUSEWHEEL = 0x020A;
+        private const int WM_XBUTTONDOWN = 0x020B;
+        private const int WM_XBUTTONUP = 0x020C;
+        private const int WM_XBUTTONDBLCLK = 0x020D;
+        private const int MK_LBUTTON = 0x0001;
+        private const int MK_RBUTTON = 0x0002;
+        private const int MK_SHIFT = 0x0004;
+        private const int MK_CONTROL = 0x0008;
+        private const int MK_MBUTTON = 0x0010;
+        private const int MK_XBUTTON1 = 0x0020;
+        private const int MK_XBUTTON2 = 0x0040;
+        private const uint MAPVK_VK_TO_VSC = 0;
+        private const int GpuPaintIntervalMs = 33;
+        private const int GpuCaptureStripWidth = 16;
+
+        public const int DefaultGpuCaptureWidth = 1024;
+        public const int DefaultGpuCaptureHeight = 576;
 
         // RegisterHotKey ID（仅 Guardian 自身动作）
         private const int HK_CTRL_F = 0xCF01;
@@ -36,8 +77,9 @@ namespace CF7Launcher.Guardian
         private NotifyIcon _trayIcon;
         private ContextMenuStrip _trayMenu;
         private TextBox _logBox;
-        private Panel _flashPanel;
-
+        private D3DPanel _flashPanel;
+        private Panel _gpuCaptureStrip;
+        private System.Windows.Forms.Timer _gpuPaintTimer;
         private Panel _toolbar;
         private FlowLayoutPanel _hotkeyPanel;
         private bool _hotkeysExpanded;
@@ -59,7 +101,31 @@ namespace CF7Launcher.Guardian
 
         private WindowManager _windowManager;
 
+        private GpuRenderer _gpuRenderer;
+        private bool _gpuMode;
+        private bool _gpuFallbackPending;
+
+        /// <summary>Flash 嵌入目标：始终是 _flashPanel。</summary>
         public Panel FlashHostPanel { get { return _flashPanel; } }
+        public Panel GpuCaptureHostPanel { get { return _gpuCaptureStrip; } }
+
+        public void SetGpuCaptureHostVisible(bool visible)
+        {
+            if (!this.IsHandleCreated)
+            {
+                _gpuCaptureStrip.Visible = visible;
+                return;
+            }
+
+            if (this.InvokeRequired)
+            {
+                if (!this.IsDisposed)
+                    this.BeginInvoke(new Action<bool>(SetGpuCaptureHostVisible), visible);
+                return;
+            }
+
+            _gpuCaptureStrip.Visible = visible;
+        }
 
         public GuardianForm()
         {
@@ -70,6 +136,76 @@ namespace CF7Launcher.Guardian
         }
 
         public void BindWindowManager(WindowManager wm) { _windowManager = wm; }
+
+
+
+        public bool InitGpuRenderer(AppConfig config)
+        {
+            if (this.InvokeRequired)
+            {
+                bool started = false;
+                this.Invoke(new MethodInvoker(delegate { started = InitGpuRenderer(config); }));
+                return started;
+            }
+
+            if (_windowManager == null || _windowManager.FlashHwnd == IntPtr.Zero)
+            {
+                LogManager.Log("[Guardian] GPU init skipped: Flash window not ready");
+                return false;
+            }
+
+            StopGpuRenderer();
+
+            GpuRenderer renderer = new GpuRenderer();
+            renderer.Sharpness = config.Sharpness;
+            renderer.OnFallbackRequested += OnGpuFallbackRequested;
+
+            if (!renderer.Init(DefaultGpuCaptureWidth, DefaultGpuCaptureHeight))
+            {
+                renderer.OnFallbackRequested -= OnGpuFallbackRequested;
+                renderer.Dispose();
+                LogManager.Log("[Guardian] GPU renderer init failed");
+                return false;
+            }
+
+            _gpuRenderer = renderer;
+            _gpuMode = true;
+            _gpuFallbackPending = false;
+            SetGpuCaptureHostVisible(true);
+            _flashPanel.Renderer = renderer;
+            EnsureGpuPaintTimer();
+            _gpuPaintTimer.Start();
+            renderer.StartRenderLoop(_windowManager.FlashHwnd);
+            _flashPanel.Focus();
+            _flashPanel.Invalidate();
+            LogManager.Log("[Guardian] GPU post-processing enabled");
+            return true;
+        }
+
+        public void StopGpuRenderer()
+        {
+            if (this.InvokeRequired)
+            {
+                if (this.IsHandleCreated && !this.IsDisposed)
+                    this.BeginInvoke(new Action(StopGpuRenderer));
+                return;
+            }
+
+            if (_gpuPaintTimer != null)
+                _gpuPaintTimer.Stop();
+
+            if (_gpuRenderer != null)
+            {
+                _gpuRenderer.OnFallbackRequested -= OnGpuFallbackRequested;
+                _gpuRenderer.Dispose();
+                _gpuRenderer = null;
+            }
+
+            _flashPanel.Renderer = null;
+            _gpuMode = false;
+            _gpuFallbackPending = false;
+            _flashPanel.Invalidate();
+        }
 
         public void TrackFlashProcess(Process p)
         {
@@ -240,11 +376,29 @@ namespace CF7Launcher.Guardian
 
             this.Controls.Add(_toolbar);
 
-            // ── Flash 宿主 ──
-            _flashPanel = new Panel();
+            // ── Flash 宿主（单 Panel + GPU overlay 架构）──
+            // Flash 嵌入 _flashPanel。GPU 模式下，在 _flashPanel 内部创建
+            // _gpuOverlay 子 Panel 覆盖在 Flash HWND 之上，SwapChain 渲染到 overlay。
+            _flashPanel = new D3DPanel();
             _flashPanel.Dock = DockStyle.Fill;
             _flashPanel.BackColor = Color.Black;
+            _flashPanel.MouseEnter += OnFlashPanelMouseEnter;
+            _flashPanel.MouseDown += OnFlashPanelMouseDown;
+            _flashPanel.MouseUp += OnFlashPanelMouseUp;
+            _flashPanel.MouseMove += OnFlashPanelMouseMove;
+            _flashPanel.MouseWheel += OnFlashPanelMouseWheel;
+            _flashPanel.MouseDoubleClick += OnFlashPanelMouseDoubleClick;
+            _flashPanel.KeyDown += OnFlashPanelKeyDown;
+            _flashPanel.KeyUp += OnFlashPanelKeyUp;
+            _flashPanel.KeyPress += OnFlashPanelKeyPress;
             this.Controls.Add(_flashPanel);
+
+            _gpuCaptureStrip = new Panel();
+            _gpuCaptureStrip.Dock = DockStyle.Right;
+            _gpuCaptureStrip.Width = GpuCaptureStripWidth;
+            _gpuCaptureStrip.BackColor = Color.Black;
+            _gpuCaptureStrip.Visible = false;
+            this.Controls.Add(_gpuCaptureStrip);
 
             this.FormClosing += OnFormClosing;
         }
@@ -338,6 +492,12 @@ namespace CF7Launcher.Guardian
 
         private void SendKeyToFlash(Keys key)
         {
+            if (_gpuMode)
+            {
+                ForwardCtrlComboToFlash(key);
+                return;
+            }
+
             if (_windowManager != null && _windowManager.FlashHwnd != IntPtr.Zero)
                 SetForegroundWindow(_windowManager.FlashHwnd);
 
@@ -347,6 +507,20 @@ namespace CF7Launcher.Guardian
             keybd_event((byte)Keys.ControlKey, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
 
             LogManager.Log("[Input] Sent Ctrl+" + key + " to Flash");
+        }
+
+        private void ForwardCtrlComboToFlash(Keys key)
+        {
+            IntPtr flashHwnd = (_windowManager != null) ? _windowManager.FlashHwnd : IntPtr.Zero;
+            if (flashHwnd == IntPtr.Zero)
+                return;
+
+            PostKeyMessage(flashHwnd, WM_KEYDOWN, Keys.ControlKey);
+            PostKeyMessage(flashHwnd, WM_KEYDOWN, key);
+            PostKeyMessage(flashHwnd, WM_KEYUP, key);
+            PostKeyMessage(flashHwnd, WM_KEYUP, Keys.ControlKey);
+
+            LogManager.Log("[Input] Posted Ctrl+" + key + " to Flash");
         }
 
         // ============================================================
@@ -387,6 +561,12 @@ namespace CF7Launcher.Guardian
             }
 
             this.ResumeLayout(true);
+
+            // GPU 渲染器 resize（暂时禁用）
+            // if (_gpuRenderer != null)
+            //     _gpuRenderer.RequestResize(_flashPanel.Width, _flashPanel.Height);
+
+            _flashPanel.Invalidate();
             LogManager.Log("[Guardian] Fullscreen=" + _isFullscreen);
         }
 
@@ -443,6 +623,366 @@ namespace CF7Launcher.Guardian
                 _logBox.SelectionLength = 0;
             }
         }
+
+        private void EnsureGpuPaintTimer()
+        {
+            if (_gpuPaintTimer != null)
+                return;
+
+            _gpuPaintTimer = new System.Windows.Forms.Timer();
+            _gpuPaintTimer.Interval = GpuPaintIntervalMs;
+            _gpuPaintTimer.Tick += delegate
+            {
+                if (_gpuMode && !_flashPanel.IsDisposed)
+                    _flashPanel.Invalidate();
+            };
+        }
+
+        private void OnGpuFallbackRequested()
+        {
+            if (_gpuFallbackPending)
+                return;
+
+            _gpuFallbackPending = true;
+
+            try
+            {
+                if (this.InvokeRequired)
+                    this.BeginInvoke(new Action(HandleGpuFallbackOnUiThread));
+                else
+                    HandleGpuFallbackOnUiThread();
+            }
+            catch
+            {
+                _gpuFallbackPending = false;
+            }
+        }
+
+        private void HandleGpuFallbackOnUiThread()
+        {
+            if (!_gpuMode)
+            {
+                _gpuFallbackPending = false;
+                return;
+            }
+
+            LogManager.Log("[Guardian] GPU renderer fallback to embedded Flash");
+            StopGpuRenderer();
+
+            if (_windowManager != null)
+            {
+                _windowManager.DisableGpuMode();
+                _windowManager.ReparentFlash(_flashPanel);
+            }
+
+            SetGpuCaptureHostVisible(false);
+            _flashPanel.Focus();
+            _gpuFallbackPending = false;
+        }
+
+        private void OnFlashPanelMouseEnter(object sender, EventArgs e)
+        {
+            if (_gpuMode)
+                _flashPanel.Focus();
+        }
+
+        private void OnFlashPanelMouseDown(object sender, MouseEventArgs e)
+        {
+            if (!_gpuMode)
+                return;
+
+            _flashPanel.Focus();
+            ForwardMouseMessage(GetMouseDownMessage(e.Button), e);
+        }
+
+        private void OnFlashPanelMouseUp(object sender, MouseEventArgs e)
+        {
+            if (!_gpuMode)
+                return;
+
+            ForwardMouseMessage(GetMouseUpMessage(e.Button), e);
+        }
+
+        private void OnFlashPanelMouseMove(object sender, MouseEventArgs e)
+        {
+            if (!_gpuMode)
+                return;
+
+            ForwardMouseMessage(WM_MOUSEMOVE, e);
+        }
+
+        private void OnFlashPanelMouseWheel(object sender, MouseEventArgs e)
+        {
+            if (!_gpuMode)
+                return;
+
+            IntPtr flashHwnd = (_windowManager != null) ? _windowManager.FlashHwnd : IntPtr.Zero;
+            if (flashHwnd == IntPtr.Zero)
+                return;
+
+            Point mapped;
+            if (!TryMapPanelPointToCapture(e.Location, out mapped))
+                return;
+
+            int keyState = GetMouseKeyState(Control.MouseButtons);
+            int wParam = (unchecked((short)e.Delta) << 16) | (keyState & 0xFFFF);
+            PostMessage(flashHwnd, WM_MOUSEWHEEL, new IntPtr(wParam), MakeMouseLParam(mapped.X, mapped.Y));
+        }
+
+        private void OnFlashPanelMouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (!_gpuMode)
+                return;
+
+            ForwardMouseMessage(GetMouseDoubleClickMessage(e.Button), e);
+        }
+
+        private void OnFlashPanelKeyDown(object sender, KeyEventArgs e)
+        {
+            if (!_gpuMode)
+                return;
+
+            IntPtr flashHwnd = (_windowManager != null) ? _windowManager.FlashHwnd : IntPtr.Zero;
+            if (flashHwnd == IntPtr.Zero)
+                return;
+
+            int message = (e.Alt ? WM_SYSKEYDOWN : WM_KEYDOWN);
+            PostKeyMessage(flashHwnd, message, e.KeyCode);
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+
+        private void OnFlashPanelKeyUp(object sender, KeyEventArgs e)
+        {
+            if (!_gpuMode)
+                return;
+
+            IntPtr flashHwnd = (_windowManager != null) ? _windowManager.FlashHwnd : IntPtr.Zero;
+            if (flashHwnd == IntPtr.Zero)
+                return;
+
+            int message = (e.Alt ? WM_SYSKEYUP : WM_KEYUP);
+            PostKeyMessage(flashHwnd, message, e.KeyCode);
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+
+        private void OnFlashPanelKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!_gpuMode)
+                return;
+
+            IntPtr flashHwnd = (_windowManager != null) ? _windowManager.FlashHwnd : IntPtr.Zero;
+            if (flashHwnd == IntPtr.Zero)
+                return;
+
+            PostMessage(flashHwnd, WM_CHAR, new IntPtr(e.KeyChar), IntPtr.Zero);
+            e.Handled = true;
+        }
+
+        private void ForwardMouseMessage(int message, MouseEventArgs e)
+        {
+            if (message == 0)
+                return;
+
+            IntPtr flashHwnd = (_windowManager != null) ? _windowManager.FlashHwnd : IntPtr.Zero;
+            if (flashHwnd == IntPtr.Zero)
+                return;
+
+            Point mapped;
+            if (!TryMapPanelPointToCapture(e.Location, out mapped))
+                return;
+
+            int keyState = GetMouseKeyState(Control.MouseButtons);
+            keyState |= GetMouseButtonMask(e.Button);
+
+            if (message == WM_XBUTTONDOWN || message == WM_XBUTTONUP || message == WM_XBUTTONDBLCLK)
+            {
+                int xButtonMask = (e.Button == MouseButtons.XButton2) ? (2 << 16) : (1 << 16);
+                PostMessage(flashHwnd, message, new IntPtr(xButtonMask | (keyState & 0xFFFF)), MakeMouseLParam(mapped.X, mapped.Y));
+            }
+            else
+            {
+                PostMessage(flashHwnd, message, new IntPtr(keyState), MakeMouseLParam(mapped.X, mapped.Y));
+            }
+        }
+
+        private bool TryMapPanelPointToCapture(Point panelPoint, out Point capturePoint)
+        {
+            capturePoint = Point.Empty;
+            if (!_gpuMode || _gpuRenderer == null)
+                return false;
+
+            Rectangle drawRect = GetGpuDrawRect();
+            if (drawRect.Width <= 0 || drawRect.Height <= 0 || !drawRect.Contains(panelPoint))
+                return false;
+
+            int captureW = _gpuRenderer.CaptureWidth;
+            int captureH = _gpuRenderer.CaptureHeight;
+            int x = (panelPoint.X - drawRect.Left) * captureW / drawRect.Width;
+            int y = (panelPoint.Y - drawRect.Top) * captureH / drawRect.Height;
+
+            capturePoint = new Point(
+                Math.Max(0, Math.Min(captureW - 1, x)),
+                Math.Max(0, Math.Min(captureH - 1, y)));
+            return true;
+        }
+
+        private Rectangle GetGpuDrawRect()
+        {
+            int sourceWidth = (_gpuRenderer != null) ? _gpuRenderer.CaptureWidth : DefaultGpuCaptureWidth;
+            int sourceHeight = (_gpuRenderer != null) ? _gpuRenderer.CaptureHeight : DefaultGpuCaptureHeight;
+
+            Rectangle bounds = _flashPanel.ClientRectangle;
+            if (bounds.Width <= 0 || bounds.Height <= 0 || sourceWidth <= 0 || sourceHeight <= 0)
+                return Rectangle.Empty;
+
+            float scale = Math.Min((float)bounds.Width / sourceWidth, (float)bounds.Height / sourceHeight);
+            int drawWidth = Math.Max(1, (int)Math.Round(sourceWidth * scale));
+            int drawHeight = Math.Max(1, (int)Math.Round(sourceHeight * scale));
+            int drawX = bounds.X + (bounds.Width - drawWidth) / 2;
+            int drawY = bounds.Y + (bounds.Height - drawHeight) / 2;
+            return new Rectangle(drawX, drawY, drawWidth, drawHeight);
+        }
+
+        private static int GetMouseDownMessage(MouseButtons button)
+        {
+            switch (button)
+            {
+                case MouseButtons.Left: return WM_LBUTTONDOWN;
+                case MouseButtons.Right: return WM_RBUTTONDOWN;
+                case MouseButtons.Middle: return WM_MBUTTONDOWN;
+                case MouseButtons.XButton1:
+                case MouseButtons.XButton2:
+                    return WM_XBUTTONDOWN;
+                default:
+                    return 0;
+            }
+        }
+
+        private static int GetMouseUpMessage(MouseButtons button)
+        {
+            switch (button)
+            {
+                case MouseButtons.Left: return WM_LBUTTONUP;
+                case MouseButtons.Right: return WM_RBUTTONUP;
+                case MouseButtons.Middle: return WM_MBUTTONUP;
+                case MouseButtons.XButton1:
+                case MouseButtons.XButton2:
+                    return WM_XBUTTONUP;
+                default:
+                    return 0;
+            }
+        }
+
+        private static int GetMouseDoubleClickMessage(MouseButtons button)
+        {
+            switch (button)
+            {
+                case MouseButtons.Left: return WM_LBUTTONDBLCLK;
+                case MouseButtons.Right: return WM_RBUTTONDBLCLK;
+                case MouseButtons.Middle: return WM_MBUTTONDBLCLK;
+                case MouseButtons.XButton1:
+                case MouseButtons.XButton2:
+                    return WM_XBUTTONDBLCLK;
+                default:
+                    return 0;
+            }
+        }
+
+        private static int GetMouseButtonMask(MouseButtons button)
+        {
+            switch (button)
+            {
+                case MouseButtons.Left: return MK_LBUTTON;
+                case MouseButtons.Right: return MK_RBUTTON;
+                case MouseButtons.Middle: return MK_MBUTTON;
+                case MouseButtons.XButton1: return MK_XBUTTON1;
+                case MouseButtons.XButton2: return MK_XBUTTON2;
+                default: return 0;
+            }
+        }
+
+        private static int GetMouseKeyState(MouseButtons buttons)
+        {
+            int state = 0;
+            if ((buttons & MouseButtons.Left) == MouseButtons.Left)
+                state |= MK_LBUTTON;
+            if ((buttons & MouseButtons.Right) == MouseButtons.Right)
+                state |= MK_RBUTTON;
+            if ((buttons & MouseButtons.Middle) == MouseButtons.Middle)
+                state |= MK_MBUTTON;
+            if ((buttons & MouseButtons.XButton1) == MouseButtons.XButton1)
+                state |= MK_XBUTTON1;
+            if ((buttons & MouseButtons.XButton2) == MouseButtons.XButton2)
+                state |= MK_XBUTTON2;
+
+            Keys modifiers = Control.ModifierKeys;
+            if ((modifiers & Keys.Shift) == Keys.Shift)
+                state |= MK_SHIFT;
+            if ((modifiers & Keys.Control) == Keys.Control)
+                state |= MK_CONTROL;
+
+            return state;
+        }
+
+        private static void PostKeyMessage(IntPtr flashHwnd, int message, Keys key)
+        {
+            bool keyUp = (message == WM_KEYUP || message == WM_SYSKEYUP);
+            PostMessage(flashHwnd, message, new IntPtr((int)key), MakeKeyLParam(key, keyUp));
+        }
+
+        private static IntPtr MakeMouseLParam(int x, int y)
+        {
+            return new IntPtr((y << 16) | (x & 0xFFFF));
+        }
+
+        private static IntPtr MakeKeyLParam(Keys key, bool keyUp)
+        {
+            uint scanCode = MapVirtualKey((uint)key, MAPVK_VK_TO_VSC);
+            int lParam = 1 | ((int)scanCode << 16);
+            if (IsExtendedKey(key))
+                lParam |= 1 << 24;
+            if (keyUp)
+                lParam |= unchecked((int)0xC0000000);
+            return new IntPtr(lParam);
+        }
+
+        private static bool IsExtendedKey(Keys key)
+        {
+            switch (key)
+            {
+                case Keys.Right:
+                case Keys.Left:
+                case Keys.Up:
+                case Keys.Down:
+                case Keys.Insert:
+                case Keys.Delete:
+                case Keys.Home:
+                case Keys.End:
+                case Keys.PageUp:
+                case Keys.PageDown:
+                case Keys.NumLock:
+                case Keys.Cancel:
+                case Keys.PrintScreen:
+                case Keys.Divide:
+                case Keys.RControlKey:
+                case Keys.RMenu:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        // ============================================================
+        //  GPU 渲染器（显示管线待完善，代码保留）
+        // ============================================================
+        // 已验证可行：BitBlt 捕获（0/300黑帧）、D3D11 off-screen CAS 处理、回读
+        // 待解决：如何将 GPU 处理后的帧显示到用户可见的面板上
+        //   - SwapChain → WinForms Panel：WM_PAINT 覆盖 SwapChain 输出
+        //   - Overlay Panel：Flash 被遮挡后停止 GDI 渲染
+        //   - SetWindowRgn 空区域：Flash 同样停止渲染
+        // 需要外部技术验证后继续
 
         // ============================================================
         //  托盘
@@ -509,6 +1049,7 @@ namespace CF7Launcher.Guardian
         private void DoExit()
         {
             this.FormClosing -= OnFormClosing;
+            StopGpuRenderer();
             DoUnregisterHotkeys();
             CleanupTrayIcon();
             if (_exitWatchdog != null) _exitWatchdog.Stop();
@@ -527,7 +1068,11 @@ namespace CF7Launcher.Guardian
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing) CleanupTrayIcon();
+            if (disposing)
+            {
+                StopGpuRenderer();
+                CleanupTrayIcon();
+            }
             base.Dispose(disposing);
         }
     }
