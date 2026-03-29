@@ -63,6 +63,8 @@
     <Compile Include="src\Tasks\RegexTask.cs" />
     <Compile Include="src\Tasks\ComputationTask.cs" />
     <Compile Include="src\Tasks\GomokuTask.cs" />
+    <Compile Include="src\Tasks\ToastTask.cs" />
+    <Compile Include="src\Guardian\ToastOverlay.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

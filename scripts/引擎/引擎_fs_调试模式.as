@@ -1,42 +1,49 @@
 ﻿_root.调试模式 = false;
 //_root.调试模式 = true;
 
-_root.发布消息 = function() 
+_root.发布消息 = function()
 {
 	var 消息 = "";
     for (var i = 0; i < arguments.length; i++) {
-        if (i > 0) 消息 += " "; // 参数间用空格分隔
+        if (i > 0) 消息 += " ";
         消息 += arguments[i];
     }
-	
-	if (_root.调试模式) 
+
+	if (_root.调试模式)
 	{
         _root.发布调试消息(消息);
-    } 
-	else 
-	{
-        if(!消息窗.正在播放动画)
-		{
-			消息窗.正在播放动画 = true;
-			消息窗.动画结束帧 = 30;
-			消息窗.gotoAndPlay(1);
-		}
-		else
-		{
-			消息窗.gotoAndPlay(Math.min(消息窗._currentframe, 消息窗.动画结束帧));
-		}
-
-        消息窗.mytext += 消息 + "<BR>";
-		var 显示框 = 消息窗.文本框.文字显示框;
-        if (显示框.textHeight > 显示框._height - 10) 
-		{
-            var 消息数组 = 消息窗.mytext.split("<BR>");
-            var 初始索引 = 消息数组.length >= 8 ? 消息数组.length - 4 : (消息数组.length >= 4 ? 消息数组.length - 5 : Math.floor(消息数组.length / 2));
-            var 新消息 = 消息数组.slice(初始索引).join("<BR>");
-            消息窗.mytext = 新消息;
-			_root.服务器.发布服务器消息(消息数组.length);
-        }
+        return;
     }
+
+	// C# toast 路径：socket 已连接时转发到启动器渲染
+	if (_root.server.isSocketConnected)
+	{
+		_root.server.sendTaskToNode("toast", 消息, null);
+		return; // 不触碰消息窗.mytext，零 reflow 开销
+	}
+
+	// Fallback：完整 Flash 消息窗渲染（socket 未连接时）
+	if(!消息窗.正在播放动画)
+	{
+		消息窗.正在播放动画 = true;
+		消息窗.动画结束帧 = 30;
+		消息窗.gotoAndPlay(1);
+	}
+	else
+	{
+		消息窗.gotoAndPlay(Math.min(消息窗._currentframe, 消息窗.动画结束帧));
+	}
+
+	消息窗.mytext += 消息 + "<BR>";
+	var 显示框 = 消息窗.文本框.文字显示框;
+	if (显示框.textHeight > 显示框._height - 10)
+	{
+		var 消息数组 = 消息窗.mytext.split("<BR>");
+		var 初始索引 = 消息数组.length >= 8 ? 消息数组.length - 4 : (消息数组.length >= 4 ? 消息数组.length - 5 : Math.floor(消息数组.length / 2));
+		var 新消息 = 消息数组.slice(初始索引).join("<BR>");
+		消息窗.mytext = 新消息;
+		_root.服务器.发布服务器消息(消息数组.length);
+	}
 };
 
 

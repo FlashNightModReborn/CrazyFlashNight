@@ -118,6 +118,11 @@ class Program
             return "{\"success\":false,\"error\":\"audio task not supported in this version\"}";
         });
 
+        // Toast overlay（消息窗从 Flash 卸载到 C#）
+        ToastOverlay toastOverlay = new ToastOverlay(form, form.FlashHostPanel);
+        ToastTask toastTask = new ToastTask(toastOverlay);
+        router.RegisterSync("toast", toastTask.Handle);
+
         LogManager.Log("[Guardian] Bus ready: HTTP=" + httpPort + " Socket=" + socketPort);
 
         // === 快捷键拦截（独立进程，永不超时）===
@@ -189,6 +194,7 @@ class Program
             {
                 form.Show();
                 form.Activate();
+                toastOverlay.SetReady();
             }));
         });
 
@@ -203,6 +209,7 @@ class Program
         gomokuTask.Dispose();
         socketServer.Dispose();
         httpServer.Dispose();
+        toastOverlay.Dispose();
 
         return 0;
     }
