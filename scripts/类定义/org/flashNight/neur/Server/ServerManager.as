@@ -484,20 +484,19 @@ class org.flashNight.neur.Server.ServerManager {
         setTimeout(Delegate.create(this, connectToSocket), 1000); // 1秒后重试连接
     }
 
-    // 发送消息的函数，检查是否已连接
-    public function sendSocketMessage(message:String):Void {
+    // 发送消息的函数，检查是否已连接。返回是否成功发送。
+    public function sendSocketMessage(message:String):Boolean {
         if (isSocketConnected) {
             xmlSocket.send(message + '\0');
-            trace("Sent message to server: " + message);
+            return true;
         } else {
             trace("Socket not connected. Cannot send message.");
+            return false;
         }
     }
 
-    // 删除自定义的 JSON 序列化和解析函数
-
-    // 使用 JSON 类进行序列化
-    public function sendTaskToNode(taskType:String, payload:Object, extra:Object):Void {
+    // 使用 JSON 类进行序列化。返回是否成功发送。
+    public function sendTaskToNode(taskType:String, payload:Object, extra:Object):Boolean {
         var message:Object = new Object();
         message.task = taskType;
         message.payload = payload;
@@ -508,10 +507,10 @@ class org.flashNight.neur.Server.ServerManager {
         var messageString:String = jsonParser.stringify(message);
         if (messageString == null) {
             trace("Failed to stringify message.");
-            return;
+            return false;
         }
 
-        sendSocketMessage(messageString);
+        return sendSocketMessage(messageString);
     }
 
     // 发送带回调的任务：响应通过 callId 路由回 callback

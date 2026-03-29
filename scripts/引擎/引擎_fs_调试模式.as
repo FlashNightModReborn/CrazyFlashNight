@@ -15,11 +15,10 @@ _root.发布消息 = function()
         return;
     }
 
-	// C# toast 路径：socket 已连接时转发到启动器渲染
-	if (_root.server.isSocketConnected)
+	// C# toast 路径：发送成功则跳过 Flash 渲染，失败则 fallback
+	if (_root.server.sendTaskToNode("toast", 消息, null))
 	{
-		_root.server.sendTaskToNode("toast", 消息, null);
-		return; // 不触碰消息窗.mytext，零 reflow 开销
+		return;
 	}
 
 	// Fallback：完整 Flash 消息窗渲染（socket 未连接时）
