@@ -51,6 +51,7 @@
 
 import org.flashNight.sara.util.*;
 import org.flashNight.arki.component.Effect.HitNumberSystem;
+import org.flashNight.arki.render.FrameBroadcaster;
 
 class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
 
@@ -85,13 +86,6 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     /** 队列长度 */
     private static var _length:Number = 0;
 
-    // ========================================================================
-    // C# overlay 通信
-    // ========================================================================
-
-    /** cam 暂存（flush 内部使用，每帧写入，发送后清零） */
-    private static var _camStr:String = null;
-
     /**
      * 协议字段安全发送：null/undefined → 空串
      *
@@ -99,9 +93,6 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
      *   efText:  "真""能""热""冲""电""蚀""原体"（TrueDamageHandle/MagicDamageHandle/UniversalDamageHandle）
      *   efEmoji: "✨""☠"（UniversalDamageHandle:101）
      * 均不含协议分隔符 | ; " \，无需转义。
-     *
-     * 若未来 efText 放宽为任意字符串，转义应在 C# 解析侧防御，
-     * 避免在 AS2 热路径上承担 4 次 split/join 的字符串开销。
      */
     private static function safeField(s:String):String {
         if (s == null || s == undefined) return "";
@@ -113,7 +104,7 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     // ========================================================================
 
     /** 是否启用调试输出 */
-    public static var debugMode:Boolean = true;
+    public static var debugMode:Boolean = false;
 
     // ========================================================================
     // 默认值常量（用于防御性处理未初始化的全局变量）
@@ -222,41 +213,12 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
      */
     public static function flush():Void {
         var n:Number = _length;
-        var r:Object = _root;
-        // _root.server = ServerManager 单例（拥有 isSocketConnected / sendSocketMessage）
-        // _root.服务器 = 兼容代理对象（仅有 发布服务器消息 等旧接口，无 socket 属性）
-        var sm:Object = r.server;
-        var socketOn:Boolean = sm.isSocketConnected;
+        if (n == 0) return;
 
-        // === 摄像头广播（每帧，即使无 hn 数据）===
-        // C# overlay 需要持续的 camera 更新来正确定位活跃动画
-        if (socketOn) {
-            var gw0:MovieClip = r.gameworld;
-            if (gw0) {
-                _camStr = gw0._x + "|" + gw0._y + "|" + (gw0._xscale * 0.01);
-            } else {
-                _camStr = null; // gameworld 不存在时清零，防止发出旧 camera
-            }
-            if (n == 0) {
-                // 无 hn 数据，仅发 cam（驱动 V8 tick 推进活跃动画）
-                if (_camStr != null) {
-                    sm.sendSocketMessage('{"task":"frame","cam":"' + _camStr + '","hn":""}');
-                    _camStr = null;
-                }
-                return;
-            }
-        } else if (n == 0) {
-            return;
-        }
+        var r:Object = _root;
 
         // === 阶段1：全局开关预读 + 短路 ===
-        // r.是否打击数字特效 由引擎常数初始化为 true，存档/UI 只写 Boolean，无 undefined 可能
         if (!r.是否打击数字特效) {
-            if (socketOn && _camStr != null) {
-                // 特效关闭但仍需发 cam 驱动活跃动画
-                sm.sendSocketMessage('{"task":"frame","cam":"' + _camStr + '","hn":""}');
-                _camStr = null;
-            }
             if (debugMode) {
                 r.服务器.发布服务器消息(
                     "[HitNumberBatch] global:OFF, normal:" + n + " 全部丢弃"
@@ -279,27 +241,10 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         var sw:Number = Stage.width;
         var sh:Number = Stage.height;
 
-        // 获取全局控制参数（带防御性处理）
-        var capacityBase:Number = r.同屏打击数字特效上限;
-        if (isNaN(capacityBase) || capacityBase <= 0) {
-            capacityBase = DEFAULT_CAPACITY;
-        }
-
-        var current:Number = r.当前打击数字特效总数;
-        if (isNaN(current) || current < 0) {
-            current = DEFAULT_CURRENT;
-        }
-
-        var remaining:Number = capacityBase - current;
-        if (remaining < 0) remaining = 0;
-
-        // 计算显示配额
-        var quota:Number = (remaining >= n) ? n : remaining;
-
         // === 阶段2.5：C# overlay 路径 ===
-        // C# GDI+ 渲染成本远低于 Flash DOMDynamicText，不再受 Flash quota 限制
-        // 仅做视野剔除，全部发送（V8 侧 MAX_ACTIVE=80 兜底）
-        if (socketOn && _camStr != null) {
+        // socket 连接时，序列化 hn 数据写入 FrameBroadcaster 数据槽
+        // cam 广播 + 消息发送由 FrameBroadcaster.send() 统一处理
+        if (r.server.isSocketConnected) {
             var buf:String = "";
             var shown2:Number = 0;
             var i:Number;
@@ -326,13 +271,8 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
                 }
             } while (++i < n);
 
-            // 合并 cam + hn 为单消息（不含 \0 — sendSocketMessage 已 append）
-            sm.sendSocketMessage(
-                '{"task":"frame","cam":"' + _camStr + '","hn":"' + buf + '"}'
-            );
-            _camStr = null;
-            // 不增加 _root.当前打击数字特效总数 — C# 独立管理
-            // 不调用 HitNumberSystem.spawn — 不创建 Flash MC
+            // 写入 FrameBroadcaster 数据槽（不直接发送消息）
+            FrameBroadcaster.setHnPayload(buf);
 
             if (debugMode) {
                 r.服务器.发布服务器消息(
@@ -344,6 +284,22 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         }
 
         // === 阶段3：Flash fallback 路径（原有逻辑）===
+        // 获取全局控制参数（带防御性处理）
+        var capacityBase:Number = r.同屏打击数字特效上限;
+        if (isNaN(capacityBase) || capacityBase <= 0) {
+            capacityBase = DEFAULT_CAPACITY;
+        }
+
+        var current:Number = r.当前打击数字特效总数;
+        if (isNaN(current) || current < 0) {
+            current = DEFAULT_CURRENT;
+        }
+
+        var remaining:Number = capacityBase - current;
+        if (remaining < 0) remaining = 0;
+
+        var quota:Number = (remaining >= n) ? n : remaining;
+
         var shown:Number = 0;
         var culled:Number = 0;
         var dropped:Number = 0;

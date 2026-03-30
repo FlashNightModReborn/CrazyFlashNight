@@ -287,11 +287,12 @@ _root.帧计时器.初始化任务栈 = function():Void {
 
 
     this.eventBus.subscribe("frameEnd", function():Void {
-        // 帧末批量处理伤害数字显示
+        // 帧末批量处理伤害数字显示（序列化 hn 数据写入 FrameBroadcaster 数据槽）
         HitNumberBatchProcessor.flush();
         // 更新射线视觉效果管理器（支持 Tesla/Prism/Spectrum/Wave 多风格）
         RayVfxManager.update();
-        // _root.服务器.发布服务器消息("frameEnd")
+        // 帧末统一广播（收集 cam + 消费各子系统数据槽 → 单消息发送到 C#）
+        FrameBroadcaster.send();
     }, this);
 };
 
@@ -780,6 +781,8 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     _root.关卡结束界面._visible = false;
     // 清空打击数字批处理队列，避免跨场景残留
     HitNumberBatchProcessor.clear();
+    // 重置 FrameBroadcaster 数据槽，防止跨场景残留的 hn 数据被发送
+    FrameBroadcaster.reset();
     // 初始化打击数字对象池（场景级初始化，避免 spawn 热路径的 null 检查）
     HitNumberSystem.initPool();
     // 通知 C# 清除活跃伤害数字动画（S2 修复：场景切换时同步 reset）

@@ -15,13 +15,15 @@ namespace HitNumber {
         worldY: number;
         rawX: number;        // 原始目标坐标（用于同目标合并判定）
         rawY: number;
-        damage: number;      // 当前显示伤害（合并模式下为累计总伤）
+        targetDmg: number;   // 目标总伤（合并时立即更新）
+        displayDmg: number;  // 当前显示伤害（逐帧递增动画）
         packed: number;
         efText: string;
         efEmoji: string;
         lifeSteal: number;
         shieldAbsorb: number;
         frame: number;       // 0-13 可见动画帧，14 = 已过期
-        hitCount: number;    // 命中段数（≥1，合并模式下累加）
+        targetHits: number;  // 目标段数（合并时立即更新）
+        displayHits: number; // 当前显示段数（逐帧递增动画）
     }
 }

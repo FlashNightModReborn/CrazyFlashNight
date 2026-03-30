@@ -117,10 +117,8 @@ namespace CF7Launcher.Guardian
         private bool _ownerVisible;
         private string _currentRenderStr;
 
-        // Font cache: 4 档位避免循环内 new Font
-        private Font _numberFont;
-        private Font _effectFont;
-        private int _lastVpW;
+        // 字体缓存：key = (family_index << 16 | style << 8 | size_bucket)
+        private readonly Dictionary<int, Font> _fontCache = new Dictionary<int, Font>();
 
         public HitNumberOverlay(Form owner, Control anchor)
         {
@@ -286,24 +284,6 @@ namespace CF7Launcher.Guardian
                 PaintLayered();
         }
 
-        private void EnsureFont()
-        {
-            int vpW = (int)_mapper.ViewportWidth;
-            if (vpW == _lastVpW) return;
-            _lastVpW = vpW;
-
-            float scale = vpW / 1024f;
-            float numPt = 28f * scale;  // SWF base font size = 28pt
-            numPt = Math.Max(8f, Math.Min(numPt, 56f));
-            float efPt = 14f * scale;
-            efPt = Math.Max(6f, Math.Min(efPt, 28f));
-
-            if (_numberFont != null) _numberFont.Dispose();
-            if (_effectFont != null) _effectFont.Dispose();
-            _numberFont = new Font("Arial Black", numPt, FontStyle.Regular);
-            _effectFont = new Font("Microsoft YaHei", efPt, FontStyle.Bold);
-        }
-
         /// <summary>
         /// 渲染描述符格式（stride=11）：
         ///   stgX,stgY,combinedScale,alpha,combinedBlur,damage,packed,efText,efEmoji,lifeSteal,shieldAbsorb
@@ -453,13 +433,10 @@ namespace CF7Launcher.Guardian
                             for (int ri = 0; ri < runs.Count; ri++)
                             {
                                 RenderRun run = runs[ri];
-                                using (Font f = CreateRunFont(run))
-                                {
-                                    SizeF sz = g.MeasureString(run.Text, f, 9999, measureFmt);
-                                    run.MeasuredWidth = sz.Width;
-                                    run.ResolvedFont = f.Clone() as Font;
-                                    totalWidth += sz.Width;
-                                }
+                                Font f = GetCachedFont(run.FontIdx, run.Style, run.FontPt);
+                                SizeF sz = g.MeasureString(run.Text, f, 9999, measureFmt);
+                                run.MeasuredWidth = sz.Width;
+                                totalWidth += sz.Width;
                             }
                         }
 
@@ -477,8 +454,7 @@ namespace CF7Launcher.Guardian
                             for (int ri = 0; ri < runs.Count; ri++)
                             {
                                 RenderRun run = runs[ri];
-                                Font f = run.ResolvedFont;
-                                if (f == null) continue;
+                                Font f = GetCachedFont(run.FontIdx, run.Style, run.FontPt);
 
                                 Color fgColor = Color.FromArgb(a, run.Color.R, run.Color.G, run.Color.B);
 
@@ -505,46 +481,74 @@ namespace CF7Launcher.Guardian
                                 }
 
                                 drawX += run.MeasuredWidth;
-                                f.Dispose();
+                                // f 来自缓存，不 Dispose
                             }
                         }
 
-                        // ======== 段数上标（×N）========
-                        // 独立于文本段，定位在主数字右上角
-                        // 设计参考 Hades：小字号 + 上标偏移 + 白色描边 + 黄色填充 + 细体
+                        // ======== 段数上标：12hit ========
+                        // 数字斜体荧光青 + "hit" 再缩半，格斗游戏标准格式
                         if (hitCount > 1)
                         {
-                            float countPt = mainPt * 0.55f;
-                            countPt = Math.Max(6f, Math.Min(countPt, 36f));
-                            string countText = "\u00D7" + hitCount.ToString();
+                            float numPt = mainPt * 0.55f;
+                            numPt = Math.Max(6f, Math.Min(numPt, 36f));
+                            float hitPt = numPt * 0.5f;
+                            hitPt = Math.Max(4f, Math.Min(hitPt, 18f));
+
+                            string numText = hitCount.ToString();
+                            string hitText = "hit";
 
                             float supX = drawX + 2f;
                             float supY = drawY - mainPt * 0.35f;
 
-                            // 斜体 + 黑描边 + 荧光青填充
-                            // 斜体与主数字的正体形成即时视觉区分
+                            Font numFont = GetCachedFont(FONT_IDX_NUMBER, FontStyle.Bold | FontStyle.Italic, numPt);
+                            Font hitFont = GetCachedFont(FONT_IDX_LABEL, FontStyle.Bold | FontStyle.Italic, hitPt);
+
                             using (StringFormat supFmt = new StringFormat(StringFormat.GenericTypographic))
-                            using (Font countFont = new Font(FONT_NUMBER, countPt, FontStyle.Bold | FontStyle.Italic))
-                            using (GraphicsPath countPath = new GraphicsPath())
                             {
                                 supFmt.FormatFlags |= StringFormatFlags.NoWrap;
-                                float emSize = g.DpiY * countFont.SizeInPoints / 72f;
-                                countPath.AddString(countText,
-                                    countFont.FontFamily, (int)countFont.Style,
-                                    emSize, new PointF(supX, supY), supFmt);
+                                Color cyan = Color.FromArgb(a, 0x00, 0xFF, 0xE0);
 
-                                // 黑描边（与主数字一致，任何背景可读）
-                                using (Pen blackPen = new Pen(Color.FromArgb(a, 0, 0, 0), penWidth * 0.9f))
+                                // 数字部分
+                                using (GraphicsPath numPath = new GraphicsPath())
                                 {
-                                    blackPen.LineJoin = LineJoin.Round;
-                                    g.DrawPath(blackPen, countPath);
-                                }
+                                    float numEm = g.DpiY * numFont.SizeInPoints / 72f;
+                                    numPath.AddString(numText,
+                                        numFont.FontFamily, (int)numFont.Style,
+                                        numEm, new PointF(supX, supY), supFmt);
 
-                                // 荧光青填充（高饱和、不与任何伤害色撞色）
-                                using (SolidBrush countBrush = new SolidBrush(
-                                    Color.FromArgb(a, 0x00, 0xFF, 0xE0)))
-                                {
-                                    g.FillPath(countBrush, countPath);
+                                    using (Pen bp = new Pen(Color.FromArgb(a, 0, 0, 0), penWidth * 0.9f))
+                                    {
+                                        bp.LineJoin = LineJoin.Round;
+                                        g.DrawPath(bp, numPath);
+                                    }
+                                    using (SolidBrush fb = new SolidBrush(cyan))
+                                    {
+                                        g.FillPath(fb, numPath);
+                                    }
+
+                                    // 测量数字宽度，定位 "hit"
+                                    RectangleF numBounds = numPath.GetBounds();
+                                    float hitX = numBounds.Right + 1f;
+                                    // "hit" 基线对齐数字底部
+                                    float hitY = supY + numEm - g.DpiY * hitFont.SizeInPoints / 72f;
+
+                                    using (GraphicsPath hitPath = new GraphicsPath())
+                                    {
+                                        float hitEm = g.DpiY * hitFont.SizeInPoints / 72f;
+                                        hitPath.AddString(hitText,
+                                            hitFont.FontFamily, (int)hitFont.Style,
+                                            hitEm, new PointF(hitX, hitY), supFmt);
+
+                                        using (Pen bp2 = new Pen(Color.FromArgb(a, 0, 0, 0), penWidth * 0.6f))
+                                        {
+                                            bp2.LineJoin = LineJoin.Round;
+                                            g.DrawPath(bp2, hitPath);
+                                        }
+                                        using (SolidBrush fb2 = new SolidBrush(cyan))
+                                        {
+                                            g.FillPath(fb2, hitPath);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -582,9 +586,14 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        // 字体族常量
+        // 字体族常量（index 用于缓存 key）
+        private const int FONT_IDX_NUMBER = 0;
+        private const int FONT_IDX_LABEL  = 1;
+        private const int FONT_IDX_EMOJI  = 2;
+
         private const string FONT_NUMBER = "Arial Black";          // 数字（匹配 SWF face="Arial-Black"）
-        private const string FONT_LABEL = "Microsoft YaHei";       // 中文标签（粗体、内置、免嵌入）
+        private const string FONT_LABEL  = "Microsoft YaHei";      // 中文标签
+        private const string FONT_EMOJI  = "Segoe UI Symbol";      // emoji（矢量轮廓，GraphicsPath 兼容）
         private const FontStyle FONT_LABEL_STYLE = FontStyle.Bold;
 
         /// <summary>内部文本段（单行内的一个颜色/大小片段）</summary>
@@ -594,8 +603,6 @@ namespace CF7Launcher.Guardian
             public Color Color;
             public float FontPt;
             public bool IsLabel;       // true = 中文标签用 YaHei Bold，false = 数字用 Arial Black
-            public float MeasuredWidth;
-            public Font Font;
 
             public TextSegment(string text, Color color, float fontPt, bool isLabel = false)
             {
@@ -612,56 +619,123 @@ namespace CF7Launcher.Guardian
             public string Text;
             public Color Color;
             public float FontPt;
-            public bool IsLabel;
+            public int FontIdx;        // FONT_IDX_NUMBER / LABEL / EMOJI
+            public FontStyle Style;
             public float MeasuredWidth;
-            public Font ResolvedFont;
+        }
+
+        /// <summary>检测字符串是否包含 emoji 字符</summary>
+        private static bool ContainsEmoji(string text)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+                if (char.IsHighSurrogate(c)) return true;           // SMP emoji
+                if (c >= 0x2600 && c <= 0x27BF) return true;        // ☠✨ 等
+                if (c >= 0x2B50 && c <= 0x2B55) return true;
+            }
+            return false;
         }
 
         /// <summary>
-        /// Emoji → 中文替换。GDI+ GraphicsPath 不支持 emoji 字形轮廓，
-        /// 且 DrawString font linking 在不同 Windows 版本上不可靠。
-        /// 统一替换为 YaHei Bold 有字形的中文字，走 GraphicsPath 描边，
-        /// 与所有其他标签视觉完全一致。
+        /// 将 TextSegment 拆分为 emoji / 非 emoji 子段。
+        /// emoji 段走 Segoe UI Symbol（有矢量轮廓，GraphicsPath 可用）。
+        /// 非 emoji 段走 Arial Black 或 YaHei Bold。
         /// </summary>
-        private static string ReplaceEmoji(string text)
-        {
-            if (string.IsNullOrEmpty(text)) return text;
-            // SMP emoji（surrogate pairs）
-            text = text.Replace("\uD83D\uDEE1", "\u76FE");  // 🛡 → 盾
-            // BMP 符号
-            text = text.Replace("\u2728", "\u2606");          // ✨ → ☆
-            text = text.Replace("\u2620", "\u2620");          // ☠ → ☠ (YaHei 有此字形)
-            return text;
-        }
-
-        /// <summary>将 TextSegment 转为 RenderRun（应用 emoji 替换）</summary>
         private static void SegmentToRuns(TextSegment seg, List<RenderRun> runs)
         {
-            string text = ReplaceEmoji(seg.Text);
+            string text = seg.Text;
             if (string.IsNullOrEmpty(text)) return;
-            runs.Add(new RenderRun
+
+            if (!ContainsEmoji(text))
             {
-                Text = text,
-                Color = seg.Color,
-                FontPt = seg.FontPt,
-                IsLabel = seg.IsLabel
-            });
+                // 快速路径：无 emoji，整段直出
+                runs.Add(new RenderRun
+                {
+                    Text = text,
+                    Color = seg.Color,
+                    FontPt = seg.FontPt,
+                    FontIdx = seg.IsLabel ? FONT_IDX_LABEL : FONT_IDX_NUMBER,
+                    Style = seg.IsLabel ? FONT_LABEL_STYLE : FontStyle.Regular
+                });
+                return;
+            }
+
+            // 含 emoji：逐字符拆分
+            int start = 0;
+            bool curEmoji = false;
+
+            for (int i = 0; i <= text.Length; i++)
+            {
+                bool isEmoji = false;
+                if (i < text.Length)
+                {
+                    char c = text[i];
+                    if (char.IsLowSurrogate(c)) continue; // 跟随 high surrogate
+                    isEmoji = char.IsHighSurrogate(c)
+                           || (c >= 0x2600 && c <= 0x27BF)
+                           || (c >= 0x2B50 && c <= 0x2B55);
+                }
+
+                if (i == 0) { curEmoji = isEmoji; continue; }
+
+                if (i == text.Length || isEmoji != curEmoji)
+                {
+                    string part = text.Substring(start, i - start);
+                    if (part.Length > 0)
+                    {
+                        runs.Add(new RenderRun
+                        {
+                            Text = part,
+                            Color = seg.Color,
+                            // emoji 字形视觉偏小，放大 1.3x 补偿
+                            FontPt = curEmoji ? seg.FontPt * 1.3f : seg.FontPt,
+                            FontIdx = curEmoji ? FONT_IDX_EMOJI
+                                   : (seg.IsLabel ? FONT_IDX_LABEL : FONT_IDX_NUMBER),
+                            Style = curEmoji ? FontStyle.Regular
+                                 : (seg.IsLabel ? FONT_LABEL_STYLE : FontStyle.Regular)
+                        });
+                    }
+                    start = i;
+                    curEmoji = isEmoji;
+                }
+            }
         }
 
-        /// <summary>根据 RenderRun 属性创建对应字体</summary>
-        private static Font CreateRunFont(RenderRun run)
+        /// <summary>
+        /// 从缓存获取或创建字体。
+        /// key = fontIdx << 16 | (int)style << 8 | size_bucket
+        /// size_bucket = 半点四舍五入，避免浮点精度产生过多 key
+        /// </summary>
+        private Font GetCachedFont(int fontIdx, FontStyle style, float pt)
         {
-            string family = run.IsLabel ? FONT_LABEL : FONT_NUMBER;
-            FontStyle style = run.IsLabel ? FONT_LABEL_STYLE : FontStyle.Regular;
-            return new Font(family, run.FontPt, style);
+            int bucket = (int)(pt * 2 + 0.5f); // 0.5pt 精度
+            int key = (fontIdx << 16) | ((int)style << 8) | bucket;
+
+            Font f;
+            if (_fontCache.TryGetValue(key, out f))
+                return f;
+
+            string family;
+            switch (fontIdx)
+            {
+                case FONT_IDX_EMOJI:  family = FONT_EMOJI;  break;
+                case FONT_IDX_LABEL:  family = FONT_LABEL;  break;
+                default:              family = FONT_NUMBER;  break;
+            }
+
+            f = new Font(family, pt, style);
+            _fontCache[key] = f;
+            return f;
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (_numberFont != null) _numberFont.Dispose();
-                if (_effectFont != null) _effectFont.Dispose();
+                foreach (Font f in _fontCache.Values)
+                    f.Dispose();
+                _fontCache.Clear();
             }
             base.Dispose(disposing);
         }

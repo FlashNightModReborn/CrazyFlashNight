@@ -73,27 +73,19 @@ var HitNumber;
 /// <reference path="parser.ts" />
 var HitNumber;
 (function (HitNumber) {
-    /** 随机位置偏移量（像素），与 Flash 侧 HitNumberSystem 一致 */
     const POSITION_OFFSET = 60;
-    /** 最大同时活跃数字数 */
     const MAX_ACTIVE = 80;
-    /** 总可见帧数 */
     const TOTAL_FRAMES = 14;
-    /** 视口外裁剪边距 */
     const MARGIN = 100;
     // ======== 混合密度管理 ========
-    /** 低密度阈值：活跃数 ≤ 此值时每个 hit 独立显示 */
     const DENSITY_LOW = 8;
-    /** 同目标合并距离阈值（gameworld 像素） */
     const MERGE_DIST = 40;
-    /** 合并时动画回退帧数（产生"脉冲"放大效果） */
     const PULSE_REWIND = 4;
+    // ======== 段数递增动画 ========
+    /** 递增动画最大持续帧数（避免大段数计数太久） */
+    const COUNT_ANIM_MAX_FRAMES = 8;
     const _active = [];
     let _activeCount = 0;
-    /**
-     * 在活跃列表中查找同目标条目（rawX/rawY 距离 < MERGE_DIST）
-     * 返回索引，未找到返回 -1
-     */
     function findMergeTarget(rawX, rawY) {
         for (let i = 0; i < _activeCount; i++) {
             const e = _active[i];
@@ -105,10 +97,6 @@ var HitNumber;
         }
         return -1;
     }
-    /**
-     * 由 C# FrameTask 调用
-     * 格式: "v|x|y|p|et|ee|ls|sa;..."
-     */
     function spawnBatch(raw) {
         if (!raw || raw.length === 0)
             return;
@@ -121,14 +109,13 @@ var HitNumber;
             const rawX = +parts[1];
             const rawY = +parts[2];
             const dmg = +parts[0];
-            // 高密度时尝试合并同目标
             if (highDensity) {
                 const mi = findMergeTarget(rawX, rawY);
                 if (mi >= 0) {
                     const existing = _active[mi];
-                    existing.damage += dmg;
-                    existing.hitCount++;
-                    // 更新效果标签为最新
+                    existing.targetDmg += dmg;
+                    existing.targetHits++;
+                    // displayHits 不变——tick 时逐帧递增
                     existing.packed = +parts[3];
                     const et = HitNumber.unescField(parts[4]);
                     const ee = HitNumber.unescField(parts[5]);
@@ -142,12 +129,10 @@ var HitNumber;
                         existing.lifeSteal += ls;
                     if (sa > 0)
                         existing.shieldAbsorb += sa;
-                    // 脉冲：回退动画帧（产生重新放大效果）
                     existing.frame = Math.max(0, existing.frame - PULSE_REWIND);
                     continue;
                 }
             }
-            // 新建条目
             if (_activeCount >= MAX_ACTIVE)
                 continue;
             const entry = {
@@ -155,24 +140,24 @@ var HitNumber;
                 worldY: rawY + (Math.random() - 0.5) * POSITION_OFFSET * 2,
                 rawX: rawX,
                 rawY: rawY,
-                damage: dmg,
+                targetDmg: dmg,
+                displayDmg: dmg,
                 packed: +parts[3],
                 efText: HitNumber.unescField(parts[4]),
                 efEmoji: HitNumber.unescField(parts[5]),
                 lifeSteal: +parts[6],
                 shieldAbsorb: +parts[7],
                 frame: 0,
-                hitCount: 1
+                targetHits: 1,
+                displayHits: 1
             };
             _active[_activeCount++] = entry;
         }
     }
     HitNumber.spawnBatch = spawnBatch;
     /**
-     * 每帧调用一次（由 Flash frame 消息驱动）
-     *
-     * 输出格式（stride=12）：
-     *   stgX,stgY,combinedScale,alpha,combinedBlur,damage,packed,efText,efEmoji,lifeSteal,shieldAbsorb,hitCount
+     * 每帧调用。输出 stride=12：
+     * stgX,stgY,combinedScale,alpha,combinedBlur,damage,packed,efText,efEmoji,lifeSteal,shieldAbsorb,displayHits
      */
     function tick() {
         if (_activeCount === 0)
@@ -185,12 +170,26 @@ var HitNumber;
             const f = e.frame;
             if (f >= TOTAL_FRAMES)
                 continue;
-            // 文本中心 = MC 原点 + SWF Matrix 偏移
+            // 段数递增动画：displayHits 追赶 targetHits
+            if (e.displayHits < e.targetHits) {
+                const hitDelta = e.targetHits - e.displayHits;
+                const hitRate = hitDelta <= COUNT_ANIM_MAX_FRAMES
+                    ? 1
+                    : Math.ceil(hitDelta / COUNT_ANIM_MAX_FRAMES);
+                e.displayHits = Math.min(e.displayHits + hitRate, e.targetHits);
+            }
+            // 伤害递增动画：displayDmg 追赶 targetDmg（同步节奏）
+            if (e.displayDmg < e.targetDmg) {
+                const dmgDelta = e.targetDmg - e.displayDmg;
+                const dmgRate = dmgDelta <= COUNT_ANIM_MAX_FRAMES
+                    ? Math.ceil(dmgDelta / COUNT_ANIM_MAX_FRAMES)
+                    : Math.ceil(dmgDelta / COUNT_ANIM_MAX_FRAMES);
+                e.displayDmg = Math.min(e.displayDmg + dmgRate, e.targetDmg);
+            }
             const textX = e.worldX + HitNumber.offsetXLUT[f];
             const textY = e.worldY + HitNumber.offsetYLUT[f];
             const stgX = cam.gx + textX * cam.sx;
             const stgY = cam.gy + textY * cam.sx;
-            // 视口外裁剪
             if (stgX < -MARGIN || stgX > HitNumber.STAGE_W + MARGIN ||
                 stgY < -MARGIN || stgY > HitNumber.STAGE_H + MARGIN) {
                 e.frame = f + 1;
@@ -205,10 +204,10 @@ var HitNumber;
                 result += ";";
             result += stgX + "," + stgY + "," +
                 combinedScale + "," + alpha + "," + combinedBlur + "," +
-                e.damage + "," + e.packed + "," +
+                (e.displayDmg | 0) + "," + e.packed + "," +
                 e.efText + "," + e.efEmoji + "," +
                 e.lifeSteal + "," + e.shieldAbsorb + "," +
-                e.hitCount;
+                e.displayHits;
             e.frame = f + 1;
             if (f + 1 < TOTAL_FRAMES)
                 _active[writeIdx++] = e;
