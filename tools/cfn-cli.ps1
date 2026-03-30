@@ -12,16 +12,34 @@ param(
     [string[]]$Args
 )
 
-# 端口候选列表（与 PortAllocator 种子 "1192433993" 一致）
+# 端口文件（launcher 启动时写入，优先读取）
+$ProjectRoot = Split-Path -Parent (Split-Path -Parent $PSCommandPath)
+$PortsFile = Join-Path $ProjectRoot 'launcher_ports.json'
+
+# 盲扫候选列表（fallback）
 $Ports = @(1192, 1924, 9243, 2433, 4339, 3399, 3993, 11924, 19243, 24339, 43399, 33993, 3000)
 
+function Test-HttpPort($p) {
+    try {
+        $r = Invoke-WebRequest -Uri "http://localhost:$p/testConnection" `
+            -Method POST -Body "" -TimeoutSec 2 -UseBasicParsing -ErrorAction Stop
+        return ($r.StatusCode -eq 200)
+    } catch { return $false }
+}
+
 function Find-Port {
-    foreach ($p in $Ports) {
+    # 优先从端口文件读取
+    if (Test-Path $PortsFile) {
         try {
-            $r = Invoke-WebRequest -Uri "http://localhost:$p/testConnection" `
-                -Method POST -Body "" -TimeoutSec 2 -UseBasicParsing -ErrorAction Stop
-            if ($r.StatusCode -eq 200) { return $p }
+            $json = Get-Content -Raw $PortsFile | ConvertFrom-Json
+            if ($json.httpPort -and (Test-HttpPort $json.httpPort)) {
+                return $json.httpPort
+            }
         } catch {}
+    }
+    # Fallback: 盲扫
+    foreach ($p in $Ports) {
+        if (Test-HttpPort $p) { return $p }
     }
     return $null
 }
@@ -60,8 +78,10 @@ switch ($Command) {
             Write-Error "Usage: cfn-cli.ps1 toast <message>"
             exit 1
         }
-        Invoke-WebRequest -Uri "http://localhost:$Port/logBatch" `
-            -Method POST -Body "frame=0&messages=$msg" -TimeoutSec 5 -UseBasicParsing | Out-Null
+        $body = @{ task = "toast"; payload = $msg } | ConvertTo-Json
+        Invoke-WebRequest -Uri "http://localhost:$Port/task" `
+            -Method POST -Body $body -ContentType "application/json" `
+            -TimeoutSec 5 -UseBasicParsing | Out-Null
         Write-Host "Toast sent: $msg"
     }
     "log" {

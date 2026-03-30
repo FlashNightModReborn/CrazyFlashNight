@@ -19,6 +19,7 @@ namespace CF7Launcher.Bus
     ///   POST /console         — 远程控制台命令（转发到 AS2）
     ///   GET  /status          — 连接状态 + task 清单（TaskRegistry 驱动）
     ///   POST /task            — 统一 task 提交（仅 httpCallable task: toast, gomoku_eval）
+    ///   POST /shutdown        — 优雅关闭 launcher（CLI 调用）
     ///   GET  /crossdomain.xml — Flash 跨域策略
     /// </summary>
     public class HttpApiServer : IDisposable
@@ -34,6 +35,7 @@ namespace CF7Launcher.Bus
         private readonly object _consoleLock = new object();
         private readonly XmlSocketServer _socketServer;
         private MessageRouter _router;
+        private Action _shutdownAction;
 
         private class ConsoleEntry
         {
@@ -58,6 +60,14 @@ namespace CF7Launcher.Bus
         public void SetRouter(MessageRouter router)
         {
             _router = router;
+        }
+
+        /// <summary>
+        /// 注入关闭回调（供 /shutdown 端点使用）。
+        /// </summary>
+        public void SetShutdownAction(Action action)
+        {
+            _shutdownAction = action;
         }
 
         public bool Start(int port)
@@ -135,6 +145,8 @@ namespace CF7Launcher.Bus
                     HandleStatus(ctx);
                 else if (path == "/task" && method == "POST")
                     HandleTask(ctx);
+                else if (path == "/shutdown" && method == "POST")
+                    HandleShutdown(ctx);
                 else if (path == "/crossdomain.xml")
                     HandleCrossDomain(ctx);
                 else
@@ -268,6 +280,22 @@ namespace CF7Launcher.Bus
             }
         }
 
+        private void HandleShutdown(HttpListenerContext ctx)
+        {
+            ctx.Response.ContentType = "application/json";
+            WriteResponse(ctx, "{\"ok\":true,\"message\":\"shutting down\"}");
+            LogManager.Log("[HTTP] Shutdown requested via /shutdown");
+            if (_shutdownAction != null)
+            {
+                // 延迟让 HTTP 响应发出去，再执行关闭
+                ThreadPool.QueueUserWorkItem(delegate
+                {
+                    Thread.Sleep(200);
+                    _shutdownAction();
+                });
+            }
+        }
+
         private void HandleStatus(HttpListenerContext ctx)
         {
             ctx.Response.ContentType = "application/json";
@@ -335,18 +363,23 @@ namespace CF7Launcher.Bus
             }
 
             // 每个请求独立的异步等待机制
+            // expired 标志防止 late callback 在 ManualResetEvent 释放后调 Set()
             ManualResetEvent done = new ManualResetEvent(false);
             string asyncResult = null;
+            bool expired = false;
 
             string syncResult = _router.ProcessMessage(body, delegate(string asyncResp)
             {
+                if (expired) return; // late callback：超时后到达，静默丢弃
                 asyncResult = asyncResp;
-                done.Set();
+                try { done.Set(); } catch { } // 防御性：event 可能已被 Close
             });
 
             // sync task（如 toast）：ProcessMessage 直接返回
             if (syncResult != null)
             {
+                expired = true;
+                done.Close();
                 WriteResponse(ctx, syncResult);
                 return;
             }
@@ -354,12 +387,16 @@ namespace CF7Launcher.Bus
             // toast 返回 null（fire-and-forget）
             if (taskName == "toast")
             {
+                expired = true;
+                done.Close();
                 WriteResponse(ctx, "{\"ok\":true}");
                 return;
             }
 
             // async task（如 gomoku_eval）：等待回调或超时
-            bool completed = done.WaitOne(15000); // 15s 超时
+            // TODO: 读取请求体中的 timeout 字段，当前固定 15s
+            bool completed = done.WaitOne(15000);
+            expired = true; // 标记过期，阻止 late callback
             done.Close();
 
             if (completed && asyncResult != null)

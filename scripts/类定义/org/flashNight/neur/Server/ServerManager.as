@@ -1,5 +1,6 @@
 ﻿import org.flashNight.neur.Event.Delegate;
 import org.flashNight.neur.Event.EventBus;
+import org.flashNight.gesh.path.PathManager;
 import FastJSON;
 
 /**
@@ -113,8 +114,78 @@ class org.flashNight.neur.Server.ServerManager {
         _callIdCounter = 0;
         _pendingCallbacks = {};
 
-        // 启动连接状态机
-        transitionTo(S_HTTP_PROBING);
+        // 启动连接：先尝试读端口文件快速连接，失败则 fallback 盲扫
+        tryLoadPortsFile();
+    }
+
+    /**
+     * 尝试从 launcher_ports.json 读取端口，实现快速连接。
+     * 成功：直接用文件中的 httpPort 跳过盲扫，进入 FETCHING_PORT。
+     * 失败：fallback 到 S_HTTP_PROBING 盲扫。
+     */
+    private function tryLoadPortsFile():Void {
+        // PathManager 提供项目根路径（兼容 testMovie / 游戏 / Steam 环境）
+        if (!PathManager.isEnvironmentValid()) {
+            PathManager.initialize(null);
+        }
+        var base:String = PathManager.getBasePath();
+        if (base == null || base.length == 0) {
+            trace("[ServerManager] No basePath, fallback to blind scan");
+            transitionTo(S_HTTP_PROBING);
+            return;
+        }
+
+        var portsUrl:String = base + "launcher_ports.json";
+        trace("[ServerManager] Trying ports file: " + portsUrl);
+
+        var lv:LoadVars = new LoadVars();
+        lv.onData = function(rawData:String):Void {
+            if (rawData == null || rawData == undefined) {
+                trace("[ServerManager] Ports file not found, fallback to blind scan");
+                ServerManager.instance.transitionTo(ServerManager.S_HTTP_PROBING);
+                return;
+            }
+
+            // 手动解析简单 JSON: {"httpPort":1192,"socketPort":1924,"pid":12345}
+            var hp:Number = ServerManager.instance.extractJsonNumber(rawData, "httpPort");
+            var sp:Number = ServerManager.instance.extractJsonNumber(rawData, "socketPort");
+
+            if (isNaN(hp) || hp <= 0) {
+                trace("[ServerManager] Invalid httpPort in ports file, fallback");
+                ServerManager.instance.transitionTo(ServerManager.S_HTTP_PROBING);
+                return;
+            }
+
+            trace("[ServerManager] Ports file: httpPort=" + hp + " socketPort=" + sp);
+            ServerManager.instance.currentPort = hp;
+            if (!isNaN(sp) && sp > 0) {
+                ServerManager.instance.socketPort = sp;
+                // 直接跳到 socket 连接（httpPort 和 socketPort 都已知）
+                ServerManager.instance.transitionTo(ServerManager.S_SOCKET_CONNECTING);
+            } else {
+                // 只有 httpPort，走正常 FETCHING_PORT 获取 socketPort
+                ServerManager.instance.transitionTo(ServerManager.S_FETCHING_PORT);
+            }
+        };
+        lv.load(portsUrl);
+    }
+
+    /**
+     * 从简单 JSON 字符串中提取数字字段值。
+     * 不依赖 FastJSON，避免在连接建立前引入复杂解析。
+     */
+    private function extractJsonNumber(json:String, key:String):Number {
+        var search:String = "\"" + key + "\":";
+        var idx:Number = json.indexOf(search);
+        if (idx < 0) return NaN;
+        idx += search.length;
+        var end:Number = idx;
+        while (end < json.length) {
+            var c:String = json.charAt(end);
+            if (c == "," || c == "}" || c == " ") break;
+            end++;
+        }
+        return Number(json.substring(idx, end));
     }
 
     // 获取单例实例
@@ -306,8 +377,9 @@ class org.flashNight.neur.Server.ServerManager {
         portIndex++;
         if (portIndex >= portList.length) {
             portIndex = 0;
+            // 整轮循环完毕才计为一次重试（而非每个端口失败都计数）
+            _retryCount++;
         }
-        _retryCount++;
         transitionTo(S_DISCONNECTED);
     }
 

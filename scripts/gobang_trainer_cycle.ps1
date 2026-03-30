@@ -132,11 +132,22 @@ function Get-LatestRunLines {
 
 $ProjectRoot = Split-Path -Parent $ScriptDir
 $LauncherExe = Join-Path $ProjectRoot 'CRAZYFLASHER7MercenaryEmpire.exe'
+$PortsFile = Join-Path $ProjectRoot 'launcher_ports.json'
 
-# 端口候选列表（与 PortAllocator 种子 "1192433993" 一致）
+# 盲扫候选列表（fallback）
 $BusPorts = @(1192, 1924, 9243, 2433, 4339, 3399, 3993, 11924, 19243, 24339, 43399, 33993, 3000)
 
 function Test-BusRunning {
+    # 优先从端口文件读取
+    if (Test-Path $PortsFile) {
+        try {
+            $json = Get-Content -Raw $PortsFile | ConvertFrom-Json
+            $r = Invoke-WebRequest -Uri "http://localhost:$($json.httpPort)/testConnection" `
+                -Method POST -Body '' -TimeoutSec 2 -UseBasicParsing -ErrorAction Stop
+            if ($r.StatusCode -eq 200) { return $true }
+        } catch {}
+    }
+    # Fallback
     foreach ($p in $BusPorts) {
         try {
             $r = Invoke-WebRequest -Uri "http://localhost:$p/testConnection" `

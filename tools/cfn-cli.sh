@@ -15,10 +15,28 @@ set -e
 # 项目根目录（cfn-cli.sh 在 tools/ 下）
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-# 端口候选列表（与 PortAllocator 种子 "1192433993" 一致）
+# 端口文件（launcher 启动时写入，优先读取）
+PORTS_FILE="$PROJECT_ROOT/launcher_ports.json"
+
+# 盲扫候选列表（fallback，与 PortAllocator 种子 "1192433993" 一致）
 PORTS=(1192 1924 9243 2433 4339 3399 3993 11924 19243 24339 43399 33993 3000)
 
 discover_port() {
+    # 优先从端口文件读取
+    if [ -f "$PORTS_FILE" ]; then
+        local file_port=$(grep -o '"httpPort":[0-9]*' "$PORTS_FILE" 2>/dev/null | grep -o '[0-9]*')
+        if [ -n "$file_port" ]; then
+            code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+                "http://localhost:$file_port/testConnection" \
+                -H "Content-Length: 0" --connect-timeout 1 2>/dev/null) || true
+            if [ "$code" = "200" ]; then
+                echo "$file_port"
+                return 0
+            fi
+        fi
+    fi
+
+    # Fallback: 盲扫候选端口
     for port in "${PORTS[@]}"; do
         code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
             "http://localhost:$port/testConnection" \
@@ -56,8 +74,16 @@ case "${1:-status}" in
         ;;
 
     stop-bus)
-        # 通过 taskkill 关闭 bus-only launcher
-        taskkill //IM CRAZYFLASHER7MercenaryEmpire.exe //F 2>/dev/null && echo "Bus stopped" || echo "No bus process found"
+        # 优雅关闭：先尝试 /shutdown 端点，fallback 到 taskkill
+        PORT=$(discover_port 2>/dev/null) || true
+        if [ -n "$PORT" ]; then
+            curl -s -X POST "http://localhost:$PORT/shutdown" \
+                -H "Content-Length: 0" --connect-timeout 2 2>/dev/null
+            echo "Shutdown signal sent"
+            sleep 1
+        else
+            taskkill //IM CRAZYFLASHER7MercenaryEmpire.exe //F 2>/dev/null && echo "Bus killed" || echo "No bus process found"
+        fi
         ;;
 
     wait)
@@ -109,9 +135,10 @@ case "${1:-status}" in
             toast)
                 shift; MSG="$*"
                 if [ -z "$MSG" ]; then echo "Usage: cfn-cli toast <message>" >&2; exit 1; fi
-                curl -s -X POST "http://localhost:$PORT/logBatch" \
-                    -d "frame=0&messages=$MSG" 2>/dev/null
-                echo "Toast sent: $MSG"
+                curl -s -X POST "http://localhost:$PORT/task" \
+                    -H "Content-Type: application/json" \
+                    -d "{\"task\":\"toast\",\"payload\":\"$MSG\"}" 2>/dev/null
+                echo
                 ;;
             log)
                 shift; MSG="$*"

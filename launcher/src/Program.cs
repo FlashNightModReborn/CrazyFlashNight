@@ -134,6 +134,24 @@ class Program
         // 注入 router 到 HttpApiServer（供 /task 端点使用）
         httpServer.SetRouter(router);
 
+        // 注入 shutdown 回调
+        httpServer.SetShutdownAction(delegate { form.ForceExit(); });
+
+        // 写端口文件（CLI 和 AS2 可直接读取，无需盲扫）
+        string portsFile = Path.Combine(projectRoot, "launcher_ports.json");
+        string portsJson = "{\"httpPort\":" + httpPort
+            + ",\"socketPort\":" + socketPort
+            + ",\"pid\":" + Process.GetCurrentProcess().Id + "}";
+        try
+        {
+            File.WriteAllText(portsFile, portsJson);
+            LogManager.Log("[Guardian] Wrote " + portsFile);
+        }
+        catch (Exception ex)
+        {
+            LogManager.Log("[Guardian] Failed to write ports file: " + ex.Message);
+        }
+
         LogManager.Log("[Guardian] Bus ready: HTTP=" + httpPort + " Socket=" + socketPort);
 
         if (busOnly)
@@ -154,6 +172,7 @@ class Program
             hnOverlay.Dispose();
             v8Runtime.Dispose();
             toastOverlay.Dispose();
+            try { File.Delete(portsFile); } catch { }
 
             return 0;
         }
@@ -243,6 +262,7 @@ class Program
         hnOverlay.Dispose();
         v8Runtime.Dispose();
         toastOverlay.Dispose();
+        try { File.Delete(portsFile); } catch { }
 
         return 0;
     }

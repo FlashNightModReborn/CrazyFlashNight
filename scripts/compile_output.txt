@@ -1,7 +1,12 @@
 ﻿=== GOBANG AUTOMATION TEST ===
 [Trainer] Loaded 68 built-in problems
+[Trainer] Problem filter=mid_complex_diagonal -> 1/68
 Extracting ports from eyeOf119: 1192433993
 Final extracted ports: 1192, 1924, 9243, 2433, 4339, 3399, 3993, 11924, 19243, 24339, 43399, 33993, 3000
-[FSM] DISCONNECTED -> HTTP_PROBING (retry=0, frame=0)
+[PathManager] [DEBUG] 正常模式：当前 URL: file:///E|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+[PathManager] [INFO] 检测到 Steam 环境，设置为 Steam 模式。
+[PathManager] [INFO] 匹配基础路径 'CrazyFlashNight/'，基础路径设置为: file:///E|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/
+[PathManager] [INFO] 基础路径设置为 Steam 环境路径: file:///E|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/
+[ServerManager] Trying ports file: file:///E|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/launcher_ports.json
 [Trainer] Waiting for XMLSocket connection...
 [compile] done
