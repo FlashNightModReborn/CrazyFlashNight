@@ -51,34 +51,40 @@ class Program
 
     static int Run(string[] args)
     {
+        bool busOnly = Array.IndexOf(args, "--bus-only") >= 0;
+
         // 定位项目根目录（EXE 所在目录）
         string exePath = typeof(Program).Assembly.Location;
         string projectRoot = Path.GetDirectoryName(exePath);
 
-        // 创建 Guardian 窗口
+        // 创建 Guardian 窗口（bus-only 模式下也需要，因为 LogManager/Overlay 依赖 Form）
         GuardianForm form = new GuardianForm();
 
         LogManager.Log("[Guardian] Project root: " + projectRoot);
+        if (busOnly)
+            LogManager.Log("[Guardian] --bus-only mode: skipping Flash Player startup");
 
-        // 读配置
+        // 读配置（bus-only 跳过文件验证）
         AppConfig config = new AppConfig(projectRoot);
 
-        // 验证文件
-        if (!File.Exists(config.FlashPlayerPath))
+        if (!busOnly)
         {
-            ShowError("Flash Player not found:\n" + config.FlashPlayerPath);
-            return 1;
-        }
-        if (!File.Exists(config.SwfPath))
-        {
-            ShowError("SWF file not found:\n" + config.SwfPath);
-            return 1;
+            if (!File.Exists(config.FlashPlayerPath))
+            {
+                ShowError("Flash Player not found:\n" + config.FlashPlayerPath);
+                return 1;
+            }
+            if (!File.Exists(config.SwfPath))
+            {
+                ShowError("SWF file not found:\n" + config.SwfPath);
+                return 1;
+            }
+
+            LogManager.Log("[Guardian] Flash: " + config.FlashPlayerPath);
+            LogManager.Log("[Guardian] SWF: " + config.SwfPath);
         }
 
-        LogManager.Log("[Guardian] Flash: " + config.FlashPlayerPath);
-        LogManager.Log("[Guardian] SWF: " + config.SwfPath);
-
-        // === V8 总线 ===
+        // === V8 总线（两种模式都启动）===
 
         PortAllocator portAlloc = new PortAllocator();
         MessageRouter router = new MessageRouter();
@@ -108,39 +114,53 @@ class Program
             httpServer.ResolveConsoleResult(json);
         };
 
-        // Task 处理器
-        GomokuTask gomokuTask = new GomokuTask(projectRoot);
-        router.RegisterSync("eval", EvalTask.Handle);
-        router.RegisterSync("regex", RegexTask.Handle);
-        router.RegisterSync("computation", ComputationTask.Handle);
-        router.RegisterAsync("gomoku_eval", gomokuTask.HandleAsync);
-        router.RegisterSync("audio", delegate(Newtonsoft.Json.Linq.JObject msg)
-        {
-            return "{\"success\":false,\"error\":\"audio task not supported in this version\"}";
-        });
-
         // Toast overlay（消息窗从 Flash 卸载到 C#）
         ToastOverlay toastOverlay = new ToastOverlay(form, form.FlashHostPanel);
         ToastTask toastTask = new ToastTask(toastOverlay);
-        router.RegisterSync("toast", toastTask.Handle);
 
         // V8 持久化 Runtime + 打击伤害数字 overlay
         string scriptsDir = Path.Combine(projectRoot, "launcher", "scripts");
         V8Runtime v8Runtime = new V8Runtime(scriptsDir);
         HitNumberOverlay hnOverlay = new HitNumberOverlay(form, form.FlashHostPanel);
         FrameTask frameTask = new FrameTask(v8Runtime, hnOverlay);
-        router.RegisterSync("frame", frameTask.Handle);
-        router.RegisterSync("hn_reset", delegate(Newtonsoft.Json.Linq.JObject msg)
-        {
-            v8Runtime.Reset();
-            hnOverlay.NotifyReset();
-            return null;
-        });
+
+        // 快车道注入：F/R 前缀消息由 XmlSocketServer 直接分发到 FrameTask，绕过 MessageRouter
+        socketServer.SetFrameHandler(frameTask);
+
+        // Task 注册（TaskRegistry = single source of truth）
+        GomokuTask gomokuTask = new GomokuTask(projectRoot);
+        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, v8Runtime, hnOverlay);
+
+        // 注入 router 到 HttpApiServer（供 /task 端点使用）
+        httpServer.SetRouter(router);
 
         LogManager.Log("[Guardian] Bus ready: HTTP=" + httpPort + " Socket=" + socketPort);
 
-        // === 快捷键拦截（独立进程，永不超时）===
+        if (busOnly)
+        {
+            // === bus-only 模式：仅运行通信总线，不启动 Flash Player ===
+            // Flash Player 由外部（如 Flash CS6 testMovie）自行启动并连接
+            LogManager.Log("[Guardian] Bus-only mode active. Waiting for external Flash connection...");
+            form.Text = "CF7:ME Bus (test mode)";
 
+            // 消息循环（保持进程存活）
+            Application.Run(form);
+
+            // 清理
+            LogManager.Log("[Guardian] Bus-only shutting down...");
+            gomokuTask.Dispose();
+            socketServer.Dispose();
+            httpServer.Dispose();
+            hnOverlay.Dispose();
+            v8Runtime.Dispose();
+            toastOverlay.Dispose();
+
+            return 0;
+        }
+
+        // === 正常模式：启动 Flash Player 并嵌入 ===
+
+        // 快捷键拦截（独立进程）
         string guardExe = Path.Combine(projectRoot, "hotkey_guard.exe");
         Process guardProc = null;
         if (File.Exists(guardExe))
@@ -165,8 +185,7 @@ class Program
             LogManager.Log("[Guardian] hotkey_guard.exe not found, shortcuts not blocked");
         }
 
-        // === 守护进程核心 ===
-
+        // 守护进程核心
         WindowManager windowManager = new WindowManager();
 
         ProcessManager processManager = new ProcessManager(
@@ -191,9 +210,6 @@ class Program
         {
             form.ForceExit();
         };
-
-        // GPU 锐化暂时禁用（显示管线待完善），Flash 正常嵌入
-        // float sharpness = config.GpuSharpeningEnabled ? config.Sharpness : 0f;
 
         // 在后台线程等待 Flash 窗口出现并嵌入
         ThreadPool.QueueUserWorkItem(delegate

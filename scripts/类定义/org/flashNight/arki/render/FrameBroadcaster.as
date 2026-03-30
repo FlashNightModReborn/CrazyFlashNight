@@ -2,7 +2,15 @@
  * FrameBroadcaster - 帧末统一广播器
  *
  * 职责：收集摄像头数据 + 读取各子系统数据槽 → 发送单条 frame 消息到 C# 启动器。
- * 在 frameEnd 管线中作为最后一步调用，确保每帧恰好发送一条 task:frame 消息。
+ * 在 frameEnd 管线中作为最后一步调用，确保每帧恰好发送一条 frame 消息。
+ *
+ * 传输协议（快车道）：
+ *   send() 使用前缀协议 "F{cam}\x01{hn}" 直达 C# 端 FrameTask.HandleRaw()，
+ *   绕过 MessageRouter 的 JObject.Parse，消除每帧 JSON 解析开销。
+ *   - 前缀 "F" 标识 frame 快车道消息（C# 按首字节分发）
+ *   - cam 格式: "gw._x|gw._y|scale"（管道符分隔）
+ *   - \x01 (SOH) 分隔 cam 与 hn（cam/hn 内容只含 |;数字文本，不含 \x01）
+ *   - hn 格式: "value|x|y|packed|efText|efEmoji|lifeSteal|shieldAbsorb;..." (分号分条目)
  *
  * 架构：
  *   frameEnd pipeline:
@@ -11,7 +19,7 @@
  *     FrameBroadcaster.send()          -> 收集 cam + 消费数据槽 -> sendSocketMessage
  *
  * @author FlashNight
- * @version 1.0
+ * @version 2.0
  */
 class org.flashNight.arki.render.FrameBroadcaster {
 
@@ -52,9 +60,9 @@ class org.flashNight.arki.render.FrameBroadcaster {
 
         var cam:String = gw._x + "|" + gw._y + "|" + (gw._xscale * 0.01);
 
-        // 组装 JSON（hn 可能为 null/空串）
+        // 快车道前缀协议：F{cam}\x01{hn}，绕过 C# 端 JObject.Parse
         var hn:String = (_hnPayload != null) ? _hnPayload : "";
-        sm.sendSocketMessage('{"task":"frame","cam":"' + cam + '","hn":"' + hn + '"}');
+        sm.sendSocketMessage("F" + cam + "\x01" + hn);
 
         // 消费后清空所有数据槽
         _hnPayload = null;

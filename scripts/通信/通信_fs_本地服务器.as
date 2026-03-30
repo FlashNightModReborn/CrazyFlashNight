@@ -1,30 +1,25 @@
-﻿import org.flashNight.neur.Server.ServerManager;
+﻿// 通信_fs_本地服务器.as
+// 初始化 ServerManager 单例，连接到 C# Guardian Launcher。
+// 文件名"本地服务器"是历史遗留（原 Node.js Local Server 已迁移至 C# launcher）。
+// 端口提取由 ServerManager.extractPorts() 在构造函数中完成，此处不再重复注入。
+
+import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.neur.Event.Delegate;
 
-// Step 1: 获取ServerManager单例实例并存储为全局变量
+// 获取 ServerManager 单例实例并存储为全局变量
 _root.server = ServerManager.getInstance();
-
-// Step 2: 提取四位和五位端口号到端口列表中
-var eyeOf119:String = _root.闪客之夜.toString();
-for (var i:Number = 0; i <= eyeOf119.length - 4; i++) {
-    _root.server.portList.push(Number(eyeOf119.substring(i, i + 4)));
-}
-for (var j:Number = 0; j <= eyeOf119.length - 5; j++) {
-    _root.server.portList.push(Number(eyeOf119.substring(j, j + 5)));
-}
 
 // 旧有的 _root.服务器 对象，保留兼容性
 _root.服务器 = {};
-_root.服务器.端口列表 = _root.server.portList;    // 重定向到 ServerManager 的 portList
-_root.服务器.端口索引 = _root.server.portIndex;    // 重定向到 ServerManager 的 portIndex
-_root.服务器.当前端口 = _root.server.currentPort;  // 重定向到 ServerManager 的 currentPort
+_root.服务器.端口列表 = _root.server.portList;
+_root.服务器.端口索引 = _root.server.portIndex;
+_root.服务器.当前端口 = _root.server.currentPort;
 
-// Step 3: 保留原有的函数接口，通过调用新的ServerManager来实现
 // 使用包装函数而非委托，以支持多参数自动拼接功能(类似 _root.发布消息)
 _root.服务器.发布服务器消息 = function() {
     var msg:String = "";
     for (var i = 0; i < arguments.length; i++) {
-        if (i > 0) msg += " "; // 参数间用空格分隔
+        if (i > 0) msg += " ";
         msg += arguments[i];
     }
     _root.server.sendServerMessage(msg);
@@ -40,7 +35,3 @@ _root.服务器.立即发送 = function() {
     }
     _root.server.sendImmediate(msg);
 };
-
-
-// 发送消息，通过旧接口
-_root.服务器.发布服务器消息("This is a test message.");

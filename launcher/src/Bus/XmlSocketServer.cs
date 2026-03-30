@@ -10,7 +10,14 @@ namespace CF7Launcher.Bus
 {
     /// <summary>
     /// XMLSocket TCP 服务器。
-    /// 协议：\0 分割的 JSON 消息，单客户端。
+    /// 协议：\0 分割的消息，单客户端。
+    ///
+    /// 消息分发采用双通道：
+    ///   1. 快车道（前缀协议）：首字节 'F' → FrameTask.HandleRaw（每帧，绕过 JSON 解析）
+    ///                         首字节 'R' → FrameTask.HandleReset（场景切换）
+    ///   2. 通用路由（JSON）：其余消息 → MessageRouter.ProcessMessage（JObject.Parse）
+    ///
+    /// 快车道在 HandleMessage 最前端判断，零 GC 分配，不经过 MessageRouter。
     /// </summary>
     public class XmlSocketServer : IDisposable
     {
@@ -22,6 +29,9 @@ namespace CF7Launcher.Bus
         private readonly MessageRouter _router;
         private readonly object _clientLock = new object();
 
+        // 快车道处理器（由 Program.cs 在 FrameTask 构造后注入）
+        private CF7Launcher.Tasks.FrameTask _frameTask;
+
         // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换
         private int _generation;
 
@@ -31,6 +41,15 @@ namespace CF7Launcher.Bus
         public XmlSocketServer(MessageRouter router)
         {
             _router = router;
+        }
+
+        /// <summary>
+        /// 注入快车道处理器。必须在 FrameTask 构造完成后调用。
+        /// 注入前收到的 F/R 前缀消息将静默丢弃（启动时序保护）。
+        /// </summary>
+        public void SetFrameHandler(CF7Launcher.Tasks.FrameTask frameTask)
+        {
+            _frameTask = frameTask;
         }
 
         public bool Start(int port)
@@ -161,6 +180,43 @@ namespace CF7Launcher.Bus
 
         private void HandleMessage(string message)
         {
+            // === 快车道：前缀协议，绕过 JSON 解析 ===
+            if (message.Length > 0)
+            {
+                char prefix = message[0];
+
+                if (prefix == 'F')
+                {
+                    // Frame 快车道：F{cam}\x01{hn}
+                    if (_frameTask == null) return; // 启动时序保护：FrameTask 尚未注入
+                    int sep = message.IndexOf('\x01', 1);
+                    string cam, hn;
+                    if (sep > 1)
+                    {
+                        cam = message.Substring(1, sep - 1);
+                        hn = (sep < message.Length - 1) ? message.Substring(sep + 1) : "";
+                    }
+                    else
+                    {
+                        // 无分隔符：整条（去掉 F）当作 cam，hn 为空
+                        cam = message.Substring(1);
+                        hn = "";
+                    }
+                    _frameTask.HandleRaw(cam, hn);
+                    return;
+                }
+
+                if (prefix == 'R')
+                {
+                    // hn_reset 快车道
+                    if (_frameTask == null) return;
+                    _frameTask.HandleReset();
+                    return;
+                }
+            }
+
+            // === 通用路由：JSON 消息 ===
+
             // Flash 策略请求
             if (FlashPolicyHandler.IsPolicyRequest(message))
             {

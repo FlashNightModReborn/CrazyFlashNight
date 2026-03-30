@@ -61,14 +61,46 @@ scripts/类定义/org/flashNight/[包名]/
 
 ---
 
-## 3. Node.js 测试
+## 3. C# Launcher 测试
 
-**现状**：`tools/Local Server/` 无正式测试框架，验证依赖手动运行。
+**现状**：`launcher/` 通过编译验证 + HTTP 端点检查 + 游戏集成测试。
 
-现有手段：
-- `node server.js` 启动后 HTTP 手动验证
-- `testPlaySound.js` — 音频播放验证
-- `/testConnection` — 健康检查（POST → `status=success`）
+验证手段：
+- `launcher/build.ps1` — 编译验证（MSBuild，零错误即通过）
+- `bash tools/cfn-cli.sh status` — 健康检查（返回 task 清单 + socket 连接状态）
+- `bash tools/cfn-cli.sh console "help"` — AS2 回环测试
+- 游戏集成：启动游戏后观察 hit number overlay、toast、gomoku 是否正常工作
+
+### `--bus-only` 模式（testMovie 集成测试）
+
+Launcher 支持 `--bus-only` 参数，仅启动通信总线（HTTP + XMLSocket + TaskRegistry），不启动 Flash Player。
+用于 Flash CS6 testMovie 场景：外部 Flash Player 实例自行连接到 bus。
+
+```powershell
+# 手动启动
+CRAZYFLASHER7MercenaryEmpire.exe --bus-only
+
+# 通过 cfn-cli 启动/停止
+bash tools/cfn-cli.sh start-bus
+bash tools/cfn-cli.sh stop-bus
+```
+
+### 自动化 AI 调优循环
+
+`gobang_trainer_cycle.ps1` 是完整的 AI 评测自动化入口，自动管理 bus 生命周期：
+
+```powershell
+# 全量 trainer-only（68 题，~180s）
+powershell -ExecutionPolicy Bypass -File scripts/gobang_trainer_cycle.ps1 -Mode trainer_only -Json
+
+# 定向题面（~15s）
+powershell -ExecutionPolicy Bypass -File scripts/gobang_trainer_cycle.ps1 -Mode trainer_only -Problems mid_complex_diagonal,def_diag_two_two_block -Json
+```
+
+流程：自动启动 bus → 重写 TestLoader.as → 编译 testMovie → 等待 SUMMARY → 解析 JSON → 恢复 TestLoader.as。
+详见 `scripts/类定义/org/flashNight/hana/Gobang/TRAINING_METHODOLOGY.md`。
+
+**此模式不仅用于五子棋，后续任何需要 AS2↔C# 通信的 AI/模拟实验均可复用此基建。**
 
 ---
 

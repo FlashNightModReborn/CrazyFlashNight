@@ -5,25 +5,32 @@
 ## 1. 架构概览
 
 ```
-┌─────────────────────────────────┐
-│     Flash Player (AS2 客户端)     │
-│  ┌─────────┐  ┌──────────────┐  │
-│  │ 主 SWF   │  │ 子 SWF/小游戏│  │
-│  │(游戏逻辑)│←→│  (hana包)    │  │
-│  └────┬─────┘  └──────────────┘  │
-│       │ XMLSocket                 │
-└───────┼───────────────────────────┘
+┌─────────────────────────────────────┐
+│     Flash Player (AS2 客户端)         │
+│  ┌─────────┐  ┌──────────────┐      │
+│  │ 主 SWF   │  │ 子 SWF/小游戏│      │
+│  │(游戏逻辑)│←→│  (hana包)    │      │
+│  └────┬─────┘  └──────────────┘      │
+│       │ XMLSocket (快车道 F/R + JSON)  │
+└───────┼──────────────────────────────┘
         │
-┌───────┼───────────────────────────┐
-│  Node.js 本地服务器               │
-│  ┌────┴─────┐  ┌──────────────┐  │
-│  │XMLSocket │  │  HTTP/REST   │  │
-│  │ 服务     │  │   服务       │  │
-│  └──────────┘  └──────────────┘  │
-│  ┌──────────────────────────────┐│
-│  │ 任务处理器(eval/regex/音频等)  ││
-│  └──────────────────────────────┘│
-└───────────────────────────────────┘
+┌───────┼──────────────────────────────┐
+│  C# Guardian Launcher                │
+│  ┌────┴──────┐   ┌──────────────┐    │
+│  │XmlSocket  │   │  HTTP API    │    │
+│  │ 快车道    │   │ /status      │    │
+│  │ F→Frame   │   │ /console     │    │
+│  │ R→Reset   │   │ /task        │    │
+│  │ JSON→路由 │   │ /logBatch    │    │
+│  └───────────┘   └──────────────┘    │
+│  ┌──────────────────────────────┐    │
+│  │ TaskRegistry (single source) │    │
+│  │ toast | gomoku_eval          │    │
+│  │ V8Runtime (hit-number)       │    │
+│  └──────────────────────────────┘    │
+└──────────────────────────────────────┘
+        ↑
+  cfn-cli.sh / .ps1（外部 CLI 工具）
 ```
 
 ---
@@ -40,29 +47,64 @@
 
 > 这意味着子 SWF 与主文件之间不存在显式的消息协议，而是共享同一运行时上下文，直接通过属性和方法调用通信。
 
-### AS2 ↔ Node.js 通信
-- 协议：XMLSocket（TCP 长连接）+ HTTP（辅助通道）
-- 端口：通过 HTTP `GET /getSocketPort` 获取
-- 消息格式：JSON over XMLSocket（`\0` 终止符分帧）
-- 详细文档：`tools/Local Server/server.md`
-- 客户端入口：`org.flashNight.neur.Server.ServerManager`（单例）
+### AS2 ↔ C# Guardian Launcher 通信
+- 传输：XMLSocket（TCP 长连接，双通道：前缀快车道 + JSON 路由）+ HTTP（辅助通道）
+- 端口发现：HTTP `POST /testConnection` 探测 → `GET /getSocketPort` 获取 socket 端口
+- 消息分帧：`\0` 终止符
+- Task 注册表：`launcher/src/Bus/TaskRegistry.cs`（single source of truth）
+- 状态查询：`GET /status`（返回 task 清单 + 连接状态）
+- 客户端入口：`org.flashNight.neur.Server.ServerManager`（单例，5 状态 FSM）
 - 初始化脚本：`scripts/通信/通信_fs_本地服务器.as`
 
-#### 连接建立流程
+#### 连接状态机（帧驱动，无 setTimeout/setInterval）
 
 ```
-1. 端口发现：从 _root.闪客之夜 提取候选端口列表
-2. HTTP 探测：POST /testConnection → status=success
-3. 获取 Socket 端口：GET /getSocketPort → socketPort=9999
-4. XMLSocket 连接：连接 localhost:{socketPort}
-5. 断线重连：最多 5 次，间隔 300 帧（≈10s）
+S_DISCONNECTED(0)      等待重连延迟（150帧≈5s），retryCount < 5
+  │
+  v
+S_HTTP_PROBING(1)      POST /testConnection → portList 轮询
+  │ success → currentPort = port
+  v
+S_FETCHING_PORT(2)     GET /getSocketPort → socketPort
+  │ success → socketPort = port
+  v
+S_SOCKET_CONNECTING(3) XMLSocket.connect(localhost, socketPort)
+  │ success
+  v
+S_CONNECTED(4)         业务就绪
+  │ onSocketClose
+  v
+S_FETCHING_PORT(2)     关键：重新发现端口（launcher 可能重启在不同端口）
 ```
+
+- 端口候选列表从 `_root.闪客之夜`（数字种子 "1192433993"）提取 4/5 位有效端口
+- 失败路径：任意层失败 → `retryCount++` → S_DISCONNECTED → 等待 delay → 重试
+- 所有状态转换由 `transitionTo()` 统一管理，每个异步回调先检查当前状态是否匹配
 
 #### 消息协议
 
-**客户端 → 服务器**（XMLSocket，JSON + `\0`）：
+XMLSocket 消息以 `\0` 终止符分帧，采用**双通道分发**：
+
+##### 快车道（前缀协议，绕过 JSON 解析）
+
+高频消息使用固定前缀，由 `XmlSocketServer.HandleMessage` 首字节判断直达处理器：
+
+| 前缀 | 格式 | 处理器 | 频率 |
+|------|------|--------|------|
+| `F` | `F{cam}\x01{hn}` | `FrameTask.HandleRaw(cam, hn)` | 每帧（30fps） |
+| `R` | `R`（无负载） | `FrameTask.HandleReset()` | 场景切换 |
+
+- cam 格式：`gw._x|gw._y|scale`（管道符分隔）
+- `\x01`(SOH) 分隔 cam 与 hn（两者内容只含 `|`;数字文本）
+- hn 格式：`value|x|y|packed|efText|efEmoji|lifeSteal|shieldAbsorb;...`（分号分条目）
+
+##### 通用路由（JSON）
+
+非快车道消息经 `MessageRouter.ProcessMessage` 路由（JObject.Parse + task 字段分发）：
+
+**客户端 → 服务器**：
 ```json
-{ "task": "eval|regex|computation|audio", "payload": ..., "extra": ... }
+{ "task": "toast|gomoku_eval", "payload": ..., "callId": ... }
 ```
 
 **服务器 → 客户端**：
@@ -71,12 +113,12 @@
 { "success": false, "error": "错误信息" }
 ```
 
-| 任务类型 | 处理器 | 用途 |
-|---------|--------|------|
-| `eval` | `controllers/evalTask.js` | VM2 沙箱执行 JavaScript 表达式 |
-| `regex` | `controllers/regexTask.js` | 正则匹配（AS2 正则能力有限，委托服务端） |
-| `computation` | `controllers/computationTask.js` | 数值计算任务 |
-| `audio` | `controllers/audioTask.js` | 音频控制（play/pause/stop/setVolume） |
+| 任务类型 | 处理器 | 类型 | 用途 |
+|---------|--------|------|------|
+| `toast` | `ToastTask.cs` | sync | UI toast 通知（fire-and-forget） |
+| `gomoku_eval` | `GomokuTask.cs` | async | 五子棋 AI 评估（rapfi 引擎，callId 回调） |
+| `console` | 服务器推送 → AS2 | push | 远程控制台命令（HTTP /console → XMLSocket） |
+| `console_result` | 事件回执 | event | AS2 执行结果回传（触发 OnConsoleResult 事件） |
 
 **HTTP 辅助通道**：`POST /logBatch`（调试日志批量上报，每帧最多一次，`ServerManager.sendMessageBuffer()` 管理缓冲区）
 

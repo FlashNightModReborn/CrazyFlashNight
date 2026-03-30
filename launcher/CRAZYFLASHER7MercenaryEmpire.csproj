@@ -59,11 +59,9 @@
 <Compile Include="src\Render\CasShaderBytecode.cs" />
     <Compile Include="src\Render\GpuRenderer.cs" />
     <Compile Include="src\Render\D3DPanel.cs" />
-    <Compile Include="src\Tasks\EvalTask.cs" />
-    <Compile Include="src\Tasks\RegexTask.cs" />
-    <Compile Include="src\Tasks\ComputationTask.cs" />
     <Compile Include="src\Tasks\GomokuTask.cs" />
     <Compile Include="src\Tasks\ToastTask.cs" />
+    <Compile Include="src\Bus\TaskRegistry.cs" />
     <Compile Include="src\Guardian\ToastOverlay.cs" />
     <Compile Include="src\Guardian\FlashCoordinateMapper.cs" />
     <Compile Include="src\Guardian\FlashHtmlParser.cs" />

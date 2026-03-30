@@ -1,43 +1,87 @@
 ﻿import org.flashNight.neur.Event.Delegate;
 import org.flashNight.neur.Event.EventBus;
-import FastJSON; 
+import FastJSON;
 
+/**
+ * ServerManager — AS2 ↔ C# Guardian Launcher 通信管理器（单例）
+ *
+ * 职责：
+ *   1. HTTP 端口发现（POST /testConnection）
+ *   2. XMLSocket 端口获取（GET /getSocketPort）
+ *   3. XMLSocket 双向通信（JSON + \0 终止符）
+ *   4. HTTP 日志批量上报（POST /logBatch）
+ *   5. callId 回调路由（异步 task 结果分发）
+ *
+ * 连接状态机（帧驱动，无 setTimeout/setInterval）：
+ *
+ *   S_DISCONNECTED(0)
+ *     │ delay elapsed && retryCount < MAX
+ *     v
+ *   S_HTTP_PROBING(1)       ← testConnection(portList[portIndex])
+ *     │ success → currentPort = port
+ *     v
+ *   S_FETCHING_PORT(2)      ← GET /getSocketPort
+ *     │ success → socketPort = port
+ *     v
+ *   S_SOCKET_CONNECTING(3)  ← XMLSocket.connect()
+ *     │ success
+ *     v
+ *   S_CONNECTED(4)
+ *     │ onSocketClose
+ *     v
+ *   S_FETCHING_PORT(2)      ← 重新发现端口（不死守旧端口）
+ *
+ *   失败路径：任意层失败 → retryCount++ → S_DISCONNECTED → 等待 delay → 重试
+ *   超过 MAX_RETRIES 后静止在 S_DISCONNECTED
+ */
 class org.flashNight.neur.Server.ServerManager {
     public static var instance:ServerManager;
     public var portList:Array;
     public var portIndex:Number;
     public var currentPort:Number;
-    private var frameClip:MovieClip; // 用于管理 enterFrame 事件的影片剪辑
-    public var currentFrame:Number; // 独立的帧计数器
+    private var frameClip:MovieClip;
+    public var currentFrame:Number;
 
-    // 重连相关变量
-    public var reconnectionAttempts:Number = 0;
-    public var maxReconnectionAttempts:Number = 5;
-    public var reconnectionDelayFrames:Number = 300; // 固定重连间隔10秒
-    public var framesSinceLastReconnectionAttempt:Number = 0;
-    public var isReconnecting:Boolean = false;
+    // ==================== 连接状态机 ====================
+    private var _state:Number;
+    private var _stateEnteredFrame:Number;
+    private var _retryCount:Number;
 
-    // 消息发送相关变量
-    private var isSending:Boolean = false; // 当前是否在发送消息
-    private var hasSentThisFrame:Boolean = false; // 本帧是否已发送过消息
-    private var messageBuffer:String = ""; // 待发送的消息缓冲区
+    private static var S_DISCONNECTED:Number      = 0;
+    private static var S_HTTP_PROBING:Number       = 1;
+    private static var S_FETCHING_PORT:Number      = 2;
+    private static var S_SOCKET_CONNECTING:Number  = 3;
+    private static var S_CONNECTED:Number          = 4;
 
-    // Cached EventBus instance
+    private static var MAX_RETRIES:Number    = 5;
+    private static var RETRY_DELAY:Number    = 150; // 5s @30fps
+
+    // ==================== 消息发送 ====================
+    private var isSending:Boolean = false;
+    private var hasSentThisFrame:Boolean = false;
+    private var messageBuffer:String = "";
+
+    // ==================== EventBus ====================
     private var eventBus:EventBus;
 
-    // 新增变量
+    // ==================== XMLSocket ====================
     public var xmlSocket:XMLSocket;
     public var socketHost:String = "localhost";
-    public var socketPort:Number = null; // 初始为空，在获取到端口号后设置
-    public var isSocketConnected:Boolean = false; // 用于跟踪连接状态
+    public var socketPort:Number = null;
+    public var isSocketConnected:Boolean = false;
 
-    // JSON parser instance
+    // ==================== JSON ====================
     private var jsonParser:FastJSON;
 
-    // Callback 路由（用于异步任务结果分发）
+    // ==================== Callback 路由 ====================
     private var _callIdCounter:Number;
-    private var _pendingCallbacks:Object;  // {String(callId): {cb:Function, frame:Number}}
-    private static var CALLBACK_TIMEOUT_FRAMES:Number = 600; // 20秒 @30fps
+    private var _pendingCallbacks:Object;
+    private static var CALLBACK_TIMEOUT_FRAMES:Number = 600; // 20s @30fps
+
+    // ==================== 状态名称（调试用）====================
+    private static var STATE_NAMES:Array = [
+        "DISCONNECTED", "HTTP_PROBING", "FETCHING_PORT", "SOCKET_CONNECTING", "CONNECTED"
+    ];
 
     // 构造函数
     public function ServerManager() {
@@ -51,20 +95,26 @@ class org.flashNight.neur.Server.ServerManager {
         portIndex = 0;
         currentPort = null;
         currentFrame = 0;
-        eventBus = EventBus.getInstance(); // Cache EventBus instance
+        _state = S_DISCONNECTED;
+        _stateEnteredFrame = 0;
+        _retryCount = 0;
+
+        eventBus = EventBus.getInstance();
         extractPorts();
         initFrameClip();
-        getAvailablePort(); // 启动端口检测
 
         // Subscribe internal functions to frameUpdate event
         eventBus.subscribe("frameUpdate", onFrameUpdate, this);
 
         // Initialize JSON parser
-        jsonParser = new FastJSON(); // 传入 true 以启用宽容模式
+        jsonParser = new FastJSON();
 
         // Callback 路由初始化
         _callIdCounter = 0;
         _pendingCallbacks = {};
+
+        // 启动连接状态机
+        transitionTo(S_HTTP_PROBING);
     }
 
     // 获取单例实例
@@ -75,7 +125,49 @@ class org.flashNight.neur.Server.ServerManager {
         return instance;
     }
 
-    // 提取端口号
+    // ==================== 状态机核心 ====================
+
+    /**
+     * 状态转换 + 入口动作。所有状态变更必须通过此方法。
+     */
+    private function transitionTo(newState:Number):Void {
+        var oldState:Number = _state;
+        _state = newState;
+        _stateEnteredFrame = currentFrame;
+
+        // 更新 isSocketConnected（FrameBroadcaster 等外部代码读取此字段）
+        isSocketConnected = (newState == S_CONNECTED);
+
+        trace("[FSM] " + STATE_NAMES[oldState] + " -> " + STATE_NAMES[newState]
+              + " (retry=" + _retryCount + ", frame=" + currentFrame + ")");
+
+        // 入口动作
+        switch (newState) {
+            case S_HTTP_PROBING:
+                if (portIndex < portList.length) {
+                    testConnection(portList[portIndex]);
+                } else {
+                    // 无可用端口，回到 DISCONNECTED
+                    portIndex = 0;
+                    _retryCount++;
+                    transitionTo(S_DISCONNECTED);
+                }
+                break;
+
+            case S_FETCHING_PORT:
+                getSocketPort();
+                break;
+
+            case S_SOCKET_CONNECTING:
+                initXMLSocket();
+                break;
+
+            // S_DISCONNECTED, S_CONNECTED: 无入口动作，由 onFrameUpdate 驱动
+        }
+    }
+
+    // ==================== 端口提取 ====================
+
     public function extractPorts():Void {
         var eyeOf119:String = (_root.闪客之夜 != undefined) ? _root.闪客之夜.toString() : "1192433993";
         trace("Extracting ports from eyeOf119: " + eyeOf119);
@@ -84,10 +176,8 @@ class org.flashNight.neur.Server.ServerManager {
         for (var i:Number = 0; i <= eyeOf119.length - 4; i++) {
             var port4:String = eyeOf119.substring(i, i + 4);
             var port4Num:Number = Number(port4);
-
             if (isValidPort(port4Num) && !containsPort(port4Num)) {
                 portList.push(port4Num);
-                trace("Added valid 4-digit port: " + port4Num);
             }
         }
 
@@ -95,20 +185,17 @@ class org.flashNight.neur.Server.ServerManager {
         for (var j:Number = 0; j <= eyeOf119.length - 5; j++) {
             var port5:String = eyeOf119.substring(j, j + 5);
             var port5Num:Number = Number(port5);
-
             if (isValidPort(port5Num) && !containsPort(port5Num)) {
                 portList.push(port5Num);
-                trace("Added valid 5-digit port: " + port5Num);
             }
         }
 
-        // 确保端口3000被加入（如果还未加入）
+        // 确保端口3000被加入
         if (!containsPort(3000) && isValidPort(3000)) {
             portList.push(3000);
-            trace("Added default port: 3000");
         }
 
-        // 移除重复的端口
+        // 去重
         var uniquePorts:Object = {};
         var finalPortList:Array = [];
         for (var k:Number = 0; k < portList.length; k++) {
@@ -136,143 +223,39 @@ class org.flashNight.neur.Server.ServerManager {
         return false;
     }
 
+    // ==================== 帧驱动 ====================
+
     private function initFrameClip():Void {
-        // 使用 AS2 的最大安全深度值
         var MAX_DEPTH:Number = 1048575;
-        
         frameClip = _root.createEmptyMovieClip("ServerManagerFrameClip", MAX_DEPTH);
         frameClip.onEnterFrame = Delegate.create(this, onEnterFrameHandler);
     }
 
-    public function getAvailablePort():Void {
-        if (portIndex < portList.length) {
-            var port:Number = portList[portIndex];
-            trace("Trying to connect to HTTP server on port: " + port);
-
-            testConnection(port);
-        } else {
-            trace("No available ports found.");
-        }
-    }
-
-    private function testConnection(port:Number):Void {
-        var lv:LoadVars = new LoadVars();
-
-        lv.onLoad = function(success:Boolean):Void {
-            if (success) {
-                ServerManager.instance.onPortSuccess(port);
-            } else {
-                ServerManager.instance.onPortFailure(port);
-            }
-        };
-
-        lv.sendAndLoad("http://localhost:" + port + "/testConnection", lv, "POST");
-    }
-
-    private function onPortSuccess(port:Number):Void {
-        trace("Connected to HTTP server on port: " + port);
-        currentPort = port;
-
-        // 重置重连相关变量
-        reconnectionAttempts = 0;
-        framesSinceLastReconnectionAttempt = 0;
-        isReconnecting = false;
-
-        // 获取 XMLSocket 端口
-        getSocketPort();
-    }
-
-    private function onPortFailure(port:Number):Void {
-        trace("Failed to connect to HTTP server on port: " + port);
-        reconnectionAttempts++;
-        framesSinceLastReconnectionAttempt = 0;
-
-        if (reconnectionAttempts < maxReconnectionAttempts) {
-            isReconnecting = true;
-            trace("Reconnection attempt " + reconnectionAttempts + " scheduled in " + reconnectionDelayFrames + " frames.");
-        } else {
-            isReconnecting = false;
-            trace("Max reconnection attempts reached. Giving up.");
-        }
-
-        portIndex++;
-        if (portIndex >= portList.length) {
-            portIndex = 0; // 循环尝试端口列表
-        }
-    }
-
-    // 获取 XMLSocket 端口号
-    private function getSocketPort():Void {
-        var lv:LoadVars = new LoadVars();
-
-        lv.onLoad = function(success:Boolean):Void {
-            if (success) {
-                var response:Object = this;
-                if (response.socketPort != undefined) {
-                    ServerManager.instance.socketPort = Number(response.socketPort);
-                    trace("Retrieved XMLSocket port: " + ServerManager.instance.socketPort);
-                    // 初始化 XMLSocket 连接
-                    ServerManager.instance.initXMLSocket();
-                } else {
-                    trace("Failed to retrieve socket port.");
-                }
-            } else {
-                trace("Failed to load socket port.");
-            }
-        };
-
-        lv.load("http://localhost:" + currentPort + "/getSocketPort");
-    }
-
-    // 发送服务器消息（将消息追加到 messageBuffer）
-    public function sendServerMessage(message:String):Void {
-        // 验证消息内容，确保只接受字符串且不包含非法字符
-        /*
-        if (typeof(message) != "string" || message.indexOf("{") != -1 || message.indexOf("}") != -1) {
-            trace("Invalid message format. Only plain strings without '{}' are allowed.");
-            return;
-        }
-        */
-
-        // 将消息追加到消息缓冲区
-        if (messageBuffer.length > 0) {
-            messageBuffer += "|" + message;
-        } else {
-            messageBuffer = message;
-        }
-
-        trace("Message appended to buffer: " + message);
-    }
-
     public function onEnterFrameHandler():Void {
-        // 增加帧计数
         currentFrame++;
-
-        // Publish frameUpdate event
         eventBus.publish("frameUpdate", currentFrame);
-
-        // 重置 hasSentThisFrame 标志
         hasSentThisFrame = false;
     }
-    
 
     public function onFrameUpdate(currentFrame:Number):Void {
-        // 处理重连逻辑
-        if (isReconnecting) {
-            framesSinceLastReconnectionAttempt++;
-            if (framesSinceLastReconnectionAttempt >= reconnectionDelayFrames) {
-                isReconnecting = false;
-                trace("Attempting reconnection...");
-                getAvailablePort(); // 尝试重连
+        // ---- 状态机 tick ----
+        if (_state == S_DISCONNECTED) {
+            // 等待重连延迟
+            if (_retryCount < MAX_RETRIES
+                && (currentFrame - _stateEnteredFrame) >= RETRY_DELAY) {
+                transitionTo(S_HTTP_PROBING);
             }
         }
 
-        // 如果当前没有在发送消息，且消息缓冲区不为空，且已连接到端口，且本帧还未发送过消息
-        if (!isSending && messageBuffer.length > 0 && currentPort != null && !hasSentThisFrame) {
-            sendMessageBuffer();
+        // ---- S_CONNECTED 业务逻辑 ----
+        if (_state == S_CONNECTED) {
+            // 发送 HTTP 日志缓冲区
+            if (!isSending && messageBuffer.length > 0 && currentPort != null && !hasSentThisFrame) {
+                sendMessageBuffer();
+            }
         }
 
-        // 每 60 帧扫描一次超时的 pending callback（~2秒@30fps）
+        // ---- Callback 超时扫描（所有状态都执行，确保断线后也能清理）----
         if (currentFrame % 60 === 0) {
             for (var k:String in _pendingCallbacks) {
                 var e:Object = _pendingCallbacks[k];
@@ -284,68 +267,89 @@ class org.flashNight.neur.Server.ServerManager {
         }
     }
 
-    // 立即发送单条消息，绕过 messageBuffer/isSending，每次独立请求
-    // 用于调试：即使主线程随后冻结，OS 网络栈也会把请求发出去
-    public function sendImmediate(message:String):Void {
-        if (currentPort == null) return;
-        var lv:LoadVars = new LoadVars();
-        lv.messages = message;
-        lv.frame = currentFrame;
-        lv.sendAndLoad("http://localhost:" + currentPort + "/logBatch", new LoadVars(), "POST");
+    // ==================== HTTP 端口探测 ====================
+
+    // 保留公共接口兼容性（通信_fs_本地服务器.as 的兼容代理可能调用）
+    public function getAvailablePort():Void {
+        if (_state == S_DISCONNECTED || _state == S_CONNECTED) {
+            _retryCount = 0;
+            transitionTo(S_HTTP_PROBING);
+        }
     }
 
-    // 发送积累的消息
-    private function sendMessageBuffer():Void {
-        if (currentPort == null) {
-            trace("No current HTTP port available. Cannot send messages.");
-            return;
-        }
-
-        if (isSending) {
-            trace("Already sending messages. Send aborted.");
-            return;
-        }
-
-        // 发送消息
+    private function testConnection(port:Number):Void {
         var lv:LoadVars = new LoadVars();
-        var messageToSend:String = messageBuffer; // 仅发送消息内容，不包含帧数
-
-        lv.frame = currentFrame; // 将帧数作为独立参数
-        lv.messages = messageToSend;
-
-        trace("Sending messages for frame " + currentFrame + ": " + messageToSend + " to HTTP port: " + currentPort);
-
-        isSending = true;
-        hasSentThisFrame = true; // 标记本帧已经发送过消息
-
         lv.onLoad = function(success:Boolean):Void {
             if (success) {
-                ServerManager.instance.onMessageSuccess();
+                ServerManager.instance.onPortSuccess(port);
             } else {
-                ServerManager.instance.onMessageFailure();
+                ServerManager.instance.onPortFailure(port);
             }
         };
-
-        lv.sendAndLoad("http://localhost:" + currentPort + "/logBatch", lv, "POST");
-
-        // 清空消息缓冲区
-        messageBuffer = "";
+        lv.sendAndLoad("http://localhost:" + port + "/testConnection", lv, "POST");
     }
 
-    private function onMessageSuccess():Void {
-        trace("Messages sent successfully.");
-        isSending = false;
+    private function onPortSuccess(port:Number):Void {
+        // 防止过期回调：只在 HTTP_PROBING 状态处理
+        if (_state != S_HTTP_PROBING) return;
+
+        trace("Connected to HTTP server on port: " + port);
+        currentPort = port;
+        _retryCount = 0;
+        transitionTo(S_FETCHING_PORT);
     }
 
-    private function onMessageFailure():Void {
-        trace("Failed to send messages.");
-        isSending = false;
-        // 可选：将失败的消息重新加入缓冲区或记录错误
+    private function onPortFailure(port:Number):Void {
+        if (_state != S_HTTP_PROBING) return;
+
+        trace("Failed to connect to HTTP server on port: " + port);
+        portIndex++;
+        if (portIndex >= portList.length) {
+            portIndex = 0;
+        }
+        _retryCount++;
+        transitionTo(S_DISCONNECTED);
     }
 
-    // 初始化 XMLSocket
+    // ==================== Socket 端口获取 ====================
+
+    private function getSocketPort():Void {
+        var lv:LoadVars = new LoadVars();
+        lv.onLoad = function(success:Boolean):Void {
+            if (success) {
+                var response:Object = this;
+                if (response.socketPort != undefined) {
+                    ServerManager.instance.onSocketPortReceived(Number(response.socketPort));
+                } else {
+                    ServerManager.instance.onSocketPortFailed("no socketPort in response");
+                }
+            } else {
+                ServerManager.instance.onSocketPortFailed("HTTP load failed");
+            }
+        };
+        lv.load("http://localhost:" + currentPort + "/getSocketPort");
+    }
+
+    private function onSocketPortReceived(port:Number):Void {
+        if (_state != S_FETCHING_PORT) return;
+
+        socketPort = port;
+        trace("Retrieved XMLSocket port: " + socketPort);
+        transitionTo(S_SOCKET_CONNECTING);
+    }
+
+    private function onSocketPortFailed(reason:String):Void {
+        if (_state != S_FETCHING_PORT) return;
+
+        trace("Failed to get socket port: " + reason);
+        _retryCount++;
+        transitionTo(S_DISCONNECTED);
+    }
+
+    // ==================== XMLSocket ====================
+
     public function initXMLSocket():Void {
-        var self = this; // 保存对 this 的引用
+        var self = this;
         xmlSocket = new XMLSocket();
         xmlSocket.onConnect = function(success:Boolean):Void {
             self.onSocketConnect(success);
@@ -357,36 +361,42 @@ class org.flashNight.neur.Server.ServerManager {
             self.onSocketClose();
         };
 
-        connectToSocket();
-    }
-
-    public function connectToSocket():Void {
         if (socketPort == null) {
             trace("Socket port not available. Cannot connect.");
+            _retryCount++;
+            transitionTo(S_DISCONNECTED);
             return;
         }
-
         xmlSocket.connect(socketHost, socketPort);
     }
 
-    // 修改后的 XMLSocket onConnect 事件处理器
     private function onSocketConnect(success:Boolean):Void {
+        if (_state != S_SOCKET_CONNECTING) return;
+
         if (success) {
             trace("XMLSocket connected to server on port: " + socketPort);
-            isSocketConnected = true; // 标记为已连接
+            _retryCount = 0;
+            transitionTo(S_CONNECTED);
         } else {
             trace("Failed to connect XMLSocket to server on port: " + socketPort);
-            isSocketConnected = false; // 标记为未连接
+            _retryCount++;
+            transitionTo(S_DISCONNECTED);
         }
     }
 
-    // 使用 JSON 类解析服务器返回的数据
+    // 使用 try/catch 包住 FastJSON.parse 处理服务器返回的数据
+    // 契约：热路径(frame)走快车道不经过此方法；冷路径(task 响应)用 try/catch 兜底
     private function onSocketData(data:String):Void {
-        trace("Received data from server: " + data);
         // 移除 null 终止符
         data = data.split('\0').join('');
 
-        var response:Object = jsonParser.parse(data);
+        var response:Object;
+        try {
+            response = jsonParser.parse(data);
+        } catch (e) {
+            trace("[ServerManager] Bad packet: " + e.message + " | data=" + data.substring(0, 80));
+            return;
+        }
 
         // 处理服务器推送的控制台命令
         if (response.task == "console") {
@@ -405,30 +415,22 @@ class org.flashNight.neur.Server.ServerManager {
             }
         }
 
+        // 未被 callback 路由匹配的通用响应
         if (response.success) {
-            if (response.task == "audio") {
-                // 处理音频任务的成功响应
-                trace("Audio task succeeded: " + response.message);
-            } else {
-                // 处理其他任务的成功响应
-                trace("Task succeeded. Result: " + response.result);
-            }
+            trace("[ServerManager] Task result: " + response.result);
         } else {
-            // 处理错误信息
-            trace("Task failed. Error: " + response.error);
+            trace("[ServerManager] Task error: " + response.error);
         }
     }
 
     // 处理从服务器推送来的控制台命令
     private function handleConsoleCommand(command:String):Void {
-        // 解码 %uXXXX 编码的非 ASCII 字符（由 Node 端编码以避免 UTF-8/GBK 不匹配）
         command = unescape(command);
         trace("[Console] Executing: " + command);
 
         var result:String = "";
 
         if (_root.cheatCode != undefined) {
-            // 临时拦截输出函数，收集命令产生的所有消息
             var output:Array = [];
             var origTip:Function = _root.最上层发布文字提示;
             var origMsg:Function = _root.发布消息;
@@ -446,10 +448,8 @@ class org.flashNight.neur.Server.ServerManager {
                 }
             };
 
-            // 执行命令
             _root.cheatCode(command);
 
-            // 恢复原始函数
             _root.最上层发布文字提示 = origTip;
             _root.发布消息 = origMsg;
 
@@ -460,31 +460,34 @@ class org.flashNight.neur.Server.ServerManager {
 
         trace("[Console] Result: " + result);
 
-        // 发送结果回服务器
-        var response:Object = new Object();
-        response.task = "console_result";
-        response.success = true;
-        response.command = command;
-        response.result = result;
+        var responseObj:Object = new Object();
+        responseObj.task = "console_result";
+        responseObj.success = true;
+        responseObj.command = command;
+        responseObj.result = result;
 
-        var responseString:String = jsonParser.stringify(response);
+        var responseString:String = jsonParser.stringify(responseObj);
         sendSocketMessage(responseString);
     }
 
-
     public function onSocketClose():Void {
         trace("XMLSocket connection closed");
-        isSocketConnected = false; // 标记为未连接
+        isSocketConnected = false;
+
         // 清理所有 pending callback（断线后不会再收到响应）
         for (var k:String in _pendingCallbacks) {
             _pendingCallbacks[k].cb({success: false, error: "socket closed"});
         }
         _pendingCallbacks = {};
-        // 尝试重新连接
-        setTimeout(Delegate.create(this, connectToSocket), 1000); // 1秒后重试连接
+
+        // 关键：回到 FETCHING_PORT 重新发现端口（launcher 可能重启在不同端口）
+        // 不是死守旧端口，也不用 setTimeout
+        _retryCount = 0;
+        transitionTo(S_FETCHING_PORT);
     }
 
-    // 发送消息的函数，检查是否已连接。返回是否成功发送。
+    // ==================== 消息发送 ====================
+
     public function sendSocketMessage(message:String):Boolean {
         if (isSocketConnected) {
             xmlSocket.send(message + '\0');
@@ -495,7 +498,45 @@ class org.flashNight.neur.Server.ServerManager {
         }
     }
 
-    // 使用 JSON 类进行序列化。返回是否成功发送。
+    public function sendServerMessage(message:String):Void {
+        if (messageBuffer.length > 0) {
+            messageBuffer += "|" + message;
+        } else {
+            messageBuffer = message;
+        }
+    }
+
+    public function sendImmediate(message:String):Void {
+        if (currentPort == null) return;
+        var lv:LoadVars = new LoadVars();
+        lv.messages = message;
+        lv.frame = currentFrame;
+        lv.sendAndLoad("http://localhost:" + currentPort + "/logBatch", new LoadVars(), "POST");
+    }
+
+    private function sendMessageBuffer():Void {
+        if (currentPort == null || isSending) return;
+
+        var lv:LoadVars = new LoadVars();
+        var messageToSend:String = messageBuffer;
+
+        lv.frame = currentFrame;
+        lv.messages = messageToSend;
+
+        isSending = true;
+        hasSentThisFrame = true;
+
+        lv.onLoad = function(success:Boolean):Void {
+            ServerManager.instance.isSending = false;
+        };
+
+        lv.sendAndLoad("http://localhost:" + currentPort + "/logBatch", lv, "POST");
+
+        messageBuffer = "";
+    }
+
+    // ==================== Task 发送 ====================
+
     public function sendTaskToNode(taskType:String, payload:Object, extra:Object):Boolean {
         var message:Object = new Object();
         message.task = taskType;
@@ -513,7 +554,6 @@ class org.flashNight.neur.Server.ServerManager {
         return sendSocketMessage(messageString);
     }
 
-    // 发送带回调的任务：响应通过 callId 路由回 callback
     public function sendTaskWithCallback(taskType:String, payload:Object, extra:Object,
                                           callback:Function):Void {
         var callId:Number = _callIdCounter++;
@@ -537,49 +577,6 @@ class org.flashNight.neur.Server.ServerManager {
 
         _pendingCallbacks[String(callId)] = {cb: callback, frame: currentFrame};
         sendSocketMessage(messageString);
-    }
-
-    // 具体任务执行函数
-
-    // 执行 eval 任务
-    public function executeEvalTask(code:String):Void {
-        sendTaskToNode("eval", code, null);
-    }
-
-    // 执行正则表达式匹配任务
-    public function executeRegexTask(text:String, pattern:String, flags:String):Void {
-        var extra:Object = new Object();
-        extra.pattern = pattern;
-        extra.flags = flags;
-
-        sendTaskToNode("regex", text, extra);
-    }
-
-    // 执行计算任务
-    public function executeComputationTask(data:Array):Void {
-        var extra:Object = new Object();
-        extra.data = data;
-
-        sendTaskToNode("computation", null, extra);
-    }
-
-    // 示例：使用 socket 进行计算密集型任务
-    public function heavyComputation(data:String):Void {
-        sendSocketMessage(data);
-    }
-
-    // 执行音频任务
-    public function executeAudioTask(action:String, src:String, options:Object):Void {
-        var payload:Object = new Object();
-        payload.action = action;
-        if (src != null) {
-            payload.src = src;
-        }
-        if (options != null) {
-            payload.options = options;
-        }
-
-        sendTaskToNode("audio", payload, null);
     }
 
 }

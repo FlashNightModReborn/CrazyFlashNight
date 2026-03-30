@@ -5,8 +5,8 @@ using Microsoft.ClearScript.V8;
 namespace CF7Launcher.V8
 {
     /// <summary>
-    /// 持久化 V8 引擎单例，运行受信任的内部 TS 编译产物。
-    /// 与 EvalTask（每次创建新引擎的不受信任沙箱）独立共存。
+    /// 持久化 V8 引擎单例，运行受信任的内部 TS 编译产物（hit-number-bundle.js）。
+    /// 由 FrameTask 每帧驱动：UpdateCamera → SpawnBatch → Tick → 渲染描述符。
     ///
     /// 线程安全：ReadLoop 线程写 camera/spawn，UI 线程可能调用 Reset。
     /// 单 _lock 保护所有 V8 访问。

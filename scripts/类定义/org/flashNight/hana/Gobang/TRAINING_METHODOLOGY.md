@@ -7,15 +7,20 @@
 ## 架构
 
 ```text
-Flash (GobangTrainer)
-  -> XMLSocket
-  -> Node.js (gomokuTask)
-  -> Rapfi CLI
+gobang_trainer_cycle.ps1
+  -> 启动 launcher --bus-only（如未在运行）
+  -> 重写 TestLoader.as 为 trainer 入口代码
+  -> compile_test.ps1 → Flash CS6 testMovie
+
+Flash (GobangTrainer in testMovie)
+  -> ServerManager FSM 自动连接 bus
+  -> XMLSocket → C# GomokuTask → Rapfi CLI
 
 本地 AI 与 Rapfi 对同一局面分别作答
   -> GobangTrainer 汇总结果
-  -> SUMMARY REPORT / FAIL 列表
-  -> 定位弱点并进入下一轮调优
+  -> SUMMARY REPORT / FAIL 列表 → flashlog.txt
+  -> gobang_trainer_cycle.ps1 解析结果
+  -> 恢复 TestLoader.as → 定位弱点并进入下一轮调优
 ```
 
 ## 调优循环
@@ -112,9 +117,10 @@ Flash (GobangTrainer)
 | 文件 | 用途 |
 |------|------|
 | `GobangTrainer.as` | 题库与评测框架 |
-| `TestLoader.as` | 自动化入口，支持 `trainer_only` 与题面过滤 |
-| `gobang_trainer_cycle.ps1` | 外层训练脚本，负责写配置、触发编译、等待 fresh summary、解析结果 |
-| `gomokuTask.js` | Rapfi 桥接 |
+| `TestLoader.as` | 由 `gobang_trainer_cycle.ps1` 自动重写（注入 trainer 代码），运行后恢复 |
+| `gobang_trainer_cycle.ps1` | 外层训练脚本：启动 bus、重写 TestLoader、触发编译、等待 summary、解析结果、恢复 TestLoader |
+| `launcher/src/Tasks/GomokuTask.cs` | Rapfi 桥接（C# Guardian Launcher，替代旧 `gomokuTask.js`） |
+| `tools/cfn-cli.sh` | CLI 工具：`start-bus`/`stop-bus`/`status`/`console`/`wait` |
 | `GobangEval.as` | 评估权重、桥接分、候选生成 |
 | `GobangMinmax.as` | 根搜索、预搜索、根短名单收集 |
 | `GobangAI.as` | 难度参数、局部确认、threat refine |

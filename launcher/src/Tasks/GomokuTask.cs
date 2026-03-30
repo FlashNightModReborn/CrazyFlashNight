@@ -32,10 +32,9 @@ namespace CF7Launcher.Tasks
 
         private static string FindEngine(string root)
         {
-            // 搜索目录：优先 tools/rapfi/，回退 tools/Local Server/bin/
+            // 搜索目录：tools/rapfi/（唯一来源，Local Server 已退役）
             string[] searchDirs = new string[] {
-                Path.Combine(root, "tools", "rapfi"),
-                Path.Combine(root, "tools", "Local Server", "bin")
+                Path.Combine(root, "tools", "rapfi")
             };
 
             string[] patterns = new string[] {

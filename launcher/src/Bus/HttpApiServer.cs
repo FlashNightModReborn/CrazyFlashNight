@@ -9,8 +9,17 @@ using CF7Launcher.Guardian;
 namespace CF7Launcher.Bus
 {
     /// <summary>
-    /// HTTP API 服务器，复刻 Local Server 的 HTTP 端点。
+    /// HTTP API 服务器，提供 Guardian Launcher 的 REST 接口。
     /// 使用 HttpListener (localhost 不需要 ACL)。
+    ///
+    /// 端点：
+    ///   POST /testConnection  — 健康检查
+    ///   GET  /getSocketPort   — 返回 XMLSocket 端口号
+    ///   POST /logBatch        — 批量日志上报
+    ///   POST /console         — 远程控制台命令（转发到 AS2）
+    ///   GET  /status          — 连接状态 + task 清单（TaskRegistry 驱动）
+    ///   POST /task            — 统一 task 提交（仅 httpCallable task: toast, gomoku_eval）
+    ///   GET  /crossdomain.xml — Flash 跨域策略
     /// </summary>
     public class HttpApiServer : IDisposable
     {
@@ -24,6 +33,7 @@ namespace CF7Launcher.Bus
         private readonly Queue<ConsoleEntry> _pendingConsole;
         private readonly object _consoleLock = new object();
         private readonly XmlSocketServer _socketServer;
+        private MessageRouter _router;
 
         private class ConsoleEntry
         {
@@ -40,6 +50,14 @@ namespace CF7Launcher.Bus
             _projectRoot = projectRoot;
             _socketServer = socketServer;
             _pendingConsole = new Queue<ConsoleEntry>();
+        }
+
+        /// <summary>
+        /// 注入 MessageRouter（用于 /task 端点）。在 TaskRegistry.RegisterAll 之后调用。
+        /// </summary>
+        public void SetRouter(MessageRouter router)
+        {
+            _router = router;
         }
 
         public bool Start(int port)
@@ -113,6 +131,10 @@ namespace CF7Launcher.Bus
                     HandleLogBatch(ctx);
                 else if (path == "/console" && method == "POST")
                     HandleConsole(ctx);
+                else if (path == "/status" && method == "GET")
+                    HandleStatus(ctx);
+                else if (path == "/task" && method == "POST")
+                    HandleTask(ctx);
                 else if (path == "/crossdomain.xml")
                     HandleCrossDomain(ctx);
                 else
@@ -243,6 +265,111 @@ namespace CF7Launcher.Bus
                     entry.Result = fullJson;
                     entry.Done.Set();
                 }
+            }
+        }
+
+        private void HandleStatus(HttpListenerContext ctx)
+        {
+            ctx.Response.ContentType = "application/json";
+            string json = TaskRegistry.ToStatusJson(
+                _socketServer.HasClient, Port, _socketPort);
+            WriteResponse(ctx, json);
+        }
+
+        /// <summary>
+        /// POST /task — 统一 task 提交端点（仅 httpCallable task）。
+        /// Body: {"task":"gomoku_eval","payload":{...},"timeout":10000}
+        /// toast: fire-and-forget，立即返回 {"ok":true}
+        /// gomoku_eval: 异步等待，阻塞直到回调或超时
+        ///
+        /// 不复用 /console 的 FIFO 队列；每个请求独立持有 ManualResetEvent，
+        /// 通过 MessageRouter 的 asyncRespond 回调接收响应。
+        /// </summary>
+        private void HandleTask(HttpListenerContext ctx)
+        {
+            ctx.Response.ContentType = "application/json";
+
+            if (_router == null)
+            {
+                ctx.Response.StatusCode = 503;
+                WriteResponse(ctx, "{\"ok\":false,\"error\":\"router not initialized\"}");
+                return;
+            }
+
+            string body = ReadBody(ctx);
+            if (string.IsNullOrEmpty(body))
+            {
+                ctx.Response.StatusCode = 400;
+                WriteResponse(ctx, "{\"ok\":false,\"error\":\"empty body\"}");
+                return;
+            }
+
+            // 提取 task 名称做 httpCallable 检查
+            string taskName = null;
+            try
+            {
+                var jobj = Newtonsoft.Json.Linq.JObject.Parse(body);
+                taskName = jobj.Value<string>("task");
+            }
+            catch
+            {
+                ctx.Response.StatusCode = 400;
+                WriteResponse(ctx, "{\"ok\":false,\"error\":\"invalid JSON\"}");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(taskName))
+            {
+                ctx.Response.StatusCode = 400;
+                WriteResponse(ctx, "{\"ok\":false,\"error\":\"missing task field\"}");
+                return;
+            }
+
+            // 只允许 httpCallable task（toast, gomoku_eval）
+            if (taskName != "toast" && taskName != "gomoku_eval")
+            {
+                ctx.Response.StatusCode = 400;
+                WriteResponse(ctx,
+                    "{\"ok\":false,\"error\":\"task '" + taskName + "' is not httpCallable\"}");
+                return;
+            }
+
+            // 每个请求独立的异步等待机制
+            ManualResetEvent done = new ManualResetEvent(false);
+            string asyncResult = null;
+
+            string syncResult = _router.ProcessMessage(body, delegate(string asyncResp)
+            {
+                asyncResult = asyncResp;
+                done.Set();
+            });
+
+            // sync task（如 toast）：ProcessMessage 直接返回
+            if (syncResult != null)
+            {
+                WriteResponse(ctx, syncResult);
+                return;
+            }
+
+            // toast 返回 null（fire-and-forget）
+            if (taskName == "toast")
+            {
+                WriteResponse(ctx, "{\"ok\":true}");
+                return;
+            }
+
+            // async task（如 gomoku_eval）：等待回调或超时
+            bool completed = done.WaitOne(15000); // 15s 超时
+            done.Close();
+
+            if (completed && asyncResult != null)
+            {
+                WriteResponse(ctx, asyncResult);
+            }
+            else
+            {
+                ctx.Response.StatusCode = 504;
+                WriteResponse(ctx, "{\"ok\":false,\"error\":\"timeout\"}");
             }
         }
 

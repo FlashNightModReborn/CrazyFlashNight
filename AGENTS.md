@@ -24,7 +24,7 @@
 |------|------|------|
 | AS2 编码/审查 | [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) | [scripts/FlashCS6自动化编译.md](scripts/FlashCS6自动化编译.md)、[coding-standards.md](agentsDoc/coding-standards.md)、[as2-performance.md](agentsDoc/as2-performance.md)、[game-systems.md](agentsDoc/game-systems.md) |
 | 改 XML 数据/配置 | [data-schemas.md](agentsDoc/data-schemas.md) | [game-design.md](agentsDoc/game-design.md)、[testing-guide.md](agentsDoc/testing-guide.md) |
-| 本地服务器/通信 | [architecture.md](agentsDoc/architecture.md) | `launcher/`（C# 守护进程 + V8 总线）、[testing-guide.md](agentsDoc/testing-guide.md) |
+| Guardian Launcher 通信 | [architecture.md](agentsDoc/architecture.md) | `launcher/`（C# 守护进程 + V8 总线）、[testing-guide.md](agentsDoc/testing-guide.md)、`tools/cfn-cli.sh` |
 | 自动化脚本 | `automation/README.md` | [scripts/FlashCS6自动化编译.md](scripts/FlashCS6自动化编译.md)、`start_game*.ps1`、`xml_fla.ps1` |
 | 新增物品/单位 | `0.说明文件与教程/添加新物品和单位的详细基础教程宝宝可用.docx` | [data-schemas.md](agentsDoc/data-schemas.md)、[game-design.md](agentsDoc/game-design.md) |
 | 会话收尾 | [self-optimization.md](agentsDoc/self-optimization.md) | [shared-notes.md](agentsDoc/shared-notes.md) |
@@ -46,8 +46,8 @@
 │   └── *.fla / *.swf             测试用 Flash 项目
 ├── data/                       ✎ 游戏数据
 ├── config/                     ✎ 系统配置
-├── launcher/                   ✎ C# 守护进程 + V8 总线（替代旧 Node.js Local Server）
-├── tools/Local Server/         ⊘ 已废弃（V8 总线迁移至 launcher/）
+├── launcher/                   ✎ C# 守护进程 + V8 总线
+├── tools/cfn-cli.sh|.ps1      ✎ Guardian Launcher 调试/测试 CLI
 ├── automation/                 ✎ PowerShell 自动化
 ├── flashswf/                   ⊘ Flash 资源（只读）
 ├── agentsDoc/                  ✎ Agent 深度文档

@@ -51,28 +51,36 @@
 
 编写规范与 XMLParser 隐式行为详见 [data-schemas.md](data-schemas.md) §2-§3。
 
-## 7. Node.js 编码规范
+## 7. C# Launcher 编码规范
 
-> 遵循现代 JS 最佳实践（`const` 优先、箭头函数、解构赋值等）。以下为**项目特有约定**。
+> Guardian Launcher（`launcher/`）使用 C# 5 / .NET Framework 4.5 / MSBuild 4.0。
 
 ### 项目结构
 
 ```
-tools/Local Server/
-├── server.js              # 入口：HTTP + XMLSocket 启动
-├── routes/                # Express 路由定义（只做请求分发）
-├── controllers/           # 业务逻辑处理器（每种 task 一个文件）
-├── services/              # 基础服务（socketServer 等）
-└── package.json
+launcher/src/
+├── Bus/                   # 通信基础设施
+│   ├── MessageRouter.cs   # JSON 消息路由（task 字段分发）
+│   ├── XmlSocketServer.cs # XMLSocket TCP 服务器（快车道 + JSON 双通道）
+│   ├── HttpApiServer.cs   # HTTP REST 接口（/status, /console, /logBatch 等）
+│   ├── TaskRegistry.cs    # Task 注册表 — single source of truth
+│   └── ...
+├── Tasks/                 # Task 处理器
+│   ├── FrameTask.cs       # 帧数据处理（快车道 HandleRaw + JSON 回退）
+│   ├── GomokuTask.cs      # 五子棋 AI（异步，rapfi 引擎桥接）
+│   └── ToastTask.cs       # UI toast 通知（fire-and-forget）
+├── V8/V8Runtime.cs        # 持久化 V8 引擎（hit-number 渲染）
+└── Guardian/              # WinForms UI、overlay、窗口管理
 ```
 
 ### 项目特有约定
 
-- **统一响应格式**：`{ success: true/false, result/error }`
-- **沙箱执行**：eval 任务使用 VM2，禁止直接 `eval()`
-- **本地监听**：服务仅绑定 `localhost`
-- **日志**：winston 结构化日志，包含 task 类型、端口号等上下文
-- **依赖管理**：`node_modules/` 不入库，部署前 `npm install`；新增依赖前评估必要性
+- **Task 注册**：所有 task 必须通过 `TaskRegistry.RegisterAll()` 注册，不在 Program.cs 散装注册
+- **Task 元数据**：每个 task 声明 transport/direction/httpCallable，`/status` 端点自动暴露
+- **快车道 vs JSON**：高频消息（frame, hn_reset）走前缀协议绕过 JObject.Parse；低频消息走 MessageRouter JSON 路由
+- **本地监听**：HTTP 和 XMLSocket 仅绑定 `localhost`
+- **C# 5 语法限制**：无 string interpolation、无 null propagation、无 expression-bodied members
+- **构建**：`launcher/build.ps1`（NuGet restore → MSBuild → copy DLLs）
 
 ## 8. 调试规范
 

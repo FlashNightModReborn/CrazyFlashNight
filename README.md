@@ -67,18 +67,7 @@
    从Adobe官方下载独立播放器版本，或者从重制版包体中获取
    ```
 
-3. **配置Node.js环境**
-   ```powershell
-   # 检查Node.js版本
-   node --version
-   npm --version
-   
-   # 进入服务器目录并安装依赖
-   cd "tools\Local Server"
-   npm install
-   ```
-
-4. **配置PowerShell执行策略**
+3. **配置PowerShell执行策略**
    ```powershell
    # 允许本地脚本执行
    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
@@ -118,15 +107,8 @@ CrazyFlashNight/
 │   ├── 通信/                    # 网络和保存系统脚本
 │   ├── 逻辑/                    # 游戏逻辑
 │   └── 类定义/                  # 主要类库（org.flashNight.*）
-├── 📁 tools/Local Server/       # ✅ Node.js本地服务器（可测试和修改）
-│   ├── server.js                # 主服务器文件
-│   ├── controllers/             # 任务处理器（eval、regex、计算、音频）
-│   ├── routes/                  # HTTP路由
-│   ├── services/                # 服务模块（socketServer.js等）
-│   ├── utils/                   # 工具模块（logger.js等）
-│   ├── config/ports.js          # 端口配置
-│   ├── package.json             # 依赖配置
-│   └── server.md                # 服务器详细文档
+├── 📁 launcher/                 # ✎ C# Guardian Launcher（V8 总线 + HTTP/XMLSocket）
+├── 📁 tools/cfn-cli.sh|.ps1    # ✎ Guardian CLI 调试工具
 └── 📁 其他文件（README.md、crossdomain.xml等）
 ```
 
@@ -155,13 +137,12 @@ CrazyFlashNight/
 </weapon>
 ```
 
-**2. `tools/Local Server/` - Node.js本地服务器**
+**2. `launcher/` - C# Guardian Launcher**
 
-可以实时测试和修改的JavaScript代码：
-- HTTP API接口
-- XMLSocket通信逻辑
-- 任务处理器功能
-- 日志和监控系统
+V8 总线 + HTTP/XMLSocket 通信，构建后自动随游戏启动：
+- `launcher/build.ps1` 构建
+- `tools/cfn-cli.sh status` 查看运行状态
+- `tools/cfn-cli.sh console "help"` 远程控制台
 
 #### ⚠️ 需要特殊处理的文件
 
@@ -235,21 +216,17 @@ cd "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter
 .\start_game_2_5.ps1
 ```
 
-### 启动本地服务器
+### Guardian Launcher
+
+C# Guardian Launcher（`launcher/`）随游戏自动启动，提供 V8 总线和 HTTP/XMLSocket 通信。
 
 ```powershell
-# 进入服务器目录
-cd "tools\Local Server"
+# 构建 launcher（修改 C# 代码后需重新构建）
+launcher\build.ps1
 
-# 首次运行需要安装依赖
-npm install
-
-# 启动服务器
-node server.js
-
-# 服务器将在控制台显示启动信息
-# HTTP服务器: http://localhost:3000
-# XMLSocket服务器: localhost:3001
+# CLI 工具（游戏运行时）
+bash tools/cfn-cli.sh status          # 查看连接状态和 task 清单
+bash tools/cfn-cli.sh console "help"  # 执行 AS2 控制台命令
 ```
 
 ### 验证环境
@@ -257,10 +234,6 @@ node server.js
 ```powershell
 # 检查Flash Player版本
 Get-ItemProperty "HKLM:\SOFTWARE\Adobe\Flash Player ActiveX" | Select-Object Version
-
-# 检查Node.js和npm版本
-node --version
-npm --version
 
 # 检查PowerShell版本
 $PSVersionTable.PSVersion
@@ -366,18 +339,6 @@ POST /regex/match
     "text": "Hello 123 World",
     "flags": "g"
 }
-```
-
-#### 服务器配置
-
-编辑 `tools/Local Server/config/ports.js`：
-
-```javascript
-module.exports = {
-    http: 3000,           // HTTP服务端口
-    xmlsocket: 3001,      // XMLSocket端口
-    fallback: [3002, 3003] // 备用端口列表
-};
 ```
 
 ### 自动化脚本配置

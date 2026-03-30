@@ -6,8 +6,12 @@ using Newtonsoft.Json.Linq;
 namespace CF7Launcher.Bus
 {
     /// <summary>
-    /// 消息路由：按 task 字段分发到 Task 处理器。
+    /// JSON 消息路由：按 task 字段分发到 Task 处理器。
     /// wrapResponse：注入 callId 到响应中。
+    ///
+    /// 注意：frame (前缀 'F') 和 hn_reset (前缀 'R') 消息走快车道，
+    /// 由 XmlSocketServer.HandleMessage 前缀检测直接分发到 FrameTask，
+    /// 不经过本路由器。本路由器仅处理 JSON 格式的 task 消息。
     /// </summary>
     public class MessageRouter
     {
