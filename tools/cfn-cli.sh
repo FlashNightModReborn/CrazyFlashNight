@@ -127,7 +127,7 @@ case "${1:-status}" in
             console)
                 shift; CMD="$*"
                 if [ -z "$CMD" ]; then echo "Usage: cfn-cli console <command>" >&2; exit 1; fi
-                SAFE_CMD=$(printf '%s' "$CMD" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))' 2>/dev/null) || SAFE_CMD="\"$CMD\""
+                SAFE_CMD=$(printf '%s' "$CMD" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))') || { echo "Error: python required for JSON escaping" >&2; exit 1; }
                 curl -s -X POST "http://localhost:$PORT/console" \
                     -H "Content-Type: application/json" \
                     -d "{\"command\":$SAFE_CMD}" 2>/dev/null
@@ -136,7 +136,7 @@ case "${1:-status}" in
             toast)
                 shift; MSG="$*"
                 if [ -z "$MSG" ]; then echo "Usage: cfn-cli toast <message>" >&2; exit 1; fi
-                SAFE_MSG=$(printf '%s' "$MSG" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))' 2>/dev/null) || SAFE_MSG="\"$MSG\""
+                SAFE_MSG=$(printf '%s' "$MSG" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))') || { echo "Error: python required for JSON escaping" >&2; exit 1; }
                 curl -s -X POST "http://localhost:$PORT/task" \
                     -H "Content-Type: application/json" \
                     -d "{\"task\":\"toast\",\"payload\":$SAFE_MSG}" 2>/dev/null
