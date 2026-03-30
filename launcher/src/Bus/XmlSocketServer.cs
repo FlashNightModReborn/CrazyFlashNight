@@ -63,7 +63,8 @@ namespace CF7Launcher.Bus
                 try
                 {
                     TcpClient client = _listener.AcceptTcpClient();
-                    LogManager.Log("[XmlSocket] Client connected");
+                    client.NoDelay = true; // 禁用 Nagle：frame 消息需要低延迟
+                    LogManager.Log("[XmlSocket] Client connected (NoDelay=true)");
 
                     int gen;
                     lock (_clientLock)

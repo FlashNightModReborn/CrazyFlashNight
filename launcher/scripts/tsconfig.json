@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "none",
+    "outFile": "dist/hit-number-bundle.js",
+    "rootDir": "src",
+    "strict": true,
+    "declaration": false,
+    "sourceMap": false,
+    "lib": ["ES2020"]
+  },
+  "include": ["src/**/*.ts"]
+}

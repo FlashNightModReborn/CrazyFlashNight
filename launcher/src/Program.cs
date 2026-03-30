@@ -11,6 +11,7 @@ using CF7Launcher.Bus;
 using CF7Launcher.Config;
 using CF7Launcher.Guardian;
 using CF7Launcher.Tasks;
+using CF7Launcher.V8;
 
 class Program
 {
@@ -123,6 +124,19 @@ class Program
         ToastTask toastTask = new ToastTask(toastOverlay);
         router.RegisterSync("toast", toastTask.Handle);
 
+        // V8 持久化 Runtime + 打击伤害数字 overlay
+        string scriptsDir = Path.Combine(projectRoot, "launcher", "scripts");
+        V8Runtime v8Runtime = new V8Runtime(scriptsDir);
+        HitNumberOverlay hnOverlay = new HitNumberOverlay(form, form.FlashHostPanel);
+        FrameTask frameTask = new FrameTask(v8Runtime, hnOverlay);
+        router.RegisterSync("frame", frameTask.Handle);
+        router.RegisterSync("hn_reset", delegate(Newtonsoft.Json.Linq.JObject msg)
+        {
+            v8Runtime.Reset();
+            hnOverlay.NotifyReset();
+            return null;
+        });
+
         LogManager.Log("[Guardian] Bus ready: HTTP=" + httpPort + " Socket=" + socketPort);
 
         // === 快捷键拦截（独立进程，永不超时）===
@@ -195,6 +209,7 @@ class Program
                 form.Show();
                 form.Activate();
                 toastOverlay.SetReady();
+                hnOverlay.SetReady();
             }));
         });
 
@@ -209,6 +224,8 @@ class Program
         gomokuTask.Dispose();
         socketServer.Dispose();
         httpServer.Dispose();
+        hnOverlay.Dispose();
+        v8Runtime.Dispose();
         toastOverlay.Dispose();
 
         return 0;

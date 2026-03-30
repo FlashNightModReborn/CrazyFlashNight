@@ -67,6 +67,9 @@
     <Compile Include="src\Guardian\ToastOverlay.cs" />
     <Compile Include="src\Guardian\FlashCoordinateMapper.cs" />
     <Compile Include="src\Guardian\FlashHtmlParser.cs" />
+    <Compile Include="src\V8\V8Runtime.cs" />
+    <Compile Include="src\Tasks\FrameTask.cs" />
+    <Compile Include="src\Guardian\HitNumberOverlay.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

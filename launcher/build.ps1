@@ -27,6 +27,28 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "  NuGet restore OK." -ForegroundColor Green
 
+# Step 1.5: TypeScript compile (V8 scripts)
+Write-Host "[Step 1.5] TypeScript compile..." -ForegroundColor Yellow
+$tsDir = Join-Path $launcherDir "scripts"
+if (Test-Path (Join-Path $tsDir "tsconfig.json")) {
+    Push-Location $tsDir
+    try {
+        if (-not (Test-Path "node_modules")) {
+            npm install --ignore-scripts 2>&1 | Out-Null
+        }
+        npx tsc --project tsconfig.json
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "  [FAIL] TypeScript compilation failed." -ForegroundColor Red
+            exit 1
+        }
+        Write-Host "  TypeScript compiled -> dist/hit-number-bundle.js" -ForegroundColor Green
+    } finally {
+        Pop-Location
+    }
+} else {
+    Write-Host "  [SKIP] No tsconfig.json found in $tsDir" -ForegroundColor Yellow
+}
+
 # Step 2: MSBuild
 Write-Host "[Step 2/4] MSBuild compile..." -ForegroundColor Yellow
 $csproj = Join-Path $launcherDir "CRAZYFLASHER7MercenaryEmpire.csproj"

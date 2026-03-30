@@ -782,6 +782,11 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     HitNumberBatchProcessor.clear();
     // 初始化打击数字对象池（场景级初始化，避免 spawn 热路径的 null 检查）
     HitNumberSystem.initPool();
+    // 通知 C# 清除活跃伤害数字动画（S2 修复：场景切换时同步 reset）
+    // 注意：_root.server = ServerManager 单例，_root.服务器 = 兼容代理（无 socket 属性）
+    if (_root.server.isSocketConnected) {
+        _root.server.sendSocketMessage('{"task":"hn_reset"}');
+    }
     // 重置射线视觉效果管理器，清理跨场景残留的射线
     RayVfxManager.reset();
     // 重置 TimSort 重入保护标志，防止 compare 异常后永久降级为 Array.sort()
