@@ -1194,10 +1194,11 @@ _root.cleanupForRestart = function():Void {
     _root.发布消息("[cleanupForRestart] TargetCacheManager cleared");
 
     // -------------------------
-    // 11.5 清理 HitNumberBatchProcessor 队列
+    // 11.5 清理 HitNumberBatchProcessor 队列 + FrameBroadcaster 数据槽
     // -------------------------
     HitNumberBatchProcessor.clear();
-    _root.发布消息("[cleanupForRestart] HitNumberBatchProcessor cleared");
+    FrameBroadcaster.reset();
+    _root.发布消息("[cleanupForRestart] HitNumberBatchProcessor + FrameBroadcaster cleared");
 
     // -------------------------
     // 12. 清理 CooldownWheel 和 UnitUpdateWheel
