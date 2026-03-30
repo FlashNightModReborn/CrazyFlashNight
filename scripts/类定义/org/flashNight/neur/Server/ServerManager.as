@@ -173,16 +173,25 @@ class org.flashNight.neur.Server.ServerManager {
     /**
      * 从简单 JSON 字符串中提取数字字段值。
      * 不依赖 FastJSON，避免在连接建立前引入复杂解析。
+     * 容忍 "key" : 123 和 "key":123 两种格式（跳过冒号后的空白）。
      */
     private function extractJsonNumber(json:String, key:String):Number {
-        var search:String = "\"" + key + "\":";
+        var search:String = "\"" + key + "\"";
         var idx:Number = json.indexOf(search);
         if (idx < 0) return NaN;
         idx += search.length;
+        // 跳过空白
+        while (idx < json.length && json.charAt(idx) <= " ") idx++;
+        // 期望冒号
+        if (idx >= json.length || json.charAt(idx) != ":") return NaN;
+        idx++;
+        // 跳过空白
+        while (idx < json.length && json.charAt(idx) <= " ") idx++;
+        // 读取数字
         var end:Number = idx;
         while (end < json.length) {
             var c:String = json.charAt(end);
-            if (c == "," || c == "}" || c == " ") break;
+            if (c == "," || c == "}" || c <= " ") break;
             end++;
         }
         return Number(json.substring(idx, end));

@@ -22,9 +22,9 @@ PORTS_FILE="$PROJECT_ROOT/launcher_ports.json"
 PORTS=(1192 1924 9243 2433 4339 3399 3993 11924 19243 24339 43399 33993 3000)
 
 discover_port() {
-    # 优先从端口文件读取
+    # 优先从端口文件读取（用 python 解析，容忍任意 JSON 格式）
     if [ -f "$PORTS_FILE" ]; then
-        local file_port=$(grep -o '"httpPort":[0-9]*' "$PORTS_FILE" 2>/dev/null | grep -o '[0-9]*')
+        local file_port=$(python -c "import json; print(json.load(open('$PORTS_FILE'))['httpPort'])" 2>/dev/null)
         if [ -n "$file_port" ]; then
             code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
                 "http://localhost:$file_port/testConnection" \
@@ -127,17 +127,19 @@ case "${1:-status}" in
             console)
                 shift; CMD="$*"
                 if [ -z "$CMD" ]; then echo "Usage: cfn-cli console <command>" >&2; exit 1; fi
+                SAFE_CMD=$(printf '%s' "$CMD" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))' 2>/dev/null) || SAFE_CMD="\"$CMD\""
                 curl -s -X POST "http://localhost:$PORT/console" \
                     -H "Content-Type: application/json" \
-                    -d "{\"command\":\"$CMD\"}" 2>/dev/null
+                    -d "{\"command\":$SAFE_CMD}" 2>/dev/null
                 echo
                 ;;
             toast)
                 shift; MSG="$*"
                 if [ -z "$MSG" ]; then echo "Usage: cfn-cli toast <message>" >&2; exit 1; fi
+                SAFE_MSG=$(printf '%s' "$MSG" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))' 2>/dev/null) || SAFE_MSG="\"$MSG\""
                 curl -s -X POST "http://localhost:$PORT/task" \
                     -H "Content-Type: application/json" \
-                    -d "{\"task\":\"toast\",\"payload\":\"$MSG\"}" 2>/dev/null
+                    -d "{\"task\":\"toast\",\"payload\":$SAFE_MSG}" 2>/dev/null
                 echo
                 ;;
             log)

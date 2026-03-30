@@ -218,6 +218,7 @@ class Program
             socketServer.Dispose();
             httpServer.Dispose();
             gomokuTask.Dispose();
+            try { File.Delete(portsFile); } catch { }
             return 1;
         }
 
