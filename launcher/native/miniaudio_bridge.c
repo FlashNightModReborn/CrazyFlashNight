@@ -214,29 +214,34 @@ MA_EXPORT int ma_bridge_bgm_play(const wchar_t* wpath, int loop, float volume, f
 
 MA_EXPORT int ma_bridge_bgm_stop(float fadeSec) {
     ma_uint64 fadeMs;
-    int slot;
+    int i;
 
     if (!g_initialized) return -1;
 
-    slot = g_bgmActive;
-    if (!g_bgmLoaded[slot]) return -1;
-
     fadeMs = (ma_uint64)(fadeSec * 1000.0f);
-    if (fadeMs >= MIN_FADE_MS) {
-        ma_sound_stop_with_fade_in_milliseconds(&g_bgm[slot], fadeMs);
-    } else {
-        ma_sound_stop(&g_bgm[slot]);
+
+    /* Stop BOTH slots — catches the active one and any still-fading-out old one */
+    for (i = 0; i < 2; i++) {
+        if (!g_bgmLoaded[i]) continue;
+        if (fadeMs >= MIN_FADE_MS) {
+            ma_sound_stop_with_fade_in_milliseconds(&g_bgm[i], fadeMs);
+        } else {
+            ma_sound_stop(&g_bgm[i]);
+        }
     }
 
     return 0;
 }
 
 MA_EXPORT void ma_bridge_bgm_set_volume(float volume) {
-    int slot;
+    int i;
     if (!g_initialized) return;
-    slot = g_bgmActive;
-    if (g_bgmLoaded[slot]) {
-        ma_sound_set_volume(&g_bgm[slot], volume);
+
+    /* Set volume on BOTH slots — keeps crossfade overlap consistent with slider */
+    for (i = 0; i < 2; i++) {
+        if (g_bgmLoaded[i]) {
+            ma_sound_set_volume(&g_bgm[i], volume);
+        }
     }
 }
 
