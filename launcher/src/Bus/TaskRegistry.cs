@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Tasks;
+using CF7Launcher.Data;
 using CF7Launcher.V8;
 using CF7Launcher.Guardian;
 
@@ -29,11 +30,13 @@ namespace CF7Launcher.Bus
             GomokuTask gomoku,
             ToastTask toast,
             FrameTask frame,
+            DataQueryTask dataQuery,
             V8Runtime v8,
             HitNumberOverlay hnOverlay)
         {
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
+            router.RegisterAsync("data_query", dataQuery.HandleAsync);
             router.RegisterSync("toast", toast.Handle);
 
             // JSON 回退路径：frame/hn_reset 的 JSON 格式兼容入口
@@ -70,6 +73,7 @@ namespace CF7Launcher.Bus
             AppendTask(sb, "hn_reset",       "fast_lane", "AS2->C#", false); sb.Append(",");
             AppendTask(sb, "toast",          "json_sync", "AS2->C#", true);  sb.Append(",");
             AppendTask(sb, "gomoku_eval",    "json_async","AS2<->C#",true);  sb.Append(",");
+            AppendTask(sb, "data_query",     "json_async","AS2<->C#",true);  sb.Append(",");
             AppendTask(sb, "console",        "json_push", "C#->AS2", false); sb.Append(",");
             AppendTask(sb, "console_result", "json_event","AS2->C#", false);
 

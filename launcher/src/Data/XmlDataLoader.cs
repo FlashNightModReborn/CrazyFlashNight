@@ -1,0 +1,313 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml;
+using Newtonsoft.Json.Linq;
+using CF7Launcher.Guardian;
+
+namespace CF7Launcher.Data
+{
+    /// <summary>
+    /// NPC 对话中一个 Dialogue 节点解析后的结构。
+    /// </summary>
+    public class DialogueGroup
+    {
+        public int TaskRequirement;
+        public JArray SubDialogues;
+    }
+
+    /// <summary>
+    /// 从项目 data/ 目录解析 XML 文件，生成与 Flash AS2 运行时一致的数据结构。
+    ///
+    /// NPC 对话：字段名全 lowercase（name, title, char, text, id, target, imageurl）。
+    /// 佣兵 bundle：teams 用中文属性名，dialogues 用 PascalCase，Value 序列化为 string。
+    /// </summary>
+    public static class XmlDataLoader
+    {
+        // ===================== NPC 对话 =====================
+
+        /// <summary>
+        /// 加载所有 NPC 对话数据，按 NPC 名分组。
+        /// 复刻 NpcDialogueLoader.mergeDialogues (AS2) 的输出结构。
+        /// </summary>
+        public static Dictionary<string, List<DialogueGroup>> LoadNpcDialogues(string projectRoot)
+        {
+            string dataDir = Path.Combine(projectRoot, "data", "dialogues");
+            string listPath = Path.Combine(dataDir, "list.xml");
+
+            Dictionary<string, List<DialogueGroup>> index =
+                new Dictionary<string, List<DialogueGroup>>();
+
+            if (!File.Exists(listPath))
+            {
+                LogManager.Log("[XmlDataLoader] list.xml not found: " + listPath);
+                return index;
+            }
+
+            XmlDocument listDoc = new XmlDocument();
+            listDoc.Load(listPath);
+
+            XmlNodeList items = listDoc.SelectNodes("//items");
+            if (items == null) return index;
+
+            foreach (XmlNode item in items)
+            {
+                string fileName = item.InnerText;
+                if (string.IsNullOrEmpty(fileName)) continue;
+
+                string filePath = Path.Combine(dataDir, fileName);
+                if (!File.Exists(filePath))
+                {
+                    LogManager.Log("[XmlDataLoader] NPC dialogue file not found: " + filePath);
+                    continue;
+                }
+
+                try
+                {
+                    ParseNpcDialogueFile(filePath, index);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[XmlDataLoader] Error parsing " + fileName + ": " + ex.Message);
+                }
+            }
+
+            LogManager.Log("[XmlDataLoader] NPC dialogues loaded: " + index.Count + " NPCs");
+            return index;
+        }
+
+        private static void ParseNpcDialogueFile(
+            string filePath, Dictionary<string, List<DialogueGroup>> index)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(filePath);
+
+            // root > Dialogues (可能多个 Dialogues 节点)
+            XmlNodeList dialoguesNodes = doc.SelectNodes("//Dialogues");
+            if (dialoguesNodes == null) return;
+
+            foreach (XmlNode dialoguesNode in dialoguesNodes)
+            {
+                // Dialogues > Name = NPC 名
+                XmlNode nameNode = dialoguesNode.SelectSingleNode("Name");
+                if (nameNode == null) continue;
+                string npcName = nameNode.InnerText;
+                if (string.IsNullOrEmpty(npcName)) continue;
+
+                List<DialogueGroup> groups;
+                if (!index.TryGetValue(npcName, out groups))
+                {
+                    groups = new List<DialogueGroup>();
+                    index[npcName] = groups;
+                }
+
+                // Dialogues > Dialogue (每个是一组对话)
+                XmlNodeList dialogueNodes = dialoguesNode.SelectNodes("Dialogue");
+                if (dialogueNodes == null) continue;
+
+                foreach (XmlNode dialogueNode in dialogueNodes)
+                {
+                    DialogueGroup group = new DialogueGroup();
+
+                    // TaskRequirement (Dialogue 的子元素, 可选, 默认 0)
+                    XmlNode trNode = dialogueNode.SelectSingleNode("TaskRequirement");
+                    if (trNode != null)
+                    {
+                        int tr;
+                        if (int.TryParse(trNode.InnerText, out tr))
+                            group.TaskRequirement = tr;
+                    }
+
+                    // SubDialogue 数组
+                    XmlNodeList subNodes = dialogueNode.SelectNodes("SubDialogue");
+                    JArray subs = new JArray();
+
+                    if (subNodes != null)
+                    {
+                        foreach (XmlNode subNode in subNodes)
+                        {
+                            JObject sub = new JObject();
+
+                            // id 来自 XML 属性，非子元素
+                            XmlElement subElem = subNode as XmlElement;
+                            if (subElem != null)
+                                sub["id"] = subElem.GetAttribute("id");
+
+                            // PascalCase → lowercase 映射
+                            sub["name"] = GetChildText(subNode, "Name");
+                            sub["title"] = GetChildText(subNode, "Title");
+                            sub["char"] = GetChildText(subNode, "Char");
+                            sub["text"] = GetChildText(subNode, "Text");
+
+                            // target / imageurl：当前 XML 无此字段，输出 null
+                            string target = GetChildText(subNode, "Target");
+                            sub["target"] = target != null ? (JToken)target : JValue.CreateNull();
+
+                            string imageurl = GetChildText(subNode, "ImageUrl");
+                            sub["imageurl"] = imageurl != null ? (JToken)imageurl : JValue.CreateNull();
+
+                            subs.Add(sub);
+                        }
+                    }
+
+                    group.SubDialogues = subs;
+                    groups.Add(group);
+                }
+            }
+        }
+
+        private static string GetChildText(XmlNode parent, string childName)
+        {
+            XmlNode child = parent.SelectSingleNode(childName);
+            if (child == null) return null;
+            return child.InnerText;
+        }
+
+        // ===================== 佣兵 Bundle =====================
+
+        /// <summary>
+        /// 加载佣兵 bundle (teams + names + dialogues + pool)。
+        /// 字段名精确匹配 AS2 运行时变量的属性名。
+        /// </summary>
+        public static JObject LoadMercBundle(string projectRoot)
+        {
+            string dataDir = Path.Combine(projectRoot, "data", "hybrid_mercenaries");
+
+            JObject bundle = new JObject();
+            bundle["teams"] = LoadTeams(Path.Combine(dataDir, "teams.xml"));
+            bundle["names"] = LoadNames(Path.Combine(dataDir, "name.xml"));
+
+            JArray dialogues;
+            JObject pool;
+            LoadDialoguesAndPool(Path.Combine(dataDir, "dialogues.xml"), out dialogues, out pool);
+            bundle["dialogues"] = dialogues;
+            bundle["pool"] = pool;
+
+            LogManager.Log("[XmlDataLoader] Merc bundle loaded");
+            return bundle;
+        }
+
+        /// <summary>
+        /// teams.xml → [{战队抬头, 战队名, 权重(number), 战队项链}, ...]
+        /// </summary>
+        private static JArray LoadTeams(string path)
+        {
+            JArray teams = new JArray();
+            if (!File.Exists(path))
+            {
+                LogManager.Log("[XmlDataLoader] teams.xml not found: " + path);
+                return teams;
+            }
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(path);
+
+            XmlNodeList teamNodes = doc.SelectNodes("//Team");
+            if (teamNodes == null) return teams;
+
+            foreach (XmlNode teamNode in teamNodes)
+            {
+                JObject team = new JObject();
+                team["\u6218\u961F\u62AC\u5934"] = GetChildText(teamNode, "Title");    // 战队抬头
+                team["\u6218\u961F\u540D"] = GetChildText(teamNode, "Name");            // 战队名
+
+                string weightStr = GetChildText(teamNode, "Weight");
+                int weight;
+                if (weightStr != null && int.TryParse(weightStr, out weight))
+                    team["\u6743\u91CD"] = weight;                                       // 权重 (number)
+                else
+                    team["\u6743\u91CD"] = 1;
+
+                team["\u6218\u961F\u9879\u94FE"] = GetChildText(teamNode, "Necklace");  // 战队项链
+                teams.Add(team);
+            }
+
+            return teams;
+        }
+
+        /// <summary>
+        /// name.xml → ["影行者", "荒野猎手", ...]
+        /// </summary>
+        private static JArray LoadNames(string path)
+        {
+            JArray names = new JArray();
+            if (!File.Exists(path))
+            {
+                LogManager.Log("[XmlDataLoader] name.xml not found: " + path);
+                return names;
+            }
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(path);
+
+            XmlNodeList nameNodes = doc.SelectNodes("//Name");
+            if (nameNodes == null) return names;
+
+            foreach (XmlNode node in nameNodes)
+            {
+                string text = node.InnerText;
+                if (!string.IsNullOrEmpty(text))
+                    names.Add(text);
+            }
+
+            return names;
+        }
+
+        /// <summary>
+        /// dialogues.xml → dialogues 数组 + pool 对象。
+        /// 注意：Value 字段必须序列化为 string（AS2 line 762 dialogue[nodeName] = nodeValue 全部是字符串）。
+        /// </summary>
+        private static void LoadDialoguesAndPool(
+            string path, out JArray dialogues, out JObject pool)
+        {
+            dialogues = new JArray();
+            pool = new JObject();
+
+            if (!File.Exists(path))
+            {
+                LogManager.Log("[XmlDataLoader] dialogues.xml not found: " + path);
+                return;
+            }
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(path);
+
+            XmlNodeList dialogueNodes = doc.SelectNodes("//Dialogue");
+            if (dialogueNodes == null) return;
+
+            foreach (XmlNode dialogueNode in dialogueNodes)
+            {
+                JObject dialogue = new JObject();
+
+                // PascalCase 保留（匹配 AS2 的 dialogue[nodeName] = nodeValue）
+                foreach (XmlNode child in dialogueNode.ChildNodes)
+                {
+                    if (child.NodeType != XmlNodeType.Element) continue;
+                    // 全部存为 string（含 Value），匹配 AS2 行为
+                    dialogue[child.Name] = child.InnerText;
+                }
+
+                dialogues.Add(dialogue);
+
+                // 按 Personality 分池
+                JToken personalityToken;
+                if (dialogue.TryGetValue("Personality", out personalityToken))
+                {
+                    string personality = personalityToken.ToString();
+                    JArray bucket;
+                    JToken existing;
+                    if (pool.TryGetValue(personality, out existing))
+                    {
+                        bucket = (JArray)existing;
+                    }
+                    else
+                    {
+                        bucket = new JArray();
+                        pool[personality] = bucket;
+                    }
+                    bucket.Add(dialogue);
+                }
+            }
+        }
+    }
+}
