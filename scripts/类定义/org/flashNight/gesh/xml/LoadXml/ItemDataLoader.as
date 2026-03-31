@@ -40,9 +40,13 @@ class org.flashNight.gesh.xml.LoadXml.ItemDataLoader extends BaseXMLLoader {
      * @param onErrorHandler 加载失败后的回调函数。
      */
     public function loadItemData(onLoadHandler:Function, onErrorHandler:Function):Void {
+        // 子文件合并结果缓存：load() 幂等，reload() 清缓存后重跑
+        if (this.combinedData != null) {
+            if (onLoadHandler != null) onLoadHandler(this.combinedData);
+            return;
+        }
         var self:ItemDataLoader = this;
 
-        // super.load() 读取 list.xml（保留 BaseXMLLoader 实例缓存）
         super.load(function(data:Object):Void {
             if (!data || !data.items) {
                 if (onErrorHandler != null) onErrorHandler();

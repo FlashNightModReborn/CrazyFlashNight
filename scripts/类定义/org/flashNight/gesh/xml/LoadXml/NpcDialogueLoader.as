@@ -40,6 +40,10 @@ class org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader extends BaseXMLLoader {
      * @param onErrorHandler 加载失败后的回调函数。
      */
     public function loadNpcDialogues(onLoadHandler:Function, onErrorHandler:Function):Void {
+        if (this.combinedData != null) {
+            if (onLoadHandler != null) onLoadHandler(this.combinedData);
+            return;
+        }
         var self:NpcDialogueLoader = this;
 
         super.load(function(data:Object):Void {

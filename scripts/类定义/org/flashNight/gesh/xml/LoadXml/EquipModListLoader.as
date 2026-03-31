@@ -40,6 +40,10 @@ class org.flashNight.gesh.xml.LoadXml.EquipModListLoader extends BaseXMLLoader {
      * @param onErrorHandler 加载失败后的回调函数。
      */
     public function loadModData(onLoadHandler:Function, onErrorHandler:Function):Void {
+        if (this.combinedData != null) {
+            if (onLoadHandler != null) onLoadHandler({mod: this.combinedData});
+            return;
+        }
         var self:EquipModListLoader = this;
 
         super.load(function(data:Object):Void {

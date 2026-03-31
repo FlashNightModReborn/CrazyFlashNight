@@ -40,6 +40,10 @@ class org.flashNight.gesh.xml.LoadXml.StageInfoLoader extends BaseXMLLoader {
      * @param onErrorHandler 加载失败后的回调函数。
      */
     public function loadStageInfo(onLoadHandler:Function, onErrorHandler:Function):Void {
+        if (this.combinedData != null) {
+            if (onLoadHandler != null) onLoadHandler(this.combinedData);
+            return;
+        }
         var self:StageInfoLoader = this;
 
         super.load(function(data:Object):Void {

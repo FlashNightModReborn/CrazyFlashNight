@@ -40,9 +40,12 @@ class org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader extends BaseXMLLoade
      * @param onErrorHandler 加载失败后的回调函数。
      */
     public function loadEnemyProperties(onLoadHandler:Function, onErrorHandler:Function):Void {
+        if (this.combinedData != null) {
+            if (onLoadHandler != null) onLoadHandler(this.combinedData);
+            return;
+        }
         var self:EnemyPropertiesLoader = this;
 
-        // super.load() 读取 list.xml（保留 BaseXMLLoader 实例缓存）
         super.load(function(data:Object):Void {
             if (!data || !data.items) {
                 if (onErrorHandler != null) onErrorHandler();

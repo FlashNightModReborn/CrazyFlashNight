@@ -22,6 +22,8 @@ class org.flashNight.aven.Promise.ListLoaderTest {
     private static var _failed:Number;
     private static var _total:Number;
     private static var _timerSeq:Number;
+    private static var _expectedTests:Number;
+    private static var _reported:Boolean;
 
     private static function assert(name:String, condition:Boolean, detail:String):Void {
         _total++;
@@ -31,6 +33,18 @@ class org.flashNight.aven.Promise.ListLoaderTest {
         } else {
             _failed++;
             trace("[FAIL] " + name + (detail != undefined ? " | " + detail : ""));
+        }
+        // 完成计数器：所有测试完成后自动输出汇总
+        if (_total >= _expectedTests && !_reported) {
+            _reported = true;
+            trace("");
+            trace("=== ListLoaderTest Results: " + _passed + "/" + _total
+                  + " passed, " + _failed + " failed ===");
+            if (_failed == 0) {
+                trace("ALL PASSED");
+            } else {
+                trace("SOME TESTS FAILED");
+            }
         }
     }
 
@@ -56,24 +70,14 @@ class org.flashNight.aven.Promise.ListLoaderTest {
         _failed = 0;
         _total = 0;
         _timerSeq = 0;
+        _reported = false;
+        _expectedTests = 21; // 基础设施 3 + ListLoader 5 + 契约回归 3 + 数据一致性 8 + 性能 2
 
         trace("=== ListLoader Infrastructure Tests ===");
 
         runInfraTests();
         runListLoaderTests();
         runRegressionTests();
-
-        // 汇总报告（等足够帧让所有异步完成）
-        afterFrames(90, function():Void {
-            trace("");
-            trace("=== ListLoaderTest Results: " + _passed + "/" + _total
-                  + " passed, " + _failed + " failed ===");
-            if (_failed == 0) {
-                trace("ALL PASSED");
-            } else {
-                trace("SOME TESTS FAILED");
-            }
-        });
     }
 
     // ================================================================
@@ -298,14 +302,44 @@ class org.flashNight.aven.Promise.ListLoaderTest {
                 itemCount >= 100,
                 "itemCount=" + itemCount + " (expected >=100 items)");
 
-            // 14. reload 耗时测量
-            var startTime:Number = getTimer();
-            itemLoader.reload(function(data2:Object):Void {
-                var elapsed:Number = getTimer() - startTime;
-                trace("[PERF] ItemDataLoader reload (parallel): " + elapsed + "ms");
-                assert("item-load-timing", true, elapsed + "ms");
-            }, function():Void {
-                assert("item-load-timing", false, "reload failed");
+            // 14-15. 串行 vs 并行性能对比
+            //   获取 entries 用于直接调 ListLoader（不经过 ItemDataLoader 缓存）
+            LoaderPromise.loadXML("data/items/list.xml").then(function(listData:Object):Void {
+                var entries:Array = ListLoader.normalizeToArray(listData.items);
+                // 只取前 10 个子文件，控制总耗时
+                var testEntries:Array = entries.slice(0, 10);
+
+                // 14. 串行基线 (concurrency=1)
+                var serialStart:Number = getTimer();
+                ListLoader.loadChildren({
+                    entries:      testEntries,
+                    basePath:     "data/items/",
+                    concurrency:  1,
+                    mergeFn:      ListLoader.concatField("item"),
+                    initialValue: []
+                }).then(function(serialResult:Object):Void {
+                    var serialTime:Number = getTimer() - serialStart;
+                    trace("[PERF] 10 XML serial  (concurrency=1): " + serialTime + "ms");
+                    assert("perf-serial-baseline", serialTime > 0, serialTime + "ms");
+
+                    // 15. 并行测量 (concurrency=4)
+                    var parallelStart:Number = getTimer();
+                    ListLoader.loadChildren({
+                        entries:      testEntries,
+                        basePath:     "data/items/",
+                        concurrency:  4,
+                        mergeFn:      ListLoader.concatField("item"),
+                        initialValue: []
+                    }).then(function(parallelResult:Object):Void {
+                        var parallelTime:Number = getTimer() - parallelStart;
+                        var ratio:String = (serialTime > 0)
+                            ? String(Math.round(serialTime / parallelTime * 10) / 10)
+                            : "N/A";
+                        trace("[PERF] 10 XML parallel(concurrency=4): " + parallelTime + "ms"
+                              + " | speedup: " + ratio + "x");
+                        assert("perf-parallel-speedup", parallelTime > 0, parallelTime + "ms " + ratio + "x");
+                    });
+                });
             });
         }, function():Void {
             assert("item-data-consistency", false, "load failed");

@@ -42,6 +42,10 @@ class org.flashNight.gesh.json.LoadJson.TaskTextLoader extends BaseXMLLoader {
      * @param onErrorHandler 加载失败后的回调函数。
      */
     public function loadTaskText(onLoadHandler:Function, onErrorHandler:Function):Void {
+        if (this.combinedData != null) {
+            if (onLoadHandler != null) onLoadHandler(this.combinedData);
+            return;
+        }
         var self:TaskTextLoader = this;
 
         super.load(function(data:Object):Void {
