@@ -12,7 +12,8 @@
  *   [PERF] processQueue 移除逐项 try-catch（H18 热路径禁止 try-catch）
  *         回调由 Promise.then() 内部包装器保证异常安全，Scheduler 无需重复捕获
  *   [PERF] 热循环内局部化 _queue / MAX_DRAIN_ITEMS / _head（H01 局部变量直读 0ns）
- *   [PERF] enqueue() 移除逐次 ensureClip()，改为惰性检查 _clipAlive 标志
+ *   [PERF] enqueue 存活检查从 isClipUsable() 方法调用(1340ns)
+ *         降级为内联 _clip._parent 单次 native 属性读(~170ns)
  *
  * 中断安全性:
  *   _head 是实例变量，每处理一项后立即递增。若 Flash Player 因脚本超时
@@ -28,7 +29,6 @@ class org.flashNight.aven.Promise.Scheduler {
     private var _queue:Array;
     private var _head:Number;
     private var _clip:MovieClip;
-    private var _clipAlive:Boolean;
 
     /** 每帧最大处理项数，防止无限循环 */
     private static var MAX_DRAIN_ITEMS:Number = 10000;
@@ -49,7 +49,6 @@ class org.flashNight.aven.Promise.Scheduler {
     private function Scheduler() {
         this._queue = [];
         this._head = 0;
-        this._clipAlive = false;
         this.ensureClip();
     }
 
@@ -64,22 +63,20 @@ class org.flashNight.aven.Promise.Scheduler {
     /**
      * 添加一个带单参数的函数到异步调用队列。
      * Promise 的 fulfilled/rejected 分发走这里，避免为每次回调再套一层 async 闭包。
+     *
+     * 热路径优化（H01/S01）：
+     *   - 移除冗余的 head-reset 检查（processQueue 末尾已做 q.length=0 + _head=0）
+     *   - clip 存活检查从 isClipUsable() 方法调用(1340ns) 降级为
+     *     内联 _clip._parent 单次 native 属性读(~170ns)
+     *     clip 被 removeMovieClip() 后 _parent 变 undefined，一次读取即可捕获
      */
     public function enqueueWithArg(fn:Function, arg:Object):Void {
-        // 队列空闲时先做快速重置，避免 head 长期累积
-        if (this._queue.length == this._head) {
-            this._queue.length = 0;
-            this._head = 0;
-        }
-
-        // clip 可能在队列非空时被外部移除；这里必须每次入队都做存活校验
-        if (!this.isClipUsable()) {
-            this._clipAlive = false;
-            this.ensureClip();
-        }
-
         this._queue.push(fn);
         this._queue.push(arg);
+        // 内联 clip 存活检查：native 属性读 ~170ns vs isClipUsable() 方法调用 ~1850ns
+        if (this._clip._parent == undefined) {
+            this.ensureClip();
+        }
     }
 
     /** 确保驱动 onEnterFrame 的隐藏 clip 始终存在 */
@@ -91,14 +88,6 @@ class org.flashNight.aven.Promise.Scheduler {
         clip._visible = false;
         clip.onEnterFrame = Delegate.create(this, this.processQueue);
         this._clip = clip;
-        this._clipAlive = true;
-    }
-
-    /** clip 存活性检查，队列空闲后的首个 enqueue 会用它做轻量自愈 */
-    private function isClipUsable():Boolean {
-        return (typeof(this._clip) == "movieclip"
-            && this._clip._parent != undefined
-            && typeof(this._clip.onEnterFrame) == "function");
     }
 
     /**
@@ -114,9 +103,8 @@ class org.flashNight.aven.Promise.Scheduler {
      * 已处理项不会重复执行，未处理项下一帧自动恢复。
      */
     private function processQueue():Void {
-        // 检测 clip 是否被外部移除
-        if (!this.isClipUsable()) {
-            this._clipAlive = false;
+        // 检测 clip 是否被外部移除（内联检查，避免方法调用开销）
+        if (this._clip._parent == undefined) {
             this.ensureClip();
         }
 
