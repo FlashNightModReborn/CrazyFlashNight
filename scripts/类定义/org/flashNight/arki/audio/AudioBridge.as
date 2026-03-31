@@ -64,25 +64,24 @@ class org.flashNight.arki.audio.AudioBridge {
 
     /**
      * BGM 播放（JSON 路由，立即发送）
-     * @param url    音频文件路径（相对于项目根）
-     * @param loop   是否循环
-     * @param vol    最终有效音量（0.0-∞，已由调用方归一化）
-     * @param fade   淡入时间（秒）
+     * @return true 消息已发送，false socket 未连接
      */
-    public static function playBGM(url:String, loop:Boolean, vol:Number, fade:Number):Void {
-        if (_sm == null || !_sm.isSocketConnected) return;
+    public static function playBGM(url:String, loop:Boolean, vol:Number, fade:Number):Boolean {
+        if (_sm == null || !_sm.isSocketConnected) return false;
         _sm.sendSocketMessage('{"task":"audio","cmd":"bgm_play","path":"'
             + url + '","loop":' + (loop ? 1 : 0)
             + ',"vol":' + vol + ',"fade":' + fade + '}');
+        return true;
     }
 
     /**
      * BGM 停止（带淡出）
-     * @param fade   淡出时间（秒）
+     * @return true 消息已发送，false socket 未连接
      */
-    public static function stopBGM(fade:Number):Void {
-        if (_sm == null || !_sm.isSocketConnected) return;
+    public static function stopBGM(fade:Number):Boolean {
+        if (_sm == null || !_sm.isSocketConnected) return false;
         _sm.sendSocketMessage('{"task":"audio","cmd":"bgm_stop","fade":' + fade + '}');
+        return true;
     }
 
     /**

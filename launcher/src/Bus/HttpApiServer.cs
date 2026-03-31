@@ -384,8 +384,8 @@ namespace CF7Launcher.Bus
                 return;
             }
 
-            // toast 返回 null（fire-and-forget）
-            if (taskName == "toast")
+            // fire-and-forget task（返回 null，立即响应）
+            if (taskName == "toast" || taskName == "audio")
             {
                 expired = true;
                 done.Close();

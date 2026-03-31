@@ -90,16 +90,20 @@ class org.flashNight.arki.audio.SoundEffectManager {
         var finalVolume:Number = volume * bgmVolume / 100;
         var fadeSec:Number = bgm.fadeDuration / 30;
 
-        AudioBridge.playBGM(url, loop, finalVolume / 100, fadeSec);
+        if (!AudioBridge.playBGM(url, loop, finalVolume / 100, fadeSec)) return;
 
         currentBGMBaseVolume = volume;
         currentFadeDuration = bgm.fadeDuration;
         currentBGMUrl = url;
     }
 
+    /** 停止 BGM，淡出时间不低于 1 秒 */
     public function stopBGM():Void {
-        AudioBridge.stopBGM(currentFadeDuration / 30);
-        currentBGMUrl = null;
+        var fadeSec:Number = currentFadeDuration / 30;
+        if (fadeSec < 1) fadeSec = 1;
+        if (AudioBridge.stopBGM(fadeSec)) {
+            currentBGMUrl = null;
+        }
     }
 
     public function stopAll():Void {
