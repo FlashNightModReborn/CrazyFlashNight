@@ -49,6 +49,20 @@ if (Test-Path (Join-Path $tsDir "tsconfig.json")) {
     Write-Host "  [SKIP] No tsconfig.json found in $tsDir" -ForegroundColor Yellow
 }
 
+# Step 1.8: Build native miniaudio DLL
+Write-Host "[Step 1.8] Build native miniaudio DLL..." -ForegroundColor Yellow
+$nativeBat = Join-Path $launcherDir "native\build.bat"
+if (Test-Path $nativeBat) {
+    & cmd /c $nativeBat
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[FAIL] Native build failed." -ForegroundColor Red
+        exit 1
+    }
+    Write-Host "  Native build OK." -ForegroundColor Green
+} else {
+    Write-Host "  [SKIP] No native\build.bat found" -ForegroundColor Yellow
+}
+
 # Step 2: MSBuild
 Write-Host "[Step 2/4] MSBuild compile..." -ForegroundColor Yellow
 $csproj = Join-Path $launcherDir "CRAZYFLASHER7MercenaryEmpire.csproj"
@@ -67,6 +81,7 @@ $managedFiles = @(
     "ClearScript.V8.dll",
     "ClearScript.V8.ICUData.dll",
     "Newtonsoft.Json.dll",
+    "miniaudio.dll",
     "SharpDX.dll",
     "SharpDX.DXGI.dll",
     "SharpDX.Direct3D11.dll",

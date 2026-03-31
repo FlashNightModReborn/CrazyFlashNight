@@ -1,64 +1,37 @@
-﻿/* 
+﻿/**
  * 文件：org/flashNight/arki/audio/SoundEffectManager.as
- * 说明：音效管理器，内部区分 3 个轨道：
- *   1) bgmEngine: 全功能 MusicEngine（背景音乐）
- *   2) karaokeEngine: 全功能 MusicEngine（点歌）
- *   3) sfxEngine: 轻量 LightweightSoundEngine（普通音效）
- * 
- * 对外提供常用的 playSound，用于播放一般音效。
- * 对于背景音乐/点歌，则可直接调用 bgmEngine.handleCommand(...) 或 karaokeEngine.handleCommand(...)
+ * 说明：音效管理器，通过 AudioBridge 将播放指令发送到 launcher 的 native 音频引擎。
+ *
+ * 归一化规则：所有 Flash 侧原始音量值（0-100+）在此处 /100 转为 0.0-∞ float，
+ * AudioBridge 透传，native 层直接设。SoundEffectManager 是唯一归一化点。
  */
- 
-import org.flashNight.arki.audio.*;
-import org.flashNight.neur.Event.EventBus;
+
+import org.flashNight.arki.audio.AudioBridge;
 import org.flashNight.gesh.xml.LoadXml.BaseXMLLoader;
 
 class org.flashNight.arki.audio.SoundEffectManager {
 
-    private var preprocessor:SoundPreprocessor;
-    public var bgmEngine:MusicEngine;       // 全功能音乐引擎（背景）
-    public var karaokeEngine:MusicEngine;   // 全功能音乐引擎（点歌）
-    public var sfxEngine:IMusicEngine;       // 轻量音效引擎
-
-    private var globalSoundObj:Sound; // 全局音量控制器
-    private var globalVolume:Number; // 全局音量
-    private var bgmVolume:Number; // BGM音量
-    private var currentBGMBaseVolume:Number; // 记录当前音乐的基础音量
+    private var globalVolume:Number;
+    private var bgmVolume:Number;
+    private var currentBGMBaseVolume:Number;
+    private var currentFadeDuration:Number;
+    private var currentBGMUrl:String;
 
     public var bgmList:Object;
     private var bgmListPath:String = "sounds/bgm_list.xml";
-    
-    public function SoundEffectManager(preproc:SoundPreprocessor) {
-        this.preprocessor = preproc;
-        globalSoundObj = new Sound();
-        globalVolume = 50; // 默认音量为50
-        bgmVolume = 80; // 默认bgm音量为80
-        
-        // 初始化三轨道
-        bgmEngine = new MusicEngine(null, null, null); 
-        karaokeEngine = new MusicEngine(null, null, null);
 
-        bgmEngine.setMusicPlayer(new MusicPlayer());
-        karaokeEngine.setMusicPlayer(new SimMusicPlayer());
-        
-        sfxEngine = new LightweightSoundEngine(this.preprocessor);
+    public function SoundEffectManager() {
+        globalVolume = 50;
+        bgmVolume = 80;
+        currentBGMBaseVolume = 100;
+        currentFadeDuration = 20;
+        currentBGMUrl = null;
 
-        //
-        EventBus.getInstance().subscribe("frameUpdate", function() {
-            this.bgmEngine.onAction();
-        }, this);
-        
-        // 如有需要，可设置 MusicPlayer 给两个全功能引擎
-        //   bgmEngine.setMusicPlayer( ... );
-        //   karaokeEngine.setMusicPlayer( ... );
-
-        // 导入bgm列表
         loadBGMList();
     }
 
-    public function loadBGMList(){
+    public function loadBGMList():Void {
         var loader:BaseXMLLoader = new BaseXMLLoader(bgmListPath);
-        // 为回调捕获 this
         var self:SoundEffectManager = this;
         loader.load(
             function(data:Object):Void {
@@ -70,8 +43,8 @@ class org.flashNight.arki.audio.SoundEffectManager {
                 var musics:Object = data.music;
                 for (var i in musics) {
                     var bgm = musics[i];
-                    if(isNaN(bgm.fadeDuration)) bgm.fadeDuration = BGMDefault.fadeDuration;
-                    if(isNaN(bgm.baseVolume)) bgm.baseVolume = BGMDefault.baseVolume;
+                    if (isNaN(bgm.fadeDuration)) bgm.fadeDuration = BGMDefault.fadeDuration;
+                    if (isNaN(bgm.baseVolume)) bgm.baseVolume = BGMDefault.baseVolume;
                     self.bgmList[bgm.title] = bgm;
                 }
             },
@@ -80,94 +53,85 @@ class org.flashNight.arki.audio.SoundEffectManager {
             }
         );
     }
-    
+
     /**
-     * 播放音效接口，对应原 _root.播放音效(...) 功能
-     * @param soundId          音效标识
-     * @param source           分类（可选），否则从 soundSourceDict 查找
+     * 播放音效 — SFX 快车道（S 前缀）
+     * @param soundId   音效 linkageIdentifier
+     * @param source    分类（不再需要，保留参数签名兼容）
      */
     public function playSound(soundId:String, source:String):Void {
-        if(globalVolume == 0) return; //音量为0时不调用声音
-        // 直接调用 sfxEngine.handleCommand("play", {...}) 
-        sfxEngine.handleCommand("play", {
-            soundId: soundId,
-            source: source
-        });
+        if (globalVolume == 0) return;
+        AudioBridge.playSound(soundId);
     }
 
     /**
-     * 播放背景音乐接口
-     * @param title          背景音乐名称
-     * @param loop           是否循环
-     * @param volume         音量
+     * 播放背景音乐 — JSON 路由
+     * @param title     bgm_list.xml 中的曲目标题
+     * @param loop      是否循环
+     * @param volume    基础音量（可选，默认从 bgm.baseVolume 取）
      */
     public function playBGM(title:String, loop:Boolean, volume:Number):Void {
         var bgm = bgmList[title];
-        var url = bgm.url;
-        if(url == null) return;
-        //若为预留关键字stop则停止当前音乐
-        if(url == "stop") {
+        if (bgm == null) return;
+        var url:String = bgm.url;
+        if (url == null) return;
+
+        if (url == "stop") {
             stopBGM();
             return;
         }
-        if(globalVolume == 0 || bgmVolume == 0) return; //全局音量和音乐音量任一为0时不加载音乐
 
-        var stateName = bgmEngine.getActiveStateName();
-        var command = null;
-        if(stateName == "idle"){
-            command = "play";
-        }else if(bgmEngine.getCurrentClip() == url){
-            return; //若调用的声音和当前播放的声音路径相同则阻止指令
-        }else if(stateName == "playing"){
-            command = "switch";
-        }
-        if(command != null){
-            if(loop !== true) loop = false;
-            if(isNaN(volume) || volume < 0 || volume > 100) volume = bgm.baseVolume;
-            var finalVolume = volume * bgmVolume / 100; // 应用设置的音乐音量
-            var result = bgmEngine.handleCommand(command, {clip:url, priority:0, loop:loop, volume:finalVolume, fadeDuration:bgm.fadeDuration});
-            if(result) currentBGMBaseVolume = volume; // 成功播放音乐后记录基础音量
-        }
+        if (globalVolume == 0 || bgmVolume == 0) return;
+        if (currentBGMUrl == url) return;
+
+        if (loop !== true) loop = false;
+        if (isNaN(volume) || volume < 0) volume = bgm.baseVolume;
+
+        var finalVolume:Number = volume * bgmVolume / 100;
+        var fadeSec:Number = bgm.fadeDuration / 30;
+
+        AudioBridge.playBGM(url, loop, finalVolume / 100, fadeSec);
+
+        currentBGMBaseVolume = volume;
+        currentFadeDuration = bgm.fadeDuration;
+        currentBGMUrl = url;
     }
+
     public function stopBGM():Void {
-        bgmEngine.handleCommand("stop", null);
+        AudioBridge.stopBGM(currentFadeDuration / 30);
+        currentBGMUrl = null;
     }
-    
-    /**
-     * 若需要模拟之前的 stopAllSound()，可遍历三轨道 stop()
-     */
+
     public function stopAll():Void {
-        bgmEngine.stop();
-        karaokeEngine.stop();
-        sfxEngine.stop();
+        stopBGM();
     }
-    
-    /**
-     * 其它针对背景音乐/点歌的操作，可直接调用 bgmEngine / karaokeEngine
-     * 如：bgmEngine.handleCommand("play", {clip:"bgm_main", priority:5});
-     */
-    
+
     /**
      * 调整全局音量
      */
-    public function setGlobalVolume(value:Number):Void{
-        if(isNaN(value) || value > 100 || value < 0) return;
+    public function setGlobalVolume(value:Number):Void {
+        if (isNaN(value) || value > 100 || value < 0) return;
         globalVolume = value;
-        globalSoundObj.setVolume(globalVolume);
+        // 归一化点：/100
+        AudioBridge.setMasterVolume(value / 100);
     }
-    public function getGlobalVolume():Number{
+
+    public function getGlobalVolume():Number {
         return globalVolume;
     }
+
     /**
      * 调整BGM音量
      */
-    public function setBGMVolume(value:Number):Void{
-        if(isNaN(value) || value > 100 || value < 0) return;
+    public function setBGMVolume(value:Number):Void {
+        if (isNaN(value) || value > 100 || value < 0) return;
         bgmVolume = value;
-        var finalVolume = currentBGMBaseVolume * bgmVolume / 100; // 应用设置的音乐音量
-        bgmEngine.handleCommand("adjust",{volume: finalVolume});
+        var finalVolume:Number = currentBGMBaseVolume * bgmVolume / 100;
+        // 归一化点：/100
+        AudioBridge.setBGMVolume(finalVolume / 100);
     }
-    public function getBGMVolume():Number{
+
+    public function getBGMVolume():Number {
         return bgmVolume;
     }
 }

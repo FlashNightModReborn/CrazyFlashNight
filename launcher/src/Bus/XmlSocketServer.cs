@@ -213,6 +213,13 @@ namespace CF7Launcher.Bus
                     _frameTask.HandleReset();
                     return;
                 }
+
+                if (prefix == 'S')
+                {
+                    // SFX 快车道：S{soundId}\x01{volume}
+                    CF7Launcher.Tasks.AudioTask.HandleSfxFastLane(message);
+                    return;
+                }
             }
 
             // === 通用路由：JSON 消息 ===

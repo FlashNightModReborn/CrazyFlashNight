@@ -17,6 +17,7 @@
  *     HitNumberBatchProcessor.flush()  -> setHnPayload(buf)
  *     RayVfxManager.update()           -> 将来可增加 setRayPayload()
  *     FrameBroadcaster.send()          -> 收集 cam + 消费数据槽 -> sendSocketMessage
+ *                                      -> AudioBridge.flush() 合批发送本帧 SFX
  *
  * @author FlashNight
  * @version 2.0
@@ -66,6 +67,9 @@ class org.flashNight.arki.render.FrameBroadcaster {
 
         // 消费后清空所有数据槽
         _hnPayload = null;
+
+        // SFX 合批发送（帧内 AudioBridge.playSound() 累积，此处统一发出）
+        org.flashNight.arki.audio.AudioBridge.flush();
     }
 
     /**
@@ -74,5 +78,6 @@ class org.flashNight.arki.render.FrameBroadcaster {
      */
     public static function reset():Void {
         _hnPayload = null;
+        org.flashNight.arki.audio.AudioBridge.reset();
     }
 }

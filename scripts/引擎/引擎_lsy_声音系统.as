@@ -1,10 +1,9 @@
-﻿import org.flashNight.arki.audio.SoundPreprocessor;
-import org.flashNight.arki.audio.SoundEffectManager;
+﻿import org.flashNight.arki.audio.*;
 
-_root.createEmptyMovieClip("musicManager", 65532); // BGM总影片剪辑
+// AudioBridge 初始化（连接到 launcher native 音频引擎）
+AudioBridge.init();
 
-var preproc = new SoundPreprocessor(null);
-_root.soundEffectManager = new SoundEffectManager(preproc);
+_root.soundEffectManager = new SoundEffectManager();
 
 _root.播放音效 = function(音效id, 声音源){
 	_root.soundEffectManager.playSound(音效id, 声音源);

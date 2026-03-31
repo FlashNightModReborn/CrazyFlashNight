@@ -85,6 +85,10 @@ class Program
             LogManager.Log("[Guardian] SWF: " + config.SwfPath);
         }
 
+        // === 音频引擎（在所有网络服务之前初始化）===
+        CF7Launcher.Audio.AudioEngine.Init(projectRoot);
+        CF7Launcher.Audio.AudioEngine.PreloadFromDirectories(projectRoot);
+
         // === V8 总线（两种模式都启动）===
 
         PortAllocator portAlloc = new PortAllocator();
@@ -132,7 +136,8 @@ class Program
         GomokuTask gomokuTask = new GomokuTask(projectRoot);
         DataCache dataCache = new DataCache(projectRoot);
         DataQueryTask dataQueryTask = new DataQueryTask(dataCache);
-        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay);
+        CF7Launcher.Tasks.AudioTask audioTask = new CF7Launcher.Tasks.AudioTask();
+        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask);
 
         // 注入 router 到 HttpApiServer（供 /task 端点使用）
         httpServer.SetRouter(router);
@@ -259,6 +264,7 @@ class Program
 
         // 清理
         LogManager.Log("[Guardian] Shutting down...");
+        CF7Launcher.Audio.AudioEngine.Shutdown();
         processManager.Dispose();
         gomokuTask.Dispose();
         socketServer.Dispose();

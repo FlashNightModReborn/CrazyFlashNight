@@ -17,6 +17,8 @@ namespace CF7Launcher.Bus
     ///   hn_reset     快车道 R 前缀   AS2→C#  (同上)
     ///   toast        JSON sync      AS2→C#  httpCallable=true
     ///   gomoku_eval  JSON async     AS2↔C#  httpCallable=true
+    ///   audio        JSON sync      AS2→C#  httpCallable=true
+    ///   sfx          快车道 S 前缀   AS2→C#  (XmlSocketServer 直分发，不经 MessageRouter)
     ///   console      JSON push      C#→AS2  (HttpApiServer /console 专用端点)
     ///   console_result  JSON event  AS2→C#  (内部事件，触发 OnConsoleResult)
     /// </summary>
@@ -32,12 +34,14 @@ namespace CF7Launcher.Bus
             FrameTask frame,
             DataQueryTask dataQuery,
             V8Runtime v8,
-            HitNumberOverlay hnOverlay)
+            HitNumberOverlay hnOverlay,
+            AudioTask audio)
         {
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
             router.RegisterAsync("data_query", dataQuery.HandleAsync);
             router.RegisterSync("toast", toast.Handle);
+            router.RegisterSync("audio", audio.Handle);
 
             // JSON 回退路径：frame/hn_reset 的 JSON 格式兼容入口
             // 正常流量走快车道（XmlSocketServer 前缀检测），此处仅作防御性保留
@@ -74,6 +78,8 @@ namespace CF7Launcher.Bus
             AppendTask(sb, "toast",          "json_sync", "AS2->C#", true);  sb.Append(",");
             AppendTask(sb, "gomoku_eval",    "json_async","AS2<->C#",true);  sb.Append(",");
             AppendTask(sb, "data_query",     "json_async","AS2<->C#",true);  sb.Append(",");
+            AppendTask(sb, "audio",          "json_sync", "AS2->C#", true);  sb.Append(",");
+            AppendTask(sb, "sfx",            "fast_lane", "AS2->C#", false); sb.Append(",");
             AppendTask(sb, "console",        "json_push", "C#->AS2", false); sb.Append(",");
             AppendTask(sb, "console_result", "json_event","AS2->C#", false);
 
