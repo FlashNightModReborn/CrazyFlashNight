@@ -421,17 +421,32 @@ _root.初始化NPC = function(目标) {
     }
     目标._name = 目标.名字;
 
-    // 对话绑定逻辑：支持异步加载
+    // 对话绑定：通过 Launcher 查询（Launcher 是唯一数据源）
+    // 注意：用 目标._name（line 422 已赋值），AS2 中 _name 作局部变量名会引发编译器冲突
     if (目标.默认对话 == null) {
-        if (_root.NPC对话_isLoaded()) {
-            // 对话数据已加载，直接绑定
-            目标.默认对话 = _root.读取并组装NPC对话(目标.名字);
-            目标.NPC对话已绑定 = true;
-        } else {
-            // 对话数据未加载，使用占位并注册待绑定
-            目标.默认对话 = []; // 空数组占位，避免后续代码空引用
-            目标.NPC对话已绑定 = false;
-            _root.NPC对话_注册待绑定(目标, 目标.名字);
+        var npcNameStr:String = 目标._name;
+        if (npcNameStr != undefined && npcNameStr != null && npcNameStr.length > 0) {
+            目标.默认对话 = [];  // 占位
+            var npcRef:MovieClip = 目标;
+            org.flashNight.neur.Server.DataQueryService.query(
+                "npc_dialogue",
+                {key: npcNameStr, taskProgress: _root.主线任务进度},
+                function(response:Object):Void {
+                    if (npcRef._parent == null) return;  // MC 已销毁
+                    if (response.success) {
+                        if (response.result != null && response.result.length > 0) {
+                            var assembled:Array = [];
+                            for (var i:Number = 0; i < response.result.length; i++) {
+                                assembled[i] = _root.组装单次对话(response.result[i]);
+                            }
+                            npcRef.默认对话 = assembled;
+                        }
+                        npcRef.NPC对话已绑定 = true;
+                    } else {
+                        _root.服务器.发布服务器消息("[初始化NPC] 查询失败:", npcNameStr, "error:", response.error);
+                    }
+                }
+            );
         }
     }
 

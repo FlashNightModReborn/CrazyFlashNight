@@ -292,29 +292,9 @@ _root.加载并配置佣兵随机对话 = function(xml文件地址:String):Void
 	随机对话XML.load(xml文件地址);
 };
 
-_root.加载并配置非人形佣兵随机对话 = function(xml文件地址:String):Void 
-{
-	var 随机对话XML:XML = new XML();
-	随机对话XML.ignoreWhite = true;
-	随机对话XML.onLoad = function(加载成功:Boolean)
-	{
-		if (加载成功)
-		{
-			var groups:Array = _root.解析XML节点(this.firstChild).Group;
-			var len = groups.length;
-			_root.非人形佣兵随机对话 = new Object();
-			for(var i:Number = 0; i < len; i++){
-				var identity = _root.配置数据为数组(groups[i].Identity);
-				var dialogue = _root.配置数据为数组(groups[i].Dialogue);
-				for(var j:Number = 0; j < identity.length; j++)
-				_root.非人形佣兵随机对话[identity[j]] = dialogue;
-			}
-		}
-		else
-		{//trace("无法加载 XML 文件: " + xml文件地址);
-		}
-	};// 加载 XML 文件
-	随机对话XML.load(xml文件地址);
+// [Phase 3 DEPRECATED] Legacy 非人形佣兵对话加载。数据由 Launcher enemy_dialogues 查询提供。
+_root.加载并配置非人形佣兵随机对话 = function(xml文件地址:String):Void {
+	trace("[DEPRECATED] 加载并配置非人形佣兵随机对话 called — no-op");
 };
 
 _root.加载并配置NPC对话 = function(xml文件地址:String):Void 
@@ -385,401 +365,45 @@ _root.读取并组装NPC对话 = function(NPC名称:String){
 }
 
 //=============================================================================
-// NPC对话生命周期管理 API
-// 用于在战斗地图卸载对话数据以节省内存，回到非战斗地图时自动恢复
+// [Phase 3 DEPRECATED] NPC对话生命周期管理 API — 已移除
+// NPC对话现在通过 Launcher npc_dialogue 查询按需获取，存储在 MC 上，随 MC 销毁。
+// 以下函数保留为无操作存根，防止残留调用导致运行时错误。
 //=============================================================================
 
-// 内部状态: "unloaded" | "loading" | "loaded"
 _root.NPC对话_状态 = "unloaded";
-// 加载回调队列（避免并发加载时丢失回调）
 _root.NPC对话_回调队列 = [];
-// 待绑定对话的NPC列表（用于异步加载完成后补齐对话）
 _root.NPC对话_待绑定列表 = [];
-// 加载令牌（用于防止卸载后异步回调写回数据的竞态问题）
 _root.NPC对话_加载令牌 = 0;
-
-/**
- * 确保NPC对话数据已加载（唯一加载入口）
- * @param onOk 加载成功回调
- * @param onErr 加载失败回调（可选）
- */
 _root.NPC对话_ensureLoaded = function(onOk:Function, onErr:Function):Void {
-	// 已加载，直接回调
-	if (_root.NPC对话_状态 == "loaded" && _root.NPC对话 != null) {
-		if (onOk != null) onOk();
-		return;
-	}
-
-	// 正在加载，加入回调队列
-	if (_root.NPC对话_状态 == "loading") {
-		if (onOk != null || onErr != null) {
-			_root.NPC对话_回调队列.push({onOk: onOk, onErr: onErr});
-		}
-		return;
-	}
-
-	// 开始加载
-	_root.NPC对话_状态 = "loading";
-	_root.NPC对话_加载令牌++; // 递增令牌
-	var currentToken:Number = _root.NPC对话_加载令牌;
-
-	if (onOk != null || onErr != null) {
-		_root.NPC对话_回调队列.push({onOk: onOk, onErr: onErr});
-	}
-
-	var loader = org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader.getInstance();
-	loader.loadNpcDialogues(
-		function(data:Object):Void {
-			// 令牌校验：如果令牌不一致，说明加载期间被卸载过，丢弃结果
-			if (currentToken != _root.NPC对话_加载令牌) {
-				trace("[NPC对话] 加载结果已过期，丢弃 (token mismatch)");
-				return;
-			}
-
-			_root.NPC对话 = data;
-			_root.NPC对话_状态 = "loaded";
-			trace("[NPC对话] 加载成功，共 " + _root.NPC对话_countKeys(data) + " 个NPC");
-
-			// 补齐待绑定的NPC对话
-			_root.NPC对话_补齐待绑定();
-
-			// 执行所有成功回调
-			_root.NPC对话_执行回调队列(true);
-		},
-		function():Void {
-			// 令牌校验
-			if (currentToken != _root.NPC对话_加载令牌) {
-				trace("[NPC对话] 加载失败结果已过期，丢弃 (token mismatch)");
-				return;
-			}
-
-			_root.NPC对话_状态 = "unloaded";
-			trace("[NPC对话] 加载失败");
-
-			// 执行所有失败回调
-			_root.NPC对话_执行回调队列(false);
-		}
-	);
+	trace("[DEPRECATED] NPC对话_ensureLoaded called — no-op");
 };
-
-/**
- * 执行回调队列
- * @param success 是否成功
- */
-_root.NPC对话_执行回调队列 = function(success:Boolean):Void {
-	var queue:Array = _root.NPC对话_回调队列;
-	_root.NPC对话_回调队列 = [];
-	for (var i:Number = 0; i < queue.length; i++) {
-		if (success) {
-			if (queue[i].onOk != null) queue[i].onOk();
-		} else {
-			if (queue[i].onErr != null) queue[i].onErr();
-		}
-	}
-};
-
-/**
- * 卸载NPC对话数据，释放内存
- * @param reason 卸载原因（用于日志）
- */
-_root.NPC对话_unload = function(reason:String):Void {
-	if (_root.NPC对话_状态 == "unloaded") return;
-
-	// 递增令牌，使正在进行的异步加载回调失效
-	_root.NPC对话_加载令牌++;
-
-	// 清除全局数据
-	_root.NPC对话 = null;
-
-	// 清除加载器缓存
-	var loader = org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader.getInstance();
-	loader.unload();
-
-	// 清除回调队列
-	_root.NPC对话_回调队列 = [];
-
-	// 清除待绑定列表
-	_root.NPC对话_待绑定列表 = [];
-
-	_root.NPC对话_状态 = "unloaded";
-	trace("[NPC对话] 已卸载, 原因: " + reason);
-};
-
-/**
- * 检查NPC对话数据是否已加载
- * @return Boolean
- */
-_root.NPC对话_isLoaded = function():Boolean {
-	return _root.NPC对话_状态 == "loaded" && _root.NPC对话 != null;
-};
-
-/**
- * 注册待绑定对话的NPC（对话加载完成后自动补齐）
- * @param npc NPC的MovieClip引用
- * @param npcName NPC名称
- */
-_root.NPC对话_注册待绑定 = function(npc:MovieClip, npcName:String):Void {
-	_root.NPC对话_待绑定列表.push({npc: npc, name: npcName});
-};
-
-/**
- * 补齐所有待绑定的NPC对话
- */
-_root.NPC对话_补齐待绑定 = function():Void {
-	var list:Array = _root.NPC对话_待绑定列表;
-	_root.NPC对话_待绑定列表 = [];
-
-	for (var i:Number = 0; i < list.length; i++) {
-		var item:Object = list[i];
-		// 检查NPC是否仍然有效（没有被销毁）
-		if (item.npc != null && item.npc._parent != null) {
-			var 对话 = _root.读取并组装NPC对话(item.name);
-			if (对话 != null && 对话.length > 0) {
-				item.npc.默认对话 = 对话;
-				item.npc.NPC对话已绑定 = true;
-				// trace("[NPC对话] 补齐对话: " + item.name);
-			}
-		}
-	}
-};
-
-/**
- * 辅助函数：计算对象的键数量
- */
-_root.NPC对话_countKeys = function(obj:Object):Number {
-	var count:Number = 0;
-	for (var key:String in obj) {
-		count++;
-	}
-	return count;
-};
+_root.NPC对话_执行回调队列 = function(success:Boolean):Void {};
+_root.NPC对话_unload = function(reason:String):Void {};
+_root.NPC对话_isLoaded = function():Boolean { return false; };
+_root.NPC对话_注册待绑定 = function(npc:MovieClip, npcName:String):Void {};
+_root.NPC对话_补齐待绑定 = function():Void {};
+_root.NPC对话_countKeys = function(obj:Object):Number { return 0; };
 
 //=============================================================================
-// 佣兵配置数据生命周期管理 API
-// 用于在战斗地图卸载佣兵杂交配置数据以节省内存，回到非战斗地图时自动恢复
-// 管理的数据：战队信息数组、随机名称库、佣兵随机对话
+// [Phase 3 DEPRECATED] 佣兵配置数据生命周期管理 API — 已移除
+// 佣兵配置数据现在通过 Launcher merc_bundle 查询按需获取，生成完成后由 cleanup 释放。
+// 以下函数保留为无操作存根。
 //=============================================================================
 
-// 内部状态: "unloaded" | "loading" | "loaded"
 _root.佣兵配置_状态 = "unloaded";
-// 加载回调队列
 _root.佣兵配置_回调队列 = [];
-// 加载令牌（防止竞态）
 _root.佣兵配置_加载令牌 = 0;
-// 加载计数器（三个文件都加载完成才算成功）
 _root.佣兵配置_加载计数 = 0;
-
-/**
- * 确保佣兵配置数据已加载（唯一加载入口）
- * @param onOk 加载成功回调
- * @param onErr 加载失败回调（可选）
- */
 _root.佣兵配置_ensureLoaded = function(onOk:Function, onErr:Function):Void {
-	// 已加载，直接回调
-	if (_root.佣兵配置_状态 == "loaded" && _root.佣兵配置_isDataValid()) {
-		if (onOk != null) onOk();
-		return;
-	}
-
-	// 正在加载，加入回调队列
-	if (_root.佣兵配置_状态 == "loading") {
-		if (onOk != null || onErr != null) {
-			_root.佣兵配置_回调队列.push({onOk: onOk, onErr: onErr});
-		}
-		return;
-	}
-
-	// 开始加载
-	_root.佣兵配置_状态 = "loading";
-	_root.佣兵配置_加载令牌++;
-	var currentToken:Number = _root.佣兵配置_加载令牌;
-	_root.佣兵配置_加载计数 = 0;
-
-	if (onOk != null || onErr != null) {
-		_root.佣兵配置_回调队列.push({onOk: onOk, onErr: onErr});
-	}
-
-	// 加载完成检查函数
-	var checkComplete:Function = function():Void {
-		// 令牌校验
-		if (currentToken != _root.佣兵配置_加载令牌) {
-			trace("[佣兵配置] 加载结果已过期，丢弃");
-			return;
-		}
-
-		_root.佣兵配置_加载计数++;
-		if (_root.佣兵配置_加载计数 >= 3) {
-			_root.佣兵配置_状态 = "loaded";
-			trace("[佣兵配置] 全部加载成功");
-			_root.佣兵配置_执行回调队列(true);
-		}
-	};
-
-	// 加载失败处理
-	var onLoadError:Function = function():Void {
-		if (currentToken != _root.佣兵配置_加载令牌) return;
-		_root.佣兵配置_状态 = "unloaded";
-		trace("[佣兵配置] 加载失败");
-		_root.佣兵配置_执行回调队列(false);
-	};
-
-	// 并行加载三个文件
-	_root.佣兵配置_加载战队信息("data/hybrid_mercenaries/teams.xml", checkComplete, onLoadError, currentToken);
-	_root.佣兵配置_加载随机名称库("data/hybrid_mercenaries/name.xml", checkComplete, onLoadError, currentToken);
-	_root.佣兵配置_加载随机对话("data/hybrid_mercenaries/dialogues.xml", checkComplete, onLoadError, currentToken);
+	trace("[DEPRECATED] 佣兵配置_ensureLoaded called — no-op");
 };
-
-/**
- * 执行回调队列
- */
-_root.佣兵配置_执行回调队列 = function(success:Boolean):Void {
-	var queue:Array = _root.佣兵配置_回调队列;
-	_root.佣兵配置_回调队列 = [];
-	for (var i:Number = 0; i < queue.length; i++) {
-		if (success) {
-			if (queue[i].onOk != null) queue[i].onOk();
-		} else {
-			if (queue[i].onErr != null) queue[i].onErr();
-		}
-	}
-};
-
-/**
- * 卸载佣兵配置数据，释放内存
- */
-_root.佣兵配置_unload = function(reason:String):Void {
-	if (_root.佣兵配置_状态 == "unloaded") return;
-
-	// 递增令牌，使正在进行的异步加载失效
-	_root.佣兵配置_加载令牌++;
-
-	// 清除数据
-	_root.战队信息数组 = null;
-	_root.随机名称库 = null;
-	_root.佣兵随机对话 = null;
-	_root.佣兵对话池 = null;
-
-	// 清除回调队列
-	_root.佣兵配置_回调队列 = [];
-
-	_root.佣兵配置_状态 = "unloaded";
-	trace("[佣兵配置] 已卸载, 原因: " + reason);
-};
-
-/**
- * 检查佣兵配置数据是否已加载
- */
-_root.佣兵配置_isLoaded = function():Boolean {
-	return _root.佣兵配置_状态 == "loaded" && _root.佣兵配置_isDataValid();
-};
-
-/**
- * 检查数据是否有效
- */
-_root.佣兵配置_isDataValid = function():Boolean {
-	return _root.战队信息数组 != null && _root.战队信息数组.length > 0
-		&& _root.随机名称库 != null && _root.随机名称库.length > 0
-		&& _root.佣兵随机对话 != null && _root.佣兵随机对话.length > 0;
-};
-
-/**
- * 加载战队信息（内部函数）
- */
-_root.佣兵配置_加载战队信息 = function(path:String, onOk:Function, onErr:Function, token:Number):Void {
-	var xml:XML = new XML();
-	xml.ignoreWhite = true;
-	xml.onLoad = function(success:Boolean):Void {
-		if (token != _root.佣兵配置_加载令牌) return;
-		if (success) {
-			_root.战队信息数组 = [];
-			var teamNodes:Array = this.firstChild.childNodes;
-			for (var i:Number = 0; i < teamNodes.length; i++) {
-				var team:Object = {};
-				var childNodes:Array = teamNodes[i].childNodes;
-				for (var j:Number = 0; j < childNodes.length; j++) {
-					var nodeName:String = childNodes[j].nodeName;
-					var nodeValue:String = childNodes[j].firstChild.nodeValue;
-					switch (nodeName) {
-						case "Title": team.战队抬头 = nodeValue; break;
-						case "Name": team.战队名 = nodeValue; break;
-						case "Weight": team.权重 = parseInt(nodeValue); break;
-						case "Necklace": team.战队项链 = nodeValue; break;
-					}
-				}
-				_root.战队信息数组.push(team);
-			}
-			onOk();
-		} else {
-			onErr();
-		}
-	};
-	xml.load(path);
-};
-
-/**
- * 加载随机名称库（内部函数）
- */
-_root.佣兵配置_加载随机名称库 = function(path:String, onOk:Function, onErr:Function, token:Number):Void {
-	var xml:XML = new XML();
-	xml.ignoreWhite = true;
-	xml.onLoad = function(success:Boolean):Void {
-		if (token != _root.佣兵配置_加载令牌) return;
-		if (success) {
-			var nodes:Array = this.firstChild.childNodes;
-			var len:Number = nodes.length;
-			_root.随机名称库 = new Array(len);
-			for (var i:Number = 0; i < len; i++) {
-				if (nodes[i].nodeName == "Name") {
-					_root.随机名称库[i] = nodes[i].firstChild.nodeValue;
-				}
-			}
-			onOk();
-		} else {
-			onErr();
-		}
-	};
-	xml.load(path);
-};
-
-/**
- * 加载佣兵随机对话（内部函数）
- */
-_root.佣兵配置_加载随机对话 = function(path:String, onOk:Function, onErr:Function, token:Number):Void {
-	var xml:XML = new XML();
-	xml.ignoreWhite = true;
-	xml.onLoad = function(success:Boolean):Void {
-		if (token != _root.佣兵配置_加载令牌) return;
-		if (success) {
-			var nodes:Array = this.firstChild.childNodes;
-			var len:Number = nodes.length;
-			_root.佣兵随机对话 = new Array(len);
-			for (var i:Number = 0; i < len; i++) {
-				var dialogue:Object = {};
-				var childNodes:Array = nodes[i].childNodes;
-				for (var j:Number = 0; j < childNodes.length; j++) {
-					var nodeName:String = childNodes[j].nodeName;
-					var nodeValue:String = childNodes[j].firstChild.nodeValue;
-					dialogue[nodeName] = nodeValue;
-				}
-				_root.佣兵随机对话[i] = dialogue;
-			}
-			// ── Phase 2: 按 Personality 分池 ──
-			_root.佣兵对话池 = {};
-			for (var k:Number = 0; k < len; k++) {
-				var d:Object = _root.佣兵随机对话[k];
-				var pKey:String = d.Personality;
-				if (_root.佣兵对话池[pKey] == null) {
-					_root.佣兵对话池[pKey] = [];
-				}
-				_root.佣兵对话池[pKey].push(d);
-			}
-			onOk();
-		} else {
-			onErr();
-		}
-	};
-	xml.load(path);
-};
+_root.佣兵配置_执行回调队列 = function(success:Boolean):Void {};
+_root.佣兵配置_unload = function(reason:String):Void {};
+_root.佣兵配置_isLoaded = function():Boolean { return false; };
+_root.佣兵配置_isDataValid = function():Boolean { return false; };
+_root.佣兵配置_加载战队信息 = function():Void {};
+_root.佣兵配置_加载随机名称库 = function():Void {};
+_root.佣兵配置_加载随机对话 = function():Void {};
 
 _root.加载并配置发型库 = function(xml文件地址:String):Void 
 {

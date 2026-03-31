@@ -1,0 +1,144 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using CF7Launcher.Data;
+using CF7Launcher.Guardian;
+
+namespace CF7Launcher.Tasks
+{
+    /// <summary>
+    /// data_query async handler：Flash 按需查询 NPC 对话 / 佣兵配置等非战斗数据。
+    /// 数据从项目 XML 文件解析，由 DataCache 延迟加载并缓存。
+    ///
+    /// 协议：
+    ///   请求 payload: { dataType: "npc_dialogue"|"merc_bundle", key: ..., taskProgress: ... }
+    ///   响应: { success: true, task: "data_query", result: ... }
+    ///      或 { success: false, task: "data_query", error: "..." }
+    /// </summary>
+    public class DataQueryTask
+    {
+        private readonly DataCache _cache;
+
+        public DataQueryTask(DataCache cache)
+        {
+            _cache = cache;
+        }
+
+        public void HandleAsync(JObject message, Action<string> respond)
+        {
+            ThreadPool.QueueUserWorkItem(delegate
+            {
+                try
+                {
+                    string result = Process(message);
+                    respond(result);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[DataQueryTask] Exception: " + ex);
+                    respond(BuildError("data_query exception: " + ex.Message));
+                }
+            });
+        }
+
+        private string Process(JObject message)
+        {
+            JObject payload = message.Value<JObject>("payload");
+            if (payload == null)
+                return BuildError("missing payload");
+
+            string dataType = payload.Value<string>("dataType");
+            if (dataType == null)
+                return BuildError("missing dataType");
+
+            switch (dataType)
+            {
+                case "npc_dialogue":
+                    return QueryNpcDialogue(payload);
+                case "merc_bundle":
+                    return QueryMercBundle();
+                case "enemy_dialogues":
+                    return QueryEnemyDialogues();
+                default:
+                    return BuildError("unknown dataType: " + dataType);
+            }
+        }
+
+        /// <summary>
+        /// NPC 对话查询。
+        /// 数据加载失败 → success:false（Flash 走 legacy fallback）。
+        /// NPC 不存在或无匹配条目 → success:true, result:[]（匹配 legacy 正常行为）。
+        /// </summary>
+        private string QueryNpcDialogue(JObject payload)
+        {
+            string npcName = payload.Value<string>("key");
+            int taskProgress = payload.Value<int>("taskProgress");
+
+            Dictionary<string, List<DialogueGroup>> index = _cache.GetNpcDialogues();
+
+            // 数据加载失败（缓存了错误状态）→ Flash 走 fallback
+            if (index == null)
+                return BuildError("NPC data unavailable: " + (_cache.GetNpcError() ?? "unknown"));
+
+            // NPC 不存在 → success:true, result:[]
+            List<DialogueGroup> groups;
+            if (npcName == null || !index.TryGetValue(npcName, out groups))
+                return BuildSuccess(new JArray());
+
+            // 过滤：TaskRequirement > taskProgress → 跳过
+            JArray result = new JArray();
+            for (int i = 0; i < groups.Count; i++)
+            {
+                DialogueGroup g = groups[i];
+                if (g.TaskRequirement > taskProgress) continue;
+                result.Add(g.SubDialogues);
+            }
+            return BuildSuccess(result);
+        }
+
+        private string QueryMercBundle()
+        {
+            JObject bundle = _cache.GetMercBundle();
+
+            // 数据加载失败（缓存了错误状态）→ Flash 走 fallback
+            if (bundle == null)
+                return BuildError("merc_bundle unavailable: " + (_cache.GetMercError() ?? "unknown"));
+
+            return BuildSuccess(bundle);
+        }
+
+        /// <summary>
+        /// 非人形佣兵对话查询。返回全量数据（按身份分组）。
+        /// </summary>
+        private string QueryEnemyDialogues()
+        {
+            JObject data = _cache.GetEnemyDialogues();
+            if (data == null)
+                return BuildError("enemy_dialogues unavailable: " + (_cache.GetEnemyDlgError() ?? "unknown"));
+
+            return BuildSuccess(data);
+        }
+
+        /// <summary>成功响应。DataQueryTask 内部私有辅助方法。</summary>
+        private static string BuildSuccess(JToken result)
+        {
+            JObject obj = new JObject();
+            obj["success"] = true;
+            obj["task"] = "data_query";
+            obj["result"] = result;
+            return obj.ToString(Formatting.None);
+        }
+
+        /// <summary>错误响应。DataQueryTask 内部私有辅助方法。</summary>
+        private static string BuildError(string error)
+        {
+            JObject obj = new JObject();
+            obj["success"] = false;
+            obj["task"] = "data_query";
+            obj["error"] = error;
+            return obj.ToString(Formatting.None);
+        }
+    }
+}

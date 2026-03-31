@@ -127,63 +127,102 @@ _root.获取随机佣兵编号 = function(已上场佣兵编号)
 
 _root.生成游戏世界佣兵 = function(添加佣兵函数, 机率, 是否门口)
 {
-	// 检查佣兵配置数据是否已加载
-	if (!_root.佣兵配置_isLoaded()) {
-		// 数据未加载，延迟执行
-		var frameFlag = _root.gameworld.frameFlag;
-		_root.佣兵配置_ensureLoaded(function():Void {
-			// 回调时检查场景是否已切换
+	var frameFlag = _root.gameworld.frameFlag;
+	org.flashNight.neur.Server.DataQueryService.query(
+		"merc_bundle", null,
+		function(response:Object):Void {
 			if (frameFlag != _root.gameworld.frameFlag) return;
-			// 数据加载完成，执行实际的佣兵生成
-			_root.生成游戏世界佣兵内部(添加佣兵函数, 机率, 是否门口);
-		}, function():Void {
-			trace("[生成游戏世界佣兵] 佣兵配置加载失败，跳过佣兵生成");
-		});
-		return;
-	}
-	// 数据已加载，直接执行
-	_root.生成游戏世界佣兵内部(添加佣兵函数, 机率, 是否门口);
+			if (response.success) {
+				_root.战队信息数组 = response.result.teams;
+				_root.随机名称库 = response.result.names;
+				_root.佣兵随机对话 = response.result.dialogues;
+				_root.佣兵对话池 = response.result.pool;
+				_root.生成游戏世界佣兵内部_withCleanup(
+					添加佣兵函数, 机率, 是否门口, frameFlag
+				);
+			} else {
+				_root.服务器.发布服务器消息("[生成游戏世界佣兵] 查询失败:", response.error);
+			}
+		}
+	);
 };
 
-// 内部实现函数，仅在数据已加载时调用
-_root.生成游戏世界佣兵内部 = function(添加佣兵函数, 机率, 是否门口)
-{
+/**
+ * Launcher 数据源的佣兵生成入口，带瞬态 cleanup。
+ *
+ * 使用闭包捕获 actualEnqueued 共享计数器（非参数传递）。
+ * 原因：帧计时器.添加单次任务 通过 ArgumentsUtil.sliceArgs 值拷贝额外参数，
+ * 无法让多个回调共享同一可变变量。闭包捕获 activation object 上的绑定，
+ * 所有回调引用同一个 actualEnqueued，最后一个完成时触发 cleanup。
+ *
+ * 并发安全：场景刷可雇用玩家（初始一次）和门口佣兵刷新器（每50帧）可能重叠。
+ * 使用 _root._mercDataRefCount 全局引用计数，仅最后一批结束时才 null 化数据。
+ * 不触碰 _root.佣兵配置_状态 — 该状态由 通信_fs_lsy_XML数据解析.as 独占管理。
+ */
+_root.生成游戏世界佣兵内部_withCleanup = function(
+	添加佣兵函数, 机率, 是否门口, frameFlag
+) {
 	var 游戏世界 = _root.gameworld;
 	var 场上佣兵总人数 = _root.成功率(100 / 机率) ? _root.随机整数(1, 3) : 0.5;
 	var 面积系数 = (_root.Xmax - _root.Xmin) * (_root.Ymax - _root.Ymin) / _root.面积系数;
-	if(!isNaN(游戏世界.面积系数)) 面积系数 *= 游戏世界.面积系数;
+	if (!isNaN(游戏世界.面积系数)) 面积系数 *= 游戏世界.面积系数;
 	场上佣兵总人数 = Math.floor(Math.max(场上佣兵总人数 * 面积系数, 1));
-	if (场上佣兵总人数 > _root.可雇佣兵.length){
+	if (场上佣兵总人数 > _root.可雇佣兵.length) {
 		场上佣兵总人数 = _root.可雇佣兵.length;
 	}
 
+	// 全局引用计数：并发批次共享数据，最后一批结束才释放
+	if (_root._mercDataRefCount == undefined) _root._mercDataRefCount = 0;
+	_root._mercDataRefCount++;
+
 	var 已上场佣兵编号 = [];
+	var actualEnqueued:Number = 0;
 
-	for (var 迭代器 = 0; 迭代器 < 场上佣兵总人数; 迭代器++)
-	{
-		var 随机编号 = _root.获取随机佣兵编号(已上场佣兵编号);
-		if (随机编号 == -1)
-		{
-			break;
+	var cleanup:Function = function():Void {
+		_root._mercDataRefCount--;
+		if (_root._mercDataRefCount <= 0) {
+			_root._mercDataRefCount = 0;
+			_root.战队信息数组 = null;
+			_root.随机名称库 = null;
+			_root.佣兵随机对话 = null;
+			_root.佣兵对话池 = null;
+			// 发型库不清理 — 会话常驻数据，被 _root.请求新佣兵 等多条路径持续读取
+			// legacy 生命周期管理不管它，asLoader 启动一次性加载后需要永久存在
 		}
-		// 没有更多可用佣兵，跳出循环
-		_root.帧计时器.添加单次任务(function(是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, frameFlag) {
-			// _root.发布消息(frameFlag, _root.gameworld.frameFlag)
-			if(frameFlag != _root.gameworld.frameFlag) return;
+	};
 
-			if (是否门口)
-			{
-				var 刷佣兵的门 = _root.随机选择数组元素(_root.gameworld.出生点列表);
-				添加佣兵函数(随机编号, 刷佣兵的门._x, 刷佣兵的门._y);
-			}
-			else
-			{
-				添加佣兵函数(随机编号);
-			}
-		}, _root.随机整数(1,场上佣兵总人数 * 2) * 1000, 是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, _root.gameworld.frameFlag)
+	for (var 迭代器 = 0; 迭代器 < 场上佣兵总人数; 迭代器++) {
+		var 随机编号 = _root.获取随机佣兵编号(已上场佣兵编号);
+		if (随机编号 == -1) break;
 
-		已上场佣兵编号[随机编号] = -1;// 标记编号已使用
+		actualEnqueued++;
+
+		_root.帧计时器.添加单次任务(
+			function(是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, fFlag) {
+				if (fFlag != _root.gameworld.frameFlag) {
+					actualEnqueued--;
+					if (actualEnqueued <= 0) cleanup();
+					return;
+				}
+
+				if (是否门口) {
+					var 门 = _root.随机选择数组元素(_root.gameworld.出生点列表);
+					添加佣兵函数(随机编号, 门._x, 门._y);
+				} else {
+					添加佣兵函数(随机编号);
+				}
+
+				actualEnqueued--;
+				if (actualEnqueued <= 0) cleanup();
+			},
+			_root.随机整数(1, 场上佣兵总人数 * 2) * 1000,
+			是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, frameFlag
+		);
+
+		已上场佣兵编号[随机编号] = -1;
 	}
+
+	if (actualEnqueued == 0) cleanup();
 };
 
 _root.门口刷可雇用玩家 = function(){

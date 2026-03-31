@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using CF7Launcher.Bus;
 using CF7Launcher.Config;
 using CF7Launcher.Guardian;
+using CF7Launcher.Data;
 using CF7Launcher.Tasks;
 using CF7Launcher.V8;
 
@@ -129,7 +130,9 @@ class Program
 
         // Task 注册（TaskRegistry = single source of truth）
         GomokuTask gomokuTask = new GomokuTask(projectRoot);
-        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, v8Runtime, hnOverlay);
+        DataCache dataCache = new DataCache(projectRoot);
+        DataQueryTask dataQueryTask = new DataQueryTask(dataCache);
+        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay);
 
         // 注入 router 到 HttpApiServer（供 /task 端点使用）
         httpServer.SetRouter(router);
