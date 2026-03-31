@@ -63,9 +63,8 @@ class org.flashNight.arki.scene.StageManager {
     
     public function initStage():Void{
         _root.当前为战斗地图 = true;
-        // 进入战斗地图时卸载非战斗用数据以节省内存
-        _root.NPC对话_unload("enter_battle");
-        _root.佣兵配置_unload("enter_battle");
+        // [Phase 3] NPC对话/佣兵配置 unload 已移除 — Launcher 是唯一数据源
+        // NPC对话存在 MC 上（随 MC 销毁 GC），佣兵数据由 _withCleanup refcount 管理
         isCleared = false;
         currentStage++;
 

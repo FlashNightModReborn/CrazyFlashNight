@@ -179,20 +179,16 @@ namespace CF7Launcher.Data
             if (dialogues.Count == 0)
                 throw new InvalidOperationException("dialogues.xml loaded 0 entries");
 
-            // 发型库捆绑进 merc_bundle（佣兵生成链读 _root.发型库[hair]）
-            string hairstylePath = Path.Combine(projectRoot, "data", "items", "hairstyle.xml");
-            JObject hairstyles = LoadHairstyles(hairstylePath);
+            // 发型库由 Flash 本地 asLoader frame 54 加载（会话常驻，不走 Launcher）
 
             JObject bundle = new JObject();
             bundle["teams"] = teams;
             bundle["names"] = names;
             bundle["dialogues"] = dialogues;
             bundle["pool"] = pool;
-            bundle["hairstyles"] = hairstyles;
 
             LogManager.Log("[XmlDataLoader] Merc bundle loaded: teams=" + teams.Count
-                + " names=" + names.Count + " dialogues=" + dialogues.Count
-                + " hairstyles=" + ((JArray)hairstyles["identifiers"]).Count);
+                + " names=" + names.Count + " dialogues=" + dialogues.Count);
             return bundle;
         }
 

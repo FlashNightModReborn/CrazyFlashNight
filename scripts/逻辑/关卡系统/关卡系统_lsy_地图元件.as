@@ -421,14 +421,11 @@ _root.初始化NPC = function(目标) {
     }
     目标._name = 目标.名字;
 
-    // 对话绑定逻辑：Launcher 优先，legacy XML 兜底
-    // 注意：用 目标._name（line 422 已赋值）而非 var _name 局部变量
-    // AS2 中 _name 是 MovieClip 内建属性，作局部变量名可能引发编译器冲突
+    // 对话绑定：通过 Launcher 查询（Launcher 是唯一数据源）
+    // 注意：用 目标._name（line 422 已赋值），AS2 中 _name 作局部变量名会引发编译器冲突
     if (目标.默认对话 == null) {
         var npcNameStr:String = 目标._name;
-        if (org.flashNight.neur.Server.DataQueryService.isAvailable()
-            && npcNameStr != undefined && npcNameStr != null && npcNameStr.length > 0) {
-            // ─── Primary path: Launcher 查询（仅对有名字的 NPC）───
+        if (npcNameStr != undefined && npcNameStr != null && npcNameStr.length > 0) {
             目标.默认对话 = [];  // 占位
             var npcRef:MovieClip = 目标;
             org.flashNight.neur.Server.DataQueryService.query(
@@ -436,7 +433,6 @@ _root.初始化NPC = function(目标) {
                 {key: npcNameStr, taskProgress: _root.主线任务进度},
                 function(response:Object):Void {
                     if (npcRef._parent == null) return;  // MC 已销毁
-
                     if (response.success) {
                         if (response.result != null && response.result.length > 0) {
                             var assembled:Array = [];
@@ -447,29 +443,10 @@ _root.初始化NPC = function(目标) {
                         }
                         npcRef.NPC对话已绑定 = true;
                     } else {
-                        // 查询失败（系统/通信错误，非"无数据"）→ fallback legacy
                         _root.服务器.发布服务器消息("[初始化NPC] 查询失败:", npcNameStr, "error:", response.error);
-                        npcRef.NPC对话已绑定 = false;
-                        _root.NPC对话_注册待绑定(npcRef, npcNameStr);
-                        _root.NPC对话_ensureLoaded(null, null);
                     }
                 }
             );
-        } else {
-            // ─── Fallback: Socket 未连接 ───
-            if (_root.NPC对话_isLoaded()) {
-                目标.默认对话 = _root.读取并组装NPC对话(目标.名字);
-                目标.NPC对话已绑定 = true;
-            } else {
-                目标.默认对话 = [];
-                目标.NPC对话已绑定 = false;
-                _root.NPC对话_注册待绑定(目标, 目标.名字);
-                // ★ 修复断线竞态：主动触发 legacy 加载
-                // 场景：跳转地图时 socket 连通→门控跳过 reload→随后断连→初始化NPC 走 fallback
-                // ensureLoaded 幂等：已加载→立即返回；加载中→入队；未加载→启动加载
-                // 加载完成后 NPC对话_补齐待绑定() 自动绑定已注册的 NPC
-                _root.NPC对话_ensureLoaded(null, null);
-            }
         }
     }
 

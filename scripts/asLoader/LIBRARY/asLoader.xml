@@ -300,24 +300,15 @@ guideLoader.loadGuideData(
             </DOMFrame>
             <DOMFrame index="49" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// 使用统一的生命周期管理 API 加载佣兵配置
-// ensureLoaded 是唯一入口，并行加载 teams.xml、name.xml、dialogues.xml
-_root.佣兵配置_ensureLoaded(
-    function():Void {
-        trace("佣兵配置数据加载成功！");
-    },
-    function():Void {
-        trace("佣兵配置数据加载失败！");
-    }
-);
+                <script><![CDATA[// [Phase 3] 已移除: legacy 佣兵配置 preload。数据由 Launcher merc_bundle 查询按需提供。
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="50" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// 非人形佣兵对话单独加载（不在佣兵配置生命周期管理内）
-_root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues.xml");]]></script>
+                <script><![CDATA[// [Phase 3] 已移除: legacy 非人形佣兵对话 preload。数据由 Launcher enemy_dialogues 查询按需提供。
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -330,16 +321,8 @@ _root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues
             </DOMFrame>
             <DOMFrame index="52" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// 使用统一的生命周期管理 API 加载NPC对话
-// ensureLoaded 是唯一入口，确保状态、回调队列、待绑定列表的一致性
-_root.NPC对话_ensureLoaded(
-    function():Void {
-        trace("NPC对话数据加载成功！");
-    },
-    function():Void {
-        trace("NPC对话数据加载失败！");
-    }
-);]]></script>
+                <script><![CDATA[// [Phase 3] 已移除: legacy NPC对话 preload。数据由 Launcher npc_dialogue 查询按 NPC 提供。
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

@@ -128,83 +128,23 @@ _root.获取随机佣兵编号 = function(已上场佣兵编号)
 _root.生成游戏世界佣兵 = function(添加佣兵函数, 机率, 是否门口)
 {
 	var frameFlag = _root.gameworld.frameFlag;
-
-	if (org.flashNight.neur.Server.DataQueryService.isAvailable()) {
-		org.flashNight.neur.Server.DataQueryService.query(
-			"merc_bundle", null,
-			function(response:Object):Void {
-				if (frameFlag != _root.gameworld.frameFlag) return;
-				if (response.success) {
-					_root.战队信息数组 = response.result.teams;
-					_root.随机名称库 = response.result.names;
-					_root.佣兵随机对话 = response.result.dialogues;
-					_root.佣兵对话池 = response.result.pool;
-					// 发型库捆绑在 merc_bundle 中（佣兵生成链读 _root.发型库[hair]）
-					if (response.result.hairstyles != null) {
-						_root.发型库 = response.result.hairstyles.identifiers;
-						_root.发型名称库 = response.result.hairstyles.names;
-						_root.发型价格 = response.result.hairstyles.prices;
-					}
-					_root.生成游戏世界佣兵内部_withCleanup(
-						添加佣兵函数, 机率, 是否门口, frameFlag
-					);
-				} else {
-					// Fallback legacy
-					_root.服务器.发布服务器消息("[生成游戏世界佣兵] Launcher 查询失败:", response.error, "回退legacy");
-					_root.佣兵配置_ensureLoaded(function():Void {
-						if (frameFlag != _root.gameworld.frameFlag) return;
-						_root.生成游戏世界佣兵内部(添加佣兵函数, 机率, 是否门口);
-					}, function():Void {
-						_root.服务器.发布服务器消息("[生成游戏世界佣兵] 佣兵配置加载失败");
-					});
-				}
-			}
-		);
-	} else {
-		if (!_root.佣兵配置_isLoaded()) {
-			_root.佣兵配置_ensureLoaded(function():Void {
-				if (frameFlag != _root.gameworld.frameFlag) return;
-				_root.生成游戏世界佣兵内部(添加佣兵函数, 机率, 是否门口);
-			}, function():Void {
-				_root.服务器.发布服务器消息("[生成游戏世界佣兵] legacy 佣兵配置加载失败");
-			});
-		} else {
-			_root.生成游戏世界佣兵内部(添加佣兵函数, 机率, 是否门口);
-		}
-	}
-};
-
-// 内部实现函数，仅在数据已加载时调用（legacy 路径 + fallback 使用）
-_root.生成游戏世界佣兵内部 = function(添加佣兵函数, 机率, 是否门口)
-{
-	var 游戏世界 = _root.gameworld;
-	var 场上佣兵总人数 = _root.成功率(100 / 机率) ? _root.随机整数(1, 3) : 0.5;
-	var 面积系数 = (_root.Xmax - _root.Xmin) * (_root.Ymax - _root.Ymin) / _root.面积系数;
-	if(!isNaN(游戏世界.面积系数)) 面积系数 *= 游戏世界.面积系数;
-	场上佣兵总人数 = Math.floor(Math.max(场上佣兵总人数 * 面积系数, 1));
-	if (场上佣兵总人数 > _root.可雇佣兵.length){
-		场上佣兵总人数 = _root.可雇佣兵.length;
-	}
-
-	var 已上场佣兵编号 = [];
-
-	for (var 迭代器 = 0; 迭代器 < 场上佣兵总人数; 迭代器++)
-	{
-		var 随机编号 = _root.获取随机佣兵编号(已上场佣兵编号);
-		if (随机编号 == -1) break;
-
-		_root.帧计时器.添加单次任务(function(是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, frameFlag) {
-			if(frameFlag != _root.gameworld.frameFlag) return;
-			if (是否门口) {
-				var 刷佣兵的门 = _root.随机选择数组元素(_root.gameworld.出生点列表);
-				添加佣兵函数(随机编号, 刷佣兵的门._x, 刷佣兵的门._y);
+	org.flashNight.neur.Server.DataQueryService.query(
+		"merc_bundle", null,
+		function(response:Object):Void {
+			if (frameFlag != _root.gameworld.frameFlag) return;
+			if (response.success) {
+				_root.战队信息数组 = response.result.teams;
+				_root.随机名称库 = response.result.names;
+				_root.佣兵随机对话 = response.result.dialogues;
+				_root.佣兵对话池 = response.result.pool;
+				_root.生成游戏世界佣兵内部_withCleanup(
+					添加佣兵函数, 机率, 是否门口, frameFlag
+				);
 			} else {
-				添加佣兵函数(随机编号);
+				_root.服务器.发布服务器消息("[生成游戏世界佣兵] 查询失败:", response.error);
 			}
-		}, _root.随机整数(1,场上佣兵总人数 * 2) * 1000, 是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, _root.gameworld.frameFlag)
-
-		已上场佣兵编号[随机编号] = -1;
-	}
+		}
+	);
 };
 
 /**
@@ -246,9 +186,8 @@ _root.生成游戏世界佣兵内部_withCleanup = function(
 			_root.随机名称库 = null;
 			_root.佣兵随机对话 = null;
 			_root.佣兵对话池 = null;
-			_root.发型库 = null;
-			_root.发型名称库 = null;
-			_root.发型价格 = null;
+			// 发型库不清理 — 会话常驻数据，被 _root.请求新佣兵 等多条路径持续读取
+			// legacy 生命周期管理不管它，asLoader 启动一次性加载后需要永久存在
 		}
 	};
 

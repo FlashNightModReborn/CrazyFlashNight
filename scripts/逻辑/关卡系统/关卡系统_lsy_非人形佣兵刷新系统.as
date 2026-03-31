@@ -4,26 +4,19 @@ _root.生成游戏世界可雇用敌人 = function(添加佣兵函数, 机率, �
 {
 	_root.刷新受雇欲望基准();
 	var frameFlag = _root.gameworld.frameFlag;
-
-	if (org.flashNight.neur.Server.DataQueryService.isAvailable()) {
-		org.flashNight.neur.Server.DataQueryService.query(
-			"enemy_dialogues", null,
-			function(response:Object):Void {
-				if (frameFlag != _root.gameworld.frameFlag) return;
-				if (response.success) {
-					_root.非人形佣兵随机对话 = response.result;
-					_root.生成游戏世界可雇用敌人内部(添加佣兵函数, 机率, 是否门口, frameFlag);
-				} else {
-					// Fallback: 使用已有的 legacy 数据（启动时 asLoader 帧 50 加载）
-					_root.服务器.发布服务器消息("[生成可雇用敌人] Launcher 查询失败:", response.error);
-					_root.生成游戏世界可雇用敌人内部(添加佣兵函数, 机率, 是否门口, frameFlag);
-				}
+	org.flashNight.neur.Server.DataQueryService.query(
+		"enemy_dialogues", null,
+		function(response:Object):Void {
+			if (frameFlag != _root.gameworld.frameFlag) return;
+			if (response.success) {
+				_root.非人形佣兵随机对话 = response.result;
+				_root.生成游戏世界可雇用敌人内部(添加佣兵函数, 机率, 是否门口, frameFlag);
+			} else {
+				_root.服务器.发布服务器消息("[生成可雇用敌人] 查询失败:", response.error);
+				// 不生成 — 下游直接读 _root.非人形佣兵随机对话[身份]，null 会崩
 			}
-		);
-	} else {
-		// Socket 未连接，直接用 legacy 数据
-		_root.生成游戏世界可雇用敌人内部(添加佣兵函数, 机率, 是否门口, frameFlag);
-	}
+		}
+	);
 };
 
 // 内部实现：生成可雇用敌人（数据已就绪）

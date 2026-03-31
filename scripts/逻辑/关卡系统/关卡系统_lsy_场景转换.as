@@ -418,11 +418,6 @@ _root.防止播放跳关 = function(){
 
 _root.跳转地图 = function(跳转帧){
 	_root.当前为战斗地图 = false;
-	// Socket 连接时跳过 legacy reload（数据由 Launcher 按需提供）
-	if (!org.flashNight.neur.Server.DataQueryService.isAvailable()) {
-		_root.NPC对话_ensureLoaded(null, null);
-		_root.佣兵配置_ensureLoaded(null, null);
-	}
 	// 检索环境xml中是否存在对应的基地地图或外部地图
 	if(WeatherSystem.getInstance().getEnvConfig().hasSceneEnv(_root.关卡标志)){
 		// 通过关卡标志是否有"地图-"前缀来区分基地/外部地图
