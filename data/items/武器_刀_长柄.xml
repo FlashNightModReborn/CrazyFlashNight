@@ -330,4 +330,32 @@
         <bladeCount>4</bladeCount>
       </data>
     </item>
+      <item>
+      <name>烬灭裁决</name>
+      <displayname>烬灭裁决</displayname>
+      <icon>烬灭裁决长柄</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>长柄</actiontype>
+      <skill>
+        <skillname>回旋裂地</skillname>
+        <description>手持该武器时可以使用回旋裂地。</description>
+        <cd>7000</cd>
+        <mp>50</mp>
+      </skill>
+      <price>500000</price>
+      <description>联合大学的最上等的多形态订制武器之一，此武器可按Q在长柄与双刀形态之间切换
+      刀刃所过之处能够汲取部分物质作为能量补给使用者，同时会喷出炽热的火焰灼烧敌人。</description>
+      <data>
+        <level>45</level>
+        <weight>20</weight>
+        <dressup>刀-烬灭裁决长柄</dressup>
+        <power>354</power>
+        <defence>100</defence>
+        <rout>0.05</rout>
+        <slay>5</slay>
+        <vampirism>3</vampirism>
+        <bladeCount>5</bladeCount>
+      </data>
+    </item>
 </root>

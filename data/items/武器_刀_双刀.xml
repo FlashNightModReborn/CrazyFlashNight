@@ -214,4 +214,33 @@
         <bladeCount>3</bladeCount>
       </data>
     </item>
+      <item>
+      <name>烬灭裁决双刀</name>
+      <displayname>烬灭裁决双刀</displayname>
+      <icon>烬灭裁决双刀</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>双刀</actiontype>
+      <skill>
+        <skillname>深冲利刺</skillname>
+        <description>手持该武器时可以使用深冲利刺。</description>
+        <cd>8000</cd>
+        <mp>80</mp>
+      </skill>
+      <price>500000</price>
+      <description>联合大学的最上等的多形态订制武器之一，此武器可按Q在长柄与双刀形态之间切换
+      刀刃所过之处能够汲取部分物质作为能量补给使用者，同时会喷出炽热的火焰灼烧敌人。</description>
+      <data>
+        <level>45</level>
+        <weight>20</weight>
+        <dressup>刀-烬灭裁决主剑</dressup>
+        <dressup2>刀-烬灭裁决副剑</dressup2>
+        <power>354</power>
+        <defence>100</defence>
+        <rout>0.05</rout>
+        <slay>5</slay>
+        <vampirism>3</vampirism>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
 </root>
