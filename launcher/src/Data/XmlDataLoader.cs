@@ -46,7 +46,7 @@ namespace CF7Launcher.Data
             listDoc.Load(listPath);
 
             XmlNodeList items = listDoc.SelectNodes("//items");
-            if (items == null)
+            if (items == null || items.Count == 0)
                 throw new InvalidOperationException("list.xml contains no <items> entries");
 
             // 任一子文件缺失/解析失败 = 整体失败（匹配 AS2 NpcDialogueLoader 的 Promise.all 语义）
@@ -179,14 +179,20 @@ namespace CF7Launcher.Data
             if (dialogues.Count == 0)
                 throw new InvalidOperationException("dialogues.xml loaded 0 entries");
 
+            // 发型库捆绑进 merc_bundle（佣兵生成链读 _root.发型库[hair]）
+            string hairstylePath = Path.Combine(projectRoot, "data", "items", "hairstyle.xml");
+            JObject hairstyles = LoadHairstyles(hairstylePath);
+
             JObject bundle = new JObject();
             bundle["teams"] = teams;
             bundle["names"] = names;
             bundle["dialogues"] = dialogues;
             bundle["pool"] = pool;
+            bundle["hairstyles"] = hairstyles;
 
             LogManager.Log("[XmlDataLoader] Merc bundle loaded: teams=" + teams.Count
-                + " names=" + names.Count + " dialogues=" + dialogues.Count);
+                + " names=" + names.Count + " dialogues=" + dialogues.Count
+                + " hairstyles=" + ((JArray)hairstyles["identifiers"]).Count);
             return bundle;
         }
 
@@ -302,6 +308,113 @@ namespace CF7Launcher.Data
                     bucket.Add(dialogue);
                 }
             }
+        }
+
+        // ===================== 发型库 =====================
+
+        /// <summary>
+        /// hairstyle.xml → {identifiers: [...], names: [...], prices: [...]}
+        /// 三个平行数组，按 Hair id 索引。匹配 AS2 的 _root.发型库/发型名称库/发型价格。
+        /// </summary>
+        public static JObject LoadHairstyles(string path)
+        {
+            if (!File.Exists(path))
+                throw new FileNotFoundException("hairstyle.xml not found: " + path);
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(path);
+
+            XmlNodeList hairNodes = doc.SelectNodes("//Hair");
+            if (hairNodes == null || hairNodes.Count == 0)
+                throw new InvalidOperationException("hairstyle.xml contains no <Hair> entries");
+
+            JArray identifiers = new JArray();
+            JArray names = new JArray();
+            JArray prices = new JArray();
+
+            foreach (XmlNode hairNode in hairNodes)
+            {
+                string identifier = GetChildText(hairNode, "Identifier");
+                identifiers.Add(identifier != null ? identifier : "");
+
+                string name = GetChildText(hairNode, "Name");
+                names.Add(name != null ? name : "");
+
+                string priceStr = GetChildText(hairNode, "Price");
+                int price;
+                if (priceStr != null && int.TryParse(priceStr, out price))
+                    prices.Add(price);
+                else
+                    prices.Add(0);
+            }
+
+            JObject result = new JObject();
+            result["identifiers"] = identifiers;
+            result["names"] = names;
+            result["prices"] = prices;
+            return result;
+        }
+
+        // ===================== 非人形佣兵对话 =====================
+
+        /// <summary>
+        /// enemy_dialogues.xml → { "身份": [{Text, MinIntention, MaxIntention}, ...], ... }
+        /// 按 Identity 分组，一个 Group 的多个 Identity 共享同一组 Dialogue。
+        /// 匹配 AS2 的 _root.非人形佣兵随机对话[身份] 结构。
+        /// </summary>
+        public static JObject LoadEnemyDialogues(string path)
+        {
+            if (!File.Exists(path))
+                throw new FileNotFoundException("enemy_dialogues.xml not found: " + path);
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(path);
+
+            JObject result = new JObject();
+
+            XmlNodeList groupNodes = doc.SelectNodes("//Group");
+            if (groupNodes == null || groupNodes.Count == 0)
+                throw new InvalidOperationException("enemy_dialogues.xml contains no <Group> entries");
+
+            foreach (XmlNode groupNode in groupNodes)
+            {
+                // 解析该 Group 的所有 Dialogue
+                XmlNodeList dialogueNodes = groupNode.SelectNodes("Dialogue");
+                JArray dialogues = new JArray();
+                if (dialogueNodes != null)
+                {
+                    foreach (XmlNode dNode in dialogueNodes)
+                    {
+                        JObject d = new JObject();
+                        d["Text"] = GetChildText(dNode, "Text");
+
+                        string minStr = GetChildText(dNode, "MinIntention");
+                        int minVal;
+                        d["MinIntention"] = (minStr != null && int.TryParse(minStr, out minVal)) ? minVal : 0;
+
+                        string maxStr = GetChildText(dNode, "MaxIntention");
+                        int maxVal;
+                        d["MaxIntention"] = (maxStr != null && int.TryParse(maxStr, out maxVal)) ? maxVal : 0;
+
+                        dialogues.Add(d);
+                    }
+                }
+
+                // 一个 Group 可有多个 Identity，共享同一组 Dialogue
+                XmlNodeList identityNodes = groupNode.SelectNodes("Identity");
+                if (identityNodes != null)
+                {
+                    foreach (XmlNode idNode in identityNodes)
+                    {
+                        string identity = idNode.InnerText;
+                        if (!string.IsNullOrEmpty(identity))
+                            result[identity] = dialogues;
+                    }
+                }
+            }
+
+            LogManager.Log("[XmlDataLoader] Enemy dialogues loaded: " + result.Count + " identities");
+            return result;
         }
     }
 }

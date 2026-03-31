@@ -86,5 +86,36 @@ namespace CF7Launcher.Data
         }
 
         public string GetMercError() { return _mercError; }
+
+        // ===================== 非人形佣兵对话 =====================
+
+        private readonly object _enemyDlgLock = new object();
+        private bool _enemyDlgAttempted;
+        private JObject _enemyDialogues;
+        private string _enemyDlgError;
+
+        public JObject GetEnemyDialogues()
+        {
+            if (_enemyDlgAttempted) return _enemyDialogues;
+            lock (_enemyDlgLock)
+            {
+                if (_enemyDlgAttempted) return _enemyDialogues;
+                try
+                {
+                    string path = System.IO.Path.Combine(_projectRoot, "data", "dialogues", "enemy_dialogues.xml");
+                    _enemyDialogues = XmlDataLoader.LoadEnemyDialogues(path);
+                }
+                catch (Exception ex)
+                {
+                    _enemyDlgError = ex.Message;
+                    _enemyDialogues = null;
+                    LogManager.Log("[DataCache] Enemy dialogues load FAILED: " + _enemyDlgError);
+                }
+                _enemyDlgAttempted = true;
+                return _enemyDialogues;
+            }
+        }
+
+        public string GetEnemyDlgError() { return _enemyDlgError; }
     }
 }

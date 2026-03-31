@@ -59,6 +59,8 @@ namespace CF7Launcher.Tasks
                     return QueryNpcDialogue(payload);
                 case "merc_bundle":
                     return QueryMercBundle();
+                case "enemy_dialogues":
+                    return QueryEnemyDialogues();
                 default:
                     return BuildError("unknown dataType: " + dataType);
             }
@@ -105,6 +107,18 @@ namespace CF7Launcher.Tasks
                 return BuildError("merc_bundle unavailable: " + (_cache.GetMercError() ?? "unknown"));
 
             return BuildSuccess(bundle);
+        }
+
+        /// <summary>
+        /// 非人形佣兵对话查询。返回全量数据（按身份分组）。
+        /// </summary>
+        private string QueryEnemyDialogues()
+        {
+            JObject data = _cache.GetEnemyDialogues();
+            if (data == null)
+                return BuildError("enemy_dialogues unavailable: " + (_cache.GetEnemyDlgError() ?? "unknown"));
+
+            return BuildSuccess(data);
         }
 
         /// <summary>成功响应。DataQueryTask 内部私有辅助方法。</summary>
