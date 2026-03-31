@@ -24,6 +24,7 @@ import org.flashNight.neur.Event.*;
 class org.flashNight.aven.Promise.Scheduler {
     private static var _instance:Scheduler;
     private static var CLIP_NAME:String = "_promiseScheduler";
+    private static var NO_ARG:Object = {};
     private var _queue:Array;
     private var _head:Number;
     private var _clip:MovieClip;
@@ -57,22 +58,47 @@ class org.flashNight.aven.Promise.Scheduler {
      * @param fn 要执行的函数
      */
     public function enqueue(fn:Function):Void {
-        if (!this._clipAlive) {
+        this.enqueueWithArg(fn, NO_ARG);
+    }
+
+    /**
+     * 添加一个带单参数的函数到异步调用队列。
+     * Promise 的 fulfilled/rejected 分发走这里，避免为每次回调再套一层 async 闭包。
+     */
+    public function enqueueWithArg(fn:Function, arg:Object):Void {
+        // 队列空闲时先做快速重置，避免 head 长期累积
+        if (this._queue.length == this._head) {
+            this._queue.length = 0;
+            this._head = 0;
+        }
+
+        // clip 可能在队列非空时被外部移除；这里必须每次入队都做存活校验
+        if (!this.isClipUsable()) {
+            this._clipAlive = false;
             this.ensureClip();
         }
+
         this._queue.push(fn);
+        this._queue.push(arg);
     }
 
     /** 确保驱动 onEnterFrame 的隐藏 clip 始终存在 */
     private function ensureClip():Void {
         var clip:MovieClip = _root[CLIP_NAME];
-        if (typeof(clip) != "movieclip") {
+        if (typeof(clip) != "movieclip" || clip._parent == undefined) {
             clip = _root.createEmptyMovieClip(CLIP_NAME, _root.getNextHighestDepth());
         }
         clip._visible = false;
         clip.onEnterFrame = Delegate.create(this, this.processQueue);
         this._clip = clip;
         this._clipAlive = true;
+    }
+
+    /** clip 存活性检查，队列空闲后的首个 enqueue 会用它做轻量自愈 */
+    private function isClipUsable():Boolean {
+        return (typeof(this._clip) == "movieclip"
+            && this._clip._parent != undefined
+            && typeof(this._clip.onEnterFrame) == "function");
     }
 
     /**
@@ -89,7 +115,7 @@ class org.flashNight.aven.Promise.Scheduler {
      */
     private function processQueue():Void {
         // 检测 clip 是否被外部移除
-        if (typeof(this._clip) != "movieclip" || this._clip._parent == undefined) {
+        if (!this.isClipUsable()) {
             this._clipAlive = false;
             this.ensureClip();
         }
@@ -108,9 +134,14 @@ class org.flashNight.aven.Promise.Scheduler {
             }
 
             var fn:Function = Function(q[head]);
-            head++;
+            var arg:Object = q[head + 1];
+            head += 2;
             this._head = head;  // 写回实例变量，保证中断安全
-            fn();
+            if (arg === NO_ARG) {
+                fn();
+            } else {
+                fn(arg);
+            }
         }
 
         // 排空完毕：快速重置
@@ -120,7 +151,7 @@ class org.flashNight.aven.Promise.Scheduler {
         } else {
             this._head = head;
             // 已处理区间过长时压缩，防止内存泄漏
-            if (head > 512) {
+            if (head > 1024) {
                 q.splice(0, head);
                 this._head = 0;
             }

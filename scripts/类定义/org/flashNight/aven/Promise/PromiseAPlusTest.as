@@ -81,10 +81,24 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
         trace("  Promises/A+ Compliance Test Suite");
         trace("========================================");
 
-        // --- 同步可验证的测试 ---
+        runCoreTests();
+        runPhase2Tests();
+        runPhase3Tests();
+
+        // --- 帧计数器，等待异步测试完成后输出汇总 ---
+        _clip = _root.createEmptyMovieClip("_promiseTestTimer", _root.getNextHighestDepth());
+        _clip.onEnterFrame = function():Void {
+            org.flashNight.aven.Promise.PromiseAPlusTest._frameCount++;
+            if (org.flashNight.aven.Promise.PromiseAPlusTest._frameCount >= 45) {
+                org.flashNight.aven.Promise.PromiseAPlusTest.reportResults();
+            }
+        };
+    }
+
+    /** Core A+ 规范测试与第一批生产安全测试 */
+    private static function runCoreTests():Void {
         test_2_2_7_thenReturnsPromise();
 
-        // --- 异步测试 ---
         test_2_1_stateTransitions();
         test_2_2_1_optionalArguments();
         test_2_2_2_onFulfilledCalledWithValue();
@@ -122,8 +136,10 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
         test_longChain();
         test_errorRecoveryInChain();
         test_schedulerRecoversAfterClipRemoval();
+    }
 
-        // --- Phase 2: 扩展生产安全测试 ---
+    /** Phase 2: 扩展生产安全测试 */
+    private static function runPhase2Tests():Void {
         test_errorPropagationSkipsFulfilled();
         test_reRejectFromCatch();
         test_nonFunctionThenArgs();
@@ -146,8 +162,10 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
         test_raceImmediateVsDelayed();
         test_resolveNullInChain();
         test_multipleOnRejected();
+    }
 
-        // --- Phase 3: 生产健壮性强化测试 ---
+    /** Phase 3: 生产健壮性强化测试 */
+    private static function runPhase3Tests():Void {
         test_catchRecoverWithFulfilledPromise();
         test_onRejectedReturnsUndefined();
         test_handlerReturnsFunction();
@@ -163,15 +181,6 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
         test_catchThenFinally();
         test_allSingleReject();
         test_raceWithThenable();
-
-        // --- 帧计数器，等待异步测试完成后输出汇总 ---
-        _clip = _root.createEmptyMovieClip("_promiseTestTimer", _root.getNextHighestDepth());
-        _clip.onEnterFrame = function():Void {
-            org.flashNight.aven.Promise.PromiseAPlusTest._frameCount++;
-            if (org.flashNight.aven.Promise.PromiseAPlusTest._frameCount >= 45) {
-                org.flashNight.aven.Promise.PromiseAPlusTest.reportResults();
-            }
-        };
     }
 
     /** 输出汇总 */

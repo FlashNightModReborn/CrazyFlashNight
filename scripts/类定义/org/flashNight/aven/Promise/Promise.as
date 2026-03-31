@@ -11,6 +11,10 @@
  *   [PERF] resolvePromise 中 isReferenceLike 结果判断后提前返回，减少分支深度
  *   [PERF] _resolve/_reject 回调分发使用 while(i<len) + 局部变量（H01/H16）
  *   [PERF] asyncCall 直接 push 到 Scheduler 队列，省去 getInstance() 方法调用
+ *   [PERF] fulfilled/rejected 改为“外部异步调度 + 单层包装器”，
+ *         消除每次回调执行时额外创建的 async 闭包
+ *   [PERF] Promise.all/race/allSettled 观察内部 Promise 时走 _subscribe 快路径，
+ *         不再为每个输入额外创建无人消费的 promise2
  *
  * 修复记录 (2026-03):
  *   [FIX] AS2 不支持 IIFE — 移除所有 (function(){})() 模式
@@ -73,6 +77,12 @@ class org.flashNight.aven.Promise.Promise {
                 return;
             }
 
+            // 内部 Promise 走订阅快路径，避免 then() 产生额外 promise2
+            if (value instanceof Promise) {
+                Promise(value)._subscribe(self._resolve, self._reject);
+                return;
+            }
+
             // 处理 thenable（包括 Promise 实例和含 then 方法的普通对象）
             if (Promise.isReferenceLike(value)) {
                 var thenProp:Object = undefined;
@@ -122,7 +132,7 @@ class org.flashNight.aven.Promise.Promise {
             var i:Number = 0;
             var len:Number = callbacks.length;
             while (i < len) {
-                callbacks[i](value);
+                Promise.asyncCallWithArg(callbacks[i], value);
                 i++;
             }
         };
@@ -141,7 +151,7 @@ class org.flashNight.aven.Promise.Promise {
             var i:Number = 0;
             var len:Number = callbacks.length;
             while (i < len) {
-                callbacks[i](reason);
+                Promise.asyncCallWithArg(callbacks[i], reason);
                 i++;
             }
         };
@@ -164,6 +174,8 @@ class org.flashNight.aven.Promise.Promise {
     public function then(onFulfilled:Function, onRejected:Function):Promise {
         var self:Promise = this;
         var selfState:Number = self._state; // H01: 局部化状态
+        var hasOnFulfilled:Boolean = (typeof(onFulfilled) == "function");
+        var hasOnRejected:Boolean = (typeof(onRejected) == "function");
 
         var promise2:Promise = new Promise(function(resolve2:Function, reject2:Function):Void {
 
@@ -171,43 +183,39 @@ class org.flashNight.aven.Promise.Promise {
              * 包装后的 fulfilled 回调
              */
             function fulfilled(value:Object):Void {
-                Promise.asyncCall(function():Void {
-                    try {
-                        if (typeof(onFulfilled) == "function") {
-                            var x:Object = onFulfilled(value);
-                            Promise.resolvePromise(promise2, x, resolve2, reject2);
-                        } else {
-                            resolve2(value);
-                        }
-                    } catch (e:Object) {
-                        reject2(e);
+                try {
+                    if (hasOnFulfilled) {
+                        var x:Object = onFulfilled(value);
+                        Promise.resolvePromise(promise2, x, resolve2, reject2);
+                    } else {
+                        resolve2(value);
                     }
-                });
+                } catch (e:Object) {
+                    reject2(e);
+                }
             }
 
             /**
              * 包装后的 rejected 回调
              */
             function rejected(reason:Object):Void {
-                Promise.asyncCall(function():Void {
-                    try {
-                        if (typeof(onRejected) == "function") {
-                            var x:Object = onRejected(reason);
-                            Promise.resolvePromise(promise2, x, resolve2, reject2);
-                        } else {
-                            reject2(reason);
-                        }
-                    } catch (e:Object) {
-                        reject2(e);
+                try {
+                    if (hasOnRejected) {
+                        var x:Object = onRejected(reason);
+                        Promise.resolvePromise(promise2, x, resolve2, reject2);
+                    } else {
+                        reject2(reason);
                     }
-                });
+                } catch (e:Object) {
+                    reject2(e);
+                }
             }
 
             // 根据当前 promise 的状态，决定立刻异步调用还是加入回调队列
             if (selfState === 1) { // FULFILLED
-                fulfilled(self._value);
+                Promise.asyncCallWithArg(fulfilled, self._value);
             } else if (selfState === 2) { // REJECTED
-                rejected(self._reason);
+                Promise.asyncCallWithArg(rejected, self._reason);
             } else {
                 // pending 状态，先把回调存起来
                 self._onFulfilledCallbacks.push(fulfilled);
@@ -216,6 +224,21 @@ class org.flashNight.aven.Promise.Promise {
         });
 
         return promise2;
+    }
+
+    /**
+     * 内部订阅快路径：
+     * 仅用于 Promise 组合器和内部 Promise 采纳，不创建新的 promise2。
+     */
+    private function _subscribe(onFulfilled:Function, onRejected:Function):Void {
+        if (this._state === 1) {
+            Promise.asyncCallWithArg(onFulfilled, this._value);
+        } else if (this._state === 2) {
+            Promise.asyncCallWithArg(onRejected, this._reason);
+        } else {
+            this._onFulfilledCallbacks.push(onFulfilled);
+            this._onRejectedCallbacks.push(onRejected);
+        }
     }
 
     /**
@@ -286,6 +309,21 @@ class org.flashNight.aven.Promise.Promise {
 
         // 引用类型：可能是 thenable (A+ §2.3.3)
         var called:Boolean = false;
+        if (x instanceof Promise) {
+            Promise(x)._subscribe(
+                function(y:Object):Void {
+                    if (called) return;
+                    called = true;
+                    resolvePromise(promise2, y, resolve2, reject2);
+                },
+                function(r:Object):Void {
+                    if (called) return;
+                    called = true;
+                    reject2(r);
+                }
+            );
+            return;
+        }
         try {
             var thenProp:Object = x["then"];
             if (typeof(thenProp) == "function") {
@@ -380,7 +418,8 @@ class org.flashNight.aven.Promise.Promise {
         resolve:Function, reject:Function,
         total:Number, state:Object
     ):Void {
-        Promise.resolve(promise).then(
+        Promise.observe(
+            promise,
             function(value:Object):Void {
                 if (state.rejected) return;
                 results[index] = value;
@@ -407,7 +446,8 @@ class org.flashNight.aven.Promise.Promise {
 
             var i:Number = 0;
             while (i < len) {
-                Promise.resolve(promises[i]).then(
+                Promise.observe(
+                    promises[i],
                     function(value:Object):Void { resolve(value); },
                     function(reason:Object):Void { reject(reason); }
                 );
@@ -443,7 +483,8 @@ class org.flashNight.aven.Promise.Promise {
         promise:Object, index:Number, results:Array,
         resolve:Function, total:Number, state:Object
     ):Void {
-        Promise.resolve(promise).then(
+        Promise.observe(
+            promise,
             function(value:Object):Void {
                 results[index] = { status: "fulfilled", value: value };
                 state.completed++;
@@ -461,6 +502,22 @@ class org.flashNight.aven.Promise.Promise {
         );
     }
 
+    /**
+     * 组合器内部观察输入值。
+     * 对内部 Promise 走 _subscribe，普通值走异步 fulfill，其他值退回 Promise.resolve。
+     */
+    private static function observe(input:Object, onFulfilled:Function, onRejected:Function):Void {
+        if (input instanceof Promise) {
+            Promise(input)._subscribe(onFulfilled, onRejected);
+            return;
+        }
+        if (!Promise.isReferenceLike(input)) {
+            Promise.asyncCallWithArg(onFulfilled, input);
+            return;
+        }
+        Promise.resolve(input).then(onFulfilled, onRejected);
+    }
+
     /* ================== 异步调度 ================== */
 
     /**
@@ -474,5 +531,18 @@ class org.flashNight.aven.Promise.Promise {
             _scheduler = s;
         }
         s.enqueue(fn);
+    }
+
+    /**
+     * 在下一次 Scheduler 排空时调用带单参数的函数。
+     * Promise 的回调调度走这个路径，避免每次执行再创建 async 闭包。
+     */
+    private static function asyncCallWithArg(fn:Function, arg:Object):Void {
+        var s:Scheduler = _scheduler;
+        if (s == undefined) {
+            s = Scheduler.getInstance();
+            _scheduler = s;
+        }
+        s.enqueueWithArg(fn, arg);
     }
 }
