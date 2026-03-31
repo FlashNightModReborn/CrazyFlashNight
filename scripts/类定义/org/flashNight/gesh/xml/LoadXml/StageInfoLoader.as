@@ -1,5 +1,6 @@
 ﻿import org.flashNight.gesh.xml.LoadXml.BaseXMLLoader;
 import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.aven.Promise.ListLoader;
 
 class org.flashNight.gesh.xml.LoadXml.StageInfoLoader extends BaseXMLLoader {
     private static var instance:StageInfoLoader = null;
@@ -34,88 +35,59 @@ class org.flashNight.gesh.xml.LoadXml.StageInfoLoader extends BaseXMLLoader {
     }
 
     /**
-     * 解析 list.xml 文件，根据其中内容，解析并合并其中的 XML 数据。
+     * 解析 list.xml 文件，根据其中内容，并行加载并合并子 XML 数据。
      * @param onLoadHandler 加载成功后的回调函数，接收合并后的数据作为参数。
      * @param onErrorHandler 加载失败后的回调函数。
      */
     public function loadStageInfo(onLoadHandler:Function, onErrorHandler:Function):Void {
         var self:StageInfoLoader = this;
 
-        // 加载 list.xml 文件
         super.load(function(data:Object):Void {
-            // trace("StageInfoLoader: list.xml 文件加载成功！");
-            // trace("StageInfoLoader: list.xml 数据 = " + ObjectUtil.stringify(data));
-
-            if (!data || !data.stages || !(data.stages instanceof Array)) {
-                // trace("StageInfoLoader: list.xml 数据结构不正确！");
+            if (!data || !data.stages) {
                 if (onErrorHandler != null) onErrorHandler();
                 return;
             }
+            var entries:Array = ListLoader.normalizeToArray(data.stages);
 
-            var childXmlFolderPaths:Array = data.stages;
-            // trace("StageInfoLoader: 需要加载的子 XML 文件夹列表 = " + ObjectUtil.stringify(childXmlFolderPaths));
-
-            self.combinedData = {};
-
-            // 开始加载子 XML 文件
-            self.loadChildXmlFiles(childXmlFolderPaths, 0, function():Void {
-                // 将合并后的数据保存到基类的 data 属性中
-                super.data = self.combinedData;
-
-                // trace("StageInfoLoader: 所有子 XML 文件加载并合并成功！");
-                // trace("StageInfoLoader: 合并后的数据 = " + ObjectUtil.stringify(self.combinedData));
+            ListLoader.loadChildren({
+                entries:      entries,
+                basePath:     path,
+                pathBuilder:  StageInfoLoader.buildStagePath,
+                mergeFn:      StageInfoLoader.mergeStageInfo,
+                initialValue: {}
+            }).then(function(result:Object):Void {
+                self.combinedData = result;
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
-            }, function():Void {
-                // trace("StageInfoLoader: 加载子 XML 文件失败！");
+            }).onCatch(function(reason:Object):Void {
+                trace("[StageInfoLoader] " + reason);
                 if (onErrorHandler != null) onErrorHandler();
             });
         }, function():Void {
-            // trace("StageInfoLoader: list.xml 文件加载失败！");
             if (onErrorHandler != null) onErrorHandler();
         });
     }
 
-    /**
-     * 递归加载子 XML 文件并合并数据。
-     * @param paths 子 XML 文件路径数组。
-     * @param index 当前加载的文件索引。
-     * @param onComplete 所有文件加载完成的回调函数。
-     * @param onError 加载失败的回调函数。
-     */
-    private function loadChildXmlFiles(paths:Array, index:Number, onComplete:Function, onError:Function):Void {
-        var self:StageInfoLoader = this;
+    /** pathBuilder: data/stages/{folderName}/__list__.xml */
+    private static function buildStagePath(basePath:String, entry:String):String {
+        return basePath + entry + "/__list__.xml";
+    }
 
-        if (index >= paths.length) {
-            // 所有文件加载完成
-            onComplete();
-            return;
+    /** mergeFn: 从 childData.StageInfo 提取关卡信息，注入 url 字段 */
+    private static function mergeStageInfo(acc:Object, childData:Object, index:Number, entry:String):Object {
+        var infoList = childData.StageInfo;
+        if (infoList == null || infoList == undefined) return acc;
+        // StageInfo 可能是单个对象或数组
+        if (!(infoList instanceof Array)) {
+            infoList = [infoList];
         }
-
-        var xmlFolderName:String = paths[index];
-        var xmlFilePath:String = path + xmlFolderName + "/__list__.xml";
-        // trace("StageInfoLoader: 准备加载子 XML 文件 = " + xmlFilePath);
-
-        var loader:BaseXMLLoader = new BaseXMLLoader(xmlFilePath);
-
-        loader.load(function(childData:Object):Void {
-            // trace("StageInfoLoader: 子 XML 文件加载成功 = " + xmlFilePath);
-            // trace("StageInfoLoader: 子 XML 数据 = " + ObjectUtil.stringify(childData));
-
-            // 假设 childData.StageInfo 中的关卡信息，合并到 combinedData 中
-            var infoList = childData.StageInfo;
-            //填写每个关卡对应的url
-            for(var i=0; i<infoList.length; i++){
-                var info = infoList[i];
-                info.url = path + xmlFolderName + "/" + info.Name + ".xml";
-                self.combinedData[info.Name] = info;
-            }
-
-            // 递归加载下一个文件
-            self.loadChildXmlFiles(paths, index + 1, onComplete, onError);
-        }, function():Void {
-            // trace("StageInfoLoader: 子 XML 文件加载失败 = " + xmlFilePath);
-            onError();
-        });
+        var i:Number = 0;
+        while (i < infoList.length) {
+            var info:Object = infoList[i];
+            info.url = path + entry + "/" + info.Name + ".xml";
+            acc[info.Name] = info;
+            i++;
+        }
+        return acc;
     }
 
     /**

@@ -3,6 +3,10 @@ import org.flashNight.gesh.path.PathManager;
 import org.flashNight.gesh.object.ObjectUtil;
 
 class org.flashNight.gesh.json.LoadJson.BaseJSONLoader {
+
+    /** 调试开关：设为 true 启用 INFO/WARN/DEBUG 日志，false 仅输出 ERROR。 */
+    private static var _debug:Boolean = false;
+
     // 日志输出方法
     private static function log(message:String, level:String):Void {
         var formattedMessage:String = "[BaseJSONLoader] [" + level + "] " + message;
@@ -20,14 +24,17 @@ class org.flashNight.gesh.json.LoadJson.BaseJSONLoader {
     }
     
     private static function logWarn(message:String):Void {
+        if (!_debug) return;
         log(message, "WARN");
     }
-    
+
     private static function logInfo(message:String):Void {
+        if (!_debug) return;
         log(message, "INFO");
     }
-    
+
     private static function logDebug(message:String):Void {
+        if (!_debug) return;
         log(message, "DEBUG");
     }
     private var data:Object = null;

@@ -1,5 +1,6 @@
 ﻿import org.flashNight.gesh.xml.LoadXml.BaseXMLLoader;
 import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.aven.Promise.ListLoader;
 
 class org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader extends BaseXMLLoader {
     private static var instance:NpcDialogueLoader = null;
@@ -34,151 +35,116 @@ class org.flashNight.gesh.xml.LoadXml.NpcDialogueLoader extends BaseXMLLoader {
     }
 
     /**
-     * 解析 list.xml 文件，根据其中内容，解析并合并其中的 XML 数据。
+     * 解析 list.xml 文件，根据其中内容，并行加载并合并子 XML 数据。
      * @param onLoadHandler 加载成功后的回调函数，接收合并后的数据作为参数。
      * @param onErrorHandler 加载失败后的回调函数。
      */
     public function loadNpcDialogues(onLoadHandler:Function, onErrorHandler:Function):Void {
         var self:NpcDialogueLoader = this;
 
-        // 加载 list.xml 文件
         super.load(function(data:Object):Void {
-            // trace("NpcDialogueLoader: list.xml 文件加载成功！");
-            // trace("NpcDialogueLoader: list.xml 数据 = " + ObjectUtil.stringify(data));
-
-            if (!data || !data.items || !(data.items instanceof Array)) {
-                // trace("NpcDialogueLoader: list.xml 数据结构不正确！");
+            if (!data || !data.items) {
                 if (onErrorHandler != null) onErrorHandler();
                 return;
             }
+            var entries:Array = ListLoader.normalizeToArray(data.items);
 
-            var childXmlPaths:Array = data.items;
-            // trace("NpcDialogueLoader: 需要加载的子 XML 文件列表 = " + ObjectUtil.stringify(childXmlPaths));
-
-            self.combinedData = {};
-
-            // 开始加载子 XML 文件
-            self.loadChildXmlFiles(childXmlPaths, 0, function():Void {
-                // 将合并后的数据保存到基类的 data 属性中
-                super.data = self.combinedData;
-
-                // trace("NpcDialogueLoader: 所有子 XML 文件加载并合并成功！");
-                // trace("NpcDialogueLoader: 合并后的数据 = " + ObjectUtil.stringify(self.combinedData));
+            ListLoader.loadChildren({
+                entries:      entries,
+                basePath:     path,
+                mergeFn:      NpcDialogueLoader.mergeDialogues,
+                initialValue: {}
+            }).then(function(result:Object):Void {
+                self.combinedData = result;
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
-            }, function():Void {
-                // trace("NpcDialogueLoader: 加载子 XML 文件失败！");
+            }).onCatch(function(reason:Object):Void {
+                trace("[NpcDialogueLoader] " + reason);
                 if (onErrorHandler != null) onErrorHandler();
             });
         }, function():Void {
-            // trace("NpcDialogueLoader: list.xml 文件加载失败！");
             if (onErrorHandler != null) onErrorHandler();
         });
     }
 
     /**
-     * 递归加载子 XML 文件并合并数据。
-     * @param paths 子 XML 文件路径数组。
-     * @param index 当前加载的文件索引。
-     * @param onComplete 所有文件加载完成的回调函数。
-     * @param onError 加载失败的回调函数。
+     * 合并单个子 XML 的 NPC 对话数据到累加器。
+     * 处理 Dialogues → Dialogue → SubDialogue 的嵌套结构，
+     * 并将 PascalCase 字段名转换为 lowercase。
      */
-    private function loadChildXmlFiles(paths:Array, index:Number, onComplete:Function, onError:Function):Void {
-        var self:NpcDialogueLoader = this;
+    private static function mergeDialogues(acc:Object, childData:Object, index:Number, entry:String):Object {
+        var dialoguesData:Object = childData.Dialogues;
+        if (dialoguesData == null || dialoguesData == undefined) return acc;
 
-        if (index >= paths.length) {
-            // 所有文件加载完成
-            onComplete();
-            return;
+        // Dialogues 可能是单个对象或数组
+        var dialoguesArray;
+        if (dialoguesData instanceof Array) {
+            dialoguesArray = dialoguesData;
+        } else {
+            dialoguesArray = [dialoguesData];
         }
 
-        var xmlFileName:String = paths[index];
-        var xmlFilePath:String = path + xmlFileName;
-        // trace("NpcDialogueLoader: 准备加载子 XML 文件 = " + xmlFilePath);
+        var i:Number = 0;
+        while (i < dialoguesArray.length) {
+            var npcData:Object = dialoguesArray[i];
+            if (npcData != null && npcData.Name != undefined) {
+                var npcName:String = npcData.Name;
 
-        var loader:BaseXMLLoader = new BaseXMLLoader(xmlFilePath);
+                if (npcData.Dialogue != null) {
+                    if (acc[npcName] == undefined) {
+                        acc[npcName] = [];
+                    }
 
-        loader.load(function(childData:Object):Void {
-            // trace("NpcDialogueLoader: 子 XML 文件加载成功 = " + xmlFilePath);
-            // trace("NpcDialogueLoader: 子 XML 数据 = " + ObjectUtil.stringify(childData));
+                    // Dialogue 可能是单个对象或数组
+                    var dialogueArray;
+                    if (npcData.Dialogue instanceof Array) {
+                        dialogueArray = npcData.Dialogue;
+                    } else {
+                        dialogueArray = [npcData.Dialogue];
+                    }
 
-            // 修复：新的XML文件结构中，childData直接就是根节点，包含Dialogues
-            // 每个文件只有一个Dialogues节点（代表一个或多个NPC）
-            var dialoguesData:Object = childData.Dialogues;
+                    var j:Number = 0;
+                    while (j < dialogueArray.length) {
+                        var dialogue:Object = dialogueArray[j];
+                        var dialogueObj:Object = {};
 
-            if (dialoguesData) {
-                // 将Dialogues转换为数组（可能是单个对象或数组）
-                var dialoguesArray:Array = (dialoguesData instanceof Array) ? dialoguesData : [dialoguesData];
+                        dialogueObj.TaskRequirement = dialogue.TaskRequirement ? Number(dialogue.TaskRequirement) : 0;
 
-                for (var i:Number = 0; i < dialoguesArray.length; i++) {
-                    var npcData:Object = dialoguesArray[i];
-                    if (npcData && npcData.Name) {
-                        var npcName:String = npcData.Name;
-                        // trace("NpcDialogueLoader: 合并NPC对话，NPC名称 = " + npcName);
-
-                        // 修复：需要保持与游戏期望的数据结构一致
-                        // 游戏期望: NPC对话[NPC名称] = [{TaskRequirement: 0, Dialogue: [...]}, ...]
-                        if (npcData.Dialogue) {
-                            // 如果该NPC还没有数据，初始化为空数组
-                            if (!self.combinedData[npcName]) {
-                                self.combinedData[npcName] = [];
+                        if (dialogue.SubDialogue != null) {
+                            var subArray;
+                            if (dialogue.SubDialogue instanceof Array) {
+                                subArray = dialogue.SubDialogue;
+                            } else {
+                                subArray = [dialogue.SubDialogue];
                             }
 
-                            // 将Dialogue转换为数组
-                            var dialogueArray:Array = (npcData.Dialogue instanceof Array) ? npcData.Dialogue : [npcData.Dialogue];
-
-                            // 为每个对话创建正确的数据结构
-                            for (var j:Number = 0; j < dialogueArray.length; j++) {
-                                var dialogueObj:Object = {};
-                                var dialogue:Object = dialogueArray[j];
-
-                                // 提取TaskRequirement字段（如果存在）
-                                dialogueObj.TaskRequirement = dialogue.TaskRequirement ? Number(dialogue.TaskRequirement) : 0;
-
-                                // 重要：Dialogue字段应该直接是SubDialogue数组，而不是完整的对话对象
-                                // 游戏代码期望: 总对话[i].Dialogue 直接就是 SubDialogue数组
-                                // 同时需要将字段名转换为小写，因为组装单次对话函数期望小写字段名
-                                if (dialogue.SubDialogue) {
-                                    var subDialogueArray:Array = (dialogue.SubDialogue instanceof Array) ? dialogue.SubDialogue : [dialogue.SubDialogue];
-
-                                    // 转换字段名为小写
-                                    var convertedSubDialogues:Array = [];
-                                    for (var k:Number = 0; k < subDialogueArray.length; k++) {
-                                        var subDialogue:Object = subDialogueArray[k];
-                                        var convertedSubDialogue:Object = {};
-
-                                        // 转换字段名为小写（Name -> name, Title -> title, etc.）
-                                        convertedSubDialogue.name = subDialogue.Name || subDialogue.name;
-                                        convertedSubDialogue.title = subDialogue.Title || subDialogue.title;
-                                        convertedSubDialogue.char = subDialogue.Char || subDialogue.char;
-                                        convertedSubDialogue.text = subDialogue.Text || subDialogue.text;
-                                        convertedSubDialogue.id = subDialogue.id;
-
-                                        // 保留其他可能的字段
-                                        convertedSubDialogue.target = subDialogue.Target || subDialogue.target;
-                                        convertedSubDialogue.imageurl = subDialogue.ImageUrl || subDialogue.imageurl;
-
-                                        convertedSubDialogues.push(convertedSubDialogue);
-                                    }
-
-                                    dialogueObj.Dialogue = convertedSubDialogues;
-                                } else {
-                                    // 如果没有SubDialogue，将整个对话对象作为单个元素的数组
-                                    dialogueObj.Dialogue = [dialogue];
-                                }
-
-                                self.combinedData[npcName].push(dialogueObj);
+                            var converted:Array = [];
+                            var k:Number = 0;
+                            while (k < subArray.length) {
+                                var sub:Object = subArray[k];
+                                var c:Object = {};
+                                c.name = sub.Name || sub.name;
+                                c.title = sub.Title || sub.title;
+                                c.char = sub.Char || sub.char;
+                                c.text = sub.Text || sub.text;
+                                c.id = sub.id;
+                                c.target = sub.Target || sub.target;
+                                c.imageurl = sub.ImageUrl || sub.imageurl;
+                                converted.push(c);
+                                k++;
                             }
+                            dialogueObj.Dialogue = converted;
+                        } else {
+                            dialogueObj.Dialogue = [dialogue];
                         }
+
+                        acc[npcName].push(dialogueObj);
+                        j++;
                     }
                 }
             }
-
-            // 递归加载下一个文件
-            self.loadChildXmlFiles(paths, index + 1, onComplete, onError);
-        }, function():Void {
-            // trace("NpcDialogueLoader: 子 XML 文件加载失败 = " + xmlFilePath);
-            onError();
-        });
+            i++;
+        }
+        return acc;
     }
 
     /**

@@ -1,5 +1,6 @@
 ﻿import org.flashNight.gesh.xml.LoadXml.BaseXMLLoader;
 import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.aven.Promise.ListLoader;
 
 class org.flashNight.gesh.xml.LoadXml.ItemDataLoader extends BaseXMLLoader {
     private static var instance:ItemDataLoader = null;
@@ -34,81 +35,36 @@ class org.flashNight.gesh.xml.LoadXml.ItemDataLoader extends BaseXMLLoader {
     }
 
     /**
-     * 解析 list.xml 文件，根据其中内容，解析并合并其中的 XML 数据。
+     * 解析 list.xml 文件，根据其中内容，并行加载并合并子 XML 数据。
      * @param onLoadHandler 加载成功后的回调函数，接收合并后的数据作为参数。
      * @param onErrorHandler 加载失败后的回调函数。
      */
     public function loadItemData(onLoadHandler:Function, onErrorHandler:Function):Void {
         var self:ItemDataLoader = this;
 
-        // 加载 list.xml 文件
+        // super.load() 读取 list.xml（保留 BaseXMLLoader 实例缓存）
         super.load(function(data:Object):Void {
-            // trace("ItemDataLoader: list.xml 文件加载成功！");
-            // trace("ItemDataLoader: list.xml 数据 = " + ObjectUtil.stringify(data));
-
-            if (!data || !data.items || !(data.items instanceof Array)) {
-                // trace("ItemDataLoader: list.xml 数据结构不正确！");
+            if (!data || !data.items) {
                 if (onErrorHandler != null) onErrorHandler();
                 return;
             }
+            var entries:Array = ListLoader.normalizeToArray(data.items);
 
-            var childXmlPaths:Array = data.items;
-            // trace("ItemDataLoader: 需要加载的子 XML 文件列表 = " + ObjectUtil.stringify(childXmlPaths));
-
-            self.combinedData = [];
-
-            // 开始加载子 XML 文件
-            self.loadChildXmlFiles(childXmlPaths, 0, function():Void {
-                // 将合并后的数据保存到基类的 data 属性中
-                super.data = self.combinedData;
-
-                // trace("ItemDataLoader: 所有子 XML 文件加载并合并成功！");
-                // trace("ItemDataLoader: 合并后的数据 = " + ObjectUtil.stringify(self.combinedData));
+            ListLoader.loadChildren({
+                entries:      entries,
+                basePath:     path,
+                mergeFn:      ListLoader.concatField("item"),
+                initialValue: []
+            }).then(function(result:Object):Void {
+                var arr = result;
+                self.combinedData = arr;
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
-            }, function():Void {
-                // trace("ItemDataLoader: 加载子 XML 文件失败！");
+            }).onCatch(function(reason:Object):Void {
+                trace("[ItemDataLoader] " + reason);
                 if (onErrorHandler != null) onErrorHandler();
             });
         }, function():Void {
-            // trace("ItemDataLoader: list.xml 文件加载失败！");
             if (onErrorHandler != null) onErrorHandler();
-        });
-    }
-
-    /**
-     * 递归加载子 XML 文件并合并数据。
-     * @param paths 子 XML 文件路径数组。
-     * @param index 当前加载的文件索引。
-     * @param onComplete 所有文件加载完成的回调函数。
-     * @param onError 加载失败的回调函数。
-     */
-    private function loadChildXmlFiles(paths:Array, index:Number, onComplete:Function, onError:Function):Void {
-        var self:ItemDataLoader = this;
-
-        if (index >= paths.length) {
-            // 所有文件加载完成
-            onComplete();
-            return;
-        }
-
-        var xmlFileName:String = paths[index];
-        var xmlFilePath:String = path + xmlFileName;
-        // trace("ItemDataLoader: 准备加载子 XML 文件 = " + xmlFilePath);
-
-        var loader:BaseXMLLoader = new BaseXMLLoader(xmlFilePath);
-
-        loader.load(function(childData:Object):Void {
-            // trace("ItemDataLoader: 子 XML 文件加载成功 = " + xmlFilePath);
-            // trace("ItemDataLoader: 子 XML 数据 = " + ObjectUtil.stringify(childData));
-
-            // 假设 childData.item 中的物品数据，合并到 combinedData 中
-            self.combinedData = self.combinedData.concat(childData.item);
-
-            // 递归加载下一个文件
-            self.loadChildXmlFiles(paths, index + 1, onComplete, onError);
-        }, function():Void {
-            // trace("ItemDataLoader: 子 XML 文件加载失败 = " + xmlFilePath);
-            onError();
         });
     }
 

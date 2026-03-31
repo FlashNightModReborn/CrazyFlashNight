@@ -1,6 +1,7 @@
 ﻿import org.flashNight.gesh.xml.LoadXml.BaseXMLLoader;
 import org.flashNight.gesh.json.LoadJson.BaseJSONLoader;
 import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.aven.Promise.ListLoader;
 
 // 由于需要先读取list.xml，所以继承BaseXMLLoader
 class org.flashNight.gesh.json.LoadJson.TaskDataLoader extends BaseXMLLoader {
@@ -36,80 +37,36 @@ class org.flashNight.gesh.json.LoadJson.TaskDataLoader extends BaseXMLLoader {
     }
 
     /**
-     * 解析 list.xml 文件，根据其中内容，解析并合并其中的 XML 数据。
+     * 解析 list.xml 文件，根据其中内容，并行加载并合并子 JSON 数据。
      * @param onLoadHandler 加载成功后的回调函数，接收合并后的数据作为参数。
      * @param onErrorHandler 加载失败后的回调函数。
      */
     public function loadTaskData(onLoadHandler:Function, onErrorHandler:Function):Void {
         var self:TaskDataLoader = this;
 
-        // 加载 list.xml 文件
         super.load(function(data:Object):Void {
-            // trace("TaskDataLoader: list.xml 文件加载成功！");
-
-            if (!data || !data.task || !(data.task instanceof Array)) {
-                // trace("TaskDataLoader: list.xml 数据结构不正确！");
+            if (!data || !data.task) {
                 if (onErrorHandler != null) onErrorHandler();
                 return;
             }
+            var entries:Array = ListLoader.normalizeToArray(data.task);
 
-            var childJSONPaths:Array = data.task;
-            // trace("TaskDataLoader: 需要加载的子 JSON 文件列表 = " + ObjectUtil.stringify(childJSONPaths));
-
-            self.combinedData = [];
-
-            // 开始加载子 JSON 文件
-            self.loadChildJSONFiles(childJSONPaths, 0, function():Void {
-                // 将合并后的数据保存到基类的 data 属性中
-                super.data = self.combinedData;
-
-                // trace("TaskDataLoader: 所有子 JSON 文件加载并合并成功！");
-                // trace("TaskDataLoader: 合并后的数据 = " + ObjectUtil.stringify(self.combinedData));
+            ListLoader.loadChildren({
+                entries:      entries,
+                basePath:     path,
+                childType:    "json",
+                mergeFn:      ListLoader.concatField("tasks"),
+                initialValue: []
+            }).then(function(result:Object):Void {
+                var arr = result;
+                self.combinedData = arr;
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
-            }, function():Void {
-                // trace("TaskDataLoader: 加载子 JSON 文件失败！");
+            }).onCatch(function(reason:Object):Void {
+                trace("[TaskDataLoader] " + reason);
                 if (onErrorHandler != null) onErrorHandler();
             });
         }, function():Void {
-            // trace("TaskDataLoader: list.xml 文件加载失败！");
             if (onErrorHandler != null) onErrorHandler();
-        });
-    }
-
-    /**
-     * 递归加载子 JSON 文件并合并数据。
-     * @param paths 子 JSON 文件路径数组。
-     * @param index 当前加载的文件索引。
-     * @param onComplete 所有文件加载完成的回调函数。
-     * @param onError 加载失败的回调函数。
-     */
-    private function loadChildJSONFiles(paths:Array, index:Number, onComplete:Function, onError:Function):Void {
-        var self:TaskDataLoader = this;
-
-        if (index >= paths.length) {
-            // 所有文件加载完成
-            onComplete();
-            return;
-        }
-
-        var jsonFileName:String = paths[index];
-        var jsonFilePath:String = path + jsonFileName;
-        // trace("TaskDataLoader: 准备加载子 JSON 文件 = " + jsonFilePath);
-
-        var loader:BaseJSONLoader = new BaseJSONLoader(jsonFilePath);
-
-        loader.load(function(childData:Object):Void {
-            // trace("TaskDataLoader: 子 JSON 文件加载成功 = " + jsonFilePath);
-            // trace("TaskDataLoader: 子 JSON 数据 = " + ObjectUtil.stringify(childData));
-
-            // 假设 childData.tasks 中的任务数据，合并到 combinedData 中
-            self.combinedData = self.combinedData.concat(childData.tasks);
-
-            // 递归加载下一个文件
-            self.loadChildJSONFiles(paths, index + 1, onComplete, onError);
-        }, function():Void {
-            // trace("TaskDataLoader: 子 JSON 文件加载失败 = " + jsonFilePath);
-            onError();
         });
     }
 
