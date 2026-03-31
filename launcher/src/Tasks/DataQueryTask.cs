@@ -66,7 +66,8 @@ namespace CF7Launcher.Tasks
 
         /// <summary>
         /// NPC 对话查询。
-        /// NPC 不存在或无匹配条目时返回 success:true, result:[]（匹配 legacy 行为）。
+        /// 数据加载失败 → success:false（Flash 走 legacy fallback）。
+        /// NPC 不存在或无匹配条目 → success:true, result:[]（匹配 legacy 正常行为）。
         /// </summary>
         private string QueryNpcDialogue(JObject payload)
         {
@@ -74,6 +75,10 @@ namespace CF7Launcher.Tasks
             int taskProgress = payload.Value<int>("taskProgress");
 
             Dictionary<string, List<DialogueGroup>> index = _cache.GetNpcDialogues();
+
+            // 数据加载失败（缓存了错误状态）→ Flash 走 fallback
+            if (index == null)
+                return BuildError("NPC data unavailable: " + (_cache.GetNpcError() ?? "unknown"));
 
             // NPC 不存在 → success:true, result:[]
             List<DialogueGroup> groups;
@@ -94,6 +99,11 @@ namespace CF7Launcher.Tasks
         private string QueryMercBundle()
         {
             JObject bundle = _cache.GetMercBundle();
+
+            // 数据加载失败（缓存了错误状态）→ Flash 走 fallback
+            if (bundle == null)
+                return BuildError("merc_bundle unavailable: " + (_cache.GetMercError() ?? "unknown"));
+
             return BuildSuccess(bundle);
         }
 

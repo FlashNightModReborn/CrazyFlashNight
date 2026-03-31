@@ -38,18 +38,18 @@ namespace CF7Launcher.Data
             Dictionary<string, List<DialogueGroup>> index =
                 new Dictionary<string, List<DialogueGroup>>();
 
+            // list.xml 缺失 = 整体失败（匹配 AS2 Promise.all 语义）
             if (!File.Exists(listPath))
-            {
-                LogManager.Log("[XmlDataLoader] list.xml not found: " + listPath);
-                return index;
-            }
+                throw new FileNotFoundException("list.xml not found: " + listPath);
 
             XmlDocument listDoc = new XmlDocument();
             listDoc.Load(listPath);
 
             XmlNodeList items = listDoc.SelectNodes("//items");
-            if (items == null) return index;
+            if (items == null)
+                throw new InvalidOperationException("list.xml contains no <items> entries");
 
+            // 任一子文件缺失/解析失败 = 整体失败（匹配 AS2 NpcDialogueLoader 的 Promise.all 语义）
             foreach (XmlNode item in items)
             {
                 string fileName = item.InnerText;
@@ -57,19 +57,10 @@ namespace CF7Launcher.Data
 
                 string filePath = Path.Combine(dataDir, fileName);
                 if (!File.Exists(filePath))
-                {
-                    LogManager.Log("[XmlDataLoader] NPC dialogue file not found: " + filePath);
-                    continue;
-                }
+                    throw new FileNotFoundException("NPC dialogue file missing: " + fileName);
 
-                try
-                {
-                    ParseNpcDialogueFile(filePath, index);
-                }
-                catch (Exception ex)
-                {
-                    LogManager.Log("[XmlDataLoader] Error parsing " + fileName + ": " + ex.Message);
-                }
+                ParseNpcDialogueFile(filePath, index);
+                // ParseNpcDialogueFile 内部不 catch — 解析异常直接冒泡
             }
 
             LogManager.Log("[XmlDataLoader] NPC dialogues loaded: " + index.Count + " NPCs");
@@ -173,17 +164,29 @@ namespace CF7Launcher.Data
         {
             string dataDir = Path.Combine(projectRoot, "data", "hybrid_mercenaries");
 
-            JObject bundle = new JObject();
-            bundle["teams"] = LoadTeams(Path.Combine(dataDir, "teams.xml"));
-            bundle["names"] = LoadNames(Path.Combine(dataDir, "name.xml"));
-
+            JArray teams = LoadTeams(Path.Combine(dataDir, "teams.xml"));
+            JArray names = LoadNames(Path.Combine(dataDir, "name.xml"));
             JArray dialogues;
             JObject pool;
             LoadDialoguesAndPool(Path.Combine(dataDir, "dialogues.xml"), out dialogues, out pool);
+
+            // 匹配 AS2 legacy 语义：三份 XML 全部成功且非空才算 loaded
+            // 任一为空 = 加载失败，Flash 端走 fallback legacy
+            if (teams.Count == 0)
+                throw new InvalidOperationException("teams.xml loaded 0 entries");
+            if (names.Count == 0)
+                throw new InvalidOperationException("name.xml loaded 0 entries");
+            if (dialogues.Count == 0)
+                throw new InvalidOperationException("dialogues.xml loaded 0 entries");
+
+            JObject bundle = new JObject();
+            bundle["teams"] = teams;
+            bundle["names"] = names;
             bundle["dialogues"] = dialogues;
             bundle["pool"] = pool;
 
-            LogManager.Log("[XmlDataLoader] Merc bundle loaded");
+            LogManager.Log("[XmlDataLoader] Merc bundle loaded: teams=" + teams.Count
+                + " names=" + names.Count + " dialogues=" + dialogues.Count);
             return bundle;
         }
 
@@ -192,12 +195,9 @@ namespace CF7Launcher.Data
         /// </summary>
         private static JArray LoadTeams(string path)
         {
-            JArray teams = new JArray();
             if (!File.Exists(path))
-            {
-                LogManager.Log("[XmlDataLoader] teams.xml not found: " + path);
-                return teams;
-            }
+                throw new FileNotFoundException("teams.xml not found: " + path);
+            JArray teams = new JArray();
 
             XmlDocument doc = new XmlDocument();
             doc.Load(path);
@@ -230,12 +230,9 @@ namespace CF7Launcher.Data
         /// </summary>
         private static JArray LoadNames(string path)
         {
-            JArray names = new JArray();
             if (!File.Exists(path))
-            {
-                LogManager.Log("[XmlDataLoader] name.xml not found: " + path);
-                return names;
-            }
+                throw new FileNotFoundException("name.xml not found: " + path);
+            JArray names = new JArray();
 
             XmlDocument doc = new XmlDocument();
             doc.Load(path);
@@ -260,14 +257,11 @@ namespace CF7Launcher.Data
         private static void LoadDialoguesAndPool(
             string path, out JArray dialogues, out JObject pool)
         {
+            if (!File.Exists(path))
+                throw new FileNotFoundException("dialogues.xml not found: " + path);
+
             dialogues = new JArray();
             pool = new JObject();
-
-            if (!File.Exists(path))
-            {
-                LogManager.Log("[XmlDataLoader] dialogues.xml not found: " + path);
-                return;
-            }
 
             XmlDocument doc = new XmlDocument();
             doc.Load(path);
