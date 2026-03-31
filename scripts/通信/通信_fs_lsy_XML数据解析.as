@@ -16,50 +16,6 @@ _root.配置数据为数组 = function(输入){
     }
 };
 
-_root.实体映射反向 = new Object();// 反向映射 HTML 实体
-_root.实体映射反向["&amp;"] = "&";
-_root.实体映射反向["&lt;"] = "<";
-_root.实体映射反向["&gt;"] = ">";
-_root.实体映射反向["&quot;"] = "\"";
-_root.实体映射反向["&apos;"] = "'";
-_root.实体映射反向["&nbsp;"] = " ";
-_root.实体映射反向["&NewLine;"] = "\n";
-_root.实体映射反向["&copy;"] = "©";
-_root.实体映射反向["&reg;"] = "®";
-_root.实体映射反向["&trade;"] = "™";
-_root.实体映射反向["&deg;"] = "°";
-_root.实体映射反向["&plusmn;"] = "±";
-_root.实体映射反向["&sup2;"] = "²";
-_root.实体映射反向["&sup3;"] = "³";
-_root.实体映射反向["&frac14;"] = "¼";
-_root.实体映射反向["&frac12;"] = "½";
-_root.实体映射反向["&frac34;"] = "¾";
-_root.实体映射反向["&times;"] = "×";
-_root.实体映射反向["&divide;"] = "÷";
-_root.实体映射反向["&iexcl;"] = "¡";
-_root.实体映射反向["&cent;"] = "¢";
-_root.实体映射反向["&pound;"] = "£";
-_root.实体映射反向["&curren;"] = "¤";
-_root.实体映射反向["&yen;"] = "¥";
-_root.实体映射反向["&brvbar;"] = "¦";
-_root.实体映射反向["&sect;"] = "§";
-_root.实体映射反向["&uml;"] = "¨";
-_root.实体映射反向["&ordf;"] = "ª";
-_root.实体映射反向["&laquo;"] = "«";
-_root.实体映射反向["&not;"] = "¬";
-_root.实体映射反向["&shy;"] = "­";
-_root.实体映射反向["&macr;"] = "¯";
-_root.转换HTML实体回文本 = function(带实体的文本:String):String 
-{
-	for (var 实体:String in _root.实体映射反向) {;
-
-
-	var 对应字符:String = _root.实体映射反向[实体];
-	带实体的文本 = 带实体的文本.split(实体).join(对应字符);
-}
-return 带实体的文本;
-};
-
 
 _root.解析并设置奖励品配置 = function(奖励品配置:Array)
 {// 清空或初始化奖励数组
@@ -980,31 +936,6 @@ _root.加载并配置宠物信息 = function(xml文件地址:String):Void
 };
 
 
-_root.加载并配置技能表 = function(xml文件地址:String):Void 
-{
-	var 技能XML:XML = new XML();
-	技能XML.ignoreWhite = true;
-	技能XML.onLoad = function(加载成功:Boolean){
-		if (加载成功){
-			var 技能表 = _root.解析XML节点(this.firstChild).Skill;
-			var 技能表对象 = new Object();
-			for(var i = 0; i < 技能表.length; i++){
-				var 技能对象 = 技能表[i];
-				if(!技能对象.Name || 技能对象.Name == "") continue;
-				技能对象.id = i;
-				技能对象.Passive = 技能对象.Type.indexOf("被动") > -1;
-				技能对象.Equippable = 技能对象.Type != "被动";
-				技能表对象[技能对象.Name] = 技能对象;
-			}
-			_root.技能表 = 技能表;
-			_root.技能表对象 = 技能表对象;
-		}else{
-			//_root.服务器.发布服务器消息("无法加载 XML 文件: " + xml文件地址);
-		}
-	};
-	技能XML.load(xml文件地址);
-};
-
 
 _root.加载过场背景与文本 = function(xml文件地址:String):Void 
 {
@@ -1052,12 +983,7 @@ _root.解析XML节点 = function(节点:XMLNode):Object
 	for (var i = 0; i < 节点.childNodes.length; i++)
 	{
 		var 子节点:XMLNode = 节点.childNodes[i];
-		var 节点名:String = 子节点.nodeName;// 特别处理 Description 节点
-		if ((节点名 == "Description" or 节点名 == "MaterialDetail") && 子节点.nodeType == 1)
-		{
-			解析结果[节点名] = _root.转换HTML实体回文本(子节点.firstChild.nodeValue);
-			continue;
-		}
+		var 节点名:String = 子节点.nodeName;
 		// 检查是否有子节点                                                                                                      
 		if (子节点.hasChildNodes())
 		{

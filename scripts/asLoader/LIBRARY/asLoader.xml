@@ -370,7 +370,7 @@ _root.NPC对话_ensureLoaded(
             </DOMFrame>
             <DOMFrame index="58" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.加载并配置技能表("data/skills/skills.xml");]]></script>
+                <script><![CDATA[org.flashNight.gesh.xml.LoadXml.SkillDataLoader.getInstance().load(null, null);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
