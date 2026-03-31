@@ -181,6 +181,10 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
         test_catchThenFinally();
         test_allSingleReject();
         test_raceWithThenable();
+        test_schedulerTickManualDrain();
+        test_schedulerBindToExternalDriven();
+        test_schedulerFallbackToClip();
+        test_schedulerUnbindPausesThenFallback();
     }
 
     /** 输出汇总 */
@@ -1581,6 +1585,109 @@ class org.flashNight.aven.Promise.PromiseAPlusTest {
                 assert("all-single-reject", r == "solo-fail", "got: " + r);
             }
         );
+    }
+
+    // ================================================================
+    // Scheduler 驱动模式测试
+    // ================================================================
+
+    /** tick() 手动排空：clip 模式下立即排空，不等帧 */
+    private static function test_schedulerTickManualDrain():Void {
+        var result:Object = {value: null};
+        Promise.resolve("tick-val").then(function(v:Object):Void {
+            result.value = v;
+        });
+
+        // 不等帧，直接 tick
+        Scheduler.getInstance().tick();
+        assert("tick-manual-drain", result.value == "tick-val", "got: " + result.value);
+    }
+
+    /** bindTo 切换到外部驱动：clip 应被移除，isExternalDriven 应为 true */
+    private static function test_schedulerBindToExternalDriven():Void {
+        var scheduler:Scheduler = Scheduler.getInstance();
+        var mockBus:Object = {
+            subscribers: [],
+            subscribe: function(name:String, fn:Function, scope:Object):Void {
+                this.subscribers.push({name: name, fn: fn, scope: scope});
+            },
+            unsubscribe: function(name:String, fn:Function, scope:Object):Void {
+                this.subscribers = [];
+            }
+        };
+
+        // 绑定
+        scheduler.bindTo(mockBus, "testEvent");
+        assert("bindTo-external-flag", scheduler.isExternalDriven() === true, "not external");
+        assert("bindTo-clip-removed", _root._promiseScheduler == undefined
+            || _root._promiseScheduler._parent == undefined, "clip still alive");
+
+        // 外部驱动下 Promise 排空需要手动 tick
+        var result:Object = {value: null};
+        Promise.resolve("external-val").then(function(v:Object):Void {
+            result.value = v;
+        });
+        // 不 tick，值应该还是 null
+        assert("bindTo-no-auto-drain", result.value == null, "drained without tick");
+        // tick 后排空
+        scheduler.tick();
+        assert("bindTo-tick-drains", result.value == "external-val", "got: " + result.value);
+
+        // 还原到 clip 模式
+        scheduler.unbind(mockBus, "testEvent");
+        scheduler.fallbackToClip();
+    }
+
+    /** fallbackToClip 恢复 clip 驱动 */
+    private static function test_schedulerFallbackToClip():Void {
+        var scheduler:Scheduler = Scheduler.getInstance();
+        assert("fallback-not-external", scheduler.isExternalDriven() === false, "still external");
+
+        // 验证 clip 恢复后 Promise 能自然排空
+        var fired:Object = {done: false};
+        Promise.resolve("fallback-val").then(function(v:Object):Void {
+            fired.done = true;
+        });
+
+        afterFrames(3, function():Void {
+            assert("fallback-fires", fired.done === true, "callback never fired after fallback");
+        });
+    }
+
+    /** unbind 暂停排空 → fallbackToClip 恢复 */
+    private static function test_schedulerUnbindPausesThenFallback():Void {
+        var scheduler:Scheduler = Scheduler.getInstance();
+        var mockBus:Object = {
+            subscribe: function(name:String, fn:Function, scope:Object):Void {},
+            unsubscribe: function(name:String, fn:Function, scope:Object):Void {}
+        };
+
+        // bind + unbind，不 fallback：此时无驱动
+        scheduler.bindTo(mockBus, "evt");
+        scheduler.unbind(mockBus, "evt");
+        assert("unbind-paused", scheduler.isExternalDriven() === false, "flag not cleared");
+
+        // 入队一个回调，此时无驱动，不会自动排空
+        var result:Object = {value: null};
+        Promise.resolve("paused-val").then(function(v:Object):Void {
+            result.value = v;
+        });
+
+        // 手动 tick 验证队列没丢
+        scheduler.tick();
+        assert("unbind-tick-recovers", result.value == "paused-val", "got: " + result.value);
+
+        // 恢复 clip 模式
+        scheduler.fallbackToClip();
+
+        // 再验证 clip 驱动正常
+        var fired2:Object = {done: false};
+        Promise.resolve("restored").then(function(v:Object):Void {
+            fired2.done = true;
+        });
+        afterFrames(3, function():Void {
+            assert("unbind-fallback-restored", fired2.done === true, "clip not restored");
+        });
     }
 
     /** P3-15: Promise.race 含 thenable */

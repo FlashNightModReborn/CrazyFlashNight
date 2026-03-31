@@ -2,33 +2,41 @@
  * org.flashNight.aven.Promise.Scheduler
  *
  * Promise 异步回调调度器。
- * 支持"外部 tick 优先 + clip 回退"的可插拔驱动模式。
+ * 支持两种互斥的驱动模式，以及一个测试用手动排空入口。
  *
- * === 驱动模式 ===
+ * === 驱动模式（互斥，同一时刻只有一种在工作） ===
  *
- * 1. 外部 tick 模式（生产推荐）：
- *    业务启动时调用 Scheduler.getInstance().bindTo(eventBus, "frameUpdate")
- *    或直接在帧计时器中调用 Scheduler.getInstance().tick()。
- *    此模式下 Promise 排空在帧更新管线中有确定位置，无独立 clip 开销。
+ * 1. clip 回退模式（默认）：
+ *    构造时自动创建隐藏 MovieClip 的 onEnterFrame 驱动排空。
+ *    适用于 TestLoader 等不经过帧计时器的独立环境。
  *
- * 2. clip 回退模式（默认/测试兼容）：
- *    未 bind 外部事件时，自动创建隐藏 MovieClip 的 onEnterFrame 驱动排空。
- *    兼容 TestLoader 等不经过帧计时器的环境。
+ * 2. 外部驱动模式（生产推荐）：
+ *    调用 bindTo(eventBus, "frameUpdate") 切入。
+ *    移除独立 clip，Promise 排空由外部事件驱动，在帧更新管线中有确定相位。
+ *    enqueue 热路径零额外检查（_externalDriven 短路 clip 存活检测）。
  *
- * 3. 手动 tick 模式（单元测试）：
- *    测试代码直接调用 Scheduler.getInstance().tick() 立即排空队列，
- *    无需等待自然帧，测试变为纯同步。
+ * === 手动排空（测试专用） ===
+ *
+ *   tick() 立即执行一次 processQueue，用于单元测试同步验证。
+ *   注意：tick() 本身不切换驱动模式。
+ *   - clip 模式下调用 tick()：本次手动排空 + 下一帧 clip 空排（无害但冗余）
+ *   - 外部驱动模式下调用 tick()：等价于外部事件触发
+ *
+ * === 冷路径储备 API ===
+ *
+ *   fallbackToClip()：显式从外部驱动切回 clip 模式。
+ *   业务层在检测到外部驱动失效时主动调用，零热路径开销。
  *
  * === 性能优化记录 (2026-03) ===
  *   [PERF] processQueue 从逐项 shift() 改为 head 指针推进 + 尾部压缩
  *         shift() 是 O(n)/次 → 排空 n 项总计 O(n²)；head 指针是 O(1)/次 → 总计 O(n)
  *   [PERF] processQueue 移除逐项 try-catch（H18 热路径禁止 try-catch）
  *   [PERF] 热循环内局部化 _queue / MAX_DRAIN_ITEMS / _head（H01 局部变量直读 0ns）
- *   [PERF] enqueueWithArg 极简化：仅 2× push，外部 tick 模式下零额外检查
+ *   [PERF] 外部驱动模式下 enqueue 仅 2× push，零额外检查
  *
  * === 中断安全性 ===
  *   _head 是实例变量，每处理一项后立即递增。若 Flash Player 因脚本超时
- *   静默中止 tick，已处理的项 _head 已越过，不会重复执行；
+ *   静默中止 processQueue，已处理的项 _head 已越过，不会重复执行；
  *   未处理的项仍在 _queue[_head..] 中存活，下一帧自动恢复。
  */
 import org.flashNight.neur.Event.*;
@@ -56,13 +64,12 @@ class org.flashNight.aven.Promise.Scheduler {
     }
 
     /**
-     * 构造函数
+     * 构造函数（clip 回退模式）
      */
     private function Scheduler() {
         this._queue = [];
         this._head = 0;
         this._externalDriven = false;
-        // 默认 clip 回退模式
         this.ensureClip();
     }
 
@@ -71,36 +78,53 @@ class org.flashNight.aven.Promise.Scheduler {
     // ================================================================
 
     /**
-     * 绑定到 EventBus 事件，切换为外部 tick 模式。
-     * 绑定后移除独立 clip，Promise 排空由外部事件驱动。
+     * 切换到外部驱动模式：绑定到 EventBus 事件。
+     * 移除独立 clip，后续排空完全由外部事件驱动。
      *
      * @param eventBus  EventBus 实例
      * @param eventName 事件名（通常 "frameUpdate"）
-     *
-     * 用法：Scheduler.getInstance().bindTo(EventBus.getInstance(), "frameUpdate");
      */
     public function bindTo(eventBus:Object, eventName:String):Void {
-        // 移除 clip 回退
         this.removeClip();
         this._externalDriven = true;
-        // 订阅事件，scope 绑定到 this
         eventBus.subscribe(eventName, this.tick, this);
     }
 
     /**
-     * 解绑外部事件，恢复 clip 回退模式。
-     * 用于热切换或销毁时清理。
+     * 从外部驱动模式解绑，但不自动恢复 clip。
+     * 解绑后队列暂停排空，直到 fallbackToClip() 或再次 bindTo()。
      */
     public function unbind(eventBus:Object, eventName:String):Void {
         eventBus.unsubscribe(eventName, this.tick, this);
+        this._externalDriven = false;
+    }
+
+    /**
+     * 冷路径储备：显式从外部驱动切回 clip 模式。
+     * 业务层在检测到外部驱动失效时主动调用。零热路径开销。
+     */
+    public function fallbackToClip():Void {
         this._externalDriven = false;
         this.ensureClip();
     }
 
     /**
+     * 当前是否处于外部驱动模式。
+     * 业务层或诊断代码可查询，判断是否需要 fallbackToClip()。
+     */
+    public function isExternalDriven():Boolean {
+        return this._externalDriven;
+    }
+
+    /**
      * 手动触发一次队列排空。
-     * - 外部 tick 模式下由 EventBus 回调自动调用
-     * - 测试环境可直接调用实现同步排空
+     *
+     * 主要用途：
+     * - 单元测试中同步排空，无需等待自然帧
+     * - 外部驱动模式下由 EventBus 回调自动调用
+     *
+     * 注意：此方法不切换驱动模式。clip 模式下手动调用会导致
+     * 本次立即排空 + 下一帧 clip 空排（无害但冗余）。
      */
     public function tick():Void {
         this.processQueue();
@@ -116,7 +140,6 @@ class org.flashNight.aven.Promise.Scheduler {
     public function enqueue(fn:Function):Void {
         this._queue.push(fn);
         this._queue.push(NO_ARG);
-        // clip 回退模式下需要确保 clip 存活
         if (!this._externalDriven && this._clip._parent == undefined) {
             this.ensureClip();
         }
@@ -129,7 +152,6 @@ class org.flashNight.aven.Promise.Scheduler {
     public function enqueueWithArg(fn:Function, arg:Object):Void {
         this._queue.push(fn);
         this._queue.push(arg);
-        // clip 回退模式下需要确保 clip 存活
         if (!this._externalDriven && this._clip._parent == undefined) {
             this.ensureClip();
         }
@@ -150,13 +172,13 @@ class org.flashNight.aven.Promise.Scheduler {
         this._clip = clip;
     }
 
-    /** 移除回退 clip，切换到外部驱动时调用 */
+    /** 移除回退 clip */
     private function removeClip():Void {
-        if (this._clip != undefined) {
+        if (typeof(this._clip) == "movieclip") {
             delete this._clip.onEnterFrame;
             this._clip.removeMovieClip();
-            this._clip = undefined;
         }
+        this._clip = undefined;
     }
 
     /**
