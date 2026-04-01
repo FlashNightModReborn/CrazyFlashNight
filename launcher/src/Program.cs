@@ -228,8 +228,9 @@ class Program
             // 消息循环（保持进程存活）
             Application.Run(form);
 
-            // 清理：先摘快车道，再停服务，最后 dispose overlay
+            // 清理：先停帧处理+摘快车道，再停服务，最后 dispose overlay
             LogManager.Log("[Guardian] Bus-only shutting down...");
+            frameTask.Stop();
             socketServer.SetFrameHandler(null);
             socketServer.SetNotchHandler(null);
             gomokuTask.Dispose();
@@ -337,8 +338,9 @@ class Program
         // 消息循环
         Application.Run(form);
 
-        // 清理：先摘快车道，再停服务，最后 dispose overlay
+        // 清理：先停帧处理+摘快车道，再停服务，最后 dispose overlay
         LogManager.Log("[Guardian] Shutting down...");
+        frameTask.Stop();
         socketServer.SetFrameHandler(null);
         socketServer.SetNotchHandler(null);
         CF7Launcher.Audio.AudioEngine.Shutdown();

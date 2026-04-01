@@ -203,7 +203,80 @@ var Notch = (function() {
         clockCtx.stroke();
     }
 
-    function addNotice(category, text, color) { upsertRow(category, text, color, false); }
+    // === 游戏通知防洪 ===
+    var GAME_CAT = 'game';
+    var GAME_TRANSIENT_MS = 3000;
+    var gameQueue = [];       // 待显示队列
+    var gameThrottleTimer = null;
+    var GAME_THROTTLE_MS = 350; // 最少间隔
+
+    function addNotice(category, text, color) {
+        if (category === GAME_CAT) {
+            addGameNotice(text, color);
+            return;
+        }
+        upsertRow(category, text, color, false);
+    }
+
+    function addGameNotice(text, color) {
+        // 合并相同消息：队列中已有则计数+1
+        for (var i = 0; i < gameQueue.length; i++) {
+            if (gameQueue[i].text === text) {
+                gameQueue[i].count++;
+                return;
+            }
+        }
+        // 检查当前显示中的 rows 是否有相同文本
+        for (var i = 0; i < rows.length; i++) {
+            if (rows[i].baseText === text && rows[i].isGame) {
+                rows[i].count = (rows[i].count || 1) + 1;
+                rows[i].el.textContent = text + ' x' + rows[i].count;
+                // 重置淡出定时器
+                if (rows[i].rt) clearTimeout(rows[i].rt);
+                rows[i].rt = setTimeout(function(){ removeRow(rows[i].id); }, GAME_TRANSIENT_MS);
+                return;
+            }
+        }
+        gameQueue.push({ text: text, color: color, count: 1 });
+        drainGameQueue();
+    }
+
+    function drainGameQueue() {
+        if (gameThrottleTimer || gameQueue.length === 0) return;
+        var item = gameQueue.shift();
+        var displayText = item.count > 1 ? item.text + ' x' + item.count : item.text;
+        var uid = GAME_CAT + '_' + Date.now();
+        upsertGameRow(uid, displayText, item.text, item.color, item.count);
+        // 节流：下一条至少等 GAME_THROTTLE_MS
+        if (gameQueue.length > 0) {
+            gameThrottleTimer = setTimeout(function() {
+                gameThrottleTimer = null;
+                drainGameQueue();
+            }, GAME_THROTTLE_MS);
+        }
+    }
+
+    function upsertGameRow(id, displayText, baseText, color, count) {
+        var el = document.createElement('div');
+        el.className = 'notch-info-row game-notify';
+        el.textContent = displayText;
+        el.style.color = color;
+        var row = {id:id, text:displayText, baseText:baseText, color:color,
+                   persistent:false, el:el, rt:null, isGame:true, count:count};
+        row.rt = setTimeout(function(){ removeRow(id); }, GAME_TRANSIENT_MS);
+        rows.push(row);
+        infoContainer.appendChild(el);
+        // 游戏通知最多显示 4 条，超出挤掉最旧的游戏通知
+        var gameRows = 0;
+        for (var j = 0; j < rows.length; j++) { if (rows[j].isGame) gameRows++; }
+        while (gameRows > 4) {
+            for (var j = 0; j < rows.length; j++) {
+                if (rows[j].isGame) { fadeOutRow(rows[j]); rows.splice(j,1); gameRows--; break; }
+            }
+        }
+        requestAnimationFrame(function(){ el.classList.add('visible'); });
+    }
+
     function setStatus(id, text, color) { upsertRow(id, text, color, true); }
     function clearStatus(id) {
         for (var i = rows.length-1; i >= 0; i--) {

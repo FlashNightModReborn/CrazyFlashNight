@@ -188,26 +188,14 @@ namespace CF7Launcher.Guardian
                 _webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
 
                 // 导航到 overlay 页面
+                // _webReady 延迟到 JS "ready" 消息到达时才置真（OnWebMessageReceived）
                 _webView.CoreWebView2.Navigate("https://overlay.local/overlay.html");
 
-                _webReady = true;
-
-                // 把 CoreWebView2 传给 InputShieldForm 供 CDP 注入
+                // 把 CoreWebView2 传给 InputShieldForm 供 CDP 注入（不依赖 _webReady）
                 if (_inputShield != null)
                     _inputShield.SetTargetWebView(_webView.CoreWebView2);
 
-                // 如果 SetReady 已经被调用过，flush 早期缓冲并显示
-                if (_toastReady)
-                    FlushToastBuffer();
-                if (_shown)
-                {
-                    SyncPosition();
-                    ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
-                    SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
-                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-                }
-
-                LogManager.Log("[WebOverlay] WebView2 initialized, navigating to overlay.html");
+                LogManager.Log("[WebOverlay] WebView2 engine ready, waiting for JS ready...");
             }
             catch (Exception ex)
             {
@@ -305,9 +293,27 @@ namespace CF7Launcher.Guardian
                 }
                 else if (json.Contains("\"ready\""))
                 {
-                    LogManager.Log("[WebOverlay] JS side ready");
-                    // JS 就绪后一次性推送光照等级静态数据
+                    LogManager.Log("[WebOverlay] JS side ready → activating web channel");
+                    _webReady = true;
+
+                    // flush 早期缓冲的 toast 消息
+                    if (_toastReady)
+                        FlushToastBuffer();
+
+                    // 显示 overlay（如果 SetReady 已先调用）
+                    if (_shown)
+                    {
+                        SyncPosition();
+                        ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
+                        SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
+                            SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                    }
+
+                    // 一次性推送光照等级静态数据
                     PushLightLevels();
+
+                    // 通知 GDI+ fallback 它可以退出了（如果之前在顶着）
+                    // 不需要——fallback 继续运行也无害，_webReady=true 后消息走 Web 通道
                 }
             }
             catch (Exception ex)

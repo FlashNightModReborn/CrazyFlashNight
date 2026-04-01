@@ -26,6 +26,7 @@ namespace CF7Launcher.Tasks
         private readonly V8Runtime _v8;
         private readonly HitNumberOverlay _overlay;
         private readonly FpsRingBuffer _fpsBuffer;
+        private volatile bool _stopped;
 
         public FpsRingBuffer FpsBuffer { get { return _fpsBuffer; } }
 
@@ -36,6 +37,9 @@ namespace CF7Launcher.Tasks
             _fpsBuffer = new FpsRingBuffer(600);
         }
 
+        /// <summary>停止处理帧数据。在退出前调用，防止推送到已 disposed 的 overlay。</summary>
+        public void Stop() { _stopped = true; }
+
         /// <summary>
         /// 快车道入口：由 XmlSocketServer 前缀检测直接调用，跳过 JObject 构造。
         /// 前缀协议格式：F{cam}\x01{hn}\x02{fps}
@@ -43,6 +47,7 @@ namespace CF7Launcher.Tasks
         /// </summary>
         public void HandleRaw(string cam, string hn, string fps)
         {
+            if (_stopped) return;
             try
             {
                 if (!string.IsNullOrEmpty(cam))

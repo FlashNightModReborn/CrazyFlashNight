@@ -78,6 +78,9 @@ namespace CF7Launcher.Guardian
         private int _screenX;
         private int _screenY;
 
+        /// <summary>mask 未初始化时暂存的 raw rects，OnPositionChanged 后重新应用。</summary>
+        private List<Rectangle> _pendingRawRects;
+
         /// <summary>鼠标是否在命中区域内（用于 leave 检测）。</summary>
         private bool _mouseTracking;
         private bool _mouseInside;
@@ -119,6 +122,13 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void UpdateHitRects(List<Rectangle> rects)
         {
+            // mask 未初始化时暂存，等 OnPositionChanged 填充 _maskW/_maskH 后重新应用
+            if (_maskW <= 0 || _maskH <= 0)
+            {
+                _pendingRawRects = new List<Rectangle>(rects);
+                return;
+            }
+
             _hitRects.Clear();
             // Clamp 到位图边界，防止超出导致鼠标永远命中
             foreach (Rectangle r in rects)
@@ -217,6 +227,14 @@ namespace CF7Launcher.Guardian
             _screenY = origin.Y + (int)vpY;
             _maskW = Math.Max(1, (int)vpW);
             _maskH = Math.Max(1, (int)vpH);
+
+            // mask 就绪后，重新应用启动期暂存的 hitRects
+            if (_pendingRawRects != null)
+            {
+                List<Rectangle> pending = _pendingRawRects;
+                _pendingRawRects = null;
+                UpdateHitRects(pending);
+            }
 
             if (_shown)
                 RebuildMask();
