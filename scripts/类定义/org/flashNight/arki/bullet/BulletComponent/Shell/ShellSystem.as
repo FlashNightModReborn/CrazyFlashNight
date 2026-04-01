@@ -5,6 +5,7 @@ import org.flashNight.neur.Server.*;
 import org.flashNight.gesh.object.*;
 import org.flashNight.arki.bullet.BulletComponent.Loader.*;
 import org.flashNight.arki.bullet.BulletComponent.Shell.*;
+import org.flashNight.arki.audio.AudioBridge;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 
 class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
@@ -89,6 +90,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
                 // ⚠️ 清零所有内部标志，防止对象池重用时状态污染
                 this.__isRecycled = false;
                 this.__scheduledRecycle = false;
+                this.__hitGround = false;
             };
 
             var releaseFunc:Function = function():Void {
@@ -274,6 +276,11 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
                 弹壳._y += 弹壳.垂直速度;
                 弹壳._rotation += 弹壳.旋转速度;
             } else {
+                // 首次触地播放弹壳落地音效
+                if (!弹壳.__hitGround) {
+                    弹壳.__hitGround = true;
+                    AudioBridge.playSound("shell-hit-ground.mp3");
+                }
                 弹壳.垂直速度 = 弹壳.垂直速度 / -2 - engine.randomIntegerStrict(0, 5);
                 // 透视缩放效果：根据旋转角度调整水平缩放，模拟3D旋转的透视感
                 // 公式简化为：0.75 + 0.25 * sin(θ)，取值范围 [0.5, 1.0]
@@ -286,8 +293,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
                     弹壳._y = 弹壳.Z轴坐标 - 6;
                     弹壳._rotation += 弹壳.旋转速度;
                 } else {
-                    // 弹壳落地，立即从活动循环中移除并调度回收
-                    // _root.服务器.发布服务器消息("[ShellSystem] updateAllShells: 弹壳落地 " + 弹壳 + ", 从activeShells[" + i + "]移除并调度回收");
+                    // 弹壳彻底静止，调度回收
                     _root.add2map3(弹壳, 2);
                     shouldRemove = true;
                 }

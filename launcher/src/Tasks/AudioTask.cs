@@ -41,6 +41,9 @@ namespace CF7Launcher.Tasks
                 case "bgm_vol":
                     HandleBgmVol(message);
                     break;
+                case "sfx_vol":
+                    HandleSfxVol(message);
+                    break;
                 case "master_vol":
                     HandleMasterVol(message);
                     break;
@@ -76,6 +79,12 @@ namespace CF7Launcher.Tasks
             AudioEngine.ma_bridge_bgm_set_volume(vol);
         }
 
+        private void HandleSfxVol(JObject msg)
+        {
+            float vol = msg.Value<float?>("vol") ?? 1.0f;
+            AudioEngine.ma_bridge_sfx_set_volume(vol);
+        }
+
         private void HandleMasterVol(JObject msg)
         {
             float vol = msg.Value<float?>("vol") ?? 1.0f;
@@ -86,6 +95,7 @@ namespace CF7Launcher.Tasks
         /// SFX fast-lane handler. Called directly from XmlSocketServer
         /// when message prefix is 'S'.
         /// Batch format: S{id1}|{id2}|{id3} (pipe-delimited, all at vol=1.0)
+        /// Resolves string ids to native handles via AudioEngine cache (O(1) Dictionary lookup).
         /// </summary>
         public static void HandleSfxFastLane(string message)
         {
@@ -99,7 +109,11 @@ namespace CF7Launcher.Tasks
             {
                 string id = ids[i];
                 if (id.Length == 0) continue;
-                AudioEngine.ma_bridge_sfx_play(id, 1.0f);
+                int handle = AudioEngine.ResolveSfxHandle(id);
+                if (handle >= 0)
+                {
+                    AudioEngine.ma_bridge_sfx_play(handle, 1.0f);
+                }
             }
         }
     }

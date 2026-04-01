@@ -2,6 +2,7 @@
 // C# 5 syntax
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using CF7Launcher.Guardian;
@@ -10,7 +11,8 @@ namespace CF7Launcher.Audio
 {
     /// <summary>
     /// Thin P/Invoke wrapper for miniaudio_bridge.dll.
-    /// All methods are static, matching the C export layer 1:1.
+    /// SFX uses handle-based API: native load() returns int handle,
+    /// C# caches filename->handle in a Dictionary for O(1) lookup.
     /// </summary>
     internal static class AudioEngine
     {
@@ -33,22 +35,38 @@ namespace CF7Launcher.Audio
         [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
         public static extern void ma_bridge_bgm_set_volume(float volume);
 
-        // === SFX ===
+        // === SFX (handle-based) ===
         [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public static extern int ma_bridge_sfx_load(string id, string path);
+        public static extern int ma_bridge_sfx_load(string path);
 
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public static extern int ma_bridge_sfx_play(string id, float volume);
+        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int ma_bridge_sfx_play(int handle, float volume);
 
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        public static extern void ma_bridge_sfx_unload(string id);
+        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void ma_bridge_sfx_unload(int handle);
+
+        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void ma_bridge_sfx_set_volume(float volume);
 
         // === Global ===
         [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
         public static extern void ma_bridge_set_master_volume(float volume);
 
+        // === SFX handle cache ===
+        private static readonly Dictionary<string, int> _sfxHandles = new Dictionary<string, int>();
+
         /// <summary>
-        /// Initialize the audio engine and preload all SFX from manifest.
+        /// Resolve a SFX id (filename) to its native handle.
+        /// Returns -1 if not found.
+        /// </summary>
+        public static int ResolveSfxHandle(string id)
+        {
+            int handle;
+            return _sfxHandles.TryGetValue(id, out handle) ? handle : -1;
+        }
+
+        /// <summary>
+        /// Initialize the audio engine.
         /// Call before XmlSocketServer.Start().
         /// </summary>
         public static bool Init(string projectRoot)
@@ -63,18 +81,19 @@ namespace CF7Launcher.Audio
             return true;
         }
 
-        // SFX 包扫描顺序：后扫覆盖前（与原 SoundPreprocessor 加载顺序一致）
+        // SFX pack scan order: later packs override earlier (same as original SoundPreprocessor)
         private static readonly string[] SFX_PACK_ORDER = { "武器", "特效", "人物" };
 
         /// <summary>
         /// Preload all SFX by scanning sounds/export/{武器,特效,人物}/ directories.
-        /// Filename = linkageId, override order: 武器 → 特效 → 人物 (last wins).
-        /// No manifest file needed.
+        /// Filename = linkageId, override order: 武器 -> 特效 -> 人物 (last wins).
+        /// Returns number of successfully loaded sounds.
         /// </summary>
         public static int PreloadFromDirectories(string projectRoot)
         {
             int loaded = 0;
             int failed = 0;
+            int overridden = 0;
 
             for (int p = 0; p < SFX_PACK_ORDER.Length; p++)
             {
@@ -90,20 +109,34 @@ namespace CF7Launcher.Audio
                 for (int i = 0; i < files.Length; i++)
                 {
                     string filename = Path.GetFileName(files[i]);
-                    // filename = linkageId (e.g. "awp1.wav", "gunpickup.mp3")
-                    // relative path for native engine to resolve
                     string relPath = "sounds/export/" + packName + "/" + filename;
 
-                    int r = ma_bridge_sfx_load(filename, relPath);
-                    if (r == 0)
+                    int handle = ma_bridge_sfx_load(relPath);
+                    if (handle >= 0)
+                    {
+                        // If same id was already loaded from an earlier pack, unload it
+                        int oldHandle;
+                        if (_sfxHandles.TryGetValue(filename, out oldHandle))
+                        {
+                            ma_bridge_sfx_unload(oldHandle);
+                            overridden++;
+                        }
+                        _sfxHandles[filename] = handle;
                         loaded++;
+                    }
                     else
+                    {
+                        if (failed < 3)
+                        {
+                            LogManager.Log("[Audio] SFX load FAIL: rc=" + handle + " path=" + relPath);
+                        }
                         failed++;
+                    }
                 }
             }
 
-            LogManager.Log("[Audio] SFX preload: " + loaded + " loaded, " + failed + " failed"
-                + " (scanned " + SFX_PACK_ORDER.Length + " packs)");
+            LogManager.Log("[Audio] SFX preload: " + loaded + " loaded, " + failed + " failed, "
+                + overridden + " overridden (scanned " + SFX_PACK_ORDER.Length + " packs)");
             return loaded;
         }
 
@@ -112,6 +145,7 @@ namespace CF7Launcher.Audio
         /// </summary>
         public static void Shutdown()
         {
+            _sfxHandles.Clear();
             ma_bridge_shutdown();
             LogManager.Log("[Audio] Engine shutdown");
         }

@@ -30,7 +30,7 @@ REM Output to launcher\bin\Release (relative to this script's directory)
 set "OUTDIR=%~dp0..\bin\Release"
 if not exist "%OUTDIR%" mkdir "%OUTDIR%"
 
-cl /O2 /LD /DMINIAUDIO_IMPLEMENTATION /W3 /D_CRT_SECURE_NO_WARNINGS "%~dp0miniaudio_bridge.c" /Fe:"%OUTDIR%\miniaudio.dll" /link ole32.lib
+cl /O2 /LD /W3 /D_CRT_SECURE_NO_WARNINGS "%~dp0miniaudio_bridge.c" /Fe:"%OUTDIR%\miniaudio.dll" /link ole32.lib
 
 if errorlevel 1 (
     echo [FAIL] Compilation failed.

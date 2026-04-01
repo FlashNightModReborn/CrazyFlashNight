@@ -7,6 +7,12 @@ bin-release/
 # Other files and folders
 .settings/
 
+# Native build intermediates
+*.obj
+*.exp
+*.lib
+*.pdb
+
 # Executables
 # *.swf
 *.air
