@@ -60,7 +60,7 @@ _root.最上层发布文字提示 = function(消息){
         // Launcher 不在线（CS6 测试 / socket 断线）→ Flash 本地队列
         _root.全屏UI层.文字提示列表.push(消息);
         if(_root.全屏UI层.getActiveTextCount() == 0){
-            _root.全屏UI层.tickCOunt = 0;
+            _root.全屏UI层.tickCount = 0;
         }
     }
 }

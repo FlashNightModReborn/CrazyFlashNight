@@ -483,7 +483,12 @@ namespace CF7Launcher.Guardian
 
         private void SendToast(string text)
         {
-            if (!_webReady || _disposed) return;
+            if (!_webReady || _disposed)
+            {
+                // JS 还没 ready → 走 GDI+ fallback，不丢弃
+                if (_toastFallback != null) _toastFallback.AddMessage(text);
+                return;
+            }
             string escaped = EscapeForJs(text);
             ExecScript("typeof Toast!=='undefined'&&Toast.add('" + escaped + "')");
         }
