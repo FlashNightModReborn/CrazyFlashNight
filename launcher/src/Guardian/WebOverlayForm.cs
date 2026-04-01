@@ -56,6 +56,11 @@ namespace CF7Launcher.Guardian
         private bool _shown;
         private bool _disposed;
 
+        // GDI+ fallback：WebView2 未就绪或初始化失败时，消息转发到 GDI+ overlay
+        private IToastSink _toastFallback;
+        private INotchSink _notchFallback;
+        private bool _webFailed; // 初始化永久失败，所有后续消息走 fallback
+
         // IToastSink: 早期消息缓冲（WebView2 初始化前）
         private readonly List<string> _toastEarlyBuffer = new List<string>();
         private bool _toastReady;
@@ -117,10 +122,20 @@ namespace CF7Launcher.Guardian
             InitWebView2Async(webDir);
         }
 
-        /// <summary>注入 InputShieldForm 引用。</summary>
+        /// <summary>注入 GDI+ fallback。WebView2 未就绪或失败时消息走这里。</summary>
+        public void SetFallback(IToastSink toastFallback, INotchSink notchFallback)
+        {
+            _toastFallback = toastFallback;
+            _notchFallback = notchFallback;
+        }
+
+        /// <summary>注入 InputShieldForm 引用。若 WebView2 已就绪，立即补调 SetTargetWebView。</summary>
         public void SetInputShield(InputShieldForm shield)
         {
             _inputShield = shield;
+            // 防时序漏洞：如果 WebView2 已经 ready（先于 shield 注入），补调
+            if (_webReady && _inputShield != null && _webView != null && _webView.CoreWebView2 != null)
+                _inputShield.SetTargetWebView(_webView.CoreWebView2);
         }
 
         protected override CreateParams CreateParams
@@ -196,9 +211,27 @@ namespace CF7Launcher.Guardian
             }
             catch (Exception ex)
             {
-                LogManager.Log("[WebOverlay] WebView2 init failed: " + ex.Message);
-                // 降级：WebOverlayForm 静默不显示
+                LogManager.Log("[WebOverlay] WebView2 init failed, falling back to GDI+: " + ex.Message);
+                _webFailed = true;
+                // 激活 GDI+ fallback 并 flush 早期缓冲
+                ActivateFallback();
             }
+        }
+
+        /// <summary>WebView2 初始化失败时，激活 GDI+ fallback 并 flush 早期消息。</summary>
+        private void ActivateFallback()
+        {
+            if (_toastFallback != null)
+            {
+                // 先 SetReady fallback（如果还没 ready）
+                _toastFallback.SetReady();
+                // flush 早期缓冲到 GDI+
+                foreach (string msg in _toastEarlyBuffer)
+                    _toastFallback.AddMessage(msg);
+                _toastEarlyBuffer.Clear();
+            }
+            if (_notchFallback != null)
+                _notchFallback.SetReady();
         }
 
         #endregion
@@ -370,6 +403,7 @@ namespace CF7Launcher.Guardian
                     category, text, accentColor);
                 return;
             }
+            if (_webFailed) { if (_notchFallback != null) _notchFallback.AddNotice(category, text, accentColor); return; }
             if (!_webReady || _disposed) return;
             string hex = accentColor.R.ToString("x2") + accentColor.G.ToString("x2") + accentColor.B.ToString("x2");
             string escaped = text.Replace("\\", "\\\\").Replace("'", "\\'");
@@ -384,6 +418,7 @@ namespace CF7Launcher.Guardian
                     id, label, subLabel, accentColor);
                 return;
             }
+            if (_webFailed) { if (_notchFallback != null) _notchFallback.SetStatusItem(id, label, subLabel, accentColor); return; }
             if (!_webReady || _disposed) return;
             string text = label;
             if (!string.IsNullOrEmpty(subLabel)) text += "  " + subLabel;
@@ -399,6 +434,7 @@ namespace CF7Launcher.Guardian
                 this.BeginInvoke(new Action<string>(ClearStatusItem), id);
                 return;
             }
+            if (_webFailed) { if (_notchFallback != null) _notchFallback.ClearStatusItem(id); return; }
             if (!_webReady || _disposed) return;
             ExecScript("typeof Notch!=='undefined'&&Notch.clearStatus('" + id + "')");
         }
@@ -414,6 +450,12 @@ namespace CF7Launcher.Guardian
                 this.BeginInvoke(new Action<string>(AddMessage), text);
                 return;
             }
+            // WebView2 初始化失败 → 永久走 GDI+ fallback
+            if (_webFailed)
+            {
+                if (_toastFallback != null) _toastFallback.AddMessage(text);
+                return;
+            }
             if (!_toastReady)
             {
                 _toastEarlyBuffer.Add(text);
@@ -425,8 +467,7 @@ namespace CF7Launcher.Guardian
         private void SendToast(string text)
         {
             if (!_webReady || _disposed) return;
-            // 转义反斜杠和单引号，保留 HTML 标签原样传给 JS innerHTML
-            string escaped = text.Replace("\\", "\\\\").Replace("'", "\\'").Replace("\n", "\\n").Replace("\r", "");
+            string escaped = EscapeForJs(text);
             ExecScript("typeof Toast!=='undefined'&&Toast.add('" + escaped + "')");
         }
 
@@ -527,6 +568,12 @@ namespace CF7Launcher.Guardian
             int end = json.IndexOf('"', idx);
             if (end < 0) return null;
             return json.Substring(idx, end - idx);
+        }
+
+        /// <summary>转义字符串供 JS 单引号字面量使用。</summary>
+        private static string EscapeForJs(string text)
+        {
+            return text.Replace("\\", "\\\\").Replace("'", "\\'").Replace("\n", "\\n").Replace("\r", "");
         }
 
         #endregion

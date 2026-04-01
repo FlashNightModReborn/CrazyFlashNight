@@ -2,7 +2,7 @@ var Notch = (function() {
     'use strict';
     var notchEl, pillEl, fpsEl, sparkCanvas, sparkCtx;
     var clockCanvas, clockCtx, toolbarEl, infoContainer, expandBtn;
-    var expanded = false, fpsValue = 0, fpsPoints = [], gameHour = 12;
+    var expanded = false, fpsValue = 0, fpsPoints = [], gameHour = 6; // 对齐 WeatherSystem.currentTime 初始值
     var autoHideTimer = null;
     var rows = [], TRANSIENT_MS = 4000, MAX_ROWS = 4;
     var lightLevels = null, MAX_LIGHT = 9;
@@ -96,28 +96,28 @@ var Notch = (function() {
         var w = sparkCanvas.width, h = sparkCanvas.height;
         sparkCtx.clearRect(0, 0, w, h);
 
-        // 光照等级背景（暖黄色填充区域图）
+        // 光照等级背景（暖黄色填充区域图，固定 30 小时窗口，不跟随 FPS 数据量）
         if (lightLevels && lightLevels.length >= 24) {
             var startHour = Math.floor(gameHour);
-            var points = fpsPoints.length > 2 ? fpsPoints.length : 30;
-            var stepX = w / points;
+            var lightPts = 30; // 与 GDI+ SparklinePoints 对齐，始终完整绘制
+            var stepX = w / lightPts;
             var stepH = h / MAX_LIGHT;
 
             sparkCtx.beginPath();
             sparkCtx.moveTo(0, h); // 左下角
-            for (var i = 0; i < points; i++) {
+            for (var i = 0; i < lightPts; i++) {
                 var hourIdx = (startHour + i) % 24;
                 var ly = h - lightLevels[hourIdx] * stepH;
                 sparkCtx.lineTo(i * stepX, ly);
             }
-            sparkCtx.lineTo((points - 1) * stepX, h); // 右下角
+            sparkCtx.lineTo((lightPts - 1) * stepX, h); // 右下角
             sparkCtx.closePath();
             sparkCtx.fillStyle = 'rgba(180,160,60,0.39)';
             sparkCtx.fill();
 
             // 顶部轮廓线
             sparkCtx.beginPath();
-            for (var i = 0; i < points; i++) {
+            for (var i = 0; i < lightPts; i++) {
                 var hourIdx = (startHour + i) % 24;
                 var ly = h - lightLevels[hourIdx] * stepH;
                 if (i === 0) sparkCtx.moveTo(0, ly);

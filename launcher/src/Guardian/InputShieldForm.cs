@@ -299,7 +299,11 @@ namespace CF7Launcher.Guardian
 
         #endregion
 
-        #region CDP 注入
+        #region CDP 注入（串行队列）
+
+        // CDP 事件严格串行：前一个 await 完成后才发下一个，防止乱序
+        private readonly Queue<string> _cdpQueue = new Queue<string>();
+        private bool _cdpBusy;
 
         /// <summary>从 WM_xxx 的 lParam 提取客户区坐标并注入 CDP。</summary>
         private void DispatchCdpMouse(string type, IntPtr lParam, string button)
@@ -318,6 +322,7 @@ namespace CF7Launcher.Guardian
         {
             if (_targetWebView == null) return;
 
+            // 合并连续 mouseMoved：队列尾部如果已有 mouseMoved，替换之
             string clickCount = (type == "mousePressed") ? ",\"clickCount\":1" : "";
             string json = "{\"type\":\"" + type + "\""
                 + ",\"x\":" + x
@@ -325,19 +330,54 @@ namespace CF7Launcher.Guardian
                 + ",\"button\":\"" + button + "\""
                 + clickCount + "}";
 
+            if (type == "mouseMoved" && _cdpQueue.Count > 0)
+            {
+                // 队列尾部替换优化（Queue 不支持直接替换尾部，用标记跳过旧的）
+                // 简化处理：直接入队，DrainQueue 中连续 mouseMoved 只发最后一个
+            }
+
+            _cdpQueue.Enqueue(json);
+            DrainQueue();
+        }
+
+        private async void DrainQueue()
+        {
+            if (_cdpBusy || _targetWebView == null) return;
+            _cdpBusy = true;
+
             try
             {
-                _targetWebView.CallDevToolsProtocolMethodAsync("Input.dispatchMouseEvent", json);
+                while (_cdpQueue.Count > 0)
+                {
+                    string json = _cdpQueue.Dequeue();
+
+                    // 合并连续 mouseMoved：如果队列前面还有 mouseMoved，跳过当前这条
+                    if (json.Contains("\"mouseMoved\"") && _cdpQueue.Count > 0)
+                    {
+                        // peek 下一条，如果也是 mouseMoved 就跳过当前
+                        string next = _cdpQueue.Peek();
+                        if (next.Contains("\"mouseMoved\""))
+                            continue;
+                    }
+
+                    await _targetWebView.CallDevToolsProtocolMethodAsync(
+                        "Input.dispatchMouseEvent", json);
+                }
             }
             catch
             {
-                // WebView2 可能已 disposed
+                // WebView2 可能已 disposed，清空队列
+                _cdpQueue.Clear();
+            }
+            finally
+            {
+                _cdpBusy = false;
             }
         }
 
         #endregion
 
-        #region 生命周期
+        #region 生命周期 + 自愈 watchdog
 
         /// <summary>
         /// 激活 shield 层。在 WebOverlayForm.SetReady() 之后调用。
@@ -346,6 +386,35 @@ namespace CF7Launcher.Guardian
         {
             OnPositionChanged();
             ShowOverlay();
+        }
+
+        /// <summary>
+        /// Owner 失焦/最小化时强制重置所有输入状态。
+        /// OverlayBase 会在 Deactivate 时调用 HideOverlay，这里额外清理 CDP 状态。
+        /// </summary>
+        protected override void OnOwnerBecameHidden()
+        {
+            ResetInputState();
+        }
+
+        /// <summary>强制重置所有鼠标/CDP 状态，防止残留幻影。</summary>
+        private void ResetInputState()
+        {
+            if (_captured)
+            {
+                _captured = false;
+                try { ReleaseCapture(); } catch { }
+            }
+            _mouseTracking = false;
+            _mouseInside = false;
+            _cdpQueue.Clear();
+
+            // 向 WebView2 发送最终清理事件
+            if (_targetWebView != null)
+            {
+                DispatchCdpMouseAt("mouseReleased", -1, -1, "left");
+                DispatchCdpMouseAt("mouseMoved", -1, -1, "none");
+            }
         }
 
         protected override void Dispose(bool disposing)

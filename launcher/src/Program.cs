@@ -165,6 +165,9 @@ class Program
                 new Action(form.ForceExit),
                 new Action<Keys>(form.HandleButtonClick));
 
+            // GDI+ fallback：WebView2 初始化失败或未就绪时走这里
+            webOverlay.SetFallback(toastOverlay, notchOverlay);
+
             // 光照等级数据（与 NotchOverlay 共用同一默认值）
             webOverlay.SetLightLevels(new int[] {
                 0, 0, 1, 4, 7, 7, 7, 7, 7, 7, 7, 7, 9, 7, 7, 7, 7, 7, 7, 4, 1, 0, 0, 0

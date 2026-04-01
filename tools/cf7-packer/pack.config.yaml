@@ -112,6 +112,10 @@ layers:
       - "SharpDX.DXGI.dll"
       - "SharpDX.Direct3D11.dll"
       - "SharpDX.D3DCompiler.dll"
+      # WebView2（幽灵输入解耦 overlay）
+      - "Microsoft.Web.WebView2.Core.dll"
+      - "Microsoft.Web.WebView2.WinForms.dll"
+      - "WebView2Loader.dll"
       # Flash Player + SWF
       - "CRAZYFLASHER7MercenaryEmpire.swf"
       - "Adobe Flash Player 20.exe"
@@ -120,6 +124,12 @@ layers:
       - "config.toml"
       - "LICENSE"
       - "README.md"
+    exclude: []
+
+  - name: launcher-web
+    description: "WebView2 overlay 前端资源（HTML/CSS/JS）"
+    source: "launcher/web/"
+    include: [ "**/*" ]
     exclude: []
 
   - name: rapfi
