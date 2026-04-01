@@ -10,9 +10,9 @@ namespace CF7Launcher.Tasks
     /// </summary>
     public class ToastTask
     {
-        private readonly ToastOverlay _overlay;
+        private readonly IToastSink _overlay;
 
-        public ToastTask(ToastOverlay overlay)
+        public ToastTask(IToastSink overlay)
         {
             _overlay = overlay;
         }

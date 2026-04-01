@@ -18,7 +18,7 @@ namespace CF7Launcher.Guardian
     /// 使用 TrackMouseEvent(TME_LEAVE) 检测鼠标离开。
     /// 状态机：Collapsed → Expanding → Expanded → Collapsing → Collapsed
     /// </summary>
-    public class NotchOverlay : OverlayBase
+    public class NotchOverlay : OverlayBase, INotchSink
     {
         #region Win32 (TrackMouseEvent)
 

@@ -13,6 +13,7 @@ using CF7Launcher.Guardian;
 using CF7Launcher.Data;
 using CF7Launcher.Tasks;
 using CF7Launcher.V8;
+using Microsoft.Web.WebView2.Core;
 
 class Program
 {
@@ -119,9 +120,8 @@ class Program
             httpServer.ResolveConsoleResult(json);
         };
 
-        // Toast overlay（消息窗从 Flash 卸载到 C#）
+        // Toast overlay（GDI+ 保留作 fallback）
         ToastOverlay toastOverlay = new ToastOverlay(form, form.FlashHostPanel);
-        ToastTask toastTask = new ToastTask(toastOverlay);
 
         // V8 持久化 Runtime + 打击伤害数字 overlay
         string scriptsDir = Path.Combine(projectRoot, "launcher", "scripts");
@@ -138,10 +138,39 @@ class Program
             new Action(form.ForceExit),
             new Action<Keys>(form.HandleButtonClick));
 
+        // WebView2 overlay（与 GDI+ overlay 并存，Phase 0 PoC）
+        WebOverlayForm webOverlay = null;
+        try
+        {
+            string wv2ver = CoreWebView2Environment.GetAvailableBrowserVersionString();
+            LogManager.Log("[WebView2] Runtime found: " + wv2ver);
+            string webDir = Path.Combine(projectRoot, "launcher", "web");
+            webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir);
+        }
+        catch (Exception ex)
+        {
+            LogManager.Log("[WebView2] Runtime not available, overlay disabled: " + ex.Message);
+        }
+
+        // WebView2 可用时注入 Notch 依赖
+        if (webOverlay != null)
+        {
+            webOverlay.SetNotchDependencies(frameTask.FpsBuffer,
+                new Action(form.ToggleFullscreen),
+                new Action(form.ToggleLog),
+                new Action(form.ForceExit),
+                new Action<Keys>(form.HandleButtonClick));
+        }
+
+        // Toast/Notch 路由：WebView2 可用时走 Web 渲染，否则 GDI+ fallback
+        IToastSink toastSink = (webOverlay != null) ? (IToastSink)webOverlay : (IToastSink)toastOverlay;
+        INotchSink notchSink = (webOverlay != null) ? (INotchSink)webOverlay : (INotchSink)notchOverlay;
+        ToastTask toastTask = new ToastTask(toastSink);
+
         // 快车道注入：F/R 前缀消息由 XmlSocketServer 直接分发到 FrameTask，绕过 MessageRouter
         socketServer.SetFrameHandler(frameTask);
-        // W 前缀快车道：波次计时器 → NotchOverlay
-        socketServer.SetNotchHandler(notchOverlay);
+        // N/W 前缀快车道：通知 + 波次计时器 → Notch sink
+        socketServer.SetNotchHandler(notchSink);
 
         // Task 注册（TaskRegistry = single source of truth）
         GomokuTask gomokuTask = new GomokuTask(projectRoot);
@@ -188,6 +217,7 @@ class Program
             gomokuTask.Dispose();
             socketServer.Dispose();
             httpServer.Dispose();
+            if (webOverlay != null) webOverlay.Dispose();
             notchOverlay.Dispose();
             hnOverlay.Dispose();
             v8Runtime.Dispose();
@@ -264,9 +294,18 @@ class Program
             {
                 form.Show();
                 form.Activate();
-                toastOverlay.SetReady();
+                if (webOverlay != null)
+                {
+                    // WebView2 接管 Toast + Notch，GDI+ overlay 不激活
+                    webOverlay.SetReady();
+                }
+                else
+                {
+                    // fallback: GDI+ overlay
+                    toastOverlay.SetReady();
+                    notchOverlay.SetReady();
+                }
                 hnOverlay.SetReady();
-                notchOverlay.SetReady();
             }));
         });
 
@@ -282,6 +321,7 @@ class Program
         gomokuTask.Dispose();
         socketServer.Dispose();
         httpServer.Dispose();
+        if (webOverlay != null) webOverlay.Dispose();
         notchOverlay.Dispose();
         hnOverlay.Dispose();
         v8Runtime.Dispose();

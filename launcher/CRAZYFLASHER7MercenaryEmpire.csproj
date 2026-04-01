@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <OutputType>WinExe</OutputType>
     <PlatformTarget>x64</PlatformTarget>
     <AssemblyName>CRAZYFLASHER7MercenaryEmpire</AssemblyName>
@@ -42,6 +42,12 @@
     <Reference Include="SharpDX.D3DCompiler">
       <HintPath>packages\SharpDX.D3DCompiler.4.2.0\lib\net45\SharpDX.D3DCompiler.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.WebView2.Core">
+      <HintPath>packages\Microsoft.Web.WebView2.1.0.3856.49\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebView2.WinForms">
+      <HintPath>packages\Microsoft.Web.WebView2.1.0.3856.49\lib\net462\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Program.cs" />
@@ -77,6 +83,9 @@
     <Compile Include="src\Data\DataCache.cs" />
     <Compile Include="src\Data\XmlDataLoader.cs" />
     <Compile Include="src\Tasks\DataQueryTask.cs" />
+    <Compile Include="src\Guardian\IToastSink.cs" />
+    <Compile Include="src\Guardian\INotchSink.cs" />
+    <Compile Include="src\Guardian\WebOverlayForm.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

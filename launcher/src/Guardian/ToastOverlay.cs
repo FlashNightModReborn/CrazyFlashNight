@@ -14,7 +14,7 @@ namespace CF7Launcher.Guardian
     /// 使用 FlashCoordinateMapper 定位，FlashHtmlParser 解析文本。
     /// Owner 跟随：最小化/Alt-Tab 时自动隐藏，不会悬浮到其他应用上。
     /// </summary>
-    public class ToastOverlay : OverlayBase
+    public class ToastOverlay : OverlayBase, IToastSink
     {
         // 消息窗在 Flash 舞台上的坐标
         private const float FlashX = 5f;

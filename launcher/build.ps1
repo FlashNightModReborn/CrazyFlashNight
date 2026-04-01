@@ -85,7 +85,9 @@ $managedFiles = @(
     "SharpDX.dll",
     "SharpDX.DXGI.dll",
     "SharpDX.Direct3D11.dll",
-    "SharpDX.D3DCompiler.dll"
+    "SharpDX.D3DCompiler.dll",
+    "Microsoft.Web.WebView2.Core.dll",
+    "Microsoft.Web.WebView2.WinForms.dll"
 )
 foreach ($f in $managedFiles) {
     $src = Join-Path $binDir $f
@@ -98,7 +100,7 @@ foreach ($f in $managedFiles) {
 }
 
 # Step 4: Copy native V8 DLL
-Write-Host "[Step 4/4] Copy native V8 DLL..." -ForegroundColor Yellow
+Write-Host "[Step 4/6] Copy native V8 DLL..." -ForegroundColor Yellow
 $nativeSrc = Join-Path $launcherDir `
     "packages\Microsoft.ClearScript.V8.Native.win-x64.7.4.5\runtimes\win-x64\native\ClearScriptV8.win-x64.dll"
 if (Test-Path $nativeSrc) {
@@ -107,6 +109,26 @@ if (Test-Path $nativeSrc) {
 } else {
     Write-Host "  [FAIL] Native DLL not found: $nativeSrc" -ForegroundColor Red
     exit 1
+}
+
+# Step 5: Copy WebView2 native loader
+Write-Host "[Step 5/6] Copy WebView2 native loader..." -ForegroundColor Yellow
+$wv2Loader = Join-Path $launcherDir `
+    "packages\Microsoft.Web.WebView2.1.0.3856.49\runtimes\win-x64\native\WebView2Loader.dll"
+if (Test-Path $wv2Loader) {
+    Copy-Item $wv2Loader $projectRoot -Force
+    Write-Host "  Copied: WebView2Loader.dll"
+} else {
+    Write-Host "  [WARN] WebView2Loader.dll not found: $wv2Loader" -ForegroundColor Yellow
+}
+
+# Step 6: Verify web overlay assets
+Write-Host "[Step 6/6] Verify web overlay assets..." -ForegroundColor Yellow
+$webDir = Join-Path $launcherDir "web"
+if (Test-Path (Join-Path $webDir "overlay.html")) {
+    Write-Host "  OK: launcher\web\overlay.html present"
+} else {
+    Write-Host "  [WARN] launcher\web\overlay.html not found (WebView2 overlay will be unavailable)" -ForegroundColor Yellow
 }
 
 Write-Host ""

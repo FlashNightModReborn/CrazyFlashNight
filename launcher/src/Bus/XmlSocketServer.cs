@@ -31,7 +31,7 @@ namespace CF7Launcher.Bus
 
         // 快车道处理器（由 Program.cs 在构造后注入）
         private CF7Launcher.Tasks.FrameTask _frameTask;
-        private CF7Launcher.Guardian.NotchOverlay _notchOverlay;
+        private CF7Launcher.Guardian.INotchSink _notchOverlay;
 
         // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换
         private int _generation;
@@ -53,7 +53,7 @@ namespace CF7Launcher.Bus
             _frameTask = frameTask;
         }
 
-        public void SetNotchHandler(CF7Launcher.Guardian.NotchOverlay notch)
+        public void SetNotchHandler(CF7Launcher.Guardian.INotchSink notch)
         {
             _notchOverlay = notch;
         }

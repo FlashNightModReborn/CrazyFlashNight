@@ -1,0 +1,110 @@
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body {
+    width:100%; height:100%; overflow:hidden;
+    background:transparent;
+    font-family:"Microsoft YaHei","Segoe UI",sans-serif;
+    color:white; pointer-events:none;
+}
+
+/* === Toast === */
+#toast-container {
+    position:absolute;
+    left:0.49%; top:8.68%;
+    width:20%; max-height:20.8%;
+    overflow:hidden; pointer-events:none;
+}
+.toast-line {
+    font-size:clamp(10px,1.4vw,16px);
+    line-height:1.3; padding:1px 2px;
+    color:white;
+    text-shadow:1px 1px 0 rgba(0,0,0,0.8);
+    word-wrap:break-word; pointer-events:none;
+    animation:toast-life 9400ms ease-out forwards;
+}
+.toast-line font { text-shadow:1px 1px 0 rgba(0,0,0,0.8); }
+@keyframes toast-life {
+    0%{opacity:0} 2.1%{opacity:1} 87.2%{opacity:1} 100%{opacity:0}
+}
+
+/* === Notch === */
+#notch {
+    position:absolute; top:0; left:50%;
+    transform:translateX(-50%);
+    pointer-events:auto;
+    transition:width 150ms ease-out;
+    width:auto;
+}
+#notch-pill {
+    display:inline-flex; align-items:center; gap:4px;
+    padding:3px 8px;
+    background:rgba(24,24,26,0.88);
+    border-radius:0 0 8px 8px;
+    height:28px;
+    white-space:nowrap;
+}
+.notch-fps {
+    font:bold 13px/1 "Consolas","Courier New",monospace;
+    min-width:24px; text-align:right;
+}
+.fps-good { color:#66ff66; }
+.fps-warn { color:#ffcc00; }
+.fps-bad  { color:#ff4444; }
+.notch-expand-btn {
+    font-size:10px; cursor:pointer;
+    color:rgba(255,255,255,0.5);
+    padding:0 2px;
+}
+.notch-expand-btn:hover { color:white; }
+
+#notch-sparkline { display:block; }
+#notch-clock { display:block; }
+
+/* Toolbar: hidden by default, shown when expanded */
+#notch-toolbar {
+    display:none;
+    gap:2px; padding:2px 4px;
+    background:rgba(24,24,26,0.88);
+    border-radius:0 0 4px 4px;
+}
+#notch.expanded #notch-toolbar { display:flex; }
+#notch.expanded #notch-pill {
+    border-radius:0;
+    width:100%;
+    justify-content:center;
+}
+
+#notch-toolbar button {
+    font:11px/1 "Microsoft YaHei",sans-serif;
+    padding:3px 8px;
+    border:none; border-radius:3px;
+    background:rgba(255,255,255,0.08);
+    color:rgba(255,255,255,0.8);
+    cursor:pointer; pointer-events:auto;
+    white-space:nowrap;
+}
+#notch-toolbar button:hover {
+    background:rgba(255,255,255,0.2);
+    color:white;
+}
+
+/* Info rows (notifications) */
+#notch-info {
+    pointer-events:none;
+}
+.notch-info-row {
+    font:12px/1.4 "Microsoft YaHei",sans-serif;
+    padding:2px 8px;
+    background:rgba(24,24,26,0.75);
+    border-radius:0 0 4px 4px;
+    text-align:center;
+    opacity:0;
+    transition:opacity 300ms ease-in;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.notch-info-row.visible { opacity:1; }
+.notch-info-row.fading {
+    opacity:0;
+    transition:opacity 500ms ease-out;
+}
