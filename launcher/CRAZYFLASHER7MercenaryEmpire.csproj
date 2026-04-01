@@ -65,12 +65,15 @@
     <Compile Include="src\Tasks\GomokuTask.cs" />
     <Compile Include="src\Tasks\ToastTask.cs" />
     <Compile Include="src\Bus\TaskRegistry.cs" />
+    <Compile Include="src\Guardian\OverlayBase.cs" />
+    <Compile Include="src\Guardian\FpsRingBuffer.cs" />
     <Compile Include="src\Guardian\ToastOverlay.cs" />
     <Compile Include="src\Guardian\FlashCoordinateMapper.cs" />
     <Compile Include="src\Guardian\FlashHtmlParser.cs" />
     <Compile Include="src\V8\V8Runtime.cs" />
     <Compile Include="src\Tasks\FrameTask.cs" />
     <Compile Include="src\Guardian\HitNumberOverlay.cs" />
+    <Compile Include="src\Guardian\NotchOverlay.cs" />
     <Compile Include="src\Data\DataCache.cs" />
     <Compile Include="src\Data\XmlDataLoader.cs" />
     <Compile Include="src\Tasks\DataQueryTask.cs" />

@@ -11,75 +11,15 @@ namespace CF7Launcher.Guardian
 {
     /// <summary>
     /// 伤害数字 GDI+ 分层窗口覆盖层。
-    /// 复用 ToastOverlay 的 Win32 / Owner-following / UpdateLayeredWindow 模式。
+    /// 继承 OverlayBase 的 Win32 / Owner-following / UpdateLayeredWindow 模式。
     ///
     /// 关键差异：
     /// - 无独立 Timer —— 由 Flash frame 消息驱动（每帧一次 UpdateRender）
     /// - 覆盖整个 Flash viewport（伤害数字可出现在任意位置）
     /// - 8 方向偏移描边模拟 GlowFilter
     /// </summary>
-    public class HitNumberOverlay : Form
+    public class HitNumberOverlay : OverlayBase
     {
-        #region Win32 (identical to ToastOverlay)
-
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        [DllImport("user32.dll")]
-        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
-            int X, int Y, int cx, int cy, uint uFlags);
-
-        [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
-        private static extern bool UpdateLayeredWindow(IntPtr hwnd, IntPtr hdcDst,
-            ref POINT pptDst, ref SIZE psize, IntPtr hdcSrc,
-            ref POINT pptSrc, uint crKey, ref BLENDFUNCTION pblend, uint dwFlags);
-
-        [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        private static extern IntPtr CreateCompatibleDC(IntPtr hdc);
-
-        [DllImport("gdi32.dll", ExactSpelling = true)]
-        private static extern IntPtr SelectObject(IntPtr hdc, IntPtr hObj);
-
-        [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        private static extern bool DeleteObject(IntPtr hObj);
-
-        [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        private static extern bool DeleteDC(IntPtr hdc);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT { public int x, y; }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct SIZE { public int cx, cy; }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private struct BLENDFUNCTION
-        {
-            public byte BlendOp;
-            public byte BlendFlags;
-            public byte SourceConstantAlpha;
-            public byte AlphaFormat;
-        }
-
-        private const int SW_SHOWNOACTIVATE = 4;
-        private const int SW_HIDE = 0;
-        private static readonly IntPtr HWND_TOP = new IntPtr(0);
-        private const uint SWP_NOMOVE = 0x0002;
-        private const uint SWP_NOSIZE = 0x0001;
-        private const uint SWP_NOACTIVATE = 0x0010;
-        private const byte AC_SRC_OVER = 0x00;
-        private const byte AC_SRC_ALPHA = 0x01;
-        private const uint ULW_ALPHA = 0x02;
-
-        private const int WS_EX_TOOLWINDOW = 0x00000080;
-        private const int WS_EX_NOACTIVATE = 0x08000000;
-        private const int WS_EX_LAYERED = 0x00080000;
-        private const int WS_EX_TRANSPARENT = 0x00000020;
-        private const int WM_NCHITTEST = 0x0084;
-        private const int HTTRANSPARENT = -1;
-
-        #endregion
-
         #region Color Table (mirrors Flash HitNumberBatchProcessor.COLOR_TABLE)
 
         private static readonly Color[] ColorTable = {
@@ -108,91 +48,27 @@ namespace CF7Launcher.Guardian
 
         #endregion
 
-        private readonly Form _owner;
-        private readonly Control _anchor;
-        private readonly FlashCoordinateMapper _mapper;
         private readonly List<string> _earlyBuffer;
         private bool _ready;
-        private bool _shown;
-        private bool _ownerVisible;
         private string _currentRenderStr;
 
         // 字体缓存：key = (family_index << 16 | style << 8 | size_bucket)
         private readonly Dictionary<int, Font> _fontCache = new Dictionary<int, Font>();
 
         public HitNumberOverlay(Form owner, Control anchor)
+            : base(owner, anchor, 1024f, 576f)
         {
-            _owner = owner;
-            _anchor = anchor;
-            _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
             _earlyBuffer = new List<string>();
             _ready = false;
-            _shown = false;
-            _ownerVisible = true;
             _currentRenderStr = null;
-
-            this.FormBorderStyle = FormBorderStyle.None;
-            this.ShowInTaskbar = false;
-            this.StartPosition = FormStartPosition.Manual;
-            this.Owner = owner;
-
-            CreateHandle();
-
-            // 位置跟踪
-            owner.Move += delegate { RepaintIfShown(); };
-            owner.Resize += delegate { RepaintIfShown(); };
-            anchor.Resize += delegate { RepaintIfShown(); };
-
-            // Owner 可见性跟踪
-            owner.Activated += delegate { OnOwnerActivated(); };
-            owner.Deactivate += delegate { OnOwnerDeactivated(); };
-            owner.Resize += delegate
-            {
-                if (owner.WindowState == FormWindowState.Minimized)
-                    OnOwnerDeactivated();
-                else
-                    OnOwnerActivated();
-            };
         }
 
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE
-                             | WS_EX_LAYERED | WS_EX_TRANSPARENT;
-                return cp;
-            }
-        }
+        #region Owner 跟随 (override)
 
-        protected override void WndProc(ref Message m)
+        protected override void OnOwnerBecameVisible()
         {
-            if (m.Msg == WM_NCHITTEST)
-            {
-                m.Result = (IntPtr)HTTRANSPARENT;
-                return;
-            }
-            base.WndProc(ref m);
-        }
-
-        #region Owner following
-
-        private void OnOwnerActivated()
-        {
-            _ownerVisible = true;
-            if (_shown && !string.IsNullOrEmpty(_currentRenderStr))
-            {
-                ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
+            if (!string.IsNullOrEmpty(_currentRenderStr))
                 PaintLayered();
-            }
-        }
-
-        private void OnOwnerDeactivated()
-        {
-            _ownerVisible = false;
-            if (_shown)
-                ShowWindow(this.Handle, SW_HIDE);
         }
 
         #endregion
@@ -243,11 +119,7 @@ namespace CF7Launcher.Guardian
                 return;
             }
             _currentRenderStr = null;
-            if (_shown)
-            {
-                _shown = false;
-                ShowWindow(this.Handle, SW_HIDE);
-            }
+            DismissOverlay();
         }
 
         #endregion
@@ -258,27 +130,20 @@ namespace CF7Launcher.Guardian
 
             if (string.IsNullOrEmpty(renderStr))
             {
-                if (_shown)
-                {
-                    _shown = false;
-                    ShowWindow(this.Handle, SW_HIDE);
-                }
+                DismissOverlay();
                 return;
             }
 
             if (!_shown && _ownerVisible)
             {
-                _shown = true;
-                ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
-                SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                ShowOverlay();
             }
 
             if (_ownerVisible)
                 PaintLayered();
         }
 
-        private void RepaintIfShown()
+        protected override void OnPositionChanged()
         {
             if (_shown && _ownerVisible && !string.IsNullOrEmpty(_currentRenderStr))
                 PaintLayered();
@@ -304,8 +169,7 @@ namespace CF7Launcher.Guardian
             int bmpH = Math.Max(4, (int)vpH + padY * 2);
 
             Point origin;
-            try { origin = _anchor.PointToScreen(Point.Empty); }
-            catch { origin = Point.Empty; }
+            GetAnchorScreenOrigin(out origin);
 
             int scrX = origin.X + (int)vpX - padX;
             int scrY = origin.Y + (int)vpY - padY;
@@ -354,9 +218,6 @@ namespace CF7Launcher.Guardian
                         byte a = (byte)(255 * Math.Max(0f, Math.Min(1f, alpha)));
 
                         // ======== 构建文本段 ========
-                        // Flash buildHtml 将所有标签拼接在一行（<font> 标签改色不换行）
-                        // C# 用分段绘制模拟：每段有自己的 (text, color, fontSizePt)
-
                         List<TextSegment> segments = new List<TextSegment>();
 
                         // 主伤害数字
@@ -369,22 +230,22 @@ namespace CF7Launcher.Guardian
                         float labelPt = 20f * combinedScale * pixPerFlash;
                         labelPt = Math.Max(4f, Math.Min(labelPt, 40f));
 
-                        // EF_DMG_TYPE_LABEL (bit 3): " 真" / " 能" 等，用主伤害颜色
+                        // EF_DMG_TYPE_LABEL (bit 3)
                         if ((flags & 8) != 0 && !string.IsNullOrEmpty(efText))
                             segments.Add(new TextSegment(" " + efText, mainColor, labelPt, true));
 
-                        // EF_CRUSH_LABEL (bit 4): " ✨破击" 等，固定 #66bcf5
+                        // EF_CRUSH_LABEL (bit 4)
                         if ((flags & 16) != 0 && !string.IsNullOrEmpty(efText))
                         {
                             string crushText = " " + (string.IsNullOrEmpty(efEmoji) ? "" : efEmoji) + efText;
                             segments.Add(new TextSegment(crushText, Color.FromArgb(0x66, 0xBC, 0xF5), labelPt, true));
                         }
 
-                        // EF_TOXIC (bit 1): " 毒"，固定 #66dd00
+                        // EF_TOXIC (bit 1)
                         if ((flags & 2) != 0)
                             segments.Add(new TextSegment(" 毒", Color.FromArgb(0x66, 0xDD, 0x00), labelPt, true));
 
-                        // EF_LIFESTEAL (bit 5): " 汲:X"，固定 #bb00aa，Flash size=15
+                        // EF_LIFESTEAL (bit 5)
                         if ((flags & 32) != 0 && lifeSteal > 0)
                         {
                             float lsPt = 15f * combinedScale * pixPerFlash;
@@ -393,11 +254,11 @@ namespace CF7Launcher.Guardian
                                 Color.FromArgb(0xBB, 0x00, 0xAA), lsPt, true));
                         }
 
-                        // EF_CRUMBLE (bit 0): " 溃"，固定 #FF3333
+                        // EF_CRUMBLE (bit 0)
                         if ((flags & 1) != 0)
                             segments.Add(new TextSegment(" 溃", Color.FromArgb(0xFF, 0x33, 0x33), labelPt, true));
 
-                        // EF_EXECUTE (bit 2): " 斩"，敌方 #660033 / 友方 #4A0099
+                        // EF_EXECUTE (bit 2)
                         if ((flags & 4) != 0)
                         {
                             Color exeColor = ((flags & 128) != 0)
@@ -406,18 +267,16 @@ namespace CF7Launcher.Guardian
                             segments.Add(new TextSegment(" 斩", exeColor, labelPt, true));
                         }
 
-                        // EF_SHIELD (bit 8): " 🛡X"，固定 #00CED1，Flash size=18
+                        // EF_SHIELD (bit 8)
                         if ((flags & 256) != 0 && shieldAbsorb > 0)
                         {
                             float shPt = 18f * combinedScale * pixPerFlash;
                             shPt = Math.Max(4f, Math.Min(shPt, 36f));
-                            // 🛡 = U+1F6E1，C# 中用 surrogate pair
                             segments.Add(new TextSegment(" \uD83D\uDEE1" + ((int)shieldAbsorb).ToString(),
                                 Color.FromArgb(0x00, 0xCE, 0xD1), shPt, true));
                         }
 
-                        // ======== 测量总宽度 → 居中 ========
-                        // ======== 展开段为渲染子段（emoji / 非 emoji 分离）========
+                        // ======== 展开段为渲染子段 ========
                         List<RenderRun> runs = new List<RenderRun>();
                         for (int si = 0; si < segments.Count; si++)
                         {
@@ -459,7 +318,6 @@ namespace CF7Launcher.Guardian
                                 Color fgColor = Color.FromArgb(a, run.Color.R, run.Color.G, run.Color.B);
 
                                 {
-                                    // 非 emoji: GraphicsPath 描边 + 填充
                                     using (GraphicsPath path = new GraphicsPath())
                                     {
                                         path.AddString(run.Text,
@@ -481,12 +339,10 @@ namespace CF7Launcher.Guardian
                                 }
 
                                 drawX += run.MeasuredWidth;
-                                // f 来自缓存，不 Dispose
                             }
                         }
 
                         // ======== 段数上标：12hit ========
-                        // 数字斜体荧光青 + "hit" 再缩半，格斗游戏标准格式
                         if (hitCount > 1)
                         {
                             float numPt = mainPt * 0.55f;
@@ -508,7 +364,6 @@ namespace CF7Launcher.Guardian
                                 supFmt.FormatFlags |= StringFormatFlags.NoWrap;
                                 Color cyan = Color.FromArgb(a, 0x00, 0xFF, 0xE0);
 
-                                // 数字部分
                                 using (GraphicsPath numPath = new GraphicsPath())
                                 {
                                     float numEm = g.DpiY * numFont.SizeInPoints / 72f;
@@ -526,18 +381,16 @@ namespace CF7Launcher.Guardian
                                         g.FillPath(fb, numPath);
                                     }
 
-                                    // 测量数字宽度，定位 "hit"
                                     RectangleF numBounds = numPath.GetBounds();
                                     float hitX = numBounds.Right + 1f;
-                                    // "hit" 基线对齐数字底部
-                                    float hitY = supY + numEm - g.DpiY * hitFont.SizeInPoints / 72f;
+                                    float hitY2 = supY + numEm - g.DpiY * hitFont.SizeInPoints / 72f;
 
                                     using (GraphicsPath hitPath = new GraphicsPath())
                                     {
                                         float hitEm = g.DpiY * hitFont.SizeInPoints / 72f;
                                         hitPath.AddString(hitText,
                                             hitFont.FontFamily, (int)hitFont.Style,
-                                            hitEm, new PointF(hitX, hitY), supFmt);
+                                            hitEm, new PointF(hitX, hitY2), supFmt);
 
                                         using (Pen bp2 = new Pen(Color.FromArgb(a, 0, 0, 0), penWidth * 0.6f))
                                         {
@@ -555,34 +408,7 @@ namespace CF7Launcher.Guardian
                     }
                 }
 
-                // UpdateLayeredWindow
-                IntPtr hdcScreen = IntPtr.Zero;
-                IntPtr hdcMem = CreateCompatibleDC(hdcScreen);
-                IntPtr hBmp = bmp.GetHbitmap(Color.FromArgb(0));
-                IntPtr hOld = SelectObject(hdcMem, hBmp);
-
-                try
-                {
-                    POINT ptDst = new POINT { x = scrX, y = scrY };
-                    SIZE sz = new SIZE { cx = bmpW, cy = bmpH };
-                    POINT ptSrc = new POINT { x = 0, y = 0 };
-                    BLENDFUNCTION blend = new BLENDFUNCTION
-                    {
-                        BlendOp = AC_SRC_OVER,
-                        BlendFlags = 0,
-                        SourceConstantAlpha = 255,
-                        AlphaFormat = AC_SRC_ALPHA
-                    };
-
-                    UpdateLayeredWindow(this.Handle, hdcScreen,
-                        ref ptDst, ref sz, hdcMem, ref ptSrc, 0, ref blend, ULW_ALPHA);
-                }
-                finally
-                {
-                    SelectObject(hdcMem, hOld);
-                    DeleteObject(hBmp);
-                    DeleteDC(hdcMem);
-                }
+                CommitBitmap(bmp, scrX, scrY, 255);
             }
         }
 
@@ -591,18 +417,17 @@ namespace CF7Launcher.Guardian
         private const int FONT_IDX_LABEL  = 1;
         private const int FONT_IDX_EMOJI  = 2;
 
-        private const string FONT_NUMBER = "Arial Black";          // 数字（匹配 SWF face="Arial-Black"）
-        private const string FONT_LABEL  = "Microsoft YaHei";      // 中文标签
-        private const string FONT_EMOJI  = "Segoe UI Symbol";      // emoji（矢量轮廓，GraphicsPath 兼容）
+        private const string FONT_NUMBER = "Arial Black";
+        private const string FONT_LABEL  = "Microsoft YaHei";
+        private const string FONT_EMOJI  = "Segoe UI Symbol";
         private const FontStyle FONT_LABEL_STYLE = FontStyle.Bold;
 
-        /// <summary>内部文本段（单行内的一个颜色/大小片段）</summary>
         private class TextSegment
         {
             public string Text;
             public Color Color;
             public float FontPt;
-            public bool IsLabel;       // true = 中文标签用 YaHei Bold，false = 数字用 Arial Black
+            public bool IsLabel;
 
             public TextSegment(string text, Color color, float fontPt, bool isLabel = false)
             {
@@ -613,35 +438,28 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        /// <summary>渲染子段</summary>
         private class RenderRun
         {
             public string Text;
             public Color Color;
             public float FontPt;
-            public int FontIdx;        // FONT_IDX_NUMBER / LABEL / EMOJI
+            public int FontIdx;
             public FontStyle Style;
             public float MeasuredWidth;
         }
 
-        /// <summary>检测字符串是否包含 emoji 字符</summary>
         private static bool ContainsEmoji(string text)
         {
             for (int i = 0; i < text.Length; i++)
             {
                 char c = text[i];
-                if (char.IsHighSurrogate(c)) return true;           // SMP emoji
-                if (c >= 0x2600 && c <= 0x27BF) return true;        // ☠✨ 等
+                if (char.IsHighSurrogate(c)) return true;
+                if (c >= 0x2600 && c <= 0x27BF) return true;
                 if (c >= 0x2B50 && c <= 0x2B55) return true;
             }
             return false;
         }
 
-        /// <summary>
-        /// 将 TextSegment 拆分为 emoji / 非 emoji 子段。
-        /// emoji 段走 Segoe UI Symbol（有矢量轮廓，GraphicsPath 可用）。
-        /// 非 emoji 段走 Arial Black 或 YaHei Bold。
-        /// </summary>
         private static void SegmentToRuns(TextSegment seg, List<RenderRun> runs)
         {
             string text = seg.Text;
@@ -649,7 +467,6 @@ namespace CF7Launcher.Guardian
 
             if (!ContainsEmoji(text))
             {
-                // 快速路径：无 emoji，整段直出
                 runs.Add(new RenderRun
                 {
                     Text = text,
@@ -661,7 +478,6 @@ namespace CF7Launcher.Guardian
                 return;
             }
 
-            // 含 emoji：逐字符拆分
             int start = 0;
             bool curEmoji = false;
 
@@ -671,7 +487,7 @@ namespace CF7Launcher.Guardian
                 if (i < text.Length)
                 {
                     char c = text[i];
-                    if (char.IsLowSurrogate(c)) continue; // 跟随 high surrogate
+                    if (char.IsLowSurrogate(c)) continue;
                     isEmoji = char.IsHighSurrogate(c)
                            || (c >= 0x2600 && c <= 0x27BF)
                            || (c >= 0x2B50 && c <= 0x2B55);
@@ -688,7 +504,6 @@ namespace CF7Launcher.Guardian
                         {
                             Text = part,
                             Color = seg.Color,
-                            // emoji 字形视觉偏小，放大 1.3x 补偿
                             FontPt = curEmoji ? seg.FontPt * 1.3f : seg.FontPt,
                             FontIdx = curEmoji ? FONT_IDX_EMOJI
                                    : (seg.IsLabel ? FONT_IDX_LABEL : FONT_IDX_NUMBER),
@@ -702,14 +517,9 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        /// <summary>
-        /// 从缓存获取或创建字体。
-        /// key = fontIdx << 16 | (int)style << 8 | size_bucket
-        /// size_bucket = 半点四舍五入，避免浮点精度产生过多 key
-        /// </summary>
         private Font GetCachedFont(int fontIdx, FontStyle style, float pt)
         {
-            int bucket = (int)(pt * 2 + 0.5f); // 0.5pt 精度
+            int bucket = (int)(pt * 2 + 0.5f);
             int key = (fontIdx << 16) | ((int)style << 8) | bucket;
 
             Font f;

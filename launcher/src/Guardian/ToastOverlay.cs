@@ -14,68 +14,8 @@ namespace CF7Launcher.Guardian
     /// 使用 FlashCoordinateMapper 定位，FlashHtmlParser 解析文本。
     /// Owner 跟随：最小化/Alt-Tab 时自动隐藏，不会悬浮到其他应用上。
     /// </summary>
-    public class ToastOverlay : Form
+    public class ToastOverlay : OverlayBase
     {
-        #region Win32
-
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        [DllImport("user32.dll")]
-        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
-            int X, int Y, int cx, int cy, uint uFlags);
-
-        [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
-        private static extern bool UpdateLayeredWindow(IntPtr hwnd, IntPtr hdcDst,
-            ref POINT pptDst, ref SIZE psize, IntPtr hdcSrc,
-            ref POINT pptSrc, uint crKey, ref BLENDFUNCTION pblend, uint dwFlags);
-
-        [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        private static extern IntPtr CreateCompatibleDC(IntPtr hdc);
-
-        [DllImport("gdi32.dll", ExactSpelling = true)]
-        private static extern IntPtr SelectObject(IntPtr hdc, IntPtr hObj);
-
-        [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        private static extern bool DeleteObject(IntPtr hObj);
-
-        [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        private static extern bool DeleteDC(IntPtr hdc);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT { public int x, y; }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct SIZE { public int cx, cy; }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private struct BLENDFUNCTION
-        {
-            public byte BlendOp;
-            public byte BlendFlags;
-            public byte SourceConstantAlpha;
-            public byte AlphaFormat;
-        }
-
-        private const int SW_SHOWNOACTIVATE = 4;
-        private const int SW_HIDE = 0;
-        private static readonly IntPtr HWND_TOP = new IntPtr(0);
-        private const uint SWP_NOMOVE = 0x0002;
-        private const uint SWP_NOSIZE = 0x0001;
-        private const uint SWP_NOACTIVATE = 0x0010;
-        private const byte AC_SRC_OVER = 0x00;
-        private const byte AC_SRC_ALPHA = 0x01;
-        private const uint ULW_ALPHA = 0x02;
-
-        private const int WS_EX_TOOLWINDOW = 0x00000080;
-        private const int WS_EX_NOACTIVATE = 0x08000000;
-        private const int WS_EX_LAYERED = 0x00080000;
-        private const int WS_EX_TRANSPARENT = 0x00000020;
-        private const int WM_NCHITTEST = 0x0084;
-        private const int HTTRANSPARENT = -1;
-
-        #endregion
-
         // 消息窗在 Flash 舞台上的坐标
         private const float FlashX = 5f;
         private const float FlashY = 50f;
@@ -97,100 +37,37 @@ namespace CF7Launcher.Guardian
             public int Age;
         }
 
-        private readonly Form _owner;
-        private readonly FlashCoordinateMapper _mapper;
         private readonly List<MessageLine> _lines;
         private readonly List<string> _earlyBuffer;
         private readonly System.Windows.Forms.Timer _timer;
         private bool _ready;
         private int _remainingMs;
-        private bool _shown;
-        private bool _ownerVisible;  // owner 是否在前台
         private float _globalAlpha;
 
         private Font _textFont;
         private int _lastVpW;
 
         public ToastOverlay(Form owner, Control anchor)
+            : base(owner, anchor, 1024f, 576f)
         {
-            _owner = owner;
-            _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
             _lines = new List<MessageLine>();
             _earlyBuffer = new List<string>();
             _ready = false;
-            _shown = false;
-            _ownerVisible = true;
             _remainingMs = 0;
             _globalAlpha = 0f;
             _lastVpW = 0;
             _textFont = new Font("Microsoft YaHei", 8f, FontStyle.Regular);
 
-            this.FormBorderStyle = FormBorderStyle.None;
-            this.ShowInTaskbar = false;
-            this.StartPosition = FormStartPosition.Manual;
-            this.Owner = owner;  // Win32 owner 关系：最小化时自动跟随
-
             _timer = new System.Windows.Forms.Timer();
             _timer.Interval = TickIntervalMs;
             _timer.Tick += OnTick;
-
-            CreateHandle();
-
-            // 位置跟踪
-            owner.Move += delegate { RepositionAndPaint(); };
-            owner.Resize += delegate { RepositionAndPaint(); };
-            anchor.Resize += delegate { RepositionAndPaint(); };
-
-            // Owner 可见性跟踪：Alt-Tab / 最小化时隐藏 toast
-            owner.Activated += delegate { OnOwnerActivated(); };
-            owner.Deactivate += delegate { OnOwnerDeactivated(); };
-            owner.Resize += delegate
-            {
-                if (owner.WindowState == FormWindowState.Minimized)
-                    OnOwnerDeactivated();
-                else
-                    OnOwnerActivated();
-            };
         }
 
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE
-                             | WS_EX_LAYERED | WS_EX_TRANSPARENT;
-                return cp;
-            }
-        }
+        #region Owner 跟随 (override)
 
-        protected override void WndProc(ref Message m)
+        protected override void OnOwnerBecameVisible()
         {
-            if (m.Msg == WM_NCHITTEST)
-            {
-                m.Result = (IntPtr)HTTRANSPARENT;
-                return;
-            }
-            base.WndProc(ref m);
-        }
-
-        #region Owner 跟随
-
-        private void OnOwnerActivated()
-        {
-            _ownerVisible = true;
-            if (_shown && _lines.Count > 0)
-            {
-                ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
-                PaintLayered();
-            }
-        }
-
-        private void OnOwnerDeactivated()
-        {
-            _ownerVisible = false;
-            if (_shown)
-                ShowWindow(this.Handle, SW_HIDE);
+            PaintLayered();
         }
 
         #endregion
@@ -255,16 +132,7 @@ namespace CF7Launcher.Guardian
             if (!_timer.Enabled)
                 _timer.Start();
 
-            if (!_shown)
-                _shown = true;
-
-            if (_ownerVisible)
-            {
-                ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
-                // HWND_TOP 而非 HWND_TOPMOST：保持在 owner 之上，但不遮挡其他应用
-                SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-            }
+            ShowOverlay();
 
             PaintLayered();
         }
@@ -297,10 +165,9 @@ namespace CF7Launcher.Guardian
             if (_remainingMs <= 0)
             {
                 _timer.Stop();
-                _shown = false;
-                ShowWindow(this.Handle, SW_HIDE);
                 _lines.Clear();
                 _globalAlpha = 0f;
+                DismissOverlay();
                 return;
             }
 
@@ -314,7 +181,7 @@ namespace CF7Launcher.Guardian
                 PaintLayered();
         }
 
-        private void RepositionAndPaint()
+        protected override void OnPositionChanged()
         {
             if (_shown && _ownerVisible)
                 PaintLayered();
@@ -432,35 +299,8 @@ namespace CF7Launcher.Guardian
                     }
                 }
 
-                IntPtr hdcScreen = IntPtr.Zero;
-                IntPtr hdcMem = CreateCompatibleDC(hdcScreen);
-                IntPtr hBmp = bmp.GetHbitmap(Color.FromArgb(0));
-                IntPtr hOld = SelectObject(hdcMem, hBmp);
-
-                try
-                {
-                    byte windowAlpha = (byte)(255 * _globalAlpha);
-
-                    POINT ptDst = new POINT { x = scrX, y = scrY };
-                    SIZE sz = new SIZE { cx = w, cy = h };
-                    POINT ptSrc = new POINT { x = 0, y = 0 };
-                    BLENDFUNCTION blend = new BLENDFUNCTION
-                    {
-                        BlendOp = AC_SRC_OVER,
-                        BlendFlags = 0,
-                        SourceConstantAlpha = windowAlpha,
-                        AlphaFormat = AC_SRC_ALPHA
-                    };
-
-                    UpdateLayeredWindow(this.Handle, hdcScreen,
-                        ref ptDst, ref sz, hdcMem, ref ptSrc, 0, ref blend, ULW_ALPHA);
-                }
-                finally
-                {
-                    SelectObject(hdcMem, hOld);
-                    DeleteObject(hBmp);
-                    DeleteDC(hdcMem);
-                }
+                byte windowAlpha = (byte)(255 * _globalAlpha);
+                CommitBitmap(bmp, scrX, scrY, windowAlpha);
             }
         }
 

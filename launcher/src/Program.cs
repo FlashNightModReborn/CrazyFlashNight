@@ -129,8 +129,19 @@ class Program
         HitNumberOverlay hnOverlay = new HitNumberOverlay(form, form.FlashHostPanel);
         FrameTask frameTask = new FrameTask(v8Runtime, hnOverlay);
 
+        // 刘海 Notch overlay（FPS 显示 + 可展开工具栏）
+        NotchOverlay notchOverlay = new NotchOverlay(
+            form, form.FlashHostPanel, frameTask.FpsBuffer,
+            projectRoot,
+            new Action(form.ToggleFullscreen),
+            new Action(form.ToggleLog),
+            new Action(form.ForceExit),
+            new Action<Keys>(form.HandleButtonClick));
+
         // 快车道注入：F/R 前缀消息由 XmlSocketServer 直接分发到 FrameTask，绕过 MessageRouter
         socketServer.SetFrameHandler(frameTask);
+        // W 前缀快车道：波次计时器 → NotchOverlay
+        socketServer.SetNotchHandler(notchOverlay);
 
         // Task 注册（TaskRegistry = single source of truth）
         GomokuTask gomokuTask = new GomokuTask(projectRoot);
@@ -177,6 +188,7 @@ class Program
             gomokuTask.Dispose();
             socketServer.Dispose();
             httpServer.Dispose();
+            notchOverlay.Dispose();
             hnOverlay.Dispose();
             v8Runtime.Dispose();
             toastOverlay.Dispose();
@@ -254,6 +266,7 @@ class Program
                 form.Activate();
                 toastOverlay.SetReady();
                 hnOverlay.SetReady();
+                notchOverlay.SetReady();
             }));
         });
 
@@ -269,6 +282,7 @@ class Program
         gomokuTask.Dispose();
         socketServer.Dispose();
         httpServer.Dispose();
+        notchOverlay.Dispose();
         hnOverlay.Dispose();
         v8Runtime.Dispose();
         toastOverlay.Dispose();

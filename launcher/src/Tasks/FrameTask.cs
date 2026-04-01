@@ -7,10 +7,10 @@ namespace CF7Launcher.Tasks
 {
     /// <summary>
     /// 处理 Flash 每帧发送的 frame 消息。
-    /// 包含摄像头状态（cam）和可选的伤害数字数据（hn）。
+    /// 包含摄像头状态（cam）、可选的伤害数字数据（hn）和可选的 FPS 数据。
     ///
     /// 快车道路径（主路径）：
-    ///   XmlSocketServer 前缀检测 → HandleRaw(cam, hn)
+    ///   XmlSocketServer 前缀检测 → HandleRaw(cam, hn, fps)
     ///     绕过 MessageRouter / JObject.Parse，零 GC 分配
     ///
     /// JSON 回退路径（兼容）：
@@ -25,18 +25,23 @@ namespace CF7Launcher.Tasks
     {
         private readonly V8Runtime _v8;
         private readonly HitNumberOverlay _overlay;
+        private readonly FpsRingBuffer _fpsBuffer;
+
+        public FpsRingBuffer FpsBuffer { get { return _fpsBuffer; } }
 
         public FrameTask(V8Runtime v8, HitNumberOverlay overlay)
         {
             _v8 = v8;
             _overlay = overlay;
+            _fpsBuffer = new FpsRingBuffer(600);
         }
 
         /// <summary>
         /// 快车道入口：由 XmlSocketServer 前缀检测直接调用，跳过 JObject 构造。
-        /// 前缀协议格式：F{cam}\x01{hn}
+        /// 前缀协议格式：F{cam}\x01{hn}\x02{fps}
+        /// fps 字段可选（仅在有新采样时存在）。
         /// </summary>
-        public void HandleRaw(string cam, string hn)
+        public void HandleRaw(string cam, string hn, string fps)
         {
             try
             {
@@ -48,6 +53,22 @@ namespace CF7Launcher.Tasks
 
                 string renderStr = _v8.Tick();
                 _overlay.UpdateRender(renderStr);
+
+                if (!string.IsNullOrEmpty(fps))
+                {
+                    // 格式：fps 或 fps|hour
+                    int pipe = fps.IndexOf('|');
+                    string fpsStr = (pipe >= 0) ? fps.Substring(0, pipe) : fps;
+                    float fpsVal;
+                    if (float.TryParse(fpsStr, out fpsVal))
+                        _fpsBuffer.Push(fpsVal);
+                    if (pipe >= 0 && pipe < fps.Length - 1)
+                    {
+                        float hour;
+                        if (float.TryParse(fps.Substring(pipe + 1), out hour))
+                            _fpsBuffer.SetGameHour(hour);
+                    }
+                }
             }
             catch (Exception ex)
             {

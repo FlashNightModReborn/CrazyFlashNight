@@ -182,22 +182,24 @@ class org.flashNight.arki.scene.WaveSpawner {
         }
 
         var 计时器状态 = "隐藏";
+        var timerStr:String = "";
         if(waveTime > 0){
             计时器状态 = "计时";
             var min = Math.floor(waveTime / 60);
             var sec = waveTime % 60;
             var min_str = min < 10 ? "0" + min.toString() : min.toString();
             var sec_str = sec < 10 ? "0" + sec.toString() : sec.toString();
-            _root.无限过图计时器.计时text.text = min_str + ":" + sec_str;
+            timerStr = min_str + ":" + sec_str;
         }
         else if(totalWave > 1){
             计时器状态 = "波次";
         }
-        _root.无限过图计时器.当前波次text.text = currentWave + 1;
-        _root.无限过图计时器.总波次text.text = totalWave;
-        _root.帧计时器.添加单次任务(function():Void {
-            _root.无限过图计时器.刷新计时器(计时器状态);
-        }, 100);
+
+        // 快车道推送到 C# 刘海 overlay：W{wave}|{total}|{mmss}|{state}
+        var sm:Object = _root.server;
+        if (sm.isSocketConnected) {
+            sm.sendSocketMessage("W" + (currentWave + 1) + "|" + totalWave + "|" + timerStr + "|" + 计时器状态);
+        }
 
         // 显示剩余敌人数标签
         _root.d_剩余敌人数._visible = true;
@@ -266,7 +268,11 @@ class org.flashNight.arki.scene.WaveSpawner {
             var sec = total_sec % 60;
             var min_str = min < 10 ? "0" + min.toString() : min.toString();
             var sec_str = sec < 10 ? "0" + sec.toString() : sec.toString();
-            _root.无限过图计时器.计时text.text = min_str + ":" + sec_str;
+            // 快车道推送倒计时更新
+            var sm:Object = _root.server;
+            if (sm.isSocketConnected) {
+                sm.sendSocketMessage("W" + (currentWave + 1) + "|" + totalWave + "|" + min_str + ":" + sec_str + "|计时");
+            }
         }
         
         var emenyCount = getEnemyCount();

@@ -1,5 +1,6 @@
 ﻿import org.flashNight.neur.Controller.PIDController;
 import org.flashNight.neur.Controller.SimpleKalmanFilter1D;
+import org.flashNight.arki.render.FrameBroadcaster;
 
 /**
  * PerformanceScheduler - 性能调度门面/协调器
@@ -230,7 +231,11 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             this._holdUntilMs = 0;
             this._prevDenoisedFPS = actualFPS;  // 趋势门控：从实际 FPS 重建基准
 
-            root.发布消息("紧急降级: [" + panicLevel + " : " + actualFPS + " FPS] " + root._quality);
+            // 通知推送到 C# 刘海 overlay（红色警告）
+            var _sm1:Object = root.server;
+            if (_sm1.isSocketConnected) {
+                _sm1.sendSocketMessage("Nperf|ff4444|\u26A0 紧急降级: [" + panicLevel + "] " + Math.round(actualFPS) + " FPS");
+            }
             if (logger != null) {
                 logger.levelChanged(currentTime, currentLevel, panicLevel, actualFPS, root._quality);
             }
@@ -291,7 +296,12 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
                     this._performanceLevel = newLevel;
                     currentLevel = newLevel;
 
-                    root.发布消息("性能等级: [" + currentLevel + " : " + actualFPS + " FPS] " + root._quality);
+                    // 通知推送到 C# 刘海 overlay（档位变化：升级绿色，降级黄色）
+                    var _sm2:Object = root.server;
+                    if (_sm2.isSocketConnected) {
+                        var _nc:String = (newLevel < oldLevel) ? "66ff66" : "ffcc00";
+                        _sm2.sendSocketMessage("Nperf|" + _nc + "|\u26A1 性能等级: [" + currentLevel + "] " + Math.round(actualFPS) + " FPS");
+                    }
 
                     if (logger != null) {
                         logger.levelChanged(currentTime, oldLevel, newLevel, actualFPS, root._quality);
@@ -309,6 +319,11 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             viz.setWeatherSystem(root.天气系统);
         }
         viz.updateData(actualFPS);
+        var fpsStr:String = String(Math.round(actualFPS));
+        if (root.天气系统 != undefined) {
+            fpsStr += "|" + String(root.天气系统.getCurrentTime());
+        }
+        FrameBroadcaster.setFpsPayload(fpsStr);
         var canvas:MovieClip = root.玩家信息界面.性能帧率显示器.画布;
         viz.drawCurve(canvas, currentLevel);
     }
@@ -364,10 +379,19 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             this._viz.setWeatherSystem(root.天气系统);
         }
         this._viz.updateData(estimatedFPS);
+        var fpsStr2:String = String(Math.round(estimatedFPS));
+        if (root.天气系统 != undefined) {
+            fpsStr2 += "|" + String(root.天气系统.getCurrentTime());
+        }
+        FrameBroadcaster.setFpsPayload(fpsStr2);
         var canvas:MovieClip = root.玩家信息界面.性能帧率显示器.画布;
         this._viz.drawCurve(canvas, level);
 
-        root.发布消息("手动设置性能等级: [" + level + "] 保持" + holdSec + "秒");
+        // 通知推送到 C# 刘海 overlay（手动设置：蓝色）
+        var _sm3:Object = root.server;
+        if (_sm3.isSocketConnected) {
+            _sm3.sendSocketMessage("Nperf|66ccff|\u2699 手动设置: [" + level + "] " + holdSec + "秒");
+        }
 
         if (this._logger != null) {
             this._logger.manualSet(currentTime, level, holdSec);

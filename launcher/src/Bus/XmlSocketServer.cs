@@ -29,8 +29,9 @@ namespace CF7Launcher.Bus
         private readonly MessageRouter _router;
         private readonly object _clientLock = new object();
 
-        // 快车道处理器（由 Program.cs 在 FrameTask 构造后注入）
+        // 快车道处理器（由 Program.cs 在构造后注入）
         private CF7Launcher.Tasks.FrameTask _frameTask;
+        private CF7Launcher.Guardian.NotchOverlay _notchOverlay;
 
         // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换
         private int _generation;
@@ -50,6 +51,11 @@ namespace CF7Launcher.Bus
         public void SetFrameHandler(CF7Launcher.Tasks.FrameTask frameTask)
         {
             _frameTask = frameTask;
+        }
+
+        public void SetNotchHandler(CF7Launcher.Guardian.NotchOverlay notch)
+        {
+            _notchOverlay = notch;
         }
 
         public bool Start(int port)
@@ -187,22 +193,34 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'F')
                 {
-                    // Frame 快车道：F{cam}\x01{hn}
+                    // Frame 快车道：F{cam}\x01{hn}\x02{fps}
+                    // \x02{fps} 可选，仅在有新 FPS 采样时存在
                     if (_frameTask == null) return; // 启动时序保护：FrameTask 尚未注入
-                    int sep = message.IndexOf('\x01', 1);
-                    string cam, hn;
-                    if (sep > 1)
+                    int sep1 = message.IndexOf('\x01', 1);
+                    string cam, hn, fps;
+                    if (sep1 > 1)
                     {
-                        cam = message.Substring(1, sep - 1);
-                        hn = (sep < message.Length - 1) ? message.Substring(sep + 1) : "";
+                        cam = message.Substring(1, sep1 - 1);
+                        int sep2 = message.IndexOf('\x02', sep1 + 1);
+                        if (sep2 >= 0)
+                        {
+                            hn = message.Substring(sep1 + 1, sep2 - sep1 - 1);
+                            fps = (sep2 < message.Length - 1) ? message.Substring(sep2 + 1) : "";
+                        }
+                        else
+                        {
+                            hn = (sep1 < message.Length - 1) ? message.Substring(sep1 + 1) : "";
+                            fps = "";
+                        }
                     }
                     else
                     {
-                        // 无分隔符：整条（去掉 F）当作 cam，hn 为空
+                        // 无 \x01 分隔符：整条（去掉 F）当作 cam，hn/fps 为空
                         cam = message.Substring(1);
                         hn = "";
+                        fps = "";
                     }
-                    _frameTask.HandleRaw(cam, hn);
+                    _frameTask.HandleRaw(cam, hn, fps);
                     return;
                 }
 
@@ -218,6 +236,73 @@ namespace CF7Launcher.Bus
                 {
                     // SFX 快车道：S{soundId}\x01{volume}
                     CF7Launcher.Tasks.AudioTask.HandleSfxFastLane(message);
+                    return;
+                }
+
+                if (prefix == 'N')
+                {
+                    // Notice 快车道：N{category}|{colorHex}|{text}
+                    // 例如 Nperf|ffcc00|⚡ 性能等级: [2] 26 FPS
+                    if (_notchOverlay == null) return;
+                    string nPayload = message.Substring(1);
+                    int sep1n = nPayload.IndexOf('|');
+                    if (sep1n > 0)
+                    {
+                        string nCategory = nPayload.Substring(0, sep1n);
+                        int sep2n = nPayload.IndexOf('|', sep1n + 1);
+                        if (sep2n > sep1n && sep2n < nPayload.Length - 1)
+                        {
+                            string hexColor = nPayload.Substring(sep1n + 1, sep2n - sep1n - 1);
+                            string nText = nPayload.Substring(sep2n + 1);
+                            int rgb;
+                            if (int.TryParse(hexColor, System.Globalization.NumberStyles.HexNumber, null, out rgb))
+                            {
+                                System.Drawing.Color c = System.Drawing.Color.FromArgb(
+                                    (rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
+                                _notchOverlay.AddNotice(nCategory, nText, c);
+                            }
+                        }
+                    }
+                    return;
+                }
+
+                if (prefix == 'W')
+                {
+                    // Wave timer 快车道：W{wave}|{total}|{mmss}|{state} 或 W隐藏
+                    if (_notchOverlay == null) return;
+                    string payload = message.Substring(1);
+                    if (payload == "\u9690\u85CF") // "隐藏"
+                    {
+                        _notchOverlay.ClearStatusItem("wave_timer");
+                    }
+                    else
+                    {
+                        // wave|total|mmss|state
+                        string[] parts = payload.Split('|');
+                        if (parts.Length >= 4)
+                        {
+                            string wave = parts[0];
+                            string total = parts[1];
+                            string timer = parts[2];   // "01:23" or ""
+                            string state = parts[3];   // "计时" or "波次"
+
+                            string text;
+                            System.Drawing.Color accent;
+                            if (state == "\u8BA1\u65F6") // 计时
+                            {
+                                // ⚔ 波次 3/10 · 剩余 01:23
+                                text = "\u2694 \u6CE2\u6B21 " + wave + "/" + total + " \u00B7 \u5269\u4F59 " + timer;
+                                accent = System.Drawing.Color.FromArgb(255, 200, 80);
+                            }
+                            else
+                            {
+                                // ⚔ 波次 3/10 · 歼灭模式
+                                text = "\u2694 \u6CE2\u6B21 " + wave + "/" + total + " \u00B7 \u6B7C\u706D\u6A21\u5F0F";
+                                accent = System.Drawing.Color.FromArgb(100, 200, 255);
+                            }
+                            _notchOverlay.SetStatusItem("wave_timer", text, "", accent);
+                        }
+                    }
                     return;
                 }
             }

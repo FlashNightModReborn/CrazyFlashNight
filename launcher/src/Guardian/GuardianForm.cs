@@ -80,10 +80,6 @@ namespace CF7Launcher.Guardian
         private D3DPanel _flashPanel;
         private Panel _gpuCaptureStrip;
         private System.Windows.Forms.Timer _gpuPaintTimer;
-        private Panel _toolbar;
-        private FlowLayoutPanel _hotkeyPanel;
-        private bool _hotkeysExpanded;
-
         private Panel _logBar;
         private TextBox _searchBox;
         private int _searchPos;
@@ -328,54 +324,6 @@ namespace CF7Launcher.Guardian
 
             this.Controls.Add(_logBar);
 
-            // ── 顶部工具栏 ──
-            _toolbar = new Panel();
-            _toolbar.Dock = DockStyle.Top;
-            _toolbar.Height = 28;
-            _toolbar.BackColor = Color.FromArgb(24, 24, 26);
-            _toolbar.Padding = new Padding(2, 2, 2, 2);
-
-            _hotkeyPanel = new FlowLayoutPanel();
-            _hotkeyPanel.Dock = DockStyle.Fill;
-            _hotkeyPanel.Visible = false;
-            _hotkeyPanel.BackColor = Color.FromArgb(24, 24, 26);
-            _hotkeyPanel.FlowDirection = FlowDirection.LeftToRight;
-            _hotkeyPanel.WrapContents = false;
-            _hotkeyPanel.Padding = new Padding(0);
-
-            string[] labels = {
-                "Q \u9000\u51FA",  "W \u5173\u95ED",  "R \u91CD\u7F6E",
-                "F \u5168\u5C4F",  "P \u622A\u56FE",  "O \u6253\u5F00"
-            };
-            for (int i = 0; i < AllHotkeyKeys.Length; i++)
-            {
-                Button hkBtn = CreateToolbarButton(labels[i], 66, uiFont);
-                hkBtn.Margin = new Padding(1, 0, 1, 0);
-                Keys captured = AllHotkeyKeys[i];
-                hkBtn.Click += delegate { HandleButtonClick(captured); };
-                _hotkeyPanel.Controls.Add(hkBtn);
-            }
-
-            // Fill 先加
-            _toolbar.Controls.Add(_hotkeyPanel);
-
-            Button menuBtn = CreateToolbarButton("\u2630", 28, uiFont);
-            menuBtn.Click += delegate { _hotkeysExpanded = !_hotkeysExpanded; _hotkeyPanel.Visible = _hotkeysExpanded; };
-            menuBtn.Dock = DockStyle.Left;
-            _toolbar.Controls.Add(menuBtn);
-
-            Button logBtn = CreateToolbarButton("\u65E5\u5FD7", 48, uiFont);
-            logBtn.Click += delegate { ToggleLog(); };
-            logBtn.Dock = DockStyle.Right;
-            _toolbar.Controls.Add(logBtn);
-
-            Button fsBtn = CreateToolbarButton("\u5168\u5C4F", 48, uiFont);
-            fsBtn.Click += delegate { ToggleFullscreen(); };
-            fsBtn.Dock = DockStyle.Right;
-            _toolbar.Controls.Add(fsBtn);
-
-            this.Controls.Add(_toolbar);
-
             // ── Flash 宿主（单 Panel + GPU overlay 架构）──
             // Flash 嵌入 _flashPanel。GPU 模式下，在 _flashPanel 内部创建
             // _gpuOverlay 子 Panel 覆盖在 Flash HWND 之上，SwapChain 渲染到 overlay。
@@ -401,23 +349,6 @@ namespace CF7Launcher.Guardian
             this.Controls.Add(_gpuCaptureStrip);
 
             this.FormClosing += OnFormClosing;
-        }
-
-        private static Button CreateToolbarButton(string text, int width, Font font)
-        {
-            Button btn = new Button();
-            btn.Text = text;
-            btn.Size = new Size(width, 24);
-            btn.FlatStyle = FlatStyle.Flat;
-            btn.FlatAppearance.BorderSize = 0;
-            btn.BackColor = Color.FromArgb(30, 30, 34);
-            btn.ForeColor = Color.FromArgb(170, 170, 170);
-            btn.Font = font;
-            btn.Cursor = Cursors.Hand;
-            btn.Margin = new Padding(1, 0, 1, 0);
-            btn.MouseEnter += delegate { btn.BackColor = Color.FromArgb(55, 55, 60); };
-            btn.MouseLeave += delegate { btn.BackColor = Color.FromArgb(30, 30, 34); };
-            return btn;
         }
 
         // ============================================================
@@ -480,7 +411,7 @@ namespace CF7Launcher.Guardian
         //  工具栏按钮
         // ============================================================
 
-        private void HandleButtonClick(Keys key)
+        public void HandleButtonClick(Keys key)
         {
             switch (key)
             {
@@ -490,7 +421,7 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        private void SendKeyToFlash(Keys key)
+        public void SendKeyToFlash(Keys key)
         {
             if (_gpuMode)
             {
@@ -545,7 +476,6 @@ namespace CF7Launcher.Guardian
                 this.WindowState = FormWindowState.Normal;
                 this.FormBorderStyle = FormBorderStyle.None;
                 this.WindowState = FormWindowState.Maximized;
-                _toolbar.Visible = false;
 
                 if (_hotkeysRegistered)
                     RegisterHotKey(this.Handle, HK_ESC, 0, (uint)Keys.Escape);
@@ -555,7 +485,6 @@ namespace CF7Launcher.Guardian
                 this.WindowState = FormWindowState.Normal;
                 this.FormBorderStyle = _savedBorderStyle;
                 this.Bounds = _savedBounds;
-                _toolbar.Visible = true;
 
                 UnregisterHotKey(this.Handle, HK_ESC);
             }
@@ -574,7 +503,7 @@ namespace CF7Launcher.Guardian
         //  日志
         // ============================================================
 
-        private void ToggleLog()
+        public void ToggleLog()
         {
             _logVisible = !_logVisible;
             this.SuspendLayout();

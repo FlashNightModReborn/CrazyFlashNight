@@ -27,6 +27,9 @@ class org.flashNight.arki.render.FrameBroadcaster {
     /** hn 数据槽（由 HitNumberBatchProcessor.flush() 写入，send() 消费后清空） */
     private static var _hnPayload:String = null;
 
+    /** fps 数据槽（由 PerformanceScheduler 写入，send() 消费后清空） */
+    private static var _fpsPayload:String = null;
+
     // 未来扩展槽位（如 ray vfx 数据）
     // private static var _rayPayload:String = null;
 
@@ -37,6 +40,15 @@ class org.flashNight.arki.render.FrameBroadcaster {
      */
     public static function setHnPayload(payload:String):Void {
         _hnPayload = payload;
+    }
+
+    /**
+     * 写入 fps 数据槽。
+     * 由 PerformanceScheduler 在采样后调用。
+     * @param payload FPS 值字符串（如 "28"）
+     */
+    public static function setFpsPayload(payload:String):Void {
+        _fpsPayload = payload;
     }
 
     /**
@@ -61,9 +73,14 @@ class org.flashNight.arki.render.FrameBroadcaster {
 
         var cam:String = gw._x + "|" + gw._y + "|" + (gw._xscale * 0.01);
 
-        // 快车道前缀协议：F{cam}\x01{hn}，绕过 C# 端 JObject.Parse
+        // 快车道前缀协议：F{cam}\x01{hn}[\x02{fps}]，绕过 C# 端 JObject.Parse
         var hn:String = (_hnPayload != null) ? _hnPayload : "";
-        sm.sendSocketMessage("F" + cam + "\x01" + hn);
+        var msg:String = "F" + cam + "\x01" + hn;
+        if (_fpsPayload != null) {
+            msg += "\x02" + _fpsPayload;
+            _fpsPayload = null;
+        }
+        sm.sendSocketMessage(msg);
 
         // 消费后清空所有数据槽
         _hnPayload = null;
@@ -78,6 +95,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
      */
     public static function reset():Void {
         _hnPayload = null;
+        _fpsPayload = null;
         org.flashNight.arki.audio.AudioBridge.reset();
     }
 }
