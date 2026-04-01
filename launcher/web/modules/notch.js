@@ -229,11 +229,12 @@ var Notch = (function() {
         // 检查当前显示中的 rows 是否有相同文本
         for (var i = 0; i < rows.length; i++) {
             if (rows[i].baseText === text && rows[i].isGame) {
-                rows[i].count = (rows[i].count || 1) + 1;
-                rows[i].el.textContent = text + ' x' + rows[i].count;
-                // 重置淡出定时器
-                if (rows[i].rt) clearTimeout(rows[i].rt);
-                rows[i].rt = setTimeout(function(){ removeRow(rows[i].id); }, GAME_TRANSIENT_MS);
+                var row = rows[i]; // 捕获稳定引用，不用可变索引
+                row.count = (row.count || 1) + 1;
+                row.el.textContent = text + ' x' + row.count;
+                if (row.rt) clearTimeout(row.rt);
+                var rowId = row.id;
+                row.rt = setTimeout(function(){ removeRow(rowId); }, GAME_TRANSIENT_MS);
                 return;
             }
         }

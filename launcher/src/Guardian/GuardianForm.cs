@@ -975,8 +975,17 @@ namespace CF7Launcher.Guardian
             DoExit();
         }
 
+        /// <summary>退出前回调。Program.cs 注入，在 Form dispose 之前断开快车道。</summary>
+        public Action OnShutdownEarly;
+
         private void DoExit()
         {
+            // 最早期断开快车道，防止 dispose 后 FrameTask 推到已释放的 overlay
+            if (OnShutdownEarly != null)
+            {
+                try { OnShutdownEarly(); } catch { }
+                OnShutdownEarly = null;
+            }
             this.FormClosing -= OnFormClosing;
             StopGpuRenderer();
             DoUnregisterHotkeys();

@@ -53,6 +53,14 @@ _root.加载引导界面 = function(filename){
 }
 
 _root.最上层发布文字提示 = function(消息){
-    // 走 N-prefix 快车道 → Launcher Notch 通知栈（game category，金色高亮）
-    _root.server.sendSocketMessage("Ngame|ffd700|" + 消息);
+    if (_root.server.isSocketConnected) {
+        // Launcher 在线 → 走 N-prefix 快车道 → Web overlay 游戏通知
+        _root.server.sendSocketMessage("Ngame|ffd700|" + 消息);
+    } else {
+        // Launcher 不在线（CS6 测试 / socket 断线）→ Flash 本地队列
+        _root.全屏UI层.文字提示列表.push(消息);
+        if(_root.全屏UI层.getActiveTextCount() == 0){
+            _root.全屏UI层.tickCOunt = 0;
+        }
+    }
 }

@@ -86,6 +86,7 @@ namespace CF7Launcher.Tasks
         /// </summary>
         public void HandleReset()
         {
+            if (_stopped) return;
             try
             {
                 _v8.Reset();

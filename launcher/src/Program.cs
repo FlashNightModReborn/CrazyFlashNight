@@ -201,6 +201,14 @@ class Program
         // 注入 shutdown 回调
         httpServer.SetShutdownAction(delegate { form.ForceExit(); });
 
+        // 退出前回调：在 Form dispose 之前断开快车道，防退出竞态
+        form.OnShutdownEarly = delegate
+        {
+            frameTask.Stop();
+            socketServer.SetFrameHandler(null);
+            socketServer.SetNotchHandler(null);
+        };
+
         // 写端口文件（CLI 和 AS2 可直接读取，无需盲扫）
         string portsFile = Path.Combine(projectRoot, "launcher_ports.json");
         string portsJson = "{\"httpPort\":" + httpPort
@@ -317,15 +325,16 @@ class Program
                 form.Activate();
                 if (webOverlay != null)
                 {
-                    // WebView2 接管 Toast + Notch，GDI+ overlay 不激活
+                    // GDI+ toast 激活作为过渡期 fallback（WebView2 JS ready 前消息走这里）
+                    // GDI+ notch 不激活——避免双刘海屏，启动期短暂丢通知可接受
+                    toastOverlay.SetReady();
+
                     webOverlay.SetReady();
-                    // 幽灵输入层：在 WebOverlay 之后激活，确保 Z-order 在最上层
                     if (inputShield != null)
                         inputShield.SetReady();
                 }
                 else
                 {
-                    // fallback: GDI+ overlay
                     toastOverlay.SetReady();
                     notchOverlay.SetReady();
                 }
