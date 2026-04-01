@@ -6,6 +6,7 @@ var Notch = (function() {
     var autoHideTimer = null;
     var rows = [], TRANSIENT_MS = 4000, MAX_ROWS = 4;
     var lightLevels = null, MAX_LIGHT = 9;
+    var expandCooldown = false; // 收起后冷却期，防止振荡
 
     function init() {
         notchEl = document.getElementById('notch');
@@ -46,24 +47,20 @@ var Notch = (function() {
     }
 
     function doExpand() {
+        if (expandCooldown) return;
         expanded = true;
-        var vw = document.documentElement.clientWidth;
-        // pill 宽度从当前值渐变到视口宽度（px→px，CSS transition 可插值）
-        pillEl.style.width = Math.max(200, vw) + 'px';
         notchEl.classList.add('expanded');
         cancelAutoHide();
-        setTimeout(reportRect, 20);
+        // toolbar 的 max-width 过渡驱动 pill 宽度变化，150ms 后上报最终 rect
+        setTimeout(reportRect, 180);
     }
     function doCollapse() {
         expanded = false;
-        // 先设到收起宽度（px→px 可过渡），过渡结束后清除固定宽度
-        var collapsedW = notchEl.querySelector('#notch-left').offsetWidth + 16;
-        pillEl.style.width = collapsedW + 'px';
+        expandCooldown = true;
+        setTimeout(function() { expandCooldown = false; }, 600);
         notchEl.classList.remove('expanded');
-        setTimeout(function() {
-            pillEl.style.width = '';
-            reportRect();
-        }, 180);
+        // 过渡完成后上报收起态 rect
+        setTimeout(reportRect, 180);
     }
     function startAutoHide() {
         cancelAutoHide();
@@ -73,7 +70,9 @@ var Notch = (function() {
         if (autoHideTimer) { clearTimeout(autoHideTimer); autoHideTimer = null; }
     }
     function reportRect() {
-        var rect = notchEl.getBoundingClientRect();
+        // 上报 pill（实际条带）的 rect，不上报整个 notch（含空白 info 区域）
+        // 这样 hitRect 只覆盖有交互内容的区域，鼠标移到空白处可触发 WM_MOUSELEAVE
+        var rect = pillEl.getBoundingClientRect();
         Bridge.send({
             type: 'interactiveRect',
             x: Math.round(rect.left), y: Math.round(rect.top),
@@ -83,7 +82,7 @@ var Notch = (function() {
 
     function onFpsData(data) {
         fpsValue = data.value || 0;
-        gameHour = data.hour || 12;
+        gameHour = (typeof data.hour === 'number') ? data.hour : 6;
         if (data.points) fpsPoints = data.points;
         fpsEl.textContent = Math.round(fpsValue);
         fpsEl.className = 'notch-fps ' + (
@@ -148,22 +147,58 @@ var Notch = (function() {
         var w = clockCanvas.width, h = clockCanvas.height;
         var cx = w/2, cy = h/2, r = Math.min(cx,cy) - 1;
         clockCtx.clearRect(0, 0, w, h);
+
+        // 对齐 GDI+ NotchOverlay 三档配色：白天/黄昏/夜晚
+        var hr = Math.floor(gameHour) % 24;
+        var faceColor, rimColor, handColor;
+        if (hr >= 5 && hr <= 17) {
+            // 白天：暖黄
+            faceColor = 'rgba(180,170,100,0.2)';
+            rimColor = 'rgba(200,190,120,0.7)';
+            handColor = 'rgba(240,230,160,0.86)';
+        } else if ((hr >= 3 && hr <= 4) || (hr >= 18 && hr <= 20)) {
+            // 黄昏/黎明：橙
+            faceColor = 'rgba(200,140,60,0.2)';
+            rimColor = 'rgba(220,160,80,0.63)';
+            handColor = 'rgba(240,180,100,0.78)';
+        } else {
+            // 夜晚：蓝
+            faceColor = 'rgba(100,120,180,0.16)';
+            rimColor = 'rgba(130,150,200,0.55)';
+            handColor = 'rgba(160,180,220,0.7)';
+        }
+
+        // 表盘填充
         clockCtx.beginPath();
         clockCtx.arc(cx, cy, r, 0, Math.PI*2);
-        clockCtx.strokeStyle = 'rgba(255,255,255,0.5)';
-        clockCtx.lineWidth = 1;
+        clockCtx.fillStyle = faceColor;
+        clockCtx.fill();
+
+        // 外圈
+        clockCtx.beginPath();
+        clockCtx.arc(cx, cy, r, 0, Math.PI*2);
+        clockCtx.strokeStyle = rimColor;
+        clockCtx.lineWidth = 1.2;
         clockCtx.stroke();
-        var ha = ((gameHour%12)/12)*Math.PI*2 - Math.PI/2;
+
+        // 时针（短粗）：hour%12 映射到 360°
+        var hour12 = gameHour % 12;
+        var ha = (hour12/12)*Math.PI*2 - Math.PI/2;
         clockCtx.beginPath();
         clockCtx.moveTo(cx, cy);
         clockCtx.lineTo(cx + Math.cos(ha)*r*0.5, cy + Math.sin(ha)*r*0.5);
-        clockCtx.strokeStyle = '#ffd700';
+        clockCtx.strokeStyle = handColor;
         clockCtx.lineWidth = 2;
+        clockCtx.lineCap = 'round';
         clockCtx.stroke();
+
+        // 分针（长细）：小数部分映射 360°
+        var minFrac = gameHour - Math.floor(gameHour);
+        var ma = minFrac*Math.PI*2 - Math.PI/2;
         clockCtx.beginPath();
         clockCtx.moveTo(cx, cy);
-        clockCtx.lineTo(cx, cy - r*0.7);
-        clockCtx.strokeStyle = 'rgba(255,255,255,0.4)';
+        clockCtx.lineTo(cx + Math.cos(ma)*r*0.8, cy + Math.sin(ma)*r*0.8);
+        clockCtx.strokeStyle = handColor;
         clockCtx.lineWidth = 1;
         clockCtx.stroke();
     }

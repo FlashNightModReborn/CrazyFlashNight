@@ -238,6 +238,9 @@ namespace CF7Launcher.Guardian
 
         #region Owner 跟随
 
+        /// <summary>当前缩放比（viewport 实际高度 / Flash 设计高度 576）。</summary>
+        private double _zoomFactor = 1.0;
+
         private void SyncPosition()
         {
             try
@@ -252,6 +255,16 @@ namespace CF7Launcher.Guardian
                 int h = Math.Max(1, (int)vpH);
 
                 SetWindowPos(this.Handle, HWND_TOP, x, y, w, h, SWP_NOACTIVATE);
+
+                // WebView2 缩放：viewport 实际高度 / Flash 设计高度
+                double newZoom = Math.Max(0.25, vpH / 576.0);
+                if (_webReady && _webView != null && Math.Abs(newZoom - _zoomFactor) > 0.001)
+                {
+                    _zoomFactor = newZoom;
+                    _webView.ZoomFactor = _zoomFactor;
+                    if (_inputShield != null)
+                        _inputShield.SetZoomFactor(_zoomFactor);
+                }
             }
             catch
             {
@@ -271,11 +284,12 @@ namespace CF7Launcher.Guardian
                 string json = args.WebMessageAsJson;
                 if (json.Contains("\"interactiveRect\""))
                 {
-                    // JS 上报交互区域 → 转发给 InputShieldForm
-                    int rx = ExtractInt(json, "\"x\":");
-                    int ry = ExtractInt(json, "\"y\":");
-                    int rw = ExtractInt(json, "\"w\":");
-                    int rh = ExtractInt(json, "\"h\":");
+                    // JS 上报交互区域（CSS 像素）→ 缩放为物理像素 → 转发给 InputShieldForm
+                    double z = _zoomFactor;
+                    int rx = (int)(ExtractInt(json, "\"x\":") * z);
+                    int ry = (int)(ExtractInt(json, "\"y\":") * z);
+                    int rw = (int)(ExtractInt(json, "\"w\":") * z);
+                    int rh = (int)(ExtractInt(json, "\"h\":") * z);
                     if (_inputShield != null && rw > 0 && rh > 0)
                     {
                         List<Rectangle> rects = new List<Rectangle>();
@@ -403,8 +417,7 @@ namespace CF7Launcher.Guardian
                     category, text, accentColor);
                 return;
             }
-            if (_webFailed) { if (_notchFallback != null) _notchFallback.AddNotice(category, text, accentColor); return; }
-            if (!_webReady || _disposed) return;
+            if (_webFailed || !_webReady || _disposed) { if (_notchFallback != null) _notchFallback.AddNotice(category, text, accentColor); return; }
             string hex = accentColor.R.ToString("x2") + accentColor.G.ToString("x2") + accentColor.B.ToString("x2");
             string escaped = text.Replace("\\", "\\\\").Replace("'", "\\'");
             ExecScript("typeof Notch!=='undefined'&&Notch.addNotice('" + category + "','" + escaped + "','#" + hex + "')");
@@ -418,8 +431,7 @@ namespace CF7Launcher.Guardian
                     id, label, subLabel, accentColor);
                 return;
             }
-            if (_webFailed) { if (_notchFallback != null) _notchFallback.SetStatusItem(id, label, subLabel, accentColor); return; }
-            if (!_webReady || _disposed) return;
+            if (_webFailed || !_webReady || _disposed) { if (_notchFallback != null) _notchFallback.SetStatusItem(id, label, subLabel, accentColor); return; }
             string text = label;
             if (!string.IsNullOrEmpty(subLabel)) text += "  " + subLabel;
             string hex = accentColor.R.ToString("x2") + accentColor.G.ToString("x2") + accentColor.B.ToString("x2");
@@ -434,8 +446,7 @@ namespace CF7Launcher.Guardian
                 this.BeginInvoke(new Action<string>(ClearStatusItem), id);
                 return;
             }
-            if (_webFailed) { if (_notchFallback != null) _notchFallback.ClearStatusItem(id); return; }
-            if (!_webReady || _disposed) return;
+            if (_webFailed || !_webReady || _disposed) { if (_notchFallback != null) _notchFallback.ClearStatusItem(id); return; }
             ExecScript("typeof Notch!=='undefined'&&Notch.clearStatus('" + id + "')");
         }
 

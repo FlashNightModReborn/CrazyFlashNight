@@ -85,6 +85,13 @@ namespace CF7Launcher.Guardian
         /// <summary>鼠标按钮按下期间是否持有 capture。</summary>
         private bool _captured;
 
+        /// <summary>WebView2 缩放比，用于 物理像素 ↔ CSS像素 转换。</summary>
+        private double _zoomFactor = 1.0;
+
+        /// <summary>收起冷却：hitRect 缩小后短暂禁止 CDP mouseMoved，防振荡。</summary>
+        private int _lastHitWidth;
+        private long _collapseTick;
+
         public InputShieldForm(Form owner, Control anchor)
             : base(owner, anchor, 1024f, 576f)
         {
@@ -98,15 +105,37 @@ namespace CF7Launcher.Guardian
             _targetWebView = webView;
         }
 
+        /// <summary>更新缩放比。WebOverlayForm 在 SyncPosition 时调用。</summary>
+        public void SetZoomFactor(double zoom)
+        {
+            _zoomFactor = Math.Max(0.25, zoom);
+        }
+
         #region 命中区域管理
 
         /// <summary>
         /// 更新交互区域矩形列表。由 WebOverlayForm 在收到 JS hitRects 消息后调用。
+        /// 物理像素坐标，已由 WebOverlayForm 乘过 zoom。
         /// </summary>
         public void UpdateHitRects(List<Rectangle> rects)
         {
             _hitRects.Clear();
-            _hitRects.AddRange(rects);
+            // Clamp 到位图边界，防止超出导致鼠标永远命中
+            foreach (Rectangle r in rects)
+            {
+                int cx = Math.Max(0, r.X);
+                int cy = Math.Max(0, r.Y);
+                int cw = Math.Min(r.Width, _maskW - cx);
+                int ch = Math.Min(r.Height, _maskH - cy);
+                if (cw > 0 && ch > 0)
+                    _hitRects.Add(new Rectangle(cx, cy, cw, ch));
+            }
+            // 检测收起（宽度缩小）→ 进入冷却期
+            int newWidth = (_hitRects.Count > 0) ? _hitRects[0].Width : 0;
+            if (newWidth < _lastHitWidth && _lastHitWidth > 0)
+                _collapseTick = Environment.TickCount;
+            _lastHitWidth = newWidth;
+
             RebuildMask();
 
             // hitRect 变更后，鼠标可能落在新 rect 之外（如 notch 收起）
@@ -226,7 +255,6 @@ namespace CF7Launcher.Guardian
 
                 case WM_MOUSEMOVE:
                 {
-                    // 首次进入命中区域时注册 WM_MOUSELEAVE 追踪
                     if (!_mouseTracking)
                     {
                         TRACKMOUSEEVENT tme = new TRACKMOUSEEVENT();
@@ -238,6 +266,11 @@ namespace CF7Launcher.Guardian
                         _mouseTracking = true;
                     }
                     _mouseInside = true;
+
+                    // 收起冷却期内不发 CDP mouseMoved，防止 JS mouseenter → 重新展开
+                    long elapsed = Environment.TickCount - _collapseTick;
+                    if (_collapseTick > 0 && elapsed >= 0 && elapsed < 800)
+                        return;
 
                     DispatchCdpMouse("mouseMoved", m.LParam, "none");
                     return;
@@ -317,12 +350,15 @@ namespace CF7Launcher.Guardian
             DispatchCdpMouseAt(type, x, y, button);
         }
 
-        /// <summary>向 WebView2 注入 CDP 鼠标事件。坐标为 viewport 相对。</summary>
-        private void DispatchCdpMouseAt(string type, int x, int y, string button)
+        /// <summary>向 WebView2 注入 CDP 鼠标事件。坐标为物理像素，内部转为 CSS 像素。</summary>
+        private void DispatchCdpMouseAt(string type, int physX, int physY, string button)
         {
             if (_targetWebView == null) return;
 
-            // 合并连续 mouseMoved：队列尾部如果已有 mouseMoved，替换之
+            // 物理像素 → CSS 像素（CDP 坐标空间）
+            int x = (int)(physX / _zoomFactor);
+            int y = (int)(physY / _zoomFactor);
+
             string clickCount = (type == "mousePressed") ? ",\"clickCount\":1" : "";
             string json = "{\"type\":\"" + type + "\""
                 + ",\"x\":" + x
