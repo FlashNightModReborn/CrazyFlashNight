@@ -26,22 +26,37 @@ html, body {
     0%{opacity:0} 2.1%{opacity:1} 87.2%{opacity:1} 100%{opacity:0}
 }
 
-/* === Notch === */
+/* === Notch: 单行布局，对齐 GDI+ NotchOverlay ===
+ *
+ * GDI+ 布局（28px 高单行）：
+ *   [8px] [FPS] [3px] [sparkline 70x16] [4px] [clock 16x16] [4px] [▼] ... [按钮从右往左] [8px]
+ *
+ * 收起：pill 仅包含左侧 FPS 区域，按钮不可见
+ * 展开：pill 撑满视口宽度，左侧 FPS + 右侧按钮在同一行
+ */
 #notch {
     position:absolute; top:0; left:50%;
     transform:translateX(-50%);
     pointer-events:auto;
-    transition:width 150ms ease-out;
-    width:auto;
 }
+
 #notch-pill {
-    display:inline-flex; align-items:center; gap:4px;
-    padding:3px 8px;
+    display:flex; align-items:center;
+    padding:0 8px;
     background:rgba(24,24,26,0.88);
     border-radius:0 0 8px 8px;
     height:28px;
     white-space:nowrap;
+    /* 收起→展开 宽度渐变，对齐 GDI+ 的 ease-out t*(2-t) */
+    transition:width 150ms ease-out, border-radius 150ms ease-out;
 }
+
+/* 左侧 FPS 区域 */
+#notch-left {
+    display:flex; align-items:center; gap:4px;
+    flex-shrink:0;
+}
+
 .notch-fps {
     font:bold 13px/1 "Consolas","Courier New",monospace;
     min-width:24px; text-align:right;
@@ -49,6 +64,7 @@ html, body {
 .fps-good { color:#66ff66; }
 .fps-warn { color:#ffcc00; }
 .fps-bad  { color:#ff4444; }
+
 .notch-expand-btn {
     font-size:10px; cursor:pointer;
     color:rgba(255,255,255,0.5);
@@ -59,18 +75,24 @@ html, body {
 #notch-sparkline { display:block; }
 #notch-clock { display:block; }
 
-/* Toolbar: hidden by default, shown when expanded */
+/* 右侧工具栏：收起时隐藏，展开时淡入并占据右侧空间 */
 #notch-toolbar {
-    display:none;
-    gap:2px; padding:2px 4px;
-    background:rgba(24,24,26,0.88);
-    border-radius:0 0 4px 4px;
+    display:flex; align-items:center;
+    gap:2px;
+    margin-left:auto; /* 推到右侧 */
+    overflow:hidden;
+    max-width:0;
+    opacity:0;
+    transition:max-width 150ms ease-out, opacity 120ms ease-out 30ms;
 }
-#notch.expanded #notch-toolbar { display:flex; }
+
+#notch.expanded #notch-toolbar {
+    max-width:600px; /* 足够容纳所有按钮 */
+    opacity:1;
+}
+
 #notch.expanded #notch-pill {
-    border-radius:0;
-    width:100%;
-    justify-content:center;
+    border-radius:0 0 4px 4px;
 }
 
 #notch-toolbar button {
@@ -81,6 +103,7 @@ html, body {
     color:rgba(255,255,255,0.8);
     cursor:pointer; pointer-events:auto;
     white-space:nowrap;
+    transition:background 100ms;
 }
 #notch-toolbar button:hover {
     background:rgba(255,255,255,0.2);

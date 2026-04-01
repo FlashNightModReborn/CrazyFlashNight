@@ -13,8 +13,10 @@ namespace CF7Launcher.Guardian
     /// WebView2 透明覆盖层窗口。
     /// 作为独立顶层窗口悬浮于 Flash HWND 之上，承载 HTML/CSS/JS 渲染的 UI。
     ///
-    /// Phase 0: PoC 验证 airspace + 点击穿透 + owner 跟随。
-    /// Phase 1+: 实现 IToastSink / INotchSink 替代 GDI+ overlay。
+    /// 透明度架构：
+    /// - Form.TransparencyKey + WS_EX_LAYERED 实现像素级透明
+    /// - TransparencyKey 颜色像素：视觉透明 + 点击穿透（无需轮询切换）
+    /// - 非 TransparencyKey 像素（notch/toast）：可见 + 可点击
     /// </summary>
     public class WebOverlayForm : Form, IToastSink, INotchSink, IDisposable
     {
@@ -27,14 +29,7 @@ namespace CF7Launcher.Guardian
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
             int X, int Y, int cx, int cy, uint uFlags);
 
-        [DllImport("user32.dll")]
-        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll")]
-        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
         private const int SW_SHOWNOACTIVATE = 4;
-        private const int SW_HIDE = 0;
         private static readonly IntPtr HWND_TOP = new IntPtr(0);
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
@@ -42,11 +37,16 @@ namespace CF7Launcher.Guardian
 
         private const int WS_EX_TOOLWINDOW = 0x00000080;
         private const int WS_EX_NOACTIVATE = 0x08000000;
-        private const int WS_EX_LAYERED = 0x00080000;
         private const int WS_EX_TRANSPARENT = 0x00000020;
-        private const int GWL_EXSTYLE = -20;
 
         #endregion
+
+        /// <summary>
+        /// TransparencyKey 颜色。选择极暗色 (1,1,1)：
+        /// - 与 HTML 暗色背景 rgba(24,24,26) 反差小，抗锯齿边缘几乎无色差
+        /// - 几乎不可能与实际内容颜色冲突
+        /// </summary>
+        private static readonly Color TRANSPARENT_COLOR = Color.FromArgb(1, 1, 1);
 
         private readonly Form _owner;
         private readonly Control _anchor;
@@ -54,17 +54,17 @@ namespace CF7Launcher.Guardian
         private WebView2 _webView;
         private bool _webReady;
         private bool _shown;
-        private bool _ownerVisible;
         private bool _disposed;
-
-        // 点击穿透切换
-        private System.Windows.Forms.Timer _cursorTimer;
-        private Rectangle _interactiveRect;
-        private bool _isPassthrough;
 
         // IToastSink: 早期消息缓冲（WebView2 初始化前）
         private readonly List<string> _toastEarlyBuffer = new List<string>();
         private bool _toastReady;
+
+        // InputShieldForm 引用（CDP 输入注入 + hitRects 转发）
+        private InputShieldForm _inputShield;
+
+        // 光照等级（静态 24h 数组，初始化后一次性推送给 JS）
+        private int[] _lightLevels;
 
         // INotchSink: FPS 推送 + 按钮委托
         private FpsRingBuffer _fpsBuffer;
@@ -81,12 +81,15 @@ namespace CF7Launcher.Guardian
             _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
             _webReady = false;
             _shown = false;
-            _ownerVisible = true;
-            _isPassthrough = true;
 
             this.FormBorderStyle = FormBorderStyle.None;
             this.ShowInTaskbar = false;
             this.StartPosition = FormStartPosition.Manual;
+
+            // 像素级透明：BackColor = TransparencyKey → 匹配像素视觉透明 + 点击穿透
+            this.BackColor = TRANSPARENT_COLOR;
+            this.TransparencyKey = TRANSPARENT_COLOR;
+
             this.Owner = owner;
 
             CreateHandle();
@@ -96,27 +99,28 @@ namespace CF7Launcher.Guardian
             _webView.Dock = DockStyle.Fill;
             this.Controls.Add(_webView);
 
-            // Owner 跟随
+            // Owner 跟随：Move/Resize → 同步位置
             owner.Move += delegate { SyncPosition(); };
             owner.Resize += delegate
             {
                 SyncPosition();
-                if (owner.WindowState == FormWindowState.Minimized)
-                    OnOwnerDeactivated();
-                else
-                    OnOwnerActivated();
+                // 从最小化恢复时重新显示（Win32 owned 窗口最小化时自动隐藏，
+                // 但 ShowWindow(SW_SHOWNOACTIVATE) 创建的窗口可能不自动恢复）
+                if (owner.WindowState != FormWindowState.Minimized && _shown && _webReady)
+                {
+                    ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
+                }
             };
             anchor.Resize += delegate { SyncPosition(); };
-            owner.Activated += delegate { OnOwnerActivated(); };
-            owner.Deactivate += delegate { OnOwnerDeactivated(); };
-
-            // 点击穿透轮询 (50ms)
-            _cursorTimer = new System.Windows.Forms.Timer();
-            _cursorTimer.Interval = 50;
-            _cursorTimer.Tick += OnCursorTick;
 
             // 异步初始化 WebView2
             InitWebView2Async(webDir);
+        }
+
+        /// <summary>注入 InputShieldForm 引用。</summary>
+        public void SetInputShield(InputShieldForm shield)
+        {
+            _inputShield = shield;
         }
 
         protected override CreateParams CreateParams
@@ -124,11 +128,19 @@ namespace CF7Launcher.Guardian
             get
             {
                 CreateParams cp = base.CreateParams;
-                // 不加 WS_EX_LAYERED：WebView2 自己处理透明背景，
-                // WS_EX_LAYERED 会导致逐像素命中检测（alpha=0 区域永远穿透）
+                // WS_EX_TOOLWINDOW: 不出现在任务栏和 Alt-Tab 列表
+                // WS_EX_NOACTIVATE: 顶层窗口点击时不变前台
+                // WS_EX_TRANSPARENT: 永久点击穿透，所有鼠标事件直达 Flash
+                //   Phase 0: overlay 纯视觉层，交互走键盘快捷键
+                //   Phase 1: 可探索 cursor polling 或 InputHost 方案恢复 notch 鼠标交互
                 cp.ExStyle |= WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE | WS_EX_TRANSPARENT;
                 return cp;
             }
+        }
+
+        protected override bool ShowWithoutActivation
+        {
+            get { return true; }
         }
 
         #region WebView2 初始化
@@ -145,7 +157,7 @@ namespace CF7Launcher.Guardian
                     await CoreWebView2Environment.CreateAsync(null, userDataDir);
                 await _webView.EnsureCoreWebView2Async(env);
 
-                // 透明背景
+                // 透明背景：WebView2 透明区域显示 Form BackColor (=TransparencyKey) → 视觉穿透
                 _webView.DefaultBackgroundColor = Color.Transparent;
 
                 // 虚拟主机映射：https://overlay.local/ → webDir/
@@ -164,11 +176,21 @@ namespace CF7Launcher.Guardian
                 _webView.CoreWebView2.Navigate("https://overlay.local/overlay.html");
 
                 _webReady = true;
-                _cursorTimer.Start();
 
-                // 如果 SetReady 已经被调用过，flush 早期缓冲
+                // 把 CoreWebView2 传给 InputShieldForm 供 CDP 注入
+                if (_inputShield != null)
+                    _inputShield.SetTargetWebView(_webView.CoreWebView2);
+
+                // 如果 SetReady 已经被调用过，flush 早期缓冲并显示
                 if (_toastReady)
                     FlushToastBuffer();
+                if (_shown)
+                {
+                    SyncPosition();
+                    ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
+                    SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
+                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                }
 
                 LogManager.Log("[WebOverlay] WebView2 initialized, navigating to overlay.html");
             }
@@ -204,89 +226,6 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        private void OnOwnerActivated()
-        {
-            _ownerVisible = true;
-            if (_shown && _webReady)
-            {
-                ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
-                SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-            }
-        }
-
-        private void OnOwnerDeactivated()
-        {
-            _ownerVisible = false;
-            if (_shown)
-                ShowWindow(this.Handle, SW_HIDE);
-        }
-
-        #endregion
-
-        #region 点击穿透
-
-        private int _dbgCounter;
-        private static string _dbgFile;
-
-        private static void DbgLog(string msg)
-        {
-            try
-            {
-                if (_dbgFile == null)
-                    _dbgFile = Path.Combine(
-                        Path.GetDirectoryName(typeof(WebOverlayForm).Assembly.Location),
-                        "weboverlay_debug.log");
-                File.AppendAllText(_dbgFile, DateTime.Now.ToString("HH:mm:ss.fff") + " " + msg + "\r\n");
-            }
-            catch { }
-        }
-
-        private void OnCursorTick(object sender, EventArgs e)
-        {
-            if (!_webReady || _disposed) return;
-
-            try
-            {
-                Point cursor = Cursor.Position;
-                Point winOrigin = this.Location;
-                Rectangle screenRect = new Rectangle(
-                    winOrigin.X + _interactiveRect.X,
-                    winOrigin.Y + _interactiveRect.Y,
-                    _interactiveRect.Width,
-                    _interactiveRect.Height);
-                bool inInteractive = screenRect.Width > 0
-                    && screenRect.Contains(cursor);
-
-                _dbgCounter++;
-                if (_dbgCounter % 60 == 1)
-                {
-                    DbgLog("cursor=" + cursor.X + "," + cursor.Y
-                        + " win=" + winOrigin.X + "," + winOrigin.Y
-                        + " iRect=" + _interactiveRect
-                        + " sRect=" + screenRect
-                        + " in=" + inInteractive + " pass=" + _isPassthrough);
-                }
-
-                if (inInteractive && _isPassthrough)
-                {
-                    int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
-                    SetWindowLong(this.Handle, GWL_EXSTYLE, ex & ~WS_EX_TRANSPARENT);
-                    _isPassthrough = false;
-                }
-                else if (!inInteractive && !_isPassthrough)
-                {
-                    int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
-                    SetWindowLong(this.Handle, GWL_EXSTYLE, ex | WS_EX_TRANSPARENT);
-                    _isPassthrough = true;
-                }
-            }
-            catch
-            {
-                // 窗口可能已 disposed
-            }
-        }
-
         #endregion
 
         #region JS ↔ C# 消息
@@ -297,16 +236,19 @@ namespace CF7Launcher.Guardian
             try
             {
                 string json = args.WebMessageAsJson;
-                // 使用简单字符串匹配避免 JSON 依赖
                 if (json.Contains("\"interactiveRect\""))
                 {
-                    // 解析交互区域 {type:"interactiveRect", x:N, y:N, w:N, h:N}
-                    int x = ExtractInt(json, "\"x\":");
-                    int y = ExtractInt(json, "\"y\":");
-                    int w = ExtractInt(json, "\"w\":");
-                    int h = ExtractInt(json, "\"h\":");
-                    _interactiveRect = new Rectangle(x, y, w, h);
-                    DbgLog("interactiveRect set: " + _interactiveRect);
+                    // JS 上报交互区域 → 转发给 InputShieldForm
+                    int rx = ExtractInt(json, "\"x\":");
+                    int ry = ExtractInt(json, "\"y\":");
+                    int rw = ExtractInt(json, "\"w\":");
+                    int rh = ExtractInt(json, "\"h\":");
+                    if (_inputShield != null && rw > 0 && rh > 0)
+                    {
+                        List<Rectangle> rects = new List<Rectangle>();
+                        rects.Add(new Rectangle(rx, ry, rw, rh));
+                        _inputShield.UpdateHitRects(rects);
+                    }
                 }
                 else if (json.Contains("\"click\""))
                 {
@@ -317,6 +259,8 @@ namespace CF7Launcher.Guardian
                 else if (json.Contains("\"ready\""))
                 {
                     LogManager.Log("[WebOverlay] JS side ready");
+                    // JS 就绪后一次性推送光照等级静态数据
+                    PushLightLevels();
                 }
             }
             catch (Exception ex)
@@ -350,6 +294,27 @@ namespace CF7Launcher.Guardian
         #endregion
 
         #region Notch 注入
+
+        /// <summary>注入光照等级数据（24 元素数组）。</summary>
+        public void SetLightLevels(int[] levels)
+        {
+            _lightLevels = levels;
+        }
+
+        /// <summary>将光照等级数组一次性推送给 JS。</summary>
+        private void PushLightLevels()
+        {
+            if (_lightLevels == null || _lightLevels.Length < 24) return;
+            System.Text.StringBuilder sb = new System.Text.StringBuilder(128);
+            sb.Append("{\"type\":\"lightLevels\",\"levels\":[");
+            for (int i = 0; i < 24; i++)
+            {
+                if (i > 0) sb.Append(',');
+                sb.Append(_lightLevels[i]);
+            }
+            sb.Append("]}");
+            PostToWeb(sb.ToString());
+        }
 
         /// <summary>
         /// 注入 Notch 所需的依赖。在 FrameTask 创建后调用。
@@ -488,7 +453,7 @@ namespace CF7Launcher.Guardian
                 FlushToastBuffer();
             if (_fpsTimer != null)
                 _fpsTimer.Start();
-            if (_webReady && _ownerVisible)
+            if (_webReady)
             {
                 SyncPosition();
                 ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
@@ -509,12 +474,6 @@ namespace CF7Launcher.Guardian
                     _fpsTimer.Stop();
                     _fpsTimer.Dispose();
                     _fpsTimer = null;
-                }
-                if (_cursorTimer != null)
-                {
-                    _cursorTimer.Stop();
-                    _cursorTimer.Dispose();
-                    _cursorTimer = null;
                 }
                 if (_webView != null)
                 {

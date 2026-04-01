@@ -68,3 +68,10 @@ data/task/agent_tasks.json
 data/task/text/agent_text.json
 scripts/TestLoader.as
 data/rag/sync_state.json
+
+# WebView2 runtime cache (machine-specific)
+launcher/webview2_userdata/
+weboverlay_debug.log
+
+# Launcher runtime logs
+logs/

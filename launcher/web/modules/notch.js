@@ -5,6 +5,7 @@ var Notch = (function() {
     var expanded = false, fpsValue = 0, fpsPoints = [], gameHour = 12;
     var autoHideTimer = null;
     var rows = [], TRANSIENT_MS = 4000, MAX_ROWS = 4;
+    var lightLevels = null, MAX_LIGHT = 9;
 
     function init() {
         notchEl = document.getElementById('notch');
@@ -35,6 +36,9 @@ var Notch = (function() {
         }
 
         Bridge.on('fps', onFpsData);
+        Bridge.on('lightLevels', function(data) {
+            if (data.levels) lightLevels = data.levels;
+        });
         window.addEventListener('resize', reportRect);
         reportRect();
         drawSparkline();
@@ -43,14 +47,23 @@ var Notch = (function() {
 
     function doExpand() {
         expanded = true;
+        var vw = document.documentElement.clientWidth;
+        // pill 宽度从当前值渐变到视口宽度（px→px，CSS transition 可插值）
+        pillEl.style.width = Math.max(200, vw) + 'px';
         notchEl.classList.add('expanded');
         cancelAutoHide();
-        reportRect();
+        setTimeout(reportRect, 20);
     }
     function doCollapse() {
         expanded = false;
+        // 先设到收起宽度（px→px 可过渡），过渡结束后清除固定宽度
+        var collapsedW = notchEl.querySelector('#notch-left').offsetWidth + 16;
+        pillEl.style.width = collapsedW + 'px';
         notchEl.classList.remove('expanded');
-        reportRect();
+        setTimeout(function() {
+            pillEl.style.width = '';
+            reportRect();
+        }, 180);
     }
     function startAutoHide() {
         cancelAutoHide();
@@ -82,6 +95,40 @@ var Notch = (function() {
     function drawSparkline() {
         var w = sparkCanvas.width, h = sparkCanvas.height;
         sparkCtx.clearRect(0, 0, w, h);
+
+        // 光照等级背景（暖黄色填充区域图）
+        if (lightLevels && lightLevels.length >= 24) {
+            var startHour = Math.floor(gameHour);
+            var points = fpsPoints.length > 2 ? fpsPoints.length : 30;
+            var stepX = w / points;
+            var stepH = h / MAX_LIGHT;
+
+            sparkCtx.beginPath();
+            sparkCtx.moveTo(0, h); // 左下角
+            for (var i = 0; i < points; i++) {
+                var hourIdx = (startHour + i) % 24;
+                var ly = h - lightLevels[hourIdx] * stepH;
+                sparkCtx.lineTo(i * stepX, ly);
+            }
+            sparkCtx.lineTo((points - 1) * stepX, h); // 右下角
+            sparkCtx.closePath();
+            sparkCtx.fillStyle = 'rgba(180,160,60,0.39)';
+            sparkCtx.fill();
+
+            // 顶部轮廓线
+            sparkCtx.beginPath();
+            for (var i = 0; i < points; i++) {
+                var hourIdx = (startHour + i) % 24;
+                var ly = h - lightLevels[hourIdx] * stepH;
+                if (i === 0) sparkCtx.moveTo(0, ly);
+                else sparkCtx.lineTo(i * stepX, ly);
+            }
+            sparkCtx.strokeStyle = 'rgba(200,180,70,0.55)';
+            sparkCtx.lineWidth = 1;
+            sparkCtx.stroke();
+        }
+
+        // FPS 曲线
         if (fpsPoints.length < 2) return;
         var pts = fpsPoints, maxV = 60;
         for (var i = 0; i < pts.length; i++) { if (pts[i] > maxV) maxV = pts[i]; }

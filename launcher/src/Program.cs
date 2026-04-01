@@ -62,6 +62,9 @@ class Program
         // 创建 Guardian 窗口（bus-only 模式下也需要，因为 LogManager/Overlay 依赖 Form）
         GuardianForm form = new GuardianForm();
 
+        // 启用文件日志（GuardianForm 构造函数中已初始化 UI 日志，这里补充文件通道）
+        LogManager.InitFileLog(projectRoot);
+
         LogManager.Log("[Guardian] Project root: " + projectRoot);
         if (busOnly)
             LogManager.Log("[Guardian] --bus-only mode: skipping Flash Player startup");
@@ -152,7 +155,8 @@ class Program
             LogManager.Log("[WebView2] Runtime not available, overlay disabled: " + ex.Message);
         }
 
-        // WebView2 可用时注入 Notch 依赖
+        // WebView2 可用时注入 Notch 依赖 + 创建 InputShieldForm
+        InputShieldForm inputShield = null;
         if (webOverlay != null)
         {
             webOverlay.SetNotchDependencies(frameTask.FpsBuffer,
@@ -160,6 +164,15 @@ class Program
                 new Action(form.ToggleLog),
                 new Action(form.ForceExit),
                 new Action<Keys>(form.HandleButtonClick));
+
+            // 光照等级数据（与 NotchOverlay 共用同一默认值）
+            webOverlay.SetLightLevels(new int[] {
+                0, 0, 1, 4, 7, 7, 7, 7, 7, 7, 7, 7, 9, 7, 7, 7, 7, 7, 7, 4, 1, 0, 0, 0
+            });
+
+            // 幽灵输入层：GDI+ 命中测试 + CDP 注入
+            inputShield = new InputShieldForm(form, form.FlashHostPanel);
+            webOverlay.SetInputShield(inputShield);
         }
 
         // Toast/Notch 路由：WebView2 可用时走 Web 渲染，否则 GDI+ fallback
@@ -217,12 +230,14 @@ class Program
             gomokuTask.Dispose();
             socketServer.Dispose();
             httpServer.Dispose();
+            if (inputShield != null) inputShield.Dispose();
             if (webOverlay != null) webOverlay.Dispose();
             notchOverlay.Dispose();
             hnOverlay.Dispose();
             v8Runtime.Dispose();
             toastOverlay.Dispose();
             try { File.Delete(portsFile); } catch { }
+            LogManager.Shutdown();
 
             return 0;
         }
@@ -298,6 +313,9 @@ class Program
                 {
                     // WebView2 接管 Toast + Notch，GDI+ overlay 不激活
                     webOverlay.SetReady();
+                    // 幽灵输入层：在 WebOverlay 之后激活，确保 Z-order 在最上层
+                    if (inputShield != null)
+                        inputShield.SetReady();
                 }
                 else
                 {
@@ -321,12 +339,14 @@ class Program
         gomokuTask.Dispose();
         socketServer.Dispose();
         httpServer.Dispose();
+        if (inputShield != null) inputShield.Dispose();
         if (webOverlay != null) webOverlay.Dispose();
         notchOverlay.Dispose();
         hnOverlay.Dispose();
         v8Runtime.Dispose();
         toastOverlay.Dispose();
         try { File.Delete(portsFile); } catch { }
+        LogManager.Shutdown();
 
         return 0;
     }

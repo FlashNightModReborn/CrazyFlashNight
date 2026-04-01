@@ -86,6 +86,7 @@
     <Compile Include="src\Guardian\IToastSink.cs" />
     <Compile Include="src\Guardian\INotchSink.cs" />
     <Compile Include="src\Guardian\WebOverlayForm.cs" />
+    <Compile Include="src\Guardian\InputShieldForm.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

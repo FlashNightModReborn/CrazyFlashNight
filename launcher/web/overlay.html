@@ -10,22 +10,26 @@
 <!-- Toast container -->
 <div id="toast-container"></div>
 
-<!-- Notch: FPS pill + toolbar + info rows -->
+<!-- Notch: 单行布局，左侧 FPS 区域 + 右侧工具栏按钮 -->
 <div id="notch">
     <div id="notch-pill">
-        <span id="notch-fps" class="notch-fps">--</span>
-        <canvas id="notch-sparkline" width="70" height="16"></canvas>
-        <canvas id="notch-clock" width="16" height="16"></canvas>
-        <span id="notch-expand" class="notch-expand-btn">&#9660;</span>
-    </div>
-    <div id="notch-toolbar">
-        <button data-key="Q">Q &#36864;&#20986;</button>
-        <button data-key="W">W &#20851;&#38381;</button>
-        <button data-key="R">R &#37325;&#32622;</button>
-        <button data-key="F">F &#20840;&#23631;</button>
-        <button data-key="P">P &#25130;&#22270;</button>
-        <button data-key="O">O &#25171;&#24320;</button>
-        <button data-key="LOG">&#26085;&#24535;</button>
+        <!-- 左侧：FPS 指标区 -->
+        <div id="notch-left">
+            <span id="notch-fps" class="notch-fps">--</span>
+            <canvas id="notch-sparkline" width="70" height="16"></canvas>
+            <canvas id="notch-clock" width="16" height="16"></canvas>
+            <span id="notch-expand" class="notch-expand-btn">&#9660;</span>
+        </div>
+        <!-- 右侧：工具栏按钮（展开时从右往左排列） -->
+        <div id="notch-toolbar">
+            <button data-key="Q">Q 退出</button>
+            <button data-key="W">W 关闭</button>
+            <button data-key="R">R 重置</button>
+            <button data-key="F">F 全屏</button>
+            <button data-key="P">P 截图</button>
+            <button data-key="O">O 打开</button>
+            <button data-key="LOG">日志</button>
+        </div>
     </div>
     <div id="notch-info"></div>
 </div>
