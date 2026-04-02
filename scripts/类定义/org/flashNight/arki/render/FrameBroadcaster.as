@@ -30,8 +30,8 @@ class org.flashNight.arki.render.FrameBroadcaster {
     /** fps 数据槽（由 PerformanceScheduler 写入，send() 消费后清空） */
     private static var _fpsPayload:String = null;
 
-    // 未来扩展槽位（如 ray vfx 数据）
-    // private static var _rayPayload:String = null;
+    /** UI 状态数据槽（由 watch 回调写入，send() 消费后清空）*/
+    private static var _uiPayload:String = null;
 
     /**
      * 写入 hn 数据槽。
@@ -49,6 +49,19 @@ class org.flashNight.arki.render.FrameBroadcaster {
      */
     public static function setFpsPayload(payload:String):Void {
         _fpsPayload = payload;
+    }
+
+    /**
+     * 追加 UI 状态 KV 对到数据槽。
+     * 由 watch 回调在值变化时调用，多次调用会拼接（同帧内可能多个变量变化）。
+     * @param kv 格式 "key:value"，如 "g:1200690"
+     */
+    public static function pushUiState(kv:String):Void {
+        if (_uiPayload == null) {
+            _uiPayload = kv;
+        } else {
+            _uiPayload += "|" + kv;
+        }
     }
 
     /**
@@ -80,6 +93,12 @@ class org.flashNight.arki.render.FrameBroadcaster {
             msg += "\x02" + _fpsPayload;
             _fpsPayload = null;
         }
+        // UI 状态数据：pushUiState 可能在 send() 之后执行（watch 时序），
+        // 因此只在读到数据时才清空，最迟延迟 1 帧到达
+        if (_uiPayload != null) {
+            msg += "\x03" + _uiPayload;
+            _uiPayload = null;
+        }
         sm.sendSocketMessage(msg);
 
         // 消费后清空所有数据槽
@@ -96,6 +115,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
     public static function reset():Void {
         _hnPayload = null;
         _fpsPayload = null;
+        // 注意：不清空 _uiPayload，场景切换时 UI 快照需要保留到下一帧 send()
         org.flashNight.arki.audio.AudioBridge.reset();
     }
 }

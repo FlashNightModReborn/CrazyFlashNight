@@ -24,9 +24,12 @@ _root.UI系统.经济面板动效占比 = 0.2; // 渐显/渐隐帧比例
 // ============================
 _root.UI系统.金钱刷新 = function(newValue:Number, oldValue:Number):Void {
   _root.UI系统.经济面板刷新(_root.金币图标, "金钱", newValue);
+  // 帧数据管线推送（JS 端对比 old/new 自算 delta）
+  org.flashNight.arki.render.FrameBroadcaster.pushUiState("g:" + Math.round(newValue));
 };
 _root.UI系统.虚拟币刷新 = function(newValue:Number, oldValue:Number):Void {
   _root.UI系统.经济面板刷新(_root.K点图标, "虚拟币", newValue);
+  org.flashNight.arki.render.FrameBroadcaster.pushUiState("k:" + Math.round(newValue));
 };
 
 // ============================

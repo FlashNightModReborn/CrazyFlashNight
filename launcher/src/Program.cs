@@ -173,6 +173,12 @@ class Program
                 0, 0, 1, 4, 7, 7, 7, 7, 7, 7, 7, 7, 9, 7, 7, 7, 7, 7, 7, 4, 1, 0, 0, 0
             });
 
+            // 游戏命令通道（pause 等）
+            webOverlay.SetSocketServer(socketServer);
+
+            // U 前缀快车道：UI 数据透传到 WebView2
+            socketServer.SetUiDataHandler(new Action<string>(webOverlay.HandleUiData));
+
             // 幽灵输入层：GDI+ 命中测试 + CDP 注入
             inputShield = new InputShieldForm(form, form.FlashHostPanel);
             webOverlay.SetInputShield(inputShield);

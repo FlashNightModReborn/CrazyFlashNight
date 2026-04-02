@@ -32,6 +32,7 @@ namespace CF7Launcher.Bus
         // 快车道处理器（由 Program.cs 在构造后注入）
         private CF7Launcher.Tasks.FrameTask _frameTask;
         private CF7Launcher.Guardian.INotchSink _notchOverlay;
+        private Action<string> _uiDataHandler; // U 前缀：UI 数据透传
 
         // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换
         private int _generation;
@@ -56,6 +57,12 @@ namespace CF7Launcher.Bus
         public void SetNotchHandler(CF7Launcher.Guardian.INotchSink notch)
         {
             _notchOverlay = notch;
+        }
+
+        /// <summary>注入 U 前缀处理器（UI 数据透传到 WebView2）。</summary>
+        public void SetUiDataHandler(Action<string> handler)
+        {
+            _uiDataHandler = handler;
         }
 
         public bool Start(int port)
@@ -193,34 +200,50 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'F')
                 {
-                    // Frame 快车道：F{cam}\x01{hn}\x02{fps}
-                    // \x02{fps} 可选，仅在有新 FPS 采样时存在
-                    if (_frameTask == null) return; // 启动时序保护：FrameTask 尚未注入
-                    int sep1 = message.IndexOf('\x01', 1);
+                    // Frame 快车道：F{cam}\x01{hn}[\x02{fps}][\x03{uiState}]
+                    if (_frameTask == null) return;
+
+                    // 先提取 \x03 UI 状态段（可能附在 fps 后面或 hn 后面）
+                    string uiState = null;
+                    string body = message;
+                    int sep3 = message.IndexOf('\x03', 1);
+                    if (sep3 >= 0)
+                    {
+                        uiState = (sep3 < message.Length - 1) ? message.Substring(sep3 + 1) : "";
+                        body = message.Substring(0, sep3);
+                    }
+
+                    int sep1 = body.IndexOf('\x01', 1);
                     string cam, hn, fps;
                     if (sep1 > 1)
                     {
-                        cam = message.Substring(1, sep1 - 1);
-                        int sep2 = message.IndexOf('\x02', sep1 + 1);
+                        cam = body.Substring(1, sep1 - 1);
+                        int sep2 = body.IndexOf('\x02', sep1 + 1);
                         if (sep2 >= 0)
                         {
-                            hn = message.Substring(sep1 + 1, sep2 - sep1 - 1);
-                            fps = (sep2 < message.Length - 1) ? message.Substring(sep2 + 1) : "";
+                            hn = body.Substring(sep1 + 1, sep2 - sep1 - 1);
+                            fps = (sep2 < body.Length - 1) ? body.Substring(sep2 + 1) : "";
                         }
                         else
                         {
-                            hn = (sep1 < message.Length - 1) ? message.Substring(sep1 + 1) : "";
+                            hn = (sep1 < body.Length - 1) ? body.Substring(sep1 + 1) : "";
                             fps = "";
                         }
                     }
                     else
                     {
-                        // 无 \x01 分隔符：整条（去掉 F）当作 cam，hn/fps 为空
-                        cam = message.Substring(1);
+                        cam = body.Substring(1);
                         hn = "";
                         fps = "";
                     }
                     _frameTask.HandleRaw(cam, hn, fps);
+                    // UI 状态段透传到 WebView2（与帧渲染同步）
+                    if (uiState != null && uiState.Length > 0)
+                    {
+                        LogManager.Log("[Frame:UI] " + uiState);
+                        if (_uiDataHandler != null)
+                            _uiDataHandler(uiState);
+                    }
                     return;
                 }
 
@@ -277,20 +300,21 @@ namespace CF7Launcher.Bus
                     }
                     else
                     {
-                        // wave|total|mmss|state
+                        // wave|total|mmss|state[|enemyCount]
                         string[] parts = payload.Split('|');
                         if (parts.Length >= 4)
                         {
                             string wave = parts[0];
                             string total = parts[1];
-                            string timer = parts[2];   // "01:23" or ""
-                            string state = parts[3];   // "计时" or "波次"
+                            string timer = parts[2];
+                            string state = parts[3];
+                            string enemies = (parts.Length >= 5) ? parts[4] : "";
 
                             string text;
                             System.Drawing.Color accent;
                             if (state == "\u8BA1\u65F6") // 计时
                             {
-                                // ⚔ 波次 3/10 · 剩余 01:23
+                                // ⚔ 波次 3/10 · 剩余 01:23 · 敌人 5
                                 text = "\u2694 \u6CE2\u6B21 " + wave + "/" + total + " \u00B7 \u5269\u4F59 " + timer;
                                 accent = System.Drawing.Color.FromArgb(255, 200, 80);
                             }
@@ -300,9 +324,20 @@ namespace CF7Launcher.Bus
                                 text = "\u2694 \u6CE2\u6B21 " + wave + "/" + total + " \u00B7 \u6B7C\u706D\u6A21\u5F0F";
                                 accent = System.Drawing.Color.FromArgb(100, 200, 255);
                             }
+                            if (enemies.Length > 0 && enemies != "0")
+                                text += " \u00B7 \u6B8B\u654C " + enemies; // · 残敌 N
                             _notchOverlay.SetStatusItem("wave_timer", text, "", accent);
                         }
                     }
+                    return;
+                }
+
+                if (prefix == 'U')
+                {
+                    // UI 数据快车道：U{type}|{payload...}
+                    // 零解析，整条 payload 转发给 WebView2 层
+                    if (_uiDataHandler != null)
+                        _uiDataHandler(message.Substring(1));
                     return;
                 }
             }

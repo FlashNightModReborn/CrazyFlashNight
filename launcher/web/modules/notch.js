@@ -36,6 +36,42 @@ var Notch = (function() {
             })(buttons[i]);
         }
 
+        // submenu hover → 更新 hitRect 以覆盖下拉区域
+        var submenuWrap = document.querySelector('.notch-submenu-wrap');
+        if (submenuWrap) {
+            submenuWrap.addEventListener('mouseenter', function() {
+                setTimeout(reportRect, 50); // 等 CSS :hover 展开后上报
+            });
+            submenuWrap.addEventListener('mouseleave', function() {
+                setTimeout(reportRect, 50);
+            });
+        }
+
+        // 暂停按钮（常驻）
+        var pauseBtn = document.getElementById('notch-pause');
+        if (pauseBtn) {
+            pauseBtn.addEventListener('click', function() {
+                Bridge.send({ type: 'click', key: 'PAUSE' });
+            });
+        }
+
+        // 暂停状态（帧数据 p:0/1）
+        UiData.on('p', function(val) {
+            var pb = document.getElementById('notch-pause');
+            if (!pb) return;
+            var paused = (val === '1');
+            pb.textContent = paused ? '\u25B6' : '\u23F8'; // ▶ or ⏸
+            if (paused) pb.classList.add('paused');
+            else pb.classList.remove('paused');
+        });
+
+        // 主线任务进度（帧数据 q:N）→ 控制按钮可见性
+        UiData.on('q', function(val) {
+            var progress = parseInt(val, 10) || 0;
+            var btn = document.querySelector('[data-key="WAREHOUSE"]');
+            if (btn) btn.style.display = progress > 13 ? '' : 'none';
+        });
+
         Bridge.on('fps', onFpsData);
         Bridge.on('lightLevels', function(data) {
             if (data.levels) lightLevels = data.levels;
@@ -70,9 +106,21 @@ var Notch = (function() {
         if (autoHideTimer) { clearTimeout(autoHideTimer); autoHideTimer = null; }
     }
     function reportRect() {
-        // 上报 pill（实际条带）的 rect，不上报整个 notch（含空白 info 区域）
-        // 这样 hitRect 只覆盖有交互内容的区域，鼠标移到空白处可触发 WM_MOUSELEAVE
-        var rect = pillEl.getBoundingClientRect();
+        // 展开时上报整个 #notch rect（包含 submenu 下拉区域），收起时只报 pill
+        var target = expanded ? notchEl : pillEl;
+        var rect = target.getBoundingClientRect();
+        // submenu 可能超出 notch 边界，取并集
+        if (expanded) {
+            var sub = document.querySelector('.notch-submenu');
+            if (sub && sub.offsetParent !== null) {
+                var sr = sub.getBoundingClientRect();
+                var x1 = Math.min(rect.left, sr.left);
+                var y1 = Math.min(rect.top, sr.top);
+                var x2 = Math.max(rect.right, sr.right);
+                var y2 = Math.max(rect.bottom, sr.bottom);
+                rect = { left: x1, top: y1, width: x2 - x1, height: y2 - y1 };
+            }
+        }
         Bridge.send({
             type: 'interactiveRect',
             x: Math.round(rect.left), y: Math.round(rect.top),

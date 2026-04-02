@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
+using CF7Launcher.Bus;
 
 namespace CF7Launcher.Guardian
 {
@@ -65,6 +66,9 @@ namespace CF7Launcher.Guardian
         private readonly List<string> _toastEarlyBuffer = new List<string>();
         private bool _toastReady;
 
+        // UI 数据早期缓冲：WebView2 就绪前收到的状态数据，就绪后 flush
+        private readonly List<string> _uiDataEarlyBuffer = new List<string>();
+
         // InputShieldForm 引用（CDP 输入注入 + hitRects 转发）
         private InputShieldForm _inputShield;
 
@@ -78,6 +82,9 @@ namespace CF7Launcher.Guardian
         private Action _onToggleLog;
         private Action _onForceExit;
         private Action<Keys> _onSendKey;
+
+        // 游戏命令通道
+        private XmlSocketServer _socketServer;
 
         public WebOverlayForm(Form owner, Control anchor, string webDir)
         {
@@ -296,9 +303,10 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[WebOverlay] JS side ready → activating web channel");
                     _webReady = true;
 
-                    // flush 早期缓冲的 toast 消息
+                    // flush 早期缓冲
                     if (_toastReady)
                         FlushToastBuffer();
+                    FlushUiDataBuffer();
 
                     // 显示 overlay（如果 SetReady 已先调用）
                     if (_shown)
@@ -369,6 +377,12 @@ namespace CF7Launcher.Guardian
             PostToWeb(sb.ToString());
         }
 
+        /// <summary>注入 XmlSocketServer 用于发送游戏命令（pause 等）。</summary>
+        public void SetSocketServer(XmlSocketServer server)
+        {
+            _socketServer = server;
+        }
+
         /// <summary>
         /// 注入 Notch 所需的依赖。在 FrameTask 创建后调用。
         /// </summary>
@@ -409,6 +423,40 @@ namespace CF7Launcher.Guardian
             }
             sb.Append("]}");
             PostToWeb(sb.ToString());
+        }
+
+        #endregion
+
+        #region UI 数据快车道 (U 前缀)
+
+        /// <summary>
+        /// 处理 U 前缀 payload，零解析转发到 JS。
+        /// 格式：{type}|{field1}|{field2}|...
+        /// JS 端 UiData.dispatch(type, fields[]) 负责分发。
+        /// </summary>
+        public void HandleUiData(string payload)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(HandleUiData), payload);
+                return;
+            }
+            if (_disposed) return;
+            if (!_webReady)
+            {
+                // WebView2 未就绪，缓冲（后续 flush 时 JS 对比会去重）
+                _uiDataEarlyBuffer.Add(payload);
+                return;
+            }
+            string escaped = payload.Replace("\\", "\\\\").Replace("'", "\\'");
+            ExecScript("typeof UiData!=='undefined'&&UiData.dispatch('" + escaped + "')");
+        }
+
+        private void FlushUiDataBuffer()
+        {
+            foreach (string p in _uiDataEarlyBuffer)
+                HandleUiData(p);
+            _uiDataEarlyBuffer.Clear();
         }
 
         #endregion
@@ -565,7 +613,23 @@ namespace CF7Launcher.Guardian
                 case "O": if (_onSendKey != null) _onSendKey(Keys.O); break;
                 case "LOG": if (_onToggleLog != null) _onToggleLog(); break;
                 case "EXIT": if (_onForceExit != null) _onForceExit(); break;
+                case "PAUSE": SendGameCommand("togglePause"); break;
+                case "WAREHOUSE": SendGameCommand("warehouse"); break;
+                case "SETTINGS": SendGameCommand("toggleSettings"); break;
+                case "SHOP": SendGameCommand("openShop"); break;
+                case "HELP": SendGameCommand("openHelp"); break;
+                case "SAFEEXIT": SendGameCommand("safeExit"); break;
+                case "PETS": SendGameCommand("togglePets"); break;
+                case "MERCS": SendGameCommand("toggleMercs"); break;
+                case "TABLET": SendGameCommand("toggleTablet"); break;
             }
+        }
+
+        /// <summary>通过 XmlSocket 向 AS2 发送游戏命令。</summary>
+        private void SendGameCommand(string action)
+        {
+            if (_socketServer == null) return;
+            _socketServer.Send("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
         }
 
         private static int ExtractInt(string json, string key)

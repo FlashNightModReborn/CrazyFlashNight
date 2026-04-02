@@ -485,6 +485,12 @@ class org.flashNight.neur.Server.ServerManager {
             return;
         }
 
+        // 处理 C#→AS2 游戏命令
+        if (response.task == "cmd") {
+            handleGameCommand(response.action, response);
+            return;
+        }
+
         // Callback 路由：有 callId 的响应分发到注册的回调
         if (response.callId !== undefined) {
             var cbKey:String = String(response.callId);
@@ -549,6 +555,20 @@ class org.flashNight.neur.Server.ServerManager {
 
         var responseString:String = jsonParser.stringify(responseObj);
         sendSocketMessage(responseString);
+    }
+
+    // C#→AS2 游戏命令分发器
+    private function handleGameCommand(action:String, params:Object):Void {
+        if (action == undefined || action == "") {
+            trace("[GameCmd] Missing action");
+            return;
+        }
+        var handler:Function = _root.gameCommands[action];
+        if (typeof handler == "function") {
+            handler(params);
+        } else {
+            trace("[GameCmd] Unknown action: " + action);
+        }
     }
 
     public function onSocketClose():Void {

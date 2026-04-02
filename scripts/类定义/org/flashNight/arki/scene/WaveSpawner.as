@@ -195,13 +195,13 @@ class org.flashNight.arki.scene.WaveSpawner {
             计时器状态 = "波次";
         }
 
-        // 快车道推送到 C# 刘海 overlay：W{wave}|{total}|{mmss}|{state}
+        // 快车道推送到 C# 刘海 overlay：W{wave}|{total}|{mmss}|{state}|{enemyCount}
         var sm:Object = _root.server;
         if (sm.isSocketConnected) {
-            sm.sendSocketMessage("W" + (currentWave + 1) + "|" + totalWave + "|" + timerStr + "|" + 计时器状态);
+            sm.sendSocketMessage("W" + (currentWave + 1) + "|" + totalWave + "|" + timerStr + "|" + 计时器状态 + "|" + getEnemyCount());
         }
 
-        // 显示剩余敌人数标签
+        // 显示剩余敌人数标签（保留 Flash 端兼容）
         _root.d_剩余敌人数._visible = true;
 
         // 对于本轮要生成的出生点，记录其生成所需时长
@@ -262,20 +262,26 @@ class org.flashNight.arki.scene.WaveSpawner {
     public function clockTick():Void{
         if(!isActive || isFinished) return;
         countDownTime++;
+
+        var emenyCount = getEnemyCount();
+        var sm:Object = _root.server;
+
         if(waveTime > 0){
             var total_sec = waveTime - countDownTime;
             var min = Math.floor(total_sec / 60);
             var sec = total_sec % 60;
             var min_str = min < 10 ? "0" + min.toString() : min.toString();
             var sec_str = sec < 10 ? "0" + sec.toString() : sec.toString();
-            // 快车道推送倒计时更新
-            var sm:Object = _root.server;
             if (sm.isSocketConnected) {
-                sm.sendSocketMessage("W" + (currentWave + 1) + "|" + totalWave + "|" + min_str + ":" + sec_str + "|计时");
+                sm.sendSocketMessage("W" + (currentWave + 1) + "|" + totalWave + "|" + min_str + ":" + sec_str + "|计时|" + emenyCount);
+            }
+        } else {
+            // 歼灭模式：也持续推送敌人数
+            if (sm.isSocketConnected) {
+                sm.sendSocketMessage("W" + (currentWave + 1) + "|" + totalWave + "||波次|" + emenyCount);
             }
         }
-        
-        var emenyCount = getEnemyCount();
+
         _root.d_剩余敌人数.text = _root.获得翻译("剩余敌人数：") + emenyCount;
         
         if (emenyCount <= finishRequirement || (waveTime > 0 && total_sec <= 0)){
