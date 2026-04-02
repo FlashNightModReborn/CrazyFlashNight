@@ -2,11 +2,26 @@ var Notch = (function() {
     'use strict';
     var notchEl, pillEl, fpsEl, sparkCanvas, sparkCtx;
     var clockCanvas, clockCtx, toolbarEl, infoContainer, expandBtn;
+    var perfBadgeEl, statsEl;
     var expanded = false, fpsValue = 0, fpsPoints = [], gameHour = 6; // 对齐 WeatherSystem.currentTime 初始值
+    var perfLevel = 0; // 性能等级 0-3
     var autoHideTimer = null;
     var rows = [], TRANSIENT_MS = 4000, MAX_ROWS = 4;
     var lightLevels = null, MAX_LIGHT = 9;
     var expandCooldown = false; // 收起后冷却期，防止振荡
+    // DPR-aware canvas
+    var dpr = window.devicePixelRatio || 1;
+    // 光照离屏缓存
+    var lightCacheCanvas = null, lightCacheCtx = null, lightCacheHour = -1;
+
+    function setupHiDpi(canvas, ctx, cssW, cssH) {
+        canvas.width = cssW * dpr;
+        canvas.height = cssH * dpr;
+        canvas.style.width = cssW + 'px';
+        canvas.style.height = cssH + 'px';
+        var c = canvas.getContext('2d');
+        c.scale(dpr, dpr);
+    }
 
     function init() {
         notchEl = document.getElementById('notch');
@@ -19,6 +34,25 @@ var Notch = (function() {
         toolbarEl = document.getElementById('notch-toolbar');
         infoContainer = document.getElementById('notch-info');
         expandBtn = document.getElementById('notch-expand');
+        perfBadgeEl = document.getElementById('notch-perf-badge');
+        statsEl = document.getElementById('notch-stats');
+
+        // DPR-aware canvas setup
+        setupHiDpi(sparkCanvas, sparkCtx, 70, 16);
+        sparkCtx = sparkCanvas.getContext('2d');
+        setupHiDpi(clockCanvas, clockCtx, 16, 16);
+        clockCtx = clockCanvas.getContext('2d');
+
+        // 光照离屏缓存
+        lightCacheCanvas = document.createElement('canvas');
+        lightCacheCanvas.width = 70 * dpr;
+        lightCacheCanvas.height = 16 * dpr;
+        lightCacheCtx = lightCacheCanvas.getContext('2d');
+        lightCacheCtx.scale(dpr, dpr);
+
+        // 冷启动 ghost baseline：预填标称帧率
+        fpsPoints = [];
+        for (var fi = 0; fi < 24; fi++) fpsPoints.push(30);
 
         pillEl.addEventListener('mouseenter', doExpand);
         notchEl.addEventListener('mouseleave', startAutoHide);
@@ -107,53 +141,63 @@ var Notch = (function() {
         if (autoHideTimer) { clearTimeout(autoHideTimer); autoHideTimer = null; }
     }
     function reportRect() {
-        // 基础 rect：展开时整个 notch，收起时 pill
-        var target = expanded ? notchEl : pillEl;
-        var r = target.getBoundingClientRect();
-        var x1 = r.left, y1 = r.top, x2 = r.right, y2 = r.bottom;
+        // 多矩形上报：各区域独立，避免包围盒误扩大
+        var rects = [];
 
-        // 暂停按钮独立于 notch，但需要纳入 hitRect 才能接收点击
-        var pb = document.getElementById('notch-pause');
-        if (pb) {
-            var pr = pb.getBoundingClientRect();
-            if (pr.width > 0) {
-                x1 = Math.min(x1, pr.left);
-                y1 = Math.min(y1, pr.top);
-                x2 = Math.max(x2, pr.right);
-                y2 = Math.max(y2, pr.bottom);
-            }
+        function pushRect(el) {
+            var r = el.getBoundingClientRect();
+            if (r.width > 0 && r.height > 0)
+                rects.push(Math.round(r.left), Math.round(r.top),
+                           Math.round(r.width), Math.round(r.height));
         }
 
-        // 所有可见 submenu 下拉区域
+        // 1) notch pill / expanded notch
+        pushRect(expanded ? notchEl : pillEl);
+
+        // 2) 暂停按钮（独立于 notch）
+        var pb = document.getElementById('notch-pause');
+        if (pb) pushRect(pb);
+
+        // 3) 所有可见 submenu 下拉区域
         var subs = document.querySelectorAll('.notch-submenu');
         for (var si = 0; si < subs.length; si++) {
-            if (subs[si].offsetParent !== null) {
-                var sr = subs[si].getBoundingClientRect();
-                if (sr.width > 0) {
-                    x1 = Math.min(x1, sr.left);
-                    y1 = Math.min(y1, sr.top);
-                    x2 = Math.max(x2, sr.right);
-                    y2 = Math.max(y2, sr.bottom);
-                }
-            }
+            if (subs[si].offsetParent !== null) pushRect(subs[si]);
         }
 
-        Bridge.send({
-            type: 'interactiveRect',
-            x: Math.round(x1), y: Math.round(y1),
-            w: Math.round(x2 - x1), h: Math.round(y2 - y1)
-        });
+        Bridge.send({ type: 'interactiveRect', r: rects });
     }
 
     function onFpsData(data) {
         fpsValue = data.value || 0;
         gameHour = (typeof data.hour === 'number') ? data.hour : 6;
         if (data.points) fpsPoints = data.points;
+        if (typeof data.level === 'number') perfLevel = data.level;
         fpsEl.textContent = expanded ? fpsValue.toFixed(1) : Math.round(fpsValue);
         fpsEl.className = 'notch-fps ' + (
             fpsValue >= 25 ? 'fps-good' : fpsValue >= 18 ? 'fps-warn' : 'fps-bad');
+        updatePerfBadge();
+        updateStats();
         drawSparkline();
         drawClock();
+    }
+
+    function updatePerfBadge() {
+        if (!perfBadgeEl) return;
+        perfBadgeEl.textContent = 'L' + perfLevel;
+        perfBadgeEl.className = 'perf-badge perf-L' + perfLevel;
+    }
+
+    function updateStats() {
+        if (!statsEl || fpsPoints.length < 2) return;
+        var pts = fpsPoints, n = pts.length;
+        var lo = pts[0], hi = pts[0], sum = 0;
+        for (var i = 0; i < n; i++) {
+            if (pts[i] < lo) lo = pts[i];
+            if (pts[i] > hi) hi = pts[i];
+            sum += pts[i];
+        }
+        var avg = sum / n;
+        statsEl.textContent = lo.toFixed(1) + '~' + hi.toFixed(1) + ' avg:' + avg.toFixed(1);
     }
 
     // FPS 颜色插值：≥25 绿, 18~25 绿→黄渐变, <18 黄→红渐变
@@ -171,48 +215,52 @@ var Notch = (function() {
     }
 
     function drawSparkline() {
-        var w = sparkCanvas.width, h = sparkCanvas.height;
+        // 逻辑尺寸（CSS 像素），DPR 已由 setupHiDpi 的 ctx.scale 处理
+        var w = 70, h = 16;
         var ctx = sparkCtx;
         ctx.clearRect(0, 0, w, h);
 
-        // === 光照等级背景（昼夜渐变） ===
+        // === 光照等级背景（离屏缓存，整点才重绘） ===
         if (lightLevels && lightLevels.length >= 24) {
-            var startHour = Math.floor(gameHour);
-            var lightPts = 30;
-            var stepX = w / lightPts;
-            var stepH = h / MAX_LIGHT;
-
-            // 填充区域
-            ctx.beginPath();
-            ctx.moveTo(0, h);
-            for (var i = 0; i < lightPts; i++) {
-                var hourIdx = (startHour + i) % 24;
-                var ly = h - lightLevels[hourIdx] * stepH;
-                ctx.lineTo(i * stepX, ly);
+            var currentLightHour = Math.floor(gameHour);
+            if (currentLightHour !== lightCacheHour) {
+                lightCacheHour = currentLightHour;
+                lightCacheCtx.clearRect(0, 0, w, h);
+                var lightPts = 30;
+                var stepX = w / lightPts;
+                var stepH = h / MAX_LIGHT;
+                lightCacheCtx.beginPath();
+                lightCacheCtx.moveTo(0, h);
+                for (var i = 0; i < lightPts; i++) {
+                    var hourIdx = (currentLightHour + i) % 24;
+                    lightCacheCtx.lineTo(i * stepX, h - lightLevels[hourIdx] * stepH);
+                }
+                lightCacheCtx.lineTo((lightPts - 1) * stepX, h);
+                lightCacheCtx.closePath();
+                lightCacheCtx.fillStyle = 'rgba(180,160,60,0.35)';
+                lightCacheCtx.fill();
+                lightCacheCtx.beginPath();
+                for (var i = 0; i < lightPts; i++) {
+                    var hourIdx2 = (currentLightHour + i) % 24;
+                    var ly = h - lightLevels[hourIdx2] * stepH;
+                    if (i === 0) lightCacheCtx.moveTo(0, ly);
+                    else lightCacheCtx.lineTo(i * stepX, ly);
+                }
+                lightCacheCtx.strokeStyle = 'rgba(200,180,70,0.5)';
+                lightCacheCtx.lineWidth = 0.8;
+                lightCacheCtx.stroke();
             }
-            ctx.lineTo((lightPts - 1) * stepX, h);
-            ctx.closePath();
-            ctx.fillStyle = 'rgba(180,160,60,0.35)';
-            ctx.fill();
-
-            // 轮廓线
-            ctx.beginPath();
-            for (var i = 0; i < lightPts; i++) {
-                var hourIdx2 = (startHour + i) % 24;
-                var ly2 = h - lightLevels[hourIdx2] * stepH;
-                if (i === 0) ctx.moveTo(0, ly2); else ctx.lineTo(i * stepX, ly2);
-            }
-            ctx.strokeStyle = 'rgba(200,180,70,0.5)';
-            ctx.lineWidth = 0.8;
-            ctx.stroke();
+            // blit 缓存
+            ctx.drawImage(lightCacheCanvas, 0, 0, w, h);
         }
 
         // === FPS 曲线 ===
         if (fpsPoints.length < 2) return;
         var pts = fpsPoints;
         var n = pts.length;
+        var isSimple = (perfLevel >= 3); // L3 高压简化渲染
 
-        // 自适应 Y 轴（对齐 AS2 FPSVisualization 的 min/max + minDiff 策略）
+        // 自适应 Y 轴
         var minV = pts[0], maxV = pts[0];
         for (var i = 1; i < n; i++) {
             if (pts[i] < minV) minV = pts[i];
@@ -221,60 +269,70 @@ var Notch = (function() {
         var MIN_DIFF = 5;
         if (maxV - minV < MIN_DIFF) {
             var delta = (MIN_DIFF - (maxV - minV)) / 2;
-            minV -= delta;
-            maxV += delta;
+            minV -= delta; maxV += delta;
         }
         var range = maxV - minV;
         if (range < 1) range = 1;
-
-        // Y 坐标映射
         function yOf(fps) { return h - ((fps - minV) / range) * h; }
 
-        // 危险区域底色（18fps 以下区域半透明红色）
+        // 危险区底色（18fps 以下）
         var dangerY = yOf(18);
         if (dangerY < h) {
             ctx.fillStyle = 'rgba(255,50,50,0.12)';
             ctx.fillRect(0, dangerY, w, h - dangerY);
-            // 18fps 分界线
             ctx.strokeStyle = 'rgba(255,80,80,0.3)';
             ctx.lineWidth = 0.5;
             ctx.setLineDash([2, 3]);
-            ctx.beginPath();
-            ctx.moveTo(0, dangerY);
-            ctx.lineTo(w, dangerY);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0, dangerY); ctx.lineTo(w, dangerY); ctx.stroke();
             ctx.setLineDash([]);
         }
 
-        // 计算所有点坐标
+        // 目标帧率参考线（26fps）
+        var targetY = yOf(26);
+        if (targetY > 0 && targetY < h) {
+            ctx.strokeStyle = 'rgba(102,255,102,0.2)';
+            ctx.lineWidth = 0.5;
+            ctx.setLineDash([3, 4]);
+            ctx.beginPath(); ctx.moveTo(0, targetY); ctx.lineTo(w, targetY); ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        // 计算坐标
         var xs = [], ys = [];
         for (var i = 0; i < n; i++) {
             xs.push((i / (n - 1)) * w);
             ys.push(yOf(pts[i]));
         }
 
-        // 渐变填充（曲线下方，颜色跟随平均帧率）
+        // 平均帧率
         var avgFps = 0;
         for (var i = 0; i < n; i++) avgFps += pts[i];
         avgFps /= n;
 
+        if (isSimple) {
+            // L3 简化：单色折线，无渐变/光晕
+            ctx.beginPath();
+            ctx.moveTo(xs[0], ys[0]);
+            for (var i = 1; i < n; i++) ctx.lineTo(xs[i], ys[i]);
+            ctx.strokeStyle = fpsColor(avgFps, 0.8);
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            return;
+        }
+
+        // 渐变填充
         ctx.beginPath();
         ctx.moveTo(xs[0], ys[0]);
         for (var i = 1; i < n; i++) {
-            // 平滑曲线：用中点作为控制点
             var cpx = (xs[i - 1] + xs[i]) / 2;
             var cpy = (ys[i - 1] + ys[i]) / 2;
             ctx.quadraticCurveTo(xs[i - 1], ys[i - 1], cpx, cpy);
         }
         ctx.lineTo(xs[n - 1], ys[n - 1]);
-
-        // 填充到底部
         var fillGrad = ctx.createLinearGradient(0, 0, 0, h);
         fillGrad.addColorStop(0, fpsColor(avgFps, 0.3));
         fillGrad.addColorStop(1, fpsColor(avgFps, 0.02));
-        ctx.lineTo(xs[n - 1], h);
-        ctx.lineTo(xs[0], h);
-        ctx.closePath();
+        ctx.lineTo(xs[n - 1], h); ctx.lineTo(xs[0], h); ctx.closePath();
         ctx.fillStyle = fillGrad;
         ctx.fill();
 
@@ -291,24 +349,21 @@ var Notch = (function() {
             ctx.stroke();
         }
 
-        // 当前值指示器：末端圆点 + 脉冲光晕
+        // 末端圆点 + 光晕
         var lastX = xs[n - 1], lastY = ys[n - 1], lastFps = pts[n - 1];
-        var dotColor = fpsColor(lastFps, 1);
-        // 光晕
         var glow = ctx.createRadialGradient(lastX, lastY, 0, lastX, lastY, 4);
         glow.addColorStop(0, fpsColor(lastFps, 0.6));
         glow.addColorStop(1, fpsColor(lastFps, 0));
         ctx.fillStyle = glow;
         ctx.fillRect(lastX - 4, lastY - 4, 8, 8);
-        // 实心圆点
         ctx.beginPath();
         ctx.arc(lastX, lastY, 1.5, 0, Math.PI * 2);
-        ctx.fillStyle = dotColor;
+        ctx.fillStyle = fpsColor(lastFps, 1);
         ctx.fill();
     }
 
     function drawClock() {
-        var w = clockCanvas.width, h = clockCanvas.height;
+        var w = 16, h = 16; // 逻辑尺寸（DPR 由 ctx.scale 处理）
         var cx = w/2, cy = h/2, r = Math.min(cx,cy) - 1;
         clockCtx.clearRect(0, 0, w, h);
 

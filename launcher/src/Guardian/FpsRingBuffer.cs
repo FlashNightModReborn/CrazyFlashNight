@@ -22,6 +22,7 @@ namespace CF7Launcher.Guardian
         private float _max;
         private bool _hasData;
         private float _gameHour; // 当前游戏内时间 (0.0-23.999...)
+        private int _perfLevel;  // 当前性能等级 (0-3)
 
         public FpsRingBuffer(int capacity)
         {
@@ -109,6 +110,12 @@ namespace CF7Launcher.Guardian
         public void SetGameHour(float hour)
         {
             lock (_lock) { _gameHour = hour; }
+        }
+
+        public int PerfLevel { get { lock (_lock) { return _perfLevel; } } }
+        public void SetPerfLevel(int level)
+        {
+            lock (_lock) { _perfLevel = level; }
         }
 
         public float Latest

@@ -279,18 +279,32 @@ namespace CF7Launcher.Guardian
                 string json = args.WebMessageAsJson;
                 if (json.Contains("\"interactiveRect\""))
                 {
-                    // JS 上报交互区域（CSS 像素）→ 缩放为物理像素 → 转发给 InputShieldForm
+                    // JS 上报多矩形交互区域（CSS 像素 flat array）→ 缩放为物理像素 → 转发
                     double z = _zoomFactor;
-                    int rx = (int)(ExtractInt(json, "\"x\":") * z);
-                    int ry = (int)(ExtractInt(json, "\"y\":") * z);
-                    int rw = (int)(ExtractInt(json, "\"w\":") * z);
-                    int rh = (int)(ExtractInt(json, "\"h\":") * z);
-                    if (_inputShield != null && rw > 0 && rh > 0)
+                    List<Rectangle> rects = new List<Rectangle>();
+                    int arrStart = json.IndexOf('[');
+                    int arrEnd = json.IndexOf(']');
+                    if (arrStart >= 0 && arrEnd > arrStart)
                     {
-                        List<Rectangle> rects = new List<Rectangle>();
-                        rects.Add(new Rectangle(rx, ry, rw, rh));
-                        _inputShield.UpdateHitRects(rects);
+                        string nums = json.Substring(arrStart + 1, arrEnd - arrStart - 1);
+                        string[] parts = nums.Split(',');
+                        for (int pi = 0; pi + 3 < parts.Length; pi += 4)
+                        {
+                            int rx, ry, rw, rh;
+                            if (int.TryParse(parts[pi].Trim(), out rx) &&
+                                int.TryParse(parts[pi + 1].Trim(), out ry) &&
+                                int.TryParse(parts[pi + 2].Trim(), out rw) &&
+                                int.TryParse(parts[pi + 3].Trim(), out rh))
+                            {
+                                rx = (int)(rx * z); ry = (int)(ry * z);
+                                rw = (int)(rw * z); rh = (int)(rh * z);
+                                if (rw > 0 && rh > 0)
+                                    rects.Add(new Rectangle(rx, ry, rw, rh));
+                            }
+                        }
                     }
+                    if (_inputShield != null && rects.Count > 0)
+                        _inputShield.UpdateHitRects(rects);
                 }
                 else if (json.Contains("\"click\""))
                 {
@@ -413,6 +427,8 @@ namespace CF7Launcher.Guardian
             sb.Append(Math.Round(_fpsBuffer.Latest * 10) / 10.0); // 1 位小数
             sb.Append(",\"hour\":");
             sb.Append(_fpsBuffer.GameHour);
+            sb.Append(",\"level\":");
+            sb.Append(_fpsBuffer.PerfLevel);
             sb.Append(",\"points\":[");
             int count = _fpsBuffer.Count;
             int start = Math.Max(0, count - 30);

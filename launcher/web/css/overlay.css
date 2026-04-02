@@ -30,8 +30,10 @@ html, body {
 .currency-panel {
     display:inline-flex; align-items:center; gap:2px;
     position:relative;
-    flex-shrink:0;
+    flex:1 1 0; /* 两侧经济面板均分，让中间 FPS 区真正居中 */
+    min-width:0;
 }
+#currency-kpoint { justify-content:flex-end; } /* 右侧面板右对齐 */
 .currency-icon {
     font:bold 11px/1 "Consolas","Courier New",monospace;
     color:rgba(255,255,255,0.5);
@@ -129,11 +131,37 @@ html, body {
 
 .notch-fps {
     font:bold 13px/1 "Consolas","Courier New",monospace;
-    min-width:36px; text-align:right;
+    min-width:28px; text-align:center;
 }
 .fps-good { color:#66ff66; }
 .fps-warn { color:#ffcc00; }
 .fps-bad  { color:#ff4444; }
+
+/* 性能等级 badge（展开态可见） */
+.perf-badge {
+    display:none;
+    font:bold 9px/1 "Consolas","Courier New",monospace;
+    padding:1px 3px;
+    border-radius:2px;
+    min-width:18px; text-align:center;
+    flex-shrink:0;
+    transition:background 300ms, color 300ms;
+}
+#notch.expanded .perf-badge { display:inline; }
+.perf-L0 { color:#66ff66; background:rgba(102,255,102,0.12); }
+.perf-L1 { color:#66ccff; background:rgba(102,204,255,0.12); }
+.perf-L2 { color:#ffcc00; background:rgba(255,204,0,0.15); }
+.perf-L3 { color:#ff4444; background:rgba(255,68,68,0.18); }
+
+/* 统计量（展开态可见） */
+.notch-stats {
+    display:none;
+    font:9px/1 "Consolas","Courier New",monospace;
+    color:rgba(255,255,255,0.5);
+    white-space:nowrap;
+    flex-shrink:0;
+}
+#notch.expanded .notch-stats { display:inline; }
 
 .notch-expand-btn {
     font-size:10px; cursor:pointer;
@@ -237,7 +265,7 @@ html, body {
     font-size:18px; line-height:1;
     width:34px; height:34px;
     display:flex; align-items:center; justify-content:center;
-    border:none; border-radius:0 0 0 6px;
+    border-radius:0 0 0 6px;
     background:rgba(24,24,26,0.82);
     color:rgba(255,255,255,0.7);
     cursor:pointer; pointer-events:auto;

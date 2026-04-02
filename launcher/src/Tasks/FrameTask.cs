@@ -61,17 +61,22 @@ namespace CF7Launcher.Tasks
 
                 if (!string.IsNullOrEmpty(fps))
                 {
-                    // 格式：fps 或 fps|hour
-                    int pipe = fps.IndexOf('|');
-                    string fpsStr = (pipe >= 0) ? fps.Substring(0, pipe) : fps;
+                    // 格式：fps|hour|level
+                    string[] parts = fps.Split('|');
                     float fpsVal;
-                    if (float.TryParse(fpsStr, out fpsVal))
+                    if (parts.Length > 0 && float.TryParse(parts[0], out fpsVal))
                         _fpsBuffer.Push(fpsVal);
-                    if (pipe >= 0 && pipe < fps.Length - 1)
+                    if (parts.Length > 1)
                     {
                         float hour;
-                        if (float.TryParse(fps.Substring(pipe + 1), out hour))
+                        if (float.TryParse(parts[1], out hour))
                             _fpsBuffer.SetGameHour(hour);
+                    }
+                    if (parts.Length > 2)
+                    {
+                        int level;
+                        if (int.TryParse(parts[2], out level))
+                            _fpsBuffer.SetPerfLevel(level);
                     }
                 }
             }

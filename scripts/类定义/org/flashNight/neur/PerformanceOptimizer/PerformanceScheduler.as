@@ -319,10 +319,9 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             viz.setWeatherSystem(root.天气系统);
         }
         viz.updateData(actualFPS);
-        var fpsStr:String = String(Math.round(actualFPS));
-        if (root.天气系统 != undefined) {
-            fpsStr += "|" + String(root.天气系统.getCurrentTime());
-        }
+        var fpsStr:String = String(Math.round(actualFPS * 10) / 10);
+        var hourStr:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
+        fpsStr += "|" + hourStr + "|" + String(currentLevel);
         FrameBroadcaster.setFpsPayload(fpsStr);
         var canvas:MovieClip = root.玩家信息界面.性能帧率显示器.画布;
         viz.drawCurve(canvas, currentLevel);
@@ -379,10 +378,9 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             this._viz.setWeatherSystem(root.天气系统);
         }
         this._viz.updateData(estimatedFPS);
-        var fpsStr2:String = String(Math.round(estimatedFPS));
-        if (root.天气系统 != undefined) {
-            fpsStr2 += "|" + String(root.天气系统.getCurrentTime());
-        }
+        var fpsStr2:String = String(Math.round(estimatedFPS * 10) / 10);
+        var hourStr2:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
+        fpsStr2 += "|" + hourStr2 + "|" + String(level);
         FrameBroadcaster.setFpsPayload(fpsStr2);
         var canvas:MovieClip = root.玩家信息界面.性能帧率显示器.画布;
         this._viz.drawCurve(canvas, level);
