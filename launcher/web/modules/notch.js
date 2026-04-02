@@ -146,6 +146,8 @@ var Notch = (function() {
         UiData.on('s', function(val) {
             if (val === '1') notchEl.classList.add('game-ready');
             else notchEl.classList.remove('game-ready');
+            // 可交互区域几何形状已变（toolbar/center/pause 显隐），重报 hitRect
+            setTimeout(reportRect, 50);
         });
         // 初始态：未加载（无 .game-ready → CSS 隐藏 toolbar + pause）
 

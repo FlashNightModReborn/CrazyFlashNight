@@ -84,6 +84,7 @@ namespace CF7Launcher.Guardian
         // 拦截后需要触发动作的键 → action 回调
         private readonly Dictionary<uint, Action> _actionVks;
         private readonly uint _myPid;
+        private volatile uint _flashPid; // Flash 进程 PID（嵌入前前台是 Flash 而非 Guardian）
         private volatile bool _ctrlHeld;
 
         // Escape 拦截（全屏时动态启用）
@@ -112,6 +113,11 @@ namespace CF7Launcher.Guardian
         {
             _actionVks[vk] = callback;
         }
+
+        /// <summary>
+        /// 设置 Flash 进程 PID（嵌入前前台窗口是 Flash PID，嵌入后是 Guardian PID）
+        /// </summary>
+        public void SetFlashPid(uint pid) { _flashPid = pid; }
 
         /// <summary>
         /// 动态启用/禁用 Escape 键拦截（全屏时启用）
@@ -191,13 +197,13 @@ namespace CF7Launcher.Guardian
 
                     if (shouldBlock)
                     {
-                        // 快速前台检查：仅当本进程在前台时拦截
+                        // 快速前台检查：Guardian 或 Flash 在前台时拦截
                         IntPtr fg = GetForegroundWindow();
                         if (fg != IntPtr.Zero)
                         {
                             uint pid;
                             GetWindowThreadProcessId(fg, out pid);
-                            if (pid == _myPid)
+                            if (pid == _myPid || (_flashPid != 0 && pid == _flashPid))
                             {
                                 // 触发动作回调（异步，不阻塞钩子线程）
                                 Action action;

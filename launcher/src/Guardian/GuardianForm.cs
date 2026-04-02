@@ -207,6 +207,9 @@ namespace CF7Launcher.Guardian
         public void TrackFlashProcess(Process p)
         {
             _flashProcess = p;
+            // 把 Flash PID 传给键盘钩子，使其在 Flash 独立前台时也能拦截
+            if (_kbHook != null && p != null)
+                _kbHook.SetFlashPid((uint)p.Id);
             if (_exitWatchdog == null)
             {
                 _exitWatchdog = new System.Windows.Forms.Timer();
@@ -230,12 +233,16 @@ namespace CF7Launcher.Guardian
 
         private void InitializeComponent()
         {
-            this.Text = "CF7:ME";
+            this.Text = "CF7:FlashNight";
             this.Size = new Size(1280, 660);
             this.MinimumSize = new Size(800, 480);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.BackColor = Color.Black;
+
+            // 窗口图标：从 exe 自身资源提取（app.ico 已嵌入为 ApplicationIcon）
+            try { this.Icon = Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location); }
+            catch { /* fallback: 使用系统默认 */ }
 
             Font uiFont = new Font("Microsoft YaHei UI", 8.25f);
 
@@ -370,19 +377,70 @@ namespace CF7Launcher.Guardian
             // Escape → 全屏时退出全屏（通过 SetEscapeEnabled 动态控制）
             _kbHook.RegisterAction(0x1B, delegate { ToggleFullscreen(); });
 
-            _kbHook.Install();
-            _hotkeysRegistered = true;
+            if (_kbHook.Install())
+            {
+                _hotkeysRegistered = true;
+            }
+            else
+            {
+                // 钩子安装失败 → fallback 到 RegisterHotKey（全局但至少能用）
+                LogManager.Log("[Hotkey] KeyboardHook failed, falling back to RegisterHotKey");
+                _kbHook.Dispose();
+                _kbHook = null;
+                FallbackRegisterHotkeys();
+            }
+        }
+
+        /// <summary>Fallback：KeyboardHook 安装失败时退化为 RegisterHotKey</summary>
+        private void FallbackRegisterHotkeys()
+        {
+            // 延迟到窗口句柄就绪
+            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
+            t.Interval = 200;
+            t.Tick += delegate
+            {
+                if (!this.IsHandleCreated) return;
+                t.Stop();
+                t.Dispose();
+                bool f = RegisterHotKey(this.Handle, HK_CTRL_F, MOD_CONTROL, (uint)Keys.F);
+                bool q = RegisterHotKey(this.Handle, HK_CTRL_Q, MOD_CONTROL, (uint)Keys.Q);
+                _hotkeysRegistered = true;
+                LogManager.Log("[Hotkey] Fallback RegisterHotKey Ctrl+F=" + f + " Ctrl+Q=" + q);
+            };
+            t.Start();
         }
 
         private void DoUnregisterHotkeys()
         {
             if (!_hotkeysRegistered) return;
             if (_kbHook != null) { _kbHook.Dispose(); _kbHook = null; }
+            // fallback 清理（无论是否实际注册过，调用 Unregister 是安全的）
+            if (this.IsHandleCreated)
+            {
+                UnregisterHotKey(this.Handle, HK_CTRL_F);
+                UnregisterHotKey(this.Handle, HK_CTRL_Q);
+                UnregisterHotKey(this.Handle, HK_ESC);
+            }
             _hotkeysRegistered = false;
         }
 
         protected override void WndProc(ref Message m)
         {
+            // fallback 模式下处理 RegisterHotKey 的 WM_HOTKEY
+            if (m.Msg == WM_HOTKEY && _kbHook == null)
+            {
+                int id = m.WParam.ToInt32();
+                if (id == HK_ESC || id == HK_CTRL_F)
+                {
+                    ToggleFullscreen();
+                    return;
+                }
+                if (id == HK_CTRL_Q)
+                {
+                    ForceExit();
+                    return;
+                }
+            }
             base.WndProc(ref m);
         }
 
