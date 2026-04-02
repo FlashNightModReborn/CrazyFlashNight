@@ -27,7 +27,8 @@ var Notch = (function() {
             if (expanded) doCollapse(); else doExpand();
         });
 
-        var buttons = toolbarEl.querySelectorAll('button[data-key]');
+        // 绑定所有 data-key 按钮（toolbar + row1-right + 任何位置）
+        var buttons = notchEl.querySelectorAll('button[data-key]');
         for (var i = 0; i < buttons.length; i++) {
             (function(btn) {
                 btn.addEventListener('click', function() {

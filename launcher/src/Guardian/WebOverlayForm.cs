@@ -441,11 +441,12 @@ namespace CF7Launcher.Guardian
                 this.BeginInvoke(new Action<string>(HandleUiData), payload);
                 return;
             }
-            if (_disposed) return;
+            if (_disposed || _webFailed) return; // 永久失败时丢弃（UI 数据无 GDI+ fallback）
             if (!_webReady)
             {
-                // WebView2 未就绪，缓冲（后续 flush 时 JS 对比会去重）
-                _uiDataEarlyBuffer.Add(payload);
+                // WebView2 未就绪，缓冲（上限 200 条防止内存泄漏）
+                if (_uiDataEarlyBuffer.Count < 200)
+                    _uiDataEarlyBuffer.Add(payload);
                 return;
             }
             string escaped = payload.Replace("\\", "\\\\").Replace("'", "\\'");
