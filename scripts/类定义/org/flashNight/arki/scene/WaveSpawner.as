@@ -113,8 +113,6 @@ class org.flashNight.arki.scene.WaveSpawner {
             return;
         }
 
-        _root.d_剩余敌人数._visible = false;
-
         if (waveSpawnWheel != null) {
             waveSpawnWheel.clear();
         }
@@ -201,9 +199,6 @@ class org.flashNight.arki.scene.WaveSpawner {
             sm.sendSocketMessage("W" + (currentWave + 1) + "|" + totalWave + "|" + timerStr + "|" + 计时器状态 + "|" + getEnemyCount());
         }
 
-        // 显示剩余敌人数标签（保留 Flash 端兼容）
-        _root.d_剩余敌人数._visible = true;
-
         // 对于本轮要生成的出生点，记录其生成所需时长
         var hideSpawnPoints = {};
         // 遍历刷怪列表
@@ -282,8 +277,6 @@ class org.flashNight.arki.scene.WaveSpawner {
             }
         }
 
-        _root.d_剩余敌人数.text = _root.获得翻译("剩余敌人数：") + emenyCount;
-        
         if (emenyCount <= finishRequirement || (waveTime > 0 && total_sec <= 0)){
             finishWave();
         }
@@ -302,7 +295,6 @@ class org.flashNight.arki.scene.WaveSpawner {
                 var finishMessage:String = _root.获得翻译("所有波次结束");
                 _root.最上层发布文字提示(finishMessage);
             }
-            _root.d_剩余敌人数._visible = false;
             stageManager.clearStage();
         }
     }

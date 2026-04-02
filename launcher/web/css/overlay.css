@@ -48,6 +48,7 @@ html, body {
 .currency-value {
     font:bold 12px/1 "Consolas","Courier New",monospace;
     color:rgba(255,255,255,0.9);
+    font-variant-numeric:tabular-nums; /* 数字等宽，防止数值变化时宽度抖动 */
     min-width:48px;
 }
 .currency-delta {
@@ -95,7 +96,7 @@ html, body {
     background:rgba(24,24,26,0.82);
     border-radius:0 0 8px 8px;
     white-space:nowrap;
-    transition:border-radius 150ms ease-out;
+    transition:border-radius 200ms ease-out, box-shadow 300ms ease-out;
     overflow:visible;
     /* 毛玻璃 + 多层发光边缘，任何背景可辨 */
     -webkit-backdrop-filter:blur(12px) saturate(1.2);
@@ -116,12 +117,21 @@ html, body {
     height:28px;
     gap:1px;
 }
+/* row1-right：收起时折叠，展开时滑出 */
 #notch-row1-right {
-    display:none; /* 收起时隐藏全屏/日志 */
-    align-items:center; gap:2px;
+    display:flex; align-items:center; gap:2px;
     margin-left:auto;
+    max-width:0;
+    opacity:0;
+    overflow:hidden;
+    transition:max-width 250ms ease-out, opacity 200ms ease-out;
 }
-#notch.expanded #notch-row1-right { display:flex; }
+#notch.expanded #notch-row1-right {
+    max-width:300px;
+    opacity:1;
+    /* overflow 由 JS 在展开过渡结束后设为 visible，确保子菜单可见 */
+    transition:max-width 300ms cubic-bezier(0.34,1.2,0.64,1), opacity 250ms 50ms ease-out;
+}
 
 /* 左侧 FPS 区域 */
 #notch-center {
@@ -137,31 +147,55 @@ html, body {
 .fps-warn { color:#ffcc00; }
 .fps-bad  { color:#ff4444; }
 
-/* 性能等级 badge（展开态可见） */
+/* 性能等级 badge：收起时折叠，展开时弹出 */
 .perf-badge {
-    display:none;
+    display:inline-block;
     font:bold 9px/1 "Consolas","Courier New",monospace;
     padding:1px 3px;
     border-radius:2px;
-    min-width:18px; text-align:center;
+    text-align:center;
     flex-shrink:0;
-    transition:background 300ms, color 300ms;
+    cursor:help;
+    max-width:0; opacity:0; overflow:hidden;
+    padding-left:0; padding-right:0;
+    transition:max-width 200ms ease-out, opacity 150ms ease-out, padding 200ms ease-out,
+               background 300ms, color 300ms, transform 300ms;
 }
-#notch.expanded .perf-badge { display:inline; }
+#notch.expanded .perf-badge {
+    max-width:30px; opacity:1;
+    padding-left:3px; padding-right:3px;
+    transition:max-width 250ms cubic-bezier(0.34,1.2,0.64,1), opacity 200ms 50ms ease-out,
+               padding 250ms cubic-bezier(0.34,1.2,0.64,1),
+               background 300ms, color 300ms, transform 300ms;
+}
 .perf-L0 { color:#66ff66; background:rgba(102,255,102,0.12); }
 .perf-L1 { color:#66ccff; background:rgba(102,204,255,0.12); }
 .perf-L2 { color:#ffcc00; background:rgba(255,204,0,0.15); }
 .perf-L3 { color:#ff4444; background:rgba(255,68,68,0.18); }
+/* badge 等级变化 pulse 动画 */
+.perf-badge.badge-pulse {
+    animation:badge-pulse 0.4s ease-out;
+}
+@keyframes badge-pulse {
+    0%   { transform:scale(1); }
+    40%  { transform:scale(1.35); }
+    100% { transform:scale(1); }
+}
 
-/* 统计量（展开态可见） */
+/* 统计量（游戏时间）：收起时折叠，展开时渐出 */
 .notch-stats {
-    display:none;
+    display:inline;
     font:9px/1 "Consolas","Courier New",monospace;
     color:rgba(255,255,255,0.5);
     white-space:nowrap;
     flex-shrink:0;
+    max-width:0; opacity:0; overflow:hidden;
+    transition:max-width 200ms ease-out, opacity 150ms ease-out;
 }
-#notch.expanded .notch-stats { display:inline; }
+#notch.expanded .notch-stats {
+    max-width:50px; opacity:1;
+    transition:max-width 250ms cubic-bezier(0.34,1.2,0.64,1), opacity 200ms 50ms ease-out;
+}
 
 .notch-expand-btn {
     font-size:10px; cursor:pointer;
@@ -170,21 +204,118 @@ html, body {
 }
 .notch-expand-btn:hover { color:white; }
 
-#notch-sparkline { display:block; }
+/* FPS 数字跌破阈值抖动 */
+.notch-fps.fps-shake {
+    animation:fps-shake 0.4s ease-out;
+}
+@keyframes fps-shake {
+    0%,100% { transform:translateX(0); }
+    20%     { transform:translateX(-2px); }
+    40%     { transform:translateX(2px); }
+    60%     { transform:translateX(-1px); }
+    80%     { transform:translateX(1px); }
+}
+
+#notch-sparkline { display:block; cursor:pointer; }
 #notch-clock { display:block; }
 
-/* 第二行工具栏：收起时隐藏，展开时显示 */
-#notch-toolbar {
+/* === Sparkline Tooltip（向下展开，多行） === */
+.spark-tooltip {
+    position:fixed;
+    font:10px/1.5 "Consolas","Courier New",monospace;
+    color:rgba(255,255,255,0.92);
+    background:rgba(20,20,22,0.94);
+    -webkit-backdrop-filter:blur(12px) saturate(1.2);
+    backdrop-filter:blur(12px) saturate(1.2);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:4px;
+    padding:5px 8px;
+    pointer-events:none;
+    z-index:100;
+    white-space:nowrap;
+    box-shadow:0 4px 14px rgba(0,0,0,0.55), 0 0 1px rgba(255,255,255,0.1);
+}
+.spark-tooltip b { color:#fff; font-weight:bold; }
+.spark-tooltip .tip-dim { color:rgba(255,255,255,0.45); }
+
+/* === 展开详细图面板 === */
+#notch-expanded-panel {
     display:none;
+    position:absolute;
+    top:100%;
+    left:50%;
+    transform:translateX(-50%);
+    width:400px;
+    padding:6px;
+    background:rgba(24,24,26,0.88);
+    -webkit-backdrop-filter:blur(14px) saturate(1.2);
+    backdrop-filter:blur(14px) saturate(1.2);
+    border:1px solid rgba(255,255,255,0.12);
+    border-top:none;
+    border-radius:0 0 8px 8px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.6), 0 0 1px rgba(255,255,255,0.12);
+    cursor:pointer;
+    opacity:0;
+    transition:opacity 200ms ease-out;
+    pointer-events:auto;
+    z-index:5;
+}
+#notch-expanded-panel.visible { opacity:1; }
+#notch-expanded-panel .expanded-hint {
+    font:9px/1 "Consolas",monospace;
+    color:rgba(255,255,255,0.35);
+    text-align:center;
+    margin-top:3px;
+}
+#notch-expanded-canvas {
+    display:block;
+    width:100%;
+    height:120px;
+    border-radius:4px;
+}
+
+/* === 动态主题（光照驱动） === */
+#notch.theme-day #notch-pill {
+    background:rgba(30,30,32,0.68);
+    border-color:rgba(255,255,255,0.18);
+}
+#notch.theme-dusk #notch-pill {
+    background:rgba(28,26,24,0.78);
+    border-color:rgba(255,200,100,0.12);
+}
+#notch.theme-night #notch-pill {
+    background:rgba(18,20,28,0.88);
+    border-color:rgba(100,140,220,0.12);
+}
+
+/* 第二行工具栏：收起时完全折叠（宽+高），展开时滑出 */
+#notch-toolbar {
+    display:flex;
     align-items:center;
     flex-wrap:wrap;
     gap:2px;
-    padding:2px 8px 4px;
-    border-top:1px solid rgba(255,255,255,0.1);
+    padding:0;
+    border-top:1px solid rgba(255,255,255,0);
+    max-height:0;
+    max-width:0;   /* ← 收纳态宽度也归零，不撑开 pill */
+    opacity:0;
+    overflow:hidden;
+    transition:max-height 250ms ease-out, max-width 250ms ease-out,
+               opacity 200ms ease-out, padding 250ms ease-out,
+               border-color 200ms ease-out;
 }
 
 #notch.expanded #notch-toolbar {
-    display:flex;
+    max-height:80px;
+    max-width:600px; /* 足够展开所有按钮 */
+    opacity:1;
+    padding:2px 8px 4px;
+    border-top-color:rgba(255,255,255,0.1);
+    transition:max-height 300ms cubic-bezier(0.34,1.2,0.64,1),
+               max-width 300ms cubic-bezier(0.34,1.2,0.64,1),
+               opacity 250ms 50ms ease-out,
+               padding 300ms cubic-bezier(0.34,1.2,0.64,1),
+               border-color 250ms 50ms ease-out;
 }
 
 #notch.expanded #notch-pill {
@@ -211,6 +342,7 @@ html, body {
 /* === 二级菜单：其他 === */
 .notch-submenu-wrap {
     position:relative;
+    display:flex; align-items:center; /* 与兄弟 button 对齐 */
 }
 
 /* trigger 继承 #notch-toolbar button 样式，无需额外规则 */
@@ -288,41 +420,117 @@ html, body {
     background:rgba(80,20,20,0.9);
 }
 
-/* Info rows (notifications) */
+/* === 通知栈 === */
 #notch-info {
     pointer-events:none;
+    display:flex; flex-direction:column; align-items:center;
+    gap:0; /* 由 margin-top 控制间距，折叠时可动画 */
 }
+
+/* ── 通用通知行 ── */
 .notch-info-row {
     font:12px/1.4 "Microsoft YaHei",sans-serif;
-    padding:2px 8px;
-    background:rgba(24,24,26,0.75);
-    border-radius:0 0 4px 4px;
+    padding:3px 12px;
+    background:rgba(24,24,26,0.78);
+    -webkit-backdrop-filter:blur(12px) saturate(1.2);
+    backdrop-filter:blur(12px) saturate(1.2);
+    border:1px solid rgba(255,255,255,0.08);
+    border-top:none;
+    border-radius:0 0 5px 5px;
     text-align:center;
-    opacity:0;
-    transition:opacity 300ms ease-in;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    box-shadow:0 2px 8px rgba(0,0,0,0.35), 0 0 1px rgba(255,255,255,0.08);
+    /* ── 入场前状态：零高度 + 隐形 ── */
+    opacity:0;
+    transform:translateY(-8px) scale(0.96);
+    max-height:0;
+    margin-top:0;
+    padding-top:0; padding-bottom:0;
+    /* 收起态 transition（用于被挤出时的折叠） */
+    transition:
+        opacity 200ms ease-out,
+        transform 250ms ease-out,
+        max-height 250ms ease-out,
+        margin-top 250ms ease-out,
+        padding 250ms ease-out;
 }
-.notch-info-row.visible { opacity:1; }
+/* ── 入场：先展开空间(max-height/margin/padding)，再弹入内容(opacity/transform) ── */
+.notch-info-row.visible {
+    opacity:1;
+    transform:translateY(0) scale(1);
+    max-height:44px;
+    margin-top:2px;
+    padding-top:3px; padding-bottom:3px;
+    transition:
+        max-height 300ms cubic-bezier(0.34,1.2,0.64,1),       /* 先展开 */
+        margin-top 300ms cubic-bezier(0.34,1.2,0.64,1),
+        padding    300ms cubic-bezier(0.34,1.2,0.64,1),
+        opacity    250ms 80ms ease-out,                         /* 延迟 80ms 淡入 */
+        transform  350ms 40ms cubic-bezier(0.34,1.4,0.64,1);   /* 弹性滑入 */
+}
+/* ── 退场第一阶段：淡出 + 缩小 ── */
 .notch-info-row.fading {
     opacity:0;
-    transition:opacity 500ms ease-out;
+    transform:translateY(-4px) scale(0.94);
+    max-height:44px; /* 保持高度，仅视觉淡出 */
+    margin-top:2px;
+    padding-top:3px; padding-bottom:3px;
+    transition:
+        opacity   180ms ease-out,
+        transform 180ms ease-out;
+}
+/* ── 退场第二阶段：高度折叠 → 下方行平滑上推 ── */
+.notch-info-row.collapsing {
+    opacity:0 !important;
+    max-height:0 !important;
+    margin-top:0 !important;
+    padding-top:0 !important; padding-bottom:0 !important;
+    border-width:0 !important;
+    transition:
+        max-height  220ms ease-in,
+        margin-top  220ms ease-in,
+        padding     220ms ease-in,
+        border-width 220ms ease-in;
 }
 
-/* 游戏通知：更大字号、半透明亮底、从上方滑入 */
+/* ── 状态行（持久型，如波次计时器） ── */
+.notch-info-row.status-row {
+    border-left:3px solid var(--accent, rgba(255,200,80,0.8));
+    border-radius:0 0 5px 0;
+    text-align:left;
+    padding-left:10px;
+    background:rgba(24,24,26,0.82);
+    min-width:200px; /* 稳定宽度，防止计时器数值变化时抖动 */
+}
+
+/* ── 游戏通知（瞬态，较醒目） ── */
 .notch-info-row.game-notify {
-    font:bold 14px/1.4 "Microsoft YaHei",sans-serif;
-    padding:4px 24px;
-    background:rgba(255,255,255,0.12);
-    border:1px solid rgba(255,215,0,0.25);
-    border-radius:4px;
-    margin-top:2px;
-    text-shadow:0 1px 3px rgba(0,0,0,0.6);
-    transform:translateY(-8px);
-    transition:opacity 250ms ease-out, transform 250ms ease-out;
+    font:bold 13px/1.4 "Microsoft YaHei",sans-serif;
+    padding:4px 20px;
+    background:rgba(255,255,255,0.10);
+    border:1px solid rgba(255,215,0,0.2);
+    border-top:none;
+    border-radius:0 0 6px 6px;
+    text-shadow:0 1px 3px rgba(0,0,0,0.5);
 }
 .notch-info-row.game-notify.visible {
-    opacity:1;
-    transform:translateY(0);
+    max-height:48px;
+    padding-top:4px; padding-bottom:4px;
+    transition:
+        max-height 320ms cubic-bezier(0.34,1.2,0.64,1),
+        margin-top 320ms cubic-bezier(0.34,1.2,0.64,1),
+        padding    320ms cubic-bezier(0.34,1.2,0.64,1),
+        opacity    280ms 80ms ease-out,
+        transform  380ms 40ms cubic-bezier(0.34,1.4,0.64,1);
+}
+
+/* ── 计数更新脉冲 ── */
+.notch-info-row.count-pulse {
+    animation:count-pulse 0.35s ease-out;
+}
+@keyframes count-pulse {
+    0%   { background:rgba(255,255,255,0.25); }
+    100% { background:rgba(255,255,255,0.10); }
 }
