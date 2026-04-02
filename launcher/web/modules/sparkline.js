@@ -147,19 +147,19 @@ var SparklineRenderer = (function() {
         ctx.lineTo(xs[0], h);
         ctx.closePath();
 
-        // 三段色带渐变
+        // 三段色带渐变（canvas y=0 是顶部=高FPS，y=h 是底部=低FPS）
         var grad = ctx.createLinearGradient(0, 0, 0, h);
-        var dangerNorm = (h - yOf(DANGER_FPS, h, scale)) / h; // 危险线在归一化高度
-        var targetNorm = (h - yOf(TARGET_FPS, h, scale)) / h;
-        // 从底(0)到顶(1): 红→黄→绿
-        grad.addColorStop(0, 'rgba(255,50,50,0.02)');
-        if (dangerNorm > 0 && dangerNorm < 1) {
-            grad.addColorStop(Math.min(1, dangerNorm), 'rgba(255,200,0,0.08)');
+        var dangerY = yOf(DANGER_FPS, h, scale) / h; // 18fps 线在 canvas 中的归一化 y 位置
+        var targetY = yOf(TARGET_FPS, h, scale) / h;  // 26fps 线
+        // 从顶(0)=高FPS 到底(1)=低FPS: 绿→黄→红
+        grad.addColorStop(0, 'rgba(100,255,100,0.25)');
+        if (targetY > 0 && targetY < 1) {
+            grad.addColorStop(Math.min(1, targetY), 'rgba(100,255,100,0.15)');
         }
-        if (targetNorm > 0 && targetNorm < 1) {
-            grad.addColorStop(Math.min(1, targetNorm), 'rgba(100,255,100,0.15)');
+        if (dangerY > 0 && dangerY < 1) {
+            grad.addColorStop(Math.min(1, dangerY), 'rgba(255,200,0,0.08)');
         }
-        grad.addColorStop(1, 'rgba(100,255,100,0.25)');
+        grad.addColorStop(1, 'rgba(255,50,50,0.02)');
         ctx.fillStyle = grad;
         ctx.fill();
     }

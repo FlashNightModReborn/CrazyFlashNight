@@ -7,8 +7,8 @@ namespace CF7Launcher.Guardian
 {
     /// <summary>
     /// 低级键盘钩子——运行在专用线程上，永不超时。
-    /// 仅负责拦截 Ctrl+W/R/P/O（Flash SA 原生快捷键），不做任何 UI 操作。
-    /// Ctrl+F/Q 由 RegisterHotKey 处理（GuardianForm 负责）。
+    /// 拦截 Ctrl+W/R/P/O（Flash SA 原生快捷键）和 Ctrl+F/Q（Guardian 动作键）。
+    /// 仅当 Guardian 进程在前台时拦截，不影响其他应用程序。
     /// </summary>
     public class KeyboardHook : IDisposable
     {
@@ -71,6 +71,7 @@ namespace CF7Launcher.Guardian
         private const uint VK_CONTROL = 0x11;
         private const uint VK_LCONTROL = 0xA2;
         private const uint VK_RCONTROL = 0xA3;
+        private const uint VK_ESCAPE = 0x1B;
 
         private IntPtr _hookId = IntPtr.Zero;
         private LowLevelKeyboardProc _proc;
@@ -78,10 +79,15 @@ namespace CF7Launcher.Guardian
         private uint _threadId;
         private volatile bool _running;
 
-        // 仅拦截这些键（Ctrl+ 组合）。F/Q 由 RegisterHotKey 处理。
+        // 仅拦截的键（Ctrl+ 组合）
         private readonly HashSet<uint> _blockedVks;
+        // 拦截后需要触发动作的键 → action 回调
+        private readonly Dictionary<uint, Action> _actionVks;
         private readonly uint _myPid;
         private volatile bool _ctrlHeld;
+
+        // Escape 拦截（全屏时动态启用）
+        private volatile bool _escEnabled;
 
         public KeyboardHook()
         {
@@ -93,6 +99,26 @@ namespace CF7Launcher.Guardian
             _blockedVks.Add(0x52); // R
             _blockedVks.Add(0x50); // P
             _blockedVks.Add(0x4F); // O
+            _blockedVks.Add(0x46); // F — 原 RegisterHotKey，现迁入此处
+            _blockedVks.Add(0x51); // Q — 原 RegisterHotKey，现迁入此处
+
+            _actionVks = new Dictionary<uint, Action>();
+        }
+
+        /// <summary>
+        /// 注册拦截后的动作回调（UI 线程安全：回调在专用线程触发，调用方需自行 BeginInvoke）
+        /// </summary>
+        public void RegisterAction(uint vk, Action callback)
+        {
+            _actionVks[vk] = callback;
+        }
+
+        /// <summary>
+        /// 动态启用/禁用 Escape 键拦截（全屏时启用）
+        /// </summary>
+        public void SetEscapeEnabled(bool enabled)
+        {
+            _escEnabled = enabled;
         }
 
         public bool Install()
@@ -102,7 +128,6 @@ namespace CF7Launcher.Guardian
 
             _thread = new Thread(delegate()
             {
-                // 获取此线程 ID 用于退出时发 WM_QUIT
                 _threadId = GetCurrentThreadId();
 
                 using (var proc = System.Diagnostics.Process.GetCurrentProcess())
@@ -131,21 +156,19 @@ namespace CF7Launcher.Guardian
             ready.WaitOne(2000);
             bool ok = _hookId != IntPtr.Zero;
             Guardian.LogManager.Log("[KeyboardHook] Install " + (ok ? "OK" : "FAILED")
-                + " (dedicated thread)");
+                + " (dedicated thread, blocks: W/R/P/O/F/Q)");
             return ok;
         }
 
         /// <summary>
         /// 钩子回调——在专用线程上运行，极轻量。
-        /// 不做 BeginInvoke、不写日志、不触发事件。只判断 + 返回。
+        /// 拦截逻辑 + 动作触发分离：拦截在微秒级返回，动作通过 ThreadPool 异步执行。
         /// </summary>
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
             if (nCode >= 0)
             {
                 int msg = wParam.ToInt32();
-
-                // 直接从 lParam 读 vkCode（KBDLLHOOKSTRUCT 第一个字段，偏移 0）
                 uint vk = (uint)Marshal.ReadInt32(lParam);
 
                 // 追踪 Ctrl 物理状态
@@ -154,19 +177,37 @@ namespace CF7Launcher.Guardian
                     _ctrlHeld = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
                 }
 
-                // 仅在 keydown 时拦截
-                if ((msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN)
-                    && _ctrlHeld
-                    && _blockedVks.Contains(vk))
+                if (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN)
                 {
-                    // 快速前台检查：仅当本进程在前台时拦截
-                    IntPtr fg = GetForegroundWindow();
-                    if (fg != IntPtr.Zero)
+                    bool shouldBlock = false;
+
+                    // Ctrl + 被保护键
+                    if (_ctrlHeld && _blockedVks.Contains(vk))
+                        shouldBlock = true;
+
+                    // Escape（仅全屏时）
+                    if (vk == VK_ESCAPE && _escEnabled)
+                        shouldBlock = true;
+
+                    if (shouldBlock)
                     {
-                        uint pid;
-                        GetWindowThreadProcessId(fg, out pid);
-                        if (pid == _myPid)
-                            return new IntPtr(1); // 拦截
+                        // 快速前台检查：仅当本进程在前台时拦截
+                        IntPtr fg = GetForegroundWindow();
+                        if (fg != IntPtr.Zero)
+                        {
+                            uint pid;
+                            GetWindowThreadProcessId(fg, out pid);
+                            if (pid == _myPid)
+                            {
+                                // 触发动作回调（异步，不阻塞钩子线程）
+                                Action action;
+                                if (_actionVks.TryGetValue(vk, out action) && action != null)
+                                {
+                                    ThreadPool.QueueUserWorkItem(delegate { action(); });
+                                }
+                                return new IntPtr(1); // 拦截
+                            }
+                        }
                     }
                 }
             }
@@ -184,7 +225,6 @@ namespace CF7Launcher.Guardian
                 _hookId = IntPtr.Zero;
             }
 
-            // 向专用线程发 WM_QUIT 使 GetMessage 返回 false
             if (_threadId != 0)
                 PostThreadMessage(_threadId, WM_QUIT, IntPtr.Zero, IntPtr.Zero);
 

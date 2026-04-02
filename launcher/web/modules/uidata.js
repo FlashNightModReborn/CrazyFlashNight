@@ -9,6 +9,7 @@
  *   k = kpoint (虚拟币/K点)
  *   p = paused (暂停状态, 0/1)
  *   q = quest (主线任务进度)
+ *   s = state (游戏状态, 0=未加载/重置, 1=已进入)
  *
  * 注册: UiData.on('g', function(newValue, oldValue){ ... })
  * 对比: 仅在值变化时触发 handler，JS 端维护 last known state

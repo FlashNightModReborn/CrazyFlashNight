@@ -37,12 +37,12 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="3" edges="!7200 440|7200 500!7200 500|0 500!0 500|0 440"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="!0 440|7200 440"/>
-                    <Edge fillStyle1="2" edges="!7200 60|7200 440"/>
                     <Edge fillStyle1="1" edges="!0 60|0 0!0 0|7200 0!7200 0|7200 60"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!7200 60|0 60"/>
+                    <Edge fillStyle1="2" edges="!7200 60|7200 440"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!7200 440|0 440"/>
+                    <Edge fillStyle0="3" edges="!0 440|0 500!0 500|7200 500!7200 500|7200 440"/>
                     <Edge fillStyle0="2" edges="!0 60|0 440"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!7200 60|0 60"/>
                   </edges>
                 </DOMShape>
                 <DOMDynamicText fontRenderingMode="device" width="326.45" height="18.45" isSelectable="false" variableName="_parent.当前公告">

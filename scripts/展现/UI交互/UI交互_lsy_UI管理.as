@@ -113,6 +113,19 @@ _root.gameCommands["safeExit"] = function() {
     _root.自动存盘();
 };
 
+// ============================================================
+// 游戏状态通知 → WebView 按钮可见性
+// s:0 = 未加载/重置（仅全屏/日志/其他可用）
+// s:1 = 游戏已进入（全部按钮可用）
+// ============================================================
+_root.notifyGameEntered = function() {
+    org.flashNight.arki.render.FrameBroadcaster.pushUiState("s:1");
+};
+
+_root.notifyGameReset = function() {
+    org.flashNight.arki.render.FrameBroadcaster.pushUiState("s:0");
+};
+
 // 暂停状态同步
 _root.watch("暂停", function(prop, oldVal, newVal) {
     org.flashNight.arki.render.FrameBroadcaster.pushUiState("p:" + (newVal ? "1" : "0"));

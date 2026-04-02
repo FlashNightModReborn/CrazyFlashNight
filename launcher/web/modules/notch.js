@@ -141,6 +141,14 @@ var Notch = (function() {
             if (btn) btn.style.display = progress > 13 ? '' : 'none';
         });
 
+        // 游戏状态：s:0=未加载 s:1=已进入
+        // 用 CSS class 控制，比 inline style 更可靠
+        UiData.on('s', function(val) {
+            if (val === '1') notchEl.classList.add('game-ready');
+            else notchEl.classList.remove('game-ready');
+        });
+        // 初始态：未加载（无 .game-ready → CSS 隐藏 toolbar + pause）
+
         Bridge.on('fps', onFpsData);
         Bridge.on('lightLevels', function(data) {
             if (data.levels) lightLevels = data.levels;
@@ -242,7 +250,12 @@ var Notch = (function() {
             if (oldLevel !== perfLevel) onPerfLevelChange(oldLevel, perfLevel);
         }
 
-        // 累积全量历史
+        // 累积全量历史：首次收到 data.points 时回填，避免展开图启动空窗
+        if (data.points && fullHistory.length === 0) {
+            for (var hi = 0; hi < data.points.length; hi++) {
+                fullHistory.push(data.points[hi]);
+            }
+        }
         fullHistory.push(fpsValue);
         if (fullHistory.length > MAX_HISTORY) fullHistory.shift();
 
@@ -575,6 +588,8 @@ var Notch = (function() {
                     rows[i].el.textContent = text;
                 }
                 rows[i].el.style.color = color;
+                // 同步 accent 左边条颜色（状态行模式切换时 color 会变）
+                if (persistent) rows[i].el.style.setProperty('--accent', color);
                 if (!persistent && rows[i].rt) {
                     clearTimeout(rows[i].rt);
                     rows[i].rt = setTimeout(function(){removeRow(id);}, TRANSIENT_MS);

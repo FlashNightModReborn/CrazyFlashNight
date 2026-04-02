@@ -322,6 +322,19 @@ html, body {
     border-radius:0 0 4px 4px;
 }
 
+/* === 游戏未加载：仅保留 全屏/日志/其他，隐藏其余一切 === */
+#notch:not(.game-ready) #notch-toolbar { display:none !important; }
+#notch:not(.game-ready) #currency-gold,
+#notch:not(.game-ready) #currency-kpoint,
+#notch:not(.game-ready) #notch-center,
+#notch:not(.game-ready) .notch-divider { display:none !important; }
+/* 未加载时 row1-right 始终可见（全屏/日志/其他），无需展开 */
+#notch:not(.game-ready) #notch-row1-right {
+    max-width:none !important; opacity:1 !important; overflow:visible !important;
+}
+/* 未加载时禁用展开交互 */
+#notch:not(.game-ready) .notch-expand-btn { display:none !important; }
+
 #notch-toolbar button,
 #notch-row1-right button {
     font:11px/1 "Microsoft YaHei",sans-serif;
@@ -419,6 +432,8 @@ html, body {
     color:#ff6666;
     background:rgba(80,20,20,0.9);
 }
+/* 游戏未加载时隐藏暂停按钮（在原 #notch-pause 之后，确保覆盖 display:flex） */
+#notch:not(.game-ready) ~ #notch-pause { display:none; }
 
 /* === 通知栈 === */
 #notch-info {

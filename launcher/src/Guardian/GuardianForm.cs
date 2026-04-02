@@ -91,6 +91,7 @@ namespace CF7Launcher.Guardian
         private FormBorderStyle _savedBorderStyle;
 
         private bool _hotkeysRegistered;
+        private KeyboardHook _kbHook; // 前台感知低级钩子，替代 RegisterHotKey
 
         private Process _flashProcess;
         private System.Windows.Forms.Timer _exitWatchdog;
@@ -358,52 +359,30 @@ namespace CF7Launcher.Guardian
 
         private void SetupHotkeys()
         {
-            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
-            t.Interval = 200;
-            t.Tick += delegate
-            {
-                if (!this.IsHandleCreated) return;
-                t.Stop();
-                t.Dispose();
-                DoRegisterHotkeys();
-            };
-            t.Start();
-        }
+            // 用前台感知的低级钩子替代 RegisterHotKey（后者是系统全局的，
+            // 会吞掉其他应用的 Ctrl+F 等快捷键，影响开发效率）
+            _kbHook = new KeyboardHook();
 
-        private void DoRegisterHotkeys()
-        {
-            if (_hotkeysRegistered) return;
-            bool f = RegisterHotKey(this.Handle, HK_CTRL_F, MOD_CONTROL, (uint)Keys.F);
-            bool q = RegisterHotKey(this.Handle, HK_CTRL_Q, MOD_CONTROL, (uint)Keys.Q);
+            // Ctrl+F → 全屏（回调在钩子线程，需 BeginInvoke 回 UI 线程）
+            _kbHook.RegisterAction(0x46, delegate { ToggleFullscreen(); });
+            // Ctrl+Q → 退出
+            _kbHook.RegisterAction(0x51, delegate { ForceExit(); });
+            // Escape → 全屏时退出全屏（通过 SetEscapeEnabled 动态控制）
+            _kbHook.RegisterAction(0x1B, delegate { ToggleFullscreen(); });
+
+            _kbHook.Install();
             _hotkeysRegistered = true;
-            LogManager.Log("[Hotkey] Ctrl+F=" + f + " Ctrl+Q=" + q);
         }
 
         private void DoUnregisterHotkeys()
         {
             if (!_hotkeysRegistered) return;
-            UnregisterHotKey(this.Handle, HK_CTRL_F);
-            UnregisterHotKey(this.Handle, HK_CTRL_Q);
-            UnregisterHotKey(this.Handle, HK_ESC);
+            if (_kbHook != null) { _kbHook.Dispose(); _kbHook = null; }
             _hotkeysRegistered = false;
         }
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == WM_HOTKEY)
-            {
-                int id = m.WParam.ToInt32();
-                if (id == HK_ESC || id == HK_CTRL_F)
-                {
-                    ToggleFullscreen();
-                    return;
-                }
-                if (id == HK_CTRL_Q)
-                {
-                    ForceExit();
-                    return;
-                }
-            }
             base.WndProc(ref m);
         }
 
@@ -477,8 +456,8 @@ namespace CF7Launcher.Guardian
                 this.FormBorderStyle = FormBorderStyle.None;
                 this.WindowState = FormWindowState.Maximized;
 
-                if (_hotkeysRegistered)
-                    RegisterHotKey(this.Handle, HK_ESC, 0, (uint)Keys.Escape);
+                // 全屏时启用 Escape 退出
+                if (_kbHook != null) _kbHook.SetEscapeEnabled(true);
             }
             else
             {
@@ -486,7 +465,7 @@ namespace CF7Launcher.Guardian
                 this.FormBorderStyle = _savedBorderStyle;
                 this.Bounds = _savedBounds;
 
-                UnregisterHotKey(this.Handle, HK_ESC);
+                if (_kbHook != null) _kbHook.SetEscapeEnabled(false);
             }
 
             this.ResumeLayout(true);
