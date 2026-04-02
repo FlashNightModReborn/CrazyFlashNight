@@ -107,7 +107,7 @@ launcher/
 │   │   ├── FlashCoordinateMapper.cs       Flash 舞台坐标 ↔ 屏幕坐标
 │   │   ├── FpsRingBuffer.cs               FPS 环形缓冲 + GameHour
 │   │   ├── HotkeyGuard.cs                 独立进程：WH_KEYBOARD_LL 钩子
-│   │   └── KeyboardHook.cs                (已弃用)
+│   │   └── KeyboardHook.cs                (未使用，保留备用)
 │   ├── Bus/
 │   │   ├── XmlSocketServer.cs             TCP 服务器（快车道 F/R 前缀 + JSON 双通道）
 │   │   ├── HttpApiServer.cs               HTTP REST (/status, /console, /logBatch 等)
@@ -129,15 +129,19 @@ launcher/
 │       └── RenderNativeMethods.cs         PrintWindow/BitBlt P/Invoke
 ├── native/
 │   ├── miniaudio.h                        miniaudio 单头文件库 (Unlicense)
-│   ├── miniaudio_bridge.c                 C 导出层 (BGM dual-instance, SFX preload, wchar_t)
+│   ├── miniaudio_bridge.c                 C 导出层 (BGM crossfade, SFX preload, peak detector, wchar_t)
 │   └── build.bat                          MSVC 自动探测 + 编译脚本
 ├── web/                                   WebView2 overlay 前端资源
-│   ├── overlay.html                       DOM 结构 (Toast + Notch)
+│   ├── overlay.html                       DOM 结构 (Toast + Notch + Jukebox)
 │   ├── css/overlay.css                    样式 + 动效
 │   └── modules/
 │       ├── bridge.js                      C# ↔ JS 消息桥
+│       ├── uidata.js                      帧同步 UI 状态分发 (KV 格式)
 │       ├── toast.js                       Toast 消息 (Flash HTML 白名单过滤)
-│       └── notch.js                       Notch UI (FPS/sparkline/clock/toolbar)
+│       ├── sparkline.js                   FPS 折线图渲染 (DPR 感知, LOD)
+│       ├── notch.js                       Notch UI (FPS/sparkline/clock/toolbar)
+│       ├── currency.js                    经济面板 (金钱/K点 动画)
+│       └── jukebox.js                     BGM 可视化 (波形/标题/进度)
 ├── bin/Release/                           编译输出
 ├── packages/                              NuGet 包缓存
 └── tools/
@@ -245,10 +249,9 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 WinForms Pane
 从种子 `"1192433993"` 提取 4/5 位数子串作为候选端口，与 AS2 `ServerManager.as` 保持一致。运行时逐个测试可用性。
 
 ### 快捷键拦截
-三层防御：
-1. `SetMenu(NULL)` 移除 Flash 菜单栏（消除加速器快捷键）
-2. `RegisterHotKey` 注册 Ctrl+F(全屏)/Ctrl+Q(退出)
-3. `hotkey_guard.exe` 独立进程 WH_KEYBOARD_LL 钩子拦截 Ctrl+Q/W/R/F/P/O
+两层防御：
+1. `SetMenu(NULL)` 移除 Flash 菜单栏（消除加速器快捷键，Ctrl+F/Q/W/O/P 从源头消失）
+2. `hotkey_guard.exe` 独立进程 `WH_KEYBOARD_LL` 前台感知钩子：仅当 Guardian/Flash 在前台时拦截 Ctrl+F(全屏)/Ctrl+Q(退出)，不影响其他应用
 
 ### 原生音频引擎 (miniaudio)
 音频播放从 Flash Sound API 完全迁移到 C# launcher 的 native DLL，Flash 侧仅发送播放指令。
@@ -258,7 +261,9 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 WinForms Pane
 - `AudioEngine.cs`: P/Invoke 封装 + 启动时目录扫描预加载 SFX
 - `AudioTask.cs`: BGM JSON handler + SFX 快车道批量解析
 
-**BGM**：双 `ma_sound` 实例 ping-pong crossfade。切换时旧曲淡出与新曲淡入重叠进行，基于 `ma_engine_get_time_in_milliseconds` 全局时钟调度。`stopBGM` 使用 `ma_sound_stop_with_fade_in_milliseconds`，操作两个槽位确保无残留。
+**BGM**：双 `ma_sound` 实例 ping-pong crossfade。切换时旧曲淡出与新曲淡入重叠进行，基于 `ma_engine_get_time_in_milliseconds` 全局时钟调度。`stopBGM` 使用 `ma_sound_stop_with_fade_in_milliseconds`，操作两个槽位确保无残留。注意 miniaudio 的 base volume 与 fader 是相乘关系，crossfade 路径中 `ma_sound_set_volume` 必须设为 1.0（由 fader 独立控制 0→1 淡入）。
+
+**BGM 可视化**：`PeakDetector` 自定义节点（`ma_node_vtable` passthrough）插入 bgmGroup → engine endpoint 之间，实时采样 L/R peak。C# 60ms 轮询 `ma_bridge_bgm_get_peak/cursor/length/is_playing` → WebView2 `PostWebMessageAsJson` → `jukebox.js` 渲染滚动波形 + 进度条。曲目标题由 AS2 `pushUiState("bgm:title")` 经 UiData 通道推送。
 
 **SFX**：启动时扫描 `sounds/export/{武器,特效,人物}/` 目录，文件名即 linkageId，覆盖顺序武器→特效→人物（后覆盖前）。Flash 侧帧内累积，帧末由 FrameBroadcaster 合批发送 `S{id1}|{id2}|{id3}` 快车道消息。native 层 90ms 去重。
 

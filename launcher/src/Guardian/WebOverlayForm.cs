@@ -86,6 +86,10 @@ namespace CF7Launcher.Guardian
         // 游戏命令通道
         private XmlSocketServer _socketServer;
 
+        // BGM 音频可视化轮询
+        private System.Windows.Forms.Timer _audioTimer;
+        private string _bgmTitle = ""; // 当前曲目标题（由 UiData bgm: 设置）
+
         public WebOverlayForm(Form owner, Control anchor, string webDir)
         {
             _owner = owner;
@@ -414,6 +418,11 @@ namespace CF7Launcher.Guardian
             _fpsTimer = new System.Windows.Forms.Timer();
             _fpsTimer.Interval = 1000;
             _fpsTimer.Tick += OnFpsTick;
+
+            // BGM 音频可视化 timer (60ms ≈ 16.7Hz)
+            _audioTimer = new System.Windows.Forms.Timer();
+            _audioTimer.Interval = 60;
+            _audioTimer.Tick += OnAudioTick;
         }
 
         private void OnFpsTick(object sender, EventArgs e)
@@ -439,6 +448,42 @@ namespace CF7Launcher.Guardian
             }
             sb.Append("]}");
             PostToWeb(sb.ToString());
+        }
+
+        private void OnAudioTick(object sender, EventArgs e)
+        {
+            if (!_webReady || _disposed) return;
+
+            try
+            {
+                float peakL, peakR;
+                Audio.AudioEngine.ma_bridge_bgm_get_peak(out peakL, out peakR);
+                int playing = Audio.AudioEngine.ma_bridge_bgm_is_playing();
+                float cursor = Audio.AudioEngine.ma_bridge_bgm_get_cursor();
+                float length = Audio.AudioEngine.ma_bridge_bgm_get_length();
+
+                // 紧凑 JSON: {type:"audio",l:0.5,r:0.4,p:1,c:12.3,d:180.0}
+                System.Text.StringBuilder sb = new System.Text.StringBuilder(128);
+                sb.Append("{\"type\":\"audio\",\"l\":");
+                sb.Append(Math.Round(peakL * 1000) / 1000.0);
+                sb.Append(",\"r\":");
+                sb.Append(Math.Round(peakR * 1000) / 1000.0);
+                sb.Append(",\"p\":");
+                sb.Append(playing);
+                sb.Append(",\"c\":");
+                sb.Append(Math.Round(cursor * 10) / 10.0);
+                sb.Append(",\"d\":");
+                sb.Append(Math.Round(length * 10) / 10.0);
+                sb.Append('}');
+                PostToWeb(sb.ToString());
+            }
+            catch { }
+        }
+
+        /// <summary>设置当前 BGM 标题（由 UiData bgm: 推送）。</summary>
+        public void SetBgmTitle(string title)
+        {
+            _bgmTitle = title ?? "";
         }
 
         #endregion
@@ -581,6 +626,8 @@ namespace CF7Launcher.Guardian
                 FlushToastBuffer();
             if (_fpsTimer != null)
                 _fpsTimer.Start();
+            if (_audioTimer != null)
+                _audioTimer.Start();
             if (_webReady)
             {
                 SyncPosition();
@@ -602,6 +649,12 @@ namespace CF7Launcher.Guardian
                     _fpsTimer.Stop();
                     _fpsTimer.Dispose();
                     _fpsTimer = null;
+                }
+                if (_audioTimer != null)
+                {
+                    _audioTimer.Stop();
+                    _audioTimer.Dispose();
+                    _audioTimer = null;
                 }
                 if (_webView != null)
                 {

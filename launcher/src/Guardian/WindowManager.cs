@@ -35,6 +35,11 @@ namespace CF7Launcher.Guardian
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+            int X, int Y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool IsWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
@@ -51,6 +56,12 @@ namespace CF7Launcher.Guardian
         private const int WS_THICKFRAME = 0x00040000;
         private const int WS_BORDER = 0x00800000;
         private const int WS_CHILD = 0x40000000;
+
+        // SetWindowPos flags
+        private const uint SWP_NOMOVE = 0x0002;
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOZORDER = 0x0004;
+        private const uint SWP_FRAMECHANGED = 0x0020;
 
         private uint _flashProcessId;
         private uint _guardianProcessId;
@@ -138,6 +149,12 @@ namespace CF7Launcher.Guardian
                 DestroyMenu(hMenu);
                 LogManager.Log("[WindowManager] Flash menu removed (accelerators disabled)");
             }
+
+            // 强制重算非客户区：SetWindowLong 改样式后窗口管理器仍缓存旧的
+            // non-client metrics（菜单栏高度等），必须用 SWP_FRAMECHANGED 刷新，
+            // 否则 Flash 内容区域顶部会出现黑色间隙。
+            SetWindowPos(_flashHwnd, IntPtr.Zero, 0, 0, 0, 0,
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 
             // 设置父窗口
             SetParent(_flashHwnd, _hostPanel.Handle);
@@ -243,6 +260,8 @@ namespace CF7Launcher.Guardian
             style = style & ~WS_CAPTION & ~WS_THICKFRAME & ~WS_BORDER;
             style = style | WS_CHILD;
             SetWindowLong(_flashHwnd, GWL_STYLE, style);
+            SetWindowPos(_flashHwnd, IntPtr.Zero, 0, 0, 0, 0,
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
             SetParent(_flashHwnd, _hostPanel.Handle);
 
             // 重新绑定 resize 事件

@@ -9,6 +9,7 @@ var Notch = (function() {
     var rows = [], TRANSIENT_MS = 4000, MAX_ROWS = 4;
     var lightLevels = null, MAX_LIGHT = 9;
     var expandCooldown = false;
+    var _reportRect = null; // init() 后赋值，供外部调用
 
     // SparklineRenderer 实例
     var sparkRenderer = null;
@@ -217,6 +218,8 @@ var Notch = (function() {
         pushRect(expanded ? notchEl : pillEl);
         var trt = document.getElementById('top-right-tools');
         if (trt && trt.offsetParent !== null) pushRect(trt);
+        var jbp = document.getElementById('jukebox-panel');
+        if (jbp && jbp.offsetParent !== null) pushRect(jbp);
         var subs = document.querySelectorAll('.notch-submenu');
         for (var si = 0; si < subs.length; si++) {
             if (subs[si].offsetParent !== null) pushRect(subs[si]);
@@ -224,6 +227,7 @@ var Notch = (function() {
         if (chartVisible && expandedPanel) pushRect(expandedPanel);
         Bridge.send({ type: 'interactiveRect', r: rects });
     }
+    _reportRect = reportRect;
 
     // ── FPS 数据接收 ──
     function onFpsData(data) {
@@ -651,5 +655,5 @@ var Notch = (function() {
     }
 
     window.addEventListener('load', init);
-    return { addNotice:addNotice, setStatus:setStatus, clearStatus:clearStatus };
+    return { addNotice:addNotice, setStatus:setStatus, clearStatus:clearStatus, reportRect:function(){ if(_reportRect) _reportRect(); } };
 })();

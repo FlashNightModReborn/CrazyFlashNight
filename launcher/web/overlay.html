@@ -57,7 +57,6 @@
             <button data-key="TABLET" title="平板电脑">💻 平板</button>
             <button data-key="WAREHOUSE" title="后勤战备箱">📦 战备箱</button>
             <button data-key="SHOP" title="商城">🛒 商城</button>
-            <button data-key="JUKEBOX" title="点歌器">🎵 点歌</button>
         </div>
     </div>
     <div id="notch-info"></div>
@@ -76,12 +75,28 @@
     <button data-key="SAFEEXIT" title="安全退出">&#10005;</button>
 </div>
 
+<!-- BGM 可视化面板：紧贴右上角工具条下方 -->
+<div id="jukebox-panel">
+    <div id="jukebox-header">
+        <button id="jukebox-toggle" title="展开/折叠">&#9835; 点歌</button>
+        <span id="jukebox-title">未播放</span>
+        <span id="jukebox-time"></span>
+    </div>
+    <div id="jukebox-body">
+        <canvas id="jukebox-wave" width="160" height="32"></canvas>
+        <div id="jukebox-progress">
+            <div id="jukebox-prog-fill"></div>
+        </div>
+    </div>
+</div>
+
 <script src="modules/bridge.js"></script>
 <script src="modules/uidata.js"></script>
 <script src="modules/toast.js"></script>
 <script src="modules/sparkline.js"></script>
 <script src="modules/notch.js"></script>
 <script src="modules/currency.js"></script>
+<script src="modules/jukebox.js"></script>
 <script>
 (function() {
     window.addEventListener('load', function() {

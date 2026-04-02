@@ -424,12 +424,13 @@ html, body {
     backdrop-filter:blur(12px) saturate(1.2);
     border-bottom:1px solid rgba(255,255,255,0.08);
 }
+/* 工具条与下方 jukebox 面板是同一卡片，底部圆角交给面板 */
 #top-right-tools button:first-child {
-    border-radius:0 0 0 6px;
+    border-radius:0;
     border-left:1px solid rgba(255,255,255,0.12);
 }
 #top-right-tools button:last-child {
-    border-radius:0 0 6px 0;
+    border-radius:0;
     border-right:1px solid rgba(255,255,255,0.12);
 }
 #top-right-tools button:hover {
@@ -557,4 +558,108 @@ html, body {
 @keyframes count-pulse {
     0%   { background:rgba(255,255,255,0.25); }
     100% { background:rgba(255,255,255,0.10); }
+}
+
+/* === 点歌面板 (Jukebox) === */
+#jukebox-panel {
+    position:absolute;
+    top:32px; right:80px; /* 紧贴 #top-right-tools 下方，同 right 对齐 */
+    width:170px; /* 5 buttons × 34px = 与工具条等宽 */
+    background:rgba(24,24,26,0.82);
+    -webkit-backdrop-filter:blur(12px) saturate(1.2);
+    backdrop-filter:blur(12px) saturate(1.2);
+    border-left:1px solid rgba(255,255,255,0.12);
+    border-right:1px solid rgba(255,255,255,0.12);
+    border-bottom:1px solid rgba(255,255,255,0.12);
+    border-top:none; /* 与工具条同一卡片，无缝衔接 */
+    border-radius:0 0 6px 6px; /* 整个卡片的底部圆角 */
+    pointer-events:auto;
+    overflow:hidden;
+    transition:max-height 280ms ease;
+}
+/* 游戏未加载时隐藏 */
+#notch:not(.game-ready) ~ #jukebox-panel { display:none; }
+
+/* ── 头部行 ── */
+#jukebox-header {
+    display:flex; align-items:center; gap:0;
+    height:24px;
+    min-width:0;
+}
+#jukebox-toggle {
+    height:24px; padding:0 6px;
+    display:flex; align-items:center; gap:3px;
+    border:none;
+    background:rgba(102,204,255,0.08);
+    color:rgba(102,204,255,0.8);
+    font:10px/1 "Microsoft YaHei",sans-serif;
+    cursor:pointer; pointer-events:auto;
+    flex-shrink:0;
+    border-radius:0 0 0 6px; /* 左下角跟随面板圆角 */
+    transition:background 120ms, color 120ms;
+    white-space:nowrap;
+}
+#jukebox-toggle:hover {
+    background:rgba(102,204,255,0.2);
+    color:rgba(102,204,255,1);
+}
+#jukebox-panel.expanded #jukebox-toggle {
+    background:rgba(102,204,255,0.15);
+    color:rgba(102,204,255,1);
+}
+#jukebox-title {
+    font:11px/1.2 "Microsoft YaHei",sans-serif;
+    color:rgba(255,255,255,0.7);
+    white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis;
+    flex:1; min-width:0;
+    padding:0 4px;
+}
+/* 无 BGM 时标题变暗 */
+#jukebox-panel:not(.has-bgm) #jukebox-title {
+    color:rgba(255,255,255,0.3);
+}
+#jukebox-time {
+    font:9px/1 "Consolas","Courier New",monospace;
+    color:rgba(255,255,255,0.4);
+    white-space:nowrap; flex-shrink:0;
+    padding-right:4px;
+}
+
+/* ── 可折叠波形区 ── */
+#jukebox-body {
+    overflow:hidden;
+    max-height:0; opacity:0;
+    transition:max-height 250ms ease, opacity 200ms ease;
+}
+#jukebox-panel.expanded #jukebox-body {
+    max-height:36px; opacity:1;
+}
+/* 无 BGM 时不允许展开波形 */
+#jukebox-panel:not(.has-bgm) #jukebox-body {
+    max-height:0 !important; opacity:0 !important;
+}
+#jukebox-wave {
+    display:block;
+    width:100%;
+    height:32px;
+}
+#jukebox-progress {
+    height:2px;
+    background:rgba(255,255,255,0.08);
+}
+#jukebox-prog-fill {
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, rgba(102,204,255,0.6), rgba(150,220,255,0.8));
+    transition:width 100ms linear;
+}
+
+/* ── 折叠态新曲通知闪烁 ── */
+@keyframes jukebox-notify {
+    0%   { background:rgba(102,204,255,0.2); }
+    100% { background:transparent; }
+}
+#jukebox-panel.notify #jukebox-title {
+    animation:jukebox-notify 1.8s ease-out;
 }

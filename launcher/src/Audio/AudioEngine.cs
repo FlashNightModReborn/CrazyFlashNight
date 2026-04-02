@@ -48,6 +48,19 @@ namespace CF7Launcher.Audio
         [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
         public static extern void ma_bridge_sfx_set_volume(float volume);
 
+        // === BGM info (peak / cursor / length / isPlaying) ===
+        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void ma_bridge_bgm_get_peak(out float peakL, out float peakR);
+
+        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+        public static extern float ma_bridge_bgm_get_cursor();
+
+        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+        public static extern float ma_bridge_bgm_get_length();
+
+        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int ma_bridge_bgm_is_playing();
+
         // === Global ===
         [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
         public static extern void ma_bridge_set_master_volume(float volume);

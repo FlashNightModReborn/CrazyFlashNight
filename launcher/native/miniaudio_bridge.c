@@ -50,6 +50,47 @@ typedef struct {
     ULONGLONG lastPlayTime;
 } SfxSlot;
 
+/* ========== Peak detector node ========== */
+typedef struct {
+    ma_node_base base;
+    volatile float peakL;
+    volatile float peakR;
+} PeakDetector;
+
+static void peak_process_pcm(ma_node* pNode, const float** ppFramesIn,
+    ma_uint32* pFrameCountIn, float** ppFramesOut, ma_uint32* pFrameCountOut)
+{
+    PeakDetector* pd = (PeakDetector*)pNode;
+    ma_uint32 count = *pFrameCountOut;    /* passthrough: consume = produce */
+    const float* in = ppFramesIn[0];
+    float* out = ppFramesOut[0];
+    float pL = 0.0f, pR = 0.0f;
+    ma_uint32 i;
+
+    for (i = 0; i < count; i++) {
+        float l = in[i * 2 + 0];
+        float r = in[i * 2 + 1];
+        float al = l < 0 ? -l : l;
+        float ar = r < 0 ? -r : r;
+        if (al > pL) pL = al;
+        if (ar > pR) pR = ar;
+        out[i * 2 + 0] = l;
+        out[i * 2 + 1] = r;
+    }
+
+    pd->peakL = pL;
+    pd->peakR = pR;
+    *pFrameCountIn = count;
+}
+
+static ma_node_vtable g_peakVtable = {
+    peak_process_pcm,
+    NULL,   /* onGetRequiredInputFrameCount */
+    1,      /* 1 input bus */
+    1,      /* 1 output bus */
+    0       /* flags */
+};
+
 /* ========== Global state ========== */
 static ma_engine      g_engine;
 static int            g_initialized = 0;
@@ -58,6 +99,9 @@ static wchar_t        g_basePath[MAX_WPATH_LEN] = {0};
 /* Sound groups (buses) */
 static ma_sound_group g_bgmGroup;
 static ma_sound_group g_sfxGroup;
+
+/* BGM peak detector (between bgmGroup and engine endpoint) */
+static PeakDetector   g_bgmPeak;
 
 /* BGM dual-instance crossfade */
 static ma_sound       g_bgm[2];
@@ -126,6 +170,34 @@ MA_EXPORT int ma_bridge_init(const wchar_t* basePath) {
         return -1;
     }
 
+    /* Initialize BGM peak detector node (stereo passthrough) */
+    {
+        ma_node_config peakCfg;
+        ma_uint32 inCh[1], outCh[1];
+        ma_uint32 ch = ma_engine_get_channels(&g_engine);
+        if (ch < 2) ch = 2; /* force stereo for peak L/R */
+        inCh[0] = ch;
+        outCh[0] = ch;
+        peakCfg = ma_node_config_init();
+        peakCfg.vtable = &g_peakVtable;
+        peakCfg.pInputChannels = inCh;
+        peakCfg.pOutputChannels = outCh;
+        peakCfg.initialState = ma_node_state_started;
+
+        memset(&g_bgmPeak, 0, sizeof(g_bgmPeak));
+        result = ma_node_init(ma_engine_get_node_graph(&g_engine),
+            &peakCfg, NULL, &g_bgmPeak.base);
+        if (result == MA_SUCCESS) {
+            /* Wire: peakNode output → engine endpoint */
+            ma_node_attach_output_bus(&g_bgmPeak.base, 0,
+                ma_engine_get_endpoint(&g_engine), 0);
+            /* Wire: bgmGroup output → peakNode input (replaces default → endpoint) */
+            ma_node_attach_output_bus((ma_node*)&g_bgmGroup, 0,
+                &g_bgmPeak.base, 0);
+        }
+        /* If peak node init fails, bgmGroup remains wired to endpoint (graceful degradation) */
+    }
+
     memset(g_sfx, 0, sizeof(g_sfx));
     g_sfxCount = 0;
     g_bgmLoaded[0] = g_bgmLoaded[1] = 0;
@@ -153,6 +225,7 @@ MA_EXPORT void ma_bridge_shutdown(void) {
     }
     g_sfxCount = 0;
 
+    ma_node_uninit(&g_bgmPeak.base, NULL);
     ma_sound_group_uninit(&g_sfxGroup);
     ma_sound_group_uninit(&g_bgmGroup);
     ma_engine_uninit(&g_engine);
@@ -201,17 +274,23 @@ MA_EXPORT int ma_bridge_bgm_play(const wchar_t* wpath, int loop, float volume, f
          * Overlapping crossfade:
          * Old BGM fades out (current -> 0), new BGM fades in (0 -> 1).
          * Both run for fadeMs duration, no silence gap.
+         *
+         * NOTE: 不能用 ma_sound_set_volume(0) 初始化新音轨！
+         * miniaudio 的 base volume 和 fader 是 *相乘* 关系：
+         *   output = fader_processed_PCM × base_volume
+         * base_volume=0 会导致永远静音，无论 fader 如何变化。
+         * 正确做法：base_volume=1，让 fader 独立控制 0→1 淡入。
          */
         ma_sound_set_fade_in_milliseconds(&g_bgm[oldSlot], -1.0f, 0.0f, fadeMs);
         ma_sound_set_stop_time_in_milliseconds(&g_bgm[oldSlot], now + fadeMs);
 
-        ma_sound_set_volume(&g_bgm[newSlot], 0.0f);
+        ma_sound_set_volume(&g_bgm[newSlot], 1.0f);
         ma_sound_set_fade_in_milliseconds(&g_bgm[newSlot], 0.0f, 1.0f, fadeMs);
         ma_sound_start(&g_bgm[newSlot]);
 
     } else if (fadeMs >= MIN_FADE_MS) {
         /* No old BGM playing, just fade in the new one */
-        ma_sound_set_volume(&g_bgm[newSlot], 0.0f);
+        ma_sound_set_volume(&g_bgm[newSlot], 1.0f);
         ma_sound_set_fade_in_milliseconds(&g_bgm[newSlot], 0.0f, 1.0f, fadeMs);
         ma_sound_start(&g_bgm[newSlot]);
 
@@ -355,6 +434,38 @@ MA_EXPORT void ma_bridge_sfx_unload(int handle) {
 MA_EXPORT void ma_bridge_sfx_set_volume(float volume) {
     if (!g_initialized) return;
     ma_sound_group_set_volume(&g_sfxGroup, volume);
+}
+
+/* ========== BGM info (peak / cursor / length / isPlaying) ========== */
+
+MA_EXPORT void ma_bridge_bgm_get_peak(float* outL, float* outR) {
+    if (!g_initialized || outL == NULL || outR == NULL) {
+        if (outL) *outL = 0.0f;
+        if (outR) *outR = 0.0f;
+        return;
+    }
+    *outL = g_bgmPeak.peakL;
+    *outR = g_bgmPeak.peakR;
+}
+
+MA_EXPORT float ma_bridge_bgm_get_cursor(void) {
+    float cursor = 0.0f;
+    if (g_initialized && g_bgmLoaded[g_bgmActive])
+        ma_sound_get_cursor_in_seconds(&g_bgm[g_bgmActive], &cursor);
+    return cursor;
+}
+
+MA_EXPORT float ma_bridge_bgm_get_length(void) {
+    float length = 0.0f;
+    if (g_initialized && g_bgmLoaded[g_bgmActive])
+        ma_sound_get_length_in_seconds(&g_bgm[g_bgmActive], &length);
+    return length;
+}
+
+MA_EXPORT int ma_bridge_bgm_is_playing(void) {
+    if (g_initialized && g_bgmLoaded[g_bgmActive])
+        return ma_sound_is_playing(&g_bgm[g_bgmActive]) ? 1 : 0;
+    return 0;
 }
 
 /* ========== Global ========== */

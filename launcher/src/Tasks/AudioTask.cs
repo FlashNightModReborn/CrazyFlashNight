@@ -64,13 +64,21 @@ namespace CF7Launcher.Tasks
             float vol = msg.Value<float?>("vol") ?? 1.0f;
             float fade = msg.Value<float?>("fade") ?? 0.0f;
 
-            AudioEngine.ma_bridge_bgm_play(path, loop, vol, fade);
+            LogManager.Log("[Audio] bgm_play: path=" + path + " loop=" + loop
+                + " vol=" + vol.ToString("F3") + " fade=" + fade.ToString("F2"));
+
+            int rc = AudioEngine.ma_bridge_bgm_play(path, loop, vol, fade);
+            if (rc != 0)
+                LogManager.Log("[Audio] bgm_play FAILED: rc=" + rc + " path=" + path);
         }
 
         private void HandleBgmStop(JObject msg)
         {
             float fade = msg.Value<float?>("fade") ?? 0.0f;
-            AudioEngine.ma_bridge_bgm_stop(fade);
+            LogManager.Log("[Audio] bgm_stop: fade=" + fade.ToString("F2"));
+            int rc = AudioEngine.ma_bridge_bgm_stop(fade);
+            if (rc != 0)
+                LogManager.Log("[Audio] bgm_stop FAILED: rc=" + rc);
         }
 
         private void HandleBgmVol(JObject msg)
