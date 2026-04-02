@@ -132,6 +132,12 @@ layers:
     include: [ "**/*" ]
     exclude: []
 
+  - name: launcher-scripts
+    description: "V8 运行时 JS bundle（伤害数字渲染等）"
+    source: "launcher/scripts/dist/"
+    include: [ "**/*" ]
+    exclude: []
+
   - name: rapfi
     description: "Rapfi 五子棋引擎（GomokuTask 依赖）"
     source: "tools/rapfi/"

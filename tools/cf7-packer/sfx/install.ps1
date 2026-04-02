@@ -77,14 +77,16 @@ function Find-GamePath {
         $manifest = Join-Path $lib "steamapps\appmanifest_$STEAM_APP_ID.acf"
         if (Test-Path $manifest) {
             $gamePath = Join-Path $lib "steamapps\common\$GAME_DIR_NAME"
-            if (Test-Path $gamePath) {
+            $exeCheck = Join-Path $gamePath "CrazyFlasher7StandAloneStarter.exe"
+            if ((Test-Path $gamePath) -and (Test-Path $exeCheck)) {
                 Write-Host "  找到游戏目录: $gamePath" -ForegroundColor Green
                 return $gamePath
             }
         }
         # 直接检查目录
         $direct = Join-Path $lib "steamapps\common\$GAME_DIR_NAME"
-        if (Test-Path $direct) {
+        $exeCheck = Join-Path $direct "CrazyFlasher7StandAloneStarter.exe"
+        if ((Test-Path $direct) -and (Test-Path $exeCheck)) {
             Write-Host "  找到游戏目录: $direct" -ForegroundColor Green
             return $direct
         }

@@ -115,7 +115,7 @@ goto :fail
 
 :: === Phase 3.5: verify checksum ===
 echo     Verifying SHA256 checksum...
-for /f "delims=" %%H in ('certutil -hashfile "!ZIP_PATH!" SHA256 ^| findstr /r "^[0-9a-f]"') do set "ACTUAL_SHA256=%%H"
+for /f "skip=1 delims=" %%H in ('certutil -hashfile "!ZIP_PATH!" SHA256') do if not defined ACTUAL_SHA256 set "ACTUAL_SHA256=%%H"
 set "ACTUAL_SHA256=!ACTUAL_SHA256: =!"
 if /i not "!ACTUAL_SHA256!"=="!EXPECTED_SHA256!" (
     echo [X] SHA256 checksum mismatch!
