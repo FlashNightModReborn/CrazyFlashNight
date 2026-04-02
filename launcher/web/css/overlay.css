@@ -10,7 +10,7 @@ html, body {
 #toast-container {
     position:absolute;
     left:0.49%; top:8.68%;
-    width:20%;
+    width:285px;
     pointer-events:none;
 }
 .toast-line {
@@ -403,37 +403,46 @@ html, body {
     display:none;
 }
 
-/* === 暂停按钮：完全独立，固定在视口右上角 === */
-#notch-pause {
+/* === 右上角工具条：设置/帮助/退出/暂停 === */
+#top-right-tools {
     position:absolute;
-    top:0; right:100px;
-    font-size:18px; line-height:1;
-    width:34px; height:34px;
+    top:0; right:80px; /* 避开 Flash 右上角小地图，同时不被 notch 展开态遮挡 */
+    display:flex; align-items:stretch;
+    pointer-events:auto;
+    gap:0;
+}
+#top-right-tools button {
+    font-size:14px; line-height:1;
+    width:34px; height:32px;
     display:flex; align-items:center; justify-content:center;
-    border-radius:0 0 0 6px;
+    border:none;
     background:rgba(24,24,26,0.82);
     color:rgba(255,255,255,0.7);
     cursor:pointer; pointer-events:auto;
     transition:background 100ms, color 100ms;
     -webkit-backdrop-filter:blur(12px) saturate(1.2);
     backdrop-filter:blur(12px) saturate(1.2);
-    border:1px solid rgba(255,255,255,0.12);
-    border-top:none;
-    box-shadow:
-        0 1px 0 rgba(255,255,255,0.1) inset,
-        0 2px 8px rgba(0,0,0,0.5),
-        0 0 1px rgba(255,255,255,0.15);
+    border-bottom:1px solid rgba(255,255,255,0.08);
 }
-#notch-pause:hover {
+#top-right-tools button:first-child {
+    border-radius:0 0 0 6px;
+    border-left:1px solid rgba(255,255,255,0.12);
+}
+#top-right-tools button:last-child {
+    border-radius:0 0 6px 0;
+    border-right:1px solid rgba(255,255,255,0.12);
+}
+#top-right-tools button:hover {
     background:rgba(60,60,64,0.9);
     color:white;
 }
+#notch-pause { font-size:16px; }
 #notch-pause.paused {
     color:#ff6666;
     background:rgba(80,20,20,0.9);
 }
-/* 游戏未加载时隐藏暂停按钮（在原 #notch-pause 之后，确保覆盖 display:flex） */
-#notch:not(.game-ready) ~ #notch-pause { display:none; }
+/* 游戏未加载时隐藏右上角工具条（设置/帮助/退出/暂停） */
+#notch:not(.game-ready) ~ #top-right-tools { display:none; }
 
 /* === 通知栈 === */
 #notch-info {

@@ -639,6 +639,8 @@ namespace CF7Launcher.Guardian
                 case "PETS": SendGameCommand("togglePets"); break;
                 case "MERCS": SendGameCommand("toggleMercs"); break;
                 case "TABLET": SendGameCommand("toggleTablet"); break;
+                case "GAMESETTINGS": SendGameCommand("openSettings"); break;
+                case "JUKEBOX": SendGameCommand("openJukebox"); break;
             }
         }
 

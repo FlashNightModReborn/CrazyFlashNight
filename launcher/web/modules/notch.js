@@ -87,7 +87,7 @@ var Notch = (function() {
         });
 
         // 绑定所有 data-key 按钮
-        var buttons = document.querySelectorAll('#notch button[data-key], #notch-pause[data-key]');
+        var buttons = document.querySelectorAll('#notch button[data-key], #top-right-tools button[data-key]');
         for (var i = 0; i < buttons.length; i++) {
             (function(btn) {
                 btn.addEventListener('click', function() {
@@ -215,8 +215,8 @@ var Notch = (function() {
                            Math.round(r.width), Math.round(r.height));
         }
         pushRect(expanded ? notchEl : pillEl);
-        var pb = document.getElementById('notch-pause');
-        if (pb) pushRect(pb);
+        var trt = document.getElementById('top-right-tools');
+        if (trt && trt.offsetParent !== null) pushRect(trt);
         var subs = document.querySelectorAll('.notch-submenu');
         for (var si = 0; si < subs.length; si++) {
             if (subs[si].offsetParent !== null) pushRect(subs[si]);

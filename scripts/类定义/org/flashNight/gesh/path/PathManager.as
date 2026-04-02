@@ -7,7 +7,7 @@
     public static var LOG_LEVEL_DEBUG:Number = 4;  // 输出所有日志（包括调试信息）
     
     // ========== 日志配置 ==========
-    private static var logLevel:Number = LOG_LEVEL_DEBUG; // 默认日志级别
+    private static var logLevel:Number = LOG_LEVEL_WARN; // 默认日志级别
     private static var enableTimestamp:Boolean = false;  // 是否在日志中包含时间戳
     private static var logPrefix:String = "[PathManager]"; // 日志前缀
     private static var useServerLog:Boolean = true; // 是否使用服务器日志（_root.服务器.发布服务器消息）

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家信息界面" itemID="6651f9a1-00001952" linkageExportForAS="true" linkageIdentifier="玩家信息界面" lastModified="1754496470" lastUniqueIdentifier="24">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家信息界面" itemID="6651f9a1-00001952" linkageExportForAS="true" linkageIdentifier="玩家信息界面" lastModified="1775139982" lastUniqueIdentifier="24">
   <timeline>
     <DOMTimeline name="玩家信息界面">
       <layers>
@@ -12,19 +12,10 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="性能帧率显示器" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="性能帧率显示器" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="性能-帧率显示器/性能帧率显示器" name="性能帧率显示器" selected="true" centerPoint3DX="467.8" centerPoint3DY="10.8">
-                  <matrix>
-                    <Matrix tx="430.25" ty="2.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="37.55" y="8.45"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -127,10 +118,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/功能按钮界面" name="功能按钮界面" centerPoint3DX="526.25" centerPoint3DY="62.8">
                   <matrix>
-                    <Matrix tx="467.65" ty="36.8"/>
+                    <Matrix a="1.55599975585938" d="1.55599975585938" tx="488.25" ty="27.3"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="-37.05" y="17.05"/>
                   </transformationPoint>
                   <filters>
                     <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" highlightColor="#666666" isEnabled="false"/>
@@ -159,13 +150,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="玩家必要信息界面" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="玩家必要信息界面" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/玩家必要信息界面" name="玩家必要信息界面" centerPoint3DX="612.2" centerPoint3DY="36.9">
+                <DOMSymbolInstance libraryItemName="sprite/玩家必要信息界面" name="玩家必要信息界面" centerPoint3DX="612.4" centerPoint3DY="36.9">
                   <matrix>
-                    <Matrix tx="506.75" ty="10.45"/>
+                    <Matrix tx="506.95" ty="10.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="121.8" y="17"/>

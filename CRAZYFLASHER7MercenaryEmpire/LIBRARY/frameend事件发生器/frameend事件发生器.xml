@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="性能-帧率显示器/性能帧率显示器" itemID="662da682-00000b97" lastModified="1775139883" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="frameend事件发生器/frameend事件发生器" itemID="69ce7ce6-00001294" lastModified="1775140070" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="性能帧率显示器">
+    <DOMTimeline name="frameend事件发生器" currentFrame="1">
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/透明控件" selected="true" centerPoint3DX="32.15" centerPoint3DY="35.15">
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" centerPoint3DX="32.15" centerPoint3DY="35.15">
                   <matrix>
                     <Matrix tx="19.65" ty="22.65"/>
                   </matrix>
@@ -23,14 +23,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/透明控件" centerPoint3DX="32.15" centerPoint3DY="35.15">
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" selected="true" centerPoint3DX="32.15" centerPoint3DY="35.15">
                   <matrix>
                     <Matrix tx="19.65" ty="22.65"/>
                   </matrix>

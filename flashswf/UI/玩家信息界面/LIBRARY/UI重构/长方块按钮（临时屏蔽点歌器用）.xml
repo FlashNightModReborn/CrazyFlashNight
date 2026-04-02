@@ -16,7 +16,7 @@ stop();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="按钮碰撞箱" color="#E391EE" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="按钮碰撞箱" color="#E391EE" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -44,11 +44,11 @@ on (press, rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#35BA9D" autoNamed="false">
+        <DOMLayer name="背景" color="#35BA9D" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape isDrawingObject="true">
+                <DOMShape selected="true" isDrawingObject="true">
                   <transformationPoint>
                     <Point y="-0.05"/>
                   </transformationPoint>
@@ -62,10 +62,10 @@ on (press, rollOut) {
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!263 134|-315 134!-315 134|-315 -135!-315 -135|316 -135!316 -135|316 82!316 82|263 134"/>
+                    <Edge strokeStyle="1" edges="!316 -135|316 82!316 82|263 134!263 134|-315 134!-315 134|-315 -135!-315 -135|316 -135"/>
                   </edges>
                 </DOMShape>
-                <DOMShape isDrawingObject="true">
+                <DOMShape selected="true" isDrawingObject="true">
                   <transformationPoint>
                     <Point x="-15.75" y="-2.05"/>
                   </transformationPoint>
@@ -78,7 +78,7 @@ on (press, rollOut) {
                     <Edge fillStyle1="1" edges="!-298 -123|-298 43!-298 43|-332 43!-332 43|-332 -123!-332 -123|-298 -123"/>
                   </edges>
                 </DOMShape>
-                <DOMShape isDrawingObject="true">
+                <DOMShape selected="true" isDrawingObject="true">
                   <matrix>
                     <Matrix a="0.946670532226563" d="0.946670532226563" tx="0.9" ty="0.4"/>
                   </matrix>
@@ -94,7 +94,7 @@ on (press, rollOut) {
                     <Edge fillStyle1="1" edges="!332 73|332 146!332 146|259 146!259 146|332 73"/>
                   </edges>
                 </DOMShape>
-                <DOMShape isDrawingObject="true">
+                <DOMShape selected="true" isDrawingObject="true">
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.1">
@@ -108,7 +108,7 @@ on (press, rollOut) {
                     <Edge strokeStyle="1" edges="!-254 114|-294 114!-294 114|-294 74"/>
                   </edges>
                 </DOMShape>
-                <DOMShape isDrawingObject="true">
+                <DOMShape selected="true" isDrawingObject="true">
                   <matrix>
                     <Matrix a="-0.999984741210938" d="-0.999984741210938" tx="0.05" ty="-0.05"/>
                   </matrix>
@@ -125,7 +125,7 @@ on (press, rollOut) {
                     <Edge strokeStyle="1" edges="!-254 114|-294 114!-294 114|-294 74"/>
                   </edges>
                 </DOMShape>
-                <DOMShape isDrawingObject="true">
+                <DOMShape selected="true" isDrawingObject="true">
                   <matrix>
                     <Matrix tx="0.4"/>
                   </matrix>
@@ -139,10 +139,10 @@ on (press, rollOut) {
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!242 83|260 83!260 83|260 65!279 83|260 83!260 83|260 102"/>
+                    <Edge strokeStyle="1" edges="!279 83|260 83!260 83|260 102!242 83|260 83!260 83|260 65"/>
                   </edges>
                 </DOMShape>
-                <DOMShape isDrawingObject="true">
+                <DOMShape selected="true" isDrawingObject="true">
                   <matrix>
                     <Matrix tx="-0.25" ty="-0.1"/>
                   </matrix>

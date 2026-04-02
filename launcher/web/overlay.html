@@ -50,16 +50,14 @@
                 </div>
             </div>
         </div>
-        <!-- 第二行：功能按钮（展开时可见） -->
+        <!-- 第二行：游戏功能按钮（展开时可见） -->
         <div id="notch-toolbar">
             <button data-key="PETS" title="战宠">🐾 战宠</button>
             <button data-key="MERCS" title="佣兵">⚔ 佣兵</button>
             <button data-key="TABLET" title="平板电脑">💻 平板</button>
             <button data-key="WAREHOUSE" title="后勤战备箱">📦 战备箱</button>
             <button data-key="SHOP" title="商城">🛒 商城</button>
-            <button data-key="SETTINGS" title="修改器">🔧 修改器</button>
-            <button data-key="HELP" title="帮助">❓ 帮助</button>
-            <button data-key="SAFEEXIT" title="安全退出">🚪 退出</button>
+            <button data-key="JUKEBOX" title="点歌器">🎵 点歌</button>
         </div>
     </div>
     <div id="notch-info"></div>
@@ -69,8 +67,14 @@
         <div class="expanded-hint">点击关闭</div>
     </div>
 </div>
-<!-- 暂停按钮：完全独立于 notch，固定在右上角 -->
-<button id="notch-pause" data-key="PAUSE" title="暂停/继续">&#9208;</button>
+<!-- 右上角工具条：独立于 notch，固定定位 -->
+<div id="top-right-tools">
+    <button data-key="GAMESETTINGS" title="系统设置">⚙</button>
+    <button data-key="SETTINGS" title="修改器">🔧</button>
+    <button id="notch-pause" data-key="PAUSE" title="暂停/继续">&#9208;</button>
+    <button data-key="HELP" title="帮助">?</button>
+    <button data-key="SAFEEXIT" title="安全退出">&#10005;</button>
+</div>
 
 <script src="modules/bridge.js"></script>
 <script src="modules/uidata.js"></script>

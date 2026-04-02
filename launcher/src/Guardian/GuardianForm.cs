@@ -516,6 +516,7 @@ namespace CF7Launcher.Guardian
 
                 // 全屏时启用 Escape 退出
                 if (_kbHook != null) _kbHook.SetEscapeEnabled(true);
+                else if (this.IsHandleCreated) RegisterHotKey(this.Handle, HK_ESC, 0, (uint)Keys.Escape);
             }
             else
             {
@@ -524,6 +525,7 @@ namespace CF7Launcher.Guardian
                 this.Bounds = _savedBounds;
 
                 if (_kbHook != null) _kbHook.SetEscapeEnabled(false);
+                else if (this.IsHandleCreated) UnregisterHotKey(this.Handle, HK_ESC);
             }
 
             this.ResumeLayout(true);

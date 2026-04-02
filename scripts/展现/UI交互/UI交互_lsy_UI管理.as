@@ -113,6 +113,14 @@ _root.gameCommands["safeExit"] = function() {
     _root.自动存盘();
 };
 
+_root.gameCommands["openSettings"] = function() {
+    _root.系统设置界面._visible = !_root.系统设置界面._visible;
+};
+
+_root.gameCommands["openJukebox"] = function() {
+    _root.发布消息("点歌系统重构中，敬请期待");
+};
+
 // ============================================================
 // 游戏状态通知 → WebView 按钮可见性
 // s:0 = 未加载/重置（仅全屏/日志/其他可用）
