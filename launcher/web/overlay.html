@@ -13,30 +13,40 @@
 <!-- Notch: 单行布局，左侧 FPS 区域 + 右侧工具栏按钮 -->
 <div id="notch">
     <div id="notch-pill">
-        <!-- 第一行：指标 + 高频操作 -->
+        <!-- 第一行：经济 | FPS | 经济 -->
         <div id="notch-row1">
             <div id="currency-gold" class="currency-panel">
                 <span class="currency-icon">K</span>
                 <span class="currency-value">0</span>
                 <span class="currency-delta"></span>
             </div>
-            <div id="currency-kpoint" class="currency-panel">
-                <span class="currency-icon">$</span>
-                <span class="currency-value">0</span>
-                <span class="currency-delta"></span>
-            </div>
             <div class="notch-divider"></div>
-            <div id="notch-left">
+            <div id="notch-center">
                 <span id="notch-fps" class="notch-fps">--</span>
                 <canvas id="notch-sparkline" width="70" height="16"></canvas>
                 <canvas id="notch-clock" width="16" height="16"></canvas>
                 <span id="notch-expand" class="notch-expand-btn">&#9660;</span>
             </div>
+            <div class="notch-divider"></div>
+            <div id="currency-kpoint" class="currency-panel">
+                <span class="currency-icon">$</span>
+                <span class="currency-value">0</span>
+                <span class="currency-delta"></span>
+            </div>
             <div id="notch-row1-right">
                 <button data-key="F">F 全屏</button>
                 <button data-key="LOG">日志</button>
+                <div class="notch-submenu-wrap">
+                    <button class="notch-submenu-trigger">其他 &#9656;</button>
+                    <div class="notch-submenu">
+                        <button data-key="Q">Q 强退</button>
+                        <button data-key="W">W 关闭</button>
+                        <button data-key="R">R 重置</button>
+                        <button data-key="P">P 截图</button>
+                        <button data-key="O">O 打开</button>
+                    </div>
+                </div>
             </div>
-            <button id="notch-pause" data-key="PAUSE" title="暂停/继续">&#9208;</button>
         </div>
         <!-- 第二行：功能按钮（展开时可见） -->
         <div id="notch-toolbar">
@@ -48,20 +58,12 @@
             <button data-key="SETTINGS" title="修改器">🔧 修改器</button>
             <button data-key="HELP" title="帮助">❓ 帮助</button>
             <button data-key="SAFEEXIT" title="安全退出">🚪 退出</button>
-            <div class="notch-submenu-wrap">
-                <button class="notch-submenu-trigger">其他 &#9656;</button>
-                <div class="notch-submenu">
-                    <button data-key="Q">Q 强退</button>
-                    <button data-key="W">W 关闭</button>
-                    <button data-key="R">R 重置</button>
-                    <button data-key="P">P 截图</button>
-                    <button data-key="O">O 打开</button>
-                </div>
-            </div>
         </div>
     </div>
     <div id="notch-info"></div>
 </div>
+<!-- 暂停按钮：完全独立于 notch，固定在右上角 -->
+<button id="notch-pause" data-key="PAUSE" title="暂停/继续">&#9208;</button>
 
 <script src="modules/bridge.js"></script>
 <script src="modules/uidata.js"></script>

@@ -27,8 +27,8 @@ var Notch = (function() {
             if (expanded) doCollapse(); else doExpand();
         });
 
-        // 绑定所有 data-key 按钮（toolbar + row1-right + 任何位置）
-        var buttons = notchEl.querySelectorAll('button[data-key]');
+        // 绑定所有 data-key 按钮（notch 内部 + body 级暂停按钮）
+        var buttons = document.querySelectorAll('#notch button[data-key], #notch-pause[data-key]');
         for (var i = 0; i < buttons.length; i++) {
             (function(btn) {
                 btn.addEventListener('click', function() {
@@ -37,15 +37,18 @@ var Notch = (function() {
             })(buttons[i]);
         }
 
-        // submenu hover → 更新 hitRect 以覆盖下拉区域
-        var submenuWrap = document.querySelector('.notch-submenu-wrap');
-        if (submenuWrap) {
-            submenuWrap.addEventListener('mouseenter', function() {
-                setTimeout(reportRect, 50); // 等 CSS :hover 展开后上报
-            });
-            submenuWrap.addEventListener('mouseleave', function() {
-                setTimeout(reportRect, 50);
-            });
+        // 所有 submenu hover → 更新 hitRect 以覆盖下拉区域
+        var submenuWraps = document.querySelectorAll('.notch-submenu-wrap');
+        for (var si = 0; si < submenuWraps.length; si++) {
+            (function(wrap) {
+                wrap.addEventListener('mouseenter', function() {
+                    cancelAutoHide(); // 防止 submenu 展开时 notch 收起
+                    setTimeout(reportRect, 50);
+                });
+                wrap.addEventListener('mouseleave', function() {
+                    setTimeout(reportRect, 50);
+                });
+            })(submenuWraps[si]);
         }
 
         // 暂停按钮已通过上方 notchEl.querySelectorAll('button[data-key]') 统一绑定
@@ -77,12 +80,15 @@ var Notch = (function() {
         drawClock();
     }
 
+    function updateFpsText() {
+        if (fpsEl) fpsEl.textContent = expanded ? fpsValue.toFixed(1) : Math.round(fpsValue);
+    }
     function doExpand() {
         if (expandCooldown) return;
         expanded = true;
         notchEl.classList.add('expanded');
         cancelAutoHide();
-        // toolbar 的 max-width 过渡驱动 pill 宽度变化，150ms 后上报最终 rect
+        updateFpsText();
         setTimeout(reportRect, 180);
     }
     function doCollapse() {
@@ -90,7 +96,7 @@ var Notch = (function() {
         expandCooldown = true;
         setTimeout(function() { expandCooldown = false; }, 600);
         notchEl.classList.remove('expanded');
-        // 过渡完成后上报收起态 rect
+        updateFpsText();
         setTimeout(reportRect, 180);
     }
     function startAutoHide() {
@@ -101,25 +107,41 @@ var Notch = (function() {
         if (autoHideTimer) { clearTimeout(autoHideTimer); autoHideTimer = null; }
     }
     function reportRect() {
-        // 展开时上报整个 #notch rect（包含 submenu 下拉区域），收起时只报 pill
+        // 基础 rect：展开时整个 notch，收起时 pill
         var target = expanded ? notchEl : pillEl;
-        var rect = target.getBoundingClientRect();
-        // submenu 可能超出 notch 边界，取并集
-        if (expanded) {
-            var sub = document.querySelector('.notch-submenu');
-            if (sub && sub.offsetParent !== null) {
-                var sr = sub.getBoundingClientRect();
-                var x1 = Math.min(rect.left, sr.left);
-                var y1 = Math.min(rect.top, sr.top);
-                var x2 = Math.max(rect.right, sr.right);
-                var y2 = Math.max(rect.bottom, sr.bottom);
-                rect = { left: x1, top: y1, width: x2 - x1, height: y2 - y1 };
+        var r = target.getBoundingClientRect();
+        var x1 = r.left, y1 = r.top, x2 = r.right, y2 = r.bottom;
+
+        // 暂停按钮独立于 notch，但需要纳入 hitRect 才能接收点击
+        var pb = document.getElementById('notch-pause');
+        if (pb) {
+            var pr = pb.getBoundingClientRect();
+            if (pr.width > 0) {
+                x1 = Math.min(x1, pr.left);
+                y1 = Math.min(y1, pr.top);
+                x2 = Math.max(x2, pr.right);
+                y2 = Math.max(y2, pr.bottom);
             }
         }
+
+        // 所有可见 submenu 下拉区域
+        var subs = document.querySelectorAll('.notch-submenu');
+        for (var si = 0; si < subs.length; si++) {
+            if (subs[si].offsetParent !== null) {
+                var sr = subs[si].getBoundingClientRect();
+                if (sr.width > 0) {
+                    x1 = Math.min(x1, sr.left);
+                    y1 = Math.min(y1, sr.top);
+                    x2 = Math.max(x2, sr.right);
+                    y2 = Math.max(y2, sr.bottom);
+                }
+            }
+        }
+
         Bridge.send({
             type: 'interactiveRect',
-            x: Math.round(rect.left), y: Math.round(rect.top),
-            w: Math.round(rect.width), h: Math.round(rect.height)
+            x: Math.round(x1), y: Math.round(y1),
+            w: Math.round(x2 - x1), h: Math.round(y2 - y1)
         });
     }
 
@@ -127,63 +149,162 @@ var Notch = (function() {
         fpsValue = data.value || 0;
         gameHour = (typeof data.hour === 'number') ? data.hour : 6;
         if (data.points) fpsPoints = data.points;
-        fpsEl.textContent = Math.round(fpsValue);
+        fpsEl.textContent = expanded ? fpsValue.toFixed(1) : Math.round(fpsValue);
         fpsEl.className = 'notch-fps ' + (
             fpsValue >= 25 ? 'fps-good' : fpsValue >= 18 ? 'fps-warn' : 'fps-bad');
         drawSparkline();
         drawClock();
     }
 
+    // FPS 颜色插值：≥25 绿, 18~25 绿→黄渐变, <18 黄→红渐变
+    function fpsColor(fps, alpha) {
+        var r, g, b;
+        if (fps >= 25) { r = 100; g = 255; b = 100; }
+        else if (fps >= 18) {
+            var t = (fps - 18) / 7; // 0=18fps, 1=25fps
+            r = Math.round(255 - 155 * t); g = Math.round(200 + 55 * t); b = Math.round(0 + 100 * t);
+        } else {
+            var t2 = Math.max(0, fps / 18); // 0=0fps, 1=18fps
+            r = 255; g = Math.round(200 * t2); b = 0;
+        }
+        return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+
     function drawSparkline() {
         var w = sparkCanvas.width, h = sparkCanvas.height;
-        sparkCtx.clearRect(0, 0, w, h);
+        var ctx = sparkCtx;
+        ctx.clearRect(0, 0, w, h);
 
-        // 光照等级背景（暖黄色填充区域图，固定 30 小时窗口，不跟随 FPS 数据量）
+        // === 光照等级背景（昼夜渐变） ===
         if (lightLevels && lightLevels.length >= 24) {
             var startHour = Math.floor(gameHour);
-            var lightPts = 30; // 与 GDI+ SparklinePoints 对齐，始终完整绘制
+            var lightPts = 30;
             var stepX = w / lightPts;
             var stepH = h / MAX_LIGHT;
 
-            sparkCtx.beginPath();
-            sparkCtx.moveTo(0, h); // 左下角
+            // 填充区域
+            ctx.beginPath();
+            ctx.moveTo(0, h);
             for (var i = 0; i < lightPts; i++) {
                 var hourIdx = (startHour + i) % 24;
                 var ly = h - lightLevels[hourIdx] * stepH;
-                sparkCtx.lineTo(i * stepX, ly);
+                ctx.lineTo(i * stepX, ly);
             }
-            sparkCtx.lineTo((lightPts - 1) * stepX, h); // 右下角
-            sparkCtx.closePath();
-            sparkCtx.fillStyle = 'rgba(180,160,60,0.39)';
-            sparkCtx.fill();
+            ctx.lineTo((lightPts - 1) * stepX, h);
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(180,160,60,0.35)';
+            ctx.fill();
 
-            // 顶部轮廓线
-            sparkCtx.beginPath();
+            // 轮廓线
+            ctx.beginPath();
             for (var i = 0; i < lightPts; i++) {
-                var hourIdx = (startHour + i) % 24;
-                var ly = h - lightLevels[hourIdx] * stepH;
-                if (i === 0) sparkCtx.moveTo(0, ly);
-                else sparkCtx.lineTo(i * stepX, ly);
+                var hourIdx2 = (startHour + i) % 24;
+                var ly2 = h - lightLevels[hourIdx2] * stepH;
+                if (i === 0) ctx.moveTo(0, ly2); else ctx.lineTo(i * stepX, ly2);
             }
-            sparkCtx.strokeStyle = 'rgba(200,180,70,0.55)';
-            sparkCtx.lineWidth = 1;
-            sparkCtx.stroke();
+            ctx.strokeStyle = 'rgba(200,180,70,0.5)';
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
         }
 
-        // FPS 曲线
+        // === FPS 曲线 ===
         if (fpsPoints.length < 2) return;
-        var pts = fpsPoints, maxV = 60;
-        for (var i = 0; i < pts.length; i++) { if (pts[i] > maxV) maxV = pts[i]; }
-        maxV = Math.max(maxV, 10);
-        sparkCtx.strokeStyle = 'rgba(100,255,100,0.8)';
-        sparkCtx.lineWidth = 1.5;
-        sparkCtx.beginPath();
-        for (var i = 0; i < pts.length; i++) {
-            var x = (i / (pts.length - 1)) * w;
-            var y = h - (pts[i] / maxV) * h;
-            if (i === 0) sparkCtx.moveTo(x, y); else sparkCtx.lineTo(x, y);
+        var pts = fpsPoints;
+        var n = pts.length;
+
+        // 自适应 Y 轴（对齐 AS2 FPSVisualization 的 min/max + minDiff 策略）
+        var minV = pts[0], maxV = pts[0];
+        for (var i = 1; i < n; i++) {
+            if (pts[i] < minV) minV = pts[i];
+            if (pts[i] > maxV) maxV = pts[i];
         }
-        sparkCtx.stroke();
+        var MIN_DIFF = 5;
+        if (maxV - minV < MIN_DIFF) {
+            var delta = (MIN_DIFF - (maxV - minV)) / 2;
+            minV -= delta;
+            maxV += delta;
+        }
+        var range = maxV - minV;
+        if (range < 1) range = 1;
+
+        // Y 坐标映射
+        function yOf(fps) { return h - ((fps - minV) / range) * h; }
+
+        // 危险区域底色（18fps 以下区域半透明红色）
+        var dangerY = yOf(18);
+        if (dangerY < h) {
+            ctx.fillStyle = 'rgba(255,50,50,0.12)';
+            ctx.fillRect(0, dangerY, w, h - dangerY);
+            // 18fps 分界线
+            ctx.strokeStyle = 'rgba(255,80,80,0.3)';
+            ctx.lineWidth = 0.5;
+            ctx.setLineDash([2, 3]);
+            ctx.beginPath();
+            ctx.moveTo(0, dangerY);
+            ctx.lineTo(w, dangerY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        // 计算所有点坐标
+        var xs = [], ys = [];
+        for (var i = 0; i < n; i++) {
+            xs.push((i / (n - 1)) * w);
+            ys.push(yOf(pts[i]));
+        }
+
+        // 渐变填充（曲线下方，颜色跟随平均帧率）
+        var avgFps = 0;
+        for (var i = 0; i < n; i++) avgFps += pts[i];
+        avgFps /= n;
+
+        ctx.beginPath();
+        ctx.moveTo(xs[0], ys[0]);
+        for (var i = 1; i < n; i++) {
+            // 平滑曲线：用中点作为控制点
+            var cpx = (xs[i - 1] + xs[i]) / 2;
+            var cpy = (ys[i - 1] + ys[i]) / 2;
+            ctx.quadraticCurveTo(xs[i - 1], ys[i - 1], cpx, cpy);
+        }
+        ctx.lineTo(xs[n - 1], ys[n - 1]);
+
+        // 填充到底部
+        var fillGrad = ctx.createLinearGradient(0, 0, 0, h);
+        fillGrad.addColorStop(0, fpsColor(avgFps, 0.3));
+        fillGrad.addColorStop(1, fpsColor(avgFps, 0.02));
+        ctx.lineTo(xs[n - 1], h);
+        ctx.lineTo(xs[0], h);
+        ctx.closePath();
+        ctx.fillStyle = fillGrad;
+        ctx.fill();
+
+        // 主曲线：分段着色
+        for (var i = 1; i < n; i++) {
+            ctx.beginPath();
+            ctx.moveTo(xs[i - 1], ys[i - 1]);
+            var cpx2 = (xs[i - 1] + xs[i]) / 2;
+            var cpy2 = (ys[i - 1] + ys[i]) / 2;
+            ctx.quadraticCurveTo(xs[i - 1], ys[i - 1], cpx2, cpy2);
+            ctx.lineTo(xs[i], ys[i]);
+            ctx.strokeStyle = fpsColor((pts[i - 1] + pts[i]) / 2, 0.9);
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        }
+
+        // 当前值指示器：末端圆点 + 脉冲光晕
+        var lastX = xs[n - 1], lastY = ys[n - 1], lastFps = pts[n - 1];
+        var dotColor = fpsColor(lastFps, 1);
+        // 光晕
+        var glow = ctx.createRadialGradient(lastX, lastY, 0, lastX, lastY, 4);
+        glow.addColorStop(0, fpsColor(lastFps, 0.6));
+        glow.addColorStop(1, fpsColor(lastFps, 0));
+        ctx.fillStyle = glow;
+        ctx.fillRect(lastX - 4, lastY - 4, 8, 8);
+        // 实心圆点
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = dotColor;
+        ctx.fill();
     }
 
     function drawClock() {

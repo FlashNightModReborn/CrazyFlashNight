@@ -410,7 +410,7 @@ namespace CF7Launcher.Guardian
             // 构建 JSON: {type:"fps", value:N, hour:N, points:[...]}
             System.Text.StringBuilder sb = new System.Text.StringBuilder(256);
             sb.Append("{\"type\":\"fps\",\"value\":");
-            sb.Append(Math.Round(_fpsBuffer.Latest));
+            sb.Append(Math.Round(_fpsBuffer.Latest * 10) / 10.0); // 1 位小数
             sb.Append(",\"hour\":");
             sb.Append(_fpsBuffer.GameHour);
             sb.Append(",\"points\":[");
@@ -419,7 +419,7 @@ namespace CF7Launcher.Guardian
             for (int i = start; i < count; i++)
             {
                 if (i > start) sb.Append(',');
-                sb.Append(Math.Round(_fpsBuffer.GetAt(i)));
+                sb.Append(Math.Round(_fpsBuffer.GetAt(i) * 10) / 10.0);
             }
             sb.Append("]}");
             PostToWeb(sb.ToString());
