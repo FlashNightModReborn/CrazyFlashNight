@@ -123,6 +123,10 @@
             if (isExpanded) {
                 isExpanded = false;
                 panel.classList.remove('expanded');
+                // 几何变化 → 同步 InputShield hitRect（等 CSS transition 完成）
+                setTimeout(function() {
+                    if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
+                }, 300);
             }
         }
     }

@@ -170,14 +170,15 @@ MA_EXPORT int ma_bridge_init(const wchar_t* basePath) {
         return -1;
     }
 
-    /* Initialize BGM peak detector node (stereo passthrough) */
+    /* Initialize BGM peak detector node (always stereo passthrough).
+     * process callback hard-codes i*2+0/1 for L/R, so node must be 2ch
+     * regardless of engine output channels. miniaudio auto-converts at
+     * the bus boundary (bgmGroup→peak: downmix, peak→endpoint: upmix). */
     {
         ma_node_config peakCfg;
         ma_uint32 inCh[1], outCh[1];
-        ma_uint32 ch = ma_engine_get_channels(&g_engine);
-        if (ch < 2) ch = 2; /* force stereo for peak L/R */
-        inCh[0] = ch;
-        outCh[0] = ch;
+        inCh[0] = 2;
+        outCh[0] = 2;
         peakCfg = ma_node_config_init();
         peakCfg.vtable = &g_peakVtable;
         peakCfg.pInputChannels = inCh;

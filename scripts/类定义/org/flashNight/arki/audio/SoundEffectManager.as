@@ -41,19 +41,15 @@ class org.flashNight.arki.audio.SoundEffectManager {
                 };
                 self.bgmList = new Object();
                 var musics:Object = data.music;
-                var count:Number = 0;
                 for (var i in musics) {
                     var bgm = musics[i];
                     if (isNaN(bgm.fadeDuration)) bgm.fadeDuration = BGMDefault.fadeDuration;
                     if (isNaN(bgm.baseVolume)) bgm.baseVolume = BGMDefault.baseVolume;
                     self.bgmList[bgm.title] = bgm;
-                    count++;
                 }
-                _root.server.sendSocketMessage("N[BGM] bgmList loaded: " + count + " entries");
             },
             function():Void {
                 trace("[SoundEffectManager] Error loading bgmList XML");
-                _root.server.sendSocketMessage("N[BGM] ERROR: failed to load bgm_list.xml");
             }
         );
     }
@@ -76,30 +72,17 @@ class org.flashNight.arki.audio.SoundEffectManager {
      */
     public function playBGM(title:String, loop:Boolean, volume:Number):Void {
         var bgm = bgmList[title];
-        if (bgm == null) {
-            _root.server.sendSocketMessage("N[BGM] title not in bgmList: " + title);
-            return;
-        }
+        if (bgm == null) return;
         var url:String = bgm.url;
-        if (url == null) {
-            _root.server.sendSocketMessage("N[BGM] url is null for title: " + title);
-            return;
-        }
+        if (url == null) return;
 
         if (url == "stop") {
-            _root.server.sendSocketMessage("N[BGM] stop command for: " + title);
             stopBGM();
             return;
         }
 
-        if (globalVolume == 0 || bgmVolume == 0) {
-            _root.server.sendSocketMessage("N[BGM] muted globalVol=" + globalVolume + " bgmVol=" + bgmVolume + " title=" + title);
-            return;
-        }
-        if (currentBGMUrl == url) {
-            // 同一曲目已在播放，跳过（不打日志避免刷屏）
-            return;
-        }
+        if (globalVolume == 0 || bgmVolume == 0) return;
+        if (currentBGMUrl == url) return;
 
         if (loop !== true) loop = false;
         if (isNaN(volume) || volume < 0) volume = bgm.baseVolume;
@@ -107,12 +90,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
         var finalVolume:Number = volume * bgmVolume / 100;
         var fadeSec:Number = bgm.fadeDuration / 30;
 
-        _root.server.sendSocketMessage("N[BGM] PLAY title=" + title + " url=" + url + " loop=" + loop + " vol=" + (finalVolume / 100) + " fade=" + fadeSec);
-
-        if (!AudioBridge.playBGM(url, loop, finalVolume / 100, fadeSec)) {
-            _root.server.sendSocketMessage("N[BGM] AudioBridge.playBGM returned false (socket down?)");
-            return;
-        }
+        if (!AudioBridge.playBGM(url, loop, finalVolume / 100, fadeSec)) return;
 
         currentBGMBaseVolume = volume;
         currentFadeDuration = bgm.fadeDuration;
@@ -126,7 +104,6 @@ class org.flashNight.arki.audio.SoundEffectManager {
     public function stopBGM():Void {
         var fadeSec:Number = currentFadeDuration / 30;
         if (fadeSec < 1) fadeSec = 1;
-        _root.server.sendSocketMessage("N[BGM] STOP fade=" + fadeSec + " was=" + currentBGMUrl);
         if (AudioBridge.stopBGM(fadeSec)) {
             currentBGMUrl = null;
             org.flashNight.arki.render.FrameBroadcaster.pushUiState("bgm:");
