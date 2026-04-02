@@ -47,7 +47,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
             天气系统: { currentTime: 0, dayNightLightLevels: buildLight() },
             玩家信息界面: { 性能帧率显示器: { 帧率数字: { text: null }, 画布: canvas } },
             显示列表: { 预设任务ID: "TASK", 继续播放:function(){}, 暂停播放:function(){} },
-            UI系统: { 经济面板动效: true }
+            UI系统: {}
         };
     }
 

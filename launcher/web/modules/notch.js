@@ -48,13 +48,7 @@ var Notch = (function() {
             });
         }
 
-        // 暂停按钮（常驻）
-        var pauseBtn = document.getElementById('notch-pause');
-        if (pauseBtn) {
-            pauseBtn.addEventListener('click', function() {
-                Bridge.send({ type: 'click', key: 'PAUSE' });
-            });
-        }
+        // 暂停按钮已通过上方 notchEl.querySelectorAll('button[data-key]') 统一绑定
 
         // 暂停状态（帧数据 p:0/1）
         UiData.on('p', function(val) {

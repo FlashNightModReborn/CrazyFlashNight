@@ -179,7 +179,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 shellSystem.setMaxShellCountLimit(25);
                 root.发射效果上限 = 15;
                 root.显示列表.继续播放(root.显示列表.预设任务ID);
-                root.UI系统.经济面板动效 = true;
+                // root.UI系统.经济面板动效 已移除（经济面板迁移到 WebView2）
 
                 this._host.offsetTolerance = 10;
                 break;
@@ -199,7 +199,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 shellSystem.setMaxShellCountLimit(12);
                 root.发射效果上限 = 10;
                 root.显示列表.继续播放(root.显示列表.预设任务ID);
-                root.UI系统.经济面板动效 = true;
+                // root.UI系统.经济面板动效 已移除（经济面板迁移到 WebView2）
 
                 this._host.offsetTolerance = 30;
                 break;
@@ -218,7 +218,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 shellSystem.setMaxShellCountLimit(12);
                 root.发射效果上限 = 5;
                 root.显示列表.暂停播放(root.显示列表.预设任务ID);
-                root.UI系统.经济面板动效 = false;
+                // root.UI系统.经济面板动效 已移除（经济面板迁移到 WebView2）
 
                 this._host.offsetTolerance = 50;
                 break;
@@ -237,7 +237,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
                 shellSystem.setMaxShellCountLimit(10);
                 root.发射效果上限 = 0;
                 root.显示列表.暂停播放(root.显示列表.预设任务ID);
-                root.UI系统.经济面板动效 = false;
+                // root.UI系统.经济面板动效 已移除（经济面板迁移到 WebView2）
 
                 this._host.offsetTolerance = 80;
         }

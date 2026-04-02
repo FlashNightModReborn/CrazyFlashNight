@@ -32,7 +32,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
             发射效果上限: null,
             天气系统: { lightUpdateThreshold: null },
             显示列表: displayList,
-            UI系统: { 经济面板动效: null }
+            UI系统: {}
         };
 
         var effectSystem:Object = {};
@@ -76,7 +76,6 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(shellSystem.limit == 25, "L0 shellLimit=25");
         out += line(root.发射效果上限 == 15, "L0 发射效果上限=15");
         out += line(displayList.continueCalled && displayList.continueArg == "TASK", "L0 显示列表继续播放");
-        out += line(root.UI系统.经济面板动效 == true, "L0 UI动效=true");
         out += line(host.offsetTolerance == 10, "L0 offsetTolerance=10");
         out += line(trailInstance.q == 0 && clipFrameRenderer.level == 0 && bladeRenderer.level == 0, "L0 渲染器档位=0");
         out += line(weatherParticleRenderer.level == 0 && skyboxRenderer.level == 0 && gwOverlayRenderer.level == 0, "L0 天气渲染器档位=0");
@@ -95,7 +94,6 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(shellSystem.limit == 12, "L1 shellLimit=12");
         out += line(root.发射效果上限 == 10, "L1 发射效果上限=10");
         out += line(displayList.continueCalled && !displayList.pauseCalled, "L1 显示列表继续播放");
-        out += line(root.UI系统.经济面板动效 == true, "L1 UI动效=true");
         out += line(host.offsetTolerance == 30, "L1 offsetTolerance=30");
         out += line(trailInstance.q == 1 && clipFrameRenderer.level == 1 && bladeRenderer.level == 1, "L1 渲染器档位=1");
         out += line(weatherParticleRenderer.level == 1 && skyboxRenderer.level == 1 && gwOverlayRenderer.level == 1, "L1 天气渲染器档位=1");
@@ -110,7 +108,6 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(root.天气系统.lightUpdateThreshold == 0.5, "L2 光照阈值=0.5");
         out += line(shellSystem.limit == 12, "L2 shellLimit=12");
         out += line(displayList.pauseCalled && displayList.pauseArg == "TASK", "L2 显示列表暂停播放");
-        out += line(root.UI系统.经济面板动效 == false, "L2 UI动效=false");
         out += line(host.offsetTolerance == 50, "L2 offsetTolerance=50");
         out += line(trailInstance.q == 2 && clipFrameRenderer.level == 2 && bladeRenderer.level == 2, "L2 渲染器档位=2");
         out += line(weatherParticleRenderer.level == 2 && skyboxRenderer.level == 2 && gwOverlayRenderer.level == 2, "L2 天气渲染器档位=2");
