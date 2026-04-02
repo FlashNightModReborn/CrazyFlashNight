@@ -35,21 +35,38 @@ _root.agent.检测npc状态库文件 = function():Void {
     if (!PathManager.isEnvironmentValid()) {
         return;
     }
-    var fullPath:String = PathManager.resolvePath(_root.agent.REL_NPC_STATE_DB);
-    if (fullPath == null) {
-        return;
-    }
-    var lv:LoadVars = new LoadVars();
     var self:Object = _root.agent;
-    lv.onData = function(raw:String):Void {
-        if (raw != undefined && raw.length > 0) {
-            self.npc_state_db_exists = true;
-        } else {
-            self.npc_state_db_exists = false;
+    var checkFile:Function;
+    // 先检测 npc_state_db.json，不存在则检测 sync_state.json
+    checkFile = function(relPath:String, onDone:Function):Void {
+        var fullPath:String = PathManager.resolvePath(relPath);
+        if (fullPath == null) {
+            onDone(false);
+            return;
         }
+        var lv:LoadVars = new LoadVars();
+        lv.onData = function(raw:String):Void {
+            var exists:Boolean = (raw != undefined && raw.length > 0);
+            onDone(exists);
+        };
+        lv.load(fullPath);
+    };
+    // 第一个回调：检测 npc_state_db.json 结果
+    var onFirstCheck:Function = function(exists:Boolean):Void {
+        if (exists) {
+            self.npc_state_db_exists = true;
+            _root.agent.注册同步轮询();
+        } else {
+            // 第一个不存在，检测第二个
+            checkFile(self.REL_SYNC_STATE, onSecondCheck);
+        }
+    };
+    // 第二个回调：检测 sync_state.json 结果
+    var onSecondCheck:Function = function(exists:Boolean):Void {
+        self.npc_state_db_exists = exists;
         _root.agent.注册同步轮询();
     };
-    lv.load(fullPath);
+    checkFile(self.REL_NPC_STATE_DB, onFirstCheck);
 };
 
 _root.agent.轮询同步状态 = function():Void {
