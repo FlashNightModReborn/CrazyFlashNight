@@ -612,9 +612,25 @@ html, body {
     font:11px/1.2 "Microsoft YaHei",sans-serif;
     color:rgba(255,255,255,0.7);
     white-space:nowrap;
-    overflow:hidden; text-overflow:ellipsis;
+    overflow:hidden;
     flex:1; min-width:0;
     padding:0 4px;
+    /* 容器：marquee 动效的裁剪窗口 */
+}
+.marquee-inner {
+    display:inline-block;
+    white-space:nowrap;
+    pointer-events:none; /* 点击穿透到父元素 */
+}
+#jukebox-title.scrolling .marquee-inner {
+    animation:jukebox-marquee var(--marquee-dur, 6s) linear infinite;
+    /* 左边留一小段静止间隔：在 animation 内通过 pause 实现 */
+}
+@keyframes jukebox-marquee {
+    0%   { transform:translateX(0); }
+    10%  { transform:translateX(0); }       /* 静止片刻 */
+    90%  { transform:translateX(var(--marquee-dist, -50%)); }
+    100% { transform:translateX(var(--marquee-dist, -50%)); } /* 末尾停顿 */
 }
 /* 无 BGM 时标题变暗 */
 #jukebox-panel:not(.has-bgm) #jukebox-title {
@@ -724,6 +740,14 @@ html, body {
     color:rgba(255,255,255,0.8);
     cursor:pointer;
     transition:border-color 120ms, background 120ms;
+    min-width:0; /* 允许 flex 子元素收缩 */
+}
+#jukebox-album-label {
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    min-width:0;
+    flex:1;
 }
 #jukebox-album-trigger:hover {
     background:rgba(255,255,255,0.08);
@@ -791,7 +815,11 @@ html, body {
     cursor:pointer;
     white-space:nowrap;
     overflow:hidden;
-    text-overflow:ellipsis;
+}
+/* 选中/高亮的曲目名如果溢出则滚动 */
+.track-item.active .marquee-inner,
+.track-item:hover .marquee-inner {
+    animation:jukebox-marquee var(--marquee-dur, 5s) linear infinite;
 }
 .track-item:hover {
     background:rgba(102,204,255,0.1);
@@ -893,6 +921,9 @@ html, body {
 }
 #jukebox-pause-btn.paused {
     color:rgba(255,180,80,0.9);
+}
+#jukebox-stop-btn {
+    font-size:9px; /* ■ 稍小一点更协调 */
 }
 
 /* ── 帮助弹窗 ── */

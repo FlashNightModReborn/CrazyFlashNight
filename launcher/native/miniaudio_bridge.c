@@ -488,20 +488,24 @@ MA_EXPORT void ma_bridge_bgm_set_looping(int looping) {
 MA_EXPORT int ma_bridge_bgm_pause(void) {
     int i;
     if (!g_initialized) return -1;
-    for (i = 0; i < 2; i++) {
-        if (g_bgmLoaded[i]) ma_sound_stop(&g_bgm[i]);
+    /* 停止 active slot + 强制终止旧 slot 的 crossfade 尾巴（如果还在跑） */
+    if (g_bgmLoaded[g_bgmActive])
+        ma_sound_stop(&g_bgm[g_bgmActive]);
+    /* 旧 slot：如果仍在播放（crossfade 尾巴），直接停掉并清理 stop-time */
+    {
+        int old = 1 - g_bgmActive;
+        if (g_bgmLoaded[old] && ma_sound_is_playing(&g_bgm[old])) {
+            ma_sound_set_stop_time_in_milliseconds(&g_bgm[old], 0);
+            ma_sound_stop(&g_bgm[old]);
+        }
     }
     return 0;
 }
 
 MA_EXPORT int ma_bridge_bgm_resume(void) {
-    int i;
-    if (!g_initialized) return -1;
-    /* 恢复所有已加载的 slot（与 pause 对称，保留 crossfade 语义） */
-    for (i = 0; i < 2; i++) {
-        if (g_bgmLoaded[i]) ma_sound_start(&g_bgm[i]);
-    }
-    return 0;
+    if (!g_initialized || !g_bgmLoaded[g_bgmActive]) return -1;
+    /* 只恢复 active slot — 旧 slot 的 crossfade 已在 pause 时终结 */
+    return ma_sound_start(&g_bgm[g_bgmActive]) == MA_SUCCESS ? 0 : -2;
 }
 
 /* ========== Global ========== */

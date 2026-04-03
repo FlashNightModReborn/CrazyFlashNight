@@ -87,6 +87,50 @@
         return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
     }
 
+    /**
+     * 设置 marquee 滚动效果：文本超出容器时自动水平滚动。
+     * 使用 ResizeObserver 在容器尺寸确定后才测量，不依赖定时器。
+     */
+    function setupMarquee(el, text, speed) {
+        if (speed == null) speed = 25;
+        el.innerHTML = '<span class="marquee-inner">' + escHtml(text) + '</span>';
+        el.classList.remove('scrolling');
+        el.style.removeProperty('--marquee-dist');
+        el.style.removeProperty('--marquee-dur');
+        // 存储 speed 供 observer 回调使用
+        el._marqueeSpeed = speed;
+        // 注册 observer（首次）
+        if (!el._marqueeObserver) {
+            el._marqueeObserver = new ResizeObserver(function() {
+                checkMarqueeOverflow(el);
+            });
+            el._marqueeObserver.observe(el);
+        }
+        // 立即检查一次（容器尺寸可能已经正确）
+        checkMarqueeOverflow(el);
+    }
+
+    function checkMarqueeOverflow(el) {
+        var inner = el.querySelector('.marquee-inner');
+        if (!inner) return;
+        var overflow = inner.scrollWidth - el.clientWidth;
+        if (overflow > 2) {
+            var speed = el._marqueeSpeed || 25;
+            var dur = Math.max(4, overflow / speed);
+            el.style.setProperty('--marquee-dist', '-' + overflow + 'px');
+            el.style.setProperty('--marquee-dur', dur + 's');
+            if (!el.classList.contains('scrolling')) {
+                el.classList.add('scrolling');
+            }
+        } else {
+            el.classList.remove('scrolling');
+        }
+    }
+
+    function escHtml(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
     // ── 折叠/展开 ──
     toggleBtn.addEventListener('click', function() {
         isExpanded = !isExpanded;
@@ -126,11 +170,11 @@
         if (isExpanded) render();
     }
 
-    // ── 设置标题 ──
+    // ── 设置标题（含 marquee 溢出检测）──
     function setTitle(title) {
         var oldTitle = bgmTitle;
         bgmTitle = title || '';
-        titleEl.textContent = bgmTitle || '未播放';
+        setupMarquee(titleEl, bgmTitle || '未播放', 18);
         titleEl.title = bgmTitle;
 
         var hadBgm = panel.classList.contains('has-bgm');
@@ -344,7 +388,7 @@
         for (var i = 0; i < source.length; i++) {
             var div = document.createElement('div');
             div.className = 'track-item';
-            div.textContent = source[i].title;
+            div.innerHTML = '<span class="marquee-inner">' + escHtml(source[i].title) + '</span>';
             div.setAttribute('data-title', source[i].title);
             if (source[i].title === bgmTitle) div.classList.add('active');
             div.addEventListener('click', onTrackClick);
@@ -353,7 +397,12 @@
     }
 
     function onTrackClick(e) {
-        var title = e.target.getAttribute('data-title');
+        // 向上查找 data-title（点击的可能是内部的 span.marquee-inner）
+        var el = e.target;
+        while (el && !el.getAttribute('data-title')) {
+            el = el.parentElement;
+        }
+        var title = el ? el.getAttribute('data-title') : null;
         if (title) {
             Bridge.send({type: 'jukebox', cmd: 'play', title: title});
         }
@@ -377,6 +426,7 @@
     // ══════════════════════════════════════════════
 
     var pauseBtn = document.getElementById('jukebox-pause-btn');
+    var stopBtn  = document.getElementById('jukebox-stop-btn');
     var isPaused = false;
 
     if (pauseBtn) {
@@ -385,6 +435,18 @@
             pauseBtn.classList.toggle('paused', isPaused);
             pauseBtn.textContent = isPaused ? '\u25B6' : '\u2016'; // ▶ or ‖
             Bridge.send({type: 'jukebox', cmd: isPaused ? 'pause' : 'resume'});
+        });
+    }
+
+    if (stopBtn) {
+        stopBtn.addEventListener('click', function() {
+            // 停止点歌器，恢复默认场景 BGM
+            isPaused = false;
+            if (pauseBtn) {
+                pauseBtn.classList.remove('paused');
+                pauseBtn.textContent = '\u2016';
+            }
+            Bridge.send({type: 'jukebox', cmd: 'stop'});
         });
     }
 
