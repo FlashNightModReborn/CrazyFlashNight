@@ -123,7 +123,7 @@ launcher/
 │   ├── Services/
 │   │   └── DirectoryWatcherService.cs     通用文件监听服务（去抖 + 增量回调）
 │   ├── Tasks/
-│   │   ├── AudioTask.cs                   BGM JSON handler + SFX 快车道批量解析
+│   │   ├── AudioTask.cs                   BGM JSON handler (play/stop/vol/seek/loop) + SFX 快车道
 │   │   ├── FrameTask.cs                   帧数据处理（快车道 HandleRaw + JSON 回退）
 │   │   ├── GomokuTask.cs                  五子棋 AI (外部 rapfi 引擎, async)
 │   │   └── ToastTask.cs                   UI toast 通知 (fire-and-forget)
@@ -134,19 +134,21 @@ launcher/
 │       └── RenderNativeMethods.cs         PrintWindow/BitBlt P/Invoke
 ├── native/
 │   ├── miniaudio.h                        miniaudio 单头文件库 (Unlicense)
-│   ├── miniaudio_bridge.c                 C 导出层 (BGM crossfade, SFX preload, peak detector, wchar_t)
+│   ├── miniaudio_bridge.c                 C 导出层 (BGM crossfade/seek/pause/looping, SFX preload, peak)
 │   └── build.bat                          MSVC 自动探测 + 编译脚本
 ├── web/                                   WebView2 overlay 前端资源
-│   ├── overlay.html                       DOM 结构 (Toast + Notch + Jukebox)
+│   ├── overlay.html                       DOM 结构 (Toast + Notch + Jukebox + 帮助弹窗)
 │   ├── css/overlay.css                    样式 + 动效
+│   ├── lib/
+│   │   └── marked.min.js                  Markdown→HTML 渲染器 (MIT, ~40KB min)
 │   └── modules/
 │       ├── bridge.js                      C# ↔ JS 消息桥
 │       ├── uidata.js                      帧同步 UI 状态分发 (KV 格式)
 │       ├── toast.js                       Toast 消息 (Flash HTML 白名单过滤)
 │       ├── sparkline.js                   FPS 折线图渲染 (DPR 感知, LOD)
-│       ├── notch.js                       Notch UI (FPS/sparkline/clock/toolbar)
+│       ├── notch.js                       Notch UI (FPS/sparkline/clock/toolbar + hitRect 上报)
 │       ├── currency.js                    经济面板 (金钱/K点 动画)
-│       └── jukebox.js                     BGM 可视化 (波形/标题/进度)
+│       └── jukebox.js                     BGM 点歌器 (专辑浏览/选曲/波形/seek/暂停/设置/帮助)
 ├── bin/Release/                           编译输出
 ├── packages/                              NuGet 包缓存
 └── tools/

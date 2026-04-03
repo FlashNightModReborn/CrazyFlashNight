@@ -431,13 +431,10 @@ class org.flashNight.arki.audio.SoundEffectManager {
         _playMode = mode;
         trace("[BGM] playMode=" + _playMode);
         org.flashNight.arki.render.FrameBroadcaster.pushUiState("jbm:" + _playMode);
-        // 如果 jukebox 正在播放，切换 loop 状态
-        if (_jukeboxActive) {
+        // 如果 jukebox 正在播放，运行时更新 loop（不重启播放）
+        if (_jukeboxActive && _bgmSource == "jukebox") {
             _jukeboxLoop = (_playMode == "singleLoop");
-            // 需要通知 native 层更新 loop（重新播放同一首）
-            if (currentBGMUrl != null) {
-                doPlayBGM(_jukeboxTitle, _jukeboxLoop, null);
-            }
+            AudioBridge.setBGMLooping(_jukeboxLoop);
         }
     }
 

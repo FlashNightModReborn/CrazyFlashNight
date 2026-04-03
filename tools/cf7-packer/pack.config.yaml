@@ -66,15 +66,18 @@ layers:
       - "arts/原版素材库-子弹_横向拖尾联弹.swf"
 
   - name: sounds
-    description: "音效导出文件 + manifest + BGM 音乐"
+    description: "音效导出文件 + manifest + BGM 音乐（含玩家自定义）"
     source: "sounds/"
     include:
       # SFX：FFDec 导出的独立音频文件（文件名即 linkageId，launcher 启动时扫描目录加载）
       - "export/**/*"
-      # BGM 配置与音乐文件
+      # BGM 配置与音乐文件（MusicCatalog 自动发现所有子目录下的音频）
       - "bgm_list.xml"
+      - "README.md"
       - "**/*.mp3"
       - "**/*.wav"
+      - "**/*.ogg"
+      - "**/*.flac"
     exclude:
       # XFL 源工程（运行时不需要，音频已通过 export/ 提供）
       - "*/LIBRARY/**"

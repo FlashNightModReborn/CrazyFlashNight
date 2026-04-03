@@ -476,16 +476,27 @@ MA_EXPORT int ma_bridge_bgm_seek(float seconds) {
     return ma_sound_seek_to_second(&g_bgm[g_bgmActive], seconds) == MA_SUCCESS ? 0 : -2;
 }
 
+/* ========== BGM set looping (runtime) ========== */
+
+MA_EXPORT void ma_bridge_bgm_set_looping(int looping) {
+    if (!g_initialized || !g_bgmLoaded[g_bgmActive]) return;
+    ma_sound_set_looping(&g_bgm[g_bgmActive], looping ? MA_TRUE : MA_FALSE);
+}
+
 /* ========== BGM pause/resume ========== */
 
 MA_EXPORT int ma_bridge_bgm_pause(void) {
-    if (!g_initialized || !g_bgmLoaded[g_bgmActive]) return -1;
-    ma_sound_stop(&g_bgm[g_bgmActive]);
+    int i;
+    if (!g_initialized) return -1;
+    for (i = 0; i < 2; i++) {
+        if (g_bgmLoaded[i]) ma_sound_stop(&g_bgm[i]);
+    }
     return 0;
 }
 
 MA_EXPORT int ma_bridge_bgm_resume(void) {
     if (!g_initialized || !g_bgmLoaded[g_bgmActive]) return -1;
+    /* 只恢复 active slot — 旧 slot 已在 crossfade 中淡出完毕 */
     return ma_sound_start(&g_bgm[g_bgmActive]) == MA_SUCCESS ? 0 : -2;
 }
 

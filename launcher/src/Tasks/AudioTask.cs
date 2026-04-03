@@ -50,6 +50,9 @@ namespace CF7Launcher.Tasks
                 case "bgm_seek":
                     HandleBgmSeek(message);
                     break;
+                case "bgm_loop":
+                    HandleBgmLoop(message);
+                    break;
                 default:
                     LogManager.Log("[Audio] Unknown cmd: " + cmd);
                     break;
@@ -100,6 +103,12 @@ namespace CF7Launcher.Tasks
         {
             float vol = msg.Value<float?>("vol") ?? 1.0f;
             AudioEngine.ma_bridge_set_master_volume(vol);
+        }
+
+        private void HandleBgmLoop(JObject msg)
+        {
+            int loop = msg.Value<int?>("loop") ?? 1;
+            AudioEngine.ma_bridge_bgm_set_looping(loop);
         }
 
         private void HandleBgmSeek(JObject msg)

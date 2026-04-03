@@ -101,4 +101,13 @@ class org.flashNight.arki.audio.AudioBridge {
         if (_sm == null || !_sm.isSocketConnected) return;
         _sm.sendSocketMessage('{"task":"audio","cmd":"master_vol","vol":' + vol + '}');
     }
+
+    /**
+     * 运行时修改当前 BGM 的循环状态（不重启播放）
+     * @param loop   true=循环, false=不循环
+     */
+    public static function setBGMLooping(loop:Boolean):Void {
+        if (_sm == null || !_sm.isSocketConnected) return;
+        _sm.sendSocketMessage('{"task":"audio","cmd":"bgm_loop","loop":' + (loop ? 1 : 0) + '}');
+    }
 }
