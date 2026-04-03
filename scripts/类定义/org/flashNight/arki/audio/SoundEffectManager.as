@@ -68,10 +68,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
         _suppressedStage = null;
 
         loadBGMList();
-
-        // 显式推送默认音量到 native 层（无存档的新会话需要）
-        AudioBridge.setMasterVolume(globalVolume / 100);
-        AudioBridge.setBGMVolume(bgmVolume / 100);
+        // 默认音量由 Launcher 侧 Program.cs 在 AudioEngine.Init 后直接设（不依赖 socket）
     }
 
     public function loadBGMList():Void {
@@ -527,13 +524,10 @@ class org.flashNight.arki.audio.SoundEffectManager {
         if (loop !== true) loop = false;
         if (isNaN(volume) || volume < 0) volume = bgm.baseVolume;
 
-        // 即使音量为 0 也更新状态（静音不等于不切歌），只是不发 native 播放指令
-        var muted:Boolean = (globalVolume == 0 || bgmVolume == 0);
-        if (!muted) {
-            var finalVolume:Number = volume * bgmVolume / 100;
-            var fadeSec:Number = bgm.fadeDuration / 30;
-            if (!AudioBridge.playBGM(url, loop, finalVolume / 100, fadeSec)) return false;
-        }
+        var finalVolume:Number = volume * bgmVolume / 100;
+        var fadeSec:Number = bgm.fadeDuration / 30;
+        // 不跳过音量=0 的情况：native 层自然静音，恢复音量时通过 bgm_vol/master_vol 生效
+        if (!AudioBridge.playBGM(url, loop, finalVolume / 100, fadeSec)) return false;
 
         currentBGMBaseVolume = volume;
         currentFadeDuration = bgm.fadeDuration;

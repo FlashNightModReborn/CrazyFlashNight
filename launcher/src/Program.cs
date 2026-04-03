@@ -93,6 +93,10 @@ class Program
         CF7Launcher.Audio.AudioEngine.Init(projectRoot);
         CF7Launcher.Audio.AudioEngine.PreloadFromDirectories(projectRoot);
 
+        // 默认音量（直接 P/Invoke，不依赖 Flash socket）
+        // Flash 存档加载后会通过 setGlobalVolume/setBGMVolume 覆盖
+        CF7Launcher.Audio.AudioEngine.ma_bridge_set_master_volume(0.5f);  // 50%
+
         // === 音乐目录（扫描 + 热加载监听）===
         var musicCatalog = new CF7Launcher.Audio.MusicCatalog(projectRoot);
 
