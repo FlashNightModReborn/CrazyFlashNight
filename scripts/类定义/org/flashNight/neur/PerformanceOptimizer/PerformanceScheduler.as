@@ -39,8 +39,13 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     private var _lastRemoteMs:Number;
     private static var REMOTE_TIMEOUT_MS:Number = 10000;
 
+    // --- 前馈 hold 窗口（关卡脚本 setPerformanceLevel 用）---
+    // hold 期间挂起远程模式，到期后自动恢复
+    private var _holdUntilMs:Number;
+    private var _wasRemoteBeforeHold:Boolean;  // hold 开始时是否处于远程模式
+
     // --- 本地后备（断连时使用）---
-    private var _fallbackUpgradeCount:Number;  // 升级确认计数
+    private var _fallbackUpgradeCount:Number;
     private var _panicFPS:Number;
 
     /**
@@ -71,6 +76,8 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._lastAppliedSoftU = 0;
         this._remoteControlled = false;
         this._lastRemoteMs = 0;
+        this._holdUntilMs = 0;
+        this._wasRemoteBeforeHold = false;
         this._fallbackUpgradeCount = 0;
         this._panicFPS = 5;
     }
@@ -94,6 +101,26 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         // 测量：区间平均 FPS
         var actualFPS:Number = sampler.measure(currentTime, currentLevel);
         this._actualFPS = actualFPS;
+
+        // ── hold 窗口到期检查（前馈 setPerformanceLevel 挂起了远程模式）──
+        if (this._holdUntilMs > 0 && currentTime >= this._holdUntilMs) {
+            this._holdUntilMs = 0;
+            // hold 到期: 如果之前是远程模式，恢复它（下一条 P 指令会接管）
+            if (this._wasRemoteBeforeHold) {
+                this._remoteControlled = true;
+                this._lastRemoteMs = currentTime;
+            }
+        }
+
+        // ── hold 窗口期间: 只采样+广播，不决策（远程和本地都不干预）──
+        if (this._holdUntilMs > 0) {
+            sampler.resetInterval(currentTime, currentLevel);
+            var fpsStrH:String = String(Math.round(actualFPS * 10) / 10);
+            var hourStrH:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
+            fpsStrH += "|" + hourStrH + "|" + String(currentLevel);
+            FrameBroadcaster.setFpsPayload(fpsStrH);
+            return;
+        }
 
         // ── 远程控制模式 ──────────────────────────
         if (this._remoteControlled) {
@@ -160,23 +187,42 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     // 前馈控制接口
     // ------------------------------------------------------------------
 
+    /**
+     * 前馈控制（关卡脚本调用）。
+     * 在远程主控模式下: 挂起远程模式 holdSec 秒，期间 C# P 指令被 applyFromLauncher 接收
+     * 但 evaluate() 的 hold 分支会阻止远程模式重新生效，hold 到期后自动恢复。
+     */
     public function setPerformanceLevel(level:Number, holdSec:Number, currentTime:Number):Void {
         level = Math.round(level);
         var host:Object = this._host;
         var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
         level = Math.max(cap, Math.min(level, 1));
 
+        if (holdSec == undefined || holdSec <= 0) {
+            holdSec = 5;
+        }
+
+        if (currentTime == undefined) {
+            currentTime = getTimer();
+        }
+
+        // 挂起远程模式（如果当前是远程主控）
+        this._wasRemoteBeforeHold = this._remoteControlled;
+        this._remoteControlled = false;
+
+        // 应用前馈指令
         var appliedSoftU:Number = (level > 0) ? 1.0 : 0.0;
         this._actuator.setPresetQuality(this._presetQuality);
         this._actuator.apply(level, appliedSoftU);
         this._performanceLevel = level;
         this._lastAppliedSoftU = appliedSoftU;
 
-        if (currentTime == undefined) {
-            currentTime = getTimer();
-        }
+        // 建立 hold 保护窗口
+        this._holdUntilMs = currentTime + holdSec * 1000;
         this._sampler.resetInterval(currentTime, level);
+        this._fallbackUpgradeCount = 0;
 
+        // FPS 载荷广播
         var root:Object = this._env.root;
         var estimatedFPS:Number = this._frameRate - level * 2;
         this._actualFPS = estimatedFPS;
@@ -201,6 +247,10 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
      */
     public function onSceneChanged():Void {
         var now:Number = getTimer();
+
+        // 清除 hold 窗口（场景切换后不延续旧 hold）
+        this._holdUntilMs = 0;
+        this._wasRemoteBeforeHold = false;
 
         var host:Object = this._host;
         var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;

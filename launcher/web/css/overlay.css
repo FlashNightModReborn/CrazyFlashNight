@@ -169,8 +169,8 @@ html, body {
                background 300ms, color 300ms, transform 300ms;
 }
 .perf-L0 { color:#66ff66; background:rgba(102,255,102,0.12); }
-.perf-L1 { color:#66ccff; background:rgba(102,204,255,0.12); }
-.perf-L2 { color:#ffcc00; background:rgba(255,204,0,0.15); }
+.perf-L1 { color:#ffaa00; background:rgba(255,170,0,0.15); }
+.perf-L2 { color:#ff6633; background:rgba(255,102,51,0.15); }
 .perf-L3 { color:#ff4444; background:rgba(255,68,68,0.18); }
 /* badge 等级变化 pulse 动画 */
 .perf-badge.badge-pulse {
