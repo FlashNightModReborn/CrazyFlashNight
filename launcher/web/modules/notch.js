@@ -223,6 +223,9 @@ var Notch = (function() {
         // 点歌器设置下拉菜单（position:absolute，超出面板区域）
         var jbsm = document.getElementById('jukebox-settings-menu');
         if (jbsm && jbsm.offsetParent !== null) pushRect(jbsm);
+        // 帮助弹窗
+        var jbhm = document.getElementById('jukebox-help-modal');
+        if (jbhm && jbhm.classList.contains('visible')) pushRect(jbhm);
         var subs = document.querySelectorAll('.notch-submenu');
         for (var si = 0; si < subs.length; si++) {
             if (subs[si].offsetParent !== null) pushRect(subs[si]);

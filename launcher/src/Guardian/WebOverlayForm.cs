@@ -797,6 +797,48 @@ namespace CF7Launcher.Guardian
                     _manualStop = true;
                     SendGameCommand("jukeboxStop");
                     break;
+                case "loadHelp":
+                    LoadAndPushHelp();
+                    break;
+            }
+        }
+
+        private void LoadAndPushHelp()
+        {
+            try
+            {
+                // 读取 sounds/README.md
+                string readmePath = System.IO.Path.Combine(
+                    System.IO.Path.GetDirectoryName(typeof(Program).Assembly.Location),
+                    "sounds", "README.md");
+                if (!System.IO.File.Exists(readmePath))
+                {
+                    PostToWeb("{\"type\":\"helpText\",\"text\":\"帮助文件未找到\"}");
+                    return;
+                }
+                string text = System.IO.File.ReadAllText(readmePath, System.Text.Encoding.UTF8);
+                // 转义为 JSON 字符串
+                System.Text.StringBuilder sb = new System.Text.StringBuilder(text.Length + 64);
+                sb.Append("{\"type\":\"helpText\",\"text\":\"");
+                for (int i = 0; i < text.Length; i++)
+                {
+                    char c = text[i];
+                    switch (c)
+                    {
+                        case '\\': sb.Append("\\\\"); break;
+                        case '"': sb.Append("\\\""); break;
+                        case '\n': sb.Append("\\n"); break;
+                        case '\r': break; // skip
+                        case '\t': sb.Append("\\t"); break;
+                        default: sb.Append(c); break;
+                    }
+                }
+                sb.Append("\"}");
+                PostToWeb(sb.ToString());
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Jukebox] LoadHelp error: " + ex.Message);
             }
         }
 

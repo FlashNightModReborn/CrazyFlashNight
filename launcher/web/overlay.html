@@ -92,6 +92,7 @@
                 <select id="jukebox-album-select">
                     <option value="">全部</option>
                 </select>
+                <div id="jukebox-help-btn" title="帮助">?</div>
                 <div id="jukebox-settings">
                     <div id="jukebox-settings-toggle" title="设置">&#9881;</div>
                     <div id="jukebox-settings-menu">
@@ -111,6 +112,12 @@
     </div>
 </div>
 
+<div id="jukebox-help-modal">
+    <div id="jukebox-help-content"></div>
+    <div id="jukebox-help-close">关闭</div>
+</div>
+
+<script src="lib/marked.min.js"></script>
 <script src="modules/bridge.js"></script>
 <script src="modules/uidata.js"></script>
 <script src="modules/toast.js"></script>

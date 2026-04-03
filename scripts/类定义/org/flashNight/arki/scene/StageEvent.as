@@ -64,7 +64,7 @@ class org.flashNight.arki.scene.StageEvent {
         if(this.bgm.Command == "play"){
             _root.soundEffectManager.playBGMWithSource(this.bgm.Title, "stage", this.bgm.Loop, null);
         }else if (this.bgm.Command == "stop"){
-            _root.soundEffectManager.stopBGM();
+            _root.soundEffectManager.stopBGMWithSource("stage");
         }
 
         // 对话（目前跟随事件只能由对话触发）

@@ -118,7 +118,10 @@ launcher/
 │   │   ├── PortAllocator.cs               种子 "1192433993" 确定性端口分配
 │   │   └── FlashPolicyHandler.cs          Flash 跨域策略
 │   ├── Audio/
-│   │   └── AudioEngine.cs                 miniaudio P/Invoke + 目录扫描预加载
+│   │   ├── AudioEngine.cs                 miniaudio P/Invoke (play/stop/seek/peak)
+│   │   └── MusicCatalog.cs                BGM 目录：XML解析 + 文件系统扫描 + 热加载
+│   ├── Services/
+│   │   └── DirectoryWatcherService.cs     通用文件监听服务（去抖 + 增量回调）
 │   ├── Tasks/
 │   │   ├── AudioTask.cs                   BGM JSON handler + SFX 快车道批量解析
 │   │   ├── FrameTask.cs                   帧数据处理（快车道 HandleRaw + JSON 回退）
@@ -259,13 +262,19 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 WinForms Pane
 音频播放从 Flash Sound API 完全迁移到 C# launcher 的 native DLL，Flash 侧仅发送播放指令。
 
 **架构**：
-- `miniaudio_bridge.c` → `miniaudio.dll`: 单文件 C 库，WASAPI shared mode
-- `AudioEngine.cs`: P/Invoke 封装 + 启动时目录扫描预加载 SFX
-- `AudioTask.cs`: BGM JSON handler + SFX 快车道批量解析
+- `miniaudio_bridge.c` → `miniaudio.dll`: 单文件 C 库，WASAPI shared mode，支持 play/stop/seek/peak
+- `AudioEngine.cs`: P/Invoke 封装 (bgm_play/stop/seek/get_peak/get_cursor/get_length/is_playing)
+- `AudioTask.cs`: BGM JSON handler (bgm_play/stop/vol/seek) + SFX 快车道批量解析
+- `MusicCatalog.cs`: BGM 曲库管理，合并 bgm_list.xml + 文件系统自动发现 + FileSystemWatcher 热加载
+- `DirectoryWatcherService.cs`: 通用文件监听服务（500ms 去抖，可复用于 mod/皮肤等场景）
 
-**BGM**：双 `ma_sound` 实例 ping-pong crossfade。切换时旧曲淡出与新曲淡入重叠进行，基于 `ma_engine_get_time_in_milliseconds` 全局时钟调度。`stopBGM` 使用 `ma_sound_stop_with_fade_in_milliseconds`，操作两个槽位确保无残留。注意 miniaudio 的 base volume 与 fader 是相乘关系，crossfade 路径中 `ma_sound_set_volume` 必须设为 1.0（由 fader 独立控制 0→1 淡入）。
+**BGM 专辑系统**：`MusicCatalog` 启动时解析 `sounds/bgm_list.xml`（手工注册曲目）并扫描 `sounds/*/` 子目录发现未注册的音频文件（MP3/WAV/OGG/FLAC），按文件夹名归类为专辑。合并后的完整目录在 Flash 业务就绪后推送（`OnClientReady` 事件），热加载增量通过 `catalogUpdate` 推送。玩家只需在 `sounds/` 下新建文件夹投放音频，游戏运行中即可识别。详细说明见 `sounds/README.md`。
 
-**BGM 可视化**：`PeakDetector` 自定义节点（`ma_node_vtable` passthrough）插入 bgmGroup → engine endpoint 之间，实时采样 L/R peak。C# 60ms 轮询 `ma_bridge_bgm_get_peak/cursor/length/is_playing` → WebView2 `PostWebMessageAsJson` → `jukebox.js` 渲染滚动波形 + 进度条。曲目标题由 AS2 `pushUiState("bgm:title")` 经 UiData 通道推送。
+**BGM 优先级**：Flash 侧 `SoundEffectManager` 实现 3 级优先级状态机（stage > jukebox > scene），支持 override 模式（jukebox > stage > scene）。被高优先级抢占的 BGM 意图记录在 `_suppressedScene/_suppressedStage` 中，恢复时精确还原（含 album 模式和 loop 语义）。
+
+**BGM**：双 `ma_sound` 实例 ping-pong crossfade。切换时旧曲淡出与新曲淡入重叠进行，基于 `ma_engine_get_time_in_milliseconds` 全局时钟调度。`stopBGM` 使用 `ma_sound_stop_with_fade_in_milliseconds`，操作两个槽位确保无残留。注意 miniaudio 的 base volume 与 fader 是相乘关系，crossfade 路径中 `ma_sound_set_volume` 必须设为 1.0（由 fader 独立控制 0→1 淡入）。Seek 使用 `ma_sound_seek_to_second()`（基于声源自身采样率换算，不依赖 engine sample rate）。
+
+**BGM 可视化 + 点歌器**：`PeakDetector` 自定义节点（`ma_node_vtable` passthrough）插入 bgmGroup → engine endpoint 之间，实时采样 L/R peak。C# 60ms 轮询 `ma_bridge_bgm_get_peak/cursor/length/is_playing` → WebView2 `PostWebMessageAsJson` → `jukebox.js` 渲染滚动波形 + 进度条（可拖拽 seek）。点歌器面板含专辑浏览、选曲播放、设置菜单（覆盖关卡BGM / 真随机）和帮助按钮。曲目标题由 AS2 `pushUiState("bgm:title")` 经 UiData 通道推送，设置状态由 `jbo:/jbr:` 通道同步。
 
 **SFX**：启动时扫描 `sounds/export/{武器,特效,人物}/` 目录，文件名即 linkageId，覆盖顺序武器→特效→人物（后覆盖前）。Flash 侧帧内累积，帧末由 FrameBroadcaster 合批发送 `S{id1}|{id2}|{id3}` 快车道消息。native 层 90ms 去重。
 

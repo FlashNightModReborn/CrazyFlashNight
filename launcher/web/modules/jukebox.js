@@ -378,6 +378,143 @@
         }
     }
 
+    // ══════════════════════════════════════════════
+    // ██  帮助按钮
+    // ══════════════════════════════════════════════
+
+    var helpBtn   = document.getElementById('jukebox-help-btn');
+    var helpModal = document.getElementById('jukebox-help-modal');
+    var helpContent = document.getElementById('jukebox-help-content');
+    var helpClose = document.getElementById('jukebox-help-close');
+    var helpLoaded = false;
+
+    if (helpBtn && helpModal) {
+        helpBtn.addEventListener('click', function() {
+            if (!helpLoaded) {
+                // 加载 sounds/README.md（WebView 的 base URL 是 launcher/web/）
+                // 通过 Bridge 请求 Launcher 读取文件
+                helpContent.textContent = '加载中...';
+                Bridge.send({type: 'jukebox', cmd: 'loadHelp'});
+            }
+            helpModal.classList.toggle('visible');
+            setTimeout(function() {
+                if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
+            }, 50);
+        });
+        helpClose.addEventListener('click', function() {
+            helpModal.classList.remove('visible');
+            setTimeout(function() {
+                if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
+            }, 50);
+        });
+
+        // 接收帮助文本
+        Bridge.on('helpText', function(data) {
+            helpLoaded = true;
+            if (typeof marked !== 'undefined' && marked.parse) {
+                helpContent.innerHTML = marked.parse(data.text || '');
+            } else {
+                helpContent.innerHTML = renderMiniMd(data.text || '');
+            }
+        });
+    }
+
+    // ══════════════════════════════════════════════
+    // ██  轻量 Markdown → HTML（仅支持使用的子集）
+    // ══════════════════════════════════════════════
+
+    function esc(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function renderMiniMd(src) {
+        var lines = src.split('\n');
+        var html = [];
+        var inCode = false;
+        var inTable = false;
+
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+
+            // 代码块
+            if (line.indexOf('```') === 0) {
+                if (inCode) {
+                    html.push('</code></pre>');
+                    inCode = false;
+                } else {
+                    inCode = true;
+                    html.push('<pre class="md-code"><code>');
+                }
+                continue;
+            }
+            if (inCode) {
+                html.push(esc(line) + '\n');
+                continue;
+            }
+
+            // 空行
+            if (line.replace(/\s/g, '') === '') {
+                if (inTable) { html.push('</table>'); inTable = false; }
+                html.push('<div class="md-spacer"></div>');
+                continue;
+            }
+
+            // 表格分隔行
+            if (/^\|[\s\-:]+\|/.test(line)) continue;
+
+            // 表格行
+            if (line.charAt(0) === '|') {
+                var cells = line.split('|');
+                var row = '<tr>';
+                for (var c = 1; c < cells.length - 1; c++) {
+                    var tag = !inTable ? 'th' : 'td';
+                    row += '<' + tag + '>' + esc(cells[c].replace(/^\s+|\s+$/g, '')) + '</' + tag + '>';
+                }
+                row += '</tr>';
+                if (!inTable) { html.push('<table class="md-table">'); inTable = true; }
+                html.push(row);
+                continue;
+            }
+            if (inTable) { html.push('</table>'); inTable = false; }
+
+            // 标题
+            var hm = line.match(/^(#{1,3})\s+(.*)/);
+            if (hm) {
+                var lvl = hm[1].length;
+                html.push('<h' + (lvl + 2) + ' class="md-h">' + esc(hm[2]) + '</h' + (lvl + 2) + '>');
+                continue;
+            }
+
+            // 有序列表
+            var olm = line.match(/^(\d+)\.\s+(.*)/);
+            if (olm) {
+                html.push('<div class="md-li"><span class="md-num">' + olm[1] + '.</span> ' + inlineFormat(olm[2]) + '</div>');
+                continue;
+            }
+
+            // 无序列表
+            if (line.charAt(0) === '-' && line.charAt(1) === ' ') {
+                html.push('<div class="md-li"><span class="md-bullet">-</span> ' + inlineFormat(line.substring(2)) + '</div>');
+                continue;
+            }
+
+            // 普通段落
+            html.push('<p class="md-p">' + inlineFormat(line) + '</p>');
+        }
+        if (inCode) html.push('</code></pre>');
+        if (inTable) html.push('</table>');
+        return html.join('');
+    }
+
+    function inlineFormat(s) {
+        s = esc(s);
+        // **粗体**
+        s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        // `行内代码`
+        s = s.replace(/`([^`]+)`/g, '<code class="md-inline-code">$1</code>');
+        return s;
+    }
+
     // 通知动画结束清理
     panel.addEventListener('animationend', function(e) {
         if (e.animationName === 'jukebox-notify') {
