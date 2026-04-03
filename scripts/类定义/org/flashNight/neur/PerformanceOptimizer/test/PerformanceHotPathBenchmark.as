@@ -4,7 +4,6 @@ import org.flashNight.neur.PerformanceOptimizer.IntervalSampler;
 import org.flashNight.neur.PerformanceOptimizer.AdaptiveKalmanStage;
 import org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer;
 import org.flashNight.neur.PerformanceOptimizer.PerformanceActuator;
-import org.flashNight.neur.PerformanceOptimizer.FPSVisualization;
 import org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler;
 
 /**
@@ -18,7 +17,7 @@ import org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler;
  * 覆盖的热路径：
  *   L0 极热（每帧）: tick、evaluate(fast-path)
  *   L1 温热（每采样窗口）: measure+resetInterval、filter、process、evaluate(sample-path)
- *   L2 冷（低频）: apply、updateData+drawCurve
+ *   L2 冷（低频）: apply
  */
 class org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark {
 
@@ -37,7 +36,6 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark 
         out += bench_kalman_filter();
         out += bench_quantizer_process();
         out += bench_actuator_apply();
-        out += bench_visualization_updateDraw();
         out += bench_scheduler_evaluateFastPath();
         out += bench_scheduler_evaluateSamplePath();
         return out + "\n";
@@ -158,40 +156,12 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark 
         var t0:Number = getTimer();
 
         for (var i:Number = 0; i < ITER_MEDIUM; i++) {
-            actuator.apply(i & 3);
+            actuator.apply(i & 1, (i & 3) * 0.25);
             checksum += host.offsetTolerance;
         }
 
         var elapsed:Number = getTimer() - t0;
         return line("PerformanceActuator.apply", elapsed, ITER_MEDIUM, checksum);
-    }
-
-    // ------------------------------------------------------------------
-    // FPSVisualization
-    // ------------------------------------------------------------------
-
-    /**
-     * 基准：FPSVisualization.updateData() + drawCurve()
-     * 每采样窗口调用一次。主要开销在 Flash 绘图 API（curveTo 等）。
-     */
-    private static function bench_visualization_updateDraw():String {
-        var light:Array = buildLight();
-        var weather:Object = { currentTime: 8.5, dayNightLightLevels: light };
-
-        var viz:FPSVisualization = new FPSVisualization(24, 30, weather);
-        var canvas = makeCanvasNoOp();
-
-        var checksum:Number = 0;
-        var t0:Number = getTimer();
-
-        for (var i:Number = 0; i < ITER_HEAVY; i++) {
-            viz.updateData(20 + (i % 10));
-            viz.drawCurve(canvas, i & 3);
-            checksum += viz.getFPSDiff();
-        }
-
-        var elapsed:Number = getTimer() - t0;
-        return line("FPSVisualization.updateData+drawCurve", elapsed, ITER_HEAVY, checksum);
     }
 
     // ------------------------------------------------------------------
@@ -251,18 +221,13 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark 
     /**
      * 构造用于 scheduler 基准测试的完整环境
      * - mock actuator（隔离执行器开销）
-     * - viz/logger 置空（隔离可视化/日志开销）
+     * - logger 置空
      */
     private static function makeSchedulerForBench(frameRate:Number):PerformanceScheduler {
-        var canvas:Object = makeCanvasNoOp();
-
         var root:Object = {
             _quality: "HIGH",
-            发布消息: function(msg:String):Void {},
-            天气系统: { currentTime: 0, dayNightLightLevels: buildLight() },
-            玩家信息界面: { 性能帧率显示器: { 帧率数字: { text: null }, 画布: canvas } },
-            显示列表: { 预设任务ID: "TASK", 继续播放: function() {}, 暂停播放: function() {} },
-            UI系统: {}
+            天气系统: { currentTime: 0, dayNightLightLevels: buildLight(), getCurrentTime: function():Number { return this.currentTime; } },
+            显示列表: { 预设任务ID: "TASK", 继续播放: function() {}, 暂停播放: function() {} }
         };
 
         var host:Object = {
@@ -274,7 +239,6 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark 
         var pid:PIDController = new PIDController(0.2, 0.5, -30, 3, 0.2);
         var scheduler:PerformanceScheduler = new PerformanceScheduler(host, frameRate, 26, "HIGH", {root: root}, pid);
         scheduler.setActuator(makeActuatorMock());
-        scheduler.setVisualization(null); // 隔离 scheduler 核心，排除可视化开销
         scheduler.setLogger(null);
         return scheduler;
     }
@@ -324,24 +288,9 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark 
         return {
             lastLevel: -1,
             presetQuality: "HIGH",
-            apply: function(level:Number):Void { this.lastLevel = level; },
+            apply: function(tier:Number, softU:Number):Void { this.lastLevel = tier; },
             setPresetQuality: function(q:String):Void { this.presetQuality = q; },
             getPresetQuality: function():String { return this.presetQuality; }
-        };
-    }
-
-    /** 空操作画布（消除 Flash 绘图 API 的实际渲染开销） */
-    private static function makeCanvasNoOp():Object {
-        return {
-            _x: 0,
-            _y: 0,
-            clear: function():Void {},
-            beginFill: function(color:Number, alpha:Number):Void {},
-            endFill: function():Void {},
-            moveTo: function(x:Number, y:Number):Void {},
-            lineTo: function(x:Number, y:Number):Void {},
-            curveTo: function(cx:Number, cy:Number, ax:Number, ay:Number):Void {},
-            lineStyle: function(thickness:Number, color:Number, alpha:Number):Void {}
         };
     }
 

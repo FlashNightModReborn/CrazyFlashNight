@@ -1,12 +1,240 @@
-﻿=== GOBANG AUTOMATION TEST ===
-[Trainer] Loaded 68 built-in problems
-[Trainer] Problem filter=mid_complex_diagonal -> 1/68
-Extracting ports from eyeOf119: 1192433993
-Final extracted ports: 1192, 1924, 9243, 2433, 4339, 3399, 3993, 11924, 19243, 24339, 43399, 33993, 3000
-[PathManager] [DEBUG] 正常模式：当前 URL: file:///E|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
-[PathManager] [INFO] 检测到 Steam 环境，设置为 Steam 模式。
-[PathManager] [INFO] 匹配基础路径 'CrazyFlashNight/'，基础路径设置为: file:///E|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/
-[PathManager] [INFO] 基础路径设置为 Steam 环境路径: file:///E|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/
-[ServerManager] Trying ports file: file:///E|/steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/launcher_ports.json
-[Trainer] Waiting for XMLSocket connection...
+﻿╔══════════════════════════════════════════════════╗
+║   PerformanceOptimizer Test Suite                ║
+╚══════════════════════════════════════════════════╝
+
+── IntervalSampler ── PASS (8/8, 0ms)
+=== IntervalSamplerTest ===
+[tick]
+  ✓ 倒计时29次不触发，第30次触发
+[measure/reset]
+  ✓ level0: dt=1s → FPS=30.0
+  ✓ dtSec=1.0
+  ✓ PID deltaFrames: level3→120
+  ✓ resetInterval: frameStartTime更新
+  ✓ resetInterval: level2→90帧
+  ✓ protection: max(30*1, 30*(1+2))=90
+  ✓ protection: max(30*10, 90)=300
+
+
+── AdaptiveKalmanStage ── PASS (4/4, 0ms)
+=== AdaptiveKalmanStageTest ===
+[Q scaling]
+  ✓ dt=0.5 → Q=0.05
+  ✓ dt=0.001 → Q clamp到0.01
+  ✓ dt=100 → Q clamp到2.0
+[estimate]
+  ✓ 估计值向测量值移动（10 < est < 30）
+
+
+── HysteresisQuantizer ── PASS (26/26, 1ms)
+=== HysteresisQuantizerTest ===
+[downgrade_2step]
+  ✓ 降级第1次：不切换，进入等待
+  ✓ 确认计数=1，方向=降级(+1)
+  ✓ 降级第2次：达到阈值，切换到1
+  ✓ 切换后确认计数归零
+  ✓ 候选等于当前：确认状态清空
+[upgrade_3step]
+  ✓ 升级第1次：不切换，计数=1
+  ✓ 升级第2次：不切换（需3次），计数=2
+  ✓ 方向=升级(-1)
+  ✓ 升级第3次：达到阈值，切换到1
+[directionReversal]
+  ✓ 升级方向积累2次
+  ✓ 方向反转：计数重置为1，方向=降级(+1)
+  ✓ 降级第2次（含反转的1次）：达到阈值，切换到3
+[clamp]
+  ✓ 候选被clamp到minLevel=2（第1次等待）
+  ✓ 升级第2次：需3次确认，继续等待
+  ✓ 升级第3次：达到阈值，切换到2
+[strictEquality]
+  ✓ 严格比较: Number(1) !== String('1') 检测为变化
+  ✓ Number(1) === Number(1) 不触发变化
+[clearConfirmation]
+  ✓ process后有待确认
+  ✓ clearConfirmation 清空所有状态
+  ✓ setConfirmState(2, -1) 精确设置
+  ✓ setAwaitingConfirmation(true) 兼容模式：count=1, direction=降级
+  ✓ setAwaitingConfirmation(false) 清空
+[customThresholds]
+  ✓ 自定义阈值：降级=1, 升级=4
+  ✓ 降级阈值=1：首次即切换
+  ✓ 升级阈值=4：第4次切换
+  ✓ 默认阈值：降级=2, 升级=3
+
+
+── PerformanceActuator ── PASS (46/46, 0ms)
+=== PerformanceActuatorTest ===
+[tier0_softU0]
+  ✓ quality=HIGH（预设）
+  ✓ 显示列表继续播放
+  ✓ maxEffectCount=20
+  ✓ maxScreenEffectCount=20
+  ✓ isDeathEffect=true
+  ✓ 面积系数=300000
+  ✓ 同屏打击数字特效上限=25
+  ✓ DeathEffectRenderer启用
+  ✓ enableCulling=false
+  ✓ shellLimit=25
+  ✓ 发射效果上限=15
+  ✓ offsetTolerance=10
+  ✓ 渲染器档位=0
+[tier0_softU03]
+  ✓ quality=HIGH（tier0始终预设）
+  ✓ 显示列表继续播放
+  ✓ maxEffectCount≈14
+  ✓ isDeathEffect=true（softU<0.5）
+  ✓ DeathEffectRenderer启用（softU<0.5）
+  ✓ enableCulling=true（softU>=0.25）
+  ✓ 渲染器档位=1（softU=0.3→rl=1）
+[tier1_softU05]
+  ✓ quality=LOW
+  ✓ 显示列表暂停播放
+  ✓ maxEffectCount=10
+  ✓ isDeathEffect=false（softU>=0.5）
+  ✓ DeathEffectRenderer禁用（softU>=0.5）
+  ✓ 渲染器档位=2（softU=0.5→rl=2）
+[tier1_softU1]
+  ✓ quality=LOW
+  ✓ maxEffectCount=0
+  ✓ maxScreenEffectCount=5
+  ✓ 面积系数=3000000
+  ✓ 同屏打击数字特效上限=10
+  ✓ shellLimit=10
+  ✓ 发射效果上限=0
+  ✓ offsetTolerance=80
+  ✓ 渲染器档位=3
+[rendererLevel]
+  ✓ softU=0.0→rl=0
+  ✓ softU=0.25→rl=1
+  ✓ softU=0.5→rl=2
+  ✓ softU=0.75→rl=3
+  ✓ softU=1.0→rl=3（clamp）
+[boolThreshold]
+  ✓ softU=0.49: isDeathEffect=true
+  ✓ softU=0.49: deathRenderer启用
+  ✓ softU=0.51: isDeathEffect=false
+  ✓ softU=0.51: deathRenderer禁用
+  ✓ softU=0.24: enableCulling=false
+  ✓ softU=0.26: enableCulling=true
+
+
+── PerformanceScheduler ── PASS (83/83, 5ms)
+=== PerformanceSchedulerTest ===
+[evaluate]
+  ✓ 确认后切到tier1（含softU防抖重刷）
+  ✓ apply序列中包含tier1切换
+  ✓ scheduler.performanceLevel更新为1
+  ✓ 切到tier1后采样周期=60帧
+[onSceneChanged]
+  ✓ performanceLevel重置为0
+  ✓ 执行器收到apply(0)
+  ✓ PID已重置（无异常抛出）
+  ✓ 迟滞确认状态已清除
+  ✓ 采样周期重置为30帧（level0）
+  ✓ frameStartTime更新为当前时间（>0）
+[onSceneChanged_levelCap]
+  ✓ onSceneChanged尊重性能等级上限: tier=1（非0）
+  ✓ 执行器收到apply(1)（非0）
+  ✓ 采样周期=60帧（tier1: 30*(1+1)）
+[setPerformanceLevel]
+  ✓ performanceLevel设为1
+  ✓ 执行器收到apply(1)
+  ✓ quantizer确认状态已清除
+  ✓ 采样间隔=60帧（tier1正常间隔）
+  ✓ holdUntilMs=6000（1000+5*1000）
+  ✓ frameStartTime更新为传入时间
+  ✓ 估算帧率=28（30-1*2）
+  ✓ 相同等级不重复执行
+[holdSuppressesQuantizer]
+  ✓ hold期间无apply调用（量化器被抑制）
+  ✓ hold期间FPS仍在测量
+  ✓ hold期间等级不变
+  ✓ t=7000仍在hold，无apply
+  ✓ hold过期后量化器恢复工作
+[emergencyBypass]
+  ✓ 默认panicFPS=5
+  ✓ 紧急降级: 0→1
+  ✓ 执行器收到apply(1)
+  ✓ 紧急降级后迟滞状态已清除
+  ✓ 紧急降级后hold已清除
+  ✓ 10FPS不触发紧急降级（走正常通道）
+  ✓ setPanicFPS(3)生效
+  ✓ tier1不再紧急降级（已到底）
+[presetQuality动态同步]
+  ✓ 初始presetQuality=HIGH
+  ✓ apply前presetQuality同步为LOW
+  ✓ L1 在预设为LOW时 quality=LOW（而非MEDIUM）
+[logger]
+  ✓ 采样点日志 sample 调用2次
+  ✓ PID分量日志 pidDetail 调用2次（与sample同步）
+  ✓ 切档日志 levelChanged 调用1次
+  ✓ 前馈日志 manualSet 调用1次
+  ✓ 场景切换日志 sceneChanged 调用1次
+  ✓ sceneChanged快照: level=1（重置前）
+  ✓ sceneChanged快照: targetFPS=26
+  ✓ sceneChanged快照: quality=HIGH
+[pidDetail+tag]
+  ✓ setLoggerTag设置标签
+  ✓ sample携带tag='OL:test'
+  ✓ pidDetail被调用
+  ✓ 纯比例PID: iTerm=0
+  ✓ 纯比例PID: dTerm=0
+  ✓ P+I+D=pidOutput（冗余校验通过）
+  ✓ setLoggerTag(null)清除标签
+  ✓ 无logger时getLoggerTag返回null
+  ✓ PIDController.getLastP()可用
+  ✓ PIDController.getLastI()可用
+  ✓ PIDController.getLastD()可用
+  ✓ reset后getLastP()=0
+  ✓ reset后getLastI()=0
+  ✓ reset后getLastD()=0
+[forceLevel]
+  ✓ forceLevel(1)设置等级为1
+  ✓ 执行器收到apply(1)
+  ✓ 采样间隔=60帧（tier1），无保护窗口
+  ✓ PID已重置（无异常抛出）
+  ✓ 迟滞确认状态已清除
+  ✓ forceLevel(-1)被clamp到0
+  ✓ forceLevel(5)被clamp到1
+  ✓ forceLevel: 60帧采样间隔, 无hold窗口
+  ✓ setPerformanceLevel: 30帧采样间隔, hold=55000ms
+[trendGate_suppressUpgrade]
+  ✓ 默认trendThreshold=0.2 FPS/sec
+  ✓ 窗口1后仍为tier1（门控生效）
+  ✓ 窗口1: 首次建立升级方向（confirmCount=1，门控从窗口2起生效）
+  ✓ 窗口2后仍为tier1（门控持续生效）
+  ✓ 窗口2: 门控清除后process重建，confirmCount≤1（无法累积到阈值3）
+  ✓ 3个窗口后未过早恢复（tier>=1）
+  ✓ 执行器未收到升级方向的apply（tier=0）
+[trendGate_allowDowngrade]
+  ✓ 降级方向不受趋势门控影响: 切档正常执行
+  ✓ 降级到tier1
+[trendGate_sceneReset]
+  ✓ onSceneChanged后prevDenoisedFPS重置为frameRate(30)
+[trendGate_accessor]
+  ✓ 默认值0.2 FPS/sec
+  ✓ setTrendThreshold(1.0)生效
+  ✓ setTrendThreshold(0)允许（极保守模式）
+  ✓ 负值回退到默认0.2
+  ✓ NaN回退到默认0.2
+
+
+── PerformanceHotPathBenchmark ── BENCH (2439ms)
+=== PerformanceHotPathBenchmark ===
+  note: same-machine comparison only
+  IntervalSampler.tick: 235 ms / 100000 (2.35 us/op, checksum=0)
+  IntervalSampler.measure+resetInterval: 106 ms / 20000 (5.3 us/op, checksum=83601000)
+  AdaptiveKalmanStage.filter: 103 ms / 20000 (5.15 us/op, checksum=459997.492)
+  HysteresisQuantizer.process: 509 ms / 100000 (5.09 us/op, checksum=200000)
+  PerformanceActuator.apply: 923 ms / 20000 (46.15 us/op, checksum=730000)
+  PerformanceScheduler.evaluate(fast-path): 385 ms / 100000 (3.85 us/op, checksum=5000050000)
+  PerformanceScheduler.evaluate(sample-path): 178 ms / 5000 (35.6 us/op, checksum=0)
+
+
+══════════════════════════════════════════════════
+ALL PASSED
+  Total : 167  |  Pass : 167  |  Fail : 0  |  Time : 2445 ms
+══════════════════════════════════════════════════
+
 [compile] done

@@ -93,7 +93,7 @@ import org.flashNight.arki.render.FrameBroadcaster;
  * - PIDController          现有PID（由 PIDControllerFactory 异步加载参数）
  * - HysteresisQuantizer    非对称迟滞量化器（降级2次/升级3次确认）
  * - PerformanceActuator    执行器（应用具体降载策略）
- * - FPSVisualization       数据记录与曲线绘制（可选）
+ * - FPSVisualization       已迁移到 launcher WebView 端（sparkline.js）
  *
  * 【状态所有权】
  *   scheduler 完全拥有以下状态（不再回写到 host）：
@@ -120,7 +120,6 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     private var _kalmanStage:org.flashNight.neur.PerformanceOptimizer.AdaptiveKalmanStage;
     private var _quantizer:org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer;
     private var _actuator:Object;  // 非空：默认 PerformanceActuator，允许测试注入 mock
-    private var _viz:Object;       // 非空：默认 FPSVisualization，允许测试注入 mock
     private var _logger:Object;    // 唯一可空模块：性能日志器（默认 null，运行时热拔插）
     private var _holdUntilMs:Number;  // 保持窗口结束时间戳（ms），hold 期间抑制切档但不阻断观测
     private var _panicFPS:Number;     // 紧急降级阈值（FPS），低于此值绕过迟滞直接降级
@@ -132,6 +131,10 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     // 仅影响升级方向（level↓/画质↑），不影响降级方向。
     private var _prevDenoisedFPS:Number;   // 上一次 Kalman 滤波输出（用于计算趋势）
     private var _trendThreshold:Number;    // 趋势门控阈值（FPS/sec），归一化到秒以消除采样周期对灵敏度的影响
+
+    // --- softU 防抖 ---
+    private var _lastAppliedSoftU:Number;  // 上次 apply 时的 softU（防抖基线）
+    private var _softUThreshold:Number;    // softU 变化阈值（默认 0.15），|Δ softU| > threshold 才重刷
 
     /**
      * 构造函数
@@ -166,22 +169,20 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         var kalman:SimpleKalmanFilter1D = new SimpleKalmanFilter1D(this._frameRate, 0.5, 1);
         this._kalmanStage = new org.flashNight.neur.PerformanceOptimizer.AdaptiveKalmanStage(kalman, 0.1, 0.01, 2.0);
 
-        // --- Quantizer ---
+        // --- Quantizer（2 档模型：tier ∈ {0, 1}）---
         var levelCap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
-        // 非对称迟滞：降级（level↑）2次确认快速响应，升级（level↓）3次确认谨慎恢复
-        this._quantizer = new org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer(levelCap, 3, 2, 3);
+        // 非对称迟滞：降级（tier↑）2次确认快速响应，升级（tier↓）3次确认谨慎恢复
+        this._quantizer = new org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer(levelCap, 1, 2, 3);
 
         // --- Actuator ---
         this._actuator = new org.flashNight.neur.PerformanceOptimizer.PerformanceActuator(host, this._presetQuality, this._env);
 
-        // --- Visualization（可选）---
-        var weather:Object = (this._env.root && this._env.root.天气系统 != undefined) ? this._env.root.天气系统 : null;
-        this._viz = new org.flashNight.neur.PerformanceOptimizer.FPSVisualization(24, this._frameRate, weather);
-
         this._holdUntilMs = 0;
         this._panicFPS = 5;  // 极保守: 仅在游戏接近冻结时触发，不干扰迟滞量化器的正常抖动吸收
         this._prevDenoisedFPS = this._frameRate;  // 初始值=标称帧率，与 Kalman 初始估计一致
-        this._trendThreshold = 0.2;  // 默认 0.2 FPS/sec（≈ level2 下 0.6 FPS/window），源自振荡 #4 实测标定
+        this._trendThreshold = 0.2;  // 默认 0.2 FPS/sec（≈ tier1 下 0.4 FPS/window），源自振荡 #4 实测标定
+        this._lastAppliedSoftU = 0;
+        this._softUThreshold = 0.15;
     }
 
     /**
@@ -212,17 +213,15 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         var actualFPS:Number = sampler.measure(currentTime, currentLevel);
         this._actualFPS = actualFPS;
 
-        // UI数字显示（观测输出，不参与控制）
-        root.玩家信息界面.性能帧率显示器.帧率数字.text = actualFPS;
-
         // ── 紧急降级旁路（pre-Kalman, 使用原始区间平均 FPS）──────────
         // 阈值极保守（默认 5 FPS），仅在游戏接近冻结时触发。
         // 正常帧率抖动（10~20 FPS 区间）由迟滞量化器吸收，此处不干预。
-        if (actualFPS < this._panicFPS && currentLevel < 3) {
-            var panicLevel:Number = currentLevel + 1;
+        if (actualFPS < this._panicFPS && currentLevel < 1) {
+            var panicLevel:Number = 1;
             actuator.setPresetQuality(this._presetQuality);
-            actuator.apply(panicLevel);
+            actuator.apply(panicLevel, 1.0);
             this._performanceLevel = panicLevel;
+            this._lastAppliedSoftU = 1.0;
 
             // 从实际 FPS 重新建立状态估计，避免 Kalman 残留旧估计拖累恢复
             kalmanStage.reset(actualFPS, 1);
@@ -231,11 +230,6 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             this._holdUntilMs = 0;
             this._prevDenoisedFPS = actualFPS;  // 趋势门控：从实际 FPS 重建基准
 
-            // 通知推送到 C# 刘海 overlay（红色警告）
-            var _sm1:Object = root.server;
-            if (_sm1.isSocketConnected) {
-                _sm1.sendSocketMessage("Nperf|ff4444|\u26A0 紧急降级: [" + panicLevel + "] " + Math.round(actualFPS) + " FPS");
-            }
             if (logger != null) {
                 logger.levelChanged(currentTime, currentLevel, panicLevel, actualFPS, root._quality);
             }
@@ -276,6 +270,11 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
                 }
             }
 
+            // ── softU 计算（每采样点都算，不管 tier 是否变）──────────
+            var softU:Number = pidOutput / 3;
+            if (softU < 0) softU = 0;
+            if (softU > 1) softU = 1;
+
             // ── 保持窗口检查（方案 B: 测量与保持解耦）──────────────
             // hold 期间继续 Kalman/PID/日志观测，仅抑制量化器+执行器输出，
             // 确保 Kalman 估计在 hold 结束时已收敛到真实帧率。
@@ -288,23 +287,27 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
                 var qResult:Number = quantizer.process(pidOutput, currentLevel);
 
                 if (qResult >= 0) {
+                    // tier 变化 → 必须 apply
                     var oldLevel:Number = currentLevel;
                     var newLevel:Number = qResult;
 
                     actuator.setPresetQuality(this._presetQuality);
-                    actuator.apply(newLevel);
+                    actuator.apply(newLevel, softU);
                     this._performanceLevel = newLevel;
+                    this._lastAppliedSoftU = softU;
                     currentLevel = newLevel;
-
-                    // 通知推送到 C# 刘海 overlay（档位变化：升级绿色，降级黄色）
-                    var _sm2:Object = root.server;
-                    if (_sm2.isSocketConnected) {
-                        var _nc:String = (newLevel < oldLevel) ? "66ff66" : "ffcc00";
-                        _sm2.sendSocketMessage("Nperf|" + _nc + "|\u26A1 性能等级: [" + currentLevel + "] " + Math.round(actualFPS) + " FPS");
-                    }
 
                     if (logger != null) {
                         logger.levelChanged(currentTime, oldLevel, newLevel, actualFPS, root._quality);
+                    }
+                } else {
+                    // tier 不变 → softU 防抖检查
+                    var delta:Number = softU - this._lastAppliedSoftU;
+                    if (delta < 0) delta = -delta;
+                    if (delta > this._softUThreshold) {
+                        actuator.setPresetQuality(this._presetQuality);
+                        actuator.apply(currentLevel, softU);
+                        this._lastAppliedSoftU = softU;
                     }
                 }
             }
@@ -313,18 +316,11 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             sampler.resetInterval(currentTime, currentLevel);
         }
 
-        // 8) 数据记录与可视化（所有路径共用）
-        var viz:Object = this._viz;
-        if (viz.setWeatherSystem != undefined && root.天气系统 != undefined) {
-            viz.setWeatherSystem(root.天气系统);
-        }
-        viz.updateData(actualFPS);
+        // 8) FPS 载荷广播（C# overlay 依赖此数据通道）
         var fpsStr:String = String(Math.round(actualFPS * 10) / 10);
         var hourStr:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
         fpsStr += "|" + hourStr + "|" + String(currentLevel);
         FrameBroadcaster.setFpsPayload(fpsStr);
-        var canvas:MovieClip = root.玩家信息界面.性能帧率显示器.画布;
-        viz.drawCurve(canvas, currentLevel);
     }
 
     // ------------------------------------------------------------------
@@ -337,7 +333,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         level = Math.round(level);
         var host:Object = this._host;
         var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : this._quantizer.getMinLevel();
-        level = Math.max(cap, Math.min(level, 3));
+        level = Math.max(cap, Math.min(level, 1));
 
         if (this._performanceLevel === level) {
             return;
@@ -349,9 +345,11 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
         // 前馈：直接切档并执行
         this._performanceLevel = level;
+        var appliedSoftU:Number = (level > 0) ? 1.0 : 0.0;
 
         this._actuator.setPresetQuality(this._presetQuality);
-        this._actuator.apply(level);
+        this._actuator.apply(level, appliedSoftU);
+        this._lastAppliedSoftU = appliedSoftU;
 
         // 重置PID与迟滞状态，避免立即被反馈覆盖
         this._pid.reset();
@@ -369,27 +367,13 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._sampler.resetInterval(currentTime, level);
         this._holdUntilMs = currentTime + holdSec * 1000;
 
-        // UI显示：用估算帧率填充（与工作版本一致）
+        // 估算帧率用于 FPS 载荷广播
         var estimatedFPS:Number = this._frameRate - level * 2;
         this._actualFPS = estimatedFPS;
-        root.玩家信息界面.性能帧率显示器.帧率数字.text = estimatedFPS;
-
-        if (this._viz.setWeatherSystem != undefined && root.天气系统 != undefined) {
-            this._viz.setWeatherSystem(root.天气系统);
-        }
-        this._viz.updateData(estimatedFPS);
         var fpsStr2:String = String(Math.round(estimatedFPS * 10) / 10);
         var hourStr2:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
         fpsStr2 += "|" + hourStr2 + "|" + String(level);
         FrameBroadcaster.setFpsPayload(fpsStr2);
-        var canvas:MovieClip = root.玩家信息界面.性能帧率显示器.画布;
-        this._viz.drawCurve(canvas, level);
-
-        // 通知推送到 C# 刘海 overlay（手动设置：蓝色）
-        var _sm3:Object = root.server;
-        if (_sm3.isSocketConnected) {
-            _sm3.sendSocketMessage("Nperf|66ccff|\u2699 手动设置: [" + level + "] " + holdSec + "秒");
-        }
 
         if (this._logger != null) {
             this._logger.manualSet(currentTime, level, holdSec);
@@ -422,16 +406,18 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
      *   若 resetInterval 使用不同的 level，首样本 FPS 会被放大 (1+level) 倍。
      *   因此 resetInterval 必须传入目标 level，而非 0。
      *
-     * @param level:Number 目标性能等级（0-3）
+     * @param level:Number 目标性能等级（0-1）
      */
     public function forceLevel(level:Number):Void {
         level = Math.round(level);
-        level = Math.max(0, Math.min(level, 3));
+        level = Math.max(0, Math.min(level, 1));
 
         // 应用新等级（不创建保护窗口）
+        var appliedSoftU:Number = (level > 0) ? 1.0 : 0.0;
         this._actuator.setPresetQuality(this._presetQuality);
-        this._actuator.apply(level);
+        this._actuator.apply(level, appliedSoftU);
         this._performanceLevel = level;
+        this._lastAppliedSoftU = appliedSoftU;
 
         // 重置 PID 和迟滞状态（避免旧积分/确认状态影响）
         this._pid.reset();
@@ -474,9 +460,12 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         var host:Object = this._host;
         var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
         var resetLevel:Number = Math.max(cap, 0);
+        // cap=1 时 softU=1.0（满降载），避免 tier=1 但软参数回到高质量端
+        var resetSoftU:Number = (resetLevel > 0) ? 1.0 : 0.0;
         this._actuator.setPresetQuality(this._presetQuality);
-        this._actuator.apply(resetLevel);
+        this._actuator.apply(resetLevel, resetSoftU);
         this._performanceLevel = resetLevel;
+        this._lastAppliedSoftU = resetSoftU;
 
         // 5) 重置采样窗口（使用重置后的等级，确保采样间隔与等级匹配）
         this._sampler.resetInterval(now, resetLevel);
@@ -498,20 +487,6 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
     public function getSampler():org.flashNight.neur.PerformanceOptimizer.IntervalSampler { return this._sampler; }
     public function getKalmanStage():org.flashNight.neur.PerformanceOptimizer.AdaptiveKalmanStage { return this._kalmanStage; }
-
-    public function getVisualization():Object { return this._viz; }
-    public function setVisualization(viz:Object):Void {
-        // NullViz: viz 为空时注入空操作对象，与 NullPID 同理，
-        // 保证 evaluate()/setPerformanceLevel() 无需 null 检查
-        if (viz == null || viz == undefined) {
-            viz = {
-                updateData: function():Void {},
-                drawCurve: function():Void {},
-                setWeatherSystem: function():Void {}
-            };
-        }
-        this._viz = viz;
-    }
 
     public function getLogger():Object { return this._logger; }
     public function setLogger(logger:Object):Void { this._logger = logger; }
@@ -535,6 +510,14 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._trendThreshold = (isNaN(threshold) || threshold < 0) ? 0.2 : threshold;
     }
     public function getPrevDenoisedFPS():Number { return this._prevDenoisedFPS; }
+
+    // --- softU 防抖 ---
+
+    public function getLastAppliedSoftU():Number { return this._lastAppliedSoftU; }
+    public function getSoftUThreshold():Number { return this._softUThreshold; }
+    public function setSoftUThreshold(threshold:Number):Void {
+        this._softUThreshold = (isNaN(threshold) || threshold < 0) ? 0.15 : threshold;
+    }
 
     /**
      * 设置日志标签（委托到 logger.setTag）。

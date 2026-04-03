@@ -1,4 +1,4 @@
-﻿import org.flashNight.hana.Gobang.*;
+import org.flashNight.hana.Gobang.*;
 /*
 GobangTest.runQuick();
 var trainer:GobangTrainer = new GobangTrainer();

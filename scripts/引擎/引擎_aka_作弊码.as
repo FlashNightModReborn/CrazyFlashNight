@@ -181,7 +181,7 @@ _root.cheatFunction.killall = function() {
 // ============================================================
 //
 // 用法：
-//   输入 sysid  → 自动执行 7 阶段开环阶跃测试（0→1→2→3→2→1→0）
+//   输入 sysid  → 自动执行 3 阶段开环阶跃测试（0→1→0）
 //   输入 stopsysid → 中止测试并导出已收集的日志
 //
 // 原理：
@@ -189,8 +189,9 @@ _root.cheatFunction.killall = function() {
 //   量化器锁定（minLevel = maxLevel = targetLevel）阻止 PID 改变等级，
 //   实现开环条件下的阶跃响应数据采集。
 //
-// 每阶段保持 30 秒（30000ms），总测试时长 ≈ 3.5 分钟。
+// 每阶段保持 30 秒（30000ms），总测试时长 ≈ 1.5 分钟。
 // 日志包含 EVT_SAMPLE + EVT_PID_DETAIL，标签格式 "OL:from>to"。
+// 注：2 档模型后降级为二值辨识（0→1→0），不再等价于旧 4 段辨识。
 // ============================================================
 
 _root.cheatFunction.sysid = function() {
@@ -215,8 +216,8 @@ _root.cheatFunction.sysid = function() {
 	ft.performanceLogger.clear();
 	scheduler.setLogger(ft.performanceLogger);
 
-	// 测试序列定义：开环阶跃 0→1→2→3→2→1→0
-	var levels = [0, 1, 2, 3, 2, 1, 0];
+	// 测试序列定义：开环阶跃 0→1→0（2 档模型）
+	var levels = [0, 1, 0];
 	var HOLD = 30000; // 每相位保持时间（30000ms = 30秒）
 	var phase = 0;
 
@@ -231,7 +232,7 @@ _root.cheatFunction.sysid = function() {
 
 			// 恢复量化器
 			ft.性能等级上限 = 0;
-			scheduler.getQuantizer().setMaxLevel(3);
+			scheduler.getQuantizer().setMaxLevel(1);
 			scheduler.setLoggerTag(null);
 
 			// 导出日志
@@ -292,7 +293,7 @@ _root.cheatFunction.stopsysid = function() {
 
 	// 恢复量化器
 	ft.性能等级上限 = 0;
-	scheduler.getQuantizer().setMaxLevel(3);
+	scheduler.getQuantizer().setMaxLevel(1);
 	scheduler.setLoggerTag(null);
 
 	// 导出已收集的日志

@@ -2,7 +2,7 @@
 import org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler;
 
 /**
- * PerformanceSchedulerTest - 门面协调器回归测试（mock actuator/viz）
+ * PerformanceSchedulerTest - 门面协调器回归测试（mock actuator）
  *
  * 状态所有权：scheduler 内部持有 performanceLevel / actualFPS / pid 等，
  * host 上仅保留 性能等级上限 和 offsetTolerance。
@@ -39,15 +39,10 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
     }
 
     private static function makeRoot():Object {
-        var canvas:Object = { clear:function(){}, beginFill:function(){}, endFill:function(){}, moveTo:function(){}, lineTo:function(){}, curveTo:function(){}, lineStyle:function(){}, _x:0, _y:0 };
         return {
             _quality: "HIGH",
-            lastMsg: null,
-            发布消息: function(msg:String):Void { this.lastMsg = msg; },
-            天气系统: { currentTime: 0, dayNightLightLevels: buildLight() },
-            玩家信息界面: { 性能帧率显示器: { 帧率数字: { text: null }, 画布: canvas } },
-            显示列表: { 预设任务ID: "TASK", 继续播放:function(){}, 暂停播放:function(){} },
-            UI系统: {}
+            天气系统: { currentTime: 0, dayNightLightLevels: buildLight(), getCurrentTime: function():Number { return this.currentTime; } },
+            显示列表: { 预设任务ID: "TASK", 继续播放:function(){}, 暂停播放:function(){} }
         };
     }
 
@@ -68,20 +63,11 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
     private static function makeMockActuator():Object {
         return {
             applied: [],
+            appliedSoftU: [],
             presetQuality: "HIGH",
-            apply: function(level:Number):Void { this.applied.push(level); },
+            apply: function(tier:Number, softU:Number):Void { this.applied.push(tier); this.appliedSoftU.push(softU); },
             setPresetQuality: function(q:String):Void { this.presetQuality = q; },
             getPresetQuality: function():String { return this.presetQuality; }
-        };
-    }
-
-    private static function makeMockViz():Object {
-        return {
-            updateData: function(fps:Number):Void {},
-            drawCurve: function(c:MovieClip, level:Number):Void {},
-            getTotalFPS: function():Number { return 0; },
-            getMinFPS: function():Number { return 0; },
-            getMaxFPS: function():Number { return 0; }
         };
     }
 
@@ -101,7 +87,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
-        scheduler.setVisualization(makeMockViz());
+
 
         // 对齐合成时间域：测试使用 t=50,100,..., 但 IntervalSampler._frameStartTime
         // 在构造时取 getTimer()（真实壁钟）。若其他测试已运行使 getTimer() ≈ 1500ms，
@@ -115,10 +101,19 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
             scheduler.evaluate(t);
         }
 
-        out += line(actuator.applied.length == 1, "两次确认后只执行一次切档");
-        out += line(actuator.applied.length == 1 && actuator.applied[0] == 3, "低FPS下切到level3（clamp后）");
-        out += line(scheduler.getPerformanceLevel() == 3, "scheduler.performanceLevel更新为3");
-        out += line(scheduler.getSampler().getFramesLeft() == 120, "切到level3后采样周期=120帧");
+        // 注意：softU 防抖可能在 tier 不变时触发额外 apply，因此 applied.length >= 1
+        var tierApplies:Number = 0;
+        for (var c:Number = 0; c < actuator.applied.length; c++) {
+            if (actuator.applied[c] == 1) tierApplies++;
+        }
+        out += line(tierApplies >= 1, "确认后切到tier1（含softU防抖重刷）");
+        var foundTier1:Boolean = false;
+        for (var d:Number = 0; d < actuator.applied.length; d++) {
+            if (actuator.applied[d] == 1) { foundTier1 = true; break; }
+        }
+        out += line(foundTier1, "apply序列中包含tier1切换");
+        out += line(scheduler.getPerformanceLevel() == 1, "scheduler.performanceLevel更新为1");
+        out += line(scheduler.getSampler().getFramesLeft() == 60, "切到tier1后采样周期=60帧");
 
         return out;
     }
@@ -135,7 +130,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
-        scheduler.setVisualization(makeMockViz());
+
 
         // 先用前馈设置到 level 2，使 quantizer 进入已确认状态
         scheduler.setPerformanceLevel(2, 5, 1000);
@@ -172,24 +167,24 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var root:Object = makeRoot();
         var host:Object = makeHost();
-        host.性能等级上限 = 2; // 低配机器，锁定最低 level 2
+        host.性能等级上限 = 1; // 低配机器，锁定最低 tier 1
         var pid:PIDController = makePID();
         var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
-        scheduler.setVisualization(makeMockViz());
 
-        // 先手动设为 level 3
-        scheduler.setPerformanceLevel(3, 5, 1000);
+
+        // 先手动设为 tier 1
+        scheduler.setPerformanceLevel(1, 5, 1000);
         actuator.applied = [];
 
         scheduler.onSceneChanged();
 
         // 重置后不应低于性能等级上限
-        out += line(scheduler.getPerformanceLevel() == 2, "onSceneChanged尊重性能等级上限: level=2（非0）");
-        out += line(actuator.applied.length == 1 && actuator.applied[0] == 2, "执行器收到apply(2)（非0）");
-        out += line(scheduler.getSampler().getFramesLeft() == 90, "采样周期=90帧（level2: 30*(1+2)）");
+        out += line(scheduler.getPerformanceLevel() == 1, "onSceneChanged尊重性能等级上限: tier=1（非0）");
+        out += line(actuator.applied.length == 1 && actuator.applied[0] == 1, "执行器收到apply(1)（非0）");
+        out += line(scheduler.getSampler().getFramesLeft() == 60, "采样周期=60帧（tier1: 30*(1+1)）");
 
         return out;
     }
@@ -206,26 +201,26 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
-        scheduler.setVisualization(makeMockViz());
 
-        // 手动设置到 level 2，保持5秒
-        scheduler.setPerformanceLevel(2, 5, 1000);
 
-        out += line(scheduler.getPerformanceLevel() === 2, "performanceLevel设为2");
-        out += line(actuator.applied.length == 1 && actuator.applied[0] == 2, "执行器收到apply(2)");
+        // 手动设置到 tier 1，保持5秒
+        scheduler.setPerformanceLevel(1, 5, 1000);
+
+        out += line(scheduler.getPerformanceLevel() === 1, "performanceLevel设为1");
+        out += line(actuator.applied.length == 1 && actuator.applied[0] == 1, "执行器收到apply(1)");
         out += line(!scheduler.getQuantizer().isAwaitingConfirmation(), "quantizer确认状态已清除");
 
-        // 方案B: 正常采样间隔 + hold 窗口（不再使用 setProtectionWindow）
-        out += line(scheduler.getSampler().getFramesLeft() == 90, "采样间隔=90帧（level2正常间隔）");
+        // 方案B: 正常采样间隔 + hold 窗口
+        out += line(scheduler.getSampler().getFramesLeft() == 60, "采样间隔=60帧（tier1正常间隔）");
         out += line(scheduler.getHoldUntilMs() == 6000, "holdUntilMs=6000（1000+5*1000）");
         out += line(scheduler.getSampler().getFrameStartTime() == 1000, "frameStartTime更新为传入时间");
 
-        // 估算帧率: 30 - 2*2 = 26
-        out += line(scheduler.getActualFPS() == 26, "估算帧率=26（30-2*2）");
+        // 估算帧率: 30 - 1*2 = 28
+        out += line(scheduler.getActualFPS() == 28, "估算帧率=28（30-1*2）");
 
         // 相同等级不重复执行
         actuator.applied = [];
-        scheduler.setPerformanceLevel(2, 5, 2000);
+        scheduler.setPerformanceLevel(1, 5, 2000);
         out += line(actuator.applied.length == 0, "相同等级不重复执行");
 
         return out;
@@ -243,53 +238,48 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
-        scheduler.setVisualization(makeMockViz());
 
-        // 设置 level=2, hold 10秒 (t=1000 → holdUntilMs=11000)
-        scheduler.setPerformanceLevel(2, 10, 1000);
+
+        // 设置 tier=1, hold 10秒 (t=1000 → holdUntilMs=11000)
+        scheduler.setPerformanceLevel(1, 10, 1000);
         actuator.applied = []; // 清除前馈产生的 apply
+        actuator.appliedSoftU = [];
 
         // 对齐时间域
         scheduler.getSampler().setFrameStartTime(1000);
 
-        // 模拟90帧（level2采样周期），帧间隔50ms → t=1000+4500=5500
-        // 5500 < 11000 → hold 有效，量化器应被抑制
+        // 模拟60帧（tier1采样周期），帧间隔50ms → t=1000+3000=4000
+        // 4000 < 11000 → hold 有效，量化器应被抑制
         var t:Number = 1000;
-        for (var i:Number = 0; i < 90; i++) {
+        for (var i:Number = 0; i < 60; i++) {
             t += 50;
             scheduler.evaluate(t);
         }
 
-        // hold 期间：不应有任何 apply 调用（量化器被抑制）
+        // hold 期间：不应有任何 apply 调用（量化器+softU防抖均被抑制）
         out += line(actuator.applied.length == 0, "hold期间无apply调用（量化器被抑制）");
         // 但 FPS 应已被测量（actualFPS 已更新）
         out += line(scheduler.getActualFPS() > 0, "hold期间FPS仍在测量");
-        // level 保持不变
-        out += line(scheduler.getPerformanceLevel() == 2, "hold期间等级不变");
+        // tier 保持不变
+        out += line(scheduler.getPerformanceLevel() == 1, "hold期间等级不变");
 
-        // 继续模拟到 hold 过期（t > 11000），再触发一次采样
-        // 当前 t ≈ 5500，还需到 t > 11000，即再跑约110帧 (5500ms)
-        // level2 采样周期=90帧，所以跑90帧触发下一次采样
-        for (var j:Number = 0; j < 90; j++) {
+        // 继续到 t ≈ 7000，仍在 hold
+        for (var j:Number = 0; j < 60; j++) {
             t += 50;
             scheduler.evaluate(t);
         }
 
-        // t ≈ 10000，仍在 hold (< 11000)，还是不应切
-        out += line(actuator.applied.length == 0, "t=10000仍在hold，无apply");
+        out += line(actuator.applied.length == 0, "t=7000仍在hold，无apply");
 
-        // 再跑90帧到 t ≈ 14500 > 11000
-        for (var k:Number = 0; k < 90; k++) {
+        // 再跑到 t > 11000
+        for (var k:Number = 0; k < 120; k++) {
             t += 50;
             scheduler.evaluate(t);
         }
 
-        // hold 过期后，量化器恢复工作，低 FPS 应触发切档
-        // 20FPS (50ms/帧) → error = 26-~20 = ~6 → pidOutput ≈ 6 → clamp 3
-        // 但注意迟滞需要2次确认，所以第一次可能还没切
-        // 实际上在 hold 期间 PID 一直在运行，积累了确认状态（但量化器被抑制，没有 process 调用）
-        // hold 结束后第一次 process 开始计数
-        out += line(scheduler.getPerformanceLevel() >= 2, "hold过期后量化器恢复工作");
+        // hold 过期后，量化器恢复工作
+        // tier 已经是 1（最高降载），PID 输出大 → softU 防抖可能触发
+        out += line(scheduler.getPerformanceLevel() >= 1, "hold过期后量化器恢复工作");
 
         return out;
     }
@@ -306,7 +296,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
-        scheduler.setVisualization(makeMockViz());
+
 
         // 默认 panicFPS = 5
         out += line(scheduler.getPanicFPS() == 5, "默认panicFPS=5");
@@ -343,25 +333,25 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         // 10 FPS > 5 FPS → 不走紧急通道，走正常 Kalman/PID/迟滞
         // 第一次采样：迟滞开始计数但不切换
         // 可能切也可能不切（取决于迟滞确认次数），但不应是紧急降级
-        out += line(scheduler.getPerformanceLevel() <= 3, "10FPS不触发紧急降级（走正常通道）");
+        out += line(scheduler.getPerformanceLevel() <= 1, "10FPS不触发紧急降级（走正常通道）");
 
         // 测试: setPanicFPS 可调
         scheduler.setPanicFPS(3);
         out += line(scheduler.getPanicFPS() == 3, "setPanicFPS(3)生效");
 
-        // 测试: level=3 时不再紧急降级（已到最低）
+        // 测试: tier=1 时不再紧急降级（已到最低）
         actuator.applied = [];
-        scheduler.forceLevel(3);
+        scheduler.forceLevel(1);
         actuator.applied = []; // 清除 forceLevel 的 apply
         scheduler.getSampler().setFrameStartTime(t);
-        // 120帧（level3 采样周期），帧间隔1000ms（≈ 1 FPS，极端低）
-        for (var k:Number = 0; k < 120; k++) {
+        // 60帧（tier1 采样周期），帧间隔1000ms（≈ 1 FPS，极端低）
+        for (var k:Number = 0; k < 60; k++) {
             t += 1000;
-            scheduler.evaluate(k == 119 ? t : t); // 只在最后一帧触发采样
+            scheduler.evaluate(t);
         }
 
-        // level=3 已经是最低，不应再紧急降级
-        out += line(scheduler.getPerformanceLevel() == 3, "level3不再紧急降级（已到底）");
+        // tier=1 已经是最低，不应再紧急降级
+        out += line(scheduler.getPerformanceLevel() == 1, "tier1不再紧急降级（已到底）");
 
         return out;
     }
@@ -375,7 +365,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         var host:Object = makeHost();
 
         var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root});
-        scheduler.setVisualization(makeMockViz());
+
 
         // 初始预设画质
         out += line(scheduler.getActuator().getPresetQuality() == "HIGH", "初始presetQuality=HIGH");
@@ -400,10 +390,10 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         var pid:PIDController = makePID();
         var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
 
-        // mock actuator/viz
+        // mock actuator
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
-        scheduler.setVisualization(makeMockViz());
+
 
         // mock logger（记录调用次数和参数）
         var calls:Array = [];
@@ -443,17 +433,19 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         out += line(countCalls(calls, "pidDetail") == 2, "PID分量日志 pidDetail 调用2次（与sample同步）");
         out += line(countCalls(calls, "levelChanged") == 1, "切档日志 levelChanged 调用1次");
 
-        // 前馈调用
-        scheduler.setPerformanceLevel(2, 5, 1000);
+        // 前馈调用（注意：当前 level 已经是 1，setPerformanceLevel(1,...) 会被去重跳过
+        // 所以用 forceLevel(0) 先切回 0，再 setPerformanceLevel(1,...) 触发前馈日志
+        scheduler.forceLevel(0);
+        scheduler.setPerformanceLevel(1, 5, 1000);
         out += line(countCalls(calls, "manualSet") == 1, "前馈日志 manualSet 调用1次");
 
-        // 场景切换（此时 level=2, 由前馈设置）
+        // 场景切换（此时 tier=1, 由前馈设置）
         scheduler.onSceneChanged();
         out += line(countCalls(calls, "sceneChanged") == 1, "场景切换日志 sceneChanged 调用1次");
 
         // 验证快照捕获了重置前的状态
         var scEntry:Object = findCall(calls, "sceneChanged");
-        out += line(scEntry.level == 2, "sceneChanged快照: level=2（重置前）");
+        out += line(scEntry.level == 1, "sceneChanged快照: level=1（重置前）");
         out += line(scEntry.targetFPS == 26, "sceneChanged快照: targetFPS=26");
         out += line(scEntry.quality == "HIGH", "sceneChanged快照: quality=HIGH");
 
@@ -472,7 +464,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
-        scheduler.setVisualization(makeMockViz());
+
 
         // mock logger with tag support
         var calls:Array = [];
@@ -560,18 +552,18 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
-        scheduler.setVisualization(makeMockViz());
+
 
         // 先手动设置半确认状态，验证 forceLevel 会清除它
         scheduler.getQuantizer().setAwaitingConfirmation(true);
 
         // 1) forceLevel 切换等级
-        scheduler.forceLevel(2);
-        out += line(scheduler.getPerformanceLevel() == 2, "forceLevel(2)设置等级为2");
-        out += line(actuator.applied.length == 1 && actuator.applied[0] == 2, "执行器收到apply(2)");
+        scheduler.forceLevel(1);
+        out += line(scheduler.getPerformanceLevel() == 1, "forceLevel(1)设置等级为1");
+        out += line(actuator.applied.length == 1 && actuator.applied[0] == 1, "执行器收到apply(1)");
 
-        // 2) 采样间隔与目标等级一致（level2 → 90帧），无保护窗口
-        out += line(scheduler.getSampler().getFramesLeft() == 90, "采样间隔=90帧（level2），无保护窗口");
+        // 2) 采样间隔与目标等级一致（tier1 → 60帧），无保护窗口
+        out += line(scheduler.getSampler().getFramesLeft() == 60, "采样间隔=60帧（tier1），无保护窗口");
 
         // 3) PID 已重置（无异常抛出即可）
         out += line(true, "PID已重置（无异常抛出）");
@@ -579,17 +571,16 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         // 4) 迟滞确认状态已清除
         out += line(!scheduler.getQuantizer().isAwaitingConfirmation(), "迟滞确认状态已清除");
 
-        // 5) 等级限制：clamp 到 0-3
+        // 5) 等级限制：clamp 到 0-1
         scheduler.forceLevel(-1);
         out += line(scheduler.getPerformanceLevel() == 0, "forceLevel(-1)被clamp到0");
 
         scheduler.forceLevel(5);
-        out += line(scheduler.getPerformanceLevel() == 3, "forceLevel(5)被clamp到3");
+        out += line(scheduler.getPerformanceLevel() == 1, "forceLevel(5)被clamp到1");
 
         // 6) 与 setPerformanceLevel 的关键差异：
         //    forceLevel: 无 hold 窗口 → holdUntilMs=0
         //    setPerformanceLevel: 有 hold 窗口 → holdUntilMs>0
-        //    两者采样间隔均为正常值（方案B不再使用 setProtectionWindow）
         actuator.applied = [];
         scheduler.forceLevel(1);
         var forceLevelFrames:Number = scheduler.getSampler().getFramesLeft();
@@ -616,7 +607,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
      *   有趋势门控时：Kalman 下降趋势 > threshold → 清除升级确认 → 阻止过早恢复。
      *
      * 测试策略：
-     *   构造一个 Kp=1 的 PID，手动设置 level=2，注入 Kalman 已收敛到高 FPS 的初始状态。
+     *   构造一个 Kp=0.2 的 PID，手动设置 tier=1，注入 Kalman 已收敛到高 FPS 的初始状态。
      *   通过合成时间序列让 Kalman 估计持续下降（模拟刷怪启动时的帧率下降趋势）。
      *   验证趋势门控阻止了升级方向的迟滞确认累积。
      */
@@ -631,67 +622,59 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
-        scheduler.setVisualization(makeMockViz());
+
 
         // 确认默认趋势阈值
         out += line(scheduler.getTrendThreshold() == 0.2, "默认trendThreshold=0.2 FPS/sec");
 
-        // 设置到 level 2（高压档），清除 hold 让反馈回路正常工作
-        scheduler.setPerformanceLevel(2, 0.001, 1000);
+        // 设置到 tier 1（低画质），清除 hold 让反馈回路正常工作
+        scheduler.setPerformanceLevel(1, 0.001, 1000);
         actuator.applied = [];
+        actuator.appliedSoftU = [];
 
         // 设置 Kalman 初始估计为 28（高于 target=26），模拟"估计滞后于真实 FPS 下降"
         scheduler.getKalmanStage().reset(28, 0.01);
         scheduler.getSampler().setFrameStartTime(1000);
-        // 趋势基准也设为 28，这样第一次 Kalman 下降就能被检测到
-        // 需要通过内部状态设置（通过 evaluate 的首次 Kalman 更新来自然产生趋势）
 
         // 模拟帧率从 28 逐步下降到 22（刷怪启动）
-        // 每次采样窗口 = 90帧 (level 2)，帧间隔逐渐变大模拟 FPS 下降
-        // 策略：用3个采样窗口，每窗口注入不同的实际帧率
+        // 每次采样窗口 = 60帧 (tier 1)，帧间隔逐渐变大模拟 FPS 下降
 
         // 窗口1: 实际 FPS ≈ 27（Kalman 从 28 略降到 ~27.3）
         //   PID: 0.2 * (26 - 27.3) = -0.26 → round=0 → 升级方向
-        //   趋势率: (27.3 - 28) / ~3s ≈ -0.23 FPS/sec < -0.2 → 但门控在 process() 之前执行，
-        //   此时 pendingDirection 仍为 0（setPerformanceLevel 清除），门控不触发。
-        //   process() 执行后 confirmCount=1, pendingDirection=-1 → 为窗口2的门控建立方向。
         var t:Number = 1100;
-        for (var i:Number = 0; i < 90; i++) {
-            t += 33; // 33ms/帧 ≈ 30 FPS，但窗口稍长 → 实际 FPS ≈ 27
+        for (var i:Number = 0; i < 60; i++) {
+            t += 33;
             scheduler.evaluate(t);
         }
 
-        out += line(scheduler.getPerformanceLevel() == 2, "窗口1后仍为level2（门控生效）");
+        out += line(scheduler.getPerformanceLevel() == 1, "窗口1后仍为tier1（门控生效）");
         out += line(scheduler.getQuantizer().getConfirmCount() == 1,
             "窗口1: 首次建立升级方向（confirmCount=1，门控从窗口2起生效）");
 
         // 窗口2: 实际 FPS ≈ 25（Kalman 继续下降）
-        //   趋势继续为负 → 门控继续生效
-        for (var j:Number = 0; j < 90; j++) {
-            t += 40; // 40ms/帧 ≈ 25 FPS
+        for (var j:Number = 0; j < 60; j++) {
+            t += 40;
             scheduler.evaluate(t);
         }
 
-        out += line(scheduler.getPerformanceLevel() == 2, "窗口2后仍为level2（门控持续生效）");
+        out += line(scheduler.getPerformanceLevel() == 1, "窗口2后仍为tier1（门控持续生效）");
         out += line(scheduler.getQuantizer().getConfirmCount() <= 1,
             "窗口2: 门控清除后process重建，confirmCount≤1（无法累积到阈值3）");
 
         // 窗口3: 实际 FPS ≈ 22（进一步下降）
-        //   此时 PID: 0.2 * (26-22估计) ≈ 0.8 → round=1，不再是升级方向
-        //   甚至可能触发降级方向
-        for (var k:Number = 0; k < 90; k++) {
+        for (var k:Number = 0; k < 60; k++) {
             t += 45;
             scheduler.evaluate(t);
         }
 
-        // 关键断言：整个过程中没有发生过恢复到 L0/L1
-        out += line(scheduler.getPerformanceLevel() >= 2, "3个窗口后未过早恢复（level>=2）");
-        // 执行器不应收到任何升级方向的 apply
+        // 关键断言：整个过程中没有恢复到 tier 0
+        out += line(scheduler.getPerformanceLevel() >= 1, "3个窗口后未过早恢复（tier>=1）");
+        // 执行器不应收到 tier=0 的 apply（softU 防抖的 apply 是同 tier 重刷，可以有）
         var hasUpgrade:Boolean = false;
         for (var m:Number = 0; m < actuator.applied.length; m++) {
-            if (actuator.applied[m] < 2) hasUpgrade = true;
+            if (actuator.applied[m] < 1) hasUpgrade = true;
         }
-        out += line(!hasUpgrade, "执行器未收到升级方向的apply");
+        out += line(!hasUpgrade, "执行器未收到升级方向的apply（tier=0）");
 
         return out;
     }
@@ -708,7 +691,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
 
         var actuator:Object = makeMockActuator();
         scheduler.setActuator(actuator);
-        scheduler.setVisualization(makeMockViz());
+
 
         scheduler.getSampler().setFrameStartTime(0);
 
@@ -721,9 +704,13 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
             scheduler.evaluate(t);
         }
 
-        // 降级应正常发生（与 test_twoStepConfirmation 一致）
-        out += line(actuator.applied.length == 1, "降级方向不受趋势门控影响: 切档正常执行");
-        out += line(scheduler.getPerformanceLevel() == 3, "降级到level3");
+        // 降级应正常发生（softU 防抖可能有额外同 tier apply，但至少一次 tier=1）
+        var hasTier1:Boolean = false;
+        for (var n:Number = 0; n < actuator.applied.length; n++) {
+            if (actuator.applied[n] == 1) { hasTier1 = true; break; }
+        }
+        out += line(hasTier1, "降级方向不受趋势门控影响: 切档正常执行");
+        out += line(scheduler.getPerformanceLevel() == 1, "降级到tier1");
 
         return out;
     }
@@ -737,7 +724,7 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         var host:Object = makeHost();
         var pid:PIDController = makePID();
         var scheduler:PerformanceScheduler = new PerformanceScheduler(host, 30, 26, "HIGH", {root: root}, pid);
-        scheduler.setVisualization(makeMockViz());
+
 
         // 人为设置一个偏低的 prevDenoisedFPS（模拟之前处于低帧率状态）
         // 场景切换后应重置为 frameRate=30

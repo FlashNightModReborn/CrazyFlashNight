@@ -302,6 +302,19 @@ var Notch = (function() {
         perfBadgeEl.classList.remove('badge-pulse');
         void perfBadgeEl.offsetWidth; // 强制 reflow 重启动画
         perfBadgeEl.classList.add('badge-pulse');
+
+        // sparkline 边框闪光：升级=绿, 降级=黄
+        if (sparkCanvas) {
+            var isUpgrade = newLevel < oldLevel;
+            var glowColor = isUpgrade ? '#66ff66' : '#ffcc00';
+            sparkCanvas.style.boxShadow = '0 0 6px 2px ' + glowColor;
+            sparkCanvas.style.transition = 'box-shadow 0.15s ease-in';
+            clearTimeout(sparkCanvas._glowTimer);
+            sparkCanvas._glowTimer = setTimeout(function() {
+                sparkCanvas.style.transition = 'box-shadow 1.2s ease-out';
+                sparkCanvas.style.boxShadow = 'none';
+            }, 300);
+        }
     }
 
     function updatePerfBadge() {

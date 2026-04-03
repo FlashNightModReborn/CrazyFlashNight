@@ -165,7 +165,7 @@ _root.帧计时器.初始化任务栈 = function():Void {
     // │ → 控制理论详见 PerformanceScheduler.as 及其子模块           │
     // └─────────────────────────────────────────────────────────┘
 
-    var pid:PIDController = new PIDController(0.2, 0.5, -30, 3, 0.2);
+    var pid:PIDController = new PIDController(0.15, 0.5, -15, 3, 0.2);
     var pidFactory:PIDControllerFactory = PIDControllerFactory.getInstance();
     function onPIDSuccess(newPID:PIDController):Void {
         _root.帧计时器.scheduler.setPID(newPID);
@@ -463,10 +463,11 @@ _root.帧计时器.性能评估优化 = function() {
 };
 
 
-_root.帧计时器.执行性能调整 = function(新性能等级)
+_root.帧计时器.执行性能调整 = function(tier)
 {
     // 固化单路径：执行器由 scheduler 持有
-    this.scheduler.getActuator().apply(新性能等级);
+    // tier 0 → softU=0 (全质量), tier 1 → softU=1 (满降载)
+    this.scheduler.getActuator().apply(tier, tier > 0 ? 1.0 : 0.0);
 };
 
 _root.帧计时器.执行性能调整(0);

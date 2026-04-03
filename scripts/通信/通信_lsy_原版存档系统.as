@@ -48,7 +48,9 @@ _root.存档系统.读取设置 = function(设置){
     if(!isNaN(设置.setBGMVolume)) _root.soundEffectManager.setBGMVolume(设置.setBGMVolume);
     if(!isNaN(设置.性能等级上限)) {
         var _cap:Number = Math.round(设置.性能等级上限);
-        _root.帧计时器.性能等级上限 = (_cap < 0) ? 0 : (_cap > 3) ? 3 : _cap;
+        // 写回迁移: 旧 4 档 → 2 档 (0→0, 1→0, 2→1, 3→1)
+        _cap = (_cap >= 2) ? 1 : (_cap < 0) ? 0 : _cap;
+        _root.帧计时器.性能等级上限 = _cap;
     }
     if(设置.cameraZoomToggle || 设置.cameraZoomToggle  === false) _root.cameraZoomToggle = 设置.cameraZoomToggle;
     if(!isNaN(设置.basicZoomScale)) _root.basicZoomScale = 设置.basicZoomScale;

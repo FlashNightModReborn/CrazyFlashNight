@@ -216,7 +216,7 @@ html, body {
     80%     { transform:translateX(1px); }
 }
 
-#notch-sparkline { display:block; cursor:pointer; }
+#notch-sparkline { display:block; cursor:pointer; border-radius:2px; }
 #notch-clock { display:block; }
 
 /* === Sparkline Tooltip（向下展开，多行） === */

@@ -2,7 +2,6 @@
 import org.flashNight.neur.PerformanceOptimizer.test.AdaptiveKalmanStageTest;
 import org.flashNight.neur.PerformanceOptimizer.test.HysteresisQuantizerTest;
 import org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest;
-import org.flashNight.neur.PerformanceOptimizer.test.FPSVisualizationTest;
 import org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest;
 import org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark;
 
@@ -47,7 +46,6 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuit
         report += _runSuite("AdaptiveKalmanStage",   AdaptiveKalmanStageTest);
         report += _runSuite("HysteresisQuantizer",   HysteresisQuantizerTest);
         report += _runSuite("PerformanceActuator",   PerformanceActuatorTest);
-        report += _runSuite("FPSVisualization",      FPSVisualizationTest);
         report += _runSuite("PerformanceScheduler",  PerformanceSchedulerTest);
 
         report += _runBenchmarkSuite("PerformanceHotPathBenchmark", PerformanceHotPathBenchmark);
