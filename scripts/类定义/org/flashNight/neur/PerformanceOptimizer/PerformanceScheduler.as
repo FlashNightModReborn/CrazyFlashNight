@@ -275,9 +275,10 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
     public function setRemoteControlled(enabled:Boolean):Void {
         if (!enabled) {
-            // 无条件清除 hold 状态，防止 hold 到期后错误恢复远程模式
+            // 清除"hold 到期后恢复远程"的标记，防止断线后伪恢复。
+            // 但保留 _holdUntilMs：hold 保护窗口独立于连接状态，
+            // 关卡脚本的"强制维持 N 秒"语义在断线时仍应生效。
             this._wasRemoteBeforeHold = false;
-            this._holdUntilMs = 0;
             if (this._remoteControlled) {
                 this._fallbackUpgradeCount = 0;
                 this._sampler.resetInterval(getTimer(), this._performanceLevel);

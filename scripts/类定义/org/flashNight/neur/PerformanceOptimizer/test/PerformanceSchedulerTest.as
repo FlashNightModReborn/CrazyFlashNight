@@ -204,27 +204,34 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         return out;
     }
 
-    // --- hold + 断线: _wasRemoteBeforeHold 被清除 ---
+    // --- hold + 断线: 不伪恢复远程，但 hold 保护继续生效 ---
     private static function test_holdDisconnectClearsWasRemote():String {
-        var out:String = "-- hold + 断线不会伪恢复远程 --\n";
+        var out:String = "-- hold + 断线 --\n";
         var s:PerformanceScheduler = makeScheduler();
 
         // 进入远程模式
         s.applyFromLauncher(0, 0);
+        out += line(s.isRemoteControlled(), "初始远程模式");
 
-        // 前馈 hold
+        // 前馈 hold: tier=1, 10秒
         s.setPerformanceLevel(1, 10);
         out += line(!s.isRemoteControlled(), "hold 挂起远程");
+        out += line(s.getPerformanceLevel() == 1, "前馈 tier=1");
 
         // 模拟断连: onSocketClose → setRemoteControlled(false)
         s.setRemoteControlled(false);
-        out += line(!s.isRemoteControlled(), "断连后仍为本地");
+        out += line(!s.isRemoteControlled(), "断连后本地模式");
 
-        // 关键: _wasRemoteBeforeHold 应已被清除
-        // 验证方式: 如果 hold 到期后不应自动恢复远程
-        // （无法直接读私有字段，但可以通过 applyFromLauncher 间接验证——
-        //   如果 _wasRemoteBeforeHold 没被清，后续 evaluate 到期会设 _remoteControlled=true）
-        // 这里验证 setRemoteControlled(false) 后再次调用不会出错（幂等）
+        // 关键1: hold 保护窗口仍然存在（tier 不被本地后备改写）
+        // hold 期间 P 指令被拦截，applyFromLauncher 不会改 tier
+        var act:Object = s.getActuator();
+        var countBefore:Number = act._callCount;
+        s.applyFromLauncher(0, 0);
+        out += line(s.getPerformanceLevel() == 1, "hold 中断连后 tier 仍被保护");
+        out += line(act._callCount == countBefore, "hold 中 P 指令仍被拦截");
+
+        // 关键2: hold 到期后不会伪恢复远程（_wasRemoteBeforeHold 已清）
+        // 幂等验证
         s.setRemoteControlled(false);
         out += line(!s.isRemoteControlled(), "幂等调用无异常");
 
