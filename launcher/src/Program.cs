@@ -93,6 +93,9 @@ class Program
         CF7Launcher.Audio.AudioEngine.Init(projectRoot);
         CF7Launcher.Audio.AudioEngine.PreloadFromDirectories(projectRoot);
 
+        // === 音乐目录（扫描 + 热加载监听）===
+        var musicCatalog = new CF7Launcher.Audio.MusicCatalog(projectRoot);
+
         // === V8 总线（两种模式都启动）===
 
         PortAllocator portAlloc = new PortAllocator();
@@ -121,6 +124,19 @@ class Program
         router.OnConsoleResult += delegate(string json)
         {
             httpServer.ResolveConsoleResult(json);
+        };
+
+        // 音乐目录推送：Flash 业务就绪后发送完整 catalog
+        socketServer.OnClientReady += delegate {
+            LogManager.Log("[MusicCatalog] Pushing full catalog to Flash");
+            string catalogJson = musicCatalog.GetFullCatalogJson();
+            socketServer.Send(catalogJson + "\0");
+        };
+
+        // 音乐目录热更新推送到 Flash
+        musicCatalog.CatalogChanged += delegate(string updateJson) {
+            if (socketServer.IsClientReady)
+                socketServer.Send(updateJson + "\0");
         };
 
         // Toast overlay（GDI+ 保留作 fallback）
@@ -181,6 +197,9 @@ class Program
             // 游戏命令通道（pause 等）
             webOverlay.SetSocketServer(socketServer);
 
+            // 音乐目录注入
+            webOverlay.SetMusicCatalog(musicCatalog);
+
             // U 前缀快车道：UI 数据透传到 WebView2
             socketServer.SetUiDataHandler(new Action<string>(webOverlay.HandleUiData));
 
@@ -215,6 +234,7 @@ class Program
         // 退出前回调：在 Form dispose 之前断开快车道，防退出竞态
         form.OnShutdownEarly = delegate
         {
+            musicCatalog.Dispose();
             frameTask.Stop();
             socketServer.SetFrameHandler(null);
             socketServer.SetNotchHandler(null);

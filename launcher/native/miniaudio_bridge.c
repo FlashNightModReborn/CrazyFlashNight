@@ -469,6 +469,13 @@ MA_EXPORT int ma_bridge_bgm_is_playing(void) {
     return 0;
 }
 
+/* ========== BGM seek ========== */
+
+MA_EXPORT int ma_bridge_bgm_seek(float seconds) {
+    if (!g_initialized || !g_bgmLoaded[g_bgmActive]) return -1;
+    return ma_sound_seek_to_second(&g_bgm[g_bgmActive], seconds) == MA_SUCCESS ? 0 : -2;
+}
+
 /* ========== Global ========== */
 
 MA_EXPORT void ma_bridge_set_master_volume(float volume) {

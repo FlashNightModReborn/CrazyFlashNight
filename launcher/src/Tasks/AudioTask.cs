@@ -47,6 +47,9 @@ namespace CF7Launcher.Tasks
                 case "master_vol":
                     HandleMasterVol(message);
                     break;
+                case "bgm_seek":
+                    HandleBgmSeek(message);
+                    break;
                 default:
                     LogManager.Log("[Audio] Unknown cmd: " + cmd);
                     break;
@@ -97,6 +100,14 @@ namespace CF7Launcher.Tasks
         {
             float vol = msg.Value<float?>("vol") ?? 1.0f;
             AudioEngine.ma_bridge_set_master_volume(vol);
+        }
+
+        private void HandleBgmSeek(JObject msg)
+        {
+            float sec = msg.Value<float?>("sec") ?? 0.0f;
+            int rc = AudioEngine.ma_bridge_bgm_seek(sec);
+            if (rc != 0)
+                LogManager.Log("[Audio] bgm_seek FAILED: rc=" + rc + " sec=" + sec.ToString("F2"));
         }
 
         /// <summary>

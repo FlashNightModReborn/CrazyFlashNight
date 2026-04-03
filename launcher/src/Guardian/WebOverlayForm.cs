@@ -89,6 +89,11 @@ namespace CF7Launcher.Guardian
         // BGM 音频可视化轮询
         private System.Windows.Forms.Timer _audioTimer;
         private string _bgmTitle = ""; // 当前曲目标题（由 UiData bgm: 设置）
+        private bool _wasPlaying;       // 上一 tick 的 playing 状态（trackEnd 检测）
+        private bool _manualStop;       // 手动 stop 标记（防 trackEnd 误判）
+
+        // 音乐目录
+        private CF7Launcher.Audio.MusicCatalog _musicCatalog;
 
         public WebOverlayForm(Form owner, Control anchor, string webDir)
         {
@@ -310,6 +315,10 @@ namespace CF7Launcher.Guardian
                     if (_inputShield != null && rects.Count > 0)
                         _inputShield.UpdateHitRects(rects);
                 }
+                else if (json.Contains("\"jukebox\""))
+                {
+                    HandleJukeboxMessage(json);
+                }
                 else if (json.Contains("\"click\""))
                 {
                     string key = ExtractString(json, "\"key\":\"");
@@ -337,6 +346,10 @@ namespace CF7Launcher.Guardian
 
                     // 一次性推送光照等级静态数据
                     PushLightLevels();
+
+                    // 推送音乐目录到 WebView
+                    if (_musicCatalog != null)
+                        PostToWeb(_musicCatalog.GetFullCatalogJson());
 
                     // 通知 GDI+ fallback 它可以退出了（如果之前在顶着）
                     // 不需要——fallback 继续运行也无害，_webReady=true 后消息走 Web 通道
@@ -399,6 +412,14 @@ namespace CF7Launcher.Guardian
         public void SetSocketServer(XmlSocketServer server)
         {
             _socketServer = server;
+        }
+
+        internal void SetMusicCatalog(CF7Launcher.Audio.MusicCatalog catalog)
+        {
+            _musicCatalog = catalog;
+            catalog.CatalogChanged += delegate(string updateJson) {
+                if (_webReady) PostToWeb(updateJson);
+            };
         }
 
         /// <summary>
@@ -476,6 +497,15 @@ namespace CF7Launcher.Guardian
                 sb.Append(Math.Round(length * 10) / 10.0);
                 sb.Append('}');
                 PostToWeb(sb.ToString());
+
+                // 曲目自然结束检测（jukebox trackEnd 恢复）
+                bool isPlaying = playing == 1;
+                if (_wasPlaying && !isPlaying && !_manualStop)
+                {
+                    SendGameCommand("jukeboxTrackEnd");
+                }
+                _wasPlaying = isPlaying;
+                if (isPlaying) _manualStop = false;
             }
             catch { }
         }
@@ -732,6 +762,70 @@ namespace CF7Launcher.Guardian
         private static string EscapeForJs(string text)
         {
             return text.Replace("\\", "\\\\").Replace("'", "\\'").Replace("\n", "\\n").Replace("\r", "");
+        }
+
+        // ── Jukebox 消息处理 ──
+
+        private void HandleJukeboxMessage(string json)
+        {
+            string cmd = ExtractString(json, "\"cmd\":\"");
+            if (cmd == null) return;
+
+            switch (cmd)
+            {
+                case "play":
+                    string title = ExtractString(json, "\"title\":\"");
+                    if (title != null)
+                        SendGameCommandWithData("jukeboxPlay",
+                            "\"title\":\"" + EscapeJsonString(title) + "\"");
+                    break;
+                case "override":
+                    bool over = json.Contains("\"value\":true");
+                    SendGameCommandWithData("jukeboxOverride",
+                        "\"value\":" + (over ? "true" : "false"));
+                    break;
+                case "trueRandom":
+                    bool tr = json.Contains("\"value\":true");
+                    SendGameCommandWithData("jukeboxTrueRandom",
+                        "\"value\":" + (tr ? "true" : "false"));
+                    break;
+                case "seek":
+                    float sec = ExtractFloat(json, "\"sec\":");
+                    Audio.AudioEngine.ma_bridge_bgm_seek(sec);
+                    break;
+                case "stop":
+                    _manualStop = true;
+                    SendGameCommand("jukeboxStop");
+                    break;
+            }
+        }
+
+        private void SendGameCommandWithData(string action, string extraFields)
+        {
+            if (_socketServer == null) return;
+            _socketServer.Send("{\"task\":\"cmd\",\"action\":\"" + action + "\"," + extraFields + "}\0");
+        }
+
+        private static float ExtractFloat(string json, string key)
+        {
+            int idx = json.IndexOf(key);
+            if (idx < 0) return 0f;
+            idx += key.Length;
+            int end = idx;
+            while (end < json.Length && (char.IsDigit(json[end]) || json[end] == '.' || json[end] == '-'))
+                end++;
+            float val;
+            if (float.TryParse(json.Substring(idx, end - idx),
+                System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out val))
+                return val;
+            return 0f;
+        }
+
+        private static string EscapeJsonString(string s)
+        {
+            if (s == null) return "";
+            return s.Replace("\\", "\\\\").Replace("\"", "\\\"");
         }
 
         #endregion

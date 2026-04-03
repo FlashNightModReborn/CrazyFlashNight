@@ -56,6 +56,7 @@ namespace CF7Launcher.Guardian
         private const int WM_RBUTTONDOWN = 0x0204;
         private const int WM_RBUTTONUP = 0x0205;
         private const int WM_MOUSELEAVE = 0x02A3;
+        private const int WM_MOUSEWHEEL = 0x020A;
 
         private const int WM_MOUSEACTIVATE = 0x0021;
         private const int MA_NOACTIVATE = 3;
@@ -343,9 +344,41 @@ namespace CF7Launcher.Guardian
                     }
                     DispatchCdpMouse("mouseReleased", m.LParam, "right");
                     return;
+
+                case WM_MOUSEWHEEL:
+                    DispatchCdpMouseWheel(m.WParam, m.LParam);
+                    return;
             }
 
             base.WndProc(ref m);
+        }
+
+        /// <summary>滚轮事件注入 CDP。WM_MOUSEWHEEL 的 lParam 是屏幕坐标。</summary>
+        private void DispatchCdpMouseWheel(IntPtr wParam, IntPtr lParam)
+        {
+            if (_targetWebView == null) return;
+
+            // 64 位安全：用 ToInt64 避免 OverflowException
+            long wp = wParam.ToInt64();
+            int delta = (short)((wp >> 16) & 0xFFFF);
+
+            long lp = lParam.ToInt64();
+            int sx = (short)(lp & 0xFFFF);
+            int sy = (short)((lp >> 16) & 0xFFFF);
+            Point clientPt = this.PointToClient(new Point(sx, sy));
+
+            int x = (int)(clientPt.X / _zoomFactor);
+            int y = (int)(clientPt.Y / _zoomFactor);
+
+            string json = "{\"type\":\"mouseWheel\""
+                + ",\"x\":" + x
+                + ",\"y\":" + y
+                + ",\"deltaX\":0"
+                + ",\"deltaY\":" + (-delta)
+                + ",\"button\":\"none\"}";
+
+            _cdpQueue.Enqueue(json);
+            DrainQueue();
         }
 
         #endregion

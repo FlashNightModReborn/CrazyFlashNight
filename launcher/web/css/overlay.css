@@ -633,11 +633,14 @@ html, body {
     transition:max-height 250ms ease, opacity 200ms ease;
 }
 #jukebox-panel.expanded #jukebox-body {
-    max-height:36px; opacity:1;
+    max-height:220px; opacity:1;
 }
-/* 无 BGM 时不允许展开波形 */
-#jukebox-panel:not(.has-bgm) #jukebox-body {
-    max-height:0 !important; opacity:0 !important;
+/* 无 BGM 时隐藏波形和进度条，但浏览器仍可用 */
+#jukebox-panel:not(.has-bgm) #jukebox-wave {
+    display:none;
+}
+#jukebox-panel:not(.has-bgm) #jukebox-progress {
+    display:none;
 }
 #jukebox-wave {
     display:block;
@@ -645,8 +648,9 @@ html, body {
     height:32px;
 }
 #jukebox-progress {
-    height:2px;
+    height:4px;
     background:rgba(255,255,255,0.08);
+    cursor:pointer;
 }
 #jukebox-prog-fill {
     height:100%;
@@ -662,4 +666,136 @@ html, body {
 }
 #jukebox-panel.notify #jukebox-title {
     animation:jukebox-notify 1.8s ease-out;
+}
+
+/* ── 专辑浏览器 ── */
+#jukebox-browser {
+    display:none;
+    padding:2px 0;
+    border-top:1px solid rgba(255,255,255,0.06);
+}
+#jukebox-panel.expanded #jukebox-browser {
+    display:block;
+}
+#jukebox-toolbar {
+    display:flex;
+    align-items:center;
+    gap:2px;
+    padding:2px 4px;
+}
+#jukebox-album-select {
+    flex:1; min-width:0;
+    background:rgba(24,24,26,0.9);
+    color:rgba(255,255,255,0.8);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:3px;
+    font:10px/1.4 "Microsoft YaHei",sans-serif;
+    padding:2px 4px;
+    outline:none;
+}
+#jukebox-album-select:focus {
+    border-color:rgba(102,204,255,0.4);
+}
+#jukebox-track-list {
+    max-height:100px;
+    overflow-y:auto;
+    margin:2px 0;
+}
+#jukebox-track-list::-webkit-scrollbar {
+    width:4px;
+}
+#jukebox-track-list::-webkit-scrollbar-track {
+    background:transparent;
+}
+#jukebox-track-list::-webkit-scrollbar-thumb {
+    background:rgba(255,255,255,0.15);
+    border-radius:2px;
+}
+.track-item {
+    padding:2px 6px;
+    font:11px/1.3 "Microsoft YaHei",sans-serif;
+    color:rgba(255,255,255,0.6);
+    cursor:pointer;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.track-item:hover {
+    background:rgba(102,204,255,0.1);
+    color:rgba(255,255,255,0.85);
+}
+.track-item.active {
+    background:rgba(102,204,255,0.15);
+    border-left:2px solid rgba(102,204,255,0.8);
+    color:rgba(255,255,255,0.95);
+}
+/* ── 设置菜单（齿轮图标 + 下拉） ── */
+#jukebox-settings {
+    position:relative;
+    flex-shrink:0;
+}
+#jukebox-settings-toggle {
+    width:20px; height:20px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; line-height:1;
+    color:rgba(255,255,255,0.4);
+    cursor:pointer;
+    border-radius:3px;
+    transition:color 120ms, background 120ms;
+}
+#jukebox-settings-toggle:hover {
+    color:rgba(102,204,255,0.9);
+    background:rgba(255,255,255,0.08);
+}
+#jukebox-settings.open #jukebox-settings-toggle {
+    color:rgba(102,204,255,0.9);
+    background:rgba(255,255,255,0.1);
+}
+#jukebox-settings-menu {
+    display:none;
+    position:absolute;
+    top:100%; right:0;
+    margin-top:2px;
+    padding:3px 0;
+    background:rgba(24,24,26,0.92);
+    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:4px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.5);
+    min-width:110px;
+    z-index:20;
+}
+#jukebox-settings.open #jukebox-settings-menu {
+    display:block;
+}
+.jb-setting-item {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:3px 8px;
+    font:10px/1.4 "Microsoft YaHei",sans-serif;
+    color:rgba(255,255,255,0.5);
+    cursor:pointer;
+    transition:background 100ms, color 100ms;
+}
+.jb-setting-item:hover {
+    background:rgba(255,255,255,0.08);
+    color:rgba(255,255,255,0.8);
+}
+.jb-setting-dot {
+    display:inline-block;
+    width:6px; height:6px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.25);
+    background:transparent;
+    flex-shrink:0;
+    transition:background 120ms, border-color 120ms;
+}
+.jb-setting-item.active .jb-setting-dot {
+    background:rgba(102,204,255,0.9);
+    border-color:rgba(102,204,255,0.9);
+}
+.jb-setting-item.active {
+    color:rgba(255,255,255,0.85);
 }

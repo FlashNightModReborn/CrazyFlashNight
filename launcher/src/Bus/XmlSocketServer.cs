@@ -37,8 +37,15 @@ namespace CF7Launcher.Bus
         // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换
         private int _generation;
 
+        // 业务就绪标记：policy 握手完成后的首条业务消息时触发
+        private volatile bool _clientReady;
+
+        /// <summary>业务就绪事件：Flash policy 握手完成后、首条业务消息到达时触发。</summary>
+        public event Action OnClientReady;
+
         public int Port { get; private set; }
         public bool HasClient { get { return _client != null && _client.Connected; } }
+        public bool IsClientReady { get { return _clientReady && _client != null && _client.Connected; } }
 
         public XmlSocketServer(MessageRouter router)
         {
@@ -106,6 +113,7 @@ namespace CF7Launcher.Bus
 
                         _generation++;
                         gen = _generation;
+                        _clientReady = false;
                         _client = client;
                         _stream = client.GetStream();
                     }
@@ -193,6 +201,20 @@ namespace CF7Launcher.Bus
 
         private void HandleMessage(string message)
         {
+            // === 业务就绪信号 ===
+            // policy request 不走快车道（它是 XML 文本），所以首条快车道或 JSON 消息
+            // 意味着 policy 握手已完成、Flash 业务层已就绪。
+            // 放在最前面确保无论走快车道还是 JSON 路由都能触发。
+            if (!_clientReady && message.Length > 0 && !FlashPolicyHandler.IsPolicyRequest(message))
+            {
+                _clientReady = true;
+                if (OnClientReady != null)
+                {
+                    try { OnClientReady(); }
+                    catch (Exception ex) { LogManager.Log("[XmlSocket] OnClientReady error: " + ex.Message); }
+                }
+            }
+
             // === 快车道：前缀协议，绕过 JSON 解析 ===
             if (message.Length > 0)
             {

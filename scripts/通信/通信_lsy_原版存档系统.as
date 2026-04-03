@@ -26,9 +26,10 @@ _root.存档系统.初始化收集品栏 = function(){
 }
 _root.存档系统.存储设置 = function(){
     var ws:WeatherSystem = WeatherSystem.getInstance();
+    var sem = _root.soundEffectManager;
     return {
-        setGlobalVolume:_root.soundEffectManager.getGlobalVolume(),
-        setBGMVolume:_root.soundEffectManager.getBGMVolume(),
+        setGlobalVolume:sem.getGlobalVolume(),
+        setBGMVolume:sem.getBGMVolume(),
         性能等级上限:_root.帧计时器.性能等级上限,
         是否阴影:_root.是否阴影,
         是否视觉元素:_root.是否视觉元素,
@@ -38,7 +39,9 @@ _root.存档系统.存储设置 = function(){
         开启昼夜系统:ws.enableDayNightCycle,
         暂停昼夜系统:ws.pauseDayNightCycle,
         使用滤镜渲染:ws.useFilterRendering,
-        立绘类型:_root.立绘类型
+        立绘类型:_root.立绘类型,
+        jukeboxOverride:sem.getJukeboxOverride(),
+        jukeboxTrueRandom:sem.getTrueRandom()
     }
 }
 
@@ -62,6 +65,9 @@ _root.存档系统.读取设置 = function(设置){
     if(设置.暂停昼夜系统 || 设置.暂停昼夜系统  === false) ws.pauseDayNightCycle = 设置.暂停昼夜系统;
     if(设置.使用滤镜渲染 || 设置.使用滤镜渲染  === false) ws.useFilterRendering = 设置.使用滤镜渲染;
     if(设置.立绘类型) _root.立绘类型 = 设置.立绘类型;
+    var sem = _root.soundEffectManager;
+    if(设置.jukeboxOverride || 设置.jukeboxOverride === false) sem.setJukeboxOverride(设置.jukeboxOverride);
+    if(设置.jukeboxTrueRandom || 设置.jukeboxTrueRandom === false) sem.setTrueRandom(设置.jukeboxTrueRandom);
 }
 
 _root.存档系统.mydata数据组包 = function(){

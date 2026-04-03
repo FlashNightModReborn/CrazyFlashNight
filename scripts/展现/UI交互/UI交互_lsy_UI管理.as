@@ -118,7 +118,22 @@ _root.gameCommands["openSettings"] = function() {
 };
 
 _root.gameCommands["openJukebox"] = function() {
-    _root.发布消息("点歌系统重构中，敬请期待");
+    _root.发布消息("点歌器已迁移至右上角面板");
+};
+_root.gameCommands["jukeboxPlay"] = function(params) {
+    _root.soundEffectManager.jukeboxPlay(params.title);
+};
+_root.gameCommands["jukeboxStop"] = function() {
+    _root.soundEffectManager.jukeboxStop();
+};
+_root.gameCommands["jukeboxOverride"] = function(params) {
+    _root.soundEffectManager.setJukeboxOverride(params.value == true || params.value == "true");
+};
+_root.gameCommands["jukeboxTrackEnd"] = function() {
+    _root.soundEffectManager.jukeboxTrackEnd();
+};
+_root.gameCommands["jukeboxTrueRandom"] = function(params) {
+    _root.soundEffectManager.setTrueRandom(params.value == true || params.value == "true");
 };
 
 // ============================================================

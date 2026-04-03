@@ -145,11 +145,16 @@ _root.配置场景环境信息 = function(){
 		if(_root.门口佣兵刷新器 && !isNaN(环境信息.佣兵刷新数据.Entrance)){
 			_root.门口佣兵刷新器.几率 = 环境信息.佣兵刷新数据.Entrance;
 		}
-		//播放场景bgm
-		if(环境信息.BGM != null){
+		//播放场景bgm（支持单曲/专辑两种模式）
+		if(typeof 环境信息.BGM == "object" && 环境信息.BGM.album != undefined){
+			// 专辑模式: <BGM album="TFR"/> 或 <BGM album="TFR" default="Dialtone"/>
+			_root.soundEffectManager.playAlbumBGM(环境信息.BGM.album, "scene", true, 环境信息.BGM["default"]);
+		} else if(环境信息.BGM != null){
 			if(环境信息.BGM == "stop") _root.soundEffectManager.stopBGM();
-			else _root.soundEffectManager.playBGM(环境信息.BGM, true, null);
+			else _root.soundEffectManager.playBGMWithSource(环境信息.BGM, "scene", true, null);
 		}
+		// 兜底: 如果场景无 BGM 配置但 jukebox 激活，确保 jukebox 恢复
+		_root.soundEffectManager.resumeJukeboxIfNeeded();
 	}else{
 		天气系统.spaceCondition = "室外";
 		天气系统.visualCondition = "光照";

@@ -220,6 +220,9 @@ var Notch = (function() {
         if (trt && trt.offsetParent !== null) pushRect(trt);
         var jbp = document.getElementById('jukebox-panel');
         if (jbp && jbp.offsetParent !== null) pushRect(jbp);
+        // 点歌器设置下拉菜单（position:absolute，超出面板区域）
+        var jbsm = document.getElementById('jukebox-settings-menu');
+        if (jbsm && jbsm.offsetParent !== null) pushRect(jbsm);
         var subs = document.querySelectorAll('.notch-submenu');
         for (var si = 0; si < subs.length; si++) {
             if (subs[si].offsetParent !== null) pushRect(subs[si]);

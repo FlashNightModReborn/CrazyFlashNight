@@ -508,6 +508,20 @@ class org.flashNight.neur.Server.ServerManager {
             return;
         }
 
+        // 音乐目录同步（Launcher → Flash）
+        if (response.task == "catalog") {
+            if (_root.soundEffectManager != undefined) {
+                _root.soundEffectManager.mergeCatalog(response);
+            }
+            return;
+        }
+        if (response.task == "catalogUpdate") {
+            if (_root.soundEffectManager != undefined) {
+                _root.soundEffectManager.updateCatalog(response);
+            }
+            return;
+        }
+
         // Callback 路由：有 callId 的响应分发到注册的回调
         if (response.callId !== undefined) {
             var cbKey:String = String(response.callId);

@@ -228,7 +228,7 @@ class org.flashNight.arki.scene.StageManager {
         //播放场景bgm
         if(basicInfo.BGM){
             if(basicInfo.BGM.Command == "play"){
-                _root.soundEffectManager.playBGM(basicInfo.BGM.Title, basicInfo.BGM.Loop, null);
+                _root.soundEffectManager.playBGMWithSource(basicInfo.BGM.Title, "stage", basicInfo.BGM.Loop, null);
             }else if (basicInfo.BGM.Command == "stop"){
                 _root.soundEffectManager.stopBGM();
             }

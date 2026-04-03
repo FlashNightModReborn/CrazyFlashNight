@@ -1,7 +1,7 @@
 /**
- * jukebox.js — BGM 可视化面板
+ * jukebox.js — BGM 可视化面板 + 专辑浏览 + 选曲 + 进度拖拽
  * 折叠态：仅标题行，切歌时闪烁通知
- * 展开态：标题 + 滚动波形 + 进度条
+ * 展开态：标题 + 滚动波形 + 进度条 + 专辑浏览器
  */
 (function() {
     'use strict';
@@ -12,12 +12,22 @@
     var timeEl    = document.getElementById('jukebox-time');
     var canvas    = document.getElementById('jukebox-wave');
     var progFill  = document.getElementById('jukebox-prog-fill');
+    var progBar   = document.getElementById('jukebox-progress');
+
+    // 浏览器元素
+    var albumSelect = document.getElementById('jukebox-album-select');
+    var trackList   = document.getElementById('jukebox-track-list');
+
+    // 设置菜单
+    var settingsWrap   = document.getElementById('jukebox-settings');
+    var settingsToggle = document.getElementById('jukebox-settings-toggle');
+    var settingsMenu   = document.getElementById('jukebox-settings-menu');
 
     if (!panel || !canvas) return;
 
     var ctx       = canvas.getContext('2d');
     var dpr       = window.devicePixelRatio || 1;
-    var cssW      = 168; // 170 - 2px border
+    var cssW      = 168;
     var cssH      = 32;
 
     // 波形历史 ring buffer
@@ -28,9 +38,15 @@
     var histLen   = 0;
 
     // 状态
-    var playing   = false;
-    var bgmTitle  = '';
-    var isExpanded = false;
+    var playing        = false;
+    var bgmTitle       = '';
+    var isExpanded     = false;
+    var currentDuration = 0;
+
+    // 目录数据
+    var albums    = {};      // albumName -> [{title, weight}, ...]
+    var allTracks = [];      // flat list
+    var currentAlbumFilter = '';
 
     // DPR 感知 canvas
     function resizeCanvas() {
@@ -46,7 +62,6 @@
         if (mq.addEventListener) mq.addEventListener('change', resizeCanvas);
     }
 
-    // 格式化时间 mm:ss
     function fmtTime(sec) {
         if (!sec || sec <= 0) return '--:--';
         var m = Math.floor(sec / 60);
@@ -58,11 +73,9 @@
     toggleBtn.addEventListener('click', function() {
         isExpanded = !isExpanded;
         panel.classList.toggle('expanded', isExpanded);
-        // 交互区域几何变化 → 通知 InputShield 更新 hitRect
-        // notch.js 的 reportRect 会读取 jukebox-panel 的 boundingRect
         setTimeout(function() {
             if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
-        }, 300); // 等 CSS transition 完成
+        }, 300);
     });
 
     // ── 接收音频数据 ──
@@ -72,14 +85,13 @@
         playing   = data.p === 1;
         var cursor   = data.c || 0;
         var duration = data.d || 0;
+        currentDuration = duration;
 
-        // 写入历史
         histL[histIdx] = peakL;
         histR[histIdx] = peakR;
         histIdx = (histIdx + 1) % HISTORY;
         if (histLen < HISTORY) histLen++;
 
-        // 更新进度（无 BGM 时忽略残留数据）
         if (duration > 0 && bgmTitle) {
             var pct = Math.min(cursor / duration, 1) * 100;
             progFill.style.width = pct + '%';
@@ -89,7 +101,6 @@
             timeEl.textContent = '';
         }
 
-        // 展开态才绘制波形（节省 CPU）
         if (isExpanded) render();
     }
 
@@ -100,35 +111,34 @@
         titleEl.textContent = bgmTitle || '未播放';
         titleEl.title = bgmTitle;
 
-        // 标记是否有 BGM（控制标题亮度、是否可展开波形）
+        var hadBgm = panel.classList.contains('has-bgm');
         panel.classList.toggle('has-bgm', !!bgmTitle);
+        // 波形显隐改变面板高度 → 更新 hitRect
+        if (hadBgm !== !!bgmTitle) {
+            setTimeout(function() {
+                if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
+            }, 50);
+        }
 
-        // 切歌通知（折叠态 + 有新标题）
         if (bgmTitle && !isExpanded && bgmTitle !== oldTitle) {
             panel.classList.remove('notify');
             void panel.offsetHeight;
             panel.classList.add('notify');
         }
 
-        // 切歌时清空波形历史
         if (bgmTitle !== oldTitle) {
             histLen = 0;
             histIdx = 0;
         }
 
-        // 无 BGM 时自动折叠 + 清空进度
         if (!bgmTitle) {
             timeEl.textContent = '';
             progFill.style.width = '0%';
-            if (isExpanded) {
-                isExpanded = false;
-                panel.classList.remove('expanded');
-                // 几何变化 → 同步 InputShield hitRect（等 CSS transition 完成）
-                setTimeout(function() {
-                    if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
-                }, 300);
-            }
+            // 不再自动折叠：无 BGM 时仍允许浏览和选曲
         }
+
+        // 高亮当前播放曲目
+        updateActiveTrack();
     }
 
     // ── 渲染滚动波形 ──
@@ -152,20 +162,192 @@
             var age = (histLen - 1 - i) / Math.max(histLen - 1, 1);
             var alpha = playing ? (0.3 + 0.7 * (1 - age)) : 0.15;
 
-            // L channel (上半)
             var hL = Math.max(1 * dpr, lv * maxH);
             ctx.fillStyle = 'rgba(102,204,255,' + alpha + ')';
             ctx.fillRect(x, midY - hL, Math.max(barW - 0.5, 1), hL);
 
-            // R channel (下半)
             var hR = Math.max(1 * dpr, rv * maxH);
             ctx.fillStyle = 'rgba(150,220,255,' + (alpha * 0.8) + ')';
             ctx.fillRect(x, midY, Math.max(barW - 0.5, 1), hR);
         }
 
-        // 中线
         ctx.fillStyle = 'rgba(255,255,255,0.15)';
         ctx.fillRect(0, midY - 0.5 * dpr, w, 1 * dpr);
+    }
+
+    // ══════════════════════════════════════════════
+    // ██  目录接收
+    // ══════════════════════════════════════════════
+
+    Bridge.on('catalog', function(data) {
+        albums = {};
+        allTracks = [];
+        var tracks = data.tracks || [];
+        for (var i = 0; i < tracks.length; i++) {
+            var t = tracks[i];
+            if (!albums[t.album]) albums[t.album] = [];
+            albums[t.album].push(t);
+            allTracks.push(t);
+        }
+        renderAlbumSelect();
+        renderTrackList(currentAlbumFilter);
+    });
+
+    Bridge.on('catalogUpdate', function(data) {
+        var added = data.added || [];
+        var removed = data.removed || [];
+        for (var r = 0; r < removed.length; r++) {
+            removeTrackByTitle(removed[r]);
+        }
+        for (var a = 0; a < added.length; a++) {
+            var t = added[a];
+            if (!albums[t.album]) albums[t.album] = [];
+            albums[t.album].push(t);
+            allTracks.push(t);
+        }
+        renderAlbumSelect();
+        renderTrackList(currentAlbumFilter);
+    });
+
+    function removeTrackByTitle(title) {
+        for (var alb in albums) {
+            var arr = albums[alb];
+            for (var i = arr.length - 1; i >= 0; i--) {
+                if (arr[i].title === title) arr.splice(i, 1);
+            }
+            if (arr.length === 0) delete albums[alb];
+        }
+        for (var j = allTracks.length - 1; j >= 0; j--) {
+            if (allTracks[j].title === title) allTracks.splice(j, 1);
+        }
+    }
+
+    // ══════════════════════════════════════════════
+    // ██  专辑/曲目渲染
+    // ══════════════════════════════════════════════
+
+    function renderAlbumSelect() {
+        if (!albumSelect) return;
+        var val = albumSelect.value;
+        albumSelect.innerHTML = '<option value="">全部</option>';
+        var names = [];
+        for (var alb in albums) names.push(alb);
+        names.sort();
+        for (var i = 0; i < names.length; i++) {
+            var opt = document.createElement('option');
+            opt.value = names[i];
+            opt.textContent = names[i] + ' (' + albums[names[i]].length + ')';
+            albumSelect.appendChild(opt);
+        }
+        albumSelect.value = val;
+    }
+
+    function renderTrackList(albumFilter) {
+        if (!trackList) return;
+        trackList.innerHTML = '';
+        var source = albumFilter ? (albums[albumFilter] || []) : allTracks;
+        for (var i = 0; i < source.length; i++) {
+            var div = document.createElement('div');
+            div.className = 'track-item';
+            div.textContent = source[i].title;
+            div.setAttribute('data-title', source[i].title);
+            if (source[i].title === bgmTitle) div.classList.add('active');
+            div.addEventListener('click', onTrackClick);
+            trackList.appendChild(div);
+        }
+    }
+
+    function onTrackClick(e) {
+        var title = e.target.getAttribute('data-title');
+        if (title) {
+            Bridge.send({type: 'jukebox', cmd: 'play', title: title});
+        }
+    }
+
+    function updateActiveTrack() {
+        if (!trackList) return;
+        var items = trackList.children;
+        for (var i = 0; i < items.length; i++) {
+            var t = items[i].getAttribute('data-title');
+            if (t === bgmTitle) {
+                items[i].classList.add('active');
+            } else {
+                items[i].classList.remove('active');
+            }
+        }
+    }
+
+    if (albumSelect) {
+        albumSelect.addEventListener('change', function() {
+            currentAlbumFilter = this.value;
+            renderTrackList(currentAlbumFilter);
+        });
+    }
+
+    // ══════════════════════════════════════════════
+    // ██  进度条拖拽 seek
+    // ══════════════════════════════════════════════
+
+    var seeking = false;
+    if (progBar) {
+        progBar.addEventListener('mousedown', function(e) {
+            seeking = true;
+            doSeek(e);
+        });
+    }
+    document.addEventListener('mousemove', function(e) {
+        if (seeking) doSeek(e);
+    });
+    document.addEventListener('mouseup', function() {
+        seeking = false;
+    });
+
+    function doSeek(e) {
+        if (currentDuration <= 0 || !progBar) return;
+        var rect = progBar.getBoundingClientRect();
+        var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        Bridge.send({type: 'jukebox', cmd: 'seek', sec: pct * currentDuration});
+    }
+
+    // ══════════════════════════════════════════════
+    // ██  设置菜单
+    // ══════════════════════════════════════════════
+
+    var settingsState = {
+        override: false,
+        trueRandom: false
+    };
+
+    if (settingsToggle) {
+        settingsToggle.addEventListener('click', function() {
+            settingsWrap.classList.toggle('open');
+            setTimeout(function() {
+                if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
+            }, 50);
+        });
+    }
+
+    if (settingsMenu) {
+        settingsMenu.addEventListener('click', function(e) {
+            var item = e.target;
+            while (item && !item.classList.contains('jb-setting-item')) {
+                item = item.parentElement;
+            }
+            if (!item) return;
+            var key = item.getAttribute('data-key');
+            if (!key) return;
+
+            // 切换状态
+            settingsState[key] = !settingsState[key];
+            item.classList.toggle('active', settingsState[key]);
+
+            // 发送到 Launcher
+            if (key === 'override') {
+                Bridge.send({type: 'jukebox', cmd: 'override', value: settingsState.override});
+            } else if (key === 'trueRandom') {
+                Bridge.send({type: 'jukebox', cmd: 'trueRandom', value: settingsState.trueRandom});
+            }
+        });
     }
 
     // ── 注册消息 ──
@@ -175,6 +357,25 @@
         UiData.on('bgm', function(val) {
             setTitle(val);
         });
+        // 从 Flash 同步设置状态（存档恢复 / 手动切换）
+        UiData.on('jbo', function(val) {
+            settingsState.override = (val === '1');
+            syncSettingUI('override', settingsState.override);
+        });
+        UiData.on('jbr', function(val) {
+            settingsState.trueRandom = (val === '1');
+            syncSettingUI('trueRandom', settingsState.trueRandom);
+        });
+    }
+
+    function syncSettingUI(key, active) {
+        if (!settingsMenu) return;
+        var items = settingsMenu.querySelectorAll('.jb-setting-item');
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].getAttribute('data-key') === key) {
+                items[i].classList.toggle('active', active);
+            }
+        }
     }
 
     // 通知动画结束清理
