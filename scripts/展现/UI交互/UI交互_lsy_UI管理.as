@@ -135,6 +135,9 @@ _root.gameCommands["jukeboxTrackEnd"] = function() {
 _root.gameCommands["jukeboxTrueRandom"] = function(params) {
     _root.soundEffectManager.setTrueRandom(params.value == true || params.value == "true");
 };
+_root.gameCommands["jukeboxPlayMode"] = function(params) {
+    _root.soundEffectManager.setPlayMode(params.value);
+};
 
 // ============================================================
 // 游戏状态通知 → WebView 按钮可见性

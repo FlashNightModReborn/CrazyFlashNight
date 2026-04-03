@@ -220,9 +220,11 @@ var Notch = (function() {
         if (trt && trt.offsetParent !== null) pushRect(trt);
         var jbp = document.getElementById('jukebox-panel');
         if (jbp && jbp.offsetParent !== null) pushRect(jbp);
-        // 点歌器设置下拉菜单（position:absolute，超出面板区域）
+        // 点歌器浮动菜单（position:absolute，超出面板区域）
         var jbsm = document.getElementById('jukebox-settings-menu');
         if (jbsm && jbsm.offsetParent !== null) pushRect(jbsm);
+        var jbao = document.getElementById('jukebox-album-options');
+        if (jbao && jbao.offsetParent !== null) pushRect(jbao);
         // 帮助弹窗
         var jbhm = document.getElementById('jukebox-help-modal');
         if (jbhm && jbhm.classList.contains('visible')) pushRect(jbhm);

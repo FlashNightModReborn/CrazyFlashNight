@@ -28,12 +28,15 @@ class org.flashNight.arki.audio.SoundEffectManager {
     private var _bgmSource:String;          // "scene" | "stage" | "jukebox" | null
     private var _currentAlbum:String;       // 当前播放曲目所属专辑
     private var _currentLoop:Boolean;       // 当前播放的 loop 状态（用于快照 suppressed）
+    private var _sceneIsAlbumMode:Boolean;  // 当前场景 BGM 是否通过 album 模式进入（区分单曲 vs 专辑）
     private var _jukeboxOverride:Boolean;   // 是否覆盖关卡BGM
     private var _jukeboxActive:Boolean;     // 点歌器是否有选中的曲目
     private var _jukeboxTitle:String;       // 点歌器选中的曲目 title
     private var _jukeboxLoop:Boolean;       // 点歌器是否循环
     private var _trueRandom:Boolean;        // true=真随机, false=伪随机(默认,不重复)
     private var _lastRandomTitle:String;    // 上一次随机选取的曲目
+    private var _playMode:String;           // "singleLoop" | "albumLoop" | "playOnce"
+    private var _jukeboxAlbum:String;       // 点歌器当前曲目所属专辑（用于 albumLoop）
 
     // ── 专辑索引 ──
     private var _albumIndex:Object;         // album → [{title, weight}, ...]
@@ -48,6 +51,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
         currentBGMBaseVolume = 100;
         currentFadeDuration = 20;
         currentBGMUrl = null;
+        bgmList = new Object();
 
         _bgmSource = null;
         _currentAlbum = null;
@@ -57,6 +61,8 @@ class org.flashNight.arki.audio.SoundEffectManager {
         _jukeboxLoop = true;
         _trueRandom = false;
         _lastRandomTitle = null;
+        _playMode = "singleLoop";
+        _jukeboxAlbum = null;
         _albumIndex = {};
         _suppressedScene = null;
         _suppressedStage = null;
@@ -223,6 +229,8 @@ class org.flashNight.arki.audio.SoundEffectManager {
             // 快照 jukebox 意图（如果 jukebox 正在播放）
             // jukeboxPlay 时已经快照了 scene，这里无需重复
         } else if (source == "scene") {
+            // scene 请求到达意味着已离开战斗，无条件清除过期的 stage 快照
+            _suppressedStage = null;
             if (_jukeboxActive) {
                 // 更新 suppressed scene（记录最新的场景意图）
                 _suppressedScene = {type: "single", title: title, loop: loop};
@@ -230,7 +238,6 @@ class org.flashNight.arki.audio.SoundEffectManager {
                 // ★ 自动恢复：刚被 stop 后 jukebox 需要重新开始播放
                 if (currentBGMUrl == null) {
                     playBGMWithSource(_jukeboxTitle, "jukebox", _jukeboxLoop, null);
-                    _suppressedStage = null; // 已离开战斗，清除过期快照
                 }
                 return;
             }
@@ -251,6 +258,8 @@ class org.flashNight.arki.audio.SoundEffectManager {
             _bgmSource = source;
             _currentAlbum = bgm.album;
             _currentLoop = loop;
+            // 单曲调用不改变 _sceneIsAlbumMode（由 playAlbumBGM 设置）
+            if (source == "scene") _sceneIsAlbumMode = false;
             trace("[BGM] source=" + source + " title=" + title + " result=play");
             org.flashNight.arki.render.FrameBroadcaster.pushUiState("jbs:" + source);
         }
@@ -272,12 +281,12 @@ class org.flashNight.arki.audio.SoundEffectManager {
         // 在调用 playBGMWithSource 之前，先检查是否会被 jukebox 拒绝
         // 如果会被拒绝，直接在这里记录 album 级别的 suppressed 意图
         if (source == "scene" && _jukeboxActive) {
+            _suppressedStage = null; // scene 到达 = 已离开战斗
             _suppressedScene = {type: "album", album: album, loop: loop, defaultTitle: defaultTitle};
             trace("[BGM] source=scene album=" + album + " result=reject_by_jukebox (album preserved)");
             // 自动恢复 jukebox（如果刚被 stop）
             if (currentBGMUrl == null) {
                 playBGMWithSource(_jukeboxTitle, "jukebox", _jukeboxLoop, null);
-                _suppressedStage = null;
             }
             return;
         }
@@ -293,6 +302,8 @@ class org.flashNight.arki.audio.SoundEffectManager {
 
         var selectedTitle:String = weightedRandom(tracks);
         playBGMWithSource(selectedTitle, source, loop, null);
+        // playBGMWithSource 会设 _sceneIsAlbumMode=false，这里覆盖回 true
+        if (source == "scene") _sceneIsAlbumMode = true;
     }
 
     /**
@@ -334,7 +345,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
     public function jukeboxPlay(title:String):Void {
         // 快照当前被压制的意图（使用 _currentLoop 保留原始 loop 语义）
         if (_bgmSource == "scene") {
-            if (_currentAlbum != null && _currentAlbum != "") {
+            if (_sceneIsAlbumMode) {
                 _suppressedScene = {type: "album", album: _currentAlbum, loop: _currentLoop, defaultTitle: null};
             } else {
                 var currentTitle:String = findTitleByUrl(currentBGMUrl);
@@ -347,8 +358,12 @@ class org.flashNight.arki.audio.SoundEffectManager {
 
         _jukeboxActive = true;
         _jukeboxTitle = title;
-        _jukeboxLoop = true;
-        playBGMWithSource(title, "jukebox", true, null);
+        // 播放模式决定 loop：singleLoop 循环，其余不循环（由 trackEnd 处理续播/恢复）
+        _jukeboxLoop = (_playMode == "singleLoop");
+        // 记录曲目所属专辑（albumLoop 模式需要）
+        var bgmInfo:Object = bgmList[title];
+        _jukeboxAlbum = (bgmInfo != null) ? bgmInfo.album : null;
+        playBGMWithSource(title, "jukebox", _jukeboxLoop, null);
     }
 
     public function jukeboxStop():Void {
@@ -358,10 +373,27 @@ class org.flashNight.arki.audio.SoundEffectManager {
     }
 
     public function jukeboxTrackEnd():Void {
-        if (!_jukeboxActive) return; // 非 jukebox 播放结束，忽略
-        if (_jukeboxLoop) return;    // 循环模式不会自然结束（防御性）
+        if (!_jukeboxActive) return;
+        if (_jukeboxLoop) return; // 单曲循环不会自然结束
+
+        if (_playMode == "albumLoop" && _jukeboxAlbum != null) {
+            // 专辑循环：从同专辑随机选下一首
+            var tracks:Array = _albumIndex[_jukeboxAlbum];
+            if (tracks != undefined && tracks.length > 0) {
+                var nextTitle:String = weightedRandom(tracks);
+                _jukeboxTitle = nextTitle;
+                // 清空 currentBGMUrl 以允许播放（doPlayBGM 有去重检查）
+                currentBGMUrl = null;
+                playBGMWithSource(nextTitle, "jukebox", false, null);
+                trace("[BGM] albumLoop: next=" + nextTitle);
+                return;
+            }
+        }
+
+        // playOnce 或 albumLoop 无曲目：恢复默认
         _jukeboxActive = false;
         _jukeboxTitle = null;
+        _jukeboxAlbum = null;
         restoreSuppressed();
     }
 
@@ -369,9 +401,10 @@ class org.flashNight.arki.audio.SoundEffectManager {
      * 兜底恢复：场景切换后调用，确保 jukebox 不因"目标场景无 BGM 配置"而丢失。
      */
     public function resumeJukeboxIfNeeded():Void {
+        // 此方法在场景加载末尾调用，意味着已离开战斗
+        _suppressedStage = null;
         if (_jukeboxActive && currentBGMUrl == null) {
             playBGMWithSource(_jukeboxTitle, "jukebox", _jukeboxLoop, null);
-            _suppressedStage = null; // 已离开战斗，清除过期快照
         }
     }
 
@@ -391,6 +424,25 @@ class org.flashNight.arki.audio.SoundEffectManager {
         _trueRandom = (value == true);
         trace("[BGM] trueRandom=" + _trueRandom);
         org.flashNight.arki.render.FrameBroadcaster.pushUiState("jbr:" + (_trueRandom ? "1" : "0"));
+    }
+
+    public function setPlayMode(mode:String):Void {
+        if (mode != "singleLoop" && mode != "albumLoop" && mode != "playOnce") mode = "singleLoop";
+        _playMode = mode;
+        trace("[BGM] playMode=" + _playMode);
+        org.flashNight.arki.render.FrameBroadcaster.pushUiState("jbm:" + _playMode);
+        // 如果 jukebox 正在播放，切换 loop 状态
+        if (_jukeboxActive) {
+            _jukeboxLoop = (_playMode == "singleLoop");
+            // 需要通知 native 层更新 loop（重新播放同一首）
+            if (currentBGMUrl != null) {
+                doPlayBGM(_jukeboxTitle, _jukeboxLoop, null);
+            }
+        }
+    }
+
+    public function getPlayMode():String {
+        return _playMode;
     }
 
     public function getJukeboxOverride():Boolean {

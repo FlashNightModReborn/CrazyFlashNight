@@ -91,6 +91,7 @@ namespace CF7Launcher.Guardian
         private string _bgmTitle = ""; // 当前曲目标题（由 UiData bgm: 设置）
         private bool _wasPlaying;       // 上一 tick 的 playing 状态（trackEnd 检测）
         private bool _manualStop;       // 手动 stop 标记（防 trackEnd 误判）
+        private bool _bgmPaused;        // 暂停标记（暂停期间不触发 trackEnd）
 
         // 音乐目录
         private CF7Launcher.Audio.MusicCatalog _musicCatalog;
@@ -498,14 +499,14 @@ namespace CF7Launcher.Guardian
                 sb.Append('}');
                 PostToWeb(sb.ToString());
 
-                // 曲目自然结束检测（jukebox trackEnd 恢复）
+                // 曲目自然结束检测（排除暂停和手动 stop）
                 bool isPlaying = playing == 1;
-                if (_wasPlaying && !isPlaying && !_manualStop)
+                if (_wasPlaying && !isPlaying && !_manualStop && !_bgmPaused)
                 {
                     SendGameCommand("jukeboxTrackEnd");
                 }
                 _wasPlaying = isPlaying;
-                if (isPlaying) _manualStop = false;
+                if (isPlaying) { _manualStop = false; _bgmPaused = false; }
             }
             catch { }
         }
@@ -789,9 +790,23 @@ namespace CF7Launcher.Guardian
                     SendGameCommandWithData("jukeboxTrueRandom",
                         "\"value\":" + (tr ? "true" : "false"));
                     break;
+                case "playMode":
+                    string mode = ExtractString(json, "\"value\":\"");
+                    if (mode != null)
+                        SendGameCommandWithData("jukeboxPlayMode",
+                            "\"value\":\"" + EscapeJsonString(mode) + "\"");
+                    break;
                 case "seek":
                     float sec = ExtractFloat(json, "\"sec\":");
                     Audio.AudioEngine.ma_bridge_bgm_seek(sec);
+                    break;
+                case "pause":
+                    _bgmPaused = true;
+                    Audio.AudioEngine.ma_bridge_bgm_pause();
+                    break;
+                case "resume":
+                    _bgmPaused = false;
+                    Audio.AudioEngine.ma_bridge_bgm_resume();
                     break;
                 case "stop":
                     _manualStop = true;

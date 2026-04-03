@@ -15,20 +15,28 @@
     var progBar   = document.getElementById('jukebox-progress');
 
     // 浏览器元素
-    var albumSelect = document.getElementById('jukebox-album-select');
-    var trackList   = document.getElementById('jukebox-track-list');
+    var albumDropdown = document.getElementById('jukebox-album-dropdown');
+    var albumTrigger  = document.getElementById('jukebox-album-trigger');
+    var albumLabel    = document.getElementById('jukebox-album-label');
+    var albumOptions  = document.getElementById('jukebox-album-options');
+    var trackList     = document.getElementById('jukebox-track-list');
 
     // 设置菜单
     var settingsWrap   = document.getElementById('jukebox-settings');
     var settingsToggle = document.getElementById('jukebox-settings-toggle');
     var settingsMenu   = document.getElementById('jukebox-settings-menu');
 
+    var miniCanvas = document.getElementById('jukebox-mini-wave');
+
     if (!panel || !canvas) return;
 
     var ctx       = canvas.getContext('2d');
+    var miniCtx   = miniCanvas ? miniCanvas.getContext('2d') : null;
     var dpr       = window.devicePixelRatio || 1;
     var cssW      = 168;
     var cssH      = 32;
+    var miniW     = 120;
+    var miniH     = 20;
 
     // 波形历史 ring buffer
     var HISTORY   = 100;
@@ -51,10 +59,20 @@
     // DPR 感知 canvas
     function resizeCanvas() {
         dpr = window.devicePixelRatio || 1;
+        // 主波形（body 中，固定尺寸）
+        cssW = 168; cssH = 32;
         canvas.width  = cssW * dpr;
         canvas.height = cssH * dpr;
         canvas.style.width  = cssW + 'px';
         canvas.style.height = cssH + 'px';
+        // mini 波形（header 标题区背景）
+        if (miniCanvas && miniCanvas.parentElement) {
+            var mr = miniCanvas.parentElement.getBoundingClientRect();
+            miniW = Math.round(mr.width) || 120;
+            miniH = Math.round(mr.height) || 20;
+            miniCanvas.width  = miniW * dpr;
+            miniCanvas.height = miniH * dpr;
+        }
     }
     resizeCanvas();
     if (window.matchMedia) {
@@ -82,7 +100,9 @@
     function onAudioData(data) {
         var peakL = data.l || 0;
         var peakR = data.r || 0;
+        var wasPlaying = playing;
         playing   = data.p === 1;
+        if (playing && !wasPlaying) syncPauseState(true);
         var cursor   = data.c || 0;
         var duration = data.d || 0;
         currentDuration = duration;
@@ -101,6 +121,8 @@
             timeEl.textContent = '';
         }
 
+        // mini 波形始终渲染（header 底色），主波形仅展开时
+        renderMini();
         if (isExpanded) render();
     }
 
@@ -175,6 +197,37 @@
         ctx.fillRect(0, midY - 0.5 * dpr, w, 1 * dpr);
     }
 
+    // ── mini 波形（header 标题区底色）──
+    function renderMini() {
+        if (!miniCtx) return;
+        var w = miniCanvas.width;
+        var h = miniCanvas.height;
+        var midY = h / 2;
+
+        miniCtx.clearRect(0, 0, w, h);
+        if (histLen === 0) return;
+
+        var barW = w / HISTORY;
+        var maxH = midY - 1 * dpr;
+
+        for (var i = 0; i < histLen; i++) {
+            var idx = (histIdx - histLen + i + HISTORY) % HISTORY;
+            var lv = histL[idx];
+            var rv = histR[idx];
+            var x = i * barW;
+            var age = (histLen - 1 - i) / Math.max(histLen - 1, 1);
+            var alpha = playing ? (0.2 + 0.5 * (1 - age)) : 0.1;
+
+            var hL = Math.max(1 * dpr, lv * maxH);
+            miniCtx.fillStyle = 'rgba(102,204,255,' + alpha + ')';
+            miniCtx.fillRect(x, midY - hL, Math.max(barW - 0.5, 1), hL);
+
+            var hR = Math.max(1 * dpr, rv * maxH);
+            miniCtx.fillStyle = 'rgba(150,220,255,' + (alpha * 0.7) + ')';
+            miniCtx.fillRect(x, midY, Math.max(barW - 0.5, 1), hR);
+        }
+    }
+
     // ══════════════════════════════════════════════
     // ██  目录接收
     // ══════════════════════════════════════════════
@@ -227,20 +280,62 @@
     // ══════════════════════════════════════════════
 
     function renderAlbumSelect() {
-        if (!albumSelect) return;
-        var val = albumSelect.value;
-        albumSelect.innerHTML = '<option value="">全部</option>';
+        if (!albumOptions) return;
+        albumOptions.innerHTML = '';
+        // "全部" 选项
+        var allOpt = document.createElement('div');
+        allOpt.className = 'jb-album-option' + (currentAlbumFilter === '' ? ' active' : '');
+        allOpt.textContent = '全部';
+        allOpt.setAttribute('data-album', '');
+        albumOptions.appendChild(allOpt);
+
         var names = [];
         for (var alb in albums) names.push(alb);
         names.sort();
         for (var i = 0; i < names.length; i++) {
-            var opt = document.createElement('option');
-            opt.value = names[i];
+            var opt = document.createElement('div');
+            opt.className = 'jb-album-option' + (names[i] === currentAlbumFilter ? ' active' : '');
             opt.textContent = names[i] + ' (' + albums[names[i]].length + ')';
-            albumSelect.appendChild(opt);
+            opt.setAttribute('data-album', names[i]);
+            albumOptions.appendChild(opt);
         }
-        albumSelect.value = val;
+        // 更新触发器文本
+        if (albumLabel) {
+            albumLabel.textContent = currentAlbumFilter
+                ? currentAlbumFilter + ' (' + (albums[currentAlbumFilter] || []).length + ')'
+                : '全部';
+        }
     }
+
+    // 自定义下拉交互
+    if (albumTrigger) {
+        albumTrigger.addEventListener('click', function() {
+            albumDropdown.classList.toggle('open');
+            setTimeout(function() {
+                if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
+            }, 50);
+        });
+    }
+    if (albumOptions) {
+        albumOptions.addEventListener('click', function(e) {
+            var opt = e.target;
+            while (opt && !opt.classList.contains('jb-album-option')) opt = opt.parentElement;
+            if (!opt) return;
+            currentAlbumFilter = opt.getAttribute('data-album') || '';
+            albumDropdown.classList.remove('open');
+            renderAlbumSelect(); // 更新 active 标记和触发器文本
+            renderTrackList(currentAlbumFilter);
+            setTimeout(function() {
+                if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
+            }, 50);
+        });
+    }
+    // 点击外部关闭下拉
+    document.addEventListener('click', function(e) {
+        if (albumDropdown && !albumDropdown.contains(e.target)) {
+            albumDropdown.classList.remove('open');
+        }
+    });
 
     function renderTrackList(albumFilter) {
         if (!trackList) return;
@@ -277,11 +372,32 @@
         }
     }
 
-    if (albumSelect) {
-        albumSelect.addEventListener('change', function() {
-            currentAlbumFilter = this.value;
-            renderTrackList(currentAlbumFilter);
+    // ══════════════════════════════════════════════
+    // ██  暂停/继续
+    // ══════════════════════════════════════════════
+
+    var pauseBtn = document.getElementById('jukebox-pause-btn');
+    var isPaused = false;
+
+    if (pauseBtn) {
+        pauseBtn.addEventListener('click', function() {
+            isPaused = !isPaused;
+            pauseBtn.classList.toggle('paused', isPaused);
+            pauseBtn.textContent = isPaused ? '\u25B6' : '\u2016'; // ▶ or ‖
+            Bridge.send({type: 'jukebox', cmd: isPaused ? 'pause' : 'resume'});
         });
+    }
+
+    // 播放状态变化时自动重置暂停按钮
+    function syncPauseState(isPlaying) {
+        if (isPlaying && isPaused) {
+            // 外部触发了新曲播放，重置暂停状态
+            isPaused = false;
+            if (pauseBtn) {
+                pauseBtn.classList.remove('paused');
+                pauseBtn.textContent = '\u2016';
+            }
+        }
     }
 
     // ══════════════════════════════════════════════
@@ -315,17 +431,25 @@
 
     var settingsState = {
         override: false,
-        trueRandom: false
+        trueRandom: false,
+        playMode: 'singleLoop'  // singleLoop | albumLoop | playOnce
     };
 
     if (settingsToggle) {
-        settingsToggle.addEventListener('click', function() {
+        settingsToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
             settingsWrap.classList.toggle('open');
             setTimeout(function() {
                 if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
             }, 50);
         });
     }
+    // 点击外部关闭设置
+    document.addEventListener('click', function(e) {
+        if (settingsWrap && !settingsWrap.contains(e.target)) {
+            settingsWrap.classList.remove('open');
+        }
+    });
 
     if (settingsMenu) {
         settingsMenu.addEventListener('click', function(e) {
@@ -337,11 +461,22 @@
             var key = item.getAttribute('data-key');
             if (!key) return;
 
-            // 切换状态
+            if (item.classList.contains('jb-radio')) {
+                // 单选组：同 key 的其他 item 取消 active
+                var val = item.getAttribute('data-value');
+                settingsState[key] = val;
+                var siblings = settingsMenu.querySelectorAll('.jb-radio[data-key="' + key + '"]');
+                for (var s = 0; s < siblings.length; s++) {
+                    siblings[s].classList.toggle('active', siblings[s].getAttribute('data-value') === val);
+                }
+                Bridge.send({type: 'jukebox', cmd: 'playMode', value: val});
+                return;
+            }
+
+            // 切换开关
             settingsState[key] = !settingsState[key];
             item.classList.toggle('active', settingsState[key]);
 
-            // 发送到 Launcher
             if (key === 'override') {
                 Bridge.send({type: 'jukebox', cmd: 'override', value: settingsState.override});
             } else if (key === 'trueRandom') {
@@ -366,17 +501,30 @@
             settingsState.trueRandom = (val === '1');
             syncSettingUI('trueRandom', settingsState.trueRandom);
         });
+        UiData.on('jbm', function(val) {
+            syncPlayModeUI(val);
+        });
     }
 
     function syncSettingUI(key, active) {
         if (!settingsMenu) return;
-        var items = settingsMenu.querySelectorAll('.jb-setting-item');
+        var items = settingsMenu.querySelectorAll('.jb-setting-item[data-key="' + key + '"]');
         for (var i = 0; i < items.length; i++) {
-            if (items[i].getAttribute('data-key') === key) {
-                items[i].classList.toggle('active', active);
-            }
+            items[i].classList.toggle('active', active);
         }
     }
+
+    function syncPlayModeUI(mode) {
+        if (!settingsMenu) return;
+        settingsState.playMode = mode;
+        var radios = settingsMenu.querySelectorAll('.jb-radio[data-key="playMode"]');
+        for (var i = 0; i < radios.length; i++) {
+            radios[i].classList.toggle('active', radios[i].getAttribute('data-value') === mode);
+        }
+    }
+
+    // 初始化默认选中状态
+    syncPlayModeUI('singleLoop');
 
     // ══════════════════════════════════════════════
     // ██  帮助按钮

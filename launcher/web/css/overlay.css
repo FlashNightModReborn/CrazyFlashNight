@@ -636,12 +636,36 @@ html, body {
     max-height:220px; opacity:1;
 }
 /* 无 BGM 时隐藏波形和进度条，但浏览器仍可用 */
-#jukebox-panel:not(.has-bgm) #jukebox-wave {
-    display:none;
-}
+#jukebox-panel:not(.has-bgm) #jukebox-wave,
 #jukebox-panel:not(.has-bgm) #jukebox-progress {
     display:none;
 }
+/* 标题区域（点歌按钮右侧）：含 mini 波形背景 */
+#jukebox-title-area {
+    flex:1; min-width:0;
+    display:flex; align-items:center;
+    position:relative;
+    overflow:hidden;
+    height:100%;
+}
+/* mini 波形：仅覆盖标题区，作为底色 */
+#jukebox-mini-wave {
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 300ms;
+}
+#jukebox-panel.has-bgm #jukebox-mini-wave {
+    opacity:0.4;
+}
+#jukebox-title,
+#jukebox-time {
+    position:relative;
+    z-index:1;
+}
+/* 展开态主波形：独立一栏 */
 #jukebox-wave {
     display:block;
     width:100%;
@@ -677,24 +701,76 @@ html, body {
 #jukebox-panel.expanded #jukebox-browser {
     display:block;
 }
-#jukebox-toolbar {
+/* 控制按钮行（暂停、帮助、设置）：居中排列 */
+#jukebox-controls {
     display:flex;
     align-items:center;
+    justify-content:center;
     gap:2px;
     padding:2px 4px;
+    border-bottom:1px solid rgba(255,255,255,0.06);
 }
-#jukebox-album-select {
-    flex:1; min-width:0;
-    background:rgba(24,24,26,0.9);
-    color:rgba(255,255,255,0.8);
-    border:1px solid rgba(255,255,255,0.15);
+/* ── 自定义专辑下拉 ── */
+#jukebox-album-row {
+    padding:2px 4px;
+}
+#jukebox-album-dropdown {
+    position:relative;
+}
+#jukebox-album-trigger {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:3px 6px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.12);
     border-radius:3px;
     font:10px/1.4 "Microsoft YaHei",sans-serif;
-    padding:2px 4px;
-    outline:none;
+    color:rgba(255,255,255,0.8);
+    cursor:pointer;
+    transition:border-color 120ms, background 120ms;
 }
-#jukebox-album-select:focus {
-    border-color:rgba(102,204,255,0.4);
+#jukebox-album-trigger:hover {
+    background:rgba(255,255,255,0.08);
+    border-color:rgba(102,204,255,0.3);
+}
+.jb-dd-arrow {
+    font-size:8px;
+    color:rgba(255,255,255,0.4);
+    margin-left:4px;
+}
+#jukebox-album-options {
+    display:none;
+    position:absolute;
+    top:100%; left:0; right:0;
+    margin-top:2px;
+    max-height:140px;
+    overflow-y:auto;
+    background:rgba(24,24,26,0.94);
+    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:4px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.5);
+    z-index:15;
+}
+#jukebox-album-dropdown.open #jukebox-album-options {
+    display:block;
+}
+#jukebox-album-options::-webkit-scrollbar { width:4px; }
+#jukebox-album-options::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:2px; }
+.jb-album-option {
+    padding:3px 8px;
+    font:10px/1.4 "Microsoft YaHei",sans-serif;
+    color:rgba(255,255,255,0.65);
+    cursor:pointer;
+    transition:background 80ms;
+}
+.jb-album-option:hover {
+    background:rgba(102,204,255,0.12);
+    color:rgba(255,255,255,0.9);
+}
+.jb-album-option.active {
+    background:rgba(102,204,255,0.18);
+    color:rgba(102,204,255,0.95);
 }
 #jukebox-track-list {
     max-height:100px;
@@ -734,19 +810,7 @@ html, body {
     position:relative;
     flex-shrink:0;
 }
-#jukebox-settings-toggle {
-    width:20px; height:20px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:12px; line-height:1;
-    color:rgba(255,255,255,0.4);
-    cursor:pointer;
-    border-radius:3px;
-    transition:color 120ms, background 120ms;
-}
-#jukebox-settings-toggle:hover {
-    color:rgba(102,204,255,0.9);
-    background:rgba(255,255,255,0.08);
-}
+/* settings toggle 继承 .jb-ctrl-btn 基础样式，仅覆盖 open 状态 */
 #jukebox-settings.open #jukebox-settings-toggle {
     color:rgba(102,204,255,0.9);
     background:rgba(255,255,255,0.1);
@@ -799,21 +863,36 @@ html, body {
 .jb-setting-item.active {
     color:rgba(255,255,255,0.85);
 }
+.jb-setting-divider {
+    height:1px;
+    background:rgba(255,255,255,0.08);
+    margin:3px 0;
+}
+.jb-setting-group-label {
+    padding:2px 8px;
+    font:9px/1.2 "Microsoft YaHei",sans-serif;
+    color:rgba(102,204,255,0.5);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
 
-/* ── 帮助按钮 ── */
-#jukebox-help-btn {
-    width:20px; height:20px;
+/* ── 控制按钮通用样式（统一尺寸 + 视觉权重）── */
+.jb-ctrl-btn {
+    width:24px; height:20px;
     display:flex; align-items:center; justify-content:center;
-    font:bold 11px/1 "Consolas","Courier New",monospace;
-    color:rgba(255,255,255,0.35);
+    font:11px/1 "Microsoft YaHei",sans-serif;
+    color:rgba(255,255,255,0.4);
     cursor:pointer;
     border-radius:3px;
     flex-shrink:0;
     transition:color 120ms, background 120ms;
 }
-#jukebox-help-btn:hover {
+.jb-ctrl-btn:hover {
     color:rgba(102,204,255,0.9);
     background:rgba(255,255,255,0.08);
+}
+#jukebox-pause-btn.paused {
+    color:rgba(255,180,80,0.9);
 }
 
 /* ── 帮助弹窗 ── */

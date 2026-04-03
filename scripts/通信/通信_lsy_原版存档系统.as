@@ -41,7 +41,8 @@ _root.存档系统.存储设置 = function(){
         使用滤镜渲染:ws.useFilterRendering,
         立绘类型:_root.立绘类型,
         jukeboxOverride:sem.getJukeboxOverride(),
-        jukeboxTrueRandom:sem.getTrueRandom()
+        jukeboxTrueRandom:sem.getTrueRandom(),
+        jukeboxPlayMode:sem.getPlayMode()
     }
 }
 
@@ -68,6 +69,7 @@ _root.存档系统.读取设置 = function(设置){
     var sem = _root.soundEffectManager;
     if(设置.jukeboxOverride || 设置.jukeboxOverride === false) sem.setJukeboxOverride(设置.jukeboxOverride);
     if(设置.jukeboxTrueRandom || 设置.jukeboxTrueRandom === false) sem.setTrueRandom(设置.jukeboxTrueRandom);
+    if(设置.jukeboxPlayMode) sem.setPlayMode(设置.jukeboxPlayMode);
 }
 
 _root.存档系统.mydata数据组包 = function(){

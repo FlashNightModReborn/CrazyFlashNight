@@ -476,6 +476,19 @@ MA_EXPORT int ma_bridge_bgm_seek(float seconds) {
     return ma_sound_seek_to_second(&g_bgm[g_bgmActive], seconds) == MA_SUCCESS ? 0 : -2;
 }
 
+/* ========== BGM pause/resume ========== */
+
+MA_EXPORT int ma_bridge_bgm_pause(void) {
+    if (!g_initialized || !g_bgmLoaded[g_bgmActive]) return -1;
+    ma_sound_stop(&g_bgm[g_bgmActive]);
+    return 0;
+}
+
+MA_EXPORT int ma_bridge_bgm_resume(void) {
+    if (!g_initialized || !g_bgmLoaded[g_bgmActive]) return -1;
+    return ma_sound_start(&g_bgm[g_bgmActive]) == MA_SUCCESS ? 0 : -2;
+}
+
 /* ========== Global ========== */
 
 MA_EXPORT void ma_bridge_set_master_volume(float volume) {

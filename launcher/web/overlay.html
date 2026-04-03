@@ -79,8 +79,11 @@
 <div id="jukebox-panel">
     <div id="jukebox-header">
         <button id="jukebox-toggle" title="展开/折叠">&#9835; 点歌</button>
-        <span id="jukebox-title">未播放</span>
-        <span id="jukebox-time"></span>
+        <div id="jukebox-title-area">
+            <canvas id="jukebox-mini-wave" width="120" height="20"></canvas>
+            <span id="jukebox-title">未播放</span>
+            <span id="jukebox-time"></span>
+        </div>
     </div>
     <div id="jukebox-body">
         <canvas id="jukebox-wave" width="160" height="32"></canvas>
@@ -88,13 +91,11 @@
             <div id="jukebox-prog-fill"></div>
         </div>
         <div id="jukebox-browser">
-            <div id="jukebox-toolbar">
-                <select id="jukebox-album-select">
-                    <option value="">全部</option>
-                </select>
-                <div id="jukebox-help-btn" title="帮助">?</div>
+            <div id="jukebox-controls">
+                <div id="jukebox-pause-btn" class="jb-ctrl-btn" title="暂停/继续">&#8214;</div>
+                <div id="jukebox-help-btn" class="jb-ctrl-btn" title="帮助">?</div>
                 <div id="jukebox-settings">
-                    <div id="jukebox-settings-toggle" title="设置">&#9881;</div>
+                    <div id="jukebox-settings-toggle" class="jb-ctrl-btn" title="设置">&#9881;</div>
                     <div id="jukebox-settings-menu">
                         <div class="jb-setting-item" data-key="override">
                             <span class="jb-setting-dot"></span>
@@ -104,7 +105,30 @@
                             <span class="jb-setting-dot"></span>
                             <span class="jb-setting-label">真随机</span>
                         </div>
+                        <div class="jb-setting-divider"></div>
+                        <div class="jb-setting-group-label">播放模式</div>
+                        <div class="jb-setting-item jb-radio" data-key="playMode" data-value="singleLoop">
+                            <span class="jb-setting-dot"></span>
+                            <span class="jb-setting-label">单曲循环</span>
+                        </div>
+                        <div class="jb-setting-item jb-radio" data-key="playMode" data-value="albumLoop">
+                            <span class="jb-setting-dot"></span>
+                            <span class="jb-setting-label">专辑循环</span>
+                        </div>
+                        <div class="jb-setting-item jb-radio" data-key="playMode" data-value="playOnce">
+                            <span class="jb-setting-dot"></span>
+                            <span class="jb-setting-label">播完回默认</span>
+                        </div>
                     </div>
+                </div>
+            </div>
+            <div id="jukebox-album-row">
+                <div id="jukebox-album-dropdown">
+                    <div id="jukebox-album-trigger">
+                        <span id="jukebox-album-label">全部</span>
+                        <span class="jb-dd-arrow">&#9662;</span>
+                    </div>
+                    <div id="jukebox-album-options"></div>
                 </div>
             </div>
             <div id="jukebox-track-list"></div>
