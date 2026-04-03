@@ -574,8 +574,9 @@ html, body {
     border-top:none; /* 与工具条同一卡片，无缝衔接 */
     border-radius:0 0 6px 6px; /* 整个卡片的底部圆角 */
     pointer-events:auto;
-    overflow:hidden;
-    transition:max-height 280ms ease;
+    /* 不设 overflow:hidden — body 自身的 max-height+overflow 控制收起动画，
+       面板需要 overflow:visible 让弹出菜单（设置/专辑下拉）可以超出 */
+    overflow:visible;
 }
 /* 游戏未加载时隐藏 */
 #notch:not(.game-ready) ~ #jukebox-panel { display:none; }
@@ -633,7 +634,7 @@ html, body {
     transition:max-height 250ms ease, opacity 200ms ease;
 }
 #jukebox-panel.expanded #jukebox-body {
-    max-height:220px; opacity:1;
+    max-height:400px; opacity:1;
 }
 /* 无 BGM 时隐藏波形和进度条，但浏览器仍可用 */
 #jukebox-panel:not(.has-bgm) #jukebox-wave,
@@ -817,6 +818,8 @@ html, body {
     left:0; right:0; /* 与面板等宽 */
     margin-top:2px;
     padding:3px 0;
+    max-height:200px;
+    overflow-y:auto;
     background:rgba(24,24,26,0.92);
     -webkit-backdrop-filter:blur(12px);
     backdrop-filter:blur(12px);
@@ -825,6 +828,8 @@ html, body {
     box-shadow:0 4px 16px rgba(0,0,0,0.5);
     z-index:20;
 }
+#jukebox-settings-menu::-webkit-scrollbar { width:4px; }
+#jukebox-settings-menu::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:2px; }
 #jukebox-settings.open #jukebox-settings-menu {
     display:block;
 }

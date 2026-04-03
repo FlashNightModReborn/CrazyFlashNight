@@ -495,9 +495,13 @@ MA_EXPORT int ma_bridge_bgm_pause(void) {
 }
 
 MA_EXPORT int ma_bridge_bgm_resume(void) {
-    if (!g_initialized || !g_bgmLoaded[g_bgmActive]) return -1;
-    /* 只恢复 active slot — 旧 slot 已在 crossfade 中淡出完毕 */
-    return ma_sound_start(&g_bgm[g_bgmActive]) == MA_SUCCESS ? 0 : -2;
+    int i;
+    if (!g_initialized) return -1;
+    /* 恢复所有已加载的 slot（与 pause 对称，保留 crossfade 语义） */
+    for (i = 0; i < 2; i++) {
+        if (g_bgmLoaded[i]) ma_sound_start(&g_bgm[i]);
+    }
+    return 0;
 }
 
 /* ========== Global ========== */
