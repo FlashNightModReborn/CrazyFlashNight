@@ -138,6 +138,12 @@ _root.gameCommands["jukeboxTrueRandom"] = function(params) {
 _root.gameCommands["jukeboxPlayMode"] = function(params) {
     _root.soundEffectManager.setPlayMode(params.value);
 };
+_root.gameCommands["setGlobalVolume"] = function(params) {
+    if (!isNaN(params.value)) _root.soundEffectManager.setGlobalVolume(Number(params.value));
+};
+_root.gameCommands["setBGMVolume"] = function(params) {
+    if (!isNaN(params.value)) _root.soundEffectManager.setBGMVolume(Number(params.value));
+};
 
 // ============================================================
 // 游戏状态通知 → WebView 按钮可见性

@@ -810,7 +810,20 @@ namespace CF7Launcher.Guardian
                     break;
                 case "stop":
                     _manualStop = true;
+                    if (_bgmPaused)
+                    {
+                        _bgmPaused = false;
+                        Audio.AudioEngine.ma_bridge_bgm_resume();
+                    }
                     SendGameCommand("jukeboxStop");
+                    break;
+                case "volGlobal":
+                    int vg = ExtractInt(json, "\"value\":");
+                    SendGameCommandWithData("setGlobalVolume", "\"value\":" + vg);
+                    break;
+                case "volBgm":
+                    int vb = ExtractInt(json, "\"value\":");
+                    SendGameCommandWithData("setBGMVolume", "\"value\":" + vb);
                     break;
                 case "loadHelp":
                     LoadAndPushHelp();

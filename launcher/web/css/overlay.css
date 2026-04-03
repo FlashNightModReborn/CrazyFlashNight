@@ -796,6 +796,7 @@ html, body {
 #jukebox-track-list {
     max-height:100px;
     overflow-y:auto;
+    overflow-x:hidden; /* 水平裁剪，让子元素 overflow:hidden 生效 */
     margin:2px 0;
 }
 #jukebox-track-list::-webkit-scrollbar {
@@ -815,11 +816,13 @@ html, body {
     cursor:pointer;
     white-space:nowrap;
     overflow:hidden;
+    /* 限制宽度=列表宽度，防止内容撑开导致溢出检测失效 */
+    max-width:100%;
 }
-/* 选中/高亮的曲目名如果溢出则滚动 */
-.track-item.active .marquee-inner,
-.track-item:hover .marquee-inner {
-    animation:jukebox-marquee var(--marquee-dur, 5s) linear infinite;
+/* 选中/高亮的曲目名：仅溢出项（有 scrolling class）在 active/hover 时滚动 */
+.track-item.scrolling.active .marquee-inner,
+.track-item.scrolling:hover .marquee-inner {
+    animation:jukebox-marquee var(--marquee-dur) linear infinite;
 }
 .track-item:hover {
     background:rgba(102,204,255,0.1);
@@ -891,6 +894,61 @@ html, body {
 .jb-setting-item.active {
     color:rgba(255,255,255,0.85);
 }
+/* ── 音量滑条（自定义 div，不依赖原生 range input） ── */
+.jb-slider-row {
+    display:flex; align-items:center; gap:4px;
+    padding:3px 8px;
+}
+.jb-slider-label {
+    font:9px/1 "Microsoft YaHei",sans-serif;
+    color:rgba(255,255,255,0.5);
+    width:22px; flex-shrink:0;
+}
+.jb-slider-track {
+    flex:1; min-width:0;
+    height:14px;
+    position:relative;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+}
+.jb-slider-track::before {
+    content:'';
+    position:absolute;
+    left:0; right:0;
+    height:3px;
+    background:rgba(255,255,255,0.12);
+    border-radius:2px;
+}
+.jb-slider-fill {
+    position:absolute;
+    left:0;
+    height:3px;
+    background:rgba(102,204,255,0.5);
+    border-radius:2px;
+    pointer-events:none;
+    width:50%;
+}
+.jb-slider-thumb {
+    position:absolute;
+    width:10px; height:10px;
+    border-radius:50%;
+    background:rgba(102,204,255,0.9);
+    pointer-events:none;
+    left:50%;
+    transform:translateX(-50%);
+    transition:background 100ms;
+}
+.jb-slider-track:hover .jb-slider-thumb {
+    background:rgba(102,204,255,1);
+    box-shadow:0 0 4px rgba(102,204,255,0.4);
+}
+.jb-slider-value {
+    font:9px/1 "Consolas","Courier New",monospace;
+    color:rgba(255,255,255,0.4);
+    width:18px; text-align:right; flex-shrink:0;
+}
+
 .jb-setting-divider {
     height:1px;
     background:rgba(255,255,255,0.08);

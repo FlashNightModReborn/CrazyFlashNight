@@ -113,11 +113,23 @@
     function checkMarqueeOverflow(el) {
         var inner = el.querySelector('.marquee-inner');
         if (!inner) return;
-        var overflow = inner.scrollWidth - el.clientWidth;
+        // 用 scrollWidth vs clientWidth：scrollWidth 是完整内容宽度，
+        // clientWidth 是可见区域宽度（受 overflow:hidden 约束）。
+        // 如果 el 本身被内容撑开（clientWidth == scrollWidth），
+        // 回退到父容器宽度作为可见区域参考。
+        var containerW = el.clientWidth;
+        var contentW = el.scrollWidth;
+        if (contentW <= containerW && el.parentElement) {
+            containerW = el.parentElement.clientWidth;
+            contentW = inner.getBoundingClientRect().width;
+        }
+        var overflow = contentW - containerW;
         if (overflow > 2) {
             var speed = el._marqueeSpeed || 25;
-            var dur = Math.max(4, overflow / speed);
-            el.style.setProperty('--marquee-dist', '-' + overflow + 'px');
+            // 多滚 8px 留出右侧呼吸空间
+            var dist = overflow + 8;
+            var dur = Math.max(4, dist / speed);
+            el.style.setProperty('--marquee-dist', '-' + dist + 'px');
             el.style.setProperty('--marquee-dur', dur + 's');
             if (!el.classList.contains('scrolling')) {
                 el.classList.add('scrolling');
@@ -390,10 +402,20 @@
             div.className = 'track-item';
             div.innerHTML = '<span class="marquee-inner">' + escHtml(source[i].title) + '</span>';
             div.setAttribute('data-title', source[i].title);
+            div._marqueeSpeed = 25;
             if (source[i].title === bgmTitle) div.classList.add('active');
             div.addEventListener('click', onTrackClick);
+            div.addEventListener('mouseenter', onTrackHover);
             trackList.appendChild(div);
         }
+    }
+
+    function onTrackHover(e) {
+        var item = e.currentTarget;
+        // 首次 hover 时测量溢出，之后复用
+        if (item._marqueeChecked) return;
+        item._marqueeChecked = true;
+        checkMarqueeOverflow(item);
     }
 
     function onTrackClick(e) {
@@ -440,7 +462,6 @@
 
     if (stopBtn) {
         stopBtn.addEventListener('click', function() {
-            // 停止点歌器，恢复默认场景 BGM
             isPaused = false;
             if (pauseBtn) {
                 pauseBtn.classList.remove('paused');
@@ -449,6 +470,63 @@
             Bridge.send({type: 'jukebox', cmd: 'stop'});
         });
     }
+
+    // ══════════════════════════════════════════════
+    // ██  音量滑条（自定义 div，click + drag）
+    // ══════════════════════════════════════════════
+
+    var sliders = {};  // key → {track, fill, thumb, valEl, value, cmd}
+
+    function initSlider(key, cmd, defaultVal) {
+        var row = document.querySelector('.jb-slider-row[data-slider="' + key + '"]');
+        if (!row) return;
+        var s = {
+            track: row.querySelector('.jb-slider-track'),
+            fill: row.querySelector('.jb-slider-fill'),
+            thumb: row.querySelector('.jb-slider-thumb'),
+            valEl: row.querySelector('.jb-slider-value'),
+            value: defaultVal,
+            cmd: cmd
+        };
+        sliders[key] = s;
+        updateSliderUI(s);
+
+        s.track.addEventListener('mousedown', function(e) {
+            applySliderFromEvent(s, e);
+            var onMove = function(ev) { applySliderFromEvent(s, ev); };
+            var onUp = function() {
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onUp);
+            };
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        });
+    }
+
+    function applySliderFromEvent(s, e) {
+        var rect = s.track.getBoundingClientRect();
+        var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        s.value = Math.round(pct * 100);
+        updateSliderUI(s);
+        Bridge.send({type: 'jukebox', cmd: s.cmd, value: s.value});
+    }
+
+    function updateSliderUI(s) {
+        var pct = s.value + '%';
+        s.fill.style.width = pct;
+        s.thumb.style.left = pct;
+        if (s.valEl) s.valEl.textContent = s.value;
+    }
+
+    function setSliderValue(key, val) {
+        var s = sliders[key];
+        if (!s) return;
+        s.value = Math.max(0, Math.min(100, val));
+        updateSliderUI(s);
+    }
+
+    initSlider('volGlobal', 'volGlobal', 50);
+    initSlider('volBgm', 'volBgm', 80);
 
     // 播放状态变化时自动重置暂停按钮
     function syncPauseState(isPlaying) {
@@ -565,6 +643,15 @@
         });
         UiData.on('jbm', function(val) {
             syncPlayModeUI(val);
+        });
+        // 音量同步（存档加载后 Flash 推送当前值）
+        UiData.on('vg', function(val) {
+            var v = parseInt(val, 10);
+            if (!isNaN(v)) setSliderValue('volGlobal', v);
+        });
+        UiData.on('vb', function(val) {
+            var v = parseInt(val, 10);
+            if (!isNaN(v)) setSliderValue('volBgm', v);
         });
     }
 

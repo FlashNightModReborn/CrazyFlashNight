@@ -573,6 +573,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
         if (isNaN(value) || value > 100 || value < 0) return;
         globalVolume = value;
         AudioBridge.setMasterVolume(value / 100);
+        org.flashNight.arki.render.FrameBroadcaster.pushUiState("vg:" + Math.round(value));
     }
 
     public function getGlobalVolume():Number {
@@ -584,6 +585,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
         bgmVolume = value;
         var finalVolume:Number = currentBGMBaseVolume * bgmVolume / 100;
         AudioBridge.setBGMVolume(finalVolume / 100);
+        org.flashNight.arki.render.FrameBroadcaster.pushUiState("vb:" + Math.round(value));
     }
 
     public function getBGMVolume():Number {
