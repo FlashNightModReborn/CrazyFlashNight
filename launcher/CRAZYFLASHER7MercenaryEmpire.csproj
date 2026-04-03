@@ -87,6 +87,7 @@
     <Compile Include="src\Guardian\INotchSink.cs" />
     <Compile Include="src\Guardian\WebOverlayForm.cs" />
     <Compile Include="src\Guardian\InputShieldForm.cs" />
+    <Compile Include="src\Guardian\PerfDecisionEngine.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

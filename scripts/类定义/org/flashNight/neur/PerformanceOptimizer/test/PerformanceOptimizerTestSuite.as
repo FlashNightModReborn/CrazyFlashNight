@@ -1,9 +1,8 @@
 ﻿import org.flashNight.neur.PerformanceOptimizer.test.IntervalSamplerTest;
-import org.flashNight.neur.PerformanceOptimizer.test.AdaptiveKalmanStageTest;
-import org.flashNight.neur.PerformanceOptimizer.test.HysteresisQuantizerTest;
 import org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest;
 import org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest;
 import org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark;
+// AdaptiveKalmanStageTest, HysteresisQuantizerTest: 已迁移到 C# PerfDecisionEngine
 
 /**
  * PerformanceOptimizerTestSuite — 性能调度系统全局测试入口
@@ -43,8 +42,6 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceOptimizerTestSuit
 
         // ── 依次执行各子套件 ──
         report += _runSuite("IntervalSampler",       IntervalSamplerTest);
-        report += _runSuite("AdaptiveKalmanStage",   AdaptiveKalmanStageTest);
-        report += _runSuite("HysteresisQuantizer",   HysteresisQuantizerTest);
         report += _runSuite("PerformanceActuator",   PerformanceActuatorTest);
         report += _runSuite("PerformanceScheduler",  PerformanceSchedulerTest);
 

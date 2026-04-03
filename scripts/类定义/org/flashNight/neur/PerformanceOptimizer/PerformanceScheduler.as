@@ -1,112 +1,27 @@
-﻿import org.flashNight.neur.Controller.PIDController;
-import org.flashNight.neur.Controller.SimpleKalmanFilter1D;
-import org.flashNight.arki.render.FrameBroadcaster;
+﻿import org.flashNight.arki.render.FrameBroadcaster;
 
 /**
- * PerformanceScheduler - 性能调度门面/协调器
+ * PerformanceScheduler - 性能调度薄壳（采样 + 广播 + 远程/本地执行）
  *
- * 目标：
- * - 将工作版本中位于 `_root.帧计时器` 的过程式性能调度逻辑，拆分为可解释、可测试、可替换模块；
- * - 在行为上保持等价（同输入序列下产生同样的档位切换与副作用）。
+ * 决策逻辑已迁移到 C# PerfDecisionEngine（launcher/src/Guardian/PerfDecisionEngine.cs）。
+ * AS2 端仅负责：
+ * 1. 帧计数 + 区间平均 FPS 测量（IntervalSampler）
+ * 2. FPS 载荷广播（FrameBroadcaster → C# FrameTask）
+ * 3. 接收 C# P 指令并执行（applyFromLauncher → PerformanceActuator）
+ * 4. 本地后备：Socket 断连时的极简阈值降级
  *
- * 【反馈控制主循环 (evaluate)】
- * ───────────────────────────────────────────────────────────
- *   每帧调用 → 采样计数器递减 → 到达采样点？
- *                                     │
- *                               ┌─────┴─────┐
- *                              否           是
- *                               │           │
- *                               ▼           ▼
- *                            返回     1.测量FPS    ← 区间平均: ȳ_k = N_k / Δt_k
- *                                          ↓
- *                                     2.更新Q      ← 自适应: Q = Q₀ × dt
- *                                          ↓
- *                                     3.卡尔曼滤波  ← 状态估计: ŷ_k = Kalman(ȳ_k)
- *                                          ↓
- *                                     4.PID计算    ← 控制律: u*_k = PID(r - ŷ_k)
- *                                          ↓
- *                                     5.量化       ← u_k = round(u*_k) ∈ {0,1,2,3}
- *                                          ↓
- *                                     6.迟滞确认   ← 非对称施密特触发器: 降级2次/升级3次
- *                                          ↓
- *                                     7.执行调整   ← 修改特效/画质/刷佣兵等参数
- *                                          ↓
- *                                     8.重置采样   ← N_{k+1} = 帧率 × (1 + u_k)
+ * 【数据流】
+ *   evaluate() 每帧调用 → 采样计数器递减 → 到达采样点 → 测量 FPS → 广播
+ *   C# PerfDecisionEngine 收到 FPS → 统计决策 → P{tier}|{softU100}
+ *   ServerManager P 前缀 → applyFromLauncher() → PerformanceActuator.apply()
  *
- * 【PID 控制律】
- * ───────────────────────────────────────────────────────────
- *   u*(t) = Kp·e(t) + Ki·∫e(τ)dτ + Kd·de(t)/dt
- *   离散化: u*_k = Kp·e_k + Ki·Σ(e_i·Δt) + Kd·(e_k - e_{k-1})/Δt
- *
- *   参数物理意义：
- *   • Kp (比例增益): 控制响应速度，Kp↑ → 响应快但易超调
- *     经验公式: Kp ≈ 1/ΔFPS，当前 Kp=0.2 等价假设「一档 ≈ 5 FPS」
- *   • Ki (积分增益): 消除稳态误差，Ki↑ → 精度高但易振荡
- *     integralMax 限制积分饱和（Anti-Windup）
- *   • Kd (微分增益): 控制对误差变化率的响应
- *
- *   【工程实态】PID 在本系统中退化为「PD + 方向偏置」的阈值生成器
- *   ───────────────────────────────────────────────────────────
- *   由于 deltaTime 传入帧数（30~120）而非秒（详见 IntervalSampler.getPIDDeltaTimeFrames）：
- *
- *   积分项: integral += error × 30~120 → 首拍即 clamp 到 integralMax=3
- *           iTerm = Ki × integral = 0.5 × (±3) = ±1.5（常量方向偏置）
- *           实际作用: 帧率低于目标→+1.5, 高于目标→-1.5, 加速跨越量化边界
- *
- *   微分项: errorDiff = Δerror / 30~120（缩小30-120倍）
- *           有效增益 ≈ Kd/deltaTime = -30/30~120 ≈ -1.0 ~ -0.25
- *           实际作用: 中等强度的阻尼项（详见下文 Kd 分析）
- *
- *   比例项: 唯一真正随误差连续变化的分量
- *           P = 0.2 × error = 0.2 × (26 - filteredFPS)
- *
- *   合计: pidOutput ≈ 0.2×error ± 1.5 + D_damping
- *   经 round()→clamp[0,3]→迟滞确认 后，只剩下「跨没跨过量化边界」这一位信息
- *   因此 PID 参数精度对最终切档决策的影响极小，系统稳定性由迟滞量化器主导
- *
- *   【Kd = -30 的实际工程效果】阻尼器，而非预见性控制
- *   ───────────────────────────────────────────────────────────
- *   误差定义: e = targetFPS - denoisedFPS
- *
- *   帧率下降时: e 增大 → de/dt > 0 → D = kd × de/dt = -30 × 正 = 负
- *     → D 抵消 P，减缓 PID 输出上升 → 不急于降级，过滤瞬时帧率跌落
- *     实测: FPS 骤降时 D ≈ -0.8 ~ -1.3，部分抵消 P ≈ +1.0 ~ +2.0
- *
- *   帧率上升时: e 减小 → de/dt < 0 → D = kd × de/dt = -30 × 负 = 正
- *     → D 拉住 P，减缓 PID 输出下降 → 不急于恢复，防止刚升回就被打回
- *     实测: FPS 回升时 D ≈ +0.05 ~ +0.3，延缓恢复
- *
- *   稳态时: de/dt ≈ 0 → D ≈ 0，微分项退场
- *
- *   |Kd|=30 远大于 Kp=0.2（150倍），但 deltaTime=帧数 将其缩小30-120倍，
- *   最终有效增益 ≈ -1.0 ~ -0.25，与 P 项同量级，形成有意义但不主导的阻尼。
- *   若 deltaTime 为秒（~1s），D 将达到 ±30~60，远超 P+I，系统会发散。
- *   因此帧数单位不是 bug，而是让 |Kd|=30 工作在合理范围的必要条件。
- *
- *   【控制目标】targetFPS = 26（而非30）— 死区/裕度设计
- *     Flash 帧率硬上限 = 30 FPS，系统饱和在30时控制器「不可控」。
- *     目标26预留4FPS裕度，避免在 29~30 FPS 区间被噪声频繁踢导致切档。
- *
- * 组件：
- * - IntervalSampler        变周期采样器（区间平均测量 + 窗口重置）
- * - AdaptiveKalmanStage    自适应卡尔曼滤波（包装 SimpleKalmanFilter1D）
- * - PIDController          现有PID（由 PIDControllerFactory 异步加载参数）
- * - HysteresisQuantizer    非对称迟滞量化器（降级2次/升级3次确认）
- * - PerformanceActuator    执行器（应用具体降载策略）
- * - FPSVisualization       已迁移到 launcher WebView 端（sparkline.js）
- *
- * 【状态所有权】
- *   scheduler 完全拥有以下状态（不再回写到 host）：
- *   - performanceLevel, actualFPS, pid, presetQuality
- *   - 采样器/滤波器/量化器的全部内部状态
- *   host 上仅保留 性能等级上限（存档系统读写）和 offsetTolerance（摄像机读取）。
- *
- * 依赖注入（便于测试）：
- * - env.root 提供 _root 等舞台对象访问（默认使用全局 _root）
+ * 【本地后备（Socket 断连时）】
+ *   极简阈值：FPS < 15 → tier=1, FPS > 24 连续 3 次 → tier=0
+ *   不使用 Kalman/PID，仅保证不冻屏
  */
 class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
 
-    private var _host:Object;  // 宿主（仅用于读取 性能等级上限、写入 offsetTolerance）
+    private var _host:Object;
     private var _env:Object;
 
     private var _frameRate:Number;
@@ -114,38 +29,29 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     private var _presetQuality:String;
     private var _performanceLevel:Number;
     private var _actualFPS:Number;
-    private var _pid:PIDController;
 
     private var _sampler:org.flashNight.neur.PerformanceOptimizer.IntervalSampler;
-    private var _kalmanStage:org.flashNight.neur.PerformanceOptimizer.AdaptiveKalmanStage;
-    private var _quantizer:org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer;
-    private var _actuator:Object;  // 非空：默认 PerformanceActuator，允许测试注入 mock
-    private var _logger:Object;    // 唯一可空模块：性能日志器（默认 null，运行时热拔插）
-    private var _holdUntilMs:Number;  // 保持窗口结束时间戳（ms），hold 期间抑制切档但不阻断观测
-    private var _panicFPS:Number;     // 紧急降级阈值（FPS），低于此值绕过迟滞直接降级
+    private var _actuator:Object;
+    private var _lastAppliedSoftU:Number;
 
-    // --- 趋势门控 (Trend Gate) ---
-    // 在 Kalman 估计持续下降时抑制升级方向的迟滞确认，
-    // 修复已知失效模式：Kalman 滞后导致估计仍在目标值之上而实际 FPS 已在下降，
-    // PID 误判为"帧率充足"触发过早恢复（详见 数据分析报告 振荡 #4）。
-    // 仅影响升级方向（level↓/画质↑），不影响降级方向。
-    private var _prevDenoisedFPS:Number;   // 上一次 Kalman 滤波输出（用于计算趋势）
-    private var _trendThreshold:Number;    // 趋势门控阈值（FPS/sec），归一化到秒以消除采样周期对灵敏度的影响
+    // --- 远程控制 (C# 决策引擎) ---
+    private var _remoteControlled:Boolean;
+    private var _lastRemoteMs:Number;
+    private static var REMOTE_TIMEOUT_MS:Number = 10000;
 
-    // --- softU 防抖 ---
-    private var _lastAppliedSoftU:Number;  // 上次 apply 时的 softU（防抖基线）
-    private var _softUThreshold:Number;    // softU 变化阈值（默认 0.15），|Δ softU| > threshold 才重刷
+    // --- 本地后备（断连时使用）---
+    private var _fallbackUpgradeCount:Number;  // 升级确认计数
+    private var _panicFPS:Number;
 
     /**
      * 构造函数
-     * @param host:Object       宿主对象（推荐传 _root.帧计时器）
+     * @param host:Object       宿主对象（_root.帧计时器）
      * @param frameRate:Number  标称帧率（默认30）
      * @param targetFPS:Number  目标帧率（默认26）
      * @param presetQuality:String 预设画质（默认 _root._quality）
      * @param env:Object        （可选）依赖注入，至少应包含 {root}
-     * @param pid:PIDController （可选）PID控制器实例
      */
-    public function PerformanceScheduler(host:Object, frameRate:Number, targetFPS:Number, presetQuality:String, env:Object, pid:PIDController) {
+    public function PerformanceScheduler(host:Object, frameRate:Number, targetFPS:Number, presetQuality:String, env:Object) {
         this._host = host;
 
         if (env == undefined) {
@@ -158,39 +64,21 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._presetQuality = (presetQuality != undefined) ? presetQuality : this._env.root._quality;
         this._performanceLevel = 0;
         this._actualFPS = 0;
-        // NullPID: Kp=0 → update() 恒返回 0，行为等价于无控制器；
-        // PIDControllerFactory 异步加载完成后通过 setPID() 替换为真实实例
-        this._pid = (pid != undefined) ? pid : new PIDController(0, 0, 0, 0, 0);
 
-        // --- Sampler ---
         this._sampler = new org.flashNight.neur.PerformanceOptimizer.IntervalSampler(this._frameRate);
-
-        // --- Kalman ---
-        var kalman:SimpleKalmanFilter1D = new SimpleKalmanFilter1D(this._frameRate, 0.5, 1);
-        this._kalmanStage = new org.flashNight.neur.PerformanceOptimizer.AdaptiveKalmanStage(kalman, 0.1, 0.01, 2.0);
-
-        // --- Quantizer（2 档模型：tier ∈ {0, 1}）---
-        var levelCap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
-        // 非对称迟滞：降级（tier↑）2次确认快速响应，升级（tier↓）3次确认谨慎恢复
-        this._quantizer = new org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer(levelCap, 1, 2, 3);
-
-        // --- Actuator ---
         this._actuator = new org.flashNight.neur.PerformanceOptimizer.PerformanceActuator(host, this._presetQuality, this._env);
 
-        this._holdUntilMs = 0;
-        this._panicFPS = 5;  // 极保守: 仅在游戏接近冻结时触发，不干扰迟滞量化器的正常抖动吸收
-        this._prevDenoisedFPS = this._frameRate;  // 初始值=标称帧率，与 Kalman 初始估计一致
-        this._trendThreshold = 0.2;  // 默认 0.2 FPS/sec（≈ tier1 下 0.4 FPS/window），源自振荡 #4 实测标定
         this._lastAppliedSoftU = 0;
-        this._softUThreshold = 0.15;
+        this._remoteControlled = false;
+        this._lastRemoteMs = 0;
+        this._fallbackUpgradeCount = 0;
+        this._panicFPS = 5;
     }
 
     /**
-     * 每帧调用的反馈控制主循环（行为等价于 _root.帧计时器.性能评估优化）
-     * @param currentTime:Number （可选）测试用时间戳（ms），未提供则使用 getTimer()
+     * 每帧调用。采样计数→测量→广播→（远程: 等待 P 指令 / 本地后备: 极简阈值）
      */
     public function evaluate(currentTime:Number):Void {
-        // P0: 内联 tick() — 消除每帧方法调用开销（T4+T1）
         var sampler:Object = this._sampler;
         if (--sampler._framesLeft !== 0) {
             return;
@@ -200,123 +88,68 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             currentTime = getTimer();
         }
 
-        // P1: 采样点路径局部变量缓存（T1）— 将 this.* 哈希查找降为寄存器/栈读取
         var root:Object = this._env.root;
         var currentLevel:Number = this._performanceLevel;
-        var kalmanStage:Object = this._kalmanStage;
-        var pid:PIDController = this._pid;
-        var logger:Object = this._logger;
-        var quantizer:Object = this._quantizer;
-        var actuator:Object = this._actuator;
 
-        // 2) 测量：区间平均 FPS（原公式）
+        // 测量：区间平均 FPS
         var actualFPS:Number = sampler.measure(currentTime, currentLevel);
         this._actualFPS = actualFPS;
 
-        // ── 紧急降级旁路（pre-Kalman, 使用原始区间平均 FPS）──────────
-        // 阈值极保守（默认 5 FPS），仅在游戏接近冻结时触发。
-        // 正常帧率抖动（10~20 FPS 区间）由迟滞量化器吸收，此处不干预。
-        if (actualFPS < this._panicFPS && currentLevel < 1) {
-            var panicLevel:Number = 1;
-            actuator.setPresetQuality(this._presetQuality);
-            actuator.apply(panicLevel, 1.0);
-            this._performanceLevel = panicLevel;
-            this._lastAppliedSoftU = 1.0;
-
-            // 从实际 FPS 重新建立状态估计，避免 Kalman 残留旧估计拖累恢复
-            kalmanStage.reset(actualFPS, 1);
-            pid.reset();
-            quantizer.clearConfirmation();
-            this._holdUntilMs = 0;
-            this._prevDenoisedFPS = actualFPS;  // 趋势门控：从实际 FPS 重建基准
-
-            if (logger != null) {
-                logger.levelChanged(currentTime, currentLevel, panicLevel, actualFPS, root._quality);
+        // ── 远程控制模式 ──────────────────────────
+        if (this._remoteControlled) {
+            if (currentTime - this._lastRemoteMs > REMOTE_TIMEOUT_MS) {
+                this.setRemoteControlled(false);
+                // 落入本地后备
+            } else {
+                sampler.resetInterval(currentTime, currentLevel);
+                var fpsStrR:String = String(Math.round(actualFPS * 10) / 10);
+                var hourStrR:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
+                fpsStrR += "|" + hourStrR + "|" + String(currentLevel);
+                FrameBroadcaster.setFpsPayload(fpsStrR);
+                return;
             }
-
-            currentLevel = panicLevel;
-            sampler.resetInterval(currentTime, currentLevel);
-            // → 跳过 Kalman/PID/量化，直接到可视化
-
-        } else {
-            // 3) 自适应卡尔曼：Q = baseQ * dt
-            var dtSeconds:Number = sampler.getDeltaTimeSec(currentTime);
-            var denoisedFPS:Number = kalmanStage.filter(actualFPS, dtSeconds);
-
-            // 4) PID：保持与工作版本一致，deltaTime 传"帧数"
-            var pidDeltaFrames:Number = sampler.getPIDDeltaTimeFrames(currentLevel);
-            var pidOutput:Number = pid.update(this._targetFPS, denoisedFPS, pidDeltaFrames);
-
-            // 可插拔日志：采样点 + PID 分量详细记录（默认关闭）
-            if (logger != null) {
-                logger.sample(currentTime, currentLevel, actualFPS, denoisedFPS, pidOutput);
-                logger.pidDetail(currentTime, pid.getLastP(), pid.getLastI(), pid.getLastD(), pidOutput);
-            }
-
-            // ── 趋势门控 (Trend Gate) ──────────────────────────────
-            // Kalman 估计下降超过阈值时，清除升级方向的迟滞确认累积。
-            // 原理：Kalman 恒定状态模型在负载快速上升时存在固有滞后，
-            // 估计值可能仍在目标值之上，导致 PID 误判为"帧率充足"。
-            // 趋势门控检测 Kalman 输出的下降趋势，在估计尚未跌破目标值时
-            // 提前阻止升级确认累积，防止过早恢复。
-            // 仅作用于升级方向（level↓/画质↑），不干预降级方向。
-            var prevDenoised:Number = this._prevDenoisedFPS;
-            this._prevDenoisedFPS = denoisedFPS;
-            var trendRate:Number = (denoisedFPS - prevDenoised) / dtSeconds; // FPS/sec，归一化消除采样周期影响
-
-            if (trendRate < -this._trendThreshold) {
-                if (quantizer.getPendingDirection() === -1) {
-                    quantizer.clearConfirmation();
-                }
-            }
-
-            // ── softU 计算（每采样点都算，不管 tier 是否变）──────────
-            var softU:Number = pidOutput / 3;
-            if (softU < 0) softU = 0;
-            if (softU > 1) softU = 1;
-
-            // ── 保持窗口检查（方案 B: 测量与保持解耦）──────────────
-            // hold 期间继续 Kalman/PID/日志观测，仅抑制量化器+执行器输出，
-            // 确保 Kalman 估计在 hold 结束时已收敛到真实帧率。
-            if (currentTime >= this._holdUntilMs) {
-                // 5) 量化 + 6) 迟滞确认
-                var host:Object = this._host;
-                var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : quantizer.getMinLevel();
-                quantizer.setMinLevel(cap);
-
-                var qResult:Number = quantizer.process(pidOutput, currentLevel);
-
-                if (qResult >= 0) {
-                    // tier 变化 → 必须 apply
-                    var oldLevel:Number = currentLevel;
-                    var newLevel:Number = qResult;
-
-                    actuator.setPresetQuality(this._presetQuality);
-                    actuator.apply(newLevel, softU);
-                    this._performanceLevel = newLevel;
-                    this._lastAppliedSoftU = softU;
-                    currentLevel = newLevel;
-
-                    if (logger != null) {
-                        logger.levelChanged(currentTime, oldLevel, newLevel, actualFPS, root._quality);
-                    }
-                } else {
-                    // tier 不变 → softU 防抖检查
-                    var delta:Number = softU - this._lastAppliedSoftU;
-                    if (delta < 0) delta = -delta;
-                    if (delta > this._softUThreshold) {
-                        actuator.setPresetQuality(this._presetQuality);
-                        actuator.apply(currentLevel, softU);
-                        this._lastAppliedSoftU = softU;
-                    }
-                }
-            }
-
-            // 7) 重置采样窗口（基于当前性能等级）
-            sampler.resetInterval(currentTime, currentLevel);
         }
 
-        // 8) FPS 载荷广播（C# overlay 依赖此数据通道）
+        // ── 本地后备（Socket 断连或超时时运行）──────
+        var actuator:Object = this._actuator;
+
+        // 紧急降级
+        if (actualFPS < this._panicFPS && currentLevel < 1) {
+            actuator.setPresetQuality(this._presetQuality);
+            actuator.apply(1, 1.0);
+            this._performanceLevel = 1;
+            this._lastAppliedSoftU = 1.0;
+            this._fallbackUpgradeCount = 0;
+            currentLevel = 1;
+        } else if (currentLevel < 1 && actualFPS < 15) {
+            // 简单降级: FPS < 15 → tier=1
+            actuator.setPresetQuality(this._presetQuality);
+            actuator.apply(1, 1.0);
+            this._performanceLevel = 1;
+            this._lastAppliedSoftU = 1.0;
+            this._fallbackUpgradeCount = 0;
+            currentLevel = 1;
+        } else if (currentLevel > 0 && actualFPS > 24) {
+            // 升级候选: FPS > 24 连续 3 次
+            this._fallbackUpgradeCount++;
+            if (this._fallbackUpgradeCount >= 3) {
+                var host:Object = this._host;
+                var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
+                if (cap < 1) {
+                    actuator.setPresetQuality(this._presetQuality);
+                    actuator.apply(0, 0);
+                    this._performanceLevel = 0;
+                    this._lastAppliedSoftU = 0;
+                    currentLevel = 0;
+                }
+                this._fallbackUpgradeCount = 0;
+            }
+        } else {
+            this._fallbackUpgradeCount = 0;
+        }
+
+        // 重置采样窗口 + 广播
+        sampler.resetInterval(currentTime, currentLevel);
         var fpsStr:String = String(Math.round(actualFPS * 10) / 10);
         var hourStr:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
         fpsStr += "|" + hourStr + "|" + String(currentLevel);
@@ -324,57 +157,33 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     }
 
     // ------------------------------------------------------------------
-    // 前馈控制接口（行为等价于 手动设置/降低/提升性能等级）
+    // 前馈控制接口
     // ------------------------------------------------------------------
 
     public function setPerformanceLevel(level:Number, holdSec:Number, currentTime:Number):Void {
-        var root:Object = this._env.root;
-
         level = Math.round(level);
         var host:Object = this._host;
-        var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : this._quantizer.getMinLevel();
+        var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
         level = Math.max(cap, Math.min(level, 1));
 
-        if (holdSec == undefined || holdSec <= 0) {
-            holdSec = 5;
-        }
-
-        // 前馈语义：强制设置 tier + softU 并建立 hold 保护窗口。
-        // 即使 tier 相同也必须执行（同 tier 可能 softU 不同，且需要重建 hold）。
-        this._performanceLevel = level;
         var appliedSoftU:Number = (level > 0) ? 1.0 : 0.0;
-
         this._actuator.setPresetQuality(this._presetQuality);
         this._actuator.apply(level, appliedSoftU);
+        this._performanceLevel = level;
         this._lastAppliedSoftU = appliedSoftU;
-
-        // 重置PID与迟滞状态，避免立即被反馈覆盖
-        this._pid.reset();
-        this._quantizer.clearConfirmation();
-        // 【设计备注】此处未重置 KalmanStage：
-        // hold 窗口期间 Kalman 持续接收真实测量值（方案 B），
-        // hold 结束时估计已收敛，无需手动重置。
 
         if (currentTime == undefined) {
             currentTime = getTimer();
         }
-
-        // hold 窗口：继续观测但抑制切档（方案 B — 测量与保持解耦）
-        // 修复: 旧 setProtectionWindow 导致 measure() 分子分母不匹配 → 虚假低 FPS
         this._sampler.resetInterval(currentTime, level);
-        this._holdUntilMs = currentTime + holdSec * 1000;
 
-        // 估算帧率用于 FPS 载荷广播
+        var root:Object = this._env.root;
         var estimatedFPS:Number = this._frameRate - level * 2;
         this._actualFPS = estimatedFPS;
-        var fpsStr2:String = String(Math.round(estimatedFPS * 10) / 10);
-        var hourStr2:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
-        fpsStr2 += "|" + hourStr2 + "|" + String(level);
-        FrameBroadcaster.setFpsPayload(fpsStr2);
-
-        if (this._logger != null) {
-            this._logger.manualSet(currentTime, level, holdSec);
-        }
+        var fpsStr:String = String(Math.round(estimatedFPS * 10) / 10);
+        var hourStr:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
+        fpsStr += "|" + hourStr + "|" + String(level);
+        FrameBroadcaster.setFpsPayload(fpsStr);
     }
 
     public function decreaseLevel(steps:Number, holdSec:Number, currentTime:Number):Void {
@@ -388,148 +197,72 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     }
 
     /**
-     * 开环测试用：强制设置性能等级，不创建保护窗口。
-     *
-     * 与 setPerformanceLevel 的区别：
-     * - 不创建保护窗口 → evaluate() 的采样不会被阻塞
-     * - 不估算/填充帧率 → 等待真实测量数据
-     *
-     * 配合量化器锁定（minLevel = maxLevel = targetLevel）使用，
-     * PID 输出经量化后始终被 clamp 到当前等级，实现开环条件。
-     * 用于系统辨识时的开环阶跃响应测试。
-     *
-     * 【采样间隔必须与目标等级一致】
-     *   measure() 分子 = frameRate×(1+level)，分母 = 实际经过时间；
-     *   若 resetInterval 使用不同的 level，首样本 FPS 会被放大 (1+level) 倍。
-     *   因此 resetInterval 必须传入目标 level，而非 0。
-     *
-     * @param level:Number 目标性能等级（0-1）
-     */
-    public function forceLevel(level:Number):Void {
-        level = Math.round(level);
-        level = Math.max(0, Math.min(level, 1));
-
-        // 应用新等级（不创建保护窗口）
-        var appliedSoftU:Number = (level > 0) ? 1.0 : 0.0;
-        this._actuator.setPresetQuality(this._presetQuality);
-        this._actuator.apply(level, appliedSoftU);
-        this._performanceLevel = level;
-        this._lastAppliedSoftU = appliedSoftU;
-
-        // 重置 PID 和迟滞状态（避免旧积分/确认状态影响）
-        this._pid.reset();
-        this._quantizer.clearConfirmation();
-        this._holdUntilMs = 0;
-
-        // 采样间隔使用目标等级，确保 measure() 分子分母一致
-        this._sampler.resetInterval(getTimer(), level);
-    }
-
-    /**
-     * 场景切换时的重置入口（对齐既有 SceneChanged 处理）
-     *
-     * 重置：卡尔曼滤波器、PID、迟滞状态、性能等级→0、采样窗口
+     * 场景切换重置
      */
     public function onSceneChanged():Void {
         var now:Number = getTimer();
 
-        // 日志：在重置前捕获当前状态快照
-        if (this._logger != null) {
-            this._logger.sceneChanged(now, this._performanceLevel, this._actualFPS, this._targetFPS, this._env.root._quality);
-        }
-
-        // 1) 重置卡尔曼滤波器
-        this._kalmanStage.reset(this._frameRate, 1);
-
-        // 2) 重置 PID 控制器
-        this._pid.reset();
-
-        // 3) 重置迟滞状态
-        this._quantizer.clearConfirmation();
-
-        // 3.5) 清除保持窗口（场景切换后不应延续旧 hold）
-        this._holdUntilMs = 0;
-
-        // 3.6) 重置趋势门控基准（与 Kalman 重置一致）
-        this._prevDenoisedFPS = this._frameRate;
-
-        // 4) 执行器重置 + 同步性能等级（尊重性能等级上限，避免低配机器场景切换时冻屏）
         var host:Object = this._host;
         var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
         var resetLevel:Number = Math.max(cap, 0);
-        // cap=1 时 softU=1.0（满降载），避免 tier=1 但软参数回到高质量端
         var resetSoftU:Number = (resetLevel > 0) ? 1.0 : 0.0;
         this._actuator.setPresetQuality(this._presetQuality);
         this._actuator.apply(resetLevel, resetSoftU);
         this._performanceLevel = resetLevel;
         this._lastAppliedSoftU = resetSoftU;
-
-        // 5) 重置采样窗口（使用重置后的等级，确保采样间隔与等级匹配）
+        this._fallbackUpgradeCount = 0;
         this._sampler.resetInterval(now, resetLevel);
     }
 
     // ------------------------------------------------------------------
-    // Accessors / injection helpers
+    // 远程控制接口（C# 决策引擎）
     // ------------------------------------------------------------------
 
-    public function setPID(pid:PIDController):Void { this._pid = pid; }
-    public function getPID():PIDController { return this._pid; }
+    public function setRemoteControlled(enabled:Boolean):Void {
+        if (!enabled && this._remoteControlled) {
+            this._fallbackUpgradeCount = 0;
+            this._sampler.resetInterval(getTimer(), this._performanceLevel);
+        }
+        this._remoteControlled = enabled;
+        if (enabled) {
+            this._lastRemoteMs = getTimer();
+        }
+    }
+
+    public function isRemoteControlled():Boolean {
+        return this._remoteControlled;
+    }
+
+    public function applyFromLauncher(tier:Number, softU:Number):Void {
+        var now:Number = getTimer();
+        this._lastRemoteMs = now;
+        this._remoteControlled = true;
+
+        if (tier == this._performanceLevel && softU == this._lastAppliedSoftU) {
+            return;
+        }
+
+        if (tier != this._performanceLevel) {
+            this._sampler.resetInterval(now, tier);
+        }
+
+        this._actuator.setPresetQuality(this._presetQuality);
+        this._actuator.apply(tier, softU);
+        this._performanceLevel = tier;
+        this._lastAppliedSoftU = softU;
+    }
+
+    // ------------------------------------------------------------------
+    // Accessors
+    // ------------------------------------------------------------------
 
     public function setPresetQuality(q:String):Void { this._presetQuality = q; }
     public function getPresetQuality():String { return this._presetQuality; }
-
-    public function getQuantizer():org.flashNight.neur.PerformanceOptimizer.HysteresisQuantizer { return this._quantizer; }
     public function getActuator():Object { return this._actuator; }
     public function setActuator(actuator:Object):Void { this._actuator = actuator; }
-
     public function getSampler():org.flashNight.neur.PerformanceOptimizer.IntervalSampler { return this._sampler; }
-    public function getKalmanStage():org.flashNight.neur.PerformanceOptimizer.AdaptiveKalmanStage { return this._kalmanStage; }
-
-    public function getLogger():Object { return this._logger; }
-    public function setLogger(logger:Object):Void { this._logger = logger; }
-
     public function getPerformanceLevel():Number { return this._performanceLevel; }
     public function getActualFPS():Number { return this._actualFPS; }
     public function getTargetFPS():Number { return this._targetFPS; }
-
-    public function getPanicFPS():Number { return this._panicFPS; }
-    public function setPanicFPS(fps:Number):Void {
-        // 钳制: isNaN 或 <=0 回退到默认值 5，防止无意关闭紧急旁路
-        this._panicFPS = (isNaN(fps) || fps <= 0) ? 5 : fps;
-    }
-    public function getHoldUntilMs():Number { return this._holdUntilMs; }
-
-    // --- 趋势门控 (Trend Gate) ---
-
-    public function getTrendThreshold():Number { return this._trendThreshold; }
-    public function setTrendThreshold(threshold:Number):Void {
-        // 钳制: isNaN 或 <0 回退到默认值 0.2 FPS/sec; threshold=0 为极保守（任何负趋势触发），Infinity 为禁用
-        this._trendThreshold = (isNaN(threshold) || threshold < 0) ? 0.2 : threshold;
-    }
-    public function getPrevDenoisedFPS():Number { return this._prevDenoisedFPS; }
-
-    // --- softU 防抖 ---
-
     public function getLastAppliedSoftU():Number { return this._lastAppliedSoftU; }
-    public function getSoftUThreshold():Number { return this._softUThreshold; }
-    public function setSoftUThreshold(threshold:Number):Void {
-        this._softUThreshold = (isNaN(threshold) || threshold < 0) ? 0.15 : threshold;
-    }
-
-    /**
-     * 设置日志标签（委托到 logger.setTag）。
-     * 用于系统辨识数据采集时标注当前场景/模式。
-     * 如果 logger 未挂载则静默忽略。
-     */
-    public function setLoggerTag(tag:String):Void {
-        if (this._logger != null && this._logger.setTag != undefined) {
-            this._logger.setTag(tag);
-        }
-    }
-    public function getLoggerTag():String {
-        if (this._logger != null && this._logger.getTag != undefined) {
-            return this._logger.getTag();
-        }
-        return null;
-    }
 }

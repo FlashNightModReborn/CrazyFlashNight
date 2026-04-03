@@ -132,6 +132,11 @@ class Program
         HitNumberOverlay hnOverlay = new HitNumberOverlay(form, form.FlashHostPanel);
         FrameTask frameTask = new FrameTask(v8Runtime, hnOverlay);
 
+        // 性能决策引擎（主控模式：发送 P 指令到 AS2，AS2 端只采样+执行）
+        var perfEngine = new PerfDecisionEngine(frameTask.FpsBuffer, socketServer);
+        perfEngine.IsActive = true;
+        frameTask.SetDecisionEngine(perfEngine);
+
         // 刘海 Notch overlay（FPS 显示 + 可展开工具栏）
         NotchOverlay notchOverlay = new NotchOverlay(
             form, form.FlashHostPanel, frameTask.FpsBuffer,
@@ -308,6 +313,9 @@ class Program
         }
 
         windowManager.TrackProcess(processManager.FlashProcess);
+
+        // 延迟注入 WindowManager 到性能决策引擎（bus-only 模式不走此路径）
+        perfEngine.SetWindowManager(windowManager);
 
         // Flash 退出双重检测：Process.Exited 事件 + 定时器后备
         form.TrackFlashProcess(processManager.FlashProcess);

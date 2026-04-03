@@ -23,6 +23,7 @@ namespace CF7Launcher.Guardian
         private bool _hasData;
         private float _gameHour; // 当前游戏内时间 (0.0-23.999...)
         private int _perfLevel;  // 当前性能等级 (0-3)
+        private int _samplesAfterReset; // 场景重置后的有效样本计数
 
         public FpsRingBuffer(int capacity)
         {
@@ -35,6 +36,7 @@ namespace CF7Launcher.Guardian
             _max = 0f;
             _hasData = false;
             _gameHour = 7f; // 默认白天
+            _samplesAfterReset = 0;
         }
 
         public void Push(float fps)
@@ -54,6 +56,7 @@ namespace CF7Launcher.Guardian
                 if (_count < _data.Length) _count++;
                 _sum += fps;
                 _hasData = true;
+                _samplesAfterReset++;
 
                 if (wasEmpty)
                 {
@@ -127,6 +130,127 @@ namespace CF7Launcher.Guardian
                     if (!_hasData) return 0f;
                     return _data[(_head - 1 + _data.Length) % _data.Length];
                 }
+            }
+        }
+
+        // ------------------------------------------------------------------
+        // 场景重置支持
+        // ------------------------------------------------------------------
+
+        /// <summary>
+        /// 场景重置时调用。不清空 buffer（sparkline 仍需历史），
+        /// 仅归零场景内样本计数，供决策引擎做 warmup 判断。
+        /// </summary>
+        public void NotifySceneReset()
+        {
+            lock (_lock) { _samplesAfterReset = 0; }
+        }
+
+        public int SamplesAfterReset
+        {
+            get { lock (_lock) { return _samplesAfterReset; } }
+        }
+
+        // ------------------------------------------------------------------
+        // 统计方法（供 PerfDecisionEngine 使用，0.25-1 Hz 调用频率）
+        // ------------------------------------------------------------------
+
+        /// <summary>
+        /// 最近 window 个样本的平均值。O(window)。
+        /// </summary>
+        public float WindowAverage(int window)
+        {
+            lock (_lock)
+            {
+                int w = window < _count ? window : _count;
+                if (w <= 0) return 0f;
+                float sum = 0f;
+                for (int i = 0; i < w; i++)
+                {
+                    int pos = (_head - 1 - i + _data.Length) % _data.Length;
+                    sum += _data[pos];
+                }
+                return sum / w;
+            }
+        }
+
+        /// <summary>
+        /// 最近 window 个样本的第 p 百分位 (0-100)。
+        /// O(window log window)，window 通常为 5-30，开销可忽略。
+        /// </summary>
+        public float Percentile(int p, int window)
+        {
+            lock (_lock)
+            {
+                int w = window < _count ? window : _count;
+                if (w <= 0) return 0f;
+                float[] slice = new float[w];
+                for (int i = 0; i < w; i++)
+                {
+                    int pos = (_head - 1 - i + _data.Length) % _data.Length;
+                    slice[i] = _data[pos];
+                }
+                Array.Sort(slice);
+                int idx = (int)(w * p / 100f);
+                if (idx >= w) idx = w - 1;
+                if (idx < 0) idx = 0;
+                return slice[idx];
+            }
+        }
+
+        /// <summary>
+        /// 最近 window 个样本的线性回归斜率 (FPS/sample)。
+        /// 正 = 帧率改善，负 = 恶化。O(window)。
+        /// x=0 为最旧，x=w-1 为最新。
+        /// </summary>
+        public float Trend(int window)
+        {
+            lock (_lock)
+            {
+                int w = window < _count ? window : _count;
+                if (w < 2) return 0f;
+                // 线性回归: slope = (n*Sxy - Sx*Sy) / (n*Sxx - Sx*Sx)
+                float sx = 0f, sy = 0f, sxy = 0f, sxx = 0f;
+                for (int i = 0; i < w; i++)
+                {
+                    // i=0 → 最旧, i=w-1 → 最新
+                    int pos = (_head - w + i + _data.Length) % _data.Length;
+                    float x = i;
+                    float y = _data[pos];
+                    sx += x;
+                    sy += y;
+                    sxy += x * y;
+                    sxx += x * x;
+                }
+                float denom = w * sxx - sx * sx;
+                return denom == 0f ? 0f : (w * sxy - sx * sy) / denom;
+            }
+        }
+
+        /// <summary>
+        /// 最近 window 个样本的方差。O(window)。
+        /// </summary>
+        public float Variance(int window)
+        {
+            lock (_lock)
+            {
+                int w = window < _count ? window : _count;
+                if (w < 2) return 0f;
+                float mean = 0f;
+                for (int i = 0; i < w; i++)
+                {
+                    int pos = (_head - 1 - i + _data.Length) % _data.Length;
+                    mean += _data[pos];
+                }
+                mean /= w;
+                float sumSq = 0f;
+                for (int i = 0; i < w; i++)
+                {
+                    int pos = (_head - 1 - i + _data.Length) % _data.Length;
+                    float diff = _data[pos] - mean;
+                    sumSq += diff * diff;
+                }
+                return sumSq / (w - 1);
             }
         }
     }

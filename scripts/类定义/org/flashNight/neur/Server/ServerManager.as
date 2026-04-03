@@ -471,6 +471,23 @@ class org.flashNight.neur.Server.ServerManager {
         // 移除 null 终止符
         data = data.split('\0').join('');
 
+        // 性能调度快车道：P{tier}|{softU_x100}（绕过 JSON 解析）
+        if (data.length > 0 && data.charAt(0) == "P") {
+            var payload:String = data.substring(1);
+            var sep:Number = payload.indexOf("|");
+            if (sep >= 0) {
+                var tier:Number = Number(payload.substring(0, sep));
+                var softU100:Number = Number(payload.substring(sep + 1));
+                if (!isNaN(tier) && !isNaN(softU100)) {
+                    var sched:Object = _root.帧计时器.scheduler;
+                    if (sched != null) {
+                        sched.applyFromLauncher(tier, softU100 / 100);
+                    }
+                }
+            }
+            return;
+        }
+
         var response:Object;
         try {
             response = jsonParser.parse(data);
@@ -580,6 +597,12 @@ class org.flashNight.neur.Server.ServerManager {
             _pendingCallbacks[k].cb({success: false, error: "socket closed"});
         }
         _pendingCallbacks = {};
+
+        // 性能调度: 断连回退到本地模式（幂等，已是 local 时空操作）
+        var sched:Object = _root.帧计时器.scheduler;
+        if (sched != null) {
+            sched.setRemoteControlled(false);
+        }
 
         // 关键：回到 FETCHING_PORT 重新发现端口（launcher 可能重启在不同端口）
         // 不是死守旧端口，也不用 setTimeout

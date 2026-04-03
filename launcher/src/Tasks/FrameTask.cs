@@ -26,9 +26,15 @@ namespace CF7Launcher.Tasks
         private readonly V8Runtime _v8;
         private readonly HitNumberOverlay _overlay;
         private readonly FpsRingBuffer _fpsBuffer;
+        private PerfDecisionEngine _decisionEngine; // 可空，Phase 1 之前为 null
         private volatile bool _stopped;
 
         public FpsRingBuffer FpsBuffer { get { return _fpsBuffer; } }
+
+        public void SetDecisionEngine(PerfDecisionEngine engine)
+        {
+            _decisionEngine = engine;
+        }
 
         public FrameTask(V8Runtime v8, HitNumberOverlay overlay)
         {
@@ -78,6 +84,19 @@ namespace CF7Launcher.Tasks
                         if (int.TryParse(parts[2], out level))
                             _fpsBuffer.SetPerfLevel(level);
                     }
+
+                    // 决策引擎：影子模式记录对比，主控模式发送 P 指令
+                    if (_decisionEngine != null)
+                    {
+                        PerfDecision? decision = _decisionEngine.Evaluate();
+                        if (decision.HasValue)
+                        {
+                            if (_decisionEngine.IsActive)
+                                _decisionEngine.SendCommand(decision.Value);
+                            else
+                                _decisionEngine.LogShadowComparison(decision.Value);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -96,6 +115,9 @@ namespace CF7Launcher.Tasks
             {
                 _v8.Reset();
                 _overlay.NotifyReset();
+                if (_decisionEngine != null)
+                    _decisionEngine.OnSceneReset();
+                _fpsBuffer.NotifySceneReset();
             }
             catch (Exception ex)
             {

@@ -1,7 +1,8 @@
 ﻿import org.flashNight.neur.PerformanceOptimizer.IntervalSampler;
 
 /**
- * IntervalSamplerTest - 变周期采样器单元测试
+ * IntervalSamplerTest - 变周期采样器单元测试（简化版）
+ * getPIDDeltaTimeFrames / setProtectionWindow 已随 PID 迁移移除。
  */
 class org.flashNight.neur.PerformanceOptimizer.test.IntervalSamplerTest {
 
@@ -39,17 +40,9 @@ class org.flashNight.neur.PerformanceOptimizer.test.IntervalSamplerTest {
         var dt:Number = s.getDeltaTimeSec(1000);
         out += line(almostEqual(dt, 1.0, 0.0001), "dtSec=1.0");
 
-        out += line(s.getPIDDeltaTimeFrames(3) == 120, "PID deltaFrames: level3→120");
-
         s.resetInterval(1000, 2);
         out += line(s.getFrameStartTime() == 1000, "resetInterval: frameStartTime更新");
         out += line(s.getFramesLeft() == 90, "resetInterval: level2→90帧");
-
-        s.setProtectionWindow(2000, 1, 2);
-        out += line(s.getFramesLeft() == 90, "protection: max(30*1, 30*(1+2))=90");
-
-        s.setProtectionWindow(2000, 10, 2);
-        out += line(s.getFramesLeft() == 300, "protection: max(30*10, 90)=300");
 
         return out;
     }
