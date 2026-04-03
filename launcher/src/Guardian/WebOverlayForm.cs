@@ -810,11 +810,9 @@ namespace CF7Launcher.Guardian
                     break;
                 case "stop":
                     _manualStop = true;
-                    if (_bgmPaused)
-                    {
-                        _bgmPaused = false;
-                        Audio.AudioEngine.ma_bridge_bgm_resume();
-                    }
+                    _bgmPaused = false;
+                    // 不 resume — 直接让 Flash 侧 stopBGM 处理
+                    // （native 层 bgm_stop 对已暂停的 sound 同样有效）
                     SendGameCommand("jukeboxStop");
                     break;
                 case "volGlobal":

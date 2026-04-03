@@ -981,7 +981,8 @@ html, body {
     color:rgba(255,180,80,0.9);
 }
 #jukebox-stop-btn {
-    font-size:9px; /* ■ 稍小一点更协调 */
+    font-size:14px;
+    line-height:1;
 }
 
 /* ── 帮助弹窗 ── */
