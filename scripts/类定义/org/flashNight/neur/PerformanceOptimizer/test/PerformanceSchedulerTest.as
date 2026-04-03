@@ -230,10 +230,14 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         out += line(s.getPerformanceLevel() == 1, "hold 中断连后 tier 仍被保护");
         out += line(act._callCount == countBefore, "hold 中 P 指令仍被拦截");
 
-        // 关键2: hold 到期后不会伪恢复远程（_wasRemoteBeforeHold 已清）
-        // 幂等验证
-        s.setRemoteControlled(false);
-        out += line(!s.isRemoteControlled(), "幂等调用无异常");
+        // 关键2: 推进时间越过 hold 窗口，验证到期后不会伪恢复远程
+        // setPerformanceLevel 用 getTimer() 设置 holdUntilMs，所以传一个足够大的 currentTime
+        var futureTime:Number = getTimer() + 20000; // 20秒后，超过 10秒 hold
+        s.getSampler().setFramesLeft(1); // 确保到达采样点
+        s.getSampler().setFrameStartTime(futureTime - 1000); // 1秒前，使 FPS 测量合理
+        s.evaluate(futureTime);
+        // hold 到期 + _wasRemoteBeforeHold 已清 → 不应恢复远程
+        out += line(!s.isRemoteControlled(), "hold 到期后未伪恢复远程");
 
         return out;
     }
