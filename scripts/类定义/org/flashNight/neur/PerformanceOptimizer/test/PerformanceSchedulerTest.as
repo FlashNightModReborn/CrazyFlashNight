@@ -218,10 +218,11 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceSchedulerTest {
         // 估算帧率: 30 - 1*2 = 28
         out += line(scheduler.getActualFPS() == 28, "估算帧率=28（30-1*2）");
 
-        // 相同等级不重复执行
+        // 同 tier 再次前馈：仍执行 apply（重建 hold + 强制 softU），确保前馈语义完整
         actuator.applied = [];
         scheduler.setPerformanceLevel(1, 5, 2000);
-        out += line(actuator.applied.length == 0, "相同等级不重复执行");
+        out += line(actuator.applied.length == 1 && actuator.applied[0] == 1, "同tier前馈仍执行apply（重建hold）");
+        out += line(scheduler.getHoldUntilMs() == 7000, "hold窗口重建为7000（2000+5*1000）");
 
         return out;
     }

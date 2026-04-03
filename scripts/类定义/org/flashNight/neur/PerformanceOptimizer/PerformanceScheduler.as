@@ -335,15 +335,12 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : this._quantizer.getMinLevel();
         level = Math.max(cap, Math.min(level, 1));
 
-        if (this._performanceLevel === level) {
-            return;
-        }
-
         if (holdSec == undefined || holdSec <= 0) {
             holdSec = 5;
         }
 
-        // 前馈：直接切档并执行
+        // 前馈语义：强制设置 tier + softU 并建立 hold 保护窗口。
+        // 即使 tier 相同也必须执行（同 tier 可能 softU 不同，且需要重建 hold）。
         this._performanceLevel = level;
         var appliedSoftU:Number = (level > 0) ? 1.0 : 0.0;
 

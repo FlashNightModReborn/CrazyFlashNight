@@ -465,9 +465,9 @@ _root.帧计时器.性能评估优化 = function() {
 
 _root.帧计时器.执行性能调整 = function(tier)
 {
-    // 固化单路径：执行器由 scheduler 持有
-    // tier 0 → softU=0 (全质量), tier 1 → softU=1 (满降载)
-    this.scheduler.getActuator().apply(tier, tier > 0 ? 1.0 : 0.0);
+    // 通过 scheduler 前馈接口执行，确保内部状态同步
+    // （performanceLevel、lastAppliedSoftU、采样窗口、PID/迟滞重置）
+    this.scheduler.forceLevel(tier);
 };
 
 _root.帧计时器.执行性能调整(0);
