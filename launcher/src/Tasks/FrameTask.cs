@@ -67,7 +67,7 @@ namespace CF7Launcher.Tasks
 
                 if (!string.IsNullOrEmpty(fps))
                 {
-                    // 格式：fps|hour|level
+                    // 格式：fps|hour|level|epoch
                     string[] parts = fps.Split('|');
                     float fpsVal;
                     if (parts.Length > 0 && float.TryParse(parts[0], out fpsVal))
@@ -83,6 +83,20 @@ namespace CF7Launcher.Tasks
                         int level;
                         if (int.TryParse(parts[2], out level))
                             _fpsBuffer.SetPerfLevel(level);
+                    }
+                    if (parts.Length > 3)
+                    {
+                        int epoch;
+                        if (int.TryParse(parts[3], out epoch))
+                        {
+                            if (_fpsBuffer.SetSceneEpoch(epoch))
+                            {
+                                // epoch 变化 = 场景切换，触发 warmup
+                                _fpsBuffer.NotifySceneReset();
+                                if (_decisionEngine != null)
+                                    _decisionEngine.OnSceneReset();
+                            }
+                        }
                     }
 
                     // 决策引擎：影子模式记录对比，主控模式发送 P 指令

@@ -48,7 +48,6 @@ namespace CF7Launcher.Guardian
         private int _lastSendTicks;
         private int _focusCooldownMs;
         private int _lastEvalTicks; // 上次 Evaluate 时间，用于计算 elapsed
-        private const int STALE_GAP_MS = 15000; // 15秒无样本视为断线过，触发 warmup
 
         // --- 模式 ---
         /// <summary>
@@ -86,15 +85,11 @@ namespace CF7Launcher.Guardian
             int elapsedMs = now - _lastEvalTicks;
             _lastEvalTicks = now;
 
-            // 0a. 断线间隙检测：如果距上次样本 > 15秒，可能断线期间切了场景，
-            // 强制触发 warmup（等价于 NotifySceneReset）
-            if (elapsedMs > STALE_GAP_MS)
-            {
-                _buffer.NotifySceneReset();
-                OnSceneReset();
-            }
+            // 场景切换检测已由 FPS payload 中的 sceneEpoch 驱动：
+            // FrameTask 解析 epoch 变化 → NotifySceneReset + OnSceneReset
+            // 无需在此做 stale-gap 检测。
 
-            // 0b. 从 AS2 上报值同步当前 tier（单一真实来源）
+            // 0. 从 AS2 上报值同步当前 tier（单一真实来源）
             _currentTier = _buffer.PerfLevel;
 
             // 1. Warmup 保护：场景切换后积累期不决策

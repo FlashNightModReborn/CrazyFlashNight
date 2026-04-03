@@ -24,6 +24,7 @@ namespace CF7Launcher.Guardian
         private float _gameHour; // 当前游戏内时间 (0.0-23.999...)
         private int _perfLevel;  // 当前性能等级 (0-3)
         private int _samplesAfterReset; // 场景重置后的有效样本计数
+        private int _sceneEpoch;       // AS2 场景计数器（检测变化触发 warmup）
 
         public FpsRingBuffer(int capacity)
         {
@@ -37,6 +38,7 @@ namespace CF7Launcher.Guardian
             _hasData = false;
             _gameHour = 7f; // 默认白天
             _samplesAfterReset = 0;
+            _sceneEpoch = -1; // -1 = 未收到首个 epoch，首次总是触发
         }
 
         public void Push(float fps)
@@ -119,6 +121,28 @@ namespace CF7Launcher.Guardian
         public void SetPerfLevel(int level)
         {
             lock (_lock) { _perfLevel = level; }
+        }
+
+        /// <summary>
+        /// 设置场景计数器。返回 true 表示 epoch 发生了变化（= 场景切换）。
+        /// 首次调用（_sceneEpoch == -1）不视为变化（初始化）。
+        /// </summary>
+        public bool SetSceneEpoch(int epoch)
+        {
+            lock (_lock)
+            {
+                if (_sceneEpoch == -1)
+                {
+                    _sceneEpoch = epoch;
+                    return false; // 首次初始化，不触发
+                }
+                if (epoch != _sceneEpoch)
+                {
+                    _sceneEpoch = epoch;
+                    return true; // epoch 变化 = 场景切换
+                }
+                return false;
+            }
         }
 
         public float Latest

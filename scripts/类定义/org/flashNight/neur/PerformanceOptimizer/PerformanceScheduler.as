@@ -44,6 +44,9 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     private var _holdUntilMs:Number;
     private var _wasRemoteBeforeHold:Boolean;  // hold 开始时是否处于远程模式
 
+    // --- 场景计数器（嵌入 FPS payload，C# 端检测变化触发 warmup）---
+    private var _sceneEpoch:Number;
+
     // --- 本地后备（断连时使用）---
     private var _fallbackUpgradeCount:Number;
     private var _panicFPS:Number;
@@ -78,6 +81,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         this._lastRemoteMs = 0;
         this._holdUntilMs = 0;
         this._wasRemoteBeforeHold = false;
+        this._sceneEpoch = 0;
         this._fallbackUpgradeCount = 0;
         this._panicFPS = 5;
     }
@@ -117,7 +121,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
             sampler.resetInterval(currentTime, currentLevel);
             var fpsStrH:String = String(Math.round(actualFPS * 10) / 10);
             var hourStrH:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
-            fpsStrH += "|" + hourStrH + "|" + String(currentLevel);
+            fpsStrH += "|" + hourStrH + "|" + String(currentLevel) + "|" + String(this._sceneEpoch);
             FrameBroadcaster.setFpsPayload(fpsStrH);
             return;
         }
@@ -131,7 +135,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
                 sampler.resetInterval(currentTime, currentLevel);
                 var fpsStrR:String = String(Math.round(actualFPS * 10) / 10);
                 var hourStrR:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
-                fpsStrR += "|" + hourStrR + "|" + String(currentLevel);
+                fpsStrR += "|" + hourStrR + "|" + String(currentLevel) + "|" + String(this._sceneEpoch);
                 FrameBroadcaster.setFpsPayload(fpsStrR);
                 return;
             }
@@ -179,7 +183,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         sampler.resetInterval(currentTime, currentLevel);
         var fpsStr:String = String(Math.round(actualFPS * 10) / 10);
         var hourStr:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
-        fpsStr += "|" + hourStr + "|" + String(currentLevel);
+        fpsStr += "|" + hourStr + "|" + String(currentLevel) + "|" + String(this._sceneEpoch);
         FrameBroadcaster.setFpsPayload(fpsStr);
     }
 
@@ -226,10 +230,10 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         var root:Object = this._env.root;
         var estimatedFPS:Number = this._frameRate - level * 2;
         this._actualFPS = estimatedFPS;
-        var fpsStr:String = String(Math.round(estimatedFPS * 10) / 10);
-        var hourStr:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
-        fpsStr += "|" + hourStr + "|" + String(level);
-        FrameBroadcaster.setFpsPayload(fpsStr);
+        var fpsStr2:String = String(Math.round(estimatedFPS * 10) / 10);
+        var hourStr2:String = (root.天气系统 != undefined) ? String(root.天气系统.getCurrentTime()) : "6";
+        fpsStr2 += "|" + hourStr2 + "|" + String(level) + "|" + String(this._sceneEpoch);
+        FrameBroadcaster.setFpsPayload(fpsStr2);
     }
 
     public function decreaseLevel(steps:Number, holdSec:Number, currentTime:Number):Void {
@@ -251,6 +255,7 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
         // 清除 hold 窗口（场景切换后不延续旧 hold）
         this._holdUntilMs = 0;
         this._wasRemoteBeforeHold = false;
+        this._sceneEpoch++;
 
         var host:Object = this._host;
         var cap:Number = (host && !isNaN(host.性能等级上限)) ? host.性能等级上限 : 0;
@@ -286,6 +291,14 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler {
     public function applyFromLauncher(tier:Number, softU:Number):Void {
         var now:Number = getTimer();
         this._lastRemoteMs = now;
+
+        // hold 窗口期间: 只刷新心跳时间戳，不 apply、不恢复远程模式。
+        // hold 到期后 evaluate() 会根据 _wasRemoteBeforeHold 自动恢复远程模式，
+        // 届时下一条 P 指令才会真正生效。
+        if (this._holdUntilMs > 0 && now < this._holdUntilMs) {
+            return;
+        }
+
         this._remoteControlled = true;
 
         if (tier == this._performanceLevel && softU == this._lastAppliedSoftU) {
