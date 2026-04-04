@@ -7,19 +7,19 @@ namespace GameInput {
 
     const ROOT_STATE = 0;
     const NO_COMMAND = 0;
-    const DEFAULT_TIMEOUT = 8; // 放宽到 8 帧 (~267ms @30fps)，对搓招新手更友好
+    const DEFAULT_TIMEOUT = 8;
 
     export class CommandDfa {
         private _dfa: TrieDfa | null = null;
 
-        // DFA 状态
         private _state: number = ROOT_STATE;
         private _timer: number = 0;
         private _commandId: number = NO_COMMAND;
         private _lastCommandId: number = NO_COMMAND;
-
-        // 输入路径追踪：从 ROOT 到当前 state 的有效转移事件序列
         private _inputPath: number[] = [];
+
+        // 上帧事件指纹（用于去重持续按住不变的输入）
+        private _prevEventKey: string = "";
 
         setDfa(dfa: TrieDfa): void {
             this._dfa = dfa;
@@ -32,6 +32,7 @@ namespace GameInput {
             this._commandId = NO_COMMAND;
             this._lastCommandId = NO_COMMAND;
             this._inputPath.length = 0;
+            this._prevEventKey = "";
         }
 
         getCommandId(): number { return this._commandId; }
@@ -41,6 +42,9 @@ namespace GameInput {
 
         /**
          * 热路径：内联 DFA 状态转移 + 路径追踪
+         *
+         * 去重逻辑：如果本帧事件和上帧完全相同，且 DFA 不在 ROOT，
+         * 则只维持 timer（不重新转移），避免"持续按住 → 超时 → 回 ROOT → 再转移"的闪烁循环。
          */
         updateFast(events: number[], timeout: number = DEFAULT_TIMEOUT): void {
             const dfa = this._dfa;
@@ -49,11 +53,29 @@ namespace GameInput {
                 return;
             }
 
+            // 计算本帧事件指纹
+            let eventKey = "";
+            for (let k = 0; k < events.length; k++) {
+                if (k > 0) eventKey += ",";
+                eventKey += events[k];
+            }
+
             let state = this._state;
             let timer = this._timer;
             const path = this._inputPath;
 
             this._commandId = NO_COMMAND;
+
+            // 去重：事件不变 + 不在 ROOT → 只维持 timer，不推进 DFA
+            if (eventKey === this._prevEventKey && state !== ROOT_STATE && eventKey.length > 0) {
+                // 持续按住同样的键，保持当前状态，timer 不增加（防止超时回 ROOT）
+                this._prevEventKey = eventKey;
+                this._state = state;
+                this._timer = timer;
+                return;
+            }
+
+            this._prevEventKey = eventKey;
             timer++;
 
             const evCount = events.length;
@@ -63,7 +85,7 @@ namespace GameInput {
                 if (nextState >= 0) {
                     state = nextState;
                     timer = 0;
-                    path.push(ev); // 追踪有效转移
+                    path.push(ev);
                     const cmd = dfa.getAccept(state);
                     if (cmd > 0) {
                         this._commandId = cmd;
@@ -75,7 +97,7 @@ namespace GameInput {
             if (timer > timeout) {
                 state = ROOT_STATE;
                 timer = 0;
-                path.length = 0; // 超时重置路径
+                path.length = 0;
             }
 
             this._state = state;

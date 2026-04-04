@@ -138,9 +138,13 @@ class org.flashNight.arki.render.FrameBroadcaster {
     /**
      * 接收 Launcher 推送的 K 前缀消息（由 ServerManager.onSocketData 调用）。
      *
-     * K payload 格式:
-     *   cmdId=0:  chr(0x20)                          (1 byte)
-     *   cmdId>0:  chr(cmdId+0x20) + cmdName + \x01 + hints
+     * K payload v2 格式:
+     *   chr(cmdId+0x20) \x01 {typed} \x02 {hints}
+     *   cmdId=0: chr(0x20) \x01 {typed} \x02 {hints}
+     *   cmdId>0: chr(cmdId+0x20) {cmdName} \x01 {typed} \x02 {hints}
+     *
+     * AS2 侧只消费 _cmdId 和 _cmdName（缓冲逻辑用）。
+     * _comboHints 保留正确语义供未来 AS2 侧 UI 使用。
      *
      * @param payload K 前缀之后的内容（不含 'K' 字符本身）
      */
@@ -153,24 +157,35 @@ class org.flashNight.arki.render.FrameBroadcaster {
         }
 
         var rawId:Number = payload.charCodeAt(0) - 0x20;
+        var sep1:Number = payload.indexOf("\x01");
+        var sep2:Number = payload.indexOf("\x02");
+
         if (rawId <= 0 || isNaN(rawId)) {
-            // cmdId=0: 无搓招，显式清空（防止上帧残留）
+            // cmdId=0: 无搓招，显式清空
             _cmdId = 0;
             _cmdName = "";
-            _comboHints = "";
+            // 解析 hints（\x02 之后）供可视化
+            if (sep2 >= 0 && sep2 < payload.length - 1) {
+                _comboHints = payload.substring(sep2 + 1);
+            } else {
+                _comboHints = "";
+            }
             return;
         }
 
         _cmdId = rawId;
 
-        // 冷路径：解析 cmdName 和 hints
-        var rest:String = payload.substring(1);
-        var sep:Number = rest.indexOf("\x01");
-        if (sep >= 0) {
-            _cmdName = rest.substring(0, sep);
-            _comboHints = rest.substring(sep + 1);
+        // cmdName: chr(cmdId) 到 \x01 之间
+        if (sep1 > 1) {
+            _cmdName = payload.substring(1, sep1);
         } else {
-            _cmdName = rest;
+            _cmdName = "";
+        }
+
+        // hints: \x02 之后
+        if (sep2 >= 0 && sep2 < payload.length - 1) {
+            _comboHints = payload.substring(sep2 + 1);
+        } else {
             _comboHints = "";
         }
     }

@@ -570,13 +570,15 @@ _root.帧计时器.键盘输入控制目标 = function()
         // 模组切换时清空缓冲
         if (控制对象.当前搓招模组 != 模组名) {
             控制对象.搓招缓冲ID = 0;
+            控制对象.搓招缓冲名 = "";
             控制对象.搓招缓冲已消费 = true;
         }
         控制对象.当前搓招模组 = 模组名;
 
-        // Launcher DFA 命中时写入缓冲
+        // Launcher DFA 命中时写入缓冲（同时缓存名字，因为下一帧 K 会清空 _cmdName）
         if (launcherCmdId != 0) {
             控制对象.搓招缓冲ID = launcherCmdId;
+            控制对象.搓招缓冲名 = FrameBroadcaster.getCmdName();
             控制对象.搓招缓冲帧 = frame;
             控制对象.搓招缓冲已消费 = false;
         }
@@ -593,7 +595,7 @@ _root.帧计时器.键盘输入控制目标 = function()
 
         if (active) {
             控制对象.当前搓招ID = 控制对象.搓招缓冲ID;
-            控制对象.当前搓招名 = FrameBroadcaster.getCmdName();
+            控制对象.当前搓招名 = 控制对象.搓招缓冲名;
         } else {
             控制对象.当前搓招ID = 0;
             控制对象.当前搓招名 = "";

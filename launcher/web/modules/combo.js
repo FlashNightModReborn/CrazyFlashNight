@@ -25,6 +25,7 @@ var Combo = (function() {
     var hitTimer = 0;
     var hitName = '';
     var pendingTyped = ''; // V8 命中时缓存 typed，等 N 前缀确认
+    var knownPatterns = {}; // name → fullSequence，从 hints 数据积累
 
     function init() {
         statusEl = document.getElementById('combo-status');
@@ -82,35 +83,24 @@ var Combo = (function() {
         if (!statusEl) return;
 
         var html = '<div class="combo-progress">';
-
-        // 已输入部分（高亮）
         html += '<span class="cp-typed">' + esc(typed) + '</span>';
 
-        // 分支：解析 hints
         if (hintsRaw.length > 0) {
             var entries = hintsRaw.split(';');
-            // 如果只有 1 个分支，直接内联显示剩余
-            if (entries.length === 1) {
-                var p = parseHint(entries[0]);
-                if (p) {
-                    // 从 fullSeq 中去掉 typed 前缀得到 remaining
-                    var remaining = p.fullSeq.substring(typed.length);
-                    html += '<span class="cp-remain">' + esc(remaining) + '</span>';
-                    html += '<span class="cp-name">' + esc(p.name) + '</span>';
-                }
-            } else {
-                // 多分支：竖向展开
-                html += '<span class="cp-branches">';
-                for (var i = 0; i < entries.length; i++) {
-                    var p = parseHint(entries[i]);
-                    if (!p) continue;
-                    var remaining = p.fullSeq.substring(typed.length);
-                    html += '<span class="cp-branch">'
-                         + '<span class="cp-remain">' + esc(remaining) + '</span>'
-                         + '<span class="cp-name">' + esc(p.name) + '</span>'
-                         + '</span>';
-                }
-                html += '</span>';
+
+            // 积累 pattern 缓存（用于 Sync 路径 fallback）
+            for (var k = 0; k < entries.length; k++) {
+                var pk = parseHint(entries[k]);
+                if (pk && pk.name) knownPatterns[pk.name] = pk.fullSeq;
+            }
+
+            for (var i = 0; i < entries.length; i++) {
+                var p = parseHint(entries[i]);
+                if (!p) continue;
+                if (i > 0) html += '<span class="cp-divider">|</span>';
+                var remaining = p.fullSeq.substring(typed.length);
+                html += '<span class="cp-remain">' + esc(remaining) + '</span>'
+                     + '<span class="cp-name">' + esc(p.name) + '</span>';
             }
         }
 
@@ -161,8 +151,11 @@ var Combo = (function() {
         var isDFA = text.indexOf('DFA') === 0;
         var name = text.replace(/^(DFA|Sync)\s*/, '');
 
-        // 用缓存的 typed 序列，如果没有则用招式名作 fallback
-        var typed = pendingTyped || name;
+        // typed 来源优先级：
+        // 1. pendingTyped（V8 DFA 命中帧缓存）— DFA 路径
+        // 2. knownPatterns[name]（从 hints 积累的完整序列）— Sync 路径 fallback
+        // 3. name（最终 fallback，不应该走到这里）
+        var typed = pendingTyped || knownPatterns[name] || name;
         pendingTyped = '';
 
         showHit(name, typed, isDFA);

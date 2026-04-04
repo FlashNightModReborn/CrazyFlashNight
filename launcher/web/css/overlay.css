@@ -1161,21 +1161,12 @@ html, body {
     border-radius:2px;
 }
 
-/* 多分支容器 */
-.cp-branches {
-    display:flex;
-    flex-direction:column;
-    gap:1px;
-    margin-left:2px;
+/* 分支分隔符 */
+.cp-divider {
+    color:rgba(255,255,255,0.15);
+    font-size:11px;
+    margin:0 3px;
 }
-.cp-branch {
-    display:flex;
-    align-items:center;
-    gap:2px;
-    padding:1px 0;
-    opacity:0.7;
-}
-.cp-branch:first-child { opacity:1; }
 
 /* === 命中态：收束 → 扫光 → 消散 === */
 .combo-hit-bar {
