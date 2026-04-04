@@ -72,6 +72,10 @@ class Program
         // 读配置（bus-only 跳过文件验证）
         AppConfig config = new AppConfig(projectRoot);
 
+        // Flash Player 本地信任配置（确保 SWF 可访问网络）
+        if (!FlashTrustManager.EnsureTrust(projectRoot))
+            LogManager.Log("[Guardian] WARNING: Flash trust not configured — SWF may fail to connect");
+
         if (!busOnly)
         {
             if (!File.Exists(config.FlashPlayerPath))

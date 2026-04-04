@@ -119,8 +119,9 @@ layers:
       - "Microsoft.Web.WebView2.Core.dll"
       - "Microsoft.Web.WebView2.WinForms.dll"
       - "WebView2Loader.dll"
-      # Flash Player + SWF
+      # Flash Player + SWF + 启动脚本
       - "CRAZYFLASHER7MercenaryEmpire.swf"
+      - "CRAZYFLASHER7MercenaryEmpire.bat"
       - "Adobe Flash Player 20.exe"
       # 配置
       - "config.xml"
