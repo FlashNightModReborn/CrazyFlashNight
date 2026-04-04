@@ -25,6 +25,8 @@ var Combo = (function() {
     var hitTimer = 0;
     var hitName = '';
     var pendingTyped = ''; // V8 命中时缓存 typed，等 N 前缀确认
+    var pendingAge = 0;    // pendingTyped 存活帧数，超过阈值过期
+    var PENDING_MAX_AGE = 10; // ~333ms，超过则认为 AS2 未执行
     var knownPatterns = {}; // name → fullSequence，从 hints 数据积累
 
     function init() {
@@ -40,9 +42,19 @@ var Combo = (function() {
             var typed = fields[1] || '';
             var hints = fields[2] || '';
 
-            // V8 DFA 命中帧：只缓存 typed，不触发动效（等 AS2 N前缀确认）
+            // pendingTyped 老化：每帧递增，超过阈值清空（防止 V8 识别但 AS2 未执行时残留）
+            if (pendingTyped.length > 0) {
+                pendingAge++;
+                if (pendingAge > PENDING_MAX_AGE) {
+                    pendingTyped = '';
+                    pendingAge = 0;
+                }
+            }
+
+            // V8 DFA 命中帧：缓存 typed，等 AS2 N前缀确认后才触发动效
             if (cmdName.length > 0) {
                 pendingTyped = typed;
+                pendingAge = 0;
                 return;
             }
 

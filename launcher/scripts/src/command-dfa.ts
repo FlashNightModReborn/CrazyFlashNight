@@ -2,6 +2,7 @@
  * CommandDFA - 搓招 DFA 状态机 (镜像 AS2 CommandDFA.as 的 updateFast)
  *
  * V8 侧职责：DFA 状态转移 + 输入路径追踪。不做缓冲。
+ * 超时语义与 AS2 原版一致：每帧 timer++，超过 timeout 回 ROOT。
  */
 namespace GameInput {
 
@@ -18,9 +19,6 @@ namespace GameInput {
         private _lastCommandId: number = NO_COMMAND;
         private _inputPath: number[] = [];
 
-        // 上帧事件指纹（用于去重持续按住不变的输入）
-        private _prevEventKey: string = "";
-
         setDfa(dfa: TrieDfa): void {
             this._dfa = dfa;
             this.resetState();
@@ -32,7 +30,6 @@ namespace GameInput {
             this._commandId = NO_COMMAND;
             this._lastCommandId = NO_COMMAND;
             this._inputPath.length = 0;
-            this._prevEventKey = "";
         }
 
         getCommandId(): number { return this._commandId; }
@@ -42,9 +39,7 @@ namespace GameInput {
 
         /**
          * 热路径：内联 DFA 状态转移 + 路径追踪
-         *
-         * 去重逻辑：如果本帧事件和上帧完全相同，且 DFA 不在 ROOT，
-         * 则只维持 timer（不重新转移），避免"持续按住 → 超时 → 回 ROOT → 再转移"的闪烁循环。
+         * 与 AS2 原版语义一致：每帧 timer++，有效转移时 timer=0，超时回 ROOT。
          */
         updateFast(events: number[], timeout: number = DEFAULT_TIMEOUT): void {
             const dfa = this._dfa;
@@ -53,29 +48,11 @@ namespace GameInput {
                 return;
             }
 
-            // 计算本帧事件指纹
-            let eventKey = "";
-            for (let k = 0; k < events.length; k++) {
-                if (k > 0) eventKey += ",";
-                eventKey += events[k];
-            }
-
             let state = this._state;
             let timer = this._timer;
             const path = this._inputPath;
 
             this._commandId = NO_COMMAND;
-
-            // 去重：事件不变 + 不在 ROOT → 只维持 timer，不推进 DFA
-            if (eventKey === this._prevEventKey && state !== ROOT_STATE && eventKey.length > 0) {
-                // 持续按住同样的键，保持当前状态，timer 不增加（防止超时回 ROOT）
-                this._prevEventKey = eventKey;
-                this._state = state;
-                this._timer = timer;
-                return;
-            }
-
-            this._prevEventKey = eventKey;
             timer++;
 
             const evCount = events.length;

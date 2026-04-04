@@ -329,6 +329,7 @@ var HitNumber;
  * CommandDFA - 搓招 DFA 状态机 (镜像 AS2 CommandDFA.as 的 updateFast)
  *
  * V8 侧职责：DFA 状态转移 + 输入路径追踪。不做缓冲。
+ * 超时语义与 AS2 原版一致：每帧 timer++，超过 timeout 回 ROOT。
  */
 var GameInput;
 (function (GameInput) {
@@ -343,8 +344,6 @@ var GameInput;
             this._commandId = NO_COMMAND;
             this._lastCommandId = NO_COMMAND;
             this._inputPath = [];
-            // 上帧事件指纹（用于去重持续按住不变的输入）
-            this._prevEventKey = "";
         }
         setDfa(dfa) {
             this._dfa = dfa;
@@ -356,7 +355,6 @@ var GameInput;
             this._commandId = NO_COMMAND;
             this._lastCommandId = NO_COMMAND;
             this._inputPath.length = 0;
-            this._prevEventKey = "";
         }
         getCommandId() { return this._commandId; }
         getLastCommandId() { return this._lastCommandId; }
@@ -364,9 +362,7 @@ var GameInput;
         getInputPath() { return this._inputPath; }
         /**
          * 热路径：内联 DFA 状态转移 + 路径追踪
-         *
-         * 去重逻辑：如果本帧事件和上帧完全相同，且 DFA 不在 ROOT，
-         * 则只维持 timer（不重新转移），避免"持续按住 → 超时 → 回 ROOT → 再转移"的闪烁循环。
+         * 与 AS2 原版语义一致：每帧 timer++，有效转移时 timer=0，超时回 ROOT。
          */
         updateFast(events, timeout = DEFAULT_TIMEOUT) {
             const dfa = this._dfa;
@@ -374,26 +370,10 @@ var GameInput;
                 this._commandId = NO_COMMAND;
                 return;
             }
-            // 计算本帧事件指纹
-            let eventKey = "";
-            for (let k = 0; k < events.length; k++) {
-                if (k > 0)
-                    eventKey += ",";
-                eventKey += events[k];
-            }
             let state = this._state;
             let timer = this._timer;
             const path = this._inputPath;
             this._commandId = NO_COMMAND;
-            // 去重：事件不变 + 不在 ROOT → 只维持 timer，不推进 DFA
-            if (eventKey === this._prevEventKey && state !== ROOT_STATE && eventKey.length > 0) {
-                // 持续按住同样的键，保持当前状态，timer 不增加（防止超时回 ROOT）
-                this._prevEventKey = eventKey;
-                this._state = state;
-                this._timer = timer;
-                return;
-            }
-            this._prevEventKey = eventKey;
             timer++;
             const evCount = events.length;
             for (let i = 0; i < evCount; i++) {
@@ -506,6 +486,11 @@ var GameInput;
     let _currentModuleId = -1;
     let _lastHintState = -1;
     let _lastHintStr = "";
+    // 显示层防闪烁：hints 非空时缓存，回 ROOT 时延持几帧再清空
+    let _displayHints = "";
+    let _displayTyped = "";
+    let _displayHoldTimer = 0;
+    const DISPLAY_HOLD_FRAMES = 10; // hints 消失后保持 10 帧（~333ms）
     // 日志
     let _logBuf = [];
     function _log(msg) {
@@ -603,20 +588,49 @@ var GameInput;
         // typed: 已输入事件的符号序列
         const typedStr = GameInput.sequenceToString(inputPath);
         // 3. hints: 仅 state 变化时重算
-        let hints;
+        let rawHints;
         if (state !== _lastHintState) {
             _lastHintState = state;
             _lastHintStr = buildHints(mod, state, typedStr);
         }
-        hints = _lastHintStr;
-        // 4. 格式化 K payload: chr(cmdId+0x20) \x01 typed \x02 hints
+        rawHints = _lastHintStr;
+        // 4. 显示层防闪烁
+        //    DFA 在"持续按住 → 超时回 ROOT → 再转移"时会导致 hints 在有/无之间振荡。
+        //    解决：hints 非空时更新显示缓存；hints 变空后延持 DISPLAY_HOLD_FRAMES 帧再清。
+        let outTyped;
+        let outHints;
+        if (rawHints.length > 0) {
+            // 有新 hints → 更新显示缓存
+            _displayHints = rawHints;
+            _displayTyped = typedStr;
+            _displayHoldTimer = DISPLAY_HOLD_FRAMES;
+            outTyped = typedStr;
+            outHints = rawHints;
+        }
+        else if (_displayHoldTimer > 0) {
+            // hints 变空但延持中 → 继续输出缓存
+            _displayHoldTimer--;
+            outTyped = _displayTyped;
+            outHints = _displayHints;
+        }
+        else {
+            // 延持结束 → 真正清空
+            _displayHints = "";
+            _displayTyped = "";
+            outTyped = "";
+            outHints = "";
+        }
+        // 5. 格式化 K payload: chr(cmdId+0x20) \x01 typed \x02 hints
         if (cmdId === 0) {
-            return String.fromCharCode(0x20) + "\x01" + typedStr + "\x02" + hints;
+            return String.fromCharCode(0x20) + "\x01" + outTyped + "\x02" + outHints;
         }
         // 命中
         const cmdName = mod.dfa.getCommandName(cmdId);
         _log("[GameInput] HIT cmdId=" + cmdId + " name=" + cmdName + " typed=" + typedStr);
-        // 命中时输出完整触发序列，不输出分支
+        // 命中时清空显示缓存（由 AS2 N 前缀接管显示）
+        _displayHoldTimer = 0;
+        _displayHints = "";
+        _displayTyped = "";
         return String.fromCharCode(cmdId + 0x20) + cmdName + "\x01" + typedStr + "\x02";
     }
     GameInput.processFrame = processFrame;

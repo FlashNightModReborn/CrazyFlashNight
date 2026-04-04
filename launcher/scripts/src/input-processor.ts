@@ -24,6 +24,12 @@ namespace GameInput {
     let _lastHintState: number = -1;
     let _lastHintStr: string = "";
 
+    // 显示层防闪烁：hints 非空时缓存，回 ROOT 时延持几帧再清空
+    let _displayHints: string = "";
+    let _displayTyped: string = "";
+    let _displayHoldTimer: number = 0;
+    const DISPLAY_HOLD_FRAMES = 10; // hints 消失后保持 10 帧（~333ms）
+
     // 日志
     let _logBuf: string[] = [];
     function _log(msg: string): void {
@@ -133,23 +139,53 @@ namespace GameInput {
         const typedStr = sequenceToString(inputPath);
 
         // 3. hints: 仅 state 变化时重算
-        let hints: string;
+        let rawHints: string;
         if (state !== _lastHintState) {
             _lastHintState = state;
             _lastHintStr = buildHints(mod, state, typedStr);
         }
-        hints = _lastHintStr;
+        rawHints = _lastHintStr;
 
-        // 4. 格式化 K payload: chr(cmdId+0x20) \x01 typed \x02 hints
+        // 4. 显示层防闪烁
+        //    DFA 在"持续按住 → 超时回 ROOT → 再转移"时会导致 hints 在有/无之间振荡。
+        //    解决：hints 非空时更新显示缓存；hints 变空后延持 DISPLAY_HOLD_FRAMES 帧再清。
+        let outTyped: string;
+        let outHints: string;
+
+        if (rawHints.length > 0) {
+            // 有新 hints → 更新显示缓存
+            _displayHints = rawHints;
+            _displayTyped = typedStr;
+            _displayHoldTimer = DISPLAY_HOLD_FRAMES;
+            outTyped = typedStr;
+            outHints = rawHints;
+        } else if (_displayHoldTimer > 0) {
+            // hints 变空但延持中 → 继续输出缓存
+            _displayHoldTimer--;
+            outTyped = _displayTyped;
+            outHints = _displayHints;
+        } else {
+            // 延持结束 → 真正清空
+            _displayHints = "";
+            _displayTyped = "";
+            outTyped = "";
+            outHints = "";
+        }
+
+        // 5. 格式化 K payload: chr(cmdId+0x20) \x01 typed \x02 hints
         if (cmdId === 0) {
-            return String.fromCharCode(0x20) + "\x01" + typedStr + "\x02" + hints;
+            return String.fromCharCode(0x20) + "\x01" + outTyped + "\x02" + outHints;
         }
 
         // 命中
         const cmdName = mod.dfa.getCommandName(cmdId);
         _log("[GameInput] HIT cmdId=" + cmdId + " name=" + cmdName + " typed=" + typedStr);
 
-        // 命中时输出完整触发序列，不输出分支
+        // 命中时清空显示缓存（由 AS2 N 前缀接管显示）
+        _displayHoldTimer = 0;
+        _displayHints = "";
+        _displayTyped = "";
+
         return String.fromCharCode(cmdId + 0x20) + cmdName + "\x01" + typedStr + "\x02";
     }
 }
