@@ -224,6 +224,10 @@ class org.flashNight.arki.audio.SoundEffectManager {
                 // jukebox 覆盖模式下拒绝 stage
                 _suppressedStage = {title: title, loop: loop};
                 trace("[BGM] source=stage title=" + title + " result=reject_by_jukebox_override");
+                // jukebox 可能被 transition stopBGM 中断, 需要恢复播放
+                if (currentBGMUrl == null) {
+                    playBGMWithSource(_jukeboxTitle, "jukebox", _jukeboxLoop, null);
+                }
                 return;
             }
             // stage 可以打断 jukebox（非 override 模式）和 scene
@@ -263,6 +267,13 @@ class org.flashNight.arki.audio.SoundEffectManager {
             if (source == "scene") _sceneIsAlbumMode = false;
             trace("[BGM] source=" + source + " title=" + title + " result=play");
             org.flashNight.arki.render.FrameBroadcaster.pushUiState("jbs:" + source);
+        } else if (bgm.url == currentBGMUrl && source != _bgmSource) {
+            // 同一首曲目继续播放, 但 source 上下文变更(如跨关卡同 BGM)
+            _bgmSource = source;
+            _currentAlbum = bgm.album;
+            _currentLoop = loop;
+            if (source == "scene") _sceneIsAlbumMode = false;
+            trace("[BGM] source=" + source + " title=" + title + " result=source_updated");
         }
     }
 
@@ -409,6 +420,21 @@ class org.flashNight.arki.audio.SoundEffectManager {
         }
     }
 
+    /**
+     * 进入无 BGM 配置的 UI 帧(如选关界面)时调用。
+     * jukebox 活跃时保持/恢复播放, 否则停止残留 BGM。
+     */
+    public function enterNoBgmFrame():Void {
+        _suppressedStage = null;
+        if (_jukeboxActive) {
+            if (currentBGMUrl == null) {
+                playBGMWithSource(_jukeboxTitle, "jukebox", _jukeboxLoop, null);
+            }
+            return;
+        }
+        doStopBGM();
+    }
+
     public function setJukeboxOverride(value:Boolean):Void {
         var wasOverride:Boolean = _jukeboxOverride;
         _jukeboxOverride = (value == true);
@@ -543,6 +569,17 @@ class org.flashNight.arki.audio.SoundEffectManager {
     }
 
     /**
+     * 场景过渡时调用。jukebox override 激活时保持 jukebox 连续播放, 不中断。
+     */
+    public function stopBGMForTransition():Void {
+        if (_jukeboxOverride && _jukeboxActive) {
+            trace("[BGM] stopBGMForTransition: skip (jukebox override active)");
+            return;
+        }
+        doStopBGM();
+    }
+
+    /**
      * 带来源的停止：stage 发出的 stop 在 override 模式下不能停掉 jukebox。
      */
     public function stopBGMWithSource(source:String):Void {
@@ -561,6 +598,22 @@ class org.flashNight.arki.audio.SoundEffectManager {
             _bgmSource = null;
             _currentAlbum = null;
             org.flashNight.arki.render.FrameBroadcaster.pushUiState("bgm:");
+        }
+    }
+
+    /**
+     * 场景跳转时调用, 清除残留的 stage 上下文. 不停止当前播放.
+     * _suppressedStage 无条件清除(覆盖 jukebox override 下 _bgmSource="jukebox" 但
+     * _suppressedStage 残留的情况); _bgmSource 仅在 "stage" 时重置.
+     */
+    public function notifyLeaveBattle():Void {
+        var hadStage:Boolean = (_suppressedStage != null || _bgmSource == "stage");
+        _suppressedStage = null;
+        if (_bgmSource == "stage") {
+            _bgmSource = null;
+        }
+        if (hadStage) {
+            trace("[BGM] notifyLeaveBattle: stage context cleared");
         }
     }
 

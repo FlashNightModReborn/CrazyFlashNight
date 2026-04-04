@@ -18,6 +18,13 @@ namespace CF7Launcher.Tasks
     public class AudioTask
     {
         /// <summary>
+        /// Flash 侧发起 bgm_play/bgm_stop 时置 true,
+        /// WebOverlayForm.OnAudioTick 读取并转为 _manualStop, 防止误触 jukeboxTrackEnd。
+        /// volatile 保证跨线程可见性。
+        /// </summary>
+        public static volatile bool FlashBgmChange;
+
+        /// <summary>
         /// Sync handler registered with MessageRouter.
         /// All audio commands are fire-and-forget (returns null).
         /// </summary>
@@ -73,6 +80,7 @@ namespace CF7Launcher.Tasks
             LogManager.Log("[Audio] bgm_play: path=" + path + " loop=" + loop
                 + " vol=" + vol.ToString("F3") + " fade=" + fade.ToString("F2"));
 
+            FlashBgmChange = true;
             int rc = AudioEngine.ma_bridge_bgm_play(path, loop, vol, fade);
             if (rc != 0)
                 LogManager.Log("[Audio] bgm_play FAILED: rc=" + rc + " path=" + path);
@@ -82,6 +90,7 @@ namespace CF7Launcher.Tasks
         {
             float fade = msg.Value<float?>("fade") ?? 0.0f;
             LogManager.Log("[Audio] bgm_stop: fade=" + fade.ToString("F2"));
+            FlashBgmChange = true;
             int rc = AudioEngine.ma_bridge_bgm_stop(fade);
             if (rc != 0)
                 LogManager.Log("[Audio] bgm_stop FAILED: rc=" + rc);

@@ -630,7 +630,7 @@ var GameInput;
         }
         // 命中
         const cmdName = mod.dfa.getCommandName(cmdId);
-        _log("[GameInput] HIT cmdId=" + cmdId + " name=" + cmdName + " typed=" + typedStr);
+        // HIT 日志已由 WebView2 combo overlay 接管，不再写文件日志
         // 命中时清空显示缓存（由 AS2 N 前缀接管显示）
         _displayHoldTimer = 0;
         _displayHints = "";

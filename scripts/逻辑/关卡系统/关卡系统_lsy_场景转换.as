@@ -337,8 +337,8 @@ _root.返回基地 = function(){
 	}
 	// 清空限制词条
 	_root.限制系统.clearEntries();
-	// 停止背景音乐
-	_root.soundEffectManager.stopBGM();
+	// 停止背景音乐(jukebox override 时保持连续播放)
+	_root.soundEffectManager.stopBGMForTransition();
 	// 清除StageManager
 	StageManager.instance.clear();
 }
@@ -418,6 +418,7 @@ _root.防止播放跳关 = function(){
 
 _root.跳转地图 = function(跳转帧){
 	_root.当前为战斗地图 = false;
+	_root.soundEffectManager.notifyLeaveBattle();
 	// 检索环境xml中是否存在对应的基地地图或外部地图
 	if(WeatherSystem.getInstance().getEnvConfig().hasSceneEnv(_root.关卡标志)){
 		// 通过关卡标志是否有"地图-"前缀来区分基地/外部地图

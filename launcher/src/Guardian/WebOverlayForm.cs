@@ -501,6 +501,12 @@ namespace CF7Launcher.Guardian
 
                 // 曲目自然结束检测（排除暂停和手动 stop）
                 bool isPlaying = playing == 1;
+                // Flash 侧 bgm_play/bgm_stop 同样视为 manual stop，防换歌间隙误触 trackEnd
+                if (CF7Launcher.Tasks.AudioTask.FlashBgmChange)
+                {
+                    _manualStop = true;
+                    CF7Launcher.Tasks.AudioTask.FlashBgmChange = false;
+                }
                 if (_wasPlaying && !isPlaying && !_manualStop && !_bgmPaused)
                 {
                     SendGameCommand("jukeboxTrackEnd");

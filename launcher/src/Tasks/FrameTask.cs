@@ -97,11 +97,7 @@ namespace CF7Launcher.Tasks
                 // 搓招输入处理：解析 \x04 payload -> V8 -> K 前缀推送
                 if (!string.IsNullOrEmpty(inputPayload) && _socket != null)
                 {
-                    if (!_inputPayloadLogged)
-                    {
-                        _inputPayloadLogged = true;
-                        LogManager.Log("[Frame:Input] First \\x04 received: " + inputPayload);
-                    }
+                    // \x04 诊断日志已验证，不再输出
                     // 格式: mask|facingBit|moduleId|doubleTapDir
                     string[] inputParts = inputPayload.Split('|');
                     if (inputParts.Length >= 4)

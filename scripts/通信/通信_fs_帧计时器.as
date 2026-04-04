@@ -264,19 +264,15 @@ _root.帧计时器.构建搓招模组 = function():Void {
         dfa: heavyReg.getDFA()
     };
 
-    _root.服务器.发布服务器消息("[帧计时器] 多模组搓招系统构建完成",bareReg.toString(),lightReg.toString(),heavyReg.toString());
-
     // 输入采样器（共用，保留用于本地调试/兜底）
     this.inputSampler = new InputSampler();
 
     // 标记 DFA 已构建，D 前缀待发送
     this.dfaBuilt = true;
     this.dfaSentToLauncher = false;
-
-    // 尝试立即发送 D 前缀（如果 socket 已连接）
     this.发送DFA数据到Launcher();
 
-    _root.服务器.发布服务器消息("[帧计时器] 多模组搓招系统构建完成");
+    _root.服务器.发布服务器消息("[搓招] 模组构建完成 → Launcher 同步" + (this.dfaSentToLauncher ? "OK" : "等待连接"));
 };
 
 /**
@@ -285,57 +281,35 @@ _root.帧计时器.构建搓招模组 = function():Void {
  */
 _root.帧计时器.初始化输入搓招系统 = function():Void {
     var self = this;
-
-    _root.服务器.发布服务器消息("[帧计时器] 开始加载搓招系统 XML 配置...");
-
-    // 1. 先加载运行时配置
     var runtimeLoader:InputCommandRuntimeConfigLoader = new InputCommandRuntimeConfigLoader(
         "data/config/InputCommandRuntimeConfig.xml"
     );
-
     runtimeLoader.load(
         function(runtimeConfig:Object):Void {
-            _root.服务器.发布服务器消息("[帧计时器] 运行时配置加载成功");
-
-            // 2. 加载搓招命令配置列表
             var listLoader:InputCommandListXMLLoader = new InputCommandListXMLLoader(
                 "data/inputCommand/list.xml"
             );
-
             listLoader.loadAll(
                 function(configs:Object):Void {
-                    _root.服务器.发布服务器消息("[帧计时器] 搓招配置 XML 加载成功");
-
-                    // 注入到 CommandConfig
                     CommandConfig.setXMLConfigs(configs);
-
-                    // 构建模组
                     self.构建搓招模组();
                 },
                 function():Void {
-                    // XML 加载失败，使用硬编码
-                    _root.服务器.发布服务器消息("[帧计时器] 搓招配置 XML 加载失败，使用硬编码");
-                    self.构建搓招模组();
+                    self.构建搓招模组(); // XML 失败，硬编码 fallback
                 }
             );
         },
         function():Void {
-            // 运行时配置加载失败，继续尝试加载命令配置
-            _root.服务器.发布服务器消息("[帧计时器] 运行时配置加载失败，使用默认值");
-
             var listLoader:InputCommandListXMLLoader = new InputCommandListXMLLoader(
                 "data/inputCommand/list.xml"
             );
-
             listLoader.loadAll(
                 function(configs:Object):Void {
-                    _root.服务器.发布服务器消息("[帧计时器] 搓招配置 XML 加载成功");
                     CommandConfig.setXMLConfigs(configs);
                     self.构建搓招模组();
                 },
                 function():Void {
-                    _root.服务器.发布服务器消息("[帧计时器] 搓招配置 XML 加载失败，使用硬编码");
-                    self.构建搓招模组();
+                    self.构建搓招模组(); // 全部失败，硬编码 fallback
                 }
             );
         }
@@ -349,7 +323,6 @@ _root.帧计时器.初始化输入搓招系统 = function():Void {
 _root.帧计时器.初始化输入搓招系统同步 = function():Void {
     CommandConfig.disableXMLMode();
     this.构建搓招模组();
-    _root.服务器.发布服务器消息("[帧计时器] 搓招系统同步初始化完成（硬编码模式）");
 };
 
 /**
@@ -360,25 +333,18 @@ _root.帧计时器.初始化输入搓招系统同步 = function():Void {
  */
 _root.帧计时器.发送DFA数据到Launcher = function():Void {
     if (this.dfaSentToLauncher || !this.dfaBuilt) return;
-
     var sm:Object = _root.server;
-    if (sm == undefined || !sm.isSocketConnected) {
-        _root.服务器.发布服务器消息("[帧计时器] D前缀: socket 未连接，等待下次重试");
-        return;
-    }
+    if (sm == undefined || !sm.isSocketConnected) return;
 
     var moduleIds:Array = ["barehand", "lightWeapon", "heavyWeapon"];
     var moduleNums:Array = ["0", "1", "2"];
     for (var mi:Number = 0; mi < moduleIds.length; mi++) {
         var mod:Object = this.commandModules[moduleIds[mi]];
         if (mod != undefined && mod.registry != undefined) {
-            var json:String = mod.registry.serializeForLauncher();
-            sm.sendSocketMessage("D" + moduleNums[mi] + "\x01" + json);
-            _root.服务器.发布服务器消息("[帧计时器] D前缀发送模组: " + moduleIds[mi] + " (" + json.length + " bytes)");
+            sm.sendSocketMessage("D" + moduleNums[mi] + "\x01" + mod.registry.serializeForLauncher());
         }
     }
     this.dfaSentToLauncher = true;
-    _root.服务器.发布服务器消息("[帧计时器] D前缀发送完成，所有模组已同步到 Launcher");
 };
 
 /**

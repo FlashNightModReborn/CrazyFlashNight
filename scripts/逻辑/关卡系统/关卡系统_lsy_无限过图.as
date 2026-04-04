@@ -28,7 +28,7 @@ _root.选关界面进入关卡 = function(关卡难度){
 
 	if(起点帧) _root.关卡地图帧值 = 起点帧;
 
-	_root.soundEffectManager.stopBGM();
+	_root.soundEffectManager.stopBGMForTransition();
 	_root.淡出动画.淡出跳转帧(淡出跳转帧);
 };
 
@@ -52,7 +52,7 @@ _root.委托界面进入关卡 = function(关卡难度){
 		淡出跳转帧 = NPC任务_任务_起始帧;
 		_root.当前关卡名 = NPC任务_任务[12];
 	}
-	_root.soundEffectManager.stopBGM();
+	_root.soundEffectManager.stopBGMForTransition();
 	_root.淡出动画.淡出跳转帧(淡出跳转帧);
 };
 
