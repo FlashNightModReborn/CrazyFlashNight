@@ -13,8 +13,9 @@ namespace CF7Launcher.Config
     {
         private const string TrustFileName = "cf7me.cfg";
 
-        // 记录本次写入的信任文件路径，退出时逐一清理
-        private static readonly List<string> _activeLeasePaths = new List<string>();
+        // 只记录本次 **新写入/追加** 的信任文件路径，退出时逐一清理
+        // 预存条目（EnsureTrust 前就已存在的）不纳入此列表
+        private static readonly List<string> _ownedLeasePaths = new List<string>();
         private static string _leasedRoot;
 
         /// <summary>
@@ -62,13 +63,13 @@ namespace CF7Launcher.Config
 
         /// <summary>
         /// 撤销信任文件（退租）。Guardian 退出时调用。
-        /// 只清理本次 EnsureTrust 写入的文件和条目。
+        /// 只清理本次 EnsureTrust 新写入/追加的条目，不动预存的。
         /// </summary>
         public static void RevokeTrust()
         {
             if (_leasedRoot == null) return;
 
-            foreach (string filePath in _activeLeasePaths)
+            foreach (string filePath in _ownedLeasePaths)
             {
                 try
                 {
@@ -104,7 +105,7 @@ namespace CF7Launcher.Config
                 }
             }
 
-            _activeLeasePaths.Clear();
+            _ownedLeasePaths.Clear();
             _leasedRoot = null;
         }
 
@@ -122,23 +123,27 @@ namespace CF7Launcher.Config
                     {
                         if (line.Trim().Equals(projectRoot, StringComparison.OrdinalIgnoreCase))
                         {
-                            // 已存在，纳入租约管理
-                            _activeLeasePaths.Add(trustFile);
-                            LogManager.Log("[FlashTrust] Lease acquired (existing): " + trustFile);
+                            // 条目已存在（由 bat 或之前的进程写入），不纳入租约
+                            // 退出时不会删除此条目
+                            LogManager.Log("[FlashTrust] Already trusted (not leased): " + trustFile);
                             return true;
                         }
                     }
+                    // 路径不在文件中，追加——这是我们写的，纳入租约
                     File.AppendAllText(trustFile, Environment.NewLine + projectRoot);
+                    _ownedLeasePaths.Add(trustFile);
+                    LogManager.Log("[FlashTrust] Lease acquired (appended): " + trustFile);
                 }
                 else
                 {
+                    // 文件不存在，整个文件由我们创建，纳入租约
                     if (!Directory.Exists(trustDir))
                         Directory.CreateDirectory(trustDir);
                     File.WriteAllText(trustFile, projectRoot);
+                    _ownedLeasePaths.Add(trustFile);
+                    LogManager.Log("[FlashTrust] Lease acquired (created): " + trustFile);
                 }
 
-                _activeLeasePaths.Add(trustFile);
-                LogManager.Log("[FlashTrust] Lease acquired: " + trustFile);
                 return true;
             }
             catch (UnauthorizedAccessException)

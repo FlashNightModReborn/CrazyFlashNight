@@ -76,13 +76,24 @@ class Program
         if (!SteamOwnershipCheck.Check(projectRoot))
         {
             LogManager.Log("[Guardian] Steam ownership check FAILED — refusing to write trust file");
-            ShowError("Steam ownership verification failed.\nPlease launch the game from Steam.");
+            string reason = SteamOwnershipCheck.FailReason;
+            if (reason == "steam_not_running")
+                ShowError("Steam is not running.\nPlease start Steam first, then launch the game from your Steam library.");
+            else if (reason == "not_owned")
+                ShowError("Game ownership not found.\nPlease make sure you own the game on this Steam account.");
+            else
+                ShowError("Steam ownership verification failed.\nPlease launch the game from Steam.");
             return 1;
         }
 
         // Flash Player 本地信任配置（确保 SWF 可访问网络）
-        if (!FlashTrustManager.EnsureTrust(projectRoot))
+        // 使用 try/finally 确保所有退出路径都调用 RevokeTrust
+        bool trustAcquired = FlashTrustManager.EnsureTrust(projectRoot);
+        if (!trustAcquired)
             LogManager.Log("[Guardian] WARNING: Flash trust not configured — SWF may fail to connect");
+
+        try
+        {
 
         if (!busOnly)
         {
@@ -298,7 +309,6 @@ class Program
             v8Runtime.Dispose();
             toastOverlay.Dispose();
             try { File.Delete(portsFile); } catch { }
-            FlashTrustManager.RevokeTrust();
             LogManager.Shutdown();
 
             return 0;
@@ -415,9 +425,17 @@ class Program
         v8Runtime.Dispose();
         toastOverlay.Dispose();
         try { File.Delete(portsFile); } catch { }
-        FlashTrustManager.RevokeTrust();
         LogManager.Shutdown();
 
         return 0;
+
+        } // end try
+        finally
+        {
+            // 统一出口：无论正常退出还是早退（Flash/SWF 缺失、端口失败等），
+            // 都确保清理本次写入的信任条目，不留残留
+            if (trustAcquired)
+                FlashTrustManager.RevokeTrust();
+        }
     }
 }
