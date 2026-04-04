@@ -81,6 +81,8 @@ class Program
                 ShowError("Steam is not running.\nPlease start Steam first, then launch the game from your Steam library.");
             else if (reason == "not_owned")
                 ShowError("Game ownership not found.\nPlease make sure you own the game on this Steam account.");
+            else if (reason == "dll_missing" || reason == "dll_load_failed")
+                ShowError("Steam runtime files are missing or corrupted.\nPlease verify game files through Steam.");
             else
                 ShowError("Steam ownership verification failed.\nPlease launch the game from Steam.");
             return 1;

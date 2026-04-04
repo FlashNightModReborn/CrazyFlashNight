@@ -1,6 +1,14 @@
 // Steam 正版所有权校验（Guardian 层）
 // 动态加载 steam_api64.dll，检查用户是否拥有本体 AppID
 // C# 5 语法，P/Invoke 动态绑定
+//
+// 安全策略：
+//   开发环境（IsDevRepository=true）→ 全部 fail-open，不干扰开发
+//   发行环境（IsDevRepository=false）→ DLL 缺失/加载失败 = fail-closed（疑似篡改）
+//     仅导出名解析失败（SDK 版本不兼容）保留 fail-open
+//
+// GPLv3 合规：
+//   开发环境检测不绑定特定 remote URL，fork/mirror/改名仓库均视为合法开发环境
 
 using System;
 using System.IO;
@@ -44,33 +52,40 @@ namespace CF7Launcher.Config
 
         /// <summary>
         /// 检查当前 Steam 用户是否拥有本体游戏。
-        /// 开发环境（合法 git clone）自动跳过。
+        /// 开发环境（合法 git 仓库）自动跳过。
         /// </summary>
-        /// <returns>true=拥有或无法验证（容错），false=确认不拥有</returns>
+        /// <returns>true=拥有/开发环境/无法验证, false=确认不拥有或疑似篡改</returns>
         public static bool Check(string projectRoot)
         {
             _failReason = null;
 
-            // 开发环境检测：三级深度验证真实 git clone
-            if (IsDevRepository(projectRoot))
+            // 开发环境检测：三级深度验证真实 git 仓库（支持 worktree/fork/mirror）
+            bool isDev = IsDevRepository(projectRoot);
+            if (isDev)
             {
                 LogManager.Log("[SteamCheck] Dev repository detected, skipping ownership check");
                 return true;
             }
 
+            // === 以下为发行环境路径，采用 fail-closed 策略 ===
+
             string dllPath = FindSteamApiDll(projectRoot);
             if (dllPath == null)
             {
-                LogManager.Log("[SteamCheck] steam_api64.dll not found, skipping ownership check");
-                return true; // 找不到 DLL 时容错放行
+                // 发行环境下 DLL 应该存在，缺失视为篡改
+                LogManager.Log("[SteamCheck] steam_api64.dll not found in release environment — blocking");
+                _failReason = "dll_missing";
+                return false;
             }
 
             LogManager.Log("[SteamCheck] Loading: " + dllPath);
             IntPtr hModule = LoadLibraryW(dllPath);
             if (hModule == IntPtr.Zero)
             {
+                // DLL 存在但加载失败，可能被替换为无效文件
                 LogManager.Log("[SteamCheck] LoadLibrary failed: " + Marshal.GetLastWin32Error());
-                return true; // 加载失败容错
+                _failReason = "dll_load_failed";
+                return false;
             }
 
             try
@@ -85,65 +100,140 @@ namespace CF7Launcher.Config
         }
 
         /// <summary>
-        /// 三级深度验证：是否为真正从 GitHub clone 的开发仓库。
-        /// Level 1: .git/HEAD 是文件（拦截 mkdir .git）
-        /// Level 2: HEAD 内容是合法 git ref（拦截空文件伪造）
-        /// Level 3: .git/config 包含项目 remote URL（拦截伪造 git 结构）
+        /// 三级深度验证：是否为真实的 git 开发仓库。
+        /// 支持普通 clone、worktree、fork、mirror——不绑定特定 remote URL（GPLv3 合规）。
+        ///
+        /// Level 1: .git 入口有效（目录含 HEAD，或 worktree 文件含 gitdir:）
+        /// Level 2: HEAD 内容是合法 git ref 或 commit hash
+        /// Level 3: objects/pack/ 下存在真实 .pack 文件（证明有实际 git 历史）
         /// </summary>
         private static bool IsDevRepository(string projectRoot)
         {
-            string gitDir = Path.Combine(projectRoot, ".git");
+            string gitPath = Path.Combine(projectRoot, ".git");
+            string gitDir = null;
 
-            // Level 1: .git/HEAD 必须是文件
-            string headFile = Path.Combine(gitDir, "HEAD");
-            if (!File.Exists(headFile))
+            // Level 1: 解析 .git 入口
+            if (Directory.Exists(gitPath))
             {
-                LogManager.Log("[SteamCheck] No .git/HEAD found");
+                // 标准 clone：.git 是目录
+                gitDir = gitPath;
+            }
+            else if (File.Exists(gitPath))
+            {
+                // git worktree：.git 是文件，内容为 "gitdir: /path/to/.git/worktrees/xxx"
+                try
+                {
+                    string content = File.ReadAllText(gitPath).Trim();
+                    if (content.StartsWith("gitdir:"))
+                    {
+                        string linked = content.Substring("gitdir:".Length).Trim();
+                        // 处理相对路径
+                        if (!Path.IsPathRooted(linked))
+                            linked = Path.Combine(projectRoot, linked);
+                        linked = Path.GetFullPath(linked);
+                        if (Directory.Exists(linked))
+                        {
+                            gitDir = linked;
+                            LogManager.Log("[SteamCheck] Worktree detected, gitDir=" + gitDir);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[SteamCheck] Failed to read .git file: " + ex.Message);
+                }
+            }
+
+            if (gitDir == null)
+            {
+                LogManager.Log("[SteamCheck] No valid .git entry found");
                 return false;
             }
 
             // Level 2: HEAD 内容合法（ref: refs/heads/xxx 或 40位十六进制 commit hash）
+            string headFile = Path.Combine(gitDir, "HEAD");
+            if (!File.Exists(headFile))
+            {
+                LogManager.Log("[SteamCheck] No HEAD file in gitDir");
+                return false;
+            }
+
             try
             {
                 string head = File.ReadAllText(headFile).Trim();
-                bool validRef = head.StartsWith("ref: refs/heads/");
+                bool validRef = head.StartsWith("ref: refs/");
                 bool validHash = head.Length == 40 && IsHexString(head);
                 if (!validRef && !validHash)
                 {
-                    LogManager.Log("[SteamCheck] .git/HEAD content invalid: " + head);
+                    LogManager.Log("[SteamCheck] HEAD content invalid: " + head);
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                LogManager.Log("[SteamCheck] Failed to read .git/HEAD: " + ex.Message);
+                LogManager.Log("[SteamCheck] Failed to read HEAD: " + ex.Message);
                 return false;
             }
 
-            // Level 3: .git/config 包含项目的 remote URL
-            string configFile = Path.Combine(gitDir, "config");
-            if (!File.Exists(configFile))
+            // Level 3: objects/pack/ 下存在至少一个 .pack 文件
+            // 真实 clone 必有 pack 文件；mkdir .git + 伪造 HEAD 无法通过此检查
+            // 对于 worktree，pack 文件在主仓库的 objects/ 下
+            string objectsDir = ResolveObjectsDir(gitDir);
+            if (objectsDir == null)
             {
-                LogManager.Log("[SteamCheck] No .git/config found");
+                LogManager.Log("[SteamCheck] Cannot resolve objects directory");
                 return false;
             }
 
-            try
+            string packDir = Path.Combine(objectsDir, "pack");
+            if (!Directory.Exists(packDir))
             {
-                string config = File.ReadAllText(configFile);
-                if (config.IndexOf("FlashNightModReborn/CrazyFlashNight", StringComparison.OrdinalIgnoreCase) < 0)
-                {
-                    LogManager.Log("[SteamCheck] .git/config does not contain expected remote URL");
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogManager.Log("[SteamCheck] Failed to read .git/config: " + ex.Message);
+                LogManager.Log("[SteamCheck] No objects/pack/ directory");
                 return false;
             }
 
+            string[] packFiles = Directory.GetFiles(packDir, "*.pack");
+            if (packFiles.Length == 0)
+            {
+                LogManager.Log("[SteamCheck] No .pack files in objects/pack/");
+                return false;
+            }
+
+            LogManager.Log("[SteamCheck] Valid git repository: " + packFiles.Length + " pack file(s)");
             return true;
+        }
+
+        /// <summary>
+        /// 解析 objects 目录路径。
+        /// 普通 clone：gitDir/objects/
+        /// worktree：gitDir 是 .git/worktrees/xxx/，objects 在主 .git/objects/
+        ///           通过 worktree 的 commondir 文件或向上查找 objects/ 获取
+        /// </summary>
+        private static string ResolveObjectsDir(string gitDir)
+        {
+            // 优先检查 commondir 文件（git worktree 标准机制）
+            string commondirFile = Path.Combine(gitDir, "commondir");
+            if (File.Exists(commondirFile))
+            {
+                try
+                {
+                    string commondir = File.ReadAllText(commondirFile).Trim();
+                    if (!Path.IsPathRooted(commondir))
+                        commondir = Path.Combine(gitDir, commondir);
+                    commondir = Path.GetFullPath(commondir);
+                    string objDir = Path.Combine(commondir, "objects");
+                    if (Directory.Exists(objDir))
+                        return objDir;
+                }
+                catch { }
+            }
+
+            // 直接检查 gitDir/objects/
+            string direct = Path.Combine(gitDir, "objects");
+            if (Directory.Exists(direct))
+                return direct;
+
+            return null;
         }
 
         private static bool IsHexString(string s)
@@ -181,20 +271,21 @@ namespace CF7Launcher.Config
                 }
             }
 
-            // 逐个检查，给出具体失败的函数名
+            // 逐个检查——导出名解析失败属于 SDK 版本不兼容，保留 fail-open
+            // （与 DLL 缺失/加载失败不同，这不是用户可控的篡改向量）
             if (pInit == IntPtr.Zero)
             {
-                LogManager.Log("[SteamCheck] Cannot resolve SteamAPI_Init, skipping");
+                LogManager.Log("[SteamCheck] Cannot resolve SteamAPI_Init, skipping (SDK mismatch)");
                 return true;
             }
             if (pApps == IntPtr.Zero)
             {
-                LogManager.Log("[SteamCheck] Cannot resolve SteamAPI_SteamApps_v00X, skipping");
+                LogManager.Log("[SteamCheck] Cannot resolve SteamAPI_SteamApps_v00X, skipping (SDK mismatch)");
                 return true;
             }
             if (pSubscribed == IntPtr.Zero)
             {
-                LogManager.Log("[SteamCheck] Cannot resolve SteamAPI_ISteamApps_BIsSubscribedApp, skipping");
+                LogManager.Log("[SteamCheck] Cannot resolve SteamAPI_ISteamApps_BIsSubscribedApp, skipping (SDK mismatch)");
                 return true;
             }
 
