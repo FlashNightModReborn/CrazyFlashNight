@@ -53,6 +53,7 @@
     <Compile Include="src\Program.cs" />
     <Compile Include="src\Config\AppConfig.cs" />
     <Compile Include="src\Config\FlashTrustManager.cs" />
+    <Compile Include="src\Config\SteamOwnershipCheck.cs" />
     <Compile Include="src\Guardian\ProcessManager.cs" />
     <Compile Include="src\Guardian\WindowManager.cs" />
     <Compile Include="src\Guardian\KeyboardHook.cs" />

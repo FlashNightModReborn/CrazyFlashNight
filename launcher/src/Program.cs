@@ -72,6 +72,14 @@ class Program
         // 读配置（bus-only 跳过文件验证）
         AppConfig config = new AppConfig(projectRoot);
 
+        // Steam 正版所有权校验（不通过则不写信任文件，Flash 无法联网）
+        if (!SteamOwnershipCheck.Check(projectRoot))
+        {
+            LogManager.Log("[Guardian] Steam ownership check FAILED — refusing to write trust file");
+            ShowError("Steam ownership verification failed.\nPlease launch the game from Steam.");
+            return 1;
+        }
+
         // Flash Player 本地信任配置（确保 SWF 可访问网络）
         if (!FlashTrustManager.EnsureTrust(projectRoot))
             LogManager.Log("[Guardian] WARNING: Flash trust not configured — SWF may fail to connect");
@@ -290,6 +298,7 @@ class Program
             v8Runtime.Dispose();
             toastOverlay.Dispose();
             try { File.Delete(portsFile); } catch { }
+            FlashTrustManager.RevokeTrust();
             LogManager.Shutdown();
 
             return 0;
@@ -406,6 +415,7 @@ class Program
         v8Runtime.Dispose();
         toastOverlay.Dispose();
         try { File.Delete(portsFile); } catch { }
+        FlashTrustManager.RevokeTrust();
         LogManager.Shutdown();
 
         return 0;
