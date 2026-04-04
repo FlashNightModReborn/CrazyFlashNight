@@ -222,19 +222,30 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'F')
                 {
-                    // Frame 快车道：F{cam}\x01{hn}[\x02{fps}][\x03{uiState}]
+                    // Frame 快车道：F{cam}\x01{hn}[\x02{fps}][\x03{uiState}][\x04{inputPayload}]
                     if (_frameTask == null) return;
 
-                    // 先提取 \x03 UI 状态段（可能附在 fps 后面或 hn 后面）
-                    string uiState = null;
-                    string body = message;
-                    int sep3 = message.IndexOf('\x03', 1);
-                    if (sep3 >= 0)
+                    // 1) 先提取 \x04 输入数据段（始终在消息最末尾）
+                    string inputPayload = null;
+                    string fMsg = message;
+                    int sep4 = message.IndexOf('\x04', 1);
+                    if (sep4 >= 0)
                     {
-                        uiState = (sep3 < message.Length - 1) ? message.Substring(sep3 + 1) : "";
-                        body = message.Substring(0, sep3);
+                        inputPayload = (sep4 < message.Length - 1) ? message.Substring(sep4 + 1) : "";
+                        fMsg = message.Substring(0, sep4);
                     }
 
+                    // 2) 提取 \x03 UI 状态段
+                    string uiState = null;
+                    string body = fMsg;
+                    int sep3 = fMsg.IndexOf('\x03', 1);
+                    if (sep3 >= 0)
+                    {
+                        uiState = (sep3 < fMsg.Length - 1) ? fMsg.Substring(sep3 + 1) : "";
+                        body = fMsg.Substring(0, sep3);
+                    }
+
+                    // 3) 解析 cam / hn / fps
                     int sep1 = body.IndexOf('\x01', 1);
                     string cam, hn, fps;
                     if (sep1 > 1)
@@ -258,7 +269,7 @@ namespace CF7Launcher.Bus
                         hn = "";
                         fps = "";
                     }
-                    _frameTask.HandleRaw(cam, hn, fps);
+                    _frameTask.HandleRaw(cam, hn, fps, inputPayload);
                     // UI 状态段透传到 WebView2（与帧渲染同步）
                     if (uiState != null && uiState.Length > 0)
                     {
@@ -360,6 +371,26 @@ namespace CF7Launcher.Bus
                     // 零解析，整条 payload 转发给 WebView2 层
                     if (_uiDataHandler != null)
                         _uiDataHandler(message.Substring(1));
+                    return;
+                }
+
+                if (prefix == 'D')
+                {
+                    // DFA 数据同步：D{moduleId}\x01{json}
+                    if (_frameTask == null) return;
+                    string dPayload = message.Substring(1);
+                    int dSep = dPayload.IndexOf('\x01');
+                    if (dSep >= 0)
+                    {
+                        string moduleId = dPayload.Substring(0, dSep);
+                        string dataJson = (dSep < dPayload.Length - 1) ? dPayload.Substring(dSep + 1) : "";
+                        LogManager.Log("[XmlSocket:D] Received DFA module=" + moduleId + " jsonLen=" + dataJson.Length);
+                        _frameTask.LoadInputModule(moduleId, dataJson);
+                    }
+                    else
+                    {
+                        LogManager.Log("[XmlSocket:D] Parse error: no \\x01 separator in D message, len=" + dPayload.Length);
+                    }
                     return;
                 }
             }

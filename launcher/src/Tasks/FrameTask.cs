@@ -27,13 +27,26 @@ namespace CF7Launcher.Tasks
         private readonly HitNumberOverlay _overlay;
         private readonly FpsRingBuffer _fpsBuffer;
         private PerfDecisionEngine _decisionEngine; // 可空，Phase 1 之前为 null
+        private CF7Launcher.Bus.XmlSocketServer _socket; // 用于 K 前缀推送
+        private Action<string> _uiDataHandler; // combo hints → WebView2
         private volatile bool _stopped;
+        private bool _inputPayloadLogged; // 首次收到 inputPayload 时输出一次日志
 
         public FpsRingBuffer FpsBuffer { get { return _fpsBuffer; } }
 
         public void SetDecisionEngine(PerfDecisionEngine engine)
         {
             _decisionEngine = engine;
+        }
+
+        public void SetSocket(CF7Launcher.Bus.XmlSocketServer socket)
+        {
+            _socket = socket;
+        }
+
+        public void SetUiDataHandler(Action<string> handler)
+        {
+            _uiDataHandler = handler;
         }
 
         public FrameTask(V8Runtime v8, HitNumberOverlay overlay)
@@ -51,7 +64,23 @@ namespace CF7Launcher.Tasks
         /// 前缀协议格式：F{cam}\x01{hn}\x02{fps}
         /// fps 字段可选（仅在有新采样时存在）。
         /// </summary>
-        public void HandleRaw(string cam, string hn, string fps)
+        /// <summary>
+        /// 加载搓招模组 DFA 数据（由 D 前缀触发）。
+        /// </summary>
+        public void LoadInputModule(string moduleId, string dataJson)
+        {
+            if (_stopped) return;
+            try
+            {
+                _v8.LoadInputModule(moduleId, dataJson);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Frame] LoadInputModule error: " + ex.Message);
+            }
+        }
+
+        public void HandleRaw(string cam, string hn, string fps, string inputPayload)
         {
             if (_stopped) return;
             try
@@ -64,6 +93,61 @@ namespace CF7Launcher.Tasks
 
                 string renderStr = _v8.Tick();
                 _overlay.UpdateRender(renderStr);
+
+                // 搓招输入处理：解析 \x04 payload -> V8 -> K 前缀推送
+                if (!string.IsNullOrEmpty(inputPayload) && _socket != null)
+                {
+                    if (!_inputPayloadLogged)
+                    {
+                        _inputPayloadLogged = true;
+                        LogManager.Log("[Frame:Input] First \\x04 received: " + inputPayload);
+                    }
+                    // 格式: mask|facingBit|moduleId|doubleTapDir
+                    string[] inputParts = inputPayload.Split('|');
+                    if (inputParts.Length >= 4)
+                    {
+                        int mask, facingBit, moduleId, doubleTapDir;
+                        if (int.TryParse(inputParts[0], out mask) &&
+                            int.TryParse(inputParts[1], out facingBit) &&
+                            int.TryParse(inputParts[2], out moduleId) &&
+                            int.TryParse(inputParts[3], out doubleTapDir))
+                        {
+                            string kPayload = _v8.ProcessInput(mask, facingBit, moduleId, doubleTapDir);
+                            if (!string.IsNullOrEmpty(kPayload))
+                            {
+                                _socket.PushToClient("K" + kPayload);
+
+                                // 推送 combo 状态到 WebView2 overlay
+                                // kPayload v2: chr(cmdId+0x20)[cmdName]\x01{typed}\x02{hints}
+                                if (_uiDataHandler != null && kPayload.Length > 0)
+                                {
+                                    int rawCmdId = (int)kPayload[0] - 0x20;
+                                    int sep1 = kPayload.IndexOf('\x01');
+                                    int sep2 = kPayload.IndexOf('\x02');
+                                    string cmdName = "";
+                                    string typed = "";
+                                    string hints = "";
+                                    if (sep1 >= 0)
+                                    {
+                                        if (rawCmdId > 0 && sep1 > 1)
+                                            cmdName = kPayload.Substring(1, sep1 - 1);
+                                        if (sep2 > sep1)
+                                        {
+                                            typed = kPayload.Substring(sep1 + 1, sep2 - sep1 - 1);
+                                            hints = (sep2 < kPayload.Length - 1) ? kPayload.Substring(sep2 + 1) : "";
+                                        }
+                                        else
+                                        {
+                                            typed = kPayload.Substring(sep1 + 1);
+                                        }
+                                    }
+                                    // combo|{cmdName}|{typed}|{hints}
+                                    _uiDataHandler("combo|" + cmdName + "|" + typed + "|" + hints);
+                                }
+                            }
+                        }
+                    }
+                }
 
                 if (!string.IsNullOrEmpty(fps))
                 {

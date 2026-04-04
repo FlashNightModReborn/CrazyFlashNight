@@ -352,6 +352,34 @@ class org.flashNight.neur.InputCommand.CommandRegistry {
 
     // ========== 查询接口 ==========
 
+    // ========== 序列化（用于传输到 Launcher V8）==========
+
+    /**
+     * 将完整的 DFA + 命令元数据序列化为 D 前缀消息的 JSON payload。
+     *
+     * 合并 TrieDFA 自动机数据 + CommandDFA 命令名 + Registry name/id 映射。
+     * 输出可直接被 V8 GameInput.loadModule() 消费。
+     *
+     * @return JSON 字符串，包含 DfaModuleData 结构
+     */
+    public function serializeForLauncher():String {
+        var dfa:CommandDFA = this._dfa;
+        var trieDfa:Object = dfa.getTrieDFA();
+
+        // TrieDFA 核心数据
+        var trieJson:String = trieDfa.serialize();
+
+        // CommandDFA 命令名数组
+        var namesJson:String = dfa.serializeNames();
+
+        // 合并：将 commandNames 注入 TrieDFA JSON
+        // trieJson 是 {...}，在末尾 } 前插入 commandNames 字段
+        var merged:String = trieJson.substring(0, trieJson.length - 1)
+            + ",\"commandNames\":" + namesJson + "}";
+
+        return merged;
+    }
+
     /**
      * 获取 DFA 实例
      */

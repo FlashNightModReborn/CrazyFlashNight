@@ -1100,3 +1100,215 @@ html, body {
 #jukebox-help-close:hover {
     background:rgba(255,255,255,0.08);
 }
+
+/* === Combo 搓招进度（刘海体系内）=== */
+#combo-status {
+    pointer-events:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:0;
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    transition:max-height 300ms ease-out, opacity 200ms ease-out, padding 200ms ease-out;
+}
+#combo-status.has-hints {
+    max-height:90px;
+    opacity:1;
+    padding:2px 0;
+}
+
+/* 输入中：进度条布局 */
+.combo-progress {
+    display:flex;
+    align-items:center;
+    gap:2px;
+    background:rgba(24,24,26,0.78);
+    -webkit-backdrop-filter:blur(10px);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.1);
+    border-top:none;
+    border-radius:0 0 5px 5px;
+    padding:3px 10px;
+    font-size:13px;
+    white-space:nowrap;
+}
+
+/* 已输入部分：高亮实心 */
+.cp-typed {
+    color:#ffd700;
+    font-weight:bold;
+    font-size:14px;
+    letter-spacing:1px;
+    text-shadow:0 0 6px rgba(255,215,0,0.5);
+}
+
+/* 剩余输入：虚化 */
+.cp-remain {
+    color:rgba(128,208,255,0.5);
+    font-size:13px;
+    letter-spacing:1px;
+}
+
+/* 招式名标签 */
+.cp-name {
+    color:rgba(255,255,255,0.5);
+    font-size:10px;
+    margin-left:4px;
+    padding:1px 4px;
+    background:rgba(255,255,255,0.06);
+    border-radius:2px;
+}
+
+/* 多分支容器 */
+.cp-branches {
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+    margin-left:2px;
+}
+.cp-branch {
+    display:flex;
+    align-items:center;
+    gap:2px;
+    padding:1px 0;
+    opacity:0.7;
+}
+.cp-branch:first-child { opacity:1; }
+
+/* === 命中态：收束 → 扫光 → 消散 === */
+.combo-hit-bar {
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(24,24,26,0.88);
+    -webkit-backdrop-filter:blur(12px) saturate(1.3);
+    backdrop-filter:blur(12px) saturate(1.3);
+    border:1px solid rgba(255,215,0,0.35);
+    border-top:none;
+    border-radius:0 0 6px 6px;
+    padding:5px 16px;
+    overflow:hidden;
+    box-shadow:
+        0 0 16px rgba(255,215,0,0.2),
+        0 1px 0 rgba(255,215,0,0.25) inset;
+    animation:chb-glow 600ms ease-out, chb-collapse 400ms 700ms ease-in forwards;
+}
+
+/* 金色扫光 */
+.chb-sweep {
+    position:absolute;
+    top:0; left:-100%; width:100%; height:100%;
+    background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(255,215,0,0.12) 35%,
+        rgba(255,215,0,0.35) 50%,
+        rgba(255,215,0,0.12) 65%,
+        transparent 100%);
+    animation:chb-sweep-move 500ms 60ms ease-out forwards;
+    pointer-events:none;
+}
+
+.chb-seq {
+    position:relative;
+    z-index:1;
+    font-size:16px;
+    font-weight:bold;
+    letter-spacing:2px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* 单字符：先亮起，再收束到中心，最后散开消失 */
+.ch-converge {
+    display:inline-block;
+    color:#ffd700;
+    text-shadow:0 0 10px rgba(255,215,0,0.8), 0 0 20px rgba(255,215,0,0.3);
+    opacity:0;
+    transform:scale(0.6);
+    animation:ch-converge-anim 700ms ease-out forwards;
+    /* --ch-offset 由 JS 注入，控制收束位移 */
+}
+
+/* === 动画关键帧 === */
+
+/* 整条发光 → 正常 */
+@keyframes chb-glow {
+    0%   { box-shadow:0 0 30px rgba(255,215,0,0.5), 0 1px 0 rgba(255,215,0,0.4) inset;
+           border-color:rgba(255,215,0,0.6); }
+    100% { box-shadow:0 0 16px rgba(255,215,0,0.2), 0 1px 0 rgba(255,215,0,0.25) inset;
+           border-color:rgba(255,215,0,0.35); }
+}
+
+/* 整条收缩消失 */
+@keyframes chb-collapse {
+    0%   { opacity:1; transform:scaleY(1); }
+    60%  { opacity:0.5; transform:scaleY(0.7); }
+    100% { opacity:0; transform:scaleY(0); max-height:0; padding:0; margin:0; }
+}
+
+/* 扫光 */
+@keyframes chb-sweep-move {
+    0%   { left:-100%; }
+    100% { left:100%; }
+}
+
+/* 招式名小标签 */
+.chb-tag {
+    font-size:10px;
+    color:rgba(255,255,255,0.45);
+    margin-left:6px;
+    opacity:0;
+    animation:chb-fade-in 200ms 300ms ease-out forwards;
+}
+@keyframes chb-fade-in {
+    0%   { opacity:0; }
+    100% { opacity:1; }
+}
+
+/* === DFA 路径：金色（预输入缓冲命中）=== */
+.combo-hit-bar.hit-dfa {
+    border-color:rgba(255,215,0,0.5);
+    box-shadow:0 0 20px rgba(255,215,0,0.25), 0 1px 0 rgba(255,215,0,0.3) inset;
+}
+.combo-hit-bar.hit-dfa .ch-converge {
+    color:#ffd700;
+    text-shadow:0 0 10px rgba(255,215,0,0.8), 0 0 20px rgba(255,215,0,0.3);
+}
+
+/* === Sync 路径：青色（同帧即时检测）=== */
+.combo-hit-bar.hit-sync {
+    border-color:rgba(102,204,255,0.45);
+    box-shadow:0 0 20px rgba(102,204,255,0.2), 0 1px 0 rgba(102,204,255,0.25) inset;
+}
+.combo-hit-bar.hit-sync .ch-converge {
+    color:#66ccff;
+    text-shadow:0 0 10px rgba(102,204,255,0.7), 0 0 20px rgba(102,204,255,0.25);
+}
+.combo-hit-bar.hit-sync .chb-sweep {
+    background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(102,204,255,0.12) 35%,
+        rgba(102,204,255,0.3) 50%,
+        rgba(102,204,255,0.12) 65%,
+        transparent 100%);
+}
+
+/* 字符：出现 → 聚拢 → 弹性定位 */
+@keyframes ch-converge-anim {
+    0%   { opacity:0; transform:scale(0.6) translateX(0); }
+    30%  { opacity:1; transform:scale(1.2) translateX(0); }
+    70%  { opacity:1; transform:scale(1.05) translateX(var(--ch-offset, 0)); }
+    100% { opacity:1; transform:scale(1) translateX(var(--ch-offset, 0)); }
+}
+
+/* combo-fly-container 保留但目前不使用飞出动效 */
+#combo-fly-container {
+    position:fixed;
+    top:0; left:0; width:100%; height:100%;
+    pointer-events:none;
+    z-index:200;
+}

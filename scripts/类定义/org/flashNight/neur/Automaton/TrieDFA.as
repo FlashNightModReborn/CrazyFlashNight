@@ -491,6 +491,78 @@ class org.flashNight.neur.Automaton.TrieDFA {
         return this.compiled;
     }
 
+    // ========== 序列化（用于传输到 Launcher V8）==========
+
+    /**
+     * 将 DFA 核心数据序列化为 JSON 字符串。
+     * undefined 转移替换为 -1，确保 JSON.parse 后可直接使用。
+     *
+     * 输出格式: {
+     *   alphabetSize: Number,
+     *   stateCount: Number,
+     *   transitions: Number[],  // 长度 = stateCount * alphabetSize, -1 表示无转移
+     *   accept: Number[],       // 长度 = stateCount, 0 表示非接受状态
+     *   depth: Number[],        // 长度 = stateCount
+     *   hint: Number[],         // 长度 = stateCount
+     *   patterns: Number[][]    // patternId -> 原始事件序列
+     * }
+     */
+    public function serialize():String {
+        var sc:Number = this.stateCount;
+        var alpha:Number = this.alphabetSize;
+        var transLen:Number = sc * alpha;
+
+        // transitions: undefined -> -1
+        var sb:String = "{\"alphabetSize\":" + alpha + ",\"stateCount\":" + sc;
+        sb += ",\"transitions\":[";
+        var trans:Array = this.transitions;
+        for (var i:Number = 0; i < transLen; i++) {
+            if (i > 0) sb += ",";
+            var t:Number = trans[i];
+            sb += (t == undefined) ? "-1" : String(t);
+        }
+        sb += "],\"accept\":[";
+        var acc:Array = this.accept;
+        for (var j:Number = 0; j < sc; j++) {
+            if (j > 0) sb += ",";
+            var a:Number = acc[j];
+            sb += (a == undefined) ? "0" : String(a);
+        }
+        sb += "],\"depth\":[";
+        var dep:Array = this.depth;
+        for (var k:Number = 0; k < sc; k++) {
+            if (k > 0) sb += ",";
+            var d:Number = dep[k];
+            sb += (d == undefined) ? "0" : String(d);
+        }
+        sb += "],\"hint\":[";
+        var hnt:Array = this.hint;
+        for (var m:Number = 0; m < sc; m++) {
+            if (m > 0) sb += ",";
+            var h:Number = hnt[m];
+            sb += (h == undefined) ? "0" : String(h);
+        }
+        sb += "],\"patterns\":[";
+        var pats:Array = this.patterns;
+        var patCount:Number = this.nextPatternId;
+        for (var p:Number = 0; p < patCount; p++) {
+            if (p > 0) sb += ",";
+            var pat:Array = pats[p];
+            if (pat == undefined) {
+                sb += "[]";
+            } else {
+                sb += "[";
+                for (var q:Number = 0; q < pat.length; q++) {
+                    if (q > 0) sb += ",";
+                    sb += String(pat[q]);
+                }
+                sb += "]";
+            }
+        }
+        sb += "]}";
+        return sb;
+    }
+
     // ========== 便捷方法 ==========
 
     /**

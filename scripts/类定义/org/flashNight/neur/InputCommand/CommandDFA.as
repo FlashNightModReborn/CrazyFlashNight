@@ -243,6 +243,29 @@ class org.flashNight.neur.InputCommand.CommandDFA {
         return this.dfa;
     }
 
+    // ========== 序列化（用于传输到 Launcher V8）==========
+
+    /**
+     * 将命令名映射序列化为 JSON 数组字符串。
+     * 索引 = patternId，值 = 命令名。索引 0 保留为空串。
+     *
+     * 输出格式: ["", "波动拳", "诛杀步", ...]
+     */
+    public function serializeNames():String {
+        var count:Number = this.dfa.getPatternCount() + 1; // +1 因为 patternId 从 1 开始
+        var sb:String = "[";
+        for (var i:Number = 0; i < count; i++) {
+            if (i > 0) sb += ",";
+            var name:String = this.commandName[i];
+            if (name == undefined) name = "";
+            // JSON 字符串转义：替换双引号和反斜杠
+            name = name.split("\\").join("\\\\").split("\"").join("\\\"");
+            sb += "\"" + name + "\"";
+        }
+        sb += "]";
+        return sb;
+    }
+
     // ========== 角色状态更新（核心更新逻辑）==========
 
     /**

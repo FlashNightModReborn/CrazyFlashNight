@@ -33,6 +33,18 @@ class org.flashNight.arki.render.FrameBroadcaster {
     /** UI 状态数据槽（由 watch 回调写入，send() 消费后清空）*/
     private static var _uiPayload:String = null;
 
+    /** 输入数据槽（由 键盘输入控制目标 写入，send() 消费后清空）*/
+    private static var _inputPayload:String = null;
+
+    // ========== K 前缀接收侧（Launcher -> Flash）==========
+
+    /** Launcher 返回的搓招 commandId（0=无搓招）*/
+    private static var _cmdId:Number = 0;
+    /** Launcher 返回的搓招命令名（cmdId=0 时为空）*/
+    private static var _cmdName:String = "";
+    /** Launcher 返回的搓招可视化提示 */
+    private static var _comboHints:String = "";
+
     /**
      * 写入 hn 数据槽。
      * 由 HitNumberBatchProcessor.flush() 在 C# overlay 路径中调用。
@@ -49,6 +61,15 @@ class org.flashNight.arki.render.FrameBroadcaster {
      */
     public static function setFpsPayload(payload:String):Void {
         _fpsPayload = payload;
+    }
+
+    /**
+     * 写入输入数据槽。
+     * 由 键盘输入控制目标() 在 bitmask 算完后调用。
+     * @param payload 格式 "mask|facingBit|moduleId|doubleTapDir"
+     */
+    public static function setInputPayload(payload:String):Void {
+        _inputPayload = payload;
     }
 
     /**
@@ -99,6 +120,10 @@ class org.flashNight.arki.render.FrameBroadcaster {
             msg += "\x03" + _uiPayload;
             _uiPayload = null;
         }
+        if (_inputPayload != null) {
+            msg += "\x04" + _inputPayload;
+            _inputPayload = null;
+        }
         sm.sendSocketMessage(msg);
 
         // 消费后清空所有数据槽
@@ -108,6 +133,63 @@ class org.flashNight.arki.render.FrameBroadcaster {
         org.flashNight.arki.audio.AudioBridge.flush();
     }
 
+    // ========== K 前缀接收方法 ==========
+
+    /**
+     * 接收 Launcher 推送的 K 前缀消息（由 ServerManager.onSocketData 调用）。
+     *
+     * K payload 格式:
+     *   cmdId=0:  chr(0x20)                          (1 byte)
+     *   cmdId>0:  chr(cmdId+0x20) + cmdName + \x01 + hints
+     *
+     * @param payload K 前缀之后的内容（不含 'K' 字符本身）
+     */
+    public static function receiveK(payload:String):Void {
+        if (payload == null || payload.length == 0) {
+            _cmdId = 0;
+            _cmdName = "";
+            _comboHints = "";
+            return;
+        }
+
+        var rawId:Number = payload.charCodeAt(0) - 0x20;
+        if (rawId <= 0 || isNaN(rawId)) {
+            // cmdId=0: 无搓招，显式清空（防止上帧残留）
+            _cmdId = 0;
+            _cmdName = "";
+            _comboHints = "";
+            return;
+        }
+
+        _cmdId = rawId;
+
+        // 冷路径：解析 cmdName 和 hints
+        var rest:String = payload.substring(1);
+        var sep:Number = rest.indexOf("\x01");
+        if (sep >= 0) {
+            _cmdName = rest.substring(0, sep);
+            _comboHints = rest.substring(sep + 1);
+        } else {
+            _cmdName = rest;
+            _comboHints = "";
+        }
+    }
+
+    /** 获取 Launcher 返回的搓招 commandId（0=无搓招）*/
+    public static function getCmdId():Number {
+        return _cmdId;
+    }
+
+    /** 获取 Launcher 返回的搓招命令名 */
+    public static function getCmdName():String {
+        return _cmdName;
+    }
+
+    /** 获取 Launcher 返回的搓招可视化提示 */
+    public static function getComboHints():String {
+        return _comboHints;
+    }
+
     /**
      * 场景切换时重置所有数据槽。
      * 在 SceneChanged 回调中调用，位于 HitNumberBatchProcessor.clear() 之后。
@@ -115,7 +197,12 @@ class org.flashNight.arki.render.FrameBroadcaster {
     public static function reset():Void {
         _hnPayload = null;
         _fpsPayload = null;
+        _inputPayload = null;
         // 注意：不清空 _uiPayload，场景切换时 UI 快照需要保留到下一帧 send()
+        // 清空 K 前缀接收状态
+        _cmdId = 0;
+        _cmdName = "";
+        _comboHints = "";
         org.flashNight.arki.audio.AudioBridge.reset();
     }
 }

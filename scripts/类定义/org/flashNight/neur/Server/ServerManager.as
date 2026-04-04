@@ -471,8 +471,17 @@ class org.flashNight.neur.Server.ServerManager {
         // 移除 null 终止符
         data = data.split('\0').join('');
 
+        if (data.length == 0) return;
+        var prefix:String = data.charAt(0);
+
+        // 搓招输入快车道：K{cmdId+0x20}[{cmdName}\x01{hints}]（绕过 JSON 解析）
+        if (prefix == "K") {
+            org.flashNight.arki.render.FrameBroadcaster.receiveK(data.substring(1));
+            return;
+        }
+
         // 性能调度快车道：P{tier}|{softU_x100}（绕过 JSON 解析）
-        if (data.length > 0 && data.charAt(0) == "P") {
+        if (prefix == "P") {
             var payload:String = data.substring(1);
             var sep:Number = payload.indexOf("|");
             if (sep >= 0) {

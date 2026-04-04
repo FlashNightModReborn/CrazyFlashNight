@@ -530,6 +530,13 @@ var Notch = (function() {
     var GAME_THROTTLE_MS = 350;
 
     function addNotice(category, text, color) {
+        // combo 搓招通知：交由 Combo 模块做飞出动效，不走默认通知行
+        if (category === 'combo') {
+            if (typeof Combo !== 'undefined' && Combo.onNotchCombo) {
+                Combo.onNotchCombo(text, color);
+            }
+            return;
+        }
         if (category === GAME_CAT) {
             addGameNotice(text, color);
             return;

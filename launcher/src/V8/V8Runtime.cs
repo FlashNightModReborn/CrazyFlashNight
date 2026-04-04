@@ -85,6 +85,70 @@ namespace CF7Launcher.V8
             }
         }
 
+        // ========== GameInput namespace (搓招 DFA 迁移) ==========
+
+        /// <summary>
+        /// 初始化搓招输入处理器（启动时调用一次）。
+        /// </summary>
+        public void InitGameInput()
+        {
+            if (!_loaded) return;
+            lock (_lock)
+            {
+                _engine.Script.GameInput.init();
+                object logResult = _engine.Script.GameInput.flushLog();
+                string logs = logResult as string ?? "";
+                if (logs.Length > 0)
+                    Guardian.LogManager.Log(logs);
+            }
+            Guardian.LogManager.Log("[V8Runtime] GameInput initialized");
+        }
+
+        /// <summary>
+        /// 加载一个搓招模组的 DFA 数据（AS2 通过 D 前缀发送）。
+        /// </summary>
+        /// <param name="moduleId">"0"=barehand, "1"=lightWeapon, "2"=heavyWeapon</param>
+        /// <param name="dataJson">DfaModuleData JSON 字符串</param>
+        public void LoadInputModule(string moduleId, string dataJson)
+        {
+            if (!_loaded) return;
+            lock (_lock)
+            {
+                _engine.Script.GameInput.loadModule(moduleId, dataJson);
+                object logResult = _engine.Script.GameInput.flushLog();
+                string logs = logResult as string ?? "";
+                if (logs.Length > 0)
+                    Guardian.LogManager.Log(logs);
+            }
+            Guardian.LogManager.Log("[V8Runtime] GameInput module loaded: " + moduleId);
+        }
+
+        /// <summary>
+        /// 每帧处理输入：InputSampler + CommandDFA 状态转移。
+        /// 返回 K 前缀 payload 字符串。
+        /// </summary>
+        /// <param name="mask">8-bit bitmask (AS2 Key.isDown 生成)</param>
+        /// <param name="facingBit">0=左, 1=右</param>
+        /// <param name="moduleId">0/1/2</param>
+        /// <param name="doubleTapDir">-1/0/1</param>
+        public string ProcessInput(int mask, int facingBit, int moduleId, int doubleTapDir)
+        {
+            if (!_loaded) return "";
+            lock (_lock)
+            {
+                object result = _engine.Script.GameInput.processFrame(mask, facingBit, moduleId, doubleTapDir);
+                string kPayload = result as string ?? "";
+
+                // 刷新 V8 日志缓冲
+                object logResult = _engine.Script.GameInput.flushLog();
+                string logs = logResult as string ?? "";
+                if (logs.Length > 0)
+                    Guardian.LogManager.Log(logs);
+
+                return kPayload;
+            }
+        }
+
         public void Dispose()
         {
             _engine.Dispose();

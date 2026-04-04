@@ -9,8 +9,8 @@ import org.flashNight.arki.unit.Action.Skill.*;
  * 2 - 帧检查执行（旧逻辑兜底）
  */
 
-// 调试开关：设为true启用搓招触发监控
-_root.技能函数.搓招调试 = true;
+// 调试开关：搓招可视化已迁移到 WebView2 overlay，默认关闭文本日志
+_root.技能函数.搓招调试 = false;
 
 // 监控输出：招式名 + 触发方式 + 输入状态
 // 同时负责标记搓招缓冲已消费，避免重复触发
@@ -22,10 +22,21 @@ _root.技能函数.搓招监控 = function(招式名:String, 触发码:Number):N
 		自机.搓招缓冲已消费 = true;
 	}
 
+	// WebView2 刘海通知：搓招确认触发
+	// 通过 N 前缀推送到 Launcher → WebView2 notch overlay
+	// 触发码 1=DFA预输入（金色）, 2=同帧检测（青色）
+	if (触发码 > 0) {
+		var sm:Object = _root.server;
+		if (sm != undefined && sm.isSocketConnected) {
+			var color:String = (触发码 == 1) ? "ffd700" : "66ccff";
+			var tag:String = (触发码 == 1) ? "DFA" : "Sync";
+			sm.sendSocketMessage("Ncombo|" + color + "|" + tag + " " + 招式名);
+		}
+	}
+
+	// 文本日志（调试开关控制）
 	if(_root.技能函数.搓招调试 && 触发码 > 0) {
 		var 方式:String = (触发码 == 1) ? "DFA预输入" : "同帧检测";
-
-		// 构造输入状态字符串
 		var 输入状态:String = "";
 		if(自机.左行) 输入状态 += "←";
 		if(自机.右行) 输入状态 += "→";
@@ -36,14 +47,10 @@ _root.技能函数.搓招监控 = function(招式名:String, 触发码:Number):N
 		if(Key.isDown(_root.奔跑键)) 输入状态 += "+Shift";
 		if(自机.doubleTapRunDirection == 1) 输入状态 += "(→→run)";
 		else if(自机.doubleTapRunDirection == -1) 输入状态 += "(←←run)";
-
-		// 缓冲帧差（仅DFA预输入时显示）
 		var 缓冲延迟:String = "";
 		if(触发码 == 1 && 自机.搓招缓冲帧 != undefined) {
 			缓冲延迟 = " 延迟=" + (_root.帧计时器.当前帧数 - 自机.搓招缓冲帧) + "帧";
 		}
-
-		// 输出：帧数 + 招式 + 触发方式 + 当前按键 + DFA搓招名 + 缓冲延迟
 		_root.发布消息(_root.帧计时器.当前帧数 + ":[搓招触发] " + 招式名 + " ← " + 方式
 			+ " | 按键=[" + 输入状态 + "]"
 			+ (触发码 == 1 ? " DFA识别=" + (自机.当前搓招名 || "无") + 缓冲延迟 : ""));

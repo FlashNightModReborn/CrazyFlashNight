@@ -182,6 +182,10 @@ class Program
         perfEngine.IsActive = true;
         frameTask.SetDecisionEngine(perfEngine);
 
+        // 搓招输入处理：注入 socket 引用用于 K 前缀推送，初始化 V8 GameInput
+        frameTask.SetSocket(socketServer);
+        v8Runtime.InitGameInput();
+
         // 刘海 Notch overlay（FPS 显示 + 可展开工具栏）
         NotchOverlay notchOverlay = new NotchOverlay(
             form, form.FlashHostPanel, frameTask.FpsBuffer,
@@ -231,6 +235,9 @@ class Program
 
             // U 前缀快车道：UI 数据透传到 WebView2
             socketServer.SetUiDataHandler(new Action<string>(webOverlay.HandleUiData));
+
+            // combo hints → WebView2 (FrameTask 每帧推送)
+            frameTask.SetUiDataHandler(new Action<string>(webOverlay.HandleUiData));
 
             // 幽灵输入层：GDI+ 命中测试 + CDP 注入
             inputShield = new InputShieldForm(form, form.FlashHostPanel);

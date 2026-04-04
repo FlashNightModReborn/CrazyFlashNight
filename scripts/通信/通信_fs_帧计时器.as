@@ -266,8 +266,15 @@ _root.帧计时器.构建搓招模组 = function():Void {
 
     _root.服务器.发布服务器消息("[帧计时器] 多模组搓招系统构建完成",bareReg.toString(),lightReg.toString(),heavyReg.toString());
 
-    // 输入采样器（共用）
+    // 输入采样器（共用，保留用于本地调试/兜底）
     this.inputSampler = new InputSampler();
+
+    // 标记 DFA 已构建，D 前缀待发送
+    this.dfaBuilt = true;
+    this.dfaSentToLauncher = false;
+
+    // 尝试立即发送 D 前缀（如果 socket 已连接）
+    this.发送DFA数据到Launcher();
 
     _root.服务器.发布服务器消息("[帧计时器] 多模组搓招系统构建完成");
 };
@@ -343,6 +350,35 @@ _root.帧计时器.初始化输入搓招系统同步 = function():Void {
     CommandConfig.disableXMLMode();
     this.构建搓招模组();
     _root.服务器.发布服务器消息("[帧计时器] 搓招系统同步初始化完成（硬编码模式）");
+};
+
+/**
+ * 将已编译的 DFA 数据通过 D 前缀发送到 Launcher V8。
+ * 可能在以下时机被调用：
+ * 1. 构建搓招模组() 完成后（如果 socket 已连接）
+ * 2. frameUpdate 中检测到 dfaBuilt 但未发送（socket 延迟连接的情况）
+ */
+_root.帧计时器.发送DFA数据到Launcher = function():Void {
+    if (this.dfaSentToLauncher || !this.dfaBuilt) return;
+
+    var sm:Object = _root.server;
+    if (sm == undefined || !sm.isSocketConnected) {
+        _root.服务器.发布服务器消息("[帧计时器] D前缀: socket 未连接，等待下次重试");
+        return;
+    }
+
+    var moduleIds:Array = ["barehand", "lightWeapon", "heavyWeapon"];
+    var moduleNums:Array = ["0", "1", "2"];
+    for (var mi:Number = 0; mi < moduleIds.length; mi++) {
+        var mod:Object = this.commandModules[moduleIds[mi]];
+        if (mod != undefined && mod.registry != undefined) {
+            var json:String = mod.registry.serializeForLauncher();
+            sm.sendSocketMessage("D" + moduleNums[mi] + "\x01" + json);
+            _root.服务器.发布服务器消息("[帧计时器] D前缀发送模组: " + moduleIds[mi] + " (" + json.length + " bytes)");
+        }
+    }
+    this.dfaSentToLauncher = true;
+    _root.服务器.发布服务器消息("[帧计时器] D前缀发送完成，所有模组已同步到 Launcher");
 };
 
 /**
@@ -519,68 +555,58 @@ _root.帧计时器.键盘输入控制目标 = function()
 
         控制对象.强制奔跑 = shiftRun || doubleRun;
 
-        // === 搓招系统刷新（多模组版本 + 缓冲机制）===
-        var sampler:InputSampler = this.inputSampler;
+        // === \x04 数据发送：mask + 朝向 + 模组 + 双击方向 → Launcher V8 ===
         var 模组名:String = this.推断动作模组(控制对象);
-        var module:Object = this.commandModules[模组名];
+        var facingBit:Number = (控制对象.方向 == "右") ? 1 : 0;
+        var moduleId:Number = (模组名 == "barehand") ? 0 : ((模组名 == "heavyWeapon") ? 2 : 1);
+        var dtDir:Number = 控制对象.doubleTapRunDirection;
+        if (dtDir == undefined) dtDir = 0;
+        FrameBroadcaster.setInputPayload(mask + "|" + facingBit + "|" + moduleId + "|" + dtDir);
+
+        // === 搓招缓冲（输入源：Launcher K 前缀 cmdId，替代本地 DFA）===
         var frame:Number = this.当前帧数;
+        var launcherCmdId:Number = FrameBroadcaster.getCmdId();
 
-        if (sampler != null && module != null) {
-            var dfa:CommandDFA = module.dfa;
+        // 模组切换时清空缓冲
+        if (控制对象.当前搓招模组 != 模组名) {
+            控制对象.搓招缓冲ID = 0;
+            控制对象.搓招缓冲已消费 = true;
+        }
+        控制对象.当前搓招模组 = 模组名;
 
-            // 模组切换时重置状态（不同DFA的state含义不同）
-            if (控制对象.当前搓招模组 != 模组名) {
-                控制对象.commandState = 0;
-                控制对象.stepTimer = 0;
-                // 模组切换也清空缓冲
+        // Launcher DFA 命中时写入缓冲
+        if (launcherCmdId != 0) {
+            控制对象.搓招缓冲ID = launcherCmdId;
+            控制对象.搓招缓冲帧 = frame;
+            控制对象.搓招缓冲已消费 = false;
+        }
+
+        // 根据宽容帧数决定当前帧是否有有效搓招（tolerance +1 补偿通信延迟）
+        var tolerance:Number = InputCommandRuntimeConfigLoader.bufferTolerance + 1;
+        var active:Boolean = false;
+
+        if (控制对象.搓招缓冲ID != 0 &&
+            !控制对象.搓招缓冲已消费 &&
+            frame - 控制对象.搓招缓冲帧 <= tolerance) {
+            active = true;
+        }
+
+        if (active) {
+            控制对象.当前搓招ID = 控制对象.搓招缓冲ID;
+            控制对象.当前搓招名 = FrameBroadcaster.getCmdName();
+        } else {
+            控制对象.当前搓招ID = 0;
+            控制对象.当前搓招名 = "";
+            if (控制对象.搓招缓冲ID != 0 && frame - 控制对象.搓招缓冲帧 > tolerance) {
                 控制对象.搓招缓冲ID = 0;
-                控制对象.搓招缓冲已消费 = true;
-            }
-
-            // 1. 从玩家对象采样本帧输入事件
-            var events:Array = sampler.sample(控制对象);
-
-            // 2. 更新搓招状态机（updateFast 性能最优）
-            dfa.updateFast(控制对象, events, 5);
-
-            // 3. 搓招缓冲机制：识别到新招式时写入缓冲
-            if (控制对象.commandId != 0) {
-                控制对象.搓招缓冲ID = 控制对象.commandId;
-                控制对象.搓招缓冲帧 = frame;
-                控制对象.搓招缓冲已消费 = false;
-            }
-
-            // 4. 根据宽容帧数决定当前帧是否有有效搓招
-            var tolerance:Number = InputCommandRuntimeConfigLoader.bufferTolerance;
-            var active:Boolean = false;
-
-            if (控制对象.搓招缓冲ID != 0 &&
-                !控制对象.搓招缓冲已消费 &&
-                frame - 控制对象.搓招缓冲帧 <= tolerance) {
-                active = true;
-            }
-
-            // 5. 为脚本层挂载易用字段
-            控制对象.最近搓招ID = 控制对象.lastCommandId;
-            控制对象.当前搓招模组 = 模组名;
-
-            if (active) {
-                控制对象.当前搓招ID = 控制对象.搓招缓冲ID;
-                控制对象.当前搓招名 = dfa.getCommandName(控制对象.搓招缓冲ID);
-            } else {
-                控制对象.当前搓招ID = 0;
-                控制对象.当前搓招名 = "";
-                // 超过宽容帧数，清空缓冲
-                if (控制对象.搓招缓冲ID != 0 && frame - 控制对象.搓招缓冲帧 > tolerance) {
-                    控制对象.搓招缓冲ID = 0;
-                }
             }
         }
-        // 只在识别瞬间（缓冲帧=0）输出日志，避免刷屏
-        if(控制对象.当前搓招名 !== "" && frame == 控制对象.搓招缓冲帧){
-            var 输入序列:String = sampler.eventsToString(events);
-            _root.发布消息(_root.帧计时器.当前帧数 + ":模组=" + 模组名 + " 搓招=" + 控制对象.当前搓招名 + " 输入=[" + 输入序列 + "]");
-        }
+
+        // 搓招识别日志已迁移到 WebView2 combo overlay，默认不刷屏
+        // 如需调试可取消注释:
+        // if(控制对象.当前搓招名 !== "" && frame == 控制对象.搓招缓冲帧){
+        //     _root.发布消息(_root.帧计时器.当前帧数 + ":模组=" + 模组名 + " 搓招=" + 控制对象.当前搓招名 + " [Launcher DFA]");
+        // }
     }
 };
 
@@ -596,6 +622,10 @@ _root.帧计时器.键盘输入控制目标 = function()
 _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     this.性能评估优化();
     this.定期更新天气();
+    // D 前缀重试：DFA 已构建但 socket 当时未连接，等连接后自动发送
+    if (this.dfaBuilt && !this.dfaSentToLauncher) {
+        this.发送DFA数据到Launcher();
+    }
     this.键盘输入控制目标();
     this.当前帧数 = this.server.currentFrame;
     // _root.发布消息(System.IME.getEnabled())
