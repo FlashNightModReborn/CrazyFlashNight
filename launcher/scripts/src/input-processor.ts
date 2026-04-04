@@ -117,11 +117,15 @@ namespace GameInput {
         const mod = _modules[moduleId];
         if (!mod) return String.fromCharCode(0x20);
 
-        // 模组切换时重置
+        // 模组切换时重置 DFA + 显示缓存
         if (moduleId !== _currentModuleId) {
             mod.cmdDfa.resetState();
             _currentModuleId = moduleId;
             _lastHintState = -1;
+            _lastHintStr = "";
+            _displayHints = "";
+            _displayTyped = "";
+            _displayHoldTimer = 0;
         }
 
         // 1. InputSampler → events

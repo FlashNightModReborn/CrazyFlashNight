@@ -25,8 +25,9 @@ var Combo = (function() {
     var hitTimer = 0;
     var hitName = '';
     var pendingTyped = ''; // V8 命中时缓存 typed，等 N 前缀确认
-    var pendingAge = 0;    // pendingTyped 存活帧数，超过阈值过期
-    var PENDING_MAX_AGE = 10; // ~333ms，超过则认为 AS2 未执行
+    var pendingName = '';  // 与 pendingTyped 绑定的招式名
+    var pendingAge = 0;
+    var PENDING_MAX_AGE = 10;
     var knownPatterns = {}; // name → fullSequence，从 hints 数据积累
 
     function init() {
@@ -47,13 +48,15 @@ var Combo = (function() {
                 pendingAge++;
                 if (pendingAge > PENDING_MAX_AGE) {
                     pendingTyped = '';
+                    pendingName = '';
                     pendingAge = 0;
                 }
             }
 
-            // V8 DFA 命中帧：缓存 typed，等 AS2 N前缀确认后才触发动效
+            // V8 DFA 命中帧：缓存 typed + 招式名，等 AS2 N前缀确认
             if (cmdName.length > 0) {
                 pendingTyped = typed;
+                pendingName = cmdName;
                 pendingAge = 0;
                 return;
             }
@@ -164,11 +167,18 @@ var Combo = (function() {
         var name = text.replace(/^(DFA|Sync)\s*/, '');
 
         // typed 来源优先级：
-        // 1. pendingTyped（V8 DFA 命中帧缓存）— DFA 路径
-        // 2. knownPatterns[name]（从 hints 积累的完整序列）— Sync 路径 fallback
-        // 3. name（最终 fallback，不应该走到这里）
-        var typed = pendingTyped || knownPatterns[name] || name;
+        // 1. pendingTyped（仅当绑定的招式名匹配时才用）
+        // 2. knownPatterns[name]（从 hints 积累的完整序列）
+        // 3. name（最终 fallback）
+        var typed;
+        if (pendingTyped.length > 0 && pendingName === name) {
+            typed = pendingTyped;
+        } else {
+            typed = knownPatterns[name] || name;
+        }
         pendingTyped = '';
+        pendingName = '';
+        pendingAge = 0;
 
         showHit(name, typed, isDFA);
     }
