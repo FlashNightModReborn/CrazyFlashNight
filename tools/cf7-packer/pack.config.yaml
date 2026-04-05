@@ -131,13 +131,13 @@ layers:
     exclude: []
 
   - name: launcher-web
-    description: "WebView2 overlay 前端资源（HTML/CSS/JS）"
+    description: "WebView2 overlay 前端资源（HTML/CSS/JS/Markdown 帮助）"
     source: "launcher/web/"
     include: [ "**/*" ]
     exclude: []
 
   - name: launcher-scripts
-    description: "V8 运行时 JS bundle（伤害数字渲染等）"
+    description: "V8 运行时 JS bundle（伤害数字渲染 + 搓招 DFA）"
     source: "launcher/scripts/dist/"
     include: [ "**/*" ]
     exclude: []
