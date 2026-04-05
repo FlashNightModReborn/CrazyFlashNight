@@ -59,7 +59,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Elemen
         // 设置默认值
         this.hitPoint = 10;
         this.maxFrame = 1;
-        this.audio = "拾取音效";
+        this.audio = "拾取音效.mp3";
         this.hp = 9999999;
         this.防御力 = 99999;
         this.躲闪率 = 100;

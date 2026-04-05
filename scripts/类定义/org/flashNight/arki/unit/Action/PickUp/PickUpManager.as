@@ -73,7 +73,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         var 控制对象:MovieClip = TargetCacheManager.findHero();
         target.gotoAndPlay("消失");
         delete this.pickupItemDict[target.index];
-        _root.soundEffectManager.playSound("拾取音效");
+        _root.soundEffectManager.playSound("拾取音效.mp3");
         
         if (!拾取者 && 播放拾取动画) {
             控制对象.拾取();

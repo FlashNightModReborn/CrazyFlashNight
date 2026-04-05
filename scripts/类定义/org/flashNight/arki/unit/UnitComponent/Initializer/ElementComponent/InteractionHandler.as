@@ -8,7 +8,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
     
     // 交互距离常量
     private static var INTERACTION_Z_DISTANCE:Number = 50;
-    private static var DEFAULT_PICKUP_AUDIO:String = "拾取音效";
+    private static var DEFAULT_PICKUP_AUDIO:String = "拾取音效.mp3";
     
     /**
      * 初始化目标的交互功能
