@@ -176,6 +176,17 @@
     </div>
 </div>
 
+<!-- 游戏帮助弹窗 -->
+<div id="game-help-modal">
+    <div id="game-help-tabs">
+        <button class="gh-tab active" data-tab="controls">基本操作</button>
+        <button class="gh-tab" data-tab="worldview">世界观</button>
+        <button class="gh-tab" data-tab="easter-eggs">彩蛋内容</button>
+        <span id="game-help-close">&times;</span>
+    </div>
+    <div id="game-help-content"></div>
+</div>
+
 <div id="jukebox-help-modal">
     <div id="jukebox-help-content"></div>
     <div id="jukebox-help-close">关闭</div>
@@ -190,6 +201,7 @@
 <script src="modules/currency.js"></script>
 <script src="modules/jukebox.js"></script>
 <script src="modules/combo.js"></script>
+<script src="modules/help.js"></script>
 <script>
 (function() {
     window.addEventListener('load', function() {

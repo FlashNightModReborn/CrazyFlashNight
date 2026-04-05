@@ -88,7 +88,7 @@ var Notch = (function() {
         });
 
         // 绑定所有 data-key 按钮（SAFEEXIT/EXIT_CANCEL 单独处理）
-        var skipKeys = { SAFEEXIT:1, EXIT_CANCEL:1 };
+        var skipKeys = { SAFEEXIT:1, EXIT_CANCEL:1, HELP:1 };
         var buttons = document.querySelectorAll('#notch button[data-key], #top-right-tools button[data-key], #quest-row button[data-key], #safe-exit-panel button[data-key]');
         for (var i = 0; i < buttons.length; i++) {
             (function(btn) {
@@ -109,6 +109,14 @@ var Notch = (function() {
                 if (!p) return;
                 if (p.style.display === 'block') closeSafeExitPanel();
                 else openSafeExitPanel();
+            });
+        })();
+
+        // HELP: 打开 Web 帮助弹窗而非 Flash
+        (function() {
+            var btn = document.querySelector('[data-key="HELP"]');
+            if (btn) btn.addEventListener('click', function() {
+                if (typeof GameHelp !== 'undefined') GameHelp.toggle();
             });
         })();
 
@@ -310,6 +318,9 @@ var Notch = (function() {
         // 安全退出面板
         var sep = document.getElementById('safe-exit-panel');
         if (sep && sep.style.display === 'block') pushRect(sep);
+        // 游戏帮助弹窗
+        var ghm = document.getElementById('game-help-modal');
+        if (ghm && ghm.classList.contains('visible')) pushRect(ghm);
         Bridge.send({ type: 'interactiveRect', r: rects });
     }
     _reportRect = reportRect;

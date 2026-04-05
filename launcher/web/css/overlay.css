@@ -1209,7 +1209,100 @@ button[data-key="SAFEEXIT"].save-done {
     line-height:1;
 }
 
-/* ── 帮助弹窗 ── */
+/* ── 游戏帮助弹窗 ── */
+#game-help-modal {
+    display:none;
+    position:fixed;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:520px; max-height:75vh;
+    background:rgba(24,24,26,0.95);
+    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:8px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.6);
+    z-index:100;
+    pointer-events:auto;
+    overflow:hidden;
+    flex-direction:column;
+}
+#game-help-modal.visible {
+    display:flex;
+}
+#game-help-tabs {
+    display:flex; align-items:center;
+    padding:6px 8px 0;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    flex-shrink:0;
+}
+.gh-tab {
+    font:10px/1 "Microsoft YaHei",sans-serif;
+    padding:6px 10px;
+    border:none;
+    background:transparent;
+    color:rgba(255,255,255,0.5);
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+    transition:color 150ms, border-color 150ms;
+    pointer-events:auto;
+}
+.gh-tab:hover { color:rgba(255,255,255,0.8); }
+.gh-tab.active {
+    color:rgba(102,204,255,0.95);
+    border-bottom-color:rgba(102,204,255,0.6);
+}
+#game-help-close {
+    margin-left:auto;
+    font-size:16px;
+    color:rgba(255,255,255,0.4);
+    cursor:pointer;
+    padding:4px 6px;
+    pointer-events:auto;
+}
+#game-help-close:hover { color:white; }
+
+#game-help-content {
+    flex:1;
+    overflow-y:auto;
+    padding:12px 16px;
+    font:11px/1.6 "Microsoft YaHei",sans-serif;
+    color:rgba(255,255,255,0.75);
+}
+#game-help-content h1,
+#game-help-content h2,
+#game-help-content h3 {
+    color:rgba(102,204,255,0.95);
+    margin:10px 0 4px;
+    font-weight:bold;
+}
+#game-help-content h1 { font-size:14px; margin-top:0; }
+#game-help-content h2 { font-size:12px; }
+#game-help-content h3 { font-size:11px; }
+#game-help-content p { margin:4px 0; }
+#game-help-content ul,
+#game-help-content ol {
+    padding-left:18px;
+    margin:4px 0;
+}
+#game-help-content li { margin:2px 0; }
+#game-help-content li::marker { color:rgba(102,204,255,0.7); }
+#game-help-content strong { color:rgba(255,255,255,0.9); }
+#game-help-content blockquote {
+    border-left:2px solid rgba(255,200,80,0.5);
+    margin:6px 0;
+    padding:4px 10px;
+    color:rgba(255,200,80,0.8);
+    background:rgba(255,200,80,0.05);
+    border-radius:0 3px 3px 0;
+}
+#game-help-content hr {
+    border:none;
+    border-top:1px solid rgba(255,255,255,0.1);
+    margin:8px 0;
+}
+
+/* ── 点歌帮助弹窗 ── */
 #jukebox-help-modal {
     display:none;
     position:fixed;
