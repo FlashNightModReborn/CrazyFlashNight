@@ -433,7 +433,7 @@ _root.新建角色 = function(){
     // 清空物品获取方式的动态发现集合（保留静态索引：合成/商店/K点商店）
     org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance().clearDynamicDiscoveries();
     //
-    _root.soundEffectManager.stopBGM();
+    _root.soundEffectManager.stopBGMForTransition();
     // _root.淡出动画.淡出跳转帧("教学关卡");
 
     // 修复教学关卡初始化问题：

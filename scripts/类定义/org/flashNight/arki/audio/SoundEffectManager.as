@@ -420,21 +420,6 @@ class org.flashNight.arki.audio.SoundEffectManager {
         }
     }
 
-    /**
-     * 进入无 BGM 配置的 UI 帧(如选关界面)时调用。
-     * jukebox 活跃时保持/恢复播放, 否则停止残留 BGM。
-     */
-    public function enterNoBgmFrame():Void {
-        _suppressedStage = null;
-        if (_jukeboxActive) {
-            if (currentBGMUrl == null) {
-                playBGMWithSource(_jukeboxTitle, "jukebox", _jukeboxLoop, null);
-            }
-            return;
-        }
-        doStopBGM();
-    }
-
     public function setJukeboxOverride(value:Boolean):Void {
         var wasOverride:Boolean = _jukeboxOverride;
         _jukeboxOverride = (value == true);
@@ -593,12 +578,13 @@ class org.flashNight.arki.audio.SoundEffectManager {
     private function doStopBGM():Void {
         var fadeSec:Number = currentFadeDuration / 30;
         if (fadeSec < 1) fadeSec = 1;
-        if (AudioBridge.stopBGM(fadeSec)) {
-            currentBGMUrl = null;
-            _bgmSource = null;
-            _currentAlbum = null;
-            org.flashNight.arki.render.FrameBroadcaster.pushUiState("bgm:");
-        }
+        AudioBridge.stopBGM(fadeSec);
+        // 状态清理和 UI 推送不依赖 AudioBridge 返回值:
+        // socket 未连接时 native 层本就无 BGM 在播, 但 Flash 侧状态仍需一致
+        currentBGMUrl = null;
+        _bgmSource = null;
+        _currentAlbum = null;
+        org.flashNight.arki.render.FrameBroadcaster.pushUiState("bgm:");
     }
 
     /**

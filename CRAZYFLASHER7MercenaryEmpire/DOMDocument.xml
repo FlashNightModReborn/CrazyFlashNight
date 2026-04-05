@@ -1581,7 +1581,7 @@ else
 	_root.获得支线任务进度数组();
 	_root.关卡标志 = "房间";
 	_root.场景进入位置名 = "出生地";
-	_root.soundEffectManager.stopBGM();
+	_root.soundEffectManager.stopBGMForTransition();
 	_root.跳转地图("房间");
 }
 /*
@@ -1648,8 +1648,7 @@ key_hd.onKeyUp = function()
                               </DOMFrame>
                               <DOMFrame index="159" keyMode="9728">
                                    <Actionscript>
-                                        <script><![CDATA[_root.soundEffectManager.enterNoBgmFrame();
-stop();
+                                        <script><![CDATA[stop();
 ]]></script>
                                    </Actionscript>
                                    <elements/>

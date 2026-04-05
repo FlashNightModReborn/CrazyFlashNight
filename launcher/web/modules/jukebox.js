@@ -48,6 +48,7 @@
     // 状态
     var playing        = false;
     var bgmTitle       = '';
+    var bgmSource      = '';   // 'scene' | 'stage' | 'jukebox' | ''
     var isExpanded     = false;
     var currentDuration = 0;
 
@@ -631,6 +632,9 @@
     if (typeof UiData !== 'undefined') {
         UiData.on('bgm', function(val) {
             setTitle(val);
+        });
+        UiData.on('jbs', function(val) {
+            bgmSource = val || '';
         });
         // 从 Flash 同步设置状态（存档恢复 / 手动切换）
         UiData.on('jbo', function(val) {
