@@ -134,13 +134,15 @@ namespace CF7Launcher.Guardian
                 return;
             }
 
+            // 先绘制再显示：避免 ShowOverlay 与 PaintLayered 之间的间隙
+            // 导致 DWM 合成一帧旧 bitmap 残影（Layered Window surface 在 Hide 后仍保留）
+            if (_ownerVisible)
+                PaintLayered();
+
             if (!_shown && _ownerVisible)
             {
                 ShowOverlay();
             }
-
-            if (_ownerVisible)
-                PaintLayered();
         }
 
         protected override void OnPositionChanged()

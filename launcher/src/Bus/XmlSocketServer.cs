@@ -290,8 +290,10 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'S')
                 {
-                    // SFX 快车道：S{soundId}\x01{volume}
-                    CF7Launcher.Tasks.AudioTask.HandleSfxFastLane(message);
+                    // SFX 快车道：异步分发，避免被同批次 F 消息的 V8 渲染阻塞。
+                    // HandleSfxFastLane 内部仅 Dictionary 只读查找 + P/Invoke，线程安全。
+                    string sfxMsg = message;
+                    ThreadPool.QueueUserWorkItem(delegate { CF7Launcher.Tasks.AudioTask.HandleSfxFastLane(sfxMsg); });
                     return;
                 }
 

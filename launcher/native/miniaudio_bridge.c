@@ -37,7 +37,7 @@
 #define MAX_SFX_SLOTS       1024
 #define SFX_VOICES          4       /* overlapping voices per SFX */
 #define MAX_WPATH_LEN       1024
-#define DEFAULT_THROTTLE_MS 90
+#define DEFAULT_THROTTLE_MS 30
 #define MIN_FADE_MS         100
 
 /* ========== SFX slot (voice pool) ========== */

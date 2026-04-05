@@ -124,13 +124,14 @@ class org.flashNight.arki.render.FrameBroadcaster {
             msg += "\x04" + _inputPayload;
             _inputPayload = null;
         }
+        // SFX 优先发送：音效对延迟敏感，必须在 F 消息（含 V8 渲染）之前到达 C# 端，
+        // 避免被 SpawnBatch+Tick+UpdateRender 的处理时间阻塞
+        org.flashNight.arki.audio.AudioBridge.flush();
+
         sm.sendSocketMessage(msg);
 
         // 消费后清空所有数据槽
         _hnPayload = null;
-
-        // SFX 合批发送（帧内 AudioBridge.playSound() 累积，此处统一发出）
-        org.flashNight.arki.audio.AudioBridge.flush();
     }
 
     // ========== K 前缀接收方法 ==========
