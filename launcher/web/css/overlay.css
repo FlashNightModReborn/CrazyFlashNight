@@ -560,6 +560,131 @@ html, body {
     100% { background:rgba(255,255,255,0.10); }
 }
 
+/* ── 任务通知卡片（从 Flash 弹出公告界面迁移） ── */
+.notch-task-card {
+    display:flex; align-items:center; gap:6px;
+    padding:4px 10px;
+    background:rgba(24,24,26,0.78);
+    -webkit-backdrop-filter:blur(12px) saturate(1.2);
+    backdrop-filter:blur(12px) saturate(1.2);
+    border:1px solid rgba(255,255,255,0.08);
+    border-top:none;
+    border-left:2px solid rgba(255,170,100,0.6);
+    border-radius:0 0 5px 0;
+    box-shadow:0 2px 8px rgba(0,0,0,0.35), 0 0 1px rgba(255,255,255,0.08);
+    /* 入场前状态 */
+    opacity:0;
+    transform:translateY(-8px) scale(0.96);
+    max-height:0;
+    margin-top:0;
+    padding-top:0; padding-bottom:0;
+    transition:
+        opacity 200ms ease-out,
+        transform 250ms ease-out,
+        max-height 250ms ease-out,
+        margin-top 250ms ease-out,
+        padding 250ms ease-out;
+}
+.notch-task-card.visible {
+    opacity:1;
+    transform:translateY(0) scale(1);
+    max-height:44px;
+    margin-top:2px;
+    padding-top:4px; padding-bottom:4px;
+    transition:
+        max-height 300ms cubic-bezier(0.34,1.2,0.64,1),
+        margin-top 300ms cubic-bezier(0.34,1.2,0.64,1),
+        padding    300ms cubic-bezier(0.34,1.2,0.64,1),
+        opacity    250ms 80ms ease-out,
+        transform  350ms 40ms cubic-bezier(0.34,1.4,0.64,1);
+}
+/* 退场复用 fading/collapsing 机制（JS 调用 collapseRow） */
+.notch-task-card.fading {
+    opacity:0;
+    transform:translateY(-4px) scale(0.94);
+    max-height:44px;
+    margin-top:2px;
+    padding-top:4px; padding-bottom:4px;
+    transition:opacity 180ms ease-out, transform 180ms ease-out;
+}
+.notch-task-card.collapsing {
+    opacity:0 !important;
+    max-height:0 !important;
+    margin-top:0 !important;
+    padding-top:0 !important; padding-bottom:0 !important;
+    border-width:0 !important;
+    transition:
+        max-height  220ms ease-in,
+        margin-top  220ms ease-in,
+        padding     220ms ease-in,
+        border-width 220ms ease-in;
+}
+
+.task-card-avatar {
+    width:22px; height:22px;
+    border-radius:3px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px;
+    color:rgba(255,200,100,0.5);
+    flex-shrink:0;
+    overflow:hidden;
+}
+.task-card-avatar img {
+    width:100%; height:100%;
+    object-fit:cover;
+    border-radius:3px;
+}
+
+.task-card-text {
+    display:flex; flex-direction:column; gap:0;
+    min-width:0;
+}
+.task-card-tag {
+    font:bold 9px/1.2 "Consolas","Courier New",monospace;
+    color:rgba(255,170,100,0.7);
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    white-space:nowrap;
+}
+.task-card-name {
+    font:11px/1.3 "Microsoft YaHei",sans-serif;
+    color:rgba(255,255,255,0.8);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:180px;
+}
+
+/* ── 公告通知行（柔和强调） ── */
+.notch-info-row.announce-row {
+    border-left:2px solid rgba(68,221,136,0.6);
+    border-radius:0 0 5px 0;
+    text-align:left;
+    padding-left:10px;
+}
+
+/* ── 任务完成状态行（可点击） ── */
+.notch-info-row.task-done-row {
+    cursor:pointer;
+    pointer-events:auto;
+    border-left:2px solid rgba(68,221,136,0.5);
+    font:11px/1.4 "Microsoft YaHei",sans-serif;
+    transition:
+        background 150ms ease-out,
+        border-color 150ms ease-out,
+        opacity 200ms ease-out,
+        transform 250ms ease-out,
+        max-height 250ms ease-out,
+        margin-top 250ms ease-out,
+        padding 250ms ease-out;
+}
+.notch-info-row.task-done-row:hover {
+    background:rgba(68,221,136,0.1);
+    border-left-color:rgba(102,255,170,0.7);
+}
+
 /* === 点歌面板 (Jukebox) === */
 #jukebox-panel {
     position:absolute;

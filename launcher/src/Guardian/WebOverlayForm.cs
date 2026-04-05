@@ -731,6 +731,7 @@ namespace CF7Launcher.Guardian
                 case "TABLET": SendGameCommand("toggleTablet"); break;
                 case "GAMESETTINGS": SendGameCommand("openSettings"); break;
                 case "JUKEBOX": SendGameCommand("openJukebox"); break;
+                case "TASK_MAP": SendGameCommand("openTaskMap"); break;
             }
         }
 

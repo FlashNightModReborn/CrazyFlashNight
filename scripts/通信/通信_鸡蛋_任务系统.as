@@ -155,14 +155,16 @@ _root.GetTask = function(id) {
     var taskData = TaskUtil.getTaskData(id);
     _root.AddTask(id);
     _root.SetDialogue(TaskUtil.getTaskText(taskData.get_conversation));
-    _root.弹出公告界面.弹出新任务(id);
+    // 任务通知 → Launcher 刘海屏
+    var taskTitle = TaskUtil.getTaskText(taskData.title);
+    _root.server.sendSocketMessage("Utask|" + taskTitle);
     if (taskData.announcement.length > 0) {
         //#$#;用于分割多条公告
         var announcement_Arr = taskData.announcement.split("#$#;");
-        // 在2秒后发布公告
+        // 在2秒后逐条发布公告到刘海屏
         _root.帧计时器.添加单次任务(function() {
             for (var i = 0; i < announcement_Arr.length; i++) {
-                _root.最上层发布文字提示(announcement_Arr[i]);
+                _root.server.sendSocketMessage("Uannounce|" + announcement_Arr[i]);
             }
         }, 2000);
     }
@@ -170,7 +172,6 @@ _root.GetTask = function(id) {
 
 // 原名为taskFinished
 _root.taskCompleteCheck = function(index) {
-    _root.任务完成提示._visible = false;
     var taskData = TaskUtil.getTaskData(_root.tasks_to_do[index].id);
     var requirements = _root.tasks_to_do[index].requirements;
     if (requirements.stages.length != 0) {
@@ -185,7 +186,6 @@ _root.taskCompleteCheck = function(index) {
     if (!TaskUtil.checkSpecialRequirements(taskData)) {
         return false;
     }
-    _root.任务完成提示._visible = true;
     return true;
 }
 
@@ -461,11 +461,16 @@ _root.点击npc后检测任务 = function(npc名字, 目标) {
 }
 
 _root.是否达成任务检测 = function() {
+    var found:Boolean = false;
     for (var i in _root.tasks_to_do) {
-        if (_root.taskCompleteCheck(i))
-            return true;
+        if (_root.taskCompleteCheck(i)) {
+            found = true;
+            break;
+        }
     }
-    return false;
+    // 任务完成状态 → Launcher 刘海屏
+    org.flashNight.arki.render.FrameBroadcaster.pushUiState("td:" + (found ? "1" : "0"));
+    return found;
 }
 
 _root.完成任务提示检测 = function() {

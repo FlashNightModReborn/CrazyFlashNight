@@ -233,6 +233,8 @@ var Notch = (function() {
             if (subs[si].offsetParent !== null) pushRect(subs[si]);
         }
         if (chartVisible && expandedPanel) pushRect(expandedPanel);
+        // 可点击的任务完成状态行
+        if (taskDoneEl && taskDoneEl.offsetParent !== null) pushRect(taskDoneEl);
         Bridge.send({ type: 'interactiveRect', r: rects });
     }
     _reportRect = reportRect;
@@ -682,6 +684,146 @@ var Notch = (function() {
         el.classList.add('count-pulse');
     }
 
-    window.addEventListener('load', init);
-    return { addNotice:addNotice, setStatus:setStatus, clearStatus:clearStatus, reportRect:function(){ if(_reportRect) _reportRect(); } };
+    // ── 任务卡片 & 公告通知（从 Flash 弹出公告界面迁移） ──
+    var TASK_CARD_MS = 5000;    // 任务卡片停留时间
+    var ANNOUNCE_MS  = 4500;    // 公告停留时间
+    var taskCardTimer = null;
+    var taskCardEl = null;
+    var announceQueue = [];
+    var announceTimer = null;
+
+    /**
+     * 显示任务卡片（"新任务！" 横幅）。
+     * @param taskName 任务名称字符串
+     * @param avatar   可选，发布者头像 URL（未来扩展）
+     */
+    function showTaskCard(taskName, avatar) {
+        // 如果已有卡片在显示，先立即移除
+        if (taskCardEl && taskCardEl.parentNode) {
+            taskCardEl.parentNode.removeChild(taskCardEl);
+        }
+        if (taskCardTimer) { clearTimeout(taskCardTimer); taskCardTimer = null; }
+
+        var el = document.createElement('div');
+        el.className = 'notch-task-card';
+
+        // 头像槽位
+        var avatarEl = document.createElement('div');
+        avatarEl.className = 'task-card-avatar';
+        if (avatar) {
+            var img = document.createElement('img');
+            img.src = avatar;
+            img.alt = '';
+            avatarEl.appendChild(img);
+        } else {
+            avatarEl.textContent = '\u2694'; // ⚔ 默认图标
+        }
+        el.appendChild(avatarEl);
+
+        // 文本区
+        var textArea = document.createElement('div');
+        textArea.className = 'task-card-text';
+        var tagEl = document.createElement('span');
+        tagEl.className = 'task-card-tag';
+        tagEl.textContent = 'NEW QUEST'; // 新任务标签
+        textArea.appendChild(tagEl);
+        var nameEl = document.createElement('span');
+        nameEl.className = 'task-card-name';
+        nameEl.textContent = taskName;
+        textArea.appendChild(nameEl);
+        el.appendChild(textArea);
+
+        taskCardEl = el;
+        infoContainer.appendChild(el);
+        animateIn(el);
+
+        taskCardTimer = setTimeout(function() {
+            collapseRow({ el: el, rt: null });
+            taskCardTimer = null;
+            taskCardEl = null;
+        }, TASK_CARD_MS);
+    }
+
+    /**
+     * 公告通知（队列式，逐条显示）。
+     */
+    function showAnnouncement(text) {
+        announceQueue.push(text);
+        drainAnnounceQueue();
+    }
+
+    function drainAnnounceQueue() {
+        if (announceTimer || announceQueue.length === 0) return;
+        var text = announceQueue.shift();
+        // 复用 addNotice 的 upsertRow，但使用专用 category 和绿色强调
+        upsertRow('_announce', text, '#44dd88', false);
+        // 找到刚创建的行，加上公告专属样式
+        for (var i = rows.length - 1; i >= 0; i--) {
+            if (rows[i].id === '_announce') {
+                rows[i].el.classList.add('announce-row');
+                break;
+            }
+        }
+        announceTimer = setTimeout(function() {
+            announceTimer = null;
+            drainAnnounceQueue();
+        }, ANNOUNCE_MS);
+    }
+
+    // ── 任务完成状态行（可点击，跳转地图交付） ──
+    var taskDoneEl = null;
+    var TASK_DONE_ID = '_task_done';
+
+    function onTaskDoneChange(val) {
+        if (val === '1') {
+            if (!taskDoneEl) {
+                var el = document.createElement('div');
+                el.className = 'notch-info-row status-row task-done-row';
+                el.style.setProperty('--accent', 'rgba(68,221,136,0.5)');
+                el.style.color = 'rgba(68,221,136,0.75)';
+                el.textContent = '\u25CF \u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u70B9\u51FB\u4EA4\u4ED8'; // ● 任务已达成 · 点击交付
+                el.addEventListener('click', function() {
+                    Bridge.send({ type: 'click', key: 'TASK_MAP' });
+                });
+                taskDoneEl = el;
+                var row = { id: TASK_DONE_ID, text: '', color: '#44dd88',
+                            persistent: true, el: el, rt: null };
+                rows.push(row);
+                infoContainer.appendChild(el);
+                animateIn(el);
+                setTimeout(reportRect, 50);
+            }
+        } else {
+            if (taskDoneEl) {
+                for (var i = rows.length - 1; i >= 0; i--) {
+                    if (rows[i].id === TASK_DONE_ID) {
+                        collapseRow(rows[i]);
+                        rows.splice(i, 1);
+                        break;
+                    }
+                }
+                taskDoneEl = null;
+                setTimeout(reportRect, 450);
+            }
+        }
+    }
+
+    // 注册 UiData 监听
+    function initTaskListeners() {
+        if (typeof UiData === 'undefined') return;
+        // U 前缀旧格式透传
+        UiData.onLegacy('task', function(fields) {
+            if (fields.length > 0) showTaskCard(fields[0], fields[1] || null);
+        });
+        UiData.onLegacy('announce', function(fields) {
+            if (fields.length > 0) showAnnouncement(fields[0]);
+        });
+        // KV 格式：td = task done 状态
+        UiData.on('td', onTaskDoneChange);
+    }
+
+    window.addEventListener('load', function() { init(); initTaskListeners(); });
+    return { addNotice:addNotice, setStatus:setStatus, clearStatus:clearStatus,
+             showTaskCard:showTaskCard, showAnnouncement:showAnnouncement,
+             reportRect:function(){ if(_reportRect) _reportRect(); } };
 })();

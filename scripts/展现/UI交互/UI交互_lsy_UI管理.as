@@ -113,6 +113,12 @@ _root.gameCommands["safeExit"] = function() {
     _root.自动存盘();
 };
 
+_root.gameCommands["openTaskMap"] = function() {
+    if (_root.地图界面._x != undefined) {
+        _root.地图界面.gotoAndStop(2);
+    }
+};
+
 _root.gameCommands["openSettings"] = function() {
     _root.系统设置界面._visible = !_root.系统设置界面._visible;
 };
