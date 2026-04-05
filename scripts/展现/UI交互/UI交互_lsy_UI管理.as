@@ -119,6 +119,15 @@ _root.gameCommands["openTaskMap"] = function() {
     }
 };
 
+_root.gameCommands["openTaskUI"] = function() {
+    _root.从库中加载全屏UI("任务栏界面");
+};
+
+_root.gameCommands["openEquipUI"] = function() {
+    _root.物品栏界面._visible = true;
+    _root.物品栏界面.gotoAndStop(_root.物品栏界面.界面);
+};
+
 _root.gameCommands["openSettings"] = function() {
     _root.系统设置界面._visible = !_root.系统设置界面._visible;
 };

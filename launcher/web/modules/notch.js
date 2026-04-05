@@ -88,7 +88,7 @@ var Notch = (function() {
         });
 
         // 绑定所有 data-key 按钮
-        var buttons = document.querySelectorAll('#notch button[data-key], #top-right-tools button[data-key]');
+        var buttons = document.querySelectorAll('#notch button[data-key], #top-right-tools button[data-key], #quest-row button[data-key]');
         for (var i = 0; i < buttons.length; i++) {
             (function(btn) {
                 btn.addEventListener('click', function() {
@@ -135,6 +135,25 @@ var Notch = (function() {
             else pb.classList.remove('paused');
         });
 
+        // 存盘动画：sv:1=存盘中, sv:2=成功
+        UiData.on('sv', function(val) {
+            var btn = document.querySelector('[data-key="SAFEEXIT"]');
+            if (!btn) return;
+            if (val === '1') {
+                btn.textContent = '\u00B7\u00B7'; // ·· 存盘中
+                btn.classList.add('saving');
+                btn.classList.remove('save-done');
+            } else if (val === '2') {
+                btn.classList.remove('saving');
+                btn.textContent = '\u2713'; // ✓
+                btn.classList.add('save-done');
+                setTimeout(function() {
+                    btn.classList.remove('save-done');
+                    btn.textContent = '\u2715'; // ✕ 恢复
+                }, 1500);
+            }
+        });
+
         // 主线任务进度
         UiData.on('q', function(val) {
             var progress = parseInt(val, 10) || 0;
@@ -147,6 +166,16 @@ var Notch = (function() {
         UiData.on('s', function(val) {
             if (val === '1') notchEl.classList.add('game-ready');
             else notchEl.classList.remove('game-ready');
+            // 任务行 + 通知条跟随游戏状态显隐
+            var qr = document.getElementById('quest-row');
+            var nb = document.getElementById('quest-notice-bar');
+            if (val === '1') {
+                if (qr) qr.style.display = '';
+            } else {
+                if (qr) qr.style.display = 'none';
+                if (nb) { nb.style.display = 'none'; nb.classList.remove('visible', 'task-done'); }
+            }
+            updateJukeboxTop();
             // 可交互区域几何形状已变（toolbar/center/pause 显隐），重报 hitRect
             setTimeout(reportRect, 50);
         });
@@ -233,8 +262,12 @@ var Notch = (function() {
             if (subs[si].offsetParent !== null) pushRect(subs[si]);
         }
         if (chartVisible && expandedPanel) pushRect(expandedPanel);
-        // 可点击的任务完成状态行
-        if (taskDoneEl && taskDoneEl.offsetParent !== null) pushRect(taskDoneEl);
+        // 任务+装备行（右上角独立定位）
+        var questRow = document.getElementById('quest-row');
+        if (questRow && questRow.offsetParent !== null) pushRect(questRow);
+        // 通知条（任务完成态可点击）
+        if (noticeBar && noticeBar.offsetParent !== null && noticeBar.classList.contains('visible'))
+            pushRect(noticeBar);
         Bridge.send({ type: 'interactiveRect', r: rects });
     }
     _reportRect = reportRect;
@@ -684,146 +717,166 @@ var Notch = (function() {
         el.classList.add('count-pulse');
     }
 
-    // ── 任务卡片 & 公告通知（从 Flash 弹出公告界面迁移） ──
-    var TASK_CARD_MS = 5000;    // 任务卡片停留时间
-    var ANNOUNCE_MS  = 4500;    // 公告停留时间
-    var taskCardTimer = null;
-    var taskCardEl = null;
-    var announceQueue = [];
-    var announceTimer = null;
+    // ── 通知条状态机 ──
+    // 状态: hidden → playing → task-done → hidden
+    // 图标: 播放通知时=占位符(后续可换阵营图标), 任务完成=❗
+    var noticeBar = null, noticeText = null, noticeIcon = null, noticeWrap = null;
+    var noticeTimer = null;
+    var noticeQueue = [];
+    var NOTICE_MS = 5000;
+    var questTaskDone = false;
+    var ICON_PLACEHOLDER = '\u25C6'; // ◆ 占位符（后续替换为阵营图标）
+    var ICON_DONE = '\u2757';        // ❗ 任务完成
 
-    /**
-     * 显示任务卡片（"新任务！" 横幅）。
-     * @param taskName 任务名称字符串
-     * @param avatar   可选，发布者头像 URL（未来扩展）
-     */
-    function showTaskCard(taskName, avatar) {
-        // 如果已有卡片在显示，先立即移除
-        if (taskCardEl && taskCardEl.parentNode) {
-            taskCardEl.parentNode.removeChild(taskCardEl);
-        }
-        if (taskCardTimer) { clearTimeout(taskCardTimer); taskCardTimer = null; }
+    function initQuestRow() {
+        noticeBar = document.getElementById('quest-notice-bar');
+        noticeText = document.getElementById('quest-notice-text');
+        noticeIcon = document.getElementById('quest-notice-icon');
+        noticeWrap = document.getElementById('quest-notice-text-wrap');
+        if (!noticeBar) return;
 
-        var el = document.createElement('div');
-        el.className = 'notch-task-card';
-
-        // 头像槽位
-        var avatarEl = document.createElement('div');
-        avatarEl.className = 'task-card-avatar';
-        if (avatar) {
-            var img = document.createElement('img');
-            img.src = avatar;
-            img.alt = '';
-            avatarEl.appendChild(img);
-        } else {
-            avatarEl.textContent = '\u2694'; // ⚔ 默认图标
-        }
-        el.appendChild(avatarEl);
-
-        // 文本区
-        var textArea = document.createElement('div');
-        textArea.className = 'task-card-text';
-        var tagEl = document.createElement('span');
-        tagEl.className = 'task-card-tag';
-        tagEl.textContent = 'NEW QUEST'; // 新任务标签
-        textArea.appendChild(tagEl);
-        var nameEl = document.createElement('span');
-        nameEl.className = 'task-card-name';
-        nameEl.textContent = taskName;
-        textArea.appendChild(nameEl);
-        el.appendChild(textArea);
-
-        taskCardEl = el;
-        infoContainer.appendChild(el);
-        animateIn(el);
-
-        taskCardTimer = setTimeout(function() {
-            collapseRow({ el: el, rt: null });
-            taskCardTimer = null;
-            taskCardEl = null;
-        }, TASK_CARD_MS);
-    }
-
-    /**
-     * 公告通知（队列式，逐条显示）。
-     */
-    function showAnnouncement(text) {
-        announceQueue.push(text);
-        drainAnnounceQueue();
-    }
-
-    function drainAnnounceQueue() {
-        if (announceTimer || announceQueue.length === 0) return;
-        var text = announceQueue.shift();
-        // 复用 addNotice 的 upsertRow，但使用专用 category 和绿色强调
-        upsertRow('_announce', text, '#44dd88', false);
-        // 找到刚创建的行，加上公告专属样式
-        for (var i = rows.length - 1; i >= 0; i--) {
-            if (rows[i].id === '_announce') {
-                rows[i].el.classList.add('announce-row');
-                break;
+        noticeBar.addEventListener('click', function() {
+            if (questTaskDone && !noticeTimer) {
+                Bridge.send({ type: 'click', key: 'TASK_MAP' });
             }
-        }
-        announceTimer = setTimeout(function() {
-            announceTimer = null;
-            drainAnnounceQueue();
-        }, ANNOUNCE_MS);
+        });
     }
 
-    // ── 任务完成状态行（可点击，跳转地图交付） ──
-    var taskDoneEl = null;
-    var TASK_DONE_ID = '_task_done';
+    /** 设置图标（文字或后续图片） */
+    function setNoticeIcon(icon) {
+        if (noticeIcon) noticeIcon.textContent = icon;
+    }
 
-    function onTaskDoneChange(val) {
-        if (val === '1') {
-            if (!taskDoneEl) {
-                var el = document.createElement('div');
-                el.className = 'notch-info-row status-row task-done-row';
-                el.style.setProperty('--accent', 'rgba(68,221,136,0.5)');
-                el.style.color = 'rgba(68,221,136,0.75)';
-                el.textContent = '\u25CF \u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u70B9\u51FB\u4EA4\u4ED8'; // ● 任务已达成 · 点击交付
-                el.addEventListener('click', function() {
-                    Bridge.send({ type: 'click', key: 'TASK_MAP' });
-                });
-                taskDoneEl = el;
-                var row = { id: TASK_DONE_ID, text: '', color: '#44dd88',
-                            persistent: true, el: el, rt: null };
-                rows.push(row);
-                infoContainer.appendChild(el);
-                animateIn(el);
+    /** 显示通知条，设置文本并检测滚动 */
+    function showNoticeBar(text) {
+        if (!noticeBar || !noticeText) return;
+        noticeText.textContent = text;
+        noticeBar.style.display = '';
+        noticeBar.classList.remove('scrolling');
+
+        // 双帧等待：第一帧让 display 生效 + visible 触发，第二帧测量宽度
+        requestAnimationFrame(function() {
+            noticeBar.classList.add('visible');
+            requestAnimationFrame(function() {
+                // 此时布局已完成，scrollWidth 准确
+                if (!noticeWrap) return;
+                var textW = noticeText.scrollWidth;
+                var wrapW = noticeWrap.clientWidth;
+                if (textW > wrapW + 2) {
+                    var dist = textW - wrapW + 12;
+                    var dur = Math.max(4, dist / 25);
+                    noticeBar.style.setProperty('--scroll-dist', '-' + dist + 'px');
+                    noticeBar.style.setProperty('--scroll-dur', dur + 's');
+                    noticeBar.classList.add('scrolling');
+                }
+            });
+            updateJukeboxTop();
+            setTimeout(reportRect, 50);
+        });
+    }
+
+    /** 收起通知条 */
+    function hideNoticeBar() {
+        if (!noticeBar) return;
+        noticeBar.classList.remove('visible', 'scrolling', 'task-done');
+        setTimeout(function() {
+            if (!noticeBar.classList.contains('visible')) {
+                noticeBar.style.display = 'none';
+                updateJukeboxTop();
                 setTimeout(reportRect, 50);
             }
-        } else {
-            if (taskDoneEl) {
-                for (var i = rows.length - 1; i >= 0; i--) {
-                    if (rows[i].id === TASK_DONE_ID) {
-                        collapseRow(rows[i]);
-                        rows.splice(i, 1);
-                        break;
-                    }
-                }
-                taskDoneEl = null;
-                setTimeout(reportRect, 450);
+        }, 280);
+    }
+
+    /** 联动 jukebox 面板 top */
+    function updateJukeboxTop() {
+        var jbp = document.getElementById('jukebox-panel');
+        if (!jbp) return;
+        var qr = document.getElementById('quest-row');
+        var qrVisible = qr && qr.style.display !== 'none';
+        var nbVisible = noticeBar && noticeBar.classList.contains('visible');
+        var top = 32;
+        if (qrVisible) top += 28;
+        if (nbVisible) top += 24;
+        jbp.style.top = top + 'px';
+    }
+
+    /** 新任务通知 */
+    function showTaskCard(taskName) {
+        noticeQueue.push({ text: '\u65B0\u4EFB\u52A1: ' + taskName, icon: null });
+        drainNoticeQueue();
+    }
+
+    /** 公告通知 */
+    function showAnnouncement(text) {
+        noticeQueue.push({ text: text, icon: null });
+        drainNoticeQueue();
+    }
+
+    function drainNoticeQueue() {
+        if (noticeTimer || noticeQueue.length === 0) return;
+        var item = noticeQueue.shift();
+        // 播放通知时：图标=阵营图标或占位符
+        setNoticeIcon(item.icon || ICON_PLACEHOLDER);
+        noticeBar.classList.remove('task-done');
+        // 入场动效：暖色高亮文字 + 图标闪亮
+        noticeBar.classList.add('notice-active');
+        noticeBar.classList.remove('notice-flash');
+        void noticeBar.offsetWidth; // reflow 重启动画
+        noticeBar.classList.add('notice-flash');
+        showNoticeBar(item.text);
+
+        noticeTimer = setTimeout(function() {
+            noticeTimer = null;
+            noticeBar.classList.remove('notice-active', 'notice-flash');
+            if (noticeQueue.length > 0) {
+                drainNoticeQueue();
+            } else if (questTaskDone) {
+                enterTaskDoneState();
+            } else {
+                hideNoticeBar();
             }
+        }, NOTICE_MS);
+    }
+
+    /** 进入任务完成常驻态 */
+    function enterTaskDoneState() {
+        if (!noticeBar) return;
+        setNoticeIcon(ICON_DONE);
+        noticeBar.classList.add('task-done');
+        showNoticeBar('\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u70B9\u51FB\u4EA4\u4ED8');
+    }
+
+    /** 任务完成状态变化 (td:0/1) */
+    function onTaskDoneChange(val) {
+        var wasDone = questTaskDone;
+        questTaskDone = (val === '1');
+        if (!noticeBar) return;
+
+        if (questTaskDone && !wasDone) {
+            // 变为完成
+            if (!noticeTimer) enterTaskDoneState();
+            // 有通知在播→等播完自动切换
+        } else if (!questTaskDone && wasDone) {
+            // 不再完成
+            noticeBar.classList.remove('task-done');
+            if (!noticeTimer) hideNoticeBar();
         }
     }
 
     // 注册 UiData 监听
     function initTaskListeners() {
         if (typeof UiData === 'undefined') return;
-        // U 前缀旧格式透传
         UiData.onLegacy('task', function(fields) {
-            if (fields.length > 0) showTaskCard(fields[0], fields[1] || null);
+            if (fields.length > 0) showTaskCard(fields[0]);
         });
         UiData.onLegacy('announce', function(fields) {
             if (fields.length > 0) showAnnouncement(fields[0]);
         });
-        // KV 格式：td = task done 状态
         UiData.on('td', onTaskDoneChange);
     }
 
-    window.addEventListener('load', function() { init(); initTaskListeners(); });
+    window.addEventListener('load', function() { init(); initQuestRow(); initTaskListeners(); });
     return { addNotice:addNotice, setStatus:setStatus, clearStatus:clearStatus,
-             showTaskCard:showTaskCard, showAnnouncement:showAnnouncement,
              reportRect:function(){ if(_reportRect) _reportRect(); } };
 })();

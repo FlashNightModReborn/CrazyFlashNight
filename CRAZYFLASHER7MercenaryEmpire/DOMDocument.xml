@@ -6532,32 +6532,17 @@ on (rollOut) {
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="玩家信息UI" color="#4FFF4F" autoNamed="false" layerType="folder"/>
-                    <DOMLayer name="存盘动画" color="#DCD6F9" parentLayerIndex="45" autoNamed="false">
+                    <DOMLayer name="存盘动画" color="#DCD6F9" parentLayerIndex="45" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="129" duration="81" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/悬浮UI/存盘动画" name="存盘动画" centerPoint3DX="1001.15" centerPoint3DY="528.35">
-                                             <matrix>
-                                                  <Matrix a="0.4849853515625" d="0.4849853515625" tx="972.3" ty="499.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="任务完成提示" color="#69EC4F" parentLayerIndex="45" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="任务完成提示" color="#69EC4F" parentLayerIndex="45" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="129" keyMode="9728">
                                    <elements/>
@@ -7452,6 +7437,7 @@ onClipEvent (enterFrame) {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="582767" publishTime="1775365444"/>
           <PublishItem publishSize="583342" publishTime="1775361397"/>
           <PublishItem publishSize="586956" publishTime="1775359902"/>
           <PublishItem publishSize="586985" publishTime="1775327461"/>
@@ -7471,6 +7457,5 @@ onClipEvent (enterFrame) {
           <PublishItem publishSize="620823" publishTime="1770395043"/>
           <PublishItem publishSize="620823" publishTime="1770394978"/>
           <PublishItem publishSize="620835" publishTime="1770394351"/>
-          <PublishItem publishSize="620835" publishTime="1770394158"/>
      </publishHistory>
 </DOMDocument>

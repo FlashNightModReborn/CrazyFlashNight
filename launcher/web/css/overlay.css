@@ -442,6 +442,21 @@ html, body {
     color:#ff6666;
     background:rgba(80,20,20,0.9);
 }
+
+/* ── 存盘动画：✕ 按钮状态 ── */
+button[data-key="SAFEEXIT"].saving {
+    color:rgba(255,200,100,0.8) !important;
+    animation:save-pulse 1s ease-in-out infinite;
+    pointer-events:none;
+}
+button[data-key="SAFEEXIT"].save-done {
+    color:rgba(102,255,102,0.9) !important;
+    transition:color 400ms ease-out, background 400ms ease-out;
+}
+@keyframes save-pulse {
+    0%,100% { opacity:0.5; }
+    50%     { opacity:1; }
+}
 /* 游戏未加载时隐藏右上角工具条（设置/帮助/退出/暂停） */
 #notch:not(.game-ready) ~ #top-right-tools { display:none; }
 
@@ -560,135 +575,151 @@ html, body {
     100% { background:rgba(255,255,255,0.10); }
 }
 
-/* ── 任务通知卡片（从 Flash 弹出公告界面迁移） ── */
-.notch-task-card {
-    display:flex; align-items:center; gap:6px;
-    padding:4px 10px;
-    background:rgba(24,24,26,0.78);
+/* ── 装备 + 任务 按钮行 ── */
+#quest-row {
+    position:absolute;
+    top:32px; right:80px;
+    width:170px;
+    display:flex;
+    align-items:center;
+    gap:0;
+    height:28px;
+    background:rgba(24,24,26,0.82);
     -webkit-backdrop-filter:blur(12px) saturate(1.2);
     backdrop-filter:blur(12px) saturate(1.2);
-    border:1px solid rgba(255,255,255,0.08);
-    border-top:none;
-    border-left:2px solid rgba(255,170,100,0.6);
-    border-radius:0 0 5px 0;
-    box-shadow:0 2px 8px rgba(0,0,0,0.35), 0 0 1px rgba(255,255,255,0.08);
-    /* 入场前状态 */
-    opacity:0;
-    transform:translateY(-8px) scale(0.96);
-    max-height:0;
-    margin-top:0;
-    padding-top:0; padding-bottom:0;
-    transition:
-        opacity 200ms ease-out,
-        transform 250ms ease-out,
-        max-height 250ms ease-out,
-        margin-top 250ms ease-out,
-        padding 250ms ease-out;
-}
-.notch-task-card.visible {
-    opacity:1;
-    transform:translateY(0) scale(1);
-    max-height:44px;
-    margin-top:2px;
-    padding-top:4px; padding-bottom:4px;
-    transition:
-        max-height 300ms cubic-bezier(0.34,1.2,0.64,1),
-        margin-top 300ms cubic-bezier(0.34,1.2,0.64,1),
-        padding    300ms cubic-bezier(0.34,1.2,0.64,1),
-        opacity    250ms 80ms ease-out,
-        transform  350ms 40ms cubic-bezier(0.34,1.4,0.64,1);
-}
-/* 退场复用 fading/collapsing 机制（JS 调用 collapseRow） */
-.notch-task-card.fading {
-    opacity:0;
-    transform:translateY(-4px) scale(0.94);
-    max-height:44px;
-    margin-top:2px;
-    padding-top:4px; padding-bottom:4px;
-    transition:opacity 180ms ease-out, transform 180ms ease-out;
-}
-.notch-task-card.collapsing {
-    opacity:0 !important;
-    max-height:0 !important;
-    margin-top:0 !important;
-    padding-top:0 !important; padding-bottom:0 !important;
-    border-width:0 !important;
-    transition:
-        max-height  220ms ease-in,
-        margin-top  220ms ease-in,
-        padding     220ms ease-in,
-        border-width 220ms ease-in;
-}
-
-.task-card-avatar {
-    width:22px; height:22px;
-    border-radius:3px;
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.1);
-    display:flex; align-items:center; justify-content:center;
-    font-size:11px;
-    color:rgba(255,200,100,0.5);
-    flex-shrink:0;
-    overflow:hidden;
-}
-.task-card-avatar img {
-    width:100%; height:100%;
-    object-fit:cover;
-    border-radius:3px;
-}
-
-.task-card-text {
-    display:flex; flex-direction:column; gap:0;
-    min-width:0;
-}
-.task-card-tag {
-    font:bold 9px/1.2 "Consolas","Courier New",monospace;
-    color:rgba(255,170,100,0.7);
-    letter-spacing:0.5px;
-    text-transform:uppercase;
-    white-space:nowrap;
-}
-.task-card-name {
-    font:11px/1.3 "Microsoft YaHei",sans-serif;
-    color:rgba(255,255,255,0.8);
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    max-width:180px;
-}
-
-/* ── 公告通知行（柔和强调） ── */
-.notch-info-row.announce-row {
-    border-left:2px solid rgba(68,221,136,0.6);
-    border-radius:0 0 5px 0;
-    text-align:left;
-    padding-left:10px;
-}
-
-/* ── 任务完成状态行（可点击） ── */
-.notch-info-row.task-done-row {
-    cursor:pointer;
+    border-left:1px solid rgba(255,255,255,0.12);
+    border-right:1px solid rgba(255,255,255,0.12);
+    border-top:1px solid rgba(255,255,255,0.06);
     pointer-events:auto;
-    border-left:2px solid rgba(68,221,136,0.5);
-    font:11px/1.4 "Microsoft YaHei",sans-serif;
-    transition:
-        background 150ms ease-out,
-        border-color 150ms ease-out,
-        opacity 200ms ease-out,
-        transform 250ms ease-out,
-        max-height 250ms ease-out,
-        margin-top 250ms ease-out,
-        padding 250ms ease-out;
 }
-.notch-info-row.task-done-row:hover {
-    background:rgba(68,221,136,0.1);
-    border-left-color:rgba(102,255,170,0.7);
+#quest-row button {
+    flex:1;
+    font:11px/1 "Microsoft YaHei",sans-serif;
+    height:28px;
+    display:flex; align-items:center; justify-content:center;
+    border:none;
+    background:transparent;
+    color:rgba(255,255,255,0.7);
+    cursor:pointer; pointer-events:auto;
+    transition:background 100ms, color 100ms;
+    white-space:nowrap;
+}
+#quest-row button:first-child {
+    border-right:1px solid rgba(255,255,255,0.06);
+}
+#quest-row button:hover {
+    background:rgba(255,255,255,0.12);
+    color:white;
+}
+
+/* ── 通知条：按钮行下方，icon(1格) + text(4格) ── */
+#quest-notice-bar {
+    position:absolute;
+    top:60px; right:80px;
+    width:170px;
+    height:0;
+    overflow:hidden;
+    display:flex; align-items:center;
+    background:rgba(24,24,26,0.82);
+    -webkit-backdrop-filter:blur(12px) saturate(1.2);
+    backdrop-filter:blur(12px) saturate(1.2);
+    border-left:1px solid rgba(255,255,255,0.12);
+    border-right:1px solid rgba(255,255,255,0.12);
+    border-top:1px solid rgba(255,255,255,0.06);
+    pointer-events:auto;
+    transition:height 250ms cubic-bezier(0.34,1.2,0.64,1),
+               opacity 200ms ease-out;
+    opacity:0;
+}
+#quest-notice-bar.visible {
+    height:24px;
+    opacity:1;
+}
+
+/* 图标槽位 */
+#quest-notice-icon {
+    width:24px; height:24px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    font-size:12px;
+    color:rgba(255,255,255,0.35);
+    border-right:1px solid rgba(255,255,255,0.06);
+    transition:color 300ms ease-out, text-shadow 300ms ease-out;
+}
+
+/* 新通知入场：图标闪亮一次 */
+#quest-notice-bar.notice-flash #quest-notice-icon {
+    animation:icon-flash 0.8s ease-out;
+}
+@keyframes icon-flash {
+    0%   { color:#fff; background:rgba(255,200,100,0.3); text-shadow:0 0 10px rgba(255,200,100,0.8); }
+    100% { color:rgba(255,255,255,0.35); background:transparent; text-shadow:none; }
+}
+
+/* 任务完成态：图标背景+颜色持续脉冲 */
+#quest-notice-bar.task-done #quest-notice-icon {
+    animation:icon-breathe 1.5s ease-in-out infinite;
+}
+@keyframes icon-breathe {
+    0%,100% {
+        color:rgba(255,160,40,0.6);
+        background:rgba(255,160,40,0.04);
+        text-shadow:0 0 2px rgba(255,160,40,0.2);
+    }
+    50% {
+        color:rgba(255,200,60,1);
+        background:rgba(255,180,40,0.2);
+        text-shadow:0 0 10px rgba(255,180,40,0.6);
+    }
+}
+
+/* 文本区 */
+#quest-notice-text-wrap {
+    flex:1;
+    min-width:0;
+    height:24px;
+    overflow:hidden;
+    position:relative;
+}
+#quest-notice-text {
+    display:block;
+    font:10px/24px "Microsoft YaHei",sans-serif;
+    color:rgba(255,255,255,0.6);
+    white-space:nowrap;
+    padding:0 6px;
+    transition:color 300ms ease-out;
+}
+/* 新通知高亮文字 */
+#quest-notice-bar.notice-active #quest-notice-text {
+    color:rgba(255,220,150,0.9);
+}
+
+/* 任务完成态 */
+#quest-notice-bar.task-done {
+    cursor:pointer;
+}
+#quest-notice-bar.task-done:hover {
+    background:rgba(40,40,42,0.9);
+}
+#quest-notice-bar.task-done #quest-notice-text {
+    color:rgba(255,200,80,0.85);
+}
+
+/* 通知文本过长时滚动 */
+#quest-notice-bar.scrolling #quest-notice-text {
+    animation:quest-scroll var(--scroll-dur, 8s) linear infinite;
+}
+@keyframes quest-scroll {
+    0%   { transform:translateX(0); }
+    15%  { transform:translateX(0); }
+    85%  { transform:translateX(var(--scroll-dist, -100px)); }
+    100% { transform:translateX(var(--scroll-dist, -100px)); }
 }
 
 /* === 点歌面板 (Jukebox) === */
 #jukebox-panel {
     position:absolute;
-    top:32px; right:80px; /* 紧贴 #top-right-tools 下方，同 right 对齐 */
+    top:32px; right:80px; /* 默认紧贴工具条下方，quest-row 显示时由 JS 推到 60px */
     width:170px; /* 5 buttons × 34px = 与工具条等宽 */
     background:rgba(24,24,26,0.82);
     -webkit-backdrop-filter:blur(12px) saturate(1.2);

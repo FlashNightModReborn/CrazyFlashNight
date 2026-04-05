@@ -732,6 +732,8 @@ namespace CF7Launcher.Guardian
                 case "GAMESETTINGS": SendGameCommand("openSettings"); break;
                 case "JUKEBOX": SendGameCommand("openJukebox"); break;
                 case "TASK_MAP": SendGameCommand("openTaskMap"); break;
+                case "TASK_UI": SendGameCommand("openTaskUI"); break;
+                case "EQUIP_UI": SendGameCommand("openEquipUI"); break;
             }
         }
 

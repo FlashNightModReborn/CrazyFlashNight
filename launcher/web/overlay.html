@@ -58,6 +58,7 @@
             <button data-key="WAREHOUSE" title="后勤战备箱">📦 战备箱</button>
             <button data-key="SHOP" title="商城">🛒 商城</button>
         </div>
+        <!-- (quest row moved to #quest-row between top-right-tools and jukebox) -->
     </div>
     <div id="notch-info"></div>
     <div id="combo-status"></div>
@@ -76,7 +77,19 @@
     <button data-key="SAFEEXIT" title="安全退出">&#10005;</button>
 </div>
 
-<!-- BGM 可视化面板：紧贴右上角工具条下方 -->
+<!-- 任务 + 装备行：右上角工具条与点歌面板之间 -->
+<div id="quest-row" style="display:none">
+    <button data-key="EQUIP_UI" title="装备栏">&#9776; 装备</button>
+    <button data-key="TASK_UI" title="任务栏">&#9776; 任务</button>
+</div>
+<div id="quest-notice-bar" style="display:none">
+    <div id="quest-notice-icon">&#10069;</div>
+    <div id="quest-notice-text-wrap">
+        <span id="quest-notice-text"></span>
+    </div>
+</div>
+
+<!-- BGM 可视化面板：紧贴任务行下方 -->
 <div id="jukebox-panel">
     <div id="jukebox-header">
         <button id="jukebox-toggle" title="展开/折叠">&#9835; 点歌</button>

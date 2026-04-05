@@ -149,8 +149,8 @@ _root.存档系统.mydata数据组包 = function(){
 _root.自动存盘 = function(){
    if(_root.允许存档 === true){
         _root.存档系统.dirtyMark = false;
-        _root.存盘动画._visible = true;
-        // _root.存盘动画.gotoAndStop("储存中");
+        // 存盘动画 → Launcher 工具条
+        org.flashNight.arki.render.FrameBroadcaster.pushUiState("sv:1");
         if(_root.身价 < 1000 * _root.等级){
             _root.身价 = 1000 * _root.等级;
         }
@@ -161,11 +161,12 @@ _root.自动存盘 = function(){
             _root.SavePCTasks();
             _root.存盘标志 = 1;
             // 存盘重连次数 = 0;
-            _root.存盘动画.gotoAndPlay("存储成功");
-            _root.发布消息("游戏本地储存成功！");
+            org.flashNight.arki.render.FrameBroadcaster.pushUiState("sv:2");
+            // _root.发布消息("游戏本地储存成功！");
+            _root.安全退出界面.gotoAndStop("成功");
         }else{
             _root.存盘标志 = 1;
-            _root.存盘动画.gotoAndPlay("存储成功");
+            org.flashNight.arki.render.FrameBroadcaster.pushUiState("sv:2");
             _root.安全退出界面.gotoAndStop("成功");
         }
     }

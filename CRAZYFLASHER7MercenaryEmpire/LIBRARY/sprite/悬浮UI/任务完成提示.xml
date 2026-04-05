@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="任务完成提示">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -12,11 +12,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#CFFBF9">
+        <DOMLayer name="Layer 1" color="#CFFBF9" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2011" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 2011" selected="true" symbolType="button">
                   <matrix>
                     <Matrix ty="-0.2"/>
                   </matrix>
