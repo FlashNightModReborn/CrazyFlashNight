@@ -290,10 +290,9 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'S')
                 {
-                    // SFX 快车道：异步分发，避免被同批次 F 消息的 V8 渲染阻塞。
-                    // HandleSfxFastLane 内部仅 Dictionary 只读查找 + P/Invoke，线程安全。
-                    string sfxMsg = message;
-                    ThreadPool.QueueUserWorkItem(delegate { CF7Launcher.Tasks.AudioTask.HandleSfxFastLane(sfxMsg); });
+                    // SFX 快车道：同步分发（单线程，与 ReadLoop 串行）。
+                    // Flash 侧已将 S 消息调序到 F 之前发送，确保同批次内音效优先处理。
+                    CF7Launcher.Tasks.AudioTask.HandleSfxFastLane(message);
                     return;
                 }
 
