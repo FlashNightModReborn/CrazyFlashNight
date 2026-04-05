@@ -106,8 +106,8 @@ _root.gameCommands["toggleTablet"] = function() {
 };
 
 _root.gameCommands["safeExit"] = function() {
-    _root.安全退出界面.gotoAndStop("加载");
-    _root.安全退出界面._visible = 1;
+    // 安全退出界面已迁移到 Launcher Web 侧
+    // 只触发存盘，sv:1/sv:2 通知 Launcher 面板状态
     _root.仓库标志 = 0;
     _root.存盘标志 = 0;
     _root.自动存盘();

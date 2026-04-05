@@ -87,15 +87,30 @@ var Notch = (function() {
             if (expanded) doCollapse(); else doExpand();
         });
 
-        // 绑定所有 data-key 按钮
-        var buttons = document.querySelectorAll('#notch button[data-key], #top-right-tools button[data-key], #quest-row button[data-key]');
+        // 绑定所有 data-key 按钮（SAFEEXIT/EXIT_CANCEL 单独处理）
+        var skipKeys = { SAFEEXIT:1, EXIT_CANCEL:1 };
+        var buttons = document.querySelectorAll('#notch button[data-key], #top-right-tools button[data-key], #quest-row button[data-key], #safe-exit-panel button[data-key]');
         for (var i = 0; i < buttons.length; i++) {
             (function(btn) {
+                var key = btn.getAttribute('data-key');
+                if (skipKeys[key]) return; // 单独绑定
                 btn.addEventListener('click', function() {
-                    Bridge.send({ type: 'click', key: btn.getAttribute('data-key') });
+                    Bridge.send({ type: 'click', key: key });
                 });
             })(buttons[i]);
         }
+
+        // SAFEEXIT: 单独绑定（sePanel/seBtn 在后面初始化，用查询兜底）
+        (function() {
+            var btn = document.querySelector('[data-key="SAFEEXIT"]');
+            if (!btn) return;
+            btn.addEventListener('click', function() {
+                var p = document.getElementById('safe-exit-panel');
+                if (!p) return;
+                if (p.style.display === 'block') closeSafeExitPanel();
+                else openSafeExitPanel();
+            });
+        })();
 
         // submenu hover → 更新 hitRect
         var submenuWraps = document.querySelectorAll('.notch-submenu-wrap');
@@ -135,24 +150,48 @@ var Notch = (function() {
             else pb.classList.remove('paused');
         });
 
-        // 存盘动画：sv:1=存盘中, sv:2=成功
+        // 安全退出面板状态机
+        var sePanel = document.getElementById('safe-exit-panel');
+        var seStatus = document.getElementById('safe-exit-status');
+        var seButtons = document.getElementById('safe-exit-buttons');
+        var seBtn = document.querySelector('[data-key="SAFEEXIT"]');
+
         UiData.on('sv', function(val) {
-            var btn = document.querySelector('[data-key="SAFEEXIT"]');
-            if (!btn) return;
             if (val === '1') {
-                btn.textContent = '\u00B7\u00B7'; // ·· 存盘中
-                btn.classList.add('saving');
-                btn.classList.remove('save-done');
+                // 存盘中 → ✕ 变脉冲
+                if (seBtn) {
+                    seBtn.textContent = '\u00B7\u00B7'; // ··
+                    seBtn.classList.add('saving');
+                }
+                if (seStatus) { seStatus.textContent = '\u5B58\u76D8\u4E2D\u2026'; seStatus.className = 'saving'; }
+                if (seButtons) seButtons.style.display = 'none';
             } else if (val === '2') {
-                btn.classList.remove('saving');
-                btn.textContent = '\u2713'; // ✓
-                btn.classList.add('save-done');
-                setTimeout(function() {
-                    btn.classList.remove('save-done');
-                    btn.textContent = '\u2715'; // ✕ 恢复
-                }, 1500);
+                // 存盘成功 → ✕ 短暂变 ✓
+                if (seBtn) {
+                    seBtn.classList.remove('saving');
+                    seBtn.textContent = '\u2713'; // ✓
+                    seBtn.classList.add('save-done');
+                    setTimeout(function() {
+                        seBtn.classList.remove('save-done');
+                        seBtn.textContent = '\u2715'; // ✕
+                    }, 1500);
+                }
+                if (seStatus) { seStatus.textContent = '\u5B58\u76D8\u6210\u529F'; seStatus.className = 'done'; }
+                if (seButtons) { seButtons.style.display = ''; }
+                setTimeout(reportRect, 50);
             }
         });
+
+        // EXIT_CANCEL: 关闭面板
+        var cancelBtn = document.querySelector('[data-key="EXIT_CANCEL"]');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function() {
+                closeSafeExitPanel();
+            });
+        }
+
+        // EXIT_CONFIRM: 退出游戏（C# 直接关闭进程）
+        // 通过 data-key 绑定走 Bridge.send → HandleButtonClick
 
         // 主线任务进度
         UiData.on('q', function(val) {
@@ -268,6 +307,9 @@ var Notch = (function() {
         // 通知条（任务完成态可点击）
         if (noticeBar && noticeBar.offsetParent !== null && noticeBar.classList.contains('visible'))
             pushRect(noticeBar);
+        // 安全退出面板
+        var sep = document.getElementById('safe-exit-panel');
+        if (sep && sep.style.display === 'block') pushRect(sep);
         Bridge.send({ type: 'interactiveRect', r: rects });
     }
     _reportRect = reportRect;
@@ -862,6 +904,31 @@ var Notch = (function() {
             noticeBar.classList.remove('task-done');
             if (!noticeTimer) hideNoticeBar();
         }
+    }
+
+    // ── 安全退出面板 ──
+    function openSafeExitPanel() {
+        var panel = document.getElementById('safe-exit-panel');
+        var status = document.getElementById('safe-exit-status');
+        var btns = document.getElementById('safe-exit-buttons');
+        var exitBtn = document.querySelector('[data-key="SAFEEXIT"]');
+        if (!panel) return;
+        // 重置状态
+        status.textContent = '\u5B58\u76D8\u4E2D\u2026'; // 存盘中…
+        status.className = 'saving';
+        btns.style.display = 'none';
+        panel.style.display = 'block';
+        if (exitBtn) exitBtn.classList.add('panel-open');
+        setTimeout(reportRect, 50);
+        // 触发存盘
+        Bridge.send({ type: 'click', key: 'SAFEEXIT' });
+    }
+    function closeSafeExitPanel() {
+        var panel = document.getElementById('safe-exit-panel');
+        var exitBtn = document.querySelector('[data-key="SAFEEXIT"]');
+        if (panel) panel.style.display = 'none';
+        if (exitBtn) exitBtn.classList.remove('panel-open');
+        setTimeout(reportRect, 50);
     }
 
     // 注册 UiData 监听

@@ -734,6 +734,7 @@ namespace CF7Launcher.Guardian
                 case "TASK_MAP": SendGameCommand("openTaskMap"); break;
                 case "TASK_UI": SendGameCommand("openTaskUI"); break;
                 case "EQUIP_UI": SendGameCommand("openEquipUI"); break;
+                case "EXIT_CONFIRM": if (_onForceExit != null) _onForceExit(); break;
             }
         }
 

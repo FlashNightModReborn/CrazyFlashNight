@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2065" itemID="6597607e-00000a8e" lastModified="1761366404" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="Symbol 2065" currentFrame="11">
+    <DOMTimeline name="Symbol 2065">
       <layers>
         <DOMLayer name="Labels Layer" color="#C750EA">
           <frames>
@@ -180,7 +180,7 @@ on (rollOut) {
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
-                <DOMDynamicText name="mytext" fontRenderingMode="device" width="191" height="41.75" isSelectable="false" lineType="multiline">
+                <DOMDynamicText name="mytext" selected="true" fontRenderingMode="device" width="191" height="41.75" isSelectable="false" lineType="multiline">
                   <matrix>
                     <Matrix tx="12" ty="24.25"/>
                   </matrix>
@@ -225,7 +225,7 @@ on(rollOut){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/退出游戏" selected="true" centerPoint3DX="63.2" centerPoint3DY="67.8">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/退出游戏" centerPoint3DX="63.2" centerPoint3DY="67.8">
                   <matrix>
                     <Matrix tx="24.2" ty="55.8"/>
                   </matrix>
