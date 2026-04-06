@@ -565,3 +565,45 @@ _root.敌人函数.吉他播放嘲讽音效 = function():Void {
     var 随机索引 = random(歌曲列表.length); 
     _root.播放音效(歌曲列表[随机索引]);
 };
+
+
+
+
+
+
+_root.敌人函数.大学学员随机发型表_男 = [
+	"发型-男式-黑中分头",
+	"发型-男式-黑圆平头",
+	"发型-男式-黑碎平头",
+	"发型-男式-黑猫王头",
+	"发型-男式-黑混混头"
+];
+_root.敌人函数.大学学员随机发型表_女 = [
+	"发型-女式-棕发大姐头"
+];
+_root.敌人函数.大学学员随机兵器表 = [
+	"校制式刀",
+	"校制式剑",
+	"合家欢",
+	"单刀",
+	"砍刀",
+	"破旧军刀",
+	"虎彻"
+];
+
+
+_root.敌人函数.获取大学学员随机装扮 = function(target){
+	target.hasDressup = true;
+	if(!target.性别){
+		target.性别 = random(2) === 0 ? "男" : "女";
+	}
+	if(!target.刀) {
+		target.刀 = this.大学学员随机兵器表[random(this.大学学员随机兵器表.length)];
+	}
+	if(!target.发型){
+		if(target.性别 === "男") target.发型 = this.大学学员随机发型表_男[random(this.大学学员随机发型表_男.length)];
+		else target.发型 = this.大学学员随机发型表_女[random(this.大学学员随机发型表_女.length)];
+	}
+
+	target.刀口位置生成子弹 = _root.主角函数.刀口位置生成子弹;
+}

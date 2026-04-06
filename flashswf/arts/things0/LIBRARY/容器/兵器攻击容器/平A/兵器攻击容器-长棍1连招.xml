@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招" itemID="69647138-00000e5c" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长棍1连招" lastModified="1774114472">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招" itemID="69647138-00000e5c" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长棍1连招" lastModified="1775485273">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-长棍1连招">
+    <DOMTimeline name="兵器攻击容器-长棍1连招" currentFrame="68">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -82,7 +82,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <Actionscript>
@@ -277,7 +277,7 @@ function 长棍旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -308,7 +308,7 @@ function 长棍旋击(击倒率)
             </DOMFrame>
             <DOMFrame index="19" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>

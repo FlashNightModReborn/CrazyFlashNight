@@ -1775,6 +1775,7 @@ _root.主角函数.跳转到招式 = function(target:MovieClip, key:String, coun
     target.gotoAndPlay(frame);
 }
 
+_root.主角函数.刀口位置生成子弹 = BladeShootCore.shoot;
 
 //释放技能与战技
 _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值) {

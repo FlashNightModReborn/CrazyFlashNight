@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-1连招" itemID="6976bef2-00000a1e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-1连招" lastModified="1771713597" lastUniqueIdentifier="4142">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-1连招" itemID="6976bef2-00000a1e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-1连招" lastModified="1775484676" lastUniqueIdentifier="4142">
   <timeline>
     <DOMTimeline name="兵器攻击容器-1连招" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;259&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -26,65 +26,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
-{
-	if (_parent.方向 == "右")
-	{
-		if (Key.isDown(_root.右键) == true)
-		{
-			_parent.移动("右",快速度);
-		}
-		else
-		{
-			_parent.移动("右",慢速度);
-		}
-	}
-	else if (_parent.方向 == "左")
-	{
-		if (Key.isDown(_root.左键) == true)
-		{
-			_parent.移动("左",快速度);
-		}
-		else
-		{
-			_parent.移动("左",慢速度);
-		}
-	}
-}
-function 攻击时按键四向移动(慢速度, 快速度)
-{
-	var 上下未按键 = 0;
-	var 左右未按键 = 0;
-	if (Key.isDown(_parent.上键) == true)
-	{
-		_parent.移动("上",快速度 / 2);
-	}
-	else if (Key.isDown(_parent.下键) == true)
-	{
-		_parent.移动("下",快速度 / 2);
-	}
-	else
-	{
-		上下未按键 = 1;
-	}
-	if (Key.isDown(_parent.左键) == true)
-	{
-		_parent.移动("左",快速度);
-	}
-	else if (Key.isDown(_parent.右键) == true)
-	{
-		_parent.移动("右",快速度);
-	}
-	else
-	{
-		左右未按键 = 1;
-	}
-	if (上下未按键 && 左右未按键)
-	{
-		攻击时移动(慢速度,快速度);
-	}
-}
-function 攻击时可改变移动方向(速度)
+                <script><![CDATA[function 攻击时可改变移动方向(速度)
 {
 	if (Key.isDown(_parent.右键) == true)
 	{
@@ -438,36 +380,14 @@ _root.兵器攻击路由.动画完毕(this, _parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#808080" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击与移动as" color="#808080" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[/*
-function 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度)
-{
-	var 子弹参数 = new Object();
-	子弹参数.子弹威力 = 子弹威力;
-	if (_parent.被动技能.刀剑攻击 && _parent.被动技能.刀剑攻击.启用)
-	{
-		子弹参数.子弹威力 +=  _parent.刀属性.power * _parent.被动技能.刀剑攻击.等级 * 0.075;
-	}
-	if (_parent.mp攻击加成)
-	{
-		子弹参数.子弹威力 += _parent.mp攻击加成;
-	}
-	子弹参数.Z轴攻击范围 = Z轴攻击范围;
-	子弹参数.击倒率 = 击倒率;
-	子弹参数.水平击退速度 = 水平击退速度;
-	if(垂直击退速度){
-		子弹参数.垂直击退速度 = 垂直击退速度;
-	}
-
-	_parent.刀口位置生成子弹(_parent, 子弹参数);
-}
-*/]]></script>
+                <script><![CDATA[攻击时移动(5,25);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -481,13 +401,19 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" duration="11" keyMode="9728">
+            <DOMFrame index="8" duration="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[攻击时移动(5,25);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -501,13 +427,19 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="11" keyMode="9728">
+            <DOMFrame index="21" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[攻击时移动(5,25);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -521,13 +453,19 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="34" duration="13" keyMode="9728">
+            <DOMFrame index="34" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 10;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[攻击时移动(5,25);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -553,7 +491,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="51" duration="15" keyMode="9728">
+            <DOMFrame index="51" duration="9" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.2;
 Z轴攻击范围 = 30;
@@ -561,6 +499,12 @@ Z轴攻击范围 = 30;
 水平击退速度 = 10;
 垂直击退速度 = 3;
 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="60" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[攻击时移动(5,25);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -615,118 +559,6 @@ Z轴攻击范围 = 30;
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#DDB110" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
-                  <matrix>
-                    <Matrix tx="-21.45" ty="296.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="2" duration="12" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="14" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
-                  <matrix>
-                    <Matrix tx="-21.45" ty="296.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="15" duration="14" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="29" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
-                  <matrix>
-                    <Matrix tx="-21.45" ty="296.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="30" duration="12" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="42" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
-                  <matrix>
-                    <Matrix tx="-21.45" ty="296.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="43" duration="17" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="60" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
-                  <matrix>
-                    <Matrix tx="-21.45" ty="296.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="61" duration="13" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

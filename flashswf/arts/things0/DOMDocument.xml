@@ -32,7 +32,7 @@
           <DOMFolderItem name="临时武器/1.枪械相关/长枪" itemID="68404178-00000bbf"/>
           <DOMFolderItem name="临时武器/无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
-          <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3"/>
+          <DOMFolderItem name="容器/兵器攻击容器" itemID="6958f35f-000035a3" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A" itemID="696462ce-00000acc" isExpanded="true"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板" itemID="699e0c3e-00001e05"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件" itemID="699e0c3e-00001e06"/>
@@ -43,7 +43,7 @@
           <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504"/>
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798"/>
           <DOMFolderItem name="容器/武器变形容器" itemID="69cb66ff-00000ab7" isExpanded="true"/>
-          <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79" isExpanded="true"/>
+          <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79"/>
           <DOMFolderItem name="容器/战技容器/sprite" itemID="695e92dd-000012bc"/>
           <DOMFolderItem name="容器/战技容器/属性标签标志元件" itemID="695e8bfa-000070f2"/>
           <DOMFolderItem name="尚未整理" itemID="693ece28-00001dc3"/>
@@ -146,7 +146,7 @@
           <DOMSoundItem name="sound/sound641.mp3" itemID="67764734-00002089" linkageExportForAS="true" linkageIdentifier="9mmclip2.wav" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/sound641.wav" sourceLastImported="1736862758" externalFileCRC32="296318466" externalFileSize="125164" href="sound/sound641.wav" soundDataHRef="M 58 1702344344.dat" format="44kHz 16bit Stereo" sampleCount="31280" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/sound642.mp3" itemID="67764734-0000208a" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/sound642.wav" sourceLastImported="1736862758" externalFileCRC32="1226158872" externalFileSize="184024" href="sound/sound642.wav" soundDataHRef="M 59 1702344344.dat" format="44kHz 16bit Stereo" sampleCount="45995" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="个人编辑单位/浮士德的一堆相关或是不相关/sound73.mp3 副本" itemID="66b9e474-000006d1" sourceExternalFilepath="../未命名-1/LIBRARY/个人编辑单位/浮士德的一堆相关或是不相关/sound73.mp3 副本 2" sourceLastImported="1702359585" href="个人编辑单位/浮士德的一堆相关或是不相关/sound73.mp3 副本 2" soundDataHRef="M 98 1767715906.dat" format="22kHz 16bit Mono" sampleCount="20160" exportFormat="5" exportBits="7" dataLength="4550" exportNative="true" cachedSampleCount="5040"/>
-          <DOMSoundItem name="音效/sound77.mp3" itemID="6974bac3-00027d46" sourceExternalFilepath="../things0/LIBRARY/音效/sound77.wav" sourceLastImported="1770477209" externalFileSize="93284" href="音效/sound77.wav" soundDataHRef="M 102 1767835806.dat" format="44kHz 16bit Mono" sampleCount="44100" exportFormat="5"/>
+          <DOMSoundItem name="音效/sound77.mp3" itemID="6974bac3-00027d46" sourceExternalFilepath="../things0/LIBRARY/音效/sound77.wav" sourceLastImported="1775476128" externalFileSize="93284" href="音效/sound77.wav" soundDataHRef="M 102 1767835806.dat" format="44kHz 16bit Mono" sampleCount="44100" exportFormat="5"/>
           <DOMSoundItem name="sound/soundfootstep.wav" itemID="67764734-0000208b" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/soundfootstep.wav" sourceLastImported="1736862759" externalFileCRC32="3770162224" externalFileSize="96624" href="sound/soundfootstep.wav" soundDataHRef="M 98 1720595161.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/soundfootstep_female.wav" itemID="668e44cf-00000b65" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/soundfootstep_female.wav" sourceLastImported="1736862759" externalFileCRC32="1746597399" externalFileSize="96624" href="sound/soundfootstep_female.wav" soundDataHRef="M 100 1720599759.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="sound/soundfootstep_female1.wav" itemID="668e44cf-00000b69" sourceExternalFilepath="../../../../../steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/重制版/github/CrazyFlashNight/flashswf/arts/things0/LIBRARY/sound/soundfootstep_female1.wav" sourceLastImported="1736862760" externalFileCRC32="1383320771" externalFileSize="96624" href="sound/soundfootstep_female1.wav" soundDataHRef="M 101 1720599759.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5" exportBits="17"/>
@@ -1231,7 +1231,7 @@
           <Include href="回归枢机之光特效.xml" loadImmediate="false" itemID="6946dba8-00001147" lastModified="1766332410"/>
           <Include href="疾走幻影剑舞黑暗特效.xml" loadImmediate="false" itemID="6963d72d-00001476" lastModified="1769694923"/>
           <Include href="疾走幻影剑舞强光特效.xml" loadImmediate="false" itemID="6963d6bc-00001387" lastModified="1769694923"/>
-          <Include href="加载MC库-00.xml" itemID="665305b5-00000da5" lastModified="1771713905"/>
+          <Include href="加载MC库-00.xml" itemID="665305b5-00000da5" lastModified="1775483263"/>
           <Include href="近战子弹.xml" loadImmediate="false" itemID="666c5d45-00000625" lastModified="1718282919"/>
           <Include href="临时武器/1.枪械相关/KRISS相关/Symbol 4015.xml" loadImmediate="false" itemID="668e7c1e-00000ff6" lastModified="1749127422"/>
           <Include href="临时武器/1.枪械相关/手枪/Symbol 3805枪-手枪-Glock 18.xml" loadImmediate="false" itemID="68419130-0000075c" lastModified="1749127477"/>
@@ -1271,19 +1271,19 @@
           <Include href="容器/兵器攻击容器/兵器攻击容器-蓄力重劈.xml" itemID="695a431f-000015c6" lastModified="1769694923"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-月光斩.xml" itemID="695a2a52-0000128d" lastModified="1769694923"/>
           <Include href="容器/兵器攻击容器/平A/！兵器攻击容器-棍棒1连招（屑鱼搓的）.xml" loadImmediate="false" itemID="6986462c-00000c0f" lastModified="1770407468"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-1连招.xml" itemID="6976bef2-00000a1e" lastModified="1771713597"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招.xml" itemID="69637c74-0000337c" lastModified="1771682960"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-1连招.xml" itemID="6976bef2-00000a1e" lastModified="1775484676"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招.xml" itemID="69637c74-0000337c" lastModified="1775485199"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="697b6555-00003229" lastModified="1770412910"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短柄1连招.xml" itemID="699e0c20-00001dff" lastModified="1771997347"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招.xml" itemID="698642fe-00000b06" lastModified="1774117108"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1771994734"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1775485072"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1770225044"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml" itemID="6974a6b3-00001f9d" lastModified="1771508245"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招.xml" itemID="69875871-00000a1a" lastModified="1770477876"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1770409209"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1775485128"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1770412422"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1774114472"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1774114445"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1775485273"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1775485207"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml" itemID="696a8b8f-00001638" lastModified="1770412840"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1771713572"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="69949a8d-00003587" lastModified="1706272572"/>
@@ -2130,7 +2130,7 @@
           <Include href="重复项目文件夹/不知道怎么说的特效.xml" itemIcon="1" loadImmediate="false" itemID="6910baf4-00000c46" lastModified="1762700036"/>
           <Include href="重复项目文件夹/气流.xml" loadImmediate="false" itemID="674099cc-000008b1" lastModified="1766640847"/>
           <Include href="重复项目文件夹/特殊地震.xml" loadImmediate="false" itemID="6910baf4-00000c45" lastModified="1763126335"/>
-          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1772128181"/>
+          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1775483271"/>
           <Include href="主角动画层/手枪2攻击.xml" loadImmediate="false" itemID="66576c39-00002e31" lastModified="1769694922"/>
           <Include href="主角动画层/手枪2站立.xml" loadImmediate="false" itemID="66576852-000009ed" lastModified="1769694922"/>
           <Include href="主角动画层/手枪攻击.xml" loadImmediate="false" itemID="6657384b-0000061d" lastModified="1769694922"/>
@@ -2672,6 +2672,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4080252" publishTime="1775476898"/>
           <PublishItem publishSize="4124259" publishTime="1774117172"/>
           <PublishItem publishSize="4139894" publishTime="1774114547"/>
           <PublishItem publishSize="4128161" publishTime="1772128415"/>
@@ -2691,6 +2692,5 @@
           <PublishItem publishSize="4128404" publishTime="1771995437"/>
           <PublishItem publishSize="4128311" publishTime="1771994892"/>
           <PublishItem publishSize="4128309" publishTime="1771993195"/>
-          <PublishItem publishSize="4128309" publishTime="1771992722"/>
      </publishHistory>
 </DOMDocument>

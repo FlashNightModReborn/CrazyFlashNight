@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招" itemID="69646d02-00000da3" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长枪1连招" lastModified="1774114445">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招" itemID="69646d02-00000da3" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长枪1连招" lastModified="1775485207">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-长枪1连招" currentFrame="78">
+    <DOMTimeline name="兵器攻击容器-长枪1连招" currentFrame="68">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -347,11 +347,11 @@ function 长枪旋击(击倒率)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -371,7 +371,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
             <DOMFrame index="11" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -391,7 +391,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
             <DOMFrame index="19" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -411,7 +411,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
             <DOMFrame index="25" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -452,7 +452,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
             <DOMFrame index="39" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -476,7 +476,7 @@ function 长枪旋击(击倒率)
             </DOMFrame>
             <DOMFrame index="49" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
