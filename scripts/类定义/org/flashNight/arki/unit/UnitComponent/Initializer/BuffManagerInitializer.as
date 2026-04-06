@@ -46,9 +46,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer 
         }
 
         target.buffManager = createManager(target);
-        if(target._name === _root.控制目标){
-            _root.UI系统.iconBar.initialize(target.buffManager);
-        }
     }
 
     public static function initialize(target:MovieClip):Void {
@@ -57,21 +54,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer 
 
         if (!target.buffManager || typeof target.buffManager.update != "function") {
             target.buffManager = createManager(target);
-            if(target._name === _root.控制目标){
-                _root.UI系统.iconBar.initialize(target.buffManager);
-            }
-            /*
-
-            var podBuff:PodBuff = new PodBuff("hp", BuffCalculationType.ADD, 1500);
-            var childBuffs:Array = [podBuff];
-            
-            var timeLimitComp:TimeLimitComponent = new TimeLimitComponent(150); // 5S生命周期
-            var components:Array = [timeLimitComp];
-            
-            var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
-            target.buffManager.addBuff(metaBuff);
-
-            */
+        }
+        if(target._name === _root.控制目标){
+            _root.UI系统.iconBar.initialize(target.buffManager);
         }
         target.buffManager.update(0); // 强制更新一次以防万一
     }

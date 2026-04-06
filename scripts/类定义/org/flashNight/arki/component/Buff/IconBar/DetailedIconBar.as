@@ -43,7 +43,7 @@ class org.flashNight.arki.component.Buff.IconBar.DetailedIconBar {
 
         var metabuffs = _manager.getAllMetaBuffs();
         for(var i=0; i < metabuffs.length; i++){
-            this.addIcon(metabuffs[i], null)
+            this.addIcon(metabuffs[i].__regId, metabuffs[i]);
         }
 
         _manager.eventDispatcher.subscribe("add", addIcon, this);
@@ -51,6 +51,10 @@ class org.flashNight.arki.component.Buff.IconBar.DetailedIconBar {
     }
 
     public function deinitialize():Void{
+        if(this.manager){
+            this.manager.eventDispatcher.unsubscribe("add", addIcon, this);
+            this.manager.eventDispatcher.unsubscribe("remove", removeIcon, this);
+        }
         this.manager = null;
         for(var i=0; i<this.iconPool.length; i++){
             this.iconPool[i]._visible = false;
@@ -70,7 +74,7 @@ class org.flashNight.arki.component.Buff.IconBar.DetailedIconBar {
                 var total = timer.getTotal();
                 var remain = timer.getRemaining();
                 // 计算计时动画停留的帧
-                var targrtFrame = (25 * remain / total) | 0 + 1;
+                var targrtFrame = ((25 * remain / total) | 0) + 1;
                 iconTimer._visible = true;
                 iconTimer.gotoAndStop(targrtFrame);
             }else{
