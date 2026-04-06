@@ -491,5 +491,11 @@ _root.初始化NPC = function(目标) {
     } else {
         目标._xscale *= 缩放系数;
     }
+
+    // 出生 seed：立即注册进深度管理器，将创建暂存深度替换为 Twip 深度
+    org.flashNight.gesh.depth.DepthManager.instance.updateDepth(目标, 目标._y);
+    // 劫持 swapDepths：将帧脚本的原生调用重定向到 DepthManager
+    org.flashNight.gesh.depth.DepthManager.instance.installHijack(目标);
+
     目标.NPC初始化完毕 = true;
 }
