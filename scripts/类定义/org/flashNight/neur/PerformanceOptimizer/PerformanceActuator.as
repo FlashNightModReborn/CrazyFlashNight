@@ -94,15 +94,16 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
         // ── 软参数: lerp(high, low, softU)，所有旋钮同向降载保证单调性 ──
         es.maxEffectCount        = (20 * inv + 0.5) >> 0;             // 20→0
         es.maxScreenEffectCount  = (15 * inv + 5 + 0.5) >> 0;        // 20→5
-        es.isDeathEffect         = (softU < 0.5);                     // 前半段开，后半段关
         root.面积系数             = (300000 * inv + 3000000 * softU + 0.5) >> 0;
-        root.同屏打击数字特效上限  = (15 * inv + 10 + 0.5) >> 0;       // 25→10
-        dr.isEnabled             = (softU < 0.5);
-        dr.enableCulling         = (softU >= 0.25);
         root.天气系统.lightUpdateThreshold = 0.1 + 0.9 * softU;       // 0.1→1.0
         ss.setMaxShellCountLimit((15 * inv + 10 + 0.5) >> 0);        // 25→10
         root.发射效果上限          = (15 * inv + 0.5) >> 0;            // 15→0
         this._host.offsetTolerance = (10 + 70 * softU + 0.5) >> 0;   // 10→80
+
+        // ── 永久开启（画质性价比高，非持续性开销，不受 softU 控制）──
+        es.isDeathEffect         = true;
+        dr.isEnabled             = true;
+        dr.enableCulling         = true;  // 离屏剔除始终开启，零代价减少无用 draw
 
         // ── 渲染器档位: softU → 0-3 离散映射（保留渲染器内部 4 档分辨率）──
         var rl:Number = (softU * 4) >> 0;

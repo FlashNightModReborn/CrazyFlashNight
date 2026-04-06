@@ -5,6 +5,25 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
+# OS 版本检查: 需要 Windows 10 (6.2+) 以上
+# Win7=6.1, Win8=6.2, Win8.1=6.3, Win10+=10.0
+$osVer = [Environment]::OSVersion.Version
+if ($osVer.Major -lt 10) {
+    Write-Host ""
+    Write-Host "  [!] 系统版本不受支持" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "  当前系统: Windows $($osVer.Major).$($osVer.Minor)" -ForegroundColor Yellow
+    Write-Host "  最低要求: Windows 10" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "  本游戏依赖 WebView2、现代音频引擎等组件，" -ForegroundColor Gray
+    Write-Host "  无法在 Windows 7/8/8.1 上正常运行。" -ForegroundColor Gray
+    Write-Host "  请升级到 Windows 10 或更高版本后重试。" -ForegroundColor Gray
+    Write-Host ""
+    Read-Host "  按 Enter 退出"
+    exit 1
+}
+
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $Host.UI.RawUI.WindowTitle = "闪客快打7 更新安装"
 
