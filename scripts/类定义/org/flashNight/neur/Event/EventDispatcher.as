@@ -70,6 +70,10 @@ class org.flashNight.neur.Event.EventDispatcher {
     /** 标志是否已销毁 */
     private var _isDestroyed:Boolean;
 
+    public function isDestroyed():Boolean {
+        return this._isDestroyed;
+    }
+
     // 位标志常量
     private static var FLAG_GLOBAL:Number = 1;
     private static var FLAG_ONCE:Number = 2;

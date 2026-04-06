@@ -51,7 +51,7 @@ class org.flashNight.arki.component.Buff.IconBar.DetailedIconBar {
     }
 
     public function deinitialize():Void{
-        if(this.manager){
+        if(this.manager && this.manager.eventDispatcher && !this.manager.eventDispatcher.isDestroyed()){
             this.manager.eventDispatcher.unsubscribe("add", addIcon, this);
             this.manager.eventDispatcher.unsubscribe("remove", removeIcon, this);
         }
@@ -73,10 +73,10 @@ class org.flashNight.arki.component.Buff.IconBar.DetailedIconBar {
             if(timer != null){
                 var total = timer.getTotal();
                 var remain = timer.getRemaining();
-                // 计算计时动画停留的帧
-                var targrtFrame = ((25 * remain / total) | 0) + 1;
+                // 计算计时动画停留的帧（第26帧=白/满，第1帧=黑/空）
+                var targetFrame = ((25 * remain / total) | 0) + 1;
                 iconTimer._visible = true;
-                iconTimer.gotoAndStop(targrtFrame);
+                iconTimer.gotoAndStop(targetFrame);
             }else{
                 iconTimer._visible = false;
             }
