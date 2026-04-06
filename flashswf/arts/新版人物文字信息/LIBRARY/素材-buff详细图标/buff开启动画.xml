@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材-buff详细图标/buff开启动画" itemID="69a7209b-0000046d" lastModified="1772641566">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材-buff详细图标/buff开启动画" itemID="69a7209b-0000046d" lastModified="1775463255">
   <timeline>
     <DOMTimeline name="buff开启动画" currentFrame="8">
       <layers>
@@ -23,13 +23,22 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="7" keyMode="9728">
+            <DOMFrame index="1" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.initializing = true;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.initializing = false;]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
-]]></script>
+_parent.initializing = false;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -46,7 +55,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!80 -80|80 80!80 80|-80 80!-80 80|-80 -80!-80 -80|80 -80"/>
+                    <Edge fillStyle1="1" edges="!80 80|-80 80!-80 80|-80 -80!-80 -80|80 -80!80 -80|80 80"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -71,7 +80,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!80 -80|80 80!80 80|-80 80!-80 80|-80 -80!-80 -80|80 -80"/>
+                    <Edge fillStyle1="1" edges="!80 80|-80 80!-80 80|-80 -80!-80 -80|80 -80!80 -80|80 80"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -96,7 +105,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!250 -250|250 250!250 250|-250 250!-250 250|-250 -250!-250 -250|250 -250"/>
+                    <Edge fillStyle1="1" edges="!250 250|-250 250!-250 250|-250 -250!-250 -250|250 -250!250 -250|250 250"/>
                     <Edge cubics="!250 -250(;250,-250 250,250 250,250q250 -250 250 250);"/>
                     <Edge cubics="!-250 250(;-250,250 -250,-250 -250,-250q-250 250 -250 -250);"/>
                     <Edge cubics="!250 250(;250,250 -250,250 -250,250q250 250 -250 250);"/>

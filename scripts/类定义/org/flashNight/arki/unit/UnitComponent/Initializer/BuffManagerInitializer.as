@@ -46,6 +46,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer 
         }
 
         target.buffManager = createManager(target);
+        if(target._name === _root.控制目标){
+            _root.UI系统.iconBar.initialize(target.buffManager);
+        }
     }
 
     public static function initialize(target:MovieClip):Void {
@@ -54,9 +57,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer 
 
         if (!target.buffManager || typeof target.buffManager.update != "function") {
             target.buffManager = createManager(target);
-
             if(target._name === _root.控制目标){
-                
+                _root.UI系统.iconBar.initialize(target.buffManager);
             }
             /*
 

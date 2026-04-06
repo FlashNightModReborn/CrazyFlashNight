@@ -11,11 +11,9 @@ class org.flashNight.arki.component.Buff.IconBar.DetailedIconBar {
 
     private var manager:BuffManager;
 
-    private var iconPool:Array;          // 图标池
-    private var buffIdToIconMap:Object;  // 图标池
-    private var iconToBuffMap:Array;     // 图标与metabuff映射数组
-    private var activeIconList:Array;
-    private var buffIdDict:Object;
+    private var iconPool:Array;       // 图标池
+    private var iconToBuffMap:Array;  // 图标与metabuff映射数组
+    private var activeBuffs:Array;    // buff数组
 
     private var startX:Number;
     private var startY:Number;
@@ -33,42 +31,69 @@ class org.flashNight.arki.component.Buff.IconBar.DetailedIconBar {
         this.padding = _padding;
 
         this.iconPool = [];
-        buffIdToIconMap = {};
         this.iconToBuffMap = [];
-
-        this.buffIdDict = {};
+        this.activeBuffs = [];
     }
 
     public function initialize(_manager:BuffManager):Void{
-        return; // 写到一半 一会再写
-
+        if(this.manager){
+            this.deinitialize();
+        }
         this.manager = _manager;
-        this.activeIconList = [];
 
         var metabuffs = _manager.getAllMetaBuffs();
         for(var i=0; i < metabuffs.length; i++){
             this.addIcon(metabuffs[i], null)
         }
+
+        _manager.eventDispatcher.subscribe("add", addIcon, this);
+        _manager.eventDispatcher.subscribe("remove", removeIcon, this);
     }
 
     public function deinitialize():Void{
         this.manager = null;
+        for(var i=0; i<this.iconPool.length; i++){
+            this.iconPool[i]._visible = false;
+            this.iconToBuffMap[i] = null;
+        }
+        this.activeBuffs = [];
     }
 
     public function update():Void{
-        for(var i=0; i < this.activeIconList.length; i++){
+        for(var i=0; i < this.activeBuffs.length; i++){
+            var buffInfo = this.activeBuffs[i]
+            var buff = buffInfo.buff;
+            var iconTimer = buffInfo.icon.buff计时动画;
             // 刷新计时
+            var timer = buff.getPrimaryTimer();
+            if(timer != null){
+                var total = timer.getTotal();
+                var remain = timer.getRemaining();
+                // 计算计时动画停留的帧
+                var targrtFrame = (25 * remain / total) | 0 + 1;
+                iconTimer._visible = true;
+                iconTimer.gotoAndStop(targrtFrame);
+            }else{
+                iconTimer._visible = false;
+            }
         }
     }
 
-    public function addIcon(_buff, id:String):Void{
-        for(var index=0; index<this.iconToBuffMap.length; index++){
+    public function addIcon(id:String, _buff):Void{
+        // 先检查对应buff是否已经存在
+        for(var i=0; i<this.activeBuffs.length; i++){
+            if(this.activeBuffs[i].id === id){
+                return;
+            }
+        }
+        var index;
+        var icon;
+        for(index=0; index<this.iconToBuffMap.length; index++){
             if(this.iconToBuffMap[index] === null){
                 break;
             }
         }
 
-        var icon;
         if(index < this.iconToBuffMap.length){
             //
             icon = this.iconPool[index];
@@ -76,28 +101,36 @@ class org.flashNight.arki.component.Buff.IconBar.DetailedIconBar {
             //
             icon = iconProto.duplicateMovieClip("icon" + index, index, null);
             this.iconPool[index] = icon;
-            this.buffIdToIconMap[id] = index;
-            this.activeIconList.push(index);
         }
+        this.activeBuffs.push(
+            {id:id, buff:_buff, icon:icon, iconIndex:index}
+        );
         
         this.iconToBuffMap[index] = _buff;
-        icon._visible = true;
-
         arrangeIcons();
     }
 
     public function removeIcon(id:String):Void{
+        for(var i=0; i<this.activeBuffs.length; i++){
+            if(this.activeBuffs[i].id === id){
+                var iconIndex = this.activeBuffs[i].iconIndex;
+                this.iconToBuffMap[iconIndex] = null;
+                this.activeBuffs.splice(i,1);
+                break;
+            }
+        }
         arrangeIcons();
     }
 
     private function arrangeIcons():Void{
-        var i = 0;
-        for(var index = 0; index < this.iconToBuffMap.length; index++){
-            if(this.iconToBuffMap[index] != null){
-                var icon = this.iconPool[index];
-                icon._x = this.startX + i * this.padding;
-                i++;
-            }
+        for(var i = 0; i < this.activeBuffs.length; i++){
+            var icon = this.activeBuffs[i].icon;
+            icon._x = this.startX + i * this.padding;
+        }
+        
+        for(var i = 0; i < this.iconPool.length; i++){
+            var icon = this.iconPool[i];
+            icon._visible = this.iconToBuffMap[i] != null;
         }
     }
 

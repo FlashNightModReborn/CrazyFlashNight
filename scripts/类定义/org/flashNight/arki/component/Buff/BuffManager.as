@@ -370,7 +370,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
             this._onBuffAdded(finalId, buff);
         }
         // 发布add事件
-        this.eventDispatcher.publish("add", finalId);
+        this.eventDispatcher.publish("add", finalId, buff);
 
         return finalId;
     }

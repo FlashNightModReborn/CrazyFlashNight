@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材-buff详细图标/buff详细图标" itemID="69a85b92-0000054e" linkageExportForAS="true" linkageIdentifier="buff详细图标" lastModified="1772641657" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材-buff详细图标/buff详细图标" itemID="69a85b92-0000054e" linkageExportForAS="true" linkageIdentifier="buff详细图标" lastModified="1775467512" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="buff详细图标">
       <layers>
@@ -7,7 +7,11 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.buff计时动画._visible = false;
-this.buff边框._visible = false;]]></script>
+// this.buff边框._visible = false;
+this.initializing = false;
+if(this._name == "buff详细图标"){
+	this._visible = false;
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -26,7 +30,7 @@ this.buff边框._visible = false;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="buff计时动画" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="buff计时动画" color="#FF4FFF" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

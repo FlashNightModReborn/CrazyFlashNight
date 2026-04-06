@@ -110,6 +110,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         target.shield.update(4); // 护盾更新（与buff同步，每4帧驱动一次）
         WatchDogUpdater.update(target);
         HeroPositionUpdater.update(target);
+        
+        // 硬代码更新buffUI
+        _root.UI系统.iconBar.update();
     }
 
     public static function onMapElementUpdate(target:MovieClip):Void {

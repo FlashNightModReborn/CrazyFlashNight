@@ -1,10 +1,10 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材-buff详细图标/buff计时动画" itemID="69a7205e-00000462" lastModified="1772560518">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材-buff详细图标/buff计时动画" itemID="69a7205e-00000462" lastModified="1775458813">
   <timeline>
-    <DOMTimeline name="buff计时动画" currentFrame="24">
+    <DOMTimeline name="buff计时动画">
       <layers>
         <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="25" keyMode="9728">
+            <DOMFrame index="0" duration="26" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 ]]></script>
@@ -20,9 +20,9 @@
                 <morphSegments>
                   <MorphSegment startPointA="-0.9765625, -0.9765625" startPointB="-0.9765625, -0.9765625" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="0">
                     <MorphCurves controlPointA="0, -0.9765625" anchorPointA="#0.FA, -0.9765625" controlPointB="0, -0.9765625" anchorPointB="#0.FA, -0.9765625" isLine="true"/>
-                    <MorphCurves controlPointA="#0.FA, -0.9375" anchorPointA="#0.FA, -0.8984375" controlPointB="#0.FA, 0" anchorPointB="#0.FA, #0.FA" isLine="true"/>
-                    <MorphCurves controlPointA="0, -0.8984375" anchorPointA="-0.9765625, -0.8984375" controlPointB="0, #0.FA" anchorPointB="-0.9765625, #0.FA" isLine="true"/>
-                    <MorphCurves controlPointA="-0.9765625, -0.9375" anchorPointA="-0.9765625, -0.9765625" controlPointB="-0.9765625, 0" anchorPointB="-0.9765625, -0.9765625" isLine="true"/>
+                    <MorphCurves controlPointA="#0.FA, 0" anchorPointA="#0.FA, #0.FA" controlPointB="#0.FA, -0.9375" anchorPointB="#0.FA, -0.8984375" isLine="true"/>
+                    <MorphCurves controlPointA="0, #0.FA" anchorPointA="-0.9765625, #0.FA" controlPointB="0, -0.8984375" anchorPointB="-0.9765625, -0.8984375" isLine="true"/>
+                    <MorphCurves controlPointA="-0.9765625, 0" anchorPointA="-0.9765625, -0.9765625" controlPointB="-0.9765625, -0.9375" anchorPointB="-0.9765625, -0.9765625" isLine="true"/>
                   </MorphSegment>
                 </morphSegments>
                 <morphHintsList/>
@@ -35,7 +35,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!250 -230|-250 -230!-250 -230|-250 -250!-250 -250|250 -250!250 -250|250 -230"/>
+                    <Edge fillStyle1="1" edges="!250 -250|250 250!250 250|-250 250!-250 250|-250 -250!-250 -250|250 -250"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -49,10 +49,13 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!250 -250|250 250!250 250|-250 250!-250 250|-250 -250!-250 -250|250 -250"/>
+                    <Edge fillStyle1="1" edges="!250 -230|-250 -230!-250 -230|-250 -250!-250 -250|250 -250!250 -250|250 -230"/>
                   </edges>
                 </DOMShape>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
