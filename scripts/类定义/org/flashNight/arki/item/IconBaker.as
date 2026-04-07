@@ -1,4 +1,5 @@
 ﻿import org.flashNight.neur.Server.ServerManager;
+import org.flashNight.neur.Server.ChunkedBitmapTransport;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.render.BitmapExporter;
 
@@ -6,7 +7,8 @@ import org.flashNight.arki.render.BitmapExporter;
  * IconBaker - 图标烘焙状态机
  *
  * 将 Flash 库中的矢量图标光栅化为 256x256 位图，
- * 通过 XMLSocket 分块传输到 C# 端保存为 PNG。
+ * 每个图标导出两帧（f1=图标, f2=掉落物），
+ * 通过 ChunkedBitmapTransport 分块传输到 C# 端保存为 PNG。
  *
  * 使用：_root.gameCommands["bakeIcons"] 触发 IconBaker.start()
  */
@@ -15,8 +17,10 @@ class org.flashNight.arki.item.IconBaker {
     // 状态机阶段
     private static var IDLE:Number = 0;
     private static var SETUP:Number = 2;
-    private static var DRAW:Number = 3;
-    private static var WAIT_ACK:Number = 4;
+    private static var DRAW_F1:Number = 3;
+    private static var WAIT_F1:Number = 4;
+    private static var DRAW_F2:Number = 5;
+    private static var WAIT_F2:Number = 6;
 
     // 运行时状态
     private static var _iconNames:Array;
@@ -27,6 +31,7 @@ class org.flashNight.arki.item.IconBaker {
     private static var _container:MovieClip;
     private static var _failedIcons:Array;
     private static var _savedQuality:String;
+    private static var _isFullBake:Boolean;
 
     // 统计（从 C# 端 end 响应累积）
     private static var _created:Number;
@@ -36,9 +41,11 @@ class org.flashNight.arki.item.IconBaker {
     // CRC32 查表
     private static var _crcTable:Array;
 
+    // 任务路由名
+    private static var TASK:String = "icon_bake";
+
     /**
      * 启动烘焙流程。
-     * 遍历全部物品，去重 icon name，逐个光栅化。
      * @param maxCount 最大烘焙数量，0 或不传表示全量
      */
     public static function start(maxCount:Number):Void {
@@ -53,17 +60,20 @@ class org.flashNight.arki.item.IconBaker {
         _nameToHash = {};
         var allItems:Array = ItemUtil.itemDataArray;
 
-        for (var i:Number = 0; i < allItems.length; i++) {
+        var i:Number = 0;
+        while (i < allItems.length) {
             var iconName:String = allItems[i].icon;
             if (iconName != undefined && iconName != "" && !seen[iconName]) {
                 seen[iconName] = true;
                 _iconNames.push(iconName);
                 _nameToHash[iconName] = crc32(iconName);
             }
+            i++;
         }
 
         // maxCount > 0 时截取前 N 个（测试用）
-        if (maxCount > 0 && maxCount < _iconNames.length) {
+        _isFullBake = !(maxCount > 0 && maxCount < _iconNames.length);
+        if (!_isFullBake) {
             _iconNames = _iconNames.slice(0, maxCount);
         }
 
@@ -79,51 +89,36 @@ class org.flashNight.arki.item.IconBaker {
             return;
         }
 
-        // 保存原始画质
         _savedQuality = _root._quality;
-
-        // 重置渲染器校准（用第一个图标重新确定缩放比）
         BitmapExporter.resetCalibration();
 
-        _root.发布消息("开始烘焙 " + _total + " 个图标...");
+        _root.发布消息("开始烘焙 " + _total + " 个图标（" + (_isFullBake ? "全量" : "测试") + "）...");
 
-        // 创建隐藏容器
         _container = _root.createEmptyMovieClip("_iconBaker", 9999999);
         _container._visible = false;
-
         _phase = SETUP;
 
-        // 启动 onEnterFrame 状态机
         _container.onEnterFrame = function():Void {
             org.flashNight.arki.item.IconBaker.tick();
         };
     }
 
-    /**
-     * 每帧调度，根据当前阶段执行对应逻辑。
-     */
     private static function tick():Void {
         switch (_phase) {
-            case SETUP:
-                doSetup();
-                break;
-            case DRAW:
-                doDraw();
-                break;
-            // WAIT_ACK: 空转等回调
+            case SETUP:    doSetup();   break;
+            case DRAW_F1:  doDrawF1();  break;
+            case DRAW_F2:  doDrawF2();  break;
+            // WAIT_F1, WAIT_F2: 空转等回调
         }
     }
 
     /**
-     * SETUP 阶段：创建图标 MC 并固化第 1 帧。
-     * 第一帧是图标，第二帧是掉落物时的画面，与需要烘焙的图标无关，直接丢弃。
-     * 如果缺少符号或边界异常则记录失败并推进到下一个图标。
+     * SETUP：创建图标 MC，停在第 1 帧。
      */
     private static function doSetup():Void {
         var iconName:String = _iconNames[_index];
         var symbolName:String = "图标-" + iconName;
 
-        // 清理上一个
         _container.iconHolder.removeMovieClip();
         var holder:MovieClip = _container.createEmptyMovieClip("iconHolder", 1);
         var iconMC:MovieClip = holder.attachMovie(symbolName, "icon", 1);
@@ -137,70 +132,89 @@ class org.flashNight.arki.item.IconBaker {
 
         iconMC.gotoAndStop(1);
         _root.服务器.发布服务器消息("[IconBaker] SETUP " + (_index + 1) + "/" + _total + ": " + iconName);
-        _phase = DRAW;
+        _phase = DRAW_F1;
     }
 
     /**
-     * DRAW 阶段：委托 BitmapExporter 光栅化 + 编码，发送分块到 C#。
+     * DRAW_F1：渲染第 1 帧（图标）并发送。
      */
-    private static function doDraw():Void {
+    private static function doDrawF1():Void {
         var iconName:String = _iconNames[_index];
         var hash:String = _nameToHash[iconName];
         var iconMC:MovieClip = _container.iconHolder.icon;
 
-        // 切换到最佳渲染品质
         _root._quality = "BEST";
-
-        // 委托渲染 + 像素提取 + base64 编码
-        var chunks:Array = BitmapExporter.render(iconMC);
-
-        // 恢复画质
+        iconMC.gotoAndStop(1);
+        var chunks:Array = BitmapExporter.render(iconMC, "f1");
         _root._quality = _savedQuality;
 
         if (chunks == null) {
-            _root.服务器.发布服务器消息("[IconBaker] 渲染失败: " + iconName);
-            _failedIcons.push(iconName);
-            advanceToNext();
+            _root.服务器.发布服务器消息("[IconBaker] f1 渲染失败: " + iconName);
+            // f1 失败仍尝试 f2
+            _phase = DRAW_F2;
             return;
         }
 
-        // 发送 begin
-        var sm:ServerManager = ServerManager.getInstance();
-        sm.sendTaskToNode("icon_bake", {op: "begin", iconName: iconName, hash: hash});
-
-        // 发送分块
-        var i:Number = 0;
-        while (i < chunks.length) {
-            sm.sendTaskToNode("icon_bake", {op: "chunk", hash: hash, b64data: chunks[i].b64});
-            i++;
-        }
-
-        // 发送 end（with callback）
-        _phase = WAIT_ACK;
-        sm.sendTaskWithCallback("icon_bake",
-            {op: "end", hash: hash, current: _index + 1, total: _total},
-            null,
+        _phase = WAIT_F1;
+        ChunkedBitmapTransport.send(TASK, iconName, hash + "_1", chunks,
+            _index + 1, _total,
             function(resp:Object):Void {
-                org.flashNight.arki.item.IconBaker.onIconSaved(resp);
+                org.flashNight.arki.item.IconBaker.onFrameSaved(resp);
+                org.flashNight.arki.item.IconBaker._phase = DRAW_F2;
             }
         );
     }
 
     /**
-     * C# 端 end 响应回调。
+     * DRAW_F2：渲染第 2 帧（掉落物）并发送。
      */
-    private static function onIconSaved(resp:Object):Void {
+    private static function doDrawF2():Void {
+        var iconName:String = _iconNames[_index];
+        var hash:String = _nameToHash[iconName];
+        var iconMC:MovieClip = _container.iconHolder.icon;
+
+        // 检查是否有第 2 帧
+        if (iconMC._totalframes < 2) {
+            // 只有 1 帧，跳过 f2
+            advanceToNext();
+            return;
+        }
+
+        _root._quality = "BEST";
+        iconMC.gotoAndStop(2);
+        var chunks:Array = BitmapExporter.render(iconMC, "f2");
+        _root._quality = _savedQuality;
+
+        if (chunks == null) {
+            // f2 渲染失败不算整体失败
+            advanceToNext();
+            return;
+        }
+
+        _phase = WAIT_F2;
+        ChunkedBitmapTransport.send(TASK, iconName, hash + "_2", chunks,
+            _index + 1, _total,
+            function(resp:Object):Void {
+                org.flashNight.arki.item.IconBaker.onFrameSaved(resp);
+                org.flashNight.arki.item.IconBaker.advanceToNext();
+            }
+        );
+    }
+
+    /**
+     * 帧保存回调（f1 和 f2 共用）。
+     */
+    private static function onFrameSaved(resp:Object):Void {
         if (resp.success) {
             var action:String = resp.action;
-            if (action == "created") _created++;
-            else if (action == "updated") _updated++;
-            else if (action == "unchanged") _unchanged++;
+            if (action === "created") _created++;
+            else if (action === "updated") _updated++;
+            else if (action === "unchanged") _unchanged++;
         } else {
             var iconName:String = _iconNames[_index];
             _root.服务器.发布服务器消息("[IconBaker] 保存失败: " + iconName + " - " + resp.error);
             _failedIcons.push(iconName);
         }
-        advanceToNext();
     }
 
     /**
@@ -209,7 +223,6 @@ class org.flashNight.arki.item.IconBaker {
     private static function advanceToNext():Void {
         _index++;
         if (_index >= _total) {
-            // 全部完成
             _phase = IDLE;
             _container.removeMovieClip();
 
@@ -220,13 +233,14 @@ class org.flashNight.arki.item.IconBaker {
             if (_failedIcons.length > 0) msg += ", 失败 " + _failedIcons.length;
             _root.发布消息(msg);
 
-            // 通知 C# 端完成
+            // 通知 C# 端完成（含 fullBake 标志供清理判断）
             var sm:ServerManager = ServerManager.getInstance();
-            sm.sendTaskToNode("icon_bake", {
+            sm.sendTaskToNode(TASK, {
                 op: "complete",
                 total: _total,
                 failed: _failedIcons.length,
-                failedNames: _failedIcons
+                failedNames: _failedIcons,
+                fullBake: _isFullBake
             });
         } else {
             _phase = SETUP;
@@ -237,45 +251,39 @@ class org.flashNight.arki.item.IconBaker {
     // CRC32 (ISO 3309, polynomial 0xEDB88320)
     // ================================================================
 
-    /**
-     * 初始化 CRC32 查表。
-     */
     private static function initCrcTable():Void {
         _crcTable = [];
-        for (var i:Number = 0; i < 256; i++) {
+        var i:Number = 0;
+        while (i < 256) {
             var c:Number = i;
-            for (var j:Number = 0; j < 8; j++) {
+            var j:Number = 0;
+            while (j < 8) {
                 if (c & 1) {
                     c = 0xEDB88320 ^ (c >>> 1);
                 } else {
                     c = c >>> 1;
                 }
+                j++;
             }
             _crcTable[i] = c;
+            i++;
         }
     }
 
-    /**
-     * 计算字符串的 CRC32（UTF-8 编码后），返回 8 位十六进制字符串。
-     */
     public static function crc32(str:String):String {
         if (_crcTable == undefined) initCrcTable();
-
-        // 转 UTF-8 字节
         var bytes:Array = stringToUTF8Bytes(str);
-
         var crc:Number = 0xFFFFFFFF;
-        for (var i:Number = 0; i < bytes.length; i++) {
+        var i:Number = 0;
+        var len:Number = bytes.length;
+        while (i < len) {
             crc = _crcTable[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+            i++;
         }
         crc = crc ^ 0xFFFFFFFF;
-
         return padHex8(crc);
     }
 
-    /**
-     * 将字符串转为 UTF-8 字节数组。
-     */
     private static function stringToUTF8Bytes(str:String):Array {
         var bytes:Array = [];
         var i:Number = 0;
@@ -306,14 +314,13 @@ class org.flashNight.arki.item.IconBaker {
         return bytes;
     }
 
-    /**
-     * 将 Number 转为 8 位零填充十六进制字符串。
-     */
     private static function padHex8(n:Number):String {
         var hex:String = "0123456789abcdef";
         var s:String = "";
-        for (var i:Number = 7; i >= 0; i--) {
+        var i:Number = 7;
+        while (i >= 0) {
             s += hex.charAt((n >>> (i * 4)) & 0xF);
+            i--;
         }
         return s;
     }

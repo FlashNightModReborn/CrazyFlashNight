@@ -15,11 +15,14 @@ namespace CF7Launcher.Tasks
     /// icon_bake sync handler：Flash AS2 端逐个光栅化矢量图标，
     /// 以 base64 编码分块传输像素数据，C# 端解码并保存为 256x256 PNG。
     ///
+    /// 每个图标导出两帧：hash_1.png (图标) + hash_2.png (掉落物)。
+    /// 全量烘焙完成后清理不再存在的图标（manifest 收敛）。
+    ///
     /// 协议（全部走 RegisterSync，保证 begin→chunk→end 顺序）：
-    ///   begin:    { op:"begin", iconName:"...", hash:"..." }          → null（无响应）
-    ///   chunk:    { op:"chunk", hash:"...", b64data:"..." }           → null（无响应）
-    ///   end:      { op:"end", hash:"...", current:N, total:M }        → { success, action }
-    ///   complete: { op:"complete", total:N, failed:M, failedNames:[] } → null（通知 INotchSink）
+    ///   begin:    { op:"begin", iconName:"...", hash:"xxx_1" }
+    ///   chunk:    { op:"chunk", hash:"xxx_1", b64data:"..." }
+    ///   end:      { op:"end", hash:"xxx_1", current:N, total:M }
+    ///   complete: { op:"complete", total, failed, failedNames, fullBake:true/false }
     /// </summary>
     public class IconBakeTask
     {
@@ -30,13 +33,19 @@ namespace CF7Launcher.Tasks
         private readonly string _manifestPath;
         private readonly INotchSink _notchSink;
 
-        // 当前图标的累积 buffer（原始字节，chunk 到达时立即解码）
+        // 当前图标的累积 buffer
         private MemoryStream _currentBuffer;
         private string _currentIconName;
         private string _currentHash;
 
-        // manifest: iconName → filename (e.g. "crc32hex.png")
-        private Dictionary<string, string> _manifest;
+        // manifest: iconName → JObject { "f1": "hash_1.png", "f2": "hash_2.png" }
+        private Dictionary<string, JObject> _manifest;
+
+        // 本轮出现的 iconName 集合（全量烘焙时用于清理判断）
+        private HashSet<string> _seenIcons;
+
+        // 本轮出现的文件名集合（用于孤儿文件清理）
+        private HashSet<string> _seenFiles;
 
         // 统计
         private int _created;
@@ -51,10 +60,11 @@ namespace CF7Launcher.Tasks
             _iconsDir = Path.Combine(projectRoot, "launcher", "web", "icons");
             _manifestPath = Path.Combine(_iconsDir, "manifest.json");
             _notchSink = notchSink;
+            _seenIcons = new HashSet<string>();
+            _seenFiles = new HashSet<string>();
             LoadManifest();
         }
 
-        /// <summary>同步 handler，由 MessageRouter 在 socket 读线程上调用。</summary>
         public string Handle(JObject message)
         {
             try
@@ -89,8 +99,11 @@ namespace CF7Launcher.Tasks
             _currentIconName = payload.Value<string>("iconName");
             _currentHash = payload.Value<string>("hash");
             _currentBuffer = new MemoryStream(ICON_SIZE * ICON_SIZE * BYTES_PER_PIXEL);
-            LogManager.Log("[IconBakeTask] begin: " + _currentIconName + " (" + _currentHash + ")");
-            return null; // 无响应
+
+            // 记录本轮出现的 icon
+            _seenIcons.Add(_currentIconName);
+
+            return null;
         }
 
         private string HandleChunk(JObject payload)
@@ -98,11 +111,10 @@ namespace CF7Launcher.Tasks
             string b64data = payload.Value<string>("b64data");
             if (b64data != null && _currentBuffer != null)
             {
-                // 每个 chunk 独立解码，避免 base64 padding 拼接问题
                 byte[] decoded = Convert.FromBase64String(b64data);
                 _currentBuffer.Write(decoded, 0, decoded.Length);
             }
-            return null; // 无响应
+            return null;
         }
 
         private string HandleEnd(JObject payload)
@@ -114,31 +126,36 @@ namespace CF7Launcher.Tasks
             if (_currentBuffer == null || _currentHash != hash)
                 return BuildError("no matching begin for hash: " + hash);
 
-            // 确保目录存在
             if (!Directory.Exists(_iconsDir))
                 Directory.CreateDirectory(_iconsDir);
 
             string action;
-            string iconNameForLog = _currentIconName; // 保存，finally 前使用
+            string iconNameForLog = _currentIconName;
+
+            // 从 hash 提取帧标识：hash 格式为 "crc32hex_1" 或 "crc32hex_2"
+            string frameKey = "f1";
+            if (hash.Length > 2 && hash[hash.Length - 2] == '_')
+            {
+                frameKey = "f" + hash[hash.Length - 1];
+            }
+
             try
             {
-                // 从 MemoryStream 获取已解码的原始 ARGB 字节
                 byte[] rawArgb = _currentBuffer.ToArray();
                 int expectedLen = ICON_SIZE * ICON_SIZE * BYTES_PER_PIXEL;
                 if (rawArgb.Length != expectedLen)
                     return BuildError("pixel data length mismatch: expected " + expectedLen + " got " + rawArgb.Length);
 
-                // ARGB → BGRA 字节序转换 (GDI+ 在 little-endian 上用 BGRA)
+                // ARGB → BGRA
                 byte[] bgra = new byte[rawArgb.Length];
                 for (int i = 0; i < rawArgb.Length; i += 4)
                 {
-                    bgra[i + 0] = rawArgb[i + 3]; // B ← rawArgb[3]
-                    bgra[i + 1] = rawArgb[i + 2]; // G ← rawArgb[2]
-                    bgra[i + 2] = rawArgb[i + 1]; // R ← rawArgb[1]
-                    bgra[i + 3] = rawArgb[i + 0]; // A ← rawArgb[0]
+                    bgra[i + 0] = rawArgb[i + 3]; // B
+                    bgra[i + 1] = rawArgb[i + 2]; // G
+                    bgra[i + 2] = rawArgb[i + 1]; // R
+                    bgra[i + 3] = rawArgb[i + 0]; // A
                 }
 
-                // 编码为 PNG
                 byte[] newPng;
                 using (Bitmap bmp = new Bitmap(ICON_SIZE, ICON_SIZE, PixelFormat.Format32bppArgb))
                 {
@@ -182,20 +199,21 @@ namespace CF7Launcher.Tasks
                     _created++;
                 }
 
-                // 更新 manifest
-                _manifest[_currentIconName] = filename;
-                SaveManifest();
+                // 记录本轮文件
+                _seenFiles.Add(filename);
 
-                // 检测 CRC32 冲突：不同 iconName 映射到同一 hash
-                // （概率极低但防御性检查）
-                foreach (var kvp in _manifest)
+                // 更新 manifest（每个 iconName 下按帧存储）
+                JObject entry;
+                if (_manifest.ContainsKey(_currentIconName))
                 {
-                    if (kvp.Value == filename && kvp.Key != _currentIconName)
-                    {
-                        LogManager.Log("[IconBakeTask] CRC32 collision: '" + _currentIconName +
-                                       "' and '" + kvp.Key + "' both map to " + filename);
-                    }
+                    entry = _manifest[_currentIconName];
                 }
+                else
+                {
+                    entry = new JObject();
+                    _manifest[_currentIconName] = entry;
+                }
+                entry[frameKey] = filename;
             }
             catch (Exception ex)
             {
@@ -209,15 +227,13 @@ namespace CF7Launcher.Tasks
                 _currentHash = null;
             }
 
-            // 进度通知 + 日志
-            LogManager.Log("[IconBakeTask] " + current + "/" + total + " " + action + ": " + iconNameForLog);
+            LogManager.Log("[IconBakeTask] " + current + "/" + total + " " + action + ": " + iconNameForLog + " [" + frameKey + "]");
             if (_notchSink != null)
             {
                 string label = "烘焙 " + current + "/" + total;
                 _notchSink.SetStatusItem("icon_bake", label, iconNameForLog ?? hash, Color.Cyan);
             }
 
-            // 响应
             JObject resp = new JObject();
             resp["success"] = true;
             resp["task"] = "icon_bake";
@@ -229,12 +245,79 @@ namespace CF7Launcher.Tasks
         {
             int total = payload.Value<int>("total");
             int failed = payload.Value<int>("failed");
+            bool fullBake = payload.Value<bool>("fullBake");
+
+            // 全量烘焙时清理失效图标
+            int purgedManifest = 0;
+            int purgedFiles = 0;
+            if (fullBake)
+            {
+                // 1. 删除 manifest 中不在本轮出现的条目，及其 PNG 文件
+                List<string> toRemove = new List<string>();
+                foreach (var kvp in _manifest)
+                {
+                    if (!_seenIcons.Contains(kvp.Key))
+                    {
+                        toRemove.Add(kvp.Key);
+                        // 删除该条目关联的所有 PNG
+                        JObject entry = kvp.Value;
+                        foreach (var frame in entry)
+                        {
+                            string filename = frame.Value.ToString();
+                            string path = Path.Combine(_iconsDir, filename);
+                            if (File.Exists(path))
+                            {
+                                try { File.Delete(path); purgedFiles++; }
+                                catch { }
+                            }
+                        }
+                    }
+                }
+                foreach (string key in toRemove)
+                {
+                    _manifest.Remove(key);
+                    purgedManifest++;
+                }
+
+                // 2. 扫描目录中的孤儿 PNG（不在任何 manifest 条目中）
+                HashSet<string> allManifestFiles = new HashSet<string>();
+                foreach (var kvp in _manifest)
+                {
+                    foreach (var frame in kvp.Value)
+                    {
+                        allManifestFiles.Add(frame.Value.ToString());
+                    }
+                }
+                allManifestFiles.Add("manifest.json"); // 不要删 manifest 自身
+                try
+                {
+                    foreach (string filePath in Directory.GetFiles(_iconsDir))
+                    {
+                        string fname = Path.GetFileName(filePath);
+                        if (!allManifestFiles.Contains(fname))
+                        {
+                            try { File.Delete(filePath); purgedFiles++; }
+                            catch { }
+                        }
+                    }
+                }
+                catch { }
+
+                // 保存清理后的 manifest
+                SaveManifest();
+            }
+            else
+            {
+                // 部分烘焙只保存，不清理
+                SaveManifest();
+            }
 
             string summary = "烘焙完成: " + total + " 个图标";
             if (_created > 0) summary += ", 新增 " + _created;
             if (_updated > 0) summary += ", 更新 " + _updated;
             if (_unchanged > 0) summary += ", 未变 " + _unchanged;
             if (failed > 0) summary += ", 失败 " + failed;
+            if (purgedManifest > 0) summary += ", 清理 " + purgedManifest + " 条目/" + purgedFiles + " 文件";
 
             LogManager.Log("[IconBakeTask] " + summary);
 
@@ -244,36 +327,50 @@ namespace CF7Launcher.Tasks
                 _notchSink.AddNotice("icon_bake", summary, Color.LimeGreen);
             }
 
-            // 重置统计
+            // 重置统计和集合
             _created = 0;
             _updated = 0;
             _unchanged = 0;
+            _seenIcons.Clear();
+            _seenFiles.Clear();
 
-            return null; // 无响应
+            return null;
         }
 
         // ================================================================
-        // manifest 管理
+        // manifest 管理（新格式：iconName → { f1: "hash_1.png", f2: "hash_2.png" }）
         // ================================================================
 
         private void LoadManifest()
         {
-            _manifest = new Dictionary<string, string>();
-            if (File.Exists(_manifestPath))
+            _manifest = new Dictionary<string, JObject>();
+            if (!File.Exists(_manifestPath)) return;
+
+            try
             {
-                try
+                string json = File.ReadAllText(_manifestPath, Encoding.UTF8);
+                JObject root = JObject.Parse(json);
+                foreach (var kvp in root)
                 {
-                    string json = File.ReadAllText(_manifestPath, Encoding.UTF8);
-                    JObject obj = JObject.Parse(json);
-                    foreach (var kvp in obj)
+                    JToken val = kvp.Value;
+                    if (val.Type == JTokenType.Object)
                     {
-                        _manifest[kvp.Key] = kvp.Value.ToString();
+                        // 新格式
+                        _manifest[kvp.Key] = (JObject)val;
+                    }
+                    else if (val.Type == JTokenType.String)
+                    {
+                        // 兼容旧格式：iconName → "hash.png"
+                        // 迁移为新格式，旧文件视为 f1
+                        JObject entry = new JObject();
+                        entry["f1"] = val.ToString();
+                        _manifest[kvp.Key] = entry;
                     }
                 }
-                catch (Exception ex)
-                {
-                    LogManager.Log("[IconBakeTask] Failed to load manifest: " + ex.Message);
-                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[IconBakeTask] Failed to load manifest: " + ex.Message);
             }
         }
 
@@ -281,12 +378,12 @@ namespace CF7Launcher.Tasks
         {
             try
             {
-                JObject obj = new JObject();
+                JObject root = new JObject();
                 foreach (var kvp in _manifest)
                 {
-                    obj[kvp.Key] = kvp.Value;
+                    root[kvp.Key] = kvp.Value;
                 }
-                File.WriteAllText(_manifestPath, obj.ToString(Formatting.Indented), Encoding.UTF8);
+                File.WriteAllText(_manifestPath, root.ToString(Formatting.Indented), Encoding.UTF8);
             }
             catch (Exception ex)
             {
@@ -295,7 +392,7 @@ namespace CF7Launcher.Tasks
         }
 
         // ================================================================
-        // CRC32 (ISO 3309, polynomial 0xEDB88320)
+        // CRC32 / 辅助
         // ================================================================
 
         private static uint[] BuildCrcTable()
@@ -316,10 +413,6 @@ namespace CF7Launcher.Tasks
             return table;
         }
 
-        /// <summary>
-        /// 计算字符串的 CRC32（UTF-8 编码后），返回 8 位十六进制字符串。
-        /// 用于验证 AS2 端传来的 hash 一致性。
-        /// </summary>
         public static string ComputeCrc32(string input)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(input);
@@ -331,10 +424,6 @@ namespace CF7Launcher.Tasks
             crc ^= 0xFFFFFFFF;
             return crc.ToString("x8");
         }
-
-        // ================================================================
-        // 辅助
-        // ================================================================
 
         private static bool ByteArrayEqual(byte[] a, byte[] b)
         {

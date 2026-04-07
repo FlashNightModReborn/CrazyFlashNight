@@ -10,7 +10,7 @@ import flash.geom.Rectangle;
  *
  * 设计原则：
  * - 渲染逻辑与传输/状态机分离，IconBaker 调用本类完成光栅化
- * - 缩放策略：首个图标自动校准，后续统一使用固定 Matrix
+ * - 多校准档位：通过 profileKey 区分不同帧/类型的缩放参数
  * - 像素提取按 as2-performance.md 热路径规范优化
  */
 class org.flashNight.arki.render.BitmapExporter {
@@ -19,92 +19,97 @@ class org.flashNight.arki.render.BitmapExporter {
     private static var SIZE:Number = 256;
     private static var ROWS_PER_CHUNK:Number = 32;
 
-    // 校准状态：首个图标确定缩放比后锁定
-    private static var _calibrated:Boolean = false;
-    private static var _scale:Number;
-    private static var _offsetX:Number;
-    private static var _offsetY:Number;
+    // 校准档位字典：profileKey → {scale, offsetX, offsetY}
+    private static var _profiles:Object;
 
     // base64 查表（预构建，避免 charAt 的 GetMember 开销）
     private static var _b64Chars:Array;
 
     // 复用缓冲区
     private static var _bmp:BitmapData;
-    private static var _mtx:Matrix;
     private static var _clearRect:Rectangle;
 
     /**
-     * 重置校准状态。下次 render 时重新从首个图标确定缩放比。
+     * 重置全部校准档位。下次 render 时重新从首个 MC 确定缩放比。
      */
     public static function resetCalibration():Void {
-        _calibrated = false;
+        _profiles = {};
         if (_bmp != undefined) {
             _bmp.dispose();
             _bmp = undefined;
         }
-        _mtx = undefined;
     }
 
     /**
      * 光栅化 MovieClip 并返回 base64 分块数组。
      *
-     * @param mc 要光栅化的 MovieClip（已 gotoAndStop 到目标帧）
+     * @param mc          要光栅化的 MovieClip（已 gotoAndStop 到目标帧）
+     * @param profileKey  校准档位名（如 "f1"/"f2"），不同帧使用独立缩放参数
      * @return 分块数组 [{b64: "...", startRow: N}, ...]，失败返回 null
      */
-    public static function render(mc:MovieClip):Array {
+    public static function render(mc:MovieClip, profileKey:String):Array {
         if (mc == undefined) return null;
 
         // 惰性初始化
         if (_b64Chars == undefined) _initB64Table();
+        if (_profiles == undefined) _profiles = {};
         if (_bmp == undefined) {
             _bmp = new BitmapData(SIZE, SIZE, true, 0x00000000);
             _clearRect = new Rectangle(0, 0, SIZE, SIZE);
         }
 
-        // 校准：用首个图标的边界确定统一 Matrix
-        if (!_calibrated) {
-            _calibrate(mc);
+        // 获取或创建校准档位
+        var profile:Object = _profiles[profileKey];
+        if (profile == undefined) {
+            profile = _calibrate(mc, profileKey);
+            if (profile == null) return null;
         }
 
         // 清空复用 BitmapData [S03: 复用预分配对象]
         _bmp.fillRect(_clearRect, 0x00000000);
 
         // 光栅化
-        _bmp.draw(mc, _mtx);
+        _bmp.draw(mc, profile.mtx);
 
         // 提取像素 + base64 分块编码
         return _extractChunks();
     }
 
     /**
-     * 从首个图标确定统一缩放 Matrix。
-     * 所有图标使用相同制作规范，边界应一致。
+     * 从 MC 的边界确定缩放 Matrix 并存入校准档位。
+     * 每个 profileKey 只校准一次（用首个遇到的 MC）。
      */
-    private static function _calibrate(mc:MovieClip):Void {
+    private static function _calibrate(mc:MovieClip, profileKey:String):Object {
         var bb:Object = mc.getBounds(mc);
         var bw:Number = bb.xMax - bb.xMin;
         var bh:Number = bb.yMax - bb.yMin;
 
+        var scale:Number;
+        var offsetX:Number;
+        var offsetY:Number;
+
         if (bw <= 0 || bh <= 0) {
-            // 退回默认 1:1 映射
-            _scale = 1;
-            _offsetX = 0;
-            _offsetY = 0;
+            scale = 1;
+            offsetX = 0;
+            offsetY = 0;
         } else {
-            // [H15] Math.min 内联为三元
-            _scale = SIZE / ((bw > bh) ? bw : bh);
-            var drawW:Number = bw * _scale;
-            var drawH:Number = bh * _scale;
-            _offsetX = (SIZE - drawW) / 2 - bb.xMin * _scale;
-            _offsetY = (SIZE - drawH) / 2 - bb.yMin * _scale;
+            // [H15] Math.min/max 内联为三元
+            scale = SIZE / ((bw > bh) ? bw : bh);
+            var drawW:Number = bw * scale;
+            var drawH:Number = bh * scale;
+            offsetX = (SIZE - drawW) / 2 - bb.xMin * scale;
+            offsetY = (SIZE - drawH) / 2 - bb.yMin * scale;
         }
 
-        _mtx = new Matrix(_scale, 0, 0, _scale, _offsetX, _offsetY);
-        _calibrated = true;
+        var mtx:Matrix = new Matrix(scale, 0, 0, scale, offsetX, offsetY);
+        var profile:Object = {scale: scale, offsetX: offsetX, offsetY: offsetY, mtx: mtx};
+        _profiles[profileKey] = profile;
 
-        _root.服务器.发布服务器消息("[BitmapExporter] 校准: scale=" + _scale
-            + " offset=(" + ((_offsetX * 100 | 0) / 100) + "," + ((_offsetY * 100 | 0) / 100) + ")"
+        _root.服务器.发布服务器消息("[BitmapExporter] 校准 [" + profileKey + "]: scale=" + scale
+            + " offset=(" + ((offsetX * 100 | 0) / 100) + "," + ((offsetY * 100 | 0) / 100) + ")"
             + " bounds=(" + (bw | 0) + "x" + (bh | 0) + ")");
+
+        return profile;
     }
 
     /**
@@ -112,12 +117,10 @@ class org.flashNight.arki.render.BitmapExporter {
      *
      * 热路径优化（参照 as2-performance.md）：
      * - [H01] 全部外部变量缓存到局部
-     * - [H04] 不使用 s.length（此处为 Number 计算，不涉及）
      * - [H15] Math.min 内联为三元
      * - [S01] base64 编码内联，避免方法调用(1340ns/call)
      * - [S03] 字节数组预分配长度
      * - 字符串拼接用裸 +（优于 Array.join [anti-hallucination §2]）
-     * - getPixel32 结果直接位运算拆分
      * - base64 查表用数组索引(35ns) 替代 charAt(580ns)
      */
     private static function _extractChunks():Array {
@@ -133,9 +136,9 @@ class org.flashNight.arki.render.BitmapExporter {
             var endRow:Number = startRow + rowsPerChunk;
             if (endRow > size) endRow = size;
 
-            // 像素提取 → 字节数组
-            // 预计算大小 [S03]：rowsPerChunk * SIZE * 4 = 32768
-            var bytes:Array = new Array((endRow - startRow) * size * 4);
+            // 像素提取 → 字节数组，预分配 [S03]
+            var byteCount:Number = (endRow - startRow) * size * 4;
+            var bytes:Array = new Array(byteCount);
             var bi:Number = 0;
             var y:Number = startRow;
             while (y < endRow) {
@@ -156,7 +159,7 @@ class org.flashNight.arki.render.BitmapExporter {
             // base64 编码（内联 [S01]，数组查表替代 charAt）
             var out:String = "";
             var ei:Number = 0;
-            var blen:Number = bi; // 实际写入长度
+            var blen:Number = bi;
             // 主循环：仅处理完整三元组
             var fullEnd:Number = blen - (blen % 3);
             while (ei < fullEnd) {
@@ -169,7 +172,7 @@ class org.flashNight.arki.render.BitmapExporter {
                     + b64[c3 & 63];
                 ei += 3;
             }
-            // 尾部 padding（32行×256×4=32768, 32768%3=1, 有1字节余）
+            // 尾部 padding
             var rem:Number = blen - fullEnd;
             if (rem === 1) {
                 var r1:Number = bytes[ei];
@@ -192,7 +195,7 @@ class org.flashNight.arki.render.BitmapExporter {
 
     /**
      * 初始化 base64 字符查表。
-     * 数组索引查找(35ns) 远优于 String.charAt(580ns) [H04/成本阶梯]。
+     * 数组索引查找(35ns) 远优于 String.charAt(580ns)。
      */
     private static function _initB64Table():Void {
         var str:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
