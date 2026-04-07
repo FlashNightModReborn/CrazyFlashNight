@@ -33,10 +33,12 @@ class org.flashNight.arki.item.IconBaker {
     private static var _savedQuality:String;
     private static var _isFullBake:Boolean;
 
-    // 统计（从 C# 端 end 响应累积）
+    // 统计（按图标粒度，非帧粒度）
     private static var _created:Number;
     private static var _updated:Number;
     private static var _unchanged:Number;
+    // 当前图标的最高优先级动作：created > updated > unchanged
+    private static var _iconAction:String;
 
     // CRC32 查表
     private static var _crcTable:Array;
@@ -131,6 +133,7 @@ class org.flashNight.arki.item.IconBaker {
         }
 
         iconMC.gotoAndStop(1);
+        _iconAction = "unchanged"; // 每个图标开始时重置
         _root.服务器.发布服务器消息("[IconBaker] SETUP " + (_index + 1) + "/" + _total + ": " + iconName);
         _phase = DRAW_F1;
     }
@@ -175,7 +178,9 @@ class org.flashNight.arki.item.IconBaker {
 
         // 检查是否有第 2 帧
         if (iconMC._totalframes < 2) {
-            // 只有 1 帧，跳过 f2
+            // 只有 1 帧，通知 C# 清除该图标可能残留的 f2
+            var sm:ServerManager = ServerManager.getInstance();
+            sm.sendTaskToNode(TASK, {op: "purge_frame", iconName: iconName, frameKey: "f2"});
             advanceToNext();
             return;
         }
@@ -203,13 +208,18 @@ class org.flashNight.arki.item.IconBaker {
 
     /**
      * 帧保存回调（f1 和 f2 共用）。
+     * 按优先级提升当前图标动作：created > updated > unchanged。
      */
     private static function onFrameSaved(resp:Object):Void {
         if (resp.success) {
             var action:String = resp.action;
-            if (action === "created") _created++;
-            else if (action === "updated") _updated++;
-            else if (action === "unchanged") _unchanged++;
+            // 提升优先级：created > updated > unchanged
+            if (action === "created") {
+                _iconAction = "created";
+            } else if (action === "updated" && _iconAction !== "created") {
+                _iconAction = "updated";
+            }
+            // unchanged 不提升（默认值）
         } else {
             var iconName:String = _iconNames[_index];
             _root.服务器.发布服务器消息("[IconBaker] 保存失败: " + iconName + " - " + resp.error);
@@ -221,6 +231,11 @@ class org.flashNight.arki.item.IconBaker {
      * 推进到下一个图标，或完成烘焙。
      */
     private static function advanceToNext():Void {
+        // 按图标粒度累加统计
+        if (_iconAction === "created") _created++;
+        else if (_iconAction === "updated") _updated++;
+        else _unchanged++;
+
         _index++;
         if (_index >= _total) {
             _phase = IDLE;

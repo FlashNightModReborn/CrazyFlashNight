@@ -76,11 +76,12 @@ namespace CF7Launcher.Tasks
                 string op = payload.Value<string>("op");
                 switch (op)
                 {
-                    case "begin":    return HandleBegin(payload);
-                    case "chunk":    return HandleChunk(payload);
-                    case "end":      return HandleEnd(payload);
-                    case "complete": return HandleComplete(payload);
-                    default:         return BuildError("unknown op: " + op);
+                    case "begin":       return HandleBegin(payload);
+                    case "chunk":       return HandleChunk(payload);
+                    case "end":         return HandleEnd(payload);
+                    case "purge_frame": return HandlePurgeFrame(payload);
+                    case "complete":    return HandleComplete(payload);
+                    default:            return BuildError("unknown op: " + op);
                 }
             }
             catch (Exception ex)
@@ -239,6 +240,38 @@ namespace CF7Launcher.Tasks
             resp["task"] = "icon_bake";
             resp["action"] = action;
             return resp.ToString(Formatting.None);
+        }
+
+        /// <summary>
+        /// 删除指定图标的某一帧（如图标从 2 帧变为 1 帧时清除残留 f2）。
+        /// </summary>
+        private string HandlePurgeFrame(JObject payload)
+        {
+            string iconName = payload.Value<string>("iconName");
+            string frameKey = payload.Value<string>("frameKey");
+
+            if (iconName != null && frameKey != null && _manifest.ContainsKey(iconName))
+            {
+                JObject entry = _manifest[iconName];
+                JToken fileToken = entry[frameKey];
+                if (fileToken != null)
+                {
+                    string filename = fileToken.ToString();
+                    string path = Path.Combine(_iconsDir, filename);
+                    if (File.Exists(path))
+                    {
+                        try { File.Delete(path); }
+                        catch { }
+                        LogManager.Log("[IconBakeTask] purge_frame: " + iconName + " [" + frameKey + "] → " + filename);
+                    }
+                    entry.Remove(frameKey);
+                }
+            }
+
+            // 记录本轮出现
+            if (iconName != null) _seenIcons.Add(iconName);
+
+            return null;
         }
 
         private string HandleComplete(JObject payload)
