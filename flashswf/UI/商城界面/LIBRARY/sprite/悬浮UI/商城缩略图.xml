@@ -1,0 +1,66 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/商城缩略图" itemID="677113cc-00000998" lastModified="1735463884">
+  <timeline>
+    <DOMTimeline name="商城缩略图">
+      <layers>
+        <DOMLayer name="Script Layer" color="#BBA62B" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._alpha = 0;
+this.onRollOver = function()
+{
+   if(_parent.tmp_sz != undefined)
+   {
+      tmp_sz = _parent.tmp_sz;
+   }
+   else
+   {
+      tmp_sz = _root.根据物品名查找全部属性(_parent.item[1]);
+   }
+   _root.物品图标注释(tmp_sz[0],1);
+   if(_root.商城主mc.展示框._visible == 1)
+   {
+      物品名字 = tmp_sz[0];
+      物品小类别 = tmp_sz[3];
+      _root.商城主mc.展示框.男模[物品小类别] = 物品名字;
+      _root.商城主mc.展示框.女模[物品小类别] = 物品名字;
+      if(_root.商城主mc.展示框.男模._visible == 1)
+      {
+         _root.商城主mc.刷新商城人物装扮("男模");
+      }
+      if(_root.商城主mc.展示框.女模._visible == 1)
+      {
+         _root.商城主mc.刷新商城人物装扮("女模");
+      }
+   }
+};
+this.onPress == function()
+{
+};
+this.onRollOut = function()
+{
+   _root.注释结束();
+};
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#3ABDC0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 46" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

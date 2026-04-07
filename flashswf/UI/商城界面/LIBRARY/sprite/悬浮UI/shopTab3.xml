@@ -1,0 +1,255 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/shopTab3" itemID="67d26d15-0000022d" linkageExportForAS="true" linkageIdentifier="shopTab3" lastModified="1741843733">
+  <timeline>
+    <DOMTimeline name="shopTab3">
+      <layers>
+        <DOMLayer name="Script Layer" color="#B5F5B0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.name.text = _root.获得翻译(_root.getItemData(this.item[1]).displayname);
+this.price.text = this.item[this.item.length - 2];
+var n = _root.商城物品查询(item);
+this.quantity.text = 0;
+if(this.thumb != undefined)
+{
+   removeMovieClip(this.thumb);
+}
+this.attachMovie("图标-" + _root.getItemData(item[1]).icon,"thumb",this.getNextHighestDepth());
+thumb._x = 19;
+thumb._y = 18.6;
+if(n != -1)
+{
+   this.quantity.text = _root.商城购物车[n][_root.商城购物车[n].length - 1];
+   this.勾选按钮.gotoAndPlay(2);
+}
+shopTabBG.onRelease = function()
+{
+   if(_parent._parent.装备详情面板 != undefined)
+   {
+      removeMovieClip(_parent._parent.装备详情面板);
+   }
+   else
+   {
+      _parent._parent.展示商品详情(商品缩略图._x,商品缩略图._y,item);
+   }
+};
+tmp_sz = _root.根据物品名查找全部属性(item[1]);
+物品大类型 = tmp_sz[2];
+if(物品大类型 != "消耗品" && 物品大类型 != "收集品")
+{
+   this.减少按钮._visible = false;
+   this.增加按钮._visible = false;
+   this.quantity._visible = false;
+}
+else
+{
+   this.勾选按钮._visible = false;
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#A4EFED">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 59" name="勾选按钮" centerPoint3DX="253.15" centerPoint3DY="17.6">
+                  <matrix>
+                    <Matrix tx="218" ty="6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#5AD2ED">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="name" fontRenderingMode="device" width="107" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix d="1.0025634765625" tx="35" ty="8.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>AK47</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#936BEA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="price" fontRenderingMode="device" width="49.8" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix d="1.0025634765625" tx="146.6" ty="8.1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>3.5G</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#52ED7F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 66" name="减少按钮" symbolType="button">
+                  <matrix>
+                    <Matrix tx="203.95" ty="7.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   if(Number(this.quantity.text) > 0)
+   {
+      this.quantity.text = Number(this.quantity.text) - 1 * _root.商城主mc.购物倍数;
+      _root.购物车物品删除(this.item,_root.商城主mc.购物倍数);
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#F2D495">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 65" name="增加按钮" symbolType="button">
+                  <matrix>
+                    <Matrix tx="250.35" ty="10.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   this.quantity.text = Number(this.quantity.text) + 1 * _root.商城主mc.购物倍数;
+   _root.购物车物品添加(this.item,_root.商城主mc.购物倍数);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#4E9EC5">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="quantity" fontRenderingMode="device" width="22" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix d="1.0025634765625" tx="223" ty="10"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>000</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#A551B9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/商城缩略图" name="商品缩略图" centerPoint3DX="117" centerPoint3DY="27.1">
+                  <matrix>
+                    <Matrix tx="7" ty="6.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#B6B0BE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 45" name="shopTabBG">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#F9DC7F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0213623046875" c="-0.18310546875" d="0" tx="150" ty="17.5"/>
+                        </matrix>
+                        <GradientEntry color="#999999" ratio="0"/>
+                        <GradientEntry color="#666666" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#666666"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#CCCCCC"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!6000 0|6000 700!6000 700|0 700"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!0 700|0 0!0 0|6000 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

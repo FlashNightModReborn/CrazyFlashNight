@@ -1,0 +1,217 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 541" itemID="6597607e-000007c5" lastModified="1712291411">
+  <timeline>
+    <DOMTimeline name="Symbol 541">
+      <layers>
+        <DOMLayer name="Script Layer" color="#E9D722" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#8AE945">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 540" centerPoint3DX="85.35" centerPoint3DY="126.8">
+                  <matrix>
+                    <Matrix tx="72.7" ty="112.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   地点X = this._x;
+   地点Y = this._y;
+   _parent.attachMovie("男模","男模",_parent.getNextHighestDepth(),{_x:地点X + random(10),_y:地点Y + random(10),性别:"男",身高:200,发型:"发型-男式-黑暴走头",头部装备:"",上装装备:"黑色功夫装",手部装备:"",下装装备:"咖啡色多包裤",脚部装备:"新手皮鞋"});
+   _root.商城主mc.刷新商城人物装扮("男模");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4BDD7F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 540" centerPoint3DX="85.35" centerPoint3DY="126.8">
+                  <matrix>
+                    <Matrix tx="72.7" ty="112.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   地点X = this._x;
+   地点Y = this._y;
+   _parent.attachMovie("女模","女模",_parent.getNextHighestDepth(),{_x:地点X + random(10),_y:地点Y + random(10),性别:"女",身高:200,发型:"发型-女式-咖啡色中长马尾",头部装备:"",上装装备:"米色高腰背心",手部装备:"",下装装备:"棕色带腿包短裤",脚部装备:"棕色圆头皮鞋",_visible:0});
+   _root.商城主mc.刷新商城人物装扮("女模");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#A2D3ED">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="txt" fontRenderingMode="device" width="102.45" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix d="1.0025634765625" tx="15.5" ty="-3.85"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>预览</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#DC505C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 538" symbolType="button">
+                  <matrix>
+                    <Matrix tx="132.95" ty="5.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#60C285">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 536" symbolType="button">
+                  <matrix>
+                    <Matrix tx="4" ty="3.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#ABB286">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="73.15" centerPoint3DY="227.9">
+                  <matrix>
+                    <Matrix tx="27.35" ty="216.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   if(_parent.男模._visible == 1)
+   {
+      _parent.男模._visible = 0;
+      _parent.女模._visible = 1;
+   }
+   else
+   {
+      _parent.男模._visible = 1;
+      _parent.女模._visible = 0;
+   }
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("切换性别");
+}
+on(rollOver){
+   _root.注释(150,显示文字);
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#2E6CE9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.15435791015625" c="-0.0948944091796875" d="0" tx="70.25" ty="118.85"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="2">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!2960 -151|2960 4907!2960 4907|-150 4907!-150 4907|-150 -151!-150 -151|2960 -151"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,108 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 499" itemID="6597607e-000007b2" lastModified="1719229638">
+  <timeline>
+    <DOMTimeline name="Symbol 499">
+      <layers>
+        <DOMLayer name="Script Layer" color="#D47DF8" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#9CD774">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#FFCC00"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-19 152|14 107!14 107|38 61!38 61|101 83!101 83|86 111!86 111|53 101!53 101|-52 277!-52 277|-222 274!-222 274|-268 154!-268 154|-255 154"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!-255 154|-120 58!-120 58|-19 152"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!-255 154|-21 154!-21 154|-19 152"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-219 346|-235 340!-235 340[-242 333 -241 324!-241 324[-242 314 -235 308!-235 308[-229 302 -219 302!-219 302[-210 302 -203 308!-203 308[-197 314 -197 324!-197 324[-197 333 -203 340!-203 340|-219 346!-66 305|-54 302!-54 302[-45 302 -38
+ 308!-38 308[-32 314 -31 324!-31 324|-38 340!-38 340|-54 346!-54 346[-63 346 -70 340!-70 340|-76 324!-76 324|-70 308!-70 308|-66 305"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#AEAAE8">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="53" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="7" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>购物车</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#1ECCBE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="26.85" ty="10.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="26.85" ty="10.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.71875" blueMultiplier="0.71875" greenMultiplier="0.71875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

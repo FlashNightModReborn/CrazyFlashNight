@@ -1,0 +1,124 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 509" itemID="6597607e-000007b5" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 509">
+      <layers>
+        <DOMLayer name="Script Layer" color="#75D4B5">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#B5A84C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 508" centerPoint3DX="236.3" centerPoint3DY="14">
+                  <matrix>
+                    <Matrix tx="196.5" ty="1.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   stop();
+   显示文字 = _root.获得翻译("结账");
+}
+on(release){
+   this.gotoAndStop(1);
+   _root.购物车结账();
+}
+on(press){
+   this.gotoAndStop(3);
+}
+on(rollOver){
+   this.gotoAndStop(2);
+}
+on(rollOut){
+   this.gotoAndStop(1);
+}
+on(rollOver){
+   _root.注释(150,_root.获得翻译(显示文字));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#A3D493">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="58" height="15.85" isSelectable="false" variableName="_root.购物车总价">
+                  <matrix>
+                    <Matrix tx="63" ty="4.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>0</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F1C982">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="63" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="126.95" ty="5.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>K点</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#A4D8C5" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="62.6" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-6" ty="4.8"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>总计</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

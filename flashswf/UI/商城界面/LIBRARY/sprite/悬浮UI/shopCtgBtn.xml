@@ -1,0 +1,152 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/shopCtgBtn" itemID="67d272e5-00000650" linkageExportForAS="true" linkageIdentifier="shopCtgBtn" lastModified="1741845221">
+  <timeline>
+    <DOMTimeline name="shopCtgBtn">
+      <layers>
+        <DOMLayer name="Script Layer" color="#7894DB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.txt.text = this.btnName;
+多语言标题 = _root.获得翻译(this.txt.text);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#EAE212">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 43" centerPoint3DX="25" centerPoint3DY="21.65">
+                  <matrix>
+                    <Matrix tx="2.5" ty="10.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   检测值 = "txt";
+   gotoAndStop("延时判定");
+   play();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#50C37B">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="71.75" height="15.55" isSelectable="false" variableName="多语言标题">
+                  <matrix>
+                    <Matrix d="1.0025634765625" tx="18.25" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>商城按钮</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#60DECC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#99CC00"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!183 286|183 129!183 129|297 208!297 208|183 286"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#4CFCAF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 35" centerPoint3DX="36.55" centerPoint3DY="9">
+                  <matrix>
+                    <Matrix a="1.4449462890625" d="1.11111450195313" tx="6.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+}
+on(release){
+   _root.商城主mc.商品类别txt.text = _parent.txt.text;
+   if(_root.商城主mc.当前页面 != _parent.btnName)
+   {
+      _root.商城主mc.shopList.商城列表滚动条.滑块._y = 0;
+      _root.商城主mc.当前页面 = _parent.btnName;
+   }
+   _parent._parent._parent._parent.shopList.makeList2();
+}
+on(rollOver){
+   _root.注释(150,_parent.多语言标题);
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" blurX="2" blurY="2" distance="2" strength="0.28"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#E9C4A0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="txt" fontRenderingMode="device" width="86" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix d="1.0025634765625" tx="2" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>商城按钮</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

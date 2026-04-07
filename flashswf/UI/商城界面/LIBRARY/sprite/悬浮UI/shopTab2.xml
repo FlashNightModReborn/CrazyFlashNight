@@ -1,0 +1,173 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/shopTab2" itemID="67d26d17-0000022e" linkageExportForAS="true" linkageIdentifier="shopTab2" lastModified="1741843735">
+  <timeline>
+    <DOMTimeline name="shopTab2">
+      <layers>
+        <DOMLayer name="Script Layer" color="#CFAEAC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.name.text = _root.获得翻译(_root.getItemData(this.item[1]).displayname);
+if (this.thumb != undefined)
+{
+	removeMovieClip(this.thumb);
+}
+this.attachMovie("图标-" + _root.getItemData(item[1]).icon,"thumb",this.getNextHighestDepth());
+thumb._x = 17;
+thumb._y = 17;
+this.quantity.text = item[item.length - 1];
+shopTabBG.onRelease = function()
+{
+	if (_parent._parent.装备详情面板 != undefined)
+	{
+		removeMovieClip(_parent._parent.装备详情面板);
+	}
+	else
+	{
+		_parent._parent.展示商品详情(商品缩略图._x,商品缩略图._y,item);
+	}
+};]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#5AC970">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 76" centerPoint3DX="215" centerPoint3DY="16.95">
+                  <matrix>
+                    <Matrix tx="188" ty="4.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#B0DFFB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="name" fontRenderingMode="device" width="102.4" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix d="1.0025634765625" tx="35.6" ty="8.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>AK47</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#4467EE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText width="6.3" height="15.55" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="143" ty="8.75"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>x</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#8DE1ED">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="quantity" fontRenderingMode="device" width="27" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix d="1.0025634765625" tx="155" ty="8.7"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#35CDE9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/商城缩略图" name="商品缩略图" centerPoint3DX="115" centerPoint3DY="25.5">
+                  <matrix>
+                    <Matrix tx="5" ty="5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#9F9AA1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0213623046875" c="-0.152587890625" d="0" tx="125" ty="17.5"/>
+                        </matrix>
+                        <GradientEntry color="#999999" ratio="0"/>
+                        <GradientEntry color="#666666" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#666666"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#CCCCCC"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!5000 0|5000 700!5000 700|0 700"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!0 700|0 0!0 0|5000 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

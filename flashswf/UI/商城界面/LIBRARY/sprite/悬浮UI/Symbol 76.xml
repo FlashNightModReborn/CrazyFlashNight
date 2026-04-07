@@ -1,0 +1,67 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 76" itemID="6597607e-00000722" lastModified="1735464106">
+  <timeline>
+    <DOMTimeline name="Symbol 76">
+      <layers>
+        <DOMLayer name="Script Layer" color="#21B8F4" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.onRelease = function()
+{
+	_root.领取商品(_parent.item);
+};
+_root.全部翻译(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#A4C39C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="50" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="1.5" ty="4.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>领取</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#8E6A94">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.01495361328125" c="-0.03265380859375" d="0" tx="26.75" ty="12.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFCC00" ratio="0"/>
+                        <GradientEntry color="#996600" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1070 490|0 490!0 490|0 0!0 0|1070 0!1070 0|1070 490"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

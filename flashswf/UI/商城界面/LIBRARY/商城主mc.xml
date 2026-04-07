@@ -1,0 +1,846 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="商城主mc" itemID="6679151e-00002a67" linkageExportForAS="true" linkageIdentifier="shopMainMC" lastModified="1761102948" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="商城主mc">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#8780F3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" name="商城" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" name="刷新" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#CDA575">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 显示运营图标(名字)
+{
+	图标HOT = [];
+	图标打折 = [];
+	图标NEW = [];
+	图标半价 = [];
+	图标一折 = [];
+	var _loc2_ = 0;
+	while (_loc2_ < 图标NEW.length)
+	{
+		if (名字 == 图标NEW[_loc2_])
+		{
+			return "图标NEW";
+		}
+		_loc2_ += 1;
+	}
+	_loc2_ = 0;
+	while (_loc2_ < 图标HOT.length)
+	{
+		if (名字 == 图标HOT[_loc2_])
+		{
+			return "图标HOT";
+		}
+		_loc2_ += 1;
+	}
+	_loc2_ = 0;
+	while (_loc2_ < 图标打折.length)
+	{
+		if (名字 == 图标打折[_loc2_])
+		{
+			return "图标打折";
+		}
+		_loc2_ += 1;
+	}
+	_loc2_ = 0;
+	while (_loc2_ < 图标半价.length)
+	{
+		if (名字 == 图标半价[_loc2_])
+		{
+			return "图标半价";
+		}
+		_loc2_ += 1;
+	}
+	_loc2_ = 0;
+	while (_loc2_ < 图标一折.length)
+	{
+		if (名字 == 图标一折[_loc2_])
+		{
+			return "图标一折";
+		}
+		_loc2_ += 1;
+	}
+	return "无";
+}
+function 按类别筛选(s)
+{
+	temp = new Array();
+	var _loc3_ = 0;
+	while (_loc3_ < _root.商城商品总数组.length)
+	{
+		if (_root.商城商品总数组[_loc3_][2] == s)
+		{
+			temp.push(_root.商城商品总数组[_loc3_]);
+		}
+		_loc3_ += 1;
+	}
+	return temp;
+}
+function 刷新购物清单(arr)
+{
+	if (shopCart.shopCartContent != undefined)
+	{
+		removeMovieClip(shopCart.shopCartContent);
+		delete undefined;
+		//§§push(undefined);
+	}
+	shopCart.createEmptyMovieClip("shopCartContent",shopCart.getNextHighestDepth());
+	shopCart.shopCartContent.setMask(shopCart.mask2);
+	var _loc3_ = 0;
+	while (_loc3_ < arr.length)
+	{
+		shopCart.shopCartContent.attachMovie("shopTab3","tab" + _loc3_.toString(),shopCart.shopCartContent.getNextHighestDepth(),{item:arr[_loc3_]});
+		shopCart.shopCartContent["tab" + _loc3_.toString()]._y = shopCart.mask2._y + 40 * _loc3_;
+		shopCart.shopCartContent["tab" + _loc3_.toString()]._x = shopCart.mask2._x;
+		_loc3_ += 1;
+	}
+	shopCart.获得页数();
+	_root.保存购物车();
+}
+function 刷新已买显示(arr)
+{
+	if (shopCart.shopCartContent != undefined)
+	{
+		removeMovieClip(shopCart.shopCartContent);
+		delete undefined;
+		//§§push(undefined);
+	}
+	shopCart.createEmptyMovieClip("shopCartContent",shopCart.getNextHighestDepth());
+	shopCart.shopCartContent.setMask(shopCart.mask2);
+	var _loc2_ = 0;
+	while (_loc2_ < arr.length)
+	{
+		shopCart.shopCartContent.attachMovie("shopTab2","tab" + _loc2_.toString(),shopCart.shopCartContent.getNextHighestDepth(),{item:arr[_loc2_]});
+		shopCart.shopCartContent["tab" + _loc2_.toString()]._y = shopCart.mask2._y + 40 * _loc2_;
+		shopCart.shopCartContent["tab" + _loc2_.toString()]._x = shopCart.mask2._x + 10;
+		_loc2_ += 1;
+	}
+	shopCart.获得页数();
+}
+function 组装已经购买物品(shopid)
+{
+	var _loc3_ = [];
+	var _loc4_ = 0;
+	var _loc5_ = _root.商城商品总数组.length;
+	while (_loc4_ < _loc5_)
+	{
+		if (shopid == _root.商城商品总数组[_loc4_][0])
+		{
+			_loc3_ = _root.商城商品总数组[_loc4_];
+			break;
+		}
+		_loc4_ += 1;
+	}
+	return _loc3_;
+}
+function 刷新已买清单()
+{
+	var _loc2_ = new Array();
+	var _loc3_ = 0;
+	while (_loc3_ < _root.商城已购买物品.length)
+	{
+		var _loc4_ = new Array();
+		var _loc5_ = 组装已经购买物品(_root.商城已购买物品[_loc3_][0]);
+		_loc4_.push(_loc5_[0]);
+		_loc4_.push(_loc5_[1]);
+		_loc4_.push(_loc5_[2]);
+		_loc4_.push(_loc5_[3]);
+		_loc4_.push("11084055");
+		_loc4_.push(_root.商城已购买物品[_loc3_][4]);
+		_loc2_.push(_loc4_);
+		_loc3_ += 1;
+	}
+	this.刷新已买显示(_loc2_);
+	_root.清单load状态(false);
+}
+function checkItem(s)
+{
+	var _loc2_ = 0;
+	while (_loc2_ < bill.length)
+	{
+		if (bill[_loc2_].id == s.id)
+		{
+			return _loc2_;
+		}
+		_loc2_ += 1;
+	}
+	return -1;
+}
+function checkAndRemove(s)
+{
+	n = checkItem(s);
+	if (n != -1)
+	{
+		if (bill[n].quantity > 1)
+		{
+			bill[n].quantity--;
+		}
+		else
+		{
+			bill.splice(n,1);
+		}
+	}
+}
+function 显示充值界面()
+{
+	/*_root.最终充值地址 = "http://www.crazyflasher.com/skflashermsg/newpage/pay.jsp?type=1&username=" + _root.userID + "&region=" + _root.充值到某区 + "&r=" + random(1000);
+	if (_root.联运充值到官网 == true)
+	{
+	}
+	if (_root.联运充值到运营商 == true)
+	{
+		if (_root.operations == "@1001")
+		{
+			充值界面360平台._visible = true;
+			return undefined;
+		}
+		_root.最终充值地址 = _root.联运充值地址;
+	}
+	if (_root.是否是某网站(["andylaw.net", "www.andylaw.net", "game.andylaw.net", "crazyparkour.andylaw.net"]) == true)
+	{
+		_root.最终充值地址 = "http://andylaw.net:8080/skflashermsg/newpage/pay.jsp?type=1&username=" + _root.userID + "&region=" + _root.充值到某区 + "&r=" + random(1000);
+	}
+	getURL(_root.最终充值地址, "_blank");*/
+}
+function 支付充值(金额)
+{
+	/*bill = new CF7_PAY_BILL();
+	bill.addParameter("service","create_direct_pay_by_user");
+	bill.addParameter("partner","2088501803975789");
+	bill.addParameter("notify_url","http://www.baidu.com");
+	bill.addParameter("error_notify_url","http://www.baidu.com");
+	bill.addParameter("return_url","http://" + _root.address + "/K5studioAlipay/kcstudio_bigw.html");
+	bill.addParameter("_input_charset","utf-8");
+	bill.addParameter("subject","KM201102170000" + 金额);
+	bill.addParameter("body","Crazy_Flasher_500G");
+	bill.addParameter("out_trade_no",_root.userID + "_" + getTimeMilliseconds());
+	bill.addParameter("total_fee","0.01");
+	bill.addParameter("payment_type","1");
+	bill.addParameter("seller_email","webmaster@k5studio.com");
+	bill.addParameter("paymethod","directPay");
+	bill.addParameter("extra_common_param",_root.userID);
+	b = bill.makeBill();
+	b.send("https://www.alipay.com/cooperate/gateway.do","_blank","get");*/
+}
+function getTimeMilliseconds()
+{
+	now_date = new Date();
+	now_milliseconds = (now_date.getHours() * 3600 + now_date.getMinutes() * 60 + now_date.getSeconds()) * 1000 + now_date.getMilliseconds();
+	return now_milliseconds;
+}
+function 根据数字得商品类别(数字)
+{
+	var _loc2_ = "";
+	数字 += "";
+	switch (数字)
+	{
+		case "1" :
+			_loc2_ = "特价商品";
+			break;
+		case "2" :
+			_loc2_ = "新品推荐";
+			break;
+		case "3" :
+			_loc2_ = "必备弹夹";
+			break;
+		case "4" :
+			_loc2_ = "常用材料";
+			break;
+		case "5" :
+			_loc2_ = "酷炫长枪";
+			break;
+		case "6" :
+			_loc2_ = "逼格手枪";
+			break;
+		case "7" :
+			_loc2_ = "实战冷兵";
+			break;
+		case "8" :
+			_loc2_ = "精良护头";
+			break;
+		case "9" :
+			_loc2_ = "精良胸甲";
+			break;
+		case "10" :
+			_loc2_ = "精良手甲";
+			break;
+		case "11" :
+			_loc2_ = "精良腿甲";
+			break;
+		case "12" :
+			_loc2_ = "精良战靴";
+			break;
+		case "13" :
+			_loc2_ = "特效胶囊";
+			break;
+		case "14" :
+			_loc2_ = "极品装备";
+			break;
+		case "15" :
+			_loc2_ = "非卖品";
+	}
+	return _loc2_;
+}
+function 刷新商城人物装扮(目标)
+{
+	var 目标 = this.展示框[目标];
+	tmp_aaa = _root.根据物品名查找属性(目标.头部装备, 14);
+	if (tmp_aaa[0] == "true")
+	{
+		目标.发型 = "";
+	}
+	else
+	{
+		目标.发型 = 目标.发型;
+	}
+	目标.面具 = _root.根据物品名查找属性(目标.头部装备, 15);
+	目标.身体 = 目标.性别 + _root.根据物品名查找属性(目标.上装装备, 15) + "身体";
+	目标.上臂 = 目标.性别 + _root.根据物品名查找属性(目标.上装装备, 15) + "上臂";
+	目标.左下臂 = 目标.性别 + _root.根据物品名查找属性(目标.上装装备, 15) + "左下臂";
+	目标.右下臂 = 目标.性别 + _root.根据物品名查找属性(目标.上装装备, 15) + "右下臂";
+	目标.左手 = _root.根据物品名查找属性(目标.手部装备, 15) + "左手";
+	目标.右手 = _root.根据物品名查找属性(目标.手部装备, 15) + "右手";
+	目标.屁股 = 目标.性别 + _root.根据物品名查找属性(目标.下装装备, 15) + "屁股";
+	目标.左大腿 = 目标.性别 + _root.根据物品名查找属性(目标.下装装备, 15) + "左大腿";
+	目标.右大腿 = 目标.性别 + _root.根据物品名查找属性(目标.下装装备, 15) + "右大腿";
+	目标.小腿 = 目标.性别 + _root.根据物品名查找属性(目标.下装装备, 15) + "小腿";
+	目标.脚 = _root.根据物品名查找属性(目标.脚部装备, 15);
+	目标.刀_装扮 = _root.根据物品名查找属性(目标.刀, 15);
+	目标.长枪_装扮 = _root.根据物品名查找属性(目标.长枪, 15);
+	目标.手枪_装扮 = _root.根据物品名查找属性(目标.手枪, 15);
+	目标.手枪2_装扮 = _root.根据物品名查找属性(目标.手枪2, 15);
+	目标.手雷_装扮 = _root.根据物品名查找属性(目标.手雷, 15);
+	目标.gotoAndPlay("刷新装扮");
+}
+
+bill = new Array();
+shopList.mask._visible = false;
+this.shopList.makeList = function(arr)
+{
+	临时商品列表 = arr;
+	if (临时商品列表.length < 7)
+	{
+		shopList.商城列表滚动条._visible = false;
+	}
+	else
+	{
+		shopList.商城列表滚动条._visible = true;
+	}
+	shopList.makeList2();
+};
+this.shopList.makeList2 = function()
+{
+	筛选表 = 按类别筛选(当前页面);
+	if (筛选表.length < 7)
+	{
+		this.shopList.商城列表滚动条._visible = false;
+	}
+	else
+	{
+		this.shopList.商城列表滚动条._visible = true;
+	}
+	if (this.shopListContent != undefined)
+	{
+		removeMovieClip(this.shopListContent);
+	}
+	this.createEmptyMovieClip("shopListContent",this.getNextHighestDepth());
+	this.shopListContent._x = 0;
+	this.shopListContent._y = 0;
+	this.shopListContent.setMask(shopList.mask);
+	var _loc3_ = 0;
+	while (_loc3_ < 筛选表.length)
+	{
+		temp = 筛选表[_loc3_];
+		this.shopListContent.attachMovie("shopTab","tab" + _loc3_.toString(),this.shopListContent.getNextHighestDepth(),{item:temp, _x:this.定位器._x, _y:this.定位器._y + _loc3_ * 50});
+		this.获得页数();
+		_loc3_ += 1;
+	}
+};
+this.shopList.makeList3 = function(领取物品表)
+{
+	if (领取物品表.length < 7)
+	{
+		shopList.商城列表滚动条._visible = false;
+	}
+	else
+	{
+		shopList.商城列表滚动条._visible = true;
+	}
+	if (this.shopListContent != undefined)
+	{
+		removeMovieClip(this.shopListContent);
+	}
+	this.createEmptyMovieClip("shopListContent",this.getNextHighestDepth());
+	this.shopListContent._x = shopList.mask._x;
+	this.shopListContent._y = shopList.mask._y;
+	this.shopListContent.setMask(shopList.mask);
+	var _loc3_ = 0;
+	while (_loc3_ < 领取物品表.length)
+	{
+		temp = 领取物品表[_loc3_];
+		this.shopListContent.attachMovie("shopTab2","tab" + _loc3_.toString(),this.shopListContent.getNextHighestDepth(),{item:temp});
+		this.shopListContent["tab" + _loc3_.toString()]._y = _loc3_ * 50;
+		_loc3_ += 1;
+	}
+};
+shopCart.refreshCart = function()
+{
+	this.btnUP._alpha = 30;
+	this.btnDown._alpha = 30;
+};
+shopCtg.createEmptyMovieClip("shopCtgContent",this.getNextHighestDepth());
+shopCtg.shopCtgContent._x = shopCtg.mask3._x;
+shopCtg.shopCtgContent._y = shopCtg.mask3._y;
+this.shopCtg.makeCtg = function(arr)
+{
+	var _loc3_ = 0;
+	while (_loc3_ < arr.length)
+	{
+		this.shopCtgContent.attachMovie("shopCtgBtn","btn" + _loc3_.toString(),this.shopCtgContent.getNextHighestDepth(),{btnName:arr[_loc3_]});
+		this.shopCtgContent["btn" + _loc3_.toString()]._x = 0;
+		this.shopCtgContent["btn" + _loc3_.toString()]._y = 5 + 25 * _loc3_;
+		_loc3_ += 1;
+	}
+};
+
+function 关闭商城(){
+	_root.保存购物车();
+	_root.商城主mc = null;
+	_root.卸载全屏UI();
+	_root.自动存盘();
+}
+
+购物倍数 = 1;
+临时商品列表 = new Array();
+当前页面 = "常用物品";
+_root.获取购物车信息();
+_root.主体load状态(true);
+var temp = new Array();
+var arrSend = new Array();
+var loop = 0;
+while (loop < _root.kshop_list.length)
+{
+	temp = [];
+	temp.push(_root.kshop_list[loop].id);
+	temp.push(_root.kshop_list[loop].item);
+	temp.push(_root.kshop_list[loop].type);
+	temp.push(_root.kshop_list[loop].price);
+	arrSend.push(temp);
+	loop++;
+}
+
+_root.商城主mc = this;
+_root.商城商品总数组 = arrSend;
+this.shopList.makeList(arrSend);
+_root.主体load状态(false);
+_root.获取虚拟币值();
+_root.读盘商城已购买物品();
+this.刷新购物清单(_root.商城购物车);
+
+_root.购物车总价 = _root.获取购物车总价();
+shopCtg.makeCtg(["新品推荐", "必备弹夹", "常用材料", "酷炫长枪", "逼格手枪", "实战冷兵", "精良护头", "精良胸甲", "精良手甲", "精良腿甲", "精良战靴", "特效胶囊", "极品装备", "非卖品"]);
+gotoAndStop("商城");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.获取虚拟币值();
+_root.商城主mc.刷新购物清单();
+_root.购物车总价 = _root.获取购物车总价();
+_root.商城主mc.刷新购物清单(_root.商城购物车);
+gotoAndStop("商城");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#42DDC5">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 545" symbolType="button">
+                  <matrix>
+                    <Matrix tx="1010" ty="13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	关闭商城();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#C7DE7C">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="282" height="23.75" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="16.95" ty="5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>商城</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="18" bitmapSize="360" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="18" bitmapSize="360" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#FDC294">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#8A6DFB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 543" selected="true" centerPoint3DX="1257.95" centerPoint3DY="148.4">
+                  <matrix>
+                    <Matrix tx="1068.95" ty="48.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._visible = false;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#725BC2">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 542" name="商城loading3" centerPoint3DX="647.5" centerPoint3DY="264.65">
+                  <matrix>
+                    <Matrix tx="632.1" ty="249.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._visible = false;
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="51" blueOffset="51" greenOffset="51"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#F2BE25">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 542" name="商城loading2" centerPoint3DX="611.05" centerPoint3DY="418.65">
+                  <matrix>
+                    <Matrix tx="595.65" ty="403.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._visible = false;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#80E249">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 542" name="商城loading1" centerPoint3DX="304.05" centerPoint3DY="326.65">
+                  <matrix>
+                    <Matrix tx="288.65" ty="311.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._visible = false;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#B7ADA4">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="537.1" centerPoint3DY="34.95">
+                  <matrix>
+                    <Matrix tx="491.3" ty="23.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _parent.展示框._visible = 1;
+}
+onClipEvent(load){
+   显示文字 = _root.获得翻译("打开预览窗");
+}
+on(rollOver){
+   _root.注释(150,显示文字);
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#B8D9FC">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 541" name="展示框" centerPoint3DX="334.15" centerPoint3DY="273.4">
+                  <matrix>
+                    <Matrix tx="255.4" ty="145.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this._visible = 0;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#11FBBC">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 532" name="shopList" centerPoint3DX="309.25" centerPoint3DY="260.3">
+                  <matrix>
+                    <Matrix tx="143.3" ty="64"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#BED4F9">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="商品类别txt" fontRenderingMode="device" width="179.5" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="138" ty="37.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#D28CE8">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 526" centerPoint3DX="398" centerPoint3DY="42.25">
+                  <matrix>
+                    <Matrix tx="329.9" ty="28.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#CBEFFE">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 518" name="shopCtg" centerPoint3DX="244.05" centerPoint3DY="244.7">
+                  <matrix>
+                    <Matrix d="0.997482299804688" tx="16" ty="32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#9F8ACA">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 516" name="shopCart" centerPoint3DX="632.55" centerPoint3DY="242.55">
+                  <matrix>
+                    <Matrix tx="487.55" ty="58"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按钮" color="#1DB6FD" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 491" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.27999877929688" d="1.19999694824219"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#AE9E4A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 490" centerPoint3DX="512.65" centerPoint3DY="288.6">
+                  <matrix>
+                    <Matrix a="1.27999877929688" d="1.19999694824219"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" strength="0.5"/>
+                    <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

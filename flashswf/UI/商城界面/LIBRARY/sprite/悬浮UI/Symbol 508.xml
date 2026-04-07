@@ -1,0 +1,132 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 508" itemID="6597607e-000007b4" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 508">
+      <layers>
+        <DOMLayer name="Layer 1" color="#BF518B">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0067138671875" c="-0.0082244873046875" d="0" tx="5.15" ty="11.55"/>
+                        </matrix>
+                        <GradientEntry color="#CCFF00" ratio="0"/>
+                        <GradientEntry color="#99CC00" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!231 126[224 120 216 121!216 121[208 122 203 129!203 129|79 265!79 265|1 202!1 202[-5 196 -13 196!-13 196[-21 196 -26 202!-26 202|-32 217!-32 217|-26 232!-26 232|68 335!68 335|77 341!77 341|88 340!88 340|96 334!96 334|233 156!233 156
+|237 141!237 141|231 126"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#82DF27">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="61.05" height="15.55" isSelectable="false" variableName="显示文字">
+                  <matrix>
+                    <Matrix tx="14" ty="3.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>确认购买</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#96ACB7" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" centerPoint3DX="39" centerPoint3DY="12">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="2" quality="3"/>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#999999" strength="0.3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" centerPoint3DX="39" centerPoint3DY="12">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="2" quality="3"/>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#999999" strength="0.3"/>
+                  </filters>
+                  <color>
+                    <Color redMultiplier="0.8984375" blueMultiplier="0.8984375" greenMultiplier="0.8984375" redOffset="26" blueOffset="26" greenOffset="26"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/通用背景mc" centerPoint3DX="39" centerPoint3DY="13">
+                  <matrix>
+                    <Matrix ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter angle="44.9992520943067" distance="2" quality="3"/>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#999999" strength="0.3"/>
+                  </filters>
+                  <color>
+                    <Color redMultiplier="0.8984375" blueMultiplier="0.8984375" greenMultiplier="0.8984375" redOffset="26" blueOffset="26" greenOffset="26"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#92F82B">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728" soundEffect="custom" soundName="sound/sound18.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32769" level1="32769"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 1" color="#E15D93">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" soundEffect="custom" soundName="sound/sound19.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32769" level1="32769"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
