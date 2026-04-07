@@ -835,6 +835,8 @@ namespace CF7Launcher.Guardian
                 case "TASK_MAP": SendGameCommand("openTaskMap"); break;
                 case "TASK_UI": SendGameCommand("openTaskUI"); break;
                 case "EQUIP_UI": SendGameCommand("openEquipUI"); break;
+                case "BAKE": SendGameCommand("bakeIcons"); break;
+                case "BAKE10": SendGameCommand("bakeIcons", "\"maxCount\":10"); break;
                 case "EXIT_CONFIRM": if (_onForceExit != null) _onForceExit(); break;
             }
         }
@@ -844,6 +846,13 @@ namespace CF7Launcher.Guardian
         {
             if (_socketServer == null) return;
             _socketServer.Send("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
+        }
+
+        /// <summary>通过 XmlSocket 向 AS2 发送带参数的游戏命令。</summary>
+        private void SendGameCommand(string action, string extraJsonFields)
+        {
+            if (_socketServer == null) return;
+            _socketServer.Send("{\"task\":\"cmd\",\"action\":\"" + action + "\"," + extraJsonFields + "}\0");
         }
 
         private static int ExtractInt(string json, string key)

@@ -239,4 +239,38 @@ class Base64
         }
         return str;
     }
+
+    /**
+     * Base64 编码（字节数组版本）
+     * 直接接受 0-255 范围的 Number 数组，跳过 UTF-8 转换步骤。
+     * 用于编码二进制数据（如像素 ARGB 字节）。
+     * @param bytes 字节数组（每个元素为 0-255 的 Number）
+     * @return 编码后的 Base64 字符串
+     */
+    public static function encodeBytes(bytes:Array):String
+    {
+        var output:Array = [];
+        var i:Number = 0;
+
+        while (i < bytes.length)
+        {
+            var chr1:Number = bytes[i++];
+            var chr2:Number = (i < bytes.length) ? bytes[i++] : NaN;
+            var chr3:Number = (i < bytes.length) ? bytes[i++] : NaN;
+
+            var enc1:Number = chr1 >> 2;
+            var enc2:Number = ((chr1 & 3) << 4) | ((isNaN(chr2) ? 0 : chr2) >> 4);
+            var enc3:Number = isNaN(chr2) ? 64 : (((chr2 & 15) << 2) | ((isNaN(chr3) ? 0 : chr3) >> 6));
+            var enc4:Number = isNaN(chr3) ? 64 : (chr3 & 63);
+
+            output.push(
+                keyStr.charAt(enc1),
+                keyStr.charAt(enc2),
+                keyStr.charAt(enc3),
+                keyStr.charAt(enc4)
+            );
+        }
+
+        return output.join("");
+    }
 }

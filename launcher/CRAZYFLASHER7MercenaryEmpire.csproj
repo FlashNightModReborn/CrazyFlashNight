@@ -87,6 +87,7 @@
     <Compile Include="src\Data\DataCache.cs" />
     <Compile Include="src\Data\XmlDataLoader.cs" />
     <Compile Include="src\Tasks\DataQueryTask.cs" />
+    <Compile Include="src\Tasks\IconBakeTask.cs" />
     <Compile Include="src\Guardian\IToastSink.cs" />
     <Compile Include="src\Guardian\INotchSink.cs" />
     <Compile Include="src\Guardian\WebOverlayForm.cs" />

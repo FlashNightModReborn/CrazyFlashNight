@@ -259,7 +259,8 @@ class Program
         DataCache dataCache = new DataCache(projectRoot);
         DataQueryTask dataQueryTask = new DataQueryTask(dataCache);
         CF7Launcher.Tasks.AudioTask audioTask = new CF7Launcher.Tasks.AudioTask();
-        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask);
+        IconBakeTask iconBakeTask = new IconBakeTask(projectRoot, notchSink);
+        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask);
 
         // 注入 router 到 HttpApiServer（供 /task 端点使用）
         httpServer.SetRouter(router);

@@ -159,6 +159,10 @@ _root.gameCommands["setGlobalVolume"] = function(params) {
 _root.gameCommands["setBGMVolume"] = function(params) {
     if (!isNaN(params.value)) _root.soundEffectManager.setBGMVolume(Number(params.value));
 };
+_root.gameCommands["bakeIcons"] = function(params) {
+    var maxCount:Number = Number(params.maxCount);
+    org.flashNight.arki.item.IconBaker.start(isNaN(maxCount) ? 0 : maxCount);
+};
 
 // ============================================================
 // 游戏状态通知 → WebView 按钮可见性
