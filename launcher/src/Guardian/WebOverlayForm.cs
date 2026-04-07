@@ -96,6 +96,10 @@ namespace CF7Launcher.Guardian
         // 音乐目录
         private CF7Launcher.Audio.MusicCatalog _musicCatalog;
 
+        // Web 资源热重载：监听 webDir 文件变化，去抖后自动 Reload
+        private FileSystemWatcher _webWatcher;
+        private System.Threading.Timer _reloadDebounce;
+
         public WebOverlayForm(Form owner, Control anchor, string webDir)
         {
             _owner = owner;
@@ -212,6 +216,9 @@ namespace CF7Launcher.Guardian
                 if (_inputShield != null)
                     _inputShield.SetTargetWebView(_webView.CoreWebView2);
 
+                // 热重载：监听 webDir 文件变化，去抖 500ms 后自动 Reload
+                StartWebWatcher(webDir);
+
                 LogManager.Log("[WebOverlay] WebView2 engine ready, waiting for JS ready...");
             }
             catch (Exception ex)
@@ -221,6 +228,46 @@ namespace CF7Launcher.Guardian
                 // 激活 GDI+ fallback 并 flush 早期缓冲
                 ActivateFallback();
             }
+        }
+
+        /// <summary>监听 webDir 文件变化，去抖后自动 Reload WebView2。</summary>
+        private void StartWebWatcher(string webDir)
+        {
+            _webWatcher = new FileSystemWatcher(webDir);
+            _webWatcher.IncludeSubdirectories = true;
+            _webWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime;
+            _webWatcher.Filter = "*.*";
+
+            FileSystemEventHandler handler = (s, e) => ScheduleReload();
+            RenamedEventHandler renHandler = (s, e) => ScheduleReload();
+            _webWatcher.Changed += handler;
+            _webWatcher.Created += handler;
+            _webWatcher.Renamed += renHandler;
+            _webWatcher.EnableRaisingEvents = true;
+
+            LogManager.Log("[WebOverlay] Hot-reload watcher started: " + webDir);
+        }
+
+        /// <summary>去抖 500ms：多次文件变化只触发一次 Reload。</summary>
+        private void ScheduleReload()
+        {
+            if (_disposed) return;
+            if (_reloadDebounce != null)
+                _reloadDebounce.Dispose();
+            _reloadDebounce = new System.Threading.Timer(_ =>
+            {
+                if (_disposed || !_webReady) return;
+                try
+                {
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        if (_disposed || _webView == null || _webView.CoreWebView2 == null) return;
+                        _webView.CoreWebView2.Reload();
+                        LogManager.Log("[WebOverlay] Hot-reload triggered");
+                    }));
+                }
+                catch { }
+            }, null, 500, System.Threading.Timeout.Infinite);
         }
 
         /// <summary>WebView2 初始化失败时，激活 GDI+ fallback 并 flush 早期消息。</summary>
@@ -692,6 +739,17 @@ namespace CF7Launcher.Guardian
                     _audioTimer.Stop();
                     _audioTimer.Dispose();
                     _audioTimer = null;
+                }
+                if (_webWatcher != null)
+                {
+                    _webWatcher.EnableRaisingEvents = false;
+                    _webWatcher.Dispose();
+                    _webWatcher = null;
+                }
+                if (_reloadDebounce != null)
+                {
+                    _reloadDebounce.Dispose();
+                    _reloadDebounce = null;
                 }
                 if (_webView != null)
                 {
