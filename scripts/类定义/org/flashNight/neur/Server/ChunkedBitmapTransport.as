@@ -3,23 +3,24 @@
 /**
  * ChunkedBitmapTransport - 分块位图传输层
  *
- * 将 BitmapExporter 产出的 base64 chunks 通过 XMLSocket
+ * 将 BitmapExporter 产出的裁剪结果通过 XMLSocket
  * 以 begin/chunk/end 协议发送到 C# 端。
  *
  * 协议：
- *   begin → {op:"begin", iconName, hash}
+ *   begin → {op:"begin", iconName, hash, contentX, contentY, contentW, contentH}
  *   chunk × N → {op:"chunk", hash, b64data}
  *   end → {op:"end", hash, current, total}（with callback）
  */
 class org.flashNight.neur.Server.ChunkedBitmapTransport {
 
     /**
-     * 发送单个图标的像素数据（所有分块 + 协议包装）。
+     * 发送单个图标帧的像素数据（所有分块 + 协议包装）。
      *
      * @param taskType  task 路由名（如 "icon_bake"）
      * @param iconName  图标名（业务标识）
      * @param hash      文件名哈希（含帧后缀，如 "df918107_1"）
-     * @param chunks    BitmapExporter.render() 返回的分块数组
+     * @param result    BitmapExporter.render() 返回的结果对象
+     *                  {chunks, contentX, contentY, contentW, contentH}
      * @param current   当前进度序号
      * @param total     总数
      * @param callback  C# end 响应回调 function(resp:Object):Void
@@ -28,15 +29,24 @@ class org.flashNight.neur.Server.ChunkedBitmapTransport {
         taskType:String,
         iconName:String,
         hash:String,
-        chunks:Array,
+        result:Object,
         current:Number,
         total:Number,
         callback:Function
     ):Void {
         var sm:ServerManager = ServerManager.getInstance();
+        var chunks:Array = result.chunks;
 
-        // begin（fire-and-forget）
-        sm.sendTaskToNode(taskType, {op: "begin", iconName: iconName, hash: hash});
+        // begin（附带 contentRect，fire-and-forget）
+        sm.sendTaskToNode(taskType, {
+            op: "begin",
+            iconName: iconName,
+            hash: hash,
+            contentX: result.contentX,
+            contentY: result.contentY,
+            contentW: result.contentW,
+            contentH: result.contentH
+        });
 
         // chunks（fire-and-forget）
         var i:Number = 0;

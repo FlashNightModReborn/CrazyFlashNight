@@ -19,10 +19,13 @@ namespace CF7Launcher.Tasks
     /// 全量烘焙完成后清理不再存在的图标（manifest 收敛）。
     ///
     /// 协议（全部走 RegisterSync，保证 begin→chunk→end 顺序）：
-    ///   begin:    { op:"begin", iconName:"...", hash:"xxx_1" }
-    ///   chunk:    { op:"chunk", hash:"xxx_1", b64data:"..." }
-    ///   end:      { op:"end", hash:"xxx_1", current:N, total:M }
-    ///   complete: { op:"complete", total, failed, failedNames, fullBake:true/false }
+    ///   begin:    { op:"begin", iconName, hash, contentX, contentY, contentW, contentH }
+    ///   chunk:    { op:"chunk", hash, b64data }
+    ///   end:      { op:"end", hash, current, total }
+    ///   complete: { op:"complete", total, failed, failedNames, fullBake }
+    ///
+    /// contentRect 裁剪：AS2 端用 getColorBoundsRect 裁剪透明区域，
+    /// 只传输有内容的像素，C# 端在 256×256 画布对应位置重建。
     /// </summary>
     public class IconBakeTask
     {
@@ -38,14 +41,17 @@ namespace CF7Launcher.Tasks
         private string _currentIconName;
         private string _currentHash;
 
+        // 当前帧的 contentRect（由 begin 传入）
+        private int _contentX;
+        private int _contentY;
+        private int _contentW;
+        private int _contentH;
+
         // manifest: iconName → JObject { "f1": "hash_1.png", "f2": "hash_2.png" }
         private Dictionary<string, JObject> _manifest;
 
         // 本轮出现的 iconName 集合（全量烘焙时用于清理判断）
         private HashSet<string> _seenIcons;
-
-        // 本轮出现的文件名集合（用于孤儿文件清理）
-        private HashSet<string> _seenFiles;
 
         // 统计
         private int _created;
@@ -61,7 +67,6 @@ namespace CF7Launcher.Tasks
             _manifestPath = Path.Combine(_iconsDir, "manifest.json");
             _notchSink = notchSink;
             _seenIcons = new HashSet<string>();
-            _seenFiles = new HashSet<string>();
             LoadManifest();
         }
 
@@ -99,7 +104,14 @@ namespace CF7Launcher.Tasks
         {
             _currentIconName = payload.Value<string>("iconName");
             _currentHash = payload.Value<string>("hash");
-            _currentBuffer = new MemoryStream(ICON_SIZE * ICON_SIZE * BYTES_PER_PIXEL);
+
+            // 解析 contentRect（AS2 端 getColorBoundsRect 裁剪结果）
+            _contentX = payload.Value<int?>("contentX") ?? 0;
+            _contentY = payload.Value<int?>("contentY") ?? 0;
+            _contentW = payload.Value<int?>("contentW") ?? ICON_SIZE;
+            _contentH = payload.Value<int?>("contentH") ?? ICON_SIZE;
+
+            _currentBuffer = new MemoryStream(_contentW * _contentH * BYTES_PER_PIXEL);
 
             // 记录本轮出现的 icon
             _seenIcons.Add(_currentIconName);
@@ -143,18 +155,28 @@ namespace CF7Launcher.Tasks
             try
             {
                 byte[] rawArgb = _currentBuffer.ToArray();
-                int expectedLen = ICON_SIZE * ICON_SIZE * BYTES_PER_PIXEL;
+                int expectedLen = _contentW * _contentH * BYTES_PER_PIXEL;
                 if (rawArgb.Length != expectedLen)
-                    return BuildError("pixel data length mismatch: expected " + expectedLen + " got " + rawArgb.Length);
+                    return BuildError("pixel data length mismatch: expected " + expectedLen + " got " + rawArgb.Length
+                        + " (contentRect=" + _contentX + "," + _contentY + "," + _contentW + "," + _contentH + ")");
 
-                // ARGB → BGRA
-                byte[] bgra = new byte[rawArgb.Length];
-                for (int i = 0; i < rawArgb.Length; i += 4)
+                // 在 256×256 BGRA 画布的 contentRect 位置填充像素
+                byte[] bgra = new byte[ICON_SIZE * ICON_SIZE * BYTES_PER_PIXEL];
+                int srcIdx = 0;
+                int stride = ICON_SIZE * BYTES_PER_PIXEL;
+                for (int row = 0; row < _contentH; row++)
                 {
-                    bgra[i + 0] = rawArgb[i + 3]; // B
-                    bgra[i + 1] = rawArgb[i + 2]; // G
-                    bgra[i + 2] = rawArgb[i + 1]; // R
-                    bgra[i + 3] = rawArgb[i + 0]; // A
+                    int dstRowStart = (_contentY + row) * stride + _contentX * BYTES_PER_PIXEL;
+                    for (int col = 0; col < _contentW; col++)
+                    {
+                        int di = dstRowStart + col * BYTES_PER_PIXEL;
+                        // ARGB → BGRA
+                        bgra[di + 0] = rawArgb[srcIdx + 3]; // B
+                        bgra[di + 1] = rawArgb[srcIdx + 2]; // G
+                        bgra[di + 2] = rawArgb[srcIdx + 1]; // R
+                        bgra[di + 3] = rawArgb[srcIdx + 0]; // A
+                        srcIdx += BYTES_PER_PIXEL;
+                    }
                 }
 
                 byte[] newPng;
@@ -199,9 +221,6 @@ namespace CF7Launcher.Tasks
                     action = "created";
                     _created++;
                 }
-
-                // 记录本轮文件
-                _seenFiles.Add(filename);
 
                 // 更新 manifest（每个 iconName 下按帧存储）
                 JObject entry;
@@ -365,7 +384,6 @@ namespace CF7Launcher.Tasks
             _updated = 0;
             _unchanged = 0;
             _seenIcons.Clear();
-            _seenFiles.Clear();
 
             return null;
         }

@@ -10,7 +10,7 @@ import flash.geom.Rectangle;
  *
  * 设计原则：
  * - 渲染逻辑与传输/状态机分离，IconBaker 调用本类完成光栅化
- * - 多校准档位：通过 profileKey 区分不同帧/类型的缩放参数
+ * - 校准策略由调用方控制：profileKey 非 null 缓存复用，null 每次独立校准
  * - 像素提取按 as2-performance.md 热路径规范优化
  */
 class org.flashNight.arki.render.BitmapExporter {
@@ -19,7 +19,7 @@ class org.flashNight.arki.render.BitmapExporter {
     private static var SIZE:Number = 256;
     private static var ROWS_PER_CHUNK:Number = 32;
 
-    // 校准档位字典：profileKey → {scale, offsetX, offsetY}
+    // 校准缓存：profileKey → Matrix（非 null 时缓存复用）
     private static var _profiles:Object;
 
     // base64 查表（预构建，避免 charAt 的 GetMember 开销）
@@ -30,7 +30,7 @@ class org.flashNight.arki.render.BitmapExporter {
     private static var _clearRect:Rectangle;
 
     /**
-     * 重置全部校准档位。下次 render 时重新从首个 MC 确定缩放比。
+     * 重置校准缓存与内部缓冲区。
      */
     public static function resetCalibration():Void {
         _profiles = {};
@@ -41,13 +41,18 @@ class org.flashNight.arki.render.BitmapExporter {
     }
 
     /**
-     * 光栅化 MovieClip 并返回 base64 分块数组。
+     * 光栅化 MovieClip 并返回带裁剪信息的结果对象。
      *
      * @param mc          要光栅化的 MovieClip（已 gotoAndStop 到目标帧）
-     * @param profileKey  校准档位名（如 "f1"/"f2"），不同帧使用独立缩放参数
-     * @return 分块数组 [{b64: "...", startRow: N}, ...]，失败返回 null
+     * @param profileKey  校准缓存键。非 null 时首次校准后缓存复用（适用于
+     *                    模板统一的帧，如 f1 图标帧——遮罩导致 getBounds 不可靠，
+     *                    但所有图标共享同一模板边界）。null 时每次独立校准
+     *                    （适用于尺寸各异的帧，如 f2 掉落物帧）。
+     * @return {chunks, contentX, contentY, contentW, contentH}，失败返回 null
+     *         chunks: [{b64: "..."}, ...]
+     *         contentX/Y/W/H: 实际内容区域（像素坐标），C# 端据此在 256×256 画布定位
      */
-    public static function render(mc:MovieClip, profileKey:String):Array {
+    public static function render(mc:MovieClip, profileKey:String):Object {
         if (mc == undefined) return null;
 
         // 惰性初始化
@@ -58,28 +63,55 @@ class org.flashNight.arki.render.BitmapExporter {
             _clearRect = new Rectangle(0, 0, SIZE, SIZE);
         }
 
-        // 获取或创建校准档位
-        var profile:Object = _profiles[profileKey];
-        if (profile == undefined) {
-            profile = _calibrate(mc, profileKey);
-            if (profile == null) return null;
+        // 校准：profileKey 非 null 时缓存复用，null 时每次独立计算
+        var mtx:Matrix;
+        if (profileKey != null && _profiles[profileKey] != undefined) {
+            mtx = _profiles[profileKey];
+        } else {
+            mtx = _buildMatrix(mc);
+            if (profileKey != null) {
+                _profiles[profileKey] = mtx;
+            }
         }
 
         // 清空复用 BitmapData [S03: 复用预分配对象]
         _bmp.fillRect(_clearRect, 0x00000000);
 
         // 光栅化
-        _bmp.draw(mc, profile.mtx);
+        _bmp.draw(mc, mtx);
 
-        // 提取像素 + base64 分块编码
-        return _extractChunks();
+        // 用 getColorBoundsRect 获取非透明像素的边界矩形
+        // mask=0xFF000000 color=0x00000000 findColor=false → 找 alpha != 0 的区域
+        var cr:Rectangle = _bmp.getColorBoundsRect(0xFF000000, 0x00000000, false);
+
+        var cx:Number;
+        var cy:Number;
+        var cw:Number;
+        var ch:Number;
+
+        if (cr.width <= 0 || cr.height <= 0) {
+            // 全透明，仍返回满幅（防御性）
+            cx = 0;
+            cy = 0;
+            cw = SIZE;
+            ch = SIZE;
+        } else {
+            cx = cr.x;
+            cy = cr.y;
+            cw = cr.width;
+            ch = cr.height;
+        }
+
+        // 提取 contentRect 区域的像素 + base64 分块编码
+        var chunks:Array = _extractChunks(cx, cy, cw, ch);
+
+        return {chunks: chunks, contentX: cx, contentY: cy, contentW: cw, contentH: ch};
     }
 
     /**
-     * 从 MC 的边界确定缩放 Matrix 并存入校准档位。
-     * 每个 profileKey 只校准一次（用首个遇到的 MC）。
+     * 根据 MC 边界计算等比缩放居中 Matrix。
      */
-    private static function _calibrate(mc:MovieClip, profileKey:String):Object {
+    private static function _buildMatrix(mc:MovieClip):Matrix {
         var bb:Object = mc.getBounds(mc);
         var bw:Number = bb.xMax - bb.xMin;
         var bh:Number = bb.yMax - bb.yMin;
@@ -101,19 +133,11 @@ class org.flashNight.arki.render.BitmapExporter {
             offsetY = (SIZE - drawH) / 2 - bb.yMin * scale;
         }
 
-        var mtx:Matrix = new Matrix(scale, 0, 0, scale, offsetX, offsetY);
-        var profile:Object = {scale: scale, offsetX: offsetX, offsetY: offsetY, mtx: mtx};
-        _profiles[profileKey] = profile;
-
-        _root.服务器.发布服务器消息("[BitmapExporter] 校准 [" + profileKey + "]: scale=" + scale
-            + " offset=(" + ((offsetX * 100 | 0) / 100) + "," + ((offsetY * 100 | 0) / 100) + ")"
-            + " bounds=(" + (bw | 0) + "x" + (bh | 0) + ")");
-
-        return profile;
+        return new Matrix(scale, 0, 0, scale, offsetX, offsetY);
     }
 
     /**
-     * 从 _bmp 提取像素，base64 编码并分块返回。
+     * 从 _bmp 的指定区域提取像素，base64 编码并分块返回。
      *
      * 热路径优化（参照 as2-performance.md）：
      * - [H01] 全部外部变量缓存到局部
@@ -123,27 +147,30 @@ class org.flashNight.arki.render.BitmapExporter {
      * - 字符串拼接用裸 +（优于 Array.join [anti-hallucination §2]）
      * - base64 查表用数组索引(35ns) 替代 charAt(580ns)
      */
-    private static function _extractChunks():Array {
+    private static function _extractChunks(cx:Number, cy:Number, cw:Number, ch:Number):Array {
         var chunks:Array = [];
         // [H01] 局部化外部变量
         var bmp:BitmapData = _bmp;
-        var size:Number = SIZE;
         var rowsPerChunk:Number = ROWS_PER_CHUNK;
         var b64:Array = _b64Chars;
 
-        var startRow:Number = 0;
-        while (startRow < size) {
+        // 内容区域边界
+        var xEnd:Number = cx + cw;
+        var yEnd:Number = cy + ch;
+
+        var startRow:Number = cy;
+        while (startRow < yEnd) {
             var endRow:Number = startRow + rowsPerChunk;
-            if (endRow > size) endRow = size;
+            if (endRow > yEnd) endRow = yEnd;
 
             // 像素提取 → 字节数组，预分配 [S03]
-            var byteCount:Number = (endRow - startRow) * size * 4;
+            var byteCount:Number = (endRow - startRow) * cw * 4;
             var bytes:Array = new Array(byteCount);
             var bi:Number = 0;
             var y:Number = startRow;
             while (y < endRow) {
-                var x:Number = 0;
-                while (x < size) {
+                var x:Number = cx;
+                while (x < xEnd) {
                     var p:Number = bmp.getPixel32(x, y);
                     // ARGB 拆分 — 直接索引赋值 [H20: 避免 push]
                     bytes[bi] = (p >>> 24) & 0xFF;
@@ -186,7 +213,7 @@ class org.flashNight.arki.render.BitmapExporter {
                     + "=";
             }
 
-            chunks.push({b64: out, startRow: startRow});
+            chunks.push({b64: out});
             startRow += rowsPerChunk;
         }
 

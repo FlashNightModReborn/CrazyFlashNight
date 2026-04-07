@@ -148,18 +148,19 @@ class org.flashNight.arki.item.IconBaker {
 
         _root._quality = "BEST";
         iconMC.gotoAndStop(1);
-        var chunks:Array = BitmapExporter.render(iconMC, "f1");
+        var result:Object = BitmapExporter.render(iconMC, "f1");
         _root._quality = _savedQuality;
 
-        if (chunks == null) {
+        if (result == null) {
             _root.服务器.发布服务器消息("[IconBaker] f1 渲染失败: " + iconName);
+            _failedIcons.push(iconName);
             // f1 失败仍尝试 f2
             _phase = DRAW_F2;
             return;
         }
 
         _phase = WAIT_F1;
-        ChunkedBitmapTransport.send(TASK, iconName, hash + "_1", chunks,
+        ChunkedBitmapTransport.send(TASK, iconName, hash + "_1", result,
             _index + 1, _total,
             function(resp:Object):Void {
                 org.flashNight.arki.item.IconBaker.onFrameSaved(resp);
@@ -187,17 +188,17 @@ class org.flashNight.arki.item.IconBaker {
 
         _root._quality = "BEST";
         iconMC.gotoAndStop(2);
-        var chunks:Array = BitmapExporter.render(iconMC, "f2");
+        var result:Object = BitmapExporter.render(iconMC, null);
         _root._quality = _savedQuality;
 
-        if (chunks == null) {
+        if (result == null) {
             // f2 渲染失败不算整体失败
             advanceToNext();
             return;
         }
 
         _phase = WAIT_F2;
-        ChunkedBitmapTransport.send(TASK, iconName, hash + "_2", chunks,
+        ChunkedBitmapTransport.send(TASK, iconName, hash + "_2", result,
             _index + 1, _total,
             function(resp:Object):Void {
                 org.flashNight.arki.item.IconBaker.onFrameSaved(resp);
