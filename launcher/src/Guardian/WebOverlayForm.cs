@@ -99,6 +99,7 @@ namespace CF7Launcher.Guardian
         // Web 资源热重载：监听 webDir 文件变化，去抖后自动 Reload
         private FileSystemWatcher _webWatcher;
         private System.Threading.Timer _reloadDebounce;
+        private System.Threading.Timer _reloadTimeout;
 
         public WebOverlayForm(Form owner, Control anchor, string webDir)
         {
@@ -242,6 +243,7 @@ namespace CF7Launcher.Guardian
             RenamedEventHandler renHandler = (s, e) => ScheduleReload();
             _webWatcher.Changed += handler;
             _webWatcher.Created += handler;
+            _webWatcher.Deleted += handler;
             _webWatcher.Renamed += renHandler;
             _webWatcher.EnableRaisingEvents = true;
 
@@ -252,22 +254,44 @@ namespace CF7Launcher.Guardian
         private void ScheduleReload()
         {
             if (_disposed) return;
-            if (_reloadDebounce != null)
-                _reloadDebounce.Dispose();
-            _reloadDebounce = new System.Threading.Timer(_ =>
+            var newTimer = new System.Threading.Timer(_ =>
             {
-                if (_disposed || !_webReady) return;
+                if (_disposed) return;
                 try
                 {
                     this.BeginInvoke(new Action(() =>
                     {
                         if (_disposed || _webView == null || _webView.CoreWebView2 == null) return;
+
+                        // 重置就绪状态，使消息进入缓冲/fallback 通道
+                        _webReady = false;
                         _webView.CoreWebView2.Reload();
-                        LogManager.Log("[WebOverlay] Hot-reload triggered");
+                        LogManager.Log("[WebOverlay] Hot-reload triggered, _webReady reset to false");
+
+                        // 超时保护：10s 后若 JS 未重新发出 ready，降级到 fallback
+                        var timeout = new System.Threading.Timer(__ =>
+                        {
+                            if (_disposed || _webReady) return;
+                            try
+                            {
+                                this.BeginInvoke(new Action(() =>
+                                {
+                                    if (_disposed || _webReady) return;
+                                    LogManager.Log("[WebOverlay] Hot-reload timeout: JS did not send ready within 10s, activating fallback");
+                                    _webFailed = true;
+                                    ActivateFallback();
+                                }));
+                            }
+                            catch (Exception ex) { LogManager.Log("[WebOverlay] Hot-reload timeout error: " + ex.Message); }
+                        }, null, 10000, System.Threading.Timeout.Infinite);
+                        var oldTimeout = System.Threading.Interlocked.Exchange(ref _reloadTimeout, timeout);
+                        if (oldTimeout != null) oldTimeout.Dispose();
                     }));
                 }
-                catch { }
+                catch (Exception ex) { LogManager.Log("[WebOverlay] Hot-reload invoke error: " + ex.Message); }
             }, null, 500, System.Threading.Timeout.Infinite);
+            var old = System.Threading.Interlocked.Exchange(ref _reloadDebounce, newTimer);
+            if (old != null) old.Dispose();
         }
 
         /// <summary>WebView2 初始化失败时，激活 GDI+ fallback 并 flush 早期消息。</summary>
@@ -377,6 +401,11 @@ namespace CF7Launcher.Guardian
                 {
                     LogManager.Log("[WebOverlay] JS side ready → activating web channel");
                     _webReady = true;
+                    _webFailed = false; // 热重载恢复时清除降级标记
+
+                    // 取消热重载超时 Timer
+                    var oldTimeout = System.Threading.Interlocked.Exchange(ref _reloadTimeout, null);
+                    if (oldTimeout != null) oldTimeout.Dispose();
 
                     // flush 早期缓冲
                     if (_toastReady)
@@ -750,6 +779,11 @@ namespace CF7Launcher.Guardian
                 {
                     _reloadDebounce.Dispose();
                     _reloadDebounce = null;
+                }
+                if (_reloadTimeout != null)
+                {
+                    _reloadTimeout.Dispose();
+                    _reloadTimeout = null;
                 }
                 if (_webView != null)
                 {
