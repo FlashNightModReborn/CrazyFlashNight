@@ -310,6 +310,15 @@ namespace CF7Launcher.Guardian
                 _notchFallback.SetReady();
         }
 
+        /// <summary>Web 通道恢复后，挂起 GDI+ fallback（隐藏 + 停 timer），避免双重 UI。</summary>
+        private void SuspendFallback()
+        {
+            var notch = _notchFallback as NotchOverlay;
+            if (notch != null) notch.Suspend();
+            var toast = _toastFallback as ToastOverlay;
+            if (toast != null) toast.Suspend();
+        }
+
         #endregion
 
         #region Owner 跟随
@@ -428,8 +437,8 @@ namespace CF7Launcher.Guardian
                     if (_musicCatalog != null)
                         PostToWeb(_musicCatalog.GetFullCatalogJson());
 
-                    // 通知 GDI+ fallback 它可以退出了（如果之前在顶着）
-                    // 不需要——fallback 继续运行也无害，_webReady=true 后消息走 Web 通道
+                    // Web 通道恢复，挂起 GDI+ fallback 避免双重 UI
+                    SuspendFallback();
                 }
             }
             catch (Exception ex)
@@ -615,10 +624,10 @@ namespace CF7Launcher.Guardian
                 this.BeginInvoke(new Action<string>(HandleUiData), payload);
                 return;
             }
-            if (_disposed || _webFailed) return; // 永久失败时丢弃（UI 数据无 GDI+ fallback）
-            if (!_webReady)
+            if (_disposed) return;
+            if (_webFailed || !_webReady)
             {
-                // WebView2 未就绪，缓冲（上限 200 条防止内存泄漏）
+                // WebView2 未就绪或降级中，缓冲等待恢复（上限 200 条防止内存泄漏）
                 if (_uiDataEarlyBuffer.Count < 200)
                     _uiDataEarlyBuffer.Add(payload);
                 return;

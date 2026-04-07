@@ -82,6 +82,19 @@ namespace CF7Launcher.Guardian
             _earlyBuffer.Clear();
         }
 
+        /// <summary>挂起：停止 timer + 隐藏。WebView2 恢复后调用，避免双重 UI。</summary>
+        public void Suspend()
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action(Suspend));
+                return;
+            }
+            _ready = false;
+            _timer.Stop();
+            DismissOverlay();
+        }
+
         public void AddMessage(string text)
         {
             if (this.InvokeRequired)

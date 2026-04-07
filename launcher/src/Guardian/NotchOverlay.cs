@@ -169,6 +169,19 @@ namespace CF7Launcher.Guardian
             PaintLayered();
         }
 
+        /// <summary>挂起：隐藏窗口 + 停止 timer。WebView2 恢复后调用，避免双重 UI。</summary>
+        public void Suspend()
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action(Suspend));
+                return;
+            }
+            _ready = false;
+            _timer.Stop();
+            DismissOverlay();
+        }
+
         /// <summary>设置或更新状态槽位（前向兼容：无限过图计时器等）。</summary>
         /// <summary>设置或更新持久信息行（外部清除前一直在）。同 category 替换。</summary>
         public void SetStatusItem(string id, string label, string subLabel, Color accentColor)
