@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/敌人-爆胖僵尸" itemID="69d5f34f-0000088e" linkageExportForAS="true" linkageIdentifier="敌人-爆胖僵尸" lastModified="1775631142" lastUniqueIdentifier="63">
   <timeline>
-    <DOMTimeline name="敌人-爆胖僵尸" currentFrame="13">
+    <DOMTimeline name="敌人-爆胖僵尸" currentFrame="11">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -579,7 +579,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="77" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1318" name="man" centerPoint3DX="72.05" centerPoint3DY="14.85">
+                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1318" name="man" selected="true" centerPoint3DX="72.05" centerPoint3DY="14.85">
                   <matrix>
                     <Matrix tx="9.9" ty="-59.7"/>
                   </matrix>
@@ -594,7 +594,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="85" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1319" name="man" centerPoint3DX="44.5" centerPoint3DY="69.1">
+                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1319" name="man" selected="true" centerPoint3DX="44.5" centerPoint3DY="69.1">
                   <matrix>
                     <Matrix tx="-1.45" ty="-0.55"/>
                   </matrix>
@@ -609,7 +609,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="94" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1329" name="man" centerPoint3DX="449.25" centerPoint3DY="268.15">
+                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1329" name="man" selected="true" centerPoint3DX="449.25" centerPoint3DY="268.15">
                   <matrix>
                     <Matrix tx="354.8" ty="175.85"/>
                   </matrix>

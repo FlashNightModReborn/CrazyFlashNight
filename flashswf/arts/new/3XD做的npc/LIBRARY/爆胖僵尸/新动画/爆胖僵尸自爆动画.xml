@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/新动画/爆胖僵尸自爆动画" itemID="69bc3451-00000388" lastModified="1775631385" lastUniqueIdentifier="255">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/新动画/爆胖僵尸自爆动画" itemID="69bc3451-00000388" lastModified="1775642044" lastUniqueIdentifier="255">
   <timeline>
-    <DOMTimeline name="爆胖僵尸自爆动画" currentFrame="51" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-19&lt;/guideline&gt;&lt;guideline direction="v"&gt;24&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="爆胖僵尸自爆动画" currentFrame="90" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-19&lt;/guideline&gt;&lt;guideline direction="v"&gt;24&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 2" color="#9933CC" autoNamed="false">
           <frames>
@@ -11,7 +11,7 @@
         </DOMLayer>
         <DOMLayer name="代码" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="33" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[function 自爆()
 {
@@ -32,6 +32,13 @@
 	子弹属性.区域定位area = this.攻击点;
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="32" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.击倒呐喊();
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -94,8 +101,7 @@
             </DOMFrame>
             <DOMFrame index="90" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.动画完毕();
-]]></script>
+                <script><![CDATA[_parent.死亡检测();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

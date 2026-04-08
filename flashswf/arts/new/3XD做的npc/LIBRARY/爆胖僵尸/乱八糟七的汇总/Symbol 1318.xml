@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/乱八糟七的汇总/Symbol 1318" itemID="6577f78a-000011ef" lastModified="1775629628">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/乱八糟七的汇总/Symbol 1318" itemID="6577f78a-000011ef" lastModified="1775642219">
   <timeline>
-    <DOMTimeline name="Symbol 1318">
+    <DOMTimeline name="Symbol 1318" currentFrame="22">
       <layers>
-        <DOMLayer name="Labels_Layer" color="#5E53F5">
+        <DOMLayer name="Labels_Layer" color="#5E53F5" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" name="a0" labelType="name" keyMode="9728">
               <elements/>
@@ -27,10 +27,10 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="15" duration="21" keyMode="9728">
+            <DOMFrame index="15" duration="17" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
+            <DOMFrame index="32" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
@@ -459,7 +459,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_18" color="#BCC96F" current="true" isSelected="true">
+        <DOMLayer name="Layer_18" color="#BCC96F">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements/>

@@ -1,10 +1,267 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/血触手-击飞 合并" itemID="69c14844-000004d3" lastModified="1774274672" lastUniqueIdentifier="90">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/血触手-击飞 合并" itemID="69c14844-000004d3" lastModified="1775642276" lastUniqueIdentifier="90">
   <timeline>
-    <DOMTimeline name="血触手-击飞 合并" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;94&lt;/guideline&gt;&lt;guideline direction="h"&gt;88&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="v"&gt;36&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="血触手-击飞 合并" currentFrame="118" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;94&lt;/guideline&gt;&lt;guideline direction="h"&gt;88&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="v"&gt;36&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
+        <DOMLayer name="Labels_Layer" color="#2E97BC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="9" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="7" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="6" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="6" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="7" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="75" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="7" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="6" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="108" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#14EEAE" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 != true)
+{
+   _parent.击倒呐喊();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="MergedLayer_1" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
+            <DOMFrame index="0" duration="118" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/左臂上" symbolType="graphic" centerPoint3DX="-11.95" centerPoint3DY="-69.15" loop="loop">
+                  <matrix>
+                    <Matrix a="0.275482177734375" b="0.2056884765625" c="0.21368408203125" d="-0.28631591796875" tx="-27.4" ty="-61.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.8" y="10.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/左臂下" symbolType="graphic" centerPoint3DX="-2.4" centerPoint3DY="-90.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.200225830078125" b="-0.0921173095703125" c="0.076690673828125" d="-0.17144775390625" tx="-2.7" ty="-75.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.9" y="21.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/左手" symbolType="graphic" centerPoint3DX="3.95" centerPoint3DY="-105.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.258834838867188" b="-0.118377685546875" c="0.118377685546875" d="0.258834838867188" tx="0.6" ty="-107.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.85" y="27.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/鞋子" symbolType="graphic" centerPoint3DX="37.5" centerPoint3DY="51.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.192001342773438" b="-0.13427734375" c="0.146286010742188" d="0.209136962890625" tx="35.4" ty="50.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-14.65" y="-11.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/左腿上" symbolType="graphic" centerPoint3DX="11.6" centerPoint3DY="-8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.959991455078125" b="0.273971557617188" c="-0.273971557617188" d="0.959991455078125" tx="2.35" ty="-32.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.15" y="8.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/右腿下" symbolType="graphic" centerPoint3DX="23.6" centerPoint3DY="26.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9029541015625" b="-0.4139404296875" c="0.4139404296875" d="0.9029541015625" tx="4.9" ty="12.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.95" y="6.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/鞋子" symbolType="graphic" centerPoint3DX="24.3" centerPoint3DY="61.2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.224365234375" b="-0.0700225830078125" c="0.0762481689453125" d="0.244384765625" tx="22.85" ty="60.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.65" y="-11.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/右腿上" symbolType="graphic" centerPoint3DX="0.8" centerPoint3DY="-0.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.836822509765625" b="-0.54449462890625" c="0.54449462890625" d="0.836822509765625" tx="-19.1" ty="-14.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9" y="7.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/右腿下" symbolType="graphic" centerPoint3DX="13.8" centerPoint3DY="32.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.927154541015625" b="-0.354110717773438" c="0.354110717773438" d="0.927154541015625" tx="-3.5" ty="17.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.45" y="4.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/身体" symbolType="graphic" centerPoint3DX="-16.15" centerPoint3DY="-47.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.56329345703125" b="-0.861297607421875" c="0.861297607421875" d="0.56329345703125" tx="-53.1" ty="-45.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.05" y="51"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/屁股" symbolType="graphic" centerPoint3DX="-4.55" centerPoint3DY="-23.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.940719604492188" b="-0.33746337890625" c="0.33746337890625" d="0.940719604492188" tx="-19.7" ty="-28.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.1" y="11.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/头部" symbolType="graphic" centerPoint3DX="-34.8" centerPoint3DY="-69.2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.55242919921875" b="-0.837448120117188" c="0.837448120117188" d="0.55242919921875" tx="-53.65" ty="-64.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.55" y="21.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/右手下" symbolType="graphic" centerPoint3DX="-16.95" centerPoint3DY="-81.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.182861328125" b="-0.4747314453125" c="0.4747314453125" d="-0.182861328125" tx="-20.15" ty="-73.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-32.85" y="16.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/右手上" symbolType="graphic" centerPoint3DX="-20.2" centerPoint3DY="-56.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.347076416015625" b="-0.372299194335938" c="0.372299194335938" d="-0.347076416015625" tx="-19.8" ty="-47.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.6" y="-16.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/右手触手" symbolType="graphic" centerPoint3DX="12" centerPoint3DY="-81.75" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.43902587890625" b="0.325668334960938" c="-0.3155517578125" d="0.42608642578125" tx="99.5" ty="213.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-447.1" y="-338.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="角色部件/重复项目文件夹/左臂上" symbolType="graphic" centerPoint3DX="-11.95" centerPoint3DY="-69.15" loop="loop">
                   <matrix>

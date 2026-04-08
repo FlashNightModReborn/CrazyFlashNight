@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防爆服僵尸/代码层/敌人-防爆服僵尸" itemID="671dc7f1-0000097d" linkageExportForAS="true" linkageIdentifier="敌人-防爆服僵尸" lastModified="1760717703" lastUniqueIdentifier="47">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防爆服僵尸/代码层/敌人-防爆服僵尸" itemID="671dc7f1-0000097d" linkageExportForAS="true" linkageIdentifier="敌人-防爆服僵尸" lastModified="1775641937" lastUniqueIdentifier="47">
   <timeline>
-    <DOMTimeline name="敌人-防爆服僵尸" currentFrame="16" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="h"&gt;10&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-防爆服僵尸" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="h"&gt;10&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -622,7 +622,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="71" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/被击" name="man" centerPoint3DX="47.85" centerPoint3DY="-55.55">
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/被击" name="man" selected="true" centerPoint3DX="47.85" centerPoint3DY="-55.55">
                   <matrix>
                     <Matrix tx="-25.65" ty="-147.6"/>
                   </matrix>
@@ -643,7 +643,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/击飞" name="man" centerPoint3DX="52.9" centerPoint3DY="-52.75">
+                <DOMSymbolInstance libraryItemName="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/击飞" name="man" selected="true" centerPoint3DX="52.9" centerPoint3DY="-52.75">
                   <matrix>
                     <Matrix tx="-23.45" ty="-128"/>
                   </matrix>

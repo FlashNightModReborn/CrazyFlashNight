@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁弓箭手/黑铁长枪兵/动画合集/起身" itemID="67ba017c-00002268" lastModified="1740240479" lastUniqueIdentifier="152">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁弓箭手/黑铁长枪兵/动画合集/起身" itemID="67ba017c-00002268" lastModified="1775642325" lastUniqueIdentifier="152">
   <timeline>
-    <DOMTimeline name="起身" currentFrame="49" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;88&lt;/guideline&gt;&lt;guideline direction="h"&gt;108&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="起身" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;88&lt;/guideline&gt;&lt;guideline direction="h"&gt;108&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="代码层" color="#B93CFD" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#B93CFD" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -39,14 +39,14 @@ if(_parent.hp < 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="死亡消失层" color="#9B42CE" locked="true" autoNamed="false">
+        <DOMLayer name="死亡消失层" color="#9B42CE" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="黑铁弓箭手/怪物通用模板/死亡消失元件/Symbol 39" centerPoint3DX="-372.1" centerPoint3DY="-138.55">
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/怪物通用模板/死亡消失元件/Symbol 39" selected="true" centerPoint3DX="-372.1" centerPoint3DY="-138.55">
                   <matrix>
                     <Matrix a="0.444442749023438" d="0.444442749023438" tx="-390.1" ty="-156.55"/>
                   </matrix>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/击飞" itemID="671dc806-00000b91" lastModified="1730004085">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防爆服僵尸/代码层/蛙型仿生僵尸/动画合集/击飞" itemID="671dc806-00000b91" lastModified="1775642283">
   <timeline>
     <DOMTimeline name="击飞" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;114&lt;/guideline&gt;&lt;guideline direction="h"&gt;99&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -48,7 +48,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#14EEAE" autoNamed="false">
+        <DOMLayer name="代码层" color="#14EEAE" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -375,7 +375,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="z1" color="#00FFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="z1" color="#00FFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="119" keyMode="9728">
               <elements>

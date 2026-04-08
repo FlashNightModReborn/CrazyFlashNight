@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="黑铁弓箭手/敌人-黑铁弓箭手" itemID="67b9f41e-000003fd" linkageExportForAS="true" linkageIdentifier="敌人-黑铁弓箭手" lastModified="1775620023" lastUniqueIdentifier="44">
   <timeline>
-    <DOMTimeline name="敌人-黑铁弓箭手" currentFrame="23">
+    <DOMTimeline name="敌人-黑铁弓箭手" currentFrame="14">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -657,7 +657,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="黑铁弓箭手/黑铁长枪兵/动画合集/起身" name="man" centerPoint3DX="66.3" centerPoint3DY="-13.05">
+                <DOMSymbolInstance libraryItemName="黑铁弓箭手/黑铁长枪兵/动画合集/起身" name="man" selected="true" centerPoint3DX="66.3" centerPoint3DY="-13.05">
                   <matrix>
                     <Matrix tx="-22.35" ty="-109.25"/>
                   </matrix>
