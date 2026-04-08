@@ -2,7 +2,23 @@
      <folders>
           <DOMFolderItem name="01.怪物通用模板" itemID="66fff238-000007dd"/>
           <DOMFolderItem name="01.怪物通用模板/area框" itemID="69d5c8c1-00000d8d"/>
-          <DOMFolderItem name="触手僵尸" itemID="69d5ca32-00001363" isExpanded="true"/>
+          <DOMFolderItem name="爆胖僵尸" itemID="69d5fa0b-000022d3" isExpanded="true"/>
+          <DOMFolderItem name="爆胖僵尸/01.怪物通用模板" itemID="69d5fa0e-0000235b"/>
+          <DOMFolderItem name="爆胖僵尸/01.怪物通用模板/area框" itemID="69d5fa0e-0000235c"/>
+          <DOMFolderItem name="爆胖僵尸/Graphic" itemID="58132b87-000007ef"/>
+          <DOMFolderItem name="爆胖僵尸/飙血特效素材" itemID="69c2ce7e-000002d2"/>
+          <DOMFolderItem name="爆胖僵尸/怪物通用模板" itemID="69d5fa0e-0000235d"/>
+          <DOMFolderItem name="爆胖僵尸/怪物通用模板/area框" itemID="69d5fa0e-0000235e"/>
+          <DOMFolderItem name="爆胖僵尸/怪物通用模板/通用ai元件" itemID="69d5fa0e-0000235f"/>
+          <DOMFolderItem name="爆胖僵尸/怪物通用模板/新近战子弹定位元件" itemID="69d5fa0e-00002360"/>
+          <DOMFolderItem name="爆胖僵尸/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="69d5fa0e-00002361"/>
+          <DOMFolderItem name="爆胖僵尸/怪物通用模板/血条与名称" itemID="69d5fa0e-00002362"/>
+          <DOMFolderItem name="爆胖僵尸/乱八糟七的汇总" itemID="69d5f49e-00000890"/>
+          <DOMFolderItem name="爆胖僵尸/蛙型仿生僵尸" itemID="69ac941c-00001a9e"/>
+          <DOMFolderItem name="爆胖僵尸/蛙型仿生僵尸/杂项素材" itemID="69ac941c-00001a9f"/>
+          <DOMFolderItem name="爆胖僵尸/新动画" itemID="69d5f5fd-000009dd"/>
+          <DOMFolderItem name="爆胖僵尸/血素材" itemID="69c2ce89-000002d7"/>
+          <DOMFolderItem name="触手僵尸" itemID="69d5ca32-00001363"/>
           <DOMFolderItem name="触手僵尸/触手动画" itemID="689b75f8-000002cc"/>
           <DOMFolderItem name="触手僵尸/血" itemID="69c0471f-000010cd"/>
           <DOMFolderItem name="触手僵尸/血综合" itemID="69c04f14-0000188a"/>
@@ -48,7 +64,7 @@
           <DOMFolderItem name="怪物通用模板" itemID="663f0996-000058f5"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="663f0996-000058f6" isExpanded="true"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="663f0996-000058f7" isExpanded="true"/>
-          <DOMFolderItem name="黑铁弓箭手" itemID="67ba016f-0000217f" isExpanded="true"/>
+          <DOMFolderItem name="黑铁弓箭手" itemID="67ba016f-0000217f"/>
           <DOMFolderItem name="黑铁弓箭手/弓箭手动画" itemID="6766d57d-00001436"/>
           <DOMFolderItem name="黑铁弓箭手/弓箭手动画/弓箭手身体零件" itemID="67b9f441-00000402" isExpanded="true"/>
           <DOMFolderItem name="黑铁弓箭手/弓箭手动画/蛙型仿生僵尸" itemID="67b9f693-000005a3" isExpanded="true"/>
@@ -106,7 +122,7 @@
           <DOMFolderItem name="徘徊者异形/一些复用信息元件" itemID="68ac44c4-00000271"/>
           <DOMFolderItem name="徘徊者异形/疑似原版身体素材以及尸块" itemID="68ac45bb-00000283"/>
           <DOMFolderItem name="思考标签（与旧思考块）" itemID="67e51b4a-00000f3a"/>
-          <DOMFolderItem name="特警僵尸" itemID="671db3dc-000001b7" isExpanded="true"/>
+          <DOMFolderItem name="特警僵尸" itemID="671db3dc-000001b7"/>
           <DOMFolderItem name="特警僵尸/代码层" itemID="671dc166-00000537" isExpanded="true"/>
           <DOMFolderItem name="特警僵尸/代码层/怪物通用模板" itemID="65ae6715-000036fd" isExpanded="true"/>
           <DOMFolderItem name="特警僵尸/代码层/怪物通用模板/area框" itemID="671dc7ff-00000a10"/>
@@ -181,6 +197,124 @@
      <symbols>
           <Include href="01.怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="65ae6963-00003740" lastModified="1705929059"/>
           <Include href="Symbol 145.xml" loadImmediate="false" itemID="65e1d4ea-000002bd" lastModified="1756119203"/>
+          <Include href="爆胖僵尸/01.怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="69d5fa0e-000023df" lastModified="1705929059"/>
+          <Include href="爆胖僵尸/Graphic/shape 612.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000264" lastModified="1477651512"/>
+          <Include href="爆胖僵尸/Graphic/shape 614.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000266" lastModified="1477651512"/>
+          <Include href="爆胖僵尸/Graphic/shape 616.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000268" lastModified="1477651512"/>
+          <Include href="爆胖僵尸/Graphic/shape 618.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-0000026a" lastModified="1477651512"/>
+          <Include href="爆胖僵尸/Graphic/shape 620.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-0000026c" lastModified="1477651512"/>
+          <Include href="爆胖僵尸/Graphic/shape 621.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-0000026d" lastModified="1477651512"/>
+          <Include href="爆胖僵尸/Graphic/shape 622.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-0000026e" lastModified="1477651512"/>
+          <Include href="爆胖僵尸/Graphic/shape 623.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-0000026f" lastModified="1477651512"/>
+          <Include href="爆胖僵尸/Graphic/shape 624.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000270" lastModified="1477651512"/>
+          <Include href="爆胖僵尸/Graphic/shape 625.xml" itemIcon="1" loadImmediate="false" itemID="58132c38-00000271" lastModified="1477651512"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 125.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0f-000023ee" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 127.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0f-000023ef" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 128.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0e-000023ed" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 129.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0f-000023f0" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 145.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000002a7" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 150.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000002ab" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 151.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000002ac" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 152.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000002ad" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 159.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000002b3" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 186.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000002cb" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 453.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000003a9" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 905.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000051f" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1227.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005d2" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1228.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005d3" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1231.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005d6" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1232.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005d7" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1234.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005d9" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1238.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005dc" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1248.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005e5" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1249.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005e6" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1254.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005e9" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1255.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005ea" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1260.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005ee" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1262.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005f0" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1263.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005f1" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1265.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005f3" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1268.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005f6" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1270.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005f8" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1271.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005f9" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1273.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005fb" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1275.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005fd" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1277.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005fe" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1278.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000005ff" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1280.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000601" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1281.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000602" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1282.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000603" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1283.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000604" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1285.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000606" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1286.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000607" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1288.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000609" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1289.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000060a" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1291.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000060c" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1294.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000060e" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1295.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000060f" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1298.xml" loadImmediate="false" itemID="6577efbc-00000611" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1300.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000613" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1301.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000614" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/Symbol 1306.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000618" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/飙血特效素材/滴血.xml" loadImmediate="false" itemID="69bbed26-00000de2" lastModified="1774323268"/>
+          <Include href="爆胖僵尸/飙血特效素材/撒血.xml" loadImmediate="false" itemID="69bbed5d-00000de6" lastModified="1773923678"/>
+          <Include href="爆胖僵尸/飙血特效素材/血222.xml" loadImmediate="false" itemID="69bbe6f3-00000ac5" lastModified="1773922035"/>
+          <Include href="爆胖僵尸/飙血特效素材/血223.xml" loadImmediate="false" itemID="69bbe70c-00000ac9" lastModified="1773922060"/>
+          <Include href="爆胖僵尸/敌人-爆胖僵尸.xml" itemID="69d5f34f-0000088e" lastModified="1775631142"/>
+          <Include href="爆胖僵尸/怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="69d5fa0e-00002373" lastModified="1705929037"/>
+          <Include href="爆胖僵尸/怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="69d5fa0e-0000237e" lastModified="1705929009"/>
+          <Include href="爆胖僵尸/怪物通用模板/通用ai元件/思考标签.xml" loadImmediate="false" itemID="69d5fa0e-0000237f" lastModified="1746165689"/>
+          <Include href="爆胖僵尸/怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="69d5fa0e-00002380" lastModified="1705928955"/>
+          <Include href="爆胖僵尸/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0e-000023e0" lastModified="1701884437"/>
+          <Include href="爆胖僵尸/怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="69d5fa0e-00002372" lastModified="1714404428"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 18.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-00000f81" lastModified="1701306521"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 19.xml" loadImmediate="false" itemID="6577f78a-00000f82" lastModified="1701306521"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 99.xml" loadImmediate="false" itemID="6577f78a-00000fa1" lastModified="1701306521"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 195.xml" loadImmediate="false" itemID="6577f78a-00000fbc" lastModified="1707307969"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1299.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011dc" lastModified="1755165790"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1300.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011dd" lastModified="1701306521"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1301.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011de" lastModified="1755165756"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1302.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011df" lastModified="1755166289"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1303.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011e0" lastModified="1755164499"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1304.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011e1" lastModified="1701306521"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1305.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011e2" lastModified="1755163242"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1306.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011e3" lastModified="1755164168"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1307.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011e4" lastModified="1755165931"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1308.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011e5" lastModified="1755166040"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1309.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011e6" lastModified="1743955360"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1310.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011e7" lastModified="1743955373"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1311.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011e8" lastModified="1701306521"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1312.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011e9" lastModified="1755164822"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1313.xml" loadImmediate="false" itemID="6577f78a-000011ea" lastModified="1775629480"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1315.xml" loadImmediate="false" itemID="6577f78a-000011ec" lastModified="1775629505"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1316.xml" loadImmediate="false" itemID="6577f78a-000011ed" lastModified="1775629555"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1317.xml" loadImmediate="false" itemID="6577f78a-000011ee" lastModified="1775631613"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1318.xml" loadImmediate="false" itemID="6577f78a-000011ef" lastModified="1775629628"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1319.xml" loadImmediate="false" itemID="6577f78a-000011f0" lastModified="1755166407"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1320.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011f1" lastModified="1701306521"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1321.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011f2" lastModified="1701306521"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1322.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011f3" lastModified="1701306521"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1323.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011f4" lastModified="1701306521"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1328.xml" itemIcon="1" loadImmediate="false" itemID="6577f78a-000011f5" lastModified="1701306521"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/Symbol 1329.xml" loadImmediate="false" itemID="6577f78a-000011f6" lastModified="1755166408"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/元件 3.xml" itemIcon="1" loadImmediate="false" itemID="689daa3d-00000139" lastModified="1755164178"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/元件 4.xml" itemIcon="1" loadImmediate="false" itemID="689dae63-00000147" lastModified="1755164514"/>
+          <Include href="爆胖僵尸/乱八糟七的汇总/元件 6.xml" itemIcon="1" loadImmediate="false" itemID="689db125-0000015a" lastModified="1755165853"/>
+          <Include href="爆胖僵尸/蛙型仿生僵尸/杂项素材/Symbol 254.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0e-000023ea" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/蛙型仿生僵尸/杂项素材/Symbol 259.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0e-000023eb" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/蛙型仿生僵尸/杂项素材/Symbol 263.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0e-000023ec" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/蛙型仿生僵尸/杂项素材/Symbol 287.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0e-000023c8" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/蛙型仿生僵尸/杂项素材/Symbol 290.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0e-000023c9" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/蛙型仿生僵尸/杂项素材/Symbol 291.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0e-000023ca" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/蛙型仿生僵尸/杂项素材/Symbol 299.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0e-000023cb" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/蛙型仿生僵尸/杂项素材/Symbol 300.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0e-000023cc" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/蛙型仿生僵尸/杂项素材/Symbol 304.xml" itemIcon="1" loadImmediate="false" itemID="69d5fa0e-000023ce" lastModified="1702098593"/>
+          <Include href="爆胖僵尸/新动画/爆胖僵尸呕吐动画1.xml" loadImmediate="false" itemID="69bc344a-00000387" lastModified="1775631346"/>
+          <Include href="爆胖僵尸/新动画/爆胖僵尸自爆动画.xml" loadImmediate="false" itemID="69bc3451-00000388" lastModified="1775631385"/>
+          <Include href="爆胖僵尸/血素材/爆皮内构.xml" loadImmediate="false" itemID="69bbeadf-00000dbb" lastModified="1773923097"/>
+          <Include href="爆胖僵尸/血素材/爆血特效.xml" loadImmediate="false" itemID="69bbe176-0000095f" lastModified="1773940697"/>
+          <Include href="爆胖僵尸/血素材/向上飙血.xml" loadImmediate="false" itemID="69bbe893-00000b42" lastModified="1773922509"/>
+          <Include href="爆胖僵尸/阴影.xml" loadImmediate="false" itemID="69d5fa0f-000023f1" lastModified="1705744649"/>
           <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="673638e5-00000b84" lastModified="1731606757"/>
           <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="673638e5-00000b86" lastModified="1731606757"/>
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="673639c2-00000bbb" lastModified="1731606978"/>
@@ -233,7 +367,7 @@
           <Include href="触手僵尸/血触手-倒地起身 合并.xml" loadImmediate="false" itemID="69c14961-000005d4" lastModified="1774274957"/>
           <Include href="触手僵尸/血触手-击飞 合并.xml" loadImmediate="false" itemID="69c14844-000004d3" lastModified="1774274672"/>
           <Include href="触手僵尸/血触手-跑步 合并.xml" loadImmediate="false" itemID="69c149c1-0000062a" lastModified="1774275028"/>
-          <Include href="触手僵尸/血触手-平A1 合并.xml" loadImmediate="false" itemID="69c1487f-00000530" lastModified="1775620970"/>
+          <Include href="触手僵尸/血触手-平A1 合并.xml" loadImmediate="false" itemID="69c1487f-00000530" lastModified="1775630130"/>
           <Include href="触手僵尸/血触手-死亡 合并.xml" loadImmediate="false" itemID="69c148d4-000005a9" lastModified="1774274914"/>
           <Include href="触手僵尸/血触手-远程 合并.xml" loadImmediate="false" itemID="69c148a5-0000055b" lastModified="1775621479"/>
           <Include href="触手僵尸/血触手-走路 合并.xml" loadImmediate="false" itemID="69c149d3-00000655" lastModified="1774275037"/>
@@ -1611,6 +1745,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2231060" publishTime="1775631523"/>
+          <PublishItem publishSize="2230831" publishTime="1775631154"/>
+          <PublishItem publishSize="2230812" publishTime="1775630891"/>
           <PublishItem publishSize="1901394" publishTime="1775621374"/>
           <PublishItem publishSize="1901394" publishTime="1775621231"/>
           <PublishItem publishSize="1901153" publishTime="1775620964"/>
@@ -1628,8 +1765,5 @@
           <PublishItem publishSize="1667450" publishTime="1756574644"/>
           <PublishItem publishSize="1667062" publishTime="1756557273"/>
           <PublishItem publishSize="1667062" publishTime="1756557247"/>
-          <PublishItem publishSize="1667062" publishTime="1756556948"/>
-          <PublishItem publishSize="1660365" publishTime="1756556194"/>
-          <PublishItem publishSize="1660365" publishTime="1756556185"/>
      </publishHistory>
 </DOMDocument>

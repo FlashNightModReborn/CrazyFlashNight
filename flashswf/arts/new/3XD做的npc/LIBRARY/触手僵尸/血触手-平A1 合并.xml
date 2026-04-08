@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/血触手-平A1 合并" itemID="69c1487f-00000530" lastModified="1775620970" lastUniqueIdentifier="341">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/血触手-平A1 合并" itemID="69c1487f-00000530" lastModified="1775630130" lastUniqueIdentifier="341">
   <timeline>
-    <DOMTimeline name="血触手-平A1 合并" currentFrame="34" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;94&lt;/guideline&gt;&lt;guideline direction="h"&gt;88&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="v"&gt;36&lt;/guideline&gt;&lt;guideline direction="v"&gt;68&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="血触手-平A1 合并" currentFrame="36" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;94&lt;/guideline&gt;&lt;guideline direction="h"&gt;88&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="v"&gt;36&lt;/guideline&gt;&lt;guideline direction="v"&gt;68&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
@@ -58,7 +58,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="追踪" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="追踪" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -140,7 +140,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -204,7 +204,7 @@ onClipEvent(enterFrame){
               <elements>
                 <DOMSymbolInstance libraryItemName="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="41.9" centerPoint3DY="-168.3">
                   <matrix>
-                    <Matrix a="0.536178588867188" d="7.74462890625" tx="41.9" ty="-168.3"/>
+                    <Matrix a="0.536178588867188" d="7.74461364746094" tx="41.9" ty="-168.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -367,7 +367,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="36" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="120.05" centerPoint3DY="-56.4">
+                <DOMSymbolInstance libraryItemName="刀狙少女/未命名文件夹 1/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="120.05" centerPoint3DY="-56.4">
                   <matrix>
                     <Matrix a="0.491989135742188" d="1.9656982421875" tx="120.05" ty="-56.4"/>
                   </matrix>
@@ -940,8 +940,8 @@ onClipEvent(enterFrame){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-430 -1734[464 -2340 787 -1681!787 -1681[407 -2245 -430 -1734!-250 -2227[652 -2358 806 -1703!806 -1703[555 -2319 -250 -2227"/>
                     <Edge fillStyle1="2" edges="!-387 -1260[356 -2233 755 -1666!755 -1666[306 -2115 -387 -1260"/>
+                    <Edge fillStyle1="1" edges="!-250 -2227[652 -2358 806 -1703!806 -1703[555 -2319 -250 -2227!-430 -1734[464 -2340 787 -1681!787 -1681[407 -2245 -430 -1734"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -955,7 +955,7 @@ onClipEvent(enterFrame){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!225 -2355[#607.EB #FFF909.F3 1729 -758!1729 -758[#533.F7 #FFF8D1.2E 225 -2355!1825 -698[#6A9.D9 #FFF97B.ED 913 -2538!913 -2538[#757.53 #FFF9BC.3A 1825 -698!-25 -2037[#4FF.28 #FFF928.A6 1599 -778!1599 -778[1094 -1770 -25 -2037"/>
+                    <Edge fillStyle1="1" edges="!1825 -698[#6A9.D9 #FFF97B.ED 913 -2538!913 -2538[#757.53 #FFF9BC.3A 1825 -698!225 -2355[#607.EB #FFF909.F3 1729 -758!1729 -758[#533.F7 #FFF8D1.2E 225 -2355!-25 -2037[#4FF.28 #FFF928.A6 1599 -778!1599 -778[1094 -1770 -25 -2037"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -986,7 +986,7 @@ onClipEvent(enterFrame){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!930 349[#A35.56 #FFFD6B.C7 1413 -3182!1413 -3182[2867 -461 930 349!716 202[#90F.1A #FFFCD1.44 827 -3444!827 -3444[2611 -603 716 202!1130 433[#BE0.11 #FFFE14.1E 1793 -3158!1793 -3158[#D3A.E3 #FFFEC2.CA 1130 433"/>
+                    <Edge fillStyle1="1" edges="!1130 433[#BE0.11 #FFFE14.1E 1793 -3158!1793 -3158[#D3A.E3 #FFFEC2.CA 1130 433!716 202[#90F.1A #FFFCD1.44 827 -3444!827 -3444[2611 -603 716 202!930 349[#A35.56 #FFFD6B.C7 1413 -3182!1413 -3182[2867 -461 930 349"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1000,7 +1000,7 @@ onClipEvent(enterFrame){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!996 342[2627 #FFFDD0.73 1807 -3264!1807 -3264[2891 -463 996 342!1110 459[2810 -380 2433 -2962!2433 -2962[#BF1.52 -268.5 1110 459!1240 513[3203 -305 3152 -2798!3152 -2798[3438 -237 1240 513"/>
+                    <Edge fillStyle1="1" edges="!1240 513[3203 -305 3152 -2798!3152 -2798[3438 -237 1240 513!1110 459[2810 -380 2433 -2962!2433 -2962[#BF1.52 -268.5 1110 459!996 342[2627 #FFFDD0.73 1807 -3264!1807 -3264[2891 -463 996 342"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1036,7 +1036,7 @@ onClipEvent(enterFrame){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-430 -1734[469 -2320 787 -1681!787 -1681[#181.A6 #FFF76D.3A -430 -1734!-387 -1260[361 -2213 755 -1666!755 -1666[311 #FFF7FF.61 -387 -1260!-250 -2227[657 -2338 806 -1703!806 -1703[#20B.14 -2275 -250 -2227"/>
+                    <Edge fillStyle1="1" edges="!-250 -2227[657 -2338 806 -1703!806 -1703[#20B.14 -2275 -250 -2227!-387 -1260[361 -2213 755 -1666!755 -1666[311 #FFF7FF.61 -387 -1260!-430 -1734[469 -2320 787 -1681!787 -1681[#181.A6 #FFF76D.3A -430 -1734"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1050,7 +1050,7 @@ onClipEvent(enterFrame){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!225 -2355[1519 -1752 1729 -758!1729 -758[#4FC.97 #FFF917.AB 225 -2355!1825 -698[#675.6 -1633.125 913 -2538!913 -2538[1854 -1574 1825 -698!-25 -2037[1254 -1721 1599 -778!1599 -778[#3FE.D4 #FFF946.78 -25 -2037"/>
+                    <Edge fillStyle1="1" edges="!1825 -698[#675.6 -1633.125 913 -2538!913 -2538[1854 -1574 1825 -698!225 -2355[1519 -1752 1729 -758!1729 -758[#4FC.97 #FFF917.AB 225 -2355!-25 -2037[1254 -1721 1599 -778!1599 -778[#3FE.D4 #FFF946.78 -25 -2037"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1081,7 +1081,7 @@ onClipEvent(enterFrame){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!972 493[#B48.AD #FFFE0C.6E 1793 -3158!1793 -3158[3322 -317 972 493!616 252[#880.12 -815 827 -3444!827 -3444[2546 -603 616 252!797 414[#9CD.2D -660 1413 -3182!1413 -3182[2802 -461 797 414"/>
+                    <Edge fillStyle1="1" edges="!797 414[#9CD.2D -660 1413 -3182!1413 -3182[2802 -461 797 414!616 252[#880.12 -815 827 -3444!827 -3444[2546 -603 616 252!972 493[#B48.AD #FFFE0C.6E 1793 -3158!1793 -3158[3322 -317 972 493"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1095,7 +1095,7 @@ onClipEvent(enterFrame){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!1240 513[3203 -305 3152 -2798!3152 -2798[3438 -237 1240 513!1110 459[2810 -380 2433 -2962!2433 -2962[#BF1.52 -268.5 1110 459!996 342[2627 #FFFDD0.73 1807 -3264!1807 -3264[2891 -463 996 342"/>
+                    <Edge fillStyle1="1" edges="!996 342[2627 #FFFDD0.73 1807 -3264!1807 -3264[2891 -463 996 342!1110 459[2810 -380 2433 -2962!2433 -2962[#BF1.52 -268.5 1110 459!1240 513[3203 -305 3152 -2798!3152 -2798[3438 -237 1240 513"/>
                   </edges>
                 </DOMShape>
               </elements>
