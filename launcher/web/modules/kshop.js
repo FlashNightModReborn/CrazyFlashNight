@@ -57,6 +57,32 @@ var KShop = (function() {
     }
     function toast(msg) { if (typeof Toast !== 'undefined') Toast.add(msg); }
 
+    // 长按加速：按住按钮自动重复触发，间隔逐步缩短
+    // 初始 400ms → 加速到最快 50ms（每次 ×0.85）
+    function holdRepeat(el, callback) {
+        var timer = null, interval = 400, raf = null;
+        function fire() {
+            callback();
+            interval = Math.max(50, interval * 0.85);
+            timer = setTimeout(fire, interval);
+        }
+        function start(e) {
+            e.preventDefault();
+            interval = 400;
+            callback();
+            timer = setTimeout(fire, interval);
+        }
+        function stop() {
+            if (timer) { clearTimeout(timer); timer = null; }
+            interval = 400;
+        }
+        el.addEventListener('mousedown', start);
+        el.addEventListener('mouseup', stop);
+        el.addEventListener('mouseleave', stop);
+        // 阻止默认 click（已在 mousedown 中触发）
+        el.addEventListener('click', function(e) { e.stopPropagation(); });
+    }
+
     // ══════════════════════════════════════════
     //  Panel registration
     // ══════════════════════════════════════════
@@ -78,17 +104,17 @@ var KShop = (function() {
             '<div class="kshop-categories" id="kshop-cat-bar"></div>' +
             '<div class="kshop-body">' +
                 '<div class="kshop-grid-wrap">' +
-                    '<div class="kshop-loading" id="kshop-loading">LOADING...</div>' +
+                    '<div class="kshop-loading" id="kshop-loading">\u52a0\u8f7d\u4e2d\u2026</div>' +
                     '<div class="kshop-grid" id="kshop-grid"></div>' +
                 '</div>' +
                 '<div class="kshop-sidebar">' +
-                    '<div class="kshop-cart-header">// CART</div>' +
+                    '<div class="kshop-cart-header">// \u8d2d\u7269\u8f66</div>' +
                     '<div class="kshop-cart-list" id="kshop-cart-list"></div>' +
                     '<div class="kshop-cart-footer">' +
-                        '<span>TOTAL: <b id="kshop-cart-total">0</b></span>' +
-                        '<button class="kshop-checkout-btn" id="kshop-checkout">CHECKOUT</button>' +
+                        '<span>\u5408\u8ba1: <b id="kshop-cart-total">0</b></span>' +
+                        '<button class="kshop-checkout-btn" id="kshop-checkout">\u7ed3\u8d26</button>' +
                     '</div>' +
-                    '<div class="kshop-claim-header">// PURCHASED</div>' +
+                    '<div class="kshop-claim-header">// \u5df2\u8d2d\u4e70</div>' +
                     '<div class="kshop-claim-list" id="kshop-claim-list"></div>' +
                 '</div>' +
             '</div>' +
@@ -222,9 +248,12 @@ var KShop = (function() {
                 : '';
 
             card.innerHTML = iconEl +
-                '<div class="kshop-card-name">' + escHtml(item.displayname) + '</div>' +
-                '<div class="kshop-card-price">K ' + item.price + '</div>' +
-                lockHtml + actionHtml;
+                '<div class="kshop-card-info">' +
+                    '<div class="kshop-card-name">' + escHtml(item.displayname) + '</div>' +
+                    '<div class="kshop-card-price">K ' + item.price + '</div>' +
+                    lockHtml +
+                '</div>' +
+                actionHtml;
 
             card.addEventListener('mouseenter', onCardHover);
             card.addEventListener('mouseleave', onCardLeave);
@@ -287,11 +316,11 @@ var KShop = (function() {
         _tooltip.innerHTML =
             '<div class="kshop-tt-header"><b>' + escHtml(item.displayname) + '</b></div>' +
             '<div class="kshop-tt-divider"></div>' +
-            '<span class="kshop-tt-dim">TYPE</span> ' + escHtml(item.majorType) + ' / ' + escHtml(item.subType) + '<br>' +
-            '<span class="kshop-tt-dim">LVL</span> ' + item.level +
-            (locked ? ' <span class="kshop-tt-locked">\u26bf LOCKED</span>' : '') + '<br>' +
+            '<span class="kshop-tt-dim">\u7c7b\u578b</span> ' + escHtml(item.majorType) + ' / ' + escHtml(item.subType) + '<br>' +
+            '<span class="kshop-tt-dim">\u7b49\u7ea7</span> ' + item.level +
+            (locked ? ' <span class="kshop-tt-locked">\u26bf \u9501\u5b9a</span>' : '') + '<br>' +
             '<span class="kshop-tt-price">K ' + item.price + '</span>' +
-            '<div class="kshop-tt-loading">LOADING...</div>';
+            '<div class="kshop-tt-loading">\u52a0\u8f7d\u4e2d\u2026</div>';
     }
 
     function renderRichTooltip(item, data) {
@@ -300,7 +329,7 @@ var KShop = (function() {
         var descHtml = data.descHTML ? convertAS2Html(data.descHTML) : '';
 
         var lockBanner = locked
-            ? '<div class="kshop-tt-lock-banner">\u26bf LOCKED \u2014 Lv.' + item.level + '</div>'
+            ? '<div class="kshop-tt-lock-banner">\u26bf \u9501\u5b9a \u2014 \u9700\u8981 Lv.' + item.level + '</div>'
             : '';
 
         // 物品图标（与原 Flash 注释框的 物品图标定位 层对应）
@@ -403,7 +432,7 @@ var KShop = (function() {
             '</div>' +
             '<div class="kshop-qty-popup-foot">' +
                 '<span class="kshop-qty-subtotal">K ' + item.price + '</span>' +
-                '<button class="kshop-qty-confirm">ADD</button>' +
+                '<button class="kshop-qty-confirm">\u52a0\u8d2d</button>' +
             '</div>';
 
         // 定位到按钮附近
@@ -422,14 +451,16 @@ var KShop = (function() {
             subtotalEl.textContent = 'K ' + (v * price);
         }
 
-        // +/- 按钮
+        // +/- 按钮：长按加速
         var btns = _qtyPopup.querySelectorAll('.kshop-qty-pop-btn');
         for (var b = 0; b < btns.length; b++) {
-            btns[b].addEventListener('click', function(ev) {
-                var delta = Number(ev.target.getAttribute('data-v'));
-                input.value = Math.max(1, (Number(input.value) || 1) + delta);
-                updateSubtotal();
-            });
+            (function(btn) {
+                var delta = Number(btn.getAttribute('data-v'));
+                holdRepeat(btn, function() {
+                    input.value = Math.max(1, (Number(input.value) || 1) + delta);
+                    updateSubtotal();
+                });
+            })(btns[b]);
         }
         input.addEventListener('input', updateSubtotal);
         input.addEventListener('keydown', function(ev) {
@@ -517,8 +548,24 @@ var KShop = (function() {
 
             // 点击行弹详情
             row.addEventListener('click', onCartRowClick);
+            // 数量按钮：长按加速
             var btns = row.querySelectorAll('.kshop-qty-btn');
-            for (var b = 0; b < btns.length; b++) btns[b].addEventListener('click', onQtyChange);
+            for (var b = 0; b < btns.length; b++) {
+                (function(btn) {
+                    var cidx = Number(btn.getAttribute('data-idx'));
+                    var delta = Number(btn.getAttribute('data-delta'));
+                    holdRepeat(btn, function() {
+                        for (var j = 0; j < _cart.length; j++) {
+                            if (_cart[j].idx === cidx) {
+                                _cart[j].qty += delta;
+                                if (_cart[j].qty <= 0) { _cart.splice(j, 1); }
+                                renderCart();
+                                return;
+                            }
+                        }
+                    });
+                })(btns[b]);
+            }
             _cartList.appendChild(row);
         }
         _cartTotal.textContent = total;
@@ -528,7 +575,7 @@ var KShop = (function() {
     function onCartRowClick(e) {
         if (e.target.classList.contains('kshop-qty-btn')) return;
         var idx = Number(e.currentTarget.getAttribute('data-idx'));
-        showItemDetail(idx);
+        showItemDetail(idx, e.currentTarget);
     }
 
     function onQtyChange(e) {
@@ -548,30 +595,53 @@ var KShop = (function() {
     // ══════════════════════════════════════════
     //  Item detail (tooltip-style, triggered by row click)
     // ══════════════════════════════════════════
-    function showItemDetail(idx) {
+    function showItemDetail(idx, anchorEl) {
         var item = findCatalogItem(idx);
         if (!item || !_tooltip) return;
 
-        // 用缓存的富文本（如果有的话）
+        // 有缓存直接渲染富文本，无缓存异步拉取（几毫秒级）
         if (_tooltipCache[idx]) {
             renderRichTooltip(item, _tooltipCache[idx]);
         } else {
             renderBasicTooltip(item);
             requestFlashTooltip(idx);
         }
-        // 固定在屏幕中央偏右
+
         _tooltip.style.display = 'block';
-        _tooltip.style.left = '60%';
-        _tooltip.style.top = '30%';
         _tooltipHovering = idx;
-        // 5s 后自动关闭
+
+        // 锚定到点击行的左侧（sidebar 行 → tooltip 出现在行左方）
+        if (anchorEl) {
+            var rect = anchorEl.getBoundingClientRect();
+            var tw = _tooltip.offsetWidth || 300;
+            var th = _tooltip.offsetHeight || 200;
+            var vw = window.innerWidth, vh = window.innerHeight;
+            // 优先放在行的左侧
+            var x = rect.left - tw - 8;
+            if (x < 8) x = rect.right + 8; // 左侧放不下则放右侧
+            var y = rect.top;
+            if (y + th > vh - 8) y = vh - th - 8;
+            if (y < 8) y = 8;
+            _tooltip.style.left = x + 'px';
+            _tooltip.style.top = y + 'px';
+        }
+
+        // 点击其他地方关闭
         var closeIdx = idx;
+        function onDetailOutside(ev) {
+            if (_tooltip.contains(ev.target) || (anchorEl && anchorEl.contains(ev.target))) return;
+            document.removeEventListener('click', onDetailOutside);
+            if (_tooltipHovering === closeIdx) hideTooltip();
+        }
         setTimeout(function() {
-            if (_tooltipHovering === closeIdx) {
-                _tooltipHovering = -1;
-                _tooltip.style.display = 'none';
-            }
-        }, 5000);
+            document.addEventListener('click', onDetailOutside);
+        }, 0);
+
+        // 兜底 8s 自动关闭
+        setTimeout(function() {
+            document.removeEventListener('click', onDetailOutside);
+            if (_tooltipHovering === closeIdx) hideTooltip();
+        }, 8000);
     }
 
     // ══════════════════════════════════════════
@@ -632,7 +702,7 @@ var KShop = (function() {
             row.innerHTML =
                 '<span class="kshop-cart-thumb">' + iconHtml(iconName, 'kshop-row-icon') + '</span>' +
                 '<span class="kshop-claim-name">' + escHtml(displayName) + ' \u00d7' + qty + '</span>' +
-                '<button class="kshop-claim-btn" data-pidx="' + i + '">CLAIM</button>';
+                '<button class="kshop-claim-btn" data-pidx="' + i + '">\u9886\u53d6</button>';
             row.querySelector('.kshop-claim-btn').addEventListener('click', onClaim);
             if (catItem) row.addEventListener('click', onClaimRowClick);
             _claimList.appendChild(row);
@@ -642,7 +712,7 @@ var KShop = (function() {
     function onClaimRowClick(e) {
         if (e.target.classList.contains('kshop-claim-btn')) return;
         var idx = Number(e.currentTarget.getAttribute('data-idx'));
-        if (!isNaN(idx)) showItemDetail(idx);
+        if (!isNaN(idx)) showItemDetail(idx, e.currentTarget);
     }
 
     function onClaim(e) {
@@ -708,7 +778,7 @@ var KShop = (function() {
     function showSaveFailedDialog(msg, timeoutMode) {
         var dlg = _el.querySelector('#kshop-dialog');
         if (!dlg) return;
-        var btns = '<button class="kshop-dlg-btn" data-action="retry">RETRY</button>';
+        var btns = '<button class="kshop-dlg-btn" data-action="retry">\u91cd\u8bd5</button>';
         if (!timeoutMode) btns += '<button class="kshop-dlg-btn" data-action="cancel">\u7ee7\u7eed\u8d2d\u7269</button>';
         btns += '<button class="kshop-dlg-btn kshop-dlg-danger" data-action="force">\u5f3a\u5236\u5173\u95ed</button>';
 
