@@ -79,7 +79,7 @@ namespace CF7Launcher.Guardian
         // 面板系统
         private ShopTask _shopTask;
         private Action<bool> _onPanelStateChanged;
-        private bool _panelOpen;
+        private string _activePanel;  // null = 无面板, "kshop"/"help"/...
         private bool _pauseNeedsRestore;
 
         // 光照等级（静态 24h 数组，初始化后一次性推送给 JS）
@@ -640,10 +640,18 @@ namespace CF7Launcher.Guardian
             }
             if (_disposed) return;
 
-            // 维护最新值快照：按 type（首个 | 前的部分）去重，热重载后可恢复完整状态
-            int sep = payload.IndexOf('|');
-            if (sep > 0)
-                _uiDataSnapshot[payload.Substring(0, sep)] = payload;
+            // 维护最新值快照：payload 是 "key:val|key:val|..." 合批 KV 格式
+            // 按每个 KV 对的 key 独立存储最新值，热重载后可恢复完整状态
+            {
+                string[] pairs = payload.Split('|');
+                for (int i = 0; i < pairs.Length; i++)
+                {
+                    int colon = pairs[i].IndexOf(':');
+                    if (colon > 0)
+                        _uiDataSnapshot[pairs[i].Substring(0, colon)] = pairs[i];
+                    // 无冒号的段（旧格式）不进快照，由 buffer 兜底
+                }
+            }
 
             if (_webFailed || !_webReady)
             {
@@ -658,22 +666,36 @@ namespace CF7Launcher.Guardian
 
         private void FlushUiDataBuffer()
         {
-            // 1) 先回放快照：确保热重载后恢复所有已知 UiData 最新值（如 s|1 game-ready）
-            var snapshotTypes = new HashSet<string>();
-            foreach (var kv in _uiDataSnapshot)
+            // 1) 先回放快照：将所有已知 KV 最新值合并成一条 payload 推送
+            //    快照格式: key → "key:val"，拼接为 "s:1|k:1303750|p:0|..."
+            if (_uiDataSnapshot.Count > 0)
             {
-                snapshotTypes.Add(kv.Key);
-                string escaped = kv.Value.Replace("\\", "\\\\").Replace("'", "\\'");
-                ExecScript("typeof UiData!=='undefined'&&UiData.dispatch('" + escaped + "')");
+                var sb = new System.Text.StringBuilder();
+                foreach (var kv in _uiDataSnapshot)
+                {
+                    if (sb.Length > 0) sb.Append('|');
+                    sb.Append(kv.Value); // kv.Value 已是 "key:val" 格式
+                }
+                string snapshotPayload = sb.ToString().Replace("\\", "\\\\").Replace("'", "\\'");
+                ExecScript("typeof UiData!=='undefined'&&UiData.dispatch('" + snapshotPayload + "')");
             }
 
-            // 2) 再回放 buffer 中不在快照里的条目（避免重复推送快照已覆盖的类型）
+            // 2) 再回放 buffer 中快照未覆盖的条目
+            //    buffer 中的合批 payload 拆分后逐 key 检查，只推送快照未含的 key
             foreach (string p in _uiDataEarlyBuffer)
             {
-                int sep = p.IndexOf('|');
-                string type = sep > 0 ? p.Substring(0, sep) : p;
-                if (snapshotTypes.Contains(type)) continue; // 快照已包含最新值
-                HandleUiData(p);
+                string[] pairs = p.Split('|');
+                var remaining = new System.Text.StringBuilder();
+                for (int i = 0; i < pairs.Length; i++)
+                {
+                    int colon = pairs[i].IndexOf(':');
+                    string key = colon > 0 ? pairs[i].Substring(0, colon) : null;
+                    if (key != null && _uiDataSnapshot.ContainsKey(key)) continue; // 快照已有最新值
+                    if (remaining.Length > 0) remaining.Append('|');
+                    remaining.Append(pairs[i]);
+                }
+                if (remaining.Length > 0)
+                    HandleUiData(remaining.ToString());
             }
             _uiDataEarlyBuffer.Clear();
         }
@@ -871,7 +893,7 @@ namespace CF7Launcher.Guardian
                                 _pauseNeedsRestore = true;
                         }
                         // help 等纯 web 面板无需通知 Flash
-                        _panelOpen = false;
+                        _activePanel = null;
                         if (_onPanelStateChanged != null) _onPanelStateChanged(false);
                     }
                     break;
@@ -896,12 +918,14 @@ namespace CF7Launcher.Guardian
         {
             if (this.InvokeRequired) { try { this.BeginInvoke(new Action(OnSocketDisconnected)); } catch {} return; }
 
-            if (_panelOpen)
+            if (_activePanel != null)
             {
                 PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"force_close\",\"reason\":\"disconnected\"}");
-                _panelOpen = false;
+                // 只有需要 Flash 交互的面板才需要恢复暂停状态
+                if (_activePanel == "kshop")
+                    _pauseNeedsRestore = true;
+                _activePanel = null;
                 if (_onPanelStateChanged != null) _onPanelStateChanged(false);
-                _pauseNeedsRestore = true;
             }
             if (_shopTask != null) _shopTask.ClearPending();
         }
@@ -952,14 +976,14 @@ namespace CF7Launcher.Guardian
                     {
                         LogManager.Log("[Panel] SHOP → opening panel via PostToWeb");
                         PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"kshop\"}");
-                        _panelOpen = true;
+                        _activePanel = "kshop";
                         if (_onPanelStateChanged != null) _onPanelStateChanged(true);
-                        LogManager.Log("[Panel] SHOP → _panelOpen=true, state callback fired");
+                        LogManager.Log("[Panel] SHOP → _activePanel=kshop, state callback fired");
                     }
                     break;
                 case "HELP":
                     PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"help\"}");
-                    _panelOpen = true;
+                    _activePanel = "help";
                     if (_onPanelStateChanged != null) _onPanelStateChanged(true);
                     break;
                 case "SAFEEXIT": SendGameCommand("safeExit"); break;

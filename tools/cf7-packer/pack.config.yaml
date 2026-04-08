@@ -131,10 +131,19 @@ layers:
     exclude: []
 
   - name: launcher-web
-    description: "WebView2 overlay 前端资源（HTML/CSS/JS/Markdown 帮助）"
+    description: "WebView2 overlay 前端资源（HTML/CSS/JS/icons/Markdown 帮助/面板系统）"
     source: "launcher/web/"
-    include: [ "**/*" ]
-    exclude: []
+    include:
+      - "overlay.html"
+      - "css/**"
+      - "lib/**"
+      - "modules/**"
+      - "help/**"
+      - "icons/manifest.json"
+      - "icons/**/*.png"
+    exclude:
+      # 已被 help-panel.js 替代，不再被 overlay.html 引用
+      - "modules/help.js"
 
   - name: launcher-scripts
     description: "V8 运行时 JS bundle（伤害数字渲染 + 搓招 DFA）"

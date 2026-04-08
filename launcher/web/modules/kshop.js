@@ -159,8 +159,8 @@ var KShop = (function() {
 
         var reqId = 'bq' + (++_reqSeq);
         _pendingReq[reqId] = function(resp) {
-            if (!Panels.isOpen()) return;
             delete _pendingReq[reqId];
+            if (!Panels.isOpen()) return;
             _loading = false;
             if (_loadingEl) _loadingEl.style.display = 'none';
             if (_grid) _grid.style.opacity = '';
@@ -344,8 +344,8 @@ var KShop = (function() {
     function requestFlashTooltip(idx) {
         var reqId = 'tt' + (++_reqSeq);
         _pendingReq[reqId] = function(resp) {
+            delete _pendingReq[reqId]; // 先清理，无论面板是否已关
             if (!Panels.isOpen()) return;
-            delete _pendingReq[reqId];
             if (resp.success) {
                 _tooltipCache[idx] = { descHTML: resp.descHTML || '', introHTML: resp.introHTML || '' };
                 if (_tooltipHovering === idx && PanelTooltip.isVisible() && Panels.isOpen()) {
@@ -597,8 +597,8 @@ var KShop = (function() {
         var payload = [];
         for (var i = 0; i < _cart.length; i++) payload.push({idx: _cart[i].idx, qty: _cart[i].qty});
         _pendingReq[reqId] = function(resp) {
-            if (!Panels.isOpen()) return;
             delete _pendingReq[reqId];
+            if (!Panels.isOpen()) return;
             _checkingOut = false;
             if (resp.success) {
                 _kpoints = resp.newBalance;
@@ -664,8 +664,8 @@ var KShop = (function() {
         e.target.disabled = true;
         var reqId = 'cl' + (++_reqSeq);
         _pendingReq[reqId] = function(resp) {
-            if (!Panels.isOpen()) return;
             delete _pendingReq[reqId];
+            if (!Panels.isOpen()) return;
             if (resp.success) {
                 _purchased = resp.purchased || [];
                 renderClaimed();
@@ -688,8 +688,8 @@ var KShop = (function() {
         for (var i = 0; i < _cart.length; i++) cartPayload.push({idx: _cart[i].idx, qty: _cart[i].qty});
         var reqId = 'wclose' + (++_reqSeq);
         _pendingReq[reqId] = function(resp) {
-            if (!Panels.isOpen()) return;
             delete _pendingReq[reqId];
+            if (!Panels.isOpen()) return;
             if (resp.success) {
                 doClose();
             } else if (resp.error === 'timeout') {
@@ -704,6 +704,7 @@ var KShop = (function() {
     }
 
     function doClose() {
+        _pendingReq = {};
         dismissDialog();
         dismissQtyInput();
         hideTooltip();
