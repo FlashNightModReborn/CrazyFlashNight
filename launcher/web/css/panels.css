@@ -23,13 +23,39 @@
 #panel-content   { position:absolute; inset:4% 6%; z-index:1; display:flex; flex-direction:column;
                    pointer-events:auto; }
 
-/* ── Tooltip ── */
+/* ── Tooltip (rich Flash bridge) ── */
 #panel-tooltip   { position:fixed; z-index:1100; pointer-events:none; display:none;
                    background:var(--cp-bg); border:1px solid var(--cp-cyan); color:var(--cp-text);
-                   padding:10px 14px; font-size:12px; max-width:300px; letter-spacing:0.3px;
+                   padding:10px 14px; font-size:12px; max-width:480px; letter-spacing:0.3px;
+                   line-height:1.5;
                    clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
                    box-shadow:var(--cp-glow); }
 #panel-tooltip b { color:var(--cp-cyan); }
+
+/* Tooltip internal structure */
+.kshop-tt-header b { color:var(--cp-cyan); font-size:13px; }
+.kshop-tt-divider { margin:4px 0; border-top:1px solid rgba(0,240,255,0.15); }
+.kshop-tt-dim { color:var(--cp-dim); font-size:11px; }
+.kshop-tt-price { color:var(--cp-yellow); }
+.kshop-tt-locked { color:var(--cp-red); font-size:11px; }
+.kshop-tt-loading { color:var(--cp-dim); font-size:10px; margin-top:6px; letter-spacing:2px;
+                    animation:kshop-pulse 1.2s ease-in-out infinite; }
+.kshop-tt-lock-banner { margin-top:6px; padding:4px 8px; color:var(--cp-red); font-size:11px;
+                        border-top:1px solid rgba(255,0,60,0.2); letter-spacing:1px; }
+
+/* Rich tooltip (Flash bridge data) */
+.kshop-tt-rich { display:flex; gap:12px; }
+.kshop-tt-icon { flex:0 0 auto; display:flex; align-items:flex-start; justify-content:center;
+                 padding:4px; border-right:1px solid rgba(0,240,255,0.08); }
+.kshop-tt-icon img { width:96px; height:96px; object-fit:contain;
+                     filter:drop-shadow(0 0 6px rgba(0,240,255,0.2)); }
+.kshop-tt-intro { flex:0 0 auto; max-width:200px; padding-right:10px;
+                  border-right:1px solid rgba(0,240,255,0.1); line-height:1.6; }
+.kshop-tt-desc  { flex:1; min-width:160px; line-height:1.6; }
+
+/* Flash HTML 继承样式：AS2 <FONT COLOR> 已转为 <span style="color:"> */
+#panel-tooltip span[style] { font-size:inherit; }
+#panel-tooltip b { font-weight:bold; }
 
 /* ═══════════════════════════════════════════════════════
    K-Shop Panel
@@ -105,10 +131,21 @@
 /* ── Body ── */
 .kshop-body { display:flex; flex:1; overflow:hidden; }
 
+/* ── Grid wrap + loading ── */
+.kshop-grid-wrap { flex:1; position:relative; overflow:hidden; display:flex; flex-direction:column; }
+.kshop-loading {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:14px; letter-spacing:4px; color:var(--cp-cyan); z-index:2;
+    text-shadow:0 0 10px rgba(0,240,255,0.4);
+    animation:kshop-pulse 1.2s ease-in-out infinite;
+}
+@keyframes kshop-pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
 /* ── Grid ── */
 .kshop-grid {
     flex:1; display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr));
     gap:8px; padding:12px 16px; overflow-y:auto; align-content:start;
+    transition:opacity 0.2s;
 }
 /* Scrollbar */
 .kshop-grid::-webkit-scrollbar { width:4px; }
@@ -133,6 +170,12 @@
     box-shadow:0 0 12px rgba(0,240,255,0.08), inset 0 0 20px rgba(0,240,255,0.03);
 }
 .kshop-card-nosale { opacity:0.45; filter:saturate(0.3); }
+.kshop-card-locked { opacity:0.55; }
+.kshop-card-locked .kshop-card-price { color:var(--cp-dim); text-shadow:none; }
+.kshop-lock {
+    position:absolute; bottom:4px; left:4px; font-size:9px; color:var(--cp-red);
+    letter-spacing:0.5px; text-shadow:0 0 4px rgba(255,0,60,0.3);
+}
 .kshop-icon { width:52px; height:52px; display:block; margin:0 auto 6px; object-fit:contain;
               filter:drop-shadow(0 0 3px rgba(0,240,255,0.15)); }
 .kshop-icon-placeholder { background:rgba(0,240,255,0.05); width:52px; height:52px; }
@@ -150,6 +193,7 @@
     clip-path:polygon(0 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 3px 100%, 0 calc(100% - 3px));
 }
 .kshop-add-btn:hover { background:rgba(0,240,255,0.25); box-shadow:0 0 8px rgba(0,240,255,0.3); }
+.kshop-add-single { font-size:12px; }
 
 /* ── Sidebar ── */
 .kshop-sidebar {
@@ -220,3 +264,42 @@
     box-shadow:0 0 8px rgba(0,240,255,0.2);
 }
 .kshop-claim-btn:disabled { opacity:0.25; cursor:default; }
+
+/* ── Row icons ── */
+.kshop-cart-thumb { flex-shrink:0; margin-right:6px; }
+.kshop-row-icon { width:24px; height:24px; display:block; object-fit:contain;
+                  filter:drop-shadow(0 0 2px rgba(0,240,255,0.1)); }
+.kshop-detail-icon { width:48px; height:48px; display:block; margin:0 auto; object-fit:contain; }
+.kshop-cart-row { cursor:pointer; transition:background 0.1s; }
+.kshop-cart-row:hover { background:rgba(0,240,255,0.04); }
+.kshop-claim-row { cursor:default; }
+
+/* Remove button (equipment in cart) */
+.kshop-remove-btn { margin-left:4px; color:var(--cp-red); border-color:rgba(255,0,60,0.2);
+                    background:rgba(255,0,60,0.05); font-size:10px; width:16px; height:16px; line-height:14px; }
+.kshop-remove-btn:hover { background:rgba(255,0,60,0.15); border-color:var(--cp-red); }
+
+/* ── Save-failed dialog ── */
+.kshop-dialog {
+    position:absolute; inset:0; z-index:50; display:flex; align-items:center; justify-content:center;
+    background:rgba(0,0,0,0.7);
+}
+.kshop-dlg-inner {
+    background:var(--cp-bg); border:1px solid var(--cp-red); padding:20px 28px; max-width:360px;
+    clip-path:polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    box-shadow:0 0 20px rgba(255,0,60,0.15);
+}
+.kshop-dlg-title { color:var(--cp-yellow); font-size:14px; font-weight:bold; letter-spacing:1px;
+                   text-transform:uppercase; margin-bottom:8px; }
+.kshop-dlg-hint { color:var(--cp-dim); font-size:11px; margin-bottom:14px; }
+.kshop-dlg-btns { display:flex; gap:8px; flex-wrap:wrap; }
+.kshop-dlg-btn {
+    background:rgba(0,240,255,0.06); border:1px solid rgba(0,240,255,0.2);
+    color:var(--cp-cyan); padding:5px 14px; cursor:pointer;
+    font-family:inherit; font-size:11px; text-transform:uppercase; letter-spacing:1px;
+    transition:all 0.15s;
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+}
+.kshop-dlg-btn:hover { background:rgba(0,240,255,0.15); border-color:var(--cp-cyan); }
+.kshop-dlg-danger { color:var(--cp-red); border-color:rgba(255,0,60,0.25); background:rgba(255,0,60,0.05); }
+.kshop-dlg-danger:hover { background:rgba(255,0,60,0.15); border-color:var(--cp-red); }

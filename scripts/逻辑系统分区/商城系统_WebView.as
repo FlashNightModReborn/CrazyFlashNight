@@ -169,3 +169,48 @@ _root.gameCommands["shopSaveCart"] = function(params) {
     var resp = { task: "shop_response", callId: callId, success: true };
     _root.server.sendSocketMessage(_root._shopJson.stringify(resp));
 };
+
+// ========== 物品注释（Bridge 到 WebView） ==========
+// 仅商城面板使用，其他场景走原有 Flash 注释框
+_root.gameCommands["shopTooltip"] = function(params) {
+    var idx = Number(params.idx);
+    var callId = params.callId;
+
+    if (isNaN(idx) || idx < 0 || idx >= _root.kshop_list.length) {
+        var errResp = { task: "shop_response", callId: callId, success: false, error: "invalid_idx" };
+        _root.server.sendSocketMessage(_root._shopJson.stringify(errResp));
+        return;
+    }
+
+    var entry = _root.kshop_list[idx];
+    var itemName = entry.item;
+    var itemData = org.flashNight.arki.item.ItemUtil.getItemData(itemName);
+    if (itemData == undefined) {
+        var errResp2 = { task: "shop_response", callId: callId, success: false, error: "item_not_found" };
+        _root.server.sendSocketMessage(_root._shopJson.stringify(errResp2));
+        return;
+    }
+
+    // value 对象：商城物品不涉及强化等级，默认 level=1
+    var value = { level: 1 };
+
+    // 生成两段 HTML（与 物品图标注释 同一调用链，但不渲染 Flash 注释框）
+    var descHTML = org.flashNight.gesh.tooltip.TooltipComposer.generateItemDescriptionText(itemData, null);
+    var introHTML = org.flashNight.gesh.tooltip.TooltipComposer.generateIntroPanelContent(null, itemData, value);
+
+    // LiteJSON 不转义双引号，XML 数据中内嵌的 <font color="#xxx"> 会破坏 JSON 结构
+    // 将双引号替换为单引号（AS2 TextField 两者等效）
+    descHTML = descHTML.split('"').join("'");
+    introHTML = introHTML.split('"').join("'");
+
+    var resp = {
+        task: "shop_response",
+        callId: callId,
+        success: true,
+        descHTML: descHTML,
+        introHTML: introHTML,
+        itemName: itemName,
+        displayname: String(itemData.displayname || itemName)
+    };
+    _root.server.sendSocketMessage(_root._shopJson.stringify(resp));
+};

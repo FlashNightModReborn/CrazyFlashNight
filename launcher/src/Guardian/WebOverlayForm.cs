@@ -849,6 +849,7 @@ namespace CF7Launcher.Guardian
                 case "checkout":
                 case "claim":
                 case "saveCart":
+                case "tooltip":
                     LogManager.Log("[Panel] Routing cmd=" + cmd + " to ShopTask, _shopTask=" + (_shopTask != null ? "ok" : "NULL"));
                     if (_shopTask != null) _shopTask.HandleWebRequest(cmd, parsed);
                     break;
