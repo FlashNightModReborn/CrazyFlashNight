@@ -11,17 +11,19 @@
 ## 快速开始
 
 ```bash
-# 从项目根目录运行
-python tools/linkage_scanner/scan_linkage.py --exclude-unused
+# 从项目根目录运行（默认排除归档目录）
+python tools/linkage_scanner/scan_linkage.py
 ```
 
 ## 命令行参数
 
 | 参数 | 说明 |
 |------|------|
-| (无参数) | 全量扫描，含 unused/ 目录，输出 XML + 控制台报告 |
-| `--exclude-unused` | 排除 `flashswf/unused/` 下的归档文件 |
+| (无参数) | 扫描生产源，输出 XML + 控制台报告 |
+| `--include-all` | 包含默认排除的归档目录（`unused/`、`renew/`） |
 | `--xml-only` | 只生成 XML，不打印控制台报告 |
+
+默认排除的目录（非生产源）：`unused/`（废弃归档）、`renew/`（翻新对照）。
 
 ## 输出产物
 
@@ -47,8 +49,9 @@ python tools/linkage_scanner/scan_linkage.py --exclude-unused
 ## 工作原理
 
 1. **XFL 目录**：直接读取 `LIBRARY/**/*.xml`，正则匹配 `linkageExportForAS="true"` + `linkageIdentifier`
-2. **FLA 文件**：FLA 本质是 ZIP，按 local file header 逐条解析（支持 store 和 deflate），提取 LIBRARY XML 内容，无需解压到磁盘
-3. **去重规则**：同一源内的重复 ID 只算一次（用 set）；XFL 目录存在时跳过同名 FLA
+2. **FLA 文件**：FLA 本质是 ZIP，按 local file header 逐条解析（支持 store/deflate 及 data descriptor 标志位 0x08），提取 LIBRARY XML 内容，无需解压到磁盘
+3. **去重规则**：同一源内的重复 ID 只算一次（`seen_in_source` set，`source_counts` 取 `len()`）；XFL 目录存在时跳过同名 FLA
+4. **XML 安全**：输出属性值过滤 XML 1.0 非法字符（U+FFFE/U+FFFF、控制字符等），确保标准解析器可正常读取
 
 ## 典型工作流
 
@@ -60,9 +63,9 @@ python tools/linkage_scanner/scan_linkage.py --exclude-unused
 
 | 指标 | 值 |
 |------|-----|
-| 唯一 linkageIdentifier | ~5540 |
-| 来源文件 | ~140 |
-| 真实冲突（排除 unused） | ~125 |
+| 唯一 linkageIdentifier | ~5624 |
+| 来源文件 | ~146 |
+| 冲突（排除 unused） | ~1879 |
 
 ## 文件说明
 
