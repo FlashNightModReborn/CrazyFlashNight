@@ -1,6 +1,7 @@
 ﻿import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.neur.Server.ChunkedBitmapTransport;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.render.BitmapExporter;
 
 /**
@@ -57,19 +58,40 @@ class org.flashNight.arki.item.IconBaker {
         }
 
         // 收集唯一 icon name + 计算 CRC32
+        // 包括基础 icon 和进阶 tier 数据中的独立 icon
         var seen:Object = {};
         _iconNames = [];
         _nameToHash = {};
         var allItems:Array = ItemUtil.itemDataArray;
+        var tierKeys:Array = EquipmentUtil.tierDataList;
 
         var i:Number = 0;
         while (i < allItems.length) {
-            var iconName:String = allItems[i].icon;
+            var itemData:Object = allItems[i];
+
+            // 收集基础 icon
+            var iconName:String = itemData.icon;
             if (iconName != undefined && iconName != "" && !seen[iconName]) {
                 seen[iconName] = true;
                 _iconNames.push(iconName);
                 _nameToHash[iconName] = crc32(iconName);
             }
+
+            // 收集进阶 tier 中的独立 icon
+            var t:Number = 0;
+            while (t < tierKeys.length) {
+                var tierData:Object = itemData[tierKeys[t]];
+                if (tierData != undefined) {
+                    var tierIcon:String = tierData.icon;
+                    if (tierIcon != undefined && tierIcon != "" && !seen[tierIcon]) {
+                        seen[tierIcon] = true;
+                        _iconNames.push(tierIcon);
+                        _nameToHash[tierIcon] = crc32(tierIcon);
+                    }
+                }
+                t++;
+            }
+
             i++;
         }
 
