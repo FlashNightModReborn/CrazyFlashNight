@@ -61,9 +61,9 @@ var Panels = (function() {
         if (data.cmd === 'open') open(data.panel, data.initData);
         else if (data.cmd === 'close') close();
         else if (data.cmd === 'force_close') {
-            var activeId = _active;
+            var panel = _active ? _registry[_active] : null;
             close();
-            if (activeId === 'kshop' && typeof KShop !== 'undefined') KShop.onForceClose();
+            if (panel && panel.onForceClose) panel.onForceClose();
         }
     });
     Bridge.on('panel_esc', triggerRequestClose);

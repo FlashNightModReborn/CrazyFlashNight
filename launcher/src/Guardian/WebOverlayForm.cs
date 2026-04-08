@@ -70,6 +70,8 @@ namespace CF7Launcher.Guardian
 
         // UI 数据早期缓冲：WebView2 就绪前收到的状态数据，就绪后 flush
         private readonly List<string> _uiDataEarlyBuffer = new List<string>();
+        // UI 数据最新值快照：按 type 去重，热重载后恢复完整状态
+        private readonly Dictionary<string, string> _uiDataSnapshot = new Dictionary<string, string>();
 
         // InputShieldForm 引用（CDP 输入注入 + hitRects 转发）
         private InputShieldForm _inputShield;
@@ -637,6 +639,12 @@ namespace CF7Launcher.Guardian
                 return;
             }
             if (_disposed) return;
+
+            // 维护最新值快照：按 type（首个 | 前的部分）去重，热重载后可恢复完整状态
+            int sep = payload.IndexOf('|');
+            if (sep > 0)
+                _uiDataSnapshot[payload.Substring(0, sep)] = payload;
+
             if (_webFailed || !_webReady)
             {
                 // WebView2 未就绪或降级中，缓冲等待恢复（上限 200 条防止内存泄漏）
@@ -650,8 +658,23 @@ namespace CF7Launcher.Guardian
 
         private void FlushUiDataBuffer()
         {
+            // 1) 先回放快照：确保热重载后恢复所有已知 UiData 最新值（如 s|1 game-ready）
+            var snapshotTypes = new HashSet<string>();
+            foreach (var kv in _uiDataSnapshot)
+            {
+                snapshotTypes.Add(kv.Key);
+                string escaped = kv.Value.Replace("\\", "\\\\").Replace("'", "\\'");
+                ExecScript("typeof UiData!=='undefined'&&UiData.dispatch('" + escaped + "')");
+            }
+
+            // 2) 再回放 buffer 中不在快照里的条目（避免重复推送快照已覆盖的类型）
             foreach (string p in _uiDataEarlyBuffer)
+            {
+                int sep = p.IndexOf('|');
+                string type = sep > 0 ? p.Substring(0, sep) : p;
+                if (snapshotTypes.Contains(type)) continue; // 快照已包含最新值
                 HandleUiData(p);
+            }
             _uiDataEarlyBuffer.Clear();
         }
 
@@ -840,10 +863,17 @@ namespace CF7Launcher.Guardian
             switch (cmd)
             {
                 case "close":
-                    if (!TrySendGameCommand("shopPanelClose"))
-                        _pauseNeedsRestore = true;
-                    _panelOpen = false;
-                    if (_onPanelStateChanged != null) _onPanelStateChanged(false);
+                    {
+                        string panel = parsed.Value<string>("panel") ?? "";
+                        if (panel == "kshop")
+                        {
+                            if (!TrySendGameCommand("shopPanelClose"))
+                                _pauseNeedsRestore = true;
+                        }
+                        // help 等纯 web 面板无需通知 Flash
+                        _panelOpen = false;
+                        if (_onPanelStateChanged != null) _onPanelStateChanged(false);
+                    }
                     break;
                 case "bulkQuery":
                 case "checkout":
@@ -927,7 +957,11 @@ namespace CF7Launcher.Guardian
                         LogManager.Log("[Panel] SHOP → _panelOpen=true, state callback fired");
                     }
                     break;
-                case "HELP": SendGameCommand("openHelp"); break;
+                case "HELP":
+                    PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"help\"}");
+                    _panelOpen = true;
+                    if (_onPanelStateChanged != null) _onPanelStateChanged(true);
+                    break;
                 case "SAFEEXIT": SendGameCommand("safeExit"); break;
                 case "PETS": SendGameCommand("togglePets"); break;
                 case "MERCS": SendGameCommand("toggleMercs"); break;

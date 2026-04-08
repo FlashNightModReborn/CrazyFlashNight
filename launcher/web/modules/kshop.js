@@ -28,7 +28,7 @@ var KShop = (function() {
     var _loading = false;
 
     // DOM refs
-    var _el, _catBar, _grid, _cartList, _cartTotal, _balanceEl, _tooltip;
+    var _el, _catBar, _grid, _cartList, _cartTotal, _balanceEl;
     var _checkoutBtn, _claimList, _loadingEl;
 
     var _kHandler = function(v) { _kpoints = Number(v); if (_balanceEl) _balanceEl.textContent = _kpoints; };
@@ -59,8 +59,10 @@ var KShop = (function() {
 
     // 长按加速：按住按钮自动重复触发，间隔逐步缩短
     // 初始 400ms → 加速到最快 50ms（每次 ×0.85）
+    // 返回 stop 函数，供外部在 DOM 重建前主动停止
+    var _activeHoldTimers = []; // 所有活跃的 holdRepeat stop 句柄
     function holdRepeat(el, callback) {
-        var timer = null, interval = 400, raf = null;
+        var timer = null, interval = 400;
         function fire() {
             callback();
             interval = Math.max(50, interval * 0.85);
@@ -71,16 +73,24 @@ var KShop = (function() {
             interval = 400;
             callback();
             timer = setTimeout(fire, interval);
+            // 全局 mouseup 兜底：即使按钮被销毁也能停止
+            document.addEventListener('mouseup', stop);
         }
         function stop() {
             if (timer) { clearTimeout(timer); timer = null; }
             interval = 400;
+            document.removeEventListener('mouseup', stop);
         }
         el.addEventListener('mousedown', start);
         el.addEventListener('mouseup', stop);
         el.addEventListener('mouseleave', stop);
-        // 阻止默认 click（已在 mousedown 中触发）
         el.addEventListener('click', function(e) { e.stopPropagation(); });
+        _activeHoldTimers.push(stop);
+    }
+    // 在 DOM 重建前调用，强制停止所有活跃的长按 timer
+    function killAllHoldTimers() {
+        for (var i = 0; i < _activeHoldTimers.length; i++) _activeHoldTimers[i]();
+        _activeHoldTimers = [];
     }
 
     // ══════════════════════════════════════════
@@ -89,7 +99,8 @@ var KShop = (function() {
     Panels.register('kshop', {
         create: createDOM,
         onOpen: onOpen,
-        onRequestClose: function() { requestClose(); }
+        onRequestClose: function() { requestClose(); },
+        onForceClose: onForceClose
     });
 
     function createDOM() {
@@ -128,7 +139,6 @@ var KShop = (function() {
         _cartTotal = _el.querySelector('#kshop-cart-total');
         _checkoutBtn = _el.querySelector('#kshop-checkout');
         _claimList = _el.querySelector('#kshop-claim-list');
-        _tooltip = document.getElementById('panel-tooltip');
 
         _el.querySelector('.kshop-close-btn').addEventListener('click', function() { requestClose(); });
         _checkoutBtn.addEventListener('click', checkout);
@@ -279,42 +289,28 @@ var KShop = (function() {
     function onCardHover(e) {
         var idx = Number(e.currentTarget.getAttribute('data-idx'));
         var item = findCatalogItem(idx);
-        if (!item || !_tooltip) return;
+        if (!item) return;
         _tooltipHovering = idx;
 
-        // 有缓存则直接渲染富文本
-        if (_tooltipCache[idx]) {
-            renderRichTooltip(item, _tooltipCache[idx]);
-        } else {
-            // 先显示基础占位
-            renderBasicTooltip(item);
-            // 异步请求 Flash 富文本
-            requestFlashTooltip(idx);
-        }
-        _tooltip.style.display = 'block';
+        var html = _tooltipCache[idx]
+            ? buildRichHtml(item, _tooltipCache[idx])
+            : buildBasicHtml(item);
+        PanelTooltip.showAtMouse(html, e);
+        if (!_tooltipCache[idx]) requestFlashTooltip(idx);
     }
 
     function onCardLeave() {
         _tooltipHovering = -1;
-        if (_tooltip) _tooltip.style.display = 'none';
+        PanelTooltip.hide();
     }
 
     function onCardMove(e) {
-        if (!_tooltip) return;
-        // 确保 tooltip 不超出视口
-        var x = e.clientX + 14, y = e.clientY + 14;
-        var tw = _tooltip.offsetWidth, th = _tooltip.offsetHeight;
-        var vw = window.innerWidth, vh = window.innerHeight;
-        if (x + tw > vw - 8) x = e.clientX - tw - 8;
-        if (y + th > vh - 8) y = vh - th - 8;
-        _tooltip.style.left = x + 'px';
-        _tooltip.style.top = y + 'px';
+        PanelTooltip.followMouse(e);
     }
 
-    function renderBasicTooltip(item) {
+    function buildBasicHtml(item) {
         var locked = isLocked(item);
-        _tooltip.innerHTML =
-            '<div class="kshop-tt-header"><b>' + escHtml(item.displayname) + '</b></div>' +
+        return '<div class="kshop-tt-header"><b>' + escHtml(item.displayname) + '</b></div>' +
             '<div class="kshop-tt-divider"></div>' +
             '<span class="kshop-tt-dim">\u7c7b\u578b</span> ' + escHtml(item.majorType) + ' / ' + escHtml(item.subType) + '<br>' +
             '<span class="kshop-tt-dim">\u7b49\u7ea7</span> ' + item.level +
@@ -323,23 +319,21 @@ var KShop = (function() {
             '<div class="kshop-tt-loading">\u52a0\u8f7d\u4e2d\u2026</div>';
     }
 
-    function renderRichTooltip(item, data) {
+    function buildRichHtml(item, data) {
         var locked = isLocked(item);
-        var introHtml = data.introHTML ? convertAS2Html(data.introHTML) : '';
-        var descHtml = data.descHTML ? convertAS2Html(data.descHTML) : '';
+        var introHtml = data.introHTML ? PanelTooltip.convertAS2Html(data.introHTML) : '';
+        var descHtml = data.descHTML ? PanelTooltip.convertAS2Html(data.descHTML) : '';
 
         var lockBanner = locked
             ? '<div class="kshop-tt-lock-banner">\u26bf \u9501\u5b9a \u2014 \u9700\u8981 Lv.' + item.level + '</div>'
             : '';
 
-        // 物品图标（与原 Flash 注释框的 物品图标定位 层对应）
         var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(item.icon) : null;
         var iconBlock = iconUrl
             ? '<div class="kshop-tt-icon"><img src="' + iconUrl + '" onerror="this.parentNode.style.display=\'none\'"></div>'
             : '';
 
-        _tooltip.innerHTML =
-            '<div class="kshop-tt-rich">' +
+        return '<div class="kshop-tt-rich">' +
                 iconBlock +
                 (introHtml ? '<div class="kshop-tt-intro">' + introHtml + '</div>' : '') +
                 (descHtml ? '<div class="kshop-tt-desc">' + descHtml + '</div>' : '') +
@@ -350,34 +344,17 @@ var KShop = (function() {
     function requestFlashTooltip(idx) {
         var reqId = 'tt' + (++_reqSeq);
         _pendingReq[reqId] = function(resp) {
-            if (!Panels.isOpen()) return; // 面板已关闭，丢弃
+            if (!Panels.isOpen()) return;
             delete _pendingReq[reqId];
             if (resp.success) {
                 _tooltipCache[idx] = { descHTML: resp.descHTML || '', introHTML: resp.introHTML || '' };
-                // 如果用户还在 hover 同一个物品且面板仍开着，刷新 tooltip
-                if (_tooltipHovering === idx && _tooltip && Panels.isOpen()) {
+                if (_tooltipHovering === idx && PanelTooltip.isVisible() && Panels.isOpen()) {
                     var item = findCatalogItem(idx);
-                    if (item) {
-                        renderRichTooltip(item, _tooltipCache[idx]);
-                    }
+                    if (item) PanelTooltip.updateContent(buildRichHtml(item, _tooltipCache[idx]));
                 }
             }
         };
         Bridge.send({type:'panel', cmd:'tooltip', callId: reqId, idx: idx});
-    }
-
-    // AS2 TextField HTML → 浏览器 HTML
-    // <FONT COLOR='#FFCC00'>text</FONT> → <span style="color:#FFCC00">text</span>
-    // <B>text</B> → <b>text</b> (已兼容)
-    // <BR> → <br>
-    function convertAS2Html(s) {
-        if (!s) return '';
-        return s
-            .replace(/<FONT\s+COLOR\s*=\s*'([^']+)'\s*>/gi, '<span style="color:$1">')
-            .replace(/<\/FONT>/gi, '</span>')
-            .replace(/<BR\s*\/?>/gi, '<br>')
-            .replace(/<B>/gi, '<b>').replace(/<\/B>/gi, '</b>')
-            .replace(/<I>/gi, '<i>').replace(/<\/I>/gi, '</i>');
     }
 
     // ══════════════════════════════════════════
@@ -491,6 +468,7 @@ var KShop = (function() {
     }
 
     function dismissQtyInput() {
+        killAllHoldTimers();
         document.removeEventListener('click', onQtyOutsideClick);
         if (_qtyPopup && _qtyPopup.parentNode) {
             _qtyPopup.parentNode.removeChild(_qtyPopup);
@@ -511,6 +489,7 @@ var KShop = (function() {
     }
 
     function renderCart() {
+        killAllHoldTimers();
         _cartList.innerHTML = '';
         var total = 0;
         for (var i = 0; i < _cart.length; i++) {
@@ -594,54 +573,18 @@ var KShop = (function() {
 
     // ══════════════════════════════════════════
     //  Item detail (tooltip-style, triggered by row click)
+    //  使用 PanelTooltip.showAnchored，生命周期由通用模块管理
     // ══════════════════════════════════════════
     function showItemDetail(idx, anchorEl) {
         var item = findCatalogItem(idx);
-        if (!item || !_tooltip) return;
+        if (!item) return;
 
-        // 有缓存直接渲染富文本，无缓存异步拉取（几毫秒级）
-        if (_tooltipCache[idx]) {
-            renderRichTooltip(item, _tooltipCache[idx]);
-        } else {
-            renderBasicTooltip(item);
-            requestFlashTooltip(idx);
-        }
-
-        _tooltip.style.display = 'block';
         _tooltipHovering = idx;
-
-        // 锚定到点击行的左侧（sidebar 行 → tooltip 出现在行左方）
-        if (anchorEl) {
-            var rect = anchorEl.getBoundingClientRect();
-            var tw = _tooltip.offsetWidth || 300;
-            var th = _tooltip.offsetHeight || 200;
-            var vw = window.innerWidth, vh = window.innerHeight;
-            // 优先放在行的左侧
-            var x = rect.left - tw - 8;
-            if (x < 8) x = rect.right + 8; // 左侧放不下则放右侧
-            var y = rect.top;
-            if (y + th > vh - 8) y = vh - th - 8;
-            if (y < 8) y = 8;
-            _tooltip.style.left = x + 'px';
-            _tooltip.style.top = y + 'px';
-        }
-
-        // 点击其他地方关闭
-        var closeIdx = idx;
-        function onDetailOutside(ev) {
-            if (_tooltip.contains(ev.target) || (anchorEl && anchorEl.contains(ev.target))) return;
-            document.removeEventListener('click', onDetailOutside);
-            if (_tooltipHovering === closeIdx) hideTooltip();
-        }
-        setTimeout(function() {
-            document.addEventListener('click', onDetailOutside);
-        }, 0);
-
-        // 兜底 8s 自动关闭
-        setTimeout(function() {
-            document.removeEventListener('click', onDetailOutside);
-            if (_tooltipHovering === closeIdx) hideTooltip();
-        }, 8000);
+        var html = _tooltipCache[idx]
+            ? buildRichHtml(item, _tooltipCache[idx])
+            : buildBasicHtml(item);
+        PanelTooltip.showAnchored(html, anchorEl);
+        if (!_tooltipCache[idx]) requestFlashTooltip(idx);
     }
 
     // ══════════════════════════════════════════
@@ -765,14 +708,14 @@ var KShop = (function() {
         dismissQtyInput();
         hideTooltip();
         Panels.close();
-        Bridge.send({type:'panel', cmd:'close'});
+        Bridge.send({type:'panel', cmd:'close', panel:'kshop'});
         UiData.off('k', _kHandler);
         _closing = false;
     }
 
     function hideTooltip() {
         _tooltipHovering = -1;
-        if (_tooltip) _tooltip.style.display = 'none';
+        PanelTooltip.hide();
     }
 
     function showSaveFailedDialog(msg, timeoutMode) {
@@ -823,5 +766,5 @@ var KShop = (function() {
         toast('\u8fde\u63a5\u65ad\u5f00\uff0c\u5546\u57ce\u5df2\u5173\u95ed');
     }
 
-    return { requestClose: requestClose, onForceClose: onForceClose };
+    return {};
 })();
