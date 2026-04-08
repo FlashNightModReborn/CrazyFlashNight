@@ -92,6 +92,7 @@ namespace CF7Launcher.Guardian
 
         private bool _hotkeysRegistered;
         private KeyboardHook _kbHook; // 前台感知低级钩子，替代 RegisterHotKey
+        private WebOverlayForm _webOverlay; // 面板系统：ESC→PostToWeb
 
         private Process _flashProcess;
         private System.Windows.Forms.Timer _exitWatchdog;
@@ -374,8 +375,19 @@ namespace CF7Launcher.Guardian
             _kbHook.RegisterAction(0x46, delegate { ToggleFullscreen(); });
             // Ctrl+Q → 退出
             _kbHook.RegisterAction(0x51, delegate { ForceExit(); });
-            // Escape → 全屏时退出全屏（通过 SetEscapeEnabled 动态控制）
-            _kbHook.RegisterAction(0x1B, delegate { ToggleFullscreen(); });
+            // Escape：固定回调，按 volatile 标志分支（避免 Dictionary 并发竞态）
+            _kbHook.RegisterAction(0x1B, delegate {
+                if (_kbHook.PanelEscEnabled)
+                {
+                    try { this.BeginInvoke(new Action(delegate {
+                        if (_webOverlay != null) _webOverlay.PostToWeb("{\"type\":\"panel_esc\"}");
+                    })); } catch {}
+                }
+                else
+                {
+                    ToggleFullscreen();
+                }
+            });
 
             if (_kbHook.Install())
             {
@@ -489,6 +501,24 @@ namespace CF7Launcher.Guardian
             PostKeyMessage(flashHwnd, WM_KEYUP, Keys.ControlKey);
 
             LogManager.Log("[Input] Posted Ctrl+" + key + " to Flash");
+        }
+
+        // ============================================================
+        //  面板系统
+        // ============================================================
+
+        public void SetWebOverlay(WebOverlayForm overlay) { _webOverlay = overlay; }
+
+        /// <summary>
+        /// 面板状态变化回调（由 WebOverlayForm 调用，可能来自任意线程）。
+        /// 仅切换 _panelEscEnabled 标志，不动态改绑 ESC 回调。
+        /// </summary>
+        public void HandlePanelStateChanged(bool open)
+        {
+            if (this.InvokeRequired) { try { this.BeginInvoke(new Action<bool>(HandlePanelStateChanged), open); } catch {} return; }
+
+            if (_kbHook != null)
+                _kbHook.SetPanelEscapeEnabled(open);
         }
 
         // ============================================================

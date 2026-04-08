@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <title>CF7:ME Overlay</title>
 <link rel="stylesheet" href="css/overlay.css">
+<link rel="stylesheet" href="css/panels.css">
 </head>
 <body>
 
@@ -194,6 +195,13 @@
     <div id="jukebox-help-close">关闭</div>
 </div>
 
+<!-- Panel system -->
+<div id="panel-container" style="display:none">
+  <div id="panel-backdrop"></div>
+  <div id="panel-content"></div>
+</div>
+<div id="panel-tooltip"></div>
+
 <script src="lib/marked.min.js"></script>
 <script src="modules/bridge.js"></script>
 <script src="modules/uidata.js"></script>
@@ -204,9 +212,13 @@
 <script src="modules/jukebox.js"></script>
 <script src="modules/combo.js"></script>
 <script src="modules/help.js"></script>
+<script src="modules/panels.js"></script>
+<script src="modules/icons.js"></script>
+<script src="modules/kshop.js"></script>
 <script>
 (function() {
     window.addEventListener('load', function() {
+        Panels.init();
         Bridge.send({ type: 'ready' });
     });
 })();

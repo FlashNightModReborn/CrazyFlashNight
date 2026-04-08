@@ -43,6 +43,9 @@ namespace CF7Launcher.Bus
         /// <summary>业务就绪事件：Flash policy 握手完成后、首条业务消息到达时触发。</summary>
         public event Action OnClientReady;
 
+        /// <summary>客户端断连事件：仅当前 generation 的 ReadLoop 退出时触发。</summary>
+        public event Action OnClientDisconnected;
+
         public int Port { get; private set; }
         public bool HasClient { get { return _client != null && _client.Connected; } }
         public bool IsClientReady { get { return _clientReady && _client != null && _client.Connected; } }
@@ -185,12 +188,20 @@ namespace CF7Launcher.Bus
 
             LogManager.Log("[XmlSocket] Client disconnected");
 
-            // 只有当自己仍是当前连接时才清理共享字段
+            // 只有当自己仍是当前连接时才清理共享字段并触发断连事件
             lock (_clientLock)
             {
                 if (_generation == gen)
                 {
                     CloseClientLocked();
+                    Action dcHandler = OnClientDisconnected;
+                    if (dcHandler != null)
+                    {
+                        try { dcHandler(); } catch (Exception dcEx)
+                        {
+                            LogManager.Log("[XmlSocket] OnClientDisconnected error: " + dcEx.Message);
+                        }
+                    }
                 }
             }
 
@@ -397,6 +408,10 @@ namespace CF7Launcher.Bus
             }
 
             // === 通用路由：JSON 消息 ===
+            if (message.Length < 500)
+                LogManager.Log("[XmlSocket:JSON] " + message);
+            else
+                LogManager.Log("[XmlSocket:JSON] (len=" + message.Length + ") " + message.Substring(0, 120) + "...");
 
             // Flash 策略请求
             if (FlashPolicyHandler.IsPolicyRequest(message))
@@ -433,6 +448,32 @@ namespace CF7Launcher.Bus
                 catch (Exception ex)
                 {
                     LogManager.Log("[XmlSocket] Send error: " + ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 带返回值的发送：Write+Flush 成功返回 true，异常或未连接返回 false。
+        /// 注意：true 仅代表本地写入成功，不等于 Flash 已收到（best-effort 语义）。
+        /// </summary>
+        public bool TrySend(string data)
+        {
+            lock (_clientLock)
+            {
+                if (_stream == null || _client == null || !_client.Connected)
+                    return false;
+
+                try
+                {
+                    byte[] bytes = Encoding.UTF8.GetBytes(data);
+                    _stream.Write(bytes, 0, bytes.Length);
+                    _stream.Flush();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[XmlSocket] TrySend error: " + ex.Message);
+                    return false;
                 }
             }
         }

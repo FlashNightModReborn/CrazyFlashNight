@@ -260,7 +260,18 @@ class Program
         DataQueryTask dataQueryTask = new DataQueryTask(dataCache);
         CF7Launcher.Tasks.AudioTask audioTask = new CF7Launcher.Tasks.AudioTask();
         IconBakeTask iconBakeTask = new IconBakeTask(projectRoot, notchSink);
-        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask);
+        ShopTask shopTask = new ShopTask(socketServer);
+        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask);
+
+        // 面板系统接线
+        if (webOverlay != null)
+        {
+            webOverlay.SetShopTask(shopTask);
+            webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
+            form.SetWebOverlay(webOverlay);
+            socketServer.OnClientDisconnected += webOverlay.OnSocketDisconnected;
+            socketServer.OnClientReady += webOverlay.OnSocketReconnected;
+        }
 
         // 注入 router 到 HttpApiServer（供 /task 端点使用）
         httpServer.SetRouter(router);
@@ -273,6 +284,7 @@ class Program
         {
             musicCatalog.Dispose();
             frameTask.Stop();
+            shopTask.Dispose();
             socketServer.SetFrameHandler(null);
             socketServer.SetNotchHandler(null);
         };

@@ -1,10 +1,19 @@
-# 商城 WebView 迁移实施计划（v8）
+# 商城 WebView 迁移实施计划（v9）
 
 ## Context
 
 K 点商城从 Flash MC 迁移到 WebView2 overlay。同时建立通用面板框架供未来复用。
 
 用户决策：购物车逻辑在 JS 侧；放弃装备预览；图标用 manifest.json `_1` 帧。
+
+## v8→v9 修正记录
+
+| # | 问题 | 修正 |
+|---|---|---|
+| 21 | D9: FastJSON.stringify() 按对象身份缓存（UID），同一数组引用内容变化后返回旧字符串，打穿购买/领取后推送最新 purchased 列表的闭环（FastJSON.as:118, JSONTest.as:633） | 改用 `new LiteJSON()`：无缓存、每次全量序列化。商城操作为秒级用户交互，50KB 级 bulkQuery stringify ~5-15ms，无需快车道协议 |
+| 22 | M5: TrySendGameCommand 依赖 void Send 吞异常，只检查 IsClientReady 不检查 Write/Flush 结果，"成功才开面板"语义不完整 | XmlSocketServer 新增 `bool TrySend()`（catch 时 return false），TrySendGameCommand 透传返回值；文档明确 best-effort 语义 + D8 force_close 兜底 |
+| 23 | GuardianForm.HandlePanelStateChanged 反复 RegisterAction(0x1B, ...) 动态改绑 ESC 回调，但 Dictionary 无锁，钩子线程并发 TryGetValue 属 UB | 改为初始化时一次性注册固定 ESC 回调，内部按 `volatile bool PanelEscEnabled` 分支；HandlePanelStateChanged 仅切标志 |
+| 24 | M2: 文字说明"type 不匹配则回退到 first-match"，但代码只接受 type 相等或 undefined，历史存档分类名变更时静默丢弃购物车条目 | 改为两遍扫描：先尝试 id+type 精确匹配，匹配不到则回退纯 id first-match |
 
 ## v5→v6 修正记录
 
@@ -363,20 +372,24 @@ _pendingReq[reqId] = function(resp) {
 | doClose 时 Send 失败 | ✓ 已完成 | ✗ Send 返回 false | ✓ 设 true | 无感(重连后恢复) |
 | 重连 | — | ✓ 补发 | ✓ 清除 | 无感 |
 
-### D9: JSON 序列化 — 局部 FastJSON 实例
+### D9: JSON 序列化 — 局部 LiteJSON 实例
 
 `ServerManager.jsonParser` 是 `private`（ServerManager.as:75）。虽然 AS2 运行时不强制 private，但依赖未公开成员不稳妥。
 
-**方案**: 在 `商城系统_WebView.as` 顶部创建独立 FastJSON 实例：
+**方案**: 在 `商城系统_WebView.as` 顶部创建独立 LiteJSON 实例：
 
 ```actionscript
-var _shopJson:FastJSON = new FastJSON();
+var _shopJson:LiteJSON = new LiteJSON();
 
 // 所有回包使用 _shopJson.stringify(resp) 代替 _root.server.jsonParser.stringify(resp)
 // 发送: _root.server.sendSocketMessage(_shopJson.stringify(resp))
 ```
 
-FastJSON 是 public class，无外部依赖，可安全实例化。
+LiteJSON 是 public class，无外部依赖，可安全实例化。
+
+**为什么不用 FastJSON**: FastJSON.stringify() 按对象身份缓存（FastJSON.as:118-122，generateCacheKey 对 object 使用 UID）。商城回包中 `purchased: _root.商城已购买物品` 是同一数组引用，购买后 push / 领取后 splice 改变内容但不改变引用，FastJSON 会返回首次缓存的旧字符串，直接打穿购买/领取闭环（JSONTest.as:633 已验证此行为）。LiteJSON 无缓存机制，每次全量序列化，正好适合内容可变的回包场景。商城操作为用户驱动（秒级间隔），50KB 级 bulkQuery 回包的 LiteJSON stringify 约 5-15ms，性能完全够用，无需快车道协议。
+
+**为什么不需要快车道协议**: 现有快车道（K/P/W/S/N 前缀）均为帧级高频热路径（每秒数十至上百次），payload 为扁平管道符分隔。商城通信是请求-响应模式 + callId 映射 + 嵌套数组结构 + 秒级频率，JSON task 管道完全够用。
 
 ### D7: 结算安全 — Flash 全权威 + qty 校验
 
@@ -743,35 +756,44 @@ public void SetWebOverlay(WebOverlayForm overlay) { _webOverlay = overlay; }  //
 
 /// <summary>
 /// 面板状态变化回调（由 WebOverlayForm 调用，可能来自任意线程）。
+/// 仅切换 _panelEscEnabled 标志，不动态改绑 ESC 回调，避免 Dictionary 并发读写竞态。
 /// </summary>
 public void HandlePanelStateChanged(bool open)  // 新增, public
 {
     if (this.InvokeRequired) { try { this.BeginInvoke(new Action<bool>(HandlePanelStateChanged), open); } catch {} return; }
 
-    if (open)
+    if (_kbHook != null)
+        _kbHook.SetPanelEscapeEnabled(open);
+}
+```
+
+ESC 回调在初始化时**一次性注册**，内部按 volatile 标志分支：
+```csharp
+// GuardianForm 初始化时（SetupKeyboardHook 末尾）：
+_kbHook.RegisterAction(0x1B, delegate {
+    // HookCallback 在专用线程 → ThreadPool.QueueUserWorkItem 已处理
+    // volatile bool 读取天然线程安全，无需锁
+    if (_kbHook.PanelEscEnabled)
     {
-        if (_kbHook != null)
-        {
-            _kbHook.SetPanelEscapeEnabled(true);
-            _kbHook.RegisterAction(0x1B, delegate {
-                // KeyboardHook 回调在 ThreadPool → marshal 到 UI 线程
-                try { this.BeginInvoke(new Action(() => {
-                    _webOverlay?.PostToWeb("{\"type\":\"panel_esc\"}");
-                })); } catch {}
-            });
-        }
+        try { this.BeginInvoke(new Action(() => {
+            _webOverlay?.PostToWeb("{\"type\":\"panel_esc\"}");
+        })); } catch {}
     }
     else
     {
-        if (_kbHook != null)
-        {
-            _kbHook.SetPanelEscapeEnabled(false);
-            // 恢复 ESC 原始行为
-            _kbHook.RegisterAction(0x1B, delegate { ToggleFullscreen(); });
-        }
+        try { this.BeginInvoke(new Action(ToggleFullscreen)); } catch {}
     }
-}
+});
 ```
+
+KeyboardHook 相应修改：`_panelEscEnabled` 改为带 public getter 的属性：
+```csharp
+private volatile bool _panelEscEnabled;
+public bool PanelEscEnabled { get { return _panelEscEnabled; } }
+public void SetPanelEscapeEnabled(bool enabled) { _panelEscEnabled = enabled; }
+```
+
+**为什么不动态改绑**: RegisterAction 写普通 Dictionary，HookCallback 在钩子专用线程同时读 Dictionary.TryGetValue，属于并发未定义行为。虽然单键覆写在实践中通常不崩，但属于 UB。固定回调 + volatile 标志分支彻底消除竞态。
 
 #### Program.cs 接线（完整）
 
@@ -809,7 +831,8 @@ TaskRegistry.RegisterAll(router, ..., shopTask);
 
 ```actionscript
 // JSON 序列化器（不依赖 ServerManager 私有 jsonParser）
-var _shopJson:FastJSON = new FastJSON();
+// 使用 LiteJSON 而非 FastJSON：FastJSON 按对象身份缓存，同一数组引用内容变化后仍返回旧字符串
+var _shopJson:LiteJSON = new LiteJSON();
 
 // ========== 面板暂停 save/restore ==========
 _root._shopPrevPause = undefined;
@@ -854,17 +877,20 @@ _root.gameCommands["shopBulkQuery"] = function(params) {
             });
         }
     }
-    // 将旧格式购物车转为 idx 格式
+    // 将旧格式购物车转为 idx 格式（M2: 精确匹配 + first-match 回退）
     var cartMigrated = [];
     for (var c = 0; c < _root.商城购物车.length; c++) {
         var cartItem = _root.商城购物车[c];
         // 旧格式 [id, name, type, price, qty] → 找 idx
+        var matched = -1;
         for (var k = 0; k < _root.kshop_list.length; k++) {
-            if (_root.kshop_list[k].id == cartItem[0]
-            && (_root.kshop_list[k].type == cartItem[2] || cartItem[2] == undefined)) { // M2: type 二次确认
-                cartMigrated.push({idx: k, qty: Number(cartItem[cartItem.length - 1])});
-                break;
+            if (_root.kshop_list[k].id == cartItem[0]) {
+                if (matched < 0) matched = k; // first-match 兜底
+                if (_root.kshop_list[k].type == cartItem[2]) { matched = k; break; } // 精确匹配
             }
+        }
+        if (matched >= 0) {
+            cartMigrated.push({idx: matched, qty: Number(cartItem[cartItem.length - 1])});
         }
     }
     var resp = {
@@ -1073,11 +1099,28 @@ bulkQuery 中 `if (itemData != undefined && attrs != undefined)` 会静默跳过
 
 **处理**: JS 侧按收到的 catalog 渲染，不假设与 kshop.json 长度一致。若实现时发现有商品被跳过，在 Flash trace 中记录警告以便排查数据问题。
 
-### M2: 购物车迁移 first-match 对重复 ID 的处理
+### M2: 购物车迁移 — 精确匹配 + first-match 回退
 
 旧购物车按 id first-match 查找 idx。16 组重复 id 中所有条目都是同名同价（仅分类不同），first-match 映射到的条目与用户预期一致（价格相同）。
 
-**额外保护**: 迁移时比较 `kshop_list[k].type == cartItem[2]` 做二次确认，不匹配则回退到 first-match。
+**方案**: 先尝试 id+type 精确匹配，匹配不到再回退到纯 id first-match，确保历史存档中分类名变更时不会静默丢弃购物车条目：
+
+```actionscript
+// bulkQuery 购物车迁移段
+for (var c = 0; c < _root.商城购物车.length; c++) {
+    var cartItem = _root.商城购物车[c];
+    var matched = -1;
+    for (var k = 0; k < _root.kshop_list.length; k++) {
+        if (_root.kshop_list[k].id == cartItem[0]) {
+            if (matched < 0) matched = k; // first-match 兜底
+            if (_root.kshop_list[k].type == cartItem[2]) { matched = k; break; } // 精确匹配
+        }
+    }
+    if (matched >= 0) {
+        cartMigrated.push({idx: matched, qty: Number(cartItem[cartItem.length - 1])});
+    }
+}
+```
 
 ### M3: CSS z-index 确认
 
@@ -1097,7 +1140,7 @@ case "SHOP":
     break;
 ```
 
-### M5: TrySendGameCommand 而非修改现有签名
+### M5: TrySendGameCommand — best-effort 语义
 
 新增独立方法，不改动现有 `SendGameCommand` 的 void 签名（零影响现有调用方）：
 
@@ -1105,18 +1148,42 @@ case "SHOP":
 private bool TrySendGameCommand(string action)
 {
     if (_socketServer == null || !_socketServer.IsClientReady) return false;
-    _socketServer.Send("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
-    return true;
+    return _socketServer.TrySend("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
 }
 private bool TrySendGameCommand(string action, string extraJsonFields)
 {
     if (_socketServer == null || !_socketServer.IsClientReady) return false;
-    _socketServer.Send("{\"task\":\"cmd\",\"action\":\"" + action + "\"," + extraJsonFields + "}\0");
-    return true;
+    return _socketServer.TrySend("{\"task\":\"cmd\",\"action\":\"" + action + "\"," + extraJsonFields + "}\0");
 }
 ```
 
 面板相关代码使用 `TrySendGameCommand`，其他现有调用方不受影响。
+
+**C1: XmlSocketServer 新增 TrySend**（现有 void Send 保持不变）：
+```csharp
+public bool TrySend(string data)
+{
+    lock (_clientLock)
+    {
+        if (_stream == null || _client == null || !_client.Connected)
+            return false;
+        try
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(data);
+            _stream.Write(bytes, 0, bytes.Length);
+            _stream.Flush();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            LogManager.Log("[XmlSocket] TrySend error: " + ex.Message);
+            return false;
+        }
+    }
+}
+```
+
+**语义说明**: TrySend 返回 true 仅代表 Write+Flush 无异常，**不等于 Flash 已收到**（TCP ACK 在 OS 层，check→write 微窗口内断连仍可能 true）。但相比原 void Send 吞异常，TrySend 至少能捕获 Write/Flush 阶段的断连，缩小了不确定窗口。D8 的 OnClientDisconnected 事件在 ReadLoop 退出时触发 force_close，作为最终兜底。
 
 ### S1: shopClaim 数量取法
 
@@ -1156,7 +1223,7 @@ function checkout() {
 12. **saveCart 失败**: 显示 retry/discard 对话框，不自动强退
 13. **Socket 中途断连**: 面板强制关闭 + _pendingReq 清空 + 重连后 Flash 暂停恢复
 14. **saveCart qty 校验**: 小数/负数/NaN 全被过滤，与 checkout 一致
-15. **JSON 序列化**: `_shopJson` 独立实例，不访问 ServerManager private 字段
+15. **JSON 序列化**: `_shopJson` 为 LiteJSON 实例（无身份缓存），不访问 ServerManager private 字段
 16. **shopPanelOpen 发送失败**: 面板不打开（按钮无反应）
 17. **补发失败不清标志**: OnSocketReconnected 补发 shopPanelClose 若失败 → 标志保留 → 下次重连再试
 18. **迟到响应守卫**: force_close 后迟到的 pending 回调 → `if(!Panels.isOpen()) return` 静默丢弃

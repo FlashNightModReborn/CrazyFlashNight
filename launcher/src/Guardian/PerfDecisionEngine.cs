@@ -164,11 +164,8 @@ namespace CF7Launcher.Guardian
                 _pendingDirection = 0;
             }
 
-            // 7. softU 回收率探针日志（每次采样都记录）
+            // 7. softU 回收率探针（日志已关闭，仅在 tier 变化时输出）
             float p5_30 = _buffer.Percentile(5, 30);
-            LogManager.Log(string.Format(
-                "[PerfProbe] fps={0:F1} mean5={1:F1} trend={2:F2} var={3:F1} softU={4:F2} tier={5} p5_30={6:F1} samples={7}",
-                latest, mean5, trend10, var10, softU, _currentTier, p5_30, samplesAfterReset));
 
             // 8. 发送判定
             bool tierChanged = (newTier != _currentTier);
@@ -215,10 +212,7 @@ namespace CF7Launcher.Guardian
 
             float mean5 = _buffer.WindowAverage(DECISION_WINDOW);
             float trend10 = _buffer.Trend(TREND_WINDOW);
-            LogManager.Log(string.Format(
-                "[PerfActive] fps={0:F1} mean5={1:F1} trend10={2:F2} softU={3:F2} warmup={4} | sent={5}",
-                _buffer.Latest, mean5, trend10, decision.SoftU,
-                _buffer.SamplesAfterReset, cmd));
+            // PerfActive 日志已关闭（仅 tier 变化时由 PerfProbe 输出）
         }
 
         /// <summary>影子模式：记录 C# 决策与 AS2 实际档位的对比日志。</summary>

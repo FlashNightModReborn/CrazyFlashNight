@@ -321,6 +321,8 @@ var Notch = (function() {
         // 游戏帮助弹窗
         var ghm = document.getElementById('game-help-modal');
         if (ghm && ghm.classList.contains('visible')) pushRect(ghm);
+        // 面板系统命中区域
+        if (typeof Panels !== 'undefined') Panels.getHitRects(pushRect);
         Bridge.send({ type: 'interactiveRect', r: rects });
     }
     _reportRect = reportRect;

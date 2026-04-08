@@ -1,0 +1,222 @@
+/* ═══════════════════════════════════════════════════════
+   Panel System — Cyberpunk 2077 Style
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+    --cp-cyan:    #00f0ff;
+    --cp-yellow:  #fcee09;
+    --cp-red:     #ff003c;
+    --cp-bg:      rgba(10, 12, 18, 0.96);
+    --cp-bg2:     rgba(16, 20, 30, 0.92);
+    --cp-border:  rgba(0, 240, 255, 0.15);
+    --cp-border2: rgba(0, 240, 255, 0.08);
+    --cp-text:    #d0d8e8;
+    --cp-dim:     #607088;
+    --cp-glow:    0 0 8px rgba(0, 240, 255, 0.3);
+    --cp-cut:     10px;  /* corner cut size */
+}
+
+/* ── Container ── */
+#panel-container { position:fixed; inset:0; z-index:1000; pointer-events:auto; }
+#panel-backdrop  { position:absolute; inset:0;
+                   background:radial-gradient(ellipse at 50% 30%, rgba(0,40,60,0.55), rgba(0,0,0,0.75)); }
+#panel-content   { position:absolute; inset:4% 6%; z-index:1; display:flex; flex-direction:column;
+                   pointer-events:auto; }
+
+/* ── Tooltip ── */
+#panel-tooltip   { position:fixed; z-index:1100; pointer-events:none; display:none;
+                   background:var(--cp-bg); border:1px solid var(--cp-cyan); color:var(--cp-text);
+                   padding:10px 14px; font-size:12px; max-width:300px; letter-spacing:0.3px;
+                   clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+                   box-shadow:var(--cp-glow); }
+#panel-tooltip b { color:var(--cp-cyan); }
+
+/* ═══════════════════════════════════════════════════════
+   K-Shop Panel
+   ═══════════════════════════════════════════════════════ */
+
+.kshop-panel {
+    display:flex; flex-direction:column; height:100%;
+    background:var(--cp-bg); color:var(--cp-text);
+    font-family:"Consolas","Courier New","Microsoft YaHei",monospace;
+    font-size:13px; overflow:hidden;
+    border:1px solid var(--cp-border);
+    clip-path:polygon(
+        0 0, calc(100% - var(--cp-cut)) 0, 100% var(--cp-cut),
+        100% 100%, var(--cp-cut) 100%, 0 calc(100% - var(--cp-cut))
+    );
+    box-shadow:0 0 40px rgba(0,240,255,0.06), inset 0 0 80px rgba(0,240,255,0.02);
+}
+
+/* Scanline overlay */
+.kshop-panel::before {
+    content:''; position:absolute; inset:0; z-index:999; pointer-events:none;
+    background:repeating-linear-gradient(
+        0deg,
+        transparent 0px, transparent 2px,
+        rgba(0,240,255,0.015) 2px, rgba(0,240,255,0.015) 4px
+    );
+}
+
+/* ── Header ── */
+.kshop-header {
+    display:flex; align-items:center; padding:12px 20px;
+    background:linear-gradient(90deg, rgba(0,240,255,0.08) 0%, transparent 60%);
+    border-bottom:1px solid var(--cp-border);
+    position:relative;
+}
+.kshop-header::after {
+    content:''; position:absolute; bottom:-1px; left:0; width:120px; height:1px;
+    background:var(--cp-cyan); box-shadow:0 0 6px var(--cp-cyan);
+}
+.kshop-title {
+    font-size:15px; font-weight:bold; flex:1;
+    text-transform:uppercase; letter-spacing:3px;
+    color:var(--cp-cyan);
+    text-shadow:0 0 10px rgba(0,240,255,0.4);
+}
+.kshop-balance { margin-right:20px; font-size:13px; color:var(--cp-dim); letter-spacing:0.5px; }
+.kshop-balance b { color:var(--cp-yellow); font-size:15px; text-shadow:0 0 6px rgba(252,238,9,0.3); }
+.kshop-close-btn {
+    background:none; border:1px solid rgba(255,0,60,0.3); color:var(--cp-red);
+    font-size:18px; cursor:pointer; padding:2px 8px; transition:all 0.15s;
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+}
+.kshop-close-btn:hover { background:rgba(255,0,60,0.15); border-color:var(--cp-red);
+                          box-shadow:0 0 8px rgba(255,0,60,0.3); }
+
+/* ── Categories ── */
+.kshop-categories {
+    display:flex; flex-wrap:wrap; gap:5px; padding:10px 20px;
+    background:rgba(0,240,255,0.02); border-bottom:1px solid var(--cp-border2);
+}
+.kshop-cat-btn {
+    background:rgba(0,240,255,0.04); border:1px solid var(--cp-border2);
+    color:var(--cp-dim); padding:5px 12px; cursor:pointer; font-size:11px;
+    font-family:inherit; text-transform:uppercase; letter-spacing:1px; transition:all 0.15s;
+    clip-path:polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+}
+.kshop-cat-btn:hover { background:rgba(0,240,255,0.08); color:var(--cp-text); border-color:var(--cp-border); }
+.kshop-cat-btn.active {
+    background:rgba(0,240,255,0.12); border-color:rgba(0,240,255,0.4); color:var(--cp-cyan);
+    box-shadow:var(--cp-glow); text-shadow:0 0 6px rgba(0,240,255,0.4);
+}
+
+/* ── Body ── */
+.kshop-body { display:flex; flex:1; overflow:hidden; }
+
+/* ── Grid ── */
+.kshop-grid {
+    flex:1; display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr));
+    gap:8px; padding:12px 16px; overflow-y:auto; align-content:start;
+}
+/* Scrollbar */
+.kshop-grid::-webkit-scrollbar { width:4px; }
+.kshop-grid::-webkit-scrollbar-track { background:rgba(0,240,255,0.03); }
+.kshop-grid::-webkit-scrollbar-thumb { background:rgba(0,240,255,0.15); }
+.kshop-grid::-webkit-scrollbar-thumb:hover { background:rgba(0,240,255,0.3); }
+
+/* ── Card ── */
+.kshop-card {
+    background:var(--cp-bg2); border:1px solid var(--cp-border2);
+    padding:10px 8px 8px; text-align:center; position:relative; cursor:default;
+    transition:all 0.15s;
+    clip-path:polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+}
+.kshop-card::before {
+    content:''; position:absolute; top:0; left:0; width:100%; height:1px;
+    background:linear-gradient(90deg, transparent, var(--cp-border), transparent);
+}
+.kshop-card:hover {
+    border-color:rgba(0,240,255,0.35);
+    background:rgba(0,240,255,0.06);
+    box-shadow:0 0 12px rgba(0,240,255,0.08), inset 0 0 20px rgba(0,240,255,0.03);
+}
+.kshop-card-nosale { opacity:0.45; filter:saturate(0.3); }
+.kshop-icon { width:52px; height:52px; display:block; margin:0 auto 6px; object-fit:contain;
+              filter:drop-shadow(0 0 3px rgba(0,240,255,0.15)); }
+.kshop-icon-placeholder { background:rgba(0,240,255,0.05); width:52px; height:52px; }
+.kshop-card-name { font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+                   color:var(--cp-text); }
+.kshop-card-price { color:var(--cp-yellow); font-size:12px; margin-top:3px; letter-spacing:0.5px;
+                    text-shadow:0 0 4px rgba(252,238,9,0.2); }
+
+/* Add button */
+.kshop-add-btn {
+    position:absolute; top:4px; right:4px;
+    background:rgba(0,240,255,0.1); border:1px solid rgba(0,240,255,0.25);
+    color:var(--cp-cyan); width:22px; height:22px; cursor:pointer;
+    font-size:14px; line-height:20px; transition:all 0.15s;
+    clip-path:polygon(0 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 3px 100%, 0 calc(100% - 3px));
+}
+.kshop-add-btn:hover { background:rgba(0,240,255,0.25); box-shadow:0 0 8px rgba(0,240,255,0.3); }
+
+/* ── Sidebar ── */
+.kshop-sidebar {
+    width:270px; min-width:220px;
+    border-left:1px solid var(--cp-border);
+    display:flex; flex-direction:column; overflow-y:auto;
+    background:rgba(0,0,0,0.2);
+}
+.kshop-sidebar::-webkit-scrollbar { width:3px; }
+.kshop-sidebar::-webkit-scrollbar-thumb { background:rgba(0,240,255,0.12); }
+
+.kshop-cart-header, .kshop-claim-header {
+    padding:10px 14px; font-weight:bold; font-size:12px;
+    text-transform:uppercase; letter-spacing:2px; color:var(--cp-dim);
+    background:rgba(0,240,255,0.03); border-bottom:1px solid var(--cp-border2);
+}
+.kshop-cart-list, .kshop-claim-list { flex:1; overflow-y:auto; padding:6px 14px; }
+.kshop-cart-row, .kshop-claim-row {
+    display:flex; align-items:center; padding:6px 0;
+    border-bottom:1px solid rgba(0,240,255,0.05);
+}
+.kshop-cart-name, .kshop-claim-name {
+    flex:1; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    color:var(--cp-text);
+}
+.kshop-cart-qty { font-size:12px; color:var(--cp-dim); }
+.kshop-cart-sub { font-size:12px; color:var(--cp-yellow); margin-left:8px; min-width:55px; text-align:right; }
+
+/* Qty buttons */
+.kshop-qty-btn {
+    background:rgba(0,240,255,0.06); border:1px solid rgba(0,240,255,0.12);
+    color:var(--cp-cyan); width:18px; height:18px; cursor:pointer;
+    font-size:12px; line-height:16px; padding:0; transition:all 0.1s;
+}
+.kshop-qty-btn:hover { background:rgba(0,240,255,0.15); border-color:rgba(0,240,255,0.3); }
+
+/* Cart footer */
+.kshop-cart-footer {
+    display:flex; align-items:center; justify-content:space-between; padding:10px 14px;
+    background:rgba(0,240,255,0.03); border-top:1px solid var(--cp-border);
+}
+.kshop-cart-footer b { color:var(--cp-yellow); font-size:14px; }
+
+/* Checkout button */
+.kshop-checkout-btn {
+    background:rgba(252,238,9,0.08); border:1px solid rgba(252,238,9,0.35);
+    color:var(--cp-yellow); padding:6px 20px; cursor:pointer;
+    font-family:inherit; font-size:12px; text-transform:uppercase; letter-spacing:2px;
+    transition:all 0.15s;
+    clip-path:polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+}
+.kshop-checkout-btn:hover:not(:disabled) {
+    background:rgba(252,238,9,0.18); border-color:var(--cp-yellow);
+    box-shadow:0 0 12px rgba(252,238,9,0.2); text-shadow:0 0 6px rgba(252,238,9,0.4);
+}
+.kshop-checkout-btn:disabled { opacity:0.25; cursor:default; filter:saturate(0); }
+
+/* Claim button */
+.kshop-claim-btn {
+    background:rgba(0,240,255,0.06); border:1px solid rgba(0,240,255,0.2);
+    color:var(--cp-cyan); padding:3px 12px; cursor:pointer; margin-left:8px;
+    font-family:inherit; font-size:10px; text-transform:uppercase; letter-spacing:1px;
+    transition:all 0.15s;
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+}
+.kshop-claim-btn:hover:not(:disabled) {
+    background:rgba(0,240,255,0.15); border-color:var(--cp-cyan);
+    box-shadow:0 0 8px rgba(0,240,255,0.2);
+}
+.kshop-claim-btn:disabled { opacity:0.25; cursor:default; }

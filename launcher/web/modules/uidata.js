@@ -75,11 +75,22 @@ var UiData = (function() {
         }
     }
 
+    /** 移除已注册的 handler（按引用匹配，仅移除第一个匹配项） */
+    function off(key, handler) {
+        if (!handlers[key]) return;
+        for (var i = handlers[key].length - 1; i >= 0; i--) {
+            if (handlers[key][i] === handler) {
+                handlers[key].splice(i, 1);
+                break;
+            }
+        }
+    }
+
     /** 注册旧格式处理器（兼容 U 前缀独立推送） */
     function onLegacy(type, handler) {
         if (!legacyHandlers[type]) legacyHandlers[type] = [];
         legacyHandlers[type].push(handler);
     }
 
-    return { on: on, onLegacy: onLegacy, dispatch: dispatch };
+    return { on: on, off: off, onLegacy: onLegacy, dispatch: dispatch };
 })();

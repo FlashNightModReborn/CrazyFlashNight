@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using CF7Launcher.Bus;
+using CF7Launcher.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian
 {
@@ -71,6 +73,12 @@ namespace CF7Launcher.Guardian
 
         // InputShieldForm 引用（CDP 输入注入 + hitRects 转发）
         private InputShieldForm _inputShield;
+
+        // 面板系统
+        private ShopTask _shopTask;
+        private Action<bool> _onPanelStateChanged;
+        private bool _panelOpen;
+        private bool _pauseNeedsRestore;
 
         // 光照等级（静态 24h 数组，初始化后一次性推送给 JS）
         private int[] _lightLevels;
@@ -399,6 +407,10 @@ namespace CF7Launcher.Guardian
                 else if (json.Contains("\"jukebox\""))
                 {
                     HandleJukeboxMessage(json);
+                }
+                else if (json.Contains("\"panel\""))
+                {
+                    HandlePanelMessage(json);
                 }
                 else if (json.Contains("\"click\""))
                 {
@@ -807,6 +819,75 @@ namespace CF7Launcher.Guardian
 
         #endregion
 
+        #region 面板系统
+
+        public void SetShopTask(ShopTask task)
+        {
+            _shopTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
+        public void SetPanelStateCallback(Action<bool> cb) { _onPanelStateChanged = cb; }
+
+        private void HandlePanelMessage(string json)
+        {
+            LogManager.Log("[Panel] HandlePanelMessage: " + json);
+            JObject parsed;
+            try { parsed = JObject.Parse(json); } catch { LogManager.Log("[Panel] JSON parse failed"); return; }
+            string cmd = parsed.Value<string>("cmd");
+            if (cmd == null) { LogManager.Log("[Panel] cmd is null"); return; }
+            switch (cmd)
+            {
+                case "close":
+                    if (!TrySendGameCommand("shopPanelClose"))
+                        _pauseNeedsRestore = true;
+                    _panelOpen = false;
+                    if (_onPanelStateChanged != null) _onPanelStateChanged(false);
+                    break;
+                case "bulkQuery":
+                case "checkout":
+                case "claim":
+                case "saveCart":
+                    LogManager.Log("[Panel] Routing cmd=" + cmd + " to ShopTask, _shopTask=" + (_shopTask != null ? "ok" : "NULL"));
+                    if (_shopTask != null) _shopTask.HandleWebRequest(cmd, parsed);
+                    break;
+            }
+        }
+
+        private bool TrySendGameCommand(string action)
+        {
+            if (_socketServer == null || !_socketServer.IsClientReady) return false;
+            return _socketServer.TrySend("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
+        }
+
+        public void OnSocketDisconnected()
+        {
+            if (this.InvokeRequired) { try { this.BeginInvoke(new Action(OnSocketDisconnected)); } catch {} return; }
+
+            if (_panelOpen)
+            {
+                PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"force_close\",\"reason\":\"disconnected\"}");
+                _panelOpen = false;
+                if (_onPanelStateChanged != null) _onPanelStateChanged(false);
+                _pauseNeedsRestore = true;
+            }
+            if (_shopTask != null) _shopTask.ClearPending();
+        }
+
+        public void OnSocketReconnected()
+        {
+            if (this.InvokeRequired) { try { this.BeginInvoke(new Action(OnSocketReconnected)); } catch {} return; }
+
+            if (_pauseNeedsRestore)
+            {
+                if (TrySendGameCommand("shopPanelClose"))
+                    _pauseNeedsRestore = false;
+            }
+        }
+
+        #endregion
+
         #region 辅助方法
 
         private void HandleButtonClick(string key)
@@ -824,7 +905,27 @@ namespace CF7Launcher.Guardian
                 case "PAUSE": SendGameCommand("togglePause"); break;
                 case "WAREHOUSE": SendGameCommand("warehouse"); break;
                 case "SETTINGS": SendGameCommand("toggleSettings"); break;
-                case "SHOP": SendGameCommand("openShop"); break;
+                case "SHOP":
+                    LogManager.Log("[Panel] SHOP clicked, _webFailed=" + _webFailed);
+                    if (_webFailed)
+                    {
+                        LogManager.Log("[Panel] SHOP → fallback openShop");
+                        SendGameCommand("openShop");
+                    }
+                    else if (!TrySendGameCommand("shopPanelOpen"))
+                    {
+                        LogManager.Log("[Panel] SHOP → TrySend failed");
+                        PostToWeb("{\"type\":\"toast\",\"text\":\"商城暂时不可用\"}");
+                    }
+                    else
+                    {
+                        LogManager.Log("[Panel] SHOP → opening panel via PostToWeb");
+                        PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"kshop\"}");
+                        _panelOpen = true;
+                        if (_onPanelStateChanged != null) _onPanelStateChanged(true);
+                        LogManager.Log("[Panel] SHOP → _panelOpen=true, state callback fired");
+                    }
+                    break;
                 case "HELP": SendGameCommand("openHelp"); break;
                 case "SAFEEXIT": SendGameCommand("safeExit"); break;
                 case "PETS": SendGameCommand("togglePets"); break;

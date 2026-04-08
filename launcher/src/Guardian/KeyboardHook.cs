@@ -89,6 +89,10 @@ namespace CF7Launcher.Guardian
 
         // Escape 拦截（全屏时动态启用）
         private volatile bool _escEnabled;
+        // 面板 ESC 拦截（与 _escEnabled 独立）
+        private volatile bool _panelEscEnabled;
+        public bool PanelEscEnabled { get { return _panelEscEnabled; } }
+        public void SetPanelEscapeEnabled(bool enabled) { _panelEscEnabled = enabled; }
 
         public KeyboardHook()
         {
@@ -191,8 +195,8 @@ namespace CF7Launcher.Guardian
                     if (_ctrlHeld && _blockedVks.Contains(vk))
                         shouldBlock = true;
 
-                    // Escape（仅全屏时）
-                    if (vk == VK_ESCAPE && _escEnabled)
+                    // Escape（全屏时 或 面板打开时）
+                    if (vk == VK_ESCAPE && (_escEnabled || _panelEscEnabled))
                         shouldBlock = true;
 
                     if (shouldBlock)
