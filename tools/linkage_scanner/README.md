@@ -38,7 +38,13 @@ python tools/linkage_scanner/scan_linkage.py
 <!-- symbolName 与 id 不同时显示，方便在 FLA 库中定位 -->
 <asset id="图标-寸拳" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/Symbol 4640" />
 
-<!-- 冲突条目（同一 linkageId 出现在多个 SWF 中） -->
+<!-- 同源重复：同一 SWF 内多个库名指向同一 linkageId -->
+<duplicate id="effect2">
+  <source swf="flashswf/arts/new/特效库.swf" symbolName="未命名文件夹 1/sprite 27" />
+  <source swf="flashswf/arts/new/特效库.swf" symbolName="未命名文件夹 2/sprite 112" />
+</duplicate>
+
+<!-- 跨源冲突：同一 linkageId 出现在多个 SWF 中 -->
 <conflict id="近战子弹">
   <source swf="flashswf/arts/things0.swf" symbolName="sprite/近战子弹" />
   <source swf="flashswf/arts/原版素材库-子弹.swf" symbolName="子弹/近战子弹" />
@@ -47,8 +53,9 @@ python tools/linkage_scanner/scan_linkage.py
 
 ### 控制台报告（省略 `--xml-only` 时）
 
-- 唯一 linkageIdentifier 总数
-- 冲突列表（每个冲突 ID 及其所有来源和库名）
+- 唯一 linkageIdentifier 总数及三类分布（unique / duplicates / conflicts）
+- 同源重复列表（同 SWF 多个 symbolName）
+- 跨源冲突列表（多个 SWF）
 - 各源文件导出数量排行
 
 ## 工作原理
@@ -57,7 +64,8 @@ python tools/linkage_scanner/scan_linkage.py
 2. **FLA 文件**：FLA 本质是 ZIP，按 local file header 逐条解析（支持 store/deflate 及 data descriptor 标志位 0x08），提取 LIBRARY XML 内容，无需解压到磁盘
 3. **去重规则**：同一源内的重复 ID 只算一次（`seen_in_source` set，`source_counts` 取 `len()`）；XFL 目录存在时跳过同名 FLA
 4. **symbolName 输出**：仅当 `name` ≠ `linkageIdentifier` 时才写入 `symbolName` 属性，避免冗余
-5. **XML 安全**：输出属性值过滤 XML 1.0 非法字符（U+FFFE/U+FFFF、控制字符等），确保标准解析器可正常读取
+5. **实体解码**：XFL/FLA 中的属性值是 XML 实体编码的（如 `&amp;` → `&`、`&lt;` → `<`）。正则捕获后先通过 `html.unescape()` 还原真实值，再在输出时由 `xml_safe()` 重新转义，避免双重编码（如 `&amp;amp;`）
+6. **XML 安全**：输出属性值过滤 XML 1.0 非法字符（U+FFFE/U+FFFF、控制字符等），确保标准解析器可正常读取
 
 ## 典型工作流
 
@@ -72,8 +80,10 @@ python tools/linkage_scanner/scan_linkage.py
 |------|-----|
 | 唯一 linkageIdentifier | ~5567 |
 | 来源文件 | ~145 |
-| 冲突 | ~129 |
-| symbolName ≠ linkageId | ~4810/5438 (88%) |
+| unique | ~5425 |
+| 同源重复 (duplicate) | ~13 |
+| 跨源冲突 (conflict) | ~129 |
+| symbolName ≠ linkageId | ~88% |
 
 ## 文件说明
 
