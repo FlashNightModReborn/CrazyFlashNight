@@ -1,10 +1,15 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
+          <DOMFolderItem name="01.怪物通用模板" itemID="66fff238-000007dd"/>
+          <DOMFolderItem name="01.怪物通用模板/area框" itemID="69d5c7f7-00000d81"/>
+          <DOMFolderItem name="01.怪物通用模板/新近战子弹定位元件" itemID="65ae6c71-00003849"/>
+          <DOMFolderItem name="01.怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03"/>
           <DOMFolderItem name="2.音效文件夹" itemID="68368bd3-000028d2"/>
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="68368bd3-000028d3" isExpanded="true"/>
           <DOMFolderItem name="3.位图相关" itemID="6690e84b-000017e9"/>
           <DOMFolderItem name="3.音效相关" itemID="6690f591-00003200"/>
           <DOMFolderItem name="弹壳" itemID="68368c1d-0000293f"/>
+          <DOMFolderItem name="僵尸类子弹" itemID="69d5c7ce-00000d7b" isExpanded="true"/>
           <DOMFolderItem name="联弹" itemID="68368bd3-000028d4"/>
           <DOMFolderItem name="联弹/白色手里剑" itemID="68368bd3-000028df"/>
           <DOMFolderItem name="联弹/联弹爆炸" itemID="68368bd3-000028e6"/>
@@ -166,6 +171,8 @@
           <DOMBitmapItem name="特效-血液组/位图血迹7" itemID="68ca7d8d-0000047e" linkageExportForAS="true" linkageIdentifier="位图血迹7" sourceExternalFilepath="./LIBRARY/3.位图相关/bitmap690.png" sourceLastImported="1758103792" originalCompressionType="lossless" quality="50" href="特效-血液组/位图血迹7.png" bitmapDataHRef="M 55 1721575215.dat" frameRight="1400" frameBottom="480"/>
      </media>
      <symbols>
+          <Include href="01.怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="65ae6963-00003740" lastModified="1705929059"/>
+          <Include href="01.怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
           <Include href="Symbol 2.xml" loadImmediate="false" itemID="6577f78a-00000f72" lastModified="1701306521"/>
           <Include href="Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-000013c7" lastModified="1701508661"/>
           <Include href="Symbol 25.xml" loadImmediate="false" itemID="6577faef-000013c8" lastModified="1701508661"/>
@@ -196,6 +203,8 @@
           <Include href="等离子光片.xml" loadImmediate="false" itemID="6883540e-00000e06" lastModified="1762845237"/>
           <Include href="反坦克导弹图像.xml" itemIcon="1" loadImmediate="false" itemID="68d8f8ee-00000eb8" lastModified="1762845201"/>
           <Include href="核战斗部火箭弹图像.xml" itemIcon="1" loadImmediate="false" itemID="6912f3c7-000039ed" lastModified="1762852721"/>
+          <Include href="僵尸类子弹/毒球.xml" itemID="69d5c7b7-00000d7a" lastModified="1775618059"/>
+          <Include href="僵尸类子弹/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="689da03f-0000015b" lastModified="1755161659"/>
           <Include href="联弹/白色手里剑/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000250" lastModified="1705503817"/>
           <Include href="联弹/白色手里剑/Symbol 23.xml" loadImmediate="false" itemID="6577efbc-00000251" lastModified="1705503796"/>
           <Include href="联弹/白色手里剑/Symbol 573.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000416" lastModified="1705503893"/>
@@ -619,7 +628,7 @@
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 664.xml" loadImmediate="false" itemID="668b9cdd-000001e0" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 1217.xml" itemIcon="1" loadImmediate="false" itemID="668b9f53-000001d0" lastModified="1720426265"/>
           <Include href="无AS链接/月牙刀光.xml" loadImmediate="false" itemID="68d25fac-000012ee" lastModified="1758618233"/>
-          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1765771644"/>
+          <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1775618011"/>
           <Include href="长枪/火药燃气液压打桩机/暴君收割机/暴君收割机锯片.xml" loadImmediate="false" itemID="6922e368-00002da6" lastModified="1763949118"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
           <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1762845287"/>

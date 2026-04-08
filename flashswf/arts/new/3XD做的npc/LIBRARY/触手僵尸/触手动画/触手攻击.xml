@@ -1,0 +1,60 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/触手动画/触手攻击" itemID="685bebcc-00000c9e" symbolType="graphic" lastModified="1774199868">
+  <timeline>
+    <DOMTimeline name="触手攻击" currentFrame="5">
+      <layers>
+        <DOMLayer name="Layer_5" color="#97DFFA" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="触手僵尸/触手动画/Symbol 2070" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3499755859375" d="0.3499755859375" tx="27.8" ty="28.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="触手僵尸/触手动画/Symbol 2071" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3499755859375" d="0.3499755859375" tx="27.8" ty="28.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="触手僵尸/触手动画/Symbol 2072" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3499755859375" d="0.3499755859375" tx="27.8" ty="28.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="触手僵尸/触手动画/Symbol 2073" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3499755859375" d="0.3499755859375" tx="27.8" ty="28.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
