@@ -303,3 +303,40 @@
 .kshop-dlg-btn:hover { background:rgba(0,240,255,0.15); border-color:var(--cp-cyan); }
 .kshop-dlg-danger { color:var(--cp-red); border-color:rgba(255,0,60,0.25); background:rgba(255,0,60,0.05); }
 .kshop-dlg-danger:hover { background:rgba(255,0,60,0.15); border-color:var(--cp-red); }
+
+/* ── Quantity input popup (consumables) ── */
+.kshop-qty-popup {
+    position:fixed; z-index:1200; pointer-events:auto;
+    background:var(--cp-bg); border:1px solid var(--cp-cyan); padding:10px 12px;
+    clip-path:polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+    box-shadow:var(--cp-glow), 0 4px 20px rgba(0,0,0,0.5);
+    font-family:"Consolas","Courier New","Microsoft YaHei",monospace; font-size:12px; color:var(--cp-text);
+}
+.kshop-qty-popup-title { font-size:11px; color:var(--cp-cyan); margin-bottom:6px;
+                          white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px; }
+.kshop-qty-popup-row { display:flex; align-items:center; gap:3px; }
+.kshop-qty-pop-btn {
+    background:rgba(0,240,255,0.06); border:1px solid rgba(0,240,255,0.15);
+    color:var(--cp-cyan); width:26px; height:24px; cursor:pointer;
+    font-size:11px; line-height:22px; padding:0; transition:all 0.1s;
+}
+.kshop-qty-pop-btn:hover { background:rgba(0,240,255,0.15); border-color:var(--cp-cyan); }
+.kshop-qty-input {
+    width:50px; height:24px; text-align:center; border:1px solid rgba(0,240,255,0.2);
+    background:rgba(0,0,0,0.4); color:var(--cp-yellow); font-family:inherit; font-size:13px;
+    outline:none;
+}
+.kshop-qty-input:focus { border-color:var(--cp-cyan); box-shadow:0 0 4px rgba(0,240,255,0.2); }
+/* hide number input spinners */
+.kshop-qty-input::-webkit-inner-spin-button,
+.kshop-qty-input::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+.kshop-qty-popup-foot { display:flex; align-items:center; justify-content:space-between; margin-top:6px; }
+.kshop-qty-subtotal { color:var(--cp-yellow); font-size:12px; }
+.kshop-qty-confirm {
+    background:rgba(0,240,255,0.08); border:1px solid rgba(0,240,255,0.3);
+    color:var(--cp-cyan); padding:3px 14px; cursor:pointer;
+    font-family:inherit; font-size:11px; letter-spacing:1px; transition:all 0.15s;
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+}
+.kshop-qty-confirm:hover { background:rgba(0,240,255,0.2); border-color:var(--cp-cyan);
+                           box-shadow:0 0 6px rgba(0,240,255,0.2); }
