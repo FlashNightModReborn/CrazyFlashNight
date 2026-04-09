@@ -74,25 +74,10 @@ if (flash.external.ExternalInterface.available) {
     flash.external.ExternalInterface.addCallback("reloadTaskData", _root, _root.重新加载任务数据);
 }
 
-_root.LoadPCTasks = function() {
-    var saveData = SharedObject.getLocal(_root.savePath);
-    _root.tasks_to_do = saveData.data.tasks_to_do;
-    _root.tasks_finished = saveData.data.tasks_finished;
-    _root.task_chains_progress = saveData.data.task_chains_progress;
-    // _root.task_history = saveData.data.task_history;
-    _root.UpdateTaskProgress();
-    _root.检查任务数据完整性();
-}
-
-_root.SavePCTasks = function() {
-    var saveData = SharedObject.getLocal(_root.savePath);
-    saveData.data.tasks_to_do = _root.tasks_to_do;
-    saveData.data.tasks_finished = _root.tasks_finished;
-    saveData.data.task_chains_progress = _root.task_chains_progress;
-    saveData.data.task_history = undefined;
-    saveData.flush();
-    _root.UpdateTaskProgress();
-}
+// LoadPCTasks / SavePCTasks 已折入 SaveManager.loadAll() / saveAll()
+// 保留空壳防止外部调用报错
+_root.LoadPCTasks = function() {};
+_root.SavePCTasks = function() {};
 
 
 _root.检查任务数据完整性 = function() {

@@ -1,486 +1,55 @@
-﻿import org.flashNight.gesh.object.*;
-import org.flashNight.arki.item.itemCollection.*;
-import org.flashNight.neur.Event.*;
-import org.flashNight.arki.weather.*;
+﻿import org.flashNight.neur.Server.*;
+
+// ==================== SaveManager shim 层 ====================
+// 注意：不能用 var sm = SaveManager.getInstance() 然后闭包捕获 sm
+// 因为帧脚本局部变量在 asLoader 卸载后被回收（AS2 闭包陷阱）
+// 每个委托函数必须每次调用时通过 SaveManager.getInstance() 获取实例
+
+// 初始化 SaveManager 单例（确保构造运行）
+SaveManager.getInstance();
 
 _root.存档系统 = new Object();
-_root.存档系统.latest_version = "2.7";
-
+_root.存档系统.latest_version = SaveManager.LATEST_VERSION;
 _root.存档系统.dirtyMark = false;
 
-_root.存档系统.初始化物品栏 = function(){
-    return {
-        背包:new ArrayInventory(null,50),
-        装备栏:new EquipmentInventory(null),
-        药剂栏:new DrugInventory(null,4),
-        仓库:new ArrayInventory(null,1200),
-        战备箱:new ArrayInventory(null,400)
-    };
-}
+// 数据组包/初始化委托（每次调用走 class 静态方法，不依赖帧脚本局部变量）
+_root.存档系统.mydata数据组包 = function() { _root.mydata = SaveManager.getInstance().packGameState(); };
+_root.存档系统.初始化物品栏 = function() { return SaveManager.getInstance().initInventory(); };
+_root.存档系统.初始化收集品栏 = function() { return SaveManager.getInstance().initCollection(); };
+_root.存档系统.存储设置 = function() { return SaveManager.getInstance().packSettings(); };
+_root.存档系统.读取设置 = function(s) { SaveManager.getInstance().applySettings(s); };
+_root.存档系统.convert = function(data) { SaveManager.getInstance().migrateAndSync(data, SaveManager.getInstance().getSOData()); };
 
-_root.存档系统.初始化收集品栏 = function(){
-    return {
-        材料:new DictCollection(null),
-        情报:new InformationCollection(null)
-    }
-}
-_root.存档系统.存储设置 = function(){
-    var ws:WeatherSystem = WeatherSystem.getInstance();
-    var sem = _root.soundEffectManager;
-    return {
-        setGlobalVolume:sem.getGlobalVolume(),
-        setBGMVolume:sem.getBGMVolume(),
-        性能等级上限:_root.帧计时器.性能等级上限,
-        是否阴影:_root.是否阴影,
-        是否视觉元素:_root.是否视觉元素,
-        是否打击数字特效:_root.是否打击数字特效,
-        cameraZoomToggle:_root.cameraZoomToggle,
-        basicZoomScale:_root.basicZoomScale,
-        开启昼夜系统:ws.enableDayNightCycle,
-        暂停昼夜系统:ws.pauseDayNightCycle,
-        使用滤镜渲染:ws.useFilterRendering,
-        立绘类型:_root.立绘类型,
-        jukeboxOverride:sem.getJukeboxOverride(),
-        jukeboxTrueRandom:sem.getTrueRandom(),
-        jukeboxPlayMode:sem.getPlayMode()
-    }
-}
+// 核心存/读委托
+_root.自动存盘 = function() { SaveManager.getInstance().saveAll(); };
+_root.本地存盘 = function() { SaveManager.getInstance().saveAll(); };
+_root.读取本地存盘 = function() { SaveManager.getInstance().preload(); };
+_root.读取存盘 = function() { return SaveManager.getInstance().loadAll(); };
+_root.是否存过盘 = function() { return SaveManager.getInstance().hasSaveData(); };
+_root.新建角色 = function() { return SaveManager.getInstance().newCharacter(); };
+_root.删除存盘 = function() { SaveManager.getInstance().deleteSlot(); };
 
-_root.存档系统.读取设置 = function(设置){
-    if(!设置) return;
-    if(!isNaN(设置.setGlobalVolume)) _root.soundEffectManager.setGlobalVolume(设置.setGlobalVolume);
-    if(!isNaN(设置.setBGMVolume)) _root.soundEffectManager.setBGMVolume(设置.setBGMVolume);
-    if(!isNaN(设置.性能等级上限)) {
-        var _cap:Number = Math.round(设置.性能等级上限);
-        // 写回迁移: 旧 4 档 → 2 档 (0→0, 1→0, 2→1, 3→1)
-        _cap = (_cap >= 2) ? 1 : (_cap < 0) ? 0 : _cap;
-        _root.帧计时器.性能等级上限 = _cap;
-    }
-    if(设置.cameraZoomToggle || 设置.cameraZoomToggle  === false) _root.cameraZoomToggle = 设置.cameraZoomToggle;
-    if(!isNaN(设置.basicZoomScale)) _root.basicZoomScale = 设置.basicZoomScale;
-    if(设置.是否阴影 || 设置.是否阴影  === false) _root.是否阴影 = 设置.是否阴影;
-    if(设置.是否视觉元素 || 设置.是否视觉元素  === false) _root.是否视觉元素 = 设置.是否视觉元素;
-    if(设置.是否打击数字特效 || 设置.是否打击数字特效  === false) _root.是否打击数字特效 = 设置.是否打击数字特效;
-    var ws:WeatherSystem = WeatherSystem.getInstance();
-    if(设置.开启昼夜系统 || 设置.开启昼夜系统  === false) ws.enableDayNightCycle = 设置.开启昼夜系统;
-    if(设置.暂停昼夜系统 || 设置.暂停昼夜系统  === false) ws.pauseDayNightCycle = 设置.暂停昼夜系统;
-    if(设置.使用滤镜渲染 || 设置.使用滤镜渲染  === false) ws.useFilterRendering = 设置.使用滤镜渲染;
-    if(设置.立绘类型) _root.立绘类型 = 设置.立绘类型;
-    var sem = _root.soundEffectManager;
-    if(设置.jukeboxOverride || 设置.jukeboxOverride === false) sem.setJukeboxOverride(设置.jukeboxOverride);
-    if(设置.jukeboxTrueRandom || 设置.jukeboxTrueRandom === false) sem.setTrueRandom(设置.jukeboxTrueRandom);
-    if(设置.jukeboxPlayMode) sem.setPlayMode(设置.jukeboxPlayMode);
-}
+// 折入 saveAll/loadAll，保留空壳防外部调用报错
+_root.本地存盘战宠 = function() {};
+_root.读取本地存盘战宠 = function() {};
+_root.SavePCTasks = function() {};
+_root.LoadPCTasks = function() {};
 
-_root.存档系统.mydata数据组包 = function(){
-    _root.身价 = _root.基础身价值 * _root.等级;
-    var 主角储存数据 = [_root.角色名,_root.性别,_root.金钱,_root.等级,_root.经验值,_root.身高,_root.技能点数,_root.玩家称号,_root.身价,_root.虚拟币,_root.键值设定,_root.difficultyMode,_root.佣兵是否出战信息,_root.easterEgg];
-    var 装备储存数据 = [
-        _root.脸型,
-        _root.发型,
-        null, null, null, null, null, null, null, null, null, null, null, // 装备名（弃用）
-        null, null, null, // 药剂栏（弃用）
-        _root.快捷技能栏1,_root.快捷技能栏2,_root.快捷技能栏3,_root.快捷技能栏4,_root.快捷技能栏5,_root.快捷技能栏6,_root.快捷技能栏7,_root.快捷技能栏8,_root.快捷技能栏9,_root.快捷技能栏10,_root.快捷技能栏11,_root.快捷技能栏12,_root.快捷物品栏4];
-    var 主角技能表储存数据 = _root.主角技能表;
-    // var 物品储存数据 = _root.物品栏;
-    var 物品储存数据 = {
-        背包:  _root.物品栏.背包.toObject(),
-        装备栏:_root.物品栏.装备栏.toObject(),
-        药剂栏:_root.物品栏.药剂栏.toObject(),
-        仓库:  _root.物品栏.仓库.toObject(),
-        战备箱:_root.物品栏.战备箱.toObject()
-    }
-    var 收集品储存数据 = {
-        材料:_root.收集品栏.材料.toObject(),
-        情报:_root.收集品栏.情报.toObject()
-    }
-    var 同伴储存数据 = [_root.同伴数据,_root.同伴数];
-    var 任务储存数据 = _root.主线任务进度;
-    // var 仓库储存数据 = _root.仓库栏;
-    var 健身储存数据 = [_root.全局健身HP加成, _root.全局健身MP加成, _root.全局健身空攻加成, _root.全局健身防御加成, _root.全局健身内力加成];
+// 商城委托
+_root.保存购物车 = function() { SaveManager.getInstance().saveShopCart(); };
+_root.获取购物车信息 = function() { SaveManager.getInstance().loadShopCart(); };
+_root.存盘商城已购买物品 = function() { SaveManager.getInstance().saveShopPurchased(); };
+_root.读盘商城已购买物品 = function() { SaveManager.getInstance().loadShopPurchased(); };
 
-    // 确保击杀统计已初始化
-    if (_root.killStats == null) {
-        _root.killStats = { total:0, byType:{} };
-    }
-
-    var 其他存储数据 = {
-        设置:_root.存档系统.存储设置(),
-        击杀统计:_root.killStats,
-        // 物品获取方式缓存（关卡掉落、敌人掉落、任务奖励的发现记录）
-        物品来源缓存:org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance().exportToSave()
-    };
-
-     // 获取当前时间并格式化为字符串
-    var now:Date = new Date();
-    var 年 = now.getFullYear();
-    var 月 = now.getMonth() + 1;
-    var 日 = now.getDate();
-    var 时 = now.getHours();
-    var 分 = now.getMinutes();
-    var 秒 = now.getSeconds();
-
-    //  补零函数
-    function pad(n) { return (n < 10) ? "0" + n : n; }
-
-    var lastSaved:String = 年 + "-" + pad(月) + "-" + pad(日) + " " + pad(时) + ":" + pad(分) + ":" + pad(秒);
-
-    var mydata = {};
-    mydata.version = _root.存档系统.latest_version;
-    mydata[0] = 主角储存数据;
-    mydata[1] = 装备储存数据;
-    mydata[2] = null;
-    mydata[3] = 任务储存数据;
-    mydata[4] = 同伴储存数据;
-    mydata[5] = 主角技能表储存数据;
-    mydata[6] = null;
-    mydata[7] = 健身储存数据;
-    mydata.inventory = 物品储存数据;
-    mydata.collection = 收集品储存数据;
-    mydata.infrastructure = _root.基建系统.infrastructure;
-    mydata.lastSaved = lastSaved;
-    mydata.others = 其他存储数据;
-
-    _root.mydata = mydata;
-    
-    // _root.playerData[_root.playerCurrent] = mydata;
-}
-
-_root.自动存盘 = function(){
-   if(_root.允许存档 === true){
-        _root.存档系统.dirtyMark = false;
-        // 存盘动画 → Launcher 工具条
-        org.flashNight.arki.render.FrameBroadcaster.pushUiState("sv:1");
-        if(_root.身价 < 1000 * _root.等级){
-            _root.身价 = 1000 * _root.等级;
-        }
-        _root.存档系统.mydata数据组包();
-        _root.本地存盘战宠();
-        if(_root.lastsave != _root.mydata.toString() or _root.lastsave_2 != _root.mydata_2.toString() or _root.lastsave_3 != _root.mydata_3.toString() or _root.lastsave_4 != _root.mydata_4.toString()){
-            _root.本地存盘();
-            _root.SavePCTasks();
-            _root.存盘标志 = 1;
-            // 存盘重连次数 = 0;
-            org.flashNight.arki.render.FrameBroadcaster.pushUiState("sv:2");
-        }else{
-            _root.存盘标志 = 1;
-            org.flashNight.arki.render.FrameBroadcaster.pushUiState("sv:2");
-        }
-    }
-}
-
-
-_root.本地存盘 = function() {
-    var mysave = SharedObject.getLocal(_root.savePath);
-   
-    // Store the actual game data in the SharedObject
-    mysave.data[存盘名] = _root.mydata;
-    mysave.flush();  // Save the data to disk
-    /*
-    if(_root.调试模式 === true)
-    {
-        // Convert the saved object to FNTL format for testing and display purposes
-        var FNTL = ObjectUtil.toFNTL(mysave.data, true);  // Serialize saved data to FNTL
-
-        // Step 1: Create a text field for displaying the FNTL data
-        if (!_root.saveDataField) {
-            _root.createTextField("saveDataField", 9999, 10, 50, 380, 180);
-            _root.saveDataField.border = true;
-            _root.saveDataField.multiline = true;
-            _root.saveDataField.wordWrap = true;
-            _root.saveDataField.text = "Game data (in FNTL format) will be shown here...";
-        }
-
-        // Step 2: Create a button for manually saving data
-        if (!_root.saveButton) {
-            _root.createTextField("saveButton", 9998, 400, 50, 100, 25);
-            _root.saveButton.border = true;
-            _root.saveButton.background = true;
-            _root.saveButton.backgroundColor = 0xCCCCCC;
-            _root.saveButton.text = "Save Data";
-            _root.saveButton.selectable = false;
-            _root.saveButton.onRelease = function() {
-                _root.本地存盘();  // Trigger the save function and display the FNTL
-            };
-        }
-
-        // Display the FNTL data in the text field for easy copy-paste testing
-        
-        _root.saveDataField.text = FNTL;  // Display the FNTL string in the text field
-    }
-    */
-};
-
-
-
-
-
-_root.读取本地存盘 = function(){
-    var 本地loadgame = SharedObject.getLocal(_root.savePath);
-    _root.mydata = 本地loadgame.data[存盘名];
-    //先检查存盘是否异常
-    _root.存档系统.convert(_root.mydata); // 检查并迁移存档数据
-}
-
-_root.读取存盘 = function(){
-    ServerManager.getInstance().sendServerMessage("读取存盘");
-    if(_root.当前玩家总数 == 1)
-    {
-        _root.lastsave = _root.mydata.toString();
-        _root.lastsave2[0] = _root.mydata[0].toString();
-        _root.lastsave2[1] = _root.mydata[1].toString();
-        _root.lastsave2[2] = _root.mydata[2].toString();
-        _root.lastsave2[3] = _root.mydata[3].toString();
-        _root.lastsave2[4] = _root.mydata[4].toString();
-        _root.lastsave2[5] = _root.mydata[5].toString();
-        _root.lastsave2[6] = _root.mydata[6].toString();
-    }
-    var 主角储存数据 = _root.mydata[0];
-    var 装备储存数据 = _root.mydata[1];
-    // var 物品储存数据 = _root.mydata[2];
-    var 任务储存数据 = _root.mydata[3];
-    var 健身储存数据 = _root.mydata[7];
-    _root.同伴数据 = _root.mydata[4][0];
-    _root.同伴数 = Math.floor(Number(_root.mydata[4][1]));
-    _root.主角技能表 = _root.mydata[5];
-    _root.更新主角被动技能();
-    // _root.仓库栏 = _root.mydata[6];
-    _root.角色名 = 主角储存数据[0];
-    _root.性别 = 主角储存数据[1];
-    _root.金钱 = Math.floor(Number(主角储存数据[2]));
-    _root.等级 = Math.floor(Number(主角储存数据[3]));
-    _root.经验值 = Math.floor(Number(主角储存数据[4]));
-    _root.虚拟币 = Math.floor(Number(主角储存数据[9]));
-    _root.全局健身HP加成 = Math.floor(Number(健身储存数据[0]));
-    _root.全局健身MP加成 = Math.floor(Number(健身储存数据[1]));
-    _root.全局健身空攻加成 = Math.floor(Number(健身储存数据[2]));
-    _root.全局健身防御加成 = Math.floor(Number(健身储存数据[3]));
-    _root.全局健身内力加成 = Math.floor(Number(健身储存数据[4]));
-    if (isNaN(_root.全局健身HP加成)) _root.全局健身HP加成 = 0;
-    if (isNaN(_root.全局健身MP加成)) _root.全局健身MP加成 = 0;
-    if (isNaN(_root.全局健身空攻加成)) _root.全局健身空攻加成 = 0;
-    if (isNaN(_root.全局健身内力加成)) _root.全局健身内力加成 = 0;
-    if (isNaN(_root.全局健身防御加成)) _root.全局健身防御加成 = 0;
-    if(主角储存数据[10].length > 0)
-    {
-        _root.键值设定 = 主角储存数据[10];
-    }
-    if(主角储存数据[11] >= 0)
-    {
-        _root.difficultyMode = 主角储存数据[11];
-    }
-    else
-    {
-        _root.difficultyMode = 0;
-    }
-    if(主角储存数据[12].length > 0)
-    {
-        _root.佣兵是否出战信息 = 主角储存数据[12];
-        i = 0;
-        while(i < _root.佣兵是否出战信息.length)
-        {
-            if(_root.佣兵是否出战信息[i] == -1)
-            {
-                _root.佣兵是否出战信息[i] = 1;
-            }
-            i++;
-        }
-    }
-    
-    var tmp经验值 = 根据等级得升级所需经验(_root.等级);
-    if(tmp经验值 < _root.经验值)
-    {
-        _root.经验值 = tmp经验值;
-    }
-    tmp经验值 = 根据等级得升级所需经验(_root.等级 - 1);
-    if(tmp经验值 > _root.经验值)
-    {
-        _root.经验值 = tmp经验值;
-    }
-    _root.身高 = Math.floor(Number(主角储存数据[5]));
-    _root.技能点数 = Math.floor(Number(主角储存数据[6]));
-    _root.玩家称号 = 主角储存数据[7];
-    _root.身价 = Math.floor(Number(主角储存数据[8]));
-    _root.长枪强化等级 = undefined;
-    _root.手枪强化等级 = undefined;
-    _root.手枪2强化等级 = undefined;
-    _root.刀强化等级 = undefined;
-    _root.脸型 = 装备储存数据[0];
-    _root.发型 = 装备储存数据[1];
-    // _root.头部装备 = 装备储存数据[2];
-    // _root.上装装备 = 装备储存数据[3];
-    // _root.手部装备 = 装备储存数据[4];
-    // _root.下装装备 = 装备储存数据[5];
-    // _root.脚部装备 = 装备储存数据[6];
-    // _root.颈部装备 = 装备储存数据[7];
-    // _root.长枪 = 装备储存数据[8];
-    // _root.手枪 = 装备储存数据[9];
-    // _root.手枪2 = 装备储存数据[10];
-    // _root.刀 = 装备储存数据[11];
-    // _root.手雷 = 装备储存数据[12];
-    // _root.快捷物品栏1 = 装备储存数据[13];
-    // _root.快捷物品栏2 = 装备储存数据[14];
-    // _root.快捷物品栏3 = 装备储存数据[15];
-    _root.快捷技能栏1 = 装备储存数据[16];
-    _root.快捷技能栏2 = 装备储存数据[17];
-    _root.快捷技能栏3 = 装备储存数据[18];
-    _root.快捷技能栏4 = 装备储存数据[19];
-    _root.快捷技能栏5 = 装备储存数据[20];
-    _root.快捷技能栏6 = 装备储存数据[21];
-    _root.快捷技能栏7 = 装备储存数据[22];
-    _root.快捷技能栏8 = 装备储存数据[23];
-    _root.快捷技能栏9 = 装备储存数据[24];
-    _root.快捷技能栏10 = 装备储存数据[25];
-    _root.快捷技能栏11 = 装备储存数据[26];
-    _root.快捷技能栏12 = 装备储存数据[27];
-    // _root.快捷物品栏4 = 装备储存数据[28];
-    // _root.物品栏 = 物品储存数据;
-
-    _root.物品栏 = {
-        背包:new ArrayInventory(_root.mydata.inventory.背包,50),
-        装备栏:new EquipmentInventory(_root.mydata.inventory.装备栏),
-        药剂栏:new DrugInventory(_root.mydata.inventory.药剂栏,4),
-        仓库:new ArrayInventory(_root.mydata.inventory.仓库,1200),
-        战备箱:new ArrayInventory(_root.mydata.inventory.战备箱,400)
-    };
-    _root.收集品栏 = {
-        材料:new DictCollection(_root.mydata.collection.材料),
-        情报:new InformationCollection(_root.mydata.collection.情报)
-    };
-    _root.基建系统.infrastructure = mydata.infrastructure;
-    if(_root.mydata.others){
-        if(_root.mydata.others.设置){
-            _root.存档系统.读取设置(_root.mydata.others.设置);
-        }
-        // 读取击杀统计
-        if(_root.mydata.others.击杀统计){
-            _root.killStats = _root.mydata.others.击杀统计;
-        } else {
-            _root.killStats = { total:0, byType:{} };
-        }
-        // 读取物品来源缓存（关卡掉落、敌人掉落、任务奖励的发现记录）
-        if(_root.mydata.others.物品来源缓存){
-            org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance().loadFromSave(_root.mydata.others.物品来源缓存);
-        }
-    } else {
-        // 兼容旧存档
-        _root.killStats = { total:0, byType:{} };
-    }
-    _root.主线任务进度 = Math.floor(Number(任务储存数据));
-    _root.LoadPCTasks();
-    // 挑战奖励已在 loadFromSave() 中从 completedChallengeQuests 集合恢复，无需额外调用
-    if(_root.角色名 == undefined){
-        _root.发布消息("游戏本地无存盘！");
-        return false;
-    }
-
-    // 防御性刷新：立即设置等级阈值并触发UI刷新
-    _root.UI系统.防御性刷新等级经验();
-
-    _root.发布消息("游戏本地读取成功！");
-    _root.读取本地存盘战宠(); // 使用最新的savePath重新读取战宠数据
-    载入新佣兵库数据(0,0,0,0,0);
-    // 存档加载后立即扫描任务完成状态 → 刘海屏
-    _root.是否达成任务检测();
-    return true;
-}
-
-_root.是否存过盘 = function(){
-    var 本地loadgame = SharedObject.getLocal(_root.savePath);
-    var tmp主角储存数据 = 本地loadgame.data[存盘名][0];
-    var tmp角色名 = tmp主角储存数据[0];
-    if(tmp角色名 == undefined) return false;
-    return true;
-}
-
-_root.新建角色 = function(){
-    if (_root.上装装备 != ""){
-        _root.物品栏.装备栏.add("上装装备", org.flashNight.arki.item.BaseItem.create(_root.上装装备, 1));
-    }
-    if (_root.下装装备 != ""){
-        _root.物品栏.装备栏.add("下装装备", org.flashNight.arki.item.BaseItem.create(_root.下装装备, 1));
-    }
-    if (_root.脚部装备 != ""){
-        _root.物品栏.装备栏.add("脚部装备", org.flashNight.arki.item.BaseItem.create(_root.脚部装备, 1));
-    }
-    if (_root.难度 == "逆天模式（简单）"){
-        _root.difficultyMode = 1;
-    }else if (_root.难度 == "挑战模式（自限）"){
-        _root.difficultyMode = 2;
-    }else{
-        _root.difficultyMode = 0;
-    }
-    _root.上装装备 = undefined;
-    _root.下装装备 = undefined;
-    _root.脚部装备 = undefined;
-    _root.难度 = undefined;
-    // 存档数据
-    _root.存档系统.mydata数据组包();
-    _root.金钱 = 0;
-    _root.虚拟币 = 0;
-    _root.宠物信息 = [[],[],[],[],[]];
-    _root.宠物领养限制 = 5;
-    // 全局加成
-    _root.全局健身HP加成 = 0;
-    _root.全局健身MP加成 = 0;
-    _root.全局健身空攻加成 = 0;
-    _root.全局健身内力加成 = 0;
-    _root.全局健身防御加成 = 0;
-    // 基建
-    _root.基建系统.infrastructure = {};
-    // 初始化击杀统计
-    _root.killStats = { total:0, byType:{} };
-    // 清空物品获取方式的动态发现集合（保留静态索引：合成/商店/K点商店）
-    org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance().clearDynamicDiscoveries();
-    //
-    _root.soundEffectManager.stopBGMForTransition();
-    // _root.淡出动画.淡出跳转帧("教学关卡");
-
-    // 修复教学关卡初始化问题：
-    // 1. 设置新出生标志，避免转场景数据传递逻辑混乱
-    _root.新出生 = false;
-
-    // 2. 手动触发SceneReady事件，确保ZoomController和单位缓存系统正确初始化
-    // 这解决了新建角色进入教学关卡时，运镜失效、无法命中敌人、AI异常的问题
-    _root.帧计时器.添加单次任务(function() {
-        EventBus.instance.publish("SceneReady");
-    }, 30); // 延迟3帧确保gameworld和主角已加载完成
-
-    _root.载入关卡数据("无限过图", "data/stages/特殊/教学关卡.xml");
-    _root.场景进入位置名 = "出生地";
-    _root.淡出动画.淡出跳转帧("wuxianguotu_1");
-    return true;
-}
-
-_root.删除存盘 = function(){
-    var mysave = SharedObject.getLocal(_root.savePath);
-    mysave.clear();
-
-    // 清理内存中的全局数据,防止新角色继承旧角色数据
-    _root.主角技能表 = [];
-    _root.初始化主角技能表();
-    _root.主角被动技能 = {};
-
-    // 清理其他可能残留的数据
-    _root.物品栏 = _root.存档系统.初始化物品栏();
-    _root.收集品栏 = _root.存档系统.初始化收集品栏();
-    _root.同伴数据 = [];
-    _root.同伴数 = 0;
-    // 清理击杀统计
-    _root.killStats = { total:0, byType:{} };
-}
-
+// 保留旧变量声明（兼容性）
 _root.存盘名 = "test";
+_root.lastsave = "";
 _root.lastsave2 = [];
 _root.lastsave2_1 = [];
 _root.lastsave2_2 = [];
 _root.lastsave2_3 = [];
-_root.lastsave = "";
 _root.lastsave_1 = "";
 _root.lastsave_2 = "";
 _root.lastsave_3 = "";
-// _root.存盘中 = false;
 
 _root.允许存档 = true;
-// _root.存盘重连次数 = 0;
-// _root.存盘重连次数限制 = 10;

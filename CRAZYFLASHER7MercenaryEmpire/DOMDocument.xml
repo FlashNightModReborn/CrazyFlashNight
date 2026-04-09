@@ -3040,7 +3040,22 @@ on (press) {
 	if (saveData)
 	{
 		var mysave = SharedObject.getLocal(_root.savePath);
+
+		// 清除旧顶层 key（防止残留污染新导入）
+		delete mysave.data.tasks_to_do;
+		delete mysave.data.tasks_finished;
+		delete mysave.data.task_chains_progress;
+		delete mysave.data.task_history;
+		delete mysave.data.战宠;
+		delete mysave.data.宠物领养限制;
+		delete mysave.data.商城已购买物品;
+		delete mysave.data.商城购物车;
+
+		// 写入导入数据
 		mysave.data["test"] = saveData;
+
+		// 迁移 + 覆写顶层 key（确保旧代码也可读）
+		org.flashNight.neur.Server.SaveManager.getInstance().migrateAndSync(saveData, mysave.data);
 
 		// 获取当前时间并格式化为字符串（与数据组包函数保持一致）
 		var now:Date = new Date();
@@ -3059,7 +3074,7 @@ on (press) {
 		}
 
 		var lastSaved:String = 年 + "-" + pad(月) + "-" + pad(日) + " " + pad(时) + ":" + pad(分) + ":" + pad(秒);
-	
+
 		mysave.data["test"].lastSaved = lastSaved;
 		mysave.flush();
 		trace("存档导入成功");

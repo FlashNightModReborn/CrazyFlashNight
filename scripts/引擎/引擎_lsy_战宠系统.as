@@ -174,27 +174,10 @@ _root.删除场景宠物 = function(){
 	_root.出战宠物id库 = [];
 }
 
-_root.读取本地存盘战宠 = function(){
-	var 本地loadgame = SharedObject.getLocal(_root.savePath);
-	if (本地loadgame.data.战宠 == undefined){
-		_root.宠物信息 = new Array();
-		_root.宠物信息.push([]);
-		_root.宠物信息.push([]);
-		_root.宠物信息.push([]);
-		_root.宠物信息.push([]);
-		_root.宠物信息.push([]);
-		_root.宠物领养限制 = 5;
-	}else{
-		_root.宠物信息 = 本地loadgame.data.战宠;
-		_root.宠物领养限制 = 本地loadgame.data.宠物领养限制;
-	}
-}
-_root.本地存盘战宠 = function(){
-	var mysave = SharedObject.getLocal(_root.savePath);
-	mysave.data.战宠 = _root.宠物信息;
-	mysave.data.宠物领养限制 = _root.宠物领养限制;
-	mysave.flush();
-}
+// 读取/存盘战宠已折入 SaveManager.loadAll() / saveAll()
+// 保留空壳防止外部调用报错
+_root.读取本地存盘战宠 = function(){};
+_root.本地存盘战宠 = function(){};
 
 _root.最大宠物格子数 = 80;
 _root.最大宠物出战数 = 5;

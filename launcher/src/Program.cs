@@ -402,6 +402,23 @@ class Program
             form.ForceExit();
         };
 
+        // Flash 僵尸进程兜底：Socket 断连后 10s 内进程仍未退出则强制关闭
+        // Flash Player 20 SA 偶发退出卡死，Process.Exited 和 HasExited 均不触发
+        socketServer.OnClientDisconnected += delegate
+        {
+            System.Threading.Timer zombieTimer = null;
+            zombieTimer = new System.Threading.Timer(delegate
+            {
+                try { zombieTimer.Dispose(); } catch { }
+                Process fp = processManager.FlashProcess;
+                if (fp != null && !fp.HasExited)
+                {
+                    LogManager.Log("[Guardian] Flash zombie detected (socket disconnected 10s ago, process still alive) — forcing exit");
+                    form.ForceExit();
+                }
+            }, null, 10000, System.Threading.Timeout.Infinite);
+        };
+
         // 退出前杀 Flash + 停音频（在 DoExit 的 ExitThread 之前执行）
         form.OnKillFlash = delegate
         {

@@ -1,37 +1,6 @@
-﻿_root.读盘商城已购买物品 = function()
-{
-	本地loadgame = SharedObject.getLocal(_root.savePath);
-	if (本地loadgame.data.商城已购买物品.length > 0)
-	{
-		_root.商城已购买物品 = 本地loadgame.data.商城已购买物品;
-	}
-}
-_root.存盘商城已购买物品 = function()
-{
-	if (_root.商城已购买物品.length >= 0)
-	{
-		mysave = SharedObject.getLocal(_root.savePath);
-		mysave.data.商城已购买物品 = _root.商城已购买物品;
-		mysave.flush();
-	}
-}
-_root.获取购物车信息 = function()
-{
-	本地loadgame = SharedObject.getLocal(_root.savePath);
-	if (本地loadgame.data.商城购物车.length > 0)
-	{
-		_root.商城购物车 = 本地loadgame.data.商城购物车;
-	}
-}
-_root.保存购物车 = function()
-{
-	if (_root.商城购物车.length >= 0)
-	{
-		mysave = SharedObject.getLocal(_root.savePath);
-		mysave.data.商城购物车 = _root.商城购物车;
-		mysave.flush();
-	}
-}
+﻿// 商城存盘函数已折入 SaveManager
+// shim 层在 通信_lsy_原版存档系统.as 中委托到 SaveManager
+// 此处不再重复定义，避免覆盖 shim 委托
 _root.获取已购买物品 = function()
 {
 }
