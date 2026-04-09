@@ -40,12 +40,7 @@ class Program
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
-        // 全局异常处理：记录完整堆栈后退出，不吞异常、不让程序带病运行
-        Application.ThreadException += delegate(object s, System.Threading.ThreadExceptionEventArgs te)
-        {
-            try { LogManager.Log("[Guardian] UI thread exception:\n" + te.Exception); } catch { }
-            Environment.Exit(1);
-        };
+        // 非 UI 线程未处理异常：仅补日志（进程即将终止，CLR 自行处理）
         AppDomain.CurrentDomain.UnhandledException += delegate(object s, UnhandledExceptionEventArgs ue)
         {
             try { LogManager.Log("[Guardian] Unhandled exception:\n" + ue.ExceptionObject); } catch { }
