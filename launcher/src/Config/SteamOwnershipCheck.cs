@@ -107,7 +107,7 @@ namespace CF7Launcher.Config
         /// Level 2: HEAD 内容是合法 git ref 或 commit hash
         /// Level 3: objects/pack/ 下存在真实 .pack 文件（证明有实际 git 历史）
         /// </summary>
-        private static bool IsDevRepository(string projectRoot)
+        public static bool IsDevRepository(string projectRoot)
         {
             string gitPath = Path.Combine(projectRoot, ".git");
             string gitDir = null;

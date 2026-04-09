@@ -10,13 +10,14 @@ namespace CF7Launcher.Guardian
     public class ProcessManager : IDisposable
     {
         private Process _flashProcess;
+        private readonly object _lock = new object();
         private readonly string _flashPlayerPath;
         private readonly string _swfPath;
         private readonly DateTime _startTime;
 
         public event Action OnFlashExited;
 
-        public Process FlashProcess { get { return _flashProcess; } }
+        public Process FlashProcess { get { lock (_lock) { return _flashProcess; } } }
 
         public ProcessManager(string flashPlayerPath, string swfPath)
         {
@@ -34,12 +35,15 @@ namespace CF7Launcher.Guardian
                 psi.Arguments = "\"" + _swfPath + "\"";
                 psi.UseShellExecute = false;
 
-                _flashProcess = Process.Start(psi);
-                if (_flashProcess == null)
-                    return false;
+                lock (_lock)
+                {
+                    _flashProcess = Process.Start(psi);
+                    if (_flashProcess == null)
+                        return false;
 
-                _flashProcess.EnableRaisingEvents = true;
-                _flashProcess.Exited += OnProcessExited;
+                    _flashProcess.EnableRaisingEvents = true;
+                    _flashProcess.Exited += OnProcessExited;
+                }
 
                 LogManager.Log("[Guardian] Flash Player started, PID=" + _flashProcess.Id);
                 return true;
@@ -54,14 +58,17 @@ namespace CF7Launcher.Guardian
         private void OnProcessExited(object sender, EventArgs e)
         {
             int exitCode = -1;
-            try { exitCode = _flashProcess.ExitCode; }
-            catch { }
+            TimeSpan uptime = TimeSpan.Zero;
+            lock (_lock)
+            {
+                if (_flashProcess == null) return;
+                try { exitCode = _flashProcess.ExitCode; } catch { }
+                try { uptime = DateTime.Now - _flashProcess.StartTime; } catch { }
+            }
 
-            TimeSpan uptime = DateTime.Now - _flashProcess.StartTime;
             LogManager.Log("[Guardian] Flash Player exited, code=" + exitCode
                 + ", uptime=" + uptime.TotalSeconds.ToString("F1") + "s");
 
-            // 5 秒内退出视为崩溃
             if (uptime.TotalSeconds < 5)
             {
                 LogManager.Log("[Guardian] WARNING: Flash exited within 5 seconds, possible crash.");
@@ -72,10 +79,15 @@ namespace CF7Launcher.Guardian
                 handler();
         }
 
-        public void Dispose()
+        /// <summary>
+        /// 终结 Flash 进程。在 DoExit() 中 Application.ExitThread() 之前调用。
+        /// 线程安全，可多次调用。不 Dispose Process 对象（由 Dispose() 负责）。
+        /// </summary>
+        public void KillFlash()
         {
-            if (_flashProcess != null)
+            lock (_lock)
             {
+                if (_flashProcess == null) return;
                 try
                 {
                     if (!_flashProcess.HasExited)
@@ -86,8 +98,28 @@ namespace CF7Launcher.Guardian
                     }
                 }
                 catch { }
-                _flashProcess.Dispose();
-                _flashProcess = null;
+            }
+        }
+
+        public void Dispose()
+        {
+            lock (_lock)
+            {
+                if (_flashProcess != null)
+                {
+                    try
+                    {
+                        if (!_flashProcess.HasExited)
+                        {
+                            _flashProcess.CloseMainWindow();
+                            if (!_flashProcess.WaitForExit(3000))
+                                _flashProcess.Kill();
+                        }
+                    }
+                    catch { }
+                    _flashProcess.Dispose();
+                    _flashProcess = null;
+                }
             }
         }
     }

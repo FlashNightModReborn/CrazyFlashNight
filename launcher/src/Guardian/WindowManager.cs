@@ -272,6 +272,43 @@ namespace CF7Launcher.Guardian
             LogManager.Log("[WindowManager] Flash reparented to new host");
         }
 
+        /// <summary>停止嵌入看门狗定时器。退出时在 DetachFlash 前调用。</summary>
+        public void StopWatchdog()
+        {
+            if (_watchdog != null)
+            {
+                _watchdog.Stop();
+                _watchdog.Dispose();
+                _watchdog = null;
+            }
+        }
+
+        /// <summary>
+        /// 解除 Flash 窗口嵌入（去 WS_CHILD、SetParent 回桌面）。
+        /// 退出时在 KillFlash 前调用，避免窗口层面的孤儿句柄问题。
+        /// </summary>
+        public void DetachFlash()
+        {
+            StopWatchdog();
+            if (_flashHwnd == IntPtr.Zero) return;
+            if (_hostPanel != null)
+                _hostPanel.Resize -= OnHostPanelResize;
+            try
+            {
+                if (IsWindow(_flashHwnd))
+                {
+                    int style = GetWindowLong(_flashHwnd, GWL_STYLE);
+                    style = style & ~WS_CHILD;
+                    SetWindowLong(_flashHwnd, GWL_STYLE, style);
+                    SetWindowPos(_flashHwnd, IntPtr.Zero, 0, 0, 0, 0,
+                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+                    SetParent(_flashHwnd, IntPtr.Zero);
+                }
+            }
+            catch { }
+            _flashHwnd = IntPtr.Zero;
+        }
+
         public bool IsFlashForeground()
         {
             IntPtr hwnd = GetForegroundWindow();

@@ -40,6 +40,17 @@ class Program
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
+        // 全局异常处理：抑制退出期间的 .NET 错误对话框，改为写日志
+        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+        Application.ThreadException += delegate(object s, System.Threading.ThreadExceptionEventArgs te)
+        {
+            try { LogManager.Log("[Guardian] Thread exception: " + te.Exception.Message); } catch { }
+        };
+        AppDomain.CurrentDomain.UnhandledException += delegate(object s, UnhandledExceptionEventArgs ue)
+        {
+            try { LogManager.Log("[Guardian] Unhandled exception: " + ue.ExceptionObject); } catch { }
+        };
+
         try
         {
             return Run(args);
@@ -230,6 +241,9 @@ class Program
             // 游戏命令通道（pause 等）
             webOverlay.SetSocketServer(socketServer);
 
+            // 开发环境检测：非 git 仓库时隐藏"其他"菜单中的开发工具
+            webOverlay.SetDevMode(SteamOwnershipCheck.IsDevRepository(projectRoot));
+
             // 音乐目录注入
             webOverlay.SetMusicCatalog(musicCatalog);
 
@@ -316,20 +330,20 @@ class Program
             // 消息循环（保持进程存活）
             Application.Run(form);
 
-            // 清理：先停帧处理+摘快车道，再停服务，最后 dispose overlay
+            // 清理：每步 try-catch 保护，防止单点异常跳过后续步骤
             LogManager.Log("[Guardian] Bus-only shutting down...");
-            frameTask.Stop();
-            socketServer.SetFrameHandler(null);
-            socketServer.SetNotchHandler(null);
-            gomokuTask.Dispose();
-            socketServer.Dispose();
-            httpServer.Dispose();
-            if (inputShield != null) inputShield.Dispose();
-            if (webOverlay != null) webOverlay.Dispose();
-            notchOverlay.Dispose();
-            hnOverlay.Dispose();
-            v8Runtime.Dispose();
-            toastOverlay.Dispose();
+            try { frameTask.Stop(); } catch { }
+            try { socketServer.SetFrameHandler(null); } catch { }
+            try { socketServer.SetNotchHandler(null); } catch { }
+            try { gomokuTask.Dispose(); } catch { }
+            try { socketServer.Dispose(); } catch { }
+            try { httpServer.Dispose(); } catch { }
+            try { if (inputShield != null) inputShield.Dispose(); } catch { }
+            try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
+            try { notchOverlay.Dispose(); } catch { }
+            try { hnOverlay.Dispose(); } catch { }
+            try { v8Runtime.Dispose(); } catch { }
+            try { toastOverlay.Dispose(); } catch { }
             try { File.Delete(portsFile); } catch { }
             LogManager.Shutdown();
 
@@ -393,6 +407,14 @@ class Program
             form.ForceExit();
         };
 
+        // 退出前杀 Flash + 停音频（在 DoExit 的 ExitThread 之前执行）
+        form.OnKillFlash = delegate
+        {
+            windowManager.DetachFlash();
+            CF7Launcher.Audio.AudioEngine.Shutdown();
+            processManager.KillFlash();
+        };
+
         // 在后台线程等待 Flash 窗口出现并嵌入
         ThreadPool.QueueUserWorkItem(delegate
         {
@@ -430,22 +452,22 @@ class Program
         // 消息循环
         Application.Run(form);
 
-        // 清理：先停帧处理+摘快车道，再停服务，最后 dispose overlay
+        // 清理：每步 try-catch 保护，防止单点异常跳过后续步骤
         LogManager.Log("[Guardian] Shutting down...");
-        frameTask.Stop();
-        socketServer.SetFrameHandler(null);
-        socketServer.SetNotchHandler(null);
-        CF7Launcher.Audio.AudioEngine.Shutdown();
-        processManager.Dispose();
-        gomokuTask.Dispose();
-        socketServer.Dispose();
-        httpServer.Dispose();
-        if (inputShield != null) inputShield.Dispose();
-        if (webOverlay != null) webOverlay.Dispose();
-        notchOverlay.Dispose();
-        hnOverlay.Dispose();
-        v8Runtime.Dispose();
-        toastOverlay.Dispose();
+        try { frameTask.Stop(); } catch { }
+        try { socketServer.SetFrameHandler(null); } catch { }
+        try { socketServer.SetNotchHandler(null); } catch { }
+        try { CF7Launcher.Audio.AudioEngine.Shutdown(); } catch { }
+        try { processManager.Dispose(); } catch { }
+        try { gomokuTask.Dispose(); } catch { }
+        try { socketServer.Dispose(); } catch { }
+        try { httpServer.Dispose(); } catch { }
+        try { if (inputShield != null) inputShield.Dispose(); } catch { }
+        try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
+        try { notchOverlay.Dispose(); } catch { }
+        try { hnOverlay.Dispose(); } catch { }
+        try { v8Runtime.Dispose(); } catch { }
+        try { toastOverlay.Dispose(); } catch { }
         try { File.Delete(portsFile); } catch { }
         LogManager.Shutdown();
 

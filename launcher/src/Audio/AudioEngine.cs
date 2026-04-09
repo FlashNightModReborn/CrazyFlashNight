@@ -77,6 +77,9 @@ namespace CF7Launcher.Audio
         [DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
         public static extern void ma_bridge_set_master_volume(float volume);
 
+        // === Shutdown 幂等保护 ===
+        private static volatile bool _shutdown;
+
         // === SFX handle cache ===
         private static readonly Dictionary<string, int> _sfxHandles = new Dictionary<string, int>();
 
@@ -170,6 +173,8 @@ namespace CF7Launcher.Audio
         /// </summary>
         public static void Shutdown()
         {
+            if (_shutdown) return;
+            _shutdown = true;
             _sfxHandles.Clear();
             ma_bridge_shutdown();
             LogManager.Log("[Audio] Engine shutdown");

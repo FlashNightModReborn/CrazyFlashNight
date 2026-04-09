@@ -1038,7 +1038,7 @@ namespace CF7Launcher.Guardian
 
                 if (!invoked) { CleanupTrayIcon(); Environment.Exit(0); }
 
-                ThreadPool.QueueUserWorkItem(delegate { Thread.Sleep(3000); Environment.Exit(0); });
+                ThreadPool.QueueUserWorkItem(delegate { Thread.Sleep(8000); Environment.Exit(0); });
                 return;
             }
             DoExit();
@@ -1046,6 +1046,9 @@ namespace CF7Launcher.Guardian
 
         /// <summary>退出前回调。Program.cs 注入，在 Form dispose 之前断开快车道。</summary>
         public Action OnShutdownEarly;
+
+        /// <summary>退出前杀 Flash + 停音频。Program.cs 注入，在 ExitThread 之前执行。</summary>
+        public Action OnKillFlash;
 
         private void DoExit()
         {
@@ -1060,8 +1063,17 @@ namespace CF7Launcher.Guardian
             DoUnregisterHotkeys();
             CleanupTrayIcon();
             if (_exitWatchdog != null) _exitWatchdog.Stop();
+
+            // 在退出消息循环前终结 Flash + 停音频，不依赖 post-Run 清理
+            if (OnKillFlash != null)
+            {
+                try { OnKillFlash(); } catch { }
+                OnKillFlash = null;
+            }
+
             Application.ExitThread();
-            ThreadPool.QueueUserWorkItem(delegate { Thread.Sleep(1000); Environment.Exit(0); });
+            // 安全定时器 5s > KillFlash 的 3s 最大等待
+            ThreadPool.QueueUserWorkItem(delegate { Thread.Sleep(5000); Environment.Exit(0); });
         }
 
         private void CleanupTrayIcon()

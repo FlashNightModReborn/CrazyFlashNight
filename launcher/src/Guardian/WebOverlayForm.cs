@@ -58,6 +58,7 @@ namespace CF7Launcher.Guardian
         private bool _webReady;
         private bool _shown;
         private bool _disposed;
+        private bool _devMode;
 
         // GDI+ fallback：WebView2 未就绪或初始化失败时，消息转发到 GDI+ overlay
         private IToastSink _toastFallback;
@@ -444,6 +445,10 @@ namespace CF7Launcher.Guardian
                             SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
                     }
 
+                    // 非开发环境：隐藏"其他"菜单中的开发工具
+                    if (!_devMode)
+                        ExecScript("document.getElementById('notch').classList.add('hide-other')");
+
                     // 一次性推送光照等级静态数据
                     PushLightLevels();
 
@@ -512,6 +517,12 @@ namespace CF7Launcher.Guardian
         public void SetSocketServer(XmlSocketServer server)
         {
             _socketServer = server;
+        }
+
+        /// <summary>设置开发模式标志。非开发环境下隐藏"其他"菜单中的开发工具。</summary>
+        public void SetDevMode(bool isDev)
+        {
+            _devMode = isDev;
         }
 
         internal void SetMusicCatalog(CF7Launcher.Audio.MusicCatalog catalog)
