@@ -92,7 +92,8 @@ class org.flashNight.neur.Server.SaveManager {
         FrameBroadcaster.pushUiState("sv:2");
         _root.UpdateTaskProgress();
 
-        sm.sendServerMessage("[SaveManager.saveAll] flush=" + ok + " version=" + mydata.version + " tasks_to_do.len=" + _root.tasks_to_do.length);
+        var _saLen = (_root.tasks_to_do != undefined) ? _root.tasks_to_do.length : 0;
+        sm.sendServerMessage("[SaveManager.saveAll] flush=" + ok + " version=" + mydata.version + " tasks_to_do.len=" + _saLen);
         return ok;
     }
 
@@ -107,6 +108,14 @@ class org.flashNight.neur.Server.SaveManager {
             return;
         }
         _root.mydata = raw;
+
+        // 结构校验：主角储存数据必须存在
+        if (raw[0] == undefined) {
+            sm.sendServerMessage("[SaveManager.preload] 存档结构异常: mydata[0]=undefined，跳过");
+            _root.mydata = undefined;
+            return;
+        }
+
         sm.sendServerMessage("[SaveManager.preload] version=" + raw.version + " 角色名=" + raw[0][0] + " 等级=" + raw[0][3]);
         sm.sendServerMessage("[SaveManager.preload] 顶层key: tasks_to_do=" + (so.data.tasks_to_do != undefined) + " 战宠=" + (so.data.战宠 != undefined) + " 商城=" + (so.data.商城已购买物品 != undefined));
         sm.sendServerMessage("[SaveManager.preload] mydata内部: tasks=" + (raw.tasks != undefined) + " pets=" + (raw.pets != undefined) + " shop=" + (raw.shop != undefined));
@@ -114,8 +123,9 @@ class org.flashNight.neur.Server.SaveManager {
         sm.sendServerMessage("[SaveManager.preload] migrate changed=" + changed + " newVersion=" + _root.mydata.version);
         if (changed) {
             syncTopLevelFromMydata(_root.mydata, so.data);
-            flushSO(so);
-            sm.sendServerMessage("[SaveManager.preload] 迁移已持久化");
+            if (flushSO(so)) {
+                sm.sendServerMessage("[SaveManager.preload] 迁移已持久化");
+            }
         }
     }
 
@@ -134,14 +144,21 @@ class org.flashNight.neur.Server.SaveManager {
             return false;
         }
 
+        // 结构校验：主角储存数据必须存在
+        if (_root.mydata[0] == undefined) {
+            sm.sendServerMessage("[SaveManager.loadAll] 存档结构异常: mydata[0]=undefined，return false");
+            return false;
+        }
+
         sm.sendServerMessage("[SaveManager.loadAll] version=" + _root.mydata.version + " 角色名=" + _root.mydata[0][0] + " 等级=" + _root.mydata[0][3]);
 
         // 迁移
         var changed:Boolean = migrate(_root.mydata, soData);
         if (changed) {
             syncTopLevelFromMydata(_root.mydata, soData);
-            flushSO(so);
-            sm.sendServerMessage("[SaveManager.loadAll] 迁移已持久化");
+            if (flushSO(so)) {
+                sm.sendServerMessage("[SaveManager.loadAll] 迁移已持久化");
+            }
         }
 
         // 解包 mydata 内部数据（主角/装备/设置/物品栏等）
@@ -157,7 +174,8 @@ class org.flashNight.neur.Server.SaveManager {
         _root.tasks_finished = soData.tasks_finished;
         _root.task_chains_progress = soData.task_chains_progress;
 
-        sm.sendServerMessage("[SaveManager.loadAll] 顶层tasks: tasks_to_do=" + (soData.tasks_to_do != undefined) + " len=" + soData.tasks_to_do.length);
+        var _ttdLen = (soData.tasks_to_do != undefined) ? soData.tasks_to_do.length : 0;
+        sm.sendServerMessage("[SaveManager.loadAll] 顶层tasks: tasks_to_do=" + (soData.tasks_to_do != undefined) + " len=" + _ttdLen);
         sm.sendServerMessage("[SaveManager.loadAll] 顶层pets: 战宠=" + (soData.战宠 != undefined) + " 宠物领养限制=" + soData.宠物领养限制);
 
         // fallback 到 mydata 内部（纯新格式存档）
@@ -208,7 +226,9 @@ class org.flashNight.neur.Server.SaveManager {
         _root.载入新佣兵库数据(0, 0, 0, 0, 0);
         _root.是否达成任务检测();
 
-        sm.sendServerMessage("[SaveManager.loadAll] 完成: 主线进度=" + _root.主线任务进度 + " tasks_to_do.len=" + _root.tasks_to_do.length + " 宠物数=" + _root.宠物信息.length);
+        var _laLen = (_root.tasks_to_do != undefined) ? _root.tasks_to_do.length : 0;
+        var _lpLen = (_root.宠物信息 != undefined) ? _root.宠物信息.length : 0;
+        sm.sendServerMessage("[SaveManager.loadAll] 完成: 主线进度=" + _root.主线任务进度 + " tasks_to_do.len=" + _laLen + " 宠物数=" + _lpLen);
         return true;
     }
 
@@ -770,13 +790,21 @@ class org.flashNight.neur.Server.SaveManager {
         return SharedObject.getLocal(_root.savePath);
     }
 
+    /**
+     * flush SharedObject 并检查结果。
+     * flush() 返回值：true=成功, "pending"=等待用户授权, false/其他=失败
+     * 只有 true 才算成功落盘，"pending" 视为未完成（不清 dirtyMark）。
+     */
     public function flushSO(so:SharedObject):Boolean {
         var result:Object = so.flush();
-        if (result === false) {
-            ServerManager.getInstance().sendServerMessage("SaveManager: flush failed for " + _root.savePath);
-            return false;
+        if (result === true) {
+            return true;
         }
-        return true;
+        var msg:String = (result == "pending")
+            ? "SaveManager: flush pending (awaiting user authorization) for "
+            : "SaveManager: flush failed (result=" + result + ") for ";
+        ServerManager.getInstance().sendServerMessage(msg + _root.savePath);
+        return false;
     }
 
     private function ensureShopNode(soData:Object):Object {
