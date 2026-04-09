@@ -40,15 +40,15 @@ class Program
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
-        // 全局异常处理：抑制退出期间的 .NET 错误对话框，改为写日志
-        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+        // 全局异常处理：记录完整堆栈后退出，不吞异常、不让程序带病运行
         Application.ThreadException += delegate(object s, System.Threading.ThreadExceptionEventArgs te)
         {
-            try { LogManager.Log("[Guardian] Thread exception: " + te.Exception.Message); } catch { }
+            try { LogManager.Log("[Guardian] UI thread exception:\n" + te.Exception); } catch { }
+            Environment.Exit(1);
         };
         AppDomain.CurrentDomain.UnhandledException += delegate(object s, UnhandledExceptionEventArgs ue)
         {
-            try { LogManager.Log("[Guardian] Unhandled exception: " + ue.ExceptionObject); } catch { }
+            try { LogManager.Log("[Guardian] Unhandled exception:\n" + ue.ExceptionObject); } catch { }
         };
 
         try
