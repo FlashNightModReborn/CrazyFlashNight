@@ -114,18 +114,19 @@ namespace CF7Launcher.Bus
         /// </summary>
         private static void BuildTaskList(StringBuilder sb)
         {
-            AppendTask(sb, "frame",          "fast_lane", "AS2->C#", false); sb.Append(",");
-            AppendTask(sb, "hn_reset",       "fast_lane", "AS2->C#", false); sb.Append(",");
-            AppendTask(sb, "toast",          "json_sync", "AS2->C#", true);  sb.Append(",");
-            AppendTask(sb, "gomoku_eval",    "json_async","AS2<->C#",true);  sb.Append(",");
-            AppendTask(sb, "data_query",     "json_async","AS2<->C#",true);  sb.Append(",");
-            AppendTask(sb, "audio",          "json_sync", "AS2->C#", true);  sb.Append(",");
-            AppendTask(sb, "sfx",            "fast_lane", "AS2->C#", false); sb.Append(",");
-            AppendTask(sb, "console",        "json_push", "C#->AS2", false); sb.Append(",");
-            AppendTask(sb, "console_result", "json_event","AS2->C#", false); sb.Append(",");
-            AppendTask(sb, "icon_bake",      "json_sync", "AS2<->C#",false); sb.Append(",");
-            AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false); sb.Append(",");
-            AppendTask(sb, "archive",        "json_async","AS2<->C#",true);
+            bool first = true;
+            first = AppendTask(sb, "frame",          "fast_lane", "AS2->C#", false, first);
+            first = AppendTask(sb, "hn_reset",       "fast_lane", "AS2->C#", false, first);
+            first = AppendTask(sb, "toast",          "json_sync", "AS2->C#", true,  first);
+            first = AppendTask(sb, "gomoku_eval",    "json_async","AS2<->C#",true,  first);
+            first = AppendTask(sb, "data_query",     "json_async","AS2<->C#",true,  first);
+            first = AppendTask(sb, "audio",          "json_sync", "AS2->C#", true,  first);
+            first = AppendTask(sb, "sfx",            "fast_lane", "AS2->C#", false, first);
+            first = AppendTask(sb, "console",        "json_push", "C#->AS2", false, first);
+            first = AppendTask(sb, "console_result", "json_event","AS2->C#", false, first);
+            first = AppendTask(sb, "icon_bake",      "json_sync", "AS2<->C#",false, first);
+            first = AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);
         }
 
         /// <summary>
@@ -138,19 +139,22 @@ namespace CF7Launcher.Bus
             BuildTaskList(null);
         }
 
-        private static void AppendTask(StringBuilder sb, string name, string transport,
-                                         string direction, bool httpCallable)
+        private static bool AppendTask(StringBuilder sb, string name, string transport,
+                                         string direction, bool httpCallable, bool first)
         {
             if (httpCallable)
                 _httpCallable.Add(name);
 
-            if (sb == null) return;
-
-            sb.Append("{\"name\":\"").Append(name).Append("\"");
-            sb.Append(",\"transport\":\"").Append(transport).Append("\"");
-            sb.Append(",\"direction\":\"").Append(direction).Append("\"");
-            sb.Append(",\"httpCallable\":").Append(httpCallable ? "true" : "false");
-            sb.Append("}");
+            if (sb != null)
+            {
+                if (!first) sb.Append(",");
+                sb.Append("{\"name\":\"").Append(name).Append("\"");
+                sb.Append(",\"transport\":\"").Append(transport).Append("\"");
+                sb.Append(",\"direction\":\"").Append(direction).Append("\"");
+                sb.Append(",\"httpCallable\":").Append(httpCallable ? "true" : "false");
+                sb.Append("}");
+            }
+            return false;
         }
     }
 }
