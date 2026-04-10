@@ -300,6 +300,9 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function newCharacter():Boolean {
+        // deleteSlot() 禁用了存档，新建角色时恢复
+        _root.允许存档 = true;
+
         // 初始装备
         if (_root.上装装备 != "") {
             _root.物品栏.装备栏.add("上装装备", BaseItem.create(_root.上装装备, 1));

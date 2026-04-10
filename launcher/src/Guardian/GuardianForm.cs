@@ -1060,7 +1060,7 @@ namespace CF7Launcher.Guardian
                 try { LogManager.Log("[Guardian] Exit guard fired — forcing process termination"); } catch { }
                 Environment.Exit(1);
             });
-            exitGuard.IsBackground = false; // 前台线程：阻止 CLR 在主线程退出时提前回收
+            exitGuard.IsBackground = true; // 后台线程：正常退出时随主线程结束；卡死时主线程仍活着，8s 后强杀
             exitGuard.Name = "ExitGuard";
             exitGuard.Start();
 

@@ -353,8 +353,8 @@ namespace CF7Launcher.Bus
                 return;
             }
 
-            // 只允许 httpCallable task（toast, gomoku_eval, audio）
-            if (taskName != "toast" && taskName != "gomoku_eval" && taskName != "audio")
+            // 只允许 httpCallable task
+            if (taskName != "toast" && taskName != "gomoku_eval" && taskName != "audio" && taskName != "archive")
             {
                 ctx.Response.StatusCode = 400;
                 WriteResponse(ctx,
