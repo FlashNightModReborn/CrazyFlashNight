@@ -421,6 +421,19 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function deleteSlot():Void {
+        // P3a: 清理预取缓存（防止删档后被内存缓存复活）
+        clearPrefetch();
+
+        // P3a: 通知 Launcher 删除 shadow JSON（防止下次启动被文件复活）
+        var sm:ServerManager = ServerManager.getInstance();
+        if (sm.isSocketConnected) {
+            sm.sendTaskWithCallback("archive", {op:"delete", slot:_root.savePath}, null,
+                function(resp:Object):Void {
+                    sm.sendServerMessage("[SaveManager] shadow delete: " + (resp.success == true));
+                }
+            );
+        }
+
         var so:SharedObject = getSO();
         so.clear();
 
@@ -463,10 +476,26 @@ class org.flashNight.neur.Server.SaveManager {
     public function hasSaveData():Boolean {
         var so:SharedObject = getSO();
         var raw:Object = so.data[SAVE_KEY];
-        if (raw == undefined) return false;
-        if (raw[0] == undefined) return false;
-        if (raw[0][0] == undefined) return false;
-        return true;
+        if (raw != undefined && raw[0] != undefined && raw[0][0] != undefined) {
+            return true;
+        }
+        // SOL 无有效数据 — 检查 Launcher 预取是否有可用恢复数据
+        if (_prefetchedData != undefined && sanitizeSlot(_prefetchedSlot) == sanitizeSlot(_root.savePath)) {
+            ServerManager.getInstance().sendServerMessage(
+                "[SaveManager.hasSaveData] SOL 无数据，但 Launcher 预取可用 slot=" + _prefetchedSlot);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Launcher 异步预取是否正在进行中（SOL 缺失时帧脚本可轮询此状态）
+     * true = socket 已连接且预取请求已发出但尚未返回
+     */
+    public function isRecoveryPending():Boolean {
+        if (_root.mydata != undefined) return false;  // SOL 正常，无需恢复
+        if (_prefetchedData != undefined) return false;  // 预取已到
+        return ServerManager.getInstance().isSocketConnected;  // socket 在线 = 预取可能还在途中
     }
 
     public function newCharacter():Boolean {

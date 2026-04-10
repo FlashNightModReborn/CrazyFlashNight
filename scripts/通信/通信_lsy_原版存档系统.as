@@ -27,6 +27,7 @@ _root.本地存盘 = function() { SaveManager.getInstance().saveAll(); };
 _root.读取本地存盘 = function() { SaveManager.getInstance().preload(); };
 _root.读取存盘 = function() { return SaveManager.getInstance().loadAll(); };
 _root.是否存过盘 = function() { return SaveManager.getInstance().hasSaveData(); };
+_root.存档恢复等待中 = function() { return SaveManager.getInstance().isRecoveryPending(); };
 _root.新建角色 = function() { return SaveManager.getInstance().newCharacter(); };
 _root.删除存盘 = function() { SaveManager.getInstance().deleteSlot(); };
 

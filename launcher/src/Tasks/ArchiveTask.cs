@@ -73,6 +73,8 @@ namespace CF7Launcher.Tasks
                     return HandleShadow(payload);
                 case "load":
                     return HandleLoad(payload);
+                case "delete":
+                    return HandleDelete(payload);
                 case "list":
                     return HandleList();
                 default:
@@ -273,6 +275,33 @@ namespace CF7Launcher.Tasks
             result["task"] = "archive";
             result["slot"] = safeName;
             result["data"] = data;
+            return result.ToString(Formatting.None);
+        }
+
+        // ==================== delete ====================
+
+        private string HandleDelete(JObject payload)
+        {
+            string slot = payload.Value<string>("slot");
+            if (string.IsNullOrEmpty(slot))
+                return BuildError("missing slot");
+
+            string safeName = SanitizeSlotName(slot);
+            string targetPath = Path.Combine(_savesDir, safeName + ".json");
+
+            lock (_lock)
+            {
+                if (File.Exists(targetPath))
+                {
+                    File.Delete(targetPath);
+                    LogManager.Log("[ArchiveTask] Shadow deleted: " + safeName);
+                }
+            }
+
+            JObject result = new JObject();
+            result["success"] = true;
+            result["task"] = "archive";
+            result["slot"] = safeName;
             return result.ToString(Formatting.None);
         }
 

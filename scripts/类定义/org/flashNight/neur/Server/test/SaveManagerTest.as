@@ -61,6 +61,9 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_loadAll_clearPrefetch_blocks_late_callback();
         test_loadAll_recovers_from_missing_sol();
         test_loadAll_sanitize_slot_match();
+        test_deleteSlot_clears_prefetch();
+        test_hasSaveData_with_prefetch();
+        test_isRecoveryPending();
 
         trace("========== SaveManagerTest END: " + passedCount + "/" + testCount + " passed, " + failedCount + " failed ==========");
     }
@@ -881,5 +884,72 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
 
         SharedObject.getLocal(specialSlot).clear();
         _root.savePath = oldPath;
+    }
+
+    private static function test_deleteSlot_clears_prefetch():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+        _root.savePath = TEST_SLOT;
+
+        // 先注入预取数据
+        var md:Object = buildValidMydata();
+        md[0][0] = "即将删除";
+        sm.receiveSavePush({ data: getTestJsonParser().stringify(md), slot: TEST_SLOT });
+        assert(sm.getPrefetchStatus().hasPrefetch == true, "deleteSlot_clears: prefetch exists before delete");
+
+        // 删档
+        sm.deleteSlot();
+
+        // 验证预取被清理
+        assert(sm.getPrefetchStatus().hasPrefetch == false, "deleteSlot_clears: prefetch cleared after delete");
+
+        // 验证 hasSaveData 返回 false（SOL 空 + 预取已清）
+        assert(sm.hasSaveData() == false, "deleteSlot_clears: hasSaveData false after delete");
+
+        cleanTestSO();
+        _root.savePath = oldPath;
+    }
+
+    private static function test_hasSaveData_with_prefetch():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+        _root.savePath = TEST_SLOT;
+
+        // SOL 空
+        SharedObject.getLocal(TEST_SLOT).clear();
+        _root.mydata = undefined;
+
+        // 无预取时
+        assert(sm.hasSaveData() == false, "hasSaveData_prefetch: false without prefetch");
+
+        // 注入预取
+        var md:Object = buildValidMydata();
+        sm.receiveSavePush({ data: getTestJsonParser().stringify(md), slot: TEST_SLOT });
+
+        // SOL 空 + 预取可用 → true
+        assert(sm.hasSaveData() == true, "hasSaveData_prefetch: true with prefetch");
+
+        cleanTestSO();
+        sm.clearPrefetch();
+        _root.savePath = oldPath;
+    }
+
+    private static function test_isRecoveryPending():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+
+        // SOL 正常 → 不需要恢复
+        _root.mydata = { version: "3.0" };
+        assert(sm.isRecoveryPending() == false, "isRecoveryPending: false when SOL present");
+
+        // SOL 缺失 + 预取已到 → 不再 pending
+        _root.mydata = undefined;
+        var md:Object = buildValidMydata();
+        sm.receiveSavePush({ data: getTestJsonParser().stringify(md), slot: "x" });
+        assert(sm.isRecoveryPending() == false, "isRecoveryPending: false when prefetch arrived");
+
+        sm.clearPrefetch();
     }
 }
