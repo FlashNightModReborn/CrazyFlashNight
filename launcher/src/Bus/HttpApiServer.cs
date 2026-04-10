@@ -353,8 +353,8 @@ namespace CF7Launcher.Bus
                 return;
             }
 
-            // 只允许 httpCallable task
-            if (taskName != "toast" && taskName != "gomoku_eval" && taskName != "audio" && taskName != "archive")
+            // httpCallable 检查：TaskRegistry 是唯一真相源
+            if (!TaskRegistry.IsHttpCallable(taskName))
             {
                 ctx.Response.StatusCode = 400;
                 WriteResponse(ctx,

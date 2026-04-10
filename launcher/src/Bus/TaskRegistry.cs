@@ -11,12 +11,14 @@ namespace CF7Launcher.Bus
 {
     /// <summary>
     /// Single source of truth：全部活跃 task 的注册与元数据。
+    /// httpCallable 标记在此统一声明，HttpApiServer 通过 IsHttpCallable() 查询。
     ///
     /// Task 清单：
     ///   frame        快车道 F 前缀   AS2→C#  (XmlSocketServer 直分发，不经 MessageRouter)
     ///   hn_reset     快车道 R 前缀   AS2→C#  (同上)
     ///   toast        JSON sync      AS2→C#  httpCallable=true
     ///   gomoku_eval  JSON async     AS2↔C#  httpCallable=true
+    ///   data_query   JSON async     AS2↔C#  httpCallable=true
     ///   audio        JSON sync      AS2→C#  httpCallable=true
     ///   sfx          快车道 S 前缀   AS2→C#  (XmlSocketServer 直分发，不经 MessageRouter)
     ///   console      JSON push      C#→AS2  (HttpApiServer /console 专用端点)
@@ -26,6 +28,17 @@ namespace CF7Launcher.Bus
     /// </summary>
     public static class TaskRegistry
     {
+        private static readonly HashSet<string> _httpCallable = new HashSet<string>();
+
+        /// <summary>
+        /// 检查 task 是否允许经 HTTP /task 端点调用。
+        /// 唯一真相源：由 ToStatusJson 中的 AppendTask 声明自动收集。
+        /// </summary>
+        public static bool IsHttpCallable(string taskName)
+        {
+            return _httpCallable.Contains(taskName);
+        }
+
         /// <summary>
         /// 向 MessageRouter 注册所有 JSON 路由的 task（快车道 task 不在此注册）。
         /// </summary>
@@ -70,6 +83,9 @@ namespace CF7Launcher.Bus
             // console / console_result 不在此注册：
             //   console_result 由 MessageRouter 内部特殊处理（OnConsoleResult 事件）
             //   console 是 HttpApiServer /console 端点主动推送到 AS2
+
+            // 初始化 httpCallable 集合（与 ToStatusJson 元数据同步）
+            BuildTaskMetadata();
         }
 
         /// <summary>
@@ -86,7 +102,18 @@ namespace CF7Launcher.Bus
             sb.Append(socketPort);
             sb.Append(",\"tasks\":[");
 
-            // 全量 task 清单（含元数据）
+            BuildTaskList(sb);
+
+            sb.Append("]}");
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// 全量 task 清单（含元数据）。httpCallable 标记在此声明，同时驱动
+        /// _httpCallable 集合和 /status JSON 输出，消除双写不一致风险。
+        /// </summary>
+        private static void BuildTaskList(StringBuilder sb)
+        {
             AppendTask(sb, "frame",          "fast_lane", "AS2->C#", false); sb.Append(",");
             AppendTask(sb, "hn_reset",       "fast_lane", "AS2->C#", false); sb.Append(",");
             AppendTask(sb, "toast",          "json_sync", "AS2->C#", true);  sb.Append(",");
@@ -99,14 +126,26 @@ namespace CF7Launcher.Bus
             AppendTask(sb, "icon_bake",      "json_sync", "AS2<->C#",false); sb.Append(",");
             AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false); sb.Append(",");
             AppendTask(sb, "archive",        "json_async","AS2<->C#",true);
+        }
 
-            sb.Append("]}");
-            return sb.ToString();
+        /// <summary>
+        /// 从 BuildTaskList 中提取 httpCallable 集合。只在 RegisterAll 时调用一次。
+        /// </summary>
+        private static void BuildTaskMetadata()
+        {
+            _httpCallable.Clear();
+            // 用 null sb 调用 AppendTask，仅收集 httpCallable 标记
+            BuildTaskList(null);
         }
 
         private static void AppendTask(StringBuilder sb, string name, string transport,
                                          string direction, bool httpCallable)
         {
+            if (httpCallable)
+                _httpCallable.Add(name);
+
+            if (sb == null) return;
+
             sb.Append("{\"name\":\"").Append(name).Append("\"");
             sb.Append(",\"transport\":\"").Append(transport).Append("\"");
             sb.Append(",\"direction\":\"").Append(direction).Append("\"");
