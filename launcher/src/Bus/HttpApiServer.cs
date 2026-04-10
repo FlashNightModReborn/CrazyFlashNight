@@ -316,7 +316,8 @@ namespace CF7Launcher.Bus
                     return;
                 }
 
-                string safeName = System.Text.RegularExpressions.Regex.Replace(slot, @"[^a-zA-Z0-9_\-]", "");
+                // 对齐 ArchiveTask.SanitizeSlotName：非法字符替换为 _ 而非删除
+                string safeName = System.Text.RegularExpressions.Regex.Replace(slot, @"[^a-zA-Z0-9_\-]", "_");
                 string filePath = Path.Combine(_projectRoot, "saves", safeName + ".json");
                 if (!File.Exists(filePath))
                 {

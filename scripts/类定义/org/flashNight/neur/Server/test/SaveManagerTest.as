@@ -59,6 +59,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_loadAll_json_overlays_sol_pets();
         test_loadAll_rejects_stale_json();
         test_loadAll_clearPrefetch_blocks_late_callback();
+        test_loadAll_recovers_from_missing_sol();
+        test_loadAll_sanitize_slot_match();
 
         trace("========== SaveManagerTest END: " + passedCount + "/" + testCount + " passed, " + failedCount + " failed ==========");
     }
@@ -821,6 +823,63 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         assert(sm.getPrefetchStatus().hasPrefetch == false, "clearPrefetch_blocks: prefetch cleared");
 
         cleanTestSO();
+        _root.savePath = oldPath;
+    }
+
+    private static function test_loadAll_recovers_from_missing_sol():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+
+        // 确保 SO 是空的（模拟本地存档被删）
+        _root.savePath = TEST_SLOT;
+        SharedObject.getLocal(TEST_SLOT).clear();
+        _root.mydata = undefined;  // preload 在 SO 空时会设为 undefined
+
+        // receiveSavePush 注入有效 JSON（模拟 Launcher 有备份）
+        var md:Object = buildValidMydata();
+        md.lastSaved = "2026-04-10 12:00:00";
+        md[0][0] = "恢复角色";
+        md.tasks.tasks_to_do = [{id:"recovered"}];
+        var jsonStr:String = getTestJsonParser().stringify(md);
+        sm.receiveSavePush({ data: jsonStr, slot: TEST_SLOT });
+
+        var ok:Boolean = sm.loadAll();
+        assert(ok == true, "recovers_from_missing_sol: returned true");
+        assert(_root.角色名 == "恢复角色", "recovers_from_missing_sol: 角色名 from JSON, got " + _root.角色名);
+        // SO 空 → 无顶层 key → fallback 到 mydata.tasks
+        assert(_root.tasks_to_do[0].id == "recovered", "recovers_from_missing_sol: tasks from JSON fallback");
+
+        cleanTestSO();
+        _root.savePath = oldPath;
+    }
+
+    private static function test_loadAll_sanitize_slot_match():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+
+        // 模拟含特殊字符的 savePath
+        var specialSlot:String = "test slot!@#";
+        _root.savePath = specialSlot;
+        SharedObject.getLocal(specialSlot).clear();
+        _root.mydata = undefined;
+
+        // receiveSavePush 返回规范化后的 slot（ArchiveTask 会把特殊字符→_）
+        // 这模拟了 Launcher 返回 "test_slot___" 而 savePath 是 "test slot!@#"
+        var md:Object = buildValidMydata();
+        md.lastSaved = "2026-04-10 12:00:00";
+        md[0][0] = "特殊槽位角色";
+        var jsonStr:String = getTestJsonParser().stringify(md);
+        // receiveSavePush 存的是 resp.slot（可能是规范化后的）
+        sm.receiveSavePush({ data: jsonStr, slot: "test_slot___" });
+
+        // loadAll 应该通过 sanitizeSlot 比较匹配
+        var ok:Boolean = sm.loadAll();
+        assert(ok == true, "sanitize_slot_match: returned true, got " + ok);
+        assert(_root.角色名 == "特殊槽位角色", "sanitize_slot_match: 角色名 from JSON, got " + _root.角色名);
+
+        SharedObject.getLocal(specialSlot).clear();
         _root.savePath = oldPath;
     }
 }

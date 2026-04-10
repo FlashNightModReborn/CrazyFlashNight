@@ -157,10 +157,35 @@ class org.flashNight.neur.Server.SaveManager {
     public function preload():Void {
         var sm:ServerManager = ServerManager.getInstance();
         sm.sendServerMessage("[SaveManager.preload] savePath=" + _root.savePath);
+
+        // P3a: 异步预取 — 无论 SOL 状态如何，都向 Launcher 请求 JSON 存档
+        // 这确保了"本地档坏了还能靠 Launcher 恢复"的场景
+        _prefetchGen++;
+        var currentGen:Number = _prefetchGen;
+        var self:SaveManager = this;
+        var requestedSlot:String = _root.savePath;
+        if (sm.isSocketConnected) {
+            sm.sendTaskWithCallback("archive", {op:"load", slot:requestedSlot}, null,
+                function(resp:Object):Void {
+                    if (currentGen != self._prefetchGen) return;
+                    if (resp.success != true || typeof resp.data != "string") return;
+                    var parsed:Object = self._jsonParser.parse(resp.data);
+                    if (self._jsonParser.errors.length > 0) return;
+                    if (!self.validateMydata(parsed)) return;
+                    self._prefetchedData = parsed;
+                    // 存请求时的原始 slot，不用响应中的规范化 slot
+                    // ArchiveTask 会 sanitize slot（非法字符→_），导致返回值与原始 savePath 不一致
+                    self._prefetchedSlot = requestedSlot;
+                    sm.sendServerMessage("[SaveManager] prefetch OK slot=" + requestedSlot);
+                }
+            );
+        }
+
+        // SOL 读取
         var so:SharedObject = getSO();
         var raw:Object = so.data[SAVE_KEY];
         if (raw == undefined) {
-            sm.sendServerMessage("[SaveManager.preload] 空槽位，mydata=undefined");
+            sm.sendServerMessage("[SaveManager.preload] 空槽位，mydata=undefined（Launcher 预取可能恢复）");
             _root.mydata = undefined;
             return;
         }
@@ -184,25 +209,6 @@ class org.flashNight.neur.Server.SaveManager {
                 sm.sendServerMessage("[SaveManager.preload] 迁移已持久化");
             }
         }
-
-        // P3a: 异步预取 JSON 存档
-        _prefetchGen++;
-        var currentGen:Number = _prefetchGen;
-        var self:SaveManager = this;
-        if (sm.isSocketConnected) {
-            sm.sendTaskWithCallback("archive", {op:"load", slot:_root.savePath}, null,
-                function(resp:Object):Void {
-                    if (currentGen != self._prefetchGen) return;
-                    if (resp.success != true || typeof resp.data != "string") return;
-                    var parsed:Object = self._jsonParser.parse(resp.data);
-                    if (self._jsonParser.errors.length > 0) return;
-                    if (!self.validateMydata(parsed)) return;
-                    self._prefetchedData = parsed;
-                    self._prefetchedSlot = String(resp.slot);
-                    sm.sendServerMessage("[SaveManager] prefetch OK slot=" + resp.slot);
-                }
-            );
-        }
     }
 
     public function loadAll():Boolean {
@@ -211,13 +217,21 @@ class org.flashNight.neur.Server.SaveManager {
 
         // P3a: JSON 优先分支
         if (_prefetchedData != undefined) {
-            var solLastSaved:String = (_root.mydata != undefined) ? _root.mydata.lastSaved : undefined;
+            var solMissing:Boolean = (_root.mydata == undefined);
+            var solLastSaved:String = solMissing ? undefined : _root.mydata.lastSaved;
             var jsonLastSaved:String = _prefetchedData.lastSaved;
 
             var useJson:Boolean = false;
-            if (_prefetchedSlot != _root.savePath) {
-                sm.sendServerMessage("[SaveManager.loadAll] slot 不匹配");
-            } else if (solLastSaved == undefined || jsonLastSaved == undefined || jsonLastSaved < solLastSaved) {
+            if (sanitizeSlot(_prefetchedSlot) != sanitizeSlot(_root.savePath)) {
+                sm.sendServerMessage("[SaveManager.loadAll] slot 不匹配: prefetch=" + _prefetchedSlot + " savePath=" + _root.savePath);
+            } else if (solMissing) {
+                // SOL 完全缺失 → JSON 是唯一恢复源
+                sm.sendServerMessage("[SaveManager.loadAll] SOL 缺失，尝试 JSON 恢复");
+                useJson = true;
+            } else if (solLastSaved == undefined) {
+                // SOL 存在但无时间戳（刚迁移的存档）→ 保守，用 SOL
+                sm.sendServerMessage("[SaveManager.loadAll] SOL 无时间戳，保守走 SOL");
+            } else if (jsonLastSaved == undefined || jsonLastSaved < solLastSaved) {
                 sm.sendServerMessage("[SaveManager.loadAll] 时间戳检查不通过: json=" + jsonLastSaved + " sol=" + solLastSaved);
             } else {
                 useJson = true;
@@ -1116,6 +1130,27 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     // ==================== 私有方法 ====================
+
+    /**
+     * 与 ArchiveTask.SanitizeSlotName 对齐的槽位名规范化。
+     * 非法字符（非 a-z A-Z 0-9 _ -）替换为 _。
+     */
+    private function sanitizeSlot(slot:String):String {
+        if (slot == undefined || slot.length == 0) return "default";
+        var result:String = "";
+        var i:Number = 0;
+        while (i < slot.length) {
+            var c:Number = slot.charCodeAt(i);
+            // a-z: 97-122, A-Z: 65-90, 0-9: 48-57, _: 95, -: 45
+            if ((c >= 97 && c <= 122) || (c >= 65 && c <= 90) || (c >= 48 && c <= 57) || c == 95 || c == 45) {
+                result += slot.charAt(i);
+            } else {
+                result += "_";
+            }
+            i++;
+        }
+        return (result.length == 0) ? "default" : result;
+    }
 
     private function getSO():SharedObject {
         return SharedObject.getLocal(_root.savePath);
