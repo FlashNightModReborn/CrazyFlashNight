@@ -1038,7 +1038,7 @@ namespace CF7Launcher.Guardian
 
                 if (!invoked) { CleanupTrayIcon(); Environment.Exit(0); }
 
-                ThreadPool.QueueUserWorkItem(delegate { Thread.Sleep(8000); Environment.Exit(0); });
+                // DoExit 内部已有 exitGuard 前台线程保底，此处无需额外计时
                 return;
             }
             DoExit();
@@ -1052,6 +1052,18 @@ namespace CF7Launcher.Guardian
 
         private void DoExit()
         {
+            // 最先启动绝对保底线程：独立前台线程，不依赖 ThreadPool/消息循环/任何锁
+            // 无论后续清理如何卡死，8 秒后强制终结进程
+            Thread exitGuard = new Thread(delegate()
+            {
+                Thread.Sleep(8000);
+                try { LogManager.Log("[Guardian] Exit guard fired — forcing process termination"); } catch { }
+                Environment.Exit(1);
+            });
+            exitGuard.IsBackground = false; // 前台线程：阻止 CLR 在主线程退出时提前回收
+            exitGuard.Name = "ExitGuard";
+            exitGuard.Start();
+
             // 最早期断开快车道，防止 dispose 后 FrameTask 推到已释放的 overlay
             if (OnShutdownEarly != null)
             {
@@ -1072,8 +1084,6 @@ namespace CF7Launcher.Guardian
             }
 
             Application.ExitThread();
-            // 安全定时器 5s > KillFlash 的 3s 最大等待
-            ThreadPool.QueueUserWorkItem(delegate { Thread.Sleep(5000); Environment.Exit(0); });
         }
 
         private void CleanupTrayIcon()

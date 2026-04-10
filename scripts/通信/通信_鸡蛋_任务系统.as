@@ -74,11 +74,7 @@ if (flash.external.ExternalInterface.available) {
     flash.external.ExternalInterface.addCallback("reloadTaskData", _root, _root.重新加载任务数据);
 }
 
-// LoadPCTasks / SavePCTasks 已折入 SaveManager.loadAll() / saveAll()
-// 保留空壳防止外部调用报错
-_root.LoadPCTasks = function() {};
-_root.SavePCTasks = function() {};
-
+// LoadPCTasks / SavePCTasks 空壳定义在 通信_lsy_原版存档系统.as 的 shim 层
 
 _root.检查任务数据完整性 = function() {
     //先检查任务数据是否加载完毕

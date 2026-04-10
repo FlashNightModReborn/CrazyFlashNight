@@ -22,6 +22,7 @@ namespace CF7Launcher.Bus
     ///   console      JSON push      C#→AS2  (HttpApiServer /console 专用端点)
     ///   console_result  JSON event  AS2→C#  (内部事件，触发 OnConsoleResult)
     ///   icon_bake       JSON sync   AS2↔C#  (图标烘焙：begin/chunk/end/complete)
+    ///   archive         JSON async  AS2↔C#  httpCallable=true  (存档shadow备份/读取)
     /// </summary>
     public static class TaskRegistry
     {
@@ -38,7 +39,8 @@ namespace CF7Launcher.Bus
             HitNumberOverlay hnOverlay,
             AudioTask audio,
             IconBakeTask iconBake,
-            ShopTask shopTask)
+            ShopTask shopTask,
+            ArchiveTask archiveTask)
         {
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
@@ -50,6 +52,10 @@ namespace CF7Launcher.Bus
             // 商城面板回包路由
             if (shopTask != null)
                 router.RegisterAsync("shop_response", shopTask.HandleFlashResponse);
+
+            // 存档 shadow 备份
+            if (archiveTask != null)
+                router.RegisterAsync("archive", archiveTask.HandleAsync);
 
             // JSON 回退路径：frame/hn_reset 的 JSON 格式兼容入口
             // 正常流量走快车道（XmlSocketServer 前缀检测），此处仅作防御性保留
@@ -91,7 +97,8 @@ namespace CF7Launcher.Bus
             AppendTask(sb, "console",        "json_push", "C#->AS2", false); sb.Append(",");
             AppendTask(sb, "console_result", "json_event","AS2->C#", false); sb.Append(",");
             AppendTask(sb, "icon_bake",      "json_sync", "AS2<->C#",false); sb.Append(",");
-            AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false);
+            AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false); sb.Append(",");
+            AppendTask(sb, "archive",        "json_async","AS2<->C#",true);
 
             sb.Append("]}");
             return sb.ToString();

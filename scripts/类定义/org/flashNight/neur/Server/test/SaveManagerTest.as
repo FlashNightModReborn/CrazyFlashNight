@@ -27,6 +27,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_packGameState_syncs_mainline_progress();
         test_easterEgg_roundtrip();
         test_ensureShopNode_null_safe();
+        test_ext_namespace_roundtrip();
 
         trace("========== SaveManagerTest END: " + passedCount + "/" + testCount + " passed, " + failedCount + " failed ==========");
     }
@@ -228,13 +229,15 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         var oldProgress = _root.主线任务进度;
         var oldChains = _root.task_chains_progress;
 
+        // packGameState 不再有同步副作用，只是读取 _root.主线任务进度
         _root.task_chains_progress = { 主线: 42 };
-        _root.主线任务进度 = 0;
+        _root.主线任务进度 = 99;
 
         var mydata:Object = sm.packGameState();
 
-        assert(mydata[3] == 42, "packGameState_syncs: mydata[3] should be 42, got " + mydata[3]);
-        assert(_root.主线任务进度 == 42, "packGameState_syncs: _root synced to 42");
+        // mydata[3] 应该是 _root.主线任务进度 的值（99），而非 task_chains_progress 的值
+        assert(mydata[3] == 99, "packGameState_no_sideeffect: mydata[3] should be 99 (from _root), got " + mydata[3]);
+        assert(_root.主线任务进度 == 99, "packGameState_no_sideeffect: _root NOT modified by pack");
 
         _root.主线任务进度 = oldProgress;
         _root.task_chains_progress = oldChains;
@@ -268,5 +271,27 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
 
         assert(soData["test"].shop.商城购物车[0] == "cart_item", "ensureShopNode: shop node created");
         assert(soData.商城购物车[0] == "cart_item", "ensureShopNode: dual-write top level ok");
+    }
+
+    private static function test_ext_namespace_roundtrip():Void {
+        var sm:SaveManager = SaveManager.getInstance();
+
+        var oldExt = _root._saveExt;
+
+        // 设置 ext 数据
+        _root._saveExt = { modA: { enabled: true }, customData: 42 };
+
+        var mydata:Object = sm.packGameState();
+        assert(mydata.ext != undefined, "ext_roundtrip: ext exists in packed data");
+        assert(mydata.ext.customData == 42, "ext_roundtrip: ext.customData preserved");
+        assert(mydata.reserved != undefined, "ext_roundtrip: reserved exists in packed data");
+
+        // 清空后解包恢复
+        _root._saveExt = undefined;
+        sm.unpackGameState(mydata);
+        assert(_root._saveExt != undefined, "ext_roundtrip: _saveExt restored after unpack");
+        assert(_root._saveExt.customData == 42, "ext_roundtrip: _saveExt.customData restored");
+
+        _root._saveExt = oldExt;
     }
 }

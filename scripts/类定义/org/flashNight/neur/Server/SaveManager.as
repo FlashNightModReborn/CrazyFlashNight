@@ -5,7 +5,7 @@ import org.flashNight.neur.Event.*;
 import org.flashNight.arki.weather.*;
 import org.flashNight.arki.render.FrameBroadcaster;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
-
+import LiteJSON;
 /**
  * SaveManager — 存档系统统一管理器（单例）
  *
@@ -38,11 +38,13 @@ class org.flashNight.neur.Server.SaveManager {
     // ==================== 状态 ====================
     private var _dirtyMark:Boolean;
     private var _lastSaveHash:String;
+    private var _liteJson:LiteJSON;
 
     // ==================== 构造 ====================
     private function SaveManager() {
         _dirtyMark = false;
         _lastSaveHash = "";
+        _liteJson = new LiteJSON();
     }
 
     // ==================== 核心存/读 ====================
@@ -57,6 +59,11 @@ class org.flashNight.neur.Server.SaveManager {
         sm.sendServerMessage("[SaveManager.saveAll] 角色=" + _root.角色名 + " 等级=" + _root.等级 + " 金钱=" + _root.金钱 + " savePath=" + _root.savePath);
 
         FrameBroadcaster.pushUiState("sv:1");
+
+        // 同步主线任务进度（确保 mydata[3] 与 task_chains_progress 一致）
+        if (!isNaN(_root.task_chains_progress.主线)) {
+            _root.主线任务进度 = _root.task_chains_progress.主线;
+        }
 
         // 身价校正
         if (_root.身价 < 1000 * _root.等级) {
@@ -94,6 +101,13 @@ class org.flashNight.neur.Server.SaveManager {
 
         var _saLen = (_root.tasks_to_do != undefined) ? _root.tasks_to_do.length : 0;
         sm.sendServerMessage("[SaveManager.saveAll] flush=" + ok + " version=" + mydata.version + " tasks_to_do.len=" + _saLen);
+
+        // P1: shadow 推送到 Launcher 落盘（SOL 仍是权威源，Launcher 做备份）
+        sm.sendServerMessage("[SaveManager] shadow gate: ok=" + ok + " socket=" + sm.isSocketConnected);
+        if (ok && sm.isSocketConnected) {
+            pushShadow(sm, mydata);
+        }
+
         return ok;
     }
 
@@ -218,6 +232,10 @@ class org.flashNight.neur.Server.SaveManager {
             _root.lastsave = _root.mydata.toString();
         }
 
+        // 刚读取的存档是干净的，重置 dirtyMark
+        _dirtyMark = false;
+        _root.存档系统.dirtyMark = false;
+
         // 副作用链
         _root.UpdateTaskProgress();
         _root.检查任务数据完整性();
@@ -265,6 +283,11 @@ class org.flashNight.neur.Server.SaveManager {
         _root.lastsave = "";
         _root.lastsave2 = [];
         _lastSaveHash = "";
+
+        // 禁止在删档→新建角色之间的窗口期意外触发存盘
+        _root.允许存档 = false;
+        _dirtyMark = false;
+        _root.存档系统.dirtyMark = false;
     }
 
     public function hasSaveData():Boolean {
@@ -344,11 +367,6 @@ class org.flashNight.neur.Server.SaveManager {
     // ==================== 数据组包/解包 ====================
 
     public function packGameState():Object {
-        // 同步主线任务进度（确保 mydata[3] 与 task_chains_progress 一致）
-        if (!isNaN(_root.task_chains_progress.主线)) {
-            _root.主线任务进度 = _root.task_chains_progress.主线;
-        }
-
         _root.身价 = _root.基础身价值 * _root.等级;
 
         var 主角储存数据:Array = [
@@ -420,6 +438,11 @@ class org.flashNight.neur.Server.SaveManager {
             商城已购买物品: _root.商城已购买物品,
             商城购物车: _root.商城购物车
         };
+
+        // 预留命名空间 — 透传已有数据，保证往返不丢
+        if (_root._saveExt == undefined) _root._saveExt = {};
+        mydata.ext = _root._saveExt;
+        mydata.reserved = {};
 
         return mydata;
     }
@@ -560,6 +583,9 @@ class org.flashNight.neur.Server.SaveManager {
         } else {
             _root.killStats = { total:0, byType:{} };
         }
+
+        // 预留命名空间恢复
+        _root._saveExt = (mydata.ext != undefined) ? mydata.ext : {};
 
         // 主线任务进度（从 mydata[3]，后续 loadAll 会从 task_chains_progress 覆盖）
         _root.主线任务进度 = Math.floor(Number(mydata[3]));
@@ -784,6 +810,33 @@ class org.flashNight.neur.Server.SaveManager {
         return getSO().data;
     }
 
+    // ==================== Shadow 推送 ====================
+
+    /**
+     * 将 mydata 推送到 Launcher 做 shadow 备份。
+     * 使用 fire-and-forget 模式：推送失败不影响 SOL 存盘结果。
+     *
+     * 实现要点：
+     *   - 用 LiteJSON（无缓存）单独 stringify mydata，避免 FastJSON 缓存投毒
+     *   - 手动拼外层 JSON 字符串，避免 sendTaskToNode 对深层嵌套对象二次 stringify
+     *   - 直接调用 sendSocketMessage 发送，绕过 FastJSON 路径
+     */
+    private function pushShadow(sm:ServerManager, mydata:Object):Void {
+        sm.sendServerMessage("[SaveManager] pushShadow enter");
+        var dataJson:String = _liteJson.stringify(mydata);
+        if (dataJson == null || dataJson == "null") {
+            sm.sendServerMessage("[SaveManager] shadow skipped: stringify returned " + dataJson);
+            return;
+        }
+        sm.sendServerMessage("[SaveManager] shadow stringify ok, len=" + dataJson.length);
+
+        // 手动拼装完整消息 JSON（外层结构简单，无需序列化器）
+        var slot:String = _root.savePath;
+        var msg:String = "{\"task\":\"archive\",\"payload\":{\"op\":\"shadow\",\"slot\":\"" + slot + "\",\"data\":" + dataJson + "}}";
+        var ok:Boolean = sm.sendSocketMessage(msg);
+        sm.sendServerMessage("[SaveManager] shadow sent slot=" + slot + " ok=" + ok);
+    }
+
     // ==================== 私有方法 ====================
 
     private function getSO():SharedObject {
@@ -795,7 +848,7 @@ class org.flashNight.neur.Server.SaveManager {
      * flush() 返回值：true=成功, "pending"=等待用户授权, false/其他=失败
      * 只有 true 才算成功落盘，"pending" 视为未完成（不清 dirtyMark）。
      */
-    public function flushSO(so:SharedObject):Boolean {
+    private function flushSO(so:SharedObject):Boolean {
         var result:Object = so.flush();
         if (result === true) {
             return true;

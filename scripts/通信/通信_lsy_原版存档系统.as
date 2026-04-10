@@ -19,6 +19,7 @@ _root.存档系统.初始化收集品栏 = function() { return SaveManager.getIn
 _root.存档系统.存储设置 = function() { return SaveManager.getInstance().packSettings(); };
 _root.存档系统.读取设置 = function(s) { SaveManager.getInstance().applySettings(s); };
 _root.存档系统.convert = function(data) { SaveManager.getInstance().migrateAndSync(data, SaveManager.getInstance().getSOData()); };
+_root.存档系统.migrateAndSync = function(data, soData) { SaveManager.getInstance().migrateAndSync(data, soData); };
 
 // 核心存/读委托
 _root.自动存盘 = function() { SaveManager.getInstance().saveAll(); };

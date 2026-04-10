@@ -3055,7 +3055,7 @@ on (press) {
 		mysave.data["test"] = saveData;
 
 		// 迁移 + 覆写顶层 key（确保旧代码也可读）
-		org.flashNight.neur.Server.SaveManager.getInstance().migrateAndSync(saveData, mysave.data);
+		_root.存档系统.migrateAndSync(saveData, mysave.data);
 
 		// 获取当前时间并格式化为字符串（与数据组包函数保持一致）
 		var now:Date = new Date();

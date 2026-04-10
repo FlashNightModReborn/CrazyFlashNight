@@ -75,3 +75,7 @@ weboverlay_debug.log
 
 # Launcher runtime logs
 logs/
+
+# Save shadow backups (player-specific, not source)
+saves/*.json
+saves/*.json.tmp

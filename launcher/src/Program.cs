@@ -270,7 +270,8 @@ class Program
         CF7Launcher.Tasks.AudioTask audioTask = new CF7Launcher.Tasks.AudioTask();
         IconBakeTask iconBakeTask = new IconBakeTask(projectRoot, notchSink);
         ShopTask shopTask = new ShopTask(socketServer);
-        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask);
+        ArchiveTask archiveTask = new ArchiveTask(projectRoot);
+        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, archiveTask);
 
         // 面板系统接线
         if (webOverlay != null)
