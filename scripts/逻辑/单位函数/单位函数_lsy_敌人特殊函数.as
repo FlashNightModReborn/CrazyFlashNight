@@ -650,3 +650,18 @@ _root.敌人函数.大学剑道社随机兵器表 = [
 	"西洋重剑枪",
 	"金铁杖"
 ];
+_root.敌人函数.获取大学剑道社随机装扮 = function(target){
+	target.hasDressup = true;
+	if(!target.性别){
+		target.性别 = random(2) === 0 ? "男" : "女";
+	}
+	if(!target.刀) {
+		target.刀 = this.大学剑道社随机兵器表[random(this.大学剑道社随机兵器表.length)];
+	}
+	if(!target.发型){
+		if(target.性别 === "男") target.发型 = this.大学剑道社随机发型表_男[random(this.大学剑道社随机发型表_男.length)];
+		else target.发型 = this.大学剑道社随机发型表_女[random(this.大学剑道社随机发型表_女.length)];
+	}
+
+	target.刀口位置生成子弹 = _root.主角函数.刀口位置生成子弹;
+}
