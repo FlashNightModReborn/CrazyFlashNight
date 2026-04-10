@@ -6,6 +6,7 @@ import org.flashNight.arki.weather.*;
 import org.flashNight.arki.render.FrameBroadcaster;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import LiteJSON;
+import JSON;
 /**
  * SaveManager — 存档系统统一管理器（单例）
  *
@@ -39,12 +40,54 @@ class org.flashNight.neur.Server.SaveManager {
     private var _dirtyMark:Boolean;
     private var _lastSaveHash:String;
     private var _liteJson:LiteJSON;
+    private var _jsonParser:JSON;
+    private var _prefetchedData:Object;
+    private var _prefetchedSlot:String;
+    private var _prefetchGen:Number;
 
     // ==================== 构造 ====================
     private function SaveManager() {
         _dirtyMark = false;
         _lastSaveHash = "";
         _liteJson = new LiteJSON();
+        _jsonParser = new JSON(false);
+        _prefetchGen = 0;
+    }
+
+    // ==================== 预取管理 ====================
+
+    public function getPrefetchStatus():Object {
+        return { hasPrefetch: (_prefetchedData != undefined), slot: _prefetchedSlot, gen: _prefetchGen };
+    }
+
+    public function clearPrefetch():Void {
+        _prefetchedData = undefined;
+        _prefetchedSlot = undefined;
+        _prefetchGen++;
+    }
+
+    public function receiveSavePush(response:Object):Void {
+        var sm:ServerManager = ServerManager.getInstance();
+        _prefetchGen++;
+        var dataRaw = response.data;
+
+        if (typeof dataRaw != "string") {
+            sm.sendServerMessage("[SaveManager] receiveSavePush: data not string, type=" + typeof dataRaw);
+            return;
+        }
+
+        var parsed:Object = _jsonParser.parse(dataRaw);
+        if (_jsonParser.errors.length > 0) {
+            sm.sendServerMessage("[SaveManager] receiveSavePush: parse errors=" + _jsonParser.errors.length);
+            return;
+        }
+        if (!validateMydata(parsed)) {
+            sm.sendServerMessage("[SaveManager] receiveSavePush: validate failed");
+            return;
+        }
+        _prefetchedData = parsed;
+        _prefetchedSlot = String(response.slot);
+        sm.sendServerMessage("[SaveManager] receiveSavePush OK slot=" + _prefetchedSlot);
     }
 
     // ==================== 核心存/读 ====================
@@ -102,10 +145,10 @@ class org.flashNight.neur.Server.SaveManager {
         var _saLen = (_root.tasks_to_do != undefined) ? _root.tasks_to_do.length : 0;
         sm.sendServerMessage("[SaveManager.saveAll] flush=" + ok + " version=" + mydata.version + " tasks_to_do.len=" + _saLen);
 
-        // P1: shadow 推送到 Launcher 落盘（SOL 仍是权威源，Launcher 做备份）
+        // P3a: shadow 推送到 Launcher 落盘 + 回调确认
         sm.sendServerMessage("[SaveManager] shadow gate: ok=" + ok + " socket=" + sm.isSocketConnected);
         if (ok && sm.isSocketConnected) {
-            pushShadow(sm, mydata);
+            pushShadowWithConfirm(sm, mydata);
         }
 
         return ok;
@@ -141,11 +184,120 @@ class org.flashNight.neur.Server.SaveManager {
                 sm.sendServerMessage("[SaveManager.preload] 迁移已持久化");
             }
         }
+
+        // P3a: 异步预取 JSON 存档
+        _prefetchGen++;
+        var currentGen:Number = _prefetchGen;
+        var self:SaveManager = this;
+        if (sm.isSocketConnected) {
+            sm.sendTaskWithCallback("archive", {op:"load", slot:_root.savePath}, null,
+                function(resp:Object):Void {
+                    if (currentGen != self._prefetchGen) return;
+                    if (resp.success != true || typeof resp.data != "string") return;
+                    var parsed:Object = self._jsonParser.parse(resp.data);
+                    if (self._jsonParser.errors.length > 0) return;
+                    if (!self.validateMydata(parsed)) return;
+                    self._prefetchedData = parsed;
+                    self._prefetchedSlot = String(resp.slot);
+                    sm.sendServerMessage("[SaveManager] prefetch OK slot=" + resp.slot);
+                }
+            );
+        }
     }
 
     public function loadAll():Boolean {
         var sm:ServerManager = ServerManager.getInstance();
         sm.sendServerMessage("[SaveManager.loadAll] savePath=" + _root.savePath);
+
+        // P3a: JSON 优先分支
+        if (_prefetchedData != undefined) {
+            var solLastSaved:String = (_root.mydata != undefined) ? _root.mydata.lastSaved : undefined;
+            var jsonLastSaved:String = _prefetchedData.lastSaved;
+
+            var useJson:Boolean = false;
+            if (_prefetchedSlot != _root.savePath) {
+                sm.sendServerMessage("[SaveManager.loadAll] slot 不匹配");
+            } else if (solLastSaved == undefined || jsonLastSaved == undefined || jsonLastSaved < solLastSaved) {
+                sm.sendServerMessage("[SaveManager.loadAll] 时间戳检查不通过: json=" + jsonLastSaved + " sol=" + solLastSaved);
+            } else {
+                useJson = true;
+            }
+
+            if (useJson) {
+                sm.sendServerMessage("[SaveManager.loadAll] 使用 JSON 权威数据 ts=" + jsonLastSaved);
+                var jsonData:Object = _prefetchedData;
+                clearPrefetch();
+
+                if (!_applyCore(jsonData)) {
+                    sm.sendServerMessage("[SaveManager.loadAll] JSON applyCore 失败，降级 SOL");
+                } else {
+                    // SO 覆盖层：与 SOL 路径步骤一致
+                    var jso:SharedObject = getSO();
+                    var jsoData:Object = jso.data;
+
+                    // tasks（SO 顶层权威 → fallback mydata.tasks）
+                    _root.tasks_to_do = jsoData.tasks_to_do;
+                    _root.tasks_finished = jsoData.tasks_finished;
+                    _root.task_chains_progress = jsoData.task_chains_progress;
+                    if (_root.tasks_to_do == undefined && _root.mydata.tasks != undefined) {
+                        _root.tasks_to_do = _root.mydata.tasks.tasks_to_do;
+                        _root.tasks_finished = _root.mydata.tasks.tasks_finished;
+                        _root.task_chains_progress = _root.mydata.tasks.task_chains_progress;
+                    }
+
+                    // 宠物（SO 顶层权威 → fallback mydata.pets）
+                    if (jsoData.战宠 != undefined) {
+                        _root.宠物信息 = jsoData.战宠;
+                        _root.宠物领养限制 = jsoData.宠物领养限制;
+                    } else if (_root.mydata.pets != undefined) {
+                        _root.宠物信息 = _root.mydata.pets.宠物信息;
+                        _root.宠物领养限制 = _root.mydata.pets.宠物领养限制;
+                    } else {
+                        _root.宠物信息 = [[], [], [], [], []];
+                        _root.宠物领养限制 = 5;
+                    }
+
+                    // 商城（SO 顶层权威 → fallback mydata.shop）
+                    if (jsoData.商城已购买物品 != undefined) {
+                        _root.商城已购买物品 = jsoData.商城已购买物品;
+                    } else if (_root.mydata.shop != undefined) {
+                        _root.商城已购买物品 = _root.mydata.shop.商城已购买物品;
+                    }
+                    if (jsoData.商城购物车 != undefined) {
+                        _root.商城购物车 = jsoData.商城购物车;
+                    } else if (_root.mydata.shop != undefined) {
+                        _root.商城购物车 = _root.mydata.shop.商城购物车;
+                    }
+
+                    // lastsave + dirtyMark
+                    if (_root.当前玩家总数 == 1) {
+                        _root.lastsave = _root.mydata.toString();
+                    }
+                    _dirtyMark = false;
+                    _root.存档系统.dirtyMark = false;
+
+                    // 副作用链 — 严格复用 SOL 路径写法，保持直接调用
+                    _root.UpdateTaskProgress();
+                    _root.检查任务数据完整性();
+                    _root.UI系统.防御性刷新等级经验();
+                    _root.发布消息("游戏本地读取成功！");
+                    _root.载入新佣兵库数据(0, 0, 0, 0, 0);
+                    _root.是否达成任务检测();
+
+                    var _jLen = (_root.tasks_to_do != undefined) ? _root.tasks_to_do.length : 0;
+                    var _jpLen = (_root.宠物信息 != undefined) ? _root.宠物信息.length : 0;
+                    sm.sendServerMessage("[SaveManager.loadAll] JSON+SO 完成: " + _root.角色名 + " lv" + _root.等级 + " tasks=" + _jLen + " pets=" + _jpLen);
+                    _prefetchGen++;
+                    return true;
+                }
+            } else {
+                clearPrefetch();
+            }
+        } else if (sm.isSocketConnected) {
+            sm.sendServerMessage("[SaveManager.loadAll] prefetch 未就绪，走 SOL");
+        }
+
+        // ─── SOL 路径（原有逻辑完全不变）───
 
         // 始终从 SO 鲜读
         var so:SharedObject = getSO();
@@ -155,12 +307,14 @@ class org.flashNight.neur.Server.SaveManager {
         // 空槽位 guard
         if (_root.mydata == undefined) {
             sm.sendServerMessage("[SaveManager.loadAll] 空槽位，return false");
+            _prefetchGen++;
             return false;
         }
 
         // 结构校验：主角储存数据必须存在
         if (_root.mydata[0] == undefined) {
             sm.sendServerMessage("[SaveManager.loadAll] 存档结构异常: mydata[0]=undefined，return false");
+            _prefetchGen++;
             return false;
         }
 
@@ -178,6 +332,7 @@ class org.flashNight.neur.Server.SaveManager {
         // 解包 mydata 内部数据（主角/装备/设置/物品栏等）
         if (!unpackGameState(_root.mydata)) {
             sm.sendServerMessage("[SaveManager.loadAll] unpackGameState 失败");
+            _prefetchGen++;
             return false;
         }
 
@@ -247,6 +402,7 @@ class org.flashNight.neur.Server.SaveManager {
         var _laLen = (_root.tasks_to_do != undefined) ? _root.tasks_to_do.length : 0;
         var _lpLen = (_root.宠物信息 != undefined) ? _root.宠物信息.length : 0;
         sm.sendServerMessage("[SaveManager.loadAll] 完成: 主线进度=" + _root.主线任务进度 + " tasks_to_do.len=" + _laLen + " 宠物数=" + _lpLen);
+        _prefetchGen++;
         return true;
     }
 
@@ -448,6 +604,114 @@ class org.flashNight.neur.Server.SaveManager {
         mydata.reserved = {};
 
         return mydata;
+    }
+
+    // ==================== JSON 校验/装载 ====================
+
+    /**
+     * 校验 mydata 结构完整性 — 覆盖 unpackGameState + loadFromMydata 消费的全部字段。
+     * 用于拦截截断/损坏的 JSON 数据（含边界截断导致尾部 tasks/pets/shop 丢失的场景）。
+     */
+    private function validateMydata(mydata:Object):Boolean {
+        if (mydata == undefined) return false;
+        if (mydata.version != "3.0") return false;
+        if (mydata.lastSaved == undefined) return false;
+
+        // 数组槽位（unpackGameState 消费的最大索引+1）
+        if (!(mydata[0] instanceof Array) || mydata[0].length < 14) return false;
+        if (!(mydata[1] instanceof Array) || mydata[1].length < 28) return false;
+        if (mydata[3] == undefined) return false;
+        if (!(mydata[4] instanceof Array) || mydata[4].length < 2) return false;
+        if (!(mydata[5] instanceof Array)) return false;
+        if (!(mydata[7] instanceof Array) || mydata[7].length < 5) return false;
+
+        // 对象字段
+        if (mydata.inventory == undefined) return false;
+        if (mydata.inventory.背包 == undefined) return false;
+        if (mydata.inventory.装备栏 == undefined) return false;
+        if (mydata.inventory.药剂栏 == undefined) return false;
+        if (mydata.inventory.仓库 == undefined) return false;
+        if (mydata.inventory.战备箱 == undefined) return false;
+        if (mydata.collection == undefined) return false;
+        if (mydata.collection.材料 == undefined) return false;
+        if (mydata.collection.情报 == undefined) return false;
+        if (mydata.infrastructure == undefined) return false;
+
+        // 尾部字段校验 — 每个 loadFromMydata 消费的子字段都必须存在
+        if (mydata.tasks == undefined) return false;
+        if (mydata.tasks.tasks_to_do == undefined) return false;
+        if (mydata.tasks.tasks_finished == undefined) return false;
+        if (mydata.tasks.task_chains_progress == undefined) return false;
+        if (mydata.pets == undefined) return false;
+        if (mydata.pets.宠物信息 == undefined) return false;
+        if (mydata.pets.宠物领养限制 == undefined) return false;
+        if (mydata.shop == undefined) return false;
+        if (mydata.shop.商城已购买物品 == undefined) return false;
+        if (mydata.shop.商城购物车 == undefined) return false;
+
+        return true;
+    }
+
+    /**
+     * 无副作用的核心装载 — loadAll JSON 分支和 loadFromMydata 的共用内核。
+     * 只做：validate → 设 _root.mydata → 归一化 → unpackGameState。
+     * 不做：tasks/pets/shop、dirtyMark、副作用链。
+     */
+    private function _applyCore(mydata:Object):Boolean {
+        if (!validateMydata(mydata)) return false;
+        _root.mydata = mydata;
+        if (!(mydata[0][10] instanceof Array)) mydata[0][10] = [];
+        if (!(mydata[0][12] instanceof Array)) mydata[0][12] = [];
+        return unpackGameState(mydata);
+    }
+
+    /**
+     * 独立公共 API — 从 mydata 对象恢复完整游戏状态。
+     * 包含 tasks/pets/shop 处理 + 副作用链（带防御性 typeof 检查）。
+     * loadAll 的 JSON 分支不调用此方法，而是用 _applyCore + SO 覆盖 + 副作用。
+     */
+    public function loadFromMydata(mydata:Object):Boolean {
+        var sm:ServerManager = ServerManager.getInstance();
+
+        if (!_applyCore(mydata)) {
+            sm.sendServerMessage("[SaveManager.loadFromMydata] applyCore failed");
+            return false;
+        }
+
+        // tasks（防御性默认化 — validateMydata 已保证字段存在，fallback 是二次防御）
+        var t:Object = mydata.tasks;
+        _root.tasks_to_do = (t != undefined && t.tasks_to_do != undefined) ? t.tasks_to_do : [];
+        _root.tasks_finished = (t != undefined && t.tasks_finished != undefined) ? t.tasks_finished : {};
+        _root.task_chains_progress = (t != undefined && t.task_chains_progress != undefined) ? t.task_chains_progress : {};
+
+        // 宠物
+        var p:Object = mydata.pets;
+        _root.宠物信息 = (p != undefined && p.宠物信息 != undefined) ? p.宠物信息 : [[], [], [], [], []];
+        _root.宠物领养限制 = (p != undefined && p.宠物领养限制 != undefined) ? p.宠物领养限制 : 5;
+
+        // 商城
+        var sh:Object = mydata.shop;
+        _root.商城已购买物品 = (sh != undefined && sh.商城已购买物品 != undefined) ? sh.商城已购买物品 : [];
+        _root.商城购物车 = (sh != undefined && sh.商城购物车 != undefined) ? sh.商城购物车 : [];
+
+        // lastsave
+        if (_root.当前玩家总数 == 1) {
+            _root.lastsave = _root.mydata.toString();
+        }
+        // dirtyMark
+        _dirtyMark = false;
+        _root.存档系统.dirtyMark = false;
+
+        // 副作用链（防御性检查 — loadFromMydata 是独立公共 API，可能在启动早期调用）
+        if (typeof _root.UpdateTaskProgress == "function") _root.UpdateTaskProgress();
+        if (typeof _root.检查任务数据完整性 == "function") _root.检查任务数据完整性();
+        if (_root.UI系统 != undefined && typeof _root.UI系统.防御性刷新等级经验 == "function") _root.UI系统.防御性刷新等级经验();
+        _root.发布消息("游戏本地读取成功！");
+        if (typeof _root.载入新佣兵库数据 == "function") _root.载入新佣兵库数据(0, 0, 0, 0, 0);
+        if (typeof _root.是否达成任务检测 == "function") _root.是否达成任务检测();
+
+        sm.sendServerMessage("[SaveManager.loadFromMydata] OK: " + _root.角色名 + " lv" + _root.等级);
+        return true;
     }
 
     /**
@@ -826,7 +1090,7 @@ class org.flashNight.neur.Server.SaveManager {
      */
     private function pushShadow(sm:ServerManager, mydata:Object):Void {
         sm.sendServerMessage("[SaveManager] pushShadow enter");
-        var dataJson:String = _liteJson.stringify(mydata);
+        var dataJson:String = _jsonParser.stringify(mydata);
         if (dataJson == null || dataJson == "null") {
             sm.sendServerMessage("[SaveManager] shadow skipped: stringify returned " + dataJson);
             return;
@@ -838,6 +1102,17 @@ class org.flashNight.neur.Server.SaveManager {
         var msg:String = "{\"task\":\"archive\",\"payload\":{\"op\":\"shadow\",\"slot\":\"" + slot + "\",\"data\":" + dataJson + "}}";
         var ok:Boolean = sm.sendSocketMessage(msg);
         sm.sendServerMessage("[SaveManager] shadow sent slot=" + slot + " ok=" + ok);
+    }
+
+    private function pushShadowWithConfirm(sm:ServerManager, mydata:Object):Void {
+        var dataJson:String = _jsonParser.stringify(mydata);
+        if (dataJson == null || dataJson == "null") return;
+        sm.sendTaskWithCallback("archive",
+            {op:"shadow", slot:_root.savePath, data:dataJson}, null,
+            function(resp:Object):Void {
+                sm.sendServerMessage("[SaveManager] shadow confirm: " + (resp.success == true));
+            }
+        );
     }
 
     // ==================== 私有方法 ====================

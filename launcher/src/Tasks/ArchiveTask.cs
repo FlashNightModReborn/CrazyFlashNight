@@ -128,7 +128,7 @@ namespace CF7Launcher.Tasks
             lock (_lock)
             {
                 // 原子写入：先写 .tmp 再 rename，防断电半写
-                File.WriteAllText(tmpPath, data, Encoding.UTF8);
+                File.WriteAllText(tmpPath, data, new System.Text.UTF8Encoding(false));
 
                 // Windows 上 File.Move 不允许目标已存在，先删再移
                 if (File.Exists(targetPath))

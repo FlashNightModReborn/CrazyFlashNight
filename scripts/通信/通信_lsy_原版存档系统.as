@@ -54,3 +54,12 @@ _root.lastsave_2 = "";
 _root.lastsave_3 = "";
 
 _root.允许存档 = true;
+
+// 调试入口（/console → #func:_root.debugSavePrefetch() 然后 #get:debugLastResult）
+_root.debugSaveRoundtrip = function():Void {
+    _root.debugLastResult = "roundtrip=" + SaveManager.getInstance().loadFromMydata(SaveManager.getInstance().packGameState());
+};
+_root.debugSavePrefetch = function():Void {
+    var st:Object = SaveManager.getInstance().getPrefetchStatus();
+    _root.debugLastResult = "hasPrefetch=" + st.hasPrefetch + " slot=" + st.slot + " gen=" + st.gen;
+};

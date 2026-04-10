@@ -149,6 +149,8 @@ namespace CF7Launcher.Bus
                     HandleShutdown(ctx);
                 else if (path == "/crossdomain.xml")
                     HandleCrossDomain(ctx);
+                else if (path == "/save-push" && method == "POST")
+                    HandleSavePush(ctx);
                 else
                 {
                     ctx.Response.StatusCode = 404;
@@ -293,6 +295,50 @@ namespace CF7Launcher.Bus
                     Thread.Sleep(200);
                     _shutdownAction();
                 });
+            }
+        }
+
+        private void HandleSavePush(HttpListenerContext ctx)
+        {
+            ctx.Response.ContentType = "application/json";
+            try
+            {
+                string body;
+                using (var reader = new System.IO.StreamReader(ctx.Request.InputStream, ctx.Request.ContentEncoding))
+                    body = reader.ReadToEnd();
+
+                var req = Newtonsoft.Json.Linq.JObject.Parse(body);
+                string slot = req.Value<string>("slot");
+                if (string.IsNullOrEmpty(slot))
+                {
+                    ctx.Response.StatusCode = 400;
+                    WriteResponse(ctx, "{\"ok\":false,\"error\":\"missing slot\"}");
+                    return;
+                }
+
+                string safeName = System.Text.RegularExpressions.Regex.Replace(slot, @"[^a-zA-Z0-9_\-]", "");
+                string filePath = Path.Combine(_projectRoot, "saves", safeName + ".json");
+                if (!File.Exists(filePath))
+                {
+                    ctx.Response.StatusCode = 404;
+                    WriteResponse(ctx, "{\"ok\":false,\"error\":\"file not found\"}");
+                    return;
+                }
+
+                string data = File.ReadAllText(filePath, new System.Text.UTF8Encoding(false));
+                var msg = new Newtonsoft.Json.Linq.JObject();
+                msg["task"] = "save_push";
+                msg["slot"] = safeName;
+                msg["data"] = data;
+                bool sent = _socketServer.TrySend(msg.ToString(Newtonsoft.Json.Formatting.None) + "\0");
+
+                WriteResponse(ctx, "{\"ok\":" + (sent ? "true" : "false") + "}");
+                LogManager.Log("[HTTP] /save-push slot=" + safeName + " sent=" + sent);
+            }
+            catch (Exception ex)
+            {
+                ctx.Response.StatusCode = 500;
+                WriteResponse(ctx, "{\"ok\":false,\"error\":\"" + ex.Message.Replace("\"", "'") + "\"}");
             }
         }
 

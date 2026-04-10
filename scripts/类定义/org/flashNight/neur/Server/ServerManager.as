@@ -530,6 +530,10 @@ class org.flashNight.neur.Server.ServerManager {
             }
             return;
         }
+        if (response.task == "save_push") {
+            org.flashNight.neur.Server.SaveManager.getInstance().receiveSavePush(response);
+            return;
+        }
 
         // Callback 路由：有 callId 的响应分发到注册的回调
         if (response.callId !== undefined) {
