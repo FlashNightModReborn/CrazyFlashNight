@@ -62,8 +62,11 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_loadAll_recovers_from_missing_sol();
         test_loadAll_sanitize_slot_match();
         test_deleteSlot_clears_prefetch();
+        test_deleteSlot_tombstone_blocks_json_recovery();
         test_hasSaveData_with_prefetch();
+        test_hasSaveData_respects_tombstone();
         test_isRecoveryPending();
+        test_isRecoveryPending_false_after_delete();
 
         trace("========== SaveManagerTest END: " + passedCount + "/" + testCount + " passed, " + failedCount + " failed ==========");
     }
@@ -951,5 +954,77 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         assert(sm.isRecoveryPending() == false, "isRecoveryPending: false when prefetch arrived");
 
         sm.clearPrefetch();
+    }
+
+    private static function test_deleteSlot_tombstone_blocks_json_recovery():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+        _root.savePath = TEST_SLOT;
+
+        // 先 seed 一份有效 SO，然后删档
+        seedTestSO("2026-01-01 00:00:00", undefined);
+        sm.deleteSlot();
+
+        // 注入 JSON 预取（模拟 Launcher 还有旧 shadow）
+        var md:Object = buildValidMydata();
+        md.lastSaved = "2099-01-01 00:00:00";
+        md[0][0] = "复活角色";
+        sm.receiveSavePush({ data: getTestJsonParser().stringify(md), slot: TEST_SLOT });
+        assert(sm.getPrefetchStatus().hasPrefetch == true, "tombstone_blocks: prefetch injected");
+
+        // loadAll 应该因为墓碑而拒绝 JSON 恢复
+        _root.mydata = undefined;
+        var ok:Boolean = sm.loadAll();
+        assert(ok == false, "tombstone_blocks: loadAll returns false despite JSON available");
+        assert(_root.角色名 != "复活角色", "tombstone_blocks: 角色名 not from revived JSON");
+
+        cleanTestSO();
+        _root.savePath = oldPath;
+    }
+
+    private static function test_hasSaveData_respects_tombstone():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+        _root.savePath = TEST_SLOT;
+
+        // 清 SO 并写墓碑
+        var so:SharedObject = SharedObject.getLocal(TEST_SLOT);
+        so.clear();
+        so.data._deleted = true;
+        so.flush();
+
+        // 注入预取
+        var md:Object = buildValidMydata();
+        sm.receiveSavePush({ data: getTestJsonParser().stringify(md), slot: TEST_SLOT });
+
+        // 有预取但有墓碑 → false
+        assert(sm.hasSaveData() == false, "hasSaveData_tombstone: false despite prefetch");
+
+        cleanTestSO();
+        sm.clearPrefetch();
+        _root.savePath = oldPath;
+    }
+
+    private static function test_isRecoveryPending_false_after_delete():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+        _root.savePath = TEST_SLOT;
+
+        // 删档（设墓碑 + 清 prefetch）
+        var so:SharedObject = SharedObject.getLocal(TEST_SLOT);
+        so.clear();
+        so.data._deleted = true;
+        so.flush();
+        sm.clearPrefetch();
+        _root.mydata = undefined;
+
+        // 即使 SOL 缺失，墓碑存在 → 不应该 pending
+        assert(sm.isRecoveryPending() == false, "isRecoveryPending_after_delete: false with tombstone");
+
+        cleanTestSO();
+        _root.savePath = oldPath;
     }
 }

@@ -44,6 +44,7 @@ class org.flashNight.neur.Server.SaveManager {
     private var _prefetchedData:Object;
     private var _prefetchedSlot:String;
     private var _prefetchGen:Number;
+    private var _prefetchInFlight:Boolean;
 
     // ==================== 构造 ====================
     private function SaveManager() {
@@ -52,6 +53,7 @@ class org.flashNight.neur.Server.SaveManager {
         _liteJson = new LiteJSON();
         _jsonParser = new JSON(false);
         _prefetchGen = 0;
+        _prefetchInFlight = false;
     }
 
     // ==================== 预取管理 ====================
@@ -64,6 +66,7 @@ class org.flashNight.neur.Server.SaveManager {
         _prefetchedData = undefined;
         _prefetchedSlot = undefined;
         _prefetchGen++;
+        _prefetchInFlight = false;
     }
 
     public function receiveSavePush(response:Object):Void {
@@ -120,6 +123,8 @@ class org.flashNight.neur.Server.SaveManager {
 
         // 写入新位置
         soData[SAVE_KEY] = mydata;
+        // 清除删档墓碑（如果有）
+        delete soData._deleted;
 
         // dual-write 顶层 key（权威源）
         soData.tasks_to_do = _root.tasks_to_do;
@@ -165,16 +170,16 @@ class org.flashNight.neur.Server.SaveManager {
         var self:SaveManager = this;
         var requestedSlot:String = _root.savePath;
         if (sm.isSocketConnected) {
+            _prefetchInFlight = true;
             sm.sendTaskWithCallback("archive", {op:"load", slot:requestedSlot}, null,
                 function(resp:Object):Void {
+                    self._prefetchInFlight = false;
                     if (currentGen != self._prefetchGen) return;
                     if (resp.success != true || typeof resp.data != "string") return;
                     var parsed:Object = self._jsonParser.parse(resp.data);
                     if (self._jsonParser.errors.length > 0) return;
                     if (!self.validateMydata(parsed)) return;
                     self._prefetchedData = parsed;
-                    // 存请求时的原始 slot，不用响应中的规范化 slot
-                    // ArchiveTask 会 sanitize slot（非法字符→_），导致返回值与原始 savePath 不一致
                     self._prefetchedSlot = requestedSlot;
                     sm.sendServerMessage("[SaveManager] prefetch OK slot=" + requestedSlot);
                 }
@@ -222,10 +227,14 @@ class org.flashNight.neur.Server.SaveManager {
             var jsonLastSaved:String = _prefetchedData.lastSaved;
 
             var useJson:Boolean = false;
+            var solDeleted:Boolean = (getSO().data._deleted == true);
             if (sanitizeSlot(_prefetchedSlot) != sanitizeSlot(_root.savePath)) {
                 sm.sendServerMessage("[SaveManager.loadAll] slot 不匹配: prefetch=" + _prefetchedSlot + " savePath=" + _root.savePath);
+            } else if (solDeleted) {
+                // 墓碑存在 → 此槽位被主动删除，不允许 JSON 恢复
+                sm.sendServerMessage("[SaveManager.loadAll] 槽位已删除（墓碑），不从 JSON 恢复");
             } else if (solMissing) {
-                // SOL 完全缺失 → JSON 是唯一恢复源
+                // SOL 完全缺失且无墓碑 → JSON 是唯一恢复源
                 sm.sendServerMessage("[SaveManager.loadAll] SOL 缺失，尝试 JSON 恢复");
                 useJson = true;
             } else if (solLastSaved == undefined) {
@@ -424,18 +433,31 @@ class org.flashNight.neur.Server.SaveManager {
         // P3a: 清理预取缓存（防止删档后被内存缓存复活）
         clearPrefetch();
 
-        // P3a: 通知 Launcher 删除 shadow JSON（防止下次启动被文件复活）
+        var so:SharedObject = getSO();
+        so.clear();
+
+        // P3a: 写入墓碑——防止 Launcher JSON 在 delete 失败/离线时复活已删存档
+        // loadAll 和 hasSaveData 检查此标记，拒绝 JSON 恢复
+        // 墓碑在 delete 回调成功后清除，或在下次 saveAll 写入新数据时自然被覆盖
+        so.data._deleted = true;
+        flushSO(so);
+
+        // 通知 Launcher 删除 shadow JSON
         var sm:ServerManager = ServerManager.getInstance();
+        var self:SaveManager = this;
         if (sm.isSocketConnected) {
             sm.sendTaskWithCallback("archive", {op:"delete", slot:_root.savePath}, null,
                 function(resp:Object):Void {
                     sm.sendServerMessage("[SaveManager] shadow delete: " + (resp.success == true));
+                    if (resp.success == true) {
+                        // JSON 已删——清除墓碑（不再需要防复活）
+                        var tso:SharedObject = self.getSO();
+                        delete tso.data._deleted;
+                        self.flushSO(tso);
+                    }
                 }
             );
         }
-
-        var so:SharedObject = getSO();
-        so.clear();
 
         // 现有清理
         _root.主角技能表 = [];
@@ -479,6 +501,8 @@ class org.flashNight.neur.Server.SaveManager {
         if (raw != undefined && raw[0] != undefined && raw[0][0] != undefined) {
             return true;
         }
+        // 墓碑检查：此槽位被主动删除，不允许 JSON 恢复
+        if (so.data._deleted == true) return false;
         // SOL 无有效数据 — 检查 Launcher 预取是否有可用恢复数据
         if (_prefetchedData != undefined && sanitizeSlot(_prefetchedSlot) == sanitizeSlot(_root.savePath)) {
             ServerManager.getInstance().sendServerMessage(
@@ -490,12 +514,13 @@ class org.flashNight.neur.Server.SaveManager {
 
     /**
      * Launcher 异步预取是否正在进行中（SOL 缺失时帧脚本可轮询此状态）
-     * true = socket 已连接且预取请求已发出但尚未返回
+     * true = 预取请求已发出且尚未返回（_prefetchInFlight），SOL 缺失，且未被主动删除
      */
     public function isRecoveryPending():Boolean {
-        if (_root.mydata != undefined) return false;  // SOL 正常，无需恢复
-        if (_prefetchedData != undefined) return false;  // 预取已到
-        return ServerManager.getInstance().isSocketConnected;  // socket 在线 = 预取可能还在途中
+        if (_root.mydata != undefined) return false;
+        if (_prefetchedData != undefined) return false;
+        if (getSO().data._deleted == true) return false;
+        return _prefetchInFlight;
     }
 
     public function newCharacter():Boolean {
