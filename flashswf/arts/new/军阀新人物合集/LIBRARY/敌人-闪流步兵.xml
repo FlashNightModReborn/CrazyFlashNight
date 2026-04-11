@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-闪流步兵" itemID="69da7cdb-000011c4" linkageExportForAS="true" linkageIdentifier="敌人-闪流步兵" lastModified="1775928166" lastUniqueIdentifier="58">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-闪流步兵" itemID="69da7cdb-000011c4" linkageExportForAS="true" linkageIdentifier="敌人-闪流步兵" lastModified="1775929374" lastUniqueIdentifier="60">
   <timeline>
-    <DOMTimeline name="敌人-闪流步兵" currentFrame="107">
+    <DOMTimeline name="敌人-闪流步兵" currentFrame="39">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -143,11 +143,11 @@ x轴保持距离 = 100;
 高空攻击Y轴范围 = 80; //高度大于该值才会触发高空技能库
 高空攻击X轴范围 = 250;
 
-近战技能库.push("曼巴","枪托");
-近战技能库.push("");
-中程技能库.push("");
-远程技能库.push("");
-超远程技能库.push("");
+近战技能库.push("磁能爆破","磁能踢击");
+中程技能库.push("磁能爆破","原地磁能射击","过载射击","磁能踢击");
+远程技能库.push("原地磁能射击","过载射击","前进磁能射击");
+超远程技能库.push("前进磁能射击");
+身后技能库.push("磁能爆破");
 
 
 初始化敌人模板 = _root.初始化敌人模板;
@@ -242,7 +242,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
                     <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
                   </matrix>
@@ -254,7 +254,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-72.75" centerPoint3DY="-37.85">
+                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-72.75" centerPoint3DY="-37.85">
                   <matrix>
                     <Matrix a="5.72386169433594" d="1.68096923828125" tx="-85.25" ty="-50.35"/>
                   </matrix>
@@ -266,7 +266,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="95" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
                     <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
                   </matrix>
@@ -281,7 +281,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="索敌层" color="#AE8C5A" locked="true" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="索敌层" color="#AE8C5A" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -385,7 +385,6 @@ on(rollOut){
 			}
 		}
 		*/
-		/*有身后招式时激活下列内容
 		else if (距离X < 130 && 距离Z <= _parent.y轴攻击范围)
 		{
 			if (_parent.身后技能库.length > 0 && random(_parent.攻击欲望) == 0)
@@ -394,7 +393,6 @@ on(rollOut){
 				_parent.状态改变("近战");
 			}
 		}
-		*/
 		/*有横向招式时激活下列内容
 		else if ( ((_parent.横向技能库.length > 0 &&  距离X < _parent.横向攻击X轴范围) || (_parent.横向远程技能库.length > 0 &&  距离X >= _parent.横向攻击X轴范围)) && 距离Z <= _parent.横向攻击Z轴范围 && ( !_parent.横向攻击X轴最小范围 || 距离X > _parent.横向攻击X轴最小范围)  && random(_parent.攻击欲望 * 2) == 0)
 		{
@@ -625,7 +623,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="闪流步兵动画/闪流步兵-死亡" centerPoint3DX="11.5" centerPoint3DY="-68.2">
+                <DOMSymbolInstance libraryItemName="闪流步兵动画/闪流步兵-死亡" selected="true" centerPoint3DX="11.5" centerPoint3DY="-68.2">
                   <matrix>
                     <Matrix a="0.175445556640625" d="0.175399780273438" tx="43.05" ty="-67.45"/>
                   </matrix>

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="阎凝儿gazer/动画合集/攻击动作" itemID="665b657b-000043b1" lastModified="1723207773" lastUniqueIdentifier="1009">
   <timeline>
-    <DOMTimeline name="攻击动作" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;307&lt;/guideline&gt;&lt;guideline direction="v"&gt;64&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="攻击动作" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;307&lt;/guideline&gt;&lt;guideline direction="v"&gt;64&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="招式名" color="#FF800A" locked="true" autoNamed="false">
           <frames>
@@ -77,7 +77,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -630,14 +630,14 @@ _root.子弹区域shoot传递(子弹属性);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 4" color="#FF4FFF" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="14" duration="53" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="透明控件" centerPoint3DX="200.5" centerPoint3DY="71.8">
+                <DOMSymbolInstance libraryItemName="透明控件" selected="true" centerPoint3DX="200.5" centerPoint3DY="71.8">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="188" ty="59.3"/>
                   </matrix>
