@@ -67,6 +67,15 @@ class org.flashNight.neur.Navigation.AStarGridTest
         test_large_grid_pathfinding();
         test_grid_edge_cases();
 
+        // 新接口测试（findInit/findStep/getResult、getLastExpanded）
+        test_getLastExpanded();
+        test_findInit_findStep_consistency();
+        test_findStep_incremental();
+        test_findInit_invalid_inputs();
+        test_findStep_without_init();
+        test_consecutive_finds_dirty_list();
+        test_heuristic_type2_backward_compat();
+
         // 性能和压力测试（不以耗时判定成败，只记录）
         if (doPerf) {
             perf_smoke(seed);
@@ -937,6 +946,190 @@ class org.flashNight.neur.Navigation.AStarGridTest
         log(" [内存密集型] " + runs + "次连续搜索平均耗时：" + (totalTime/runs) + " ms");
         
         end(true);
+    }
+
+    // ========== 新接口测试 ==========
+
+    private static function test_getLastExpanded():Void
+    {
+        var name:String = "getLastExpanded 统计验证";
+        begin(name);
+
+        var nav:AStarGrid = new AStarGrid(5, 1, false, false);
+        var path:Array = nav.find(0, 0, 4, 0);
+        assertNotNull(path, "应找到路径");
+        var exp:Number = nav.getLastExpanded();
+        assertTrue(exp > 0, "展开数应>0（实际=" + exp + "）");
+        assertTrue(exp <= 5, "5格直线展开数应<=5（实际=" + exp + "）");
+
+        // 起点=终点时展开数=0
+        nav.find(2, 0, 2, 0);
+        assertEqual(nav.getLastExpanded(), 0, "起点=终点展开数应=0");
+
+        end();
+    }
+
+    private static function test_findInit_findStep_consistency():Void
+    {
+        var name:String = "findInit+findStep 与 find 一致性";
+        begin(name);
+
+        var nav:AStarGrid = new AStarGrid(10, 10, true, false);
+        var walk:Array = [];
+        var y:Number = 0;
+        while (y < 10) {
+            var row:Array = [1,1,1,1,1,1,1,1,1,1];
+            walk.push(row);
+            y++;
+        }
+        walk[4][3] = 0; walk[4][4] = 0; walk[4][5] = 0; walk[4][6] = 0;
+        nav.setWalkableMatrix(walk);
+
+        // find 一次性
+        var path1:Array = nav.find(0, 0, 9, 9);
+        assertNotNull(path1, "find 应找到路径");
+
+        // findInit + findStep（大预算一次完成）
+        var status:Number = nav.findInit(0, 0, 9, 9);
+        assertEqual(status, 0, "findInit 应返回0（搜索已启动）");
+        assertTrue(nav.isSearchActive(), "搜索应处于活跃状态");
+
+        status = nav.findStep(10000);
+        assertEqual(status, 1, "findStep 应返回1（找到）");
+
+        var path2:Array = nav.getResult();
+        assertNotNull(path2, "getResult 应非空");
+        assertTrue(pathEqual(path1, path2), "两种方式的路径应完全一致");
+
+        end();
+    }
+
+    private static function test_findStep_incremental():Void
+    {
+        var name:String = "findStep 分步搜索（小预算多次调用）";
+        begin(name);
+
+        var nav:AStarGrid = new AStarGrid(20, 20, true, false);
+        var status:Number = nav.findInit(0, 0, 19, 19);
+        assertEqual(status, 0, "findInit 应返回0");
+
+        var iterations:Number = 0;
+        var maxIter:Number = 200;
+        while (iterations < maxIter) {
+            status = nav.findStep(5); // 每次只展开5个节点
+            iterations++;
+            if (status !== 0) break;
+        }
+        assertEqual(status, 1, "分步搜索最终应找到路径");
+        assertTrue(iterations > 1, "应需要多次迭代（实际=" + iterations + "次）");
+
+        var path:Array = nav.getResult();
+        assertNotNull(path, "分步搜索结果应非空");
+        assertPoint(path[0], 0, 0, "起点应为(0,0)");
+        assertPoint(path[path.length - 1], 19, 19, "终点应为(19,19)");
+
+        // 搜索完成后应不再活跃
+        assertTrue(!nav.isSearchActive(), "搜索完成后应不再活跃");
+
+        end();
+    }
+
+    private static function test_findInit_invalid_inputs():Void
+    {
+        var name:String = "findInit 无效输入验证";
+        begin(name);
+
+        var nav:AStarGrid = new AStarGrid(5, 5, true, false);
+
+        // 越界
+        assertEqual(nav.findInit(-1, 0, 4, 4), -1, "起点越界应返回-1");
+        assertEqual(nav.findInit(0, 0, 10, 4), -1, "终点越界应返回-1");
+
+        // 不可走
+        nav.setWalkable(0, 0, false);
+        assertEqual(nav.findInit(0, 0, 4, 4), -1, "起点不可走应返回-1");
+        nav.setWalkable(0, 0, true);
+
+        // 起点=终点
+        var status:Number = nav.findInit(3, 3, 3, 3);
+        assertEqual(status, 1, "起点=终点应返回1");
+        var path:Array = nav.getResult();
+        assertNotNull(path, "平凡路径应非空");
+        assertEqual(path.length, 1, "平凡路径长度=1");
+
+        end();
+    }
+
+    private static function test_findStep_without_init():Void
+    {
+        var name:String = "findStep 未初始化时返回-1";
+        begin(name);
+
+        var nav:AStarGrid = new AStarGrid(5, 5, true, false);
+        var status:Number = nav.findStep(100);
+        assertEqual(status, -1, "未初始化调用 findStep 应返回-1");
+
+        end();
+    }
+
+    private static function test_consecutive_finds_dirty_list():Void
+    {
+        var name:String = "连续多次 find（脏列表正确性）";
+        begin(name);
+
+        var nav:AStarGrid = new AStarGrid(10, 10, true, false);
+        var walk:Array = [];
+        var y:Number = 0;
+        while (y < 10) {
+            var row:Array = [1,1,1,1,1,1,1,1,1,1];
+            walk.push(row);
+            y++;
+        }
+        walk[5][0] = 0; walk[5][1] = 0; walk[5][2] = 0;
+        walk[5][3] = 0; walk[5][4] = 0; walk[5][5] = 0;
+        walk[5][6] = 0; walk[5][7] = 0;
+        nav.setWalkableMatrix(walk);
+
+        // 连续多次不同起终点搜索
+        var p1:Array = nav.find(0, 0, 9, 9);
+        assertNotNull(p1, "第1次搜索应有路径");
+        assertPoint(p1[0], 0, 0, "第1次起点");
+
+        var p2:Array = nav.find(0, 0, 5, 0);
+        assertNotNull(p2, "第2次搜索应有路径");
+        assertPoint(p2[p2.length - 1], 5, 0, "第2次终点");
+
+        var p3:Array = nav.find(9, 0, 0, 9);
+        assertNotNull(p3, "第3次搜索应有路径");
+
+        var p4:Array = nav.find(0, 0, 9, 0);
+        assertNotNull(p4, "第4次搜索（短路径）应有路径");
+
+        // 重复搜索确认确定性
+        var p5:Array = nav.find(0, 0, 9, 9);
+        assertTrue(pathEqual(p1, p5), "相同输入应产生相同路径（脏列表清理正确）");
+
+        end();
+    }
+
+    private static function test_heuristic_type2_backward_compat():Void
+    {
+        var name:String = "setHeuristic(2) 向后兼容";
+        begin(name);
+
+        var nav:AStarGrid = new AStarGrid(8, 8, true, false);
+
+        nav.setHeuristic(1);
+        var path1:Array = nav.find(0, 0, 7, 7);
+
+        nav.setHeuristic(2); // 应等价于 1
+        var path2:Array = nav.find(0, 0, 7, 7);
+
+        assertNotNull(path1, "Octile应有路径");
+        assertNotNull(path2, "type2应有路径");
+        assertTrue(pathEqual(path1, path2), "type2应与Octile结果一致");
+
+        end();
     }
 
     // ========== 断言 & 工具 ==========
