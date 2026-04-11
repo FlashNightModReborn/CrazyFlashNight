@@ -2,6 +2,7 @@
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 
 // 单位状态机基类
 
@@ -38,10 +39,10 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitBehavior extends FSM_StateMachine{
     // 具体执行函数
     // 检查是否进入睡眠/启用ai
     public function sleepCheck():Boolean{
-        return data.self.思考标签 == null || _root.暂停 === true;
+        return data.self.思考标签 == null || AIEnvironment.isPaused();
     }
     public function wakeupCheck():Boolean{
-        return data.self.思考标签 != null && _root.暂停 !== true;
+        return data.self.思考标签 != null && !AIEnvironment.isPaused();
     }
     //睡眠及各个停止函数通用
     public function sleep_enter():Void{

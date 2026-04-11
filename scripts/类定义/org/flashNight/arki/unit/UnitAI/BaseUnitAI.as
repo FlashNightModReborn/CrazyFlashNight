@@ -17,7 +17,7 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitAI{
         this.data = new UnitAIData(this.self);
 
         // 人格兜底：Hero/Mecenary 需要 personality 驱动 Utility AI，
-        // 正常流程由 _root.配置人形怪AI 在单位创建时设置。
+        // 正常流程由配置人形怪AI在单位创建时设置。
         // 防御性检查：personality 缺失时自动生成，避免后续 NaN 级联。
         if (this.data.personality == null
             && (_type == "Hero" || _type == "Mecenary")) {
@@ -30,10 +30,10 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitAI{
                 }
                 s.aiSeed = _seed & 0x7FFFFFFF;
             }
-            s.personality = _root.生成随机人格(s.aiSeed);
-            _root.计算AI参数(s.personality);
+            s.personality = AIEnvironment.generatePersonality(s.aiSeed);
+            AIEnvironment.computeAIParams(s.personality);
             this.data.personality = s.personality;
-            _root.服务器.发布服务器消息("[AI WARNING] " + s._name
+            AIEnvironment.log("[AI WARNING] " + s._name
                 + " personality==null, auto-generated in BaseUnitAI");
         }
 

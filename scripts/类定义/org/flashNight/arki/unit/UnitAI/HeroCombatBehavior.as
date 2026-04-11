@@ -9,6 +9,7 @@ import org.flashNight.arki.unit.UnitAI.ActionArbiter;
 import org.flashNight.arki.unit.UnitAI.MovementResolver;
 import org.flashNight.arki.unit.UnitAI.strategies.RetreatMovementStrategy;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 
 /**
  * 佣兵根状态机 — HFSM 模块化架构（Phase 1: 无损迁移）
@@ -85,7 +86,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // 阈值由 personality.retreatEnterThreshold 驱动（勇气低→更容易撤退）
         // S6: 冷却期内禁止再次进入撤退（振荡抑制）
         this.pushGateTransition("HeroCombatModule", "Retreating", function() {
-            if (_root.帧计时器.当前帧数 < data._retreatCooldownUntil) return false;
+            if (AIEnvironment.getFrame() < data._retreatCooldownUntil) return false;
             var threshold:Number = data.personality.retreatEnterThreshold;
             if (isNaN(threshold)) threshold = 0.6;
             return data.arbiter.getRetreatUrgency() > threshold;
@@ -111,7 +112,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // 手动控制 → Selector（控制释放 / 全自动开启）
         this.pushGateTransition("ManualOverride", "Selector", function() {
             var self = data.self;
-            return self.操控编号 == -1 || _root.控制目标全自动 == true;
+            return self.操控编号 == -1 || AIEnvironment.isFullAuto() == true;
         });
 
         // Retreating → Selector（紧迫度恢复 + HP回升 + 撤退方向被堵 + 超时兜底）
@@ -140,7 +141,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
                 if (urgency < 0.5) {
                     var maxDur:Number = pp.retreatMaxDuration;
                     if (isNaN(maxDur)) maxDur = 120;
-                    var retreatDur:Number = _root.帧计时器.当前帧数 - behavior._retreatMovement.getStartFrame();
+                    var retreatDur:Number = AIEnvironment.getFrame() - behavior._retreatMovement.getStartFrame();
                     if (retreatDur > maxDur) return true;
                 }
                 return false;
@@ -161,7 +162,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
     /**
      * selector_enter — 统一决策入口
      *
-     * 复刻原 _root.主角模板ai函数.思考 的完整流程：
+     * 复刻原主角模板ai函数.思考的完整流程：
      * 1. 暂停检查（sleepCheck Gate 兜底）
      * 2. 死亡检查
      * 3. 玩家控制检查 → ManualOverride
@@ -176,21 +177,21 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         data.updateSelf();
         var self = data.self;
 
-        // 1. 暂停守卫（复刻原 if(_root.暂停) 逻辑）
+        // 1. 暂停守卫
         //    sleepCheck Gate 会在下帧处理，这里做安全退出
-        if (_root.暂停) {
+        if (AIEnvironment.isPaused()) {
             this.ChangeState("FollowingHero");
             return;
         }
 
         // 2. 死亡守卫（复刻原 hp<=0 早期退出）
         if (self.hp <= 0) {
-            self.状态改变(_root.血腥开关 == false ? "击倒" : "血腥死");
+            self.状态改变(AIEnvironment.isBloodyMode() ? "血腥死" : "击倒");
             return;
         }
 
         // 3. 玩家控制检查（复刻原 操控编号 != -1 && !全自动 → 不思考）
-        if (self.操控编号 != -1 && _root.控制目标全自动 == false) {
+        if (self.操控编号 != -1 && AIEnvironment.isFullAuto() == false) {
             this.ChangeState("ManualOverride");
             return;
         }
@@ -203,8 +204,8 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         // 4-6. 武器模式 + 血包评估（统一管线）
         data.arbiter.tick(data, "selector");
 
-        // 5. 命令同步（复刻原 _parent.命令 = _root.命令）
-        self.命令 = _root.命令;
+        // 5. 命令同步
+        self.命令 = AIEnvironment.getCommand();
 
         // 7. 目标搜索（复刻原 aggroClear → 寻找攻击目标）
         self.dispatcher.publish("aggroClear", self);
@@ -216,9 +217,9 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
 
         if (!self.是否为敌人) {
             // 己方佣兵
-            if (_root.集中攻击目标 != "无" && _root.集中攻击目标) {
+            if (AIEnvironment.getFocusTarget() != "无" && AIEnvironment.getFocusTarget()) {
                 // 集中攻击目标覆盖（复刻原 aggroSet + 强制进入攻击）
-                var focusTarget = _root.gameworld[_root.集中攻击目标];
+                var focusTarget = AIEnvironment.resolveUnit(AIEnvironment.getFocusTarget());
                 if (focusTarget && focusTarget.hp > 0) {
                     data.target = focusTarget;
                     self.dispatcher.publish("aggroSet", self, focusTarget);
@@ -333,7 +334,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
      */
     public function retreat_enter():Void {
         MovementResolver.clearInput(data.self);
-        _retreatMovement.enter(_root.帧计时器.当前帧数);
+        _retreatMovement.enter(AIEnvironment.getFrame());
     }
 
     /**
@@ -344,7 +345,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
      *     WeaponEvaluator 据此偏置近战（刷怪场景下远程撤退=负收益循环）。
      */
     public function retreat_exit():Void {
-        var frame:Number = _root.帧计时器.当前帧数;
+        var frame:Number = AIEnvironment.getFrame();
 
         // S6: 再入冷却
         var cooldown:Number = data.personality.retreatReentryCooldown;
@@ -364,8 +365,8 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
             }
         }
 
-        if (_root.AI调试模式 == true) {
-            _root.服务器.发布服务器消息("[RET-EXIT] " + data.self.名字
+        if (AIEnvironment.isAIDebug()) {
+            AIEnvironment.log("[RET-EXIT] " + data.self.名字
                 + " dist=" + Math.round(data.absdiff_x)
                 + " failCount=" + data._retreatFailCount);
         }
@@ -384,7 +385,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
         MovementResolver.clearInput(self);
 
         if (self.hp <= 0) return;
-        if (_root.暂停) return;
+        if (AIEnvironment.isPaused()) return;
 
         data.updateSelf();
         if (data.target != null && data.target.hp > 0) {

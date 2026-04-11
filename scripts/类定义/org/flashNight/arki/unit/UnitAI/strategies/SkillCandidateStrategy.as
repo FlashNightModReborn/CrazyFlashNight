@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitAI.AIContext;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.DecisionTrace;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 
 /**
  * SkillCandidateStrategy — 技能候选源（距离/冷却/buff 过滤）
@@ -48,7 +49,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.SkillCandidateStrategy {
             }
 
             // 全局buff已激活 → 排除
-            var preBuffMark:Object = _root.技能函数.预战buff标记[sk.技能名];
+            var preBuffMark:Object = AIEnvironment.getPreBuffMarks()[sk.技能名];
             if (preBuffMark != null && preBuffMark.global && preBuffMark.buffId != null) {
                 if (self.buffManager != null && self.buffManager.getBuffById(preBuffMark.buffId) != null) {
                     trace.reject(sk.技能名, DecisionTrace.REASON_BUFF);

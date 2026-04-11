@@ -3,6 +3,7 @@ import org.flashNight.neur.StateMachine.FSM_StateMachine;
 import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 
 /**
  * 战斗模块 — 作为子状态机嵌入根机 EnemyBehavior
@@ -63,7 +64,7 @@ class org.flashNight.arki.unit.UnitAI.CombatModule extends FSM_StateMachine {
         // 同步外部 攻击目标 变更（如 HitUpdater 在 idle 期间触发仇恨）
         var extTarget:String = self.攻击目标;
         if (extTarget && extTarget != "无") {
-            var resolved = _root.gameworld[extTarget];
+            var resolved = AIEnvironment.resolveUnit(extTarget);
             if (resolved != null && resolved.hp > 0 && resolved != data.target) {
                 data.target = resolved;
             }
@@ -102,7 +103,7 @@ class org.flashNight.arki.unit.UnitAI.CombatModule extends FSM_StateMachine {
         // 与外部 攻击目标 参数保持一致
         var chaseTarget:String = self.攻击目标;
         if (chaseTarget && chaseTarget != "无" && t._name != chaseTarget) {
-            var resolved = _root.gameworld[chaseTarget];
+            var resolved = AIEnvironment.resolveUnit(chaseTarget);
             if (resolved != null && resolved.hp > 0) {
                 data.target = resolved;
                 t = resolved;
@@ -192,8 +193,8 @@ class org.flashNight.arki.unit.UnitAI.CombatModule extends FSM_StateMachine {
             return;
         }
 
-        var randy = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
-        var randx = engine.randomIntegerStrict(_root.Xmin, _root.Xmax);
+        var randy = engine.randomIntegerStrict(AIEnvironment.getYmin(), AIEnvironment.getYmax());
+        var randx = engine.randomIntegerStrict(AIEnvironment.getXmin(), AIEnvironment.getXmax());
 
         self.左行 = randx < data.x;
         self.右行 = !self.左行;

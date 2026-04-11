@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.MovementResolver;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 
 /**
  * RetreatMovementStrategy — 撤退期移动 + 掩护射击策略
@@ -105,7 +106,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.RetreatMovementStrategy {
         }
 
         var executor:Object = data.arbiter.getExecutor();
-        var frame:Number = _root.帧计时器.当前帧数;
+        var frame:Number = AIEnvironment.getFrame();
         var commitFrames:Number = data.personality.reloadCommitFrames;
         if (isNaN(commitFrames) || commitFrames <= 0) commitFrames = 30;
 
@@ -120,8 +121,8 @@ class org.flashNight.arki.unit.UnitAI.strategies.RetreatMovementStrategy {
                 self.man.gotoAndPlay("换弹匣");
             }
             executor.commitBody("reload", 2, commitFrames, frame, 0);
-            if (_root.AI调试模式 == true) {
-                _root.服务器.发布服务器消息("[RET-RELOAD] " + self.名字
+            if (AIEnvironment.isAIDebug()) {
+                AIEnvironment.log("[RET-RELOAD] " + self.名字
                     + " 安全距离换弹 cur=" + self.攻击模式
                     + " ammo=" + Math.round((curAmmoRR || 0) * 100) + "%");
             }
@@ -147,8 +148,8 @@ class org.flashNight.arki.unit.UnitAI.strategies.RetreatMovementStrategy {
                     self.man.gotoAndPlay("换弹匣");
                 }
                 executor.commitBody("reload", 2, commitFrames, frame, 0);
-                if (_root.AI调试模式 == true) {
-                    _root.服务器.发布服务器消息("[RET-RELOAD] " + self.名字
+                if (AIEnvironment.isAIDebug()) {
+                    AIEnvironment.log("[RET-RELOAD] " + self.名字
                         + " 切换到 " + rmMode + " 换弹 ammo="
                         + Math.round(rmAmmo * 100) + "%");
                 }
@@ -173,7 +174,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.RetreatMovementStrategy {
         // X轴
         _retMoveX = 0;
         if (data.target != null && data.target._x != undefined && data.target.hp > 0) {
-            // 注意：撤退方向在策略层不做“贴墙归零”门控。
+            // 注意：撤退方向在策略层不做"贴墙归零"门控。
             // 贴边/障碍处理应统一交给 MovementResolver.applyBoundaryAwareMovement：
             //   - retWall 归零会导致 wantX=0，从而无法触发沿墙滑行/角落突围/edgeEscape 脱离逻辑
             //   - 实战表现为：被压到地图边缘后只上下移动，无法正确反向撤离
@@ -185,7 +186,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.RetreatMovementStrategy {
         }
 
         // Z轴
-        var frame:Number = _root.帧计时器.当前帧数;
+        var frame:Number = AIEnvironment.getFrame();
         _retMoveZ = 0;
         _retZSep = data.absdiff_z;
         if (isNaN(_retZSep)) _retZSep = 0;
@@ -230,7 +231,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.RetreatMovementStrategy {
     private function _evaluateCoveringFire(data:UnitAIData, self:MovieClip):Boolean {
         var repoDir:Number = data.arbiter.getRepositionDir();
         var executor:Object = data.arbiter.getExecutor();
-        var frame:Number = _root.帧计时器.当前帧数;
+        var frame:Number = AIEnvironment.getFrame();
 
         if (repoDir <= 0 || self.射击中 || executor.isAnimLocked()) {
             return false;
@@ -274,8 +275,8 @@ class org.flashNight.arki.unit.UnitAI.strategies.RetreatMovementStrategy {
         }
 
         // 调试日志
-        if (_root.AI调试模式 == true && (frame & 31) == 0) {
-            _root.服务器.发布服务器消息("[RET-FIRE] " + self.名字
+        if (AIEnvironment.isAIDebug() && (frame & 31) == 0) {
+            AIEnvironment.log("[RET-FIRE] " + self.名字
                 + " ammo=" + Math.round((ammoR || 0) * 100) + "%"
                 + " z=" + Math.round(_retZSep) + "/" + Math.round(zRange * 2)
                 + " x=" + Math.round(data.absdiff_x) + "/" + Math.round(data.xrange * 1.5)

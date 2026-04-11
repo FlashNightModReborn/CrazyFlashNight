@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.StanceManager;
 import org.flashNight.arki.unit.UnitAI.AmmoHelper;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 
 /**
  * WeaponEvaluator — 武器模式评估与切换
@@ -101,7 +102,7 @@ class org.flashNight.arki.unit.UnitAI.WeaponEvaluator {
      */
     public function evaluateWeaponMode(data:UnitAIData):Void {
         var self:MovieClip = data.self;
-        var currentFrame:Number = _root.帧计时器.当前帧数;
+        var currentFrame:Number = AIEnvironment.getFrame();
 
         // 武器切换冷却（8帧 ≈ 0.3s，配合 unitUpdateWheel 4帧间隔 = 每2个AI tick评估一次）
         if (currentFrame - _lastWeaponSwitchFrame < 8) {
@@ -142,8 +143,8 @@ class org.flashNight.arki.unit.UnitAI.WeaponEvaluator {
                 _lastWeaponSwitchFrame = currentFrame;
                 applyWeaponRanges(self, data);
                 _stanceMgr.syncStance("兵器");
-                if (_root.AI调试模式 == true) {
-                    _root.服务器.发布服务器消息("[WPN] " + self.名字
+                if (AIEnvironment.isAIDebug()) {
+                    AIEnvironment.log("[WPN] " + self.名字
                         + " EMERGENCY melee! ammo=" + Math.round(curAmmo * 100)
                         + "% dist=" + Math.round(dist));
                 }
@@ -266,7 +267,7 @@ class org.flashNight.arki.unit.UnitAI.WeaponEvaluator {
         _stanceMgr.syncStance(self.攻击模式);
 
         // ── Debug 武器评估输出 ──
-        if (_root.AI调试模式 == true) {
+        if (AIEnvironment.isAIDebug()) {
             var curMode:String = didSwitch ? prevMode : self.攻击模式;
             var dbgSwitchCost:Number = baseSwitchCost * (1 - healthPressure * 0.7);
             if (dbgSwitchCost < 0.05) dbgSwitchCost = 0.05;
@@ -285,7 +286,7 @@ class org.flashNight.arki.unit.UnitAI.WeaponEvaluator {
             wmsg += " [dist=" + Math.round(dist) + " hp=" + Math.round(hpRatio * 100) + "% pr=" + (Math.round(healthPressure * 100) / 100);
             if (data._retreatFailCount >= 2) wmsg += " retFail=" + data._retreatFailCount;
             wmsg += "]";
-            _root.服务器.发布服务器消息(wmsg);
+            AIEnvironment.log(wmsg);
         }
     }
 

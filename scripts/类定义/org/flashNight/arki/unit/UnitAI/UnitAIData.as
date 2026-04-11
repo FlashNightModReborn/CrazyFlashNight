@@ -156,9 +156,9 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         // ── 聚合字段：从 MC 复制到纯值，供 AIContext.build() 零MC直读 ──
         this.hp = self.hp;
         this.hpMax = self.hp满血值;
-        this.isRigid = (self.刚体 == true) || (self.man.刚体标签 == true);
+        this.isRigid = Boolean(self.刚体) || Boolean(self.man.刚体标签);
         this.attackMode = self.攻击模式;
-        this.reloadTag = (self.man.换弹标签 == true);
+        this.reloadTag = Boolean(self.man.换弹标签);
         this.unitState = self.状态;
 
         // 子弹威胁（BulletThreatScanProcessor 帧末写入，AI帧更新读取，容忍0~1帧延迟）

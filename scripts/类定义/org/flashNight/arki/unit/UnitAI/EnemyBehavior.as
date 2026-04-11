@@ -5,6 +5,7 @@ import org.flashNight.arki.unit.UnitAI.BaseUnitBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.CombatModule;
 import org.flashNight.arki.unit.UnitAI.PickupModule;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.naki.Select.QuickSelect;
 
@@ -118,7 +119,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior {
 
         // Step 1: 解析现有仇恨目标 → 验证 → 失效则清除并降级为重新索敌
         if (chaseTarget && chaseTarget != "无") {
-            data.target = _root.gameworld[chaseTarget];
+            data.target = AIEnvironment.resolveUnit(chaseTarget);
             var resolved:MovieClip = data.target;
             if (resolved == null || !(resolved.hp > 0)) {
                 data.target = null;
@@ -146,7 +147,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior {
         if (hasPickupModule && self.允许拾取) {
             // 己方单位背包已满时禁用拾取
             if (self.是否为敌人 == false) {
-                if (_root.物品栏.背包.getFirstVacancy() == -1) {
+                if (AIEnvironment.getFirstBagVacancy() == -1) {
                     self.允许拾取 = false;
                     hasPickupModule = false;
                 }
@@ -164,8 +165,9 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior {
 
                 // 收集已落地的可拾取物
                 var 可拾取物距离表 = [];
-                for (var i in _root.pickupItemManager.pickupItemDict) {
-                    var 可拾取物 = _root.pickupItemManager.pickupItemDict[i];
+                var pickupDict:Object = AIEnvironment.getPickupManager().pickupItemDict;
+                for (var i in pickupDict) {
+                    var 可拾取物 = pickupDict[i];
                     if (可拾取物 != null && 可拾取物.area != null) {
                         可拾取物距离表.push({
                             物品: 可拾取物,
@@ -247,7 +249,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior {
         if (Math.abs(data.x - playerx) > X距离) {
             self.左行 = data.x > playerx;
             self.右行 = data.x < playerx;
-            var randz = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
+            var randz = engine.randomIntegerStrict(AIEnvironment.getYmin(), AIEnvironment.getYmax());
             if (Math.abs(data.z - randz) > Y距离) {
                 self.上行 = data.z > randz;
                 self.下行 = data.z < randz;
@@ -356,8 +358,8 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior {
                 targetZ += repulseZ * 0.5;
             }
 
-            targetX = Math.max(_root.Xmin, Math.min(_root.Xmax, targetX));
-            targetZ = Math.max(_root.Ymin, Math.min(_root.Ymax, targetZ));
+            targetX = Math.max(AIEnvironment.getXmin(), Math.min(AIEnvironment.getXmax(), targetX));
+            targetZ = Math.max(AIEnvironment.getYmin(), Math.min(AIEnvironment.getYmax(), targetZ));
 
             self.左行 = targetX < data.x;
             self.右行 = targetX > data.x;

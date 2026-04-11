@@ -2,6 +2,7 @@
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
 import org.flashNight.neur.Navigation.AStarGrid;
 import org.flashNight.naki.RandomNumberEngine.*;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 import org.flashNight.arki.unit.UnitAI.BaseUnitBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.spatial.move.*;
@@ -69,21 +70,21 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
 
     /**
      * 获取或构建当前场景的 A* 导航网格（懒加载）。
-     * 网格挂在 _root.gameworld._mercNavGrid 上，场景切换时随 gameworld 自动释放。
+     * 网格挂在 AIEnvironment.getGameworld()._mercNavGrid 上，场景切换时随 gameworld 自动释放。
      * 只在首次 L-path 全部失败时调用，大多数简单地图不会触发。
      */
     private static function getNavGrid():AStarGrid {
-        var gw:MovieClip = _root.gameworld;
+        var gw:MovieClip = AIEnvironment.getGameworld();
         if (gw._mercNavGrid != undefined) {
             return AStarGrid(gw._mercNavGrid);
         }
 
         // 构建网格
         var cs:Number = NAV_CELL_SIZE;
-        var xmin:Number = _root.Xmin;
-        var xmax:Number = _root.Xmax;
-        var ymin:Number = _root.Ymin;
-        var ymax:Number = _root.Ymax;
+        var xmin:Number = AIEnvironment.getXmin();
+        var xmax:Number = AIEnvironment.getXmax();
+        var ymin:Number = AIEnvironment.getYmin();
+        var ymax:Number = AIEnvironment.getYmax();
         var cols:Number = Math.ceil((xmax - xmin) / cs);
         var rows:Number = Math.ceil((ymax - ymin) / cs);
 
@@ -95,7 +96,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
         var nav:AStarGrid = new AStarGrid(cols, rows, true, false);
 
         // 对 collisionLayer 做 hitTest 采样，构建可走性矩阵
-        var collisionLayer:MovieClip = _root.collisionLayer;
+        var collisionLayer:MovieClip = AIEnvironment.getCollisionLayer();
         var r:Number = 0;
         while (r < rows) {
             var c:Number = 0;
@@ -122,7 +123,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
         gw._mercNavYmin = ymin;
         _global.ASSetPropFlags(gw, ["_mercNavCellSize", "_mercNavXmin", "_mercNavYmin"], 1, false);
 
-        // _root.服务器.发布服务器消息("[佣兵AI] NavGrid构建: " + cols + "x" + rows + "=" + (cols * rows) + "格 bounds=(" + xmin + "," + ymin + ")-(" + xmax + "," + ymax + ")");
+        // AIEnvironment.log("[佣兵AI] NavGrid构建: " + cols + "x" + rows + "=" + (cols * rows) + "格 bounds=(" + xmin + "," + ymin + ")-(" + xmax + "," + ymax + ")");
 
         return nav;
     }
@@ -143,7 +144,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
      */
     private static function findPathAStar(sx:Number, sy:Number, ex:Number, ey:Number):Array {
         var nav:AStarGrid = getNavGrid();
-        var gw:MovieClip = _root.gameworld;
+        var gw:MovieClip = AIEnvironment.getGameworld();
         var cs:Number = gw._mercNavCellSize;
         var ox:Number = gw._mercNavXmin;
         var oy:Number = gw._mercNavYmin;
@@ -202,9 +203,9 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
     public function think():Void {
         var self:MovieClip = data.self;
 
-        var aliveFrames:Number = _root.帧计时器.当前帧数 - data.createdFrame;
+        var aliveFrames:Number = AIEnvironment.getFrame() - data.createdFrame;
         if (aliveFrames > ALIVE_MAX_TIME) {
-            // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " 超时删除 alive=" + aliveFrames);
+            // AIEnvironment.log("[佣兵AI] " + self._name + " 超时删除 alive=" + aliveFrames);
             self.删除可雇用单位();
             return;
         }
@@ -212,7 +213,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
 
         // ── 如果已有未走完的 A* waypoint，直接继续 Walking ──
         if (data.waypoints != null && data.waypointIndex < data.waypoints.length && data.target != null) {
-            // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " wp续行 " + data.waypointIndex + "/" + data.waypoints.length);
+            // AIEnvironment.log("[佣兵AI] " + self._name + " wp续行 " + data.waypointIndex + "/" + data.waypoints.length);
             this.superMachine.ChangeState("Walking");
             return;
         }
@@ -232,17 +233,18 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
             // ── Phase 1: L-path 搜索可达的门 ──
             var 出生点列表:Array = [];
             var 全部门:Array = [];
-            for (var 单位:String in _root.gameworld) {
-                var 出生点:MovieClip = _root.gameworld[单位];
+            var _gw:MovieClip = AIEnvironment.getGameworld();
+            for (var 单位:String in _gw) {
+                var 出生点:MovieClip = _gw[单位];
                 if (出生点.是否从门加载主角 && 单位 != "出生地") {
                     全部门.push(出生点);
-                    if (Mover.isReachable(self, 出生点, 50, _root.调试模式)) {
+                    if (Mover.isReachable(self, 出生点, 50, AIEnvironment.isGlobalDebug())) {
                         出生点列表.push(出生点);
                     }
                 }
             }
 
-            // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " 门搜索: 全部=" + 全部门.length + " L可达=" + 出生点列表.length + " pos=(" + Math.round(data.x) + "," + Math.round(data.z) + ")");
+            // AIEnvironment.log("[佣兵AI] " + self._name + " 门搜索: 全部=" + 全部门.length + " L可达=" + 出生点列表.length + " pos=(" + Math.round(data.x) + "," + Math.round(data.z) + ")");
 
             if (出生点列表.length > 0) {
                 // L-path 找到可达门
@@ -252,16 +254,16 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
                 data.wpStallCount = 0;
                 data.wpPrevDecisionIdx = -1;
                 data.updateTarget();
-                // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " L-path→" + data.target._name + " dist=(" + Math.round(data.absdiff_x) + "," + Math.round(data.absdiff_z) + ")");
+                // AIEnvironment.log("[佣兵AI] " + self._name + " L-path→" + data.target._name + " dist=(" + Math.round(data.absdiff_x) + "," + Math.round(data.absdiff_z) + ")");
 
-                if (_root.调试模式) {
+                if (AIEnvironment.isGlobalDebug()) {
                     var aabb:AABB = AABB.fromMovieClip(data.target, 0);
                     AABBRenderer.renderAABB(AABBCollider.fromAABB(aabb), 0, "filled");
                 }
 
                 if (data.absdiff_x < 100 && data.absdiff_z < 50) {
                     // 已靠近门——基于存活时间的体验优化
-                    var aliveTime:Number = _root.帧计时器.当前帧数 - data.createdFrame;
+                    var aliveTime:Number = AIEnvironment.getFrame() - data.createdFrame;
                     if (aliveTime <= 100) {
                         newstate = engine.randomCheckThird() ? "Wandering" : "Idle";
                     } else if (aliveTime <= 200) {
@@ -301,7 +303,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
                     data.wpPrevDecisionIdx = -1;
                     data.updateTarget();
                     newstate = "Walking";
-                    // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " A*→" + bestDoor._name + " wp=" + bestPath.length);
+                    // AIEnvironment.log("[佣兵AI] " + self._name + " A*→" + bestDoor._name + " wp=" + bestPath.length);
                     // 按路径长度给足 walk 时长
                     var pathLen:Number = 0;
                     var j:Number = 1;
@@ -316,16 +318,16 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
                         speed = 4;
                     data.think_threshold = Math.max(WALK_MAX_TIME, Math.ceil(pathLen / speed) + 10);
 
-                    if (_root.调试模式) {
-                        _root.发布消息("A* path: " + bestPath.length + " waypoints, " + Math.round(pathLen) + "px");
+                    if (AIEnvironment.isGlobalDebug()) {
+                        AIEnvironment.log("A* path: " + bestPath.length + " waypoints, " + Math.round(pathLen) + "px");
                     }
                 } else {
-                    // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " A*也无路! 门=" + 全部门.length);
+                    // AIEnvironment.log("[佣兵AI] " + self._name + " A*也无路! 门=" + 全部门.length);
                     newstate = "Wandering";
                 }
 
             } else {
-                // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " 场景无门");
+                // AIEnvironment.log("[佣兵AI] " + self._name + " 场景无门");
                 newstate = "Wandering";
             }
         }
@@ -334,7 +336,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
             newstate = engine.randomCheckHalf() ? "Idle" : "Walking";
         }
 
-        // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " think→" + newstate + " alive=" + aliveFrames);
+        // AIEnvironment.log("[佣兵AI] " + self._name + " think→" + newstate + " alive=" + aliveFrames);
         this.superMachine.ChangeState(newstate);
     }
 
@@ -377,7 +379,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
             // 1) 卡死检测
             var isStuck:Boolean = data.stuckProbeByDiffChange(true, 8, 3);
             if (isStuck) {
-                // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " 卡死! pos=(" + Math.round(data.x) + "," + Math.round(data.z) + ") wp=" + (data.waypoints != null ? data.waypointIndex + "/" + data.waypoints.length : "null"));
+                // AIEnvironment.log("[佣兵AI] " + self._name + " 卡死! pos=(" + Math.round(data.x) + "," + Math.round(data.z) + ") wp=" + (data.waypoints != null ? data.waypointIndex + "/" + data.waypoints.length : "null"));
                 data.waypoints = null;
                 data.waypointIndex = 0;
                 data.wpStallCount = 0;
@@ -467,7 +469,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
 
         // 到达判定
         if (data.absdiff_x < 50 && data.absdiff_z < 25) {
-            // _root.服务器.发布服务器消息("[佣兵AI] " + data.self._name + " 到达门! alive=" + (_root.帧计时器.当前帧数 - data.createdFrame) + " 方式=" + (data.waypoints != null ? "A*" : "L-path"));
+            // AIEnvironment.log("[佣兵AI] " + data.self._name + " 到达门! alive=" + (AIEnvironment.getFrame() - data.createdFrame) + " 方式=" + (data.waypoints != null ? "A*" : "L-path"));
             data.self.删除可雇用单位();
             return;
         }
@@ -514,8 +516,8 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
         var randy:Number;
 
         for (var i:Number = 0; i < maxAttempts; i++) {
-            randx = engine.randomIntegerStrict(_root.Xmin, _root.Xmax);
-            randy = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
+            randx = engine.randomIntegerStrict(AIEnvironment.getXmin(), AIEnvironment.getXmax());
+            randy = engine.randomIntegerStrict(AIEnvironment.getYmin(), AIEnvironment.getYmax());
             if (Mover.isReachableToPoint(self, randx, randy, 30, false)) {
                 foundTarget = true;
                 break;
@@ -523,8 +525,8 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
         }
 
         if (!foundTarget) {
-            randx = engine.randomIntegerStrict(_root.Xmin, _root.Xmax);
-            randy = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
+            randx = engine.randomIntegerStrict(AIEnvironment.getXmin(), AIEnvironment.getXmax());
+            randy = engine.randomIntegerStrict(AIEnvironment.getYmin(), AIEnvironment.getYmax());
         }
 
         self.左行 = randx < data.x;

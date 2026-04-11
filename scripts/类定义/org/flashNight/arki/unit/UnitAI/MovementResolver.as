@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.unit.UnitAI.UnitAIData;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 import org.flashNight.arki.spatial.move.Mover;
 
 /**
@@ -39,7 +40,7 @@ class org.flashNight.arki.unit.UnitAI.MovementResolver {
         if (downSpace < margin) return -2;
 
         // 弹道威胁：强偏向空间更大的一侧（保持与 EngageMovementStrategy 一致）
-        var btAge:Number = _root.帧计时器.当前帧数 - self._btFrame;
+        var btAge:Number = AIEnvironment.getFrame() - self._btFrame;
         if (btAge >= 0 && btAge <= 1 && self._btCount > 0) {
             if (upSpace > downSpace * 1.3) return -2;
             if (downSpace > upSpace * 1.3) return 2;
@@ -80,8 +81,8 @@ class org.flashNight.arki.unit.UnitAI.MovementResolver {
 
         // ── Phase 0: 障碍物/边界脱困（在被阻/卡死时触发）──
         // 说明：边界贴墙可用 bnd* 直接判断，但地图障碍需要碰撞探测。
-        // 这里不引入 getWalkableDirections（8向全探测太重），仅在“方向不可走/确实卡死”时用少量 probe。
-        var frameNow:Number = _root.帧计时器.当前帧数;
+        // 这里不引入 getWalkableDirections（8向全探测太重），仅在"方向不可走/确实卡死"时用少量 probe。
+        var frameNow:Number = AIEnvironment.getFrame();
         var trying:Boolean = (wantX != 0 || wantZ != 0);
         if (trying && self.状态 != "技能" && self.状态 != "战技") {
             // 脱困窗口内：直接复用上次方向（避免重复 hitTest）
@@ -211,10 +212,10 @@ class org.flashNight.arki.unit.UnitAI.MovementResolver {
                         data._unstuckUntilFrame = frameNow + baseWindow;
                         data._noProgressCount = 0; // 成功找到脱困方向，重置进展计数
 
-                        if (_root.AI调试模式 == true || _root.AI日志级别 >= 2) {
+                        if (AIEnvironment.isAIDebug() || AIEnvironment.getAILogLevel() >= 2) {
                             var reason:String = blockedAhead ? "BLOCKED"
                                 : (noProgress ? "NO_PROGRESS" : "STUCK");
-                            _root.服务器.发布服务器消息("[MOV] " + self.名字
+                            AIEnvironment.log("[MOV] " + self.名字
                                 + " UNSTUCK(" + reason + ")"
                                 + " from=" + oldWX + "," + oldWZ
                                 + " to=" + bestX + "," + bestZ
@@ -227,8 +228,8 @@ class org.flashNight.arki.unit.UnitAI.MovementResolver {
                         if (data._probeFailCount >= 3) {
                             Mover.pushOutFromCollision(self, 120, 10, 45);
                             data._probeFailCount = 0;
-                            if (_root.AI调试模式 == true || _root.AI日志级别 >= 2) {
-                                _root.服务器.发布服务器消息("[MOV] " + self.名字
+                            if (AIEnvironment.isAIDebug() || AIEnvironment.getAILogLevel() >= 2) {
+                                AIEnvironment.log("[MOV] " + self.名字
                                     + " PUSHOUT pos=" + Math.round(data.x) + "," + Math.round(data.y));
                             }
                         }
@@ -293,11 +294,11 @@ class org.flashNight.arki.unit.UnitAI.MovementResolver {
         }
 
         // ── 调试日志（每 32 帧输出一次，覆盖所有调用）──
-        if (_root.AI调试模式 == true) {
-            var _f:Number = _root.帧计时器.当前帧数;
+        if (AIEnvironment.isAIDebug()) {
+            var _f:Number = AIEnvironment.getFrame();
             if ((_f & 31) == 0 || result > 0) {
                 var tag:String = (result == 0) ? "OK" : ((result == 1) ? "SLIDE" : "CORNER");
-                _root.服务器.发布服务器消息("[MOV] " + self.名字
+                AIEnvironment.log("[MOV] " + self.名字
                     + " " + tag
                     + " wX=" + wantX + " wZ=" + wantZ
                     + " pos=" + Math.round(data.x) + "," + Math.round(data.y)

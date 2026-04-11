@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.unit.UnitAI.AIContext;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 
 /**
  * DecisionTrace — AI 决策可观测性系统
@@ -6,7 +7,7 @@
  * 贯穿单次 tick 的诊断对象，策略在过滤/评分时调用 trace 方法记录，
  * tick 末尾由 flush() 按智能触发条件决定是否输出。
  *
- * 日志级别（从 _root.AI日志级别 读取，默认 0）：
+ * 日志级别（从 AIEnvironment.getAILogLevel() 读取，默认 0）：
  *   0 = OFF    — 不输出（零开销：reject/scored 方法直接 return）
  *   1 = BRIEF  — 选中动作 + 关键上下文（一行）
  *   2 = TOP3   — Top3 候选 + 概率 + 过滤聚合
@@ -101,7 +102,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
      */
     public function begin(unitName:String, ctx:AIContext, p:Object):Void {
         // 动态读取日志级别
-        var lv:Number = _root.AI日志级别;
+        var lv:Number = AIEnvironment.getAILogLevel();
         _level = (isNaN(lv) || lv < 0) ? 0 : lv;
 
         if (_level <= 0) return;
@@ -198,7 +199,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
     }
 
     /**
-     * setCandidateCounts — 记录候选数量（用于诊断“无动作/发呆”）
+     * setCandidateCounts — 记录候选数量（用于诊断"无动作/发呆"）
      *
      * @param rawCount       收集后（过滤前）候选数
      * @param postFilterCount 过滤后（评分前）候选数
@@ -239,7 +240,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
     public function flush():Void {
         if (_level <= 0) return;
 
-        // 未产生 selected：LEVEL_FULL 仍输出（否则最关键的“发呆”阶段完全无日志）
+        // 未产生 selected：LEVEL_FULL 仍输出（否则最关键的"发呆"阶段完全无日志）
         var hasSelection:Boolean = (_selectedName != null);
         if (!hasSelection && _level < LEVEL_FULL) return;
 
@@ -388,7 +389,7 @@ class org.flashNight.arki.unit.UnitAI.DecisionTrace {
             }
         }
 
-        _root.服务器.发布服务器消息(msg);
+        AIEnvironment.log(msg);
 
         if (hasSelection) _lastSelectedName = _selectedName;
     }

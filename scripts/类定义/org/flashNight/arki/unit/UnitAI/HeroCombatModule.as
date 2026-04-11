@@ -5,6 +5,7 @@ import org.flashNight.arki.unit.UnitAI.MovementResolver;
 import org.flashNight.arki.unit.UnitAI.strategies.EngageMovementStrategy;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 
 /**
  * 佣兵战斗模块 — 作为子状态机嵌入根机 HeroCombatBehavior
@@ -77,7 +78,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // 同步外部攻击目标变更
         var extTarget:String = self.攻击目标;
         if (extTarget && extTarget != "无") {
-            var resolved = _root.gameworld[extTarget];
+            var resolved = AIEnvironment.resolveUnit(extTarget);
             if (resolved != null && resolved.hp > 0 && resolved != data.target) {
                 data.target = resolved;
             }
@@ -86,7 +87,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
             self.dispatcher.publish("aggroSet", self, data.target);
         }
         // 追击计时：用于检测长时间追不上目标
-        data._chaseStartFrame = _root.帧计时器.当前帧数;
+        data._chaseStartFrame = AIEnvironment.getFrame();
     }
 
     public function chase():Void {
@@ -224,7 +225,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         // Phase 4: Starvation Guard → 防输出饥饿
         // ═══════════════════════════════════════════════════════
 
-        var frame:Number = _root.帧计时器.当前帧数;
+        var frame:Number = AIEnvironment.getFrame();
 
         // ── Phase 1: Arbiter — 收集开火意图 ──
         data.arbiter.tick(data, "engage");
@@ -326,7 +327,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
      */
     private function _checkTargetSwitch():Boolean {
         var self:MovieClip = data.self;
-        var frame:Number = _root.帧计时器.当前帧数;
+        var frame:Number = AIEnvironment.getFrame();
 
         // 人格参数驱动检测频率
         var p:Object = data.personality;
@@ -442,7 +443,7 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatModule extends FSM_StateMachine 
         }
 
         // 背后威胁：若候选与当前目标分居两侧且距离近，提升优先级
-        // 近似“不要让敌人出现在身后”，不依赖怪物类型。
+        // 近似"不要让敌人出现在身后"，不依赖怪物类型。
         var cur:MovieClip = data.target;
         if (cur != null && cur != candidate && cur.hp > 0 && cur._x != undefined && dist < 160) {
             var frontSide:Number = (cur._x >= self._x) ? 1 : -1;

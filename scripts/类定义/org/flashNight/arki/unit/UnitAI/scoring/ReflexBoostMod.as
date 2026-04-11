@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.unit.UnitAI.scoring.ScoringModifier;
 import org.flashNight.arki.unit.UnitAI.ActionExecutor;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 
 /**
  * ReflexBoostMod — 反射闪避评分注入
@@ -41,7 +42,7 @@ class org.flashNight.arki.unit.UnitAI.scoring.ReflexBoostMod extends ScoringModi
             scratch._reflexActive = false;
             return;
         }
-        var frame:Number = _root.帧计时器.当前帧数;
+        var frame:Number = AIEnvironment.getFrame();
         var reflexCooldown:Number = 3 * p.tickInterval;
         scratch._reflexActive = (frame - _executor.getLastReflexFrame() >= reflexCooldown);
     }

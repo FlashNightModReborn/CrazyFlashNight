@@ -1,4 +1,6 @@
-﻿/**
+﻿import org.flashNight.arki.unit.UnitAI.AIEnvironment;
+
+/**
  * ActionExecutor — 动作互斥/commitment/中断规则执行器
  *
  * 三轨独立追踪：
@@ -344,7 +346,7 @@ class org.flashNight.arki.unit.UnitAI.ActionExecutor {
                 break;
             case "skill":
             case "preBuff":
-                _root.技能路由.技能标签跳转_旧(self, candidate.name);
+                AIEnvironment.routeSkill(self, candidate.name);
                 break;
             case "reload":
                 var man:MovieClip = self.man;

@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitAI.AIContext;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.DecisionTrace;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 
 /**
  * PreBuffStrategy — 预战增益候选源
@@ -44,7 +45,7 @@ class org.flashNight.arki.unit.UnitAI.strategies.PreBuffStrategy {
         var skills:Array = self.已学技能表;
         if (skills == null) return;
 
-        var marks:Object = _root.技能函数.预战buff标记;
+        var marks:Object = AIEnvironment.getPreBuffMarks();
         if (marks == null) return;
 
         var nowMs:Number = ctx.nowMs;

@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.unit.UnitAI.UnitAIData;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 
 /**
  * HealExecutor — 血包使用评估与执行
@@ -6,7 +7,7 @@
  * 从 UtilityEvaluator 提取的治疗子服务。
  * 职责：evaluateHealNeed() — 评估并执行血包使用
  *
- * 副作用：直接修改 self.血包数量、调用 _root.佣兵使用血包
+ * 副作用：直接修改 self.血包数量、调用 AIEnvironment.useHealPack
  * （item 轨独立于 body 轨，不经过候选/评分/Boltzmann 管线）
  */
 class org.flashNight.arki.unit.UnitAI.HealExecutor {
@@ -30,7 +31,7 @@ class org.flashNight.arki.unit.UnitAI.HealExecutor {
      */
     public function evaluateHealNeed(data:UnitAIData):Void {
         var self:MovieClip = data.self;
-        var currentFrame:Number = _root.帧计时器.当前帧数;
+        var currentFrame:Number = AIEnvironment.getFrame();
 
         // 技能/战技播放期：血包动作会打断技能，按"仅技能可取消技能"规则延后
         if (self.状态 == "技能" || self.状态 == "战技") return;
@@ -49,16 +50,16 @@ class org.flashNight.arki.unit.UnitAI.HealExecutor {
         if (hpRatio < 0.2) healScore += 1.0;
 
         // 安全区自动回血
-        if (_root.gameworld.允许通行 && self.hp满血值 > self.hp) {
+        if (AIEnvironment.isAreaSafe() && self.hp满血值 > self.hp) {
             healScore += 0.6;
         }
 
         if (healScore > 0.5) {
             var hpBefore:Number = self.hp;
             self.血包数量--;
-            _root.佣兵使用血包(self._name);
+            AIEnvironment.useHealPack(self._name);
             self.上次使用血包时间 = currentFrame;
-            _root.发布消息(self.名字 + "[" + hpBefore + "/" + self.hp满血值 + "] 紧急治疗后还剩[" + self.血包数量 + "]个治疗包");
+            AIEnvironment.log(self.名字 + "[" + hpBefore + "/" + self.hp满血值 + "] 紧急治疗后还剩[" + self.血包数量 + "]个治疗包");
         }
     }
 }

@@ -2,12 +2,14 @@
 import org.flashNight.arki.unit.UnitAI.UtilityEvaluator;
 import org.flashNight.arki.unit.UnitAI.ActionExecutor;
 import org.flashNight.arki.unit.UnitAI.AIContext;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 import org.flashNight.arki.unit.UnitAI.DecisionTrace;
 import org.flashNight.arki.unit.UnitAI.PipelineFactory;
 import org.flashNight.arki.unit.UnitAI.StanceManager;
 import org.flashNight.arki.unit.UnitAI.WeaponEvaluator;
 import org.flashNight.arki.unit.UnitAI.HealExecutor;
 import org.flashNight.arki.unit.UnitAI.scoring.ScoringPipeline;
+import org.flashNight.arki.unit.UnitAI.ThreatAssessor;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 import org.flashNight.arki.bullet.BulletComponent.Queue.BulletThreatScanProcessor;
@@ -79,25 +81,19 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
     // ── 决策追踪（可观测性）──
     private var _trace:DecisionTrace;
 
-    // ── 撤退紧迫度（burst damage tracking）──
-    private var _prevHpRatio:Number;
-    private var _retreatUrgency:Number = 0;
+    // ── 威胁评估（提取到 ThreatAssessor）──
+    private var _threat:ThreatAssessor;
 
     // ── 角落激进模式（S7: 被逼入角落时主动解围而非继续逃跑）──
+    // corneredAggression 暂留在 ActionArbiter（依赖 _prepareContext 内 build 后的时序）
     private var _corneredAggression:Number = 0;
-
-    // ── 包围度 + 近距密度（左右敌人分布检测，统一采样）──
-    private var _encirclement:Number = 0;
-    private var _nearbyCount:Number = 0;
-    private var _leftEnemyCount:Number = 0;
-    private var _rightEnemyCount:Number = 0;
-    private var _lastEncirclementFrame:Number = -999;
 
     // ═══════ 构造 ═══════
 
     public function ActionArbiter(personality:Object, scorer:UtilityEvaluator, self:MovieClip) {
         this.p = personality;
         this._scorer = scorer;
+        this._threat = new ThreatAssessor(personality);
         this._stanceMgr = new StanceManager();
         this._weaponEval = new WeaponEvaluator(personality, this._stanceMgr);
         this._healExec = new HealExecutor(personality);
@@ -135,7 +131,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
             var arbiter:ActionArbiter = this;
 
             this._onHitCallback = function() {
-                arbiter._recentHitFrame = _root.帧计时器.当前帧数;
+                arbiter._recentHitFrame = AIEnvironment.getFrame();
             };
             self.dispatcher.subscribe("hit", this._onHitCallback, arbiter);
 
@@ -161,29 +157,23 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
     public function getRetreatUrgency():Number {
         // S7: 角落激进模式下降低有效撤退紧迫度
-        // 逃不掉就不该逃 — 抑制 Retreating Gate 触发，转为原地解围
+        var raw:Number = _threat.getRetreatUrgency();
         if (_corneredAggression > 0) {
-            return _retreatUrgency * (1 - _corneredAggression * 0.5);
+            return raw * (1 - _corneredAggression * 0.5);
         }
-        return _retreatUrgency;
+        return raw;
     }
 
     public function getEncirclement():Number {
-        return _encirclement;
+        return _threat.getEncirclement();
     }
 
     public function getNearbyCount():Number {
-        return _nearbyCount;
+        return _threat.getNearbyCount();
     }
 
-    /**
-     * getLeftEnemyCount / getRightEnemyCount — 左右敌人数量（周期采样）
-     *
-     * 说明：统计窗口为 scanRange（当前 250px），仅用于走位/战术偏置等
-     * 低频信号，不用于精确碰撞或逐帧反应。
-     */
-    public function getLeftEnemyCount():Number  { return _leftEnemyCount; }
-    public function getRightEnemyCount():Number { return _rightEnemyCount; }
+    public function getLeftEnemyCount():Number  { return _threat.getLeftEnemyCount(); }
+    public function getRightEnemyCount():Number { return _threat.getRightEnemyCount(); }
 
     public function getAmmoRatio(self:MovieClip):Number {
         return _weaponEval.getAmmoRatio(self, self.攻击模式);
@@ -212,10 +202,10 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
       */
     public function tick(data:UnitAIData, context:String):Void {
         var self:MovieClip = data.self;
-        var frame:Number = _root.帧计时器.当前帧数;
+        var frame:Number = AIEnvironment.getFrame();
 
-        _updateRetreatUrgency(self, frame);
-        _updateSpatialAwareness(self, frame);
+        _threat.updateRetreatUrgency(data, frame);
+        _threat.updateSpatialAwareness(data, frame);
         var dynT:Number = _prepareContext(data, context, frame);
         _selectBodyAction(data, context, self, frame, dynT);
 
@@ -224,67 +214,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         _trace.flush();
     }
 
-    // ═══════ tick 阶段 1：撤退紧迫度 ═══════
-
-    /**
-     * _updateRetreatUrgency — burst damage → 勇气调节的撤退紧迫度
-     *
-     * hpRatio 内联计算（与 AIContext.build 内相同公式，同 tick 内一致）。
-     * 首帧 _prevHpRatio 为 NaN → hpDelta 视为 0（避免非满血单位误触撤退）。
-     */
-    private function _updateRetreatUrgency(self:MovieClip, frame:Number):Void {
-        var maxHP:Number = self.hp满血值;
-        var hpRatio:Number = (maxHP > 0) ? Math.max(0, Math.min(1, self.hp / maxHP)) : 1;
-        var hpDelta:Number = hpRatio - _prevHpRatio;
-        _prevHpRatio = hpRatio;
-        if (isNaN(hpDelta)) hpDelta = 0;
-        if (hpDelta < -0.01) {
-            _retreatUrgency = Math.min(1,
-                _retreatUrgency + Math.max(0, -hpDelta - p.勇气 * 0.15) * 3);
-        }
-        _retreatUrgency *= 0.92;
-        if (_retreatUrgency < 0.05) _retreatUrgency = 0;
-    }
-
-    // ═══════ tick 阶段 2：空间感知 ═══════
-
-    /**
-     * _updateSpatialAwareness — 包围度 + 近距密度 + 射弹预警
-     *
-     * 包围度/近距密度每 16 帧周期性采样（≈0.6s），射弹预警逐帧检测。
-     * 两者均可加剧 _retreatUrgency。
-     */
-    private function _updateSpatialAwareness(self:MovieClip, frame:Number):Void {
-        // 包围度 + 近距密度检测（周期性，每 16 帧 ≈ 0.6s）
-        if (frame - _lastEncirclementFrame >= 16) {
-            _lastEncirclementFrame = frame;
-            var scanRange:Number = 250;
-            var leftCount:Number = TargetCacheManager.getEnemyCountInRange(self, 8, scanRange, 0, true);
-            var rightCount:Number = TargetCacheManager.getEnemyCountInRange(self, 8, 0, scanRange, true);
-            _leftEnemyCount = leftCount;
-            _rightEnemyCount = rightCount;
-            _encirclement = Math.min(1, leftCount * rightCount / 4);
-            _nearbyCount = TargetCacheManager.getEnemyCountInRange(self, 16, 150, 150, true);
-        }
-
-        // 包围加剧低勇气角色的撤退紧迫度
-        if (_encirclement > 0.2) {
-            var courageDampen:Number = 1.0 - p.勇气;
-            _retreatUrgency = Math.min(1, _retreatUrgency + _encirclement * courageDampen * 0.3);
-        }
-
-        // 射弹预警 → 前瞻性撤退（年龄窗口容忍 0~1 帧延迟）
-        var btAge:Number = frame - self._btFrame;
-        var btCount:Number = self._btCount;
-        if (btAge >= 0 && btAge <= 1 && !isNaN(btCount) && btCount > 0) {
-            var btETA:Number = self._btMinETA - btAge;
-            if (isNaN(btETA) || btETA < 0) btETA = 0;
-            var btUrgency:Number = Math.min(0.5, btCount * 0.1)
-                * Math.max(0, 1 - btETA / 20)
-                * (1 - p.勇气 * 0.7);
-            _retreatUrgency = Math.min(1, _retreatUrgency + btUrgency);
-        }
-    }
+    // ═══════ tick 阶段 1-2：已提取到 ThreatAssessor ═══════
 
     // ═══════ tick 阶段 3：黑板构建 + 温度 ═══════
 
@@ -303,7 +233,8 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
         // 黑板构建（build-once 契约：所有信号在此一次性聚合）
         _executor.updateAnimLock(data.self);
         _ctx.build(data, context, _executor, _stanceMgr, _recentHitFrame, p,
-                   _retreatUrgency, _encirclement, _nearbyCount, _leftEnemyCount, _rightEnemyCount);
+                   _threat.getRetreatUrgency(), _threat.getEncirclement(),
+                   _threat.getNearbyCount(), _threat.getLeftEnemyCount(), _threat.getRightEnemyCount());
 
         // S7: 角落激进模式 — 被逼入角落 + 高勇气 + 目标活跃 → 主动解围
         // bndCorner > 0.3 = X轴和Z轴同时靠近边界（无处可逃）
@@ -503,7 +434,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
         // 全局buff单次施放记录（兴奋剂/铁布衫/觉醒霸体等永久buff仅施放一次）
         if (selected.type == "skill" || selected.type == "preBuff") {
-            var pbMark:Object = _root.技能函数.预战buff标记[selected.name];
+            var pbMark:Object = AIEnvironment.getPreBuffMarks()[selected.name];
             if (pbMark != null && pbMark.global) {
                 data._usedGlobalBuffs[selected.name] = true;
             }
