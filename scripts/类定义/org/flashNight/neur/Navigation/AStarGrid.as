@@ -8,8 +8,9 @@
 //    3) 稳定鲁棒：下标/边界检查完备；搜索轮次 searchId 复用标记避免全表清空。
 //    4) 易调优：Manhattan / Octile 两种启发式；maxExpand 限流。
 //    5) 帧预算：findInit/findStep/getResult 分步搜索接口，可跨帧分摊。
-//  复杂度：
-//    - 典型 A* 时间 O(E log V)，二叉堆 push/pop O(log V)，空间 O(V)。
+//  复杂度（理论）：
+//    - 若无权重、均匀代价，典型 A* 时间复杂度 O(E log V)，E≈分支因子×展开节点数；
+//      使用二叉堆使 push/pop 为 O(log V)。空间复杂度 O(V)。
 //  AVM1 性能优化要点：
 //    - 方法调用 ~1340ns、函数调用 ~485ns → 热路径全部内联到 findStep()
 //    - new Array() ~550ns + GC → 静态方向表 _DX4/_DY4/_DX8/_DY8 类级复用
@@ -18,21 +19,92 @@
 //    - 实例变量 ~144ns/次 → 热循环入口全部缓存到局部寄存器变量 (H01)
 //    - == ~21ns vs === ~19ns → 热路径一律 === (H08)
 //    - Math.abs ~249ns → 三元 (H14)；Math.min ~264ns → 三元 (H15)
-//  坐标与单位：
-//    - 格坐标，非像素；线性索引 = y * _w + x（行主序）。
-//    - 代价基于 COST_STRAIGHT=10 的整数刻度，权重为加法"额外成本"。
+//  约定与术语：
+//    - "卡角"：指斜向穿过两个相邻的障碍角落；禁止卡角可避免"擦角穿越"。
+//    - "权重"：对某格的**额外代价**（加法），非倍率；默认 0 表示无额外成本。
+//    - "可走性"：1=可走、0=不可走。
+//  坐标与单位说明：
+//    - **格坐标 vs 像素坐标**：本类所有 API 使用"格"为单位；若世界坐标是像素，
+//      需由调用方完成 px→cell/cell→px 映射。
+//    - **索引计算公式**：内部线性索引 = y * _w + x（行主序存储）。
+//    - **代价单位**：基于 COST_STRAIGHT=10 的整数刻度（相当于把每步×10），
+//      权重是加法的"额外成本"。
 //  返回路径：
-//    - [{x:Number, y:Number}, ...]，从起点到终点；无路返回 null。
-//  启发式：
-//    - 0 = Manhattan（4 邻接）；1 = Octile（8 邻接，默认）。
-//    - 注：原 type 2 "Euclidean近似" 与 Octile 数学等价，已合并。
-//  确定性：
-//    - 堆比较：先 f 小，再 g 小 → 同输入→同输出，测试可复现。
+//    - 形式为数组 [{x:Number, y:Number}, ...]，**从起点到终点**（已反转），
+//      若无路返回 null。
+//  特殊情形的明确约定：
+//    - **起点 = 终点**：返回 [{x:sx,y:sy}]（长度 1），属于命中而非 null。
+//    - **终点不可走**：当前直接返回 null。设计意图：避免"擦边占位"的歧义行为。
+//    - **maxExpand 限制**：触发上限返回 null 并不代表"地图无路"，而是"被限流"；
+//      真实无路需提高限制重试验证。
+//  启发式与邻接匹配的可采纳性：
+//    - **4 邻接→Manhattan** 可采纳；**8 邻接→Octile** 可采纳；
+//    - setHeuristic(2) 等价于 Octile（原 "Euclidean近似" 数学相同，已合并）。
+//    - **启发式选错**会导致扩张变多或最优性受影响（切勿随意切换）。
+//  确定性与 tie-breaking：
+//    - **堆比较规则**：先比 f，再比 g；若 f,g 都相等，按插入顺序稳定；
+//    - 因此 **同输入→同输出**，确保测试可复现。
 //  分步搜索 API（帧预算模式）：
 //    - findInit(sx,sy,gx,gy) → 返回 1(平凡路径)/0(搜索已启动)/-1(无效输入)
 //    - findStep(budget)      → 返回 1(找到)/0(预算耗尽)/-1(无路)
 //    - getResult()           → 返回路径 Array 或 null
-//    - find() 是 findInit+findStep 的便捷封装
+//    - find() 是 findInit+findStep 的便捷封装（一次性完成，不遗留搜索状态）
+//  状态生命周期：
+//    - findInit() 无论成功与否，都会先终止上一次残留的搜索状态
+//    - find() 保证返回后无活跃搜索（budget 耗尽也会终止）
+//    - resize() 完全重置所有搜索状态
+//  注意：
+//    - 本类为**纯栅格** A*，未内建导航网格/可视直线(LOS)/漏斗压路径；
+//      可在外层做路径后处理。
+//
+//  使用示例：
+//    ```actionscript
+//    // 1. 创建 5x3 网格，允许斜向但禁止卡角
+//    var nav:AStarGrid = new AStarGrid(5, 3, true, false);
+//
+//    // 2. 设置地图（二维数组，1=可走，0=不可走）
+//    var walkMatrix:Array = [
+//        [1,1,1,0,1],
+//        [1,0,1,0,1],
+//        [1,1,1,1,1]
+//    ];
+//    nav.setWalkableMatrix(walkMatrix);
+//
+//    // 3. 可选：设置地形权重（额外成本）
+//    var weightMatrix:Array = [
+//        [0,0,5,0,0],
+//        [0,0,2,0,0],
+//        [0,0,0,0,0]
+//    ];
+//    nav.setWeightMatrix(weightMatrix);
+//
+//    // 4. 一次性寻路：从(0,0)到(4,2)
+//    var path:Array = nav.find(0, 0, 4, 2);
+//    if (path != null) {
+//        for (var i:Number = 0; i < path.length; i++) {
+//            trace("步骤" + i + ": (" + path[i].x + "," + path[i].y + ")");
+//        }
+//    }
+//
+//    // 5. 分步寻路（帧预算模式）：
+//    var status:Number = nav.findInit(0, 0, 4, 2);
+//    if (status === 0) {
+//        // onEnterFrame 中每帧推进：
+//        status = nav.findStep(50); // 每帧最多展开 50 个节点
+//        if (status === 1) {
+//            var stepPath:Array = nav.getResult();
+//            // 使用 stepPath...
+//        }
+//        // status === 0 则下一帧继续 findStep
+//    }
+//    ```
+//
+//  最佳实践：
+//    - 对于大地图（>100x100），建议启用 maxExpand 限制或使用分步搜索
+//    - 4向寻路推荐 Manhattan 启发式，8向寻路推荐 Octile 启发式
+//    - 权重值通常在 0-10 范围内，过大会影响路径自然度
+//    - 频繁寻路时，复用同一个 AStarGrid 实例而非重复创建
+//    - 动态障碍变化时，只需调用 setWalkable(x,y,false) 无需重新创建网格
 // ===============================================================
 
 class org.flashNight.neur.Navigation.AStarGrid
@@ -164,11 +236,13 @@ class org.flashNight.neur.Navigation.AStarGrid
             _openPos[i]    = 0;
         }
 
-        _openHeap   = [];
-        _openCount  = 0;
-        _dirtyList  = [];
-        _dirtyCount = 0;
-        _stepActive = false;
+        _openHeap     = [];
+        _openCount    = 0;
+        _dirtyList    = [];
+        _dirtyCount   = 0;
+        _stepActive   = false;
+        _stepResult   = null;
+        _lastExpanded = 0;
     }
 
     // ===========================================================
@@ -315,6 +389,10 @@ class org.flashNight.neur.Navigation.AStarGrid
         var budget:Number = (maxExpand != undefined && maxExpand > 0) ? maxExpand : _size;
         status = findStep(budget);
         if (status === 1) return _stepResult;
+
+        // budget 耗尽(0)或无路(-1)：终止残留的活跃搜索，
+        // 保证 find() 作为"一次性"接口不遗留分步搜索状态
+        _stepActive = false;
         return null;
     }
 
@@ -333,6 +411,11 @@ class org.flashNight.neur.Navigation.AStarGrid
         var w:Number  = _w;
         var h:Number  = _h;
 
+        // 无论成功与否，先终止上一次残留的分步搜索状态
+        _stepActive   = false;
+        _stepResult   = null;
+        _lastExpanded = 0;
+
         // 内联边界检查
         if (sx < 0 || sy < 0 || sx >= w || sy >= h) return -1;
         if (gx < 0 || gy < 0 || gx >= w || gy >= h) return -1;
@@ -343,12 +426,10 @@ class org.flashNight.neur.Navigation.AStarGrid
 
         if (wk[sI] === 0 || wk[gI] === 0) return -1;
 
-        // 起点=终点：平凡路径
+        // 起点=终点：平凡路径（_stepActive 已在入口置 false）
         if (sI === gI)
         {
-            _stepResult   = [{x:sx, y:sy}];
-            _lastExpanded = 0;
-            _stepActive   = false;
+            _stepResult = [{x:sx, y:sy}];
             return 1;
         }
 
@@ -472,6 +553,8 @@ class org.flashNight.neur.Navigation.AStarGrid
         var hi:Number, nd:Number, pi:Number, pn:Number;
         var lc:Number, rc:Number, bt:Number, bn:Number;
         var tf1:Number, tf2:Number;
+        var ndF:Number, ndG:Number;  // heapUp/Down 不变量缓存（省循环内重复数组读取）
+        var rcN:Number, lcN:Number;  // heapDown 子节点索引缓存
 
         // =======================================================
         // 主搜索循环
@@ -490,11 +573,14 @@ class org.flashNight.neur.Navigation.AStarGrid
                 nd = hp[oc];
                 hp[0] = nd;
                 op[nd] = 1;
-                hp.length = oc;
+                // 不截断 hp.length：省 ~170ns/次 native 属性写入
+                // 逻辑边界由 oc 保证，stale 元素不影响正确性
                 op[curI] = 0;
 
-                // --- heapDown(0) 内联 ---
+                // --- heapDown(0) 内联（缓存不变量 ndF/ndG） ---
                 hi = 0;
+                ndF = fa[nd];
+                ndG = ga[nd];
                 while (true)
                 {
                     lc = (hi << 1) + 1;
@@ -503,15 +589,16 @@ class org.flashNight.neur.Navigation.AStarGrid
                     bt = lc;
                     if (rc < oc)
                     {
-                        // inline less(hp[rc], hp[lc])
-                        tf1 = fa[hp[rc]];
-                        tf2 = fa[hp[lc]];
-                        if (tf1 < tf2 || (tf1 === tf2 && ga[hp[rc]] < ga[hp[lc]])) bt = rc;
+                        // 缓存 hp[rc]/hp[lc] 避免 ga[hp[x]] 重复索引
+                        rcN = hp[rc];
+                        lcN = hp[lc];
+                        tf1 = fa[rcN];
+                        tf2 = fa[lcN];
+                        if (tf1 < tf2 || (tf1 === tf2 && ga[rcN] < ga[lcN])) bt = rc;
                     }
                     bn = hp[bt];
                     tf1 = fa[bn];
-                    tf2 = fa[nd];
-                    if (tf1 < tf2 || (tf1 === tf2 && ga[bn] < ga[nd]))
+                    if (tf1 < ndF || (tf1 === ndF && ga[bn] < ndG))
                     {
                         hp[hi] = bn;
                         op[bn] = hi + 1;
@@ -628,16 +715,17 @@ class org.flashNight.neur.Navigation.AStarGrid
                             dl[dc] = nI;
                             dc++;
 
-                            // heapUp(oc) 内联
+                            // heapUp(oc) 内联（ndF/ndG 缓存不变量）
                             hi = oc;
                             nd = nI;
+                            ndF = fa[nI];
+                            ndG = tG;
                             while (hi > 0)
                             {
                                 pi = (hi - 1) >> 1;
                                 pn = hp[pi];
-                                tf1 = fa[nd];
                                 tf2 = fa[pn];
-                                if (tf1 < tf2 || (tf1 === tf2 && ga[nd] < ga[pn]))
+                                if (ndF < tf2 || (ndF === tf2 && ndG < ga[pn]))
                                 {
                                     hp[hi] = pn;
                                     op[pn] = hi + 1;
@@ -675,16 +763,17 @@ class org.flashNight.neur.Navigation.AStarGrid
                             }
                             fa[nI] = tG + hV;
 
-                            // heapUp(pos - 1) 内联
+                            // heapUp(pos - 1) 内联（ndF/ndG 缓存不变量）
                             hi = pos - 1;
                             nd = nI;
+                            ndF = fa[nI];
+                            ndG = tG;
                             while (hi > 0)
                             {
                                 pi = (hi - 1) >> 1;
                                 pn = hp[pi];
-                                tf1 = fa[nd];
                                 tf2 = fa[pn];
-                                if (tf1 < tf2 || (tf1 === tf2 && ga[nd] < ga[pn]))
+                                if (ndF < tf2 || (ndF === tf2 && ndG < ga[pn]))
                                 {
                                     hp[hi] = pn;
                                     op[pn] = hi + 1;

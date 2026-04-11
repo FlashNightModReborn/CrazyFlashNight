@@ -76,6 +76,11 @@ class org.flashNight.neur.Navigation.AStarGridTest
         test_consecutive_finds_dirty_list();
         test_heuristic_type2_backward_compat();
 
+        // 状态生命周期回归测试
+        test_findInit_failure_clears_state();
+        test_find_budget_terminates_search();
+        test_resize_clears_step_state();
+
         // 性能和压力测试（不以耗时判定成败，只记录）
         if (doPerf) {
             perf_smoke(seed);
@@ -1128,6 +1133,84 @@ class org.flashNight.neur.Navigation.AStarGridTest
         assertNotNull(path1, "Octile应有路径");
         assertNotNull(path2, "type2应有路径");
         assertTrue(pathEqual(path1, path2), "type2应与Octile结果一致");
+
+        end();
+    }
+
+    // ========== 状态生命周期回归测试 ==========
+
+    private static function test_findInit_failure_clears_state():Void
+    {
+        var name:String = "findInit 失败后不残留旧搜索状态";
+        begin(name);
+
+        var nav:AStarGrid = new AStarGrid(5, 5, true, false);
+
+        // 先执行一次成功搜索，产生有效 result / expanded / active
+        var path:Array = nav.find(0, 0, 4, 4);
+        assertNotNull(path, "首次搜索应成功");
+        assertTrue(nav.getLastExpanded() > 0, "首次搜索 expanded 应>0");
+
+        // 用分步 API 产生活跃搜索
+        nav.findInit(0, 0, 4, 4);
+        nav.findStep(2); // 只展开2个节点，搜索未完成
+
+        // 现在调用一次失败的 findInit（终点越界）
+        var status:Number = nav.findInit(0, 0, 10, 10);
+        assertEqual(status, -1, "越界应返回-1");
+
+        // 验证所有状态都已清空
+        assertTrue(!nav.isSearchActive(), "失败后搜索不应活跃");
+        assertTrue(nav.getResult() == null, "失败后 getResult 应为 null");
+        assertEqual(nav.getLastExpanded(), 0, "失败后 lastExpanded 应为0");
+
+        // 再次调用 findStep 应返回-1（无活跃搜索）
+        assertEqual(nav.findStep(100), -1, "无活跃搜索时 findStep 应返回-1");
+
+        end();
+    }
+
+    private static function test_find_budget_terminates_search():Void
+    {
+        var name:String = "find() budget 耗尽后不遗留活跃搜索";
+        begin(name);
+
+        var nav:AStarGrid = new AStarGrid(50, 50, true, false);
+
+        // 用极小的 maxExpand，强制 budget 耗尽
+        var path:Array = nav.find(0, 0, 49, 49, 3);
+        // 路径可能为 null（budget 不够）
+        // 关键断言：find() 返回后不应有活跃搜索
+        assertTrue(!nav.isSearchActive(), "find() 返回后搜索不应活跃");
+
+        // findStep 应返回-1（无活跃搜索）
+        assertEqual(nav.findStep(100), -1, "find()后 findStep 应返回-1");
+
+        end();
+    }
+
+    private static function test_resize_clears_step_state():Void
+    {
+        var name:String = "resize() 完全清除搜索状态";
+        begin(name);
+
+        var nav:AStarGrid = new AStarGrid(10, 10, true, false);
+
+        // 产生有效搜索结果
+        nav.find(0, 0, 9, 9);
+        assertTrue(nav.getLastExpanded() > 0, "搜索后应有 expanded");
+
+        // resize
+        nav.resize(5, 5);
+
+        // 所有状态应已清零
+        assertTrue(!nav.isSearchActive(), "resize后搜索不应活跃");
+        assertTrue(nav.getResult() == null, "resize后 getResult 应为 null");
+        assertEqual(nav.getLastExpanded(), 0, "resize后 lastExpanded 应为0");
+
+        // 新尺寸上应能正常寻路
+        var path:Array = nav.find(0, 0, 4, 4);
+        assertNotNull(path, "resize后新尺寸应能寻路");
 
         end();
     }
