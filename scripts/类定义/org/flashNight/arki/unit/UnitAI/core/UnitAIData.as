@@ -246,6 +246,7 @@ class org.flashNight.arki.unit.UnitAI.core.UnitAIData{
     // 进展投影检测：位移在意图方向上的投影连续不足 → 判定"被阻"
     // 捕获"贴障碍物侧向滑动"和"被敌人反向推挤"两种 stuckProbe 无法覆盖的场景
     public var _noProgressCount:Number = 0;
+    public var _xNoProgressCount:Number = 0; // 分轴X检测：X方向单独无进展计数
     public var _lastProgressX:Number;
     public var _lastProgressZ:Number;
 

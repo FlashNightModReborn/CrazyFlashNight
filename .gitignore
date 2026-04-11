@@ -86,3 +86,8 @@ logs/
 # Save shadow backups (player-specific, not source)
 saves/*.json
 saves/*.json.tmp
+
+# AI sim results (generated images/data, not source)
+tools/mercenary-ai-sim/results/
+tools/combat-movement-sim/results/
+tools/combat-movement-sim/__pycache__/

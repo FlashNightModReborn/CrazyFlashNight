@@ -29,6 +29,13 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy 
     private var _retMoveZ:Number;
     private var _retZSep:Number;
 
+    // ── 边界逃脱承诺窗口 ──
+    // 检测撤退方向被地图边界阻挡 → 反转X + 强制Z逃脱，保持30帧不动摇
+    private var _wallEscUntil:Number;   // 承诺截止帧
+    private var _wallEscX:Number;       // 承诺的X方向
+    private var _wallEscZ:Number;       // 承诺的Z方向
+    private static var WALL_ESC_WINDOW:Number = 30; // ~1秒 @30fps
+
     // ═══════ 构造 ═══════
 
     public function RetreatMovementStrategy() {
@@ -37,6 +44,9 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy 
         _retMoveX = 0;
         _retMoveZ = 0;
         _retZSep = 0;
+        _wallEscUntil = 0;
+        _wallEscX = 0;
+        _wallEscZ = 0;
     }
 
     // ═══════ 生命周期 ═══════
@@ -171,13 +181,21 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy 
      * 结果写入 _retMoveX, _retMoveZ, _retZSep
      */
     private function _computeRetreatMove(data:UnitAIData, self:MovieClip):Void {
+        var frame:Number = AIEnvironment.getFrame();
+        var MARGIN:Number = 80;
+
+        // ── 边界逃脱承诺窗口内：直接使用承诺方向 ──
+        if (frame < _wallEscUntil) {
+            _retMoveX = _wallEscX;
+            _retMoveZ = _wallEscZ;
+            _retZSep = data.absdiff_z;
+            if (isNaN(_retZSep)) _retZSep = 0;
+            return;
+        }
+
         // X轴
         _retMoveX = 0;
         if (data.target != null && data.target._x != undefined && data.target.hp > 0) {
-            // 注意：撤退方向在策略层不做"贴墙归零"门控。
-            // 贴边/障碍处理应统一交给 MovementResolver.applyBoundaryAwareMovement：
-            //   - retWall 归零会导致 wantX=0，从而无法触发沿墙滑行/角落突围/edgeEscape 脱离逻辑
-            //   - 实战表现为：被压到地图边缘后只上下移动，无法正确反向撤离
             _retMoveX = (data.diff_x > 0) ? -1 : 1; // 远离目标
         } else {
             if (data.diff_x != null && !isNaN(data.diff_x) && data.diff_x != 0) {
@@ -185,8 +203,37 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy 
             }
         }
 
+        // ── 边界困境检测：撤退方向被地图边界阻挡 → 反转X + Z逃脱 + 承诺窗口 ──
+        var wallTrapped:Boolean = false;
+        if (_retMoveX < 0 && data.bndLeftDist < MARGIN) wallTrapped = true;
+        else if (_retMoveX > 0 && data.bndRightDist < MARGIN) wallTrapped = true;
+
+        if (wallTrapped) {
+            _retMoveX = -_retMoveX; // 反转X
+            // Z逃脱：远离目标Z轴
+            var escZ:Number = 0;
+            if (data.diff_z != null && data.diff_z != 0) {
+                escZ = (data.diff_z > 0) ? -1 : 1;
+                if (escZ < 0 && data.bndUpDist < 50) escZ = 1;
+                else if (escZ > 0 && data.bndDownDist < 50) escZ = -1;
+            } else {
+                escZ = (data.bndUpDist > data.bndDownDist) ? -1 : 1;
+            }
+            _wallEscUntil = frame + WALL_ESC_WINDOW;
+            _wallEscX = _retMoveX;
+            _wallEscZ = escZ;
+            _retMoveZ = escZ;
+            _retZSep = data.absdiff_z;
+            if (isNaN(_retZSep)) _retZSep = 0;
+            if (AIEnvironment.isAIDebug()) {
+                AIEnvironment.log("[RET-WALLESC] " + self.名字
+                    + " trapped→escape X=" + _retMoveX + " Z=" + escZ
+                    + " win=" + WALL_ESC_WINDOW);
+            }
+            return; // Z已设定，跳过正常Z计算
+        }
+
         // Z轴
-        var frame:Number = AIEnvironment.getFrame();
         _retMoveZ = 0;
         _retZSep = data.absdiff_z;
         if (isNaN(_retZSep)) _retZSep = 0;

@@ -113,21 +113,32 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
                     blockedAhead = !Mover.isDirectionWalkable(self, wantX, wantZ, probe);
                 }
 
-                // noProgress: 位移在意图方向上的投影（dot product）
-                // 捕获"贴障碍物侧向滑动"和"被敌人反向推挤"两种 stuck 无法覆盖的场景
+                // noProgress: 合成投影 + 分轴X检测
+                // 合成投影：捕获"贴障碍物侧向滑动"和"被推挤"
+                // 分轴X：捕获"Z有自由度但X被边界/障碍永久阻挡"（解决边界无限弹跳）
                 var noProgress:Boolean = false;
                 var curPlaneZ:Number = !isNaN(data.z) ? data.z : data.y;
                 if (data._lastProgressX != undefined) {
                     var dpX:Number = data.x - data._lastProgressX;
                     var dpZ:Number = curPlaneZ - data._lastProgressZ;
-                    // 投影：正数表示朝意图方向前进
                     var prog:Number = dpX * wantX + dpZ * wantZ;
                     if (prog < 1.0) {
                         data._noProgressCount++;
                     } else {
                         data._noProgressCount = 0;
                     }
-                    noProgress = (data._noProgressCount >= 3);
+                    noProgress = (data._noProgressCount >= 2);
+                    // 分轴X检测：wantX≠0 时单独追踪X方向进展
+                    if (wantX != 0) {
+                        if (dpX * wantX < 0.5) {
+                            data._xNoProgressCount++;
+                        } else {
+                            data._xNoProgressCount = 0;
+                        }
+                        if (data._xNoProgressCount >= 3) noProgress = true;
+                    } else {
+                        data._xNoProgressCount = 0;
+                    }
                 }
                 data._lastProgressX = data.x;
                 data._lastProgressZ = curPlaneZ;
@@ -199,6 +210,18 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
                         bestX = 0; bestZ = -oldWZ;
                     }
 
+                    // 5) 远距probe重试：常规probe只找到纯Z/退后时，
+                    // 用2x probe看更远处的绕行对角方向（解决贴障碍物时短probe看不到绕行空间）
+                    if (oldWX != 0 && bestX == 0) {
+                        var farProbe:Number = probe * 2;
+                        if (farProbe < 60) farProbe = 60;
+                        if (Mover.isDirectionWalkable(self, oldWX, preferZ, farProbe)) {
+                            bestX = oldWX; bestZ = preferZ;
+                        } else if (Mover.isDirectionWalkable(self, oldWX, altZ, farProbe)) {
+                            bestX = oldWX; bestZ = altZ;
+                        }
+                    }
+
                     if (bestX != 0 || bestZ != 0) {
                         wantX = bestX;
                         wantZ = bestZ;
@@ -206,9 +229,9 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
                         data._unstuckZ = bestZ;
                         // 脱困窗口递增：持续卡死时逐步加长，足够绕过大障碍
                         var scc:Number = data.getStuckCheckCount();
-                        var baseWindow:Number = 12;
-                        if (scc > 12) baseWindow = 40;
-                        else if (scc > 6) baseWindow = 24;
+                        var baseWindow:Number = 24;
+                        if (scc > 12) baseWindow = 48;
+                        else if (scc > 6) baseWindow = 36;
                         data._unstuckUntilFrame = frameNow + baseWindow;
                         data._noProgressCount = 0; // 成功找到脱困方向，重置进展计数
 
