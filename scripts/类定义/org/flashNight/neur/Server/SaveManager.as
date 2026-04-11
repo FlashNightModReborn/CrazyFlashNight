@@ -436,25 +436,19 @@ class org.flashNight.neur.Server.SaveManager {
         var so:SharedObject = getSO();
         so.clear();
 
-        // P3a: 写入墓碑——防止 Launcher JSON 在 delete 失败/离线时复活已删存档
-        // loadAll 和 hasSaveData 检查此标记，拒绝 JSON 恢复
-        // 墓碑在 delete 回调成功后清除，或在下次 saveAll 写入新数据时自然被覆盖
+        // P3a: 写入墓碑——防止 Launcher JSON 复活已删存档
+        // 墓碑**仅在 saveAll 写入新数据时清除**，不在 delete 回调中清除。
+        // 原因：旧的 inflight shadow 可能晚于 delete 落地，重新写回 JSON 文件；
+        // 如果 delete 回调清了墓碑，这个迟到的旧 shadow 就会在下次启动时复活已删存档。
         so.data._deleted = true;
         flushSO(so);
 
-        // 通知 Launcher 删除 shadow JSON
+        // 通知 Launcher 删除 shadow JSON（best-effort，墓碑是真正的防线）
         var sm:ServerManager = ServerManager.getInstance();
-        var self:SaveManager = this;
         if (sm.isSocketConnected) {
             sm.sendTaskWithCallback("archive", {op:"delete", slot:_root.savePath}, null,
                 function(resp:Object):Void {
                     sm.sendServerMessage("[SaveManager] shadow delete: " + (resp.success == true));
-                    if (resp.success == true) {
-                        // JSON 已删——清除墓碑（不再需要防复活）
-                        var tso:SharedObject = self.getSO();
-                        delete tso.data._deleted;
-                        self.flushSO(tso);
-                    }
                 }
             );
         }

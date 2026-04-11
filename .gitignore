@@ -27,7 +27,7 @@ bin-release/
 # should NOT be excluded as they contain compiler settings and other important
 # information for Eclipse / Flash Builder.
 launcher_ports.json
-/.vs
+.vs/
 /新建文件
 恢复*/
 *.swd
@@ -68,6 +68,13 @@ data/task/agent_tasks.json
 data/task/text/agent_text.json
 scripts/TestLoader.as
 data/rag/sync_state.json
+
+# Node modules (npm install restores)
+node_modules/
+
+# Launcher build output & NuGet packages (dotnet build/restore regenerates)
+launcher/bin/Release/
+launcher/packages/
 
 # WebView2 runtime cache (machine-specific)
 launcher/webview2_userdata/
