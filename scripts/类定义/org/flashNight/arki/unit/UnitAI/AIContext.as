@@ -1,7 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.ActionExecutor;
 import org.flashNight.arki.unit.UnitAI.StanceManager;
-import org.flashNight.arki.unit.UnitAI.WeaponEvaluator;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
 
 /**
  * AIContext — 单 tick 黑板（Blackboard）
@@ -100,28 +100,15 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
 
     // ═══════ 每 tick 构建 ═══════
 
-    /**
-     * build — 聚合所有管线信号到黑板
-     *
-     * @param data           共享 AI 数据
-     * @param ctx            "chase" | "engage" | "selector" | "retreat"
-     * @param executor       ActionExecutor 实例
-     * @param stanceMgr      StanceManager 实例（姿态/战术偏置）
-     * @param weaponEval     WeaponEvaluator 实例（余弹比查询）
-     * @param recentHitFrame   最近被击帧号
-     * @param p                personality 引用（含派生参数）
-     * @param retreatUrgency   撤退紧迫度 [0,1]（ActionArbiter 预计算）
-     * @param encirclement     包围度 [0,1]（ActionArbiter 预计算）
-     * @param nearbyCount      近距敌人数（ActionArbiter 周期采样，复用包围度扫描窗口）
-     * @param leftCount        左侧敌人数（ActionArbiter 周期采样）
-     * @param rightCount       右侧敌人数（ActionArbiter 周期采样）
-     */
+    // build — 聚合所有管线信号到黑板
+    // 前置条件：调用方必须确保 data.updateSelf() 已在当帧执行；
+    //           有目标时 data.updateTarget() 也必须先于 build() 执行。
+    // data 含聚合字段：hp/hpMax/isRigid/attackMode/ammoRatio/bt系列/target系列
     public function build(
         data:UnitAIData,
         ctx:String,
         executor:ActionExecutor,
         stanceMgr:StanceManager,
-        weaponEval:WeaponEvaluator,
         recentHitFrame:Number,
         p:Object,
         retreatUrgency:Number,
@@ -130,24 +117,34 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
         leftCount:Number,
         rightCount:Number
     ):Void {
-        var s:MovieClip = data.self;
+        // 防御性检查：updateSelf 必须先于 build
+        if (data.hp == undefined) {
+            AIEnvironment.log("[AIContext] WARN: build() called before updateSelf()");
+        }
+
+        // ── 帧/时间（从 AIEnvironment 读取，零 _root 直读）──
+        this.frame = AIEnvironment.getFrame();
+        this.nowMs = AIEnvironment.getTimerMs();
+
+        // ── 自身状态（全部从 data 聚合字段读取，零 MC 直读）──
+        this.self = data.self;
+        var maxHP:Number = data.hpMax;
+        this.hpRatio = (maxHP > 0) ? Math.max(0, Math.min(1, data.hp / maxHP)) : 1;
+        this.isRigid = data.isRigid;
+        this.attackMode = data.attackMode;
+        this.ammoRatio = data.ammoRatio;
+
+        // ── 目标/距离（从 data 聚合字段读取）──
         var t:MovieClip = data.target;
-
-        // ── 帧/时间 ──
-        this.frame = _root.帧计时器.当前帧数;
-        this.nowMs = getTimer();
-
-        // ── 自身状态 ──
-        this.self = s;
-        var maxHP:Number = s.hp满血值;
-        this.hpRatio = (maxHP > 0) ? Math.max(0, Math.min(1, s.hp / maxHP)) : 1;
-        this.isRigid = (s.刚体 == true) || s.man.刚体标签;
-        this.attackMode = s.攻击模式;
-        this.ammoRatio = weaponEval.getAmmoRatio(s, s.攻击模式);
-
-        // ── 目标/距离 ──
         this.target = t;
-        this.targetValid = (t != null && t.hp > 0);
+        if (t == null) {
+            this.targetValid = false;
+            this.targetThreat = false;
+        } else {
+            this.targetValid = (data.targetHP > 0);
+            this.targetThreat = (data.targetShooting == true
+                || data.targetState == "技能" || data.targetState == "战技");
+        }
         this.xDist = data.absdiff_x;
         this.zDist = data.absdiff_z;
         this.xdistance = data.xdistance;
@@ -156,23 +153,16 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
 
         // ── 威胁感知（单一真相源）──
         var dodgeWin:Number = p.dodgeReactWindow;
-        // dodgeReactWindow 已在 计算AI参数 中 clamp，此处信任
         this.recentHitAge = this.frame - recentHitFrame;
         var hitThreat:Boolean = (this.recentHitAge >= 0 && this.recentHitAge < dodgeWin);
 
-        this.targetThreat = false;
-        if (t != null) {
-            this.targetThreat = (t.射击中 == true || t.状态 == "技能" || t.状态 == "战技");
-        }
-
-        // ── 射弹预警（帧末尾循环写入 _bt* 属性，年龄窗口容忍 0~1 帧延迟）──
-        // processQueue() 在帧末执行，AI 在帧更新执行 → 写入帧与读取帧差 1
-        var btAge:Number = this.frame - s._btFrame;
-        if (btAge >= 0 && btAge <= 1 && s._btCount > 0) {
-            this.bulletThreat = s._btCount;
-            var btDir:Number = s._btDirX;
+        // ── 射弹预警（从 data.bt* 聚合字段读取，零 MC 直读）──
+        var btAge:Number = this.frame - data.btFrame;
+        if (btAge >= 0 && btAge <= 1 && data.btCount > 0) {
+            this.bulletThreat = data.btCount;
+            var btDir:Number = data.btDirX;
             this.bulletThreatDir = (btDir > 0) ? 1 : ((btDir < 0) ? -1 : 0);
-            this.bulletETA = s._btMinETA - btAge; // 年龄修正：补偿延迟帧数
+            this.bulletETA = data.btMinETA - btAge;
         } else {
             this.bulletThreat = 0;
             this.bulletThreatDir = 0;
@@ -203,7 +193,6 @@ class org.flashNight.arki.unit.UnitAI.AIContext {
         this.enemyRightCount = rightCount;
         var lrSum:Number = leftCount + rightCount;
         this.enemyBalance = (lrSum > 0) ? ((rightCount - leftCount) / lrSum) : 0;
-        // dominantSide 使用 1 的滞后阈值，避免轻微抖动导致方向频繁翻转
         if (rightCount > leftCount + 1) this.enemyDominantSide = 1;
         else if (leftCount > rightCount + 1) this.enemyDominantSide = -1;
         else this.enemyDominantSide = 0;

@@ -302,7 +302,7 @@ class org.flashNight.arki.unit.UnitAI.ActionArbiter {
 
         // 黑板构建（build-once 契约：所有信号在此一次性聚合）
         _executor.updateAnimLock(data.self);
-        _ctx.build(data, context, _executor, _stanceMgr, _weaponEval, _recentHitFrame, p,
+        _ctx.build(data, context, _executor, _stanceMgr, _recentHitFrame, p,
                    _retreatUrgency, _encirclement, _nearbyCount, _leftEnemyCount, _rightEnemyCount);
 
         // S7: 角落激进模式 — 被逼入角落 + 高勇气 + 目标活跃 → 主动解围

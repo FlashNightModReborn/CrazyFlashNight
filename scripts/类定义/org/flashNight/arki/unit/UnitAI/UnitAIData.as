@@ -1,6 +1,8 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.unit.UnitAI.ActionArbiter;
 import org.flashNight.arki.unit.UnitAI.UtilityEvaluator;
+import org.flashNight.arki.unit.UnitAI.AIEnvironment;
+import org.flashNight.arki.unit.UnitAI.AmmoHelper;
 
 class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
@@ -123,7 +125,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
         this.aiNextMode = null;
         this.personality = self.personality; // 六维 + 派生参数（同一对象引用）
-        this.createdFrame = _root.帧计时器.当前帧数;
+        this.createdFrame = AIEnvironment.getFrame();
         this._usedGlobalBuffs = {};
     }
 
@@ -137,10 +139,10 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         this.standby = self.待机 ? true : false;
 
         // 边界距离（供 applyBoundaryAwareMovement 和评分修正器使用）
-        var bMinX:Number = (_root.Xmin != undefined) ? _root.Xmin : 0;
-        var bMaxX:Number = (_root.Xmax != undefined) ? _root.Xmax : Stage.width;
-        var bMinY:Number = (_root.Ymin != undefined) ? _root.Ymin : 0;
-        var bMaxY:Number = (_root.Ymax != undefined) ? _root.Ymax : Stage.height;
+        var bMinX:Number = AIEnvironment.getXmin();
+        var bMaxX:Number = AIEnvironment.getXmax();
+        var bMinY:Number = AIEnvironment.getYmin();
+        var bMaxY:Number = AIEnvironment.getYmax();
         this.bndLeftDist  = this.x - bMinX;
         this.bndRightDist = bMaxX - this.x;
         this.bndUpDist    = this.y - bMinY;
@@ -150,13 +152,30 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         var xP:Number = 1 - Math.min(this.bndLeftDist, this.bndRightDist) / _m;
         var zP:Number = 1 - Math.min(this.bndUpDist, this.bndDownDist) / _m;
         this.bndCorner = ((xP > 0) ? xP : 0) * ((zP > 0) ? zP : 0);
+
+        // ── 聚合字段：从 MC 复制到纯值，供 AIContext.build() 零MC直读 ──
+        this.hp = self.hp;
+        this.hpMax = self.hp满血值;
+        this.isRigid = (self.刚体 == true) || (self.man.刚体标签 == true);
+        this.attackMode = self.攻击模式;
+        this.reloadTag = (self.man.换弹标签 == true);
+        this.unitState = self.状态;
+
+        // 子弹威胁（BulletThreatScanProcessor 帧末写入，AI帧更新读取，容忍0~1帧延迟）
+        this.btFrame = self._btFrame;
+        this.btCount = self._btCount;
+        this.btDirX = self._btDirX;
+        this.btMinETA = self._btMinETA;
+
+        // 弹药状态（当前武器模式）
+        this.ammoRatio = AmmoHelper.computeRatio(self, self.攻击模式);
     }
     
     public function updateTarget():Void{
         var target:MovieClip = this.target;
         if(target != null){
             // T2-A：目标速度追踪（预测拦截用）
-            var curFrame:Number = _root.帧计时器.当前帧数;
+            var curFrame:Number = AIEnvironment.getFrame();
             // 目标切换检测：不同对象引用 → 归零速度历史，防止预测过冲
             if (target != _prevTargetRef) {
                 _prevTargetRef = target;
@@ -183,6 +202,11 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
             this.diff_z = this.tz - this.z;
             this.absdiff_x = Math.abs(this.diff_x);
             this.absdiff_z = Math.abs(this.diff_z);
+
+            // ── target 聚合字段 ──
+            this.targetHP = target.hp;
+            this.targetShooting = (target.射击中 == true);
+            this.targetState = target.状态;
         }else{
             this.tx = null;
             this.ty = null;
@@ -193,6 +217,11 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
             this.diff_z = null;
             this.absdiff_x = null;
             this.absdiff_z = null;
+
+            // target 聚合字段置安全默认值
+            this.targetHP = 0;
+            this.targetShooting = false;
+            this.targetState = "";
         }
     }
 
@@ -232,6 +261,30 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     // 刷怪场景下撤退=负收益循环，累积失败时果断切近战
     public var _retreatFailCount:Number = 0;
 
+    // ═══════ 聚合字段（updateSelf/updateTarget 中从 MC 复制，供 AIContext.build 消费）═══════
+
+    // ── self 侧 ──
+    public var hp:Number;
+    public var hpMax:Number;
+    public var isRigid:Boolean;        // self.刚体 || self.man.刚体标签
+    public var attackMode:String;      // self.攻击模式
+    public var reloadTag:Boolean;      // self.man.换弹标签
+    public var unitState:String;       // self.状态（与 state 同源，命名区分避免混淆）
+
+    // 子弹威胁（BulletThreatScanProcessor 帧末写入 self._bt* 属性）
+    public var btFrame:Number;
+    public var btCount:Number;
+    public var btDirX:Number;
+    public var btMinETA:Number;
+
+    // 弹药状态（当前武器模式）
+    public var ammoRatio:Number;
+
+    // ── target 侧 ──
+    public var targetHP:Number;
+    public var targetShooting:Boolean;
+    public var targetState:String;
+
     /**
      * 改进版卡死检测 - 基于自身绝对位置变化而非相对距离变化
      * 
@@ -254,7 +307,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         if (eps == undefined) eps = 8; // 提高阈值，适配四向移动
         if (minStuckCount == undefined) minStuckCount = 3;
 
-        var currentFrame:Number = _root.帧计时器.当前帧数;
+        var currentFrame:Number = AIEnvironment.getFrame();
 
         // 非移动意图 / 待机状态：重置检测计数
         if (!isTryingToMove || this.standby) {
@@ -265,9 +318,9 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
 
         // 更新自身坐标
         this.updateSelf();
-        // 使用“地面坐标”(x,z) 做卡死检测：
+        // 使用"地面坐标"(x,z) 做卡死检测：
         // - z = Z轴坐标（单位在地面平面上的纵向坐标）
-        // - _y 可能包含跳跃/浮空/受击抖动的显示偏移，纳入检测会导致误判为“在移动”→漏报卡死
+        // - _y 可能包含跳跃/浮空/受击抖动的显示偏移，纳入检测会导致误判为"在移动"→漏报卡死
         var curPlaneZ:Number = !isNaN(this.z) ? this.z : this.y;
 
         // 初次检测：记录位置，不判定卡死
@@ -314,9 +367,9 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         this._lastStuckCheckFrame = currentFrame;
 
         // 调试输出
-        if (_root.调试模式 && this._stuckCheckCount > 0) {
+        if (AIEnvironment.isGlobalDebug() && this._stuckCheckCount > 0) {
             var totalDelta:Number = Math.sqrt(delta2);
-            _root.发布消息(this.self, "卡死检测: " + this._stuckCheckCount + "/" + minStuckCount + " 移动距离: " + totalDelta);
+            AIEnvironment.logBroadcast(this.self, "卡死检测: " + this._stuckCheckCount + "/" + minStuckCount + " 移动距离: " + totalDelta);
         }
 
         // 只有连续多次无移动才判定为真正卡死
@@ -344,7 +397,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
         if (minStuckCount == undefined) minStuckCount = 3;
         if (minFrameGap == undefined) minFrameGap = 4;
 
-        var currentFrame:Number = _root.帧计时器.当前帧数;
+        var currentFrame:Number = AIEnvironment.getFrame();
         // 使用地面坐标做检测（见 stuckProbeByDiffChange 说明）
         var curPlaneZ:Number = !isNaN(this.z) ? this.z : this.y;
 

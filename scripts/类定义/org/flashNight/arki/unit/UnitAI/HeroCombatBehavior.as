@@ -197,6 +197,9 @@ class org.flashNight.arki.unit.UnitAI.HeroCombatBehavior extends BaseUnitBehavio
 
         MovementResolver.clearInput(self);
 
+        // 确保 target 聚合字段在 tick 前刷新（Step 2d: AIContext.build 改为读 data.target*）
+        if (data.target != null) data.updateTarget();
+
         // 4-6. 武器模式 + 血包评估（统一管线）
         data.arbiter.tick(data, "selector");
 

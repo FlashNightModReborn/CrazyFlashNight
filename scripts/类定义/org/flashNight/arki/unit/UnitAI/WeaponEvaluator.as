@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.unit.UnitAI.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.StanceManager;
+import org.flashNight.arki.unit.UnitAI.AmmoHelper;
 
 /**
  * WeaponEvaluator — 武器模式评估与切换
@@ -84,22 +85,7 @@ class org.flashNight.arki.unit.UnitAI.WeaponEvaluator {
      *         双枪取两把中较低值（短板决定切换紧迫度）
      */
     public function getAmmoRatio(self:MovieClip, mode:String):Number {
-        switch (mode) {
-            case "长枪":
-                if (self.长枪弹匣容量 > 0) return 1 - self.长枪.value.shot / self.长枪弹匣容量;
-                break;
-            case "手枪":
-                if (self.手枪弹匣容量 > 0) return 1 - self.手枪.value.shot / self.手枪弹匣容量;
-                break;
-            case "手枪2":
-                if (self.手枪2弹匣容量 > 0) return 1 - self.手枪2.value.shot / self.手枪2弹匣容量;
-                break;
-            case "双枪":
-                var r1:Number = (self.手枪弹匣容量 > 0) ? (1 - self.手枪.value.shot / self.手枪弹匣容量) : 1;
-                var r2:Number = (self.手枪2弹匣容量 > 0) ? (1 - self.手枪2.value.shot / self.手枪2弹匣容量) : 1;
-                return (r1 < r2) ? r1 : r2; // 短板值
-        }
-        return 1.0; // 近战/空手/无限弹药
+        return AmmoHelper.computeRatio(self, mode);
     }
 
     // ═══════ 武器模式评估 ═══════
