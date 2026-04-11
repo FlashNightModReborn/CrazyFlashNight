@@ -1,4 +1,8 @@
-﻿import org.flashNight.arki.unit.UnitAI.*;
+﻿import org.flashNight.arki.unit.UnitAI.core.AIEnvironment;
+import org.flashNight.arki.unit.UnitAI.core.UnitAIData;
+import org.flashNight.arki.unit.UnitAI.behavior.EnemyBehavior;
+import org.flashNight.arki.unit.UnitAI.behavior.HeroCombatBehavior;
+import org.flashNight.arki.unit.UnitAI.behavior.MecenaryBehavior;
 
 class org.flashNight.arki.unit.UnitAI.BaseUnitAI{
 
