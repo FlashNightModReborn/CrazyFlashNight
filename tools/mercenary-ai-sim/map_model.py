@@ -401,6 +401,71 @@ def generate_adversarial_map(name: str = "adversarial",
         # 门在最右房间
         doors.append((xmax - 40, (ymin + ymax) / 2))
 
+    elif pattern == "tight_s":
+        # 紧凑S弯：两道墙形成S形通道，通道宽度刚好够通行
+        # 测试 4 方向移动在极窄拐弯处的表现
+        cx = (xmin + xmax) / 2
+        cy = (ymin + ymax) / 2
+        passage = 55
+        wall_len = (xmax - xmin) * 0.6
+        # 上墙（偏右），缺口在左
+        collisions.append(box(cx - wall_len / 2 + passage, cy - passage / 2 - t,
+                              cx + wall_len / 2, cy - passage / 2))
+        # 下墙（偏左），缺口在右
+        collisions.append(box(cx - wall_len / 2, cy + passage / 2,
+                              cx + wall_len / 2 - passage, cy + passage / 2 + t))
+        doors.append((xmax - 40, ymax - 20))
+
+    elif pattern == "cross_walls":
+        # 十字墙：横墙+纵墙交叉，缺口错开确保可达性
+        cx = (xmin + xmax) / 2
+        cy = (ymin + ymax) / 2
+        gap = 65
+        # 横墙分两段（中间留缺口偏左）
+        collisions.append(box(xmin + gap, cy - t / 2, cx - gap / 2, cy + t / 2))
+        collisions.append(box(cx + gap / 2, cy - t / 2, xmax + 10, cy + t / 2))
+        # 纵墙分两段（中间留缺口偏下）
+        collisions.append(box(cx - t / 2, ymin - 10, cx + t / 2, cy - gap / 2))
+        collisions.append(box(cx - t / 2, cy + gap / 2, cx + t / 2, ymax - gap))
+        # 门在右下角
+        doors.append((xmax - 40, ymax - 20))
+
+    elif pattern == "funnel":
+        # 漏斗：宽入口收窄到极窄通道再扩开，门在窄通道另一侧
+        cx = (xmin + xmax) / 2
+        cy = (ymin + ymax) / 2
+        passage = 55
+        funnel_len = 200
+        # 上斜墙
+        collisions.append(Polygon([
+            (cx - funnel_len, ymin - 10),
+            (cx - funnel_len, cy - passage * 2),
+            (cx, cy - passage / 2),
+            (cx + t, cy - passage / 2),
+            (cx + t, ymin - 10),
+        ]))
+        # 下斜墙
+        collisions.append(Polygon([
+            (cx - funnel_len, ymax + 10),
+            (cx - funnel_len, cy + passage * 2),
+            (cx, cy + passage / 2),
+            (cx + t, cy + passage / 2),
+            (cx + t, ymax + 10),
+        ]))
+        doors.append((xmax - 40, cy))
+
+    elif pattern == "comb":
+        # 梳齿状：从上方伸出多个齿，门在齿之间的底部
+        n_teeth = 5
+        tooth_w = t
+        gap_w = (xmax - xmin - n_teeth * tooth_w) / (n_teeth + 1)
+        tooth_h = (ymax - ymin) * 0.7
+        for i in range(n_teeth):
+            tx = xmin + (i + 1) * gap_w + i * tooth_w
+            collisions.append(box(tx, ymin - 10, tx + tooth_w, ymin + tooth_h))
+        # 门在最右齿的右侧底部
+        doors.append((xmax - 40, ymax - 20))
+
     return MapData(
         name=f"{name}_{pattern}",
         bounds=bounds,

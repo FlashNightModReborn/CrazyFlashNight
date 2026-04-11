@@ -284,40 +284,40 @@ class MercenarySimulator:
             self._think()
 
     def _apply_movement(self):
-        """根据方向标志移动 agent，碰撞时不移动（简化 Mover.move2D）。"""
+        """
+        模拟真实游戏的移动：
+        - 每 action = 4 帧，每帧独立移动 speed 像素
+        - X 和 Y 轴独立处理（4方向，非对角归一化）
+        - 方向标志在 action 期间不变（由 decision tick 设定）
+        """
         a = self.agent
         cfg = a.config
         speed = cfg.move_speed
 
-        dx = 0
-        dy = 0
+        # 每帧的 X/Y 轴独立速度
+        frame_dx = 0
+        frame_dy = 0
         if a.move_left:
-            dx -= speed
-        if a.move_right:
-            dx += speed
+            frame_dx = -speed
+        elif a.move_right:
+            frame_dx = speed
         if a.move_up:
-            dy -= speed
-        if a.move_down:
-            dy += speed
+            frame_dy = -speed
+        elif a.move_down:
+            frame_dy = speed
 
-        # 对角线归一化
-        if dx != 0 and dy != 0:
-            factor = speed / math.sqrt(dx * dx + dy * dy)
-            dx *= factor
-            dy *= factor
-
-        new_x = a.x + dx
-        new_y = a.y + dy
-
-        # 碰撞检测：如果目标点不可通行，尝试分轴移动
-        if self.coll.is_point_valid(new_x, new_y):
-            a.x = new_x
-            a.y = new_y
-        elif dx != 0 and self.coll.is_point_valid(a.x + dx, a.y):
-            a.x += dx
-        elif dy != 0 and self.coll.is_point_valid(a.x, a.y + dy):
-            a.y += dy
-        # else: 完全被卡住，不动
+        # 模拟 4 个子帧
+        for _ in range(4):
+            # X 轴移动
+            if frame_dx != 0:
+                nx = a.x + frame_dx
+                if self.coll.is_point_valid(nx, a.y):
+                    a.x = nx
+            # Y 轴移动（独立于 X）
+            if frame_dy != 0:
+                ny = a.y + frame_dy
+                if self.coll.is_point_valid(a.x, ny):
+                    a.y = ny
 
 
 # ---------------------------------------------------------------------------
@@ -345,6 +345,7 @@ class BFSMercenarySimulator(MercenarySimulator):
         self.nav = nav_grid
         self._waypoints: Optional[List[Tuple[float, float]]] = None
         self._wp_index: int = 0
+        self._wp_stall: int = 0
 
     def _think(self):
         """改进版 think：L-path 失败时用 Grid BFS，支持 waypoint 复用。"""
@@ -407,7 +408,7 @@ class BFSMercenarySimulator(MercenarySimulator):
                               (best_path[i][1] - best_path[i - 1][1]) ** 2)
                     for i in range(1, len(best_path))
                 ) if len(best_path) > 1 else 0
-                needed_actions = int(path_len / max(cfg.move_speed, 1)) + 10
+                needed_actions = int(path_len / max(cfg.move_speed * 4, 1)) + 10
                 a.think_threshold = max(cfg.walk_max, needed_actions)
             else:
                 # L-path 可达
@@ -436,10 +437,29 @@ class BFSMercenarySimulator(MercenarySimulator):
         self._change_state(new_state)
 
     def _walking(self):
-        """改进版 Walking：有 waypoints 时沿路径走，否则退化为原版逻辑。"""
+        """
+        改进版 Walking —— 精确匹配 AS2 新代码的移动模型：
+        - 每 tick: waypoint 到达检查（动态半径 = speed×4帧），连续推进
+        - 每 decision tick: 方向设定 + 卡死检测 + 停滞→跳过
+        - 移动: 4子帧独立轴（由 _apply_movement 处理）
+        """
         a = self.agent
         cfg = a.config
         self._walk_tick += 1
+
+        # ── 每 tick: waypoint 到达推进（匹配 AS2 每 action 检查）──
+        if self._waypoints and self._wp_index < len(self._waypoints):
+            wp_arrive_r = max(cfg.move_speed * 4, 15)  # 动态到达半径
+            wp_arrive_sq = wp_arrive_r * wp_arrive_r
+            while self._wp_index < len(self._waypoints):
+                wp = self._waypoints[self._wp_index]
+                dx = wp[0] - a.x
+                dz = wp[1] - a.y
+                if dx * dx + dz * dz < wp_arrive_sq:
+                    self._wp_index += 1
+                    self._wp_stall = 0
+                else:
+                    break
 
         on_decision = (self._walk_tick % cfg.walk_decision_interval == 0)
 
@@ -451,7 +471,12 @@ class BFSMercenarySimulator(MercenarySimulator):
                 a.stuck_count += 1
                 if a.stuck_count >= cfg.stuck_count_max:
                     a.stuck_count = 0
+                    self._waypoints = None
+                    self._wp_index = 0
+                    saved = a.target_door
                     self._change_state("Wandering")
+                    a.target_door = saved
+                    a.think_threshold = random.randint(5, 15)
                     return
             else:
                 a.stuck_count = 0
@@ -459,29 +484,44 @@ class BFSMercenarySimulator(MercenarySimulator):
             a.prev_x = a.x
             a.prev_y = a.y
 
-            # 设置移动方向 —— 优先跟随 waypoint
+            # 设置移动方向
             if self._waypoints and self._wp_index < len(self._waypoints):
+                prev_idx = self._wp_index
                 wp = self._waypoints[self._wp_index]
                 diff_x = wp[0] - a.x
                 diff_z = wp[1] - a.y
 
-                # 到达当前 waypoint → 推进到下一个
-                if abs(diff_x) < 15 and abs(diff_z) < 15:
-                    self._wp_index += 1
-                    if self._wp_index < len(self._waypoints):
-                        wp = self._waypoints[self._wp_index]
-                        diff_x = wp[0] - a.x
-                        diff_z = wp[1] - a.y
-                    else:
-                        # 所有 waypoint 走完，直奔目标
-                        if a.target_door is not None:
-                            diff_x = a.target_door[0] - a.x
-                            diff_z = a.target_door[1] - a.y
+                # 停滞检测：连续 3 个 decision tick waypoint 没推进 → 跳过
+                if self._wp_index == prev_idx:
+                    self._wp_stall = getattr(self, '_wp_stall', 0) + 1
+                    if self._wp_stall >= 3:
+                        self._wp_index += 1
+                        self._wp_stall = 0
+                        if self._wp_index >= len(self._waypoints):
+                            self._waypoints = None
+                            self._wp_index = 0
+                        elif self._wp_index < len(self._waypoints):
+                            wp = self._waypoints[self._wp_index]
+                            diff_x = wp[0] - a.x
+                            diff_z = wp[1] - a.y
 
-                a.move_left = diff_x < -10
-                a.move_right = diff_x > 10
-                a.move_up = diff_z < -5
-                a.move_down = diff_z > 5
+                if self._waypoints and self._wp_index < len(self._waypoints):
+                    a.move_left = diff_x < -10
+                    a.move_right = diff_x > 10
+                    a.move_up = diff_z < -5
+                    a.move_down = diff_z > 5
+
+            elif self._waypoints and self._wp_index >= len(self._waypoints):
+                # 所有 waypoint 走完，直奔目标
+                self._waypoints = None
+                self._wp_index = 0
+                if a.target_door is not None:
+                    diff_x = a.target_door[0] - a.x
+                    diff_z = a.target_door[1] - a.y
+                    a.move_left = diff_x < -20
+                    a.move_right = diff_x > 20
+                    a.move_up = diff_z < -10
+                    a.move_down = diff_z > 10
 
             elif a.target_door is not None:
                 # 无 waypoint（L-path 可达），原版逻辑
@@ -492,7 +532,7 @@ class BFSMercenarySimulator(MercenarySimulator):
                 a.move_up = diff_z < -10
                 a.move_down = diff_z > 10
 
-        # 执行移动
+        # 执行移动（4子帧独立轴）
         self._apply_movement()
 
         # 到达判定
@@ -505,7 +545,11 @@ class BFSMercenarySimulator(MercenarySimulator):
 
         a.action_count += 1
         if a.action_count >= a.think_threshold:
-            self._change_state("Thinking")
+            # 有未走完的 waypoint → 不回 Thinking
+            if self._waypoints and self._wp_index < len(self._waypoints):
+                pass
+            else:
+                self._change_state("Thinking")
 
     def _change_state(self, new_state: str):
         """BFS 版覆盖：Wandering 时保留 target_door，只清 waypoints。"""

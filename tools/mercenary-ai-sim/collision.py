@@ -251,24 +251,82 @@ class NavigationGrid:
                         return (nr, nc)
         return None
 
+    def _axis_smooth(self, path: List[Tuple[float, float]]
+                      ) -> List[Tuple[float, float]]:
+        """
+        轴对齐路径平滑：只保留方向变化的拐点。
+
+        格栅路径会有大量同方向的连续点（如一直向右走 10 格），
+        合并为起点→拐点→拐点→终点，减少 waypoint 数量。
+        与 4 方向移动系统完全兼容（不引入斜线）。
+        """
+        if len(path) <= 2:
+            return path
+
+        smoothed = [path[0]]
+        for i in range(1, len(path) - 1):
+            # 计算前后方向
+            prev_dx = path[i][0] - path[i-1][0]
+            prev_dy = path[i][1] - path[i-1][1]
+            next_dx = path[i+1][0] - path[i][0]
+            next_dy = path[i+1][1] - path[i][1]
+
+            # 方向发生变化 → 保留为拐点
+            if (prev_dx != next_dx) or (prev_dy != next_dy):
+                smoothed.append(path[i])
+
+        smoothed.append(path[-1])
+        return smoothed
+
+    def _los_smooth(self, path: List[Tuple[float, float]]
+                     ) -> List[Tuple[float, float]]:
+        """
+        视线路径平滑（Line-of-Sight smoothing）。
+
+        从路径起点开始，尝试跳过中间 waypoint 直接连到更远的点。
+        如果两点之间的直线全部在可通行区域内（checkSegment），就跳过中间的点。
+        显著缩短格栅路径在开阔区域的锯齿绕行。
+        """
+        if len(path) <= 2:
+            return path
+
+        smoothed = [path[0]]
+        current = 0
+
+        while current < len(path) - 1:
+            # 从当前点尽量跳到最远的可直达点
+            farthest = current + 1
+            for candidate in range(len(path) - 1, current + 1, -1):
+                if self.coll.check_segment(
+                    path[current][0], path[current][1],
+                    path[candidate][0], path[candidate][1],
+                    step=self.cell_size * 0.7  # 比格子小的步长确保精度
+                ):
+                    farthest = candidate
+                    break
+
+            smoothed.append(path[farthest])
+            current = farthest
+
+        return smoothed
+
     def find_path_with_waypoints(self, sx: float, sy: float, ex: float, ey: float,
                                   simplify_tolerance: float = 0
                                   ) -> Optional[List[Tuple[float, float]]]:
         """
-        寻路 + 路径简化。
-
-        simplify_tolerance > 0 时，用 Douglas-Peucker 简化路径点，
-        减少 waypoint 数量（AS2 端跟随更流畅）。
+        寻路 + LOS 路径平滑 + 可选 Douglas-Peucker 简化。
         """
         path = self.find_path(sx, sy, ex, ey)
         if path is None or len(path) <= 2:
             return path
 
-        if simplify_tolerance <= 0:
-            return path
+        # 轴对齐路径平滑：合并同方向连续段，只保留拐点
+        path = self._axis_smooth(path)
 
-        # Douglas-Peucker 简化
-        from shapely.geometry import LineString
-        line = LineString(path)
-        simplified = line.simplify(simplify_tolerance, preserve_topology=True)
-        return list(simplified.coords)
+        if simplify_tolerance > 0 and len(path) > 2:
+            from shapely.geometry import LineString
+            line = LineString(path)
+            simplified = line.simplify(simplify_tolerance, preserve_topology=True)
+            return list(simplified.coords)
+
+        return path

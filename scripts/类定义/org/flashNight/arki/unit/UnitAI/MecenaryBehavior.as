@@ -165,6 +165,26 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
             i++;
         }
 
+        // 轴对齐路径平滑：只保留方向变化的拐点
+        // 格栅路径中连续同方向的点（如一直向右走 10 格）合并为一步
+        if(worldPath.length > 2) {
+            var smoothed:Array = [worldPath[0]];
+            var j:Number = 1;
+            while(j < worldPath.length - 1) {
+                var pdx:Number = worldPath[j].x - worldPath[j-1].x;
+                var pdy:Number = worldPath[j].y - worldPath[j-1].y;
+                var ndx:Number = worldPath[j+1].x - worldPath[j].x;
+                var ndy:Number = worldPath[j+1].y - worldPath[j].y;
+                // 方向变化 → 保留为拐点
+                if(pdx != ndx || pdy != ndy) {
+                    smoothed.push(worldPath[j]);
+                }
+                j++;
+            }
+            smoothed.push(worldPath[worldPath.length - 1]);
+            worldPath = smoothed;
+        }
+
         return worldPath;
     }
 
