@@ -80,6 +80,7 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     public var waypoints:Array;      // [{x,y}, ...] A* 路径点列表，null = 无路径
     public var waypointIndex:Number; // 当前正在走向的 waypoint 下标
     public var wpStallCount:Number;  // waypoint 进度停滞计数（连续未推进 index 的 decision tick 数）
+    public var wpPrevDecisionIdx:Number; // 上一个 decision tick 时的 waypointIndex（用于跨 tick 停滞检测）
 
     // ═══════ 边界感知（updateSelf 计算）═══════
     public var bndLeftDist:Number;   // 距左边界距离（像素）

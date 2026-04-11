@@ -346,6 +346,7 @@ class BFSMercenarySimulator(MercenarySimulator):
         self._waypoints: Optional[List[Tuple[float, float]]] = None
         self._wp_index: int = 0
         self._wp_stall: int = 0
+        self._prev_decision_wp_idx: int = -1
 
     def _think(self):
         """改进版 think：L-path 失败时用 Grid BFS，支持 waypoint 复用。"""
@@ -364,6 +365,14 @@ class BFSMercenarySimulator(MercenarySimulator):
             # 直接继续 Walking
             self._change_state("Walking")
             return
+
+        # waypoint 已在上面 early-return 过了，到这里说明需要重新搜索
+        # 清除旧 target 确保搜索逻辑执行（修复 Bug2: 卡死恢复后不 repath）
+        a.target_door = None
+        self._waypoints = None
+        self._wp_index = 0
+        self._wp_stall = 0
+        self._prev_decision_wp_idx = -1
 
         # 搜索门 —— 先试 L-path（快），失败再试 BFS（慢但可靠）
         best_door = None
@@ -473,10 +482,8 @@ class BFSMercenarySimulator(MercenarySimulator):
                     a.stuck_count = 0
                     self._waypoints = None
                     self._wp_index = 0
-                    saved = a.target_door
                     self._change_state("Wandering")
-                    a.target_door = saved
-                    a.think_threshold = random.randint(5, 15)
+                    # think() 会清除 target_door 并重新搜索（Bug2 修复）
                     return
             else:
                 a.stuck_count = 0
@@ -486,24 +493,30 @@ class BFSMercenarySimulator(MercenarySimulator):
 
             # 设置移动方向
             if self._waypoints and self._wp_index < len(self._waypoints):
-                prev_idx = self._wp_index
                 wp = self._waypoints[self._wp_index]
                 diff_x = wp[0] - a.x
                 diff_z = wp[1] - a.y
 
-                # 停滞检测：连续 3 个 decision tick waypoint 没推进 → 跳过
-                if self._wp_index == prev_idx:
-                    self._wp_stall = getattr(self, '_wp_stall', 0) + 1
+                # 停滞检测：比较跨 decision tick 的 waypointIndex
+                # _prev_decision_wp_idx 记录上一个 decision tick 时的值
+                prev_decision_idx = getattr(self, '_prev_decision_wp_idx', -1)
+                if self._wp_index == prev_decision_idx:
+                    # 与上个 decision tick 相同 → 累计停滞
+                    self._wp_stall += 1
                     if self._wp_stall >= 3:
                         self._wp_index += 1
                         self._wp_stall = 0
                         if self._wp_index >= len(self._waypoints):
                             self._waypoints = None
                             self._wp_index = 0
-                        elif self._wp_index < len(self._waypoints):
+                        else:
                             wp = self._waypoints[self._wp_index]
                             diff_x = wp[0] - a.x
                             diff_z = wp[1] - a.y
+                else:
+                    # 有推进 → 归零
+                    self._wp_stall = 0
+                self._prev_decision_wp_idx = self._wp_index
 
                 if self._waypoints and self._wp_index < len(self._waypoints):
                     a.move_left = diff_x < -10
