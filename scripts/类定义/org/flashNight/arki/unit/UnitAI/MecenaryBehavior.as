@@ -9,6 +9,16 @@ import org.flashNight.arki.render.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 
 // 场景中佣兵与可雇佣敌人NPC的状态机，继承单位状态机基类
+//
+// 寻路模拟器：tools/mercenary-ai-sim/
+//   Python 外部模拟环境，精确复刻本类 FSM 与 Mover.isReachable 的 L-path 逻辑，
+//   用于离线测试寻路改进方案。通过对抗性地图（U形/Z字/螺旋等）量化 exit rate，
+//   验证通过后再移植回本文件。详见 tools/mercenary-ai-sim/README.md
+//
+// 寻路改进方向（已验证）：
+//   L-path 失败时回退到 Grid A*（org.flashNight.neur.Navigation.AStarGrid）
+//   场景加载时 hitTest 采样 → setWalkableMatrix，think() 中 find() → waypoint 缓存
+//   模拟器对比：u_trap 场景 exit rate 72% → 93%（+21%）
 
 class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
 
