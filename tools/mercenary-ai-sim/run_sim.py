@@ -74,9 +74,9 @@ def run_real_maps(args):
         print(f"  [{m.name}] running {args.n_agents} agents...")
         agents = run_batch_sim(m, n_agents=args.n_agents, max_ticks=args.max_ticks)
 
-        n_exit = sum(1 for a in agents if a.exited)
-        exit_rate = n_exit / len(agents) * 100
-        avg_frames = sum(a.alive_frames for a in agents if a.exited) / max(n_exit, 1)
+        n_exit = sum(1 for a in agents if a.exit_reason == "door")
+        exit_rate = n_exit / max(len(agents), 1) * 100
+        avg_frames = sum(a.alive_frames for a in agents if a.exit_reason == "door") / max(n_exit, 1)
         print(f"    Exit rate: {exit_rate:.1f}%  Avg exit frames: {avg_frames:.0f}")
 
         results[m.name] = {
@@ -125,9 +125,9 @@ def run_random_maps(args):
         print(f"  [{name}] {len(m.collisions)} obstacles, {len(m.doors)} doors")
         agents = run_batch_sim(m, n_agents=args.n_agents, max_ticks=args.max_ticks)
 
-        n_exit = sum(1 for a in agents if a.exited)
-        exit_rate = n_exit / len(agents) * 100
-        avg_frames = sum(a.alive_frames for a in agents if a.exited) / max(n_exit, 1)
+        n_exit = sum(1 for a in agents if a.exit_reason == "door")
+        exit_rate = n_exit / max(len(agents), 1) * 100
+        avg_frames = sum(a.alive_frames for a in agents if a.exit_reason == "door") / max(n_exit, 1)
         print(f"    Exit rate: {exit_rate:.1f}%  Avg exit frames: {avg_frames:.0f}")
 
         results[name] = {
@@ -160,7 +160,9 @@ def run_random_maps(args):
 
 def run_adversarial_maps(args):
     """跑对抗性测试地图——专门击败 L-path 算法的场景。"""
-    patterns = ["wall_gap", "zigzag", "u_trap", "spiral", "double_wall"]
+    patterns = ["wall_gap", "zigzag", "u_trap", "spiral", "double_wall",
+                "narrow_maze", "bottleneck", "pocket", "multi_room",
+                "long_corridor"]
     results = {}
 
     for pattern in patterns:
@@ -168,9 +170,9 @@ def run_adversarial_maps(args):
         print(f"  [{m.name}] {len(m.collisions)} obstacles, {len(m.doors)} doors")
         agents = run_batch_sim(m, n_agents=args.n_agents, max_ticks=args.max_ticks)
 
-        n_exit = sum(1 for a in agents if a.exited)
-        exit_rate = n_exit / len(agents) * 100
-        avg_frames = sum(a.alive_frames for a in agents if a.exited) / max(n_exit, 1)
+        n_exit = sum(1 for a in agents if a.exit_reason == "door")
+        exit_rate = n_exit / max(len(agents), 1) * 100
+        avg_frames = sum(a.alive_frames for a in agents if a.exit_reason == "door") / max(n_exit, 1)
         timeout_frames = [a.alive_frames for a in agents if not a.exited]
         avg_timeout = sum(timeout_frames) / max(len(timeout_frames), 1)
         print(f"    Exit: {exit_rate:.1f}%  AvgExit: {avg_frames:.0f}f  AvgTimeout: {avg_timeout:.0f}f")
@@ -206,7 +208,9 @@ def run_adversarial_maps(args):
 
 def run_compare(args):
     """跑 baseline vs BFS 对比测试（同一出生点，公平比较）。"""
-    patterns = ["wall_gap", "zigzag", "u_trap", "spiral", "double_wall"]
+    patterns = ["wall_gap", "zigzag", "u_trap", "spiral", "double_wall",
+                "narrow_maze", "bottleneck", "pocket", "multi_room",
+                "long_corridor"]
     results = {}
 
     for pattern in patterns:
@@ -217,13 +221,13 @@ def run_compare(args):
             m, n_agents=args.n_agents, max_ticks=args.max_ticks
         )
 
-        n_base = sum(1 for a in baseline_agents if a.exited)
-        n_bfs = sum(1 for a in bfs_agents if a.exited)
+        n_base = sum(1 for a in baseline_agents if a.exit_reason == "door")
+        n_bfs = sum(1 for a in bfs_agents if a.exit_reason == "door")
         base_rate = n_base / len(baseline_agents) * 100
         bfs_rate = n_bfs / len(bfs_agents) * 100
 
-        base_frames = [a.alive_frames for a in baseline_agents if a.exited]
-        bfs_frames = [a.alive_frames for a in bfs_agents if a.exited]
+        base_frames = [a.alive_frames for a in baseline_agents if a.exit_reason == "door"]
+        bfs_frames = [a.alive_frames for a in bfs_agents if a.exit_reason == "door"]
         avg_base = sum(base_frames) / max(len(base_frames), 1)
         avg_bfs = sum(bfs_frames) / max(len(bfs_frames), 1)
 

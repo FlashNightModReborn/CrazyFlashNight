@@ -73,7 +73,8 @@ class MercenaryAgent:
     prev_y: float = 0
 
     # 统计
-    exited: bool = False         # 是否已成功到达门
+    exited: bool = False         # 是否已离场（成功或超时）
+    exit_reason: str = ""        # "door" = 到达门, "timeout" = 超时删除, "" = 仍在场上
     trajectory: List[Tuple[float, float]] = field(default_factory=list)
 
     def __post_init__(self):
@@ -128,6 +129,7 @@ class MercenarySimulator:
         # 超时卸载
         if a.alive_frames > cfg.alive_max_time:
             a.exited = True
+            a.exit_reason = "timeout"
             return
 
         # 搜索可达的门
@@ -218,6 +220,7 @@ class MercenarySimulator:
             if (abs(a.target_door[0] - a.x) < cfg.arrive_dist_x and
                     abs(a.target_door[1] - a.y) < cfg.arrive_dist_z):
                 a.exited = True
+                a.exit_reason = "door"
                 return
 
         a.action_count += 1
@@ -344,13 +347,21 @@ class BFSMercenarySimulator(MercenarySimulator):
         self._wp_index: int = 0
 
     def _think(self):
-        """改进版 think：L-path 失败时用 Grid BFS。"""
+        """改进版 think：L-path 失败时用 Grid BFS，支持 waypoint 复用。"""
         a = self.agent
         cfg = a.config
 
         # 超时卸载
         if a.alive_frames > cfg.alive_max_time:
             a.exited = True
+            a.exit_reason = "timeout"
+            return
+
+        # 如果已有 BFS 路径且还有 waypoint 未走完，复用（不重算）
+        if (self._waypoints and self._wp_index < len(self._waypoints)
+                and a.target_door is not None):
+            # 直接继续 Walking
+            self._change_state("Walking")
             return
 
         # 搜索门 —— 先试 L-path（快），失败再试 BFS（慢但可靠）
@@ -387,22 +398,35 @@ class BFSMercenarySimulator(MercenarySimulator):
             self._waypoints = best_path
             self._wp_index = 0
 
-            diff_x = abs(best_door[0] - a.x)
-            diff_z = abs(best_door[1] - a.y)
-
-            if diff_x < cfg.near_door_x and diff_z < cfg.near_door_z:
-                # 已靠近门 —— 存活时间概率逻辑（同原版）
-                if a.alive_frames <= 100:
-                    new_state = "Wandering" if random.random() < 0.33 else "Idle"
-                elif a.alive_frames <= 200:
-                    p = 0.33 * (200 - a.alive_frames) / 100
-                    new_state = "Wandering" if random.random() < p else "Idle"
-                elif a.alive_frames <= 300:
-                    new_state = "Idle"
-                else:
-                    new_state = "Walking"
+            if best_path is not None:
+                # BFS 路径可用 → 立即 Walking，walk 时长按路径长度给足
+                new_state = "Walking"
+                # 估算需要多少 action 走完路径（每 action 移动约 speed 像素）
+                path_len = sum(
+                    math.sqrt((best_path[i][0] - best_path[i - 1][0]) ** 2 +
+                              (best_path[i][1] - best_path[i - 1][1]) ** 2)
+                    for i in range(1, len(best_path))
+                ) if len(best_path) > 1 else 0
+                needed_actions = int(path_len / max(cfg.move_speed, 1)) + 10
+                a.think_threshold = max(cfg.walk_max, needed_actions)
             else:
-                new_state = "Idle" if random.random() < 0.5 else "Walking"
+                # L-path 可达
+                diff_x = abs(best_door[0] - a.x)
+                diff_z = abs(best_door[1] - a.y)
+
+                if diff_x < cfg.near_door_x and diff_z < cfg.near_door_z:
+                    # 已靠近门 —— 存活时间概率逻辑（同原版）
+                    if a.alive_frames <= 100:
+                        new_state = "Wandering" if random.random() < 0.33 else "Idle"
+                    elif a.alive_frames <= 200:
+                        p = 0.33 * (200 - a.alive_frames) / 100
+                        new_state = "Wandering" if random.random() < p else "Idle"
+                    elif a.alive_frames <= 300:
+                        new_state = "Idle"
+                    else:
+                        new_state = "Walking"
+                else:
+                    new_state = "Idle" if random.random() < 0.5 else "Walking"
         else:
             new_state = "Wandering"
 
@@ -476,11 +500,55 @@ class BFSMercenarySimulator(MercenarySimulator):
             if (abs(a.target_door[0] - a.x) < cfg.arrive_dist_x and
                     abs(a.target_door[1] - a.y) < cfg.arrive_dist_z):
                 a.exited = True
+                a.exit_reason = "door"
                 return
 
         a.action_count += 1
         if a.action_count >= a.think_threshold:
             self._change_state("Thinking")
+
+    def _change_state(self, new_state: str):
+        """BFS 版覆盖：Wandering 时保留 target_door，只清 waypoints。"""
+        a = self.agent
+
+        if new_state == "Wandering":
+            # 保留 target_door（不清除），让下次 Thinking 能快速 repath
+            self._waypoints = None
+            self._wp_index = 0
+            # 缩短 wander 时间，尽快回 Thinking 重算路径
+            a.think_threshold = random.randint(5, 15)
+            a.state = "Wandering"
+            a.action_count = 0
+            self._walk_tick = 0
+            # 朝 target_door 方向带偏移漫游（而非完全随机）
+            if a.target_door is not None:
+                dx = a.target_door[0] - a.x
+                dy = a.target_door[1] - a.y
+                # 加一点随机偏移避免原地打转
+                angle_offset = random.uniform(-1.0, 1.0)
+                import math
+                dist = math.sqrt(dx * dx + dy * dy) + 0.01
+                nx = dx / dist
+                ny = dy / dist
+                # 旋转方向向量
+                cos_a = math.cos(angle_offset)
+                sin_a = math.sin(angle_offset)
+                rnx = nx * cos_a - ny * sin_a
+                rny = nx * sin_a + ny * cos_a
+                a.move_left = rnx < -0.3
+                a.move_right = rnx > 0.3
+                a.move_up = rny < -0.3
+                a.move_down = rny > 0.3
+            else:
+                # 无目标，完全随机
+                a.move_left = random.random() < 0.5
+                a.move_right = not a.move_left
+                a.move_up = random.random() < 0.5
+                a.move_down = not a.move_up
+        else:
+            # 其他状态走父类逻辑
+            if new_state != "Wandering":
+                super()._change_state(new_state)
 
 
 # ---------------------------------------------------------------------------
@@ -527,7 +595,7 @@ def run_single_sim(map_data: MapData, spawn_x: float, spawn_y: float,
 
     if use_bfs:
         if nav_grid is None:
-            nav_grid = coll.build_grid(cell_size=20)
+            nav_grid = coll.build_grid(cell_size=15)
         sim = BFSMercenarySimulator(map_data, coll, agent, nav_grid)
     else:
         sim = MercenarySimulator(map_data, coll, agent)
@@ -548,7 +616,7 @@ def run_batch_sim(map_data: MapData, n_agents: int = 50,
     use_bfs=True 时使用 BFS 改进版 AI。
     """
     coll = CollisionWorld(map_data)
-    nav_grid = coll.build_grid(cell_size=20) if use_bfs else None
+    nav_grid = coll.build_grid(cell_size=15) if use_bfs else None
 
     spawn_points = _generate_spawn_points(coll, map_data, n_agents)
 
@@ -570,7 +638,7 @@ def run_compare_sim(map_data: MapData, n_agents: int = 50,
     返回 (baseline_agents, bfs_agents)。
     """
     coll = CollisionWorld(map_data)
-    nav_grid = coll.build_grid(cell_size=20)
+    nav_grid = coll.build_grid(cell_size=15)
 
     # 生成一批共享出生点
     spawn_points = _generate_spawn_points(coll, map_data, n_agents)

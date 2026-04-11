@@ -89,11 +89,12 @@ def draw_batch_result(map_data: MapData, agents: List[MercenaryAgent],
     # --- 地图面板 ---
     draw_map(ax_map, map_data, title=title or map_data.name)
 
-    n_exit = sum(1 for a in agents if a.exited)
-    n_timeout = len(agents) - n_exit
+    n_exit = sum(1 for a in agents if a.exit_reason == "door")
+    n_timeout = sum(1 for a in agents if a.exit_reason == "timeout")
+    n_active = len(agents) - n_exit - n_timeout
 
     for a in agents:
-        color = "#2196F3" if a.exited else "#F44336"
+        color = "#2196F3" if a.exit_reason == "door" else "#F44336"
         draw_trajectory(ax_map, a, color=color, alpha=0.3)
 
     # 图例
@@ -108,8 +109,8 @@ def draw_batch_result(map_data: MapData, agents: List[MercenaryAgent],
     ax_stats.axis("off")
 
     exit_rate = n_exit / len(agents) * 100 if agents else 0
-    exit_frames = [a.alive_frames for a in agents if a.exited]
-    timeout_frames = [a.alive_frames for a in agents if not a.exited]
+    exit_frames = [a.alive_frames for a in agents if a.exit_reason == "door"]
+    timeout_frames = [a.alive_frames for a in agents if a.exit_reason == "timeout"]
 
     lines = [
         f"Agents: {len(agents)}",
@@ -144,10 +145,10 @@ def draw_batch_result(map_data: MapData, agents: List[MercenaryAgent],
 
 def _stats_text(agents: List[MercenaryAgent], label: str) -> str:
     """生成统计文本块。"""
-    n_exit = sum(1 for a in agents if a.exited)
+    n_exit = sum(1 for a in agents if a.exit_reason == "door")
     n_total = len(agents)
     exit_rate = n_exit / n_total * 100 if n_total else 0
-    exit_frames = [a.alive_frames for a in agents if a.exited]
+    exit_frames = [a.alive_frames for a in agents if a.exit_reason == "door"]
 
     lines = [
         f"=== {label} ===",
@@ -177,17 +178,17 @@ def draw_compare_result(map_data: MapData,
     # --- Baseline ---
     draw_map(ax_base, map_data, title="Baseline (L-path)")
     for a in baseline_agents:
-        color = "#2196F3" if a.exited else "#F44336"
+        color = "#2196F3" if a.exit_reason == "door" else "#F44336"
         draw_trajectory(ax_base, a, color=color, alpha=0.3)
-    n_base_exit = sum(1 for a in baseline_agents if a.exited)
+    n_base_exit = sum(1 for a in baseline_agents if a.exit_reason == "door")
     ax_base.set_xlabel(f"Exit: {n_base_exit}/{len(baseline_agents)}", fontsize=11)
 
     # --- BFS ---
     draw_map(ax_bfs, map_data, title="BFS (A* grid)")
     for a in bfs_agents:
-        color = "#4CAF50" if a.exited else "#FF9800"
+        color = "#4CAF50" if a.exit_reason == "door" else "#FF9800"
         draw_trajectory(ax_bfs, a, color=color, alpha=0.3)
-    n_bfs_exit = sum(1 for a in bfs_agents if a.exited)
+    n_bfs_exit = sum(1 for a in bfs_agents if a.exit_reason == "door")
     ax_bfs.set_xlabel(f"Exit: {n_bfs_exit}/{len(bfs_agents)}", fontsize=11)
 
     # --- 统计对比 ---
@@ -195,12 +196,12 @@ def draw_compare_result(map_data: MapData,
     text = _stats_text(baseline_agents, "Baseline") + "\n\n" + _stats_text(bfs_agents, "BFS")
 
     # delta
-    base_rate = sum(1 for a in baseline_agents if a.exited) / len(baseline_agents) * 100
-    bfs_rate = sum(1 for a in bfs_agents if a.exited) / len(bfs_agents) * 100
+    base_rate = sum(1 for a in baseline_agents if a.exit_reason == "door") / len(baseline_agents) * 100
+    bfs_rate = sum(1 for a in bfs_agents if a.exit_reason == "door") / len(bfs_agents) * 100
     delta = bfs_rate - base_rate
 
-    base_frames = [a.alive_frames for a in baseline_agents if a.exited]
-    bfs_frames = [a.alive_frames for a in bfs_agents if a.exited]
+    base_frames = [a.alive_frames for a in baseline_agents if a.exit_reason == "door"]
+    bfs_frames = [a.alive_frames for a in bfs_agents if a.exit_reason == "door"]
     avg_base = np.mean(base_frames) if base_frames else float('inf')
     avg_bfs = np.mean(bfs_frames) if bfs_frames else float('inf')
 

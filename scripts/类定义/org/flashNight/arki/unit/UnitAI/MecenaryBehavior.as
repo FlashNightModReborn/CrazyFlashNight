@@ -1,5 +1,6 @@
 ﻿import org.flashNight.neur.StateMachine.FSM_Status;
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
+import org.flashNight.neur.Navigation.AStarGrid;
 import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.BaseUnitBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
@@ -12,45 +13,46 @@ import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 //
 // 寻路模拟器：tools/mercenary-ai-sim/
 //   Python 外部模拟环境，精确复刻本类 FSM 与 Mover.isReachable 的 L-path 逻辑，
-//   用于离线测试寻路改进方案。通过对抗性地图（U形/Z字/螺旋等）量化 exit rate，
-//   验证通过后再移植回本文件。详见 tools/mercenary-ai-sim/README.md
+//   用于离线测试寻路改进方案。详见 tools/mercenary-ai-sim/README.md
 //
-// 寻路改进方向（已验证）：
-//   L-path 失败时回退到 Grid A*（org.flashNight.neur.Navigation.AStarGrid）
-//   场景加载时 hitTest 采样 → setWalkableMatrix，think() 中 find() → waypoint 缓存
-//   模拟器对比：u_trap 场景 exit rate 72% → 93%（+21%）
+// 寻路策略（已通过模拟器 10 种对抗性地图验证，全线正向零退化）：
+//   1. 优先 L-path（Mover.isReachable，快，O(1)）
+//   2. L-path 全部失败时懒加载 AStarGrid → find() → waypoint 缓存
+//   3. Walking 沿 waypoint 逐点移动；Thinking 复用未走完的 waypoint
+//   4. Wandering 保留 target 不清除，缩短 wander 时间后快速 repath
 
 class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
 
-    public static var IDLE_MIN_TIME:Number = 10; // 停止状态最短10次action（40帧）切换状态
-    public static var IDLE_MAX_TIME:Number = 40; // 停止状态最长40次action（160帧）切换状态
-    public static var WALK_MIN_TIME:Number = 8; // 移动状态最短8次action（32帧）切换状态
-    public static var WALK_MAX_TIME:Number = 40; // 移动状态最长40次action（160帧）切换状态
-    public static var WANDER_MIN_TIME:Number = 15; // 漫游状态最短15次action（60帧）切换状态
-    public static var WANDER_MAX_TIME:Number = 50; // 漫游状态最长50次action（200帧）切换状态
-    public static var ALIVE_MAX_TIME:Number = 30 * 30; // 最大存活30s
+    public static var IDLE_MIN_TIME:Number = 10;
+    public static var IDLE_MAX_TIME:Number = 40;
+    public static var WALK_MIN_TIME:Number = 8;
+    public static var WALK_MAX_TIME:Number = 40;
+    public static var WANDER_MIN_TIME:Number = 15;
+    public static var WANDER_MAX_TIME:Number = 50;
+    public static var ALIVE_MAX_TIME:Number = 30 * 30; // 900 帧 = 30s @30fps
     public static var STUCK_COUNT_MAX:Number = 3;
+
+    // A* 网格参数
+    private static var NAV_CELL_SIZE:Number = 15; // 格子大小（像素）
 
     public function MecenaryBehavior(_data:UnitAIData){
         super(_data);
 
-        // 状态列表 
-        // 已存在的包括基类的睡眠状态（默认状态）
-
-        // 思考状态，结算进入状态函数后一定会跳转至其他状态
+        // 状态列表（已存在基类的睡眠状态为默认状态）
         this.AddStatus("Thinking",new FSM_Status(null, this.think, null));
-        // 空闲状态
         this.AddStatus("Idle",new FSM_Status(null, this.idle_enter, null));
-        // 移动状态
         this.AddStatus("Walking",new FSM_Status(this.walk, this.walk_enter, null));
-        // 漫游状态
         this.AddStatus("Wandering",new FSM_Status(null, this.wander_enter, null));
 
-        //过渡线
+        // 过渡线
         this.pushGateTransition("Idle","Thinking",function(){
             return this.actionCount >= data.think_threshold;
         });
         this.pushGateTransition("Walking","Thinking",function(){
+            // 有未走完的 waypoint 时延长 Walking，不回 Thinking
+            if(data.waypoints != null && data.waypointIndex < data.waypoints.length) {
+                return false;
+            }
             return this.actionCount >= data.think_threshold;
         });
         this.pushGateTransition("Wandering","Thinking",function(){
@@ -61,128 +63,378 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
         this.pushGateTransition("Sleeping","Thinking",this.wakeupCheck);
     }
 
+    // ═══════════════════════════════════════════
+    //  A* 导航网格懒加载
+    // ═══════════════════════════════════════════
+
+    /**
+     * 获取或构建当前场景的 A* 导航网格（懒加载）。
+     * 网格挂在 _root.gameworld._mercNavGrid 上，场景切换时随 gameworld 自动释放。
+     * 只在首次 L-path 全部失败时调用，大多数简单地图不会触发。
+     */
+    private static function getNavGrid():AStarGrid {
+        var gw:MovieClip = _root.gameworld;
+        if(gw._mercNavGrid != undefined) {
+            return AStarGrid(gw._mercNavGrid);
+        }
+
+        // 构建网格
+        var cs:Number = NAV_CELL_SIZE;
+        var xmin:Number = _root.Xmin;
+        var xmax:Number = _root.Xmax;
+        var ymin:Number = _root.Ymin;
+        var ymax:Number = _root.Ymax;
+        var cols:Number = Math.ceil((xmax - xmin) / cs);
+        var rows:Number = Math.ceil((ymax - ymin) / cs);
+
+        if(cols < 1) cols = 1;
+        if(rows < 1) rows = 1;
+
+        var nav:AStarGrid = new AStarGrid(cols, rows, true, false);
+
+        // 对 collisionLayer 做 hitTest 采样，构建可走性矩阵
+        var collisionLayer:MovieClip = _root.collisionLayer;
+        var r:Number = 0;
+        while(r < rows) {
+            var c:Number = 0;
+            while(c < cols) {
+                // 格子中心的世界坐标
+                var wx:Number = xmin + (c + 0.5) * cs;
+                var wy:Number = ymin + (r + 0.5) * cs;
+                // hitTest(x, y, true) 检查像素级碰撞
+                if(collisionLayer.hitTest(wx, wy, true)) {
+                    nav.setWalkable(c, r, false);
+                }
+                c++;
+            }
+            r++;
+        }
+
+        // 挂到 gameworld 上，设为不可枚举（不影响 for..in 遍历）
+        gw._mercNavGrid = nav;
+        _global.ASSetPropFlags(gw, ["_mercNavGrid"], 1, false);
+
+        // 保存坐标转换参数
+        gw._mercNavCellSize = cs;
+        gw._mercNavXmin = xmin;
+        gw._mercNavYmin = ymin;
+        _global.ASSetPropFlags(gw, ["_mercNavCellSize", "_mercNavXmin", "_mercNavYmin"], 1, false);
+
+        // _root.服务器.发布服务器消息("[佣兵AI] NavGrid构建: " + cols + "x" + rows + "=" + (cols * rows) + "格 bounds=(" + xmin + "," + ymin + ")-(" + xmax + "," + ymax + ")");
+
+        return nav;
+    }
+
+    /** 世界坐标 → 格子坐标 */
+    private static function worldToCell(worldVal:Number, origin:Number, cellSize:Number):Number {
+        var c:Number = Math.floor((worldVal - origin) / cellSize);
+        return (c < 0) ? 0 : c;
+    }
+
+    /**
+     * 用 A* 搜索从 (sx,sy) 到 (ex,ey) 的路径，返回世界坐标 waypoint 数组。
+     * 返回 null 表示不可达。
+     */
+    private static function findPathAStar(sx:Number, sy:Number,
+                                           ex:Number, ey:Number):Array {
+        var nav:AStarGrid = getNavGrid();
+        var gw:MovieClip = _root.gameworld;
+        var cs:Number = gw._mercNavCellSize;
+        var ox:Number = gw._mercNavXmin;
+        var oy:Number = gw._mercNavYmin;
+
+        var sc:Number = worldToCell(sx, ox, cs);
+        var sr:Number = worldToCell(sy, oy, cs);
+        var ec:Number = worldToCell(ex, ox, cs);
+        var er:Number = worldToCell(ey, oy, cs);
+
+        // A* 搜索（限制展开节点数，避免极端卡帧）
+        var gridPath:Array = nav.find(sc, sr, ec, er, nav.getWidth() * nav.getHeight());
+        if(gridPath == null) {
+            return null;
+        }
+
+        // 格子坐标 → 世界坐标
+        var worldPath:Array = new Array(gridPath.length);
+        var i:Number = 0;
+        while(i < gridPath.length) {
+            worldPath[i] = {
+                x: ox + (gridPath[i].x + 0.5) * cs,
+                y: oy + (gridPath[i].y + 0.5) * cs
+            };
+            i++;
+        }
+
+        return worldPath;
+    }
 
 
-    // 具体执行函数
+    // ═══════════════════════════════════════════
+    //  状态实现
+    // ═══════════════════════════════════════════
+
     // 思考
     public function think():Void{
         var self:MovieClip = data.self;
 
-        if(_root.帧计时器.当前帧数 - data.createdFrame > ALIVE_MAX_TIME) {
+        var aliveFrames:Number = _root.帧计时器.当前帧数 - data.createdFrame;
+        if(aliveFrames > ALIVE_MAX_TIME) {
+            // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " 超时删除 alive=" + aliveFrames);
             self.删除可雇用单位();
             return;
         }
-        data.updateSelf(); // 更新自身坐标
+        data.updateSelf();
 
-        //search target
+        // ── 如果已有未走完的 A* waypoint，直接继续 Walking ──
+        if(data.waypoints != null && data.waypointIndex < data.waypoints.length
+           && data.target != null) {
+            // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " wp续行 " + data.waypointIndex + "/" + data.waypoints.length);
+            this.superMachine.ChangeState("Walking");
+            return;
+        }
+
         var newstate:String = null;
         var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
-        if(data.target == null){
-            var 出生点列表 = [];
-            for (var 单位 in _root.gameworld){
-                var 出生点 = _root.gameworld[单位];
-                if (出生点.是否从门加载主角 && 单位 != "出生地"){
+
+        if(data.target == null) {
+            // ── Phase 1: L-path 搜索可达的门 ──
+            var 出生点列表:Array = [];
+            var 全部门:Array = [];
+            for(var 单位:String in _root.gameworld) {
+                var 出生点:MovieClip = _root.gameworld[单位];
+                if(出生点.是否从门加载主角 && 单位 != "出生地") {
+                    全部门.push(出生点);
                     if(Mover.isReachable(self, 出生点, 50, _root.调试模式)) {
                         出生点列表.push(出生点);
-                    } else {
-                        // _root.发布消息(出生点,"unReachable");
                     }
-                    
                 }
             }
-            if(出生点列表.length > 0){
+
+            // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " 门搜索: 全部=" + 全部门.length + " L可达=" + 出生点列表.length + " pos=(" + Math.round(data.x) + "," + Math.round(data.z) + ")");
+
+            if(出生点列表.length > 0) {
+                // L-path 找到可达门
                 data.target = engine.getRandomArrayElement(出生点列表);
+                data.waypoints = null; // L-path 可达，不需要 waypoint
+                data.waypointIndex = 0;
+                data.wpStallCount = 0;
                 data.updateTarget();
+                // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " L-path→" + data.target._name + " dist=(" + Math.round(data.absdiff_x) + "," + Math.round(data.absdiff_z) + ")");
+
                 if(_root.调试模式) {
                     var aabb:AABB = AABB.fromMovieClip(data.target, 0);
                     AABBRenderer.renderAABB(AABBCollider.fromAABB(aabb), 0, "filled");
                 }
-                
-                if(data.absdiff_x < 100 && data.absdiff_z < 50){
-                    // 基于存活时间的体验优化
+
+                if(data.absdiff_x < 100 && data.absdiff_z < 50) {
+                    // 已靠近门——基于存活时间的体验优化
                     var aliveTime:Number = _root.帧计时器.当前帧数 - data.createdFrame;
-                    
                     if(aliveTime <= 100) {
-                        // 存活时间较短，33%几率进入wandering，提升体验
                         newstate = engine.randomCheckThird() ? "Wandering" : "Idle";
                     } else if(aliveTime <= 200) {
-                        // 线性过渡：wandering概率从33%减少到0%
                         var wanderingProbability:Number = 33 * (200 - aliveTime) / 100;
                         newstate = engine.successRate(wanderingProbability) ? "Wandering" : "Idle";
                     } else if(aliveTime <= 300) {
-                        // 中等存活时间，必然进入idle
                         newstate = "Idle";
                     } else {
-                        // 存活时间过长，直接walk避免过度逗留
                         newstate = "Walking";
                     }
-
-                    // _root.发布消息(aliveTime, wanderingProbability, newstate)
                 } else {
-                    newstate = engine.randomCheckHalf() ? "Idle" : "Walking"; // 避免佣兵停留时间太短，概率逗留
+                    newstate = engine.randomCheckHalf() ? "Idle" : "Walking";
                 }
-            }else{
-                // 找不到目标时进入漫游状态
+
+            } else if(全部门.length > 0) {
+                // ── Phase 2: L-path 全部失败 → A* 回退 ──
+                var bestDoor:MovieClip = null;
+                var bestPath:Array = null;
+                var i:Number = 0;
+                while(i < 全部门.length) {
+                    var door:MovieClip = 全部门[i];
+                    var doorZ:Number = isNaN(door.Z轴坐标) ? door._y : door.Z轴坐标;
+                    var path:Array = findPathAStar(data.x, data.z, door._x, doorZ);
+                    if(path != null) {
+                        bestDoor = door;
+                        bestPath = path;
+                        break;
+                    }
+                    i++;
+                }
+
+                if(bestDoor != null) {
+                    data.target = bestDoor;
+                    data.waypoints = bestPath;
+                    data.waypointIndex = 0;
+                data.wpStallCount = 0;
+                    data.updateTarget();
+                    newstate = "Walking";
+                    // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " A*→" + bestDoor._name + " wp=" + bestPath.length);
+                    // 按路径长度给足 walk 时长
+                    var pathLen:Number = 0;
+                    var j:Number = 1;
+                    while(j < bestPath.length) {
+                        var ddx:Number = bestPath[j].x - bestPath[j-1].x;
+                        var ddy:Number = bestPath[j].y - bestPath[j-1].y;
+                        pathLen += Math.sqrt(ddx * ddx + ddy * ddy);
+                        j++;
+                    }
+                    var speed:Number = self.行走X速度;
+                    if(isNaN(speed) || speed <= 0) speed = 4;
+                    data.think_threshold = Math.max(WALK_MAX_TIME, Math.ceil(pathLen / speed) + 10);
+
+                    if(_root.调试模式) {
+                        _root.发布消息("A* path: " + bestPath.length + " waypoints, " + Math.round(pathLen) + "px");
+                    }
+                } else {
+                    // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " A*也无路! 门=" + 全部门.length);
+                    newstate = "Wandering";
+                }
+
+            } else {
+                // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " 场景无门");
                 newstate = "Wandering";
             }
         }
-        if(newstate == null){
-            newstate = engine.randomCheckHalf() ? "Idle" : "Walking"; // 兜底
+
+        if(newstate == null) {
+            newstate = engine.randomCheckHalf() ? "Idle" : "Walking";
         }
 
-        // _root.发布消息(self, "think", newstate);
-
+        // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " think→" + newstate + " alive=" + aliveFrames);
         this.superMachine.ChangeState(newstate);
     }
 
     // 移动
     public function walk():Void {
         var sm = this.superMachine;
-
-        // 判定帧：每 4 次（若想每 5 次，把下面两处 4 改成 5，并改成 % 5 判定）
+        var self:MovieClip = data.self;
         var onDecisionTick:Boolean = ((sm.actionCount & 3) == 0);
 
-        if (onDecisionTick) {
-            // 1) 判定是否卡死
+        // ── 每 tick 都执行：waypoint 到达检查与推进 ──
+        // 移动速度 ×4帧/action = 单次 action 的最大位移，作为到达半径
+        // 确保 agent 不会因为速度过快而反复越过 waypoint
+        if(data.waypoints != null && data.waypointIndex < data.waypoints.length) {
+            data.updateSelf();
+            var speed:Number = self.行走X速度;
+            if(isNaN(speed) || speed <= 0) speed = 4;
+            // 到达半径 = 单次 action 最大位移（speed × 4帧），至少 cell_size
+            var WP_ARRIVE_SQ:Number = speed * 4;
+            if(WP_ARRIVE_SQ < NAV_CELL_SIZE) WP_ARRIVE_SQ = NAV_CELL_SIZE;
+            WP_ARRIVE_SQ = WP_ARRIVE_SQ * WP_ARRIVE_SQ;
+
+            // 连续推进：可能一个 action 跨过了多个 waypoint
+            while(data.waypointIndex < data.waypoints.length) {
+                var wp:Object = data.waypoints[data.waypointIndex];
+                var wpDx:Number = wp.x - data.x;
+                var wpDz:Number = wp.y - data.z;
+                if(wpDx * wpDx + wpDz * wpDz < WP_ARRIVE_SQ) {
+                    data.waypointIndex++;
+                    data.wpStallCount = 0;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if(onDecisionTick) {
+            // 1) 卡死检测
             var isStuck:Boolean = data.stuckProbeByDiffChange(true, 8, 3);
-            if (isStuck) {
+            if(isStuck) {
+                // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " 卡死! pos=(" + Math.round(data.x) + "," + Math.round(data.z) + ") wp=" + (data.waypoints != null ? data.waypointIndex + "/" + data.waypoints.length : "null"));
+                data.waypoints = null;
+                data.waypointIndex = 0;
+                data.wpStallCount = 0;
+                var savedTarget:MovieClip = data.target;
                 this.superMachine.ChangeState("Wandering");
-                // _root.发布消息(data.self, "检测到卡死，切换到漫游模式");
+                data.target = savedTarget;
+                data.think_threshold = LinearCongruentialEngine.instance.randomIntegerStrict(5, 15);
                 return;
             }
 
-            // 2) 同一帧内刷新移动方向（原来第二个 if(%4==0) 的内容）
-            var self = data.self;
-            var X距离:Number = 20;
-            var Y距离:Number = 10;
+            // 2) 设置移动方向
+            self.左行 = false;
+            self.右行 = false;
+            self.上行 = false;
+            self.下行 = false;
 
-            self.左行 = false; self.右行 = false;
-            self.上行 = false; self.下行 = false;
+            if(data.waypoints != null && data.waypointIndex < data.waypoints.length) {
+                // ── A* waypoint 方向设定 ──
+                var prevIdx:Number = data.waypointIndex;
+                var curWp:Object = data.waypoints[data.waypointIndex];
+                var curDx:Number = curWp.x - data.x;
+                var curDz:Number = curWp.y - data.z;
 
-            if (data.absdiff_x > X距离) {
-                self.左行 = (data.diff_x < 0);
-                self.右行 = (data.diff_x > 0);
-            }
-            if (data.absdiff_z > Y距离) {
-                self.上行 = (data.diff_z < 0);
-                self.下行 = (data.diff_z > 0);
+                // 停滞检测：waypointIndex 连续 N 个 decision tick 没推进 → 跳过
+                if(data.waypointIndex == prevIdx) {
+                    data.wpStallCount++;
+                    if(data.wpStallCount >= 3) {
+                        data.waypointIndex++;
+                        data.wpStallCount = 0;
+                        // _root.服务器.发布服务器消息("[佣兵AI] " + self._name + " wp跳过 idx=" + (data.waypointIndex - 1) + "→" + data.waypointIndex + "/" + data.waypoints.length);
+                        if(data.waypointIndex >= data.waypoints.length) {
+                            data.waypoints = null;
+                            data.waypointIndex = 0;
+                            data.wpStallCount = 0;
+                        } else {
+                            curWp = data.waypoints[data.waypointIndex];
+                            curDx = curWp.x - data.x;
+                            curDz = curWp.y - data.z;
+                        }
+                    }
+                }
+
+                if(data.waypoints != null && data.waypointIndex < data.waypoints.length) {
+                    self.左行 = curDx < -10;
+                    self.右行 = curDx > 10;
+                    self.上行 = curDz < -5;
+                    self.下行 = curDz > 5;
+                }
+
+            } else if(data.waypoints != null && data.waypointIndex >= data.waypoints.length) {
+                // 所有 waypoint 走完 → 清路径，直奔目标
+                data.waypoints = null;
+                data.waypointIndex = 0;
+                data.wpStallCount = 0;
+                data.updateTarget();
+                if(data.absdiff_x > 20) {
+                    self.左行 = (data.diff_x < 0);
+                    self.右行 = (data.diff_x > 0);
+                }
+                if(data.absdiff_z > 10) {
+                    self.上行 = (data.diff_z < 0);
+                    self.下行 = (data.diff_z > 0);
+                }
+
+            } else {
+                // ── 原版直线移动（L-path 可达时）──
+                data.updateTarget();
+                if(data.absdiff_x > 20) {
+                    self.左行 = (data.diff_x < 0);
+                    self.右行 = (data.diff_x > 0);
+                }
+                if(data.absdiff_z > 10) {
+                    self.上行 = (data.diff_z < 0);
+                    self.下行 = (data.diff_z > 0);
+                }
             }
         } else {
-            // 非判定帧：只更新目标
+            // 非判定帧：只更新目标坐标
             data.updateTarget();
         }
 
-        // 结束条件保持原位
-        if (data.absdiff_x < 50 && data.absdiff_z < 25) {
+        // 到达判定
+        if(data.absdiff_x < 50 && data.absdiff_z < 25) {
+            // _root.服务器.发布服务器消息("[佣兵AI] " + data.self._name + " 到达门! alive=" + (_root.帧计时器.当前帧数 - data.createdFrame) + " 方式=" + (data.waypoints != null ? "A*" : "L-path"));
             data.self.删除可雇用单位();
             return;
         }
     }
 
-
     // 进入移动状态
     public function walk_enter():Void{
-        data.think_threshold = LinearCongruentialEngine.instance.randomIntegerStrict(WALK_MIN_TIME, WALK_MAX_TIME);
+        // 如果有 A* waypoint，think() 中已设置 think_threshold，不覆盖
+        if(data.waypoints == null || data.waypointIndex >= data.waypoints.length) {
+            data.think_threshold = LinearCongruentialEngine.instance.randomIntegerStrict(WALK_MIN_TIME, WALK_MAX_TIME);
+        }
     }
 
     // 进入停止状态
@@ -196,45 +448,41 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
 
     // 进入漫游状态
     public function wander_enter():Void{
-        data.target = null; // 清除目标
-        data.updateSelf(); // 更新自身坐标
+        data.target = null;
+        data.updateSelf();
 
-        var self = data.self;
+        var self:MovieClip = data.self;
         var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
 
         data.think_threshold = engine.randomIntegerStrict(WANDER_MIN_TIME, WANDER_MAX_TIME);
-        // _root.发布消息(self._name, data.standby, self.待机)
+
         if(data.standby) {
-            // 待机状态下无法移动
             self.左行 = false;
             self.右行 = false;
             self.上行 = false;
             self.下行 = false;
-            return; 
+            return;
         }
 
-        // 尝试找到一个可达的随机目标点
         var maxAttempts:Number = 10;
         var foundTarget:Boolean = false;
-        var randx:Number, randy:Number;
-        
+        var randx:Number;
+        var randy:Number;
+
         for(var i:Number = 0; i < maxAttempts; i++) {
             randx = engine.randomIntegerStrict(_root.Xmin, _root.Xmax);
             randy = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
-            
-            // 直接检测点坐标的可达性
             if(Mover.isReachableToPoint(self, randx, randy, 30, false)) {
                 foundTarget = true;
                 break;
             }
         }
-        
+
         if(!foundTarget) {
-            // 如果找不到可达点，使用原来的简单逻辑作为备选
             randx = engine.randomIntegerStrict(_root.Xmin, _root.Xmax);
             randy = engine.randomIntegerStrict(_root.Ymin, _root.Ymax);
         }
-        
+
         self.左行 = randx < data.x;
         self.右行 = !self.左行;
         self.上行 = randy < data.z;

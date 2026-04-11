@@ -284,22 +284,22 @@ def generate_adversarial_map(name: str = "adversarial",
         doors.append((cx, cy + u_h / 2 - 40))
 
     elif pattern == "spiral":
-        # 简化螺旋：两层嵌套的C形
+        # 回旋走廊：两道嵌套的L墙，迫使佣兵走"回"字路线
         cx = (xmin + xmax) / 2
         cy = (ymin + ymax) / 2
-        # 外层C（开口朝右）
-        ow, oh = 400, 250
-        gap = 70
+        corridor = 70  # 走廊宽（必须容得下佣兵通行）
+        # 外层：顶墙+左墙（开口在右下）
+        ow, oh = 500, 280
         collisions.append(box(cx - ow / 2, cy - oh / 2, cx + ow / 2, cy - oh / 2 + t))  # 顶
         collisions.append(box(cx - ow / 2, cy - oh / 2, cx - ow / 2 + t, cy + oh / 2))  # 左
-        collisions.append(box(cx - ow / 2, cy + oh / 2 - t, cx + ow / 2, cy + oh / 2))  # 底
-        # 内层C（开口朝左）
-        iw, ih = 200, 120
-        collisions.append(box(cx - iw / 2, cy - ih / 2, cx + iw / 2, cy - ih / 2 + t))  # 顶
-        collisions.append(box(cx + iw / 2 - t, cy - ih / 2, cx + iw / 2, cy + ih / 2))  # 右
-        collisions.append(box(cx - iw / 2, cy + ih / 2 - t, cx + iw / 2, cy + ih / 2))  # 底
-        # 门在内层中心
-        doors.append((cx, cy))
+        # 内层：底墙+右墙（开口在左上，与外层开口相反）
+        iw = ow - 2 * (t + corridor)
+        ih = oh - 2 * (t + corridor)
+        if iw > 80 and ih > 40:
+            collisions.append(box(cx - iw / 2, cy + ih / 2 - t, cx + iw / 2, cy + ih / 2))  # 底
+            collisions.append(box(cx + iw / 2 - t, cy - ih / 2, cx + iw / 2, cy + ih / 2))  # 右
+        # 门在内层内部
+        doors.append((cx - 20, cy))
 
     elif pattern == "double_wall":
         # 两道平行纵墙，缺口不对齐（一个在上，一个在下）
@@ -313,6 +313,93 @@ def generate_adversarial_map(name: str = "adversarial",
         collisions.append(box(x2 - t / 2, ymin + gap, x2 + t / 2, ymax + 10))
         # 门在最右
         doors.append((xmax - 60, ymin + 40))
+
+    elif pattern == "narrow_maze":
+        # 3道交替横墙+纵墙组成简易迷宫，缺口很窄
+        gap = 55  # 窄缺口
+        h_range = ymax - ymin
+        # 横墙1（上方，缺口在右）
+        hy1 = ymin + h_range * 0.33
+        collisions.append(box(xmin - 10, hy1, xmax - gap - 60, hy1 + t))
+        # 横墙2（下方，缺口在左）
+        hy2 = ymin + h_range * 0.66
+        collisions.append(box(xmin + gap + 60, hy2, xmax + 10, hy2 + t))
+        # 纵墙（中间，缺口在底）
+        vx = (xmin + xmax) / 2
+        collisions.append(box(vx - t / 2, ymin - 10, vx + t / 2, ymax - gap))
+        # 门在右下角
+        doors.append((xmax - 40, ymax - 30))
+
+    elif pattern == "bottleneck":
+        # 两个大障碍物中间留一个极窄通道，门在通道对面的空地上
+        cx = (xmin + xmax) / 2
+        cy = (ymin + ymax) / 2
+        passage = 55  # 通道宽
+        block_len = (xmax - xmin) * 0.35  # 每个障碍物长度（不要太大）
+        block_h = t * 1.5
+        # 左侧块
+        collisions.append(box(cx - passage / 2 - block_len, cy - block_h / 2,
+                              cx - passage / 2, cy + block_h / 2))
+        # 右侧块
+        collisions.append(box(cx + passage / 2, cy - block_h / 2,
+                              cx + passage / 2 + block_len, cy + block_h / 2))
+        # 门在右侧空地（障碍物之后）
+        doors.append((cx + passage / 2 + block_len + 60, cy))
+
+    elif pattern == "pocket":
+        # 门在口袋内部：三面墙封闭，开口朝左（但门在右下角）
+        # 佣兵需要先向左走找到开口再绕进去
+        px = xmax - 200  # 口袋右边界
+        py = ymin + 30    # 口袋上边界
+        pw, ph = 250, 200  # 口袋宽高
+        gap = 60           # 开口宽
+        # 上壁
+        collisions.append(box(px - pw, py, px, py + t))
+        # 右壁
+        collisions.append(box(px - t, py, px, py + ph))
+        # 下壁（留左侧开口）
+        collisions.append(box(px - pw + gap, py + ph - t, px, py + ph))
+        # 门在口袋内部右下
+        doors.append((px - 40, py + ph - 50))
+
+    elif pattern == "long_corridor":
+        # 蛇形走廊：4段交替横向通道，佣兵需要走完整个蛇形才能到门
+        gap = 60
+        n_turns = 4
+        seg_h = (ymax - ymin - t * n_turns) / (n_turns + 1)
+        for i in range(n_turns):
+            wy = ymin + (i + 1) * (seg_h + t) - t
+            if i % 2 == 0:
+                # 缺口在右
+                collisions.append(box(xmin - 10, wy, xmax - gap, wy + t))
+            else:
+                # 缺口在左
+                collisions.append(box(xmin + gap, wy, xmax + 10, wy + t))
+        # 门在最底部（蛇形末端）
+        if n_turns % 2 == 0:
+            doors.append((xmin + 40, ymax - 20))
+        else:
+            doors.append((xmax - 40, ymax - 20))
+
+    elif pattern == "multi_room":
+        # 3个房间通过窄门连通
+        h_range = ymax - ymin
+        room_w = (xmax - xmin) / 3
+        gap = 60
+        # 墙1（房间1-2之间），缺口在下方
+        x1 = xmin + room_w
+        collisions.append(box(x1 - t / 2, ymin - 10, x1 + t / 2, ymax - gap))
+        # 墙2（房间2-3之间），缺口在上方
+        x2 = xmin + 2 * room_w
+        collisions.append(box(x2 - t / 2, ymin + gap, x2 + t / 2, ymax + 10))
+        # 每个房间加一个内部障碍增加复杂度
+        for rx in [xmin + room_w * 0.5, xmin + room_w * 1.5, xmin + room_w * 2.5]:
+            oy = random.uniform(ymin + 40, ymax - 40)
+            ow = random.uniform(60, 100)
+            oh = random.uniform(40, 70)
+            collisions.append(box(rx - ow / 2, oy - oh / 2, rx + ow / 2, oy + oh / 2))
+        # 门在最右房间
+        doors.append((xmax - 40, (ymin + ymax) / 2))
 
     return MapData(
         name=f"{name}_{pattern}",

@@ -59,44 +59,52 @@ python run_sim.py --adversarial --seed 42 --n-agents 100
 | `--no-show` | off | 不弹窗显示图表 |
 | `--save-dir DIR` | 不保存 | 结果输出目录 |
 
-## 对抗性地图 Pattern
+## 对抗性地图 Pattern（10种）
 
 | Pattern | 拓扑 | 击败 L-path 的原理 |
 |---|---|---|
 | `wall_gap` | 单道纵墙 + 中间缺口 | 直线和两种 L 都被墙挡，需绕到缺口 |
 | `zigzag` | 两道错位纵墙 | 需 S 形绕行，任何单次 L 转弯都不够 |
 | `u_trap` | U 形障碍，门在内部 | 需绕到 U 的开口进入 |
-| `spiral` | 嵌套 C 形，门在中心 | 需多次转弯穿越两层 |
+| `spiral` | 嵌套L墙回旋走廊 | 需多次转弯穿越走廊 |
 | `double_wall` | 平行双墙缺口不对齐 | 同 zigzag，更紧凑 |
+| `narrow_maze` | 横纵墙交叉迷宫 | 多段窄缺口，路径很长 |
+| `bottleneck` | 两大障碍物中间窄通道 | 需精确穿过瓶颈 |
+| `pocket` | 三面封闭口袋，开口背对门方向 | 需反方向绕行进入口袋 |
+| `multi_room` | 3房间+房内障碍物+窄门 | 需穿越多个连通房间 |
+| `long_corridor` | 蛇形4段横向通道 | 路径极长，测试超时边界 |
 
-## Baseline 测试结果（当前 AI, seed=42, n=100）
+## 最终对比数据（5种子平均，n=250，修正后统计）
 
-| Pattern | Exit Rate | Avg Exit Frames |
+```
+python run_sim.py --compare
+```
+
+| Pattern | Baseline | BFS | Delta |
+|---|---|---|---|
+| **pocket** | 0.0% | **100.0%** | **+100.0%** |
+| **u_trap** | 0.0% | **98.4%** | **+98.4%** |
+| **multi_room** | 25.2% | **74.4%** | **+49.2%** |
+| **zigzag** | 33.2% | **74.0%** | **+40.8%** |
+| **spiral** | 63.2% | **86.8%** | **+23.6%** |
+| **wall_gap** | 44.0% | **63.2%** | **+19.2%** |
+| **bottleneck** | 39.2% | **58.4%** | **+19.2%** |
+| double_wall | 39.6% | 50.0% | +10.4% |
+| long_corridor | 14.4% | 16.0% | +1.6% |
+| narrow_maze | 9.6% | 10.0% | +0.4% |
+
+**全线正向，零退化。** narrow_maze/long_corridor 提升小是物理极限（路径太长，alive_max 不够走完）。
+
+## 6轮迭代记录
+
+| 轮次 | 改动 | 效果 |
 |---|---|---|
-| u_trap | 77% | 949 |
-| spiral | 77% | 945 |
-| zigzag | 85% | 777 |
-| double_wall | 89% | 761 |
-| wall_gap | 95% | 752 |
-
-真实地图（门放在边界）：100%，因为边界位置 L-path 基本可达。
-
-## Baseline vs Grid BFS 对比（seed=42, n=100）
-
-```
-python run_sim.py --compare --seed 42 --n-agents 100
-```
-
-| Pattern | Baseline | BFS | Rate Delta | Frame Delta |
-|---|---|---|---|---|
-| u_trap | 72% | **93%** | **+21%** | **-175f** |
-| spiral | 76% | **84%** | **+8%** | -0f |
-| zigzag | 83% | **85%** | +2% | +17f |
-| double_wall | 92% | **93%** | +1% | +16f |
-| wall_gap | 93% | 91% | -2% | -10f |
-
-**结论**：Grid BFS 在 L-path 结构性失败的场景（u_trap, spiral）上提升显著。
-简单场景两者接近，BFS 不会引入退化。
+| R1 | BFS路径→立即Walking，Thinking复用未走完的waypoint | u_trap 0→99% |
+| R2 | cell_size 20→15，Wandering保留target_door，bottleneck门位置修复 | spiral 0→83% |
+| R3 | 新增 pocket/multi_room 两个场景 | 全线正向 |
+| R4 | 修复 exit_reason 统计bug（超时误计为成功），spiral几何重设计 | 数据可信度修复 |
+| R5 | 多种子稳定性验证，确认零退化 | 稳定性确认 |
+| R6 | 文档总结 | — |
 
 ## 迭代工作流
 
@@ -117,12 +125,26 @@ python run_sim.py --compare --seed 42 --n-agents 100
 已经有完善的 AS2 栅格 A* 实现（二叉堆、8方向、防穿角、searchId 复用），
 集成步骤：
 
-1. **场景加载时**：对 `collisionLayer` 按 cell_size 格栅做 `hitTest` 采样
-   → `AStarGrid.setWalkableMatrix()`（可分帧执行）
+1. **懒加载（首次 L-path 失败时触发）**：
+   - `think()` 中所有门的 `isReachable` 全部失败 → 检查 `_root.gameworld` 上是否已有 AStarGrid 单例
+   - 如果没有 → 对 `collisionLayer` 按 cell_size=15 做 `hitTest` 采样 → `AStarGrid.setWalkableMatrix()`
+   - 如果有且未 dirty → 直接复用
+   - 构建一次，整个场景生命周期内所有佣兵共享（挂在 `_root.gameworld` 上，场景切换自动清理）
+   - 采样可分帧执行避免卡帧（`maxExpand` 限流 / 分批写入 `_walk[]`）
 2. **佣兵 `think()` 中**：L-path 失败时调用 `AStarGrid.find(sx, sy, gx, gy)`
    → 缓存 waypoint 列表到 `UnitAIData`
+   → BFS 路径可用时**立即进入 Walking**，不随机 Idle
+   → 下次 Thinking 若 waypoint 未走完则**复用不重算**
 3. **佣兵 `walk()` 中**：逐 waypoint 移动，到达一个推进到下一个
-4. **动态障碍**：`CollisionLayerChanged` 事件触发时，增量更新 `setWalkable()`
+   → Walking 时长按路径长度动态给足
+4. **佣兵卡死 → Wandering**：保留 target_door，清空 waypoints，缩短 wander 时间
+   → 下次 Thinking 从新位置 repath
+5. **动态障碍**：`CollisionLayerChanged` 事件触发时标记 dirty，下次查询重建
+
+**为什么懒加载优于场景加载时构建**：
+- 大多数简单地图 L-path 就够，A* 网格永远不会被构建 → 零冗余开销
+- 构建时碰撞层已包含所有 ObstacleRenderer 运行时障碍物 → 天然正确
+- 挂在 `_root.gameworld` 上 → 场景切换时随 gameworld 自动释放
 
 | Python 模块 | AS2 文件 |
 |---|---|

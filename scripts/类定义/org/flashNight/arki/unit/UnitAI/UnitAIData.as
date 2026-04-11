@@ -76,6 +76,11 @@ class org.flashNight.arki.unit.UnitAI.UnitAIData{
     // 已施放的全局buff技能（单次施放保护，fight-scoped）
     public var _usedGlobalBuffs:Object;
 
+    // ═══════ A* 寻路 waypoint（佣兵AI用）═══════
+    public var waypoints:Array;      // [{x,y}, ...] A* 路径点列表，null = 无路径
+    public var waypointIndex:Number; // 当前正在走向的 waypoint 下标
+    public var wpStallCount:Number;  // waypoint 进度停滞计数（连续未推进 index 的 decision tick 数）
+
     // ═══════ 边界感知（updateSelf 计算）═══════
     public var bndLeftDist:Number;   // 距左边界距离（像素）
     public var bndRightDist:Number;  // 距右边界距离
