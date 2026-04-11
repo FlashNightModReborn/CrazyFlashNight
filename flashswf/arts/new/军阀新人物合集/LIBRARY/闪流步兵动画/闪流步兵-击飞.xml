@@ -1,0 +1,176 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪流步兵动画/闪流步兵-击飞" itemID="69d8f601-0000021a" lastModified="1775928089" lastUniqueIdentifier="36">
+  <timeline>
+    <DOMTimeline name="闪流步兵-击飞" currentFrame="7" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="代码层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 != true)
+{
+   _parent.击倒呐喊();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="18" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MergedLayer_1" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵左大臂" symbolType="graphic" centerPoint3DX="-317.85" centerPoint3DY="-234.1" loop="loop">
+                  <matrix>
+                    <Matrix a="1.1715087890625" b="-0.027069091796875" c="0.027069091796875" d="1.1715087890625" tx="-400.9" ty="-315.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.7" y="35.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵左手" symbolType="graphic" centerPoint3DX="-171.65" centerPoint3DY="-61.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.57196044921875" b="0.688278198242188" c="-0.688217163085938" d="0.57196044921875" tx="-175.6" ty="-111.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.35" y="34.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵左小臂" symbolType="graphic" centerPoint3DX="-234.6" centerPoint3DY="-127.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.78570556640625" b="0.36505126953125" c="-0.30523681640625" d="0.6568603515625" tx="-285.05" ty="-196.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.85" y="24.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵左大腿" symbolType="graphic" centerPoint3DX="-157.15" centerPoint3DY="18.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9215087890625" b="0.116561889648438" c="-0.116561889648438" d="0.9215087890625" tx="-227.9" ty="-83.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42" y="57.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵靴子" symbolType="graphic" centerPoint3DX="-11.1" centerPoint3DY="241.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.678466796875" b="-0.618331909179688" c="0.618331909179688" d="0.678466796875" tx="-109.75" ty="233.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.05" y="75.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵小腿" symbolType="graphic" centerPoint3DX="-88.1" centerPoint3DY="141" loop="loop">
+                  <matrix>
+                    <Matrix a="0.693359375" b="-0.610107421875" c="0.610107421875" d="0.693359375" tx="-182.65" ty="123.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.6" y="39.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵右大腿" symbolType="graphic" centerPoint3DX="-253.55" centerPoint3DY="47.15" loop="loop">
+                  <matrix>
+                    <Matrix a="0.697677612304688" b="-0.613067626953125" c="0.613067626953125" d="0.697677612304688" tx="-376.75" ty="4.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="80.7" y="45.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵靴子" symbolType="graphic" centerPoint3DX="-98.6" centerPoint3DY="277.45" loop="loop">
+                  <matrix>
+                    <Matrix a="0.82843017578125" b="-0.392745971679688" c="0.392745971679688" d="0.82843017578125" tx="-190.95" ty="240.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.15" y="75.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵小腿" symbolType="graphic" centerPoint3DX="-177.25" centerPoint3DY="170.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.69287109375" b="-0.60528564453125" c="0.60528564453125" d="0.69287109375" tx="-271.2" ty="153"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75.35" y="42.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="综合肢体文件/闪流步兵屁股" centerPoint3DX="-259.8" centerPoint3DY="-62.95">
+                  <matrix>
+                    <Matrix a="0.912338256835938" b="-0.4093017578125" c="0.4093017578125" d="0.912338256835938" tx="-246.8" ty="-32.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.75" y="-9.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵胸部" symbolType="graphic" centerPoint3DX="-378.25" centerPoint3DY="-199.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.4871826171875" b="-0.7789306640625" c="0.7789306640625" d="0.4871826171875" tx="-529.8" ty="-173.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="142.65" y="206.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="综合肢体文件/闪流步兵下腹部" centerPoint3DX="-299.95" centerPoint3DY="-117.2">
+                  <matrix>
+                    <Matrix a="0.75054931640625" b="-0.651702880859375" c="0.651702880859375" d="0.75054931640625" tx="-299.65" ty="-116.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="72.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵头盔" symbolType="graphic" centerPoint3DX="-470.25" centerPoint3DY="-302.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.285980224609375" b="-0.865020751953125" c="0.865020751953125" d="0.285980224609375" tx="-560.8" ty="-266"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.55" y="111.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵右大臂" symbolType="graphic" centerPoint3DX="-446.25" centerPoint3DY="-117.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.576019287109375" b="-0.701812744140625" c="0.701812744140625" d="0.576019287109375" tx="-549.8" ty="-112.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="111.85" y="50.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵枪" symbolType="graphic" centerPoint3DX="-231" centerPoint3DY="179.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.483184814453125" b="0.767547607421875" c="-0.767547607421875" d="0.483184814453125" tx="-300.75" ty="-53.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="146.35" y="80.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵右手" symbolType="graphic" centerPoint3DX="-328.85" centerPoint3DY="83.2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.655929565429688" b="0.62188720703125" c="-0.62188720703125" d="0.655929565429688" tx="-339.75" ty="29.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.4" y="32.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵右小臂" symbolType="graphic" centerPoint3DX="-388.5" centerPoint3DY="0.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.7445068359375" b="0.517990112304688" c="-0.517990112304688" d="0.7445068359375" tx="-423.9" ty="-84.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="34.5" y="39.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

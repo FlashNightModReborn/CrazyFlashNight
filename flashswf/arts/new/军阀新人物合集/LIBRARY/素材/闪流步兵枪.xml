@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/闪流步兵枪" itemID="6999fd32-00000134" symbolType="graphic" lastModified="1771699506">
+  <timeline>
+    <DOMTimeline name="闪流步兵枪">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵枪前端" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="236.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="139.9" y="46.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵枪中部" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="86.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75.1" y="71.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵枪把" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="18.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.95" y="37.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

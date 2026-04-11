@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="综合肢体文件/闪流步兵下腹部" itemID="699b4aa8-000011df" lastModified="1775399978">
+  <timeline>
+    <DOMTimeline name="闪流步兵下腹部">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵腹部" selected="true" symbolType="graphic" centerPoint3DY="6.65" loop="loop">
+                  <matrix>
+                    <Matrix a="1.103759765625" d="1.02854919433594" tx="-96.3" ty="-56.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="97.5" y="69"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵护甲衔接" symbolType="graphic" centerPoint3DX="0.2" centerPoint3DY="-56.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.923095703125" b="0.145431518554688" c="-0.145431518554688" d="0.923095703125" tx="-9.55" ty="-69.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.55" y="12.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/闪流步兵护甲衔接" symbolType="graphic" centerPoint3DX="79.75" centerPoint3DY="-42.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.92303466796875" b="0.145431518554688" c="-0.145431518554688" d="0.92303466796875" tx="70" ty="-56.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="12.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

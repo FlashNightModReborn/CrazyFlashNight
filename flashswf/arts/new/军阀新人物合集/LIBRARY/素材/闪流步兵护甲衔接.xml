@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/闪流步兵护甲衔接" itemID="6999f85d-00000113" symbolType="graphic" lastModified="1771698269">
+  <timeline>
+    <DOMTimeline name="闪流步兵护甲衔接">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#9B9B9B"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#C8AB8F"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="2">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!391 110S5|501 110!501 110|501 0!501 0|0 0!0 0|0 110!0 110|101 110"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!101 110S7|391 110"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!101 399S5|0 399!0 399|0 509!0 509|501 509!501 509|501 399!501 399|391 399"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!391 399S7|101 399"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!101 110S5[171 255 101 399!391 399[441 255 391 110"/>
+                    <Edge cubics="!501 110(;501,110 501,0 501,0q501 110 501 0);"/>
+                    <Edge cubics="!501 0(;501,0 0,0 0,0q501 0 0 0);"/>
+                    <Edge cubics="!0 0(;0,0 0,110 0,110q0 0 0 110);"/>
+                    <Edge cubics="!0 509(;0,509 501,509 501,509q0 509 501 509);"/>
+                    <Edge cubics="!501 509(;501,509 501,399 501,399q501 509 501 399);"/>
+                    <Edge cubics="!0 399(;0,399 0,509 0,509q0 399 0 509);"/>
+                    <Edge cubics="!101 110(;148,207 148,303 101,399q101 110Q171 255q101 399);"/>
+                    <Edge cubics="!101 399(;101,399 0,399 0,399q101 399 0 399);"/>
+                    <Edge cubics="!0 110(;0,110 101,110 101,110q0 110 101 110);"/>
+                    <Edge cubics="!501 399(;501,399 391,399 391,399q501 399 391 399);"/>
+                    <Edge cubics="!391 110(;391,110 501,110 501,110q391 110 501 110);"/>
+                    <Edge cubics="!391 110(;424,207 424,303 391,399q391 110Q441 255q391 399);"/>
+                    <Edge cubics="!391 399(;391,399 101,399 101,399q391 399 101 399);"/>
+                    <Edge cubics="!101 110(;101,110 391,110 391,110q101 110 391 110);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
