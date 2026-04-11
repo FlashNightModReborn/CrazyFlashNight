@@ -234,6 +234,7 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
                         else if (scc > 6) baseWindow = 36;
                         data._unstuckUntilFrame = frameNow + baseWindow;
                         data._noProgressCount = 0; // 成功找到脱困方向，重置进展计数
+                        data._xNoProgressCount = 0;
 
                         if (AIEnvironment.isAIDebug() || AIEnvironment.getAILogLevel() >= 2) {
                             var reason:String = blockedAhead ? "BLOCKED"
@@ -263,6 +264,7 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
             // 无移动意图：清空脱困窗口 + 进展计数，避免下一次移动继承旧状态
             data._unstuckUntilFrame = 0;
             data._noProgressCount = 0;
+            data._xNoProgressCount = 0;
             data._lastProgressX = undefined;
             data._lastProgressZ = undefined;
         }

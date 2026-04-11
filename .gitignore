@@ -87,7 +87,8 @@ logs/
 saves/*.json
 saves/*.json.tmp
 
-# AI sim results (generated images/data, not source)
+# AI sim (generated results + Python bytecode cache)
 tools/mercenary-ai-sim/results/
+tools/mercenary-ai-sim/__pycache__/
 tools/combat-movement-sim/results/
 tools/combat-movement-sim/__pycache__/
