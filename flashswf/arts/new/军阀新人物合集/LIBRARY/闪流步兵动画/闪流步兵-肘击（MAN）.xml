@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪流步兵动画/闪流步兵-肘击（MAN）" itemID="69d2952a-000005ba" lastModified="1775928789" lastUniqueIdentifier="379">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪流步兵动画/闪流步兵-肘击（MAN）" itemID="69d2952a-000005ba" lastModified="1775932191" lastUniqueIdentifier="379">
   <timeline>
-    <DOMTimeline name="闪流步兵-肘击（MAN）" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="闪流步兵-肘击（MAN）" currentFrame="70" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -78,9 +78,21 @@ if (random(2) == 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="音效" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="99" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="49" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("哈！.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" duration="40" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("哈！.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -202,7 +214,7 @@ if (random(2) == 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="位移" color="#808080" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="位移" color="#808080" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements>

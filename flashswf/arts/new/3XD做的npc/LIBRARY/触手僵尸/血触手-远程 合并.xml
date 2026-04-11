@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/血触手-远程 合并" itemID="69c148a5-0000055b" lastModified="1775621479" lastUniqueIdentifier="423">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/血触手-远程 合并" itemID="69c148a5-0000055b" lastModified="1775931259" lastUniqueIdentifier="423">
   <timeline>
-    <DOMTimeline name="血触手-远程 合并" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;94&lt;/guideline&gt;&lt;guideline direction="h"&gt;88&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="v"&gt;36&lt;/guideline&gt;&lt;guideline direction="v"&gt;73&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="血触手-远程 合并" currentFrame="22" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;94&lt;/guideline&gt;&lt;guideline direction="h"&gt;88&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="v"&gt;36&lt;/guideline&gt;&lt;guideline direction="v"&gt;73&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
@@ -9,7 +9,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="115" keyMode="9728">
               <Actionscript>
@@ -85,7 +85,7 @@ function 攻击时四向移动(上, 下, 左, 右)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹" color="#9933CC" autoNamed="false">
+        <DOMLayer name="子弹" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
