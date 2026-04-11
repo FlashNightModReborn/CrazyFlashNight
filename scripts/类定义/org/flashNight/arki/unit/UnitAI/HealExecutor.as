@@ -59,7 +59,7 @@ class org.flashNight.arki.unit.UnitAI.HealExecutor {
             self.血包数量--;
             AIEnvironment.useHealPack(self._name);
             self.上次使用血包时间 = currentFrame;
-            AIEnvironment.log(self.名字 + "[" + hpBefore + "/" + self.hp满血值 + "] 紧急治疗后还剩[" + self.血包数量 + "]个治疗包");
+            AIEnvironment.toast(self.名字 + "[" + hpBefore + "/" + self.hp满血值 + "] 紧急治疗后还剩[" + self.血包数量 + "]个治疗包");
         }
     }
 }

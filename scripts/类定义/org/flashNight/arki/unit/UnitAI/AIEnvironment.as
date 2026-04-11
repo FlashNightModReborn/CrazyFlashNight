@@ -79,9 +79,14 @@ class org.flashNight.arki.unit.UnitAI.AIEnvironment {
         _root.服务器.发布服务器消息(msg);
     }
 
-    /** 游戏内消息广播 */
+    /** 游戏内消息广播（带发送者） */
     public static function logBroadcast(sender:MovieClip, msg:String):Void {
         _root.发布消息(sender, msg);
+    }
+
+    /** 游戏内 toast 消息（无发送者，单参数） */
+    public static function toast(msg:String):Void {
+        _root.发布消息(msg);
     }
 
     // ═══════ 服务调用 ═══════

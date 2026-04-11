@@ -319,7 +319,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior 
                     data.think_threshold = Math.max(WALK_MAX_TIME, Math.ceil(pathLen / speed) + 10);
 
                     if (AIEnvironment.isGlobalDebug()) {
-                        AIEnvironment.log("A* path: " + bestPath.length + " waypoints, " + Math.round(pathLen) + "px");
+                        AIEnvironment.toast("A* path: " + bestPath.length + " waypoints, " + Math.round(pathLen) + "px");
                     }
                 } else {
                     // AIEnvironment.log("[佣兵AI] " + self._name + " A*也无路! 门=" + 全部门.length);
