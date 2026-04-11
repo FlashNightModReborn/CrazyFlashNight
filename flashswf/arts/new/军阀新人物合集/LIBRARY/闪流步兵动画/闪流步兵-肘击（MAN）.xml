@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪流步兵动画/闪流步兵-肘击（MAN）" itemID="69d2952a-000005ba" lastModified="1775932191" lastUniqueIdentifier="379">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪流步兵动画/闪流步兵-肘击（MAN）" itemID="69d2952a-000005ba" lastModified="1775934207" lastUniqueIdentifier="379">
   <timeline>
-    <DOMTimeline name="闪流步兵-肘击（MAN）" currentFrame="70" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="闪流步兵-肘击（MAN）" currentFrame="12" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -78,7 +78,7 @@ if (random(2) == 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="音效" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -97,16 +97,71 @@ if (random(2) == 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹" color="#4FFFFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="18" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-120.45" centerPoint3DY="-329.25">
+                  <matrix>
+                    <Matrix a="2.654052734375" d="23.6395721435547" tx="-120.45" ty="-329.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="18" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="33.4" centerPoint3DY="-193.9">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-120.45" centerPoint3DY="-329.25">
                   <matrix>
-                    <Matrix a="1.615234375" d="10.5912322998047" tx="33.4" ty="-193.9"/>
+                    <Matrix a="2.65406799316406" d="23.6395721435547" tx="-120.45" ty="-329.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -154,14 +209,69 @@ if (random(2) == 0)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="20" duration="44" keyMode="9728">
+            <DOMFrame index="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-120.45" centerPoint3DY="-329.25">
+                  <matrix>
+                    <Matrix a="2.654052734375" d="23.6395721435547" tx="-120.45" ty="-329.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="41" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="64" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-98.9" centerPoint3DY="-327.9">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-324" centerPoint3DY="-313.65">
                   <matrix>
-                    <Matrix a="4.16398620605469" d="21.7120513916016" tx="-98.9" ty="-327.9"/>
+                    <Matrix a="6.52389526367188" d="26.4887237548828" tx="-324" ty="-313.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -209,7 +319,62 @@ if (random(2) == 0)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="66" duration="33" keyMode="9728">
+            <DOMFrame index="66" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-324" centerPoint3DY="-313.65">
+                  <matrix>
+                    <Matrix a="6.52389526367188" d="26.4887084960938" tx="-324" ty="-313.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="30" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

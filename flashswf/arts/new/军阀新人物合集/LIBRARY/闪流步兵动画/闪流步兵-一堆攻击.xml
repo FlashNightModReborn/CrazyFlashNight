@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪流步兵动画/闪流步兵-一堆攻击" itemID="69da74a7-00000a24" lastModified="1775932128" lastUniqueIdentifier="395">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪流步兵动画/闪流步兵-一堆攻击" itemID="69da74a7-00000a24" lastModified="1775933583" lastUniqueIdentifier="395">
   <timeline>
-    <DOMTimeline name="闪流步兵-一堆攻击" currentFrame="15" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="闪流步兵-一堆攻击" currentFrame="310" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
@@ -110,14 +110,14 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="17" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
+                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" selected="true" centerPoint3DX="341.4" centerPoint3DY="-219.05">
                   <matrix>
                     <Matrix a="1.24160766601563" d="1.24740600585938" tx="310.65" ty="-240.55"/>
                   </matrix>
@@ -289,7 +289,65 @@ gotoAndPlay(_parent.近战招式);]]></script>
             <DOMFrame index="33" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="39" keyMode="9728">
+            <DOMFrame index="39" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" selected="true" centerPoint3DX="341.4" centerPoint3DY="-219.05">
+                  <matrix>
+                    <Matrix a="1.24160766601563" d="1.24740600585938" tx="310.65" ty="-240.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 5;
+	子弹属性.子弹种类 = "磁暴射线";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹速度 = 30;
+	子弹属性.Z轴攻击范围 = 50.
+	子弹属性.击倒率 = 10;
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.毒 = 0;
+	子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "电";
+	
+	//非常用
+	/*
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	子弹属性.区域定位area = this.area;
+	*/
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
                   <matrix>
@@ -344,10 +402,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="6" keyMode="9728">
+            <DOMFrame index="48" duration="41" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
                   <matrix>
@@ -402,10 +460,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="47" duration="41" keyMode="9728">
+            <DOMFrame index="90" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="88" keyMode="9728">
+            <DOMFrame index="97" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
                   <matrix>
@@ -460,10 +518,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="7" keyMode="9728">
+            <DOMFrame index="98" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="96" keyMode="9728">
+            <DOMFrame index="104" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
                   <matrix>
@@ -518,10 +576,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="97" duration="6" keyMode="9728">
+            <DOMFrame index="105" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="103" keyMode="9728">
+            <DOMFrame index="111" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
                   <matrix>
@@ -576,10 +634,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="104" duration="6" keyMode="9728">
+            <DOMFrame index="112" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="110" keyMode="9728">
+            <DOMFrame index="118" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
                   <matrix>
@@ -634,68 +692,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" duration="6" keyMode="9728">
+            <DOMFrame index="119" duration="31" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="117" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
-                  <matrix>
-                    <Matrix a="1.24160766601563" d="1.24740600585938" tx="310.65" ty="-240.55"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	子弹属性 = _root.子弹属性初始化(this);
-	
-	//以下部分只需要更改需要更改的属性,其余部分可注释掉
-	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 1;
-	子弹属性.子弹散射度 = 5;
-	子弹属性.子弹种类 = "磁暴射线";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
-	子弹属性.子弹速度 = 30;
-	子弹属性.Z轴攻击范围 = 50.
-	子弹属性.击倒率 = 10;
-	子弹属性.水平击退速度 = NaN;
-	子弹属性.垂直击退速度 = NaN;
-	子弹属性.毒 = 0;
-	子弹属性.伤害类型 = "魔法";
-	子弹属性.魔法伤害属性 = "电";
-	
-	//非常用
-	/*
-	子弹属性.发射效果 = "";
-	子弹属性.击中地图效果 = "火花".
-	子弹属性.击中后子弹的效果 = "".
-	子弹属性.命中率 = NaN.
-	子弹属性.固伤 = NaN;
-	子弹属性.百分比伤害 = NaN;
-	子弹属性.血量上限击溃 = NaN;
-	子弹属性.防御粉碎 = NaN;
-	子弹属性.区域定位area = this.area;
-	*/
-	/*
-	//已初始化内容，通常不需要重复赋值，可注释掉
-	子弹属性.发射者 = 子弹属性.发射者.
-	子弹属性.shootX = 子弹属性.shootX;
-	子弹属性.shootY = 子弹属性.shootY;
-	子弹属性.shootZ = 子弹属性.shootZ;
-	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
-	*/
-	_root.子弹区域shoot传递(子弹属性);
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="118" duration="31" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="149" duration="2" keyMode="9728">
+            <DOMFrame index="150" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-308.45" centerPoint3DY="-108.4">
                   <matrix>
@@ -750,10 +750,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="151" keyMode="9728">
+            <DOMFrame index="152" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="152" duration="2" keyMode="9728">
+            <DOMFrame index="153" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-308.45" centerPoint3DY="-108.4">
                   <matrix>
@@ -808,10 +808,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="154" duration="3" keyMode="9728">
+            <DOMFrame index="155" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="157" duration="2" keyMode="9728">
+            <DOMFrame index="158" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-308.45" centerPoint3DY="-108.4">
                   <matrix>
@@ -866,10 +866,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="159" keyMode="9728">
+            <DOMFrame index="160" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="160" duration="2" keyMode="9728">
+            <DOMFrame index="161" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-308.45" centerPoint3DY="-108.4">
                   <matrix>
@@ -924,10 +924,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="162" keyMode="9728">
+            <DOMFrame index="163" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="163" duration="2" keyMode="9728">
+            <DOMFrame index="164" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-308.45" centerPoint3DY="-108.4">
                   <matrix>
@@ -982,10 +982,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="165" keyMode="9728">
+            <DOMFrame index="166" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="166" duration="2" keyMode="9728">
+            <DOMFrame index="167" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-308.45" centerPoint3DY="-108.4">
                   <matrix>
@@ -1040,12 +1040,12 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="168" duration="47" keyMode="9728">
+            <DOMFrame index="169" duration="47" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="215" keyMode="9728">
+            <DOMFrame index="216" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
+                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" selected="true" centerPoint3DX="341.4" centerPoint3DY="-219.05">
                   <matrix>
                     <Matrix a="1.24160766601563" d="1.24740600585938" tx="310.65" ty="-240.55"/>
                   </matrix>
@@ -1063,7 +1063,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
 	子弹属性.子弹种类 = "热能射线";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
 	子弹属性.子弹速度 = 30;
-	子弹属性.Z轴攻击范围 = 50.
+	子弹属性.Z轴攻击范围 = 30.
 	子弹属性.击倒率 = 10;
 	子弹属性.水平击退速度 = NaN;
 	子弹属性.垂直击退速度 = NaN;
@@ -1098,12 +1098,12 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="216" duration="7" keyMode="9728">
+            <DOMFrame index="217" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="223" keyMode="9728">
+            <DOMFrame index="224" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
+                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" selected="true" centerPoint3DX="341.4" centerPoint3DY="-219.05">
                   <matrix>
                     <Matrix a="1.24160766601563" d="1.24740600585938" tx="310.65" ty="-240.55"/>
                   </matrix>
@@ -1121,7 +1121,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
 	子弹属性.子弹种类 = "热能射线";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
 	子弹属性.子弹速度 = 30;
-	子弹属性.Z轴攻击范围 = 50.
+	子弹属性.Z轴攻击范围 = 30.
 	子弹属性.击倒率 = 10;
 	子弹属性.水平击退速度 = NaN;
 	子弹属性.垂直击退速度 = NaN;
@@ -1156,12 +1156,12 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="224" duration="6" keyMode="9728">
+            <DOMFrame index="225" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="230" keyMode="9728">
+            <DOMFrame index="231" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
+                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" selected="true" centerPoint3DX="341.4" centerPoint3DY="-219.05">
                   <matrix>
                     <Matrix a="1.24160766601563" d="1.24740600585938" tx="310.65" ty="-240.55"/>
                   </matrix>
@@ -1179,7 +1179,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
 	子弹属性.子弹种类 = "热能射线";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
 	子弹属性.子弹速度 = 30;
-	子弹属性.Z轴攻击范围 = 50.
+	子弹属性.Z轴攻击范围 = 30.
 	子弹属性.击倒率 = 10;
 	子弹属性.水平击退速度 = NaN;
 	子弹属性.垂直击退速度 = NaN;
@@ -1214,12 +1214,12 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="231" duration="6" keyMode="9728">
+            <DOMFrame index="232" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="237" keyMode="9728">
+            <DOMFrame index="238" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
+                <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" selected="true" centerPoint3DX="341.4" centerPoint3DY="-219.05">
                   <matrix>
                     <Matrix a="1.24160766601563" d="1.24740600585938" tx="310.65" ty="-240.55"/>
                   </matrix>
@@ -1237,7 +1237,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
 	子弹属性.子弹种类 = "热能射线";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
 	子弹属性.子弹速度 = 30;
-	子弹属性.Z轴攻击范围 = 50.
+	子弹属性.Z轴攻击范围 = 30.
 	子弹属性.击倒率 = 10;
 	子弹属性.水平击退速度 = NaN;
 	子弹属性.垂直击退速度 = NaN;
@@ -1272,10 +1272,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="238" duration="6" keyMode="9728">
+            <DOMFrame index="239" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="244" keyMode="9728">
+            <DOMFrame index="245" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="341.4" centerPoint3DY="-219.05">
                   <matrix>
@@ -1295,7 +1295,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
 	子弹属性.子弹种类 = "热能射线";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
 	子弹属性.子弹速度 = 30;
-	子弹属性.Z轴攻击范围 = 50.
+	子弹属性.Z轴攻击范围 = 30.
 	子弹属性.击倒率 = 10;
 	子弹属性.水平击退速度 = NaN;
 	子弹属性.垂直击退速度 = NaN;
@@ -1330,12 +1330,12 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="245" duration="29" keyMode="9728">
+            <DOMFrame index="246" duration="29" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="274" duration="2" keyMode="9728">
+            <DOMFrame index="275" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-308.45" centerPoint3DY="-108.4">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="-308.45" centerPoint3DY="-108.4">
                   <matrix>
                     <Matrix a="4.69776916503906" d="25.6688842773438" tx="-612.25" ty="-244.2"/>
                   </matrix>
@@ -1388,10 +1388,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="276" duration="2" keyMode="9728">
+            <DOMFrame index="277" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="278" duration="2" keyMode="9728">
+            <DOMFrame index="279" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-308.45" centerPoint3DY="-108.4">
                   <matrix>
@@ -1446,10 +1446,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="280" duration="29" keyMode="9728">
+            <DOMFrame index="281" duration="29" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="309" duration="2" keyMode="9728">
+            <DOMFrame index="310" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-1074.95" centerPoint3DY="-724.4">
                   <matrix>
@@ -1469,7 +1469,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 50;
 	子弹属性.击倒率 = 10;
 	子弹属性.毒 = 0;
 	子弹属性.伤害类型 = "魔法";
@@ -1504,10 +1504,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="311" keyMode="9728">
+            <DOMFrame index="312" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="312" duration="2" keyMode="9728">
+            <DOMFrame index="313" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-1074.95" centerPoint3DY="-724.4">
                   <matrix>
@@ -1527,7 +1527,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 50;
 	子弹属性.击倒率 = 10;
 	子弹属性.毒 = 0;
 	子弹属性.伤害类型 = "魔法";
@@ -1562,10 +1562,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="314" keyMode="9728">
+            <DOMFrame index="315" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="315" duration="2" keyMode="9728">
+            <DOMFrame index="316" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-1074.95" centerPoint3DY="-724.4">
                   <matrix>
@@ -1585,7 +1585,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 50;
 	子弹属性.击倒率 = 10;
 	子弹属性.毒 = 0;
 	子弹属性.伤害类型 = "魔法";
@@ -1620,7 +1620,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="317" duration="22" keyMode="9728">
+            <DOMFrame index="318" duration="22" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1656,7 +1656,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="音效" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -2666,7 +2666,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="310" duration="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/闪流步兵闪电特效" selected="true" centerPoint3DX="138.25" centerPoint3DY="261.6">
+                <DOMSymbolInstance libraryItemName="特效/闪流步兵闪电特效" centerPoint3DX="138.25" centerPoint3DY="261.6">
                   <matrix>
                     <Matrix a="0.854644775390625" b="-1.055908203125" c="1.055908203125" d="0.854644775390625" tx="-99" ty="360.55"/>
                   </matrix>

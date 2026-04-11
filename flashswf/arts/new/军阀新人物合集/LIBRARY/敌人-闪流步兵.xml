@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-闪流步兵" itemID="69da7cdb-000011c4" linkageExportForAS="true" linkageIdentifier="敌人-闪流步兵" lastModified="1775933147" lastUniqueIdentifier="60">
   <timeline>
-    <DOMTimeline name="敌人-闪流步兵">
+    <DOMTimeline name="敌人-闪流步兵" currentFrame="43">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -493,7 +493,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -548,7 +548,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="闪流步兵动画/闪流步兵-肘击（MAN）" centerPoint3DX="11.45" centerPoint3DY="-68.25">
+                <DOMSymbolInstance libraryItemName="闪流步兵动画/闪流步兵-肘击（MAN）" selected="true" centerPoint3DX="11.45" centerPoint3DY="-68.25">
                   <matrix>
                     <Matrix a="0.175399780273438" d="0.175369262695313" tx="43.05" ty="-67.5"/>
                   </matrix>
