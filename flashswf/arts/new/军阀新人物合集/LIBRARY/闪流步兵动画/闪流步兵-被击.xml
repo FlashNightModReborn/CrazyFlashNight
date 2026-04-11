@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪流步兵动画/闪流步兵-被击" itemID="69d8f4b5-000001c1" lastModified="1775928047" lastUniqueIdentifier="36">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪流步兵动画/闪流步兵-被击" itemID="69d8f4b5-000001c1" lastModified="1775934469" lastUniqueIdentifier="36">
   <timeline>
-    <DOMTimeline name="闪流步兵-被击" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="闪流步兵-被击" currentFrame="16" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="14" name="a0" labelType="name" keyMode="9728">
               <elements/>
@@ -12,15 +12,33 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
+        <DOMLayer name="代码层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="9" keyMode="9728">
+            <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="12" keyMode="9728">
+            <DOMFrame index="3" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (random(2) == 0)
+{
+	gotoAndPlay("磁能爆破");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="7" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (random(2) == 0)
+{
+	gotoAndPlay("磁能爆破");
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

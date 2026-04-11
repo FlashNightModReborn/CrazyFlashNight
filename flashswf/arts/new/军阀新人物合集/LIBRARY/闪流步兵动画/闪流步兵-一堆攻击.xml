@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪流步兵动画/闪流步兵-一堆攻击" itemID="69da74a7-00000a24" lastModified="1775933583" lastUniqueIdentifier="395">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪流步兵动画/闪流步兵-一堆攻击" itemID="69da74a7-00000a24" lastModified="1775934775" lastUniqueIdentifier="395">
   <timeline>
-    <DOMTimeline name="闪流步兵-一堆攻击" currentFrame="310" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="闪流步兵-一堆攻击" currentFrame="319" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
@@ -1620,7 +1620,65 @@ gotoAndPlay(_parent.近战招式);]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="318" duration="22" keyMode="9728">
+            <DOMFrame index="318" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="319" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-1074.95" centerPoint3DY="-724.4">
+                  <matrix>
+                    <Matrix a="16.8163757324219" d="49.2208709716797" tx="-1378.75" ty="-860.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 50;
+	子弹属性.击倒率 = 10;
+	子弹属性.毒 = 0;
+	子弹属性.伤害类型 = "魔法";
+	子弹属性.魔法伤害属性 = "电";
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="321" duration="18" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
