@@ -25,7 +25,7 @@
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65ae6c71-00003849" isExpanded="true"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03"/>
           <DOMFolderItem name="怪物通用模板/血条与名称" itemID="65ae670e-000036fc"/>
-          <DOMFolderItem name="闪流步兵动画" itemID="69da7cf1-000011c5"/>
+          <DOMFolderItem name="闪流步兵动画" itemID="69da7cf1-000011c5" isExpanded="true"/>
           <DOMFolderItem name="素材" itemID="69d27e5b-00000164"/>
           <DOMFolderItem name="特效" itemID="69d7a7e4-000001c1"/>
           <DOMFolderItem name="吴豫Itinerant" itemID="66a75d0b-000006c4"/>
@@ -215,10 +215,11 @@
           <Include href="磁暴线圈支撑零件2.xml" itemIcon="1" loadImmediate="false" itemID="69aec1ff-0000008c" lastModified="1773060827"/>
           <Include href="磁暴线圈支撑正.xml" itemIcon="1" loadImmediate="false" itemID="69aec33e-000000a5" lastModified="1773068447"/>
           <Include href="磁暴线圈中心.xml" itemIcon="1" loadImmediate="false" itemID="69aee2dd-00000111" lastModified="1773069021"/>
-          <Include href="敌人-Gazer.xml" itemID="665b6b5e-000044ae" lastModified="1762183860"/>
-          <Include href="敌人-Itinerant.xml" itemID="66a1374f-00000492" lastModified="1755702302"/>
-          <Include href="敌人-Surveyor.xml" itemID="6652fae0-000012d7" lastModified="1755702531"/>
-          <Include href="敌人-闪流步兵.xml" itemID="69da7cdb-000011c4" lastModified="1775933147"/>
+          <Include href="敌人-Gazer.xml" itemID="665b6b5e-000044ae" lastModified="1775977461"/>
+          <Include href="敌人-Itinerant.xml" itemID="66a1374f-00000492" lastModified="1775977792"/>
+          <Include href="敌人-Surveyor.xml" itemID="6652fae0-000012d7" lastModified="1775977451"/>
+          <Include href="敌人-闪流步兵.xml" itemID="69da7cdb-000011c4" lastModified="1775977798"/>
+          <Include href="刚体标签.xml" loadImmediate="false" itemID="69db4565-00000893" lastModified="1775977869"/>
           <Include href="怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="69db020b-000002be" lastModified="1775960587"/>
           <Include href="怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65689e04-0000008e" lastModified="1700337299"/>
           <Include href="怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1705929037"/>
@@ -227,9 +228,9 @@
           <Include href="怪物通用模板/Symbol 25.xml" loadImmediate="false" itemID="65699d0d-0000008a" lastModified="1700331558"/>
           <Include href="怪物通用模板/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="65689e04-0000008f" lastModified="1701582054"/>
           <Include href="怪物通用模板/死亡消失元件/Symbol 39.xml" loadImmediate="false" itemID="6570b322-000003ec" lastModified="1701884437"/>
-          <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
           <Include href="怪物通用模板/通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="65ae68f0-00003738" lastModified="1705929134"/>
           <Include href="怪物通用模板/通用ai元件/思考标签.xml" loadImmediate="false" itemID="68145f67-0000024d" lastModified="1746165689"/>
+          <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
           <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1716387345"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1701884437"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1701884437"/>
@@ -240,7 +241,7 @@
           <Include href="闪流步兵动画/闪流步兵-击飞.xml" loadImmediate="false" itemID="69d8f601-0000021a" lastModified="1775928089"/>
           <Include href="闪流步兵动画/闪流步兵-跑步.xml" loadImmediate="false" itemID="69d28a45-00000423" lastModified="1775925989"/>
           <Include href="闪流步兵动画/闪流步兵-死亡.xml" loadImmediate="false" itemID="69d90123-00000740" lastModified="1775928230"/>
-          <Include href="闪流步兵动画/闪流步兵-一堆攻击.xml" loadImmediate="false" itemID="69da74a7-00000a24" lastModified="1775961514"/>
+          <Include href="闪流步兵动画/闪流步兵-一堆攻击.xml" loadImmediate="false" itemID="69da74a7-00000a24" lastModified="1775977942"/>
           <Include href="闪流步兵动画/闪流步兵-肘击（MAN）.xml" loadImmediate="false" itemID="69d2952a-000005ba" lastModified="1775934388"/>
           <Include href="闪流步兵动画/闪流步兵-走路.xml" loadImmediate="false" itemID="69d2861b-0000018e" lastModified="1775925277"/>
           <Include href="素材/军阀徽章.xml" itemIcon="1" loadImmediate="false" itemID="6999a3c9-000000a2" lastModified="1771676617"/>
@@ -643,7 +644,7 @@
                                                   <Point x="324.6" y="-89.2"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="敌人-Gazer" centerPoint3DX="417.35" centerPoint3DY="267.9">
+                                        <DOMSymbolInstance libraryItemName="敌人-Gazer" selected="true" centerPoint3DX="417.35" centerPoint3DY="267.9">
                                              <matrix>
                                                   <Matrix tx="92.75" ty="357.1"/>
                                              </matrix>
@@ -667,7 +668,7 @@
                                                   <Point x="112.7" y="261.05"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="敌人-闪流步兵" selected="true" centerPoint3DX="470.3" centerPoint3DY="556.2">
+                                        <DOMSymbolInstance libraryItemName="敌人-闪流步兵" centerPoint3DX="470.3" centerPoint3DY="556.2">
                                              <matrix>
                                                   <Matrix tx="74" ty="649.65"/>
                                              </matrix>
