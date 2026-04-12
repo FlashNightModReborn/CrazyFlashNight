@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-防御地带/出生点-防御地带内部入口" itemID="6826dc87-0000031d" linkageExportForAS="true" linkageIdentifier="出生点-防御地带内部入口" lastModified="1747378426" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-防御地带/出生点-防御地带内部入口" itemID="6826dc87-0000031d" linkageExportForAS="true" linkageIdentifier="出生点-防御地带内部入口" lastModified="1776002985" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="出生点-防御地带内部入口">
+    <DOMTimeline name="出生点-防御地带内部入口" currentFrame="11">
       <layers>
         <DOMLayer name="label" color="#FF4FFF" autoNamed="false">
           <frames>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="50" keyMode="9728">
               <Actionscript>
@@ -32,6 +32,25 @@ gotoAndPlay("关门");]]></script>
             <DOMFrame index="50" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndStop("正常");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("电梯开门.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="40" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("电梯开门.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -87,10 +106,10 @@ gotoAndPlay("关门");]]></script>
                   </strokes>
                   <edges>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!56363 -11685|56556 -11685!56556 -11685|56556 -1729"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!56556 -1729|56884 -1729!56884 -1729|56884 -11741!56884 -11741|56612 -12004!56612 -12004|45665 -12004!45665 -12004|45393 -11741!45393 -11741|45393 -1729!45393 -1729|45721 -1729"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!45721 -1729|45721 -11685!45721 -11685|45913 -11685"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!45913 -11685|56363 -11685"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!56556 -1729|56363 -1927!56363 -1927|56363 -11685"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!56363 -11685|45913 -11685"/>
-                    <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!45913 -11685|45721 -11685!45721 -11685|45721 -1729"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!45721 -1729|45393 -1729!45393 -1729|45393 -11741!45393 -11741|45665 -12004!45665 -12004|56612 -12004!56612 -12004|56884 -11741!56884 -11741|56884 -1729!56884 -1729|56556 -1729"/>
                     <Edge fillStyle1="3" strokeStyle="1" edges="!45913 -11685|45913 -1927!45913 -1927|45721 -1729"/>
                   </edges>
                 </DOMShape>
@@ -131,7 +150,7 @@ gotoAndPlay("关门");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="防御地带内部入口门右" color="#FF800A" parentLayerIndex="3" autoNamed="false">
+        <DOMLayer name="防御地带内部入口门右" color="#FF800A" parentLayerIndex="4" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -216,7 +235,7 @@ gotoAndPlay("关门");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="防御地带内部入口门左" color="#FF4FFF" parentLayerIndex="5" autoNamed="false">
+        <DOMLayer name="防御地带内部入口门左" color="#FF4FFF" parentLayerIndex="6" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -291,7 +310,7 @@ gotoAndPlay("关门");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!2199 -15575|-16899 -15575!-16899 -15575|-16899 -26480!-16899 -26480|2199 -26480!2199 -26480|2199 -15575"/>
+                    <Edge fillStyle1="1" edges="!2199 -26480|2199 -15575!2199 -15575|-16899 -15575!-16899 -15575|-16899 -26480!-16899 -26480|2199 -26480"/>
                   </edges>
                 </DOMShape>
               </elements>

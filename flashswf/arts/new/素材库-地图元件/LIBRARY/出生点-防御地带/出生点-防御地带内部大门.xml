@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-防御地带/出生点-防御地带内部大门" itemID="6826e0af-000002be" linkageExportForAS="true" linkageIdentifier="出生点-防御地带内部大门" lastModified="1747378799" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-防御地带/出生点-防御地带内部大门" itemID="6826e0af-000002be" linkageExportForAS="true" linkageIdentifier="出生点-防御地带内部大门" lastModified="1776003019" lastUniqueIdentifier="16">
   <timeline>
-    <DOMTimeline name="出生点-防御地带内部大门" currentFrame="49">
+    <DOMTimeline name="出生点-防御地带内部大门" currentFrame="10">
       <layers>
         <DOMLayer name="label" color="#FF4FFF" autoNamed="false">
           <frames>
@@ -37,6 +37,25 @@ gotoAndPlay("关门");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("货梯开门.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="40" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("货梯关门.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="遮罩" color="#9933CC" locked="true" autoNamed="false" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="50" keyMode="9728">
@@ -55,7 +74,7 @@ gotoAndPlay("关门");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" parentLayerIndex="2" locked="true">
+        <DOMLayer name="图层 3" color="#FF800A" parentLayerIndex="3" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -125,7 +144,7 @@ gotoAndPlay("关门");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" parentLayerIndex="4" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F" parentLayerIndex="5" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

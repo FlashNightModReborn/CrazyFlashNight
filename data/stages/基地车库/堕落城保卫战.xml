@@ -142,7 +142,7 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种264</Type>
+                        <Type>兵种445</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
@@ -241,7 +241,7 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种267</Type>
+                        <Type>兵种445</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
@@ -284,6 +284,96 @@
                         <Level>45</Level>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
+                    <Enemy>
+                        <Type>兵种71</Type>
+                        <Interval>2700</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <超时空传送>true</超时空传送>
+                            <extra>
+                                <muti>
+                                    <命中率>0.1</命中率>
+                                    <躲闪率>10</躲闪率>
+                                    <防御力>0.5</防御力>
+                                    <空手攻击力>0.5</空手攻击力>
+                                </muti>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种71</Type>
+                        <Interval>2700</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <超时空传送>true</超时空传送>
+                            <extra>
+                                <muti>
+                                    <命中率>0.1</命中率>
+                                    <躲闪率>10</躲闪率>
+                                    <防御力>0.5</防御力>
+                                    <空手攻击力>0.5</空手攻击力>
+                                </muti>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种72</Type>
+                        <Interval>2700</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                        <Parameters>
+                            <超时空传送>true</超时空传送>
+                            <extra>
+                                <muti>
+                                    <命中率>0.1</命中率>
+                                    <躲闪率>10</躲闪率>
+                                    <防御力>0.5</防御力>
+                                    <空手攻击力>0.5</空手攻击力>
+                                </muti>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种72</Type>
+                        <Interval>2700</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <超时空传送>true</超时空传送>
+                            <extra>
+                                <muti>
+                                    <命中率>0.1</命中率>
+                                    <躲闪率>10</躲闪率>
+                                    <防御力>0.5</防御力>
+                                    <空手攻击力>0.5</空手攻击力>
+                                </muti>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种74</Type>
+                        <Interval>2800</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <超时空传送>true</超时空传送>
+                            <extra>
+                                <muti>
+                                    <命中率>0.1</命中率>
+                                    <躲闪率>10</躲闪率>
+                                    <防御力>0.5</防御力>
+                                    <空手攻击力>0.5</空手攻击力>
+                                </muti>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
                 </EnemyGroup>
             </SubWave>
             <SubWave id="2">
@@ -310,9 +400,18 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy>
+                        <Type>兵种445</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <IsHostile>false</IsHostile>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>称号:军阀</Parameters>
+                    </Enemy>
+                    <Enemy>
                         <Type>兵种372</Type>
                         <Interval>1600</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>45</Level>
                         <SpawnIndex>1</SpawnIndex>
                         <Parameters>
@@ -330,7 +429,7 @@
                     <Enemy>
                         <Type>兵种373</Type>
                         <Interval>1600</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>45</Level>
                         <SpawnIndex>0</SpawnIndex>
                         <Parameters>
@@ -348,7 +447,7 @@
                     <Enemy>
                         <Type>兵种372</Type>
                         <Interval>1600</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>45</Level>
                         <SpawnIndex>2</SpawnIndex>
                         <Parameters>
@@ -366,7 +465,7 @@
                     <Enemy>
                         <Type>兵种373</Type>
                         <Interval>1600</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>45</Level>
                         <SpawnIndex>3</SpawnIndex>
                         <Parameters>
