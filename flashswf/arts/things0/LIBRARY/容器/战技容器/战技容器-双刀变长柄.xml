@@ -1,15 +1,15 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-双刀变长柄" itemID="69db8c15-00000a44" linkageExportForAS="true" linkageIdentifier="战技容器-双刀变长柄" lastModified="1776001707" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-双刀变长柄" itemID="69db8c15-00000a44" linkageExportForAS="true" linkageIdentifier="战技容器-双刀变长柄" lastModified="1776012788" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="战技容器-双刀变长柄" currentFrame="24">
+    <DOMTimeline name="战技容器-双刀变长柄" currentFrame="12">
       <layers>
-        <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="拆招层" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" name="双刀变长柄" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="拆招层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="拆招层" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="24" keyMode="9728">
               <elements/>
@@ -25,56 +25,400 @@ _root.战技路由.动画完毕(this, _parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("收刀.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("青年冷峻-打斗11_01.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[{
+	_root.播放音效("砸地.wav");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹控制as" color="#FF4FFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="385" centerPoint3DY="385.55">
+                  <matrix>
+                    <Matrix a="8.689697265625" d="7.45372009277344" tx="391.35" ty="-93.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.85" y="74.05"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	
+	自机 = _root.获得父节点(this,2);
+	子弹属性.子弹威力 = 自机.空手攻击力 * 0.1 + 自机.等级 * 10 + 自机.刀属性.power * 5;
+	if(自机.等级 < 12){
+		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 50;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.区域定位area = this.area;
+	_root.子弹区域shoot传递(子弹属性);
+}
+	/*
+	子弹属性.吸血 = 50;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	*/
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹控制as" color="#4FFFFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="237.1" centerPoint3DY="275.5">
+                  <matrix>
+                    <Matrix a="5.88461303710938" d="5.02641296386719" tx="240.9" ty="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.85" y="74.15"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	
+	自机 = _root.获得父节点(this,2);
+	子弹属性.子弹威力 = 自机.空手攻击力 * 0.1 + 自机.等级 * 1 + 自机.刀属性.power * 1.5;
+	if(自机.等级 < 12){
+		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 50;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.区域定位area = this.area;
+	_root.子弹区域shoot传递(子弹属性);
+}
+	/*
+	子弹属性.吸血 = 50;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	*/
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-61" centerPoint3DY="219.5">
+                  <matrix>
+                    <Matrix a="5.88461303710938" d="5.02641296386719" tx="-57.2" ty="-79.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.85" y="74.15"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	
+	自机 = _root.获得父节点(this,2);
+	子弹属性.子弹威力 = 自机.空手攻击力 * 0.1 + 自机.等级 * 5 + 自机.刀属性.power * 3;
+	if(自机.等级 < 12){
+		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 50;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.区域定位area = this.area;
+	_root.子弹区域shoot传递(子弹属性);
+}
+	/*
+	子弹属性.吸血 = 50;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	*/
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="1004.65" centerPoint3DY="355.55">
+                  <matrix>
+                    <Matrix a="5.24966430664063" d="5.63578796386719" tx="1007.95" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.85" y="74.1"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 2;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	
+	自机 = _root.获得父节点(this,2);
+	子弹属性.子弹威力 = 自机.空手攻击力 * 0.1 + 自机.等级 * 5 + 自机.刀属性.power * 3;
+	if(自机.等级 < 12){
+		子弹属性.子弹威力 = Math.floor(子弹属性.子弹威力 * (自机.等级 + 5)/20)
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 50;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.区域定位area = this.area;
+	_root.子弹区域shoot传递(子弹属性);
+}
+	/*
+	子弹属性.吸血 = 50;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	*/
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="攻击点" color="#808080" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="剑匣判定" centerPoint3DX="182.55" centerPoint3DY="-53.4">
+                  <matrix>
+                    <Matrix a="4.81607055664063" d="4.72021484375" tx="170.05" ty="-65.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_parent._parent.刀 != "")
+	{
+		_parent._parent.根据模式重新读取武器加成("兵器");
+	}
+	this.onUnload = function()
+	{
+		if (_parent._parent.状态 == "技能")
+		{
+			_parent._parent.根据模式重新读取武器加成("空手");
+		}
+		else if (_parent._parent.攻击模式 != "")
+		{
+			_parent._parent.根据模式重新读取武器加成(_parent._parent.攻击模式);
+		}
+	};
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="攻击时移动" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                  <matrix>
+                    <Matrix tx="-21.45" ty="296.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.攻击时可改变移动方向(5);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="移动点2" color="#FF4F4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="移动点2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF">
-          <frames>
-            <DOMFrame index="0" duration="25" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="攻击点" color="#808080" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="25" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="25" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="移动点2" color="#FF4F4F" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="25" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="移动点2" color="#4FFF4F" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="25" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="刚体标签" color="#9933CC" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements>
@@ -90,24 +434,42 @@ _root.战技路由.动画完毕(this, _parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="无敌标签" color="#FF800A" autoNamed="false">
+        <DOMLayer name="无敌标签" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-182.25" centerPoint3DY="271.55">
+                  <matrix>
+                    <Matrix tx="-182.25" ty="271.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" centerPoint3DX="-217.75" centerPoint3DY="293.45">
+                  <matrix>
+                    <Matrix tx="-182.25" ty="305.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-35.5" y="-12"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -273,7 +635,7 @@ _root.战技路由.动画完毕(this, _parent);]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!30787 4980S1[30282 -4196 22664 -9134!22664 -9134|23546 4928!23546 4928|30787 4980"/>
+!23546 4928S1|30787 4980!30787 4980[30282 -4196 22664 -9134!22664 -9134|23546 4928"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -346,7 +708,7 @@ _root.战技路由.动画完毕(this, _parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#009999" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#009999" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -5664,7 +6026,7 @@ _root.战技路由.动画完毕(this, _parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 40" color="#FF4F4F">
+        <DOMLayer name="图层 40" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements>
@@ -5710,7 +6072,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 61" color="#9933CC" autoNamed="false">
+        <DOMLayer name="Sound Layer 61" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>

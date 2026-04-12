@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-蓄力重劈" itemID="695a431f-000015c6" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-蓄力重劈" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-蓄力重劈" itemID="695a431f-000015c6" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-蓄力重劈" lastModified="1776006974">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-蓄力重劈">
+    <DOMTimeline name="兵器攻击容器-蓄力重劈" currentFrame="31">
       <layers>
-        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="31" name="蓄力重劈" labelType="name" keyMode="9728">
               <elements/>
@@ -364,7 +364,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="363.4" centerPoint3DY="-90.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="363.4" centerPoint3DY="-90.55">
                   <matrix>
                     <Matrix a="-0.104690551757813" b="-0.936447143554688" c="0.936447143554688" d="-0.104690551757813" tx="216.4" ty="35.95"/>
                   </matrix>
@@ -389,7 +389,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="34" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="187.25" centerPoint3DY="259.65">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="187.25" centerPoint3DY="259.65">
                   <matrix>
                     <Matrix a="23.0612945556641" d="4.57438659667969" tx="400.7" ty="245.05"/>
                   </matrix>
@@ -792,7 +792,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左下臂-2" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="左下臂-2" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
