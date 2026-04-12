@@ -25,6 +25,7 @@ import org.flashNight.arki.component.Buff.Component.*;
 #include "../逻辑/装备函数/红外夜视仪.as"
 #include "../逻辑/装备函数/电感切割刃.as"
 #include "../逻辑/装备函数/炎魔斩new.as"
+#include "../逻辑/装备函数/烬灭裁决.as"
 #include "../逻辑/装备函数/死者之手.as"
 
 #include "../逻辑/装备函数/双面雷神.as"

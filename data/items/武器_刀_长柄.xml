@@ -350,6 +350,7 @@
         <level>45</level>
         <weight>20</weight>
         <dressup>刀-烬灭裁决长柄</dressup>
+        <dressup2>刀-烬灭裁决副剑</dressup2>
         <power>354</power>
         <defence>100</defence>
         <rout>0.05</rout>
@@ -357,5 +358,18 @@
         <vampirism>3</vampirism>
         <bladeCount>5</bladeCount>
       </data>
+      <lifecycle>
+        <attr_0>
+          <init>
+            <initRoutines>烬灭裁决初始化</initRoutines>
+            <initParam>
+              <默认双刀>false</默认双刀>
+            </initParam>
+          </init>
+          <cycle>
+            <cycleRoutines>烬灭裁决周期</cycleRoutines>
+          </cycle>
+        </attr_0>
+      </lifecycle>
     </item>
 </root>

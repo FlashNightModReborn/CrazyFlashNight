@@ -43,7 +43,7 @@
           <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504"/>
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798"/>
           <DOMFolderItem name="容器/武器变形容器" itemID="69cb66ff-00000ab7" isExpanded="true"/>
-          <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79"/>
+          <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79" isExpanded="true"/>
           <DOMFolderItem name="容器/战技容器/sprite" itemID="695e92dd-000012bc"/>
           <DOMFolderItem name="容器/战技容器/属性标签标志元件" itemID="695e8bfa-000070f2"/>
           <DOMFolderItem name="尚未整理" itemID="693ece28-00001dc3"/>
@@ -1361,8 +1361,6 @@
           <Include href="容器/空手攻击容器/平A/空手攻击容器-兽形拳1连招.xml" itemID="6964d0f9-000026f0" lastModified="1771683054"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-腕刃1连招.xml" itemID="6963b211-00000fda" lastModified="1770225277"/>
           <Include href="容器/容器.xml" loadImmediate="false" itemID="6957d2ea-0000091e" lastModified="1768414239"/>
-          <Include href="容器/武器变形容器/！武器变形容器-双刀变长柄.xml" loadImmediate="false" itemID="69cb68c0-00000c90" lastModified="1774938812"/>
-          <Include href="容器/武器变形容器/！武器变形容器-长柄变双刀.xml" loadImmediate="false" itemID="69cb68c5-00000c91" lastModified="1774938309"/>
           <Include href="容器/战技容器/！战技容器-逆暴雨.xml" loadImmediate="false" itemID="6993780a-00000b8f" lastModified="1771272354"/>
           <Include href="容器/战技容器/sprite/Symbol 8.xml" loadImmediate="false" itemID="695e92f4-00001514" lastModified="1767805684"/>
           <Include href="容器/战技容器/sprite/Symbol 12.xml" loadImmediate="false" itemID="695e92f4-0000150a" lastModified="1767805684"/>
@@ -1412,14 +1410,16 @@
           <Include href="容器/战技容器/战技容器-破坏殆尽.xml" itemID="69592333-00000e49" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-漆黑凶斩.xml" itemID="6959ed7a-00000ab6" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-深冲利刺.xml" itemID="697b98a5-0000160d" lastModified="1771254459"/>
-          <Include href="容器/战技容器/战技容器-手部发射.xml" itemID="6967dd18-00000c38" lastModified="1769694922"/>
+          <Include href="容器/战技容器/战技容器-手部发射.xml" itemID="6967dd18-00000c38" lastModified="1775996771"/>
+          <Include href="容器/战技容器/战技容器-双刀变长柄.xml" itemID="69db8c15-00000a44" lastModified="1776001707"/>
           <Include href="容器/战技容器/战技容器-瞬步斩.xml" itemID="6959e9f0-000009b9" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-突刺.xml" itemID="6967ddae-00000ce5" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-猩红凶斩.xml" itemID="6958efa4-0000307e" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-凶斩.xml" itemID="6959e9c2-00000938" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-旋风腿.xml" itemID="6959da65-000011b7" lastModified="1771781258"/>
           <Include href="容器/战技容器/战技容器-一文字落雷.xml" itemID="695e518e-0000599b" lastModified="1769694922"/>
-          <Include href="容器/战技容器/战技容器-战技小跳.xml" itemID="695a6637-00001877" lastModified="1769694922"/>
+          <Include href="容器/战技容器/战技容器-战技小跳.xml" itemID="695a6637-00001877" lastModified="1775995967"/>
+          <Include href="容器/战技容器/战技容器-长柄变双刀.xml" itemID="69db8c1e-00000a45" lastModified="1776001710"/>
           <Include href="容器/战技容器/战技容器-掌炮.xml" itemID="6959110f-00000989" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-重力操作.xml" itemID="69592474-00000eab" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-追踪五连.xml" itemID="69590fc9-00000924" lastModified="1769694922"/>
@@ -2672,6 +2672,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4097587" publishTime="1776001104"/>
+          <PublishItem publishSize="4097587" publishTime="1775996823"/>
           <PublishItem publishSize="4080252" publishTime="1775476898"/>
           <PublishItem publishSize="4124259" publishTime="1774117172"/>
           <PublishItem publishSize="4139894" publishTime="1774114547"/>
@@ -2690,7 +2692,5 @@
           <PublishItem publishSize="4128398" publishTime="1771997095"/>
           <PublishItem publishSize="4128415" publishTime="1771995768"/>
           <PublishItem publishSize="4128404" publishTime="1771995437"/>
-          <PublishItem publishSize="4128311" publishTime="1771994892"/>
-          <PublishItem publishSize="4128309" publishTime="1771993195"/>
      </publishHistory>
 </DOMDocument>
