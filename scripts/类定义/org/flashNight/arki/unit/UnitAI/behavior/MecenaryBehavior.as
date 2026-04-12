@@ -1,6 +1,7 @@
 ﻿import org.flashNight.neur.StateMachine.FSM_Status;
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
 import org.flashNight.neur.Navigation.AStarGrid;
+import org.flashNight.neur.Event.EventBus;
 import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.arki.unit.UnitAI.core.AIEnvironment;
 import org.flashNight.arki.unit.UnitAI.core.BaseUnitBehavior;
@@ -8,6 +9,7 @@ import org.flashNight.arki.unit.UnitAI.core.UnitAIData;
 import org.flashNight.arki.spatial.move.*;
 import org.flashNight.sara.util.*;
 import org.flashNight.arki.render.*;
+import org.flashNight.arki.collision.CollisionLayerRenderer;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 
 // 场景中佣兵与可雇佣敌人NPC的状态机，继承单位状态机基类
@@ -35,6 +37,10 @@ class org.flashNight.arki.unit.UnitAI.behavior.MecenaryBehavior extends BaseUnit
 
     // A* 网格参数
     private static var NAV_CELL_SIZE:Number = 15; // 格子大小（像素）
+
+    // 导航网格脏标记（由 CollisionLayerRenderer.EVENT_COLLISION_CHANGED 驱动）
+    private static var _navDirty:Boolean = false;
+    private static var _navSubscribed:Boolean = false;
 
     public function MecenaryBehavior(_data:UnitAIData) {
         super(_data);
@@ -69,12 +75,41 @@ class org.flashNight.arki.unit.UnitAI.behavior.MecenaryBehavior extends BaseUnit
     // ═══════════════════════════════════════════
 
     /**
+     * 碰撞层变化事件处理器：标记网格为脏，下次 getNavGrid() 时重建。
+     * 用 static 方法而非闭包，便于 EventBus v3.0 的 (callback, scope) 去重。
+     */
+    private static function _onCollisionChanged():Void {
+        _navDirty = true;
+    }
+
+    /**
      * 获取或构建当前场景的 A* 导航网格（懒加载）。
      * 网格挂在 AIEnvironment.getGameworld()._mercNavGrid 上，场景切换时随 gameworld 自动释放。
      * 只在首次 L-path 全部失败时调用，大多数简单地图不会触发。
+     * 订阅 CollisionLayer 变化事件：运行时障碍物增减会自动触发下次重建。
      */
     private static function getNavGrid():AStarGrid {
+        // 首次调用时订阅碰撞层变化事件（EventBus 内部去重，安全）
+        if (!_navSubscribed) {
+            EventBus.getInstance().subscribe(
+                CollisionLayerRenderer.EVENT_COLLISION_CHANGED,
+                _onCollisionChanged,
+                null
+            );
+            _navSubscribed = true;
+        }
+
         var gw:MovieClip = AIEnvironment.getGameworld();
+
+        // 消费脏标记：碰撞层自上次构建后有变化 → 丢弃旧网格
+        if (_navDirty && gw._mercNavGrid != undefined) {
+            delete gw._mercNavGrid;
+            delete gw._mercNavCellSize;
+            delete gw._mercNavXmin;
+            delete gw._mercNavYmin;
+        }
+        _navDirty = false;
+
         if (gw._mercNavGrid != undefined) {
             return AStarGrid(gw._mercNavGrid);
         }

@@ -66,10 +66,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Obstac
      * @param gameworld 游戏世界MovieClip（参数保留用于向后兼容，实际未使用）
      */
     public static function clearAllObstacles(gameworld:MovieClip):Void {
-        var collisionLayer:MovieClip = _root.collisionLayer;
-        if (collisionLayer) {
-            collisionLayer.clear();
-            CollisionLayerRenderer.markDirty();
-        }
+        CollisionLayerRenderer.clearAll();
     }
 }

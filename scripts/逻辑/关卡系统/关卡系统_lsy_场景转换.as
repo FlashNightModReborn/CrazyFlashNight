@@ -456,7 +456,7 @@ _root.清除游戏世界组件 = function(){
 	SceneManager.instance.removeGameWorld();
 	
 	// 清除游戏世界相关组件
-	_root.collisionLayer.clear();
+	CollisionLayerRenderer.clearAll();
 	_root.gameworld层级定位器.removeMovieClip();
 	_root.层级管理器.检查层级范围();
 	_root.卸载后景();

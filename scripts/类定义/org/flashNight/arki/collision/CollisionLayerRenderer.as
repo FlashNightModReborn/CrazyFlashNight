@@ -180,6 +180,19 @@ class org.flashNight.arki.collision.CollisionLayerRenderer {
         }
     }
 
+    /**
+     * 清空碰撞层并标记脏。
+     * 供场景切换、批量障碍物重置等需要完全重绘的场景使用，
+     * 调用方不应直接调 collisionLayer.clear()，以确保事件订阅者（A* 网格、小地图等）收到变更通知。
+     */
+    public static function clearAll():Void {
+        var layer:MovieClip = _root.collisionLayer;
+        if (layer) {
+            layer.clear();
+            markDirty();
+        }
+    }
+
     // ==================== 脏标记管理 ====================
 
     /**
