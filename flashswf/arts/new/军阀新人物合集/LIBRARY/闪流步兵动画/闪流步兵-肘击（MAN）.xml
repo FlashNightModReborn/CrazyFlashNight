@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪流步兵动画/闪流步兵-肘击（MAN）" itemID="69d2952a-000005ba" lastModified="1775934388" lastUniqueIdentifier="379">
   <timeline>
-    <DOMTimeline name="闪流步兵-肘击（MAN）" currentFrame="21" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="闪流步兵-肘击（MAN）" currentFrame="96" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;419&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="v"&gt;-229&lt;/guideline&gt;&lt;guideline direction="v"&gt;-458&lt;/guideline&gt;&lt;guideline direction="v"&gt;-35&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -106,7 +106,7 @@ if (random(2) == 0)
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-200.25" centerPoint3DY="-400.55">
                   <matrix>
-                    <Matrix a="3.03108215332031" d="29.9278564453125" tx="-200.25" ty="-400.55"/>
+                    <Matrix a="3.03106689453125" d="29.9278564453125" tx="-200.25" ty="-400.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -271,7 +271,7 @@ if (random(2) == 0)
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-324" centerPoint3DY="-313.65">
                   <matrix>
-                    <Matrix a="6.52389526367188" d="26.4887237548828" tx="-324" ty="-313.65"/>
+                    <Matrix a="6.52389526367188" d="26.4887084960938" tx="-324" ty="-313.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -5407,7 +5407,7 @@ if (random(2) == 0)
                     <Matrix a="0.998886108398438" b="0.042938232421875" c="-0.042938232421875" d="0.998886108398438" tx="-234.9" ty="-90.75"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="16.45" y="72.75"/>
+                    <Point x="16.45" y="72.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="素材/闪流步兵头盔" symbolType="graphic" centerPoint3DX="-161.4" centerPoint3DY="-346.9" loop="loop">
@@ -12831,7 +12831,7 @@ if (random(2) == 0)
                     <Matrix a="0.998886108398438" b="0.042938232421875" c="-0.042938232421875" d="0.998886108398438" tx="-234.9" ty="-90.75"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="16.45" y="72.65"/>
+                    <Point x="16.45" y="72.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="素材/闪流步兵头盔" symbolType="graphic" centerPoint3DX="-161.4" centerPoint3DY="-346.9" loop="loop">
