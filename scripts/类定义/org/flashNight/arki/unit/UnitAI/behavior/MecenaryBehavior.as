@@ -41,6 +41,9 @@ class org.flashNight.arki.unit.UnitAI.behavior.MecenaryBehavior extends BaseUnit
     // 导航网格脏标记（由 CollisionLayerRenderer.EVENT_COLLISION_CHANGED 驱动）
     private static var _navDirty:Boolean = false;
     private static var _navSubscribed:Boolean = false;
+    // 导航网格版本号：每次碰撞层变化递增，已缓存 waypoints 的单位比对此值判断自身路径是否过期
+    // 初值从 1 开始，data.wpNavVersion 默认 undefined → 永不等于 1，强制首次路径也打版本号
+    private static var _navVersion:Number = 1;
 
     public function MecenaryBehavior(_data:UnitAIData) {
         super(_data);
@@ -80,6 +83,7 @@ class org.flashNight.arki.unit.UnitAI.behavior.MecenaryBehavior extends BaseUnit
      */
     private static function _onCollisionChanged():Void {
         _navDirty = true;
+        _navVersion++;
     }
 
     /**
@@ -246,11 +250,15 @@ class org.flashNight.arki.unit.UnitAI.behavior.MecenaryBehavior extends BaseUnit
         }
         data.updateSelf();
 
-        // ── 如果已有未走完的 A* waypoint，直接继续 Walking ──
+        // ── 如果已有未走完的 A* waypoint，检查版本后决定是否续行 ──
         if (data.waypoints != null && data.waypointIndex < data.waypoints.length && data.target != null) {
-            // AIEnvironment.log("[佣兵AI] " + self._name + " wp续行 " + data.waypointIndex + "/" + data.waypoints.length);
-            this.superMachine.ChangeState("Walking");
-            return;
+            if (data.wpNavVersion == _navVersion) {
+                // AIEnvironment.log("[佣兵AI] " + self._name + " wp续行 " + data.waypointIndex + "/" + data.waypoints.length);
+                this.superMachine.ChangeState("Walking");
+                return;
+            }
+            // 网格已变，旧 waypoint 过期 → 清空，落入下方重新搜索逻辑
+            // AIEnvironment.log("[佣兵AI] " + self._name + " wp失效 v" + data.wpNavVersion + "→v" + _navVersion);
         }
 
         var newstate:String = null;
@@ -336,6 +344,7 @@ class org.flashNight.arki.unit.UnitAI.behavior.MecenaryBehavior extends BaseUnit
                     data.waypointIndex = 0;
                     data.wpStallCount = 0;
                     data.wpPrevDecisionIdx = -1;
+                    data.wpNavVersion = _navVersion;
                     data.updateTarget();
                     newstate = "Walking";
                     // AIEnvironment.log("[佣兵AI] " + self._name + " A*→" + bestDoor._name + " wp=" + bestPath.length);
@@ -380,6 +389,17 @@ class org.flashNight.arki.unit.UnitAI.behavior.MecenaryBehavior extends BaseUnit
         var sm = this.superMachine;
         var self:MovieClip = data.self;
         var onDecisionTick:Boolean = ((sm.actionCount & 3) == 0);
+
+        // ── 网格版本失效检查：障碍物变化后立即回 Thinking 重算 ──
+        if (data.waypoints != null && data.wpNavVersion != _navVersion) {
+            // AIEnvironment.log("[佣兵AI] " + self._name + " walk中wp失效 v" + data.wpNavVersion + "→v" + _navVersion);
+            data.waypoints = null;
+            data.waypointIndex = 0;
+            data.wpStallCount = 0;
+            data.wpPrevDecisionIdx = -1;
+            this.superMachine.ChangeState("Thinking");
+            return;
+        }
 
         // ── 每 tick 都执行：waypoint 到达检查与推进 ──
         // 移动速度 ×4帧/action = 单次 action 的最大位移，作为到达半径
