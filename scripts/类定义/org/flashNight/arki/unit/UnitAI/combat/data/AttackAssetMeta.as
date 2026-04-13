@@ -103,7 +103,7 @@ class org.flashNight.arki.unit.UnitAI.combat.data.AttackAssetMeta {
     // ───── 兵器资产聚合（15 条，subset 数组）─────
     //
     // subsets 数组字段：
-    //   kind               : "blade" (走 BladeShootCore × 刀_刀口数) | "direct" (走 _root.子弹区域shoot传递 × 1)
+    //   kind               : "blade" (helper → BladeShootCore × 刀_刀口数) | "direct" (_root.子弹区域shoot传递 × 1)
     //   passiveScope       : "weaponOnly" (子弹威力 += 刀.power×lvl×0.075，加法)
     //                        "wholeBullet" (子弹威力 *= 1 + lvl×0.075，整段乘法)
     //                        "none"
@@ -111,142 +111,165 @@ class org.flashNight.arki.unit.UnitAI.combat.data.AttackAssetMeta {
     //   effHitsUnarmed     : Σ (split / unarmedDiv) —— 空手部分（分母 3/5 混用）
     //   judgmentHitCount   : Σ split —— 每弹平加项触发次数
     //   bulletSpawnCount   : 此 subset 内 shoot 调用次数 —— 毒触发基准（再 × bladeCount for blade）
+    //
+    // direct subset 多数来自资产内"虚空刀" DOMLayer（动画补充判定段，每次普攻都触发）
+    //
+    // 数据来源：tools/parse_melee_subsets.py 自动从 1连招 XML 提取
+    //          运行：python tools/parse_melee_subsets.py（仓库根目录）
+    //          脚本头 docstring 含完整使用说明、解析规则、排错指引
+    //          —— 不要手改 effHits/Spawn 字段；改资产后重跑 parser
+    //          totalFrames/stages/firstStageFrames 仍为人工估算（parser 不解析 timeline 总帧数）
     private static function initMelee():Object {
         var m:Object = {};
 
-        // 1连招：基准 blade-only 资产
+        // 1连招：基准（虚空刀 layer 空）
         m["1连招"] = { totalFrames:74, stages:5, firstStageFrames:14,
                       subsets: [
                           { kind:"blade", passiveScope:"weaponOnly",
-                            effHitsWeapon:12.7, effHitsUnarmed:2.72,
+                            effHitsWeapon:12.70, effHitsUnarmed:2.65,
                             judgmentHitCount:11, bulletSpawnCount:11 }
                       ]};
 
-        // 刀剑：前半 blade/加法 + 后半 direct/整段乘
-        m["刀剑"] = { totalFrames:82, stages:5, firstStageFrames:15,
-                    subsets: [
-                        { kind:"blade",  passiveScope:"weaponOnly",
-                          effHitsWeapon:13.0, effHitsUnarmed:2.8,
-                          judgmentHitCount:10, bulletSpawnCount:10 },
-                        { kind:"direct", passiveScope:"wholeBullet",
-                          effHitsWeapon:18.0, effHitsUnarmed:3.6,
-                          judgmentHitCount:18, bulletSpawnCount:6 }
-                    ]};
-
-        // 双刀：blade-only
+        // 双刀：主手刀攻击 + 副手刀攻击 双 helper（虚空刀 layer 空）
         m["双刀"] = { totalFrames:85, stages:5, firstStageFrames:14,
                     subsets: [
                         { kind:"blade", passiveScope:"weaponOnly",
-                          effHitsWeapon:21.5, effHitsUnarmed:5.73,
-                          judgmentHitCount:20, bulletSpawnCount:20 }
+                          effHitsWeapon:27.50, effHitsUnarmed:7.33,
+                          judgmentHitCount:26, bulletSpawnCount:26 }
                     ]};
 
-        // 棍棒：blade-only
-        m["棍棒"] = { totalFrames:80, stages:5, firstStageFrames:16,
-                    subsets: [
-                        { kind:"blade", passiveScope:"weaponOnly",
-                          effHitsWeapon:20.7, effHitsUnarmed:5.78,
-                          judgmentHitCount:18, bulletSpawnCount:18 }
-                    ]};
-
-        // 狂野：前半 blade/加法 + 后半 direct/整段乘（高 effHits）
-        m["狂野"] = { totalFrames:95, stages:6, firstStageFrames:14,
-                    subsets: [
-                        { kind:"blade",  passiveScope:"weaponOnly",
-                          effHitsWeapon:33.5, effHitsUnarmed:5.27,
-                          judgmentHitCount:17, bulletSpawnCount:17 },
-                        { kind:"direct", passiveScope:"wholeBullet",
-                          effHitsWeapon:15.0, effHitsUnarmed:3.0,
-                          judgmentHitCount:15, bulletSpawnCount:5 }
-                    ]};
-
-        // 直剑：blade-only
+        // 直剑（虚空刀 layer 空）
         m["直剑"] = { totalFrames:76, stages:5, firstStageFrames:14,
                     subsets: [
                         { kind:"blade", passiveScope:"weaponOnly",
-                          effHitsWeapon:16.2, effHitsUnarmed:5.97,
+                          effHitsWeapon:16.20, effHitsUnarmed:3.18,
                           judgmentHitCount:13, bulletSpawnCount:13 }
                     ]};
 
-        // 短兵：前半 blade/加法 + 后半 direct/整段乘
+        // 刀剑：blade + 虚空刀 direct
+        m["刀剑"] = { totalFrames:82, stages:5, firstStageFrames:15,
+                    subsets: [
+                        { kind:"blade",  passiveScope:"weaponOnly",
+                          effHitsWeapon:13.00, effHitsUnarmed:2.80,
+                          judgmentHitCount:10, bulletSpawnCount:10 },
+                        { kind:"direct", passiveScope:"wholeBullet",
+                          effHitsWeapon:18.00, effHitsUnarmed:3.60,
+                          judgmentHitCount:18, bulletSpawnCount:6 }
+                    ]};
+
+        // 狂野：blade + 虚空刀 direct
+        m["狂野"] = { totalFrames:95, stages:6, firstStageFrames:14,
+                    subsets: [
+                        { kind:"blade",  passiveScope:"weaponOnly",
+                          effHitsWeapon:33.50, effHitsUnarmed:5.27,
+                          judgmentHitCount:17, bulletSpawnCount:17 },
+                        { kind:"direct", passiveScope:"wholeBullet",
+                          effHitsWeapon:18.00, effHitsUnarmed:3.60,
+                          judgmentHitCount:18, bulletSpawnCount:6 }
+                    ]};
+
+        // 短兵：blade + 虚空刀 direct
         m["短兵"] = { totalFrames:81, stages:5, firstStageFrames:15,
                     subsets: [
                         { kind:"blade",  passiveScope:"weaponOnly",
-                          effHitsWeapon:9.0, effHitsUnarmed:1.8,
-                          judgmentHitCount:9, bulletSpawnCount:9 },
+                          effHitsWeapon:13.00, effHitsUnarmed:2.60,
+                          judgmentHitCount:13, bulletSpawnCount:13 },
                         { kind:"direct", passiveScope:"wholeBullet",
-                          effHitsWeapon:3.0, effHitsUnarmed:0.6,
-                          judgmentHitCount:3, bulletSpawnCount:1 }
-                    ]};
-
-        // 短柄：采集不完整，fallback 近似（参照 1连招）
-        m["短柄"] = { totalFrames:72, stages:4, firstStageFrames:14,
-                    subsets: [
-                        { kind:"blade", passiveScope:"weaponOnly",
-                          effHitsWeapon:11.5, effHitsUnarmed:2.5,
-                          judgmentHitCount:9, bulletSpawnCount:9 }
-                    ]};
-
-        // 迅捷：采集不完整，fallback 近似
-        m["迅捷"] = { totalFrames:70, stages:5, firstStageFrames:12,
-                    subsets: [
-                        { kind:"blade", passiveScope:"weaponOnly",
-                          effHitsWeapon:12.0, effHitsUnarmed:2.6,
-                          judgmentHitCount:10, bulletSpawnCount:10 }
-                    ]};
-
-        // 重斩：blade-only（高威力重武器）
-        m["重斩"] = { totalFrames:92, stages:4, firstStageFrames:22,
-                    subsets: [
-                        { kind:"blade", passiveScope:"weaponOnly",
-                          effHitsWeapon:26.5, effHitsUnarmed:5.8,
-                          judgmentHitCount:19, bulletSpawnCount:19 }
-                    ]};
-
-        // 镰刀：blade-only
-        m["镰刀"] = { totalFrames:78, stages:4, firstStageFrames:17,
-                    subsets: [
-                        { kind:"blade", passiveScope:"weaponOnly",
-                          effHitsWeapon:15.0, effHitsUnarmed:3.067,
-                          judgmentHitCount:10, bulletSpawnCount:10 }
-                    ]};
-
-        // 长刀：blade-only（unarmedDiv 3/5 混用）
-        m["长刀"] = { totalFrames:84, stages:5, firstStageFrames:15,
-                    subsets: [
-                        { kind:"blade", passiveScope:"weaponOnly",
-                          effHitsWeapon:24.5, effHitsUnarmed:4.933,
-                          judgmentHitCount:15, bulletSpawnCount:15 }
-                    ]};
-
-        // 长枪：前半 blade + 后半 direct（旋击 split=3）
-        m["长枪"] = { totalFrames:90, stages:5, firstStageFrames:18,
-                    subsets: [
-                        { kind:"blade",  passiveScope:"weaponOnly",
-                          effHitsWeapon:19.5, effHitsUnarmed:2.0,
-                          judgmentHitCount:11, bulletSpawnCount:11 },
-                        { kind:"direct", passiveScope:"wholeBullet",
-                          effHitsWeapon:5.4, effHitsUnarmed:5.4,
+                          effHitsWeapon:27.00, effHitsUnarmed:5.40,
                           judgmentHitCount:27, bulletSpawnCount:9 }
                     ]};
 
-        // 长柄：blade-only
-        m["长柄"] = { totalFrames:88, stages:5, firstStageFrames:18,
-                    subsets: [
-                        { kind:"blade", passiveScope:"weaponOnly",
-                          effHitsWeapon:20.5, effHitsUnarmed:2.867,
-                          judgmentHitCount:13, bulletSpawnCount:13 }
-                    ]};
-
-        // 长棍：前半 blade + 后半 direct（旋击 split=3）
-        m["长棍"] = { totalFrames:86, stages:5, firstStageFrames:17,
+        // 短柄：blade + 虚空刀 direct
+        m["短柄"] = { totalFrames:72, stages:4, firstStageFrames:14,
                     subsets: [
                         { kind:"blade",  passiveScope:"weaponOnly",
-                          effHitsWeapon:18.5, effHitsUnarmed:2.4,
-                          judgmentHitCount:12, bulletSpawnCount:12 },
+                          effHitsWeapon:20.30, effHitsUnarmed:3.05,
+                          judgmentHitCount:13, bulletSpawnCount:13 },
                         { kind:"direct", passiveScope:"wholeBullet",
-                          effHitsWeapon:3.6, effHitsUnarmed:3.6,
+                          effHitsWeapon:38.70, effHitsUnarmed:6.00,
+                          judgmentHitCount:30, bulletSpawnCount:10 }
+                    ]};
+
+        // 迅捷：blade + 虚空刀 direct（少量）
+        m["迅捷"] = { totalFrames:70, stages:5, firstStageFrames:12,
+                    subsets: [
+                        { kind:"blade",  passiveScope:"weaponOnly",
+                          effHitsWeapon:19.00, effHitsUnarmed:4.60,
+                          judgmentHitCount:15, bulletSpawnCount:15 },
+                        { kind:"direct", passiveScope:"wholeBullet",
+                          effHitsWeapon:6.00, effHitsUnarmed:2.00,
+                          judgmentHitCount:6, bulletSpawnCount:2 }
+                    ]};
+
+        // 棍棒：blade + 虚空刀 direct
+        m["棍棒"] = { totalFrames:80, stages:5, firstStageFrames:16,
+                    subsets: [
+                        { kind:"blade",  passiveScope:"weaponOnly",
+                          effHitsWeapon:20.70, effHitsUnarmed:4.53,
+                          judgmentHitCount:18, bulletSpawnCount:18 },
+                        { kind:"direct", passiveScope:"wholeBullet",
+                          effHitsWeapon:8.50, effHitsUnarmed:2.40,
+                          judgmentHitCount:8, bulletSpawnCount:8 }
+                    ]};
+
+        // 重斩：blade + 虚空刀 direct
+        m["重斩"] = { totalFrames:92, stages:4, firstStageFrames:22,
+                    subsets: [
+                        { kind:"blade",  passiveScope:"weaponOnly",
+                          effHitsWeapon:26.00, effHitsUnarmed:5.67,
+                          judgmentHitCount:19, bulletSpawnCount:19 },
+                        { kind:"direct", passiveScope:"wholeBullet",
+                          effHitsWeapon:24.00, effHitsUnarmed:4.80,
+                          judgmentHitCount:24, bulletSpawnCount:8 }
+                    ]};
+
+        // 镰刀：blade + 虚空刀 direct
+        m["镰刀"] = { totalFrames:78, stages:4, firstStageFrames:17,
+                    subsets: [
+                        { kind:"blade",  passiveScope:"weaponOnly",
+                          effHitsWeapon:15.00, effHitsUnarmed:2.93,
+                          judgmentHitCount:10, bulletSpawnCount:10 },
+                        { kind:"direct", passiveScope:"wholeBullet",
+                          effHitsWeapon:33.00, effHitsUnarmed:6.60,
+                          judgmentHitCount:33, bulletSpawnCount:11 }
+                    ]};
+
+        // 长刀：blade + 虚空刀 direct
+        m["长刀"] = { totalFrames:84, stages:5, firstStageFrames:15,
+                    subsets: [
+                        { kind:"blade",  passiveScope:"weaponOnly",
+                          effHitsWeapon:21.00, effHitsUnarmed:4.20,
+                          judgmentHitCount:15, bulletSpawnCount:15 },
+                        { kind:"direct", passiveScope:"wholeBullet",
+                          effHitsWeapon:9.00, effHitsUnarmed:1.80,
+                          judgmentHitCount:9, bulletSpawnCount:3 }
+                    ]};
+
+        // 长枪：含旋击 helper（split=3）（虚空刀 layer 空）
+        m["长枪"] = { totalFrames:90, stages:5, firstStageFrames:18,
+                    subsets: [
+                        { kind:"blade", passiveScope:"weaponOnly",
+                          effHitsWeapon:38.00, effHitsUnarmed:7.60,
+                          judgmentHitCount:38, bulletSpawnCount:20 }
+                    ]};
+
+        // 长柄：blade + 虚空刀 direct
+        m["长柄"] = { totalFrames:88, stages:5, firstStageFrames:18,
+                    subsets: [
+                        { kind:"blade",  passiveScope:"weaponOnly",
+                          effHitsWeapon:14.00, effHitsUnarmed:2.80,
+                          judgmentHitCount:14, bulletSpawnCount:14 },
+                        { kind:"direct", passiveScope:"wholeBullet",
+                          effHitsWeapon:18.00, effHitsUnarmed:3.60,
                           judgmentHitCount:18, bulletSpawnCount:6 }
+                    ]};
+
+        // 长棍：含旋击 helper（split=3）（虚空刀 layer 空）
+        m["长棍"] = { totalFrames:86, stages:5, firstStageFrames:17,
+                    subsets: [
+                        { kind:"blade", passiveScope:"weaponOnly",
+                          effHitsWeapon:30.00, effHitsUnarmed:6.00,
+                          judgmentHitCount:30, bulletSpawnCount:18 }
                     ]};
 
         return m;

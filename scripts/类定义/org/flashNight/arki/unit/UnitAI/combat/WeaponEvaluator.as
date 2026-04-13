@@ -31,7 +31,12 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
     // ═══════ 武器威力偏置权重 ═══════
     //
     // 实际 DPS 通过 WeaponDpsEstimator 计算，log(dps/refDps)/2 压榨到 ±1
-    // 再乘 POWER_WEIGHT × 0.5 得到 ±0.15 分值偏移（不盖过距离/人格维度）
+    // 再乘 POWER_WEIGHT × 0.5 → 当前 0.6 × 0.5 = 0.30 封顶（每模式 ±0.30 分值偏移）
+    // 不同模式间最大相对差 0.60（一个 +0.30、一个 -0.30）
+    //
+    // 调参基准：射程最优 +0.10、迟滞 +0.15、健康压力 ±0.40。
+    // POWER_WEIGHT=0.6 让 DPS 信号在贴脸/远距能压过距离匹配，但仍小于健康压力。
+    // 降回 0.3 = ±0.15 旧口径，更保守；升到 1.0 = ±0.50，DPS 几乎主导。
 
     private static var POWER_WEIGHT:Number = 0.6;
 
@@ -39,7 +44,6 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
     //
     // min/max 定义每种武器的最优作战距离区间
     // 在区间内 → +0.1，偏离 → 按距离线性惩罚，封顶 -0.3
-    // 与 WEAPON_POWER 共同决定武器选择：power 管基准偏好，range 管距离适应
 
     private static var WEAPON_RANGES:Object = initWeaponRanges();
 
