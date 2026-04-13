@@ -1141,6 +1141,9 @@ _root.主角函数.攻击模式切换 = function(模式) {
             状态改变("攻击模式切换");
         }
     }
+    // AI DPS 缓存失效：攻击模式切换 → 跨模式毒合成 / 伤害类型等都变
+    org.flashNight.arki.unit.PlayerInfoProvider.invalidateDpsCache(this);
+
     if (_root.控制目标 === this._name) {
         _root.玩家信息界面.刷新攻击模式(this.攻击模式);
     }

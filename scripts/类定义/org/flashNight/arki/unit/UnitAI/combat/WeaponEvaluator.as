@@ -2,6 +2,7 @@
 import org.flashNight.arki.unit.UnitAI.combat.StanceManager;
 import org.flashNight.arki.unit.UnitAI.combat.AmmoHelper;
 import org.flashNight.arki.unit.UnitAI.core.AIEnvironment;
+import org.flashNight.arki.unit.PlayerInfoProvider;
 
 /**
  * WeaponEvaluator — 武器模式评估与切换
@@ -27,28 +28,12 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
     // ── 武器评估冷却 ──
     private var _lastWeaponSwitchFrame:Number;
 
-    // ═══════ 武器威力系数（DPS 代理）═══════
+    // ═══════ 武器威力偏置权重 ═══════
     //
-    // 控制武器选择的基础偏好：高系数 = 更高效的输出方式
-    // 当前硬编码，后续替换为 actualDPS / referenceDPS
-    // 中心化偏移公式：(power - 0.5) × POWER_WEIGHT
-    //   0.5 = 中性点（兵器），不改变原有评分
-    //   < 0.5 → 降权（空手），> 0.5 → 升权（远程）
-    //   远程牵制 > 近战换血 的战术思路通过系数差异表达
+    // 实际 DPS 通过 WeaponDpsEstimator 计算，log(dps/refDps)/2 压榨到 ±1
+    // 再乘 POWER_WEIGHT × 0.5 得到 ±0.15 分值偏移（不盖过距离/人格维度）
 
-    private static var WEAPON_POWER:Object = initWeaponPower();
-    private static var POWER_WEIGHT:Number = 0.3;  // 降权：让距离/人格有更多发言权
-
-    private static function initWeaponPower():Object {
-        var wp:Object = {};
-        wp["空手"] = 0.1;   // 极低：几乎不应主动选择
-        wp["兵器"] = 0.75;  // 近战武器，效率较高但有风险
-        wp["手枪"] = 0.6;   // 单手枪，略优于近战
-        wp["双枪"] = 0.8;   // 双持高火力
-        wp["长枪"] = 1.0;   // 最高效远程输出
-        wp["手雷"] = 0.5;   // 情境武器，中性
-        return wp;
-    }
+    private static var POWER_WEIGHT:Number = 0.6;
 
     // ═══════ 武器有效射程表（射程匹配度评分用）═══════
     //
@@ -184,67 +169,8 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
 
         for (var i:Number = 0; i < modes.length; i++) {
             var mode:String = modes[i];
-            var score:Number = scoreWeaponMode(mode, dist, hpRatio);
-
-            // ── 射程匹配度 ──
-            var wRange:Object = WEAPON_RANGES[mode];
-            if (wRange != null) {
-                if (dist < wRange.min) {
-                    var underPenalty:Number = -(wRange.min - dist) / 200;
-                    score += (underPenalty < -0.3) ? -0.3 : underPenalty;
-                } else if (dist > wRange.max) {
-                    var overPenalty:Number = -(dist - wRange.max) / 200;
-                    score += (overPenalty < -0.3) ? -0.3 : overPenalty;
-                } else {
-                    score += 0.1; // 在最优区间内
-                }
-            }
-
-            // ── 余弹比评分调制 ──
-            var ammoR:Number = getAmmoRatio(self, mode);
-            if (ammoR <= 0) {
-                score -= 0.5;
-            } else {
-                score += (ammoR - 0.5) * 0.2;
-            }
-
-            // ── 近距×缺弹交互惩罚（远程风筝失败信号）──
-            // 远程武器在射程下限内 + 弹药不健康 = 风筝失败，应切近战
-            // penalty = (1-ammoR) × (underRatio) × 0.5
-            //   dist=100, ammo=20%, min=150 → 0.8 × 0.33 × 0.5 = -0.13
-            //   dist=50,  ammo=10%, min=150 → 0.9 × 0.67 × 0.5 = -0.30
-            // 仅影响远程武器（近战 min=0，underRatio=0）
-            if (wRange != null && dist < wRange.min && ammoR < 0.5) {
-                var underRatio:Number = (wRange.min - dist) / wRange.min;
-                score -= (1 - ammoR) * underRatio * 0.5;
-            }
-
-            // ── S9: 撤退失效 → 近战偏置 ──
-            // 连续撤退未能拉开有效距离 = 远程风筝不可行
-            // 刷怪场景下撤退耗时→敌人越来越多→更难撤退，应果断切近战
-            var rfc:Number = data._retreatFailCount;
-            if (rfc >= 2) {
-                var failBias:Number = rfc * 0.2;
-                if (failBias > 0.5) failBias = 0.5;
-                if (mode == "兵器") {
-                    score += failBias;
-                } else if (mode == "空手") {
-                    score += failBias * 0.4;
-                } else {
-                    // 远程武器降权（抵消 healthPressure 的远程偏好）
-                    score -= failBias * 0.8;
-                }
-            }
-
-            // ── 切换成本 + 迟滞（hysteresis）──
-            if (mode == self.攻击模式) {
-                score += hysteresis; // 维持当前 → 加分
-            } else {
-                var switchCost:Number = baseSwitchCost * (1 - healthPressure * 0.7);
-                if (switchCost < 0.05) switchCost = 0.05;
-                score -= switchCost; // 切换 → 惩罚
-            }
-
+            var score:Number = finalModeScore(self, mode, dist, hpRatio, data,
+                                              baseSwitchCost, hysteresis, healthPressure);
             if (score > bestScore) {
                 bestScore = score;
                 bestMode = mode;
@@ -267,6 +193,7 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
         _stanceMgr.syncStance(self.攻击模式);
 
         // ── Debug 武器评估输出 ──
+        // 调用同一个 finalModeScore，确保显示分数与决策分数一致
         if (AIEnvironment.isAIDebug()) {
             var curMode:String = didSwitch ? prevMode : self.攻击模式;
             var dbgSwitchCost:Number = baseSwitchCost * (1 - healthPressure * 0.7);
@@ -274,12 +201,13 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
             var wmsg:String = "[WPN] " + self.名字 + " cur=" + curMode + " sc=" + (Math.round(dbgSwitchCost * 100) / 100) + " hy=" + (Math.round(hysteresis * 100) / 100) + " | ";
             for (var di:Number = 0; di < modes.length; di++) {
                 var dm:String = modes[di];
-                var ds:Number = scoreWeaponMode(dm, dist, hpRatio);
+                var dsFinal:Number = finalModeScore(self, dm, dist, hpRatio, data,
+                                                    baseSwitchCost, hysteresis, healthPressure);
                 var ar:Number = getAmmoRatio(self, dm);
-                var ammoAdj:Number = (ar <= 0) ? -0.5 : ((ar - 0.5) * 0.2);
-                var dsc:Number = (dm != curMode) ? -dbgSwitchCost : 0;
-                wmsg += dm + "=" + (Math.round((ds + ammoAdj + dsc) * 100) / 100);
+                wmsg += dm + "=" + (Math.round(dsFinal * 100) / 100);
                 if (dm != "空手" && dm != "兵器") wmsg += "[" + Math.round(ar * 100) + "%]";
+                var dbgDps:Number = lookupDpsForMode(self, dm);
+                if (dbgDps > 0) wmsg += "dps=" + Math.round(dbgDps);
                 wmsg += " ";
             }
             wmsg += "-> " + bestMode + (didSwitch ? " SWITCH!" : " hold");
@@ -288,6 +216,70 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
             wmsg += "]";
             AIEnvironment.log(wmsg);
         }
+    }
+
+    // ═══════ 武器模式综合评分（决策与 debug 共用）═══════
+    //
+    // 单一职责：把 scoreWeaponMode（基础人格/距离/DPS）+ wRange + 弹药 + 近距×缺弹
+    // + retreat fail bias + 切换成本/hysteresis 全部聚合
+    // 主循环和 debug 都调它，避免显示分数与决策分数漂移
+    private function finalModeScore(self:MovieClip, mode:String, dist:Number, hpRatio:Number,
+                                    data:UnitAIData, baseSwitchCost:Number,
+                                    hysteresis:Number, healthPressure:Number):Number {
+        var score:Number = scoreWeaponMode(self, mode, dist, hpRatio);
+
+        // ── 射程匹配度 ──
+        var wRange:Object = WEAPON_RANGES[mode];
+        if (wRange != null) {
+            if (dist < wRange.min) {
+                var underPenalty:Number = -(wRange.min - dist) / 200;
+                score += (underPenalty < -0.3) ? -0.3 : underPenalty;
+            } else if (dist > wRange.max) {
+                var overPenalty:Number = -(dist - wRange.max) / 200;
+                score += (overPenalty < -0.3) ? -0.3 : overPenalty;
+            } else {
+                score += 0.1;
+            }
+        }
+
+        // ── 余弹比评分调制 ──
+        var ammoR:Number = getAmmoRatio(self, mode);
+        if (ammoR <= 0) {
+            score -= 0.5;
+        } else {
+            score += (ammoR - 0.5) * 0.2;
+        }
+
+        // ── 近距×缺弹交互惩罚（远程风筝失败信号）──
+        if (wRange != null && dist < wRange.min && ammoR < 0.5) {
+            var underRatio:Number = (wRange.min - dist) / wRange.min;
+            score -= (1 - ammoR) * underRatio * 0.5;
+        }
+
+        // ── S9: 撤退失效 → 近战偏置 ──
+        var rfc:Number = data._retreatFailCount;
+        if (rfc >= 2) {
+            var failBias:Number = rfc * 0.2;
+            if (failBias > 0.5) failBias = 0.5;
+            if (mode == "兵器") {
+                score += failBias;
+            } else if (mode == "空手") {
+                score += failBias * 0.4;
+            } else {
+                score -= failBias * 0.8;
+            }
+        }
+
+        // ── 切换成本 + 迟滞 ──
+        if (mode == self.攻击模式) {
+            score += hysteresis;
+        } else {
+            var switchCost:Number = baseSwitchCost * (1 - healthPressure * 0.7);
+            if (switchCost < 0.05) switchCost = 0.05;
+            score -= switchCost;
+        }
+
+        return score;
     }
 
     // ═══════ 武器模式评分 ═══════
@@ -308,7 +300,7 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
      *   低血+低勇气: 高压 → 强烈偏向远程
      *   低血+高勇气: 低压 → 维持近战
      */
-    private function scoreWeaponMode(mode:String, dist:Number, hpRatio:Number):Number {
+    private function scoreWeaponMode(self:MovieClip, mode:String, dist:Number, hpRatio:Number):Number {
         var score:Number = 0;
         var courage:Number = p.勇气 || 0;
         var intel:Number = p.智力 || 0;
@@ -351,12 +343,40 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
                 break;
         }
 
-        // ── 武器威力系数偏移（DPS 代理层）──
-        var power:Number = WEAPON_POWER[mode];
-        if (power == undefined) power = 0.5;
-        score += (power - 0.5) * POWER_WEIGHT;
+        // ── 武器威力系数偏移（装备感知 DPS 代理）──
+        // log(dps/refDps) 压榨到 ±1，再 × POWER_WEIGHT × 0.5 封顶 ±0.15
+        // 手雷不进 DPS 排名（lookupDpsForMode 返回 0），跳过偏移
+        var dps:Number = lookupDpsForMode(self, mode);
+        if (dps > 0) {
+            var refDps:Number = PlayerInfoProvider.getReferenceDPS(self, listCandidateModes(self));
+            if (refDps <= 0) refDps = 1;
+            var logRatio:Number = Math.log(Math.max(dps, 1) / refDps);
+            var squashed:Number = logRatio / 2.0;
+            if (squashed > 1) squashed = 1;
+            else if (squashed < -1) squashed = -1;
+            score += squashed * 0.5 * POWER_WEIGHT;
+        }
 
         return score;
+    }
+
+    // ═══════ DPS 查询辅助 ═══════
+
+    private function lookupDpsForMode(self:MovieClip, mode:String):Number {
+        if (mode == "空手") return PlayerInfoProvider.getUnarmedDPS(self);
+        if (mode == "兵器") return PlayerInfoProvider.getMeleeDPS(self);
+        if (mode == "手枪" || mode == "双枪" || mode == "长枪")
+            return PlayerInfoProvider.getGunDPS(self, mode);
+        return 0;   // 手雷不进 DPS 排名
+    }
+
+    private function listCandidateModes(self:MovieClip):Array {
+        var m:Array = ["空手"];
+        if (self.刀) m.push("兵器");
+        if (self.手枪 && self.手枪2) m.push("双枪");
+        else if (self.手枪 || self.手枪2) m.push("手枪");
+        if (self.长枪) m.push("长枪");
+        return m;
     }
 
     // ═══════ 攻击范围设定 ═══════

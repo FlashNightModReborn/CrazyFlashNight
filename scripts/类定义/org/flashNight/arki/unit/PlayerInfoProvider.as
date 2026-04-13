@@ -3,6 +3,8 @@ import org.flashNight.arki.component.StatHandler.*;
 import org.flashNight.arki.unit.Action.Shoot.*;
 import org.flashNight.arki.unit.UnitUtil;
 import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
+import org.flashNight.arki.unit.UnitAI.combat.WeaponDpsEstimator;
+import org.flashNight.arki.unit.UnitAI.core.AIEnvironment;
 
 /**
  * 玩家信息提供者类
@@ -649,5 +651,65 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
         target.副手威力 = getOffHandPower(heroUnit);
         target.长枪威力 = getRiflePower(heroUnit);
         target.手雷威力 = getGrenadePower(heroUnit);
+    }
+
+    // ========================================
+    // AI DPS 估算缓存（粗排名，目标无关，30 帧 TTL）
+    // ========================================
+    // 缓存挂在 unit.估算 上；装备变化 / 攻击模式切换 显式 invalidate
+    // readOrComputeDps 用闭包 fn 延迟计算，避免重复调用 estimator
+
+    public static function getUnarmedDPS(unit:MovieClip):Number {
+        return readOrComputeDps(unit, "unarmed", function() {
+            return WeaponDpsEstimator.unarmedComboDPS(unit);
+        });
+    }
+
+    public static function getMeleeDPS(unit:MovieClip):Number {
+        return readOrComputeDps(unit, "melee", function() {
+            return WeaponDpsEstimator.meleeComboDPS(unit);
+        });
+    }
+
+    public static function getGunDPS(unit:MovieClip, mode:String):Number {
+        return readOrComputeDps(unit, "gun_" + mode, function() {
+            return WeaponDpsEstimator.gunSustainedDPS(unit, mode);
+        });
+    }
+
+    // 候选模式集的 DPS 中位数，用于 log-ratio 归一化基线。
+    // 键带 modes 签名，避免不同候选集读到同一条陈旧中位数
+    public static function getReferenceDPS(unit:MovieClip, modes:Array):Number {
+        var sig:String = modes.join(",");
+        return readOrComputeDps(unit, "ref_" + sig, function() {
+            var arr:Array = [];
+            for (var i:Number = 0; i < modes.length; i++) {
+                var m:String = modes[i];
+                var v:Number;
+                if (m == "空手") v = WeaponDpsEstimator.unarmedComboDPS(unit);
+                else if (m == "兵器") v = WeaponDpsEstimator.meleeComboDPS(unit);
+                else v = WeaponDpsEstimator.gunSustainedDPS(unit, m);
+                arr.push(v);
+            }
+            arr.sort(Array.NUMERIC);
+            var mid:Number = arr[arr.length >> 1];
+            return (mid > 0) ? mid : 1;
+        });
+    }
+
+    public static function invalidateDpsCache(unit:MovieClip):Void {
+        unit.估算 = null;
+    }
+
+    private static function readOrComputeDps(unit:MovieClip, key:String, fn:Function):Number {
+        var bag:Object = unit.估算;
+        if (bag == null) { bag = {}; unit.估算 = bag; }
+        var now:Number = AIEnvironment.getFrame();
+        var stampKey:String = "_stamp_" + key;
+        var stamp:Number = bag[stampKey];
+        if (bag[key] != null && stamp != null && (now - stamp) < 30) return bag[key];
+        bag[key] = fn();
+        bag[stampKey] = now;
+        return bag[key];
     }
 }

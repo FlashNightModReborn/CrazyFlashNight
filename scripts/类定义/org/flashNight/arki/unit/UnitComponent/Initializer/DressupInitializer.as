@@ -389,6 +389,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         if (target.shield && target.shield.refreshStanceResistance) {
             target.shield.refreshStanceResistance();
         }
+
+        // AI DPS 估算缓存失效（装备变化 → 武器威力/弹匣容量/伤害类型可能全变）
+        org.flashNight.arki.unit.PlayerInfoProvider.invalidateDpsCache(target);
     }
 
     private static function updateProperty(__target:MovieClip, key:String, __data:Object){
