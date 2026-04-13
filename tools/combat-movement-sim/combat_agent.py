@@ -19,7 +19,7 @@ class MovementConfig:
     margin: float = 80.0             # 边界安全余量（AS2: MARGIN=80）
     probe_min: float = 20.0          # 最小探测距离
     probe_max: float = 60.0          # 最大探测距离
-    probe_speed_mult: float = 4.0    # 探测距离 = speed * mult
+    probe_speed_mult: float = 5.0    # 离线调优默认值；当前 AS2 基线仍是 speed * 4
     no_progress_threshold: int = 3   # 连续无进展帧数阈值
     probe_fail_trigger: int = 3      # 探测全败触发 pushOut 的次数
     unstuck_base_window: int = 12    # 基础脱困窗口（帧）

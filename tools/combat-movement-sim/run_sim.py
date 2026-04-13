@@ -22,7 +22,7 @@ import os
 import sys
 
 from combat_agent import MovementConfig
-from combat_sim import run_retreat_sim, run_batch
+from combat_sim import run_batch
 from scenario_gen import get_all_scenarios, get_scenario_by_name, CombatScenario, CHASE_SCENARIOS
 from param_scanner import (
     scan_params, rank_by_composite, print_results_table,
@@ -124,13 +124,13 @@ def cmd_compare(args):
     os.makedirs(out_dir, exist_ok=True)
 
     for s in scenarios:
-        r_a = run_retreat_sim(s, config_a, args.max_ticks)
-        r_b = run_retreat_sim(s, config_b, args.max_ticks)
+        r_a = run_batch([s], config_a, max_ticks=args.max_ticks)[0]
+        r_b = run_batch([s], config_b, max_ticks=args.max_ticks)[0]
         path = os.path.join(out_dir, f"compare_{s.name}.png")
         draw_comparison(s, r_a, "default", r_b, label_b, path)
 
-        tag_a = "OK" if r_a.reached_safe else "FAIL"
-        tag_b = "OK" if r_b.reached_safe else "FAIL"
+        tag_a = "OK" if r_a.succeeded else "FAIL"
+        tag_b = "OK" if r_b.succeeded else "FAIL"
         print(f"  {s.name}: "
               f"default={tag_a}({r_a.escape_frames}f) "
               f"vs {label_b}={tag_b}({r_b.escape_frames}f)")
@@ -157,9 +157,9 @@ def cmd_chase(args):
 
     # 额外打印追逐专属指标
     for r in results:
-        caught = getattr(r, '_caught', False)
-        min_d = getattr(r, '_min_enemy_dist', -1)
-        tag = "OK" if r.reached_safe else "FAIL"
+        caught = r.caught
+        min_d = r.min_enemy_dist if r.min_enemy_dist != float("inf") else -1
+        tag = "OK" if r.succeeded else "FAIL"
         caught_tag = " CAUGHT" if caught else ""
         print(f"  {r.scenario_name}: {tag}({r.escape_frames}f)"
               f"  min_dist={min_d:.0f}{caught_tag}")
@@ -176,7 +176,10 @@ def cmd_chase(args):
 def _get_scenarios(args) -> list:
     if args.scenario:
         return [get_scenario_by_name(args.scenario)]
-    return get_all_scenarios()
+    scenarios = get_all_scenarios()
+    if args.include_chase:
+        scenarios.extend(fn() for fn in CHASE_SCENARIOS)
+    return scenarios
 
 
 def main():
@@ -190,6 +193,8 @@ def main():
                         help="默认 vs 调优参数对比")
     parser.add_argument("--chase", action="store_true",
                         help="多移动敌人追逐场景")
+    parser.add_argument("--include-chase", action="store_true",
+                        help="在 baseline/scan/compare 中纳入 CHASE_SCENARIOS")
     parser.add_argument("--scenario", type=str, default=None,
                         help="只跑指定场景（名称）")
     parser.add_argument("--max-ticks", type=int, default=500,

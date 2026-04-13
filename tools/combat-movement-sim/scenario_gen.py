@@ -58,9 +58,9 @@ def corner_trap_left() -> CombatScenario:
     """左下角陷阱：agent 被压到左下角，敌人堵住唯一出口。"""
     xmin, xmax, ymin, ymax = 50, 1150, 180, 510
     t = 60
-    # L 形墙封住左下角
+    # L 形墙 + 右侧窄出口
     wall_h = shapely_box(xmin - 10, ymax - 150, xmin + 250, ymax - 150 + t)
-    wall_v = shapely_box(xmin + 250 - t, ymax - 150, xmin + 250, ymax + 10)
+    wall_v = shapely_box(xmin + 250 - t, ymax - 60, xmin + 250, ymax + 10)
     collisions = [wall_h, wall_v]
 
     return CombatScenario(
@@ -78,7 +78,7 @@ def corner_trap_right() -> CombatScenario:
     xmin, xmax, ymin, ymax = 50, 1150, 180, 510
     t = 60
     wall_h = shapely_box(xmax - 250, ymin + 90, xmax + 10, ymin + 90 + t)
-    wall_v = shapely_box(xmax - 250, ymin - 10, xmax - 250 + t, ymin + 90 + t)
+    wall_v = shapely_box(xmax - 250, ymin - 10, xmax - 250 + t, ymin + 60)
     collisions = [wall_h, wall_v]
 
     return CombatScenario(
@@ -362,7 +362,7 @@ def get_all_scenarios() -> List[CombatScenario]:
 
 
 def get_scenario_by_name(name: str) -> CombatScenario:
-    for fn in ALL_SCENARIOS:
+    for fn in ALL_SCENARIOS + CHASE_SCENARIOS:
         s = fn()
         if s.name == name:
             return s

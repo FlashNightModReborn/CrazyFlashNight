@@ -19,6 +19,10 @@ from combat_sim import SimResult
 from scenario_gen import CombatScenario
 
 
+def _yn(flag: bool) -> str:
+    return "Y" if flag else "N"
+
+
 def _plot_polygon(ax, geom, **kwargs):
     """绘制 shapely Polygon / MultiPolygon。"""
     defaults = {"facecolor": "#8B4513", "edgecolor": "#333", "alpha": 0.6}
@@ -78,8 +82,8 @@ def draw_trajectory(ax, result: SimResult, color: str = "#2196F3",
 
     # 起点和终点标记
     ax.plot(xs[0], zs[0], "o", color=color, markersize=6, zorder=6)
-    end_marker = "s" if result.reached_safe else "x"
-    end_color = "green" if result.reached_safe else "red"
+    end_marker = "s" if result.succeeded else "x"
+    end_color = "green" if result.succeeded else ("orange" if result.caught else "red")
     ax.plot(xs[-1], zs[-1], end_marker, color=end_color, markersize=8, zorder=6)
 
     # 敌人轨迹（多敌人追逐仿真时）
@@ -110,24 +114,32 @@ def draw_single_result(scenario: CombatScenario, result: SimResult,
 
     # 统计面板
     ax_stats.axis("off")
-    stats_text = (
-        f"Scenario: {result.scenario_name}\n"
-        f"{'─' * 30}\n"
-        f"Total frames: {result.total_frames}\n"
-        f"Reached safe: {'✓' if result.reached_safe else '✗'}\n"
-        f"Escape frames: {result.escape_frames}\n"
-        f"Stuck rate: {result.stuck_rate:.1%}\n"
-        f"Smoothness: {result.smoothness:.3f}\n"
-        f"Corner events: {result.corner_events}\n"
-        f"Slide events: {result.slide_events}\n"
-        f"Direction changes: {result.direction_changes}\n"
-        f"{'─' * 30}\n"
-        f"Config:\n"
-        f"  margin={result.config.margin}\n"
-        f"  no_progress={result.config.no_progress_threshold}\n"
-        f"  unstuck_win={result.config.unstuck_base_window}\n"
-        f"  probe_mult={result.config.probe_speed_mult}"
-    )
+    stats_lines = [
+        f"Scenario: {result.scenario_name}",
+        f"{'-' * 30}",
+        f"Objective: {result.objective}",
+        f"Success: {_yn(result.succeeded)}",
+        f"Reached safe: {_yn(result.reached_safe)}",
+        f"Caught: {_yn(result.caught)}",
+        f"Total frames: {result.total_frames}",
+        f"Escape frames: {result.escape_frames}",
+        f"Stuck rate: {result.stuck_rate:.1%}",
+        f"Smoothness: {result.smoothness:.3f}",
+        f"Corner events: {result.corner_events}",
+        f"Slide events: {result.slide_events}",
+        f"Direction changes: {result.direction_changes}",
+    ]
+    if result.min_enemy_dist != float("inf"):
+        stats_lines.append(f"Min enemy dist: {result.min_enemy_dist:.1f}")
+    stats_lines.extend([
+        f"{'-' * 30}",
+        "Config:",
+        f"  margin={result.config.margin}",
+        f"  no_progress={result.config.no_progress_threshold}",
+        f"  unstuck_win={result.config.unstuck_base_window}",
+        f"  probe_mult={result.config.probe_speed_mult}",
+    ])
+    stats_text = "\n".join(stats_lines)
     ax_stats.text(0.05, 0.95, stats_text, transform=ax_stats.transAxes,
                   fontsize=9, verticalalignment="top", fontfamily="monospace")
 
@@ -160,14 +172,20 @@ def draw_comparison(scenario: CombatScenario,
     axes[2].axis("off")
     lines = [
         f"{'Metric':<20} {'A':>8} {'B':>8}",
-        f"{'─' * 38}",
-        f"{'Reached safe':<20} {'✓' if result_a.reached_safe else '✗':>8} {'✓' if result_b.reached_safe else '✗':>8}",
+        f"{'-' * 38}",
+        f"{'Success':<20} {_yn(result_a.succeeded):>8} {_yn(result_b.succeeded):>8}",
+        f"{'Reached safe':<20} {_yn(result_a.reached_safe):>8} {_yn(result_b.reached_safe):>8}",
+        f"{'Caught':<20} {_yn(result_a.caught):>8} {_yn(result_b.caught):>8}",
         f"{'Escape frames':<20} {result_a.escape_frames:>8} {result_b.escape_frames:>8}",
         f"{'Stuck rate':<20} {result_a.stuck_rate:>7.1%} {result_b.stuck_rate:>7.1%}",
         f"{'Smoothness':<20} {result_a.smoothness:>8.3f} {result_b.smoothness:>8.3f}",
         f"{'Corners':<20} {result_a.corner_events:>8} {result_b.corner_events:>8}",
         f"{'Slides':<20} {result_a.slide_events:>8} {result_b.slide_events:>8}",
     ]
+    if result_a.min_enemy_dist != float("inf") or result_b.min_enemy_dist != float("inf"):
+        a_val = "--" if result_a.min_enemy_dist == float("inf") else f"{result_a.min_enemy_dist:.1f}"
+        b_val = "--" if result_b.min_enemy_dist == float("inf") else f"{result_b.min_enemy_dist:.1f}"
+        lines.append(f"{'Min enemy dist':<20} {a_val:>8} {b_val:>8}")
     axes[2].text(0.05, 0.95, "\n".join(lines), transform=axes[2].transAxes,
                  fontsize=9, verticalalignment="top", fontfamily="monospace")
 

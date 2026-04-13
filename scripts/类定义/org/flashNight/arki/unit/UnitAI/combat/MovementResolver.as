@@ -70,11 +70,14 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
      * @param self   MovieClip
      * @param wantX  X轴意图: -1=左, 0=无, 1=右
      * @param wantZ  Z轴意图: -1=上, 0=无, 1=下
+     * @param goalX  可选的长期目标X（如撤退锚点）；仅用于脱困绕行偏置
+     * @param goalZ  可选的长期目标Z（如撤退锚点）；仅用于脱困绕行偏置
      * @return Number  0=正常, 1=X轴沿墙滑行, 2=角落突围
      */
     public static function applyBoundaryAwareMovement(
         data:UnitAIData, self:MovieClip,
-        wantX:Number, wantZ:Number
+        wantX:Number, wantZ:Number,
+        goalX:Number, goalZ:Number
     ):Number {
         var MARGIN:Number = 80;
         var xBlocked:Boolean = false;
@@ -93,7 +96,7 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
                 // 探测距离：不要过大（会错过狭窄出口），也不要过小（容易被抖动误导）
                 var spd:Number = self.行走X速度;
                 if (isNaN(spd) || spd <= 0) spd = 6;
-                var probe:Number = spd * 4;
+                var probe:Number = spd * 5;
                 if (probe < 20) probe = 20;
                 else if (probe > 60) probe = 60;
 
@@ -149,9 +152,11 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
                     var oldWX:Number = wantX;
                     var oldWZ:Number = wantZ;
 
-                    // 优先 Z 方向：朝目标对齐（无目标则朝空间更大的一侧）
+                    // 优先 Z 方向：朝显式撤退目标对齐；无显式目标时沿用旧目标/空间规则
                     var preferZ:Number = 0;
-                    if (data.tz != null && !isNaN(data.tz)) {
+                    if (goalZ != null && !isNaN(goalZ) && Math.abs(goalZ - data.z) > 8) {
+                        preferZ = (goalZ > data.z) ? 1 : -1;
+                    } else if (data.tz != null && !isNaN(data.tz)) {
                         preferZ = (data.tz > data.z) ? 1 : -1;
                     } else {
                         var zp:Number = MovementResolver.pickZDirBySpaceEx(data, self, MARGIN);
@@ -160,6 +165,10 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
                         else preferZ = (data.bndUpDist > data.bndDownDist) ? -1 : 1;
                     }
                     var altZ:Number = -preferZ;
+                    var goalDirX:Number = 0;
+                    if (goalX != null && !isNaN(goalX) && Math.abs(goalX - data.x) > 8) {
+                        goalDirX = (goalX > data.x) ? 1 : -1;
+                    }
 
                     var bestX:Number = 0;
                     var bestZ:Number = 0;
@@ -180,12 +189,23 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
                         }
                     }
 
-                    // 1) 尽量保持原意图（含对角）
+                    // 1) 朝长期目标X绕行/推进（撤退锚点）
+                    if (bestX == 0 && bestZ == 0
+                        && goalDirX != 0 && Mover.isDirectionWalkable(self, goalDirX, preferZ, probe)) {
+                        bestX = goalDirX; bestZ = preferZ;
+                    } else if (bestX == 0 && bestZ == 0
+                        && goalDirX != 0 && Mover.isDirectionWalkable(self, goalDirX, altZ, probe)) {
+                        bestX = goalDirX; bestZ = altZ;
+                    } else if (bestX == 0 && bestZ == 0
+                        && goalDirX != 0 && Mover.isDirectionWalkable(self, goalDirX, 0, probe)) {
+                        bestX = goalDirX; bestZ = 0;
+                    }
+                    // 2) 尽量保持原意图（含对角）
                     if (bestX == 0 && bestZ == 0
                         && (oldWX != 0 || oldWZ != 0) && Mover.isDirectionWalkable(self, oldWX, oldWZ, probe)) {
                         bestX = oldWX; bestZ = oldWZ;
                     }
-                    // 2) X优先：对角绕障（X + preferZ / altZ）
+                    // 3) X优先：对角绕障（X + preferZ / altZ）
                     else if (bestX == 0 && bestZ == 0
                         && oldWX != 0 && Mover.isDirectionWalkable(self, oldWX, preferZ, probe)) {
                         bestX = oldWX; bestZ = preferZ;
@@ -193,7 +213,7 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
                         && oldWX != 0 && Mover.isDirectionWalkable(self, oldWX, altZ, probe)) {
                         bestX = oldWX; bestZ = altZ;
                     }
-                    // 3) 纯Z挪位（沿墙滑行/绕柱）
+                    // 4) 纯Z挪位（沿墙滑行/绕柱）
                     else if (bestX == 0 && bestZ == 0
                         && Mover.isDirectionWalkable(self, 0, preferZ, probe)) {
                         bestX = 0; bestZ = preferZ;
@@ -201,7 +221,7 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
                         && Mover.isDirectionWalkable(self, 0, altZ, probe)) {
                         bestX = 0; bestZ = altZ;
                     }
-                    // 4) 退一步（反向X/反向Z）
+                    // 5) 退一步（反向X/反向Z）
                     else if (bestX == 0 && bestZ == 0
                         && oldWX != 0 && Mover.isDirectionWalkable(self, -oldWX, 0, probe)) {
                         bestX = -oldWX; bestZ = 0;
@@ -210,12 +230,18 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
                         bestX = 0; bestZ = -oldWZ;
                     }
 
-                    // 5) 远距probe重试：常规probe只找到纯Z/退后时，
+                    // 6) 远距probe重试：常规probe只找到纯Z/退后时，
                     // 用2x probe看更远处的绕行对角方向（解决贴障碍物时短probe看不到绕行空间）
-                    if (oldWX != 0 && bestX == 0) {
+                    if ((oldWX != 0 || goalDirX != 0) && bestX == 0) {
                         var farProbe:Number = probe * 2;
                         if (farProbe < 60) farProbe = 60;
-                        if (Mover.isDirectionWalkable(self, oldWX, preferZ, farProbe)) {
+                        if (goalDirX != 0 && Mover.isDirectionWalkable(self, goalDirX, preferZ, farProbe)) {
+                            bestX = goalDirX; bestZ = preferZ;
+                        } else if (goalDirX != 0 && Mover.isDirectionWalkable(self, goalDirX, altZ, farProbe)) {
+                            bestX = goalDirX; bestZ = altZ;
+                        } else if (goalDirX != 0 && Mover.isDirectionWalkable(self, goalDirX, 0, farProbe)) {
+                            bestX = goalDirX; bestZ = 0;
+                        } else if (Mover.isDirectionWalkable(self, oldWX, preferZ, farProbe)) {
                             bestX = oldWX; bestZ = preferZ;
                         } else if (Mover.isDirectionWalkable(self, oldWX, altZ, farProbe)) {
                             bestX = oldWX; bestZ = altZ;
@@ -235,6 +261,7 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
                         data._unstuckUntilFrame = frameNow + baseWindow;
                         data._noProgressCount = 0; // 成功找到脱困方向，重置进展计数
                         data._xNoProgressCount = 0;
+                        data._probeFailCount = 0;
 
                         if (AIEnvironment.isAIDebug() || AIEnvironment.getAILogLevel() >= 2) {
                             var reason:String = blockedAhead ? "BLOCKED"
@@ -278,9 +305,13 @@ class org.flashNight.arki.unit.UnitAI.combat.MovementResolver {
 
         // ── Phase 2: X轴被阻时注入Z逃脱分量 ──
         if (xBlocked && wantX != 0 && wantZ == 0) {
-            var zPick:Number = MovementResolver.pickZDirBySpaceEx(data, self, MARGIN);
-            if (zPick < 0) wantZ = -1;
-            else if (zPick > 0) wantZ = 1;
+            if (goalZ != null && !isNaN(goalZ) && Math.abs(goalZ - data.z) > 8) {
+                wantZ = (goalZ > data.z) ? 1 : -1;
+            } else {
+                var zPick:Number = MovementResolver.pickZDirBySpaceEx(data, self, MARGIN);
+                if (zPick < 0) wantZ = -1;
+                else if (zPick > 0) wantZ = 1;
+            }
         }
 
         // ── Phase 3: Z轴输出（含自动重定向）──

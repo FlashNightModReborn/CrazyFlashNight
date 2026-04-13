@@ -28,6 +28,8 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy 
     private var _retMoveX:Number;
     private var _retMoveZ:Number;
     private var _retZSep:Number;
+    private var _retGoalX:Number;
+    private var _retGoalZ:Number;
 
     // ── 边界逃脱承诺窗口 ──
     // 检测撤退方向被地图边界阻挡 → 反转X + 强制Z逃脱，保持30帧不动摇
@@ -44,6 +46,8 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy 
         _retMoveX = 0;
         _retMoveZ = 0;
         _retZSep = 0;
+        _retGoalX = 0;
+        _retGoalZ = 0;
         _wallEscUntil = 0;
         _wallEscX = 0;
         _wallEscZ = 0;
@@ -57,6 +61,14 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy 
     public function enter(frame:Number):Void {
         _retreatStartFrame = frame;
         _retreatFireCounter = 0;
+        _retMoveX = 0;
+        _retMoveZ = 0;
+        _retZSep = 0;
+        _retGoalX = 0;
+        _retGoalZ = 0;
+        _wallEscUntil = 0;
+        _wallEscX = 0;
+        _wallEscZ = 0;
     }
 
     /**
@@ -183,6 +195,7 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy 
     private function _computeRetreatMove(data:UnitAIData, self:MovieClip):Void {
         var frame:Number = AIEnvironment.getFrame();
         var MARGIN:Number = 80;
+        var goalDirZ:Number = 0;
 
         // ── 边界逃脱承诺窗口内：直接使用承诺方向 ──
         if (frame < _wallEscUntil) {
@@ -190,6 +203,7 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy 
             _retMoveZ = _wallEscZ;
             _retZSep = data.absdiff_z;
             if (isNaN(_retZSep)) _retZSep = 0;
+            _setRetreatGoal(data, _retMoveX, _retMoveZ);
             return;
         }
 
@@ -225,6 +239,7 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy 
             _retMoveZ = escZ;
             _retZSep = data.absdiff_z;
             if (isNaN(_retZSep)) _retZSep = 0;
+            _setRetreatGoal(data, _retMoveX, escZ);
             if (AIEnvironment.isAIDebug()) {
                 AIEnvironment.log("[RET-WALLESC] " + self.名字
                     + " trapped→escape X=" + _retMoveX + " Z=" + escZ
@@ -248,17 +263,66 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy 
                     escapeZ = -1;
                 }
                 _retMoveZ = escapeZ;
+                goalDirZ = escapeZ;
             } else {
                 _retMoveZ = (data.bndUpDist > data.bndDownDist) ? -1 : 1;
+                goalDirZ = _retMoveZ;
             }
         } else {
             var zWave:Number = Math.floor(frame / 30) % 2;
             if (zWave == 0 && data.bndUpDist > 60) {
                 _retMoveZ = -1;
+                goalDirZ = -1;
             } else if (zWave == 1 && data.bndDownDist > 60) {
                 _retMoveZ = 1;
+                goalDirZ = 1;
+            } else if (zWave == 0 && data.bndDownDist > 40) {
+                goalDirZ = 1;
+            } else if (zWave == 1 && data.bndUpDist > 40) {
+                goalDirZ = -1;
             }
         }
+
+        if (goalDirZ == 0) goalDirZ = _retMoveZ;
+        if (goalDirZ == 0) {
+            if (data.bndUpDist > data.bndDownDist) goalDirZ = -1;
+            else if (data.bndDownDist > data.bndUpDist) goalDirZ = 1;
+            else goalDirZ = (Math.floor(frame / 30) % 2 == 0) ? -1 : 1;
+        }
+        _setRetreatGoal(data, _retMoveX, goalDirZ);
+    }
+
+    /**
+     * _setRetreatGoal — 生成短视距撤退锚点，供 MovementResolver 脱困绕行偏置使用
+     *
+     * 这里只编码“方向感”，不承担真正路径规划职责：
+     *   X 轴保持长期撤退侧，
+     *   Z 轴在贴墙/绕障时给出明确的绕行偏好。
+     */
+    private function _setRetreatGoal(data:UnitAIData, goalDirX:Number, goalDirZ:Number):Void {
+        var goalXDist:Number = data.xrange;
+        if (isNaN(goalXDist) || goalXDist < 160) goalXDist = 160;
+        else if (goalXDist > 320) goalXDist = 320;
+
+        var goalZDist:Number = 120;
+        if (!isNaN(data.zrange) && data.zrange > 30) {
+            goalZDist = data.zrange * 4;
+        }
+        if (goalZDist < 120) goalZDist = 120;
+        else if (goalZDist > 220) goalZDist = 220;
+
+        _retGoalX = data.x + goalDirX * goalXDist;
+        _retGoalZ = data.z + goalDirZ * goalZDist;
+
+        var clampXMin:Number = AIEnvironment.getXmin() + 20;
+        var clampXMax:Number = AIEnvironment.getXmax() - 20;
+        var clampZMin:Number = AIEnvironment.getYmin() + 20;
+        var clampZMax:Number = AIEnvironment.getYmax() - 20;
+
+        if (_retGoalX < clampXMin) _retGoalX = clampXMin;
+        else if (_retGoalX > clampXMax) _retGoalX = clampXMax;
+        if (_retGoalZ < clampZMin) _retGoalZ = clampZMin;
+        else if (_retGoalZ > clampZMax) _retGoalZ = clampZMax;
     }
 
     // ═══════ 阶段 3: 掩护射击判定 ═══════
@@ -351,7 +415,8 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy 
             self.动作A = true;
             if (self.攻击模式 === "双枪") self.动作B = true;
         } else {
-            MovementResolver.applyBoundaryAwareMovement(data, self, _retMoveX, _retMoveZ);
+            MovementResolver.applyBoundaryAwareMovement(
+                data, self, _retMoveX, _retMoveZ, _retGoalX, _retGoalZ);
         }
 
         // 切换跑步（非射击期间才切，避免打断射击动作）

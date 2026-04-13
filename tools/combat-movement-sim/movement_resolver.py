@@ -192,6 +192,9 @@ def apply_boundary_aware_movement(
                     else:
                         prefer_z = -1 if agent.bnd_up > agent.bnd_down else 1
                 alt_z = -prefer_z
+                goal_x = 0
+                if agent.target_x is not None and abs(agent.target_x - agent.x) > 8:
+                    goal_x = 1 if agent.target_x > agent.x else -1
 
                 best_x = 0
                 best_z = 0
@@ -214,21 +217,29 @@ def apply_boundary_aware_movement(
                             return eex, alt_z
                         if is_direction_walkable(coll, agent.x, agent.z, eex, 0, p):
                             return eex, 0
-                    # 1) 原意图
+                    # 1) 朝目标 X 的绕行 / 推进
+                    if goal_x != 0:
+                        if is_direction_walkable(coll, agent.x, agent.z, goal_x, prefer_z, p):
+                            return goal_x, prefer_z
+                        if is_direction_walkable(coll, agent.x, agent.z, goal_x, alt_z, p):
+                            return goal_x, alt_z
+                        if is_direction_walkable(coll, agent.x, agent.z, goal_x, 0, p):
+                            return goal_x, 0
+                    # 2) 原意图
                     if (old_wx != 0 or old_wz != 0) and is_direction_walkable(coll, agent.x, agent.z, old_wx, old_wz, p):
                         return old_wx, old_wz
-                    # 2) X + preferZ/altZ 对角
+                    # 3) X + preferZ/altZ 对角
                     if old_wx != 0:
                         if is_direction_walkable(coll, agent.x, agent.z, old_wx, prefer_z, p):
                             return old_wx, prefer_z
                         if is_direction_walkable(coll, agent.x, agent.z, old_wx, alt_z, p):
                             return old_wx, alt_z
-                    # 3) 纯Z
+                    # 4) 纯Z
                     if is_direction_walkable(coll, agent.x, agent.z, 0, prefer_z, p):
                         return 0, prefer_z
                     if is_direction_walkable(coll, agent.x, agent.z, 0, alt_z, p):
                         return 0, alt_z
-                    # 4) 退一步
+                    # 5) 退一步
                     if old_wx != 0 and is_direction_walkable(coll, agent.x, agent.z, -old_wx, 0, p):
                         return -old_wx, 0
                     if old_wz != 0 and is_direction_walkable(coll, agent.x, agent.z, 0, -old_wz, p):
@@ -285,11 +296,14 @@ def apply_boundary_aware_movement(
 
     # ── Phase 2: X轴被阻时注入Z ──
     if x_blocked and want_x != 0 and want_z == 0:
-        z_pick = pick_z_dir_by_space(agent, MARGIN)
-        if z_pick < 0:
-            want_z = -1
-        elif z_pick > 0:
-            want_z = 1
+        if agent.target_z is not None and abs(agent.target_z - agent.z) > 8:
+            want_z = 1 if agent.target_z > agent.z else -1
+        else:
+            z_pick = pick_z_dir_by_space(agent, MARGIN)
+            if z_pick < 0:
+                want_z = -1
+            elif z_pick > 0:
+                want_z = 1
 
     # ── Phase 3: Z轴输出 ──
     z_blocked = False

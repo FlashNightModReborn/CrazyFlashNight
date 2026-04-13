@@ -15,8 +15,8 @@ from dataclasses import asdict
 from typing import Dict, List, Optional, Tuple
 
 from combat_agent import MovementConfig
-from combat_sim import SimResult, run_retreat_sim
-from scenario_gen import CombatScenario, get_all_scenarios
+from combat_sim import SimResult, run_batch
+from scenario_gen import CombatScenario
 
 
 # ═══════ 参数网格 ═══════
@@ -71,10 +71,7 @@ def scan_params(
         params = dict(zip(param_names, combo))
         cfg = _make_config(**params)
 
-        sim_results = []
-        for s in scenarios:
-            r = run_retreat_sim(s, cfg, max_ticks)
-            sim_results.append(r)
+        sim_results = run_batch(scenarios, cfg, max_ticks=max_ticks)
 
         all_results.append((params, sim_results))
 
@@ -93,16 +90,21 @@ def aggregate_results(results: List[SimResult]) -> Dict:
     if n == 0:
         return {}
 
+    succeeded = sum(1 for r in results if r.succeeded)
     reached = sum(1 for r in results if r.reached_safe)
+    caught = sum(1 for r in results if r.caught)
     escape_frames = [r.escape_frames for r in results if r.escape_frames >= 0]
     stuck_rates = [r.stuck_rate for r in results]
     smoothness = [r.smoothness for r in results]
     corners = [r.corner_events for r in results]
     slides = [r.slide_events for r in results]
+    min_enemy_dists = [r.min_enemy_dist for r in results if r.min_enemy_dist != float("inf")]
 
-    return {
+    summary = {
         "n_scenarios": n,
+        "success_rate": succeeded / n,
         "reach_rate": reached / n,
+        "caught_rate": caught / n,
         "avg_escape_frames": sum(escape_frames) / max(1, len(escape_frames)),
         "avg_stuck_rate": sum(stuck_rates) / n,
         "max_stuck_rate": max(stuck_rates),
@@ -110,11 +112,15 @@ def aggregate_results(results: List[SimResult]) -> Dict:
         "avg_corner_events": sum(corners) / n,
         "avg_slide_events": sum(slides) / n,
     }
+    if min_enemy_dists:
+        summary["avg_min_enemy_dist"] = sum(min_enemy_dists) / len(min_enemy_dists)
+        summary["min_min_enemy_dist"] = min(min_enemy_dists)
+    return summary
 
 
 def find_best(
     scan_results: List[Tuple[Dict, List[SimResult]]],
-    metric: str = "reach_rate",
+    metric: str = "success_rate",
     higher_is_better: bool = True,
 ) -> Tuple[Dict, Dict]:
     """找到指定指标最优的参数组合。"""
@@ -157,10 +163,12 @@ def rank_by_composite(
     """
     if weights is None:
         weights = {
-            "reach_rate": 3.0,
+            "success_rate": 4.0,
+            "caught_rate": -1.5,
             "avg_escape_frames": -0.001,
             "avg_stuck_rate": -2.0,
-            "avg_smoothness": -0.5,
+            "avg_smoothness": -0.25,
+            "avg_min_enemy_dist": 0.002,
         }
 
     scored = []
@@ -187,12 +195,18 @@ def print_results_table(
     for i, (params, agg, score) in enumerate(ranked[:top_n]):
         print(f"\n  #{i+1}  score={score:.4f}")
         print(f"    params: {params}")
-        print(f"    reach_rate={agg['reach_rate']:.2%}"
+        print(f"    success={agg['success_rate']:.2%}"
+              f"  reach={agg['reach_rate']:.2%}"
+              f"  caught={agg['caught_rate']:.2%}"
               f"  avg_escape={agg['avg_escape_frames']:.0f}f"
               f"  stuck={agg['avg_stuck_rate']:.2%}"
               f"  smooth={agg['avg_smoothness']:.3f}"
               f"  corners={agg['avg_corner_events']:.1f}"
               f"  slides={agg['avg_slide_events']:.1f}")
+        if "avg_min_enemy_dist" in agg:
+            print("    "
+                  f"min_enemy_dist(avg/min)={agg['avg_min_enemy_dist']:.1f}/"
+                  f"{agg['min_min_enemy_dist']:.1f}")
 
 
 def save_results(

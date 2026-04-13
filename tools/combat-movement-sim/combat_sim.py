@@ -33,9 +33,13 @@ class SimResult:
     """单次仿真结果。"""
     scenario_name: str
     config: MovementConfig
+    objective: str = "reach_safe"
     total_frames: int = 0
     stuck_frames: int = 0
     reached_safe: bool = False
+    caught: bool = False
+    caught_frame: int = -1
+    min_enemy_dist: float = float("inf")
     escape_frames: int = -1          # -1 = 未到达
     corner_events: int = 0
     slide_events: int = 0
@@ -52,13 +56,28 @@ class SimResult:
         total_ticks = self.total_frames // 4
         return self.direction_changes / max(1, total_ticks)
 
+    @property
+    def succeeded(self) -> bool:
+        if self.objective == "survive":
+            return not self.caught
+        return self.reached_safe
+
     def summary_dict(self) -> Dict:
         return {
             "scenario": self.scenario_name,
+            "objective": self.objective,
+            "succeeded": self.succeeded,
             "total_frames": self.total_frames,
             "stuck_frames": self.stuck_frames,
             "stuck_rate": round(self.stuck_rate, 4),
             "reached_safe": self.reached_safe,
+            "caught": self.caught,
+            "caught_frame": self.caught_frame if self.caught_frame >= 0 else None,
+            "min_enemy_dist": (
+                round(self.min_enemy_dist, 4)
+                if self.min_enemy_dist != float("inf")
+                else None
+            ),
             "escape_frames": self.escape_frames,
             "corner_events": self.corner_events,
             "slide_events": self.slide_events,
@@ -104,6 +123,53 @@ def _compute_retreat_dir(agent, enemy_x, enemy_z, safe_zone, frame):
     return want_x, want_z
 
 
+def _compute_survival_gap_dir(agent, enemies):
+    """在无安全区的多敌包围下，朝敌人角度分布的最大缺口移动。"""
+    angles = []
+    for e in enemies:
+        dx = e["x"] - agent.x
+        dz = e["z"] - agent.z
+        if abs(dx) < 1e-6 and abs(dz) < 1e-6:
+            continue
+        angles.append(math.atan2(dz, dx))
+
+    if not angles:
+        return 0, 0
+
+    angles.sort()
+    best_mid = angles[0]
+    best_score = -1e9
+    wrapped = angles + [angles[0] + 2 * math.pi]
+
+    for idx in range(len(angles)):
+        start = wrapped[idx]
+        end = wrapped[idx + 1]
+        gap = end - start
+        mid = start + gap * 0.5
+        dir_x = math.cos(mid)
+        dir_z = math.sin(mid)
+
+        space_x = agent.bnd_right if dir_x > 0 else agent.bnd_left
+        space_z = agent.bnd_down if dir_z > 0 else agent.bnd_up
+        score = gap + 0.002 * (space_x + space_z)
+        if score > best_score:
+            best_score = score
+            best_mid = mid
+
+    dir_x = math.cos(best_mid)
+    dir_z = math.sin(best_mid)
+    want_x = 1 if dir_x > 0.35 else (-1 if dir_x < -0.35 else 0)
+    want_z = 1 if dir_z > 0.35 else (-1 if dir_z < -0.35 else 0)
+
+    if want_x == 0 and want_z == 0:
+        if abs(dir_x) >= abs(dir_z):
+            want_x = 1 if dir_x >= 0 else -1
+        else:
+            want_z = 1 if dir_z >= 0 else -1
+
+    return want_x, want_z
+
+
 # ═══════ 策略层：边界逃脱承诺窗口 ═══════
 
 class WallEscapeStrategy:
@@ -135,19 +201,26 @@ class WallEscapeStrategy:
         if not trapped:
             return want_x, want_z
 
-        # 反转 X
-        esc_x = -want_x
-
-        # Z 逃脱：远离敌人 Z 轴
-        diff_z = enemy_z - agent.z
-        if diff_z != 0:
-            esc_z = -1 if diff_z > 0 else 1
-            if esc_z < 0 and agent.bnd_up < 50:
-                esc_z = 1
-            elif esc_z > 0 and agent.bnd_down < 50:
-                esc_z = -1
+        # X 逃脱：优先朝安全区推进，否则反转当前 X
+        if agent.target_x is not None and abs(agent.target_x - agent.x) > 8:
+            esc_x = 1 if agent.target_x > agent.x else -1
         else:
-            esc_z = -1 if agent.bnd_up > agent.bnd_down else 1
+            esc_x = -want_x
+
+        # Z 逃脱：优先朝安全区对齐，否则远离敌人 Z 轴
+        if agent.target_z is not None and abs(agent.target_z - agent.z) > 8:
+            esc_z = 1 if agent.target_z > agent.z else -1
+        else:
+            diff_z = enemy_z - agent.z
+            if diff_z != 0:
+                esc_z = -1 if diff_z > 0 else 1
+            else:
+                esc_z = -1 if agent.bnd_up > agent.bnd_down else 1
+
+        if esc_z < 0 and agent.bnd_up < 50:
+            esc_z = 1
+        elif esc_z > 0 and agent.bnd_down < 50:
+            esc_z = -1
 
         self._until = frame + self.window
         self._esc_x = esc_x
@@ -177,11 +250,13 @@ def run_retreat_sim(
         z=scenario.agent_start[1],
         config=config,
     )
+    agent.target_x = scenario.safe_zone[0] if scenario.safe_zone else None
     agent.target_z = scenario.safe_zone[1] if scenario.safe_zone else None
 
     result = SimResult(
         scenario_name=scenario.name,
         config=config,
+        objective="reach_safe",
     )
 
     strategy = WallEscapeStrategy(wall_escape_window) if wall_escape else None
@@ -224,6 +299,7 @@ def run_retreat_sim(
             if dist < safe_radius:
                 result.reached_safe = True
                 result.escape_frames = frame
+                break
 
     # 汇总
     result.total_frames = frame + 4
@@ -263,6 +339,7 @@ def run_chase_sim(
         z=scenario.agent_start[1],
         config=config,
     )
+    agent.target_x = scenario.safe_zone[0] if scenario.safe_zone else None
     agent.target_z = scenario.safe_zone[1] if scenario.safe_zone else None
 
     # 初始化敌人列表
@@ -276,15 +353,17 @@ def run_chase_sim(
 
     enemy_trajectories = [[(e["x"], e["z"])] for e in enemies]
 
-    result = SimResult(scenario_name=scenario.name, config=config)
+    result = SimResult(
+        scenario_name=scenario.name,
+        config=config,
+        objective="reach_safe" if scenario.safe_zone else "survive",
+    )
     strategy = WallEscapeStrategy(wall_escape_window) if wall_escape else None
     prev_move_x = 0
     prev_move_z = 0
     frame = 0
 
     CAUGHT_DIST = 40.0
-    caught = False
-    min_enemy_dist = 9999.0
 
     for tick in range(max_ticks):
         frame = tick * 4
@@ -313,20 +392,39 @@ def run_chase_sim(
         # ── 找最近敌人（决策用）──
         nearest_ex, nearest_ez = enemies[0]["x"], enemies[0]["z"]
         nearest_dist = 9999.0
+        threat_x = 0.0
+        threat_z = 0.0
+        threat_w = 0.0
         for e in enemies:
             d = math.sqrt((agent.x - e["x"]) ** 2 + (agent.z - e["z"]) ** 2)
             if d < nearest_dist:
                 nearest_dist = d
                 nearest_ex, nearest_ez = e["x"], e["z"]
+            # 多敌场景下使用加权威胁中心，避免只盯最近敌人而撞向其余包抄者
+            w = 1.0 / max(d, 40.0)
+            threat_x += e["x"] * w
+            threat_z += e["z"] * w
+            threat_w += w
 
-        min_enemy_dist = min(min_enemy_dist, nearest_dist)
-        if nearest_dist < CAUGHT_DIST and not caught:
-            caught = True
+        result.min_enemy_dist = min(result.min_enemy_dist, nearest_dist)
+        if nearest_dist < CAUGHT_DIST and not result.caught:
+            result.caught = True
+            result.caught_frame = frame
+            break
 
         # ── agent 移动决策 ──
         agent.update_boundaries(scenario.map_data.bounds)
-        want_x, want_z = _compute_retreat_dir(
-            agent, nearest_ex, nearest_ez, scenario.safe_zone, frame)
+        if scenario.safe_zone is None and len(enemies) >= 3:
+            want_x, want_z = _compute_survival_gap_dir(agent, enemies)
+        else:
+            decision_ex = nearest_ex
+            decision_ez = nearest_ez
+            use_threat_center = bool(scenario.map_data.collisions)
+            if len(enemies) > 1 and threat_w > 0 and use_threat_center:
+                decision_ex = threat_x / threat_w
+                decision_ez = threat_z / threat_w
+            want_x, want_z = _compute_retreat_dir(
+                agent, decision_ex, decision_ez, scenario.safe_zone, frame)
         if strategy:
             want_x, want_z = strategy.apply(
                 agent, want_x, want_z, nearest_ez, config.margin, frame)
@@ -351,6 +449,7 @@ def run_chase_sim(
             if dist < safe_radius:
                 result.reached_safe = True
                 result.escape_frames = frame
+                break
 
     result.total_frames = frame + 4
     result.stuck_frames = agent.stuck_frames
@@ -359,8 +458,8 @@ def run_chase_sim(
     result.trajectory = agent.trajectory
     # 附加多敌人数据到 result（供可视化用）
     result._enemy_trajectories = enemy_trajectories
-    result._min_enemy_dist = min_enemy_dist
-    result._caught = caught
+    result._min_enemy_dist = result.min_enemy_dist
+    result._caught = result.caught
 
     return result
 
