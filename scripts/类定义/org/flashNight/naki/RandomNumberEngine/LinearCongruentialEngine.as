@@ -40,4 +40,52 @@ class org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine extends Ba
         return (seed = (1192433993 * seed + 1013904223) % 4294967296) * 2.3283064365386963e-10;
     }
 
+    // ==================== 热路径内联重写 ====================
+    // 下列方法覆盖 BaseRandomNumberEngine 中的同名继承版本，
+    // 将内部对 nextFloat() 的调用直接展开为 seed 更新，
+    // 省掉一次原型链方法查找 + 函数调用。调用方代码无需改动。
+    // 同步把 /100 等常量除法化为乘法（无回放一致性需求）。
+
+    // 覆盖：伤害/外观波动（ShellSystem 每弹壳每帧、其它特效）
+    public function randomFluctuation(fluctuationRange:Number):Number {
+        var r:Number = (seed = (1192433993 * seed + 1013904223) % 4294967296) * 2.3283064365386963e-10;
+        return 1 + (r * fluctuationRange * 2 - fluctuationRange) * 0.01;
+    }
+
+    // 覆盖：整数偏移（BulletFactory 子弹散射角、HitNumberSystem 等）
+    public function randomOffset(range:Number):Number {
+        var r:Number = (seed = (1192433993 * seed + 1013904223) % 4294967296) * 2.3283064365386963e-10;
+        return ((r * (range * 2 + 1)) >> 0) - range;
+    }
+
+    // 覆盖：浮点偏移（ShellSystem 弹壳物理、HitNumberSystem）
+    public function randomFloatOffset(range:Number):Number {
+        var r:Number = (seed = (1192433993 * seed + 1013904223) % 4294967296) * 2.3283064365386963e-10;
+        return r * (range * 2) - range;
+    }
+
+    // 覆盖：区间随机整数（WaveSpawner / CombatModule / EnemyBehavior 共约 36 个热点调用）
+    public function randomInteger(min:Number, max:Number):Number {
+        var r:Number = (seed = (1192433993 * seed + 1013904223) % 4294967296) * 2.3283064365386963e-10;
+        return ((r * (max - min + 1)) >> 0) + min;
+    }
+
+    // 覆盖：randomInteger 的别名（向后兼容接口同样展开）
+    public function randomIntegerStrict(min:Number, max:Number):Number {
+        var r:Number = (seed = (1192433993 * seed + 1013904223) % 4294967296) * 2.3283064365386963e-10;
+        return ((r * (max - min + 1)) >> 0) + min;
+    }
+
+    // 覆盖：区间随机浮点（ShellSystem 弹壳轨迹）
+    public function randomFloat(min:Number, max:Number):Number {
+        var r:Number = (seed = (1192433993 * seed + 1013904223) % 4294967296) * 2.3283064365386963e-10;
+        return r * (max - min) + min;
+    }
+
+    // 覆盖：百分比成功判定（DodgeHandler 每次伤害 2 次闪避判定）
+    public function successRate(probabilityPercent:Number):Boolean {
+        var r:Number = (seed = (1192433993 * seed + 1013904223) % 4294967296) * 2.3283064365386963e-10;
+        return r * 100 <= probabilityPercent;
+    }
+
 }
