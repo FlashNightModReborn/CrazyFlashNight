@@ -13,4 +13,15 @@
         <description>更改模组为破极拳。</description>
         <tag>手环</tag>
     </mod>
+        <mod>
+        <name>腿演迅驰环</name>
+        <use>手部装备</use>
+        <stats>
+            <override>
+                <actiontype>迅驰腿</actiontype>
+            </override>
+        </stats>
+        <description>更改模组为迅驰腿。</description>
+        <tag>手环</tag>
+    </mod>
 </root>

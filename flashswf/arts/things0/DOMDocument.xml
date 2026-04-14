@@ -40,8 +40,8 @@
           <DOMFolderItem name="容器/兵器攻击容器/平A/属性标签标志元件" itemID="699e0c3e-00001e09"/>
           <DOMFolderItem name="容器/兵器攻击容器/平A/主角肢体素材" itemID="699e0c3e-00001e0c"/>
           <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09"/>
-          <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504"/>
-          <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798"/>
+          <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504" isExpanded="true"/>
+          <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798" isExpanded="true"/>
           <DOMFolderItem name="容器/武器变形容器" itemID="69cb66ff-00000ab7" isExpanded="true"/>
           <DOMFolderItem name="容器/战技容器" itemID="6958ee41-00002e79" isExpanded="true"/>
           <DOMFolderItem name="容器/战技容器/sprite" itemID="695e92dd-000012bc"/>
@@ -222,6 +222,32 @@
           <Include href="Graphic/shape 221.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000dd" lastModified="1477651338"/>
           <Include href="Graphic/shape 222.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000de" lastModified="1477651338"/>
           <Include href="Graphic/shape 223.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000df" lastModified="1477651338"/>
+          <Include href="Graphic/shape 253.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000fd" lastModified="1477651338"/>
+          <Include href="Graphic/shape 254.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000fe" lastModified="1477651338"/>
+          <Include href="Graphic/shape 255.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000ff" lastModified="1477651338"/>
+          <Include href="Graphic/shape 256.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000100" lastModified="1477651338"/>
+          <Include href="Graphic/shape 257.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000101" lastModified="1477651338"/>
+          <Include href="Graphic/shape 258.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000102" lastModified="1477651338"/>
+          <Include href="Graphic/shape 259.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000103" lastModified="1477651338"/>
+          <Include href="Graphic/shape 260.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000104" lastModified="1477651338"/>
+          <Include href="Graphic/shape 261.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000105" lastModified="1477651338"/>
+          <Include href="Graphic/shape 262.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000106" lastModified="1477651338"/>
+          <Include href="Graphic/shape 263.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000107" lastModified="1477651338"/>
+          <Include href="Graphic/shape 268.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-0000010c" lastModified="1477651338"/>
+          <Include href="Graphic/shape 269.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-0000010d" lastModified="1477651338"/>
+          <Include href="Graphic/shape 270.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-0000010e" lastModified="1477651338"/>
+          <Include href="Graphic/shape 271.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-0000010f" lastModified="1477651338"/>
+          <Include href="Graphic/shape 272.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000110" lastModified="1477651338"/>
+          <Include href="Graphic/shape 273.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000111" lastModified="1477651338"/>
+          <Include href="Graphic/shape 274.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000112" lastModified="1477651338"/>
+          <Include href="Graphic/shape 275.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000113" lastModified="1477651338"/>
+          <Include href="Graphic/shape 276.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000114" lastModified="1477651338"/>
+          <Include href="Graphic/shape 277.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000115" lastModified="1477651338"/>
+          <Include href="Graphic/shape 278.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000116" lastModified="1477651338"/>
+          <Include href="Graphic/shape 279.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000117" lastModified="1477651338"/>
+          <Include href="Graphic/shape 280.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000118" lastModified="1477651338"/>
+          <Include href="Graphic/shape 281.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-00000119" lastModified="1477651338"/>
+          <Include href="Graphic/shape 282.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-0000011a" lastModified="1477651338"/>
           <Include href="Graphic/shape 595.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000254" lastModified="1477651486"/>
           <Include href="Graphic/shape 596.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000255" lastModified="1477651486"/>
           <Include href="Graphic/shape 597.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000256" lastModified="1477651486"/>
@@ -292,6 +318,16 @@
           <Include href="Graphic/shape 1798.xml" itemIcon="1" loadImmediate="false" itemID="58132b91-00000706" lastModified="1477651345"/>
           <Include href="Graphic/shape 1799.xml" itemIcon="1" loadImmediate="false" itemID="58132b91-00000707" lastModified="1477651345"/>
           <Include href="Graphic/shape 1800.xml" itemIcon="1" loadImmediate="false" itemID="58132b91-00000708" lastModified="1477651345"/>
+          <Include href="Graphic/shape 1859.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-00000743" lastModified="1477651346"/>
+          <Include href="Graphic/shape 1860.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-00000744" lastModified="1477651346"/>
+          <Include href="Graphic/shape 1861.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-00000745" lastModified="1477651346"/>
+          <Include href="Graphic/shape 1862.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-00000746" lastModified="1477651346"/>
+          <Include href="Graphic/shape 1863.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-00000747" lastModified="1477651346"/>
+          <Include href="Graphic/shape 1864.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-00000748" lastModified="1477651346"/>
+          <Include href="Graphic/shape 1865.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-00000749" lastModified="1477651346"/>
+          <Include href="Graphic/shape 1866.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-0000074a" lastModified="1477651346"/>
+          <Include href="Graphic/shape 1867.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-0000074b" lastModified="1477651346"/>
+          <Include href="Graphic/shape 1868.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-0000074c" lastModified="1477651346"/>
           <Include href="Graphic/shape 2022.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007e6" lastModified="1477651346"/>
           <Include href="Graphic/shape 2023.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007e7" lastModified="1477651346"/>
           <Include href="Graphic/shape 2024.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007e8" lastModified="1477651346"/>
@@ -300,8 +336,13 @@
           <Include href="Graphic/shape 2027.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007eb" lastModified="1477651346"/>
           <Include href="MovieClip/sprite 216.xml" loadImmediate="false" itemID="58132b8a-000000d8" lastModified="1749127541"/>
           <Include href="MovieClip/sprite 224.xml" loadImmediate="false" itemID="58132b8a-000000e0" lastModified="1749127492"/>
+          <Include href="MovieClip/sprite 264.xml" loadImmediate="false" itemID="58132b8a-00000108" lastModified="1776194623"/>
+          <Include href="MovieClip/sprite 284.xml" loadImmediate="false" itemID="58132b8a-0000011c" lastModified="1776193974"/>
+          <Include href="MovieClip/sprite 701.xml" loadImmediate="false" itemID="58132beb-000002bd" lastModified="1477657770"/>
           <Include href="MovieClip/sprite 724.xml" loadImmediate="false" itemID="58132bff-000002d4" lastModified="1749127399"/>
           <Include href="MovieClip/sprite 1205.xml" loadImmediate="false" itemID="58132b8f-000004b5" lastModified="1769694309"/>
+          <Include href="MovieClip/sprite 1236.xml" loadImmediate="false" itemID="58132bed-000004d5" lastModified="1776195469"/>
+          <Include href="MovieClip/sprite 1869.xml" loadImmediate="false" itemID="58132b92-0000074d" lastModified="1776194331"/>
           <Include href="MovieClip/sprite 2028.xml" loadImmediate="false" itemID="58132b92-000007ec" lastModified="1749127392"/>
           <Include href="MovieClip/元件 1.xml" loadImmediate="false" itemID="581339df-00001c10" lastModified="1477655007"/>
           <Include href="P90.xml" itemIcon="1" loadImmediate="false" itemID="681b4b4a-00001004" lastModified="1746619210"/>
@@ -1354,12 +1395,13 @@
           <Include href="容器/空手攻击容器/平A/空手攻击容器-单臂巨拳1连招.xml" itemID="6967d527-00000a61" lastModified="1771957275"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" itemID="6964ce51-00002614" lastModified="1772042981"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-巨拳1连招.xml" itemID="6964c727-0000249e" lastModified="1771724391"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1772043780"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1776200264"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-强化1连招.xml" itemID="6964d172-0000273a" lastModified="1771683038"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-拳击1连招.xml" itemID="6964cdcf-00002588" lastModified="1771683047"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-兽王崩拳1连招.xml" itemID="6964d061-00002699" lastModified="1770225216"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-兽形拳1连招.xml" itemID="6964d0f9-000026f0" lastModified="1771683054"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-腕刃1连招.xml" itemID="6963b211-00000fda" lastModified="1770225277"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-腕刃1连招.xml" itemID="6963b211-00000fda" lastModified="1776198321"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-迅驰腿1连招.xml" itemID="69de9d91-00000d1f" lastModified="1776200378"/>
           <Include href="容器/容器.xml" loadImmediate="false" itemID="6957d2ea-0000091e" lastModified="1768414239"/>
           <Include href="容器/战技容器/！战技容器-逆暴雨.xml" loadImmediate="false" itemID="6993780a-00000b8f" lastModified="1771272354"/>
           <Include href="容器/战技容器/sprite/Symbol 8.xml" loadImmediate="false" itemID="695e92f4-00001514" lastModified="1767805684"/>
@@ -1419,7 +1461,7 @@
           <Include href="容器/战技容器/战技容器-旋风腿.xml" itemID="6959da65-000011b7" lastModified="1771781258"/>
           <Include href="容器/战技容器/战技容器-一文字落雷.xml" itemID="695e518e-0000599b" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-战技小跳.xml" itemID="695a6637-00001877" lastModified="1775995967"/>
-          <Include href="容器/战技容器/战技容器-长柄变双刀.xml" itemID="69db8c1e-00000a45" lastModified="1776182759"/>
+          <Include href="容器/战技容器/战技容器-长柄变双刀.xml" itemID="69db8c1e-00000a45" lastModified="1776198609"/>
           <Include href="容器/战技容器/战技容器-掌炮.xml" itemID="6959110f-00000989" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-重力操作.xml" itemID="69592474-00000eab" lastModified="1769694922"/>
           <Include href="容器/战技容器/战技容器-追踪五连.xml" itemID="69590fc9-00000924" lastModified="1776182769"/>
@@ -2044,6 +2086,7 @@
           <Include href="战技1 复制.xml" loadImmediate="false" itemID="6910b5ba-00001da5" lastModified="1769694922"/>
           <Include href="掌炮蓄力波.xml" loadImmediate="false" itemID="690a37d3-0000179f" lastModified="1762279251"/>
           <Include href="重复项目文件夹/shape 62.xml" itemIcon="1" loadImmediate="false" itemID="673b0ab6-000003ad" lastModified="1731922569"/>
+          <Include href="重复项目文件夹/shape 283.xml" itemIcon="1" loadImmediate="false" itemID="58133978-00001be2" lastModified="1477651338"/>
           <Include href="重复项目文件夹/shape 713.xml" itemIcon="1" loadImmediate="false" itemID="681a23ee-00000e23" lastModified="1477651455"/>
           <Include href="重复项目文件夹/shape 714.xml" itemIcon="1" loadImmediate="false" itemID="681a23ee-00000e24" lastModified="1477651455"/>
           <Include href="重复项目文件夹/shape 715.xml" itemIcon="1" loadImmediate="false" itemID="681a23ee-00000e25" lastModified="1477651455"/>
@@ -2177,7 +2220,7 @@
                                         <script><![CDATA[stop();]]></script>
                                    </Actionscript>
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="加载MC库-00" selected="true" centerPoint3DX="1277" centerPoint3DY="546.05">
+                                        <DOMSymbolInstance libraryItemName="加载MC库-00" centerPoint3DX="1277" centerPoint3DY="546.05">
                                              <matrix>
                                                   <Matrix tx="356.3" ty="-65.75"/>
                                              </matrix>
@@ -2672,6 +2715,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4355705" publishTime="1776200230"/>
+          <PublishItem publishSize="4356927" publishTime="1776199440"/>
           <PublishItem publishSize="4108037" publishTime="1776011969"/>
           <PublishItem publishSize="4107998" publishTime="1776011202"/>
           <PublishItem publishSize="4107964" publishTime="1776007467"/>
@@ -2690,7 +2735,5 @@
           <PublishItem publishSize="4128315" publishTime="1772040532"/>
           <PublishItem publishSize="4128471" publishTime="1772040386"/>
           <PublishItem publishSize="4128471" publishTime="1772039916"/>
-          <PublishItem publishSize="4128474" publishTime="1772039367"/>
-          <PublishItem publishSize="4128441" publishTime="1772038717"/>
      </publishHistory>
 </DOMDocument>

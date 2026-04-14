@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-长柄变双刀" itemID="69db8c1e-00000a45" linkageExportForAS="true" linkageIdentifier="战技容器-长柄变双刀" lastModified="1776182759" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-长柄变双刀" itemID="69db8c1e-00000a45" linkageExportForAS="true" linkageIdentifier="战技容器-长柄变双刀" lastModified="1776198609" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="战技容器-长柄变双刀" currentFrame="30">
+    <DOMTimeline name="战技容器-长柄变双刀" currentFrame="2">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -25,7 +25,7 @@ _root.战技路由.动画完毕(this, _parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <Actionscript>
@@ -530,7 +530,7 @@ _root.战技路由.动画完毕(this, _parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -786,7 +786,7 @@ _root.战技路由.动画完毕(this, _parent);]]></script>
             </DOMFrame>
             <DOMFrame index="26" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -981,8 +981,8 @@ _root.战技路由.动画完毕(this, _parent);]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!26010 1418[24337 5548 20334 8123!20334 8123[16327 10699 12338 10210!12338 10210[11518 10109 10797 9891!10797 9891[8013 9050 6709 6457!6709 6457[5072 3189 6746 -941!6746 -941[8417 -5070 12420 -7645!12420 -7645[15168 -9410 17905 -9737
-!17905 -9737[19162 -9886 20416 -9732!20416 -9732[24403 -9244 26044 -5979!26044 -5979[27685 -2712 26010 1418"/>
+!12420 -7645[15168 -9410 17905 -9737!17905 -9737[19162 -9886 20416 -9732!20416 -9732[24403 -9244 26044 -5979!26044 -5979[27685 -2712 26010 1418!26010 1418[24337 5548 20334 8123!20334 8123[16327 10699 12338 10210!12338 10210[11518 10109
+ 10797 9891!10797 9891[8013 9050 6709 6457!6709 6457[5072 3189 6746 -941!6746 -941[8417 -5070 12420 -7645"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1088,8 +1088,8 @@ _root.战技路由.动画完毕(this, _parent);]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!11931 -10465[12953 -10599 14196 -10460!14196 -10460[18146 -10020 22026 -7080!22026 -7080[25907 -4139 27440 -420!27440 -420[28972 3299 27262 5618!27262 5618[25551 7938 21599 7497!21599 7497[20786 7406 19976 7210!19976 7210[16850 6453
- 13768 4117!13768 4117[9889 1175 8356 -2544!8356 -2544[6823 -6262 8533 -8581!8533 -8581[9707 -10171 11931 -10465"/>
+!27262 5618[25551 7938 21599 7497!21599 7497[20786 7406 19976 7210!19976 7210[16850 6453 13768 4117!13768 4117[9889 1175 8356 -2544!8356 -2544[6823 -6262 8533 -8581!8533 -8581[9707 -10171 11931 -10465!11931 -10465[12953 -10599 14196 -10460
+!14196 -10460[18146 -10020 22026 -7080!22026 -7080[25907 -4139 27440 -420!27440 -420[28972 3299 27262 5618"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1198,7 +1198,7 @@ _root.战技路由.动画完毕(this, _parent);]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!5581 1619|14078 3852!14078 3852[#2F9E.34 #FFEF9B.B1 -4867 -8488!-4867 -8488[2262 -2293 5581 1619"/>
+!14078 3852[#2F9E.34 #FFEF9B.B1 -4867 -8488!-4867 -8488[2262 -2293 5581 1619!5581 1619|14078 3852"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1349,7 +1349,7 @@ _root.战技路由.动画完毕(this, _parent);]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!6960 668|13549 -1046!13549 -1046[7135 -8208 -8986 -5592!-8986 -5592[4235 -3680 6960 668"/>
+!13549 -1046[7135 -8208 -8986 -5592!-8986 -5592[4235 -3680 6960 668!6960 668|13549 -1046"/>
                   </edges>
                 </DOMShape>
               </elements>
