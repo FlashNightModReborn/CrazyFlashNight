@@ -617,7 +617,7 @@ _root.敌人函数.获取大学学员随机装扮 = function(target){
 	}
 
 	target.刀口位置生成子弹 = _root.主角函数.刀口位置生成子弹;
-}
+};
 
 _root.敌人函数.大学剑道社随机发型表_男 = [
 	"发型-男式-白色阴阳头",
@@ -664,4 +664,132 @@ _root.敌人函数.获取大学剑道社随机装扮 = function(target){
 	}
 
 	target.刀口位置生成子弹 = _root.主角函数.刀口位置生成子弹;
-}
+};
+
+_root.敌人函数.大学军阀派随机发型表_男 = [
+	"发型-男式-白色阴阳头",
+	"发型-男式-短碎卷发",
+	"发型-男式-日轻主角",
+	"发型-男式-淡金卷",
+	"发型-男式-藏蓝偏分",
+	"发型-男式-狂野紫红",
+	"发型-男式-青绿渐变",
+	"发型-男式-阴阳两隔",
+	"发型-男式-茜红卷发",
+	"发型-男式-亚麻短发",
+	"发型-男式-苍紫短辫"
+];
+_root.敌人函数.大学军阀派随机发型表_女 = [
+	"发型-女式-缠流子",
+	"发型-女式-遮眼米白长发",
+	"发型-女式-中性遮发眼头",
+	"发型-女式-骷髅帽子黄发头",
+	"发型-女式-棕发大姐头"
+];
+_root.敌人函数.大学军阀派随机兵器表 = [
+	"PPSh41",
+	"汤姆逊冲锋枪",
+	"UMP",
+	"M1A1SMG",
+	"TYPE79TAPSII",
+	"MP40BLACK",
+	"KRISS突击版",
+	"TTI MPX",
+	"PP1901",
+	"MP5A3",
+	"MP510",
+	"M16A1",
+	"M4A1",
+	"G36",
+	"FAMAS",
+	"AUG",
+	"AK200",
+	"XM8",
+	"MK17",
+	"FN F2000",
+	"AKS74U",
+	"DD MK18",
+	"AK74",
+	"HK33KA3",
+	"战术版AK200",
+	"HK53",
+	"QBZ95",
+	"HK416",
+	"HK33A2",
+	"QBZ-191",
+	"TTI TR1",
+	"DD MK18 Mod1",
+	"勃朗宁725双管霰弹枪",
+	"雷明登870急速型",
+	"XM1014",
+	"FNSLP半自动霰弹枪",
+	"白火铳",
+	"ZUX197",
+	"XM1014战术版",
+	"M249",
+	"HK23",
+	"MK48",
+	"PKM机枪",
+	"M1918A2",
+	"NEGEV",
+	"Sniper",
+	"M24SWS",
+	"Marlin1895",
+	"芬兰之星",
+	"XM556-Preview",
+	"XM556-Microgun",
+	"MG42",
+	"XM214-CageFrame",
+	"HKSL8",
+	"SteyrScout",
+	"Type56R",
+	"毛瑟98k",
+	"G3SG1",
+	"SteyrScout10",
+	"KaiShek",
+	"HKSL8BLACK",
+	"中国88式狙击步枪",
+	"m14",
+	"中国88式狙击步枪改造版"
+];
+_root.敌人函数.获取大学军阀派随机装扮 = function(target){
+	target.hasDressup = true;
+	if(!target.性别){
+		target.性别 = random(2) === 0 ? "男" : "女";
+	}
+	if(!target.长枪) {
+		target.长枪 = this.大学军阀派随机兵器表[random(this.大学军阀派随机兵器表.length)];
+	}
+	if(!target.发型){
+		if(target.性别 === "男") target.发型 = this.大学军阀派随机发型表_男[random(this.大学军阀派随机发型表_男.length)];
+		else target.发型 = this.大学军阀派随机发型表_女[random(this.大学军阀派随机发型表_女.length)];
+	}
+
+	target.刀口位置生成子弹 = _root.主角函数.刀口位置生成子弹;
+};
+
+
+_root.敌人函数.大学军校学员随机发型表_男 = [
+	"发型-男式-白色阴阳头",
+];
+_root.敌人函数.大学军校学员随机发型表_女 = [
+	"发型-女式-缠流子",
+];
+_root.敌人函数.大学军校学员随机兵器表 = [
+	"M4A1改",
+];
+_root.敌人函数.获取大学军校学员随机装扮 = function(target){
+	target.hasDressup = true;
+	if(!target.性别){
+		target.性别 = random(2) === 0 ? "男" : "女";
+	}
+	if(!target.长枪) {
+		target.长枪 = this.大学军校学员随机兵器表[random(this.大学军校学员随机兵器表.length)];
+	}
+	if(!target.发型){
+		if(target.性别 === "男") target.发型 = this.大学军校学员随机发型表_男[random(this.大学军校学员随机发型表_男.length)];
+		else target.发型 = this.大学军校学员随机发型表_女[random(this.大学军校学员随机发型表_女.length)];
+	}
+
+	target.刀口位置生成子弹 = _root.主角函数.刀口位置生成子弹;
+};
