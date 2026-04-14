@@ -1,72 +1,118 @@
 """
-战斗移动 Agent 数据模型 — 对应 AS2 的 UnitAIData + MovieClip 移动状态。
+Combat movement agent state shared by the offline simulators.
 
-将 AS2 中分散在 UnitAIData / MovieClip / Mover 中的移动相关状态
-收敛到一个纯 Python dataclass，供 MovementResolver 和仿真器使用。
+The original tool started as a MovementResolver-only harness. This model now
+also carries a lightweight survival runtime so we can tune the "burst
+survival" loop without introducing a second simulator island.
 """
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass, field
-from typing import List, Tuple, Optional
+from typing import List, Optional, Tuple
 
 from shared import CollisionWorld
 
 
 @dataclass
 class MovementConfig:
-    """MovementResolver 可调参数（对应 AS2 中的硬编码常量）。"""
-    margin: float = 80.0             # 边界安全余量（AS2: MARGIN=80）
-    probe_min: float = 20.0          # 最小探测距离
-    probe_max: float = 60.0          # 最大探测距离
-    probe_speed_mult: float = 5.0    # 当前 AS2 基线：probe = speed * 5
-    no_progress_threshold: int = 2   # 当前 AS2 基线：_noProgressCount >= 2
-    probe_fail_trigger: int = 3      # 探测全败触发 pushOut 的次数
-    unstuck_base_window: int = 24    # 当前 AS2 基线：基础脱困窗口（帧）
-    unstuck_mid_window: int = 36     # 当前 AS2 基线：中等卡死脱困窗口
-    unstuck_high_window: int = 48    # 当前 AS2 基线：严重卡死脱困窗口
-    unstuck_mid_thresh: int = 6      # 中等卡死阈值（stuckCheckCount）
-    unstuck_high_thresh: int = 12    # 严重卡死阈值
-    pushout_radius: float = 120.0    # pushOut 搜索半径
-    pushout_steps: int = 10          # pushOut 径向步数
-    pushout_angles: int = 45         # pushOut 角度数（每步几度间隔→360/angles）
+    """Movement heuristics plus a minimal survival-tuning surface."""
 
-    # ── 动态追逐 / 交战走位近似参数（ThreatAssessor + EngageMovementStrategy）──
-    threat_scan_range: float = 250.0           # ThreatAssessor.scanRange
-    nearby_enemy_range: float = 150.0          # ThreatAssessor.nearby 窗口
-    encirclement_evade_threshold: float = 0.25 # 接近 EngageMovementStrategy 的包围压力启动线
-    pincer_side_advantage: int = 1             # 左右敌人数差多少才判定“安全侧”
-    edge_escape_margin: float = 80.0           # EngageMovementStrategy.edgeMargin
-    edge_safe_space: float = 60.0              # safeX 可用空间门槛
-    survival_gap_enemy_min: int = 3            # 多敌无安全区时启用缺口突围的最小敌人数
-    pressure_dominance_ratio: float = 1.15     # 左右压力权重优势达到该比值才判定单侧更挤
-    pack_escape_window: int = 20               # 多敌逃逸承诺窗口（帧）
-    pack_escape_min_nearby: int = 1            # 触发多敌逃逸承诺的最小近距敌人数
-    threat_sample_interval: int = 16           # ThreatAssessor 风格采样周期（帧）
-    kite_x_threshold: float = 180.0            # EngageMovementStrategy 近似 X 风筝阈值
-    evade_nearby_count: int = 2                # wantsEvade 的近距敌人数门槛
-    strafe_pulse_min: int = 8                  # 蛇形走位脉冲最短持续
-    strafe_pulse_max: int = 15                 # 蛇形走位脉冲最长持续
-    strafe_gap_base: int = 12                  # 脉冲基础间歇
-    strafe_gap_min: int = 3                    # 脉冲最短间歇
+    # MovementResolver parity
+    margin: float = 80.0
+    probe_min: float = 20.0
+    probe_max: float = 60.0
+    probe_speed_mult: float = 5.0
+    no_progress_threshold: int = 2
+    probe_fail_trigger: int = 3
+    unstuck_base_window: int = 24
+    unstuck_mid_window: int = 36
+    unstuck_high_window: int = 48
+    unstuck_mid_thresh: int = 6
+    unstuck_high_thresh: int = 12
+    pushout_radius: float = 120.0
+    pushout_steps: int = 10
+    pushout_angles: int = 45
+
+    # Threat / engage surrogate
+    threat_scan_range: float = 250.0
+    nearby_enemy_range: float = 150.0
+    encirclement_evade_threshold: float = 0.25
+    pincer_side_advantage: int = 1
+    edge_escape_margin: float = 80.0
+    edge_safe_space: float = 60.0
+    survival_gap_enemy_min: int = 3
+    pressure_dominance_ratio: float = 1.15
+    pack_escape_window: int = 20
+    pack_escape_min_nearby: int = 1
+    threat_sample_interval: int = 16
+    kite_x_threshold: float = 180.0
+    evade_nearby_count: int = 2
+    strafe_pulse_min: int = 8
+    strafe_pulse_max: int = 15
+    strafe_gap_base: int = 12
+    strafe_gap_min: int = 3
+
+    # Burst survival heuristics
+    burst_guard_hp_threshold: float = 0.45
+    burst_guard_impact_ratio: float = 0.55
+    burst_guard_nearby_enemies: int = 2
+    burst_guard_recent_hit_frames: int = 16
+    burst_guard_imminent_damage_ratio: float = 0.3
+    overguard_imminent_damage_ratio: float = 0.85
+    overguard_recast_gap_frames: int = 24
+    shield_duration_frames: int = 20
+    shield_cooldown_frames: int = 120
+    shield_damage_mult: float = 0.45
+    shield_impact_mult: float = 0.35
+    impact_recovery_per_tick: float = 180.0
+    down_recovery_frames: int = 24
+    stagger_move_hold_frames: int = 12
+    post_break_pure_move_frames: int = 24
+    emergency_speed_mult: float = 1.15
+    downed_damage_mult: float = 1.25
+    escape_skill_hp_threshold: float = 0.6
+    escape_skill_impact_ratio: float = 0.45
+    escape_skill_nearby_enemies: int = 1
+    escape_imminent_damage_ratio: float = 0.25
+    escape_imminent_attackers: int = 2
+    escape_single_imminent_damage_ratio: float = 0.8
+    escape_single_imminent_hp_threshold: float = 0.35
+    escape_dash_distance: float = 140.0
+    escape_invuln_frames: int = 8
+    escape_cooldown_frames: int = 120
+    escape_impact_clear_ratio: float = 0.2
+    escape_push_radius: float = 120.0
+    escape_push_distance: float = 90.0
+    escape_attack_delay_frames: int = 20
+    wakeup_guard_invuln_frames: int = 12
+    wakeup_guard_shield_frames: int = 24
+    wakeup_guard_pure_move_frames: int = 32
+    wakeup_guard_impact_clear_ratio: float = 0.0
+    wakeup_guard_dash_distance: float = 100.0
+    wakeup_guard_push_radius: float = 140.0
+    wakeup_guard_push_distance: float = 110.0
+    wakeup_guard_attack_delay_frames: int = 28
+    combo_break_cancel_window_frames: int = 20
+    combo_break_cancel_radius: float = 220.0
 
 
 @dataclass
 class CombatAgent:
-    """一个战斗单位的移动状态。"""
+    """Movement state plus the minimal runtime needed for survival tuning."""
+
     x: float
-    z: float                         # 2.5D 的 Z 轴（对应 AS2 的 _y）
-    speed: float = 6.0               # 每帧移动像素（AS2: 行走X速度）
+    z: float
+    speed: float = 6.0
     config: MovementConfig = field(default_factory=MovementConfig)
 
-    # ── 边界距离（每 tick 由 update_boundaries 计算）──
+    # Boundary state
     bnd_left: float = 0.0
     bnd_right: float = 0.0
     bnd_up: float = 0.0
     bnd_down: float = 0.0
-    bnd_corner: float = 0.0          # 角落度 [0,1]
+    bnd_corner: float = 0.0
 
-    # ── 脱困状态（对应 UnitAIData._unstuck*）──
+    # MovementResolver unstuck state
     unstuck_until_frame: int = 0
     unstuck_x: int = 0
     unstuck_z: int = 0
@@ -75,41 +121,63 @@ class CombatAgent:
     last_progress_z: Optional[float] = None
     probe_fail_count: int = 0
 
-    # ── 卡死检测（对应 UnitAIData.stuckProbeByCurrentPosition）──
+    # Stuck probe state
     _pos_history: List[Tuple[float, float]] = field(default_factory=list)
     _stuck_check_count: int = 0
 
-    # ── 移动标志输出（对应 AS2 self.左行/右行/上行/下行）──
+    # Movement output
     move_left: bool = False
     move_right: bool = False
     move_up: bool = False
     move_down: bool = False
 
-    # ── 目标信息 ──
+    # Optional target hint
     target_x: Optional[float] = None
     target_z: Optional[float] = None
 
-    # ── 统计 ──
+    # Statistics
     trajectory: List[Tuple[float, float]] = field(default_factory=list)
-    stuck_frames: int = 0            # 累计卡死帧数
-    corner_events: int = 0           # 角落突围触发次数
-    slide_events: int = 0            # 沿墙滑行触发次数
+    stuck_frames: int = 0
+    corner_events: int = 0
+    slide_events: int = 0
     total_frames: int = 0
 
-    def __post_init__(self):
+    # Survival runtime
+    hp: float = 100.0
+    hp_max: float = 100.0
+    impact_force: float = 0.0
+    impact_cap: float = 1800.0
+    impact_stagger_boundary: float = 900.0
+    alive: bool = True
+    down_until_frame: int = 0
+    pure_move_until_frame: int = 0
+    shield_until_frame: int = 0
+    shield_cooldown_until_frame: int = 0
+    last_shield_frame: int = -10**9
+    escape_invuln_until_frame: int = 0
+    escape_cooldown_until_frame: int = 0
+    last_hit_frame: int = -10**9
+    last_hit_tag: str = ""
+    total_damage_taken: float = 0.0
+    total_impact_taken: float = 0.0
+    tough_break_count: int = 0
+    down_count: int = 0
+    shield_uses: int = 0
+    escape_skill_uses: int = 0
+    wakeup_guard_uses: int = 0
+    evaded_hits: int = 0
+
+    def __post_init__(self) -> None:
         self.trajectory = [(self.x, self.z)]
 
-    # ═══════ 边界距离计算 ═══════
-
     def update_boundaries(self, bounds: Tuple[float, float, float, float]) -> None:
-        """计算到地图四边的距离 + 角落度。"""
+        """Compute distance to each map edge and a coarse corner factor."""
         xmin, xmax, ymin, ymax = bounds
         self.bnd_left = self.x - xmin
         self.bnd_right = xmax - self.x
         self.bnd_up = self.z - ymin
         self.bnd_down = ymax - self.z
 
-        # 角落度：两轴中较小边界距离的归一化乘积
         margin = self.config.margin
         x_close = min(self.bnd_left, self.bnd_right) / margin
         z_close = min(self.bnd_up, self.bnd_down) / margin
@@ -117,16 +185,14 @@ class CombatAgent:
         z_close = max(0.0, 1.0 - z_close)
         self.bnd_corner = x_close * z_close
 
-    # ═══════ 卡死检测 ═══════
-
-    def stuck_probe(self, record: bool = True,
-                    tolerance: float = 6.0,
-                    threshold: int = 3,
-                    window: int = 4) -> bool:
-        """
-        对应 UnitAIData.stuckProbeByCurrentPosition。
-        检查最近 window 帧内位移是否低于 tolerance。
-        """
+    def stuck_probe(
+        self,
+        record: bool = True,
+        tolerance: float = 6.0,
+        threshold: int = 3,
+        window: int = 4,
+    ) -> bool:
+        """Approximate UnitAIData.stuckProbeByCurrentPosition."""
         if record:
             self._pos_history.append((self.x, self.z))
             if len(self._pos_history) > window + 1:
@@ -150,18 +216,14 @@ class CombatAgent:
     def get_stuck_check_count(self) -> int:
         return self._stuck_check_count
 
-    # ═══════ 移动标志清除 ═══════
-
     def clear_input(self) -> None:
         self.move_left = False
         self.move_right = False
         self.move_up = False
         self.move_down = False
 
-    # ═══════ 移动执行（4 子帧独立轴）═══════
-
     def apply_movement(self, coll: CollisionWorld, n_subframes: int = 4) -> None:
-        """执行一个 action tick 的移动（4 子帧，每帧独立轴碰撞检测）。"""
+        """Apply one action tick worth of movement using axis-separated checks."""
         spd = self.speed
         dx = 0.0
         dz = 0.0
@@ -185,6 +247,14 @@ class CombatAgent:
                     self.z = nz
 
     def record_frame(self) -> None:
-        """记录当前位置到轨迹。"""
         self.trajectory.append((self.x, self.z))
-        self.total_frames += 4  # 每 action = 4 帧
+        self.total_frames += 4
+
+    def is_downed(self, frame: int) -> bool:
+        return frame < self.down_until_frame
+
+    def shield_active(self, frame: int) -> bool:
+        return frame < self.shield_until_frame
+
+    def escape_active(self, frame: int) -> bool:
+        return frame < self.escape_invuln_until_frame

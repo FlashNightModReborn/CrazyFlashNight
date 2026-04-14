@@ -55,6 +55,19 @@ EXTENDED_PARAM_GRID = {
     "strafe_gap_base": [8, 12, 16],
 }
 
+SURVIVAL_PARAM_GRID = {
+    "shield_damage_mult": [0.35, 0.5],
+    "shield_impact_mult": [0.25, 0.45],
+    "shield_duration_frames": [20, 32],
+    "overguard_imminent_damage_ratio": [0.7, 0.85],
+    "overguard_recast_gap_frames": [16, 24],
+    "post_break_pure_move_frames": [24, 40],
+    "escape_single_imminent_damage_ratio": [0.65, 0.8],
+    "escape_single_imminent_hp_threshold": [0.25, 0.35],
+    "escape_dash_distance": [110.0, 160.0],
+    "escape_impact_clear_ratio": [0.1, 0.25],
+}
+
 
 def _make_config(**overrides) -> MovementConfig:
     return MovementConfig(**overrides)
@@ -66,6 +79,7 @@ def scan_params(
     scenarios: List[CombatScenario],
     param_grid: Dict[str, List] = None,
     max_ticks: int = 500,
+    base_params: Optional[Dict] = None,
     verbose: bool = True,
 ) -> List[Tuple[Dict, List[SimResult]]]:
     """
@@ -75,6 +89,8 @@ def scan_params(
     """
     if param_grid is None:
         param_grid = DEFAULT_PARAM_GRID
+    if base_params is None:
+        base_params = {}
 
     param_names = list(param_grid.keys())
     param_values = list(param_grid.values())
@@ -85,7 +101,9 @@ def scan_params(
 
     for idx, combo in enumerate(combos):
         params = dict(zip(param_names, combo))
-        cfg = _make_config(**params)
+        merged = dict(base_params)
+        merged.update(params)
+        cfg = _make_config(**merged)
 
         sim_results = run_batch(scenarios, cfg, max_ticks=max_ticks)
 
@@ -115,22 +133,41 @@ def aggregate_results(results: List[SimResult]) -> Dict:
     corners = [r.corner_events for r in results]
     slides = [r.slide_events for r in results]
     min_enemy_dists = [r.min_enemy_dist for r in results if r.min_enemy_dist != float("inf")]
+    dead = sum(1 for r in results if r.dead)
+    down_counts = [r.down_count for r in results]
+    tough_break_counts = [r.tough_break_count for r in results]
+    shield_uses = [r.shield_uses for r in results]
+    escape_uses = [r.escape_skill_uses for r in results]
+    wakeup_uses = [r.wakeup_guard_uses for r in results]
+    evaded_hits = [r.evaded_hits for r in results]
+    hp_remaining = [r.hp_remaining_pct for r in results]
+    death_frames = [r.death_frame for r in results if r.death_frame >= 0]
 
     summary = {
         "n_scenarios": n,
         "success_rate": succeeded / n,
         "reach_rate": reached / n,
         "caught_rate": caught / n,
+        "dead_rate": dead / n,
         "avg_escape_frames": sum(escape_frames) / max(1, len(escape_frames)),
         "avg_stuck_rate": sum(stuck_rates) / n,
         "max_stuck_rate": max(stuck_rates),
         "avg_smoothness": sum(smoothness) / n,
         "avg_corner_events": sum(corners) / n,
         "avg_slide_events": sum(slides) / n,
+        "avg_down_count": sum(down_counts) / n,
+        "avg_tough_break_count": sum(tough_break_counts) / n,
+        "avg_shield_uses": sum(shield_uses) / n,
+        "avg_escape_skill_uses": sum(escape_uses) / n,
+        "avg_wakeup_guard_uses": sum(wakeup_uses) / n,
+        "avg_evaded_hits": sum(evaded_hits) / n,
+        "avg_hp_remaining_pct": sum(hp_remaining) / n,
     }
     if min_enemy_dists:
         summary["avg_min_enemy_dist"] = sum(min_enemy_dists) / len(min_enemy_dists)
         summary["min_min_enemy_dist"] = min(min_enemy_dists)
+    if death_frames:
+        summary["avg_death_frame"] = sum(death_frames) / len(death_frames)
     return summary
 
 
@@ -181,10 +218,16 @@ def rank_by_composite(
         weights = {
             "success_rate": 4.0,
             "caught_rate": -1.5,
+            "dead_rate": -3.0,
             "avg_escape_frames": -0.001,
             "avg_stuck_rate": -2.0,
             "avg_smoothness": -0.25,
             "avg_min_enemy_dist": 0.002,
+            "avg_hp_remaining_pct": 1.5,
+            "avg_down_count": -0.5,
+            "avg_tough_break_count": -1.0,
+            "avg_wakeup_guard_uses": 0.2,
+            "avg_evaded_hits": 0.25,
         }
 
     scored = []

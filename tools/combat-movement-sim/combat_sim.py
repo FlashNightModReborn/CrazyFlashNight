@@ -45,6 +45,19 @@ class SimResult:
     slide_events: int = 0
     direction_changes: int = 0       # 方向变化次数
     trajectory: List[Tuple[float, float]] = field(default_factory=list)
+    dead: bool = False
+    death_frame: int = -1
+    death_reason: str = ""
+    down_count: int = 0
+    tough_break_count: int = 0
+    shield_uses: int = 0
+    escape_skill_uses: int = 0
+    wakeup_guard_uses: int = 0
+    evaded_hits: int = 0
+    total_damage_taken: float = 0.0
+    total_impact_taken: float = 0.0
+    hp_remaining: float = 0.0
+    hp_max: float = 0.0
 
     @property
     def stuck_rate(self) -> float:
@@ -58,9 +71,15 @@ class SimResult:
 
     @property
     def succeeded(self) -> bool:
-        if self.objective == "survive":
-            return not self.caught
+        if self.objective in ("survive", "burst_survival"):
+            return (not self.caught) and (not self.dead)
         return self.reached_safe
+
+    @property
+    def hp_remaining_pct(self) -> float:
+        if self.hp_max <= 0:
+            return 0.0
+        return self.hp_remaining / self.hp_max
 
     def summary_dict(self) -> Dict:
         return {
@@ -73,6 +92,9 @@ class SimResult:
             "reached_safe": self.reached_safe,
             "caught": self.caught,
             "caught_frame": self.caught_frame if self.caught_frame >= 0 else None,
+            "dead": self.dead,
+            "death_frame": self.death_frame if self.death_frame >= 0 else None,
+            "death_reason": self.death_reason or None,
             "min_enemy_dist": (
                 round(self.min_enemy_dist, 4)
                 if self.min_enemy_dist != float("inf")
@@ -82,6 +104,15 @@ class SimResult:
             "corner_events": self.corner_events,
             "slide_events": self.slide_events,
             "smoothness": round(self.smoothness, 4),
+            "down_count": self.down_count,
+            "tough_break_count": self.tough_break_count,
+            "shield_uses": self.shield_uses,
+            "escape_skill_uses": self.escape_skill_uses,
+            "wakeup_guard_uses": self.wakeup_guard_uses,
+            "evaded_hits": self.evaded_hits,
+            "total_damage_taken": round(self.total_damage_taken, 4),
+            "total_impact_taken": round(self.total_impact_taken, 4),
+            "hp_remaining_pct": round(self.hp_remaining_pct, 4),
         }
 
 
@@ -845,6 +876,619 @@ def run_chase_sim(
     return result
 
 
+def _spawn_enemy_runtime(scenario: CombatScenario):
+    enemies = []
+    if scenario.enemies:
+        for ec in scenario.enemies:
+            enemies.append({
+                "x": ec.x,
+                "z": ec.z,
+                "speed": ec.speed,
+                "chase_range": ec.chase_range,
+                "attack_range": ec.attack_range,
+                "attack_damage": ec.attack_damage,
+                "attack_impact": ec.attack_impact,
+                "attack_cooldown_frames": ec.attack_cooldown_frames,
+                "attack_windup_frames": ec.attack_windup_frames,
+                "attack_tag": ec.attack_tag,
+                "_next_attack_frame": 0,
+            })
+    else:
+        enemies.append({
+            "x": scenario.enemy_pos[0],
+            "z": scenario.enemy_pos[1],
+            "speed": scenario.enemy_speed,
+            "chase_range": 999.0,
+            "attack_range": 0.0,
+            "attack_damage": 0.0,
+            "attack_impact": 0.0,
+            "attack_cooldown_frames": 24,
+            "attack_windup_frames": 4,
+            "attack_tag": "hit",
+            "_next_attack_frame": 0,
+        })
+    return enemies
+
+
+def _step_enemy_motion(agent, enemies, coll):
+    for e in enemies:
+        dx = agent.x - e["x"]
+        dz = agent.z - e["z"]
+        dist = math.sqrt(dx * dx + dz * dz)
+        if dist <= 1.0 or dist > e["chase_range"]:
+            continue
+
+        spd = e["speed"]
+        for _ in range(4):
+            step_dx = agent.x - e["x"]
+            step_dz = agent.z - e["z"]
+            step_dist = math.sqrt(step_dx * step_dx + step_dz * step_dz)
+            if step_dist <= 1.0:
+                break
+
+            nx = e["x"] + (step_dx / step_dist) * spd
+            nz = e["z"] + (step_dz / step_dist) * spd
+            if coll.is_point_valid(nx, e["z"]):
+                e["x"] = nx
+            if coll.is_point_valid(e["x"], nz):
+                e["z"] = nz
+
+
+def _nearest_enemy(agent, enemies):
+    nearest = None
+    nearest_dist = float("inf")
+    for e in enemies:
+        dist = math.sqrt((agent.x - e["x"]) ** 2 + (agent.z - e["z"]) ** 2)
+        if dist < nearest_dist:
+            nearest = e
+            nearest_dist = dist
+    return nearest, nearest_dist
+
+
+def _maybe_activate_shield(agent, enemies, pressure, frame, config):
+    if agent.is_downed(frame):
+        return False
+    if agent.shield_active(frame):
+        return False
+
+    hp_ratio = agent.hp / max(1.0, agent.hp_max)
+    recent_hit = frame - agent.last_hit_frame <= config.burst_guard_recent_hit_frames
+    nearby_ok = pressure["nearby_count"] >= config.burst_guard_nearby_enemies
+    imminent_damage, imminent_attackers = _estimate_imminent_burst(agent, enemies, frame)
+    lethal_burst = imminent_damage >= agent.hp * config.overguard_imminent_damage_ratio
+    overguard_ready = frame >= agent.last_shield_frame + config.overguard_recast_gap_frames
+
+    if frame < agent.shield_cooldown_until_frame and not (lethal_burst and overguard_ready):
+        return False
+
+    heavy_threat = False
+    for e in enemies:
+        if e["attack_range"] <= 0 or e["attack_impact"] <= 0:
+            continue
+        dist = math.sqrt((agent.x - e["x"]) ** 2 + (agent.z - e["z"]) ** 2)
+        if dist <= e["attack_range"] * 1.25 and (
+            e["attack_impact"] >= agent.impact_cap * config.burst_guard_impact_ratio
+        ):
+            heavy_threat = True
+            break
+
+    should_guard = False
+    if heavy_threat and nearby_ok:
+        should_guard = True
+    elif heavy_threat and recent_hit:
+        should_guard = True
+    elif hp_ratio <= config.burst_guard_hp_threshold and pressure["nearby_count"] >= 1:
+        should_guard = True
+    elif imminent_attackers >= 2 and imminent_damage >= agent.hp * config.burst_guard_imminent_damage_ratio:
+        should_guard = True
+    elif lethal_burst and overguard_ready:
+        should_guard = True
+
+    if not should_guard:
+        return False
+
+    agent.shield_until_frame = frame + config.shield_duration_frames
+    agent.shield_cooldown_until_frame = frame + config.shield_cooldown_frames
+    agent.last_shield_frame = frame
+    agent.pure_move_until_frame = max(
+        agent.pure_move_until_frame,
+        frame + config.post_break_pure_move_frames,
+    )
+    agent.shield_uses += 1
+    return True
+
+
+def _estimate_imminent_burst(agent, enemies, frame, horizon_frames=16):
+    total_damage = 0.0
+    attacker_count = 0
+    for e in enemies:
+        if e["attack_range"] <= 0 or e["attack_damage"] <= 0:
+            continue
+        if e["_next_attack_frame"] > frame + horizon_frames:
+            continue
+        dist = math.sqrt((agent.x - e["x"]) ** 2 + (agent.z - e["z"]) ** 2)
+        if dist > e["attack_range"] * 1.1:
+            continue
+        total_damage += e["attack_damage"]
+        attacker_count += 1
+    return total_damage, attacker_count
+
+
+def _apply_escape_reposition(agent, coll, dash_x, dash_z):
+    steps = 12
+    step_x = dash_x / steps
+    step_z = dash_z / steps
+    for _ in range(steps):
+        nx = agent.x + step_x
+        nz = agent.z + step_z
+        if coll.is_point_valid(nx, agent.z):
+            agent.x = nx
+        if coll.is_point_valid(agent.x, nz):
+            agent.z = nz
+
+
+def _push_enemy_away(agent, enemy, coll, distance):
+    dx = enemy["x"] - agent.x
+    dz = enemy["z"] - agent.z
+    dist = math.sqrt(dx * dx + dz * dz)
+    if dist <= 1e-6:
+        dx, dz, dist = 1.0, 0.0, 1.0
+    push_x = (dx / dist) * distance
+    push_z = (dz / dist) * distance * 0.6
+    steps = 10
+    for _ in range(steps):
+        nx = enemy["x"] + push_x / steps
+        nz = enemy["z"] + push_z / steps
+        if coll.is_point_valid(nx, enemy["z"]):
+            enemy["x"] = nx
+        if coll.is_point_valid(enemy["x"], nz):
+            enemy["z"] = nz
+
+
+def _compute_escape_skill_dir(agent, scenario, enemies, pressure, frame, config):
+    if scenario.safe_zone is None and (
+        len(enemies) >= config.survival_gap_enemy_min
+        and pressure["encirclement"] > config.encirclement_evade_threshold
+    ):
+        return _compute_survival_gap_dir(agent, enemies)
+
+    decision_ex = pressure["threat_center_x"]
+    decision_ez = pressure["threat_center_z"]
+    want_x, want_z = _compute_retreat_dir(
+        agent, decision_ex, decision_ez, scenario.safe_zone, frame
+    )
+    tactical_planner = EngageTacticalPlanner()
+    pack_planner = PackEscapePlanner(config.pack_escape_window)
+    nearest_dist = min(
+        math.sqrt((agent.x - e["x"]) ** 2 + (agent.z - e["z"]) ** 2)
+        for e in enemies
+    )
+    want_x, want_z = tactical_planner.apply(
+        agent,
+        pressure,
+        decision_ex,
+        nearest_dist,
+        want_x,
+        want_z,
+        frame,
+        config,
+    )
+    want_x, want_z = pack_planner.apply(
+        agent, scenario, enemies, pressure, want_x, want_z, frame, config
+    )
+    if want_x == 0 and want_z == 0:
+        return _compute_survival_gap_dir(agent, enemies)
+    return want_x, want_z
+
+
+def _scrub_pending_hits(agent, pending_hits, frame, config):
+    remaining = []
+    cancelled = 0
+    cancel_until = frame + config.combo_break_cancel_window_frames
+    cancel_radius = config.combo_break_cancel_radius
+
+    for hit in pending_hits:
+        if hit["hit_frame"] > cancel_until:
+            remaining.append(hit)
+            continue
+        source = hit.get("source")
+        if source is None:
+            remaining.append(hit)
+            continue
+        source_dist = math.sqrt((agent.x - source["x"]) ** 2 + (agent.z - source["z"]) ** 2)
+        if source_dist > cancel_radius:
+            remaining.append(hit)
+            continue
+        cancelled += 1
+
+    if cancelled > 0:
+        agent.evaded_hits += cancelled
+    return remaining
+
+
+def _maybe_cast_escape_skill(agent, scenario, enemies, pressure, frame, config, coll, pending_hits):
+    if frame < agent.escape_cooldown_until_frame:
+        return False
+    if agent.is_downed(frame):
+        return False
+
+    hp_ratio = agent.hp / max(1.0, agent.hp_max)
+    recent_hit = frame - agent.last_hit_frame <= config.burst_guard_recent_hit_frames
+    edge_pinned = min(agent.bnd_left, agent.bnd_right) < config.edge_escape_margin
+    imminent_damage, imminent_attackers = _estimate_imminent_burst(agent, enemies, frame)
+    heavy_threat = False
+    for e in enemies:
+        if e["attack_range"] <= 0 or e["attack_impact"] <= 0:
+            continue
+        dist = math.sqrt((agent.x - e["x"]) ** 2 + (agent.z - e["z"]) ** 2)
+        if dist <= e["attack_range"] * 1.25 and (
+            e["attack_impact"] >= agent.impact_cap * config.escape_skill_impact_ratio
+        ):
+            heavy_threat = True
+            break
+
+    should_escape = False
+    if heavy_threat and pressure["nearby_count"] >= config.escape_skill_nearby_enemies:
+        should_escape = True
+    elif recent_hit and (
+        edge_pinned or pressure["encirclement"] > config.encirclement_evade_threshold
+    ):
+        should_escape = True
+    elif hp_ratio <= config.escape_skill_hp_threshold and pressure["nearby_count"] >= 1:
+        should_escape = True
+    elif frame < agent.pure_move_until_frame and pressure["nearby_count"] >= 1:
+        should_escape = True
+    elif imminent_attackers >= config.escape_imminent_attackers and (
+        imminent_damage >= agent.hp * config.escape_imminent_damage_ratio
+    ):
+        should_escape = True
+    elif imminent_attackers >= 1 and hp_ratio <= config.escape_single_imminent_hp_threshold and (
+        imminent_damage >= agent.hp * config.escape_single_imminent_damage_ratio
+    ):
+        should_escape = True
+
+    if not should_escape:
+        return False
+
+    want_x, want_z = _compute_escape_skill_dir(agent, scenario, enemies, pressure, frame, config)
+    if want_x == 0 and want_z == 0:
+        return False
+
+    dash_x = want_x * config.escape_dash_distance
+    dash_z = want_z * config.escape_dash_distance * 0.6
+    _apply_escape_reposition(agent, coll, dash_x, dash_z)
+    agent.update_boundaries(scenario.map_data.bounds)
+    agent.escape_invuln_until_frame = frame + config.escape_invuln_frames
+    agent.escape_cooldown_until_frame = frame + config.escape_cooldown_frames
+    agent.pure_move_until_frame = max(
+        agent.pure_move_until_frame,
+        frame + config.post_break_pure_move_frames,
+    )
+    agent.impact_force *= config.escape_impact_clear_ratio
+    for enemy in enemies:
+        dist = math.sqrt((agent.x - enemy["x"]) ** 2 + (agent.z - enemy["z"]) ** 2)
+        if dist <= config.escape_push_radius:
+            _push_enemy_away(agent, enemy, coll, config.escape_push_distance)
+            enemy["_next_attack_frame"] = max(
+                enemy["_next_attack_frame"],
+                frame + config.escape_attack_delay_frames,
+            )
+    pending_hits[:] = _scrub_pending_hits(agent, pending_hits, frame, config)
+    agent.escape_skill_uses += 1
+    return True
+
+
+def _activate_wakeup_guard(agent, scenario, enemies, pressure, frame, config, coll, pending_hits):
+    imminent_damage, imminent_attackers = _estimate_imminent_burst(agent, enemies, frame)
+    nearby = pressure["nearby_count"]
+    if nearby <= 0 and imminent_attackers <= 0:
+        return False
+
+    want_x, want_z = _compute_escape_skill_dir(
+        agent, scenario, enemies, pressure, frame, config
+    )
+    if want_x != 0 or want_z != 0:
+        dash_x = want_x * config.wakeup_guard_dash_distance
+        dash_z = want_z * config.wakeup_guard_dash_distance * 0.6
+        _apply_escape_reposition(agent, coll, dash_x, dash_z)
+        agent.update_boundaries(scenario.map_data.bounds)
+
+    agent.escape_invuln_until_frame = max(
+        agent.escape_invuln_until_frame,
+        frame + config.wakeup_guard_invuln_frames,
+    )
+    agent.shield_until_frame = max(
+        agent.shield_until_frame,
+        frame + config.wakeup_guard_shield_frames,
+    )
+    agent.pure_move_until_frame = max(
+        agent.pure_move_until_frame,
+        frame + config.wakeup_guard_pure_move_frames,
+    )
+    agent.impact_force *= config.wakeup_guard_impact_clear_ratio
+
+    push_radius = config.wakeup_guard_push_radius
+    if imminent_attackers >= 2:
+        push_radius += 20.0
+    if imminent_damage >= agent.hp * 0.5:
+        push_radius += 20.0
+    for enemy in enemies:
+        dist = math.sqrt((agent.x - enemy["x"]) ** 2 + (agent.z - enemy["z"]) ** 2)
+        if dist <= push_radius:
+            _push_enemy_away(agent, enemy, coll, config.wakeup_guard_push_distance)
+            enemy["_next_attack_frame"] = max(
+                enemy["_next_attack_frame"],
+                frame + config.wakeup_guard_attack_delay_frames,
+            )
+
+    pending_hits[:] = _scrub_pending_hits(agent, pending_hits, frame, config)
+    agent.wakeup_guard_uses += 1
+    return True
+
+
+def _schedule_enemy_attacks(agent, enemies, pending_hits, frame):
+    for e in enemies:
+        if e["attack_range"] <= 0 or e["attack_damage"] <= 0:
+            continue
+        if frame < e["_next_attack_frame"]:
+            continue
+
+        dist = math.sqrt((agent.x - e["x"]) ** 2 + (agent.z - e["z"]) ** 2)
+        if dist > e["attack_range"]:
+            continue
+
+        pending_hits.append({
+            "hit_frame": frame + e["attack_windup_frames"],
+            "damage": e["attack_damage"],
+            "impact": e["attack_impact"],
+            "tag": e["attack_tag"],
+            "range": e["attack_range"],
+            "source": e,
+        })
+        e["_next_attack_frame"] = frame + e["attack_cooldown_frames"]
+
+
+def _resolve_pending_hits(agent, pending_hits, result, frame, config):
+    remaining = []
+    for hit in pending_hits:
+        if hit["hit_frame"] > frame:
+            remaining.append(hit)
+            continue
+        if not agent.alive:
+            continue
+
+        source = hit.get("source")
+        if source is not None:
+            source_dist = math.sqrt((agent.x - source["x"]) ** 2 + (agent.z - source["z"]) ** 2)
+            if source_dist > hit.get("range", 0.0) * 1.05:
+                agent.evaded_hits += 1
+                continue
+        if agent.escape_active(frame):
+            agent.evaded_hits += 1
+            continue
+
+        damage = hit["damage"]
+        impact = hit["impact"]
+        if agent.shield_active(frame):
+            damage *= config.shield_damage_mult
+            impact *= config.shield_impact_mult
+        if agent.is_downed(frame):
+            damage *= config.downed_damage_mult
+
+        agent.last_hit_frame = frame
+        agent.last_hit_tag = hit["tag"]
+        agent.total_damage_taken += damage
+        agent.total_impact_taken += impact
+        agent.hp -= damage
+        agent.impact_force += impact
+
+        if agent.hp <= 0:
+            agent.alive = False
+            result.dead = True
+            result.death_frame = frame
+            result.death_reason = f"LETHAL:{hit['tag']}"
+            continue
+
+        if (not agent.is_downed(frame)) and agent.impact_force > agent.impact_cap:
+            agent.tough_break_count += 1
+            agent.down_count += 1
+            agent.impact_force = 0.0
+            agent.down_until_frame = frame + config.down_recovery_frames
+            agent.pure_move_until_frame = max(
+                agent.pure_move_until_frame,
+                frame + config.post_break_pure_move_frames,
+            )
+        elif (not agent.is_downed(frame)) and agent.impact_force > agent.impact_stagger_boundary:
+            agent.pure_move_until_frame = max(
+                agent.pure_move_until_frame,
+                frame + config.stagger_move_hold_frames,
+            )
+    return remaining
+
+
+def run_burst_survival_sim(
+    scenario: CombatScenario,
+    config: Optional[MovementConfig] = None,
+    max_ticks: int = 500,
+    safe_radius: float = 80.0,
+    wall_escape: bool = False,
+    wall_escape_window: int = 30,
+) -> SimResult:
+    if config is None:
+        config = MovementConfig()
+
+    coll = CollisionWorld(scenario.map_data)
+    agent = CombatAgent(
+        x=scenario.agent_start[0],
+        z=scenario.agent_start[1],
+        speed=scenario.agent_speed,
+        config=config,
+        hp=scenario.agent_hp,
+        hp_max=scenario.agent_hp,
+        impact_cap=scenario.agent_impact_cap,
+        impact_stagger_boundary=scenario.agent_stagger_boundary,
+        down_until_frame=scenario.initial_down_frames,
+        pure_move_until_frame=scenario.initial_down_frames,
+    )
+    agent.target_x = scenario.safe_zone[0] if scenario.safe_zone else None
+    agent.target_z = scenario.safe_zone[1] if scenario.safe_zone else None
+
+    enemies = _spawn_enemy_runtime(scenario)
+    enemy_trajectories = [[(e["x"], e["z"])] for e in enemies]
+    pending_hits = []
+
+    result = SimResult(
+        scenario_name=scenario.name,
+        config=config,
+        objective="burst_survival",
+        hp_remaining=agent.hp,
+        hp_max=agent.hp_max,
+    )
+
+    strategy = WallEscapeStrategy(wall_escape_window) if wall_escape else None
+    threat_tracker = ThreatTracker(config.threat_sample_interval)
+    tactical_planner = EngageTacticalPlanner()
+    pack_planner = PackEscapePlanner(config.pack_escape_window)
+    prev_move_x = 0
+    prev_move_z = 0
+    base_speed = agent.speed
+    frame = 0
+    limit_ticks = min(max_ticks, scenario.survival_ticks)
+    prev_downed = agent.is_downed(0)
+
+    for tick in range(limit_ticks):
+        frame = tick * 4
+
+        _step_enemy_motion(agent, enemies, coll)
+        for idx, e in enumerate(enemies):
+            enemy_trajectories[idx].append((e["x"], e["z"]))
+
+        pending_hits = _resolve_pending_hits(agent, pending_hits, result, frame, config)
+        if not agent.alive:
+            break
+
+        nearest, nearest_dist = _nearest_enemy(agent, enemies)
+        result.min_enemy_dist = min(result.min_enemy_dist, nearest_dist)
+
+        agent.update_boundaries(scenario.map_data.bounds)
+        pressure = threat_tracker.sample(agent, enemies, frame, config)
+        current_downed = agent.is_downed(frame)
+        if prev_downed and not current_downed:
+            agent.pure_move_until_frame = max(
+                agent.pure_move_until_frame,
+                frame + config.post_break_pure_move_frames,
+            )
+            if _activate_wakeup_guard(
+                agent, scenario, enemies, pressure, frame, config, coll, pending_hits
+            ):
+                nearest, nearest_dist = _nearest_enemy(agent, enemies)
+                result.min_enemy_dist = min(result.min_enemy_dist, nearest_dist)
+                agent.update_boundaries(scenario.map_data.bounds)
+                pressure = _compute_enemy_pressure(agent, enemies, config)
+        cast_escape = _maybe_cast_escape_skill(
+            agent, scenario, enemies, pressure, frame, config, coll, pending_hits
+        )
+        if cast_escape:
+            nearest, nearest_dist = _nearest_enemy(agent, enemies)
+            result.min_enemy_dist = min(result.min_enemy_dist, nearest_dist)
+            agent.update_boundaries(scenario.map_data.bounds)
+            pressure = _compute_enemy_pressure(agent, enemies, config)
+        if not cast_escape:
+            _maybe_activate_shield(agent, enemies, pressure, frame, config)
+
+        if agent.is_downed(frame):
+            agent.clear_input()
+            cur_mx = 0
+            cur_mz = 0
+        else:
+            decision_ex = nearest["x"] if nearest is not None else agent.x
+            decision_ez = nearest["z"] if nearest is not None else agent.z
+            use_threat_center = (
+                len(enemies) > 1
+                and (pressure["nearby_count"] >= 2 or bool(scenario.map_data.collisions))
+            )
+            if use_threat_center:
+                decision_ex = pressure["threat_center_x"]
+                decision_ez = pressure["threat_center_z"]
+
+            if (scenario.safe_zone is None
+                    and len(enemies) >= config.survival_gap_enemy_min
+                    and pressure["encirclement"] > config.encirclement_evade_threshold):
+                want_x, want_z = _compute_survival_gap_dir(agent, enemies)
+            else:
+                want_x, want_z = _compute_retreat_dir(
+                    agent, decision_ex, decision_ez, scenario.safe_zone, frame)
+                want_x, want_z = tactical_planner.apply(
+                    agent,
+                    pressure,
+                    decision_ex,
+                    nearest_dist,
+                    want_x,
+                    want_z,
+                    frame,
+                    config,
+                )
+
+            want_x, want_z = pack_planner.apply(
+                agent, scenario, enemies, pressure, want_x, want_z, frame, config)
+            if strategy and nearest is not None:
+                want_x, want_z = strategy.apply(
+                    agent, want_x, want_z, nearest["z"], config.margin, frame)
+
+            agent.clear_input()
+            apply_boundary_aware_movement(agent, coll, want_x, want_z, frame)
+
+            cur_mx = -1 if agent.move_left else (1 if agent.move_right else 0)
+            cur_mz = -1 if agent.move_up else (1 if agent.move_down else 0)
+
+            agent.speed = (
+                base_speed * config.emergency_speed_mult
+                if frame < agent.pure_move_until_frame or agent.shield_active(frame)
+                else base_speed
+            )
+            agent.apply_movement(coll)
+            agent.speed = base_speed
+
+        if cur_mx != prev_move_x or cur_mz != prev_move_z:
+            result.direction_changes += 1
+        prev_move_x = cur_mx
+        prev_move_z = cur_mz
+
+        agent.record_frame()
+        _schedule_enemy_attacks(agent, enemies, pending_hits, frame)
+        agent.impact_force = max(0.0, agent.impact_force - config.impact_recovery_per_tick)
+        prev_downed = agent.is_downed(frame)
+
+        if scenario.safe_zone and not result.reached_safe:
+            sx, sz = scenario.safe_zone
+            dist = math.sqrt((agent.x - sx) ** 2 + (agent.z - sz) ** 2)
+            if dist < safe_radius:
+                result.reached_safe = True
+                result.escape_frames = frame
+                if nearest_dist > config.threat_scan_range:
+                    break
+
+    result.total_frames = frame + 4
+    result.stuck_frames = agent.stuck_frames
+    result.corner_events = agent.corner_events
+    result.slide_events = agent.slide_events
+    result.trajectory = agent.trajectory
+    result.down_count = agent.down_count
+    result.tough_break_count = agent.tough_break_count
+    result.shield_uses = agent.shield_uses
+    result.escape_skill_uses = agent.escape_skill_uses
+    result.wakeup_guard_uses = agent.wakeup_guard_uses
+    result.evaded_hits = agent.evaded_hits
+    result.total_damage_taken = agent.total_damage_taken
+    result.total_impact_taken = agent.total_impact_taken
+    result.hp_remaining = max(0.0, agent.hp)
+    result.hp_max = agent.hp_max
+    result._enemy_trajectories = enemy_trajectories
+    result._min_enemy_dist = result.min_enemy_dist
+    result._caught = result.caught
+    return result
+
+
 def run_batch(
     scenarios: List[CombatScenario],
     config: Optional[MovementConfig] = None,
@@ -857,7 +1501,12 @@ def run_batch(
     results = []
     for s in scenarios:
         for _ in range(n_runs):
-            if s.enemies:
+            if getattr(s, "mode", "") == "burst_survival":
+                r = run_burst_survival_sim(
+                    s, config, max_ticks,
+                    wall_escape=wall_escape,
+                    wall_escape_window=wall_escape_window)
+            elif s.enemies:
                 r = run_chase_sim(s, config, max_ticks,
                                   wall_escape=wall_escape,
                                   wall_escape_window=wall_escape_window)
