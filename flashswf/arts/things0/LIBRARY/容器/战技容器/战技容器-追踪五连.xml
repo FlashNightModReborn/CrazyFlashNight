@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-追踪五连" itemID="69590fc9-00000924" linkageExportForAS="true" linkageIdentifier="战技容器-追踪五连" lastModified="1769694922">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-追踪五连" itemID="69590fc9-00000924" linkageExportForAS="true" linkageIdentifier="战技容器-追踪五连" lastModified="1776182769">
   <timeline>
-    <DOMTimeline name="战技容器-追踪五连" currentFrame="65">
+    <DOMTimeline name="战技容器-追踪五连" currentFrame="11">
       <layers>
         <DOMLayer name="标签" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -178,14 +178,14 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="11" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="366.7" centerPoint3DY="135.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="366.7" centerPoint3DY="135.75">
                   <matrix>
                     <Matrix a="6.65533447265625" d="2.517333984375" tx="371.2" ty="22.8"/>
                   </matrix>
@@ -872,11 +872,11 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="66" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -15858,7 +15858,7 @@ _parent.攻击呐喊();]]></script>
           <frames>
             <DOMFrame index="0" duration="66" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" selected="true" centerPoint3DX="73.65" centerPoint3DY="433.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="73.65" centerPoint3DY="433.65">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559982299804688" tx="-13" ty="233.05"/>
                   </matrix>

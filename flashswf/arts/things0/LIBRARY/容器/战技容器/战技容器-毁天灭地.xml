@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-毁天灭地" itemID="6959156e-00000aac" linkageExportForAS="true" linkageIdentifier="战技容器-毁天灭地" lastModified="1770033078">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/战技容器/战技容器-毁天灭地" itemID="6959156e-00000aac" linkageExportForAS="true" linkageIdentifier="战技容器-毁天灭地" lastModified="1776182785">
   <timeline>
-    <DOMTimeline name="战技容器-毁天灭地">
+    <DOMTimeline name="战技容器-毁天灭地" currentFrame="44">
       <layers>
         <DOMLayer name="拆招层" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -28,7 +28,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -82,14 +82,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="44" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-55.9" centerPoint3DY="367.1">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="-55.9" centerPoint3DY="367.1">
                   <matrix>
                     <Matrix a="2.72991943359375" d="14.5360717773438" tx="-0.85" ty="-767.6"/>
                   </matrix>
