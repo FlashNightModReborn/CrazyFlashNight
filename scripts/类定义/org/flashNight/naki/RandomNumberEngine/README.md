@@ -66,4 +66,4 @@
 - [`PinkNoiseEngine.as`](PinkNoiseEngine.as) — 特化引擎，1/f 粉红噪音
 - [`PinkNoiseEngine.md`](PinkNoiseEngine.md) — 粉噪 PSD 验证脚本（FFT 测斜率 ≈ -1）
 - [`MultinomialSampleBenchmark.md`](MultinomialSampleBenchmark.md) — 多项分布采样性能基准
-- 全局绑定入口：[`scripts/引擎/引擎_fs_随机数引擎.as`](../../../../../../引擎/引擎_fs_随机数引擎.as)
+- 全局绑定入口：[`scripts/引擎/引擎_fs_随机数引擎.as`](../../../../../引擎/引擎_fs_随机数引擎.as)
