@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.unit.UnitAI.core.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.combat.MovementResolver;
+import org.flashNight.arki.unit.UnitAI.core.AIEnvironment;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
 /**
@@ -27,6 +28,7 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.EngageMovementStrategy {
     private var _strafeDir:Number;        // -1=上, 1=下, 0=不动
     private var _strafePulseEnd:Number;   // 当前移动脉冲结束帧
     private var _strafeNextStart:Number;  // 下次移动脉冲开始帧
+    private var _lastBreakoutLogFrame:Number;
 
     // 确定性随机源（可复现行为）
     private var _rng:LinearCongruentialEngine;
@@ -45,6 +47,7 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.EngageMovementStrategy {
         _strafeDir = 0;
         _strafePulseEnd = 0;
         _strafeNextStart = 0;
+        _lastBreakoutLogFrame = -999;
     }
 
     /**
@@ -171,6 +174,39 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.EngageMovementStrategy {
 
         // 贴墙：虽有移动意图但受限于边界，建议保持开火
         if (wallBlocked) return 3;
+
+        // 关键脱离动作：向安全侧突围 / 贴边回场内时，优先保证位移连续性。
+        // 否则 HeroCombatModule 的 stutter fire 会把这类短窗口切碎，出现
+        // “明明判定该撤，却又被开火插帧拖回包夹/墙边”的问题。
+        var breakoutMove:Boolean = false;
+        var breakoutReason:String = null;
+        if (wantsEvade) {
+            if (edgeEscapeX != 0 && moveX == edgeEscapeX) {
+                breakoutMove = true;
+                breakoutReason = "EDGE";
+            } else if (safeX != 0 && moveX == safeX && moveX != 0
+                && (enc > evadeEnc || urgency > evadeUrg * 0.8)) {
+                breakoutMove = true;
+                breakoutReason = "SAFE";
+            }
+        }
+        if (breakoutMove) {
+            if ((AIEnvironment.isAIDebug() || AIEnvironment.getAILogLevel() >= 2)
+                && frame - _lastBreakoutLogFrame >= 12) {
+                _lastBreakoutLogFrame = frame;
+                AIEnvironment.log("[ENG-MOV] " + self.名字
+                    + " BREAKOUT(" + breakoutReason + ")"
+                    + " move=" + moveX + "," + moveZ
+                    + " safeX=" + safeX
+                    + " edgeX=" + edgeEscapeX
+                    + " repo=" + repoDir
+                    + " urg=" + Math.round(urgency * 100)
+                    + " enc=" + Math.round(enc * 100)
+                    + " xDist=" + Math.round(data.absdiff_x)
+                    + " zDist=" + Math.round(data.absdiff_z));
+            }
+            return 2;
+        }
 
         // 硬性闪避检测：子弹逼近/高紧迫/重包围 → 建议纯走位
         if (wantsEvade) {

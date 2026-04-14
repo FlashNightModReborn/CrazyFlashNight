@@ -66,7 +66,7 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.SkillCandidateStrategy {
             var skillPri:Number = 1;
             if (sk.功能 == "解围霸体") {
                 skillPri = 0;
-            } else if (sk.功能 == "躲避") {
+            } else if (sk.类型 == "躲避" || sk.功能 == "躲避") {
                 skillPri = ctx.underFire ? 0 : 1;
             }
             out.push({

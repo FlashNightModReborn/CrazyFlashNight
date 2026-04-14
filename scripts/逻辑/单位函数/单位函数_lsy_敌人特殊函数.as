@@ -754,6 +754,7 @@ _root.敌人函数.大学军阀派随机兵器表 = [
 ];
 _root.敌人函数.获取大学军阀派随机装扮 = function(target){
 	target.hasDressup = true;
+	enableShoot = true;
 	if(!target.性别){
 		target.性别 = random(2) === 0 ? "男" : "女";
 	}
@@ -770,10 +771,10 @@ _root.敌人函数.获取大学军阀派随机装扮 = function(target){
 
 
 _root.敌人函数.大学军校学员随机发型表_男 = [
-	"发型-男式-黑圆平头",
+	"发型-男式-黑圆平头"
 ];
 _root.敌人函数.大学军校学员随机发型表_女 = [
-	"发型-女式-棕发大姐头",
+	"发型-女式-棕发大姐头"
 ];
 _root.敌人函数.大学军校学员随机兵器表 = [
 	"M4A1改",
@@ -783,6 +784,7 @@ _root.敌人函数.大学军校学员随机兵器表 = [
 ];
 _root.敌人函数.获取大学军校学员随机装扮 = function(target){
 	target.hasDressup = true;
+	enableShoot = true;
 	if(!target.性别){
 		target.性别 = random(2) === 0 ? "男" : "女";
 	}

@@ -25,6 +25,7 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroCombatModule extends FSM_Stat
     // Input Composer 状态
     private var _stutterPhase:Number;  // stutter-step 走打交替: 0=走, 1=打
     private var _noFireTicks:Number;   // 连续无攻击输出的 tick 数（starvation guard）
+    private var _lastReengageHoldLogFrame:Number;
 
     // 确定性随机源（可复现行为）
     private var _rng:LinearCongruentialEngine;
@@ -36,6 +37,7 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroCombatModule extends FSM_Stat
         this._movement = new EngageMovementStrategy();
         this._stutterPhase = 0;
         this._noFireTicks = 0;
+        this._lastReengageHoldLogFrame = -999;
         this._rng = LinearCongruentialEngine.getInstance();
 
         // 闭包捕获子状态机引用 — engage() 需要访问 HeroCombatModule 实例方法
@@ -51,6 +53,9 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroCombatModule extends FSM_Stat
 
         // 内部 Gate: 距离判定
         this.transitions.push("Chasing", "Engaging", function() {
+            if (AIEnvironment.getFrame() < _data._retreatReengageHoldUntil) {
+                return false;
+            }
             return _data.absdiff_z <= _data.zrange && _data.absdiff_x <= _data.xrange;
         }, true);
         this.transitions.push("Engaging", "Chasing", function() {
@@ -74,6 +79,7 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroCombatModule extends FSM_Stat
 
     public function chase_enter():Void {
         var self:MovieClip = data.self;
+        var frame:Number = AIEnvironment.getFrame();
         _movement.reset(); // 脱离交战，重置走位状态
         // 同步外部攻击目标变更
         var extTarget:String = self.攻击目标;
@@ -87,11 +93,12 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroCombatModule extends FSM_Stat
             self.dispatcher.publish("aggroSet", self, data.target);
         }
         // 追击计时：用于检测长时间追不上目标
-        data._chaseStartFrame = AIEnvironment.getFrame();
+        data._chaseStartFrame = frame;
     }
 
     public function chase():Void {
         var self:MovieClip = data.self;
+        var frame:Number = AIEnvironment.getFrame();
         MovementResolver.clearInput(self);
 
         // 目标失效守卫（T0-1：增加 hp 校验，防止追尸体）
@@ -110,6 +117,20 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroCombatModule extends FSM_Stat
         // 预战buff + 换弹 + 武器评估 全部收敛到 arbiter.tick()
         // arbiter 内部按中断规则互斥，不再有覆盖冲突
         data.arbiter.tick(data, "chase");
+
+        if (frame < data._retreatReengageHoldUntil
+            && data.absdiff_x <= data.xrange && data.absdiff_z <= data.zrange
+            && (AIEnvironment.isAIDebug() || AIEnvironment.getAILogLevel() >= 2)
+            && frame - _lastReengageHoldLogFrame >= 12) {
+            _lastReengageHoldLogFrame = frame;
+            AIEnvironment.log("[ENG-HOLD] " + self.名字
+                + " RETREAT_COOLDOWN"
+                + " left=" + (data._retreatReengageHoldUntil - frame)
+                + " xDist=" + Math.round(data.absdiff_x)
+                + " zDist=" + Math.round(data.absdiff_z)
+                + " urg=" + Math.round(data.arbiter.getRetreatUrgency() * 100)
+                + " enc=" + Math.round(data.arbiter.getEncirclement() * 100));
+        }
 
         // 动作保护期：禁止跑步切换/移动输入，避免打断技能/换弹动画
         // 技能：只有技能才能取消技能
@@ -243,11 +264,44 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroCombatModule extends FSM_Stat
         self.动作B = false;
 
         var moveMode:Number = _movement.apply(UnitAIData(data), self, frame, inSkill);
+        var pureMoveHold:Boolean = (!isNaN(self._pureMoveUntilFrame) && frame < self._pureMoveUntilFrame);
+        var pureMoveNow:Boolean = (moveMode == 2
+            && data.arbiter.getRetreatUrgency() >= 0.95
+            && data.arbiter.getEncirclement() >= 0.95
+            && data.arbiter.getNearbyCount() >= 4);
+        if (pureMoveNow) {
+            var pureMoveHoldFrames:Number = data.personality.pureMoveHoldFrames;
+            if (isNaN(pureMoveHoldFrames) || pureMoveHoldFrames < 4) pureMoveHoldFrames = 8;
+            self._pureMoveUntilFrame = frame + pureMoveHoldFrames;
+            pureMoveHold = true;
+        }
+        if (pureMoveHold) {
+            wantFire = false;
+            wantFireB = false;
+            if (!inSkill && data.arbiter.getExecutor().getCurrentBodyType() == "attack") {
+                data.arbiter.getExecutor().expireBodyCommit();
+            }
+            if ((AIEnvironment.isAIDebug() || AIEnvironment.getAILogLevel() >= 2)
+                && frame - _lastReengageHoldLogFrame >= 12) {
+                _lastReengageHoldLogFrame = frame;
+                AIEnvironment.log("[ENG-HOLD] " + self.名字
+                    + " PURE_MOVE"
+                    + " left=" + (self._pureMoveUntilFrame - frame)
+                    + " xDist=" + Math.round(data.absdiff_x)
+                    + " zDist=" + Math.round(data.absdiff_z)
+                    + " urg=" + Math.round(data.arbiter.getRetreatUrgency() * 100)
+                    + " enc=" + Math.round(data.arbiter.getEncirclement() * 100));
+            }
+        }
 
         // ── Phase 3: Compose — 统一裁决开火/走位 ──
         var moving:Boolean = (self.左行 || self.右行 || self.上行 || self.下行);
 
-        if (inSkill || !moving || self.移动射击 == true
+        if (pureMoveHold && !inSkill) {
+            if (moving && !self.射击中) {
+                self.状态改变(self.攻击模式 + "跑");
+            }
+        } else if (inSkill || !moving || self.移动射击 == true
             || moveMode == 0 || moveMode == 3) {
             // 无冲突：技能中/无移动/移动射击/无脉冲/贴墙 → 恢复开火意图
             self.动作A = wantFire;
@@ -279,7 +333,7 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroCombatModule extends FSM_Stat
         // ── Phase 4: Starvation Guard — 防输出饥饿 ──
         // 连续 N tick 无有效攻击输出 → 强制开火窗口
         // 跳过：技能/换弹中（单位正在做有意义的动作）、硬性闪避（生存优先）
-        if (!inSkill && moveMode != 2) {
+        if (!inSkill && moveMode != 2 && !pureMoveHold) {
             if (self.动作A || self.射击中 == true) {
                 _noFireTicks = 0;
             } else {
@@ -302,7 +356,8 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroCombatModule extends FSM_Stat
         if (!self.动作A && self.射击中 != true) {
             var st:String = self.状态;
             if (st != "技能" && st != "战技"
-                && data.arbiter.getExecutor().getCurrentBodyType() == null) {
+                && data.arbiter.getExecutor().getCurrentBodyType() == null
+                && !pureMoveHold) {
                 self.动作A = true;
                 if (self.攻击模式 === "双枪") self.动作B = true;
             }

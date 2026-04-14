@@ -1,0 +1,12 @@
+{
+  "shield_damage_mult": [0.35, 0.5],
+  "shield_impact_mult": [0.25, 0.45],
+  "shield_duration_frames": [20, 32],
+  "overguard_imminent_damage_ratio": [0.7, 0.85],
+  "overguard_recast_gap_frames": [16, 24],
+  "post_break_pure_move_frames": [24, 40],
+  "escape_single_imminent_damage_ratio": [0.65, 0.8],
+  "escape_single_imminent_hp_threshold": [0.25, 0.35],
+  "escape_dash_distance": [110.0, 160.0],
+  "escape_impact_clear_ratio": [0.1, 0.25]
+}

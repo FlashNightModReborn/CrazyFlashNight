@@ -352,6 +352,11 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroCombatBehavior extends BaseUn
         if (isNaN(cooldown) || cooldown <= 0) cooldown = 60;
         data._retreatCooldownUntil = frame + cooldown;
 
+        // 撤退刚结束时短暂禁止重进攻，避免脱身后一拍就瞬步斩/震地扑回去
+        var reengageHold:Number = data.personality.retreatExitReengageHoldFrames;
+        if (isNaN(reengageHold) || reengageHold <= 0) reengageHold = 24;
+        data._retreatReengageHoldUntil = frame + reengageHold;
+
         // S9: 撤退效果评估（结果导向：不管退出原因，看是否拉开了有效距离）
         var t = data.target;
         if (t != null && t.hp > 0 && t._x != undefined) {
@@ -368,7 +373,8 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroCombatBehavior extends BaseUn
         if (AIEnvironment.isAIDebug()) {
             AIEnvironment.log("[RET-EXIT] " + data.self.名字
                 + " dist=" + Math.round(data.absdiff_x)
-                + " failCount=" + data._retreatFailCount);
+                + " failCount=" + data._retreatFailCount
+                + " reengageHold=" + reengageHold);
         }
     }
 
