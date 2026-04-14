@@ -1,4 +1,4 @@
-﻿import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
+﻿import org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine;
 
 /*
  * PinkNoiseEngine 粉红噪音生成器
@@ -22,7 +22,20 @@
  *    减少数组索引和动态查找带来的额外开销。
  * 2. 固化参数：numStages 固定为 5，平滑因子 c 固定为 8.54，所有与分层相关的参数（更新周期、权重）
  *    均在编译时固化，确保运行时只进行必要的数值更新。
- * 3. 内联展开 super.nextFloat()：直接展开调用，减少函数调用开销。
+ * 3. 硬编码 LCG 公式：底层熵源直接展开为 (seed = (1192433993 * seed + 1013904223) % 4294967296)
+ *    与归一化常量 2.3283064365386963e-10（= 2^-32），省掉一切函数调用开销。
+ *
+ * 继承关系说明：
+ * -------------------------------
+ * 直接继承自 BaseRandomNumberEngine 而非 LinearCongruentialEngine。
+ * 原因：LCG 在热路径上把 randomFluctuation/randomOffset/... 等助手方法的内部
+ * nextFloat() 调用全部内联成单步 LCG 公式（绕过虚派发以提速）。若 PinkNoise
+ * 继承 LCG，这些助手会绕过 PinkNoise.nextFloat() 直接吐出均匀分布，破坏 1/f
+ * 频谱语义。继承 BaseRNE 后，未覆盖的助手仍走 this.nextFloat() 虚派发，
+ * 自动落回本类的 5 层粉噪实现。
+ *
+ * 由于本引擎为伤害波动等极热路径特化设计，不打算泛用，因此底层 LCG 算术
+ * 通过常量硬编码而非引用复用——可读性让位于性能。
  *
  * 单例模式：
  * -------------------------------
@@ -41,9 +54,13 @@
  * 2. 所有的数值常量（如权重系数及归一化因子）均为预先计算好，确保每次调用 nextFloat() 时只进行最少量的计算。
  */
 
-class org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine extends LinearCongruentialEngine {
+class org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine extends BaseRandomNumberEngine {
     // 单例实例（仅用于获取实例，不参与频繁访问计算）
     public static var instance:PinkNoiseEngine;
+
+    // 种子（与 BaseRandomNumberEngine.seed 同一份实例变量，此处重声明仅为
+    // 抑制 AS2 编译器对父类 private 字段直接访问的警告，与 SeededLCG 同样的写法）
+    private var seed:Number;
 
     // 分层状态：各层随机数值，采用成员变量而非数组以降低索引开销
     private var s0:Number, s1:Number, s2:Number, s3:Number, s4:Number;
@@ -59,8 +76,8 @@ class org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine extends LinearCongr
     /*
      * reset() 方法
      * -------------------------------
-     * 用于初始化各层状态，直接内联展开 super.nextFloat() 调用以减少函数调用开销，
-     * 同时更新种子（seed）并归一化到 [0,1) 区间。
+     * 用于初始化各层状态，直接硬编码展开 LCG 公式以减少函数调用开销，
+     * 同时更新种子（seed，继承自 BaseRandomNumberEngine）并归一化到 [0,1) 区间。
      */
     private function reset():Void {
         s0 = (seed = (1192433993 * seed + 1013904223) % 4294967296) * 2.3283064365386963e-10;

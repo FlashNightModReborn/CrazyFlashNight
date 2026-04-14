@@ -1,5 +1,25 @@
 ﻿import org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine;
 
+/*
+ * LinearCongruentialEngine 线性同余随机数引擎（项目通用引擎）
+ *
+ * ⚠ 封闭叶类（Sealed Leaf Class），不得被继承
+ * -------------------------------
+ * 本类的 randomFluctuation / randomOffset / randomFloatOffset / randomInteger /
+ * randomIntegerStrict / randomFloat / successRate 共 7 个助手方法，均已把
+ * 内部的 nextFloat() 调用硬编码展开成单步 LCG 公式，绕过原型链虚派发以提速。
+ *
+ * 后果：若任何子类继承本类并覆盖 nextFloat()，上述助手仍会执行 LCG 公式，
+ * 直接读写 this.seed 后返回均匀分布——完全绕过子类的 nextFloat()，
+ * 导致子类的随机分布特性（如 PinkNoise 的 1/f 频谱）被静默破坏，且无运行时报错。
+ *
+ * 历史踩坑：PinkNoiseEngine 原继承本类，2026-04 重构改为直接继承 Base。
+ * 详见 PinkNoiseEngine.as 顶部"继承关系说明"段落与本目录 README.md。
+ *
+ * 规则：新增随机数引擎一律直接继承 BaseRandomNumberEngine；若需复用本类算法，
+ * 通过常量复制（硬编码 1192433993 / 1013904223 / 4294967296 / 2.3283064365386963e-10）
+ * 或 HAS-A 组合实现，禁止 extends LinearCongruentialEngine。
+ */
 class org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine extends BaseRandomNumberEngine {
     // 静态单例实例
     public static var instance:LinearCongruentialEngine;
