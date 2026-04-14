@@ -110,14 +110,23 @@ def cmd_compare(args):
         config_b = MovementConfig(**params)
         label_b = "custom"
     else:
-        # 使用一组已知改进参数
+        # 保留一组历史“追逐定向”候选参数做回归对照：
+        # 默认基线在引入状态化压力/走位近似后已达到动态 3/7，
+        # 这组参数不再代表推荐值，也不应直接视为 AS2 回写值。
         config_b = MovementConfig(
-            margin=100,
+            margin=80,
             no_progress_threshold=2,
-            unstuck_base_window=16,
-            probe_speed_mult=4.0,
+            unstuck_base_window=12,
+            unstuck_mid_window=24,
+            unstuck_high_window=40,
+            probe_speed_mult=5.0,
+            edge_escape_margin=100,
+            encirclement_evade_threshold=0.15,
+            pressure_dominance_ratio=1.05,
+            pack_escape_window=12,
+            pack_escape_min_nearby=1,
         )
-        label_b = "tuned"
+        label_b = "candidate_chase"
 
     print(f"\n=== Compare: default vs {label_b}, {len(scenarios)} scenarios ===")
     out_dir = os.path.join(_output_dir(), "compare")

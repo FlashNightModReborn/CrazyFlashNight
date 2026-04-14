@@ -25,6 +25,10 @@ class org.flashNight.arki.unit.UnitAI.combat.strategies.BasicAttackStrategy {
      * collect — 输出一个 BasicAttack 候选
      */
     public function collect(ctx:AIContext, data:UnitAIData, out:Array, trace:DecisionTrace):Void {
+        if (!isNaN(ctx.self._pureMoveUntilFrame) && ctx.frame < ctx.self._pureMoveUntilFrame) {
+            trace.reject("BasicAttack", DecisionTrace.REASON_THREAT);
+            return;
+        }
         out.push({
             name: "BasicAttack", type: "attack", priority: 3,
             commitFrames: p.chaseCommitment, score: 0

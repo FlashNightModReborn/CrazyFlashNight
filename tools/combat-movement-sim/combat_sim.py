@@ -123,6 +123,20 @@ def _compute_retreat_dir(agent, enemy_x, enemy_z, safe_zone, frame):
     return want_x, want_z
 
 
+def _pick_z_dir_by_space(agent, margin):
+    """Approx MovementResolver.pickZDirBySpaceEx without bullet-pressure input."""
+    up_space = agent.bnd_up
+    down_space = agent.bnd_down
+
+    if up_space < margin and down_space < margin:
+        return 0
+    if up_space < margin:
+        return 2
+    if down_space < margin:
+        return -2
+    return -1 if up_space >= down_space else 1
+
+
 def _compute_survival_gap_dir(agent, enemies):
     """在无安全区的多敌包围下，朝敌人角度分布的最大缺口移动。"""
     angles = []
@@ -168,6 +182,359 @@ def _compute_survival_gap_dir(agent, enemies):
             want_z = 1 if dir_z >= 0 else -1
 
     return want_x, want_z
+
+
+def _compute_enemy_pressure(agent, enemies, config):
+    """
+    近似 ThreatAssessor 的多敌空间感知。
+
+    输出：
+      - left/right_count   ThreatAssessor 左右敌人数
+      - nearby_count       近距敌人数
+      - encirclement       左右同时有敌时的包围度
+      - dominant_side      1=右侧更挤, -1=左侧更挤, 0=均衡
+      - threat_center_x/z  加权威胁中心（多敌时比“最近敌人”更稳）
+    """
+    left_count = 0
+    right_count = 0
+    total_left_count = 0
+    total_right_count = 0
+    nearby_count = 0
+    left_weight = 0.0
+    right_weight = 0.0
+    threat_x = 0.0
+    threat_z = 0.0
+    threat_w = 0.0
+
+    for e in enemies:
+        dx = e["x"] - agent.x
+        dz = e["z"] - agent.z
+        dist = math.sqrt(dx * dx + dz * dz)
+
+        if dx < 0:
+            total_left_count += 1
+        elif dx > 0:
+            total_right_count += 1
+
+        if dist <= config.threat_scan_range:
+            if dx < 0:
+                left_count += 1
+            elif dx > 0:
+                right_count += 1
+            if dx < 0:
+                left_weight += 1.0 / max(dist, 40.0)
+            elif dx > 0:
+                right_weight += 1.0 / max(dist, 40.0)
+
+        if dist <= config.nearby_enemy_range:
+            nearby_count += 1
+
+        w = 1.0 / max(dist, 40.0)
+        threat_x += e["x"] * w
+        threat_z += e["z"] * w
+        threat_w += w
+
+    encirclement = min(1.0, (left_count * right_count) / 4.0)
+    dominant_side = 0
+    if right_count > left_count + config.pincer_side_advantage:
+        dominant_side = 1
+    elif left_count > right_count + config.pincer_side_advantage:
+        dominant_side = -1
+    elif total_right_count > total_left_count + config.pincer_side_advantage:
+        dominant_side = 1
+    elif total_left_count > total_right_count + config.pincer_side_advantage:
+        dominant_side = -1
+    elif right_weight > left_weight * config.pressure_dominance_ratio:
+        dominant_side = 1
+    elif left_weight > right_weight * config.pressure_dominance_ratio:
+        dominant_side = -1
+
+    if threat_w > 0:
+        threat_x /= threat_w
+        threat_z /= threat_w
+    else:
+        threat_x = agent.x
+        threat_z = agent.z
+
+    return {
+        "left_count": left_count,
+        "right_count": right_count,
+        "total_left_count": total_left_count,
+        "total_right_count": total_right_count,
+        "left_weight": left_weight,
+        "right_weight": right_weight,
+        "nearby_count": nearby_count,
+        "encirclement": encirclement,
+        "dominant_side": dominant_side,
+        "threat_center_x": threat_x,
+        "threat_center_z": threat_z,
+    }
+
+
+class ThreatTracker:
+    """Cache pressure samples to match ThreatAssessor's periodic refresh."""
+
+    def __init__(self, sample_interval_frames: int):
+        self.sample_interval_frames = sample_interval_frames
+        self._last_sample_frame = -10**9
+        self._cached = None
+
+    def sample(self, agent, enemies, frame, config):
+        if (
+            self._cached is None
+            or frame - self._last_sample_frame >= self.sample_interval_frames
+        ):
+            self._cached = _compute_enemy_pressure(agent, enemies, config)
+            self._last_sample_frame = frame
+        return self._cached
+
+
+def _apply_pack_pressure(agent, config, pressure, want_x):
+    """
+    近似 EngageMovementStrategy 的 safeX + edgeEscapeX。
+
+    目的不是完整复刻交战走位，而是在多敌追逐中模拟：
+      1. 被包夹时向“敌人更少的一侧”突围
+      2. 贴边时优先向场内回拉，避免沿边硬挤
+    """
+    edge_escape_x = 0
+    if agent.bnd_left < config.edge_escape_margin:
+        edge_escape_x = 1
+    elif agent.bnd_right < config.edge_escape_margin:
+        edge_escape_x = -1
+
+    if edge_escape_x != 0:
+        return edge_escape_x
+
+    safe_x = 0
+    dominant_side = pressure["dominant_side"]
+    needs_evade = (
+        pressure["encirclement"] > config.encirclement_evade_threshold
+        or pressure["nearby_count"] >= config.evade_nearby_count
+    )
+    if needs_evade and dominant_side != 0:
+        safe_x = -dominant_side
+        if safe_x < 0 and agent.bnd_left < config.edge_safe_space:
+            safe_x = 1 if agent.bnd_right > config.edge_safe_space else 0
+        elif safe_x > 0 and agent.bnd_right < config.edge_safe_space:
+            safe_x = -1 if agent.bnd_left > config.edge_safe_space else 0
+
+    if safe_x != 0:
+        return safe_x
+    return want_x
+
+
+class StrafePulsePlanner:
+    """Approx EngageMovementStrategy's pulsed Z movement."""
+
+    def __init__(self):
+        self._strafe_dir = 0
+        self._strafe_pulse_end = 0
+        self._strafe_next_start = 0
+        self._pulse_index = 0
+
+    def _pick_dir(self, agent, config):
+        z_pick = _pick_z_dir_by_space(agent, config.edge_escape_margin)
+        if z_pick == 0:
+            return 0
+
+        direction = -1 if z_pick < 0 else 1
+        if abs(z_pick) == 2:
+            return direction
+        if self._strafe_dir == 0:
+            return direction
+        return -self._strafe_dir
+
+    def apply(self, agent, pressure, want_z, frame, config):
+        in_pulse = frame < self._strafe_pulse_end
+        if not in_pulse and frame >= self._strafe_next_start:
+            self._strafe_dir = self._pick_dir(agent, config)
+            span = max(0, config.strafe_pulse_max - config.strafe_pulse_min)
+            pulse_len = config.strafe_pulse_min
+            if span > 0:
+                pulse_len += self._pulse_index % (span + 1)
+
+            pressure_level = min(
+                1.0,
+                pressure["encirclement"] + pressure["nearby_count"] / 3.0,
+            )
+            gap = config.strafe_gap_base - int(math.floor(pressure_level * 5))
+            gap = max(config.strafe_gap_min, gap)
+            jitter = 0 if gap <= 1 else self._pulse_index % gap
+
+            self._strafe_pulse_end = frame + pulse_len
+            self._strafe_next_start = self._strafe_pulse_end + gap + jitter
+            self._pulse_index += 1
+            in_pulse = True
+
+        if in_pulse and self._strafe_dir != 0:
+            return self._strafe_dir
+        return want_z
+
+
+class EngageTacticalPlanner:
+    """
+    Approx EngageMovementStrategy for multi-enemy chase tests.
+
+    This keeps the simulation movement-only, but ports the stateful parts that
+    matter for offline tuning: periodic threat sampling, pulsed strafing,
+    edge re-entry, and anti-pincer X-side selection.
+    """
+
+    def __init__(self):
+        self._pulse = StrafePulsePlanner()
+
+    def apply(
+        self,
+        agent,
+        pressure,
+        decision_x,
+        nearest_dist,
+        want_x,
+        want_z,
+        frame,
+        config,
+    ):
+        decision_dx = decision_x - agent.x
+        wants_kite = (want_x != 0 and abs(decision_dx) < config.kite_x_threshold)
+        wants_evade = (
+            pressure["encirclement"] > config.encirclement_evade_threshold
+            or pressure["nearby_count"] >= config.evade_nearby_count
+        )
+
+        edge_escape_x = 0
+        if agent.bnd_left < config.edge_escape_margin:
+            edge_escape_x = 1
+        elif agent.bnd_right < config.edge_escape_margin:
+            edge_escape_x = -1
+
+        if edge_escape_x != 0 and nearest_dist < config.kite_x_threshold * 1.5:
+            wants_evade = True
+
+        if not wants_kite and not wants_evade:
+            return want_x, want_z
+
+        move_x = want_x
+        move_z = self._pulse.apply(agent, pressure, want_z, frame, config)
+
+        safe_x = 0
+        if pressure["encirclement"] > 0.25:
+            left_count = pressure["left_count"]
+            right_count = pressure["right_count"]
+            if left_count > right_count + 1:
+                safe_x = 1
+            elif right_count > left_count + 1:
+                safe_x = -1
+            elif pressure["dominant_side"] != 0:
+                safe_x = -pressure["dominant_side"]
+
+            if safe_x < 0 and agent.bnd_left < config.edge_safe_space:
+                safe_x = 1 if agent.bnd_right > config.edge_safe_space else 0
+            elif safe_x > 0 and agent.bnd_right < config.edge_safe_space:
+                safe_x = -1 if agent.bnd_left > config.edge_safe_space else 0
+
+        kite_dir = -1 if decision_dx > 0 else 1
+        kite_wall = (
+            (kite_dir < 0 and agent.bnd_left < config.edge_escape_margin)
+            or (kite_dir > 0 and agent.bnd_right < config.edge_escape_margin)
+        )
+
+        if wants_kite:
+            if not kite_wall:
+                move_x = kite_dir
+            elif edge_escape_x != 0:
+                move_x = edge_escape_x
+        elif wants_evade and edge_escape_x != 0:
+            move_x = edge_escape_x
+
+        if wants_evade and safe_x != 0:
+            if move_x == 0 or (
+                move_x != safe_x
+                and (
+                    pressure["encirclement"] > 0.6
+                    or pressure["dominant_side"] != 0
+                )
+            ):
+                move_x = safe_x
+
+        if move_x == 0 and edge_escape_x != 0:
+            move_x = edge_escape_x
+
+        return move_x, move_z
+
+
+class PackEscapePlanner:
+    """
+    多敌逃逸承诺窗口。
+
+    用于近似 EngageMovementStrategy 中：
+      - safeX 选边
+      - edgeEscapeX 贴边回拉
+      - gap escape 缺口突围
+
+    核心目的：避免在强压力场景里每 tick 重新改主意。
+    """
+    def __init__(self, window_frames: int = 20):
+        self.window = window_frames
+        self._until = 0
+        self._esc_x = 0
+        self._esc_z = 0
+
+    def _commit(self, frame: int, esc_x: int, esc_z: int):
+        self._until = frame + self.window
+        self._esc_x = esc_x
+        self._esc_z = esc_z
+        return esc_x, esc_z
+
+    def apply(self, agent, scenario, enemies, pressure, want_x, want_z, frame, config):
+        if frame < self._until:
+            return self._esc_x, self._esc_z
+
+        edge_x_trapped = (
+            agent.bnd_left < config.edge_escape_margin
+            or agent.bnd_right < config.edge_escape_margin
+        )
+        min_bnd = min(agent.bnd_left, agent.bnd_right, agent.bnd_up, agent.bnd_down)
+        strong_side = (pressure["dominant_side"] != 0)
+        under_pack_pressure = (
+            pressure["encirclement"] > config.encirclement_evade_threshold
+            or pressure["nearby_count"] >= config.pack_escape_min_nearby
+        )
+
+        # 1) 贴边回场内：优先保留向场内的 X 承诺，并借缺口方向补 Z。
+        if edge_x_trapped and under_pack_pressure:
+            esc_x = _apply_pack_pressure(agent, config, pressure, want_x)
+            gap_x, gap_z = _compute_survival_gap_dir(agent, enemies)
+            esc_z = gap_z if gap_z != 0 else want_z
+            if esc_x == 0:
+                esc_x = 1 if agent.bnd_left < agent.bnd_right else -1
+            return self._commit(frame, esc_x, esc_z)
+
+        # 2) 无安全区的蜂群/包围：直接沿最大缺口突围，并保持一段时间。
+        if (scenario.safe_zone is None
+                and len(enemies) >= config.survival_gap_enemy_min
+                and pressure["encirclement"] > config.encirclement_evade_threshold):
+            gap_x, gap_z = _compute_survival_gap_dir(agent, enemies)
+            return self._commit(frame, gap_x, gap_z)
+
+        # 3) 单侧优势明显时：先朝安全侧持续突围，必要时借缺口方向补 Z。
+        if strong_side and under_pack_pressure:
+            esc_x = _apply_pack_pressure(agent, config, pressure, want_x)
+            esc_z = want_z
+            gap_x, gap_z = _compute_survival_gap_dir(agent, enemies)
+            if gap_z != 0 and (esc_x != want_x or scenario.safe_zone is None):
+                esc_z = gap_z
+            if (agent.bnd_corner > 0
+                    or min_bnd < config.edge_escape_margin * 2
+                    or scenario.safe_zone is None):
+                if gap_x != 0 and esc_x == want_x and min_bnd > config.edge_escape_margin:
+                    esc_x = gap_x
+                if gap_z != 0:
+                    esc_z = gap_z
+            if esc_x != want_x or esc_z != want_z:
+                return self._commit(frame, esc_x, esc_z)
+
+        return want_x, want_z
 
 
 # ═══════ 策略层：边界逃脱承诺窗口 ═══════
@@ -359,6 +726,9 @@ def run_chase_sim(
         objective="reach_safe" if scenario.safe_zone else "survive",
     )
     strategy = WallEscapeStrategy(wall_escape_window) if wall_escape else None
+    threat_tracker = ThreatTracker(config.threat_sample_interval)
+    tactical_planner = EngageTacticalPlanner()
+    pack_planner = PackEscapePlanner(config.pack_escape_window)
     prev_move_x = 0
     prev_move_z = 0
     frame = 0
@@ -389,22 +759,14 @@ def run_chase_sim(
                     nz = e["z"] + (dz / dist) * spd
             enemy_trajectories[ei].append((e["x"], e["z"]))
 
-        # ── 找最近敌人（决策用）──
+        # ── 找最近敌人 + 包围压力（决策用）──
         nearest_ex, nearest_ez = enemies[0]["x"], enemies[0]["z"]
         nearest_dist = 9999.0
-        threat_x = 0.0
-        threat_z = 0.0
-        threat_w = 0.0
         for e in enemies:
             d = math.sqrt((agent.x - e["x"]) ** 2 + (agent.z - e["z"]) ** 2)
             if d < nearest_dist:
                 nearest_dist = d
                 nearest_ex, nearest_ez = e["x"], e["z"]
-            # 多敌场景下使用加权威胁中心，避免只盯最近敌人而撞向其余包抄者
-            w = 1.0 / max(d, 40.0)
-            threat_x += e["x"] * w
-            threat_z += e["z"] * w
-            threat_w += w
 
         result.min_enemy_dist = min(result.min_enemy_dist, nearest_dist)
         if nearest_dist < CAUGHT_DIST and not result.caught:
@@ -414,17 +776,36 @@ def run_chase_sim(
 
         # ── agent 移动决策 ──
         agent.update_boundaries(scenario.map_data.bounds)
-        if scenario.safe_zone is None and len(enemies) >= 3:
+        pressure = threat_tracker.sample(agent, enemies, frame, config)
+
+        if (scenario.safe_zone is None
+                and len(enemies) >= config.survival_gap_enemy_min
+                and pressure["encirclement"] > config.encirclement_evade_threshold):
             want_x, want_z = _compute_survival_gap_dir(agent, enemies)
         else:
             decision_ex = nearest_ex
             decision_ez = nearest_ez
-            use_threat_center = bool(scenario.map_data.collisions)
-            if len(enemies) > 1 and threat_w > 0 and use_threat_center:
-                decision_ex = threat_x / threat_w
-                decision_ez = threat_z / threat_w
+            use_threat_center = (
+                len(enemies) > 1
+                and (pressure["nearby_count"] >= 2 or bool(scenario.map_data.collisions))
+            )
+            if use_threat_center:
+                decision_ex = pressure["threat_center_x"]
+                decision_ez = pressure["threat_center_z"]
             want_x, want_z = _compute_retreat_dir(
                 agent, decision_ex, decision_ez, scenario.safe_zone, frame)
+            want_x, want_z = tactical_planner.apply(
+                agent,
+                pressure,
+                decision_ex,
+                nearest_dist,
+                want_x,
+                want_z,
+                frame,
+                config,
+            )
+        want_x, want_z = pack_planner.apply(
+            agent, scenario, enemies, pressure, want_x, want_z, frame, config)
         if strategy:
             want_x, want_z = strategy.apply(
                 agent, want_x, want_z, nearest_ez, config.margin, frame)

@@ -19,17 +19,36 @@ class MovementConfig:
     margin: float = 80.0             # 边界安全余量（AS2: MARGIN=80）
     probe_min: float = 20.0          # 最小探测距离
     probe_max: float = 60.0          # 最大探测距离
-    probe_speed_mult: float = 5.0    # 离线调优默认值；当前 AS2 基线仍是 speed * 4
-    no_progress_threshold: int = 3   # 连续无进展帧数阈值
+    probe_speed_mult: float = 5.0    # 当前 AS2 基线：probe = speed * 5
+    no_progress_threshold: int = 2   # 当前 AS2 基线：_noProgressCount >= 2
     probe_fail_trigger: int = 3      # 探测全败触发 pushOut 的次数
-    unstuck_base_window: int = 12    # 基础脱困窗口（帧）
-    unstuck_mid_window: int = 24     # 中等卡死脱困窗口
-    unstuck_high_window: int = 40    # 严重卡死脱困窗口
+    unstuck_base_window: int = 24    # 当前 AS2 基线：基础脱困窗口（帧）
+    unstuck_mid_window: int = 36     # 当前 AS2 基线：中等卡死脱困窗口
+    unstuck_high_window: int = 48    # 当前 AS2 基线：严重卡死脱困窗口
     unstuck_mid_thresh: int = 6      # 中等卡死阈值（stuckCheckCount）
     unstuck_high_thresh: int = 12    # 严重卡死阈值
     pushout_radius: float = 120.0    # pushOut 搜索半径
     pushout_steps: int = 10          # pushOut 径向步数
     pushout_angles: int = 45         # pushOut 角度数（每步几度间隔→360/angles）
+
+    # ── 动态追逐 / 交战走位近似参数（ThreatAssessor + EngageMovementStrategy）──
+    threat_scan_range: float = 250.0           # ThreatAssessor.scanRange
+    nearby_enemy_range: float = 150.0          # ThreatAssessor.nearby 窗口
+    encirclement_evade_threshold: float = 0.25 # 接近 EngageMovementStrategy 的包围压力启动线
+    pincer_side_advantage: int = 1             # 左右敌人数差多少才判定“安全侧”
+    edge_escape_margin: float = 80.0           # EngageMovementStrategy.edgeMargin
+    edge_safe_space: float = 60.0              # safeX 可用空间门槛
+    survival_gap_enemy_min: int = 3            # 多敌无安全区时启用缺口突围的最小敌人数
+    pressure_dominance_ratio: float = 1.15     # 左右压力权重优势达到该比值才判定单侧更挤
+    pack_escape_window: int = 20               # 多敌逃逸承诺窗口（帧）
+    pack_escape_min_nearby: int = 1            # 触发多敌逃逸承诺的最小近距敌人数
+    threat_sample_interval: int = 16           # ThreatAssessor 风格采样周期（帧）
+    kite_x_threshold: float = 180.0            # EngageMovementStrategy 近似 X 风筝阈值
+    evade_nearby_count: int = 2                # wantsEvade 的近距敌人数门槛
+    strafe_pulse_min: int = 8                  # 蛇形走位脉冲最短持续
+    strafe_pulse_max: int = 15                 # 蛇形走位脉冲最长持续
+    strafe_gap_base: int = 12                  # 脉冲基础间歇
+    strafe_gap_min: int = 3                    # 脉冲最短间歇
 
 
 @dataclass

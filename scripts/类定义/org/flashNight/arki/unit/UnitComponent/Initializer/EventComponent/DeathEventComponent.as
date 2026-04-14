@@ -1,9 +1,69 @@
 ﻿// 路径: org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/KillEventComponent.as
 import org.flashNight.neur.Event.EventDispatcher;
 import org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater;
+import org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEventComponent {
+    private static function logDiagnostic(message:String):Void {
+        if (_root == undefined || _root.服务器 == undefined || _root.服务器.发布服务器消息 == undefined) {
+            return;
+        }
+        _root.服务器.发布服务器消息(message);
+    }
+
+    private static function safeNum(value:Number):String {
+        return isNaN(value) ? "-" : String(Math.round(value));
+    }
+
+    private static function safePct(cur:Number, max:Number):String {
+        if (isNaN(cur) || isNaN(max) || max <= 0) {
+            return "-";
+        }
+        return Math.round(cur / max * 100) + "%";
+    }
+
+    private static function getAICombatSnapshot(target:MovieClip):String {
+        if (target == null || target.unitAI == null || target.unitAI.data == null || target.unitAI.data.arbiter == null) {
+            return " mode=" + (target.攻击模式 || "-") + " urg=- enc=- near=-";
+        }
+
+        var arbiter = target.unitAI.data.arbiter;
+        return " mode=" + (target.攻击模式 || "-")
+            + " urg=" + Math.round(arbiter.getRetreatUrgency() * 100)
+            + " enc=" + Math.round(arbiter.getEncirclement() * 100)
+            + " near=" + Math.round(arbiter.getNearbyCount());
+    }
+
+    private static function logDeathSnapshot(target:MovieClip):Void {
+        if (!ImpactStateHandler.shouldTrackCombatDiagnostics(target)) {
+            return;
+        }
+        if (target._deathDiagLogged) {
+            return;
+        }
+        target._deathDiagLogged = true;
+
+        var frame:Number = (_root.帧计时器 != undefined) ? _root.帧计时器.当前帧数 : -1;
+        var lastHitFrame:Number = Number(target._lastHitFrame);
+        var hitAge:String = isNaN(lastHitFrame) ? "-" : String(frame - lastHitFrame);
+
+        logDiagnostic("[UNIT-DEATH] " + target._name
+            + " hp=" + safePct(target.hp, target.hp满血值)
+            + " state=" + (target.状态 || "-")
+            + " reload=" + ((target.man != undefined && target.man.换弹标签) ? 1 : 0)
+            + " rigid=" + ((target.刚体 || (target.man != undefined && target.man.刚体标签)) ? 1 : 0)
+            + " rf=" + safeNum(target._lastImpactForce) + "/" + safeNum(target._lastImpactCap)
+            + " stagger=" + safeNum(target._lastImpactStagger)
+            + " impact=" + (target._lastImpactReason || "-")
+            + " kb=" + safeNum(target._lastImpactHSpeed) + "/" + safeNum(target._lastImpactVSpeed)
+            + " src=" + (target._lastHitShooterName || "-") + "/" + (target._lastHitBulletName || "-")
+            + " dir=" + (target._lastHitDirection || "-")
+            + " dodge=" + (target._lastHitDodge || "-")
+            + " hitAge=" + hitAge
+            + getAICombatSnapshot(target));
+    }
+
     /**
      * 初始化单位的死亡事件监听
      * @param target 目标单位( MovieClip )
@@ -29,6 +89,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
     }
 
     public static function onDeath(target:MovieClip):Void {
+        ImpactStateHandler.flushPendingDiagnostics(target);
+        logDeathSnapshot(target);
         if(!target.respawn){
             // 遍历目标下的所有影片剪辑
             // 安全策略：只移除 target 的直接子元件（_parent === target），

@@ -1,6 +1,7 @@
 ﻿// 路径: org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/KillEventComponent.as
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.unit.UnitComponent.Updater.*;
+import org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler;
 import org.flashNight.arki.component.StatHandler.*;
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
@@ -92,6 +93,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
     public static function onUpdate(target:MovieClip):Void {
         // —— 屏外渲染剔除（非主角） ——
         applyVisibilityCulling(target);
+        ImpactStateHandler.flushPendingDiagnostics(target);
 
         // —— 原有刷新逻辑 ——
         ImpactUpdater.update(target);
@@ -104,6 +106,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
 
     public static function onHeroUpdate(target:MovieClip):Void {
         // 主角不做渲染剔除
+        ImpactStateHandler.flushPendingDiagnostics(target);
         ImpactUpdater.updateHero(target);
         InformationComponentUpdater.update(target);
         target.buffManager.update(4);

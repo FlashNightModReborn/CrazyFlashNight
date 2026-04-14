@@ -311,6 +311,57 @@ def chase_pack_obstacles() -> CombatScenario:
     )
 
 
+def chase_pincer_lane() -> CombatScenario:
+    """
+    双侧夹击走廊：最近敌人在左侧，但右侧敌人数量更多。
+
+    纯“远离最近敌人”会把 agent 推向右侧包抄网；
+    需要类似 EngageMovementStrategy.safeX 的逻辑，先朝左侧缺口突围。
+    """
+    xmin, xmax, ymin, ymax = 50, 1150, 180, 510
+    cy = (ymin + ymax) / 2
+
+    return CombatScenario(
+        name="chase_pincer_lane",
+        map_data=_make_map("chase_pincer_lane", (xmin, xmax, ymin, ymax), []),
+        agent_start=(580, cy),
+        enemy_pos=(520, cy),
+        safe_zone=(xmin + 90, cy),
+        description="最近敌人在左侧，但右侧三敌包抄，测试 safeX 选边",
+        enemies=[
+            EnemyConfig(520, cy, speed=3.0),         # 最近威胁（诱导错误右撤）
+            EnemyConfig(720, cy - 60, speed=3.0),    # 右上包抄
+            EnemyConfig(720, cy + 60, speed=3.0),    # 右下包抄
+            EnemyConfig(860, cy, speed=2.5),         # 右侧深层拦截
+        ],
+    )
+
+
+def chase_edge_reentry() -> CombatScenario:
+    """
+    左边缘再入场：agent 初始贴左边，被追时如果继续按最近敌人反向撤退会顶墙。
+
+    需要 edgeEscapeX 先把单位拉回场内，再恢复正常撤退。
+    """
+    xmin, xmax, ymin, ymax = 50, 1150, 180, 510
+    cy = (ymin + ymax) / 2
+
+    return CombatScenario(
+        name="chase_edge_reentry",
+        map_data=_make_map("chase_edge_reentry", (xmin, xmax, ymin, ymax), []),
+        agent_start=(xmin + 55, cy - 10),
+        enemy_pos=(xmin + 170, cy - 10),
+        safe_zone=(xmax - 80, cy),
+        description="贴左边出生，被右侧追兵压墙，测试 edgeEscapeX 回场内",
+        enemies=[
+            EnemyConfig(xmin + 170, cy - 10, speed=3.0),
+            EnemyConfig(xmin + 230, cy - 80, speed=2.8),
+            EnemyConfig(xmin + 230, cy + 60, speed=2.8),
+            EnemyConfig(xmin + 330, cy - 10, speed=2.5),
+        ],
+    )
+
+
 def chase_swarm() -> CombatScenario:
     """蜂群追逐：8 个极慢敌人全方位包围，测试生存能力。"""
     xmin, xmax, ymin, ymax = 50, 1150, 180, 510
@@ -353,6 +404,8 @@ CHASE_SCENARIOS = [
     chase_pack_corridor,
     chase_pack_corner,
     chase_pack_obstacles,
+    chase_pincer_lane,
+    chase_edge_reentry,
     chase_swarm,
 ]
 

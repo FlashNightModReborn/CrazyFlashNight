@@ -8,6 +8,23 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
 
+    private static function recordHitDiagnostic(hitTarget:MovieClip,
+                                                shooter:MovieClip,
+                                                bullet:MovieClip,
+                                                damageResult:DamageResult,
+                                                hitDirection:String):Void {
+        if (!ImpactStateHandler.shouldTrackCombatDiagnostics(hitTarget)) {
+            return;
+        }
+        var frame:Number = (_root.帧计时器 != undefined) ? _root.帧计时器.当前帧数 : -1;
+        hitTarget._lastHitFrame = frame;
+        hitTarget._lastHitShooterName = (shooter == null) ? "-" : (shooter.名字 || shooter._name || String(shooter));
+        hitTarget._lastHitBulletName = (bullet == null) ? "-" : (bullet.技能名 || bullet.子弹种类 || bullet._name || "-");
+        hitTarget._lastHitDirection = hitDirection;
+        hitTarget._lastHitDodge = (damageResult == null || damageResult.dodgeStatus == null || damageResult.dodgeStatus == "") ? "-" : damageResult.dodgeStatus;
+        hitTarget._lastHitDistance = (shooter == null || isNaN(shooter._x)) ? -1 : Math.round(Math.abs(hitTarget._x - shooter._x));
+    }
+
     // 私有方法：核心受击处理逻辑（不包含主角专供的hp刷新）
     private static function doHitUpdate(hitTarget:MovieClip, shooter:MovieClip, bullet:MovieClip, collisionResult:CollisionResult, damageResult:DamageResult):Void {
         // === 宏展开：实例状态标志位 ===
@@ -64,6 +81,8 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         if (bloodEnabled) {
             BulletEffectHandler.createBulletEffect(hitTarget, ocx, ocy, sxc);
         }
+
+        recordHitDiagnostic(hitTarget, shooter, bullet, damageResult, hitDirection);
 
         // ────────────── 冲击力与状态判断 ──────────────
         ImpactStateHandler.handleImpactState(hitTarget, bullet, damageResult, hitDirection, bloodEnabled);

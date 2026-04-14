@@ -258,6 +258,10 @@ class org.flashNight.arki.unit.UnitAI.core.UnitAIData{
     // Retreating onExit 写入，HeroCombatModule→Retreating Gate 读取
     public var _retreatCooldownUntil:Number = 0;
 
+    // 撤退退出后的短暂重进攻冷却（防止刚脱身就立刻重新贴脸）
+    // retreat_exit 写入，HeroCombatModule Chasing→Engaging Gate 读取
+    public var _retreatReengageHoldUntil:Number = 0;
+
     // S9: 撤退失效计数（连续未能拉开有效距离的撤退次数）
     // retreat_exit 写入（结果导向），WeaponEvaluator 读取（近战偏置）
     // 刷怪场景下撤退=负收益循环，累积失败时果断切近战

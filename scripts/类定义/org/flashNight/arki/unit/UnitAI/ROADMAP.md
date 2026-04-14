@@ -28,7 +28,7 @@ UnitAI/
 - MC 写入未收敛（6+ 文件直接写 MC 属性，engage wantFire 读写契约需 Phase 2 先解耦）
 - `self._x/方向/待机` 等单位位置仍从 MC 直读
 - corneredAggression 仍在 ActionArbiter（依赖 _prepareContext 时序）
-- 无测试框架
+- 无 AS2 单测框架（但已具备 Python L1 离线仿真）
 
 ---
 
@@ -54,28 +54,39 @@ UnitAI/
 
 #### A. 战斗移动仿真器 (`tools/combat-movement-sim/`)
 
+**当前状态**：已落地，可直接运行 `python tools/combat-movement-sim/run_sim.py --baseline|--chase|--compare`
+- 已和当前 AS2 `MovementResolver` 主常量重新对齐：`probe = speed * 5`、`noProgress >= 2`、脱困窗口 `24/36/48`
+- 静态撤退场景（9 个）当前基线可达 `success_rate = 100%`
+- 动态追逐场景（7 个）当前默认基线已提升到 `3/7`
+- 已补入三类状态化近似：**ThreatAssessor 16 帧 pressure 采样**、**EngageMovementStrategy 脉冲式 Z 走位**、**count-first dominantSide / safeX 修正**
+- 当前这套默认基线已救回 `chase_pack_open`、`chase_pack_corridor`、`chase_pack_obstacles`
+- 当前 compare 内置的是**历史追逐候选包**；在新默认基线上已不再增加通过场景，且会回退部分静态图，因此只保留作回归参考
+- 当前默认基线仍失败的红场景为：
+  `chase_pack_corner`、`chase_pincer_lane`、`chase_edge_reentry`、`chase_swarm`
+
 从 mercenary-ai-sim 的非战斗寻路扩展到战斗期间的移动决策：
 
-| 维度 | mercenary-ai-sim (已有) | combat-movement-sim (新增) |
+| 维度 | mercenary-ai-sim (已有) | combat-movement-sim (现状) |
 |------|------------------------|---------------------------|
 | 移动目标 | 门（固定点） | 目标单位（动态/静止） |
-| 决策逻辑 | Thinking/Walking/Wandering | Engage/Retreat + MovementResolver |
+| 决策逻辑 | Thinking/Walking/Wandering | Retreat + 多敌追逐压力近似（Threat/Engage surrogate） |
 | 碰撞处理 | is_point_valid | applyBoundaryAwareMovement 全套 |
-| 关键参数 | idle/walk/wander 时长 | MARGIN, probe, 脱困窗口, Z方向选择 |
-| 评估指标 | 出口率/超时率 | 卡死率/溜边平滑度/角落逃脱时间/有效伤害时间比 |
+| 关键参数 | idle/walk/wander 时长 | margin、probe、脱困窗口、encirclement/edgeEscape 阈值 |
+| 评估指标 | 出口率/超时率 | 卡死率/溜边平滑度/角落逃脱时间/最小敌距/被抓率 |
 
 **核心模块**:
-1. `boundary_movement.py` — 复刻 MovementResolver.applyBoundaryAwareMovement
+1. `movement_resolver.py` — 复刻 MovementResolver.applyBoundaryAwareMovement
    - Phase 0: blockedAhead + noProgress + stuck 三触发器
    - edgeEscape → X优先对角 → 纯Z滑行 → 反向退步 → pushOut 兜底
    - 脱困窗口递增机制
-2. `retreat_sim.py` — 复刻 RetreatMovementStrategy 四阶段管线
-3. `engage_sim.py` — 复刻 EngageMovementStrategy 的 X/Z 轴移动
+2. `combat_sim.py` — 撤退/追逐主循环，含多敌威胁中心、16 帧 pressure 采样、脉冲式 strafe、safeX/edgeEscape 近似、PackEscapePlanner 承诺窗口
+3. `param_scanner.py` — 参数网格搜索 + 综合评分排序
 4. `scenario_gen.py` — 对抗场景生成器
    - 墙角陷阱（三面封闭 + 敌人堵口）
    - 狭窄通道对冲
    - L 形/U 形拐角追逐
-   - 多敌包围
+   - 多敌包围 / 双侧夹击 / 贴边再入场
+5. `visualize.py` — 轨迹绘制 + 对比图输出
 
 **数据源充足的理由**:
 - MovementResolver 330 行，逻辑完全自包含（只依赖 UnitAIData + Mover 的碰撞探测）
@@ -89,12 +100,18 @@ UnitAI/
 ```python
 # 示例：扫描 MovementResolver 的关键参数
 param_grid = {
-    "MARGIN": [60, 80, 100, 120],
-    "probe_min": [15, 20, 30],
-    "probe_max": [40, 60, 80],
-    "unstuck_base_window": [8, 12, 16, 24],
-    "noProgress_threshold": [2, 3, 4, 5],
-    "probeFailCount_trigger": [2, 3, 5],
+    "margin": [60, 80, 100, 120],
+    "probe_speed_mult": [4.0, 5.0, 6.0],
+    "unstuck_base_window": [12, 24, 36, 48],
+    "no_progress_threshold": [2, 3, 4, 5],
+    "encirclement_evade_threshold": [0.2, 0.25, 0.35],
+    "edge_escape_margin": [60, 80, 100],
+    "pressure_dominance_ratio": [1.05, 1.15, 1.3],
+    "pack_escape_window": [12, 20, 28],
+    "threat_sample_interval": [12, 16, 20],
+    "kite_x_threshold": [160, 180, 220],
+    "evade_nearby_count": [1, 2, 3],
+    "strafe_gap_base": [8, 12, 16],
 }
 
 # 每组参数跑 N 次 × M 个场景 → 统计指标
@@ -102,7 +119,8 @@ metrics = {
     "stuck_rate": "卡死超过 3 秒的比例",
     "corner_escape_frames": "角落脱困平均帧数",
     "edge_smoothness": "溜边轨迹的方向变化频率（越低越平滑）",
-    "effective_combat_ratio": "有效战斗时间/总时间",
+    "caught_rate": "动态追逐被抓比例",
+    "avg_min_enemy_dist": "动态追逐最近敌距（越高越好）",
 }
 ```
 
@@ -110,9 +128,25 @@ metrics = {
 
 离线找到的最优参数 → 直接更新 MovementResolver.as 的常量：
 - `MARGIN` (当前硬编码 80)
-- 脱困窗口基数 (当前 12/24/40 三档)
-- noProgress 阈值 (当前 3)
+- 脱困窗口基数 (当前 24/36/48 三档)
+- noProgress 阈值 (当前 2)
 - probeFailCount 触发值 (当前 3)
+- probe 距离倍率 (当前 `speed * 5`)
+
+#### D. 下一阶段离线重点：ThreatAssessor + EngageMovementStrategy
+
+在 `MovementResolver` 几何层已能稳定复现之后，下一阶段不再只盯脱困常量，而是校准：
+- `ThreatAssessor.scanRange / nearbyRange / encirclement` 对多敌压力的判定口径
+- `EngageMovementStrategy.safeX / edgeEscapeX / enemyDominantSide` 的选边逻辑
+- `HeroCombatModule` 的走打合成在多敌压力下何时应让位给纯移动
+- 若继续推进离线层，优先级应转向**更完整迁移 EngageMovementStrategy / HeroCombatModule 组合逻辑**，而不是继续堆局部启发式
+- 当前默认基线已能覆盖 `open / corridor / obstacles` 三类动态追逐；继续突破需要补“绕最近敌人的缺口突围”和“走打冲突裁决”
+
+优先吃掉的红场景：
+1. `chase_pack_corner` — 角落多敌压迫下仍缺少更完整的逃逸-重定位组合
+2. `chase_pincer_lane` — safeX 已接近正确，但仍缺“绕最近敌人的缺口突围”组合
+3. `chase_edge_reentry` — 贴边出生后“回场内”与“重新加速脱离”之间仍会断档
+4. `chase_swarm` — 无安全区蜂群场景仍需要更强的全局缺口规划/持久生存策略
 
 ### 2.3 MC 写入解耦（Phase 2 后期）
 
@@ -207,10 +241,13 @@ A/B 框架：
 | 工具 | 位置 | 状态 | 用途 |
 |------|------|------|------|
 | mercenary-ai-sim | tools/mercenary-ai-sim/ | 已验证 | 非战斗寻路离线仿真 + BFS 对比 |
-| combat-movement-sim | tools/combat-movement-sim/ | **Phase 2 待建** | 战斗移动离线仿真 + 参数扫描 |
+| combat-movement-sim | tools/combat-movement-sim/ | 已落地（需持续对齐 AS2 基线） | 战斗移动离线仿真 + 参数扫描 + 动态追逐对抗 |
 
 ---
 
 ## 修改历史
 
 - 2026-04-11: Phase 1 完成（Step 1-6），创建本文档
+- 2026-04-14: combat-movement-sim 与当前 AS2 基线重新对齐；补充动态追逐红场景与下一阶段离线重点
+- 2026-04-14: 引入加权压力判定与 PackEscapePlanner；确认当前 heuristic ceiling 约为动态追逐 3/7
+- 2026-04-14: 引入 ThreatAssessor 采样滞后与 EngageMovementStrategy 脉冲走位近似；默认动态追逐基线提升到 3/7，旧 candidate 包退化为回归参考

@@ -87,6 +87,7 @@ class org.flashNight.arki.unit.UnitAI.combat.ActionArbiter {
     // ── 角落激进模式（S7: 被逼入角落时主动解围而非继续逃跑）──
     // corneredAggression 暂留在 ActionArbiter（依赖 _prepareContext 内 build 后的时序）
     private var _corneredAggression:Number = 0;
+    private var _lastSurvivalGateLogFrame:Number = -999;
 
     // ═══════ 构造 ═══════
 
@@ -309,6 +310,7 @@ class org.flashNight.arki.unit.UnitAI.combat.ActionArbiter {
         for (var fi:Number = 0; fi < _filters.length; fi++) {
             _filters[fi].filter(_ctx, candidates, _trace);
         }
+        var panicGate:Boolean = _applyHighPressureSurvivalGate(candidates, context, data, frame);
         var postFilterCount:Number = candidates.length;
 
         // 诊断：记录候选计数 + 源概览
@@ -341,7 +343,9 @@ class org.flashNight.arki.unit.UnitAI.combat.ActionArbiter {
             var holdAttack:Boolean = false;
 
             if (_ctx.isBodyCommitted) {
-                if (_ctx.inputSemantic == "hold") {
+                if (panicGate) {
+                    _trace.reject("Continue", DecisionTrace.REASON_THREAT);
+                } else if (_ctx.inputSemantic == "hold") {
                     var atkMode:String = _ctx.attackMode;
                     if (atkMode == "空手" || atkMode == "兵器") {
                         var meleeContScore:Number = 0.5 + p.勇气 * 2.0;
@@ -386,8 +390,7 @@ class org.flashNight.arki.unit.UnitAI.combat.ActionArbiter {
                         }
                         _executor.commitBody(selected.type, selected.priority,
                             Math.round(commitF * p.tickInterval), frame, skillCD);
-                        if (selected.skill != null
-                            && (selected.skill.功能 == "躲避" || selected.skill.功能 == "位移")) {
+                        if (_isMobilitySkill(selected.skill)) {
                             _executor.setDodgeActive(true);
                         }
                         if (selected._reflexBoosted) {
@@ -422,6 +425,162 @@ class org.flashNight.arki.unit.UnitAI.combat.ActionArbiter {
         if (context == "engage") {
             _executor.autoHold(self);
         }
+    }
+
+    private function _isHighPressureSurvivalGate(context:String):Boolean {
+        if (context != "engage" || _ctx == null) return false;
+
+        var urgGate:Number = p.panicUrgencyThreshold;
+        if (isNaN(urgGate) || urgGate <= 0) urgGate = 0.9;
+
+        var encGate:Number = p.panicEncirclementThreshold;
+        if (isNaN(encGate) || encGate <= 0) encGate = 0.75;
+
+        var nearGate:Number = p.panicNearbyThreshold;
+        if (isNaN(nearGate) || nearGate <= 0) nearGate = 4;
+
+        return _ctx.retreatUrgency >= urgGate
+            && _ctx.encirclement >= encGate
+            && _ctx.nearbyCount >= nearGate;
+    }
+
+    private function _isHighPressureSafeSkill(c:Object, edgePinnedMelee:Boolean):Boolean {
+        if (c == null) return false;
+        if (c.type != "skill" && c.type != "preBuff") return false;
+        if (c.priority <= 0) return true;
+        if (c.skill == null) return false;
+
+        var func:String = c.skill.功能;
+        if (edgePinnedMelee && _isEdgePinnedBreakoutSkill(c.skill)) return true;
+        if (_isBreakoutOutputSkill(c.skill)) return true;
+
+        return _isDodgeSkill(c.skill)
+            || func == "防护"
+            || func == "解围霸体"
+            || func == "霸体"
+            || func == "无敌";
+    }
+
+    private function _isDodgeSkill(skill:Object):Boolean {
+        if (skill == null) return false;
+        return skill.类型 == "躲避" || skill.功能 == "躲避";
+    }
+
+    private function _isMobilitySkill(skill:Object):Boolean {
+        if (_isDodgeSkill(skill)) return true;
+        if (skill == null || skill.功能 == null) return false;
+        return skill.功能.indexOf("位移") >= 0;
+    }
+
+    private function _isEdgePinnedBreakoutSkill(skill:Object):Boolean {
+        if (skill == null) return false;
+        if (_isMobilitySkill(skill)) return true;
+
+        var func:String = skill.功能;
+        if (func == null) return false;
+        return func == "防护"
+            || func == "解围霸体"
+            || func == "霸体"
+            || func == "无敌"
+            || func.indexOf("解围") >= 0;
+    }
+
+    private function _isBreakoutOutputSkill(skill:Object):Boolean {
+        if (skill == null || skill.功能 == null) return false;
+        var func:String = skill.功能;
+        return func == "爆发解围输出"
+            || func == "持续解围输出"
+            || func == "持续解围爆发输出"
+            || func == "解围持续爆发输出";
+    }
+
+    private function _isEdgePinnedMeleeSurvivalState(data:UnitAIData):Boolean {
+        if (_ctx == null || data == null) return false;
+        if (_ctx.attackMode != "兵器" && _ctx.attackMode != "空手") return false;
+
+        var edgeMargin:Number = p.panicEdgePinnedMargin;
+        if (isNaN(edgeMargin) || edgeMargin <= 0) edgeMargin = 120;
+
+        var nearGate:Number = p.panicEdgePinnedNearbyThreshold;
+        if (isNaN(nearGate) || nearGate <= 0) nearGate = 3;
+
+        var urgGate:Number = p.panicEdgePinnedUrgencyThreshold;
+        if (isNaN(urgGate) || urgGate <= 0) urgGate = 0.75;
+
+        var encGate:Number = p.panicEdgePinnedEncThreshold;
+        if (isNaN(encGate) || encGate <= 0) encGate = 0.6;
+
+        var edgeDist:Number = Math.min(data.bndLeftDist, data.bndRightDist);
+        return edgeDist < edgeMargin
+            && _ctx.nearbyCount >= nearGate
+            && (_ctx.retreatUrgency >= urgGate || _ctx.encirclement >= encGate);
+    }
+
+    private function _isPureMoveSurvivalState(context:String, data:UnitAIData):Boolean {
+        if (_ctx == null || data == null) return false;
+        if (context != "engage") return false;
+
+        var urgGate:Number = p.pureMoveUrgencyThreshold;
+        if (isNaN(urgGate) || urgGate <= 0) urgGate = 0.95;
+
+        var encGate:Number = p.pureMoveEncirclementThreshold;
+        if (isNaN(encGate) || encGate <= 0) encGate = 0.95;
+
+        var nearGate:Number = p.pureMoveNearbyThreshold;
+        if (isNaN(nearGate) || nearGate <= 0) nearGate = 4;
+
+        return _ctx.retreatUrgency >= urgGate
+            && _ctx.encirclement >= encGate
+            && _ctx.nearbyCount >= nearGate;
+    }
+
+    private function _applyHighPressureSurvivalGate(candidates:Array, context:String, data:UnitAIData, frame:Number):Boolean {
+        var panicGate:Boolean = _isHighPressureSurvivalGate(context);
+        var edgePinnedMelee:Boolean = (context == "engage") && _isEdgePinnedMeleeSurvivalState(data);
+        var pureMove:Boolean = _isPureMoveSurvivalState(context, data);
+        if (!panicGate && !edgePinnedMelee) return false;
+
+        var gateTag:String = pureMove ? "PURE_MOVE" : (edgePinnedMelee ? "EDGE_MELEE" : "PANIC_GATE");
+        var edgeDist:Number = -1;
+        if (data != null) edgeDist = Math.min(data.bndLeftDist, data.bndRightDist);
+        if (pureMove) {
+            var pureMoveHold:Number = p.pureMoveHoldFrames;
+            if (isNaN(pureMoveHold) || pureMoveHold < 4) pureMoveHold = 8;
+            _ctx.self._pureMoveUntilFrame = frame + pureMoveHold;
+        }
+
+        var removed:Boolean = false;
+        for (var i:Number = candidates.length - 1; i >= 0; i--) {
+            var c:Object = candidates[i];
+            if (c.type == "attack") {
+                if (pureMove) {
+                    _trace.reject(c.name, DecisionTrace.REASON_THREAT);
+                    candidates.splice(i, 1);
+                    removed = true;
+                }
+                continue;
+            }
+            if (_isHighPressureSafeSkill(c, edgePinnedMelee)) continue;
+            _trace.reject(c.name, DecisionTrace.REASON_THREAT);
+            candidates.splice(i, 1);
+            removed = true;
+        }
+
+        if (removed
+            && (AIEnvironment.isAIDebug() || AIEnvironment.getAILogLevel() >= 2)
+            && frame - _lastSurvivalGateLogFrame >= 12) {
+            _lastSurvivalGateLogFrame = frame;
+            AIEnvironment.log("[AI-SAFE] " + _ctx.self.名字
+                + " " + gateTag
+                + " urg=" + Math.round(_ctx.retreatUrgency * 100)
+                + " enc=" + Math.round(_ctx.encirclement * 100)
+                + " near=" + Math.round(_ctx.nearbyCount)
+                + " mode=" + _ctx.attackMode
+                + " edge=" + Math.round(edgeDist)
+                + " lock=" + ((_ctx.lockSource != null) ? _ctx.lockSource : "-"));
+        }
+
+        return true;
     }
 
 

@@ -164,6 +164,37 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponDpsEstimator {
         return mainDPS + poisonDPS;
     }
 
+    public static function gunReloadSeconds(self:MovieClip, mode:String):Number {
+        if (mode == "双枪") return dualReloadSeconds(self);
+
+        var attrSrc:String = resolveAttrSrc(self, mode);
+        if (attrSrc == null) return 0;
+        var wd:Object = self[attrSrc + "属性"];
+        if (wd == null) return 0;
+        return reloadSecondsFor(self, attrSrc);
+    }
+
+    public static function gunBurstSeconds(self:MovieClip, mode:String):Number {
+        if (mode == "双枪") {
+            if (self.手枪 == null || self.手枪2 == null) return 0;
+            var mInt_s:Number = (self.手枪属性.interval | 0) / 1000;
+            var oInt_s:Number = (self.手枪2属性.interval | 0) / 1000;
+            var mCap:Number = self.手枪弹匣容量 || self.手枪属性.capacity || 30;
+            var oCap:Number = self.手枪2弹匣容量 || self.手枪2属性.capacity || 30;
+            var mBurst_s:Number = mCap * mInt_s;
+            var oBurst_s:Number = oCap * oInt_s;
+            return (mBurst_s > oBurst_s) ? mBurst_s : oBurst_s;
+        }
+
+        var attrSrc:String = resolveAttrSrc(self, mode);
+        if (attrSrc == null) return 0;
+        var wd:Object = self[attrSrc + "属性"];
+        if (wd == null) return 0;
+
+        var capacity:Number = self[attrSrc + "弹匣容量"] || wd.capacity || 30;
+        return capacity * ((wd.interval | 0) / 1000);
+    }
+
     // 主伤每发（含 basePow + 伤害加成；不含毒）
     private static function gunMainPerShot(self:MovieClip, attrSrc:String):Number {
         var wd:Object = self[attrSrc + "属性"];

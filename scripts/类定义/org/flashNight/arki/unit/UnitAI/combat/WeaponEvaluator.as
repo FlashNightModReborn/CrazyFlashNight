@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitAI.core.UnitAIData;
 import org.flashNight.arki.unit.UnitAI.combat.StanceManager;
 import org.flashNight.arki.unit.UnitAI.combat.AmmoHelper;
+import org.flashNight.arki.unit.UnitAI.combat.WeaponDpsEstimator;
 import org.flashNight.arki.unit.UnitAI.core.AIEnvironment;
 import org.flashNight.arki.unit.PlayerInfoProvider;
 
@@ -152,10 +153,12 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
         // 生存压力（切换成本 + debug 共用）
         var courage:Number = p.勇气 || 0;
         var healthPressure:Number = (1 - hpRatio) * (1 - courage);
+        var edgeMeleePressure:Number = _computeEdgeMeleePressure(data);
 
         // 评估各可用模式
         var bestMode:String = self.攻击模式;
         var bestScore:Number = -999;
+        var modeScores:Object = {};
         var modes:Array = ["空手"];
         if (has刀) modes.push("兵器");
         if (has手枪 && has手枪2) {
@@ -174,10 +177,39 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
         for (var i:Number = 0; i < modes.length; i++) {
             var mode:String = modes[i];
             var score:Number = finalModeScore(self, mode, dist, hpRatio, data,
-                                              baseSwitchCost, hysteresis, healthPressure);
+                                              baseSwitchCost, hysteresis, healthPressure,
+                                              edgeMeleePressure);
+            modeScores[mode] = score;
             if (score > bestScore) {
                 bestScore = score;
                 bestMode = mode;
+            }
+        }
+
+        var heldByEdgePressure:Boolean = false;
+        var heldByRangedCommit:Boolean = false;
+        var currentAmmo:Number = getAmmoRatio(self, self.攻击模式);
+        var currentRanged:Boolean = (self.攻击模式 != "空手" && self.攻击模式 != "兵器");
+        if (edgeMeleePressure > 0.55
+            && (bestMode == "空手" || bestMode == "兵器")
+            && currentRanged
+            && currentAmmo > 0.25) {
+            bestMode = self.攻击模式;
+            heldByEdgePressure = true;
+        }
+
+        var rangedCommitBias:Number = 0;
+        if (!heldByEdgePressure
+            && bestMode != self.攻击模式
+            && _isRangedMode(bestMode)
+            && _isRangedMode(self.攻击模式)) {
+            var currentScore:Number = modeScores[self.攻击模式];
+            rangedCommitBias = _computeRangedCommitBias(self, self.攻击模式);
+            if (!_isHardRangeMismatch(self.攻击模式, dist)
+                && !isNaN(currentScore)
+                && currentScore + rangedCommitBias >= bestScore) {
+                bestMode = self.攻击模式;
+                heldByRangedCommit = true;
             }
         }
 
@@ -206,7 +238,8 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
             for (var di:Number = 0; di < modes.length; di++) {
                 var dm:String = modes[di];
                 var dsFinal:Number = finalModeScore(self, dm, dist, hpRatio, data,
-                                                    baseSwitchCost, hysteresis, healthPressure);
+                                                    baseSwitchCost, hysteresis, healthPressure,
+                                                    edgeMeleePressure);
                 var ar:Number = getAmmoRatio(self, dm);
                 wmsg += dm + "=" + (Math.round(dsFinal * 100) / 100);
                 if (dm != "空手" && dm != "兵器") wmsg += "[" + Math.round(ar * 100) + "%]";
@@ -214,9 +247,11 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
                 if (dbgDps > 0) wmsg += "dps=" + Math.round(dbgDps);
                 wmsg += " ";
             }
-            wmsg += "-> " + bestMode + (didSwitch ? " SWITCH!" : " hold");
+            wmsg += "-> " + bestMode + (didSwitch ? " SWITCH!" : (heldByEdgePressure ? " HOLD_EDGE!" : (heldByRangedCommit ? " HOLD_COMMIT!" : " hold")));
             wmsg += " [dist=" + Math.round(dist) + " hp=" + Math.round(hpRatio * 100) + "% pr=" + (Math.round(healthPressure * 100) / 100);
             if (data._retreatFailCount >= 2) wmsg += " retFail=" + data._retreatFailCount;
+            if (edgeMeleePressure > 0) wmsg += " edgePr=" + (Math.round(edgeMeleePressure * 100) / 100);
+            if (heldByRangedCommit) wmsg += " commitPr=" + (Math.round(rangedCommitBias * 100) / 100);
             wmsg += "]";
             AIEnvironment.log(wmsg);
         }
@@ -229,7 +264,8 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
     // 主循环和 debug 都调它，避免显示分数与决策分数漂移
     private function finalModeScore(self:MovieClip, mode:String, dist:Number, hpRatio:Number,
                                     data:UnitAIData, baseSwitchCost:Number,
-                                    hysteresis:Number, healthPressure:Number):Number {
+                                    hysteresis:Number, healthPressure:Number,
+                                    edgeMeleePressure:Number):Number {
         var score:Number = scoreWeaponMode(self, mode, dist, hpRatio);
 
         // ── 射程匹配度 ──
@@ -252,6 +288,18 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
             score -= 0.5;
         } else {
             score += (ammoR - 0.5) * 0.2;
+        }
+
+        // 贴边高压下不鼓励切近战贴脸互砍；远程若弹药充足则略增权，
+        // 给脱围与解围技能留出站位窗口。
+        if (edgeMeleePressure > 0) {
+            if (mode == "兵器") {
+                score -= edgeMeleePressure * 0.8;
+            } else if (mode == "空手") {
+                score -= edgeMeleePressure * 0.6;
+            } else if (ammoR > 0.25) {
+                score += edgeMeleePressure * 0.25;
+            }
         }
 
         // ── 近距×缺弹交互惩罚（远程风筝失败信号）──
@@ -284,6 +332,67 @@ class org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator {
         }
 
         return score;
+    }
+
+    private function _computeEdgeMeleePressure(data:UnitAIData):Number {
+        if (data == null || data.arbiter == null) return 0;
+
+        var edgeDist:Number = Math.min(data.bndLeftDist, data.bndRightDist);
+        var edgeMargin:Number = 140;
+        var edgePressure:Number = 1 - edgeDist / edgeMargin;
+        if (edgePressure <= 0) return 0;
+        if (edgePressure > 1) edgePressure = 1;
+
+        var near:Number = data.arbiter.getNearbyCount();
+        var urg:Number = data.arbiter.getRetreatUrgency();
+        var enc:Number = data.arbiter.getEncirclement();
+
+        var crowdPressure:Number = 0;
+        if (near >= 2) crowdPressure += 0.2;
+        if (near >= 3) crowdPressure += 0.25;
+        if (near >= 4) crowdPressure += 0.15;
+        crowdPressure += urg * 0.35;
+        crowdPressure += enc * 0.35;
+
+        if (crowdPressure > 1) crowdPressure = 1;
+        return edgePressure * crowdPressure;
+    }
+
+    private function _isRangedMode(mode:String):Boolean {
+        return mode == "双枪" || mode == "手枪" || mode == "长枪";
+    }
+
+    private function _isHardRangeMismatch(mode:String, dist:Number):Boolean {
+        var wr:Object = WEAPON_RANGES[mode];
+        if (wr == null) return false;
+        return dist > wr.max + 120;
+    }
+
+    private function _computeRangedCommitBias(self:MovieClip, mode:String):Number {
+        if (!_isRangedMode(mode)) return 0;
+
+        var ammoR:Number = getAmmoRatio(self, mode);
+        var ammoFloor:Number = p.rangedCommitAmmoFloor;
+        if (isNaN(ammoFloor) || ammoFloor < 0.3) ammoFloor = 0.55;
+        if (ammoR <= ammoFloor) return 0;
+
+        var reloadS:Number = WeaponDpsEstimator.gunReloadSeconds(self, mode);
+        var burstS:Number = WeaponDpsEstimator.gunBurstSeconds(self, mode);
+        if (reloadS <= 0 || burstS <= 0) return 0;
+
+        var ammoPressure:Number = (ammoR - ammoFloor) / (1 - ammoFloor);
+        if (ammoPressure < 0) ammoPressure = 0;
+        if (ammoPressure > 1) ammoPressure = 1;
+
+        var cycleShare:Number = reloadS / (burstS + reloadS);
+        var burstWeight:Number = burstS / 3;
+        if (burstWeight < 0.6) burstWeight = 0.6;
+        if (burstWeight > 1.4) burstWeight = 1.4;
+
+        var weight:Number = p.rangedCommitWeight;
+        if (isNaN(weight) || weight <= 0) weight = 1.1;
+
+        return ammoPressure * cycleShare * burstWeight * weight;
     }
 
     // ═══════ 武器模式评分 ═══════

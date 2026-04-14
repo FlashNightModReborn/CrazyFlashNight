@@ -24,8 +24,8 @@ from scenario_gen import CombatScenario
 DEFAULT_PARAM_GRID = {
     "margin": [60, 80, 100, 120],
     "no_progress_threshold": [2, 3, 4, 5],
-    "unstuck_base_window": [8, 12, 16, 24],
-    "probe_speed_mult": [3.0, 4.0, 5.0],
+    "unstuck_base_window": [12, 24, 36, 48],
+    "probe_speed_mult": [4.0, 5.0, 6.0],
 }
 
 # 不在默认网格中但可单独扫描的参数
@@ -37,6 +37,22 @@ EXTENDED_PARAM_GRID = {
     "unstuck_high_window": [30, 40, 50],
     "unstuck_mid_thresh": [4, 6, 8],
     "unstuck_high_thresh": [8, 12, 16],
+    "threat_scan_range": [200, 250, 300],
+    "nearby_enemy_range": [120, 150, 180],
+    "encirclement_evade_threshold": [0.2, 0.25, 0.35],
+    "edge_escape_margin": [60, 80, 100],
+    "edge_safe_space": [40, 60, 80],
+    "pincer_side_advantage": [0, 1, 2],
+    "survival_gap_enemy_min": [3, 4, 5],
+    "pressure_dominance_ratio": [1.05, 1.15, 1.3],
+    "pack_escape_window": [12, 20, 28],
+    "pack_escape_min_nearby": [1, 2, 3],
+    "threat_sample_interval": [12, 16, 20],
+    "kite_x_threshold": [160, 180, 220],
+    "evade_nearby_count": [1, 2, 3],
+    "strafe_pulse_min": [8, 12],
+    "strafe_pulse_max": [12, 15, 18],
+    "strafe_gap_base": [8, 12, 16],
 }
 
 
