@@ -60,10 +60,38 @@ class Program
     static int Run(string[] args)
     {
         bool busOnly = Array.IndexOf(args, "--bus-only") >= 0;
+        bool forceWebViewFail = Array.IndexOf(args, "--force-webview-fail") >= 0;
 
         // 定位项目根目录（EXE 所在目录）
         string exePath = typeof(Program).Assembly.Location;
         string projectRoot = Path.GetDirectoryName(exePath);
+
+        // Phase 1 (11b-β): WebView2 全局硬依赖 fail-closed 预检.
+        // 正常模式必须 WebView2 Runtime 可用才能创建 BootstrapForm; bus-only 跳过.
+        if (!busOnly)
+        {
+            string wv2Error = null;
+            if (forceWebViewFail)
+            {
+                wv2Error = "forced by --force-webview-fail flag";
+            }
+            else
+            {
+                try { CoreWebView2Environment.GetAvailableBrowserVersionString(); }
+                catch (Exception ex) { wv2Error = ex.Message; }
+            }
+            if (wv2Error != null)
+            {
+                MessageBox.Show(
+                    "WebView2 Runtime 不可用, 无法启动启动器.\n\n"
+                    + "请安装 WebView2 Evergreen Bootstrapper:\n"
+                    + "https://developer.microsoft.com/microsoft-edge/webview2/\n\n"
+                    + "详情: " + wv2Error,
+                    "CF7:ME - WebView2 缺失",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 1;
+            }
+        }
 
         // 创建 Guardian 窗口（bus-only 模式下也需要，因为 LogManager/Overlay 依赖 Form）
         GuardianForm form = new GuardianForm();
@@ -201,23 +229,14 @@ class Program
             new Action(form.ForceExit),
             new Action<Keys>(form.HandleButtonClick));
 
-        // WebView2 overlay（与 GDI+ overlay 并存，Phase 0 PoC）
-        WebOverlayForm webOverlay = null;
-        try
-        {
-            string wv2ver = CoreWebView2Environment.GetAvailableBrowserVersionString();
-            LogManager.Log("[WebView2] Runtime found: " + wv2ver);
-            string webDir = Path.Combine(projectRoot, "launcher", "web");
-            webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir);
-        }
-        catch (Exception ex)
-        {
-            LogManager.Log("[WebView2] Runtime not available, overlay disabled: " + ex.Message);
-        }
+        // Phase 1 (11c): WebView2 全局硬依赖; 入口已预检, 这里 WebOverlayForm 构造异常直接 throw 到上游
+        string wv2ver = CoreWebView2Environment.GetAvailableBrowserVersionString();
+        LogManager.Log("[WebView2] Runtime found: " + wv2ver);
+        string webDir = Path.Combine(projectRoot, "launcher", "web");
+        WebOverlayForm webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir);
 
-        // WebView2 可用时注入 Notch 依赖 + 创建 InputShieldForm
+        // Notch 依赖 + InputShieldForm
         InputShieldForm inputShield = null;
-        if (webOverlay != null)
         {
             webOverlay.SetNotchDependencies(frameTask.FpsBuffer,
                 new Action(form.ToggleFullscreen),
@@ -253,9 +272,9 @@ class Program
             webOverlay.SetInputShield(inputShield);
         }
 
-        // Toast/Notch 路由：WebView2 可用时走 Web 渲染，否则 GDI+ fallback
-        IToastSink toastSink = (webOverlay != null) ? (IToastSink)webOverlay : (IToastSink)toastOverlay;
-        INotchSink notchSink = (webOverlay != null) ? (INotchSink)webOverlay : (INotchSink)notchOverlay;
+        // Phase 1 (11c): WebView2 硬依赖 — webOverlay 必有, 直接用
+        IToastSink toastSink = webOverlay;
+        INotchSink notchSink = webOverlay;
         ToastTask toastTask = new ToastTask(toastSink);
 
         // 快车道注入：F/R 前缀消息由 XmlSocketServer 直接分发到 FrameTask，绕过 MessageRouter
@@ -273,15 +292,12 @@ class Program
         ArchiveTask archiveTask = new ArchiveTask(projectRoot);
         TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, archiveTask);
 
-        // 面板系统接线
-        if (webOverlay != null)
-        {
-            webOverlay.SetShopTask(shopTask);
-            webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
-            form.SetWebOverlay(webOverlay);
-            socketServer.OnClientDisconnected += webOverlay.OnSocketDisconnected;
-            socketServer.OnClientReady += webOverlay.OnSocketReconnected;
-        }
+        // 面板系统接线 (11c: webOverlay 必有)
+        webOverlay.SetShopTask(shopTask);
+        webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
+        form.SetWebOverlay(webOverlay);
+        socketServer.OnClientDisconnected += webOverlay.OnSocketDisconnected;
+        socketServer.OnClientReady += webOverlay.OnSocketReconnected;
 
         // 注入 router 到 HttpApiServer（供 /task 端点使用）
         httpServer.SetRouter(router);
@@ -381,44 +397,16 @@ class Program
 
         form.BindWindowManager(windowManager);
 
-        if (!processManager.Start())
-        {
-            ShowError("Failed to start Flash Player.");
-            socketServer.Dispose();
-            httpServer.Dispose();
-            gomokuTask.Dispose();
-            try { File.Delete(portsFile); } catch { }
-            return 1;
-        }
-
-        windowManager.TrackProcess(processManager.FlashProcess);
+        // 11b-α: processManager.Start / TrackProcess / TrackFlashProcess 迁入 GameLaunchFlow.TransitionToSpawning
+        //   Flash 不立即启动, 由 BootstrapForm 的 start_game 触发 launchFlow.StartGame(slot)
 
         // 延迟注入 WindowManager 到性能决策引擎（bus-only 模式不走此路径）
         perfEngine.SetWindowManager(windowManager);
 
-        // Flash 退出双重检测：Process.Exited 事件 + 定时器后备
-        form.TrackFlashProcess(processManager.FlashProcess);
-        processManager.OnFlashExited += delegate
-        {
-            form.ForceExit();
-        };
-
-        // Flash 僵尸进程兜底：Socket 断连后 10s 内进程仍未退出则强制关闭
-        // Flash Player 20 SA 偶发退出卡死，Process.Exited 和 HasExited 均不触发
-        socketServer.OnClientDisconnected += delegate
-        {
-            System.Threading.Timer zombieTimer = null;
-            zombieTimer = new System.Threading.Timer(delegate
-            {
-                try { zombieTimer.Dispose(); } catch { }
-                Process fp = processManager.FlashProcess;
-                if (fp != null && !fp.HasExited)
-                {
-                    LogManager.Log("[Guardian] Flash zombie detected (socket disconnected 10s ago, process still alive) — forcing exit");
-                    form.ForceExit();
-                }
-            }, null, 10000, System.Threading.Timeout.Infinite);
-        };
+        // 11c: Flash 退出 + zombie 兜底整体迁入 GameLaunchFlow (按 state + attempt 隔离)
+        //   Ready 状态 → 触发 form.ForceExit (玩家正常关游戏)
+        //   活跃非 Ready 状态 → TransitionToError (允许 retry)
+        //   Idle/Error/Resetting → 忽略
 
         // 退出前杀 Flash + 停音频（在 DoExit 的 ExitThread 之前执行）
         form.OnKillFlash = delegate
@@ -428,42 +416,52 @@ class Program
             processManager.KillFlash();
         };
 
-        // 在后台线程等待 Flash 窗口出现并嵌入
-        ThreadPool.QueueUserWorkItem(delegate
-        {
-            if (config.GpuSharpeningEnabled)
-            {
-                LogManager.Log("[Guardian] GPU mode skipped: strict single-window capture path is not viable yet");
-            }
+        // 11b-α: ThreadPool embed + form.Show/Activate + SetReady 整块迁入 GameLaunchFlow.TransitionToEmbedding / TransitionToReady
+        //   (readyWiring 关闭注入 toastOverlay/webOverlay/inputShield/hnOverlay.SetReady)
 
-            windowManager.EmbedFlashWindow(processManager.FlashProcess, form.FlashHostPanel);
-            form.BeginInvoke(new Action(delegate
-            {
-                form.Show();
-                form.Activate();
-                if (webOverlay != null)
-                {
-                    // GDI+ toast 激活作为过渡期 fallback（WebView2 JS ready 前消息走这里）
-                    // GDI+ notch 不激活——避免双刘海屏，启动期短暂丢通知可接受
-                    toastOverlay.SetReady();
+        // ArchiveTask 已在 TaskRegistry.RegisterAll 中注册 (line 401-402)
+        // BootstrapForm (WebView2)
+        string bootstrapWebDir = Path.Combine(projectRoot, "launcher", "web");
+        CF7Launcher.Guardian.BootstrapForm bootForm = new CF7Launcher.Guardian.BootstrapForm(bootstrapWebDir);
 
-                    webOverlay.SetReady();
-                    if (inputShield != null)
-                        inputShield.SetReady();
-                }
-                else
-                {
-                    toastOverlay.SetReady();
-                    notchOverlay.SetReady();
-                }
+        // GameLaunchFlow (状态机接管 processManager.Start / EmbedFlashWindow / SetReady 全链)
+        CF7Launcher.Guardian.GameLaunchFlow launchFlow = new CF7Launcher.Guardian.GameLaunchFlow(
+            socketServer, router, processManager, windowManager,
+            form, bootForm,
+            /* readyWiring */ delegate
+            {
+                // Phase 1 全局硬依赖 WebView2: webOverlay 永不为 null
+                toastOverlay.SetReady();
+                webOverlay.SetReady();
+                if (inputShield != null) inputShield.SetReady();
                 hnOverlay.SetReady();
-            }));
-        });
+                // 11b-β: Ready 才让托盘可见
+                form.ShowTrayIcon();
+            },
+            /* hotkeyGuardSpawn */ null);
 
-        LogManager.Log("[Guardian] All systems ready. Flash is running.");
+        bootForm.StateProvider = delegate { return launchFlow.CurrentState; };
+        launchFlow.OnStateChanged += delegate(string state, string smsg)
+        {
+            Newtonsoft.Json.Linq.JObject obj = new Newtonsoft.Json.Linq.JObject();
+            obj["type"] = "bootstrap";
+            obj["cmd"] = "state";
+            obj["state"] = state;
+            obj["msg"] = smsg ?? "";
+            bootForm.PostToWeb(obj.ToString(Newtonsoft.Json.Formatting.None));
+        };
+        bootForm.OnJsMessage += delegate(string json)
+        {
+            CF7Launcher.Guardian.BootstrapMessageHandler.Handle(json, bootForm, archiveTask, launchFlow);
+        };
 
-        // 消息循环
-        Application.Run(form);
+        // GuardianContext: BootstrapForm 作 MainForm; 退出走 guard.ForceExit -> DoExit -> ExitGuard
+        CF7Launcher.Guardian.GuardianContext ctx = new CF7Launcher.Guardian.GuardianContext(bootForm, form);
+
+        LogManager.Log("[Guardian] Bootstrap ready. Waiting for user to select slot...");
+
+        // 消息循环: ctx (BootstrapForm MainForm, GuardianForm 由 launchFlow Ready 时 Show)
+        Application.Run(ctx);
 
         // 清理：每步 try-catch 保护，防止单点异常跳过后续步骤
         LogManager.Log("[Guardian] Shutting down...");

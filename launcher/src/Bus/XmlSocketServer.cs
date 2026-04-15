@@ -188,20 +188,23 @@ namespace CF7Launcher.Bus
 
             LogManager.Log("[XmlSocket] Client disconnected");
 
-            // 只有当自己仍是当前连接时才清理共享字段并触发断连事件
+            // Phase 1e (5a)：回调必须在锁外触发，防止订阅者 handler 内调用 Send/Close
+            // 等同锁 API 造成重入/死锁（见 plan Phase 1e 锁语义约束 1）
+            Action dcHandler = null;
             lock (_clientLock)
             {
                 if (_generation == gen)
                 {
                     CloseClientLocked();
-                    Action dcHandler = OnClientDisconnected;
-                    if (dcHandler != null)
-                    {
-                        try { dcHandler(); } catch (Exception dcEx)
-                        {
-                            LogManager.Log("[XmlSocket] OnClientDisconnected error: " + dcEx.Message);
-                        }
-                    }
+                    dcHandler = OnClientDisconnected;  // 快照，锁外 Fire
+                }
+            }
+            if (dcHandler != null)
+            {
+                try { dcHandler(); }
+                catch (Exception dcEx)
+                {
+                    LogManager.Log("[XmlSocket] OnClientDisconnected error: " + dcEx.Message);
                 }
             }
 
@@ -484,6 +487,50 @@ namespace CF7Launcher.Bus
         public void PushToClient(string json)
         {
             Send(json + "\0");
+        }
+
+        // ==================== Phase 1e (5b) 状态机配套 API ====================
+
+        /// <summary>
+        /// 强制关闭当前客户端：触发 ReadLoop 退出 + OnClientDisconnected。
+        /// 锁语义约束 3：关流/关 client 在锁内，Fire 回调在锁外。
+        /// 调用方（GameLaunchFlow.Reset）若已订阅 OnClientDisconnected + 在等待 dcGate，
+        /// 强关后 ReadLoop 退出时 handler 会被 Fire，即便当前没有处于 ReadLoop 阻塞中
+        /// 也可由本方法直接 Fire 一次（两种路径对订阅者语义一致：至少通知一次）。
+        /// </summary>
+        public void ForceCloseCurrentClient()
+        {
+            Action dcHandler = null;
+            lock (_clientLock)
+            {
+                if (_client == null && _stream == null) return;
+                CloseClientLocked();
+                dcHandler = OnClientDisconnected;  // 快照，锁外 Fire
+            }
+            LogManager.Log("[XmlSocket] ForceCloseCurrentClient");
+            if (dcHandler != null)
+            {
+                try { dcHandler(); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[XmlSocket] ForceCloseCurrentClient handler error: " + ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 原子订阅断连事件：返回 false 表示当前已无连接（不应订阅 + 不应等 dcGate）。
+        /// 锁内 HasClient 判断 + 订阅 一条原子 API，避免"先判有连接后订阅"之间的 race。
+        /// </summary>
+        public bool TrySubscribeOnClientDisconnected(Action handler)
+        {
+            if (handler == null) return false;
+            lock (_clientLock)
+            {
+                if (_client == null || !_client.Connected) return false;
+                OnClientDisconnected += handler;
+                return true;
+            }
         }
 
         /// <summary>

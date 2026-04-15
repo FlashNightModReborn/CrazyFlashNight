@@ -15,7 +15,10 @@ namespace CF7Launcher.Guardian
         private readonly string _swfPath;
         private readonly DateTime _startTime;
 
-        public event Action OnFlashExited;
+        /// <summary>
+        /// Phase 1d：事件携带退出的 Process 引用（二重防御，订阅方可识别是否为当前 attempt 的进程）。
+        /// </summary>
+        public event Action<Process> OnFlashExited;
 
         public Process FlashProcess { get { lock (_lock) { return _flashProcess; } } }
 
@@ -57,11 +60,21 @@ namespace CF7Launcher.Guardian
 
         private void OnProcessExited(object sender, EventArgs e)
         {
+            Process exited = sender as Process;
             int exitCode = -1;
             TimeSpan uptime = TimeSpan.Zero;
+
+            // Phase 1d：sender 校验——仅当 sender 是当前追踪的 _flashProcess 才传播事件。
+            // 防止：retry 场景下旧 Flash 的 Exited 事件晚到、串入新 attempt 的状态机。
             lock (_lock)
             {
                 if (_flashProcess == null) return;
+                if (!object.ReferenceEquals(exited, _flashProcess))
+                {
+                    LogManager.Log("[Guardian] Flash Exited from stale process, ignored (pid="
+                        + (exited != null ? exited.Id.ToString() : "null") + ")");
+                    return;
+                }
                 try { exitCode = _flashProcess.ExitCode; } catch { }
                 try { uptime = DateTime.Now - _flashProcess.StartTime; } catch { }
             }
@@ -74,9 +87,9 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[Guardian] WARNING: Flash exited within 5 seconds, possible crash.");
             }
 
-            Action handler = OnFlashExited;
+            Action<Process> handler = OnFlashExited;
             if (handler != null)
-                handler();
+                handler(exited);
         }
 
         /// <summary>

@@ -1,0 +1,67 @@
+html, body {
+  margin: 0; padding: 0;
+  background: #18181a; color: #e0e0e0;
+  font-family: "Microsoft YaHei", sans-serif;
+  height: 100%; overflow: hidden;
+}
+.wrap { padding: 24px 32px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; }
+h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: 22px; }
+.subtitle { color: #888; margin-bottom: 20px; font-size: 13px; }
+
+.toolbar { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; }
+.toolbar button {
+  background: #2a2a30; color: #e0e0e0;
+  border: 1px solid #555; padding: 6px 14px;
+  cursor: pointer; font-size: 13px; border-radius: 3px;
+}
+.toolbar button:hover { background: #3a3a45; border-color: #4da6ff; }
+.state-badge {
+  margin-left: auto; padding: 4px 10px; font-size: 12px;
+  border: 1px solid #555; border-radius: 3px; background: #222;
+}
+.state-badge.ready   { border-color: #7ed07e; color: #7ed07e; }
+.state-badge.error   { border-color: #e06e6e; color: #e06e6e; }
+.state-badge.running { border-color: #f0a860; color: #f0a860; }
+
+.cards { flex: 1; overflow-y: auto; display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.card {
+  background: #222228; border: 1px solid #333;
+  border-radius: 4px; padding: 14px; display: flex; flex-direction: column;
+}
+.card.corrupt      { border-color: #e06e6e; background: #2a2020; }
+.card.tombstoned   { border-color: #888; background: #222; opacity: 0.75; }
+.card.inconsistent { border-color: #d08040; background: #2a2418; }
+
+.card .slot { font-weight: bold; font-size: 15px; margin-bottom: 4px; }
+.card .progress { color: #bbb; font-size: 13px; min-height: 18px; margin-bottom: 4px; }
+.card .meta { color: #666; font-size: 11px; margin-bottom: 10px; }
+.card .flag { display: inline-block; font-size: 11px; padding: 2px 6px;
+  border-radius: 2px; margin-right: 4px; }
+.card .flag.corrupt      { background: #4a2020; color: #e06e6e; }
+.card .flag.tombstoned   { background: #333; color: #bbb; }
+.card .flag.inconsistent { background: #4a3a20; color: #d08040; }
+
+.card-actions { margin-top: auto; display: flex; gap: 6px; }
+.card-actions button {
+  flex: 1; padding: 6px 10px; font-size: 12px;
+  border: 1px solid #4da6ff; background: #2a2a30; color: #4da6ff;
+  border-radius: 3px; cursor: pointer;
+}
+.card-actions button:hover { background: #3a3a45; }
+.card-actions button.danger { border-color: #e06e6e; color: #e06e6e; }
+.card-actions button.danger:hover { background: #3a2020; }
+.card-actions button:disabled {
+  border-color: #444; color: #555; cursor: not-allowed; background: #222;
+}
+
+#log {
+  margin-top: 12px; padding: 10px; max-height: 120px; overflow-y: auto;
+  background: #0a0a0c; border: 1px solid #333;
+  font-family: Consolas, monospace; font-size: 11px; white-space: pre-wrap;
+}
+.tag-in  { color: #8fd67a; }
+.tag-out { color: #f0a860; }
+.tag-err { color: #e06e6e; }
+
+.empty { color: #666; font-style: italic; padding: 40px; text-align: center; grid-column: 1 / -1; }

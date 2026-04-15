@@ -58,6 +58,9 @@
     <Compile Include="src\Guardian\WindowManager.cs" />
     <Compile Include="src\Guardian\KeyboardHook.cs" />
     <Compile Include="src\Guardian\GuardianForm.cs" />
+    <Compile Include="src\Guardian\GameLaunchFlow.cs" />
+    <Compile Include="src\Guardian\BootstrapMessageHandler.cs" />
+    <Compile Include="src\Guardian\GuardianContext.cs" />
     <Compile Include="src\Guardian\LogManager.cs" />
     <Compile Include="src\Bus\PortAllocator.cs" />
     <Compile Include="src\Bus\FlashPolicyHandler.cs" />
@@ -93,6 +96,7 @@
     <Compile Include="src\Guardian\IToastSink.cs" />
     <Compile Include="src\Guardian\INotchSink.cs" />
     <Compile Include="src\Guardian\WebOverlayForm.cs" />
+    <Compile Include="src\Guardian\BootstrapForm.cs" />
     <Compile Include="src\Guardian\InputShieldForm.cs" />
     <Compile Include="src\Guardian\PerfDecisionEngine.cs" />
   </ItemGroup>
