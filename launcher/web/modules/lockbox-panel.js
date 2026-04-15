@@ -12,6 +12,7 @@ var LockboxPanel = (function() {
     var _loadToken = 0;
     var _panelOpen = false;
     var _metaDirty = true;
+    var _uiFxEpoch = 0;
 
     var DEFAULT_INIT = {
         mode: 'dev',
@@ -128,16 +129,16 @@ var LockboxPanel = (function() {
                         '<div class="lockbox-side-title">目标序列</div>',
                         '<div id="lockbox-sequences"></div>',
                     '</section>',
-                    '<section class="lockbox-side-section">',
+                    '<section class="lockbox-side-section lockbox-buffer-section">',
                         '<div class="lockbox-side-title">Buffer</div>',
                         '<div id="lockbox-buffer"></div>',
                     '</section>',
-                    '<section class="lockbox-side-section">',
+                    '<section class="lockbox-side-section lockbox-trace-section">',
                         '<div class="lockbox-side-title">Trace</div>',
                         '<div class="lockbox-trace-bar"><div class="lockbox-trace-fill" id="lockbox-trace-fill"></div></div>',
                         '<div class="lockbox-trace-meta" id="lockbox-trace-meta"></div>',
                     '</section>',
-                    '<section class="lockbox-side-section">',
+                    '<section class="lockbox-side-section lockbox-status-section">',
                         '<div class="lockbox-side-title">运行状态</div>',
                         '<div class="lockbox-status" id="lockbox-status"></div>',
                     '</section>',
@@ -286,6 +287,7 @@ var LockboxPanel = (function() {
     function cleanup() {
         _panelOpen = false;
         _loadToken++;
+        bumpUiFxEpoch();
         stopLoop();
         _state = null;
         if (typeof LockboxAudio !== 'undefined') {
@@ -481,14 +483,22 @@ var LockboxPanel = (function() {
         return exact || fallback;
     }
 
+    function bumpUiFxEpoch() {
+        _uiFxEpoch++;
+        return _uiFxEpoch;
+    }
+
     function flashSeqRow(id) {
         // Deferred so it runs AFTER the caller's renderAll rebuilds the DOM.
         if (!_refs.sequences) return;
+        var fxEpoch = _uiFxEpoch;
         setTimeout(function() {
+            if (fxEpoch !== _uiFxEpoch || !_state || !_panelOpen) return;
             var row = _refs.sequences && _refs.sequences.querySelector('[data-seq-id="' + id + '"]');
             if (!row) return;
             row.classList.add('just-hit');
             setTimeout(function() {
+                if (fxEpoch !== _uiFxEpoch) return;
                 if (row) row.classList.remove('just-hit');
             }, 720);
         }, 0);
@@ -496,11 +506,14 @@ var LockboxPanel = (function() {
 
     function spawnCellTapBurst(r, c) {
         if (!_refs.grid) return;
+        var fxEpoch = _uiFxEpoch;
         setTimeout(function() {
+            if (fxEpoch !== _uiFxEpoch || !_state || !_panelOpen) return;
             var cellEl = _refs.grid && _refs.grid.querySelector('.lockbox-cell[data-r="' + r + '"][data-c="' + c + '"]');
             if (!cellEl) return;
             cellEl.classList.add('tap-burst');
             setTimeout(function() {
+                if (fxEpoch !== _uiFxEpoch) return;
                 if (cellEl) cellEl.classList.remove('tap-burst');
             }, 480);
         }, 0);
@@ -508,6 +521,7 @@ var LockboxPanel = (function() {
 
     function clearRuntimeFx() {
         if (!_el) return;
+        bumpUiFxEpoch();
         _el.classList.remove('fx-perfect', 'fx-good', 'fx-miss', 'fx-fail', 'fx-overload', 'fx-trace-kill', 'fx-shake');
         _el.removeAttribute('data-phase');
         _el.removeAttribute('data-result-tone');
@@ -549,7 +563,10 @@ var LockboxPanel = (function() {
                 startedAt: 0,
                 currentMs: 0,
                 pointerId: null,
-                result: null
+                result: null,
+                audioStep: -1,
+                sweetCueFired: false,
+                dangerCueFired: false
             },
             result: null,
             openedAt: now,
@@ -583,7 +600,9 @@ var LockboxPanel = (function() {
         if (_refs.guideNote) _refs.guideNote.textContent = '指引关闭。';
         if (_refs.traceModuleStack) _refs.traceModuleStack.innerHTML = '';
         if (_refs.railFinisher) _refs.railFinisher.classList.remove('visible');
+        if (_refs.railFinisher) _refs.railFinisher.removeAttribute('data-hold-window');
         if (_refs.railFinisherProgress) _refs.railFinisherProgress.style.height = '0%';
+        if (_refs.railFinisherTrack) _refs.railFinisherTrack.style.setProperty('--finisher-charge', '0');
         if (_refs.railFinisherMeta) _refs.railFinisherMeta.textContent = 'PRESS';
         if (_refs.traceFooter) _refs.traceFooter.textContent = 'TRACE BUS / waiting for puzzle';
         _refs.status.innerHTML = '<div class="lockbox-status-line">' + escapeHtml(text) + '</div>';
@@ -727,6 +746,9 @@ var LockboxPanel = (function() {
         _state.finisher.startedAt = performance.now();
         _state.finisher.currentMs = 0;
         _state.finisher.pointerId = pointerId;
+        _state.finisher.audioStep = -1;
+        _state.finisher.sweetCueFired = false;
+        _state.finisher.dangerCueFired = false;
         _refs.railFinisherTrack.setPointerCapture(pointerId);
         if (typeof LockboxAudio !== 'undefined') LockboxAudio.startHeartbeat();
         renderFinisher();
@@ -1020,7 +1042,22 @@ var LockboxPanel = (function() {
         if (_state.phase === 'FINISHER' && _state.finisher.holding) {
             _state.finisher.currentMs = now - _state.finisher.startedAt;
             var holdPct = LockboxCore.clamp(_state.finisher.currentMs / 900, 0, 1.3);
-            if (typeof LockboxAudio !== 'undefined') LockboxAudio.tickHeartbeat(Math.min(1, holdPct));
+            if (typeof LockboxAudio !== 'undefined') {
+                LockboxAudio.tickHeartbeat(Math.min(1, holdPct));
+                var audioStep = Math.min(6, Math.floor(Math.min(_state.finisher.currentMs, 1199) / 180));
+                if (audioStep > _state.finisher.audioStep) {
+                    _state.finisher.audioStep = audioStep;
+                    LockboxAudio.play('finisherHoldPulse', { pct: Math.min(1.2, holdPct) });
+                }
+                if (!_state.finisher.sweetCueFired && _state.finisher.currentMs >= 780 && _state.finisher.currentMs <= 1020) {
+                    _state.finisher.sweetCueFired = true;
+                    LockboxAudio.play('finisherSweetCue');
+                }
+                if (!_state.finisher.dangerCueFired && _state.finisher.currentMs >= 1020) {
+                    _state.finisher.dangerCueFired = true;
+                    LockboxAudio.play('finisherDanger');
+                }
+            }
             if (_state.finisher.currentMs >= 1200) {
                 finishFinisherHold(true);
                 return;
@@ -1034,7 +1071,7 @@ var LockboxPanel = (function() {
             if (changed) renderAll();
             else renderMetaOnly();
         } else if (changed) {
-            renderAll();
+            renderMetaOnly();
         }
     }
 
@@ -1150,8 +1187,29 @@ var LockboxPanel = (function() {
                 '<span>主解 ' + (_state.mainSolved ? '完成' : '失败') + '</span>',
                 '<span>Bonus ' + (_state.bonusSolved ? '保留' : _state.bonusLocked ? '锁死' : '未拿') + '</span>',
                 '<span>收尾 ' + (payload.reason === 'trace' ? 'TRACE' : (payload.finisherResult || '无')) + '</span>',
+            '</div>',
+            renderResultTelemetry(payload)
+        ].join('');
+    }
+
+    function renderResultTelemetry(payload) {
+        var tracePct = Math.round((_state.traceValue || 0) * 100) + '%';
+        var traceState = _state.traceFrozen ? 'FROZEN' : getTraceVisualState().toUpperCase();
+        var solverState = _state.puzzle.accepted === false ? 'FALLBACK' : 'OK';
+        return [
+            '<div class="lockbox-result-telemetry">',
+                renderResultMetric('TRACE', tracePct + ' / ' + traceState),
+                renderResultMetric('PICKS', _state.bufferTokens.length + ' / ' + _state.config.bufferCap),
+                renderResultMetric('ILLEGAL', String(_state.illegalTapCount)),
+                renderResultMetric('SEED', (_state.puzzle.familySeed >>> 0) + ' / V' + (_state.puzzle.variantIndex | 0)),
+                renderResultMetric('PROFILE', _state.config.id + ' / ' + _state.request.source),
+                renderResultMetric('SOLVER', solverState),
             '</div>'
         ].join('');
+    }
+
+    function renderResultMetric(label, value) {
+        return '<div class="lockbox-result-metric"><span>' + escapeHtml(label) + '</span><b>' + escapeHtml(value) + '</b></div>';
     }
 
     function renderMetaOnly() {
@@ -1163,12 +1221,32 @@ var LockboxPanel = (function() {
         renderProfileSwitch();
         renderTraceShell();
         _refs.traceFill.style.width = Math.round(_state.traceValue * 100) + '%';
-        _refs.traceMeta.textContent = Math.round(_state.traceValue * 100) + '% / 锁阈值 ' + Math.round(_state.config.bonusLockPct * 100) + '%' + (_state.traceFrozen ? ' / 已冻结' : '');
+        _refs.traceMeta.innerHTML = renderTraceMetaBlock();
         _refs.status.innerHTML = renderStatusBlock();
         _refs.traceFrame.style.setProperty('--trace-intensity', String((_state.traceValue * 0.55).toFixed(3)));
         _refs.traceFrame.className = 'lockbox-trace-frame' + (_state.traceFrozen ? ' frozen' : '') + (_state.bonusLocked ? ' bonus-locked' : '');
         _el.querySelector('[data-action="start"]').disabled = _state.phase !== 'OBSERVE';
         _el.querySelector('[data-action="submit"]').disabled = !(_state.phase === 'MAIN_READY' && _state.mainSolved);
+    }
+
+    function renderTraceMetaBlock() {
+        var tracePct = Math.round((_state.traceValue || 0) * 100);
+        var lockPct = Math.round(_state.config.bonusLockPct * 100);
+        if (_state.phase === 'RESULT' || _state.phase === 'FAIL') {
+            return [
+                '<div class="lockbox-trace-meta-grid">',
+                    renderTraceMetaChip('TRACE', tracePct + '%'),
+                    renderTraceMetaChip('LOCK', lockPct + '%'),
+                    renderTraceMetaChip('STATE', _state.traceFrozen ? 'FROZEN' : getTraceVisualState().toUpperCase()),
+                    renderTraceMetaChip('BONUS', _state.bonusSolved ? 'KEPT' : _state.bonusLocked ? 'LOCKED' : 'OPEN'),
+                '</div>'
+            ].join('');
+        }
+        return escapeHtml(tracePct + '% / 锁阈值 ' + lockPct + '%' + (_state.traceFrozen ? ' / 已冻结' : ''));
+    }
+
+    function renderTraceMetaChip(label, value) {
+        return '<span class="lockbox-trace-meta-chip"><em>' + escapeHtml(label) + '</em><b>' + escapeHtml(value) + '</b></span>';
     }
 
     function renderTraceShell() {
@@ -1378,16 +1456,25 @@ var LockboxPanel = (function() {
         if (!_state) return;
         if (_state.phase !== 'FINISHER') {
             _refs.railFinisher.classList.remove('visible');
+            _refs.railFinisher.removeAttribute('data-hold-window');
             _refs.railFinisherProgress.style.height = '0%';
+            _refs.railFinisherTrack.style.setProperty('--finisher-charge', '0');
             _refs.railFinisherMeta.textContent = 'PRESS';
             return;
         }
 
         _refs.railFinisher.classList.add('visible');
         var pctValue = LockboxCore.clamp((_state.finisher.currentMs || 0) / 1200, 0, 1);
+        var holdMs = _state.finisher.currentMs || 0;
+        var holdWindow = 'arming';
+        if (holdMs >= 780 && holdMs <= 1020) holdWindow = 'sweet';
+        else if (holdMs > 1020) holdWindow = 'danger';
+        else if (holdMs >= 600) holdWindow = 'ready';
+        _refs.railFinisher.setAttribute('data-hold-window', holdWindow);
         _refs.railFinisherProgress.style.height = Math.round(pctValue * 100) + '%';
+        _refs.railFinisherTrack.style.setProperty('--finisher-charge', String(pctValue.toFixed(3)));
         _refs.railFinisherMeta.textContent = _state.finisher.holding
-            ? ('释放 @ ' + Math.round(_state.finisher.currentMs) + 'ms')
+            ? ((holdWindow === 'sweet' ? '甜区释放 @ ' : holdWindow === 'danger' ? '过压释放 @ ' : '释放 @ ') + Math.round(holdMs) + 'ms')
             : '按住开始';
     }
 

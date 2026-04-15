@@ -535,7 +535,23 @@ var LockboxAudio = (function() {
         finisherHoldPulse: function(meta) {
             var pct = (meta && meta.pct) || 0;
             var freq = 220 + pct * 660;
-            tone(freq, { type: 'sine', attackMs: 2, holdMs: 10, releaseMs: 80, peak: 0.1 + pct * 0.1 });
+            var t0 = _ctx ? _ctx.currentTime : 0;
+            tone(freq, { at: t0, type: 'sine', attackMs: 2, holdMs: 14, releaseMs: 110, peak: 0.09 + pct * 0.08, wet: 0.25, reverb: true });
+            tone(freq * 2, { at: t0 + 0.018, type: 'triangle', attackMs: 1, holdMs: 10, releaseMs: 90, peak: 0.05 + pct * 0.04, wet: 0.2, delay: true });
+        },
+        finisherSweetCue: function() {
+            var c = ctx(); if (!c) return;
+            var t0 = c.currentTime;
+            tone(988, { at: t0, type: 'triangle', attackMs: 2, holdMs: 26, releaseMs: 200, peak: 0.16, wet: 0.55, reverb: true });
+            tone(1480, { at: t0 + 0.03, type: 'sine', attackMs: 1, holdMs: 24, releaseMs: 180, peak: 0.12, wet: 0.55, reverb: true });
+            burst({ at: t0, freq: 4200, q: 8, attackMs: 1, holdMs: 20, releaseMs: 180, peak: 0.08, wet: 0.45, reverb: true });
+        },
+        finisherDanger: function() {
+            var c = ctx(); if (!c) return;
+            var t0 = c.currentTime;
+            tone(330, { at: t0, type: 'square', attackMs: 1, holdMs: 20, releaseMs: 160, peak: 0.14, sweepTo: 220, sweepMs: 180, wet: 0.28, delay: true });
+            tone(165, { at: t0 + 0.045, type: 'square', attackMs: 1, holdMs: 18, releaseMs: 180, peak: 0.12, sweepTo: 110, sweepMs: 180 });
+            burst({ at: t0, freq: 1800, q: 3, attackMs: 1, holdMs: 28, releaseMs: 170, peak: 0.08 });
         },
         finishPerfect: function() {
             var c = ctx(); if (!c) return;
