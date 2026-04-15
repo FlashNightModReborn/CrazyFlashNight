@@ -79,7 +79,9 @@ _root._bootstrap.sendReady = function():Void {
         // ServerManager 无 sendTask 方法; sendTaskToNode 是 fire-and-forget, 适合 ack 语义
         var ok:Boolean = sm.sendTaskToNode("bootstrap_ready", { attemptId: attemptId }, null);
         sm.sendServerMessage("[Bootstrap] sent bootstrap_ready attemptId=" + attemptId + " ok=" + ok);
-    } else {
+    } else if (sm != undefined) {
+        // socket 不可用, 但 ServerManager 尚在: 记 log buffer (下次 flush 失败也无害)
         sm.sendServerMessage("[Bootstrap] WARN: socket disconnected, skip ready ack");
     }
+    // sm == undefined 时静默: 没任何可用日志通道, 继续流程不阻断时间线
 };

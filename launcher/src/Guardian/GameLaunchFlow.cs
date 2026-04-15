@@ -54,6 +54,18 @@ namespace CF7Launcher.Guardian
         // per-attempt ready 缓存（attemptId → arrived？）不变式 #8
         private readonly Dictionary<string, bool> _cachedReady = new Dictionary<string, bool>();
 
+        // Flash zombie 兜底 (socket 断开 10s 后进程仍存活 → ForceExit). 按 attempt 隔离:
+        // timer 触发时快照 _currentAttemptId, 不一致说明已 retry 过, 放弃判定.
+        private System.Threading.Timer _zombieTimer;
+        private string _zombieAttemptSnapshot;
+
+        // Waiting 状态超时 (不变式 #17: _timerGen + attempt 双保险).
+        // 每次 arm 时快照 (gen, attempt); 触发时 gen 错位或 attempt 错位即 DROP.
+        private System.Threading.Timer _waitTimer;
+        private const int WAIT_CONNECT_MS = 10000;      // Flash 连 socket
+        private const int WAIT_HANDSHAKE_MS = 8000;     // 连上后 bootstrap_handshake 到达
+        private const int WAIT_GAME_READY_MS = 8000;    // embed 完后 bootstrap_ready 到达
+
         // ==================== 公共 API ====================
 
         /// <summary>状态变更事件。参数：(state, message)。</summary>
@@ -92,6 +104,7 @@ namespace CF7Launcher.Guardian
             _windowManager.OnEmbedResult += OnEmbedResult;
             _processManager.OnFlashExited += OnFlashExited;
             _socketServer.OnClientReady += OnSocketClientReady;
+            _socketServer.OnClientDisconnected += OnSocketClientDisconnected;
         }
 
         /// <summary>玩家选择 slot 后启动游戏。锁内快照 slot，后续使用局部变量。</summary>
@@ -107,6 +120,8 @@ namespace CF7Launcher.Guardian
                 _pendingSlot = slot;
                 _currentAttemptId = Guid.NewGuid().ToString("N");
                 _cachedReady.Clear();
+                CancelWaitTimerLocked();   // 新 attempt 前清旧 wait timer
+                CancelZombieTimerLocked(); // 新 attempt 前清 zombie timer
                 TransitionToSpawning();
             }
         }
@@ -141,6 +156,8 @@ namespace CF7Launcher.Guardian
             {
                 SetState(State.Resetting, "");
                 oldProcess = _currentFlashProcess;  // 锁内快照（不变式 #19 + v21-r9）
+                CancelWaitTimerLocked();    // 清 wait timer, 防 reset 期间误触
+                CancelZombieTimerLocked();  // 清 zombie timer, 防 reset 期间误杀
             }
 
             ManualResetEventSlim dcGate = new ManualResetEventSlim(false);
@@ -227,6 +244,7 @@ namespace CF7Launcher.Guardian
             if (_form != null)
                 _form.TrackFlashProcess(_currentFlashProcess);
             SetState(State.WaitingConnect, "");
+            ArmWaitTimeoutLocked(WAIT_CONNECT_MS, "socket_connect_timeout");
         }
 
         /// <summary>socket OnClientReady: WaitingConnect → WaitingHandshake。</summary>
@@ -235,13 +253,17 @@ namespace CF7Launcher.Guardian
             lock (_stateLock)
             {
                 if (_state == State.WaitingConnect)
+                {
                     SetState(State.WaitingHandshake, "");
+                    ArmWaitTimeoutLocked(WAIT_HANDSHAKE_MS, "handshake_timeout");
+                }
             }
         }
 
         /// <summary>HandleBootstrapHandshake 响应后调用（锁内）：触发异步 Embed。</summary>
         private void TransitionToEmbedding()
         {
+            CancelWaitTimerLocked();  // 清 handshake 超时; WindowManager.EmbedFlashWindow 自带 10s 内置超时
             SetState(State.Embedding, "");
             Process flash = _currentFlashProcess;
             GuardianForm form = _form;
@@ -266,6 +288,7 @@ namespace CF7Launcher.Guardian
         /// <summary>HandleBootstrapReady 命中 WaitingGameReady 时调用（锁内）。</summary>
         private void TransitionToReady()
         {
+            CancelWaitTimerLocked();  // 清 game_ready 超时
             SetState(State.Ready, "");
             RunOnUi(delegate
             {
@@ -289,7 +312,12 @@ namespace CF7Launcher.Guardian
 
         private void TransitionToError(string msg)
         {
-            lock (_stateLock) { SetState(State.Error, msg); }
+            lock (_stateLock)
+            {
+                CancelWaitTimerLocked();
+                CancelZombieTimerLocked();
+                SetState(State.Error, msg);
+            }
         }
 
         // ==================== Router handler（构造期注册）====================
@@ -355,17 +383,139 @@ namespace CF7Launcher.Guardian
                 {
                     TransitionToReady();
                 }
+                else
+                {
+                    ArmWaitTimeoutLocked(WAIT_GAME_READY_MS, "game_ready_timeout");
+                }
             }
         }
 
         private void OnFlashExited(Process exited)
         {
             LogManager.Log("[LaunchFlow] OnFlashExited pid=" + (exited != null ? exited.Id.ToString() : "null"));
+            State snapshot;
+            lock (_stateLock) { snapshot = _state; }
+            switch (snapshot)
+            {
+                case State.Idle:
+                case State.Error:
+                case State.Resetting:
+                    return;  // 已处理或未启动, 忽略
+                case State.Ready:
+                    // 玩家正常关游戏 → launcher 也退出
+                    LogManager.Log("[LaunchFlow] Flash exited in Ready state → forcing launcher exit");
+                    CancelZombieTimer();
+                    if (_form != null) _form.ForceExit();
+                    return;
+                default:
+                    // 活跃启动态 (Spawning/WaitingConnect/WaitingHandshake/Embedding/WaitingGameReady)
+                    // → TransitionToError 让 BootstrapForm 保留 Error 态供 retry
+                    CancelZombieTimer();
+                    lock (_stateLock) { TransitionToError("flash_exited"); }
+                    return;
+            }
+        }
+
+        /// <summary>
+        /// Flash socket 断开 10s 兜底: Flash Player 20 SA 偶发退出卡死, Process.Exited/HasExited 均不触发.
+        /// 只在 Ready 状态生效 (活跃启动态由 OnFlashExited + state 机制接管).
+        /// 按 _currentAttemptId 快照隔离: retry 后快照失配即放弃判定, 防误杀新 attempt.
+        /// </summary>
+        private void OnSocketClientDisconnected()
+        {
+            string attemptSnapshot;
+            State stateSnapshot;
             lock (_stateLock)
             {
-                // 当前活跃状态下 Flash 突然退出 → Error；Idle/Error/Resetting 已处理过，忽略
-                if (_state == State.Idle || _state == State.Error || _state == State.Resetting) return;
-                TransitionToError("flash_exited");
+                if (_state != State.Ready) return;  // 非 Ready 不启 zombie 兜底
+                attemptSnapshot = _currentAttemptId;
+                stateSnapshot = _state;
+                CancelZombieTimerLocked();  // 防止多次断连累积 timer
+                _zombieAttemptSnapshot = attemptSnapshot;
+                _zombieTimer = new System.Threading.Timer(ZombieTimerCallback, attemptSnapshot, 10000, System.Threading.Timeout.Infinite);
+            }
+            LogManager.Log("[LaunchFlow] socket disconnected in Ready, armed zombie timer attempt=" + attemptSnapshot);
+        }
+
+        private void ZombieTimerCallback(object state)
+        {
+            string attemptAtArm = state as string;
+            Process flashAtCheck;
+            bool shouldKill = false;
+            lock (_stateLock)
+            {
+                if (attemptAtArm != _currentAttemptId)
+                {
+                    LogManager.Log("[LaunchFlow] zombie timer stale attempt, drop");
+                    return;
+                }
+                if (_state != State.Ready)
+                {
+                    LogManager.Log("[LaunchFlow] zombie timer state changed to " + _state + ", drop");
+                    return;
+                }
+                flashAtCheck = _currentFlashProcess;
+            }
+            try
+            {
+                if (flashAtCheck != null && !flashAtCheck.HasExited)
+                {
+                    shouldKill = true;
+                }
+            }
+            catch { }
+            if (shouldKill)
+            {
+                LogManager.Log("[LaunchFlow] Flash zombie detected (socket disconnected 10s, process alive) → ForceExit");
+                if (_form != null) _form.ForceExit();
+            }
+        }
+
+        /// <summary>锁内或锁外均可调用; 锁内调用者用 CancelZombieTimerLocked 避免重入开销.</summary>
+        private void CancelZombieTimer()
+        {
+            lock (_stateLock) { CancelZombieTimerLocked(); }
+        }
+
+        private void CancelZombieTimerLocked()
+        {
+            if (_zombieTimer != null)
+            {
+                try { _zombieTimer.Dispose(); } catch { }
+                _zombieTimer = null;
+                _zombieAttemptSnapshot = null;
+            }
+        }
+
+        // ==================== Wait state timeout (不变式 #17) ====================
+
+        /// <summary>
+        /// 锁内调用. 在进入 Waiting* 状态后 arm 一次性 timer; 超时触发 TransitionToError.
+        /// 快照 (_timerGen, _currentAttemptId); 触发回调时双重校验, 错位即 DROP.
+        /// </summary>
+        private void ArmWaitTimeoutLocked(int timeoutMs, string reason)
+        {
+            CancelWaitTimerLocked();
+            int genSnap = _timerGen;
+            string attemptSnap = _currentAttemptId;
+            _waitTimer = new System.Threading.Timer(delegate(object payload)
+            {
+                lock (_stateLock)
+                {
+                    if (_timerGen != genSnap) return;           // 状态已变, stale
+                    if (_currentAttemptId != attemptSnap) return;  // attempt 已变
+                    LogManager.Log("[LaunchFlow] wait timeout: " + reason + " (gen=" + genSnap + ")");
+                    TransitionToError(reason);
+                }
+            }, null, timeoutMs, System.Threading.Timeout.Infinite);
+        }
+
+        private void CancelWaitTimerLocked()
+        {
+            if (_waitTimer != null)
+            {
+                try { _waitTimer.Dispose(); } catch { }
+                _waitTimer = null;
             }
         }
 

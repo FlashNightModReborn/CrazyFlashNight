@@ -403,29 +403,10 @@ class Program
         // 延迟注入 WindowManager 到性能决策引擎（bus-only 模式不走此路径）
         perfEngine.SetWindowManager(windowManager);
 
-        // Flash 退出兜底: 活跃状态下由 GameLaunchFlow.OnFlashExited 触发 Error; Ready 时仍退出守护进程
-        processManager.OnFlashExited += delegate(System.Diagnostics.Process exited)
-        {
-            // 旧逻辑: 无条件 ForceExit. 新逻辑: GameLaunchFlow 会接管; 这里保留作为 Ready 后的兜底
-            form.ForceExit();
-        };
-
-        // Flash 僵尸进程兜底：Socket 断连后 10s 内进程仍未退出则强制关闭
-        // Flash Player 20 SA 偶发退出卡死，Process.Exited 和 HasExited 均不触发
-        socketServer.OnClientDisconnected += delegate
-        {
-            System.Threading.Timer zombieTimer = null;
-            zombieTimer = new System.Threading.Timer(delegate
-            {
-                try { zombieTimer.Dispose(); } catch { }
-                Process fp = processManager.FlashProcess;
-                if (fp != null && !fp.HasExited)
-                {
-                    LogManager.Log("[Guardian] Flash zombie detected (socket disconnected 10s ago, process still alive) — forcing exit");
-                    form.ForceExit();
-                }
-            }, null, 10000, System.Threading.Timeout.Infinite);
-        };
+        // 11c: Flash 退出 + zombie 兜底整体迁入 GameLaunchFlow (按 state + attempt 隔离)
+        //   Ready 状态 → 触发 form.ForceExit (玩家正常关游戏)
+        //   活跃非 Ready 状态 → TransitionToError (允许 retry)
+        //   Idle/Error/Resetting → 忽略
 
         // 退出前杀 Flash + 停音频（在 DoExit 的 ExitThread 之前执行）
         form.OnKillFlash = delegate
