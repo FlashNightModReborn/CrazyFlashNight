@@ -35,7 +35,9 @@
     'crazyflasher7_saves6', 'crazyflasher7_saves7', 'crazyflasher7_saves8',
     'crazyflasher7_saves9'
   ];
-  var SLOT_NAME_RE = /^[a-zA-Z0-9_\u4e00-\u9fa5-]{1,32}$/;  // 与 ArchiveTask.SanitizeSlotName 对齐的宽松版
+  // ASCII-only 对齐 ArchiveTask.SanitizeSlotName 保留字符集; 中文名 round-trip 需 Phase 2 的
+  // slotId/displayName 双字段支持, 当前不放行以防静默折叠到规范化名
+  var SLOT_NAME_RE = /^[a-zA-Z0-9_-]{1,32}$/;
 
   var lastSlotsFromLauncher = [];
 
@@ -206,7 +208,7 @@
     var input = prompt(
       '\u8f93\u5165\u5b58\u6863\u540d\u79f0:\n'
       + '\u2022 \u7559\u7a7a\u81ea\u52a8\u9009\u7528: ' + defaultName + '\n'
-      + '\u2022 \u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e2d\u6587/_/-, 1-32 \u5b57\u7b26',
+      + '\u2022 \u4ec5\u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e0b\u5212\u7ebf/\u77ed\u6a2a\u7ebf, 1-32 \u5b57\u7b26',
       defaultName);
     if (input == null) return;  // 取消
     var slot = input.trim();
