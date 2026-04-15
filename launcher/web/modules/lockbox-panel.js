@@ -13,6 +13,7 @@ var LockboxPanel = (function() {
     var _panelOpen = false;
     var _metaDirty = true;
     var _uiFxEpoch = 0;
+    var _resultAudioTimer = 0;
 
     var DEFAULT_INIT = {
         mode: 'dev',
@@ -287,6 +288,7 @@ var LockboxPanel = (function() {
     function cleanup() {
         _panelOpen = false;
         _loadToken++;
+        clearResultAudioSchedule();
         bumpUiFxEpoch();
         stopLoop();
         _state = null;
@@ -520,6 +522,7 @@ var LockboxPanel = (function() {
     }
 
     function clearRuntimeFx() {
+        clearResultAudioSchedule();
         if (!_el) return;
         bumpUiFxEpoch();
         _el.classList.remove('fx-perfect', 'fx-good', 'fx-miss', 'fx-fail', 'fx-overload', 'fx-trace-kill', 'fx-shake');
@@ -569,6 +572,7 @@ var LockboxPanel = (function() {
                 dangerCueFired: false
             },
             result: null,
+            resultAudio: null,
             openedAt: now,
             observeStartedAt: now,
             injectStartedAt: 0,
@@ -800,6 +804,7 @@ var LockboxPanel = (function() {
         _state.resultAt = performance.now();
         _state.phase = (outcome === 'fail') ? 'FAIL' : 'RESULT';
         _state.lastStatus = buildResultCopy(payload);
+        _state.resultAudio = buildResultAudioState(payload);
         if (typeof LockboxAudio !== 'undefined') {
             LockboxAudio.stopAll(true, { keepFx: true });
             if (reason === 'trace') LockboxAudio.play('traceOverload', { outcome: outcome });
@@ -807,14 +812,7 @@ var LockboxPanel = (function() {
             else if (finisherResult === 'perfect') LockboxAudio.play('finishPerfect');
             else if (finisherResult === 'good') LockboxAudio.play('finishGood');
             else LockboxAudio.play('finishMiss');
-
-            var humTone = (outcome === 'fail' || reason === 'trace') ? 'cold' : 'warm';
-            var humDuration = finisherResult === 'perfect' ? 7.2 : outcome === 'fail' ? 5.2 : 5.6;
-            setTimeout(function() {
-                if (typeof LockboxAudio !== 'undefined' && _state && _state.result) {
-                    LockboxAudio.startOutroHum({ tone: humTone, duration: humDuration });
-                }
-            }, finisherResult === 'perfect' ? 900 : 700);
+            scheduleResultOutroHum(_state.resultAudio, _state.resultAudio.delayMs);
         }
         triggerResultFx(outcome, finisherResult, reason);
         notifyHost('result', payload);
@@ -908,9 +906,73 @@ var LockboxPanel = (function() {
         _el.style.setProperty('--trace-level', String((_state.traceValue || 0).toFixed(3)));
     }
 
+    function buildResultAudioState(payload) {
+        if (!_state || !payload) return null;
+        var delayMs = payload.finisherResult === 'perfect' ? 900 : 700;
+        var duration = payload.finisherResult === 'perfect' ? 7.2 : payload.outcome === 'fail' ? 5.2 : 5.6;
+        return {
+            tone: (payload.outcome === 'fail' || payload.reason === 'trace') ? 'cold' : 'warm',
+            duration: duration,
+            delayMs: delayMs,
+            readyAt: _state.resultAt + delayMs,
+            startedAt: 0,
+            loadToken: _loadToken
+        };
+    }
+
+    function clearResultAudioSchedule() {
+        if (_resultAudioTimer) {
+            clearTimeout(_resultAudioTimer);
+            _resultAudioTimer = 0;
+        }
+    }
+
+    function scheduleResultOutroHum(audioState, delayMs) {
+        clearResultAudioSchedule();
+        if (!audioState) return;
+        if (delayMs <= 0) {
+            syncResultAudioScene();
+            return;
+        }
+        _resultAudioTimer = setTimeout(function() {
+            _resultAudioTimer = 0;
+            syncResultAudioScene();
+        }, delayMs);
+    }
+
+    function syncResultAudioScene() {
+        if (!_state || !_state.resultAudio || typeof LockboxAudio === 'undefined' || !_panelOpen) return;
+        var audioState = _state.resultAudio;
+        if (audioState.loadToken !== _loadToken) return;
+
+        var now = performance.now();
+        if (!audioState.startedAt && now < audioState.readyAt) {
+            scheduleResultOutroHum(audioState, Math.max(0, audioState.readyAt - now));
+            return;
+        }
+
+        if (LockboxAudio.isMuted()) return;
+        LockboxAudio.resume();
+
+        var elapsedMs = audioState.startedAt
+            ? (now - audioState.startedAt)
+            : Math.max(0, now - audioState.readyAt);
+        var remainingDuration = audioState.duration - (elapsedMs / 1000);
+        if (remainingDuration <= 0.2) return;
+
+        audioState.startedAt = now;
+        LockboxAudio.startOutroHum({
+            tone: audioState.tone,
+            duration: remainingDuration
+        });
+    }
+
     function syncAudioScene() {
         if (!_state || typeof LockboxAudio === 'undefined' || LockboxAudio.isMuted()) return;
-        if (_state.result || _state.phase === 'FAIL' || _state.phase === 'RESULT') return;
+        if (_state.result || _state.phase === 'FAIL' || _state.phase === 'RESULT') {
+            syncResultAudioScene();
+            return;
+        }
         if (_state.phase === 'OBSERVE') return;
         LockboxAudio.resume();
         LockboxAudio.startAmbient();
