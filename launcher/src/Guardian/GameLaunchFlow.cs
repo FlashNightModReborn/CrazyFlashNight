@@ -54,10 +54,13 @@ namespace CF7Launcher.Guardian
         // per-attempt ready 缓存（attemptId → arrived？）不变式 #8
         private readonly Dictionary<string, bool> _cachedReady = new Dictionary<string, bool>();
 
-        // Flash zombie 兜底 (socket 断开 10s 后进程仍存活 → ForceExit). 按 attempt 隔离:
-        // timer 触发时快照 _currentAttemptId, 不一致说明已 retry 过, 放弃判定.
+        // Flash zombie 兜底 (socket 断开 10s 后进程仍存活 → ForceExit).
+        // 三层防护 (Timer.Dispose 不保证已入队回调不执行, 必须在回调内自校验):
+        //   1. _zombieGen: arm 时 ++, callback 快照; gen 错位 = 已被替换/取消, drop
+        //   2. attempt 快照: retry 后 _currentAttemptId 变, drop
+        //   3. socket HasClient 实时查: 重连成功后 socket 已重建, drop
         private System.Threading.Timer _zombieTimer;
-        private string _zombieAttemptSnapshot;
+        private int _zombieGen;
 
         // Waiting 状态超时 (不变式 #17: _timerGen + attempt 双保险).
         // 每次 arm 时快照 (gen, attempt); 触发时 gen 错位或 attempt 错位即 DROP.
@@ -434,27 +437,42 @@ namespace CF7Launcher.Guardian
         private void OnSocketClientDisconnected()
         {
             string attemptSnapshot;
-            State stateSnapshot;
+            int genSnapshot;
             lock (_stateLock)
             {
                 if (_state != State.Ready) return;  // 非 Ready 不启 zombie 兜底
                 attemptSnapshot = _currentAttemptId;
-                stateSnapshot = _state;
-                CancelZombieTimerLocked();  // 防止多次断连累积 timer
-                _zombieAttemptSnapshot = attemptSnapshot;
-                _zombieTimer = new System.Threading.Timer(ZombieTimerCallback, attemptSnapshot, 10000, System.Threading.Timeout.Infinite);
+                CancelZombieTimerLocked();  // 防多次断连累积 + 让前一轮 callback 的 gen 校验失配
+                _zombieGen++;
+                genSnapshot = _zombieGen;
+                object payload = new ZombiePayload(attemptSnapshot, genSnapshot);
+                _zombieTimer = new System.Threading.Timer(ZombieTimerCallback, payload, 10000, System.Threading.Timeout.Infinite);
             }
-            LogManager.Log("[LaunchFlow] socket disconnected in Ready, armed zombie timer attempt=" + attemptSnapshot);
+            LogManager.Log("[LaunchFlow] socket disconnected in Ready, armed zombie timer attempt="
+                + attemptSnapshot + " gen=" + genSnapshot);
+        }
+
+        private class ZombiePayload
+        {
+            public readonly string Attempt;
+            public readonly int Gen;
+            public ZombiePayload(string a, int g) { Attempt = a; Gen = g; }
         }
 
         private void ZombieTimerCallback(object state)
         {
-            string attemptAtArm = state as string;
+            ZombiePayload payload = state as ZombiePayload;
+            if (payload == null) return;
             Process flashAtCheck;
-            bool shouldKill = false;
             lock (_stateLock)
             {
-                if (attemptAtArm != _currentAttemptId)
+                // 三层校验:
+                if (payload.Gen != _zombieGen)
+                {
+                    LogManager.Log("[LaunchFlow] zombie timer stale gen (" + payload.Gen + " vs " + _zombieGen + "), drop");
+                    return;
+                }
+                if (payload.Attempt != _currentAttemptId)
                 {
                     LogManager.Log("[LaunchFlow] zombie timer stale attempt, drop");
                     return;
@@ -464,19 +482,25 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[LaunchFlow] zombie timer state changed to " + _state + ", drop");
                     return;
                 }
+                // socket 已重连 → 非 zombie, 健康会话. 顺手清掉本轮 timer 引用.
+                if (_socketServer != null && _socketServer.HasClient)
+                {
+                    LogManager.Log("[LaunchFlow] zombie timer fired but socket reconnected, drop");
+                    if (_zombieTimer != null)
+                    {
+                        try { _zombieTimer.Dispose(); } catch { }
+                        _zombieTimer = null;
+                    }
+                    return;
+                }
                 flashAtCheck = _currentFlashProcess;
             }
-            try
-            {
-                if (flashAtCheck != null && !flashAtCheck.HasExited)
-                {
-                    shouldKill = true;
-                }
-            }
+            bool shouldKill = false;
+            try { if (flashAtCheck != null && !flashAtCheck.HasExited) shouldKill = true; }
             catch { }
             if (shouldKill)
             {
-                LogManager.Log("[LaunchFlow] Flash zombie detected (socket disconnected 10s, process alive) → ForceExit");
+                LogManager.Log("[LaunchFlow] Flash zombie detected (socket disconnected 10s, process alive, no reconnect) → ForceExit");
                 if (_form != null) _form.ForceExit();
             }
         }
@@ -487,13 +511,20 @@ namespace CF7Launcher.Guardian
             lock (_stateLock) { CancelZombieTimerLocked(); }
         }
 
+        /// <summary>
+        /// 锁内调用. 不改 _zombieGen (由 arm 专用); 递增 gen 会误废将来 arm 的 callback.
+        /// Dispose 后 gen 仍当前值, 已入队的旧回调进 callback 时会看到 gen 不变但 _zombieTimer==null;
+        /// 回调自身不用 _zombieTimer 做 gate, 它靠 payload.Gen vs _zombieGen 校验 — 所以
+        /// 如果 Cancel 后没再 arm 新 timer, 旧回调 gen 等于当前 gen, 需要额外机制阻断.
+        /// 实现: 让 Cancel 也递增 gen (即 invalidation token), 新的 arm 再 ++ 一次.
+        /// </summary>
         private void CancelZombieTimerLocked()
         {
             if (_zombieTimer != null)
             {
                 try { _zombieTimer.Dispose(); } catch { }
                 _zombieTimer = null;
-                _zombieAttemptSnapshot = null;
+                _zombieGen++;  // invalidation: 已入队的旧 callback 看到 gen 错位即 drop
             }
         }
 
