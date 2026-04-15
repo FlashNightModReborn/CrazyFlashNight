@@ -24,27 +24,32 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: 22px; }
 .state-badge.running { border-color: #f0a860; color: #f0a860; }
 
 .cards { flex: 1; overflow-y: auto; display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; align-content: start; }
 .card {
   background: #222228; border: 1px solid #333;
-  border-radius: 4px; padding: 14px; display: flex; flex-direction: column;
+  border-radius: 4px; padding: 10px 12px; display: flex; flex-direction: column;
+  min-height: 110px;
 }
 .card.corrupt      { border-color: #e06e6e; background: #2a2020; }
 .card.tombstoned   { border-color: #888; background: #222; opacity: 0.75; }
 .card.inconsistent { border-color: #d08040; background: #2a2418; }
+.card.empty-slot   { border: 1px dashed #444; background: #1e1e22; opacity: 0.85; }
+.card.empty-slot:hover { border-color: #4da6ff; opacity: 1; }
 
-.card .slot { font-weight: bold; font-size: 15px; margin-bottom: 4px; }
-.card .progress { color: #bbb; font-size: 13px; min-height: 18px; margin-bottom: 4px; }
-.card .meta { color: #666; font-size: 11px; margin-bottom: 10px; }
-.card .flag { display: inline-block; font-size: 11px; padding: 2px 6px;
+.card .slot { font-weight: bold; font-size: 14px; margin-bottom: 2px; }
+.card .slot-id { color: #555; font-size: 10px; margin-bottom: 4px; font-family: Consolas, monospace; }
+.card .progress { color: #bbb; font-size: 12px; min-height: 16px; margin-bottom: 4px; }
+.card .meta { color: #666; font-size: 10px; margin-bottom: 8px; min-height: 14px; }
+.card .flag { display: inline-block; font-size: 10px; padding: 1px 5px;
   border-radius: 2px; margin-right: 4px; }
 .card .flag.corrupt      { background: #4a2020; color: #e06e6e; }
 .card .flag.tombstoned   { background: #333; color: #bbb; }
 .card .flag.inconsistent { background: #4a3a20; color: #d08040; }
+.card .flag.empty        { background: #2a2a30; color: #666; }
 
-.card-actions { margin-top: auto; display: flex; gap: 6px; }
+.card-actions { margin-top: auto; display: flex; gap: 5px; }
 .card-actions button {
-  flex: 1; padding: 6px 10px; font-size: 12px;
+  flex: 1; padding: 5px 8px; font-size: 11px;
   border: 1px solid #4da6ff; background: #2a2a30; color: #4da6ff;
   border-radius: 3px; cursor: pointer;
 }

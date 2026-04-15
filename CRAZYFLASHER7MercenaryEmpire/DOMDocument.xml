@@ -1380,9 +1380,12 @@ _root.多语言是否中文 = true;
 // 默认基础路径
 _root.baseSavePath = "crazyflasher7_saves";
 
-// Phase 1b: cf7_config SharedObject 已弃用; savePath 由 bootstrap_handshake 响应注入.
-// 在 handshake 完成前使用默认值(legacy 路径和未接入 launcher 的场景仍可工作).
-_root.savePath = _root.baseSavePath;
+// Phase 1b: cf7_config SharedObject 已弃用; savePath 由 launcher bootstrap_handshake 响应注入.
+// 仅在 handshake 未注入时退回默认 baseSavePath (独立 testMovie / 未接入 launcher 场景).
+// 注意: asLoader frame 4 在 "多语言" 前已完成 handshake, _root.savePath 非 undefined 则尊重之.
+if (_root.savePath == undefined) {
+    _root.savePath = _root.baseSavePath;
+}
 存档文本.html = false;
 存档文本._visible = false;
 写入存档._visible = false;

@@ -12,11 +12,12 @@
 
   <div class="toolbar">
     <button id="btn-refresh">刷新</button>
+    <button id="btn-new">新建角色...</button>
     <button id="btn-retry" style="display:none">重试</button>
     <span id="state-badge" class="state-badge">Idle</span>
   </div>
 
-  <div id="cards" class="cards"><div class="empty">加载中...</div></div>
+  <div id="cards" class="cards"></div>
 
   <div id="log"></div>
 </div>
@@ -26,7 +27,17 @@
   var cardsEl = document.getElementById('cards');
   var stateBadge = document.getElementById('state-badge');
   var retryBtn = document.getElementById('btn-retry');
-  var currentState = 'Idle';
+
+  // 原版 10 个预设槽位 (对齐 DOMDocument.xml 原 cf7_config 槽位命名)
+  var PRESET_SLOTS = [
+    'crazyflasher7_saves',  'crazyflasher7_saves1', 'crazyflasher7_saves2',
+    'crazyflasher7_saves3', 'crazyflasher7_saves4', 'crazyflasher7_saves5',
+    'crazyflasher7_saves6', 'crazyflasher7_saves7', 'crazyflasher7_saves8',
+    'crazyflasher7_saves9'
+  ];
+  var SLOT_NAME_RE = /^[a-zA-Z0-9_\u4e00-\u9fa5-]{1,32}$/;  // 与 ArchiveTask.SanitizeSlotName 对齐的宽松版
+
+  var lastSlotsFromLauncher = [];
 
   function logLine(cls, text) {
     var d = new Date(), ts = d.toTimeString().slice(0, 8);
@@ -58,19 +69,60 @@
     return (n / 1024).toFixed(1) + 'KB';
   }
 
+  function presetDisplayName(slot) {
+    // crazyflasher7_saves → 存档 1; crazyflasher7_savesN → 存档 N+1
+    var m = /^crazyflasher7_saves(\d*)$/.exec(slot);
+    if (!m) return slot;
+    var idx = m[1] === '' ? 0 : parseInt(m[1], 10);
+    return '\u5b58\u6863 ' + (idx + 1);
+  }
+
+  function mergeSlots(fromLauncher) {
+    // 合并预设 10 槽 + launcher 返回的其他自定义 slot. 先预设按顺序, 再自定义按字母序.
+    var byName = {};
+    for (var i = 0; i < fromLauncher.length; i++) {
+      byName[fromLauncher[i].slot] = fromLauncher[i];
+    }
+    var merged = [];
+    // 预设 10 槽
+    for (var j = 0; j < PRESET_SLOTS.length; j++) {
+      var slot = PRESET_SLOTS[j];
+      var data = byName[slot];
+      if (data) { merged.push(data); delete byName[slot]; }
+      else merged.push(emptyPlaceholder(slot, true));
+    }
+    // 剩余自定义 slot
+    var rest = [];
+    for (var key in byName) if (byName.hasOwnProperty(key)) rest.push(byName[key]);
+    rest.sort(function(a, b) { return a.slot < b.slot ? -1 : a.slot > b.slot ? 1 : 0; });
+    return merged.concat(rest);
+  }
+
+  function emptyPlaceholder(slot, isPreset) {
+    return {
+      slot: slot,
+      corrupt: false,
+      tombstoned: false,
+      inconsistent: false,
+      mainProgress: null,
+      size: 0,
+      lastModified: null,
+      __empty: true,
+      __preset: !!isPreset
+    };
+  }
+
   function renderCards(slots) {
     cardsEl.innerHTML = '';
-    if (!slots || slots.length === 0) {
-      cardsEl.innerHTML = '<div class="empty">暂无存档</div>';
-      return;
-    }
-    for (var i = 0; i < slots.length; i++) {
-      cardsEl.appendChild(renderCard(slots[i]));
+    var merged = mergeSlots(slots || []);
+    for (var i = 0; i < merged.length; i++) {
+      cardsEl.appendChild(renderCard(merged[i]));
     }
   }
 
   function renderCard(s) {
     var classes = ['card'];
+    if (s.__empty)      classes.push('empty-slot');
     if (s.corrupt)      classes.push('corrupt');
     if (s.tombstoned)   classes.push('tombstoned');
     if (s.inconsistent) classes.push('inconsistent');
@@ -78,49 +130,107 @@
     card.className = classes.join(' ');
 
     var flags = '';
-    if (s.corrupt)      flags += '<span class="flag corrupt">损坏</span>';
-    if (s.tombstoned && !s.inconsistent) flags += '<span class="flag tombstoned">已删除</span>';
-    if (s.inconsistent) flags += '<span class="flag inconsistent">不一致</span>';
+    if (s.__empty && s.__preset) flags += '<span class="flag empty">\u7a7a\u69fd\u4f4d</span>';
+    if (s.corrupt)      flags += '<span class="flag corrupt">\u635f\u574f</span>';
+    if (s.tombstoned && !s.inconsistent) flags += '<span class="flag tombstoned">\u5df2\u5220\u9664</span>';
+    if (s.inconsistent) flags += '<span class="flag inconsistent">\u4e0d\u4e00\u81f4</span>';
 
-    var meta = fmtBytes(s.size);
-    if (s.lastModified) meta += ' \u00b7 ' + s.lastModified.slice(0, 16).replace('T', ' ');
+    var meta = '';
+    if (!s.__empty) {
+      meta = fmtBytes(s.size);
+      if (s.lastModified) meta += ' \u00b7 ' + s.lastModified.slice(0, 16).replace('T', ' ');
+    }
+
+    var displayName = s.__preset ? presetDisplayName(s.slot) : s.slot;
+    var progressText;
+    if (s.__empty)        progressText = '\u2014';
+    else                  progressText = s.mainProgress || '\u2014';
 
     var actions = '';
-    if (s.tombstoned || s.inconsistent) {
-      actions = '<button class="btn-rebuild">重建</button>';
+    if (s.__empty) {
+      // 空槽位: 新建角色
+      actions = '<button class="btn-newchar">\u65b0\u5efa\u89d2\u8272</button>';
+    } else if (s.tombstoned || s.inconsistent) {
+      actions = '<button class="btn-rebuild">\u91cd\u5efa</button>';
     } else if (s.corrupt) {
-      actions = '<button disabled>无法加载</button>'
-              + '<button class="btn-delete danger">删除</button>';
+      actions = '<button disabled>\u65e0\u6cd5\u52a0\u8f7d</button>'
+              + '<button class="btn-delete danger">\u5220\u9664</button>';
     } else {
-      actions = '<button class="btn-start">开始</button>'
-              + '<button class="btn-delete danger">删除</button>';
+      actions = '<button class="btn-start">\u5f00\u59cb</button>'
+              + '<button class="btn-delete danger">\u5220\u9664</button>';
     }
 
     card.innerHTML =
-      '<div class="slot">' + escapeHtml(s.slot) + '</div>' +
-      '<div class="progress">' + escapeHtml(s.mainProgress || '—') + '</div>' +
+      '<div class="slot">' + escapeHtml(displayName) + '</div>' +
+      '<div class="slot-id">' + escapeHtml(s.slot) + '</div>' +
+      '<div class="progress">' + escapeHtml(progressText) + '</div>' +
       '<div class="meta">' + flags + meta + '</div>' +
       '<div class="card-actions">' + actions + '</div>';
 
-    var startBtn = card.querySelector('.btn-start');
-    var deleteBtn = card.querySelector('.btn-delete');
-    var rebuildBtn = card.querySelector('.btn-rebuild');
-    if (startBtn) startBtn.onclick = function() { send({ cmd: 'start_game', slot: s.slot }); };
-    if (deleteBtn) deleteBtn.onclick = function() {
-      if (confirm('确定删除存档 "' + s.slot + '" ?')) {
+    var startBtn    = card.querySelector('.btn-start');
+    var deleteBtn   = card.querySelector('.btn-delete');
+    var rebuildBtn  = card.querySelector('.btn-rebuild');
+    var newCharBtn  = card.querySelector('.btn-newchar');
+    if (startBtn)   startBtn.onclick   = function() { send({ cmd: 'start_game', slot: s.slot }); };
+    if (deleteBtn)  deleteBtn.onclick  = function() {
+      if (confirm('\u786e\u5b9a\u5220\u9664\u5b58\u6863 "' + displayName + '" ?')) {
         send({ cmd: 'delete', slot: s.slot });
       }
     };
     if (rebuildBtn) rebuildBtn.onclick = function() {
-      if (confirm('重建存档 "' + s.slot + '" (原数据将丢弃)?')) {
+      if (confirm('\u91cd\u5efa\u5b58\u6863 "' + displayName + '" (\u539f\u6570\u636e\u5c06\u4e22\u5f03)?')) {
         send({ cmd: 'rebuild', slot: s.slot });
       }
+    };
+    if (newCharBtn) newCharBtn.onclick = function() {
+      // 空槽位新建角色: 直接 start_game, Flash preload 收 slot not found 后走新建流程
+      send({ cmd: 'start_game', slot: s.slot });
     };
     return card;
   }
 
+  function pickAutoSlotName() {
+    // 找第一个空的预设槽; 全满则自动命名 custom_<timestamp>
+    var occupied = {};
+    for (var i = 0; i < lastSlotsFromLauncher.length; i++) {
+      occupied[lastSlotsFromLauncher[i].slot] = true;
+    }
+    for (var j = 0; j < PRESET_SLOTS.length; j++) {
+      if (!occupied[PRESET_SLOTS[j]]) return PRESET_SLOTS[j];
+    }
+    return 'custom_' + Date.now();
+  }
+
+  function handleNewCharacterClick() {
+    var defaultName = pickAutoSlotName();
+    var input = prompt(
+      '\u8f93\u5165\u5b58\u6863\u540d\u79f0:\n'
+      + '\u2022 \u7559\u7a7a\u81ea\u52a8\u9009\u7528: ' + defaultName + '\n'
+      + '\u2022 \u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e2d\u6587/_/-, 1-32 \u5b57\u7b26',
+      defaultName);
+    if (input == null) return;  // 取消
+    var slot = input.trim();
+    if (!slot) slot = defaultName;
+    if (!SLOT_NAME_RE.test(slot)) {
+      alert('\u5b58\u6863\u540d\u79f0\u4e0d\u5408\u6cd5: ' + slot);
+      return;
+    }
+    // 已存在检查
+    for (var k = 0; k < lastSlotsFromLauncher.length; k++) {
+      if (lastSlotsFromLauncher[k].slot === slot) {
+        var entry = lastSlotsFromLauncher[k];
+        if (entry.tombstoned) {
+          if (!confirm('\u6b64\u6863\u5df2\u5220\u9664, \u662f\u5426\u91cd\u5efa?')) return;
+          send({ cmd: 'rebuild', slot: slot }); return;
+        }
+        if (!confirm('\u5b58\u6863 "' + slot + '" \u5df2\u5b58\u5728, \u76f4\u63a5\u52a0\u8f7d?')) return;
+        send({ cmd: 'start_game', slot: slot }); return;
+      }
+    }
+    send({ cmd: 'start_game', slot: slot });
+  }
+
   function applyState(state, msg) {
-    currentState = state;
     stateBadge.textContent = state + (msg ? ': ' + msg : '');
     stateBadge.className = 'state-badge';
     if (state === 'Ready')       stateBadge.className += ' ready';
@@ -139,7 +249,8 @@
     if (msg.cmd === 'state') {
       applyState(msg.state, msg.msg);
     } else if (msg.cmd === 'list_resp') {
-      renderCards(msg.slots || []);
+      lastSlotsFromLauncher = msg.slots || [];
+      renderCards(lastSlotsFromLauncher);
     } else if (msg.cmd === 'delete_resp') {
       if (msg.ok) send({ cmd: 'list' });
       else logLine('tag-err', 'delete failed: ' + msg.error);
@@ -151,6 +262,7 @@
   });
 
   document.getElementById('btn-refresh').onclick = function() { send({ cmd: 'list' }); };
+  document.getElementById('btn-new').onclick = handleNewCharacterClick;
   retryBtn.onclick = function() { send({ cmd: 'retry' }); };
 
   logLine('tag-in', 'Bootstrap loaded');
