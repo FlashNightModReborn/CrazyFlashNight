@@ -29,9 +29,10 @@ var LockboxAudio = (function() {
         return _ctx;
     }
 
+    var MASTER_VOL = 0.32;
     function buildBus() {
         _master = _ctx.createGain();
-        _master.gain.value = 0.32;
+        _master.gain.value = _muted ? 0.0001 : MASTER_VOL;
         _master.connect(_ctx.destination);
 
         _wet = _ctx.createGain();
@@ -377,6 +378,12 @@ var LockboxAudio = (function() {
         if (_muted) {
             stopAmbient();
             stopHeartbeat();
+        }
+        if (_master && _ctx) {
+            var t = _ctx.currentTime;
+            _master.gain.cancelScheduledValues(t);
+            _master.gain.setValueAtTime(_master.gain.value, t);
+            _master.gain.linearRampToValueAtTime(_muted ? 0.0001 : MASTER_VOL, t + 0.03);
         }
     }
     function isMuted() { return _muted; }

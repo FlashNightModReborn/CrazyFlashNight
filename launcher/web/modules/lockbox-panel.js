@@ -414,6 +414,11 @@ var LockboxPanel = (function() {
 
     function loadPuzzle(request) {
         var token = ++_loadToken;
+        if (typeof LockboxAudio !== 'undefined') {
+            LockboxAudio.stopHeartbeat();
+            LockboxAudio.stopAmbient();
+        }
+        clearRuntimeFx();
         setProfileUi(request.profile, request.source);
         setBusyState('生成/加载题目中…');
         resolvePuzzle(request, token).then(function(packageData) {
@@ -476,13 +481,19 @@ var LockboxPanel = (function() {
         return exact || fallback;
     }
 
+    function clearRuntimeFx() {
+        if (!_el) return;
+        _el.classList.remove('fx-perfect', 'fx-good', 'fx-miss', 'fx-fail', 'fx-shake');
+        _el.removeAttribute('data-phase');
+    }
+
     function beginRun(packageData, request) {
         if (!packageData) return;
         if (typeof LockboxAudio !== 'undefined') {
             LockboxAudio.stopHeartbeat();
             LockboxAudio.stopAmbient();
         }
-        if (_el) _el.classList.remove('fx-perfect', 'fx-good', 'fx-miss', 'fx-fail', 'fx-shake');
+        clearRuntimeFx();
         var now = performance.now();
         _state = {
             request: LockboxCore.clone(request),
