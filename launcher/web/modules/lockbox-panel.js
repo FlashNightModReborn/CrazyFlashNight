@@ -9,6 +9,9 @@ var LockboxPanel = (function() {
     var _pointerReleaseBound = false;
     var _helpOpen = true;
     var _hudOpen = false;
+    var _loadToken = 0;
+    var _panelOpen = false;
+    var _metaDirty = true;
 
     var DEFAULT_INIT = {
         mode: 'dev',
@@ -39,6 +42,7 @@ var LockboxPanel = (function() {
                 '<div class="lockbox-header-right">',
                     '<button class="lockbox-chrome-btn" type="button" data-action="toggle-help">规则</button>',
                     '<button class="lockbox-chrome-btn" type="button" data-action="toggle-hud">调试</button>',
+                    '<button class="lockbox-chrome-btn" type="button" data-action="toggle-mute">♪ 开</button>',
                     '<div class="lockbox-phase-badge" id="lockbox-phase-badge">INIT</div>',
                     '<button class="lockbox-close-btn" type="button">×</button>',
                 '</div>',
@@ -180,6 +184,7 @@ var LockboxPanel = (function() {
         _refs.closeBtn = _el.querySelector('.lockbox-close-btn');
         _refs.helpToggle = _el.querySelector('[data-action="toggle-help"]');
         _refs.hudToggle = _el.querySelector('[data-action="toggle-hud"]');
+        _refs.muteToggle = _el.querySelector('[data-action="toggle-mute"]');
         _refs.helpPanel = _el.querySelector('#lockbox-help-panel');
         _refs.grid = _el.querySelector('#lockbox-grid');
         _refs.phaseBadge = _el.querySelector('#lockbox-phase-badge');
@@ -223,6 +228,7 @@ var LockboxPanel = (function() {
             var action = btn.getAttribute('data-action');
             if (action === 'toggle-help') toggleHelp();
             else if (action === 'toggle-hud') toggleHud();
+            else if (action === 'toggle-mute') toggleMute();
             else if (action === 'start') startInject();
             else if (action === 'submit') requestSubmit();
             else if (action === 'reroll') rerollPuzzle();
@@ -263,6 +269,7 @@ var LockboxPanel = (function() {
 
     function onOpen(el, initData) {
         var data = normalizeInitData(initData || DEFAULT_INIT);
+        _panelOpen = true;
         _helpOpen = true;
         _hudOpen = false;
         _refs.profile.value = data.profile;
@@ -271,13 +278,20 @@ var LockboxPanel = (function() {
         _refs.variant.value = String(data.variantIndex | 0);
         setProfileUi(data.profile, data.source);
         renderChromeToggles();
+        if (typeof LockboxAudio !== 'undefined') LockboxAudio.resume();
         loadPuzzle(data);
         startLoop();
     }
 
     function cleanup() {
+        _panelOpen = false;
+        _loadToken++;
         stopLoop();
         _state = null;
+        if (typeof LockboxAudio !== 'undefined') {
+            LockboxAudio.stopAmbient();
+            LockboxAudio.stopHeartbeat();
+        }
     }
 
     function closePanel() {
@@ -296,11 +310,22 @@ var LockboxPanel = (function() {
         renderChromeToggles();
     }
 
+    function toggleMute() {
+        if (typeof LockboxAudio === 'undefined') return;
+        LockboxAudio.setMuted(!LockboxAudio.isMuted());
+        renderChromeToggles();
+    }
+
     function renderChromeToggles() {
         if (_refs.helpPanel) _refs.helpPanel.classList.toggle('visible', _helpOpen);
         if (_refs.hud) _refs.hud.classList.toggle('visible', _hudOpen);
         if (_refs.helpToggle) _refs.helpToggle.textContent = _helpOpen ? '收起规则' : '规则';
         if (_refs.hudToggle) _refs.hudToggle.textContent = _hudOpen ? '收起调试' : '调试';
+        if (_refs.muteToggle) {
+            var muted = (typeof LockboxAudio !== 'undefined') && LockboxAudio.isMuted();
+            _refs.muteToggle.textContent = muted ? '♪ 关' : '♪ 开';
+            _refs.muteToggle.classList.toggle('muted', muted);
+        }
     }
 
     function normalizeInitData(initData) {
@@ -388,18 +413,22 @@ var LockboxPanel = (function() {
     }
 
     function loadPuzzle(request) {
+        var token = ++_loadToken;
         setProfileUi(request.profile, request.source);
         setBusyState('生成/加载题目中…');
-        resolvePuzzle(request).then(function(packageData) {
+        resolvePuzzle(request, token).then(function(packageData) {
+            if (token !== _loadToken || !_panelOpen) return;
             beginRun(packageData, request);
         }).catch(function(error) {
+            if (token !== _loadToken || !_panelOpen) return;
             setBusyState('题目生成失败: ' + (error && error.message ? error.message : String(error)));
         });
     }
 
-    function resolvePuzzle(request) {
+    function resolvePuzzle(request, token) {
         if (request.source === 'baked') {
             return loadBakedPool().then(function(pool) {
+                if (token !== _loadToken || !_panelOpen) return null;
                 var picked = pickBakedVariant(pool, request);
                 if (picked) {
                     request.familySeed = picked.familySeed >>> 0;
@@ -448,6 +477,12 @@ var LockboxPanel = (function() {
     }
 
     function beginRun(packageData, request) {
+        if (!packageData) return;
+        if (typeof LockboxAudio !== 'undefined') {
+            LockboxAudio.stopHeartbeat();
+            LockboxAudio.stopAmbient();
+        }
+        if (_el) _el.classList.remove('fx-perfect', 'fx-good', 'fx-miss', 'fx-fail', 'fx-shake');
         var now = performance.now();
         _state = {
             request: LockboxCore.clone(request),
@@ -521,7 +556,14 @@ var LockboxPanel = (function() {
         _state.phase = 'INJECTING';
         _state.traceStartedAt = performance.now();
         _state.injectStartedAt = _state.traceStartedAt;
+        _state.traceTickLevel = 0;
+        _state.traceCriticalFired = false;
         _state.lastStatus = 'Trace 已启动，执行注入路径。';
+        if (typeof LockboxAudio !== 'undefined') {
+            LockboxAudio.play('inject');
+            LockboxAudio.startAmbient();
+            LockboxAudio.setAmbientTension(0);
+        }
         notifyHost('start', null);
         renderAll();
     }
@@ -550,9 +592,11 @@ var LockboxPanel = (function() {
         _state.selectedCells.push(cell);
         _state.selectedMap[LockboxCore.cellKey(cell)] = true;
         _state.bufferTokens.push(token);
+        if (typeof LockboxAudio !== 'undefined') LockboxAudio.play('tapLegal', { tokenId: token });
 
         var completion = LockboxCore.evaluateBuffer(_state.bufferTokens, _state.puzzle.seqA, _state.puzzle.seqB, _state.puzzle.seqC);
         var mainSolvedNow = completion.a && completion.b;
+        var bonusGainedNow = completion.c && !_state.bonusLocked && !_state.bonusSolved;
 
         if (completion.c && !_state.bonusLocked) _state.bonusSolved = true;
         if (mainSolvedNow && !_state.mainSolved) {
@@ -561,6 +605,10 @@ var LockboxPanel = (function() {
             _state.traceAtMainSolved = _state.traceValue;
             _state.lastStatus = '主解 A/B 已完成，可立即提交或继续追 C。';
             _state.phase = 'MAIN_READY';
+            if (typeof LockboxAudio !== 'undefined') LockboxAudio.play('mainSolved');
+        } else if (bonusGainedNow) {
+            _state.lastStatus = 'Bonus C 命中，可收尾或继续优化。';
+            if (typeof LockboxAudio !== 'undefined') LockboxAudio.play('bonusSolved');
         } else if (_state.phase === 'MAIN_READY' && !_state.bonusSolved) {
             _state.lastStatus = '主解已保底，可继续贪 Bonus。';
         } else {
@@ -594,9 +642,11 @@ var LockboxPanel = (function() {
         if (_state.illegalGraceLeft > 0) {
             _state.illegalGraceLeft--;
             _state.lastStatus = '非法节点命中，但本档仍有 1 次宽限。';
+            if (typeof LockboxAudio !== 'undefined') LockboxAudio.play('illegalGrace');
         } else {
             _state.tracePenalty += _state.config.tracePulse;
             _state.lastStatus = '非法节点触发 Trace 脉冲。';
+            if (typeof LockboxAudio !== 'undefined') LockboxAudio.play('illegalPulse');
         }
         renderMetaOnly();
     }
@@ -606,6 +656,7 @@ var LockboxPanel = (function() {
         _state.phase = 'FINISHER';
         _state.traceFrozen = true;
         _state.lastStatus = 'Trace 已冻结，按住并在甜区释放。';
+        if (typeof LockboxAudio !== 'undefined') LockboxAudio.play('finisherArm');
         renderAll();
     }
 
@@ -615,6 +666,7 @@ var LockboxPanel = (function() {
         _state.finisher.currentMs = 0;
         _state.finisher.pointerId = pointerId;
         _refs.railFinisherTrack.setPointerCapture(pointerId);
+        if (typeof LockboxAudio !== 'undefined') LockboxAudio.startHeartbeat();
         renderFinisher();
     }
 
@@ -664,8 +716,35 @@ var LockboxPanel = (function() {
         _state.resultAt = performance.now();
         _state.phase = (outcome === 'fail') ? 'FAIL' : 'RESULT';
         _state.lastStatus = buildResultCopy(payload);
+        if (typeof LockboxAudio !== 'undefined') {
+            LockboxAudio.stopHeartbeat();
+            LockboxAudio.stopAmbient();
+            if (outcome === 'fail') LockboxAudio.play('fail');
+            else if (finisherResult === 'perfect') LockboxAudio.play('finishPerfect');
+            else if (finisherResult === 'good') LockboxAudio.play('finishGood');
+            else LockboxAudio.play('finishMiss');
+        }
+        triggerResultFx(outcome, finisherResult);
         notifyHost('result', payload);
         renderAll();
+    }
+
+    function triggerResultFx(outcome, finisherResult) {
+        if (!_el) return;
+        _el.classList.remove('fx-perfect', 'fx-good', 'fx-miss', 'fx-fail', 'fx-shake');
+        void _el.offsetWidth;
+        if (outcome === 'fail') {
+            _el.classList.add('fx-fail', 'fx-shake');
+        } else if (finisherResult === 'perfect') {
+            _el.classList.add('fx-perfect');
+        } else if (finisherResult === 'good') {
+            _el.classList.add('fx-good');
+        } else {
+            _el.classList.add('fx-miss');
+        }
+        setTimeout(function() {
+            if (_el) _el.classList.remove('fx-shake');
+        }, 700);
     }
 
     function computeRating(outcome, finisherResult) {
@@ -758,6 +837,7 @@ var LockboxPanel = (function() {
     function startLoop() {
         stopLoop();
         function frame(now) {
+            if (!_panelOpen) { _loopId = 0; return; }
             _loopId = requestAnimationFrame(frame);
             tick(now);
         }
@@ -778,9 +858,24 @@ var LockboxPanel = (function() {
             if (Math.abs(nextTrace - _state.traceValue) > 0.0025) changed = true;
             _state.traceValue = nextTrace;
 
+            if (typeof LockboxAudio !== 'undefined') {
+                LockboxAudio.setAmbientTension(_state.traceValue);
+                var nextLevel = Math.min(9, Math.floor(_state.traceValue * 10));
+                if (nextLevel > (_state.traceTickLevel || 0)) {
+                    _state.traceTickLevel = nextLevel;
+                    LockboxAudio.play('traceTick', { level: nextLevel });
+                }
+                if (!_state.traceCriticalFired && _state.traceValue >= 0.85) {
+                    _state.traceCriticalFired = true;
+                    LockboxAudio.play('traceCritical');
+                }
+            }
+
             if (!_state.bonusLocked && !_state.bonusSolved && _state.traceValue >= _state.config.bonusLockPct) {
                 _state.bonusLocked = true;
                 _state.lastStatus = 'Bonus 窗口已锁死，优先保住主解。';
+                if (typeof LockboxAudio !== 'undefined') LockboxAudio.play('bonusLock');
+                _metaDirty = true;
                 changed = true;
             }
 
@@ -793,6 +888,8 @@ var LockboxPanel = (function() {
 
         if (_state.phase === 'FINISHER' && _state.finisher.holding) {
             _state.finisher.currentMs = now - _state.finisher.startedAt;
+            var holdPct = LockboxCore.clamp(_state.finisher.currentMs / 900, 0, 1.3);
+            if (typeof LockboxAudio !== 'undefined') LockboxAudio.tickHeartbeat(Math.min(1, holdPct));
             if (_state.finisher.currentMs >= 1200) {
                 finishFinisherHold(true);
                 return;
@@ -800,8 +897,22 @@ var LockboxPanel = (function() {
             renderFinisher();
         }
 
-        renderMetaOnly();
-        if (changed) renderAll();
+        renderFrame();
+        if (_metaDirty) {
+            _metaDirty = false;
+            if (changed) renderAll();
+            else renderMetaOnly();
+        } else if (changed) {
+            renderAll();
+        }
+    }
+
+    function renderFrame() {
+        if (!_state) return;
+        var tracePct = Math.round(_state.traceValue * 100);
+        if (_refs.traceFill) _refs.traceFill.style.width = tracePct + '%';
+        if (_refs.traceRailFill) _refs.traceRailFill.style.height = tracePct + '%';
+        if (_refs.traceFrame) _refs.traceFrame.style.setProperty('--trace-intensity', String((_state.traceValue * 0.55).toFixed(3)));
     }
 
     function renderAll() {
@@ -822,7 +933,7 @@ var LockboxPanel = (function() {
         var html = [];
         var guideActive = !!hintInfo;
         _refs.grid.style.setProperty('--lockbox-size', _state.config.size);
-        _refs.grid.style.setProperty('--lockbox-grid-max', (_state.config.size >= 5 ? 486 : 548) + 'px');
+        _refs.grid.style.setProperty('--lockbox-grid-max', (_state.config.size >= 5 ? 380 : 460) + 'px');
         _refs.grid.style.setProperty('--lockbox-grid-vh-max', 'calc(100vh - 214px)');
         _refs.grid.className = 'lockbox-grid' + (guideActive ? ' guide-active guide-' + _state.hintMode : '');
 
@@ -911,6 +1022,7 @@ var LockboxPanel = (function() {
 
     function renderMetaOnly() {
         if (!_state) return;
+        if (_el) _el.setAttribute('data-phase', _state.phase);
         _refs.phaseBadge.textContent = _state.phase;
         _refs.axisLabel.textContent = buildAxisLabel();
         _refs.stageHint.textContent = _state.lastStatus;
@@ -982,27 +1094,55 @@ var LockboxPanel = (function() {
         return '关';
     }
 
+    function collectMinPaths() {
+        var pool = [];
+        if (_state && _state.report && _state.report.mainMinPaths && _state.report.mainMinPaths.length) {
+            pool = _state.report.mainMinPaths;
+        } else if (_state && _state.report && _state.report.canonicalMainPath) {
+            pool = [_state.report.canonicalMainPath];
+        } else if (_state && _state.puzzle && _state.puzzle.canonicalPath) {
+            pool = [_state.puzzle.canonicalPath];
+        }
+        return pool;
+    }
+
+    function pathPrefixMatches(p, picks) {
+        if (picks.length > p.length) return false;
+        for (var i = 0; i < picks.length; i++) {
+            if (picks[i].r !== p[i].r || picks[i].c !== p[i].c) return false;
+        }
+        return true;
+    }
+
     function getHintInfo() {
-        if (!_state || _state.hintMode === 'off' || !_state.puzzle || !_state.puzzle.canonicalPath) return null;
+        if (!_state || _state.hintMode === 'off') return null;
         if (_state.phase === 'FAIL' || _state.phase === 'RESULT') return null;
 
-        var path = _state.puzzle.canonicalPath;
-        var prefixMatches = true;
-        var i;
-        for (i = 0; i < _state.selectedCells.length && i < path.length; i++) {
-            if (_state.selectedCells[i].r !== path[i].r || _state.selectedCells[i].c !== path[i].c) {
-                prefixMatches = false;
-                break;
-            }
+        var pool = collectMinPaths();
+        if (!pool.length) return null;
+
+        var picks = _state.selectedCells;
+        var viable = [];
+        for (var k = 0; k < pool.length; k++) {
+            if (pathPrefixMatches(pool[k], picks)) viable.push(pool[k]);
         }
 
-        var startIndex = prefixMatches ? _state.selectedCells.length : 0;
+        var reset = false;
+        var path = null;
+        if (viable.length) {
+            path = viable[0];
+        } else {
+            reset = true;
+            path = pool[0];
+        }
+
+        var startIndex = reset ? 0 : picks.length;
         if (startIndex >= path.length) return null;
 
         var hinted = {};
         var steps = {};
         var nextKey = null;
-        for (i = startIndex; i < path.length; i++) {
+        for (var i = startIndex; i < path.length; i++) {
             var key = LockboxCore.cellKey(path[i]);
             if (!nextKey) nextKey = key;
             hinted[key] = true;
@@ -1014,9 +1154,11 @@ var LockboxPanel = (function() {
             hinted: hinted,
             nextKey: nextKey,
             steps: steps,
-            reset: !prefixMatches,
+            reset: reset,
             nextCell: path[startIndex],
-            remaining: path.length - startIndex
+            remaining: path.length - startIndex,
+            viableCount: viable.length,
+            totalPaths: pool.length
         };
     }
 
@@ -1028,7 +1170,14 @@ var LockboxPanel = (function() {
         var nextCell = hintInfo.nextCell;
         var tokenId = nextCell ? _state.puzzle.matrix[nextCell.r][nextCell.c] : null;
         var tokenCode = (tokenId !== null && LockboxCore.TOKEN_SPECS[tokenId]) ? LockboxCore.TOKEN_SPECS[tokenId].code : '--';
-        var prefix = hintInfo.reset ? '当前走法偏离参考链路；' : '';
+        var prefix;
+        if (hintInfo.reset) {
+            prefix = '当前走法已脱离所有最短主解（' + hintInfo.totalPaths + ' 条），回退到首选路径；';
+        } else if (hintInfo.viableCount < hintInfo.totalPaths) {
+            prefix = '仍在 ' + hintInfo.viableCount + '/' + hintInfo.totalPaths + ' 条最短主解上；';
+        } else {
+            prefix = '';
+        }
 
         if (_state.hintMode === 'next') {
             return prefix + '下一步：第 ' + (nextCell.r + 1) + ' 行 第 ' + (nextCell.c + 1) + ' 列 / ' + tokenCode;

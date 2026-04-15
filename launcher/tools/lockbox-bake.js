@@ -25,16 +25,17 @@ function percentile(values, pct) {
     return sorted[index];
 }
 
-function runFuzz(profileId, count) {
+function runFuzz(profileId, count, variantSpan) {
     var attempts = [];
     var accepted = 0;
     var bonusShareSum = 0;
     var mainMinSum = 0;
     var entryStartSum = 0;
+    var span = Math.max(1, variantSpan | 0);
 
     for (var i = 0; i < count; i++) {
         var familySeed = core.mixSeed(0x5eed1234, i + profileId.length * 97);
-        var variantIndex = i % 3;
+        var variantIndex = i % span;
         var generated = generator.generatePuzzle(profileId, familySeed, variantIndex, { maxAttempts: 320 });
         attempts.push(generated.puzzle.attemptCount || 0);
         if (generated.puzzle.accepted !== false) accepted++;
@@ -87,7 +88,7 @@ function main() {
     var summaries = [];
     for (var i = 0; i < profiles.length; i++) {
         console.log('[lockbox-bake] fuzz -> ' + profiles[i]);
-        var summary = runFuzz(profiles[i], seedCount);
+        var summary = runFuzz(profiles[i], seedCount, variantsPerFamily);
         summaries.push(summary);
         console.log(JSON.stringify(summary));
     }

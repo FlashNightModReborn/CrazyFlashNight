@@ -988,6 +988,479 @@
         width:100%;
     }
 }
+
+/* ═══════════════════════════════════════════════════════
+   LOCKBOX · CYBERPUNK 2077 OVERRIDES
+   Harsh yellow stripes, scanlines, bracket corners, RGB split.
+   ═══════════════════════════════════════════════════════ */
+
+@keyframes lb-scan {
+    0%   { transform:translateY(-100%); }
+    100% { transform:translateY(100%); }
+}
+@keyframes lb-glitch-x {
+    0%,100% { transform:translate(0,0); }
+    20%     { transform:translate(-1px,0); }
+    40%     { transform:translate(1px,-1px); }
+    60%     { transform:translate(-1px,1px); }
+    80%     { transform:translate(1px,0); }
+}
+@keyframes lb-pulse-next {
+    0%,100% { box-shadow:0 0 0 0 rgba(252,238,9,0.75), inset 0 0 0 1px #fcee0a; }
+    50%     { box-shadow:0 0 16px 4px rgba(252,238,9,0.55), inset 0 0 0 2px #fcee0a; }
+}
+@keyframes lb-marquee {
+    0%   { background-position:0 0; }
+    100% { background-position:48px 0; }
+}
+@keyframes lb-alert-blink {
+    0%,60%,100% { opacity:1; }
+    65%,80%     { opacity:0.35; }
+}
+
+.lockbox-panel {
+    background:
+        repeating-linear-gradient(0deg, rgba(0,240,255,0.02) 0 1px, transparent 1px 3px),
+        radial-gradient(circle at 12% 12%, rgba(0, 240, 255, 0.1), transparent 32%),
+        radial-gradient(circle at 88% 18%, rgba(252, 238, 9, 0.08), transparent 28%),
+        linear-gradient(180deg, rgba(7, 10, 16, 0.98), rgba(5, 7, 12, 0.98));
+    border:1px solid rgba(252,238,9,0.18);
+    clip-path:polygon(
+        0 14px, 14px 0,
+        calc(100% - 40px) 0, calc(100% - 34px) 6px, calc(100% - 6px) 6px, 100% 14px,
+        100% calc(100% - 14px), calc(100% - 14px) 100%,
+        40px 100%, 34px calc(100% - 6px), 6px calc(100% - 6px), 0 calc(100% - 14px)
+    );
+    box-shadow:
+        0 0 0 1px rgba(252,238,9,0.05),
+        0 0 32px rgba(0,240,255,0.1),
+        inset 0 0 120px rgba(252,238,9,0.02);
+}
+.lockbox-panel::before {
+    content:"";
+    position:absolute; inset:0;
+    pointer-events:none;
+    background:linear-gradient(180deg, transparent 0%, rgba(0,240,255,0.06) 50%, transparent 100%);
+    height:18%; opacity:0.45; mix-blend-mode:screen;
+    animation:lb-scan 6s linear infinite;
+}
+.lockbox-panel::after {
+    content:"// HIGH-SEC CRACKER · V3.77 · CHIPPING //  // HIGH-SEC CRACKER · V3.77 · CHIPPING //  ";
+    position:absolute; top:0; left:0; right:0; height:18px;
+    font-family:"Consolas",monospace; font-size:10px; letter-spacing:4px;
+    color:#0a0a0a; background:
+        repeating-linear-gradient(-45deg, #fcee09 0 8px, #1a1a00 8px 16px);
+    padding:3px 18px; overflow:hidden; white-space:nowrap;
+    text-shadow:0 0 2px rgba(0,0,0,0.6); font-weight:bold;
+    animation:lb-marquee 2.4s linear infinite;
+    pointer-events:none;
+}
+
+.lockbox-header { padding-top:26px; background:linear-gradient(90deg, rgba(252,238,9,0.08), transparent 50%); border-bottom-color:rgba(252,238,9,0.24); }
+.lockbox-kicker { color:#fcee09; font-weight:bold; }
+.lockbox-title {
+    color:#fcee09; text-shadow:1px 0 0 rgba(255,0,60,0.55), -1px 0 0 rgba(0,240,255,0.55);
+    letter-spacing:3px; font-size:19px;
+}
+.lockbox-panel:hover .lockbox-title { animation:lb-glitch-x 0.8s steps(1) infinite; }
+
+.lockbox-chrome-btn {
+    border-color:rgba(252,238,9,0.25); color:#fcee09;
+    background:rgba(252,238,9,0.04);
+    clip-path:polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+}
+.lockbox-chrome-btn:hover { background:rgba(252,238,9,0.14); border-color:#fcee09; box-shadow:0 0 8px rgba(252,238,9,0.28); }
+.lockbox-chrome-btn.muted { color:var(--cp-dim); border-color:rgba(120,120,140,0.3); background:transparent; }
+.lockbox-phase-badge {
+    background:#fcee09; color:#0a0a0a; border:none; font-weight:bold;
+    clip-path:polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+    padding:4px 14px;
+}
+.lockbox-close-btn {
+    color:#ff003c; border-color:rgba(255,0,60,0.4);
+    clip-path:polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+
+.lockbox-help-card {
+    border:1px solid rgba(252,238,9,0.3);
+    background:
+        repeating-linear-gradient(135deg, rgba(252,238,9,0.02) 0 2px, transparent 2px 6px),
+        rgba(8,10,16,0.96);
+    clip-path:polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px));
+    box-shadow:0 0 24px rgba(252,238,9,0.1), inset 0 0 60px rgba(252,238,9,0.02);
+}
+.lockbox-help-title { color:#fcee09; text-shadow:0 0 8px rgba(252,238,9,0.35); }
+.lockbox-help-item { border-color:rgba(252,238,9,0.16); background:rgba(252,238,9,0.03); }
+.lockbox-help-item b { color:#fcee09; }
+
+.lockbox-grid-shell {
+    background:
+        linear-gradient(180deg, rgba(252,238,9,0.03), transparent 40%),
+        radial-gradient(ellipse at center, rgba(0,240,255,0.08), transparent 70%);
+    border:1px dashed rgba(252,238,9,0.18);
+}
+.lockbox-trace-frame {
+    border:1px solid rgba(252,238,9,0.22);
+    background:
+        linear-gradient(var(--trace-intensity, 0)*1, rgba(255,0,60,0.08), transparent);
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,0.6), 0 0 calc(var(--trace-intensity, 0) * 40px) rgba(255,0,60,0.4);
+}
+.lockbox-trace-frame.frozen { border-color:#00f0ff; box-shadow:0 0 18px rgba(0,240,255,0.45), inset 0 0 0 1px rgba(0,240,255,0.5); }
+.lockbox-trace-frame.bonus-locked { animation:lb-alert-blink 1.6s ease-in-out infinite; }
+
+.lockbox-cell {
+    background:rgba(10,16,22,0.85);
+    border:1px solid rgba(0,240,255,0.22);
+    clip-path:polygon(0 6px, 6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px));
+    transition:transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s;
+    position:relative;
+}
+.lockbox-cell::before, .lockbox-cell::after {
+    content:""; position:absolute; width:10px; height:10px; pointer-events:none;
+    border:1px solid rgba(252,238,9,0.4);
+}
+.lockbox-cell::before { top:3px; left:3px; border-right:none; border-bottom:none; }
+.lockbox-cell::after { bottom:3px; right:3px; border-left:none; border-top:none; }
+.lockbox-cell.legal {
+    border-color:#00f0ff;
+    box-shadow:0 0 10px rgba(0,240,255,0.35), inset 0 0 14px rgba(0,240,255,0.1);
+}
+.lockbox-cell.entry {
+    border-color:#fcee09; background:rgba(252,238,9,0.05);
+    box-shadow:inset 0 2px 0 0 #fcee09;
+}
+.lockbox-cell.selected {
+    border-color:#fcee09; background:rgba(252,238,9,0.14);
+    box-shadow:0 0 14px rgba(252,238,9,0.45), inset 0 0 16px rgba(252,238,9,0.18);
+    transform:translateY(-1px);
+}
+.lockbox-cell.selected::before, .lockbox-cell.selected::after { border-color:#fcee09; }
+.lockbox-cell.hint-next { animation:lb-pulse-next 1.2s ease-in-out infinite; border-color:#fcee09; }
+.lockbox-cell.disabled { opacity:0.35; filter:saturate(0.4); }
+.lockbox-cell.guide-muted { opacity:0.28; }
+
+.lockbox-hint-badge {
+    background:#fcee09; color:#0a0a0a; font-weight:bold;
+    clip-path:polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%);
+    padding:1px 6px; font-size:10px; letter-spacing:1px;
+}
+.lockbox-hint-badge.next { background:#ff003c; color:#fff; box-shadow:0 0 8px rgba(255,0,60,0.6); }
+
+.lockbox-buffer-slot {
+    background:rgba(10,16,22,0.9);
+    border:1px solid rgba(0,240,255,0.22);
+    clip-path:polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+}
+.lockbox-buffer-slot.filled {
+    border-color:#fcee09; background:rgba(252,238,9,0.08);
+    box-shadow:inset 0 0 12px rgba(252,238,9,0.25);
+}
+.lockbox-buffer-slot.empty { color:rgba(0,240,255,0.3); }
+
+.lockbox-seq-row {
+    border:1px solid rgba(0,240,255,0.18); background:rgba(10,14,22,0.8);
+    clip-path:polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+}
+.lockbox-seq-row.done {
+    border-color:#fcee09; background:rgba(252,238,9,0.08);
+    box-shadow:0 0 12px rgba(252,238,9,0.2);
+}
+.lockbox-seq-row.locked {
+    border-color:#ff003c;
+    background:
+        repeating-linear-gradient(-45deg, rgba(255,0,60,0.08) 0 4px, transparent 4px 10px),
+        rgba(255,0,60,0.04);
+}
+.lockbox-seq-label {
+    background:#fcee09; color:#0a0a0a; font-weight:bold;
+    clip-path:polygon(0 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+}
+.lockbox-seq-row.done .lockbox-seq-label { background:#00f0ff; }
+.lockbox-seq-row.locked .lockbox-seq-label { background:#ff003c; color:#fff; }
+.lockbox-seq-state { color:var(--cp-dim); letter-spacing:2px; font-weight:bold; }
+.lockbox-seq-row.done .lockbox-seq-state { color:#fcee09; text-shadow:0 0 6px rgba(252,238,9,0.6); }
+.lockbox-seq-row.locked .lockbox-seq-state { color:#ff003c; }
+
+.lockbox-trace-bar {
+    background:
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.7) 0 2px, transparent 2px 6px),
+        rgba(10,14,22,0.9);
+    border:1px solid rgba(252,238,9,0.28);
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+}
+.lockbox-trace-fill {
+    background:linear-gradient(90deg, #00f0ff, #fcee09 68%, #ff003c 92%);
+    box-shadow:0 0 12px rgba(252,238,9,0.45);
+}
+.lockbox-trace-rail {
+    border:1px solid rgba(252,238,9,0.2);
+    background:rgba(10,14,22,0.85);
+}
+.lockbox-trace-rail-fill {
+    background:linear-gradient(0deg, #00f0ff, #fcee09 68%, #ff003c 92%);
+}
+.lockbox-trace-module {
+    border:1px solid rgba(0,240,255,0.22); background:rgba(8,12,18,0.85);
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+    font-family:"Consolas",monospace;
+}
+.lockbox-trace-module.hot    { border-color:#ff003c; box-shadow:0 0 10px rgba(255,0,60,0.4); color:#ff003c; }
+.lockbox-trace-module.warn   { border-color:#fcee09; color:#fcee09; }
+.lockbox-trace-module.safe   { border-color:#00f0ff; color:#00f0ff; }
+.lockbox-trace-module.frozen { border-color:#00f0ff; background:rgba(0,240,255,0.1); color:#00f0ff; }
+
+.lockbox-btn-primary {
+    background:#fcee09; color:#0a0a0a; border:none; font-weight:bold;
+    clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    text-shadow:none;
+}
+.lockbox-btn-primary:hover:not(:disabled) { background:#fff55a; box-shadow:0 0 14px rgba(252,238,9,0.6); }
+.lockbox-btn-accent {
+    background:#ff003c; color:#fff; border:none; font-weight:bold;
+    clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.lockbox-btn-accent:hover:not(:disabled) { background:#ff3060; box-shadow:0 0 14px rgba(255,0,60,0.55); }
+
+.lockbox-result-card.visible {
+    border:1px solid #fcee09;
+    background:
+        repeating-linear-gradient(135deg, rgba(252,238,9,0.03) 0 3px, transparent 3px 10px),
+        rgba(8,10,16,0.96);
+    clip-path:polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px));
+    box-shadow:0 0 24px rgba(252,238,9,0.25);
+    animation:lb-glitch-x 0.4s steps(1) 2;
+}
+.lockbox-result-card.fail {
+    border-color:#ff003c;
+    background:
+        repeating-linear-gradient(-45deg, rgba(255,0,60,0.08) 0 4px, transparent 4px 12px),
+        rgba(20,0,6,0.9);
+    box-shadow:0 0 24px rgba(255,0,60,0.4);
+}
+.lockbox-result-card.partial_success { border-color:#ff8a00; box-shadow:0 0 22px rgba(255,138,0,0.35); }
+.lockbox-result-title {
+    color:#fcee09; letter-spacing:4px; font-size:22px;
+    text-shadow:1px 0 0 rgba(255,0,60,0.6), -1px 0 0 rgba(0,240,255,0.6);
+}
+.lockbox-result-card.fail .lockbox-result-title { color:#ff003c; }
+.lockbox-result-rating { background:#fcee09; color:#0a0a0a; font-weight:bold; padding:2px 10px; clip-path:polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%); }
+
+.lockbox-rail-finisher-track {
+    border:1px solid #fcee09;
+    background:
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.6) 0 2px, transparent 2px 6px),
+        rgba(10,14,22,0.9);
+}
+.lockbox-rail-finisher-zone.perfect { background:rgba(0,240,255,0.35); box-shadow:inset 0 0 12px rgba(0,240,255,0.5); }
+.lockbox-rail-finisher-zone.good-low,
+.lockbox-rail-finisher-zone.good-high { background:rgba(252,238,9,0.28); }
+.lockbox-rail-finisher-progress { background:linear-gradient(0deg, #fcee09, #ff003c); box-shadow:0 0 12px rgba(252,238,9,0.6); }
+
+.lockbox-side-section {
+    border:1px solid rgba(252,238,9,0.18);
+    background:
+        linear-gradient(180deg, rgba(252,238,9,0.03), transparent 60%),
+        rgba(8,10,16,0.8);
+    clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.lockbox-side-title { color:#fcee09; letter-spacing:3px; }
+.lockbox-side-title::before { content:"▌ "; color:#fcee09; }
+
+.lockbox-hud {
+    border:1px solid rgba(255,0,60,0.24);
+    background:
+        repeating-linear-gradient(-45deg, rgba(255,0,60,0.03) 0 2px, transparent 2px 8px),
+        rgba(12,6,10,0.92);
+}
+
+/* ═══════════════════════════════════════════════════════
+   LOCKBOX · CLIMAX FX (result burst, shake, CRT vignette,
+   finisher charge rings, trace critical flash, guide arrow)
+   ═══════════════════════════════════════════════════════ */
+
+@keyframes lb-result-flash {
+    0%   { opacity:0; transform:scale(0.4); }
+    35%  { opacity:1; }
+    100% { opacity:0; transform:scale(1.8); }
+}
+@keyframes lb-shake {
+    0%,100% { transform:translate(0,0); }
+    10%     { transform:translate(-6px,2px) skewX(-0.8deg); }
+    20%     { transform:translate(5px,-3px) skewX(0.6deg); }
+    30%     { transform:translate(-4px,3px); }
+    45%     { transform:translate(3px,-2px); }
+    60%     { transform:translate(-2px,1px); }
+    75%     { transform:translate(2px,-1px); }
+}
+@keyframes lb-charge-ring {
+    0%   { transform:translate(-50%,-50%) scale(0.6); opacity:0; }
+    30%  { opacity:0.9; }
+    100% { transform:translate(-50%,-50%) scale(1.9); opacity:0; }
+}
+@keyframes lb-critical-pulse {
+    0%,100% { box-shadow:inset 0 0 0 0 rgba(255,0,60,0.0); }
+    50%     { box-shadow:inset 0 0 64px 12px rgba(255,0,60,0.35); }
+}
+@keyframes lb-trace-danger-edge {
+    0%,100% { opacity:0.0; }
+    50%     { opacity:0.6; }
+}
+@keyframes lb-perfect-corona {
+    0%   { opacity:0; transform:scale(0.6); filter:blur(6px); }
+    25%  { opacity:1; filter:blur(0); }
+    100% { opacity:0; transform:scale(2.4); filter:blur(8px); }
+}
+@keyframes lb-sparkle-rotate {
+    from { transform:translate(-50%,-50%) rotate(0deg); }
+    to   { transform:translate(-50%,-50%) rotate(360deg); }
+}
+
+/* CRT vignette corners — passive on panel */
+.lockbox-panel .lockbox-main::before {
+    content:"";
+    position:absolute; inset:0; pointer-events:none; z-index:20;
+    box-shadow:inset 0 0 120px rgba(0,0,0,0.55);
+    mix-blend-mode:multiply;
+}
+.lockbox-main { position:relative; }
+
+/* Trace danger — red edge fade-in as trace ramps (driven via --trace-intensity) */
+.lockbox-trace-frame::after {
+    content:"";
+    position:absolute; inset:0; pointer-events:none;
+    box-shadow:inset 0 0 60px calc(var(--trace-intensity, 0) * 40px) rgba(255,0,60,0.55);
+    opacity:calc(var(--trace-intensity, 0) * 1.6);
+    transition:opacity 0.18s linear;
+}
+.lockbox-trace-frame.bonus-locked { animation:lb-critical-pulse 1.2s ease-in-out infinite; }
+
+/* Finisher charge rings — pulsing while holding */
+.lockbox-rail-finisher.visible { position:relative; }
+.lockbox-rail-finisher.visible::before,
+.lockbox-rail-finisher.visible::after {
+    content:"";
+    position:absolute;
+    left:50%; top:50%;
+    width:82px; height:82px;
+    border:2px solid #fcee09;
+    border-radius:50%;
+    transform:translate(-50%,-50%) scale(0.6);
+    pointer-events:none;
+    opacity:0;
+    box-shadow:0 0 14px rgba(252,238,9,0.55);
+    animation:lb-charge-ring 1.4s ease-out infinite;
+}
+.lockbox-rail-finisher.visible::after { animation-delay:0.7s; border-color:#00f0ff; box-shadow:0 0 14px rgba(0,240,255,0.55); }
+
+/* Result climax overlays — full-panel flash bursts */
+.lockbox-panel.fx-perfect::before,
+.lockbox-panel.fx-good::before,
+.lockbox-panel.fx-miss::before,
+.lockbox-panel.fx-fail::before { animation:none; }
+.lockbox-panel.fx-perfect { box-shadow:0 0 80px rgba(252,238,9,0.4), inset 0 0 120px rgba(0,240,255,0.12); }
+.lockbox-panel.fx-fail    { box-shadow:0 0 80px rgba(255,0,60,0.55), inset 0 0 140px rgba(255,0,60,0.18); }
+
+.lockbox-panel.fx-shake .lockbox-main { animation:lb-shake 0.65s cubic-bezier(.36,.07,.19,.97) 1; }
+
+.lockbox-panel.fx-perfect .lockbox-result-card.visible::before,
+.lockbox-panel.fx-good .lockbox-result-card.visible::before,
+.lockbox-panel.fx-miss .lockbox-result-card.visible::before,
+.lockbox-panel.fx-fail .lockbox-result-card.visible::before {
+    content:"";
+    position:absolute; inset:-24px; pointer-events:none;
+    border-radius:50%;
+    animation:lb-result-flash 0.9s ease-out 1;
+    transform-origin:center;
+}
+.lockbox-panel.fx-perfect .lockbox-result-card.visible::before {
+    background:radial-gradient(circle, rgba(252,238,9,0.85), rgba(0,240,255,0.6) 40%, transparent 70%);
+    box-shadow:0 0 90px rgba(252,238,9,0.8);
+}
+.lockbox-panel.fx-good .lockbox-result-card.visible::before {
+    background:radial-gradient(circle, rgba(0,240,255,0.75), transparent 65%);
+}
+.lockbox-panel.fx-miss .lockbox-result-card.visible::before {
+    background:radial-gradient(circle, rgba(255,138,0,0.6), transparent 70%);
+}
+.lockbox-panel.fx-fail .lockbox-result-card.visible::before {
+    background:radial-gradient(circle, rgba(255,0,60,0.85), transparent 70%);
+    animation:lb-result-flash 1.2s ease-out 1;
+}
+
+/* Perfect corona + sparkle ring around the result card */
+.lockbox-panel.fx-perfect .lockbox-result-card.visible::after {
+    content:"";
+    position:absolute; left:50%; top:50%;
+    width:420px; height:420px;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+    background:
+        conic-gradient(from 0deg,
+            transparent 0 10deg, rgba(252,238,9,0.9) 10deg 14deg, transparent 14deg 90deg,
+            transparent 90deg 100deg, rgba(0,240,255,0.9) 100deg 104deg, transparent 104deg 180deg,
+            transparent 180deg 190deg, rgba(252,238,9,0.9) 190deg 194deg, transparent 194deg 270deg,
+            transparent 270deg 280deg, rgba(0,240,255,0.9) 280deg 284deg, transparent 284deg 360deg);
+    border-radius:50%;
+    filter:blur(1.5px);
+    animation:lb-sparkle-rotate 2.4s linear 1, lb-perfect-corona 1.4s ease-out 1;
+    opacity:0;
+}
+
+/* Inject-phase active glow on grid shell */
+.lockbox-panel .lockbox-grid-shell {
+    transition:box-shadow 0.4s ease;
+}
+.lockbox-panel[data-phase="INJECTING"] .lockbox-grid-shell,
+.lockbox-panel[data-phase="MAIN_READY"] .lockbox-grid-shell {
+    box-shadow:
+        inset 0 0 60px rgba(0,240,255,0.08),
+        0 0 24px rgba(0,240,255,0.15);
+}
+.lockbox-panel[data-phase="FINISHER"] .lockbox-grid-shell {
+    box-shadow:
+        inset 0 0 80px rgba(252,238,9,0.12),
+        0 0 32px rgba(252,238,9,0.25);
+}
+.lockbox-panel[data-phase="FAIL"] .lockbox-grid-shell {
+    box-shadow:
+        inset 0 0 80px rgba(255,0,60,0.18),
+        0 0 24px rgba(255,0,60,0.25);
+    border-color:rgba(255,0,60,0.35);
+}
+
+/* Phase badge color shift per phase */
+.lockbox-panel[data-phase="OBSERVE"]  .lockbox-phase-badge { background:#00f0ff; color:#0a0a0a; }
+.lockbox-panel[data-phase="INJECTING"] .lockbox-phase-badge { background:#fcee09; color:#0a0a0a; animation:lb-alert-blink 1.6s ease-in-out infinite; }
+.lockbox-panel[data-phase="MAIN_READY"] .lockbox-phase-badge { background:#8cff6a; color:#0a0a0a; }
+.lockbox-panel[data-phase="FINISHER"]  .lockbox-phase-badge { background:#ff8a00; color:#0a0a0a; animation:lb-alert-blink 0.6s ease-in-out infinite; }
+.lockbox-panel[data-phase="RESULT"]    .lockbox-phase-badge { background:#fcee09; color:#0a0a0a; }
+.lockbox-panel[data-phase="FAIL"]      .lockbox-phase-badge { background:#ff003c; color:#fff; }
+
+/* Layout tightening: let grid shrink and give right column more room.
+   Rails 60→56, grid shrinks (380 @ elite / 460 @ standard via panel.js),
+   side pane grows from 228 → 252-300px so sequences/buffer breathe. */
+.lockbox-main {
+    grid-template-columns:minmax(0, 1fr) minmax(252px, 300px);
+    gap:10px;
+}
+.lockbox-grid-shell {
+    grid-template-columns:56px minmax(0, 1fr) 56px;
+    gap:6px 8px;
+    padding:8px 6px;
+    flex:1 1 auto;
+    min-width:0;
+    width:100%;
+}
+.lockbox-grid-pane { min-width:0; }
+.lockbox-trace-rail { padding:6px 4px; }
+.lockbox-trace-rail-title { font-size:10px; letter-spacing:2px; }
+.lockbox-trace-module { padding:5px 6px; font-size:10px; }
+.lockbox-trace-module b { font-size:11px; }
+
+@media (max-width: 900px) {
+    .lockbox-main { grid-template-columns:1fr; }
+}
+
 .kshop-claim-btn {
     background:rgba(0,240,255,0.06); border:1px solid rgba(0,240,255,0.2);
     color:var(--cp-cyan); padding:3px 12px; cursor:pointer; margin-left:8px;

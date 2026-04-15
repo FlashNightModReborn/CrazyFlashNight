@@ -30,11 +30,35 @@
             routeTightness: 0,
             canonicalMainPath: null,
             canonicalFullPath: null,
+            mainMinPaths: [],
             exploredStates: 0,
             firstSolveAtPick: null
         };
 
-        function visit(cell, path, buffer, used, prevMainSolved, prevFullSolved) {
+        var used = {};
+        var path = [];
+        var buffer = [];
+
+        function clonePath(p) {
+            var out = [];
+            for (var i = 0; i < p.length; i++) out.push({ r: p[i].r, c: p[i].c });
+            return out;
+        }
+
+        function recordMainPath(len, p) {
+            if (report.minMainLen === null || len < report.minMainLen) {
+                report.minMainLen = len;
+                report.mainSolutionCountMinLen = 1;
+                report.canonicalMainPath = clonePath(p);
+                report.mainMinPaths = [clonePath(p)];
+                report.firstSolveAtPick = len;
+            } else if (len === report.minMainLen) {
+                report.mainSolutionCountMinLen++;
+                if (report.mainMinPaths.length < 64) report.mainMinPaths.push(clonePath(p));
+            }
+        }
+
+        function visit(cell, prevMainSolved, prevFullSolved) {
             report.exploredStates++;
 
             var completion = core.evaluateBuffer(buffer, seqA, seqB, seqC);
@@ -45,19 +69,12 @@
 
             if (mainSolved && !prevMainSolved) {
                 report.mainSolutionCount++;
-                if (report.minMainLen === null || buffer.length < report.minMainLen) {
-                    report.minMainLen = buffer.length;
-                    report.mainSolutionCountMinLen = 1;
-                    report.canonicalMainPath = path.slice();
-                    report.firstSolveAtPick = buffer.length;
-                } else if (buffer.length === report.minMainLen) {
-                    report.mainSolutionCountMinLen++;
-                }
+                recordMainPath(buffer.length, path);
             }
 
             if (fullSolved && !prevFullSolved) {
                 report.fullSolutionCount++;
-                if (!report.canonicalFullPath) report.canonicalFullPath = path.slice();
+                if (!report.canonicalFullPath) report.canonicalFullPath = clonePath(path);
             }
 
             if (buffer.length >= config.bufferCap) {
@@ -76,12 +93,14 @@
             var childMainFlags = [];
             for (var j = 0; j < legal.length; j++) {
                 var nextCell = legal[j];
-                var nextUsed = {};
-                for (var key in used) nextUsed[key] = true;
-                nextUsed[core.cellKey(nextCell)] = true;
-                var nextBuffer = buffer.concat([matrix[nextCell.r][nextCell.c]]);
-                var nextPath = path.concat([{ r: nextCell.r, c: nextCell.c }]);
-                var child = visit(nextCell, nextPath, nextBuffer, nextUsed, prevMainSolved || mainSolved, prevFullSolved || fullSolved);
+                var nextKey = core.cellKey(nextCell);
+                used[nextKey] = true;
+                path.push({ r: nextCell.r, c: nextCell.c });
+                buffer.push(matrix[nextCell.r][nextCell.c]);
+                var child = visit(nextCell, prevMainSolved || mainSolved, prevFullSolved || fullSolved);
+                buffer.pop();
+                path.pop();
+                delete used[nextKey];
                 childMainFlags.push(child.hasMain);
                 if (child.hasMain) hasMain = true;
                 if (child.hasFull) hasFull = true;
@@ -100,9 +119,12 @@
 
         for (var col = 0; col < config.size; col++) {
             var startCell = { r: 0, c: col };
-            var used = {};
-            used[core.cellKey(startCell)] = true;
-            var outcome = visit(startCell, [startCell], [matrix[0][col]], used, false, false);
+            var startKey = core.cellKey(startCell);
+            used = {};
+            used[startKey] = true;
+            path = [{ r: 0, c: col }];
+            buffer = [matrix[0][col]];
+            var outcome = visit(startCell, false, false);
             if (outcome.hasMain) report.entryStartCount++;
         }
 
