@@ -289,8 +289,7 @@ var LockboxPanel = (function() {
         stopLoop();
         _state = null;
         if (typeof LockboxAudio !== 'undefined') {
-            LockboxAudio.stopAmbient();
-            LockboxAudio.stopHeartbeat();
+            LockboxAudio.stopAll(true);
         }
     }
 
@@ -312,7 +311,9 @@ var LockboxPanel = (function() {
 
     function toggleMute() {
         if (typeof LockboxAudio === 'undefined') return;
-        LockboxAudio.setMuted(!LockboxAudio.isMuted());
+        var nextMuted = !LockboxAudio.isMuted();
+        LockboxAudio.setMuted(nextMuted);
+        if (!nextMuted) syncAudioScene();
         renderChromeToggles();
     }
 
@@ -415,8 +416,7 @@ var LockboxPanel = (function() {
     function loadPuzzle(request) {
         var token = ++_loadToken;
         if (typeof LockboxAudio !== 'undefined') {
-            LockboxAudio.stopHeartbeat();
-            LockboxAudio.stopAmbient();
+            LockboxAudio.stopAll(true);
         }
         clearRuntimeFx();
         setProfileUi(request.profile, request.source);
@@ -483,15 +483,17 @@ var LockboxPanel = (function() {
 
     function clearRuntimeFx() {
         if (!_el) return;
-        _el.classList.remove('fx-perfect', 'fx-good', 'fx-miss', 'fx-fail', 'fx-shake');
+        _el.classList.remove('fx-perfect', 'fx-good', 'fx-miss', 'fx-fail', 'fx-overload', 'fx-trace-kill', 'fx-shake');
         _el.removeAttribute('data-phase');
+        _el.removeAttribute('data-result-tone');
+        _el.setAttribute('data-trace-state', 'idle');
+        _el.style.setProperty('--trace-level', '0');
     }
 
     function beginRun(packageData, request) {
         if (!packageData) return;
         if (typeof LockboxAudio !== 'undefined') {
-            LockboxAudio.stopHeartbeat();
-            LockboxAudio.stopAmbient();
+            LockboxAudio.stopAll(true);
         }
         clearRuntimeFx();
         var now = performance.now();
@@ -505,6 +507,9 @@ var LockboxPanel = (function() {
             tracePenalty: 0,
             traceStartedAt: 0,
             traceFrozen: false,
+            traceTickLevel: 0,
+            traceCriticalFired: false,
+            traceTerminalFired: false,
             selectedCells: [],
             selectedMap: {},
             bufferTokens: [],
@@ -538,6 +543,7 @@ var LockboxPanel = (function() {
 
     function setBusyState(text) {
         _state = null;
+        clearRuntimeFx();
         _refs.phaseBadge.textContent = 'INIT';
         _refs.axisLabel.textContent = '等待题目';
         _refs.stageHint.textContent = text;
@@ -569,11 +575,13 @@ var LockboxPanel = (function() {
         _state.injectStartedAt = _state.traceStartedAt;
         _state.traceTickLevel = 0;
         _state.traceCriticalFired = false;
+        _state.traceTerminalFired = false;
         _state.lastStatus = 'Trace 已启动，执行注入路径。';
         if (typeof LockboxAudio !== 'undefined') {
             LockboxAudio.play('inject');
             LockboxAudio.startAmbient();
             LockboxAudio.setAmbientTension(0);
+            LockboxAudio.setTraceBedIntensity(0);
         }
         notifyHost('start', null);
         renderAll();
@@ -667,7 +675,10 @@ var LockboxPanel = (function() {
         _state.phase = 'FINISHER';
         _state.traceFrozen = true;
         _state.lastStatus = 'Trace 已冻结，按住并在甜区释放。';
-        if (typeof LockboxAudio !== 'undefined') LockboxAudio.play('finisherArm');
+        if (typeof LockboxAudio !== 'undefined') {
+            LockboxAudio.stopTraceBed();
+            LockboxAudio.play('finisherArm');
+        }
         renderAll();
     }
 
@@ -728,23 +739,27 @@ var LockboxPanel = (function() {
         _state.phase = (outcome === 'fail') ? 'FAIL' : 'RESULT';
         _state.lastStatus = buildResultCopy(payload);
         if (typeof LockboxAudio !== 'undefined') {
-            LockboxAudio.stopHeartbeat();
-            LockboxAudio.stopAmbient();
-            if (outcome === 'fail') LockboxAudio.play('fail');
+            LockboxAudio.stopAll(true);
+            if (reason === 'trace') LockboxAudio.play('traceOverload', { outcome: outcome });
+            else if (outcome === 'fail') LockboxAudio.play('fail');
             else if (finisherResult === 'perfect') LockboxAudio.play('finishPerfect');
             else if (finisherResult === 'good') LockboxAudio.play('finishGood');
             else LockboxAudio.play('finishMiss');
         }
-        triggerResultFx(outcome, finisherResult);
+        triggerResultFx(outcome, finisherResult, reason);
         notifyHost('result', payload);
         renderAll();
     }
 
-    function triggerResultFx(outcome, finisherResult) {
+    function triggerResultFx(outcome, finisherResult, reason) {
         if (!_el) return;
-        _el.classList.remove('fx-perfect', 'fx-good', 'fx-miss', 'fx-fail', 'fx-shake');
+        _el.classList.remove('fx-perfect', 'fx-good', 'fx-miss', 'fx-fail', 'fx-overload', 'fx-trace-kill', 'fx-shake');
         void _el.offsetWidth;
-        if (outcome === 'fail') {
+        if (reason === 'trace' && outcome === 'fail') {
+            _el.classList.add('fx-trace-kill', 'fx-shake');
+        } else if (reason === 'trace') {
+            _el.classList.add('fx-overload', 'fx-shake');
+        } else if (outcome === 'fail') {
             _el.classList.add('fx-fail', 'fx-shake');
         } else if (finisherResult === 'perfect') {
             _el.classList.add('fx-perfect');
@@ -772,11 +787,71 @@ var LockboxPanel = (function() {
     }
 
     function buildResultCopy(payload) {
+        if (payload.outcome === 'fail' && payload.reason === 'trace') return 'Trace 已完成终端接管，主解未能在封箱前落地。';
         if (payload.outcome === 'fail') return '主解未完成，箱体仍处于锁定状态。';
         if (payload.outcome === 'partial_success') return '主解保底成功，但 Trace 已烧毁剩余窗口。';
         if (payload.finisherResult === 'perfect') return '完美收尾，协议注入稳定落点。';
         if (payload.finisherResult === 'good') return '收尾良好，主成功已确认。';
         return '主解已确认，但收尾偏粗暴。';
+    }
+
+    function buildResultTitle(payload) {
+        if (!payload) return '';
+        if (payload.reason === 'trace' && payload.outcome === 'fail') return 'TRACE KILL';
+        if (payload.reason === 'trace') return 'OVERLOAD';
+        if (payload.finisherResult === 'perfect') return 'PERFECT';
+        if (payload.finisherResult === 'good') return 'STABLE';
+        if (payload.outcome === 'fail') return 'FAIL';
+        return 'SUCCESS';
+    }
+
+    function getResultTone(payload) {
+        if (!payload) return 'idle';
+        if (payload.reason === 'trace' && payload.outcome === 'fail') return 'trace-kill';
+        if (payload.reason === 'trace') return 'overload';
+        if (payload.outcome === 'fail') return 'fail';
+        if (payload.finisherResult === 'perfect') return 'perfect';
+        if (payload.finisherResult === 'good') return 'good';
+        return 'miss';
+    }
+
+    function getTraceVisualState() {
+        if (!_state) return 'idle';
+        if (_state.result && _state.result.reason === 'trace') {
+            return _state.result.outcome === 'fail' ? 'trace-fail' : 'overload';
+        }
+        if (_state.phase === 'FINISHER') return 'finisher';
+        if (_state.phase === 'FAIL') return 'locked';
+        if (_state.phase === 'RESULT') return 'locked';
+        if (_state.traceFrozen) return 'locked';
+        if (_state.traceValue >= 0.96) return 'terminal';
+        if (_state.traceValue >= 0.85) return 'critical';
+        if (_state.traceValue > 0) return 'active';
+        return 'idle';
+    }
+
+    function updatePanelStateAttrs() {
+        if (!_el || !_state) return;
+        _el.setAttribute('data-phase', _state.phase);
+        _el.setAttribute('data-trace-state', getTraceVisualState());
+        _el.setAttribute('data-result-tone', getResultTone(_state.result));
+        _el.style.setProperty('--trace-level', String((_state.traceValue || 0).toFixed(3)));
+    }
+
+    function syncAudioScene() {
+        if (!_state || typeof LockboxAudio === 'undefined' || LockboxAudio.isMuted()) return;
+        if (_state.result || _state.phase === 'FAIL' || _state.phase === 'RESULT') return;
+        if (_state.phase === 'OBSERVE') return;
+        LockboxAudio.resume();
+        LockboxAudio.startAmbient();
+        LockboxAudio.setAmbientTension(_state.phase === 'FINISHER' ? Math.max(0.7, _state.traceValue || 0) : (_state.traceValue || 0));
+        if (_state.phase === 'INJECTING' || _state.phase === 'MAIN_READY') {
+            LockboxAudio.stopHeartbeat();
+            LockboxAudio.setTraceBedIntensity(_state.traceValue || 0);
+        } else if (_state.phase === 'FINISHER') {
+            LockboxAudio.stopTraceBed();
+            if (_state.finisher && _state.finisher.holding) LockboxAudio.startHeartbeat();
+        }
     }
 
     function notifyHost(eventName, resultPayload) {
@@ -871,6 +946,7 @@ var LockboxPanel = (function() {
 
             if (typeof LockboxAudio !== 'undefined') {
                 LockboxAudio.setAmbientTension(_state.traceValue);
+                LockboxAudio.setTraceBedIntensity(_state.traceValue);
                 var nextLevel = Math.min(9, Math.floor(_state.traceValue * 10));
                 if (nextLevel > (_state.traceTickLevel || 0)) {
                     _state.traceTickLevel = nextLevel;
@@ -879,6 +955,10 @@ var LockboxPanel = (function() {
                 if (!_state.traceCriticalFired && _state.traceValue >= 0.85) {
                     _state.traceCriticalFired = true;
                     LockboxAudio.play('traceCritical');
+                }
+                if (!_state.traceTerminalFired && _state.traceValue >= 0.96) {
+                    _state.traceTerminalFired = true;
+                    LockboxAudio.play('traceTerminal');
                 }
             }
 
@@ -924,6 +1004,7 @@ var LockboxPanel = (function() {
         if (_refs.traceFill) _refs.traceFill.style.width = tracePct + '%';
         if (_refs.traceRailFill) _refs.traceRailFill.style.height = tracePct + '%';
         if (_refs.traceFrame) _refs.traceFrame.style.setProperty('--trace-intensity', String((_state.traceValue * 0.55).toFixed(3)));
+        updatePanelStateAttrs();
     }
 
     function renderAll() {
@@ -998,6 +1079,7 @@ var LockboxPanel = (function() {
 
     function renderBuffer() {
         var html = [];
+        _refs.buffer.style.setProperty('--buffer-count', String(_state.config.bufferCap));
         for (var i = 0; i < _state.config.bufferCap; i++) {
             if (i < _state.bufferTokens.length) {
                 html.push('<div class="lockbox-buffer-slot filled">' + LockboxCore.renderTokenSvg(_state.bufferTokens[i], { size: 30 }) + '</div>');
@@ -1016,24 +1098,25 @@ var LockboxPanel = (function() {
         }
 
         var payload = _state.result;
-        _refs.resultCard.className = 'lockbox-result-card visible ' + payload.outcome;
+        var tone = getResultTone(payload);
+        _refs.resultCard.className = 'lockbox-result-card visible ' + payload.outcome + ' tone-' + tone;
         _refs.resultCard.innerHTML = [
             '<div class="lockbox-result-head">',
-                '<div class="lockbox-result-title">' + escapeHtml(payload.outcome.toUpperCase()) + '</div>',
+                '<div class="lockbox-result-title">' + escapeHtml(buildResultTitle(payload)) + '</div>',
                 '<div class="lockbox-result-rating">评级 ' + escapeHtml(payload.rating) + '</div>',
             '</div>',
             '<div class="lockbox-result-body">' + escapeHtml(buildResultCopy(payload)) + '</div>',
             '<div class="lockbox-result-tags">',
                 '<span>主解 ' + (_state.mainSolved ? '完成' : '失败') + '</span>',
                 '<span>Bonus ' + (_state.bonusSolved ? '保留' : _state.bonusLocked ? '锁死' : '未拿') + '</span>',
-                '<span>收尾 ' + (payload.finisherResult || '无') + '</span>',
+                '<span>收尾 ' + (payload.reason === 'trace' ? 'TRACE' : (payload.finisherResult || '无')) + '</span>',
             '</div>'
         ].join('');
     }
 
     function renderMetaOnly() {
         if (!_state) return;
-        if (_el) _el.setAttribute('data-phase', _state.phase);
+        updatePanelStateAttrs();
         _refs.phaseBadge.textContent = _state.phase;
         _refs.axisLabel.textContent = buildAxisLabel();
         _refs.stageHint.textContent = _state.lastStatus;
@@ -1050,12 +1133,29 @@ var LockboxPanel = (function() {
 
     function renderTraceShell() {
         var tracePct = Math.round(_state.traceValue * 100);
+        var traceState = getTraceVisualState();
         if (_refs.traceRailFill) _refs.traceRailFill.style.height = tracePct + '%';
-        if (_refs.traceRailRightTitle) _refs.traceRailRightTitle.textContent = _state.phase === 'FINISHER' ? 'FINISH' : 'MODE C';
+        if (_refs.traceRailRightTitle) {
+            _refs.traceRailRightTitle.textContent = _state.phase === 'FINISHER'
+                ? 'FINISH'
+                : traceState === 'terminal'
+                    ? 'PURGE'
+                    : traceState === 'critical'
+                        ? 'ALERT'
+                        : 'MODE C';
+        }
         if (_refs.traceRailLeftMeta) {
             _refs.traceRailLeftMeta.innerHTML = [
                 '<div>' + tracePct + '%</div>',
-                '<div>' + (_state.traceFrozen ? 'FROZEN' : _state.bonusLocked ? 'LOCKED' : 'LIVE') + '</div>'
+                '<div>' + (_state.traceFrozen
+                    ? 'FROZEN'
+                    : traceState === 'terminal'
+                        ? 'TERMINAL'
+                        : traceState === 'critical'
+                            ? 'CRITICAL'
+                            : _state.bonusLocked
+                                ? 'LOCKED'
+                                : 'LIVE') + '</div>'
             ].join('');
         }
         if (_refs.traceModuleStack) {
@@ -1070,10 +1170,10 @@ var LockboxPanel = (function() {
             var hintInfo = getHintInfo();
             _refs.traceFooter.innerHTML = [
                 '<span class="lockbox-trace-footer-label">TRACE BUS</span>',
-                '<span class="lockbox-trace-footer-chip">mode C</span>',
+                '<span class="lockbox-trace-footer-chip">' + traceState + '</span>',
                 '<span class="lockbox-trace-footer-chip">trace ' + tracePct + '%</span>',
                 '<span class="lockbox-trace-footer-chip">' + (_state.bonusLocked ? 'bonus locked' : 'bonus open') + '</span>',
-                '<span class="lockbox-trace-footer-chip">' + (_state.traceFrozen ? 'frozen' : 'injecting') + '</span>',
+                '<span class="lockbox-trace-footer-chip">' + (_state.traceFrozen ? 'frozen' : traceState === 'terminal' ? 'purge imminent' : 'injecting') + '</span>',
                 '<span class="lockbox-trace-footer-chip">guide ' + getHintModeLabel(_state.hintMode) + (hintInfo && hintInfo.reset ? ' / reset' : '') + '</span>'
             ].join('');
         }

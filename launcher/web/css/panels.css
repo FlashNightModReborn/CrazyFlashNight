@@ -423,31 +423,35 @@
 }
 
 .lockbox-quickbar {
-    display:flex;
-    justify-content:space-between;
+    display:grid;
+    grid-template-columns:auto auto minmax(0, 1fr);
     align-items:center;
     gap:8px 12px;
     margin-bottom:8px;
-    flex-wrap:wrap;
+    min-width:0;
 }
 
 .lockbox-control-strip {
     display:flex;
     gap:6px;
-    flex-wrap:wrap;
-    margin-left:auto;
-    justify-content:flex-end;
+    flex-wrap:nowrap;
+    align-items:center;
+    min-width:0;
 }
 
 .lockbox-toolbar-btn {
     min-width:0;
     padding:5px 10px;
+    white-space:nowrap;
+    flex:0 0 auto;
 }
 
 .lockbox-profile-switch {
     display:flex;
     gap:6px;
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
+    align-items:center;
+    min-width:0;
 }
 
 .lockbox-chip-btn {
@@ -478,6 +482,12 @@
     color:var(--cp-dim);
     font-size:11px;
     letter-spacing:1px;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    text-align:right;
+    justify-self:end;
 }
 
 .lockbox-guide-note {
@@ -885,18 +895,33 @@
 .lockbox-mini-token { width:28px; }
 .lockbox-seq-state { color:var(--cp-dim); font-size:11px; }
 
-.lockbox-buffer-track { display:grid; grid-template-columns:repeat(auto-fit, minmax(36px, 1fr)); gap:6px; }
+.lockbox-buffer-track {
+    display:grid;
+    grid-template-columns:repeat(var(--buffer-count, 6), minmax(0, 1fr));
+    gap:clamp(4px, calc(32px / var(--buffer-count, 6)), 6px);
+    align-items:stretch;
+}
 .lockbox-buffer-slot {
+    min-width:0;
     min-height:38px;
+    aspect-ratio:1 / 1;
+    padding:clamp(2px, calc(14px / var(--buffer-count, 6)), 4px);
     display:flex;
     align-items:center;
     justify-content:center;
     border:1px dashed rgba(0,240,255,0.12);
     background:rgba(0,0,0,0.18);
     color:var(--cp-dim);
-    font-size:11px;
+    font-size:clamp(10px, calc(92px / var(--buffer-count, 6)), 11px);
+    line-height:1;
 }
 .lockbox-buffer-slot.filled { border-style:solid; border-color:rgba(125,255,162,0.24); }
+.lockbox-buffer-slot svg {
+    width:100%;
+    max-width:min(100%, calc(198px / var(--buffer-count, 6)));
+    height:auto;
+    margin:auto;
+}
 
 .lockbox-trace-bar {
     height:14px;
@@ -971,11 +996,20 @@
         grid-column:1 / span 2;
     }
     .lockbox-quickbar {
+        display:flex;
+        flex-wrap:wrap;
         align-items:flex-start;
     }
+    .lockbox-profile-switch,
     .lockbox-control-strip {
+        flex-wrap:wrap;
         margin-left:0;
         justify-content:flex-start;
+    }
+    .lockbox-profile-note {
+        width:100%;
+        text-align:left;
+        overflow:visible;
     }
     .lockbox-help-head {
         flex-direction:column;
@@ -1098,6 +1132,40 @@
         linear-gradient(180deg, rgba(252,238,9,0.03), transparent 40%),
         radial-gradient(ellipse at center, rgba(0,240,255,0.08), transparent 70%);
     border:1px dashed rgba(252,238,9,0.18);
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+}
+.lockbox-grid-shell::before,
+.lockbox-grid-shell::after {
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    transition:opacity 0.18s ease, transform 0.18s ease;
+}
+.lockbox-grid-shell::before {
+    background:
+        linear-gradient(90deg, transparent 0, rgba(0,240,255,0.12) 14%, transparent 36%, rgba(252,238,9,0.08) 70%, transparent 100%),
+        repeating-linear-gradient(0deg, rgba(0,240,255,0.12) 0 1px, transparent 1px 34px),
+        repeating-linear-gradient(90deg, rgba(0,240,255,0.08) 0 1px, transparent 1px 34px);
+    mix-blend-mode:screen;
+    opacity:0.16;
+    animation:lb-holo-drift 11s linear infinite;
+}
+.lockbox-grid-shell::after {
+    inset:6px;
+    background:
+        repeating-linear-gradient(-62deg, rgba(255,0,60,0.0) 0 14px, rgba(255,0,60,0.26) 14px 18px, rgba(252,238,9,0.18) 18px 21px, transparent 21px 34px);
+    mix-blend-mode:screen;
+    opacity:0;
+}
+.lockbox-grid-pane,
+.lockbox-trace-rail,
+.lockbox-trace-footer,
+.lockbox-side-section {
+    position:relative;
+    z-index:1;
 }
 .lockbox-trace-frame {
     border:1px solid rgba(252,238,9,0.22);
@@ -1238,12 +1306,32 @@
     box-shadow:0 0 24px rgba(255,0,60,0.4);
 }
 .lockbox-result-card.partial_success { border-color:#ff8a00; box-shadow:0 0 22px rgba(255,138,0,0.35); }
+.lockbox-result-card.tone-overload {
+    border-color:#ff8a00;
+    background:
+        linear-gradient(180deg, rgba(255,138,0,0.1), rgba(255,0,60,0.08)),
+        repeating-linear-gradient(-45deg, rgba(255,138,0,0.1) 0 4px, transparent 4px 12px),
+        rgba(22,8,0,0.94);
+    box-shadow:0 0 30px rgba(255,82,0,0.42);
+}
+.lockbox-result-card.tone-trace-kill {
+    border-color:#ff003c;
+    background:
+        linear-gradient(180deg, rgba(255,0,60,0.12), rgba(0,240,255,0.04)),
+        repeating-linear-gradient(-45deg, rgba(255,0,60,0.12) 0 4px, transparent 4px 12px),
+        rgba(20,0,6,0.94);
+    box-shadow:0 0 34px rgba(255,0,60,0.5);
+}
 .lockbox-result-title {
     color:#fcee09; letter-spacing:4px; font-size:22px;
     text-shadow:1px 0 0 rgba(255,0,60,0.6), -1px 0 0 rgba(0,240,255,0.6);
 }
 .lockbox-result-card.fail .lockbox-result-title { color:#ff003c; }
+.lockbox-result-card.tone-overload .lockbox-result-title { color:#ff8a00; }
+.lockbox-result-card.tone-trace-kill .lockbox-result-title { color:#ff003c; }
 .lockbox-result-rating { background:#fcee09; color:#0a0a0a; font-weight:bold; padding:2px 10px; clip-path:polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%); }
+.lockbox-result-card.tone-overload .lockbox-result-rating { background:#ff8a00; }
+.lockbox-result-card.tone-trace-kill .lockbox-result-rating { background:#ff003c; color:#fff; }
 
 .lockbox-rail-finisher-track {
     border:1px solid #fcee09;
@@ -1314,6 +1402,23 @@
     from { transform:translate(-50%,-50%) rotate(0deg); }
     to   { transform:translate(-50%,-50%) rotate(360deg); }
 }
+@keyframes lb-holo-drift {
+    0%   { transform:translate3d(0,0,0); }
+    100% { transform:translate3d(-36px,24px,0); }
+}
+@keyframes lb-hazard-scroll {
+    0%   { transform:translate3d(-16%,0,0); }
+    100% { transform:translate3d(16%,0,0); }
+}
+@keyframes lb-terminal-flood {
+    0%,100% { opacity:0.28; }
+    50%     { opacity:0.82; }
+}
+@keyframes lb-overload-wave {
+    0%   { opacity:0; transform:translate(-50%,-50%) scale(0.72); }
+    28%  { opacity:1; }
+    100% { opacity:0; transform:translate(-50%,-50%) scale(1.7); }
+}
 
 /* CRT vignette corners — passive on panel */
 .lockbox-panel .lockbox-main::before {
@@ -1333,6 +1438,82 @@
     transition:opacity 0.18s linear;
 }
 .lockbox-trace-frame.bonus-locked { animation:lb-critical-pulse 1.2s ease-in-out infinite; }
+
+.lockbox-panel[data-trace-state="active"] .lockbox-grid-shell::before,
+.lockbox-panel[data-trace-state="critical"] .lockbox-grid-shell::before,
+.lockbox-panel[data-trace-state="terminal"] .lockbox-grid-shell::before,
+.lockbox-panel[data-trace-state="overload"] .lockbox-grid-shell::before,
+.lockbox-panel[data-trace-state="trace-fail"] .lockbox-grid-shell::before {
+    opacity:calc(0.18 + var(--trace-level, 0) * 0.28);
+}
+.lockbox-panel[data-trace-state="critical"] .lockbox-grid-shell::after {
+    opacity:0.42;
+    animation:lb-hazard-scroll 1.2s linear infinite;
+}
+.lockbox-panel[data-trace-state="finisher"] .lockbox-grid-shell::after {
+    opacity:0.22;
+    animation:lb-hazard-scroll 1.8s linear infinite;
+}
+.lockbox-panel[data-trace-state="terminal"] .lockbox-grid-shell::after,
+.lockbox-panel[data-trace-state="overload"] .lockbox-grid-shell::after,
+.lockbox-panel[data-trace-state="trace-fail"] .lockbox-grid-shell::after {
+    opacity:0.92;
+    animation:lb-hazard-scroll 0.42s linear infinite, lb-terminal-flood 0.56s steps(2) infinite;
+}
+.lockbox-panel[data-trace-state="critical"] .lockbox-grid-shell {
+    border-color:rgba(255,138,0,0.42);
+    box-shadow:
+        inset 0 0 88px rgba(255,138,0,0.08),
+        0 0 26px rgba(255,138,0,0.18);
+}
+.lockbox-panel[data-trace-state="terminal"] .lockbox-grid-shell,
+.lockbox-panel[data-trace-state="overload"] .lockbox-grid-shell,
+.lockbox-panel[data-trace-state="trace-fail"] .lockbox-grid-shell {
+    border-color:rgba(255,0,60,0.48);
+    box-shadow:
+        inset 0 0 120px rgba(255,0,60,0.16),
+        0 0 40px rgba(255,0,60,0.3);
+}
+.lockbox-panel[data-trace-state="terminal"] .lockbox-trace-frame,
+.lockbox-panel[data-trace-state="trace-fail"] .lockbox-trace-frame {
+    border-color:#ff003c;
+    box-shadow:
+        0 0 28px rgba(255,0,60,0.65),
+        inset 0 0 0 1px rgba(255,0,60,0.6),
+        inset 0 0 46px rgba(255,0,60,0.18);
+}
+.lockbox-panel[data-trace-state="overload"] .lockbox-trace-frame {
+    border-color:#ff8a00;
+    box-shadow:
+        0 0 28px rgba(255,138,0,0.52),
+        inset 0 0 0 1px rgba(255,138,0,0.46),
+        inset 0 0 52px rgba(255,82,0,0.16);
+}
+.lockbox-panel[data-trace-state="critical"] .lockbox-trace-fill {
+    box-shadow:0 0 18px rgba(255,138,0,0.55);
+}
+.lockbox-panel[data-trace-state="terminal"] .lockbox-trace-fill,
+.lockbox-panel[data-trace-state="overload"] .lockbox-trace-fill,
+.lockbox-panel[data-trace-state="trace-fail"] .lockbox-trace-fill {
+    background:linear-gradient(90deg, #fcee09 0%, #ff8a00 30%, #ff003c 58%, #00f0ff 100%);
+    box-shadow:0 0 24px rgba(255,0,60,0.68);
+    animation:lb-terminal-flood 0.38s linear infinite;
+}
+.lockbox-panel[data-trace-state="critical"] .lockbox-phase-badge {
+    box-shadow:0 0 18px rgba(255,138,0,0.45);
+}
+.lockbox-panel[data-trace-state="terminal"] .lockbox-phase-badge,
+.lockbox-panel[data-trace-state="overload"] .lockbox-phase-badge,
+.lockbox-panel[data-trace-state="trace-fail"] .lockbox-phase-badge {
+    box-shadow:0 0 22px rgba(255,0,60,0.72);
+}
+.lockbox-panel[data-trace-state="terminal"] .lockbox-trace-footer-chip,
+.lockbox-panel[data-trace-state="overload"] .lockbox-trace-footer-chip,
+.lockbox-panel[data-trace-state="trace-fail"] .lockbox-trace-footer-chip {
+    border-color:rgba(255,0,60,0.34);
+    background:rgba(42,0,10,0.82);
+    color:#fff55a;
+}
 
 /* Finisher charge rings — pulsing while holding */
 .lockbox-rail-finisher.visible { position:relative; }
@@ -1356,16 +1537,22 @@
 .lockbox-panel.fx-perfect::before,
 .lockbox-panel.fx-good::before,
 .lockbox-panel.fx-miss::before,
-.lockbox-panel.fx-fail::before { animation:none; }
+.lockbox-panel.fx-fail::before,
+.lockbox-panel.fx-overload::before,
+.lockbox-panel.fx-trace-kill::before { animation:none; }
 .lockbox-panel.fx-perfect { box-shadow:0 0 80px rgba(252,238,9,0.4), inset 0 0 120px rgba(0,240,255,0.12); }
 .lockbox-panel.fx-fail    { box-shadow:0 0 80px rgba(255,0,60,0.55), inset 0 0 140px rgba(255,0,60,0.18); }
+.lockbox-panel.fx-overload { box-shadow:0 0 88px rgba(255,138,0,0.52), inset 0 0 160px rgba(255,82,0,0.16); }
+.lockbox-panel.fx-trace-kill { box-shadow:0 0 96px rgba(255,0,60,0.72), inset 0 0 180px rgba(255,0,60,0.24); }
 
 .lockbox-panel.fx-shake .lockbox-main { animation:lb-shake 0.65s cubic-bezier(.36,.07,.19,.97) 1; }
 
 .lockbox-panel.fx-perfect .lockbox-result-card.visible::before,
 .lockbox-panel.fx-good .lockbox-result-card.visible::before,
 .lockbox-panel.fx-miss .lockbox-result-card.visible::before,
-.lockbox-panel.fx-fail .lockbox-result-card.visible::before {
+.lockbox-panel.fx-fail .lockbox-result-card.visible::before,
+.lockbox-panel.fx-overload .lockbox-result-card.visible::before,
+.lockbox-panel.fx-trace-kill .lockbox-result-card.visible::before {
     content:"";
     position:absolute; inset:-24px; pointer-events:none;
     border-radius:50%;
@@ -1386,6 +1573,14 @@
     background:radial-gradient(circle, rgba(255,0,60,0.85), transparent 70%);
     animation:lb-result-flash 1.2s ease-out 1;
 }
+.lockbox-panel.fx-overload .lockbox-result-card.visible::before {
+    background:radial-gradient(circle, rgba(255,138,0,0.92), rgba(255,0,60,0.52) 42%, transparent 74%);
+    animation:lb-result-flash 1.05s ease-out 1;
+}
+.lockbox-panel.fx-trace-kill .lockbox-result-card.visible::before {
+    background:radial-gradient(circle, rgba(255,0,60,0.95), rgba(0,240,255,0.22) 38%, transparent 74%);
+    animation:lb-result-flash 1.25s ease-out 1;
+}
 
 /* Perfect corona + sparkle ring around the result card */
 .lockbox-panel.fx-perfect .lockbox-result-card.visible::after {
@@ -1404,6 +1599,32 @@
     filter:blur(1.5px);
     animation:lb-sparkle-rotate 2.4s linear 1, lb-perfect-corona 1.4s ease-out 1;
     opacity:0;
+}
+.lockbox-panel.fx-overload .lockbox-result-card.visible::after,
+.lockbox-panel.fx-trace-kill .lockbox-result-card.visible::after {
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:440px;
+    height:440px;
+    border-radius:50%;
+    transform:translate(-50%,-50%) scale(0.72);
+    pointer-events:none;
+    opacity:0;
+    animation:lb-overload-wave 0.96s ease-out 1;
+}
+.lockbox-panel.fx-overload .lockbox-result-card.visible::after {
+    background:
+        radial-gradient(circle, rgba(255,138,0,0.42) 0 28%, rgba(255,0,60,0.2) 28% 42%, transparent 42% 100%),
+        conic-gradient(from 0deg, rgba(255,138,0,0.0) 0 28deg, rgba(255,138,0,0.9) 28deg 34deg, transparent 34deg 110deg, rgba(255,82,0,0.9) 110deg 116deg, transparent 116deg 205deg, rgba(255,0,60,0.75) 205deg 212deg, transparent 212deg 360deg);
+    box-shadow:0 0 120px rgba(255,82,0,0.32);
+}
+.lockbox-panel.fx-trace-kill .lockbox-result-card.visible::after {
+    background:
+        radial-gradient(circle, rgba(255,0,60,0.38) 0 26%, rgba(0,240,255,0.12) 26% 38%, transparent 38% 100%),
+        conic-gradient(from 0deg, rgba(255,0,60,0.0) 0 18deg, rgba(255,0,60,0.92) 18deg 26deg, transparent 26deg 90deg, rgba(0,240,255,0.55) 90deg 96deg, transparent 96deg 170deg, rgba(255,0,60,0.92) 170deg 178deg, transparent 178deg 252deg, rgba(0,240,255,0.55) 252deg 258deg, transparent 258deg 360deg);
+    box-shadow:0 0 132px rgba(255,0,60,0.36);
 }
 
 /* Inject-phase active glow on grid shell */

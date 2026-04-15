@@ -13,7 +13,13 @@ var LockboxAudio = (function() {
     var _lastTapAt = 0;
     var _ambient = null;
     var _heartbeat = null;
+    var _traceBed = null;
+    var _voices = [];
+    var _voiceSeq = 0;
     var TOKEN_FREQS = [660, 494, 740, 392, 880];
+    var MASTER_VOL = 0.32;
+    var WET_VOL = 0.35;
+    var DELAY_FB_VOL = 0.32;
 
     function ctx() {
         if (_ctx) return _ctx;
@@ -29,20 +35,19 @@ var LockboxAudio = (function() {
         return _ctx;
     }
 
-    var MASTER_VOL = 0.32;
     function buildBus() {
         _master = _ctx.createGain();
         _master.gain.value = _muted ? 0.0001 : MASTER_VOL;
         _master.connect(_ctx.destination);
 
         _wet = _ctx.createGain();
-        _wet.gain.value = 0.35;
+        _wet.gain.value = _muted ? 0.0001 : WET_VOL;
         _wet.connect(_master);
 
         _delay = _ctx.createDelay(1.0);
         _delay.delayTime.value = 0.22;
         _delayFb = _ctx.createGain();
-        _delayFb.gain.value = 0.32;
+        _delayFb.gain.value = _muted ? 0.0001 : DELAY_FB_VOL;
         _delay.connect(_delayFb);
         _delayFb.connect(_delay);
         _delay.connect(_wet);
@@ -84,6 +89,83 @@ var LockboxAudio = (function() {
 
     function now() { return _ctx ? _ctx.currentTime : 0; }
 
+    function clearTimer(timerId) {
+        if (!timerId || typeof window === 'undefined' || !window.clearTimeout) return;
+        window.clearTimeout(timerId);
+    }
+
+    function removeVoice(entry) {
+        if (!entry) return;
+        if (entry.timerId) {
+            clearTimer(entry.timerId);
+            entry.timerId = 0;
+        }
+        for (var i = _voices.length - 1; i >= 0; i--) {
+            if (_voices[i] === entry) {
+                _voices.splice(i, 1);
+                break;
+            }
+        }
+    }
+
+    function trackVoice(entry, stopAt) {
+        entry.id = ++_voiceSeq;
+        entry.stopAt = stopAt;
+        _voices.push(entry);
+        if (typeof window !== 'undefined' && window.setTimeout && _ctx) {
+            var ttlMs = Math.max(90, Math.round((stopAt - _ctx.currentTime) * 1000) + 140);
+            entry.timerId = window.setTimeout(function() {
+                removeVoice(entry);
+            }, ttlMs);
+        }
+        return entry;
+    }
+
+    function scheduleGainRamp(gainNode, target, duration) {
+        if (!gainNode || !gainNode.gain || !_ctx) return;
+        var t = _ctx.currentTime;
+        gainNode.gain.cancelScheduledValues(t);
+        gainNode.gain.setValueAtTime(Math.max(0.0001, gainNode.gain.value), t);
+        gainNode.gain.linearRampToValueAtTime(Math.max(0.0001, target), t + duration);
+    }
+
+    function stopNode(node, when) {
+        if (!node) return;
+        try { node.stop(when); } catch (e) {}
+    }
+
+    function stopVoice(entry, hard) {
+        if (!entry || entry.stopped) return;
+        entry.stopped = true;
+        var t = _ctx ? _ctx.currentTime : 0;
+        var fade = hard ? 0.02 : 0.06;
+        if (entry.gain && entry.gain.gain && _ctx) {
+            entry.gain.gain.cancelScheduledValues(t);
+            entry.gain.gain.setValueAtTime(Math.max(0.0001, entry.gain.gain.value), t);
+            entry.gain.gain.linearRampToValueAtTime(0.0001, t + fade);
+        }
+        if (entry.osc) entry.osc.onended = null;
+        if (entry.src) entry.src.onended = null;
+        stopNode(entry.osc, t + fade + 0.02);
+        stopNode(entry.src, t + fade + 0.02);
+        removeVoice(entry);
+    }
+
+    function clearFxTail() {
+        if (!_ctx || !_wet || !_delayFb) return;
+        var t = _ctx.currentTime;
+        var wetRestore = _muted ? 0.0001 : WET_VOL;
+        var delayRestore = _muted ? 0.0001 : DELAY_FB_VOL;
+        _wet.gain.cancelScheduledValues(t);
+        _wet.gain.setValueAtTime(Math.max(0.0001, _wet.gain.value), t);
+        _wet.gain.linearRampToValueAtTime(0.0001, t + 0.03);
+        _wet.gain.linearRampToValueAtTime(wetRestore, t + 0.16);
+        _delayFb.gain.cancelScheduledValues(t);
+        _delayFb.gain.setValueAtTime(Math.max(0.0001, _delayFb.gain.value), t);
+        _delayFb.gain.linearRampToValueAtTime(0.0001, t + 0.03);
+        _delayFb.gain.linearRampToValueAtTime(delayRestore, t + 0.16);
+    }
+
     function env(gainParam, t0, attack, hold, release, peak) {
         gainParam.cancelScheduledValues(t0);
         gainParam.setValueAtTime(0.0001, t0);
@@ -123,7 +205,10 @@ var LockboxAudio = (function() {
             if (opts.reverb) sendG.connect(_reverb);
         }
         osc.start(t0);
-        osc.stop(t0 + attack + hold + release + 0.05);
+        var stopAt = t0 + attack + hold + release + 0.05;
+        osc.stop(stopAt);
+        var entry = trackVoice({ osc: osc, gain: g }, stopAt);
+        osc.onended = function() { removeVoice(entry); };
         return { osc: osc, gain: g };
     }
 
@@ -156,7 +241,10 @@ var LockboxAudio = (function() {
             if (opts.reverb) sendG.connect(_reverb);
         }
         src.start(t0);
-        src.stop(t0 + attack + hold + release + 0.05);
+        var stopAt = t0 + attack + hold + release + 0.05;
+        src.stop(stopAt);
+        var entry = trackVoice({ src: src, gain: g }, stopAt);
+        src.onended = function() { removeVoice(entry); };
     }
 
     function chord(freqs, opts) {
@@ -260,6 +348,106 @@ var LockboxAudio = (function() {
         _heartbeat = null;
     }
 
+    function startTraceBed() {
+        if (!_enabled || _muted) return;
+        var c = ctx(); if (!c || _traceBed) return;
+        var t0 = c.currentTime;
+
+        var carrier = c.createOscillator();
+        carrier.type = 'sawtooth';
+        carrier.frequency.setValueAtTime(118, t0);
+        var sub = c.createOscillator();
+        sub.type = 'square';
+        sub.frequency.setValueAtTime(59, t0);
+
+        var pitchLfo = c.createOscillator();
+        pitchLfo.frequency.setValueAtTime(4.5, t0);
+        var pitchAmt = c.createGain();
+        pitchAmt.gain.setValueAtTime(2, t0);
+        pitchLfo.connect(pitchAmt);
+        pitchAmt.connect(carrier.detune);
+
+        var noise = c.createBufferSource();
+        noise.buffer = noiseBuffer();
+        noise.loop = true;
+        var noiseFilter = c.createBiquadFilter();
+        noiseFilter.type = 'bandpass';
+        noiseFilter.frequency.setValueAtTime(1400, t0);
+        noiseFilter.Q.value = 2.8;
+
+        var mainGain = c.createGain();
+        mainGain.gain.setValueAtTime(0.0001, t0);
+        var noiseGain = c.createGain();
+        noiseGain.gain.setValueAtTime(0.0001, t0);
+        var sendGain = c.createGain();
+        sendGain.gain.setValueAtTime(0.18, t0);
+
+        carrier.connect(mainGain);
+        sub.connect(mainGain);
+        noise.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
+        mainGain.connect(_master);
+        noiseGain.connect(_master);
+        mainGain.connect(sendGain);
+        noiseGain.connect(sendGain);
+        sendGain.connect(_delay);
+
+        carrier.start(t0);
+        sub.start(t0);
+        pitchLfo.start(t0);
+        noise.start(t0);
+
+        _traceBed = {
+            carrier: carrier,
+            sub: sub,
+            pitchLfo: pitchLfo,
+            pitchAmt: pitchAmt,
+            noise: noise,
+            noiseFilter: noiseFilter,
+            mainGain: mainGain,
+            noiseGain: noiseGain,
+            sendGain: sendGain
+        };
+    }
+
+    function setTraceBedIntensity(traceValue) {
+        if (!_ctx) return;
+        if (_muted || traceValue < 0.72) {
+            stopTraceBed();
+            return;
+        }
+        if (!_traceBed) startTraceBed();
+        if (!_traceBed) return;
+
+        var t = _ctx.currentTime;
+        var scaled = Math.max(0, Math.min(1, (traceValue - 0.72) / 0.28));
+        _traceBed.mainGain.gain.cancelScheduledValues(t);
+        _traceBed.mainGain.gain.linearRampToValueAtTime(0.024 + scaled * 0.11, t + 0.08);
+        _traceBed.noiseGain.gain.cancelScheduledValues(t);
+        _traceBed.noiseGain.gain.linearRampToValueAtTime(0.004 + scaled * 0.075, t + 0.08);
+        _traceBed.noiseFilter.frequency.cancelScheduledValues(t);
+        _traceBed.noiseFilter.frequency.linearRampToValueAtTime(1200 + scaled * 3200, t + 0.08);
+        _traceBed.pitchAmt.gain.cancelScheduledValues(t);
+        _traceBed.pitchAmt.gain.linearRampToValueAtTime(2 + scaled * 26, t + 0.08);
+        _traceBed.carrier.frequency.cancelScheduledValues(t);
+        _traceBed.carrier.frequency.linearRampToValueAtTime(118 + scaled * 124, t + 0.08);
+        _traceBed.sub.frequency.cancelScheduledValues(t);
+        _traceBed.sub.frequency.linearRampToValueAtTime(59 + scaled * 58, t + 0.08);
+    }
+
+    function stopTraceBed() {
+        if (!_traceBed || !_ctx) return;
+        var t = _ctx.currentTime;
+        var bed = _traceBed;
+        _traceBed = null;
+        scheduleGainRamp(bed.mainGain, 0.0001, 0.14);
+        scheduleGainRamp(bed.noiseGain, 0.0001, 0.14);
+        stopNode(bed.carrier, t + 0.18);
+        stopNode(bed.sub, t + 0.18);
+        stopNode(bed.pitchLfo, t + 0.18);
+        stopNode(bed.noise, t + 0.18);
+    }
+
     var SFX = {
         tapLegal: function(meta) {
             var t = performance.now();
@@ -315,6 +503,15 @@ var LockboxAudio = (function() {
             tone(220, { at: t0 + 0.2, type: 'sawtooth', attackMs: 3, holdMs: 60, releaseMs: 200, peak: 0.2, sweepTo: 110, sweepMs: 220 });
             burst({ at: t0, freq: 3000, q: 6, attackMs: 2, holdMs: 40, releaseMs: 220, peak: 0.1, wet: 0.4, reverb: true });
         },
+        traceTerminal: function() {
+            var c = ctx(); if (!c) return;
+            var t0 = c.currentTime;
+            tone(330, { at: t0, type: 'sawtooth', attackMs: 4, holdMs: 110, releaseMs: 420, peak: 0.18, sweepTo: 660, sweepMs: 340, wet: 0.4, reverb: true });
+            tone(165, { at: t0, type: 'square', attackMs: 2, holdMs: 80, releaseMs: 260, peak: 0.18, sweepTo: 82, sweepMs: 280 });
+            tone(1320, { at: t0 + 0.08, type: 'square', attackMs: 1, holdMs: 28, releaseMs: 140, peak: 0.12, wet: 0.35, delay: true });
+            tone(1760, { at: t0 + 0.15, type: 'square', attackMs: 1, holdMs: 24, releaseMs: 120, peak: 0.1, wet: 0.35, delay: true });
+            burst({ at: t0, freq: 4600, q: 9, attackMs: 1, holdMs: 34, releaseMs: 220, peak: 0.12, wet: 0.45, reverb: true });
+        },
         finisherHoldPulse: function(meta) {
             var pct = (meta && meta.pct) || 0;
             var freq = 220 + pct * 660;
@@ -363,6 +560,37 @@ var LockboxAudio = (function() {
             burst({ at: t0, freq: 400, q: 0.4, attackMs: 4, holdMs: 120, releaseMs: 480, peak: 0.25, sweepTo: 80, sweepMs: 520 });
             tone(65, { at: t0 + 0.5, type: 'sine', attackMs: 6, holdMs: 240, releaseMs: 680, peak: 0.3 });
             burst({ at: t0 + 0.1, freq: 2200, q: 0.6, attackMs: 2, holdMs: 20, releaseMs: 160, peak: 0.16, wet: 0.5, reverb: true });
+        },
+        traceOverload: function(meta) {
+            var c = ctx(); if (!c) return;
+            var t0 = c.currentTime;
+            var success = meta && meta.outcome === 'partial_success';
+            tone(36, { at: t0, type: 'sine', attackMs: 2, holdMs: 180, releaseMs: 780, peak: 0.48, wet: 0.45, reverb: true });
+            tone(72, { at: t0, type: 'sawtooth', attackMs: 2, holdMs: 140, releaseMs: 620, peak: 0.26, sweepTo: success ? 96 : 34, sweepMs: 520, wet: 0.45, reverb: true });
+            tone(240, { at: t0, type: 'square', attackMs: 2, holdMs: 80, releaseMs: 260, peak: 0.18, sweepTo: 960, sweepMs: 220, wet: 0.35, delay: true });
+            burst({ at: t0, freq: 140, q: 0.8, attackMs: 1, holdMs: 24, releaseMs: 320, peak: 0.36 });
+            burst({ at: t0, freq: 5600, q: 0.45, attackMs: 1, holdMs: 80, releaseMs: 620, peak: 0.25, sweepTo: 800, sweepMs: 700, wet: 0.65, reverb: true });
+            var shards = success ? [1175, 1397, 1760, 2093, 2637, 3136] : [988, 880, 784, 659, 523, 392];
+            for (var i = 0; i < shards.length; i++) {
+                tone(shards[i], {
+                    at: t0 + 0.06 + i * 0.05,
+                    type: success ? 'triangle' : 'square',
+                    attackMs: 2,
+                    holdMs: 18,
+                    releaseMs: 220,
+                    peak: success ? 0.16 : 0.12,
+                    wet: 0.5,
+                    reverb: true
+                });
+            }
+            if (success) {
+                tone(196, { at: t0 + 0.32, type: 'sine', attackMs: 4, holdMs: 160, releaseMs: 720, peak: 0.2, wet: 0.6, reverb: true });
+                tone(247, { at: t0 + 0.32, type: 'sine', attackMs: 4, holdMs: 160, releaseMs: 720, peak: 0.18, wet: 0.6, reverb: true });
+                tone(392, { at: t0 + 0.32, type: 'triangle', attackMs: 4, holdMs: 140, releaseMs: 680, peak: 0.16, wet: 0.55, reverb: true });
+            } else {
+                tone(156, { at: t0 + 0.26, type: 'sawtooth', attackMs: 3, holdMs: 140, releaseMs: 520, peak: 0.16, sweepTo: 52, sweepMs: 420, wet: 0.45 });
+                tone(104, { at: t0 + 0.34, type: 'sine', attackMs: 3, holdMs: 120, releaseMs: 540, peak: 0.18 });
+            }
         }
     };
 
@@ -373,16 +601,26 @@ var LockboxAudio = (function() {
         if (fn) fn(meta);
     }
 
+    function stopAll(hard) {
+        if (!_ctx) return;
+        stopAmbient();
+        stopHeartbeat();
+        stopTraceBed();
+        var voices = _voices.slice();
+        for (var i = 0; i < voices.length; i++) stopVoice(voices[i], hard !== false);
+        _voices.length = 0;
+        clearFxTail();
+    }
+
     function setMuted(m) {
         _muted = !!m;
         if (_muted) {
-            stopAmbient();
-            stopHeartbeat();
+            stopAll(true);
         }
         if (_master && _ctx) {
             var t = _ctx.currentTime;
             _master.gain.cancelScheduledValues(t);
-            _master.gain.setValueAtTime(_master.gain.value, t);
+            _master.gain.setValueAtTime(Math.max(0.0001, _master.gain.value), t);
             _master.gain.linearRampToValueAtTime(_muted ? 0.0001 : MASTER_VOL, t + 0.03);
         }
     }
@@ -396,8 +634,11 @@ var LockboxAudio = (function() {
         startAmbient: startAmbient,
         stopAmbient: stopAmbient,
         setAmbientTension: setAmbientTension,
+        setTraceBedIntensity: setTraceBedIntensity,
+        stopTraceBed: stopTraceBed,
         startHeartbeat: startHeartbeat,
         tickHeartbeat: tickHeartbeat,
-        stopHeartbeat: stopHeartbeat
+        stopHeartbeat: stopHeartbeat,
+        stopAll: stopAll
     };
 })();
