@@ -807,6 +807,14 @@ var LockboxPanel = (function() {
             else if (finisherResult === 'perfect') LockboxAudio.play('finishPerfect');
             else if (finisherResult === 'good') LockboxAudio.play('finishGood');
             else LockboxAudio.play('finishMiss');
+
+            var humTone = (outcome === 'fail' || reason === 'trace') ? 'cold' : 'warm';
+            var humDuration = finisherResult === 'perfect' ? 7.2 : outcome === 'fail' ? 5.2 : 5.6;
+            setTimeout(function() {
+                if (typeof LockboxAudio !== 'undefined' && _state && _state.result) {
+                    LockboxAudio.startOutroHum({ tone: humTone, duration: humDuration });
+                }
+            }, finisherResult === 'perfect' ? 900 : 700);
         }
         triggerResultFx(outcome, finisherResult, reason);
         notifyHost('result', payload);
@@ -1049,7 +1057,10 @@ var LockboxPanel = (function() {
                     _state.finisher.audioStep = audioStep;
                     LockboxAudio.play('finisherHoldPulse', { pct: Math.min(1.2, holdPct) });
                 }
-                if (!_state.finisher.sweetCueFired && _state.finisher.currentMs >= 780 && _state.finisher.currentMs <= 1020) {
+                // Drop upper bound: a stalled frame (e.g. 770→1050ms) would otherwise
+                // skip the sweet cue entirely. Now sweet fires on first crossing of 780,
+                // danger fires on first crossing of 1020 — preserving temporal order.
+                if (!_state.finisher.sweetCueFired && _state.finisher.currentMs >= 780) {
                     _state.finisher.sweetCueFired = true;
                     LockboxAudio.play('finisherSweetCue');
                 }
@@ -1137,17 +1148,32 @@ var LockboxPanel = (function() {
 
     function renderSequences() {
         var seqs = [
-            { id: 'A', tokens: _state.puzzle.seqA, done: LockboxCore.bufferContainsSequence(_state.bufferTokens, _state.puzzle.seqA), locked: false },
-            { id: 'B', tokens: _state.puzzle.seqB, done: LockboxCore.bufferContainsSequence(_state.bufferTokens, _state.puzzle.seqB), locked: false },
-            { id: 'C', tokens: _state.puzzle.seqC, done: _state.bonusSolved, locked: _state.bonusLocked && !_state.bonusSolved }
+            { id: 'A', tokens: _state.puzzle.seqA, done: LockboxCore.bufferContainsSequence(_state.bufferTokens, _state.puzzle.seqA), locked: false, required: true },
+            { id: 'B', tokens: _state.puzzle.seqB, done: LockboxCore.bufferContainsSequence(_state.bufferTokens, _state.puzzle.seqB), locked: false, required: true },
+            { id: 'C', tokens: _state.puzzle.seqC, done: _state.bonusSolved, locked: _state.bonusLocked && !_state.bonusSolved, required: false }
         ];
+        var isResult = _state.phase === 'RESULT' || _state.phase === 'FAIL';
+        _refs.sequences.classList.toggle('result-mode', isResult);
+
         var html = [];
         for (var i = 0; i < seqs.length; i++) {
+            var s = seqs[i];
+            var stateWord;
+            if (isResult) {
+                stateWord = s.locked ? 'LOCKED'
+                          : s.done ? 'HIT'
+                          : s.required ? 'MISS'
+                          : 'SKIP';
+            } else {
+                stateWord = s.locked ? 'LOCKED'
+                          : s.done ? 'SOLVED'
+                          : 'PENDING';
+            }
             html.push(
-                '<div class="lockbox-seq-row ' + (seqs[i].done ? 'done' : '') + ' ' + (seqs[i].locked ? 'locked' : '') + '" data-seq-id="' + seqs[i].id + '">' +
-                '<div class="lockbox-seq-label">' + seqs[i].id + '</div>' +
-                '<div class="lockbox-seq-tokens">' + renderTokenStrip(seqs[i].tokens, 28) + '</div>' +
-                '<div class="lockbox-seq-state">' + (seqs[i].locked ? 'LOCKED' : seqs[i].done ? 'SOLVED' : 'PENDING') + '</div>' +
+                '<div class="lockbox-seq-row ' + (s.done ? 'done' : '') + ' ' + (s.locked ? 'locked' : '') + '" data-seq-id="' + s.id + '">' +
+                '<div class="lockbox-seq-label">' + s.id + '</div>' +
+                '<div class="lockbox-seq-tokens">' + renderTokenStrip(s.tokens, 28) + '</div>' +
+                '<div class="lockbox-seq-state">' + stateWord + '</div>' +
                 '</div>'
             );
         }
@@ -1233,21 +1259,21 @@ var LockboxPanel = (function() {
         var tracePct = Math.round((_state.traceValue || 0) * 100);
         var lockPct = Math.round(_state.config.bonusLockPct * 100);
         if (_state.phase === 'RESULT' || _state.phase === 'FAIL') {
-            return [
-                '<div class="lockbox-trace-meta-grid">',
-                    renderTraceMetaChip('TRACE', tracePct + '%'),
-                    renderTraceMetaChip('LOCK', lockPct + '%'),
-                    renderTraceMetaChip('STATE', _state.traceFrozen ? 'FROZEN' : getTraceVisualState().toUpperCase()),
-                    renderTraceMetaChip('BONUS', _state.bonusSolved ? 'KEPT' : _state.bonusLocked ? 'LOCKED' : 'OPEN'),
-                '</div>'
-            ].join('');
+            // Result card telemetry already carries TRACE/PICKS/ILLEGAL/SEED/PROFILE/SOLVER.
+            // Collapse this section to a visual-only artifact: the bar is the "ended-here"
+            // marker, single inline caption replaces the 4-chip grid (which was clipping
+            // at 252px side pane width anyway).
+            var stateWord = _state.traceFrozen ? 'FROZEN' : getTraceVisualState().toUpperCase();
+            var bonusWord = _state.bonusSolved ? 'BONUS KEPT' : _state.bonusLocked ? 'BONUS LOCKED' : 'BONUS OPEN';
+            return '<div class="lockbox-trace-inline">' +
+                '<span class="lockbox-trace-inline-chip accent">' + escapeHtml(stateWord) + ' @ ' + tracePct + '%</span>' +
+                '<span class="lockbox-trace-inline-chip muted">LOCK ' + lockPct + '%</span>' +
+                '<span class="lockbox-trace-inline-chip">' + escapeHtml(bonusWord) + '</span>' +
+                '</div>';
         }
         return escapeHtml(tracePct + '% / 锁阈值 ' + lockPct + '%' + (_state.traceFrozen ? ' / 已冻结' : ''));
     }
 
-    function renderTraceMetaChip(label, value) {
-        return '<span class="lockbox-trace-meta-chip"><em>' + escapeHtml(label) + '</em><b>' + escapeHtml(value) + '</b></span>';
-    }
 
     function renderTraceShell() {
         var tracePct = Math.round(_state.traceValue * 100);

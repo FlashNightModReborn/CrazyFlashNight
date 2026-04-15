@@ -977,38 +977,6 @@
 .lockbox-trace-meta,
 .lockbox-status-line,
 .lockbox-kv-row { font-size:12px; color:var(--cp-dim); line-height:1.6; }
-.lockbox-trace-meta-grid {
-    display:grid;
-    grid-template-columns:repeat(2, minmax(0, 1fr));
-    gap:6px;
-    margin-top:8px;
-}
-.lockbox-trace-meta-chip {
-    min-width:0;
-    padding:5px 7px;
-    border:1px solid rgba(0,240,255,0.14);
-    background:
-        linear-gradient(180deg, rgba(0,240,255,0.06), transparent 65%),
-        rgba(4,10,16,0.7);
-    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
-}
-.lockbox-trace-meta-chip em {
-    display:block;
-    margin-bottom:1px;
-    color:var(--cp-dim);
-    font-style:normal;
-    font-size:10px;
-    letter-spacing:2px;
-}
-.lockbox-trace-meta-chip b {
-    display:block;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-    color:var(--cp-text);
-    font-size:12px;
-    letter-spacing:1px;
-}
 
 .lockbox-hud {
     display:none;
@@ -1052,7 +1020,6 @@
     .lockbox-help-grid { grid-template-columns:1fr; }
     .lockbox-hud-grid { grid-template-columns:1fr; }
     .lockbox-result-telemetry { grid-template-columns:1fr; }
-    .lockbox-trace-meta-grid { grid-template-columns:1fr; }
     .lockbox-grid-shell {
         grid-template-columns:minmax(0, 1fr) 72px;
     }
@@ -1301,11 +1268,55 @@
 .lockbox-cell.legal {
     border-color:#00f0ff;
     box-shadow:0 0 10px rgba(0,240,255,0.35), inset 0 0 14px rgba(0,240,255,0.1);
+    transition:box-shadow 0.14s ease, transform 0.14s ease, filter 0.14s ease, border-color 0.14s ease;
+}
+.lockbox-cell.legal:hover {
+    box-shadow:0 0 18px rgba(0,240,255,0.65), inset 0 0 22px rgba(0,240,255,0.22);
+    transform:translateY(-1px) scale(1.02);
+    filter:brightness(1.12);
 }
 .lockbox-cell.entry {
     border-color:#fcee09; background:rgba(252,238,9,0.05);
     box-shadow:inset 0 2px 0 0 #fcee09;
+    position:relative;
 }
+.lockbox-cell.entry::after {
+    content:"";
+    position:absolute;
+    left:-2px; right:-2px;
+    top:-2px;
+    height:2px;
+    background:linear-gradient(90deg, transparent 0, #fcee09 30%, #fff 50%, #fcee09 70%, transparent 100%);
+    filter:drop-shadow(0 0 6px rgba(252,238,9,0.8));
+    animation:lb-entry-beam 1.6s linear infinite;
+    pointer-events:none;
+    opacity:0.9;
+}
+@keyframes lb-entry-beam {
+    0%   { background-position:-100% 0; opacity:0.5; }
+    50%  { opacity:1; }
+    100% { background-position:200% 0; opacity:0.5; }
+}
+
+/* MAIN_READY grid halo — subtle green aura once A/B are satisfied */
+.lockbox-panel[data-phase="MAIN_READY"] .lockbox-grid-shell {
+    box-shadow:
+        inset 0 0 70px rgba(125,255,162,0.14),
+        0 0 28px rgba(125,255,162,0.3);
+    border-color:rgba(125,255,162,0.4);
+}
+.lockbox-panel[data-phase="MAIN_READY"] .lockbox-cell.selected {
+    border-color:#9dffb6;
+    box-shadow:0 0 16px rgba(157,255,182,0.55), inset 0 0 18px rgba(157,255,182,0.22);
+}
+
+/* INJECTING: panel vignette subtly breathes — sells "live session" */
+@keyframes lb-inject-breathe {
+    0%,100% { box-shadow:0 0 0 1px rgba(252,238,9,0.05), 0 0 24px rgba(0,240,255,0.08), inset 0 0 120px rgba(252,238,9,0.02); }
+    50%     { box-shadow:0 0 0 1px rgba(252,238,9,0.08), 0 0 36px rgba(0,240,255,0.14), inset 0 0 140px rgba(0,240,255,0.04); }
+}
+.lockbox-panel[data-phase="INJECTING"] { animation:lb-inject-breathe 3.4s ease-in-out infinite; }
+.lockbox-panel[data-phase="MAIN_READY"] { animation:lb-inject-breathe 2.2s ease-in-out infinite; }
 .lockbox-cell.selected {
     border-color:#fcee09; background:rgba(252,238,9,0.14);
     box-shadow:0 0 14px rgba(252,238,9,0.45), inset 0 0 16px rgba(252,238,9,0.18);
@@ -1406,6 +1417,121 @@
 .lockbox-seq-state { color:var(--cp-dim); letter-spacing:2px; font-weight:bold; }
 .lockbox-seq-row.done .lockbox-seq-state { color:#fcee09; text-shadow:0 0 6px rgba(252,238,9,0.6); }
 .lockbox-seq-row.locked .lockbox-seq-state { color:#ff003c; }
+
+/* ═════ RESULT MODE — flat HUD checklist ═════
+   A/B/C become single-line terminal rows: colored accent bar on the left,
+   evidence tokens dimmed to 18px, status chip pops with solid color + glow.
+*/
+#lockbox-sequences.result-mode {
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+#lockbox-sequences.result-mode .lockbox-seq-row {
+    grid-template-columns:20px minmax(0, 1fr) auto;
+    gap:8px;
+    padding:4px 8px 4px 10px;
+    border:1px solid rgba(0,240,255,0.12);
+    border-left:3px solid rgba(252,238,9,0.5);
+    background:linear-gradient(90deg, rgba(252,238,9,0.04), rgba(8,10,16,0.76) 55%);
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+    box-shadow:none;
+    transition:border-color 0.16s ease, background 0.16s ease, filter 0.16s ease;
+}
+#lockbox-sequences.result-mode .lockbox-seq-row.done {
+    border-color:rgba(125,255,162,0.22);
+    border-left-color:#9dffb6;
+    background:linear-gradient(90deg, rgba(125,255,162,0.1), rgba(8,18,14,0.82) 55%);
+    box-shadow:0 0 14px rgba(125,255,162,0.18);
+}
+#lockbox-sequences.result-mode .lockbox-seq-row.locked {
+    border-color:rgba(255,0,60,0.28);
+    border-left-color:#ff003c;
+    background:
+        repeating-linear-gradient(-45deg, rgba(255,0,60,0.08) 0 3px, transparent 3px 9px),
+        linear-gradient(90deg, rgba(255,0,60,0.12), rgba(18,6,8,0.85) 55%);
+}
+#lockbox-sequences.result-mode .lockbox-seq-row:not(.done):not(.locked) {
+    border-left-color:rgba(255,138,0,0.55);
+    background:linear-gradient(90deg, rgba(255,138,0,0.06), rgba(16,10,6,0.8) 55%);
+    filter:saturate(0.8);
+}
+#lockbox-sequences.result-mode .lockbox-seq-label {
+    padding:1px 5px;
+    font-size:11px;
+    clip-path:polygon(0 0, 100% 0, calc(100% - 3px) 100%, 0 100%);
+}
+#lockbox-sequences.result-mode .lockbox-seq-tokens {
+    display:flex;
+    gap:2px;
+    flex-wrap:nowrap;
+    overflow:hidden;
+    opacity:0.55;
+}
+#lockbox-sequences.result-mode .lockbox-mini-token {
+    width:18px; height:18px;
+    flex-shrink:0;
+}
+#lockbox-sequences.result-mode .lockbox-mini-token svg {
+    width:18px !important;
+    height:18px !important;
+}
+#lockbox-sequences.result-mode .lockbox-seq-row:hover .lockbox-seq-tokens { opacity:0.95; }
+
+#lockbox-sequences.result-mode .lockbox-seq-state {
+    padding:2px 9px;
+    font-size:10px;
+    font-weight:bold;
+    letter-spacing:2px;
+    color:rgba(200,220,240,0.55);
+    background:rgba(4,8,14,0.72);
+    border:1px solid rgba(0,240,255,0.18);
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+    text-shadow:none;
+    position:relative;
+    min-width:54px;
+    text-align:center;
+}
+#lockbox-sequences.result-mode .lockbox-seq-state::before {
+    display:inline-block;
+    margin-right:4px;
+    font-weight:bold;
+}
+#lockbox-sequences.result-mode .lockbox-seq-row.done .lockbox-seq-state {
+    color:#02110a;
+    background:#9dffb6;
+    border-color:#9dffb6;
+    box-shadow:0 0 12px rgba(125,255,162,0.55), inset 0 0 6px rgba(255,255,255,0.18);
+    text-shadow:none;
+}
+#lockbox-sequences.result-mode .lockbox-seq-row.done .lockbox-seq-state::before { content:"▸"; }
+#lockbox-sequences.result-mode .lockbox-seq-row.locked .lockbox-seq-state {
+    color:#fff;
+    background:#ff003c;
+    border-color:#ff003c;
+    box-shadow:0 0 12px rgba(255,0,60,0.55), inset 0 0 6px rgba(255,255,255,0.12);
+}
+#lockbox-sequences.result-mode .lockbox-seq-row.locked .lockbox-seq-state::before { content:"✕"; }
+#lockbox-sequences.result-mode .lockbox-seq-row:not(.done):not(.locked) .lockbox-seq-state {
+    color:#ffb56a;
+    background:rgba(40,18,4,0.76);
+    border-color:#ff8a00;
+    box-shadow:0 0 10px rgba(255,138,0,0.32);
+}
+#lockbox-sequences.result-mode .lockbox-seq-row:not(.done):not(.locked) .lockbox-seq-state::before { content:"◇"; }
+/* Bonus row (C) that's neither done nor locked → user skipped it, neutral grey */
+#lockbox-sequences.result-mode .lockbox-seq-row[data-seq-id="C"]:not(.done):not(.locked) {
+    border-left-color:rgba(130,150,180,0.45);
+    background:linear-gradient(90deg, rgba(130,150,180,0.05), rgba(8,10,16,0.78) 55%);
+    filter:none;
+}
+#lockbox-sequences.result-mode .lockbox-seq-row[data-seq-id="C"]:not(.done):not(.locked) .lockbox-seq-state {
+    color:rgba(200,220,240,0.6);
+    background:rgba(18,24,34,0.8);
+    border-color:rgba(130,150,180,0.32);
+    box-shadow:none;
+}
+#lockbox-sequences.result-mode .lockbox-seq-row[data-seq-id="C"]:not(.done):not(.locked) .lockbox-seq-state::before { content:"·"; }
 
 .lockbox-trace-bar {
     background:
@@ -1510,22 +1636,65 @@
     background:
         linear-gradient(180deg, rgba(0,240,255,0.05), transparent 58%),
         rgba(8,10,16,0.84);
+    padding:10px 12px;
+}
+.lockbox-panel[data-phase="RESULT"] .lockbox-trace-section .lockbox-side-title::after,
+.lockbox-panel[data-phase="FAIL"] .lockbox-trace-section .lockbox-side-title::after {
+    content:" · SNAPSHOT";
+    color:rgba(0,240,255,0.5);
+    letter-spacing:2px;
+    font-size:10px;
 }
 .lockbox-panel[data-phase="RESULT"] .lockbox-trace-section .lockbox-trace-bar,
 .lockbox-panel[data-phase="FAIL"] .lockbox-trace-section .lockbox-trace-bar {
-    height:18px;
-    box-shadow:0 0 16px rgba(0,240,255,0.08), inset 0 0 0 1px rgba(0,240,255,0.08);
+    height:10px;
+    box-shadow:0 0 12px rgba(0,240,255,0.1), inset 0 0 0 1px rgba(0,240,255,0.08);
 }
 .lockbox-panel[data-phase="RESULT"] .lockbox-trace-section .lockbox-trace-fill,
 .lockbox-panel[data-phase="FAIL"] .lockbox-trace-section .lockbox-trace-fill {
-    box-shadow:0 0 18px rgba(0,240,255,0.18);
+    box-shadow:0 0 14px rgba(0,240,255,0.22);
 }
-.lockbox-panel[data-result-tone="overload"] .lockbox-trace-section .lockbox-trace-meta-chip,
-.lockbox-panel[data-result-tone="trace-kill"] .lockbox-trace-section .lockbox-trace-meta-chip {
-    border-color:rgba(255,0,60,0.18);
+
+/* Inline caption below the post-mortem bar — replaces the old 4-chip grid */
+.lockbox-trace-inline {
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px 6px;
+    margin-top:8px;
+    align-items:center;
 }
-.lockbox-panel[data-result-tone="overload"] .lockbox-trace-section .lockbox-trace-meta-chip b { color:#ffd089; }
-.lockbox-panel[data-result-tone="trace-kill"] .lockbox-trace-section .lockbox-trace-meta-chip b { color:#ffd7e2; }
+.lockbox-trace-inline-chip {
+    display:inline-block;
+    padding:1px 7px;
+    font-size:10px;
+    letter-spacing:1.5px;
+    color:var(--cp-text);
+    background:rgba(4,8,14,0.72);
+    border:1px solid rgba(0,240,255,0.18);
+    clip-path:polygon(0 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 3px 100%, 0 calc(100% - 3px));
+}
+.lockbox-trace-inline-chip.accent {
+    color:#0a0a0a;
+    background:#00f0ff;
+    border-color:#00f0ff;
+    box-shadow:0 0 10px rgba(0,240,255,0.4);
+}
+.lockbox-trace-inline-chip.muted {
+    color:var(--cp-dim);
+    background:transparent;
+    border-color:rgba(0,240,255,0.12);
+}
+.lockbox-panel[data-result-tone="overload"] .lockbox-trace-inline-chip.accent {
+    background:#ff8a00;
+    border-color:#ff8a00;
+    box-shadow:0 0 10px rgba(255,138,0,0.5);
+}
+.lockbox-panel[data-result-tone="trace-kill"] .lockbox-trace-inline-chip.accent {
+    background:#ff003c;
+    border-color:#ff003c;
+    color:#fff;
+    box-shadow:0 0 10px rgba(255,0,60,0.55);
+}
 
 .lockbox-rail-finisher-track {
     --finisher-charge:0;
@@ -1582,10 +1751,6 @@
 }
 
 /* Rail label reveal: "HOLD & RELEASE IN SWEET ZONE" */
-.lockbox-rail-finisher.visible::before,
-.lockbox-rail-finisher.visible::after {
-    /* existing ring animations — keep */
-}
 .lockbox-rail-finisher {
     position:relative;
 }

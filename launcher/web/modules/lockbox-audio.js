@@ -460,6 +460,70 @@ var LockboxAudio = (function() {
         stopNode(bed.noise, t + 0.18);
     }
 
+    var _outroHum = null;
+    function startOutroHum(opts) {
+        // Dead-air bed after a result: a 40-60Hz hum with filtered vinyl-noise
+        // crackle, fades in over 0.8s and out over 4s so it doesn't fight the
+        // result SFX tail but still gives the "equipment still powered" feel.
+        if (!_enabled || _muted) return;
+        var c = ctx(); if (!c) return;
+        stopOutroHum();
+        opts = opts || {};
+        var t0 = c.currentTime;
+        var duration = opts.duration || 6.0;
+        var tone1 = c.createOscillator();
+        tone1.type = 'sine';
+        tone1.frequency.setValueAtTime(opts.tone === 'warm' ? 62 : 48, t0);
+        var tone2 = c.createOscillator();
+        tone2.type = 'sine';
+        tone2.frequency.setValueAtTime(opts.tone === 'warm' ? 93 : 72, t0);
+        tone2.detune.setValueAtTime(-6, t0);
+        var crackle = c.createBufferSource();
+        crackle.buffer = noiseBuffer();
+        crackle.loop = true;
+        var crackleBp = c.createBiquadFilter();
+        crackleBp.type = 'bandpass';
+        crackleBp.frequency.setValueAtTime(opts.tone === 'warm' ? 2400 : 3200, t0);
+        crackleBp.Q.value = 1.6;
+        var toneGain = c.createGain();
+        toneGain.gain.setValueAtTime(0.0001, t0);
+        toneGain.gain.linearRampToValueAtTime(opts.tone === 'warm' ? 0.09 : 0.07, t0 + 0.8);
+        toneGain.gain.linearRampToValueAtTime(0.0001, t0 + duration);
+        var crackleGain = c.createGain();
+        crackleGain.gain.setValueAtTime(0.0001, t0);
+        crackleGain.gain.linearRampToValueAtTime(0.02, t0 + 0.8);
+        crackleGain.gain.linearRampToValueAtTime(0.0001, t0 + duration);
+        tone1.connect(toneGain);
+        tone2.connect(toneGain);
+        crackle.connect(crackleBp);
+        crackleBp.connect(crackleGain);
+        toneGain.connect(_master);
+        crackleGain.connect(_master);
+        var wetSend = c.createGain();
+        wetSend.gain.value = 0.2;
+        toneGain.connect(wetSend);
+        wetSend.connect(_reverb);
+        tone1.start(t0);
+        tone2.start(t0);
+        crackle.start(t0);
+        stopNode(tone1, t0 + duration + 0.2);
+        stopNode(tone2, t0 + duration + 0.2);
+        stopNode(crackle, t0 + duration + 0.2);
+        _outroHum = { tone1: tone1, tone2: tone2, crackle: crackle, toneGain: toneGain, crackleGain: crackleGain };
+    }
+
+    function stopOutroHum() {
+        if (!_outroHum || !_ctx) return;
+        var t = _ctx.currentTime;
+        var h = _outroHum;
+        _outroHum = null;
+        scheduleGainRamp(h.toneGain, 0.0001, 0.16);
+        scheduleGainRamp(h.crackleGain, 0.0001, 0.16);
+        stopNode(h.tone1, t + 0.2);
+        stopNode(h.tone2, t + 0.2);
+        stopNode(h.crackle, t + 0.2);
+    }
+
     var SFX = {
         tapLegal: function(meta) {
             var t = performance.now();
@@ -646,6 +710,7 @@ var LockboxAudio = (function() {
         stopAmbient();
         stopHeartbeat();
         stopTraceBed();
+        stopOutroHum();
         var voices = _voices.slice();
         for (var i = 0; i < voices.length; i++) stopVoice(voices[i], hard !== false);
         _voices.length = 0;
@@ -683,6 +748,8 @@ var LockboxAudio = (function() {
         startHeartbeat: startHeartbeat,
         tickHeartbeat: tickHeartbeat,
         stopHeartbeat: stopHeartbeat,
+        startOutroHum: startOutroHum,
+        stopOutroHum: stopOutroHum,
         stopAll: stopAll
     };
 })();
