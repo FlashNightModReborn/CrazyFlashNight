@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-迅驰腿1连招" itemID="69de9d91-00000d1f" linkageExportForAS="true" linkageIdentifier="空手攻击容器-迅驰腿1连招" lastModified="1776234666" lastUniqueIdentifier="35">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-迅驰腿1连招" itemID="69de9d91-00000d1f" linkageExportForAS="true" linkageIdentifier="空手攻击容器-迅驰腿1连招" lastModified="1776265560" lastUniqueIdentifier="35">
   <timeline>
-    <DOMTimeline name="空手攻击容器-迅驰腿1连招" currentFrame="128">
+    <DOMTimeline name="空手攻击容器-迅驰腿1连招" currentFrame="134">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -234,10 +234,10 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
 		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
@@ -248,8 +248,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 12;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -296,10 +295,10 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
 		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
@@ -310,8 +309,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 10;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -358,10 +356,10 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
 		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
@@ -372,8 +370,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 15;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -410,7 +407,7 @@
             </DOMFrame>
             <DOMFrame index="35" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="305.75" centerPoint3DY="4.9">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" selected="true" centerPoint3DX="305.75" centerPoint3DY="4.9">
                   <matrix>
                     <Matrix a="4.48028564453125" d="2.43051147460938" tx="306.95" ty="4.3"/>
                   </matrix>
@@ -423,10 +420,10 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
 		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
@@ -437,8 +434,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 10;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -488,10 +484,10 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 0.5;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
 		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
@@ -502,7 +498,6 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
 	子弹属性.水平击退速度 = 7;
 	//非常用
 	/*
@@ -556,10 +551,10 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 0.5 ;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
 		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
@@ -570,8 +565,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 10;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -618,13 +612,13 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.2;
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
@@ -632,8 +626,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 12;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -680,10 +673,10 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
 		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.2;
@@ -694,8 +687,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 12;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -724,13 +716,16 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="91" duration="10" keyMode="9728">
+            <DOMFrame index="91" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="101" keyMode="9728">
+            <DOMFrame index="99" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="102" duration="2" keyMode="9728">
+            <DOMFrame index="100" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="288.4" centerPoint3DY="20.9">
                   <matrix>
@@ -745,13 +740,13 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.3;
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
@@ -759,8 +754,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 12;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -789,7 +783,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="104" duration="27" keyMode="9728">
+            <DOMFrame index="103" duration="28" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="131" duration="2" keyMode="9728">
@@ -807,13 +801,13 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 3;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 0.5;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.3;
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
@@ -821,8 +815,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 12;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -856,7 +849,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -876,7 +869,7 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
@@ -890,7 +883,6 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
 	子弹属性.水平击退速度 = 7;
 	//非常用
 	/*
@@ -938,7 +930,7 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
@@ -952,7 +944,6 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
 	子弹属性.水平击退速度 = 7;
 	//非常用
 	/*
@@ -1000,7 +991,7 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
@@ -1014,8 +1005,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 10;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -1062,7 +1052,7 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
@@ -1076,7 +1066,6 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
 	子弹属性.水平击退速度 = 7;
 	//非常用
 	/*
@@ -1127,7 +1116,7 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
@@ -1141,7 +1130,6 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
 	子弹属性.水平击退速度 = 7;
 	//非常用
 	/*
@@ -1195,10 +1183,10 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 0.5;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
 		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
@@ -1209,7 +1197,6 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
 	子弹属性.水平击退速度 = 7;
 	//非常用
 	/*
@@ -1254,13 +1241,13 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 3;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 0.5;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 1;
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
@@ -1268,8 +1255,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 13;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -1305,7 +1291,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="139.7" centerPoint3DY="74">
                   <matrix>
-                    <Matrix a="4.57785034179688" d="2.09602355957031" tx="140.8" ty="73.4"/>
+                    <Matrix a="4.57785034179688" d="2.09600830078125" tx="140.8" ty="73.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.25" y="0.4"/>
@@ -1316,7 +1302,7 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
@@ -1330,8 +1316,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 10;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -1378,10 +1363,10 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 0.5;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
 		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.2;
@@ -1392,7 +1377,6 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
 	子弹属性.水平击退速度 = 7;
 	//非常用
 	/*
@@ -1422,14 +1406,14 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="90" duration="10" keyMode="9728">
+            <DOMFrame index="90" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="100" duration="2" keyMode="9728">
+            <DOMFrame index="99" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="288.4" centerPoint3DY="20.9">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="249.4" centerPoint3DY="20.9">
                   <matrix>
-                    <Matrix a="3.78837585449219" d="3.033203125" tx="289.4" ty="20"/>
+                    <Matrix a="4.72836303710938" d="3.033203125" tx="250.6" ty="20"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.25" y="0.4"/>
@@ -1440,10 +1424,10 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 0.5;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
 		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.3;
@@ -1454,7 +1438,6 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
 	子弹属性.水平击退速度 = 7;
 	//非常用
 	/*
@@ -1484,7 +1467,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="102" duration="23" keyMode="9728">
+            <DOMFrame index="101" duration="24" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="125" duration="2" keyMode="9728">
@@ -1505,10 +1488,10 @@
 	子弹属性.霰弹值 = 2;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.5;
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
@@ -1516,7 +1499,6 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
 	子弹属性.水平击退速度 = 7;
 	//非常用
 	/*
@@ -1564,13 +1546,13 @@
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 3;
+	子弹属性.霰弹值 = 2;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.3;
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
@@ -1578,8 +1560,7 @@
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.血量上限击溃 = 0.1;
-	子弹属性.水平击退速度 = 7;
+	子弹属性.水平击退速度 = 8;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -1613,12 +1594,12 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="3" duration="2" keyMode="9728">
+            <DOMFrame index="3" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-266.45" centerPoint3DY="318.75">
                   <matrix>
@@ -1629,20 +1610,20 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,45);
+   _parent.攻击时移动(5,100);
 }
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" duration="5" keyMode="9728">
+            <DOMFrame index="7" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="12" duration="2" keyMode="9728">
+            <DOMFrame index="12" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-266.45" centerPoint3DY="318.75">
                   <matrix>
@@ -1653,14 +1634,14 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,45);
+   _parent.攻击时移动(5,60);
 }
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" duration="12" keyMode="9728">
+            <DOMFrame index="15" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="26" duration="5" keyMode="9728">
@@ -1674,17 +1655,17 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,45);
+   _parent.攻击时移动(5,70);
 }
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="31" duration="25" keyMode="9728">
+            <DOMFrame index="31" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="56" duration="13" keyMode="9728">
+            <DOMFrame index="32" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-266.45" centerPoint3DY="318.75">
                   <matrix>
@@ -1695,17 +1676,17 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,45);
+   _parent.攻击时移动(5,60);
 }
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="69" duration="10" keyMode="9728">
+            <DOMFrame index="36" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="79" duration="2" keyMode="9728">
+            <DOMFrame index="52" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-266.45" centerPoint3DY="318.75">
                   <matrix>
@@ -1716,17 +1697,17 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
+   _parent.攻击时移动(5,75);
 }
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="81" duration="5" keyMode="9728">
+            <DOMFrame index="56" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="86" duration="2" keyMode="9728">
+            <DOMFrame index="58" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-266.45" centerPoint3DY="318.75">
                   <matrix>
@@ -1737,17 +1718,20 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,25);
+   _parent.攻击时移动(5,75);
 }
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="88" duration="6" keyMode="9728">
+            <DOMFrame index="61" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="94" duration="2" keyMode="9728">
+            <DOMFrame index="62" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="78" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-266.45" centerPoint3DY="318.75">
                   <matrix>
@@ -1758,14 +1742,56 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,15);
+   _parent.攻击时移动(5,80);
 }
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="96" duration="19" keyMode="9728">
+            <DOMFrame index="82" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-266.45" centerPoint3DY="318.75">
+                  <matrix>
+                    <Matrix a="2.16769409179688" d="2.16769409179688" tx="-293.85" ty="291.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.攻击时移动(5,75);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="94" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-266.45" centerPoint3DY="318.75">
+                  <matrix>
+                    <Matrix a="2.16769409179688" d="2.16769409179688" tx="-293.85" ty="291.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.攻击时移动(5,75);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="115" duration="5" keyMode="9728">
@@ -1779,17 +1805,17 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,45);
+   _parent.攻击时移动(5,80);
 }
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="120" duration="4" keyMode="9728">
+            <DOMFrame index="120" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="124" duration="2" keyMode="9728">
+            <DOMFrame index="123" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-266.45" centerPoint3DY="318.75">
                   <matrix>
@@ -1800,14 +1826,35 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(5,15);
+   _parent.攻击时移动(5,55);
 }
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="126" duration="18" keyMode="9728">
+            <DOMFrame index="126" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="134" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-266.45" centerPoint3DY="318.75">
+                  <matrix>
+                    <Matrix a="2.16769409179688" d="2.16769409179688" tx="-293.85" ty="291.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.攻击时移动(5,65);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="139" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1838,10 +1885,10 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="22" duration="20" keyMode="9728">
+            <DOMFrame index="22" duration="18" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="8" keyMode="9728">
+            <DOMFrame index="40" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-341.85" centerPoint3DY="26.8">
                   <matrix>
@@ -31629,19 +31676,19 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="62" duration="18" keyMode="9728">
+            <DOMFrame index="62" duration="17" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("爆炸 较明亮 01.mp3");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="80" duration="2" keyMode="9728">
+            <DOMFrame index="79" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("重武器.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="82" duration="4" keyMode="9728">
+            <DOMFrame index="81" duration="5" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("爆炸 较明亮 01.mp3");]]></script>
               </Actionscript>
