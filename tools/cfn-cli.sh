@@ -115,6 +115,29 @@ case "${1:-status}" in
         echo "Error: Socket not connected after ${TIMEOUT}s" >&2; exit 1
         ;;
 
+    task)
+        # 调用 /task 端点，主要用于 archive 调试：
+        #   cfn-cli task archive list
+        #   cfn-cli task archive load <slot>
+        #   cfn-cli task archive delete <slot>
+        #   cfn-cli task archive shadow <slot>
+        shift
+        TASK="${1:-}"; OP="${2:-}"; SLOT="${3:-}"
+        if [ -z "$TASK" ] || [ -z "$OP" ]; then
+            echo "Usage: cfn-cli task <task-name> <op> [slot]" >&2; exit 1
+        fi
+        PORT=$(discover_port) || { echo "Error: Guardian Launcher not found." >&2; exit 1; }
+        if [ -n "$SLOT" ]; then
+            PAYLOAD="{\"op\":\"$OP\",\"slot\":\"$SLOT\"}"
+        else
+            PAYLOAD="{\"op\":\"$OP\"}"
+        fi
+        curl -s -X POST "http://localhost:$PORT/task" \
+            -H "Content-Type: application/json" \
+            -d "{\"task\":\"$TASK\",\"payload\":$PAYLOAD}"
+        echo
+        ;;
+
     status|console|toast|log|port)
         # 这些命令需要 bus 已在运行
         PORT=$(discover_port) || { echo "Error: Guardian Launcher not found." >&2; exit 1; }
@@ -170,5 +193,6 @@ case "${1:-status}" in
         echo "  toast <message>         Send toast message"
         echo "  log <message>           Send debug log"
         echo "  port                    Print discovered HTTP port"
+        echo "  task <name> <op> [slot] POST /task (archive 调试：list/load/delete/shadow)"
         ;;
 esac

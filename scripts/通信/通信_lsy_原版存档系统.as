@@ -64,3 +64,17 @@ _root.debugSavePrefetch = function():Void {
     var st:Object = SaveManager.getInstance().getPrefetchStatus();
     _root.debugLastResult = "hasPrefetch=" + st.hasPrefetch + " slot=" + st.slot + " gen=" + st.gen;
 };
+
+// P3b Spike 3: bootstrap 握手验证（一次性，Phase 1 会重新设计）
+// 用法：/console → #func:_root.spike_bootstrap_handshake() 然后 #get:debugLastResult
+_root.spike_bootstrap_handshake = function():Void {
+    var sm:ServerManager = ServerManager.getInstance();
+    _root.debugLastResult = "sending... connected=" + sm.isSocketConnected;
+    if (!sm.isSocketConnected) return;
+    sm.sendTaskWithCallback("bootstrap_handshake", {hello:"from_flash"}, null,
+        function(resp:Object):Void {
+            _root.debugLastResult = "resp: success=" + resp.success
+                + " savePath=" + resp.savePath
+                + " raw=" + resp.task;
+        });
+};

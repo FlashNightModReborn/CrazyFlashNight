@@ -159,6 +159,26 @@ class org.flashNight.neur.Server.SaveManager {
         return ok;
     }
 
+    /**
+     * Phase 1b hook (10a-1 stub / 10b implementation)：
+     * preload 收到 launcher load 响应 error 以 "tombstoned:" 开头时调用本方法，
+     * 对齐 SOL 墓碑（_deleted=true）。不变式 3：launcher tombstone 清除的唯一路径仍是 shadow。
+     */
+    public function handlePreloadTombstoned(slot:String):Void {
+        // 不变式 3：launcher tombstone → 对齐 SOL 墓碑，清预取
+        // （saveAll → shadow 是 tombstone 唯一安全清除路径；这里不碰 launcher tombstone）
+        var safeSlot:String = (slot == undefined || slot.length == 0) ? _root.savePath : slot;
+        var so:SharedObject = SharedObject.getLocal(safeSlot);
+        if (so != null) {
+            so.data._deleted = true;
+            try { so.flush(); } catch (e:Error) {}
+        }
+        _prefetchedData = undefined;
+        _prefetchedSlot = undefined;
+        _prefetchInFlight = false;
+        _prefetchGen++;
+    }
+
     public function preload():Void {
         var sm:ServerManager = ServerManager.getInstance();
         sm.sendServerMessage("[SaveManager.preload] savePath=" + _root.savePath);
@@ -175,7 +195,13 @@ class org.flashNight.neur.Server.SaveManager {
                 function(resp:Object):Void {
                     self._prefetchInFlight = false;
                     if (currentGen != self._prefetchGen) return;
-                    if (resp.success != true || typeof resp.data != "string") return;
+                    if (resp.success != true || typeof resp.data != "string") {
+                        // launcher 返回 tombstoned → 对齐 SOL 墓碑，避免"本地无墓碑而launcher已删"的状态分叉
+                        if (resp.error != null && String(resp.error).indexOf("tombstoned") == 0) {
+                            self.handlePreloadTombstoned(requestedSlot);
+                        }
+                        return;
+                    }
                     var parsed:Object = self._jsonParser.parse(resp.data);
                     if (self._jsonParser.errors.length > 0) return;
                     if (!self.validateMydata(parsed)) return;

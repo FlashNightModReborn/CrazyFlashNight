@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>CF7:ME</title>
+<link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body>
+<div class="wrap">
+  <h1>闪客快打 7 - 佣兵帝国</h1>
+  <div class="subtitle">请选择存档</div>
+
+  <div class="toolbar">
+    <button id="btn-refresh">刷新</button>
+    <button id="btn-retry" style="display:none">重试</button>
+    <span id="state-badge" class="state-badge">Idle</span>
+  </div>
+
+  <div id="cards" class="cards"><div class="empty">加载中...</div></div>
+
+  <div id="log"></div>
+</div>
+<script>
+(function() {
+  var logEl = document.getElementById('log');
+  var cardsEl = document.getElementById('cards');
+  var stateBadge = document.getElementById('state-badge');
+  var retryBtn = document.getElementById('btn-retry');
+  var currentState = 'Idle';
+
+  function logLine(cls, text) {
+    var d = new Date(), ts = d.toTimeString().slice(0, 8);
+    var span = document.createElement('span');
+    span.className = cls;
+    span.textContent = '[' + ts + '] ' + text + '\n';
+    logEl.appendChild(span);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function send(obj) {
+    obj.type = 'bootstrap';
+    var json = JSON.stringify(obj);
+    logLine('tag-out', '\u2192 ' + json);
+    try { window.chrome.webview.postMessage(json); }
+    catch (e) { logLine('tag-err', 'postMessage failed: ' + e.message); }
+  }
+
+  function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, function(c) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function fmtBytes(n) {
+    if (!n) return '';
+    if (n < 1024) return n + 'B';
+    return (n / 1024).toFixed(1) + 'KB';
+  }
+
+  function renderCards(slots) {
+    cardsEl.innerHTML = '';
+    if (!slots || slots.length === 0) {
+      cardsEl.innerHTML = '<div class="empty">暂无存档</div>';
+      return;
+    }
+    for (var i = 0; i < slots.length; i++) {
+      cardsEl.appendChild(renderCard(slots[i]));
+    }
+  }
+
+  function renderCard(s) {
+    var classes = ['card'];
+    if (s.corrupt)      classes.push('corrupt');
+    if (s.tombstoned)   classes.push('tombstoned');
+    if (s.inconsistent) classes.push('inconsistent');
+    var card = document.createElement('div');
+    card.className = classes.join(' ');
+
+    var flags = '';
+    if (s.corrupt)      flags += '<span class="flag corrupt">损坏</span>';
+    if (s.tombstoned && !s.inconsistent) flags += '<span class="flag tombstoned">已删除</span>';
+    if (s.inconsistent) flags += '<span class="flag inconsistent">不一致</span>';
+
+    var meta = fmtBytes(s.size);
+    if (s.lastModified) meta += ' \u00b7 ' + s.lastModified.slice(0, 16).replace('T', ' ');
+
+    var actions = '';
+    if (s.tombstoned || s.inconsistent) {
+      actions = '<button class="btn-rebuild">重建</button>';
+    } else if (s.corrupt) {
+      actions = '<button disabled>无法加载</button>'
+              + '<button class="btn-delete danger">删除</button>';
+    } else {
+      actions = '<button class="btn-start">开始</button>'
+              + '<button class="btn-delete danger">删除</button>';
+    }
+
+    card.innerHTML =
+      '<div class="slot">' + escapeHtml(s.slot) + '</div>' +
+      '<div class="progress">' + escapeHtml(s.mainProgress || '—') + '</div>' +
+      '<div class="meta">' + flags + meta + '</div>' +
+      '<div class="card-actions">' + actions + '</div>';
+
+    var startBtn = card.querySelector('.btn-start');
+    var deleteBtn = card.querySelector('.btn-delete');
+    var rebuildBtn = card.querySelector('.btn-rebuild');
+    if (startBtn) startBtn.onclick = function() { send({ cmd: 'start_game', slot: s.slot }); };
+    if (deleteBtn) deleteBtn.onclick = function() {
+      if (confirm('确定删除存档 "' + s.slot + '" ?')) {
+        send({ cmd: 'delete', slot: s.slot });
+      }
+    };
+    if (rebuildBtn) rebuildBtn.onclick = function() {
+      if (confirm('重建存档 "' + s.slot + '" (原数据将丢弃)?')) {
+        send({ cmd: 'rebuild', slot: s.slot });
+      }
+    };
+    return card;
+  }
+
+  function applyState(state, msg) {
+    currentState = state;
+    stateBadge.textContent = state + (msg ? ': ' + msg : '');
+    stateBadge.className = 'state-badge';
+    if (state === 'Ready')       stateBadge.className += ' ready';
+    else if (state === 'Error')  stateBadge.className += ' error';
+    else if (state !== 'Idle')   stateBadge.className += ' running';
+    retryBtn.style.display = (state === 'Error') ? 'inline-block' : 'none';
+  }
+
+  window.chrome.webview.addEventListener('message', function (e) {
+    var data = e.data;
+    var msg;
+    try { msg = (typeof data === 'string') ? JSON.parse(data) : data; }
+    catch (err) { logLine('tag-err', 'bad JSON from C#: ' + err.message); return; }
+    logLine('tag-in', '\u2190 ' + JSON.stringify(msg));
+
+    if (msg.cmd === 'state') {
+      applyState(msg.state, msg.msg);
+    } else if (msg.cmd === 'list_resp') {
+      renderCards(msg.slots || []);
+    } else if (msg.cmd === 'delete_resp') {
+      if (msg.ok) send({ cmd: 'list' });
+      else logLine('tag-err', 'delete failed: ' + msg.error);
+    } else if (msg.cmd === 'error') {
+      logLine('tag-err', msg.code + ': ' + msg.msg);
+    } else if (msg.cmd === 'pong') {
+      logLine('tag-in', 'pong');
+    }
+  });
+
+  document.getElementById('btn-refresh').onclick = function() { send({ cmd: 'list' }); };
+  retryBtn.onclick = function() { send({ cmd: 'retry' }); };
+
+  logLine('tag-in', 'Bootstrap loaded');
+  send({ cmd: 'ready' });
+  send({ cmd: 'list' });
+})();
+</script>
+</body>
+</html>

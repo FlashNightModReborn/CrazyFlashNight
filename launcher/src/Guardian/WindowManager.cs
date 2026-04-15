@@ -75,6 +75,37 @@ namespace CF7Launcher.Guardian
 
         public IntPtr FlashHwnd { get { return _flashHwnd; } }
 
+        /// <summary>
+        /// Phase 1c：嵌入结果事件。true = 成功嵌入；false = 10s 内未找到 Flash 窗口或外部主动通知失败。
+        /// 触发封送到 _hostPanel 所在的 UI 线程（不变式 #5）。
+        /// </summary>
+        public event Action<bool> OnEmbedResult;
+
+        private void FireEmbedResult(bool success)
+        {
+            Action<bool> handler = OnEmbedResult;
+            if (handler == null) return;
+
+            Control target = _hostPanel;
+            if (target != null && target.IsHandleCreated && target.InvokeRequired)
+            {
+                try { target.BeginInvoke(new Action(delegate { handler(success); })); }
+                catch { handler(success); }
+            }
+            else
+            {
+                handler(success);
+            }
+        }
+
+        /// <summary>
+        /// Phase 1c：外部（如 GameLaunchFlow 检测异常）主动通知嵌入失败。
+        /// </summary>
+        public void NotifyEmbedFailure()
+        {
+            FireEmbedResult(false);
+        }
+
         public void TrackProcess(Process flashProcess)
         {
             if (flashProcess != null)
@@ -111,20 +142,22 @@ namespace CF7Launcher.Guardian
             if (hwnd == IntPtr.Zero)
             {
                 LogManager.Log("[WindowManager] Flash window not found, embedding skipped");
+                FireEmbedResult(false);
                 return;
             }
 
             _flashHwnd = hwnd;
             LogManager.Log("[WindowManager] Flash window found: 0x" + hwnd.ToString("X"));
 
-            // 在 UI 线程执行嵌入
+            // 在 UI 线程执行嵌入；DoEmbed 末尾 FireEmbedResult(true)
             if (_hostPanel.InvokeRequired)
             {
-                _hostPanel.BeginInvoke(new Action(delegate { DoEmbed(); }));
+                _hostPanel.BeginInvoke(new Action(delegate { DoEmbed(); FireEmbedResult(true); }));
             }
             else
             {
                 DoEmbed();
+                FireEmbedResult(true);
             }
         }
 

@@ -68,6 +68,9 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_isRecoveryPending();
         test_isRecoveryPending_false_after_delete();
 
+        // Phase 1b (10a-2 \u7ea2\u9636\u6bb5)\uff1apreload tombstoned \u81ea\u6e05
+        test_handlePreloadTombstoned_sets_sol_deleted();
+
         trace("========== SaveManagerTest END: " + passedCount + "/" + testCount + " passed, " + failedCount + " failed ==========");
     }
 
@@ -1023,6 +1026,32 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
 
         // 即使 SOL 缺失，墓碑存在 → 不应该 pending
         assert(sm.isRecoveryPending() == false, "isRecoveryPending_after_delete: false with tombstone");
+
+        cleanTestSO();
+        _root.savePath = oldPath;
+    }
+
+    // Phase 1b（10a-2 红阶段）：preload 收到 launcher tombstoned 响应时自清 SOL 墓碑
+    // 10a-1 stub 下 handlePreloadTombstoned 是空方法 → 断言 SOL _deleted 未设置 → FAIL
+    private static function test_handlePreloadTombstoned_sets_sol_deleted():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+        _root.savePath = TEST_SLOT;
+
+        // 前置：SOL 存在有效数据，无墓碑
+        seedTestSO("2026-01-01 00:00:00", undefined);
+        var so:SharedObject = SharedObject.getLocal(TEST_SLOT);
+        delete so.data._deleted;
+        so.flush();
+        assert(so.data._deleted != true, "preload_tombstoned_setup: no tombstone before");
+
+        // 调用 launcher 响应 handler
+        sm.handlePreloadTombstoned(TEST_SLOT);
+
+        // 预期：SOL 墓碑已设；10b 绿阶段满足；10a-1 stub 下此断言失败
+        var soAfter:SharedObject = SharedObject.getLocal(TEST_SLOT);
+        assert(soAfter.data._deleted == true, "preload_tombstoned: SOL _deleted set after handler");
 
         cleanTestSO();
         _root.savePath = oldPath;

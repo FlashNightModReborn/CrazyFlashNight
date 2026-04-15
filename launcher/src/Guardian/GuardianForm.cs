@@ -997,10 +997,25 @@ namespace CF7Launcher.Guardian
             _trayIcon = new NotifyIcon();
             _trayIcon.Text = "CF7:ME";
             _trayIcon.ContextMenuStrip = _trayMenu;
-            _trayIcon.Visible = true;
+            // Phase 1 (11b-β): 托盘图标延到 Ready 后可见, 避免 Bootstrap 期"假就绪"印象
+            _trayIcon.Visible = false;
             try { _trayIcon.Icon = Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location); }
             catch { _trayIcon.Icon = SystemIcons.Application; }
             _trayIcon.DoubleClick += delegate { ShowMainWindow(); };
+        }
+
+        /// <summary>Phase 1 (11b-β): Ready 时由 GameLaunchFlow.readyWiring 调用, 显示托盘图标。</summary>
+        public void ShowTrayIcon()
+        {
+            if (_trayIcon == null) return;
+            if (this.InvokeRequired)
+            {
+                try { this.BeginInvoke(new Action(delegate { _trayIcon.Visible = true; })); } catch { }
+            }
+            else
+            {
+                _trayIcon.Visible = true;
+            }
         }
 
         private void ShowMainWindow()
