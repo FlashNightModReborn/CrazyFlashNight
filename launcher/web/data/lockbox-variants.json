@@ -1,0 +1,1804 @@
+{
+  "PuzzleConfig": {
+    "note": "Per-variant config object lives in variantPool[].config"
+  },
+  "PuzzleInstance": {
+    "note": "Per-variant puzzle instance lives in variantPool[].puzzle"
+  },
+  "SolveReport": {
+    "note": "Per-variant solver report lives in variantPool[].report"
+  },
+  "variantPool": [
+    {
+      "familySeed": 795066454,
+      "variantIndex": 0,
+      "tier": "standard",
+      "config": {
+        "id": "standard",
+        "title": "普通高安箱",
+        "size": 4,
+        "alphabetSize": 4,
+        "bufferCap": 5,
+        "lenA": 3,
+        "lenB": 3,
+        "lenC": 3,
+        "overlapAB": 2,
+        "mainMinLen": 4,
+        "traceFullMs": 10000,
+        "tracePulse": 0.12,
+        "illegalGrace": 1,
+        "bonusLockPct": 0.7,
+        "targetFullSolutions": [
+          1,
+          3
+        ],
+        "targetMainMinSolutions": [
+          1,
+          6
+        ],
+        "targetEntryStarts": [
+          1,
+          4
+        ],
+        "targetBonusShare": [
+          0.2,
+          0.8
+        ]
+      },
+      "puzzle": {
+        "profile": "standard",
+        "matrix": [
+          [
+            0,
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            1,
+            1,
+            2
+          ],
+          [
+            0,
+            0,
+            3,
+            1
+          ],
+          [
+            0,
+            2,
+            2,
+            0
+          ]
+        ],
+        "seqA": [
+          0,
+          0,
+          2
+        ],
+        "seqB": [
+          0,
+          2,
+          1
+        ],
+        "seqC": [
+          2,
+          1,
+          2
+        ],
+        "fullString": [
+          0,
+          0,
+          2,
+          1,
+          2
+        ],
+        "canonicalPath": [
+          {
+            "r": 0,
+            "c": 0
+          },
+          {
+            "r": 3,
+            "c": 0
+          },
+          {
+            "r": 3,
+            "c": 1
+          },
+          {
+            "r": 1,
+            "c": 1
+          },
+          {
+            "r": 1,
+            "c": 3
+          }
+        ],
+        "familySeed": 795066454,
+        "variantIndex": 0,
+        "attemptCount": 1,
+        "accepted": true
+      },
+      "report": {
+        "profile": "standard",
+        "minMainLen": 4,
+        "mainSolutionCountMinLen": 4,
+        "mainSolutionCount": 7,
+        "fullSolutionCount": 3,
+        "entryStartCount": 1,
+        "totalChoices": 444,
+        "deadChoices": 418,
+        "falseObviousChoices": 391,
+        "deadChoiceRate": 0.9414414414414415,
+        "falseObviousRate": 0.9354066985645934,
+        "bonusShare": 0.42857142857142855,
+        "routeTightness": 0.8,
+        "canonicalMainPath": [
+          {
+            "r": 0,
+            "c": 0
+          },
+          {
+            "r": 1,
+            "c": 0
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 2,
+            "c": 3
+          }
+        ],
+        "canonicalFullPath": [
+          {
+            "r": 0,
+            "c": 0
+          },
+          {
+            "r": 3,
+            "c": 0
+          },
+          {
+            "r": 3,
+            "c": 1
+          },
+          {
+            "r": 1,
+            "c": 1
+          },
+          {
+            "r": 1,
+            "c": 3
+          }
+        ],
+        "exploredStates": 448,
+        "firstSolveAtPick": 4,
+        "difficultyScore": 72.82132050026787
+      }
+    },
+    {
+      "familySeed": 795066454,
+      "variantIndex": 1,
+      "tier": "standard",
+      "config": {
+        "id": "standard",
+        "title": "普通高安箱",
+        "size": 4,
+        "alphabetSize": 4,
+        "bufferCap": 5,
+        "lenA": 3,
+        "lenB": 3,
+        "lenC": 3,
+        "overlapAB": 2,
+        "mainMinLen": 4,
+        "traceFullMs": 10000,
+        "tracePulse": 0.12,
+        "illegalGrace": 1,
+        "bonusLockPct": 0.7,
+        "targetFullSolutions": [
+          1,
+          3
+        ],
+        "targetMainMinSolutions": [
+          1,
+          6
+        ],
+        "targetEntryStarts": [
+          1,
+          4
+        ],
+        "targetBonusShare": [
+          0.2,
+          0.8
+        ]
+      },
+      "puzzle": {
+        "profile": "standard",
+        "matrix": [
+          [
+            0,
+            0,
+            2,
+            3
+          ],
+          [
+            3,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ],
+          [
+            3,
+            1,
+            2,
+            3
+          ]
+        ],
+        "seqA": [
+          3,
+          0,
+          1
+        ],
+        "seqB": [
+          0,
+          1,
+          0
+        ],
+        "seqC": [
+          1,
+          0,
+          0
+        ],
+        "fullString": [
+          3,
+          0,
+          1,
+          0,
+          0
+        ],
+        "canonicalPath": [
+          {
+            "r": 0,
+            "c": 3
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 1,
+            "c": 1
+          },
+          {
+            "r": 2,
+            "c": 1
+          },
+          {
+            "r": 2,
+            "c": 2
+          }
+        ],
+        "familySeed": 795066454,
+        "variantIndex": 1,
+        "attemptCount": 4,
+        "accepted": true
+      },
+      "report": {
+        "profile": "standard",
+        "minMainLen": 4,
+        "mainSolutionCountMinLen": 2,
+        "mainSolutionCount": 4,
+        "fullSolutionCount": 3,
+        "entryStartCount": 1,
+        "totalChoices": 444,
+        "deadChoices": 430,
+        "falseObviousChoices": 376,
+        "deadChoiceRate": 0.9684684684684685,
+        "falseObviousRate": 0.8744186046511628,
+        "bonusShare": 0.75,
+        "routeTightness": 0.8,
+        "canonicalMainPath": [
+          {
+            "r": 0,
+            "c": 3
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 1,
+            "c": 1
+          },
+          {
+            "r": 0,
+            "c": 1
+          }
+        ],
+        "canonicalFullPath": [
+          {
+            "r": 0,
+            "c": 3
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 1,
+            "c": 1
+          },
+          {
+            "r": 0,
+            "c": 1
+          },
+          {
+            "r": 0,
+            "c": 0
+          }
+        ],
+        "exploredStates": 448,
+        "firstSolveAtPick": 4,
+        "difficultyScore": 75.88975487115023
+      }
+    },
+    {
+      "familySeed": 795066454,
+      "variantIndex": 2,
+      "tier": "standard",
+      "config": {
+        "id": "standard",
+        "title": "普通高安箱",
+        "size": 4,
+        "alphabetSize": 4,
+        "bufferCap": 5,
+        "lenA": 3,
+        "lenB": 3,
+        "lenC": 3,
+        "overlapAB": 2,
+        "mainMinLen": 4,
+        "traceFullMs": 10000,
+        "tracePulse": 0.12,
+        "illegalGrace": 1,
+        "bonusLockPct": 0.7,
+        "targetFullSolutions": [
+          1,
+          3
+        ],
+        "targetMainMinSolutions": [
+          1,
+          6
+        ],
+        "targetEntryStarts": [
+          1,
+          4
+        ],
+        "targetBonusShare": [
+          0.2,
+          0.8
+        ]
+      },
+      "puzzle": {
+        "profile": "standard",
+        "matrix": [
+          [
+            2,
+            0,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            3,
+            0
+          ],
+          [
+            3,
+            2,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            2
+          ]
+        ],
+        "seqA": [
+          3,
+          2,
+          3
+        ],
+        "seqB": [
+          2,
+          3,
+          0
+        ],
+        "seqC": [
+          3,
+          0,
+          0
+        ],
+        "fullString": [
+          3,
+          2,
+          3,
+          0,
+          0
+        ],
+        "canonicalPath": [
+          {
+            "r": 0,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 0
+          },
+          {
+            "r": 3,
+            "c": 0
+          },
+          {
+            "r": 3,
+            "c": 1
+          }
+        ],
+        "familySeed": 795066454,
+        "variantIndex": 2,
+        "attemptCount": 3,
+        "accepted": true
+      },
+      "report": {
+        "profile": "standard",
+        "minMainLen": 4,
+        "mainSolutionCountMinLen": 2,
+        "mainSolutionCount": 5,
+        "fullSolutionCount": 3,
+        "entryStartCount": 2,
+        "totalChoices": 444,
+        "deadChoices": 427,
+        "falseObviousChoices": 373,
+        "deadChoiceRate": 0.9617117117117117,
+        "falseObviousRate": 0.8735362997658079,
+        "bonusShare": 0.6,
+        "routeTightness": 0.8,
+        "canonicalMainPath": [
+          {
+            "r": 0,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 0
+          },
+          {
+            "r": 1,
+            "c": 0
+          }
+        ],
+        "canonicalFullPath": [
+          {
+            "r": 0,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 0
+          },
+          {
+            "r": 1,
+            "c": 0
+          },
+          {
+            "r": 1,
+            "c": 3
+          }
+        ],
+        "exploredStates": 448,
+        "firstSolveAtPick": 4,
+        "difficultyScore": 73.72229887967593
+      }
+    },
+    {
+      "familySeed": 520614500,
+      "variantIndex": 0,
+      "tier": "elite6",
+      "config": {
+        "id": "elite6",
+        "title": "顶级高安箱(6步对照)",
+        "size": 5,
+        "alphabetSize": 5,
+        "bufferCap": 6,
+        "lenA": 4,
+        "lenB": 4,
+        "lenC": 3,
+        "overlapAB": 2,
+        "mainMinLen": 6,
+        "traceFullMs": 8000,
+        "tracePulse": 0.18,
+        "illegalGrace": 0,
+        "bonusLockPct": 0.7,
+        "targetFullSolutions": [
+          1,
+          3
+        ],
+        "targetMainMinSolutions": [
+          1,
+          4
+        ],
+        "targetEntryStarts": [
+          1,
+          3
+        ],
+        "targetBonusShare": [
+          1,
+          1
+        ]
+      },
+      "puzzle": {
+        "profile": "elite6",
+        "matrix": [
+          [
+            1,
+            2,
+            3,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            2,
+            4
+          ],
+          [
+            1,
+            2,
+            4,
+            4,
+            2
+          ],
+          [
+            1,
+            4,
+            4,
+            3,
+            3
+          ],
+          [
+            0,
+            4,
+            1,
+            4,
+            1
+          ]
+        ],
+        "seqA": [
+          1,
+          0,
+          4,
+          2
+        ],
+        "seqB": [
+          4,
+          2,
+          0,
+          4
+        ],
+        "seqC": [
+          2,
+          0,
+          4
+        ],
+        "fullString": [
+          1,
+          0,
+          4,
+          2,
+          0,
+          4
+        ],
+        "canonicalPath": [
+          {
+            "r": 0,
+            "c": 0
+          },
+          {
+            "r": 4,
+            "c": 0
+          },
+          {
+            "r": 4,
+            "c": 3
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 1,
+            "c": 1
+          },
+          {
+            "r": 3,
+            "c": 1
+          }
+        ],
+        "familySeed": 520614500,
+        "variantIndex": 0,
+        "attemptCount": 3,
+        "accepted": true
+      },
+      "report": {
+        "profile": "elite6",
+        "minMainLen": 6,
+        "mainSolutionCountMinLen": 3,
+        "mainSolutionCount": 3,
+        "fullSolutionCount": 3,
+        "entryStartCount": 1,
+        "totalChoices": 5940,
+        "deadChoices": 5930,
+        "falseObviousChoices": 5232,
+        "deadChoiceRate": 0.9983164983164983,
+        "falseObviousRate": 0.8822934232715008,
+        "bonusShare": 1,
+        "routeTightness": 1,
+        "canonicalMainPath": [
+          {
+            "r": 0,
+            "c": 0
+          },
+          {
+            "r": 4,
+            "c": 0
+          },
+          {
+            "r": 4,
+            "c": 1
+          },
+          {
+            "r": 0,
+            "c": 1
+          },
+          {
+            "r": 0,
+            "c": 4
+          },
+          {
+            "r": 1,
+            "c": 4
+          }
+        ],
+        "canonicalFullPath": [
+          {
+            "r": 0,
+            "c": 0
+          },
+          {
+            "r": 4,
+            "c": 0
+          },
+          {
+            "r": 4,
+            "c": 1
+          },
+          {
+            "r": 0,
+            "c": 1
+          },
+          {
+            "r": 0,
+            "c": 4
+          },
+          {
+            "r": 1,
+            "c": 4
+          }
+        ],
+        "exploredStates": 5945,
+        "firstSolveAtPick": 6,
+        "difficultyScore": 77.45335649922497
+      }
+    },
+    {
+      "familySeed": 520614500,
+      "variantIndex": 1,
+      "tier": "elite6",
+      "config": {
+        "id": "elite6",
+        "title": "顶级高安箱(6步对照)",
+        "size": 5,
+        "alphabetSize": 5,
+        "bufferCap": 6,
+        "lenA": 4,
+        "lenB": 4,
+        "lenC": 3,
+        "overlapAB": 2,
+        "mainMinLen": 6,
+        "traceFullMs": 8000,
+        "tracePulse": 0.18,
+        "illegalGrace": 0,
+        "bonusLockPct": 0.7,
+        "targetFullSolutions": [
+          1,
+          3
+        ],
+        "targetMainMinSolutions": [
+          1,
+          4
+        ],
+        "targetEntryStarts": [
+          1,
+          3
+        ],
+        "targetBonusShare": [
+          1,
+          1
+        ]
+      },
+      "puzzle": {
+        "profile": "elite6",
+        "matrix": [
+          [
+            1,
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            3,
+            3
+          ],
+          [
+            1,
+            3,
+            1,
+            0,
+            1
+          ],
+          [
+            3,
+            4,
+            2,
+            3,
+            4
+          ],
+          [
+            1,
+            2,
+            4,
+            1,
+            4
+          ]
+        ],
+        "seqA": [
+          1,
+          1,
+          4,
+          0
+        ],
+        "seqB": [
+          4,
+          0,
+          3,
+          0
+        ],
+        "seqC": [
+          0,
+          3,
+          0
+        ],
+        "fullString": [
+          1,
+          1,
+          4,
+          0,
+          3,
+          0
+        ],
+        "canonicalPath": [
+          {
+            "r": 0,
+            "c": 0
+          },
+          {
+            "r": 4,
+            "c": 0
+          },
+          {
+            "r": 4,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 2,
+            "c": 3
+          }
+        ],
+        "familySeed": 520614500,
+        "variantIndex": 1,
+        "attemptCount": 7,
+        "accepted": true
+      },
+      "report": {
+        "profile": "elite6",
+        "minMainLen": 6,
+        "mainSolutionCountMinLen": 2,
+        "mainSolutionCount": 2,
+        "fullSolutionCount": 2,
+        "entryStartCount": 1,
+        "totalChoices": 5940,
+        "deadChoices": 5934,
+        "falseObviousChoices": 5444,
+        "deadChoiceRate": 0.998989898989899,
+        "falseObviousRate": 0.9174250084260196,
+        "bonusShare": 1,
+        "routeTightness": 1,
+        "canonicalMainPath": [
+          {
+            "r": 0,
+            "c": 0
+          },
+          {
+            "r": 4,
+            "c": 0
+          },
+          {
+            "r": 4,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 0,
+            "c": 3
+          }
+        ],
+        "canonicalFullPath": [
+          {
+            "r": 0,
+            "c": 0
+          },
+          {
+            "r": 4,
+            "c": 0
+          },
+          {
+            "r": 4,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 0,
+            "c": 3
+          }
+        ],
+        "exploredStates": 5945,
+        "firstSolveAtPick": 6,
+        "difficultyScore": 80.68030762631369
+      }
+    },
+    {
+      "familySeed": 520614500,
+      "variantIndex": 2,
+      "tier": "elite6",
+      "config": {
+        "id": "elite6",
+        "title": "顶级高安箱(6步对照)",
+        "size": 5,
+        "alphabetSize": 5,
+        "bufferCap": 6,
+        "lenA": 4,
+        "lenB": 4,
+        "lenC": 3,
+        "overlapAB": 2,
+        "mainMinLen": 6,
+        "traceFullMs": 8000,
+        "tracePulse": 0.18,
+        "illegalGrace": 0,
+        "bonusLockPct": 0.7,
+        "targetFullSolutions": [
+          1,
+          3
+        ],
+        "targetMainMinSolutions": [
+          1,
+          4
+        ],
+        "targetEntryStarts": [
+          1,
+          3
+        ],
+        "targetBonusShare": [
+          1,
+          1
+        ]
+      },
+      "puzzle": {
+        "profile": "elite6",
+        "matrix": [
+          [
+            0,
+            1,
+            4,
+            2,
+            1
+          ],
+          [
+            3,
+            0,
+            3,
+            1,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          [
+            0,
+            0,
+            2,
+            2,
+            1
+          ],
+          [
+            1,
+            2,
+            3,
+            1,
+            4
+          ]
+        ],
+        "seqA": [
+          4,
+          2,
+          2,
+          0
+        ],
+        "seqB": [
+          2,
+          0,
+          1,
+          4
+        ],
+        "seqC": [
+          0,
+          1,
+          4
+        ],
+        "fullString": [
+          4,
+          2,
+          2,
+          0,
+          1,
+          4
+        ],
+        "canonicalPath": [
+          {
+            "r": 0,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 1
+          },
+          {
+            "r": 3,
+            "c": 1
+          },
+          {
+            "r": 3,
+            "c": 4
+          },
+          {
+            "r": 4,
+            "c": 4
+          }
+        ],
+        "familySeed": 520614500,
+        "variantIndex": 2,
+        "attemptCount": 7,
+        "accepted": true
+      },
+      "report": {
+        "profile": "elite6",
+        "minMainLen": 6,
+        "mainSolutionCountMinLen": 3,
+        "mainSolutionCount": 3,
+        "fullSolutionCount": 3,
+        "entryStartCount": 1,
+        "totalChoices": 5940,
+        "deadChoices": 5928,
+        "falseObviousChoices": 5193,
+        "deadChoiceRate": 0.997979797979798,
+        "falseObviousRate": 0.8760121457489879,
+        "bonusShare": 1,
+        "routeTightness": 1,
+        "canonicalMainPath": [
+          {
+            "r": 0,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 0
+          },
+          {
+            "r": 0,
+            "c": 0
+          },
+          {
+            "r": 0,
+            "c": 4
+          },
+          {
+            "r": 4,
+            "c": 4
+          }
+        ],
+        "canonicalFullPath": [
+          {
+            "r": 0,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 0
+          },
+          {
+            "r": 0,
+            "c": 0
+          },
+          {
+            "r": 0,
+            "c": 4
+          },
+          {
+            "r": 4,
+            "c": 4
+          }
+        ],
+        "exploredStates": 5945,
+        "firstSolveAtPick": 6,
+        "difficultyScore": 77.40758802600908
+      }
+    },
+    {
+      "familySeed": 549769772,
+      "variantIndex": 0,
+      "tier": "elite7",
+      "config": {
+        "id": "elite7",
+        "title": "顶级高安箱",
+        "size": 5,
+        "alphabetSize": 5,
+        "bufferCap": 7,
+        "lenA": 4,
+        "lenB": 4,
+        "lenC": 3,
+        "overlapAB": 2,
+        "mainMinLen": 6,
+        "traceFullMs": 8000,
+        "tracePulse": 0.18,
+        "illegalGrace": 0,
+        "bonusLockPct": 0.7,
+        "targetFullSolutions": [
+          1,
+          3
+        ],
+        "targetMainMinSolutions": [
+          1,
+          4
+        ],
+        "targetEntryStarts": [
+          1,
+          3
+        ],
+        "targetBonusShare": [
+          0.15,
+          0.55
+        ]
+      },
+      "puzzle": {
+        "profile": "elite7",
+        "matrix": [
+          [
+            0,
+            3,
+            0,
+            2,
+            0
+          ],
+          [
+            3,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            4,
+            0,
+            4,
+            0
+          ],
+          [
+            3,
+            3,
+            2,
+            2,
+            2
+          ],
+          [
+            0,
+            0,
+            4,
+            1,
+            0
+          ]
+        ],
+        "seqA": [
+          0,
+          2,
+          0,
+          1
+        ],
+        "seqB": [
+          0,
+          1,
+          0,
+          2
+        ],
+        "seqC": [
+          0,
+          2,
+          3
+        ],
+        "fullString": [
+          0,
+          2,
+          0,
+          1,
+          0,
+          2,
+          3
+        ],
+        "canonicalPath": [
+          {
+            "r": 0,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 4,
+            "c": 3
+          },
+          {
+            "r": 4,
+            "c": 4
+          },
+          {
+            "r": 3,
+            "c": 4
+          },
+          {
+            "r": 3,
+            "c": 1
+          }
+        ],
+        "familySeed": 549769772,
+        "variantIndex": 0,
+        "attemptCount": 1,
+        "accepted": true
+      },
+      "report": {
+        "profile": "elite7",
+        "minMainLen": 6,
+        "mainSolutionCountMinLen": 2,
+        "mainSolutionCount": 4,
+        "fullSolutionCount": 2,
+        "entryStartCount": 2,
+        "totalChoices": 20580,
+        "deadChoices": 20553,
+        "falseObviousChoices": 17948,
+        "deadChoiceRate": 0.9986880466472303,
+        "falseObviousRate": 0.8732545127232034,
+        "bonusShare": 0.5,
+        "routeTightness": 0.8571428571428571,
+        "canonicalMainPath": [
+          {
+            "r": 0,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 4,
+            "c": 3
+          },
+          {
+            "r": 4,
+            "c": 0
+          },
+          {
+            "r": 2,
+            "c": 0
+          }
+        ],
+        "canonicalFullPath": [
+          {
+            "r": 0,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 4,
+            "c": 3
+          },
+          {
+            "r": 4,
+            "c": 4
+          },
+          {
+            "r": 3,
+            "c": 4
+          },
+          {
+            "r": 3,
+            "c": 0
+          }
+        ],
+        "exploredStates": 20585,
+        "firstSolveAtPick": 6,
+        "difficultyScore": 78.60804019587275
+      }
+    },
+    {
+      "familySeed": 549769772,
+      "variantIndex": 1,
+      "tier": "elite7",
+      "config": {
+        "id": "elite7",
+        "title": "顶级高安箱",
+        "size": 5,
+        "alphabetSize": 5,
+        "bufferCap": 7,
+        "lenA": 4,
+        "lenB": 4,
+        "lenC": 3,
+        "overlapAB": 2,
+        "mainMinLen": 6,
+        "traceFullMs": 8000,
+        "tracePulse": 0.18,
+        "illegalGrace": 0,
+        "bonusLockPct": 0.7,
+        "targetFullSolutions": [
+          1,
+          3
+        ],
+        "targetMainMinSolutions": [
+          1,
+          4
+        ],
+        "targetEntryStarts": [
+          1,
+          3
+        ],
+        "targetBonusShare": [
+          0.15,
+          0.55
+        ]
+      },
+      "puzzle": {
+        "profile": "elite7",
+        "matrix": [
+          [
+            0,
+            0,
+            4,
+            2,
+            3
+          ],
+          [
+            2,
+            1,
+            0,
+            2,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            3,
+            1,
+            0
+          ],
+          [
+            1,
+            3,
+            3,
+            1,
+            3
+          ]
+        ],
+        "seqA": [
+          3,
+          0,
+          1,
+          3
+        ],
+        "seqB": [
+          1,
+          3,
+          3,
+          0
+        ],
+        "seqC": [
+          3,
+          0,
+          2
+        ],
+        "fullString": [
+          3,
+          0,
+          1,
+          3,
+          3,
+          0,
+          2
+        ],
+        "canonicalPath": [
+          {
+            "r": 0,
+            "c": 4
+          },
+          {
+            "r": 1,
+            "c": 4
+          },
+          {
+            "r": 1,
+            "c": 1
+          },
+          {
+            "r": 4,
+            "c": 1
+          },
+          {
+            "r": 4,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 2
+          },
+          {
+            "r": 2,
+            "c": 0
+          }
+        ],
+        "familySeed": 549769772,
+        "variantIndex": 1,
+        "attemptCount": 5,
+        "accepted": true
+      },
+      "report": {
+        "profile": "elite7",
+        "minMainLen": 6,
+        "mainSolutionCountMinLen": 3,
+        "mainSolutionCount": 6,
+        "fullSolutionCount": 3,
+        "entryStartCount": 2,
+        "totalChoices": 20580,
+        "deadChoices": 20553,
+        "falseObviousChoices": 19045,
+        "deadChoiceRate": 0.9986880466472303,
+        "falseObviousRate": 0.92662871600253,
+        "bonusShare": 0.5,
+        "routeTightness": 0.8571428571428571,
+        "canonicalMainPath": [
+          {
+            "r": 0,
+            "c": 4
+          },
+          {
+            "r": 1,
+            "c": 4
+          },
+          {
+            "r": 1,
+            "c": 1
+          },
+          {
+            "r": 4,
+            "c": 1
+          },
+          {
+            "r": 4,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 2
+          }
+        ],
+        "canonicalFullPath": [
+          {
+            "r": 0,
+            "c": 4
+          },
+          {
+            "r": 1,
+            "c": 4
+          },
+          {
+            "r": 1,
+            "c": 1
+          },
+          {
+            "r": 4,
+            "c": 1
+          },
+          {
+            "r": 4,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 0
+          }
+        ],
+        "exploredStates": 20585,
+        "firstSolveAtPick": 6,
+        "difficultyScore": 75.92828541554871
+      }
+    },
+    {
+      "familySeed": 549769772,
+      "variantIndex": 2,
+      "tier": "elite7",
+      "config": {
+        "id": "elite7",
+        "title": "顶级高安箱",
+        "size": 5,
+        "alphabetSize": 5,
+        "bufferCap": 7,
+        "lenA": 4,
+        "lenB": 4,
+        "lenC": 3,
+        "overlapAB": 2,
+        "mainMinLen": 6,
+        "traceFullMs": 8000,
+        "tracePulse": 0.18,
+        "illegalGrace": 0,
+        "bonusLockPct": 0.7,
+        "targetFullSolutions": [
+          1,
+          3
+        ],
+        "targetMainMinSolutions": [
+          1,
+          4
+        ],
+        "targetEntryStarts": [
+          1,
+          3
+        ],
+        "targetBonusShare": [
+          0.15,
+          0.55
+        ]
+      },
+      "puzzle": {
+        "profile": "elite7",
+        "matrix": [
+          [
+            1,
+            1,
+            4,
+            0,
+            4
+          ],
+          [
+            1,
+            3,
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            1,
+            4,
+            4
+          ],
+          [
+            1,
+            1,
+            4,
+            1,
+            4
+          ],
+          [
+            3,
+            2,
+            3,
+            1,
+            2
+          ]
+        ],
+        "seqA": [
+          4,
+          4,
+          3,
+          1
+        ],
+        "seqB": [
+          3,
+          1,
+          3,
+          2
+        ],
+        "seqC": [
+          3,
+          2,
+          1
+        ],
+        "fullString": [
+          4,
+          4,
+          3,
+          1,
+          3,
+          2,
+          1
+        ],
+        "canonicalPath": [
+          {
+            "r": 0,
+            "c": 4
+          },
+          {
+            "r": 2,
+            "c": 4
+          },
+          {
+            "r": 2,
+            "c": 0
+          },
+          {
+            "r": 1,
+            "c": 0
+          },
+          {
+            "r": 1,
+            "c": 1
+          },
+          {
+            "r": 4,
+            "c": 1
+          },
+          {
+            "r": 4,
+            "c": 3
+          }
+        ],
+        "familySeed": 549769772,
+        "variantIndex": 2,
+        "attemptCount": 6,
+        "accepted": true
+      },
+      "report": {
+        "profile": "elite7",
+        "minMainLen": 6,
+        "mainSolutionCountMinLen": 2,
+        "mainSolutionCount": 11,
+        "fullSolutionCount": 2,
+        "entryStartCount": 3,
+        "totalChoices": 20580,
+        "deadChoices": 20532,
+        "falseObviousChoices": 19892,
+        "deadChoiceRate": 0.997667638483965,
+        "falseObviousRate": 0.9688291447496591,
+        "bonusShare": 0.18181818181818182,
+        "routeTightness": 0.8571428571428571,
+        "canonicalMainPath": [
+          {
+            "r": 0,
+            "c": 4
+          },
+          {
+            "r": 1,
+            "c": 4
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 4,
+            "c": 3
+          },
+          {
+            "r": 4,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 2
+          }
+        ],
+        "canonicalFullPath": [
+          {
+            "r": 0,
+            "c": 4
+          },
+          {
+            "r": 1,
+            "c": 4
+          },
+          {
+            "r": 1,
+            "c": 3
+          },
+          {
+            "r": 4,
+            "c": 3
+          },
+          {
+            "r": 4,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 2
+          },
+          {
+            "r": 1,
+            "c": 0
+          }
+        ],
+        "exploredStates": 20585,
+        "firstSolveAtPick": 6,
+        "difficultyScore": 79.5388163739313
+      }
+    }
+  ],
+  "fuzzSummary": [
+    {
+      "profile": "standard",
+      "seeds": 200,
+      "accepted": 200,
+      "acceptedRate": 1,
+      "avgAttempts": 3.61,
+      "p95Attempts": 10,
+      "avgBonusShare": 0.4202034493284497,
+      "avgMainSolutionCountMinLen": 2.705,
+      "avgEntryStartCount": 2.085
+    },
+    {
+      "profile": "elite6",
+      "seeds": 200,
+      "accepted": 200,
+      "acceptedRate": 1,
+      "avgAttempts": 4.365,
+      "p95Attempts": 12,
+      "avgBonusShare": 1,
+      "avgMainSolutionCountMinLen": 2.22,
+      "avgEntryStartCount": 1.08
+    },
+    {
+      "profile": "elite7",
+      "seeds": 200,
+      "accepted": 200,
+      "acceptedRate": 1,
+      "avgAttempts": 14.845,
+      "p95Attempts": 45,
+      "avgBonusShare": 0.3347260346722421,
+      "avgMainSolutionCountMinLen": 2.665,
+      "avgEntryStartCount": 2.065
+    }
+  ],
+  "generatedAt": "2026-04-15T11:22:09.645Z"
+}

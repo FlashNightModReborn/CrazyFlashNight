@@ -31,6 +31,8 @@ var Panels = (function() {
         }
         panel._el.style.display = '';
         _container.style.display = '';
+        _container.setAttribute('data-panel', id);
+        _content.setAttribute('data-panel', id);
         if (panel.onOpen) panel.onOpen(panel._el, initData);
         _active = id;
         setTimeout(function() {
@@ -43,6 +45,8 @@ var Panels = (function() {
         var panel = _registry[_active];
         if (panel && panel._el) panel._el.style.display = 'none';
         _container.style.display = 'none';
+        _container.removeAttribute('data-panel');
+        _content.removeAttribute('data-panel');
         _active = null;
         setTimeout(function() {
             if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();

@@ -916,6 +916,13 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[Panel] Routing cmd=" + cmd + " to ShopTask, _shopTask=" + (_shopTask != null ? "ok" : "NULL"));
                     if (_shopTask != null) _shopTask.HandleWebRequest(cmd, parsed);
                     break;
+                case "lockbox_session":
+                    {
+                        JToken payload = parsed["payload"];
+                        if (payload != null)
+                            LogManager.Log("[Lockbox] " + payload.ToString(Newtonsoft.Json.Formatting.None));
+                    }
+                    break;
             }
         }
 
@@ -1008,6 +1015,14 @@ namespace CF7Launcher.Guardian
                 case "EQUIP_UI": SendGameCommand("openEquipUI"); break;
                 case "BAKE": SendGameCommand("bakeIcons"); break;
                 case "BAKE10": SendGameCommand("bakeIcons", "\"maxCount\":10"); break;
+                case "LOCKBOX_TEST":
+                    {
+                        uint familySeed = unchecked((uint)Environment.TickCount);
+                        PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"lockbox\",\"initData\":{\"mode\":\"dev\",\"profile\":\"standard\",\"source\":\"runtime\",\"familySeed\":" + familySeed + ",\"variantIndex\":0,\"debug\":true}}");
+                        _activePanel = "lockbox";
+                        if (_onPanelStateChanged != null) _onPanelStateChanged(true);
+                    }
+                    break;
                 case "EXIT_CONFIRM": if (_onForceExit != null) _onForceExit(); break;
             }
         }
