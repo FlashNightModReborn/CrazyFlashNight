@@ -247,7 +247,11 @@ namespace CF7Launcher.Guardian
             ArmWaitTimeoutLocked(WAIT_CONNECT_MS, "socket_connect_timeout");
         }
 
-        /// <summary>socket OnClientReady: WaitingConnect → WaitingHandshake。</summary>
+        /// <summary>
+        /// socket OnClientReady:
+        ///   WaitingConnect → WaitingHandshake (首次连上);
+        ///   Ready 态重连 (socket 短暂抖动后恢复) → 清 zombie timer 防延迟自杀.
+        /// </summary>
         private void OnSocketClientReady()
         {
             lock (_stateLock)
@@ -256,6 +260,12 @@ namespace CF7Launcher.Guardian
                 {
                     SetState(State.WaitingHandshake, "");
                     ArmWaitTimeoutLocked(WAIT_HANDSHAKE_MS, "handshake_timeout");
+                }
+                else if (_state == State.Ready)
+                {
+                    // 正常重连: 取消先前 OnSocketClientDisconnected armed 的 zombie timer,
+                    // 否则 10s 后仍会按旧 attempt 触发, 错误地 ForceExit 健康会话.
+                    CancelZombieTimerLocked();
                 }
             }
         }
