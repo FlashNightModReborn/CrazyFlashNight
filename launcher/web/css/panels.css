@@ -1093,10 +1093,43 @@
 .lockbox-header { padding-top:26px; background:linear-gradient(90deg, rgba(252,238,9,0.08), transparent 50%); border-bottom-color:rgba(252,238,9,0.24); }
 .lockbox-kicker { color:#fcee09; font-weight:bold; }
 .lockbox-title {
-    color:#fcee09; text-shadow:1px 0 0 rgba(255,0,60,0.55), -1px 0 0 rgba(0,240,255,0.55);
+    color:#fcee09;
+    text-shadow:1px 0 0 rgba(255,0,60,0.55), -1px 0 0 rgba(0,240,255,0.55);
     letter-spacing:3px; font-size:19px;
+    position:relative;
+    animation:lb-title-chroma 3.8s steps(60) infinite;
 }
-.lockbox-panel:hover .lockbox-title { animation:lb-glitch-x 0.8s steps(1) infinite; }
+.lockbox-panel:hover .lockbox-title { animation:lb-glitch-x 0.8s steps(1) infinite, lb-title-chroma 3.8s steps(60) infinite; }
+
+@keyframes lb-title-chroma {
+    0%,92%,100% { text-shadow:1px 0 0 rgba(255,0,60,0.55), -1px 0 0 rgba(0,240,255,0.55); }
+    93%         { text-shadow:3px 0 0 rgba(255,0,60,0.8), -3px 0 0 rgba(0,240,255,0.8), 0 0 12px rgba(252,238,9,0.5); filter:brightness(1.2); }
+    95%         { text-shadow:-2px 0 0 rgba(255,0,60,0.8), 2px 0 0 rgba(0,240,255,0.8); transform:translateX(1px); }
+    97%         { text-shadow:1px 0 0 rgba(255,0,60,0.55), -1px 0 0 rgba(0,240,255,0.55); }
+}
+
+/* Panel-wide scanline jitter: on trace=critical and above, scanline accelerates */
+.lockbox-panel[data-trace-state="critical"]::before { animation-duration:3.8s; opacity:0.55; }
+.lockbox-panel[data-trace-state="terminal"]::before,
+.lockbox-panel[data-trace-state="overload"]::before,
+.lockbox-panel[data-trace-state="trace-fail"]::before {
+    animation-duration:1.8s;
+    opacity:0.7;
+    background:linear-gradient(180deg, transparent 0%, rgba(255,0,60,0.16) 50%, transparent 100%);
+}
+
+/* Header marquee color shift per trace-state */
+.lockbox-panel[data-trace-state="critical"]::after {
+    background:repeating-linear-gradient(-45deg, #ff8a00 0 8px, #2a1800 8px 16px);
+    animation-duration:1.2s;
+}
+.lockbox-panel[data-trace-state="terminal"]::after,
+.lockbox-panel[data-trace-state="overload"]::after,
+.lockbox-panel[data-trace-state="trace-fail"]::after {
+    background:repeating-linear-gradient(-45deg, #ff003c 0 8px, #2a0008 8px 16px);
+    animation-duration:0.8s;
+    color:#fff;
+}
 
 .lockbox-chrome-btn {
     border-color:rgba(252,238,9,0.25); color:#fcee09;
@@ -1161,6 +1194,7 @@
     opacity:0;
 }
 .lockbox-grid-pane,
+.lockbox-grid-wrap,
 .lockbox-trace-rail,
 .lockbox-trace-footer,
 .lockbox-side-section {
@@ -1204,6 +1238,55 @@
 }
 .lockbox-cell.selected::before, .lockbox-cell.selected::after { border-color:#fcee09; }
 .lockbox-cell.hint-next { animation:lb-pulse-next 1.2s ease-in-out infinite; border-color:#fcee09; }
+
+/* Tap burst — ring expands outward from the just-clicked cell */
+.lockbox-cell.tap-burst { animation:lb-tap-press 0.22s ease-out 1; }
+.lockbox-cell.tap-burst::before {
+    animation:lb-tap-corner 0.38s ease-out 1;
+    border-color:#fcee09;
+}
+.lockbox-cell.tap-burst::after {
+    animation:lb-tap-corner 0.38s ease-out 1;
+    animation-delay:0.05s;
+    border-color:#00f0ff;
+}
+@keyframes lb-tap-press {
+    0%   { transform:translateY(0) scale(1); }
+    40%  { transform:translateY(-2px) scale(1.04); box-shadow:0 0 24px rgba(252,238,9,0.7), inset 0 0 22px rgba(252,238,9,0.35); }
+    100% { transform:translateY(-1px) scale(1); }
+}
+@keyframes lb-tap-corner {
+    0%   { opacity:1; transform:scale(1); filter:drop-shadow(0 0 0 rgba(252,238,9,0)); }
+    50%  { opacity:1; transform:scale(1.6); filter:drop-shadow(0 0 6px rgba(252,238,9,0.7)); }
+    100% { opacity:0.4; transform:scale(1); }
+}
+
+/* Sequence row ripple on A/B/C match */
+.lockbox-seq-row.just-hit {
+    animation:lb-seq-ripple 0.7s ease-out 1;
+    position:relative;
+    overflow:hidden;
+}
+.lockbox-seq-row.just-hit::after {
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:linear-gradient(90deg, transparent 0, rgba(252,238,9,0.55) 45%, rgba(0,240,255,0.55) 55%, transparent 100%);
+    mix-blend-mode:screen;
+    animation:lb-seq-sweep 0.7s ease-out 1;
+    opacity:0;
+}
+@keyframes lb-seq-ripple {
+    0%   { box-shadow:0 0 0 0 rgba(252,238,9,0.0); transform:scale(1); }
+    30%  { box-shadow:0 0 0 4px rgba(252,238,9,0.6), 0 0 26px rgba(252,238,9,0.5); transform:scale(1.02); }
+    100% { box-shadow:0 0 0 0 rgba(252,238,9,0.0); transform:scale(1); }
+}
+@keyframes lb-seq-sweep {
+    0%   { transform:translateX(-110%); opacity:0; }
+    25%  { opacity:0.9; }
+    100% { transform:translateX(110%); opacity:0; }
+}
 .lockbox-cell.disabled { opacity:0.35; filter:saturate(0.4); }
 .lockbox-cell.guide-muted { opacity:0.28; }
 
@@ -1339,9 +1422,61 @@
         repeating-linear-gradient(0deg, rgba(0,0,0,0.6) 0 2px, transparent 2px 6px),
         rgba(10,14,22,0.9);
 }
-.lockbox-rail-finisher-zone.perfect { background:rgba(0,240,255,0.35); box-shadow:inset 0 0 12px rgba(0,240,255,0.5); }
+.lockbox-rail-finisher-zone.perfect {
+    background:
+        linear-gradient(180deg, rgba(0,240,255,0.55), rgba(252,238,9,0.45), rgba(0,240,255,0.55)),
+        rgba(0,240,255,0.4);
+    box-shadow:
+        inset 0 0 16px rgba(0,240,255,0.65),
+        0 0 18px rgba(0,240,255,0.3);
+    border-top:1px solid rgba(0,240,255,0.8);
+    border-bottom:1px solid rgba(0,240,255,0.8);
+    animation:lb-sweet-pulse 1.4s ease-in-out infinite;
+}
 .lockbox-rail-finisher-zone.good-low,
-.lockbox-rail-finisher-zone.good-high { background:rgba(252,238,9,0.28); }
+.lockbox-rail-finisher-zone.good-high {
+    background:rgba(252,238,9,0.26);
+    box-shadow:inset 0 0 10px rgba(252,238,9,0.22);
+}
+@keyframes lb-sweet-pulse {
+    0%,100% { box-shadow:inset 0 0 16px rgba(0,240,255,0.65), 0 0 14px rgba(0,240,255,0.25); filter:brightness(1); }
+    50%     { box-shadow:inset 0 0 22px rgba(0,240,255,0.95), 0 0 28px rgba(0,240,255,0.55); filter:brightness(1.25); }
+}
+
+/* Sweet-spot guide line at exact 900/1200 = 75% */
+.lockbox-rail-finisher-track::after {
+    content:"◆";
+    position:absolute;
+    left:50%;
+    bottom:75%;
+    transform:translate(-50%, 50%);
+    width:14px;
+    height:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#0a0a0a;
+    background:#00f0ff;
+    font-size:9px;
+    box-shadow:0 0 10px rgba(0,240,255,0.85), inset 0 0 4px rgba(255,255,255,0.5);
+    pointer-events:none;
+    z-index:3;
+    animation:lb-sweet-pulse 1.2s ease-in-out infinite;
+}
+
+/* Rail label reveal: "HOLD & RELEASE IN SWEET ZONE" */
+.lockbox-rail-finisher.visible::before,
+.lockbox-rail-finisher.visible::after {
+    /* existing ring animations — keep */
+}
+.lockbox-rail-finisher {
+    position:relative;
+}
+.lockbox-rail-finisher.visible .lockbox-rail-finisher-label {
+    color:#fcee09;
+    text-shadow:0 0 10px rgba(252,238,9,0.65);
+    animation:lb-alert-blink 1.1s ease-in-out infinite;
+}
 .lockbox-rail-finisher-progress { background:linear-gradient(0deg, #fcee09, #ff003c); box-shadow:0 0 12px rgba(252,238,9,0.6); }
 
 .lockbox-side-section {

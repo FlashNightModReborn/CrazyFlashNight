@@ -481,6 +481,31 @@ var LockboxPanel = (function() {
         return exact || fallback;
     }
 
+    function flashSeqRow(id) {
+        // Deferred so it runs AFTER the caller's renderAll rebuilds the DOM.
+        if (!_refs.sequences) return;
+        setTimeout(function() {
+            var row = _refs.sequences && _refs.sequences.querySelector('[data-seq-id="' + id + '"]');
+            if (!row) return;
+            row.classList.add('just-hit');
+            setTimeout(function() {
+                if (row) row.classList.remove('just-hit');
+            }, 720);
+        }, 0);
+    }
+
+    function spawnCellTapBurst(r, c) {
+        if (!_refs.grid) return;
+        setTimeout(function() {
+            var cellEl = _refs.grid && _refs.grid.querySelector('.lockbox-cell[data-r="' + r + '"][data-c="' + c + '"]');
+            if (!cellEl) return;
+            cellEl.classList.add('tap-burst');
+            setTimeout(function() {
+                if (cellEl) cellEl.classList.remove('tap-burst');
+            }, 480);
+        }, 0);
+    }
+
     function clearRuntimeFx() {
         if (!_el) return;
         _el.classList.remove('fx-perfect', 'fx-good', 'fx-miss', 'fx-fail', 'fx-overload', 'fx-trace-kill', 'fx-shake');
@@ -612,10 +637,25 @@ var LockboxPanel = (function() {
         _state.selectedMap[LockboxCore.cellKey(cell)] = true;
         _state.bufferTokens.push(token);
         if (typeof LockboxAudio !== 'undefined') LockboxAudio.play('tapLegal', { tokenId: token });
+        spawnCellTapBurst(r, c);
 
+        var prev = _state.prevCompletion || { a: false, b: false, c: false };
         var completion = LockboxCore.evaluateBuffer(_state.bufferTokens, _state.puzzle.seqA, _state.puzzle.seqB, _state.puzzle.seqC);
+        var aJustHit = completion.a && !prev.a;
+        var bJustHit = completion.b && !prev.b;
+        var cJustHit = completion.c && !prev.c && !_state.bonusLocked;
+        _state.prevCompletion = { a: completion.a, b: completion.b, c: completion.c };
+
+        if (aJustHit) flashSeqRow('A');
+        if (bJustHit) flashSeqRow('B');
+        if (cJustHit) flashSeqRow('C');
+
         var mainSolvedNow = completion.a && completion.b;
         var bonusGainedNow = completion.c && !_state.bonusLocked && !_state.bonusSolved;
+
+        if (!mainSolvedNow && (aJustHit || bJustHit) && typeof LockboxAudio !== 'undefined') {
+            LockboxAudio.play('seqMatch', { which: aJustHit ? 'A' : 'B' });
+        }
 
         if (completion.c && !_state.bonusLocked) _state.bonusSolved = true;
         if (mainSolvedNow && !_state.mainSolved) {
@@ -739,7 +779,7 @@ var LockboxPanel = (function() {
         _state.phase = (outcome === 'fail') ? 'FAIL' : 'RESULT';
         _state.lastStatus = buildResultCopy(payload);
         if (typeof LockboxAudio !== 'undefined') {
-            LockboxAudio.stopAll(true);
+            LockboxAudio.stopAll(true, { keepFx: true });
             if (reason === 'trace') LockboxAudio.play('traceOverload', { outcome: outcome });
             else if (outcome === 'fail') LockboxAudio.play('fail');
             else if (finisherResult === 'perfect') LockboxAudio.play('finishPerfect');
@@ -1067,7 +1107,7 @@ var LockboxPanel = (function() {
         var html = [];
         for (var i = 0; i < seqs.length; i++) {
             html.push(
-                '<div class="lockbox-seq-row ' + (seqs[i].done ? 'done' : '') + ' ' + (seqs[i].locked ? 'locked' : '') + '">' +
+                '<div class="lockbox-seq-row ' + (seqs[i].done ? 'done' : '') + ' ' + (seqs[i].locked ? 'locked' : '') + '" data-seq-id="' + seqs[i].id + '">' +
                 '<div class="lockbox-seq-label">' + seqs[i].id + '</div>' +
                 '<div class="lockbox-seq-tokens">' + renderTokenStrip(seqs[i].tokens, 28) + '</div>' +
                 '<div class="lockbox-seq-state">' + (seqs[i].locked ? 'LOCKED' : seqs[i].done ? 'SOLVED' : 'PENDING') + '</div>' +

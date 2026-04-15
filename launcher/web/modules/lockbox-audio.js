@@ -152,18 +152,30 @@ var LockboxAudio = (function() {
     }
 
     function clearFxTail() {
+        // Always restore to full wet/delay levels (mute gates via _master).
+        // Earlier code tied restore to _muted, which left the wet bus at 0.0001
+        // after a mute→unmute cycle and killed reverb/delay for the rest of the session.
         if (!_ctx || !_wet || !_delayFb) return;
         var t = _ctx.currentTime;
-        var wetRestore = _muted ? 0.0001 : WET_VOL;
-        var delayRestore = _muted ? 0.0001 : DELAY_FB_VOL;
         _wet.gain.cancelScheduledValues(t);
         _wet.gain.setValueAtTime(Math.max(0.0001, _wet.gain.value), t);
         _wet.gain.linearRampToValueAtTime(0.0001, t + 0.03);
-        _wet.gain.linearRampToValueAtTime(wetRestore, t + 0.16);
+        _wet.gain.linearRampToValueAtTime(WET_VOL, t + 0.16);
         _delayFb.gain.cancelScheduledValues(t);
         _delayFb.gain.setValueAtTime(Math.max(0.0001, _delayFb.gain.value), t);
         _delayFb.gain.linearRampToValueAtTime(0.0001, t + 0.03);
-        _delayFb.gain.linearRampToValueAtTime(delayRestore, t + 0.16);
+        _delayFb.gain.linearRampToValueAtTime(DELAY_FB_VOL, t + 0.16);
+    }
+
+    function resetFxImmediate() {
+        // Snap the wet/delay bus back to full level without any ramp-down window.
+        // Used before scene climaxes (finalizeRun SFX) so the attack isn't dry.
+        if (!_ctx || !_wet || !_delayFb) return;
+        var t = _ctx.currentTime;
+        _wet.gain.cancelScheduledValues(t);
+        _wet.gain.setValueAtTime(WET_VOL, t);
+        _delayFb.gain.cancelScheduledValues(t);
+        _delayFb.gain.setValueAtTime(DELAY_FB_VOL, t);
     }
 
     function env(gainParam, t0, attack, hold, release, peak) {
@@ -468,6 +480,14 @@ var LockboxAudio = (function() {
             burst({ freq: 600, q: 0.6, attackMs: 2, holdMs: 30, releaseMs: 280, peak: 0.24, sweepTo: 200, sweepMs: 280 });
             tone(55, { type: 'sine', attackMs: 2, holdMs: 40, releaseMs: 200, peak: 0.2 });
         },
+        seqMatch: function(meta) {
+            var which = meta && meta.which;
+            var base = which === 'B' ? 880 : 740;
+            var t0 = _ctx ? _ctx.currentTime : 0;
+            tone(base, { at: t0, type: 'triangle', attackMs: 2, holdMs: 24, releaseMs: 180, peak: 0.2, wet: 0.45, reverb: true });
+            tone(base * 1.5, { at: t0 + 0.05, type: 'sine', attackMs: 2, holdMs: 18, releaseMs: 160, peak: 0.12, wet: 0.45, reverb: true });
+            burst({ at: t0, freq: base * 4, q: 8, attackMs: 1, holdMs: 14, releaseMs: 120, peak: 0.08, wet: 0.4, reverb: true });
+        },
         mainSolved: function() {
             arp([523, 659, 784, 1047], 55, { type: 'triangle', attackMs: 3, holdMs: 35, releaseMs: 200, peak: 0.2, wet: 0.4, reverb: true });
             tone(131, { type: 'sine', attackMs: 4, holdMs: 80, releaseMs: 320, peak: 0.18 });
@@ -601,7 +621,11 @@ var LockboxAudio = (function() {
         if (fn) fn(meta);
     }
 
-    function stopAll(hard) {
+    function stopAll(hard, opts) {
+        // opts.keepFx = true  → don't touch wet/delay bus (use before climax SFX
+        //                        so its initial reverb attack isn't swallowed by the
+        //                        30ms dip clearFxTail introduces).
+        // default behavior  → dip+restore wet/delay to flush echo carryover.
         if (!_ctx) return;
         stopAmbient();
         stopHeartbeat();
@@ -609,7 +633,11 @@ var LockboxAudio = (function() {
         var voices = _voices.slice();
         for (var i = 0; i < voices.length; i++) stopVoice(voices[i], hard !== false);
         _voices.length = 0;
-        clearFxTail();
+        if (opts && opts.keepFx) {
+            resetFxImmediate();
+        } else {
+            clearFxTail();
+        }
     }
 
     function setMuted(m) {
