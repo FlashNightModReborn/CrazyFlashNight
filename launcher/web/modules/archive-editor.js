@@ -36,6 +36,7 @@
     _mode = 'simple';
     _currentData = null;
     _rawText = '';
+    _bannerPriority = -1;
 
     // 检查 Idle
     _idleOk = (window.BootstrapApp.getLaunchState() === 'Idle');
@@ -499,13 +500,23 @@
   }
 
   function parseLeafValue(str, origType) {
-    if (str === 'null') return null;
-    if (str === 'true') return true;
-    if (str === 'false') return false;
+    // 严格按原始类型回写，避免类型漂移（如 string "null" 变成 null）
+    if (origType === 'null') {
+      // 原值是 null；仅当用户保留 "null" 时才返回 null，否则视为用户想填字符串
+      if (str === 'null') return null;
+      return str;
+    }
+    if (origType === 'boolean') {
+      if (str === 'true') return true;
+      if (str === 'false') return false;
+      return str; // 用户输了非 bool 文本 → 退化为字符串（保留原文）
+    }
     if (origType === 'number') {
       var n = parseFloat(str);
+      // 解析失败时保留 number 类型的 NaN 语义不安全 → 保留原始字符串让后端拒绝
       return isNaN(n) ? str : n;
     }
+    // origType === 'string' / 'undefined' / 其他: 始终返回字符串，不做特殊解析
     return str;
   }
 
@@ -605,15 +616,34 @@
     _saveBtn.disabled = disabled;
     _resetBtn.disabled = !_idleOk;
 
-    // 更新 banner
-    if (!_idleOk && _bannerEl && !_bannerEl.querySelector('.idle-banner')) {
-      showBanner('info', '游戏运行中，编辑器为只读模式');
+    // 非 Idle 时追加只读提示（不覆盖已有的 error/warn banner）
+    if (!_idleOk) {
+      showBanner('info', '游戏运行中，编辑器为只读模式', /*priority:*/ 0);
+    } else {
+      // Idle 恢复时清除低优先级 idle banner（但保留更重要的 error/warn）
+      clearBannerIfPriority(0);
     }
   }
 
-  function showBanner(type, text) {
+  // banner 优先级：0=idle hint (最低), 1=info, 2=warn, 3=error (最高)
+  var _bannerPriority = -1;
+  var BANNER_PRIORITY_MAP = { info: 1, warn: 2, error: 3 };
+
+  function showBanner(type, text, priority) {
     if (!_bannerEl) return;
+    var p = (priority != null) ? priority : (BANNER_PRIORITY_MAP[type] || 1);
+    // 不覆盖更高优先级的 banner
+    if (p < _bannerPriority) return;
+    _bannerPriority = p;
     _bannerEl.innerHTML = '<div class="modal-banner ' + type + '">' + escHtml(text) + '</div>';
+  }
+
+  function clearBannerIfPriority(maxPriority) {
+    if (!_bannerEl) return;
+    if (_bannerPriority <= maxPriority) {
+      _bannerEl.innerHTML = '';
+      _bannerPriority = -1;
+    }
   }
 
   function escHtml(s) {

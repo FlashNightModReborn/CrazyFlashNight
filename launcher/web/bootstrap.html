@@ -339,10 +339,16 @@
     var sourceData = msg.sourceData;
     var suggestedSlot = msg.suggestedSlot || '';
 
-    var slot = prompt('\u9009\u62e9\u76ee\u6807\u5b58\u6863\u69fd\u4f4d:\n\u5efa\u8bae: ' + suggestedSlot, suggestedSlot);
+    var slot = prompt('\u9009\u62e9\u76ee\u6807\u5b58\u6863\u69fd\u4f4d:\n\u5efa\u8bae: ' + suggestedSlot + '\n\u4ec5\u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e0b\u5212\u7ebf/\u77ed\u6a2a\u7ebf, 1-32 \u5b57\u7b26', suggestedSlot);
     if (slot == null) return; // 取消
     slot = slot.trim();
     if (!slot) { logLine('tag-err', '\u5bfc\u5165\u53d6\u6d88: \u672a\u8f93\u5165\u69fd\u4f4d\u540d'); return; }
+
+    // 前端合法化校验 — 与 SanitizeSlotName 一致，防止 UI 看到的 slot 与后端落盘 slot 不同
+    if (!SLOT_NAME_RE.test(slot)) {
+      alert('\u69fd\u4f4d\u540d\u4e0d\u5408\u6cd5: "' + slot + '"\n\u4ec5\u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e0b\u5212\u7ebf/\u77ed\u6a2a\u7ebf, 1-32 \u5b57\u7b26');
+      return;
+    }
 
     var meta = window.BootstrapApp.getSlotMeta(slot);
     if (meta == null) {
