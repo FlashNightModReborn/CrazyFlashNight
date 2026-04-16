@@ -53,7 +53,8 @@ namespace CF7Launcher.Bus
             AudioTask audio,
             IconBakeTask iconBake,
             ShopTask shopTask,
-            ArchiveTask archiveTask)
+            ArchiveTask archiveTask,
+            BenchTask benchTask)
         {
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
@@ -61,6 +62,12 @@ namespace CF7Launcher.Bus
             router.RegisterSync("toast", toast.Handle);
             router.RegisterSync("audio", audio.Handle);
             router.RegisterSync("icon_bake", iconBake.Handle);
+            if (benchTask != null)
+            {
+                router.RegisterSync("bench_sync", benchTask.HandleSync);
+                router.RegisterAsync("bench_async", benchTask.HandleAsync);
+                router.RegisterSync("bench_push", benchTask.HandlePush);
+            }
 
             // 商城面板回包路由
             if (shopTask != null)
@@ -127,6 +134,9 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "icon_bake",      "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);
+            first = AppendTask(sb, "bench_sync",     "json_sync", "AS2<->C#",false, first);
+            first = AppendTask(sb, "bench_async",    "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "bench_push",     "json_push", "AS2<->C#",false, first);
         }
 
         /// <summary>

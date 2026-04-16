@@ -65,6 +65,7 @@
     <Compile Include="src\Bus\PortAllocator.cs" />
     <Compile Include="src\Bus\FlashPolicyHandler.cs" />
     <Compile Include="src\Bus\MessageRouter.cs" />
+    <Compile Include="src\Bus\BenchTrace.cs" />
     <Compile Include="src\Bus\XmlSocketServer.cs" />
     <Compile Include="src\Bus\HttpApiServer.cs" />
     <Compile Include="src\Render\RenderNativeMethods.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="src\Tasks\AudioTask.cs" />
     <Compile Include="src\Tasks\GomokuTask.cs" />
     <Compile Include="src\Tasks\ToastTask.cs" />
+    <Compile Include="src\Tasks\BenchTask.cs" />
     <Compile Include="src\Bus\TaskRegistry.cs" />
     <Compile Include="src\Guardian\OverlayBase.cs" />
     <Compile Include="src\Guardian\FpsRingBuffer.cs" />

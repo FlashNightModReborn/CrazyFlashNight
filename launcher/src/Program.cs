@@ -290,7 +290,8 @@ class Program
         IconBakeTask iconBakeTask = new IconBakeTask(projectRoot, notchSink);
         ShopTask shopTask = new ShopTask(socketServer);
         ArchiveTask archiveTask = new ArchiveTask(projectRoot);
-        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, archiveTask);
+        BenchTask benchTask = new BenchTask(socketServer);
+        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, archiveTask, benchTask);
 
         // 面板系统接线 (11c: webOverlay 必有)
         webOverlay.SetShopTask(shopTask);

@@ -290,6 +290,15 @@ namespace CF7Launcher.Bus
                         LogManager.Log("[Frame:UI] " + uiState);
                         if (_uiDataHandler != null)
                             _uiDataHandler(uiState);
+                        if (uiState.StartsWith("bench:"))
+                        {
+                            string token = uiState.Substring("bench:".Length);
+                            long recvUs = BenchTrace.NowUs();
+                            string kPayload = ((char)0x20).ToString() + "\x01\x02" + token;
+                            long sendUs = BenchTrace.NowUs();
+                            BenchTrace.LogEcho("frame_ui_k", token, recvUs, sendUs);
+                            Send("K" + kPayload + "\0");
+                        }
                     }
                     return;
                 }
@@ -307,6 +316,20 @@ namespace CF7Launcher.Bus
                     // SFX 快车道：同步分发（单线程，与 ReadLoop 串行）。
                     // Flash 侧已将 S 消息调序到 F 之前发送，确保同批次内音效优先处理。
                     CF7Launcher.Tasks.AudioTask.HandleSfxFastLane(message);
+                    return;
+                }
+
+                if (prefix == 'B')
+                {
+                    // Benchmark fast-lane echo. Returns via existing K prefix so
+                    // AS2 smoke tests can observe the ack without production code
+                    // changes. Payload is mirrored into K.hints.
+                    string token = (message.Length > 1) ? message.Substring(1) : "";
+                    long recvUs = BenchTrace.NowUs();
+                    string kPayload = ((char)0x20).ToString() + "\x01\x02" + token;
+                    long sendUs = BenchTrace.NowUs();
+                    BenchTrace.LogEcho("raw_b_k", token, recvUs, sendUs);
+                    Send("K" + kPayload + "\0");
                     return;
                 }
 
