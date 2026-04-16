@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/能量喷泉/能量喷泉" itemID="69210c34-00001137" linkageExportForAS="true" linkageIdentifier="能量喷泉" lastModified="1764165566" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/能量喷泉/能量喷泉" itemID="69210c34-00001137" linkageExportForAS="true" linkageIdentifier="能量喷泉" lastModified="1776350870" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="能量喷泉">
+    <DOMTimeline name="能量喷泉" currentFrame="1">
       <layers>
-        <DOMLayer name="代码" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <Actionscript>
@@ -22,7 +22,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="area" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="area" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -74,11 +74,11 @@ this._rotation = 0;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/能量喷泉/ROUND WAVE素材" blendMode="hardlight" centerPoint3DX="14.5" centerPoint3DY="-0.5">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/能量喷泉/ROUND WAVE素材" selected="true" blendMode="hardlight" centerPoint3DX="14.5" centerPoint3DY="-0.5">
                   <matrix>
                     <Matrix a="1.24992370605469" d="1.24998474121094" tx="7.9"/>
                   </matrix>
