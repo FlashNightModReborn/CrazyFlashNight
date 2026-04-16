@@ -23,6 +23,9 @@ namespace CF7Launcher.Guardian
         private static readonly object _fileLock = new object();
         private static string _logFilePath;
 
+        /// <summary>launcher.log 文件路径（供 /logs endpoint 读取）。</summary>
+        public static string LogFilePath { get { return _logFilePath; } }
+
         /// <summary>
         /// 初始化 UI 日志通道。由 GuardianForm 构造函数调用。
         /// </summary>

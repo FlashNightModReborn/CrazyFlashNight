@@ -27,6 +27,9 @@ namespace CF7Launcher.Tasks
         private readonly string _savesDir;
         private readonly object _lock = new object();
 
+        /// <summary>saves 目录路径（供 BootstrapMessageHandler 读取）。</summary>
+        public string SavesDir { get { return _savesDir; } }
+
         // 一致性校验：每个 slot 的上一次 shadow 快照
         private readonly Dictionary<string, JObject> _prevSnapshots = new Dictionary<string, JObject>();
 
@@ -77,6 +80,10 @@ namespace CF7Launcher.Tasks
                     return HandleDelete(payload);
                 case "list":
                     return HandleList();
+                case "reset":
+                    return HandleReset(payload);
+                case "load_raw":
+                    return HandleLoadRaw(payload);
                 default:
                     return BuildError("unknown op: " + op);
             }
@@ -120,6 +127,26 @@ namespace CF7Launcher.Tasks
             string targetPath = Path.Combine(_savesDir, safeName + ".json");
             string tmpPath = targetPath + ".tmp";
             string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
+
+            // Phase 2a userEdit 守卫：用户态编辑/导入（BootstrapMessageHandler 注入 userEdit:true）
+            bool userEdit = payload["userEdit"] != null && (bool)payload["userEdit"];
+            if (userEdit && dataObj != null)
+            {
+                // schema 结构校验
+                string schemaErr;
+                if (!ValidateSchemaStructure(dataObj, out schemaErr))
+                    return BuildError(schemaErr);
+
+                // tombstone 守卫：用户态不可通过 shadow 清除 tombstone
+                if (File.Exists(tombPath))
+                    return BuildError("slot_tombstoned");
+
+                // 覆写 lastSaved 为本地时间（与 SaveManager.packTimestamp() 格式一致）
+                dataObj["lastSaved"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                data = dataObj.ToString(Formatting.None);
+
+                LogManager.Log("[ArchiveTask] userEdit shadow: " + safeName);
+            }
 
             // 一致性校验
             JArray warnings = null;
@@ -417,7 +444,7 @@ namespace CF7Launcher.Tasks
 
         // ==================== 工具方法 ====================
 
-        private static string SanitizeSlotName(string slot)
+        public static string SanitizeSlotName(string slot)
         {
             if (string.IsNullOrEmpty(slot))
                 return "default";
@@ -442,6 +469,101 @@ namespace CF7Launcher.Tasks
                 return "default";
             return result;
         }
+
+        // ==================== reset (Phase 2a) ====================
+
+        /// <summary>
+        /// 清理 launcher 侧副本：同时删 .json + .tombstone + 清一致性快照。
+        /// 注意：不清除 Flash 侧 SOL，下次启动可能从 SOL 回填。
+        /// </summary>
+        private string HandleReset(JObject payload)
+        {
+            string slot = payload.Value<string>("slot");
+            if (string.IsNullOrEmpty(slot))
+                return BuildError("missing slot");
+
+            string safeName = SanitizeSlotName(slot);
+            string jsonPath = Path.Combine(_savesDir, safeName + ".json");
+            string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
+
+            lock (_lock)
+            {
+                try { if (File.Exists(jsonPath)) File.Delete(jsonPath); }
+                catch (Exception ex) { LogManager.Log("[ArchiveTask] reset delete json failed: " + ex.Message); }
+
+                try { if (File.Exists(tombPath)) File.Delete(tombPath); }
+                catch (Exception ex) { LogManager.Log("[ArchiveTask] reset delete tombstone failed: " + ex.Message); }
+            }
+
+            lock (_prevSnapshots)
+            {
+                _prevSnapshots.Remove(safeName);
+            }
+
+            LogManager.Log("[ArchiveTask] reset slot=" + safeName);
+
+            JObject result = new JObject();
+            result["success"] = true;
+            result["task"] = "archive";
+            result["slot"] = safeName;
+            result["reset"] = true;
+            return result.ToString(Formatting.None);
+        }
+
+        // ==================== load_raw (Phase 2a) ====================
+
+        /// <summary>
+        /// 绕过 tombstone 检查直接读取 .json 原始内容（供 editor 查看 inconsistent/corrupt slot）。
+        /// </summary>
+        private string HandleLoadRaw(JObject payload)
+        {
+            string slot = payload.Value<string>("slot");
+            if (string.IsNullOrEmpty(slot))
+                return BuildError("missing slot");
+
+            string safeName = SanitizeSlotName(slot);
+            string jsonPath = Path.Combine(_savesDir, safeName + ".json");
+            string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
+
+            if (!File.Exists(jsonPath))
+                return BuildError("slot not found: " + safeName);
+
+            string rawData = File.ReadAllText(jsonPath, Encoding.UTF8);
+            bool corrupt = false;
+            try { JObject.Parse(rawData); }
+            catch { corrupt = true; }
+
+            JObject result = new JObject();
+            result["success"] = true;
+            result["task"] = "archive";
+            result["slot"] = safeName;
+            result["data"] = rawData;
+            result["tombstoned"] = File.Exists(tombPath);
+            result["corrupt"] = corrupt;
+            return result.ToString(Formatting.None);
+        }
+
+        // ==================== schema 结构校验 (Phase 2a) ====================
+
+        /// <summary>
+        /// 结构校验：version + 顶层数字键数组长度 + lastSaved 存在。
+        /// 不做数值范围校验（那是前端白名单的职责）。
+        /// </summary>
+        public static bool ValidateSchemaStructure(JObject data, out string error)
+        {
+            error = null;
+            if (data == null) { error = "missing_data"; return false; }
+            string ver = data.Value<string>("version");
+            if (ver != "3.0") { error = "schema_version_mismatch"; return false; }
+            JArray arr0 = data.Value<JArray>("0");
+            if (arr0 == null || arr0.Count < 14) { error = "schema_player_array_invalid"; return false; }
+            JArray arr1 = data.Value<JArray>("1");
+            if (arr1 == null || arr1.Count < 28) { error = "schema_equip_array_invalid"; return false; }
+            if (data["lastSaved"] == null) { error = "schema_missing_lastSaved"; return false; }
+            return true;
+        }
+
+        // ==================== 工具方法 ====================
 
         private static string BuildError(string error)
         {

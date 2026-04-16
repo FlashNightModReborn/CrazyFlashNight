@@ -151,6 +151,8 @@ namespace CF7Launcher.Bus
                     HandleCrossDomain(ctx);
                 else if (path == "/save-push" && method == "POST")
                     HandleSavePush(ctx);
+                else if (path == "/logs" && method == "GET")
+                    HandleLogs(ctx);
                 else
                 {
                     ctx.Response.StatusCode = 404;
@@ -454,6 +456,75 @@ namespace CF7Launcher.Bus
             {
                 ctx.Response.StatusCode = 504;
                 WriteResponse(ctx, "{\"ok\":false,\"error\":\"timeout\"}");
+            }
+        }
+
+        // ==================== /logs (Phase 2a) ====================
+
+        /// <summary>
+        /// GET /logs?lines=200  — tail 读 launcher.log 尾部 N 行。
+        /// 响应: { success:true, lines:[...], total:int }
+        /// total = 文件实际总行数；lines.length = min(N, total)。
+        /// </summary>
+        private void HandleLogs(HttpListenerContext ctx)
+        {
+            string logPath = LogManager.LogFilePath;
+            if (string.IsNullOrEmpty(logPath) || !File.Exists(logPath))
+            {
+                WriteResponse(ctx, "{\"success\":false,\"error\":\"log file not available\"}");
+                return;
+            }
+
+            int requestedLines = 200;
+            string linesParam = ctx.Request.QueryString["lines"];
+            if (!string.IsNullOrEmpty(linesParam))
+            {
+                int parsed;
+                if (int.TryParse(linesParam, out parsed) && parsed >= 1 && parsed <= 2000)
+                    requestedLines = parsed;
+            }
+
+            try
+            {
+                // 只读打开（launcher 可能正在写入）
+                string[] allLines;
+                using (FileStream fs = new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (StreamReader sr = new StreamReader(fs, Encoding.UTF8))
+                {
+                    allLines = sr.ReadToEnd().Split(new char[] { '\n' });
+                }
+
+                // 丢弃最后一段不完整行（正在写入时可能是半行）
+                List<string> clean = new List<string>();
+                for (int i = 0; i < allLines.Length; i++)
+                {
+                    string line = allLines[i].TrimEnd('\r');
+                    if (line.Length > 0)
+                        clean.Add(line);
+                }
+
+                int total = clean.Count;
+                int skip = total > requestedLines ? total - requestedLines : 0;
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("{\"success\":true,\"total\":");
+                sb.Append(total);
+                sb.Append(",\"lines\":[");
+                bool first = true;
+                for (int i = skip; i < clean.Count; i++)
+                {
+                    if (!first) sb.Append(",");
+                    first = false;
+                    sb.Append("\"");
+                    sb.Append(EscapeJsonString(clean[i]));
+                    sb.Append("\"");
+                }
+                sb.Append("]}");
+                WriteResponse(ctx, sb.ToString());
+            }
+            catch (Exception ex)
+            {
+                WriteResponse(ctx, "{\"success\":false,\"error\":\"" + EscapeJsonString(ex.Message) + "\"}");
             }
         }
 
