@@ -12,7 +12,7 @@
   var _currentData = null;  // parsed JSON object (null when raw-only)
   var _rawText = '';         // 原始 JSON 字符串
   var _isDirty = false;      // 模型有合法修改
-  var _hasInvalidInput = false; // 面板中有未写回模型的非法输入
+
   var _mode = 'simple';     // 'simple' | 'advanced' | 'tree'
   var _rawOnly = false;      // true = 仅高级模式可用
   var _saveDisabled = false; // inconsistent slot 永久禁用保存
@@ -32,7 +32,7 @@
     _slot = initData.slot;
     _slotMeta = initData.slotMeta || {};
     _isDirty = false;
-    _hasInvalidInput = false;
+
     _rawOnly = false;
     _saveDisabled = false;
     _mode = 'simple';
@@ -118,8 +118,13 @@
     _rawText = '';
   }
 
+  function hasInvalidInput() {
+    if (!_panelEl) return false;
+    return _panelEl.querySelectorAll('input.invalid').length > 0;
+  }
+
   function canClose() {
-    if (!_isDirty && !_hasInvalidInput) return true;
+    if (!_isDirty && !hasInvalidInput()) return true;
     return confirm('有未保存更改，放弃？');
   }
 
@@ -257,7 +262,7 @@
       if (invalids.length > 0) {
         if (!confirm('有 ' + invalids.length + ' 个字段输入非法（未写入模型），切换模式将丢弃这些输入。继续？')) return;
         // 用户确认丢弃 → 清非法输入标记（模型未被这些输入污染）
-        _hasInvalidInput = false;
+    
       }
     }
     // 从简易/树切出时，同步 _rawText
@@ -369,9 +374,8 @@
     if (valid) {
       window.ArchiveSchema.setByPath(_currentData, field.path, val);
       _isDirty = true;
-    } else {
-      _hasInvalidInput = true;
     }
+    // invalid 状态由 DOM class 驱动，hasInvalidInput() 实时查询
     updateButtons();
   }
 
@@ -517,7 +521,6 @@
         // 非法值：标红 + 不写回 _currentData
         input.className = 'invalid';
         input.title = result.error;
-        _hasInvalidInput = true;
       }
       updateButtons();
     });
