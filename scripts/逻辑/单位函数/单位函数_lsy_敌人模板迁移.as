@@ -506,26 +506,30 @@ _root.敌人函数.提升属性抗性  = function(最小值) {
 }
 
 
-_root.敌人函数.配置音效 = function(类型) {
+_root.敌人函数.配置音效 = function(类型:String, target:MovieClip) {
+    // 支持填target调用，或附加在敌人单位上后直接调用
+    if (!target){
+        traget = this;
+    }
     if(类型 === "僵尸"){
-        if(this.性别 === "男"){
-            this.男_攻击呐喊_库 = ["僵尸02.wav","僵尸03.wav"];
-            this.男_中招呐喊_库 = ["僵尸04.wav","僵尸06.wav"];
-            this.男_击倒呐喊_库 = ["僵尸01.wav","僵尸05.wav"];
-        }else if(this.性别 === "女"){
-            this.女_攻击呐喊_库 = ["僵尸02.wav","僵尸03.wav"];
-            this.女_中招呐喊_库 = ["僵尸04.wav","僵尸06.wav"];
-            this.女_击倒呐喊_库 = ["僵尸01.wav","僵尸05.wav"];
+        if(target.性别 === "男"){
+            target.男_攻击呐喊_库 = ["僵尸02.wav","僵尸03.wav"];
+            target.男_中招呐喊_库 = ["僵尸04.wav","僵尸06.wav"];
+            target.男_击倒呐喊_库 = ["僵尸01.wav","僵尸05.wav"];
+        }else if(target.性别 === "女"){
+            target.女_攻击呐喊_库 = ["僵尸02.wav","僵尸03.wav"];
+            target.女_中招呐喊_库 = ["僵尸04.wav","僵尸06.wav"];
+            target.女_击倒呐喊_库 = ["僵尸01.wav","僵尸05.wav"];
         }
     }else if(类型 === "人类"){
-        if(this.性别 === "男"){
-            this.男_攻击呐喊_库 = ["11_kda_a_1-22.wav","23_kda_sy_1-22.wav","01_kyn_a_2-22.wav","25_kyo_sb-22.wav","20_kyn_h_9-22.wav"];
-            this.男_中招呐喊_库 = ["男-主角-0.wav","男-主角-1.wav","男-主角-2.wav","主角中招0.wav","主角中招1.wav","主角中招2.wav"];
-            this.男_击倒呐喊_库 = ["08_kyo_d_f-22.wav","07_ben_d_f-22.wav","06_cla_d_f-22.wav","04_and_df1-22.wav"];
-        }else if(this.性别 === "女"){
-            this.女_攻击呐喊_库 = ["01_kin_a_1-22.wav","02_kin_a_2-22.wav","03_kin_a_3-22.wav","19_kin_nage-22.wav"];
-            this.女_中招呐喊_库 = ["05_kin_d_1-22.wav","06_kin_d_2-22.wav","07_kin_d_3-22.wav","08_kin_d_4-22.wav"];
-            this.女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
+        if(target.性别 === "男"){
+            target.男_攻击呐喊_库 = ["11_kda_a_1-22.wav","23_kda_sy_1-22.wav","01_kyn_a_2-22.wav","25_kyo_sb-22.wav","20_kyn_h_9-22.wav"];
+            target.男_中招呐喊_库 = ["男-主角-0.wav","男-主角-1.wav","男-主角-2.wav","主角中招0.wav","主角中招1.wav","主角中招2.wav"];
+            target.男_击倒呐喊_库 = ["08_kyo_d_f-22.wav","07_ben_d_f-22.wav","06_cla_d_f-22.wav","04_and_df1-22.wav"];
+        }else if(target.性别 === "女"){
+            target.女_攻击呐喊_库 = ["01_kin_a_1-22.wav","02_kin_a_2-22.wav","03_kin_a_3-22.wav","19_kin_nage-22.wav"];
+            target.女_中招呐喊_库 = ["05_kin_d_1-22.wav","06_kin_d_2-22.wav","07_kin_d_3-22.wav","08_kin_d_4-22.wav"];
+            target.女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
         }
     }
 }

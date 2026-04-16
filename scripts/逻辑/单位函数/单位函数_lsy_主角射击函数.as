@@ -178,9 +178,11 @@ _root.主角函数.双枪换弹帧率控制 = function(target:MovieClip):Void {
 
 
 // 临时放置的初始化敌人射击函数
-_root.敌人函数.初始化并开始射击 = function():Void {
+_root.敌人函数.初始化并开始射击 = function(最大射击时长:Number):Void {
     var 自机 = _parent;
     var 攻击对象 = _root.gameworld[_parent.攻击目标];
+
+    var maxShootTime = 最大射击时长 > 1 ? 最大射击时长 : 90;
 
     自机.长枪射击 = WeaponFireCore.LONG_GUN_SHOOT;
     ShootInitCore.initLongGun(this, _parent);
@@ -189,13 +191,29 @@ _root.敌人函数.初始化并开始射击 = function():Void {
     自机.下行 = false;
     自机.动作A = true;
     
-    this.射击许可标签.timer = 30;
+    this.射击许可标签.timer = 0;
     // 临时糊一个小ai在这
     this.射击许可标签.onEnterFrame = function(){
-        this.timer--;
-        if(this.timer <= 0){
-            this.timer = 30;
-        
+        this.timer++;
+        // 检查子弹耗尽，检查射击时长达到
+        if(this.timer % 10 === 0){
+
+            var attackMode:String = 自机.攻击模式;
+            var weaponValue:Object = 自机[attackMode].value;
+            var capacity:Number = 自机[attackMode + "弹匣容量"];
+
+            if(weaponValue.shot >= capacity){
+                delete this.onEnterFrame;
+                自机.动作A = false;
+                自机.man.开始换弹();
+            }else if(timer >= maxShootTime){
+                delete this.onEnterFrame;
+                自机.动作A = false;
+                自机.动画完毕();
+            }
+        }
+        // 检查敌人不在攻击范围内
+        if(this.timer % 30 === 0){
             var dx = 攻击对象._x - 自机._x;
             if(自机.方向 == "左") dx = -dx;
             var dz = Math.abs(攻击对象.Z轴坐标 - 自机.Z轴坐标);
