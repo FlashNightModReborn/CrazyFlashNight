@@ -61,12 +61,13 @@
       <bullet>加强普通子弹</bullet>
       <bulletrename>加强普通子弹</bulletrename>
       <sound>silencer.wav</sound>
-      <muzzle>突击步枪枪火</muzzle>
+      <muzzle>null</muzzle>
       <bullethit>火花</bullethit>
       <clipname>突击步枪通用弹药</clipname>
       <bulletsize>25</bulletsize>
       <power>446</power>
       <impact>12</impact>
+      <silence>300</silence>
       <reloadPenalty>0</reloadPenalty>
     </data>
     <lifecycle>

@@ -281,13 +281,14 @@
         <interval>60</interval>
         <velocity>45</velocity>
         <bullet>普通子弹</bullet>
-        <sound>re_SMG_uzi_sil.wav</sound>
-        <muzzle>冲锋枪枪火</muzzle>
+        <sound>silencer.wav</sound>
+        <muzzle>null</muzzle>
         <bullethit>火花</bullethit>
         <clipname>冲锋枪通用弹药</clipname>
         <bulletsize>50</bulletsize>
         <power>110</power>
         <impact>500</impact>
+        <silence>300</silence>
         <reloadPenalty>0</reloadPenalty>
       </data>
     </item>

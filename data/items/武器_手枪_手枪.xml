@@ -53,13 +53,14 @@
         <interval>100</interval>
         <velocity>20</velocity>
         <bullet>普通子弹</bullet>
-        <sound>m4a1-1.wav</sound>
-        <muzzle>紧凑手枪枪火</muzzle>
+        <sound>silencer.wav</sound>
+        <muzzle>null</muzzle>
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
         <power>30</power>
         <impact>100</impact>
+        <silence>300</silence>
         <reloadPenalty>-15</reloadPenalty>
       </data>
     </item>
@@ -167,13 +168,14 @@
         <interval>100</interval>
         <velocity>20</velocity>
         <bullet>普通子弹</bullet>
-        <sound>re_SMG_uzi.wav</sound>
-        <muzzle>紧凑手枪枪火</muzzle>
+        <sound>silencer.wav</sound>
+        <muzzle>null</muzzle>
         <bullethit>火花</bullethit>
         <clipname>手枪通用弹药</clipname>
         <bulletsize>25</bulletsize>
         <power>40</power>
         <impact>100</impact>
+        <silence>300</silence>
         <reloadPenalty>-15</reloadPenalty>
       </data>
       <data_ice>

@@ -227,14 +227,15 @@
       <interval>50</interval>
       <velocity>50</velocity>
       <bullet>加强普通子弹</bullet>
-      <sound>re_SMG_KrissV_sil.wav</sound>
-      <muzzle>冲锋枪枪火</muzzle>
+      <sound>silencer.wav</sound>
+      <muzzle>null</muzzle>
       <bullethit>火花</bullethit>
       <clipname>冲锋枪达姆弹弹药</clipname>
       <bulletsize>20</bulletsize>
       <power>80</power>
       <impact>70</impact>
       <criticalhit>15</criticalhit>
+      <silence>300</silence>
       <reloadPenalty>0</reloadPenalty>
     </data>
   </item>
@@ -404,14 +405,15 @@
       <interval>150</interval>
       <velocity>50</velocity>
       <bullet>加强普通子弹</bullet>
-      <sound>re_sniper_50ar.wav</sound>
-      <muzzle>发射器枪火</muzzle>
+      <sound>silencer.wav</sound>
+      <muzzle>null</muzzle>
       <bullethit>火花</bullethit>
       <clipname>冲锋枪达姆弹弹药</clipname>
       <bulletsize>50</bulletsize>
       <power>550</power>
       <impact>20</impact>
       <criticalhit>10</criticalhit>
+      <silence>300</silence>
       <reloadPenalty>0</reloadPenalty>
     </data>
   </item>
