@@ -13,6 +13,9 @@
   <div class="toolbar">
     <button id="btn-refresh">刷新</button>
     <button id="btn-new">新建角色...</button>
+    <button id="btn-import">导入存档</button>
+    <button id="btn-open-dir">打开存档目录</button>
+    <button id="btn-logs">日志</button>
     <button id="btn-retry" style="display:none">重试</button>
     <span id="state-badge" class="state-badge">Idle</span>
   </div>
@@ -21,6 +24,13 @@
 
   <div id="log"></div>
 </div>
+
+<!-- Phase 2a: modal host (手写 modal, 不引 Panels.js/Bridge.js) -->
+<div id="modal-host" style="display:none">
+  <div class="modal-backdrop" id="modal-backdrop"></div>
+  <div class="modal-content" id="modal-content"></div>
+</div>
+
 <script>
 (function() {
   var logEl = document.getElementById('log');
@@ -35,11 +45,14 @@
     'crazyflasher7_saves6', 'crazyflasher7_saves7', 'crazyflasher7_saves8',
     'crazyflasher7_saves9'
   ];
-  // ASCII-only 对齐 ArchiveTask.SanitizeSlotName 保留字符集; 中文名 round-trip 需 Phase 2 的
-  // slotId/displayName 双字段支持, 当前不放行以防静默折叠到规范化名
+  // ASCII-only 对齐 ArchiveTask.SanitizeSlotName 保留字符集
   var SLOT_NAME_RE = /^[a-zA-Z0-9_-]{1,32}$/;
 
   var lastSlotsFromLauncher = [];
+  var _lastLaunchState = 'Idle';
+
+  // Phase 2a: onMessage 注册表
+  var _handlers = {};
 
   function logLine(cls, text) {
     var d = new Date(), ts = d.toTimeString().slice(0, 8);
@@ -72,7 +85,6 @@
   }
 
   function presetDisplayName(slot) {
-    // crazyflasher7_saves → 存档 1; crazyflasher7_savesN → 存档 N+1
     var m = /^crazyflasher7_saves(\d*)$/.exec(slot);
     if (!m) return slot;
     var idx = m[1] === '' ? 0 : parseInt(m[1], 10);
@@ -80,20 +92,17 @@
   }
 
   function mergeSlots(fromLauncher) {
-    // 合并预设 10 槽 + launcher 返回的其他自定义 slot. 先预设按顺序, 再自定义按字母序.
     var byName = {};
     for (var i = 0; i < fromLauncher.length; i++) {
       byName[fromLauncher[i].slot] = fromLauncher[i];
     }
     var merged = [];
-    // 预设 10 槽
     for (var j = 0; j < PRESET_SLOTS.length; j++) {
       var slot = PRESET_SLOTS[j];
       var data = byName[slot];
       if (data) { merged.push(data); delete byName[slot]; }
       else merged.push(emptyPlaceholder(slot, true));
     }
-    // 剩余自定义 slot
     var rest = [];
     for (var key in byName) if (byName.hasOwnProperty(key)) rest.push(byName[key]);
     rest.sort(function(a, b) { return a.slot < b.slot ? -1 : a.slot > b.slot ? 1 : 0; });
@@ -102,15 +111,8 @@
 
   function emptyPlaceholder(slot, isPreset) {
     return {
-      slot: slot,
-      corrupt: false,
-      tombstoned: false,
-      inconsistent: false,
-      mainProgress: null,
-      size: 0,
-      lastModified: null,
-      __empty: true,
-      __preset: !!isPreset
+      slot: slot, corrupt: false, tombstoned: false, inconsistent: false,
+      mainProgress: null, size: 0, lastModified: null, __empty: true, __preset: !!isPreset
     };
   }
 
@@ -145,20 +147,34 @@
 
     var displayName = s.__preset ? presetDisplayName(s.slot) : s.slot;
     var progressText;
-    if (s.__empty)        progressText = '\u2014';
-    else                  progressText = s.mainProgress || '\u2014';
+    if (s.__empty) progressText = '\u2014';
+    else           progressText = s.mainProgress || '\u2014';
 
+    // Phase 2a: 按 slot 状态决定按钮集 (§4.9)
     var actions = '';
     if (s.__empty) {
-      // 空槽位: 新建角色
       actions = '<button class="btn-newchar">\u65b0\u5efa\u89d2\u8272</button>';
-    } else if (s.tombstoned || s.inconsistent) {
-      actions = '<button class="btn-rebuild">\u91cd\u5efa</button>';
+    } else if (s.inconsistent) {
+      // inconsistent (json+tombstone): 重建 / 编辑(raw-only) / 导出(raw) / 清理
+      actions = '<button class="btn-rebuild">\u91cd\u5efa</button>'
+              + '<button class="btn-edit">\u7f16\u8f91</button>'
+              + '<button class="btn-export">\u5bfc\u51fa</button>'
+              + '<button class="btn-reset danger" title="\u6e05\u7406 launcher \u4fa7 JSON \u5907\u4efd\u548c\u5220\u9664\u6807\u8bb0\uff0c\u4e0d\u5f71\u54cd Flash \u5185\u90e8 SOL \u5b58\u6863\u3002\u6e38\u620f\u542f\u52a8\u540e\u53ef\u80fd\u4ece SOL \u91cd\u65b0\u751f\u6210\u3002">\u6e05\u7406\u526f\u672c</button>';
+    } else if (s.tombstoned) {
+      // 纯墓碑(无 json): 重建 / 清理
+      actions = '<button class="btn-rebuild">\u91cd\u5efa</button>'
+              + '<button class="btn-reset danger" title="\u6e05\u7406 launcher \u4fa7 JSON \u5907\u4efd\u548c\u5220\u9664\u6807\u8bb0\uff0c\u4e0d\u5f71\u54cd Flash \u5185\u90e8 SOL \u5b58\u6863\u3002\u6e38\u620f\u542f\u52a8\u540e\u53ef\u80fd\u4ece SOL \u91cd\u65b0\u751f\u6210\u3002">\u6e05\u7406\u526f\u672c</button>';
     } else if (s.corrupt) {
-      actions = '<button disabled>\u65e0\u6cd5\u52a0\u8f7d</button>'
-              + '<button class="btn-delete danger">\u5220\u9664</button>';
+      // corrupt: 编辑(raw-only) / 导出(raw) / 删除 / 清理
+      actions = '<button class="btn-edit">\u7f16\u8f91</button>'
+              + '<button class="btn-export">\u5bfc\u51fa</button>'
+              + '<button class="btn-delete danger">\u5220\u9664</button>'
+              + '<button class="btn-reset danger" title="\u6e05\u7406 launcher \u4fa7 JSON \u5907\u4efd\u548c\u5220\u9664\u6807\u8bb0\uff0c\u4e0d\u5f71\u54cd Flash \u5185\u90e8 SOL \u5b58\u6863\u3002\u6e38\u620f\u542f\u52a8\u540e\u53ef\u80fd\u4ece SOL \u91cd\u65b0\u751f\u6210\u3002">\u6e05\u7406\u526f\u672c</button>';
     } else {
+      // 正常 slot: 开始 / 编辑 / 导出 / 删除
       actions = '<button class="btn-start">\u5f00\u59cb</button>'
+              + '<button class="btn-edit">\u7f16\u8f91</button>'
+              + '<button class="btn-export">\u5bfc\u51fa</button>'
               + '<button class="btn-delete danger">\u5220\u9664</button>';
     }
 
@@ -173,6 +189,10 @@
     var deleteBtn   = card.querySelector('.btn-delete');
     var rebuildBtn  = card.querySelector('.btn-rebuild');
     var newCharBtn  = card.querySelector('.btn-newchar');
+    var editBtn     = card.querySelector('.btn-edit');
+    var exportBtn   = card.querySelector('.btn-export');
+    var resetBtn    = card.querySelector('.btn-reset');
+
     if (startBtn)   startBtn.onclick   = function() { send({ cmd: 'start_game', slot: s.slot }); };
     if (deleteBtn)  deleteBtn.onclick  = function() {
       if (confirm('\u786e\u5b9a\u5220\u9664\u5b58\u6863 "' + displayName + '" ?')) {
@@ -185,14 +205,26 @@
       }
     };
     if (newCharBtn) newCharBtn.onclick = function() {
-      // 空槽位新建角色: 直接 start_game, Flash preload 收 slot not found 后走新建流程
       send({ cmd: 'start_game', slot: s.slot });
+    };
+    if (editBtn)    editBtn.onclick    = function() {
+      window.BootstrapApp.openModal('archive-editor', { slot: s.slot, slotMeta: s });
+    };
+    if (exportBtn)  exportBtn.onclick  = function() {
+      var forceRaw = !!(s.corrupt || s.inconsistent);
+      var dn = presetDisplayName(s.slot);
+      var ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      send({ cmd: 'export', slot: s.slot, defaultName: dn + '_' + ts + '.json', forceRaw: forceRaw });
+    };
+    if (resetBtn)   resetBtn.onclick   = function() {
+      if (confirm('\u786e\u5b9a\u6e05\u7406 "' + displayName + '" \u7684 launcher \u526f\u672c?\n\n\u6b64\u64cd\u4f5c\u6e05\u7406 launcher \u4fa7 JSON \u5907\u4efd\u548c\u5220\u9664\u6807\u8bb0\uff0c\u4e0d\u5f71\u54cd Flash \u5185\u90e8 SOL \u5b58\u6863\u3002\u6e38\u620f\u542f\u52a8\u540e\u53ef\u80fd\u4ece SOL \u91cd\u65b0\u751f\u6210\u3002')) {
+        send({ cmd: 'reset', slot: s.slot, confirm: true });
+      }
     };
     return card;
   }
 
   function pickAutoSlotName() {
-    // 找第一个空的预设槽; 全满则自动命名 custom_<timestamp>
     var occupied = {};
     for (var i = 0; i < lastSlotsFromLauncher.length; i++) {
       occupied[lastSlotsFromLauncher[i].slot] = true;
@@ -210,14 +242,13 @@
       + '\u2022 \u7559\u7a7a\u81ea\u52a8\u9009\u7528: ' + defaultName + '\n'
       + '\u2022 \u4ec5\u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e0b\u5212\u7ebf/\u77ed\u6a2a\u7ebf, 1-32 \u5b57\u7b26',
       defaultName);
-    if (input == null) return;  // 取消
+    if (input == null) return;
     var slot = input.trim();
     if (!slot) slot = defaultName;
     if (!SLOT_NAME_RE.test(slot)) {
       alert('\u5b58\u6863\u540d\u79f0\u4e0d\u5408\u6cd5: ' + slot);
       return;
     }
-    // 已存在检查
     for (var k = 0; k < lastSlotsFromLauncher.length; k++) {
       if (lastSlotsFromLauncher[k].slot === slot) {
         var entry = lastSlotsFromLauncher[k];
@@ -233,6 +264,7 @@
   }
 
   function applyState(state, msg) {
+    _lastLaunchState = state;
     stateBadge.textContent = state + (msg ? ': ' + msg : '');
     stateBadge.className = 'state-badge';
     if (state === 'Ready')       stateBadge.className += ' ready';
@@ -241,6 +273,21 @@
     retryBtn.style.display = (state === 'Error') ? 'inline-block' : 'none';
   }
 
+  // ==================== Phase 2a: onMessage 分发 ====================
+
+  function dispatchMessage(msg) {
+    var cmd = msg.cmd;
+    if (!cmd) return;
+    var arr = _handlers[cmd];
+    if (arr) {
+      for (var i = 0; i < arr.length; i++) {
+        try { arr[i](msg); } catch (e) { logLine('tag-err', 'handler error [' + cmd + ']: ' + e.message); }
+      }
+    }
+  }
+
+  // ==================== WebView2 message listener ====================
+
   window.chrome.webview.addEventListener('message', function (e) {
     var data = e.data;
     var msg;
@@ -248,6 +295,7 @@
     catch (err) { logLine('tag-err', 'bad JSON from C#: ' + err.message); return; }
     logLine('tag-in', '\u2190 ' + JSON.stringify(msg));
 
+    // 内置处理
     if (msg.cmd === 'state') {
       applyState(msg.state, msg.msg);
     } else if (msg.cmd === 'list_resp') {
@@ -261,10 +309,150 @@
     } else if (msg.cmd === 'pong') {
       logLine('tag-in', 'pong');
     }
+    // Phase 2a: reset_resp 刷新列表
+    else if (msg.cmd === 'reset_resp') {
+      if (msg.ok) send({ cmd: 'list' });
+      else logLine('tag-err', 'reset failed: ' + (msg.error || 'unknown'));
+    }
+    // Phase 2a: export_resp toast
+    else if (msg.cmd === 'export_resp') {
+      if (msg.ok) logLine('tag-in', '\u5bfc\u51fa\u6210\u529f: ' + (msg.path || ''));
+      else if (msg.error !== 'cancelled') logLine('tag-err', '\u5bfc\u51fa\u5931\u8d25: ' + (msg.error || ''));
+    }
+    // Phase 2a: import_resp (import_start 失败 + import_commit 结果)
+    else if (msg.cmd === 'import_resp') {
+      if (msg.ok) { logLine('tag-in', '\u5bfc\u5165\u6210\u529f: ' + (msg.slot || '')); send({ cmd: 'list' }); }
+      else if (msg.error !== 'cancelled') logLine('tag-err', '\u5bfc\u5165\u5931\u8d25: ' + (msg.error || ''));
+    }
+    // Phase 2a: import_target → JS 侧选 slot
+    else if (msg.cmd === 'import_target') {
+      handleImportTarget(msg);
+    }
+
+    // Phase 2a: 分发给 onMessage 注册的模块 handler
+    dispatchMessage(msg);
   });
+
+  // ==================== Phase 2a: import_target 处理 ====================
+
+  function handleImportTarget(msg) {
+    var sourceData = msg.sourceData;
+    var suggestedSlot = msg.suggestedSlot || '';
+
+    var slot = prompt('\u9009\u62e9\u76ee\u6807\u5b58\u6863\u69fd\u4f4d:\n\u5efa\u8bae: ' + suggestedSlot, suggestedSlot);
+    if (slot == null) return; // 取消
+    slot = slot.trim();
+    if (!slot) { logLine('tag-err', '\u5bfc\u5165\u53d6\u6d88: \u672a\u8f93\u5165\u69fd\u4f4d\u540d'); return; }
+
+    var meta = window.BootstrapApp.getSlotMeta(slot);
+    if (meta == null) {
+      // empty slot: 直接提交
+      send({ cmd: 'import_commit', slot: slot, data: sourceData });
+    } else if (meta.tombstoned || meta.inconsistent) {
+      if (confirm('\u6b64 slot \u5df2\u6807\u8bb0\u5220\u9664/\u4e0d\u4e00\u81f4\uff0c\u9700\u5148\u6e05\u7406\u624d\u80fd\u5bfc\u5165\u3002\u662f\u5426\u81ea\u52a8\u6e05\u7406\uff1f')) {
+        // 先 reset 再 import_commit；监听 reset_resp 后发 import_commit
+        var unsub = window.BootstrapApp.onMessage('reset_resp', function(resp) {
+          unsub();
+          if (resp.ok) {
+            send({ cmd: 'import_commit', slot: slot, data: sourceData });
+          } else {
+            logLine('tag-err', '\u6e05\u7406\u5931\u8d25: ' + (resp.error || ''));
+          }
+        });
+        send({ cmd: 'reset', slot: slot, confirm: true });
+      }
+    } else if (meta.corrupt) {
+      if (confirm('\u6b64\u5b58\u6863\u5df2\u635f\u574f\uff0c\u8986\u76d6\uff1f')) {
+        send({ cmd: 'import_commit', slot: slot, data: sourceData });
+      }
+    } else {
+      // 正常 slot
+      if (confirm('\u5b58\u6863\u5df2\u5b58\u5728\uff0c\u8986\u76d6\uff1f')) {
+        send({ cmd: 'import_commit', slot: slot, data: sourceData });
+      }
+    }
+  }
+
+  // ==================== Phase 2a: modal 管理 ====================
+
+  var _currentModal = null;
+  var _currentModule = null; // { mount, unmount, canClose? }
+
+  // 模块注册表（各模块 .js 加载后自行注册）
+  var _moduleRegistry = {};
+
+  function openModal(name, initData) {
+    if (_currentModal) {
+      if (_currentModule && _currentModule.canClose && !_currentModule.canClose()) return;
+      closeModal();
+    }
+    var mod = _moduleRegistry[name];
+    if (!mod) { logLine('tag-err', '[Modal] unknown: ' + name); return; }
+    _currentModal = name;
+    _currentModule = mod;
+    var host = document.getElementById('modal-host');
+    var content = document.getElementById('modal-content');
+    content.innerHTML = '';
+    mod.mount(content, initData);
+    host.style.display = '';
+  }
+
+  function closeModal() {
+    if (!_currentModal) return;
+    if (_currentModule && _currentModule.unmount) _currentModule.unmount();
+    document.getElementById('modal-host').style.display = 'none';
+    _currentModal = null;
+    _currentModule = null;
+  }
+
+  function tryCloseModal() {
+    if (!_currentModal) return;
+    if (_currentModule && _currentModule.canClose && !_currentModule.canClose()) return;
+    closeModal();
+  }
+
+  document.getElementById('modal-backdrop').onclick = function() { tryCloseModal(); };
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && _currentModal) tryCloseModal();
+  });
+
+  // ==================== Phase 2a: 全局桥 ====================
+
+  window.BootstrapApp = {
+    send: function(obj) { send(obj); },
+    onMessage: function(cmd, handler) {
+      if (!_handlers[cmd]) _handlers[cmd] = [];
+      _handlers[cmd].push(handler);
+      return function unsubscribe() {
+        var arr = _handlers[cmd];
+        if (!arr) return;
+        var i = arr.indexOf(handler);
+        if (i >= 0) arr.splice(i, 1);
+      };
+    },
+    getLaunchState: function() { return _lastLaunchState; },
+    getSlots: function() { return lastSlotsFromLauncher.slice(); },
+    getSlotMeta: function(slot) {
+      for (var i = 0; i < lastSlotsFromLauncher.length; i++)
+        if (lastSlotsFromLauncher[i].slot === slot) return lastSlotsFromLauncher[i];
+      return null;
+    },
+    refreshList: function() { send({ cmd: 'list' }); },
+    openModal: openModal,
+    closeModal: closeModal,
+    tryCloseModal: tryCloseModal,
+    registerModule: function(name, mod) { _moduleRegistry[name] = mod; }
+  };
+
+  // ==================== 初始化 ====================
 
   document.getElementById('btn-refresh').onclick = function() { send({ cmd: 'list' }); };
   document.getElementById('btn-new').onclick = handleNewCharacterClick;
+  document.getElementById('btn-import').onclick = function() { send({ cmd: 'import_start' }); };
+  document.getElementById('btn-open-dir').onclick = function() { send({ cmd: 'open_saves_dir' }); };
+  document.getElementById('btn-logs').onclick = function() {
+    window.BootstrapApp.openModal('diagnostic-log', {});
+  };
   retryBtn.onclick = function() { send({ cmd: 'retry' }); };
 
   logLine('tag-in', 'Bootstrap loaded');
@@ -272,5 +460,10 @@
   send({ cmd: 'list' });
 })();
 </script>
+
+<!-- Phase 2a: 模块（各模块 mount/unmount/canClose 经 BootstrapApp.registerModule 注册） -->
+<script src="modules/archive-schema.js"></script>
+<script src="modules/archive-editor.js"></script>
+<script src="modules/diagnostic-log.js"></script>
 </body>
 </html>

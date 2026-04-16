@@ -70,3 +70,126 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: 22px; }
 .tag-err { color: #e06e6e; }
 
 .empty { color: #666; font-style: italic; padding: 40px; text-align: center; grid-column: 1 / -1; }
+
+/* Phase 2a: modal */
+#modal-host {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1000; display: flex; align-items: center; justify-content: center;
+}
+.modal-backdrop {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+.modal-content {
+  position: relative; z-index: 1001;
+  background: #1e1e22; border: 1px solid #444; border-radius: 6px;
+  width: 80%; max-width: 800px; max-height: 85vh;
+  overflow-y: auto; padding: 20px 24px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+/* Phase 2a: modal 内通用元素 */
+.modal-header { display: flex; align-items: center; margin-bottom: 16px; }
+.modal-header h2 { margin: 0; font-size: 16px; color: #4da6ff; flex: 1; }
+.modal-header .modal-close {
+  background: none; border: none; color: #888; font-size: 18px; cursor: pointer; padding: 4px 8px;
+}
+.modal-header .modal-close:hover { color: #e0e0e0; }
+
+.modal-banner {
+  padding: 8px 12px; margin-bottom: 12px; border-radius: 3px; font-size: 12px;
+}
+.modal-banner.warn { background: #4a3a20; color: #f0a860; border: 1px solid #d08040; }
+.modal-banner.error { background: #4a2020; color: #e06e6e; border: 1px solid #e06e6e; }
+.modal-banner.info { background: #1a2a3a; color: #4da6ff; border: 1px solid #4da6ff; }
+
+.modal-actions {
+  display: flex; gap: 8px; margin-top: 16px; padding-top: 12px;
+  border-top: 1px solid #333;
+}
+.modal-actions button {
+  padding: 6px 16px; font-size: 13px; border-radius: 3px; cursor: pointer;
+  border: 1px solid #555; background: #2a2a30; color: #e0e0e0;
+}
+.modal-actions button:hover { background: #3a3a45; border-color: #4da6ff; }
+.modal-actions button.primary { background: #2a3a50; border-color: #4da6ff; color: #4da6ff; }
+.modal-actions button.primary:hover { background: #3a4a60; }
+.modal-actions button.danger { border-color: #e06e6e; color: #e06e6e; }
+.modal-actions button.danger:hover { background: #3a2020; }
+.modal-actions button:disabled { border-color: #444; color: #555; cursor: not-allowed; background: #222; }
+
+/* Phase 2a: 编辑器模式切换 */
+.mode-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+.mode-tabs button {
+  padding: 4px 12px; font-size: 12px; border: 1px solid #444;
+  background: #222; color: #999; border-radius: 3px 3px 0 0; cursor: pointer;
+}
+.mode-tabs button.active { background: #2a2a30; color: #4da6ff; border-color: #4da6ff; border-bottom-color: #2a2a30; }
+
+/* Phase 2a: 白名单表单 */
+.schema-form { display: grid; grid-template-columns: 140px 1fr; gap: 6px 12px; align-items: center; font-size: 13px; }
+.schema-form label { color: #bbb; text-align: right; }
+.schema-form input, .schema-form select {
+  background: #181818; border: 1px solid #444; color: #e0e0e0;
+  padding: 4px 8px; border-radius: 3px; font-size: 13px;
+}
+.schema-form input:focus, .schema-form select:focus { border-color: #4da6ff; outline: none; }
+.schema-form input.invalid { border-color: #e06e6e; background: #2a1818; }
+.schema-form .hint { grid-column: 2; color: #666; font-size: 10px; margin-top: -4px; }
+.schema-form .readonly-val { color: #666; padding: 4px 0; }
+
+/* Phase 2a: 高级模式 textarea */
+.raw-editor { width: 100%; min-height: 300px; max-height: 50vh;
+  background: #0a0a0c; border: 1px solid #333; color: #e0e0e0;
+  font-family: Consolas, monospace; font-size: 12px; padding: 8px;
+  resize: vertical; tab-size: 2;
+}
+.raw-editor.invalid { border-color: #e06e6e; }
+.raw-status { font-size: 11px; margin-top: 4px; }
+.raw-status.ok { color: #7ed07e; }
+.raw-status.err { color: #e06e6e; }
+.raw-toolbar { display: flex; gap: 6px; margin-bottom: 6px; }
+.raw-toolbar button {
+  padding: 3px 10px; font-size: 11px; background: #2a2a30; border: 1px solid #444;
+  color: #bbb; border-radius: 3px; cursor: pointer;
+}
+.raw-toolbar button:hover { border-color: #4da6ff; color: #4da6ff; }
+
+/* Phase 2a: 树视图 */
+.tree-view { font-size: 12px; font-family: Consolas, monospace; }
+.tree-node { margin-left: 16px; }
+.tree-node > summary { cursor: pointer; color: #4da6ff; padding: 2px 0; list-style: none; }
+.tree-node > summary::-webkit-details-marker { display: none; }
+.tree-node > summary::before { content: '\u25b6 '; font-size: 10px; color: #888; }
+.tree-node[open] > summary::before { content: '\u25bc '; }
+.tree-leaf { display: flex; align-items: center; gap: 6px; padding: 1px 0; margin-left: 16px; }
+.tree-leaf .tree-key { color: #bbb; min-width: 40px; }
+.tree-leaf input {
+  background: #181818; border: 1px solid #333; color: #e0e0e0;
+  padding: 2px 6px; font-size: 12px; font-family: Consolas, monospace;
+  border-radius: 2px; flex: 1; max-width: 300px;
+}
+.tree-leaf input:focus { border-color: #4da6ff; outline: none; }
+.tree-leaf .tree-type { color: #555; font-size: 10px; }
+.tree-path-hint { color: #444; font-size: 10px; margin-left: 4px; }
+
+/* Phase 2a: 诊断日志 */
+.diag-log-toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.diag-log-toolbar button {
+  padding: 4px 12px; font-size: 12px; background: #2a2a30; border: 1px solid #444;
+  color: #bbb; border-radius: 3px; cursor: pointer;
+}
+.diag-log-toolbar button:hover { border-color: #4da6ff; color: #4da6ff; }
+.diag-log-toolbar label { font-size: 12px; color: #999; display: flex; align-items: center; gap: 4px; }
+.diag-log-toolbar select {
+  background: #181818; border: 1px solid #444; color: #e0e0e0;
+  padding: 2px 6px; font-size: 12px; border-radius: 3px;
+}
+.diag-log-pre {
+  background: #0a0a0c; border: 1px solid #333; padding: 8px;
+  font-family: Consolas, monospace; font-size: 11px; color: #ccc;
+  max-height: 50vh; overflow-y: auto; white-space: pre-wrap; word-break: break-all;
+}
+.diag-log-pre .log-tag { color: #4da6ff; }
+.diag-log-pre .log-warn { color: #f0a860; }
+.diag-log-pre .log-err { color: #e06e6e; }

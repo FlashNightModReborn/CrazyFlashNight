@@ -157,6 +157,36 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        // ==================== Phase 2a: 文件对话框 helper ====================
+        // Handle 由 WebView2 WebMessageReceived 事件在 UI 线程触发，
+        // 所以这些 helper 直接同步 ShowDialog(this) 即可，不需 BeginInvoke。
+
+        /// <summary>打开文件对话框，返回选中路径；用户取消返回 null。</summary>
+        public string ShowOpenFileDialog(string filter, string title)
+        {
+            using (OpenFileDialog dlg = new OpenFileDialog())
+            {
+                dlg.Filter = filter;
+                dlg.Title = title;
+                if (dlg.ShowDialog(this) == DialogResult.OK) return dlg.FileName;
+            }
+            return null;
+        }
+
+        /// <summary>保存文件对话框，返回选中路径；用户取消返回 null。</summary>
+        public string ShowSaveFileDialog(string filter, string title, string defaultName)
+        {
+            using (SaveFileDialog dlg = new SaveFileDialog())
+            {
+                dlg.Filter = filter;
+                dlg.Title = title;
+                if (!string.IsNullOrEmpty(defaultName))
+                    dlg.FileName = defaultName;
+                if (dlg.ShowDialog(this) == DialogResult.OK) return dlg.FileName;
+            }
+            return null;
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (_disposed) { base.Dispose(disposing); return; }
