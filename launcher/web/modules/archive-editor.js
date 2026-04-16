@@ -249,6 +249,13 @@
         }
       }
     }
+    // 从简易/树切出时，检查是否有未写回的非法输入
+    if ((_mode === 'simple' || _mode === 'tree') && _panelEl) {
+      var invalids = _panelEl.querySelectorAll('input.invalid');
+      if (invalids.length > 0) {
+        if (!confirm('有 ' + invalids.length + ' 个字段输入非法（未写入模型），切换模式将丢弃这些输入。继续？')) return;
+      }
+    }
     // 从简易/树切出时，同步 _rawText
     if ((_mode === 'simple' || _mode === 'tree') && _currentData) {
       _rawText = JSON.stringify(_currentData, null, 2);
@@ -482,9 +489,10 @@
         window.ArchiveSchema.setByPath(_currentData, path, result.value);
         _isDirty = true;
       } else {
-        // 非法值：标红 + 不写回 _currentData
+        // 非法值：标红 + 不写回 _currentData，但标记脏（用户有未解决的编辑）
         input.className = 'invalid';
         input.title = result.error;
+        _isDirty = true;
       }
       updateButtons();
     });
@@ -521,9 +529,11 @@
       return { valid: false, error: '布尔字段仅接受 true 或 false' };
     }
     if (origType === 'number') {
-      if (str === '' || str === 'null') return { valid: false, error: '数字字段不能为空' };
-      var n = Number(str);
+      var trimmed = str.replace(/^\s+|\s+$/g, '');
+      if (trimmed === '' || trimmed === 'null') return { valid: false, error: '数字字段不能为空' };
+      var n = Number(trimmed);
       if (isNaN(n)) return { valid: false, error: '无法解析为数字' };
+      if (!isFinite(n)) return { valid: false, error: '数值超出安全范围 (Infinity)' };
       return { valid: true, value: n };
     }
     // string / undefined / 其他
