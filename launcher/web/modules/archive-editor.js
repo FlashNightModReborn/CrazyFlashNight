@@ -82,9 +82,9 @@
       updateButtons();
     }));
 
-    // 初始化 banner
+    // 初始化 banner（priority 0 = idle hint，Idle 恢复时可被清除）
     if (!_idleOk) {
-      showBanner('info', '游戏运行中，编辑器为只读模式');
+      showBanner('info', '游戏运行中，编辑器为只读模式', /*priority:*/ 0);
     }
 
     // 按 slotMeta 决定加载路径
@@ -475,9 +475,17 @@
 
     var input = div.querySelector('input');
     input.addEventListener('change', function() {
-      var newVal = parseLeafValue(input.value, type);
-      window.ArchiveSchema.setByPath(_currentData, path, newVal);
-      _isDirty = true;
+      var result = parseLeafValue(input.value, type);
+      if (result.valid) {
+        input.className = '';
+        input.title = '';
+        window.ArchiveSchema.setByPath(_currentData, path, result.value);
+        _isDirty = true;
+      } else {
+        // 非法值：标红 + 不写回 _currentData
+        input.className = 'invalid';
+        input.title = result.error;
+      }
       updateButtons();
     });
     parentEl.appendChild(div);
@@ -499,25 +507,27 @@
     return 'string';
   }
 
+  // 返回 { valid: bool, value: any, error?: string }
+  // 非法输入 valid=false，不写回 _currentData
   function parseLeafValue(str, origType) {
-    // 严格按原始类型回写，避免类型漂移（如 string "null" 变成 null）
     if (origType === 'null') {
-      // 原值是 null；仅当用户保留 "null" 时才返回 null，否则视为用户想填字符串
-      if (str === 'null') return null;
-      return str;
+      if (str === 'null') return { valid: true, value: null };
+      // 用户想填入非 null 值 → 变为字符串（类型升级，合理）
+      return { valid: true, value: str };
     }
     if (origType === 'boolean') {
-      if (str === 'true') return true;
-      if (str === 'false') return false;
-      return str; // 用户输了非 bool 文本 → 退化为字符串（保留原文）
+      if (str === 'true') return { valid: true, value: true };
+      if (str === 'false') return { valid: true, value: false };
+      return { valid: false, error: '布尔字段仅接受 true 或 false' };
     }
     if (origType === 'number') {
-      var n = parseFloat(str);
-      // 解析失败时保留 number 类型的 NaN 语义不安全 → 保留原始字符串让后端拒绝
-      return isNaN(n) ? str : n;
+      if (str === '' || str === 'null') return { valid: false, error: '数字字段不能为空' };
+      var n = Number(str);
+      if (isNaN(n)) return { valid: false, error: '无法解析为数字' };
+      return { valid: true, value: n };
     }
-    // origType === 'string' / 'undefined' / 其他: 始终返回字符串，不做特殊解析
-    return str;
+    // string / undefined / 其他
+    return { valid: true, value: str };
   }
 
   // ==================== 操作 ====================
@@ -540,7 +550,7 @@
       data = _currentData;
     }
 
-    // 前端范围校验（简易模式下检查是否有 invalid 输入）
+    // 前端校验（简易模式范围 + 树视图类型校验）
     var invalidInputs = _panelEl.querySelectorAll('input.invalid');
     if (invalidInputs.length > 0) {
       alert('有字段超出允许范围，请修正后再保存');
@@ -607,8 +617,8 @@
       }
     }
 
-    // 简易模式下检查范围校验
-    if (_mode === 'simple' && !disabled && _panelEl) {
+    // 简易模式 / 树视图下检查 invalid 输入
+    if ((_mode === 'simple' || _mode === 'tree') && !disabled && _panelEl) {
       var invalids = _panelEl.querySelectorAll('input.invalid');
       if (invalids.length > 0) disabled = true;
     }
