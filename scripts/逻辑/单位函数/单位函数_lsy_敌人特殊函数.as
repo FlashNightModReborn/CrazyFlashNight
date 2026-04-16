@@ -764,8 +764,6 @@ _root.敌人函数.获取大学军阀派随机装扮 = function(target){
 		if(target.性别 === "男") target.发型 = this.大学军阀派随机发型表_男[random(this.大学军阀派随机发型表_男.length)];
 		else target.发型 = this.大学军阀派随机发型表_女[random(this.大学军阀派随机发型表_女.length)];
 	}
-
-	target.刀口位置生成子弹 = _root.主角函数.刀口位置生成子弹;
 };
 
 
@@ -794,6 +792,4 @@ _root.敌人函数.获取大学军校学员随机装扮 = function(target){
 		if(target.性别 === "男") target.发型 = this.大学军校学员随机发型表_男[random(this.大学军校学员随机发型表_男.length)];
 		else target.发型 = this.大学军校学员随机发型表_女[random(this.大学军校学员随机发型表_女.length)];
 	}
-
-	target.刀口位置生成子弹 = _root.主角函数.刀口位置生成子弹;
 };

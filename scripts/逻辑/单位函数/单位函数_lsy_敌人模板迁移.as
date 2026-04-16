@@ -656,13 +656,13 @@ _root.初始化敌人模板 = function() {
     this.称号 = this.称号 ? this.称号 : "";
     if (isNaN(this.身高))
         this.身高 = 175;
-    this.方向 = this.方向 ? this.方向 : "右";
-    this.攻击模式 = this.攻击模式 ? this.攻击模式 : "空手";
+    this.方向 = this.方向 === "左" ? "左" : "右";
+    if(!this.攻击模式) this.攻击模式 = "空手";
     this.状态 = this.登场动画 ? "登场" : this.攻击模式 + "站立";
     this.击中效果 = this.击中效果 ? this.击中效果 : "飙血";
     this.刚体 = this.刚体 ? true : false;
     this.无敌 = this.无敌 === true ? true : false;
-
+    
     //以下是可自定义的原版ai相关参数，在ai改革后可能被废弃
     this.x轴攻击范围 = this.x轴攻击范围 ? this.x轴攻击范围 : 100;
     this.y轴攻击范围 = this.y轴攻击范围 ? this.y轴攻击范围 : 10;
@@ -680,7 +680,6 @@ _root.初始化敌人模板 = function() {
 
     //以下是自动初始化的必要参数
     this.dispatcher.publish("aggroClear", this);
-    if(!this.攻击模式) this.攻击模式 = "空手";
     this.格斗架势 = false;
     this.浮空 = false;
     this.倒地 = false;
