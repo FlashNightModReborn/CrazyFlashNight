@@ -11,7 +11,8 @@
   var _slotMeta = null;
   var _currentData = null;  // parsed JSON object (null when raw-only)
   var _rawText = '';         // 原始 JSON 字符串
-  var _isDirty = false;
+  var _isDirty = false;      // 模型有合法修改
+  var _hasInvalidInput = false; // 面板中有未写回模型的非法输入
   var _mode = 'simple';     // 'simple' | 'advanced' | 'tree'
   var _rawOnly = false;      // true = 仅高级模式可用
   var _saveDisabled = false; // inconsistent slot 永久禁用保存
@@ -31,6 +32,7 @@
     _slot = initData.slot;
     _slotMeta = initData.slotMeta || {};
     _isDirty = false;
+    _hasInvalidInput = false;
     _rawOnly = false;
     _saveDisabled = false;
     _mode = 'simple';
@@ -117,7 +119,7 @@
   }
 
   function canClose() {
-    if (!_isDirty) return true;
+    if (!_isDirty && !_hasInvalidInput) return true;
     return confirm('有未保存更改，放弃？');
   }
 
@@ -254,6 +256,8 @@
       var invalids = _panelEl.querySelectorAll('input.invalid');
       if (invalids.length > 0) {
         if (!confirm('有 ' + invalids.length + ' 个字段输入非法（未写入模型），切换模式将丢弃这些输入。继续？')) return;
+        // 用户确认丢弃 → 清非法输入标记（模型未被这些输入污染）
+        _hasInvalidInput = false;
       }
     }
     // 从简易/树切出时，同步 _rawText
@@ -330,23 +334,44 @@
     if (!field || field.readonly) return;
 
     var rawVal = e.target.value;
+    var valid = true;
     var val;
+
     if (field.type === 'number') {
-      val = parseFloat(rawVal);
-      if (isNaN(val)) val = 0;
-      // 范围校验（前端警告）
-      var outOfRange = false;
-      if (field.min != null && val < field.min) outOfRange = true;
-      if (field.max != null && val > field.max) outOfRange = true;
-      e.target.className = outOfRange ? 'invalid' : '';
+      var trimmed = rawVal.replace(/^\s+|\s+$/g, '');
+      val = Number(trimmed);
+      if (trimmed === '' || isNaN(val) || !isFinite(val)) {
+        valid = false;
+        e.target.className = 'invalid';
+        e.target.title = '无法解析为有效数字';
+      } else if ((field.min != null && val < field.min) || (field.max != null && val > field.max)) {
+        valid = false;
+        e.target.className = 'invalid';
+        e.target.title = '超出范围' + (field.min != null ? ' (最小: ' + field.min + ')' : '') + (field.max != null ? ' (最大: ' + field.max + ')' : '');
+      } else {
+        e.target.className = '';
+        e.target.title = '';
+      }
     } else if (field.type === 'enum') {
       val = rawVal;
     } else {
       val = rawVal;
+      if (field.maxLength && rawVal.length > field.maxLength) {
+        valid = false;
+        e.target.className = 'invalid';
+        e.target.title = '超出最大长度 ' + field.maxLength;
+      } else {
+        e.target.className = '';
+        e.target.title = '';
+      }
     }
 
-    window.ArchiveSchema.setByPath(_currentData, field.path, val);
-    _isDirty = true;
+    if (valid) {
+      window.ArchiveSchema.setByPath(_currentData, field.path, val);
+      _isDirty = true;
+    } else {
+      _hasInvalidInput = true;
+    }
     updateButtons();
   }
 
@@ -489,10 +514,10 @@
         window.ArchiveSchema.setByPath(_currentData, path, result.value);
         _isDirty = true;
       } else {
-        // 非法值：标红 + 不写回 _currentData，但标记脏（用户有未解决的编辑）
+        // 非法值：标红 + 不写回 _currentData
         input.className = 'invalid';
         input.title = result.error;
-        _isDirty = true;
+        _hasInvalidInput = true;
       }
       updateButtons();
     });
