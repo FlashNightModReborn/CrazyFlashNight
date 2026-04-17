@@ -18,6 +18,7 @@ var PinAlignPanel = (function() {
     var _eventsExpanded = false;
     var _exportExpanded = false;
     var _flightToken = 0;
+    var _hoveredCandidate = null;
 
     var DEFAULT_STAGE_NOTE = "先选一格，再点相邻格交换。只有直接三消会推进锁针，连带清除不算。";
 
@@ -154,6 +155,7 @@ var PinAlignPanel = (function() {
         _seed = (initData && initData.masterSeed) || "dev-default";
         _state = PinAlignCore.createState(_spec, _seed);
         _selected = null;
+        _hoveredCandidate = null;
         _hint = PinAlignCore.getHint(_state);
         _toast = DEFAULT_STAGE_NOTE;
         _lastResult = null;
@@ -164,6 +166,7 @@ var PinAlignPanel = (function() {
     function cleanup() {
         detachResizeHandler();
         _selected = null;
+        _hoveredCandidate = null;
         _hint = null;
         _toast = "";
         _lastResult = null;
@@ -241,12 +244,30 @@ var PinAlignPanel = (function() {
         }
     }
 
+    function onTileHover(pos) {
+        if (!_state || _state.status !== "ongoing") return;
+        if (!_selected) return;
+        if (_selected.row === pos.row && _selected.col === pos.col) return;
+        if (Math.abs(_selected.row - pos.row) + Math.abs(_selected.col - pos.col) !== 1) return;
+        if (_hoveredCandidate && _hoveredCandidate.row === pos.row && _hoveredCandidate.col === pos.col) return;
+        _hoveredCandidate = { row: pos.row, col: pos.col };
+        render();
+    }
+
+    function onTileLeave(pos) {
+        if (!_hoveredCandidate) return;
+        if (_hoveredCandidate.row !== pos.row || _hoveredCandidate.col !== pos.col) return;
+        _hoveredCandidate = null;
+        render();
+    }
+
     function onTileClick(pos) {
         if (!_state || _state.status !== "ongoing") return;
         if (!_selected) {
             _selected = pos;
+            _hoveredCandidate = null;
             _hint = null;
-            _toast = "已选中一个格子，请再点相邻格完成交换。";
+            _toast = "已选中一个格子，悬停邻格查看结果，再点击完成交换。";
             render();
             return;
         }
@@ -265,8 +286,9 @@ var PinAlignPanel = (function() {
 
         var result = PinAlignCore.trySwap(_state, _selected, pos);
         _lastResult = result;
-        _hint = result.hint || PinAlignCore.getHint(_state);
+        _hint = result.valid ? (result.hint || PinAlignCore.getHint(_state)) : _hint;
         _selected = null;
+        _hoveredCandidate = null;
         if (result.valid) _flightToken += 1;
         if (!result.valid) {
             _toast = "非法交换：" + describeSwapBlock(result.reason);
@@ -294,17 +316,29 @@ var PinAlignPanel = (function() {
         syncChrome();
         PinAlignDomAdapter.sync(_refs, _state, {
             selected: _selected,
+            hoveredCandidate: _hoveredCandidate,
             hint: _hint,
             muted: _muted,
-            toast: _toast,
+            toast: describeStageNote(),
             lastResult: _lastResult,
             lastReplay: _lastReplay,
             onTileClick: onTileClick,
+            onTileHover: onTileHover,
+            onTileLeave: onTileLeave,
             eventsExpanded: _eventsExpanded,
             exportExpanded: _exportExpanded,
             flightToken: String(_flightToken),
             debug: _debugEnabled
         });
+    }
+
+    function describeStageNote() {
+        if (_selected && _hoveredCandidate && _state && _state.status === "ongoing") {
+            var preview = PinAlignCore.previewSwap(_state, _selected, _hoveredCandidate);
+            var summary = PinAlignDomAdapter.summarizePreview(preview);
+            if (summary) return "悬停预览：" + summary.badge + " — " + summary.detail;
+        }
+        return _toast || DEFAULT_STAGE_NOTE;
     }
 
     function syncChrome() {

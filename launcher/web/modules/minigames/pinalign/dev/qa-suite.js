@@ -275,6 +275,130 @@
         return ok(calibratorHits + " calibrator events, 0 silent bypasses (set pins either deflected or properly jammed)");
     }
 
+    function a13_calibratorOvershootCrafted(Core, Levels) {
+        var spec = specOf(Levels);
+        var s = Core.createState(spec, "qa-craft-calib");
+
+        s.pins[0].state = "locked";
+        s.pins[0].currentHeight = s.pins[0].targetHeight;
+        s.pins[1].state = "locked";
+        s.pins[1].currentHeight = s.pins[1].targetHeight;
+        s.pins[2].state = "set";
+        s.pins[2].currentHeight = s.pins[2].targetHeight;
+        s.pins[2].guardThisMove = false;
+        s.clampActiveThisMove = false;
+        s.clampArmed = false;
+        s.movePrepared = false;
+
+        var nextId = 90000;
+        function mkGem(row, col, color) { return { id: nextId++, kind: "gem", color: color, row: row, col: col }; }
+        function mkCalibrator(row, col, color) {
+            return { id: nextId++, kind: "special", color: color, specialType: "calibrator", row: row, col: col };
+        }
+
+        s.board[0][0] = mkCalibrator(0, 0, 0);
+        s.board[0][1] = mkGem(0, 1, 0);
+        s.board[0][2] = mkGem(0, 2, 3);
+        s.board[1][2] = mkGem(1, 2, 0);
+        s.board[0][3] = mkGem(0, 3, 1);
+        s.board[1][0] = mkGem(1, 0, 2);
+        s.board[1][1] = mkGem(1, 1, 2);
+        s.board[1][3] = mkGem(1, 3, 4);
+        s.board[2][0] = mkGem(2, 0, 4);
+        s.board[2][1] = mkGem(2, 1, 3);
+        s.board[2][2] = mkGem(2, 2, 1);
+        s.board[2][3] = mkGem(2, 3, 2);
+
+        var alertBefore = s.alertRemaining;
+        var r = Core.trySwap(s, { row: 1, col: 2 }, { row: 0, col: 2 });
+
+        if (!r.valid) return fail("crafted swap rejected: " + r.reason);
+
+        var transition = null;
+        var e;
+        var t;
+        for (e = 0; e < r.events.length; e += 1) {
+            for (t = 0; t < r.events[e].pinTransitions.length; t += 1) {
+                var tr = r.events[e].pinTransitions[t];
+                if (tr.triggeredBy === "calibrator" && tr.pinId === s.pins[2].id) {
+                    transition = tr;
+                    break;
+                }
+            }
+            if (transition) break;
+        }
+
+        if (!transition) return fail("calibrator never produced a transition on forced pin[2]");
+        if (transition.reason !== "overshoot") {
+            return fail("expected overshoot transition, got reason=" + transition.reason + " toState=" + transition.toState);
+        }
+        if (s.pins[2].state !== "jammed") return fail("pin[2] state after overshoot expected 'jammed', got '" + s.pins[2].state + "'");
+        var expectedAlert = alertBefore - 2;
+        if (s.alertRemaining !== expectedAlert) return fail("alert accounting: expected " + expectedAlert + " (−1 swap −1 overshoot), got " + s.alertRemaining);
+        return ok("forced calibrator→set-pin: reason=overshoot, pin=jammed, alert −2 (" + alertBefore + "→" + s.alertRemaining + ")");
+    }
+
+    function a14_calibratorGuardedByClamp(Core, Levels) {
+        var spec = specOf(Levels);
+        var s = Core.createState(spec, "qa-craft-calib-guard");
+
+        s.pins[0].state = "locked";
+        s.pins[0].currentHeight = s.pins[0].targetHeight;
+        s.pins[1].state = "locked";
+        s.pins[1].currentHeight = s.pins[1].targetHeight;
+        s.pins[2].state = "set";
+        s.pins[2].currentHeight = s.pins[2].targetHeight;
+        s.pins[2].guardThisMove = false;
+        s.clampArmed = true;
+        s.clampActiveThisMove = false;
+        s.movePrepared = false;
+
+        var nextId = 91000;
+        function mkGem(row, col, color) { return { id: nextId++, kind: "gem", color: color, row: row, col: col }; }
+        function mkCalibrator(row, col, color) {
+            return { id: nextId++, kind: "special", color: color, specialType: "calibrator", row: row, col: col };
+        }
+
+        s.board[0][0] = mkCalibrator(0, 0, 0);
+        s.board[0][1] = mkGem(0, 1, 0);
+        s.board[0][2] = mkGem(0, 2, 3);
+        s.board[1][2] = mkGem(1, 2, 0);
+        s.board[0][3] = mkGem(0, 3, 1);
+        s.board[1][0] = mkGem(1, 0, 2);
+        s.board[1][1] = mkGem(1, 1, 2);
+        s.board[1][3] = mkGem(1, 3, 4);
+        s.board[2][0] = mkGem(2, 0, 4);
+        s.board[2][1] = mkGem(2, 1, 3);
+        s.board[2][2] = mkGem(2, 2, 1);
+        s.board[2][3] = mkGem(2, 3, 2);
+
+        var alertBefore = s.alertRemaining;
+        var r = Core.trySwap(s, { row: 1, col: 2 }, { row: 0, col: 2 });
+
+        if (!r.valid) return fail("crafted swap rejected: " + r.reason);
+
+        var guardedSeen = false;
+        var jammedSeen = false;
+        var e;
+        var t;
+        for (e = 0; e < r.events.length; e += 1) {
+            for (t = 0; t < r.events[e].pinTransitions.length; t += 1) {
+                var tr = r.events[e].pinTransitions[t];
+                if (tr.triggeredBy === "calibrator" && tr.pinId === s.pins[2].id) {
+                    if (tr.reason === "guarded_overshoot") guardedSeen = true;
+                    if (tr.reason === "overshoot") jammedSeen = true;
+                }
+            }
+        }
+
+        if (jammedSeen) return fail("pin[2] got overshoot despite clamp armed");
+        if (!guardedSeen) return fail("no guarded_overshoot transition observed");
+        // After guard, pin stayed 'set' during the event; commitPinsAtMoveEnd then promotes set → locked.
+        if (s.pins[2].state !== "locked") return fail("after commit pin[2] should be 'locked', got '" + s.pins[2].state + "'");
+        if (s.alertRemaining !== alertBefore - 1) return fail("alert should only drop by 1 (swap cost, no overshoot), got " + s.alertRemaining + " from " + alertBefore);
+        return ok("guarded path: calibrator→set-pin under clamp → guarded_overshoot (no jam, no extra alert); commit then promotes pin→locked");
+    }
+
     function a12_cascadeTruncatesOnAllSet(Core, Levels) {
         var spec = specOf(Levels);
         var s = Core.createState(spec, "qa-cascade-trunc");
@@ -306,8 +430,10 @@
         { id: "a8", title: "hasProductiveMove API 存在", run: a8_productiveMoveApi },
         { id: "a9", title: "gameplay 不裸调 Math.random", run: a9_noBareMathRandom },
         { id: "a10", title: "无 direct special / combo / kiln / flow / seal", run: a10_noForbiddenFeatures },
-        { id: "a11", title: "calibrator 不偷偷绕过 overshoot", run: a11_calibratorRespectsOvershoot },
-        { id: "a12", title: "所有 pin set/locked 时 cascade 短路", run: a12_cascadeTruncatesOnAllSet }
+        { id: "a11", title: "calibrator 不偷偷绕过 overshoot（观测）", run: a11_calibratorRespectsOvershoot },
+        { id: "a12", title: "所有 pin set/locked 时 cascade 短路", run: a12_cascadeTruncatesOnAllSet },
+        { id: "a13", title: "calibrator 强制命中 set pin → overshoot", run: a13_calibratorOvershootCrafted },
+        { id: "a14", title: "calibrator 强制命中 set pin + clamp → guarded", run: a14_calibratorGuardedByClamp }
     ];
 
     function runOne(Core, Levels, id) {

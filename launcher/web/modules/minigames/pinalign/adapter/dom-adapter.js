@@ -140,52 +140,112 @@
             var c = sel.col + deltas[i][1];
             if (r < 0 || c < 0 || r >= state.spec.rows || c >= state.spec.cols) continue;
             var preview = PinAlignCore.previewSwap(state, sel, { row: r, col: c });
-            frag += buildPreviewMarker(state, r, c, preview);
+            frag += buildPreviewMarker(state, r, c, preview, viewModel.hoveredCandidate);
         }
         refs.previewLayer.innerHTML = frag;
     }
 
-    function buildPreviewMarker(state, row, col, preview) {
-        var modifier = "is-valid";
-        var badge = "";
-        var note = "";
-        if (!preview.valid) {
-            modifier = "is-invalid";
-            badge = "✕";
-        } else if (preview.wouldOvershoot) {
-            modifier = "is-warn";
-            badge = "⚠";
-            note = describeOvershootWarning(state, preview);
-        } else if (preview.wouldAdvance) {
-            modifier = "is-advance";
-            badge = "+" + preview.signalTiles.length;
-        } else {
-            modifier = "is-neutral";
-            badge = "~" + preview.signalTiles.length;
-        }
-        var noteHtml = note
-            ? '<span class="pinalign-preview-note">' + escapeHtml(note) + "</span>"
-            : "";
+    function buildPreviewMarker(state, row, col, preview, hovered) {
+        var summary = summarizePreview(preview);
+        var hoveredCls = (hovered && hovered.row === row && hovered.col === col) ? " is-hovered" : "";
         return [
-            '<div class="pinalign-preview-cell ', modifier,
+            '<div class="pinalign-preview-cell ', summary.modifier, hoveredCls,
+            '" data-row="', row, '" data-col="', col,
             '" style="grid-column:', (col + 1),
             '; grid-row:', (row + 1), ';">',
-                '<span class="pinalign-preview-badge">', escapeHtml(badge), "</span>",
-                noteHtml,
+                '<span class="pinalign-preview-badge">', escapeHtml(summary.badge), "</span>",
+                '<span class="pinalign-preview-note">', escapeHtml(summary.detail), "</span>",
             "</div>"
         ].join("");
     }
 
-    function describeOvershootWarning(state, preview) {
-        if (!preview || !preview.pinContributions) return "过调";
+    function summarizePreview(preview) {
+        if (!preview) return { modifier: "is-invalid", badge: "不能交换", detail: "当前没有候选" };
+        if (!preview.valid) {
+            return { modifier: "is-invalid", badge: "不能交换", detail: describeRejectReason(preview.reason) };
+        }
+        var advancers = [];
+        var overshooters = [];
+        var guarded = [];
         var i;
-        var risky = [];
         for (i = 0; i < preview.pinContributions.length; i += 1) {
             var c = preview.pinContributions[i];
-            if (c.wouldOvershoot) risky.push(describePinShort(c.pinId));
+            var short = describePinShort(c.pinId);
+            if (c.wouldOvershoot) overshooters.push(short);
+            else if (c.wouldAdvance) advancers.push(short);
+            else if (c.guardedByClamp) guarded.push(short);
         }
-        if (!risky.length) return "过调：−1 警报 + 卡死到下一手";
-        return risky.join("/") + " 已待锁，过调 −1 警报";
+        var parts = [];
+        if (overshooters.length) parts.push(overshooters.join("") + "⚠");
+        if (advancers.length) parts.push(advancers.join("") + "↑");
+        if (guarded.length) parts.push(guarded.join("") + "⛨");
+        var modifier;
+        var badge;
+        var detail;
+        if (overshooters.length) {
+            modifier = "is-warn";
+            badge = parts.join(" ");
+            detail = describeOvershootDetail(preview) + ((advancers.length || guarded.length) ? "；" + describeAdvanceDetail(preview, true) : "");
+        } else if (advancers.length) {
+            modifier = "is-advance";
+            badge = parts.join(" ");
+            detail = describeAdvanceDetail(preview, false);
+        } else if (guarded.length) {
+            modifier = "is-guarded";
+            badge = parts.join(" ");
+            detail = describeGuardedDetail(preview);
+        } else {
+            modifier = "is-neutral";
+            badge = "无推进";
+            detail = "形成匹配，但未达到任何锁针阈值，仅清盘不抬针。";
+        }
+        return { modifier: modifier, badge: badge, detail: detail };
+    }
+
+    function describeOvershootDetail(preview) {
+        var victims = [];
+        var i;
+        for (i = 0; i < preview.pinContributions.length; i += 1) {
+            if (preview.pinContributions[i].wouldOvershoot) {
+                victims.push(describePinId(preview.pinContributions[i].pinId));
+            }
+        }
+        return victims.join("/") + " 已待锁，这步过调 −1 警报 + 卡死到下一手";
+    }
+
+    function describeGuardedDetail(preview) {
+        var guarded = [];
+        var i;
+        for (i = 0; i < preview.pinContributions.length; i += 1) {
+            if (preview.pinContributions[i].guardedByClamp) {
+                guarded.push(describePinId(preview.pinContributions[i].pinId));
+            }
+        }
+        return guarded.join("/") + " 本会过调，夹具保护；本手结束时 set→locked";
+    }
+
+    function describeAdvanceDetail(preview, asSuffix) {
+        var rows = [];
+        var i;
+        for (i = 0; i < preview.pinContributions.length; i += 1) {
+            var c = preview.pinContributions[i];
+            if (c.wouldAdvance) {
+                rows.push(describePinId(c.pinId) + " 抬升 +1（信号 " + c.weight.toFixed(2) + "/阈值 " + preview.threshold.toFixed(2) + "）");
+            } else if (c.guardedByClamp && !asSuffix) {
+                rows.push(describePinId(c.pinId) + " 夹具保护（仍耗 −1 警报）");
+            }
+        }
+        if (!rows.length) return "这步不推进任何锁针";
+        return rows.join("；");
+    }
+
+    function describeRejectReason(reason) {
+        if (reason === "non_adjacent") return "只能交换相邻格";
+        if (reason === "out_of_bounds") return "位置越界";
+        if (reason === "immovable") return "障碍格不能交换";
+        if (reason === "no_match") return "交换后没有形成直接匹配";
+        if (reason === "status") return "当前不是可操作状态";
+        return reason || "未知原因";
     }
 
     function describePinShort(id) {
@@ -259,7 +319,15 @@
                 btn.disabled = !tile || tile.kind === "obstacle";
                 btn.innerHTML = buildTileInner(tile);
                 if (viewModel.onTileClick) {
-                    btn.addEventListener("click", bindTileClick(viewModel.onTileClick, row, col));
+                    btn.addEventListener("click", bindTileCallback(viewModel.onTileClick, row, col));
+                }
+                if (viewModel.onTileHover) {
+                    btn.addEventListener("mouseenter", bindTileCallback(viewModel.onTileHover, row, col));
+                    btn.addEventListener("focus", bindTileCallback(viewModel.onTileHover, row, col));
+                }
+                if (viewModel.onTileLeave) {
+                    btn.addEventListener("mouseleave", bindTileCallback(viewModel.onTileLeave, row, col));
+                    btn.addEventListener("blur", bindTileCallback(viewModel.onTileLeave, row, col));
                 }
                 container.appendChild(btn);
             }
@@ -289,7 +357,7 @@
         return '<span class="pinalign-tile-gem"></span>';
     }
 
-    function bindTileClick(handler, row, col) {
+    function bindTileCallback(handler, row, col) {
         return function() {
             handler({ row: row, col: col });
         };
@@ -316,7 +384,7 @@
         }
         container.dataset.pinToken = structuralToken;
         container.innerHTML = "";
-        var preview = bestPreviewForSelection(state, viewModel);
+        var preview = previewForHoveredCandidate(state, viewModel);
         var overshootIds = collectOvershootPinIds(viewModel.lastResult);
         var lockedIds = (viewModel.lastResult && viewModel.lastResult.committedLocks) || [];
         var unjammedIds = state.lastMoveUnjammed || [];
@@ -361,7 +429,7 @@
     }
 
     function refreshPinAccumulators(container, state, viewModel) {
-        var preview = bestPreviewForSelection(state, viewModel);
+        var preview = previewForHoveredCandidate(state, viewModel);
         var cards = container.querySelectorAll(".pinalign-pin-card");
         var i;
         for (i = 0; i < cards.length && i < state.pins.length; i += 1) {
@@ -421,32 +489,14 @@
         return null;
     }
 
-    function bestPreviewForSelection(state, viewModel) {
-        if (!viewModel || !viewModel.selected) return null;
+    function previewForHoveredCandidate(state, viewModel) {
+        if (!viewModel || !viewModel.selected || !viewModel.hoveredCandidate) return null;
         if (state.status !== "ongoing") return null;
         if (typeof PinAlignCore === "undefined" || !PinAlignCore.previewSwap) return null;
         var sel = viewModel.selected;
-        var deltas = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-        var best = null;
-        var i;
-        for (i = 0; i < deltas.length; i += 1) {
-            var r = sel.row + deltas[i][0];
-            var c = sel.col + deltas[i][1];
-            if (r < 0 || c < 0 || r >= state.spec.rows || c >= state.spec.cols) continue;
-            var p = PinAlignCore.previewSwap(state, sel, { row: r, col: c });
-            if (!p.valid) continue;
-            if (!best) { best = p; continue; }
-            if (scorePreview(p) > scorePreview(best)) best = p;
-        }
-        return best;
-    }
-
-    function scorePreview(p) {
-        var s = 0;
-        if (p.wouldAdvance) s += 10;
-        if (p.wouldOvershoot) s -= 5;
-        s += p.signalTiles.length;
-        return s;
+        var tgt = viewModel.hoveredCandidate;
+        if (Math.abs(sel.row - tgt.row) + Math.abs(sel.col - tgt.col) !== 1) return null;
+        return PinAlignCore.previewSwap(state, sel, { row: tgt.row, col: tgt.col });
     }
 
     function renderEvents(container, lastResult) {
@@ -611,6 +661,7 @@
     return {
         indexRefs: indexRefs,
         sync: sync,
-        setStageNote: setStageNote
+        setStageNote: setStageNote,
+        summarizePreview: summarizePreview
     };
 });
