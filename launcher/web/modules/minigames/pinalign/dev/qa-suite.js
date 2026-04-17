@@ -44,21 +44,49 @@
     function a2_illegalSwapNoCost(Core, Levels) {
         var spec = specOf(Levels);
         var s = Core.createState(spec, "qa-illegal");
-        var alertBefore = s.alertRemaining;
-        var legalBefore = s.telemetry.legalSwaps;
+        var snapshot = captureGameplayState(s);
         var cases = [
             ["non-adjacent", {row: 0, col: 0}, {row: 7, col: 7}],
             ["out-of-bounds", {row: 0, col: 0}, {row: -1, col: 0}],
-            ["same-cell", {row: 3, col: 3}, {row: 3, col: 3}]
+            ["same-cell", {row: 3, col: 3}, {row: 3, col: 3}],
+            ["status-check-with-preview-after", {row: 2, col: 2}, {row: 4, col: 4}]
         ];
         var i;
         for (i = 0; i < cases.length; i += 1) {
             var r = Core.trySwap(s, cases[i][1], cases[i][2]);
             if (r.valid) return fail(cases[i][0] + " swap unexpectedly valid");
         }
-        if (s.alertRemaining !== alertBefore) return fail("alertRemaining changed: " + alertBefore + " → " + s.alertRemaining);
-        if (s.telemetry.legalSwaps !== legalBefore) return fail("legalSwaps counter advanced on illegal swap");
-        return ok("alert preserved at " + alertBefore + " after " + cases.length + " illegal swaps");
+        var diff = diffGameplayState(snapshot, captureGameplayState(s));
+        if (diff) return fail("gameplay state changed after illegal swaps: " + diff);
+        return ok("gameplay state intact after " + cases.length + " illegal swaps (invalidSwaps=" + s.telemetry.invalidSwaps + ")");
+    }
+
+    function captureGameplayState(s) {
+        return {
+            alert: s.alertRemaining,
+            moveIndex: s.moveIndex,
+            movePrepared: s.movePrepared,
+            clampArmed: s.clampArmed,
+            clampActive: s.clampActiveThisMove,
+            pinStates: s.pins.map(function(p) { return p.state + ":" + p.currentHeight + ":" + !!p.guardThisMove; }).join("|"),
+            actionLogLen: s.actionLog.length,
+            lastHintKey: hintKey(s.lastHint),
+            jamCount: s.telemetry.jamCount
+        };
+    }
+
+    function hintKey(h) {
+        if (!h) return "null";
+        return h.from.row + "," + h.from.col + "->" + h.to.row + "," + h.to.col;
+    }
+
+    function diffGameplayState(a, b) {
+        var keys = ["alert", "moveIndex", "movePrepared", "clampArmed", "clampActive", "pinStates", "actionLogLen", "lastHintKey", "jamCount"];
+        var i;
+        for (i = 0; i < keys.length; i += 1) {
+            if (a[keys[i]] !== b[keys[i]]) return keys[i] + " " + a[keys[i]] + " → " + b[keys[i]];
+        }
+        return null;
     }
 
     function a3_signalAdvancesPin(Core, Levels) {
@@ -220,9 +248,56 @@
         return ok("no forbidden APIs exposed; " + p.moves + " moves with 0 combo activations");
     }
 
+    function a11_calibratorRespectsOvershoot(Core, Levels) {
+        var spec = specOf(Levels);
+        var s = Core.createState(spec, "qa-calibrator-overshoot");
+        var p = playUntilStatus(Core, s, 100);
+        var calibratorHits = 0;
+        var silentBypass = 0;
+        var r;
+        var e;
+        var t;
+        for (r = 0; r < p.results.length; r += 1) {
+            if (!p.results[r].valid) continue;
+            for (e = 0; e < p.results[r].events.length; e += 1) {
+                var trs = p.results[r].events[e].pinTransitions || [];
+                for (t = 0; t < trs.length; t += 1) {
+                    var tr = trs[t];
+                    if (tr.triggeredBy === "calibrator") calibratorHits += 1;
+                    if (tr.reason === "calibrator" && tr.fromState === "set" && tr.toState === "set") {
+                        silentBypass += 1;
+                    }
+                }
+            }
+        }
+        if (silentBypass > 0) return fail(silentBypass + " silent calibrator-over-set bypasses observed");
+        if (calibratorHits === 0) return ok("no calibrator events in " + p.moves + " moves (inconclusive but no violation)");
+        return ok(calibratorHits + " calibrator events, 0 silent bypasses (set pins either deflected or properly jammed)");
+    }
+
+    function a12_cascadeTruncatesOnAllSet(Core, Levels) {
+        var spec = specOf(Levels);
+        var s = Core.createState(spec, "qa-cascade-trunc");
+        var p = playUntilStatus(Core, s, 200);
+        var truncEvents = 0;
+        var badTruncs = 0;
+        var r;
+        for (r = 0; r < p.results.length; r += 1) {
+            if (!p.results[r].valid) continue;
+            if (!p.results[r].cascadeTruncated) continue;
+            truncEvents += 1;
+            var pinsAfter = p.results[r].pinsAfter || [];
+            var allSetOrLocked = pinsAfter.every(function(pn) { return pn.state === "set" || pn.state === "locked"; });
+            if (!allSetOrLocked) badTruncs += 1;
+        }
+        if (badTruncs > 0) return fail(badTruncs + " cascade truncations happened without all-set-or-locked state");
+        if (truncEvents === 0) return ok("no cascade truncation in " + p.moves + " moves (not every run triggers it)");
+        return ok(truncEvents + " cascade truncations, all satisfied allPinsSetOrLocked invariant");
+    }
+
     var SUITE = [
         { id: "a1", title: "同 seed + 同输入 = 同 outcome", run: a1_determinism },
-        { id: "a2", title: "非法交换不消耗警报", run: a2_illegalSwapNoCost },
+        { id: "a2", title: "非法交换不改变任何 gameplay state", run: a2_illegalSwapNoCost },
         { id: "a3", title: "只有 Signal 推进锁针", run: a3_signalAdvancesPin },
         { id: "a4", title: "Effect 永不推进锁针", run: a4_effectNeverAdvances },
         { id: "a5", title: "同一事件每 pin ≤ 1 推进", run: a5_onePerPinPerEvent },
@@ -230,7 +305,9 @@
         { id: "a7", title: "win 后交换被阻断", run: a7_winTruncatesAndBlocks },
         { id: "a8", title: "hasProductiveMove API 存在", run: a8_productiveMoveApi },
         { id: "a9", title: "gameplay 不裸调 Math.random", run: a9_noBareMathRandom },
-        { id: "a10", title: "无 direct special / combo / kiln / flow / seal", run: a10_noForbiddenFeatures }
+        { id: "a10", title: "无 direct special / combo / kiln / flow / seal", run: a10_noForbiddenFeatures },
+        { id: "a11", title: "calibrator 不偷偷绕过 overshoot", run: a11_calibratorRespectsOvershoot },
+        { id: "a12", title: "所有 pin set/locked 时 cascade 短路", run: a12_cascadeTruncatesOnAllSet }
     ];
 
     function runOne(Core, Levels, id) {

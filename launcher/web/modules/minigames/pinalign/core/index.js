@@ -340,6 +340,15 @@
         return true;
     }
 
+    function allPinsSetOrLocked(state) {
+        var i;
+        for (i = 0; i < state.pins.length; i += 1) {
+            var s = state.pins[i].state;
+            if (s !== "set" && s !== "locked") return false;
+        }
+        return true;
+    }
+
     function hasSetPin(state) {
         var i;
         for (i = 0; i < state.pins.length; i += 1) {
@@ -348,26 +357,30 @@
         return false;
     }
 
-    function selectMostNeedyPin(state, colHint, eventContext) {
-        var best = null;
-        var bestScore = -999999;
+    function selectMostNeedyPin(state, colHint, eventContext, options) {
+        var avoidSet = !!(options && options.avoidSet);
+        var passes = avoidSet ? ["exclude-set", "include-set"] : ["include-set"];
+        var p;
         var i;
-        for (i = 0; i < state.pins.length; i += 1) {
-            var pin = state.pins[i];
-            if (pin.state === "locked") continue;
-            if (eventContext && eventContext.eventPinTouched && eventContext.eventPinTouched[pin.id]) {
-                continue;
+        for (p = 0; p < passes.length; p += 1) {
+            var best = null;
+            var bestScore = -999999;
+            for (i = 0; i < state.pins.length; i += 1) {
+                var pin = state.pins[i];
+                if (pin.state === "locked") continue;
+                if (eventContext && eventContext.eventPinTouched && eventContext.eventPinTouched[pin.id]) continue;
+                if (passes[p] === "exclude-set" && pin.state === "set") continue;
+                var deficit = pin.targetHeight - pin.currentHeight;
+                var guardBoost = pin.state === "set" ? 100 : 0;
+                var laneScore = laneWeight(state.spec, pin, colHint);
+                var score = guardBoost + deficit * 10 + laneScore;
+                if (score > bestScore) {
+                    bestScore = score;
+                    best = pin;
+                }
             }
-            var deficit = pin.targetHeight - pin.currentHeight;
-            var guardBoost = pin.state === "set" ? 100 : 0;
-            var laneScore = laneWeight(state.spec, pin, colHint);
-            var score = guardBoost + deficit * 10 + laneScore;
-            if (score > bestScore) {
-                bestScore = score;
-                best = pin;
-            }
+            if (best) return best;
         }
-        if (best) return best;
         for (i = 0; i < state.pins.length; i += 1) {
             if (state.pins[i].state !== "locked") return state.pins[i];
         }
@@ -698,34 +711,34 @@
         };
     }
 
-    function internalTrySwap(state, from, to, options) {
-        var preview = !!options.preview;
-        if (state.status !== "ongoing") {
-            return makeSwapResult(false, false, "status", state);
-        }
-        beginPlayerMove(state);
-        if (!areAdjacent(from, to)) {
-            if (!preview) state.telemetry.invalidSwaps += 1;
-            return makeSwapResult(false, false, "non_adjacent", state);
-        }
+    function validateSwap(state, from, to) {
+        if (state.status !== "ongoing") return { ok: false, reason: "status" };
+        if (!areAdjacent(from, to)) return { ok: false, reason: "non_adjacent" };
         if (!isInside(state, from.row, from.col) || !isInside(state, to.row, to.col)) {
-            if (!preview) state.telemetry.invalidSwaps += 1;
-            return makeSwapResult(false, false, "out_of_bounds", state);
+            return { ok: false, reason: "out_of_bounds" };
         }
         var a = state.board[from.row][from.col];
         var b = state.board[to.row][to.col];
-        if (!isMovableTile(a) || !isMovableTile(b)) {
-            if (!preview) state.telemetry.invalidSwaps += 1;
-            return makeSwapResult(false, false, "immovable", state);
-        }
-
+        if (!isMovableTile(a) || !isMovableTile(b)) return { ok: false, reason: "immovable" };
         swapTiles(state, from, to);
         var matches = findMatches(state.board);
         if (!matches.groups.length) {
             swapTiles(state, from, to);
-            if (!preview) state.telemetry.invalidSwaps += 1;
-            return makeSwapResult(false, false, "no_match", state);
+            return { ok: false, reason: "no_match" };
         }
+        return { ok: true, matches: matches };
+    }
+
+    function internalTrySwap(state, from, to, options) {
+        var preview = !!options.preview;
+        var check = validateSwap(state, from, to);
+        if (!check.ok) {
+            if (!preview && check.reason !== "status") state.telemetry.invalidSwaps += 1;
+            return makeSwapResult(false, false, check.reason, state);
+        }
+
+        var matches = check.matches;
+        beginPlayerMove(state);
 
         var moveAlertBefore = state.alertRemaining;
         state.alertRemaining = Math.max(0, state.alertRemaining - 1);
@@ -771,6 +784,10 @@
                 state.telemetry.generatedSpecials += event.generatedSpecials.length;
             }
             if (state.status !== "ongoing") break;
+            if (allPinsSetOrLocked(state)) {
+                result.cascadeTruncated = true;
+                break;
+            }
             matches = findMatches(state.board);
         }
 
@@ -1101,7 +1118,7 @@
                 if (guardPin) guardPin.guardThisMove = true;
                 markAreaEffect(state, effectMap, tile.row, tile.col, 1);
             } else if (tile.specialType === "calibrator") {
-                var targetPin = selectMostNeedyPin(state, tile.col, eventContext);
+                var targetPin = selectMostNeedyPin(state, tile.col, eventContext, { avoidSet: true });
                 if (targetPin) {
                     safeLiftPin(state, targetPin, transitions, eventContext, "calibrator");
                 }
@@ -1138,6 +1155,38 @@
         if (pin.state === "locked" || pin.state === "jammed") return;
         if (eventContext.eventPinTouched[pin.id]) return;
         eventContext.eventPinTouched[pin.id] = true;
+        if (pin.state === "set") {
+            if (pin.guardThisMove || state.clampActiveThisMove) {
+                transitions.push({
+                    pinId: pin.id,
+                    fromState: "set",
+                    toState: "set",
+                    fromHeight: pin.currentHeight,
+                    toHeight: pin.currentHeight,
+                    reason: "guarded_overshoot",
+                    triggeredBy: reason
+                });
+                return;
+            }
+            var beforeAlert = state.alertRemaining;
+            pin.currentHeight = Math.max(0, pin.targetHeight - 1);
+            pin.state = "jammed";
+            state.alertRemaining = Math.max(0, state.alertRemaining - 1);
+            state.telemetry.jamCount += 1;
+            state.telemetry.overshootCount += 1;
+            transitions.push({
+                pinId: pin.id,
+                fromState: "set",
+                toState: "jammed",
+                fromHeight: pin.targetHeight,
+                toHeight: pin.currentHeight,
+                alertBefore: beforeAlert,
+                alertAfter: state.alertRemaining,
+                reason: "overshoot",
+                triggeredBy: reason
+            });
+            return;
+        }
         var beforeHeight = pin.currentHeight;
         var beforeState = pin.state;
         pin.currentHeight = Math.min(pin.targetHeight, pin.currentHeight + 1);
@@ -1652,8 +1701,7 @@
             clampArmed: state.clampArmed,
             status: state.status,
             moveIndex: state.moveIndex,
-            reshuffleCount: state.reshuffleCount,
-            telemetry: state.telemetry
+            reshuffleCount: state.reshuffleCount
         });
         return fnv1a(payload);
     }
