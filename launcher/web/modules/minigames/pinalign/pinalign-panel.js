@@ -20,7 +20,58 @@ var PinAlignPanel = (function() {
     var _flightToken = 0;
     var _hoveredCandidate = null;
 
-    var DEFAULT_STAGE_NOTE = "先选一格，再点相邻格交换。只有直接三消会推进锁针，连带清除不算。";
+    var DEFAULT_STAGE_NOTE = "先选一格，再点相邻格交换。主列 +2 分，邻列 +1 分，累计 ≥ 4 才抬针。";
+
+    var CODEX_ENTRIES = [
+        { id: "debris", group: "obstacle", name: "碎屑", hint: "障碍。不能交换，不计入匹配。", svg: 'M4 12 L7 5 L10 10 L13 4 L16 8 L14 14 L9 13 L6 15 Z' },
+        { id: "clip", group: "obstacle", name: "卡扣", hint: "障碍。外观不同但行为同碎屑。", svg: 'M5 5 Q5 2 9 2 L13 2 Q16 2 16 5 L16 11 Q16 14 13 14 L9 14 Q7 14 7 12 L7 8 Q7 6 9 6 L13 6 Q14 6 14 7 L14 11' },
+        { id: "shimH", group: "special", name: "横垫片", hint: "特殊。直接匹配时全行 Effect 清盘。", svg: 'M2 7 L18 7 L18 11 L2 11 Z M4 8 L4 10 M8 8 L8 10 M12 8 L12 10 M16 8 L16 10' },
+        { id: "shimV", group: "special", name: "纵垫片", hint: "特殊。直接匹配时全列 Effect 清盘。", svg: 'M7 2 L11 2 L11 18 L7 18 Z M8 4 L10 4 M8 8 L10 8 M8 12 L10 12 M8 16 L10 16' },
+        { id: "brace", group: "special", name: "卡箍", hint: "特殊。直接匹配时周围 3×3 Effect 清盘。", svg: 'M9 2 A7 7 0 1 1 8.9 2 Z M9 6 A3 3 0 1 1 8.9 6 Z M3 9 L5 9 M14 9 L17 9 M9 3 L9 5 M9 14 L9 16' },
+        { id: "calibrator", group: "special", name: "校准器", hint: "特殊。直接匹配时强制给最需要的锁针主列 +Signal。", svg: 'M10 2 L10 18 M2 10 L18 10 M10 4 A6 6 0 0 1 16 10 A6 6 0 0 1 10 16 A6 6 0 0 1 4 10 A6 6 0 0 1 10 4 Z' },
+        { id: "pin-set", group: "state", name: "待锁定", hint: "黄灯。本手再吃信号会过调卡死。", svg: 'M10 2 L10 17 M7 3 L13 3 L12 8 L8 8 Z M7 17 L13 17' },
+        { id: "pin-jammed", group: "state", name: "卡死", hint: "红灯。下一手开始会自动解除。", svg: 'M10 2 L10 17 M7 3 L13 3 L12 8 L8 8 Z M5 13 L15 13 M5 13 L13 5 M15 13 L7 5' },
+        { id: "pin-locked", group: "state", name: "已锁定", hint: "绿灯。不再受后续信号影响。", svg: 'M10 2 L10 17 M7 3 L13 3 L12 8 L8 8 Z M5 13 L15 13 M6 11 L9 14 L15 8' },
+        { id: "signal", group: "concept", name: "Signal", hint: "直接三消的格子，按列算分推进锁针。", svg: 'M10 3 L10 17 M3 10 L17 10 M10 6 A4 4 0 1 1 9.9 6 Z' },
+        { id: "effect", group: "concept", name: "Effect", hint: "波及清除的格子，只清盘不算分。", svg: 'M10 10 m-6 0 A6 6 0 1 1 10 16 M10 10 m-3 0 A3 3 0 1 1 10 13' }
+    ];
+
+    function buildCodexHtml() {
+        var groups = [
+            { key: "obstacle", label: "障碍" },
+            { key: "special", label: "特殊块" },
+            { key: "state", label: "锁针状态" },
+            { key: "concept", label: "术语" }
+        ];
+        var out = ['<div class="pinalign-codex">'];
+        var g, i;
+        for (g = 0; g < groups.length; g += 1) {
+            var group = groups[g];
+            out.push('<div class="pinalign-codex-group" data-group="', group.key, '">');
+            out.push('<div class="pinalign-codex-group-label">', group.label, '</div>');
+            out.push('<ul class="pinalign-codex-list">');
+            for (i = 0; i < CODEX_ENTRIES.length; i += 1) {
+                var e = CODEX_ENTRIES[i];
+                if (e.group !== group.key) continue;
+                out.push(
+                    '<li class="pinalign-codex-entry" data-id="', e.id, '">',
+                        '<span class="pinalign-codex-icon" aria-hidden="true">',
+                            '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">',
+                                '<path d="', e.svg, '" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>',
+                            '</svg>',
+                        '</span>',
+                        '<span class="pinalign-codex-text">',
+                            '<span class="pinalign-codex-name">', e.name, '</span>',
+                            '<span class="pinalign-codex-hint">', e.hint, '</span>',
+                        '</span>',
+                    '</li>'
+                );
+            }
+            out.push('</ul></div>');
+        }
+        out.push('</div>');
+        return out.join("");
+    }
 
     Panels.register("pinalign", {
         create: createDOM,
@@ -39,6 +90,13 @@ var PinAlignPanel = (function() {
                     '<div class="lockbox-title">锁芯矩阵校准</div>',
                 "</div>",
                 '<div class="lockbox-header-right">',
+                    '<div class="pinalign-header-controls" role="group" aria-label="控制台">',
+                        '<button class="lockbox-chrome-btn pinalign-header-btn" type="button" data-action="hint" title="提示 (H)">提示</button>',
+                        '<button class="lockbox-chrome-btn pinalign-header-btn" type="button" data-action="clamp" title="夹具 (C)">夹具</button>',
+                        '<button class="lockbox-chrome-btn pinalign-header-btn" type="button" data-action="reset" title="重开">重开</button>',
+                        '<button class="lockbox-chrome-btn pinalign-header-btn" type="button" data-action="reroll" title="换种">换种</button>',
+                        '<button class="lockbox-chrome-btn pinalign-header-btn" type="button" data-action="export" title="导出回放">导出</button>',
+                    "</div>",
                     '<div class="lockbox-phase-badge" data-pa-phase>观察中</div>',
                     '<button class="lockbox-chrome-btn" type="button" data-action="mute">静音</button>',
                     '<button class="lockbox-close-btn" type="button" data-action="close">×</button>',
@@ -57,44 +115,38 @@ var PinAlignPanel = (function() {
                         '<div class="lockbox-trace-frame"></div>',
                         '<div class="pinalign-board-area">',
                             '<div class="pinalign-bezel" aria-hidden="true">',
-                                '<div class="pinalign-bezel-outer"></div>',
-                                '<div class="pinalign-bezel-ring"></div>',
-                                '<div class="pinalign-bezel-ticks"></div>',
+                                '<div class="pinalign-bezel-face"></div>',
+                                '<div class="pinalign-bezel-bevel"></div>',
                                 '<div class="pinalign-bezel-rivet rivet-tl"></div>',
                                 '<div class="pinalign-bezel-rivet rivet-tr"></div>',
                                 '<div class="pinalign-bezel-rivet rivet-bl"></div>',
                                 '<div class="pinalign-bezel-rivet rivet-br"></div>',
+                                '<div class="pinalign-bezel-seam"></div>',
                             "</div>",
-                            '<div class="pinalign-board" data-pa-board></div>',
-                            '<div class="pinalign-flight-layer" data-pa-flight-layer aria-hidden="true"></div>',
-                            '<div class="pinalign-preview-layer" data-pa-preview-layer aria-hidden="true"></div>',
+                            '<div class="pinalign-instrument-strip" data-pa-instrument-strip role="group" aria-label="锁针仪表"></div>',
+                            '<div class="pinalign-board-stage">',
+                                '<div class="pinalign-board" data-pa-board></div>',
+                                '<div class="pinalign-lane-layer" data-pa-lane-layer aria-hidden="true"></div>',
+                                '<div class="pinalign-flight-layer" data-pa-flight-layer aria-hidden="true"></div>',
+                                '<div class="pinalign-preview-layer" data-pa-preview-layer aria-hidden="true"></div>',
+                            "</div>",
                         "</div>",
-                        '<div class="pinalign-lane-belt" data-pa-lane-belt aria-hidden="true"></div>',
                     "</div>",
                 "</div>",
                 '<div class="lockbox-side-pane">',
-                    '<section class="lockbox-side-section pinalign-pins-section">',
-                        '<div class="lockbox-side-title">锁针状态</div>',
-                        '<div data-pa-pins></div>',
-                    "</section>",
+                    '<div class="pa-visually-hidden" data-pa-pins-aria aria-live="polite"></div>',
                     '<section class="lockbox-side-section pinalign-rules-section">',
                         '<div class="lockbox-side-title">规则速览</div>',
                         '<div class="pinalign-side-copy">',
-                            '<div class="pinalign-step"><b>1.</b> 每根锁针有主列和邻列，棋盘底部色带显示哪列属于谁、影响多大。</div>',
-                            '<div class="pinalign-step"><b>2.</b> 直接三消格子 = Signal，本手累计够阈值，锁针才抬 1 格。</div>',
-                            '<div class="pinalign-step"><b>3.</b> 特殊块和波及清除 = Effect，只清盘，不推进锁针。</div>',
+                            '<div class="pinalign-step"><b>1.</b> 探针下色带=归属图。主列每块 <b>+2</b>，邻列 <b>+1</b>，其他不算。</div>',
+                            '<div class="pinalign-step"><b>2.</b> 本手直接三消格子 = Signal，累加 <b>≥ 4</b> 才抬针 1 格。</div>',
+                            '<div class="pinalign-step"><b>3.</b> 特殊块/连带清除 = Effect，只清盘，不计分。</div>',
                             '<div class="pinalign-step"><b>4.</b> 抬到目标先变“待锁定”，本手末才正式锁定；同手再吃信号会过调卡死。</div>',
                         "</div>",
                     "</section>",
-                    '<section class="lockbox-side-section pinalign-console-section">',
-                        '<div class="lockbox-side-title">控制台</div>',
-                        '<div class="pinalign-console-grid">',
-                            '<button class="lockbox-chrome-btn" type="button" data-action="hint">提示</button>',
-                            '<button class="lockbox-chrome-btn" type="button" data-action="clamp">夹具</button>',
-                            '<button class="lockbox-chrome-btn" type="button" data-action="reset">重开</button>',
-                            '<button class="lockbox-chrome-btn" type="button" data-action="reroll">换种</button>',
-                            '<button class="lockbox-chrome-btn" type="button" data-action="export">导出</button>',
-                        "</div>",
+                    '<section class="lockbox-side-section pinalign-codex-section">',
+                        '<div class="lockbox-side-title">图鉴</div>',
+                        buildCodexHtml(),
                     "</section>",
                     '<section class="lockbox-side-section pinalign-events-section">',
                         '<button class="lockbox-side-title lockbox-side-title-toggle" type="button" data-action="toggle-events" data-pa-events-toggle>最近结算 ▸</button>',
@@ -273,12 +325,14 @@ var PinAlignPanel = (function() {
         }
         if (_selected.row === pos.row && _selected.col === pos.col) {
             _selected = null;
+            _hoveredCandidate = null;
             _toast = "已取消当前选中。";
             render();
             return;
         }
         if (Math.abs(_selected.row - pos.row) + Math.abs(_selected.col - pos.col) !== 1) {
             _selected = pos;
+            _hoveredCandidate = null;
             _toast = "已切换选中格子，请点它的相邻格。";
             render();
             return;
@@ -334,9 +388,12 @@ var PinAlignPanel = (function() {
 
     function describeStageNote() {
         if (_selected && _hoveredCandidate && _state && _state.status === "ongoing") {
-            var preview = PinAlignCore.previewSwap(_state, _selected, _hoveredCandidate);
-            var summary = PinAlignDomAdapter.summarizePreview(preview);
-            if (summary) return "悬停预览：" + summary.badge + " — " + summary.detail;
+            var manhattan = Math.abs(_selected.row - _hoveredCandidate.row) + Math.abs(_selected.col - _hoveredCandidate.col);
+            if (manhattan === 1) {
+                var preview = PinAlignCore.previewSwap(_state, _selected, _hoveredCandidate);
+                var summary = PinAlignDomAdapter.summarizePreview(preview);
+                if (summary) return "悬停预览：" + summary.badge + " — " + summary.detail;
+            }
         }
         return _toast || DEFAULT_STAGE_NOTE;
     }

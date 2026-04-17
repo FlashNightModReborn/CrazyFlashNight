@@ -22,9 +22,9 @@
                 { id: "pin-c", centerCol: 6, targetHeight: null }
             ],
             lane: {
-                radius: 1.85,
-                threshold: 1.75,
-                margin: 0.2
+                weightsByDistance: [2, 1, 0],
+                threshold: 4,
+                margin: 0
             },
             alert: {
                 initial: 16
@@ -50,7 +50,7 @@
                 maxInitAttempts: 120,
                 maxReshuffleAttempts: 56,
                 minProductiveMoves: 2,
-                minLaneCoverage: 1.15
+                minLaneWeight: 2
             },
             simulation: {
                 iterations: 100,

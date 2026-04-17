@@ -35,9 +35,9 @@
             { id: "pin-c", centerCol: 6, targetHeight: null }
         ],
         lane: {
-            radius: 1.85,
-            threshold: 1.75,
-            margin: 0.2
+            weightsByDistance: [2, 1, 0],
+            threshold: 4,
+            margin: 0
         },
         alert: {
             initial: 16
@@ -63,7 +63,7 @@
             maxInitAttempts: 120,
             maxReshuffleAttempts: 56,
             minProductiveMoves: 2,
-            minLaneCoverage: 1.15
+            minLaneWeight: 2
         },
         simulation: {
             iterations: 120,
@@ -326,10 +326,9 @@
 
     function laneWeight(spec, pin, col) {
         var distance = Math.abs(pin.centerCol - col);
-        var radius = spec.lane.radius;
-        var raw = 1 - (distance / radius);
-        if (raw <= 0) return 0;
-        return Number((raw * raw).toFixed(3));
+        var weights = spec.lane.weightsByDistance;
+        if (weights && distance < weights.length) return weights[distance];
+        return 0;
     }
 
     function allPinsLocked(state) {
@@ -477,7 +476,7 @@
                 if (!isMovableTile(tile)) continue;
                 var p;
                 for (p = 0; p < state.pins.length; p += 1) {
-                    if (laneWeight(state.spec, state.pins[p], col) >= state.spec.generation.minLaneCoverage) return true;
+                    if (laneWeight(state.spec, state.pins[p], col) >= state.spec.generation.minLaneWeight) return true;
                 }
             }
         }
@@ -564,7 +563,7 @@
                 var pin = state.pins[i];
                 var lane = laneWeight(state.spec, pin, col);
                 if (pin.state === "locked") continue;
-                laneBoost += lane * (pin.state === "set" ? 0.6 : 0.35);
+                laneBoost += lane * (pin.state === "set" ? 0.30 : 0.18);
             }
             if (left === color) weight += laneBoost;
             if (up === color) weight += laneBoost * 0.85;
@@ -690,7 +689,7 @@
             contributions.push({
                 pinId: pin.id,
                 state: pin.state,
-                weight: Number(weight.toFixed(3)),
+                weight: weight,
                 wouldAdvance: advance,
                 wouldOvershoot: overshoot,
                 crossThreshold: crosses,
@@ -1098,7 +1097,7 @@
                 toState: pin.state,
                 fromHeight: beforeHeight,
                 toHeight: pin.currentHeight,
-                weight: Number(weightSum.toFixed(3)),
+                weight: weightSum,
                 reason: "signal"
             });
         }

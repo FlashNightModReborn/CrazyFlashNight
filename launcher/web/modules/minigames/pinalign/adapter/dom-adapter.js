@@ -13,7 +13,8 @@
             board: root.querySelector("[data-pa-board]"),
             boardShell: root.querySelector("[data-pa-board-shell]"),
             boardArea: root.querySelector(".pinalign-board-area"),
-            laneBelt: root.querySelector("[data-pa-lane-belt]"),
+            laneLayer: root.querySelector("[data-pa-lane-layer]"),
+            instrumentStrip: root.querySelector("[data-pa-instrument-strip]"),
             flightLayer: root.querySelector("[data-pa-flight-layer]"),
             previewLayer: root.querySelector("[data-pa-preview-layer]"),
             phaseBadge: root.querySelector("[data-pa-phase]"),
@@ -22,7 +23,7 @@
             clamp: root.querySelector("[data-pa-clamp]"),
             moves: root.querySelector("[data-pa-moves]"),
             stageNote: root.querySelector("[data-pa-stage-note]"),
-            pins: root.querySelector("[data-pa-pins]"),
+            pinsAria: root.querySelector("[data-pa-pins-aria]"),
             events: root.querySelector("[data-pa-events]"),
             eventsToggle: root.querySelector("[data-pa-events-toggle]"),
             eventsBody: root.querySelector("[data-pa-events-body]"),
@@ -44,9 +45,10 @@
     function sync(refs, state, viewModel) {
         var layoutInfo = fitBoard(refs);
         renderBoard(refs.board, state, viewModel);
-        renderLaneBelt(refs.laneBelt, state);
+        renderLaneOverlay(refs.laneLayer, state, viewModel);
         renderHud(refs, state);
-        renderPins(refs.pins, state, viewModel);
+        renderProbes(refs.instrumentStrip, state, viewModel);
+        renderPinsAria(refs.pinsAria, state);
         renderEvents(refs.events, viewModel.lastResult);
         renderExport(refs.export, viewModel.lastReplay);
         renderCollapsible(refs, viewModel);
@@ -55,6 +57,9 @@
         renderFlight(refs, viewModel);
         setStageNote(refs, viewModel.toast || "");
     }
+
+    var FLIGHT_EVENT_STAGGER = 240;
+    var FLIGHT_EFFECT_DELAY = 180;
 
     function renderFlight(refs, viewModel) {
         if (!refs.flightLayer) return;
@@ -68,11 +73,15 @@
         var s;
         for (e = 0; e < result.events.length; e += 1) {
             var event = result.events[e];
+            var base = e * FLIGHT_EVENT_STAGGER;
+            var hasEffect = event.effectTiles && event.effectTiles.length > 0;
             for (s = 0; s < event.signalTiles.length; s += 1) {
-                frag += buildFlightCell(event.signalTiles[s], "is-signal", e * 40);
+                frag += buildFlightCell(event.signalTiles[s], "is-signal", base);
             }
-            for (s = 0; s < event.effectTiles.length; s += 1) {
-                frag += buildFlightCell(event.effectTiles[s], "is-effect", e * 40 + 80);
+            if (hasEffect) {
+                for (s = 0; s < event.effectTiles.length; s += 1) {
+                    frag += buildFlightCell(event.effectTiles[s], "is-effect", base + FLIGHT_EFFECT_DELAY);
+                }
             }
         }
         refs.flightLayer.innerHTML = frag;
@@ -88,42 +97,83 @@
         ].join("");
     }
 
-    function renderLaneBelt(container, state) {
+    function renderLaneOverlay(container, state, viewModel) {
         if (!container) return;
         var cols = state.spec.cols;
+        var preview = previewForHoveredCandidate(state, viewModel);
+        var tier = computeLaneTier(state, viewModel, preview);
+        var contribById = {};
+        if (preview) {
+            var k;
+            for (k = 0; k < preview.pinContributions.length; k += 1) {
+                contribById[preview.pinContributions[k].pinId] = preview.pinContributions[k];
+            }
+        }
         var html = "";
         var c;
-        var p;
         for (c = 0; c < cols; c += 1) {
-            html += '<div class="pinalign-belt-col" data-col="' + c + '">';
-            for (p = 0; p < state.pins.length; p += 1) {
-                var pin = state.pins[p];
-                var w = getLaneWeight(state.spec, pin, c);
-                if (w > 0) {
-                    var classes = ["pinalign-belt-cell", "state-" + pin.state];
-                    var style;
-                    var tip = describePinId(pin.id) + " 权重 " + w.toFixed(2) + "（列 " + (c + 1) + "）";
-                    if (pin.state === "locked") {
-                        classes.push("is-sealed");
-                        style = "";
-                        tip += " · 已锁定，此列为保险区";
-                    } else {
-                        var alpha = Math.max(0.14, Math.min(1, w));
-                        style = "background:" + pinColor(p) + "; opacity:" + alpha.toFixed(2) + ";";
-                    }
-                    html += [
-                        '<div class="', classes.join(" "),
-                        '" style="', style,
-                        '" title="', escapeHtml(tip),
-                        '"></div>'
-                    ].join("");
-                } else {
-                    html += '<div class="pinalign-belt-cell is-empty"></div>';
-                }
+            var owner = pickLaneOwner(state, c);
+            if (!owner) {
+                html += '<div class="pinalign-lane-col" data-col="' + c + '"></div>';
+                continue;
             }
-            html += "</div>";
+            var pin = owner.pin;
+            var pinIndex = owner.pinIndex;
+            var role = owner.distance === 0 ? "main" : "neighbor";
+            var highlight = computeLaneHighlight(tier, viewModel, preview, contribById[pin.id], pin, c, state.spec);
+            var color = pinColor(pinIndex);
+            html += [
+                '<div class="pinalign-lane-col is-', role,
+                ' highlight-', highlight,
+                ' state-', pin.state,
+                '" data-col="', c,
+                '" data-pin="', escapeHtml(pin.id),
+                '" style="--pa-lane-color:', color, ';">',
+                '<i class="pinalign-lane-line"></i>',
+                '</div>'
+            ].join("");
         }
         container.innerHTML = html;
+    }
+
+    function pickLaneOwner(state, col) {
+        var best = null;
+        var p;
+        for (p = 0; p < state.pins.length; p += 1) {
+            var pin = state.pins[p];
+            var w = getLaneWeight(state.spec, pin, col);
+            if (w <= 0) continue;
+            var distance = Math.abs(pin.centerCol - col);
+            if (!best || w > best.weight || (w === best.weight && distance < best.distance)) {
+                best = { pin: pin, pinIndex: p, weight: w, distance: distance };
+            }
+        }
+        return best;
+    }
+
+    function computeLaneTier(state, viewModel, preview) {
+        if (preview && preview.valid) return "hovered";
+        if (viewModel && viewModel.selected && state.status === "ongoing") return "selected";
+        return "default";
+    }
+
+    function computeLaneHighlight(tier, viewModel, preview, contrib, pin, col, spec) {
+        if (pin.state === "locked") return "locked";
+        if (pin.state === "jammed") return "jammed";
+        if (tier === "hovered" && preview) {
+            if (contrib && contrib.weight > 0) {
+                if (contrib.wouldOvershoot) return "overshoot";
+                if (contrib.guardedByClamp) return "guarded";
+                if (contrib.wouldAdvance) return "advance";
+                return "neutral";
+            }
+            return "default";
+        }
+        if (tier === "selected" && viewModel && viewModel.selected) {
+            if (getLaneWeight(spec, pin, viewModel.selected.col) > 0) return "selected";
+            return "default";
+        }
+        return "default";
     }
 
     function renderPreview(refs, state, viewModel) {
@@ -230,7 +280,7 @@
         for (i = 0; i < preview.pinContributions.length; i += 1) {
             var c = preview.pinContributions[i];
             if (c.wouldAdvance) {
-                rows.push(describePinId(c.pinId) + " 抬升 +1（信号 " + c.weight.toFixed(2) + "/阈值 " + preview.threshold.toFixed(2) + "）");
+                rows.push(describePinId(c.pinId) + " 抬升 +1（信号 " + formatScore(c.weight) + "/阈值 " + formatScore(preview.threshold) + "）");
             } else if (c.guardedByClamp && !asSuffix) {
                 rows.push(describePinId(c.pinId) + " 夹具保护（仍耗 −1 警报）");
             }
@@ -278,14 +328,14 @@
             };
         }
 
+        var instrumentReserve = 86;
         var shellWidth = Math.max(0, refs.boardShell.clientWidth - 16);
-        var beltReserve = 30;
-        var shellHeight = Math.max(0, refs.boardShell.clientHeight - 16 - beltReserve);
-        var fallbackHeight = Math.floor(rootHeight * (stacked ? 0.52 : 0.68));
+        var shellHeight = Math.max(0, refs.boardShell.clientHeight - 16 - instrumentReserve);
+        var fallbackHeight = Math.floor(rootHeight * (stacked ? 0.48 : 0.62));
         var heightBudget = shellHeight > 220 ? shellHeight : fallbackHeight;
-        var size = Math.floor(Math.min(shellWidth, heightBudget, 560));
+        var size = Math.floor(Math.min(shellWidth, heightBudget, 520));
         if (size < 260) size = Math.min(shellWidth, 260);
-        size = clamp(size, 260, 560);
+        size = clamp(size, 260, 520);
 
         refs.root.style.setProperty("--pa-board-size", size + "px");
         refs.root.style.setProperty("--pa-board-gap", size < 320 ? "6px" : (size < 430 ? "8px" : "10px"));
@@ -375,49 +425,160 @@
         if (refs.moves) refs.moves.textContent = String(state.moveIndex || 0);
     }
 
-    function renderPins(container, state, viewModel) {
+    function renderProbes(container, state, viewModel) {
         if (!container) return;
-        var structuralToken = computePinStructuralToken(state, viewModel);
-        if (container.dataset.pinToken === structuralToken) {
-            refreshPinAccumulators(container, state, viewModel);
-            return;
-        }
-        container.dataset.pinToken = structuralToken;
-        container.innerHTML = "";
-        var preview = previewForHoveredCandidate(state, viewModel);
-        var overshootIds = collectOvershootPinIds(viewModel.lastResult);
+        var overshootIds = collectTransitionIds(viewModel.lastResult, "overshoot");
+        var guardedHitIds = collectTransitionIds(viewModel.lastResult, "guarded_overshoot");
+        var advancedIds = collectTransitionIds(viewModel.lastResult, "signal");
         var lockedIds = (viewModel.lastResult && viewModel.lastResult.committedLocks) || [];
         var unjammedIds = state.lastMoveUnjammed || [];
-        var i;
-        for (i = 0; i < state.pins.length; i += 1) {
-            var pin = state.pins[i];
-            var ratio = pin.targetHeight > 0 ? (pin.currentHeight / pin.targetHeight) * 100 : 0;
-            var card = document.createElement("div");
-            var cardClasses = ["pinalign-pin-card", "state-" + pin.state];
-            if (overshootIds.indexOf(pin.id) !== -1) cardClasses.push("just-overshoot");
-            if (lockedIds.indexOf(pin.id) !== -1) cardClasses.push("just-locked");
-            if (unjammedIds.indexOf(pin.id) !== -1) cardClasses.push("just-unjammed");
-            card.className = cardClasses.join(" ");
-            card.style.borderLeft = "3px solid " + pinColor(i);
-            var contrib = preview ? findPinContribution(preview, pin.id) : null;
-            var lockStampHtml = pin.state === "locked"
-                ? '<span class="pinalign-pin-stamp">已锁定</span>'
-                : "";
-            card.innerHTML = [
-                '<div class="pinalign-pin-head">',
-                    '<span class="pinalign-pin-id" style="color:', pinColor(i), ';">', escapeHtml(describePinId(pin.id)), "</span>",
-                    '<span class="pinalign-pin-state">', escapeHtml(describePinState(pin.state)), "</span>",
-                "</div>",
-                '<div class="pinalign-pin-bar"><span style="width:', Math.round(ratio), '%; background:', pinColor(i), ';"></span></div>',
-                '<div class="pinalign-pin-meta">', escapeHtml(describePinLane(state.spec, pin)), " | 高度 ", String(pin.currentHeight), "/", String(pin.targetHeight), "</div>",
-                '<div class="pinalign-pin-accum-slot">', buildPinAccumulator(state.spec, pin, contrib), "</div>",
-                lockStampHtml
-            ].join("");
-            container.appendChild(card);
+        var preview = previewForHoveredCandidate(state, viewModel);
+        var contribById = {};
+        var guardedPreviewIds = [];
+        var advancePreviewIds = [];
+        var overshootPreviewIds = [];
+        if (preview && preview.valid) {
+            var k;
+            for (k = 0; k < preview.pinContributions.length; k += 1) {
+                var c = preview.pinContributions[k];
+                contribById[c.pinId] = c;
+                if (c.guardedByClamp) guardedPreviewIds.push(c.pinId);
+                else if (c.wouldOvershoot) overshootPreviewIds.push(c.pinId);
+                else if (c.wouldAdvance) advancePreviewIds.push(c.pinId);
+            }
         }
+        var activeCols = collectActiveCols(viewModel);
+        var threshold = state.spec.lane.threshold;
+        var token = computeProbeToken(state, viewModel, guardedPreviewIds, advancePreviewIds, overshootPreviewIds, activeCols);
+        if (container.dataset.probeToken === token) return;
+        container.dataset.probeToken = token;
+        container.style.gridTemplateRows = "auto" + new Array(state.pins.length + 1).join(" 11px");
+        var cols = state.spec.cols;
+        var frag = "";
+        var p;
+        for (p = 0; p < state.pins.length; p += 1) {
+            var pin = state.pins[p];
+            var centerCol = Math.max(0, Math.min(cols - 1, pin.centerCol || 0));
+            var currentPct = pin.targetHeight > 0
+                ? Math.max(0, Math.min(100, (pin.currentHeight / pin.targetHeight) * 100))
+                : 0;
+            var contrib = contribById[pin.id] || null;
+            var ghostPct = computeGhostPct(pin, contrib);
+            var showGhost = contrib && contrib.weight > 0 && pin.state !== "locked" && pin.state !== "jammed";
+            var classes = ["pinalign-probe", "state-" + pin.state];
+            if (overshootIds.indexOf(pin.id) !== -1) classes.push("just-overshoot");
+            if (lockedIds.indexOf(pin.id) !== -1) classes.push("just-locked");
+            if (unjammedIds.indexOf(pin.id) !== -1) classes.push("just-unjammed");
+            if (advancedIds.indexOf(pin.id) !== -1) classes.push("just-advanced");
+            if (guardedHitIds.indexOf(pin.id) !== -1) classes.push("just-guarded");
+            if (guardedPreviewIds.indexOf(pin.id) !== -1) classes.push("is-guarded-preview");
+            if (advancePreviewIds.indexOf(pin.id) !== -1) classes.push("is-advance-preview");
+            if (overshootPreviewIds.indexOf(pin.id) !== -1) classes.push("is-overshoot-preview");
+            if (showGhost) classes.push("has-ghost");
+            var color = pinColor(p);
+            var idLabel = describePinId(pin.id);
+            var shortLabel = describePinShort(pin.id);
+            var readout = String(pin.currentHeight) + "/" + String(pin.targetHeight);
+            var stateTag = describePinState(pin.state);
+            var title = idLabel + "：主列 " + (centerCol + 1)
+                + "，高度 " + readout + "，" + stateTag;
+            var pred = buildPredChip(pin, contrib, shortLabel, threshold);
+            frag += [
+                '<div class="', classes.join(" "),
+                '" style="grid-column:', (centerCol + 1),
+                '; grid-row: 1',
+                '; --pa-probe-color:', color, ';"',
+                ' data-pin="', escapeHtml(pin.id), '"',
+                ' title="', escapeHtml(title), '"',
+                ' aria-label="', escapeHtml(title), '">',
+                    '<div class="pinalign-probe-rail">',
+                        '<i class="pinalign-probe-tick tick-base" aria-hidden="true"></i>',
+                        '<i class="pinalign-probe-tick tick-mid" aria-hidden="true"></i>',
+                        '<i class="pinalign-probe-tick tick-target" aria-hidden="true"></i>',
+                        (showGhost ? '<i class="pinalign-probe-marker is-ghost" style="bottom:' + ghostPct.toFixed(1) + '%;" aria-hidden="true"></i>' : ''),
+                        '<i class="pinalign-probe-marker" style="bottom:', currentPct.toFixed(1), '%;" aria-hidden="true"></i>',
+                    '</div>',
+                    '<div class="pinalign-probe-info" aria-hidden="true">',
+                        '<span class="pinalign-probe-title">', escapeHtml(shortLabel), '</span>',
+                        '<span class="pinalign-probe-lamp"></span>',
+                        '<span class="pinalign-probe-readout">', escapeHtml(readout), '</span>',
+                    '</div>',
+                    (pred ? '<span class="pinalign-probe-pred ' + pred.modifier + '" aria-hidden="true">' + escapeHtml(pred.text) + '</span>' : ''),
+                    '<span class="pinalign-probe-clamp" aria-hidden="true">⛨</span>',
+                    '<span class="pinalign-probe-stamp" aria-hidden="true">锁</span>',
+                '</div>'
+            ].join("");
+        }
+        for (p = 0; p < state.pins.length; p += 1) {
+            frag += buildCoverageRow(state.spec, state.pins[p], p, activeCols, 2 + p);
+        }
+        container.innerHTML = frag;
     }
 
-    function computePinStructuralToken(state, viewModel) {
+    function computeGhostPct(pin, contrib) {
+        if (!contrib || pin.targetHeight <= 0) return 0;
+        var height = pin.currentHeight;
+        if (contrib.wouldAdvance) height = pin.currentHeight + 1;
+        else if (contrib.wouldOvershoot) height = Math.max(0, pin.targetHeight - 1);
+        return Math.max(0, Math.min(100, (height / pin.targetHeight) * 100));
+    }
+
+    function buildPredChip(pin, contrib, shortLabel, threshold) {
+        if (!contrib || contrib.weight <= 0) return null;
+        if (pin.state === "locked" || pin.state === "jammed") return null;
+        if (contrib.wouldOvershoot) {
+            return { modifier: "is-warn", text: shortLabel + "⚠" };
+        }
+        if (contrib.guardedByClamp) {
+            return { modifier: "is-guarded", text: shortLabel + "⛨" };
+        }
+        if (contrib.wouldAdvance) {
+            return { modifier: "is-advance", text: shortLabel + "↑" };
+        }
+        return { modifier: "is-neutral", text: "+" + formatScore(contrib.weight) + "/" + formatScore(threshold) };
+    }
+
+    function formatScore(value) {
+        if (value == null) return "0";
+        if (Math.abs(value - Math.round(value)) < 0.05) return String(Math.round(value));
+        return value.toFixed(1);
+    }
+
+    function buildCoverageRow(spec, pin, pinIndex, activeCols, rowIndex) {
+        var color = pinColor(pinIndex);
+        var out = [
+            '<div class="pinalign-probe-coverage state-', pin.state,
+            '" style="grid-column: 1 / -1; grid-row:', rowIndex,
+            '; --pa-probe-color:', color, ';"',
+            ' data-pin="', escapeHtml(pin.id), '"',
+            ' aria-hidden="true">'
+        ];
+        var c;
+        for (c = 0; c < spec.cols; c += 1) {
+            var weight = getLaneWeight(spec, pin, c);
+            var cellClass = "pinalign-coverage-cell";
+            if (weight >= 2) cellClass += " tier-main";
+            else if (weight >= 1) cellClass += " tier-neighbor";
+            else cellClass += " tier-empty";
+            if (activeCols.indexOf(c) !== -1 && weight > 0) cellClass += " is-active";
+            out.push('<div class="', cellClass, '" data-col="', c, '"></div>');
+        }
+        out.push('</div>');
+        return out.join("");
+    }
+
+    function collectActiveCols(viewModel) {
+        var cols = [];
+        if (viewModel) {
+            if (viewModel.selected) cols.push(viewModel.selected.col);
+            if (viewModel.hoveredCandidate && cols.indexOf(viewModel.hoveredCandidate.col) === -1) {
+                cols.push(viewModel.hoveredCandidate.col);
+            }
+        }
+        return cols;
+    }
+
+    function computeProbeToken(state, viewModel, guardedPreviewIds, advancePreviewIds, overshootPreviewIds, activeCols) {
         var parts = [state.moveIndex];
         var i;
         for (i = 0; i < state.pins.length; i += 1) {
@@ -425,22 +586,28 @@
         }
         parts.push(viewModel.flightToken || "0");
         parts.push((state.lastMoveUnjammed || []).join("/"));
+        parts.push(guardedPreviewIds.join("/"));
+        parts.push((advancePreviewIds || []).join("/"));
+        parts.push((overshootPreviewIds || []).join("/"));
+        parts.push((activeCols || []).join(","));
+        parts.push(state.clampArmed ? "arm" : "dis");
         return parts.join("|");
     }
 
-    function refreshPinAccumulators(container, state, viewModel) {
-        var preview = previewForHoveredCandidate(state, viewModel);
-        var cards = container.querySelectorAll(".pinalign-pin-card");
+    function renderPinsAria(container, state) {
+        if (!container) return;
+        var lines = [];
         var i;
-        for (i = 0; i < cards.length && i < state.pins.length; i += 1) {
-            var slot = cards[i].querySelector(".pinalign-pin-accum-slot");
-            if (!slot) continue;
-            var contrib = preview ? findPinContribution(preview, state.pins[i].id) : null;
-            slot.innerHTML = buildPinAccumulator(state.spec, state.pins[i], contrib);
+        for (i = 0; i < state.pins.length; i += 1) {
+            var pin = state.pins[i];
+            lines.push(describePinId(pin.id) + "：" + describePinState(pin.state)
+                + "，" + describePinLane(state.spec, pin)
+                + "，高度 " + pin.currentHeight + "/" + pin.targetHeight);
         }
+        container.textContent = lines.join("；");
     }
 
-    function collectOvershootPinIds(result) {
+    function collectTransitionIds(result, reason) {
         var out = [];
         if (!result || !result.events) return out;
         var e;
@@ -448,45 +615,12 @@
         for (e = 0; e < result.events.length; e += 1) {
             var trs = result.events[e].pinTransitions || [];
             for (t = 0; t < trs.length; t += 1) {
-                if (trs[t].reason === "overshoot") {
+                if (trs[t].reason === reason) {
                     if (out.indexOf(trs[t].pinId) === -1) out.push(trs[t].pinId);
                 }
             }
         }
         return out;
-    }
-
-    function buildPinAccumulator(spec, pin, contrib) {
-        var threshold = spec.lane.threshold;
-        var step = 0.5;
-        var dots = Math.max(3, Math.ceil(threshold / step));
-        var weight = contrib ? contrib.weight : 0;
-        var filled = Math.min(dots, Math.round(weight / step));
-        var cls = "pinalign-pin-accum";
-        var label = contrib ? ("预览贡献 " + weight.toFixed(2) + " / " + threshold.toFixed(2)) : "本手尚无信号";
-        var tone = "";
-        if (contrib && contrib.wouldOvershoot) { cls += " is-warn"; tone = "（过调风险）"; }
-        else if (contrib && contrib.guardedByClamp) { cls += " is-guarded"; tone = "（夹具保护）"; }
-        else if (contrib && contrib.wouldAdvance) { cls += " is-advance"; tone = "（将抬 1 格）"; }
-        var out = ['<div class="', cls, '">'];
-        out.push('<div class="pinalign-pin-accum-label">', escapeHtml(label + tone), "</div>");
-        out.push('<div class="pinalign-pin-accum-dots">');
-        var d;
-        for (d = 0; d < dots; d += 1) {
-            var state = d < filled ? "on" : "off";
-            out.push('<span class="pa-dot pa-dot-', state, '"></span>');
-        }
-        out.push("</div></div>");
-        return out.join("");
-    }
-
-    function findPinContribution(preview, pinId) {
-        if (!preview || !preview.pinContributions) return null;
-        var i;
-        for (i = 0; i < preview.pinContributions.length; i += 1) {
-            if (preview.pinContributions[i].pinId === pinId) return preview.pinContributions[i];
-        }
-        return null;
     }
 
     function previewForHoveredCandidate(state, viewModel) {
@@ -604,9 +738,9 @@
             return PinAlignCore.laneWeight(spec, pin, col);
         }
         var distance = Math.abs(pin.centerCol - col);
-        var raw = 1 - (distance / spec.lane.radius);
-        if (raw <= 0) return 0;
-        return raw * raw;
+        var weights = spec.lane && spec.lane.weightsByDistance;
+        if (weights && distance < weights.length) return weights[distance];
+        return 0;
     }
 
     function shortSpecial(type) {

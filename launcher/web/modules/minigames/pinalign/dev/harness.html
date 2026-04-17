@@ -111,6 +111,21 @@ html, body {
             }, 120);
         }
 
+        var hoverMatch = location.search.match(/[?&]hover=(\d+),(\d+)/);
+        if (hoverMatch) {
+            setTimeout(function() {
+                var r = parseInt(hoverMatch[1], 10);
+                var c = parseInt(hoverMatch[2], 10);
+                var tile = document.querySelector('[data-pa-board] .pinalign-tile[data-row="' + r + '"][data-col="' + c + '"]');
+                if (tile) {
+                    var evt = document.createEvent("MouseEvent");
+                    evt.initMouseEvent("mouseenter", false, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                    tile.dispatchEvent(evt);
+                }
+                log("hovered " + r + "," + c);
+            }, 240);
+        }
+
         if (location.search.indexOf("info=1") !== -1) {
             setTimeout(function() {
                 var infoBtn = document.querySelector('[data-action="toggle-side"]');

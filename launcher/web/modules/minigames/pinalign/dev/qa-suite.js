@@ -419,6 +419,59 @@
         return ok(truncEvents + " cascade truncations, all satisfied allPinsSetOrLocked invariant");
     }
 
+    function sumWeightAt(Core, spec, pin, cols) {
+        var w = 0;
+        var i;
+        for (i = 0; i < cols.length; i += 1) w += Core.laneWeight(spec, pin, cols[i]);
+        return w;
+    }
+
+    function crosses(spec, weight) {
+        return (weight + spec.lane.margin) >= spec.lane.threshold;
+    }
+
+    function a15_mainVerticalSixPoints(Core, Levels) {
+        var spec = specOf(Levels);
+        var pin = spec.pins[0];
+        var w = sumWeightAt(Core, spec, pin, [pin.centerCol, pin.centerCol, pin.centerCol]);
+        if (w !== 6) return fail("main-col vertical 3-match expected 6, got " + w);
+        if (!crosses(spec, w)) return fail("weight 6 should cross threshold " + spec.lane.threshold);
+        return ok("pin " + pin.id + " main-col vertical 3-match weight=" + w + " crosses threshold " + spec.lane.threshold);
+    }
+
+    function a16_neighborVerticalThreeNoAdvance(Core, Levels) {
+        var spec = specOf(Levels);
+        var pin = spec.pins[0];
+        var col = pin.centerCol + 1;
+        var w = sumWeightAt(Core, spec, pin, [col, col, col]);
+        if (w !== 3) return fail("neighbor-col vertical 3-match expected 3, got " + w);
+        if (crosses(spec, w)) return fail("weight 3 should NOT cross threshold " + spec.lane.threshold);
+        return ok("pin " + pin.id + " neighbor-col vertical 3-match weight=" + w + " below threshold " + spec.lane.threshold);
+    }
+
+    function a17_mainNeighborOutsideNoAdvance(Core, Levels) {
+        var spec = specOf(Levels);
+        var pin = spec.pins[0];
+        var c0 = pin.centerCol;
+        var cols = [c0, c0 + 1, c0 + 2];
+        var w = sumWeightAt(Core, spec, pin, cols);
+        if (w !== 3) return fail("1main+1neighbor+1outside expected 3 (2+1+0), got " + w);
+        if (crosses(spec, w)) return fail("weight 3 should NOT cross threshold " + spec.lane.threshold);
+        return ok("pin " + pin.id + " horizontal at cols " + cols.join(",") + " weight=" + w + " (2+1+0), below threshold");
+    }
+
+    function a18_mainTwoNeighborAdvances(Core, Levels) {
+        var spec = specOf(Levels);
+        var pin = spec.pins[0];
+        var c0 = pin.centerCol;
+        var cols = [c0 - 1, c0, c0 + 1];
+        if (cols[0] < 0) return ok("skipped (pin at col 0)");
+        var w = sumWeightAt(Core, spec, pin, cols);
+        if (w !== 4) return fail("1neighbor+1main+1neighbor expected 4 (1+2+1), got " + w);
+        if (!crosses(spec, w)) return fail("weight 4 should cross threshold " + spec.lane.threshold);
+        return ok("pin " + pin.id + " horizontal at cols " + cols.join(",") + " weight=" + w + " (1+2+1), crosses threshold");
+    }
+
     var SUITE = [
         { id: "a1", title: "同 seed + 同输入 = 同 outcome", run: a1_determinism },
         { id: "a2", title: "非法交换不改变任何 gameplay state", run: a2_illegalSwapNoCost },
@@ -433,7 +486,11 @@
         { id: "a11", title: "calibrator 不偷偷绕过 overshoot（观测）", run: a11_calibratorRespectsOvershoot },
         { id: "a12", title: "所有 pin set/locked 时 cascade 短路", run: a12_cascadeTruncatesOnAllSet },
         { id: "a13", title: "calibrator 强制命中 set pin → overshoot", run: a13_calibratorOvershootCrafted },
-        { id: "a14", title: "calibrator 强制命中 set pin + clamp → guarded", run: a14_calibratorGuardedByClamp }
+        { id: "a14", title: "calibrator 强制命中 set pin + clamp → guarded", run: a14_calibratorGuardedByClamp },
+        { id: "a15", title: "主列竖三消 = 6 分，跨阈值", run: a15_mainVerticalSixPoints },
+        { id: "a16", title: "邻列竖三消 = 3 分，不跨", run: a16_neighborVerticalThreeNoAdvance },
+        { id: "a17", title: "1主+1邻+1外 = 3 分，不跨", run: a17_mainNeighborOutsideNoAdvance },
+        { id: "a18", title: "1主+2邻 = 4 分，跨阈值", run: a18_mainTwoNeighborAdvances }
     ];
 
     function runOne(Core, Levels, id) {
