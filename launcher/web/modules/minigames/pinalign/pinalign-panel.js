@@ -55,6 +55,15 @@ var PinAlignPanel = (function() {
                     '<div class="lockbox-grid-shell pinalign-grid-shell" data-pa-board-shell>',
                         '<div class="lockbox-trace-frame"></div>',
                         '<div class="pinalign-board-area">',
+                            '<div class="pinalign-bezel" aria-hidden="true">',
+                                '<div class="pinalign-bezel-outer"></div>',
+                                '<div class="pinalign-bezel-ring"></div>',
+                                '<div class="pinalign-bezel-ticks"></div>',
+                                '<div class="pinalign-bezel-rivet rivet-tl"></div>',
+                                '<div class="pinalign-bezel-rivet rivet-tr"></div>',
+                                '<div class="pinalign-bezel-rivet rivet-bl"></div>',
+                                '<div class="pinalign-bezel-rivet rivet-br"></div>',
+                            "</div>",
                             '<div class="pinalign-board" data-pa-board></div>',
                             '<div class="pinalign-flight-layer" data-pa-flight-layer aria-hidden="true"></div>',
                             '<div class="pinalign-preview-layer" data-pa-preview-layer aria-hidden="true"></div>',
@@ -338,9 +347,13 @@ var PinAlignPanel = (function() {
     }
 
     function describeOutcome(result) {
-        if (!result.valid) return "交换被拒绝。";
-        if (_state.status === "win") return "所有锁针都已锁定，后续无意义连锁已被截断。";
-        if (_state.status === "fail") return "警报耗尽，本局测试失败。";
+        var unjam = (_state && _state.lastMoveUnjammed) || [];
+        var prefix = unjam.length
+            ? unjam.map(toPinLabel).join("/") + " 解除卡死。"
+            : "";
+        if (!result.valid) return prefix + "交换被拒绝。";
+        if (_state.status === "win") return "全部锁针已锁定，保险箱开启。";
+        if (_state.status === "fail") return "警报耗尽，本局校准失败。";
         var signalCount = 0;
         var effectCount = 0;
         var transitions = [];
@@ -350,10 +363,54 @@ var PinAlignPanel = (function() {
             effectCount += result.events[e].effectTiles.length;
             transitions = transitions.concat(result.events[e].pinTransitions || []);
         }
-        if (hasJam(result)) return "本手有 " + signalCount + " 个 Signal，锁针发生过调卡死，并额外扣除了 1 点警报。";
-        if (transitions.length) return "本手有 " + signalCount + " 个 Signal；" + describeTransitionToast(transitions) + (effectCount ? "。另外 " + effectCount + " 个 Effect 只清盘不抬针。" : "。");
-        if (result.productive) return "这次交换产生了特殊块，但没有直接推进锁针。";
-        return "交换合法，也形成了匹配，但这次 " + signalCount + " 个 Signal 都没有累计够锁针阈值。";
+        var committed = result.committedLocks || [];
+        if (committed.length) {
+            var lockMsg = committed.map(toPinLabel).join(" / ") + " 锁定！";
+            var sealInfo = describeSealedLanes(committed);
+            var remaining = describeRemainingFocus();
+            return prefix + lockMsg + sealInfo + remaining;
+        }
+        if (hasJam(result)) return prefix + "过调：本手 " + signalCount + " 个 Signal 命中已待锁的锁针，−1 警报，卡死到下一手。";
+        if (transitions.length) return prefix + "本手 " + signalCount + " 个 Signal；" + describeTransitionToast(transitions) + (effectCount ? "。另外 " + effectCount + " 个 Effect 只清盘不抬针。" : "。");
+        if (result.productive) return prefix + "这次交换产生了特殊块，但没有直接推进锁针。";
+        return prefix + "交换合法，匹配成立，但 " + signalCount + " 个 Signal 未累计够阈值。";
+    }
+
+    function describeSealedLanes(lockedPinIds) {
+        if (!_state || !lockedPinIds.length) return "";
+        var cols = [];
+        var i;
+        var p;
+        for (i = 0; i < lockedPinIds.length; i += 1) {
+            var pin = findPin(lockedPinIds[i]);
+            if (!pin) continue;
+            for (var c = 0; c < _state.spec.cols; c += 1) {
+                if (PinAlignCore.laneWeight(_state.spec, pin, c) > 0 && cols.indexOf(c + 1) === -1) cols.push(c + 1);
+            }
+        }
+        if (!cols.length) return "";
+        cols.sort(function(a, b) { return a - b; });
+        return " 列 " + cols.join("/") + " 转为保险区。";
+    }
+
+    function describeRemainingFocus() {
+        if (!_state) return "";
+        var remaining = [];
+        var i;
+        for (i = 0; i < _state.pins.length; i += 1) {
+            if (_state.pins[i].state !== "locked") remaining.push(toPinLabel(_state.pins[i].id));
+        }
+        if (!remaining.length) return "";
+        return "继续推进 " + remaining.join(" / ") + "。";
+    }
+
+    function findPin(pinId) {
+        if (!_state) return null;
+        var i;
+        for (i = 0; i < _state.pins.length; i += 1) {
+            if (_state.pins[i].id === pinId) return _state.pins[i];
+        }
+        return null;
     }
 
     function describeTransitionToast(transitions) {

@@ -273,6 +273,76 @@
     min-height: 0;
 }
 
+.pinalign-bezel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(var(--pa-board-size) + 68px);
+    height: calc(var(--pa-board-size) + 68px);
+    max-width: calc(100% + 60px);
+    max-height: calc(100% + 60px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.pinalign-bezel-outer {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 45%),
+        linear-gradient(145deg, #3d434a 0%, #252a31 55%, #16191e 100%);
+    border: 1px solid rgba(0, 0, 0, 0.7);
+    box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.07),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.55),
+        0 4px 10px rgba(0, 0, 0, 0.55);
+}
+
+.pinalign-bezel-ring {
+    position: absolute;
+    inset: 22px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.7);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+        inset 0 0 14px rgba(0, 0, 0, 0.65);
+}
+
+.pinalign-bezel-ticks {
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    background:
+        repeating-conic-gradient(
+            from 0deg,
+            rgba(200, 208, 216, 0.5) 0deg 0.6deg,
+            rgba(0, 0, 0, 0) 0.6deg 15deg
+        );
+    mask: radial-gradient(circle, transparent 0 46%, #000 46% 50%, transparent 50% 100%);
+    -webkit-mask: radial-gradient(circle, transparent 0 46%, #000 46% 50%, transparent 50% 100%);
+    opacity: 0.55;
+}
+
+.pinalign-bezel-rivet {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 50%),
+        radial-gradient(circle at 50% 55%, rgba(80, 86, 94, 1), rgba(10, 12, 16, 1) 80%);
+    border: 1px solid rgba(0, 0, 0, 0.75);
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.6);
+}
+
+.pinalign-bezel-rivet.rivet-tl { top: 12px; left: 50%; transform: translate(-50%, 0); }
+.pinalign-bezel-rivet.rivet-tr { top: 50%; right: 12px; transform: translate(0, -50%); }
+.pinalign-bezel-rivet.rivet-bl { top: 50%; left: 12px; transform: translate(0, -50%); }
+.pinalign-bezel-rivet.rivet-br { bottom: 12px; left: 50%; transform: translate(-50%, 0); }
+
 .pinalign-board {
     position: relative;
     z-index: 1;
@@ -369,9 +439,27 @@
     background: rgba(255, 255, 255, 0.03);
 }
 
-.pinalign-belt-cell.state-locked { box-shadow: inset 0 0 0 1px rgba(147, 255, 171, 0.7); }
 .pinalign-belt-cell.state-jammed { box-shadow: inset 0 0 0 1px rgba(255, 111, 145, 0.7); }
 .pinalign-belt-cell.state-set { box-shadow: inset 0 0 0 1px rgba(252, 238, 9, 0.7); }
+
+.pinalign-belt-cell.is-sealed {
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(120, 130, 140, 0.22) 0 2px,
+        rgba(60, 66, 72, 0.4) 2px 4px
+    );
+    background-color: rgba(30, 34, 38, 0.65);
+    box-shadow:
+        inset 0 0 0 1px rgba(147, 255, 171, 0.32),
+        inset 0 0 3px rgba(0, 0, 0, 0.6);
+    animation: pa-belt-seal 620ms ease-out;
+}
+
+@keyframes pa-belt-seal {
+    0% { transform: scaleY(0.1); opacity: 0.4; }
+    55% { transform: scaleY(1.15); opacity: 1; }
+    100% { transform: scaleY(1); opacity: 1; }
+}
 
 .pinalign-preview-cell {
     display: flex;
@@ -418,6 +506,27 @@
 .pinalign-preview-cell.is-advance .pinalign-preview-badge { color: #8ce8ff; }
 .pinalign-preview-cell.is-warn .pinalign-preview-badge { color: #ff9bb4; }
 .pinalign-preview-cell.is-invalid .pinalign-preview-badge { color: #9aa6ad; }
+
+.pinalign-preview-cell.is-warn {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.pinalign-preview-note {
+    padding: 1px 4px;
+    border-radius: 2px;
+    background: rgba(130, 20, 30, 0.85);
+    border: 1px solid rgba(255, 150, 170, 0.5);
+    color: #ffd0d8;
+    font-size: 9px;
+    line-height: 1.25;
+    letter-spacing: 0;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 @keyframes pa-warn-pulse {
     0%, 100% { box-shadow: inset 0 0 12px rgba(255, 111, 145, 0.22); }
@@ -638,12 +747,92 @@
     margin-top: 4px;
 }
 
+.pinalign-pin-card {
+    position: relative;
+    overflow: hidden;
+}
+
 .pinalign-pin-card.state-locked {
     border-color: rgba(157, 255, 182, 0.45);
     box-shadow:
         inset 0 1px 0 rgba(157, 255, 182, 0.12),
         0 1px 0 rgba(0, 0, 0, 0.4),
         0 0 12px rgba(157, 255, 182, 0.12);
+}
+
+.pinalign-pin-card.just-overshoot {
+    animation: pa-pin-overshoot 560ms ease-out;
+}
+
+.pinalign-pin-card.just-locked {
+    animation: pa-pin-locked 780ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.pinalign-pin-card.just-unjammed {
+    animation: pa-pin-unjammed 640ms ease-out;
+}
+
+.pinalign-pin-card.just-locked::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(157, 255, 182, 0.55), rgba(157, 255, 182, 0) 70%);
+    pointer-events: none;
+    animation: pa-pin-lock-burst 780ms ease-out forwards;
+}
+
+.pinalign-pin-stamp {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    padding: 2px 6px;
+    border: 1.5px solid rgba(157, 255, 182, 0.75);
+    border-radius: 2px;
+    background: rgba(12, 24, 18, 0.55);
+    color: #93ffab;
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    pointer-events: none;
+    transform: rotate(-6deg);
+}
+
+.pinalign-pin-card.just-locked .pinalign-pin-stamp {
+    animation: pa-pin-stamp-slide 640ms 120ms cubic-bezier(0.3, 1.6, 0.4, 1) backwards;
+}
+
+@keyframes pa-pin-overshoot {
+    0% { transform: translateX(0); box-shadow: 0 0 0 rgba(255, 80, 100, 0); }
+    15% { transform: translateX(-4px); }
+    30% { transform: translateX(4px); }
+    45% { transform: translateX(-3px); }
+    60% { transform: translateX(2px); }
+    80% { transform: translateX(0); box-shadow: 0 0 18px rgba(255, 80, 100, 0.55); }
+    100% { transform: translateX(0); box-shadow: 0 0 0 rgba(255, 80, 100, 0); }
+}
+
+@keyframes pa-pin-locked {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.05); box-shadow: 0 0 24px rgba(157, 255, 182, 0.65); }
+    65% { transform: scale(0.98); }
+    100% { transform: scale(1); box-shadow: 0 0 12px rgba(157, 255, 182, 0.12); }
+}
+
+@keyframes pa-pin-lock-burst {
+    0% { opacity: 0.9; transform: scale(0.4); }
+    70% { opacity: 0.45; transform: scale(1.1); }
+    100% { opacity: 0; transform: scale(1.25); }
+}
+
+@keyframes pa-pin-stamp-slide {
+    0% { opacity: 0; transform: rotate(-18deg) scale(1.6) translateY(-12px); }
+    60% { opacity: 1; transform: rotate(-4deg) scale(0.95); }
+    100% { opacity: 1; transform: rotate(-6deg) scale(1); }
+}
+
+@keyframes pa-pin-unjammed {
+    0% { box-shadow: 0 0 18px rgba(255, 80, 100, 0.5); }
+    100% { box-shadow: 0 0 0 rgba(255, 80, 100, 0); }
 }
 .pinalign-pin-card.state-jammed {
     border-color: rgba(255, 111, 145, 0.5);

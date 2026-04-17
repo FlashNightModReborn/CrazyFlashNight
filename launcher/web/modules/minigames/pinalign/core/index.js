@@ -418,7 +418,8 @@
             actionLog: [],
             telemetry: createTelemetry(normalizedSpec),
             lastHint: null,
-            lastResolution: null
+            lastResolution: null,
+            lastMoveUnjammed: []
         };
         state.pins = createPins(state);
         buildInitialBoard(state);
@@ -573,9 +574,13 @@
         state.moveIndex += 1;
         state.clampActiveThisMove = !!state.clampArmed;
         state.clampArmed = false;
+        state.lastMoveUnjammed = [];
         var i;
         for (i = 0; i < state.pins.length; i += 1) {
-            if (state.pins[i].state === "jammed") state.pins[i].state = "normal";
+            if (state.pins[i].state === "jammed") {
+                state.lastMoveUnjammed.push(state.pins[i].id);
+                state.pins[i].state = "normal";
+            }
             state.pins[i].guardThisMove = false;
         }
         return state;
@@ -1288,10 +1293,12 @@
     function commitPinsAtMoveEnd(state, result) {
         var i;
         var lockedAny = false;
+        result.committedLocks = [];
         for (i = 0; i < state.pins.length; i += 1) {
             var pin = state.pins[i];
             if (pin.state === "set") {
                 pin.state = "locked";
+                result.committedLocks.push(pin.id);
                 lockedAny = true;
             }
         }

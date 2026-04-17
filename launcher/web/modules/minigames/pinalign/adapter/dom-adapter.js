@@ -100,12 +100,21 @@
                 var pin = state.pins[p];
                 var w = getLaneWeight(state.spec, pin, c);
                 if (w > 0) {
-                    var alpha = Math.max(0.14, Math.min(1, w));
+                    var classes = ["pinalign-belt-cell", "state-" + pin.state];
+                    var style;
+                    var tip = describePinId(pin.id) + " 权重 " + w.toFixed(2) + "（列 " + (c + 1) + "）";
+                    if (pin.state === "locked") {
+                        classes.push("is-sealed");
+                        style = "";
+                        tip += " · 已锁定，此列为保险区";
+                    } else {
+                        var alpha = Math.max(0.14, Math.min(1, w));
+                        style = "background:" + pinColor(p) + "; opacity:" + alpha.toFixed(2) + ";";
+                    }
                     html += [
-                        '<div class="pinalign-belt-cell state-', escapeHtml(pin.state),
-                        '" style="background:', pinColor(p),
-                        '; opacity:', alpha.toFixed(2),
-                        ';" title="', escapeHtml(describePinId(pin.id) + " 权重 " + w.toFixed(2) + "（列 " + (c + 1) + "）"),
+                        '<div class="', classes.join(" "),
+                        '" style="', style,
+                        '" title="', escapeHtml(tip),
                         '"></div>'
                     ].join("");
                 } else {
@@ -139,12 +148,14 @@
     function buildPreviewMarker(state, row, col, preview) {
         var modifier = "is-valid";
         var badge = "";
+        var note = "";
         if (!preview.valid) {
             modifier = "is-invalid";
             badge = "✕";
         } else if (preview.wouldOvershoot) {
             modifier = "is-warn";
             badge = "⚠";
+            note = describeOvershootWarning(state, preview);
         } else if (preview.wouldAdvance) {
             modifier = "is-advance";
             badge = "+" + preview.signalTiles.length;
@@ -152,13 +163,33 @@
             modifier = "is-neutral";
             badge = "~" + preview.signalTiles.length;
         }
+        var noteHtml = note
+            ? '<span class="pinalign-preview-note">' + escapeHtml(note) + "</span>"
+            : "";
         return [
             '<div class="pinalign-preview-cell ', modifier,
             '" style="grid-column:', (col + 1),
             '; grid-row:', (row + 1), ';">',
                 '<span class="pinalign-preview-badge">', escapeHtml(badge), "</span>",
+                noteHtml,
             "</div>"
         ].join("");
+    }
+
+    function describeOvershootWarning(state, preview) {
+        if (!preview || !preview.pinContributions) return "过调";
+        var i;
+        var risky = [];
+        for (i = 0; i < preview.pinContributions.length; i += 1) {
+            var c = preview.pinContributions[i];
+            if (c.wouldOvershoot) risky.push(describePinShort(c.pinId));
+        }
+        if (!risky.length) return "过调：−1 警报 + 卡死到下一手";
+        return risky.join("/") + " 已待锁，过调 −1 警报";
+    }
+
+    function describePinShort(id) {
+        return String(id || "").replace("pin-", "").replace("-", "").toUpperCase();
     }
 
     function fitBoard(refs) {
@@ -278,16 +309,32 @@
 
     function renderPins(container, state, viewModel) {
         if (!container) return;
+        var structuralToken = computePinStructuralToken(state, viewModel);
+        if (container.dataset.pinToken === structuralToken) {
+            refreshPinAccumulators(container, state, viewModel);
+            return;
+        }
+        container.dataset.pinToken = structuralToken;
         container.innerHTML = "";
         var preview = bestPreviewForSelection(state, viewModel);
+        var overshootIds = collectOvershootPinIds(viewModel.lastResult);
+        var lockedIds = (viewModel.lastResult && viewModel.lastResult.committedLocks) || [];
+        var unjammedIds = state.lastMoveUnjammed || [];
         var i;
         for (i = 0; i < state.pins.length; i += 1) {
             var pin = state.pins[i];
             var ratio = pin.targetHeight > 0 ? (pin.currentHeight / pin.targetHeight) * 100 : 0;
             var card = document.createElement("div");
-            card.className = "pinalign-pin-card state-" + pin.state;
+            var cardClasses = ["pinalign-pin-card", "state-" + pin.state];
+            if (overshootIds.indexOf(pin.id) !== -1) cardClasses.push("just-overshoot");
+            if (lockedIds.indexOf(pin.id) !== -1) cardClasses.push("just-locked");
+            if (unjammedIds.indexOf(pin.id) !== -1) cardClasses.push("just-unjammed");
+            card.className = cardClasses.join(" ");
             card.style.borderLeft = "3px solid " + pinColor(i);
             var contrib = preview ? findPinContribution(preview, pin.id) : null;
+            var lockStampHtml = pin.state === "locked"
+                ? '<span class="pinalign-pin-stamp">已锁定</span>'
+                : "";
             card.innerHTML = [
                 '<div class="pinalign-pin-head">',
                     '<span class="pinalign-pin-id" style="color:', pinColor(i), ';">', escapeHtml(describePinId(pin.id)), "</span>",
@@ -295,10 +342,50 @@
                 "</div>",
                 '<div class="pinalign-pin-bar"><span style="width:', Math.round(ratio), '%; background:', pinColor(i), ';"></span></div>',
                 '<div class="pinalign-pin-meta">', escapeHtml(describePinLane(state.spec, pin)), " | 高度 ", String(pin.currentHeight), "/", String(pin.targetHeight), "</div>",
-                buildPinAccumulator(state.spec, pin, contrib)
+                '<div class="pinalign-pin-accum-slot">', buildPinAccumulator(state.spec, pin, contrib), "</div>",
+                lockStampHtml
             ].join("");
             container.appendChild(card);
         }
+    }
+
+    function computePinStructuralToken(state, viewModel) {
+        var parts = [state.moveIndex];
+        var i;
+        for (i = 0; i < state.pins.length; i += 1) {
+            parts.push(state.pins[i].state + ":" + state.pins[i].currentHeight);
+        }
+        parts.push(viewModel.flightToken || "0");
+        parts.push((state.lastMoveUnjammed || []).join("/"));
+        return parts.join("|");
+    }
+
+    function refreshPinAccumulators(container, state, viewModel) {
+        var preview = bestPreviewForSelection(state, viewModel);
+        var cards = container.querySelectorAll(".pinalign-pin-card");
+        var i;
+        for (i = 0; i < cards.length && i < state.pins.length; i += 1) {
+            var slot = cards[i].querySelector(".pinalign-pin-accum-slot");
+            if (!slot) continue;
+            var contrib = preview ? findPinContribution(preview, state.pins[i].id) : null;
+            slot.innerHTML = buildPinAccumulator(state.spec, state.pins[i], contrib);
+        }
+    }
+
+    function collectOvershootPinIds(result) {
+        var out = [];
+        if (!result || !result.events) return out;
+        var e;
+        var t;
+        for (e = 0; e < result.events.length; e += 1) {
+            var trs = result.events[e].pinTransitions || [];
+            for (t = 0; t < trs.length; t += 1) {
+                if (trs[t].reason === "overshoot") {
+                    if (out.indexOf(trs[t].pinId) === -1) out.push(trs[t].pinId);
+                }
+            }
+        }
+        return out;
     }
 
     function buildPinAccumulator(spec, pin, contrib) {
