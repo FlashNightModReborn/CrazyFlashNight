@@ -5,6 +5,7 @@
 <title>CF7:ME Overlay</title>
 <link rel="stylesheet" href="css/overlay.css">
 <link rel="stylesheet" href="css/panels.css">
+<link rel="stylesheet" href="modules/minigames/pinalign/pinalign.css">
 </head>
 <body>
 
@@ -48,6 +49,7 @@
                         <button data-key="P">P 截图</button>
                         <button data-key="O">O 打开</button>
                         <button data-key="LOCKBOX_TEST">高安箱测试</button>
+                        <button data-key="PINALIGN_TEST">锁芯校准测试</button>
                         <button data-key="BAKE">烘焙图标</button>
                         <button data-key="BAKE10">烘焙测试(10)</button>
                     </div>
@@ -213,6 +215,11 @@
 <script src="modules/lockbox-generator.js"></script>
 <script src="modules/lockbox-audio.js"></script>
 <script src="modules/lockbox-panel.js"></script>
+<script src="modules/minigames/pinalign/core/index.js"></script>
+<script src="modules/minigames/pinalign/app/level-specs.js"></script>
+<script src="modules/minigames/pinalign/adapter/dom-adapter.js"></script>
+<script src="modules/minigames/pinalign/pinalign-audio.js"></script>
+<script src="modules/minigames/pinalign/pinalign-panel.js"></script>
 <script>
 (function() {
     window.addEventListener('load', function() {

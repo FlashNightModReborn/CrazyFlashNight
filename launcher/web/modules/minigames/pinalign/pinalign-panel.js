@@ -1,0 +1,507 @@
+var PinAlignPanel = (function() {
+    "use strict";
+
+    var _el = null;
+    var _refs = null;
+    var _state = null;
+    var _spec = null;
+    var _seed = "dev-default";
+    var _selected = null;
+    var _hint = null;
+    var _toast = "";
+    var _lastResult = null;
+    var _lastReplay = null;
+    var _audio = null;
+    var _muted = false;
+    var _resizeHandler = null;
+    var _helpOpen = false;
+    var _debugEnabled = false;
+    var _sideManual = false;
+    var _sideCollapsed = false;
+
+    Panels.register("pinalign", {
+        create: createDOM,
+        onOpen: onOpen,
+        onRequestClose: function() { closePanel(); },
+        onForceClose: cleanup
+    });
+
+    function createDOM() {
+        _el = document.createElement("div");
+        _el.className = "lockbox-panel pinalign-panel";
+        _el.innerHTML = [
+            '<div class="lockbox-header">',
+                '<div>',
+                    '<div class="lockbox-kicker">// LOCK CORE CALIBRATION //</div>',
+                    '<div class="lockbox-title">锁芯矩阵校准</div>',
+                "</div>",
+                '<div class="lockbox-header-right">',
+                    '<button class="lockbox-chrome-btn pinalign-header-action" type="button" data-action="hint">提示</button>',
+                    '<button class="lockbox-chrome-btn pinalign-header-action" type="button" data-action="clamp">夹具</button>',
+                    '<button class="lockbox-chrome-btn pinalign-header-action" type="button" data-action="reset">重开</button>',
+                    '<button class="lockbox-chrome-btn pinalign-header-action" type="button" data-action="reroll">换种</button>',
+                    '<button class="lockbox-chrome-btn pinalign-header-action" type="button" data-action="export">导出</button>',
+                    '<button class="lockbox-chrome-btn" type="button" data-action="toggle-help">规则</button>',
+                    '<button class="lockbox-chrome-btn" type="button" data-action="toggle-side">信息</button>',
+                    '<button class="lockbox-chrome-btn" type="button" data-action="mute">静音</button>',
+                    '<div class="lockbox-phase-badge" data-pa-phase>观察中</div>',
+                    '<button class="lockbox-close-btn" type="button" data-action="close">×</button>',
+                "</div>",
+            "</div>",
+            '<div class="lockbox-help-panel" data-pa-help-panel>',
+                '<div class="lockbox-help-card">',
+                    '<div class="lockbox-help-head">',
+                        '<div>',
+                            '<div class="lockbox-help-kicker">// HOW IT WORKS //</div>',
+                            '<div class="lockbox-help-title">玩法说明</div>',
+                        "</div>",
+                        '<button class="lockbox-chrome-btn" type="button" data-action="toggle-help">关闭</button>',
+                    "</div>",
+                    '<div class="lockbox-help-grid">',
+                        '<div class="lockbox-help-item"><b>1.</b> 每根锁针都有自己的“主列”和“影响列”，只吃这些列里的直接匹配信号。</div>',
+                        '<div class="lockbox-help-item"><b>2.</b> 主列信号最强，邻列是弱信号；同一次结算里要累计够阈值，锁针才会升 1 格。</div>',
+                        '<div class="lockbox-help-item"><b>3.</b> 只有直接三消出来的格子算 Signal；特殊块和连带清除都是 Effect，只清盘不抬针。</div>',
+                        '<div class="lockbox-help-item"><b>4.</b> 锁针升到目标后会先进入“待锁定”，等这一步全部结算完才正式锁定。</div>',
+                        '<div class="lockbox-help-item"><b>5.</b> 同一手里再次把“待锁定”锁针打到信号，会过调卡死，并额外扣 1 点警报。</div>',
+                        '<div class="lockbox-help-item emphasis">建议验证顺序：先做一次提示交换看推进，再故意做一次非法交换，最后测试一次过调。</div>',
+                    "</div>",
+                    '<div class="lockbox-help-actions">',
+                        '<button type="button" class="lockbox-btn lockbox-btn-primary" data-action="toggle-help">开始测试</button>',
+                    "</div>",
+                "</div>",
+            "</div>",
+            '<div class="lockbox-main">',
+                '<div class="lockbox-grid-pane">',
+                    '<div class="lockbox-stage-meta">',
+                        '<div data-pa-stage-status>目标：让全部锁针进入“已锁定”。</div>',
+                        '<div data-pa-stage-hint>先用提示交换验证推进，再故意做一次非法交换和一次过调测试。</div>',
+                    "</div>",
+                    '<div class="lockbox-quickbar pinalign-readout-row">',
+                        '<div class="lockbox-profile-note pinalign-toolbar-readout" data-pa-seed-note>',
+                            '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">种子</span><span data-pa-seed>dev-default</span></span>',
+                            '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">警报</span><span data-pa-alert>16</span></span>',
+                            '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">夹具</span><span data-pa-clamp>44%</span></span>',
+                            '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">状态</span><span data-pa-status>等待操作</span></span>',
+                        "</div>",
+                    "</div>",
+                    '<div class="lockbox-grid-shell pinalign-grid-shell" data-pa-board-shell>',
+                        '<div class="lockbox-trace-frame"></div>',
+                        '<div class="pinalign-shell-rail left" data-pa-shell-left>',
+                            '<section class="pinalign-shell-card pinalign-shell-card-summary">',
+                                '<div class="pinalign-shell-title">当前读数</div>',
+                                '<div class="pinalign-shell-metric-grid" data-pa-shell-summary></div>',
+                            "</section>",
+                            '<section class="pinalign-shell-card">',
+                                '<div class="pinalign-shell-title">当前建议</div>',
+                                '<div class="pinalign-shell-copy" data-pa-shell-guide></div>',
+                            "</section>",
+                        "</div>",
+                        '<div class="pinalign-board-wrap">',
+                            '<div class="pinalign-lane-overlay" data-pa-lane-overlay></div>',
+                            '<div class="pinalign-board" data-pa-board></div>',
+                        "</div>",
+                        '<div class="pinalign-shell-rail right" data-pa-shell-right>',
+                            '<section class="pinalign-shell-card">',
+                                '<div class="pinalign-shell-title">锁针速览</div>',
+                                '<div data-pa-shell-pins></div>',
+                            "</section>",
+                        "</div>",
+                        '<div class="pinalign-toast is-overlay" data-pa-toast></div>',
+                    "</div>",
+                    '<div class="pinalign-guide-note" data-pa-hint hidden></div>',
+                    '<div class="pinalign-guide-note" data-pa-meta hidden></div>',
+                "</div>",
+                '<div class="lockbox-side-pane">',
+                    '<section class="lockbox-side-section pinalign-debug-section" data-pa-debug-wrap>',
+                        '<div class="lockbox-side-title">宿主尺寸</div>',
+                        '<div class="pinalign-debug-copy" data-pa-debug></div>',
+                    "</section>",
+                    '<section class="lockbox-side-section pinalign-resolution-section">',
+                        '<div class="lockbox-side-title">本手说明</div>',
+                        '<div class="pinalign-side-copy" data-pa-resolution></div>',
+                    "</section>",
+                    '<section class="lockbox-side-section pinalign-steps-section">',
+                        '<div class="lockbox-side-title">玩法说明</div>',
+                        '<div class="pinalign-side-copy">',
+                            '<div class="pinalign-step"><b>1.</b> 先看每根锁针卡上的“影响列 / 主列”，确认它吃哪几列。</div>',
+                            '<div class="pinalign-step"><b>2.</b> 只有直接匹配格子算 Signal；特殊块和波及清除不推进锁针。</div>',
+                            '<div class="pinalign-step"><b>3.</b> 同一次结算里累计够信号阈值，锁针才会抬升 1 格。</div>',
+                            '<div class="pinalign-step"><b>4.</b> 到目标先变“待锁定”，本手结束时才锁定；同手再吃信号会过调卡死。</div>',
+                        "</div>",
+                    "</section>",
+                    '<section class="lockbox-side-section pinalign-pins-section">',
+                        '<div class="lockbox-side-title">锁针状态</div>',
+                        '<div data-pa-pins></div>',
+                    "</section>",
+                    '<section class="lockbox-side-section pinalign-events-section">',
+                        '<div class="lockbox-side-title">最近结算</div>',
+                        '<div data-pa-events></div>',
+                    "</section>",
+                    '<section class="lockbox-side-section pinalign-export-section">',
+                        '<div class="lockbox-side-title">回放导出</div>',
+                        '<pre data-pa-export></pre>',
+                    "</section>",
+                "</div>",
+            "</div>"
+        ].join("");
+        _refs = PinAlignDomAdapter.indexRefs(_el);
+        bindActions();
+        return _el;
+    }
+
+    function bindActions() {
+        var buttons = _el.querySelectorAll("[data-action]");
+        var i;
+        for (i = 0; i < buttons.length; i += 1) {
+            buttons[i].addEventListener("click", onAction);
+        }
+    }
+
+    function onOpen(el, initData) {
+        var data = initData || {};
+        _audio = PinAlignAudio && PinAlignAudio.create ? PinAlignAudio.create() : null;
+        _debugEnabled = !!data.debug;
+        _muted = false;
+        _sideManual = false;
+        _sideCollapsed = false;
+        if (_audio && _audio.setMuted) _audio.setMuted(_muted);
+        if (!_resizeHandler) {
+            _resizeHandler = function() { render(); };
+            window.addEventListener("resize", _resizeHandler);
+        }
+        boot(data);
+        notifyHost("open", {
+            specId: _spec.id,
+            masterSeed: _seed
+        });
+        if (typeof window.requestAnimationFrame === "function") {
+            window.requestAnimationFrame(function() { render(); });
+        }
+    }
+
+    function boot(initData) {
+        _spec = PinAlignLevels.getSpec((initData && initData.specId) || "mvp-3pin-v1");
+        _seed = (initData && initData.masterSeed) || "dev-default";
+        _state = PinAlignCore.createState(_spec, _seed);
+        _selected = null;
+        _hint = PinAlignCore.getHint(_state);
+        _toast = "先点一个格子，再点相邻格交换。只有直接三消会推进锁针，连带清除不算。";
+        _lastResult = null;
+        _lastReplay = null;
+        _helpOpen = false;
+        render();
+    }
+
+    function cleanup() {
+        detachResizeHandler();
+        _selected = null;
+        _hint = null;
+        _toast = "";
+        _lastResult = null;
+        _lastReplay = null;
+        _helpOpen = false;
+        _sideManual = false;
+        _sideCollapsed = false;
+        _state = null;
+        _spec = null;
+        _audio = null;
+    }
+
+    function closePanel() {
+        var status = _state ? _state.status : "unknown";
+        cleanup();
+        if (typeof Panels !== "undefined" && Panels.close) Panels.close();
+        Bridge.send({ type: "panel", cmd: "close", panel: "pinalign" });
+        notifyHost("close", {
+            status: status
+        });
+    }
+
+    function detachResizeHandler() {
+        if (_resizeHandler) {
+            window.removeEventListener("resize", _resizeHandler);
+            _resizeHandler = null;
+        }
+    }
+
+    function onAction(event) {
+        var action = event.currentTarget.getAttribute("data-action");
+        if (action === "toggle-help") {
+            _helpOpen = !_helpOpen;
+            render();
+            return;
+        }
+        if (action === "toggle-side") {
+            toggleSidePane();
+            render();
+            return;
+        }
+        if (action === "hint") {
+            _hint = PinAlignCore.getHint(_state);
+            _toast = _hint ? "已高亮推荐交换的两格，可以直接点击测试。" : "当前没有缓存的有效提示。";
+            render();
+            return;
+        }
+        if (action === "clamp") {
+            var clamp = PinAlignCore.armClamp(_state);
+            _toast = clamp.ok ? "夹具已就绪，只会作用于下一次合法交换。" : "夹具暂时不可用：" + describeClampBlock(clamp.reason);
+            if (clamp.ok && _audio) _audio.tick();
+            render();
+            return;
+        }
+        if (action === "reset") {
+            boot({ specId: _spec.id, masterSeed: _seed });
+            return;
+        }
+        if (action === "reroll") {
+            boot({ specId: _spec.id, masterSeed: "seed-" + Date.now() });
+            return;
+        }
+        if (action === "export") {
+            exportReplay();
+            return;
+        }
+        if (action === "mute") {
+            _muted = !_muted;
+            if (_audio && _audio.setMuted) _audio.setMuted(_muted);
+            _toast = _muted ? "音效已静音。" : "音效已恢复。";
+            render();
+            return;
+        }
+        if (action === "close") {
+            closePanel();
+        }
+    }
+
+    function toggleSidePane() {
+        var autoCollapsed = getAutoSideCollapse();
+        if (!_sideManual) {
+            _sideCollapsed = !autoCollapsed;
+        } else {
+            _sideCollapsed = !_sideCollapsed;
+        }
+        _sideManual = true;
+    }
+
+    function getAutoSideCollapse() {
+        var width = _refs && _refs.root ? _refs.root.clientWidth : (window.innerWidth || 1280);
+        return width < 1180;
+    }
+
+    function getSideCollapsed() {
+        if (_sideManual) return _sideCollapsed;
+        return getAutoSideCollapse();
+    }
+
+    function onTileClick(pos) {
+        if (!_state || _state.status !== "ongoing") return;
+        if (!_selected) {
+            _selected = pos;
+            _hint = null;
+            _toast = "已选中一个格子，请再点相邻格完成交换。";
+            render();
+            return;
+        }
+        if (_selected.row === pos.row && _selected.col === pos.col) {
+            _selected = null;
+            _toast = "已取消当前选中。";
+            render();
+            return;
+        }
+        if (Math.abs(_selected.row - pos.row) + Math.abs(_selected.col - pos.col) !== 1) {
+            _selected = pos;
+            _toast = "已切换选中格子，请点它的相邻格。";
+            render();
+            return;
+        }
+
+        var result = PinAlignCore.trySwap(_state, _selected, pos);
+        _lastResult = result;
+        _hint = result.hint || PinAlignCore.getHint(_state);
+        _selected = null;
+        if (!result.valid) {
+            _toast = "非法交换：" + describeSwapBlock(result.reason);
+            if (_audio) _audio.tick();
+        } else {
+            _toast = describeOutcome(result);
+            if (_audio) {
+                if (_state.status === "win") _audio.win();
+                else if (_state.status === "fail") _audio.fail();
+                else if (hasJam(result)) _audio.jam();
+                else _audio.settle();
+            }
+            notifyHost("turn", {
+                status: _state.status,
+                moveIndex: _state.moveIndex,
+                alertRemaining: _state.alertRemaining,
+                replayHash: result.stateHash || PinAlignCore.computeStateHash(_state)
+            });
+        }
+        render();
+    }
+
+    function render() {
+        if (!_refs || !_state) return;
+        syncChrome();
+        PinAlignDomAdapter.sync(_refs, _state, {
+            selected: _selected,
+            hint: _hint,
+            muted: _muted,
+            toast: _toast,
+            lastResult: _lastResult,
+            lastReplay: _lastReplay,
+            onTileClick: onTileClick,
+            sideCollapsed: getSideCollapsed(),
+            debug: _debugEnabled
+        });
+    }
+
+    function syncChrome() {
+        var sideCollapsed = getSideCollapsed();
+        if (_refs.helpPanel) _refs.helpPanel.classList.toggle("visible", _helpOpen);
+        if (_refs.phaseBadge) _refs.phaseBadge.textContent = describePhaseLabel();
+        if (_refs.root) {
+            _refs.root.setAttribute("data-phase", describePhaseToken());
+            _refs.root.setAttribute("data-trace-state", describeTraceToken());
+            _refs.root.classList.toggle("is-side-collapsed", sideCollapsed);
+            _refs.root.classList.toggle("is-debug", _debugEnabled);
+        }
+        if (_refs.sideToggle) {
+            _refs.sideToggle.textContent = sideCollapsed ? "信息" : "收起信息";
+            _refs.sideToggle.classList.toggle("active", !sideCollapsed);
+        }
+        if (_refs.muteButton) {
+            _refs.muteButton.textContent = _muted ? "开音" : "静音";
+            _refs.muteButton.classList.toggle("muted", _muted);
+        }
+    }
+
+    function exportReplay() {
+        _lastReplay = PinAlignCore.serializeReplay(_state);
+        var text = JSON.stringify(_lastReplay, null, 2);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text)["catch"](function() {});
+        }
+        _toast = "回放已导出到面板缓存" + (navigator.clipboard && navigator.clipboard.writeText ? "，并尝试复制到剪贴板。" : "。");
+        notifyHost("export", {
+            status: _state.status,
+            actions: _lastReplay.actions.length
+        });
+        render();
+    }
+
+    function hasJam(result) {
+        if (!result || !result.events) return false;
+        var e;
+        var p;
+        for (e = 0; e < result.events.length; e += 1) {
+            for (p = 0; p < result.events[e].pinTransitions.length; p += 1) {
+                if (result.events[e].pinTransitions[p].toState === "jammed") return true;
+            }
+        }
+        return false;
+    }
+
+    function describeOutcome(result) {
+        if (!result.valid) return "交换被拒绝。";
+        if (_state.status === "win") return "所有锁针都已锁定，后续无意义连锁已被截断。";
+        if (_state.status === "fail") return "警报耗尽，本局测试失败。";
+        var signalCount = 0;
+        var effectCount = 0;
+        var transitions = [];
+        var e;
+        for (e = 0; e < result.events.length; e += 1) {
+            signalCount += result.events[e].signalTiles.length;
+            effectCount += result.events[e].effectTiles.length;
+            transitions = transitions.concat(result.events[e].pinTransitions || []);
+        }
+        if (hasJam(result)) return "本手有 " + signalCount + " 个 Signal，锁针发生过调卡死，并额外扣除了 1 点警报。";
+        if (transitions.length) return "本手有 " + signalCount + " 个 Signal；" + describeTransitionToast(transitions) + (effectCount ? "。另外 " + effectCount + " 个 Effect 只清盘不抬针。" : "。");
+        if (result.productive) return "这次交换产生了特殊块，但没有直接推进锁针。";
+        return "交换合法，也形成了匹配，但这次 " + signalCount + " 个 Signal 都没有累计够锁针阈值。";
+    }
+
+    function describeTransitionToast(transitions) {
+        var out = [];
+        var i;
+        for (i = 0; i < transitions.length; i += 1) {
+            if (transitions[i].reason === "guarded_overshoot") {
+                out.push(toPinLabel(transitions[i].pinId) + " 被夹具保护");
+            } else {
+                out.push(toPinLabel(transitions[i].pinId) + " " + toPinState(transitions[i].toState));
+            }
+        }
+        return out.join("，");
+    }
+
+    function describeClampBlock(reason) {
+        if (reason === "status") return "当前已不是可操作状态";
+        if (reason === "already_armed") return "夹具已经处于待命状态";
+        if (reason === "charge") return "夹具充能不足";
+        return reason || "未知原因";
+    }
+
+    function describeSwapBlock(reason) {
+        if (reason === "non_adjacent") return "只能交换相邻格子";
+        if (reason === "out_of_bounds") return "交换位置越界";
+        if (reason === "immovable") return "障碍格不能参与交换";
+        if (reason === "no_match") return "交换后没有形成直接匹配";
+        return reason || "未知原因";
+    }
+
+    function toPinLabel(pinId) {
+        return "锁针" + String(pinId || "").replace("pin-", "").replace("-", "").toUpperCase();
+    }
+
+    function toPinState(state) {
+        if (state === "normal") return "回到正常";
+        if (state === "set") return "进入待锁定";
+        if (state === "jammed") return "卡死";
+        if (state === "locked") return "锁定";
+        return state;
+    }
+
+    function describePhaseToken() {
+        if (!_state) return "OBSERVE";
+        if (_state.status === "win") return "RESULT";
+        if (_state.status === "fail") return "FAIL";
+        if (hasJam(_lastResult)) return "FINISHER";
+        if (_state.clampArmed || _state.clampActiveThisMove) return "INJECTING";
+        if (_state.telemetry.productiveSwaps > 0) return "MAIN_READY";
+        return "OBSERVE";
+    }
+
+    function describePhaseLabel() {
+        var token = describePhaseToken();
+        if (token === "RESULT") return "已锁定";
+        if (token === "FAIL") return "失败";
+        if (token === "FINISHER") return "过调";
+        if (token === "INJECTING") return "夹具";
+        if (token === "MAIN_READY") return "推进中";
+        return "观察中";
+    }
+
+    function describeTraceToken() {
+        if (!_state) return "normal";
+        if (_state.status === "fail") return "trace-fail";
+        if (hasJam(_lastResult)) return "overload";
+        if (_state.alertRemaining <= 3) return "terminal";
+        if (_state.alertRemaining <= 5) return "critical";
+        return "normal";
+    }
+
+    function notifyHost(kind, payload) {
+        Bridge.send({
+            type: "panel",
+            cmd: "pinalign_session",
+            payload: {
+                kind: kind,
+                data: payload || {}
+            }
+        });
+    }
+
+    return {
+        _debugBoot: boot
+    };
+})();

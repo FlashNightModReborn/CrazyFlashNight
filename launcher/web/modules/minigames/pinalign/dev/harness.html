@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>PinAlign Harness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../../../css/panels.css">
+<link rel="stylesheet" href="../pinalign.css">
+<style>
+html, body {
+    margin: 0;
+    min-height: 100%;
+    background: #05090c;
+}
+#panel-container {
+    display: block !important;
+}
+#panel-backdrop {
+    position: absolute;
+    inset: 0;
+}
+#debug-log {
+    position: fixed;
+    left: 12px;
+    bottom: 12px;
+    z-index: 2000;
+    max-width: 420px;
+    max-height: 180px;
+    overflow: auto;
+    padding: 10px 12px;
+    background: rgba(8, 14, 18, 0.88);
+    border: 1px solid rgba(120, 194, 214, 0.24);
+    color: #d9e4e8;
+    font: 12px/1.5 Consolas, "Microsoft YaHei", monospace;
+    white-space: pre-wrap;
+}
+</style>
+</head>
+<body>
+<div id="panel-container">
+  <div id="panel-backdrop"></div>
+  <div id="panel-content"></div>
+</div>
+<pre id="debug-log">booting...</pre>
+
+<script src="../../../bridge.js"></script>
+<script src="../../../panels.js"></script>
+<script src="../core/index.js"></script>
+<script src="../app/level-specs.js"></script>
+<script src="../adapter/dom-adapter.js"></script>
+<script src="../pinalign-audio.js"></script>
+<script src="../pinalign-panel.js"></script>
+<script>
+(function() {
+    var debugEl = document.getElementById("debug-log");
+
+    function log(text) {
+        debugEl.textContent = String(text);
+    }
+
+    function openPanel() {
+        Panels.init();
+        Panels.open("pinalign", {
+            mode: "dev",
+            specId: "mvp-3pin-v1",
+            masterSeed: "harness-seed",
+            debug: true
+        });
+        log("panel opened");
+
+        if (location.search.indexOf("info=1") !== -1) {
+            setTimeout(function() {
+                var infoBtn = document.querySelector('[data-action="toggle-side"]');
+                if (infoBtn) infoBtn.click();
+            }, 80);
+        }
+
+        if (location.search.indexOf("autoplay=1") !== -1) {
+            setTimeout(function() {
+                var hintBtn = document.querySelector('[data-action="hint"]');
+                if (hintBtn) hintBtn.click();
+            }, 120);
+            setTimeout(function() {
+                var hinted = Array.prototype.slice.call(document.querySelectorAll(".pinalign-tile.is-hint"));
+                if (hinted.length >= 2) {
+                    hinted[0].click();
+                    hinted[1].click();
+                    log("autoplay swap fired");
+                } else {
+                    log("autoplay hint not found");
+                }
+            }, 320);
+        }
+
+        setTimeout(function() {
+            var board = document.querySelector("[data-pa-board]");
+            var toast = document.querySelector("[data-pa-toast]");
+            var debug = document.querySelector("[data-pa-debug]");
+            var panelContent = document.getElementById("panel-content");
+            var tiles = board ? board.querySelectorAll(".pinalign-tile").length : 0;
+            var rect = board ? board.getBoundingClientRect() : null;
+            var panelRect = panelContent ? panelContent.getBoundingClientRect() : null;
+            log(JSON.stringify({
+                tiles: tiles,
+                boardWidth: rect ? Math.round(rect.width) : 0,
+                boardHeight: rect ? Math.round(rect.height) : 0,
+                panelWidth: panelRect ? Math.round(panelRect.width) : 0,
+                panelHeight: panelRect ? Math.round(panelRect.height) : 0,
+                viewportWidth: window.innerWidth || 0,
+                viewportHeight: window.innerHeight || 0,
+                dpr: window.devicePixelRatio || 1,
+                debug: debug ? debug.textContent : "",
+                toast: toast ? toast.textContent : ""
+            }, null, 2));
+        }, 900);
+    }
+
+    window.addEventListener("load", openPanel);
+})();
+</script>
+</body>
+</html>

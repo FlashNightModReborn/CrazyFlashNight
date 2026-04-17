@@ -40,6 +40,17 @@
     background:radial-gradient(ellipse at 50% 25%, rgba(0,32,44,0.72), rgba(0,0,0,0.9));
 }
 
+#panel-container[data-panel="pinalign"] #panel-content {
+    inset: 1.2% 1.4%;
+}
+
+#panel-container[data-panel="pinalign"] #panel-backdrop {
+    background:
+        radial-gradient(circle at 24% 18%, rgba(72, 118, 112, 0.3), transparent 32%),
+        radial-gradient(circle at 80% 10%, rgba(126, 88, 58, 0.22), transparent 28%),
+        rgba(3, 7, 10, 0.86);
+}
+
 /* Tooltip internal structure */
 .kshop-tt-header b { color:var(--cp-cyan); font-size:13px; }
 .kshop-tt-divider { margin:4px 0; border-top:1px solid rgba(0,240,255,0.15); }
@@ -1015,6 +1026,9 @@
 @media (max-width: 900px) {
     #panel-container[data-panel="lockbox"] #panel-content {
         inset:0.8% 1%;
+    }
+    #panel-container[data-panel="pinalign"] #panel-content {
+        inset: 0.5% 0.7%;
     }
     .lockbox-main { grid-template-columns:1fr; }
     .lockbox-help-grid { grid-template-columns:1fr; }

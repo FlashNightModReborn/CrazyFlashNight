@@ -923,6 +923,13 @@ namespace CF7Launcher.Guardian
                             LogManager.Log("[Lockbox] " + payload.ToString(Newtonsoft.Json.Formatting.None));
                     }
                     break;
+                case "pinalign_session":
+                    {
+                        JToken payload = parsed["payload"];
+                        if (payload != null)
+                            LogManager.Log("[PinAlign] " + payload.ToString(Newtonsoft.Json.Formatting.None));
+                    }
+                    break;
             }
         }
 
@@ -1022,6 +1029,11 @@ namespace CF7Launcher.Guardian
                         _activePanel = "lockbox";
                         if (_onPanelStateChanged != null) _onPanelStateChanged(true);
                     }
+                    break;
+                case "PINALIGN_TEST":
+                    PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"pinalign\",\"initData\":{\"mode\":\"dev\",\"specId\":\"mvp-3pin-v1\",\"masterSeed\":\"dev-default\",\"debug\":true}}");
+                    _activePanel = "pinalign";
+                    if (_onPanelStateChanged != null) _onPanelStateChanged(true);
                     break;
                 case "EXIT_CONFIRM": if (_onForceExit != null) _onForceExit(); break;
             }

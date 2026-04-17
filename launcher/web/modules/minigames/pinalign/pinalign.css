@@ -1,0 +1,733 @@
+:root {
+    --pa-text: #d7e2e6;
+    --pa-dim: #8ea3ad;
+    --pa-board-size: 520px;
+    --pa-board-gap: 10px;
+}
+
+.pinalign-panel {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.pinalign-panel .lockbox-title {
+    font-size: 20px;
+}
+
+.pinalign-panel .lockbox-phase-badge {
+    min-width: 88px;
+}
+
+.pinalign-panel .lockbox-main {
+    grid-template-columns: minmax(0, 1fr) minmax(252px, 300px);
+    gap: 10px;
+    overflow: hidden;
+}
+
+.pinalign-panel .lockbox-grid-pane,
+.pinalign-panel .lockbox-side-pane {
+    min-width: 0;
+}
+
+.pinalign-panel .lockbox-grid-pane {
+    gap: 8px;
+}
+
+.pinalign-panel .lockbox-quickbar {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    margin-bottom: 2px;
+}
+
+.pinalign-panel .lockbox-stage-meta {
+    margin-bottom: 0;
+}
+
+.pinalign-panel .lockbox-profile-note {
+    min-width: 0;
+    white-space: normal;
+}
+
+.pinalign-toolbar-readout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    align-items: center;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.pinalign-toolbar-chip {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    color: var(--cp-text);
+    white-space: nowrap;
+}
+
+.pinalign-toolbar-label {
+    color: var(--pa-dim);
+}
+
+.pinalign-header-action {
+    border-color: rgba(0, 240, 255, 0.14);
+}
+
+.pinalign-panel .lockbox-side-pane {
+    gap: 8px;
+}
+
+.pinalign-panel .lockbox-side-pane .lockbox-side-section {
+    min-width: 0;
+}
+
+.pinalign-panel .lockbox-chrome-btn.active {
+    background: rgba(0, 240, 255, 0.14);
+    border-color: rgba(0, 240, 255, 0.32);
+    color: var(--cp-cyan);
+}
+
+.pinalign-hud-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.pinalign-hud-card {
+    min-width: 0;
+}
+
+.pinalign-hud-card.wide {
+    grid-column: span 1;
+}
+
+.pinalign-hud-value {
+    color: var(--cp-text);
+    font-size: 14px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.pinalign-grid-shell {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    min-width: 0;
+    min-height: 0;
+    flex: 1 1 auto;
+    width: 100%;
+    padding: 4px 4px 42px;
+}
+
+.pinalign-board-wrap {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    padding: 2px;
+}
+
+.pinalign-lane-overlay {
+    position: absolute;
+    inset: 2px;
+    width: var(--pa-board-size);
+    height: var(--pa-board-size);
+    margin: auto;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.pinalign-lane-guide {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+.pinalign-lane-band,
+.pinalign-lane-center {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+.pinalign-lane-band {
+    inset: 0;
+    border-left: 1px dashed rgba(0, 240, 255, 0.18);
+    border-right: 1px dashed rgba(0, 240, 255, 0.18);
+    background: linear-gradient(180deg, rgba(0, 240, 255, 0.12), rgba(0, 240, 255, 0.03) 24%, rgba(0, 240, 255, 0.07) 76%, rgba(0, 240, 255, 0.12));
+}
+
+.pinalign-lane-center {
+    width: 3px;
+    margin-left: -1px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(0, 240, 255, 0.95), rgba(0, 240, 255, 0.24));
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+}
+
+.pinalign-lane-tag {
+    position: absolute;
+    top: 8px;
+    transform: translateX(-50%);
+    display: grid;
+    gap: 1px;
+    justify-items: center;
+    min-width: 44px;
+    padding: 4px 5px;
+    border: 1px solid rgba(0, 240, 255, 0.26);
+    background: rgba(7, 10, 16, 0.78);
+    color: var(--cp-text);
+    font-size: 10px;
+    line-height: 1.1;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.pinalign-lane-tag b {
+    color: #00f0ff;
+    font-size: 11px;
+}
+
+.pinalign-lane-guide.state-set .pinalign-lane-band,
+.pinalign-lane-guide.state-set .pinalign-lane-center,
+.pinalign-lane-guide.state-set .pinalign-lane-tag {
+    border-color: rgba(252, 238, 9, 0.38);
+    background-color: rgba(252, 238, 9, 0.08);
+}
+
+.pinalign-lane-guide.state-set .pinalign-lane-band {
+    background: linear-gradient(180deg, rgba(252, 238, 9, 0.16), rgba(252, 238, 9, 0.04) 24%, rgba(252, 238, 9, 0.09) 76%, rgba(252, 238, 9, 0.16));
+}
+
+.pinalign-lane-guide.state-set .pinalign-lane-center {
+    background: linear-gradient(180deg, rgba(252, 238, 9, 0.95), rgba(252, 238, 9, 0.24));
+    box-shadow: 0 0 10px rgba(252, 238, 9, 0.3);
+}
+
+.pinalign-lane-guide.state-set .pinalign-lane-tag b {
+    color: #fcee09;
+}
+
+.pinalign-lane-guide.state-locked .pinalign-lane-band,
+.pinalign-lane-guide.state-locked .pinalign-lane-center,
+.pinalign-lane-guide.state-locked .pinalign-lane-tag {
+    border-color: rgba(147, 255, 171, 0.36);
+    background-color: rgba(147, 255, 171, 0.08);
+}
+
+.pinalign-lane-guide.state-locked .pinalign-lane-band {
+    background: linear-gradient(180deg, rgba(147, 255, 171, 0.14), rgba(147, 255, 171, 0.04) 24%, rgba(147, 255, 171, 0.08) 76%, rgba(147, 255, 171, 0.14));
+}
+
+.pinalign-lane-guide.state-locked .pinalign-lane-center {
+    background: linear-gradient(180deg, rgba(147, 255, 171, 0.95), rgba(147, 255, 171, 0.22));
+    box-shadow: 0 0 10px rgba(147, 255, 171, 0.28);
+}
+
+.pinalign-lane-guide.state-locked .pinalign-lane-tag b {
+    color: #93ffab;
+}
+
+.pinalign-lane-guide.state-jammed .pinalign-lane-band,
+.pinalign-lane-guide.state-jammed .pinalign-lane-center,
+.pinalign-lane-guide.state-jammed .pinalign-lane-tag {
+    border-color: rgba(255, 111, 145, 0.36);
+    background-color: rgba(255, 111, 145, 0.08);
+}
+
+.pinalign-lane-guide.state-jammed .pinalign-lane-band {
+    background: linear-gradient(180deg, rgba(255, 111, 145, 0.18), rgba(255, 111, 145, 0.04) 24%, rgba(255, 111, 145, 0.08) 76%, rgba(255, 111, 145, 0.18));
+}
+
+.pinalign-lane-guide.state-jammed .pinalign-lane-center {
+    background: linear-gradient(180deg, rgba(255, 111, 145, 0.95), rgba(255, 111, 145, 0.22));
+    box-shadow: 0 0 10px rgba(255, 111, 145, 0.28);
+}
+
+.pinalign-lane-guide.state-jammed .pinalign-lane-tag b {
+    color: #ff6f91;
+}
+
+.pinalign-shell-rail {
+    display: none;
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    min-height: 0;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pinalign-shell-card {
+    min-width: 0;
+    border: 1px solid rgba(0, 240, 255, 0.14);
+    background: rgba(7, 10, 16, 0.68);
+    padding: 10px;
+}
+
+.pinalign-shell-title {
+    margin-bottom: 8px;
+    color: #fcee09;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.pinalign-shell-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.pinalign-shell-metric {
+    min-width: 0;
+    padding: 6px 8px;
+    border: 1px solid rgba(0, 240, 255, 0.08);
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.pinalign-shell-metric-label,
+.pinalign-shell-line-label,
+.pinalign-shell-pin-meta {
+    color: var(--pa-dim);
+}
+
+.pinalign-shell-metric-label {
+    font-size: 10px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.pinalign-shell-metric-value {
+    color: var(--cp-text);
+    font-size: 13px;
+    line-height: 1.35;
+    word-break: break-word;
+}
+
+.pinalign-shell-copy,
+.pinalign-shell-line,
+.pinalign-shell-pin-meta {
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.pinalign-shell-line + .pinalign-shell-line,
+.pinalign-shell-pin + .pinalign-shell-pin {
+    margin-top: 8px;
+}
+
+.pinalign-shell-pin-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 5px;
+    color: var(--cp-text);
+    font-size: 12px;
+}
+
+.pinalign-shell-pin-bar {
+    height: 6px;
+    margin-bottom: 5px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+}
+
+.pinalign-shell-pin-bar span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #00f0ff, #fcee09);
+}
+
+.pinalign-shell-pin.state-locked .pinalign-shell-pin-head b { color: #93ffab; }
+.pinalign-shell-pin.state-set .pinalign-shell-pin-head b { color: #fcee09; }
+.pinalign-shell-pin.state-jammed .pinalign-shell-pin-head b { color: #ff6f91; }
+
+.pinalign-board {
+    position: relative;
+    z-index: 1;
+    width: var(--pa-board-size);
+    height: var(--pa-board-size);
+    max-width: min(100%, var(--pa-board-size));
+    max-height: min(100%, var(--pa-board-size));
+    aspect-ratio: 1 / 1;
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: var(--pa-board-gap);
+    margin: auto;
+}
+
+.pinalign-tile {
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+    overflow: hidden;
+}
+
+.pinalign-tile:hover {
+    transform: translateY(-2px);
+    border-color: rgba(252, 238, 9, 0.42);
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.12);
+}
+
+.pinalign-tile.is-selected {
+    border-color: #fcee09;
+    box-shadow: 0 0 0 2px rgba(252, 238, 9, 0.18), 0 0 24px rgba(252, 238, 9, 0.15);
+}
+
+.pinalign-tile.is-hint {
+    border-color: #00f0ff;
+    box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.15), 0 0 24px rgba(0, 240, 255, 0.12);
+}
+
+.pinalign-tile.kind-obstacle {
+    cursor: default;
+    border-style: dashed;
+    background: rgba(54, 47, 46, 0.85);
+}
+
+.pinalign-tile.color-0 { background: linear-gradient(180deg, #5c8dcf, #25406d); }
+.pinalign-tile.color-1 { background: linear-gradient(180deg, #c96e62, #6c2c2a); }
+.pinalign-tile.color-2 { background: linear-gradient(180deg, #c4a76e, #6a4b19); }
+.pinalign-tile.color-3 { background: linear-gradient(180deg, #7bb38d, #25523e); }
+.pinalign-tile.color-4 { background: linear-gradient(180deg, #9f7cc7, #473060); }
+
+.pinalign-tile.kind-special {
+    border-color: rgba(242, 236, 170, 0.7);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.pinalign-tile-badge,
+.pinalign-tile-label {
+    position: absolute;
+    inset: auto 8px 8px auto;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: 0.04em;
+}
+
+.pinalign-tile.kind-obstacle .pinalign-tile-label {
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+}
+
+.pinalign-tile.kind-special .pinalign-tile-badge {
+    padding: 2px 5px;
+    border-radius: 999px;
+    background: rgba(15, 22, 28, 0.28);
+}
+
+.pinalign-tile-gem {
+    position: absolute;
+    inset: 16% 16%;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.12);
+}
+
+.pinalign-guide-note,
+.pinalign-toast,
+.pinalign-event-line,
+.pinalign-pin-meta,
+.pinalign-side-copy,
+.pinalign-step,
+.pinalign-debug-copy {
+    font-size: 12px;
+    color: var(--pa-dim);
+    line-height: 1.6;
+}
+
+.pinalign-guide-note {
+    display: none;
+}
+
+.pinalign-toast {
+    padding: 10px 12px;
+    border: 1px solid rgba(0, 240, 255, 0.14);
+    background: rgba(7, 10, 16, 0.88);
+}
+
+.pinalign-toast.is-overlay {
+    position: absolute;
+    left: 50%;
+    bottom: 8px;
+    z-index: 3;
+    width: min(560px, calc(100% - 24px));
+    transform: translateX(-50%);
+    pointer-events: none;
+    text-align: center;
+}
+
+.pinalign-step + .pinalign-step {
+    margin-top: 8px;
+}
+
+.pinalign-debug-copy {
+    word-break: break-word;
+}
+
+.pinalign-pin-card {
+    padding: 10px;
+    border: 1px solid rgba(0, 240, 255, 0.14);
+    margin-bottom: 10px;
+    background: rgba(7, 10, 16, 0.54);
+}
+
+.pinalign-pin-card.state-locked { border-color: rgba(157, 255, 182, 0.45); }
+.pinalign-pin-card.state-jammed { border-color: rgba(255, 111, 145, 0.48); }
+.pinalign-pin-card.state-set { border-color: rgba(252, 238, 9, 0.4); }
+
+.pinalign-pin-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.pinalign-pin-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    border-radius: 999px;
+    margin-bottom: 6px;
+}
+
+.pinalign-pin-bar span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #00f0ff, #fcee09);
+}
+
+.pinalign-event-card {
+    border-top: 1px solid rgba(0, 240, 255, 0.08);
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+.pinalign-event-head {
+    color: var(--cp-cyan);
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.pinalign-event-empty {
+    color: var(--pa-dim);
+}
+
+[data-pa-export] {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    font-size: 11px;
+    color: #c8d7db;
+}
+
+.pinalign-panel.is-tight .lockbox-main {
+    grid-template-columns: 1fr;
+    overflow: hidden;
+}
+
+.pinalign-panel.is-tight .lockbox-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    padding: 22px 12px 6px;
+}
+
+.pinalign-panel.is-tight .lockbox-title {
+    margin-top: 0;
+    font-size: 18px;
+    letter-spacing: 2px;
+}
+
+.pinalign-panel.is-tight .lockbox-kicker {
+    display: none;
+}
+
+.pinalign-panel.is-tight .lockbox-chrome-btn {
+    padding: 4px 6px;
+    font-size: 10px;
+}
+
+.pinalign-panel.is-tight .lockbox-phase-badge {
+    min-width: 70px;
+    padding: 4px 7px;
+    font-size: 10px;
+}
+
+.pinalign-panel.is-tight .lockbox-control-strip {
+    gap: 4px;
+}
+
+.pinalign-panel.is-tight .lockbox-btn-small {
+    letter-spacing: 0;
+}
+
+.pinalign-panel.is-tight .lockbox-header-right {
+    gap: 4px;
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: flex-start;
+}
+
+.pinalign-panel.is-tight .pinalign-toolbar-readout {
+    gap: 2px 8px;
+    font-size: 11px;
+    line-height: 1.25;
+}
+
+.pinalign-panel.is-tight .lockbox-stage-meta {
+    display: none;
+}
+
+.pinalign-panel.is-tight .lockbox-side-section {
+    padding: 6px 8px;
+}
+
+.pinalign-panel.is-tight .lockbox-side-title {
+    margin-bottom: 5px;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.pinalign-panel.is-tight .lockbox-side-pane {
+    position: absolute;
+    top: 4px;
+    right: 0;
+    bottom: 4px;
+    width: min(276px, calc(100% - 28px));
+    padding-left: 6px;
+    overflow: auto;
+    z-index: 5;
+    background:
+        linear-gradient(90deg, rgba(5, 8, 12, 0), rgba(5, 8, 12, 0.88) 8%, rgba(5, 8, 12, 0.96) 22%, rgba(5, 8, 12, 0.98) 100%);
+}
+
+.pinalign-panel.is-tight .lockbox-grid-pane {
+    min-height: 0;
+    overflow: auto;
+    padding-right: 2px;
+}
+
+.pinalign-panel.is-tight:not(.is-side-collapsed) .pinalign-board-wrap {
+    justify-content: flex-start;
+    padding-left: 12px;
+}
+
+.pinalign-panel.is-tight .pinalign-readout-row {
+    display: none;
+}
+
+.pinalign-panel.is-tight .pinalign-debug-section,
+.pinalign-panel.is-tight .pinalign-events-section,
+.pinalign-panel.is-tight .pinalign-export-section {
+    display: none;
+}
+
+.pinalign-panel.is-side-collapsed .lockbox-main {
+    grid-template-columns: 1fr;
+}
+
+.pinalign-panel.is-side-collapsed .lockbox-side-pane {
+    display: none;
+}
+
+.pinalign-panel.is-side-collapsed:not(.is-stacked) .pinalign-readout-row {
+    display: none;
+}
+
+.pinalign-panel.is-side-collapsed:not(.is-stacked) .lockbox-grid-pane {
+    gap: 6px;
+}
+
+.pinalign-panel.is-side-collapsed:not(.is-stacked) .pinalign-grid-shell {
+    grid-template-columns: minmax(156px, 1fr) auto minmax(182px, 1fr);
+    gap: 8px 10px;
+}
+
+.pinalign-panel.is-side-collapsed:not(.is-stacked) .pinalign-shell-rail {
+    display: flex;
+}
+
+.pinalign-panel.is-side-collapsed:not(.is-stacked) .pinalign-shell-rail.left {
+    grid-column: 1;
+}
+
+.pinalign-panel.is-side-collapsed:not(.is-stacked) .pinalign-board-wrap {
+    grid-column: 2;
+}
+
+.pinalign-panel.is-side-collapsed:not(.is-stacked) .pinalign-shell-rail.right {
+    grid-column: 3;
+}
+
+.pinalign-panel.is-tight.is-side-collapsed .lockbox-main {
+    overflow: auto;
+}
+
+.pinalign-panel.is-tight.is-side-collapsed .lockbox-header {
+    padding-bottom: 4px;
+}
+
+.pinalign-panel.is-tight.is-side-collapsed .pinalign-grid-shell {
+    grid-template-columns: minmax(142px, 1fr) auto minmax(168px, 1fr);
+    gap: 6px 8px;
+}
+
+.pinalign-panel.is-tight.is-side-collapsed .pinalign-shell-card {
+    padding: 8px;
+}
+
+.pinalign-panel.is-tight.is-side-collapsed .pinalign-shell-title {
+    margin-bottom: 6px;
+    font-size: 10px;
+}
+
+.pinalign-panel.is-tight.is-side-collapsed .pinalign-shell-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+}
+
+.pinalign-panel.is-stacked .lockbox-main {
+    grid-template-columns: 1fr;
+}
+
+.pinalign-panel.is-stacked:not(.is-side-collapsed) .lockbox-side-pane {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.pinalign-panel.is-phone .pinalign-hud-row,
+.pinalign-panel.is-phone:not(.is-side-collapsed) .lockbox-side-pane {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pinalign-panel.is-phone .pinalign-board {
+    gap: 6px;
+}
+
+.pinalign-panel.is-phone .lockbox-quickbar {
+    grid-template-columns: 1fr;
+}
+
+.pinalign-panel.is-phone .pinalign-toolbar-readout {
+    gap: 2px 6px;
+    font-size: 10px;
+}
+
+.pinalign-panel.is-phone .pinalign-header-action {
+    display: none;
+}
