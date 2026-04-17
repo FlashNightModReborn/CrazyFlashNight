@@ -14,10 +14,12 @@ var PinAlignPanel = (function() {
     var _audio = null;
     var _muted = false;
     var _resizeHandler = null;
-    var _helpOpen = false;
     var _debugEnabled = false;
-    var _sideManual = false;
-    var _sideCollapsed = false;
+    var _eventsExpanded = false;
+    var _exportExpanded = false;
+    var _flightToken = 0;
+
+    var DEFAULT_STAGE_NOTE = "先选一格，再点相邻格交换。只有直接三消会推进锁针，连带清除不算。";
 
     Panels.register("pinalign", {
         create: createDOM,
@@ -36,110 +38,69 @@ var PinAlignPanel = (function() {
                     '<div class="lockbox-title">锁芯矩阵校准</div>',
                 "</div>",
                 '<div class="lockbox-header-right">',
-                    '<button class="lockbox-chrome-btn pinalign-header-action" type="button" data-action="hint">提示</button>',
-                    '<button class="lockbox-chrome-btn pinalign-header-action" type="button" data-action="clamp">夹具</button>',
-                    '<button class="lockbox-chrome-btn pinalign-header-action" type="button" data-action="reset">重开</button>',
-                    '<button class="lockbox-chrome-btn pinalign-header-action" type="button" data-action="reroll">换种</button>',
-                    '<button class="lockbox-chrome-btn pinalign-header-action" type="button" data-action="export">导出</button>',
-                    '<button class="lockbox-chrome-btn" type="button" data-action="toggle-help">规则</button>',
-                    '<button class="lockbox-chrome-btn" type="button" data-action="toggle-side">信息</button>',
-                    '<button class="lockbox-chrome-btn" type="button" data-action="mute">静音</button>',
                     '<div class="lockbox-phase-badge" data-pa-phase>观察中</div>',
+                    '<button class="lockbox-chrome-btn" type="button" data-action="mute">静音</button>',
                     '<button class="lockbox-close-btn" type="button" data-action="close">×</button>',
-                "</div>",
-            "</div>",
-            '<div class="lockbox-help-panel" data-pa-help-panel>',
-                '<div class="lockbox-help-card">',
-                    '<div class="lockbox-help-head">',
-                        '<div>',
-                            '<div class="lockbox-help-kicker">// HOW IT WORKS //</div>',
-                            '<div class="lockbox-help-title">玩法说明</div>',
-                        "</div>",
-                        '<button class="lockbox-chrome-btn" type="button" data-action="toggle-help">关闭</button>',
-                    "</div>",
-                    '<div class="lockbox-help-grid">',
-                        '<div class="lockbox-help-item"><b>1.</b> 每根锁针都有自己的“主列”和“影响列”，只吃这些列里的直接匹配信号。</div>',
-                        '<div class="lockbox-help-item"><b>2.</b> 主列信号最强，邻列是弱信号；同一次结算里要累计够阈值，锁针才会升 1 格。</div>',
-                        '<div class="lockbox-help-item"><b>3.</b> 只有直接三消出来的格子算 Signal；特殊块和连带清除都是 Effect，只清盘不抬针。</div>',
-                        '<div class="lockbox-help-item"><b>4.</b> 锁针升到目标后会先进入“待锁定”，等这一步全部结算完才正式锁定。</div>',
-                        '<div class="lockbox-help-item"><b>5.</b> 同一手里再次把“待锁定”锁针打到信号，会过调卡死，并额外扣 1 点警报。</div>',
-                        '<div class="lockbox-help-item emphasis">建议验证顺序：先做一次提示交换看推进，再故意做一次非法交换，最后测试一次过调。</div>',
-                    "</div>",
-                    '<div class="lockbox-help-actions">',
-                        '<button type="button" class="lockbox-btn lockbox-btn-primary" data-action="toggle-help">开始测试</button>',
-                    "</div>",
                 "</div>",
             "</div>",
             '<div class="lockbox-main">',
                 '<div class="lockbox-grid-pane">',
-                    '<div class="lockbox-stage-meta">',
-                        '<div data-pa-stage-status>目标：让全部锁针进入“已锁定”。</div>',
-                        '<div data-pa-stage-hint>先用提示交换验证推进，再故意做一次非法交换和一次过调测试。</div>',
+                    '<div class="lockbox-quickbar pinalign-toolbar-readout">',
+                        '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">种子</span><span data-pa-seed>dev-default</span></span>',
+                        '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">警报</span><span data-pa-alert>16</span></span>',
+                        '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">夹具</span><span data-pa-clamp>44%</span></span>',
+                        '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">手数</span><span data-pa-moves>0</span></span>',
                     "</div>",
-                    '<div class="lockbox-quickbar pinalign-readout-row">',
-                        '<div class="lockbox-profile-note pinalign-toolbar-readout" data-pa-seed-note>',
-                            '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">种子</span><span data-pa-seed>dev-default</span></span>',
-                            '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">警报</span><span data-pa-alert>16</span></span>',
-                            '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">夹具</span><span data-pa-clamp>44%</span></span>',
-                            '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">状态</span><span data-pa-status>等待操作</span></span>',
-                        "</div>",
-                    "</div>",
+                    '<div class="pinalign-stage-note" data-pa-stage-note>' + DEFAULT_STAGE_NOTE + "</div>",
                     '<div class="lockbox-grid-shell pinalign-grid-shell" data-pa-board-shell>',
                         '<div class="lockbox-trace-frame"></div>',
-                        '<div class="pinalign-shell-rail left" data-pa-shell-left>',
-                            '<section class="pinalign-shell-card pinalign-shell-card-summary">',
-                                '<div class="pinalign-shell-title">当前读数</div>',
-                                '<div class="pinalign-shell-metric-grid" data-pa-shell-summary></div>',
-                            "</section>",
-                            '<section class="pinalign-shell-card">',
-                                '<div class="pinalign-shell-title">当前建议</div>',
-                                '<div class="pinalign-shell-copy" data-pa-shell-guide></div>',
-                            "</section>",
-                        "</div>",
-                        '<div class="pinalign-board-wrap">',
-                            '<div class="pinalign-lane-overlay" data-pa-lane-overlay></div>',
+                        '<div class="pinalign-board-area">',
                             '<div class="pinalign-board" data-pa-board></div>',
+                            '<div class="pinalign-flight-layer" data-pa-flight-layer aria-hidden="true"></div>',
+                            '<div class="pinalign-preview-layer" data-pa-preview-layer aria-hidden="true"></div>',
                         "</div>",
-                        '<div class="pinalign-shell-rail right" data-pa-shell-right>',
-                            '<section class="pinalign-shell-card">',
-                                '<div class="pinalign-shell-title">锁针速览</div>',
-                                '<div data-pa-shell-pins></div>',
-                            "</section>",
-                        "</div>",
-                        '<div class="pinalign-toast is-overlay" data-pa-toast></div>',
+                        '<div class="pinalign-lane-belt" data-pa-lane-belt aria-hidden="true"></div>',
                     "</div>",
-                    '<div class="pinalign-guide-note" data-pa-hint hidden></div>',
-                    '<div class="pinalign-guide-note" data-pa-meta hidden></div>',
                 "</div>",
                 '<div class="lockbox-side-pane">',
-                    '<section class="lockbox-side-section pinalign-debug-section" data-pa-debug-wrap>',
-                        '<div class="lockbox-side-title">宿主尺寸</div>',
-                        '<div class="pinalign-debug-copy" data-pa-debug></div>',
-                    "</section>",
-                    '<section class="lockbox-side-section pinalign-resolution-section">',
-                        '<div class="lockbox-side-title">本手说明</div>',
-                        '<div class="pinalign-side-copy" data-pa-resolution></div>',
-                    "</section>",
-                    '<section class="lockbox-side-section pinalign-steps-section">',
-                        '<div class="lockbox-side-title">玩法说明</div>',
-                        '<div class="pinalign-side-copy">',
-                            '<div class="pinalign-step"><b>1.</b> 先看每根锁针卡上的“影响列 / 主列”，确认它吃哪几列。</div>',
-                            '<div class="pinalign-step"><b>2.</b> 只有直接匹配格子算 Signal；特殊块和波及清除不推进锁针。</div>',
-                            '<div class="pinalign-step"><b>3.</b> 同一次结算里累计够信号阈值，锁针才会抬升 1 格。</div>',
-                            '<div class="pinalign-step"><b>4.</b> 到目标先变“待锁定”，本手结束时才锁定；同手再吃信号会过调卡死。</div>',
-                        "</div>",
-                    "</section>",
                     '<section class="lockbox-side-section pinalign-pins-section">',
                         '<div class="lockbox-side-title">锁针状态</div>',
                         '<div data-pa-pins></div>',
                     "</section>",
+                    '<section class="lockbox-side-section pinalign-rules-section">',
+                        '<div class="lockbox-side-title">规则速览</div>',
+                        '<div class="pinalign-side-copy">',
+                            '<div class="pinalign-step"><b>1.</b> 每根锁针有主列和邻列，棋盘底部色带显示哪列属于谁、影响多大。</div>',
+                            '<div class="pinalign-step"><b>2.</b> 直接三消格子 = Signal，本手累计够阈值，锁针才抬 1 格。</div>',
+                            '<div class="pinalign-step"><b>3.</b> 特殊块和波及清除 = Effect，只清盘，不推进锁针。</div>',
+                            '<div class="pinalign-step"><b>4.</b> 抬到目标先变“待锁定”，本手末才正式锁定；同手再吃信号会过调卡死。</div>',
+                        "</div>",
+                    "</section>",
+                    '<section class="lockbox-side-section pinalign-console-section">',
+                        '<div class="lockbox-side-title">控制台</div>',
+                        '<div class="pinalign-console-grid">',
+                            '<button class="lockbox-chrome-btn" type="button" data-action="hint">提示</button>',
+                            '<button class="lockbox-chrome-btn" type="button" data-action="clamp">夹具</button>',
+                            '<button class="lockbox-chrome-btn" type="button" data-action="reset">重开</button>',
+                            '<button class="lockbox-chrome-btn" type="button" data-action="reroll">换种</button>',
+                            '<button class="lockbox-chrome-btn" type="button" data-action="export">导出</button>',
+                        "</div>",
+                    "</section>",
                     '<section class="lockbox-side-section pinalign-events-section">',
-                        '<div class="lockbox-side-title">最近结算</div>',
-                        '<div data-pa-events></div>',
+                        '<button class="lockbox-side-title lockbox-side-title-toggle" type="button" data-action="toggle-events" data-pa-events-toggle>最近结算 ▸</button>',
+                        '<div class="pinalign-collapsible" data-pa-events-body hidden>',
+                            '<div data-pa-events></div>',
+                        "</div>",
                     "</section>",
                     '<section class="lockbox-side-section pinalign-export-section">',
-                        '<div class="lockbox-side-title">回放导出</div>',
-                        '<pre data-pa-export></pre>',
+                        '<button class="lockbox-side-title lockbox-side-title-toggle" type="button" data-action="toggle-export" data-pa-export-toggle>回放导出 ▸</button>',
+                        '<div class="pinalign-collapsible" data-pa-export-body hidden>',
+                            '<pre data-pa-export></pre>',
+                        "</div>",
+                    "</section>",
+                    '<section class="lockbox-side-section pinalign-debug-section" data-pa-debug-wrap>',
+                        '<div class="lockbox-side-title">调试</div>',
+                        '<div class="pinalign-debug-copy" data-pa-debug></div>',
                     "</section>",
                 "</div>",
             "</div>"
@@ -162,8 +123,8 @@ var PinAlignPanel = (function() {
         _audio = PinAlignAudio && PinAlignAudio.create ? PinAlignAudio.create() : null;
         _debugEnabled = !!data.debug;
         _muted = false;
-        _sideManual = false;
-        _sideCollapsed = false;
+        _eventsExpanded = false;
+        _exportExpanded = false;
         if (_audio && _audio.setMuted) _audio.setMuted(_muted);
         if (!_resizeHandler) {
             _resizeHandler = function() { render(); };
@@ -185,10 +146,9 @@ var PinAlignPanel = (function() {
         _state = PinAlignCore.createState(_spec, _seed);
         _selected = null;
         _hint = PinAlignCore.getHint(_state);
-        _toast = "先点一个格子，再点相邻格交换。只有直接三消会推进锁针，连带清除不算。";
+        _toast = DEFAULT_STAGE_NOTE;
         _lastResult = null;
         _lastReplay = null;
-        _helpOpen = false;
         render();
     }
 
@@ -199,9 +159,8 @@ var PinAlignPanel = (function() {
         _toast = "";
         _lastResult = null;
         _lastReplay = null;
-        _helpOpen = false;
-        _sideManual = false;
-        _sideCollapsed = false;
+        _eventsExpanded = false;
+        _exportExpanded = false;
         _state = null;
         _spec = null;
         _audio = null;
@@ -226,13 +185,13 @@ var PinAlignPanel = (function() {
 
     function onAction(event) {
         var action = event.currentTarget.getAttribute("data-action");
-        if (action === "toggle-help") {
-            _helpOpen = !_helpOpen;
+        if (action === "toggle-events") {
+            _eventsExpanded = !_eventsExpanded;
             render();
             return;
         }
-        if (action === "toggle-side") {
-            toggleSidePane();
+        if (action === "toggle-export") {
+            _exportExpanded = !_exportExpanded;
             render();
             return;
         }
@@ -273,26 +232,6 @@ var PinAlignPanel = (function() {
         }
     }
 
-    function toggleSidePane() {
-        var autoCollapsed = getAutoSideCollapse();
-        if (!_sideManual) {
-            _sideCollapsed = !autoCollapsed;
-        } else {
-            _sideCollapsed = !_sideCollapsed;
-        }
-        _sideManual = true;
-    }
-
-    function getAutoSideCollapse() {
-        var width = _refs && _refs.root ? _refs.root.clientWidth : (window.innerWidth || 1280);
-        return width < 1180;
-    }
-
-    function getSideCollapsed() {
-        if (_sideManual) return _sideCollapsed;
-        return getAutoSideCollapse();
-    }
-
     function onTileClick(pos) {
         if (!_state || _state.status !== "ongoing") return;
         if (!_selected) {
@@ -319,6 +258,7 @@ var PinAlignPanel = (function() {
         _lastResult = result;
         _hint = result.hint || PinAlignCore.getHint(_state);
         _selected = null;
+        if (result.valid) _flightToken += 1;
         if (!result.valid) {
             _toast = "非法交换：" + describeSwapBlock(result.reason);
             if (_audio) _audio.tick();
@@ -351,24 +291,19 @@ var PinAlignPanel = (function() {
             lastResult: _lastResult,
             lastReplay: _lastReplay,
             onTileClick: onTileClick,
-            sideCollapsed: getSideCollapsed(),
+            eventsExpanded: _eventsExpanded,
+            exportExpanded: _exportExpanded,
+            flightToken: String(_flightToken),
             debug: _debugEnabled
         });
     }
 
     function syncChrome() {
-        var sideCollapsed = getSideCollapsed();
-        if (_refs.helpPanel) _refs.helpPanel.classList.toggle("visible", _helpOpen);
         if (_refs.phaseBadge) _refs.phaseBadge.textContent = describePhaseLabel();
         if (_refs.root) {
             _refs.root.setAttribute("data-phase", describePhaseToken());
             _refs.root.setAttribute("data-trace-state", describeTraceToken());
-            _refs.root.classList.toggle("is-side-collapsed", sideCollapsed);
             _refs.root.classList.toggle("is-debug", _debugEnabled);
-        }
-        if (_refs.sideToggle) {
-            _refs.sideToggle.textContent = sideCollapsed ? "信息" : "收起信息";
-            _refs.sideToggle.classList.toggle("active", !sideCollapsed);
         }
         if (_refs.muteButton) {
             _refs.muteButton.textContent = _muted ? "开音" : "静音";

@@ -12,50 +12,156 @@
             root: root,
             board: root.querySelector("[data-pa-board]"),
             boardShell: root.querySelector("[data-pa-board-shell]"),
-            laneOverlay: root.querySelector("[data-pa-lane-overlay]"),
-            shellSummary: root.querySelector("[data-pa-shell-summary]"),
-            shellGuide: root.querySelector("[data-pa-shell-guide]"),
-            shellPins: root.querySelector("[data-pa-shell-pins]"),
+            boardArea: root.querySelector(".pinalign-board-area"),
+            laneBelt: root.querySelector("[data-pa-lane-belt]"),
+            flightLayer: root.querySelector("[data-pa-flight-layer]"),
+            previewLayer: root.querySelector("[data-pa-preview-layer]"),
             phaseBadge: root.querySelector("[data-pa-phase]"),
-            helpPanel: root.querySelector("[data-pa-help-panel]"),
             seed: root.querySelector("[data-pa-seed]"),
             alert: root.querySelector("[data-pa-alert]"),
             clamp: root.querySelector("[data-pa-clamp]"),
-            status: root.querySelector("[data-pa-status]"),
-            hint: root.querySelector("[data-pa-hint]"),
-            toast: root.querySelector("[data-pa-toast]"),
+            moves: root.querySelector("[data-pa-moves]"),
+            stageNote: root.querySelector("[data-pa-stage-note]"),
             pins: root.querySelector("[data-pa-pins]"),
             events: root.querySelector("[data-pa-events]"),
-            resolution: root.querySelector("[data-pa-resolution]"),
-            meta: root.querySelector("[data-pa-meta]"),
+            eventsToggle: root.querySelector("[data-pa-events-toggle]"),
+            eventsBody: root.querySelector("[data-pa-events-body]"),
             export: root.querySelector("[data-pa-export]"),
+            exportToggle: root.querySelector("[data-pa-export-toggle]"),
+            exportBody: root.querySelector("[data-pa-export-body]"),
             debug: root.querySelector("[data-pa-debug]"),
             debugWrap: root.querySelector("[data-pa-debug-wrap]"),
-            muteButton: root.querySelector('[data-action="mute"]'),
-            sideToggle: root.querySelector('[data-action="toggle-side"]'),
-            stageStatus: root.querySelector("[data-pa-stage-status]"),
-            stageHint: root.querySelector("[data-pa-stage-hint]"),
-            seedNote: root.querySelector("[data-pa-seed-note]")
+            muteButton: root.querySelector('[data-action="mute"]')
         };
     }
 
-    function sync(refs, state, viewModel) {
-        var layoutInfo = fitBoard(refs, viewModel);
-        renderBoard(refs.board, state, viewModel);
-        renderLaneOverlay(refs.laneOverlay, state);
-        renderHud(refs, state, viewModel, layoutInfo);
-        renderShellSummary(refs, state, viewModel);
-        renderShellPins(refs.shellPins, state);
-        renderPins(refs.pins, state);
-        renderResolution(refs.resolution, state, viewModel.lastResult);
-        renderEvents(refs.events, viewModel.lastResult);
-        renderExport(refs.export, viewModel.lastReplay);
-        renderButtons(refs, viewModel);
-        renderDebug(refs, state, viewModel, layoutInfo);
-        setToast(refs, viewModel.toast || "");
+    var PIN_COLORS = ["#4ed7ff", "#fcd34d", "#c084fc", "#f472b6", "#34d399"];
+
+    function pinColor(index) {
+        return PIN_COLORS[index % PIN_COLORS.length];
     }
 
-    function fitBoard(refs, viewModel) {
+    function sync(refs, state, viewModel) {
+        var layoutInfo = fitBoard(refs);
+        renderBoard(refs.board, state, viewModel);
+        renderLaneBelt(refs.laneBelt, state);
+        renderHud(refs, state);
+        renderPins(refs.pins, state, viewModel);
+        renderEvents(refs.events, viewModel.lastResult);
+        renderExport(refs.export, viewModel.lastReplay);
+        renderCollapsible(refs, viewModel);
+        renderDebug(refs, state, viewModel, layoutInfo);
+        renderPreview(refs, state, viewModel);
+        renderFlight(refs, viewModel);
+        setStageNote(refs, viewModel.toast || "");
+    }
+
+    function renderFlight(refs, viewModel) {
+        if (!refs.flightLayer) return;
+        refs.flightLayer.innerHTML = "";
+        var result = viewModel.lastResult;
+        if (!result || !result.valid || !result.events || !result.events.length) return;
+        if (viewModel.flightToken === refs.flightLayer.dataset.token) return;
+        refs.flightLayer.dataset.token = viewModel.flightToken || String(Date.now());
+        var frag = "";
+        var e;
+        var s;
+        for (e = 0; e < result.events.length; e += 1) {
+            var event = result.events[e];
+            for (s = 0; s < event.signalTiles.length; s += 1) {
+                frag += buildFlightCell(event.signalTiles[s], "is-signal", e * 40);
+            }
+            for (s = 0; s < event.effectTiles.length; s += 1) {
+                frag += buildFlightCell(event.effectTiles[s], "is-effect", e * 40 + 80);
+            }
+        }
+        refs.flightLayer.innerHTML = frag;
+    }
+
+    function buildFlightCell(tile, modifier, delayMs) {
+        if (!tile) return "";
+        return [
+            '<div class="pinalign-flight-cell ', modifier,
+            '" style="grid-column:', (tile.col + 1),
+            '; grid-row:', (tile.row + 1),
+            '; animation-delay:', (delayMs || 0), 'ms;"></div>'
+        ].join("");
+    }
+
+    function renderLaneBelt(container, state) {
+        if (!container) return;
+        var cols = state.spec.cols;
+        var html = "";
+        var c;
+        var p;
+        for (c = 0; c < cols; c += 1) {
+            html += '<div class="pinalign-belt-col" data-col="' + c + '">';
+            for (p = 0; p < state.pins.length; p += 1) {
+                var pin = state.pins[p];
+                var w = getLaneWeight(state.spec, pin, c);
+                if (w > 0) {
+                    var alpha = Math.max(0.14, Math.min(1, w));
+                    html += [
+                        '<div class="pinalign-belt-cell state-', escapeHtml(pin.state),
+                        '" style="background:', pinColor(p),
+                        '; opacity:', alpha.toFixed(2),
+                        ';" title="', escapeHtml(describePinId(pin.id) + " 权重 " + w.toFixed(2) + "（列 " + (c + 1) + "）"),
+                        '"></div>'
+                    ].join("");
+                } else {
+                    html += '<div class="pinalign-belt-cell is-empty"></div>';
+                }
+            }
+            html += "</div>";
+        }
+        container.innerHTML = html;
+    }
+
+    function renderPreview(refs, state, viewModel) {
+        if (!refs.previewLayer) return;
+        refs.previewLayer.innerHTML = "";
+        if (!viewModel.selected || state.status !== "ongoing") return;
+        if (typeof PinAlignCore === "undefined" || !PinAlignCore.previewSwap) return;
+        var sel = viewModel.selected;
+        var deltas = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+        var i;
+        var frag = "";
+        for (i = 0; i < deltas.length; i += 1) {
+            var r = sel.row + deltas[i][0];
+            var c = sel.col + deltas[i][1];
+            if (r < 0 || c < 0 || r >= state.spec.rows || c >= state.spec.cols) continue;
+            var preview = PinAlignCore.previewSwap(state, sel, { row: r, col: c });
+            frag += buildPreviewMarker(state, r, c, preview);
+        }
+        refs.previewLayer.innerHTML = frag;
+    }
+
+    function buildPreviewMarker(state, row, col, preview) {
+        var modifier = "is-valid";
+        var badge = "";
+        if (!preview.valid) {
+            modifier = "is-invalid";
+            badge = "✕";
+        } else if (preview.wouldOvershoot) {
+            modifier = "is-warn";
+            badge = "⚠";
+        } else if (preview.wouldAdvance) {
+            modifier = "is-advance";
+            badge = "+" + preview.signalTiles.length;
+        } else {
+            modifier = "is-neutral";
+            badge = "~" + preview.signalTiles.length;
+        }
+        return [
+            '<div class="pinalign-preview-cell ', modifier,
+            '" style="grid-column:', (col + 1),
+            '; grid-row:', (row + 1), ';">',
+                '<span class="pinalign-preview-badge">', escapeHtml(badge), "</span>",
+            "</div>"
+        ].join("");
+    }
+
+    function fitBoard(refs) {
         var rootWidth = refs.root ? Math.max(refs.root.clientWidth || 0, 0) : 0;
         var rootHeight = refs.root ? Math.max(refs.root.clientHeight || 0, 0) : 0;
         var viewportWidth = window.innerWidth || rootWidth || 1280;
@@ -64,17 +170,9 @@
         if (!rootHeight) rootHeight = viewportHeight;
 
         var stacked = rootWidth < 920;
-        var tight = rootWidth < 1180;
-        var phone = rootWidth < 760;
-        var sideCollapsed = !!viewModel.sideCollapsed;
-
         if (refs.root) {
             refs.root.classList.toggle("is-stacked", stacked);
-            refs.root.classList.toggle("is-tight", tight && !stacked);
-            refs.root.classList.toggle("is-phone", phone);
-            refs.root.classList.toggle("is-side-collapsed", sideCollapsed);
-            refs.root.setAttribute("data-layout", stacked ? "stacked" : (tight ? "tight" : "wide"));
-            refs.root.setAttribute("data-side", sideCollapsed ? "collapsed" : "open");
+            refs.root.setAttribute("data-layout", stacked ? "stacked" : "wide");
         }
 
         if (!refs.board || !refs.boardShell) {
@@ -85,36 +183,23 @@
                 viewportHeight: viewportHeight,
                 boardShellWidth: 0,
                 boardSize: 0,
-                stacked: stacked,
-                tight: tight,
-                phone: phone,
-                sideCollapsed: sideCollapsed
+                stacked: stacked
             };
         }
 
-        var shellWidth = Math.max(0, refs.boardShell.clientWidth - (phone ? 12 : 18));
-        var shortHeight = rootHeight < 620;
-        var sizeByWidth = stacked ? 620 : (sideCollapsed ? 620 : (tight ? 520 : 600));
-        var rootRect = refs.root.getBoundingClientRect ? refs.root.getBoundingClientRect() : null;
-        var shellRect = refs.boardShell.getBoundingClientRect ? refs.boardShell.getBoundingClientRect() : null;
-        var topOffset = rootRect && shellRect ? Math.max(0, shellRect.top - rootRect.top) : 0;
-        var footerReserve = measureBlockHeight(refs.hint) + measureBlockHeight(refs.meta) + 12;
-        var derivedHeight = Math.max(0, rootHeight - topOffset - footerReserve);
-        var ratioHeight = Math.floor(rootHeight * (stacked ? (shortHeight ? 0.58 : 0.64) : (sideCollapsed ? (shortHeight ? 0.76 : 0.84) : (shortHeight ? 0.68 : 0.76))));
-        var viewportHeightCap = Math.floor(viewportHeight * (stacked ? (shortHeight ? 0.64 : 0.72) : (sideCollapsed ? (shortHeight ? 0.8 : 0.9) : (shortHeight ? 0.72 : 0.82))));
-        var sizeByHeight = Math.floor(Math.min(Math.max(derivedHeight, ratioHeight), viewportHeightCap));
-        var size = Math.floor(Math.min(shellWidth, sizeByWidth, sizeByHeight));
-
-        if (!size || size < 260) {
-            size = Math.floor(Math.min(Math.max(shellWidth, 260), sizeByWidth));
-        }
-        size = clamp(size, 260, 620);
+        var shellWidth = Math.max(0, refs.boardShell.clientWidth - 16);
+        var beltReserve = 30;
+        var shellHeight = Math.max(0, refs.boardShell.clientHeight - 16 - beltReserve);
+        var fallbackHeight = Math.floor(rootHeight * (stacked ? 0.52 : 0.68));
+        var heightBudget = shellHeight > 220 ? shellHeight : fallbackHeight;
+        var size = Math.floor(Math.min(shellWidth, heightBudget, 560));
+        if (size < 260) size = Math.min(shellWidth, 260);
+        size = clamp(size, 260, 560);
 
         refs.root.style.setProperty("--pa-board-size", size + "px");
         refs.root.style.setProperty("--pa-board-gap", size < 320 ? "6px" : (size < 430 ? "8px" : "10px"));
         refs.board.style.width = size + "px";
         refs.board.style.height = size + "px";
-        refs.boardShell.style.minHeight = (size + 18) + "px";
 
         return {
             rootWidth: rootWidth,
@@ -123,10 +208,7 @@
             viewportHeight: viewportHeight,
             boardShellWidth: shellWidth,
             boardSize: size,
-            stacked: stacked,
-            tight: tight,
-            phone: phone,
-            sideCollapsed: sideCollapsed
+            stacked: stacked
         };
     }
 
@@ -150,15 +232,6 @@
                 }
                 container.appendChild(btn);
             }
-        }
-    }
-
-    function renderLaneOverlay(container, state) {
-        if (!container) return;
-        container.innerHTML = "";
-        var i;
-        for (i = 0; i < state.pins.length; i += 1) {
-            container.insertAdjacentHTML("beforeend", buildLaneGuide(state.spec, state.pins[i]));
         }
     }
 
@@ -196,77 +269,97 @@
         return (hint.from.row === row && hint.from.col === col) || (hint.to.row === row && hint.to.col === col);
     }
 
-    function renderHud(refs, state, viewModel, layoutInfo) {
+    function renderHud(refs, state) {
         if (refs.seed) refs.seed.textContent = state.masterSeed;
         if (refs.alert) refs.alert.textContent = String(state.alertRemaining);
         if (refs.clamp) refs.clamp.textContent = String(state.clampCharge) + "%";
-        if (refs.status) refs.status.textContent = describeStatus(state);
-        if (refs.hint) refs.hint.textContent = describeHint(viewModel.hint);
-        if (refs.meta) {
-            refs.meta.textContent = [
-                "第 " + state.moveIndex + " 手",
-                "有效推进 " + state.telemetry.productiveSwaps + "/" + state.telemetry.legalSwaps,
-                "卡针 " + state.telemetry.jamCount,
-                "布局 " + describeLayout(layoutInfo)
-            ].join(" | ");
-        }
-        if (refs.stageStatus) refs.stageStatus.textContent = describeStageStatus(state, viewModel.lastResult);
-        if (refs.stageHint) refs.stageHint.textContent = describeStageHint(state, viewModel.hint, layoutInfo);
-        if (refs.seedNote) refs.seedNote.setAttribute("data-summary", "种子 " + state.masterSeed + " | 警报 " + state.alertRemaining + " | 夹具 " + state.clampCharge + "% | 状态 " + describeStatus(state));
+        if (refs.moves) refs.moves.textContent = String(state.moveIndex || 0);
     }
 
-    function renderPins(container, state) {
+    function renderPins(container, state, viewModel) {
         if (!container) return;
         container.innerHTML = "";
+        var preview = bestPreviewForSelection(state, viewModel);
         var i;
         for (i = 0; i < state.pins.length; i += 1) {
             var pin = state.pins[i];
             var ratio = pin.targetHeight > 0 ? (pin.currentHeight / pin.targetHeight) * 100 : 0;
             var card = document.createElement("div");
             card.className = "pinalign-pin-card state-" + pin.state;
+            card.style.borderLeft = "3px solid " + pinColor(i);
+            var contrib = preview ? findPinContribution(preview, pin.id) : null;
             card.innerHTML = [
                 '<div class="pinalign-pin-head">',
-                    '<span class="pinalign-pin-id">', escapeHtml(describePinId(pin.id)), "</span>",
+                    '<span class="pinalign-pin-id" style="color:', pinColor(i), ';">', escapeHtml(describePinId(pin.id)), "</span>",
                     '<span class="pinalign-pin-state">', escapeHtml(describePinState(pin.state)), "</span>",
                 "</div>",
-                '<div class="pinalign-pin-bar"><span style="width:', Math.round(ratio), '%"></span></div>',
-                '<div class="pinalign-pin-meta">', escapeHtml(describePinLane(state.spec, pin)), " | 高度 ", String(pin.currentHeight), "/", String(pin.targetHeight), "</div>"
+                '<div class="pinalign-pin-bar"><span style="width:', Math.round(ratio), '%; background:', pinColor(i), ';"></span></div>',
+                '<div class="pinalign-pin-meta">', escapeHtml(describePinLane(state.spec, pin)), " | 高度 ", String(pin.currentHeight), "/", String(pin.targetHeight), "</div>",
+                buildPinAccumulator(state.spec, pin, contrib)
             ].join("");
             container.appendChild(card);
         }
     }
 
-    function renderShellSummary(refs, state, viewModel) {
-        if (refs.shellSummary) {
-            refs.shellSummary.innerHTML = [
-                buildShellMetric("种子", state.masterSeed),
-                buildShellMetric("警报", String(state.alertRemaining)),
-                buildShellMetric("夹具", String(state.clampCharge) + "%"),
-                buildShellMetric("状态", describeStatus(state))
-            ].join("");
+    function buildPinAccumulator(spec, pin, contrib) {
+        var threshold = spec.lane.threshold;
+        var step = 0.5;
+        var dots = Math.max(3, Math.ceil(threshold / step));
+        var weight = contrib ? contrib.weight : 0;
+        var filled = Math.min(dots, Math.round(weight / step));
+        var cls = "pinalign-pin-accum";
+        var label = contrib ? ("预览贡献 " + weight.toFixed(2) + " / " + threshold.toFixed(2)) : "本手尚无信号";
+        var tone = "";
+        if (contrib && contrib.wouldOvershoot) { cls += " is-warn"; tone = "（过调风险）"; }
+        else if (contrib && contrib.guardedByClamp) { cls += " is-guarded"; tone = "（夹具保护）"; }
+        else if (contrib && contrib.wouldAdvance) { cls += " is-advance"; tone = "（将抬 1 格）"; }
+        var out = ['<div class="', cls, '">'];
+        out.push('<div class="pinalign-pin-accum-label">', escapeHtml(label + tone), "</div>");
+        out.push('<div class="pinalign-pin-accum-dots">');
+        var d;
+        for (d = 0; d < dots; d += 1) {
+            var state = d < filled ? "on" : "off";
+            out.push('<span class="pa-dot pa-dot-', state, '"></span>');
         }
-
-        if (refs.shellGuide) {
-            refs.shellGuide.innerHTML = [
-                buildShellLine("下一步", describeGuideStep(state, viewModel)),
-                buildShellLine("锁针规则", "棋盘竖色带就是影响列；主列强、邻列弱，同一步累计够才推进 1 格。"),
-                buildShellLine("当前提示", describeHint(viewModel.hint))
-            ].join("");
-        }
+        out.push("</div></div>");
+        return out.join("");
     }
 
-    function renderShellPins(container, state) {
-        if (!container) return;
-        container.innerHTML = "";
+    function findPinContribution(preview, pinId) {
+        if (!preview || !preview.pinContributions) return null;
         var i;
-        for (i = 0; i < state.pins.length; i += 1) {
-            container.insertAdjacentHTML("beforeend", buildShellPin(state.spec, state.pins[i]));
+        for (i = 0; i < preview.pinContributions.length; i += 1) {
+            if (preview.pinContributions[i].pinId === pinId) return preview.pinContributions[i];
         }
+        return null;
     }
 
-    function renderResolution(container, state, lastResult) {
-        if (!container) return;
-        container.innerHTML = describeResolution(state, lastResult);
+    function bestPreviewForSelection(state, viewModel) {
+        if (!viewModel || !viewModel.selected) return null;
+        if (state.status !== "ongoing") return null;
+        if (typeof PinAlignCore === "undefined" || !PinAlignCore.previewSwap) return null;
+        var sel = viewModel.selected;
+        var deltas = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+        var best = null;
+        var i;
+        for (i = 0; i < deltas.length; i += 1) {
+            var r = sel.row + deltas[i][0];
+            var c = sel.col + deltas[i][1];
+            if (r < 0 || c < 0 || r >= state.spec.rows || c >= state.spec.cols) continue;
+            var p = PinAlignCore.previewSwap(state, sel, { row: r, col: c });
+            if (!p.valid) continue;
+            if (!best) { best = p; continue; }
+            if (scorePreview(p) > scorePreview(best)) best = p;
+        }
+        return best;
+    }
+
+    function scorePreview(p) {
+        var s = 0;
+        if (p.wouldAdvance) s += 10;
+        if (p.wouldOvershoot) s -= 5;
+        s += p.signalTiles.length;
+        return s;
     }
 
     function renderEvents(container, lastResult) {
@@ -302,9 +395,21 @@
         container.textContent = text.length > 600 ? text.slice(0, 600) + "\n..." : text;
     }
 
-    function renderButtons(refs, viewModel) {
-        if (refs.muteButton) refs.muteButton.textContent = viewModel.muted ? "开音" : "静音";
-        if (refs.sideToggle) refs.sideToggle.textContent = viewModel.sideCollapsed ? "信息" : "收起信息";
+    function renderCollapsible(refs, viewModel) {
+        if (refs.eventsBody) {
+            refs.eventsBody.hidden = !viewModel.eventsExpanded;
+        }
+        if (refs.eventsToggle) {
+            refs.eventsToggle.textContent = "最近结算 " + (viewModel.eventsExpanded ? "▾" : "▸");
+            refs.eventsToggle.classList.toggle("is-open", !!viewModel.eventsExpanded);
+        }
+        if (refs.exportBody) {
+            refs.exportBody.hidden = !viewModel.exportExpanded;
+        }
+        if (refs.exportToggle) {
+            refs.exportToggle.textContent = "回放导出 " + (viewModel.exportExpanded ? "▾" : "▸");
+            refs.exportToggle.classList.toggle("is-open", !!viewModel.exportExpanded);
+        }
     }
 
     function renderDebug(refs, state, viewModel, layoutInfo) {
@@ -316,51 +421,17 @@
             "棋盘壳 " + layoutInfo.boardShellWidth + "px",
             "棋盘 " + layoutInfo.boardSize + "px",
             "DPR " + formatNumber(window.devicePixelRatio || 1),
-            "布局 " + describeLayout(layoutInfo),
-            "状态 " + state.status
+            "布局 " + (layoutInfo.stacked ? "单列" : "双列"),
+            "状态 " + state.status,
+            "手数 " + state.moveIndex,
+            "有效/合法 " + state.telemetry.productiveSwaps + "/" + state.telemetry.legalSwaps,
+            "卡针 " + state.telemetry.jamCount
         ].join(" | ");
     }
 
-    function setToast(refs, text) {
-        if (!refs.toast) return;
-        refs.toast.textContent = text || "";
-        refs.toast.style.opacity = text ? "1" : "0.55";
-    }
-
-    function describeStatus(state) {
-        if (state.status === "win") return "全部锁针已锁定";
-        if (state.status === "fail") return "校准失败";
-        if (state.clampArmed) return "夹具待命";
-        if (state.clampActiveThisMove) return "夹具生效中";
-        return "等待操作";
-    }
-
-    function describeStageStatus(state, lastResult) {
-        if (state.status === "win") return "目标完成：全部锁针已经锁定。";
-        if (state.status === "fail") return "目标失败：警报耗尽或盘面不可继续。";
-        if (lastResult && lastResult.valid && lastResult.productive) return "刚刚的直接匹配已经打进锁针，可以继续观察待锁定和锁定时序。";
-        return "目标：用直接三消给锁针送入足够 Signal，让它们依次进入“已锁定”。";
-    }
-
-    function describeStageHint(state, hint, layoutInfo) {
-        if (state.clampArmed) return "夹具已待命，只会影响下一次合法交换；它不会让连带清除变成锁针信号。";
-        if (layoutInfo.sideCollapsed) return "棋盘上的竖色带就是锁针影响范围；两侧卡片会同步显示主列和本手建议。";
-        if (!hint) return "当前没有缓存提示，可以先试一次非法交换，确认只有合法直接匹配才会消耗警报。";
-        return "先做一次提示交换，观察“本手说明”里 Signal、Effect 和锁针变化是怎么对应起来的。";
-    }
-
-    function describeGuideStep(state, viewModel) {
-        if (state.status === "win") return "全部锁针已经锁定，现在可以导出回放做复现。";
-        if (state.status === "fail") return "本轮校准失败，建议重开后先做一次提示交换。";
-        if (state.clampArmed) return "夹具已待命，下一次合法交换会保护本手锁定，但不会把 Effect 变成 Signal。";
-        if (viewModel.lastResult && viewModel.lastResult.valid && !viewModel.lastResult.productive) return "刚才形成了匹配，但没有任何锁针累计够阈值；继续找更贴近主列的直接匹配。";
-        if (!viewModel.hint) return "当前没有缓存提示，可以先手动试一次非法交换。";
-        return "先执行一次提示交换，再看“本手说明”里哪根锁针吃到了这次 Signal。";
-    }
-
-    function describeHint(hint) {
-        if (!hint) return "操作提示：先点一个格子，再点相邻格交换。";
-        return "建议交换：(" + (hint.from.row + 1) + "," + (hint.from.col + 1) + ") -> (" + (hint.to.row + 1) + "," + (hint.to.col + 1) + ")，评分 " + hint.score;
+    function setStageNote(refs, text) {
+        if (!refs.stageNote) return;
+        refs.stageNote.textContent = text || "";
     }
 
     function describeTransitions(transitions) {
@@ -381,59 +452,6 @@
         return out.join("，");
     }
 
-    function describeResolution(state, lastResult) {
-        if (!lastResult) {
-            return [
-                buildShellLine("核心规则", "直接匹配格子才算 Signal；主列强、邻列弱，要同一步累计够阈值才抬针。"),
-                buildShellLine("再确认", "特殊块和连带清除都是 Effect，只改盘面，不推进锁针。"),
-                buildShellLine("推荐起手", "先点“提示”，做一次推荐交换，再对照锁针状态看谁被推进。")
-            ].join("");
-        }
-        if (!lastResult.valid) {
-            return [
-                buildShellLine("交换结果", "这次交换无效：" + describeSwapReason(lastResult.reason) + "。"),
-                buildShellLine("规则提醒", "非法交换不扣警报，也不会产生 Signal。"),
-                buildShellLine("下一步", "继续找能形成直接三消的相邻交换。")
-            ].join("");
-        }
-
-        var totalSignal = 0;
-        var totalEffect = 0;
-        var transitions = [];
-        var generated = [];
-        var i;
-        for (i = 0; i < lastResult.events.length; i += 1) {
-            totalSignal += lastResult.events[i].signalTiles.length;
-            totalEffect += lastResult.events[i].effectTiles.length;
-            transitions = transitions.concat(lastResult.events[i].pinTransitions || []);
-            generated = generated.concat(lastResult.events[i].generatedSpecials || []);
-        }
-
-        return [
-            buildShellLine("直接信号", "这一步产生了 " + totalSignal + " 个 Signal 格，只有它们会参与锁针累计。"),
-            buildShellLine("锁针结果", describeResolutionTransitions(transitions)),
-            buildShellLine("盘面波及", totalEffect ? ("还有 " + totalEffect + " 个 Effect 格只清盘，不推进锁针。") : "这一步没有额外的 Effect 波及。"),
-            buildShellLine("生成块", generated.length ? ("生成了 " + describeSpecialList(generated) + "。") : "这一步没有生成特殊块。")
-        ].join("");
-    }
-
-    function describeResolutionTransitions(transitions) {
-        if (!transitions || !transitions.length) return "没有任何锁针累计够阈值，所以这次只是清盘，没有推进。";
-        var out = [];
-        var i;
-        for (i = 0; i < transitions.length; i += 1) {
-            var transition = transitions[i];
-            if (transition.reason === "overshoot") {
-                out.push(describePinId(transition.pinId) + " 过调卡死，额外扣 1 点警报");
-            } else if (transition.reason === "guarded_overshoot") {
-                out.push(describePinId(transition.pinId) + " 本来会过调，但被夹具保护住了");
-            } else {
-                out.push(describePinId(transition.pinId) + " " + describePinState(transition.fromState) + "→" + describePinState(transition.toState) + "（高度 " + transition.toHeight + "）");
-            }
-        }
-        return out.join("；");
-    }
-
     function describePinLane(spec, pin) {
         var cols = [];
         var col;
@@ -444,14 +462,6 @@
         return "影响列 " + cols[0] + "-" + cols[cols.length - 1] + " | 主列 " + String(pin.centerCol + 1);
     }
 
-    function describeSwapReason(reason) {
-        if (reason === "non_adjacent") return "只能交换相邻格子";
-        if (reason === "out_of_bounds") return "位置越界";
-        if (reason === "immovable") return "障碍格不能交换";
-        if (reason === "no_match") return "交换后没有形成直接匹配";
-        return reason || "未知原因";
-    }
-
     function getLaneWeight(spec, pin, col) {
         if (typeof PinAlignCore !== "undefined" && PinAlignCore && PinAlignCore.laneWeight) {
             return PinAlignCore.laneWeight(spec, pin, col);
@@ -460,89 +470,6 @@
         var raw = 1 - (distance / spec.lane.radius);
         if (raw <= 0) return 0;
         return raw * raw;
-    }
-
-    function buildShellMetric(label, value) {
-        return [
-            '<div class="pinalign-shell-metric">',
-                '<div class="pinalign-shell-metric-label">', escapeHtml(label), "</div>",
-                '<div class="pinalign-shell-metric-value">', escapeHtml(value), "</div>",
-            "</div>"
-        ].join("");
-    }
-
-    function buildShellLine(label, text) {
-        return [
-            '<div class="pinalign-shell-line">',
-                '<span class="pinalign-shell-line-label">', escapeHtml(label), "：</span>",
-                '<span>', escapeHtml(text), "</span>",
-            "</div>"
-        ].join("");
-    }
-
-    function buildShellPin(spec, pin) {
-        var ratio = pin.targetHeight > 0 ? (pin.currentHeight / pin.targetHeight) * 100 : 0;
-        return [
-            '<div class="pinalign-shell-pin state-', escapeHtml(pin.state), '">',
-                '<div class="pinalign-shell-pin-head">',
-                    '<span>', escapeHtml(describePinId(pin.id)), "</span>",
-                    '<b>', escapeHtml(describePinState(pin.state)), "</b>",
-                "</div>",
-                '<div class="pinalign-shell-pin-bar"><span style="width:', Math.round(ratio), '%"></span></div>',
-                '<div class="pinalign-shell-pin-meta">', escapeHtml(describePinLane(spec, pin)), ' | 高度 ', String(pin.currentHeight), '/', String(pin.targetHeight), "</div>",
-            "</div>"
-        ].join("");
-    }
-
-    function buildLaneGuide(spec, pin) {
-        var range = getLaneRange(spec, pin);
-        var left = percent(range.start, spec.cols);
-        var width = percent(range.end - range.start + 1, spec.cols);
-        var center = (((pin.centerCol - range.start) + 0.5) / (range.end - range.start + 1)) * 100;
-        return [
-            '<div class="pinalign-lane-guide state-', escapeHtml(pin.state), '" style="left:', left, '%; width:', width, '%;">',
-                '<div class="pinalign-lane-band"></div>',
-                '<div class="pinalign-lane-center" style="left:', center.toFixed(3), '%;"></div>',
-                '<div class="pinalign-lane-tag" style="left:', center.toFixed(3), '%;">',
-                    '<b>', escapeHtml(describePinShort(pin.id)), "</b>",
-                    '<span>', escapeHtml(describeRangeShort(range, spec, pin)), "</span>",
-                "</div>",
-            "</div>"
-        ].join("");
-    }
-
-    function getLaneRange(spec, pin) {
-        var start = pin.centerCol;
-        var end = pin.centerCol;
-        var col;
-        for (col = 0; col < spec.cols; col += 1) {
-            if (getLaneWeight(spec, pin, col) > 0) {
-                if (col < start) start = col;
-                if (col > end) end = col;
-            }
-        }
-        return { start: start, end: end };
-    }
-
-    function describeRangeShort(range, spec, pin) {
-        var start = range.start + 1;
-        var end = range.end + 1;
-        var center = pin.centerCol + 1;
-        if (start === end) return "主" + center;
-        return start + "-" + end + " / 主" + center;
-    }
-
-    function describePinShort(id) {
-        return String(id || "").replace("pin-", "").replace("-", "").toUpperCase();
-    }
-
-    function percent(value, total) {
-        return total ? ((value / total) * 100).toFixed(3) : "0";
-    }
-
-    function describeLayout(layoutInfo) {
-        var layoutWord = layoutInfo.stacked ? "单列" : (layoutInfo.tight ? "紧凑双列" : "宽屏双列");
-        return layoutWord + (layoutInfo.sideCollapsed ? " / 信息收起" : " / 信息展开");
     }
 
     function shortSpecial(type) {
@@ -587,11 +514,6 @@
         return Math.round(value * 100) / 100;
     }
 
-    function measureBlockHeight(el) {
-        if (!el || !el.getBoundingClientRect) return 0;
-        return Math.ceil(el.getBoundingClientRect().height || 0);
-    }
-
     function escapeHtml(text) {
         return String(text)
             .replace(/&/g, "&amp;")
@@ -602,6 +524,6 @@
     return {
         indexRefs: indexRefs,
         sync: sync,
-        setToast: setToast
+        setStageNote: setStageNote
     };
 });

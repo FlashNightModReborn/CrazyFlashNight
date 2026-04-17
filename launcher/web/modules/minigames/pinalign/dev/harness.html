@@ -41,6 +41,37 @@ html, body {
   <div id="panel-backdrop"></div>
   <div id="panel-content"></div>
 </div>
+<div id="qa-panel" hidden>
+  <div class="qa-head">
+    <span class="qa-title">验收清单</span>
+    <button type="button" id="qa-run">跑全部</button>
+    <span id="qa-summary"></span>
+  </div>
+  <ol id="qa-list"></ol>
+</div>
+<style>
+#qa-panel {
+    position: fixed; top: 12px; right: 12px; z-index: 2000;
+    width: min(420px, calc(100vw - 24px));
+    max-height: calc(100vh - 24px); overflow: auto;
+    padding: 10px 12px;
+    background: rgba(8, 14, 18, 0.94);
+    border: 1px solid rgba(120, 194, 214, 0.3);
+    color: #d9e4e8;
+    font: 12px/1.5 Consolas, "Microsoft YaHei", monospace;
+}
+#qa-panel[hidden] { display: none; }
+.qa-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.qa-title { font-weight: bold; color: #8ce8ff; }
+#qa-run { background: #1f3442; border: 1px solid #3c6a85; color: #cfe8f3; padding: 2px 10px; cursor: pointer; font: inherit; }
+#qa-run:hover { background: #2a4a5d; }
+#qa-summary { color: #9aa4ae; }
+#qa-list { margin: 0; padding-left: 22px; }
+#qa-list li { margin: 4px 0; }
+#qa-list .pass { color: #8de8ab; }
+#qa-list .fail { color: #ff8fa3; }
+#qa-list .detail { color: #9aa4ae; font-size: 11px; }
+</style>
 <pre id="debug-log">booting...</pre>
 
 <script src="../../../bridge.js"></script>
@@ -50,6 +81,7 @@ html, body {
 <script src="../adapter/dom-adapter.js"></script>
 <script src="../pinalign-audio.js"></script>
 <script src="../pinalign-panel.js"></script>
+<script src="./qa-suite.js"></script>
 <script>
 (function() {
     var debugEl = document.getElementById("debug-log");
@@ -67,6 +99,17 @@ html, body {
             debug: true
         });
         log("panel opened");
+
+        var selectMatch = location.search.match(/[?&]select=(\d+),(\d+)/);
+        if (selectMatch) {
+            setTimeout(function() {
+                var r = parseInt(selectMatch[1], 10);
+                var c = parseInt(selectMatch[2], 10);
+                var tile = document.querySelector('[data-pa-board] .pinalign-tile[data-row="' + r + '"][data-col="' + c + '"]');
+                if (tile) tile.click();
+                log("selected " + r + "," + c);
+            }, 120);
+        }
 
         if (location.search.indexOf("info=1") !== -1) {
             setTimeout(function() {
@@ -116,6 +159,50 @@ html, body {
     }
 
     window.addEventListener("load", openPanel);
+
+    function renderQaResults(bundle) {
+        var list = document.getElementById("qa-list");
+        var summary = document.getElementById("qa-summary");
+        list.innerHTML = "";
+        summary.textContent = bundle.passed + "/" + bundle.total + " 通过";
+        summary.style.color = bundle.failed ? "#ff8fa3" : "#8de8ab";
+        var i;
+        for (i = 0; i < bundle.results.length; i += 1) {
+            var r = bundle.results[i];
+            var li = document.createElement("li");
+            li.className = r.pass ? "pass" : "fail";
+            li.innerHTML = (r.pass ? "✓ " : "✗ ") + escapeHtml(r.id + " · " + r.title) + " <span class=\"detail\">(" + r.durationMs + "ms)</span>" + (r.detail ? "<br><span class=\"detail\">" + escapeHtml(r.detail) + "</span>" : "");
+            list.appendChild(li);
+        }
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function runQa() {
+        if (typeof PinAlignQA === "undefined" || !PinAlignQA.runAll) {
+            log("PinAlignQA not loaded");
+            return;
+        }
+        if (typeof PinAlignLevels === "undefined" || typeof PinAlignCore === "undefined") {
+            log("core or levels missing");
+            return;
+        }
+        var bundle = PinAlignQA.runAll(PinAlignCore, PinAlignLevels);
+        renderQaResults(bundle);
+        log("QA " + bundle.passed + "/" + bundle.total + " passed");
+        return bundle;
+    }
+
+    window.addEventListener("load", function() {
+        var btn = document.getElementById("qa-run");
+        if (btn) btn.addEventListener("click", runQa);
+        if (location.search.indexOf("qa=1") !== -1) {
+            document.getElementById("qa-panel").hidden = false;
+            setTimeout(runQa, 80);
+        }
+    });
 })();
 </script>
 </body>

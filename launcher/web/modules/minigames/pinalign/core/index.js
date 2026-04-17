@@ -606,6 +606,93 @@
         return internalTrySwap(state, from, to, options || {});
     }
 
+    function previewSwap(state, from, to) {
+        var empty = {
+            valid: false,
+            reason: null,
+            signalTiles: [],
+            pinContributions: [],
+            threshold: state && state.spec ? state.spec.lane.threshold : 0,
+            margin: state && state.spec ? state.spec.lane.margin : 0,
+            wouldAdvance: false,
+            wouldOvershoot: false,
+            clampArmed: state ? !!state.clampArmed : false
+        };
+        if (!state || state.status !== "ongoing") {
+            empty.reason = "status";
+            return empty;
+        }
+        if (!areAdjacent(from, to)) { empty.reason = "non_adjacent"; return empty; }
+        if (!isInside(state, from.row, from.col) || !isInside(state, to.row, to.col)) {
+            empty.reason = "out_of_bounds";
+            return empty;
+        }
+        var a = state.board[from.row][from.col];
+        var b = state.board[to.row][to.col];
+        if (!isMovableTile(a) || !isMovableTile(b)) { empty.reason = "immovable"; return empty; }
+
+        swapTiles(state, from, to);
+        var matches = findMatches(state.board);
+        var signalPositions = matches.signalTiles.slice();
+        swapTiles(state, from, to);
+
+        if (!signalPositions.length) {
+            empty.reason = "no_match";
+            return empty;
+        }
+
+        var contributions = [];
+        var wouldAdvance = false;
+        var wouldOvershoot = false;
+        var i;
+        for (i = 0; i < state.pins.length; i += 1) {
+            var pin = state.pins[i];
+            if (pin.state === "locked" || pin.state === "jammed") {
+                contributions.push({
+                    pinId: pin.id,
+                    state: pin.state,
+                    weight: 0,
+                    wouldAdvance: false,
+                    wouldOvershoot: false,
+                    crossThreshold: false,
+                    guardedByClamp: false
+                });
+                continue;
+            }
+            var weight = 0;
+            var s;
+            for (s = 0; s < signalPositions.length; s += 1) {
+                weight += laneWeight(state.spec, pin, signalPositions[s].col);
+            }
+            var crosses = (weight + state.spec.lane.margin) >= state.spec.lane.threshold;
+            var overshoot = crosses && pin.state === "set" && !state.clampArmed;
+            var advance = crosses && pin.state !== "set";
+            if (advance) wouldAdvance = true;
+            if (overshoot) wouldOvershoot = true;
+            contributions.push({
+                pinId: pin.id,
+                state: pin.state,
+                weight: Number(weight.toFixed(3)),
+                wouldAdvance: advance,
+                wouldOvershoot: overshoot,
+                crossThreshold: crosses,
+                guardedByClamp: crosses && pin.state === "set" && !!state.clampArmed
+            });
+        }
+
+        return {
+            valid: true,
+            reason: "match",
+            signalTiles: signalPositions,
+            pinContributions: contributions,
+            threshold: state.spec.lane.threshold,
+            margin: state.spec.lane.margin,
+            wouldAdvance: wouldAdvance,
+            wouldOvershoot: wouldOvershoot,
+            clampArmed: !!state.clampArmed
+        };
+    }
+
     function internalTrySwap(state, from, to, options) {
         var preview = !!options.preview;
         if (state.status !== "ongoing") {
@@ -1654,6 +1741,7 @@
         beginPlayerMove: beginPlayerMove,
         armClamp: armClamp,
         trySwap: trySwap,
+        previewSwap: previewSwap,
         countProductiveMoves: countProductiveMoves,
         getHint: getHint,
         runSimulation: runSimulation,
