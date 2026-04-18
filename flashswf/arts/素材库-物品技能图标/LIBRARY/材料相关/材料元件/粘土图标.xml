@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/粘土图标" itemID="66ebbfb6-00000d53" lastModified="1726726070">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/粘土图标" itemID="66ebbfb6-00000d53" lastModified="1776525995">
   <timeline>
     <DOMTimeline name="粘土图标">
       <layers>
@@ -6,17 +6,17 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="材料相关/材料元件/粘土">
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/粘土" centerPoint3DX="46.3" centerPoint3DY="112.05">
                   <matrix>
-                    <Matrix a="0.489608764648438" d="0.489608764648438" tx="-0.35" ty="36.5"/>
+                    <Matrix a="0.489608764648438" d="0.489608764648438" tx="-0.35" ty="59.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="143.7" y="161.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="材料相关/材料元件/粘土符号图标" centerPoint3DX="87.65" centerPoint3DY="47.5">
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/粘土符号图标" selected="true" centerPoint3DX="99.05" centerPoint3DY="32.85">
                   <matrix>
-                    <Matrix tx="38.5"/>
+                    <Matrix a="0.740859985351563" d="0.740859985351563" tx="62.65" ty="-2.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="49.15" y="47.5"/>

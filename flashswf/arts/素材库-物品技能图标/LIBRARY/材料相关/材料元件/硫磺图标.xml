@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/硫磺图标" itemID="66ebd112-00000120" lastModified="1726730528">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/硫磺图标" itemID="66ebd112-00000120" lastModified="1776525853">
   <timeline>
     <DOMTimeline name="硫磺图标">
       <layers>
@@ -6,20 +6,20 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="材料相关/材料元件/硫磺">
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/硫磺" centerPoint3DX="71.55" centerPoint3DY="149">
                   <matrix>
-                    <Matrix a="0.694931030273438" d="0.694931030273438" ty="93.75"/>
+                    <Matrix a="0.666046142578125" d="0.666046142578125" tx="-15.05" ty="104.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="130" y="67.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="材料相关/材料元件/硫磺符号图标">
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/硫磺符号图标" selected="true" centerPoint3DX="158.5" centerPoint3DY="45.5">
                   <matrix>
-                    <Matrix tx="52"/>
+                    <Matrix a="0.473876953125" d="0.648208618164063" tx="123.8" ty="0.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="73.2" y="70"/>
+                    <Point x="73.1" y="69.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

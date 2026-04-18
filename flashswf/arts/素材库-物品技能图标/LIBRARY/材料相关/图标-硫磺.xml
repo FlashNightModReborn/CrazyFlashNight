@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-硫磺" itemID="66ebd183-00000d74" linkageExportForAS="true" linkageIdentifier="图标-硫磺" lastModified="1726730629" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="图标-硫磺" currentFrame="1">
+    <DOMTimeline name="图标-硫磺">
       <layers>
         <DOMLayer name="图层 3" color="#FF800A">
           <frames>
@@ -41,7 +41,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="材料相关/材料元件/硫磺图标" selected="true" centerPoint3DX="-6.4" centerPoint3DY="-3.35">
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/硫磺图标" centerPoint3DX="-6.4" centerPoint3DY="-3.35">
                   <matrix>
                     <Matrix a="0.1142578125" d="0.1142578125" tx="-11.25" ty="-10.55"/>
                   </matrix>
