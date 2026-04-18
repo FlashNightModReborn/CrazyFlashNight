@@ -1,45 +1,19 @@
-// P3b Phase 1i: ApplicationContext 替换 Application.Run(form)
-// BootstrapForm 作 MainForm; Bootstrap Ready 时 Hide 不 Close.
-// 所有退出路径经 guard.ForceExit → DoExit → ExitGuard 8s (不变式: 不绕开保险).
+// Phase A Step A3: 单 Form 模型
+// - 原 BootstrapForm / GuardianForm 双 Form 结构已塌缩为 GuardianForm 单 Form + BootstrapPanel 嵌入
+// - 退出 owner 唯一化为 GuardianForm.OnFormClosing（状态分流，详见 GuardianForm.cs）
+// - 原 boot.FormClosed → guard.ForceExit 转发桥已删除，不再需要
 
-using System;
 using System.Windows.Forms;
 
 namespace CF7Launcher.Guardian
 {
     public class GuardianContext : ApplicationContext
     {
-        private readonly BootstrapForm _boot;
-        private readonly GuardianForm _guard;
-
-        public GuardianContext(BootstrapForm boot, GuardianForm guard)
+        public GuardianContext(GuardianForm form)
         {
-            _boot = boot;
-            _guard = guard;
-            this.MainForm = _boot;
-
-            // BootstrapForm 关闭: 路由到 guard.ForceExit (保证经 DoExit + ExitGuard 8s 强杀)
-            // FormClosing 里按 close-policy 拦截 Spawning/Embedding 等非终止状态; 进入这里的都是允许退出
-            _boot.FormClosed += delegate
-            {
-                if (_guard != null && !_guard.IsDisposed)
-                {
-                    try { _guard.ForceExit(); }
-                    catch (Exception ex)
-                    {
-                        LogManager.Log("[Ctx] guard.ForceExit error, fallback ExitThread: " + ex.Message);
-                        ExitThread();
-                    }
-                }
-                else
-                {
-                    LogManager.Log("[Ctx] guard disposed, bypass DoExit");
-                    ExitThread();
-                }
-            };
-
+            this.MainForm = form;
             // GuardianForm 关闭: DoExit 已跑完 (含 ExitGuard), 退消息循环
-            _guard.FormClosed += delegate { ExitThread(); };
+            form.FormClosed += delegate { ExitThread(); };
         }
     }
 }

@@ -39,10 +39,17 @@ namespace CF7Launcher.Guardian
         private readonly ProcessManager _processManager;
         private readonly WindowManager _windowManager;
         private readonly GuardianForm _form;
-        private readonly BootstrapForm _bootForm;
+        // Phase A: BootstrapForm → BootstrapPanel (UserControl 嵌入 GuardianForm)
+        private readonly BootstrapPanel _bootstrapPanel;
         private readonly Action _readyWiring;
         private readonly Action _hotkeyGuardSpawn;
         private readonly CF7Launcher.Save.SaveResolutionContext _saveCtx;
+
+        // Phase A Step A3a: RunOnUi 稳定 dispatcher 的 pending action 队列。
+        // 句柄未创建 → 入队等 HandleCreated 事件 flush；dispose → drop 队列。
+        private readonly Queue<Action> _pendingUiActions = new Queue<Action>();
+        private const int PENDING_UI_ACTIONS_MAX = 64;
+        private bool _pendingUiHooked;
 
         // ==================== 状态字段（必须在 _stateLock 内读写，不变式 #19）====================
         private readonly object _stateLock = new object();
@@ -74,6 +81,11 @@ namespace CF7Launcher.Guardian
         // 每次 StartGame 重置；每次 attempt 一份。
         private CF7Launcher.Save.SolResolveResult _resolvedSave;
 
+        // Phase C Step C2: dry-run smoke 模式.
+        // PrewarmDryRun 置为 true，HandleBootstrapHandshake 命中时短路响应 error=dryrun_abort + ThreadPool Reset.
+        // Phase E 收尾时连同 PrewarmDryRun 方法 + __debug_dry_run cmd 一并删除.
+        private bool _dryRunMode;
+
         // ==================== 公共 API ====================
 
         /// <summary>状态变更事件。参数：(state, message)。</summary>
@@ -90,7 +102,7 @@ namespace CF7Launcher.Guardian
             ProcessManager processManager,
             WindowManager windowManager,
             GuardianForm form,
-            BootstrapForm bootForm,
+            BootstrapPanel bootstrapPanel,
             Action readyWiring,
             Action hotkeyGuardSpawn,
             CF7Launcher.Save.SaveResolutionContext saveCtx)
@@ -100,7 +112,7 @@ namespace CF7Launcher.Guardian
             _processManager = processManager;
             _windowManager = windowManager;
             _form = form;
-            _bootForm = bootForm;
+            _bootstrapPanel = bootstrapPanel;
             _readyWiring = readyWiring;
             _hotkeyGuardSpawn = hotkeyGuardSpawn;
             _saveCtx = saveCtx;
@@ -112,7 +124,7 @@ namespace CF7Launcher.Guardian
             LogManager.Log("[LaunchFlow] bootstrap_ready registered");
 
             _windowManager.OnEmbedResult += OnEmbedResult;
-            _processManager.OnFlashExited += OnFlashExited;
+            _processManager.OnFlashExited += OnFlashExitedExternal;
             _socketServer.OnClientReady += OnSocketClientReady;
             _socketServer.OnClientDisconnected += OnSocketClientDisconnected;
         }
@@ -157,8 +169,36 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
+        /// Phase C Step C2: dry-run smoke 入口。
+        /// 走完整 GameLaunchFlow 状态机：bump attemptId → TransitionToSpawning → ArmEarlyReparent →
+        /// WaitingConnect → Flash 连 socket → handshake 到达 → 短路 error=dryrun_abort → ThreadPool Reset.
+        /// Idle 态 guard；已 dryrun 运行中 → no-op.
+        /// Phase E 收尾时删除.
+        /// </summary>
+        public void PrewarmDryRun()
+        {
+            lock (_stateLock)
+            {
+                if (_state != State.Idle)
+                {
+                    LogManager.Log("[DryRun] ignored: state=" + _state);
+                    return;
+                }
+                _dryRunMode = true;
+                _pendingSlot = null;  // 明确标记 prewarm 模式（不落真 slot 避免存档副作用）
+                _currentAttemptId = Guid.NewGuid().ToString("N");
+                _resolvedSave = null;
+                _cachedReady.Clear();
+                CancelWaitTimerLocked();
+                CancelZombieTimerLocked();
+                LogManager.Log("[DryRun] start attemptId=" + _currentAttemptId);
+                TransitionToSpawning();
+            }
+        }
+
+        /// <summary>
         /// 错误后重试：公共 API，收边界（不向外暴露 _pendingSlot / continuation 时序）。
-        /// 内部 = 锁内快照 slot → 锁外 Reset(onIdle: () => StartGame(slot))。
+        /// 内部 = 锁内快照 slot → 锁外 Reset(onIdle, reason) 驱动。
         /// </summary>
         public void Retry()
         {
@@ -172,15 +212,18 @@ namespace CF7Launcher.Guardian
                 }
                 slot = _pendingSlot;
             }
-            Reset(onIdle: delegate { StartGame(slot); });
+            Reset(delegate { StartGame(slot); }, "retry");
         }
 
         /// <summary>
         /// 重置到 Idle。Error/Ready/任意态都可调（幂等）。
         /// onIdle 在 Idle 到达后、锁外触发（continuation 契约，用于 Retry）。
+        /// reason 写入日志，便于事后追踪（user_cancel / user_close / retry / prewarm_deadline / ...）。
+        /// Phase B Step B3: reason 参数从 Phase D onwards 是门闩 / 信号路径的核心 token。
         /// </summary>
-        public void Reset(Action onIdle)
+        public void Reset(Action onIdle, string reason)
         {
+            LogManager.Log("[LaunchFlow] Reset requested reason=" + (reason ?? "(none)"));
             Process oldProcess;
             lock (_stateLock)
             {
@@ -232,7 +275,12 @@ namespace CF7Launcher.Guardian
                     lock (_stateLock)
                     {
                         if (_currentFlashProcess == oldProcess) _currentFlashProcess = null;
+                        // Phase C Step C2: 清 dry-run 门闩（Reset 完成 → 下次 StartGame 走正常路径）
+                        _dryRunMode = false;
                     }
+                    // Phase C: 清 WindowManager 的 EmbedPhase 字段（防下一 attempt 吃脏句柄）
+                    if (_windowManager != null) _windowManager.ResetEmbedState();
+
                     if (finalOk)
                     {
                         SetState(State.Idle, "");
@@ -255,6 +303,9 @@ namespace CF7Launcher.Guardian
         private void TransitionToSpawning()
         {
             // 锁内调用（StartGame 已持锁）
+            // Phase C: 进入新 attempt 前先清 WindowManager 的 EmbedPhase 字段（防脏句柄被下一轮吃）
+            if (_windowManager != null) _windowManager.ResetEmbedState();
+
             SetState(State.Spawning, "");
             bool ok;
             try { ok = _processManager.Start(); }
@@ -270,7 +321,13 @@ namespace CF7Launcher.Guardian
             }
             _currentFlashProcess = _processManager.FlashProcess;
             if (_windowManager != null)
+            {
                 _windowManager.TrackProcess(_currentFlashProcess);
+                // Phase C Step C1d: early reparent — Flash spawn 后立即后台 poll + SW_HIDE + SetParent 到 hidden FlashHostPanel
+                // 压缩 top-level 可见窗口时间到 100-200ms；不触发 FireEmbedResult（reveal 由 EmbedFlashWindow 终点负责）
+                if (_form != null && _form.FlashHostPanel != null)
+                    _windowManager.ArmEarlyReparent(_currentFlashProcess, _form.FlashHostPanel);
+            }
             if (_form != null)
                 _form.TrackFlashProcess(_currentFlashProcess);
             SetState(State.WaitingConnect, "");
@@ -334,17 +391,18 @@ namespace CF7Launcher.Guardian
             {
                 try { if (_readyWiring != null) _readyWiring(); }
                 catch (Exception ex) { LogManager.Log("[LaunchFlow] readyWiring error: " + ex.Message); }
+                // Phase A Step A4: panel swap 替代原 Show/Hide 双 Form 切换
+                // 单 Form 模型下 GuardianForm 始终可见，无需 Show()
                 try
                 {
                     if (_form != null)
                     {
-                        _form.Show();
+                        if (_form.BootstrapPanel != null) _form.BootstrapPanel.SetPanelVisible(false);
+                        if (_form.FlashHostPanel != null) _form.FlashHostPanel.Visible = true;
                         _form.Activate();
                     }
                 }
-                catch (Exception ex) { LogManager.Log("[LaunchFlow] form.Show error: " + ex.Message); }
-                try { if (_bootForm != null) _bootForm.HideForReady(); }
-                catch (Exception ex) { LogManager.Log("[LaunchFlow] bootForm.Hide error: " + ex.Message); }
+                catch (Exception ex) { LogManager.Log("[LaunchFlow] panel swap error: " + ex.Message); }
                 try { if (_hotkeyGuardSpawn != null) _hotkeyGuardSpawn(); }
                 catch (Exception ex) { LogManager.Log("[LaunchFlow] hotkeyGuardSpawn error: " + ex.Message); }
             });
@@ -366,6 +424,19 @@ namespace CF7Launcher.Guardian
         {
             lock (_stateLock)
             {
+                // Phase C Step C2: dry-run smoke 短路响应. ThreadPool 派发 Reset 保证在 handler 返回 + socket send 之后跑.
+                if (_dryRunMode)
+                {
+                    CancelWaitTimerLocked();
+                    LogManager.Log("[DryRun] handshake received, aborting attempt=" + _currentAttemptId);
+                    ThreadPool.QueueUserWorkItem(delegate
+                    {
+                        try { Reset(null, "dryrun_abort"); }
+                        catch (Exception ex) { LogManager.Log("[DryRun] reset worker error: " + ex.Message); }
+                    });
+                    return "{\"task\":\"bootstrap_handshake\",\"success\":false,\"error\":\"dryrun_abort\"}";
+                }
+
                 if (_state != State.WaitingConnect && _state != State.WaitingHandshake)
                 {
                     LogManager.Log("[LaunchFlow] bootstrap_handshake rejected: state=" + _state);
@@ -444,11 +515,32 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        private void OnFlashExited(Process exited)
+        /// <summary>
+        /// Phase B Step B1: 唯一 Flash 退出真源（原 GuardianForm.TrackFlashProcess watchdog 已去 ForceExit）.
+        /// 进程身份校验：ProcessManager 已按 ReferenceEquals 过滤 stale 事件，此处再校验
+        /// `exited == _currentFlashProcess` 作为 belt & suspenders——Reset 可能已 null 化 _currentFlashProcess
+        /// 或 attempt 已翻篇，此时当前 attempt 不应被 stale Flash 退出信号驱动状态机.
+        /// </summary>
+        private void OnFlashExitedExternal(Process exited)
         {
-            LogManager.Log("[LaunchFlow] OnFlashExited pid=" + (exited != null ? exited.Id.ToString() : "null"));
+            LogManager.Log("[LaunchFlow] OnFlashExitedExternal pid=" + (exited != null ? exited.Id.ToString() : "null"));
             State snapshot;
-            lock (_stateLock) { snapshot = _state; }
+            lock (_stateLock)
+            {
+                // 进程身份校验：当前 attempt 没有活 Flash，或 exited 不是当前追踪的进程 → 忽略
+                if (_currentFlashProcess == null)
+                {
+                    LogManager.Log("[LaunchFlow] OnFlashExitedExternal drop: _currentFlashProcess=null");
+                    return;
+                }
+                if (exited != null && !object.ReferenceEquals(exited, _currentFlashProcess))
+                {
+                    LogManager.Log("[LaunchFlow] OnFlashExitedExternal drop: stale process (expected pid="
+                        + _currentFlashProcess.Id + ")");
+                    return;
+                }
+                snapshot = _state;
+            }
             switch (snapshot)
             {
                 case State.Idle:
@@ -456,15 +548,17 @@ namespace CF7Launcher.Guardian
                 case State.Resetting:
                     return;  // 已处理或未启动, 忽略
                 case State.Ready:
-                    // 玩家正常关游戏 → launcher 也退出
+                    // 玩家正常关游戏 → launcher 也退出（legacy）
                     LogManager.Log("[LaunchFlow] Flash exited in Ready state → forcing launcher exit");
                     CancelZombieTimer();
                     if (_form != null) _form.ForceExit();
                     return;
                 default:
                     // 活跃启动态 (Spawning/WaitingConnect/WaitingHandshake/Embedding/WaitingGameReady)
-                    // → TransitionToError 让 BootstrapForm 保留 Error 态供 retry
+                    // → TransitionToError 让 BootstrapUI 保留 Error 态供 retry
                     CancelZombieTimer();
+                    // Phase C: launcher 不死但 attempt 换一轮 → 清 WindowManager EmbedPhase（防下一轮吃脏句柄）
+                    if (_windowManager != null) _windowManager.ResetEmbedState();
                     lock (_stateLock) { TransitionToError("flash_exited"); }
                     return;
             }
@@ -624,17 +718,96 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        // ==================== Phase A Step A3a: 稳定 UI dispatcher ====================
+        // 契约（strict）:
+        //   - 永不在后台线程直跑 action（WinForms 严禁跨线程 UI 调用）
+        //   - 无 target / target 已 dispose → drop + log
+        //   - target 存在但句柄未创建 → 入 pending 队列，等 HandleCreated 事件 flush
+        //   - BeginInvoke 失败 → drop + log（不 fallback 直跑）
+        //
+        // 为什么不保留原"直跑"兜底：单 Form + panel + async teardown / OnFormClosing 下，
+        // "句柄未创建 / 已 dispose" 从边角变成正常路径；直跑会随机崩。
         private void RunOnUi(Action action)
         {
             if (action == null) return;
-            Control target = _bootForm != null ? (Control)_bootForm : (Control)_form;
-            if (target != null && target.IsHandleCreated && target.InvokeRequired)
+            Control target = _bootstrapPanel != null ? (Control)_bootstrapPanel : (Control)_form;
+            if (target == null)
+            {
+                LogManager.Log("[LaunchFlow] RunOnUi drop: no target");
+                return;
+            }
+            if (target.IsDisposed)
+            {
+                LogManager.Log("[LaunchFlow] RunOnUi drop: target disposed");
+                return;
+            }
+            if (!target.IsHandleCreated)
+            {
+                EnqueuePendingUi(target, action);
+                return;
+            }
+            if (target.InvokeRequired)
             {
                 try { target.BeginInvoke(action); return; }
-                catch { }
+                catch (ObjectDisposedException) { LogManager.Log("[LaunchFlow] RunOnUi drop: disposed mid-invoke"); return; }
+                catch (InvalidOperationException) { LogManager.Log("[LaunchFlow] RunOnUi drop: invalid invoke"); return; }
             }
             try { action(); }
             catch (Exception ex) { LogManager.Log("[LaunchFlow] RunOnUi error: " + ex.Message); }
+        }
+
+        /// <summary>
+        /// 句柄未创建时的 action 进入 pending 队列，HandleCreated 事件 flush；HandleDestroyed drop。
+        /// 容量上限 PENDING_UI_ACTIONS_MAX 防内存泄漏。
+        /// </summary>
+        private void EnqueuePendingUi(Control target, Action action)
+        {
+            lock (_pendingUiActions)
+            {
+                if (_pendingUiActions.Count >= PENDING_UI_ACTIONS_MAX)
+                {
+                    // 丢最早的；优先保留较新的状态广播
+                    _pendingUiActions.Dequeue();
+                    LogManager.Log("[LaunchFlow] RunOnUi pending queue full, dropped oldest");
+                }
+                _pendingUiActions.Enqueue(action);
+
+                if (!_pendingUiHooked)
+                {
+                    _pendingUiHooked = true;
+                    target.HandleCreated += OnTargetHandleCreated;
+                    target.HandleDestroyed += OnTargetHandleDestroyed;
+                }
+            }
+        }
+
+        private void OnTargetHandleCreated(object sender, EventArgs e)
+        {
+            Control target = sender as Control;
+            if (target == null) return;
+            Action[] drain;
+            lock (_pendingUiActions)
+            {
+                drain = _pendingUiActions.ToArray();
+                _pendingUiActions.Clear();
+            }
+            foreach (Action a in drain)
+            {
+                try { target.BeginInvoke(a); }
+                catch (Exception ex) { LogManager.Log("[LaunchFlow] pending flush error: " + ex.Message); }
+            }
+        }
+
+        private void OnTargetHandleDestroyed(object sender, EventArgs e)
+        {
+            int dropped;
+            lock (_pendingUiActions)
+            {
+                dropped = _pendingUiActions.Count;
+                _pendingUiActions.Clear();
+            }
+            if (dropped > 0)
+                LogManager.Log("[LaunchFlow] RunOnUi pending drop on HandleDestroyed count=" + dropped);
         }
     }
 }

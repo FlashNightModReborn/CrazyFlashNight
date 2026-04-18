@@ -1,10 +1,11 @@
-// P3b Phase 1g: BootstrapForm production 升级（spike → 正式入口）
-// - PostToWeb 封送到 UI 线程（Control.BeginInvoke；不变式 #5）
-// - FormClosing 按状态拦截（close-policy 六状态表；StateProvider 由 Program.cs 注入 GameLaunchFlow.CurrentState）
-// - Ready 时 Hide 不 Close（不变式 #1）
+// Phase A Step A1: BootstrapForm → BootstrapPanel
+// UserControl 版本，宿主 GuardianForm 负责 window chrome / OnFormClosing / 退出 owner
+// - WebView2 hosting + PostToWeb 封送到 UI 线程
+// - 初始化失败走 BootstrapInitFailed 事件，由宿主 Form ForceExit（不在 panel 内 Close）
+// - Ready 过渡：SetPanelVisible(false) 替代原 HideForReady
+// - 文件对话框：ShowDialog(this.FindForm())
 
 using System;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
@@ -12,7 +13,7 @@ using Microsoft.Web.WebView2.WinForms;
 
 namespace CF7Launcher.Guardian
 {
-    public class BootstrapForm : Form
+    public class BootstrapPanel : UserControl
     {
         private readonly string _webDir;
         private WebView2 _webView;
@@ -21,66 +22,30 @@ namespace CF7Launcher.Guardian
         public event Action<string> OnJsMessage;
 
         /// <summary>
-        /// 状态提供者：11b-β 由 Program.cs 注入 `() => launchFlow.CurrentState`。
-        /// 未注入（null）时 FormClosing 放行（spike 兼容行为）。
+        /// WebView2 引擎初始化失败（fatal）。宿主 Form 订阅此事件调 ForceExit。
+        /// 传递的 string 是失败原因（用于日志/诊断）。
         /// </summary>
-        public Func<string> StateProvider;
+        public event Action<string> BootstrapInitFailed;
 
-        public BootstrapForm(string webDir)
+        public BootstrapPanel(string webDir)
         {
             _webDir = webDir;
 
-            this.Text = "CF7:ME Bootstrap";
-            this.Width = 900;
-            this.Height = 600;
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.BackColor = Color.FromArgb(24, 24, 26);
+            this.BackColor = System.Drawing.Color.FromArgb(24, 24, 26);
 
             _webView = new WebView2();
             _webView.Dock = DockStyle.Fill;
             this.Controls.Add(_webView);
 
-            this.FormClosing += OnFormClosingGuard;
-
             InitWebView2Async();
-        }
-
-        /// <summary>
-        /// close-policy 拦截：非 Idle/Error/Ready/Resetting(消息差异) 状态下用户关窗需阻止。
-        /// Ready 状态已 Hide 不会触发；11b-β 填充完整六状态消息文案。
-        /// </summary>
-        private void OnFormClosingGuard(object sender, FormClosingEventArgs e)
-        {
-            if (StateProvider == null) return;  // spike 兼容：无状态机时放行
-            string state = null;
-            try { state = StateProvider(); } catch { }
-            if (string.IsNullOrEmpty(state)) return;
-
-            switch (state)
-            {
-                case "Idle":
-                case "Error":
-                case "Ready":
-                    return;  // 放行
-                case "Resetting":
-                    e.Cancel = true;
-                    MessageBox.Show(this, "\u91cd\u7f6e\u4e2d\uff0c\u8bf7\u7a0d\u5019",
-                        "CF7:ME", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                default:
-                    // Spawning / WaitingConnect / WaitingHandshake / Embedding / WaitingGameReady
-                    e.Cancel = true;
-                    MessageBox.Show(this, "\u542f\u52a8\u4e2d\uff0c\u8bf7\u7b49\u5f85\u5b8c\u6210\u6216\u70b9\u91cd\u7f6e",
-                        "CF7:ME", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-            }
         }
 
         private async void InitWebView2Async()
         {
+            string userDataDir = null;
             try
             {
-                string userDataDir = Path.Combine(
+                userDataDir = Path.Combine(
                     Path.GetDirectoryName(_webDir), "webview2_userdata");
 
                 CoreWebView2Environment env =
@@ -101,10 +66,41 @@ namespace CF7Launcher.Guardian
             }
             catch (Exception ex)
             {
-                LogManager.Log("[Bootstrap] WebView2 init failed: " + ex.Message);
-                MessageBox.Show("WebView2 init failed:\n" + ex.Message,
-                    "Bootstrap", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Close();
+                // Fail-closed：日志落盘 + 可操作 MessageBox + 触发 BootstrapInitFailed
+                string logPath = LogManager.LogFilePath ?? "(未启用文件日志)";
+                string userData = userDataDir ?? "(未构造)";
+                try
+                {
+                    // LogManager 文件写入 AutoFlush=true，Log 同步写入磁盘
+                    LogManager.Log("[Bootstrap] WebView2 init FATAL: userDataDir=" + userData
+                        + " ex=" + ex.ToString());
+                }
+                catch { }
+
+                string dialogText =
+                    "WebView2 初始化失败，启动器无法继续运行。\r\n\r\n"
+                    + "请先关闭启动器后重试。\r\n"
+                    + "如果问题持续存在，请检查 WebView2 Runtime、用户目录权限，或查看日志。\r\n\r\n"
+                    + "用户目录: " + userData + "\r\n"
+                    + "日志位置: " + logPath + "\r\n\r\n"
+                    + "详情: " + ex.Message;
+
+                try
+                {
+                    MessageBox.Show(this.FindForm(), dialogText,
+                        "CF7:ME Bootstrap", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch { }
+
+                Action<string> handler = BootstrapInitFailed;
+                if (handler != null)
+                {
+                    try { handler(ex.Message); }
+                    catch (Exception hex)
+                    {
+                        LogManager.Log("[Bootstrap] BootstrapInitFailed handler error: " + hex.Message);
+                    }
+                }
             }
         }
 
@@ -143,23 +139,21 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// Ready 过渡：隐藏窗口而非关闭（不变式 #1）。UI 线程安全。
+        /// Ready 过渡：隐藏 panel 而非关闭（不变式 #1）。UI 线程安全。
         /// </summary>
-        public void HideForReady()
+        public void SetPanelVisible(bool visible)
         {
             if (this.IsHandleCreated && this.InvokeRequired)
             {
-                try { this.BeginInvoke(new Action(delegate { this.Hide(); })); } catch { }
+                try { this.BeginInvoke(new Action<bool>(SetPanelVisible), visible); } catch { }
+                return;
             }
-            else
-            {
-                this.Hide();
-            }
+            this.Visible = visible;
         }
 
-        // ==================== Phase 2a: 文件对话框 helper ====================
+        // ==================== 文件对话框 helper ====================
         // Handle 由 WebView2 WebMessageReceived 事件在 UI 线程触发，
-        // 所以这些 helper 直接同步 ShowDialog(this) 即可，不需 BeginInvoke。
+        // ShowDialog 以宿主 Form 作为 owner。
 
         /// <summary>打开文件对话框，返回选中路径；用户取消返回 null。</summary>
         public string ShowOpenFileDialog(string filter, string title)
@@ -168,7 +162,8 @@ namespace CF7Launcher.Guardian
             {
                 dlg.Filter = filter;
                 dlg.Title = title;
-                if (dlg.ShowDialog(this) == DialogResult.OK) return dlg.FileName;
+                Form owner = this.FindForm();
+                if (dlg.ShowDialog(owner) == DialogResult.OK) return dlg.FileName;
             }
             return null;
         }
@@ -182,7 +177,8 @@ namespace CF7Launcher.Guardian
                 dlg.Title = title;
                 if (!string.IsNullOrEmpty(defaultName))
                     dlg.FileName = defaultName;
-                if (dlg.ShowDialog(this) == DialogResult.OK) return dlg.FileName;
+                Form owner = this.FindForm();
+                if (dlg.ShowDialog(owner) == DialogResult.OK) return dlg.FileName;
             }
             return null;
         }

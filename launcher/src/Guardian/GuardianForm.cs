@@ -78,6 +78,8 @@ namespace CF7Launcher.Guardian
         private ContextMenuStrip _trayMenu;
         private TextBox _logBox;
         private D3DPanel _flashPanel;
+        private BootstrapPanel _bootstrapPanel;  // Phase A: 启动期 UI（WebView2）
+        private GameLaunchFlow _launchFlow;      // Phase A: 两段式 InitializeLaunchFlow 注入
         private Panel _gpuCaptureStrip;
         private System.Windows.Forms.Timer _gpuPaintTimer;
         private Panel _logBar;
@@ -95,7 +97,6 @@ namespace CF7Launcher.Guardian
         private WebOverlayForm _webOverlay; // 面板系统：ESC→PostToWeb
 
         private Process _flashProcess;
-        private System.Windows.Forms.Timer _exitWatchdog;
 
         private WindowManager _windowManager;
 
@@ -106,6 +107,9 @@ namespace CF7Launcher.Guardian
         /// <summary>Flash 嵌入目标：始终是 _flashPanel。</summary>
         public Panel FlashHostPanel { get { return _flashPanel; } }
         public Panel GpuCaptureHostPanel { get { return _gpuCaptureStrip; } }
+
+        /// <summary>Phase A: 启动期 BootstrapPanel。bus-only 模式下可能为 null。</summary>
+        public BootstrapPanel BootstrapPanel { get { return _bootstrapPanel; } }
 
         public void SetGpuCaptureHostVisible(bool visible)
         {
@@ -125,15 +129,33 @@ namespace CF7Launcher.Guardian
             _gpuCaptureStrip.Visible = visible;
         }
 
-        public GuardianForm()
+        /// <summary>
+        /// Phase A: 构造函数接受 bootstrapWebDir.
+        /// - bootstrapWebDir != null：正常模式。创建 BootstrapPanel 启动期可见，FlashHostPanel 隐藏.
+        /// - bootstrapWebDir == null：bus-only 模式。无 BootstrapPanel，FlashHostPanel 直接可见.
+        /// </summary>
+        public GuardianForm() : this(null) { }
+
+        public GuardianForm(string bootstrapWebDir)
         {
-            InitializeComponent();
+            InitializeComponent(bootstrapWebDir);
             SetupTrayIcon();
             SetupHotkeys();
             LogManager.Init(this, _logBox);
         }
 
         public void BindWindowManager(WindowManager wm) { _windowManager = wm; }
+
+        /// <summary>
+        /// Phase A Step A2: 两段式初始化第二步。
+        /// GameLaunchFlow ctor 依赖 GuardianForm + BootstrapPanel，因此 launchFlow 必须在 GuardianForm 之后构造；
+        /// 调此方法补 wire：保存引用供 OnFormClosing 状态分流 + Ctrl+F/Esc state-aware guard 使用。
+        /// 若 launchFlow 为 null 或 InitializeLaunchFlow 未调（极早期关窗），OnFormClosing 走 Idle 同路径。
+        /// </summary>
+        public void InitializeLaunchFlow(GameLaunchFlow launchFlow)
+        {
+            _launchFlow = launchFlow;
+        }
 
 
 
@@ -205,34 +227,26 @@ namespace CF7Launcher.Guardian
             _flashPanel.Invalidate();
         }
 
+        /// <summary>
+        /// Phase B Step B1: watchdog 去 ForceExit，只做 PID 追踪.
+        /// 原 500ms poll 检测 HasExited → ForceExit 的行为已移除;
+        /// Flash 退出唯一真源是 ProcessManager.OnFlashExited（GameLaunchFlow 订阅，按 state 分流）.
+        /// 本方法仅用于:
+        ///   - 把 Flash PID 传给 KeyboardHook，让热键在 Flash 前台时也能拦截
+        ///   - 为将来可能的 UI 侧 PID 匹配保留追踪字段
+        /// </summary>
         public void TrackFlashProcess(Process p)
         {
             _flashProcess = p;
-            // 把 Flash PID 传给键盘钩子，使其在 Flash 独立前台时也能拦截
             if (_kbHook != null && p != null)
                 _kbHook.SetFlashPid((uint)p.Id);
-            if (_exitWatchdog == null)
-            {
-                _exitWatchdog = new System.Windows.Forms.Timer();
-                _exitWatchdog.Interval = 500;
-                _exitWatchdog.Tick += delegate
-                {
-                    if (_flashProcess != null && _flashProcess.HasExited)
-                    {
-                        _exitWatchdog.Stop();
-                        LogManager.Log("[Guardian] Flash exit detected by watchdog");
-                        ForceExit();
-                    }
-                };
-            }
-            _exitWatchdog.Start();
         }
 
         // ============================================================
         //  布局
         // ============================================================
 
-        private void InitializeComponent()
+        private void InitializeComponent(string bootstrapWebDir)
         {
             this.Text = "CF7:FlashNight";
             this.Size = new Size(1280, 660);
@@ -336,9 +350,14 @@ namespace CF7Launcher.Guardian
             // ── Flash 宿主（单 Panel + GPU overlay 架构）──
             // Flash 嵌入 _flashPanel。GPU 模式下，在 _flashPanel 内部创建
             // _gpuOverlay 子 Panel 覆盖在 Flash HWND 之上，SwapChain 渲染到 overlay。
+            //
+            // Phase A: 启动期 _flashPanel.Visible=false（避免 BootstrapPanel 层级冲突/黑屏），
+            // 但通过 Form.Load 后访问 _flashPanel.Handle 强制句柄创建，
+            // 保证 WindowManager.EmbedFlashWindow 的 BeginInvoke 路径在 Embedding 阶段可用.
             _flashPanel = new D3DPanel();
             _flashPanel.Dock = DockStyle.Fill;
             _flashPanel.BackColor = Color.Black;
+            _flashPanel.Visible = (bootstrapWebDir == null);  // bus-only: 直接可见
             _flashPanel.MouseEnter += OnFlashPanelMouseEnter;
             _flashPanel.MouseDown += OnFlashPanelMouseDown;
             _flashPanel.MouseUp += OnFlashPanelMouseUp;
@@ -357,7 +376,51 @@ namespace CF7Launcher.Guardian
             _gpuCaptureStrip.Visible = false;
             this.Controls.Add(_gpuCaptureStrip);
 
+            // Phase A: BootstrapPanel（仅正常模式；后加 = 更高 z-order 显示在 Flash 之上）
+            if (bootstrapWebDir != null)
+            {
+                _bootstrapPanel = new BootstrapPanel(bootstrapWebDir);
+                _bootstrapPanel.Dock = DockStyle.Fill;
+                _bootstrapPanel.Visible = true;
+                this.Controls.Add(_bootstrapPanel);
+                _bootstrapPanel.BootstrapInitFailed += OnBootstrapInitFailed;
+            }
+
             this.FormClosing += OnFormClosing;
+
+            // Phase A: _flashPanel.Visible=false 会阻止 Handle 创建，
+            // 但 WindowManager.EmbedFlashWindow 终点需要 BeginInvoke 到 _hostPanel.Handle 才能
+            // 在 UI 线程调 StartEmbedWatchdog/ResizeFlashToPanel/FireEmbedResult.
+            // Form.Load 后显式访问 .Handle 强制创建（此时 form 自身 Handle 已就绪）.
+            // 对 bus-only 模式无害（Visible=true 的 Handle 早已创建）.
+            this.Load += delegate
+            {
+                if (_flashPanel != null && !_flashPanel.IsHandleCreated)
+                {
+                    IntPtr _ = _flashPanel.Handle;  // 访问 getter 强制创建
+                    LogManager.Log("[Guardian] _flashPanel handle force-created (Visible=" + _flashPanel.Visible + ")");
+                }
+            };
+        }
+
+        /// <summary>
+        /// Phase A Step A1/A3: WebView2 初始化失败 fatal 兜底.
+        /// 原 BootstrapForm.InitWebView2Async 的 this.Close() + GuardianContext FormClosed 桥的替代通道.
+        /// </summary>
+        private void OnBootstrapInitFailed(string reason)
+        {
+            LogManager.Log("[Guardian] BootstrapPanel init FATAL: " + reason + " → ForceExit");
+            try
+            {
+                if (this.IsHandleCreated && !this.IsDisposed)
+                    this.BeginInvoke(new Action(ForceExit));
+                else
+                    ForceExit();
+            }
+            catch
+            {
+                try { ForceExit(); } catch { }
+            }
         }
 
         // ============================================================
@@ -372,8 +435,12 @@ namespace CF7Launcher.Guardian
             _kbHook = new KeyboardHook();
 
             // Ctrl+F → 全屏（回调在钩子线程，需 BeginInvoke 回 UI 线程）
-            _kbHook.RegisterAction(0x46, delegate { ToggleFullscreen(); });
-            // Ctrl+Q → 退出
+            // Phase A Step A3b: 非 Ready 态 no-op（bootstrap 期 Flash 未 embed，全屏切换无意义）
+            _kbHook.RegisterAction(0x46, delegate {
+                if (!IsReadyForHotkey()) return;
+                ToggleFullscreen();
+            });
+            // Ctrl+Q → 退出（bootstrap / Ready 均硬退出，不经协调器）
             _kbHook.RegisterAction(0x51, delegate { ForceExit(); });
             // Escape：固定回调，按 volatile 标志分支（避免 Dictionary 并发竞态）
             _kbHook.RegisterAction(0x1B, delegate {
@@ -385,6 +452,8 @@ namespace CF7Launcher.Guardian
                 }
                 else
                 {
+                    // Phase A Step A3b: 非 Ready 态 no-op
+                    if (!IsReadyForHotkey()) return;
                     ToggleFullscreen();
                 }
             });
@@ -401,6 +470,17 @@ namespace CF7Launcher.Guardian
                 _kbHook = null;
                 FallbackRegisterHotkeys();
             }
+        }
+
+        /// <summary>
+        /// Phase A Step A3b: bootstrap 期热键 no-op 判定.
+        /// Ctrl+F / Esc ToggleFullscreen 仅 Ready 态有效; Ctrl+Q 硬退出不经此 guard.
+        /// </summary>
+        private bool IsReadyForHotkey()
+        {
+            if (_launchFlow == null) return false;
+            try { return _launchFlow.CurrentState == "Ready"; }
+            catch { return false; }
         }
 
         /// <summary>Fallback：KeyboardHook 安装失败时退化为 RegisterHotKey</summary>
@@ -444,6 +524,8 @@ namespace CF7Launcher.Guardian
                 int id = m.WParam.ToInt32();
                 if (id == HK_ESC || id == HK_CTRL_F)
                 {
+                    // Phase A Step A3b: 非 Ready 态 no-op
+                    if (!IsReadyForHotkey()) return;
                     ToggleFullscreen();
                     return;
                 }
@@ -1030,10 +1112,95 @@ namespace CF7Launcher.Guardian
         //  退出
         // ============================================================
 
+        // Phase A Step A2: OnFormClosing 状态分流 + one-shot latch
+        // - Ready / Idle / Error → 直接 ForceExit（legacy 行为，8s ExitGuard 兜底）
+        // - 启动中 / Resetting → 异步 Reset(null) + 订阅 OnStateChanged；Idle/Error 终态或 8s 超时 → ForceExit
+        // - 三条终态路径共用 _closeTerminated 门闩，只有第一条命中的路径真正调 ForceExit
+        private int _closeTerminated;
+        private Action<string, string> _closeStateWatcher;
+        private System.Windows.Forms.Timer _closeTimeoutTimer;
+
         private void OnFormClosing(object sender, FormClosingEventArgs e)
         {
+            string state = "Idle";
+            if (_launchFlow != null)
+            {
+                try { state = _launchFlow.CurrentState; } catch { }
+            }
+
+            // Ready / Idle / Error → legacy 硬退出路径
+            if (state == "Ready" || state == "Idle" || state == "Error")
+            {
+                e.Cancel = true;
+                ForceExit();
+                return;
+            }
+
+            // 启动中/Resetting：cancel + 异步等待 Idle/Error
+            // 若已被其他路径（重入）终结，阻止 form 默认关闭即可
+            if (System.Threading.Interlocked.CompareExchange(ref _closeTerminated, 0, 0) != 0)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             e.Cancel = true;
-            ForceExit();
+            LogManager.Log("[Guardian] OnFormClosing state=" + state + " → async cancel + wait terminal");
+
+            // 订阅 OnStateChanged 等待 Idle/Error
+            _closeStateWatcher = delegate(string nextState, string msg)
+            {
+                if (nextState == "Idle" || nextState == "Error")
+                    TerminateCloseOnce("state_" + nextState);
+            };
+            try { _launchFlow.OnStateChanged += _closeStateWatcher; } catch { }
+
+            // 8s 兜底（语义与 Ready 态 ExitGuard 一致）
+            _closeTimeoutTimer = new System.Windows.Forms.Timer();
+            _closeTimeoutTimer.Interval = 8000;
+            _closeTimeoutTimer.Tick += delegate { TerminateCloseOnce("close_timeout"); };
+            _closeTimeoutTimer.Start();
+
+            // 触发异步 Reset（Phase B Step B3: reason 参数已落地）
+            try { _launchFlow.Reset(null, "user_close"); }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Guardian] Reset during close failed: " + ex.Message);
+                TerminateCloseOnce("reset_exception");
+            }
+        }
+
+        private void TerminateCloseOnce(string reason)
+        {
+            if (System.Threading.Interlocked.CompareExchange(ref _closeTerminated, 1, 0) != 0) return;
+            LogManager.Log("[Guardian] close terminator fired reason=" + reason);
+
+            try
+            {
+                if (_closeTimeoutTimer != null)
+                {
+                    _closeTimeoutTimer.Stop();
+                    _closeTimeoutTimer.Dispose();
+                    _closeTimeoutTimer = null;
+                }
+            } catch { }
+
+            try
+            {
+                if (_closeStateWatcher != null && _launchFlow != null)
+                    _launchFlow.OnStateChanged -= _closeStateWatcher;
+                _closeStateWatcher = null;
+            } catch { }
+
+            // 在 UI 线程上调 ForceExit
+            if (this.InvokeRequired)
+            {
+                try { this.BeginInvoke(new Action(ForceExit)); } catch { try { ForceExit(); } catch { } }
+            }
+            else
+            {
+                ForceExit();
+            }
         }
 
         public void ForceExit()
@@ -1089,8 +1256,6 @@ namespace CF7Launcher.Guardian
             StopGpuRenderer();
             DoUnregisterHotkeys();
             CleanupTrayIcon();
-            if (_exitWatchdog != null) _exitWatchdog.Stop();
-
             // 在退出消息循环前终结 Flash + 停音频，不依赖 post-Run 清理
             if (OnKillFlash != null)
             {

@@ -93,8 +93,10 @@ class Program
             }
         }
 
-        // 创建 Guardian 窗口（bus-only 模式下也需要，因为 LogManager/Overlay 依赖 Form）
-        GuardianForm form = new GuardianForm();
+        // Phase A: single-Form 模型。GuardianForm 承载 BootstrapPanel（正常模式）。
+        // bus-only 模式 bootstrapWebDir=null，不创建 BootstrapPanel，FlashHostPanel 直接可见。
+        string bootstrapWebDir = busOnly ? null : Path.Combine(projectRoot, "launcher", "web");
+        GuardianForm form = new GuardianForm(bootstrapWebDir);
 
         // 启用文件日志（GuardianForm 构造函数中已初始化 UI 日志，这里补充文件通道）
         LogManager.InitFileLog(projectRoot);
@@ -421,9 +423,7 @@ class Program
         //   (readyWiring 关闭注入 toastOverlay/webOverlay/inputShield/hnOverlay.SetReady)
 
         // ArchiveTask 已在 TaskRegistry.RegisterAll 中注册 (line 401-402)
-        // BootstrapForm (WebView2)
-        string bootstrapWebDir = Path.Combine(projectRoot, "launcher", "web");
-        CF7Launcher.Guardian.BootstrapForm bootForm = new CF7Launcher.Guardian.BootstrapForm(bootstrapWebDir);
+        // Phase A: BootstrapPanel 已在 GuardianForm ctor 内嵌入，不再单独构造 BootstrapForm
 
         // Phase C: 存档决议依赖链。SolFileLocator 缓存 hash 子目录 + variant；SolResolver
         // 通过 ArchiveTask 的 sync API 读 tombstone / shadow。SaveResolutionContext 只是 DI 聚合。
@@ -432,10 +432,11 @@ class Program
         CF7Launcher.Save.SaveResolutionContext saveCtx = new CF7Launcher.Save.SaveResolutionContext(
             solResolver, archiveTask, config.SwfPath);
 
-        // GameLaunchFlow (状态机接管 processManager.Start / EmbedFlashWindow / SetReady 全链)
+        // Phase A 两段式初始化：GuardianForm 已建（line 97），BootstrapPanel 已作为其子控件构造。
+        // 此处构造 GameLaunchFlow（依赖 form + form.BootstrapPanel）→ 调 InitializeLaunchFlow 补 wire.
         CF7Launcher.Guardian.GameLaunchFlow launchFlow = new CF7Launcher.Guardian.GameLaunchFlow(
             socketServer, router, processManager, windowManager,
-            form, bootForm,
+            form, form.BootstrapPanel,
             /* readyWiring */ delegate
             {
                 // Phase 1 全局硬依赖 WebView2: webOverlay 永不为 null
@@ -449,7 +450,9 @@ class Program
             /* hotkeyGuardSpawn */ null,
             saveCtx);
 
-        bootForm.StateProvider = delegate { return launchFlow.CurrentState; };
+        // Phase A Step A2: wire launchFlow 到 GuardianForm（OnFormClosing 状态分流 + 热键 state-aware guard）
+        form.InitializeLaunchFlow(launchFlow);
+
         launchFlow.OnStateChanged += delegate(string state, string smsg)
         {
             Newtonsoft.Json.Linq.JObject obj = new Newtonsoft.Json.Linq.JObject();
@@ -457,19 +460,23 @@ class Program
             obj["cmd"] = "state";
             obj["state"] = state;
             obj["msg"] = smsg ?? "";
-            bootForm.PostToWeb(obj.ToString(Newtonsoft.Json.Formatting.None));
+            if (form.BootstrapPanel != null)
+                form.BootstrapPanel.PostToWeb(obj.ToString(Newtonsoft.Json.Formatting.None));
         };
-        bootForm.OnJsMessage += delegate(string json)
+        if (form.BootstrapPanel != null)
         {
-            CF7Launcher.Guardian.BootstrapMessageHandler.Handle(json, bootForm, archiveTask, launchFlow);
-        };
+            form.BootstrapPanel.OnJsMessage += delegate(string json)
+            {
+                CF7Launcher.Guardian.BootstrapMessageHandler.Handle(json, form.BootstrapPanel, archiveTask, launchFlow);
+            };
+        }
 
-        // GuardianContext: BootstrapForm 作 MainForm; 退出走 guard.ForceExit -> DoExit -> ExitGuard
-        CF7Launcher.Guardian.GuardianContext ctx = new CF7Launcher.Guardian.GuardianContext(bootForm, form);
+        // Phase A Step A3: GuardianContext 单 Form 模型（原 boot.FormClosed → guard.ForceExit 桥已删除）
+        CF7Launcher.Guardian.GuardianContext ctx = new CF7Launcher.Guardian.GuardianContext(form);
 
         LogManager.Log("[Guardian] Bootstrap ready. Waiting for user to select slot...");
 
-        // 消息循环: ctx (BootstrapForm MainForm, GuardianForm 由 launchFlow Ready 时 Show)
+        // 消息循环: ctx (GuardianForm MainForm, BootstrapPanel 作为其子控件，Ready 时 panel swap)
         Application.Run(ctx);
 
         // 清理：每步 try-catch 保护，防止单点异常跳过后续步骤

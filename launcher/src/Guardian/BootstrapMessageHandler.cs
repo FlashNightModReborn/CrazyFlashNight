@@ -19,7 +19,7 @@ namespace CF7Launcher.Guardian
     {
         public static void Handle(
             string json,
-            BootstrapForm bootForm,
+            BootstrapPanel bootForm,
             ArchiveTask archiveTask,
             GameLaunchFlow launchFlow)
         {
@@ -81,6 +81,33 @@ namespace CF7Launcher.Guardian
                     launchFlow.Retry();
                     return;
 
+                case "cancel_launch":
+                    // Phase B Step B2: 启动中用户主动取消。仅非 Idle 有效，Idle 下 no-op + log
+                    if (launchFlow == null) return;
+                    if (launchFlow.CurrentState == "Idle")
+                    {
+                        LogManager.Log("[BMH] cancel_launch ignored: state=Idle");
+                        return;
+                    }
+                    launchFlow.Reset(null, "user_cancel");
+                    return;
+
+                // ==================== Phase C Step C2: dry-run smoke (Phase E 删除) ====================
+                case "__debug_dry_run":
+                    if (launchFlow == null) { LogManager.Log("[BMH] __debug_dry_run: no launchFlow"); return; }
+                    launchFlow.PrewarmDryRun();
+                    return;
+
+                case "__debug_cancel_dry_run":
+                    if (launchFlow == null) { LogManager.Log("[BMH] __debug_cancel_dry_run: no launchFlow"); return; }
+                    if (launchFlow.CurrentState == "Idle")
+                    {
+                        LogManager.Log("[BMH] __debug_cancel_dry_run: state=Idle, no-op");
+                        return;
+                    }
+                    launchFlow.Reset(null, "debug_cancel");
+                    return;
+
                 // ==================== Phase 2a new ====================
                 case "load":
                     {
@@ -135,7 +162,7 @@ namespace CF7Launcher.Guardian
         // ==================== Phase 2a: save ====================
         // 职责：Idle 守卫 + NormalizeDataToJObject + 注入 userEdit:true → HandleShadow 内做 schema/tombstone/lastSaved
 
-        private static void HandleSave(JObject msg, BootstrapForm bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
+        private static void HandleSave(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
         {
             if (!RequireIdle("save", bootForm, launchFlow)) return;
 
@@ -194,7 +221,7 @@ namespace CF7Launcher.Guardian
 
         // ==================== Phase 2a: reset ====================
 
-        private static void HandleReset(JObject msg, BootstrapForm bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
+        private static void HandleReset(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
         {
             if (!RequireIdle("reset", bootForm, launchFlow)) return;
 
@@ -233,7 +260,7 @@ namespace CF7Launcher.Guardian
         // ==================== Phase 2a: export ====================
         // JS 侧按 slotMeta 决定 forceRaw: corrupt/inconsistent → true
 
-        private static void HandleExport(JObject msg, BootstrapForm bootForm, ArchiveTask archiveTask)
+        private static void HandleExport(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
         {
             string slot = msg.Value<string>("slot");
             if (string.IsNullOrEmpty(slot)) { PostResp(bootForm, "export_resp", false, null, "slot_missing"); return; }
@@ -313,7 +340,7 @@ namespace CF7Launcher.Guardian
         // 同步流程：Idle 守卫 → OpenFileDialog → 读文件 → schema 早期校验 → PostToWeb import_target
         // Handle 在 UI 线程调用，ShowOpenFileDialog 直接同步弹出
 
-        private static void HandleImportStart(BootstrapForm bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
+        private static void HandleImportStart(BootstrapPanel bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
         {
             if (!RequireIdle("import_start", bootForm, launchFlow)) return;
 
@@ -369,7 +396,7 @@ namespace CF7Launcher.Guardian
         // ==================== Phase 2a: import_commit ====================
         // 职责同 save：Idle + NormalizeDataToJObject + 注入 userEdit:true → HandleShadow
 
-        private static void HandleImportCommit(JObject msg, BootstrapForm bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
+        private static void HandleImportCommit(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
         {
             if (!RequireIdle("import_commit", bootForm, launchFlow)) return;
 
@@ -421,7 +448,7 @@ namespace CF7Launcher.Guardian
 
         // ==================== Phase 2a: logs ====================
 
-        private static void HandleLogs(JObject msg, BootstrapForm bootForm)
+        private static void HandleLogs(JObject msg, BootstrapPanel bootForm)
         {
             int requestedLines = 200;
             int? linesParam = msg.Value<int?>("lines");
@@ -509,7 +536,7 @@ namespace CF7Launcher.Guardian
         /// Idle 守卫：launchFlow.CurrentState == "Idle" 才放行。
         /// 失败时按 cmd 映射到对应 _resp 出站 cmd。
         /// </summary>
-        private static bool RequireIdle(string cmd, BootstrapForm bootForm, GameLaunchFlow launchFlow)
+        private static bool RequireIdle(string cmd, BootstrapPanel bootForm, GameLaunchFlow launchFlow)
         {
             if (launchFlow != null && launchFlow.CurrentState == "Idle") return true;
 
@@ -559,7 +586,7 @@ namespace CF7Launcher.Guardian
         /// <summary>
         /// 通用响应：{type:"bootstrap", cmd, ok, slot?, error?}
         /// </summary>
-        private static void PostResp(BootstrapForm bootForm, string cmd, bool ok, string slot, string error)
+        private static void PostResp(BootstrapPanel bootForm, string cmd, bool ok, string slot, string error)
         {
             JObject obj = new JObject();
             obj["type"] = "bootstrap";
@@ -588,7 +615,7 @@ namespace CF7Launcher.Guardian
         /// 用于 load / load_raw 等需要原样转发 data/tombstoned/corrupt 字段的场景。
         /// </summary>
         private static void DispatchArchiveGeneric(
-            BootstrapForm bootForm,
+            BootstrapPanel bootForm,
             ArchiveTask archiveTask,
             JObject archiveMsg,
             string outCmd)
@@ -622,7 +649,7 @@ namespace CF7Launcher.Guardian
 
         /// <summary>Phase 1 DispatchArchive（list_resp / delete_resp 专用，保留 forwardSlots 逻辑）。</summary>
         private static void DispatchArchive(
-            BootstrapForm bootForm,
+            BootstrapPanel bootForm,
             ArchiveTask archiveTask,
             JObject archiveMsg,
             string outCmd,
@@ -659,7 +686,7 @@ namespace CF7Launcher.Guardian
             });
         }
 
-        private static void PostError(BootstrapForm bootForm, string code, string msg)
+        private static void PostError(BootstrapPanel bootForm, string code, string msg)
         {
             JObject obj = new JObject();
             obj["type"] = "bootstrap";
@@ -669,7 +696,7 @@ namespace CF7Launcher.Guardian
             bootForm.PostToWeb(obj.ToString(Formatting.None));
         }
 
-        private static void PostPong(BootstrapForm bootForm, JToken payload)
+        private static void PostPong(BootstrapPanel bootForm, JToken payload)
         {
             JObject obj = new JObject();
             obj["type"] = "bootstrap";

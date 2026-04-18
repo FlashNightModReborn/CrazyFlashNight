@@ -17,6 +17,7 @@
     <button id="btn-open-dir">打开存档目录</button>
     <button id="btn-logs">日志</button>
     <button id="btn-retry" style="display:none">重试</button>
+    <button id="btn-cancel-launch" style="display:none">取消启动</button>
     <span id="state-badge" class="state-badge">Idle</span>
   </div>
 
@@ -37,6 +38,7 @@
   var cardsEl = document.getElementById('cards');
   var stateBadge = document.getElementById('state-badge');
   var retryBtn = document.getElementById('btn-retry');
+  var cancelLaunchBtn = document.getElementById('btn-cancel-launch');
 
   // 原版 10 个预设槽位 (对齐 DOMDocument.xml 原 cf7_config 槽位命名)
   var PRESET_SLOTS = [
@@ -271,6 +273,11 @@
     else if (state === 'Error')  stateBadge.className += ' error';
     else if (state !== 'Idle')   stateBadge.className += ' running';
     retryBtn.style.display = (state === 'Error') ? 'inline-block' : 'none';
+    // Phase B Step B2: 启动中态显示"取消启动"按钮（Idle/Ready/Error/Resetting 隐藏）
+    var launchInProgress = (state === 'Spawning' || state === 'WaitingConnect'
+                         || state === 'WaitingHandshake' || state === 'Embedding'
+                         || state === 'WaitingGameReady');
+    cancelLaunchBtn.style.display = launchInProgress ? 'inline-block' : 'none';
   }
 
   // ==================== Phase 2a: onMessage 分发 ====================
@@ -460,6 +467,7 @@
     window.BootstrapApp.openModal('diagnostic-log', {});
   };
   retryBtn.onclick = function() { send({ cmd: 'retry' }); };
+  cancelLaunchBtn.onclick = function() { send({ cmd: 'cancel_launch' }); };
 
   logLine('tag-in', 'Bootstrap loaded');
   send({ cmd: 'ready' });
