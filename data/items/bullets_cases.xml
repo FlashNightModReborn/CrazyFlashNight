@@ -1075,3 +1075,16 @@
         </attribute>
     </bullet>
 </bullets>
+  <bullet>
+        <name>fm92刺弹炮弹</name>
+        <movement>
+            <func>freeFall</func>
+        </movement>
+        <attribute>
+            <unitBullet>
+                <hitPoint>1</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
+        </attribute>
+    </bullet>
