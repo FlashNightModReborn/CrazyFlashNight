@@ -37,8 +37,9 @@ class org.flashNight.neur.Server.test.BootstrapProtocolTest {
         test_preload_corrupt_sets_deferred_flag();
         test_preload_needs_migration_sets_deferred_flag();
 
-        // DeferToFlash 双重失败升格：deferred=true + SOL 空 → _saveRestoreError
-        test_hasSaveData_deferred_double_failure_escalates();
+        // DeferToFlash 双重失败升格：两条 source 都要独立跑一次，防止未来分流改动回归
+        test_hasSaveData_deferred_double_failure_escalates_needs_migration();
+        test_hasSaveData_deferred_double_failure_escalates_corrupt();
 
         trace("========== RESULT: " + passedCount + " passed, " + failedCount + " failed / " + testCount + " total ==========");
     }
@@ -164,9 +165,21 @@ class org.flashNight.neur.Server.test.BootstrapProtocolTest {
     }
 
     // ==================== DeferToFlash 双重失败升格 ====================
+    // 两条 source (needs_migration / corrupt) 走 SaveManager.preload 里的不同分支
+    // (见 SaveManager.as 第 ~230-260 行), 但都必须统一升格为 _saveRestoreError。
+    // 单独覆盖可以在未来有人修改 corrupt 分支逻辑时立刻捕获回归。
 
-    private static function test_hasSaveData_deferred_double_failure_escalates():Void {
-        beginTest("hasSaveData_deferred_double_failure_escalates");
+    private static function test_hasSaveData_deferred_double_failure_escalates_needs_migration():Void {
+        beginTest("hasSaveData_deferred_escalates_needs_migration");
+        runDeferredDoubleFailureScenario("needs_migration");
+    }
+
+    private static function test_hasSaveData_deferred_double_failure_escalates_corrupt():Void {
+        beginTest("hasSaveData_deferred_escalates_corrupt");
+        runDeferredDoubleFailureScenario("corrupt");
+    }
+
+    private static function runDeferredDoubleFailureScenario(decision:String):Void {
         prepareRoot();
         SaveManager.getInstance()._resetProtocol2ForTest();
 
@@ -175,14 +188,17 @@ class org.flashNight.neur.Server.test.BootstrapProtocolTest {
         so.clear();
         so.flush();
 
-        _root._launcherSaveDecision = "needs_migration";
+        _root._launcherSaveDecision = decision;
+        if (decision == "corrupt") {
+            _root._launcherCorruptDetail = "synthetic_test_detail";
+        }
         SaveManager.getInstance().preload();
 
-        // 此时 _deferredResolutionAttempted=true 且 SOL 空。hasSaveData 应返回
-        // false 并升格为 _saveRestoreError=true，防止 UI 错误提示"重新游戏确认"。
+        // _deferredResolutionAttempted=true 且 SOL 空 → hasSaveData 升格为
+        // _saveRestoreError=true，防止 UI 错误提示"重新游戏确认"。
         var hasSave:Boolean = SaveManager.getInstance().hasSaveData();
-        assert(hasSave == false, "hasSaveData false when deferred + SOL empty");
-        assert(_root._saveRestoreError == true, "_saveRestoreError escalated by double failure");
+        assert(hasSave == false, "hasSaveData false when deferred(" + decision + ") + SOL empty");
+        assert(_root._saveRestoreError == true, "_saveRestoreError escalated by double failure (" + decision + ")");
     }
 
     // ========== helpers ==========
