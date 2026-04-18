@@ -4,7 +4,6 @@
 //! (top-level keys intact — dual-write / backrefs resolved) as a UTF-8 JSON
 //! object, which the C# SolResolver then migrates + validates.
 
-use std::collections::HashMap;
 use std::ffi::OsString;
 use std::fs;
 use std::os::windows::ffi::OsStringExt;
@@ -157,11 +156,10 @@ pub unsafe extern "C" fn sol_free(ptr: *mut u8, len: u32) {
 }
 
 /// Parse/encode scratch state: tracks parser cache order (for Reference
-/// resolution) and Rc identity → cache index reverse map.
+/// resolution).
 #[derive(Default)]
 struct Ctx {
     by_index: Vec<Rc<Value>>,
-    by_ptr: HashMap<usize, u16>,
 }
 
 impl Ctx {
@@ -178,19 +176,13 @@ impl Ctx {
     fn index_value(&mut self, v: &Rc<Value>) {
         match v.as_ref() {
             Value::Object(_, elems, _) | Value::Custom(_, elems, _) => {
-                let idx = self.by_index.len() as u16;
                 self.by_index.push(Rc::clone(v));
-                let key = Rc::as_ptr(v) as usize;
-                self.by_ptr.entry(key).or_insert(idx);
                 for e in elems {
                     self.index_value(&e.value);
                 }
             }
             Value::ECMAArray(_, dense, assoc, _) => {
-                let idx = self.by_index.len() as u16;
                 self.by_index.push(Rc::clone(v));
-                let key = Rc::as_ptr(v) as usize;
-                self.by_ptr.entry(key).or_insert(idx);
                 for item in dense {
                     self.index_value(item);
                 }
@@ -199,10 +191,7 @@ impl Ctx {
                 }
             }
             Value::StrictArray(_, items) => {
-                let idx = self.by_index.len() as u16;
                 self.by_index.push(Rc::clone(v));
-                let key = Rc::as_ptr(v) as usize;
-                self.by_ptr.entry(key).or_insert(idx);
                 for item in items {
                     self.index_value(item);
                 }
@@ -339,17 +328,17 @@ impl Ctx {
     }
 
     fn resolve_ref(&self, r: &Reference, visiting: &mut Vec<u16>) -> Json {
-        // Flash Player writes reference indexes as 1-based (an artifact of
-        // its internal HashMap behavior: the first complex object is stored
-        // when the table already holds one entry — typically the root or a
-        // sentinel). Empirically, `Reference(N)` in the byte stream maps to
-        // our 0-based cache at position N-1. Guard against the edge where
-        // a Reference(0) somehow appears (it should not in valid AMF0).
-        let raw = reference_index(r);
-        if raw == 0 {
-            return Json::Null;
-        }
-        let idx = raw - 1;
+        // AMF0 spec §2.9: reference indexes are 0-based into the cache of
+        // complex objects encountered so far. flash-lso's own AMF0 writer
+        // (amf0/writer/amf0_writer.rs) also emits the first cached object as
+        // `Reference(0)`, and flash-lso's reader returns the raw file-level
+        // u16 unchanged (it does not adjust). So we look up directly.
+        //
+        // Round-trip coverage: tests/reference_semantics.rs constructs a SOL
+        // with Reference(0) pointing at the first cached Object and requires
+        // it to resolve to that object. A 1-based misread regresses that
+        // test.
+        let idx = reference_index(r);
         if visiting.contains(&idx) {
             return Json::Null;
         }

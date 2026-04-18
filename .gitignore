@@ -77,8 +77,10 @@ launcher/bin/Release/
 launcher/packages/
 
 # Rust cargo build intermediates (launcher/native/sol_parser)
+# Cargo.lock IS tracked: sol_parser ships as an application cdylib, not a
+# library crate, so pinning transitive deps is required for reproducible /
+# offline builds.
 launcher/native/sol_parser/target/
-launcher/native/sol_parser/Cargo.lock
 
 # WebView2 runtime cache (machine-specific)
 launcher/webview2_userdata/

@@ -19,7 +19,7 @@ namespace CF7Launcher.Save
     {
         private readonly string _shareRoot;     // %APPDATA%\Macromedia\Flash Player\#SharedObjects
         private readonly object _cacheLock = new object();
-        private string _hashCache;              // subdir like "BMTA4F55"
+        private string _hashCache;              // winning hash subdir like "BMTA4F55"
         private Variant _variantCache = Variant.Unknown;
 
         private enum Variant { Unknown, DropDrive, KeepDrive, Glob }
@@ -37,6 +37,9 @@ namespace CF7Launcher.Save
         /// <summary>
         /// Return the full path to the SOL file for (slot, swfPath), or null
         /// if none of the variants yield an existing file.
+        /// Flash Player may create multiple hash subdirs (different Flash
+        /// plugin installs, different machine states) — probe every subdir in
+        /// order, winning hash is cached for stability.
         /// </summary>
         public string FindSolFile(string slot, string swfPath)
         {
@@ -48,10 +51,6 @@ namespace CF7Launcher.Save
                 return null;
             }
 
-            string hash = GetHashSubdir();
-            if (hash == null) return null;
-            string hashDir = Path.Combine(_shareRoot, hash);
-
             string solFileName = SanitizeSlot(slot) + ".sol";
             string swfFileName = Path.GetFileName(swfPath);
 
@@ -61,41 +60,61 @@ namespace CF7Launcher.Save
             string variantA = BuildSubPath(swfPath, includeDrive: false);
             string variantB = BuildSubPath(swfPath, includeDrive: true);
 
-            // Try cached variant first for stability.
-            Variant cached;
-            lock (_cacheLock) { cached = _variantCache; }
-
-            string tryA = Path.Combine(hashDir, variantA, solFileName);
-            string tryB = Path.Combine(hashDir, variantB, solFileName);
-
-            if (cached == Variant.DropDrive && File.Exists(tryA)) return tryA;
-            if (cached == Variant.KeepDrive && File.Exists(tryB)) return tryB;
-
-            if (File.Exists(tryA)) { Cache(Variant.DropDrive); return tryA; }
-            if (File.Exists(tryB)) { Cache(Variant.KeepDrive); return tryB; }
-
-            // Glob fallback: walk hashDir/localhost/** searching for <swfName>/<slot>.sol.
-            string globHit = GlobFallback(hashDir, swfFileName, solFileName);
-            if (globHit != null)
+            // Preferred probe order: last-winning hash first (stability),
+            // then all remaining subdirs. Ensures we don't silently miss a
+            // SOL under a non-first hash subdir.
+            string preferredHash;
+            Variant cachedVariant;
+            lock (_cacheLock)
             {
-                Cache(Variant.Glob);
-                return globHit;
+                preferredHash = _hashCache;
+                cachedVariant = _variantCache;
+            }
+
+            string[] hashDirs = EnumerateHashDirs();
+            if (hashDirs == null || hashDirs.Length == 0) return null;
+
+            foreach (string hashDir in OrderedHashDirs(hashDirs, preferredHash))
+            {
+                string tryA = Path.Combine(hashDir, variantA, solFileName);
+                string tryB = Path.Combine(hashDir, variantB, solFileName);
+
+                // Honor the last-winning variant first for the preferred hash.
+                string hashName = Path.GetFileName(hashDir);
+                bool isPreferred = (preferredHash != null && hashName == preferredHash);
+                if (isPreferred)
+                {
+                    if (cachedVariant == Variant.DropDrive && File.Exists(tryA))
+                        return tryA;
+                    if (cachedVariant == Variant.KeepDrive && File.Exists(tryB))
+                        return tryB;
+                }
+
+                if (File.Exists(tryA)) { Cache(hashName, Variant.DropDrive); return tryA; }
+                if (File.Exists(tryB)) { Cache(hashName, Variant.KeepDrive); return tryB; }
+
+                string globHit = GlobFallback(hashDir, swfFileName, solFileName);
+                if (globHit != null)
+                {
+                    Cache(hashName, Variant.Glob);
+                    return globHit;
+                }
             }
 
             return null;
         }
 
-        private void Cache(Variant v)
-        {
-            lock (_cacheLock) { _variantCache = v; }
-        }
-
-        private string GetHashSubdir()
+        private void Cache(string hash, Variant v)
         {
             lock (_cacheLock)
             {
-                if (_hashCache != null) return _hashCache;
+                _hashCache = hash;
+                _variantCache = v;
             }
+        }
+
+        private string[] EnumerateHashDirs()
+        {
             try
             {
                 string[] subs = Directory.GetDirectories(_shareRoot);
@@ -104,16 +123,28 @@ namespace CF7Launcher.Save
                     LogManager.Log("[SolFileLocator] no hash subdir under " + _shareRoot);
                     return null;
                 }
-                // In the wild there's typically exactly one; if multiple, pick
-                // the first (Flash uses a stable machine-specific hash).
-                string name = Path.GetFileName(subs[0]);
-                lock (_cacheLock) { _hashCache = name; }
-                return name;
+                return subs;
             }
             catch (Exception ex)
             {
-                LogManager.Log("[SolFileLocator] GetHashSubdir failed: " + ex.Message);
+                LogManager.Log("[SolFileLocator] enumerate hash subdirs failed: " + ex.Message);
                 return null;
+            }
+        }
+
+        private static IEnumerable<string> OrderedHashDirs(string[] hashDirs, string preferredHash)
+        {
+            if (preferredHash != null)
+            {
+                foreach (string d in hashDirs)
+                {
+                    if (Path.GetFileName(d) == preferredHash) { yield return d; break; }
+                }
+            }
+            foreach (string d in hashDirs)
+            {
+                if (preferredHash == null || Path.GetFileName(d) != preferredHash)
+                    yield return d;
             }
         }
 

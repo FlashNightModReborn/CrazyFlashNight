@@ -66,6 +66,24 @@ class org.flashNight.neur.Server.SaveManager {
         _prefetchInFlight = false;
     }
 
+    // ==================== 测试专用 ====================
+    // 仅供 BootstrapProtocolTest 使用。因为 SaveManager 是全局单例，正常运行
+    // 期 _protocol2Consumed 单向拉起后 preload 不再响应决议；测试需要复位状态
+    // 才能跑完 snapshot / deleted / empty / corrupt / needs_migration 五条分支。
+    // 产品代码不得调用。
+    public function _resetProtocol2ForTest():Void {
+        _bootstrapSnapshot = undefined;
+        _bootstrapSnapshotSource = undefined;
+        _skipPrefetch = false;
+        _protocol2Consumed = false;
+        _deferredResolutionAttempted = false;
+        _deferredDecisionSource = undefined;
+        _prefetchedData = undefined;
+        _prefetchedSlot = undefined;
+        _prefetchGen++;
+        _prefetchInFlight = false;
+    }
+
     // ==================== 预取管理 ====================
 
     public function getPrefetchStatus():Object {
