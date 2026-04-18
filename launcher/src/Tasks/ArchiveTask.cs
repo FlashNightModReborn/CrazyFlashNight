@@ -30,6 +30,52 @@ namespace CF7Launcher.Tasks
         /// <summary>saves 目录路径（供 BootstrapMessageHandler 读取）。</summary>
         public string SavesDir { get { return _savesDir; } }
 
+        /// <summary>
+        /// 同步读 shadow JSON。SolResolver 专用。
+        /// 与 HandleShadow 写操作共享 <c>_lock</c>，保证读到的要么是写前、要么是写后完整数据。
+        /// 不触碰 <c>_prevSnapshots</c>（避免与 consistency diff 的异步计算交叉）。
+        /// tombstone 判定独立，调用方应先调 <see cref="IsTombstoned"/>。
+        /// </summary>
+        public bool TryLoadShadowSync(string slot, out JObject data, out string error)
+        {
+            data = null;
+            error = null;
+            string safe = SanitizeSlotName(slot);
+            string path = Path.Combine(_savesDir, safe + ".json");
+            lock (_lock)
+            {
+                if (!File.Exists(path))
+                {
+                    error = "not_found";
+                    return false;
+                }
+                try
+                {
+                    string content = File.ReadAllText(path, Encoding.UTF8);
+                    data = JObject.Parse(content);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    error = ex.Message;
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 墓碑检查。SolResolver 专用，语义对齐 HandleLoad 的 tombstone 判定。
+        /// </summary>
+        public bool IsTombstoned(string slot)
+        {
+            string safe = SanitizeSlotName(slot);
+            string tombPath = Path.Combine(_savesDir, safe + ".tombstone");
+            lock (_lock)
+            {
+                return File.Exists(tombPath);
+            }
+        }
+
         // 一致性校验：每个 slot 的上一次 shadow 快照
         private readonly Dictionary<string, JObject> _prevSnapshots = new Dictionary<string, JObject>();
 

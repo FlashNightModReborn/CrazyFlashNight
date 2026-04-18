@@ -425,6 +425,13 @@ class Program
         string bootstrapWebDir = Path.Combine(projectRoot, "launcher", "web");
         CF7Launcher.Guardian.BootstrapForm bootForm = new CF7Launcher.Guardian.BootstrapForm(bootstrapWebDir);
 
+        // Phase C: 存档决议依赖链。SolFileLocator 缓存 hash 子目录 + variant；SolResolver
+        // 通过 ArchiveTask 的 sync API 读 tombstone / shadow。SaveResolutionContext 只是 DI 聚合。
+        CF7Launcher.Save.SolFileLocator solLocator = new CF7Launcher.Save.SolFileLocator();
+        CF7Launcher.Save.SolResolver solResolver = new CF7Launcher.Save.SolResolver(solLocator, archiveTask);
+        CF7Launcher.Save.SaveResolutionContext saveCtx = new CF7Launcher.Save.SaveResolutionContext(
+            solResolver, archiveTask, config.SwfPath);
+
         // GameLaunchFlow (状态机接管 processManager.Start / EmbedFlashWindow / SetReady 全链)
         CF7Launcher.Guardian.GameLaunchFlow launchFlow = new CF7Launcher.Guardian.GameLaunchFlow(
             socketServer, router, processManager, windowManager,
@@ -439,7 +446,8 @@ class Program
                 // 11b-β: Ready 才让托盘可见
                 form.ShowTrayIcon();
             },
-            /* hotkeyGuardSpawn */ null);
+            /* hotkeyGuardSpawn */ null,
+            saveCtx);
 
         bootForm.StateProvider = delegate { return launchFlow.CurrentState; };
         launchFlow.OnStateChanged += delegate(string state, string smsg)

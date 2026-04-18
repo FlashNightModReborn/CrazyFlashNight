@@ -76,6 +76,10 @@ node_modules/
 launcher/bin/Release/
 launcher/packages/
 
+# Rust cargo build intermediates (launcher/native/sol_parser)
+launcher/native/sol_parser/target/
+launcher/native/sol_parser/Cargo.lock
+
 # WebView2 runtime cache (machine-specific)
 launcher/webview2_userdata/
 weboverlay_debug.log

@@ -101,6 +101,11 @@
     <Compile Include="src\Guardian\BootstrapForm.cs" />
     <Compile Include="src\Guardian\InputShieldForm.cs" />
     <Compile Include="src\Guardian\PerfDecisionEngine.cs" />
+    <Compile Include="src\Save\SolParserNative.cs" />
+    <Compile Include="src\Save\SolFileLocator.cs" />
+    <Compile Include="src\Save\SolResolver.cs" />
+    <Compile Include="src\Save\SaveMigrator.cs" />
+    <Compile Include="src\Save\SaveResolutionContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

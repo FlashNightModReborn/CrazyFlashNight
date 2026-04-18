@@ -46,6 +46,16 @@ class org.flashNight.neur.Server.SaveManager {
     private var _prefetchGen:Number;
     private var _prefetchInFlight:Boolean;
 
+    // ── Protocol 2 (launcher 存档决议) ──
+    // 握手回调把 _root._launcher* 写入, preload() 一次性消费并转存到实例字段后 delete.
+    // preload() 被 asLoader frame 4 + 主FLA frame 63 各调一次, _protocol2Consumed 保证幂等.
+    private var _bootstrapSnapshot:Object = undefined;
+    private var _bootstrapSnapshotSource:String = undefined;
+    private var _skipPrefetch:Boolean = false;
+    private var _protocol2Consumed:Boolean = false;
+    private var _deferredResolutionAttempted:Boolean = false;
+    private var _deferredDecisionSource:String = undefined;
+
     // ==================== 构造 ====================
     private function SaveManager() {
         _dirtyMark = false;
@@ -181,35 +191,99 @@ class org.flashNight.neur.Server.SaveManager {
 
     public function preload():Void {
         var sm:ServerManager = ServerManager.getInstance();
+
+        // ── 幂等保护: asLoader frame 4 和主FLA frame 63 各调一次 ──
+        if (_protocol2Consumed) {
+            sm.sendServerMessage("[SaveManager.preload] idempotent skip (protocol 2 already consumed)");
+            return;
+        }
+
         sm.sendServerMessage("[SaveManager.preload] savePath=" + _root.savePath);
+
+        // ── Protocol 2 快路径: launcher 存档决议 ──
+        var decision:String = _root._launcherSaveDecision;
+        if (decision != undefined) {
+            var snap:Object = _root._launcherSnapshot;
+            var src:String = _root._launcherSnapshotSource;
+            var corruptDetail:String = _root._launcherCorruptDetail;
+            delete _root._launcherSaveDecision;
+            delete _root._launcherSnapshot;
+            delete _root._launcherSnapshotSource;
+            delete _root._launcherCorruptDetail;
+
+            _protocol2Consumed = true;
+            clearPrefetch();
+            sm.sendServerMessage("[SaveManager.preload] launcher decision=" + decision + " source=" + src);
+
+            if (decision == "snapshot" && snap != undefined) {
+                _root.mydata = snap;
+                _bootstrapSnapshot = snap;
+                _bootstrapSnapshotSource = (src != undefined) ? src : "unknown";
+                return;
+            }
+            if (decision == "deleted") {
+                var soDel:SharedObject = getSO();
+                soDel.clear();
+                soDel.data._deleted = true;
+                var flushOk:Boolean = flushSO(soDel);
+                if (!flushOk) {
+                    sm.sendServerMessage("[SaveManager.preload] tombstone flush FAILED slot=" + _root.savePath);
+                }
+                _root.mydata = undefined;
+                return;
+            }
+            if (decision == "empty") {
+                _root.mydata = undefined;
+                return;
+            }
+            if (decision == "corrupt") {
+                sm.sendServerMessage("[SaveManager.preload] corrupt detail=" +
+                    (corruptDetail != undefined ? corruptDetail : "unknown"));
+                _deferredResolutionAttempted = true;
+                _deferredDecisionSource = "corrupt";
+                _skipPrefetch = true;
+                // 穿透到同步 SOL 读取
+            } else if (decision == "needs_migration") {
+                sm.sendServerMessage("[SaveManager.preload] needs_migration/defer_to_flash, sync SOL path");
+                _deferredResolutionAttempted = true;
+                _deferredDecisionSource = "needs_migration";
+                _skipPrefetch = true;
+                // 穿透到同步 SOL 读取
+            }
+        }
 
         // P3a: 异步预取 — 无论 SOL 状态如何，都向 Launcher 请求 JSON 存档
         // 这确保了"本地档坏了还能靠 Launcher 恢复"的场景
-        _prefetchGen++;
-        var currentGen:Number = _prefetchGen;
-        var self:SaveManager = this;
-        var requestedSlot:String = _root.savePath;
-        if (sm.isSocketConnected) {
-            _prefetchInFlight = true;
-            sm.sendTaskWithCallback("archive", {op:"load", slot:requestedSlot}, null,
-                function(resp:Object):Void {
-                    self._prefetchInFlight = false;
-                    if (currentGen != self._prefetchGen) return;
-                    if (resp.success != true || typeof resp.data != "string") {
-                        // launcher 返回 tombstoned → 对齐 SOL 墓碑，避免"本地无墓碑而launcher已删"的状态分叉
-                        if (resp.error != null && String(resp.error).indexOf("tombstoned") == 0) {
-                            self.handlePreloadTombstoned(requestedSlot);
+        // Protocol 2 needs_migration/corrupt 路径显式跳过 (_skipPrefetch), 消除启动期 async 等待.
+        if (_skipPrefetch) {
+            _skipPrefetch = false;
+        } else {
+            _prefetchGen++;
+            var currentGen:Number = _prefetchGen;
+            var self:SaveManager = this;
+            var requestedSlot:String = _root.savePath;
+            if (sm.isSocketConnected) {
+                _prefetchInFlight = true;
+                sm.sendTaskWithCallback("archive", {op:"load", slot:requestedSlot}, null,
+                    function(resp:Object):Void {
+                        self._prefetchInFlight = false;
+                        if (currentGen != self._prefetchGen) return;
+                        if (resp.success != true || typeof resp.data != "string") {
+                            // launcher 返回 tombstoned → 对齐 SOL 墓碑，避免"本地无墓碑而launcher已删"的状态分叉
+                            if (resp.error != null && String(resp.error).indexOf("tombstoned") == 0) {
+                                self.handlePreloadTombstoned(requestedSlot);
+                            }
+                            return;
                         }
-                        return;
+                        var parsed:Object = self._jsonParser.parse(resp.data);
+                        if (self._jsonParser.errors.length > 0) return;
+                        if (!self.validateMydata(parsed)) return;
+                        self._prefetchedData = parsed;
+                        self._prefetchedSlot = requestedSlot;
+                        sm.sendServerMessage("[SaveManager] prefetch OK slot=" + requestedSlot);
                     }
-                    var parsed:Object = self._jsonParser.parse(resp.data);
-                    if (self._jsonParser.errors.length > 0) return;
-                    if (!self.validateMydata(parsed)) return;
-                    self._prefetchedData = parsed;
-                    self._prefetchedSlot = requestedSlot;
-                    sm.sendServerMessage("[SaveManager] prefetch OK slot=" + requestedSlot);
-                }
-            );
+                );
+            }
         }
 
         // SOL 读取
@@ -245,6 +319,35 @@ class org.flashNight.neur.Server.SaveManager {
     public function loadAll():Boolean {
         var sm:ServerManager = ServerManager.getInstance();
         sm.sendServerMessage("[SaveManager.loadAll] savePath=" + _root.savePath);
+
+        // ── Protocol 2: launcher snapshot 快路径 ──
+        // snap 已在 preload 经 validator 校验 (launcher C# 侧),
+        // 直接喂 loadFromMydata 即可跳过所有 SOL/JSON 合并逻辑.
+        if (_bootstrapSnapshot != undefined) {
+            var pSnap:Object = _bootstrapSnapshot;
+            var pSrc:String = _bootstrapSnapshotSource;
+            _bootstrapSnapshot = undefined;
+            _bootstrapSnapshotSource = undefined;
+            sm.sendServerMessage("[SaveManager.loadAll] using launcher snapshot source=" + pSrc);
+
+            var pOk:Boolean = loadFromMydata(pSnap);
+            if (pOk) {
+                _deferredResolutionAttempted = false;
+                _deferredDecisionSource = undefined;
+                _prefetchGen++;
+                return true;
+            }
+            // apply 失败 — source-aware 分流
+            if (pSrc == "sol") {
+                sm.sendServerMessage("[SaveManager.loadAll] sol snapshot apply failed, fallthrough to native SOL path");
+                // fallthrough: _root.mydata 已被 preload 设为 snap, 但 snap 已被此处 apply 失败,
+                // 下方 SOL 分支会重新赋值 _root.mydata = soData[SAVE_KEY] 并走原路径 migrate.
+            } else {
+                sm.sendServerMessage("[SaveManager.loadAll] json_shadow snapshot apply failed, restore error");
+                _root._saveRestoreError = true;
+                return false;
+            }
+        }
 
         // P3a: JSON 优先分支
         if (_prefetchedData != undefined) {
@@ -336,6 +439,8 @@ class org.flashNight.neur.Server.SaveManager {
                     var _jLen = (_root.tasks_to_do != undefined) ? _root.tasks_to_do.length : 0;
                     var _jpLen = (_root.宠物信息 != undefined) ? _root.宠物信息.length : 0;
                     sm.sendServerMessage("[SaveManager.loadAll] JSON+SO 完成: " + _root.角色名 + " lv" + _root.等级 + " tasks=" + _jLen + " pets=" + _jpLen);
+                    _deferredResolutionAttempted = false;
+                    _deferredDecisionSource = undefined;
                     _prefetchGen++;
                     return true;
                 }
@@ -451,6 +556,8 @@ class org.flashNight.neur.Server.SaveManager {
         var _laLen = (_root.tasks_to_do != undefined) ? _root.tasks_to_do.length : 0;
         var _lpLen = (_root.宠物信息 != undefined) ? _root.宠物信息.length : 0;
         sm.sendServerMessage("[SaveManager.loadAll] 完成: 主线进度=" + _root.主线任务进度 + " tasks_to_do.len=" + _laLen + " 宠物数=" + _lpLen);
+        _deferredResolutionAttempted = false;
+        _deferredDecisionSource = undefined;
         _prefetchGen++;
         return true;
     }
@@ -516,6 +623,9 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function hasSaveData():Boolean {
+        // Protocol 2: launcher snapshot 已就绪 → 肯定有存档
+        if (_bootstrapSnapshot != undefined) return true;
+
         var so:SharedObject = getSO();
         var raw:Object = so.data[SAVE_KEY];
         if (raw != undefined && raw[0] != undefined && raw[0][0] != undefined) {
@@ -529,14 +639,27 @@ class org.flashNight.neur.Server.SaveManager {
                 "[SaveManager.hasSaveData] SOL 无数据，但 Launcher 预取可用 slot=" + _prefetchedSlot);
             return true;
         }
+
+        // Protocol 2 双重失败升格: launcher 决议 needs_migration/corrupt, 本地 SOL 也读不出 →
+        // 不能误送"重新游戏确认", 设 _saveRestoreError = true 让 frame 128/:3198/:3363 走"存档损坏" UI.
+        if (_deferredResolutionAttempted) {
+            var src:String = (_deferredDecisionSource != undefined) ? _deferredDecisionSource : "unknown";
+            _deferredResolutionAttempted = false;
+            _deferredDecisionSource = undefined;
+            _root._saveRestoreError = true;
+            ServerManager.getInstance().sendServerMessage(
+                "[SaveManager.hasSaveData] deferred resolution double failure (source=" + src + ") → restore error");
+        }
         return false;
     }
 
     /**
      * Launcher 异步预取是否正在进行中（SOL 缺失时帧脚本可轮询此状态）
      * true = 预取请求已发出且尚未返回（_prefetchInFlight），SOL 缺失，且未被主动删除
+     * Protocol 2 下 snapshot 已就绪, 无需异步等待, 立即返回 false.
      */
     public function isRecoveryPending():Boolean {
+        if (_bootstrapSnapshot != undefined) return false;
         if (_root.mydata != undefined) return false;
         if (_prefetchedData != undefined) return false;
         if (getSO().data._deleted == true) return false;

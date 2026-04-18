@@ -42,6 +42,7 @@ namespace CF7Launcher.Guardian
         private readonly BootstrapForm _bootForm;
         private readonly Action _readyWiring;
         private readonly Action _hotkeyGuardSpawn;
+        private readonly CF7Launcher.Save.SaveResolutionContext _saveCtx;
 
         // ==================== 状态字段（必须在 _stateLock 内读写，不变式 #19）====================
         private readonly object _stateLock = new object();
@@ -69,6 +70,10 @@ namespace CF7Launcher.Guardian
         private const int WAIT_HANDSHAKE_MS = 8000;     // 连上后 bootstrap_handshake 到达
         private const int WAIT_GAME_READY_MS = 8000;    // embed 完后 bootstrap_ready 到达
 
+        // 存档决议：Phase C protocol v2。StartGame 锁外解析后设置，HandleBootstrapHandshake 响应读取。
+        // 每次 StartGame 重置；每次 attempt 一份。
+        private CF7Launcher.Save.SolResolveResult _resolvedSave;
+
         // ==================== 公共 API ====================
 
         /// <summary>状态变更事件。参数：(state, message)。</summary>
@@ -87,7 +92,8 @@ namespace CF7Launcher.Guardian
             GuardianForm form,
             BootstrapForm bootForm,
             Action readyWiring,
-            Action hotkeyGuardSpawn)
+            Action hotkeyGuardSpawn,
+            CF7Launcher.Save.SaveResolutionContext saveCtx)
         {
             _socketServer = socketServer;
             _router = router;
@@ -97,6 +103,7 @@ namespace CF7Launcher.Guardian
             _bootForm = bootForm;
             _readyWiring = readyWiring;
             _hotkeyGuardSpawn = hotkeyGuardSpawn;
+            _saveCtx = saveCtx;
 
             // Phase 1f：正常路径 bootstrap_handshake / bootstrap_ready 注册（plan §Phase 1f）
             _router.RegisterSync("bootstrap_handshake", HandleBootstrapHandshake);
@@ -113,6 +120,25 @@ namespace CF7Launcher.Guardian
         /// <summary>玩家选择 slot 后启动游戏。锁内快照 slot，后续使用局部变量。</summary>
         public void StartGame(string slot)
         {
+            // Phase C protocol v2: 锁外解析存档决议。避免在握手状态锁里做文件 I/O。
+            // SolResolver 自身线程安全（使用 ArchiveTask 的 _lock）。
+            CF7Launcher.Save.SolResolveResult resolved = null;
+            if (_saveCtx != null)
+            {
+                try
+                {
+                    resolved = _saveCtx.Resolver.Resolve(slot, _saveCtx.SwfPath);
+                    LogManager.Log("[LaunchFlow] save resolved: wire=" + resolved.WireDecision
+                        + " kind=" + resolved.Kind
+                        + " source=" + (resolved.Source != null ? resolved.Source : "n/a"));
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[LaunchFlow] SolResolver EXCEPTION: " + ex);
+                    resolved = CF7Launcher.Save.SolResolveResult.CorruptFromException(ex);
+                }
+            }
+
             lock (_stateLock)
             {
                 if (_state != State.Idle)
@@ -122,6 +148,7 @@ namespace CF7Launcher.Guardian
                 }
                 _pendingSlot = slot;
                 _currentAttemptId = Guid.NewGuid().ToString("N");
+                _resolvedSave = resolved;
                 _cachedReady.Clear();
                 CancelWaitTimerLocked();   // 新 attempt 前清旧 wait timer
                 CancelZombieTimerLocked(); // 新 attempt 前清 zombie timer
@@ -350,6 +377,20 @@ namespace CF7Launcher.Guardian
                 resp["success"] = true;
                 resp["attemptId"] = _currentAttemptId;
                 resp["savePath"] = _pendingSlot != null ? _pendingSlot : "default";
+
+                // Phase C protocol v2: 携带存档决议 + snapshot 下传给 Flash 侧 preload
+                resp["protocol"] = 2;
+                if (_resolvedSave != null)
+                {
+                    resp["saveDecision"] = _resolvedSave.WireDecision;
+                    if (_resolvedSave.Snapshot != null)
+                        resp["snapshot"] = _resolvedSave.Snapshot;
+                    if (_resolvedSave.Source != null)
+                        resp["snapshotSource"] = _resolvedSave.Source;
+                    if (_resolvedSave.CorruptDetail != null)
+                        resp["corruptDetail"] = _resolvedSave.CorruptDetail;
+                }
+
                 TransitionToEmbedding();
                 return resp.ToString(Newtonsoft.Json.Formatting.None);
             }

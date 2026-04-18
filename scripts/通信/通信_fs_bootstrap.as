@@ -34,9 +34,17 @@ _root._bootstrap.startHandshake = function():Void {
             if (resp.attemptId != undefined && resp.attemptId != null) {
                 _root._bootstrapAttemptId = String(resp.attemptId);
             }
+            // Protocol 2 (launcher 存档决议): 存到 _root._launcher* 一次性字段,
+            // SaveManager.preload() 消费后立即 delete 并置幂等锁 _protocol2Consumed.
+            if (resp.protocol >= 2 && resp.saveDecision != undefined) {
+                _root._launcherSaveDecision = resp.saveDecision;
+                _root._launcherSnapshot = resp.snapshot;
+                _root._launcherSnapshotSource = resp.snapshotSource;
+                _root._launcherCorruptDetail = resp.corruptDetail;
+            }
             _root._bootstrapSavePathReady = true;
             if (_root.server != undefined) {
-                _root.server.sendServerMessage("[Bootstrap] handshake OK savePath=" + resp.savePath + " attemptId=" + _root._bootstrapAttemptId);
+                _root.server.sendServerMessage("[Bootstrap] handshake OK savePath=" + resp.savePath + " attemptId=" + _root._bootstrapAttemptId + " protocol=" + resp.protocol + " decision=" + resp.saveDecision);
             }
         },
         function(reason:String):Void {

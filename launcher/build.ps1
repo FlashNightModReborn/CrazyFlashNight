@@ -63,6 +63,25 @@ if (Test-Path $nativeBat) {
     Write-Host "  [SKIP] No native\build.bat found" -ForegroundColor Yellow
 }
 
+# Step 1.9: Build sol_parser DLL (Rust cdylib)
+Write-Host "[Step 1.9] Build sol_parser.dll (Rust)..." -ForegroundColor Yellow
+$solBat = Join-Path $launcherDir "native\sol_parser\build.bat"
+if (-not (Test-Path $solBat)) {
+    Write-Host "[FAIL] sol_parser build.bat missing: $solBat" -ForegroundColor Red
+    exit 1
+}
+& cmd /c $solBat
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] sol_parser build failed." -ForegroundColor Red
+    exit 1
+}
+$solParserDll = Join-Path $binDir "sol_parser.dll"
+if (-not (Test-Path $solParserDll)) {
+    Write-Host "[FAIL] sol_parser.dll not found at $solParserDll after build." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  sol_parser.dll OK." -ForegroundColor Green
+
 # Step 2: MSBuild
 Write-Host "[Step 2/4] MSBuild compile..." -ForegroundColor Yellow
 $csproj = Join-Path $launcherDir "CRAZYFLASHER7MercenaryEmpire.csproj"
@@ -82,6 +101,7 @@ $managedFiles = @(
     "ClearScript.V8.ICUData.dll",
     "Newtonsoft.Json.dll",
     "miniaudio.dll",
+    "sol_parser.dll",
     "SharpDX.dll",
     "SharpDX.DXGI.dll",
     "SharpDX.Direct3D11.dll",
@@ -98,6 +118,15 @@ foreach ($f in $managedFiles) {
         Write-Host "  [WARN] Not found: $src" -ForegroundColor Yellow
     }
 }
+
+# Step 3.5: Hard assert sol_parser.dll landed at projectRoot (Step 3 只 WARN 不 fail,
+# 此处补独立硬断言防止 "build 成功但运行时 DllNotFoundException".)
+$solParserProjDll = Join-Path $projectRoot "sol_parser.dll"
+if (-not (Test-Path $solParserProjDll)) {
+    Write-Host "[FAIL] sol_parser.dll missing at projectRoot after copy step." -ForegroundColor Red
+    exit 1
+}
+Write-Host "[Step 3.5] sol_parser.dll present at projectRoot." -ForegroundColor Green
 
 # Step 4: Copy native V8 DLL
 Write-Host "[Step 4/6] Copy native V8 DLL..." -ForegroundColor Yellow
