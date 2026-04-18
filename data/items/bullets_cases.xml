@@ -403,6 +403,32 @@
             </unitBullet>
         </attribute>
     </bullet>
+     <bullet>
+        <name>fm92刺弹炮弹</name>
+        <movement>
+            <func>freeFall</func>
+        </movement>
+        <attribute>
+            <unitBullet>
+                <hitPoint>1</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
+        </attribute>
+    </bullet>
+  <bullet>
+        <name>蓝旋反坦克炮弹</name>
+        <movement>
+            <func>accelerated</func>
+        </movement>
+        <attribute>
+            <unitBullet>
+                <hitPoint>1</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
+        </attribute>
+    </bullet>
     <bullet>
         <name>爆炎手里剑</name>
         <movement>
@@ -1074,30 +1100,4 @@
             </rayConfig>
         </attribute>
 </bullets>
-  <bullet>
-        <name>fm92刺弹炮弹</name>
-        <movement>
-            <func>freeFall</func>
-        </movement>
-        <attribute>
-            <unitBullet>
-                <hitPoint>1</hitPoint>
-                <hitEffect>火花</hitEffect>
-                <zTolerance>25</zTolerance>
-            </unitBullet>
-        </attribute>
-    </bullet>
-  <bullet>
-        <name>蓝旋反坦克炮弹</name>
-        <movement>
-            <func>accelerated</func>
-        </movement>
-        <attribute>
-            <unitBullet>
-                <hitPoint>1</hitPoint>
-                <hitEffect>火花</hitEffect>
-                <zTolerance>25</zTolerance>
-            </unitBullet>
-        </attribute>
-    </bullet>
-</bullet>
+ 
