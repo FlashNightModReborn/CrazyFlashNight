@@ -1087,4 +1087,17 @@
             </unitBullet>
         </attribute>
     </bullet>
-     </bullet>
+  <bullet>
+        <name>蓝旋反坦克炮弹</name>
+        <movement>
+            <func>accelerated</func>
+        </movement>
+        <attribute>
+            <unitBullet>
+                <hitPoint>1</hitPoint>
+                <hitEffect>火花</hitEffect>
+                <zTolerance>25</zTolerance>
+            </unitBullet>
+        </attribute>
+    </bullet>
+</bullet>
