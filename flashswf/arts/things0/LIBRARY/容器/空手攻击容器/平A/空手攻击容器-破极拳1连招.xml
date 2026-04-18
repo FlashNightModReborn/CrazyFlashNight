@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-破极拳1连招" lastModified="1776200264">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-破极拳1连招" lastModified="1776542316">
   <timeline>
-    <DOMTimeline name="空手攻击容器-破极拳1连招" currentFrame="2">
+    <DOMTimeline name="空手攻击容器-破极拳1连招" currentFrame="42">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -273,7 +273,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -795,7 +795,7 @@
             </DOMFrame>
             <DOMFrame index="54" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" selected="true" centerPoint3DX="-59.8" centerPoint3DY="0.95">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="-59.8" centerPoint3DY="0.95">
                   <matrix>
                     <Matrix a="5.53178405761719" d="4.15505981445313" tx="-58.55" ty="-0.6"/>
                   </matrix>
@@ -12899,7 +12899,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 33" color="#4FFF4F" locked="true">
+        <DOMLayer name="图层 33" color="#4FFF4F" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

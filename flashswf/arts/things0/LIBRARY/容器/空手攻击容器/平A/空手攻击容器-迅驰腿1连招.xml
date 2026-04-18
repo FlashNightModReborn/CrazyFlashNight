@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-迅驰腿1连招" itemID="69de9d91-00000d1f" linkageExportForAS="true" linkageIdentifier="空手攻击容器-迅驰腿1连招" lastModified="1776265560" lastUniqueIdentifier="35">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-迅驰腿1连招" itemID="69de9d91-00000d1f" linkageExportForAS="true" linkageIdentifier="空手攻击容器-迅驰腿1连招" lastModified="1776542277" lastUniqueIdentifier="35">
   <timeline>
-    <DOMTimeline name="空手攻击容器-迅驰腿1连招" currentFrame="134">
+    <DOMTimeline name="空手攻击容器-迅驰腿1连招">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -214,7 +214,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#808080" autoNamed="false">
+        <DOMLayer name="子弹层" color="#808080" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -849,7 +849,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -1594,7 +1594,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -2909,7 +2909,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_3" color="#FF800A" locked="true">
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -2931,7 +2931,7 @@
             </DOMFrame>
             <DOMFrame index="27" duration="7" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="MovieClip/sprite 1236" symbolType="graphic" firstFrame="2" centerPoint3DX="6.3" centerPoint3DY="119.55" loop="play once">
+                <DOMSymbolInstance libraryItemName="MovieClip/sprite 1236" selected="true" symbolType="graphic" firstFrame="2" centerPoint3DX="6.3" centerPoint3DY="119.55" loop="play once">
                   <matrix>
                     <Matrix a="1.1129150390625" b="-0.453048706054688" c="0.66741943359375" d="1.63957214355469" tx="-166.55" ty="193.35"/>
                   </matrix>
