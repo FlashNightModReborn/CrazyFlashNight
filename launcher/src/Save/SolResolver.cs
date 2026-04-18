@@ -227,6 +227,13 @@ namespace CF7Launcher.Save
             if (shadowValid)
             {
                 string shadowTs = shadow.Value<string>("lastSaved");
+                // pre-2.7 分支刻意用 `>`（严格大于），与 v3.0 分支的 `>=` 分殊：
+                //   - v3.0 分支：SOL 结构已被 validator 判异常 → SOL 本身可疑
+                //     → 同秒 shadow 亦可取代（`>=`）。
+                //   - pre-2.7 分支：SOL 结构合法只是版本旧 → SOL 本身无嫌疑
+                //     → shadow 必须严格更新才值得覆盖（`>`）。
+                // lastSaved 是秒级精度；同秒歧义下保守让 AS2 再跑一次 pre-2.7 → 3.0
+                // 迁移，比错误地用旧 shadow 覆盖更新的 SOL 安全。
                 if (shadowTs != null
                     && string.Compare(shadowTs, pre27Ts, StringComparison.Ordinal) > 0)
                 {
