@@ -102,7 +102,11 @@ namespace CF7Launcher.Config
             }
         }
 
-        public void Save()
+        /// <summary>落盘到 appdata/launcher_user_prefs.json。
+        /// 返回 true 表示落盘成功; false 表示磁盘写入失败 (日志已记)。
+        /// 调用方 (ConfigCommandHandler) 据此回 {ok:false, error:"save_failed"},
+        /// 避免前端以为设置已持久化、下次启动却回退。</summary>
+        public bool Save()
         {
             try
             {
@@ -113,10 +117,12 @@ namespace CF7Launcher.Config
                 obj["ambientEnabled"] = AmbientEnabled;
                 obj["uiFontScale"] = UiFontScale;
                 File.WriteAllText(_path, obj.ToString(Newtonsoft.Json.Formatting.Indented));
+                return true;
             }
             catch (Exception ex)
             {
                 LogManager.Log("[UserPrefs] save failed: " + ex.Message);
+                return false;
             }
         }
     }

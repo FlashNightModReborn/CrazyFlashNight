@@ -77,6 +77,9 @@
     document.documentElement.style.setProperty('--fs-scale', String(v));
   }
 
+  // 字号切换的"持久化失败回退"状态: setUiFontScale 前的倍率, 用于 config_set_resp 失败时还原
+  var _priorFontScale = null;
+
   // 用户在 slot 页主动选择的槽位 + 模式 ('normal' = 加载现有存档 / 'fresh' = 新建或重建).
   // 设置后回到欢迎页, _welcomeSlot 优先使用该槽位; 「确认」按 mode 分发到 start_game / rebuild.
   // null = 未主动选择, 欢迎页走 pickDefaultSlot 默认规则 (lastPlayedSlot / 第一个健康 preset ...).
@@ -613,7 +616,13 @@
       if (!msg.ok) {
         logLine('tag-err', 'config_set failed: key=' + (msg.key || '?') + ' err=' + (msg.error || ''));
         playUiCue('playError');
+        // uiFontScale 落盘失败: 回退 CSS 到请求前的值, 避免前端以为已生效、下次启动却回退的幽灵状态.
+        // 对应 UserPrefs.Save() 磁盘写入失败时 ConfigCommandHandler 回的 save_failed.
+        if (msg.key === 'uiFontScale' && _priorFontScale != null) {
+          applyFontScale(_priorFontScale);
+        }
       }
+      if (msg.key === 'uiFontScale') _priorFontScale = null;
     }
     else if (msg.cmd === 'flash_ready') {
       var sk = document.getElementById('intro-skip');
@@ -778,6 +787,8 @@
     getUiFontScalePresets: function() { return FONT_SCALE_PRESETS.slice(); },
     setUiFontScale: function(v) {
       var clamped = clampFontScale(v);
+      // 记下"请求前"的值, config_set_resp 失败时回退到它
+      if (_prefsReceived) _priorFontScale = _prefsUiFontScale;
       applyFontScale(clamped);
       if (_prefsReceived) send({ cmd: 'config_set', key: 'uiFontScale', value: clamped });
     }

@@ -1,11 +1,16 @@
 // BMH 拆分：config_set。
 // 前端 send({cmd:'config_set', key:'introEnabled', value:true/false}) 等.
 // key 白名单:
-//   introEnabled (bool), lastPlayedSlot (string),
+//   introEnabled (bool), lastPlayedSlot (string | null),
 //   sfxEnabled (bool), ambientEnabled (bool),
 //   uiFontScale (number, clamped to [FontScaleMin..FontScaleMax])
-// 异常的 key 返回 config_set_resp {ok:false, error:"unknown_key"}.
-// 异常的 value 类型返回 {ok:false, error:"bad_value"}.
+//
+// 协议错误语义 (所有键统一)：
+//   unknown_key   — key 不在白名单
+//   bad_value     — value 类型与 key 期望不匹配 (bool 键传了 string 等)
+//   save_failed   — 内存值已更新但 %LOCALAPPDATA% 落盘失败 (磁盘满 / 权限问题)
+//   exception     — 其他意外错误
+//   ok:true       — 已落盘, 可以认为"下次启动仍是这个值"
 
 using System;
 using Newtonsoft.Json;
@@ -35,16 +40,22 @@ namespace CF7Launcher.Guardian.Handlers
                 switch (key)
                 {
                     case "introEnabled":
-                        userPrefs.IntroEnabled = val != null && val.Type == JTokenType.Boolean && val.Value<bool>();
+                        if (!IsBool(val)) { PostConfigSetResp(bootForm, key, false, "bad_value"); return; }
+                        userPrefs.IntroEnabled = val.Value<bool>();
                         break;
                     case "lastPlayedSlot":
-                        userPrefs.LastPlayedSlot = val != null && val.Type == JTokenType.String ? val.Value<string>() : null;
+                        // 允许 null 清空 (first-boot 或重置). 其他类型视为错误。
+                        if (val == null || val.Type == JTokenType.Null) userPrefs.LastPlayedSlot = null;
+                        else if (val.Type == JTokenType.String) userPrefs.LastPlayedSlot = val.Value<string>();
+                        else { PostConfigSetResp(bootForm, key, false, "bad_value"); return; }
                         break;
                     case "sfxEnabled":
-                        userPrefs.SfxEnabled = val != null && val.Type == JTokenType.Boolean && val.Value<bool>();
+                        if (!IsBool(val)) { PostConfigSetResp(bootForm, key, false, "bad_value"); return; }
+                        userPrefs.SfxEnabled = val.Value<bool>();
                         break;
                     case "ambientEnabled":
-                        userPrefs.AmbientEnabled = val != null && val.Type == JTokenType.Boolean && val.Value<bool>();
+                        if (!IsBool(val)) { PostConfigSetResp(bootForm, key, false, "bad_value"); return; }
+                        userPrefs.AmbientEnabled = val.Value<bool>();
                         break;
                     case "uiFontScale":
                         if (val == null || (val.Type != JTokenType.Float && val.Type != JTokenType.Integer))
@@ -58,7 +69,12 @@ namespace CF7Launcher.Guardian.Handlers
                         PostConfigSetResp(bootForm, key, false, "unknown_key");
                         return;
                 }
-                userPrefs.Save();
+                bool saved = userPrefs.Save();
+                if (!saved)
+                {
+                    PostConfigSetResp(bootForm, key, false, "save_failed");
+                    return;
+                }
                 PostConfigSetResp(bootForm, key, true, null);
             }
             catch (Exception ex)
@@ -66,6 +82,11 @@ namespace CF7Launcher.Guardian.Handlers
                 LogManager.Log("[BMH] config_set error key=" + key + " ex=" + ex.Message);
                 PostConfigSetResp(bootForm, key, false, "exception");
             }
+        }
+
+        private static bool IsBool(JToken val)
+        {
+            return val != null && val.Type == JTokenType.Boolean;
         }
 
         private static void PostConfigSetResp(BootstrapPanel bootForm, string key, bool ok, string err)

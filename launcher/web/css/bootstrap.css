@@ -17,6 +17,21 @@
   --fs-xl:   calc(18px * var(--fs-scale));   /* modal h2: was 16 */
   --fs-h1:   calc(20px * var(--fs-scale));   /* slots h1: was 18 */
   --fs-hero: calc(48px * var(--fs-scale));   /* version number: was 44 */
+
+  /* ── letter-spacing 反比缩放 ──
+     letter-spacing 是绝对 px; 字号放大时字与字的"感知间距"同步放大, 反而让中英混排"拉散".
+     --ls-scale: 默认档 (1.35) = 1.0, 超过默认时按反比收紧, 低于默认时不变 (clamp 至 1.0).
+     用法: letter-spacing: calc(ORIG_PX * var(--ls-scale));
+     示例: .eyebrow 原 letter-spacing:8px → calc(8px * var(--ls-scale))
+           scale=1.35 时 = 8px (原值)
+           scale=1.75 时 = 8 * 1.35/1.75 ≈ 6.17px (收紧 23%)
+           scale=1.15 时 = 8px (clamp 不放大) */
+  --ls-scale: min(1, calc(1.35 / var(--fs-scale)));
+
+  /* ── 几何布局软增长 ──
+     --geom-scale: 默认档及以下 = 1.0, 超过默认时按 67% 速度跟随字号放大, 避免字大了容器还是 230px 把内容挤断.
+     侧栏 / gap / padding 类"容器几何"用它, 而不是直接用 --fs-scale (1:1 会让大屏小屏都失衡). */
+  --geom-scale: max(1, calc((var(--fs-scale) - 1.35) * 0.67 + 1));
 }
 
 html, body {

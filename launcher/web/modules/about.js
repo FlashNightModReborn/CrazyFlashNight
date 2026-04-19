@@ -5,6 +5,7 @@
   'use strict';
 
   var _container = null;
+  var _unsubConfigResp = null;  // config_set_resp 监听器的 unsubscribe fn, unmount 时释放
 
   // 判断两个缩放值是否算"同一档" (避免浮点精度让按钮高亮漂移)
   function scaleEq(a, b) { return Math.abs(a - b) < 0.001; }
@@ -66,6 +67,17 @@
 
     // 字号预设按钮: 事件委托到 row, 点击切档 + 同步高亮
     var fsRow = document.getElementById('about-fs-row');
+    function syncFsHighlight() {
+      if (!_container) return;  // 已 unmount
+      var current = (window.BootstrapApp && window.BootstrapApp.getUiFontScale)
+        ? window.BootstrapApp.getUiFontScale() : 1.35;
+      var btns = fsRow.children;
+      for (var i = 0; i < btns.length; i++) {
+        var v = parseFloat(btns[i].getAttribute('data-scale'));
+        if (!isNaN(v) && scaleEq(v, current)) btns[i].classList.add('active');
+        else btns[i].classList.remove('active');
+      }
+    }
     fsRow.onclick = function (ev) {
       var btn = ev.target;
       while (btn && btn !== fsRow && !btn.classList.contains('fs-preset-btn')) btn = btn.parentNode;
@@ -75,10 +87,19 @@
       if (window.BootstrapApp && window.BootstrapApp.setUiFontScale) {
         window.BootstrapApp.setUiFontScale(v);
       }
+      // 乐观高亮: 假设 config_set 会成功. 若失败会通过下面的 onMessage 订阅回退.
       var children = fsRow.children;
       for (var i = 0; i < children.length; i++) children[i].classList.remove('active');
       btn.classList.add('active');
     };
+
+    // 监听 config_set_resp: uiFontScale 持久化失败 → bootstrap-main 已把 scale 回退,
+    // 这里根据回退后的值同步按钮高亮, 避免 "UI 说选中大档但实际还是标准档" 的幽灵状态.
+    if (window.BootstrapApp && window.BootstrapApp.onMessage) {
+      _unsubConfigResp = window.BootstrapApp.onMessage('config_set_resp', function(msg) {
+        if (msg.key === 'uiFontScale' && !msg.ok) syncFsHighlight();
+      });
+    }
 
     var sfxChk = document.getElementById('about-sfx');
     sfxChk.onchange = function () {
@@ -93,6 +114,7 @@
   }
 
   function unmount() {
+    if (_unsubConfigResp) { _unsubConfigResp(); _unsubConfigResp = null; }
     _container = null;
   }
 
