@@ -78,14 +78,18 @@
   }
 
   // config_set 持久化失败时的通用回退机制.
-  // sendConfigSet(key, value, revertFn) 发起请求并登记 revertFn;
-  // 收到 config_set_resp {ok:false} 时调对应 revertFn 还原前端 (checkbox / 音效引擎 / CSS 变量等).
-  // Map<key, revertFn>, 同一 key 只保留最近一次 in-flight revert (用户连点以最后一次为准).
-  var _configSetReverts = {};
+  // 每次 sendConfigSet 生成独立 requestId, revertFn 按 id 登记、按 id 消费 ——
+  // 避免"同一 key 连点两次时第二次覆盖第一次的槽位"造成 revert 错配 (即便两次都失败,
+  // 对应的 revertFn 仍各自独立指回自己请求前的 UI 状态).
+  // 前端发 {cmd, key, value, requestId:N}, C# 回 {cmd:'config_set_resp', requestId:N, ok, ...}.
+  var _configSetNextId = 1;
+  var _configSetReverts = {};  // Map<requestId, revertFn>
 
   function sendConfigSet(key, value, revertFn) {
-    if (revertFn) _configSetReverts[key] = revertFn;
-    send({ cmd: 'config_set', key: key, value: value });
+    var reqId = _configSetNextId++;
+    if (revertFn) _configSetReverts[reqId] = revertFn;
+    send({ cmd: 'config_set', key: key, value: value, requestId: reqId });
+    return reqId;
   }
 
   // 用户在 slot 页主动选择的槽位 + 模式 ('normal' = 加载现有存档 / 'fresh' = 新建或重建).
@@ -621,9 +625,11 @@
       renderWelcomeSlot();
     }
     else if (msg.cmd === 'config_set_resp') {
-      // 取出并删除登记的 revertFn (成功也要删, 避免内存泄漏 + 重复回退)
-      var revertFn = msg.key ? _configSetReverts[msg.key] : null;
-      if (msg.key && _configSetReverts.hasOwnProperty(msg.key)) delete _configSetReverts[msg.key];
+      // 按 requestId 取 revertFn (每个请求独立槽位, 连点互不覆盖).
+      // 成功也删, 避免内存泄漏; 缺 requestId 时 revertFn=null, 旧 resp 降级为 log-only.
+      var reqId = (typeof msg.requestId === 'number') ? msg.requestId : null;
+      var revertFn = (reqId != null) ? _configSetReverts[reqId] : null;
+      if (reqId != null && _configSetReverts.hasOwnProperty(reqId)) delete _configSetReverts[reqId];
       if (!msg.ok) {
         logLine('tag-err', 'config_set failed: key=' + (msg.key || '?') + ' err=' + (msg.error || ''));
         playUiCue('playError');

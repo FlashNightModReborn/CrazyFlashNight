@@ -11,6 +11,11 @@
 //   save_failed   — 内存值已更新但 %LOCALAPPDATA% 落盘失败 (磁盘满 / 权限问题)
 //   exception     — 其他意外错误
 //   ok:true       — 已落盘, 可以认为"下次启动仍是这个值"
+//
+// Correlation id (Phase 2b-ext):
+//   请求若携带 number 类型的 "requestId", config_set_resp 会原样回显.
+//   前端以此按请求关联 revertFn, 避免"同一 key 连点两次时第二次覆盖第一次的槽位"
+//   带来的 revert 错配 (详见 bootstrap-main.js _configSetReverts 说明).
 
 using System;
 using Newtonsoft.Json;
@@ -24,14 +29,18 @@ namespace CF7Launcher.Guardian.Handlers
         internal static void HandleConfigSet(JObject msg, BootstrapPanel bootForm, UserPrefs userPrefs)
         {
             string key = msg.Value<string>("key");
+            // requestId 可选, 前端带的话原样回显用于 resp 匹配
+            JToken reqIdTok = msg["requestId"];
+            long? requestId = (reqIdTok != null && reqIdTok.Type == JTokenType.Integer)
+                ? (long?)reqIdTok.Value<long>() : null;
             if (string.IsNullOrEmpty(key))
             {
-                PostConfigSetResp(bootForm, null, false, "key_missing");
+                PostConfigSetResp(bootForm, null, requestId, false, "key_missing");
                 return;
             }
             if (userPrefs == null)
             {
-                PostConfigSetResp(bootForm, key, false, "userprefs_unavailable");
+                PostConfigSetResp(bootForm, key, requestId, false, "userprefs_unavailable");
                 return;
             }
             JToken val = msg["value"];
@@ -47,33 +56,33 @@ namespace CF7Launcher.Guardian.Handlers
                 switch (key)
                 {
                     case "introEnabled":
-                        if (!IsBool(val)) { PostConfigSetResp(bootForm, key, false, "bad_value"); return; }
+                        if (!IsBool(val)) { PostConfigSetResp(bootForm, key, requestId, false, "bad_value"); return; }
                         userPrefs.IntroEnabled = val.Value<bool>();
                         break;
                     case "lastPlayedSlot":
                         // 允许 null 清空 (first-boot 或重置). 其他类型视为错误。
                         if (val == null || val.Type == JTokenType.Null) userPrefs.LastPlayedSlot = null;
                         else if (val.Type == JTokenType.String) userPrefs.LastPlayedSlot = val.Value<string>();
-                        else { PostConfigSetResp(bootForm, key, false, "bad_value"); return; }
+                        else { PostConfigSetResp(bootForm, key, requestId, false, "bad_value"); return; }
                         break;
                     case "sfxEnabled":
-                        if (!IsBool(val)) { PostConfigSetResp(bootForm, key, false, "bad_value"); return; }
+                        if (!IsBool(val)) { PostConfigSetResp(bootForm, key, requestId, false, "bad_value"); return; }
                         userPrefs.SfxEnabled = val.Value<bool>();
                         break;
                     case "ambientEnabled":
-                        if (!IsBool(val)) { PostConfigSetResp(bootForm, key, false, "bad_value"); return; }
+                        if (!IsBool(val)) { PostConfigSetResp(bootForm, key, requestId, false, "bad_value"); return; }
                         userPrefs.AmbientEnabled = val.Value<bool>();
                         break;
                     case "uiFontScale":
                         if (val == null || (val.Type != JTokenType.Float && val.Type != JTokenType.Integer))
                         {
-                            PostConfigSetResp(bootForm, key, false, "bad_value");
+                            PostConfigSetResp(bootForm, key, requestId, false, "bad_value");
                             return;
                         }
                         userPrefs.UiFontScale = UserPrefs.ClampFontScale(val.Value<double>());
                         break;
                     default:
-                        PostConfigSetResp(bootForm, key, false, "unknown_key");
+                        PostConfigSetResp(bootForm, key, requestId, false, "unknown_key");
                         return;
                 }
                 bool saved = userPrefs.Save();
@@ -85,10 +94,10 @@ namespace CF7Launcher.Guardian.Handlers
                     userPrefs.SfxEnabled     = snapSfxEnabled;
                     userPrefs.AmbientEnabled = snapAmbientEnabled;
                     userPrefs.UiFontScale    = snapUiFontScale;
-                    PostConfigSetResp(bootForm, key, false, "save_failed");
+                    PostConfigSetResp(bootForm, key, requestId, false, "save_failed");
                     return;
                 }
-                PostConfigSetResp(bootForm, key, true, null);
+                PostConfigSetResp(bootForm, key, requestId, true, null);
             }
             catch (Exception ex)
             {
@@ -99,7 +108,7 @@ namespace CF7Launcher.Guardian.Handlers
                 userPrefs.AmbientEnabled = snapAmbientEnabled;
                 userPrefs.UiFontScale    = snapUiFontScale;
                 LogManager.Log("[BMH] config_set error key=" + key + " ex=" + ex.Message);
-                PostConfigSetResp(bootForm, key, false, "exception");
+                PostConfigSetResp(bootForm, key, requestId, false, "exception");
             }
         }
 
@@ -108,12 +117,13 @@ namespace CF7Launcher.Guardian.Handlers
             return val != null && val.Type == JTokenType.Boolean;
         }
 
-        private static void PostConfigSetResp(BootstrapPanel bootForm, string key, bool ok, string err)
+        private static void PostConfigSetResp(BootstrapPanel bootForm, string key, long? requestId, bool ok, string err)
         {
             JObject obj = new JObject();
             obj["type"] = "bootstrap";
             obj["cmd"] = "config_set_resp";
             if (key != null) obj["key"] = key;
+            if (requestId.HasValue) obj["requestId"] = requestId.Value;
             obj["ok"] = ok;
             if (!ok && err != null) obj["error"] = err;
             bootForm.PostToWeb(obj.ToString(Formatting.None));
