@@ -10,6 +10,11 @@
  */
 class org.flashNight.neur.Server.BootstrapHandshake {
 
+    // Phase D Step D1: timeoutMs 可配置 (legacy 默认 5s; prewarm 路径由外层传 60s).
+    // 真正被拉长的只是 "socket 已连接但 launcher 不回 handshake" 场景;
+    // asLoader.xml 10s socket 未连上 fail-closed 不受影响.
+    public static var DEFAULT_TIMEOUT_MS:Number = 5000;
+
     private static var _state:String = "Idle";
     private static var _done:Boolean = false;
     private static var _attemptId:String = null;
@@ -18,14 +23,21 @@ class org.flashNight.neur.Server.BootstrapHandshake {
     private static var _timeoutId:Number = -1;
     private static var _sender:Function = null;  // function(attemptId, onResponse):Void
 
-    public static function start(attemptId:String, onSuccess:Function, onFailure:Function):Void {
+    /**
+     * 启动 bootstrap 握手.
+     * @param timeoutMs 可选; 缺省/非法 (undefined/NaN/<=0) 回退 DEFAULT_TIMEOUT_MS.
+     */
+    public static function start(attemptId:String, onSuccess:Function, onFailure:Function, timeoutMs:Number):Void {
+        if (timeoutMs == undefined || isNaN(timeoutMs) || timeoutMs <= 0) {
+            timeoutMs = DEFAULT_TIMEOUT_MS;
+        }
         _state = "Sending";
         _done = false;
         _attemptId = attemptId;
         _onSuccess = onSuccess;
         _onFailure = onFailure;
 
-        try { _timeoutId = setTimeout(BootstrapHandshake.handleTimeout, 5000); } catch (e:Error) {}
+        try { _timeoutId = setTimeout(BootstrapHandshake.handleTimeout, timeoutMs); } catch (e:Error) {}
 
         // ServerManager 调用由外层包装代码注入 (BootstrapHandshake 不直接引用 ServerManager,
         // 避免 class-as-value 在 AS2 的运行期解析开销/碎片)

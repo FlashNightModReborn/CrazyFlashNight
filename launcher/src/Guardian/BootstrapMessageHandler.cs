@@ -42,6 +42,14 @@ namespace CF7Launcher.Guardian
             {
                 // ==================== Phase 1 existing ====================
                 case "ready":
+                    // Phase D Step D9: 冷启动 prewarm 触发. Prewarm() 内部 session-level latch
+                    // (_prewarmTriggered) 保证一次 launcher 生命周期仅尝试一次 — bootstrap.html
+                    // reload / 双 rAF 导致 ready 多发也 no-op.
+                    if (launchFlow != null)
+                    {
+                        try { launchFlow.Prewarm(); }
+                        catch (Exception ex) { LogManager.Log("[BMH] Prewarm invoke error: " + ex.Message); }
+                    }
                     return;
 
                 case "ping":
@@ -164,8 +172,11 @@ namespace CF7Launcher.Guardian
 
         private static void HandleSave(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
         {
-            if (!RequireIdle("save", bootForm, launchFlow)) return;
+            RequireIdleOrTearDown("save", bootForm, launchFlow, delegate { HandleSaveInternal(msg, bootForm, archiveTask); });
+        }
 
+        private static void HandleSaveInternal(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
+        {
             string slot = msg.Value<string>("slot");
             if (string.IsNullOrEmpty(slot)) { PostResp(bootForm, "save_resp", false, null, "slot_missing"); return; }
 
@@ -223,8 +234,11 @@ namespace CF7Launcher.Guardian
 
         private static void HandleReset(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
         {
-            if (!RequireIdle("reset", bootForm, launchFlow)) return;
+            RequireIdleOrTearDown("reset", bootForm, launchFlow, delegate { HandleResetInternal(msg, bootForm, archiveTask); });
+        }
 
+        private static void HandleResetInternal(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
+        {
             string slot = msg.Value<string>("slot");
             if (string.IsNullOrEmpty(slot)) { PostResp(bootForm, "reset_resp", false, null, "slot_missing"); return; }
 
@@ -342,8 +356,11 @@ namespace CF7Launcher.Guardian
 
         private static void HandleImportStart(BootstrapPanel bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
         {
-            if (!RequireIdle("import_start", bootForm, launchFlow)) return;
+            RequireIdleOrTearDown("import_start", bootForm, launchFlow, delegate { HandleImportStartInternal(bootForm); });
+        }
 
+        private static void HandleImportStartInternal(BootstrapPanel bootForm)
+        {
             string filePath = bootForm.ShowOpenFileDialog(
                 "JSON 文件|*.json|所有文件|*.*",
                 "导入存档");
@@ -398,8 +415,11 @@ namespace CF7Launcher.Guardian
 
         private static void HandleImportCommit(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, GameLaunchFlow launchFlow)
         {
-            if (!RequireIdle("import_commit", bootForm, launchFlow)) return;
+            RequireIdleOrTearDown("import_commit", bootForm, launchFlow, delegate { HandleImportCommitInternal(msg, bootForm, archiveTask); });
+        }
 
+        private static void HandleImportCommitInternal(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
+        {
             string slot = msg.Value<string>("slot");
             if (string.IsNullOrEmpty(slot)) { PostResp(bootForm, "import_resp", false, null, "slot_missing"); return; }
 
@@ -533,13 +553,35 @@ namespace CF7Launcher.Guardian
         // ==================== Phase 2a: helpers ====================
 
         /// <summary>
-        /// Idle 守卫：launchFlow.CurrentState == "Idle" 才放行。
-        /// 失败时按 cmd 映射到对应 _resp 出站 cmd。
+        /// Phase D Step D11: Idle 守卫 + silent prewarm tear down 回调协议.
+        ///   - Idle → 直接 onReady()
+        ///   - silent prewarm (launchFlow.IsInSilentPrewarm) → Reset(onReady, "user_edit_" + cmd),
+        ///     Reset 推到 Idle 后 flush pending queue 跑 onReady; 用户编辑不被 prewarm 挡住
+        ///   - 其他非 Idle (用户已点 play, Embedding/WaitingGameReady/Ready) → reject not_idle
         /// </summary>
-        private static bool RequireIdle(string cmd, BootstrapPanel bootForm, GameLaunchFlow launchFlow)
+        private static void RequireIdleOrTearDown(string cmd, BootstrapPanel bootForm, GameLaunchFlow launchFlow, Action onReady)
         {
-            if (launchFlow != null && launchFlow.CurrentState == "Idle") return true;
+            if (launchFlow == null)
+            {
+                PostNotIdleResp(cmd, bootForm);
+                return;
+            }
+            if (launchFlow.CurrentState == "Idle")
+            {
+                onReady();
+                return;
+            }
+            if (launchFlow.IsInSilentPrewarm)
+            {
+                LogManager.Log("[BMH] silent teardown for cmd=" + cmd + " → Reset(user_edit_" + cmd + ")");
+                launchFlow.Reset(onReady, "user_edit_" + cmd);
+                return;
+            }
+            PostNotIdleResp(cmd, bootForm);
+        }
 
+        private static void PostNotIdleResp(string cmd, BootstrapPanel bootForm)
+        {
             string outCmd;
             switch (cmd)
             {
@@ -550,7 +592,6 @@ namespace CF7Launcher.Guardian
                 default:              outCmd = "error";       break;
             }
             PostResp(bootForm, outCmd, false, null, "not_idle");
-            return false;
         }
 
         /// <summary>

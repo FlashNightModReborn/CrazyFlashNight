@@ -169,7 +169,7 @@ namespace CF7Launcher.Bus
                         data = data.Substring(nullIdx + 1);
 
                         if (message.Length > 0)
-                            HandleMessage(message);
+                            HandleMessage(message, gen);
                     }
 
                     buffer.Clear();
@@ -213,7 +213,11 @@ namespace CF7Launcher.Bus
             try { localClient.Close(); } catch { }
         }
 
-        private void HandleMessage(string message)
+        // Phase D Step D2: connectionGen 由 ReadLoop 形参透传, 用于 async/同步响应的
+        // gen-bound send (TrySendIfGen). 原连接已被 AcceptLoop 替换后, 响应自动 drop,
+        // 不会串到新连接. Prewarm 的 held handshake 依赖此协议保证 socket 断线/重连
+        // 时 held callback 不会把 prewarm error 发到下一条连接.
+        private void HandleMessage(string message, int connectionGen)
         {
             // === 业务就绪信号 ===
             // policy request 不走快车道（它是 XML 文本），所以首条快车道或 JSON 消息
@@ -447,15 +451,42 @@ namespace CF7Launcher.Bus
             }
 
             // 路由到 MessageRouter
+            // Phase D Step D2: 响应走 gen-bound TrySendIfGen, 原连接已被替换时自动 drop.
+            // 捕获 ReadLoop 形参 connectionGen 进闭包, 保持 "本消息的响应只发回发起它的 connection" 语义.
+            int respGen = connectionGen;
             string response = _router.ProcessMessage(message, delegate(string asyncResp)
             {
-                // 异步响应回调
                 if (asyncResp != null)
-                    Send(asyncResp + "\0");
+                    TrySendIfGen(asyncResp + "\0", respGen);
             });
 
             if (response != null)
-                Send(response + "\0");
+                TrySendIfGen(response + "\0", respGen);
+        }
+
+        /// <summary>
+        /// Phase D Step D2: gen-bound send. expectedGen 与当前 _generation 不匹配时 drop
+        /// (原 connection 已被 AcceptLoop 替换). 返回 true 仅代表本地写入成功.
+        /// </summary>
+        public bool TrySendIfGen(string data, int expectedGen)
+        {
+            lock (_clientLock)
+            {
+                if (_generation != expectedGen) return false;
+                if (_stream == null || _client == null || !_client.Connected) return false;
+                try
+                {
+                    byte[] bytes = Encoding.UTF8.GetBytes(data);
+                    _stream.Write(bytes, 0, bytes.Length);
+                    _stream.Flush();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[XmlSocket] TrySendIfGen error (gen=" + expectedGen + "): " + ex.Message);
+                    return false;
+                }
+            }
         }
 
         public void Send(string data)

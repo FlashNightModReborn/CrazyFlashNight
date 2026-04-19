@@ -1117,7 +1117,8 @@ namespace CF7Launcher.Guardian
         // - 启动中 / Resetting → 异步 Reset(null) + 订阅 OnStateChanged；Idle/Error 终态或 8s 超时 → ForceExit
         // - 三条终态路径共用 _closeTerminated 门闩，只有第一条命中的路径真正调 ForceExit
         private int _closeTerminated;
-        private Action<string, string> _closeStateWatcher;
+        // Phase D Step D11: OnStateChanged 扩三元 (silentAtEmit), close watcher 签名同步.
+        private Action<string, string, bool> _closeStateWatcher;
         private System.Windows.Forms.Timer _closeTimeoutTimer;
 
         private void OnFormClosing(object sender, FormClosingEventArgs e)
@@ -1147,8 +1148,8 @@ namespace CF7Launcher.Guardian
             e.Cancel = true;
             LogManager.Log("[Guardian] OnFormClosing state=" + state + " → async cancel + wait terminal");
 
-            // 订阅 OnStateChanged 等待 Idle/Error
-            _closeStateWatcher = delegate(string nextState, string msg)
+            // 订阅 OnStateChanged 等待 Idle/Error (close watcher 不受 silentAtEmit 过滤, 无论静默与否都要反应终态)
+            _closeStateWatcher = delegate(string nextState, string msg, bool silentAtEmit)
             {
                 if (nextState == "Idle" || nextState == "Error")
                     TerminateCloseOnce("state_" + nextState);

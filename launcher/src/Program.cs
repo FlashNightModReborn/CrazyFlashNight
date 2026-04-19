@@ -453,8 +453,12 @@ class Program
         // Phase A Step A2: wire launchFlow 到 GuardianForm（OnFormClosing 状态分流 + 热键 state-aware guard）
         form.InitializeLaunchFlow(launchFlow);
 
-        launchFlow.OnStateChanged += delegate(string state, string smsg)
+        // Phase D Step D11: silent prewarm 状态不广播给 bootstrap UI,
+        // 避免 archive-editor 进只读 / bootstrap.html 闪 running badge / BMH RequireIdle 挡 save.
+        // silentAtEmit 在 SetState 锁内快照, 不受 BeginInvoke 排队延迟影响.
+        launchFlow.OnStateChanged += delegate(string state, string smsg, bool silentAtEmit)
         {
+            if (silentAtEmit) return;   // prewarm 活跃 + _pendingSlot==null 的 teardown 窗口 → 过滤
             Newtonsoft.Json.Linq.JObject obj = new Newtonsoft.Json.Linq.JObject();
             obj["type"] = "bootstrap";
             obj["cmd"] = "state";
