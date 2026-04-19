@@ -35,6 +35,13 @@ namespace CF7Launcher.Guardian.Handlers
                 return;
             }
             JToken val = msg["value"];
+            // 快照所有字段: 磁盘写入失败时回滚内存, 保证 userPrefs 内存 == 磁盘真实状态.
+            // 不然 save_failed 回包回得对, 但下次 list_resp 又把脏内存推回前端, 变成幽灵生效状态.
+            string      snapLastPlayedSlot = userPrefs.LastPlayedSlot;
+            bool        snapIntroEnabled   = userPrefs.IntroEnabled;
+            bool        snapSfxEnabled     = userPrefs.SfxEnabled;
+            bool        snapAmbientEnabled = userPrefs.AmbientEnabled;
+            double      snapUiFontScale    = userPrefs.UiFontScale;
             try
             {
                 switch (key)
@@ -72,6 +79,12 @@ namespace CF7Launcher.Guardian.Handlers
                 bool saved = userPrefs.Save();
                 if (!saved)
                 {
+                    // 回滚内存到磁盘状态
+                    userPrefs.LastPlayedSlot = snapLastPlayedSlot;
+                    userPrefs.IntroEnabled   = snapIntroEnabled;
+                    userPrefs.SfxEnabled     = snapSfxEnabled;
+                    userPrefs.AmbientEnabled = snapAmbientEnabled;
+                    userPrefs.UiFontScale    = snapUiFontScale;
                     PostConfigSetResp(bootForm, key, false, "save_failed");
                     return;
                 }
@@ -79,6 +92,12 @@ namespace CF7Launcher.Guardian.Handlers
             }
             catch (Exception ex)
             {
+                // 异常路径也回滚, 避免部分字段写入后抛异常残留脏状态
+                userPrefs.LastPlayedSlot = snapLastPlayedSlot;
+                userPrefs.IntroEnabled   = snapIntroEnabled;
+                userPrefs.SfxEnabled     = snapSfxEnabled;
+                userPrefs.AmbientEnabled = snapAmbientEnabled;
+                userPrefs.UiFontScale    = snapUiFontScale;
                 LogManager.Log("[BMH] config_set error key=" + key + " ex=" + ex.Message);
                 PostConfigSetResp(bootForm, key, false, "exception");
             }

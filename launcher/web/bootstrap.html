@@ -86,10 +86,11 @@
     <!-- 右栏：版本 + 阵营列表 -->
     <div class="side-r">
       <div class="lbl">VERSION</div>
-      <div class="ver">2.718</div>
-      <div class="ver-tail">&middot; UNSTABLE</div>
+      <!-- ver / ver-tail / CHANNEL 值由 config/version.js 填充, 不要在这里写死 -->
+      <div class="ver" id="version-number"></div>
+      <div class="ver-tail" id="version-tail"></div>
 
-      <div class="row"><span class="k">CHANNEL</span><span class="v r">DEV</span></div>
+      <div class="row"><span class="k">CHANNEL</span><span class="v" id="version-channel"></span></div>
       <div class="row"><span class="k">STEAM</span><span class="v g">&check; AVAILABLE</span></div>
       <div class="row"><span class="k">ENGINE</span><span class="v">WEBVIEW2</span></div>
       <div class="row"><span class="k">RUNTIME</span><span class="v">AVM1/SA</span></div>
@@ -150,6 +151,9 @@
   </div>
 </div>
 <button class="intro-skip" id="intro-skip">跳 过 &middot; ESC</button>
+
+<!-- 版本号 / CHANNEL 标签: 唯一配置点在 config/version.js, 加载时同步填充上面的 #version-* 节点 -->
+<script src="config/version.js"></script>
 
 <!-- Web Audio 合成的 UI 音效 (独立于 bootstrap-main.js, 先加载以便 main 能直接引 BootstrapAudio) -->
 <script src="modules/audio.js"></script>

@@ -77,8 +77,16 @@
     document.documentElement.style.setProperty('--fs-scale', String(v));
   }
 
-  // 字号切换的"持久化失败回退"状态: setUiFontScale 前的倍率, 用于 config_set_resp 失败时还原
-  var _priorFontScale = null;
+  // config_set 持久化失败时的通用回退机制.
+  // sendConfigSet(key, value, revertFn) 发起请求并登记 revertFn;
+  // 收到 config_set_resp {ok:false} 时调对应 revertFn 还原前端 (checkbox / 音效引擎 / CSS 变量等).
+  // Map<key, revertFn>, 同一 key 只保留最近一次 in-flight revert (用户连点以最后一次为准).
+  var _configSetReverts = {};
+
+  function sendConfigSet(key, value, revertFn) {
+    if (revertFn) _configSetReverts[key] = revertFn;
+    send({ cmd: 'config_set', key: key, value: value });
+  }
 
   // 用户在 slot 页主动选择的槽位 + 模式 ('normal' = 加载现有存档 / 'fresh' = 新建或重建).
   // 设置后回到欢迎页, _welcomeSlot 优先使用该槽位; 「确认」按 mode 分发到 start_game / rebuild.
@@ -613,16 +621,18 @@
       renderWelcomeSlot();
     }
     else if (msg.cmd === 'config_set_resp') {
+      // 取出并删除登记的 revertFn (成功也要删, 避免内存泄漏 + 重复回退)
+      var revertFn = msg.key ? _configSetReverts[msg.key] : null;
+      if (msg.key && _configSetReverts.hasOwnProperty(msg.key)) delete _configSetReverts[msg.key];
       if (!msg.ok) {
         logLine('tag-err', 'config_set failed: key=' + (msg.key || '?') + ' err=' + (msg.error || ''));
         playUiCue('playError');
-        // uiFontScale 落盘失败: 回退 CSS 到请求前的值, 避免前端以为已生效、下次启动却回退的幽灵状态.
-        // 对应 UserPrefs.Save() 磁盘写入失败时 ConfigCommandHandler 回的 save_failed.
-        if (msg.key === 'uiFontScale' && _priorFontScale != null) {
-          applyFontScale(_priorFontScale);
+        // save_failed / bad_value / exception 等: 调 revertFn 还原前端状态, 和 C# 回滚后的内存一致
+        if (revertFn) {
+          try { revertFn(); }
+          catch (e) { logLine('tag-err', 'config_set revert failed: ' + e.message); }
         }
       }
-      if (msg.key === 'uiFontScale') _priorFontScale = null;
     }
     else if (msg.cmd === 'flash_ready') {
       var sk = document.getElementById('intro-skip');
@@ -782,15 +792,24 @@
     closeModal: closeModal,
     tryCloseModal: tryCloseModal,
     registerModule: function(name, mod) { _moduleRegistry[name] = mod; },
+    // 带持久化失败回退的 config_set 发送: revertFn 在 config_set_resp.ok===false 时被调,
+    // 用来把前端 UI / 音效引擎等可见状态回滚到请求前, 保持与 C# 端回滚后的内存一致.
+    sendConfigSet: function(key, value, revertFn) { sendConfigSet(key, value, revertFn); },
     // 字号缩放 API: 模块 (about.js) 用来读当前值 + 切换预设
     getUiFontScale: function() { return _prefsUiFontScale; },
     getUiFontScalePresets: function() { return FONT_SCALE_PRESETS.slice(); },
     setUiFontScale: function(v) {
       var clamped = clampFontScale(v);
-      // 记下"请求前"的值, config_set_resp 失败时回退到它
-      if (_prefsReceived) _priorFontScale = _prefsUiFontScale;
+      if (!_prefsReceived) {
+        // 首次 list_resp 前不发 config_set; 直接应用不做 revert 登记
+        applyFontScale(clamped);
+        return;
+      }
+      var prior = _prefsUiFontScale;
       applyFontScale(clamped);
-      if (_prefsReceived) send({ cmd: 'config_set', key: 'uiFontScale', value: clamped });
+      sendConfigSet('uiFontScale', clamped, function() {
+        applyFontScale(prior);
+      });
     }
   };
 
@@ -800,8 +819,13 @@
   chkIntro.checked = false;
   chkIntro.onchange = function() {
     if (!_prefsReceived) return;  // 首个 list_resp 前不发 config_set, 避免冲掉 launcher 侧值
-    _prefsIntroEnabled = chkIntro.checked;
-    send({ cmd: 'config_set', key: 'introEnabled', value: chkIntro.checked });
+    var prior = !chkIntro.checked;  // 当前 checkbox 刚 flip, 所以 prior 是 flipped 前的
+    var desired = chkIntro.checked;
+    _prefsIntroEnabled = desired;
+    sendConfigSet('introEnabled', desired, function() {
+      _prefsIntroEnabled = prior;
+      chkIntro.checked = prior;
+    });
   };
 
   btnConfirmStart.onclick = function() {
