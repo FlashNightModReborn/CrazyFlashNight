@@ -100,22 +100,6 @@ namespace CF7Launcher.Guardian
                     launchFlow.Reset(null, "user_cancel");
                     return;
 
-                // ==================== Phase C Step C2: dry-run smoke (Phase E 删除) ====================
-                case "__debug_dry_run":
-                    if (launchFlow == null) { LogManager.Log("[BMH] __debug_dry_run: no launchFlow"); return; }
-                    launchFlow.PrewarmDryRun();
-                    return;
-
-                case "__debug_cancel_dry_run":
-                    if (launchFlow == null) { LogManager.Log("[BMH] __debug_cancel_dry_run: no launchFlow"); return; }
-                    if (launchFlow.CurrentState == "Idle")
-                    {
-                        LogManager.Log("[BMH] __debug_cancel_dry_run: state=Idle, no-op");
-                        return;
-                    }
-                    launchFlow.Reset(null, "debug_cancel");
-                    return;
-
                 // ==================== Phase 2a new ====================
                 case "load":
                     {

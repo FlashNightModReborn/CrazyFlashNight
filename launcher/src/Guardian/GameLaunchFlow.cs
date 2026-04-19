@@ -83,11 +83,6 @@ namespace CF7Launcher.Guardian
         // 每次 StartGame 重置；每次 attempt 一份。
         private CF7Launcher.Save.SolResolveResult _resolvedSave;
 
-        // Phase C Step C2: dry-run smoke 模式.
-        // PrewarmDryRun 置为 true，HandleBootstrapHandshake 命中时短路响应 error=dryrun_abort + ThreadPool Reset.
-        // Phase E 收尾时连同 PrewarmDryRun 方法 + __debug_dry_run cmd 一并删除.
-        private bool _dryRunMode;
-
         // ==================== Phase D: prewarm / Reset coalescing 字段 ====================
         // Held handshake callback: prewarm 模式下 handshake 已到达但 user 未选 slot 时 park 这里,
         // StartGame 消费 (normal_flush) 或 deadline/degrade/reset 错误终结 (其余路径) 时 invoke.
@@ -110,7 +105,7 @@ namespace CF7Launcher.Guardian
         private bool _prewarmTriggered;
 
         // ==================== Phase D Step D11-R: Reset in-flight guard + pending queue ====================
-        // 并发 Reset 调用 (OnFormClosing user_close / cancel_launch / dryrun_abort / prewarm_deadline /
+        // 并发 Reset 调用 (OnFormClosing user_close / cancel_launch / prewarm_deadline /
         // DegradePrewarmFailureLocked / Retry / user_edit_*) 走这条协议:
         //   - 第一个入场者拿 ownership, 置 _resetInFlight=true, SetState(Resetting), 起 worker
         //   - 后续入场者只追加 onIdle 到队列, 不重复 SetState/启 worker; 等第一个 worker 推到 Idle 时统一 flush
@@ -417,34 +412,6 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// Phase C Step C2: dry-run smoke 入口。
-        /// 走完整 GameLaunchFlow 状态机：bump attemptId → TransitionToSpawning → ArmEarlyReparent →
-        /// WaitingConnect → Flash 连 socket → handshake 到达 → 短路 error=dryrun_abort → ThreadPool Reset.
-        /// Idle 态 guard；已 dryrun 运行中 → no-op.
-        /// Phase E 收尾时删除.
-        /// </summary>
-        public void PrewarmDryRun()
-        {
-            lock (_stateLock)
-            {
-                if (_state != State.Idle)
-                {
-                    LogManager.Log("[DryRun] ignored: state=" + _state);
-                    return;
-                }
-                _dryRunMode = true;
-                _pendingSlot = null;  // 明确标记 prewarm 模式（不落真 slot 避免存档副作用）
-                _currentAttemptId = Guid.NewGuid().ToString("N");
-                _resolvedSave = null;
-                _cachedReady.Clear();
-                CancelWaitTimerLocked();
-                CancelZombieTimerLocked();
-                LogManager.Log("[DryRun] start attemptId=" + _currentAttemptId);
-                TransitionToSpawning();
-            }
-        }
-
-        /// <summary>
         /// 错误后重试：公共 API，收边界（不向外暴露 _pendingSlot / continuation 时序）。
         /// 内部 = 锁内快照 slot → 锁外 Reset(onIdle, reason) 驱动。
         /// Finding A fix: _pendingSlot == null 时 (例如 user_edit_* teardown 失败进 Error,
@@ -479,7 +446,7 @@ namespace CF7Launcher.Guardian
         /// reason 写入日志，便于事后追踪（user_cancel / user_close / retry / prewarm_deadline / ...）。
         ///
         /// Phase D Step D11-R (Finding 2 fix): in-flight guard + pending queue.
-        /// 并发入口 (OnFormClosing user_close / cancel_launch / dryrun_abort / prewarm_deadline /
+        /// 并发入口 (OnFormClosing user_close / cancel_launch / prewarm_deadline /
         /// DegradePrewarmFailureLocked / Retry / user_edit_* ...) 走同一协议:
         ///   1. 第一个入场者拿 ownership: _resetInFlight=true, SetState(Resetting), 起 worker
         ///   2. 后续入场者只追加 onIdle 到 _pendingIdleCallbacks 并返回, 不重启 worker, 不重复 SetState
@@ -610,8 +577,6 @@ namespace CF7Launcher.Guardian
                     lock (_stateLock)
                     {
                         if (_currentFlashProcess == oldProc) _currentFlashProcess = null;
-                        // Phase C Step C2: 清 dry-run 门闩
-                        _dryRunMode = false;
                         // Phase D Step D8: Reset 完成即清 abort latch (若因 prewarm 进来的)
                         _prewarmAborting = false;
                         // Phase D Step D11-R: 清 _pendingSlot / _resolvedSave, 让 onIdle 里的 StartGame
@@ -839,19 +804,7 @@ namespace CF7Launcher.Guardian
             string syncJsonToSend = null;
             lock (_stateLock)
             {
-                // Phase C Step C2: dry-run smoke 短路响应. ThreadPool 派发 Reset 保证在 handler 返回 + socket send 之后跑.
-                if (_dryRunMode)
-                {
-                    CancelWaitTimerLocked();
-                    LogManager.Log("[DryRun] handshake received, aborting attempt=" + _currentAttemptId);
-                    ThreadPool.QueueUserWorkItem(delegate
-                    {
-                        try { Reset(null, "dryrun_abort"); }
-                        catch (Exception ex) { LogManager.Log("[DryRun] reset worker error: " + ex.Message); }
-                    });
-                    syncJsonToSend = "{\"task\":\"bootstrap_handshake\",\"success\":false,\"error\":\"dryrun_abort\"}";
-                }
-                else if (_state != State.WaitingConnect && _state != State.WaitingHandshake)
+                if (_state != State.WaitingConnect && _state != State.WaitingHandshake)
                 {
                     LogManager.Log("[LaunchFlow] bootstrap_handshake rejected: state=" + _state);
                     syncJsonToSend = "{\"task\":\"bootstrap_handshake\",\"success\":false,\"error\":\"invalid_state\"}";
