@@ -468,12 +468,16 @@ namespace CF7Launcher.Guardian
                 if (_flashHwnd == IntPtr.Zero || _hostPanel == null)
                     return;
 
-                // Flash 窗口已销毁（进程退出），停止监控
+                // Flash 窗口已销毁（进程退出），停止监控.
+                // 必须 Dispose + null，否则下一 attempt 的 StartEmbedWatchdog 会因 _watchdog != null
+                // 直接 return（见该方法的早退守卫），导致第二次及之后的嵌入失去脱嵌恢复保护.
                 if (!IsWindow(_flashHwnd))
                 {
                     _flashHwnd = IntPtr.Zero;
-                    _watchdog.Stop();
-                    LogManager.Log("[WindowManager] Flash window destroyed, watchdog stopped");
+                    System.Windows.Forms.Timer dying = _watchdog;
+                    _watchdog = null;
+                    try { dying.Stop(); dying.Dispose(); } catch { }
+                    LogManager.Log("[WindowManager] Flash window destroyed, watchdog stopped+disposed");
                     return;
                 }
 

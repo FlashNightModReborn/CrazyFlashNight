@@ -37,6 +37,18 @@ namespace CF7Launcher.Guardian
             _webView.Dock = DockStyle.Fill;
             this.Controls.Add(_webView);
 
+            // 延迟到 Load 事件触发 WebView2 init：
+            // 1) 此时 GuardianForm 已完成 BootstrapInitFailed 订阅（ctor 内抛异常无订阅者会丢信号）
+            // 2) 此时 Application.Run 消息循环已启动（ForceExit 的 ExitThread 才真正生效）
+            // 两者合起来保证 fail-closed 语义：init 失败 = 弹错框 + 进程终结，而不是弹错框 + 继续跑
+            this.Load += OnPanelLoad;
+        }
+
+        private bool _initStarted;
+        private void OnPanelLoad(object sender, EventArgs e)
+        {
+            if (_initStarted) return;
+            _initStarted = true;
             InitWebView2Async();
         }
 
