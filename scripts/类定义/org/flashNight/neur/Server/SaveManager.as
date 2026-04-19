@@ -13,7 +13,7 @@ import JSON;
  * 职责：
  *   1. 归一化存档数据（tasks/pets/shop 折入 mydata）
  *   2. 单次 flush 替代多模块各自 flush
- *   3. 过渡期 dual-write（顶层 key + mydata 内部），顶层 key 为读取权威源
+ *   3. 过渡期 dual-write（顶层 key + mydata 内部），读取优先非空顶层，空壳回退 mydata
  *   4. 版本迁移链（undefined → 2.6 → 2.7 → 3.0）
  *   5. 为后续 Launcher 迁移提供统一接口
  */
@@ -154,7 +154,7 @@ class org.flashNight.neur.Server.SaveManager {
         // 清除删档墓碑（如果有）
         delete soData._deleted;
 
-        // dual-write 顶层 key（权威源）
+        // dual-write 顶层 key（读取优先层，空壳时允许回退 mydata）
         soData.tasks_to_do = _root.tasks_to_do;
         soData.tasks_finished = _root.tasks_finished;
         soData.task_chains_progress = _root.task_chains_progress;
@@ -405,39 +405,12 @@ class org.flashNight.neur.Server.SaveManager {
                     var jso:SharedObject = getSO();
                     var jsoData:Object = jso.data;
 
-                    // tasks（SO 顶层权威 → fallback mydata.tasks）
-                    _root.tasks_to_do = jsoData.tasks_to_do;
-                    _root.tasks_finished = jsoData.tasks_finished;
-                    _root.task_chains_progress = jsoData.task_chains_progress;
-                    if (_root.tasks_to_do == undefined && _root.mydata.tasks != undefined) {
-                        _root.tasks_to_do = _root.mydata.tasks.tasks_to_do;
-                        _root.tasks_finished = _root.mydata.tasks.tasks_finished;
-                        _root.task_chains_progress = _root.mydata.tasks.task_chains_progress;
-                    }
+                    // tasks（优先非空顶层；空顶层回退到 mydata.tasks，并用 mydata[3] 修补旧档主线）
+                    applyTaskBundleWithFallback(jsoData, _root.mydata.tasks, "loadAll.json");
 
-                    // 宠物（SO 顶层权威 → fallback mydata.pets）
-                    if (jsoData.战宠 != undefined) {
-                        _root.宠物信息 = jsoData.战宠;
-                        _root.宠物领养限制 = jsoData.宠物领养限制;
-                    } else if (_root.mydata.pets != undefined) {
-                        _root.宠物信息 = _root.mydata.pets.宠物信息;
-                        _root.宠物领养限制 = _root.mydata.pets.宠物领养限制;
-                    } else {
-                        _root.宠物信息 = [[], [], [], [], []];
-                        _root.宠物领养限制 = 5;
-                    }
-
-                    // 商城（SO 顶层权威 → fallback mydata.shop）
-                    if (jsoData.商城已购买物品 != undefined) {
-                        _root.商城已购买物品 = jsoData.商城已购买物品;
-                    } else if (_root.mydata.shop != undefined) {
-                        _root.商城已购买物品 = _root.mydata.shop.商城已购买物品;
-                    }
-                    if (jsoData.商城购物车 != undefined) {
-                        _root.商城购物车 = jsoData.商城购物车;
-                    } else if (_root.mydata.shop != undefined) {
-                        _root.商城购物车 = _root.mydata.shop.商城购物车;
-                    }
+                    // 宠物/商城（优先非空顶层；空顶层回退到 mydata）
+                    applyPetsBundleWithFallback(jsoData, _root.mydata.pets, "loadAll.json");
+                    applyShopBundleWithFallback(jsoData, _root.mydata.shop, "loadAll.json");
 
                     // lastsave + dirtyMark
                     if (_root.当前玩家总数 == 1) {
@@ -510,49 +483,14 @@ class org.flashNight.neur.Server.SaveManager {
 
         sm.sendServerMessage("[SaveManager.loadAll] unpack完成: 角色名=" + _root.角色名 + " 等级=" + _root.等级 + " 金钱=" + _root.金钱);
 
-        // 从顶层 key 读取 tasks/pets/shop（权威源）
-        _root.tasks_to_do = soData.tasks_to_do;
-        _root.tasks_finished = soData.tasks_finished;
-        _root.task_chains_progress = soData.task_chains_progress;
+        // 从顶层 key 读取 tasks/pets/shop（优先非空顶层；空顶层回退到 mydata）
+        applyTaskBundleWithFallback(soData, _root.mydata.tasks, "loadAll.sol");
+        applyPetsBundleWithFallback(soData, _root.mydata.pets, "loadAll.sol");
+        applyShopBundleWithFallback(soData, _root.mydata.shop, "loadAll.sol");
 
-        var _ttdLen = (soData.tasks_to_do != undefined) ? soData.tasks_to_do.length : 0;
+        var _ttdLen = (_root.tasks_to_do != undefined) ? _root.tasks_to_do.length : 0;
         sm.sendServerMessage("[SaveManager.loadAll] 顶层tasks: tasks_to_do=" + (soData.tasks_to_do != undefined) + " len=" + _ttdLen);
         sm.sendServerMessage("[SaveManager.loadAll] 顶层pets: 战宠=" + (soData.战宠 != undefined) + " 宠物领养限制=" + soData.宠物领养限制);
-
-        // fallback 到 mydata 内部（纯新格式存档）
-        if (_root.tasks_to_do == undefined && _root.mydata.tasks != undefined) {
-            sm.sendServerMessage("[SaveManager.loadAll] tasks fallback到mydata内部");
-            _root.tasks_to_do = _root.mydata.tasks.tasks_to_do;
-            _root.tasks_finished = _root.mydata.tasks.tasks_finished;
-            _root.task_chains_progress = _root.mydata.tasks.task_chains_progress;
-        }
-
-        // 宠物（顶层权威源）
-        if (soData.战宠 != undefined) {
-            _root.宠物信息 = soData.战宠;
-            _root.宠物领养限制 = soData.宠物领养限制;
-            sm.sendServerMessage("[SaveManager.loadAll] 宠物从顶层读取");
-        } else if (_root.mydata.pets != undefined) {
-            _root.宠物信息 = _root.mydata.pets.宠物信息;
-            _root.宠物领养限制 = _root.mydata.pets.宠物领养限制;
-            sm.sendServerMessage("[SaveManager.loadAll] 宠物从mydata.pets读取");
-        } else {
-            _root.宠物信息 = [[], [], [], [], []];
-            _root.宠物领养限制 = 5;
-            sm.sendServerMessage("[SaveManager.loadAll] 宠物用默认值");
-        }
-
-        // 商城（顶层权威源）
-        if (soData.商城已购买物品 != undefined) {
-            _root.商城已购买物品 = soData.商城已购买物品;
-        } else if (_root.mydata.shop != undefined) {
-            _root.商城已购买物品 = _root.mydata.shop.商城已购买物品;
-        }
-        if (soData.商城购物车 != undefined) {
-            _root.商城购物车 = soData.商城购物车;
-        } else if (_root.mydata.shop != undefined) {
-            _root.商城购物车 = _root.mydata.shop.商城购物车;
-        }
 
         // lastsave 初始化
         if (_root.当前玩家总数 == 1) {
@@ -945,7 +883,7 @@ class org.flashNight.neur.Server.SaveManager {
 
     /**
      * 解包 mydata 内部数据到 _root.*（纯 mydata 内部，不含 tasks/pets/shop）
-     * tasks/pets/shop 由 loadAll() 从顶层 key 权威源读取
+     * tasks/pets/shop 由 loadAll() 走“优先非空顶层，空壳回退 mydata”的合并逻辑
      */
     public function unpackGameState(mydata:Object):Boolean {
         if (mydata == undefined) return false;
@@ -1107,11 +1045,10 @@ class org.flashNight.neur.Server.SaveManager {
 
     public function loadShopCart():Void {
         var soData:Object = getSO().data;
-        if (soData.商城购物车 != undefined) {
-            _root.商城购物车 = soData.商城购物车;
-        } else if (soData[SAVE_KEY] != undefined && soData[SAVE_KEY].shop != undefined) {
-            _root.商城购物车 = soData[SAVE_KEY].shop.商城购物车;
-        }
+        var nestedShop:Object = (soData[SAVE_KEY] != undefined) ? soData[SAVE_KEY].shop : undefined;
+        _root.商城购物车 = preferListLayer(soData.商城购物车,
+                                          nestedShop != undefined ? nestedShop.商城购物车 : undefined,
+                                          []);
     }
 
     public function saveShopPurchased():Void {
@@ -1125,11 +1062,10 @@ class org.flashNight.neur.Server.SaveManager {
 
     public function loadShopPurchased():Void {
         var soData:Object = getSO().data;
-        if (soData.商城已购买物品 != undefined) {
-            _root.商城已购买物品 = soData.商城已购买物品;
-        } else if (soData[SAVE_KEY] != undefined && soData[SAVE_KEY].shop != undefined) {
-            _root.商城已购买物品 = soData[SAVE_KEY].shop.商城已购买物品;
-        }
+        var nestedShop:Object = (soData[SAVE_KEY] != undefined) ? soData[SAVE_KEY].shop : undefined;
+        _root.商城已购买物品 = preferListLayer(soData.商城已购买物品,
+                                            nestedShop != undefined ? nestedShop.商城已购买物品 : undefined,
+                                            []);
     }
 
     // ==================== Dirty 追踪 ====================
@@ -1195,7 +1131,7 @@ class org.flashNight.neur.Server.SaveManager {
             mydata.tasks = {
                 tasks_to_do:          soData.tasks_to_do || [],
                 tasks_finished:       soData.tasks_finished || {},
-                task_chains_progress: soData.task_chains_progress || {}
+                task_chains_progress: buildMigratedTaskChainsProgress(soData.task_chains_progress, mydata[3])
             };
         }
         if (mydata.pets == undefined) {
@@ -1220,6 +1156,7 @@ class org.flashNight.neur.Server.SaveManager {
     public function syncTopLevelFromMydata(mydata:Object, soData:Object):Void {
         if (mydata == undefined) return;
         if (mydata.tasks != undefined) {
+            ensureLegacyMainlineInTasks(mydata.tasks, mydata[3]);
             soData.tasks_to_do = mydata.tasks.tasks_to_do;
             soData.tasks_finished = mydata.tasks.tasks_finished;
             soData.task_chains_progress = mydata.tasks.task_chains_progress;
@@ -1231,6 +1168,150 @@ class org.flashNight.neur.Server.SaveManager {
         if (mydata.shop != undefined) {
             soData.商城已购买物品 = mydata.shop.商城已购买物品;
             soData.商城购物车 = mydata.shop.商城购物车;
+        }
+    }
+
+    private function buildMigratedTaskChainsProgress(source:Object, legacyMainValue:Object):Object {
+        var result:Object = {};
+        var key:String;
+        if (source != undefined) {
+            for (key in source) {
+                result[key] = source[key];
+            }
+        }
+        ensureLegacyMainlineInTasks({ task_chains_progress: result }, legacyMainValue);
+        return result;
+    }
+
+    private function ensureLegacyMainlineInTasks(tasks:Object, legacyMainValue:Object):Void {
+        if (tasks == undefined) return;
+        if (tasks.task_chains_progress == undefined) {
+            tasks.task_chains_progress = {};
+        }
+        var legacyMain:Number = Math.floor(Number(legacyMainValue));
+        if (tasks.task_chains_progress.主线 == undefined && !isNaN(legacyMain)) {
+            tasks.task_chains_progress.主线 = legacyMain;
+        }
+    }
+
+    private function hasTaskEntries(value:Object):Boolean {
+        if (value == undefined) return false;
+        if (value.length != undefined) {
+            return value.length > 0;
+        }
+        for (var key:String in value) {
+            return true;
+        }
+        return false;
+    }
+
+    private function preferTaskLayer(primary:Object, fallback:Object, defaultValue:Object):Object {
+        if (primary != undefined) {
+            if (hasTaskEntries(primary) || fallback == undefined || !hasTaskEntries(fallback)) {
+                return primary;
+            }
+        }
+        if (fallback != undefined) return fallback;
+        return defaultValue;
+    }
+
+    private function applyTaskBundleWithFallback(topData:Object, nestedTasks:Object, scope:String):Void {
+        var nested:Object = (nestedTasks != undefined) ? nestedTasks : {};
+        _root.tasks_to_do = preferTaskLayer(topData != undefined ? topData.tasks_to_do : undefined,
+                                            nested.tasks_to_do, []);
+        _root.tasks_finished = preferTaskLayer(topData != undefined ? topData.tasks_finished : undefined,
+                                               nested.tasks_finished, {});
+        _root.task_chains_progress = preferTaskLayer(topData != undefined ? topData.task_chains_progress : undefined,
+                                                     nested.task_chains_progress, {});
+        ensureLegacyMainlineInTasks({ task_chains_progress: _root.task_chains_progress }, _root.主线任务进度);
+        if (_root.tasks_to_do == undefined) _root.tasks_to_do = [];
+        if (_root.tasks_finished == undefined) _root.tasks_finished = {};
+        if (_root.task_chains_progress == undefined) _root.task_chains_progress = {};
+        if (_root.task_chains_progress.主线 == undefined) {
+            ServerManager.getInstance().sendServerMessage("[SaveManager." + scope + "] 主线任务链缺失且无法从 mydata[3] 回填");
+        }
+    }
+
+    private function hasListEntries(value:Object):Boolean {
+        return value != undefined && value.length != undefined && value.length > 0;
+    }
+
+    private function preferListLayer(primary:Object, fallback:Object, defaultValue:Object):Object {
+        if (primary != undefined) {
+            if (hasListEntries(primary) || fallback == undefined || !hasListEntries(fallback)) {
+                return primary;
+            }
+        }
+        if (fallback != undefined) return fallback;
+        return defaultValue;
+    }
+
+    private function hasPetEntries(value:Object):Boolean {
+        if (value == undefined || value.length == undefined) return false;
+        for (var i:Number = 0; i < value.length; i++) {
+            var pet:Object = value[i];
+            if (pet == undefined) continue;
+            if (pet.length != undefined) {
+                if (pet.length > 0) return true;
+            } else if (hasTaskEntries(pet)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function preferPetsInfoLayer(primary:Object, fallback:Object, defaultValue:Object):Object {
+        if (primary != undefined) {
+            if (hasPetEntries(primary) || fallback == undefined || !hasPetEntries(fallback)) {
+                return primary;
+            }
+        }
+        if (fallback != undefined) return fallback;
+        return defaultValue;
+    }
+
+    private function defaultPetsInfo():Array {
+        return [[], [], [], [], []];
+    }
+
+    private function applyPetsBundleWithFallback(topData:Object, nestedPets:Object, scope:String):Void {
+        var nested:Object = (nestedPets != undefined) ? nestedPets : {};
+        var topPets:Object = (topData != undefined) ? topData.战宠 : undefined;
+        var nestedPetsInfo:Object = nested.宠物信息;
+        var useTopPets:Boolean = topPets != undefined
+            && (hasPetEntries(topPets) || nestedPetsInfo == undefined || !hasPetEntries(nestedPetsInfo));
+
+        _root.宠物信息 = preferPetsInfoLayer(topPets, nestedPetsInfo, defaultPetsInfo());
+        if (useTopPets) {
+            _root.宠物领养限制 = (topData != undefined && topData.宠物领养限制 != undefined)
+                ? topData.宠物领养限制
+                : (nested.宠物领养限制 != undefined ? nested.宠物领养限制 : 5);
+            ServerManager.getInstance().sendServerMessage("[SaveManager." + scope + "] 宠物从顶层读取");
+        } else if (nestedPetsInfo != undefined) {
+            _root.宠物领养限制 = (nested.宠物领养限制 != undefined) ? nested.宠物领养限制 : 5;
+            ServerManager.getInstance().sendServerMessage("[SaveManager." + scope + "] 顶层宠物为空，回退 mydata.pets");
+        } else {
+            _root.宠物领养限制 = (topData != undefined && topData.宠物领养限制 != undefined)
+                ? topData.宠物领养限制
+                : 5;
+            ServerManager.getInstance().sendServerMessage("[SaveManager." + scope + "] 宠物用默认值");
+        }
+    }
+
+    private function applyShopBundleWithFallback(topData:Object, nestedShop:Object, scope:String):Void {
+        var nested:Object = (nestedShop != undefined) ? nestedShop : {};
+        var topPurchased:Object = (topData != undefined) ? topData.商城已购买物品 : undefined;
+        var topCart:Object = (topData != undefined) ? topData.商城购物车 : undefined;
+        var nestedPurchased:Object = nested.商城已购买物品;
+        var nestedCart:Object = nested.商城购物车;
+
+        _root.商城已购买物品 = preferListLayer(topPurchased, nestedPurchased, []);
+        _root.商城购物车 = preferListLayer(topCart, nestedCart, []);
+        if (topPurchased != undefined && !hasListEntries(topPurchased) && hasListEntries(nestedPurchased)) {
+            ServerManager.getInstance().sendServerMessage("[SaveManager." + scope + "] 顶层商城已购买物品为空，回退 mydata.shop");
+        }
+        if (topCart != undefined && !hasListEntries(topCart) && hasListEntries(nestedCart)) {
+            ServerManager.getInstance().sendServerMessage("[SaveManager." + scope + "] 顶层商城购物车为空，回退 mydata.shop");
         }
     }
 

@@ -62,6 +62,18 @@
   // audio.js 缺失或无 AudioContext 时 Audio 为 null, 所有调用点需 if (Audio) 守卫.
   var Audio = window.BootstrapAudio || null;
 
+  function playUiCue(name) {
+    if (!Audio || !name) return;
+    var fn = Audio[name];
+    if (typeof fn !== 'function') return;
+    try {
+      Audio.resume();
+      fn.call(Audio);
+    } catch (e) {
+      logLine('tag-err', '[Audio] cue failed: ' + name + ' ' + e.message);
+    }
+  }
+
   // ── 工具 ──
   function logLine(cls, text) {
     var d = new Date(), ts = d.toTimeString().slice(0, 8);
@@ -125,13 +137,17 @@
 
   // ── 视图切换 ──
   function showWelcome() {
+    var changed = viewWelcome.hidden || !viewSlots.hidden;
     viewWelcome.hidden = false;
     viewSlots.hidden = true;
     renderWelcomeSlot();
+    if (changed) playUiCue('playTransition');
   }
   function showSlots() {
+    var changed = viewSlots.hidden || !viewWelcome.hidden;
     viewWelcome.hidden = true;
     viewSlots.hidden = false;
+    if (changed) playUiCue('playTransition');
   }
 
   // ── 欢迎页默认 slot 选择 ──
@@ -461,15 +477,16 @@
   function handleNewCharacterClick() {
     if (_launchInFlight) return;
     var defaultName = pickAutoSlotName();
+    playUiCue('playModalOpen');
     var input = prompt(
       '\u8f93\u5165\u5b58\u6863\u540d\u79f0:\n'
       + '\u2022 \u7559\u7a7a\u81ea\u52a8\u9009\u7528: ' + defaultName + '\n'
       + '\u2022 \u4ec5\u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e0b\u5212\u7ebf/\u77ed\u6a2a\u7ebf, 1-32 \u5b57\u7b26',
       defaultName);
-    if (input == null) return;
+    if (input == null) { playUiCue('playCancel'); return; }
     var slot = input.trim();
     if (!slot) slot = defaultName;
-    if (!SLOT_NAME_RE.test(slot)) { alert('\u5b58\u6863\u540d\u79f0\u4e0d\u5408\u6cd5: ' + slot); return; }
+    if (!SLOT_NAME_RE.test(slot)) { playUiCue('playError'); alert('\u5b58\u6863\u540d\u79f0\u4e0d\u5408\u6cd5: ' + slot); return; }
     for (var k = 0; k < lastSlotsFromLauncher.length; k++) {
       if (lastSlotsFromLauncher[k].slot === slot) {
         var entry = lastSlotsFromLauncher[k];
@@ -566,7 +583,10 @@
       renderWelcomeSlot();
     }
     else if (msg.cmd === 'config_set_resp') {
-      if (!msg.ok) logLine('tag-err', 'config_set failed: key=' + (msg.key || '?') + ' err=' + (msg.error || ''));
+      if (!msg.ok) {
+        logLine('tag-err', 'config_set failed: key=' + (msg.key || '?') + ' err=' + (msg.error || ''));
+        playUiCue('playError');
+      }
     }
     else if (msg.cmd === 'flash_ready') {
       var sk = document.getElementById('intro-skip');
@@ -575,17 +595,44 @@
       // Flash 封面就绪: 同步响一次就绪和弦, 并关掉环境 hum 让位给 Flash BGM.
       if (Audio) { Audio.playReady(); Audio.stopAmbient(); }
     }
-    else if (msg.cmd === 'delete_resp') { if (msg.ok) send({ cmd: 'list' }); else logLine('tag-err', 'delete failed: ' + msg.error); }
-    else if (msg.cmd === 'error')       logLine('tag-err', msg.code + ': ' + msg.msg);
+    else if (msg.cmd === 'delete_resp') {
+      if (msg.ok) {
+        playUiCue('playSuccess');
+        send({ cmd: 'list' });
+      } else {
+        logLine('tag-err', 'delete failed: ' + msg.error);
+        playUiCue('playError');
+      }
+    }
+    else if (msg.cmd === 'error')       { logLine('tag-err', msg.code + ': ' + msg.msg); playUiCue('playError'); }
     else if (msg.cmd === 'pong')        logLine('tag-in', 'pong');
-    else if (msg.cmd === 'reset_resp')  { if (msg.ok) send({ cmd: 'list' }); else logLine('tag-err', 'reset failed: ' + (msg.error || 'unknown')); }
+    else if (msg.cmd === 'reset_resp')  {
+      if (msg.ok) {
+        playUiCue('playSuccess');
+        send({ cmd: 'list' });
+      } else {
+        logLine('tag-err', 'reset failed: ' + (msg.error || 'unknown'));
+        playUiCue('playError');
+      }
+    }
     else if (msg.cmd === 'export_resp') {
-      if (msg.ok) logLine('tag-in', '\u5bfc\u51fa\u6210\u529f: ' + (msg.path || ''));
-      else if (msg.error !== 'cancelled') logLine('tag-err', '\u5bfc\u51fa\u5931\u8d25: ' + (msg.error || ''));
+      if (msg.ok) {
+        logLine('tag-in', '\u5bfc\u51fa\u6210\u529f: ' + (msg.path || ''));
+        playUiCue('playSuccess');
+      } else if (msg.error !== 'cancelled') {
+        logLine('tag-err', '\u5bfc\u51fa\u5931\u8d25: ' + (msg.error || ''));
+        playUiCue('playError');
+      }
     }
     else if (msg.cmd === 'import_resp') {
-      if (msg.ok) { logLine('tag-in', '\u5bfc\u5165\u6210\u529f: ' + (msg.slot || '')); send({ cmd: 'list' }); }
-      else if (msg.error !== 'cancelled') logLine('tag-err', '\u5bfc\u5165\u5931\u8d25: ' + (msg.error || ''));
+      if (msg.ok) {
+        logLine('tag-in', '\u5bfc\u5165\u6210\u529f: ' + (msg.slot || ''));
+        playUiCue('playSuccess');
+        send({ cmd: 'list' });
+      } else if (msg.error !== 'cancelled') {
+        logLine('tag-err', '\u5bfc\u5165\u5931\u8d25: ' + (msg.error || ''));
+        playUiCue('playError');
+      }
     }
     else if (msg.cmd === 'import_target') handleImportTarget(msg);
 
@@ -595,11 +642,12 @@
   function handleImportTarget(msg) {
     var sourceData = msg.sourceData;
     var suggestedSlot = msg.suggestedSlot || '';
+    playUiCue('playModalOpen');
     var slot = prompt('\u9009\u62e9\u76ee\u6807\u5b58\u6863\u69fd\u4f4d:\n\u5efa\u8bae: ' + suggestedSlot + '\n\u4ec5\u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e0b\u5212\u7ebf/\u77ed\u6a2a\u7ebf, 1-32 \u5b57\u7b26', suggestedSlot);
-    if (slot == null) return;
+    if (slot == null) { playUiCue('playCancel'); return; }
     slot = slot.trim();
-    if (!slot) { logLine('tag-err', '\u5bfc\u5165\u53d6\u6d88: \u672a\u8f93\u5165\u69fd\u4f4d\u540d'); return; }
-    if (!SLOT_NAME_RE.test(slot)) { alert('\u69fd\u4f4d\u540d\u4e0d\u5408\u6cd5: "' + slot + '"'); return; }
+    if (!slot) { logLine('tag-err', '\u5bfc\u5165\u53d6\u6d88: \u672a\u8f93\u5165\u69fd\u4f4d\u540d'); playUiCue('playCancel'); return; }
+    if (!SLOT_NAME_RE.test(slot)) { playUiCue('playError'); alert('\u69fd\u4f4d\u540d\u4e0d\u5408\u6cd5: "' + slot + '"'); return; }
     var meta = window.BootstrapApp.getSlotMeta(slot);
     if (meta == null) {
       send({ cmd: 'import_commit', slot: slot, data: sourceData });
@@ -636,6 +684,7 @@
     content.innerHTML = '';
     mod.mount(content, initData);
     host.style.display = '';
+    playUiCue('playModalOpen');
   }
   function closeModal() {
     if (!_currentModal) return;
@@ -676,6 +725,7 @@
   // ── 全局桥 ──
   window.BootstrapApp = {
     send: function(obj) { send(obj); },
+    playUiCue: playUiCue,
     onMessage: function(cmd, handler) {
       if (!_handlers[cmd]) _handlers[cmd] = [];
       _handlers[cmd].push(handler);
@@ -791,11 +841,17 @@
       var t = e.target;
       if (!t || !t.closest) return;
       var btn = t.closest('button');
-      if (!btn || btn.disabled) return;
-      if (btn.matches('.btn-go')) { Audio.playConfirm(); return; }
-      if (btn.matches('.btn-back, .modal-close, #btn-cancel-launch, .intro-skip')) { Audio.playCancel(); return; }
-      if (btn.matches('.btn-start, .btn-rebuild, .btn-newchar, #btn-new, #btn-switch-slot')) { Audio.playSelect(); return; }
-      Audio.playClick();
+      if (btn && !btn.disabled) {
+        if (btn.matches('.btn-go')) { Audio.playConfirm(); return; }
+        if (btn.matches('.btn-back, .modal-close, #btn-cancel-launch, .intro-skip')) { Audio.playCancel(); return; }
+        if (btn.matches('.btn-start, .btn-rebuild, .btn-newchar, #btn-new, #btn-switch-slot')) { Audio.playSelect(); return; }
+        Audio.playClick();
+        return;
+      }
+      var check = t.closest('input[type="checkbox"], input[type="radio"]');
+      if (check && !check.disabled) {
+        Audio.playSelect();
+      }
     });
   }
 

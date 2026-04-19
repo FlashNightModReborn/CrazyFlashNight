@@ -196,6 +196,40 @@
     });
   }
 
+  function playTransition() {
+    if (!_sfxEnabled || !initCtx()) return;
+    resumeIfSuspended();
+    tonePulse(320, 'triangle', 0.006, 0.16, 0.07, 510);
+    noisePulse(0.002, 0.05, 0.035, 'bandpass', 1900, 2600, 2.1);
+    setTimeout(function () {
+      if (!_sfxEnabled || !ctx) return;
+      tonePulse(540, 'sine', 0.004, 0.12, 0.05, 720);
+    }, 55);
+  }
+
+  function playModalOpen() {
+    if (!_sfxEnabled || !initCtx()) return;
+    resumeIfSuspended();
+    tonePulse(240, 'sine', 0.01, 0.24, 0.05, 360);
+    setTimeout(function () {
+      if (!_sfxEnabled || !ctx) return;
+      tonePulse(480, 'triangle', 0.006, 0.18, 0.04, 620);
+      noisePulse(0.002, 0.05, 0.025, 'bandpass', 2400, 1800, 1.9);
+    }, 18);
+  }
+
+  function playSuccess() {
+    if (!_sfxEnabled || !initCtx()) return;
+    resumeIfSuspended();
+    [520, 660, 880].forEach(function (f, i) {
+      setTimeout(function () {
+        if (!_sfxEnabled || !ctx) return;
+        tonePulse(f, 'sine', 0.006, 0.24, i === 2 ? 0.075 : 0.055, f * 1.08);
+      }, i * 45);
+    });
+    noisePulse(0.002, 0.05, 0.03, 'bandpass', 3200, 2600, 2.4);
+  }
+
   // ── 环境 hum ──
   // 55Hz 基频 + 82.5Hz 五度 + 低通白噪声地板, 加 0.3Hz LFO 做呼吸感.
   // fade in 1.5s, fade out 0.8s; setAmbientEnabled 反复切换不串流.
@@ -279,6 +313,9 @@
     playCancel: playCancel,
     playError: playError,
     playReady: playReady,
+    playTransition: playTransition,
+    playModalOpen: playModalOpen,
+    playSuccess: playSuccess,
     startAmbient: startAmbient,
     stopAmbient: stopAmbient,
     setSfxEnabled: setSfxEnabled,

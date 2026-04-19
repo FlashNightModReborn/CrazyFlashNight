@@ -23,9 +23,8 @@ namespace CF7Launcher.Save
         }
 
         /// <summary>
-        /// 2.7 → 3.0 migration: lift SOL top-level keys into mydata.tasks /
-        /// mydata.pets / mydata.shop nested shape, with defaults when SOL
-        /// top-level is absent. Port of SaveManager.as:1052-1072.
+        /// 2.7 -> 3.0 migration: lift mirrored SOL top-level keys into
+        /// mydata.tasks / mydata.pets / mydata.shop.
         /// </summary>
         public static void Migrate_2_7_to_3_0(JObject mydata, JObject soData)
         {
@@ -34,79 +33,66 @@ namespace CF7Launcher.Save
             if (IsAbsent(mydata["tasks"]))
             {
                 JObject tasks = new JObject();
-                tasks["tasks_to_do"] = PreferNonAbsent(soData["tasks_to_do"], new JArray());
-                tasks["tasks_finished"] = PreferNonAbsent(soData["tasks_finished"], new JObject());
-                tasks["task_chains_progress"] = PreferNonAbsent(soData["task_chains_progress"], new JObject());
+                tasks["tasks_to_do"] = CloneToken(PreferTaskArray(soData["tasks_to_do"], null, new JArray()));
+                tasks["tasks_finished"] = CloneToken(PreferTaskObject(soData["tasks_finished"], null, new JObject()));
+                tasks["task_chains_progress"] = BuildTaskChainsProgress(
+                    soData["task_chains_progress"],
+                    null,
+                    mydata["3"]);
                 mydata["tasks"] = tasks;
             }
             if (IsAbsent(mydata["pets"]))
             {
-                JObject pets = new JObject();
-                pets["宠物信息"] = PreferNonAbsent(soData["战宠"], DefaultPetsArray());
-                pets["宠物领养限制"] = PreferNonAbsent(soData["宠物领养限制"], new JValue(5));
-                mydata["pets"] = pets;
+                mydata["pets"] = BuildPetsBundle(
+                    soData["战宠"],
+                    soData["宠物领养限制"],
+                    null);
             }
             if (IsAbsent(mydata["shop"]))
             {
-                JObject shop = new JObject();
-                shop["商城已购买物品"] = PreferNonAbsent(soData["商城已购买物品"], new JArray());
-                shop["商城购物车"] = PreferNonAbsent(soData["商城购物车"], new JArray());
-                mydata["shop"] = shop;
+                mydata["shop"] = BuildShopBundle(
+                    soData["商城已购买物品"],
+                    soData["商城购物车"],
+                    null);
             }
             mydata["version"] = "3.0";
         }
 
         /// <summary>
-        /// SOL top-level key authoritative merge. Port of SaveManager.as:288-319
-        /// (loadAll SOL path). Semantics:
-        /// - tasks: group gate — if soData.tasks_to_do exists, use SOL top-level
-        ///   for all three fields; otherwise keep whatever mydata.tasks has.
-        /// - pets: group gate — if soData.战宠 exists, use SOL top-level for
-        ///   both fields; otherwise keep mydata.pets.
-        /// - shop: per-field — each field independently prefers SOL top-level.
+        /// Merge mirrored top-level SOL keys into normalized mydata.
+        /// Prefer non-empty top-level layers; if top-level is present but empty
+        /// while nested mydata still has data, keep nested to avoid data loss.
+        /// Tasks also repair legacy mainline from mydata["3"].
         /// </summary>
         public static void MergeTopLevelKeys(JObject mydata, JObject soData)
         {
             if (mydata == null || soData == null) return;
 
-            // tasks group gate
-            if (!IsAbsent(soData["tasks_to_do"]))
-            {
-                JObject prev = mydata["tasks"] as JObject;
-                JObject merged = new JObject();
-                merged["tasks_to_do"] = soData["tasks_to_do"];
-                merged["tasks_finished"] = Coalesce(
-                    soData["tasks_finished"],
-                    prev != null ? prev["tasks_finished"] : null,
-                    new JObject());
-                merged["task_chains_progress"] = Coalesce(
-                    soData["task_chains_progress"],
-                    prev != null ? prev["task_chains_progress"] : null,
-                    new JObject());
-                mydata["tasks"] = merged;
-            }
+            JObject prevTasks = mydata["tasks"] as JObject;
+            JObject mergedTasks = new JObject();
+            mergedTasks["tasks_to_do"] = CloneToken(PreferTaskArray(
+                soData["tasks_to_do"],
+                prevTasks != null ? prevTasks["tasks_to_do"] : null,
+                new JArray()));
+            mergedTasks["tasks_finished"] = CloneToken(PreferTaskObject(
+                soData["tasks_finished"],
+                prevTasks != null ? prevTasks["tasks_finished"] : null,
+                new JObject()));
+            mergedTasks["task_chains_progress"] = BuildTaskChainsProgress(
+                soData["task_chains_progress"],
+                prevTasks != null ? prevTasks["task_chains_progress"] : null,
+                mydata["3"]);
+            mydata["tasks"] = mergedTasks;
 
-            // pets group gate
-            if (!IsAbsent(soData["战宠"]))
-            {
-                JObject prev = mydata["pets"] as JObject;
-                JObject merged = new JObject();
-                merged["宠物信息"] = soData["战宠"];
-                merged["宠物领养限制"] = Coalesce(
-                    soData["宠物领养限制"],
-                    prev != null ? prev["宠物领养限制"] : null,
-                    new JValue(5));
-                mydata["pets"] = merged;
-            }
+            mydata["pets"] = BuildPetsBundle(
+                soData["战宠"],
+                soData["宠物领养限制"],
+                mydata["pets"] as JObject);
 
-            // shop per-field
-            JObject shop = EnsureShop(mydata);
-            if (!IsAbsent(soData["商城已购买物品"]))
-                shop["商城已购买物品"] = soData["商城已购买物品"];
-            if (!IsAbsent(soData["商城购物车"]))
-                shop["商城购物车"] = soData["商城购物车"];
-            if (IsAbsent(shop["商城已购买物品"])) shop["商城已购买物品"] = new JArray();
-            if (IsAbsent(shop["商城购物车"])) shop["商城购物车"] = new JArray();
+            mydata["shop"] = BuildShopBundle(
+                soData["商城已购买物品"],
+                soData["商城购物车"],
+                mydata["shop"] as JObject);
         }
 
         /// <summary>
@@ -174,10 +160,10 @@ namespace CF7Launcher.Save
 
         // ───────── helpers ─────────
 
-        private static JToken PreferNonAbsent(JToken primary, JToken fallback)
+        private static JToken CloneToken(JToken token)
         {
-            if (!IsAbsent(primary)) return primary;
-            return fallback;
+            if (token == null) return null;
+            return token.DeepClone();
         }
 
         private static JToken Coalesce(JToken a, JToken b, JToken fallback)
@@ -187,14 +173,147 @@ namespace CF7Launcher.Save
             return fallback;
         }
 
-        private static JObject EnsureShop(JObject mydata)
+        private static bool HasTaskEntries(JToken token)
         {
-            JObject shop = mydata["shop"] as JObject;
-            if (shop == null)
+            if (IsAbsent(token)) return false;
+            JArray arr = token as JArray;
+            if (arr != null) return arr.Count > 0;
+            JObject obj = token as JObject;
+            return obj != null && obj.HasValues;
+        }
+
+        private static JToken PreferTaskArray(JToken primary, JToken fallback, JToken defaultValue)
+        {
+            if (!IsAbsent(primary))
             {
-                shop = new JObject();
-                mydata["shop"] = shop;
+                if (HasTaskEntries(primary) || IsAbsent(fallback) || !HasTaskEntries(fallback))
+                    return primary;
             }
+            if (!IsAbsent(fallback)) return fallback;
+            return defaultValue;
+        }
+
+        private static JToken PreferTaskObject(JToken primary, JToken fallback, JToken defaultValue)
+        {
+            if (!IsAbsent(primary))
+            {
+                if (HasTaskEntries(primary) || IsAbsent(fallback) || !HasTaskEntries(fallback))
+                    return primary;
+            }
+            if (!IsAbsent(fallback)) return fallback;
+            return defaultValue;
+        }
+
+        private static JObject BuildTaskChainsProgress(JToken primary, JToken fallback, JToken legacyMainToken)
+        {
+            JToken picked = PreferTaskObject(primary, fallback, new JObject());
+            JObject result = picked as JObject;
+            if (result != null) result = result.DeepClone() as JObject;
+            if (result == null) result = new JObject();
+
+            int legacyMain;
+            if (result["主线"] == null && TryGetLegacyMainProgress(legacyMainToken, out legacyMain))
+            {
+                result["主线"] = legacyMain;
+            }
+            return result;
+        }
+
+        private static bool TryGetLegacyMainProgress(JToken token, out int progress)
+        {
+            progress = 0;
+            if (IsAbsent(token)) return false;
+            try
+            {
+                double value = token.Value<double>();
+                if (double.IsNaN(value)) return false;
+                progress = (int)Math.Floor(value);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool HasListEntries(JToken token)
+        {
+            if (IsAbsent(token)) return false;
+            JArray arr = token as JArray;
+            return arr != null && arr.Count > 0;
+        }
+
+        private static JToken PreferListArray(JToken primary, JToken fallback, JToken defaultValue)
+        {
+            if (!IsAbsent(primary))
+            {
+                if (HasListEntries(primary) || IsAbsent(fallback) || !HasListEntries(fallback))
+                    return primary;
+            }
+            if (!IsAbsent(fallback)) return fallback;
+            return defaultValue;
+        }
+
+        private static bool HasPetEntries(JToken token)
+        {
+            JArray arr = token as JArray;
+            if (arr == null) return false;
+            for (int i = 0; i < arr.Count; i++)
+            {
+                JArray petArr = arr[i] as JArray;
+                if (petArr != null)
+                {
+                    if (petArr.Count > 0) return true;
+                    continue;
+                }
+
+                JObject petObj = arr[i] as JObject;
+                if (petObj != null)
+                {
+                    if (petObj.HasValues) return true;
+                    continue;
+                }
+
+                if (!IsAbsent(arr[i])) return true;
+            }
+            return false;
+        }
+
+        private static JToken PreferPetsInfo(JToken primary, JToken fallback, JToken defaultValue)
+        {
+            if (!IsAbsent(primary))
+            {
+                if (HasPetEntries(primary) || IsAbsent(fallback) || !HasPetEntries(fallback))
+                    return primary;
+            }
+            if (!IsAbsent(fallback)) return fallback;
+            return defaultValue;
+        }
+
+        private static JObject BuildPetsBundle(JToken primaryInfo, JToken primaryLimit, JObject previousPets)
+        {
+            JToken fallbackInfo = previousPets != null ? previousPets["宠物信息"] : null;
+            JToken fallbackLimit = previousPets != null ? previousPets["宠物领养限制"] : null;
+            bool usePrimaryInfo = !IsAbsent(primaryInfo)
+                && (HasPetEntries(primaryInfo) || IsAbsent(fallbackInfo) || !HasPetEntries(fallbackInfo));
+            JToken chosenInfo = PreferPetsInfo(primaryInfo, fallbackInfo, DefaultPetsArray());
+
+            JObject pets = new JObject();
+            pets["宠物信息"] = CloneToken(chosenInfo);
+            pets["宠物领养限制"] = CloneToken(usePrimaryInfo
+                ? Coalesce(primaryLimit, fallbackLimit, new JValue(5))
+                : Coalesce(fallbackLimit, primaryLimit, new JValue(5)));
+            return pets;
+        }
+
+        private static JObject BuildShopBundle(JToken primaryPurchased, JToken primaryCart, JObject previousShop)
+        {
+            JToken fallbackPurchased = previousShop != null ? previousShop["商城已购买物品"] : null;
+            JToken fallbackCart = previousShop != null ? previousShop["商城购物车"] : null;
+
+            JObject shop = new JObject();
+            shop["商城已购买物品"] = CloneToken(PreferListArray(primaryPurchased, fallbackPurchased, new JArray()));
+            shop["商城购物车"] = CloneToken(PreferListArray(primaryCart, fallbackCart, new JArray()));
             return shop;
         }
 
