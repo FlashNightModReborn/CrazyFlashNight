@@ -57,6 +57,18 @@
             <hitMark>弹坑</hitMark>
         </attribute>
     </bullet>
+      <bullet>
+        <name>蓝紫穿刺子弹</name>
+        <shell>
+            <casing>能量弹壳</casing>
+            <xOffset>60</xOffset>
+            <simulationMethod>标准</simulationMethod>
+            <yOffset>0</yOffset>
+        </shell>
+        <attribute>
+            <hitMark>弹坑</hitMark>
+        </attribute>
+    </bullet>
     <bullet>
         <name>横向联弹-次级穿刺子弹</name>
         <attribute>
@@ -306,6 +318,18 @@
     </bullet>
     <bullet>
         <name>电球</name>
+        <shell>
+            <casing>能量榴弹弹壳</casing>
+            <xOffset>60</xOffset>
+            <simulationMethod>标准</simulationMethod>
+            <yOffset>0</yOffset>
+        </shell>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
+    </bullet>
+      <bullet>
+        <name>加强电球</name>
         <shell>
             <casing>能量榴弹弹壳</casing>
             <xOffset>60</xOffset>
