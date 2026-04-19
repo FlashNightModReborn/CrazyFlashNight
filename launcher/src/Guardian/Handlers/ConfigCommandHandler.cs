@@ -1,8 +1,11 @@
 // BMH 拆分：config_set。
 // 前端 send({cmd:'config_set', key:'introEnabled', value:true/false}) 等.
-// key 白名单:  introEnabled (bool), lastPlayedSlot (string), sfxEnabled (bool), ambientEnabled (bool)
+// key 白名单:
+//   introEnabled (bool), lastPlayedSlot (string),
+//   sfxEnabled (bool), ambientEnabled (bool),
+//   uiFontScale (number, clamped to [FontScaleMin..FontScaleMax])
 // 异常的 key 返回 config_set_resp {ok:false, error:"unknown_key"}.
-// 零行为改动，纯搬运。
+// 异常的 value 类型返回 {ok:false, error:"bad_value"}.
 
 using System;
 using Newtonsoft.Json;
@@ -42,6 +45,14 @@ namespace CF7Launcher.Guardian.Handlers
                         break;
                     case "ambientEnabled":
                         userPrefs.AmbientEnabled = val != null && val.Type == JTokenType.Boolean && val.Value<bool>();
+                        break;
+                    case "uiFontScale":
+                        if (val == null || (val.Type != JTokenType.Float && val.Type != JTokenType.Integer))
+                        {
+                            PostConfigSetResp(bootForm, key, false, "bad_value");
+                            return;
+                        }
+                        userPrefs.UiFontScale = UserPrefs.ClampFontScale(val.Value<double>());
                         break;
                     default:
                         PostConfigSetResp(bootForm, key, false, "unknown_key");

@@ -49,7 +49,33 @@
   var _prefsIntroEnabled = false;
   var _prefsSfxEnabled = true;
   var _prefsAmbientEnabled = false;
+  var _prefsUiFontScale = 1.35;
   var _prefsReceived = false;     // 首个 list_resp 到达前不做任何 config_set (避免 init 时被 onchange 回写 false 覆盖)
+
+  // 字号缩放: 4 档预设 + clamp 范围 (与 C# UserPrefs.ClampFontScale 一致)
+  // 基准 1.35 (用户在测试机上反馈旧 1.0 偏小, 1.35 刚好), 预设向上偏移
+  var FONT_SCALE_MIN = 0.7;
+  var FONT_SCALE_MAX = 1.9;
+  var FONT_SCALE_PRESETS = [
+    { value: 1.15, label: '\u7d27\u51d1' },  // 紧凑 (大屏/密集布局)
+    { value: 1.35, label: '\u6807\u51c6' },  // 标准 (默认)
+    { value: 1.55, label: '\u5927' },        // 大 (轻松阅读)
+    { value: 1.75, label: '\u8d85\u5927' }   // 超大 (GPD 掌机 / 高 DPI)
+  ];
+
+  function clampFontScale(v) {
+    if (typeof v !== 'number' || isNaN(v) || !isFinite(v)) return 1.35;
+    if (v < FONT_SCALE_MIN) return FONT_SCALE_MIN;
+    if (v > FONT_SCALE_MAX) return FONT_SCALE_MAX;
+    return v;
+  }
+
+  function applyFontScale(v) {
+    v = clampFontScale(v);
+    _prefsUiFontScale = v;
+    // 写到 :root 上, 让 bootstrap.css 的 --fs-* calc(... * var(--fs-scale)) 全局更新
+    document.documentElement.style.setProperty('--fs-scale', String(v));
+  }
 
   // 用户在 slot 页主动选择的槽位 + 模式 ('normal' = 加载现有存档 / 'fresh' = 新建或重建).
   // 设置后回到欢迎页, _welcomeSlot 优先使用该槽位; 「确认」按 mode 分发到 start_game / rebuild.
@@ -572,6 +598,7 @@
       if (typeof msg.introEnabled === 'boolean')  _prefsIntroEnabled   = msg.introEnabled;
       if (typeof msg.sfxEnabled === 'boolean')    _prefsSfxEnabled     = msg.sfxEnabled;
       if (typeof msg.ambientEnabled === 'boolean') _prefsAmbientEnabled = msg.ambientEnabled;
+      if (typeof msg.uiFontScale === 'number')    applyFontScale(msg.uiFontScale);
       _prefsReceived = true;
       chkIntro.checked = _prefsIntroEnabled;
       if (Audio) {
@@ -745,7 +772,15 @@
     openModal: openModal,
     closeModal: closeModal,
     tryCloseModal: tryCloseModal,
-    registerModule: function(name, mod) { _moduleRegistry[name] = mod; }
+    registerModule: function(name, mod) { _moduleRegistry[name] = mod; },
+    // 字号缩放 API: 模块 (about.js) 用来读当前值 + 切换预设
+    getUiFontScale: function() { return _prefsUiFontScale; },
+    getUiFontScalePresets: function() { return FONT_SCALE_PRESETS.slice(); },
+    setUiFontScale: function(v) {
+      var clamped = clampFontScale(v);
+      applyFontScale(clamped);
+      if (_prefsReceived) send({ cmd: 'config_set', key: 'uiFontScale', value: clamped });
+    }
   };
 
   // ── Welcome 视图事件 ──

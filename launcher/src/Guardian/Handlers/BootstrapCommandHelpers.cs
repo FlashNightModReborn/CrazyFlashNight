@@ -206,6 +206,7 @@ namespace CF7Launcher.Guardian.Handlers
                         outMsgObj["introEnabled"] = userPrefs.IntroEnabled;
                         outMsgObj["sfxEnabled"] = userPrefs.SfxEnabled;
                         outMsgObj["ambientEnabled"] = userPrefs.AmbientEnabled;
+                        outMsgObj["uiFontScale"] = userPrefs.UiFontScale;
                     }
                 }
                 else

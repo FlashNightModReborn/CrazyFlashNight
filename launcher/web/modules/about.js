@@ -6,12 +6,33 @@
 
   var _container = null;
 
+  // 判断两个缩放值是否算"同一档" (避免浮点精度让按钮高亮漂移)
+  function scaleEq(a, b) { return Math.abs(a - b) < 0.001; }
+
+  function buildFontScaleButtons(currentScale) {
+    var presets = (window.BootstrapApp && window.BootstrapApp.getUiFontScalePresets)
+      ? window.BootstrapApp.getUiFontScalePresets()
+      : [];
+    var html = '';
+    for (var i = 0; i < presets.length; i++) {
+      var p = presets[i];
+      var active = scaleEq(p.value, currentScale) ? ' active' : '';
+      html += '<button type="button" class="fs-preset-btn' + active + '" ' +
+              'data-scale="' + p.value.toFixed(2) + '">' +
+              p.label + '<span class="fs-preset-x">' + p.value.toFixed(2) + 'x</span>' +
+              '</button>';
+    }
+    return html;
+  }
+
   function mount(containerEl) {
     _container = containerEl;
     // 初始值从 BootstrapAudio 当前状态读 (list_resp 注入后已 apply), fallback 默认 true/false
     var sfxOn = !!(window.BootstrapAudio && window.BootstrapAudio.isSfxEnabled && window.BootstrapAudio.isSfxEnabled());
     if (!window.BootstrapAudio) sfxOn = true;
     var ambOn = !!(window.BootstrapAudio && window.BootstrapAudio.isAmbientEnabled && window.BootstrapAudio.isAmbientEnabled());
+    var currentScale = (window.BootstrapApp && window.BootstrapApp.getUiFontScale)
+      ? window.BootstrapApp.getUiFontScale() : 1.35;
     _container.innerHTML =
       '<div class="modal-header">' +
         '<h2>ABOUT · 说明 / 版权</h2>' +
@@ -28,6 +49,9 @@
           '<span class="qq">149188029</span><span class="b">（将满）</span>、' +
           '<span class="qq">307710279</span>' +
           ' 参与讨论，关注 B 站账号 <span class="qq">黑月雾人</span> 与 <span class="qq">无名氏的低谷</span> 获取最新信息。</p>' +
+        '<h3 style="margin-top:18px">DISPLAY · 字号</h3>' +
+        '<div class="fs-preset-row" id="about-fs-row">' + buildFontScaleButtons(currentScale) + '</div>' +
+        '<p class="fs-hint">GPD 等小屏设备建议选「大」或「超大」; 1080p+ 大屏可用「紧凑」保持高密度布局。</p>' +
         '<h3 style="margin-top:18px">AUDIO</h3>' +
         '<div class="audio-toggles">' +
           '<label class="audio-toggle"><input type="checkbox" id="about-sfx"' + (sfxOn ? ' checked' : '') + '> <span>UI 音效 · hover / click / confirm / error</span></label>' +
@@ -38,6 +62,22 @@
 
     document.getElementById('about-close').onclick = function () {
       window.BootstrapApp.tryCloseModal();
+    };
+
+    // 字号预设按钮: 事件委托到 row, 点击切档 + 同步高亮
+    var fsRow = document.getElementById('about-fs-row');
+    fsRow.onclick = function (ev) {
+      var btn = ev.target;
+      while (btn && btn !== fsRow && !btn.classList.contains('fs-preset-btn')) btn = btn.parentNode;
+      if (!btn || btn === fsRow) return;
+      var v = parseFloat(btn.getAttribute('data-scale'));
+      if (isNaN(v)) return;
+      if (window.BootstrapApp && window.BootstrapApp.setUiFontScale) {
+        window.BootstrapApp.setUiFontScale(v);
+      }
+      var children = fsRow.children;
+      for (var i = 0; i < children.length; i++) children[i].classList.remove('active');
+      btn.classList.add('active');
     };
 
     var sfxChk = document.getElementById('about-sfx');
