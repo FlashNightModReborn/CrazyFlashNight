@@ -104,6 +104,65 @@ namespace CF7Launcher.Save
             return null;
         }
 
+        /// <summary>
+        /// Delete every SOL candidate matching (slot, swfPath) across all known
+        /// hash dirs / path variants. Used by "fresh start" flows so hidden
+        /// corrupt SOL residues do not hijack new-character creation.
+        /// </summary>
+        public int DeleteAllSolFiles(string slot, string swfPath)
+        {
+            HashSet<string> candidates = CollectSolCandidates(slot, swfPath);
+            int deleted = 0;
+            foreach (string path in candidates)
+            {
+                try
+                {
+                    File.Delete(path);
+                    deleted++;
+                    LogManager.Log("[SolFileLocator] deleted SOL: " + path);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[SolFileLocator] delete SOL failed: " + path + " ex=" + ex.Message);
+                }
+            }
+            if (deleted > 0)
+            {
+                lock (_cacheLock)
+                {
+                    _hashCache = null;
+                    _variantCache = Variant.Unknown;
+                }
+            }
+            return deleted;
+        }
+
+        private HashSet<string> CollectSolCandidates(string slot, string swfPath)
+        {
+            HashSet<string> hits = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            if (string.IsNullOrEmpty(slot) || string.IsNullOrEmpty(swfPath))
+                return hits;
+            if (!Directory.Exists(_shareRoot))
+                return hits;
+
+            string solFileName = SanitizeSlot(slot) + ".sol";
+            string swfFileName = Path.GetFileName(swfPath);
+            string variantA = BuildSubPath(swfPath, includeDrive: false);
+            string variantB = BuildSubPath(swfPath, includeDrive: true);
+            string[] hashDirs = EnumerateHashDirs();
+            if (hashDirs == null || hashDirs.Length == 0) return hits;
+
+            foreach (string hashDir in hashDirs)
+            {
+                string tryA = Path.Combine(hashDir, variantA, solFileName);
+                string tryB = Path.Combine(hashDir, variantB, solFileName);
+                if (File.Exists(tryA)) hits.Add(tryA);
+                if (File.Exists(tryB)) hits.Add(tryB);
+                AddGlobMatches(hashDir, swfFileName, solFileName, hits);
+            }
+            return hits;
+        }
+
         private void Cache(string hash, Variant v)
         {
             lock (_cacheLock)
@@ -208,6 +267,29 @@ namespace CF7Launcher.Save
                 LogManager.Log("[SolFileLocator] glob fallback failed: " + ex.Message);
             }
             return null;
+        }
+
+        private static void AddGlobMatches(string hashDir, string swfFileName, string solFileName, ISet<string> hits)
+        {
+            string localhost = Path.Combine(hashDir, "localhost");
+            if (!Directory.Exists(localhost)) return;
+            try
+            {
+                string[] candidates = Directory.GetFiles(
+                    localhost,
+                    solFileName,
+                    SearchOption.AllDirectories);
+                foreach (string candidate in candidates)
+                {
+                    string parent = Path.GetFileName(Path.GetDirectoryName(candidate) ?? string.Empty);
+                    if (string.Equals(parent, swfFileName, StringComparison.OrdinalIgnoreCase))
+                        hits.Add(candidate);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[SolFileLocator] glob collect failed: " + ex.Message);
+            }
         }
 
         /// <summary>

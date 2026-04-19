@@ -88,9 +88,9 @@ namespace CF7Launcher.Guardian
                             PostError(bootForm, "flash_start_failed", "launchFlow not available (flash path missing?)");
                             return;
                         }
-                        // Phase 2b: 落盘 lastPlayedSlot — 只记录 start_game (实际游玩意图),
-                        // rebuild 不算"玩家玩这个槽位", 不 overwrite.
-                        if (cmd == "start_game" && userPrefs != null && userPrefs.LastPlayedSlot != slot)
+                        // start_game / rebuild 都代表用户要以这个槽位继续游戏或重建后开局，
+                        // 都应更新欢迎页默认槽位。
+                        if (userPrefs != null && userPrefs.LastPlayedSlot != slot)
                         {
                             userPrefs.LastPlayedSlot = slot;
                             userPrefs.Save();
@@ -100,7 +100,8 @@ namespace CF7Launcher.Guardian
                         //   requireFlashReveal — Flash 封面帧 (Flash 发 bootstrap_reveal_ready 才清)
                         bool deferJs = msg.Value<bool?>("deferReveal") ?? false;
                         bool reqFlash = msg.Value<bool?>("requireFlashReveal") ?? false;
-                        launchFlow.StartGame(slot, deferJs, reqFlash);
+                        if (cmd == "rebuild") launchFlow.StartFreshGame(slot, deferJs, reqFlash);
+                        else launchFlow.StartGame(slot, deferJs, reqFlash);
                         return;
                     }
 

@@ -8,12 +8,14 @@ namespace CF7Launcher.Save
 {
     public class SaveResolutionContext
     {
+        public readonly SolFileLocator Locator;
         public readonly SolResolver Resolver;
         public readonly ArchiveTask Archive;
         public readonly string SwfPath;
 
-        public SaveResolutionContext(SolResolver resolver, ArchiveTask archive, string swfPath)
+        public SaveResolutionContext(SolFileLocator locator, SolResolver resolver, ArchiveTask archive, string swfPath)
         {
+            Locator = locator;
             Resolver = resolver;
             Archive = archive;
             SwfPath = swfPath;

@@ -216,40 +216,41 @@
     ov.classList.remove('loading');
     ov.classList.add('on');
     skipBtn.style.display = '';
-    try { vid.currentTime = 0; } catch (e) {}
-
-    // **立即 send start_game 带 defer flags** — 视频播放与 Flash 加载并行
+    try {
+      vid.preload = 'auto';
+      vid.load();
+      vid.currentTime = 0;
+    } catch (e) {}
+    // 立即 send start_game + defer flags, 让视频播放与 Flash 加载并行.
     setLaunchInFlight(true);
     send({ cmd: 'start_game', slot: slot.slot, deferReveal: true, requireFlashReveal: true });
-
     var fired = false;
-    function onVideoDone() {
+    function onVideoDone(reason) {
       if (fired) return;
       fired = true;
+      if (reason) logLine('tag-in', 'intro handoff: ' + reason);
       try { vid.pause(); vid.onended = null; vid.onerror = null; } catch (e) {}
       skipBtn.onclick = null;
-      // 切到 loading 相 (video 淡出, spinner 淡入; 若 Flash 已 reveal_ready, 下一刻即 panel swap)
+      // 切到 loading 相: 视频淡出, spinner 淡入; 若 Flash 已 reveal_ready, 下一刻即 panel swap.
       ov.classList.add('loading');
       send({ cmd: 'reveal_ok' });
     }
-    vid.onended = onVideoDone;
+    vid.onended = function() { onVideoDone('video_end'); };
     vid.onerror = function(e) {
       var err = (vid.error && vid.error.message) || (e && e.message) || 'unknown';
       logLine('tag-err', 'intro video error: ' + err);
-      onVideoDone();
+      onVideoDone('video_error');
     };
-    skipBtn.onclick = onVideoDone;
-
+    skipBtn.onclick = function() { onVideoDone('user_skip'); };
     var p = vid.play();
     if (p && typeof p.then === 'function') {
       p.catch(function(e) {
         logLine('tag-err', 'intro play rejected: ' + (e && e.message || e));
-        onVideoDone();
+        onVideoDone('play_rejected');
       });
     }
   }
 
-  // 无片头路径: 直接显示 loading overlay, 同时 send start_game (requireFlashReveal:true)
   function showLoadingOverlay() {
     var ov = document.getElementById('intro-ov');
     var skipBtn = document.getElementById('intro-skip');
@@ -285,8 +286,13 @@
     setLaunchInFlight(true);
     send({ cmd: 'start_game', slot: slotName, requireFlashReveal: true });
   }
+  function initiateFreshLaunch(slotName) {
+    if (_launchInFlight) return;
+    showLoadingOverlay();
+    setLaunchInFlight(true);
+    send({ cmd: 'rebuild', slot: slotName, requireFlashReveal: true });
+  }
 
-  // ── 槽位卡片渲染 (slots 视图) ──
   function renderCards(slots) {
     cardsEl.innerHTML = '';
     var merged = mergeSlots(slots || []);
@@ -360,9 +366,9 @@
       if (confirm('\u786e\u5b9a\u5220\u9664\u5b58\u6863 "' + displayName + '" ?')) send({ cmd: 'delete', slot: s.slot });
     };
     if (rebuildBtn) rebuildBtn.onclick = function() {
-      if (confirm('\u91cd\u5efa\u5b58\u6863 "' + displayName + '" (\u539f\u6570\u636e\u5c06\u4e22\u5f03)?')) send({ cmd: 'rebuild', slot: s.slot });
+      if (confirm('\u91cd\u5efa\u5b58\u6863 "' + displayName + '" (\u539f\u6570\u636e\u5c06\u4e22\u5f03)?')) initiateFreshLaunch(s.slot);
     };
-    if (newCharBtn) newCharBtn.onclick = function() { initiateLaunch(s.slot); };
+    if (newCharBtn) newCharBtn.onclick = function() { initiateFreshLaunch(s.slot); };
     if (editBtn) editBtn.onclick = function() {
       window.BootstrapApp.openModal('archive-editor', { slot: s.slot, slotMeta: s });
     };
@@ -403,13 +409,13 @@
         var entry = lastSlotsFromLauncher[k];
         if (entry.tombstoned) {
           if (!confirm('\u6b64\u6863\u5df2\u5220\u9664, \u662f\u5426\u91cd\u5efa?')) return;
-          send({ cmd: 'rebuild', slot: slot }); return;
+          initiateFreshLaunch(slot); return;
         }
         if (!confirm('\u5b58\u6863 "' + slot + '" \u5df2\u5b58\u5728, \u76f4\u63a5\u52a0\u8f7d?')) return;
         initiateLaunch(slot); return;
       }
     }
-    initiateLaunch(slot);
+    initiateFreshLaunch(slot);
   }
 
   // ── State 广播 ──
@@ -483,10 +489,9 @@
       if (!msg.ok) logLine('tag-err', 'config_set failed: key=' + (msg.key || '?') + ' err=' + (msg.error || ''));
     }
     else if (msg.cmd === 'flash_ready') {
-      // Phase 2b-ext: Flash 封面帧已发 reveal_ready → 跳过按钮切就绪样式
       var sk = document.getElementById('intro-skip');
       sk.classList.add('flash-ready');
-      sk.textContent = '进入游戏 \u00b7 ESC';
+      sk.textContent = '进入游戏 · ESC';
     }
     else if (msg.cmd === 'delete_resp') { if (msg.ok) send({ cmd: 'list' }); else logLine('tag-err', 'delete failed: ' + msg.error); }
     else if (msg.cmd === 'error')       logLine('tag-err', msg.code + ': ' + msg.msg);

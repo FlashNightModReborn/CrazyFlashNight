@@ -142,7 +142,7 @@
 <!-- 片头视频 + 加载 overlay. 视频阶段: .on 显示 video + 跳过按钮; 加载阶段: .on.loading 隐藏 video,
      显示 spinner + "启动中..." + "ESC 取消"; Ready 状态 Guardian 层级 panel swap 时整个 overlay 自然随 BootstrapPanel 隐藏 -->
 <div class="intro-ov" id="intro-ov">
-  <video id="intro-video" src="assets/intro.mp4" playsinline preload="auto"></video>
+  <video id="intro-video" src="assets/intro.mp4" playsinline preload="none"></video>
   <div class="loading-indicator" id="loading-indicator">
     <div class="spinner"></div>
     <div class="loading-text">启动中</div>

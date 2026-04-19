@@ -212,6 +212,27 @@ namespace CF7Launcher.Guardian
         public void StartGame(string slot) { StartGame(slot, false, false); }
 
         /// <summary>
+        /// Fresh-start path: clear launcher shadow/tombstone + all matching SOL
+        /// files before re-entering the normal StartGame resolution flow.
+        /// Used for "新建角色" and "重建" so hidden corrupt SOL residues cannot
+        /// bounce the user into the restore-error screen.
+        /// </summary>
+        public void StartFreshGame(string slot, bool deferJsReveal, bool requireFlashReveal)
+        {
+            if (_saveCtx != null)
+            {
+                if (_saveCtx.Archive != null)
+                    _saveCtx.Archive.ResetSlotSync(slot);
+                if (_saveCtx.Locator != null)
+                {
+                    int deleted = _saveCtx.Locator.DeleteAllSolFiles(slot, _saveCtx.SwfPath);
+                    LogManager.Log("[LaunchFlow] StartFreshGame cleared SOL count=" + deleted + " slot=" + slot);
+                }
+            }
+            StartGame(slot, deferJsReveal, requireFlashReveal);
+        }
+
+        /// <summary>
         /// Phase 2b-ext: 扩展签名支持 defer reveal.
         /// deferJsReveal: 前端要求等 reveal_ok 才真正 panel swap (典型: 片头视频播放中).
         /// requireFlashReveal: 等 Flash 帧 81 发 bootstrap_reveal_ready 才 panel swap (用于遮掩 Flash 内部 asset 加载时间).
@@ -222,6 +243,8 @@ namespace CF7Launcher.Guardian
             // Phase C protocol v2: 锁外解析存档决议。避免在握手状态锁里做文件 I/O。
             // SolResolver 自身线程安全（使用 ArchiveTask 的 _lock）。
             CF7Launcher.Save.SolResolveResult resolved = null;
+            bool configureAudioGate = false;
+            bool armAudioGate = false;
             if (_saveCtx != null)
             {
                 try
@@ -271,6 +294,8 @@ namespace CF7Launcher.Guardian
                     _cachedReady.Clear();
                     CancelWaitTimerLocked();
                     CancelZombieTimerLocked();
+                    configureAudioGate = true;
+                    armAudioGate = deferJsReveal;
                     TransitionToSpawning();
                 }
                 else if (_state == State.WaitingConnect || _state == State.WaitingHandshake)
@@ -280,6 +305,8 @@ namespace CF7Launcher.Guardian
                     _pendingSlot = slot;
                     _resolvedSave = resolved;
                     CancelPrewarmDeadlineLocked();
+                    configureAudioGate = true;
+                    armAudioGate = deferJsReveal;
                     LogManager.Log("[LaunchFlow] StartGame consumed into prewarm (pre-handshake) state=" + _state);
                 }
                 else if (_state == State.PrewarmHandshakeHeld)
@@ -292,6 +319,8 @@ namespace CF7Launcher.Guardian
                     _heldHandshakeCallback = null;  // 单一 owner: 先 null 再发
                     heldJsonToSend = BuildHandshakeResponseJsonLocked();
                     int heldMs = Environment.TickCount - _heldHandshakeReceivedMs;
+                    configureAudioGate = true;
+                    armAudioGate = deferJsReveal;
                     LogManager.Log("[Prewarm] normal_flush held_ms=" + heldMs);
                     TransitionToEmbedding();  // 锁内: cancel WAIT_HANDSHAKE + state→Embedding 原子发生
                 }
@@ -305,6 +334,11 @@ namespace CF7Launcher.Guardian
             // 锁外 send: held consume 路径的 gen-bound respond() 网络写.
             // TransitionToEmbedding 已在 send 前发生 → WAIT_HANDSHAKE 无 stale fire 窗口.
             SendHeldCallback(heldCbToInvoke, heldJsonToSend, "normal_flush");
+            if (configureAudioGate)
+            {
+                if (armAudioGate) CF7Launcher.Tasks.AudioTask.ArmBootstrapBgmGate();
+                else CF7Launcher.Tasks.AudioTask.CancelBootstrapBgmGate();
+            }
         }
 
         /// <summary>
@@ -490,6 +524,7 @@ namespace CF7Launcher.Guardian
         public void Reset(Action onIdle, string reason)
         {
             LogManager.Log("[LaunchFlow] Reset requested reason=" + (reason ?? "(none)"));
+            CF7Launcher.Tasks.AudioTask.CancelBootstrapBgmGate();
             List<Action> idleFlushIfAlready = null;
             Process oldProcess = null;
             Action<string> heldCbForReset = null;   // prewarm 拆除时取走的 held callback
@@ -800,6 +835,8 @@ namespace CF7Launcher.Guardian
                 }
             }
             catch (Exception ex) { LogManager.Log("[LaunchFlow] panel swap error: " + ex.Message); }
+            try { CF7Launcher.Tasks.AudioTask.ReleaseBootstrapBgmGate(); }
+            catch (Exception ex) { LogManager.Log("[LaunchFlow] release bootstrap BGM gate error: " + ex.Message); }
             try { if (_hotkeyGuardSpawn != null) _hotkeyGuardSpawn(); }
             catch (Exception ex) { LogManager.Log("[LaunchFlow] hotkeyGuardSpawn error: " + ex.Message); }
         }
@@ -893,6 +930,7 @@ namespace CF7Launcher.Guardian
 
         private void TransitionToError(string msg)
         {
+            CF7Launcher.Tasks.AudioTask.CancelBootstrapBgmGate();
             Process toKill = null;
             lock (_stateLock)
             {

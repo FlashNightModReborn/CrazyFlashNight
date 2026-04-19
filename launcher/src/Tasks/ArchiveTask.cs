@@ -76,6 +76,33 @@ namespace CF7Launcher.Tasks
             }
         }
 
+        /// <summary>
+        /// Synchronous variant of reset used by launcher-controlled "fresh start"
+        /// flows before Flash boots. Clears launcher shadow/tombstone only.
+        /// </summary>
+        public void ResetSlotSync(string slot)
+        {
+            string safeName = SanitizeSlotName(slot);
+            string jsonPath = Path.Combine(_savesDir, safeName + ".json");
+            string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
+
+            lock (_lock)
+            {
+                try { if (File.Exists(jsonPath)) File.Delete(jsonPath); }
+                catch (Exception ex) { LogManager.Log("[ArchiveTask] reset(sync) delete json failed: " + ex.Message); }
+
+                try { if (File.Exists(tombPath)) File.Delete(tombPath); }
+                catch (Exception ex) { LogManager.Log("[ArchiveTask] reset(sync) delete tombstone failed: " + ex.Message); }
+            }
+
+            lock (_prevSnapshots)
+            {
+                _prevSnapshots.Remove(safeName);
+            }
+
+            LogManager.Log("[ArchiveTask] reset(sync) slot=" + safeName);
+        }
+
         // 一致性校验：每个 slot 的上一次 shadow 快照
         private readonly Dictionary<string, JObject> _prevSnapshots = new Dictionary<string, JObject>();
 

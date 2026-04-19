@@ -433,7 +433,7 @@ class Program
         CF7Launcher.Save.SolFileLocator solLocator = new CF7Launcher.Save.SolFileLocator();
         CF7Launcher.Save.SolResolver solResolver = new CF7Launcher.Save.SolResolver(solLocator, archiveTask);
         CF7Launcher.Save.SaveResolutionContext saveCtx = new CF7Launcher.Save.SaveResolutionContext(
-            solResolver, archiveTask, config.SwfPath);
+            solLocator, solResolver, archiveTask, config.SwfPath);
 
         // Phase A 两段式初始化：GuardianForm 已建（line 97），BootstrapPanel 已作为其子控件构造。
         // 此处构造 GameLaunchFlow（依赖 form + form.BootstrapPanel）→ 调 InitializeLaunchFlow 补 wire.

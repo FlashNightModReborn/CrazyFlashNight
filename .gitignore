@@ -89,6 +89,9 @@ weboverlay_debug.log
 # Launcher runtime logs
 logs/
 
+# Legacy user prefs path (runtime now migrates to %LOCALAPPDATA%)
+launcher_user_prefs.json
+
 # Save shadow backups (player-specific, not source)
 saves/*.json
 saves/*.json.tmp

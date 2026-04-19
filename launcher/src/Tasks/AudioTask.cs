@@ -24,6 +24,92 @@ namespace CF7Launcher.Tasks
         /// </summary>
         public static volatile bool FlashBgmChange;
 
+        private sealed class DeferredBgmPlay
+        {
+            public string Path;
+            public int Loop;
+            public float Vol;
+            public float Fade;
+            public float? Seek;
+            public int? LoopOverride;
+            public float? VolumeOverride;
+        }
+
+        private static readonly object _bootstrapGateLock = new object();
+        private static bool _bootstrapBgmGateActive;
+        private static DeferredBgmPlay _deferredBgmPlay;
+
+        /// <summary>
+        /// 片头视频播放期间挂起 Flash 发来的 BGM 启动请求。
+        /// 这样游戏可以继续后台加载, 但不会在视频尚未播完时抢先出声。
+        /// </summary>
+        public static void ArmBootstrapBgmGate()
+        {
+            lock (_bootstrapGateLock)
+            {
+                _bootstrapBgmGateActive = true;
+                _deferredBgmPlay = null;
+            }
+            LogManager.Log("[Audio] bootstrap BGM gate armed");
+        }
+
+        public static void CancelBootstrapBgmGate()
+        {
+            bool hadState;
+            lock (_bootstrapGateLock)
+            {
+                hadState = _bootstrapBgmGateActive || _deferredBgmPlay != null;
+                _bootstrapBgmGateActive = false;
+                _deferredBgmPlay = null;
+            }
+            if (hadState)
+                LogManager.Log("[Audio] bootstrap BGM gate cancelled");
+        }
+
+        public static void ReleaseBootstrapBgmGate()
+        {
+            DeferredBgmPlay pending;
+            lock (_bootstrapGateLock)
+            {
+                if (!_bootstrapBgmGateActive && _deferredBgmPlay == null)
+                    return;
+                _bootstrapBgmGateActive = false;
+                pending = _deferredBgmPlay;
+                _deferredBgmPlay = null;
+            }
+
+            if (pending == null || string.IsNullOrEmpty(pending.Path))
+            {
+                LogManager.Log("[Audio] bootstrap BGM gate released (no deferred track)");
+                return;
+            }
+
+            LogManager.Log("[Audio] bootstrap BGM gate released -> play deferred path=" + pending.Path
+                + " loop=" + pending.Loop
+                + " vol=" + pending.Vol.ToString("F3")
+                + " fade=" + pending.Fade.ToString("F2"));
+
+            FlashBgmChange = true;
+            int rc = AudioEngine.ma_bridge_bgm_play(pending.Path, pending.Loop, pending.Vol, pending.Fade);
+            if (rc != 0)
+            {
+                LogManager.Log("[Audio] deferred bgm_play FAILED: rc=" + rc + " path=" + pending.Path);
+                return;
+            }
+
+            if (pending.LoopOverride.HasValue)
+                AudioEngine.ma_bridge_bgm_set_looping(pending.LoopOverride.Value);
+            if (pending.VolumeOverride.HasValue)
+                AudioEngine.ma_bridge_bgm_set_volume(pending.VolumeOverride.Value);
+            if (pending.Seek.HasValue)
+            {
+                int seekRc = AudioEngine.ma_bridge_bgm_seek(pending.Seek.Value);
+                if (seekRc != 0)
+                    LogManager.Log("[Audio] deferred bgm_seek FAILED: rc=" + seekRc
+                        + " sec=" + pending.Seek.Value.ToString("F2"));
+            }
+        }
+
         /// <summary>
         /// Sync handler registered with MessageRouter.
         /// All audio commands are fire-and-forget (returns null).
@@ -77,6 +163,23 @@ namespace CF7Launcher.Tasks
             float vol = msg.Value<float?>("vol") ?? 1.0f;
             float fade = msg.Value<float?>("fade") ?? 0.0f;
 
+            lock (_bootstrapGateLock)
+            {
+                if (_bootstrapBgmGateActive)
+                {
+                    if (_deferredBgmPlay == null) _deferredBgmPlay = new DeferredBgmPlay();
+                    _deferredBgmPlay.Path = path;
+                    _deferredBgmPlay.Loop = loop;
+                    _deferredBgmPlay.Vol = vol;
+                    _deferredBgmPlay.Fade = fade;
+                    LogManager.Log("[Audio] bgm_play deferred by bootstrap gate: path=" + path
+                        + " loop=" + loop
+                        + " vol=" + vol.ToString("F3")
+                        + " fade=" + fade.ToString("F2"));
+                    return;
+                }
+            }
+
             LogManager.Log("[Audio] bgm_play: path=" + path + " loop=" + loop
                 + " vol=" + vol.ToString("F3") + " fade=" + fade.ToString("F2"));
 
@@ -89,6 +192,15 @@ namespace CF7Launcher.Tasks
         private void HandleBgmStop(JObject msg)
         {
             float fade = msg.Value<float?>("fade") ?? 0.0f;
+            lock (_bootstrapGateLock)
+            {
+                if (_bootstrapBgmGateActive)
+                {
+                    _deferredBgmPlay = null;
+                    LogManager.Log("[Audio] bgm_stop during bootstrap gate: clear deferred track, fade="
+                        + fade.ToString("F2"));
+                }
+            }
             LogManager.Log("[Audio] bgm_stop: fade=" + fade.ToString("F2"));
             FlashBgmChange = true;
             int rc = AudioEngine.ma_bridge_bgm_stop(fade);
@@ -99,6 +211,16 @@ namespace CF7Launcher.Tasks
         private void HandleBgmVol(JObject msg)
         {
             float vol = msg.Value<float?>("vol") ?? 1.0f;
+            lock (_bootstrapGateLock)
+            {
+                if (_bootstrapBgmGateActive)
+                {
+                    if (_deferredBgmPlay == null) _deferredBgmPlay = new DeferredBgmPlay();
+                    _deferredBgmPlay.VolumeOverride = vol;
+                    LogManager.Log("[Audio] bgm_vol deferred by bootstrap gate: vol=" + vol.ToString("F3"));
+                    return;
+                }
+            }
             AudioEngine.ma_bridge_bgm_set_volume(vol);
         }
 
@@ -117,12 +239,32 @@ namespace CF7Launcher.Tasks
         private void HandleBgmLoop(JObject msg)
         {
             int loop = msg.Value<int?>("loop") ?? 1;
+            lock (_bootstrapGateLock)
+            {
+                if (_bootstrapBgmGateActive)
+                {
+                    if (_deferredBgmPlay == null) _deferredBgmPlay = new DeferredBgmPlay();
+                    _deferredBgmPlay.LoopOverride = loop;
+                    LogManager.Log("[Audio] bgm_loop deferred by bootstrap gate: loop=" + loop);
+                    return;
+                }
+            }
             AudioEngine.ma_bridge_bgm_set_looping(loop);
         }
 
         private void HandleBgmSeek(JObject msg)
         {
             float sec = msg.Value<float?>("sec") ?? 0.0f;
+            lock (_bootstrapGateLock)
+            {
+                if (_bootstrapBgmGateActive)
+                {
+                    if (_deferredBgmPlay == null) _deferredBgmPlay = new DeferredBgmPlay();
+                    _deferredBgmPlay.Seek = sec;
+                    LogManager.Log("[Audio] bgm_seek deferred by bootstrap gate: sec=" + sec.ToString("F2"));
+                    return;
+                }
+            }
             int rc = AudioEngine.ma_bridge_bgm_seek(sec);
             if (rc != 0)
                 LogManager.Log("[Audio] bgm_seek FAILED: rc=" + rc + " sec=" + sec.ToString("F2"));
