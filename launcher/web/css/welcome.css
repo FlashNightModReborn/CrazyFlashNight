@@ -139,13 +139,80 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 .side-r .faction .f .f-sep{color:var(--dust);opacity:.6}
 
 /* ── 槽位视图覆盖 ── */
-/* bootstrap.css 的 .wrap 在槽位视图内继续生效, 这里只调公共层不与之冲突 */
+/* bootstrap.css 的 .wrap / .cards / .card 在槽位视图内继续生效基础布局,
+   这里整体重皮匹配欢迎页 DLS 青 / 锈红 / 黑铁主题 (Consolas monospace + clip-path + 主题色) */
 #view-slots{padding:70px 24px 50px 24px}
 #view-slots .wrap{padding:0;background:transparent;height:100%;display:flex;flex-direction:column}
-#view-slots .slots-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
-#view-slots .slots-header h1{margin:0;color:var(--dls);font-size:20px;text-shadow:0 0 8px rgba(61,213,255,.35);flex:1}
-#view-slots .btn-back{background:transparent;border:1px solid var(--dls-dim);color:var(--dls);padding:7px 16px;cursor:pointer;font-size:13px;letter-spacing:2px;font-family:Consolas,monospace;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
-#view-slots .btn-back:hover{background:var(--dls);color:#000}
+#view-slots .slots-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--rust-dim);position:relative}
+#view-slots .slots-header::before{content:"";position:absolute;bottom:-1px;left:0;width:80px;height:1px;background:var(--dls);box-shadow:0 0 6px var(--dls)}
+#view-slots .slots-header h1{margin:0;color:var(--bone);font-size:18px;letter-spacing:8px;font-family:"Microsoft YaHei",sans-serif;text-shadow:0 0 8px rgba(200,178,138,.25);flex:1}
+#view-slots .slots-header h1::before{content:"\25B8 ";color:var(--rust)}
+#view-slots .btn-back{background:transparent;border:1px solid var(--dls-dim);color:var(--dls);padding:7px 16px;cursor:pointer;font-size:11px;letter-spacing:3px;font-family:Consolas,monospace;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);transition:all .15s}
+#view-slots .btn-back:hover{background:var(--dls);color:#000;box-shadow:0 0 10px rgba(61,213,255,.4)}
+
+/* 工具栏按钮 */
+#view-slots .toolbar{display:flex;gap:8px;margin-bottom:14px;align-items:center}
+#view-slots .toolbar button{background:transparent;border:1px solid rgba(200,178,138,.25);color:var(--bone);padding:6px 14px;font-size:11px;letter-spacing:2px;cursor:pointer;font-family:Consolas,monospace;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);border-radius:0;transition:all .15s}
+#view-slots .toolbar button:hover{border-color:var(--dls);color:var(--dls);background:rgba(61,213,255,.06);text-shadow:0 0 6px var(--dls)}
+
+/* 卡片网格 */
+#view-slots .cards{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;align-content:start;padding-right:4px}
+#view-slots .cards::-webkit-scrollbar{width:6px}
+#view-slots .cards::-webkit-scrollbar-track{background:rgba(0,0,0,.3)}
+#view-slots .cards::-webkit-scrollbar-thumb{background:var(--dls-dim)}
+#view-slots .cards::-webkit-scrollbar-thumb:hover{background:var(--dls-deep)}
+
+/* 卡片本体: 深底 + 左锈红竖条 + 右下角斜切 */
+#view-slots .card{position:relative;background:linear-gradient(180deg,rgba(12,14,18,.85) 0%,rgba(5,7,10,.9) 100%);border:1px solid var(--dls-dim);border-left:3px solid var(--rust-dim);border-radius:0;padding:14px 14px 12px;display:flex;flex-direction:column;min-height:138px;clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);transition:border-color .15s,box-shadow .2s}
+#view-slots .card:hover{border-color:var(--dls);border-left-color:var(--rust);box-shadow:0 0 16px rgba(61,213,255,.15)}
+
+#view-slots .card.corrupt{border-color:var(--rust);border-left-color:var(--rust);background:linear-gradient(180deg,rgba(58,19,13,.35) 0%,rgba(12,6,6,.9) 100%)}
+#view-slots .card.tombstoned{border-color:#3a3a3a;border-left-color:#555;opacity:.7}
+#view-slots .card.tombstoned:hover{opacity:.95}
+#view-slots .card.inconsistent{border-color:#8a5a28;border-left-color:#d08040}
+#view-slots .card.empty-slot{border:1px dashed var(--dls-dim);border-left:3px dashed var(--dls-dim);background:linear-gradient(180deg,rgba(10,14,18,.55) 0%,rgba(5,7,10,.7) 100%);opacity:.85}
+#view-slots .card.empty-slot:hover{border-color:var(--dls);border-left-color:var(--dls);opacity:1}
+
+/* 卡片顶部 SAVE 角标 (仅已有存档卡片显示, 空槽省略避免视觉噪音) */
+#view-slots .card:not(.empty-slot)::before{content:"SAVE";position:absolute;top:-7px;left:10px;background:var(--bg0);color:var(--rust);font-size:9px;letter-spacing:4px;font-family:Consolas,monospace;padding:0 6px;pointer-events:none}
+#view-slots .card.corrupt::before{content:"CORRUPT";color:var(--rust)}
+#view-slots .card.tombstoned::before{content:"TOMB";color:#aaa}
+#view-slots .card.inconsistent::before{content:"INCON";color:#d08040}
+
+/* 文本层级 */
+#view-slots .card .slot{color:var(--bone);font-weight:700;font-size:14px;letter-spacing:2px;margin-bottom:2px;font-family:"Microsoft YaHei",sans-serif}
+#view-slots .card.empty-slot .slot{color:var(--dust)}
+#view-slots .card .slot-id{color:var(--dust);font-size:9px;margin-bottom:6px;font-family:Consolas,monospace;letter-spacing:1px;opacity:.7}
+#view-slots .card .progress{color:var(--dls);font-size:11px;min-height:16px;margin-bottom:4px;font-family:Consolas,monospace;letter-spacing:1px}
+#view-slots .card .meta{color:var(--dust);font-size:10px;margin-bottom:10px;min-height:14px;font-family:Consolas,monospace;letter-spacing:1px}
+
+/* 标签 (复用欢迎页 flag 配色体系) */
+#view-slots .card .flag{display:inline-block;font-size:9px;padding:1px 6px;margin-right:4px;letter-spacing:1px;font-family:Consolas,monospace;border-radius:0}
+#view-slots .card .flag.empty{background:rgba(200,178,138,.15);color:var(--bone)}
+#view-slots .card .flag.corrupt{background:rgba(184,58,46,.2);color:var(--rust)}
+#view-slots .card .flag.tombstoned{background:#2a2a2a;color:#aaa}
+#view-slots .card .flag.inconsistent{background:rgba(208,128,64,.2);color:#d08040}
+
+/* 卡片动作按钮: 主题化 + 小斜切 */
+#view-slots .card-actions{margin-top:auto;display:flex;gap:5px;flex-wrap:wrap}
+#view-slots .card-actions button{flex:1;min-width:52px;padding:6px 8px;font-size:11px;font-family:Consolas,monospace;letter-spacing:1px;background:transparent;border:1px solid var(--dust);color:var(--bone);border-radius:0;cursor:pointer;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);transition:all .15s}
+#view-slots .card-actions button:hover{border-color:var(--dls);color:var(--dls);background:rgba(61,213,255,.08);text-shadow:0 0 5px var(--dls)}
+#view-slots .card-actions .btn-start.primary,
+#view-slots .card-actions .btn-rebuild,
+#view-slots .card-actions .btn-newchar{border-color:var(--dls);color:var(--dls)}
+#view-slots .card-actions .btn-start.primary:hover,
+#view-slots .card-actions .btn-rebuild:hover,
+#view-slots .card-actions .btn-newchar:hover{background:var(--dls);color:#000;text-shadow:none;box-shadow:0 0 10px rgba(61,213,255,.4)}
+#view-slots .card-actions .danger{border-color:rgba(184,58,46,.5);color:var(--rust)}
+#view-slots .card-actions .danger:hover{background:var(--rust);color:#fff;border-color:var(--rust);text-shadow:0 0 5px rgba(0,0,0,.5);box-shadow:0 0 10px rgba(184,58,46,.4)}
+#view-slots .card-actions button:disabled{border-color:#2a2a2a;color:#444;cursor:not-allowed;background:transparent}
+
+/* 空槽位: "新建角色"按钮独占一行, 限宽避免拉伸过丑 */
+#view-slots .card.empty-slot .card-actions{justify-content:center}
+#view-slots .card.empty-slot .card-actions .btn-newchar{flex:0 0 auto;min-width:120px;padding:7px 16px}
+
+/* 欢迎页 slot-plate: fresh-mode 标签配色 (新建/重建预告) */
+.slot-plate .meta .flag.fresh-mode{background:rgba(61,213,255,.15);color:var(--dls);border:1px solid rgba(61,213,255,.3)}
 
 /* 日志区默认隐藏 — 改由 diagnostic-log modal 显示 */
 #log{display:none}
@@ -205,3 +272,106 @@ body.intro-playing #log{display:none !important}
 .about-modal .qq{color:var(--dls);font-family:Consolas,monospace;font-weight:600}
 .about-modal .b{color:var(--bone)}
 .about-modal .foot{color:#8a8f96;margin-top:20px;font-size:11px}
+.about-modal .audio-toggles{display:flex;flex-direction:column;gap:10px;padding:8px 0 12px}
+.about-modal .audio-toggle{display:flex;align-items:center;gap:10px;color:#b8bcc0;font-size:12px;cursor:pointer;user-select:none;font-family:Consolas,monospace;letter-spacing:1.5px;transition:color .15s}
+.about-modal .audio-toggle:hover{color:#d4d8dc}
+.about-modal .audio-toggle input{appearance:none;width:15px;height:15px;background:transparent;border:1px solid var(--dust);cursor:pointer;position:relative;flex-shrink:0}
+.about-modal .audio-toggle input:checked{background:var(--dls);border-color:var(--dls);box-shadow:0 0 8px rgba(61,213,255,.5)}
+.about-modal .audio-toggle input:checked::after{content:"";position:absolute;inset:3px;background:var(--bg0)}
+
+/* ── Modal 整体重皮 (覆盖 bootstrap.css 的蓝色默认主题) ── */
+/* 容器: 黑铁底 + DLS/rust 渐变边 + 右下角斜切, 视觉与欢迎页 welcome-card 一致 */
+.modal-backdrop{background:rgba(0,0,0,.75)}
+.modal-content{position:relative;background:linear-gradient(180deg,rgba(10,14,18,.96) 0%,rgba(4,6,9,.98) 100%);border:none;border-radius:0;box-shadow:0 8px 40px rgba(0,0,0,.7),0 0 30px rgba(61,213,255,.08);padding:22px 28px;clip-path:polygon(18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 18px)}
+.modal-content::before{content:"";position:absolute;inset:0;padding:1px;background:linear-gradient(135deg,var(--dls) 0%,var(--rust-deep) 30%,transparent 50%,var(--rust-deep) 70%,var(--dls) 100%);clip-path:polygon(18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 18px);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;z-index:0}
+.modal-content>*{position:relative;z-index:1}
+.modal-content::-webkit-scrollbar{width:6px}
+.modal-content::-webkit-scrollbar-track{background:rgba(0,0,0,.3)}
+.modal-content::-webkit-scrollbar-thumb{background:var(--dls-dim)}
+.modal-content::-webkit-scrollbar-thumb:hover{background:var(--dls-deep)}
+
+/* 标题栏 */
+.modal-content .modal-header{display:flex;align-items:center;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--rust-dim);position:relative}
+.modal-content .modal-header::after{content:"";position:absolute;bottom:-1px;left:0;width:80px;height:1px;background:var(--dls);box-shadow:0 0 6px var(--dls)}
+.modal-content .modal-header h2{margin:0;color:var(--bone);font-size:15px;letter-spacing:6px;font-family:"Microsoft YaHei",sans-serif;font-weight:600;flex:1;text-shadow:0 0 6px rgba(200,178,138,.2)}
+.modal-content .modal-header h2::before{content:"\25B8 ";color:var(--rust);margin-right:4px}
+.modal-content .modal-header .modal-close{background:transparent;border:1px solid rgba(184,58,46,.3);color:var(--rust);font-size:14px;cursor:pointer;padding:3px 10px;font-family:Consolas,monospace;line-height:1;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);transition:all .15s}
+.modal-content .modal-header .modal-close:hover{background:var(--rust);color:#fff;border-color:var(--rust);box-shadow:0 0 10px rgba(184,58,46,.4)}
+
+/* Banner */
+.modal-content .modal-banner{padding:8px 14px;margin-bottom:12px;font-size:11px;letter-spacing:1px;font-family:Consolas,monospace;border-radius:0;border:1px solid}
+.modal-content .modal-banner.warn{background:rgba(208,128,64,.1);color:#d08040;border-color:rgba(208,128,64,.4)}
+.modal-content .modal-banner.error{background:rgba(184,58,46,.1);color:var(--rust);border-color:rgba(184,58,46,.4)}
+.modal-content .modal-banner.info{background:rgba(61,213,255,.06);color:var(--dls);border-color:var(--dls-dim)}
+
+/* 底部动作栏 */
+.modal-content .modal-actions{display:flex;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--rust-dim)}
+.modal-content .modal-actions button{background:transparent;border:1px solid var(--dust);color:var(--bone);padding:7px 18px;font-size:12px;letter-spacing:2px;cursor:pointer;font-family:Consolas,monospace;border-radius:0;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);transition:all .15s}
+.modal-content .modal-actions button:hover{border-color:var(--dls);color:var(--dls);background:rgba(61,213,255,.08);text-shadow:0 0 5px var(--dls)}
+.modal-content .modal-actions button.primary{border-color:var(--dls);color:var(--dls)}
+.modal-content .modal-actions button.primary:hover{background:var(--dls);color:#000;text-shadow:none;box-shadow:0 0 10px rgba(61,213,255,.4)}
+.modal-content .modal-actions button.danger{border-color:rgba(184,58,46,.5);color:var(--rust)}
+.modal-content .modal-actions button.danger:hover{background:var(--rust);color:#fff;border-color:var(--rust);box-shadow:0 0 10px rgba(184,58,46,.4)}
+.modal-content .modal-actions button:disabled{border-color:#2a2a2a;color:#444;cursor:not-allowed;background:transparent;text-shadow:none;box-shadow:none}
+
+/* 模式切换 tabs: 斜切下划线风格 */
+.modal-content .mode-tabs{display:flex;gap:2px;margin-bottom:14px;border-bottom:1px solid var(--rust-dim)}
+.modal-content .mode-tabs button{padding:7px 16px;font-size:11px;letter-spacing:3px;font-family:Consolas,monospace;border:1px solid transparent;border-bottom:none;background:transparent;color:var(--dust);cursor:pointer;border-radius:0;position:relative;top:1px;transition:all .15s}
+.modal-content .mode-tabs button:hover{color:var(--bone)}
+.modal-content .mode-tabs button.active{background:rgba(10,14,18,.9);color:var(--dls);border-color:var(--rust-dim);border-bottom:1px solid rgba(10,14,18,.9);text-shadow:0 0 5px rgba(61,213,255,.3)}
+.modal-content .mode-tabs button.active::after{content:"";position:absolute;top:-1px;left:0;right:0;height:1px;background:var(--dls);box-shadow:0 0 6px var(--dls)}
+
+/* 白名单表单 */
+.modal-content .schema-form{display:grid;grid-template-columns:130px 1fr;gap:8px 14px;align-items:center;font-size:12px;font-family:"Microsoft YaHei",sans-serif}
+.modal-content .schema-form label{color:var(--bone);text-align:right;letter-spacing:2px;font-size:12px}
+.modal-content .schema-form input,
+.modal-content .schema-form select{background:rgba(0,0,0,.4);border:1px solid var(--dls-dim);color:#d4d8dc;padding:6px 10px;border-radius:0;font-size:12px;font-family:Consolas,monospace;letter-spacing:1px;transition:border-color .15s,box-shadow .15s}
+.modal-content .schema-form input:focus,
+.modal-content .schema-form select:focus{border-color:var(--dls);outline:none;box-shadow:0 0 8px rgba(61,213,255,.25)}
+.modal-content .schema-form input.invalid{border-color:var(--rust);background:rgba(184,58,46,.08);box-shadow:0 0 6px rgba(184,58,46,.2)}
+.modal-content .schema-form .hint{grid-column:2;color:var(--dust);font-size:10px;margin-top:-4px;letter-spacing:1px;font-family:Consolas,monospace}
+.modal-content .schema-form .readonly-val{color:var(--dust);padding:4px 0;font-family:Consolas,monospace;letter-spacing:1px}
+.modal-content .schema-form select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0,0 L10,0 L5,6 Z' fill='%233dd5ff'/></svg>");background-repeat:no-repeat;background-position:calc(100% - 10px) center;padding-right:28px}
+.modal-content .schema-form select option{background:var(--bg1);color:#d4d8dc}
+
+/* 高级模式 textarea */
+.modal-content .raw-editor{width:100%;box-sizing:border-box;min-height:300px;max-height:50vh;background:rgba(0,0,0,.5);border:1px solid var(--dls-dim);color:#d4d8dc;font-family:Consolas,monospace;font-size:12px;padding:10px;resize:vertical;tab-size:2;border-radius:0;letter-spacing:.5px}
+.modal-content .raw-editor:focus{outline:none;border-color:var(--dls);box-shadow:0 0 8px rgba(61,213,255,.2)}
+.modal-content .raw-editor.invalid{border-color:var(--rust);box-shadow:0 0 6px rgba(184,58,46,.25)}
+.modal-content .raw-status{font-size:11px;margin-top:6px;letter-spacing:1px;font-family:Consolas,monospace}
+.modal-content .raw-status.ok{color:#7ed07e}
+.modal-content .raw-status.err{color:var(--rust)}
+.modal-content .raw-toolbar{display:flex;gap:6px;margin-bottom:8px}
+.modal-content .raw-toolbar button{padding:4px 12px;font-size:10px;background:transparent;border:1px solid var(--dust);color:var(--bone);border-radius:0;cursor:pointer;font-family:Consolas,monospace;letter-spacing:2px;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);transition:all .15s}
+.modal-content .raw-toolbar button:hover{border-color:var(--dls);color:var(--dls);background:rgba(61,213,255,.06)}
+
+/* 树视图 */
+.modal-content .tree-view{font-size:12px;font-family:Consolas,monospace;color:#d4d8dc;letter-spacing:.5px}
+.modal-content .tree-node{margin-left:16px}
+.modal-content .tree-node>summary{cursor:pointer;color:var(--dls);padding:3px 0;list-style:none;letter-spacing:1px;transition:text-shadow .15s}
+.modal-content .tree-node>summary:hover{text-shadow:0 0 5px var(--dls)}
+.modal-content .tree-node>summary::-webkit-details-marker{display:none}
+.modal-content .tree-node>summary::before{content:"\25B8 ";font-size:10px;color:var(--rust)}
+.modal-content .tree-node[open]>summary::before{content:"\25BE ";color:var(--dls)}
+.modal-content .tree-leaf{display:flex;align-items:center;gap:8px;padding:2px 0;margin-left:16px}
+.modal-content .tree-leaf .tree-key{color:var(--bone);min-width:50px;letter-spacing:1px}
+.modal-content .tree-leaf input{background:rgba(0,0,0,.4);border:1px solid var(--dls-dim);color:#d4d8dc;padding:3px 7px;font-size:11px;font-family:Consolas,monospace;border-radius:0;flex:1;max-width:300px;letter-spacing:.5px;transition:border-color .15s}
+.modal-content .tree-leaf input:focus{border-color:var(--dls);outline:none;box-shadow:0 0 6px rgba(61,213,255,.2)}
+.modal-content .tree-leaf .tree-type{color:var(--dust);font-size:9px;letter-spacing:1px;opacity:.7}
+.modal-content .tree-path-hint{color:#3a3a3a;font-size:9px;margin-left:4px;font-family:Consolas,monospace}
+
+/* 诊断日志 */
+.modal-content .diag-log-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.modal-content .diag-log-toolbar button{padding:5px 12px;font-size:11px;background:transparent;border:1px solid var(--dust);color:var(--bone);border-radius:0;cursor:pointer;font-family:Consolas,monospace;letter-spacing:2px;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);transition:all .15s}
+.modal-content .diag-log-toolbar button:hover{border-color:var(--dls);color:var(--dls);background:rgba(61,213,255,.06)}
+.modal-content .diag-log-toolbar label{font-size:11px;color:var(--dust);display:flex;align-items:center;gap:6px;letter-spacing:1px;font-family:Consolas,monospace}
+.modal-content .diag-log-toolbar select{background:rgba(0,0,0,.4);border:1px solid var(--dls-dim);color:var(--dls);padding:3px 8px;font-size:11px;border-radius:0;font-family:Consolas,monospace;letter-spacing:1px}
+.modal-content .diag-log-toolbar select:focus{outline:none;border-color:var(--dls)}
+.modal-content .diag-log-toolbar select option{background:var(--bg1);color:#d4d8dc}
+.modal-content .diag-log-pre{background:rgba(0,0,0,.6);border:1px solid var(--dls-dim);padding:10px;font-family:Consolas,monospace;font-size:11px;color:#c0c4c8;max-height:50vh;overflow-y:auto;white-space:pre-wrap;word-break:break-all;letter-spacing:.5px;border-radius:0}
+.modal-content .diag-log-pre::-webkit-scrollbar{width:6px}
+.modal-content .diag-log-pre::-webkit-scrollbar-track{background:rgba(0,0,0,.3)}
+.modal-content .diag-log-pre::-webkit-scrollbar-thumb{background:var(--dls-dim)}
+.modal-content .diag-log-pre .log-tag{color:var(--dls)}
+.modal-content .diag-log-pre .log-warn{color:#d08040}
+.modal-content .diag-log-pre .log-err{color:var(--rust)}

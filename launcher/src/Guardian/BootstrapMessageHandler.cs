@@ -732,6 +732,8 @@ namespace CF7Launcher.Guardian
                         if (!string.IsNullOrEmpty(userPrefs.LastPlayedSlot))
                             outMsgObj["lastPlayedSlot"] = userPrefs.LastPlayedSlot;
                         outMsgObj["introEnabled"] = userPrefs.IntroEnabled;
+                        outMsgObj["sfxEnabled"] = userPrefs.SfxEnabled;
+                        outMsgObj["ambientEnabled"] = userPrefs.AmbientEnabled;
                     }
                 }
                 else
@@ -749,7 +751,7 @@ namespace CF7Launcher.Guardian
 
         // ==================== Phase 2b: config_set ====================
         // 前端 send({cmd:'config_set', key:'introEnabled', value:true/false}) 等.
-        // key 白名单:  introEnabled (bool), lastPlayedSlot (string)
+        // key 白名单:  introEnabled (bool), lastPlayedSlot (string), sfxEnabled (bool), ambientEnabled (bool)
         // 异常的 key 返回 config_set_resp {ok:false, error:"unknown_key"}.
         private static void HandleConfigSet(JObject msg, BootstrapPanel bootForm, UserPrefs userPrefs)
         {
@@ -774,6 +776,12 @@ namespace CF7Launcher.Guardian
                         break;
                     case "lastPlayedSlot":
                         userPrefs.LastPlayedSlot = val != null && val.Type == JTokenType.String ? val.Value<string>() : null;
+                        break;
+                    case "sfxEnabled":
+                        userPrefs.SfxEnabled = val != null && val.Type == JTokenType.Boolean && val.Value<bool>();
+                        break;
+                    case "ambientEnabled":
+                        userPrefs.AmbientEnabled = val != null && val.Type == JTokenType.Boolean && val.Value<bool>();
                         break;
                     default:
                         PostConfigSetResp(bootForm, key, false, "unknown_key");

@@ -8,6 +8,10 @@
 
   function mount(containerEl) {
     _container = containerEl;
+    // 初始值从 BootstrapAudio 当前状态读 (list_resp 注入后已 apply), fallback 默认 true/false
+    var sfxOn = !!(window.BootstrapAudio && window.BootstrapAudio.isSfxEnabled && window.BootstrapAudio.isSfxEnabled());
+    if (!window.BootstrapAudio) sfxOn = true;
+    var ambOn = !!(window.BootstrapAudio && window.BootstrapAudio.isAmbientEnabled && window.BootstrapAudio.isAmbientEnabled());
     _container.innerHTML =
       '<div class="modal-header">' +
         '<h2>ABOUT · 说明 / 版权</h2>' +
@@ -24,11 +28,27 @@
           '<span class="qq">149188029</span><span class="b">（将满）</span>、' +
           '<span class="qq">307710279</span>' +
           ' 参与讨论，关注 B 站账号 <span class="qq">黑月雾人</span> 与 <span class="qq">无名氏的低谷</span> 获取最新信息。</p>' +
+        '<h3 style="margin-top:18px">AUDIO</h3>' +
+        '<div class="audio-toggles">' +
+          '<label class="audio-toggle"><input type="checkbox" id="about-sfx"' + (sfxOn ? ' checked' : '') + '> <span>UI 音效 · hover / click / confirm / error</span></label>' +
+          '<label class="audio-toggle"><input type="checkbox" id="about-ambient"' + (ambOn ? ' checked' : '') + '> <span>环境 hum · θ-FLOOD 背景低频</span></label>' +
+        '</div>' +
         '<p class="foot">本 MOD 版权归原游戏开发者 <span class="b">AndyLaw</span> 及社区共同所有。特此感谢 <span class="b">FFDec</span> 软件作者在文件编译与版本适配方面给予的支持，以及 AndyLaw 提供改编授权。</p>' +
       '</div>';
 
     document.getElementById('about-close').onclick = function () {
       window.BootstrapApp.tryCloseModal();
+    };
+
+    var sfxChk = document.getElementById('about-sfx');
+    sfxChk.onchange = function () {
+      if (window.BootstrapAudio) window.BootstrapAudio.setSfxEnabled(sfxChk.checked);
+      window.BootstrapApp.send({ cmd: 'config_set', key: 'sfxEnabled', value: sfxChk.checked });
+    };
+    var ambChk = document.getElementById('about-ambient');
+    ambChk.onchange = function () {
+      if (window.BootstrapAudio) window.BootstrapAudio.setAmbientEnabled(ambChk.checked);
+      window.BootstrapApp.send({ cmd: 'config_set', key: 'ambientEnabled', value: ambChk.checked });
     };
   }
 

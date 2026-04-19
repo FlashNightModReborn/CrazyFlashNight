@@ -10,8 +10,10 @@ namespace CF7Launcher.Config
     /// 和 AppConfig (config.toml, 只读机器配置) 分离: 用户偏好随游玩变化, 频繁读写.
     ///
     /// 当前字段 (Phase 2b):
-    ///   LastPlayedSlot — 上次启动的槽位名 (欢迎页默认槽位)
-    ///   IntroEnabled   — "加载片头动画" 复选框状态
+    ///   LastPlayedSlot  — 上次启动的槽位名 (欢迎页默认槽位)
+    ///   IntroEnabled    — "加载片头动画" 复选框状态
+    ///   SfxEnabled      — Web Audio UI 音效 (hover / click / confirm / error 等), 默认 true
+    ///   AmbientEnabled  — Web Audio 环境 hum (Idle 态背景低频 drone), 默认 false
     ///
     /// 未来扩展: 往 Load/Save 加字段, 并在 JSON schema 里读容错默认值.
     /// </summary>
@@ -19,6 +21,8 @@ namespace CF7Launcher.Config
     {
         public string LastPlayedSlot { get; set; }
         public bool IntroEnabled { get; set; }
+        public bool SfxEnabled { get; set; }
+        public bool AmbientEnabled { get; set; }
 
         private readonly string _path;
         private readonly string _legacyPath;
@@ -41,6 +45,8 @@ namespace CF7Launcher.Config
             }
             LastPlayedSlot = null;
             IntroEnabled = false;
+            SfxEnabled = true;
+            AmbientEnabled = false;
             Load();
         }
 
@@ -57,6 +63,10 @@ namespace CF7Launcher.Config
                 LastPlayedSlot = obj.Value<string>("lastPlayedSlot");
                 bool? intro = obj.Value<bool?>("introEnabled");
                 if (intro.HasValue) IntroEnabled = intro.Value;
+                bool? sfx = obj.Value<bool?>("sfxEnabled");
+                if (sfx.HasValue) SfxEnabled = sfx.Value;
+                bool? ambient = obj.Value<bool?>("ambientEnabled");
+                if (ambient.HasValue) AmbientEnabled = ambient.Value;
                 if (readPath == _legacyPath && _path != _legacyPath)
                 {
                     // One-shot migration: stop mutating repo-root prefs after first successful read.
@@ -68,6 +78,8 @@ namespace CF7Launcher.Config
                 LogManager.Log("[UserPrefs] load failed (using defaults): " + ex.Message);
                 LastPlayedSlot = null;
                 IntroEnabled = false;
+                SfxEnabled = true;
+                AmbientEnabled = false;
             }
         }
 
@@ -78,6 +90,8 @@ namespace CF7Launcher.Config
                 JObject obj = new JObject();
                 if (!string.IsNullOrEmpty(LastPlayedSlot)) obj["lastPlayedSlot"] = LastPlayedSlot;
                 obj["introEnabled"] = IntroEnabled;
+                obj["sfxEnabled"] = SfxEnabled;
+                obj["ambientEnabled"] = AmbientEnabled;
                 File.WriteAllText(_path, obj.ToString(Newtonsoft.Json.Formatting.Indented));
             }
             catch (Exception ex)

@@ -47,7 +47,20 @@
   // 这俩跟 list_resp 一起从 launcher 推过来.
   var _prefsLastPlayedSlot = null;
   var _prefsIntroEnabled = false;
+  var _prefsSfxEnabled = true;
+  var _prefsAmbientEnabled = false;
   var _prefsReceived = false;     // 首个 list_resp 到达前不做任何 config_set (避免 init 时被 onchange 回写 false 覆盖)
+
+  // 用户在 slot 页主动选择的槽位 + 模式 ('normal' = 加载现有存档 / 'fresh' = 新建或重建).
+  // 设置后回到欢迎页, _welcomeSlot 优先使用该槽位; 「确认」按 mode 分发到 start_game / rebuild.
+  // null = 未主动选择, 欢迎页走 pickDefaultSlot 默认规则 (lastPlayedSlot / 第一个健康 preset ...).
+  var _userSelectedSlot = null;
+  var _userSelectedMode = null;
+
+  // ── Web Audio 捷径 (BootstrapAudio 由 modules/audio.js 在 main 之前注入) ──
+  // Autoplay policy 下 AudioContext 初始 suspended, 首次用户交互后需手动 resume.
+  // audio.js 缺失或无 AudioContext 时 Audio 为 null, 所有调用点需 if (Audio) 守卫.
+  var Audio = window.BootstrapAudio || null;
 
   // ── 工具 ──
   function logLine(cls, text) {
@@ -126,6 +139,20 @@
   // 回退: 第一个"有进度的正常 preset" → 第一个 preset (空槽, 触发新建流程) → 第一个 slot
   function pickDefaultSlot() {
     var slots = mergeSlots(lastSlotsFromLauncher);
+    // 0) 用户从 slot 页主动选择的槽位优先. 若 list 刷新后该槽位状态与 mode 不兼容, 清除选择降级.
+    if (_userSelectedSlot) {
+      for (var x = 0; x < slots.length; x++) {
+        if (slots[x].slot !== _userSelectedSlot) continue;
+        var sel = slots[x];
+        var modeOk = (_userSelectedMode === 'fresh')
+          ? !sel.corrupt
+          : (!sel.__empty && !sel.corrupt && !sel.tombstoned && !sel.inconsistent);
+        if (modeOk) return sel;
+        break;
+      }
+      _userSelectedSlot = null;
+      _userSelectedMode = null;
+    }
     // 1) 优先 lastPlayedSlot
     if (_prefsLastPlayedSlot) {
       for (var a = 0; a < slots.length; a++) {
@@ -145,17 +172,34 @@
     return slots[0] || null;
   }
 
+  // 当前 effective mode: 用户显式 mode 优先; 未显式时按 slot 状态降级 (空槽 → fresh, 否则 normal).
+  function effectiveMode(s) {
+    if (_userSelectedMode) return _userSelectedMode;
+    if (s && s.__empty) return 'fresh';
+    return 'normal';
+  }
+
   function renderWelcomeSlot() {
     var s = pickDefaultSlot();
     _welcomeSlot = s;
     if (!s) {
       welcomeSlotNameEl.textContent = '\u65e0\u53ef\u7528\u5b58\u6863';
       welcomeSlotTimeEl.textContent = '\u2014';
+      applyConfirmLabel('normal', null);
       return;
     }
     welcomeSlotNameEl.textContent = s.__preset ? presetDisplayName(s.slot) : s.slot;
+
+    var mode = effectiveMode(s);
+    var modeHint = '';
+    if (mode === 'fresh') {
+      modeHint = s.__empty
+        ? '<span class="flag fresh-mode">\u5c06\u65b0\u5efa\u89d2\u8272</span>'
+        : '<span class="flag fresh-mode">\u5c06\u91cd\u5efa \u00b7 \u539f\u6570\u636e\u4e22\u5f03</span>';
+    }
+
     if (s.__empty) {
-      welcomeSlotTimeEl.innerHTML = '<span class="flag empty">\u7a7a\u69fd\u4f4d \u00b7 \u5c06\u65b0\u5efa\u89d2\u8272</span>';
+      welcomeSlotTimeEl.innerHTML = modeHint || '<span class="flag empty">\u7a7a\u69fd\u4f4d</span>';
     } else {
       var meta = fmtBytes(s.size);
       if (s.lastModified) meta += ' \u00b7 ' + s.lastModified.slice(0, 16).replace('T', ' ');
@@ -163,8 +207,28 @@
       if (s.corrupt)      flags = '<span class="flag corrupt">\u635f\u574f</span>';
       if (s.tombstoned)   flags = '<span class="flag tombstoned">\u5df2\u5220\u9664</span>';
       if (s.inconsistent) flags = '<span class="flag inconsistent">\u4e0d\u4e00\u81f4</span>';
-      welcomeSlotTimeEl.innerHTML = flags + escapeHtml(meta);
+      welcomeSlotTimeEl.innerHTML = modeHint + flags + escapeHtml(meta);
     }
+    applyConfirmLabel(mode, s);
+  }
+
+  // 按 mode + slot 状态调整「确认」按钮文案 (Error 态由 applyState 负责 .retry 样式, 这里不动).
+  function applyConfirmLabel(mode, s) {
+    if (!btnConfirmStart) return;
+    if (_lastLaunchState === 'Error') return;
+    if (mode === 'fresh') {
+      btnConfirmStart.textContent = (s && s.__empty) ? '\u65b0 \u5efa \u89d2 \u8272' : '\u91cd \u5efa';
+    } else {
+      btnConfirmStart.textContent = '\u786e \u8ba4';
+    }
+  }
+
+  // 从槽位页主动选择一个槽位, 回到欢迎页. 不直接启动 — 保留用户勾选片头动画的机会.
+  // showWelcome() 内部会触发 renderWelcomeSlot → applyConfirmLabel 自动反映 mode.
+  function selectSlotAndReturn(slotName, mode) {
+    _userSelectedSlot = slotName;
+    _userSelectedMode = mode;
+    showWelcome();
   }
 
   // ── 随机背景 ──
@@ -207,7 +271,7 @@
   // 无片头路径类似: start_game 也带 requireFlashReveal:true (不带 deferReveal),
   // loading spinner 覆盖 Flash 初始化期, 等 Flash 封面帧到达自动 swap.
 
-  function playIntroThenStart(slot) {
+  function playIntroThenStart(slot, mode) {
     var ov = document.getElementById('intro-ov');
     var vid = document.getElementById('intro-video');
     var skipBtn = document.getElementById('intro-skip');
@@ -221,9 +285,11 @@
       vid.load();
       vid.currentTime = 0;
     } catch (e) {}
-    // 立即 send start_game + defer flags, 让视频播放与 Flash 加载并行.
+    // 立即 send 启动命令 + defer flags, 让视频播放与 Flash 加载并行.
+    // mode='fresh' 走 rebuild (launcher 侧先 DeleteAllSolFiles + ResetSlotSync 再 spawn).
     setLaunchInFlight(true);
-    send({ cmd: 'start_game', slot: slot.slot, deferReveal: true, requireFlashReveal: true });
+    var cmd = (mode === 'fresh') ? 'rebuild' : 'start_game';
+    send({ cmd: cmd, slot: slot.slot, deferReveal: true, requireFlashReveal: true });
     var fired = false;
     function onVideoDone(reason) {
       if (fired) return;
@@ -340,7 +406,7 @@
               + '<button class="btn-delete danger">\u5220\u9664</button>'
               + '<button class="btn-reset danger">\u6e05\u7406\u526f\u672c</button>';
     } else {
-      actions = '<button class="btn-start">\u5f00\u59cb</button>'
+      actions = '<button class="btn-start primary">\u9009 \u62e9</button>'
               + '<button class="btn-edit">\u7f16\u8f91</button>'
               + '<button class="btn-export">\u5bfc\u51fa</button>'
               + '<button class="btn-delete danger">\u5220\u9664</button>';
@@ -361,14 +427,14 @@
     var exportBtn  = card.querySelector('.btn-export');
     var resetBtn   = card.querySelector('.btn-reset');
 
-    if (startBtn) startBtn.onclick = function() { initiateLaunch(s.slot); };
+    if (startBtn) startBtn.onclick = function() { selectSlotAndReturn(s.slot, 'normal'); };
     if (deleteBtn) deleteBtn.onclick = function() {
       if (confirm('\u786e\u5b9a\u5220\u9664\u5b58\u6863 "' + displayName + '" ?')) send({ cmd: 'delete', slot: s.slot });
     };
     if (rebuildBtn) rebuildBtn.onclick = function() {
-      if (confirm('\u91cd\u5efa\u5b58\u6863 "' + displayName + '" (\u539f\u6570\u636e\u5c06\u4e22\u5f03)?')) initiateFreshLaunch(s.slot);
+      if (confirm('\u91cd\u5efa\u5b58\u6863 "' + displayName + '" (\u539f\u6570\u636e\u5c06\u4e22\u5f03)?')) selectSlotAndReturn(s.slot, 'fresh');
     };
-    if (newCharBtn) newCharBtn.onclick = function() { initiateFreshLaunch(s.slot); };
+    if (newCharBtn) newCharBtn.onclick = function() { selectSlotAndReturn(s.slot, 'fresh'); };
     if (editBtn) editBtn.onclick = function() {
       window.BootstrapApp.openModal('archive-editor', { slot: s.slot, slotMeta: s });
     };
@@ -409,18 +475,25 @@
         var entry = lastSlotsFromLauncher[k];
         if (entry.tombstoned) {
           if (!confirm('\u6b64\u6863\u5df2\u5220\u9664, \u662f\u5426\u91cd\u5efa?')) return;
-          initiateFreshLaunch(slot); return;
+          selectSlotAndReturn(slot, 'fresh'); return;
         }
         if (!confirm('\u5b58\u6863 "' + slot + '" \u5df2\u5b58\u5728, \u76f4\u63a5\u52a0\u8f7d?')) return;
-        initiateLaunch(slot); return;
+        selectSlotAndReturn(slot, 'normal'); return;
       }
     }
-    initiateFreshLaunch(slot);
+    selectSlotAndReturn(slot, 'fresh');
   }
 
   // ── State 广播 ──
   function applyState(state, msg) {
+    var prevState = _lastLaunchState;
     _lastLaunchState = state;
+    // 音频反馈: Error 进入时 tap, Idle 从非 Idle 回来时恢复 ambient.
+    // Ready 不单独播 — flash_ready 消息专门负责 ready 和弦 (更精确的时机).
+    if (Audio) {
+      if (state === 'Error' && prevState !== 'Error') Audio.playError();
+      if (state === 'Idle' && prevState !== 'Idle' && _prefsAmbientEnabled) Audio.startAmbient();
+    }
     stateBadge.textContent = state + (msg ? ': ' + msg : '');
     stateBadge.className = 'state-badge';
     if (state === 'Ready')       stateBadge.className += ' ready';
@@ -480,8 +553,15 @@
       // Phase 2b: 接收 launcher 推的 UserPrefs
       if (typeof msg.lastPlayedSlot === 'string') _prefsLastPlayedSlot = msg.lastPlayedSlot;
       if (typeof msg.introEnabled === 'boolean')  _prefsIntroEnabled   = msg.introEnabled;
+      if (typeof msg.sfxEnabled === 'boolean')    _prefsSfxEnabled     = msg.sfxEnabled;
+      if (typeof msg.ambientEnabled === 'boolean') _prefsAmbientEnabled = msg.ambientEnabled;
       _prefsReceived = true;
       chkIntro.checked = _prefsIntroEnabled;
+      if (Audio) {
+        Audio.setSfxEnabled(_prefsSfxEnabled);
+        // Ambient 的实际启停: AudioContext suspended 时 startAmbient 是 no-op, 等首次交互时恢复.
+        Audio.setAmbientEnabled(_prefsAmbientEnabled);
+      }
       renderCards(lastSlotsFromLauncher);
       renderWelcomeSlot();
     }
@@ -492,6 +572,8 @@
       var sk = document.getElementById('intro-skip');
       sk.classList.add('flash-ready');
       sk.textContent = '进入游戏 · ESC';
+      // Flash 封面就绪: 同步响一次就绪和弦, 并关掉环境 hum 让位给 Flash BGM.
+      if (Audio) { Audio.playReady(); Audio.stopAmbient(); }
     }
     else if (msg.cmd === 'delete_resp') { if (msg.ok) send({ cmd: 'list' }); else logLine('tag-err', 'delete failed: ' + msg.error); }
     else if (msg.cmd === 'error')       logLine('tag-err', msg.code + ': ' + msg.msg);
@@ -574,15 +656,21 @@
       var ovEsc = document.getElementById('intro-ov');
       if (ovEsc.classList.contains('loading')) {
         // loading 相: ESC → cancel_launch, 由 Idle 广播回头 hideLaunchOverlay
+        if (Audio) Audio.playCancel();
         send({ cmd: 'cancel_launch' });
       } else {
         // 视频相: ESC = 跳过 (=触发跳过按钮, 走 onVideoDone)
+        if (Audio) Audio.playCancel();
         var skipBtn = document.getElementById('intro-skip');
         if (skipBtn.onclick) skipBtn.onclick();
       }
       return;
     }
-    if (_currentModal) { tryCloseModal(); return; }
+    if (_currentModal) {
+      if (Audio) Audio.playCancel();
+      tryCloseModal();
+      return;
+    }
   });
 
   // ── 全局桥 ──
@@ -630,17 +718,22 @@
     if (_launchInFlight) return;
     var s = _welcomeSlot;
     if (!s) { alert('\u6ca1\u6709\u53ef\u542f\u52a8\u7684\u5b58\u6863\uff0c\u8bf7\u70b9\u300c\u5207\u6362\u300d\u9009\u62e9\u69fd\u4f4d'); return; }
-    // 空 preset 需走新建流程（不能直接 start_game 一个空槽）
-    if (s.__empty) {
-      showSlots();
+    var mode = effectiveMode(s);
+    if (s.corrupt) {
+      alert('\u5b58\u6863\u5df2\u635f\u574f\uff0c\u65e0\u6cd5\u542f\u52a8\uff1b\u8bf7\u70b9\u300c\u5207\u6362\u300d\u5230\u69fd\u4f4d\u9875\u7f16\u8f91\u6216\u5220\u9664');
       return;
     }
-    if (s.corrupt || s.tombstoned || s.inconsistent) {
-      alert('\u5f53\u524d\u9ed8\u8ba4\u5b58\u6863\u5904\u4e8e\u5f02\u5e38\u72b6\u6001\uff0c\u8bf7\u70b9\u300c\u5207\u6362\u300d\u5bfc\u5230\u69fd\u4f4d\u9875\u5904\u7406');
+    if (mode === 'normal' && (s.__empty || s.tombstoned || s.inconsistent)) {
+      // 这些状态下不应该是 normal 模式 — pickDefaultSlot 已做降级, 这里兜底防御
+      alert('\u5f53\u524d\u9ed8\u8ba4\u5b58\u6863\u5904\u4e8e\u5f02\u5e38\u72b6\u6001\uff0c\u8bf7\u70b9\u300c\u5207\u6362\u300d\u5230\u69fd\u4f4d\u9875\u5904\u7406');
       return;
     }
-    if (chkIntro.checked) playIntroThenStart(s);
-    else initiateLaunch(s.slot);
+    if (chkIntro.checked) {
+      playIntroThenStart(s, mode);
+    } else {
+      if (mode === 'fresh') initiateFreshLaunch(s.slot);
+      else                  initiateLaunch(s.slot);
+    }
   };
 
   btnSwitchSlot.onclick = showSlots;
@@ -663,8 +756,52 @@
   retryBtn.onclick = function() { showLoadingOverlay(); send({ cmd: 'retry' }); };
   cancelLaunchBtn.onclick = function() { send({ cmd: 'cancel_launch' }); };
 
+  // ── Audio 初始化 + 全局事件委托 ──
+  // 首次用户交互触发 AudioContext.resume (浏览器 autoplay policy).
+  // Hover/click 走 document-level delegation: 一次挂钩覆盖所有动态生成的卡片/tabs/modal 按钮.
+  function initAudioBindings() {
+    if (!Audio) return;
+    Audio.init();   // new AudioContext (可能 suspended)
+    // 首次交互 → resume + 按 UserPrefs 启动 ambient
+    function onFirstInteraction() {
+      Audio.resume();
+      if (_prefsAmbientEnabled) Audio.startAmbient();
+      document.removeEventListener('pointerdown', onFirstInteraction, true);
+      document.removeEventListener('keydown', onFirstInteraction, true);
+    }
+    document.addEventListener('pointerdown', onFirstInteraction, true);
+    document.addEventListener('keydown', onFirstInteraction, true);
+
+    // Hover: 所有 <button> + .card 触发, 由 audio.js 内部去抖.
+    document.addEventListener('mouseover', function (e) {
+      var t = e.target;
+      if (!t || !t.closest) return;
+      var btn = t.closest('button');
+      if (btn) {
+        if (btn.disabled) return;
+        Audio.playHover();
+        return;
+      }
+      if (t.closest('.card:not(.empty-slot)')) Audio.playHover();
+    });
+
+    // Click 分类: primary (btn-go) → confirm; back/cancel/close → cancel;
+    //   slot select (start/rebuild/newchar/btn-new) → select; 其他 button → click.
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t || !t.closest) return;
+      var btn = t.closest('button');
+      if (!btn || btn.disabled) return;
+      if (btn.matches('.btn-go')) { Audio.playConfirm(); return; }
+      if (btn.matches('.btn-back, .modal-close, #btn-cancel-launch, .intro-skip')) { Audio.playCancel(); return; }
+      if (btn.matches('.btn-start, .btn-rebuild, .btn-newchar, #btn-new, #btn-switch-slot')) { Audio.playSelect(); return; }
+      Audio.playClick();
+    });
+  }
+
   // ── 初始化 ──
   loadRandomBackground();
+  initAudioBindings();
   showWelcome();   // 默认欢迎视图
 
   logLine('tag-in', 'Bootstrap loaded');
