@@ -447,6 +447,10 @@ namespace CF7Launcher.Guardian
         /// <summary>
         /// 错误后重试：公共 API，收边界（不向外暴露 _pendingSlot / continuation 时序）。
         /// 内部 = 锁内快照 slot → 锁外 Reset(onIdle, reason) 驱动。
+        /// Finding A fix: _pendingSlot == null 时 (例如 user_edit_* teardown 失败进 Error,
+        /// 或 prewarm 路径残留的 Error) 不能走 Retry→StartGame(null)→握手回退 "default" —
+        /// 会把用户误带到错误的默认槽启动。改为 Reset(null, "retry_no_slot") 清 Error 回 Idle,
+        /// 让用户回到 slot picker 重新选择.
         /// </summary>
         public void Retry()
         {
@@ -459,6 +463,12 @@ namespace CF7Launcher.Guardian
                     return;
                 }
                 slot = _pendingSlot;
+            }
+            if (slot == null)
+            {
+                LogManager.Log("[LaunchFlow] Retry with no pending slot → Reset to Idle, user must re-pick slot");
+                Reset(null, "retry_no_slot");
+                return;
             }
             Reset(delegate { StartGame(slot); }, "retry");
         }
@@ -620,8 +630,17 @@ namespace CF7Launcher.Guardian
                         }
                         else
                         {
-                            // Error 分支: 清 _resetInFlight 让后续 Reset 可以重新进入 worker;
-                            // pending callbacks 留在队列里, 调用方可通过再次 Reset 触发 flush.
+                            // Error 分支: 清 _resetInFlight 让后续 Reset 可以重新进入 worker.
+                            // Finding B fix: 同时丢弃 _pendingIdleCallbacks — 队列里的 callback
+                            // 代表 "Reset 成功后要执行的请求" (user_edit_save onReady /
+                            // Retry 的 StartGame / ...); Reset 既然失败, 这些请求已无上下文,
+                            // 若保留到下一次 unrelated Reset 成功时 flush, 会串味跨请求 (例如
+                            // 几分钟前的导入对话框/保存动作被今天的 retry 顺带重放). 调用方应
+                            // 重新发起请求.
+                            int dropped = _pendingIdleCallbacks.Count;
+                            _pendingIdleCallbacks.Clear();
+                            if (dropped > 0)
+                                LogManager.Log("[LaunchFlow] Reset error branch dropped " + dropped + " pending callback(s)");
                             _resetInFlight = false;
                             errorBranch = true;
                         }
@@ -762,6 +781,7 @@ namespace CF7Launcher.Guardian
 
         private void TransitionToError(string msg)
         {
+            Process toKill = null;
             lock (_stateLock)
             {
                 // Phase D Step D7: prewarm 路径走 silent degrade 不入 Error 态.
@@ -778,7 +798,29 @@ namespace CF7Launcher.Guardian
                 }
                 CancelWaitTimerLocked();
                 CancelZombieTimerLocked();
+                // Finding C fix: 进 Error 时同步 kill Flash, 关掉 "launcher 已报 Error 但 Flash 还在
+                // 按自己的 60s timeout 等响应" 的 zombie 窗口. 原 Flash 侧 5s timeout 时这个窗口 3s 内
+                // 自行收口, 抬到 60s 后不 kill 会留 Flash 持续运行到用户点 Retry 才关.
+                // 直接对 snapshot Process.Kill 不用 _processManager.KillFlash,
+                // 避免 retry 并发 spawn 新 Flash 时误杀新进程.
+                toKill = _currentFlashProcess;
                 SetState(State.Error, msg);
+            }
+            if (toKill != null)
+            {
+                Process snap = toKill;
+                ThreadPool.QueueUserWorkItem(delegate
+                {
+                    try
+                    {
+                        if (!snap.HasExited)
+                        {
+                            snap.Kill();
+                            LogManager.Log("[LaunchFlow] TransitionToError killed Flash pid=" + snap.Id + " (zombie close)");
+                        }
+                    }
+                    catch (Exception ex) { LogManager.Log("[LaunchFlow] TransitionToError kill error: " + ex.Message); }
+                });
             }
         }
 
