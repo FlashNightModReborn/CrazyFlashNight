@@ -77,17 +77,27 @@
     document.documentElement.style.setProperty('--fs-scale', String(v));
   }
 
-  // config_set 持久化失败时的通用回退机制.
-  // 每次 sendConfigSet 生成独立 requestId, revertFn 按 id 登记、按 id 消费 ——
-  // 避免"同一 key 连点两次时第二次覆盖第一次的槽位"造成 revert 错配 (即便两次都失败,
-  // 对应的 revertFn 仍各自独立指回自己请求前的 UI 状态).
-  // 前端发 {cmd, key, value, requestId:N}, C# 回 {cmd:'config_set_resp', requestId:N, ok, ...}.
+  // config_set 的"服务端权威对齐"机制 (Plan A+).
+  // 每次 sendConfigSet(key, value, applyFn) 生成独立 requestId, applyFn 按 id 登记、按 id 消费.
+  //
+  // applyFn(authoritative) 的语义:
+  //   无条件把 UI 对齐到参数值 (= resp.currentValue = 服务端真实值).
+  //   不是"回滚到本地 prior", 不依赖客户端记忆. 失败/成功都调 applyFn, 成功下通常是
+  //   幂等 no-op (optimistic UI 已经对上), 失败下把漂移的 UI 拉回服务端 rollback 后的真值.
+  //
+  // 协议:
+  //   out: {cmd:'config_set', key, value, requestId:N}
+  //   in:  {cmd:'config_set_resp', requestId:N, key, ok, error?, currentValue?}
+  //   约定: 除未知 key / userPrefs 不可用外, 服务端总是附带 currentValue.
+  //
+  // 这一层消灭了"连续失败级联导致 UI 停在乐观中间态"的所有场景 —— 即便 optimistic prior
+  // 捕获时机错位、响应乱序、多请求并发, UI 最终状态只信服务端, 不信本地记忆.
   var _configSetNextId = 1;
-  var _configSetReverts = {};  // Map<requestId, revertFn>
+  var _configSetApplies = {};  // Map<requestId, applyFn(authoritative)>
 
-  function sendConfigSet(key, value, revertFn) {
+  function sendConfigSet(key, value, applyFn) {
     var reqId = _configSetNextId++;
-    if (revertFn) _configSetReverts[reqId] = revertFn;
+    if (applyFn) _configSetApplies[reqId] = applyFn;
     send({ cmd: 'config_set', key: key, value: value, requestId: reqId });
     return reqId;
   }
@@ -625,19 +635,33 @@
       renderWelcomeSlot();
     }
     else if (msg.cmd === 'config_set_resp') {
-      // 按 requestId 取 revertFn (每个请求独立槽位, 连点互不覆盖).
-      // 成功也删, 避免内存泄漏; 缺 requestId 时 revertFn=null, 旧 resp 降级为 log-only.
+      // 按 requestId 取 applyFn (每个请求独立槽位, 连点/乱序都互不覆盖).
+      // 取完即删, 无论 ok/fail 都清理, 避免内存泄漏.
       var reqId = (typeof msg.requestId === 'number') ? msg.requestId : null;
-      var revertFn = (reqId != null) ? _configSetReverts[reqId] : null;
-      if (reqId != null && _configSetReverts.hasOwnProperty(reqId)) delete _configSetReverts[reqId];
+      var applyFn = (reqId != null) ? _configSetApplies[reqId] : null;
+      if (reqId != null && _configSetApplies.hasOwnProperty(reqId)) delete _configSetApplies[reqId];
+
       if (!msg.ok) {
         logLine('tag-err', 'config_set failed: key=' + (msg.key || '?') + ' err=' + (msg.error || ''));
         playUiCue('playError');
-        // save_failed / bad_value / exception 等: 调 revertFn 还原前端状态, 和 C# 回滚后的内存一致
-        if (revertFn) {
-          try { revertFn(); }
-          catch (e) { logLine('tag-err', 'config_set revert failed: ' + e.message); }
+      }
+
+      // 权威对齐: applyFn 无条件按 currentValue 设 UI, 保持与服务端真实值一致.
+      // hasOwnProperty 用来区分"字段缺失" (null/undefined 都通不过 hasOwnProperty) 和"显式 null"
+      // (比如 lastPlayedSlot 可以合法地是 null).
+      var hasCur = msg && Object.prototype.hasOwnProperty.call(msg, 'currentValue');
+      if (applyFn && hasCur) {
+        try {
+          applyFn(msg.currentValue);
+        } catch (e) {
+          logLine('tag-err', 'config_set apply failed: ' + e.message + ' (fallback to list)');
+          send({ cmd: 'list' });  // 兜底: 让 list_resp 把全量权威状态推回来
         }
+      } else if (!msg.ok) {
+        // 失败但我们没法 apply (缺 requestId / applyFn / currentValue), 用 list 兜底刷全量.
+        // 正常路径不会走这里 — 到这条说明协议对端不匹配或调用方没传 applyFn.
+        logLine('tag-err', 'config_set resp missing apply context (reqId=' + reqId + ' hasCurrent=' + hasCur + '), fallback to list');
+        send({ cmd: 'list' });
       }
     }
     else if (msg.cmd === 'flash_ready') {
@@ -807,14 +831,16 @@
     setUiFontScale: function(v) {
       var clamped = clampFontScale(v);
       if (!_prefsReceived) {
-        // 首次 list_resp 前不发 config_set; 直接应用不做 revert 登记
+        // 首次 list_resp 前不发 config_set; 直接本地应用, 不登记 applyFn
         applyFontScale(clamped);
         return;
       }
-      var prior = _prefsUiFontScale;
+      // Optimistic UI: 立刻应用期望值, 让切档手感即时
       applyFontScale(clamped);
-      sendConfigSet('uiFontScale', clamped, function() {
-        applyFontScale(prior);
+      // applyFn 按服务端 currentValue 对齐 — success 下与 clamped 一致 (no-op),
+      // failure 下由服务端 rollback 值 (磁盘真实值) 覆盖, 纠正漂移
+      sendConfigSet('uiFontScale', clamped, function(authoritative) {
+        if (typeof authoritative === 'number') applyFontScale(authoritative);
       });
     }
   };
@@ -825,12 +851,14 @@
   chkIntro.checked = false;
   chkIntro.onchange = function() {
     if (!_prefsReceived) return;  // 首个 list_resp 前不发 config_set, 避免冲掉 launcher 侧值
-    var prior = !chkIntro.checked;  // 当前 checkbox 刚 flip, 所以 prior 是 flipped 前的
     var desired = chkIntro.checked;
-    _prefsIntroEnabled = desired;
-    sendConfigSet('introEnabled', desired, function() {
-      _prefsIntroEnabled = prior;
-      chkIntro.checked = prior;
+    _prefsIntroEnabled = desired;  // optimistic
+    sendConfigSet('introEnabled', desired, function(authoritative) {
+      // 服务端权威对齐: success 下 authoritative === desired (no-op), failure 下服务端 rollback 的真值
+      if (typeof authoritative === 'boolean') {
+        _prefsIntroEnabled = authoritative;
+        chkIntro.checked = authoritative;
+      }
     });
   };
 

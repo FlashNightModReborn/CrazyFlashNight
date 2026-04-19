@@ -101,28 +101,33 @@
       });
     }
 
-    // sfx / ambient: 乐观应用到 BootstrapAudio + 走 sendConfigSet 登记 revertFn.
-    // 持久化失败 (磁盘/权限) 时 revertFn 把 checkbox 和音频引擎同步回滚, 不再有
-    // "toast 报失败但音效仍停/仍响" 的幽灵状态.
+    // sfx / ambient: 乐观应用 + 服务端权威对齐 (Plan A+).
+    // applyFn 接收服务端回的 currentValue, 无条件把 checkbox + BootstrapAudio 对齐过去 —
+    // 失败时即便 modal 仍然开着, UI 也能立刻跳回服务端 rollback 后的真实值, 不会"报失败但音效仍响".
+    // DOM 查询放在 apply 内部: modal 被关掉/重新 mount 时 element 可能已脱落, 防御空引用.
+    function applySfxState(v) {
+      if (typeof v !== 'boolean') return;
+      var el = document.getElementById('about-sfx');
+      if (el) el.checked = v;
+      if (window.BootstrapAudio) window.BootstrapAudio.setSfxEnabled(v);
+    }
+    function applyAmbientState(v) {
+      if (typeof v !== 'boolean') return;
+      var el = document.getElementById('about-ambient');
+      if (el) el.checked = v;
+      if (window.BootstrapAudio) window.BootstrapAudio.setAmbientEnabled(v);
+    }
     var sfxChk = document.getElementById('about-sfx');
     sfxChk.onchange = function () {
-      var prior = !sfxChk.checked;
       var desired = sfxChk.checked;
-      if (window.BootstrapAudio) window.BootstrapAudio.setSfxEnabled(desired);
-      window.BootstrapApp.sendConfigSet('sfxEnabled', desired, function() {
-        sfxChk.checked = prior;
-        if (window.BootstrapAudio) window.BootstrapAudio.setSfxEnabled(prior);
-      });
+      if (window.BootstrapAudio) window.BootstrapAudio.setSfxEnabled(desired);  // optimistic
+      window.BootstrapApp.sendConfigSet('sfxEnabled', desired, applySfxState);
     };
     var ambChk = document.getElementById('about-ambient');
     ambChk.onchange = function () {
-      var prior = !ambChk.checked;
       var desired = ambChk.checked;
-      if (window.BootstrapAudio) window.BootstrapAudio.setAmbientEnabled(desired);
-      window.BootstrapApp.sendConfigSet('ambientEnabled', desired, function() {
-        ambChk.checked = prior;
-        if (window.BootstrapAudio) window.BootstrapAudio.setAmbientEnabled(prior);
-      });
+      if (window.BootstrapAudio) window.BootstrapAudio.setAmbientEnabled(desired);  // optimistic
+      window.BootstrapApp.sendConfigSet('ambientEnabled', desired, applyAmbientState);
     };
   }
 
