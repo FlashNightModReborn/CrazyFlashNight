@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <title>CF7:ME</title>
 <link rel="stylesheet" href="css/bootstrap.css">
+<style>
+  /* Phase D Step D12: 点击 play 后本地即时反馈 + 防重复点击 */
+  body.launch-in-flight .btn-start,
+  body.launch-in-flight .btn-newchar,
+  body.launch-in-flight #btn-new {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -17,6 +27,7 @@
     <button id="btn-open-dir">打开存档目录</button>
     <button id="btn-logs">日志</button>
     <button id="btn-retry" style="display:none">重试</button>
+    <button id="btn-cancel-launch" style="display:none">取消启动</button>
     <span id="state-badge" class="state-badge">Idle</span>
   </div>
 
@@ -37,6 +48,16 @@
   var cardsEl = document.getElementById('cards');
   var stateBadge = document.getElementById('state-badge');
   var retryBtn = document.getElementById('btn-retry');
+  var cancelLaunchBtn = document.getElementById('btn-cancel-launch');
+
+  // Phase D Step D12: launch-in-flight 本地状态. 点击 play → 立即禁用所有 play 按钮;
+  // state=Idle 时恢复 (用户取消 / retry 链路推回 Idle); state=Error 保持禁用, 用户走 retry 按钮.
+  var _launchInFlight = false;
+  function setLaunchInFlight(flag) {
+    _launchInFlight = flag;
+    if (flag) document.body.classList.add('launch-in-flight');
+    else document.body.classList.remove('launch-in-flight');
+  }
 
   // 原版 10 个预设槽位 (对齐 DOMDocument.xml 原 cf7_config 槽位命名)
   var PRESET_SLOTS = [
@@ -193,7 +214,11 @@
     var exportBtn   = card.querySelector('.btn-export');
     var resetBtn    = card.querySelector('.btn-reset');
 
-    if (startBtn)   startBtn.onclick   = function() { send({ cmd: 'start_game', slot: s.slot }); };
+    if (startBtn)   startBtn.onclick   = function() {
+      if (_launchInFlight) return;
+      setLaunchInFlight(true);
+      send({ cmd: 'start_game', slot: s.slot });
+    };
     if (deleteBtn)  deleteBtn.onclick  = function() {
       if (confirm('\u786e\u5b9a\u5220\u9664\u5b58\u6863 "' + displayName + '" ?')) {
         send({ cmd: 'delete', slot: s.slot });
@@ -205,6 +230,8 @@
       }
     };
     if (newCharBtn) newCharBtn.onclick = function() {
+      if (_launchInFlight) return;
+      setLaunchInFlight(true);
       send({ cmd: 'start_game', slot: s.slot });
     };
     if (editBtn)    editBtn.onclick    = function() {
@@ -236,6 +263,7 @@
   }
 
   function handleNewCharacterClick() {
+    if (_launchInFlight) return;
     var defaultName = pickAutoSlotName();
     var input = prompt(
       '\u8f93\u5165\u5b58\u6863\u540d\u79f0:\n'
@@ -257,9 +285,11 @@
           send({ cmd: 'rebuild', slot: slot }); return;
         }
         if (!confirm('\u5b58\u6863 "' + slot + '" \u5df2\u5b58\u5728, \u76f4\u63a5\u52a0\u8f7d?')) return;
+        setLaunchInFlight(true);
         send({ cmd: 'start_game', slot: slot }); return;
       }
     }
+    setLaunchInFlight(true);
     send({ cmd: 'start_game', slot: slot });
   }
 
@@ -271,6 +301,17 @@
     else if (state === 'Error')  stateBadge.className += ' error';
     else if (state !== 'Idle')   stateBadge.className += ' running';
     retryBtn.style.display = (state === 'Error') ? 'inline-block' : 'none';
+    // Phase B Step B2: 启动中态显示"取消启动"按钮（Idle/Ready/Error/Resetting 隐藏）
+    var launchInProgress = (state === 'Spawning' || state === 'WaitingConnect'
+                         || state === 'WaitingHandshake' || state === 'Embedding'
+                         || state === 'WaitingGameReady');
+    cancelLaunchBtn.style.display = launchInProgress ? 'inline-block' : 'none';
+
+    // Phase D Step D12: launchInFlight 生命周期
+    //   Idle → 恢复 play 按钮 (用户 cancel_launch 触发 Reset → Idle 的场景)
+    //   Error → 保持禁用 (用户走 retry 按钮, backend StartGame 只接受 Idle)
+    //   launching / Ready → 保持禁用
+    if (state === 'Idle') setLaunchInFlight(false);
   }
 
   // ==================== Phase 2a: onMessage 分发 ====================
@@ -460,10 +501,19 @@
     window.BootstrapApp.openModal('diagnostic-log', {});
   };
   retryBtn.onclick = function() { send({ cmd: 'retry' }); };
+  cancelLaunchBtn.onclick = function() { send({ cmd: 'cancel_launch' }); };
 
   logLine('tag-in', 'Bootstrap loaded');
-  send({ cmd: 'ready' });
+  // list 仍立即发 (slot 查询与 UI 可交互信号)
   send({ cmd: 'list' });
+  // Phase D Step D9: ready 延后到 browser 完成首帧提交之后才发 —
+  // launcher 侧 ready 会触发 prewarm (Process.Start Flash SA);
+  // 双 rAF 保证首帧已绘制完毕,prewarm 的 CPU/IO 不抢首帧资源,避免白屏/闪烁.
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      send({ cmd: 'ready' });
+    });
+  });
 })();
 </script>
 

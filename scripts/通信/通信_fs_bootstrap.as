@@ -27,6 +27,9 @@ _root._bootstrap.startHandshake = function():Void {
         }
     });
 
+    // Phase D Step D1: 60s timeout — launcher prewarm 路径可能 hold 住 handshake 等待用户选槽,
+    // legacy 路径的 "已连上 socket 但 launcher 不回 handshake" 保护窗口也同步抬到 60s.
+    // asLoader.xml (10s socket 未连上 fail-closed) 不受影响.
     org.flashNight.neur.Server.BootstrapHandshake.start(_root._bootstrapAttemptId,
         function(resp:Object):Void {
             _root.savePath = resp.savePath;
@@ -52,7 +55,8 @@ _root._bootstrap.startHandshake = function():Void {
             if (_root.server != undefined) {
                 _root.server.sendServerMessage("[Bootstrap] handshake FAILED: " + reason);
             }
-        });
+        },
+        60000);
 };
 
 // 返回 "Waiting" / "Success" / "Failed"

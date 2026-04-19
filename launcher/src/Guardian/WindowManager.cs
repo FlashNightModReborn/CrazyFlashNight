@@ -51,6 +51,13 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern bool DestroyMenu(IntPtr hMenu);
 
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private const int SW_HIDE = 0;
+        private const int SW_SHOW = 5;
+
         private const int GWL_STYLE = -16;
         private const int WS_CAPTION = 0x00C00000;
         private const int WS_THICKFRAME = 0x00040000;
@@ -72,6 +79,21 @@ namespace CF7Launcher.Guardian
         private bool _gpuMode;
         private int _fixedWidth;
         private int _fixedHeight;
+
+        // ==================== Phase C: EmbedPhase 单一 owner 协议 ====================
+        // ArmEarlyReparent（background poller，hidden reparent）和 EmbedFlashWindow（embedding 阶段，reveal 或 full embed）
+        // 两条路径都可能先发现 hwnd；靠 CAS `_embedPhase` 决定谁 own 本 attempt 的 reparent/reveal 流程。
+        //
+        // 状态转换（仅在 _embedClaimLock 内读写）：
+        //   None → EarlyHiddenClaimed → EarlyHiddenDone → RevealedOrFullEmbedded   (正常 early path)
+        //   None → RevealedOrFullEmbedded                                            (EmbedFlashWindow 先到：全量路径)
+        //
+        // ResetEmbedState() 在每次 attempt 结束（Reset/OnFlashExitedExternal/DegradePrewarm）时调用，
+        // 清 _currentFlashPid / _embedPhase / _flashHwnd；保证下一个 attempt 从 None 开始、不吃脏句柄。
+        private enum EmbedPhase { None, EarlyHiddenClaimed, EarlyHiddenDone, RevealedOrFullEmbedded }
+        private readonly object _embedClaimLock = new object();
+        private EmbedPhase _embedPhase;
+        private int _currentFlashPid;
 
         public IntPtr FlashHwnd { get { return _flashHwnd; } }
 
@@ -114,16 +136,30 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// 等待 Flash 窗口出现，然后嵌入到宿主 Panel。
-        /// 在后台线程调用。
+        /// Phase C: 清除 embed 状态机字段，为下一个 attempt 归零.
+        /// 调用点：Reset / OnFlashExitedExternal 非退出分支 / DegradePrewarmFailureLocked（Phase D）.
+        /// 整进程退出路径不需要调（DetachFlash + GC 自动带走）.
         /// </summary>
-        public void EmbedFlashWindow(Process flashProcess, Panel hostPanel)
+        public void ResetEmbedState()
         {
-            _hostPanel = hostPanel;
+            lock (_embedClaimLock)
+            {
+                _currentFlashPid = 0;
+                _embedPhase = EmbedPhase.None;
+                _flashHwnd = IntPtr.Zero;
+            }
+            LogManager.Log("[WindowManager] EmbedState reset");
+        }
 
-            // 等 Flash 创建主窗口（最多 10 秒）
+        /// <summary>
+        /// Phase C: 10s poll Flash 主窗口句柄（100ms × 100 轮），复用 EmbedFlashWindow 现有逻辑.
+        /// </summary>
+        private static IntPtr PollMainWindowHandle(Process flashProcess, int timeoutMs)
+        {
+            int maxIter = timeoutMs / 100;
+            if (maxIter < 1) maxIter = 1;
             IntPtr hwnd = IntPtr.Zero;
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < maxIter; i++)
             {
                 try
                 {
@@ -133,76 +169,280 @@ namespace CF7Launcher.Guardian
                 }
                 catch { }
 
-                if (hwnd != IntPtr.Zero)
-                    break;
-
+                if (hwnd != IntPtr.Zero) return hwnd;
                 Thread.Sleep(100);
             }
-
-            if (hwnd == IntPtr.Zero)
-            {
-                LogManager.Log("[WindowManager] Flash window not found, embedding skipped");
-                FireEmbedResult(false);
-                return;
-            }
-
-            _flashHwnd = hwnd;
-            LogManager.Log("[WindowManager] Flash window found: 0x" + hwnd.ToString("X"));
-
-            // 在 UI 线程执行嵌入；DoEmbed 末尾 FireEmbedResult(true)
-            if (_hostPanel.InvokeRequired)
-            {
-                _hostPanel.BeginInvoke(new Action(delegate { DoEmbed(); FireEmbedResult(true); }));
-            }
-            else
-            {
-                DoEmbed();
-                FireEmbedResult(true);
-            }
+            return IntPtr.Zero;
         }
 
-        private void DoEmbed()
+        /// <summary>
+        /// Phase C: 把 Flash 窗口 SW_HIDE + 去边框 + SetParent 到隐藏宿主 Panel.
+        /// 不触发 FireEmbedResult（那由 EmbedFlashWindow reveal 路径终点负责），不绑 resize，不启 watchdog.
+        /// 后台线程调用.
+        /// </summary>
+        private void ReparentToHidden(IntPtr hwnd, Panel hiddenHost)
         {
-            if (_flashHwnd == IntPtr.Zero || _hostPanel == null)
-                return;
+            // 1) 立即 SW_HIDE 减少首帧 top-level 可见窗口时间
+            ShowWindow(hwnd, SW_HIDE);
 
-            // 去掉 Flash 窗口的标题栏和边框
-            int style = GetWindowLong(_flashHwnd, GWL_STYLE);
+            // 2) 去边框 + WS_CHILD
+            int style = GetWindowLong(hwnd, GWL_STYLE);
             style = style & ~WS_CAPTION & ~WS_THICKFRAME & ~WS_BORDER;
             style = style | WS_CHILD;
-            SetWindowLong(_flashHwnd, GWL_STYLE, style);
+            SetWindowLong(hwnd, GWL_STYLE, style);
 
-            // 移除 Flash SA 的菜单栏——釜底抽薪。
-            // Flash 的 Ctrl+F/Q/W/O/P 全部是菜单加速器，移除菜单后加速器表失效，
-            // 这些快捷键从源头消失，不需要任何钩子或热键拦截。
-            IntPtr hMenu = GetMenu(_flashHwnd);
+            // 3) 移除 Flash SA 菜单（釜底抽薪阻断加速器）
+            IntPtr hMenu = GetMenu(hwnd);
             if (hMenu != IntPtr.Zero)
             {
-                SetMenu(_flashHwnd, IntPtr.Zero);
+                SetMenu(hwnd, IntPtr.Zero);
                 DestroyMenu(hMenu);
                 LogManager.Log("[WindowManager] Flash menu removed (accelerators disabled)");
             }
 
-            // 强制重算非客户区：SetWindowLong 改样式后窗口管理器仍缓存旧的
-            // non-client metrics（菜单栏高度等），必须用 SWP_FRAMECHANGED 刷新，
-            // 否则 Flash 内容区域顶部会出现黑色间隙。
-            SetWindowPos(_flashHwnd, IntPtr.Zero, 0, 0, 0, 0,
+            // 4) SWP_FRAMECHANGED 强制非客户区重算
+            SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 
-            // 设置父窗口
-            SetParent(_flashHwnd, _hostPanel.Handle);
+            // 5) SetParent 到隐藏宿主
+            SetParent(hwnd, hiddenHost.Handle);
 
-            // 填满 Panel
+            // 6) MoveWindow(..., repaint=false) — hidden 状态不请求重绘
+            int w = hiddenHost.Width;
+            int h = hiddenHost.Height;
+            if (w < 1) w = 1;
+            if (h < 1) h = 1;
+            MoveWindow(hwnd, 0, 0, w, h, false);
+
+            LogManager.Log("[WindowManager] Flash reparented to hidden host hwnd=0x" + hwnd.ToString("X"));
+        }
+
+        /// <summary>
+        /// Phase C Step C1: 在 Flash spawn 后立即 arm 的后台 poller.
+        /// 10s 内找到 Flash 主窗口 → SW_HIDE + SetParent 到 hiddenHost（不 Show，不 Fire）.
+        /// 若 EmbedFlashWindow 抢先 claim（None→RevealedOrFullEmbedded），本 poller 降级放弃.
+        /// 内部 ThreadPool.QueueUserWorkItem 派发 — 调用方直接调，不阻塞 UI.
+        /// </summary>
+        public void ArmEarlyReparent(Process flashProc, Panel hiddenHost)
+        {
+            if (flashProc == null || hiddenHost == null) return;
+            int pid = flashProc.Id;
+
+            // 立即记录 pid，EmbedFlashWindow 据此做身份校验（attempt 换一轮时清零）
+            lock (_embedClaimLock)
+            {
+                _currentFlashPid = pid;
+                // _embedPhase 已由 ResetEmbedState() 归零为 None
+            }
+            _hostPanel = hiddenHost;  // 早期绑定，供后续 reveal 读 Width/Height
+
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                try
+                {
+                    IntPtr hwnd = PollMainWindowHandle(flashProc, 10000);
+                    if (hwnd == IntPtr.Zero)
+                    {
+                        LogManager.Log("[WindowManager] ArmEarlyReparent: hwnd not found in 10s, surrendering to EmbedFlashWindow");
+                        return;
+                    }
+
+                    bool claimed = false;
+                    lock (_embedClaimLock)
+                    {
+                        if (_currentFlashPid != pid) return;                         // attempt 已换
+                        if (_embedPhase != EmbedPhase.None) return;                  // EmbedFlashWindow 抢先 → 它全权处理
+                        _embedPhase = EmbedPhase.EarlyHiddenClaimed;
+                        _flashHwnd = hwnd;
+                        claimed = true;
+                    }
+
+                    if (!claimed) return;
+
+                    try
+                    {
+                        ReparentToHidden(hwnd, hiddenHost);
+                    }
+                    finally
+                    {
+                        lock (_embedClaimLock)
+                        {
+                            // 若期间 EmbedFlashWindow 覆盖为 Revealed（理论上不应该，因为 Claimed 状态会阻止它），
+                            // 保留 Revealed；正常完成 Claimed → Done
+                            if (_embedPhase == EmbedPhase.EarlyHiddenClaimed)
+                                _embedPhase = EmbedPhase.EarlyHiddenDone;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[WindowManager] ArmEarlyReparent worker error: " + ex.Message);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Phase C: Embedding 态的 reveal/全量 embed 驱动.
+        /// 通过 _embedPhase CAS 与 ArmEarlyReparent 单一 owner 协调:
+        ///   - EarlyHiddenDone → Reveal only (SW_SHOW + MoveWindow + resize binding + watchdog)
+        ///   - EarlyHiddenClaimed → spin 等 Done（1s 上限），超时降级为 needFullEmbed 幂等兜底
+        ///   - None → 全量路径（自己 poll hwnd + style + SetParent + MoveWindow + Show + resize + watchdog）
+        /// 终点统一 FireEmbedResult(true) — 状态机 Embedding→WaitingGameReady 推进信号零改动.
+        /// </summary>
+        public void EmbedFlashWindow(Process flashProcess, Panel hostPanel)
+        {
+            _hostPanel = hostPanel;
+            int pid = (flashProcess != null) ? flashProcess.Id : 0;
+
+            IntPtr hwnd = IntPtr.Zero;
+            bool needFullEmbed = false;
+            bool mustWaitForEarlyDone = false;
+
+            lock (_embedClaimLock)
+            {
+                if (_currentFlashPid != pid)
+                {
+                    // attempt 已换，脏句柄清零，走全量路径
+                    _currentFlashPid = pid;
+                    _embedPhase = EmbedPhase.None;
+                    _flashHwnd = IntPtr.Zero;
+                }
+
+                if (_embedPhase == EmbedPhase.EarlyHiddenDone)
+                {
+                    hwnd = _flashHwnd;
+                    needFullEmbed = false;
+                }
+                else if (_embedPhase == EmbedPhase.EarlyHiddenClaimed)
+                {
+                    // ArmEarlyReparent 正在 reparent；spin 等到 EarlyHiddenDone 再读 hwnd
+                    mustWaitForEarlyDone = true;
+                    needFullEmbed = false;
+                }
+                else  // None（EmbedFlashWindow 抢先；或 ArmEarlyReparent 已放弃 10s timeout）
+                {
+                    _embedPhase = EmbedPhase.RevealedOrFullEmbedded;  // 占位阻止 ArmEarlyReparent 晚到覆盖
+                    needFullEmbed = true;
+                }
+            }
+
+            if (needFullEmbed)
+            {
+                hwnd = PollMainWindowHandle(flashProcess, 10000);
+                if (hwnd == IntPtr.Zero)
+                {
+                    LogManager.Log("[WindowManager] Flash window not found (full-embed path), embedding skipped");
+                    FireEmbedResult(false);
+                    return;
+                }
+                lock (_embedClaimLock) { _flashHwnd = hwnd; }
+                LogManager.Log("[WindowManager] Flash window found (full-embed path): 0x" + hwnd.ToString("X"));
+            }
+            else if (mustWaitForEarlyDone)
+            {
+                // 最多 1s（20 × 50ms）等 ArmEarlyReparent 的 finally 块推到 EarlyHiddenDone
+                for (int i = 0; i < 20; i++)
+                {
+                    lock (_embedClaimLock)
+                    {
+                        if (_embedPhase == EmbedPhase.EarlyHiddenDone)
+                        {
+                            hwnd = _flashHwnd;
+                            break;
+                        }
+                    }
+                    if (hwnd != IntPtr.Zero) break;
+                    Thread.Sleep(50);
+                }
+
+                if (hwnd == IntPtr.Zero)
+                {
+                    // 异常降级：ArmEarlyReparent 卡死/异常；兜底自己重做完整 reparent（幂等）
+                    lock (_embedClaimLock)
+                    {
+                        IntPtr late = _flashHwnd;
+                        if (late != IntPtr.Zero)
+                        {
+                            hwnd = late;
+                            needFullEmbed = true;
+                            _embedPhase = EmbedPhase.RevealedOrFullEmbedded;
+                        }
+                    }
+                    if (hwnd == IntPtr.Zero)
+                    {
+                        LogManager.Log("[WindowManager] EmbedFlashWindow: early-reparent spin timeout, no hwnd, fail");
+                        FireEmbedResult(false);
+                        return;
+                    }
+                    LogManager.Log("[WindowManager] EmbedFlashWindow: spin timeout, degrading to full-embed");
+                }
+                else
+                {
+                    LogManager.Log("[WindowManager] Flash window found (reveal path): 0x" + hwnd.ToString("X"));
+                }
+            }
+            else
+            {
+                // EarlyHiddenDone 路径，hwnd 已读
+                LogManager.Log("[WindowManager] Flash window found (reveal path): 0x" + hwnd.ToString("X"));
+            }
+
+            // 终点统一：UI 线程 DoEmbedOrReveal + FireEmbedResult(true)
+            IntPtr hwndSnap = hwnd;
+            bool fullSnap = needFullEmbed;
+            if (_hostPanel != null && _hostPanel.InvokeRequired)
+            {
+                _hostPanel.BeginInvoke(new Action(delegate { DoEmbedOrReveal(hwndSnap, fullSnap); FireEmbedResult(true); }));
+            }
+            else
+            {
+                DoEmbedOrReveal(hwndSnap, fullSnap);
+                FireEmbedResult(true);
+            }
+        }
+
+        /// <summary>
+        /// Phase C: UI 线程终点. needFullEmbed=true 走完整 style+SetParent+Show；false 仅 Show+MoveWindow.
+        /// 两条路径都 bind resize + 启动 watchdog + 推 _embedPhase 到 RevealedOrFullEmbedded.
+        /// </summary>
+        private void DoEmbedOrReveal(IntPtr hwnd, bool needFullEmbed)
+        {
+            if (hwnd == IntPtr.Zero || _hostPanel == null)
+                return;
+
+            if (needFullEmbed)
+            {
+                // 完整路径：style + menu + SetParent + Show + MoveWindow
+                int style = GetWindowLong(hwnd, GWL_STYLE);
+                style = style & ~WS_CAPTION & ~WS_THICKFRAME & ~WS_BORDER;
+                style = style | WS_CHILD;
+                SetWindowLong(hwnd, GWL_STYLE, style);
+
+                IntPtr hMenu = GetMenu(hwnd);
+                if (hMenu != IntPtr.Zero)
+                {
+                    SetMenu(hwnd, IntPtr.Zero);
+                    DestroyMenu(hMenu);
+                    LogManager.Log("[WindowManager] Flash menu removed (accelerators disabled)");
+                }
+
+                SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+                SetParent(hwnd, _hostPanel.Handle);
+            }
+
+            // 两路径公用：Show + MoveWindow(repaint=true) + resize binding + watchdog
+            ShowWindow(hwnd, SW_SHOW);
             ResizeFlashToPanel();
 
-            // Panel 大小变化时自动调整
             _hostPanel.Resize -= OnHostPanelResize;
             _hostPanel.Resize += OnHostPanelResize;
 
-            // 启动嵌入监控定时器（检测全屏等操作导致的脱离）
             StartEmbedWatchdog();
 
-            LogManager.Log("[WindowManager] Flash window embedded");
+            lock (_embedClaimLock) { _embedPhase = EmbedPhase.RevealedOrFullEmbedded; }
+
+            LogManager.Log("[WindowManager] Flash window embedded (path=" + (needFullEmbed ? "full" : "reveal") + ")");
         }
 
         private void OnHostPanelResize(object sender, EventArgs e)
@@ -228,21 +468,25 @@ namespace CF7Launcher.Guardian
                 if (_flashHwnd == IntPtr.Zero || _hostPanel == null)
                     return;
 
-                // Flash 窗口已销毁（进程退出），停止监控
+                // Flash 窗口已销毁（进程退出），停止监控.
+                // 必须 Dispose + null，否则下一 attempt 的 StartEmbedWatchdog 会因 _watchdog != null
+                // 直接 return（见该方法的早退守卫），导致第二次及之后的嵌入失去脱嵌恢复保护.
                 if (!IsWindow(_flashHwnd))
                 {
                     _flashHwnd = IntPtr.Zero;
-                    _watchdog.Stop();
-                    LogManager.Log("[WindowManager] Flash window destroyed, watchdog stopped");
+                    System.Windows.Forms.Timer dying = _watchdog;
+                    _watchdog = null;
+                    try { dying.Stop(); dying.Dispose(); } catch { }
+                    LogManager.Log("[WindowManager] Flash window destroyed, watchdog stopped+disposed");
                     return;
                 }
 
                 IntPtr currentParent = GetParent(_flashHwnd);
                 if (currentParent != _hostPanel.Handle)
                 {
-                    // Flash 窗口脱离了嵌入（全屏切换等），重新嵌入
+                    // Flash 窗口脱离了嵌入（全屏切换等），重新嵌入（走完整路径重建 WS_CHILD + SetParent）
                     LogManager.Log("[WindowManager] Flash window detached, re-embedding...");
-                    DoEmbed();
+                    DoEmbedOrReveal(_flashHwnd, /*needFullEmbed*/ true);
                 }
             };
             _watchdog.Start();

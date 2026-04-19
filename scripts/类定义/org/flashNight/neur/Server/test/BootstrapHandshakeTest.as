@@ -20,6 +20,7 @@ class org.flashNight.neur.Server.test.BootstrapHandshakeTest {
         test_done_latch_blocks_late_callback();
         test_invalid_response_fails();
         test_timeout_fails_closed();
+        test_custom_timeout_still_fails_closed();
 
         trace("========== BootstrapHandshakeTest END: " + passedCount + "/" + testCount + " passed, " + failedCount + " failed ==========");
     }
@@ -79,5 +80,17 @@ class org.flashNight.neur.Server.test.BootstrapHandshakeTest {
         BootstrapHandshake._triggerTimeoutForTest();
         assert(failReason == "timeout", "timeout: reason=" + failReason);
         assert(BootstrapHandshake.getState() == "Failed", "timeout: state=Failed");
+    }
+
+    // Phase D Step D1: 自定义 timeoutMs (60s) 路径仍 fail-closed;
+    // _triggerTimeoutForTest 直接触发 handleTimeout, 无需真等 60s.
+    private static function test_custom_timeout_still_fails_closed():Void {
+        var failReason:String = null;
+        BootstrapHandshake.start("attempt_006", null,
+            function(r:String):Void { failReason = r; },
+            60000);
+        BootstrapHandshake._triggerTimeoutForTest();
+        assert(failReason == "timeout", "custom_timeout: reason=" + failReason);
+        assert(BootstrapHandshake.getState() == "Failed", "custom_timeout: state=Failed");
     }
 }
