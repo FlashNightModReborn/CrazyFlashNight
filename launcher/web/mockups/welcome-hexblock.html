@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>CF7:ME — Welcome (Hexblock mock)</title>
+<style>
+:root{
+  --cy: #00e5ff;
+  --cy-dim: #0088a8;
+  --cy-glow: rgba(0,229,255,.5);
+  --bg0: #000;
+  --fg: #e6edf2;
+  --fg-mute: #8894a0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:var(--bg0);color:var(--fg);font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.mono{font-family:Consolas,"Courier New",monospace}
+
+/* ── background ── */
+.bg-layer{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;filter:blur(10px) brightness(.3) saturate(.5);transform:scale(1.08)}
+.bg-grid{position:fixed;inset:0;z-index:1;background-image:linear-gradient(rgba(0,229,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.06) 1px,transparent 1px);background-size:40px 40px;mix-blend-mode:screen;opacity:.4}
+.bg-vignette{position:fixed;inset:0;z-index:2;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,.85) 100%)}
+.bg-scan{position:fixed;inset:0;z-index:3;pointer-events:none;background-image:repeating-linear-gradient(0deg,rgba(0,229,255,.025) 0,rgba(0,229,255,.025) 2px,transparent 2px,transparent 4px);animation:scan 6s linear infinite}
+@keyframes scan{from{background-position:0 0}to{background-position:0 60px}}
+
+/* ── topbar ── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;padding:12px 24px;background:linear-gradient(180deg,rgba(0,0,0,.9),transparent);gap:16px}
+.brand-tag{display:inline-flex;align-items:center;gap:10px;padding:4px 12px;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);background:var(--cy);color:#000;font-weight:700;letter-spacing:3px;font-size:12px}
+.brand-sub{color:var(--fg-mute);font-size:11px;letter-spacing:3px;font-family:Consolas,monospace}
+.topbar .spacer{flex:1}
+.topbar button{background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--fg);padding:6px 16px;font-size:12px;cursor:pointer;letter-spacing:2px;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+.topbar button:hover{border-color:var(--cy);color:var(--cy);background:rgba(0,229,255,.06)}
+
+/* ── stage ── */
+.stage{position:relative;z-index:10;height:100%;display:grid;grid-template-columns:1fr 520px 1fr;align-items:center;padding:60px 40px 40px}
+
+/* left accent strip */
+.side-strip{font-family:Consolas,monospace;color:var(--cy-dim);font-size:10px;line-height:1.6;opacity:.7;text-align:right;padding-right:40px;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:4px}
+.side-strip span{color:var(--cy)}
+
+/* right version block */
+.side-right{padding-left:40px;font-family:Consolas,monospace;font-size:11px;color:var(--fg-mute);line-height:1.9}
+.side-right .v-major{color:var(--cy);font-size:38px;font-weight:700;font-family:"Segoe UI",sans-serif;letter-spacing:-1px}
+.side-right .v-label{color:var(--fg-mute);font-size:10px;letter-spacing:4px;margin-bottom:4px}
+.side-right .kv{display:flex;gap:8px;margin-top:10px}
+.side-right .kv .k{min-width:70px;color:var(--fg-mute)}
+.side-right .kv .v{color:var(--fg)}
+.side-right .mark{color:var(--cy)}
+
+/* main card */
+.card{position:relative;background:rgba(4,10,14,.82);padding:40px 44px;clip-path:polygon(24px 0,100% 0,100% calc(100% - 24px),calc(100% - 24px) 100%,0 100%,0 24px);border:1px solid transparent}
+.card::before{content:"";position:absolute;inset:0;padding:1px;background:linear-gradient(135deg,var(--cy) 0%,transparent 30%,transparent 70%,var(--cy) 100%);clip-path:polygon(24px 0,100% 0,100% calc(100% - 24px),calc(100% - 24px) 100%,0 100%,0 24px);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+
+.card-title{display:flex;justify-content:center;margin-bottom:18px}
+.card-title img{max-width:220px;filter:drop-shadow(0 0 14px rgba(0,229,255,.4))}
+
+.eyebrow{text-align:center;color:var(--cy);font-size:11px;letter-spacing:6px;margin-bottom:2px;font-family:Consolas,monospace}
+.card-subtitle{text-align:center;color:var(--fg-mute);font-size:10px;letter-spacing:3px;margin-bottom:24px;font-family:Consolas,monospace}
+
+.slot-card{display:flex;align-items:center;gap:14px;padding:14px 18px;margin:14px 0;background:rgba(0,229,255,.05);border-left:3px solid var(--cy);clip-path:polygon(0 0,100% 0,100% 100%,12px 100%,0 calc(100% - 12px))}
+.slot-card .slot-k{font-family:Consolas,monospace;color:var(--fg-mute);font-size:10px;letter-spacing:3px}
+.slot-card .slot-v{color:var(--fg);font-size:14px;margin-top:2px}
+.slot-card .slot-v b{color:var(--cy)}
+.slot-card .slot-time{font-family:Consolas,monospace;color:var(--fg-mute);font-size:10px;margin-top:3px}
+.slot-card .switch{margin-left:auto;color:var(--cy);font-size:11px;letter-spacing:2px;cursor:pointer;padding:6px 12px;border:1px solid var(--cy-dim)}
+.slot-card .switch:hover{background:var(--cy);color:#000}
+
+.blurb{color:var(--fg-mute);font-size:11px;line-height:1.8;margin:16px 0;padding:12px 16px;font-family:Consolas,monospace;background:rgba(255,255,255,.02)}
+.blurb .hint{color:var(--cy);cursor:pointer;border-bottom:1px dashed}
+.blurb .hint:hover{color:#fff}
+
+.controls{display:flex;align-items:center;margin-top:24px;gap:12px}
+.chk{display:flex;align-items:center;gap:8px;color:var(--fg-mute);font-size:12px;cursor:pointer;user-select:none;font-family:Consolas,monospace;letter-spacing:1px}
+.chk input{appearance:none;width:14px;height:14px;background:transparent;border:1px solid var(--cy-dim);cursor:pointer;position:relative;clip-path:polygon(3px 0,100% 0,100% calc(100% - 3px),calc(100% - 3px) 100%,0 100%,0 3px)}
+.chk input:checked{background:var(--cy)}
+.chk input:checked::after{content:"";position:absolute;inset:2px;background:#000;clip-path:polygon(2px 0,100% 0,100% calc(100% - 2px),calc(100% - 2px) 100%,0 100%,0 2px)}
+.chk:hover{color:var(--fg)}
+
+.btn-confirm{margin-left:auto;background:var(--cy);color:#000;border:none;padding:12px 32px;font-size:14px;font-weight:700;letter-spacing:4px;cursor:pointer;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);font-family:inherit;box-shadow:0 0 20px rgba(0,229,255,.4)}
+.btn-confirm:hover{background:#fff;box-shadow:0 0 30px rgba(0,229,255,.7)}
+
+/* bottom bar */
+.bottom{position:fixed;bottom:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;padding:12px 24px;font-size:10px;color:var(--fg-mute);letter-spacing:3px;font-family:Consolas,monospace;background:linear-gradient(0deg,rgba(0,0,0,.8),transparent)}
+.bottom .steam{color:var(--cy)}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.modal-bg.on{display:flex}
+.modal{width:min(620px,90%);max-height:80vh;overflow-y:auto;background:#04090d;padding:32px 40px;position:relative;clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px)}
+.modal::before{content:"";position:absolute;inset:0;padding:1px;background:var(--cy);clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.modal h3{color:var(--cy);font-size:14px;letter-spacing:4px;margin-bottom:16px;font-family:Consolas,monospace}
+.modal p{color:var(--fg);font-size:13px;line-height:2;margin-bottom:10px}
+.modal .qq{color:var(--cy);font-family:Consolas,monospace}
+.modal .close{position:absolute;top:14px;right:18px;background:transparent;border:none;color:var(--cy);font-size:24px;cursor:pointer;line-height:1}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-thumb{background:var(--cy)}
+
+/* intro video */
+.intro-ov{position:fixed;inset:0;z-index:100;background:#000;display:none;align-items:center;justify-content:center}
+.intro-ov.on{display:flex}
+.intro-ov video{max-width:100%;max-height:100%}
+.intro-skip{position:fixed;top:24px;right:24px;z-index:101;color:#000;background:var(--cy);border:none;padding:10px 20px;font-family:Consolas,monospace;font-size:12px;letter-spacing:3px;cursor:pointer;display:none;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.intro-ov.on ~ .intro-skip{display:block}
+</style>
+</head>
+<body>
+
+<div class="bg-layer" id="bg"></div>
+<div class="bg-grid"></div>
+<div class="bg-vignette"></div>
+<div class="bg-scan"></div>
+
+<div class="topbar">
+  <span class="brand-tag">CF7:ME</span>
+  <span class="brand-sub">STANDALONE / 2023 MOD</span>
+  <span class="spacer"></span>
+  <button onclick="toggleFs()">全屏</button>
+  <button>日志</button>
+  <button onclick="openModal()">其他</button>
+</div>
+
+<div class="stage">
+  <div class="side-strip">
+    SYSTEM · <span>READY</span> ·· BUILD 20251025 ·· SAVE 02 ·· WEBVIEW2 ·· 1920×1080 ··
+  </div>
+
+  <div class="card">
+    <div class="card-title"><img src="../assets/logos/cf7me-title.png" alt="闪客快打7"></div>
+    <div class="eyebrow">CRAZY FLASHER 7</div>
+    <div class="card-subtitle">MERCENARY EMPIRE / 2023 STANDALONE</div>
+
+    <div class="slot-card">
+      <div>
+        <div class="slot-k">SAVE SLOT</div>
+        <div class="slot-v"><b id="slot-name">玩家A</b></div>
+        <div class="slot-time">LAST 2026-04-19 · 08:47 · 12h 34m</div>
+      </div>
+      <div class="switch" onclick="alert('placeholder: 切换存档 panel')">切换</div>
+    </div>
+
+    <div class="blurb">
+      本游戏运行时将存储数据在本地。无网单机版，无充值，无联机功能。<br>
+      本 MOD 为免费开源项目，版权归 AndyLaw 及社区共同所有。<br>
+      详细说明 / 免责声明 / 交流群 请点击 <span class="hint" onclick="openModal()">「其他」</span> 或右上角按钮。
+    </div>
+
+    <div class="controls">
+      <label class="chk"><input type="checkbox" id="chk-intro"> <span>加载片头动画</span></label>
+      <button class="btn-confirm" onclick="confirmStart()">确 认 ▸</button>
+    </div>
+  </div>
+
+  <div class="side-right">
+    <div class="v-label">VERSION</div>
+    <div class="v-major">2.71</div>
+    <div class="kv"><span class="k">BUILD</span><span class="v">2025-10-25</span></div>
+    <div class="kv"><span class="k">CHANNEL</span><span class="v mark">STABLE</span></div>
+    <div class="kv"><span class="k">STEAM</span><span class="v mark">▸ AVAILABLE</span></div>
+    <div class="kv"><span class="k">MOD</span><span class="v">OPENSOURCE · FREE</span></div>
+  </div>
+</div>
+
+<div class="bottom">
+  <span>[STEAM logo placeholder] · AVAILABLE ON <span class="steam">STEAM</span></span>
+  <span>ANDYLAW.GAMES · CF7:FLASHNIGHT LAUNCHER</span>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <button class="close" onclick="closeModal()">×</button>
+    <h3>// ABOUT · 说明</h3>
+    <p>1. 本游戏游戏过程中将存储数据在本地，请勿设置禁止储存数据。</p>
+    <p>2. 本游戏为无网单机版。无充值系统，无与网络相关的功能。如果要体验完整联机功能，请选择《闪客快打7佣兵帝国》网络版。</p>
+    <p>3. 然而网络版已经停服，你现在玩到的是玩家重置的单机版MOD。</p>
+    <p>4. 请首先在Steam平台购买正版游戏，按照指南覆盖MOD文件包。本MOD为免费开源项目，如果您不慎支付购买，请保留交易证据并联系我们。</p>
+    <p>5. 加入我们的QQ群：<span class="qq">562130873</span>（将满）、<span class="qq">149188029</span>（将满）、<span class="qq">307710279</span> 参与讨论，关注 B 站账号 <span class="qq">黑月雾人</span> 与 <span class="qq">无名氏的低谷</span> 获取最新信息。</p>
+    <p style="color:var(--fg-mute);margin-top:20px;font-size:11px">本MOD版权归原游戏开发者 AndyLaw 及社区共同所有。特此感谢 FFDec 软件作者在文件编译与版本适配方面给予的支持，以及 AndyLaw 提供改编授权。</p>
+  </div>
+</div>
+
+<div class="intro-ov" id="intro-ov">
+  <video id="intro-video" src="../assets/intro.mp4"></video>
+</div>
+<button class="intro-skip" id="intro-skip" onclick="skipIntro()">跳 过 ESC</button>
+
+<script>
+fetch('../assets/bg/manifest.json').then(r=>r.json()).then(m=>{
+  const pick=m.backgrounds[Math.floor(Math.random()*m.backgrounds.length)];
+  document.getElementById('bg').style.backgroundImage=`url(../assets/bg/${pick})`;
+}).catch(()=>{document.getElementById('bg').style.backgroundColor='#0a0c0f'});
+
+function openModal(){document.getElementById('modal').classList.add('on')}
+function closeModal(){document.getElementById('modal').classList.remove('on')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+
+function confirmStart(){
+  if(document.getElementById('chk-intro').checked){
+    const ov=document.getElementById('intro-ov');
+    const vid=document.getElementById('intro-video');
+    ov.classList.add('on');
+    vid.currentTime=0; vid.play();
+    vid.onended=skipIntro;
+  }else{
+    alert('placeholder: 进入游戏 (跳过片头)');
+  }
+}
+function skipIntro(){
+  const ov=document.getElementById('intro-ov');
+  const vid=document.getElementById('intro-video');
+  vid.pause();
+  ov.classList.remove('on');
+  alert('placeholder: 片头结束 / 用户跳过 → 进入游戏');
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(document.getElementById('intro-ov').classList.contains('on')) skipIntro();
+    else if(document.getElementById('modal').classList.contains('on')) closeModal();
+  }
+});
+function toggleFs(){
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+</script>
+</body>
+</html>

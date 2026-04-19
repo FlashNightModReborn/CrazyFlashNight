@@ -900,7 +900,7 @@
           <Include href="无限过图计时器.xml" itemID="689c1899-000001f2" lastModified="1755135414"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="83" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;29&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="65" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;29&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -1026,7 +1026,7 @@
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="as" color="#7B84C3" autoNamed="false">
+                    <DOMLayer name="as" color="#7B84C3" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <Actionscript>
@@ -1219,195 +1219,98 @@ STEAMstory.onLoad = function()
                               </DOMFrame>
                               <DOMFrame index="5" duration="8" keyMode="9728">
                                    <Actionscript>
-                                        <script><![CDATA[/*
-function 加载多语言文本()
+                                        <script><![CDATA[function 多语言文档解析(文档)
 {
-   LangrageLoad = new XML();
-   LangrageLoad.load(多语言文档地址);
-}
-function 多语言文档解析(文档)
-{
-   var _loc3_ = 文档.split("\r\n");
-   多语言json文档 += "{";
-   var _loc4_ = 0;
-   while(_loc4_ < _loc3_.length)
-   {
-      var _loc5_ = _loc3_[_loc4_].split("=");
-      多语言json文档 += "\"" + _loc5_[0] + "\":\"" + _loc5_[1] + "\"";
-      if(_loc4_ < _loc3_.length - 1)
-      {
-         多语言json文档 += ",";
-      }
-      _loc4_ += 1;
-   }
-   多语言json文档 += "}";
-   var _loc6_ = new JSON();
-   _root.json多语言数据 = _loc6_.parse(多语言json文档);
+	var _loc3_ = 文档.split("\r\n");
+	多语言json文档 += "{";
+	var _loc4_ = 0;
+	while (_loc4_ < _loc3_.length)
+	{
+		var _loc5_ = _loc3_[_loc4_].split("=");
+		多语言json文档 += "\"" + _loc5_[0] + "\":\"" + _loc5_[1] + "\"";
+		if (_loc4_ < _loc3_.length - 1)
+		{
+			多语言json文档 += ",";
+		}
+		_loc4_ += 1;
+	}
+	多语言json文档 += "}";
+	var _loc6_ = new JSON();
+	_root.json多语言数据 = _loc6_.parse(多语言json文档);
 }
 function 获得翻译(key)
 {
-   if(key == "")
-   {
-      return key;
-   }
-   var _loc3_ = _root.json多语言数据[key];
-   if(_loc3_ == undefined)
-   {
-      return key;
-   }
-   return _loc3_;
+	if (key == "")
+	{
+		return key;
+	}
+	var _loc3_ = _root.json多语言数据[key];
+	if (_loc3_ == undefined)
+	{
+		return key;
+	}
+	return _loc3_;
 }
 function translateStrings(strings)
 {
-   var _loc2_ = 0;
-   var _loc3_ = "";
-   while(_loc2_ < strings.length)
-   {
-      _loc3_ += 获得翻译(String(strings[_loc2_]));
-      _loc2_ += 1;
-   }
-   return _loc3_;
+	var _loc2_ = 0;
+	var _loc3_ = "";
+	while (_loc2_ < strings.length)
+	{
+		_loc3_ += 获得翻译(String(strings[_loc2_]));
+		_loc2_ += 1;
+	}
+	return _loc3_;
 }
 function 获得翻译或不显示(key)
 {
-   if(key == "")
-   {
-      return key;
-   }
-   var _loc3_ = _root.json多语言数据[key];
-   if(_loc3_ == undefined)
-   {
-      return "";
-   }
-   return _loc3_;
+	if (key == "")
+	{
+		return key;
+	}
+	var _loc3_ = _root.json多语言数据[key];
+	if (_loc3_ == undefined)
+	{
+		return "";
+	}
+	return _loc3_;
 }
 function 全部翻译(mc)
 {
-   for(each in mc)
-   {
-      if(mc[each].text != undefined)
-      {
-         if(mc[each]._name.indexOf("段落_") > -1)
-         {
-            var _loc3_ = mc[each]._name;
-            var _loc4_ = _root.获得翻译(_loc3_);
-            if(_loc4_ != _loc3_)
-            {
-               mc[each].text = _loc4_;
-            }
-         }
-         else
-         {
-            _loc4_ = _root.获得翻译(mc[each].text);
-            if(_loc4_ != mc[each].text)
-            {
-               mc[each].text = _loc4_;
-            }
-         }
-      }
-   }
-}
-System.useCodepage = false;
-var LangrageLoad = new XML();
-LangrageLoad.ignoreWhite = true;
-var 多语言json文档 = "";
-var json多语言数据;
-
-/*
-LangrageLoad.load(多语言文档地址);
-LangrageLoad.onLoad = function()
-{
-   _root.多语言文档解析(LangrageLoad + "");
-   _root.欢迎语 = _root.获得翻译("欢迎您，尊敬的闪客玩家       ");
-   _root.全部翻译(_root.按钮);
-   _root.全部翻译(_root);
-};
-*/
-
-function 获得翻译(key){
-	return key;
-}
-function translateStrings(strings){
-	return strings.join("");
-}
-function 获得翻译或不显示(key){
-	return key;
-}
-
-// 新建 XML 对象并忽略空白节点
-var cfgXML:XML = new XML();
-cfgXML.ignoreWhite = true;
-
-// 加载完成回调
-cfgXML.onLoad = function(success:Boolean):Void {
-    if (!success) {
-        _root.欢迎语 = "配置加载失败，请检查 config.xml";
-        return;
-    }
-
-    // 1. 收集所有字段到一个 key->value 的对象里
-    var placeholders:Object = {};
-    var nodes:Array = this.firstChild.childNodes;
-    for (var i:Number = 0; i < nodes.length; i++) {
-        var node = nodes[i];
-        // node.firstChild.nodeValue 即内层文本
-        placeholders[node.nodeName] = node.firstChild.nodeValue;
-    }
-
-    // 2. 取出模板
-    var tpl:String = placeholders["template"];
-    if (tpl == undefined) {
-        _root.欢迎语 = "找不到模板(template)节点";
-        return;
-    }
-
-    // 3. 遍历 placeholders，逐个替换模板中的 {key}
-    for (var key:String in placeholders) {
-        if (key == "template") continue;
-        // 生成 "{key}" 形式
-        var tag:String = "{" + key + "}";
-        // 反复用 split/join 来全局替换
-        tpl = tpl.split(tag).join(placeholders[key]);
-    }
-
-    // 4. 填入到舞台
-    _root.欢迎语 = tpl;
-};
-
-// 开始加载（确保 config.xml 与 SWF 在同一路径）
-cfgXML.load("config.xml");
-
-
-stop();
-
-_root.多语言是否中文 = true;
-// 默认基础路径
-_root.baseSavePath = "crazyflasher7_saves";
-
-// Phase 1b: cf7_config SharedObject 已弃用; savePath 由 launcher bootstrap_handshake 响应注入.
-// 仅在 handshake 未注入时退回默认 baseSavePath (独立 testMovie / 未接入 launcher 场景).
-// 注意: asLoader frame 4 在 "多语言" 前已完成 handshake, _root.savePath 非 undefined 则尊重之.
-if (_root.savePath == undefined) {
-    _root.savePath = _root.baseSavePath;
-}
-存档文本.html = false;
-存档文本._visible = false;
-写入存档._visible = false;
-
-// ==================== 初始化部分 ====================
-for(var slotIndex = 0; slotIndex < 10; slotIndex++){
-	var slot = _root["存档位" + slotIndex];
-	slot.slotName = slot._name; 
-	if (slotIndex == 0) {
-		slot.currentSavePath = _root.baseSavePath;
-	} else {
-		slot.currentSavePath = _root.baseSavePath + slotIndex;
+	for (each in mc)
+	{
+		if (mc[each].text != undefined)
+		{
+			if (mc[each]._name.indexOf("段落_") > -1)
+			{
+				var _loc3_ = mc[each]._name;
+				var _loc4_ = _root.获得翻译(_loc3_);
+				if (_loc4_ != _loc3_)
+				{
+					mc[each].text = _loc4_;
+				}
+			}
+			else
+			{
+				_loc4_ = _root.获得翻译(mc[each].text);
+				if (_loc4_ != mc[each].text)
+				{
+					mc[each].text = _loc4_;
+				}
+			}
+		}
 	}
-	slot.isHover = false;      
-	slot.isSelected = false;   
-	slot.useHandCursor = true;
 }
-]]></script>
+if (!_root._check)
+{
+	_root.unloadMovie();
+	_root.loadMovie("flashswf/UI/验证失败界面.swf");
+}
+else
+{
+	_root.注释结束();
+	_root.gotoAndPlay("单机版开始");
+}]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
@@ -1452,14 +1355,6 @@ Stage.showMenu = false;]]></script>
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="31" duration="2" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[if (_root.加载片头动画 === true)
-{
-	//_root.attachMovie("新片头","新片头动画",_root.getNextHighestDepth(),{_x:400,_y:240});
-	_root.attachMovie("新片头1024768","新片头动画",32767);
-}
-_root.加载片头动画 = undefined;]]></script>
-                                   </Actionscript>
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="33" duration="19" keyMode="9728">
@@ -1564,7 +1459,12 @@ _root._bootstrap.sendReady();]]></script>
                               <DOMFrame index="81" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[stop();
-_root.新片头动画.片头动画小提示.gotoAndStop(2);
+// Phase 2b-ext: Flash 封面帧到达 → 通知 launcher "asset 加载 + AS2 init + 封面渲染已完成",
+// launcher 视 _revealWaitingFlash flag 决定是否触发 panel swap (BootstrapPanel → FlashHostPanel).
+// 旧 launcher 不识别该任务也无副作用 (fire-and-forget + 10s watchdog 兜底).
+if (_root._bootstrap != undefined && typeof _root._bootstrap.sendRevealReady == "function") {
+    _root._bootstrap.sendRevealReady();
+}
 ]]></script>
                                    </Actionscript>
                                    <elements/>
@@ -1616,10 +1516,16 @@ _root.暂停 = true;]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="119" duration="10" keyMode="9728">
+                              <DOMFrame index="119" duration="6" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[stop();
 _root.暂停 = true;]]></script>
+                                   </Actionscript>
+                                   <elements/>
+                              </DOMFrame>
+                              <DOMFrame index="125" duration="4" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[_root.notifyGameEntered();]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
@@ -1800,7 +1706,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="上层遮罩" color="#EBC19E" autoNamed="false" visible="false">
+                    <DOMLayer name="上层遮罩" color="#EBC19E" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="211" keyMode="9728">
                                    <elements>
@@ -1954,7 +1860,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                               <DOMFrame index="48" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="import/arts/素材库-物品技能图标" selected="true" centerPoint3DX="84.55" centerPoint3DY="708.85">
+                                        <DOMSymbolInstance libraryItemName="import/arts/素材库-物品技能图标" centerPoint3DX="84.55" centerPoint3DY="708.85">
                                              <matrix>
                                                   <Matrix ty="700"/>
                                              </matrix>
@@ -2437,748 +2343,13 @@ onClipEvent (mouseMove) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="Layer 179" color="#417BFC" parentLayerIndex="9" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="Layer 179" color="#417BFC" parentLayerIndex="9" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="5" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="5" duration="8" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 246" centerPoint3DX="702.5" centerPoint3DY="366.45">
-                                             <matrix>
-                                                  <Matrix a="0" b="1.3890380859375" c="-2.67559814453125" d="0" tx="501.5" ty="272.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <filters>
-                                                  <BlurFilter blurX="8" blurY="8" quality="3"/>
-                                             </filters>
-                                             <color>
-                                                  <Color alphaMultiplier="0.80078125"/>
-                                             </color>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 261" name="Gamelogo" centerPoint3DX="642.45" centerPoint3DY="238.95">
-                                             <matrix>
-                                                  <Matrix tx="496.8" ty="110.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMStaticText fontRenderingMode="device" width="197.6" height="24.3" isSelectable="false">
-                                             <matrix>
-                                                  <Matrix tx="409.15" ty="170.55"/>
-                                             </matrix>
-                                             <textRuns>
-                                                  <DOMTextRun>
-                                                       <characters>AN ANDY LAW GAME MADE IN 2010&#xD;</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="10" bitmapSize="200" face="_sans" fillColor="#999999"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                             </textRuns>
-                                             <filters>
-                                                  <GlowFilter color="#000000" strength="10"/>
-                                             </filters>
-                                        </DOMStaticText>
-                                        <DOMDynamicText fontRenderingMode="device" width="322.95" height="14.25" isSelectable="false">
-                                             <matrix>
-                                                  <Matrix tx="193.9" ty="-142"/>
-                                             </matrix>
-                                             <textRuns>
-                                                  <DOMTextRun>
-                                                       <characters>2023不联网单机版</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CC9900"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                             </textRuns>
-                                             <filters>
-                                                  <GlowFilter color="#000000" strength="10"/>
-                                             </filters>
-                                        </DOMDynamicText>
-                                        <DOMStaticText fontRenderingMode="device" width="461.85" height="221.05" isSelectable="false">
-                                             <matrix>
-                                                  <Matrix tx="273.45" ty="223.5"/>
-                                             </matrix>
-                                             <textRuns>
-                                                  <DOMTextRun>
-                                                       <characters>1 </characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>本游戏游戏过程中将存储数据在本地，请勿设置禁止储存数据。</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>&#xD;2 </characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>本游戏为无网单机版。无充值系统，无与网络相关的功能。如果要体验完整联机功能，请选择《闪客快打</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>7</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>佣兵帝国》网络版。</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>&#xD;</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>3 </characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>然而网络版已经停服，你现在玩到的是玩家重置的单机版</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>MOD</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>。</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>&#xD;4 </characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>请首先在</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>Steam</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>平台</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>购买正版游戏，按照指南覆盖</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>MOD</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>文件包。本</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>MOD</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>为免费开源项目，如果您不慎支付购买，请保留交易证据并联系我们。</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>&#xD;5 </characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>加入我们的</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>QQ</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>群</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters> </characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>562130873(</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>将满</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>)</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>，</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>149188029(</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>将满</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>)</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>，</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>307710279</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters> </characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>参与讨论，</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>&#xD;</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>关注</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>B</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>站账号</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters> </characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>黑月雾人</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters> </characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>与</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters> </characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>无名的低谷</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#EEFF33"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters> </characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>获取最新信息。</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>&#xD;&#xD;</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>本</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>MOD</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>版权归原游戏开发者</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>AndyLaw</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#00FF00"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>及社区共同所有。特此感谢</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>FFDec</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#0FFDEC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>软件作者在文件编译与版本适配方面给予的支持，以及</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>AndyLaw</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#00FF00"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters>提供改编授权。</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters></characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="5" face="MicrosoftYaHei" fillColor="#FFEECC"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                             </textRuns>
-                                        </DOMStaticText>
-                                        <DOMSymbolInstance libraryItemName="sprite/确认按钮" name="按钮" centerPoint3DX="487.05" centerPoint3DY="489.2">
-                                             <matrix>
-                                                  <Matrix tx="448.05" ty="476.7"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent (load) {
-	stop();
-	if (!_root._check)
-	{
-		_root.unloadMovie();
-		_root.loadMovie("flashswf/UI/验证失败界面.swf");
-	}
-}
-on (release) {
-	gotoAndStop(1);
-	_root.注释结束();
-	// Phase 1b: cf7_config 已弃用, savePath 由 launcher bootstrap_handshake 注入.
-	_root.gotoAndPlay("单机版开始");
-}
-on (press) {
-	this.gotoAndStop(3);
-}
-on (rollOver) {
-	this.gotoAndStop(2);
-}
-on (rollOut) {
-	this.gotoAndStop(1);
-}
-on (rollOver) {
-	_root.注释(150,_root.获得翻译("确认"));
-}
-on (rollOut) {
-	_root.注释结束();
-}]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMDynamicText fontRenderingMode="device" width="467" height="19.55" isSelectable="false" variableName="欢迎语">
-                                             <matrix>
-                                                  <Matrix tx="272.3" ty="194.1"/>
-                                             </matrix>
-                                             <textRuns>
-                                                  <DOMTextRun>
-                                                       <characters></characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCFF00"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                             </textRuns>
-                                        </DOMDynamicText>
-                                        <DOMStaticText fontRenderingMode="device" width="243.1" height="15.55" isSelectable="false">
-                                             <matrix>
-                                                  <Matrix tx="-250.1" ty="165"/>
-                                             </matrix>
-                                             <textRuns>
-                                                  <DOMTextRun>
-                                                       <characters>选择语言：</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                                  <DOMTextRun>
-                                                       <characters></characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFCC00"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                             </textRuns>
-                                             <filters>
-                                                  <GlowFilter color="#000000" strength="10"/>
-                                             </filters>
-                                        </DOMStaticText>
-                                        <DOMSymbolInstance libraryItemName="sprite/片头动画复选框" centerPoint3DX="641.35" centerPoint3DY="543">
-                                             <matrix>
-                                                  <Matrix tx="628.9" ty="530.55"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="存档位5" centerPoint3DX="875.1" centerPoint3DY="64.85" isVisible="false">
-                                             <matrix>
-                                                  <Matrix tx="777.45" ty="21.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="97.65" y="43.55"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/多存档按钮" centerPoint3DX="688.3" centerPoint3DY="489.3">
-                                             <matrix>
-                                                  <Matrix tx="649.3" ty="477.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="39" y="12"/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent (load) {
-    stop();
-}
-
-on (rollOver) {
-    this.gotoAndStop(2);
-    _root.注释(150, _root.获得翻译("其他存档"));
-}
-
-on (rollOut) {
-    this.gotoAndStop(1);
-    _root.注释结束();
-}
-
-on (press) {
-    this.gotoAndStop(3);
-
-    // 将 存档位0 到 存档位9 设置为不可见
-    for (var i = 0; i <= 9; i++) {
-        var slot = _root["存档位" + i];
-        if (slot) slot._visible = !slot._visible;
-    }
-	
-	_root.存档文本._visible = !_root.存档文本._visible;
-	_root.写入存档._visible = !_root.写入存档._visible;
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="存档位6" centerPoint3DX="875.1" centerPoint3DY="162.9" isVisible="false">
-                                             <matrix>
-                                                  <Matrix tx="777.45" ty="119.35"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="97.65" y="43.55"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="存档位7" centerPoint3DX="875.1" centerPoint3DY="262.35" isVisible="false">
-                                             <matrix>
-                                                  <Matrix tx="777.45" ty="218.8"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="97.65" y="43.55"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="存档位8" centerPoint3DX="875.1" centerPoint3DY="360.4" isVisible="false">
-                                             <matrix>
-                                                  <Matrix tx="777.45" ty="316.85"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="97.65" y="43.55"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="存档位9" centerPoint3DX="875.1" centerPoint3DY="462.05" isVisible="false">
-                                             <matrix>
-                                                  <Matrix tx="777.45" ty="418.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="97.65" y="43.55"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="存档位0" centerPoint3DX="113.7" centerPoint3DY="64.85" isVisible="false">
-                                             <matrix>
-                                                  <Matrix tx="16.05" ty="21.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="97.65" y="43.55"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="存档位1" centerPoint3DX="113.7" centerPoint3DY="162.9" isVisible="false">
-                                             <matrix>
-                                                  <Matrix tx="16.05" ty="119.35"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="97.65" y="43.55"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="存档位2" centerPoint3DX="113.7" centerPoint3DY="262.35" isVisible="false">
-                                             <matrix>
-                                                  <Matrix tx="16.05" ty="218.8"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="97.65" y="43.55"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="存档位3" centerPoint3DX="113.7" centerPoint3DY="360.4" isVisible="false">
-                                             <matrix>
-                                                  <Matrix tx="16.05" ty="316.85"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="97.65" y="43.55"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="存档位4" centerPoint3DX="113.7" centerPoint3DY="462.05" isVisible="false">
-                                             <matrix>
-                                                  <Matrix tx="16.05" ty="418.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="97.65" y="43.55"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="UI重构/存档显示块" name="工具用存档块" centerPoint3DX="-185.05" centerPoint3DY="279">
-                                             <matrix>
-                                                  <Matrix tx="-305" ty="231"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="119.95" y="48"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMInputText name="存档文本" fontRenderingMode="device" width="490.75" height="66.8" variableName="_root.exportedSaveString">
-                                             <matrix>
-                                                  <Matrix tx="251.8" ty="548.55"/>
-                                             </matrix>
-                                             <textRuns>
-                                                  <DOMTextRun>
-                                                       <characters>   选择存档→写入存档=导出到下方 | 粘贴数据→选择存档→确认=导入  ⚠导入覆盖原档</characters>
-                                                       <textAttrs>
-                                                            <DOMTextAttrs aliasText="false" indent="0.5" bitmapSize="240" face="MicrosoftYaHei" fillColor="#AAAAAA"/>
-                                                       </textAttrs>
-                                                  </DOMTextRun>
-                                             </textRuns>
-                                        </DOMInputText>
-                                        <DOMSymbolInstance libraryItemName="sprite/写入存档" name="写入存档" centerPoint3DX="317.35" centerPoint3DY="489">
-                                             <matrix>
-                                                  <Matrix tx="278.35" ty="477"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="39" y="12"/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent (load) {
-	stop();
-}
-
-on (rollOver) {
-	this.gotoAndStop(2);
-	_root.注释(150,_root.获得翻译("写入存档"));
-}
-
-on (rollOut) {
-	this.gotoAndStop(1);
-	_root.注释结束();
-}
-
-on (press) {
-	this.gotoAndStop(3);
-
-	trace("=== 开始导入操作 ===");
-	trace("当前savePath: " + _root.savePath);
-	trace("exportedSaveString长度: " + (_root.exportedSaveString ? _root.exportedSaveString.length : "null"));
-
-	if (!_root.exportedSaveString)
-	{
-		trace("没有可导入的存档数据！请先选择一个有数据的存档位");
-		return false;
-	}
-
-	var saveData = _root.工具用存档块.deserializeSaveData(_root.exportedSaveString);
-
-	if (saveData)
-	{
-		var mysave = SharedObject.getLocal(_root.savePath);
-
-		// 清除旧顶层 key（防止残留污染新导入）
-		delete mysave.data.tasks_to_do;
-		delete mysave.data.tasks_finished;
-		delete mysave.data.task_chains_progress;
-		delete mysave.data.task_history;
-		delete mysave.data.战宠;
-		delete mysave.data.宠物领养限制;
-		delete mysave.data.商城已购买物品;
-		delete mysave.data.商城购物车;
-
-		// 写入导入数据
-		mysave.data["test"] = saveData;
-
-		// 迁移 + 覆写顶层 key（确保旧代码也可读）
-		_root.存档系统.migrateAndSync(saveData, mysave.data);
-
-		// 获取当前时间并格式化为字符串（与数据组包函数保持一致）
-		var now:Date = new Date();
-		var 年 = now.getFullYear();
-		var 月 = now.getMonth() + 1;
-		var 日 = now.getDate();
-		var 时 = now.getHours();
-		var 分 = now.getMinutes();
-		var 秒 = now.getSeconds();
-
-		//  补零函数
-		this.pad = function(n)
-		{
-			trace(n)
-			return (n < 10) ? "0" + n : n;
-		}
-
-		var lastSaved:String = 年 + "-" + pad(月) + "-" + pad(日) + " " + pad(时) + ":" + pad(分) + ":" + pad(秒);
-
-		mysave.data["test"].lastSaved = lastSaved;
-		mysave.flush();
-		trace("存档导入成功");
-
-		// 强制刷新显示
-		for (var i = 0; i < 10; i++)
-		{
-			var slot = _root["存档位" + i];
-			if (slot && slot.currentSavePath == _root.savePath)
-			{
-				slot.savePath = "";// 强制重新加载
-				break;
-			}
-		}
-		return true;
-	}
-	else
-	{
-		trace("存档导入失败：数据格式错误");
-		return false;
-	}
-}]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                               <DOMFrame index="13" duration="68" keyMode="9728">
                                    <elements/>
@@ -3687,7 +2858,7 @@ on (rollOut) {
                                                   </DOMTextRun>
                                              </textRuns>
                                         </DOMDynamicText>
-                                        <DOMSymbolInstance libraryItemName="sprite/退出游戏按钮" selected="true" centerPoint3DX="514.3" centerPoint3DY="296.05">
+                                        <DOMSymbolInstance libraryItemName="sprite/退出游戏按钮" centerPoint3DX="514.3" centerPoint3DY="296.05">
                                              <matrix>
                                                   <Matrix tx="475.3" ty="283.55"/>
                                              </matrix>
@@ -5186,15 +4357,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9699 4546|10002 4546!10002 4546|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|11189 4908!11189 4908|11479 5089!11479 5089|11769 5270!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11452 5451!11452 5451|11149
- 5451!11149 5451|10845 5451!10845 5451|10542 5451!10542 5451|10239 5451!10239 5451|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9342 5270|9052 5089!9052 5089|8762 4908!8762 4908|8472 4727!8472 4727|8182 4546!8182 4546|8485 4546!8485
- 4546|8789 4546!8789 4546|9092 4546!9092 4546|9395 4546!9395 4546|9685 4727!9685 4727|9989 4727!9989 4727|9699 4546!9699 4546|9395 4546!9052 5089|9355 5089!9355 5089|9659 5089!9659 5089|9369 4908!9369 4908|9672 4908!9672 4908|9962 5089
-!9962 5089|10265 5089!10265 5089|10555 5270!10555 5270|10859 5270!10859 5270|11162 5270!11162 5270|11465 5270!11465 5270|11175 5089!11175 5089|11479 5089!11189 4908|10885 4908!10885 4908|10582 4908!10582 4908|10279 4908!10279 4908|9975
- 4908!9975 4908|9672 4908!9672 4908|9382 4727!9382 4727|9079 4727!9079 4727|9369 4908!9369 4908|9065 4908!9065 4908|8762 4908!9092 4546|9382 4727!9382 4727|9685 4727!9685 4727|9975 4908!9975 4908|10265 5089!10265 5089|10569 5089!10569
- 5089|10279 4908!9355 5089|9065 4908!9065 4908|8775 4727!8775 4727|8472 4727!8485 4546|8775 4727!8775 4727|9079 4727!9079 4727|8789 4546!9342 5270|9645 5270!9645 5270|9355 5089!11769 5270|11465 5270!11465 5270|11755 5451!10002 4546|10292
- 4727!10292 4727|10595 4727!10595 4727|10885 4908!10885 4908|11175 5089!11175 5089|10872 5089!10872 5089|11162 5270!10899 4727|10595 4727!10595 4727|10305 4546!9989 4727|10292 4727!9989 4727|10279 4908!10252 5270|9962 5089!9962 5089|9659
- 5089!9659 5089|9949 5270!9949 5270|10252 5270!10239 5451|9949 5270!9949 5270|9645 5270!9645 5270|9935 5451!10872 5089|10569 5089!10569 5089|10859 5270!10859 5270|11149 5451!10845 5451|10555 5270!10555 5270|10252 5270!10252 5270|10542
- 5451!10872 5089|10582 4908!10582 4908|10292 4727!11452 5451|11162 5270"/>
+!9395 4546|9092 4546!9092 4546|8789 4546!8789 4546|8485 4546!8485 4546|8182 4546!8182 4546|8472 4727!8472 4727|8762 4908!8762 4908|9052 5089!9052 5089|9342 5270!9342 5270|9633 5451!9633 5451|9935 5451!9935 5451|10239 5451!10239 5451|10542
+ 5451!10542 5451|10845 5451!10845 5451|11149 5451!11149 5451|11452 5451!11452 5451|11755 5451!11755 5451|12059 5451!12059 5451|11769 5270!11769 5270|11479 5089!11479 5089|11189 4908!11189 4908|10899 4727!10899 4727|10609 4546!10609 4546
+|10305 4546!10305 4546|10002 4546!10002 4546|9699 4546!9699 4546|9395 4546!9395 4546|9685 4727!9685 4727|9975 4908!9975 4908|9672 4908!9672 4908|9962 5089!9962 5089|9659 5089!9659 5089|9369 4908!9369 4908|9065 4908!9065 4908|8775 4727
+!8775 4727|9079 4727!9079 4727|9369 4908!9369 4908|9672 4908!9672 4908|9382 4727!9382 4727|9685 4727!9685 4727|9989 4727!9989 4727|10279 4908!10279 4908|10569 5089!10569 5089|10265 5089!10265 5089|9975 4908!9092 4546|9382 4727!9382 4727
+|9079 4727!9079 4727|8789 4546!8485 4546|8775 4727!8775 4727|8472 4727!9065 4908|9355 5089!9355 5089|9659 5089!9659 5089|9949 5270!9949 5270|9645 5270!9645 5270|9355 5089!9342 5270|9645 5270!9645 5270|9935 5451!9052 5089|9355 5089!9065
+ 4908|8762 4908!11149 5451|10859 5270!10859 5270|10569 5089!10569 5089|10872 5089!10872 5089|11162 5270!11162 5270|11465 5270!11465 5270|11755 5451!11769 5270|11465 5270!11465 5270|11175 5089!11175 5089|10872 5089!10872 5089|10582 4908
+!10582 4908|10279 4908!10899 4727|10595 4727!10595 4727|10885 4908!10885 4908|10582 4908!10582 4908|10292 4727!10292 4727|9989 4727!9989 4727|9699 4546!11189 4908|10885 4908!10885 4908|11175 5089!11175 5089|11479 5089!10002 4546|10292
+ 4727!10279 4908|9975 4908!10239 5451|9949 5270!9949 5270|10252 5270!10252 5270|9962 5089!9962 5089|10265 5089!10845 5451|10555 5270!10555 5270|10859 5270!10859 5270|11162 5270!11162 5270|11452 5451!10252 5270|10542 5451!10265 5089|10555
+ 5270!10555 5270|10252 5270!10292 4727|10595 4727!10595 4727|10305 4546"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -5607,15 +4778,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9372 4714|9082 4533!9082 4533|8779 4533!8779 4533|9069 4714!9069 4714|9372 4714!9372 4714|9662 4895!9662 4895|9965 4895!9965 4895|9675 4714!9675 4714|9979 4714!9979 4714|9689 4533!9689 4533|9385 4533!9385 4533|9675 4714!9675 4714|9372
- 4714!9069 4714|9359 4895!9359 4895|9662 4895!9385 4533|9082 4533!9069 4714|8765 4714!8765 4714|9055 4895!9055 4895|9359 4895!9359 4895|9649 5076!9649 5076|9345 5076!9345 5076|9635 5257!9635 5257|9939 5257!9939 5257|9649 5076!9649 5076
-|9952 5076!9952 5076|10242 5257!10242 5257|10545 5257!10545 5257|10255 5076!10255 5076|9952 5076!9952 5076|9662 4895!8779 4533|8475 4533!8475 4533|8765 4714!8475 4533|8172 4533!8172 4533|8462 4714!8462 4714|8752 4895!8752 4895|9055 4895
-!9055 4895|9345 5076!8765 4714|8462 4714!9332 5257|9623 5438!9623 5438|9925 5438!9925 5438|9635 5257!9635 5257|9332 5257!9345 5076|9042 5076!9042 5076|9332 5257!8752 4895|9042 5076!11455 5257|11745 5438!11745 5438|12049 5438!12049 5438
-|11759 5257!11759 5257|11455 5257!11759 5257|11469 5076!11469 5076|11165 5076!11165 5076|11455 5257!11165 5076|10862 5076!10862 5076|11152 5257!11152 5257|11442 5438!11442 5438|11745 5438!10572 4895|10282 4714!10282 4714|9979 4714!9979
- 4714|10269 4895!10269 4895|10572 4895!10572 4895|10875 4895!10875 4895|10585 4714!10585 4714|10889 4714!10889 4714|10599 4533!10599 4533|10295 4533!10295 4533|10585 4714!11469 5076|11179 4895!11179 4895|10875 4895!10875 4895|11165 5076
-!11179 4895|10889 4714!10282 4714|9992 4533!9992 4533|9689 4533!10545 5257|10849 5257!10849 5257|10559 5076!10559 5076|10269 4895!10269 4895|9965 4895!9965 4895|10255 5076!10295 4533|9992 4533!9939 5257|10229 5438!10229 5438|10532 5438
-!10532 5438|10242 5257!10242 5257|9939 5257!9925 5438|10229 5438!10532 5438|10835 5438!10835 5438|10545 5257!10572 4895|10862 5076!10862 5076|10559 5076!10559 5076|10255 5076!10835 5438|11139 5438!11139 5438|10849 5257!11152 5257|10849
- 5257!10282 4714|10585 4714!11152 5257|11455 5257!11139 5438|11442 5438"/>
+!9662 4895|9965 4895!9965 4895|9675 4714!9675 4714|9372 4714!9372 4714|9662 4895!9385 4533|9675 4714!9675 4714|9979 4714!9979 4714|9689 4533!9689 4533|9385 4533!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9069 4714|8765
+ 4714!8765 4714|9055 4895!9055 4895|9359 4895!9372 4714|9082 4533!9082 4533|8779 4533!8779 4533|9069 4714!9385 4533|9082 4533!8765 4714|8462 4714!8462 4714|8752 4895!8752 4895|9055 4895!8765 4714|8475 4533!8475 4533|8172 4533!8172 4533
+|8462 4714!8779 4533|8475 4533!9332 5257|9635 5257!9635 5257|9345 5076!9345 5076|9042 5076!9042 5076|9332 5257!9332 5257|9623 5438!9623 5438|9925 5438!9925 5438|9635 5257!9635 5257|9939 5257!9939 5257|9649 5076!9649 5076|9345 5076!8752
+ 4895|9042 5076!9055 4895|9345 5076!9359 4895|9649 5076!9649 5076|9952 5076!9952 5076|9662 4895!11745 5438|11455 5257!11455 5257|11152 5257!11152 5257|11442 5438!11442 5438|11745 5438!11469 5076|11165 5076!11165 5076|11455 5257!11455
+ 5257|11759 5257!11759 5257|11469 5076!11745 5438|12049 5438!12049 5438|11759 5257!10889 4714|10585 4714!10585 4714|10875 4895!10875 4895|11179 4895!11179 4895|10889 4714!10889 4714|10599 4533!10599 4533|10295 4533!10295 4533|10585 4714
+!10585 4714|10282 4714!10282 4714|10572 4895!10572 4895|10875 4895!10295 4533|9992 4533!9992 4533|10282 4714!9965 4895|10255 5076!10255 5076|10559 5076!10559 5076|10269 4895!10269 4895|9965 4895!10282 4714|9979 4714!9979 4714|10269 4895
+!10269 4895|10572 4895!9925 5438|10229 5438!10229 5438|9939 5257!10229 5438|10532 5438!10532 5438|10242 5257!10242 5257|9939 5257!9952 5076|10242 5257!10242 5257|10545 5257!10545 5257|10255 5076!10255 5076|9952 5076!10545 5257|10849 5257
+!10849 5257|10559 5076!10532 5438|10835 5438!10835 5438|10545 5257!10849 5257|11152 5257!11152 5257|10862 5076!10862 5076|10559 5076!11165 5076|10862 5076!10835 5438|11139 5438!11139 5438|10849 5257!10572 4895|10862 5076!10875 4895|11165
+ 5076!11139 5438|11442 5438!11469 5076|11179 4895!9992 4533|9689 4533"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -7607,6 +6778,11 @@ onClipEvent (enterFrame) {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1352800" publishTime="1776570601"/>
+          <PublishItem publishSize="1352980" publishTime="1776570405"/>
+          <PublishItem publishSize="558542" publishTime="1776570242"/>
+          <PublishItem publishSize="558375" publishTime="1776569806"/>
+          <PublishItem publishSize="578847" publishTime="1776569113"/>
           <PublishItem publishSize="579659" publishTime="1775384558"/>
           <PublishItem publishSize="582767" publishTime="1775365444"/>
           <PublishItem publishSize="583342" publishTime="1775361397"/>
@@ -7622,10 +6798,5 @@ onClipEvent (enterFrame) {
           <PublishItem publishSize="616972" publishTime="1775100519"/>
           <PublishItem publishSize="621399" publishTime="1772271072"/>
           <PublishItem publishSize="621405" publishTime="1772270555"/>
-          <PublishItem publishSize="621230" publishTime="1772270140"/>
-          <PublishItem publishSize="620853" publishTime="1770396573"/>
-          <PublishItem publishSize="620823" publishTime="1770396479"/>
-          <PublishItem publishSize="620823" publishTime="1770395043"/>
-          <PublishItem publishSize="620823" publishTime="1770394978"/>
      </publishHistory>
 </DOMDocument>

@@ -108,6 +108,9 @@ class Program
         // 读配置（bus-only 跳过文件验证）
         AppConfig config = new AppConfig(projectRoot);
 
+        // Phase 2b: 用户级偏好 (lastPlayedSlot / introEnabled), 落盘到 launcher_user_prefs.json
+        CF7Launcher.Config.UserPrefs userPrefs = new CF7Launcher.Config.UserPrefs(projectRoot);
+
         // Steam 正版所有权校验（不通过则不写信任文件，Flash 无法联网）
         if (!SteamOwnershipCheck.Check(projectRoot))
         {
@@ -471,7 +474,7 @@ class Program
         {
             form.BootstrapPanel.OnJsMessage += delegate(string json)
             {
-                CF7Launcher.Guardian.BootstrapMessageHandler.Handle(json, form.BootstrapPanel, archiveTask, launchFlow);
+                CF7Launcher.Guardian.BootstrapMessageHandler.Handle(json, form.BootstrapPanel, archiveTask, launchFlow, userPrefs);
             };
         }
 

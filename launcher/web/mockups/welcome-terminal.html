@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>CF7:ME — Welcome (Terminal mock)</title>
+<style>
+:root{
+  --cy: #00e5ff;
+  --cy-dim: #0088a8;
+  --bg0: #000;
+  --bg1: #0a0c0f;
+  --fg: #d8e4ea;
+  --fg-mute: #6a7a82;
+  --danger: #ff2e4d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:var(--bg0);color:var(--fg);font-family:Consolas,"Courier New",monospace;overflow:hidden}
+
+/* ── background with blur + darken ── */
+.bg-layer{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;filter:blur(8px) brightness(.35) saturate(.6);transform:scale(1.05)}
+.bg-dark{position:fixed;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,20,28,.5) 0%,rgba(0,0,0,.85) 100%)}
+.bg-scan{position:fixed;inset:0;z-index:2;pointer-events:none;background-image:repeating-linear-gradient(0deg,rgba(0,229,255,.03) 0px,rgba(0,229,255,.03) 1px,transparent 1px,transparent 3px);mix-blend-mode:screen;animation:scan 8s linear infinite}
+@keyframes scan{from{background-position:0 0}to{background-position:0 40px}}
+
+/* ── status bar top ── */
+.statusbar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;gap:28px;padding:10px 20px;font-size:11px;color:var(--cy-dim);border-bottom:1px solid rgba(0,229,255,.15);background:linear-gradient(180deg,rgba(0,10,15,.8),transparent)}
+.statusbar .brand{color:var(--cy);letter-spacing:3px}
+.statusbar .mid{flex:1;color:var(--fg-mute);letter-spacing:1px}
+.statusbar button{background:transparent;border:1px solid rgba(0,229,255,.3);color:var(--cy);padding:4px 12px;font-family:inherit;font-size:11px;cursor:pointer;letter-spacing:2px}
+.statusbar button:hover{background:rgba(0,229,255,.1);border-color:var(--cy)}
+.blink{animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ── main panel ── */
+.stage{position:relative;z-index:5;height:100%;display:flex;align-items:center;justify-content:center;padding:40px}
+.panel{width:min(720px,90%);background:rgba(4,10,14,.78);border:1px solid var(--cy);box-shadow:0 0 0 1px rgba(0,229,255,.15),0 0 40px rgba(0,229,255,.12) inset,0 0 80px rgba(0,229,255,.2);padding:36px 40px;position:relative}
+.panel::before{content:"";position:absolute;top:-1px;left:-1px;width:24px;height:24px;border-top:2px solid var(--cy);border-left:2px solid var(--cy)}
+.panel::after{content:"";position:absolute;bottom:-1px;right:-1px;width:24px;height:24px;border-bottom:2px solid var(--cy);border-right:2px solid var(--cy)}
+
+.title-wrap{display:flex;justify-content:center;margin-bottom:18px}
+.title-logo{max-width:240px;height:auto;filter:drop-shadow(0 0 8px rgba(0,229,255,.35))}
+
+.title-en{text-align:center;color:var(--cy);font-size:12px;letter-spacing:6px;margin-bottom:4px}
+.title-sub{text-align:center;color:var(--fg-mute);font-size:10px;letter-spacing:3px;margin-bottom:22px}
+
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--cy-dim),transparent);margin:14px 0}
+
+.info-row{display:flex;gap:12px;align-items:center;padding:8px 0;font-size:13px}
+.info-row .k{color:var(--fg-mute);min-width:70px;letter-spacing:2px}
+.info-row .v{color:var(--fg);flex:1}
+.info-row .v .mark{color:var(--cy)}
+.info-row a{color:var(--cy);text-decoration:none;border-bottom:1px dashed var(--cy-dim);cursor:pointer}
+.info-row a:hover{color:#fff;border-color:var(--cy)}
+
+.blurb{color:var(--fg-mute);font-size:12px;line-height:1.8;margin:18px 0;padding:14px 18px;border-left:2px solid var(--cy-dim);background:rgba(0,229,255,.03)}
+
+.controls{display:flex;align-items:center;gap:18px;margin-top:24px}
+.chk{display:flex;align-items:center;gap:8px;color:var(--fg-mute);font-size:12px;cursor:pointer;user-select:none}
+.chk input{appearance:none;width:14px;height:14px;border:1px solid var(--cy-dim);background:transparent;cursor:pointer;position:relative}
+.chk input:checked{background:var(--cy);box-shadow:0 0 8px var(--cy)}
+.chk input:checked::after{content:"";position:absolute;inset:2px;background:var(--bg0)}
+.chk:hover{color:var(--fg)}
+
+.btn-row{flex:1;display:flex;justify-content:flex-end;gap:12px}
+.btn{background:transparent;border:1px solid var(--cy);color:var(--cy);padding:10px 24px;font-family:inherit;font-size:13px;letter-spacing:3px;cursor:pointer;position:relative;transition:all .15s}
+.btn:hover{background:var(--cy);color:var(--bg0);box-shadow:0 0 16px var(--cy)}
+.btn-ghost{border-color:var(--fg-mute);color:var(--fg-mute)}
+.btn-ghost:hover{background:var(--fg-mute);color:var(--bg0);box-shadow:none}
+
+.footer{position:fixed;bottom:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;padding:10px 20px;font-size:10px;color:var(--fg-mute);letter-spacing:2px;border-top:1px solid rgba(0,229,255,.1)}
+.footer .steam-mark{color:var(--cy)}
+
+/* ── modal (其他) ── */
+.modal-bg{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-bg.on{display:flex}
+.modal{width:min(640px,90%);max-height:80vh;overflow-y:auto;background:#050a0e;border:1px solid var(--cy);padding:30px 36px;position:relative}
+.modal h3{color:var(--cy);font-size:14px;letter-spacing:3px;margin-bottom:14px}
+.modal p{color:var(--fg);font-size:13px;line-height:1.9;margin-bottom:12px}
+.modal .qq{font-family:inherit;color:var(--cy)}
+.modal .close{position:absolute;top:12px;right:16px;background:transparent;border:none;color:var(--cy);font-size:20px;cursor:pointer;line-height:1}
+.modal::-webkit-scrollbar{width:6px}
+.modal::-webkit-scrollbar-thumb{background:var(--cy-dim)}
+
+/* ── intro video overlay ── */
+.intro-ov{position:fixed;inset:0;z-index:100;background:#000;display:none;align-items:center;justify-content:center}
+.intro-ov.on{display:flex}
+.intro-ov video{max-width:100%;max-height:100%}
+.intro-skip{position:fixed;top:20px;right:20px;z-index:101;color:var(--cy);background:rgba(0,0,0,.6);border:1px solid var(--cy);padding:8px 16px;font-family:inherit;font-size:12px;letter-spacing:2px;cursor:pointer;display:none}
+.intro-ov.on + .intro-skip{display:block}
+</style>
+</head>
+<body>
+
+<div class="bg-layer" id="bg"></div>
+<div class="bg-dark"></div>
+<div class="bg-scan"></div>
+
+<div class="statusbar">
+  <span class="brand">CF7:ME</span>
+  <span class="mid">// STATUS: <span style="color:var(--cy)">READY</span> <span class="blink">_</span> &nbsp; UPTIME: 00:00:03 &nbsp; WEBVIEW2/CHROMIUM</span>
+  <button onclick="toggleFs()">全屏</button>
+  <button>日志</button>
+  <button onclick="openModal()">其他 ▾</button>
+</div>
+
+<div class="stage">
+  <div class="panel">
+    <div class="title-wrap"><img src="../assets/logos/cf7me-title.png" class="title-logo" alt="闪客快打7"></div>
+    <div class="title-en">CRAZY FLASHER 7 — MERCENARY EMPIRE</div>
+    <div class="title-sub">AN ANDY LAW GAME · 2023 STANDALONE MOD</div>
+
+    <div class="divider"></div>
+
+    <div class="info-row">
+      <span class="k">VERSION</span>
+      <span class="v"><span class="mark">2.71</span> · BUILD 2025-10-25</span>
+    </div>
+    <div class="info-row">
+      <span class="k">SAVE SLOT</span>
+      <span class="v">[ <span class="mark" id="slot-name">玩家A</span> ] · LAST PLAYED 2026-04-19 08:47 &nbsp; <a id="switch-slot">切换存档 →</a></span>
+    </div>
+
+    <div class="blurb">
+      本游戏运行时将存储数据在本地，请勿设置禁止储存数据。本 MOD 为免费开源项目，请先在 Steam 平台购买正版游戏后按指南覆盖 MOD 文件包。<br>
+      详细说明、免责声明与交流群列表请点击右上角「其他」。
+    </div>
+
+    <div class="controls">
+      <label class="chk"><input type="checkbox" id="chk-intro"> <span>加载片头动画</span></label>
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="alert('placeholder: 切换存档')">切换存档</button>
+        <button class="btn" onclick="confirmStart()">确认 ▸</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>AVAILABLE ON <span class="steam-mark">STEAM</span> · (steam logo placeholder)</span>
+  <span>ANDYLAW.GAMES · CF7:FlashNight Launcher</span>
+</div>
+
+<!-- "其他" modal -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <button class="close" onclick="closeModal()">×</button>
+    <h3>ABOUT · 说明</h3>
+    <p>1. 本游戏游戏过程中将存储数据在本地，请勿设置禁止储存数据。</p>
+    <p>2. 本游戏为无网单机版。无充值系统，无与网络相关的功能。如果要体验完整联机功能，请选择《闪客快打7佣兵帝国》网络版。</p>
+    <p>3. 然而网络版已经停服，你现在玩到的是玩家重置的单机版MOD。</p>
+    <p>4. 请首先在Steam平台购买正版游戏，按照指南覆盖MOD文件包。本MOD为免费开源项目，如果您不慎支付购买，请保留交易证据并联系我们。</p>
+    <p>5. 加入我们的QQ群：<span class="qq">562130873</span>（将满）、<span class="qq">149188029</span>（将满）、<span class="qq">307710279</span> 参与讨论，关注 B 站账号 <span class="qq">黑月雾人</span> 与 <span class="qq">无名氏的低谷</span> 获取最新信息。</p>
+    <p style="color:var(--fg-mute);margin-top:20px">本MOD版权归原游戏开发者 AndyLaw 及社区共同所有。特此感谢 FFDec 软件作者在文件编译与版本适配方面给予的支持，以及 AndyLaw 提供改编授权。</p>
+  </div>
+</div>
+
+<!-- intro overlay -->
+<div class="intro-ov" id="intro-ov">
+  <video id="intro-video" src="../assets/intro.mp4"></video>
+</div>
+<button class="intro-skip" id="intro-skip" onclick="skipIntro()">跳过 ESC</button>
+
+<script>
+// random bg
+fetch('../assets/bg/manifest.json').then(r=>r.json()).then(m=>{
+  const pick=m.backgrounds[Math.floor(Math.random()*m.backgrounds.length)];
+  document.getElementById('bg').style.backgroundImage=`url(../assets/bg/${pick})`;
+}).catch(()=>{document.getElementById('bg').style.backgroundColor='#0a0c0f'});
+
+function openModal(){document.getElementById('modal').classList.add('on')}
+function closeModal(){document.getElementById('modal').classList.remove('on')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+
+function confirmStart(){
+  if(document.getElementById('chk-intro').checked){
+    const ov=document.getElementById('intro-ov');
+    const vid=document.getElementById('intro-video');
+    ov.classList.add('on');
+    document.getElementById('intro-skip').style.display='block';
+    vid.currentTime=0;
+    vid.play();
+    vid.onended=skipIntro;
+  }else{
+    alert('placeholder: 进入游戏 (已跳过片头)');
+  }
+}
+function skipIntro(){
+  const ov=document.getElementById('intro-ov');
+  const vid=document.getElementById('intro-video');
+  vid.pause();
+  ov.classList.remove('on');
+  document.getElementById('intro-skip').style.display='none';
+  alert('placeholder: 片头结束 / 用户跳过 → 进入游戏');
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(document.getElementById('intro-ov').classList.contains('on')) skipIntro();
+    else if(document.getElementById('modal').classList.contains('on')) closeModal();
+  }
+});
+function toggleFs(){
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+</script>
+</body>
+</html>

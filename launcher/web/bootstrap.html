@@ -4,522 +4,172 @@
 <meta charset="utf-8">
 <title>CF7:ME</title>
 <link rel="stylesheet" href="css/bootstrap.css">
-<style>
-  /* Phase D Step D12: 点击 play 后本地即时反馈 + 防重复点击 */
-  body.launch-in-flight .btn-start,
-  body.launch-in-flight .btn-newchar,
-  body.launch-in-flight #btn-new {
-    opacity: 0.4;
-    pointer-events: none;
-    cursor: not-allowed;
-  }
-</style>
+<link rel="stylesheet" href="css/welcome.css">
 </head>
 <body>
-<div class="wrap">
-  <h1>闪客快打 7 - 佣兵帝国</h1>
-  <div class="subtitle">请选择存档</div>
 
-  <div class="toolbar">
-    <button id="btn-refresh">刷新</button>
-    <button id="btn-new">新建角色...</button>
-    <button id="btn-import">导入存档</button>
-    <button id="btn-open-dir">打开存档目录</button>
-    <button id="btn-logs">日志</button>
-    <button id="btn-retry" style="display:none">重试</button>
-    <button id="btn-cancel-launch" style="display:none">取消启动</button>
-    <span id="state-badge" class="state-badge">Idle</span>
-  </div>
+<!-- 背景层栈 -->
+<div class="bg-photo" id="bg-photo"></div>
+<div class="bg-tint"></div>
+<div class="bg-rune"></div>
+<div class="bg-scan"></div>
+<div class="bg-grain"></div>
+<div class="bg-crack"></div>
 
-  <div id="cards" class="cards"></div>
-
-  <div id="log"></div>
+<!-- 公共 topbar -->
+<div class="topbar">
+  <span class="brand-seal">CF7:ME</span>
+  <span class="brand-sub">&theta;-FLOOD / AUDIT-DAY +13Y / STANDALONE 2023</span>
+  <span class="spacer"></span>
+  <span id="state-badge" class="state-badge">Idle</span>
+  <button id="btn-cancel-launch" class="danger" style="display:none">取消启动</button>
+  <button id="btn-retry" style="display:none">重试</button>
+  <button id="btn-fullscreen">全屏</button>
+  <button id="btn-logs">日志</button>
+  <button id="btn-about">其他</button>
 </div>
 
-<!-- Phase 2a: modal host (手写 modal, 不引 Panels.js/Bridge.js) -->
+<!-- 欢迎视图 -->
+<div id="view-welcome" class="view">
+  <div class="stage-welcome">
+
+    <!-- 左栏：传输 / 地理 / 构建 -->
+    <div class="side-l">
+      <div class="block">
+        <div class="lbl">TRANSMISSION</div>
+        <div class="val">
+          <span class="pulse-dot"></span> DLS SYNC <span class="m">0.73</span><br>
+          <span class="n">&#9678;</span> &theta;-FLOOD HUM<br>
+          <span class="n">&#9678;</span> 黑铁网络接入<br>
+          <span class="n">&#9678;</span> 诺亚终端握手
+        </div>
+      </div>
+      <div class="block">
+        <div class="lbl">REGION</div>
+        <div class="val">堕落城 &middot; 外围<br>COORD <span class="m">31&deg;N 121&deg;E</span></div>
+      </div>
+      <div class="block">
+        <div class="lbl">BUILD</div>
+        <div class="val" style="font-size:10px">2025-10-25<br>1a8f&middot;c3e0&middot;7b12</div>
+      </div>
+    </div>
+
+    <!-- 中央卡片 -->
+    <div class="welcome-card">
+      <div class="title-logo-wrap"><img src="assets/logos/cf7me-title.png" alt="闪客快打 7"></div>
+      <div class="eyebrow">CRAZY FLASHER &#8566; &middot; MERCENARY EMPIRE</div>
+      <div class="welcome-sub">佣 兵 帝 国 &middot; 2023 STANDALONE MOD</div>
+
+      <div class="hr-rune" id="rune-divider"></div>
+
+      <div class="slot-plate">
+        <div class="icon">&#9672;</div>
+        <div class="meta">
+          <div class="name">存档 &middot; <b id="welcome-slot-name">&mdash;</b></div>
+          <div class="time" id="welcome-slot-time">&mdash;</div>
+        </div>
+        <button class="switch" id="btn-switch-slot">切换</button>
+      </div>
+
+      <div class="briefing">
+        <span class="mark">&sect;</span> 本游戏运行时将存储数据在本地，请勿禁用本地存储。<br>
+        <span class="mark">&sect;</span> 单机 MOD &middot; 无充值 &middot; 无联网 &middot; 免费开源。<br>
+        <span class="mark">&sect;</span> 版权归 <span class="mark">AndyLaw</span> 及社区共同所有。完整免责声明 / 交流群列表 请开 <span class="hint" id="briefing-about">「其他」</span>。
+      </div>
+
+      <div class="welcome-controls">
+        <label class="chk-intro"><input type="checkbox" id="chk-intro"> <span>加载片头动画</span></label>
+        <button class="btn-go" id="btn-confirm-start">确 认</button>
+      </div>
+    </div>
+
+    <!-- 右栏：版本 + 阵营列表 -->
+    <div class="side-r">
+      <div class="lbl">VERSION</div>
+      <div class="ver">2.71</div>
+      <div class="ver-tail">&middot; STABLE</div>
+
+      <div class="row"><span class="k">CHANNEL</span><span class="v g">STABLE</span></div>
+      <div class="row"><span class="k">STEAM</span><span class="v g">&check; AVAILABLE</span></div>
+      <div class="row"><span class="k">ENGINE</span><span class="v">WEBVIEW2</span></div>
+      <div class="row"><span class="k">RUNTIME</span><span class="v">AVM1/SA</span></div>
+
+      <div class="faction">
+        <div class="lbl">FACTIONS</div>
+        <div id="faction-list"></div>
+        <div id="active-brand" style="margin-top:10px;font-size:9px;letter-spacing:3px;font-family:Consolas,monospace;opacity:.75"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 槽位选择视图 -->
+<div id="view-slots" class="view" hidden>
+  <div class="wrap">
+    <div class="slots-header">
+      <button class="btn-back" id="btn-back-welcome">&larr; 返回</button>
+      <h1>选择存档</h1>
+    </div>
+    <div class="toolbar">
+      <button id="btn-refresh">刷新</button>
+      <button id="btn-new">新建角色...</button>
+      <button id="btn-import">导入存档</button>
+      <button id="btn-open-dir">打开存档目录</button>
+    </div>
+    <div id="cards" class="cards"></div>
+  </div>
+</div>
+
+<!-- 底栏 -->
+<div class="bottom">
+  <span class="left">
+    <img src="assets/logos/steam.svg" class="steam-ico" alt="">
+    AVAILABLE ON <span class="steam">STEAM</span>
+  </span>
+  <span>ANDYLAW.GAMES &middot; CF7:FLASHNIGHT LAUNCHER &middot; &theta;-FLOOD SURVIVOR BUILD</span>
+</div>
+
+<!-- 日志区 (默认隐藏, 点击日志按钮弹 modal 查看) -->
+<div id="log"></div>
+
+<!-- Modal host -->
 <div id="modal-host" style="display:none">
   <div class="modal-backdrop" id="modal-backdrop"></div>
   <div class="modal-content" id="modal-content"></div>
 </div>
 
+<!-- 片头视频 + 加载 overlay. 视频阶段: .on 显示 video + 跳过按钮; 加载阶段: .on.loading 隐藏 video,
+     显示 spinner + "启动中..." + "ESC 取消"; Ready 状态 Guardian 层级 panel swap 时整个 overlay 自然随 BootstrapPanel 隐藏 -->
+<div class="intro-ov" id="intro-ov">
+  <video id="intro-video" src="assets/intro.mp4" playsinline preload="auto"></video>
+  <div class="loading-indicator" id="loading-indicator">
+    <div class="spinner"></div>
+    <div class="loading-text">启动中</div>
+    <div class="loading-hint">ESC 取消</div>
+  </div>
+</div>
+<button class="intro-skip" id="intro-skip">跳 过 &middot; ESC</button>
+
+<!-- 主控 IIFE -->
+<script src="bootstrap-main.js"></script>
+
+<!-- 初始化阵营渲染（依赖 factions.js 已加载 + DOM 已准备） -->
+<script src="modules/factions.js"></script>
 <script>
-(function() {
-  var logEl = document.getElementById('log');
-  var cardsEl = document.getElementById('cards');
-  var stateBadge = document.getElementById('state-badge');
-  var retryBtn = document.getElementById('btn-retry');
-  var cancelLaunchBtn = document.getElementById('btn-cancel-launch');
-
-  // Phase D Step D12: launch-in-flight 本地状态. 点击 play → 立即禁用所有 play 按钮;
-  // state=Idle 时恢复 (用户取消 / retry 链路推回 Idle); state=Error 保持禁用, 用户走 retry 按钮.
-  var _launchInFlight = false;
-  function setLaunchInFlight(flag) {
-    _launchInFlight = flag;
-    if (flag) document.body.classList.add('launch-in-flight');
-    else document.body.classList.remove('launch-in-flight');
-  }
-
-  // 原版 10 个预设槽位 (对齐 DOMDocument.xml 原 cf7_config 槽位命名)
-  var PRESET_SLOTS = [
-    'crazyflasher7_saves',  'crazyflasher7_saves1', 'crazyflasher7_saves2',
-    'crazyflasher7_saves3', 'crazyflasher7_saves4', 'crazyflasher7_saves5',
-    'crazyflasher7_saves6', 'crazyflasher7_saves7', 'crazyflasher7_saves8',
-    'crazyflasher7_saves9'
-  ];
-  // ASCII-only 对齐 ArchiveTask.SanitizeSlotName 保留字符集
-  var SLOT_NAME_RE = /^[a-zA-Z0-9_-]{1,32}$/;
-
-  var lastSlotsFromLauncher = [];
-  var _lastLaunchState = 'Idle';
-
-  // Phase 2a: onMessage 注册表
-  var _handlers = {};
-
-  function logLine(cls, text) {
-    var d = new Date(), ts = d.toTimeString().slice(0, 8);
-    var span = document.createElement('span');
-    span.className = cls;
-    span.textContent = '[' + ts + '] ' + text + '\n';
-    logEl.appendChild(span);
-    logEl.scrollTop = logEl.scrollHeight;
-  }
-
-  function send(obj) {
-    obj.type = 'bootstrap';
-    var json = JSON.stringify(obj);
-    logLine('tag-out', '\u2192 ' + json);
-    try { window.chrome.webview.postMessage(json); }
-    catch (e) { logLine('tag-err', 'postMessage failed: ' + e.message); }
-  }
-
-  function escapeHtml(s) {
-    if (s == null) return '';
-    return String(s).replace(/[&<>"']/g, function(c) {
-      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-    });
-  }
-
-  function fmtBytes(n) {
-    if (!n) return '';
-    if (n < 1024) return n + 'B';
-    return (n / 1024).toFixed(1) + 'KB';
-  }
-
-  function presetDisplayName(slot) {
-    var m = /^crazyflasher7_saves(\d*)$/.exec(slot);
-    if (!m) return slot;
-    var idx = m[1] === '' ? 0 : parseInt(m[1], 10);
-    return '\u5b58\u6863 ' + (idx + 1);
-  }
-
-  function mergeSlots(fromLauncher) {
-    var byName = {};
-    for (var i = 0; i < fromLauncher.length; i++) {
-      byName[fromLauncher[i].slot] = fromLauncher[i];
+  (function () {
+    if (window.Factions) {
+      window.__factionIds = { dividerId: 'rune-divider', listId: 'faction-list', activeBrandId: 'active-brand' };
+      window.Factions.init(window.__factionIds);
     }
-    var merged = [];
-    for (var j = 0; j < PRESET_SLOTS.length; j++) {
-      var slot = PRESET_SLOTS[j];
-      var data = byName[slot];
-      if (data) { merged.push(data); delete byName[slot]; }
-      else merged.push(emptyPlaceholder(slot, true));
-    }
-    var rest = [];
-    for (var key in byName) if (byName.hasOwnProperty(key)) rest.push(byName[key]);
-    rest.sort(function(a, b) { return a.slot < b.slot ? -1 : a.slot > b.slot ? 1 : 0; });
-    return merged.concat(rest);
-  }
-
-  function emptyPlaceholder(slot, isPreset) {
-    return {
-      slot: slot, corrupt: false, tombstoned: false, inconsistent: false,
-      mainProgress: null, size: 0, lastModified: null, __empty: true, __preset: !!isPreset
-    };
-  }
-
-  function renderCards(slots) {
-    cardsEl.innerHTML = '';
-    var merged = mergeSlots(slots || []);
-    for (var i = 0; i < merged.length; i++) {
-      cardsEl.appendChild(renderCard(merged[i]));
-    }
-  }
-
-  function renderCard(s) {
-    var classes = ['card'];
-    if (s.__empty)      classes.push('empty-slot');
-    if (s.corrupt)      classes.push('corrupt');
-    if (s.tombstoned)   classes.push('tombstoned');
-    if (s.inconsistent) classes.push('inconsistent');
-    var card = document.createElement('div');
-    card.className = classes.join(' ');
-
-    var flags = '';
-    if (s.__empty && s.__preset) flags += '<span class="flag empty">\u7a7a\u69fd\u4f4d</span>';
-    if (s.corrupt)      flags += '<span class="flag corrupt">\u635f\u574f</span>';
-    if (s.tombstoned && !s.inconsistent) flags += '<span class="flag tombstoned">\u5df2\u5220\u9664</span>';
-    if (s.inconsistent) flags += '<span class="flag inconsistent">\u4e0d\u4e00\u81f4</span>';
-
-    var meta = '';
-    if (!s.__empty) {
-      meta = fmtBytes(s.size);
-      if (s.lastModified) meta += ' \u00b7 ' + s.lastModified.slice(0, 16).replace('T', ' ');
-    }
-
-    var displayName = s.__preset ? presetDisplayName(s.slot) : s.slot;
-    var progressText;
-    if (s.__empty) progressText = '\u2014';
-    else           progressText = s.mainProgress || '\u2014';
-
-    // Phase 2a: 按 slot 状态决定按钮集 (§4.9)
-    var actions = '';
-    if (s.__empty) {
-      actions = '<button class="btn-newchar">\u65b0\u5efa\u89d2\u8272</button>';
-    } else if (s.inconsistent) {
-      // inconsistent (json+tombstone): 重建 / 编辑(raw-only) / 导出(raw) / 清理
-      actions = '<button class="btn-rebuild">\u91cd\u5efa</button>'
-              + '<button class="btn-edit">\u7f16\u8f91</button>'
-              + '<button class="btn-export">\u5bfc\u51fa</button>'
-              + '<button class="btn-reset danger" title="\u6e05\u7406 launcher \u4fa7 JSON \u5907\u4efd\u548c\u5220\u9664\u6807\u8bb0\uff0c\u4e0d\u5f71\u54cd Flash \u5185\u90e8 SOL \u5b58\u6863\u3002\u6e38\u620f\u542f\u52a8\u540e\u53ef\u80fd\u4ece SOL \u91cd\u65b0\u751f\u6210\u3002">\u6e05\u7406\u526f\u672c</button>';
-    } else if (s.tombstoned) {
-      // 纯墓碑(无 json): 重建 / 清理
-      actions = '<button class="btn-rebuild">\u91cd\u5efa</button>'
-              + '<button class="btn-reset danger" title="\u6e05\u7406 launcher \u4fa7 JSON \u5907\u4efd\u548c\u5220\u9664\u6807\u8bb0\uff0c\u4e0d\u5f71\u54cd Flash \u5185\u90e8 SOL \u5b58\u6863\u3002\u6e38\u620f\u542f\u52a8\u540e\u53ef\u80fd\u4ece SOL \u91cd\u65b0\u751f\u6210\u3002">\u6e05\u7406\u526f\u672c</button>';
-    } else if (s.corrupt) {
-      // corrupt: 编辑(raw-only) / 导出(raw) / 删除 / 清理
-      actions = '<button class="btn-edit">\u7f16\u8f91</button>'
-              + '<button class="btn-export">\u5bfc\u51fa</button>'
-              + '<button class="btn-delete danger">\u5220\u9664</button>'
-              + '<button class="btn-reset danger" title="\u6e05\u7406 launcher \u4fa7 JSON \u5907\u4efd\u548c\u5220\u9664\u6807\u8bb0\uff0c\u4e0d\u5f71\u54cd Flash \u5185\u90e8 SOL \u5b58\u6863\u3002\u6e38\u620f\u542f\u52a8\u540e\u53ef\u80fd\u4ece SOL \u91cd\u65b0\u751f\u6210\u3002">\u6e05\u7406\u526f\u672c</button>';
-    } else {
-      // 正常 slot: 开始 / 编辑 / 导出 / 删除
-      actions = '<button class="btn-start">\u5f00\u59cb</button>'
-              + '<button class="btn-edit">\u7f16\u8f91</button>'
-              + '<button class="btn-export">\u5bfc\u51fa</button>'
-              + '<button class="btn-delete danger">\u5220\u9664</button>';
-    }
-
-    card.innerHTML =
-      '<div class="slot">' + escapeHtml(displayName) + '</div>' +
-      '<div class="slot-id">' + escapeHtml(s.slot) + '</div>' +
-      '<div class="progress">' + escapeHtml(progressText) + '</div>' +
-      '<div class="meta">' + flags + meta + '</div>' +
-      '<div class="card-actions">' + actions + '</div>';
-
-    var startBtn    = card.querySelector('.btn-start');
-    var deleteBtn   = card.querySelector('.btn-delete');
-    var rebuildBtn  = card.querySelector('.btn-rebuild');
-    var newCharBtn  = card.querySelector('.btn-newchar');
-    var editBtn     = card.querySelector('.btn-edit');
-    var exportBtn   = card.querySelector('.btn-export');
-    var resetBtn    = card.querySelector('.btn-reset');
-
-    if (startBtn)   startBtn.onclick   = function() {
-      if (_launchInFlight) return;
-      setLaunchInFlight(true);
-      send({ cmd: 'start_game', slot: s.slot });
-    };
-    if (deleteBtn)  deleteBtn.onclick  = function() {
-      if (confirm('\u786e\u5b9a\u5220\u9664\u5b58\u6863 "' + displayName + '" ?')) {
-        send({ cmd: 'delete', slot: s.slot });
-      }
-    };
-    if (rebuildBtn) rebuildBtn.onclick = function() {
-      if (confirm('\u91cd\u5efa\u5b58\u6863 "' + displayName + '" (\u539f\u6570\u636e\u5c06\u4e22\u5f03)?')) {
-        send({ cmd: 'rebuild', slot: s.slot });
-      }
-    };
-    if (newCharBtn) newCharBtn.onclick = function() {
-      if (_launchInFlight) return;
-      setLaunchInFlight(true);
-      send({ cmd: 'start_game', slot: s.slot });
-    };
-    if (editBtn)    editBtn.onclick    = function() {
-      window.BootstrapApp.openModal('archive-editor', { slot: s.slot, slotMeta: s });
-    };
-    if (exportBtn)  exportBtn.onclick  = function() {
-      var forceRaw = !!(s.corrupt || s.inconsistent);
-      var dn = presetDisplayName(s.slot);
-      var ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-      send({ cmd: 'export', slot: s.slot, defaultName: dn + '_' + ts + '.json', forceRaw: forceRaw });
-    };
-    if (resetBtn)   resetBtn.onclick   = function() {
-      if (confirm('\u786e\u5b9a\u6e05\u7406 "' + displayName + '" \u7684 launcher \u526f\u672c?\n\n\u6b64\u64cd\u4f5c\u6e05\u7406 launcher \u4fa7 JSON \u5907\u4efd\u548c\u5220\u9664\u6807\u8bb0\uff0c\u4e0d\u5f71\u54cd Flash \u5185\u90e8 SOL \u5b58\u6863\u3002\u6e38\u620f\u542f\u52a8\u540e\u53ef\u80fd\u4ece SOL \u91cd\u65b0\u751f\u6210\u3002')) {
-        send({ cmd: 'reset', slot: s.slot, confirm: true });
-      }
-    };
-    return card;
-  }
-
-  function pickAutoSlotName() {
-    var occupied = {};
-    for (var i = 0; i < lastSlotsFromLauncher.length; i++) {
-      occupied[lastSlotsFromLauncher[i].slot] = true;
-    }
-    for (var j = 0; j < PRESET_SLOTS.length; j++) {
-      if (!occupied[PRESET_SLOTS[j]]) return PRESET_SLOTS[j];
-    }
-    return 'custom_' + Date.now();
-  }
-
-  function handleNewCharacterClick() {
-    if (_launchInFlight) return;
-    var defaultName = pickAutoSlotName();
-    var input = prompt(
-      '\u8f93\u5165\u5b58\u6863\u540d\u79f0:\n'
-      + '\u2022 \u7559\u7a7a\u81ea\u52a8\u9009\u7528: ' + defaultName + '\n'
-      + '\u2022 \u4ec5\u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e0b\u5212\u7ebf/\u77ed\u6a2a\u7ebf, 1-32 \u5b57\u7b26',
-      defaultName);
-    if (input == null) return;
-    var slot = input.trim();
-    if (!slot) slot = defaultName;
-    if (!SLOT_NAME_RE.test(slot)) {
-      alert('\u5b58\u6863\u540d\u79f0\u4e0d\u5408\u6cd5: ' + slot);
-      return;
-    }
-    for (var k = 0; k < lastSlotsFromLauncher.length; k++) {
-      if (lastSlotsFromLauncher[k].slot === slot) {
-        var entry = lastSlotsFromLauncher[k];
-        if (entry.tombstoned) {
-          if (!confirm('\u6b64\u6863\u5df2\u5220\u9664, \u662f\u5426\u91cd\u5efa?')) return;
-          send({ cmd: 'rebuild', slot: slot }); return;
-        }
-        if (!confirm('\u5b58\u6863 "' + slot + '" \u5df2\u5b58\u5728, \u76f4\u63a5\u52a0\u8f7d?')) return;
-        setLaunchInFlight(true);
-        send({ cmd: 'start_game', slot: slot }); return;
-      }
-    }
-    setLaunchInFlight(true);
-    send({ cmd: 'start_game', slot: slot });
-  }
-
-  function applyState(state, msg) {
-    _lastLaunchState = state;
-    stateBadge.textContent = state + (msg ? ': ' + msg : '');
-    stateBadge.className = 'state-badge';
-    if (state === 'Ready')       stateBadge.className += ' ready';
-    else if (state === 'Error')  stateBadge.className += ' error';
-    else if (state !== 'Idle')   stateBadge.className += ' running';
-    retryBtn.style.display = (state === 'Error') ? 'inline-block' : 'none';
-    // Phase B Step B2: 启动中态显示"取消启动"按钮（Idle/Ready/Error/Resetting 隐藏）
-    var launchInProgress = (state === 'Spawning' || state === 'WaitingConnect'
-                         || state === 'WaitingHandshake' || state === 'Embedding'
-                         || state === 'WaitingGameReady');
-    cancelLaunchBtn.style.display = launchInProgress ? 'inline-block' : 'none';
-
-    // Phase D Step D12: launchInFlight 生命周期
-    //   Idle → 恢复 play 按钮 (用户 cancel_launch 触发 Reset → Idle 的场景)
-    //   Error → 保持禁用 (用户走 retry 按钮, backend StartGame 只接受 Idle)
-    //   launching / Ready → 保持禁用
-    if (state === 'Idle') setLaunchInFlight(false);
-  }
-
-  // ==================== Phase 2a: onMessage 分发 ====================
-
-  function dispatchMessage(msg) {
-    var cmd = msg.cmd;
-    if (!cmd) return;
-    var arr = _handlers[cmd];
-    if (arr) {
-      for (var i = 0; i < arr.length; i++) {
-        try { arr[i](msg); } catch (e) { logLine('tag-err', 'handler error [' + cmd + ']: ' + e.message); }
-      }
-    }
-  }
-
-  // ==================== WebView2 message listener ====================
-
-  window.chrome.webview.addEventListener('message', function (e) {
-    var data = e.data;
-    var msg;
-    try { msg = (typeof data === 'string') ? JSON.parse(data) : data; }
-    catch (err) { logLine('tag-err', 'bad JSON from C#: ' + err.message); return; }
-    logLine('tag-in', '\u2190 ' + JSON.stringify(msg));
-
-    // 内置处理
-    if (msg.cmd === 'state') {
-      applyState(msg.state, msg.msg);
-    } else if (msg.cmd === 'list_resp') {
-      lastSlotsFromLauncher = msg.slots || [];
-      renderCards(lastSlotsFromLauncher);
-    } else if (msg.cmd === 'delete_resp') {
-      if (msg.ok) send({ cmd: 'list' });
-      else logLine('tag-err', 'delete failed: ' + msg.error);
-    } else if (msg.cmd === 'error') {
-      logLine('tag-err', msg.code + ': ' + msg.msg);
-    } else if (msg.cmd === 'pong') {
-      logLine('tag-in', 'pong');
-    }
-    // Phase 2a: reset_resp 刷新列表
-    else if (msg.cmd === 'reset_resp') {
-      if (msg.ok) send({ cmd: 'list' });
-      else logLine('tag-err', 'reset failed: ' + (msg.error || 'unknown'));
-    }
-    // Phase 2a: export_resp toast
-    else if (msg.cmd === 'export_resp') {
-      if (msg.ok) logLine('tag-in', '\u5bfc\u51fa\u6210\u529f: ' + (msg.path || ''));
-      else if (msg.error !== 'cancelled') logLine('tag-err', '\u5bfc\u51fa\u5931\u8d25: ' + (msg.error || ''));
-    }
-    // Phase 2a: import_resp (import_start 失败 + import_commit 结果)
-    else if (msg.cmd === 'import_resp') {
-      if (msg.ok) { logLine('tag-in', '\u5bfc\u5165\u6210\u529f: ' + (msg.slot || '')); send({ cmd: 'list' }); }
-      else if (msg.error !== 'cancelled') logLine('tag-err', '\u5bfc\u5165\u5931\u8d25: ' + (msg.error || ''));
-    }
-    // Phase 2a: import_target → JS 侧选 slot
-    else if (msg.cmd === 'import_target') {
-      handleImportTarget(msg);
-    }
-
-    // Phase 2a: 分发给 onMessage 注册的模块 handler
-    dispatchMessage(msg);
-  });
-
-  // ==================== Phase 2a: import_target 处理 ====================
-
-  function handleImportTarget(msg) {
-    var sourceData = msg.sourceData;
-    var suggestedSlot = msg.suggestedSlot || '';
-
-    var slot = prompt('\u9009\u62e9\u76ee\u6807\u5b58\u6863\u69fd\u4f4d:\n\u5efa\u8bae: ' + suggestedSlot + '\n\u4ec5\u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e0b\u5212\u7ebf/\u77ed\u6a2a\u7ebf, 1-32 \u5b57\u7b26', suggestedSlot);
-    if (slot == null) return; // 取消
-    slot = slot.trim();
-    if (!slot) { logLine('tag-err', '\u5bfc\u5165\u53d6\u6d88: \u672a\u8f93\u5165\u69fd\u4f4d\u540d'); return; }
-
-    // 前端合法化校验 — 与 SanitizeSlotName 一致，防止 UI 看到的 slot 与后端落盘 slot 不同
-    if (!SLOT_NAME_RE.test(slot)) {
-      alert('\u69fd\u4f4d\u540d\u4e0d\u5408\u6cd5: "' + slot + '"\n\u4ec5\u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e0b\u5212\u7ebf/\u77ed\u6a2a\u7ebf, 1-32 \u5b57\u7b26');
-      return;
-    }
-
-    var meta = window.BootstrapApp.getSlotMeta(slot);
-    if (meta == null) {
-      // empty slot: 直接提交
-      send({ cmd: 'import_commit', slot: slot, data: sourceData });
-    } else if (meta.tombstoned || meta.inconsistent) {
-      if (confirm('\u6b64 slot \u5df2\u6807\u8bb0\u5220\u9664/\u4e0d\u4e00\u81f4\uff0c\u9700\u5148\u6e05\u7406\u624d\u80fd\u5bfc\u5165\u3002\u662f\u5426\u81ea\u52a8\u6e05\u7406\uff1f')) {
-        // 先 reset 再 import_commit；监听 reset_resp 后发 import_commit
-        var unsub = window.BootstrapApp.onMessage('reset_resp', function(resp) {
-          unsub();
-          if (resp.ok) {
-            send({ cmd: 'import_commit', slot: slot, data: sourceData });
-          } else {
-            logLine('tag-err', '\u6e05\u7406\u5931\u8d25: ' + (resp.error || ''));
-          }
-        });
-        send({ cmd: 'reset', slot: slot, confirm: true });
-      }
-    } else if (meta.corrupt) {
-      if (confirm('\u6b64\u5b58\u6863\u5df2\u635f\u574f\uff0c\u8986\u76d6\uff1f')) {
-        send({ cmd: 'import_commit', slot: slot, data: sourceData });
-      }
-    } else {
-      // 正常 slot
-      if (confirm('\u5b58\u6863\u5df2\u5b58\u5728\uff0c\u8986\u76d6\uff1f')) {
-        send({ cmd: 'import_commit', slot: slot, data: sourceData });
-      }
-    }
-  }
-
-  // ==================== Phase 2a: modal 管理 ====================
-
-  var _currentModal = null;
-  var _currentModule = null; // { mount, unmount, canClose? }
-
-  // 模块注册表（各模块 .js 加载后自行注册）
-  var _moduleRegistry = {};
-
-  function openModal(name, initData) {
-    if (_currentModal) {
-      if (_currentModule && _currentModule.canClose && !_currentModule.canClose()) return;
-      closeModal();
-    }
-    var mod = _moduleRegistry[name];
-    if (!mod) { logLine('tag-err', '[Modal] unknown: ' + name); return; }
-    _currentModal = name;
-    _currentModule = mod;
-    var host = document.getElementById('modal-host');
-    var content = document.getElementById('modal-content');
-    content.innerHTML = '';
-    mod.mount(content, initData);
-    host.style.display = '';
-  }
-
-  function closeModal() {
-    if (!_currentModal) return;
-    if (_currentModule && _currentModule.unmount) _currentModule.unmount();
-    document.getElementById('modal-host').style.display = 'none';
-    _currentModal = null;
-    _currentModule = null;
-  }
-
-  function tryCloseModal() {
-    if (!_currentModal) return;
-    if (_currentModule && _currentModule.canClose && !_currentModule.canClose()) return;
-    closeModal();
-  }
-
-  document.getElementById('modal-backdrop').onclick = function() { tryCloseModal(); };
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && _currentModal) tryCloseModal();
-  });
-
-  // ==================== Phase 2a: 全局桥 ====================
-
-  window.BootstrapApp = {
-    send: function(obj) { send(obj); },
-    onMessage: function(cmd, handler) {
-      if (!_handlers[cmd]) _handlers[cmd] = [];
-      _handlers[cmd].push(handler);
-      return function unsubscribe() {
-        var arr = _handlers[cmd];
-        if (!arr) return;
-        var i = arr.indexOf(handler);
-        if (i >= 0) arr.splice(i, 1);
-      };
-    },
-    getLaunchState: function() { return _lastLaunchState; },
-    getSlots: function() { return lastSlotsFromLauncher.slice(); },
-    getSlotMeta: function(slot) {
-      for (var i = 0; i < lastSlotsFromLauncher.length; i++)
-        if (lastSlotsFromLauncher[i].slot === slot) return lastSlotsFromLauncher[i];
-      return null;
-    },
-    refreshList: function() { send({ cmd: 'list' }); },
-    openModal: openModal,
-    closeModal: closeModal,
-    tryCloseModal: tryCloseModal,
-    registerModule: function(name, mod) { _moduleRegistry[name] = mod; }
-  };
-
-  // ==================== 初始化 ====================
-
-  document.getElementById('btn-refresh').onclick = function() { send({ cmd: 'list' }); };
-  document.getElementById('btn-new').onclick = handleNewCharacterClick;
-  document.getElementById('btn-import').onclick = function() { send({ cmd: 'import_start' }); };
-  document.getElementById('btn-open-dir').onclick = function() { send({ cmd: 'open_saves_dir' }); };
-  document.getElementById('btn-logs').onclick = function() {
-    window.BootstrapApp.openModal('diagnostic-log', {});
-  };
-  retryBtn.onclick = function() { send({ cmd: 'retry' }); };
-  cancelLaunchBtn.onclick = function() { send({ cmd: 'cancel_launch' }); };
-
-  logLine('tag-in', 'Bootstrap loaded');
-  // list 仍立即发 (slot 查询与 UI 可交互信号)
-  send({ cmd: 'list' });
-  // Phase D Step D9: ready 延后到 browser 完成首帧提交之后才发 —
-  // launcher 侧 ready 会触发 prewarm (Process.Start Flash SA);
-  // 双 rAF 保证首帧已绘制完毕,prewarm 的 CPU/IO 不抢首帧资源,避免白屏/闪烁.
-  requestAnimationFrame(function () {
-    requestAnimationFrame(function () {
-      send({ cmd: 'ready' });
-    });
-  });
-})();
+  })();
 </script>
 
-<!-- Phase 2a: 模块（各模块 mount/unmount/canClose 经 BootstrapApp.registerModule 注册） -->
+<!-- 模态模块 -->
 <script src="modules/archive-schema.js"></script>
 <script src="modules/archive-editor.js"></script>
 <script src="modules/diagnostic-log.js"></script>
+<script src="modules/about.js"></script>
+
 </body>
 </html>

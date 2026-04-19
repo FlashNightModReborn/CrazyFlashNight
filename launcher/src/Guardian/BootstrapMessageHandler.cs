@@ -12,6 +12,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Tasks;
+using CF7Launcher.Config;
 
 namespace CF7Launcher.Guardian
 {
@@ -21,7 +22,8 @@ namespace CF7Launcher.Guardian
             string json,
             BootstrapPanel bootForm,
             ArchiveTask archiveTask,
-            GameLaunchFlow launchFlow)
+            GameLaunchFlow launchFlow,
+            UserPrefs userPrefs)
         {
             JObject msg;
             try { msg = JObject.Parse(json); }
@@ -57,8 +59,14 @@ namespace CF7Launcher.Guardian
                     return;
 
                 case "list":
+                    // Phase 2b: list_resp 额外附带 UserPrefs 里的 lastPlayedSlot / introEnabled
                     DispatchArchive(bootForm, archiveTask, BuildArchivePayload("list", null), "list_resp",
-                        /*forwardSlots:*/ true);
+                        /*forwardSlots:*/ true, userPrefs);
+                    return;
+
+                // Phase 2b: 前端改 "加载片头动画" 复选框等, 落到 UserPrefs
+                case "config_set":
+                    HandleConfigSet(msg, bootForm, userPrefs);
                     return;
 
                 case "delete":
@@ -80,9 +88,26 @@ namespace CF7Launcher.Guardian
                             PostError(bootForm, "flash_start_failed", "launchFlow not available (flash path missing?)");
                             return;
                         }
-                        launchFlow.StartGame(slot);
+                        // Phase 2b: 落盘 lastPlayedSlot — 只记录 start_game (实际游玩意图),
+                        // rebuild 不算"玩家玩这个槽位", 不 overwrite.
+                        if (cmd == "start_game" && userPrefs != null && userPrefs.LastPlayedSlot != slot)
+                        {
+                            userPrefs.LastPlayedSlot = slot;
+                            userPrefs.Save();
+                        }
+                        // Phase 2b-ext: defer reveal 两个独立 flag, 前端按需 opt-in
+                        //   deferReveal       — 片头视频播放期 (JS 发 reveal_ok 才清)
+                        //   requireFlashReveal — Flash 封面帧 (Flash 发 bootstrap_reveal_ready 才清)
+                        bool deferJs = msg.Value<bool?>("deferReveal") ?? false;
+                        bool reqFlash = msg.Value<bool?>("requireFlashReveal") ?? false;
+                        launchFlow.StartGame(slot, deferJs, reqFlash);
                         return;
                     }
+
+                // Phase 2b-ext: JS 侧 reveal 信号 (片头视频播完 / 跳过 / 无片头直通)
+                case "reveal_ok":
+                    if (launchFlow != null) launchFlow.OnJsRevealOk();
+                    return;
 
                 case "retry":
                     if (launchFlow == null) { PostError(bootForm, "flash_start_failed", "launchFlow not available"); return; }
@@ -672,13 +697,16 @@ namespace CF7Launcher.Guardian
             });
         }
 
-        /// <summary>Phase 1 DispatchArchive（list_resp / delete_resp 专用，保留 forwardSlots 逻辑）。</summary>
+        /// <summary>Phase 1 DispatchArchive（list_resp / delete_resp 专用，保留 forwardSlots 逻辑）。
+        /// Phase 2b: forwardSlots 路径 (list_resp) 附带 UserPrefs 的 lastPlayedSlot / introEnabled,
+        /// 让欢迎页一次性拿到"上次槽位 + 片头偏好", 不需要额外 roundtrip.</summary>
         private static void DispatchArchive(
             BootstrapPanel bootForm,
             ArchiveTask archiveTask,
             JObject archiveMsg,
             string outCmd,
-            bool forwardSlots)
+            bool forwardSlots,
+            UserPrefs userPrefs = null)
         {
             archiveTask.HandleAsync(archiveMsg, delegate(string resultJson)
             {
@@ -697,6 +725,13 @@ namespace CF7Launcher.Guardian
                 {
                     JToken slots = result["slots"];
                     outMsgObj["slots"] = slots != null ? slots : (JToken)new JArray();
+                    // Phase 2b: 欢迎页偏好附带
+                    if (userPrefs != null)
+                    {
+                        if (!string.IsNullOrEmpty(userPrefs.LastPlayedSlot))
+                            outMsgObj["lastPlayedSlot"] = userPrefs.LastPlayedSlot;
+                        outMsgObj["introEnabled"] = userPrefs.IntroEnabled;
+                    }
                 }
                 else
                 {
@@ -709,6 +744,59 @@ namespace CF7Launcher.Guardian
                 }
                 bootForm.PostToWeb(outMsgObj.ToString(Formatting.None));
             });
+        }
+
+        // ==================== Phase 2b: config_set ====================
+        // 前端 send({cmd:'config_set', key:'introEnabled', value:true/false}) 等.
+        // key 白名单:  introEnabled (bool), lastPlayedSlot (string)
+        // 异常的 key 返回 config_set_resp {ok:false, error:"unknown_key"}.
+        private static void HandleConfigSet(JObject msg, BootstrapPanel bootForm, UserPrefs userPrefs)
+        {
+            string key = msg.Value<string>("key");
+            if (string.IsNullOrEmpty(key))
+            {
+                PostConfigSetResp(bootForm, null, false, "key_missing");
+                return;
+            }
+            if (userPrefs == null)
+            {
+                PostConfigSetResp(bootForm, key, false, "userprefs_unavailable");
+                return;
+            }
+            JToken val = msg["value"];
+            try
+            {
+                switch (key)
+                {
+                    case "introEnabled":
+                        userPrefs.IntroEnabled = val != null && val.Type == JTokenType.Boolean && val.Value<bool>();
+                        break;
+                    case "lastPlayedSlot":
+                        userPrefs.LastPlayedSlot = val != null && val.Type == JTokenType.String ? val.Value<string>() : null;
+                        break;
+                    default:
+                        PostConfigSetResp(bootForm, key, false, "unknown_key");
+                        return;
+                }
+                userPrefs.Save();
+                PostConfigSetResp(bootForm, key, true, null);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[BMH] config_set error key=" + key + " ex=" + ex.Message);
+                PostConfigSetResp(bootForm, key, false, "exception");
+            }
+        }
+
+        private static void PostConfigSetResp(BootstrapPanel bootForm, string key, bool ok, string err)
+        {
+            JObject obj = new JObject();
+            obj["type"] = "bootstrap";
+            obj["cmd"] = "config_set_resp";
+            if (key != null) obj["key"] = key;
+            obj["ok"] = ok;
+            if (!ok && err != null) obj["error"] = err;
+            bootForm.PostToWeb(obj.ToString(Formatting.None));
         }
 
         private static void PostError(BootstrapPanel bootForm, string code, string msg)

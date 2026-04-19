@@ -113,6 +113,20 @@ namespace CF7Launcher.Guardian
         private readonly List<Action> _pendingIdleCallbacks = new List<Action>();
         private bool _resetInFlight;
 
+        // ==================== Phase 2b-ext: Defer reveal (panel swap 延后) ====================
+        // 设计动机: state=Ready 触发点是 Flash 窗口 embed 成功 (Win32 层面), 但 Flash 内部 asset
+        // 加载 / AS2 init / 封面帧渲染还要几百 ms 到 1s+. panel swap 立刻做会让用户看到 Flash 自己的
+        // 加载画面闪一下. 改为双信号 gate:
+        //   _revealWaitingJs     — 前端告知 "我还在播片头" (start_game 带 deferReveal:true 时 set)
+        //   _revealWaitingFlash  — 等 Flash 帧 81 "封面" 发 bootstrap_reveal_ready (始终 set 当 require 时)
+        // TryPerformRevealLocked: 两个 flag 都清才执行 DoPerformReveal (panel swap + hotkey + ready wiring).
+        // 看门狗: Flash 信号若 10s 未到 (Flash 渲染 hang / 旧 SWF 没加 sendRevealReady), 强行 reveal 防卡死.
+        private bool _revealWaitingJs;
+        private bool _revealWaitingFlash;
+        private bool _revealPerformed;
+        private System.Threading.Timer _flashRevealWatchdog;
+        private const int FLASH_REVEAL_WATCHDOG_MS = 10000;
+
         // ==================== 公共 API ====================
 
         /// <summary>
@@ -174,8 +188,11 @@ namespace CF7Launcher.Guardian
             // Async handler: 锁内判 prewarm/legacy 分支 → 锁外 respond() 同步写 socket (respond 本身 gen-bound).
             _router.RegisterAsync("bootstrap_handshake", HandleBootstrapHandshakeAsync);
             _router.RegisterSync("bootstrap_ready", HandleBootstrapReady);
+            // Phase 2b-ext: Flash 帧 81 "封面" 发来的 reveal 信号, 清 _revealWaitingFlash
+            _router.RegisterSync("bootstrap_reveal_ready", HandleBootstrapRevealReady);
             LogManager.Log("[LaunchFlow] bootstrap_handshake registered (async)");
             LogManager.Log("[LaunchFlow] bootstrap_ready registered");
+            LogManager.Log("[LaunchFlow] bootstrap_reveal_ready registered");
 
             _windowManager.OnEmbedResult += OnEmbedResult;
             _processManager.OnFlashExited += OnFlashExitedExternal;
@@ -192,7 +209,15 @@ namespace CF7Launcher.Guardian
         /// 门闩优先: _prewarmAborting=true (deadline/degrade 正在跑 Reset) → reject, 用户再点走 legacy;
         ///           _pendingSlot != null (重复点击) → reject.
         /// </summary>
-        public void StartGame(string slot)
+        public void StartGame(string slot) { StartGame(slot, false, false); }
+
+        /// <summary>
+        /// Phase 2b-ext: 扩展签名支持 defer reveal.
+        /// deferJsReveal: 前端要求等 reveal_ok 才真正 panel swap (典型: 片头视频播放中).
+        /// requireFlashReveal: 等 Flash 帧 81 发 bootstrap_reveal_ready 才 panel swap (用于遮掩 Flash 内部 asset 加载时间).
+        /// 两者独立, 可分别/同时 opt-in; 都 false 时保持原即时 reveal 语义.
+        /// </summary>
+        public void StartGame(string slot, bool deferJsReveal, bool requireFlashReveal)
         {
             // Phase C protocol v2: 锁外解析存档决议。避免在握手状态锁里做文件 I/O。
             // SolResolver 自身线程安全（使用 ArchiveTask 的 _lock）。
@@ -230,6 +255,13 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[LaunchFlow] StartGame duplicate ignored: pendingSlot=" + _pendingSlot + " incoming=" + slot);
                     return;
                 }
+
+                // Phase 2b-ext: defer reveal flags 在 attempt 入口 set (三条成功分支共用).
+                // 幂等: 同一 attempt 重复 set 只在 _pendingSlot==null 入口时发生, 后续 PrewarmHandshakeHeld
+                // 消费路径里 _pendingSlot 已非空, 此次 StartGame 会 duplicate-ignore (上面已拦).
+                _revealWaitingJs = deferJsReveal;
+                _revealWaitingFlash = requireFlashReveal;
+                _revealPerformed = false;
 
                 if (_state == State.Idle)
                 {
@@ -437,7 +469,8 @@ namespace CF7Launcher.Guardian
                 Reset(null, "retry_no_slot");
                 return;
             }
-            Reset(delegate { StartGame(slot); }, "retry");
+            // Phase 2b-ext: retry 也要求 Flash reveal 覆盖 Flash 自身 init 期, 不重播片头 (deferJs=false)
+            Reset(delegate { StartGame(slot, false, true); }, "retry");
         }
 
         /// <summary>
@@ -584,6 +617,11 @@ namespace CF7Launcher.Guardian
                         // (Retry → Reset(StartGame, "retry") → Idle → flush StartGame(slot) 必须能跑)
                         _pendingSlot = null;
                         _resolvedSave = null;
+                        // Phase 2b-ext: 清 defer reveal flags, 下一 attempt 全新开始
+                        _revealWaitingJs = false;
+                        _revealWaitingFlash = false;
+                        _revealPerformed = false;
+                        CancelFlashRevealWatchdogLocked();
 
                         if (finalOk)
                         {
@@ -718,30 +756,139 @@ namespace CF7Launcher.Guardian
             });
         }
 
-        /// <summary>HandleBootstrapReady 命中 WaitingGameReady 时调用（锁内）。</summary>
+        /// <summary>HandleBootstrapReady 命中 WaitingGameReady 时调用（锁内）。
+        /// Phase 2b-ext: 不再直接 panel swap. 改为 state=Ready 广播 + 触发 TryPerformRevealLocked;
+        /// panel swap 真实执行视 _revealWaitingJs / _revealWaitingFlash 决定 (两 flag 都清才走).
+        /// Flash reveal 等待武装看门狗 (10s) 防 Flash 没加 sendRevealReady 时卡死. </summary>
         private void TransitionToReady()
         {
             CancelWaitTimerLocked();  // 清 game_ready 超时
             SetState(State.Ready, "");
-            RunOnUi(delegate
+            if (_revealWaitingFlash)
             {
-                try { if (_readyWiring != null) _readyWiring(); }
-                catch (Exception ex) { LogManager.Log("[LaunchFlow] readyWiring error: " + ex.Message); }
-                // Phase A Step A4: panel swap 替代原 Show/Hide 双 Form 切换
-                // 单 Form 模型下 GuardianForm 始终可见，无需 Show()
-                try
+                ArmFlashRevealWatchdogLocked(_currentAttemptId);
+            }
+            TryPerformRevealLocked();
+        }
+
+        /// <summary>两个 reveal flag 都清且未执行时, 锁内触发真正的 panel swap.</summary>
+        private void TryPerformRevealLocked()
+        {
+            if (_revealPerformed) return;
+            if (_state != State.Ready) return;   // 只在 Ready 态有意义; 未 Ready 时被外部 clear 也只是占位
+            if (_revealWaitingJs) return;
+            if (_revealWaitingFlash) return;
+            _revealPerformed = true;
+            CancelFlashRevealWatchdogLocked();
+            LogManager.Log("[LaunchFlow] performing reveal (panel swap)");
+            RunOnUi(delegate { DoPerformReveal(); });
+        }
+
+        /// <summary>真正的 reveal 副作用: readyWiring + BootstrapPanel 隐藏 + FlashHostPanel 显示 + hotkey guard 启动.</summary>
+        private void DoPerformReveal()
+        {
+            try { if (_readyWiring != null) _readyWiring(); }
+            catch (Exception ex) { LogManager.Log("[LaunchFlow] readyWiring error: " + ex.Message); }
+            // Phase A Step A4: panel swap 替代原 Show/Hide 双 Form 切换
+            try
+            {
+                if (_form != null)
                 {
-                    if (_form != null)
-                    {
-                        if (_form.BootstrapPanel != null) _form.BootstrapPanel.SetPanelVisible(false);
-                        if (_form.FlashHostPanel != null) _form.FlashHostPanel.Visible = true;
-                        _form.Activate();
-                    }
+                    if (_form.BootstrapPanel != null) _form.BootstrapPanel.SetPanelVisible(false);
+                    if (_form.FlashHostPanel != null) _form.FlashHostPanel.Visible = true;
+                    _form.Activate();
                 }
-                catch (Exception ex) { LogManager.Log("[LaunchFlow] panel swap error: " + ex.Message); }
-                try { if (_hotkeyGuardSpawn != null) _hotkeyGuardSpawn(); }
-                catch (Exception ex) { LogManager.Log("[LaunchFlow] hotkeyGuardSpawn error: " + ex.Message); }
-            });
+            }
+            catch (Exception ex) { LogManager.Log("[LaunchFlow] panel swap error: " + ex.Message); }
+            try { if (_hotkeyGuardSpawn != null) _hotkeyGuardSpawn(); }
+            catch (Exception ex) { LogManager.Log("[LaunchFlow] hotkeyGuardSpawn error: " + ex.Message); }
+        }
+
+        // ==================== Phase 2b-ext: Reveal signal receivers ====================
+
+        /// <summary>JS 端发 reveal_ok (片头视频播完/跳过/无片头直通) 触发, 清 JS wait flag 后尝试 reveal.</summary>
+        public void OnJsRevealOk()
+        {
+            lock (_stateLock)
+            {
+                if (!_revealWaitingJs)
+                {
+                    LogManager.Log("[LaunchFlow] OnJsRevealOk: not waiting, ignored");
+                    return;
+                }
+                _revealWaitingJs = false;
+                LogManager.Log("[LaunchFlow] OnJsRevealOk: JS reveal cleared");
+                TryPerformRevealLocked();
+            }
+        }
+
+        /// <summary>Flash 帧 81 bootstrap_reveal_ready task handler. attemptId 校验防 stale attempt 干扰.
+        /// Phase 2b-ext: 同时往 bootstrap.html 广播 flash_ready, 让前端给跳过按钮加就绪样式 (脉冲发光 + 改文案),
+        /// 用户在视频播放中即可直观看到"Flash 已加载好, 随时可跳进游戏". </summary>
+        private string HandleBootstrapRevealReady(JObject msg)
+        {
+            bool shouldNotifyFrontend = false;
+            lock (_stateLock)
+            {
+                JObject payload = msg.Value<JObject>("payload");
+                string attemptId = payload != null ? payload.Value<string>("attemptId") : null;
+                if (attemptId == null) attemptId = msg.Value<string>("attemptId");
+                if (attemptId != _currentAttemptId)
+                {
+                    LogManager.Log("[LaunchFlow] bootstrap_reveal_ready stale attemptId="
+                        + (attemptId ?? "null") + " expected=" + _currentAttemptId);
+                    return null;
+                }
+                if (!_revealWaitingFlash)
+                {
+                    LogManager.Log("[LaunchFlow] bootstrap_reveal_ready: not waiting, ignored");
+                    return null;
+                }
+                _revealWaitingFlash = false;
+                shouldNotifyFrontend = true;
+                LogManager.Log("[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared");
+                TryPerformRevealLocked();
+            }
+            if (shouldNotifyFrontend && _form != null && _form.BootstrapPanel != null)
+            {
+                // 锁外 post, 避免 UI 线程 BeginInvoke 重入 _stateLock
+                JObject notify = new JObject();
+                notify["type"] = "bootstrap";
+                notify["cmd"] = "flash_ready";
+                try { _form.BootstrapPanel.PostToWeb(notify.ToString(Newtonsoft.Json.Formatting.None)); }
+                catch (Exception ex) { LogManager.Log("[LaunchFlow] flash_ready broadcast error: " + ex.Message); }
+            }
+            return null;
+        }
+
+        private void ArmFlashRevealWatchdogLocked(string attemptIdSnap)
+        {
+            CancelFlashRevealWatchdogLocked();
+            _flashRevealWatchdog = new System.Threading.Timer(
+                delegate(object _) { OnFlashRevealWatchdogFired(attemptIdSnap); },
+                null, FLASH_REVEAL_WATCHDOG_MS, System.Threading.Timeout.Infinite);
+        }
+
+        private void CancelFlashRevealWatchdogLocked()
+        {
+            if (_flashRevealWatchdog != null)
+            {
+                try { _flashRevealWatchdog.Dispose(); } catch { }
+                _flashRevealWatchdog = null;
+            }
+        }
+
+        private void OnFlashRevealWatchdogFired(string attemptIdSnap)
+        {
+            lock (_stateLock)
+            {
+                if (_currentAttemptId != attemptIdSnap) return;  // attempt 已切换
+                if (!_revealWaitingFlash) return;                 // 已收到或已清
+                LogManager.Log("[LaunchFlow] Flash reveal watchdog fired after "
+                    + FLASH_REVEAL_WATCHDOG_MS + "ms, force-revealing (SWF 可能未部署 sendRevealReady)");
+                _revealWaitingFlash = false;
+                TryPerformRevealLocked();
+            }
         }
 
         private void TransitionToError(string msg)
@@ -942,7 +1089,18 @@ namespace CF7Launcher.Guardian
                 case State.Resetting:
                     return;  // 已处理或未启动, 忽略
                 case State.Ready:
-                    // 玩家正常关游戏 → launcher 也退出（legacy）
+                    // Phase 2b-ext: Ready 但 reveal 尚未执行 → 属于"启动阶段"而非"玩家关游戏",
+                    // 转 Error 让 BootstrapUI retry; reveal 已执行才视为玩家正常关游戏 ForceExit.
+                    bool revealDone;
+                    lock (_stateLock) { revealDone = _revealPerformed; }
+                    if (!revealDone)
+                    {
+                        LogManager.Log("[LaunchFlow] Flash exited in Ready state BEFORE reveal → Error (retry path)");
+                        CancelZombieTimer();
+                        if (_windowManager != null) _windowManager.ResetEmbedState();
+                        lock (_stateLock) { TransitionToError("flash_exited_pre_reveal"); }
+                        return;
+                    }
                     LogManager.Log("[LaunchFlow] Flash exited in Ready state → forcing launcher exit");
                     CancelZombieTimer();
                     if (_form != null) _form.ForceExit();

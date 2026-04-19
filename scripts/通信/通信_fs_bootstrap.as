@@ -97,3 +97,20 @@ _root._bootstrap.sendReady = function():Void {
     }
     // sm == undefined 时静默: 没任何可用日志通道, 继续流程不阻断时间线
 };
+
+// ===== reveal ack (Phase 2b-ext) =====
+// 由主时间轴"封面"帧 (DOMDocument.xml frame 81) 调用, 通知 launcher 说 Flash 端 asset 加载 +
+// AS2 init + 封面渲染都已完成, 可以把 Flash 面板切到前台.
+// launcher 侧 _revealWaitingFlash flag 在 StartGame(requireFlashReveal:true) 时 set, 这个任务到达后清 flag
+// → TryPerformRevealLocked → 视 _revealWaitingJs 决定是否触发 panel swap.
+// 兼容: 旧 launcher 不认 bootstrap_reveal_ready 也没副作用 (fire-and-forget), SWF 单独升级也安全.
+_root._bootstrap.sendRevealReady = function():Void {
+    var sm:Object = _root.server;
+    var attemptId:String = _root._bootstrapAttemptId;
+    if (sm != undefined && sm.isSocketConnected) {
+        var ok:Boolean = sm.sendTaskToNode("bootstrap_reveal_ready", { attemptId: attemptId }, null);
+        sm.sendServerMessage("[Bootstrap] sent bootstrap_reveal_ready attemptId=" + attemptId + " ok=" + ok);
+    } else if (sm != undefined) {
+        sm.sendServerMessage("[Bootstrap] WARN: socket disconnected, skip reveal_ready ack");
+    }
+};
