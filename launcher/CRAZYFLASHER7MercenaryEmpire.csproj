@@ -107,6 +107,10 @@
     <Compile Include="src\Save\SolResolver.cs" />
     <Compile Include="src\Save\SaveMigrator.cs" />
     <Compile Include="src\Save\SaveResolutionContext.cs" />
+    <Compile Include="src\Save\ISolParser.cs" />
+    <Compile Include="src\Save\NativeSolParser.cs" />
+    <Compile Include="src\Save\ISolFileLocator.cs" />
+    <Compile Include="src\Save\IArchiveStateProbe.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

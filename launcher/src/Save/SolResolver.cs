@@ -95,13 +95,15 @@ namespace CF7Launcher.Save
     /// </summary>
     public class SolResolver
     {
-        private readonly SolFileLocator _locator;
-        private readonly ArchiveTask _archive;
+        private readonly ISolFileLocator _locator;
+        private readonly IArchiveStateProbe _archive;
+        private readonly ISolParser _parser;
 
-        public SolResolver(SolFileLocator locator, ArchiveTask archive)
+        public SolResolver(ISolFileLocator locator, IArchiveStateProbe archive, ISolParser parser)
         {
             _locator = locator;
             _archive = archive;
+            _parser = parser;
         }
 
         public SolResolveResult Resolve(string slot, string swfPath)
@@ -134,7 +136,7 @@ namespace CF7Launcher.Save
             JObject soData = null;
             if (solExists)
             {
-                SolParseResult parse = SolParserNative.Parse(solPath);
+                SolParseResult parse = _parser.Parse(solPath);
                 if (parse.ReturnCode == SolParserNative.RC_OK)
                 {
                     soData = parse.Data;

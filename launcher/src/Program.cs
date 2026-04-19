@@ -431,7 +431,8 @@ class Program
         // Phase C: 存档决议依赖链。SolFileLocator 缓存 hash 子目录 + variant；SolResolver
         // 通过 ArchiveTask 的 sync API 读 tombstone / shadow。SaveResolutionContext 只是 DI 聚合。
         CF7Launcher.Save.SolFileLocator solLocator = new CF7Launcher.Save.SolFileLocator();
-        CF7Launcher.Save.SolResolver solResolver = new CF7Launcher.Save.SolResolver(solLocator, archiveTask);
+        CF7Launcher.Save.SolResolver solResolver = new CF7Launcher.Save.SolResolver(
+            solLocator, archiveTask, new CF7Launcher.Save.NativeSolParser());
         CF7Launcher.Save.SaveResolutionContext saveCtx = new CF7Launcher.Save.SaveResolutionContext(
             solLocator, solResolver, archiveTask, config.SwfPath);
 
