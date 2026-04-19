@@ -239,6 +239,35 @@ namespace CF7Launcher.Tests.Save
         }
 
         [Fact]
+        public void Row4b_SolExists_RustRcNotFound_Race_ShadowValid_JsonShadow()
+        {
+            // locator 找到了路径，但 parse 时文件消失（启动抖动 race）。
+            // SolResolver.cs:142-147 把 RC_NOT_FOUND 独立成"SOL 消失"分支，
+            // 不走 DeferToFlash，而是 fallback 到 "SOL 缺失" 逻辑。
+            var loc = new StubLocator { Result = FAKE_SOL_PATH };
+            var arch = new StubArchive { Shadow = ValidMydata("2026-01-01 00:00:00") };
+            var parser = new StubParser { ReturnCode = SolParseResult.RC_NOT_FOUND, Data = null };
+
+            var r = MakeResolver(loc, arch, parser).Resolve(SLOT, SWF);
+
+            Assert.Equal(DecisionKind.Snapshot, r.Kind);
+            Assert.Equal("json_shadow", r.Source);
+        }
+
+        [Fact]
+        public void Row4c_SolExists_RustRcNotFound_Race_NoShadow_Empty()
+        {
+            // Race + shadow 也不存在 → Empty（不是 DeferToFlash！）
+            var loc = new StubLocator { Result = FAKE_SOL_PATH };
+            var arch = new StubArchive { Shadow = null, ShadowErr = "not_found" };
+            var parser = new StubParser { ReturnCode = SolParseResult.RC_NOT_FOUND, Data = null };
+
+            var r = MakeResolver(loc, arch, parser).Resolve(SLOT, SWF);
+
+            Assert.Equal(DecisionKind.Empty, r.Kind);
+        }
+
+        [Fact]
         public void Row5_SolDeletedFlag_Deleted()
         {
             var loc = new StubLocator { Result = FAKE_SOL_PATH };

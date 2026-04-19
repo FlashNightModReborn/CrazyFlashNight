@@ -182,6 +182,34 @@ namespace CF7Launcher.Tests.Bus
             Assert.Equal(3, calls);
         }
 
+        // ─────── WrapResponse 宽容分支 ───────
+
+        [Fact]
+        public void WrapResponse_NonJsonHandlerReturn_ReturnedAsIs()
+        {
+            // 当前行为：WrapResponse (L106-114) try 解析 handler 返回值失败时
+            // 直接原样返回原字符串——即便 callId 存在也不注入。
+            // 锁定此宽容语义：handler 允许返回任意字符串，router 不强制 JSON shape。
+            var router = new MessageRouter();
+            router.RegisterSync("ping", msg => "not_json_at_all");
+
+            string result = router.ProcessMessage("{\"task\":\"ping\",\"callId\":7}", null);
+
+            Assert.Equal("not_json_at_all", result);
+        }
+
+        [Fact]
+        public void WrapResponse_NullHandlerReturn_ReturnedAsNull()
+        {
+            // 边界：handler 返回 null → WrapResponse L102 早退 → null 原样返回
+            var router = new MessageRouter();
+            router.RegisterSync("silent", msg => null);
+
+            string result = router.ProcessMessage("{\"task\":\"silent\",\"callId\":1}", null);
+
+            Assert.Null(result);
+        }
+
         // ─────── 注册优先级 ───────
 
         [Fact]

@@ -61,6 +61,14 @@
     <Compile Include="src\Guardian\GuardianForm.cs" />
     <Compile Include="src\Guardian\GameLaunchFlow.cs" />
     <Compile Include="src\Guardian\BootstrapMessageHandler.cs" />
+    <Compile Include="src\Guardian\Handlers\BootstrapCommandHelpers.cs" />
+    <Compile Include="src\Guardian\Handlers\LifecycleCommandHandler.cs" />
+    <Compile Include="src\Guardian\Handlers\GameStateCommandHandler.cs" />
+    <Compile Include="src\Guardian\Handlers\ArchiveCommandHandler.cs" />
+    <Compile Include="src\Guardian\Handlers\DataEditCommandHandler.cs" />
+    <Compile Include="src\Guardian\Handlers\ImportCommandHandler.cs" />
+    <Compile Include="src\Guardian\Handlers\UiCommandHandler.cs" />
+    <Compile Include="src\Guardian\Handlers\ConfigCommandHandler.cs" />
     <Compile Include="src\Guardian\GuardianContext.cs" />
     <Compile Include="src\Guardian\LogManager.cs" />
     <Compile Include="src\Bus\PortAllocator.cs" />
