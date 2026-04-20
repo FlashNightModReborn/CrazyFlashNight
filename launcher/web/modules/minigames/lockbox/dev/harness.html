@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Lockbox Harness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../../../css/panels.css">
+<link rel="stylesheet" href="../../shared/minigame-shell.css">
+<link rel="stylesheet" href="../../shared/dev/harness-base.css">
+<link rel="stylesheet" href="../lockbox.css">
+</head>
+<body>
+<div id="panel-container" data-panel="lockbox">
+    <div id="panel-backdrop"></div>
+    <div id="panel-content"></div>
+</div>
+
+<script>
+window.__minigameOverlayRoot = "../../../../";
+</script>
+<script src="../../../bridge.js"></script>
+<script src="../../../panels.js"></script>
+<script src="../../shared/host-bridge.js"></script>
+<script src="../../shared/dev/harness-base.js"></script>
+<script src="../core/index.js"></script>
+<script src="../core/solver.js"></script>
+<script src="../core/generator.js"></script>
+<script src="../lockbox-audio.js"></script>
+<script src="../lockbox-panel.js"></script>
+<script src="./qa-suite.js"></script>
+<script>
+(function() {
+    "use strict";
+
+    var query = MinigameHarness.parseQuery(location.search);
+    var defaultSeed = parseInt(query.familySeed || "305419896", 10) >>> 0;
+
+    if (query.fail_baked === "1" || query.scenario === "fallback") {
+        var originalFetch = window.fetch;
+        window.fetch = function(url) {
+            if (String(url).indexOf("lockbox-variants.json") >= 0) {
+                return Promise.resolve({
+                    ok: false,
+                    status: 404,
+                    json: function() { return Promise.resolve({ variantPool: [] }); }
+                });
+            }
+            return originalFetch.apply(this, arguments);
+        };
+    }
+
+    function buildInit(overrides) {
+        var out = {
+            mode: "dev",
+            profile: query.profile || "standard",
+            source: (query.scenario === "fallback" ? "baked" : (query.source || "runtime")),
+            familySeed: defaultSeed,
+            variantIndex: parseInt(query.variantIndex || "0", 10) | 0,
+            debug: true
+        };
+        var key;
+        overrides = overrides || {};
+        for (key in overrides) out[key] = overrides[key];
+        return out;
+    }
+
+    function loadSession(api, overrides) {
+        var init = buildInit(overrides);
+        var readyCount = api.getSessionEvents("ready").length;
+        if (window.LockboxPanel && LockboxPanel._debugLoad) {
+            LockboxPanel._debugLoad(init);
+        } else {
+            Panels.open("lockbox", init);
+        }
+        return api.waitForNextSessionEvent("ready", readyCount, 4000).then(function() {
+            return LockboxPanel._debugGetState();
+        });
+    }
+
+    function runCanonical(api) {
+        return loadSession(api, { source: "runtime" }).then(function(state) {
+            api.assert(!!state, "missing lockbox state");
+            LockboxPanel._debugStart();
+            var path = state.report.canonicalFullPath || state.report.canonicalMainPath;
+            api.assert(path && path.length, "missing canonical path");
+            var i;
+            for (i = 0; i < path.length; i += 1) {
+                LockboxPanel._debugTapCell(path[i].r, path[i].c);
+            }
+            state = LockboxPanel._debugGetState();
+            if (state && state.phase === "MAIN_READY") {
+                LockboxPanel._debugSubmit();
+            }
+            return api.waitFor(function() {
+                var current = LockboxPanel._debugGetState();
+                return current && (current.phase === "FINISHER" || current.phase === "RESULT" || current.phase === "FAIL") ? current : null;
+            }, 2500, "lockbox finisher/result").then(function(current) {
+                if (current.phase === "FINISHER") {
+                    LockboxPanel._debugResolveFinisher(900);
+                    return api.waitFor(function() {
+                        var finalState = LockboxPanel._debugGetState();
+                        return finalState && finalState.result ? finalState : null;
+                    }, 2500, "lockbox final result");
+                }
+                return current;
+            }).then(function(finalState) {
+                api.assert(finalState.result && finalState.result.outcome !== "fail", "canonical path ended in fail");
+                var exported = LockboxPanel._debugBuildExport();
+                api.assert(!!exported && !!exported.Meta, "export payload missing");
+                api.assert(api.getSessionEvents("export").length > 0, "export event missing");
+                return "outcome=" + finalState.result.outcome + ", export ok";
+            });
+        });
+    }
+
+    function runIllegal(api) {
+        return loadSession(api, { source: "runtime" }).then(function(before) {
+            LockboxPanel._debugStart();
+            LockboxPanel._debugTapCell(1, 1);
+            LockboxPanel._debugTapCell(1, 1);
+            var after = LockboxPanel._debugGetState();
+            api.assertEqual(after.illegalTapCount, before.illegalTapCount + 2, "illegal tap counter");
+            api.assertEqual(after.bufferTokens.length, before.bufferTokens.length, "illegal taps should not fill buffer");
+            api.assertEqual(after.selectedCells.length, before.selectedCells.length, "illegal taps should not select cells");
+            api.assert(after.tracePenalty > before.tracePenalty, "second illegal tap should raise trace penalty");
+            api.assert(after.illegalGraceLeft === Math.max(0, before.illegalGraceLeft - 1), "illegal grace not consumed as expected");
+            return "illegal taps kept gameplay state intact except grace/trace";
+        });
+    }
+
+    function runFallback(api) {
+        return loadSession(api, { source: "baked" }).then(function(state) {
+            var ready = api.getSessionEvents("ready").slice(-1)[0];
+            api.assert(!!ready, "ready event missing");
+            api.assert(ready.payload.data.requested.source === "baked", "requested source should stay baked");
+            api.assert(!!ready.payload.data.resolved, "resolved metadata missing");
+            api.assert(!!state && !!state.puzzle, "fallback failed to produce puzzle");
+            return "baked fetch failure still reached ready";
+        });
+    }
+
+    function browserCases(api) {
+        return [
+            {
+                id: "lb-ui1",
+                title: "protocol emits open+ready with requested/resolved split",
+                run: function() {
+                    return loadSession(api, { source: "runtime" }).then(function() {
+                        var openEvent = api.getSessionEvents("open").slice(-1)[0];
+                        var readyEvent = api.getSessionEvents("ready").slice(-1)[0];
+                        api.assert(!!openEvent && !!readyEvent, "open/ready events missing");
+                        api.assert(!!openEvent.payload.data.requested, "open.requested missing");
+                        api.assert(openEvent.payload.data.resolved === null, "open.resolved should be null");
+                        api.assert(!!readyEvent.payload.data.resolved, "ready.resolved missing");
+                        api.assert(!!readyEvent.payload.data.metrics, "ready.metrics missing");
+                        return "open/ready envelope present";
+                    });
+                }
+            },
+            {
+                id: "lb-ui2",
+                title: "layout uses Lockbox-specific gap/padding/side width",
+                run: function() {
+                    return loadSession(api, { source: "runtime" }).then(function() {
+                        var layout = api.captureLayout();
+                        api.assertEqual(layout.main.gap, "10px", "lockbox main gap");
+                        api.assertEqual(layout.main.padding, "8px 12px 8px 12px", "lockbox main padding");
+                        api.assert(layout.side.width >= 250 && layout.side.width <= 320, "lockbox side width out of range: " + layout.side.width);
+                        return "gap=" + layout.main.gap + ", sideWidth=" + layout.side.width;
+                    });
+                }
+            },
+            {
+                id: "lb-ui3",
+                title: "illegal taps only change grace/trace",
+                run: function() {
+                    return runIllegal(api);
+                }
+            },
+            {
+                id: "lb-ui4",
+                title: "canonical route reaches result and export",
+                run: function() {
+                    return runCanonical(api);
+                }
+            }
+        ];
+    }
+
+    function runSuite(api, caseId) {
+        var defs = [];
+        var i;
+        for (i = 0; i < LockboxQA.SUITE.length; i += 1) {
+            defs.push({
+                id: LockboxQA.SUITE[i].id,
+                title: LockboxQA.SUITE[i].title,
+                run: (function(id) {
+                    return function() {
+                        var result = LockboxQA.runOne(LockboxCore, LockboxGenerator, LockboxSolver, id);
+                        if (!result.pass) throw new Error(result.detail || "logic suite failed");
+                        return result.detail || "pass";
+                    };
+                })(LockboxQA.SUITE[i].id)
+            });
+        }
+        defs = defs.concat(browserCases(api));
+        if (caseId) {
+            defs = defs.filter(function(item) { return item.id === caseId; });
+        }
+        var results = [];
+        var flow = Promise.resolve();
+        defs.forEach(function(def) {
+            flow = flow.then(function() {
+                return api.runCase(def.id, def.title, function() {
+                    return def.run(api);
+                });
+            }).then(function(result) {
+                results.push(result);
+            });
+        });
+        return flow.then(function() {
+            return MinigameHarness.normalizeBundle(results);
+        });
+    }
+
+    function collectDump(api) {
+        return {
+            layout: api.captureLayout(),
+            session: window.LockboxPanel && LockboxPanel._debugGetSession ? LockboxPanel._debugGetSession() : null,
+            state: window.LockboxPanel && LockboxPanel._debugGetState ? LockboxPanel._debugGetState() : null
+        };
+    }
+
+    var harness = MinigameHarness.create({
+        panelId: "lockbox",
+        title: "Lockbox QA",
+        openPanel: function() {
+            Panels.open("lockbox", buildInit());
+        },
+        runScenario: function(api, scenario) {
+            if (scenario === "illegal") return runIllegal(api);
+            if (scenario === "fallback") return runFallback(api);
+            return runCanonical(api);
+        },
+        runSuite: runSuite,
+        collectDump: collectDump
+    });
+
+    window.addEventListener("load", function() {
+        harness.boot();
+    });
+})();
+</script>
+</body>
+</html>

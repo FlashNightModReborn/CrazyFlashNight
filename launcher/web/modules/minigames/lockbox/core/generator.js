@@ -1,8 +1,8 @@
 (function(root, factory) {
     if (typeof module === 'object' && module.exports) {
         module.exports = factory(
-            require('./lockbox-core.js'),
-            require('./lockbox-solver.js')
+            require('./index.js'),
+            require('./solver.js')
         );
     } else {
         root.LockboxGenerator = factory(root.LockboxCore, root.LockboxSolver);

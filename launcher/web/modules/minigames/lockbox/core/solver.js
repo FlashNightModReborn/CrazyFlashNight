@@ -1,6 +1,6 @@
 (function(root, factory) {
     if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('./lockbox-core.js'));
+        module.exports = factory(require('./index.js'));
     } else {
         root.LockboxSolver = factory(root.LockboxCore);
     }

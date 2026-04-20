@@ -14,6 +14,9 @@ var LockboxPanel = (function() {
     var _metaDirty = true;
     var _uiFxEpoch = 0;
     var _resultAudioTimer = 0;
+    var _sessionSequence = 0;
+    var _sessionId = null;
+    var _sessionRequested = null;
 
     var DEFAULT_INIT = {
         mode: 'dev',
@@ -34,19 +37,19 @@ var LockboxPanel = (function() {
 
     function createDOM() {
         _el = document.createElement('div');
-        _el.className = 'lockbox-panel';
+        _el.className = 'minigame-panel lockbox-panel';
         _el.innerHTML = [
-            '<div class="lockbox-header">',
+            '<div class="minigame-header">',
                 '<div>',
-                    '<div class="lockbox-kicker">// WEBVIEW PROTOTYPE //</div>',
-                    '<div class="lockbox-title">高安箱协议破解器</div>',
+                    '<div class="minigame-kicker">// WEBVIEW PROTOTYPE //</div>',
+                    '<div class="minigame-title">高安箱协议破解器</div>',
                 '</div>',
-                '<div class="lockbox-header-right">',
-                    '<button class="lockbox-chrome-btn" type="button" data-action="toggle-help">规则</button>',
-                    '<button class="lockbox-chrome-btn" type="button" data-action="toggle-hud">调试</button>',
-                    '<button class="lockbox-chrome-btn" type="button" data-action="toggle-mute">♪ 开</button>',
-                    '<div class="lockbox-phase-badge" id="lockbox-phase-badge">INIT</div>',
-                    '<button class="lockbox-close-btn" type="button">×</button>',
+                '<div class="minigame-header-right">',
+                    '<button class="minigame-chrome-btn" type="button" data-action="toggle-help">规则</button>',
+                    '<button class="minigame-chrome-btn" type="button" data-action="toggle-hud">调试</button>',
+                    '<button class="minigame-chrome-btn" type="button" data-action="toggle-mute">♪ 开</button>',
+                    '<div class="minigame-phase-badge" id="lockbox-phase-indicator">INIT</div>',
+                    '<button class="minigame-close-btn" type="button">×</button>',
                 '</div>',
             '</div>',
             '<div class="lockbox-help-panel" id="lockbox-help-panel">',
@@ -56,7 +59,7 @@ var LockboxPanel = (function() {
                             '<div class="lockbox-help-kicker">// RULE BRIEF //</div>',
                             '<div class="lockbox-help-title">玩法速览</div>',
                         '</div>',
-                        '<button class="lockbox-chrome-btn" type="button" data-action="toggle-help">关闭</button>',
+                        '<button class="minigame-chrome-btn" type="button" data-action="toggle-help">关闭</button>',
                     '</div>',
                     '<div class="lockbox-help-grid">',
                         '<div class="lockbox-help-item"><b>1.</b> 第一手只能从顶行开始，先找入口。</div>',
@@ -71,8 +74,8 @@ var LockboxPanel = (function() {
                     '</div>',
                 '</div>',
             '</div>',
-            '<div class="lockbox-main">',
-                '<div class="lockbox-grid-pane">',
+            '<div class="minigame-main">',
+                '<div class="minigame-grid-pane lockbox-grid-pane">',
                     '<div class="lockbox-stage-meta">',
                         '<div id="lockbox-axis-label">顶行入口待机</div>',
                         '<div id="lockbox-stage-hint">规划 A/B 重叠后再开始注入。</div>',
@@ -124,23 +127,23 @@ var LockboxPanel = (function() {
                         '<div class="lockbox-trace-footer" id="lockbox-trace-footer"></div>',
                     '</div>',
                 '</div>',
-                '<div class="lockbox-side-pane">',
+                '<div class="minigame-side-pane">',
                     '<div class="lockbox-result-card" id="lockbox-result-card"></div>',
-                    '<section class="lockbox-side-section">',
-                        '<div class="lockbox-side-title">目标序列</div>',
+                    '<section class="minigame-side-section">',
+                        '<div class="minigame-side-title">目标序列</div>',
                         '<div id="lockbox-sequences"></div>',
                     '</section>',
-                    '<section class="lockbox-side-section lockbox-buffer-section">',
-                        '<div class="lockbox-side-title">Buffer</div>',
+                    '<section class="minigame-side-section lockbox-buffer-section">',
+                        '<div class="minigame-side-title">Buffer</div>',
                         '<div id="lockbox-buffer"></div>',
                     '</section>',
-                    '<section class="lockbox-side-section lockbox-trace-section">',
-                        '<div class="lockbox-side-title">Trace</div>',
+                    '<section class="minigame-side-section lockbox-trace-section">',
+                        '<div class="minigame-side-title">Trace</div>',
                         '<div class="lockbox-trace-bar"><div class="lockbox-trace-fill" id="lockbox-trace-fill"></div></div>',
                         '<div class="lockbox-trace-meta" id="lockbox-trace-meta"></div>',
                     '</section>',
-                    '<section class="lockbox-side-section lockbox-status-section">',
-                        '<div class="lockbox-side-title">运行状态</div>',
+                    '<section class="minigame-side-section lockbox-status-section">',
+                        '<div class="minigame-side-title">运行状态</div>',
                         '<div class="lockbox-status" id="lockbox-status"></div>',
                     '</section>',
                 '</div>',
@@ -166,11 +169,11 @@ var LockboxPanel = (function() {
                 '</div>',
                 '<div class="lockbox-hud-grid">',
                     '<div class="lockbox-hud-card">',
-                        '<div class="lockbox-side-title">Solver 指标</div>',
+                        '<div class="minigame-side-title">Solver 指标</div>',
                         '<div id="lockbox-metrics"></div>',
                     '</div>',
                     '<div class="lockbox-hud-card">',
-                        '<div class="lockbox-side-title">运行指标</div>',
+                        '<div class="minigame-side-title">运行指标</div>',
                         '<div id="lockbox-session-metrics"></div>',
                     '</div>',
                 '</div>',
@@ -183,13 +186,13 @@ var LockboxPanel = (function() {
     }
 
     function bindDomRefs() {
-        _refs.closeBtn = _el.querySelector('.lockbox-close-btn');
+        _refs.closeBtn = _el.querySelector('.minigame-close-btn');
         _refs.helpToggle = _el.querySelector('[data-action="toggle-help"]');
         _refs.hudToggle = _el.querySelector('[data-action="toggle-hud"]');
         _refs.muteToggle = _el.querySelector('[data-action="toggle-mute"]');
         _refs.helpPanel = _el.querySelector('#lockbox-help-panel');
         _refs.grid = _el.querySelector('#lockbox-grid');
-        _refs.phaseBadge = _el.querySelector('#lockbox-phase-badge');
+        _refs.phaseBadge = _el.querySelector('#lockbox-phase-indicator');
         _refs.axisLabel = _el.querySelector('#lockbox-axis-label');
         _refs.stageHint = _el.querySelector('#lockbox-stage-hint');
         _refs.profileSwitch = _el.querySelector('#lockbox-profile-switch');
@@ -292,12 +295,17 @@ var LockboxPanel = (function() {
         bumpUiFxEpoch();
         stopLoop();
         _state = null;
+        _sessionId = null;
+        _sessionRequested = null;
         if (typeof LockboxAudio !== 'undefined') {
             LockboxAudio.stopAll(true);
         }
     }
 
     function closePanel() {
+        notifyHost('close', _state ? _state.result : null, {
+            phase: _state ? _state.phase : 'closed'
+        });
         cleanup();
         Panels.close();
         Bridge.send({ type: 'panel', cmd: 'close', panel: 'lockbox' });
@@ -418,6 +426,13 @@ var LockboxPanel = (function() {
     }
 
     function loadPuzzle(request) {
+        if (_sessionId) {
+            notifyHost('close', _state ? _state.result : null, {
+                phase: _state ? _state.phase : 'reload',
+                reason: 'reload'
+            });
+        }
+        beginSessionRequest(request);
         var token = ++_loadToken;
         if (typeof LockboxAudio !== 'undefined') {
             LockboxAudio.stopAll(true);
@@ -459,7 +474,7 @@ var LockboxPanel = (function() {
 
     function loadBakedPool() {
         if (_poolPromise) return _poolPromise;
-        _poolPromise = fetch('data/lockbox-variants.json')
+        _poolPromise = fetch(resolveAssetUrl('data/lockbox-variants.json'))
             .then(function(resp) {
                 if (!resp.ok) throw new Error('HTTP ' + resp.status);
                 return resp.json();
@@ -585,6 +600,7 @@ var LockboxPanel = (function() {
         };
 
         renderAll();
+        notifyHost('ready', null);
     }
 
     function setBusyState(text) {
@@ -986,24 +1002,35 @@ var LockboxPanel = (function() {
         }
     }
 
-    function notifyHost(eventName, resultPayload) {
-        if (!_state) return;
-        Bridge.send({
-            type: 'panel',
-            cmd: 'lockbox_session',
-            payload: {
-                event: eventName,
-                profile: _state.config.id,
-                source: _state.request.source,
-                familySeed: _state.puzzle.familySeed,
-                variantIndex: _state.puzzle.variantIndex,
-                result: resultPayload || null,
-                metrics: collectSessionMetrics()
-            }
-        });
+    function resolveAssetUrl(path) {
+        if (typeof MinigameHostBridge !== 'undefined' && MinigameHostBridge.resolveUrl) {
+            return MinigameHostBridge.resolveUrl(path);
+        }
+        return path;
     }
 
-    function exportCurrentJson() {
+    function sendHostSession(kind, data) {
+        if (typeof MinigameHostBridge !== 'undefined' && MinigameHostBridge.sendSession) {
+            return MinigameHostBridge.sendSession('lockbox', kind, data || {});
+        }
+        if (typeof Bridge === 'undefined' || !Bridge.send) return false;
+        Bridge.send({
+            type: 'panel',
+            cmd: 'minigame_session',
+            payload: {
+                game: 'lockbox',
+                kind: kind,
+                data: data || {}
+            }
+        });
+        return true;
+    }
+
+    function notifyHost(eventName, resultPayload, extraData) {
+        sendHostSession(eventName, buildSessionPayload(resultPayload, extraData));
+    }
+
+    function exportCurrentJson(options) {
         if (!_state) return;
         var exported = LockboxCore.buildSessionExport(_state.config, _state.puzzle, _state.report, {
             request: _state.request,
@@ -1011,29 +1038,79 @@ var LockboxPanel = (function() {
             metrics: collectSessionMetrics()
         });
         var text = JSON.stringify(exported, null, 2);
-        var blob = new Blob([text], { type: 'application/json' });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'lockbox-' + _state.config.id + '-' + _state.puzzle.familySeed + '-' + _state.puzzle.variantIndex + '.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(function() { URL.revokeObjectURL(url); }, 0);
+        var fileName = 'lockbox-' + _state.config.id + '-' + _state.puzzle.familySeed + '-' + _state.puzzle.variantIndex + '.json';
+        if (!options || !options.skipDownload) {
+            var blob = new Blob([text], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(function() { URL.revokeObjectURL(url); }, 0);
+        }
 
-        Bridge.send({
-            type: 'panel',
-            cmd: 'lockbox_session',
-            payload: {
-                event: 'export',
-                profile: _state.config.id,
-                source: _state.request.source,
-                familySeed: _state.puzzle.familySeed,
-                variantIndex: _state.puzzle.variantIndex,
-                result: _state.result,
-                metrics: collectSessionMetrics()
-            }
+        notifyHost('export', _state.result, {
+            fileName: fileName
         });
+        return exported;
+    }
+
+    function nextSessionId() {
+        _sessionSequence += 1;
+        return 'lockbox-' + _sessionSequence + '-' + (Date.now() >>> 0);
+    }
+
+    function cloneRequestedRequest(request) {
+        return {
+            mode: request.mode || DEFAULT_INIT.mode,
+            profile: request.profile,
+            source: request.source,
+            familySeed: sanitizeUInt(request.familySeed, Date.now() >>> 0),
+            variantIndex: sanitizeUInt(request.variantIndex, 0),
+            hintMode: request.hintMode || 'off',
+            debug: !!request.debug
+        };
+    }
+
+    function beginSessionRequest(request) {
+        _state = null;
+        _sessionId = nextSessionId();
+        _sessionRequested = cloneRequestedRequest(request);
+        notifyHost('open', null);
+    }
+
+    function buildResolvedData() {
+        if (!_state) return null;
+        return {
+            profile: _state.config.id,
+            source: _state.request.source,
+            familySeed: _state.puzzle.familySeed >>> 0,
+            variantIndex: _state.puzzle.variantIndex | 0,
+            accepted: _state.puzzle.accepted !== false,
+            size: _state.config.size,
+            bufferCap: _state.config.bufferCap
+        };
+    }
+
+    function buildSessionPayload(resultPayload, extraData) {
+        var payload = {
+            sessionId: _sessionId,
+            phase: extraData && extraData.phase ? extraData.phase : (_state ? _state.phase : 'INIT'),
+            requested: _sessionRequested ? LockboxCore.clone(_sessionRequested) : null,
+            resolved: buildResolvedData(),
+            metrics: _state ? collectSessionMetrics() : null,
+            result: resultPayload !== undefined ? (resultPayload || null) : (_state && _state.result ? LockboxCore.clone(_state.result) : null)
+        };
+        var key;
+        if (extraData) {
+            for (key in extraData) {
+                if (key === 'phase') continue;
+                payload[key] = extraData[key];
+            }
+        }
+        return payload;
     }
 
     function collectSessionMetrics() {
@@ -1623,5 +1700,37 @@ var LockboxPanel = (function() {
             .replace(/>/g, '&gt;');
     }
 
-    return {};
+    return {
+        _debugGetState: function() {
+            return _state ? LockboxCore.clone(_state) : null;
+        },
+        _debugGetSession: function() {
+            return buildSessionPayload(undefined, null);
+        },
+        _debugLoad: function(initData) {
+            var request = normalizeInitData(initData || DEFAULT_INIT);
+            _refs.profile.value = request.profile;
+            _refs.source.value = request.source;
+            _refs.familySeed.value = String(request.familySeed >>> 0);
+            _refs.variant.value = String(request.variantIndex | 0);
+            setProfileUi(request.profile, request.source);
+            loadPuzzle(request);
+            return request;
+        },
+        _debugStart: startInject,
+        _debugTapCell: function(r, c) {
+            onCellPointerDown(r, c);
+        },
+        _debugSubmit: requestSubmit,
+        _debugResolveFinisher: function(holdMs) {
+            if (!_state || _state.phase !== 'FINISHER') return false;
+            _state.finisher.holding = true;
+            _state.finisher.currentMs = Math.max(0, Number(holdMs) || 0);
+            finishFinisherHold(false);
+            return true;
+        },
+        _debugBuildExport: function() {
+            return exportCurrentJson({ skipDownload: true });
+        }
+    };
 })();

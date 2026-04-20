@@ -3,8 +3,8 @@
 
 var fs = require('fs');
 var path = require('path');
-var core = require('../web/modules/lockbox-core.js');
-var generator = require('../web/modules/lockbox-generator.js');
+var core = require('../web/modules/minigames/lockbox/core/index.js');
+var generator = require('../web/modules/minigames/lockbox/core/generator.js');
 
 var args = process.argv.slice(2);
 var seedCount = parseInt(readArg('--seeds', '10000'), 10);

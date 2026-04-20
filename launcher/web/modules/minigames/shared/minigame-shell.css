@@ -1,0 +1,162 @@
+.minigame-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    min-width: 0;
+    background: var(--cp-bg);
+    color: var(--cp-text);
+    font-family: "Consolas","Courier New","Microsoft YaHei",monospace;
+    font-size: 13px;
+    overflow: hidden;
+    border: 1px solid var(--cp-border);
+    clip-path: polygon(
+        0 0,
+        calc(100% - var(--cp-cut)) 0,
+        100% var(--cp-cut),
+        100% 100%,
+        var(--cp-cut) 100%,
+        0 calc(100% - var(--cp-cut))
+    );
+    box-shadow: 0 0 40px rgba(0,240,255,0.06), inset 0 0 80px rgba(0,240,255,0.02);
+}
+
+.minigame-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--cp-border);
+}
+
+.minigame-kicker {
+    color: var(--cp-dim);
+    letter-spacing: 2px;
+    font-size: 11px;
+}
+
+.minigame-title {
+    color: var(--cp-cyan);
+    letter-spacing: 2px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 3px;
+}
+
+.minigame-header-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.minigame-chrome-btn {
+    background: rgba(0,240,255,0.05);
+    border: 1px solid var(--cp-border2);
+    color: var(--cp-text);
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: inherit;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+}
+
+.minigame-chrome-btn:hover {
+    background: rgba(0,240,255,0.12);
+    border-color: rgba(0,240,255,0.28);
+}
+
+.minigame-phase-badge {
+    background: rgba(0,240,255,0.08);
+    border: 1px solid rgba(0,240,255,0.2);
+    color: var(--cp-cyan);
+    padding: 4px 10px;
+    min-width: 74px;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.minigame-close-btn {
+    background: none;
+    border: 1px solid rgba(255,0,60,0.3);
+    color: var(--cp-red);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 2px 8px;
+    transition: all 0.15s;
+}
+
+.minigame-close-btn:hover {
+    background: rgba(255,0,60,0.12);
+    box-shadow: 0 0 8px rgba(255,0,60,0.24);
+}
+
+.minigame-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(252px, 252px);
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+    padding: 12px;
+}
+
+.minigame-grid-pane,
+.minigame-side-pane {
+    min-width: 0;
+    min-height: 0;
+}
+
+.minigame-side-pane {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.minigame-side-section {
+    padding: 10px 12px;
+    border: 1px solid rgba(0,240,255,0.1);
+    background: rgba(6,10,16,0.9);
+}
+
+.minigame-side-title {
+    color: var(--cp-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 11px;
+    margin-bottom: 8px;
+}
+
+#panel-container[data-panel="lockbox"] #panel-content {
+    inset: 1.2% 1.6%;
+}
+
+#panel-container[data-panel="lockbox"] #panel-backdrop {
+    background: radial-gradient(ellipse at 50% 25%, rgba(0,32,44,0.72), rgba(0,0,0,0.9));
+}
+
+#panel-container[data-panel="pinalign"] #panel-content {
+    inset: 1.2% 1.4%;
+}
+
+#panel-container[data-panel="pinalign"] #panel-backdrop {
+    background:
+        radial-gradient(circle at 24% 18%, rgba(72,118,112,0.3), transparent 32%),
+        radial-gradient(circle at 80% 10%, rgba(126,88,58,0.22), transparent 28%),
+        rgba(3,7,10,0.86);
+}
+
+@media (max-width: 900px) {
+    #panel-container[data-panel="lockbox"] #panel-content,
+    #panel-container[data-panel="pinalign"] #panel-content {
+        inset: 1.2% 1.2%;
+    }
+
+    .minigame-main {
+        grid-template-columns: 1fr;
+    }
+}

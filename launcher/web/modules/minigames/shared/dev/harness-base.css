@@ -1,0 +1,101 @@
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+    background: #05090c;
+}
+
+#panel-container {
+    display: block !important;
+}
+
+#panel-backdrop {
+    position: absolute;
+    inset: 0;
+}
+
+#qa-panel {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 2000;
+    width: min(420px, calc(100vw - 24px));
+    max-height: calc(100vh - 24px);
+    overflow: auto;
+    padding: 10px 12px;
+    background: rgba(8,14,18,0.94);
+    border: 1px solid rgba(120,194,214,0.3);
+    color: #d9e4e8;
+    font: 12px/1.5 Consolas, "Microsoft YaHei", monospace;
+}
+
+#qa-panel[hidden] {
+    display: none;
+}
+
+.qa-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.qa-title {
+    font-weight: bold;
+    color: #8ce8ff;
+}
+
+#qa-run {
+    background: #1f3442;
+    border: 1px solid #3c6a85;
+    color: #cfe8f3;
+    padding: 2px 10px;
+    cursor: pointer;
+    font: inherit;
+}
+
+#qa-run:hover {
+    background: #2a4a5d;
+}
+
+#qa-summary {
+    color: #9aa4ae;
+}
+
+#qa-list {
+    margin: 0;
+    padding-left: 22px;
+}
+
+#qa-list li {
+    margin: 4px 0;
+}
+
+#qa-list .pass {
+    color: #8de8ab;
+}
+
+#qa-list .fail {
+    color: #ff8fa3;
+}
+
+#qa-list .detail {
+    color: #9aa4ae;
+    font-size: 11px;
+}
+
+#debug-log {
+    position: fixed;
+    left: 12px;
+    bottom: 12px;
+    z-index: 2000;
+    max-width: 420px;
+    max-height: 220px;
+    overflow: auto;
+    padding: 10px 12px;
+    background: rgba(8,14,18,0.88);
+    border: 1px solid rgba(120,194,214,0.24);
+    color: #d9e4e8;
+    font: 12px/1.5 Consolas, "Microsoft YaHei", monospace;
+    white-space: pre-wrap;
+}

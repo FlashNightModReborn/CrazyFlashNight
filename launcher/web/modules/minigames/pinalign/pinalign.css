@@ -14,7 +14,7 @@
     --pa-frame-shadow: rgba(0,0,0,0.5);
 }
 
-.lockbox-panel.pinalign-panel {
+.minigame-panel.pinalign-panel {
     min-width: 0;
     overflow: hidden;
     background:
@@ -33,7 +33,7 @@
     content: none !important;
 }
 
-.pinalign-panel .lockbox-header {
+.pinalign-panel .minigame-header {
     padding-top: 12px;
     background:
         linear-gradient(180deg, rgba(72, 80, 90, 0.35), rgba(28, 32, 38, 0.15));
@@ -43,12 +43,12 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-.pinalign-panel .lockbox-kicker {
+.pinalign-panel .minigame-kicker {
     color: #8a939d;
     letter-spacing: 3px;
 }
 
-.pinalign-panel .lockbox-title {
+.pinalign-panel .minigame-title {
     color: #e4e9ef;
     text-shadow:
         0 1px 0 rgba(0, 0, 0, 0.7),
@@ -57,7 +57,7 @@
     letter-spacing: 3px;
 }
 
-.pinalign-panel:hover .lockbox-title {
+.pinalign-panel:hover .minigame-title {
     animation: none !important;
 }
 
@@ -65,7 +65,7 @@
     display: none;
 }
 
-.pinalign-panel .lockbox-phase-badge {
+.pinalign-panel .minigame-phase-badge {
     background: linear-gradient(180deg, #323842, #1f242c);
     color: #c0c8d2;
     border: 1px solid rgba(0, 0, 0, 0.5);
@@ -73,7 +73,7 @@
     letter-spacing: 1px;
 }
 
-.pinalign-panel[data-phase="RESULT"] .lockbox-phase-badge {
+.pinalign-panel[data-phase="RESULT"] .minigame-phase-badge {
     background: linear-gradient(180deg, #1a6a3a, #0d3a22);
     border-color: rgba(147, 255, 171, 0.55);
     color: #b5ffce;
@@ -82,26 +82,26 @@
         0 0 10px rgba(125, 255, 171, 0.4);
 }
 
-.pinalign-panel[data-phase="FINISHER"] .lockbox-phase-badge {
+.pinalign-panel[data-phase="FINISHER"] .minigame-phase-badge {
     background: linear-gradient(180deg, #6a1c2a, #3a0a13);
     border-color: rgba(255, 120, 140, 0.55);
     color: #ffb0be;
     box-shadow: inset 0 1px 0 rgba(255, 120, 140, 0.28);
 }
 
-.pinalign-panel[data-phase="FAIL"] .lockbox-phase-badge {
+.pinalign-panel[data-phase="FAIL"] .minigame-phase-badge {
     background: linear-gradient(180deg, #4a1016, #22070a);
     border-color: rgba(255, 80, 100, 0.6);
     color: #ff8fa3;
 }
 
-.pinalign-panel[data-phase="INJECTING"] .lockbox-phase-badge {
+.pinalign-panel[data-phase="INJECTING"] .minigame-phase-badge {
     background: linear-gradient(180deg, #5a4810, #2a2208);
     border-color: rgba(252, 224, 93, 0.55);
     color: #ffe567;
 }
 
-.pinalign-panel .lockbox-chrome-btn {
+.pinalign-panel .minigame-chrome-btn {
     background: linear-gradient(180deg, #2c3138, #1d2127);
     color: #c5ccd3;
     border: 1px solid rgba(0, 0, 0, 0.6);
@@ -112,19 +112,19 @@
     letter-spacing: 1px;
 }
 
-.pinalign-panel .lockbox-chrome-btn:hover {
+.pinalign-panel .minigame-chrome-btn:hover {
     background: linear-gradient(180deg, #3a424c, #252a32);
     border-color: rgba(180, 195, 210, 0.32);
 }
 
-.pinalign-panel .lockbox-close-btn {
+.pinalign-panel .minigame-close-btn {
     background: linear-gradient(180deg, #3a1820, #1e0708);
     border: 1px solid rgba(180, 50, 60, 0.55);
     color: #ff8a9a;
     box-shadow: inset 0 1px 0 rgba(255, 120, 130, 0.12);
 }
 
-.pinalign-panel .lockbox-side-section {
+.pinalign-panel .minigame-side-section {
     background: linear-gradient(180deg, rgba(50, 58, 68, 0.32), rgba(22, 26, 32, 0.55));
     border: 1px solid rgba(0, 0, 0, 0.5);
     box-shadow:
@@ -132,7 +132,7 @@
         0 1px 0 rgba(0, 0, 0, 0.35);
 }
 
-.pinalign-panel .lockbox-side-title {
+.pinalign-panel .minigame-side-title {
     color: #9aa4b0;
     letter-spacing: 1px;
 }
@@ -147,36 +147,36 @@
         inset 0 0 60px rgba(60, 6, 10, 0.45);
 }
 
-.pinalign-panel[data-trace-state="terminal"] .lockbox-header,
-.pinalign-panel[data-trace-state="overload"] .lockbox-header,
-.pinalign-panel[data-trace-state="trace-fail"] .lockbox-header {
+.pinalign-panel[data-trace-state="terminal"] .minigame-header,
+.pinalign-panel[data-trace-state="overload"] .minigame-header,
+.pinalign-panel[data-trace-state="trace-fail"] .minigame-header {
     background: linear-gradient(180deg, rgba(90, 18, 26, 0.45), rgba(28, 32, 38, 0.15));
     border-bottom-color: rgba(255, 80, 100, 0.4);
 }
 
-.pinalign-panel .lockbox-title {
+.pinalign-panel .minigame-title {
     font-size: 20px;
 }
 
-.pinalign-panel .lockbox-phase-badge {
+.pinalign-panel .minigame-phase-badge {
     min-width: 88px;
 }
 
-.pinalign-panel .lockbox-main {
+.pinalign-panel .minigame-main {
     grid-template-columns: minmax(0, 1fr) minmax(260px, 300px);
     gap: 10px;
     overflow: hidden;
     align-items: stretch;
 }
 
-.pinalign-panel .lockbox-grid-pane,
-.pinalign-panel .lockbox-side-pane {
+.pinalign-panel .minigame-grid-pane,
+.pinalign-panel .minigame-side-pane {
     min-width: 0;
     min-height: 0;
     max-height: 100%;
 }
 
-.pinalign-panel .lockbox-grid-pane {
+.pinalign-panel .minigame-grid-pane {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -223,7 +223,7 @@
     line-height: 1.55;
 }
 
-.pinalign-panel .lockbox-side-pane {
+.pinalign-panel .minigame-side-pane {
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -231,15 +231,15 @@
     padding-right: 2px;
 }
 
-.pinalign-panel .lockbox-side-pane .lockbox-side-section {
+.pinalign-panel .minigame-side-pane .minigame-side-section {
     padding: 8px 10px;
 }
 
-.pinalign-panel .lockbox-side-title {
+.pinalign-panel .minigame-side-title {
     margin-bottom: 6px;
 }
 
-.pinalign-panel .lockbox-side-pane .lockbox-side-section {
+.pinalign-panel .minigame-side-pane .minigame-side-section {
     min-width: 0;
 }
 
@@ -362,7 +362,7 @@
     line-height: 1.4;
 }
 
-.lockbox-side-title-toggle {
+.minigame-side-title-toggle {
     display: block;
     width: 100%;
     padding: 0;
@@ -376,7 +376,7 @@
     cursor: pointer;
 }
 
-.lockbox-side-title-toggle:hover {
+.minigame-side-title-toggle:hover {
     color: var(--cp-cyan);
 }
 
@@ -1450,12 +1450,12 @@
     color: #c8d7db;
 }
 
-.pinalign-panel.is-stacked .lockbox-main {
+.pinalign-panel.is-stacked .minigame-main {
     grid-template-columns: 1fr;
     overflow: auto;
 }
 
-.pinalign-panel.is-stacked .lockbox-side-pane {
+.pinalign-panel.is-stacked .minigame-side-pane {
     overflow: visible;
 }
 
