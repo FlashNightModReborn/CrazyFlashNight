@@ -17,9 +17,20 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         passedCount = 0;
         failedCount = 0;
 
+        runMigrationAndCoreTests();
+        runLoadFromMydataTests();
+        runPrefetchTests();
+        runLoadAllTests();
+        runRecoveryAndTombstoneTests();
+
+        trace("========== SaveManagerTest END: " + passedCount + "/" + testCount + " passed, " + failedCount + " failed ==========");
+    }
+
+    private static function runMigrationAndCoreTests():Void {
         test_migrate_undefined_to_3_0();
         test_migrate_2_6_to_3_0();
         test_migrate_2_7_to_3_0();
+        test_migrate_2_7_to_3_0_preserves_legacy_mainline();
         test_migrate_3_0_noop();
         test_syncTopLevel_overwrite();
         test_syncTopLevel_from_empty();
@@ -28,9 +39,12 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_packGameState_syncs_mainline_progress();
         test_easterEgg_roundtrip();
         test_ensureShopNode_null_safe();
+        test_loadShopCart_empty_top_level_keeps_nested_shop();
+        test_loadShopPurchased_empty_top_level_keeps_nested_shop();
         test_ext_namespace_roundtrip();
+    }
 
-        // Phase 1: loadFromMydata / validateMydata 间接测试
+    private static function runLoadFromMydataTests():Void {
         test_loadFromMydata_v3_succeeds();
         test_loadFromMydata_rejects_non_3_0();
         test_loadFromMydata_rejects_missing_inventory();
@@ -42,8 +56,9 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_loadFromMydata_sets_lastsave();
         test_loadFromMydata_resets_dirty();
         test_loadFromMydata_populates_tasks_pets_shop();
+    }
 
-        // Phase 2: prefetch / receiveSavePush 测试
+    private static function runPrefetchTests():Void {
         test_getPrefetchStatus_after_clear();
         test_clearPrefetch_invalidates_late_callback();
         test_receiveSavePush_string_data();
@@ -51,27 +66,31 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_receiveSavePush_rejects_broken_json();
         test_receiveSavePush_rejects_truncated_tail();
         test_receiveSavePush_increments_gen();
+    }
 
-        // Phase 3: loadAll JSON+SO overlay 测试
+    private static function runLoadAllTests():Void {
         test_loadAll_prefers_json_when_newer();
         test_loadAll_json_overlays_sol_shop();
         test_loadAll_json_overlays_sol_tasks();
+        test_loadAll_sol_empty_top_level_keeps_nested_tasks();
+        test_loadAll_sol_repairs_mainline_from_slot3();
         test_loadAll_json_overlays_sol_pets();
+        test_loadAll_sol_empty_top_level_keeps_nested_pets();
+        test_loadAll_sol_empty_top_level_keeps_nested_shop();
         test_loadAll_rejects_stale_json();
         test_loadAll_clearPrefetch_blocks_late_callback();
         test_loadAll_recovers_from_missing_sol();
         test_loadAll_sanitize_slot_match();
+    }
+
+    private static function runRecoveryAndTombstoneTests():Void {
         test_deleteSlot_clears_prefetch();
         test_deleteSlot_tombstone_blocks_json_recovery();
         test_hasSaveData_with_prefetch();
         test_hasSaveData_respects_tombstone();
         test_isRecoveryPending();
         test_isRecoveryPending_false_after_delete();
-
-        // Phase 1b (10a-2 \u7ea2\u9636\u6bb5)\uff1apreload tombstoned \u81ea\u6e05
         test_handlePreloadTombstoned_sets_sol_deleted();
-
-        trace("========== SaveManagerTest END: " + passedCount + "/" + testCount + " passed, " + failedCount + " failed ==========");
     }
 
     // ── helpers ──
@@ -162,6 +181,27 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         assert(mydata.version == "3.0", "migrate_2_7_to_3_0: version 3.0");
         assert(mydata.tasks.tasks_to_do.length == 2, "migrate_2_7_to_3_0: tasks_to_do length");
         assert(mydata.shop.商城已购买物品[0] == "item1", "migrate_2_7_to_3_0: shop preserved");
+    }
+
+    private static function test_migrate_2_7_to_3_0_preserves_legacy_mainline():Void {
+        var sm:SaveManager = SaveManager.getInstance();
+        var mydata:Object = {};
+        mydata.version = "2.7";
+        mydata[3] = 17;
+        var soData:Object = {};
+        soData["test"] = mydata;
+        soData.tasks_to_do = [];
+        soData.tasks_finished = {};
+        soData.task_chains_progress = {};
+        soData.战宠 = [[], [], [], [], []];
+        soData.宠物领养限制 = 5;
+        soData.商城已购买物品 = [];
+        soData.商城购物车 = [];
+
+        var changed:Boolean = sm.migrate(mydata, soData);
+        assert(changed == true, "migrate_2_7_to_3_0_preserves_legacy_mainline: changed");
+        assert(mydata.tasks.task_chains_progress.主线 == 17,
+               "migrate_2_7_to_3_0_preserves_legacy_mainline: mainline preserved");
     }
 
     private static function test_migrate_3_0_noop():Void {
@@ -313,6 +353,50 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
 
         assert(soData["test"].shop.商城购物车[0] == "cart_item", "ensureShopNode: shop node created");
         assert(soData.商城购物车[0] == "cart_item", "ensureShopNode: dual-write top level ok");
+    }
+
+    private static function test_loadShopCart_empty_top_level_keeps_nested_shop():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+        _root.savePath = TEST_SLOT;
+
+        var so:SharedObject = SharedObject.getLocal(TEST_SLOT);
+        so.clear();
+        so.data["test"] = buildValidMydata();
+        so.data["test"].shop.商城购物车 = ["nested_cart"];
+        so.data.商城购物车 = [];
+        so.flush();
+
+        _root.商城购物车 = ["stale"];
+        sm.loadShopCart();
+        assert(_root.商城购物车[0] == "nested_cart",
+               "loadShopCart_empty_top_level_keeps_nested_shop: nested cart preserved");
+
+        cleanTestSO();
+        _root.savePath = oldPath;
+    }
+
+    private static function test_loadShopPurchased_empty_top_level_keeps_nested_shop():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+        _root.savePath = TEST_SLOT;
+
+        var so:SharedObject = SharedObject.getLocal(TEST_SLOT);
+        so.clear();
+        so.data["test"] = buildValidMydata();
+        so.data["test"].shop.商城已购买物品 = ["nested_item"];
+        so.data.商城已购买物品 = [];
+        so.flush();
+
+        _root.商城已购买物品 = ["stale"];
+        sm.loadShopPurchased();
+        assert(_root.商城已购买物品[0] == "nested_item",
+               "loadShopPurchased_empty_top_level_keeps_nested_shop: nested purchased preserved");
+
+        cleanTestSO();
+        _root.savePath = oldPath;
     }
 
     private static function test_ext_namespace_roundtrip():Void {
@@ -762,6 +846,69 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         _root.savePath = oldPath;
     }
 
+    private static function test_loadAll_sol_empty_top_level_keeps_nested_tasks():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+        _root.savePath = TEST_SLOT;
+
+        var so:SharedObject = SharedObject.getLocal(TEST_SLOT);
+        var md:Object = buildValidMydata();
+        md.lastSaved = "2026-02-02 12:00:00";
+        md[0][0] = "Nested任务角色";
+        md[3] = 12;
+        md.tasks.tasks_to_do = [{id:"nested_task"}];
+        md.tasks.tasks_finished = {};
+        md.tasks.tasks_finished["500"] = 1;
+        md.tasks.task_chains_progress = { 主线: 12, 挑战: 3 };
+        so.data["test"] = md;
+        so.data.tasks_to_do = [];
+        so.data.tasks_finished = {};
+        so.data.task_chains_progress = {};
+        so.flush();
+        _root.mydata = md;
+
+        sm.loadAll();
+        assert(_root.task_chains_progress.主线 == 12,
+               "loadAll_sol_empty_top_level_keeps_nested_tasks: mainline from nested");
+        assert(_root.task_chains_progress.挑战 == 3,
+               "loadAll_sol_empty_top_level_keeps_nested_tasks: extra chains from nested");
+        assert(_root.tasks_to_do[0].id == "nested_task",
+               "loadAll_sol_empty_top_level_keeps_nested_tasks: tasks_to_do from nested");
+        assert(_root.tasks_finished["500"] == 1,
+               "loadAll_sol_empty_top_level_keeps_nested_tasks: tasks_finished from nested");
+
+        cleanTestSO();
+        _root.savePath = oldPath;
+    }
+
+    private static function test_loadAll_sol_repairs_mainline_from_slot3():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+        _root.savePath = TEST_SLOT;
+
+        var so:SharedObject = SharedObject.getLocal(TEST_SLOT);
+        var md:Object = buildValidMydata();
+        md.lastSaved = "2026-03-03 12:00:00";
+        md[0][0] = "LegacyMainline角色";
+        md[3] = 9;
+        md.tasks.task_chains_progress = {};
+        so.data["test"] = md;
+        so.data.tasks_to_do = [];
+        so.data.tasks_finished = {};
+        so.data.task_chains_progress = {};
+        so.flush();
+        _root.mydata = md;
+
+        sm.loadAll();
+        assert(_root.task_chains_progress.主线 == 9,
+               "loadAll_sol_repairs_mainline_from_slot3: repair from mydata[3]");
+
+        cleanTestSO();
+        _root.savePath = oldPath;
+    }
+
     private static function test_loadAll_json_overlays_sol_pets():Void {
         setUpForLoadTest();
         var sm:SaveManager = SaveManager.getInstance();
@@ -781,6 +928,62 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
 
         sm.loadAll();
         assert(_root.宠物领养限制 == 8, "loadAll_overlays_pets: 宠物领养限制 from SO, got " + _root.宠物领养限制);
+
+        cleanTestSO();
+        _root.savePath = oldPath;
+    }
+
+    private static function test_loadAll_sol_empty_top_level_keeps_nested_pets():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+        _root.savePath = TEST_SLOT;
+
+        var so:SharedObject = SharedObject.getLocal(TEST_SLOT);
+        var md:Object = buildValidMydata();
+        md.lastSaved = "2026-03-04 12:00:00";
+        md[0][0] = "Nested宠物角色";
+        md.pets.宠物信息 = [["petA"], [], [], [], []];
+        md.pets.宠物领养限制 = 9;
+        so.data["test"] = md;
+        so.data.战宠 = [[], [], [], [], []];
+        so.data.宠物领养限制 = 5;
+        so.flush();
+        _root.mydata = md;
+
+        sm.loadAll();
+        assert(_root.宠物信息[0][0] == "petA",
+               "loadAll_sol_empty_top_level_keeps_nested_pets: pets from nested");
+        assert(_root.宠物领养限制 == 9,
+               "loadAll_sol_empty_top_level_keeps_nested_pets: adopt limit from nested");
+
+        cleanTestSO();
+        _root.savePath = oldPath;
+    }
+
+    private static function test_loadAll_sol_empty_top_level_keeps_nested_shop():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+        _root.savePath = TEST_SLOT;
+
+        var so:SharedObject = SharedObject.getLocal(TEST_SLOT);
+        var md:Object = buildValidMydata();
+        md.lastSaved = "2026-03-05 12:00:00";
+        md[0][0] = "Nested商城角色";
+        md.shop.商城已购买物品 = ["nested_item"];
+        md.shop.商城购物车 = ["nested_cart"];
+        so.data["test"] = md;
+        so.data.商城已购买物品 = [];
+        so.data.商城购物车 = [];
+        so.flush();
+        _root.mydata = md;
+
+        sm.loadAll();
+        assert(_root.商城已购买物品[0] == "nested_item",
+               "loadAll_sol_empty_top_level_keeps_nested_shop: purchased from nested");
+        assert(_root.商城购物车[0] == "nested_cart",
+               "loadAll_sol_empty_top_level_keeps_nested_shop: cart from nested");
 
         cleanTestSO();
         _root.savePath = oldPath;

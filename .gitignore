@@ -73,8 +73,9 @@ data/rag/sync_state.json
 node_modules/
 
 # Launcher build output & NuGet packages (dotnet build/restore regenerates)
-launcher/bin/Release/
+launcher/bin/
 launcher/packages/
+launcher/tests/bin/
 
 # Rust cargo build intermediates (launcher/native/sol_parser)
 # Cargo.lock IS tracked: sol_parser ships as an application cdylib, not a

@@ -15,7 +15,7 @@ namespace CF7Launcher.Save
     /// Locates a SOL file for a given SWF path and slot name.
     /// Variant fallback: drop-drive / keep-drive / directory-glob.
     /// </summary>
-    public class SolFileLocator
+    public class SolFileLocator : ISolFileLocator
     {
         private readonly string _shareRoot;     // %APPDATA%\Macromedia\Flash Player\#SharedObjects
         private readonly object _cacheLock = new object();

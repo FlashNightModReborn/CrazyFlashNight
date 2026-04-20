@@ -22,7 +22,7 @@ namespace CF7Launcher.Tasks
     ///   响应: { success: true, task: "archive", ... }
     ///      或 { success: false, task: "archive", error: "..." }
     /// </summary>
-    public class ArchiveTask
+    public class ArchiveTask : CF7Launcher.Save.IArchiveStateProbe
     {
         private readonly string _savesDir;
         private readonly object _lock = new object();

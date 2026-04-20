@@ -16,6 +16,14 @@ namespace CF7Launcher.Save
     /// </summary>
     public sealed class SolParseResult
     {
+        // Public mirror of SolParserNative.RC_* 常量，便于跨 assembly（测试）引用。
+        public const int RC_OK = 0;
+        public const int RC_NOT_FOUND = 1;
+        public const int RC_IO_ERROR = 2;
+        public const int RC_PARSE_ERROR = 3;
+        public const int RC_INVALID_ARGS = 4;
+        public const int RC_SERIALIZE_ERROR = 5;
+
         public int ReturnCode;
         public JObject Data;    // non-null iff ReturnCode == RC_OK
         public string Error;    // diagnostic for logs; null on success

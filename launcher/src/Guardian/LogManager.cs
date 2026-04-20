@@ -23,6 +23,14 @@ namespace CF7Launcher.Guardian
         private static readonly object _fileLock = new object();
         private static string _logFilePath;
 
+        // 测试 sink：非 null 时 Log() 短路，不写文件不写 UI。
+        // volatile 保证多线程 set / 读取的可见性；teardown 时与 in-flight Log() 的 race
+        // 可接受（测试环境 sink 通常是 noop 或 list 收集器，race 不影响语义）。
+        private static volatile Action<string> _sink;
+
+        public static void SetSink(Action<string> sink) { _sink = sink; }
+        public static void ResetSink() { _sink = null; }
+
         /// <summary>launcher.log 文件路径（供 /logs endpoint 读取）。</summary>
         public static string LogFilePath { get { return _logFilePath; } }
 
@@ -82,6 +90,9 @@ namespace CF7Launcher.Guardian
 
         public static void Log(string message)
         {
+            var s = _sink;
+            if (s != null) { s(message); return; }
+
             string ts = DateTime.Now.ToString("HH:mm:ss.fff");
             string line = ts + " " + message;
 

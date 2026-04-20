@@ -27,6 +27,12 @@
   var _resetBtn = null;
   var _statusEl = null;
 
+  function playUiCue(name) {
+    if (window.BootstrapApp && window.BootstrapApp.playUiCue) {
+      window.BootstrapApp.playUiCue(name);
+    }
+  }
+
   function mount(containerEl, initData) {
     _container = containerEl;
     _slot = initData.slot;
@@ -136,6 +142,7 @@
       unsub();
       if (!msg.ok) {
         showBanner('error', '加载失败: ' + (msg.error || 'unknown'));
+        playUiCue('playError');
         _rawOnly = true;
         renderModes();
         updateButtons();
@@ -158,6 +165,7 @@
       _statusEl.textContent = '';
       renderModes();
       updateButtons();
+      playUiCue('playTransition');
     });
     _unsubs.push(unsub);
     window.BootstrapApp.send({ cmd: 'load', slot: _slot });
@@ -169,6 +177,7 @@
       unsub();
       if (!msg.ok) {
         showBanner('error', '加载失败: ' + (msg.error || 'unknown'));
+        playUiCue('playError');
         _rawOnly = true;
         renderModes();
         updateButtons();
@@ -193,11 +202,13 @@
         }
       } catch (e) {
         showBanner('error', 'JSON 解析失败: ' + e.message);
+        playUiCue('playError');
       }
 
       _statusEl.textContent = '';
       renderModes();
       updateButtons();
+      playUiCue('playTransition');
     });
     _unsubs.push(unsub);
     window.BootstrapApp.send({ cmd: 'load_raw', slot: _slot });
@@ -604,6 +615,7 @@
       if (msg.ok) {
         _isDirty = false;
         _statusEl.textContent = '保存成功 (' + (msg.size || '?') + ' bytes)';
+        playUiCue('playSuccess');
         if (msg.warnings) {
           _statusEl.textContent += ' [警告: ' + JSON.stringify(msg.warnings) + ']';
         }
@@ -613,6 +625,7 @@
       } else {
         _statusEl.textContent = '保存失败: ' + (msg.error || 'unknown');
         _statusEl.style.color = '#e06e6e';
+        playUiCue('playError');
       }
     });
     _unsubs.push(unsub);
@@ -629,10 +642,12 @@
         if (msg.ok) {
           _isDirty = false;
           _statusEl.textContent = '清理成功';
+          playUiCue('playSuccess');
           window.BootstrapApp.refreshList();
           setTimeout(function() { window.BootstrapApp.closeModal(); }, 600);
         } else {
           _statusEl.textContent = '清理失败: ' + (msg.error || 'unknown');
+          playUiCue('playError');
         }
       });
       _unsubs.push(unsub);

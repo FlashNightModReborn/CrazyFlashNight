@@ -50,7 +50,7 @@
       </div>
       <div class="block">
         <div class="lbl">BUILD</div>
-        <div class="val" style="font-size:10px">2025-10-25<br>1a8f&middot;c3e0&middot;7b12</div>
+        <div class="val val-build">2025-10-25<br>1a8f&middot;c3e0&middot;7b12</div>
       </div>
     </div>
 
@@ -86,10 +86,11 @@
     <!-- 右栏：版本 + 阵营列表 -->
     <div class="side-r">
       <div class="lbl">VERSION</div>
-      <div class="ver">2.71</div>
-      <div class="ver-tail">&middot; STABLE</div>
+      <!-- ver / ver-tail / CHANNEL 值由 config/version.js 填充, 不要在这里写死 -->
+      <div class="ver" id="version-number"></div>
+      <div class="ver-tail" id="version-tail"></div>
 
-      <div class="row"><span class="k">CHANNEL</span><span class="v g">STABLE</span></div>
+      <div class="row"><span class="k">CHANNEL</span><span class="v" id="version-channel"></span></div>
       <div class="row"><span class="k">STEAM</span><span class="v g">&check; AVAILABLE</span></div>
       <div class="row"><span class="k">ENGINE</span><span class="v">WEBVIEW2</span></div>
       <div class="row"><span class="k">RUNTIME</span><span class="v">AVM1/SA</span></div>
@@ -97,7 +98,7 @@
       <div class="faction">
         <div class="lbl">FACTIONS</div>
         <div id="faction-list"></div>
-        <div id="active-brand" style="margin-top:10px;font-size:9px;letter-spacing:3px;font-family:Consolas,monospace;opacity:.75"></div>
+        <div id="active-brand"></div>
       </div>
     </div>
 
@@ -150,6 +151,12 @@
   </div>
 </div>
 <button class="intro-skip" id="intro-skip">跳 过 &middot; ESC</button>
+
+<!-- 版本号 / CHANNEL 标签: 唯一配置点在 config/version.js, 加载时同步填充上面的 #version-* 节点 -->
+<script src="config/version.js"></script>
+
+<!-- Web Audio 合成的 UI 音效 (独立于 bootstrap-main.js, 先加载以便 main 能直接引 BootstrapAudio) -->
+<script src="modules/audio.js"></script>
 
 <!-- 主控 IIFE -->
 <script src="bootstrap-main.js"></script>
