@@ -118,9 +118,12 @@ namespace CF7Launcher.Save
             // 2. Preload shadow for all branches that may need it
             JObject shadow;
             string shadowErr;
-            bool shadowValid =
-                _archive.TryLoadShadowSync(slot, out shadow, out shadowErr)
-                && SaveMigrator.ValidateResolvedSnapshot(shadow);
+            bool shadowLoaded = _archive.TryLoadShadowSync(slot, out shadow, out shadowErr);
+            if (shadowLoaded && shadow != null)
+            {
+                SaveMigrator.NormalizeResolvedSnapshot(shadow);
+            }
+            bool shadowValid = shadowLoaded && SaveMigrator.ValidateResolvedSnapshot(shadow);
             if (!shadowValid && shadow != null)
             {
                 LogManager.Log("[SolResolver] shadow present but invalid (validator rejected)");
@@ -192,8 +195,23 @@ namespace CF7Launcher.Save
             if (ver == "3.0")
             {
                 SaveMigrator.MergeTopLevelKeys(mydata, soData);
+                SaveMigrator.NormalizeResolvedSnapshot(mydata);
                 if (SaveMigrator.ValidateResolvedSnapshot(mydata))
+                {
+                    if (shadowValid)
+                    {
+                        string validSolTs = mydata.Value<string>("lastSaved");
+                        string shadowTs = shadow.Value<string>("lastSaved");
+                        if (validSolTs != null
+                            && shadowTs != null
+                            && string.Compare(shadowTs, validSolTs, StringComparison.Ordinal) >= 0)
+                        {
+                            LogManager.Log("[SolResolver] v3.0 shadow newer-or-equal than SOL — prefer json_shadow");
+                            return SolResolveResult.NewSnapshot(shadow, "json_shadow");
+                        }
+                    }
                     return SolResolveResult.NewSnapshot(mydata, "sol");
+                }
 
                 LogManager.Log("[SolResolver] v3.0 structure invalid — shadow freshness check");
                 string solTs = mydata.Value<string>("lastSaved");

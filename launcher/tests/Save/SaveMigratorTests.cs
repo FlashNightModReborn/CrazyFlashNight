@@ -123,7 +123,15 @@ namespace CF7Launcher.Tests.Save
             mydata["version"] = "2.7";
             JObject soData = new JObject();
             soData["test"] = mydata;
-            JArray tasksToDo = new JArray(); tasksToDo.Add("a"); tasksToDo.Add("b");
+            JArray tasksToDo = new JArray();
+            tasksToDo.Add(new JObject(
+                new JProperty("id", 1),
+                new JProperty("requirements", new JObject(
+                    new JProperty("stages", new JArray())))));
+            tasksToDo.Add(new JObject(
+                new JProperty("id", 2),
+                new JProperty("requirements", new JObject(
+                    new JProperty("stages", new JArray())))));
             soData["tasks_to_do"] = tasksToDo;
             soData["tasks_finished"] = new JObject();
             soData["task_chains_progress"] = new JObject();
@@ -243,6 +251,69 @@ namespace CF7Launcher.Tests.Save
 
             Assert.Equal(9,
                 mydata["tasks"]["task_chains_progress"]["主线"].Value<int>());
+        }
+
+        [Fact]
+        public void NormalizeResolvedSnapshot_RepairsFlattenedTaskPetShopShapes()
+        {
+            JObject md = BuildValidMydata();
+            JObject tasks = (JObject)md["tasks"];
+            tasks["tasks_to_do"] = new JObject(
+                new JProperty("id", 2),
+                new JProperty("requirements", new JObject(
+                    new JProperty("stages", new JObject()))));
+            tasks["tasks_finished"] = new JArray(1, 1);
+            tasks["task_chains_progress"] = new JObject(
+                new JProperty("0", 1),
+                new JProperty("主线", 2),
+                new JProperty("stages", new JObject()));
+
+            JObject pets = (JObject)md["pets"];
+            pets["宠物信息"] = new JArray(
+                new JArray(49, 33, 176, 5000, 0, new JObject()),
+                new JObject(),
+                new JObject(),
+                new JObject(),
+                new JObject());
+
+            JObject shop = (JObject)md["shop"];
+            shop["商城已购买物品"] = new JObject();
+            shop["商城购物车"] = new JObject();
+
+            SaveMigrator.NormalizeResolvedSnapshot(md);
+
+            JArray tasksToDo = (JArray)md["tasks"]["tasks_to_do"];
+            Assert.Single(tasksToDo);
+            Assert.Equal(2, tasksToDo[0]["id"].Value<int>());
+            Assert.IsType<JArray>(tasksToDo[0]["requirements"]["stages"]);
+            Assert.Empty((JArray)tasksToDo[0]["requirements"]["stages"]);
+            Assert.Equal(1, md["tasks"]["tasks_finished"]["0"].Value<int>());
+            Assert.Equal(2, md["tasks"]["task_chains_progress"]["主线"].Value<int>());
+            Assert.Null(md["tasks"]["task_chains_progress"]["stages"]);
+
+            JArray petInfo = (JArray)md["pets"]["宠物信息"];
+            Assert.Equal(5, petInfo.Count);
+            for (int i = 0; i < petInfo.Count; i++)
+            {
+                Assert.IsType<JArray>(petInfo[i]);
+            }
+
+            Assert.IsType<JArray>(md["shop"]["商城已购买物品"]);
+            Assert.IsType<JArray>(md["shop"]["商城购物车"]);
+            Assert.True(SaveMigrator.ValidateResolvedSnapshot(md));
+        }
+
+        [Fact]
+        public void NormalizeResolvedSnapshot_DropsTaskObjectWithoutId()
+        {
+            JObject md = BuildValidMydata();
+            ((JObject)md["tasks"])["tasks_to_do"] = new JObject(
+                new JProperty("stages", new JObject()));
+
+            SaveMigrator.NormalizeResolvedSnapshot(md);
+
+            Assert.Empty((JArray)md["tasks"]["tasks_to_do"]);
+            Assert.True(SaveMigrator.ValidateResolvedSnapshot(md));
         }
 
         [Fact]
@@ -480,6 +551,25 @@ namespace CF7Launcher.Tests.Save
             Assert.False(SaveMigrator.ValidateResolvedSnapshot(md));
         }
 
+        [Fact]
+        public void Validate_TasksWrongTypes_False()
+        {
+            JObject md = BuildValidMydata();
+            JObject tasks = (JObject)md["tasks"];
+            tasks["tasks_to_do"] = new JObject(new JProperty("id", 2));
+            Assert.False(SaveMigrator.ValidateResolvedSnapshot(md));
+
+            md = BuildValidMydata();
+            tasks = (JObject)md["tasks"];
+            tasks["tasks_finished"] = new JArray(1, 1);
+            Assert.False(SaveMigrator.ValidateResolvedSnapshot(md));
+
+            md = BuildValidMydata();
+            tasks = (JObject)md["tasks"];
+            tasks["task_chains_progress"] = new JArray(1, 2);
+            Assert.False(SaveMigrator.ValidateResolvedSnapshot(md));
+        }
+
         [Theory]
         [InlineData("宠物信息")]
         [InlineData("宠物领养限制")]
@@ -498,6 +588,14 @@ namespace CF7Launcher.Tests.Save
             Assert.False(SaveMigrator.ValidateResolvedSnapshot(md));
         }
 
+        [Fact]
+        public void Validate_PetsInfoObject_False()
+        {
+            JObject md = BuildValidMydata();
+            ((JObject)md["pets"])["宠物信息"] = new JObject();
+            Assert.False(SaveMigrator.ValidateResolvedSnapshot(md));
+        }
+
         [Theory]
         [InlineData("商城已购买物品")]
         [InlineData("商城购物车")]
@@ -513,6 +611,16 @@ namespace CF7Launcher.Tests.Save
         {
             JObject md = BuildValidMydata();
             md.Remove("shop");
+            Assert.False(SaveMigrator.ValidateResolvedSnapshot(md));
+        }
+
+        [Theory]
+        [InlineData("商城已购买物品")]
+        [InlineData("商城购物车")]
+        public void Validate_ShopListObject_False(string field)
+        {
+            JObject md = BuildValidMydata();
+            ((JObject)md["shop"])[field] = new JObject();
             Assert.False(SaveMigrator.ValidateResolvedSnapshot(md));
         }
     }
