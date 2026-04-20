@@ -198,7 +198,7 @@ Program.Run(args)
 
 ## 目录结构
 
-按 2026-04-19 的源码树整理。只列追踪目录；`bin/` / `packages/` / `target/` / `node_modules/` / `obj/` 等构建产物和缓存均由 .gitignore 管理。
+按 2026-04-20 的源码树整理。只列追踪目录；`bin/` / `packages/` / `target/` / `node_modules/` / `obj/` 等构建产物和缓存均由 .gitignore 管理。
 
 ```
 launcher/
@@ -363,10 +363,10 @@ launcher/
 │       ├── icons.js                       图标 manifest 加载与解析
 │       ├── kshop.js                       K 点商城面板（ShopTask 双层 callId）
 │       ├── help.js / help-panel.js        帮助系统（顶层入口 + 面板骨架）
-│       ├── lockbox-core.js / lockbox-panel.js / lockbox-generator.js /
-│       │   lockbox-solver.js / lockbox-audio.js
 │       └── minigames/
-│           └── pinalign/                  定位小游戏（core/adapter/app/dev/reference + audio/panel/css）
+│           ├── shared/                    小游戏共享层（host-bridge + minigame-shell + shared/dev QA 基础层）
+│           ├── lockbox/                   开锁小游戏（core/dev + lockbox-audio/panel/css/README）
+│           └── pinalign/                  定位小游戏（core/adapter/app/dev/reference + audio/panel/css/README）
 │
 ├── tests/                                 【xUnit 2.4.2 C# 单测，见测试基建节】
 │   ├── Launcher.Tests.csproj              legacy csproj + packages.config（net462 对齐主工程）
@@ -380,6 +380,9 @@ launcher/
 │   └── phase1-owner-matrix.md             （Phase 1 所有权/职责矩阵归档）
 │
 └── tools/
+    ├── lockbox-bake.js                    Lockbox 变体池离线生成工具（写入 web/data/lockbox-variants.json）
+    ├── run-minigame-qa.js                 小游戏 Node QA 入口（lockbox / pinalign / all）
+    ├── validate-minigame-final-state.js   小游戏最终态静态校验（旧路径 / 旧协议 / 旧共享类名）
     └── nuget.exe                          NuGet CLI
 ```
 
@@ -510,6 +513,22 @@ powershell -File run_tests.ps1
 | `Save/SolResolverTests.cs` | tombstone / shadow / v3.0 / v2.7 / pre-2.7 / parse 失败等决议矩阵，外加接口注入边界 | 18 |
 | `Bus/MessageRouterTests.cs` | 协议分发 + callId wrap + error 构造，**锁定当前观察行为**（异常冒泡 / respond 无去重） | 15 |
 | `SanityTests.cs` | 基建冒烟 | 2 |
+
+### 小游戏 QA 与开发 harness
+
+小游戏测试不走 `launcher/tests/`，而是走 `web/modules/minigames/` 自带的双轨 QA：
+
+- **Node QA**：`node tools/run-minigame-qa.js --game lockbox|pinalign|all`
+  - 实际入口文件：`tools/run-minigame-qa.js`
+  - 共享 runner：`web/modules/minigames/shared/dev/node-qa-runner.js`
+  - 适用场景：纯逻辑、确定性、导出结构、回归脚本
+- **Browser harness**：直接打开各自 `dev/harness.html`
+  - `web/modules/minigames/lockbox/dev/harness.html`
+  - `web/modules/minigames/pinalign/dev/harness.html`
+  - 共享 QA 基础层：`web/modules/minigames/shared/dev/harness-base.js` + `harness-base.css`
+  - 支持 query 驱动的 `?qa=1` / `?case=` / `?scenario=` / `?dump=1`
+- **静态收口校验**：`node tools/validate-minigame-final-state.js`
+  - 用于阻止旧 `modules/lockbox-*.js`、旧 `lockbox_session/pinalign_session`、旧共享结构 class 名回流
 
 ### LogManager 测试 hook
 
@@ -947,14 +966,27 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
 **面板类型**：
 - **kshop**（K 点商城）: 需要 Flash 交互；打开/关闭会走 `shopPanelOpen/shopPanelClose`，并参与 `_pauseNeedsRestore`
 - **help**（游戏帮助）: 纯 Web 侧 Markdown 帮助面板，不触发 Flash 暂停恢复
-- **lockbox**（开锁小游戏）: Web 面板，支持运行时/开发态初始化参数
-- **pinalign**（定位小游戏）: Web 面板，当前主要走 dev panel 路径
+- **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
+- **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 
 **通用模块**：
 - `panels.js`: 面板注册/生命周期管理 (register/open/close/force_close)
 - `tooltip.js`: hover 跟随 + anchored 锚定两种模式，AS2 HTML 转换
 - `icons.js`: 物品图标 manifest 加载 + 名称→URL 解析
+- `web/modules/minigames/shared/host-bridge.js`: 小游戏 → 宿主的统一桥接
+- `web/modules/minigames/shared/minigame-shell.css`: 小游戏共享结构样式
+
+**小游戏宿主协议**：
+- Lockbox / Pinalign 不再各自发 `lockbox_session` / `pinalign_session`
+- 统一发 `Bridge.send({ type:'panel', cmd:'minigame_session', payload:{ game, kind, data } })`
+- 生命周期约定：
+  - `open`: 面板已打开，只保证 `data.requested`
+  - `ready`: 状态已建立，`data.requested` / `data.resolved` / `data.metrics` 都必须存在
+  - `close`: 带最后一次已知 `phase` / `metrics`
+  - `turn` / `result` / `export`: 沿用各游戏语义，但都走同一 envelope
 
 **状态机 (_activePanel)**：`null` → `"kshop" / "help" / "lockbox" / "pinalign" / ...` → `null`。当前只有 `kshop` 会在断连或强制关闭路径里设置 `_pauseNeedsRestore`；其余纯 Web / dev panel 只做面板生命周期管理，不触发 Flash 暂停恢复。
 
 **热重载恢复**：`_uiDataSnapshot` 按 KV key 维护最新值快照，WebView2 热重载后 `FlushUiDataBuffer` 先回放完整快照，确保 game-ready 等关键状态不丢失。
+
+**维护约束**：凡是小游戏目录迁移、宿主协议变更、QA 入口变化，必须同步更新本 README 的目录树、测试入口和本节协议说明；模块内细节留在各自 `web/modules/minigames/*/README.md`。
