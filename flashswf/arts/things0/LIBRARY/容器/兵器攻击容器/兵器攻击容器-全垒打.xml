@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-全垒打" itemID="696796fb-000028fd" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-全垒打" lastModified="1769694923" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-全垒打" itemID="696796fb-000028fd" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-全垒打" lastModified="1776698556" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-全垒打" currentFrame="26">
+    <DOMTimeline name="兵器攻击容器-全垒打" currentFrame="15">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -142,7 +142,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -157,11 +157,10 @@ Z轴攻击范围 = 30;
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[/*
-onClipEvent (enterFrame) {
-	_parent.攻击时可改变移动方向(20);
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	_parent.攻击时移动(10);
 }
-*/]]></script>
+]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -171,7 +170,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="21" keyMode="9728">
               <elements/>
@@ -197,7 +196,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -342,7 +341,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -818,7 +817,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#8E92A9" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#8E92A9" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -6066,7 +6065,7 @@ onClipEvent (enterFrame) {
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="56.95" centerPoint3DY="118.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="56.95" centerPoint3DY="118.6">
                   <matrix>
                     <Matrix a="-0.315673828125" b="-0.8741455078125" c="-0.8741455078125" d="0.315673828125" tx="-89.55" ty="-8.15"/>
                   </matrix>
@@ -6108,7 +6107,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="阴影" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
