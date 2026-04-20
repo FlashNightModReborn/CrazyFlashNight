@@ -1,7 +1,7 @@
 # 闪客快打7佣兵帝国 单机版 MOD
 
 **《闪客快打7佣兵帝国》（Crazy Flasher 7: Mercenary Empire）单机版 MOD 开发工程**  
-**最后核对代码基线**：commit `c2118e295`（2026-04-20）。
+**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
 
 CF7:ME 是一个 **Flash 起源、当前已演化为多栈运行时** 的单机 MOD 工程。  
 游戏核心仍运行在 **ActionScript 2.0 + Flash CS6** 上，但外围运行、启动、UI、验证和存档链路已经扩展为：
@@ -87,6 +87,8 @@ node tools/validate-doc-governance.js
 | 系统拓扑与子栈关系 | [agentsDoc/architecture.md](agentsDoc/architecture.md) |
 | 验证矩阵与测试入口 | [agentsDoc/testing-guide.md](agentsDoc/testing-guide.md) |
 | 编码规范与多栈边界 | [agentsDoc/coding-standards.md](agentsDoc/coding-standards.md) |
+| Agent 协作粒度与 harness 实践 | [agentsDoc/agent-harness.md](agentsDoc/agent-harness.md) |
+| 长会话节奏与会话健康 | [agentsDoc/human-care.md](agentsDoc/human-care.md) |
 | 文档治理规则 | [agentsDoc/documentation-governance.md](agentsDoc/documentation-governance.md) |
 | Launcher 深文档 | [launcher/README.md](launcher/README.md) |
 | 技术栈保留 / 收敛决策 | [docs/tech-stack-rationalization.md](docs/tech-stack-rationalization.md) |

@@ -1,7 +1,7 @@
 # Agent 协作与 harness 实践
 
 **文档角色**：Agent 协作 / 任务粒度 canonical doc。  
-**最后核对代码基线**：commit `d4f31beee`(2026-04-20)。
+**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
 
 只写**项目特定**约束。Prompt 写法、subagent 概念、self-contained 这类通识不在本文重复。
 
@@ -41,6 +41,12 @@
 - `publish_done.marker` 仅说明 JSFL 触发结束
 
 详见 [testing-guide.md §2](testing-guide.md)。
+
+### Harness-first 约定
+
+- UI / overlay / minigame 行为变更，优先补现有 `dev/harness.html`、`qa-suite.js` 或静态校验；不要只留“人工点一下”的说明
+- Node QA 负责确定性 / core 状态流；browser harness 负责协议 / DOM / 布局 / 交互；静态校验负责结构与旧入口回流拦截
+- 新增 harness 用例应可重跑、可断言、结果结构化；优先提供 query 参数、脚本场景或固定入口，而不是临时控制台片段
 
 ## 4. 项目特定失败模式
 

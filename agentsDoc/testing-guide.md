@@ -1,7 +1,7 @@
 # 测试约定与验证矩阵
 
 **文档角色**：验证矩阵 canonical doc。  
-**最后核对代码基线**：commit `d4f31beee`（2026-04-20）。
+**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
 
 按子栈选验证；不要用「编译一下」「跑一下 build」笼统覆盖跨栈任务。
 
@@ -69,7 +69,15 @@ chcp.com 65001 | Out-Null
 - `launcher/web/modules/minigames/lockbox/dev/harness.html`
 - `launcher/web/modules/minigames/pinalign/dev/harness.html`
 
+**默认顺序**：
+
+- 纯逻辑 / 确定性问题先跑 Node QA
+- 协议 / DOM / 布局 / 交互问题进 browser harness
+- 目录 / 协议 / 旧入口回流问题再补静态校验
+
 URL 参数:`?qa=1` 自动断言 / `?case=` 单条 / `?scenario=` 脚本场景 / `?dump=1` 结构化输出。
+
+若改动后的行为无法被现有 harness 或 QA 覆盖，同轮补测试入口，不把“靠人工记得点开”当作默认收尾。
 
 静态校验拦截:旧平铺 Lockbox 入口、旧 `lockbox_session` / `pinalign_session`、旧共享结构 class 名。
 

@@ -1,7 +1,7 @@
 # 项目技术架构总览
 
 **文档角色**：系统拓扑 canonical doc。  
-**最后核对代码基线**：commit `c2118e295`（2026-04-20）。
+**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
 
 本项目当前应被理解为：**Flash 核心游戏 + Guardian Launcher Host + WebView2 UI + native / build tooling** 的本地多栈系统。
 
@@ -36,7 +36,7 @@
 - 游戏核心逻辑、帧脚本、资源链接和 `_root` 级业务入口仍在 `scripts/` 与 Flash 资产中
 - 子资源与主 SWF 共享运行时上下文，不以现代沙箱或模块系统隔离
 - `_root`、MovieClip、帧驱动 FSM、XML 数据加载仍是核心工程现实
-- 这条链不能被文档误写成“可直接命令行编译的普通脚本项目”
+- 这条链的验证与构建依赖 Flash / JSFL / IDE 协同，不属于可直接命令行编译的普通脚本项目
 
 ### B. Flash CS6 编译与自动化 smoke 链
 

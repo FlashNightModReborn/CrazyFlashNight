@@ -5,7 +5,7 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：commit `d4f31beee`（2026-04-20）。
+**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
 
 ---
 
@@ -23,7 +23,7 @@
 
 ---
 
-## Context Packs（按任务最小加载，最后核对 commit `d4f31beee`）
+## Context Packs（按任务最小加载，最后核对 commit `9f8f0c225`）
 
 先判定**主责子栈**，再只读对应文档；跨栈任务先跟主责子栈走，再按依赖补读。
 

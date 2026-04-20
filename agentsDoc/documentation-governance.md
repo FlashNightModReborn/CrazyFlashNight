@@ -1,7 +1,7 @@
 # 文档治理规则
 
 **文档角色**：文档治理 canonical doc。  
-**最后核对代码基线**：commit `d4f31beee`（2026-04-20）。
+**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
 
 ## 1. 文档分层
 
@@ -29,6 +29,10 @@
 - `launcher/README.md` 的目录树、测试入口、Panel / minigame 章节
 - `agentsDoc/architecture.md`
 - `agentsDoc/testing-guide.md`
+- `agentsDoc/agent-harness.md`
+- `agentsDoc/human-care.md`
+- `agentsDoc/documentation-governance.md`
+- `agentsDoc/self-optimization.md`
 - `docs/tech-stack-rationalization.md`
 
 如果改动只是文档本身而非代码，也仍以**最后核对的代码基线**为准，不写“文档修改日期”替代代码基线。
