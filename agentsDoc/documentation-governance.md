@@ -1,7 +1,7 @@
 # 文档治理规则
 
 **文档角色**：文档治理 canonical doc。  
-**最后核对代码基线**：commit `c2118e295`（2026-04-20）。
+**最后核对代码基线**：commit `d4f31beee`（2026-04-20）。
 
 ## 1. 文档分层
 
@@ -71,7 +71,29 @@
 
 当旧叙述已经失真时，优先替换；不要在高频入口文档里持续保留“旧说法禁止回流”的解释性段落。
 
-## 7. 巡检脚本
+## 7. 文档体量预算
+
+入口文档承担的是「让读者快速决策去哪里」,行数失控会直接吞 agent 上下文与人类注意力。  
+本仓的预算如下,巡检脚本会硬校验:
+
+| 文档 | 角色 | 行数预算 | 超限处理 |
+|------|------|----------|----------|
+| `AGENTS.md` | 顶层路由 | ≤ 80 | 路由项太多 → 拆 Context Pack 类别;深内容 → 下沉到 canonical doc |
+| `CLAUDE.md` | Claude 入口卡 | ≤ 20 | 几乎只剩链接;新规则进 AGENTS.md 或 canonical doc |
+| `README.md` | 人类总览 | ≤ 120 | 教程 / 历史 / 营销话术全部下沉 |
+| `agentsDoc/testing-guide.md` | 验证矩阵 | ≤ 110 | 命令表格化;细节下沉到子系统 README |
+| `agentsDoc/agent-harness.md` | 协作 / harness | ≤ 90 | 只写项目特定;模型通识(prompt 写法、subagent 概念)不进 |
+| `agentsDoc/human-care.md` | 人类节奏 | ≤ 90 | 节奏 / 信号 / 主动行为表格化;不重复 self-optimization |
+| `agentsDoc/documentation-governance.md` | 文档治理 | ≤ 130 | 案例下沉到 shared-notes |
+| `agentsDoc/self-optimization.md` | 自优化 | ≤ 130 | — |
+
+**预算原则**:Opus 4.7+ 等新一代模型已具备大量协作通识,canonical doc 应只承载**项目特定**约束。模型已知道的(prompt 自包含、subagent 边界、不要 outsource thinking 等),不在本仓重复。
+
+**深文档**（架构、子系统 README、`as2-*`、`game-*`、`docs/*`）不设硬上限,但应显式标注「文档角色」与基线 commit。
+
+预算超限不是禁止 commit,但应在同一改动里完成「下沉 / 拆分」动作,而不是默默放任增长。
+
+## 8. 巡检脚本
 
 统一使用：
 
@@ -82,9 +104,11 @@ node tools/validate-doc-governance.js
 
 当前脚本负责轻量静态巡检：
 
+- 必读文件存在
 - `AGENTS.md` 的关键链接存在
 - 已知回流模式没有重新进入高频入口文档
 - 关键文档包含基线标记或维护约束
-- 关键版本号与 canonical 文档没有明显冲突
+- 高变动文档的基线 commit 真实存在于 `git log` 中
+- 入口文档行数没有突破本文 §7 的预算
 
 脚本是巡检器，不是 source of truth；规则本身仍以本文为准。

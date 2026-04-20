@@ -5,7 +5,7 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：commit `c2118e295`（2026-04-20）。
+**最后核对代码基线**：commit `d4f31beee`（2026-04-20）。
 
 ---
 
@@ -19,10 +19,11 @@
 - **验证矩阵**：不要在本文件背命令清单；统一看 [testing-guide.md](agentsDoc/testing-guide.md)
 - **不提交**：大型二进制资源、`node_modules`
 - **文档同步规则**：凡是路径迁移、协议变更、测试入口变更、构建门槛变更、新子栈引入 / 淘汰，同轮同步更新对应 canonical doc，并运行 `node tools/validate-doc-governance.js`
+- **协作元约束**：任务粒度、subagent 边界、prompt 自包含规则统一看 [agent-harness.md](agentsDoc/agent-harness.md);长会话节奏 / 主动行为 / 软停窗口看 [human-care.md](agentsDoc/human-care.md)
 
 ---
 
-## Context Packs（按任务最小加载，最后核对 commit `c2118e295`）
+## Context Packs（按任务最小加载，最后核对 commit `d4f31beee`）
 
 先判定**主责子栈**，再只读对应文档；跨栈任务先跟主责子栈走，再按依赖补读。
 
@@ -31,6 +32,7 @@
 - **Launcher Host（C# / WinForms / WebView2 / Bus）**：先读 [launcher/README.md](launcher/README.md) + [architecture.md](agentsDoc/architecture.md)；按需补 [coding-standards.md](agentsDoc/coding-standards.md)、[testing-guide.md](agentsDoc/testing-guide.md)、[tech-stack-rationalization.md](docs/tech-stack-rationalization.md)、[cfn-cli.sh](tools/cfn-cli.sh)
 - **Launcher Web / Minigames**：先读 [launcher/README.md](launcher/README.md) + [testing-guide.md](agentsDoc/testing-guide.md)；按需补 [architecture.md](agentsDoc/architecture.md)、`launcher/web/modules/minigames/*/README.md`、`launcher/web/modules/minigames/*/dev/harness.html`
 - **Automation / Build / Verification**：先读 [automation/README.md](automation/README.md) + [testing-guide.md](agentsDoc/testing-guide.md)；按需补 [FlashCS6自动化编译.md](scripts/FlashCS6自动化编译.md)、[launcher/README.md](launcher/README.md)、[cfn-cli.sh](tools/cfn-cli.sh)
+- **协作 / 任务粒度 / harness**：先读 [agent-harness.md](agentsDoc/agent-harness.md) + [human-care.md](agentsDoc/human-care.md)；按需补 [self-optimization.md](agentsDoc/self-optimization.md)
 - **文档治理 / 会话归档**：先读 [documentation-governance.md](agentsDoc/documentation-governance.md) + [self-optimization.md](agentsDoc/self-optimization.md)；按需补 [tech-stack-rationalization.md](docs/tech-stack-rationalization.md)、[shared-notes.md](agentsDoc/shared-notes.md)、[README.md](README.md)
 
 ---
@@ -41,6 +43,8 @@
 - [README.md](README.md)：人类维护者总览
 - [agentsDoc/architecture.md](agentsDoc/architecture.md)：系统拓扑 canonical doc
 - [agentsDoc/testing-guide.md](agentsDoc/testing-guide.md)：验证矩阵 canonical doc
+- [agentsDoc/agent-harness.md](agentsDoc/agent-harness.md)：Agent 协作与任务粒度 canonical doc
+- [agentsDoc/human-care.md](agentsDoc/human-care.md)：人类节奏与会话健康 canonical doc
 - [launcher/README.md](launcher/README.md)：Launcher 子系统 source of truth
 - [docs/tech-stack-rationalization.md](docs/tech-stack-rationalization.md)：技术栈保留 / 收敛决策
 

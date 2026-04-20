@@ -1,5 +1,8 @@
 # 自优化工作流
 
+**文档角色**：会话归档 / 自优化 canonical doc。  
+**最后核对代码基线**：commit `d4f31beee`（2026-04-20）。
+
 ## 1. 触发时机
 
 - 用户明确结束会话前
@@ -7,6 +10,7 @@
 - 发现重要技术洞察、架构理解或踩坑经验时
 - 修改了 `AGENTS.md`、`README.md`、`agentsDoc/*`、`launcher/README.md`、`automation/README.md`、`scripts/FlashCS6自动化编译.md`
 - 用户主动要求归档或巡检文档健康度时
+- **长会话软停窗口触发**(详见 [human-care.md §4-§5](human-care.md))
 
 ## 2. 归档判断
 
@@ -100,3 +104,22 @@ node tools/validate-doc-governance.js
 - 是否有新系统、新子栈、新验证入口需要补充索引
 - `AGENTS.md` 的 Context Packs 是否覆盖当前工作场景
 - 技术栈描述是否仍符合 `docs/tech-stack-rationalization.md`
+- 入口文档是否突破 [documentation-governance.md §7](documentation-governance.md) 的体量预算
+
+## 8. 长会话健康收尾
+
+进入长会话软停窗口时(参见 [human-care.md §5](human-care.md)),收尾动作按顺序:
+
+1. **不再开新方向**：把当前正在做的最小任务收完
+2. **强制归档当前进度**：本文 §4 收尾检查 + 把还没固化的洞察写到对应 canonical doc 或 memory
+3. **commit 现场可提交的部分**：避免下一段会话面对一堆未提交脏状态;无法 commit 的部分写一句「下一段从 X 开始」
+4. **运行巡检**：
+
+```powershell
+chcp.com 65001 | Out-Null
+node tools/validate-doc-governance.js
+```
+
+5. **轻量收尾话术**:陈述当前状态与未完成项,不评估「人类是否疲劳」、不数据化人类。
+
+「最后再做一件」几乎从不是最后一件。出现这类语言时优先复述当前状态,而不是直接接活。

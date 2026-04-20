@@ -1,145 +1,93 @@
 # 测试约定与验证矩阵
 
 **文档角色**：验证矩阵 canonical doc。  
-**最后核对代码基线**：commit `c2118e295`（2026-04-20）。
+**最后核对代码基线**：commit `d4f31beee`（2026-04-20）。
 
-本项目的验证方式必须按子栈选择，不能再用“编译一下 Flash”或“跑一下 launcher/build.ps1”笼统覆盖全部任务。
+按子栈选验证；不要用「编译一下」「跑一下 build」笼统覆盖跨栈任务。
+
+## 0. 通用前缀
+
+PowerShell 命令前先跑（避免 GBK 乱码）：
+
+```powershell
+chcp.com 65001 | Out-Null
+```
+
+下方所有 PowerShell 命令默认已执行该前缀,不再每条重复。
 
 ## 1. 任务 → 验证入口矩阵
 
-| 任务类型 | 必跑验证 | 视改动追加 |
-|----------|----------|------------|
-| AS2 class / 帧脚本 / Flash 资源联动 | `scripts/compile_test.ps1` 或 `scripts/compile_test.sh` | Flash IDE 复核、截图、专项 TestLoader 套件 |
-| XML / 数据 / 游戏数值 | 受影响路径的运行时 smoke | `compile_test`、游戏内人工验证 |
+| 任务类型 | 必跑 | 视改动追加 |
+|----------|------|------------|
+| AS2 class / 帧脚本 / Flash 资源联动 | `scripts/compile_test.ps1` 或 `bash scripts/compile_test.sh` | Flash IDE 复核、截图、专项 TestLoader 套件 |
+| XML / 数据 / 游戏数值 | 受影响路径运行时 smoke | `compile_test`、游戏内人工验证 |
 | Launcher C# / Host / Bus | `launcher/build.ps1` | `launcher/tests/run_tests.ps1`、`tools/cfn-cli`、`--bus-only` |
-| Launcher Web / Minigame | `node launcher/tools/run-minigame-qa.js --game ...` | 打开 browser harness、`node launcher/tools/validate-minigame-final-state.js` |
+| Launcher Web / Minigame | `node launcher/tools/run-minigame-qa.js --game ...` | browser harness、`node launcher/tools/validate-minigame-final-state.js` |
 | 文档与治理 | `node tools/validate-doc-governance.js` | 交叉 grep / 链接检查 / 基线复核 |
 
 ## 2. AS2 / Flash 验证
 
-### 入口
+**入口**：`powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1` 或 `bash scripts/compile_test.sh`
 
-- PowerShell：`powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1`
-- Bash：`bash scripts/compile_test.sh`
+**成功判据**（缺一不可视为成功）：
 
-### 成功判据
+- 本次运行**新鲜生成**的 `scripts/flashlog.txt`
+- 必要时核对 `scripts/compile_output.txt`
+- `scripts/compiler_errors.txt` 为空或无新错误
+- `publish_done.marker` **仅说明 JSFL 触发结束**,不能单独视为成功
 
-- 有**本次运行新鲜生成**的 `scripts/flashlog.txt`
-- 需要时核对 `scripts/compile_output.txt`
-- 编译期错误看 `scripts/compiler_errors.txt`
-- `publish_done.marker` 只能说明 JSFL 触发结束，**不能单独视为成功**
+**对外表述边界**：
 
-### 对外表述边界
+- 可以说：`已完成 Flash CS6 自动化 smoke 验证` / `已触发编译并拿到新鲜 trace`
+- **不要**在缺少新鲜 trace、编译器错误面板或 IDE 复核时说「已编译通过」
 
-- 可以说：`已完成 Flash CS6 自动化 smoke 验证`
-- 可以说：`已触发 Flash CS6 编译并拿到新鲜 trace`
-- 不要在缺少新鲜 trace / 编译器错误面板 / IDE 复核时直接写：`已编译通过`
+详见 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
 
 ## 3. Launcher Host 验证
 
-### 构建
+| 用途 | 命令 |
+|------|------|
+| 构建 | `powershell -File launcher/build.ps1` |
+| xUnit | `powershell -File launcher/tests/run_tests.ps1` |
+| 总线健康 | `bash tools/cfn-cli.sh status` |
+| AS2 回环 | `bash tools/cfn-cli.sh console "help"` |
+| 集成 (testMovie) | `CRAZYFLASHER7MercenaryEmpire.exe --bus-only` |
 
-```powershell
-chcp.com 65001 | Out-Null
-powershell -File launcher/build.ps1
-```
-
-### xUnit
-
-```powershell
-chcp.com 65001 | Out-Null
-powershell -File launcher/tests/run_tests.ps1
-```
-
-### CLI / 总线健康检查
-
-```powershell
-chcp.com 65001 | Out-Null
-bash tools/cfn-cli.sh status
-bash tools/cfn-cli.sh console "help"
-```
-
-### `--bus-only` 集成测试
-
-```powershell
-CRAZYFLASHER7MercenaryEmpire.exe --bus-only
-```
-
-适用场景：
-
-- Flash CS6 testMovie 与 Launcher 通信链验证
-- AI / 模拟实验需要外部 Flash 实例自行连总线
-- 排查是否为启动链路问题，而非总线问题
+`--bus-only` 适用：Flash CS6 testMovie ↔ Launcher 通信链验证;AI / 模拟实验需外部 Flash 自连总线;排查启动链路 vs 总线本身。
 
 ## 4. Launcher Web / Minigame 验证
 
-### Node QA
+| 用途 | 命令 |
+|------|------|
+| Node QA(单局) | `node launcher/tools/run-minigame-qa.js --game lockbox` |
+| Node QA(单局) | `node launcher/tools/run-minigame-qa.js --game pinalign` |
+| Node QA(全套) | `node launcher/tools/run-minigame-qa.js --game all` |
+| 静态校验 | `node launcher/tools/validate-minigame-final-state.js` |
 
-```powershell
-chcp.com 65001 | Out-Null
-node launcher/tools/run-minigame-qa.js --game lockbox
-node launcher/tools/run-minigame-qa.js --game pinalign
-node launcher/tools/run-minigame-qa.js --game all
-```
-
-适用场景：
-
-- 纯逻辑 QA
-- 确定性 / 导出结构 / solver 一致性
-- 回归脚本
-
-### Browser harness
-
-直接打开：
+**Browser harness**(直接打开):
 
 - `launcher/web/modules/minigames/lockbox/dev/harness.html`
 - `launcher/web/modules/minigames/pinalign/dev/harness.html`
 
-标准能力：
+URL 参数:`?qa=1` 自动断言 / `?case=` 单条 / `?scenario=` 脚本场景 / `?dump=1` 结构化输出。
 
-- `?qa=1` 自动跑断言
-- `?case=` 跑单条测试
-- `?scenario=` 跑脚本化 UI 场景
-- `?dump=1` 输出结构化结果 / 布局快照
+静态校验拦截:旧平铺 Lockbox 入口、旧 `lockbox_session` / `pinalign_session`、旧共享结构 class 名。
 
-### 静态校验
+## 5. 自动化与文档治理
 
-```powershell
-chcp.com 65001 | Out-Null
-node launcher/tools/validate-minigame-final-state.js
-```
+| 用途 | 入口 |
+|------|------|
+| 启动 / 运行链 | [automation/README.md](../automation/README.md) |
+| Flash 编译 smoke 细节 | [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md) |
+| 文档治理巡检 | `node tools/validate-doc-governance.js` |
 
-用于阻止：
+巡检脚本检查:必读文件存在、AGENTS.md 关键链接存在、回流模式未重新进入入口、关键文档基线标记存在、关键版本未回退。脚本是巡检器,不是 source of truth。
 
-- 旧平铺 Lockbox 入口回流
-- 旧 `lockbox_session` / `pinalign_session` 回流
-- 旧共享结构 class 名回流
+## 6. 收尾话术参考
 
-## 5. 自动化与文档治理验证
+- 文档改动:`已更新文档并运行文档治理巡检`
+- Minigame:`已跑 Node QA / 静态校验;browser harness 未人工点开`
+- Launcher:`已跑 build / xUnit;未做完整运行态手点`
+- Flash:`已完成 Flash smoke;未在缺少新鲜 trace 或 IDE 复核时声称编译通过`
 
-### 自动化 / 启动链
-
-- 运行文档：`automation/README.md`
-- 编译 smoke 文档：`scripts/FlashCS6自动化编译.md`
-- 两者职责分离：启动与运行 ≠ Flash 编译验证
-
-### 文档治理巡检
-
-```powershell
-chcp.com 65001 | Out-Null
-node tools/validate-doc-governance.js
-```
-
-当前脚本只检查高价值静态约束：
-
-- `AGENTS.md` 的关键链接存在
-- 治理规则与关键角色说明未回退
-- 关键文档存在基线标记或维护约束
-- 关键版本 / 角色描述未明显回退
-
-## 6. 推荐收尾话术
-
-- 文档改动：`已更新文档并运行文档治理巡检`
-- Minigame 改动：`已跑 Node QA / 静态校验；browser harness 未人工点开`
-- Launcher 改动：`已跑 build / xUnit；未做完整运行态手点`
-- Flash 改动：`已完成 Flash smoke；未在缺少新鲜 trace 或 IDE 复核时声称编译通过`
+完整失败模式与重入约束看 [agent-harness.md](agent-harness.md)。
