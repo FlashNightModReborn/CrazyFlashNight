@@ -1,7 +1,7 @@
 # Automation 自动化脚本使用指南
 
 **文档角色**：启动与运行自动化入口。  
-**最后核对代码基线**：commit `c2118e295`（2026-04-20）。
+**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
 
 本目录只负责 **运行与启动自动化**。  
 Flash CS6 编译 smoke、JSFL、trace、截图与计划任务细节，统一放在 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
@@ -77,6 +77,23 @@ chcp.com 65001 | Out-Null
 powershell -ExecutionPolicy Bypass -File ..\scripts\compile_test.ps1
 ```
 
+### 调导弹 / 追踪参数
+
+离线调优 `MissileMovement.as` / `missileConfigs.xml` 时，优先用专用模拟器先筛参数：
+
+```powershell
+chcp.com 65001 | Out-Null
+python ..\tools\missile-tuning-sim\run_sim.py audit --verbose
+python ..\tools\missile-tuning-sim\run_sim.py compare --configs interceptor cruise pressureSlow --velocity 20 --use-prelaunch
+python ..\tools\missile-tuning-sim\run_sim.py scan --base-config cruise --objective loiter --use-prelaunch --grid initialSpeedRatio=0.25,0.3 rotationSpeed=1.1,1.2 preLaunchFrames.min=18,20
+```
+
+适用边界：
+
+- 用于离线比较预设、轨迹与“持续施压”指标
+- `loiter` 目标适合慢巡航 / 滞空型导弹，`--grid` / `--set` 支持 `preLaunchFrames.min=18` 这类嵌套字段
+- 默认按“已指定攻击目标”路径模拟，不替代游戏内最终手感复核
+
 ## 5. 常见问题
 
 ### 启动脚本无法执行
@@ -110,3 +127,4 @@ powershell -ExecutionPolicy Bypass -File ..\scripts\compile_test.ps1
 - 启动 / 运行与子系统细节：[`launcher/README.md`](../launcher/README.md)
 - 测试矩阵：[`agentsDoc/testing-guide.md`](../agentsDoc/testing-guide.md)
 - Flash 编译 smoke：[`scripts/FlashCS6自动化编译.md`](../scripts/FlashCS6自动化编译.md)
+- 离线导弹调优：[`tools/missile-tuning-sim/README.md`](../tools/missile-tuning-sim/README.md)

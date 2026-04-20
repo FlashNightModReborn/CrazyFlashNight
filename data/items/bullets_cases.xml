@@ -141,7 +141,7 @@
         <movement>
             <func>DefaultMissile</func>
             <param>
-                <missileConfig>cruise</missileConfig>
+                <missileConfig>antitank</missileConfig>
                 <usePreLaunch>true</usePreLaunch>
             </param>
         </movement>
@@ -1099,5 +1099,5 @@
                 <fadeOutDuration>4</fadeOutDuration>
             </rayConfig>
         </attribute>
+    </bullet>
 </bullets>
- 

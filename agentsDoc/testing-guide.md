@@ -21,6 +21,7 @@ chcp.com 65001 | Out-Null
 |----------|------|------------|
 | AS2 class / 帧脚本 / Flash 资源联动 | `scripts/compile_test.ps1` 或 `bash scripts/compile_test.sh` | Flash IDE 复核、截图、专项 TestLoader 套件 |
 | XML / 数据 / 游戏数值 | 受影响路径运行时 smoke | `compile_test`、游戏内人工验证 |
+| 导弹运动 / 追踪参数离线调优 | `python tools/missile-tuning-sim/run_sim.py compare --configs ...` | `scan --objective loiter|pressure|hit` / `audit`、`compile_test`、游戏内人工验证 |
 | Launcher C# / Host / Bus | `launcher/build.ps1` | `launcher/tests/run_tests.ps1`、`tools/cfn-cli`、`--bus-only` |
 | Launcher Web / Minigame | `node launcher/tools/run-minigame-qa.js --game ...` | browser harness、`node launcher/tools/validate-minigame-final-state.js` |
 | 文档与治理 | `node tools/validate-doc-governance.js` | 交叉 grep / 链接检查 / 基线复核 |
@@ -87,6 +88,7 @@ URL 参数:`?qa=1` 自动断言 / `?case=` 单条 / `?scenario=` 脚本场景 / 
 |------|------|
 | 启动 / 运行链 | [automation/README.md](../automation/README.md) |
 | Flash 编译 smoke 细节 | [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md) |
+| 离线导弹调优 | `python tools/missile-tuning-sim/run_sim.py compare --configs ...` / `python tools/missile-tuning-sim/run_sim.py scan --objective loiter ...` |
 | 文档治理巡检 | `node tools/validate-doc-governance.js` |
 
 巡检脚本检查:必读文件存在、AGENTS.md 关键链接存在、回流模式未重新进入入口、关键文档基线标记存在、关键版本未回退。脚本是巡检器,不是 source of truth。

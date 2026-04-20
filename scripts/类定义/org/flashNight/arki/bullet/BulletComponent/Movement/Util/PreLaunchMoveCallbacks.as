@@ -29,6 +29,9 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.PreLaunchMoveCall
                                Math.floor(Math.random() * (config.preLaunchFrames.max - config.preLaunchFrames.min + 1));
                 this._launchX = this.targetObject._x;
                 this._launchY = this.targetObject._y;
+                this._launchRadians = angleDegrees * Math.PI / 180;
+                this._launchCos = Math.cos(this._launchRadians);
+                this._launchSin = Math.sin(this._launchRadians);
                 // 使用配置中的高度范围
                 this._peakHeight = config.preLaunchPeakHeight.min + 
                                  Math.random() * (config.preLaunchPeakHeight.max - config.preLaunchPeakHeight.min);
@@ -72,13 +75,13 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.PreLaunchMoveCall
             
             // 水平振荡运动
             var decay:Number = 1 - t;
-            var radians:Number = angleDegrees * Math.PI / 180;
-            var direction:Number = (Math.cos(radians) > 0) ? 1 : -1;
             var sinValue:Number = Math.sin(2 * Math.PI * this._horizCycles * t);
-            var x:Number = direction * this._horizAmp * decay * sinValue;
+            var forwardOffset:Number = this._horizAmp * decay * sinValue;
+            var x:Number = this._launchCos * forwardOffset;
+            var forwardY:Number = this._launchSin * forwardOffset * 0.15;
 
             // 调试信息
-            // _root.服务器.发布服务器消息(this._launchX + " " + "方向:" + direction + ", _horizAmp:" + this._horizAmp + ", decay:" + decay + ", cycles:" + this._horizCycles + ", x:" + x);
+            // _root.服务器.发布服务器消息(this._launchX + " " + "_horizAmp:" + this._horizAmp + ", decay:" + decay + ", cycles:" + this._horizCycles + ", forwardOffset:" + forwardOffset + ", x:" + x);
             // 使用配置中的旋转抖动参数
             if (t > config.rotationShakeTime.start && t < config.rotationShakeTime.end) {
                 this.rotationAngle = angleDegrees + (Math.random() - 0.5) * config.rotationShakeAmplitude;
@@ -87,7 +90,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.PreLaunchMoveCall
             }
             
             this.targetObject._x = this._launchX + x;
-            this.targetObject._y = this._launchY + y;
+            this.targetObject._y = this._launchY + y + forwardY;
             // 更新导弹旋转以匹配当前角度
             this.targetObject._rotation = this.rotationAngle;
             this.lockRotation = true;
