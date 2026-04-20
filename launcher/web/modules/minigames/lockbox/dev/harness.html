@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Lockbox Harness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../../../css/panels.css">
+<link rel="stylesheet" href="../../shared/minigame-shell.css">
+<link rel="stylesheet" href="../lockbox.css">
+<style>
+html, body {
+    margin: 0;
+    min-height: 100%;
+    background: #05090c;
+}
+#panel-container {
+    display: block !important;
+}
+#panel-backdrop {
+    position: absolute;
+    inset: 0;
+}
+#debug-log {
+    position: fixed;
+    left: 12px;
+    bottom: 12px;
+    z-index: 2000;
+    max-width: 420px;
+    max-height: 180px;
+    overflow: auto;
+    padding: 10px 12px;
+    background: rgba(8, 14, 18, 0.88);
+    border: 1px solid rgba(120, 194, 214, 0.24);
+    color: #d9e4e8;
+    font: 12px/1.5 Consolas, "Microsoft YaHei", monospace;
+    white-space: pre-wrap;
+}
+</style>
+</head>
+<body>
+<div id="panel-container" data-panel="lockbox">
+    <div id="panel-backdrop"></div>
+    <div id="panel-content"></div>
+</div>
+<pre id="debug-log">booting...</pre>
+
+<script>
+window.__minigameOverlayRoot = "../../../../";
+</script>
+<script src="../../../bridge.js"></script>
+<script src="../../../panels.js"></script>
+<script src="../../shared/host-bridge.js"></script>
+<script src="../core/index.js"></script>
+<script src="../core/solver.js"></script>
+<script src="../core/generator.js"></script>
+<script src="../lockbox-audio.js"></script>
+<script src="../lockbox-panel.js"></script>
+<script>
+(function() {
+    var debugEl = document.getElementById("debug-log");
+
+    var originalSend = Bridge.send;
+    Bridge.send = function(payload) {
+        debugEl.textContent = JSON.stringify(payload, null, 2);
+        if (originalSend) originalSend(payload);
+    };
+
+    Panels.init();
+    Panels.open("lockbox", {
+        mode: "dev",
+        profile: "standard",
+        source: "runtime",
+        familySeed: 305419896,
+        variantIndex: 0,
+        debug: true
+    });
+})();
+</script>
+</body>
+</html>

@@ -82,28 +82,28 @@ var PinAlignPanel = (function() {
 
     function createDOM() {
         _el = document.createElement("div");
-        _el.className = "lockbox-panel pinalign-panel";
+        _el.className = "minigame-panel lockbox-panel pinalign-panel";
         _el.innerHTML = [
-            '<div class="lockbox-header">',
+            '<div class="minigame-header lockbox-header">',
                 '<div>',
-                    '<div class="lockbox-kicker">// LOCK CORE CALIBRATION //</div>',
-                    '<div class="lockbox-title">锁芯矩阵校准</div>',
+                    '<div class="minigame-kicker lockbox-kicker">// LOCK CORE CALIBRATION //</div>',
+                    '<div class="minigame-title lockbox-title">锁芯矩阵校准</div>',
                 "</div>",
-                '<div class="lockbox-header-right">',
+                '<div class="minigame-header-right lockbox-header-right">',
                     '<div class="pinalign-header-controls" role="group" aria-label="控制台">',
-                        '<button class="lockbox-chrome-btn pinalign-header-btn" type="button" data-action="hint" title="提示 (H)">提示</button>',
-                        '<button class="lockbox-chrome-btn pinalign-header-btn" type="button" data-action="clamp" title="夹具 (C)">夹具</button>',
-                        '<button class="lockbox-chrome-btn pinalign-header-btn" type="button" data-action="reset" title="重开">重开</button>',
-                        '<button class="lockbox-chrome-btn pinalign-header-btn" type="button" data-action="reroll" title="换种">换种</button>',
-                        '<button class="lockbox-chrome-btn pinalign-header-btn" type="button" data-action="export" title="导出回放">导出</button>',
+                        '<button class="minigame-chrome-btn lockbox-chrome-btn pinalign-header-btn" type="button" data-action="hint" title="提示 (H)">提示</button>',
+                        '<button class="minigame-chrome-btn lockbox-chrome-btn pinalign-header-btn" type="button" data-action="clamp" title="夹具 (C)">夹具</button>',
+                        '<button class="minigame-chrome-btn lockbox-chrome-btn pinalign-header-btn" type="button" data-action="reset" title="重开">重开</button>',
+                        '<button class="minigame-chrome-btn lockbox-chrome-btn pinalign-header-btn" type="button" data-action="reroll" title="换种">换种</button>',
+                        '<button class="minigame-chrome-btn lockbox-chrome-btn pinalign-header-btn" type="button" data-action="export" title="导出回放">导出</button>',
                     "</div>",
-                    '<div class="lockbox-phase-badge" data-pa-phase>观察中</div>',
-                    '<button class="lockbox-chrome-btn" type="button" data-action="mute">静音</button>',
-                    '<button class="lockbox-close-btn" type="button" data-action="close">×</button>',
+                    '<div class="minigame-phase-badge lockbox-phase-badge" data-pa-phase>观察中</div>',
+                    '<button class="minigame-chrome-btn lockbox-chrome-btn" type="button" data-action="mute">静音</button>',
+                    '<button class="minigame-close-btn lockbox-close-btn" type="button" data-action="close">×</button>',
                 "</div>",
             "</div>",
-            '<div class="lockbox-main">',
-                '<div class="lockbox-grid-pane">',
+            '<div class="minigame-main lockbox-main">',
+                '<div class="minigame-grid-pane lockbox-grid-pane">',
                     '<div class="lockbox-quickbar pinalign-toolbar-readout">',
                         '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">种子</span><span data-pa-seed>dev-default</span></span>',
                         '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">警报</span><span data-pa-alert>16</span></span>',
@@ -133,10 +133,10 @@ var PinAlignPanel = (function() {
                         "</div>",
                     "</div>",
                 "</div>",
-                '<div class="lockbox-side-pane">',
+                '<div class="minigame-side-pane lockbox-side-pane">',
                     '<div class="pa-visually-hidden" data-pa-pins-aria aria-live="polite"></div>',
-                    '<section class="lockbox-side-section pinalign-rules-section">',
-                        '<div class="lockbox-side-title">规则速览</div>',
+                    '<section class="minigame-side-section lockbox-side-section pinalign-rules-section">',
+                        '<div class="minigame-side-title lockbox-side-title">规则速览</div>',
                         '<div class="pinalign-side-copy">',
                             '<div class="pinalign-step"><b>1.</b> 探针下色带=归属图。主列每块 <b>+2</b>，邻列 <b>+1</b>，其他不算。</div>',
                             '<div class="pinalign-step"><b>2.</b> 本手直接三消格子 = Signal，累加 <b>≥ 4</b> 才抬针 1 格。</div>',
@@ -144,24 +144,24 @@ var PinAlignPanel = (function() {
                             '<div class="pinalign-step"><b>4.</b> 抬到目标先变“待锁定”，本手末才正式锁定；同手再吃信号会过调卡死。</div>',
                         "</div>",
                     "</section>",
-                    '<section class="lockbox-side-section pinalign-codex-section">',
-                        '<div class="lockbox-side-title">图鉴</div>',
+                    '<section class="minigame-side-section lockbox-side-section pinalign-codex-section">',
+                        '<div class="minigame-side-title lockbox-side-title">图鉴</div>',
                         buildCodexHtml(),
                     "</section>",
-                    '<section class="lockbox-side-section pinalign-events-section">',
-                        '<button class="lockbox-side-title lockbox-side-title-toggle" type="button" data-action="toggle-events" data-pa-events-toggle>最近结算 ▸</button>',
+                    '<section class="minigame-side-section lockbox-side-section pinalign-events-section">',
+                        '<button class="minigame-side-title lockbox-side-title minigame-side-title-toggle lockbox-side-title-toggle" type="button" data-action="toggle-events" data-pa-events-toggle>最近结算 ▸</button>',
                         '<div class="pinalign-collapsible" data-pa-events-body hidden>',
                             '<div data-pa-events></div>',
                         "</div>",
                     "</section>",
-                    '<section class="lockbox-side-section pinalign-export-section">',
-                        '<button class="lockbox-side-title lockbox-side-title-toggle" type="button" data-action="toggle-export" data-pa-export-toggle>回放导出 ▸</button>',
+                    '<section class="minigame-side-section lockbox-side-section pinalign-export-section">',
+                        '<button class="minigame-side-title lockbox-side-title minigame-side-title-toggle lockbox-side-title-toggle" type="button" data-action="toggle-export" data-pa-export-toggle>回放导出 ▸</button>',
                         '<div class="pinalign-collapsible" data-pa-export-body hidden>',
                             '<pre data-pa-export></pre>',
                         "</div>",
                     "</section>",
-                    '<section class="lockbox-side-section pinalign-debug-section" data-pa-debug-wrap>',
-                        '<div class="lockbox-side-title">调试</div>',
+                    '<section class="minigame-side-section lockbox-side-section pinalign-debug-section" data-pa-debug-wrap>',
+                        '<div class="minigame-side-title lockbox-side-title">调试</div>',
                         '<div class="pinalign-debug-copy" data-pa-debug></div>',
                     "</section>",
                 "</div>",
@@ -574,10 +574,15 @@ var PinAlignPanel = (function() {
     }
 
     function notifyHost(kind, payload) {
+        if (typeof MinigameHostBridge !== "undefined" && MinigameHostBridge.sendSession) {
+            MinigameHostBridge.sendSession("pinalign", kind, payload || {});
+            return;
+        }
         Bridge.send({
             type: "panel",
-            cmd: "pinalign_session",
+            cmd: "minigame_session",
             payload: {
+                game: "pinalign",
                 kind: kind,
                 data: payload || {}
             }

@@ -916,18 +916,24 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[Panel] Routing cmd=" + cmd + " to ShopTask, _shopTask=" + (_shopTask != null ? "ok" : "NULL"));
                     if (_shopTask != null) _shopTask.HandleWebRequest(cmd, parsed);
                     break;
+                case "minigame_session":
                 case "lockbox_session":
-                    {
-                        JToken payload = parsed["payload"];
-                        if (payload != null)
-                            LogManager.Log("[Lockbox] " + payload.ToString(Newtonsoft.Json.Formatting.None));
-                    }
-                    break;
                 case "pinalign_session":
                     {
                         JToken payload = parsed["payload"];
-                        if (payload != null)
-                            LogManager.Log("[PinAlign] " + payload.ToString(Newtonsoft.Json.Formatting.None));
+                        if (payload == null) break;
+
+                        string game = null;
+                        if (cmd == "lockbox_session") game = "lockbox";
+                        else if (cmd == "pinalign_session") game = "pinalign";
+                        else game = (string)payload["game"];
+
+                        string prefix;
+                        if (string.Equals(game, "lockbox", StringComparison.OrdinalIgnoreCase)) prefix = "Lockbox";
+                        else if (string.Equals(game, "pinalign", StringComparison.OrdinalIgnoreCase)) prefix = "PinAlign";
+                        else prefix = "Minigame";
+
+                        LogManager.Log("[" + prefix + "] " + payload.ToString(Newtonsoft.Json.Formatting.None));
                     }
                     break;
             }

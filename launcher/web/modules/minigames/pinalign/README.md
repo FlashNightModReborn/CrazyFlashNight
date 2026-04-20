@@ -3,6 +3,7 @@
 This directory is the active runtime source for the pin alignment minigame.
 
 - Runtime root: `launcher/web/modules/minigames/pinalign/`
+- Shared shell + host bridge live in `launcher/web/modules/minigames/shared/`
 - Legacy prototype reference only: `reference/porcelain-match-v11.snapshot.html`
 - Legacy authoring area `scripts/类定义/org/flashNight/hana` is no longer the active implementation path for this minigame.
 
@@ -20,6 +21,7 @@ MVP boundaries:
 - Browser panel shell in `pinalign-panel.js`
 - DOM-only adapter in `adapter/dom-adapter.js`
 - Simulation and replay tools in `dev/`
+- Host session reporting goes through `../shared/host-bridge.js`
 - No score win condition
 - No gameplay `Math.random()`
 - No direct special activation

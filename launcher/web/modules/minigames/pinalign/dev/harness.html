@@ -5,6 +5,7 @@
 <title>PinAlign Harness</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../../../../css/panels.css">
+<link rel="stylesheet" href="../../shared/minigame-shell.css">
 <link rel="stylesheet" href="../pinalign.css">
 <style>
 html, body {
@@ -74,8 +75,12 @@ html, body {
 </style>
 <pre id="debug-log">booting...</pre>
 
+<script>
+window.__minigameOverlayRoot = "../../../../";
+</script>
 <script src="../../../bridge.js"></script>
 <script src="../../../panels.js"></script>
+<script src="../../shared/host-bridge.js"></script>
 <script src="../core/index.js"></script>
 <script src="../app/level-specs.js"></script>
 <script src="../adapter/dom-adapter.js"></script>

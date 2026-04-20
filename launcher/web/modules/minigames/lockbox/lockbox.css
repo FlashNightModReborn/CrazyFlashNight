@@ -1,0 +1,28 @@
+.minigame-panel.lockbox-panel {
+    min-width: 0;
+}
+
+.lockbox-panel .minigame-header {
+    padding-top: 26px;
+    background: linear-gradient(90deg, rgba(252,238,9,0.08), transparent 50%);
+    border-bottom-color: rgba(252,238,9,0.24);
+}
+
+.lockbox-panel .minigame-kicker {
+    color: #fcee09;
+    font-weight: bold;
+}
+
+.lockbox-panel .minigame-title {
+    text-shadow: 0 0 8px rgba(252,238,9,0.24);
+}
+
+.lockbox-panel .minigame-side-title {
+    color: #fcee09;
+    letter-spacing: 3px;
+}
+
+.lockbox-panel .minigame-side-title::before {
+    content: "▌ ";
+    color: #fcee09;
+}
