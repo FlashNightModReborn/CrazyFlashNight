@@ -296,10 +296,7 @@
     box-shadow:0 0 28px rgba(0,240,255,0.08), inset 0 0 80px rgba(0,240,255,0.03);
 }
 
-.lockbox-header,
-.lockbox-main,
 .lockbox-hud,
-.lockbox-side-section,
 .lockbox-result-card,
 .lockbox-finisher,
 .lockbox-cell,
@@ -308,51 +305,6 @@
 .lockbox-hud-card {
     box-sizing:border-box;
 }
-
-.lockbox-header {
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    padding:12px 16px 10px;
-    border-bottom:1px solid rgba(0,240,255,0.14);
-    background:linear-gradient(90deg, rgba(0,240,255,0.08), transparent 45%);
-}
-
-.lockbox-kicker { color:var(--cp-dim); letter-spacing:2px; font-size:11px; }
-.lockbox-title { color:var(--cp-cyan); letter-spacing:2px; font-size:18px; font-weight:bold; margin-top:3px; }
-.lockbox-header-right { display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
-.lockbox-chrome-btn {
-    background:rgba(0,240,255,0.05);
-    border:1px solid rgba(0,240,255,0.16);
-    color:var(--cp-text);
-    padding:6px 10px;
-    cursor:pointer;
-    font-family:inherit;
-    font-size:11px;
-    letter-spacing:1px;
-    white-space:nowrap;
-}
-.lockbox-chrome-btn:hover { background:rgba(0,240,255,0.12); border-color:rgba(0,240,255,0.28); }
-.lockbox-phase-badge {
-    min-width:88px;
-    text-align:center;
-    padding:6px 10px;
-    border:1px solid rgba(0,240,255,0.28);
-    color:var(--cp-cyan);
-    background:rgba(0,240,255,0.08);
-    letter-spacing:1px;
-    font-size:12px;
-}
-.lockbox-close-btn {
-    background:none;
-    border:1px solid rgba(255,0,60,0.35);
-    color:var(--cp-red);
-    font-size:20px;
-    width:38px;
-    height:34px;
-    cursor:pointer;
-}
-.lockbox-close-btn:hover { background:rgba(255,0,60,0.12); box-shadow:0 0 8px rgba(255,0,60,0.24); }
 
 .lockbox-help-panel {
     display:none;
@@ -403,17 +355,6 @@
     margin-top:14px;
     display:flex;
     justify-content:flex-end;
-}
-
-.lockbox-main {
-    display:grid;
-    grid-template-columns:minmax(0, 1fr) 228px;
-    gap:8px;
-    padding:8px 12px 8px;
-    min-height:0;
-    flex:1;
-    align-items:start;
-    overflow:hidden;
 }
 
 .lockbox-grid-pane {
@@ -914,20 +855,11 @@
     letter-spacing:1px;
 }
 
-.lockbox-side-pane {
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-    min-height:0;
-    overflow:auto;
-}
-.lockbox-side-section,
 .lockbox-hud-card {
     padding:8px 10px;
     border:1px solid rgba(0,240,255,0.14);
     background:rgba(7,10,16,0.88);
 }
-.lockbox-side-title { color:var(--cp-dim); letter-spacing:1px; text-transform:uppercase; font-size:11px; margin-bottom:8px; }
 .lockbox-panel[data-phase="RESULT"] .lockbox-buffer-section,
 .lockbox-panel[data-phase="FAIL"] .lockbox-buffer-section,
 .lockbox-panel[data-phase="RESULT"] .lockbox-status-section,
@@ -1030,7 +962,6 @@
     #panel-container[data-panel="pinalign"] #panel-content {
         inset: 0.5% 0.7%;
     }
-    .lockbox-main { grid-template-columns:1fr; }
     .lockbox-help-grid { grid-template-columns:1fr; }
     .lockbox-hud-grid { grid-template-columns:1fr; }
     .lockbox-result-telemetry { grid-template-columns:1fr; }
@@ -1146,16 +1077,6 @@
     pointer-events:none;
 }
 
-.lockbox-header { padding-top:26px; background:linear-gradient(90deg, rgba(252,238,9,0.08), transparent 50%); border-bottom-color:rgba(252,238,9,0.24); }
-.lockbox-kicker { color:#fcee09; font-weight:bold; }
-.lockbox-title {
-    color:#fcee09;
-    text-shadow:1px 0 0 rgba(255,0,60,0.55), -1px 0 0 rgba(0,240,255,0.55);
-    letter-spacing:3px; font-size:19px;
-    position:relative;
-    animation:lb-title-chroma 3.8s steps(60) infinite;
-}
-.lockbox-panel:hover .lockbox-title { animation:lb-glitch-x 0.8s steps(1) infinite, lb-title-chroma 3.8s steps(60) infinite; }
 
 @keyframes lb-title-chroma {
     0%,92%,100% { text-shadow:1px 0 0 rgba(255,0,60,0.55), -1px 0 0 rgba(0,240,255,0.55); }
@@ -1187,22 +1108,6 @@
     color:#fff;
 }
 
-.lockbox-chrome-btn {
-    border-color:rgba(252,238,9,0.25); color:#fcee09;
-    background:rgba(252,238,9,0.04);
-    clip-path:polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
-}
-.lockbox-chrome-btn:hover { background:rgba(252,238,9,0.14); border-color:#fcee09; box-shadow:0 0 8px rgba(252,238,9,0.28); }
-.lockbox-chrome-btn.muted { color:var(--cp-dim); border-color:rgba(120,120,140,0.3); background:transparent; }
-.lockbox-phase-badge {
-    background:#fcee09; color:#0a0a0a; border:none; font-weight:bold;
-    clip-path:polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
-    padding:4px 14px;
-}
-.lockbox-close-btn {
-    color:#ff003c; border-color:rgba(255,0,60,0.4);
-    clip-path:polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
-}
 
 .lockbox-help-card {
     border:1px solid rgba(252,238,9,0.3);
@@ -1252,8 +1157,7 @@
 .lockbox-grid-pane,
 .lockbox-grid-wrap,
 .lockbox-trace-rail,
-.lockbox-trace-footer,
-.lockbox-side-section {
+.lockbox-trace-footer {
     position:relative;
     z-index:1;
 }
@@ -1652,13 +1556,6 @@
         rgba(8,10,16,0.84);
     padding:10px 12px;
 }
-.lockbox-panel[data-phase="RESULT"] .lockbox-trace-section .lockbox-side-title::after,
-.lockbox-panel[data-phase="FAIL"] .lockbox-trace-section .lockbox-side-title::after {
-    content:" · SNAPSHOT";
-    color:rgba(0,240,255,0.5);
-    letter-spacing:2px;
-    font-size:10px;
-}
 .lockbox-panel[data-phase="RESULT"] .lockbox-trace-section .lockbox-trace-bar,
 .lockbox-panel[data-phase="FAIL"] .lockbox-trace-section .lockbox-trace-bar {
     height:10px;
@@ -1817,16 +1714,6 @@
     text-shadow:0 0 8px rgba(255,82,0,0.35);
 }
 
-.lockbox-side-section {
-    border:1px solid rgba(252,238,9,0.18);
-    background:
-        linear-gradient(180deg, rgba(252,238,9,0.03), transparent 60%),
-        rgba(8,10,16,0.8);
-    clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
-}
-.lockbox-side-title { color:#fcee09; letter-spacing:3px; }
-.lockbox-side-title::before { content:"▌ "; color:#fcee09; }
-
 .lockbox-hud {
     border:1px solid rgba(255,0,60,0.24);
     background:
@@ -1892,15 +1779,6 @@
     28%  { opacity:1; }
     100% { opacity:0; transform:translate(-50%,-50%) scale(1.7); }
 }
-
-/* CRT vignette corners — passive on panel */
-.lockbox-panel .lockbox-main::before {
-    content:"";
-    position:absolute; inset:0; pointer-events:none; z-index:20;
-    box-shadow:inset 0 0 120px rgba(0,0,0,0.55);
-    mix-blend-mode:multiply;
-}
-.lockbox-main { position:relative; }
 
 /* Trace danger — red edge fade-in as trace ramps (driven via --trace-intensity) */
 .lockbox-trace-frame::after {
@@ -1972,14 +1850,6 @@
     box-shadow:0 0 24px rgba(255,0,60,0.68);
     animation:lb-terminal-flood 0.38s linear infinite;
 }
-.lockbox-panel[data-trace-state="critical"] .lockbox-phase-badge {
-    box-shadow:0 0 18px rgba(255,138,0,0.45);
-}
-.lockbox-panel[data-trace-state="terminal"] .lockbox-phase-badge,
-.lockbox-panel[data-trace-state="overload"] .lockbox-phase-badge,
-.lockbox-panel[data-trace-state="trace-fail"] .lockbox-phase-badge {
-    box-shadow:0 0 22px rgba(255,0,60,0.72);
-}
 .lockbox-panel[data-trace-state="terminal"] .lockbox-trace-footer-chip,
 .lockbox-panel[data-trace-state="overload"] .lockbox-trace-footer-chip,
 .lockbox-panel[data-trace-state="trace-fail"] .lockbox-trace-footer-chip {
@@ -2017,8 +1887,6 @@
 .lockbox-panel.fx-fail    { box-shadow:0 0 80px rgba(255,0,60,0.55), inset 0 0 140px rgba(255,0,60,0.18); }
 .lockbox-panel.fx-overload { box-shadow:0 0 88px rgba(255,138,0,0.52), inset 0 0 160px rgba(255,82,0,0.16); }
 .lockbox-panel.fx-trace-kill { box-shadow:0 0 96px rgba(255,0,60,0.72), inset 0 0 180px rgba(255,0,60,0.24); }
-
-.lockbox-panel.fx-shake .lockbox-main { animation:lb-shake 0.65s cubic-bezier(.36,.07,.19,.97) 1; }
 
 .lockbox-panel.fx-perfect .lockbox-result-card.visible::before,
 .lockbox-panel.fx-good .lockbox-result-card.visible::before,
@@ -2122,21 +1990,6 @@
     border-color:rgba(255,0,60,0.35);
 }
 
-/* Phase badge color shift per phase */
-.lockbox-panel[data-phase="OBSERVE"]  .lockbox-phase-badge { background:#00f0ff; color:#0a0a0a; }
-.lockbox-panel[data-phase="INJECTING"] .lockbox-phase-badge { background:#fcee09; color:#0a0a0a; animation:lb-alert-blink 1.6s ease-in-out infinite; }
-.lockbox-panel[data-phase="MAIN_READY"] .lockbox-phase-badge { background:#8cff6a; color:#0a0a0a; }
-.lockbox-panel[data-phase="FINISHER"]  .lockbox-phase-badge { background:#ff8a00; color:#0a0a0a; animation:lb-alert-blink 0.6s ease-in-out infinite; }
-.lockbox-panel[data-phase="RESULT"]    .lockbox-phase-badge { background:#fcee09; color:#0a0a0a; }
-.lockbox-panel[data-phase="FAIL"]      .lockbox-phase-badge { background:#ff003c; color:#fff; }
-
-/* Layout tightening: let grid shrink and give right column more room.
-   Rails 60→56, grid shrinks (380 @ elite / 460 @ standard via panel.js),
-   side pane grows from 228 → 252-300px so sequences/buffer breathe. */
-.lockbox-main {
-    grid-template-columns:minmax(0, 1fr) minmax(252px, 300px);
-    gap:10px;
-}
 .lockbox-grid-shell {
     grid-template-columns:56px minmax(0, 1fr) 56px;
     gap:6px 8px;
@@ -2150,10 +2003,6 @@
 .lockbox-trace-rail-title { font-size:10px; letter-spacing:2px; }
 .lockbox-trace-module { padding:5px 6px; font-size:10px; }
 .lockbox-trace-module b { font-size:11px; }
-
-@media (max-width: 900px) {
-    .lockbox-main { grid-template-columns:1fr; }
-}
 
 .kshop-claim-btn {
     background:rgba(0,240,255,0.06); border:1px solid rgba(0,240,255,0.2);

@@ -917,16 +917,11 @@ namespace CF7Launcher.Guardian
                     if (_shopTask != null) _shopTask.HandleWebRequest(cmd, parsed);
                     break;
                 case "minigame_session":
-                case "lockbox_session":
-                case "pinalign_session":
                     {
                         JToken payload = parsed["payload"];
                         if (payload == null) break;
 
-                        string game = null;
-                        if (cmd == "lockbox_session") game = "lockbox";
-                        else if (cmd == "pinalign_session") game = "pinalign";
-                        else game = (string)payload["game"];
+                        string game = (string)payload["game"];
 
                         string prefix;
                         if (string.Equals(game, "lockbox", StringComparison.OrdinalIgnoreCase)) prefix = "Lockbox";

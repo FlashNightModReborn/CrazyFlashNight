@@ -1,5 +1,62 @@
 .minigame-panel.lockbox-panel {
     min-width: 0;
+    background:
+        repeating-linear-gradient(0deg, rgba(0,240,255,0.02) 0 1px, transparent 1px 3px),
+        radial-gradient(circle at 12% 12%, rgba(0,240,255,0.1), transparent 32%),
+        radial-gradient(circle at 88% 18%, rgba(252,238,9,0.08), transparent 28%),
+        linear-gradient(180deg, rgba(7,10,16,0.98), rgba(5,7,12,0.98));
+    border: 1px solid rgba(252,238,9,0.18);
+    clip-path: polygon(
+        0 14px,
+        14px 0,
+        calc(100% - 40px) 0,
+        calc(100% - 34px) 6px,
+        calc(100% - 6px) 6px,
+        100% 14px,
+        100% calc(100% - 14px),
+        calc(100% - 14px) 100%,
+        40px 100%,
+        34px calc(100% - 6px),
+        6px calc(100% - 6px),
+        0 calc(100% - 14px)
+    );
+    box-shadow:
+        0 0 0 1px rgba(252,238,9,0.05),
+        0 0 32px rgba(0,240,255,0.1),
+        inset 0 0 120px rgba(252,238,9,0.02);
+}
+
+.lockbox-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,240,255,0.06) 50%, transparent 100%);
+    height: 18%;
+    opacity: 0.45;
+    mix-blend-mode: screen;
+    animation: lb-scan 6s linear infinite;
+}
+
+.lockbox-panel::after {
+    content: "// HIGH-SEC CRACKER / V3.77 / CHIPPING //  // HIGH-SEC CRACKER / V3.77 / CHIPPING //  ";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 18px;
+    padding: 3px 18px;
+    overflow: hidden;
+    white-space: nowrap;
+    pointer-events: none;
+    background: repeating-linear-gradient(-45deg, #fcee09 0 8px, #1a1a00 8px 16px);
+    color: #0a0a0a;
+    font-family: "Consolas", monospace;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    text-shadow: 0 0 2px rgba(0,0,0,0.6);
+    animation: lb-marquee 2.4s linear infinite;
 }
 
 .lockbox-panel .minigame-header {
@@ -14,7 +71,97 @@
 }
 
 .lockbox-panel .minigame-title {
-    text-shadow: 0 0 8px rgba(252,238,9,0.24);
+    color: #fcee09;
+    letter-spacing: 3px;
+    font-size: 19px;
+    position: relative;
+    text-shadow: 1px 0 0 rgba(255,0,60,0.55), -1px 0 0 rgba(0,240,255,0.55);
+    animation: lb-title-chroma 3.8s steps(60) infinite;
+}
+
+.lockbox-panel:hover .minigame-title {
+    animation: lb-glitch-x 0.8s steps(1) infinite, lb-title-chroma 3.8s steps(60) infinite;
+}
+
+.lockbox-panel .minigame-chrome-btn {
+    background: rgba(252,238,9,0.06);
+    border-color: rgba(252,238,9,0.22);
+    color: #fcee09;
+    clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+}
+
+.lockbox-panel .minigame-chrome-btn:hover {
+    background: rgba(252,238,9,0.14);
+    border-color: #fcee09;
+    box-shadow: 0 0 8px rgba(252,238,9,0.28);
+}
+
+.lockbox-panel .minigame-chrome-btn.muted {
+    color: var(--cp-dim);
+    border-color: rgba(120,120,140,0.3);
+    background: transparent;
+}
+
+.lockbox-panel .minigame-phase-badge {
+    min-width: 88px;
+    background: rgba(252,238,9,0.12);
+    border-color: rgba(252,238,9,0.28);
+    color: #0a0a0a;
+    box-shadow: inset 0 0 0 1px rgba(252,238,9,0.3), 0 0 12px rgba(252,238,9,0.12);
+    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+    padding: 4px 14px;
+}
+
+.lockbox-panel .minigame-close-btn {
+    background: linear-gradient(180deg, rgba(255,0,60,0.16), rgba(28,6,10,0.28));
+    border-color: rgba(255,0,60,0.45);
+    color: #ff6f91;
+    box-shadow: inset 0 1px 0 rgba(255,150,170,0.12);
+    clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+
+.lockbox-panel .minigame-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(252px, 300px);
+    gap: 10px;
+    padding: 8px 12px 8px;
+    align-items: start;
+    overflow: hidden;
+    position: relative;
+}
+
+.lockbox-panel .minigame-main::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+    box-shadow: inset 0 0 120px rgba(0,0,0,0.55);
+    mix-blend-mode: multiply;
+}
+
+.lockbox-panel .minigame-side-pane {
+    gap: 6px;
+    overflow: auto;
+    padding-right: 2px;
+}
+
+.lockbox-grid-wrap,
+.lockbox-trace-rail,
+.lockbox-trace-footer,
+.lockbox-panel .minigame-side-section {
+    position: relative;
+    z-index: 1;
+}
+
+.lockbox-panel .minigame-side-section,
+.lockbox-hud-card {
+    padding: 8px 10px;
+    border: 1px solid rgba(252,238,9,0.18);
+    background:
+        linear-gradient(180deg, rgba(252,238,9,0.03), transparent 60%),
+        rgba(8,10,16,0.8);
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
 }
 
 .lockbox-panel .minigame-side-title {
@@ -25,4 +172,64 @@
 .lockbox-panel .minigame-side-title::before {
     content: "▌ ";
     color: #fcee09;
+}
+
+.lockbox-panel[data-phase="RESULT"] .lockbox-trace-section .minigame-side-title::after,
+.lockbox-panel[data-phase="FAIL"] .lockbox-trace-section .minigame-side-title::after {
+    content: " / SNAPSHOT";
+    color: rgba(0,240,255,0.5);
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.lockbox-panel[data-trace-state="critical"] .minigame-phase-badge {
+    box-shadow: 0 0 18px rgba(255,138,0,0.45);
+}
+
+.lockbox-panel[data-trace-state="terminal"] .minigame-phase-badge,
+.lockbox-panel[data-trace-state="overload"] .minigame-phase-badge,
+.lockbox-panel[data-trace-state="trace-fail"] .minigame-phase-badge {
+    box-shadow: 0 0 22px rgba(255,0,60,0.72);
+}
+
+.lockbox-panel[data-phase="OBSERVE"] .minigame-phase-badge {
+    background: #00f0ff;
+    color: #0a0a0a;
+}
+
+.lockbox-panel[data-phase="INJECTING"] .minigame-phase-badge {
+    background: #fcee09;
+    color: #0a0a0a;
+    animation: lb-alert-blink 1.6s ease-in-out infinite;
+}
+
+.lockbox-panel[data-phase="MAIN_READY"] .minigame-phase-badge {
+    background: #8cff6a;
+    color: #0a0a0a;
+}
+
+.lockbox-panel[data-phase="FINISHER"] .minigame-phase-badge {
+    background: #ff8a00;
+    color: #0a0a0a;
+    animation: lb-alert-blink 0.6s ease-in-out infinite;
+}
+
+.lockbox-panel[data-phase="RESULT"] .minigame-phase-badge {
+    background: #fcee09;
+    color: #0a0a0a;
+}
+
+.lockbox-panel[data-phase="FAIL"] .minigame-phase-badge {
+    background: #ff003c;
+    color: #fff;
+}
+
+.lockbox-panel.fx-shake .minigame-main {
+    animation: lb-shake 0.65s cubic-bezier(.36,.07,.19,.97) 1;
+}
+
+@media (max-width: 900px) {
+    .lockbox-panel .minigame-main {
+        grid-template-columns: 1fr;
+    }
 }

@@ -21,6 +21,7 @@ MVP boundaries:
 - Browser panel shell in `pinalign-panel.js`
 - DOM-only adapter in `adapter/dom-adapter.js`
 - Simulation and replay tools in `dev/`
+- Browser harness and QA chrome are built on `../shared/dev/`
 - Host session reporting goes through `../shared/host-bridge.js`
 - No score win condition
 - No gameplay `Math.random()`

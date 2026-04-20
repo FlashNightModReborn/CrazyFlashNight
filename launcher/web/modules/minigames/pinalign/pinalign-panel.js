@@ -19,6 +19,9 @@ var PinAlignPanel = (function() {
     var _exportExpanded = false;
     var _flightToken = 0;
     var _hoveredCandidate = null;
+    var _sessionSequence = 0;
+    var _sessionId = null;
+    var _sessionRequested = null;
 
     var DEFAULT_STAGE_NOTE = "先选一格，再点相邻格交换。主列 +2 分，邻列 +1 分，累计 ≥ 4 才抬针。";
 
@@ -82,27 +85,27 @@ var PinAlignPanel = (function() {
 
     function createDOM() {
         _el = document.createElement("div");
-        _el.className = "minigame-panel lockbox-panel pinalign-panel";
+        _el.className = "minigame-panel pinalign-panel";
         _el.innerHTML = [
-            '<div class="minigame-header lockbox-header">',
+            '<div class="minigame-header">',
                 '<div>',
-                    '<div class="minigame-kicker lockbox-kicker">// LOCK CORE CALIBRATION //</div>',
-                    '<div class="minigame-title lockbox-title">锁芯矩阵校准</div>',
+                    '<div class="minigame-kicker">// LOCK CORE CALIBRATION //</div>',
+                    '<div class="minigame-title">锁芯矩阵校准</div>',
                 "</div>",
-                '<div class="minigame-header-right lockbox-header-right">',
+                '<div class="minigame-header-right">',
                     '<div class="pinalign-header-controls" role="group" aria-label="控制台">',
-                        '<button class="minigame-chrome-btn lockbox-chrome-btn pinalign-header-btn" type="button" data-action="hint" title="提示 (H)">提示</button>',
-                        '<button class="minigame-chrome-btn lockbox-chrome-btn pinalign-header-btn" type="button" data-action="clamp" title="夹具 (C)">夹具</button>',
-                        '<button class="minigame-chrome-btn lockbox-chrome-btn pinalign-header-btn" type="button" data-action="reset" title="重开">重开</button>',
-                        '<button class="minigame-chrome-btn lockbox-chrome-btn pinalign-header-btn" type="button" data-action="reroll" title="换种">换种</button>',
-                        '<button class="minigame-chrome-btn lockbox-chrome-btn pinalign-header-btn" type="button" data-action="export" title="导出回放">导出</button>',
+                        '<button class="minigame-chrome-btn pinalign-header-btn" type="button" data-action="hint" title="提示 (H)">提示</button>',
+                        '<button class="minigame-chrome-btn pinalign-header-btn" type="button" data-action="clamp" title="夹具 (C)">夹具</button>',
+                        '<button class="minigame-chrome-btn pinalign-header-btn" type="button" data-action="reset" title="重开">重开</button>',
+                        '<button class="minigame-chrome-btn pinalign-header-btn" type="button" data-action="reroll" title="换种">换种</button>',
+                        '<button class="minigame-chrome-btn pinalign-header-btn" type="button" data-action="export" title="导出回放">导出</button>',
                     "</div>",
-                    '<div class="minigame-phase-badge lockbox-phase-badge" data-pa-phase>观察中</div>',
-                    '<button class="minigame-chrome-btn lockbox-chrome-btn" type="button" data-action="mute">静音</button>',
-                    '<button class="minigame-close-btn lockbox-close-btn" type="button" data-action="close">×</button>',
+                    '<div class="minigame-phase-badge" data-pa-phase>观察中</div>',
+                    '<button class="minigame-chrome-btn" type="button" data-action="mute">静音</button>',
+                    '<button class="minigame-close-btn" type="button" data-action="close">×</button>',
                 "</div>",
             "</div>",
-            '<div class="minigame-main lockbox-main">',
+            '<div class="minigame-main">',
                 '<div class="minigame-grid-pane lockbox-grid-pane">',
                     '<div class="lockbox-quickbar pinalign-toolbar-readout">',
                         '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">种子</span><span data-pa-seed>dev-default</span></span>',
@@ -133,10 +136,10 @@ var PinAlignPanel = (function() {
                         "</div>",
                     "</div>",
                 "</div>",
-                '<div class="minigame-side-pane lockbox-side-pane">',
+                '<div class="minigame-side-pane">',
                     '<div class="pa-visually-hidden" data-pa-pins-aria aria-live="polite"></div>',
-                    '<section class="minigame-side-section lockbox-side-section pinalign-rules-section">',
-                        '<div class="minigame-side-title lockbox-side-title">规则速览</div>',
+                    '<section class="minigame-side-section pinalign-rules-section">',
+                        '<div class="minigame-side-title">规则速览</div>',
                         '<div class="pinalign-side-copy">',
                             '<div class="pinalign-step"><b>1.</b> 探针下色带=归属图。主列每块 <b>+2</b>，邻列 <b>+1</b>，其他不算。</div>',
                             '<div class="pinalign-step"><b>2.</b> 本手直接三消格子 = Signal，累加 <b>≥ 4</b> 才抬针 1 格。</div>',
@@ -144,24 +147,24 @@ var PinAlignPanel = (function() {
                             '<div class="pinalign-step"><b>4.</b> 抬到目标先变“待锁定”，本手末才正式锁定；同手再吃信号会过调卡死。</div>',
                         "</div>",
                     "</section>",
-                    '<section class="minigame-side-section lockbox-side-section pinalign-codex-section">',
-                        '<div class="minigame-side-title lockbox-side-title">图鉴</div>',
+                    '<section class="minigame-side-section pinalign-codex-section">',
+                        '<div class="minigame-side-title">图鉴</div>',
                         buildCodexHtml(),
                     "</section>",
-                    '<section class="minigame-side-section lockbox-side-section pinalign-events-section">',
-                        '<button class="minigame-side-title lockbox-side-title minigame-side-title-toggle lockbox-side-title-toggle" type="button" data-action="toggle-events" data-pa-events-toggle>最近结算 ▸</button>',
+                    '<section class="minigame-side-section pinalign-events-section">',
+                        '<button class="minigame-side-title minigame-side-title-toggle" type="button" data-action="toggle-events" data-pa-events-toggle>最近结算 ▸</button>',
                         '<div class="pinalign-collapsible" data-pa-events-body hidden>',
                             '<div data-pa-events></div>',
                         "</div>",
                     "</section>",
-                    '<section class="minigame-side-section lockbox-side-section pinalign-export-section">',
-                        '<button class="minigame-side-title lockbox-side-title minigame-side-title-toggle lockbox-side-title-toggle" type="button" data-action="toggle-export" data-pa-export-toggle>回放导出 ▸</button>',
+                    '<section class="minigame-side-section pinalign-export-section">',
+                        '<button class="minigame-side-title minigame-side-title-toggle" type="button" data-action="toggle-export" data-pa-export-toggle>回放导出 ▸</button>',
                         '<div class="pinalign-collapsible" data-pa-export-body hidden>',
                             '<pre data-pa-export></pre>',
                         "</div>",
                     "</section>",
-                    '<section class="minigame-side-section lockbox-side-section pinalign-debug-section" data-pa-debug-wrap>',
-                        '<div class="minigame-side-title lockbox-side-title">调试</div>',
+                    '<section class="minigame-side-section pinalign-debug-section" data-pa-debug-wrap>',
+                        '<div class="minigame-side-title">调试</div>',
                         '<div class="pinalign-debug-copy" data-pa-debug></div>',
                     "</section>",
                 "</div>",
@@ -192,14 +195,23 @@ var PinAlignPanel = (function() {
             _resizeHandler = function() { render(); };
             window.addEventListener("resize", _resizeHandler);
         }
-        boot(data);
-        notifyHost("open", {
-            specId: _spec.id,
-            masterSeed: _seed
-        });
+        bootSession(data);
         if (typeof window.requestAnimationFrame === "function") {
             window.requestAnimationFrame(function() { render(); });
         }
+    }
+
+    function bootSession(initData) {
+        if (_sessionId) {
+            notifyHost("close", buildResultPayload(), {
+                phase: describePhaseToken(),
+                reason: "reload"
+            });
+        }
+        beginSessionRequest(initData);
+        notifyHost("open", null, { phase: "INIT" });
+        boot(initData);
+        notifyHost("ready", null);
     }
 
     function boot(initData) {
@@ -228,16 +240,17 @@ var PinAlignPanel = (function() {
         _state = null;
         _spec = null;
         _audio = null;
+        _sessionId = null;
+        _sessionRequested = null;
     }
 
     function closePanel() {
-        var status = _state ? _state.status : "unknown";
+        notifyHost("close", buildResultPayload(), {
+            phase: describePhaseToken()
+        });
         cleanup();
         if (typeof Panels !== "undefined" && Panels.close) Panels.close();
         Bridge.send({ type: "panel", cmd: "close", panel: "pinalign" });
-        notifyHost("close", {
-            status: status
-        });
     }
 
     function detachResizeHandler() {
@@ -273,11 +286,19 @@ var PinAlignPanel = (function() {
             return;
         }
         if (action === "reset") {
-            boot({ specId: _spec.id, masterSeed: _seed });
+            bootSession({
+                specId: _spec.id,
+                masterSeed: _seed,
+                debug: _debugEnabled
+            });
             return;
         }
         if (action === "reroll") {
-            boot({ specId: _spec.id, masterSeed: "seed-" + Date.now() });
+            bootSession({
+                specId: _spec.id,
+                masterSeed: "seed-" + Date.now(),
+                debug: _debugEnabled
+            });
             return;
         }
         if (action === "export") {
@@ -355,12 +376,17 @@ var PinAlignPanel = (function() {
                 else if (hasJam(result)) _audio.jam();
                 else _audio.settle();
             }
-            notifyHost("turn", {
+            notifyHost("turn", buildResultPayload(), {
                 status: _state.status,
                 moveIndex: _state.moveIndex,
                 alertRemaining: _state.alertRemaining,
                 replayHash: result.stateHash || PinAlignCore.computeStateHash(_state)
             });
+            if (_state.status !== "ongoing") {
+                notifyHost("result", buildResultPayload(), {
+                    replayHash: result.stateHash || PinAlignCore.computeStateHash(_state)
+                });
+            }
         }
         render();
     }
@@ -418,7 +444,7 @@ var PinAlignPanel = (function() {
             navigator.clipboard.writeText(text)["catch"](function() {});
         }
         _toast = "回放已导出到面板缓存" + (navigator.clipboard && navigator.clipboard.writeText ? "，并尝试复制到剪贴板。" : "。");
-        notifyHost("export", {
+        notifyHost("export", buildResultPayload(), {
             status: _state.status,
             actions: _lastReplay.actions.length
         });
@@ -573,9 +599,79 @@ var PinAlignPanel = (function() {
         return "normal";
     }
 
-    function notifyHost(kind, payload) {
+    function nextSessionId() {
+        _sessionSequence += 1;
+        return "pinalign-" + _sessionSequence + "-" + (Date.now() >>> 0);
+    }
+
+    function beginSessionRequest(initData) {
+        var data = initData || {};
+        _sessionId = nextSessionId();
+        _sessionRequested = {
+            mode: data.mode || "dev",
+            specId: data.specId || "mvp-3pin-v1",
+            masterSeed: data.masterSeed || "dev-default",
+            debug: !!data.debug
+        };
+    }
+
+    function buildResolvedData() {
+        if (!_state || !_spec) return null;
+        return {
+            specId: _spec.id,
+            masterSeed: _seed,
+            rows: _spec.rows,
+            cols: _spec.cols,
+            pinCount: _spec.pinCount
+        };
+    }
+
+    function buildMetrics() {
+        if (!_state) return null;
+        return {
+            status: _state.status,
+            moveIndex: _state.moveIndex,
+            alertRemaining: _state.alertRemaining,
+            clampCharge: _state.clampCharge,
+            productiveSwaps: _state.telemetry && _state.telemetry.productiveSwaps,
+            invalidSwaps: _state.telemetry && _state.telemetry.invalidSwaps,
+            jamCount: _state.telemetry && _state.telemetry.jamCount
+        };
+    }
+
+    function buildResultPayload() {
+        if (!_state || _state.status === "ongoing") return null;
+        return {
+            status: _state.status,
+            alertRemaining: _state.alertRemaining,
+            replayHash: PinAlignCore.computeStateHash(_state),
+            lockedPins: _state.pins.filter(function(pin) { return pin.state === "locked"; }).map(function(pin) { return pin.id; })
+        };
+    }
+
+    function buildSessionPayload(resultPayload, extraData) {
+        var payload = {
+            sessionId: _sessionId,
+            phase: extraData && extraData.phase ? extraData.phase : describePhaseToken(),
+            requested: _sessionRequested ? PinAlignCore.snapshotState(_sessionRequested) : null,
+            resolved: buildResolvedData(),
+            metrics: buildMetrics(),
+            result: resultPayload !== undefined ? resultPayload : buildResultPayload()
+        };
+        var key;
+        if (extraData) {
+            for (key in extraData) {
+                if (key === "phase") continue;
+                payload[key] = extraData[key];
+            }
+        }
+        return payload;
+    }
+
+    function notifyHost(kind, payload, extraData) {
+        var sessionPayload = buildSessionPayload(payload, extraData);
         if (typeof MinigameHostBridge !== "undefined" && MinigameHostBridge.sendSession) {
-            MinigameHostBridge.sendSession("pinalign", kind, payload || {});
+            MinigameHostBridge.sendSession("pinalign", kind, sessionPayload);
             return;
         }
         Bridge.send({
@@ -584,12 +680,37 @@ var PinAlignPanel = (function() {
             payload: {
                 game: "pinalign",
                 kind: kind,
-                data: payload || {}
+                data: sessionPayload
             }
         });
     }
 
     return {
-        _debugBoot: boot
+        _debugBoot: bootSession,
+        _debugGetState: function() {
+            return _state ? PinAlignCore.snapshotState(_state) : null;
+        },
+        _debugGetSession: function() {
+            return buildSessionPayload(undefined, null);
+        },
+        _debugGetHint: function() {
+            return _state ? PinAlignCore.getHint(_state) : null;
+        },
+        _debugClickTile: function(pos) {
+            onTileClick(pos);
+        },
+        _debugHoverTile: function(pos) {
+            onTileHover(pos);
+        },
+        _debugLeaveTile: function(pos) {
+            onTileLeave(pos);
+        },
+        _debugSwap: function(from, to) {
+            return _state ? PinAlignCore.trySwap(_state, from, to) : null;
+        },
+        _debugExportReplay: function() {
+            exportReplay();
+            return _lastReplay;
+        }
     };
 })();
