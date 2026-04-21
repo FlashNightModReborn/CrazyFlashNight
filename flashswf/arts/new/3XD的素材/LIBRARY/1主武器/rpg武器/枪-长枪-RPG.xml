@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="枪-长枪-RPG">
       <layers>
-        <DOMLayer name="攻击框" color="#EEDFAD" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击框" color="#EEDFAD" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -50,7 +50,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Symbol 1044" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="Symbol 1044" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

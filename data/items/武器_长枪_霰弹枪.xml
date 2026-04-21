@@ -902,4 +902,50 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
   </item>
+  <item weapontype="霰弹枪">
+    <name>众神之力</name>
+    <displayname>众神之力</displayname>
+    <icon>众神之力</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>397600</price>
+    <description>众神之力</description>
+     <skill>
+      <skillname>发射榴弹</skillname>
+      <description>持枪瞄准时可以充能，可发射一发威力强大的冲击炮，每弹夹消耗1发能量电池，换弹后可再次发射。</description>
+      <cd>1000</cd>
+      <mp>0</mp>
+      <power>1000</power>
+      <bulletsize>1</bulletsize>
+      <clipname>能量电池</clipname>
+      <bullet>加强电球</bullet>
+      <bulletrename>电球</bulletrename>
+      <sound>m4a1_unsil-2.wav</sound>
+      <muzzle>能量枪火</muzzle>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <velocity>10</velocity>
+      <impact>20</impact>
+    </skill>
+    <data>
+      <level>45</level>
+      <weight>4</weight>
+      <dressup>枪-长枪-众神之力</dressup>
+      <capacity>8</capacity>
+      <split>5</split>
+      <diffusion>10</diffusion>
+      <interval>200</interval>
+      <velocity>40</velocity>
+      <bullet>蓝紫穿刺子弹</bullet>
+      <bulletrename>常规穿甲弹</bulletrename>
+      <sound>aa12.wav</sound>
+      <muzzle>能量枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>能量电池</clipname>
+      <bulletsize>25</bulletsize>
+      <power>495</power>
+      <impact>12</impact>
+      <reloadPenalty>0</reloadPenalty>
+    </data>
+  </item>
 </root>

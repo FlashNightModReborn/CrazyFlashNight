@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/众神之力/众神之力素材/小光效" itemID="69847dae-000002f2" lastModified="1770290606">
+  <timeline>
+    <DOMTimeline name="小光效">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.01861572265625" d="0.01861572265625" tx="11" ty="9.4"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.368627450980392"/>
+                        <GradientEntry color="#316CE3" alpha="0.698039215686274" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!415 -46[#1C5.97 #C1.83 415 422!415 422[#D6.66 #1FD.BC 25 422!25 422[#FFFFD8.63 #C8.9 25 -46!25 -46[#EB.04 -76.03125 415 -46"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

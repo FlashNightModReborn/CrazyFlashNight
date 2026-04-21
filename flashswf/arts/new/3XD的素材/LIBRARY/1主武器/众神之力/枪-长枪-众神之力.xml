@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/众神之力/枪-长枪-众神之力" itemID="69e74df8-000009a5" linkageExportForAS="true" linkageIdentifier="枪-长枪-众神之力" lastModified="1776766641">
+  <timeline>
+    <DOMTimeline name="枪-长枪-众神之力">
+      <layers>
+        <DOMLayer name="Layer 1" color="#8FF6A0" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/众神之力/Symbol 13" name="枪口位置" centerPoint3DX="347.4" centerPoint3DY="-40">
+                  <matrix>
+                    <Matrix tx="334.9" ty="-52.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="众神之力" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/众神之力/众神之力素材/众神之力本体" selected="true" symbolType="graphic" centerPoint3DX="110.7" centerPoint3DY="-13.8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.699996948242188" d="0.699996948242188" tx="-107.65" ty="-80.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="136" y="110.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

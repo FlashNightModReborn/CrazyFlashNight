@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/众神之力/众神之力素材/橙色光" itemID="69847d9d-000002f0" lastModified="1770291308">
+  <timeline>
+    <DOMTimeline name="橙色光">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0216522216796875" d="0.0115966796875" tx="10.15" ty="0.35"/>
+                        </matrix>
+                        <GradientEntry color="#324C5D" alpha="0.2" ratio="0.450980392156863"/>
+                        <GradientEntry color="#FF9B00" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!380 88[380 124 324 150!324 150[269 176 190 176!190 176[111 176 55 150!55 150[0 124 0 88!0 88[0 52 55 26!55 26[111 0 190 0!190 0[269 0 324 26!324 26[380 52 380 88"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
