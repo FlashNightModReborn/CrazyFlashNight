@@ -1,0 +1,101 @@
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+    background: #05090c;
+    color: #d9e4e8;
+    font: 12px/1.5 Consolas, "Microsoft YaHei", monospace;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 18px 140px;
+    box-sizing: border-box;
+}
+
+#harness-toolbar {
+    width: min(1600px, calc(100vw - 36px));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
+    padding: 12px 14px;
+    background: rgba(8,14,18,0.92);
+    border: 1px solid rgba(120,194,214,0.24);
+    box-sizing: border-box;
+}
+
+.harness-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.harness-group label {
+    color: #8ce8ff;
+}
+
+.harness-group select,
+.harness-group input,
+.harness-group button {
+    font: inherit;
+    color: #d9e4e8;
+    background: #12212b;
+    border: 1px solid #2d5368;
+    padding: 5px 8px;
+    box-sizing: border-box;
+}
+
+.harness-group input {
+    width: 220px;
+}
+
+.harness-group button {
+    cursor: pointer;
+}
+
+.harness-group button:hover {
+    background: #183140;
+}
+
+#viewport-shell {
+    position: relative;
+    width: 1600px;
+    height: 900px;
+    flex: 0 0 auto;
+    background: #04080b;
+    border: 1px solid rgba(120,194,214,0.24);
+    box-shadow: 0 14px 42px rgba(0,0,0,0.45);
+    overflow: hidden;
+}
+
+#panel-container {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+}
+
+#panel-backdrop {
+    position: absolute;
+    inset: 0;
+}
+
+#harness-status {
+    width: min(1600px, calc(100vw - 36px));
+    color: #9aa4ae;
+}
+
+#qa-panel {
+    top: auto;
+    bottom: 12px;
+    right: 12px;
+}
+
+#debug-log {
+    bottom: 12px;
+    left: 12px;
+    max-width: 520px;
+}

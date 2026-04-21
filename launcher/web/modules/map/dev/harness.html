@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Map Panel Harness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../../../css/panels.css">
+<link rel="stylesheet" href="../../minigames/shared/dev/harness-base.css">
+<link rel="stylesheet" href="./harness.css">
+</head>
+<body>
+<div id="harness-toolbar">
+    <div class="harness-group">
+        <label for="map-page-select">page</label>
+        <select id="map-page-select">
+            <option value="base">base</option>
+            <option value="faction">faction</option>
+            <option value="defense">defense</option>
+            <option value="school">school</option>
+        </select>
+    </div>
+    <div class="harness-group">
+        <label for="map-gender-select">roommate</label>
+        <select id="map-gender-select">
+            <option value="male">male</option>
+            <option value="female">female</option>
+        </select>
+    </div>
+    <div class="harness-group">
+        <label for="map-disabled-input">disabled ids</label>
+        <input id="map-disabled-input" type="text" placeholder="id1,id2">
+    </div>
+    <div class="harness-group">
+        <label for="map-locked-groups-input">locked groups</label>
+        <input id="map-locked-groups-input" type="text" placeholder="warlord,schoolInside">
+    </div>
+    <div class="harness-group">
+        <label for="map-viewport-select">viewport</label>
+        <select id="map-viewport-select">
+            <option value="1600x900">1600x900</option>
+            <option value="1366x768">1366x768</option>
+            <option value="1920x1080">1920x1080</option>
+        </select>
+    </div>
+    <div class="harness-group">
+        <button type="button" id="map-apply-btn">apply + reopen</button>
+        <button type="button" id="map-refresh-btn">push snapshot</button>
+        <button type="button" id="map-force-close-btn">force close</button>
+    </div>
+</div>
+
+<div id="harness-status">Map harness ready.</div>
+
+<div id="viewport-shell">
+    <div id="panel-container" data-panel="map">
+        <div id="panel-backdrop"></div>
+        <div id="panel-content"></div>
+    </div>
+</div>
+
+<script>
+(function() {
+    var listeners = [];
+    window.chrome = window.chrome || {};
+    window.chrome.webview = {
+        addEventListener: function(type, handler) {
+            if (type === 'message') listeners.push(handler);
+        },
+        postMessage: function(message) {
+            if (window.MapHarnessHost && window.MapHarnessHost.handlePostMessage) {
+                window.MapHarnessHost.handlePostMessage(message);
+            }
+        },
+        __dispatch: function(data) {
+            var event = { data: data };
+            var i;
+            for (i = 0; i < listeners.length; i += 1) {
+                listeners[i](event);
+            }
+        }
+    };
+})();
+</script>
+<script src="../../bridge.js"></script>
+<script src="../../panels.js"></script>
+<script src="../../minigames/shared/dev/harness-base.js"></script>
+<script src="../../map-avatar-source-data.js"></script>
+<script src="../../map-panel-data.js"></script>
+<script>
+window.Toast = {
+    messages: [],
+    add: function(message) {
+        this.messages.push(String(message || ''));
+    },
+    clear: function() {
+        this.messages = [];
+    }
+};
+</script>
+<script src="../../map-panel.js"></script>
+<script src="./qa-suite.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    var query = MinigameHarness.parseQuery(location.search);
+    var shell = document.getElementById('viewport-shell');
+    var statusEl = document.getElementById('harness-status');
+    var pageSelect = document.getElementById('map-page-select');
+    var genderSelect = document.getElementById('map-gender-select');
+    var disabledInput = document.getElementById('map-disabled-input');
+    var lockedGroupsInput = document.getElementById('map-locked-groups-input');
+    var viewportSelect = document.getElementById('map-viewport-select');
+
+    function parseIds(value) {
+        return String(value || '')
+            .split(',')
+            .map(function(item) { return item.trim(); })
+            .filter(Boolean);
+    }
+
+    var host = window.MapHarnessHost = {
+        state: {
+            defaultPageId: query.page || 'base',
+            roommateGender: query.gender || 'male',
+            disabledIds: parseIds(query.disabled),
+            lockedGroups: parseIds(query.lockedGroups),
+            failNavigate: query.failNavigate === '1'
+        },
+        sentMessages: [],
+        closeCount: 0,
+        lastNavigateTarget: null,
+        viewport: query.viewport || '1600x900',
+        setViewport: function(value) {
+            var preset = String(value || '1600x900');
+            var parts = preset.split('x');
+            var width = Math.max(800, parseInt(parts[0] || '1600', 10) || 1600);
+            var height = Math.max(600, parseInt(parts[1] || '900', 10) || 900);
+            this.viewport = width + 'x' + height;
+            shell.style.width = width + 'px';
+            shell.style.height = height + 'px';
+            viewportSelect.value = this.viewport;
+            this.logStatus('viewport=' + this.viewport);
+        },
+        setState: function(patch) {
+            var key;
+            patch = patch || {};
+            for (key in patch) {
+                if (key === 'disabledIds' && Array.isArray(patch[key])) {
+                    this.state.disabledIds = patch[key].slice();
+                } else if (key === 'lockedGroups' && Array.isArray(patch[key])) {
+                    this.state.lockedGroups = patch[key].slice();
+                } else if (patch[key] !== undefined) {
+                    this.state[key] = patch[key];
+                }
+            }
+            this.syncControls();
+        },
+        getState: function() {
+            return {
+                defaultPageId: this.state.defaultPageId,
+                roommateGender: this.state.roommateGender,
+                disabledIds: this.state.disabledIds.slice(),
+                lockedGroups: this.state.lockedGroups.slice(),
+                failNavigate: this.state.failNavigate,
+                closeCount: this.closeCount,
+                lastNavigateTarget: this.lastNavigateTarget
+            };
+        },
+        getViewport: function() {
+            return this.viewport;
+        },
+        getMessages: function() {
+            return this.sentMessages.slice();
+        },
+        buildSnapshot: function() {
+            var disabledLookup = {};
+            var unlocks = MapPanelData.normalizeUnlockFlags({});
+            var i;
+            var currentPage = MapPanelData.getPage(this.state.defaultPageId);
+            var currentHotspotId = '';
+            var hotspotStates;
+            var enabledHotspotIds;
+            for (i = 0; i < this.state.disabledIds.length; i += 1) {
+                disabledLookup[this.state.disabledIds[i]] = true;
+            }
+            for (i = 0; i < this.state.lockedGroups.length; i += 1) {
+                if (this.state.lockedGroups[i]) {
+                    unlocks[this.state.lockedGroups[i]] = false;
+                }
+            }
+            hotspotStates = MapPanelData.buildHotspotStates(unlocks);
+            for (var hotspotId in hotspotStates) {
+                if (disabledLookup[hotspotId]) {
+                    hotspotStates[hotspotId].enabled = false;
+                    hotspotStates[hotspotId].lockedReason = hotspotStates[hotspotId].lockedReason || '调试禁用热点';
+                }
+            }
+            enabledHotspotIds = [];
+            for (var id in hotspotStates) {
+                if (hotspotStates[id].enabled) {
+                    enabledHotspotIds.push(id);
+                }
+            }
+            for (i = 0; i < (currentPage.hotspots || []).length; i += 1) {
+                if (hotspotStates[currentPage.hotspots[i].id] && hotspotStates[currentPage.hotspots[i].id].enabled) {
+                    currentHotspotId = currentPage.hotspots[i].id;
+                    break;
+                }
+            }
+            return {
+                version: 2,
+                defaultPageId: this.state.defaultPageId,
+                regionId: this.state.defaultPageId,
+                currentHotspotId: currentHotspotId,
+                unlocks: unlocks,
+                hotspotStates: hotspotStates,
+                enabledHotspotIds: enabledHotspotIds,
+                dynamicAvatarState: {
+                    roommateGender: this.state.roommateGender
+                },
+                markers: currentHotspotId ? [{
+                    id: 'current_location',
+                    kind: 'currentLocation',
+                    pageId: this.state.defaultPageId,
+                    hotspotId: currentHotspotId,
+                    label: '当前位置',
+                    tone: 'accent'
+                }] : [],
+                tips: currentHotspotId ? [{
+                    id: 'current_scene',
+                    pageId: this.state.defaultPageId,
+                    hotspotId: currentHotspotId,
+                    label: '当前位置',
+                    tone: 'accent'
+                }] : []
+            };
+        },
+        dispatch: function(data) {
+            window.chrome.webview.__dispatch(data);
+        },
+        pushSnapshot: function(cmd) {
+            if (window.MapPanel && MapPanel._debugRequestSnapshot) {
+                MapPanel._debugRequestSnapshot(cmd || 'refresh');
+                return;
+            }
+            this.dispatch({
+                type: 'panel_resp',
+                panel: 'map',
+                cmd: cmd || 'snapshot',
+                callId: 'harness-manual-' + Date.now(),
+                success: true,
+                snapshot: this.buildSnapshot()
+            });
+        },
+        forceClose: function(reason) {
+            this.dispatch({
+                type: 'panel_cmd',
+                cmd: 'force_close',
+                panel: 'map',
+                reason: reason || 'harness_force_close'
+            });
+        },
+        open: function() {
+            if (window.Toast && typeof window.Toast.clear === 'function') window.Toast.clear();
+            if (Panels.isOpen()) Panels.close();
+            Panels.open('map', {
+                source: 'map_harness',
+                dev: true,
+                page: this.state.defaultPageId
+            });
+        },
+        handlePostMessage: function(message) {
+            var self = this;
+            this.sentMessages.push(message);
+            if (!message || message.type !== 'panel' || message.panel !== 'map') return;
+
+            if (message.cmd === 'snapshot' || message.cmd === 'refresh') {
+                setTimeout(function() {
+                    self.dispatch({
+                        type: 'panel_resp',
+                        panel: 'map',
+                        cmd: message.cmd,
+                        callId: message.callId,
+                        success: true,
+                        snapshot: self.buildSnapshot()
+                    });
+                }, 20);
+                return;
+            }
+
+            if (message.cmd === 'navigate') {
+                this.lastNavigateTarget = message.targetId || null;
+                var success = !this.state.failNavigate && this.buildSnapshot().enabledHotspotIds.indexOf(message.targetId) >= 0;
+                setTimeout(function() {
+                    self.dispatch({
+                        type: 'panel_resp',
+                        panel: 'map',
+                        cmd: 'navigate',
+                        callId: message.callId,
+                        success: success,
+                        error: success ? null : 'invalid_target',
+                        closePanel: !!success
+                    });
+                }, 20);
+                return;
+            }
+
+            if (message.cmd === 'close') {
+                this.closeCount += 1;
+                this.logStatus('panel close x' + this.closeCount);
+            }
+        },
+        readControls: function() {
+            return {
+                defaultPageId: pageSelect.value,
+                roommateGender: genderSelect.value,
+                disabledIds: parseIds(disabledInput.value),
+                lockedGroups: parseIds(lockedGroupsInput.value)
+            };
+        },
+        syncControls: function() {
+            pageSelect.value = this.state.defaultPageId;
+            genderSelect.value = this.state.roommateGender;
+            disabledInput.value = this.state.disabledIds.join(',');
+            lockedGroupsInput.value = this.state.lockedGroups.join(',');
+            viewportSelect.value = this.viewport;
+        },
+        applyControls: function() {
+            this.setState(this.readControls());
+            this.setViewport(viewportSelect.value);
+            this.open();
+            this.logStatus('apply page=' + this.state.defaultPageId + ', gender=' + this.state.roommateGender + ', disabled=' + this.state.disabledIds.join(',') + ', locked=' + this.state.lockedGroups.join(','));
+        },
+        logStatus: function(text) {
+            statusEl.textContent = text;
+        }
+    };
+
+    function createHarness() {
+        return MinigameHarness.create({
+            panelId: 'map',
+            title: 'Map Panel QA',
+            openPanel: function() {
+                host.syncControls();
+                host.setViewport(host.viewport);
+                host.open();
+            },
+            runScenario: function(api, scenario) {
+                return MapPanelHarnessQA.runScenario(api, host, scenario);
+            },
+            runSuite: function(api, caseId) {
+                return MapPanelHarnessQA.runSuite(api, host, caseId);
+            },
+        collectDump: function() {
+            return MapPanelHarnessQA.collectDump(host);
+        }
+        });
+    }
+
+    function bindControls() {
+        document.getElementById('map-apply-btn').addEventListener('click', function() {
+            host.applyControls();
+        });
+        document.getElementById('map-refresh-btn').addEventListener('click', function() {
+            host.setState(host.readControls());
+            host.pushSnapshot('refresh');
+            host.logStatus('snapshot pushed');
+        });
+        document.getElementById('map-force-close-btn').addEventListener('click', function() {
+            host.forceClose();
+        });
+        viewportSelect.addEventListener('change', function() {
+            host.setViewport(viewportSelect.value);
+        });
+    }
+
+    window.addEventListener('load', function() {
+        host.syncControls();
+        host.setViewport(host.viewport);
+        bindControls();
+        createHarness().boot();
+    });
+})();
+</script>
+</body>
+</html>

@@ -119,6 +119,14 @@ FFDec 不应承担：
 
 本目录负责为 manifest 提供原始依据，但不建议把最终长期运行时 manifest 直接混放进 XFL 资产目录。
 
+当前最小导出链：
+
+- 运行时 manifest helper：`launcher/web/modules/map-panel-data.js`
+- 预览 / 校准页：`launcher/web/modules/map/dev/preview.html`
+- CLI 导出：`node tools/export-map-manifest.js --page base --output tmp/map-page-base.json --summary`
+
+也就是说，XFL / FFDec 仍提供原始依据，但当前阶段的“受控 manifest 导出出口”已经固定在 Web 侧工具链，而不是临时复制 DOM 坐标。
+
 ## 9. 协作约定
 
 - 对旧 Flash 地图行为有疑问时，先回本目录找真相源，再去改 Web 逻辑

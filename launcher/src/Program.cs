@@ -294,12 +294,14 @@ class Program
         CF7Launcher.Tasks.AudioTask audioTask = new CF7Launcher.Tasks.AudioTask();
         IconBakeTask iconBakeTask = new IconBakeTask(projectRoot, notchSink);
         ShopTask shopTask = new ShopTask(socketServer);
+        MapTask mapTask = new MapTask(socketServer);
         ArchiveTask archiveTask = new ArchiveTask(projectRoot);
         BenchTask benchTask = new BenchTask(socketServer);
-        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, archiveTask, benchTask);
+        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, archiveTask, benchTask);
 
         // 面板系统接线 (11c: webOverlay 必有)
         webOverlay.SetShopTask(shopTask);
+        webOverlay.SetMapTask(mapTask);
         webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
         form.SetWebOverlay(webOverlay);
         socketServer.OnClientDisconnected += webOverlay.OnSocketDisconnected;
@@ -317,6 +319,7 @@ class Program
             musicCatalog.Dispose();
             frameTask.Stop();
             shopTask.Dispose();
+            mapTask.Dispose();
             socketServer.SetFrameHandler(null);
             socketServer.SetNotchHandler(null);
         };
@@ -354,6 +357,8 @@ class Program
             try { socketServer.SetFrameHandler(null); } catch { }
             try { socketServer.SetNotchHandler(null); } catch { }
             try { gomokuTask.Dispose(); } catch { }
+            try { shopTask.Dispose(); } catch { }
+            try { mapTask.Dispose(); } catch { }
             try { socketServer.Dispose(); } catch { }
             try { httpServer.Dispose(); } catch { }
             try { if (inputShield != null) inputShield.Dispose(); } catch { }
@@ -495,6 +500,8 @@ class Program
         try { CF7Launcher.Audio.AudioEngine.Shutdown(); } catch { }
         try { processManager.Dispose(); } catch { }
         try { gomokuTask.Dispose(); } catch { }
+        try { shopTask.Dispose(); } catch { }
+        try { mapTask.Dispose(); } catch { }
         try { socketServer.Dispose(); } catch { }
         try { httpServer.Dispose(); } catch { }
         try { if (inputShield != null) inputShield.Dispose(); } catch { }

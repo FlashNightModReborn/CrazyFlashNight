@@ -110,7 +110,7 @@
 
 ## 6. 真相源约定
 
-在 preview / harness 和构建器成熟前，必须保持真相源清晰：
+在完整 preview / harness 和构建器成熟前，必须保持真相源清晰：
 
 - `XFL / LIBRARY XML` 是历史布局与逻辑真相源
 - 导出的 PNG 只是资源产物，不是位置真相源
@@ -169,6 +169,22 @@
 
 - Web panel 可以独立开关，且不依赖最终全量 manifest 即可联调
 
+Phase 1 的实现细化、协议草案、文件落点与验收清单统一看：
+
+- [docs/地图界面-webview-phase1设计.md](地图界面-webview-phase1设计.md)
+
+当前实现状态：
+
+- `TASK_MAP` 已切到 Web 地图 panel
+- `snapshot / navigate / close / force_close` 链路已通
+- 静态底图已扩到 `基地 / A兵团 / 废城禁区 / 学校` 四个页面
+- 四个页面的运行时舞台现已统一切到 `assembled` 模式：场景块按 `sceneVisuals` 拼接渲染，右侧层级按钮缺失原素材时允许直接使用 Web/CSS 复刻旧视觉语言
+- 最小 browser harness 已落地：`launcher/web/modules/map/dev/harness.html`
+- harness 当前固定覆盖 `top chrome hit-test`、`右侧层级按钮遮挡`、`学校室友头像动态图`、`1366x768` 紧凑视口可达性
+- 运行时静态数据已收敛为 `MapManifest` + `MapPanelData` helper
+- 最小 preview 已前置落地：`launcher/web/modules/map/dev/preview.html`
+- 兜底期全量复核入口已固定：`node tools/audit-map-layout.js`
+
 ### 7.3 Phase 2：资产导出与 Manifest 建模
 
 建议周期：`2-5` 个工作日
@@ -193,6 +209,17 @@
 
 - 至少一个试点分区可以完全由 manifest 驱动渲染
 
+当前状态：
+
+- `map` 正式 panel 已由 `launcher/web/modules/map-panel-data.js` 中的 manifest/helper 驱动
+- `MapManifest` 现包含 `layers / sceneNodes / hotspots / markers / flashHints / displayConditions / interactionState` 这组最小导出结构
+- 最小 preview 已可读取 manifest 并观察 `背景 / 热点 / buttonRect / 动态头像槽位 / 视口缩放`
+- CLI 导出链已固定：`node tools/export-map-manifest.js --page base --output tmp/map-page-base.json --summary`
+
+阶段结论：
+
+- Phase 2 视为已完成；后续进入“试点分区迁移”的重点不再是定义 manifest，而是继续校准、扩字段和补真实点位/提示数据
+
 ### 7.4 Phase 3：试点分区迁移
 
 建议周期：`3-5` 个工作日
@@ -213,6 +240,17 @@
 - 试点分区实现 1:1 布局、热点、跳图、状态反馈
 - 确认路线可扩展到全图
 
+当前状态：
+
+- `base` 试点分区已具备 `1:1` 背景、热点、跳图链和过滤按钮覆盖
+- snapshot 现会下发 `currentHotspotId / markers / tips`，面板会自动落到当前页并对齐到包含当前场景的过滤器
+- 正式 panel 现已渲染“当前位置” marker / tip，并在舞台热点与 scene strip 上同步高亮当前场景
+- browser harness 已补 `current location feedback` gate，避免后续把当前位置反馈层改坏
+
+阶段结论：
+
+- Phase 3 视为已完成；后续进入 Phase 4 的重点不再是证明试点成立，而是把相同做法扩展到全图 parity
+
 ### 7.5 Phase 4：全图 Parity 迁移
 
 建议周期：`2-3` 周
@@ -228,6 +266,19 @@
 - 全图主路径行为可用
 - 新增或调整热点不再依赖 Flash 时间轴编辑
 - Flash 地图从主路径降级为开发期临时兜底
+
+当前状态：
+
+- 多页面地图当前已覆盖 `base / faction / defense / school` 的正式背景、热点、过滤按钮与跳图映射
+- `snapshot` 现下发 `unlocks / hotspotStates / currentHotspotId / markers / tips`，不再只靠 `enabledHotspotIds` 粗粒度开关
+- panel 已按 `hotspotStates` 渲染锁定态、锁定原因、filter locked hint，并允许对不可达热点给出即时反馈而不是静默失效
+- preview 现可模拟 `locked groups`，观察 `flashHints / display.when / hotspotStates`；browser harness 已补锁定态回归 gate
+- compact 页热点现已按原版 XFL 实例坐标复核并回写，`faction / defense / school` 的可精确映射点位不再只靠人工目测
+- fallback 期复核脚本已固定：`node tools/audit-map-layout.js`
+
+阶段结论：
+
+- Phase 4 视为已完成；后续重点转为 Phase 5 的默认路径清理与 Phase 6 的预览/校准深化
 
 ### 7.6 Phase 5：默认切换与旧路径清理
 
@@ -248,6 +299,16 @@
 
 - 正式默认使用 Web 地图
 - 旧路径不再作为长期正式实现
+
+当前状态：
+
+- `TASK_MAP` 已是 Launcher 唯一正式地图入口
+- 开发期临时 `MAP_TEST` 子菜单入口已移除，不再维持运行时双轨按钮
+- fallback 复核已转为 `browser harness + preview + audit-map-layout.js` 这组工具链
+
+阶段结论：
+
+- Phase 5 视为已完成；后续进入 Phase 6 时，重点不再是切默认入口，而是继续降低默认视口滚动依赖并完善 preview / calibration 能力
 
 ### 7.7 Phase 6：Preview / Harness
 
@@ -270,6 +331,18 @@
 
 - 日常地图迭代可以先走 preview 再进正式 panel
 
+当前状态：
+
+- 最小 preview 已提前落地：`launcher/web/modules/map/dev/preview.html`
+- 当前 preview 已覆盖页面 / 过滤 / 热点 / `buttonRect` / 动态头像槽位 / 默认视口缩放观察，并与运行时共用 `assembled` 场景拼接渲染与 stage backdrop
+- 运行时 panel 已补默认视口 `fit` 收敛：紧凑窗口下会缩放舞台并切入 compact chrome，尽量减少对滚动的依赖
+- preview 现已接入 XFL source rect、draft 校准、选中热点微调、source 吸附、selected/page override 导出，形成最小可用校准闭环
+- preview 现已支持 `builder` 模式：可直接拖拽 / 缩放热点与过滤按钮、按页导入导出 bundle、清理 / 持久化草稿，并提供 `builder.html` 显式作者入口
+
+阶段结论：
+
+- Phase 6 视为已完成；当前继续推进的重点已从“手工对齐工具”进入“轻量作者工具”
+
 ### 7.8 Phase 7：可视化构建器
 
 建议周期：二期单列
@@ -283,6 +356,18 @@
 - 它是长期投资项，不应阻塞首期替代
 - 只有在 manifest 与 preview 稳定后再启动才划算
 
+当前状态：
+
+- 可视化构建入口已固定：`launcher/web/modules/map/dev/builder.html`
+- `builder` 模式现支持热点 / `buttonRect` 直接拖拽与缩放，而不再只靠键盘微调
+- 草稿现支持本地持久化、按页清理、全量清理，以及 bundle 粘贴导入
+- 当前构建器导出的 page bundle 已同时覆盖 `hotspots` 与 `filters`，可直接作为回写 `map-panel-data.js` 的作者产物
+- 运行时 panel / preview / builder 现已共享同一份 `sceneVisuals` 数据源，校准页不再停留在“整页截图 + 热区框”的旧观察模式
+
+阶段结论：
+
+- Phase 7 视为已完成；当前地图迁移路线的“替代 / parity / 默认切换 / preview / 轻量构建器”已闭环，后续演进进入持续优化与作者工作流细化，而不再属于首轮迁移必经阶段
+
 ## 8. 实施顺序与依赖
 
 推荐依赖顺序如下：
@@ -291,7 +376,7 @@
 2. 再做试点分区闭环
 3. 再扩展到全图 parity
 4. 再删除长期旧路径
-5. 最后做 preview / builder 深化维护体验
+5. 适当前置最小 preview，最后再把 preview / builder 做完整
 
 不推荐的顺序：
 
