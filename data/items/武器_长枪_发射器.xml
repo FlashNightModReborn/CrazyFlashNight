@@ -648,4 +648,76 @@
       </attr_0>
     </lifecycle>
   </item>
+  <item weapontype="发射器">
+    <name>FSC7</name>
+    <displayname>FSC7</displayname>
+    <icon>FSC7</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>50000</price>
+    <description>FSC7</description>
+    <data>
+      <level>10</level>
+      <weight>6</weight>
+      <dressup>枪-长枪-FSC7</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>800</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>20</velocity>
+      <bullet>fsc7炮弹</bullet>
+      <sound>re_GL_m202.wav</sound>
+      <muzzle>大喷气</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>火箭弹弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>4000</power>
+      <impact>0</impact>
+      <reloadPenalty>0</reloadPenalty>
+    </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>RPG初始化</initRoutines>
+          <initParam>
+            <temp>1</temp>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>RPG周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
+  <item weapontype="发射器">
+    <name>FM92刺弹炮</name>
+    <displayname>FM92刺弹炮</displayname>
+    <icon>FM92刺弹炮</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>140000</price>
+    <description>FM92刺弹炮</description>
+    <data>
+      <level>24</level>
+      <weight>6</weight>
+      <dressup>枪-长枪-FM92刺弹炮</dressup>
+      <capacity>6</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>500</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>17</velocity>
+      <bullet>fm92刺弹炮弹</bullet>
+      <sound>fm92开火.wav</sound>
+      <muzzle>刺弹炮枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>榴弹弹药</clipname>
+      <bulletsize>40</bulletsize>
+      <power>1600</power>
+      <impact>0</impact>
+      <reloadType>tube</reloadType>
+      <reloadPenalty>0</reloadPenalty>
+    </data>
+  </item>
 </root>

@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2副武器/沧蓝陨铁手炮/枪-手枪-沧蓝陨铁手炮" itemID="69e73840-00000425" linkageExportForAS="true" linkageIdentifier="枪-手枪-沧蓝陨铁手炮" lastModified="1776760950">
+  <timeline>
+    <DOMTimeline name="枪-手枪-沧蓝陨铁手炮">
+      <layers>
+        <DOMLayer name="Layer 1" color="#8DB44E" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2副武器/沧蓝陨铁手炮/判定使用" name="枪口位置" centerPoint3DX="175.1" centerPoint3DY="-5.3">
+                  <matrix>
+                    <Matrix a="1.35134887695313" d="1.35134887695313" tx="162.6" ty="-17.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="蓝色手炮" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件/沧蓝陨铁手炮素材" symbolType="graphic" centerPoint3DX="40.7" centerPoint3DY="-3.05" loop="loop">
+                  <matrix>
+                    <Matrix a="0.899993896484375" d="0.899993896484375" tx="-77.55" ty="-47.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="131.4" y="49.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

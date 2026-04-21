@@ -67,4 +67,70 @@
         <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
+     <item weapontype="发射器">
+      <name>沧蓝陨铁手炮</name>
+      <displayname>沧蓝陨铁手炮</displayname>
+      <icon>沧蓝陨铁手炮</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>400000</price>
+      <description>沧蓝陨铁手炮</description>
+      <inherentTags>电力,NOAH</inherentTags>
+      <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
+      <data>
+        <level>50</level>
+        <weight>4</weight>
+        <modslot>1</modslot>
+        <dressup>枪-手枪-沧蓝陨铁手炮</dressup>
+        <capacity>5</capacity>
+        <split>1</split>
+        <diffusion>3</diffusion>
+        <interval>200</interval>
+        <singleshoot>true</singleshoot>
+        <velocity>15</velocity>
+        <bullet>普通火箭弹</bullet>
+        <bulletrename>小型火箭弹</bulletrename>
+        <sound>re_GL_Mgl.wav</sound>
+        <muzzle>发射器枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>火箭弹弹药</clipname>
+        <bulletsize>25</bulletsize>
+        <power>3500</power>
+        <impact>0</impact>
+        <reloadPenalty>0</reloadPenalty>
+      </data>
+    </item>
+     <item weapontype="发射器">
+      <name>加农手炮</name>
+      <displayname>加农手炮</displayname>
+      <icon>加农手炮</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>400000</price>
+      <description>加农手炮</description>
+      <inherentTags>电力,NOAH</inherentTags>
+      <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
+      <data>
+        <level>50</level>
+        <weight>4</weight>
+        <modslot>1</modslot>
+        <dressup>枪-手枪-加农手炮</dressup>
+        <capacity>5</capacity>
+        <split>1</split>
+        <diffusion>3</diffusion>
+        <interval>200</interval>
+        <singleshoot>true</singleshoot>
+        <velocity>15</velocity>
+        <bullet>加农炮弹</bullet>
+        <bulletrename>小型火箭弹</bulletrename>
+        <sound>re_GL_Mgl.wav</sound>
+        <muzzle>加农炮枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>火箭弹弹药</clipname>
+        <bulletsize>25</bulletsize>
+        <power>3500</power>
+        <impact>0</impact>
+        <reloadPenalty>0</reloadPenalty>
+      </data>
+    </item>
 </root>

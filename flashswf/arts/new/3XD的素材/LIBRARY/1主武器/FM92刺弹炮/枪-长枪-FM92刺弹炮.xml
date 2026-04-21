@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/FM92刺弹炮/枪-长枪-FM92刺弹炮" itemID="69e7372c-000003da" linkageExportForAS="true" linkageIdentifier="枪-长枪-FM92刺弹炮" lastModified="1776760633">
+  <timeline>
+    <DOMTimeline name="枪-长枪-FM92刺弹炮">
+      <layers>
+        <DOMLayer name="Layer 1" color="#8FF6A0" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/FM92刺弹炮/Symbol 13" name="枪口位置" centerPoint3DX="301.4" centerPoint3DY="-48">
+                  <matrix>
+                    <Matrix tx="288.9" ty="-60.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="fm92" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/FM92刺弹炮/fm92" symbolType="graphic" centerPoint3DX="76.85" centerPoint3DY="-38.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.960006713867188" d="0.960006713867188" tx="-128.05" ty="-100.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="73"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
