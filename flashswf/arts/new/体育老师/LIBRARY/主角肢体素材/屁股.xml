@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/屁股" itemID="697b6508-000028be" lastModified="1776605890" lastUniqueIdentifier="14">
+  <timeline>
+    <DOMTimeline name="屁股">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/屁股" centerPoint3DX="0.15" centerPoint3DY="10.95">
+                  <matrix>
+                    <Matrix a="-0.962493896484375" d="1.185546875" tx="60.1" ty="-43.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60.95" y="74.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#0397E6" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/Symbol 49" centerPoint3DX="46.6" centerPoint3DY="35.15">
+                  <matrix>
+                    <Matrix tx="0.6" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

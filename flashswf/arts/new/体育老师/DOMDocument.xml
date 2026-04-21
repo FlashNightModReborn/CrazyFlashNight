@@ -1,0 +1,715 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" width="1200" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" timelineLabelWidth="216" viewAngle3D="97.275380851371" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="NPC" itemID="69ce2b82-00000abc"/>
+          <DOMFolderItem name="NPC/NPC-体育老师" itemID="69ce2b82-00000abd" isExpanded="true"/>
+          <DOMFolderItem name="NPC/NPC-体育老师/组件" itemID="69ce2b82-00000abe" isExpanded="true"/>
+          <DOMFolderItem name="单位" itemID="69e71921-000002d4" isExpanded="true"/>
+          <DOMFolderItem name="单位/shape" itemID="65a6bb2a-00001374"/>
+          <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
+          <DOMFolderItem name="怪物通用模板/area框" itemID="65ae673b-00003707"/>
+          <DOMFolderItem name="怪物通用模板/怪物通用模板" itemID="6652ef28-00001215"/>
+          <DOMFolderItem name="怪物通用模板/怪物通用模板/新近战子弹定位元件" itemID="6652ef28-00001216" isExpanded="true"/>
+          <DOMFolderItem name="怪物通用模板/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="6652ef28-00001217" isExpanded="true"/>
+          <DOMFolderItem name="怪物通用模板/通用ai元件" itemID="65ae6613-00001ba6"/>
+          <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65b3a368-00000650" isExpanded="true"/>
+          <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03"/>
+          <DOMFolderItem name="怪物通用模板/血条与名称" itemID="65ae670e-000036fc"/>
+          <DOMFolderItem name="容器" itemID="6957d32c-00000922"/>
+          <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09"/>
+          <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504"/>
+          <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798" isExpanded="true"/>
+          <DOMFolderItem name="属性标签标志元件" itemID="66738923-00001ce2"/>
+          <DOMFolderItem name="特效" itemID="69e718a1-000002c1"/>
+          <DOMFolderItem name="特效/幻影" itemID="694cbe6e-000013a2"/>
+          <DOMFolderItem name="特效/火焰与爆炸" itemID="6925ec22-00001fbb"/>
+          <DOMFolderItem name="特效/火焰与爆炸/炎飞燕" itemID="6925ec22-00001fbc" isExpanded="true"/>
+          <DOMFolderItem name="特效/火焰与爆炸/炎飞燕/未命名文件夹 1" itemID="65560f6e-0000313d" isExpanded="true"/>
+          <DOMFolderItem name="特效/其他特效" itemID="69e71948-000002d9"/>
+          <DOMFolderItem name="特效/气爆特效" itemID="69e718d3-000002cc"/>
+          <DOMFolderItem name="特效/气功弹（和爆炸）素材" itemID="673f5879-00000b0f"/>
+          <DOMFolderItem name="特效/气流特效" itemID="69e71899-000002bd"/>
+          <DOMFolderItem name="特效/上勾拳特效组件" itemID="668c195d-00001fc7"/>
+          <DOMFolderItem name="特效/突刺用特效" itemID="6666075a-0000150d"/>
+          <DOMFolderItem name="特效/突刺用特效/b05" itemID="4f7e582c-0000166b" isExpanded="true"/>
+          <DOMFolderItem name="特效/徒手瞬影" itemID="69e71887-000002ba"/>
+          <DOMFolderItem name="特效/新霸体特效" itemID="66c19db5-000017a9"/>
+          <DOMFolderItem name="特效/旋风腿旋风组件" itemID="668c196f-00001fc9"/>
+          <DOMFolderItem name="无AS链接" itemID="673f5879-00000b0e" isExpanded="true"/>
+          <DOMFolderItem name="主角肢体素材" itemID="68c8295d-0000091e"/>
+     </folders>
+     <media>
+          <DOMBitmapItem name="特效/幻影/位图 1" itemID="691b5515-00000877" sourceExternalFilepath="位图 1.png" sourceLastImported="1763398756" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效/幻影/位图 1.png" bitmapDataHRef="M 101 1763399143.dat" frameRight="13400" frameBottom="7300"/>
+          <DOMBitmapItem name="特效/幻影/位图 2" itemID="691caa5c-0000092f" sourceExternalFilepath="位图 2.png" sourceLastImported="1763486083" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效/幻影/位图 2.png" bitmapDataHRef="M 103 1763486352.dat" frameRight="5860" frameBottom="9460"/>
+          <DOMBitmapItem name="特效/幻影/位图 3" itemID="6925e519-00001ee7" sourceExternalFilepath="位图 3.png" sourceLastImported="1764091111" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="特效/幻影/位图 3.png" bitmapDataHRef="M 91 1764091111.dat" frameRight="9640" frameBottom="8780"/>
+     </media>
+     <symbols>
+          <Include href="NPC/NPC-体育老师/组件/屁股.xml" loadImmediate="false" itemID="67d7d8a1-000011bc" lastModified="1742204514"/>
+          <Include href="NPC/NPC-体育老师/组件/上臂.xml" loadImmediate="false" itemID="67d86cc1-00000334" lastModified="1760462972"/>
+          <Include href="NPC/NPC-体育老师/组件/身体.xml" itemIcon="1" loadImmediate="false" itemID="67d993db-000003fd" lastModified="1776752957"/>
+          <Include href="NPC/NPC-体育老师/组件/头.xml" loadImmediate="false" itemID="67d87d84-000006e9" lastModified="1742373096"/>
+          <Include href="NPC/NPC-体育老师/组件/右大腿.xml" loadImmediate="false" itemID="67d993db-000003fc" lastModified="1742206093"/>
+          <Include href="NPC/NPC-体育老师/组件/右脚.xml" loadImmediate="false" itemID="67d993db-000003f7" lastModified="1776752957"/>
+          <Include href="NPC/NPC-体育老师/组件/右手 复制.xml" loadImmediate="false" itemID="67d86cbe-00000333" lastModified="1742236862"/>
+          <Include href="NPC/NPC-体育老师/组件/右小臂.xml" loadImmediate="false" itemID="67d87d84-000006e8" lastModified="1742237078"/>
+          <Include href="NPC/NPC-体育老师/组件/右小腿.xml" loadImmediate="false" itemID="67d993db-000003f8" lastModified="1742206302"/>
+          <Include href="NPC/NPC-体育老师/组件/左大腿.xml" loadImmediate="false" itemID="67d993db-000003fb" lastModified="1742204559"/>
+          <Include href="NPC/NPC-体育老师/组件/左脚.xml" loadImmediate="false" itemID="67d993db-000003f9" lastModified="1776752957"/>
+          <Include href="NPC/NPC-体育老师/组件/左手 复制.xml" loadImmediate="false" itemID="67d86cbb-00000332" lastModified="1742236859"/>
+          <Include href="NPC/NPC-体育老师/组件/左小臂.xml" loadImmediate="false" itemID="67d87d84-000006d8" lastModified="1742236614"/>
+          <Include href="单位/shape/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="697b1a32-00003134" lastModified="1702343951"/>
+          <Include href="单位/shape/Symbol 73.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-0000098c" lastModified="1702343951"/>
+          <Include href="单位/shape/Symbol 75.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-0000098e" lastModified="1702343951"/>
+          <Include href="单位/shape/Symbol 80.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000992" lastModified="1702343951"/>
+          <Include href="单位/Symbol 3.xml" loadImmediate="false" itemID="6577b699-00000956" lastModified="1776760238"/>
+          <Include href="单位/Symbol 45.xml" loadImmediate="false" itemID="697b6508-00002816" lastModified="1776760239"/>
+          <Include href="单位/Symbol 49.xml" loadImmediate="false" itemID="697b6508-000028bf" lastModified="1776760243"/>
+          <Include href="单位/Symbol 74.xml" loadImmediate="false" itemID="6577b699-0000098d" lastModified="1776760246"/>
+          <Include href="单位/Symbol 76.xml" loadImmediate="false" itemID="6577b699-0000098f" lastModified="1771141111"/>
+          <Include href="单位/Symbol 78.xml" loadImmediate="false" itemID="6577b699-00000990" lastModified="1702343951"/>
+          <Include href="单位/Symbol 79.xml" itemIcon="0" loadImmediate="false" itemID="6577b699-00000991" lastModified="1769694883"/>
+          <Include href="单位/Symbol 83.xml" loadImmediate="false" itemID="6577b699-00000994" lastModified="1702343951"/>
+          <Include href="单位/Symbol 117.xml" loadImmediate="false" itemID="6577b699-000009a3" lastModified="1702343951"/>
+          <Include href="单位/Symbol 119.xml" loadImmediate="false" itemID="6577b699-000009a4" lastModified="1769694913"/>
+          <Include href="单位/Symbol 120.xml" loadImmediate="false" itemID="6577b699-000009a5" lastModified="1776605653"/>
+          <Include href="单位/Symbol 136.xml" loadImmediate="false" itemID="6577b699-000009b3" lastModified="1776761560"/>
+          <Include href="单位/Symbol 825.xml" loadImmediate="false" itemID="6577b699-00000b8f" lastModified="1776759983"/>
+          <Include href="单位/刚体遮罩.xml" loadImmediate="false" itemID="65c9a9f5-0000062e" lastModified="1707753394"/>
+          <Include href="单位/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
+          <Include href="单位/近战子弹 副本.xml" loadImmediate="false" itemID="697b6503-00001ff1" lastModified="1711945124"/>
+          <Include href="单位/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1776605880"/>
+          <Include href="单位/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1776605612"/>
+          <Include href="单位/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1776605677"/>
+          <Include href="单位/韧性条.xml" loadImmediate="false" itemID="65c9a44e-0000061e" lastModified="1762778455"/>
+          <Include href="单位/新版人物文字信息.xml" itemID="65c9a1af-000005fc" lastModified="1736864914"/>
+          <Include href="单位/血槽底.xml" loadImmediate="false" itemID="65c9a8c3-00000624" lastModified="1707753328"/>
+          <Include href="单位/血槽韧性条.xml" loadImmediate="false" itemID="65c9a3a2-0000060a" lastModified="1707755072"/>
+          <Include href="敌人-蛙型仿生僵尸.xml" itemID="65ae6634-00001ba9" lastModified="1776761555"/>
+          <Include href="怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="65ae6963-00003740" lastModified="1776760710"/>
+          <Include href="怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65689e04-0000008e" lastModified="1700337299"/>
+          <Include href="怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1776760710"/>
+          <Include href="怪物通用模板/area框/索敌框载体.xml" loadImmediate="false" itemID="65ae6931-0000373d" lastModified="1705929009"/>
+          <Include href="怪物通用模板/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="666c5d45-00000626" lastModified="1701582054"/>
+          <Include href="怪物通用模板/通用ai元件/思考标签.xml" loadImmediate="false" itemID="68145f67-0000024d" lastModified="1746165689"/>
+          <Include href="怪物通用模板/通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="65ae68fb-00003739" lastModified="1705928955"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1772128023"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="660a212e-00000b08" lastModified="1706272572"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1706271675"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemIcon="1" loadImmediate="false" itemID="660a212e-00000b0b" lastModified="1706271675"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1706271749"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" loadImmediate="false" itemID="660a212e-00000b0a" lastModified="1706271749"/>
+          <Include href="怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="662fbc4c-0000294f" lastModified="1714404428"/>
+          <Include href="容器/技能容器/技能容器-虎拳.xml" itemID="695637a0-0000095b" lastModified="1776760508"/>
+          <Include href="容器/技能容器/技能容器-扭转乾坤.xml" itemID="697a65ff-00004088" lastModified="1776760473"/>
+          <Include href="容器/技能容器/技能容器-日字冲拳.xml" itemID="694ac160-00004b65" lastModified="1775189875"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-后撤步.xml" itemID="6964d656-00002843" lastModified="1776761036"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-燃烧指节.xml" itemID="6964d6d2-0000293c" lastModified="1776760864"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" itemID="6964d583-0000279b" lastModified="1776761335"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" itemID="6964ce51-00002614" lastModified="1776760724"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1776605942"/>
+          <Include href="属性标签标志元件/底层背景标签.xml" loadImmediate="false" itemID="667e47f0-00000631" lastModified="1719551984"/>
+          <Include href="属性标签标志元件/刚体标签.xml" loadImmediate="false" itemID="66cf12fa-00000756" lastModified="1724846848"/>
+          <Include href="属性标签标志元件/无敌标签.xml" loadImmediate="false" itemID="66cd4f63-0000054b" lastModified="1724731329"/>
+          <Include href="特效/幻影/残影1.xml" loadImmediate="false" itemID="674008f5-0000089b" lastModified="1732286029"/>
+          <Include href="特效/幻影/残影2.xml" loadImmediate="false" itemID="674008ff-0000089d" lastModified="1732286250"/>
+          <Include href="特效/幻影/残影3.xml" loadImmediate="false" itemID="67400921-0000089f" lastModified="1732286409"/>
+          <Include href="特效/幻影/残影4.xml" loadImmediate="false" itemID="67400927-000008a1" lastModified="1732286539"/>
+          <Include href="特效/幻影/残影5.xml" loadImmediate="false" itemID="6740092e-000008a3" lastModified="1732286669"/>
+          <Include href="特效/幻影/后撤步幻影.xml" loadImmediate="false" itemID="691ca992-00000923" lastModified="1763486098"/>
+          <Include href="特效/幻影/前闪幻影.xml" loadImmediate="false" itemID="691b548a-00000867" lastModified="1763398794"/>
+          <Include href="特效/幻影/燃烧指节幻影-白.xml" loadImmediate="false" itemID="6925e4f4-00001ee3" lastModified="1764091124"/>
+          <Include href="特效/火焰与爆炸/炎飞燕/火焰闪烁.xml" loadImmediate="false" itemID="6925eba7-00001f69" lastModified="1764092844"/>
+          <Include href="特效/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 1.xml" loadImmediate="false" itemID="65560f76-00003140" lastModified="1700138870"/>
+          <Include href="特效/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 2.xml" loadImmediate="false" itemID="65560f7e-00003144" lastModified="1700138878"/>
+          <Include href="特效/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 3.xml" loadImmediate="false" itemID="65560f84-00003148" lastModified="1700138884"/>
+          <Include href="特效/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 4.xml" loadImmediate="false" itemID="65560f89-0000314c" lastModified="1700138889"/>
+          <Include href="特效/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 5.xml" loadImmediate="false" itemID="65560f8f-00003150" lastModified="1700138895"/>
+          <Include href="特效/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 6.xml" loadImmediate="false" itemID="65560f94-00003154" lastModified="1700138900"/>
+          <Include href="特效/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 7.xml" loadImmediate="false" itemID="65560f9b-00003158" lastModified="1700138907"/>
+          <Include href="特效/火焰与爆炸/炎飞燕/未命名文件夹 1/元件 8.xml" loadImmediate="false" itemID="65560fa2-0000315c" lastModified="1700138914"/>
+          <Include href="特效/其他特效/shape 209.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d1" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 210.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d2" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 211.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d3" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 212.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d4" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 213.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d5" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 214.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d6" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 215.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d7" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 217.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000d9" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 218.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000da" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 219.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000db" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 220.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000dc" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 221.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000dd" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 222.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000de" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 223.xml" itemIcon="1" loadImmediate="false" itemID="58132b8a-000000df" lastModified="1477651338"/>
+          <Include href="特效/其他特效/shape 595.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000254" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 596.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000255" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 597.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000256" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 598.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000257" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 599.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000258" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 600.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000259" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 601.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000025a" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 602.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000025b" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 603.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000025c" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 604.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000025d" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 605.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000025e" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 607.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000260" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 609.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000262" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 610.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000263" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 621.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000026e" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 622.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-0000026f" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 623.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000270" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 624.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000271" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 625.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000272" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 626.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000273" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 627.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000274" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 628.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000275" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 629.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000276" lastModified="1477651486"/>
+          <Include href="特效/其他特效/shape 630.xml" itemIcon="1" loadImmediate="false" itemID="58132c1f-00000277" lastModified="1477651487"/>
+          <Include href="特效/其他特效/shape 631.xml" itemIcon="1" loadImmediate="false" itemID="58132c1f-00000278" lastModified="1477651487"/>
+          <Include href="特效/其他特效/shape 632.xml" itemIcon="1" loadImmediate="false" itemID="58132c1f-00000279" lastModified="1477651487"/>
+          <Include href="特效/气爆特效/气爆.xml" loadImmediate="false" itemID="67400567-000001e5" lastModified="1732248936"/>
+          <Include href="特效/气爆特效/气爆2.xml" loadImmediate="false" itemID="67400581-000001ee" lastModified="1732248961"/>
+          <Include href="特效/气爆特效/气爆3.xml" loadImmediate="false" itemID="6740059b-000001f6" lastModified="1732248987"/>
+          <Include href="特效/气爆特效/气爆4.xml" loadImmediate="false" itemID="674005a7-000001fe" lastModified="1732248999"/>
+          <Include href="特效/气爆特效/气爆5.xml" loadImmediate="false" itemID="674005b6-00000206" lastModified="1732249014"/>
+          <Include href="特效/气爆特效/气爆6.xml" loadImmediate="false" itemID="674005c8-0000020e" lastModified="1732249032"/>
+          <Include href="特效/气功弹（和爆炸）素材/Symbol 652.xml" loadImmediate="false" itemID="668b9cdd-000001d4" lastModified="1720425625"/>
+          <Include href="特效/气功弹（和爆炸）素材/Symbol 654.xml" loadImmediate="false" itemID="668b9cdd-000001d6" lastModified="1720425625"/>
+          <Include href="特效/气流特效/shape 62.xml" itemIcon="1" loadImmediate="false" itemID="673b0ab6-000003ad" lastModified="1731922569"/>
+          <Include href="特效/气流特效/shape 1373.xml" itemIcon="1" loadImmediate="false" itemID="673b0ab6-000003ae" lastModified="1477651515"/>
+          <Include href="特效/气流特效/shape 1374.xml" itemIcon="1" loadImmediate="false" itemID="673b0ab6-000003af" lastModified="1477651515"/>
+          <Include href="特效/气流特效/shape 1375.xml" itemIcon="1" loadImmediate="false" itemID="673b0ab6-000003b0" lastModified="1731922564"/>
+          <Include href="特效/气流特效/shape 1376.xml" itemIcon="1" loadImmediate="false" itemID="673b0ab6-000003b1" lastModified="1477651515"/>
+          <Include href="特效/气流特效/shape 1377.xml" itemIcon="1" loadImmediate="false" itemID="673b0ab6-000003b2" lastModified="1477651515"/>
+          <Include href="特效/气流特效/气流.xml" loadImmediate="false" itemID="674099cc-000008b1" lastModified="1766640847"/>
+          <Include href="特效/日字冲拳残影.xml" loadImmediate="false" itemID="67cc950f-00000672" lastModified="1775138348"/>
+          <Include href="特效/上勾拳特效删减.xml" loadImmediate="false" itemID="668c1aed-0000204b" lastModified="1720458015"/>
+          <Include href="特效/上勾拳特效组件/shape 1048.xml" itemIcon="1" loadImmediate="false" itemID="58132c20-00000419" lastModified="1477651488"/>
+          <Include href="特效/上勾拳特效组件/shape 1049.xml" itemIcon="1" loadImmediate="false" itemID="58132c20-0000041a" lastModified="1477651488"/>
+          <Include href="特效/上勾拳特效组件/shape 1050.xml" itemIcon="1" loadImmediate="false" itemID="58132c20-0000041b" lastModified="1477651488"/>
+          <Include href="特效/上勾拳特效组件/shape 1051.xml" itemIcon="1" loadImmediate="false" itemID="58132c20-0000041c" lastModified="1477651488"/>
+          <Include href="特效/特殊爆炸.xml" loadImmediate="false" itemID="673f5c1e-00000c43" lastModified="1766634000"/>
+          <Include href="特效/突刺用特效/b05/b107.xml" itemIcon="1" loadImmediate="false" itemID="4f7e582d-000016d1" lastModified="1333680173"/>
+          <Include href="特效/突刺用特效/b05/b108.xml" itemIcon="1" loadImmediate="false" itemID="4f7e582d-000016d2" lastModified="1333680173"/>
+          <Include href="特效/突刺用特效/b05/b109.xml" itemIcon="1" loadImmediate="false" itemID="4f7e582d-000016d3" lastModified="1333680173"/>
+          <Include href="特效/突刺用特效/b05/b110.xml" itemIcon="1" loadImmediate="false" itemID="4f7e582d-000016d4" lastModified="1333680173"/>
+          <Include href="特效/突刺用特效/b05/b111.xml" itemIcon="1" loadImmediate="false" itemID="4f7e582d-000016d5" lastModified="1333680173"/>
+          <Include href="特效/徒手瞬影/徒手瞬影1.xml" loadImmediate="false" itemID="66a79f28-00000b9e" lastModified="1722261413"/>
+          <Include href="特效/徒手瞬影/徒手瞬影2.xml" loadImmediate="false" itemID="66b6fe84-000002b3" lastModified="1723268794"/>
+          <Include href="特效/徒手瞬影/徒手瞬影3.xml" loadImmediate="false" itemID="66b70a6d-00000355" lastModified="1723271825"/>
+          <Include href="特效/徒手瞬影/徒手瞬影4.xml" loadImmediate="false" itemID="66b75bef-0000074c" lastModified="1723304887"/>
+          <Include href="特效/徒手瞬影/徒手瞬影5.xml" loadImmediate="false" itemID="66b83b3f-0000036a" lastModified="1723349922"/>
+          <Include href="特效/徒手瞬影/徒手瞬影6.xml" loadImmediate="false" itemID="66b8879f-0000083c" lastModified="1723369392"/>
+          <Include href="特效/徒手瞬影/徒手瞬影7.xml" loadImmediate="false" itemID="66b88966-00000918" lastModified="1723369886"/>
+          <Include href="特效/徒手瞬影/徒手瞬影8.xml" loadImmediate="false" itemID="66b89816-00000b9c" lastModified="1723373646"/>
+          <Include href="特效/徒手瞬影/徒手瞬影9.xml" loadImmediate="false" itemID="66b8993b-00000cc2" lastModified="1723373930"/>
+          <Include href="特效/新霸体特效/上浮方块.xml" loadImmediate="false" itemID="66c19db5-000017a7" lastModified="1723965837"/>
+          <Include href="特效/旋风腿旋风短.xml" loadImmediate="false" itemID="6692e7b1-000042ed" lastModified="1722147263"/>
+          <Include href="特效/旋风腿旋风组件/shape 62.xml" itemIcon="1" loadImmediate="false" itemID="58132c35-0000003e" lastModified="1477651509"/>
+          <Include href="特效/旋风腿旋风组件/shape 1366.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000556" lastModified="1477651515"/>
+          <Include href="特效/旋风腿旋风组件/shape 1367.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000557" lastModified="1477651515"/>
+          <Include href="特效/旋风腿旋风组件/shape 1368.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000558" lastModified="1477651515"/>
+          <Include href="特效/旋风腿旋风组件/shape 1369.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000559" lastModified="1477651515"/>
+          <Include href="特效/旋风腿旋风组件/shape 1370.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055a" lastModified="1477651515"/>
+          <Include href="特效/旋风腿旋风组件/shape 1371.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055b" lastModified="1477651515"/>
+          <Include href="特效/旋风腿旋风组件/shape 1372.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055c" lastModified="1477651515"/>
+          <Include href="特效/旋风腿旋风组件/shape 1373.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055d" lastModified="1477651515"/>
+          <Include href="特效/旋风腿旋风组件/shape 1374.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055e" lastModified="1477651515"/>
+          <Include href="特效/旋风腿旋风组件/shape 1375.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055f" lastModified="1477651515"/>
+          <Include href="特效/旋风腿旋风组件/shape 1376.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000560" lastModified="1477651515"/>
+          <Include href="特效/旋风腿旋风组件/shape 1377.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000561" lastModified="1477651515"/>
+          <Include href="体育老师-近战动画.xml" loadImmediate="false" itemID="69e73693-00000510" lastModified="1776761461"/>
+          <Include href="阴影.xml" loadImmediate="false" itemID="65ab9909-000003b3" lastModified="1705744649"/>
+          <Include href="元件 1.xml" loadImmediate="false" itemID="673f56fa-00000914" lastModified="1732204413"/>
+          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1776761580"/>
+          <Include href="主角肢体素材/Symbol 3.xml" loadImmediate="false" itemID="697b650f-00003223" lastModified="1731931497"/>
+          <Include href="主角肢体素材/Symbol 6.xml" loadImmediate="false" itemID="697b6503-00001ff2" lastModified="1758557137"/>
+          <Include href="主角肢体素材/脚.xml" loadImmediate="false" itemID="697b650b-00002c94" lastModified="1775124362"/>
+          <Include href="主角肢体素材/屁股.xml" loadImmediate="false" itemID="697b6508-000028be" lastModified="1776605890"/>
+          <Include href="主角肢体素材/上臂.xml" loadImmediate="false" itemID="697b650d-0000304e" lastModified="1775124044"/>
+          <Include href="主角肢体素材/身体.xml" loadImmediate="false" itemID="697b650a-00002b2a" lastModified="1775135128"/>
+          <Include href="主角肢体素材/头.xml" loadImmediate="false" itemID="697b6508-00002815" lastModified="1775119254"/>
+          <Include href="主角肢体素材/小腿.xml" loadImmediate="false" itemID="697b650a-00002bec" lastModified="1775124317"/>
+          <Include href="主角肢体素材/右大腿.xml" loadImmediate="false" itemID="697b6507-00002736" lastModified="1775210614"/>
+          <Include href="主角肢体素材/右手.xml" loadImmediate="false" itemID="697b650a-00002b38" lastModified="1775124120"/>
+          <Include href="主角肢体素材/左大腿.xml" loadImmediate="false" itemID="697b650b-00002d3c" lastModified="1775124271"/>
+          <Include href="主角肢体素材/左手.xml" loadImmediate="false" itemID="697b650c-00002f19" lastModified="1775124554"/>
+          <Include href="主角肢体素材/左手臂.xml" loadImmediate="false" itemID="697b650d-00002fa6" lastModified="1775124471"/>
+          <Include href="主角肢体素材/左下臂.xml" loadImmediate="false" itemID="697b650d-00002f97" lastModified="1775194942"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="Scene 1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
+               <layers>
+                    <DOMLayer name="Layer 1" color="#DEEE3E" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[stop();]]></script>
+                                   </Actionscript>
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="容器/技能容器/技能容器-日字冲拳" centerPoint3DX="-574.6" centerPoint3DY="247.85">
+                                             <matrix>
+                                                  <Matrix a="0.450149536132813" d="0.450149536132813" tx="-617.25" ty="270.95"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="94.3" y="-51.55"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器/技能容器/技能容器-扭转乾坤" centerPoint3DX="-423.75" centerPoint3DY="238.6">
+                                             <matrix>
+                                                  <Matrix a="0.450149536132813" d="0.450149536132813" tx="-437.4" ty="267.35"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="30.55" y="-64"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器/技能容器/技能容器-虎拳" centerPoint3DX="-221.4" centerPoint3DY="247.7">
+                                             <matrix>
+                                                  <Matrix a="0.450149536132813" d="0.450149536132813" tx="-253.05" ty="269"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="70.55" y="-47.55"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-诛杀步" centerPoint3DX="-68.2" centerPoint3DY="268">
+                                             <matrix>
+                                                  <Matrix a="0.450149536132813" d="0.450149536132813" tx="-59.4" ty="267.6"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="-19.55" y="0.8"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-后撤步" centerPoint3DX="115.25" centerPoint3DY="277.2">
+                                             <matrix>
+                                                  <Matrix a="0.450149536132813" d="0.450149536132813" tx="144.8" ty="260.15"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="-66.1" y="38.2"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-燃烧指节" centerPoint3DX="351.85" centerPoint3DY="246.35">
+                                             <matrix>
+                                                  <Matrix a="0.450149536132813" d="0.450149536132813" tx="388.1" ty="252.65"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="-80.65" y="-13.55"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" centerPoint3DX="561.2" centerPoint3DY="246.1">
+                                             <matrix>
+                                                  <Matrix a="0.450149536132813" d="0.450149536132813" tx="584.9" ty="259.7"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="-52.85" y="-30.45"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="容器/空手攻击容器/平A/空手攻击容器-截拳1连招" centerPoint3DX="103.55" centerPoint3DY="-30.5">
+                                             <matrix>
+                                                  <Matrix a="0.450149536132813" d="0.450149536132813" tx="80.8" ty="-17.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="50.85" y="-29.3"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="主角-男" centerPoint3DX="782.2" centerPoint3DY="194.8">
+                                             <matrix>
+                                                  <Matrix tx="775.7" ty="289.3"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="体育老师-近战动画" centerPoint3DX="-193.95" centerPoint3DY="573">
+                                             <matrix>
+                                                  <Matrix a="0.384323120117188" d="0.384323120117188" tx="-198.55" ty="573"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="11.95"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="敌人-蛙型仿生僵尸" centerPoint3DX="489.3" centerPoint3DY="650.65">
+                                             <matrix>
+                                                  <Matrix tx="93" ty="744.1"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="396.3" y="-93.45"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <swatchLists>
+          <swatchList>
+               <swatches>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#003300" hue="80" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#006600" hue="80" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009900" hue="80" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC00" hue="80" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330000" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#333300" hue="40" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#336600" hue="60" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#339900" hue="67" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#33CC00" hue="70" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#33FF00" hue="72" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#660000" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663300" hue="20" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#666600" hue="40" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#669900" hue="53" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#66CC00" hue="60" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#66FF00" hue="64" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#333333" brightness="48"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000033" hue="160" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#003333" hue="120" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#006633" hue="100" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009933" hue="93" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC33" hue="90" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF33" hue="88" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330033" hue="200" saturation="239" brightness="24"/>
+                    <SolidSwatchItem color="#333333" brightness="48"/>
+                    <SolidSwatchItem color="#336633" hue="80" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#339933" hue="80" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC33" hue="80" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF33" hue="80" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660033" hue="220" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663333" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#666633" hue="40" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#669933" hue="60" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#66CC33" hue="67" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#66FF33" hue="70" saturation="239" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#666666" brightness="96"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000066" hue="160" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#003366" hue="140" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#006666" hue="120" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#009966" hue="107" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC66" hue="100" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF66" hue="96" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330066" hue="180" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#333366" hue="160" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#336666" hue="120" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#339966" hue="100" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC66" hue="93" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF66" hue="90" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660066" hue="200" saturation="239" brightness="48"/>
+                    <SolidSwatchItem color="#663366" hue="200" saturation="80" brightness="72"/>
+                    <SolidSwatchItem color="#666666" brightness="96"/>
+                    <SolidSwatchItem color="#669966" hue="80" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#66CC66" hue="80" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FF66" hue="80" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#999999" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#000099" hue="160" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#003399" hue="147" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#006699" hue="133" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#009999" hue="120" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#00CC99" hue="110" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FF99" hue="104" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#330099" hue="173" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#333399" hue="160" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#336699" hue="140" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#339999" hue="120" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#33CC99" hue="107" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FF99" hue="100" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#660099" hue="187" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#663399" hue="180" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#666699" hue="160" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#669999" hue="120" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#66CC99" hue="100" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FF99" hue="93" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000CC" hue="160" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0033CC" hue="150" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0066CC" hue="140" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#0099CC" hue="130" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00CCCC" hue="120" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#00FFCC" hue="112" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3300CC" hue="170" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#3333CC" hue="160" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#3366CC" hue="147" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#3399CC" hue="133" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33CCCC" hue="120" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#33FFCC" hue="110" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6600CC" hue="180" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#6633CC" hue="173" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#6666CC" hue="160" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#6699CC" hue="140" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66CCCC" hue="120" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#66FFCC" hue="107" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0033FF" hue="152" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0066FF" hue="144" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#0099FF" hue="136" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#00CCFF" hue="128" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3300FF" hue="168" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#3333FF" hue="160" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#3366FF" hue="150" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#3399FF" hue="140" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#33CCFF" hue="130" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#33FFFF" hue="120" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6600FF" hue="176" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#6633FF" hue="170" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#6666FF" hue="160" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#6699FF" hue="147" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#66CCFF" hue="133" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#66FFFF" hue="120" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990000" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993300" hue="13" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#996600" hue="27" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#999900" hue="40" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#99CC00" hue="50" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#99FF00" hue="56" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#CC0000" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3300" hue="10" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC6600" hue="20" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC9900" hue="30" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CCCC00" hue="40" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CCFF00" hue="48" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF0000" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3300" hue="8" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF6600" hue="16" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF9900" hue="24" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFCC00" hue="32" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#00FF00" hue="80" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990033" hue="227" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993333" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996633" hue="20" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#999933" hue="40" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#99CC33" hue="53" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#99FF33" hue="60" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#CC0033" hue="230" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3333" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6633" hue="13" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC9933" hue="27" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CCCC33" hue="40" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CCFF33" hue="50" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF0033" hue="232" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3333" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6633" hue="10" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF9933" hue="20" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FFCC33" hue="30" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FFFF33" hue="40" saturation="239" brightness="144"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#0000FF" hue="160" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990066" hue="213" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993366" hue="220" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996666" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#999966" hue="40" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#99CC66" hue="60" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#99FF66" hue="67" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#CC0066" hue="220" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3366" hue="227" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6666" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC9966" hue="20" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CCCC66" hue="40" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CCFF66" hue="53" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF0066" hue="224" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3366" hue="230" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6666" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF9966" hue="13" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FFCC66" hue="27" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FFFF66" hue="40" saturation="239" brightness="168"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FFFF00" hue="40" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#990099" hue="200" saturation="239" brightness="72"/>
+                    <SolidSwatchItem color="#993399" hue="200" saturation="120" brightness="96"/>
+                    <SolidSwatchItem color="#996699" hue="200" saturation="48" brightness="120"/>
+                    <SolidSwatchItem color="#999999" brightness="144"/>
+                    <SolidSwatchItem color="#99CC99" hue="80" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99FF99" hue="80" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC0099" hue="210" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC3399" hue="213" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC6699" hue="220" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC9999" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCCC99" hue="40" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCFF99" hue="60" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FF0099" hue="216" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF3399" hue="220" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF6699" hue="227" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF9999" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCC99" hue="20" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFFF99" hue="40" saturation="239" brightness="192"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#00FFFF" hue="120" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#9900CC" hue="190" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#9933CC" hue="187" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#9966CC" hue="180" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#9999CC" hue="160" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99CCCC" hue="120" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#99FFCC" hue="100" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC00CC" hue="200" saturation="239" brightness="96"/>
+                    <SolidSwatchItem color="#CC33CC" hue="200" saturation="144" brightness="120"/>
+                    <SolidSwatchItem color="#CC66CC" hue="200" saturation="120" brightness="144"/>
+                    <SolidSwatchItem color="#CC99CC" hue="200" saturation="80" brightness="168"/>
+                    <SolidSwatchItem color="#CCCCCC" brightness="192"/>
+                    <SolidSwatchItem color="#CCFFCC" hue="80" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FF00CC" hue="208" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF33CC" hue="210" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF66CC" hue="213" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF99CC" hue="220" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCCCC" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FFFFCC" hue="40" saturation="239" brightness="216"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
+                    <SolidSwatchItem/>
+                    <SolidSwatchItem color="#9900FF" hue="184" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#9933FF" hue="180" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#9966FF" hue="173" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#9999FF" hue="160" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#99CCFF" hue="140" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#99FFFF" hue="120" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CC00FF" hue="192" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#CC33FF" hue="190" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#CC66FF" hue="187" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#CC99FF" hue="180" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#CCCCFF" hue="160" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#CCFFFF" hue="120" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FF00FF" hue="200" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FF33FF" hue="200" saturation="239" brightness="144"/>
+                    <SolidSwatchItem color="#FF66FF" hue="200" saturation="239" brightness="168"/>
+                    <SolidSwatchItem color="#FF99FF" hue="200" saturation="239" brightness="192"/>
+                    <SolidSwatchItem color="#FFCCFF" hue="200" saturation="239" brightness="216"/>
+                    <SolidSwatchItem color="#FFFFFF" brightness="240"/>
+                    <SolidSwatchItem color="#CBA389" hue="16" saturation="93" brightness="160"/>
+                    <SolidSwatchItem color="#B78F75" hue="16" saturation="75" brightness="141"/>
+                    <SolidSwatchItem color="#E5B79A" hue="15" saturation="143" brightness="181"/>
+                    <SolidSwatchItem color="#B78564" hue="16" saturation="87" brightness="133"/>
+                    <SolidSwatchItem color="#FFDD00" hue="35" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFAA00" hue="27" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#FFBB00" hue="29" saturation="239" brightness="120"/>
+                    <SolidSwatchItem color="#5F3F29" hue="16" saturation="94" brightness="64"/>
+                    <SolidSwatchItem color="#B07F5F" hue="16" saturation="82" brightness="128"/>
+                    <SolidSwatchItem color="#EEEEEE" brightness="224"/>
+                    <SolidSwatchItem color="#A5A5A5" brightness="155"/>
+               </swatches>
+          </swatchList>
+     </swatchLists>
+     <extendedSwatchLists>
+          <swatchList>
+               <swatches>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#FFFFFF" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#FFFFFF" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#FF0000" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#00FF00" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#0000FF" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#0066FD" ratio="0"/>
+                         <GradientEntry color="#FFFFFF" ratio="0.376470588235294"/>
+                         <GradientEntry color="#FFFFFF" ratio="0.47843137254902"/>
+                         <GradientEntry color="#996600" ratio="0.501960784313725"/>
+                         <GradientEntry color="#FFCC00" ratio="0.666666666666667"/>
+                         <GradientEntry color="#FFFFFF" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <LinearGradientSwatchItem>
+                         <GradientEntry color="#FF0000" ratio="0"/>
+                         <GradientEntry color="#FFFF00" ratio="0.164705882352941"/>
+                         <GradientEntry color="#00FF00" ratio="0.364705882352941"/>
+                         <GradientEntry color="#00FFFF" ratio="0.498039215686275"/>
+                         <GradientEntry color="#0000FF" ratio="0.666666666666667"/>
+                         <GradientEntry color="#FF00FF" ratio="0.831372549019608"/>
+                         <GradientEntry color="#FF0000" ratio="1"/>
+                    </LinearGradientSwatchItem>
+                    <RadialGradientSwatchItem spreadMethod="reflect">
+                         <GradientEntry alpha="0.0117647058823529" ratio="0"/>
+                         <GradientEntry color="#FFFFFF" ratio="0.815686274509804"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#333333" ratio="0"/>
+                         <GradientEntry ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#FFFFFF" alpha="0.250980392156863" ratio="0"/>
+                         <GradientEntry color="#330000" alpha="0.0980392156862745" ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#666666" ratio="0"/>
+                         <GradientEntry color="#333333" ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#6D0101" ratio="0"/>
+                         <GradientEntry color="#B10101" ratio="0.494117647058824"/>
+                         <GradientEntry color="#FE4545" ratio="0.988235294117647"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#FFFFFF" ratio="0.564705882352941"/>
+                         <GradientEntry color="#4CB9FF" ratio="0.713725490196078"/>
+                         <GradientEntry color="#4CB9FF" alpha="0" ratio="1"/>
+                    </RadialGradientSwatchItem>
+                    <RadialGradientSwatchItem>
+                         <GradientEntry color="#2F2F2F" ratio="0.768627450980392"/>
+                         <GradientEntry color="#1E1E1E" ratio="1"/>
+                    </RadialGradientSwatchItem>
+               </swatches>
+          </swatchList>
+     </extendedSwatchLists>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+          <PD n="ikNodeCount" t="i" v="1"/>
+          <PD n="ikTreeCount" t="i" v="2"/>
+          <PD n="ikBoneCount" t="i" v="2"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="4128161" publishTime="1772128415"/>
+          <PublishItem publishSize="4128526" publishTime="1772043501"/>
+          <PublishItem publishSize="4128535" publishTime="1772043158"/>
+          <PublishItem publishSize="4128560" publishTime="1772042846"/>
+          <PublishItem publishSize="4128524" publishTime="1772042544"/>
+          <PublishItem publishSize="4128531" publishTime="1772042394"/>
+          <PublishItem publishSize="4128449" publishTime="1772041268"/>
+          <PublishItem publishSize="4128315" publishTime="1772040532"/>
+          <PublishItem publishSize="4128471" publishTime="1772040386"/>
+          <PublishItem publishSize="4128471" publishTime="1772039916"/>
+          <PublishItem publishSize="4128474" publishTime="1772039367"/>
+          <PublishItem publishSize="4128441" publishTime="1772038717"/>
+          <PublishItem publishSize="4128398" publishTime="1771997095"/>
+          <PublishItem publishSize="4128415" publishTime="1771995768"/>
+          <PublishItem publishSize="4128404" publishTime="1771995437"/>
+          <PublishItem publishSize="4128311" publishTime="1771994892"/>
+          <PublishItem publishSize="4128309" publishTime="1771993195"/>
+          <PublishItem publishSize="4128309" publishTime="1771992722"/>
+          <PublishItem publishSize="4128209" publishTime="1771991696"/>
+          <PublishItem publishSize="4128453" publishTime="1771990797"/>
+     </publishHistory>
+</DOMDocument>

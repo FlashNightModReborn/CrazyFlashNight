@@ -1,0 +1,432 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1776761580" lastUniqueIdentifier="330">
+  <timeline>
+    <DOMTimeline name="主角-男" currentFrame="39">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="容器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="7" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" name="空手行走" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" name="空手跑" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" name="空手冲击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" duration="10" name="被击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="49" duration="14" name="血腥死" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="63" duration="5" name="刷新装扮" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="7" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#D5B125" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[性别 = 性别 ? 性别 : "男";
+this.初始化玩家模板 = _root.初始化玩家模板;
+this.初始化玩家模板();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="61" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="63" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[格斗架势 = false;
+if (状态 === "技能" || 状态 === "战技")
+{
+	状态改变(攻击模式 + "站立");
+}
+else
+{
+	gotoAndStop(状态);
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刚体控制器" color="#AAB531" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="75" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/Symbol 119" name="刚体控制器" centerPoint3DX="-3.35" centerPoint3DY="-203.5">
+                  <matrix>
+                    <Matrix tx="-43.5" ty="-216"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="人物文字信息" color="#BDB2FA" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="49" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/新版人物文字信息" name="人物文字信息" cacheAsBitmap="true" centerPoint3DX="81.5" centerPoint3DY="-117.4">
+                  <matrix>
+                    <Matrix tx="1" ty="-155"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" duration="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按钮" color="#E1FF16" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="49" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/Symbol 79" symbolType="button">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[/*on(press){
+   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
+   {
+      _root.gameworld[_root.控制目标].攻击目标 = this._name;
+      _root.控制目标全自动 = true;
+   }
+}*/
+on(press, release, rollOver){
+   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
+   {
+      _root.鼠标.gotoAndStop("手型攻击");
+   }
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+on(release){
+   if(是否为敌人 != true)
+   {
+      if(this._name == _root.控制目标)
+      {
+         _root.查看用户ID = 0;
+         _root.菜单MC对应名 = this._name;
+         _root.修改详细菜单._visible = 1;
+         _root.修改详细菜单._x = _root._xmouse;
+         _root.修改详细菜单._y = _root._ymouse;
+      }
+      else
+      {
+         _root.查看用户ID = this.用户ID;
+         _root.菜单MC对应名 = this._name;
+         _root.查看详细菜单._visible = 1;
+         _root.查看详细菜单._x = _root._xmouse;
+         _root.查看详细菜单._y = _root._ymouse;
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" duration="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#3CB9C0" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="49" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" duration="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="暂时刚体控制器" color="#B5AB5C" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="75" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/Symbol 78" name="暂时刚体控制器" centerPoint3DX="-23.5" centerPoint3DY="-63.55">
+                  <matrix>
+                    <Matrix tx="-33.5" ty="-73.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="ai" color="#C2C2C7" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/Symbol 76" name="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                  <matrix>
+                    <Matrix tx="-36" ty="16.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="49" duration="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="行走状态机" color="#A0D065" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/Symbol 74" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.onEnterFrame = _root.主角函数.拳刀行走状态机;
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="49" duration="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/空手待机" name="man" centerPoint3DX="191.6" centerPoint3DY="218">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/Symbol 120" name="man" selected="true" centerPoint3DX="154.05" centerPoint3DY="220.05">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/空手跑" name="man" centerPoint3DX="240.85" centerPoint3DY="219.5">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/空手跑攻" name="man" selected="true" centerPoint3DX="281.75" centerPoint3DY="249.7">
+                  <matrix>
+                    <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	if (_parent._name == _root.控制目标)
+	{
+		// 按下攻击键K后触发
+		if (_parent.被动技能.升龙拳 && _parent.被动技能.升龙拳.启用 && Key.isDown(_parent.B键))
+		{
+			_parent.跳横移速度 = _parent.跑X速度;
+			_parent.跳跃中移动速度 = _parent.跑X速度;
+			_parent.状态改变("空手跳");
+		}
+	}
+   _parent.格斗架势 = true;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/Symbol 136" name="man" selected="true" centerPoint3DX="204" centerPoint3DY="266.8">
+                  <matrix>
+                    <Matrix a="0.277236938476563" d="0.277099609375" tx="3.2" ty="-61.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.格斗架势 = true;
+   gotoAndPlay(_parent.攻击模式 + random(2));
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="单位/Symbol 825" name="man" selected="true" centerPoint3DX="621.55" centerPoint3DY="340.05">
+                  <matrix>
+                    <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	function 死()
+	{
+		_parent.死亡检测();
+	}
+	_parent._y = _parent.Z轴坐标;
+	_parent.倒地 = true;
+	_parent.格斗架势 = true;
+	if(_parent.死亡撤退){
+		gotoAndPlay("撤退");
+	}else{
+		_root.主角函数.跳转到招式(this, "a", 6);
+	}
+	this.onUnload = function()
+	{
+		_parent.倒地 = false;
+	};
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="75" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="86.65" centerPoint3DY="85.4">
+                  <matrix>
+                    <Matrix a="0.425384521484375" d="0.173187255859375" ty="-1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="底层背景" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="68" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/底层背景标签" name="底层背景">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
