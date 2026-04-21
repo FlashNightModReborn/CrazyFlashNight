@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/身体" itemID="697b650a-00002b2a" lastModified="1775135128" lastUniqueIdentifier="18">
+  <timeline>
+    <DOMTimeline name="身体">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/身体" selected="true" centerPoint3DX="-14.8" centerPoint3DY="-74.6">
+                  <matrix>
+                    <Matrix a="-1.05168151855469" b="0.0280914306640625" d="1.2110595703125" tx="70.4" ty="-221.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="57.8" y="186.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

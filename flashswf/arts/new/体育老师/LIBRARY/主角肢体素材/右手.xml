@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/右手" itemID="697b650a-00002b38" lastModified="1775124120" lastUniqueIdentifier="15">
+  <timeline>
+    <DOMTimeline name="右手">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/右手 复制" name="基本款" centerPoint3DX="50.45" centerPoint3DY="27.35">
+                  <matrix>
+                    <Matrix a="1.18313598632813" b="0.142898559570313" c="-0.154571533203125" d="1.1978759765625" tx="23.9" ty="2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

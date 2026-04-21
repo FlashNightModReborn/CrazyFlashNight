@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/小腿" itemID="697b650a-00002bec" lastModified="1775124317" lastUniqueIdentifier="16">
+  <timeline>
+    <DOMTimeline name="小腿">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/右小腿" centerPoint3DX="4.05" centerPoint3DY="99.75">
+                  <matrix>
+                    <Matrix a="1.36917114257813" b="-0.26519775390625" c="0.27484130859375" d="1.41899108886719" tx="-62.3" ty="-3.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.7" y="78.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/脚" itemID="697b650b-00002c94" lastModified="1775124362" lastUniqueIdentifier="16">
+  <timeline>
+    <DOMTimeline name="脚">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/左脚" centerPoint3DX="18.85" centerPoint3DY="29.05">
+                  <matrix>
+                    <Matrix a="1.04327392578125" b="0.117965698242188" c="-0.116439819335938" d="1.02981567382813" tx="-20.7" ty="-6.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.4" y="29.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-体育老师/组件/左脚" centerPoint3DX="22.45" centerPoint3DY="34.6">
+                  <matrix>
+                    <Matrix a="1.20211791992188" b="0.135940551757813" c="-0.1341552734375" d="1.18658447265625" tx="-23.25" ty="-6.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.45" y="29.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
