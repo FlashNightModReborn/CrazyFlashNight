@@ -1,128 +1,109 @@
 # 项目技术架构总览
 
----
+**文档角色**：系统拓扑 canonical doc。  
+**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
 
-## 1. 架构概览
+本项目当前应被理解为：**Flash 核心游戏 + Guardian Launcher Host + WebView2 UI + native / build tooling** 的本地多栈系统。
 
-```
-┌─────────────────────────────────────┐
-│     Flash Player (AS2 客户端)         │
-│  ┌─────────┐  ┌──────────────┐      │
-│  │ 主 SWF   │  │ 子 SWF/小游戏│      │
-│  │(游戏逻辑)│←→│  (hana包)    │      │
-│  └────┬─────┘  └──────────────┘      │
-│       │ XMLSocket (快车道 F/R + JSON)  │
-└───────┼──────────────────────────────┘
-        │
-┌───────┼──────────────────────────────┐
-│  C# Guardian Launcher                │
-│  ┌────┴──────┐   ┌──────────────┐    │
-│  │XmlSocket  │   │  HTTP API    │    │
-│  │ 快车道    │   │ /status      │    │
-│  │ F→Frame   │   │ /console     │    │
-│  │ R→Reset   │   │ /task        │    │
-│  │ JSON→路由 │   │ /logBatch    │    │
-│  └───────────┘   └──────────────┘    │
-│  ┌──────────────────────────────┐    │
-│  │ TaskRegistry (single source) │    │
-│  │ toast | gomoku_eval          │    │
-│  │ V8Runtime (hit-number)       │    │
-│  └──────────────────────────────┘    │
-└──────────────────────────────────────┘
-        ↑
-  cfn-cli.sh / .ps1（外部 CLI 工具）
-```
-
----
-
-## 2. 模块通信流程
-
-### 子 SWF 加载与通信
-
-子 SWF 不作为独立沙箱运行，而是以 **资源注入** 方式集成到主文件中（本质上被视为一种资源文件）：
-
-1. **链接导出**：子 SWF 内的影片剪辑通过 AS 链接（Linkage）导出为可实例化的符号
-2. **加载注入**：主 FLA 工程中可显式设置外部 SWF 作为共享库导入（Runtime Shared Library），也可通过 `loadMovie` / `attachMovie` 在运行时加载；两种方式均将子 SWF 库中的链接符号注入到主文件的运行时环境
-3. **主文件范围运行**：实例化的影片剪辑在主文件的作用域内运行，可直接访问 `_root`、全局变量和主文件的类库，无跨 SWF 沙箱隔离
-
-> 这意味着子 SWF 与主文件之间不存在显式的消息协议，而是共享同一运行时上下文，直接通过属性和方法调用通信。
-
-### AS2 ↔ C# Guardian Launcher 通信
-- 传输：XMLSocket（TCP 长连接，双通道：前缀快车道 + JSON 路由）+ HTTP（辅助通道）
-- 端口发现：HTTP `POST /testConnection` 探测 → `GET /getSocketPort` 获取 socket 端口
-- 消息分帧：`\0` 终止符
-- Task 注册表：`launcher/src/Bus/TaskRegistry.cs`（single source of truth）
-- 状态查询：`GET /status`（返回 task 清单 + 连接状态）
-- 客户端入口：`org.flashNight.neur.Server.ServerManager`（单例，5 状态 FSM）
-- 初始化脚本：`scripts/通信/通信_fs_本地服务器.as`
-
-#### 连接状态机（帧驱动，无 setTimeout/setInterval）
+## 1. 总体分层
 
 ```
-S_DISCONNECTED(0)      等待重连延迟（150帧≈5s），retryCount < 5
-  │
-  v
-S_HTTP_PROBING(1)      POST /testConnection → portList 轮询
-  │ success → currentPort = port
-  v
-S_FETCHING_PORT(2)     GET /getSocketPort → socketPort
-  │ success → socketPort = port
-  v
-S_SOCKET_CONNECTING(3) XMLSocket.connect(localhost, socketPort)
-  │ success
-  v
-S_CONNECTED(4)         业务就绪
-  │ onSocketClose
-  v
-S_FETCHING_PORT(2)     关键：重新发现端口（launcher 可能重启在不同端口）
+┌──────────────────────────────────────────────────────┐
+│ Flash / AS2 Runtime                                 │
+│ 主 SWF、子资源、帧脚本、org.flashNight.* 类库         │
+└───────────────┬──────────────────────────────────────┘
+                │ XMLSocket / HTTP / 本地文件 / 启动参数
+┌───────────────▼──────────────────────────────────────┐
+│ Guardian Launcher Host (C# / WinForms / .NET 4.6.2) │
+│ 启动链路、TaskRegistry、音频、overlay 宿主、存档决议   │
+└───────────────┬──────────────────────────────────────┘
+                │ WebView2 postMessage / bridge
+┌───────────────▼──────────────────────────────────────┐
+│ Launcher Web UI                                     │
+│ bootstrap、overlay、Panels、minigames、dev harness   │
+└───────────────┬──────────────────────────────────────┘
+                │ build / native boundary
+┌───────────────▼──────────────────────────────────────┐
+│ Tooling & Native                                    │
+│ TypeScript/V8、Rust sol_parser、PowerShell、CLI      │
+└──────────────────────────────────────────────────────┘
 ```
 
-- 端口候选列表从 `_root.闪客之夜`（数字种子 "1192433993"）提取 4/5 位有效端口
-- 失败路径：任意层失败 → `retryCount++` → S_DISCONNECTED → 等待 delay → 重试
-- 所有状态转换由 `transitionTo()` 统一管理，每个异步回调先检查当前状态是否匹配
+## 2. 五条核心链路
 
-#### 消息协议
+### A. Flash / AS2 运行时链
 
-XMLSocket 消息以 `\0` 终止符分帧，采用**双通道分发**：
+- 游戏核心逻辑、帧脚本、资源链接和 `_root` 级业务入口仍在 `scripts/` 与 Flash 资产中
+- 子资源与主 SWF 共享运行时上下文，不以现代沙箱或模块系统隔离
+- `_root`、MovieClip、帧驱动 FSM、XML 数据加载仍是核心工程现实
+- 这条链的验证与构建依赖 Flash / JSFL / IDE 协同，不属于可直接命令行编译的普通脚本项目
 
-##### 快车道（前缀协议，绕过 JSON 解析）
+### B. Flash CS6 编译与自动化 smoke 链
 
-高频消息使用固定前缀，由 `XmlSocketServer.HandleMessage` 首字节判断直达处理器：
+- 真实编译器仍是 Flash CS6 GUI
+- 自动化 smoke 通过 `scripts/compile_test.ps1/.sh` → JSFL → `testMovie()` → `flashlog.txt` / `compile_output.txt` / `compiler_errors.txt`
+- 这条链只提供 **smoke 级验证**，不能取代 IDE 人工复核，也不能把 `publish_done.marker` 当作最终成功依据
+- 详细编译自动化细节由 `scripts/FlashCS6自动化编译.md` 负责
 
-| 前缀 | 格式 | 处理器 | 频率 |
-|------|------|--------|------|
-| `F` | `F{cam}\x01{hn}` | `FrameTask.HandleRaw(cam, hn)` | 每帧（30fps） |
-| `R` | `R`（无负载） | `FrameTask.HandleReset()` | 场景切换 |
+### C. Guardian Launcher Host 链
 
-- cam 格式：`gw._x|gw._y|scale`（管道符分隔）
-- `\x01`(SOH) 分隔 cam 与 hn（两者内容只含 `|`;数字文本）
-- hn 格式：`value|x|y|packed|efText|efEmoji|lifeSteal|shieldAbsorb;...`（分号分条目）
+- `launcher/` 是当前运行时宿主，不再只是“附带工具”
+- 关键职责：
+  - 启动前 WebView2 预检与 BootstrapPanel
+  - Flash Player SA 启动、预热、嵌入与 reveal
+  - XMLSocket / HTTP 本地总线与 `TaskRegistry`
+  - 音频系统、Notch / Toast / Web overlay 宿主
+  - 启动前存档决议与 Protocol 2
+- `launcher/README.md` 是该子系统的 source of truth
 
-##### 通用路由（JSON）
+### D. Launcher Web / Minigames / Overlay 链
 
-非快车道消息经 `MessageRouter.ProcessMessage` 路由（JObject.Parse + task 字段分发）：
+- WebView2 前端已承担启动引导、运行态 overlay、Panel 系统和小游戏 UI
+- 小游戏当前采用统一壳层与宿主协议：
+  - 共享结构类：`minigame-*`
+  - 共享宿主上报：`minigame_session`
+  - 浏览器 harness + Node QA + 静态验证三层回归
+- 这条链与 AS2 游戏核心并存，但职责不同：它是运行态 UI 层，不是替代游戏主逻辑的重写
 
-**客户端 → 服务器**：
-```json
-{ "task": "toast|gomoku_eval", "payload": ..., "callId": ... }
-```
+### E. Native & Build 链
 
-**服务器 → 客户端**：
-```json
-{ "success": true, "result": ... }
-{ "success": false, "error": "错误信息" }
-```
+- `launcher/scripts/` 中的 TypeScript 编译为 V8 运行时代码
+- `launcher/native/sol_parser/` 通过 Rust 生成 `sol_parser.dll`
+- PowerShell 承担 Windows 环境下的启动、编译 smoke、CLI 和诊断自动化
+- 这里的 Node / Rust 都属于**受控边界件**，不是独立应用栈；它们存在的理由是为现有运行时服务
 
-| 任务类型 | 处理器 | 类型 | 用途 |
-|---------|--------|------|------|
-| `toast` | `ToastTask.cs` | sync | UI toast 通知（fire-and-forget） |
-| `gomoku_eval` | `GomokuTask.cs` | async | 五子棋 AI 评估（rapfi 引擎，callId 回调） |
-| `console` | 服务器推送 → AS2 | push | 远程控制台命令（HTTP /console → XMLSocket） |
-| `console_result` | 事件回执 | event | AS2 执行结果回传（触发 OnConsoleResult 事件） |
+## 3. 通信与边界
 
-**HTTP 辅助通道**：`POST /logBatch`（调试日志批量上报，每帧最多一次，`ServerManager.sendMessageBuffer()` 管理缓冲区）
+### Flash ↔ Launcher
 
-### XML 数据加载
+- 主通道：XMLSocket（快车道前缀 + JSON 路由）
+- 辅助通道：HTTP（端口发现、状态查询、日志与辅助接口）
+- 注册中心：`launcher/src/Bus/TaskRegistry.cs`
+- 集成测试入口：`--bus-only`
 
-详见 [data-schemas.md](data-schemas.md)。
+### Launcher Host ↔ WebView2
 
+- Bootstrap 阶段：`chrome.webview.postMessage({cmd, ...})`
+- 运行态：Bridge / Panel / UiData / Notch / overlay 消息桥
+- Minigame：统一 `minigame_session` envelope
+
+### 文档边界
+
+- 本文只讲系统拓扑与链路分层
+- 协议明细、构建细节、测试矩阵、治理规则分别由：
+  - `launcher/README.md`
+  - `agentsDoc/testing-guide.md`
+  - `agentsDoc/documentation-governance.md`
+  - `docs/tech-stack-rationalization.md`
+
+## 4. 当前架构结论
+
+- 当前工程是一个必须接受 Flash 物理约束、同时由多条宿主与工具链围绕的本地多栈系统
+- 入口文档应只陈述这一现实；技术栈演进判断统一下沉到 `docs/tech-stack-rationalization.md`
+
+后续治理重点应放在：
+
+- 文档 truth source 明确化
+- 子栈边界收敛
+- 验证矩阵标准化
+- 入口页与深文档职责分离

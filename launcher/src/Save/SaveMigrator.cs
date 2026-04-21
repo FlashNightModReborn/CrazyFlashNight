@@ -2,6 +2,7 @@
 // and validation logic). C# 5 syntax; targets .NET Framework 4.6.2.
 
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Save
@@ -56,6 +57,7 @@ namespace CF7Launcher.Save
                     null);
             }
             mydata["version"] = "3.0";
+            NormalizeResolvedSnapshot(mydata);
         }
 
         /// <summary>
@@ -93,6 +95,43 @@ namespace CF7Launcher.Save
                 soData["商城已购买物品"],
                 soData["商城购物车"],
                 mydata["shop"] as JObject);
+            NormalizeResolvedSnapshot(mydata);
+        }
+
+        /// <summary>
+        /// Repair legacy/edited snapshots in place without fabricating missing
+        /// top-level sections. Only fields already present are normalized.
+        /// </summary>
+        public static void NormalizeResolvedSnapshot(JObject mydata)
+        {
+            if (mydata == null) return;
+
+            JObject tasks = mydata["tasks"] as JObject;
+            if (tasks != null)
+            {
+                if (!IsAbsent(tasks["tasks_to_do"]))
+                    tasks["tasks_to_do"] = NormalizeTaskArray(tasks["tasks_to_do"]);
+                if (!IsAbsent(tasks["tasks_finished"]))
+                    tasks["tasks_finished"] = NormalizeTaskFinishedObject(tasks["tasks_finished"]);
+                if (!IsAbsent(tasks["task_chains_progress"]))
+                    tasks["task_chains_progress"] = NormalizeTaskChainsProgress(tasks["task_chains_progress"], mydata["3"]);
+            }
+
+            JObject pets = mydata["pets"] as JObject;
+            if (pets != null)
+            {
+                if (!IsAbsent(pets["宠物信息"]))
+                    pets["宠物信息"] = NormalizePetsInfo(pets["宠物信息"]);
+            }
+
+            JObject shop = mydata["shop"] as JObject;
+            if (shop != null)
+            {
+                if (!IsAbsent(shop["商城已购买物品"]))
+                    shop["商城已购买物品"] = NormalizeListArray(shop["商城已购买物品"]);
+                if (!IsAbsent(shop["商城购物车"]))
+                    shop["商城购物车"] = NormalizeListArray(shop["商城购物车"]);
+            }
         }
 
         /// <summary>
@@ -139,21 +178,26 @@ namespace CF7Launcher.Save
             // tasks
             JObject tasks = mydata["tasks"] as JObject;
             if (tasks == null) return false;
-            if (IsAbsent(tasks["tasks_to_do"])) return false;
-            if (IsAbsent(tasks["tasks_finished"])) return false;
-            if (IsAbsent(tasks["task_chains_progress"])) return false;
+            if (!(tasks["tasks_to_do"] is JArray)) return false;
+            if (!(tasks["tasks_finished"] is JObject)) return false;
+            if (!(tasks["task_chains_progress"] is JObject)) return false;
 
             // pets
             JObject pets = mydata["pets"] as JObject;
             if (pets == null) return false;
-            if (IsAbsent(pets["宠物信息"])) return false;
+            JArray petInfo = pets["宠物信息"] as JArray;
+            if (petInfo == null || petInfo.Count < 5) return false;
+            for (int i = 0; i < petInfo.Count; i++)
+            {
+                if (!(petInfo[i] is JArray)) return false;
+            }
             if (IsAbsent(pets["宠物领养限制"])) return false;
 
             // shop
             JObject shop = mydata["shop"] as JObject;
             if (shop == null) return false;
-            if (IsAbsent(shop["商城已购买物品"])) return false;
-            if (IsAbsent(shop["商城购物车"])) return false;
+            if (!(shop["商城已购买物品"] is JArray)) return false;
+            if (!(shop["商城购物车"] is JArray)) return false;
 
             return true;
         }
@@ -179,7 +223,18 @@ namespace CF7Launcher.Save
             JArray arr = token as JArray;
             if (arr != null) return arr.Count > 0;
             JObject obj = token as JObject;
-            return obj != null && obj.HasValues;
+            if (obj == null || !obj.HasValues) return false;
+            if (!IsAbsent(obj["id"])) return true;
+
+            foreach (JProperty prop in obj.Properties())
+            {
+                int ignored;
+                if (IsNonNegativeIntegerKey(prop.Name)) return true;
+                if (string.Equals(prop.Name, "主线", StringComparison.Ordinal)) return true;
+                if (!IsTaskProgressMetaKey(prop.Name) && TryGetIntegralValue(prop.Value, out ignored))
+                    return true;
+            }
+            return false;
         }
 
         private static JToken PreferTaskArray(JToken primary, JToken fallback, JToken defaultValue)
@@ -207,15 +262,186 @@ namespace CF7Launcher.Save
         private static JObject BuildTaskChainsProgress(JToken primary, JToken fallback, JToken legacyMainToken)
         {
             JToken picked = PreferTaskObject(primary, fallback, new JObject());
-            JObject result = picked as JObject;
-            if (result != null) result = result.DeepClone() as JObject;
-            if (result == null) result = new JObject();
+            return NormalizeTaskChainsProgress(picked, legacyMainToken);
+        }
+
+        private static bool IsNonNegativeIntegerKey(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return false;
+            int index;
+            return int.TryParse(key, out index) && index >= 0;
+        }
+
+        private static bool TryGetIntegralValue(JToken token, out int value)
+        {
+            value = 0;
+            if (IsAbsent(token)) return false;
+
+            try
+            {
+                if (token.Type == JTokenType.Boolean)
+                {
+                    value = token.Value<bool>() ? 1 : 0;
+                    return true;
+                }
+
+                if (token.Type == JTokenType.Integer)
+                {
+                    value = token.Value<int>();
+                    return true;
+                }
+
+                if (token.Type == JTokenType.Float)
+                {
+                    double num = token.Value<double>();
+                    if (double.IsNaN(num) || double.IsInfinity(num)) return false;
+                    value = (int)Math.Floor(num);
+                    return true;
+                }
+
+                if (token.Type == JTokenType.String)
+                {
+                    string text = token.Value<string>();
+                    return int.TryParse(text, out value);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            return false;
+        }
+
+        private static bool IsTaskProgressMetaKey(string key)
+        {
+            return string.Equals(key, "id", StringComparison.Ordinal)
+                || string.Equals(key, "requirements", StringComparison.Ordinal)
+                || string.Equals(key, "stages", StringComparison.Ordinal)
+                || string.Equals(key, "challenge", StringComparison.Ordinal)
+                || string.Equals(key, "finished", StringComparison.Ordinal);
+        }
+
+        private static JArray NormalizeTaskArray(JToken token)
+        {
+            JArray result = new JArray();
+            if (IsAbsent(token)) return result;
+
+            JArray arr = token as JArray;
+            if (arr != null)
+            {
+                for (int i = 0; i < arr.Count; i++)
+                {
+                    JObject task = NormalizeTaskEntry(arr[i]);
+                    if (task != null) result.Add(task);
+                }
+                return result;
+            }
+
+            JObject obj = token as JObject;
+            if (obj == null) return result;
+
+            JArray indexed;
+            if (TryConvertIndexedObjectToArray(obj, out indexed))
+                return NormalizeTaskArray(indexed);
+
+            JObject single = NormalizeTaskEntry(obj);
+            if (single != null) result.Add(single);
+            return result;
+        }
+
+        private static JObject NormalizeTaskEntry(JToken token)
+        {
+            JObject obj = token as JObject;
+            if (obj == null || IsAbsent(obj["id"])) return null;
+
+            JObject result = obj.DeepClone() as JObject;
+            if (result == null) return null;
+
+            JObject requirements = result["requirements"] as JObject;
+            if (requirements == null)
+            {
+                requirements = new JObject();
+                result["requirements"] = requirements;
+            }
+            else
+            {
+                requirements = requirements.DeepClone() as JObject;
+                result["requirements"] = requirements;
+            }
+
+            JToken stagesSource = requirements["stages"];
+            if (IsAbsent(stagesSource) && !IsAbsent(result["stages"]))
+                stagesSource = result["stages"];
+
+            requirements["stages"] = NormalizeListArray(stagesSource);
+            result.Remove("stages");
+            return result;
+        }
+
+        private static JObject NormalizeTaskFinishedObject(JToken token)
+        {
+            JObject result = new JObject();
+            if (IsAbsent(token)) return result;
+
+            JArray arr = token as JArray;
+            if (arr != null)
+            {
+                for (int i = 0; i < arr.Count; i++)
+                {
+                    int value;
+                    if (TryGetIntegralValue(arr[i], out value))
+                        result[i.ToString()] = value;
+                }
+                return result;
+            }
+
+            JObject obj = token as JObject;
+            if (obj == null) return result;
+
+            foreach (JProperty prop in obj.Properties())
+            {
+                int value;
+                if (IsNonNegativeIntegerKey(prop.Name) && TryGetIntegralValue(prop.Value, out value))
+                    result[prop.Name] = value;
+            }
+            return result;
+        }
+
+        private static JObject NormalizeTaskChainsProgress(JToken token, JToken legacyMainToken)
+        {
+            JObject result = new JObject();
+            if (!IsAbsent(token))
+            {
+                JArray arr = token as JArray;
+                if (arr != null)
+                {
+                    for (int i = 0; i < arr.Count; i++)
+                    {
+                        int value;
+                        if (TryGetIntegralValue(arr[i], out value))
+                            result[i.ToString()] = value;
+                    }
+                }
+                else
+                {
+                    JObject obj = token as JObject;
+                    if (obj != null)
+                    {
+                        foreach (JProperty prop in obj.Properties())
+                        {
+                            int value;
+                            if (IsTaskProgressMetaKey(prop.Name)) continue;
+                            if (TryGetIntegralValue(prop.Value, out value))
+                                result[prop.Name] = value;
+                        }
+                    }
+                }
+            }
 
             int legacyMain;
             if (result["主线"] == null && TryGetLegacyMainProgress(legacyMainToken, out legacyMain))
-            {
                 result["主线"] = legacyMain;
-            }
             return result;
         }
 
@@ -306,6 +532,48 @@ namespace CF7Launcher.Save
             return pets;
         }
 
+        private static JArray NormalizePetsInfo(JToken token)
+        {
+            JArray source = token as JArray;
+            if (source == null)
+            {
+                JObject obj = token as JObject;
+                JArray indexed;
+                if (obj != null && TryConvertIndexedObjectToArray(obj, out indexed))
+                    source = indexed;
+            }
+
+            JArray result = new JArray();
+            if (source != null)
+            {
+                for (int i = 0; i < source.Count; i++)
+                {
+                    result.Add(NormalizePetSlot(source[i]));
+                }
+            }
+
+            while (result.Count < 5)
+                result.Add(new JArray());
+            return result;
+        }
+
+        private static JArray NormalizePetSlot(JToken token)
+        {
+            if (IsAbsent(token)) return new JArray();
+
+            JArray arr = token as JArray;
+            if (arr != null) return arr.DeepClone() as JArray ?? new JArray();
+
+            JObject obj = token as JObject;
+            if (obj == null || !obj.HasValues) return new JArray();
+
+            JArray indexed;
+            if (TryConvertIndexedObjectToArray(obj, out indexed))
+                return indexed;
+
+            return new JArray();
+        }
+
         private static JObject BuildShopBundle(JToken primaryPurchased, JToken primaryCart, JObject previousShop)
         {
             JToken fallbackPurchased = previousShop != null ? previousShop["商城已购买物品"] : null;
@@ -315,6 +583,46 @@ namespace CF7Launcher.Save
             shop["商城已购买物品"] = CloneToken(PreferListArray(primaryPurchased, fallbackPurchased, new JArray()));
             shop["商城购物车"] = CloneToken(PreferListArray(primaryCart, fallbackCart, new JArray()));
             return shop;
+        }
+
+        private static JArray NormalizeListArray(JToken token)
+        {
+            if (IsAbsent(token)) return new JArray();
+
+            JArray arr = token as JArray;
+            if (arr != null) return arr.DeepClone() as JArray ?? new JArray();
+
+            JObject obj = token as JObject;
+            if (obj == null) return new JArray();
+
+            JArray indexed;
+            if (TryConvertIndexedObjectToArray(obj, out indexed))
+                return indexed;
+
+            return new JArray();
+        }
+
+        private static bool TryConvertIndexedObjectToArray(JObject obj, out JArray array)
+        {
+            array = null;
+            if (obj == null) return false;
+
+            SortedDictionary<int, JToken> ordered = new SortedDictionary<int, JToken>();
+            foreach (JProperty prop in obj.Properties())
+            {
+                int index;
+                if (!int.TryParse(prop.Name, out index) || index < 0)
+                    return false;
+                if (!ordered.ContainsKey(index))
+                    ordered[index] = CloneToken(prop.Value);
+            }
+
+            array = new JArray();
+            foreach (KeyValuePair<int, JToken> entry in ordered)
+            {
+                array.Add(entry.Value);
+            }
+            return true;
         }
 
         private static JArray DefaultPetsArray()

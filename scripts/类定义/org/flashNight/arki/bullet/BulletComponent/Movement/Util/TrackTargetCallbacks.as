@@ -29,24 +29,25 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
     public static function create(config:Object):Function {
         return function():Void {
             // 目标失效时回退到搜索状态
+            var targetObject:MovieClip = this.targetObject;
             if (!this.target || this.target.hp <= 0) {
                 this.changeState("SearchTarget");
                 this.target = null;
                 this.hasTarget = false;
                 this.previousLOSAngle = undefined;
+                targetObject.aimYOffset = 0;
                 this.setDesiredAngularVelocity(0);  // 清除导引指令
                 return;
             }
             
-            var targetObject:MovieClip = this.targetObject;
             var target:MovieClip = this.target;
             
             // 使用 UnitUtil 计算目标偏移
-            var yOffset:Number = UnitUtil.calculateCenterOffset(target);
+            var aimYOffset:Number = UnitUtil.calculateCenterOffset(target);
             
             // 计算到目标的向量
             var dx:Number = target._x - targetObject._x;
-            var dy:Number = target._y - targetObject._y - yOffset;
+            var dy:Number = target._y - targetObject._y - aimYOffset;
             var distance:Number = Math.sqrt(dx * dx + dy * dy);
             
             // 当前视线角度（度）
@@ -55,6 +56,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
             // 获取或初始化上一帧的视线角度
             if (this.previousLOSAngle == undefined) {
                 this.previousLOSAngle = currentLOSAngle;
+                targetObject.aimYOffset = aimYOffset;
                 this.setDesiredAngularVelocity(0);
                 return;
             }
@@ -93,7 +95,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
             
             // 更新状态
             this.previousLOSAngle = currentLOSAngle;
-            targetObject.yOffset = yOffset;
+            targetObject.aimYOffset = aimYOffset;
         };
     }
 }

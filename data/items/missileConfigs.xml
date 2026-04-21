@@ -41,10 +41,10 @@
 
     <!-- 高速拦截导弹配置 -->
     <config name="interceptor">
-        <initialSpeedRatio>0.8</initialSpeedRatio>
-        <rotationSpeed>2</rotationSpeed>
+        <initialSpeedRatio>0.9</initialSpeedRatio>
+        <rotationSpeed>2.8</rotationSpeed>
         <acceleration>15</acceleration>
-        <dragCoefficient>0.0008</dragCoefficient>
+        <dragCoefficient>0.001</dragCoefficient>
 
         <preLaunchFrames>
             <min>5</min>
@@ -56,33 +56,147 @@
             <max>20</max>
         </preLaunchPeakHeight>
 
-        <navigationRatio>3</navigationRatio>
-        <angleCorrection>0.15</angleCorrection>
+        <preLaunchHorizAmp>
+            <min>0</min>
+            <max>4</max>
+        </preLaunchHorizAmp>
+
+        <preLaunchCycles>
+            <min>1</min>
+            <max>2</max>
+        </preLaunchCycles>
+
+        <rotationShakeTime>
+            <start>0.2</start>
+            <end>0.35</end>
+        </rotationShakeTime>
+
+        <rotationShakeAmplitude>0.25</rotationShakeAmplitude>
+        <searchBatchSize>8</searchBatchSize>
+        <searchRange>35</searchRange>
+        <navigationRatio>4.5</navigationRatio>
+        <angleCorrection>0.12</angleCorrection>
     </config>
 
     <!-- 巡航导弹配置 -->
     <config name="cruise">
-        <initialSpeedRatio>0.3</initialSpeedRatio>
-        <rotationSpeed>0.5</rotationSpeed>
-        <acceleration>2</acceleration>
-        <dragCoefficient>0.0012</dragCoefficient>
+        <initialSpeedRatio>0.25</initialSpeedRatio>
+        <rotationSpeed>1.2</rotationSpeed>
+        <acceleration>1.3</acceleration>
+        <dragCoefficient>0.0024</dragCoefficient>
 
         <preLaunchFrames>
-            <min>15</min>
-            <max>20</max>
+            <min>18</min>
+            <max>24</max>
         </preLaunchFrames>
 
         <preLaunchPeakHeight>
-            <min>30</min>
-            <max>80</max>
+            <min>40</min>
+            <max>90</max>
         </preLaunchPeakHeight>
 
-        <navigationRatio>5</navigationRatio>
-        <angleCorrection>0.05</angleCorrection>
+        <preLaunchHorizAmp>
+            <min>0</min>
+            <max>10</max>
+        </preLaunchHorizAmp>
+
+        <preLaunchCycles>
+            <min>0.8</min>
+            <max>2.1</max>
+        </preLaunchCycles>
+
+        <rotationShakeTime>
+            <start>0.25</start>
+            <end>0.4</end>
+        </rotationShakeTime>
+
+        <rotationShakeAmplitude>0.35</rotationShakeAmplitude>
+        <searchBatchSize>8</searchBatchSize>
+        <navigationRatio>4.5</navigationRatio>
+        <angleCorrection>0.06</angleCorrection>
         <searchRange>50</searchRange>
     </config>
 
+    <!-- precise slow pressure missile -->
+    <config name="pressureSlow">
+        <initialSpeedRatio>0.45</initialSpeedRatio>
+        <rotationSpeed>1.8</rotationSpeed>
+        <acceleration>3</acceleration>
+        <dragCoefficient>0.006</dragCoefficient>
+
+        <preLaunchFrames>
+            <min>8</min>
+            <max>12</max>
+        </preLaunchFrames>
+
+        <preLaunchPeakHeight>
+            <min>16</min>
+            <max>28</max>
+        </preLaunchPeakHeight>
+
+        <preLaunchHorizAmp>
+            <min>1</min>
+            <max>4</max>
+        </preLaunchHorizAmp>
+
+        <preLaunchCycles>
+            <min>0.6</min>
+            <max>1.2</max>
+        </preLaunchCycles>
+
+        <rotationShakeTime>
+            <start>0.18</start>
+            <end>0.32</end>
+        </rotationShakeTime>
+
+        <rotationShakeAmplitude>0.18</rotationShakeAmplitude>
+        <searchBatchSize>8</searchBatchSize>
+        <searchRange>45</searchRange>
+        <navigationRatio>4.8</navigationRatio>
+        <angleCorrection>0.18</angleCorrection>
+    </config>
+
     <!-- 多管火箭配置 -->
+    <!-- anti-tank missile -->
+    <config name="antitank">
+        <initialSpeedRatio>0.5</initialSpeedRatio>
+        <rotationSpeed>1.7</rotationSpeed>
+        <acceleration>2.6</acceleration>
+        <dragCoefficient>0.0045</dragCoefficient>
+
+        <preLaunchFrames>
+            <min>9</min>
+            <max>13</max>
+        </preLaunchFrames>
+
+        <preLaunchPeakHeight>
+            <min>18</min>
+            <max>36</max>
+        </preLaunchPeakHeight>
+
+        <preLaunchHorizAmp>
+            <min>2</min>
+            <max>6</max>
+        </preLaunchHorizAmp>
+
+        <preLaunchCycles>
+            <min>0.6</min>
+            <max>1.2</max>
+        </preLaunchCycles>
+
+        <rotationShakeTime>
+            <start>0.16</start>
+            <end>0.28</end>
+        </rotationShakeTime>
+
+        <rotationShakeAmplitude>0.12</rotationShakeAmplitude>
+        <searchBatchSize>8</searchBatchSize>
+        <searchRange>55</searchRange>
+        <navigationRatio>4.6</navigationRatio>
+        <angleCorrection>0.12</angleCorrection>
+    </config>
+
+    <!-- multi-rocket preset -->
     <config name="rocket">
         <initialSpeedRatio>0.6</initialSpeedRatio>
         <rotationSpeed>1.5</rotationSpeed>

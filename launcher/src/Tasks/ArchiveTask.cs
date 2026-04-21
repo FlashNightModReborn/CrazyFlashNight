@@ -6,12 +6,13 @@ using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Guardian;
+using CF7Launcher.Save;
 
 namespace CF7Launcher.Tasks
 {
     /// <summary>
     /// archive async handler：Flash 存盘后将 mydata JSON 副本推送到 Launcher 落盘。
-    /// SOL 仍是权威源，Launcher 仅做 shadow 备份。
+    /// shadow 既是运行中冗余副本，也是启动期与 SOL 比时间戳的候选快照。
     ///
     /// 内置一致性校验：每次 shadow 与上一次做语义级 diff，检测异常变化。
     ///
@@ -619,7 +620,7 @@ namespace CF7Launcher.Tasks
         // ==================== schema 结构校验 (Phase 2a) ====================
 
         /// <summary>
-        /// 结构校验：version + 顶层数字键数组长度 + lastSaved 存在。
+        /// 结构校验：保留基础 schema 早检，并对 tasks/pets/shop 做类型归一化。
         /// 不做数值范围校验（那是前端白名单的职责）。
         /// </summary>
         public static bool ValidateSchemaStructure(JObject data, out string error)
@@ -633,6 +634,12 @@ namespace CF7Launcher.Tasks
             JArray arr1 = data.Value<JArray>("1");
             if (arr1 == null || arr1.Count < 28) { error = "schema_equip_array_invalid"; return false; }
             if (data["lastSaved"] == null) { error = "schema_missing_lastSaved"; return false; }
+            SaveMigrator.NormalizeResolvedSnapshot(data);
+            if (!SaveMigrator.ValidateResolvedSnapshot(data))
+            {
+                error = "schema_structure_invalid";
+                return false;
+            }
             return true;
         }
 

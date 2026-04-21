@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-千山破晓钟" itemID="696533ff-00003120" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-千山破晓钟" lastModified="1771682935">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-千山破晓钟" itemID="696533ff-00003120" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-千山破晓钟" lastModified="1776699615">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-千山破晓钟" currentFrame="23">
+    <DOMTimeline name="兵器攻击容器-千山破晓钟" currentFrame="24">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -12,7 +12,7 @@
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
         <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="33" keyMode="9728">
+            <DOMFrame index="0" duration="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 千山破晓钟入口：初始化计数或检查上限
 if (typeof 千山破晓钟次数 == "undefined")
@@ -33,6 +33,24 @@ _parent.UpdateSmallState("千山破晓钟开始");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
+            <DOMFrame index="8" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爆炸 较深邃 01.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爆炸 较深邃 02.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爆炸 较深邃 02.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
             <DOMFrame index="33" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 十六夜月华结束，重置派生计数以便下次重新进入时能再派生3次
@@ -43,7 +61,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -103,14 +121,14 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="7" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -210,7 +228,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -245,7 +263,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -348,7 +366,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
 		子弹属性.子弹威力 +=  自机.刀属性.power *  自机.被动技能.上挑.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
 	子弹属性.水平击退速度 = 12;
@@ -484,7 +502,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
 		子弹属性.子弹威力 +=  自机.刀属性.power *  自机.被动技能.上挑.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
 	子弹属性.水平击退速度 = 12;
@@ -592,7 +610,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="25" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="688" centerPoint3DY="137.95">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="688" centerPoint3DY="137.95">
                   <matrix>
                     <Matrix a="25.2748260498047" d="28.2392578125" tx="634.35" ty="3.15"/>
                   </matrix>
@@ -620,7 +638,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
 		子弹属性.子弹威力 +=  自机.刀属性.power *  自机.被动技能.上挑.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
 	子弹属性.水平击退速度 = 12;
@@ -660,14 +678,14 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="8" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="605.55" centerPoint3DY="102.6">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="605.55" centerPoint3DY="102.6">
                   <matrix>
                     <Matrix a="25.2748260498047" d="28.2392578125" tx="551.9" ty="-32.2"/>
                   </matrix>
@@ -695,12 +713,12 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
 		子弹属性.子弹威力 +=  自机.刀属性.power *  自机.被动技能.上挑.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
 	子弹属性.水平击退速度 = 12;
-	子弹属性.击中后子弹的效果 = "斩打命中特效";
-	
+	子弹属性.击中后子弹的效果 = "碎石飞扬";
+	子弹属性.击中地图效果 = "碎石飞扬";
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -763,12 +781,12 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
 		子弹属性.子弹威力 +=  自机.刀属性.power *  自机.被动技能.上挑.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
 	子弹属性.水平击退速度 = 12;
-	子弹属性.击中后子弹的效果 = "斩打命中特效";
-	
+	子弹属性.击中后子弹的效果 = "碎石飞扬";
+	子弹属性.击中地图效果 = "碎石飞扬";
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -831,11 +849,12 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
 		子弹属性.子弹威力 +=  自机.刀属性.power *  自机.被动技能.上挑.等级 / 10;
 	}
 	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 50;
 	子弹属性.不硬直 = true;
 	子弹属性.水平击退速度 = 12;
-	子弹属性.击中后子弹的效果 = "斩打命中特效";
+	子弹属性.击中后子弹的效果 = "碎石飞扬";
+	子弹属性.击中地图效果 = "碎石飞扬"
 	
 	//非常用
 	/*
@@ -871,7 +890,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀_复制" color="#9933CC" autoNamed="false">
+        <DOMLayer name="刀_复制" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -954,7 +973,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#FF800A" autoNamed="false">
+        <DOMLayer name="刀" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -1030,7 +1049,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-1066 -7650[1347 -9835 5644 -8087!5644 -8087[9946 -6330 13621 -1669!13621 -1669[16871 2461 17946 6734!17946 6734|-1082 3981!-1082 3981[-2151 1700 -2581 -623!-2581 -623[-3472 -5461 -1066 -7650"/>
+                    <Edge fillStyle1="1" edges="!17946 6734|-1082 3981!-1082 3981[-2151 1700 -2581 -623!-2581 -623[-3472 -5461 -1066 -7650!-1066 -7650[1347 -9835 5644 -8087!5644 -8087[9946 -6330 13621 -1669!13621 -1669[16871 2461 17946 6734"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1040,7 +1059,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="刀" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -1119,14 +1138,14 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-3786 -11337[-846 -14005 4399 -11875!4399 -11875[9649 -9736 14133 -4054!14133 -4054[18104 983 19417 6195!19417 6195|-3797 2851!-3797 2851[-5101 68 -5629 -2763!-5629 -2763[-6719 -8665 -3786 -11337"/>
+                    <Edge fillStyle1="1" edges="!19417 6195|-3797 2851!-3797 2851[-5101 68 -5629 -2763!-5629 -2763[-6719 -8665 -3786 -11337!-3786 -11337[-846 -14005 4399 -11875!4399 -11875[9649 -9736 14133 -4054!14133 -4054[18104 983 19417 6195"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

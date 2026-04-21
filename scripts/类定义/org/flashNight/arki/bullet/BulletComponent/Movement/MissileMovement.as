@@ -147,11 +147,20 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
             if ((targetPlaneZ - targetPlaneZ) != 0) {
                 targetPlaneZ = target._y;
             }
-            target.zOffset = targetPlaneZ - target._y;
+            target.flightZOffset = targetPlaneZ - target._y;
         } else if(frame >= 150) {
             target.shouldDestroy = function() {
                 return true;
             };
+        }
+
+        var flightZOffset:Number = target.flightZOffset;
+        if ((flightZOffset - flightZOffset) != 0) {
+            flightZOffset = targetPlaneZ - target._y;
+            if ((flightZOffset - flightZOffset) != 0) {
+                flightZOffset = 0;
+            }
+            target.flightZOffset = flightZOffset;
         }
         
         // ========== 向量化物理计算开始 ==========
@@ -178,7 +187,12 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
 
         // 1. 当前状态
         var currentSpeed:Number = Math.sqrt(vx * vx + vy * vy);
-        var currentAngle:Number = Math.atan2(vy, vx);
+        var currentAngle:Number;
+        if (currentSpeed > 0.001) {
+            currentAngle = Math.atan2(vy, vx);
+        } else {
+            currentAngle = rotationAngle * Math.PI / 180;
+        }
         
         // 2. 计算法向加速度（转向力）
         var maxTurnRateRad:Number = rotationSpeed * Math.PI / 180;
@@ -245,24 +259,19 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
         if(this.lockRotation) {
             this.lockRotation = false;
         } else {
-            rotationAngle += desiredAngularVelocity * 180 / Math.PI;
-            if ((rotationAngle - rotationAngle) != 0) rotationAngle = 0;
             target._x += vx;
             target._y += vy;
+            if (newSpeed > 0.001) {
+                rotationAngle = Math.atan2(vy, vx) * 180 / Math.PI;
+            }
+            if ((rotationAngle - rotationAngle) != 0) rotationAngle = 0;
         }
         
         // 更新位置和显示
         this.rotationAngle = rotationAngle;
         target._rotation = rotationAngle;
 
-        var visualOffset:Number = target.yOffset;
-        if ((visualOffset - visualOffset) != 0 || !visualOffset) {
-            visualOffset = target.zOffset;
-        }
-        if ((visualOffset - visualOffset) != 0) {
-            visualOffset = 0;
-        }
-        target.Z轴坐标 = target._y + visualOffset;
+        target.Z轴坐标 = target._y + flightZOffset;
     }
 
     /**

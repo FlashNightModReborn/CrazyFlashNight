@@ -1,127 +1,130 @@
 # Automation 自动化脚本使用指南
 
-本文件夹包含 Crazy Flasher 7 佣兵帝国的自动化启动与环境配置脚本。
+**文档角色**：启动与运行自动化入口。  
+**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
 
----
+本目录只负责 **运行与启动自动化**。  
+Flash CS6 编译 smoke、JSFL、trace、截图与计划任务细节，统一放在 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
 
-## 目录
+## 1. 这个目录负责什么
 
-- [第一步：解除系统对脚本的运行限制](#第一步解除系统对脚本的运行限制)
-- [第二步：首次配置环境（configure_server.ps1）](#第二步首次配置环境configure_serverps1)
-- [第三步：一键启动游戏（start.ps1）](#第三步一键启动游戏startps1)
-- [常见问题](#常见问题)
-- [全部文件说明](#全部文件说明)
+- 首次环境准备（Flash 信任目录等）
+- 一键启动游戏 / Launcher
+- 兼容旧入口脚本的过渡封装
+- 运行期常见问题的快速排查
 
----
+## 2. 首次配置
 
-## 第一步：解除系统对脚本的运行限制
+### PowerShell 执行策略
 
-Windows 默认**禁止运行** PowerShell 脚本。以下两种方法任选其一：
+Windows 默认可能禁止本地脚本执行。常用做法：
 
-### 方法 A：临时解除（推荐新手使用，仅本次窗口有效）
-
-1. 按 `Win + S`，搜索 `PowerShell`
-2. **右键** 点击 "Windows PowerShell" → **"以管理员身份运行"**
-3. 输入以下命令后按回车：
-
-   ```powershell
-   Set-ExecutionPolicy Bypass -Scope Process
-   ```
-
-### 方法 B：永久解除
-
-1. **以管理员身份打开 PowerShell**
-2. 输入：
-
-   ```powershell
-   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-   ```
-
----
-
-## 第二步：首次配置环境（configure_server.ps1）
-
-> **只需运行一次。** 该脚本会配置 Flash Player 信任目录。
-
-### 如何运行
-
-1. **以管理员身份打开 PowerShell**
-2. 导航到脚本目录：
-
-   ```powershell
-   cd "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\automation"
-   ```
-
-3. 运行配置脚本：
-
-   ```powershell
-   .\configure_server.ps1
-   ```
-
-4. 等待脚本执行完毕，按回车关闭窗口。
-
----
-
-## 第三步：一键启动游戏（start.ps1）
-
-完成第二步的首次配置后，以后每次启动游戏只需运行此脚本。
-
-### 如何运行
-
-1. 打开 PowerShell（普通模式即可，**不需要**管理员权限）
-2. 导航到脚本目录：
-
-   ```powershell
-   cd "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\automation"
-   ```
-
-3. 运行启动脚本：
-
-   ```powershell
-   .\start.ps1
-   ```
-
-4. 脚本会启动守护进程，守护进程会自动：
-   - 启动 Flash Player 加载游戏 SWF
-   - 启动内嵌的 V8 总线（替代旧的 Node.js 服务器）
-   - 拦截可能干扰游戏的快捷键（Ctrl+Q/W/R 等）
-
-### 快捷方式（可选）
-
-在桌面右键 → **新建** → **快捷方式**，位置填入：
-
-```
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\automation\start.ps1"
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
----
+如果只想对当前窗口生效：
 
-## 常见问题
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process
+```
 
-### Q: 提示"无法加载文件，因为在此系统上禁止运行脚本"
+### 首次运行 `configure_server.ps1`
 
-请回到第一步解除脚本运行限制。
+```powershell
+cd "<项目根目录>\\automation"
+.\configure_server.ps1
+```
 
-### Q: 游戏启动后无法连接服务器
+用途：
 
-守护进程已内嵌 V8 总线，不再需要单独启动 Node.js 服务器。如果仍有连接问题：
-1. 检查防火墙是否拦截了 localhost 通信
-2. 确保没有其他程序占用端口
+- 配置 Flash trust
+- 校正启动所需的本地环境前置项
 
-### Q: 我的 Steam 不是装在默认路径
+## 3. 日常启动
 
-将本文档中所有路径中的 `C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter` 替换为你实际的安装路径。可在 Steam 中右键游戏 → **管理** → **浏览本地文件** 找到路径。
+```powershell
+cd "<项目根目录>\\automation"
+.\start.ps1
+```
 
----
+脚本负责：
 
-## 全部文件说明
+- 启动 Guardian Launcher
+- 走当前默认运行链路
+- 使用内嵌总线与现有宿主架构
+
+### 兼容旧入口
+
+- `start_game.ps1`：兼容旧入口，当前等价于 `start.ps1`
+- `start_server.ps1`：已废弃，不再代表当前架构
+
+## 4. 改代码后的常用动作
+
+### 改 Launcher
+
+```powershell
+chcp.com 65001 | Out-Null
+powershell -File ..\launcher\build.ps1
+```
+
+### 改 Flash / AS2
+
+不要把本目录当成编译 smoke 入口；改用：
+
+```powershell
+chcp.com 65001 | Out-Null
+powershell -ExecutionPolicy Bypass -File ..\scripts\compile_test.ps1
+```
+
+### 调导弹 / 追踪参数
+
+离线调优 `MissileMovement.as` / `missileConfigs.xml` 时，优先用专用模拟器先筛参数：
+
+```powershell
+chcp.com 65001 | Out-Null
+python ..\tools\missile-tuning-sim\run_sim.py audit --verbose
+python ..\tools\missile-tuning-sim\run_sim.py compare --configs interceptor cruise pressureSlow --velocity 20 --use-prelaunch
+python ..\tools\missile-tuning-sim\run_sim.py scan --base-config cruise --objective loiter --use-prelaunch --grid initialSpeedRatio=0.25,0.3 rotationSpeed=1.1,1.2 preLaunchFrames.min=18,20
+```
+
+适用边界：
+
+- 用于离线比较预设、轨迹与“持续施压”指标
+- `loiter` 目标适合慢巡航 / 滞空型导弹，`--grid` / `--set` 支持 `preLaunchFrames.min=18` 这类嵌套字段
+- 默认按“已指定攻击目标”路径模拟，不替代游戏内最终手感复核
+
+## 5. 常见问题
+
+### 启动脚本无法执行
+
+- 先检查 PowerShell 执行策略
+- 再确认脚本路径是否位于当前项目根
+
+### 启动后无法正常连总线
+
+- 优先用 `tools/cfn-cli.sh status` 或 `tools/cfn-cli.ps1 status` 看当前总线状态
+- 必要时看 `launcher/README.md` 的运行与诊断章节
+
+### 机器路径与默认路径不同
+
+- 不要手改文档里的旧绝对路径示例去推断工程结构
+- 以当前项目根目录为基准运行脚本
+
+## 6. 文件说明
 
 | 文件 | 用途 |
 |------|------|
-| `config.toml` | 启动参数配置（分辨率、帧率、画质等） |
-| `configure_server.ps1` | 首次环境配置：配置 Flash 信任目录 |
-| `start.ps1` | **总入口**：启动守护进程（含游戏 + V8 总线） |
-| `start_game.ps1` | 兼容旧入口，等价于 start.ps1 |
-| `start_server.ps1` | 已废弃（V8 总线内嵌于守护进程） |
-| `publish.ps1` | 开发用：调用 Flash CS6 批量发布 FLA 文件 |
-| `test.html` | 开发用：在浏览器中嵌入 SWF 进行测试 |
+| `config.toml` | 运行时配置 |
+| `configure_server.ps1` | 首次环境准备 |
+| `start.ps1` | 当前总入口 |
+| `start_game.ps1` | 兼容旧入口 |
+| `start_server.ps1` | 已废弃的旧入口 |
+| `publish.ps1` | 开发态批量发布辅助脚本 |
+
+## 7. 相关文档
+
+- 启动 / 运行与子系统细节：[`launcher/README.md`](../launcher/README.md)
+- 测试矩阵：[`agentsDoc/testing-guide.md`](../agentsDoc/testing-guide.md)
+- Flash 编译 smoke：[`scripts/FlashCS6自动化编译.md`](../scripts/FlashCS6自动化编译.md)
+- 离线导弹调优：[`tools/missile-tuning-sim/README.md`](../tools/missile-tuning-sim/README.md)

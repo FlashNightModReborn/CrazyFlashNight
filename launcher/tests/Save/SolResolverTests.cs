@@ -1,9 +1,9 @@
-// SolResolver 决议树 16 行矩阵测试。
+// SolResolver 决议树矩阵测试。
 // 矩阵对齐 SolResolver.Resolve（SolResolver.cs:107-245）真实语义，不预设"应然"行为。
 // 关键事实：
 //  - Rust parse 失败 → 直接 DeferToFlash（不 fallback shadow、不比时间戳）
 //  - SOL 缺失 + shadow 无 → Empty（不是 MissingBoth）
-//  - v3.0 结构合法 → 直接信任 SOL，不与 shadow 比时间戳
+//  - v3.0 结构合法 + shadow 同秒/更新 → 优先 json_shadow
 //  - v3.0 validate 失败 + shadow 同秒 → 可取代（>=）
 //  - pre-2.7 + shadow 同秒 → DeferToFlash（>，严格大于才覆盖）
 
@@ -314,13 +314,31 @@ namespace CF7Launcher.Tests.Save
         }
 
         [Fact]
-        public void Row8_V3Valid_TrustSol_NoShadowCompare()
+        public void Row8_V3Valid_ShadowNewerOrEqual_PrefersJsonShadow()
         {
-            // 关键断言：v3.0 结构合法，忽视 shadow（即使 shadow 更新）
+            // 关键断言：v3.0 结构合法时，同秒/更新的 shadow 才是启动期权威
             var loc = new StubLocator { Result = FAKE_SOL_PATH };
-            JObject freshShadow = ValidMydata("2099-12-31 23:59:59");
+            JObject freshShadow = ValidMydata("2020-01-01 00:00:00");
             ((JArray)freshShadow["0"])[0] = "shadow_name";
             var arch = new StubArchive { Shadow = freshShadow };
+            JObject so = SoData_V3_Valid("2020-01-01 00:00:00");
+            ((JArray)((JObject)so["test"])["0"])[0] = "sol_name";
+            var parser = new StubParser { Data = so };
+
+            var r = MakeResolver(loc, arch, parser).Resolve(SLOT, SWF);
+
+            Assert.Equal(DecisionKind.Snapshot, r.Kind);
+            Assert.Equal("json_shadow", r.Source);
+            Assert.Equal("shadow_name", r.Snapshot["0"][0].Value<string>());
+        }
+
+        [Fact]
+        public void Row8b_V3Valid_ShadowOlder_TrustSol()
+        {
+            var loc = new StubLocator { Result = FAKE_SOL_PATH };
+            JObject oldShadow = ValidMydata("2019-12-31 23:59:59");
+            ((JArray)oldShadow["0"])[0] = "shadow_name";
+            var arch = new StubArchive { Shadow = oldShadow };
             JObject so = SoData_V3_Valid("2020-01-01 00:00:00");
             ((JArray)((JObject)so["test"])["0"])[0] = "sol_name";
             var parser = new StubParser { Data = so };
