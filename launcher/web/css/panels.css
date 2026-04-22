@@ -3051,6 +3051,28 @@
     transform:translateY(-100%);
 }
 
+/* 当前位置: label 常驻 + 青蓝高亮, 呼应 feedback-layer 的 currentLocation 雷达点 */
+.map-hotspot-overlay-label.is-current {
+    opacity:1;
+    transform:translateY(-100%);
+    color:#b7f1ff;
+    border-color:rgba(114,230,255,0.5);
+    background:rgba(8, 16, 22, 0.82);
+    box-shadow:0 0 12px rgba(114,230,255,0.18);
+}
+
+/* hierarchy 模式下非 focus 的 label 随 avatar 一起 muted, 避免"avatar 暗 label 亮"的视觉失衡 */
+.map-hotspot-overlay-label.is-muted {
+    opacity:0.28;
+    filter:saturate(0.55);
+}
+
+/* is-current 优先级高于 is-muted: hierarchy 模式下的当前位置仍然亮出来 */
+.map-hotspot-overlay-label.is-current.is-muted {
+    opacity:0.85;
+    filter:none;
+}
+
 .map-avatar,
 .map-dynamic-avatar {
     position:absolute;

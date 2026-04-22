@@ -1075,9 +1075,13 @@ var MapPanelHarnessQA = (function() {
                             api.assert(labelRect.left <= hotspotRect.right + 6, 'overlay label should stay horizontally attached to hotspot');
                             api.assert(labelRect.bottom >= hotspotRect.top - 6, 'overlay label anchor should stay inside hotspot vertical band');
                             api.assert(labelRect.bottom <= hotspotRect.bottom + 6, 'overlay label should not drift below hotspot');
+                            // label 高度约束: 不得占 hotspot 高度的一半以上, 否则矮 hotspot 会被 label 盖住上半; 给 2px 容差防 subpixel rounding
+                            api.assert(labelRect.height <= (hotspotRect.height * 0.5) + 2,
+                                'overlay label height (' + Math.round(labelRect.height) + 'px) should not exceed 50% of hotspot height (' + Math.round(hotspotRect.height) + 'px)');
                             return 'label=' + overlayLabel.textContent +
                                 ' z=' + window.getComputedStyle(labelLayer).zIndex + '/' + window.getComputedStyle(avatarLayer).zIndex +
-                                ' anchor=' + Math.round(labelRect.left - hotspotRect.left) + ',' + Math.round(labelRect.bottom - hotspotRect.top);
+                                ' anchor=' + Math.round(labelRect.left - hotspotRect.left) + ',' + Math.round(labelRect.bottom - hotspotRect.top) +
+                                ' lh/hh=' + Math.round(labelRect.height) + '/' + Math.round(hotspotRect.height);
                         });
                     });
                 }

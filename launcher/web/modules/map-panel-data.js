@@ -226,6 +226,8 @@ var MapPanelData = (function() {
             ['chengzheng_avatar', '程铮', 'teaching_interior', 486.65, 255.75, '程铮头像.png'],
             ['kendo_president_avatar', '剑道社长', 'kendo_club', 663.3, 213.1, '剑道社长头像.png'],
             ['fengyouquan_avatar', '冯佑权', 'kendo_club', 593.3, 211.9, '冯佑权头像.png'],
+            // TODO(school-avatar-ownership): science_prof_avatar / arts_teacher_avatar 几何中心落在多个 hotspot 交界区,
+            // qa-suite map-ui22 以 reviewOnly 白名单豁免, 待美术定案确认 science_class / arts_class 边界或移到专属 hotspot
             ['science_prof_avatar', '理科教授', 'science_class', 744.65, 212.35, '理科教授头像.png'],
             ['arts_teacher_avatar', '文科老师', 'arts_class', 810.9, 213.1, '文科老师头像.png'],
             ['vanshuther_avatar', 'Vanshuther', 'workshop', 555.75, 327.2, 'Vanshuther头像.png'],
