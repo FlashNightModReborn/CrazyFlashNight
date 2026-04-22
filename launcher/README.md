@@ -437,7 +437,7 @@ powershell -File build.ps1
 | 3.5  | 硬断言 `sol_parser.dll` 已落盘到项目根（防止"编过但运行时 DllNotFoundException"） |
 | 4    | 复制 V8 原生 DLL（ClearScriptV8.win-x64.dll）到项目根 |
 | 5    | 复制 WebView2 原生 loader（WebView2Loader.dll）到项目根 |
-| 6    | 校验 **`launcher/web/overlay.html`** 存在（当前仅此一文件校验；bootstrap.html / modules / icons 未列，缺失不会 fail build） |
+| 6    | fail-fast 校验 `launcher/web` 运行时必需集：`bootstrap.html` / `bootstrap-main.js` / `overlay.html` / `config/version.js` / `assets/bg/manifest.json` / `assets/intro.mp4` / `help/*.md` / `icons/manifest.json` / `data/lockbox-variants.json` / 关键 `modules/*` 与 minigame 入口文件；缺失直接 exit 1 |
 
 > build.ps1 **不跑** `launcher/tests/`；测试走独立 `launcher/tests/run_tests.ps1`，见[测试基建](#测试基建)节。
 
