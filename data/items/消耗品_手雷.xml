@@ -1269,6 +1269,33 @@
       <impact>0</impact>
     </data>
   </item>
+    <item>
+    <name>量子爆弹信标</name>
+    <displayname>量子爆弹信标</displayname>
+    <icon>量子爆弹信标</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <price>8000</price>
+    <description>投掷出即可发送坐标信息，发射量子爆弹支援。</description>
+    <data>
+      <level>30</level>
+      <weight>1</weight>
+      <dressup>手雷-自制信标</dressup>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>10</diffusion>
+      <interval>10</interval>
+      <velocity>15</velocity>
+      <bullet>量子爆弹信标</bullet>
+      <sound />
+      <muzzle />
+      <bullethit />
+      <clipname>量子爆弹信标</clipname>
+      <bulletsize>50</bulletsize>
+      <power>8000</power>
+      <impact>0</impact>
+    </data>
+  </item>
   <item>
     <name>寒铁镖</name>
     <displayname>寒铁镖</displayname>

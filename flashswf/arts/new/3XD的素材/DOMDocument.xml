@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" snapAlign="false" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="1主武器" itemID="6976ca22-00000cb7" isExpanded="true"/>
+          <DOMFolderItem name="1主武器" itemID="6976ca22-00000cb7"/>
           <DOMFolderItem name="1主武器/AA12丧尸" itemID="6973017c-00000429"/>
           <DOMFolderItem name="1主武器/ak74金线" itemID="672b77ae-000000e8"/>
           <DOMFolderItem name="1主武器/ak74金线/部件1" itemID="6705dd3a-00000215"/>
@@ -270,6 +270,14 @@
           <DOMFolderItem name="5武器特效和子弹/火焰爆发特效/图片" itemID="6971c4f8-0000008b"/>
           <DOMFolderItem name="6消耗品" itemID="6976d741-00001ff3"/>
           <DOMFolderItem name="6消耗品/罐头" itemID="66a92619-0000001f" isExpanded="true"/>
+          <DOMFolderItem name="7手雷" itemID="69e8a99a-00000891"/>
+          <DOMFolderItem name="7手雷/量子爆弹信标文件" itemID="69e8a8d4-00000126" isExpanded="true"/>
+          <DOMFolderItem name="7手雷/量子爆弹信标文件/量子爆弹" itemID="69e8a8db-00000127" isExpanded="true"/>
+          <DOMFolderItem name="7手雷/量子爆弹信标文件/无AS链接" itemID="69e8a9a0-0000089f"/>
+          <DOMFolderItem name="7手雷/量子爆弹信标文件/消耗道具相关" itemID="69e8a875-00000108" isExpanded="true"/>
+          <DOMFolderItem name="非JohnWcik内容" itemID="69e8d5a4-000005c2"/>
+          <DOMFolderItem name="非JohnWcik内容/手雷" itemID="69e8d5a4-000005c3"/>
+          <DOMFolderItem name="非JohnWcik内容/手雷/无AS链接" itemID="69e8d5a4-000005c4"/>
           <DOMFolderItem name="杂项" itemID="65bdfbf3-00000798"/>
           <DOMFolderItem name="杂项/教程图片" itemID="65518c34-0000075e"/>
           <DOMFolderItem name="杂项/谜之胶囊（和其图标）" itemID="65518c34-0000075f"/>
@@ -281,7 +289,7 @@
      <media>
           <DOMBitmapItem name="3冷兵器/一部分武器1/永恒之刃/永恒之刃的素材/ 副本" itemID="6976d6b2-00001f87" sourceExternalFilepath="./LIBRARY/3冷兵器/一部分武器1/永恒之刃/永恒之刃的素材/ 副本" sourceLastImported="1708507630" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="3冷兵器/一部分武器1/永恒之刃/永恒之刃的素材/ 副本" bitmapDataHRef="M 3 1769395890.dat" frameRight="37700" frameBottom="17780"/>
           <DOMBitmapItem name="杂项/教程图片/1-1" itemID="653b9ab3-000001ee" sourceExternalFilepath="./LIBRARY/杂项/教程图片/1-1" sourceLastImported="1698405043" originalCompressionType="lossless" quality="50" href="杂项/教程图片/1-1" bitmapDataHRef="M 1 1769395847.dat" frameRight="11060" frameBottom="7920"/>
-          <DOMBitmapItem name="4人物服饰外观/一部分服饰2/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" itemID="65f1bf06-0000022d" sourceExternalFilepath="./LIBRARY/4人物服饰外观/一部分服饰2/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" sourceLastImported="1566474425" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="4人物服饰外观/一部分服饰2/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" bitmapDataHRef="M 2 1769395860.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="4人物服饰外观/一部分服饰2/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" itemID="65f1bf06-0000022d" sourceExternalFilepath="./LIBRARY/4人物服饰外观/一部分服饰2/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" sourceLastImported="1566474425" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="4人物服饰外观/一部分服饰2/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" bitmapDataHRef="M 2 1769395860.dat" frameRight="20000" frameBottom="12000"/>
           <DOMBitmapItem name="5武器特效和子弹/冰流爆发特效/图片/bing0001.png" itemID="6970e8ab-0000014d" sourceExternalFilepath="./LIBRARY/5武器特效和子弹/冰流爆发特效/图片/bing0001.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="5武器特效和子弹/冰流爆发特效/图片/bing0001.png" bitmapDataHRef="M 6 1769396006.dat" frameRight="15240" frameBottom="11480"/>
           <DOMBitmapItem name="5武器特效和子弹/冰流爆发特效/图片/bing0002.png" itemID="6970e8b0-00000151" sourceExternalFilepath="./LIBRARY/5武器特效和子弹/冰流爆发特效/图片/bing0002.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="5武器特效和子弹/冰流爆发特效/图片/bing0002.png" bitmapDataHRef="M 7 1769396006.dat" frameRight="15240" frameBottom="11480"/>
           <DOMBitmapItem name="5武器特效和子弹/冰流爆发特效/图片/bing0003.png" itemID="6970e8ba-00000155" sourceExternalFilepath="./LIBRARY/5武器特效和子弹/冰流爆发特效/图片/bing0003.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="5武器特效和子弹/冰流爆发特效/图片/bing0003.png" bitmapDataHRef="M 8 1769396006.dat" frameRight="15240" frameBottom="11480"/>
@@ -1175,6 +1183,14 @@
           <Include href="6消耗品/罐头/饮用水易拉罐.xml" loadImmediate="false" itemID="66a925f2-00000019" lastModified="1722361330"/>
           <Include href="6消耗品/罐头/元件 3.xml" loadImmediate="false" itemID="66a91101-00000155" lastModified="1722355969"/>
           <Include href="6消耗品/罐头/元件 4.xml" loadImmediate="false" itemID="66a91116-00000159" lastModified="1722355990"/>
+          <Include href="7手雷/量子爆弹信标文件/量子爆弹/量子爆弹.xml" itemIcon="1" loadImmediate="false" itemID="695891a5-0000013a" lastModified="1776854939"/>
+          <Include href="7手雷/量子爆弹信标文件/量子爆弹信标.xml" itemID="69e8d57d-000005be" lastModified="1776867027"/>
+          <Include href="7手雷/量子爆弹信标文件/无AS链接/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="69e8a9a0-000008a6" lastModified="1720533000"/>
+          <Include href="7手雷/量子爆弹信标文件/无AS链接/Symbol 3796.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f61" lastModified="1721724861"/>
+          <Include href="7手雷/量子爆弹信标文件/消耗道具相关/Symbol 3797.xml" itemID="668e7c1e-00000f62" lastModified="1776866684"/>
+          <Include href="7手雷/量子爆弹信标文件/消耗道具相关/图标-量子爆弹信标.xml" itemID="69e8a8ca-00000124" lastModified="1776855242"/>
+          <Include href="7手雷/量子爆弹信标文件/信标.xml" itemIcon="1" loadImmediate="false" itemID="669f5e7c-00000cfa" lastModified="1776866890"/>
+          <Include href="非JohnWcik内容/手雷/无AS链接/Symbol 13.xml" loadImmediate="false" itemID="66e8e5fc-00000961" lastModified="1726539260"/>
           <Include href="杂项/0.area.xml" loadImmediate="false" itemID="65bdb932-00000079" lastModified="1701486304"/>
           <Include href="杂项/3XD的素材.xml" itemID="65b5e7ed-00000904" lastModified="1706840515"/>
           <Include href="杂项/ak200.xml" loadImmediate="false" itemID="65bdb932-0000007a" lastModified="1706842153"/>
@@ -1211,6 +1227,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1878521" publishTime="1776855471"/>
           <PublishItem publishSize="1874958" publishTime="1776766672"/>
           <PublishItem publishSize="1830285" publishTime="1776761311"/>
           <PublishItem publishSize="1830285" publishTime="1776761301"/>
@@ -1230,6 +1247,5 @@
           <PublishItem publishSize="1806701" publishTime="1769396719" publishDebug="true"/>
           <PublishItem publishSize="1806670" publishTime="1769396604" publishDebug="true"/>
           <PublishItem publishSize="1806673" publishTime="1769396460" publishDebug="true"/>
-          <PublishItem publishSize="1806664" publishTime="1769396388" publishDebug="true"/>
      </publishHistory>
 </DOMDocument>
