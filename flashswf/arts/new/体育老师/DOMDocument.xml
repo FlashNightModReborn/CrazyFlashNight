@@ -14,9 +14,9 @@
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65b3a368-00000650" isExpanded="true"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03"/>
           <DOMFolderItem name="怪物通用模板/血条与名称" itemID="65ae670e-000036fc"/>
-          <DOMFolderItem name="容器" itemID="6957d32c-00000922"/>
-          <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09"/>
-          <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504"/>
+          <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
+          <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09" isExpanded="true"/>
+          <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504" isExpanded="true"/>
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798" isExpanded="true"/>
           <DOMFolderItem name="属性标签标志元件" itemID="66738923-00001ce2"/>
           <DOMFolderItem name="特效" itemID="69e718a1-000002c1"/>
@@ -71,19 +71,19 @@
           <Include href="单位/Symbol 117.xml" loadImmediate="false" itemID="6577b699-000009a3" lastModified="1702343951"/>
           <Include href="单位/Symbol 119.xml" loadImmediate="false" itemID="6577b699-000009a4" lastModified="1769694913"/>
           <Include href="单位/Symbol 120.xml" loadImmediate="false" itemID="6577b699-000009a5" lastModified="1776605653"/>
-          <Include href="单位/Symbol 136.xml" loadImmediate="false" itemID="6577b699-000009b3" lastModified="1776761560"/>
-          <Include href="单位/Symbol 825.xml" loadImmediate="false" itemID="6577b699-00000b8f" lastModified="1776759983"/>
+          <Include href="单位/Symbol 136.xml" loadImmediate="false" itemID="6577b699-000009b3" lastModified="1776864299"/>
+          <Include href="单位/Symbol 825.xml" loadImmediate="false" itemID="6577b699-00000b8f" lastModified="1776864421"/>
           <Include href="单位/刚体遮罩.xml" loadImmediate="false" itemID="65c9a9f5-0000062e" lastModified="1707753394"/>
           <Include href="单位/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
           <Include href="单位/近战子弹 副本.xml" loadImmediate="false" itemID="697b6503-00001ff1" lastModified="1711945124"/>
-          <Include href="单位/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1776605880"/>
+          <Include href="单位/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1776864012"/>
           <Include href="单位/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1776605612"/>
           <Include href="单位/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1776605677"/>
           <Include href="单位/韧性条.xml" loadImmediate="false" itemID="65c9a44e-0000061e" lastModified="1762778455"/>
           <Include href="单位/新版人物文字信息.xml" itemID="65c9a1af-000005fc" lastModified="1736864914"/>
           <Include href="单位/血槽底.xml" loadImmediate="false" itemID="65c9a8c3-00000624" lastModified="1707753328"/>
           <Include href="单位/血槽韧性条.xml" loadImmediate="false" itemID="65c9a3a2-0000060a" lastModified="1707755072"/>
-          <Include href="敌人-体育老师.xml" itemID="69e8ca01-0000090f" lastModified="1776863745"/>
+          <Include href="敌人-体育老师.xml" itemID="69e8ca01-0000090f" lastModified="1776865245"/>
           <Include href="怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="65ae6963-00003740" lastModified="1776760710"/>
           <Include href="怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65689e04-0000008e" lastModified="1700337299"/>
           <Include href="怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1776760710"/>
@@ -98,14 +98,14 @@
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1706271749"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" loadImmediate="false" itemID="660a212e-00000b0a" lastModified="1706271749"/>
           <Include href="怪物通用模板/血条与名称/新版血条位置示意.xml" loadImmediate="false" itemID="662fbc4c-0000294f" lastModified="1714404428"/>
-          <Include href="容器/技能容器/技能容器-虎拳.xml" itemID="695637a0-0000095b" lastModified="1776760508"/>
-          <Include href="容器/技能容器/技能容器-扭转乾坤.xml" itemID="697a65ff-00004088" lastModified="1776760473"/>
-          <Include href="容器/技能容器/技能容器-日字冲拳.xml" itemID="694ac160-00004b65" lastModified="1775189875"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-后撤步.xml" itemID="6964d656-00002843" lastModified="1776761036"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-燃烧指节.xml" itemID="6964d6d2-0000293c" lastModified="1776760864"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" itemID="6964d583-0000279b" lastModified="1776761335"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" itemID="6964ce51-00002614" lastModified="1776760724"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1776863631"/>
+          <Include href="容器/技能容器/技能容器-虎拳.xml" loadImmediate="false" itemID="695637a0-0000095b" lastModified="1776865238"/>
+          <Include href="容器/技能容器/技能容器-扭转乾坤.xml" loadImmediate="false" itemID="697a65ff-00004088" lastModified="1776865239"/>
+          <Include href="容器/技能容器/技能容器-日字冲拳.xml" loadImmediate="false" itemID="694ac160-00004b65" lastModified="1776865236"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-后撤步.xml" loadImmediate="false" itemID="6964d656-00002843" lastModified="1776865242"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-燃烧指节.xml" loadImmediate="false" itemID="6964d6d2-0000293c" lastModified="1776865241"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" loadImmediate="false" itemID="6964d583-0000279b" lastModified="1776865240"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" loadImmediate="false" itemID="6964ce51-00002614" lastModified="1776865616"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" loadImmediate="false" itemID="6964cd70-0000257c" lastModified="1776866048"/>
           <Include href="属性标签标志元件/底层背景标签.xml" loadImmediate="false" itemID="667e47f0-00000631" lastModified="1719551984"/>
           <Include href="属性标签标志元件/刚体标签.xml" loadImmediate="false" itemID="66cf12fa-00000756" lastModified="1724846848"/>
           <Include href="属性标签标志元件/无敌标签.xml" loadImmediate="false" itemID="66cd4f63-0000054b" lastModified="1724731329"/>
@@ -217,7 +217,7 @@
           <Include href="特效/旋风腿旋风组件/shape 1375.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055f" lastModified="1477651515"/>
           <Include href="特效/旋风腿旋风组件/shape 1376.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000560" lastModified="1477651515"/>
           <Include href="特效/旋风腿旋风组件/shape 1377.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000561" lastModified="1477651515"/>
-          <Include href="体育老师-近战动画.xml" loadImmediate="false" itemID="69e73693-00000510" lastModified="1776863745"/>
+          <Include href="体育老师-近战动画.xml" loadImmediate="false" itemID="69e73693-00000510" lastModified="1776866069"/>
           <Include href="阴影.xml" loadImmediate="false" itemID="65ab9909-000003b3" lastModified="1705744649"/>
           <Include href="元件 1.xml" loadImmediate="false" itemID="673f56fa-00000914" lastModified="1732204413"/>
           <Include href="主角肢体素材/Symbol 3.xml" loadImmediate="false" itemID="697b650f-00003223" lastModified="1731931497"/>

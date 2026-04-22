@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="69e8ca01-0000090f" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1776863745" lastUniqueIdentifier="52">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="69e8ca01-0000090f" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1776865245" lastUniqueIdentifier="55">
   <timeline>
-    <DOMTimeline name="敌人-体育老师" currentFrame="118">
+    <DOMTimeline name="敌人-体育老师" currentFrame="69">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -25,22 +25,13 @@
             <DOMFrame index="25" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" duration="6" name="空手跳" labelType="name" keyMode="9728">
+            <DOMFrame index="29" duration="8" name="空手跳" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="35" duration="2" keyMode="9728">
+            <DOMFrame index="37" duration="4" name="近战" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="37" duration="3" name="近战" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="40" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="41" duration="7" name="空手攻击" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="48" duration="3" keyMode="9728">
+            <DOMFrame index="41" duration="10" name="空手攻击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="51" duration="6" name="拾取" labelType="name" keyMode="9728">
@@ -85,7 +76,7 @@
             <DOMFrame index="112" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
+            <DOMFrame index="120" duration="5" name="消失" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -116,6 +107,11 @@ x轴保持距离 = 100;
 
 //以下为出招ai，在对应技能库中参考push方法添加技能，技能名对应近战元件中的帧名：
 
+近战技能库.push("空手攻击跳转");
+近战技能库.push("双手一起挥砍");
+中程技能库.push("双手一起挥砍");
+远程技能库.push("跳跃飞扑");
+超远程技能库.push("跳跃飞扑");
 
 近战技能库 = [];
 中程技能库 = [];
@@ -143,18 +139,13 @@ x轴保持距离 = 100;
 高空攻击Y轴范围 = 80; //高度大于该值才会触发高空技能库
 高空攻击X轴范围 = 250;
 
-近战技能库.push("空手攻击跳转");
-近战技能库.push("双手一起挥砍");
-中程技能库.push("双手一起挥砍");
-远程技能库.push("跳跃飞扑");
-超远程技能库.push("跳跃飞扑");
 
 
 初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();
 
 
-配置音效("僵尸");//如果是人类，则填人类。其他类型请询问是否配置了音效库，没有配置的可以删掉这句]]></script>
+配置音效("人类");//如果是人类，则填人类。其他类型请询问是否配置了音效库，没有配置的可以删掉这句]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -177,7 +168,7 @@ x轴保持距离 = 100;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_2" color="#5AD2ED" locked="true" heightLiteral="24">
+        <DOMLayer name="Layer_2" color="#5AD2ED" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
@@ -596,7 +587,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="单位/Symbol 825" name="man" selected="true" centerPoint3DX="618.2" centerPoint3DY="326.95">
+                <DOMSymbolInstance libraryItemName="单位/Symbol 825" name="man" centerPoint3DX="618.2" centerPoint3DY="326.95">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="0.05" ty="-75.45"/>
                   </matrix>
