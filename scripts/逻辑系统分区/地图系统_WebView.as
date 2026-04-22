@@ -100,6 +100,10 @@ _root._mapNavigateTargets = {
     teaching_right: "地图-教学楼内部右侧"
 };
 
+_root._mapPendingHotspotId = "";
+_root._mapPendingSourceHotspotId = "";
+_root._mapLastResolvedHotspotId = "";
+
 _root._mapHotspotPages = {
     base_roof: "base",
     base_lobby: "base",
@@ -341,21 +345,57 @@ _root._mapBuildHotspotStates = function(unlocks) {
     return states;
 };
 
-_root._mapResolveCurrentHotspotId = function() {
-    // 权威源：主时间轴当前帧标签 (_root._currentlabel)
-    // 每次 _root.淡出动画.淡出跳转帧(label) 完成后即时更新，覆盖所有场景切换。
-    // 回退到 _root.关卡地图帧值 只为容灾（切换途中空 label），它只在 StageManager.finishStage 更新，
-    // 单独使用会在非战斗场景永远僵在上一次通关的 EndFrame 上。
-    var currentFrameName = String(_root._currentlabel || "");
-    if (currentFrameName == "") currentFrameName = String(_root.关卡地图帧值 || "");
-    if (currentFrameName == "") return "";
-
+_root._mapResolveHotspotIdByFrameName = function(frameName:String) {
+    if (frameName == undefined || frameName == "") return "";
     for (var hotspotId in _root._mapNavigateTargets) {
-        if (_root._mapNavigateTargets[hotspotId] == currentFrameName) {
+        if (_root._mapNavigateTargets[hotspotId] == String(frameName)) {
             return hotspotId;
         }
     }
     return "";
+};
+
+_root._mapResolveCurrentHotspotIdFromSources = function() {
+    var hotspotId = _root._mapResolveHotspotIdByFrameName(String(_root._currentlabel || ""));
+    if (hotspotId != "") return hotspotId;
+
+    hotspotId = _root._mapResolveHotspotIdByFrameName(String(_root.场景进入位置名 || ""));
+    if (hotspotId != "") return hotspotId;
+
+    hotspotId = _root._mapResolveHotspotIdByFrameName(String(_root.关卡地图帧值 || ""));
+    return hotspotId;
+};
+
+_root._mapResolveCurrentHotspotId = function() {
+    // 跨一级菜单跳转时，_currentlabel 可能继续停在旧房间；
+    // 这里先读真实场景源，再在“底层仍停留旧房间/空值”时使用 pending target 兜底。
+    var sourceHotspotId = _root._mapResolveCurrentHotspotIdFromSources();
+    var pendingHotspotId = String(_root._mapPendingHotspotId || "");
+    var pendingSourceHotspotId = String(_root._mapPendingSourceHotspotId || "");
+
+    if (pendingHotspotId != "") {
+        if (sourceHotspotId == pendingHotspotId) {
+            _root._mapPendingHotspotId = "";
+            _root._mapPendingSourceHotspotId = "";
+            _root._mapLastResolvedHotspotId = sourceHotspotId;
+            return sourceHotspotId;
+        }
+
+        if (sourceHotspotId == "" || sourceHotspotId == pendingSourceHotspotId) {
+            _root._mapLastResolvedHotspotId = pendingHotspotId;
+            return pendingHotspotId;
+        }
+
+        _root._mapPendingHotspotId = "";
+        _root._mapPendingSourceHotspotId = "";
+    }
+
+    if (sourceHotspotId != "") {
+        _root._mapLastResolvedHotspotId = sourceHotspotId;
+        return sourceHotspotId;
+    }
+
+    return String(_root._mapLastResolvedHotspotId || "");
 };
 
 _root._mapResolveCurrentPageId = function(currentHotspotId:String) {
@@ -515,6 +555,9 @@ _root.gameCommands["mapPanelNavigate"] = function(params) {
         return;
     }
 
+    _root._mapPendingSourceHotspotId = _root._mapResolveCurrentHotspotIdFromSources();
+    _root._mapPendingHotspotId = targetId;
+    _root._mapLastResolvedHotspotId = targetId;
     _root.关卡结束界面._visible = 0;
     _root.场景进入位置名 = "出生地";
     _root.淡出动画.淡出跳转帧(targetFrame);

@@ -50,7 +50,13 @@ var MapPanelHarnessQA = (function() {
     }
 
     function bootMap(api, host, options) {
-        host.setState(options || {});
+        var patch = { currentHotspotId: '' };
+        var key;
+        options = options || {};
+        for (key in options) {
+            patch[key] = options[key];
+        }
+        host.setState(patch);
         host.open();
         return waitForReady(api);
     }
@@ -133,15 +139,32 @@ var MapPanelHarnessQA = (function() {
         var defs = [
             {
                 id: 'map-ui1',
-                title: 'default open keeps top chrome hit-testable',
+                title: 'default open keeps top chrome hit-testable and uses roomy stage space',
                 run: function() {
-                    return bootMap(api, host, { defaultPageId: 'base', roommateGender: 'male' }).then(function(state) {
-                        var closeBtn = document.querySelector('.map-panel-close-btn');
-                        var schoolTab = getPageTab('school');
-                        assertHitTest(api, schoolTab, 'school tab');
-                        assertHitTest(api, closeBtn, 'close button');
-                        api.assertEqual(state.activePageId, 'base', 'default page');
-                        return 'page=' + state.activePageId + ', summary=' + state.summary;
+                    return bootMap(api, host, { defaultPageId: 'base', roommateGender: 'male' }).then(function() {
+                        return api.waitFor(function() {
+                            var s = currentState();
+                            return s && s.activePageId === 'base' && s.stageScale > 1 ? s : null;
+                        }, 1500, 'roomy layout ready').then(function(state) {
+                            var closeBtn = document.querySelector('.map-panel-close-btn');
+                            var schoolTab = getPageTab('school');
+                            var firstSceneNode = document.querySelector('.map-scene-node');
+                            var readabilityPlate = firstSceneNode ? window.getComputedStyle(firstSceneNode, '::before') : null;
+                            assertHitTest(api, schoolTab, 'school tab');
+                            assertHitTest(api, closeBtn, 'close button');
+                            api.assertEqual(state.activePageId, 'base', 'default page');
+                            api.assert(state.contentFitScale >= 1.02, 'roomy viewport should apply content fit scale');
+                            api.assert(state.contentCoverageX >= 0.84, 'content should occupy most stage width');
+                            api.assert(state.contentCoverageY >= 0.78, 'content should occupy most stage height');
+                            api.assert(!!firstSceneNode, 'base page should render scene nodes');
+                            api.assert(!!readabilityPlate && readabilityPlate.backgroundImage !== 'none', 'base scene readability plate missing');
+                            api.assert(parseFloat(readabilityPlate.opacity || '0') >= 0.6, 'base scene readability plate should stay visible');
+                            return 'page=' + state.activePageId +
+                                ', stageScale=' + state.stageScale.toFixed(3) +
+                                ', fit=' + state.contentFitScale.toFixed(3) +
+                                ', coverage=' + state.contentCoverageX.toFixed(2) + '/' + state.contentCoverageY.toFixed(2) +
+                                ', plate=' + (readabilityPlate ? readabilityPlate.opacity : '0');
+                        });
                     });
                 }
             },
@@ -259,12 +282,13 @@ var MapPanelHarnessQA = (function() {
             },
             {
                 id: 'map-ui7',
-                title: 'compact viewport keeps chrome reachable and fits stage down',
+                title: 'fullscreen roundtrip restores compact stage height and scale',
                 run: function() {
-                    host.setViewport('1366x768');
+                    host.setViewport('1024x576');
                     return bootMap(api, host, { defaultPageId: 'base' }).then(function() {
-                        var shell = document.getElementById('viewport-shell').getBoundingClientRect();
+                        var viewportShell = document.getElementById('viewport-shell').getBoundingClientRect();
                         var body = document.querySelector('.map-panel-body');
+                        var stageShell = document.getElementById('map-stage-shell');
                         var stage = document.getElementById('map-stage-frame');
                         var baseTab = getPageTab('base');
                         var closeBtn = document.querySelector('.map-panel-close-btn');
@@ -273,13 +297,50 @@ var MapPanelHarnessQA = (function() {
                         var state = currentState();
                         var style = window.getComputedStyle(body);
                         var stageRect = stage.getBoundingClientRect();
+                        var compactShellRatio = stageShell.clientHeight / body.clientHeight;
                         api.assert(style.overflowY === 'auto', 'map body should scroll in compact viewport');
                         api.assert(!!state && state.compactMode, 'compact viewport should enable compact mode');
                         api.assert(!!state && state.stageScale < 1, 'compact viewport should scale stage below 1');
-                        api.assert(tabProbe.point.y >= shell.top && tabProbe.point.y <= shell.bottom, 'tab center fell outside viewport shell');
-                        api.assert(closeProbe.point.y >= shell.top && closeProbe.point.y <= shell.bottom, 'close center fell outside viewport shell');
-                        api.assert(stageRect.bottom <= shell.bottom + 1, 'stage bottom should fit within viewport shell');
-                        return 'overflowY=' + style.overflowY + ', scroll=' + body.scrollHeight + '/' + body.clientHeight + ', scale=' + state.stageScale.toFixed(3);
+                        api.assert(!!state && state.contentFitScale >= 1, 'compact viewport should keep content-fit active');
+                        api.assert(!!state && state.contentCoverageX >= 0.8, 'compact viewport should keep good horizontal content coverage');
+                        api.assert(!!state && state.contentCoverageY >= 0.74, 'compact viewport should keep good vertical content coverage');
+                        api.assert(compactShellRatio >= 0.8, 'compact viewport should keep stage shell vertically engaged');
+                        api.assert(tabProbe.point.y >= viewportShell.top && tabProbe.point.y <= viewportShell.bottom, 'tab center fell outside viewport shell');
+                        api.assert(closeProbe.point.y >= viewportShell.top && closeProbe.point.y <= viewportShell.bottom, 'close center fell outside viewport shell');
+                        api.assert(stageRect.bottom <= viewportShell.bottom + 1, 'stage bottom should fit within viewport shell');
+                        var compactDetail = 'overflowY=' + style.overflowY +
+                            ', scroll=' + body.scrollHeight + '/' + body.clientHeight +
+                            ', scale=' + state.stageScale.toFixed(3) +
+                            ', fit=' + state.contentFitScale.toFixed(3) +
+                            ', compactShell=' + compactShellRatio.toFixed(3);
+                        var baselineCompactScale = state.stageScale;
+                        host.setViewport('1920x1080');
+                        return api.waitFor(function() {
+                            var fullscreened = currentState();
+                            return fullscreened && fullscreened.activePageId === 'base' && !fullscreened.compactMode && fullscreened.stageScale > baselineCompactScale ? fullscreened : null;
+                        }, 1500, 'grow to fullscreen layout').then(function(fullscreened) {
+                            api.assert(fullscreened.contentFitScale >= 1.02, 'fullscreen layout should restore roomy content fit');
+                            host.setViewport('1024x576');
+                            return api.waitFor(function() {
+                                var downshifted = currentState();
+                                var refreshedBody = document.querySelector('.map-panel-body');
+                                var refreshedShell = document.getElementById('map-stage-shell');
+                                if (!downshifted || downshifted.activePageId !== 'base' || !downshifted.compactMode || !refreshedBody || !refreshedShell) {
+                                    return null;
+                                }
+                                var shellRatio = refreshedShell.clientHeight / refreshedBody.clientHeight;
+                                return downshifted.stageScale >= baselineCompactScale * 0.97 && shellRatio >= compactShellRatio * 0.95
+                                    ? { state: downshifted, shellRatio: shellRatio }
+                                    : null;
+                            }, 1500, 'return to compact layout').then(function(result) {
+                                api.assert(result.state.contentFitScale >= 1, 'compact recovery should keep content fit active');
+                                api.assert(result.state.contentCoverageY >= 0.74, 'compact recovery should keep vertical content coverage');
+                                return compactDetail +
+                                    ', fullScale=' + fullscreened.stageScale.toFixed(3) +
+                                    ', returnScale=' + result.state.stageScale.toFixed(3) +
+                                    ', returnShell=' + result.shellRatio.toFixed(3);
+                            });
+                        });
                     }).then(function(detail) {
                         host.setViewport('1600x900');
                         return detail;
@@ -291,9 +352,9 @@ var MapPanelHarnessQA = (function() {
             },
             {
                 id: 'map-ui8',
-                title: 'current location feedback follows snapshot hotspot',
+                title: 'current location feedback retargets across page snapshot jumps',
                 run: function() {
-                    return bootMap(api, host, { defaultPageId: 'base' }).then(function(state) {
+                    return bootMap(api, host, { defaultPageId: 'faction', currentHotspotId: 'firing_range' }).then(function(state) {
                         var marker = document.querySelector('.map-feedback-marker');
                         var currentHotspot = document.querySelector('.map-hotspot.is-current');
                         api.assert(!!state.currentHotspotId, 'snapshot should expose currentHotspotId');
@@ -301,7 +362,21 @@ var MapPanelHarnessQA = (function() {
                         api.assert(!!currentHotspot, 'current hotspot missing active state');
                         api.assert(currentHotspot.getAttribute('data-hotspot-id') === state.currentHotspotId, 'stage current hotspot mismatch');
                         api.assert(!marker.querySelector('.map-feedback-marker-label'), 'current location marker should no longer render inline label (tips layer owns text)');
-                        return 'current=' + state.currentHotspotId;
+                        api.assertEqual(state.currentHotspotId, 'firing_range', 'initial current hotspot should be firing_range');
+                        host.setState({ defaultPageId: 'base', currentHotspotId: 'base_lobby' });
+                        host.pushSnapshot('refresh');
+                        return api.waitFor(function() {
+                            var refreshed = currentState();
+                            return refreshed && refreshed.activePageId === 'base' && refreshed.currentHotspotId === 'base_lobby' ? refreshed : null;
+                        }, 1500, 'cross-page current hotspot refresh').then(function(refreshed) {
+                            var refreshedMarker = document.querySelector('.map-feedback-marker');
+                            var refreshedCurrentHotspot = document.querySelector('.map-hotspot.is-current');
+                            api.assert(!!refreshedMarker, 'refreshed current marker missing');
+                            api.assert(!!refreshedCurrentHotspot, 'refreshed current hotspot missing');
+                            api.assertEqual(refreshedCurrentHotspot.getAttribute('data-hotspot-id'), 'base_lobby', 'current hotspot should move to base_lobby');
+                            api.assert(getPageTab('base').classList.contains('is-active'), 'base tab should become active after cross-page refresh');
+                            return 'current=firing_range->' + refreshed.currentHotspotId;
+                        });
                     });
                 }
             },
@@ -653,33 +728,42 @@ var MapPanelHarnessQA = (function() {
                             api.assert(firstItem.textContent.indexOf('军阀基地') >= 0, 'warlord_base label should be "军阀基地"');
                             api.assertEqual(firstItem.getAttribute('data-audio-cue'), 'transition', 'enabled sub-item cue = transition');
 
-                            // 点击 sub-item = 触发 navigate (复用 requestNavigate 路径)
+                            // 点击 sub-item = 触发 navigate (复用 requestNavigate 路径) 且 busy 时物理 disabled
+                            host.setState({ failNavigate: true });
                             var beforeNavCount = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
                             firstItem.click();
+                            api.assert(firstItem.classList.contains('is-busy'), 'sub-item should enter busy state immediately after click');
+                            api.assertEqual(firstItem.disabled, true, 'sub-item should be physically disabled while busy');
                             var afterNavCount = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
                             api.assertEqual(afterNavCount - beforeNavCount, 1, 'sub-item click should emit exactly 1 navigate');
                             var lastMsg = host.getMessages()[host.getMessages().length - 1];
                             api.assertEqual(lastMsg.targetId, 'warlord_base', 'navigate targetId should match sub-item hotspot');
-
-                            // 切到 rock — 子列表应重建为 rock 的 2 个场景
-                            clickByHitTest(api, getFilterButton('rock'), 'rock filter');
                             return api.waitFor(function() {
-                                var s = currentState();
-                                return s && s.activeFilterId === 'rock' ? s : null;
-                            }, 1500, 'switch to rock').then(function() {
-                                api.assert(!document.querySelector('.map-rail-scene-list[data-filter-id="warlord"]'), 'warlord sub-list should collapse when leaving warlord');
-                                var rockList = document.querySelector('.map-rail-scene-list[data-filter-id="rock"]');
-                                api.assert(!!rockList, 'rock filter should expand its sub-list');
-                                api.assertEqual(rockList.querySelectorAll('.map-rail-scene-item').length, 2, 'rock has 2 hotspots → 2 sub-items');
+                                return !firstItem.disabled;
+                            }, 1500, 'sub-item busy reset').then(function() {
+                                host.setState({ failNavigate: false });
+                                clickByHitTest(api, getFilterButton('rock'), 'rock filter');
 
-                                // 切到 all (meta) — 子列表应完全消失
-                                clickByHitTest(api, getFilterButton('all'), 'all filter');
+                                // 切到 rock — 子列表应重建为 rock 的 2 个场景
+                                clickByHitTest(api, getFilterButton('rock'), 'rock filter');
                                 return api.waitFor(function() {
                                     var s = currentState();
-                                    return s && s.activeFilterId === 'all' ? s : null;
-                                }, 1500, 'switch to all').then(function() {
-                                    api.assert(!document.querySelector('.map-rail-scene-list'), 'meta filter (all) must NOT render sub-list');
-                                    return 'subList expand/collapse ok';
+                                    return s && s.activeFilterId === 'rock' ? s : null;
+                                }, 1500, 'switch to rock').then(function() {
+                                    api.assert(!document.querySelector('.map-rail-scene-list[data-filter-id="warlord"]'), 'warlord sub-list should collapse when leaving warlord');
+                                    var rockList = document.querySelector('.map-rail-scene-list[data-filter-id="rock"]');
+                                    api.assert(!!rockList, 'rock filter should expand its sub-list');
+                                    api.assertEqual(rockList.querySelectorAll('.map-rail-scene-item').length, 2, 'rock has 2 hotspots → 2 sub-items');
+
+                                    // 切到 all (meta) — 子列表应完全消失
+                                    clickByHitTest(api, getFilterButton('all'), 'all filter');
+                                    return api.waitFor(function() {
+                                        var s = currentState();
+                                        return s && s.activeFilterId === 'all' ? s : null;
+                                    }, 1500, 'switch to all').then(function() {
+                                        api.assert(!document.querySelector('.map-rail-scene-list'), 'meta filter (all) must NOT render sub-list');
+                                        return 'subList expand/collapse ok busy=ok';
+                                    });
                                 });
                             });
                         });
@@ -709,6 +793,91 @@ var MapPanelHarnessQA = (function() {
                             api.assertEqual(afterNavCount - beforeNavCount, 0, 'disabled sub-item click must NOT emit navigate');
                             api.assert((window.Toast && window.Toast.messages || []).length > toastBefore, 'disabled sub-item click should push locked reason toast');
                             return 'disabled sub-item click blocked';
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui21',
+                title: 'filter fit presets expand sparse subsets without losing stage containment',
+                run: function() {
+                    var probes = [
+                        { pageId: 'base', filterId: 'roof', presetId: 'base:roof', minFitScale: 1.68, minX: 0.75, minY: 0.46 },
+                        { pageId: 'base', filterId: 'first_floor', presetId: 'base:*', minFitScale: 1.02, minX: 0.88, minY: 0.38 },
+                        { pageId: 'base', filterId: 'basement1', presetId: 'base:basement1', minFitScale: 1.68, minX: 0.54, minY: 0.58 },
+                        { pageId: 'faction', filterId: 'rock', presetId: 'faction:rock', minFitScale: 1.68, minX: 0.44, minY: 0.66 },
+                        { pageId: 'defense', filterId: 'restricted', presetId: 'defense:restricted', minFitScale: 1.68, minX: 0.45, minY: 0.6 },
+                        { pageId: 'school', filterId: 'outside', presetId: 'school:outside', minFitScale: 1.68, minX: 0.38, minY: 0.28 }
+                    ];
+                    var details = [];
+
+                    function activateProbe(probe) {
+                        var state = currentState();
+                        var flow = Promise.resolve();
+                        function matchesProbe(candidate) {
+                            return candidate &&
+                                candidate.activePageId === probe.pageId &&
+                                candidate.activeFilterId === probe.filterId &&
+                                candidate.activeFitPresetId === probe.presetId;
+                        }
+
+                        if (!state || state.activePageId !== probe.pageId) {
+                            flow = flow.then(function() {
+                                var tab = getPageTab(probe.pageId);
+                                api.assert(!!tab, probe.pageId + ' tab missing');
+                                tab.click();
+                                return api.waitFor(function() {
+                                    var switched = currentState();
+                                    return switched && switched.activePageId === probe.pageId ? switched : null;
+                                }, 1500, 'switch to ' + probe.pageId);
+                            });
+                        }
+
+                        return flow.then(function() {
+                            if (matchesProbe(currentState())) {
+                                return currentState();
+                            }
+                            var filterButton = getFilterButton(probe.filterId);
+                            api.assert(!!filterButton, probe.filterId + ' filter missing');
+                            filterButton.click();
+                            if (window.MapPanel && typeof MapPanel._debugSyncLayout === 'function') {
+                                MapPanel._debugSyncLayout('qa_filter_fit_probe');
+                            }
+                            return api.waitFor(function() {
+                                var switched = currentState();
+                                return matchesProbe(switched) ? switched : null;
+                            }, 1500, 'switch to ' + probe.pageId + '/' + probe.filterId);
+                        });
+                    }
+
+                    return bootMap(api, host, { defaultPageId: 'base', currentHotspotId: '' }).then(function() {
+                        var flow = Promise.resolve();
+                        probes.forEach(function(probe) {
+                            flow = flow.then(function() {
+                                return activateProbe(probe).then(function(state) {
+                                    var shellRect = document.getElementById('map-stage-shell').getBoundingClientRect();
+                                    var stageRect = document.getElementById('map-stage-frame').getBoundingClientRect();
+                                    api.assertEqual(state.activeFitPresetId, probe.presetId, probe.pageId + '/' + probe.filterId + ' preset mismatch');
+                                    api.assert(state.contentFitScale >= probe.minFitScale, probe.pageId + '/' + probe.filterId + ' fit scale too low');
+                                    api.assert(state.contentCoverageX >= probe.minX, probe.pageId + '/' + probe.filterId + ' horizontal coverage too low');
+                                    api.assert(state.contentCoverageY >= probe.minY, probe.pageId + '/' + probe.filterId + ' vertical coverage too low');
+                                    api.assert(stageRect.left >= shellRect.left - 1, probe.pageId + '/' + probe.filterId + ' stage should stay inside shell (left)');
+                                    api.assert(stageRect.right <= shellRect.right + 1, probe.pageId + '/' + probe.filterId + ' stage should stay inside shell (right)');
+                                    api.assert(stageRect.top >= shellRect.top - 1, probe.pageId + '/' + probe.filterId + ' stage should stay inside shell (top)');
+                                    api.assert(stageRect.bottom <= shellRect.bottom + 1, probe.pageId + '/' + probe.filterId + ' stage should stay inside shell (bottom)');
+                                    api.assert(!!state.contentFitPreset, probe.pageId + '/' + probe.filterId + ' should expose contentFitPreset debug info');
+                                    details.push(
+                                        probe.pageId + '/' + probe.filterId +
+                                        '=' + state.activeFitPresetId +
+                                        ' ' + state.contentCoverageX.toFixed(2) + '/' + state.contentCoverageY.toFixed(2) +
+                                        ' pad=' + state.contentFitPadX.toFixed(2) + '/' + state.contentFitPadY.toFixed(2)
+                                    );
+                                });
+                            });
+                        });
+
+                        return flow.then(function() {
+                            return details.join(' | ');
                         });
                     });
                 }

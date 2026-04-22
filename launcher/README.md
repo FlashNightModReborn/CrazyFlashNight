@@ -364,7 +364,7 @@ launcher/
 │       ├── icons.js                       图标 manifest 加载与解析
 │       ├── kshop.js                       K 点商城面板（ShopTask 双层 callId）
 │       ├── help.js / help-panel.js        帮助系统（顶层入口 + 面板骨架）
-│       ├── map-panel.js / map-panel-data.js 地图面板（正式 map panel + 静态页面/热点数据）
+│       ├── map-panel.js / map-panel-data.js / map-fit-presets.js 地图面板（正式 map panel + 静态页面/热点数据 + filter fit preset 表）
 │       ├── map/
 │       │   └── dev/
 │       │       ├── harness.html           地图 panel browser harness + QA suite
@@ -549,6 +549,7 @@ powershell -File run_tests.ps1
   - 从 `web/modules/map-panel-data.js` 导出当前运行时 manifest 或单页导出
   - 用于把 preview / panel 当前数据结构交给后续 XFL / FFDec 校准链，不替代最终 authoring tool
 - **Map layout fallback audit**：`node tools/audit-map-layout.js [--page school] [--json]`
+- **Map filter-fit tuner**：`node tools/tune-map-filter-fit.js --write`
   - 对照 `flashswf/UI/地图界面/LIBRARY/地图界面.xml` 中的原版实例坐标复核当前热点布局
   - 用于 fallback 期全量复核与 compact 页 XFL 对齐，不替代 browser harness 的交互 gate
 - **Map audit sheets**：`python tools/render-map-audit-sheet.py --page base --page faction --page defense --page school`
@@ -999,7 +1000,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
 **面板类型**：
 - **kshop**（K 点商城）: 需要 Flash 交互；打开/关闭会走 `shopPanelOpen/shopPanelClose`，并参与 `_pauseNeedsRestore`
 - **help**（游戏帮助）: 纯 Web 侧 Markdown 帮助面板，不触发 Flash 暂停恢复
-- **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-panel-data.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面均已切到 `assembled` 场景拼接模式，右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台以减少默认滚动
+- **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面均已切到 `assembled` 场景拼接模式，右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 

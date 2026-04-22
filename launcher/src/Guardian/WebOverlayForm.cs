@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -100,6 +101,12 @@ namespace CF7Launcher.Guardian
 
         // BGM 音频可视化轮询
         private System.Windows.Forms.Timer _audioTimer;
+        private System.Windows.Forms.Timer _positionSettleTimer;
+        private bool _syncPositionDeferredPending;
+        private int _lastViewportWidth;
+        private int _lastViewportHeight;
+        private double _lastViewportZoom = -1.0;
+        private string _pendingSyncReason = "unspecified";
         private string _bgmTitle = ""; // 当前曲目标题（由 UiData bgm: 设置）
         private bool _wasPlaying;       // 上一 tick 的 playing 状态（trackEnd 检测）
         private bool _manualStop;       // 手动 stop 标记（防 trackEnd 误判）
@@ -139,10 +146,10 @@ namespace CF7Launcher.Guardian
             this.Controls.Add(_webView);
 
             // Owner 跟随：Move/Resize → 同步位置
-            owner.Move += delegate { SyncPosition(); };
+            owner.Move += delegate { ScheduleSyncPosition("owner_move"); };
             owner.Resize += delegate
             {
-                SyncPosition();
+                ScheduleSyncPosition("owner_resize");
                 // 从最小化恢复时重新显示（Win32 owned 窗口最小化时自动隐藏，
                 // 但 ShowWindow(SW_SHOWNOACTIVATE) 创建的窗口可能不自动恢复）
                 if (owner.WindowState != FormWindowState.Minimized && _shown && _webReady)
@@ -150,7 +157,7 @@ namespace CF7Launcher.Guardian
                     ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
                 }
             };
-            anchor.Resize += delegate { SyncPosition(); };
+            anchor.Resize += delegate { ScheduleSyncPosition("anchor_resize"); };
 
             // 异步初始化 WebView2
             InitWebView2Async(webDir);
@@ -338,7 +345,82 @@ namespace CF7Launcher.Guardian
         /// <summary>当前缩放比（viewport 实际高度 / Flash 设计高度 576）。</summary>
         private double _zoomFactor = 1.0;
 
+        private void ScheduleSyncPosition()
+        {
+            ScheduleSyncPosition("unspecified");
+        }
+
+        private void ScheduleSyncPosition(string reason)
+        {
+            if (_disposed) return;
+
+            _pendingSyncReason = reason;
+            SyncPosition(reason + ":immediate");
+
+            if (!_syncPositionDeferredPending && this.IsHandleCreated)
+            {
+                _syncPositionDeferredPending = true;
+                try
+                {
+                    this.BeginInvoke(new Action(delegate()
+                    {
+                        _syncPositionDeferredPending = false;
+                        if (_disposed) return;
+                        SyncPosition(reason + ":deferred");
+                    }));
+                }
+                catch
+                {
+                    _syncPositionDeferredPending = false;
+                }
+            }
+
+            if (_positionSettleTimer == null)
+            {
+                _positionSettleTimer = new System.Windows.Forms.Timer();
+                _positionSettleTimer.Interval = 120;
+                _positionSettleTimer.Tick += delegate
+                {
+                    if (_positionSettleTimer != null)
+                        _positionSettleTimer.Stop();
+                    if (_disposed) return;
+                    SyncPosition(_pendingSyncReason + ":settled");
+                };
+            }
+
+            _positionSettleTimer.Stop();
+            _positionSettleTimer.Start();
+        }
+
+        public void RequestLayoutSync()
+        {
+            RequestLayoutSync("external_request");
+        }
+
+        public void RequestLayoutSync(string reason)
+        {
+            if (_disposed) return;
+            if (this.InvokeRequired)
+            {
+                try
+                {
+                    this.BeginInvoke(new Action(delegate()
+                    {
+                        RequestLayoutSync(reason);
+                    }));
+                }
+                catch { }
+                return;
+            }
+            ScheduleSyncPosition(reason);
+        }
+
         private void SyncPosition()
+        {
+            SyncPosition("direct");
+        }
+
+        private void SyncPosition(string reason)
         {
             try
             {
@@ -351,10 +433,14 @@ namespace CF7Launcher.Guardian
                 int w = Math.Max(1, (int)vpW);
                 int h = Math.Max(1, (int)vpH);
 
+                bool viewportChanged = (w != _lastViewportWidth) ||
+                    (h != _lastViewportHeight);
+
                 SetWindowPos(this.Handle, HWND_TOP, x, y, w, h, SWP_NOACTIVATE);
 
                 // WebView2 缩放：viewport 实际高度 / Flash 设计高度
                 double newZoom = Math.Max(0.25, vpH / 576.0);
+                bool zoomChanged = Math.Abs(newZoom - _lastViewportZoom) > 0.001;
                 if (_webReady && _webView != null && Math.Abs(newZoom - _zoomFactor) > 0.001)
                 {
                     _zoomFactor = newZoom;
@@ -362,6 +448,16 @@ namespace CF7Launcher.Guardian
                     if (_inputShield != null)
                         _inputShield.SetZoomFactor(_zoomFactor);
                 }
+
+                _lastViewportWidth = w;
+                _lastViewportHeight = h;
+                _lastViewportZoom = newZoom;
+
+                if (_webReady && (viewportChanged || zoomChanged))
+                {
+                    ExecScript("window.dispatchEvent(new Event('resize'));");
+                }
+
             }
             catch
             {
@@ -415,6 +511,10 @@ namespace CF7Launcher.Guardian
                 else if (json.Contains("\"panel\""))
                 {
                     HandlePanelMessage(json);
+                }
+                else if (json.Contains("\"type\":\"debug\""))
+                {
+                    HandleDebugMessage(json);
                 }
                 else if (json.Contains("\"click\""))
                 {
@@ -490,6 +590,21 @@ namespace CF7Launcher.Guardian
         }
 
         #endregion
+
+        private void HandleDebugMessage(string json)
+        {
+            try
+            {
+                JObject parsed = JObject.Parse(json);
+                string scope = parsed.Value<string>("scope") ?? "";
+                if (scope != "map_layout")
+                    LogManager.Log("[WebDebug] " + json);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[WebDebug] parse failed: " + ex.Message);
+            }
+        }
 
         #region Notch 注入
 
@@ -846,6 +961,12 @@ namespace CF7Launcher.Guardian
                     _audioTimer.Stop();
                     _audioTimer.Dispose();
                     _audioTimer = null;
+                }
+                if (_positionSettleTimer != null)
+                {
+                    _positionSettleTimer.Stop();
+                    _positionSettleTimer.Dispose();
+                    _positionSettleTimer = null;
                 }
                 if (_webWatcher != null)
                 {

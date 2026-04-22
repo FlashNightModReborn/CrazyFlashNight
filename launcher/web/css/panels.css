@@ -1808,7 +1808,7 @@
 .lockbox-panel[data-trace-state="terminal"] .lockbox-grid-shell::after,
 .lockbox-panel[data-trace-state="overload"] .lockbox-grid-shell::after,
 .lockbox-panel[data-trace-state="trace-fail"] .lockbox-grid-shell::after {
-    opacity:0.92;
+    opacity:0.74;
     animation:lb-hazard-scroll 0.42s linear infinite, lb-terminal-flood 0.56s steps(2) infinite;
 }
 .lockbox-panel[data-trace-state="critical"] .lockbox-grid-shell {
@@ -2364,13 +2364,16 @@
 .map-panel.is-compact .map-panel-body {
     gap:10px;
     padding:10px 14px 14px;
+    align-items:stretch;
+    overflow-y:auto;
+    overflow-x:hidden;
 }
 
 .map-stage-shell {
     flex:1 1 auto;
     min-width:0;
     min-height:0;
-    max-width:1040px;
+    max-width:1380px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -2404,7 +2407,7 @@
 .map-stage-frame {
     position:relative;
     width:100%;
-    max-width:1040px;
+    max-width:none;
     background:#020303;
     border:1px solid rgba(186, 255, 92, 0.12);
     box-shadow:0 0 24px rgba(165, 255, 64, 0.08);
@@ -2447,12 +2450,21 @@
     content:'';
     position:absolute;
     inset:0;
+    z-index:0;
     pointer-events:none;
     opacity:0.62;
     background:
-        /* 主轴线 (纵/横 各一条中轴) */
-        linear-gradient(90deg, rgba(190,255,92,0.12) 0 1px, transparent 1px 100%),
-        linear-gradient(180deg, rgba(190,255,92,0.11) 0 1px, transparent 1px 100%),
+        /* 主轴线 (纵/横 各一条居中轴) */
+        linear-gradient(90deg,
+            transparent calc(50% - 0.5px),
+            rgba(190,255,92,0.12) calc(50% - 0.5px),
+            rgba(190,255,92,0.12) calc(50% + 0.5px),
+            transparent calc(50% + 0.5px)),
+        linear-gradient(180deg,
+            transparent calc(50% - 0.5px),
+            rgba(190,255,92,0.11) calc(50% - 0.5px),
+            rgba(190,255,92,0.11) calc(50% + 0.5px),
+            transparent calc(50% + 0.5px)),
         /* 街区大格 (148×128px) */
         repeating-linear-gradient(90deg, rgba(210,240,160,0.07) 0 1px, transparent 1px 148px),
         repeating-linear-gradient(180deg, rgba(210,240,160,0.065) 0 1px, transparent 1px 128px),
@@ -2466,6 +2478,7 @@
     content:'';
     position:absolute;
     inset:0;
+    z-index:1;
     pointer-events:none;
 }
 
@@ -2477,22 +2490,26 @@
 }
 
 .map-stage-backdrop--base::after {
-    opacity:0.92;
+    opacity:0.74;
     background:
         /* 右上角工作灯晕 (暖琥珀) */
-        radial-gradient(ellipse 240px 150px at 84% 14%, rgba(255, 190, 90, 0.22) 0%, rgba(255, 170, 60, 0) 78%),
+        radial-gradient(ellipse 220px 138px at 84% 14%, rgba(255, 190, 90, 0.15) 0%, rgba(255, 170, 60, 0) 76%),
         /* 左下角油污擦痕 */
-        radial-gradient(ellipse 340px 180px at 10% 92%, rgba(82, 58, 26, 0.48) 0%, rgba(50, 36, 14, 0) 82%),
+        radial-gradient(ellipse 320px 168px at 10% 92%, rgba(82, 58, 26, 0.32) 0%, rgba(50, 36, 14, 0) 80%),
         /* 中央暖渲染 (橄榄绿 → 透明), 把"家的温度"铺到中心 */
-        radial-gradient(ellipse 520px 320px at 50% 62%, rgba(88, 78, 32, 0.18) 0%, rgba(60, 52, 20, 0.06) 48%, rgba(0, 0, 0, 0) 82%),
+        radial-gradient(ellipse 500px 300px at 50% 62%, rgba(88, 78, 32, 0.11) 0%, rgba(60, 52, 20, 0.03) 46%, rgba(0, 0, 0, 0) 80%),
         /* 弥散暖雾 (极大 blob 提亮) */
-        radial-gradient(ellipse 900px 400px at 50% 48%, rgba(140, 108, 42, 0.06) 0%, rgba(0, 0, 0, 0) 70%),
+        radial-gradient(ellipse 860px 380px at 50% 48%, rgba(140, 108, 42, 0.035) 0%, rgba(0, 0, 0, 0) 68%),
         /* 金属擦痕横纹 */
-        repeating-linear-gradient(92deg, rgba(150, 118, 50, 0.08) 0 2px, transparent 2px 38px);
+        repeating-linear-gradient(92deg, rgba(150, 118, 50, 0.05) 0 2px, transparent 2px 38px);
 }
 
 /* --- faction: 中性街区共抢底, filter-overlay 负责派系差异 ---
  * 基础色: 墨绿 #16201a, 派系能靠 overlay 各自染色而不被全局色锁死 */
+.map-stage-frame[data-page-id="base"] .map-stage-backdrop::before {
+    opacity:0.46;
+}
+
 .map-stage-backdrop--faction {
     background:
         radial-gradient(ellipse at 50% 55%, rgba(22, 32, 22, 1) 0%, rgba(14, 20, 14, 1) 60%, rgba(8, 10, 8, 1) 100%);
@@ -2571,6 +2588,7 @@
 .map-stage-filter-overlay {
     position:absolute;
     inset:0;
+    z-index:2;
     pointer-events:none;
     opacity:0;
     transition:opacity 0.22s ease, background 0.22s ease;
@@ -2665,6 +2683,7 @@
 .map-stage-anomaly {
     position:absolute;
     inset:0;
+    z-index:3;
     pointer-events:none;
     opacity:0;
     transition:opacity 0.4s ease;
@@ -2762,6 +2781,14 @@
     display:none;
 }
 
+.map-stage-content-fit {
+    position:absolute;
+    inset:0;
+    z-index:2;
+    transform-origin:0 0;
+    will-change:transform;
+}
+
 .map-scene-layer {
     position:absolute;
     inset:0;
@@ -2772,21 +2799,48 @@
 .map-scene-node {
     position:absolute;
     overflow:visible;
+    isolation:isolate;
     transform-origin:center center;
     transition:transform 0.14s ease, opacity 0.14s ease, filter 0.14s ease;
 }
 
+.map-scene-node::before {
+    content:'';
+    position:absolute;
+    inset:-7px;
+    border-radius:8px;
+    opacity:0;
+    pointer-events:none;
+    background:radial-gradient(circle at 50% 50%, rgba(8, 10, 7, 0.24) 0%, rgba(8, 10, 7, 0.12) 56%, rgba(8, 10, 7, 0) 88%);
+    transition:opacity 0.14s ease, box-shadow 0.14s ease;
+}
+
+.map-stage-frame[data-page-id="base"] .map-scene-node::before {
+    opacity:0.88;
+    background:
+        linear-gradient(180deg, rgba(12, 15, 10, 0.12) 0%, rgba(9, 11, 8, 0.2) 100%),
+        radial-gradient(circle at 50% 44%, rgba(18, 22, 14, 0.34) 0%, rgba(10, 12, 9, 0.14) 58%, rgba(10, 12, 9, 0) 90%);
+    box-shadow:inset 0 0 0 1px rgba(224, 255, 170, 0.03), 0 10px 18px rgba(0, 0, 0, 0.14);
+}
+
 .map-scene-node-image {
     display:block;
+    position:relative;
+    z-index:1;
     width:100%;
     height:100%;
     object-fit:fill;
     filter:contrast(1.02) saturate(1.04) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.34));
 }
 
+.map-stage-frame[data-page-id="base"] .map-scene-node-image {
+    filter:contrast(1.05) saturate(1.03) drop-shadow(0 12px 20px rgba(0, 0, 0, 0.38));
+}
+
 .map-scene-node-glow {
     position:absolute;
     inset:-6px;
+    z-index:2;
     border-radius:6px;
     background:radial-gradient(circle at 50% 50%, rgba(200, 255, 76, 0.26) 0%, rgba(200, 255, 76, 0.08) 38%, rgba(200, 255, 76, 0) 72%);
     opacity:0;
@@ -2824,6 +2878,10 @@
 
 .map-scene-node.is-disabled .map-scene-node-image {
     filter:grayscale(0.14) brightness(0.76) saturate(0.72) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.24));
+}
+
+.map-stage-frame[data-page-id="base"] .map-scene-node.is-disabled::before {
+    opacity:0.68;
 }
 
 .map-scene-node.is-disabled .map-scene-node-glow {
@@ -2877,6 +2935,13 @@
     position:absolute;
     inset:0;
     z-index:5;
+    pointer-events:none;
+}
+
+.map-stage-overlay-layer {
+    position:absolute;
+    inset:0;
+    z-index:6;
     pointer-events:none;
 }
 
@@ -3251,6 +3316,29 @@
 
 .map-rail-scene-item.is-disabled .map-rail-scene-dot {
     background:rgba(255,142,96,0.52);
+}
+
+.map-rail-scene-item.is-busy,
+.map-rail-scene-item:disabled {
+    border-color:#ffd04f;
+    background:rgba(42, 32, 12, 0.86);
+    color:#ffe6a8;
+    cursor:progress;
+    box-shadow:0 0 14px rgba(255, 208, 79, 0.2), inset 0 0 12px rgba(255, 208, 79, 0.1);
+}
+
+.map-rail-scene-item.is-busy:hover,
+.map-rail-scene-item:disabled:hover {
+    transform:none;
+    background:rgba(42, 32, 12, 0.86);
+    border-color:#ffd04f;
+    color:#ffe6a8;
+}
+
+.map-rail-scene-item.is-busy .map-rail-scene-dot,
+.map-rail-scene-item:disabled .map-rail-scene-dot {
+    background:#ffd04f;
+    box-shadow:0 0 8px rgba(255, 208, 79, 0.52);
 }
 
 @media (prefers-reduced-motion: reduce) {

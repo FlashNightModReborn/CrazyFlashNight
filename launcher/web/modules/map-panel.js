@@ -1,7 +1,7 @@
 var MapPanel = (function() {
     'use strict';
 
-    var _el, _titleEl, _bodyEl, _stageEl, _stageShellEl, _railEl, _backdropEl, _filterOverlayEl, _anomalyEl, _imageEl, _sceneLayer, _hotspotLayer, _avatarLayer, _feedbackLayer, _loadingEl, _errorEl, _errorTextEl, _badgeEl;
+    var _el, _titleEl, _bodyEl, _stageEl, _stageShellEl, _railEl, _backdropEl, _filterOverlayEl, _anomalyEl, _contentFitEl, _imageEl, _sceneLayer, _hotspotLayer, _avatarLayer, _feedbackLayer, _overlayLayer, _loadingEl, _errorEl, _errorTextEl, _badgeEl;
     var _pageTabsEl, _pageSummaryEl;
     var _activePage = null;
     var _reqSeq = 0;
@@ -19,9 +19,25 @@ var MapPanel = (function() {
     var _closing = false;
     var _session = 0;
     var _stageScale = 1;
+    var _contentFitScale = 1;
+    var _contentFitOffsetX = 0;
+    var _contentFitOffsetY = 0;
+    var _contentFitPadX = 0;
+    var _contentFitPadY = 0;
+    var _contentFitPresetId = '';
+    var _contentFitPresetMeta = null;
+    var _contentBounds = null;
+    var _stageViewportWidth = 0;
+    var _stageViewportHeight = 0;
     var _layoutRaf = 0;
+    var _layoutSettleTimer = 0;
+    var _layoutPendingReason = '';
     var _layoutObserver = null;
     var _windowResizeBound = false;
+    var _visualViewportResizeBound = false;
+    var _windowResizeHandler = null;
+    var _visualViewportResizeHandler = null;
+    var _debugTelemetryEnabled = false;
     var _snapshotAnnounced = false;     // 每次 onOpen 后首次 snapshot 成功播 ready, 避免刷新 spam
 
     function playCue(name) {
@@ -68,10 +84,13 @@ var MapPanel = (function() {
                             '</div>' +
                         '</div>' +
                         '<img class="map-stage-image" id="map-stage-image" alt="地图背景">' +
+                        '<div class="map-stage-content-fit" id="map-stage-content-fit">' +
                         '<div class="map-scene-layer" id="map-scene-layer"></div>' +
                         '<div class="map-hotspot-layer" id="map-hotspot-layer"></div>' +
                         '<div class="map-dynamic-avatar-layer" id="map-dynamic-avatar-layer"></div>' +
                         '<div class="map-feedback-layer" id="map-feedback-layer"></div>' +
+                        '</div>' +
+                        '<div class="map-stage-overlay-layer" id="map-stage-overlay-layer"></div>' +
                         '<div class="map-stage-scanline" aria-hidden="true"></div>' +
                         '<div class="map-stage-corner map-stage-corner--tl" aria-hidden="true"></div>' +
                         '<div class="map-stage-corner map-stage-corner--tr" aria-hidden="true"></div>' +
@@ -97,11 +116,13 @@ var MapPanel = (function() {
         _backdropEl = _el.querySelector('#map-stage-backdrop');
         _filterOverlayEl = _el.querySelector('#map-stage-filter-overlay');
         _anomalyEl = _el.querySelector('#map-stage-anomaly');
+        _contentFitEl = _el.querySelector('#map-stage-content-fit');
         _imageEl = _el.querySelector('#map-stage-image');
         _sceneLayer = _el.querySelector('#map-scene-layer');
         _hotspotLayer = _el.querySelector('#map-hotspot-layer');
         _avatarLayer = _el.querySelector('#map-dynamic-avatar-layer');
         _feedbackLayer = _el.querySelector('#map-feedback-layer');
+        _overlayLayer = _el.querySelector('#map-stage-overlay-layer');
         _stageShellEl = _el.querySelector('#map-stage-shell');
         _railEl = _el.querySelector('#map-rail-shell');
         _loadingEl = _el.querySelector('#map-stage-loading');
@@ -121,6 +142,13 @@ var MapPanel = (function() {
         _el.addEventListener('animationend', function(e) {
             if (e.target === _el && e.animationName === 'mapPanelBoot') {
                 _el.classList.remove('is-entering');
+                scheduleLayoutSync();
+                scheduleSettledLayoutSync();
+                return;
+            }
+            if (e.target === _stageEl && e.animationName === 'mapStageBoot') {
+                scheduleLayoutSync();
+                scheduleSettledLayoutSync();
             }
         });
 
@@ -164,7 +192,10 @@ var MapPanel = (function() {
         _currentHotspotId = '';
         _hoverHotspotId = '';
         _busyLookup = {};
+        _debugTelemetryEnabled = !!(initData && initData.dev);
         _snapshotAnnounced = false;
+        resetContentFit();
+        if (_el) _el.classList.remove('is-compact');
 
         _badgeEl.style.display = initData && initData.dev ? '' : 'none';
 
@@ -180,6 +211,7 @@ var MapPanel = (function() {
         setLoading(true);
         applyPage((initData && (initData.page || initData.region)) || 'base');
         requestSnapshot('snapshot');
+        scheduleSettledLayoutSync();
         playCue('modalOpen');
     }
 
@@ -197,7 +229,10 @@ var MapPanel = (function() {
         _currentHotspotId = '';
         _hoverHotspotId = '';
         _busyLookup = {};
+        _debugTelemetryEnabled = false;
         _stageScale = 1;
+        resetContentFit();
+        if (_el) _el.classList.remove('is-compact');
         hideError();
         setLoading(false);
     }
@@ -207,10 +242,18 @@ var MapPanel = (function() {
             _layoutObserver.disconnect();
             _layoutObserver = null;
         }
-        if (_windowResizeBound && typeof window !== 'undefined' && window.removeEventListener) {
-            window.removeEventListener('resize', scheduleLayoutSync);
+        if (_windowResizeBound && typeof window !== 'undefined' && window.removeEventListener && _windowResizeHandler) {
+            window.removeEventListener('resize', _windowResizeHandler);
         }
         _windowResizeBound = false;
+        if (_visualViewportResizeBound && typeof window !== 'undefined' && window.visualViewport && window.visualViewport.removeEventListener && _visualViewportResizeHandler) {
+            window.visualViewport.removeEventListener('resize', _visualViewportResizeHandler);
+        }
+        _visualViewportResizeBound = false;
+        if (_layoutSettleTimer) {
+            clearTimeout(_layoutSettleTimer);
+            _layoutSettleTimer = 0;
+        }
         if (_layoutRaf && typeof cancelAnimationFrame === 'function') {
             cancelAnimationFrame(_layoutRaf);
         }
@@ -233,6 +276,7 @@ var MapPanel = (function() {
         updatePageTabs();
         updatePageSummary();
         scheduleLayoutSync();
+        scheduleSettledLayoutSync();
     }
 
     function useAssembledVisuals(page) {
@@ -277,7 +321,7 @@ var MapPanel = (function() {
         _imageEl.height = _activePage.height;
 
         if (hasBackground) {
-            _imageEl.src = _activePage.backgroundUrl;
+            _imageEl.src = resolveAssetUrl(_activePage.backgroundUrl);
             return;
         }
 
@@ -323,6 +367,7 @@ var MapPanel = (function() {
             if (!visual || !visual.rect || !visual.assetUrl) continue;
 
             var rect = visual.rect;
+            var assetUrl = resolveAssetUrl(visual.assetUrl);
             var node = document.createElement('div');
             node.className = 'map-scene-node';
             node.setAttribute('data-scene-node-id', visual.id);
@@ -333,7 +378,7 @@ var MapPanel = (function() {
             node.style.height = toPercent(rect.h, _activePage.height);
             node.title = visual.label || visual.id;
             node.innerHTML =
-                '<img class="map-scene-node-image" alt="" src="' + escAttr(visual.assetUrl) + '">' +
+                '<img class="map-scene-node-image" alt="" src="' + escAttr(assetUrl) + '">' +
                 '<span class="map-scene-node-glow"></span>';
             _sceneLayer.appendChild(node);
         }
@@ -486,6 +531,7 @@ var MapPanel = (function() {
         _busyLookup = {};
         // cancel cue 由调用方负责: DOM click 走 overlay click 代理, Esc/backdrop 走 onRequestClose
         // navigate 成功直闭(resp.closePanel)不播 cancel, transition cue 已足够表达
+        resetContentFit();
         Panels.close();
         if (notifyHost) {
             Bridge.send({ type: 'panel', panel: 'map', cmd: 'close' });
@@ -528,6 +574,8 @@ var MapPanel = (function() {
         renderFeedback();
         renderFilterButtons();
         updatePageSummary();
+        scheduleLayoutSync();
+        scheduleSettledLayoutSync();
     }
 
     function renderHotspots() {
@@ -789,16 +837,19 @@ var MapPanel = (function() {
             avatar.style.top = toPercent(slot.y, _activePage.height);
             avatar.style.width = toPercent(slot.w, _activePage.width);
             avatar.style.height = toPercent(slot.h, _activePage.height);
-            appendAvatarImage(avatar, assetUrl, slot.id || '');
+            appendAvatarImage(avatar, assetUrl, slot.id || '', 'map-dynamic-avatar-image');
             _avatarLayer.appendChild(avatar);
         }
     }
 
-    function appendAvatarImage(container, assetUrl, fallbackLabel) {
+    function appendAvatarImage(container, assetUrl, fallbackLabel, extraClass) {
         var image = document.createElement('img');
         image.className = 'map-avatar-image';
+        if (extraClass) {
+            image.className += ' ' + extraClass;
+        }
         image.alt = '';
-        image.src = assetUrl;
+        image.src = resolveAssetUrl(assetUrl);
         image.addEventListener('error', function onError() {
             image.removeEventListener('error', onError);
             container.classList.add('is-missing');
@@ -824,6 +875,7 @@ var MapPanel = (function() {
         if (!_activePage) return;
 
         _feedbackLayer.innerHTML = '';
+        if (_overlayLayer) _overlayLayer.innerHTML = '';
 
         renderFlashHints(MapPanelData.getPageFlashHints(_activePage.id));
         renderFeedbackMarkers(_snapshotMarkers);
@@ -831,6 +883,9 @@ var MapPanel = (function() {
     }
 
     function renderFlashHints(hints) {
+        var target = _overlayLayer || _feedbackLayer;
+        if (!target) return;
+
         for (var i = 0; i < hints.length; i++) {
             var hint = hints[i];
             if (!shouldRenderFlashHint(hint)) continue;
@@ -843,7 +898,7 @@ var MapPanel = (function() {
             el.style.left = toPercent(anchor.x, _activePage.width);
             el.style.top = toPercent(anchor.y, _activePage.height);
             el.textContent = hint.label || '未开放';
-            _feedbackLayer.appendChild(el);
+            target.appendChild(el);
         }
     }
 
@@ -1012,6 +1067,25 @@ function resolveFeedbackAnchor(item) {
 
     function resolvePageIdForHotspot(hotspotId) {
         return hotspotId ? MapPanelData.findHotspotPageId(hotspotId) : '';
+    }
+
+    function resolveAssetUrl(assetUrl) {
+        var value = String(assetUrl || '');
+        var href = '';
+        var marker = '/launcher/web/';
+        var idx = -1;
+        if (!value || /^(?:[a-z]+:|\/|#)/i.test(value)) return value;
+        if (typeof document === 'undefined' || !document.location) return value;
+
+        href = String(document.location.href || '');
+        idx = href.indexOf(marker);
+        if (idx < 0) return value;
+
+        try {
+            return new URL(value, href.slice(0, idx + marker.length)).href;
+        } catch (err) {
+            return value;
+        }
     }
 
     function resolveDynamicAvatarUrl(slot) {
@@ -1222,6 +1296,21 @@ function resolveFeedbackAnchor(item) {
                 buttons[i].title = hotspotState.lockedReason;
             }
         }
+
+        syncRailSceneItemStates();
+    }
+
+    function syncRailSceneItemStates() {
+        if (!_railEl) return;
+
+        var items = _railEl.querySelectorAll('.map-rail-scene-item');
+        for (var i = 0; i < items.length; i++) {
+            var id = items[i].getAttribute('data-hotspot-id') || '';
+            var isBusy = !!_busyLookup[id];
+            items[i].classList.toggle('is-busy', isBusy);
+            items[i].disabled = isBusy;
+            items[i].setAttribute('aria-busy', isBusy ? 'true' : 'false');
+        }
     }
 
     function syncAvatarStates() {
@@ -1243,7 +1332,7 @@ function resolveFeedbackAnchor(item) {
         } else {
             delete _busyLookup[id];
         }
-        var hotspotBtn = _hotspotLayer.querySelector('[data-hotspot-id="' + id + '"]');
+        var hotspotBtn = _hotspotLayer ? _hotspotLayer.querySelector('[data-hotspot-id="' + id + '"]') : null;
         if (hotspotBtn) hotspotBtn.classList.toggle('is-busy', !!isBusy);
 
         syncHotspotStates();
@@ -1255,54 +1344,387 @@ function resolveFeedbackAnchor(item) {
         _loadingEl.style.display = isLoading ? '' : 'none';
     }
 
+    function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    function roundLayoutValue(value) {
+        return Math.round(value * 100) / 100;
+    }
+
+    function roundLayoutRect(rect) {
+        if (!rect) return null;
+        return {
+            x: roundLayoutValue(rect.x),
+            y: roundLayoutValue(rect.y),
+            w: roundLayoutValue(rect.w),
+            h: roundLayoutValue(rect.h)
+        };
+    }
+
+    function resetContentFit() {
+        _contentFitScale = 1;
+        _contentFitOffsetX = 0;
+        _contentFitOffsetY = 0;
+        _contentFitPadX = 0;
+        _contentFitPadY = 0;
+        _contentFitPresetId = '';
+        _contentFitPresetMeta = null;
+        _contentBounds = null;
+        _stageViewportWidth = 0;
+        _stageViewportHeight = 0;
+        if (_contentFitEl) {
+            _contentFitEl.style.transform = 'translate3d(0px, 0px, 0) scale(1)';
+        }
+    }
+
+    function applyContentFit(scale, offsetX, offsetY, bounds, stageWidth, stageHeight, fitMeta) {
+        _contentFitScale = scale;
+        _contentFitOffsetX = offsetX;
+        _contentFitOffsetY = offsetY;
+        _contentFitPadX = fitMeta && isFinite(fitMeta.padX) ? roundLayoutValue(fitMeta.padX) : 0;
+        _contentFitPadY = fitMeta && isFinite(fitMeta.padY) ? roundLayoutValue(fitMeta.padY) : 0;
+        _contentFitPresetId = fitMeta && fitMeta.presetId ? String(fitMeta.presetId) : '';
+        _contentFitPresetMeta = fitMeta ? {
+            presetId: fitMeta.presetId || '',
+            padXRate: roundLayoutValue(fitMeta.padXRate || 0),
+            padYRate: roundLayoutValue(fitMeta.padYRate || 0),
+            maxScale: roundLayoutValue(fitMeta.maxScale || 1),
+            biasX: roundLayoutValue(fitMeta.biasX || 0),
+            biasY: roundLayoutValue(fitMeta.biasY || 0)
+        } : null;
+        _contentBounds = roundLayoutRect(bounds);
+        _stageViewportWidth = roundLayoutValue(stageWidth);
+        _stageViewportHeight = roundLayoutValue(stageHeight);
+        if (_contentFitEl) {
+            _contentFitEl.style.transform =
+                'translate3d(' + offsetX.toFixed(2) + 'px, ' + offsetY.toFixed(2) + 'px, 0) scale(' + scale.toFixed(4) + ')';
+        }
+    }
+
+    function measureContentBounds(stageRect) {
+        if (!_contentFitEl || !stageRect) return null;
+
+        var nodes = _contentFitEl.querySelectorAll('.map-scene-node, .map-hotspot, .map-avatar, .map-avatar-task-ring, .map-feedback-marker, .map-feedback-tip');
+        var minX = Infinity;
+        var minY = Infinity;
+        var maxX = -Infinity;
+        var maxY = -Infinity;
+        var i;
+
+        for (i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            var style = (typeof window !== 'undefined' && window.getComputedStyle) ? window.getComputedStyle(node) : null;
+            var rect;
+            if (!node || !node.getBoundingClientRect) continue;
+            if (style && (style.display === 'none' || style.visibility === 'hidden')) continue;
+
+            rect = node.getBoundingClientRect();
+            if (!rect || (rect.width <= 0 && rect.height <= 0)) continue;
+
+            minX = Math.min(minX, rect.left - stageRect.left);
+            minY = Math.min(minY, rect.top - stageRect.top);
+            maxX = Math.max(maxX, rect.right - stageRect.left);
+            maxY = Math.max(maxY, rect.bottom - stageRect.top);
+        }
+
+        if (!isFinite(minX) || !isFinite(minY) || !isFinite(maxX) || !isFinite(maxY)) {
+            return null;
+        }
+
+        return {
+            x: minX,
+            y: minY,
+            w: Math.max(1, maxX - minX),
+            h: Math.max(1, maxY - minY)
+        };
+    }
+
+    function resolveContentFitPreset(pageId, filterId) {
+        var preset = {
+            id: (pageId || '') + ':' + (filterId || '*'),
+            pageId: pageId || '',
+            filterId: filterId || '',
+            padXRate: 0.055,
+            padXMin: 22,
+            padXMax: 54,
+            padYRate: 0.07,
+            padYMin: 20,
+            padYMax: 48,
+            maxScale: 1.36,
+            biasX: 0,
+            biasY: 0
+        };
+        var source = (typeof MapFitPresets !== 'undefined' && MapFitPresets && typeof MapFitPresets.resolve === 'function')
+            ? MapFitPresets.resolve(pageId || '', filterId || '')
+            : null;
+        var numericKeys = ['padXRate', 'padXMin', 'padXMax', 'padYRate', 'padYMin', 'padYMax', 'maxScale', 'biasX', 'biasY'];
+        var i;
+
+        if (source) {
+            if (source.id) preset.id = String(source.id);
+            for (i = 0; i < numericKeys.length; i++) {
+                if (isFinite(source[numericKeys[i]])) {
+                    preset[numericKeys[i]] = Number(source[numericKeys[i]]);
+                }
+            }
+        }
+
+        preset.padXRate = clamp(preset.padXRate, 0.02, 0.12);
+        preset.padYRate = clamp(preset.padYRate, 0.02, 0.12);
+        preset.padXMin = clamp(preset.padXMin, 0, 96);
+        preset.padXMax = Math.max(preset.padXMin, preset.padXMax);
+        preset.padYMin = clamp(preset.padYMin, 0, 96);
+        preset.padYMax = Math.max(preset.padYMin, preset.padYMax);
+        preset.maxScale = Math.max(1, preset.maxScale);
+        preset.biasX = clamp(preset.biasX, -1, 1);
+        preset.biasY = clamp(preset.biasY, -1, 1);
+
+        return preset;
+    }
+
+    function syncContentFit() {
+        if (!_contentFitEl || !_stageEl || !_activePage) return;
+
+        _contentFitEl.style.transform = 'translate3d(0px, 0px, 0) scale(1)';
+
+        var activeFilter = getActiveFilter(_activePage);
+        var fitPreset = resolveContentFitPreset(_activePage.id, activeFilter ? activeFilter.id : '');
+        var stageRect = _stageEl.getBoundingClientRect();
+        var stageWidth = Math.max(0, _stageEl.clientWidth || stageRect.width);
+        var stageHeight = Math.max(0, _stageEl.clientHeight || stageRect.height);
+        var bounds = measureContentBounds(stageRect);
+        var padX;
+        var padY;
+        var fitScale;
+        var targetWidth;
+        var targetHeight;
+        var offsetX;
+        var offsetY;
+        var slackX;
+        var slackY;
+
+        if (!stageWidth || !stageHeight) {
+            resetContentFit();
+            return;
+        }
+
+        if (!useAssembledVisuals(_activePage) || !bounds) {
+            applyContentFit(1, 0, 0, bounds, stageWidth, stageHeight, {
+                presetId: fitPreset.id,
+                padX: 0,
+                padY: 0,
+                padXRate: fitPreset.padXRate,
+                padYRate: fitPreset.padYRate,
+                maxScale: fitPreset.maxScale,
+                biasX: fitPreset.biasX,
+                biasY: fitPreset.biasY
+            });
+            return;
+        }
+
+        padX = clamp(stageWidth * fitPreset.padXRate, fitPreset.padXMin, fitPreset.padXMax);
+        padY = clamp(stageHeight * fitPreset.padYRate, fitPreset.padYMin, fitPreset.padYMax);
+        fitScale = Math.max(
+            1,
+            Math.min(
+                (stageWidth - (padX * 2)) / bounds.w,
+                (stageHeight - (padY * 2)) / bounds.h,
+                fitPreset.maxScale
+            )
+        );
+
+        if (!isFinite(fitScale) || fitScale <= 0) {
+            fitScale = 1;
+        }
+
+        targetWidth = bounds.w * fitScale;
+        targetHeight = bounds.h * fitScale;
+        offsetX = ((stageWidth - targetWidth) / 2) - (bounds.x * fitScale);
+        offsetY = ((stageHeight - targetHeight) / 2) - (bounds.y * fitScale);
+        slackX = Math.max(0, stageWidth - targetWidth - (padX * 2));
+        slackY = Math.max(0, stageHeight - targetHeight - (padY * 2));
+        offsetX += (slackX * 0.5) * fitPreset.biasX;
+        offsetY += (slackY * 0.5) * fitPreset.biasY;
+
+        applyContentFit(fitScale, offsetX, offsetY, bounds, stageWidth, stageHeight, {
+            presetId: fitPreset.id,
+            padX: padX,
+            padY: padY,
+            padXRate: fitPreset.padXRate,
+            padYRate: fitPreset.padYRate,
+            maxScale: fitPreset.maxScale,
+            biasX: fitPreset.biasX,
+            biasY: fitPreset.biasY
+        });
+    }
+
+    function describeDomRect(rect) {
+        if (!rect) return null;
+        return {
+            x: roundLayoutValue(rect.left),
+            y: roundLayoutValue(rect.top),
+            w: roundLayoutValue(rect.width),
+            h: roundLayoutValue(rect.height)
+        };
+    }
+
+    function emitLayoutDiagnostic(reason, extra) {
+        if (!_debugTelemetryEnabled || !_activePage || !_stageEl || !_stageShellEl || typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') return;
+
+        var activeFilter = getActiveFilter(_activePage);
+        var visualViewport = (typeof window !== 'undefined' && window.visualViewport) ? window.visualViewport : null;
+        var payload = {
+            reason: reason || 'layout_sync',
+            activePageId: _activePage.id,
+            activeFilterId: activeFilter ? activeFilter.id : null,
+            currentHotspotId: _currentHotspotId,
+            stageScale: roundLayoutValue(_stageScale),
+            contentFitScale: roundLayoutValue(_contentFitScale),
+            contentFitOffsetX: roundLayoutValue(_contentFitOffsetX),
+            contentFitOffsetY: roundLayoutValue(_contentFitOffsetY),
+            contentFitPadX: _contentFitPadX,
+            contentFitPadY: _contentFitPadY,
+            activeFitPresetId: _contentFitPresetId,
+            contentFitPreset: _contentFitPresetMeta,
+            stageViewportWidth: _stageViewportWidth,
+            stageViewportHeight: _stageViewportHeight,
+            compactMode: !!(_el && _el.classList.contains('is-compact')),
+            contentCoverageX: _contentBounds && _stageViewportWidth
+                ? roundLayoutValue((_contentBounds.w * _contentFitScale) / _stageViewportWidth)
+                : 0,
+            contentCoverageY: _contentBounds && _stageViewportHeight
+                ? roundLayoutValue((_contentBounds.h * _contentFitScale) / _stageViewportHeight)
+                : 0,
+            windowInnerWidth: (typeof window !== 'undefined' && window.innerWidth) ? window.innerWidth : 0,
+            windowInnerHeight: (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 0,
+            visualViewportWidth: visualViewport ? roundLayoutValue(visualViewport.width) : 0,
+            visualViewportHeight: visualViewport ? roundLayoutValue(visualViewport.height) : 0,
+            bodyClientWidth: _bodyEl ? _bodyEl.clientWidth : 0,
+            bodyClientHeight: _bodyEl ? _bodyEl.clientHeight : 0,
+            shellClientWidth: _stageShellEl ? _stageShellEl.clientWidth : 0,
+            shellClientHeight: _stageShellEl ? _stageShellEl.clientHeight : 0,
+            stageClientWidth: _stageEl ? _stageEl.clientWidth : 0,
+            stageClientHeight: _stageEl ? _stageEl.clientHeight : 0,
+            contentBounds: _contentBounds
+        };
+
+        if (extra) {
+            var key;
+            for (key in extra) {
+                if (Object.prototype.hasOwnProperty.call(extra, key)) {
+                    payload[key] = extra[key];
+                }
+            }
+        }
+
+        Bridge.send({
+            type: 'debug',
+            scope: 'map_layout',
+            payload: payload
+        });
+    }
+
     function initLayoutWatcher() {
         if (_layoutObserver || !_el || !_bodyEl) return;
 
         if (typeof ResizeObserver !== 'undefined') {
             _layoutObserver = new ResizeObserver(function() {
-                scheduleLayoutSync();
+                handleViewportLayoutChange('resize_observer');
             });
             _layoutObserver.observe(_el);
             _layoutObserver.observe(_bodyEl);
             if (_stageShellEl) _layoutObserver.observe(_stageShellEl);
+            if (_railEl) _layoutObserver.observe(_railEl);
         }
 
         if (!_windowResizeBound && typeof window !== 'undefined' && window.addEventListener) {
+            if (!_windowResizeHandler) {
+                _windowResizeHandler = function() {
+                    handleViewportLayoutChange('window_resize');
+                };
+            }
             _windowResizeBound = true;
-            window.addEventListener('resize', scheduleLayoutSync);
+            window.addEventListener('resize', _windowResizeHandler);
+        }
+        if (!_visualViewportResizeBound && typeof window !== 'undefined' && window.visualViewport && window.visualViewport.addEventListener) {
+            if (!_visualViewportResizeHandler) {
+                _visualViewportResizeHandler = function() {
+                    handleViewportLayoutChange('visual_viewport_resize');
+                };
+            }
+            _visualViewportResizeBound = true;
+            window.visualViewport.addEventListener('resize', _visualViewportResizeHandler);
         }
     }
 
-    function scheduleLayoutSync() {
-        if (!_activePage || !_bodyEl || !_stageEl || _layoutRaf) return;
+    function handleViewportLayoutChange(reason) {
+        var layoutReason = (typeof reason === 'string' && reason) ? reason : 'external_resize';
+        scheduleLayoutSync(layoutReason);
+        scheduleSettledLayoutSync(layoutReason + ':settled');
+    }
+
+    function scheduleLayoutSync(reason) {
+        if (!_activePage || !_bodyEl || !_stageEl) return;
+        _layoutPendingReason = (typeof reason === 'string' && reason) ? reason : (_layoutPendingReason || 'layout_sync');
+        if (_layoutRaf) return;
 
         _layoutRaf = (typeof requestAnimationFrame === 'function'
             ? requestAnimationFrame
             : function(cb) { return setTimeout(cb, 16); })(function() {
+                var layoutReason = _layoutPendingReason || 'layout_sync';
                 _layoutRaf = 0;
-                syncStageLayout();
+                _layoutPendingReason = '';
+                syncStageLayout(layoutReason);
             });
     }
 
-    function syncStageLayout() {
+    function scheduleSettledLayoutSync(reason) {
+        if (!_activePage || !_bodyEl || !_stageEl) return;
+        if (_layoutSettleTimer) {
+            clearTimeout(_layoutSettleTimer);
+        }
+        _layoutSettleTimer = setTimeout(function() {
+            _layoutSettleTimer = 0;
+            scheduleLayoutSync((typeof reason === 'string' && reason) ? reason : 'layout_settled');
+        }, 110);
+    }
+
+    function syncStageLayout(reason) {
         if (!_activePage || !_bodyEl || !_stageEl || !_stageShellEl) return;
 
         // shell 是 body 内 stage 的直接父容器 (与 rail 平铺), shell 的 contentBox 才是 stage 可用空间;
         // 直接读 body 会把 rail 宽度也算进去, 导致 stage 超出 shell 再回头引发横向/纵向溢出。
         var shellRect = _stageShellEl.getBoundingClientRect();
-        var availableWidth = Math.max(320, Math.floor(shellRect.width));
-        var availableHeight = Math.max(220, Math.floor(shellRect.height));
+        var bodyStyle = window.getComputedStyle ? window.getComputedStyle(_bodyEl) : null;
+        var bodyPaddingTop = bodyStyle ? (parseFloat(bodyStyle.paddingTop) || 0) : 0;
+        var bodyPaddingBottom = bodyStyle ? (parseFloat(bodyStyle.paddingBottom) || 0) : 0;
+        var bodyAvailableHeight = Math.max(0, (_bodyEl.clientHeight || 0) - bodyPaddingTop - bodyPaddingBottom);
+        var availableWidth = Math.max(320, Math.floor(_stageShellEl.clientWidth || shellRect.width));
+        var availableHeight = Math.max(220, Math.floor(Math.max(_stageShellEl.clientHeight || 0, shellRect.height || 0, bodyAvailableHeight)));
         var widthScale = availableWidth / _activePage.width;
         var heightScale = availableHeight / _activePage.height;
+        var maxStageScale = 1.3;
 
-        _stageScale = Math.min(widthScale, heightScale, 1);
+        _stageScale = Math.min(widthScale, heightScale, maxStageScale);
         if (!isFinite(_stageScale) || _stageScale <= 0) {
             _stageScale = 1;
         }
 
         _stageEl.style.width = Math.round(_activePage.width * _stageScale) + 'px';
         _stageEl.style.height = Math.round(_activePage.height * _stageScale) + 'px';
+        syncContentFit();
         _el.classList.toggle('is-compact', _stageScale < 0.985);
+        emitLayoutDiagnostic(reason || 'layout_sync', {
+            availableWidth: availableWidth,
+            availableHeight: availableHeight,
+            bodyAvailableHeight: roundLayoutValue(bodyAvailableHeight),
+            widthScale: roundLayoutValue(widthScale),
+            heightScale: roundLayoutValue(heightScale),
+            shellRect: describeDomRect(shellRect),
+            stageRect: describeDomRect(_stageEl.getBoundingClientRect()),
+            bodyRect: describeDomRect(_bodyEl.getBoundingClientRect())
+        });
     }
 
     function showError(errorText) {
@@ -1378,6 +1800,22 @@ function resolveFeedbackAnchor(item) {
             renderMode: _activePage && _activePage.renderMode ? _activePage.renderMode : 'background',
             sceneVisualCount: _sceneLayer ? _sceneLayer.querySelectorAll('.map-scene-node').length : 0,
             stageScale: _stageScale,
+            contentFitScale: _contentFitScale,
+            contentFitOffsetX: roundLayoutValue(_contentFitOffsetX),
+            contentFitOffsetY: roundLayoutValue(_contentFitOffsetY),
+            contentFitPadX: _contentFitPadX,
+            contentFitPadY: _contentFitPadY,
+            activeFitPresetId: _contentFitPresetId,
+            contentFitPreset: _contentFitPresetMeta,
+            contentBounds: _contentBounds,
+            stageViewportWidth: _stageViewportWidth,
+            stageViewportHeight: _stageViewportHeight,
+            contentCoverageX: _contentBounds && _stageViewportWidth
+                ? roundLayoutValue((_contentBounds.w * _contentFitScale) / _stageViewportWidth)
+                : 0,
+            contentCoverageY: _contentBounds && _stageViewportHeight
+                ? roundLayoutValue((_contentBounds.h * _contentFitScale) / _stageViewportHeight)
+                : 0,
             compactMode: !!(_el && _el.classList.contains('is-compact')),
             flashHintIds: _activePage ? MapPanelData.getPageFlashHints(_activePage.id).filter(function(item) {
                 return shouldRenderFlashHint(item);
@@ -1397,6 +1835,7 @@ function resolveFeedbackAnchor(item) {
         _debugGetState: getDebugState,
         _debugApplySnapshot: applySnapshot,
         _debugSetFilter: setActiveFilter,
-        _debugRequestSnapshot: requestSnapshot
+        _debugRequestSnapshot: requestSnapshot,
+        _debugSyncLayout: syncStageLayout
     };
 })();

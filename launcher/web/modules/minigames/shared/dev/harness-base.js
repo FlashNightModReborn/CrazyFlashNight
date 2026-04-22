@@ -7,6 +7,8 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function() {
     "use strict";
 
+    var root = typeof globalThis !== "undefined" ? globalThis : this;
+
     function parseQuery(search) {
         var out = {};
         var source = String(search || "").replace(/^\?/, "");

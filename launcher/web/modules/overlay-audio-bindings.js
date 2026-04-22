@@ -42,6 +42,8 @@
         if (fn) fn();
     });
 
+    // click cue 走 capture: 某些按钮会在自身 click handler 里立刻切 busy/disabled，
+    // 若等到 bubble 再判断 disabled，会把本该响的一次 cue 吞掉。
     document.addEventListener('click', function (e) {
         var t = e.target;
         if (!t || !t.closest) return;
@@ -49,5 +51,5 @@
         if (!el || el.disabled) return;
         var fn = cueFn(el.getAttribute('data-audio-cue'));
         if (fn) fn();
-    });
+    }, true);
 })();
