@@ -23,7 +23,7 @@ namespace CF7Launcher.Tasks
     ///   响应: { success: true, task: "archive", ... }
     ///      或 { success: false, task: "archive", error: "..." }
     /// </summary>
-    public class ArchiveTask : CF7Launcher.Save.IArchiveStateProbe
+    public class ArchiveTask : CF7Launcher.Save.IArchiveStateProbe, CF7Launcher.Save.IArchiveShadowWriter
     {
         private readonly string _savesDir;
         private readonly object _lock = new object();
@@ -64,9 +64,78 @@ namespace CF7Launcher.Tasks
             }
         }
 
+        public bool TrySeedShadowSync(string slot, JObject data, out string targetPath, out string error)
+        {
+            targetPath = null;
+            error = null;
+            if (data == null)
+            {
+                error = "missing data";
+                return false;
+            }
+
+            string safeName = SanitizeSlotName(slot);
+            string json = data.ToString(Formatting.None);
+            if (!TryWriteShadowAtomic(safeName, json, false, out targetPath, out error))
+                return false;
+
+            lock (_prevSnapshots)
+            {
+                _prevSnapshots[safeName] = data.DeepClone() as JObject;
+            }
+
+            LogManager.Log("[ArchiveTask] seed shadow saved: slot=" + safeName + " path=" + targetPath);
+            return true;
+        }
+
         /// <summary>
         /// 墓碑检查。SolResolver 专用，语义对齐 HandleLoad 的 tombstone 判定。
         /// </summary>
+        private bool TryWriteShadowAtomic(string safeName, string data, bool clearTombstone, out string targetPath, out string error)
+        {
+            targetPath = Path.Combine(_savesDir, safeName + ".json");
+            error = null;
+            string tmpPath = targetPath + ".tmp";
+            string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
+
+            lock (_lock)
+            {
+                if (!clearTombstone && File.Exists(tombPath))
+                {
+                    error = "slot_tombstoned";
+                    return false;
+                }
+
+                try
+                {
+                    File.WriteAllText(tmpPath, data, new UTF8Encoding(false));
+                    if (File.Exists(targetPath))
+                        File.Delete(targetPath);
+                    File.Move(tmpPath, targetPath);
+
+                    if (clearTombstone && File.Exists(tombPath))
+                    {
+                        File.Delete(tombPath);
+                        LogManager.Log("[ArchiveTask] Shadow cleared tombstone: " + safeName);
+                    }
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        if (File.Exists(tmpPath))
+                            File.Delete(tmpPath);
+                    }
+                    catch { }
+
+                    error = ex.Message;
+                    return false;
+                }
+            }
+        }
+
         public bool IsTombstoned(string slot)
         {
             string safe = SanitizeSlotName(slot);
@@ -198,8 +267,6 @@ namespace CF7Launcher.Tasks
                 return BuildError("missing data");
 
             string safeName = SanitizeSlotName(slot);
-            string targetPath = Path.Combine(_savesDir, safeName + ".json");
-            string tmpPath = targetPath + ".tmp";
             string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
 
             // Phase 2a userEdit 守卫：用户态编辑/导入（BootstrapMessageHandler 注入 userEdit:true）
@@ -229,26 +296,12 @@ namespace CF7Launcher.Tasks
                 warnings = RunConsistencyCheck(safeName, dataObj);
             }
 
-            lock (_lock)
-            {
-                // 原子写入：先写 .tmp 再 rename，防断电半写
-                File.WriteAllText(tmpPath, data, new System.Text.UTF8Encoding(false));
+            string writeError;
+            string writtenPath;
+            if (!TryWriteShadowAtomic(safeName, data, true, out writtenPath, out writeError))
+                return BuildError(writeError ?? "shadow write failed");
 
-                // Windows 上 File.Move 不允许目标已存在，先删再移
-                if (File.Exists(targetPath))
-                    File.Delete(targetPath);
-                File.Move(tmpPath, targetPath);
-
-                // 不变式 3 / 9：saveAll → shadow 成功后，是 launcher tombstone 的唯一安全清除路径
-                // 非 ACID，失败即抛（让调用方看到 exception，而非静默留下 inconsistent）
-                if (File.Exists(tombPath))
-                {
-                    File.Delete(tombPath);
-                    LogManager.Log("[ArchiveTask] Shadow cleared tombstone: " + safeName);
-                }
-            }
-
-            LogManager.Log("[ArchiveTask] Shadow saved: " + safeName + " (" + data.Length + " chars)");
+            LogManager.Log("[ArchiveTask] Shadow saved: " + safeName + " (" + data.Length + " chars) path=" + writtenPath);
 
             JObject result = new JObject();
             result["success"] = true;

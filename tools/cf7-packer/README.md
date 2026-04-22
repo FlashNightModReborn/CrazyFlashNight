@@ -92,7 +92,10 @@ npm run list-tags
 | flashswf/ | 编译后 .swf + 运行时资源（排除 XFL 源工程、.fla） |
 | sounds/ | 音效 SWF + BGM（排除版权音乐） |
 | config/ | 全量复制 |
-| root-files | .exe / .swf / config.xml 等根目录文件 |
+| root-files | 根目录运行时文件（Launcher 可执行文件、原生/托管 DLL、Flash Player、配置） |
+| launcher-web | Launcher WebView2 前端资源（bootstrap/overlay/config/assets/help/icons/data） |
+| launcher-scripts | V8 运行时 bundle（`launcher/scripts/dist/`） |
+| rapfi | 五子棋引擎与权重文件（`tools/rapfi/`） |
 | root-dirs | 字体、教程文件夹 |
 
 ## 架构

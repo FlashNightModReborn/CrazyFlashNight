@@ -61,43 +61,74 @@ echo     Target: !CACHE_DIR!\electron.zip
 if not exist "!CACHE_DIR!" mkdir "!CACHE_DIR!"
 set "ZIP_PATH=!CACHE_DIR!\electron.zip"
 
-:: Strategy 1: curl + mirror
+:: Pre-clean: delete any existing zip smaller than 50 MB (treat as corrupt / partial)
+:: This prevents previous failed runs from short-circuiting all 4 strategies
+:: (the legitimate zip is ~115 MB; any smaller file is guaranteed garbage)
+if exist "!ZIP_PATH!" (
+    for %%S in ("!ZIP_PATH!") do set "ZIP_SIZE=%%~zS"
+    if !ZIP_SIZE! LSS 52428800 (
+        echo     [!] Existing zip looks corrupt ^(!ZIP_SIZE! bytes^), removing...
+        del "!ZIP_PATH!" 2>nul
+    )
+)
+
+:: Helper macro concept: each strategy inlines its own size check.
+:: A "success" means curl/powershell exited 0 AND file is >= 50 MB.
+:: The legitimate zip is ~115 MB; anything smaller is garbage (HTML error page,
+:: partial/aborted download). We fall through to the next strategy on garbage.
+
+:: Strategy 1: curl + GitHub (primary — direct, no mirror)
 if exist "!ZIP_PATH!" goto :download_done
 where curl >nul 2>&1
-if errorlevel 1 goto :try_curl_github
-echo     [1/4] curl + npmmirror...
-curl -fSL --connect-timeout 15 --max-time 300 --retry 2 -o "!ZIP_PATH!" "!MIRROR_URL!" 2>nul
-if not errorlevel 1 goto :download_done
+if errorlevel 1 goto :try_curl_mirror
+echo     [1/4] curl + GitHub...
+curl -fSL --connect-timeout 15 --max-time 300 --retry 1 -o "!ZIP_PATH!" "!GITHUB_URL!" 2>nul
+if errorlevel 1 goto :s1_cleanup
+for %%S in ("!ZIP_PATH!") do set "ZIP_SIZE=%%~zS"
+if !ZIP_SIZE! GEQ 52428800 goto :download_done
+echo     [!] Strategy 1 file too small ^(!ZIP_SIZE! bytes^), trying next...
+:s1_cleanup
 del "!ZIP_PATH!" 2>nul
 
-:try_curl_github
-:: Strategy 2: curl + GitHub
+:try_curl_mirror
+:: Strategy 2: curl + npmmirror (fallback if GitHub blocked)
 if exist "!ZIP_PATH!" goto :download_done
 where curl >nul 2>&1
 if errorlevel 1 goto :try_ps_proxy
-echo     [2/4] curl + GitHub...
-curl -fSL --connect-timeout 15 --max-time 300 --retry 2 -o "!ZIP_PATH!" "!GITHUB_URL!" 2>nul
-if not errorlevel 1 goto :download_done
+echo     [2/4] curl + npmmirror...
+curl -fSL --connect-timeout 15 --max-time 300 --retry 1 -o "!ZIP_PATH!" "!MIRROR_URL!" 2>nul
+if errorlevel 1 goto :s2_cleanup
+for %%S in ("!ZIP_PATH!") do set "ZIP_SIZE=%%~zS"
+if !ZIP_SIZE! GEQ 52428800 goto :download_done
+echo     [!] Strategy 2 file too small ^(!ZIP_SIZE! bytes^), trying next...
+:s2_cleanup
 del "!ZIP_PATH!" 2>nul
 
 :try_ps_proxy
 :: Strategy 3: PowerShell + system proxy
 if exist "!ZIP_PATH!" goto :download_done
 echo     [3/4] PowerShell + system proxy...
-powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; try { (New-Object System.Net.WebClient).DownloadFile('!MIRROR_URL!', '!ZIP_PATH!') } catch { exit 1 }" 2>nul
-if not errorlevel 1 goto :download_done
+powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; try { (New-Object System.Net.WebClient).DownloadFile('!GITHUB_URL!', '!ZIP_PATH!') } catch { exit 1 }" 2>nul
+if errorlevel 1 goto :s3_cleanup
+for %%S in ("!ZIP_PATH!") do set "ZIP_SIZE=%%~zS"
+if !ZIP_SIZE! GEQ 52428800 goto :download_done
+echo     [!] Strategy 3 file too small ^(!ZIP_SIZE! bytes^), trying next...
+:s3_cleanup
 del "!ZIP_PATH!" 2>nul
 
-:: Strategy 4: PowerShell direct
+:: Strategy 4: PowerShell direct (no proxy)
 if exist "!ZIP_PATH!" goto :download_done
 echo     [4/4] PowerShell direct...
-powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; try { $wc = New-Object System.Net.WebClient; $wc.Proxy = [System.Net.GlobalProxySelection]::GetEmptyWebProxy(); $wc.DownloadFile('!MIRROR_URL!', '!ZIP_PATH!') } catch { exit 1 }" 2>nul
-if not errorlevel 1 goto :download_done
+powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; try { $wc = New-Object System.Net.WebClient; $wc.Proxy = [System.Net.GlobalProxySelection]::GetEmptyWebProxy(); $wc.DownloadFile('!GITHUB_URL!', '!ZIP_PATH!') } catch { exit 1 }" 2>nul
+if errorlevel 1 goto :s4_cleanup
+for %%S in ("!ZIP_PATH!") do set "ZIP_SIZE=%%~zS"
+if !ZIP_SIZE! GEQ 52428800 goto :download_done
+echo     [!] Strategy 4 file too small ^(!ZIP_SIZE! bytes^), giving up.
+:s4_cleanup
 del "!ZIP_PATH!" 2>nul
 
 :: All strategies failed
-if not exist "!ZIP_PATH!" goto :download_failed
-goto :download_done
+goto :download_failed
 
 :download_failed
 echo.

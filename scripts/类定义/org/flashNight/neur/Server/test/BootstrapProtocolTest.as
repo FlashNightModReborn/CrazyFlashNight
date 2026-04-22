@@ -225,7 +225,7 @@ class org.flashNight.neur.Server.test.BootstrapProtocolTest {
         var a1:Array = new Array();
         for (var i:Number = 0; i < 28; i++) a1.push(i);
         snap["1"] = a1;
-        snap["3"] = [];
+        snap["3"] = 0;
         snap["4"] = [0, 0];
         snap["5"] = [];
         snap["7"] = [0, 0, 0, 0, 0];

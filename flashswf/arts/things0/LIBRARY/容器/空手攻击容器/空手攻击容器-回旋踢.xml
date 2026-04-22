@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-回旋踢" itemID="699df8c4-00000bc2" linkageExportForAS="true" linkageIdentifier="空手攻击容器-回旋踢" lastModified="1776700044" lastUniqueIdentifier="1016">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-回旋踢" itemID="699df8c4-00000bc2" linkageExportForAS="true" linkageIdentifier="空手攻击容器-回旋踢" lastModified="1776886149" lastUniqueIdentifier="1070">
   <timeline>
-    <DOMTimeline name="空手攻击容器-回旋踢" currentFrame="21">
+    <DOMTimeline name="空手攻击容器-回旋踢" currentFrame="41">
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -913,7 +913,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -960,11 +960,8 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	var 自机 = _parent._parent;
-	if (自机._name == _root.控制目标)
-	{
-		_root.技能函数.回旋踢可派生搓招();
-	}
+	if (_parent._parent._name == _root.控制目标)
+	{_parent.连环踢可派生搓招();}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -5421,7 +5418,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" cacheAsBitmap="true" centerPoint3DX="34.4" centerPoint3DY="-59.05">
                   <matrix>
-                    <Matrix a="0.97119140625" b="0.171234130859375" c="-0.171234130859375" d="0.97119140625" tx="-4.95" ty="-5.5"/>
+                    <Matrix a="0.971176147460938" b="0.171234130859375" c="-0.171234130859375" d="0.971176147460938" tx="-4.95" ty="-5.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -5501,7 +5498,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                     <Matrix a="-0.6226806640625" b="-0.56109619140625" c="0.56109619140625" d="-0.6226806640625" tx="31.6" ty="55.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-1.95" y="3.05"/>
+                    <Point x="-2" y="3.05"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="60" blurY="0"/>
@@ -6835,16 +6832,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="动画" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="17.05" centerPoint3DY="-152.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="-132.7" centerPoint3DY="-146.4">
                   <matrix>
-                    <Matrix a="-0.0407257080078125" b="-0.848419189453125" c="0.848403930664063" d="-0.04071044921875" tx="-5.15" ty="-125.6"/>
+                    <Matrix a="-0.848907470703125" b="-0.0285797119140625" c="0.028594970703125" d="-0.848892211914063" tx="-107.55" ty="-122.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -6852,11 +6849,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="30.7" centerPoint3DY="-68.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-146.85" centerPoint3DY="-84.55">
                   <matrix>
-                    <Matrix a="0.34136962890625" b="-0.77679443359375" c="0.776779174804688" d="0.34136962890625" tx="-0.75" ty="-54.3"/>
+                    <Matrix a="-0.720199584960938" b="0.450286865234375" c="-0.450271606445313" d="-0.720199584960938" tx="-113.05" ty="-79"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-94.8" centerPoint3DY="2.05">
+                  <matrix>
+                    <Matrix a="-0.095367431640625" b="0.844009399414063" c="-0.843994140625" d="-0.095367431640625" tx="-69.7" ty="-21.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="103.7" centerPoint3DY="-64.15">
+                  <matrix>
+                    <Matrix a="0.843399047851563" b="-0.0927734375" c="0.0927734375" d="0.8433837890625" tx="75.9" ty="-84.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -6866,16 +6887,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF" locked="true">
+        <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="44.1" centerPoint3DY="-63.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-42.2" centerPoint3DY="-166">
                   <matrix>
-                    <Matrix a="-0.84490966796875" b="-0.0598907470703125" c="0.0598907470703125" d="-0.844894409179688" tx="-11.3" ty="-52.45"/>
+                    <Matrix a="-0.128570556640625" b="0.837203979492188" c="-0.837188720703125" d="-0.128570556640625" tx="-35.2" ty="-110.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -6883,11 +6904,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="15.15" centerPoint3DY="24.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-82.7" centerPoint3DY="-151.45">
                   <matrix>
-                    <Matrix a="-0.727890014648438" b="-0.431976318359375" c="0.431976318359375" d="-0.727890014648438" tx="-39.2" ty="10.15"/>
+                    <Matrix a="0.360809326171875" b="0.766326904296875" c="-0.766311645507813" d="0.360794067382813" tx="-46.3" ty="-109.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-107.45" centerPoint3DY="-89.8">
+                  <matrix>
+                    <Matrix a="0.824478149414063" b="0.194137573242188" c="-0.194122314453125" d="0.824447631835938" tx="-51.9" ty="-92.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="15.45" centerPoint3DY="-31.35">
+                  <matrix>
+                    <Matrix a="0.010162353515625" b="-0.846343994140625" c="0.846343994140625" d="0.010162353515625" tx="0.85" ty="-85.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -6897,16 +6942,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 6" color="#808080" locked="true">
+        <DOMLayer name="图层 6" color="#808080">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-23.4" centerPoint3DY="-78.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-62" centerPoint3DY="-100.2">
                   <matrix>
-                    <Matrix a="0.30352783203125" b="-0.789657592773438" c="0.789657592773438" d="0.30352783203125" tx="-92.55" ty="-78.8"/>
+                    <Matrix a="-0.76226806640625" b="-0.366897583007813" c="0.366897583007813" d="-0.76226806640625" tx="-68.1" ty="-31.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -6914,11 +6959,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-12.1" centerPoint3DY="-12.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-62.8" centerPoint3DY="-85.35">
                   <matrix>
-                    <Matrix a="0.842819213867188" b="-0.0709228515625" c="0.0709228515625" d="0.842819213867188" tx="-41.9" ty="-74.85"/>
+                    <Matrix a="-0.837234497070313" b="0.121261596679688" c="-0.121261596679688" d="-0.837234497070313" tx="-29.6" ty="-25.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-43.3" centerPoint3DY="-64.7">
+                  <matrix>
+                    <Matrix a="-0.425796508789063" b="0.730987548828125" c="-0.730987548828125" d="-0.425796508789063" tx="24" ty="-53.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="34.2" centerPoint3DY="-73.45">
+                  <matrix>
+                    <Matrix a="0.482833862304688" b="0.694427490234375" c="-0.694427490234375" d="0.482833862304688" tx="73.1" ty="-130.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -6928,16 +6997,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 7" color="#4F80FF" locked="true">
+        <DOMLayer name="图层 7" color="#4F80FF">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-13.15" centerPoint3DY="-35.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="-18.4" centerPoint3DY="-107.1">
                   <matrix>
-                    <Matrix a="0.689208984375" b="0.722732543945313" c="-0.722763061523438" d="0.689208984375" tx="-66.95" ty="5.25"/>
+                    <Matrix a="0.776504516601563" b="-0.62799072265625" c="0.627975463867188" d="0.77655029296875" tx="17.75" ty="-50.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -6945,11 +7014,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="1.2" centerPoint3DY="-12.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-30.55" centerPoint3DY="-115.8">
                   <matrix>
-                    <Matrix a="0.25439453125" b="0.96490478515625" c="-0.964950561523438" d="0.254425048828125" tx="-65.4" ty="-3.15"/>
+                    <Matrix a="0.293533325195313" b="-0.954559326171875" c="0.954559326171875" d="0.293563842773438" tx="31.25" ty="-89.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-46.95" centerPoint3DY="-108.85">
+                  <matrix>
+                    <Matrix a="-0.564865112304688" b="-0.823562622070313" c="0.8236083984375" d="-0.564849853515625" tx="12.25" ty="-140.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="41" centerPoint3DY="-62">
+                  <matrix>
+                    <Matrix a="-0.708419799804688" b="0.7027587890625" c="-0.702804565429688" d="-0.708450317382813" tx="-0.7" ty="-115.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -6959,16 +7052,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="139.85" centerPoint3DY="11.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="40.35" centerPoint3DY="-255.5">
                   <matrix>
-                    <Matrix a="0.849075317382813" b="-0.0723114013671875" c="0.07232666015625" d="0.849090576171875" tx="77.05" ty="-29.85"/>
+                    <Matrix a="-0.0028533935546875" b="-0.852142333984375" c="0.852157592773438" d="-0.0028533935546875" tx="-5.45" ty="-196.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -6976,11 +7069,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="66.45" centerPoint3DY="195.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-64.55" centerPoint3DY="-271.75">
                   <matrix>
-                    <Matrix a="0.683853149414063" b="0.506729125976563" c="-0.5067138671875" d="0.683883666992188" tx="46.6" ty="123.2"/>
+                    <Matrix a="-0.478164672851563" b="-0.705337524414063" c="0.705352783203125" d="-0.478179931640625" tx="-69.75" ty="-197.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-190.05" centerPoint3DY="-179.1">
+                  <matrix>
+                    <Matrix a="-0.849700927734375" b="-0.0642852783203125" c="0.0642852783203125" d="-0.849716186523438" tx="-135.6" ty="-129"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-107.3" centerPoint3DY="98.85">
+                  <matrix>
+                    <Matrix a="-0.096893310546875" b="0.845596313476563" c="-0.845611572265625" d="-0.0968780517578125" tx="-54.15" ty="45.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -6990,16 +7107,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 9" color="#4FFF4F" locked="true">
+        <DOMLayer name="图层 9" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="132.25" centerPoint3DY="57">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="85.4" centerPoint3DY="-243.9">
                   <matrix>
-                    <Matrix a="0.850204467773438" b="0.0018463134765625" c="-0.0018463134765625" d="0.850204467773438" tx="82.65" ty="60"/>
+                    <Matrix a="0.0711669921875" b="-0.847213745117188" c="0.847213745117188" d="0.0711669921875" tx="84.55" ty="-195"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7007,11 +7124,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="28.95" centerPoint3DY="213.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-20.85" centerPoint3DY="-287.45">
                   <matrix>
-                    <Matrix a="0.828323364257813" b="0.188156127929688" c="-0.188156127929688" d="0.828323364257813" tx="-20.2" ty="204.65"/>
+                    <Matrix a="-0.414016723632813" b="-0.742568969726563" c="0.742568969726563" d="-0.414016723632813" tx="5.85" ty="-246.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-174.65" centerPoint3DY="-222.95">
+                  <matrix>
+                    <Matrix a="-0.838973999023438" b="-0.137680053710938" c="0.137680053710938" d="-0.838973999023438" tx="-126.75" ty="-218.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-140.85" centerPoint3DY="74.95">
+                  <matrix>
+                    <Matrix a="0.251220703125" b="0.811416625976563" c="-0.8114013671875" d="0.251220703125" tx="-158.1" ty="28"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7021,16 +7162,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右大腿" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="右大腿" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="3.45" centerPoint3DY="-50.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-31.75" centerPoint3DY="-124.5">
                   <matrix>
-                    <Matrix a="-0.523330688476563" b="-0.719146728515625" c="0.71478271484375" d="-0.520156860351563" tx="-4.7" ty="31.6"/>
+                    <Matrix a="-0.759414672851563" b="0.462966918945313" c="-0.46014404296875" d="-0.754791259765625" tx="49.15" ty="-110.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7038,11 +7179,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="57.4" centerPoint3DY="52.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-51.55" centerPoint3DY="-123.2">
                   <matrix>
-                    <Matrix a="0.62811279296875" b="-0.6007080078125" c="0.598846435546875" d="0.626174926757813" tx="-22.45" ty="54.95"/>
+                    <Matrix a="-0.371505737304688" b="0.80810546875" c="-0.803176879882813" d="-0.369232177734375" tx="23.8" ty="-156.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-65.55" centerPoint3DY="-96.95">
+                  <matrix>
+                    <Matrix a="0.401702880859375" b="0.79351806640625" c="-0.788681030273438" d="0.399261474609375" tx="-45.05" ty="-176.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="12.55" centerPoint3DY="19.05">
+                  <matrix>
+                    <Matrix a="0.834274291992188" b="0.243606567382813" c="-0.24285888671875" d="0.831710815429688" tx="-29.55" ty="-48.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7052,16 +7217,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="左小腿" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="182.65" centerPoint3DY="31">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="62.8" centerPoint3DY="-297.05">
                   <matrix>
-                    <Matrix a="0.851974487304688" b="0.0431976318359375" c="-0.045318603515625" d="0.711578369140625" tx="114.6" ty="9.15"/>
+                    <Matrix a="0.112518310546875" b="-0.845611572265625" c="0.705520629882813" d="0.103179931640625" tx="36.45" ty="-231"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7069,11 +7234,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="150.95" centerPoint3DY="166.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-69.1" centerPoint3DY="-318.6">
                   <matrix>
-                    <Matrix a="0.582107543945313" b="0.621826171875" c="-0.575149536132813" d="0.529647827148438" tx="118.5" ty="102.05"/>
+                    <Matrix a="-0.378814697265625" b="-0.764328002929688" c="0.642913818359375" d="-0.308334350585938" tx="-54.15" ty="-249.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-230" centerPoint3DY="-204.75">
+                  <matrix>
+                    <Matrix a="-0.834091186523438" b="-0.178787231445313" c="0.158432006835938" d="-0.6951904296875" tx="-166.45" ty="-173.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="112.8" centerPoint3DY="117.45">
+                  <matrix>
+                    <Matrix a="0.582107543945313" b="0.621810913085938" c="-0.57513427734375" d="0.529632568359375" tx="80.7" ty="53.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7083,16 +7272,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF" locked="true">
+        <DOMLayer name="图层 12" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="156.05" centerPoint3DY="70.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="100.45" centerPoint3DY="-266.8">
                   <matrix>
-                    <Matrix a="0.828399658203125" b="0.171585083007813" c="-0.19915771484375" d="0.690963745117188" tx="111" ty="90.05"/>
+                    <Matrix a="0.238555908203125" b="-0.811660766601563" c="0.67242431640625" d="0.254837036132813" tx="116.8" ty="-220.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7100,11 +7289,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="96.35" centerPoint3DY="179.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-21.05" centerPoint3DY="-314.55">
                   <matrix>
-                    <Matrix a="0.466171264648438" b="0.708114624023438" c="-0.670272827148438" d="0.407623291015625" tx="48.7" ty="163.75"/>
+                    <Matrix a="-0.255294799804688" b="-0.806533813476563" c="0.700119018554688" d="-0.164047241210938" tx="18.25" ty="-285.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-196.45" centerPoint3DY="-239.9">
+                  <matrix>
+                    <Matrix a="-0.79034423828125" b="-0.301742553710938" c="0.3070068359375" d="-0.650253295898438" tx="-149.9" ty="-252.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="59.95" centerPoint3DY="104.5">
+                  <matrix>
+                    <Matrix a="0.757766723632813" b="0.380142211914063" c="-0.376663208007813" d="0.6881103515625" tx="10.9" ty="115.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7114,16 +7327,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左大腿" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="左大腿" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="69.4" centerPoint3DY="78.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="101.35" centerPoint3DY="-180.5">
                   <matrix>
-                    <Matrix a="-0.004150390625" b="-0.85101318359375" c="0.851699829101563" d="-0.004180908203125" tx="22.95" ty="12.6"/>
+                    <Matrix a="-0.848526000976563" b="-0.06524658203125" c="0.065277099609375" d="-0.849197387695313" tx="32.4" ty="-139.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7131,11 +7344,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="44.15" centerPoint3DY="134.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="27.7" centerPoint3DY="-243.65">
                   <matrix>
-                    <Matrix a="0.459716796875" b="-0.714920043945313" c="0.715194702148438" d="0.459930419921875" tx="40.65" ty="53.95"/>
+                    <Matrix a="-0.740371704101563" b="0.419662475585938" c="-0.420013427734375" d="-0.740936279296875" tx="-6.3" ty="-171.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-110.7" centerPoint3DY="-233.75">
+                  <matrix>
+                    <Matrix a="-0.131881713867188" b="0.840728759765625" c="-0.841400146484375" d="-0.1319580078125" tx="-75.4" ty="-162.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="6.3" centerPoint3DY="85.7">
+                  <matrix>
+                    <Matrix a="0.459716796875" b="-0.714889526367188" c="0.715194702148438" d="0.459915161132813" tx="2.9" ty="5.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7145,16 +7382,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 14" color="#808080" locked="true">
+        <DOMLayer name="图层 14" color="#808080">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="56.4" centerPoint3DY="6.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="28.9" centerPoint3DY="-173.15">
                   <matrix>
-                    <Matrix a="0.782928466796875" b="-0.405517578125" c="0.392120361328125" d="0.757034301757813" tx="-1" ty="14.85"/>
+                    <Matrix a="-0.340347290039063" b="-0.813369750976563" c="0.786468505859375" d="-0.329086303710938" tx="32.75" ty="-115.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7162,11 +7399,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="60.5" centerPoint3DY="58.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-28.3" centerPoint3DY="-197.15">
                   <matrix>
-                    <Matrix a="0.85858154296875" b="-0.12469482421875" c="0.12261962890625" d="0.84417724609375" tx="4.35" ty="47.5"/>
+                    <Matrix a="-0.73651123046875" b="-0.484725952148438" c="0.468704223632813" d="-0.712142944335938" tx="7.35" ty="-151.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-109.05" centerPoint3DY="-161.25">
+                  <matrix>
+                    <Matrix a="-0.837646484375" b="0.275192260742188" c="-0.266098022460938" d="-0.8099365234375" tx="-51.35" ty="-160.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="8.9" centerPoint3DY="24.8">
+                  <matrix>
+                    <Matrix a="0.537277221679688" b="0.681198120117188" c="-0.669754028320313" d="0.528274536132813" tx="-9.7" ty="-29.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7176,16 +7437,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF" locked="true">
+        <DOMLayer name="图层 15" color="#4F80FF">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-17.05" centerPoint3DY="-120.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="-102.95" centerPoint3DY="-110.15">
                   <matrix>
-                    <Matrix a="0.953689575195313" b="-0.159866333007813" c="0.159866333007813" d="0.953704833984375" tx="-64.35" ty="-137.2"/>
+                    <Matrix a="-0.0815887451171875" b="-0.963546752929688" c="0.963546752929688" d="-0.081573486328125" tx="-124.05" ty="-64.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7193,11 +7454,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="34.15" centerPoint3DY="-103.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-101.95" centerPoint3DY="-71.55">
                   <matrix>
-                    <Matrix a="0.950851440429688" b="0.17303466796875" c="-0.17303466796875" d="0.950851440429688" tx="-4.55" ty="-135.65"/>
+                    <Matrix a="-0.605697631835938" b="-0.7537841796875" c="0.753799438476563" d="-0.605682373046875" tx="-94.35" ty="-21.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-56.5" centerPoint3DY="-24.6">
+                  <matrix>
+                    <Matrix a="-0.966964721679688" b="0.00543212890625" c="-0.0054168701171875" d="-0.966964721679688" tx="-13.2" ty="-0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="136.1" centerPoint3DY="-78.95">
+                  <matrix>
+                    <Matrix a="0.325576782226563" b="0.90997314453125" c="-0.90997314453125" d="0.325576782226563" tx="144.45" ty="-128.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7207,16 +7492,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 16" color="#FF4F4F" locked="true">
+        <DOMLayer name="图层 16" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="98.75" centerPoint3DY="7.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="33.3" centerPoint3DY="-215.05">
                   <matrix>
-                    <Matrix a="0.786148071289063" b="-0.305984497070313" c="0.291885375976563" d="0.700698852539063" tx="-18.7" ty="-23.65"/>
+                    <Matrix a="-0.240875244140625" b="-0.808456420898438" c="0.72216796875" d="-0.233779907226563" tx="-7.1" ty="-100.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7224,11 +7509,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="98.85" centerPoint3DY="82.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-47.65" centerPoint3DY="-234.4">
                   <matrix>
-                    <Matrix a="0.847625732421875" b="0.0120086669921875" c="-0.0037689208984375" d="0.805450439453125" tx="2.3" ty="4.9"/>
+                    <Matrix a="-0.6512451171875" b="-0.53619384765625" c="0.46856689453125" d="-0.59716796875" tx="-17.6" ty="-117.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-150.45" centerPoint3DY="-168.45">
+                  <matrix>
+                    <Matrix a="-0.824905395507813" b="0.176437377929688" c="-0.176177978515625" d="-0.73834228515625" tx="-40.05" ty="-119.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="7.4" centerPoint3DY="69.95">
+                  <matrix>
+                    <Matrix a="0.413406372070313" b="0.740066528320313" c="-0.69940185546875" d="0.399459838867188" tx="26.15" ty="-52.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7238,16 +7547,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 17" color="#4FFF4F" locked="true">
+        <DOMLayer name="图层 17" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="108.85" centerPoint3DY="-159.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="-131.85" centerPoint3DY="-238.95">
                   <matrix>
-                    <Matrix a="0.991378784179688" b="0.0853271484375" c="-0.085357666015625" d="0.99139404296875" tx="-62.45" ty="-272.2"/>
+                    <Matrix a="0.165878295898438" b="-0.981109619140625" c="0.981109619140625" d="0.165908813476563" tx="-258.4" ty="-77.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7255,11 +7564,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="160.1" centerPoint3DY="-29.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-197.8" centerPoint3DY="-161.85">
                   <matrix>
-                    <Matrix a="0.844100952148438" b="0.524246215820313" c="-0.52423095703125" d="0.844100952148438" tx="58.5" ty="-207.05"/>
+                    <Matrix a="-0.41021728515625" b="-0.906539916992188" c="0.90655517578125" d="-0.410186767578125" tx="-213" ty="42.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-187.15" centerPoint3DY="-6.65">
+                  <matrix>
+                    <Matrix a="-0.964981079101563" b="-0.242645263671875" c="0.24267578125" d="-0.964981079101563" tx="-36.65" ty="132.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="134.75" centerPoint3DY="67.35">
+                  <matrix>
+                    <Matrix a="-0.031951904296875" b="0.993133544921875" c="-0.993118286132813" d="-0.0319366455078125" tx="237.8" ty="-109.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7269,16 +7602,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 18" color="#9933CC" locked="true">
+        <DOMLayer name="图层 18" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="68.2" centerPoint3DY="-50.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="-27.4" centerPoint3DY="-189.55">
                   <matrix>
-                    <Matrix a="0.735092163085938" b="0.676467895507813" c="-0.676467895507813" d="0.735092163085938" tx="13.2" ty="-10.45"/>
+                    <Matrix a="0.734130859375" b="-0.677459716796875" c="0.677459716796875" d="0.734130859375" tx="8.65" ty="-131.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7286,11 +7619,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="90.65" centerPoint3DY="13.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-83.6" centerPoint3DY="-179.15">
                   <matrix>
-                    <Matrix a="0.317062377929688" b="0.9462890625" c="-0.9462890625" d="0.317062377929688" tx="23.2" ty="22.55"/>
+                    <Matrix a="0.230758666992188" b="-0.971923828125" c="0.971923828125" d="0.230758666992188" tx="-21.65" ty="-151.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-129.8" centerPoint3DY="-106.6">
+                  <matrix>
+                    <Matrix a="-0.617523193359375" b="-0.785202026367188" c="0.785202026367188" d="-0.617523193359375" tx="-69.5" ty="-137.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="62.6" centerPoint3DY="28.85">
+                  <matrix>
+                    <Matrix a="-0.660964965820313" b="0.747726440429688" c="-0.747726440429688" d="-0.660964965820313" tx="21.3" ty="-25.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7300,16 +7657,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 19" color="#FF800A" locked="true">
+        <DOMLayer name="图层 19" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="23.35" centerPoint3DY="-151.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="-131.55" centerPoint3DY="-152.55">
                   <matrix>
-                    <Matrix a="-0.022491455078125" b="-0.847442626953125" c="0.847442626953125" d="-0.022491455078125" tx="21.15" ty="-115.85"/>
+                    <Matrix a="-0.846435546875" b="-0.0466766357421875" c="0.0466766357421875" d="-0.846435546875" tx="-95.8" ty="-148"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7317,11 +7674,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="74.55" centerPoint3DY="-95.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-149.35" centerPoint3DY="-90.8">
                   <matrix>
-                    <Matrix a="-0.022491455078125" b="-0.847442626953125" c="0.847442626953125" d="-0.022491455078125" tx="72.35" ty="-59.45"/>
+                    <Matrix a="-0.728256225585938" b="0.43389892578125" c="-0.43389892578125" d="-0.728256225585938" tx="-117.5" ty="-106.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-101.05" centerPoint3DY="0.65">
+                  <matrix>
+                    <Matrix a="-0.113204956054688" b="0.840118408203125" c="-0.840118408203125" d="-0.113204956054688" tx="-94.1" ty="-35.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="149.2" centerPoint3DY="-39.75">
+                  <matrix>
+                    <Matrix a="0.72265625" b="-0.443206787109375" c="0.443206787109375" d="0.72265625" tx="116.95" ty="-23.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7331,16 +7712,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小臂" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="右小臂" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="49.85" centerPoint3DY="-99.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="-77.65" centerPoint3DY="-174.8">
                   <matrix>
-                    <Matrix a="-0.813674926757813" b="-0.23455810546875" c="0.179458618164063" d="-0.622528076171875" tx="7.65" ty="-59.1"/>
+                    <Matrix a="-0.30010986328125" b="0.791839599609375" c="-0.605819702148438" d="-0.2296142578125" tx="-40.25" ty="-129.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7348,11 +7729,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="101.05" centerPoint3DY="-43.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-117.3" centerPoint3DY="-138.95">
                   <matrix>
-                    <Matrix a="-0.813674926757813" b="-0.23455810546875" c="0.179458618164063" d="-0.622528076171875" tx="58.85" ty="-2.7"/>
+                    <Matrix a="0.19317626953125" b="0.824478149414063" c="-0.630783081054688" d="0.147781372070313" tx="-61.35" ty="-122.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-119.6" centerPoint3DY="-55.15">
+                  <matrix>
+                    <Matrix a="0.765731811523438" b="0.361557006835938" c="-0.276611328125" d="0.585830688476563" tx="-71.7" ty="-89.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="117.55" centerPoint3DY="9.15">
+                  <matrix>
+                    <Matrix a="-0.203704833984375" b="-0.821929931640625" c="0.628860473632813" d="-0.155853271484375" tx="61.05" ty="-7.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7362,16 +7767,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 21" color="#4FFFFF" locked="true">
+        <DOMLayer name="图层 21" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="47.45" centerPoint3DY="-131.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-109.4" centerPoint3DY="-175">
                   <matrix>
-                    <Matrix a="0.751220703125" b="-0.388046264648438" c="0.317001342773438" d="0.61376953125" tx="-20.6" ty="-113.3"/>
+                    <Matrix a="-0.325515747070313" b="-0.780349731445313" c="0.637557983398438" d="-0.265899658203125" tx="-96.6" ty="-106.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7379,11 +7784,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="101.15" centerPoint3DY="-91.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-143.9" centerPoint3DY="-121.7">
                   <matrix>
-                    <Matrix a="0.778594970703125" b="-0.327239990234375" c="0.267349243164063" d="0.636093139648438" tx="31.95" ty="-78.7"/>
+                    <Matrix a="-0.705764770507813" b="-0.465606689453125" c="0.380447387695313" d="-0.576568603515625" tx="-94.85" ty="-71.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-121.85" centerPoint3DY="-23.3">
+                  <matrix>
+                    <Matrix a="-0.803558349609375" b="0.263015747070313" c="-0.214859008789063" d="-0.656524658203125" tx="-52.5" ty="-31"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="159.35" centerPoint3DY="-14.75">
+                  <matrix>
+                    <Matrix a="0.672698974609375" b="0.510650634765625" c="-0.41717529296875" d="0.549575805664063" tx="113.4" ty="-68.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7393,16 +7822,16 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 22" color="#808080" locked="true">
+        <DOMLayer name="图层 22" color="#808080">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="2" keyMode="15872">
+            <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="87.8" centerPoint3DY="-49">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="-24.05" centerPoint3DY="-208.65">
                   <matrix>
-                    <Matrix a="-0.584030151367188" b="-0.8018798828125" c="-0.8018798828125" d="0.584030151367188" tx="-42.2" ty="26.65"/>
+                    <Matrix a="-0.8468017578125" b="0.516693115234375" c="0.516693115234375" d="0.8468017578125" tx="41.05" ty="-73.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -7410,11 +7839,35 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="93.25" centerPoint3DY="27.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-91.5" centerPoint3DY="-197">
                   <matrix>
-                    <Matrix a="-0.240264892578125" b="-0.961700439453125" c="-0.961700439453125" d="0.240264892578125" tx="-55.5" ty="49.15"/>
+                    <Matrix a="-0.41400146484375" b="0.901473999023438" c="0.901473999023438" d="0.41400146484375" tx="37.75" ty="-121.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-148.55" centerPoint3DY="-110.8">
+                  <matrix>
+                    <Matrix a="0.4483642578125" b="0.884857177734375" c="0.884857177734375" d="-0.4483642578125" tx="-8.85" ty="-165.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="51.95" centerPoint3DY="37.85">
+                  <matrix>
+                    <Matrix a="0.71270751953125" b="-0.688919067382813" c="-0.688919067382813" d="-0.71270751953125" tx="-41.05" ty="-80.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

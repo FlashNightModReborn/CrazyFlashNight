@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Map Panel Harness</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="../../../../css/panels.css">
+<link rel="stylesheet" href="../../../css/panels.css">
 <link rel="stylesheet" href="../../minigames/shared/dev/harness-base.css">
 <link rel="stylesheet" href="./harness.css">
 </head>
@@ -86,6 +86,7 @@
 <script src="../../minigames/shared/dev/harness-base.js"></script>
 <script src="../../map-avatar-source-data.js"></script>
 <script src="../../map-panel-data.js"></script>
+<script src="../../map-fit-presets.js"></script>
 <script>
 window.Toast = {
     messages: [],
@@ -96,7 +97,28 @@ window.Toast = {
         this.messages = [];
     }
 };
+// BootstrapAudio 存根: 用计数器代替实际 Web Audio, 让 overlay click 代理能被单次触发断言
+window.BootstrapAudio = (function() {
+    var counts = {};
+    var api = {
+        _counts: counts,
+        _resetCounts: function() { for (var k in counts) delete counts[k]; },
+        init: function() {},
+        resume: function() {},
+        setSfxEnabled: function() {},
+        setAmbientEnabled: function() {},
+        isSfxEnabled: function() { return true; },
+        isAmbientEnabled: function() { return false; },
+        startAmbient: function() {},
+        stopAmbient: function() {}
+    };
+    ['Hover','Click','Select','Confirm','Cancel','Error','Ready','Transition','ModalOpen','Success'].forEach(function(n) {
+        api['play' + n] = function() { counts[n] = (counts[n] || 0) + 1; };
+    });
+    return api;
+})();
 </script>
+<script src="../../overlay-audio-bindings.js"></script>
 <script src="../../map-panel.js"></script>
 <script src="./qa-suite.js"></script>
 <script>
@@ -119,9 +141,26 @@ window.Toast = {
             .filter(Boolean);
     }
 
+    function resolvePageIdForHotspotId(hotspotId) {
+        var pageOrder = MapPanelData.getPageOrder();
+        var i;
+        var j;
+        for (i = 0; i < pageOrder.length; i += 1) {
+            var page = MapPanelData.getPage(pageOrder[i]);
+            var hotspots = page && page.hotspots ? page.hotspots : [];
+            for (j = 0; j < hotspots.length; j += 1) {
+                if (hotspots[j] && hotspots[j].id === hotspotId) {
+                    return page.id;
+                }
+            }
+        }
+        return '';
+    }
+
     var host = window.MapHarnessHost = {
         state: {
             defaultPageId: query.page || 'base',
+            currentHotspotId: query.currentHotspotId || '',
             roommateGender: query.gender || 'male',
             disabledIds: parseIds(query.disabled),
             lockedGroups: parseIds(query.lockedGroups),
@@ -159,6 +198,7 @@ window.Toast = {
         getState: function() {
             return {
                 defaultPageId: this.state.defaultPageId,
+                currentHotspotId: this.state.currentHotspotId,
                 roommateGender: this.state.roommateGender,
                 disabledIds: this.state.disabledIds.slice(),
                 lockedGroups: this.state.lockedGroups.slice(),
@@ -177,7 +217,9 @@ window.Toast = {
             var disabledLookup = {};
             var unlocks = MapPanelData.normalizeUnlockFlags({});
             var i;
-            var currentPage = MapPanelData.getPage(this.state.defaultPageId);
+            var requestedHotspotId = this.state.currentHotspotId || '';
+            var currentPageId = resolvePageIdForHotspotId(requestedHotspotId) || this.state.defaultPageId;
+            var currentPage = MapPanelData.getPage(currentPageId);
             var currentHotspotId = '';
             var hotspotStates;
             var enabledHotspotIds;
@@ -202,16 +244,21 @@ window.Toast = {
                     enabledHotspotIds.push(id);
                 }
             }
+            if (requestedHotspotId && hotspotStates[requestedHotspotId] && hotspotStates[requestedHotspotId].enabled) {
+                currentHotspotId = requestedHotspotId;
+            }
             for (i = 0; i < (currentPage.hotspots || []).length; i += 1) {
+                if (currentHotspotId) break;
                 if (hotspotStates[currentPage.hotspots[i].id] && hotspotStates[currentPage.hotspots[i].id].enabled) {
                     currentHotspotId = currentPage.hotspots[i].id;
                     break;
                 }
             }
+            currentPageId = resolvePageIdForHotspotId(currentHotspotId) || currentPageId;
             return {
                 version: 2,
-                defaultPageId: this.state.defaultPageId,
-                regionId: this.state.defaultPageId,
+                defaultPageId: currentPageId,
+                regionId: currentPageId,
                 currentHotspotId: currentHotspotId,
                 unlocks: unlocks,
                 hotspotStates: hotspotStates,
@@ -222,14 +269,14 @@ window.Toast = {
                 markers: currentHotspotId ? [{
                     id: 'current_location',
                     kind: 'currentLocation',
-                    pageId: this.state.defaultPageId,
+                    pageId: currentPageId,
                     hotspotId: currentHotspotId,
                     label: '当前位置',
                     tone: 'accent'
                 }] : [],
                 tips: currentHotspotId ? [{
                     id: 'current_scene',
-                    pageId: this.state.defaultPageId,
+                    pageId: currentPageId,
                     hotspotId: currentHotspotId,
                     label: '当前位置',
                     tone: 'accent'

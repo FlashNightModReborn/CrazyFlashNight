@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-破极拳1连招" lastModified="1776605942" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" lastModified="1776866048" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="空手攻击容器-破极拳1连招" currentFrame="58">
       <layers>
-        <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="连段标识" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" name="破极拳1连招" labelType="name" keyMode="9728">
               <elements/>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -204,7 +204,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
@@ -267,7 +267,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -789,7 +789,7 @@
             </DOMFrame>
             <DOMFrame index="49" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="-59.8" centerPoint3DY="0.95">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" selected="true" centerPoint3DX="-59.8" centerPoint3DY="0.95">
                   <matrix>
                     <Matrix a="5.53178405761719" d="4.15505981445313" tx="-58.55" ty="-0.6"/>
                   </matrix>
@@ -920,7 +920,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1023,7 +1023,7 @@
             </DOMFrame>
             <DOMFrame index="49" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="118.55" centerPoint3DY="244.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="118.55" centerPoint3DY="244.75">
                   <matrix>
                     <Matrix a="2.16769409179688" d="2.16769409179688" tx="91.15" ty="217.3"/>
                   </matrix>
@@ -1044,7 +1044,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1153,7 +1153,7 @@
             </DOMFrame>
             <DOMFrame index="49" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气流特效/气流" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效/气流特效/气流" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.7100830078125" b="-0.19403076171875" c="0.191986083984375" d="-1.69181823730469" tx="-107.65" ty="-37.5"/>
                   </matrix>
@@ -1186,14 +1186,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 8" color="#FF4F4F" locked="true">
+        <DOMLayer name="图层 8" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -1586,7 +1586,7 @@
             </DOMFrame>
             <DOMFrame index="49" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 217" blendMode="overlay" centerPoint3DX="321.7" centerPoint3DY="-75.35">
+                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 217" selected="true" blendMode="overlay" centerPoint3DX="321.7" centerPoint3DY="-75.35">
                   <matrix>
                     <Matrix a="1.29580688476563" d="4.04400634765625" tx="250.1" ty="209.95"/>
                   </matrix>
@@ -1594,7 +1594,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/上勾拳特效组件/shape 1048" blendMode="overlay" centerPoint3DX="262.95" centerPoint3DY="-65.35">
+                <DOMSymbolInstance libraryItemName="特效/上勾拳特效组件/shape 1048" selected="true" blendMode="overlay" centerPoint3DX="262.95" centerPoint3DY="-65.35">
                   <matrix>
                     <Matrix a="0" b="-5.01969909667969" c="1.60842895507813" d="0" tx="305.6" ty="-102.1"/>
                   </matrix>
@@ -1602,7 +1602,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 210" blendMode="overlay" centerPoint3DX="161.05" centerPoint3DY="-91.95">
+                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 210" selected="true" blendMode="overlay" centerPoint3DX="161.05" centerPoint3DY="-91.95">
                   <matrix>
                     <Matrix a="1.92535400390625" d="4.04400634765625" tx="191.75" ty="193.45"/>
                   </matrix>
@@ -1610,7 +1610,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b107" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b107" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0" b="2.16964721679688" c="-1.17910766601563" d="0" tx="146.9" ty="-67.85"/>
                   </matrix>
@@ -1717,14 +1717,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="腕刃反转标签" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="腕刃反转标签" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 10" color="#9933CC" locked="true">
+        <DOMLayer name="图层 10" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1767,7 +1767,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 11" color="#FF800A" locked="true">
+        <DOMLayer name="图层 11" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1813,7 +1813,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF" locked="true">
+        <DOMLayer name="图层 12" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1859,7 +1859,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF" locked="true">
+        <DOMLayer name="图层 13" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -8656,7 +8656,7 @@
             </DOMFrame>
             <DOMFrame index="49" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="50.45" centerPoint3DY="-107.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="50.45" centerPoint3DY="-107.35">
                   <matrix>
                     <Matrix a="-0.792205810546875" b="0.2232666015625" c="0.2232666015625" d="0.792205810546875" tx="104.05" ty="-153.15"/>
                   </matrix>
@@ -8667,7 +8667,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="143.4" centerPoint3DY="-122.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="143.4" centerPoint3DY="-122.95">
                   <matrix>
                     <Matrix a="-0.385101318359375" b="-0.675537109375" c="-0.675537109375" d="0.385101318359375" tx="126.55" ty="-72.85"/>
                   </matrix>
@@ -8678,7 +8678,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="76.5" centerPoint3DY="-48.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="76.5" centerPoint3DY="-48.25">
                   <matrix>
                     <Matrix a="-0.79656982421875" b="0.11700439453125" c="0.11700439453125" d="0.79656982421875" tx="44.25" ty="-35.2"/>
                   </matrix>
@@ -8689,7 +8689,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="102.2" centerPoint3DY="49.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="102.2" centerPoint3DY="49.65">
                   <matrix>
                     <Matrix a="-0.63323974609375" b="-0.566390991210938" c="-0.566390991210938" d="0.63323974609375" tx="143.9" ty="-23.6"/>
                   </matrix>
@@ -8700,7 +8700,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="117.8" centerPoint3DY="9.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="117.8" centerPoint3DY="9.9">
                   <matrix>
                     <Matrix a="-0.85333251953125" b="0.0519866943359375" c="0.0519866943359375" d="0.85333251953125" tx="163.9" ty="-26"/>
                   </matrix>
@@ -8711,7 +8711,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-83.2" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-83.2" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix a="-0.81072998046875" b="-0.0465850830078125" c="-0.0465850830078125" d="0.81072998046875" tx="-42.6" ty="214.3"/>
                   </matrix>
@@ -8722,7 +8722,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="10.35" centerPoint3DY="150.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="10.35" centerPoint3DY="150.5">
                   <matrix>
                     <Matrix a="-0.72308349609375" b="-0.41278076171875" c="-0.41278076171875" d="0.72308349609375" tx="48.5" ty="82.85"/>
                   </matrix>
@@ -8733,7 +8733,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="120.45" centerPoint3DY="42.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="120.45" centerPoint3DY="42.25">
                   <matrix>
                     <Matrix a="-0.836471557617188" b="-0.15460205078125" c="-0.15460205078125" d="0.836471557617188" tx="177.45" ty="-18.1"/>
                   </matrix>
@@ -8744,7 +8744,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="234.7" centerPoint3DY="243.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="234.7" centerPoint3DY="243.1">
                   <matrix>
                     <Matrix a="-0.76031494140625" b="0.308013916015625" c="0.308013916015625" d="0.76031494140625" tx="261.3" ty="200.7"/>
                   </matrix>
@@ -8755,7 +8755,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="158.75" centerPoint3DY="198.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="158.75" centerPoint3DY="198.85">
                   <matrix>
                     <Matrix a="-0.47442626953125" b="0.6900634765625" c="0.6900634765625" d="0.47442626953125" tx="138.2" ty="124.7"/>
                   </matrix>
@@ -8766,7 +8766,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="137.9" centerPoint3DY="55.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="137.9" centerPoint3DY="55.25">
                   <matrix>
                     <Matrix a="-0.848876953125" b="0.018829345703125" c="0.018829345703125" d="0.848876953125" tx="158.75" ty="-64.35"/>
                   </matrix>
@@ -8777,7 +8777,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="127.85" centerPoint3DY="-177.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="127.85" centerPoint3DY="-177.35">
                   <matrix>
                     <Matrix a="-0.946441650390625" b="0.0434417724609375" c="0.0434417724609375" d="0.946441650390625" tx="149.75" ty="-220.85"/>
                   </matrix>
@@ -8788,7 +8788,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="144.4" centerPoint3DY="-188.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="144.4" centerPoint3DY="-188.6">
                   <matrix>
                     <Matrix a="-0.612518310546875" b="0.55255126953125" c="-0.53985595703125" d="-0.598373413085938" tx="207.85" ty="-159.15"/>
                   </matrix>
@@ -8799,7 +8799,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="152.25" centerPoint3DY="-159.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="152.25" centerPoint3DY="-159.2">
                   <matrix>
                     <Matrix a="0.655197143554688" b="0.42352294921875" c="0.42352294921875" d="-0.655197143554688" tx="159.55" ty="-211.9"/>
                   </matrix>
@@ -8810,7 +8810,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="187.4" centerPoint3DY="-271.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="187.4" centerPoint3DY="-271.65">
                   <matrix>
                     <Matrix a="0.7137451171875" b="-0.31842041015625" c="-0.31842041015625" d="-0.7137451171875" tx="213.35" ty="-291.9"/>
                   </matrix>
@@ -9659,7 +9659,7 @@
             </DOMFrame>
             <DOMFrame index="56" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-54.45" centerPoint3DY="-49.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="-54.45" centerPoint3DY="-49.15">
                   <matrix>
                     <Matrix a="-0.85333251953125" b="0.0519866943359375" c="0.0519866943359375" d="0.85333251953125" tx="-8.35" ty="-85.05"/>
                   </matrix>
@@ -9667,7 +9667,7 @@
                     <Point x="0.15" y="-0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-45.7" centerPoint3DY="-1.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="-45.7" centerPoint3DY="-1.1">
                   <matrix>
                     <Matrix a="-0.77716064453125" b="-0.3436279296875" c="-0.3436279296875" d="0.77716064453125" tx="-28.8" ty="-83.35"/>
                   </matrix>
@@ -9675,7 +9675,7 @@
                     <Point x="0.4" y="3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-93.35" centerPoint3DY="244.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-93.35" centerPoint3DY="244.55">
                   <matrix>
                     <Matrix a="-0.80841064453125" b="0.14947509765625" c="0.14947509765625" d="0.80841064453125" tx="-60.9" ty="205.9"/>
                   </matrix>
@@ -9683,7 +9683,7 @@
                     <Point x="-0.15" y="2.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-73.25" centerPoint3DY="127.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-73.25" centerPoint3DY="127.3">
                   <matrix>
                     <Matrix a="-0.818084716796875" b="0.1834716796875" c="0.1834716796875" d="0.818084716796875" tx="-90.55" ty="51.3"/>
                   </matrix>
@@ -9691,7 +9691,7 @@
                     <Point x="1.4" y="3.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-39.65" centerPoint3DY="-7.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-39.65" centerPoint3DY="-7.75">
                   <matrix>
                     <Matrix a="-0.850875854492188" b="-0.00396728515625" c="-0.00396728515625" d="0.850875854492188" tx="5.95" ty="-77.05"/>
                   </matrix>
@@ -9699,7 +9699,7 @@
                     <Point x="-1.55" y="2.35"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="37.7" centerPoint3DY="232.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="37.7" centerPoint3DY="232.65">
                   <matrix>
                     <Matrix a="-0.81304931640625" b="0.150985717773438" c="0.150985717773438" d="0.81304931640625" tx="72.45" ty="196.35"/>
                   </matrix>
@@ -9707,7 +9707,7 @@
                     <Point x="-1.6" y="2.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-18" centerPoint3DY="143.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-18" centerPoint3DY="143.05">
                   <matrix>
                     <Matrix a="-0.727523803710938" b="0.422042846679688" c="0.422042846679688" d="0.727523803710938" tx="-4.75" ty="67.25"/>
                   </matrix>
@@ -9715,7 +9715,7 @@
                     <Point x="1.05" y="2.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-150.25" centerPoint3DY="-185.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-150.25" centerPoint3DY="-185.35">
                   <matrix>
                     <Matrix a="-0.825119018554688" b="-0.05792236328125" c="-0.05792236328125" d="0.825119018554688" tx="-84.05" ty="-210.5"/>
                   </matrix>
@@ -9723,7 +9723,7 @@
                     <Point x="0.5" y="-0.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-103.4" centerPoint3DY="-184.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="-103.4" centerPoint3DY="-184.3">
                   <matrix>
                     <Matrix a="-0.659530639648438" b="-0.42742919921875" c="-0.42742919921875" d="0.659530639648438" tx="-95.25" ty="-131.55"/>
                   </matrix>
@@ -9731,7 +9731,7 @@
                     <Point x="-1" y="2.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-127" centerPoint3DY="-89.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="-127" centerPoint3DY="-89.1">
                   <matrix>
                     <Matrix a="-0.663742065429688" b="0.46856689453125" c="0.46856689453125" d="0.663742065429688" tx="-150" ty="-62.65"/>
                   </matrix>
@@ -9739,7 +9739,7 @@
                     <Point x="0.1" y="-0.15"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-22.85" centerPoint3DY="-3.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="-22.85" centerPoint3DY="-3.05">
                   <matrix>
                     <Matrix a="-0.842514038085938" b="0.1072998046875" c="0.1072998046875" d="0.842514038085938" tx="-14.65" ty="-124.3"/>
                   </matrix>
@@ -9747,7 +9747,7 @@
                     <Point x="9.4" y="14.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-54.25" centerPoint3DY="-227.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="-54.25" centerPoint3DY="-227.65">
                   <matrix>
                     <Matrix a="-0.9400634765625" b="0.146896362304688" c="0.146896362304688" d="0.9400634765625" tx="-37.1" ty="-273.45"/>
                   </matrix>
@@ -9755,7 +9755,7 @@
                     <Point x="-0.8" y="-3.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="100.65" centerPoint3DY="-172">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="100.65" centerPoint3DY="-172">
                   <matrix>
                     <Matrix a="0.79583740234375" b="-0.23345947265625" c="0.22808837890625" d="0.77752685546875" tx="55.7" ty="-226.1"/>
                   </matrix>
@@ -9763,7 +9763,7 @@
                     <Point x="1.5" y="-1.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="84.85" centerPoint3DY="-200.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="84.85" centerPoint3DY="-200.5">
                   <matrix>
                     <Matrix a="-0.6617431640625" b="-0.451950073242188" c="-0.451950073242188" d="0.6617431640625" tx="75.95" ty="-146.35"/>
                   </matrix>
@@ -9771,7 +9771,7 @@
                     <Point x="-1.7" y="0.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="42.7" centerPoint3DY="-93.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="42.7" centerPoint3DY="-93.5">
                   <matrix>
                     <Matrix a="-0.638763427734375" b="0.473175048828125" c="0.473175048828125" d="0.638763427734375" tx="21.35" ty="-67.65"/>
                   </matrix>
@@ -9783,7 +9783,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 14" color="#808080" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 14" color="#808080">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -9798,7 +9798,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.48828125"/>
+                    <Color tintMultiplier="1"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9808,7 +9808,7 @@
             </DOMFrame>
             <DOMFrame index="10" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/残影2" centerPoint3DX="16" centerPoint3DY="31.05">
+                <DOMSymbolInstance libraryItemName="特效/幻影/残影2" selected="true" centerPoint3DX="16" centerPoint3DY="31.05">
                   <matrix>
                     <Matrix a="1.33248901367188" d="1.17771911621094" tx="-438.85" ty="-282.85"/>
                   </matrix>
@@ -9819,7 +9819,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.48828125"/>
+                    <Color tintMultiplier="1"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9840,7 +9840,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.48828125"/>
+                    <Color tintMultiplier="1"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9861,7 +9861,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.48828125"/>
+                    <Color tintMultiplier="1"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9871,7 +9871,7 @@
             </DOMFrame>
             <DOMFrame index="47" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/残影5" centerPoint3DX="-83.3" centerPoint3DY="34.4">
+                <DOMSymbolInstance libraryItemName="特效/幻影/残影5" selected="true" centerPoint3DX="-83.3" centerPoint3DY="34.4">
                   <matrix>
                     <Matrix a="1.21092224121094" d="1.17521667480469" tx="-370.1" ty="-266.15"/>
                   </matrix>
@@ -9882,7 +9882,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.48828125"/>
+                    <Color tintMultiplier="1"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9892,7 +9892,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF" locked="true">
+        <DOMLayer name="图层 15" color="#4F80FF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -10147,7 +10147,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 16" color="#FF4F4F" locked="true">
+        <DOMLayer name="图层 16" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -10172,7 +10172,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 33" color="#4FFF4F" locked="true">
+        <DOMLayer name="图层 33" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -10239,11 +10239,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="影子" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" selected="true" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>

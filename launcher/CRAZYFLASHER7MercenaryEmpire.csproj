@@ -120,6 +120,8 @@
     <Compile Include="src\Save\NativeSolParser.cs" />
     <Compile Include="src\Save\ISolFileLocator.cs" />
     <Compile Include="src\Save\IArchiveStateProbe.cs" />
+    <Compile Include="src\Save\IArchiveShadowWriter.cs" />
+    <Compile Include="src\Save\LegacyPresetSlotSeeder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

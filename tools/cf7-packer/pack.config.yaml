@@ -87,12 +87,16 @@ layers:
       - "*/PublishSettings.xml"
       - "*/MobileSettings.xml"
       - "*.swf"
+      # 音乐包独立外置（与 cf7-packer/README 口径对齐，避免 **/*.mp3 等通配误收）
+      - "music/**"
 
   - name: config
     description: "运行时配置"
     source: "config/"
     include: [ "**/*" ]
-    exclude: []
+    exclude:
+      # 开发文档，不随发行包分发
+      - "**/*.md"
 
   - name: root-files
     description: "根目录可执行文件、DLL 与配置"
@@ -110,6 +114,8 @@ layers:
       - "Newtonsoft.Json.dll"
       # miniaudio 原生音频引擎
       - "miniaudio.dll"
+      # Rust SOL 解析器（Protocol 2 存档决议硬依赖）
+      - "sol_parser.dll"
       # SharpDX（D3D overlay 渲染）
       - "SharpDX.dll"
       - "SharpDX.DXGI.dll"
@@ -126,6 +132,8 @@ layers:
       # 配置
       - "config.xml"
       - "config.toml"
+      # Flash 跨域策略（socket/HTTP 沙箱校验硬依赖）
+      - "crossdomain.xml"
       - "LICENSE"
       - "README.md"
     exclude: []
@@ -134,8 +142,13 @@ layers:
     description: "WebView2 overlay 前端资源（HTML/CSS/JS/icons/Markdown 帮助/面板系统）"
     source: "launcher/web/"
     include:
+      - "bootstrap.html"
+      - "bootstrap-main.js"
       - "overlay.html"
+      - "config/**"
       - "css/**"
+      - "assets/**"
+      - "data/**"
       - "lib/**"
       - "modules/**"
       - "help/**"
@@ -155,10 +168,20 @@ layers:
     description: "Rapfi 五子棋引擎（GomokuTask 依赖）"
     source: "tools/rapfi/"
     include:
+      # Windows CPU 变体：按运行时 CPU 能力选择
+      # sse = 最低基线 fallback（无 AVX2 的老 CPU 必须保留）
+      # avx2 = 主力分发（绝大多数现代 CPU）
+      # avxvnni / avx512 / avx512vnni = 新 CPU 增强路径
+      - "pbrain-rapfi-windows-sse.exe"
       - "pbrain-rapfi-windows-avx2.exe"
+      - "pbrain-rapfi-windows-avxvnni.exe"
+      - "pbrain-rapfi-windows-avx512.exe"
+      - "pbrain-rapfi-windows-avx512vnni.exe"
       - "config.toml"
       - "*.bin"
       - "*.bin.lz4"
+      # 开源许可证归属（分发必需）
+      - "AUTHORS"
     exclude: []
 
   - name: root-dirs

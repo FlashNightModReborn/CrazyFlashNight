@@ -31,6 +31,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_migrate_2_6_to_3_0();
         test_migrate_2_7_to_3_0();
         test_migrate_2_7_to_3_0_preserves_legacy_mainline();
+        test_migrate_2_7_to_3_0_null_legacy_mainline_defaults_zero();
         test_migrate_3_0_noop();
         test_syncTopLevel_overwrite();
         test_syncTopLevel_from_empty();
@@ -202,6 +203,33 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         assert(changed == true, "migrate_2_7_to_3_0_preserves_legacy_mainline: changed");
         assert(mydata.tasks.task_chains_progress.主线 == 17,
                "migrate_2_7_to_3_0_preserves_legacy_mainline: mainline preserved");
+    }
+
+    private static function test_migrate_2_7_to_3_0_null_legacy_mainline_defaults_zero():Void {
+        var sm:SaveManager = SaveManager.getInstance();
+        var mydata:Object = buildValidMydata();
+        mydata.version = "2.7";
+        mydata[3] = null;
+        delete mydata.tasks;
+        delete mydata.pets;
+        delete mydata.shop;
+
+        var soData:Object = {};
+        soData["test"] = mydata;
+        soData.tasks_to_do = [];
+        soData.tasks_finished = {};
+        soData.task_chains_progress = {};
+        soData.战宠 = [[], [], [], [], []];
+        soData.宠物领养限制 = 5;
+        soData.商城已购买物品 = [];
+        soData.商城购物车 = [];
+
+        var changed:Boolean = sm.migrate(mydata, soData);
+        assert(changed == true, "migrate_2_7_to_3_0_null_legacy_mainline_defaults_zero: changed");
+        assert(mydata[3] == 0,
+               "migrate_2_7_to_3_0_null_legacy_mainline_defaults_zero: slot3 defaults to 0");
+        assert(mydata.tasks.task_chains_progress.主线 == 0,
+               "migrate_2_7_to_3_0_null_legacy_mainline_defaults_zero: mainline defaults to 0");
     }
 
     private static function test_migrate_3_0_noop():Void {

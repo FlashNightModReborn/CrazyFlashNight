@@ -100,6 +100,14 @@ _root._mapNavigateTargets = {
     teaching_right: "地图-教学楼内部右侧"
 };
 
+_root._mapPendingHotspotId = "";
+_root._mapPendingSourceHotspotId = "";
+_root._mapLastResolvedHotspotId = "";
+_root._mapPendingStaleTicks = 0;
+// 若 pending 连续这么多次 resolve 仍未被 source 追上/回退, 强制清空 fallback 到 source,
+// 避免跳转失败 + 场景滑到第三个位置时 pending 僵死到下一次 navigate
+_root._mapPendingMaxStaleTicks = 6;
+
 _root._mapHotspotPages = {
     base_roof: "base",
     base_lobby: "base",
@@ -341,21 +349,73 @@ _root._mapBuildHotspotStates = function(unlocks) {
     return states;
 };
 
-_root._mapResolveCurrentHotspotId = function() {
-    // 权威源：主时间轴当前帧标签 (_root._currentlabel)
-    // 每次 _root.淡出动画.淡出跳转帧(label) 完成后即时更新，覆盖所有场景切换。
-    // 回退到 _root.关卡地图帧值 只为容灾（切换途中空 label），它只在 StageManager.finishStage 更新，
-    // 单独使用会在非战斗场景永远僵在上一次通关的 EndFrame 上。
-    var currentFrameName = String(_root._currentlabel || "");
-    if (currentFrameName == "") currentFrameName = String(_root.关卡地图帧值 || "");
-    if (currentFrameName == "") return "";
-
+_root._mapResolveHotspotIdByFrameName = function(frameName:String) {
+    if (frameName == undefined || frameName == "") return "";
     for (var hotspotId in _root._mapNavigateTargets) {
-        if (_root._mapNavigateTargets[hotspotId] == currentFrameName) {
+        if (_root._mapNavigateTargets[hotspotId] == String(frameName)) {
             return hotspotId;
         }
     }
     return "";
+};
+
+_root._mapResolveCurrentHotspotIdFromSources = function() {
+    var hotspotId = _root._mapResolveHotspotIdByFrameName(String(_root._currentlabel || ""));
+    if (hotspotId != "") return hotspotId;
+
+    hotspotId = _root._mapResolveHotspotIdByFrameName(String(_root.场景进入位置名 || ""));
+    if (hotspotId != "") return hotspotId;
+
+    hotspotId = _root._mapResolveHotspotIdByFrameName(String(_root.关卡地图帧值 || ""));
+    return hotspotId;
+};
+
+_root._mapResolveCurrentHotspotId = function() {
+    // 跨一级菜单跳转时，_currentlabel 可能继续停在旧房间；
+    // 这里先读真实场景源，再在“底层仍停留旧房间/空值”时使用 pending target 兜底。
+    var sourceHotspotId = _root._mapResolveCurrentHotspotIdFromSources();
+    var pendingHotspotId = String(_root._mapPendingHotspotId || "");
+    var pendingSourceHotspotId = String(_root._mapPendingSourceHotspotId || "");
+
+    if (pendingHotspotId != "") {
+        if (sourceHotspotId == pendingHotspotId) {
+            _root._mapPendingHotspotId = "";
+            _root._mapPendingSourceHotspotId = "";
+            _root._mapPendingStaleTicks = 0;
+            _root._mapLastResolvedHotspotId = sourceHotspotId;
+            return sourceHotspotId;
+        }
+
+        if (sourceHotspotId == "" || sourceHotspotId == pendingSourceHotspotId) {
+            // 兜底: source 滞后或回到起始态, 继续使用 pending, 但累加 stale 计数
+            _root._mapPendingStaleTicks = Number(_root._mapPendingStaleTicks || 0) + 1;
+            if (_root._mapPendingStaleTicks >= Number(_root._mapPendingMaxStaleTicks || 6)) {
+                // TTL 到期: 跳转可能失败且场景飘到第三位置, 强制清空 pending fallback 回 source
+                _root._mapPendingHotspotId = "";
+                _root._mapPendingSourceHotspotId = "";
+                _root._mapPendingStaleTicks = 0;
+                if (sourceHotspotId != "") {
+                    _root._mapLastResolvedHotspotId = sourceHotspotId;
+                    return sourceHotspotId;
+                }
+                return String(_root._mapLastResolvedHotspotId || "");
+            }
+            _root._mapLastResolvedHotspotId = pendingHotspotId;
+            return pendingHotspotId;
+        }
+
+        // source 到达了第三个位置 (既不是 pending 也不是 old source), 直接清空 pending
+        _root._mapPendingHotspotId = "";
+        _root._mapPendingSourceHotspotId = "";
+        _root._mapPendingStaleTicks = 0;
+    }
+
+    if (sourceHotspotId != "") {
+        _root._mapLastResolvedHotspotId = sourceHotspotId;
+        return sourceHotspotId;
+    }
+
+    return String(_root._mapLastResolvedHotspotId || "");
 };
 
 _root._mapResolveCurrentPageId = function(currentHotspotId:String) {
@@ -515,6 +575,10 @@ _root.gameCommands["mapPanelNavigate"] = function(params) {
         return;
     }
 
+    _root._mapPendingSourceHotspotId = _root._mapResolveCurrentHotspotIdFromSources();
+    _root._mapPendingHotspotId = targetId;
+    _root._mapPendingStaleTicks = 0;
+    _root._mapLastResolvedHotspotId = targetId;
     _root.关卡结束界面._visible = 0;
     _root.场景进入位置名 = "出生地";
     _root.淡出动画.淡出跳转帧(targetFrame);
@@ -529,4 +593,21 @@ _root.gameCommands["mapPanelNavigate"] = function(params) {
 
 _root.gameCommands["mapPanelClose"] = function(params) {
     _root._mapLog("mapPanelClose");
+};
+
+// 旧版 Flash 地图界面 (flashswf/UI/地图界面/LIBRARY/地图界面.xml 内 gotoAndStop(2) 的按钮)
+// 统一走此入口, 接入 WebView 新地图面板. 绕过旧 frame 跳转, 避免双 UI.
+_root.gameCommands["openWebMap"] = function(params) {
+    var source = (params != undefined && params.source != undefined) ? String(params.source) : "as2_legacy_button";
+    _root._mapLog("openWebMap request source=" + source);
+    // 旧 Flash 地图如果已经跳到 frame 2 , 先收回避免双叠
+    if (_root.地图界面 != undefined && _root.地图界面.gotoAndStop != undefined) {
+        _root.地图界面.gotoAndStop(1);
+    }
+    // 交给 Launcher 打开 WebView 面板, 不再隐藏 gameworld (WebView overlay 自己会盖住)
+    if (_root.server != undefined && _root.server.sendSocketMessage != undefined) {
+        _root.server.sendSocketMessage('{"task":"panel_request","panel":"map","source":"' + source + '"}');
+    } else {
+        _root._mapLog("openWebMap failed: server/sendSocketMessage unavailable");
+    }
 };

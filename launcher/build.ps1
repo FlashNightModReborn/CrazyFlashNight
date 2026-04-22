@@ -151,14 +151,76 @@ if (Test-Path $wv2Loader) {
     Write-Host "  [WARN] WebView2Loader.dll not found: $wv2Loader" -ForegroundColor Yellow
 }
 
-# Step 6: Verify web overlay assets
-Write-Host "[Step 6/6] Verify web overlay assets..." -ForegroundColor Yellow
+# Step 6: Verify required WebView2 runtime assets
+Write-Host "[Step 6/6] Verify required WebView2 runtime assets..." -ForegroundColor Yellow
 $webDir = Join-Path $launcherDir "web"
-if (Test-Path (Join-Path $webDir "overlay.html")) {
-    Write-Host "  OK: launcher\web\overlay.html present"
-} else {
-    Write-Host "  [WARN] launcher\web\overlay.html not found (WebView2 overlay will be unavailable)" -ForegroundColor Yellow
+$requiredWebPaths = @(
+    "bootstrap.html",
+    "bootstrap-main.js",
+    "overlay.html",
+    "config\version.js",
+    "css\bootstrap.css",
+    "css\welcome.css",
+    "css\overlay.css",
+    "css\panels.css",
+    "lib\marked.min.js",
+    "help\controls.md",
+    "help\worldview.md",
+    "help\easter-eggs.md",
+    "icons\manifest.json",
+    "data\lockbox-variants.json",
+    "assets\bg\manifest.json",
+    "assets\logos\cf7me-title.png",
+    "assets\logos\steam.svg",
+    "assets\intro.mp4",
+    "assets\map\page-base.png",
+    "assets\map\page-faction.png",
+    "modules\audio.js",
+    "modules\factions.js",
+    "modules\archive-schema.js",
+    "modules\archive-editor.js",
+    "modules\diagnostic-log.js",
+    "modules\about.js",
+    "modules\bridge.js",
+    "modules\uidata.js",
+    "modules\toast.js",
+    "modules\sparkline.js",
+    "modules\notch.js",
+    "modules\currency.js",
+    "modules\jukebox.js",
+    "modules\combo.js",
+    "modules\panels.js",
+    "modules\tooltip.js",
+    "modules\icons.js",
+    "modules\kshop.js",
+    "modules\help-panel.js",
+    "modules\map-avatar-source-data.js",
+    "modules\map-panel-data.js",
+    "modules\map-fit-presets.js",
+    "modules\map-panel.js",
+    "modules\overlay-audio-bindings.js",
+    "modules\minigames\shared\host-bridge.js",
+    "modules\minigames\shared\minigame-shell.css",
+    "modules\minigames\lockbox\lockbox.css",
+    "modules\minigames\lockbox\lockbox-panel.js",
+    "modules\minigames\pinalign\pinalign.css",
+    "modules\minigames\pinalign\pinalign-panel.js"
+)
+$missingWebPaths = @()
+foreach ($relativePath in $requiredWebPaths) {
+    $fullPath = Join-Path $webDir $relativePath
+    if (-not (Test-Path $fullPath)) {
+        $missingWebPaths += $relativePath
+    }
 }
+if ($missingWebPaths.Count -gt 0) {
+    Write-Host "[FAIL] Required launcher\\web runtime assets missing:" -ForegroundColor Red
+    foreach ($missingPath in $missingWebPaths) {
+        Write-Host "  - $missingPath" -ForegroundColor Red
+    }
+    exit 1
+}
+Write-Host "  OK: launcher\\web runtime assets present ($($requiredWebPaths.Count) checks)" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "=== Build Complete ===" -ForegroundColor Green

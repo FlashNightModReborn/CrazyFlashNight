@@ -91,6 +91,8 @@ namespace CF7Launcher.Guardian
         private bool _isFullscreen;
         private Rectangle _savedBounds;
         private FormBorderStyle _savedBorderStyle;
+        private System.Windows.Forms.Timer _viewportSettleTimer;
+        private string _viewportSettleReason = "viewport_refresh";
 
         private bool _hotkeysRegistered;
         private KeyboardHook _kbHook; // 前台感知低级钩子，替代 RegisterHotKey
@@ -647,7 +649,49 @@ namespace CF7Launcher.Guardian
             //     _gpuRenderer.RequestResize(_flashPanel.Width, _flashPanel.Height);
 
             _flashPanel.Invalidate();
+            ScheduleViewportRefresh("toggle_fullscreen");
             LogManager.Log("[Guardian] Fullscreen=" + _isFullscreen);
+        }
+
+        private void ScheduleViewportRefresh(string reason)
+        {
+            _viewportSettleReason = reason;
+            RefreshRuntimeViewport(reason + ":immediate");
+
+            if (this.IsHandleCreated)
+            {
+                try
+                {
+                    this.BeginInvoke(new Action(delegate()
+                    {
+                        RefreshRuntimeViewport(reason + ":deferred");
+                    }));
+                }
+                catch { }
+            }
+
+            if (_viewportSettleTimer == null)
+            {
+                _viewportSettleTimer = new System.Windows.Forms.Timer();
+                _viewportSettleTimer.Interval = 140;
+                _viewportSettleTimer.Tick += delegate
+                {
+                    if (_viewportSettleTimer != null)
+                        _viewportSettleTimer.Stop();
+                    RefreshRuntimeViewport(_viewportSettleReason + ":settled");
+                };
+            }
+
+            _viewportSettleTimer.Stop();
+            _viewportSettleTimer.Start();
+        }
+
+        private void RefreshRuntimeViewport(string reason)
+        {
+            if (_windowManager != null)
+                _windowManager.ResizeFlashToPanel();
+            if (_webOverlay != null)
+                _webOverlay.RequestLayoutSync(reason);
         }
 
         // ============================================================
@@ -1280,6 +1324,12 @@ namespace CF7Launcher.Guardian
         {
             if (disposing)
             {
+                if (_viewportSettleTimer != null)
+                {
+                    _viewportSettleTimer.Stop();
+                    _viewportSettleTimer.Dispose();
+                    _viewportSettleTimer = null;
+                }
                 StopGpuRenderer();
                 CleanupTrayIcon();
             }

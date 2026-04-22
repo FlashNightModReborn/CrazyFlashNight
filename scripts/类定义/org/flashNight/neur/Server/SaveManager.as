@@ -1127,6 +1127,9 @@ class org.flashNight.neur.Server.SaveManager {
      * 顶层 key 为 undefined 时用默认值
      */
     private function convert_2_7_to_3_0(mydata:Object, soData:Object):Void {
+        if (mydata[3] == undefined || mydata[3] == null) {
+            mydata[3] = 0;
+        }
         if (mydata.tasks == undefined) {
             mydata.tasks = {
                 tasks_to_do:          soData.tasks_to_do || [],

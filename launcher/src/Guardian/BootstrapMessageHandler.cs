@@ -12,6 +12,7 @@ using System;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Tasks;
 using CF7Launcher.Config;
+using CF7Launcher.Save;
 using CF7Launcher.Guardian.Handlers;
 
 namespace CF7Launcher.Guardian
@@ -23,6 +24,7 @@ namespace CF7Launcher.Guardian
             BootstrapPanel bootForm,
             ArchiveTask archiveTask,
             GameLaunchFlow launchFlow,
+            SaveResolutionContext saveCtx,
             UserPrefs userPrefs)
         {
             JObject msg;
@@ -67,16 +69,16 @@ namespace CF7Launcher.Guardian
 
                 // ─────── Archive query ───────
                 case "list":
-                    ArchiveCommandHandler.HandleList(bootForm, archiveTask, userPrefs);
+                    ArchiveCommandHandler.HandleList(bootForm, archiveTask, saveCtx, userPrefs);
                     return;
                 case "delete":
                     ArchiveCommandHandler.HandleDelete(msg, bootForm, archiveTask);
                     return;
                 case "load":
-                    ArchiveCommandHandler.HandleLoad(msg, bootForm, archiveTask);
+                    ArchiveCommandHandler.HandleLoad(msg, bootForm, archiveTask, saveCtx);
                     return;
                 case "load_raw":
-                    ArchiveCommandHandler.HandleLoadRaw(msg, bootForm, archiveTask);
+                    ArchiveCommandHandler.HandleLoadRaw(msg, bootForm, archiveTask, saveCtx);
                     return;
 
                 // ─────── Data edit ───────

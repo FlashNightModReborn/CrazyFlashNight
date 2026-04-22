@@ -179,6 +179,35 @@ namespace CF7Launcher.Tests.Save
         }
 
         [Fact]
+        public void Migrate_2_7_to_3_0_NullLegacyMainline_DefaultsToZero()
+        {
+            JObject mydata = BuildValidMydata();
+            mydata["version"] = "2.7";
+            mydata["3"] = JValue.CreateNull();
+            mydata.Remove("tasks");
+            mydata.Remove("pets");
+            mydata.Remove("shop");
+
+            JObject soData = new JObject();
+            soData["test"] = mydata;
+            soData["tasks_to_do"] = new JArray();
+            soData["tasks_finished"] = new JObject();
+            soData["task_chains_progress"] = new JObject();
+            JArray pets = new JArray();
+            for (int i = 0; i < 5; i++) pets.Add(new JArray());
+            soData["战宠"] = pets;
+            soData["宠物领养限制"] = 5;
+            soData["商城已购买物品"] = new JArray();
+            soData["商城购物车"] = new JArray();
+
+            SaveMigrator.Migrate_2_7_to_3_0(mydata, soData);
+
+            Assert.Equal(0, mydata["3"].Value<int>());
+            Assert.Equal(0, mydata["tasks"]["task_chains_progress"]["主线"].Value<int>());
+            Assert.True(SaveMigrator.ValidateResolvedSnapshot(mydata));
+        }
+
+        [Fact]
         public void Migrate_2_7_to_3_0_TasksFinishedIsObject()
         {
             // 对齐 test_tasks_finished_is_object
