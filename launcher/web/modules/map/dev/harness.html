@@ -96,7 +96,28 @@ window.Toast = {
         this.messages = [];
     }
 };
+// BootstrapAudio 存根: 用计数器代替实际 Web Audio, 让 overlay click 代理能被单次触发断言
+window.BootstrapAudio = (function() {
+    var counts = {};
+    var api = {
+        _counts: counts,
+        _resetCounts: function() { for (var k in counts) delete counts[k]; },
+        init: function() {},
+        resume: function() {},
+        setSfxEnabled: function() {},
+        setAmbientEnabled: function() {},
+        isSfxEnabled: function() { return true; },
+        isAmbientEnabled: function() { return false; },
+        startAmbient: function() {},
+        stopAmbient: function() {}
+    };
+    ['Hover','Click','Select','Confirm','Cancel','Error','Ready','Transition','ModalOpen','Success'].forEach(function(n) {
+        api['play' + n] = function() { counts[n] = (counts[n] || 0) + 1; };
+    });
+    return api;
+})();
 </script>
+<script src="../../overlay-audio-bindings.js"></script>
 <script src="../../map-panel.js"></script>
 <script src="./qa-suite.js"></script>
 <script>

@@ -1,7 +1,7 @@
 var MapPanel = (function() {
     'use strict';
 
-    var _el, _titleEl, _bodyEl, _stageEl, _stageShellEl, _railEl, _backdropEl, _imageEl, _sceneLayer, _hotspotLayer, _avatarLayer, _feedbackLayer, _loadingEl, _errorEl, _errorTextEl, _badgeEl;
+    var _el, _titleEl, _bodyEl, _stageEl, _stageShellEl, _railEl, _backdropEl, _filterOverlayEl, _anomalyEl, _imageEl, _sceneLayer, _hotspotLayer, _avatarLayer, _feedbackLayer, _loadingEl, _errorEl, _errorTextEl, _badgeEl;
     var _pageTabsEl, _pageSummaryEl;
     var _activePage = null;
     var _reqSeq = 0;
@@ -34,7 +34,9 @@ var MapPanel = (function() {
     Panels.register('map', {
         create: createDOM,
         onOpen: onOpen,
-        onRequestClose: function() { requestClose(); },
+        // Esc / backdrop 来自 Panels 框架，不经过 DOM click，所以 overlay 的 click 代理不会触发
+        // cancel cue — 这里显式补一次；DOM click 路径（close btn）由代理负责，避免双响。
+        onRequestClose: function() { playCue('cancel'); requestClose(); },
         onClose: teardownLayoutWatcher,
         onForceClose: onForceClose
     });
@@ -56,7 +58,15 @@ var MapPanel = (function() {
             '<div class="map-panel-body">' +
                 '<div class="map-stage-shell" id="map-stage-shell">' +
                     '<div class="map-stage-frame" id="map-stage-frame">' +
-                        '<div class="map-stage-backdrop" id="map-stage-backdrop"></div>' +
+                        '<div class="map-stage-backdrop" id="map-stage-backdrop">' +
+                            // filter-overlay 与 anomaly 嵌在 backdrop 内 —
+                            // backdrop z-index:0 建立 stacking context, 子元素全部被封印在 z=0 层,
+                            // 无法逃逸到 image(z:1) / scenes(z:2) 之上, 避免干扰半透明场景边缘
+                            '<div class="map-stage-filter-overlay" id="map-stage-filter-overlay" aria-hidden="true"></div>' +
+                            '<div class="map-stage-anomaly" id="map-stage-anomaly" aria-hidden="true">' +
+                                '<div class="map-stage-anomaly-pulse"></div>' +
+                            '</div>' +
+                        '</div>' +
                         '<img class="map-stage-image" id="map-stage-image" alt="地图背景">' +
                         '<div class="map-scene-layer" id="map-scene-layer"></div>' +
                         '<div class="map-hotspot-layer" id="map-hotspot-layer"></div>' +
@@ -85,6 +95,8 @@ var MapPanel = (function() {
         _bodyEl = _el.querySelector('.map-panel-body');
         _stageEl = _el.querySelector('#map-stage-frame');
         _backdropEl = _el.querySelector('#map-stage-backdrop');
+        _filterOverlayEl = _el.querySelector('#map-stage-filter-overlay');
+        _anomalyEl = _el.querySelector('#map-stage-anomaly');
         _imageEl = _el.querySelector('#map-stage-image');
         _sceneLayer = _el.querySelector('#map-scene-layer');
         _hotspotLayer = _el.querySelector('#map-hotspot-layer');
@@ -230,10 +242,30 @@ var MapPanel = (function() {
     function renderStageBackdrop() {
         var backdropTheme = _activePage && _activePage.backdropTheme ? _activePage.backdropTheme : 'default';
         var activeViewMode = getActiveViewMode(_activePage);
+        var activeFilter = _activePage ? getActiveFilter(_activePage) : null;
+        var activeFilterId = activeFilter ? activeFilter.id : '';
         _stageEl.classList.toggle('is-assembled', useAssembledVisuals(_activePage));
         _stageEl.classList.toggle('is-layer-relation', activeViewMode === 'hierarchy');
         _stageEl.setAttribute('data-page-id', _activePage ? _activePage.id : '');
+        _stageEl.setAttribute('data-active-filter', activeFilterId);
         _backdropEl.className = 'map-stage-backdrop map-stage-backdrop--' + backdropTheme;
+        if (_filterOverlayEl) {
+            _filterOverlayEl.setAttribute('data-active-filter', activeFilterId);
+            _filterOverlayEl.setAttribute('data-page-id', _activePage ? _activePage.id : '');
+        }
+        if (_anomalyEl) {
+            // 禁区异常层: defense + restricted filter 时显示; 其它场景隐藏
+            var isAnomaly = _activePage && _activePage.id === 'defense' && activeFilterId === 'restricted';
+            _anomalyEl.classList.toggle('is-active', !!isAnomaly);
+        }
+    }
+
+    function triggerFilterRetune() {
+        if (!_stageEl) return;
+        _stageEl.classList.remove('is-retuning');
+        // force reflow 以重启动画
+        void _stageEl.offsetWidth;
+        _stageEl.classList.add('is-retuning');
     }
 
     function renderStageImage() {
@@ -393,15 +425,14 @@ var MapPanel = (function() {
         if (!_activePage || _closing) return;
 
         if (!_enabledLookup[hotspot.id]) {
+            // hotspot 按钮本身带 data-audio-cue='error'，overlay click 代理已播一次 cue，此处只补 toast
             pushLockedReason(hotspot.id);
-            playCue('error');
             return;
         }
 
         if (_busyLookup[hotspot.id]) return;
 
-        playCue('transition');
-
+        // hotspot 按钮本身带 data-audio-cue='transition'，overlay click 代理已播一次 cue
         var reqId = 'map-nav-' + (++_reqSeq);
         var currentSession = _session;
         _pendingReq[reqId] = function(resp) {
@@ -453,7 +484,8 @@ var MapPanel = (function() {
         _currentHotspotId = '';
         _hoverHotspotId = '';
         _busyLookup = {};
-        playCue('cancel');
+        // cancel cue 由调用方负责: DOM click 走 overlay click 代理, Esc/backdrop 走 onRequestClose
+        // navigate 成功直闭(resp.closePanel)不播 cancel, transition cue 已足够表达
         Panels.close();
         if (notifyHost) {
             Bridge.send({ type: 'panel', panel: 'map', cmd: 'close' });
@@ -590,11 +622,82 @@ var MapPanel = (function() {
                 '<span class="map-filter-hotspot-meta">' + enabledCount + '/' + ((filter.hotspotIds || []).length) + '</span>';
             attachFilterHandler(btn, filter.id);
             _railEl.appendChild(btn);
+
+            // 手风琴: 仅展开当前 active + 非 meta(all/hierarchy) + 非 locked 的 filter 子场景列表
+            if (activeFilter && activeFilter.id === filter.id && !isMetaFilterId(filter.id) && !isLocked) {
+                var subList = buildSceneSubList(filter);
+                if (subList) _railEl.appendChild(subList);
+            }
         }
+    }
+
+    function isMetaFilterId(filterId) {
+        return filterId === 'all' || filterId === 'hierarchy';
+    }
+
+    function findHotspotById(page, hotspotId) {
+        if (!page || !page.hotspots) return null;
+        for (var i = 0; i < page.hotspots.length; i++) {
+            if (page.hotspots[i].id === hotspotId) return page.hotspots[i];
+        }
+        return null;
+    }
+
+    function buildSceneSubList(filter) {
+        var ids = filter.hotspotIds || [];
+        if (!ids.length) return null;
+        var list = document.createElement('div');
+        list.className = 'map-rail-scene-list';
+        list.setAttribute('data-filter-id', filter.id);
+        for (var i = 0; i < ids.length; i++) {
+            var hotspotId = ids[i];
+            var hotspot = findHotspotById(_activePage, hotspotId);
+            if (!hotspot) continue;
+            var state = getHotspotState(hotspotId);
+            var enabled = !!_enabledLookup[hotspotId];
+            var isCurrent = _currentHotspotId === hotspotId;
+            var item = document.createElement('button');
+            item.className = 'map-rail-scene-item';
+            item.type = 'button';
+            item.setAttribute('data-hotspot-id', hotspotId);
+            item.setAttribute('data-audio-cue', enabled ? 'transition' : 'error');
+            item.classList.toggle('is-current', isCurrent);
+            item.classList.toggle('is-disabled', !enabled);
+            if (!enabled && state.lockedReason) {
+                item.setAttribute('data-locked-reason', state.lockedReason);
+                item.setAttribute('title', state.lockedReason);
+            } else {
+                item.setAttribute('title', hotspot.label);
+            }
+            item.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+            item.innerHTML =
+                '<span class="map-rail-scene-dot" aria-hidden="true"></span>' +
+                '<span class="map-rail-scene-label">' + escHtml(hotspot.label) + '</span>';
+            attachSceneItemHandler(item, hotspot);
+            list.appendChild(item);
+        }
+        return list;
+    }
+
+    function attachSceneItemHandler(item, hotspot) {
+        item.addEventListener('click', function() {
+            // 复用 requestNavigate: enabled 走 transition + 导航; disabled 推 toast 原因; busy 去重
+            requestNavigate(hotspot);
+        });
     }
 
     function attachFilterHandler(btn, filterId) {
         btn.addEventListener('click', function() {
+            if (!_activePage) return;
+            var filterMeta = getFilterMeta(_activePage.id, filterId);
+            var isLocked = !!(filterMeta && !_unlockFlags[filterMeta.unlockGroup]);
+            if (isLocked) {
+                // 锁定 filter 只显示原因, 不切换状态; cue 已由 overlay click 代理按 data-audio-cue='error' 播过
+                if (filterMeta && filterMeta.lockedReason && typeof Toast !== 'undefined' && Toast && typeof Toast.add === 'function') {
+                    Toast.add(filterMeta.lockedReason);
+                }
+                return;
+            }
             setActiveFilter(filterId);
         });
     }
@@ -990,7 +1093,12 @@ function resolveFeedbackAnchor(item) {
         var filter = findFilter(_activePage, filterId);
         if (!filter) return;
 
+        var previousFilterId = _pageFilterState[_activePage.id];
         _pageFilterState[_activePage.id] = filter.id;
+        if (previousFilterId && previousFilterId !== filter.id) {
+            // 「频段重调」过渡: 仅在真正切 filter 时触发, 首次/相同不重放
+            triggerFilterRetune();
+        }
         renderStageBackdrop();
         renderAvatars();
         renderSceneVisuals();

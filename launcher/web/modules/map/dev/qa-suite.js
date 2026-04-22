@@ -369,6 +369,28 @@ var MapPanelHarnessQA = (function() {
                 }
             },
             {
+                id: 'map-ui11',
+                title: 'base hotspot rects stay aligned with assembled scene visuals',
+                run: function() {
+                    return bootMap(api, host, { defaultPageId: 'base' }).then(function() {
+                        var page = MapPanelData.getPage('base');
+                        var summary = [];
+
+                        page.hotspots.forEach(function(hotspot) {
+                            var unionRect = unionSceneVisualRect(page, hotspot.id);
+                            api.assert(!!unionRect, 'base missing scene union for ' + hotspot.id);
+                            api.assert(Math.abs(hotspot.rect.x - unionRect.x) < 0.05, 'base hotspot x drift for ' + hotspot.id);
+                            api.assert(Math.abs(hotspot.rect.y - unionRect.y) < 0.05, 'base hotspot y drift for ' + hotspot.id);
+                            api.assert(Math.abs(hotspot.rect.w - unionRect.w) < 0.05, 'base hotspot w drift for ' + hotspot.id);
+                            api.assert(Math.abs(hotspot.rect.h - unionRect.h) < 0.05, 'base hotspot h drift for ' + hotspot.id);
+                            summary.push(hotspot.id);
+                        });
+
+                        return 'hotspots=' + summary.length;
+                    });
+                }
+            },
+            {
                 id: 'map-ui12',
                 title: 'task npc ring anchors to dynamic roommate avatar center',
                 run: function() {
@@ -452,7 +474,30 @@ var MapPanelHarnessQA = (function() {
                             api.assert(!document.querySelector('.map-scene-chip'), 'scene chip strip removed; right rail owns filter/floor navigation now');
                             api.assert(!document.querySelector('.map-scene-strip'), 'scene chip strip container should not be in DOM');
 
-                            return 'cues=ok';
+                            // 单次触发断言: overlay click 代理 + 面板 playCue 不可同时响
+                            var BA = window.BootstrapAudio;
+                            api.assert(!!BA && typeof BA._resetCounts === 'function', 'harness BootstrapAudio counter stub required');
+
+                            // 1) 启用 hotspot click → 只响一次 Transition (面板 requestNavigate 已不再直接播 cue)
+                            BA._resetCounts();
+                            enabledHs.click();
+                            api.assertEqual(BA._counts.Transition || 0, 1, 'enabled hotspot click should fire Transition exactly once');
+                            api.assertEqual(BA._counts.Error || 0, 0, 'enabled hotspot click should not fire Error');
+
+                            // 2) 禁用 hotspot click → 只响一次 Error, 依旧推 toast
+                            var toastBefore = (window.Toast && window.Toast.messages || []).length;
+                            BA._resetCounts();
+                            disabledHs.click();
+                            api.assertEqual(BA._counts.Error || 0, 1, 'disabled hotspot click should fire Error exactly once');
+                            api.assertEqual(BA._counts.Transition || 0, 0, 'disabled hotspot click should not fire Transition');
+                            api.assert((window.Toast && window.Toast.messages || []).length > toastBefore, 'disabled hotspot click should still push locked reason toast');
+
+                            // 3) 关闭按钮 click → 只响一次 Cancel (finishClose 不再直播 cue)
+                            BA._resetCounts();
+                            document.querySelector('.map-panel-close-btn').click();
+                            api.assertEqual(BA._counts.Cancel || 0, 1, 'close btn click should fire Cancel exactly once');
+
+                            return 'cues=ok single-fire=ok';
                         });
                     });
                 }
@@ -483,24 +528,188 @@ var MapPanelHarnessQA = (function() {
                 }
             },
             {
-                id: 'map-ui11',
-                title: 'base hotspot rects stay aligned with assembled scene visuals',
+                id: 'map-ui16',
+                title: 'locked filter click keeps state and surfaces locked reason toast',
                 run: function() {
-                    return bootMap(api, host, { defaultPageId: 'base' }).then(function() {
-                        var page = MapPanelData.getPage('base');
-                        var summary = [];
+                    return bootMap(api, host, { defaultPageId: 'school', lockedGroups: ['schoolInside'] }).then(function(state) {
+                        var beforeFilterId = state.activeFilterId;
+                        var lockedBtn = getFilterButton('inside');
+                        api.assert(!!lockedBtn, 'inside filter button missing');
+                        api.assert(lockedBtn.classList.contains('is-locked'), 'inside filter should render in locked state');
+                        api.assert(lockedBtn.getAttribute('data-audio-cue') === 'error', 'locked filter cue should be error');
 
-                        page.hotspots.forEach(function(hotspot) {
-                            var unionRect = unionSceneVisualRect(page, hotspot.id);
-                            api.assert(!!unionRect, 'base missing scene union for ' + hotspot.id);
-                            api.assert(Math.abs(hotspot.rect.x - unionRect.x) < 0.05, 'base hotspot x drift for ' + hotspot.id);
-                            api.assert(Math.abs(hotspot.rect.y - unionRect.y) < 0.05, 'base hotspot y drift for ' + hotspot.id);
-                            api.assert(Math.abs(hotspot.rect.w - unionRect.w) < 0.05, 'base hotspot w drift for ' + hotspot.id);
-                            api.assert(Math.abs(hotspot.rect.h - unionRect.h) < 0.05, 'base hotspot h drift for ' + hotspot.id);
-                            summary.push(hotspot.id);
+                        var BA = window.BootstrapAudio;
+                        var toastBefore = (window.Toast && window.Toast.messages || []).length;
+                        if (BA && BA._resetCounts) BA._resetCounts();
+
+                        lockedBtn.click();
+
+                        var after = currentState();
+                        api.assertEqual(after.activeFilterId, beforeFilterId, 'locked filter click must not mutate activeFilterId');
+                        api.assert((window.Toast && window.Toast.messages || []).length > toastBefore, 'locked filter click should push locked reason toast');
+                        if (BA) {
+                            api.assertEqual(BA._counts.Error || 0, 1, 'locked filter click should fire Error exactly once');
+                            api.assertEqual(BA._counts.Select || 0, 0, 'locked filter click must not fire Select');
+                        }
+                        return 'lockedFilter=inside activeFilter=' + after.activeFilterId;
+                    });
+                }
+            },
+            {
+                id: 'map-ui17',
+                title: 'faction filter switch drives data-active-filter + filter-overlay attribute',
+                run: function() {
+                    return bootMap(api, host, { defaultPageId: 'faction' }).then(function(state) {
+                        var stage = document.getElementById('map-stage-frame');
+                        var overlay = document.getElementById('map-stage-filter-overlay');
+                        api.assert(!!stage && !!overlay, 'stage frame + filter overlay must exist');
+                        api.assertEqual(stage.getAttribute('data-page-id'), 'faction', 'stage data-page-id should be faction');
+                        api.assertEqual(stage.getAttribute('data-active-filter'), state.activeFilterId, 'stage data-active-filter should match initial filter');
+                        api.assertEqual(overlay.getAttribute('data-page-id'), 'faction', 'overlay data-page-id should be faction');
+
+                        // 切换到 blackiron — 应改写 data-active-filter 并触发 retuning 过渡 class
+                        clickByHitTest(api, getFilterButton('blackiron'), 'blackiron filter');
+                        return api.waitFor(function() {
+                            var s = currentState();
+                            return s && s.activeFilterId === 'blackiron' ? s : null;
+                        }, 1500, 'switch to blackiron').then(function() {
+                            api.assertEqual(stage.getAttribute('data-active-filter'), 'blackiron', 'stage attr follows blackiron');
+                            api.assertEqual(overlay.getAttribute('data-active-filter'), 'blackiron', 'overlay attr follows blackiron');
+                            api.assert(stage.classList.contains('is-retuning'), 'filter switch should apply is-retuning transition class');
+
+                            // 再切回 warlord — 再次触发 retuning
+                            clickByHitTest(api, getFilterButton('warlord'), 'warlord filter');
+                            return api.waitFor(function() {
+                                var s = currentState();
+                                return s && s.activeFilterId === 'warlord' ? s : null;
+                            }, 1500, 'switch to warlord').then(function() {
+                                api.assertEqual(stage.getAttribute('data-active-filter'), 'warlord', 'stage attr follows warlord');
+                                api.assertEqual(overlay.getAttribute('data-active-filter'), 'warlord', 'overlay attr follows warlord');
+                                return 'activeFilter=warlord retune=ok';
+                            });
                         });
+                    });
+                }
+            },
+            {
+                id: 'map-ui18',
+                title: 'defense restricted filter toggles anomaly layer is-active',
+                run: function() {
+                    return bootMap(api, host, { defaultPageId: 'defense' }).then(function() {
+                        var anomaly = document.getElementById('map-stage-anomaly');
+                        api.assert(!!anomaly, 'anomaly layer node must exist');
+                        api.assert(!anomaly.classList.contains('is-active'), 'anomaly must be inactive before restricted filter');
 
-                        return 'hotspots=' + summary.length;
+                        clickByHitTest(api, getFilterButton('restricted'), 'restricted filter');
+                        return api.waitFor(function() {
+                            var s = currentState();
+                            return s && s.activeFilterId === 'restricted' ? s : null;
+                        }, 1500, 'switch to restricted').then(function() {
+                            api.assert(anomaly.classList.contains('is-active'), 'anomaly layer should activate when restricted filter selected');
+                            var pulseNode = anomaly.querySelector('.map-stage-anomaly-pulse');
+                            api.assert(!!pulseNode, 'anomaly pulse node must exist');
+                            var pulseRect = pulseNode.getBoundingClientRect();
+                            var stageRect = document.getElementById('map-stage-frame').getBoundingClientRect();
+                            // 偏心: pulse 中心应落在舞台上半 + 右侧 (x>60%, y<40%)
+                            var relX = (pulseRect.left + pulseRect.width / 2 - stageRect.left) / stageRect.width;
+                            var relY = (pulseRect.top + pulseRect.height / 2 - stageRect.top) / stageRect.height;
+                            api.assert(relX > 0.6 && relY < 0.4, 'anomaly pulse must be offset to upper-right (got x=' + relX.toFixed(2) + ' y=' + relY.toFixed(2) + ')');
+
+                            // 切回 first_line — 异常层 deactivate
+                            clickByHitTest(api, getFilterButton('first_line'), 'first_line filter');
+                            return api.waitFor(function() {
+                                var s = currentState();
+                                return s && s.activeFilterId === 'first_line' ? s : null;
+                            }, 1500, 'switch to first_line').then(function() {
+                                api.assert(!anomaly.classList.contains('is-active'), 'anomaly should deactivate when leaving restricted filter');
+                                return 'anomaly toggle ok relX=' + relX.toFixed(2) + ' relY=' + relY.toFixed(2);
+                            });
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui19',
+                title: 'rail accordion: active non-meta filter expands scene sub-list, clicks nav via hotspot path',
+                run: function() {
+                    return bootMap(api, host, { defaultPageId: 'faction' }).then(function() {
+                        // default filter is 'all' (meta) — 不应展开
+                        api.assert(!document.querySelector('.map-rail-scene-list'), 'meta filter (all) must NOT render scene sub-list');
+
+                        // 切到 warlord — 应展开 3 个子项 (warlord_base / warlord_tent / firing_range)
+                        clickByHitTest(api, getFilterButton('warlord'), 'warlord filter');
+                        return api.waitFor(function() {
+                            var s = currentState();
+                            return s && s.activeFilterId === 'warlord' ? s : null;
+                        }, 1500, 'switch to warlord').then(function() {
+                            var list = document.querySelector('.map-rail-scene-list[data-filter-id="warlord"]');
+                            api.assert(!!list, 'warlord filter should expand scene sub-list');
+                            var items = list.querySelectorAll('.map-rail-scene-item');
+                            api.assertEqual(items.length, 3, 'warlord has 3 hotspots → 3 sub-items');
+
+                            // 验证 hotspotId + 文字 label 对齐数据
+                            var firstItem = list.querySelector('.map-rail-scene-item[data-hotspot-id="warlord_base"]');
+                            api.assert(!!firstItem, 'warlord_base sub-item must exist');
+                            api.assert(firstItem.textContent.indexOf('军阀基地') >= 0, 'warlord_base label should be "军阀基地"');
+                            api.assertEqual(firstItem.getAttribute('data-audio-cue'), 'transition', 'enabled sub-item cue = transition');
+
+                            // 点击 sub-item = 触发 navigate (复用 requestNavigate 路径)
+                            var beforeNavCount = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
+                            firstItem.click();
+                            var afterNavCount = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
+                            api.assertEqual(afterNavCount - beforeNavCount, 1, 'sub-item click should emit exactly 1 navigate');
+                            var lastMsg = host.getMessages()[host.getMessages().length - 1];
+                            api.assertEqual(lastMsg.targetId, 'warlord_base', 'navigate targetId should match sub-item hotspot');
+
+                            // 切到 rock — 子列表应重建为 rock 的 2 个场景
+                            clickByHitTest(api, getFilterButton('rock'), 'rock filter');
+                            return api.waitFor(function() {
+                                var s = currentState();
+                                return s && s.activeFilterId === 'rock' ? s : null;
+                            }, 1500, 'switch to rock').then(function() {
+                                api.assert(!document.querySelector('.map-rail-scene-list[data-filter-id="warlord"]'), 'warlord sub-list should collapse when leaving warlord');
+                                var rockList = document.querySelector('.map-rail-scene-list[data-filter-id="rock"]');
+                                api.assert(!!rockList, 'rock filter should expand its sub-list');
+                                api.assertEqual(rockList.querySelectorAll('.map-rail-scene-item').length, 2, 'rock has 2 hotspots → 2 sub-items');
+
+                                // 切到 all (meta) — 子列表应完全消失
+                                clickByHitTest(api, getFilterButton('all'), 'all filter');
+                                return api.waitFor(function() {
+                                    var s = currentState();
+                                    return s && s.activeFilterId === 'all' ? s : null;
+                                }, 1500, 'switch to all').then(function() {
+                                    api.assert(!document.querySelector('.map-rail-scene-list'), 'meta filter (all) must NOT render sub-list');
+                                    return 'subList expand/collapse ok';
+                                });
+                            });
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui20',
+                title: 'rail sub-item: disabled hotspot click pushes locked reason toast, no navigate',
+                run: function() {
+                    return bootMap(api, host, { defaultPageId: 'base', disabledIds: ['armory'] }).then(function() {
+                        // 切到 basement1 filter — armory 在其中但 disabled
+                        clickByHitTest(api, getFilterButton('basement1'), 'basement1 filter');
+                        return api.waitFor(function() {
+                            var s = currentState();
+                            return s && s.activeFilterId === 'basement1' ? s : null;
+                        }, 1500, 'switch to basement1').then(function() {
+                            var disabledItem = document.querySelector('.map-rail-scene-item[data-hotspot-id="armory"]');
+                            api.assert(!!disabledItem, 'armory sub-item must exist');
+                            api.assert(disabledItem.classList.contains('is-disabled'), 'armory sub-item should render disabled');
+                            api.assertEqual(disabledItem.getAttribute('data-audio-cue'), 'error', 'disabled sub-item cue = error');
+
+                            var toastBefore = (window.Toast && window.Toast.messages || []).length;
+                            var beforeNavCount = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
+                            disabledItem.click();
+                            var afterNavCount = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
+                            api.assertEqual(afterNavCount - beforeNavCount, 0, 'disabled sub-item click must NOT emit navigate');
+                            api.assert((window.Toast && window.Toast.messages || []).length > toastBefore, 'disabled sub-item click should push locked reason toast');
+                            return 'disabled sub-item click blocked';
+                        });
                     });
                 }
             }

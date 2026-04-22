@@ -2417,46 +2417,328 @@
     position:absolute;
     inset:0;
     pointer-events:none;
+    /* 减薄内 vignette: 只在最外 10% 有轻微压暗, 不吃中央 backdrop 对比 */
     background:
-        linear-gradient(180deg, rgba(5, 7, 10, 0) 0%, rgba(5, 7, 10, 0.18) 100%),
-        linear-gradient(90deg, rgba(5, 7, 10, 0.12) 0%, rgba(5, 7, 10, 0) 18%, rgba(5, 7, 10, 0) 82%, rgba(5, 7, 10, 0.1) 100%);
+        linear-gradient(180deg, rgba(5, 7, 10, 0) 0%, rgba(5, 7, 10, 0) 86%, rgba(5, 7, 10, 0.14) 100%),
+        linear-gradient(90deg, rgba(5, 7, 10, 0.08) 0%, rgba(5, 7, 10, 0) 14%, rgba(5, 7, 10, 0) 86%, rgba(5, 7, 10, 0.06) 100%);
     z-index:1;
 }
+
+/* ================================================================
+ * Map backdrop 分层架构 · 占用地层 (occupation strata)
+ *   .map-stage-backdrop          = 深色底 + ::before 公共街区骨架
+ *   .map-stage-backdrop--<page>  = ::after 每页占用痕 (page-specific)
+ *   .map-stage-filter-overlay    = faction 派系占用痕 / decoder 覆膜
+ *   .map-stage-anomaly           = 禁区异常层 (0.77Hz 偏心脉冲)
+ * 信息密度压四边 / 中心 60% 留喘息 · composite 场景在 z=2 以上不被干扰
+ * ================================================================ */
 
 .map-stage-backdrop {
     position:absolute;
     inset:0;
-    background:#030607;
+    background:#0a0c0a; /* 通用 fallback — 各 page 覆写 */
     z-index:0;
+    overflow:hidden;
 }
 
-.map-stage-backdrop--faction {
+/* 公共底骨架: 街区方格 + 主轴线, 全页共享 — "这是同一块物理空间"
+ * 亮度: 空白区域应能清晰感知到格线存在, 但不压过 composite 场景 */
+.map-stage-backdrop::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:0.62;
     background:
-        radial-gradient(circle at 28% 24%, rgba(136, 26, 14, 0.22) 0%, rgba(136, 26, 14, 0) 28%),
-        radial-gradient(circle at 70% 68%, rgba(108, 18, 12, 0.18) 0%, rgba(108, 18, 12, 0) 26%),
-        linear-gradient(180deg, rgba(6, 8, 10, 0.98) 0%, rgba(5, 6, 8, 0.96) 100%),
-        repeating-linear-gradient(90deg, rgba(112, 22, 16, 0.12) 0, rgba(112, 22, 16, 0.12) 11px, rgba(0, 0, 0, 0) 11px, rgba(0, 0, 0, 0) 118px);
+        /* 主轴线 (纵/横 各一条中轴) */
+        linear-gradient(90deg, rgba(190,255,92,0.12) 0 1px, transparent 1px 100%),
+        linear-gradient(180deg, rgba(190,255,92,0.11) 0 1px, transparent 1px 100%),
+        /* 街区大格 (148×128px) */
+        repeating-linear-gradient(90deg, rgba(210,240,160,0.07) 0 1px, transparent 1px 148px),
+        repeating-linear-gradient(180deg, rgba(210,240,160,0.065) 0 1px, transparent 1px 128px),
+        /* 细化次级格 (74×64px) 只取边角, 增加密度但中央留空 */
+        repeating-linear-gradient(90deg, rgba(210,240,160,0.028) 0 1px, transparent 1px 74px),
+        repeating-linear-gradient(180deg, rgba(210,240,160,0.028) 0 1px, transparent 1px 64px);
 }
 
+/* page 占用痕插槽: 各 --<page> 覆写 background */
+.map-stage-backdrop::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+}
+
+/* --- base: 军工营地 / 暖灯 / 人用过的工具感 ---
+ * 基础色: 暖橄榄深色 #1a1d10, 让"家的感觉"通过环境色先到位 */
 .map-stage-backdrop--base {
     background:
-        radial-gradient(circle at 54% 18%, rgba(168, 182, 56, 0.16) 0%, rgba(168, 182, 56, 0) 24%),
-        linear-gradient(180deg, rgba(6, 8, 10, 0.98) 0%, rgba(7, 9, 10, 0.96) 100%),
-        repeating-linear-gradient(90deg, rgba(108, 18, 12, 0.1) 0, rgba(108, 18, 12, 0.1) 10px, rgba(0, 0, 0, 0) 10px, rgba(0, 0, 0, 0) 116px);
+        radial-gradient(ellipse at 50% 58%, rgba(34, 36, 20, 1) 0%, rgba(20, 22, 14, 1) 62%, rgba(10, 12, 8, 1) 100%);
 }
 
+.map-stage-backdrop--base::after {
+    opacity:0.92;
+    background:
+        /* 右上角工作灯晕 (暖琥珀) */
+        radial-gradient(ellipse 240px 150px at 84% 14%, rgba(255, 190, 90, 0.22) 0%, rgba(255, 170, 60, 0) 78%),
+        /* 左下角油污擦痕 */
+        radial-gradient(ellipse 340px 180px at 10% 92%, rgba(82, 58, 26, 0.48) 0%, rgba(50, 36, 14, 0) 82%),
+        /* 中央暖渲染 (橄榄绿 → 透明), 把"家的温度"铺到中心 */
+        radial-gradient(ellipse 520px 320px at 50% 62%, rgba(88, 78, 32, 0.18) 0%, rgba(60, 52, 20, 0.06) 48%, rgba(0, 0, 0, 0) 82%),
+        /* 弥散暖雾 (极大 blob 提亮) */
+        radial-gradient(ellipse 900px 400px at 50% 48%, rgba(140, 108, 42, 0.06) 0%, rgba(0, 0, 0, 0) 70%),
+        /* 金属擦痕横纹 */
+        repeating-linear-gradient(92deg, rgba(150, 118, 50, 0.08) 0 2px, transparent 2px 38px);
+}
+
+/* --- faction: 中性街区共抢底, filter-overlay 负责派系差异 ---
+ * 基础色: 墨绿 #16201a, 派系能靠 overlay 各自染色而不被全局色锁死 */
+.map-stage-backdrop--faction {
+    background:
+        radial-gradient(ellipse at 50% 55%, rgba(22, 32, 22, 1) 0%, rgba(14, 20, 14, 1) 60%, rgba(8, 10, 8, 1) 100%);
+}
+
+.map-stage-backdrop--faction::after {
+    opacity:0.88;
+    background:
+        /* 中央散光 — 中性墨绿 */
+        radial-gradient(ellipse 620px 340px at 50% 48%, rgba(72, 96, 56, 0.2) 0%, rgba(36, 52, 30, 0.06) 56%, rgba(0, 0, 0, 0) 88%),
+        /* 左下暗角 */
+        radial-gradient(ellipse 360px 240px at 12% 88%, rgba(14, 24, 16, 0.5) 0%, rgba(8, 12, 8, 0) 78%),
+        /* 右上亮角 (派系势力接壤的灰光) */
+        radial-gradient(ellipse 320px 200px at 82% 16%, rgba(180, 200, 120, 0.08) 0%, rgba(120, 140, 80, 0) 78%),
+        /* 斜向派系边界暗示 */
+        linear-gradient(136deg, rgba(0, 0, 0, 0) 47%, rgba(255, 255, 255, 0.04) 49.8%, rgba(0, 0, 0, 0) 53%);
+}
+
+/* --- defense: 战壕切痕 / 砂尘沉降 / 远处余烬 ---
+ * 基础色: 砂尘棕 #2a1f12, 战损即视感 */
 .map-stage-backdrop--defense {
     background:
-        radial-gradient(circle at 18% 42%, rgba(114, 230, 255, 0.1) 0%, rgba(114, 230, 255, 0) 20%),
-        linear-gradient(180deg, rgba(6, 8, 10, 0.98) 0%, rgba(5, 6, 8, 0.96) 100%),
-        repeating-linear-gradient(90deg, rgba(112, 22, 16, 0.11) 0, rgba(112, 22, 16, 0.11) 11px, rgba(0, 0, 0, 0) 11px, rgba(0, 0, 0, 0) 118px);
+        radial-gradient(ellipse at 40% 68%, rgba(52, 36, 18, 1) 0%, rgba(28, 20, 12, 1) 62%, rgba(12, 10, 8, 1) 100%);
 }
 
+.map-stage-backdrop--defense::after {
+    opacity:0.94;
+    background:
+        /* 远处余烬火光 (左下) */
+        radial-gradient(ellipse 340px 220px at 24% 84%, rgba(198, 82, 26, 0.28) 0%, rgba(120, 50, 14, 0) 74%),
+        /* 砂尘雾气 (大范围提亮) */
+        radial-gradient(ellipse 900px 320px at 50% 22%, rgba(206, 174, 118, 0.1) 0%, rgba(160, 130, 80, 0) 82%),
+        /* 中央干旱地面底色 */
+        radial-gradient(ellipse 560px 280px at 50% 58%, rgba(100, 76, 38, 0.16) 0%, rgba(60, 44, 22, 0.06) 56%, rgba(0, 0, 0, 0) 86%),
+        /* 战壕切痕 (两条斜线) */
+        linear-gradient(118deg, transparent 39%, rgba(200, 148, 86, 0.16) 40.2%, rgba(200, 148, 86, 0.08) 40.8%, transparent 42%),
+        linear-gradient(122deg, transparent 63%, rgba(186, 124, 64, 0.13) 64.2%, transparent 65.4%),
+        /* 辐射告警斜纹 */
+        repeating-linear-gradient(45deg, rgba(230, 180, 60, 0.05) 0 10px, transparent 10px 42px);
+}
+
+/* --- school: 档案秩序 / 冬日午后光 / 冷观察者 ---
+ * 基础色: 冷青蓝 #0e1a24, 与 base 的暖构成冷暖对位 */
 .map-stage-backdrop--school {
     background:
-        radial-gradient(circle at 56% 52%, rgba(174, 228, 255, 0.08) 0%, rgba(174, 228, 255, 0) 24%),
-        linear-gradient(180deg, rgba(6, 8, 10, 0.98) 0%, rgba(7, 8, 10, 0.96) 100%),
-        repeating-linear-gradient(90deg, rgba(112, 22, 16, 0.1) 0, rgba(112, 22, 16, 0.1) 11px, rgba(0, 0, 0, 0) 11px, rgba(0, 0, 0, 0) 118px);
+        radial-gradient(ellipse at 50% 52%, rgba(22, 38, 54, 1) 0%, rgba(14, 24, 36, 1) 60%, rgba(8, 14, 22, 1) 100%);
+}
+
+.map-stage-backdrop--school::after {
+    opacity:0.9;
+    background:
+        /* 冬日斜光 (右上 暖白) */
+        linear-gradient(216deg, rgba(255, 230, 180, 0.14) 0%, rgba(255, 230, 180, 0) 42%),
+        /* 左下一处档案室暖灯角落 */
+        radial-gradient(ellipse 240px 160px at 14% 86%, rgba(255, 202, 128, 0.12) 0%, rgba(220, 168, 100, 0) 78%),
+        /* 中央冷光提亮 */
+        radial-gradient(ellipse 640px 360px at 50% 50%, rgba(72, 146, 196, 0.18) 0%, rgba(32, 78, 118, 0.06) 58%, rgba(0, 0, 0, 0) 88%),
+        /* 档案索引细网 (比公共骨架更密) */
+        repeating-linear-gradient(90deg, rgba(174, 228, 255, 0.12) 0 1px, transparent 1px 52px),
+        repeating-linear-gradient(180deg, rgba(174, 228, 255, 0.1) 0 1px, transparent 1px 64px);
+}
+
+/* --- default fallback (未匹配 page) 保持纯底色 + 骨架 --- */
+.map-stage-backdrop--default {
+    background:#0a0c0a;
+}
+.map-stage-backdrop--default::after {
+    opacity:0;
+}
+
+/* ================================================================
+ * filter-overlay: faction 四派系 "抢同一块地" 的占用痕覆膜
+ * (defense/base/school 本层保持空, faction 以外无副作用)
+ * ================================================================ */
+
+.map-stage-filter-overlay {
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity 0.22s ease, background 0.22s ease;
+}
+
+.map-stage-filter-overlay[data-page-id="faction"] {
+    opacity:1;
+}
+
+/* warlord: 旧军绿 + 锈红扇形射界 + 钢印条 */
+.map-stage-filter-overlay[data-page-id="faction"][data-active-filter="warlord"] {
+    background:
+        /* 左上扇形射界 (锈红) */
+        conic-gradient(from 190deg at 22% 26%, rgba(168, 48, 28, 0.32) 0deg, rgba(168, 48, 28, 0) 34deg),
+        /* 右下扇形射界 */
+        conic-gradient(from 330deg at 76% 72%, rgba(152, 42, 22, 0.26) 0deg, rgba(152, 42, 22, 0) 42deg),
+        /* 军绿底覆盖 */
+        linear-gradient(180deg, rgba(78, 96, 50, 0.18) 0%, rgba(40, 52, 26, 0.04) 52%),
+        /* 钢印细条纹 */
+        repeating-linear-gradient(2deg, rgba(220, 86, 56, 0.055) 0 1px, transparent 1px 44px);
+}
+
+/* rock: 霓虹紫洋红 + 共振环 + 脏玻璃渍 */
+.map-stage-filter-overlay[data-page-id="faction"][data-active-filter="rock"] {
+    background:
+        /* 中央紫洋红大光晕 */
+        radial-gradient(circle at 66% 36%, rgba(220, 60, 210, 0.28) 0%, rgba(178, 36, 170, 0) 30%),
+        /* 共振环 · 紫 */
+        radial-gradient(circle at 70% 42%, rgba(220, 60, 210, 0) 13.4%, rgba(220, 60, 210, 0.18) 14.2%, rgba(220, 60, 210, 0) 15%),
+        /* 共振环 · 毒物绿 */
+        radial-gradient(circle at 70% 42%, rgba(110, 240, 160, 0) 17.8%, rgba(110, 240, 160, 0.14) 18.5%, rgba(110, 240, 160, 0) 19.4%),
+        /* 脏玻璃斜色块 */
+        linear-gradient(112deg, rgba(90, 32, 94, 0.2) 0%, rgba(0, 0, 0, 0) 42%);
+}
+
+/* blackiron: 朱砂节点 → 铜接口 → 墨底 "道袍下的光纤" */
+.map-stage-filter-overlay[data-page-id="faction"][data-active-filter="blackiron"] {
+    background:
+        /* 朱砂主节点 (左下) */
+        radial-gradient(circle at 20% 72%, rgba(216, 56, 38, 0.52) 0%, rgba(216, 56, 38, 0) 4.8%),
+        radial-gradient(circle at 26% 88%, rgba(216, 56, 38, 0.44) 0%, rgba(216, 56, 38, 0) 4.2%),
+        /* 铜接口点 */
+        radial-gradient(circle at 14% 80%, rgba(220, 158, 72, 0.4) 0%, rgba(220, 158, 72, 0) 1.6%),
+        radial-gradient(circle at 22% 82%, rgba(220, 158, 72, 0.36) 0%, rgba(220, 158, 72, 0) 1.4%),
+        /* 铜细线 — 管线经络化 */
+        linear-gradient(14deg, rgba(0,0,0,0) 20%, rgba(200, 148, 68, 0.18) 20.15%, rgba(0,0,0,0) 20.4%),
+        linear-gradient(-28deg, rgba(0,0,0,0) 62%, rgba(200, 148, 68, 0.14) 62.15%, rgba(0,0,0,0) 62.4%),
+        /* 墨底压印 (整张压一层 wash) */
+        linear-gradient(180deg, rgba(24, 16, 20, 0.52) 0%, rgba(14, 10, 14, 0.24) 100%);
+}
+
+/* fallen: 琥珀暖雾 + 动线回环 + 招牌水迹 */
+.map-stage-filter-overlay[data-page-id="faction"][data-active-filter="fallen"] {
+    background:
+        /* 右下主光区 · 琥珀 */
+        radial-gradient(ellipse 380px 240px at 72% 70%, rgba(224, 142, 54, 0.32) 0%, rgba(196, 118, 40, 0) 74%),
+        /* 酒红点缀 */
+        radial-gradient(circle at 78% 74%, rgba(220, 62, 80, 0.22) 0%, rgba(198, 48, 64, 0) 26%),
+        /* 霓虹招牌水迹倒影 */
+        radial-gradient(ellipse 80px 10px at 64% 82%, rgba(255, 190, 110, 0.42) 0%, rgba(255, 180, 90, 0) 80%),
+        /* 斜向暖色覆盖 */
+        linear-gradient(222deg, rgba(92, 42, 20, 0.3) 0%, rgba(0, 0, 0, 0) 48%);
+}
+
+/* all: 中性 muted, 轻散光 */
+.map-stage-filter-overlay[data-page-id="faction"][data-active-filter="all"] {
+    background:
+        radial-gradient(ellipse 560px 280px at 50% 50%, rgba(80, 110, 68, 0.14) 0%, rgba(40, 56, 36, 0) 78%);
+}
+
+/* ================================================================
+ * 频段重调过渡 · filter 切换瞬态 (~180ms, 可 prefers-reduced-motion 降级)
+ * 动作: skewX + 轻微模糊 + 亮度微波动, 借 Gemini "电台找台" 动作
+ * ================================================================ */
+.map-stage-frame.is-retuning .map-stage-backdrop {
+    /* filter-overlay 与 anomaly 现在是 backdrop 子节点, 父层 transform 自动传递, 不再单独动画 */
+    animation:mapStageRetune 0.18s ease-out;
+}
+
+@keyframes mapStageRetune {
+    0%   { transform:skewX(0deg);   filter:blur(0) brightness(1); }
+    20%  { transform:skewX(-2.4deg); filter:blur(1.8px) brightness(1.12); }
+    55%  { transform:skewX(1.2deg);  filter:blur(0.7px) brightness(0.92); }
+    100% { transform:skewX(0deg);   filter:blur(0) brightness(1); }
+}
+
+/* ================================================================
+ * 禁区异常层 · defense + restricted filter
+ *   等高线向偏右上错误坐标坍缩 + 0.77Hz (1.3s) 三段式呼吸脉冲
+ *   "不是界面在呼吸, 是有东西在回看你"
+ * ================================================================ */
+.map-stage-anomaly {
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity 0.4s ease;
+    background:
+        /* 等高线向 (72%, 22%) 坍缩: 奇点附近最亮, 外环递减 */
+        radial-gradient(circle at 72% 22%, rgba(150, 72, 220, 0.38) 0%, rgba(150, 72, 220, 0) 14%),
+        radial-gradient(circle at 72% 22%, rgba(180, 92, 240, 0) 17.4%, rgba(180, 92, 240, 0.22) 18.4%, rgba(180, 92, 240, 0) 19.4%),
+        radial-gradient(circle at 72% 22%, rgba(160, 76, 220, 0) 27.4%, rgba(160, 76, 220, 0.15) 28.4%, rgba(160, 76, 220, 0) 29.4%),
+        radial-gradient(circle at 72% 22%, rgba(140, 62, 200, 0) 39.4%, rgba(140, 62, 200, 0.1) 40.4%, rgba(140, 62, 200, 0) 41.4%),
+        radial-gradient(circle at 72% 22%, rgba(120, 52, 180, 0) 51.4%, rgba(120, 52, 180, 0.06) 52.4%, rgba(120, 52, 180, 0) 53.4%);
+}
+
+.map-stage-anomaly.is-active {
+    opacity:1;
+}
+
+.map-stage-anomaly-pulse {
+    position:absolute;
+    left:72%;
+    top:22%;
+    width:18px;
+    height:18px;
+    margin-left:-9px;
+    margin-top:-9px;
+    border-radius:999px;
+    background:rgba(186, 96, 240, 0.38);
+    box-shadow:0 0 18px rgba(186, 96, 240, 0.4);
+    opacity:0;
+}
+
+.map-stage-anomaly.is-active .map-stage-anomaly-pulse {
+    animation:mapStageAnomalyCore 1.3s ease-out infinite;
+}
+
+.map-stage-anomaly.is-active .map-stage-anomaly-pulse::before,
+.map-stage-anomaly.is-active .map-stage-anomaly-pulse::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius:999px;
+    border:1px solid rgba(186, 96, 240, 0.58);
+    animation:mapStageAnomalyRing 1.3s ease-out infinite;
+}
+
+.map-stage-anomaly.is-active .map-stage-anomaly-pulse::after {
+    animation-delay:-0.43s;
+    border-color:rgba(160, 82, 220, 0.4);
+}
+
+@keyframes mapStageAnomalyCore {
+    0%   { opacity:0.7; transform:scale(0.65); }
+    70%  { opacity:0.14; transform:scale(1.0); }
+    100% { opacity:0; transform:scale(1.2); }
+}
+
+@keyframes mapStageAnomalyRing {
+    0%   { opacity:0.7; transform:scale(0.8); }
+    80%  { opacity:0.08; transform:scale(3.4); }
+    100% { opacity:0; transform:scale(4); }
+}
+
+/* ================================================================
+ * 动效降级
+ * ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .map-stage-frame.is-retuning .map-stage-backdrop {
+        animation:none;
+    }
+    .map-stage-anomaly.is-active .map-stage-anomaly-pulse,
+    .map-stage-anomaly.is-active .map-stage-anomaly-pulse::before,
+    .map-stage-anomaly.is-active .map-stage-anomaly-pulse::after {
+        animation:none;
+        opacity:0.3;
+    }
 }
 
 .map-stage-frame.is-assembled::before {
@@ -2873,6 +3155,113 @@
     color:rgba(255, 205, 182, 0.72);
 }
 
+/* ================================================================
+ * Rail 场景子列表 · 手风琴第二级
+ *   仅 active 且非 meta(all/hierarchy) 的 filter 展开其 hotspot 子项
+ *   视觉语言: 向右缩进 + 左侧 accent 竖线归属, 字号/高度小于 filter 按钮
+ *   交互: 点击 = 点击对应 stage hotspot, 复用 requestNavigate
+ * ================================================================ */
+.map-rail-scene-list {
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    margin:4px 0 8px 10px;
+    padding:4px 0 4px 8px;
+    border-left:1px solid rgba(200,255,76,0.22);
+}
+
+.map-rail-scene-item {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    width:100%;
+    height:26px;
+    padding:0 8px;
+    background:rgba(10, 14, 12, 0.56);
+    border:1px solid rgba(200,255,76,0.1);
+    color:#c4d8a0;
+    font-size:11px;
+    letter-spacing:0.3px;
+    cursor:pointer;
+    text-align:left;
+    transition:background 0.12s ease, border-color 0.12s ease, color 0.12s ease, transform 0.12s ease;
+}
+
+.map-rail-scene-item:hover {
+    background:rgba(22, 30, 18, 0.78);
+    border-color:rgba(200,255,76,0.32);
+    color:#e7f5bf;
+    transform:translateX(1px);
+}
+
+.map-rail-scene-item:focus {
+    outline:none;
+    border-color:rgba(200,255,76,0.52);
+    color:#f1ffcf;
+}
+
+.map-rail-scene-dot {
+    width:5px;
+    height:5px;
+    border-radius:999px;
+    background:rgba(200,255,76,0.34);
+    flex-shrink:0;
+}
+
+.map-rail-scene-label {
+    flex:1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* is-current: 小雷达点 + 高亮边, 呼应地图上 current location marker */
+.map-rail-scene-item.is-current {
+    border-color:rgba(114,230,255,0.6);
+    background:rgba(14, 28, 36, 0.76);
+    color:#d6f5ff;
+    box-shadow:inset 2px 0 0 rgba(114,230,255,0.7);
+}
+
+.map-rail-scene-item.is-current .map-rail-scene-dot {
+    background:rgba(114,230,255,0.95);
+    box-shadow:0 0 8px rgba(114,230,255,0.6);
+    animation:mapRailSceneCurrentPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes mapRailSceneCurrentPulse {
+    0%, 100% { box-shadow:0 0 6px rgba(114,230,255,0.5); }
+    50%      { box-shadow:0 0 12px rgba(114,230,255,0.9); }
+}
+
+/* is-disabled: 锁定/未启用, 弱化但仍可点 (click → toast lockedReason) */
+.map-rail-scene-item.is-disabled {
+    border-color:rgba(255,142,96,0.26);
+    background:rgba(24, 14, 10, 0.64);
+    color:rgba(255, 205, 182, 0.58);
+    cursor:help;
+}
+
+.map-rail-scene-item.is-disabled:hover {
+    background:rgba(34, 18, 12, 0.8);
+    border-color:rgba(255,142,96,0.42);
+    color:rgba(255, 214, 196, 0.82);
+    transform:none;
+}
+
+.map-rail-scene-item.is-disabled .map-rail-scene-dot {
+    background:rgba(255,142,96,0.52);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .map-rail-scene-item.is-current .map-rail-scene-dot {
+        animation:none;
+    }
+    .map-rail-scene-item:hover {
+        transform:none;
+    }
+}
+
 .map-feedback-marker {
     position:absolute;
     width:14px;
@@ -3168,32 +3557,35 @@
 .map-stage-corner--br::before { bottom:0; right:0; }
 .map-stage-corner--br::after  { bottom:0; right:0; }
 
-/* Stage 扫描线 —— 缓慢从上向下扫，叠加在所有内容之上但不拦事件 */
+/* Stage 扫描线 —— 缓慢从上向下扫, 叠加在所有内容之上但不拦事件
+ * 元素 inset:0 铺满 stage, 亮带做在 gradient 顶部 ~14%, 靠 translateY 自身高度
+ * 动画范围即 stage 全高, 解决旧实现扫描不到下半场的问题 */
 .map-stage-scanline {
     position:absolute;
-    left:0; right:0;
-    top:0;
-    height:86px;
+    inset:0;
     z-index:7;
     pointer-events:none;
     background:linear-gradient(
         180deg,
-        rgba(200, 255, 76, 0) 0%,
-        rgba(200, 255, 76, 0.05) 42%,
-        rgba(200, 255, 76, 0.12) 70%,
-        rgba(220, 255, 128, 0.24) 96%,
-        rgba(220, 255, 128, 0) 100%
+        rgba(220, 255, 128, 0.22) 0%,
+        rgba(200, 255, 76, 0.12) 3%,
+        rgba(200, 255, 76, 0.06) 7%,
+        rgba(200, 255, 76, 0.02) 12%,
+        rgba(200, 255, 76, 0) 18%,
+        rgba(200, 255, 76, 0) 100%
     );
     mix-blend-mode:screen;
-    opacity:0.5;
+    opacity:0.55;
     animation:mapStageScan 6.8s linear infinite;
+    will-change:transform;
 }
 @media (prefers-reduced-motion: reduce) {
     .map-stage-scanline { display:none; }
 }
 @keyframes mapStageScan {
-    0%   { transform:translateY(-120%); }
-    100% { transform:translateY(calc(100% + 120%)); }
+    /* 元素占满 stage 高度, translateY(100%) = stage 全高一次完整 sweep */
+    0%   { transform:translateY(-100%); }
+    100% { transform:translateY(100%); }
 }
 
 /* Hotspot hover 靶标括号 —— 四个尖角 L 形。opacity 默认 0，hover/focus/busy/current 才浮现，
