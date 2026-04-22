@@ -1,16 +1,16 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-连环踢" itemID="699a5324-00000a8e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-连环踢" lastModified="1776543068" lastUniqueIdentifier="843">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-连环踢" itemID="699a5324-00000a8e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-连环踢" lastModified="1776885615" lastUniqueIdentifier="843">
   <timeline>
-    <DOMTimeline name="空手攻击容器-连环踢" currentFrame="21">
+    <DOMTimeline name="空手攻击容器-连环踢" currentFrame="51">
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="28" name="连环踢" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="28" duration="29" name="连环踢2段" labelType="name" keyMode="9728">
+            <DOMFrame index="28" duration="24" name="连环踢2段" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="57" keyMode="9728">
+            <DOMFrame index="52" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -272,13 +272,13 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="15" keyMode="9728">
+            <DOMFrame index="42" duration="10" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="57" keyMode="9728">
+            <DOMFrame index="52" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.空手攻击路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
@@ -286,7 +286,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层2" color="#808080" autoNamed="false">
+        <DOMLayer name="子弹层2" color="#808080" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements/>
@@ -495,12 +495,12 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="13" keyMode="9728">
+            <DOMFrame index="45" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#73BC75" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#73BC75" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -786,7 +786,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="419.25" centerPoint3DY="-58.45">
                   <matrix>
-                    <Matrix a="4.8741455078125" d="3.43482971191406" tx="126.05" ty="-14.85"/>
+                    <Matrix a="4.8741455078125" d="3.434814453125" tx="126.05" ty="-14.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-73.6" y="1.4"/>
@@ -924,7 +924,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="612.2" centerPoint3DY="-35.45">
                   <matrix>
-                    <Matrix a="4.16163635253906" d="3.15966796875" tx="266.7" ty="8.5"/>
+                    <Matrix a="4.16162109375" d="3.15966796875" tx="266.7" ty="8.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-73.6" y="1.4"/>
@@ -986,7 +986,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="14" keyMode="9728">
+            <DOMFrame index="44" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1119,12 +1119,12 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="44" duration="14" keyMode="9728">
+            <DOMFrame index="44" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#4FB28F" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#4FB28F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1134,7 +1134,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
             <DOMFrame index="22" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -1172,7 +1172,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             <DOMFrame index="28" duration="20" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="48" duration="10" keyMode="9728">
+            <DOMFrame index="48" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -1183,14 +1183,9 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	var 自机 = _parent._parent;
-	if (自机._name == _root.控制目标)
-	{
-		_root.技能函数.连环踢可派生搓招();
-	}
-}
-
-]]></script>
+	if (_parent._parent._name == _root.控制目标)
+	{_parent.连环踢可派生搓招();}
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -1438,7 +1433,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="50" duration="8" motionTweenScale="false" keyMode="8192">
+            <DOMFrame index="50" duration="3" motionTweenScale="false" keyMode="8192">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1566,7 +1561,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             <DOMFrame index="44" duration="2" motionTweenScale="false" keyMode="8192">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" duration="12" keyMode="9728">
+            <DOMFrame index="46" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1606,7 +1601,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="16" keyMode="9728">
+            <DOMFrame index="42" duration="11" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("爆炸 较深邃 02.mp3");]]></script>
               </Actionscript>
@@ -1649,7 +1644,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="46" duration="12" keyMode="9728">
+            <DOMFrame index="46" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1887,10 +1882,10 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="49" duration="6" keyMode="9728">
+            <DOMFrame index="49" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="55" duration="3" keyMode="9728">
+            <DOMFrame index="52" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -13011,7 +13006,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" duration="6" keyMode="9728">
+            <DOMFrame index="52" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="106.1" centerPoint3DY="-124.05">
                   <matrix>
@@ -13228,7 +13223,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
         </DOMLayer>
         <DOMLayer name="刚体标签" color="#FF4F4F" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="58" keyMode="9728">
+            <DOMFrame index="0" duration="53" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
@@ -13244,7 +13239,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
         </DOMLayer>
         <DOMLayer name="影子" color="#A37FA5" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="58" keyMode="9728">
+            <DOMFrame index="0" duration="53" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
