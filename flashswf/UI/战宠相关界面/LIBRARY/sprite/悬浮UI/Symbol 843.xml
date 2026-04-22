@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 843" itemID="6597607e-000007f9" lastModified="1756578462" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 843" itemID="6597607e-000007f9" lastModified="1776829828" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="Symbol 843" currentFrame="106">
+    <DOMTimeline name="Symbol 843" currentFrame="94">
       <layers>
         <DOMLayer name="Script Layer" color="#7896E5">
           <frames>
@@ -23,7 +23,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#A80BFE" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#A80BFE" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="56" keyMode="9728">
               <elements/>
@@ -54,7 +54,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#88FA61">
+        <DOMLayer name="Layer 4" color="#88FA61" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1226,7 +1226,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="85" keyMode="9728">
               <elements>
-                <DOMBitmapInstance libraryItemName="战宠头像/位图 311">
+                <DOMBitmapInstance libraryItemName="战宠头像/311新">
                   <matrix>
                     <Matrix a="0.160003662109375" d="0.160003662109375"/>
                   </matrix>
@@ -1307,7 +1307,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="94" keyMode="9728">
               <elements>
-                <DOMBitmapInstance libraryItemName="战宠头像/lady 2">
+                <DOMBitmapInstance libraryItemName="战宠头像/lady新">
                   <matrix>
                     <Matrix a="0.213333129882813" d="0.213333129882813"/>
                   </matrix>
