@@ -114,8 +114,10 @@ _root.gameCommands["safeExit"] = function() {
 };
 
 _root.gameCommands["openTaskMap"] = function() {
-    if (_root.地图界面._x != undefined) {
-        _root.地图界面.gotoAndStop(2);
+    // 旧路径 _root.地图界面.gotoAndStop(2) 已被 WebView 面板取代;
+    // 统一转发到 openWebMap, 旧 Flash 地图界面保持在 frame 1 (collapsed)
+    if (_root.gameCommands["openWebMap"] != undefined) {
+        _root.gameCommands["openWebMap"]({ source: "as2_task_map_cmd" });
     }
 };
 

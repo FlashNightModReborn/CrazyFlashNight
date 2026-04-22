@@ -1190,6 +1190,39 @@ namespace CF7Launcher.Guardian
             if (_onPanelStateChanged != null) _onPanelStateChanged(true);
         }
 
+        /// <summary>
+        /// AS2 → C# 面板打开请求 (旧版 Flash UI 按钮接入 WebView 面板).
+        /// 通过 TaskRegistry 注册的 "panel_request" task 驱动.
+        /// 当前仅支持 panel=="map"; 其它 panel 留待后续 (help / shop 已有各自入口).
+        /// </summary>
+        public void RequestOpenPanel(string panelName, string source)
+        {
+            if (_disposed) return;
+            if (this.IsHandleCreated && this.InvokeRequired)
+            {
+                try
+                {
+                    this.BeginInvoke(new Action(delegate()
+                    {
+                        RequestOpenPanel(panelName, source);
+                    }));
+                }
+                catch { }
+                return;
+            }
+
+            string safeSource = string.IsNullOrEmpty(source) ? "as2_request" : source;
+            if (string.Equals(panelName, "map", StringComparison.OrdinalIgnoreCase))
+            {
+                LogManager.Log("[Panel] RequestOpenPanel map source=" + safeSource);
+                OpenMapPanel(safeSource, false);
+            }
+            else
+            {
+                LogManager.Log("[Panel] RequestOpenPanel unsupported panel=" + (panelName ?? "<null>"));
+            }
+        }
+
         /// <summary>通过 XmlSocket 向 AS2 发送游戏命令。</summary>
         private void SendGameCommand(string action)
         {

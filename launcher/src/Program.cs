@@ -297,7 +297,7 @@ class Program
         MapTask mapTask = new MapTask(socketServer);
         ArchiveTask archiveTask = new ArchiveTask(projectRoot);
         BenchTask benchTask = new BenchTask(socketServer);
-        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, archiveTask, benchTask);
+        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, archiveTask, benchTask, webOverlay);
 
         // 面板系统接线 (11c: webOverlay 必有)
         webOverlay.SetShopTask(shopTask);

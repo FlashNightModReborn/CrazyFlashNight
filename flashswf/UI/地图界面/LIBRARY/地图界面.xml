@@ -4278,8 +4278,10 @@ On_Click_Faction("初始化");]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	gotoAndStop(2);
-	_root.gameworld._visible = false;
+	// 旧 frame 2 路径已被 WebView 面板取代; 统一走 openWebMap, 旧 UI 保持在 frame 1
+	if (_root.gameCommands != undefined && _root.gameCommands["openWebMap"] != undefined) {
+		_root.gameCommands["openWebMap"]({source: "legacy_map_ui_button"});
+	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

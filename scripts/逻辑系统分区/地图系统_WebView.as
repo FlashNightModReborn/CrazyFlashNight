@@ -594,3 +594,20 @@ _root.gameCommands["mapPanelNavigate"] = function(params) {
 _root.gameCommands["mapPanelClose"] = function(params) {
     _root._mapLog("mapPanelClose");
 };
+
+// 旧版 Flash 地图界面 (flashswf/UI/地图界面/LIBRARY/地图界面.xml 内 gotoAndStop(2) 的按钮)
+// 统一走此入口, 接入 WebView 新地图面板. 绕过旧 frame 跳转, 避免双 UI.
+_root.gameCommands["openWebMap"] = function(params) {
+    var source = (params != undefined && params.source != undefined) ? String(params.source) : "as2_legacy_button";
+    _root._mapLog("openWebMap request source=" + source);
+    // 旧 Flash 地图如果已经跳到 frame 2 , 先收回避免双叠
+    if (_root.地图界面 != undefined && _root.地图界面.gotoAndStop != undefined) {
+        _root.地图界面.gotoAndStop(1);
+    }
+    // 交给 Launcher 打开 WebView 面板, 不再隐藏 gameworld (WebView overlay 自己会盖住)
+    if (_root.server != undefined && _root.server.sendSocketMessage != undefined) {
+        _root.server.sendSocketMessage('{"task":"panel_request","panel":"map","source":"' + source + '"}');
+    } else {
+        _root._mapLog("openWebMap failed: server/sendSocketMessage unavailable");
+    }
+};

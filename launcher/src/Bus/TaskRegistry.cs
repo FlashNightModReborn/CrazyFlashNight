@@ -25,6 +25,7 @@ namespace CF7Launcher.Bus
     ///   console_result  JSON event  AS2→C#  (内部事件，触发 OnConsoleResult)
     ///   icon_bake       JSON sync   AS2↔C#  (图标烘焙：begin/chunk/end/complete)
     ///   archive         JSON async  AS2↔C#  httpCallable=true  (存档shadow备份/读取)
+    ///   panel_request   JSON sync   AS2→C#  (旧 Flash UI 请求 WebView 打开面板: 目前仅 map)
     /// </summary>
     public static class TaskRegistry
     {
@@ -55,7 +56,8 @@ namespace CF7Launcher.Bus
             ShopTask shopTask,
             MapTask mapTask,
             ArchiveTask archiveTask,
-            BenchTask benchTask)
+            BenchTask benchTask,
+            WebOverlayForm webOverlay)
         {
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
@@ -77,6 +79,18 @@ namespace CF7Launcher.Bus
             // 地图面板回包路由
             if (mapTask != null)
                 router.RegisterAsync("map_response", mapTask.HandleFlashResponse);
+
+            // AS2 → C# 面板打开请求 (旧 Flash 地图界面按钮 / openTaskMap 命令接入 WebView)
+            if (webOverlay != null)
+            {
+                router.RegisterSync("panel_request", delegate(JObject msg)
+                {
+                    string panel = msg.Value<string>("panel") ?? "";
+                    string source = msg.Value<string>("source") ?? "as2_request";
+                    webOverlay.RequestOpenPanel(panel, source);
+                    return null;
+                });
+            }
 
             // 存档 shadow 备份
             if (archiveTask != null)
@@ -139,6 +153,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "icon_bake",      "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);
             first = AppendTask(sb, "bench_sync",     "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "bench_async",    "json_async","AS2<->C#",false, first);
