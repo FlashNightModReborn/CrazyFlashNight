@@ -73,6 +73,10 @@ var MapPanelHarnessQA = (function() {
         return document.querySelector('.map-filter-hotspot[data-filter-id="' + filterId + '"]');
     }
 
+    function getHotspotOverlayLabel(hotspotId) {
+        return document.querySelector('.map-hotspot-overlay-label[data-hotspot-id="' + hotspotId + '"]');
+    }
+
     function getAvatarSrc() {
         var img = document.querySelector('.map-dynamic-avatar-image');
         return img ? img.getAttribute('src') || '' : '';
@@ -133,6 +137,103 @@ var MapPanelHarnessQA = (function() {
         }
 
         return rect;
+    }
+
+    function rectContainsPoint(rect, x, y) {
+        return !!rect &&
+            x >= rect.x &&
+            x <= rect.x + rect.w &&
+            y >= rect.y &&
+            y <= rect.y + rect.h;
+    }
+
+    function rectCenter(rect) {
+        return {
+            x: rect.x + (rect.w / 2),
+            y: rect.y + (rect.h / 2)
+        };
+    }
+
+    function pointDistance(a, b) {
+        var dx = a.x - b.x;
+        var dy = a.y - b.y;
+        return Math.sqrt((dx * dx) + (dy * dy));
+    }
+
+    function roundAuditValue(value) {
+        return Math.round(Number(value || 0) * 10) / 10;
+    }
+
+    function buildStaticAvatarOwnershipAudit(pageId) {
+        var page = MapPanelData.getPage(pageId);
+        var hotspots = page && page.hotspots ? page.hotspots : [];
+        var visuals = page && page.sceneVisuals ? page.sceneVisuals : [];
+
+        return (page && page.staticAvatars ? page.staticAvatars : []).map(function(slot) {
+            var center = {
+                x: slot.x + (slot.w / 2),
+                y: slot.y + (slot.h / 2)
+            };
+            var containingHotspotIds = hotspots.filter(function(hotspot) {
+                return rectContainsPoint(hotspot.rect, center.x, center.y);
+            }).map(function(hotspot) {
+                return hotspot.id;
+            });
+            var containingVisualIds = visuals.filter(function(visual) {
+                return rectContainsPoint(visual.rect, center.x, center.y);
+            }).map(function(visual) {
+                return visual.hotspotIds && visual.hotspotIds.length ? visual.hotspotIds[0] : visual.id;
+            });
+            var containingIds = sortIds(Array.from(new Set(containingHotspotIds.concat(containingVisualIds))));
+            var assignedHotspot = hotspots.filter(function(hotspot) {
+                return hotspot.id === slot.hotspotId;
+            })[0] || null;
+            var assignedDistance = assignedHotspot ? pointDistance(center, rectCenter(assignedHotspot.rect)) : Infinity;
+            var nearestContaining = hotspots.filter(function(hotspot) {
+                return containingIds.indexOf(hotspot.id) >= 0;
+            }).map(function(hotspot) {
+                return {
+                    id: hotspot.id,
+                    distance: pointDistance(center, rectCenter(hotspot.rect))
+                };
+            }).sort(function(a, b) {
+                return a.distance - b.distance;
+            });
+            var nearestHotspot = hotspots.map(function(hotspot) {
+                return {
+                    id: hotspot.id,
+                    distance: pointDistance(center, rectCenter(hotspot.rect))
+                };
+            }).sort(function(a, b) {
+                return a.distance - b.distance;
+            })[0] || null;
+            var assignedContains = containingIds.indexOf(slot.hotspotId) >= 0;
+            var clearMismatchHotspotId = (!assignedContains && containingIds.length === 1) ? containingIds[0] : '';
+            var ambiguousMismatchHotspotId = '';
+
+            if (assignedContains && nearestContaining.length > 0 && nearestContaining[0].id !== slot.hotspotId && isFinite(assignedDistance)) {
+                if (nearestContaining[0].distance <= assignedDistance * 0.5) {
+                    ambiguousMismatchHotspotId = nearestContaining[0].id;
+                }
+            }
+
+            return {
+                avatarId: slot.id,
+                label: slot.label || slot.id,
+                assignedHotspotId: slot.hotspotId || '',
+                centerX: roundAuditValue(center.x),
+                centerY: roundAuditValue(center.y),
+                containingHotspotIds: containingHotspotIds,
+                containingVisualIds: containingVisualIds,
+                containingIds: containingIds,
+                assignedContains: assignedContains,
+                assignedDistance: isFinite(assignedDistance) ? roundAuditValue(assignedDistance) : null,
+                nearestHotspotId: nearestHotspot ? nearestHotspot.id : '',
+                nearestHotspotDistance: nearestHotspot ? roundAuditValue(nearestHotspot.distance) : null,
+                clearMismatchHotspotId: clearMismatchHotspotId,
+                ambiguousMismatchHotspotId: ambiguousMismatchHotspotId
+            };
+        });
     }
 
     function runSuite(api, host, caseId) {
@@ -881,6 +982,105 @@ var MapPanelHarnessQA = (function() {
                         });
                     });
                 }
+            },
+            {
+                id: 'map-ui22',
+                title: 'school avatar ownership stays aligned with intended scene buckets',
+                run: function() {
+                    var expectedOwnership = {
+                        pe_teacher_avatar: 'university_interior',
+                        fengyouquan_avatar: 'kendo_club',
+                        vanshuther_avatar: 'workshop'
+                    };
+                    var reviewOnly = {
+                        science_prof_avatar: true,
+                        arts_teacher_avatar: true
+                    };
+
+                    return bootMap(api, host, { defaultPageId: 'school' }).then(function() {
+                        var audit = buildStaticAvatarOwnershipAudit('school');
+                        var lookup = {};
+                        var clearMismatches;
+                        var reviewCandidates;
+                        var id;
+
+                        audit.forEach(function(item) {
+                            lookup[item.avatarId] = item;
+                        });
+
+                        for (id in expectedOwnership) {
+                            var slot = lookup[id];
+                            var avatarEl;
+                            api.assert(!!slot, 'school ownership audit missing ' + id);
+                            api.assertEqual(slot.assignedHotspotId, expectedOwnership[id], id + ' hotspot ownership mismatch');
+                            api.assert(slot.assignedContains, id + ' center should stay inside assigned scene bucket');
+                            avatarEl = document.querySelector('.map-static-avatar[data-avatar-id="' + id + '"]');
+                            api.assert(!!avatarEl, 'school avatar element missing ' + id);
+                            api.assertEqual(avatarEl.getAttribute('data-hotspot-id'), expectedOwnership[id], id + ' rendered hotspot binding mismatch');
+                        }
+
+                        clearMismatches = audit.filter(function(item) {
+                            return item.clearMismatchHotspotId && !reviewOnly[item.avatarId];
+                        });
+                        api.assert(clearMismatches.length === 0, 'unexpected clear school avatar ownership mismatch: ' + clearMismatches.map(function(item) {
+                            return item.avatarId + '->' + item.clearMismatchHotspotId;
+                        }).join(','));
+
+                        reviewCandidates = audit.filter(function(item) {
+                            return item.clearMismatchHotspotId || item.ambiguousMismatchHotspotId;
+                        }).map(function(item) {
+                            return item.avatarId + '=' + item.assignedHotspotId + '->' + (item.clearMismatchHotspotId || item.ambiguousMismatchHotspotId);
+                        });
+
+                        return 'fixed=' + Object.keys(expectedOwnership).map(function(avatarId) {
+                            return avatarId + '->' + lookup[avatarId].assignedHotspotId;
+                        }).join(',') +
+                            (reviewCandidates.length ? ' review=' + reviewCandidates.join(',') : '');
+                    });
+                }
+            },
+            {
+                id: 'map-ui23',
+                title: 'hotspot corner labels stay attached under content-fit and above avatar chrome',
+                run: function() {
+                    return bootMap(api, host, { defaultPageId: 'defense' }).then(function() {
+                        clickByHitTest(api, getFilterButton('first_line'), 'first_line filter');
+                        return api.waitFor(function() {
+                            var state = currentState();
+                            return state && state.activeFilterId === 'first_line' ? state : null;
+                        }, 1500, 'switch to first_line').then(function() {
+                            var hotspotBtn = document.querySelector('.map-hotspot[data-hotspot-id="first_defense"]');
+                            var overlayLabel;
+                            var overlayStyle;
+                            var avatarLayer = document.getElementById('map-dynamic-avatar-layer');
+                            var labelLayer = document.getElementById('map-hotspot-label-layer');
+                            var hotspotRect;
+                            var labelRect;
+                            api.assert(!!hotspotBtn, 'first_defense hotspot missing');
+                            api.assert(!hotspotBtn.querySelector('.map-hotspot-label'), 'hotspot label should no longer live inside hotspot button');
+
+                            hotspotBtn.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+
+                            overlayLabel = getHotspotOverlayLabel('first_defense');
+                            api.assert(!!overlayLabel, 'first_defense overlay label missing');
+                            overlayStyle = window.getComputedStyle(overlayLabel);
+                            hotspotRect = hotspotBtn.getBoundingClientRect();
+                            labelRect = overlayLabel.getBoundingClientRect();
+                            api.assert(!!labelLayer && labelLayer.contains(overlayLabel), 'overlay label should render inside content-fit label layer');
+                            api.assert(!!avatarLayer, 'avatar layer missing');
+                            api.assert(parseInt(window.getComputedStyle(labelLayer).zIndex || '0', 10) > parseInt(window.getComputedStyle(avatarLayer).zIndex || '0', 10), 'label layer should stay above avatar layer');
+                            api.assert(overlayLabel.classList.contains('is-hover'), 'overlay label should track hotspot hover state');
+                            api.assert(parseFloat(overlayStyle.opacity || '0') > 0.9, 'overlay label should be visible on hover');
+                            api.assert(labelRect.left >= hotspotRect.left - 6, 'overlay label should not drift left of hotspot');
+                            api.assert(labelRect.left <= hotspotRect.right + 6, 'overlay label should stay horizontally attached to hotspot');
+                            api.assert(labelRect.bottom >= hotspotRect.top - 6, 'overlay label anchor should stay inside hotspot vertical band');
+                            api.assert(labelRect.bottom <= hotspotRect.bottom + 6, 'overlay label should not drift below hotspot');
+                            return 'label=' + overlayLabel.textContent +
+                                ' z=' + window.getComputedStyle(labelLayer).zIndex + '/' + window.getComputedStyle(avatarLayer).zIndex +
+                                ' anchor=' + Math.round(labelRect.left - hotspotRect.left) + ',' + Math.round(labelRect.bottom - hotspotRect.top);
+                        });
+                    });
+                }
             }
         ];
 
@@ -942,11 +1142,16 @@ var MapPanelHarnessQA = (function() {
 
     function collectDump(host) {
         var shell = document.getElementById('viewport-shell');
+        var ownershipAudit = {};
+        MapPanelData.getPageOrder().forEach(function(pageId) {
+            ownershipAudit[pageId] = buildStaticAvatarOwnershipAudit(pageId);
+        });
         return {
             hostState: host.getState(),
             sentMessages: host.getMessages(),
             mapState: currentState(),
             avatarSrc: getAvatarSrc(),
+            avatarOwnershipAudit: ownershipAudit,
             toastMessages: window.Toast && window.Toast.messages ? window.Toast.messages.slice() : [],
             viewport: host.getViewport(),
             shellRect: shell ? shell.getBoundingClientRect() : null

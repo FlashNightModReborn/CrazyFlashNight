@@ -7,7 +7,7 @@ var MapPanel = (function() {
     //   - 调大需回查 composite PNG 源分辨率, 否则最终总放大 > 1.5x 会 pixelated
     var STAGE_MAX_SCALE = 1.3;
 
-    var _el, _titleEl, _bodyEl, _stageEl, _stageShellEl, _railEl, _backdropEl, _filterOverlayEl, _anomalyEl, _contentFitEl, _imageEl, _sceneLayer, _hotspotLayer, _avatarLayer, _feedbackLayer, _overlayLayer, _loadingEl, _errorEl, _errorTextEl, _badgeEl;
+    var _el, _titleEl, _bodyEl, _stageEl, _stageShellEl, _railEl, _backdropEl, _filterOverlayEl, _anomalyEl, _contentFitEl, _imageEl, _sceneLayer, _hotspotLayer, _avatarLayer, _hotspotLabelLayer, _feedbackLayer, _overlayLayer, _loadingEl, _errorEl, _errorTextEl, _badgeEl;
     var _pageTabsEl, _pageSummaryEl;
     var _activePage = null;
     var _reqSeq = 0;
@@ -91,10 +91,11 @@ var MapPanel = (function() {
                         '</div>' +
                         '<img class="map-stage-image" id="map-stage-image" alt="地图背景">' +
                         '<div class="map-stage-content-fit" id="map-stage-content-fit">' +
-                        '<div class="map-scene-layer" id="map-scene-layer"></div>' +
-                        '<div class="map-hotspot-layer" id="map-hotspot-layer"></div>' +
-                        '<div class="map-dynamic-avatar-layer" id="map-dynamic-avatar-layer"></div>' +
-                        '<div class="map-feedback-layer" id="map-feedback-layer"></div>' +
+                            '<div class="map-scene-layer" id="map-scene-layer"></div>' +
+                            '<div class="map-hotspot-layer" id="map-hotspot-layer"></div>' +
+                            '<div class="map-dynamic-avatar-layer" id="map-dynamic-avatar-layer"></div>' +
+                            '<div class="map-hotspot-label-layer" id="map-hotspot-label-layer"></div>' +
+                            '<div class="map-feedback-layer" id="map-feedback-layer"></div>' +
                         '</div>' +
                         '<div class="map-stage-overlay-layer" id="map-stage-overlay-layer"></div>' +
                         '<div class="map-stage-scanline" aria-hidden="true"></div>' +
@@ -127,6 +128,7 @@ var MapPanel = (function() {
         _sceneLayer = _el.querySelector('#map-scene-layer');
         _hotspotLayer = _el.querySelector('#map-hotspot-layer');
         _avatarLayer = _el.querySelector('#map-dynamic-avatar-layer');
+        _hotspotLabelLayer = _el.querySelector('#map-hotspot-label-layer');
         _feedbackLayer = _el.querySelector('#map-feedback-layer');
         _overlayLayer = _el.querySelector('#map-stage-overlay-layer');
         _stageShellEl = _el.querySelector('#map-stage-shell');
@@ -613,13 +615,13 @@ var MapPanel = (function() {
                 btn.title = hotspot.label;
             }
             btn.innerHTML =
-                '<span class="map-hotspot-sheen"></span>' +
-                '<span class="map-hotspot-label">' + escHtml(hotspot.label) + '</span>';
+                '<span class="map-hotspot-sheen"></span>';
 
             attachHotspotHandler(btn, hotspot);
             _hotspotLayer.appendChild(btn);
         }
 
+        renderHotspotLabels();
         syncHotspotStates();
     }
 
@@ -886,6 +888,26 @@ var MapPanel = (function() {
         renderFlashHints(MapPanelData.getPageFlashHints(_activePage.id));
         renderFeedbackMarkers(_snapshotMarkers);
         renderFeedbackTips(_snapshotTips);
+    }
+
+    function renderHotspotLabels() {
+        if (!_activePage || !_hotspotLabelLayer) return;
+
+        var hotspots = getVisibleHotspots(_activePage);
+        _hotspotLabelLayer.innerHTML = '';
+        for (var i = 0; i < hotspots.length; i++) {
+            var hotspot = hotspots[i];
+            var rect = hotspot.rect;
+            var label = document.createElement('div');
+            label.className = 'map-hotspot-overlay-label';
+            label.setAttribute('data-hotspot-id', hotspot.id);
+            label.style.left = toPercent(rect.x + 8, _activePage.width);
+            label.style.top = toPercent((rect.y + rect.h) - 8, _activePage.height);
+            label.textContent = hotspot.label || hotspot.id;
+            _hotspotLabelLayer.appendChild(label);
+        }
+
+        syncHotspotLabelStates();
     }
 
     function renderFlashHints(hints) {
@@ -1183,6 +1205,7 @@ function resolveFeedbackAnchor(item) {
         renderAvatars();
         renderSceneVisuals();
         renderHotspots();
+        renderFeedback();
         renderFilterButtons();
         updatePageSummary();
         scheduleLayoutSync();
@@ -1303,7 +1326,30 @@ function resolveFeedbackAnchor(item) {
             }
         }
 
+        syncHotspotLabelStates();
         syncRailSceneItemStates();
+    }
+
+    function syncHotspotLabelStates() {
+        if (!_hotspotLabelLayer) return;
+
+        var activeViewMode = getActiveViewMode(_activePage);
+        var focusHotspotId = getFocusHotspotId(_activePage);
+        var labels = _hotspotLabelLayer.querySelectorAll('.map-hotspot-overlay-label');
+        for (var i = 0; i < labels.length; i++) {
+            var id = labels[i].getAttribute('data-hotspot-id') || '';
+            var hotspotState = getHotspotState(id);
+            var isFocused = !!focusHotspotId && focusHotspotId === id;
+            var isMuted = !!focusHotspotId && !isFocused;
+            var isBusy = !!_busyLookup[id];
+
+            labels[i].classList.toggle('is-hover', _hoverHotspotId === id);
+            labels[i].classList.toggle('is-current', _currentHotspotId === id);
+            labels[i].classList.toggle('is-busy', isBusy);
+            labels[i].classList.toggle('is-muted', isMuted);
+            labels[i].classList.toggle('is-disabled', !hotspotState.enabled);
+            labels[i].classList.toggle('is-relation', activeViewMode === 'hierarchy');
+        }
     }
 
     function syncRailSceneItemStates() {

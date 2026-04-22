@@ -222,13 +222,13 @@ var MapPanelData = (function() {
             ['bat_avatar', 'Bat', 'union_university', 471.4, 529.7, 'Bat头像.png'],
             ['tomboy_avatar', 'Tomboy', 'union_university', 516.9, 513.2, 'Tomboy头像.png'],
             ['weapon_order_avatar', '武器订购系统', 'union_university', 570.4, 516.7, '武器订购系统头像.png'],
-            ['pe_teacher_avatar', '体育老师', 'university_playground', 539.2, 428.65, '体育老师头像.png'],
+            ['pe_teacher_avatar', '体育老师', 'university_interior', 539.2, 428.65, '体育老师头像.png'],
             ['chengzheng_avatar', '程铮', 'teaching_interior', 486.65, 255.75, '程铮头像.png'],
             ['kendo_president_avatar', '剑道社长', 'kendo_club', 663.3, 213.1, '剑道社长头像.png'],
-            ['fengyouquan_avatar', '冯佑权', 'teaching_interior', 593.3, 211.9, '冯佑权头像.png'],
+            ['fengyouquan_avatar', '冯佑权', 'kendo_club', 593.3, 211.9, '冯佑权头像.png'],
             ['science_prof_avatar', '理科教授', 'science_class', 744.65, 212.35, '理科教授头像.png'],
             ['arts_teacher_avatar', '文科老师', 'arts_class', 810.9, 213.1, '文科老师头像.png'],
-            ['vanshuther_avatar', 'Vanshuther', 'university_interior', 555.75, 327.2, 'Vanshuther头像.png'],
+            ['vanshuther_avatar', 'Vanshuther', 'workshop', 555.75, 327.2, 'Vanshuther头像.png'],
             ['dean_avatar', '教导主任', 'office', 538.9, 104.15, '教导主任头像.png']
         ])
     };

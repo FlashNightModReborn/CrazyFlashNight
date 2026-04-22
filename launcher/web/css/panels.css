@@ -2934,17 +2934,24 @@
     pointer-events:none;
 }
 
-.map-feedback-layer {
+.map-hotspot-label-layer {
     position:absolute;
     inset:0;
     z-index:5;
     pointer-events:none;
 }
 
-.map-stage-overlay-layer {
+.map-feedback-layer {
     position:absolute;
     inset:0;
     z-index:6;
+    pointer-events:none;
+}
+
+.map-stage-overlay-layer {
+    position:absolute;
+    inset:0;
+    z-index:7;
     pointer-events:none;
 }
 
@@ -2985,11 +2992,6 @@
     box-shadow:none;
 }
 
-.map-hotspot.is-disabled .map-hotspot-label,
-.map-hotspot:disabled .map-hotspot-label {
-    color:#7d8578;
-}
-
 .map-hotspot.is-busy {
     border-color:#ffd04f;
     box-shadow:0 0 20px rgba(255, 208, 79, 0.28), inset 0 0 16px rgba(255, 208, 79, 0.08);
@@ -3024,10 +3026,8 @@
     pointer-events:none;
 }
 
-.map-hotspot-label {
+.map-hotspot-overlay-label {
     position:absolute;
-    left:8px;
-    bottom:8px;
     padding:2px 8px;
     color:#e9ffc1;
     background:rgba(6, 8, 6, 0.72);
@@ -3037,15 +3037,18 @@
     white-space:nowrap;
     pointer-events:none;
     opacity:0;
-    transform:translateY(4px);
+    transform:translateY(calc(-100% + 4px));
     transition:opacity 0.12s ease, transform 0.12s ease;
 }
 
-.map-hotspot:hover .map-hotspot-label,
-.map-hotspot:focus .map-hotspot-label,
-.map-hotspot.is-busy .map-hotspot-label {
+.map-hotspot-overlay-label.is-disabled {
+    color:#7d8578;
+}
+
+.map-hotspot-overlay-label.is-hover,
+.map-hotspot-overlay-label.is-busy {
     opacity:1;
-    transform:translateY(0);
+    transform:translateY(-100%);
 }
 
 .map-avatar,
