@@ -27,6 +27,7 @@ var MapPanel = (function() {
         create: createDOM,
         onOpen: onOpen,
         onRequestClose: function() { requestClose(); },
+        onClose: teardownLayoutWatcher,
         onForceClose: onForceClose
     });
 
@@ -145,6 +146,7 @@ var MapPanel = (function() {
     }
 
     function onForceClose() {
+        // teardownLayoutWatcher 已由 Panels.close() 经 onClose 钩子触发，此处只做状态复位。
         _closing = false;
         _pendingReq = {};
         _enabledLookup = {};
@@ -157,7 +159,6 @@ var MapPanel = (function() {
         _currentHotspotId = '';
         _hoverHotspotId = '';
         _busyLookup = {};
-        teardownLayoutWatcher();
         _stageScale = 1;
         hideError();
         setLoading(false);
