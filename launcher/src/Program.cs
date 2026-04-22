@@ -437,7 +437,7 @@ class Program
         // 通过 ArchiveTask 的 sync API 读 tombstone / shadow。SaveResolutionContext 只是 DI 聚合。
         CF7Launcher.Save.SolFileLocator solLocator = new CF7Launcher.Save.SolFileLocator();
         CF7Launcher.Save.SolResolver solResolver = new CF7Launcher.Save.SolResolver(
-            solLocator, archiveTask, new CF7Launcher.Save.NativeSolParser());
+            solLocator, archiveTask, new CF7Launcher.Save.NativeSolParser(), archiveTask);
         CF7Launcher.Save.SaveResolutionContext saveCtx = new CF7Launcher.Save.SaveResolutionContext(
             solLocator, solResolver, archiveTask, config.SwfPath);
 
@@ -480,7 +480,13 @@ class Program
         {
             form.BootstrapPanel.OnJsMessage += delegate(string json)
             {
-                CF7Launcher.Guardian.BootstrapMessageHandler.Handle(json, form.BootstrapPanel, archiveTask, launchFlow, userPrefs);
+                CF7Launcher.Guardian.BootstrapMessageHandler.Handle(
+                    json,
+                    form.BootstrapPanel,
+                    archiveTask,
+                    launchFlow,
+                    saveCtx,
+                    userPrefs);
             };
         }
 

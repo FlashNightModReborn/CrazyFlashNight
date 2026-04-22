@@ -98,12 +98,14 @@ namespace CF7Launcher.Save
         private readonly ISolFileLocator _locator;
         private readonly IArchiveStateProbe _archive;
         private readonly ISolParser _parser;
+        private readonly IArchiveShadowWriter _shadowWriter;
 
-        public SolResolver(ISolFileLocator locator, IArchiveStateProbe archive, ISolParser parser)
+        public SolResolver(ISolFileLocator locator, IArchiveStateProbe archive, ISolParser parser, IArchiveShadowWriter shadowWriter = null)
         {
             _locator = locator;
             _archive = archive;
             _parser = parser;
+            _shadowWriter = shadowWriter;
         }
 
         public SolResolveResult Resolve(string slot, string swfPath)
@@ -161,7 +163,7 @@ namespace CF7Launcher.Save
             if (!solExists)
             {
                 if (shadowValid)
-                    return SolResolveResult.NewSnapshot(shadow, "json_shadow");
+                    return NewSnapshotResult(slot, shadow, "json_shadow");
                 return SolResolveResult.NewEmpty();
             }
 
@@ -186,7 +188,7 @@ namespace CF7Launcher.Save
             {
                 LogManager.Log("[SolResolver] soData has no `test` key — structural anomaly");
                 if (shadowValid)
-                    return SolResolveResult.NewSnapshot(shadow, "json_shadow");
+                    return NewSnapshotResult(slot, shadow, "json_shadow");
                 return SolResolveResult.NewCorrupt("sol_no_test_field");
             }
 
@@ -207,10 +209,10 @@ namespace CF7Launcher.Save
                             && string.Compare(shadowTs, validSolTs, StringComparison.Ordinal) >= 0)
                         {
                             LogManager.Log("[SolResolver] v3.0 shadow newer-or-equal than SOL — prefer json_shadow");
-                            return SolResolveResult.NewSnapshot(shadow, "json_shadow");
+                            return NewSnapshotResult(slot, shadow, "json_shadow");
                         }
                     }
-                    return SolResolveResult.NewSnapshot(mydata, "sol");
+                    return NewSnapshotResult(slot, mydata, "sol");
                 }
 
                 LogManager.Log("[SolResolver] v3.0 structure invalid — shadow freshness check");
@@ -221,7 +223,7 @@ namespace CF7Launcher.Save
                     if (shadowTs != null
                         && string.Compare(shadowTs, solTs, StringComparison.Ordinal) >= 0)
                     {
-                        return SolResolveResult.NewSnapshot(shadow, "json_shadow");
+                        return NewSnapshotResult(slot, shadow, "json_shadow");
                     }
                 }
                 return SolResolveResult.NewCorrupt("v3.0_structure_invalid");
@@ -232,7 +234,7 @@ namespace CF7Launcher.Save
                 SaveMigrator.Migrate_2_7_to_3_0(mydata, soData);
                 SaveMigrator.MergeTopLevelKeys(mydata, soData);
                 if (SaveMigrator.ValidateResolvedSnapshot(mydata))
-                    return SolResolveResult.NewSnapshot(mydata, "sol");
+                    return NewSnapshotResult(slot, mydata, "sol");
                 LogManager.Log("[SolResolver] v2.7 C# migration failed — DeferToFlash");
                 return SolResolveResult.NewDeferToFlash();
             }
@@ -257,11 +259,49 @@ namespace CF7Launcher.Save
                 if (shadowTs != null
                     && string.Compare(shadowTs, pre27Ts, StringComparison.Ordinal) > 0)
                 {
-                    return SolResolveResult.NewSnapshot(shadow, "json_shadow");
+                    return NewSnapshotResult(slot, shadow, "json_shadow");
                 }
             }
             LogManager.Log("[SolResolver] pre-2.7 AS2 sync migration — DeferToFlash");
             return SolResolveResult.NewDeferToFlash();
+        }
+
+        private SolResolveResult NewSnapshotResult(string slot, JObject snapshot, string source)
+        {
+            if (string.Equals(source, "sol", StringComparison.Ordinal))
+            {
+                string targetPath = null;
+                string error = null;
+                bool seeded = false;
+
+                if (_shadowWriter != null)
+                {
+                    try
+                    {
+                        seeded = _shadowWriter.TrySeedShadowSync(slot, snapshot, out targetPath, out error);
+                    }
+                    catch (Exception ex)
+                    {
+                        error = ex.GetType().Name + ": " + ex.Message;
+                    }
+                }
+                else
+                {
+                    error = "no_shadow_writer";
+                }
+
+                LogManager.Log("[SolResolver] snapshot source=sol slot=" + slot
+                    + " seedAuthority=" + seeded
+                    + " target=" + (targetPath ?? "n/a")
+                    + (error != null ? " error=" + error : string.Empty));
+            }
+            else
+            {
+                LogManager.Log("[SolResolver] snapshot source=" + source
+                    + " slot=" + slot + " seedAuthority=false");
+            }
+
+            return SolResolveResult.NewSnapshot(snapshot, source);
         }
     }
 }

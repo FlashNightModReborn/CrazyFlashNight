@@ -43,6 +43,26 @@ namespace CF7Launcher.Tests.Save
             }
         }
 
+        private sealed class StubShadowWriter : IArchiveShadowWriter
+        {
+            public int Calls;
+            public bool ReturnValue = true;
+            public string Error;
+            public string TargetPath = @"E:\shadow\slot.json";
+            public JObject LastData;
+            public string LastSlot;
+
+            public bool TrySeedShadowSync(string slot, JObject data, out string targetPath, out string error)
+            {
+                Calls++;
+                LastSlot = slot;
+                LastData = data != null ? (JObject)data.DeepClone() : null;
+                targetPath = TargetPath;
+                error = Error;
+                return ReturnValue;
+            }
+        }
+
         private sealed class StubParser : ISolParser
         {
             public int ReturnCode = SolParseResult.RC_OK;
@@ -168,6 +188,13 @@ namespace CF7Launcher.Tests.Save
             return so;
         }
 
+        private static JObject SoData_V27_WithNullLegacyMain()
+        {
+            JObject so = SoData_V27();
+            ((JObject)so["test"])["3"] = JValue.CreateNull();
+            return so;
+        }
+
         /// <summary>pre-2.7 SOL（没有 version）。</summary>
         private static JObject SoData_Pre27(string lastSaved)
         {
@@ -178,9 +205,9 @@ namespace CF7Launcher.Tests.Save
             return so;
         }
 
-        private static SolResolver MakeResolver(StubLocator loc, StubArchive arch, StubParser parser)
+        private static SolResolver MakeResolver(StubLocator loc, StubArchive arch, StubParser parser, StubShadowWriter writer = null)
         {
-            return new SolResolver(loc, arch, parser);
+            return new SolResolver(loc, arch, parser, writer);
         }
 
         // ─────────────── 决议矩阵（16 行） ───────────────
@@ -321,15 +348,17 @@ namespace CF7Launcher.Tests.Save
             JObject freshShadow = ValidMydata("2020-01-01 00:00:00");
             ((JArray)freshShadow["0"])[0] = "shadow_name";
             var arch = new StubArchive { Shadow = freshShadow };
+            var writer = new StubShadowWriter();
             JObject so = SoData_V3_Valid("2020-01-01 00:00:00");
             ((JArray)((JObject)so["test"])["0"])[0] = "sol_name";
             var parser = new StubParser { Data = so };
 
-            var r = MakeResolver(loc, arch, parser).Resolve(SLOT, SWF);
+            var r = MakeResolver(loc, arch, parser, writer).Resolve(SLOT, SWF);
 
             Assert.Equal(DecisionKind.Snapshot, r.Kind);
             Assert.Equal("json_shadow", r.Source);
             Assert.Equal("shadow_name", r.Snapshot["0"][0].Value<string>());
+            Assert.Equal(0, writer.Calls);
         }
 
         [Fact]
@@ -339,15 +368,19 @@ namespace CF7Launcher.Tests.Save
             JObject oldShadow = ValidMydata("2019-12-31 23:59:59");
             ((JArray)oldShadow["0"])[0] = "shadow_name";
             var arch = new StubArchive { Shadow = oldShadow };
+            var writer = new StubShadowWriter();
             JObject so = SoData_V3_Valid("2020-01-01 00:00:00");
             ((JArray)((JObject)so["test"])["0"])[0] = "sol_name";
             var parser = new StubParser { Data = so };
 
-            var r = MakeResolver(loc, arch, parser).Resolve(SLOT, SWF);
+            var r = MakeResolver(loc, arch, parser, writer).Resolve(SLOT, SWF);
 
             Assert.Equal(DecisionKind.Snapshot, r.Kind);
             Assert.Equal("sol", r.Source);
             Assert.Equal("sol_name", r.Snapshot["0"][0].Value<string>());
+            Assert.Equal(1, writer.Calls);
+            Assert.Equal(SLOT, writer.LastSlot);
+            Assert.Equal("sol_name", writer.LastData["0"][0].Value<string>());
         }
 
         [Fact]
@@ -385,15 +418,51 @@ namespace CF7Launcher.Tests.Save
         {
             var loc = new StubLocator { Result = FAKE_SOL_PATH };
             var arch = new StubArchive();
+            var writer = new StubShadowWriter();
             JObject so = SoData_V27();
             // V27 的 test 字段有足够字段，Migrate_2_7_to_3_0 + MergeTopLevelKeys 应通过 validate
             var parser = new StubParser { Data = so };
 
-            var r = MakeResolver(loc, arch, parser).Resolve(SLOT, SWF);
+            var r = MakeResolver(loc, arch, parser, writer).Resolve(SLOT, SWF);
 
             Assert.Equal(DecisionKind.Snapshot, r.Kind);
             Assert.Equal("sol", r.Source);
             Assert.Equal("3.0", r.Snapshot.Value<string>("version"));
+            Assert.Equal(1, writer.Calls);
+        }
+
+        [Fact]
+        public void Row11b_V27_NullLegacyMain_MigrationDefaultsToZero_SeedsShadow()
+        {
+            var loc = new StubLocator { Result = FAKE_SOL_PATH };
+            var arch = new StubArchive();
+            var writer = new StubShadowWriter();
+            JObject so = SoData_V27_WithNullLegacyMain();
+            var parser = new StubParser { Data = so };
+
+            var r = MakeResolver(loc, arch, parser, writer).Resolve(SLOT, SWF);
+
+            Assert.Equal(DecisionKind.Snapshot, r.Kind);
+            Assert.Equal("sol", r.Source);
+            Assert.Equal(0, r.Snapshot["3"].Value<int>());
+            Assert.Equal(0, r.Snapshot["tasks"]["task_chains_progress"]["主线"].Value<int>());
+            Assert.Equal(1, writer.Calls);
+        }
+
+        [Fact]
+        public void Row11c_V3Valid_SeedFailure_KeepsSnapshotDecision()
+        {
+            var loc = new StubLocator { Result = FAKE_SOL_PATH };
+            var arch = new StubArchive();
+            var writer = new StubShadowWriter { ReturnValue = false, Error = "disk_full" };
+            JObject so = SoData_V3_Valid("2020-01-01 00:00:00");
+            var parser = new StubParser { Data = so };
+
+            var r = MakeResolver(loc, arch, parser, writer).Resolve(SLOT, SWF);
+
+            Assert.Equal(DecisionKind.Snapshot, r.Kind);
+            Assert.Equal("sol", r.Source);
+            Assert.Equal(1, writer.Calls);
         }
 
         [Fact]

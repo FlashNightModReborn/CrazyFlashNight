@@ -12,6 +12,7 @@ namespace CF7Launcher.Save
         public readonly SolResolver Resolver;
         public readonly ArchiveTask Archive;
         public readonly string SwfPath;
+        public readonly LegacyPresetSlotSeeder LegacySeeder;
 
         public SaveResolutionContext(SolFileLocator locator, SolResolver resolver, ArchiveTask archive, string swfPath)
         {
@@ -19,6 +20,7 @@ namespace CF7Launcher.Save
             Resolver = resolver;
             Archive = archive;
             SwfPath = swfPath;
+            LegacySeeder = new LegacyPresetSlotSeeder(archive, resolver, swfPath);
         }
     }
 }

@@ -1,7 +1,8 @@
 // CF7:ME SOL file path resolver.
 // Flash Player's SharedObject storage layout is version-dependent; in
 // particular the drive-letter handling has at least 3 variants seen in the
-// wild. This locator probes all of them and caches which one worked.
+// wild. This locator probes current-root variants only and keeps the winning
+// probe as a hint, not as a source of cross-root fallback.
 // C# 5 syntax.
 
 using System;
@@ -13,34 +14,45 @@ namespace CF7Launcher.Save
 {
     /// <summary>
     /// Locates a SOL file for a given SWF path and slot name.
-    /// Variant fallback: drop-drive / keep-drive / directory-glob.
+    /// Probe order: current-root SWF drop/keep drive, current-root EXE
+    /// drop/keep drive, then root-scoped fallback inside the current runtime
+    /// directory only.
     /// </summary>
     public class SolFileLocator : ISolFileLocator
     {
-        private readonly string _shareRoot;     // %APPDATA%\Macromedia\Flash Player\#SharedObjects
+        private readonly string _shareRoot;
         private readonly object _cacheLock = new object();
-        private string _hashCache;              // winning hash subdir like "BMTA4F55"
-        private Variant _variantCache = Variant.Unknown;
+        private string _hashCache;
+        private ProbeKind _probeCache = ProbeKind.Unknown;
 
-        private enum Variant { Unknown, DropDrive, KeepDrive, Glob }
+        private enum ProbeKind
+        {
+            Unknown,
+            SwfDropDrive,
+            SwfKeepDrive,
+            ExeDropDrive,
+            ExeKeepDrive,
+            RootScopedFallback
+        }
+
+        private sealed class DirectProbe
+        {
+            public string Path;
+            public ProbeKind Kind;
+            public string Label;
+        }
 
         public SolFileLocator()
         {
             string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            _shareRoot = Path.Combine(
-                appData,
-                "Macromedia",
-                "Flash Player",
-                "#SharedObjects");
+            _shareRoot = Path.Combine(appData, "Macromedia", "Flash Player", "#SharedObjects");
         }
 
-        /// <summary>
-        /// Return the full path to the SOL file for (slot, swfPath), or null
-        /// if none of the variants yield an existing file.
-        /// Flash Player may create multiple hash subdirs (different Flash
-        /// plugin installs, different machine states) — probe every subdir in
-        /// order, winning hash is cached for stability.
-        /// </summary>
+        public SolFileLocator(string shareRoot)
+        {
+            _shareRoot = shareRoot;
+        }
+
         public string FindSolFile(string slot, string swfPath)
         {
             if (string.IsNullOrEmpty(slot) || string.IsNullOrEmpty(swfPath))
@@ -53,22 +65,14 @@ namespace CF7Launcher.Save
 
             string solFileName = SanitizeSlot(slot) + ".sol";
             string swfFileName = Path.GetFileName(swfPath);
+            string exeFileName = Path.GetFileName(Path.ChangeExtension(swfPath, ".exe"));
 
-            // Build subpath candidates from swfPath.
-            // Example swfPath: "E:\steam\steamapps\common\...\CRAZYFLASHER7MercenaryEmpire.swf"
-            // Flash "localhost" + "<path-with-or-without-drive>" + <swfName>
-            string variantA = BuildSubPath(swfPath, includeDrive: false);
-            string variantB = BuildSubPath(swfPath, includeDrive: true);
-
-            // Preferred probe order: last-winning hash first (stability),
-            // then all remaining subdirs. Ensures we don't silently miss a
-            // SOL under a non-first hash subdir.
             string preferredHash;
-            Variant cachedVariant;
+            ProbeKind cachedProbe;
             lock (_cacheLock)
             {
                 preferredHash = _hashCache;
-                cachedVariant = _variantCache;
+                cachedProbe = _probeCache;
             }
 
             string[] hashDirs = EnumerateHashDirs();
@@ -76,45 +80,51 @@ namespace CF7Launcher.Save
 
             foreach (string hashDir in OrderedHashDirs(hashDirs, preferredHash))
             {
-                string tryA = Path.Combine(hashDir, variantA, solFileName);
-                string tryB = Path.Combine(hashDir, variantB, solFileName);
-
-                // Honor the last-winning variant first for the preferred hash.
                 string hashName = Path.GetFileName(hashDir);
-                bool isPreferred = (preferredHash != null && hashName == preferredHash);
-                if (isPreferred)
+                DirectProbe[] probes = BuildDirectProbes(hashDir, swfPath, solFileName);
+
+                if (preferredHash != null && string.Equals(hashName, preferredHash, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (cachedVariant == Variant.DropDrive && File.Exists(tryA))
-                        return tryA;
-                    if (cachedVariant == Variant.KeepDrive && File.Exists(tryB))
-                        return tryB;
+                    string cachedHit = TryCachedProbe(hashDir, swfPath, solFileName, swfFileName, exeFileName, probes, cachedProbe);
+                    if (cachedHit != null)
+                        return cachedHit;
                 }
 
-                if (File.Exists(tryA)) { Cache(hashName, Variant.DropDrive); return tryA; }
-                if (File.Exists(tryB)) { Cache(hashName, Variant.KeepDrive); return tryB; }
-
-                string globHit = GlobFallback(hashDir, swfFileName, solFileName);
-                if (globHit != null)
+                for (int i = 0; i < probes.Length; i++)
                 {
-                    Cache(hashName, Variant.Glob);
-                    return globHit;
+                    if (File.Exists(probes[i].Path))
+                    {
+                        Cache(hashName, probes[i].Kind);
+                        LogManager.Log("[SolFileLocator] hit " + probes[i].Label + ": " + probes[i].Path);
+                        return probes[i].Path;
+                    }
+                }
+
+                string scopedHit = FindRootScopedFallback(hashDir, swfPath, solFileName, swfFileName, exeFileName);
+                if (scopedHit != null)
+                {
+                    Cache(hashName, ProbeKind.RootScopedFallback);
+                    LogManager.Log("[SolFileLocator] hit root_scoped_fallback: " + scopedHit);
+                    return scopedHit;
                 }
             }
 
             return null;
         }
 
-        /// <summary>
-        /// Delete every SOL candidate matching (slot, swfPath) across all known
-        /// hash dirs / path variants. Used by "fresh start" flows so hidden
-        /// corrupt SOL residues do not hijack new-character creation.
-        /// </summary>
         public int DeleteAllSolFiles(string slot, string swfPath)
         {
             HashSet<string> candidates = CollectSolCandidates(slot, swfPath);
+            List<string> ordered = new List<string>(candidates);
+            ordered.Sort(StringComparer.OrdinalIgnoreCase);
+            LogManager.Log("[SolFileLocator] delete candidates slot=" + slot
+                + " count=" + ordered.Count
+                + (ordered.Count > 0 ? " => " + string.Join(" | ", ordered.ToArray()) : string.Empty));
+
             int deleted = 0;
-            foreach (string path in candidates)
+            for (int i = 0; i < ordered.Count; i++)
             {
+                string path = ordered[i];
                 try
                 {
                     File.Delete(path);
@@ -126,14 +136,16 @@ namespace CF7Launcher.Save
                     LogManager.Log("[SolFileLocator] delete SOL failed: " + path + " ex=" + ex.Message);
                 }
             }
+
             if (deleted > 0)
             {
                 lock (_cacheLock)
                 {
                     _hashCache = null;
-                    _variantCache = Variant.Unknown;
+                    _probeCache = ProbeKind.Unknown;
                 }
             }
+
             return deleted;
         }
 
@@ -147,28 +159,30 @@ namespace CF7Launcher.Save
 
             string solFileName = SanitizeSlot(slot) + ".sol";
             string swfFileName = Path.GetFileName(swfPath);
-            string variantA = BuildSubPath(swfPath, includeDrive: false);
-            string variantB = BuildSubPath(swfPath, includeDrive: true);
+            string exeFileName = Path.GetFileName(Path.ChangeExtension(swfPath, ".exe"));
             string[] hashDirs = EnumerateHashDirs();
             if (hashDirs == null || hashDirs.Length == 0) return hits;
 
-            foreach (string hashDir in hashDirs)
+            for (int i = 0; i < hashDirs.Length; i++)
             {
-                string tryA = Path.Combine(hashDir, variantA, solFileName);
-                string tryB = Path.Combine(hashDir, variantB, solFileName);
-                if (File.Exists(tryA)) hits.Add(tryA);
-                if (File.Exists(tryB)) hits.Add(tryB);
-                AddGlobMatches(hashDir, swfFileName, solFileName, hits);
+                DirectProbe[] probes = BuildDirectProbes(hashDirs[i], swfPath, solFileName);
+                for (int j = 0; j < probes.Length; j++)
+                {
+                    if (File.Exists(probes[j].Path))
+                        hits.Add(probes[j].Path);
+                }
+                AddRootScopedMatches(hashDirs[i], swfPath, solFileName, swfFileName, exeFileName, hits);
             }
+
             return hits;
         }
 
-        private void Cache(string hash, Variant v)
+        private void Cache(string hash, ProbeKind probe)
         {
             lock (_cacheLock)
             {
                 _hashCache = hash;
-                _variantCache = v;
+                _probeCache = probe;
             }
         }
 
@@ -182,6 +196,7 @@ namespace CF7Launcher.Save
                     LogManager.Log("[SolFileLocator] no hash subdir under " + _shareRoot);
                     return null;
                 }
+                Array.Sort(subs, StringComparer.OrdinalIgnoreCase);
                 return subs;
             }
             catch (Exception ex)
@@ -195,112 +210,190 @@ namespace CF7Launcher.Save
         {
             if (preferredHash != null)
             {
-                foreach (string d in hashDirs)
+                for (int i = 0; i < hashDirs.Length; i++)
                 {
-                    if (Path.GetFileName(d) == preferredHash) { yield return d; break; }
+                    if (string.Equals(Path.GetFileName(hashDirs[i]), preferredHash, StringComparison.OrdinalIgnoreCase))
+                    {
+                        yield return hashDirs[i];
+                        break;
+                    }
                 }
             }
-            foreach (string d in hashDirs)
+
+            for (int i = 0; i < hashDirs.Length; i++)
             {
-                if (preferredHash == null || Path.GetFileName(d) != preferredHash)
-                    yield return d;
+                if (preferredHash == null
+                    || !string.Equals(Path.GetFileName(hashDirs[i]), preferredHash, StringComparison.OrdinalIgnoreCase))
+                {
+                    yield return hashDirs[i];
+                }
             }
         }
 
-        /// <summary>
-        /// Build "localhost/&lt;path-segments&gt;/&lt;swfFileName&gt;" from an absolute
-        /// Windows path. When includeDrive is false, drops "E:" entirely.
-        /// When true, treats "E" as a path segment (no colon).
-        /// </summary>
-        private static string BuildSubPath(string swfPath, bool includeDrive)
+        private static string TryCachedProbe(
+            string hashDir,
+            string swfPath,
+            string solFileName,
+            string swfFileName,
+            string exeFileName,
+            DirectProbe[] probes,
+            ProbeKind cachedProbe)
+        {
+            for (int i = 0; i < probes.Length; i++)
+            {
+                if (probes[i].Kind == cachedProbe && File.Exists(probes[i].Path))
+                {
+                    LogManager.Log("[SolFileLocator] hit cached " + probes[i].Label + ": " + probes[i].Path);
+                    return probes[i].Path;
+                }
+            }
+
+            if (cachedProbe == ProbeKind.RootScopedFallback)
+            {
+                string cachedHit = FindRootScopedFallback(hashDir, swfPath, solFileName, swfFileName, exeFileName);
+                if (cachedHit != null)
+                {
+                    LogManager.Log("[SolFileLocator] hit cached root_scoped_fallback: " + cachedHit);
+                    return cachedHit;
+                }
+            }
+
+            return null;
+        }
+
+        private static DirectProbe[] BuildDirectProbes(string hashDir, string swfPath, string solFileName)
+        {
+            string exePath = Path.ChangeExtension(swfPath, ".exe");
+            return new DirectProbe[]
+            {
+                new DirectProbe
+                {
+                    Kind = ProbeKind.SwfDropDrive,
+                    Label = "swf_drop_drive",
+                    Path = Path.Combine(hashDir, BuildSubPath(swfPath, false), solFileName)
+                },
+                new DirectProbe
+                {
+                    Kind = ProbeKind.SwfKeepDrive,
+                    Label = "swf_keep_drive",
+                    Path = Path.Combine(hashDir, BuildSubPath(swfPath, true), solFileName)
+                },
+                new DirectProbe
+                {
+                    Kind = ProbeKind.ExeDropDrive,
+                    Label = "exe_drop_drive",
+                    Path = Path.Combine(hashDir, BuildSubPath(exePath, false), solFileName)
+                },
+                new DirectProbe
+                {
+                    Kind = ProbeKind.ExeKeepDrive,
+                    Label = "exe_keep_drive",
+                    Path = Path.Combine(hashDir, BuildSubPath(exePath, true), solFileName)
+                }
+            };
+        }
+
+        private static string[] BuildScopedRoots(string hashDir, string swfPath)
+        {
+            string swfDir = Path.GetDirectoryName(swfPath);
+            if (string.IsNullOrEmpty(swfDir))
+                return new string[0];
+
+            return new string[]
+            {
+                Path.Combine(hashDir, BuildSubPath(swfDir, false)),
+                Path.Combine(hashDir, BuildSubPath(swfDir, true))
+            };
+        }
+
+        private static string BuildSubPath(string absolutePath, bool includeDrive)
         {
             List<string> segments = new List<string>();
             segments.Add("localhost");
 
-            string root = Path.GetPathRoot(swfPath);
-            string rest = swfPath.Substring(root != null ? root.Length : 0);
+            string root = Path.GetPathRoot(absolutePath);
+            string rest = absolutePath.Substring(root != null ? root.Length : 0);
 
             if (includeDrive && !string.IsNullOrEmpty(root))
             {
-                // root typically "E:\" — take the drive letter as a segment.
                 char drive = root[0];
                 if (char.IsLetter(drive))
-                {
                     segments.Add(drive.ToString());
-                }
             }
 
-            foreach (string seg in rest.Split('\\', '/'))
+            string[] parts = rest.Split('\\', '/');
+            for (int i = 0; i < parts.Length; i++)
             {
-                if (seg.Length > 0)
-                    segments.Add(seg);
+                if (parts[i].Length > 0)
+                    segments.Add(parts[i]);
             }
 
-            // segments now ends with the SWF filename; we want the directory
-            // that contains <slot>.sol, which Flash Player names with the SWF
-            // filename itself. BuildSubPath returns the subdir minus the file.
-            // So we keep the SWF filename as the final directory segment.
             return string.Join("/", segments.ToArray());
         }
 
-        private static string GlobFallback(string hashDir, string swfFileName, string solFileName)
+        private static string FindRootScopedFallback(string hashDir, string swfPath, string solFileName, string swfFileName, string exeFileName)
         {
-            string localhost = Path.Combine(hashDir, "localhost");
-            if (!Directory.Exists(localhost)) return null;
+            string[] scopedRoots = BuildScopedRoots(hashDir, swfPath);
             try
             {
-                // Recursively search for any directory ending with the SWF
-                // filename and containing the target SOL file.
-                string[] candidates = Directory.GetFiles(
-                    localhost,
-                    solFileName,
-                    SearchOption.AllDirectories);
-                foreach (string candidate in candidates)
+                for (int i = 0; i < scopedRoots.Length; i++)
                 {
-                    string parent = Path.GetFileName(Path.GetDirectoryName(candidate) ?? string.Empty);
-                    if (string.Equals(parent, swfFileName, StringComparison.OrdinalIgnoreCase))
-                        return candidate;
+                    string scopedRoot = scopedRoots[i];
+                    if (!Directory.Exists(scopedRoot))
+                        continue;
+
+                    string[] candidates = Directory.GetFiles(scopedRoot, solFileName, SearchOption.AllDirectories);
+                    Array.Sort(candidates, StringComparer.OrdinalIgnoreCase);
+                    for (int j = 0; j < candidates.Length; j++)
+                    {
+                        if (IsCurrentRootMatch(candidates[j], swfFileName, exeFileName))
+                            return candidates[j];
+                    }
                 }
             }
             catch (Exception ex)
             {
-                LogManager.Log("[SolFileLocator] glob fallback failed: " + ex.Message);
+                LogManager.Log("[SolFileLocator] root-scoped fallback failed: " + ex.Message);
             }
+
             return null;
         }
 
-        private static void AddGlobMatches(string hashDir, string swfFileName, string solFileName, ISet<string> hits)
+        private static void AddRootScopedMatches(string hashDir, string swfPath, string solFileName, string swfFileName, string exeFileName, ISet<string> hits)
         {
-            string localhost = Path.Combine(hashDir, "localhost");
-            if (!Directory.Exists(localhost)) return;
+            string[] scopedRoots = BuildScopedRoots(hashDir, swfPath);
             try
             {
-                string[] candidates = Directory.GetFiles(
-                    localhost,
-                    solFileName,
-                    SearchOption.AllDirectories);
-                foreach (string candidate in candidates)
+                for (int i = 0; i < scopedRoots.Length; i++)
                 {
-                    string parent = Path.GetFileName(Path.GetDirectoryName(candidate) ?? string.Empty);
-                    if (string.Equals(parent, swfFileName, StringComparison.OrdinalIgnoreCase))
-                        hits.Add(candidate);
+                    string scopedRoot = scopedRoots[i];
+                    if (!Directory.Exists(scopedRoot))
+                        continue;
+
+                    string[] candidates = Directory.GetFiles(scopedRoot, solFileName, SearchOption.AllDirectories);
+                    Array.Sort(candidates, StringComparer.OrdinalIgnoreCase);
+                    for (int j = 0; j < candidates.Length; j++)
+                    {
+                        if (IsCurrentRootMatch(candidates[j], swfFileName, exeFileName))
+                            hits.Add(candidates[j]);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                LogManager.Log("[SolFileLocator] glob collect failed: " + ex.Message);
+                LogManager.Log("[SolFileLocator] root-scoped collect failed: " + ex.Message);
             }
         }
 
-        /// <summary>
-        /// Slot names are already sanitized by callers (ArchiveTask), but we
-        /// re-apply here because this is the canonical SOL-path builder.
-        /// </summary>
+        private static bool IsCurrentRootMatch(string candidate, string swfFileName, string exeFileName)
+        {
+            string parent = Path.GetFileName(Path.GetDirectoryName(candidate) ?? string.Empty);
+            return string.Equals(parent, swfFileName, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(parent, exeFileName, StringComparison.OrdinalIgnoreCase);
+        }
+
         private static string SanitizeSlot(string slot)
         {
-            // Flash stores SOL files as <name>.sol where <name> is whatever
-            // AS2 code passed to getLocal. Callers pass slot names from
-            // AppConfig which we trust; no transformation needed here.
             return slot;
         }
     }

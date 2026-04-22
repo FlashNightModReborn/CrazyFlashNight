@@ -30,6 +30,8 @@ namespace CF7Launcher.Save
         public static void Migrate_2_7_to_3_0(JObject mydata, JObject soData)
         {
             if (mydata == null) return;
+            if (IsAbsent(mydata["3"]))
+                mydata["3"] = 0;
 
             if (IsAbsent(mydata["tasks"]))
             {

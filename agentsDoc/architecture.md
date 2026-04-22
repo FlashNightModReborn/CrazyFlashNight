@@ -54,6 +54,10 @@
   - XMLSocket / HTTP 本地总线与 `TaskRegistry`
   - 音频系统、Notch / Toast / Web overlay 宿主
   - 启动前存档决议与 Protocol 2
+- 当前存档 authority 边界：
+  - valid legacy SOL 在 Resolver 命中 `Snapshot(source=sol)` 时，会被同步 seed 到当前运行根的 `saves/{slot}.json`
+  - Bootstrap `list/load/load_raw` 只对标准 10 槽做 legacy 预热；自定义 legacy 槽不自动继承
+  - `resources/` 与 `CrazyFlashNight/` 是两套物理隔离运行根；authority、legacy SOL 搜索和删除都不跨根
 - `launcher/README.md` 是该子系统的 source of truth
 
 ### D. Launcher Web / Minigames / Overlay 链
@@ -80,6 +84,12 @@
 - 辅助通道：HTTP（端口发现、状态查询、日志与辅助接口）
 - 注册中心：`launcher/src/Bus/TaskRegistry.cs`
 - 集成测试入口：`--bus-only`
+
+### Save Authority Boundary
+
+- Launcher authority 固定落在 `<projectRoot>/saves/`；哪个根启动 launcher，就只认哪个根的 authority
+- legacy SOL 定位只在当前运行根对应的 SharedObject 子树内进行，探测顺序为 `.swf` → `.exe` → 当前根 root-scoped fallback
+- `reset` / `rebuild` / legacy SOL 删除都只影响当前运行根，不承担跨根合并或恢复职责
 
 ### Launcher Host ↔ WebView2
 

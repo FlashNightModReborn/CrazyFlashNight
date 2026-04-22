@@ -43,6 +43,8 @@
     <Compile Include="Save\SaveMigratorTests.cs" />
     <Compile Include="Bus\MessageRouterTests.cs" />
     <Compile Include="Save\SolResolverTests.cs" />
+    <Compile Include="Save\SolFileLocatorTests.cs" />
+    <Compile Include="Save\LegacyPresetSlotSeederTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
