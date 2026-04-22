@@ -137,6 +137,7 @@ var MapPanel = (function() {
 
         _badgeEl.style.display = initData && initData.dev ? '' : 'none';
 
+        initLayoutWatcher();
         hideError();
         setLoading(true);
         applyPage((initData && (initData.page || initData.region)) || 'base');
@@ -156,8 +157,25 @@ var MapPanel = (function() {
         _currentHotspotId = '';
         _hoverHotspotId = '';
         _busyLookup = {};
+        teardownLayoutWatcher();
+        _stageScale = 1;
         hideError();
         setLoading(false);
+    }
+
+    function teardownLayoutWatcher() {
+        if (_layoutObserver) {
+            _layoutObserver.disconnect();
+            _layoutObserver = null;
+        }
+        if (_windowResizeBound && typeof window !== 'undefined' && window.removeEventListener) {
+            window.removeEventListener('resize', scheduleLayoutSync);
+        }
+        _windowResizeBound = false;
+        if (_layoutRaf && typeof cancelAnimationFrame === 'function') {
+            cancelAnimationFrame(_layoutRaf);
+        }
+        _layoutRaf = 0;
     }
 
     function applyPage(pageId) {
@@ -380,6 +398,8 @@ var MapPanel = (function() {
             return;
         }
 
+        if (_busyLookup[hotspot.id]) return;
+
         var reqId = 'map-nav-' + (++_reqSeq);
         var currentSession = _session;
         _pendingReq[reqId] = function(resp) {
@@ -593,7 +613,7 @@ var MapPanel = (function() {
             if (marker.pageId && marker.pageId !== _activePage.id) continue;
             if (marker.hotspotId && !visibleLookup[marker.hotspotId]) continue;
 
-            var anchor = findStaticAvatarAnchorForMarker(marker, visibleLookup) || resolveFeedbackAnchor(marker);
+            var anchor = findAvatarAnchorForMarker(marker, visibleLookup) || resolveFeedbackAnchor(marker);
             if (!anchor) continue;
 
             var ring = document.createElement('div');
@@ -823,11 +843,18 @@ function resolveFeedbackAnchor(item) {
         return keys;
     }
 
-    function findStaticAvatarAnchorForMarker(marker, visibleLookup) {
+    function findAvatarAnchorForMarker(marker, visibleLookup) {
         var npcKey = getMarkerNpcKey(marker);
-        var slots = _activePage && _activePage.staticAvatars ? _activePage.staticAvatars : [];
+        if (!npcKey || !_activePage) return null;
 
-        if (!npcKey || !slots.length) return null;
+        var staticAnchor = findAnchorInSlots(npcKey, _activePage.staticAvatars, visibleLookup, resolveStaticAvatarRect);
+        if (staticAnchor) return staticAnchor;
+
+        return findAnchorInSlots(npcKey, _activePage.dynamicAvatars, visibleLookup, resolveDynamicAvatarRect);
+    }
+
+    function findAnchorInSlots(npcKey, slots, visibleLookup, rectResolver) {
+        if (!slots || !slots.length) return null;
 
         for (var i = 0; i < slots.length; i++) {
             var slot = slots[i];
@@ -836,7 +863,7 @@ function resolveFeedbackAnchor(item) {
             var keys = getSlotNpcKeys(slot);
             for (var j = 0; j < keys.length; j++) {
                 if (keys[j] && keys[j] === npcKey) {
-                    var rect = resolveStaticAvatarRect(slot);
+                    var rect = rectResolver(slot);
                     return {
                         x: rect.x + (rect.w / 2),
                         y: rect.y + (rect.h / 2)
@@ -846,6 +873,10 @@ function resolveFeedbackAnchor(item) {
         }
 
         return null;
+    }
+
+    function resolveDynamicAvatarRect(slot) {
+        return { x: slot.x, y: slot.y, w: slot.w, h: slot.h };
     }
 
     function resolveFlashHintAnchor(hint) {
@@ -1071,11 +1102,13 @@ function resolveFeedbackAnchor(item) {
             var isFocused = !!focusHotspotId && focusHotspotId === id;
             var isMuted = !!focusHotspotId && !isFocused;
 
+            var isBusy = !!_busyLookup[id];
             buttons[i].classList.toggle('is-hover', _hoverHotspotId === id);
             buttons[i].classList.toggle('is-current', _currentHotspotId === id);
-            buttons[i].classList.toggle('is-busy', !!_busyLookup[id]);
+            buttons[i].classList.toggle('is-busy', isBusy);
             buttons[i].classList.toggle('is-muted', isMuted);
             buttons[i].classList.toggle('is-relation', activeViewMode === 'hierarchy');
+            buttons[i].disabled = isBusy;
             if (!hotspotState.enabled && hotspotState.lockedReason) {
                 buttons[i].title = hotspotState.lockedReason;
             }
@@ -1089,9 +1122,11 @@ function resolveFeedbackAnchor(item) {
         var chips = _sceneStripEl.querySelectorAll('.map-scene-chip');
         for (var i = 0; i < chips.length; i++) {
             var id = chips[i].getAttribute('data-hotspot-id') || '';
+            var chipBusy = !!_busyLookup[id];
             chips[i].classList.toggle('is-current', _currentHotspotId === id);
-            chips[i].classList.toggle('is-busy', !!_busyLookup[id]);
+            chips[i].classList.toggle('is-busy', chipBusy);
             chips[i].classList.toggle('is-muted', !!focusHotspotId && focusHotspotId !== id);
+            chips[i].disabled = chipBusy;
         }
     }
 

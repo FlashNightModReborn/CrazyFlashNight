@@ -342,7 +342,12 @@ _root._mapBuildHotspotStates = function(unlocks) {
 };
 
 _root._mapResolveCurrentHotspotId = function() {
-    var currentFrameName = String(_root.关卡地图帧值 || "");
+    // 权威源：主时间轴当前帧标签 (_root._currentlabel)
+    // 每次 _root.淡出动画.淡出跳转帧(label) 完成后即时更新，覆盖所有场景切换。
+    // 回退到 _root.关卡地图帧值 只为容灾（切换途中空 label），它只在 StageManager.finishStage 更新，
+    // 单独使用会在非战斗场景永远僵在上一次通关的 EndFrame 上。
+    var currentFrameName = String(_root._currentlabel || "");
+    if (currentFrameName == "") currentFrameName = String(_root.关卡地图帧值 || "");
     if (currentFrameName == "") return "";
 
     for (var hotspotId in _root._mapNavigateTargets) {

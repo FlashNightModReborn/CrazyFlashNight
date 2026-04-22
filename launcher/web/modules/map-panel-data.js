@@ -386,7 +386,7 @@ var MapPanelData = (function() {
             ],
             defaultFilterId: 'all',
             dynamicAvatars: [
-                { id: 'roommate', kind: 'roommateGender', hotspotId: 'school_dormitory', x: 78, y: 294, w: 48, h: 48 }
+                { id: 'roommate', label: '室友', kind: 'roommateGender', hotspotId: 'school_dormitory', x: 78, y: 294, w: 48, h: 48 }
             ],
             hotspots: [
                 { id: 'workshop', label: '大学地下工坊', sceneName: '地图-大学地下工坊', rect: { x: 423, y: 48, w: 134, h: 64 } },

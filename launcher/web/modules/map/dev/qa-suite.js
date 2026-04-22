@@ -371,6 +371,66 @@ var MapPanelHarnessQA = (function() {
                 }
             },
             {
+                id: 'map-ui12',
+                title: 'task npc ring anchors to dynamic roommate avatar center',
+                run: function() {
+                    return bootMap(api, host, { defaultPageId: 'school', roommateGender: 'female' }).then(function() {
+                        var page = MapPanelData.getPage('school');
+                        var slot = null;
+                        var dyn = page.dynamicAvatars || [];
+                        for (var i = 0; i < dyn.length; i += 1) {
+                            if (dyn[i].id === 'roommate') { slot = dyn[i]; break; }
+                        }
+                        api.assert(!!slot, 'school page missing roommate dynamic slot');
+
+                        var snapshot = host.buildSnapshot();
+                        snapshot.markers = (snapshot.markers || []).concat([{
+                            id: 'task_npc_室友',
+                            kind: 'taskNpc',
+                            npcName: '室友',
+                            pageId: 'school',
+                            hotspotId: 'school_dormitory',
+                            point: { x: 130.3, y: 347.3 }
+                        }]);
+                        MapPanel._debugApplySnapshot(snapshot);
+
+                        return api.waitFor(function() {
+                            return document.querySelector('.map-avatar-task-ring[data-hotspot-id="school_dormitory"]');
+                        }, 1500, 'task ring appears').then(function(ring) {
+                            var expectedX = (slot.x + slot.w / 2) / page.width * 100;
+                            var expectedY = (slot.y + slot.h / 2) / page.height * 100;
+                            var actualX = parseFloat(ring.style.left);
+                            var actualY = parseFloat(ring.style.top);
+                            api.assert(Math.abs(actualX - expectedX) < 0.02, 'ring x drift: expected=' + expectedX.toFixed(3) + ' actual=' + actualX.toFixed(3));
+                            api.assert(Math.abs(actualY - expectedY) < 0.02, 'ring y drift: expected=' + expectedY.toFixed(3) + ' actual=' + actualY.toFixed(3));
+                            return 'ringLeft=' + ring.style.left + ' ringTop=' + ring.style.top;
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui13',
+                title: 'navigate dedup: double-clicking a hotspot only sends one navigate',
+                run: function() {
+                    return bootMap(api, host, { defaultPageId: 'base', failNavigate: true }).then(function() {
+                        var btn = document.querySelector('.map-hotspot[data-hotspot-id="base_entrance"]');
+                        api.assert(!!btn, 'base_entrance hotspot button missing');
+
+                        var beforeCount = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
+                        btn.click();
+                        btn.click();
+                        btn.click();
+
+                        var afterCount = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
+                        api.assert(afterCount - beforeCount === 1, 'expected exactly 1 navigate, got ' + (afterCount - beforeCount));
+                        api.assert(btn.disabled === true, 'busy hotspot should be physically disabled');
+
+                        host.setState({ failNavigate: false });
+                        return 'navigateCount=' + (afterCount - beforeCount);
+                    });
+                }
+            },
+            {
                 id: 'map-ui11',
                 title: 'base hotspot rects stay aligned with assembled scene visuals',
                 run: function() {
