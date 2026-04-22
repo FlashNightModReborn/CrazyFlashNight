@@ -48,6 +48,10 @@ var Panels = (function() {
         _container.removeAttribute('data-panel');
         _content.removeAttribute('data-panel');
         _active = null;
+        // onClose：任何关闭路径（C# close / finishClose / 切换面板）都要触发，
+        // 用于 observer/listener/rAF 清理。onForceClose 仍在 force_close 分支额外触发，
+        // 语义窄化为"C# 强关时的状态复位"。
+        if (panel && panel.onClose) panel.onClose();
         setTimeout(function() {
             if (typeof Notch !== 'undefined' && Notch.reportRect) Notch.reportRect();
         }, 50);

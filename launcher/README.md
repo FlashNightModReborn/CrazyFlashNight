@@ -364,6 +364,12 @@ launcher/
 │       ├── icons.js                       图标 manifest 加载与解析
 │       ├── kshop.js                       K 点商城面板（ShopTask 双层 callId）
 │       ├── help.js / help-panel.js        帮助系统（顶层入口 + 面板骨架）
+│       ├── map-panel.js / map-panel-data.js 地图面板（正式 map panel + 静态页面/热点数据）
+│       ├── map/
+│       │   └── dev/
+│       │       ├── harness.html           地图 panel browser harness + QA suite
+│       │       ├── builder.html           地图可视化构建器入口（跳转到 builder 模式 preview）
+│       │       └── preview.html           地图 manifest 预览 / 校准页
 │       └── minigames/
 │           ├── shared/                    小游戏共享层（host-bridge + minigame-shell + shared/dev QA 基础层）
 │           ├── lockbox/                   开锁小游戏（core/dev + lockbox-audio/panel/css/README）
@@ -515,11 +521,11 @@ powershell -File run_tests.ps1
 | `Bus/MessageRouterTests.cs` | 协议分发 + callId wrap + error 构造，**锁定当前观察行为**（异常冒泡 / respond 无去重） | 15 |
 | `SanityTests.cs` | 基建冒烟 | 2 |
 
-### 小游戏 QA 与开发 harness
+### Web QA 与开发 harness
 
 本节最后核对代码基线：commit `9f8f0c225`。
 
-小游戏测试不走 `launcher/tests/`，而是走 `web/modules/minigames/` 自带的双轨 QA：
+小游戏测试不走 `launcher/tests/`，地图 panel 的 DOM / 布局 / 交互回归也不走 C# 单测；统一按各模块自带的 QA 入口执行：
 
 - **Node QA**：`node tools/run-minigame-qa.js --game lockbox|pinalign|all`
   - 实际入口文件：`tools/run-minigame-qa.js`
@@ -528,8 +534,29 @@ powershell -File run_tests.ps1
 - **Browser harness**：直接打开各自 `dev/harness.html`
   - `web/modules/minigames/lockbox/dev/harness.html`
   - `web/modules/minigames/pinalign/dev/harness.html`
+  - `web/modules/map/dev/harness.html`
   - 共享 QA 基础层：`web/modules/minigames/shared/dev/harness-base.js` + `harness-base.css`
   - 支持 query 驱动的 `?qa=1` / `?case=` / `?scenario=` / `?dump=1`
+  - `map` harness 额外覆盖页签 hit-test、右侧层级按钮遮挡、学校室友动态图、`1366x768` 紧凑视口可达性、locked group 锁定提示与锁定原因可达性
+- **Map preview / calibration**：`web/modules/map/dev/preview.html`
+  - 读取运行时 manifest，显示 assembled stage backdrop、`sceneVisuals` 拼接层、热点、页内按钮 `buttonRect`、动态头像槽位、XFL source rect
+  - 支持 draft 校准、source 吸附、复制 selected/page override、复制当前页 JSON、复制完整 manifest、下载当前页 JSON
+  - 用于视觉校准、条件模拟与默认视口收敛，可观察 locked groups / flash hint / hotspotStates，但不替代 browser harness 的交互 gate
+- **Map visual builder**：`web/modules/map/dev/builder.html`（或 `preview.html?mode=builder`）
+  - 在 preview 基础上开启 builder 模式，支持热点 / 过滤按钮拖拽与缩放、bundle 粘贴导入、本地草稿持久化、按页/全量清理
+  - 用于日常布局施工与回写准备，不替代最终 manifest 导出或运行时联调
+- **Manifest CLI 导出**：`node tools/export-map-manifest.js [--page base] [--output tmp/map-page-base.json] [--summary]`
+  - 从 `web/modules/map-panel-data.js` 导出当前运行时 manifest 或单页导出
+  - 用于把 preview / panel 当前数据结构交给后续 XFL / FFDec 校准链，不替代最终 authoring tool
+- **Map layout fallback audit**：`node tools/audit-map-layout.js [--page school] [--json]`
+  - 对照 `flashswf/UI/地图界面/LIBRARY/地图界面.xml` 中的原版实例坐标复核当前热点布局
+  - 用于 fallback 期全量复核与 compact 页 XFL 对齐，不替代 browser harness 的交互 gate
+- **Map audit sheets**：`python tools/render-map-audit-sheet.py --page base --page faction --page defense --page school`
+  - 基于 manifest + `audit-map-layout` 输出热点/头像审计图（scene visual、hotspot rect、runtime/source/authored avatar overlay）
+  - 用于全量视觉复核、Kimi/人工比对和 hand-tuned 页剩余偏差收口
+- **Kimi visual review（可选）**：`powershell -ExecutionPolicy Bypass -File tools/kimi-map-review.ps1 ...`
+  - 读取本地审计图与 audit JSON，让外部视觉模型辅助判断热点框/头像是否仍有肉眼可见偏差
+  - 仅作视觉意见补充，不替代本地 audit / harness / 游戏内联调
 - **静态收口校验**：`node tools/validate-minigame-final-state.js`
   - 用于阻止旧 `modules/lockbox-*.js`、旧 `lockbox_session/pinalign_session`、旧共享结构 class 名回流
 
@@ -972,6 +999,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
 **面板类型**：
 - **kshop**（K 点商城）: 需要 Flash 交互；打开/关闭会走 `shopPanelOpen/shopPanelClose`，并参与 `_pauseNeedsRestore`
 - **help**（游戏帮助）: 纯 Web 侧 Markdown 帮助面板，不触发 Flash 暂停恢复
+- **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-panel-data.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面均已切到 `assembled` 场景拼接模式，右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台以减少默认滚动
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 
@@ -995,4 +1023,4 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
 
 **热重载恢复**：`_uiDataSnapshot` 按 KV key 维护最新值快照，WebView2 热重载后 `FlushUiDataBuffer` 先回放完整快照，确保 game-ready 等关键状态不丢失。
 
-**维护约束**：凡是小游戏目录迁移、宿主协议变更、QA 入口变化，必须同步更新本 README 的目录树、测试入口和本节协议说明；模块内细节留在各自 `web/modules/minigames/*/README.md`。
+**维护约束**：凡是小游戏或地图 panel 的目录迁移、宿主协议变更、QA 入口变化，必须同步更新本 README 的目录树、测试入口和本节协议说明；模块内细节留在各自模块 README / 设计文档。

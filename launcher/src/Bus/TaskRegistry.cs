@@ -53,6 +53,7 @@ namespace CF7Launcher.Bus
             AudioTask audio,
             IconBakeTask iconBake,
             ShopTask shopTask,
+            MapTask mapTask,
             ArchiveTask archiveTask,
             BenchTask benchTask)
         {
@@ -72,6 +73,10 @@ namespace CF7Launcher.Bus
             // 商城面板回包路由
             if (shopTask != null)
                 router.RegisterAsync("shop_response", shopTask.HandleFlashResponse);
+
+            // 地图面板回包路由
+            if (mapTask != null)
+                router.RegisterAsync("map_response", mapTask.HandleFlashResponse);
 
             // 存档 shadow 备份
             if (archiveTask != null)
@@ -133,6 +138,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "console_result", "json_event","AS2->C#", false, first);
             first = AppendTask(sb, "icon_bake",      "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);
             first = AppendTask(sb, "bench_sync",     "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "bench_async",    "json_async","AS2<->C#",false, first);

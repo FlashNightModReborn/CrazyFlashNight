@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Map Visual Builder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+(function() {
+    var query = window.location.search ? window.location.search.substring(1) : '';
+    var next = './preview.html?mode=builder' + (query ? '&' + query : '');
+    window.location.replace(next);
+})();
+</script>
+</head>
+<body></body>
+</html>

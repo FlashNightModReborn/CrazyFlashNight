@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Map Manifest Preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./preview.css">
+</head>
+<body>
+<div class="preview-toolbar">
+    <div class="preview-group">
+        <label for="preview-page-select">page</label>
+        <select id="preview-page-select"></select>
+    </div>
+    <div class="preview-group">
+        <label for="preview-filter-select">filter</label>
+        <select id="preview-filter-select"></select>
+    </div>
+    <div class="preview-group">
+        <label for="preview-viewport-select">viewport</label>
+        <select id="preview-viewport-select">
+            <option value="1600x900">1600x900</option>
+            <option value="1366x768">1366x768</option>
+            <option value="1920x1080">1920x1080</option>
+        </select>
+    </div>
+    <div class="preview-group">
+        <label for="preview-roommate-select">roommate</label>
+        <select id="preview-roommate-select">
+            <option value="male">male</option>
+            <option value="female">female</option>
+        </select>
+    </div>
+    <div class="preview-group">
+        <label for="preview-locked-groups-input">locked groups</label>
+        <input id="preview-locked-groups-input" type="text" placeholder="warlord,schoolInside">
+    </div>
+    <label class="preview-check"><input id="preview-fit-checkbox" type="checkbox" checked>fit</label>
+    <label class="preview-check"><input id="preview-hotspots-checkbox" type="checkbox" checked>hotspots</label>
+    <label class="preview-check"><input id="preview-source-checkbox" type="checkbox" checked>source</label>
+    <label class="preview-check"><input id="preview-labels-checkbox" type="checkbox" checked>labels</label>
+    <label class="preview-check"><input id="preview-buttons-checkbox" type="checkbox" checked>buttonRect</label>
+    <label class="preview-check"><input id="preview-avatars-checkbox" type="checkbox" checked>avatars</label>
+    <label class="preview-check"><input id="preview-hints-checkbox" type="checkbox" checked>hints</label>
+    <div class="preview-group">
+        <label for="preview-step-input">step</label>
+        <input id="preview-step-input" type="number" min="0.1" step="0.1" value="1">
+    </div>
+    <label class="preview-check"><input id="preview-builder-checkbox" type="checkbox">builder</label>
+    <button type="button" id="preview-reset-btn">reset</button>
+    <button type="button" id="preview-copy-page-btn">copy page json</button>
+    <button type="button" id="preview-copy-manifest-btn">copy manifest</button>
+    <button type="button" id="preview-copy-audit-btn">copy audit json</button>
+    <button type="button" id="preview-copy-overrides-btn">copy page bundle</button>
+    <button type="button" id="preview-paste-overrides-btn">paste bundle</button>
+    <button type="button" id="preview-clear-page-drafts-btn">clear page drafts</button>
+    <button type="button" id="preview-clear-all-drafts-btn">clear all drafts</button>
+    <button type="button" id="preview-download-page-btn">download page</button>
+    <button type="button" id="preview-download-audit-btn">download audit</button>
+</div>
+
+<div class="preview-status" id="preview-status">Map preview ready.</div>
+
+<div class="preview-main">
+    <div class="preview-shell" id="preview-shell">
+        <div class="preview-stage-wrap" id="preview-stage-wrap">
+            <div class="preview-stage" id="preview-stage">
+                <div class="preview-stage-backdrop" id="preview-stage-backdrop"></div>
+                <img class="preview-stage-image" id="preview-stage-image" alt="map preview background">
+                <div class="preview-layer preview-scene-layer" id="preview-scene-layer"></div>
+                <div class="preview-layer preview-source-layer" id="preview-source-layer"></div>
+                <div class="preview-layer preview-hotspot-layer" id="preview-hotspot-layer"></div>
+                <div class="preview-layer preview-avatar-layer" id="preview-avatar-layer"></div>
+                <div class="preview-layer preview-hint-layer" id="preview-hint-layer"></div>
+                <div class="preview-layer preview-filter-layer" id="preview-filter-layer"></div>
+            </div>
+        </div>
+    </div>
+
+    <aside class="preview-sidebar">
+        <section class="preview-panel">
+            <h2>summary</h2>
+            <div id="preview-summary"></div>
+        </section>
+        <section class="preview-panel">
+            <h2>selection</h2>
+            <div id="preview-selection">Nothing selected.</div>
+        </section>
+        <section class="preview-panel">
+            <h2>audit</h2>
+            <pre id="preview-audit"></pre>
+        </section>
+        <section class="preview-panel">
+            <h2>calibration</h2>
+            <div class="preview-calibration" id="preview-calibration">
+                <div class="preview-calibration-grid">
+                    <button type="button" data-calib="y-">Y-</button>
+                    <button type="button" data-calib="y+">Y+</button>
+                    <button type="button" data-calib="x-">X-</button>
+                    <button type="button" data-calib="x+">X+</button>
+                    <button type="button" data-calib="w-">W-</button>
+                    <button type="button" data-calib="w+">W+</button>
+                    <button type="button" data-calib="h-">H-</button>
+                    <button type="button" data-calib="h+">H+</button>
+                </div>
+                <div class="preview-calibration-actions">
+                    <button type="button" id="preview-reset-selected-btn">reset selected</button>
+                    <button type="button" id="preview-snap-selected-btn">snap to source</button>
+                    <button type="button" id="preview-copy-selected-btn">copy selected override</button>
+                </div>
+            </div>
+        </section>
+        <section class="preview-panel">
+            <h2>builder</h2>
+            <div id="preview-builder-help">Enable builder mode to drag or resize hotspots and filter buttons on the stage. Drafts persist locally until cleared.</div>
+        </section>
+        <section class="preview-panel">
+            <h2>manifest dump</h2>
+            <pre id="preview-dump"></pre>
+        </section>
+    </aside>
+</div>
+
+<script src="../../map-avatar-source-data.js"></script>
+<script src="../../map-panel-data.js"></script>
+<script src="./preview.js"></script>
+</body>
+</html>

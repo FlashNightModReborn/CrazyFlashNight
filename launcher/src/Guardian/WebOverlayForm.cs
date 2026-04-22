@@ -79,6 +79,7 @@ namespace CF7Launcher.Guardian
 
         // 面板系统
         private ShopTask _shopTask;
+        private MapTask _mapTask;
         private Action<bool> _onPanelStateChanged;
         private string _activePanel;  // null = 无面板, "kshop"/"help"/...
         private bool _pauseNeedsRestore;
@@ -884,6 +885,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetMapTask(MapTask task)
+        {
+            _mapTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetPanelStateCallback(Action<bool> cb) { _onPanelStateChanged = cb; }
 
         private void HandlePanelMessage(string json)
@@ -903,6 +911,10 @@ namespace CF7Launcher.Guardian
                             if (!TrySendGameCommand("shopPanelClose"))
                                 _pauseNeedsRestore = true;
                         }
+                        else if (panel == "map")
+                        {
+                            TrySendGameCommand("mapPanelClose");
+                        }
                         // help 等纯 web 面板无需通知 Flash
                         _activePanel = null;
                         if (_onPanelStateChanged != null) _onPanelStateChanged(false);
@@ -915,6 +927,12 @@ namespace CF7Launcher.Guardian
                 case "tooltip":
                     LogManager.Log("[Panel] Routing cmd=" + cmd + " to ShopTask, _shopTask=" + (_shopTask != null ? "ok" : "NULL"));
                     if (_shopTask != null) _shopTask.HandleWebRequest(cmd, parsed);
+                    break;
+                case "snapshot":
+                case "navigate":
+                case "refresh":
+                    LogManager.Log("[Panel] Routing cmd=" + cmd + " to MapTask, _mapTask=" + (_mapTask != null ? "ok" : "NULL"));
+                    if (_mapTask != null) _mapTask.HandleWebRequest(cmd, parsed);
                     break;
                 case "minigame_session":
                     {
@@ -954,6 +972,7 @@ namespace CF7Launcher.Guardian
                 if (_onPanelStateChanged != null) _onPanelStateChanged(false);
             }
             if (_shopTask != null) _shopTask.ClearPending();
+            if (_mapTask != null) _mapTask.ClearPending();
         }
 
         public void OnSocketReconnected()
@@ -1018,7 +1037,9 @@ namespace CF7Launcher.Guardian
                 case "TABLET": SendGameCommand("toggleTablet"); break;
                 case "GAMESETTINGS": SendGameCommand("openSettings"); break;
                 case "JUKEBOX": SendGameCommand("openJukebox"); break;
-                case "TASK_MAP": SendGameCommand("openTaskMap"); break;
+                case "TASK_MAP":
+                    OpenMapPanel("task_map", false);
+                    break;
                 case "TASK_UI": SendGameCommand("openTaskUI"); break;
                 case "EQUIP_UI": SendGameCommand("openEquipUI"); break;
                 case "BAKE": SendGameCommand("bakeIcons"); break;
@@ -1038,6 +1059,14 @@ namespace CF7Launcher.Guardian
                     break;
                 case "EXIT_CONFIRM": if (_onForceExit != null) _onForceExit(); break;
             }
+        }
+
+        private void OpenMapPanel(string source, bool dev)
+        {
+            string initData = "{\"source\":\"" + EscapeJsonString(source) + "\",\"dev\":" + (dev ? "true" : "false") + "}";
+            PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"map\",\"initData\":" + initData + "}");
+            _activePanel = "map";
+            if (_onPanelStateChanged != null) _onPanelStateChanged(true);
         }
 
         /// <summary>通过 XmlSocket 向 AS2 发送游戏命令。</summary>
