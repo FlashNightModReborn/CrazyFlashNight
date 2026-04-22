@@ -295,14 +295,12 @@ var MapPanelHarnessQA = (function() {
                 run: function() {
                     return bootMap(api, host, { defaultPageId: 'base' }).then(function(state) {
                         var marker = document.querySelector('.map-feedback-marker');
-                        var currentChip = document.querySelector('.map-scene-chip.is-current');
                         var currentHotspot = document.querySelector('.map-hotspot.is-current');
                         api.assert(!!state.currentHotspotId, 'snapshot should expose currentHotspotId');
                         api.assert(!!marker, 'current location marker missing');
-                        api.assert(!!currentChip, 'current scene chip missing active state');
                         api.assert(!!currentHotspot, 'current hotspot missing active state');
-                        api.assert(currentChip.getAttribute('data-hotspot-id') === state.currentHotspotId, 'scene chip current hotspot mismatch');
                         api.assert(currentHotspot.getAttribute('data-hotspot-id') === state.currentHotspotId, 'stage current hotspot mismatch');
+                        api.assert(!marker.querySelector('.map-feedback-marker-label'), 'current location marker should no longer render inline label (tips layer owns text)');
                         return 'current=' + state.currentHotspotId;
                     });
                 }
@@ -427,6 +425,60 @@ var MapPanelHarnessQA = (function() {
 
                         host.setState({ failNavigate: false });
                         return 'navigateCount=' + (afterCount - beforeCount);
+                    });
+                }
+            },
+            {
+                id: 'map-ui14',
+                title: 'audio cue attributes routed for hotspots / tabs / filters / close',
+                run: function() {
+                    return bootMap(api, host, { defaultPageId: 'faction' }).then(function() {
+                        var tab = document.querySelector('.map-page-tab[data-page-id="base"]');
+                        api.assert(tab && tab.getAttribute('data-audio-cue') === 'select', 'page tab missing select cue');
+
+                        var closeBtn = document.querySelector('.map-panel-close-btn');
+                        api.assert(closeBtn && closeBtn.getAttribute('data-audio-cue') === 'cancel', 'close btn missing cancel cue');
+
+                        var filter = document.querySelector('.map-filter-hotspot');
+                        api.assert(filter && (filter.getAttribute('data-audio-cue') === 'select' || filter.getAttribute('data-audio-cue') === 'error'), 'filter btn missing cue');
+
+                        return bootMap(api, host, { defaultPageId: 'base', disabledIds: ['base_lobby'] }).then(function() {
+                            var enabledHs = document.querySelector('.map-hotspot[data-hotspot-id="base_entrance"]');
+                            api.assert(enabledHs && enabledHs.getAttribute('data-audio-cue') === 'transition', 'enabled hotspot should route transition');
+
+                            var disabledHs = document.querySelector('.map-hotspot[data-hotspot-id="base_lobby"]');
+                            api.assert(disabledHs && disabledHs.getAttribute('data-audio-cue') === 'error', 'disabled hotspot should route error');
+
+                            api.assert(!document.querySelector('.map-scene-chip'), 'scene chip strip removed; right rail owns filter/floor navigation now');
+                            api.assert(!document.querySelector('.map-scene-strip'), 'scene chip strip container should not be in DOM');
+
+                            return 'cues=ok';
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui15',
+                title: 'filter rail lives outside stage frame and body has no overflow',
+                run: function() {
+                    return bootMap(api, host, { defaultPageId: 'base' }).then(function() {
+                        var stage = document.getElementById('map-stage-frame');
+                        var rail = document.getElementById('map-rail-shell');
+                        var body = document.querySelector('.map-panel-body');
+                        api.assert(!!stage && !!rail && !!body, 'stage / rail / body must exist');
+                        api.assert(!stage.contains(rail), 'rail must not live inside stage frame');
+                        api.assert(body.contains(rail) && body.contains(stage), 'rail & stage must both be body children');
+                        // 过一个 rAF 让 layout 稳定
+                        return new Promise(function(resolve) { requestAnimationFrame(function() { requestAnimationFrame(resolve); }); }).then(function() {
+                            var overflowY = body.scrollHeight - body.clientHeight;
+                            var overflowX = body.scrollWidth - body.clientWidth;
+                            api.assert(overflowY <= 1, 'body should not overflow vertically (got ' + overflowY + 'px)');
+                            api.assert(overflowX <= 1, 'body should not overflow horizontally (got ' + overflowX + 'px)');
+                            var stageRect = stage.getBoundingClientRect();
+                            var railRect = rail.getBoundingClientRect();
+                            api.assert(railRect.left >= stageRect.right - 1, 'rail should sit to the right of stage (stage.right=' + stageRect.right.toFixed(1) + ', rail.left=' + railRect.left.toFixed(1) + ')');
+                            return 'stage=' + Math.round(stageRect.width) + 'x' + Math.round(stageRect.height) + ' rail=' + Math.round(railRect.width) + 'x' + Math.round(railRect.height);
+                        });
                     });
                 }
             },

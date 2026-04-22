@@ -2208,8 +2208,9 @@
 .map-panel-header {
     display:flex;
     align-items:center;
-    gap:12px;
-    padding:14px 18px;
+    flex-wrap:wrap;
+    gap:12px 16px;
+    padding:12px 18px;
     border-bottom:1px solid rgba(180, 255, 0, 0.12);
     background:linear-gradient(90deg, rgba(180,255,0,0.12) 0%, rgba(180,255,0,0.04) 48%, transparent 100%);
     position:relative;
@@ -2217,8 +2218,8 @@
 }
 
 .map-panel.is-compact .map-panel-header {
-    gap:10px;
-    padding:10px 14px;
+    gap:8px 12px;
+    padding:8px 14px;
 }
 
 .map-panel-header::after {
@@ -2236,7 +2237,9 @@
     display:flex;
     flex-direction:column;
     gap:4px;
-    flex:1;
+    flex:0 0 auto;
+    padding-right:8px;
+    border-right:1px solid rgba(180,255,0,0.12);
 }
 
 .map-panel-title {
@@ -2270,6 +2273,7 @@
     background:rgba(255, 196, 64, 0.08);
     font-size:11px;
     letter-spacing:1px;
+    flex:0 0 auto;
 }
 
 .map-panel-close-btn {
@@ -2282,6 +2286,7 @@
     cursor:pointer;
     transition:all 0.15s;
     clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+    flex:0 0 auto;
 }
 
 .map-panel-close-btn:hover {
@@ -2290,25 +2295,13 @@
     box-shadow:0 0 8px rgba(255,0,60,0.25);
 }
 
-.map-panel-toolbar {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:14px;
-    padding:10px 18px 0;
-    position:relative;
-    z-index:1;
-}
-
-.map-panel.is-compact .map-panel-toolbar {
-    gap:10px;
-    padding:8px 14px 0;
-}
-
 .map-page-tabs {
     display:flex;
     flex-wrap:wrap;
     gap:8px;
+    flex:1 1 auto;
+    min-width:0;
+    justify-content:flex-start;
 }
 
 .map-page-tab {
@@ -2347,89 +2340,66 @@
     font-size:11px;
     letter-spacing:1px;
     white-space:nowrap;
+    flex:0 0 auto;
 }
 
 .map-panel.is-compact .map-page-summary {
     font-size:10px;
 }
 
-.map-scene-strip {
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    padding:12px 18px 0;
-    position:relative;
-    z-index:1;
-}
-
-.map-panel.is-compact .map-scene-strip {
-    gap:6px;
-    padding:8px 14px 0;
-}
-
-.map-scene-chip {
-    background:rgba(9,12,8,0.78);
-    border:1px solid rgba(200,255,76,0.14);
-    color:#dfffb1;
-    padding:5px 10px;
-    cursor:pointer;
-    font-family:inherit;
-    font-size:11px;
-    letter-spacing:0.8px;
-    transition:all 0.15s ease;
-    clip-path:polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
-}
-
-.map-panel.is-compact .map-scene-chip {
-    padding:4px 8px;
-    font-size:10px;
-}
-
-.map-scene-chip:hover {
-    border-color:rgba(220,255,128,0.4);
-    background:rgba(200,255,76,0.12);
-}
-
-.map-scene-chip.is-disabled,
-.map-scene-chip:disabled {
-    color:#6f766a;
-    border-color:rgba(255,255,255,0.08);
-    background:rgba(255,255,255,0.03);
-    cursor:not-allowed;
-}
-
-.map-scene-chip.is-busy {
-    color:#ffe27b;
-    border-color:rgba(255,208,79,0.42);
-    box-shadow:0 0 14px rgba(255,208,79,0.22);
-}
-
 .map-panel-body {
     flex:1;
     min-height:0;
     display:flex;
-    align-items:flex-start;
+    flex-direction:row;
+    align-items:stretch;
     justify-content:center;
-    padding:14px 24px 24px;
+    gap:14px;
+    padding:14px 18px 18px;
     position:relative;
     z-index:1;
+    overflow:hidden;          /* 布局自身负责收敛, 不再靠外层滚动条托底 */
+}
+
+.map-panel.is-compact .map-panel-body {
+    gap:10px;
+    padding:10px 14px 14px;
+}
+
+.map-stage-shell {
+    flex:1 1 auto;
+    min-width:0;
+    min-height:0;
+    max-width:1040px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* 右侧独立 rail: 和 stage-shell 并排, 承载 filter 按钮 */
+.map-rail-shell {
+    flex:0 0 132px;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:6px 2px 6px 10px;
+    border-left:1px solid rgba(180,255,0,0.12);
     overflow-y:auto;
     overflow-x:hidden;
     overscroll-behavior:contain;
 }
 
-.map-panel.is-compact .map-panel-body {
-    padding:10px 16px 16px;
+.map-panel.is-compact .map-rail-shell {
+    flex:0 0 112px;
+    gap:6px;
+    padding:4px 2px 4px 8px;
 }
 
-.map-stage-shell {
-    width:min(100%, 1040px);
-    max-width:1040px;
-    flex:0 0 auto;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-}
+.map-rail-shell::-webkit-scrollbar { width:6px; }
+.map-rail-shell::-webkit-scrollbar-track { background:rgba(0,0,0,0.25); }
+.map-rail-shell::-webkit-scrollbar-thumb { background:rgba(200,255,76,0.2); border-radius:3px; }
+.map-rail-shell::-webkit-scrollbar-thumb:hover { background:rgba(200,255,76,0.4); }
 
 .map-stage-frame {
     position:relative;
@@ -2628,13 +2598,6 @@
     pointer-events:none;
 }
 
-.map-filter-layer {
-    position:absolute;
-    inset:0;
-    z-index:6;
-    pointer-events:none;
-}
-
 .map-hotspot {
     position:absolute;
     background:rgba(200, 255, 76, 0.06);
@@ -2810,7 +2773,10 @@
 }
 
 .map-filter-hotspot {
-    position:absolute;
+    position:relative;
+    flex:0 0 auto;
+    width:100%;
+    height:38px;
     padding:0;
     pointer-events:auto;
     display:flex;
@@ -2824,6 +2790,10 @@
     overflow:hidden;
     clip-path:polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
     transition:background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease, color 0.12s ease;
+}
+
+.map-panel.is-compact .map-filter-hotspot {
+    height:32px;
 }
 
 .map-filter-hotspot-chrome {
@@ -2903,16 +2873,6 @@
     color:rgba(255, 205, 182, 0.72);
 }
 
-.map-scene-chip.is-current {
-    color:#9feeff;
-    border-color:rgba(114,230,255,0.42);
-    box-shadow:0 0 14px rgba(114,230,255,0.18);
-}
-
-.map-scene-chip.is-muted {
-    opacity:0.42;
-}
-
 .map-feedback-marker {
     position:absolute;
     width:14px;
@@ -2959,19 +2919,6 @@
     border:1px solid rgba(114,230,255,0.42);
     border-radius:999px;
     animation:mapFeedbackPulse 1.8s ease-out infinite;
-}
-
-.map-feedback-marker-label {
-    position:absolute;
-    left:10px;
-    top:-8px;
-    padding:2px 6px;
-    background:rgba(4,12,14,0.88);
-    border:1px solid rgba(114,230,255,0.28);
-    color:#9feeff;
-    font-size:10px;
-    letter-spacing:0.6px;
-    white-space:nowrap;
 }
 
 .map-feedback-tip {
@@ -3162,4 +3109,203 @@
 .map-stage-error-actions button:hover {
     background:rgba(200,255,76,0.16);
     border-color:rgba(200,255,76,0.38);
+}
+
+/* ─── 视觉升级层 ─── */
+
+/* 面板入场：HUD 上电的 fade+scale，非 prefers-reduced-motion 场景才播 */
+.map-panel.is-entering {
+    animation:mapPanelBoot 0.34s cubic-bezier(0.2, 0.8, 0.25, 1) both;
+}
+.map-panel.is-entering .map-stage-frame {
+    animation:mapStageBoot 0.42s cubic-bezier(0.2, 0.8, 0.25, 1) 0.04s both;
+}
+
+@keyframes mapPanelBoot {
+    0%   { opacity:0; transform:scale(0.985) translateY(6px); filter:brightness(1.1); }
+    60%  { filter:brightness(1.05); }
+    100% { opacity:1; transform:none; filter:none; }
+}
+@keyframes mapStageBoot {
+    0%   { opacity:0; transform:scale(0.97); filter:brightness(1.4) saturate(0.4); }
+    100% { opacity:1; transform:none; filter:none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .map-panel.is-entering,
+    .map-panel.is-entering .map-stage-frame { animation:none; }
+}
+
+/* Stage 四角 HUD 括号 —— 静态 L 型装饰，不参与命中 */
+.map-stage-corner {
+    position:absolute;
+    width:22px;
+    height:22px;
+    pointer-events:none;
+    z-index:8;
+    opacity:0.62;
+}
+.map-stage-corner::before,
+.map-stage-corner::after {
+    content:'';
+    position:absolute;
+    background:#c8ff4c;
+    box-shadow:0 0 6px rgba(200,255,76,0.45);
+}
+/* 水平短臂 + 垂直短臂 */
+.map-stage-corner::before { width:12px; height:2px; }
+.map-stage-corner::after  { width:2px; height:12px; }
+.map-stage-corner--tl { top:6px;    left:6px;    }
+.map-stage-corner--tl::before { top:0; left:0; }
+.map-stage-corner--tl::after  { top:0; left:0; }
+.map-stage-corner--tr { top:6px;    right:6px;   }
+.map-stage-corner--tr::before { top:0; right:0; }
+.map-stage-corner--tr::after  { top:0; right:0; }
+.map-stage-corner--bl { bottom:6px; left:6px;    }
+.map-stage-corner--bl::before { bottom:0; left:0; }
+.map-stage-corner--bl::after  { bottom:0; left:0; }
+.map-stage-corner--br { bottom:6px; right:6px;   }
+.map-stage-corner--br::before { bottom:0; right:0; }
+.map-stage-corner--br::after  { bottom:0; right:0; }
+
+/* Stage 扫描线 —— 缓慢从上向下扫，叠加在所有内容之上但不拦事件 */
+.map-stage-scanline {
+    position:absolute;
+    left:0; right:0;
+    top:0;
+    height:86px;
+    z-index:7;
+    pointer-events:none;
+    background:linear-gradient(
+        180deg,
+        rgba(200, 255, 76, 0) 0%,
+        rgba(200, 255, 76, 0.05) 42%,
+        rgba(200, 255, 76, 0.12) 70%,
+        rgba(220, 255, 128, 0.24) 96%,
+        rgba(220, 255, 128, 0) 100%
+    );
+    mix-blend-mode:screen;
+    opacity:0.5;
+    animation:mapStageScan 6.8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+    .map-stage-scanline { display:none; }
+}
+@keyframes mapStageScan {
+    0%   { transform:translateY(-120%); }
+    100% { transform:translateY(calc(100% + 120%)); }
+}
+
+/* Hotspot hover 靶标括号 —— 四个尖角 L 形。opacity 默认 0，hover/focus/busy/current 才浮现，
+   因此在 assembled 模式(bg 透明) 不会出现"十字满天飞"。 */
+.map-hotspot::before {
+    content:'';
+    position:absolute;
+    inset:-5px;
+    pointer-events:none;
+    background:
+        linear-gradient(#c8ff4c, #c8ff4c) left   top    / 10px 2px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) left   top    / 2px 10px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) right  top    / 10px 2px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) right  top    / 2px 10px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) left   bottom / 10px 2px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) left   bottom / 2px 10px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) right  bottom / 10px 2px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) right  bottom / 2px 10px no-repeat;
+    filter:drop-shadow(0 0 4px rgba(200,255,76,0.4));
+    opacity:0;
+    transition:opacity 0.14s ease, inset 0.14s ease;
+}
+.map-hotspot:hover::before,
+.map-hotspot:focus::before,
+.map-hotspot.is-hover::before {
+    opacity:0.92;
+    inset:-7px;
+}
+.map-hotspot.is-busy::before {
+    opacity:1;
+    inset:-8px;
+    filter:drop-shadow(0 0 6px rgba(255,208,79,0.55));
+    background:
+        linear-gradient(#ffd04f, #ffd04f) left   top    / 12px 2px no-repeat,
+        linear-gradient(#ffd04f, #ffd04f) left   top    / 2px 12px no-repeat,
+        linear-gradient(#ffd04f, #ffd04f) right  top    / 12px 2px no-repeat,
+        linear-gradient(#ffd04f, #ffd04f) right  top    / 2px 12px no-repeat,
+        linear-gradient(#ffd04f, #ffd04f) left   bottom / 12px 2px no-repeat,
+        linear-gradient(#ffd04f, #ffd04f) left   bottom / 2px 12px no-repeat,
+        linear-gradient(#ffd04f, #ffd04f) right  bottom / 12px 2px no-repeat,
+        linear-gradient(#ffd04f, #ffd04f) right  bottom / 2px 12px no-repeat;
+    animation:mapHotspotTargeting 0.9s ease-out infinite;
+}
+.map-hotspot.is-current::before {
+    opacity:0.78;
+    background:
+        linear-gradient(#72e6ff, #72e6ff) left   top    / 10px 2px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) left   top    / 2px 10px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) right  top    / 10px 2px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) right  top    / 2px 10px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) left   bottom / 10px 2px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) left   bottom / 2px 10px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) right  bottom / 10px 2px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) right  bottom / 2px 10px no-repeat;
+    filter:drop-shadow(0 0 4px rgba(114,230,255,0.4));
+}
+.map-hotspot.is-disabled::before,
+.map-hotspot:disabled::before { display:none; }
+
+@keyframes mapHotspotTargeting {
+    0%, 100% { inset:-8px;  opacity:1; }
+    50%      { inset:-11px; opacity:0.55; }
+}
+
+/* Busy 外层发射环 —— 强调"正在传送"的反馈 */
+.map-hotspot.is-busy::after {
+    content:'';
+    position:absolute;
+    inset:-4px;
+    border:1px solid rgba(255,208,79,0.5);
+    box-shadow:0 0 14px rgba(255,208,79,0.3) inset;
+    pointer-events:none;
+    animation:mapHotspotBusyWave 1.1s ease-out infinite;
+}
+@keyframes mapHotspotBusyWave {
+    0%   { inset:-4px;  opacity:0.9; }
+    100% { inset:-22px; opacity:0;   }
+}
+
+/* Current location 雷达扫针 —— 在现有蓝色脉冲之上再叠一层旋转扫描 */
+.map-feedback-marker--currentLocation::before {
+    content:'';
+    position:absolute;
+    inset:-18px;
+    border-radius:999px;
+    background:conic-gradient(
+        from 0deg,
+        rgba(114,230,255,0.45) 0deg,
+        rgba(114,230,255,0.18) 30deg,
+        rgba(114,230,255,0) 60deg,
+        rgba(114,230,255,0) 360deg
+    );
+    animation:mapRadarSweep 2.4s linear infinite;
+    pointer-events:none;
+    mix-blend-mode:screen;
+    opacity:0.82;
+}
+@keyframes mapRadarSweep {
+    0%   { transform:rotate(0deg); }
+    100% { transform:rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .map-feedback-marker--currentLocation::before { animation:none; opacity:0.3; }
+    .map-hotspot.is-busy::after { animation:none; }
+    .map-hotspot.is-busy::before { animation:none; }
+}
+
+/* 面板关闭红色按钮、重试按钮的视觉细化 —— 增加 hover 时的电流感闪烁 */
+.map-panel-close-btn:hover {
+    animation:mapCloseBtnPulse 1.2s ease-in-out infinite;
+}
+@keyframes mapCloseBtnPulse {
+    0%, 100% { box-shadow:0 0 8px rgba(255,0,60,0.25); }
+    50%      { box-shadow:0 0 14px rgba(255,0,60,0.48); }
 }

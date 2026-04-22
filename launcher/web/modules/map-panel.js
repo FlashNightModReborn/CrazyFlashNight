@@ -1,8 +1,8 @@
 var MapPanel = (function() {
     'use strict';
 
-    var _el, _titleEl, _bodyEl, _stageEl, _backdropEl, _imageEl, _sceneLayer, _hotspotLayer, _avatarLayer, _feedbackLayer, _filterLayer, _loadingEl, _errorEl, _errorTextEl, _badgeEl;
-    var _pageTabsEl, _sceneStripEl, _pageSummaryEl;
+    var _el, _titleEl, _bodyEl, _stageEl, _stageShellEl, _railEl, _backdropEl, _imageEl, _sceneLayer, _hotspotLayer, _avatarLayer, _feedbackLayer, _loadingEl, _errorEl, _errorTextEl, _badgeEl;
+    var _pageTabsEl, _pageSummaryEl;
     var _activePage = null;
     var _reqSeq = 0;
     var _pendingReq = {};
@@ -22,6 +22,14 @@ var MapPanel = (function() {
     var _layoutRaf = 0;
     var _layoutObserver = null;
     var _windowResizeBound = false;
+    var _snapshotAnnounced = false;     // 每次 onOpen 后首次 snapshot 成功播 ready, 避免刷新 spam
+
+    function playCue(name) {
+        var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+        if (!A) return;
+        var fn = A['play' + name.charAt(0).toUpperCase() + name.slice(1)];
+        if (typeof fn === 'function') fn();
+    }
 
     Panels.register('map', {
         create: createDOM,
@@ -40,16 +48,13 @@ var MapPanel = (function() {
                     '<span class="map-panel-title">地图测试</span>' +
                     '<span class="map-panel-region" id="map-panel-region"></span>' +
                 '</div>' +
-                '<div class="map-panel-badge" id="map-panel-badge">DEV</div>' +
-                '<button class="map-panel-close-btn" type="button" title="关闭">X</button>' +
-            '</div>' +
-            '<div class="map-panel-toolbar">' +
                 '<div class="map-page-tabs" id="map-page-tabs"></div>' +
                 '<div class="map-page-summary" id="map-page-summary"></div>' +
+                '<div class="map-panel-badge" id="map-panel-badge">DEV</div>' +
+                '<button class="map-panel-close-btn" type="button" title="关闭" data-audio-cue="cancel">X</button>' +
             '</div>' +
-            '<div class="map-scene-strip" id="map-scene-strip"></div>' +
             '<div class="map-panel-body">' +
-                '<div class="map-stage-shell">' +
+                '<div class="map-stage-shell" id="map-stage-shell">' +
                     '<div class="map-stage-frame" id="map-stage-frame">' +
                         '<div class="map-stage-backdrop" id="map-stage-backdrop"></div>' +
                         '<img class="map-stage-image" id="map-stage-image" alt="地图背景">' +
@@ -57,18 +62,23 @@ var MapPanel = (function() {
                         '<div class="map-hotspot-layer" id="map-hotspot-layer"></div>' +
                         '<div class="map-dynamic-avatar-layer" id="map-dynamic-avatar-layer"></div>' +
                         '<div class="map-feedback-layer" id="map-feedback-layer"></div>' +
-                        '<div class="map-filter-layer" id="map-filter-layer"></div>' +
+                        '<div class="map-stage-scanline" aria-hidden="true"></div>' +
+                        '<div class="map-stage-corner map-stage-corner--tl" aria-hidden="true"></div>' +
+                        '<div class="map-stage-corner map-stage-corner--tr" aria-hidden="true"></div>' +
+                        '<div class="map-stage-corner map-stage-corner--bl" aria-hidden="true"></div>' +
+                        '<div class="map-stage-corner map-stage-corner--br" aria-hidden="true"></div>' +
                         '<div class="map-stage-loading" id="map-stage-loading">读取地图状态中...</div>' +
                         '<div class="map-stage-error" id="map-stage-error" style="display:none">' +
                             '<div class="map-stage-error-title">地图状态加载失败</div>' +
                             '<div class="map-stage-error-text" id="map-stage-error-text"></div>' +
                             '<div class="map-stage-error-actions">' +
-                                '<button class="map-error-retry" type="button">重试</button>' +
-                                '<button class="map-error-close" type="button">关闭</button>' +
+                                '<button class="map-error-retry" type="button" data-audio-cue="select">重试</button>' +
+                                '<button class="map-error-close" type="button" data-audio-cue="cancel">关闭</button>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
                 '</div>' +
+                '<div class="map-rail-shell" id="map-rail-shell"></div>' +
             '</div>';
 
         _titleEl = _el.querySelector('#map-panel-region');
@@ -80,13 +90,13 @@ var MapPanel = (function() {
         _hotspotLayer = _el.querySelector('#map-hotspot-layer');
         _avatarLayer = _el.querySelector('#map-dynamic-avatar-layer');
         _feedbackLayer = _el.querySelector('#map-feedback-layer');
-        _filterLayer = _el.querySelector('#map-filter-layer');
+        _stageShellEl = _el.querySelector('#map-stage-shell');
+        _railEl = _el.querySelector('#map-rail-shell');
         _loadingEl = _el.querySelector('#map-stage-loading');
         _errorEl = _el.querySelector('#map-stage-error');
         _errorTextEl = _el.querySelector('#map-stage-error-text');
         _badgeEl = _el.querySelector('#map-panel-badge');
         _pageTabsEl = _el.querySelector('#map-page-tabs');
-        _sceneStripEl = _el.querySelector('#map-scene-strip');
         _pageSummaryEl = _el.querySelector('#map-page-summary');
 
         buildPageTabs();
@@ -95,6 +105,12 @@ var MapPanel = (function() {
         _el.querySelector('.map-panel-close-btn').addEventListener('click', function() { requestClose(); });
         _el.querySelector('.map-error-retry').addEventListener('click', function() { requestSnapshot('refresh'); });
         _el.querySelector('.map-error-close').addEventListener('click', function() { requestClose(); });
+
+        _el.addEventListener('animationend', function(e) {
+            if (e.target === _el && e.animationName === 'mapPanelBoot') {
+                _el.classList.remove('is-entering');
+            }
+        });
 
         return _el;
     }
@@ -109,6 +125,7 @@ var MapPanel = (function() {
             btn.className = 'map-page-tab';
             btn.type = 'button';
             btn.setAttribute('data-page-id', page.id);
+            btn.setAttribute('data-audio-cue', 'select');
             btn.textContent = page.tabLabel;
             attachPageHandler(btn, page.id);
             _pageTabsEl.appendChild(btn);
@@ -135,14 +152,23 @@ var MapPanel = (function() {
         _currentHotspotId = '';
         _hoverHotspotId = '';
         _busyLookup = {};
+        _snapshotAnnounced = false;
 
         _badgeEl.style.display = initData && initData.dev ? '' : 'none';
+
+        if (_el) {
+            _el.classList.remove('is-entering');
+            // 强制回流后加 class, 保证 CSS 动画重新播放
+            void _el.offsetWidth;
+            _el.classList.add('is-entering');
+        }
 
         initLayoutWatcher();
         hideError();
         setLoading(true);
         applyPage((initData && (initData.page || initData.region)) || 'base');
         requestSnapshot('snapshot');
+        playCue('modalOpen');
     }
 
     function onForceClose() {
@@ -192,7 +218,6 @@ var MapPanel = (function() {
         renderHotspots();
         renderFeedback();
         renderFilterButtons();
-        renderSceneStrip();
         updatePageTabs();
         updatePageSummary();
         scheduleLayoutSync();
@@ -253,37 +278,6 @@ var MapPanel = (function() {
         _pageSummaryEl.textContent = hotspots.length
             ? (prefix + '可用 ' + enabledCount + ' / ' + hotspots.length)
             : (prefix + '无场景');
-    }
-
-    function renderSceneStrip() {
-        if (!_activePage) return;
-
-        var hotspots = getVisibleHotspots(_activePage);
-        _sceneStripEl.innerHTML = '';
-
-        for (var i = 0; i < hotspots.length; i++) {
-            var hotspot = hotspots[i];
-            var btn = document.createElement('button');
-            var hotspotState = getHotspotState(hotspot.id);
-            var enabled = !!hotspotState.enabled;
-
-            btn.className = 'map-scene-chip' + (enabled ? '' : ' is-disabled') + (_currentHotspotId === hotspot.id ? ' is-current' : '');
-            btn.type = 'button';
-            btn.setAttribute('data-hotspot-id', hotspot.id);
-            btn.textContent = hotspot.label;
-            btn.setAttribute('aria-disabled', enabled ? 'false' : 'true');
-            btn.title = enabled ? hotspot.label : (hotspotState.lockedReason || hotspot.label);
-            attachSceneChipHandler(btn, hotspot);
-            _sceneStripEl.appendChild(btn);
-        }
-
-        syncSceneChipStates();
-    }
-
-    function attachSceneChipHandler(btn, hotspot) {
-        btn.addEventListener('click', function() {
-            requestNavigate(hotspot);
-        });
     }
 
     function renderSceneVisuals() {
@@ -381,6 +375,10 @@ var MapPanel = (function() {
 
             setLoading(false);
             applySnapshot(resp.snapshot || {});
+            if (!_snapshotAnnounced) {
+                _snapshotAnnounced = true;
+                playCue('ready');
+            }
         };
 
         Bridge.send({
@@ -396,10 +394,13 @@ var MapPanel = (function() {
 
         if (!_enabledLookup[hotspot.id]) {
             pushLockedReason(hotspot.id);
+            playCue('error');
             return;
         }
 
         if (_busyLookup[hotspot.id]) return;
+
+        playCue('transition');
 
         var reqId = 'map-nav-' + (++_reqSeq);
         var currentSession = _session;
@@ -452,6 +453,7 @@ var MapPanel = (function() {
         _currentHotspotId = '';
         _hoverHotspotId = '';
         _busyLookup = {};
+        playCue('cancel');
         Panels.close();
         if (notifyHost) {
             Bridge.send({ type: 'panel', panel: 'map', cmd: 'close' });
@@ -493,7 +495,6 @@ var MapPanel = (function() {
         renderHotspots();
         renderFeedback();
         renderFilterButtons();
-        renderSceneStrip();
         updatePageSummary();
     }
 
@@ -513,6 +514,7 @@ var MapPanel = (function() {
             btn.className = 'map-hotspot' + (enabled ? '' : ' is-disabled') + (_currentHotspotId === hotspot.id ? ' is-current' : '');
             btn.type = 'button';
             btn.setAttribute('data-hotspot-id', hotspot.id);
+            btn.setAttribute('data-audio-cue', enabled ? 'transition' : 'error');
             btn.style.left = toPercent(rect.x, _activePage.width);
             btn.style.top = toPercent(rect.y, _activePage.height);
             btn.style.width = toPercent(rect.w, _activePage.width);
@@ -554,16 +556,21 @@ var MapPanel = (function() {
     }
 
     function renderFilterButtons() {
-        if (!_activePage) return;
+        if (!_activePage || !_railEl) return;
 
         var filters = getPageFilters(_activePage);
         var activeFilter = getActiveFilter(_activePage);
-        _filterLayer.innerHTML = '';
+        _railEl.innerHTML = '';
 
-        for (var i = 0; i < filters.length; i++) {
-            var filter = filters[i];
-            if (!filter.buttonRect) continue;
+        // rail 按 filter 原 buttonRect.y 升序排列 (数据契约里保存的垂直视觉顺序)
+        var ordered = filters.slice().sort(function(a, b) {
+            var ay = a.buttonRect ? a.buttonRect.y : 9999;
+            var by = b.buttonRect ? b.buttonRect.y : 9999;
+            return ay - by;
+        });
 
+        for (var i = 0; i < ordered.length; i++) {
+            var filter = ordered[i];
             var enabledCount = countEnabledIds(filter.hotspotIds || []);
             var filterMeta = getFilterMeta(_activePage.id, filter.id);
             var isLocked = !!(filterMeta && !_unlockFlags[filterMeta.unlockGroup]);
@@ -571,21 +578,18 @@ var MapPanel = (function() {
             btn.className = 'map-filter-hotspot';
             btn.type = 'button';
             btn.setAttribute('data-filter-id', filter.id);
+            btn.setAttribute('data-audio-cue', isLocked ? 'error' : 'select');
             btn.setAttribute('title', buildFilterTitle(filter, enabledCount, filterMeta, isLocked));
             btn.setAttribute('aria-label', filter.label);
             btn.classList.toggle('is-active', !!activeFilter && activeFilter.id === filter.id);
             btn.classList.toggle('is-empty', enabledCount === 0);
             btn.classList.toggle('is-locked', isLocked);
-            btn.style.left = toPercent(filter.buttonRect.x, _activePage.width);
-            btn.style.top = toPercent(filter.buttonRect.y, _activePage.height);
-            btn.style.width = toPercent(filter.buttonRect.w, _activePage.width);
-            btn.style.height = toPercent(filter.buttonRect.h, _activePage.height);
             btn.innerHTML =
                 '<span class="map-filter-hotspot-chrome"></span>' +
                 '<span class="map-filter-hotspot-label">' + escHtml(filter.label) + '</span>' +
                 '<span class="map-filter-hotspot-meta">' + enabledCount + '/' + ((filter.hotspotIds || []).length) + '</span>';
             attachFilterHandler(btn, filter.id);
-            _filterLayer.appendChild(btn);
+            _railEl.appendChild(btn);
         }
     }
 
@@ -753,9 +757,7 @@ var MapPanel = (function() {
             el.className = 'map-feedback-marker' + (marker.kind ? ' map-feedback-marker--' + marker.kind : '');
             el.style.left = toPercent(anchor.x, _activePage.width);
             el.style.top = toPercent(anchor.y, _activePage.height);
-            if (marker.label) {
-                el.innerHTML = '<span class="map-feedback-marker-label">' + escHtml(marker.label) + '</span>';
-            }
+            // 标记只留点 + 雷达扫针，文字描述交给 tips 层，避免和 tip "当前位置" 叠字
             _feedbackLayer.appendChild(el);
         }
     }
@@ -994,7 +996,6 @@ function resolveFeedbackAnchor(item) {
         renderSceneVisuals();
         renderHotspots();
         renderFilterButtons();
-        renderSceneStrip();
         updatePageSummary();
         scheduleLayoutSync();
     }
@@ -1086,7 +1087,6 @@ function resolveFeedbackAnchor(item) {
             _hoverHotspotId = '';
         }
         syncHotspotStates();
-        syncSceneChipStates();
         syncAvatarStates();
         syncSceneNodeStates();
     }
@@ -1116,21 +1116,6 @@ function resolveFeedbackAnchor(item) {
         }
     }
 
-    function syncSceneChipStates() {
-        if (!_sceneStripEl) return;
-
-        var focusHotspotId = getFocusHotspotId(_activePage);
-        var chips = _sceneStripEl.querySelectorAll('.map-scene-chip');
-        for (var i = 0; i < chips.length; i++) {
-            var id = chips[i].getAttribute('data-hotspot-id') || '';
-            var chipBusy = !!_busyLookup[id];
-            chips[i].classList.toggle('is-current', _currentHotspotId === id);
-            chips[i].classList.toggle('is-busy', chipBusy);
-            chips[i].classList.toggle('is-muted', !!focusHotspotId && focusHotspotId !== id);
-            chips[i].disabled = chipBusy;
-        }
-    }
-
     function syncAvatarStates() {
         if (!_avatarLayer) return;
 
@@ -1153,10 +1138,7 @@ function resolveFeedbackAnchor(item) {
         var hotspotBtn = _hotspotLayer.querySelector('[data-hotspot-id="' + id + '"]');
         if (hotspotBtn) hotspotBtn.classList.toggle('is-busy', !!isBusy);
 
-        var sceneChip = _sceneStripEl.querySelector('[data-hotspot-id="' + id + '"]');
-        if (sceneChip) sceneChip.classList.toggle('is-busy', !!isBusy);
         syncHotspotStates();
-        syncSceneChipStates();
         syncAvatarStates();
         syncSceneNodeStates();
     }
@@ -1174,6 +1156,7 @@ function resolveFeedbackAnchor(item) {
             });
             _layoutObserver.observe(_el);
             _layoutObserver.observe(_bodyEl);
+            if (_stageShellEl) _layoutObserver.observe(_stageShellEl);
         }
 
         if (!_windowResizeBound && typeof window !== 'undefined' && window.addEventListener) {
@@ -1194,11 +1177,13 @@ function resolveFeedbackAnchor(item) {
     }
 
     function syncStageLayout() {
-        if (!_activePage || !_bodyEl || !_stageEl) return;
+        if (!_activePage || !_bodyEl || !_stageEl || !_stageShellEl) return;
 
-        var bodyRect = _bodyEl.getBoundingClientRect();
-        var availableWidth = Math.max(320, Math.floor(bodyRect.width - 8));
-        var availableHeight = Math.max(220, Math.floor(bodyRect.height - 8));
+        // shell 是 body 内 stage 的直接父容器 (与 rail 平铺), shell 的 contentBox 才是 stage 可用空间;
+        // 直接读 body 会把 rail 宽度也算进去, 导致 stage 超出 shell 再回头引发横向/纵向溢出。
+        var shellRect = _stageShellEl.getBoundingClientRect();
+        var availableWidth = Math.max(320, Math.floor(shellRect.width));
+        var availableHeight = Math.max(220, Math.floor(shellRect.height));
         var widthScale = availableWidth / _activePage.width;
         var heightScale = availableHeight / _activePage.height;
 
@@ -1216,6 +1201,7 @@ function resolveFeedbackAnchor(item) {
         setLoading(false);
         _errorTextEl.textContent = normalizeError(errorText);
         _errorEl.style.display = 'flex';
+        playCue('error');
     }
 
     function hideError() {
