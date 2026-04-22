@@ -83,7 +83,7 @@
           <Include href="单位/新版人物文字信息.xml" itemID="65c9a1af-000005fc" lastModified="1736864914"/>
           <Include href="单位/血槽底.xml" loadImmediate="false" itemID="65c9a8c3-00000624" lastModified="1707753328"/>
           <Include href="单位/血槽韧性条.xml" loadImmediate="false" itemID="65c9a3a2-0000060a" lastModified="1707755072"/>
-          <Include href="敌人-蛙型仿生僵尸.xml" itemID="65ae6634-00001ba9" lastModified="1776761555"/>
+          <Include href="敌人-体育老师.xml" itemID="69e8ca01-0000090f" lastModified="1776863745"/>
           <Include href="怪物通用模板/area框/hitbox-area框载体.xml" loadImmediate="false" itemID="65ae6963-00003740" lastModified="1776760710"/>
           <Include href="怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65689e04-0000008e" lastModified="1700337299"/>
           <Include href="怪物通用模板/area框/按钮框.xml" itemIcon="0" loadImmediate="false" itemID="65ae694d-0000373f" lastModified="1776760710"/>
@@ -105,7 +105,7 @@
           <Include href="容器/空手攻击容器/空手攻击容器-燃烧指节.xml" itemID="6964d6d2-0000293c" lastModified="1776760864"/>
           <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" itemID="6964d583-0000279b" lastModified="1776761335"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" itemID="6964ce51-00002614" lastModified="1776760724"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1776605942"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1776863631"/>
           <Include href="属性标签标志元件/底层背景标签.xml" loadImmediate="false" itemID="667e47f0-00000631" lastModified="1719551984"/>
           <Include href="属性标签标志元件/刚体标签.xml" loadImmediate="false" itemID="66cf12fa-00000756" lastModified="1724846848"/>
           <Include href="属性标签标志元件/无敌标签.xml" loadImmediate="false" itemID="66cd4f63-0000054b" lastModified="1724731329"/>
@@ -217,10 +217,9 @@
           <Include href="特效/旋风腿旋风组件/shape 1375.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-0000055f" lastModified="1477651515"/>
           <Include href="特效/旋风腿旋风组件/shape 1376.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000560" lastModified="1477651515"/>
           <Include href="特效/旋风腿旋风组件/shape 1377.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000561" lastModified="1477651515"/>
-          <Include href="体育老师-近战动画.xml" loadImmediate="false" itemID="69e73693-00000510" lastModified="1776761461"/>
+          <Include href="体育老师-近战动画.xml" loadImmediate="false" itemID="69e73693-00000510" lastModified="1776863745"/>
           <Include href="阴影.xml" loadImmediate="false" itemID="65ab9909-000003b3" lastModified="1705744649"/>
           <Include href="元件 1.xml" loadImmediate="false" itemID="673f56fa-00000914" lastModified="1732204413"/>
-          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1776761580"/>
           <Include href="主角肢体素材/Symbol 3.xml" loadImmediate="false" itemID="697b650f-00003223" lastModified="1731931497"/>
           <Include href="主角肢体素材/Symbol 6.xml" loadImmediate="false" itemID="697b6503-00001ff2" lastModified="1758557137"/>
           <Include href="主角肢体素材/脚.xml" loadImmediate="false" itemID="697b650b-00002c94" lastModified="1775124362"/>
@@ -294,7 +293,7 @@
                                                   <Point x="-80.65" y="-13.55"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" centerPoint3DX="561.2" centerPoint3DY="246.1">
+                                        <DOMSymbolInstance libraryItemName="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" selected="true" centerPoint3DX="561.2" centerPoint3DY="246.1">
                                              <matrix>
                                                   <Matrix a="0.450149536132813" d="0.450149536132813" tx="584.9" ty="259.7"/>
                                              </matrix>
@@ -310,14 +309,6 @@
                                                   <Point x="50.85" y="-29.3"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="主角-男" centerPoint3DX="782.2" centerPoint3DY="194.8">
-                                             <matrix>
-                                                  <Matrix tx="775.7" ty="289.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
                                         <DOMSymbolInstance libraryItemName="体育老师-近战动画" centerPoint3DX="-193.95" centerPoint3DY="573">
                                              <matrix>
                                                   <Matrix a="0.384323120117188" d="0.384323120117188" tx="-198.55" ty="573"/>
@@ -326,7 +317,7 @@
                                                   <Point x="11.95"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="敌人-蛙型仿生僵尸" centerPoint3DX="489.3" centerPoint3DY="650.65">
+                                        <DOMSymbolInstance libraryItemName="敌人-体育老师" centerPoint3DX="489.3" centerPoint3DY="650.65">
                                              <matrix>
                                                   <Matrix tx="93" ty="744.1"/>
                                              </matrix>

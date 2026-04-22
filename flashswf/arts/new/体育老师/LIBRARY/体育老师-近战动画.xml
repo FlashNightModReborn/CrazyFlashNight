@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="体育老师-近战动画" itemID="69e73693-00000510" lastModified="1776761461">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="体育老师-近战动画" itemID="69e73693-00000510" lastModified="1776863745">
   <timeline>
-    <DOMTimeline name="体育老师-近战动画">
+    <DOMTimeline name="体育老师-近战动画" currentFrame="118">
       <layers>
-        <DOMLayer name="标签" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="标签" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="28" name="扭转乾坤" labelType="name" keyMode="9728">
               <elements/>
@@ -295,7 +295,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体" color="#4FFFFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" visible="false">
+        <DOMLayer name="刚体" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements>
@@ -2577,7 +2577,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="118" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="8.65" centerPoint3DY="-187.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="8.65" centerPoint3DY="-187.65">
                   <matrix>
                     <Matrix a="0.910934448242188" b="0.313125610351563" c="-0.313125610351563" d="0.910934448242188" tx="-22.85" ty="-228.4"/>
                   </matrix>
@@ -5510,7 +5510,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-58.35" centerPoint3DY="-177.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-58.35" centerPoint3DY="-177.3">
                   <matrix>
                     <Matrix a="0.612518310546875" b="0.55255126953125" c="0.53985595703125" d="-0.598373413085938" tx="-121.8" ty="-147.85"/>
                   </matrix>
@@ -6402,7 +6402,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="-55.65" centerPoint3DY="-156.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-55.65" centerPoint3DY="-156.45">
                   <matrix>
                     <Matrix a="0.9029541015625" b="0.286911010742188" c="-0.286911010742188" d="0.9029541015625" tx="-65.55" ty="-203.5"/>
                   </matrix>
@@ -7279,7 +7279,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="-47.85" centerPoint3DY="76.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-47.85" centerPoint3DY="76.05">
                   <matrix>
                     <Matrix a="0.848876953125" b="0.018829345703125" c="-0.018829345703125" d="0.848876953125" tx="-68.7" ty="-43.55"/>
                   </matrix>
@@ -8155,7 +8155,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-264.7" centerPoint3DY="138.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-264.7" centerPoint3DY="138.65">
                   <matrix>
                     <Matrix a="-0.664718627929688" b="-0.509307861328125" c="-0.509307861328125" d="0.664718627929688" tx="-189.55" ty="121.75"/>
                   </matrix>
@@ -9043,7 +9043,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-334.5" centerPoint3DY="245.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-334.5" centerPoint3DY="245.9">
                   <matrix>
                     <Matrix a="-0.809310913085938" b="-0.133926391601563" c="-0.133926391601563" d="0.809310913085938" tx="-289.45" ty="224.1"/>
                   </matrix>
@@ -9931,7 +9931,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-111.4" centerPoint3DY="82.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-111.4" centerPoint3DY="82.5">
                   <matrix>
                     <Matrix a="0.634368896484375" b="0.56671142578125" c="-0.56671142578125" d="0.634368896484375" tx="-98.35" ty="-0.25"/>
                   </matrix>
@@ -10807,7 +10807,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="102.15" centerPoint3DY="121.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="102.15" centerPoint3DY="121.8">
                   <matrix>
                     <Matrix a="0.805267333984375" b="-0.211578369140625" c="0.211578369140625" d="0.805267333984375" tx="83.55" ty="46.25"/>
                   </matrix>
@@ -11698,7 +11698,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="175" centerPoint3DY="226.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="175" centerPoint3DY="226.5">
                   <matrix>
                     <Matrix a="0.81072998046875" b="-0.0465850830078125" c="0.0465850830078125" d="0.81072998046875" tx="134.6" ty="196.05"/>
                   </matrix>
@@ -12571,7 +12571,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="15.4" centerPoint3DY="44.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="15.4" centerPoint3DY="44.75">
                   <matrix>
                     <Matrix a="0.311203002929688" b="-0.79052734375" c="0.79052734375" d="0.311203002929688" tx="-54.45" ty="-1.55"/>
                   </matrix>
@@ -13411,7 +13411,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="15.45" centerPoint3DY="-41.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="15.45" centerPoint3DY="-41.15">
                   <matrix>
                     <Matrix a="0.799713134765625" b="-0.0931396484375" c="0.0931396484375" d="0.799713134765625" tx="49.75" ty="-36.85"/>
                   </matrix>
@@ -14151,7 +14151,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="-66.15" centerPoint3DY="-95.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-66.15" centerPoint3DY="-95.75">
                   <matrix>
                     <Matrix a="0.1971435546875" b="-0.752197265625" c="0.752197265625" d="0.1971435546875" tx="-37.05" ty="-51.7"/>
                   </matrix>
@@ -14995,7 +14995,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="39.35" centerPoint3DY="-86.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="39.35" centerPoint3DY="-86.5">
                   <matrix>
                     <Matrix a="0.792205810546875" b="0.2232666015625" c="-0.2232666015625" d="0.792205810546875" tx="-14.25" ty="-132.3"/>
                   </matrix>
@@ -15777,7 +15777,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="100" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="-27.75" centerPoint3DY="30.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-27.75" centerPoint3DY="30.7">
                   <matrix>
                     <Matrix a="0.85333251953125" b="0.0519866943359375" c="-0.0519866943359375" d="0.85333251953125" tx="-73.85" ty="-5.2"/>
                   </matrix>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-蛙型仿生僵尸" itemID="65ae6634-00001ba9" linkageExportForAS="true" linkageIdentifier="敌人-蛙型仿生僵尸" lastModified="1776761555" lastUniqueIdentifier="52">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="69e8ca01-0000090f" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1776863745" lastUniqueIdentifier="52">
   <timeline>
-    <DOMTimeline name="敌人-蛙型仿生僵尸" currentFrame="13">
+    <DOMTimeline name="敌人-体育老师" currentFrame="118">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -538,7 +538,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="体育老师-近战动画" centerPoint3DX="-6.1" centerPoint3DY="-67.6">
+                <DOMSymbolInstance libraryItemName="体育老师-近战动画" selected="true" centerPoint3DX="-6.1" centerPoint3DY="-67.6">
                   <matrix>
                     <Matrix a="0.271865844726563" d="0.271865844726563" tx="-9.35" ty="-67.6"/>
                   </matrix>

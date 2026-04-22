@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-破极拳1连招" lastModified="1776605942" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-破极拳1连招" lastModified="1776863631" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="空手攻击容器-破极拳1连招" currentFrame="58">
+    <DOMTimeline name="空手攻击容器-破极拳1连招" currentFrame="46">
       <layers>
-        <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="连段标识" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" name="破极拳1连招" labelType="name" keyMode="9728">
               <elements/>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -204,7 +204,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
@@ -267,7 +267,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -920,7 +920,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1044,7 +1044,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1186,14 +1186,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 8" color="#FF4F4F" locked="true">
+        <DOMLayer name="图层 8" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -1717,14 +1717,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="腕刃反转标签" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="腕刃反转标签" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 10" color="#9933CC" locked="true">
+        <DOMLayer name="图层 10" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1767,7 +1767,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 11" color="#FF800A" locked="true">
+        <DOMLayer name="图层 11" color="#FF800A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1813,7 +1813,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF" locked="true">
+        <DOMLayer name="图层 12" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1859,7 +1859,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF" locked="true">
+        <DOMLayer name="图层 13" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -9783,7 +9783,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 14" color="#808080" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 14" color="#808080" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -9798,7 +9798,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.48828125"/>
+                    <Color tintMultiplier="1"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9808,7 +9808,7 @@
             </DOMFrame>
             <DOMFrame index="10" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/残影2" centerPoint3DX="16" centerPoint3DY="31.05">
+                <DOMSymbolInstance libraryItemName="特效/幻影/残影2" selected="true" centerPoint3DX="16" centerPoint3DY="31.05">
                   <matrix>
                     <Matrix a="1.33248901367188" d="1.17771911621094" tx="-438.85" ty="-282.85"/>
                   </matrix>
@@ -9819,7 +9819,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.48828125"/>
+                    <Color tintMultiplier="1"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9840,7 +9840,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.48828125"/>
+                    <Color tintMultiplier="1"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9861,7 +9861,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.48828125"/>
+                    <Color tintMultiplier="1"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9882,7 +9882,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color alphaMultiplier="0.48828125"/>
+                    <Color tintMultiplier="1"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9892,7 +9892,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF" locked="true">
+        <DOMLayer name="图层 15" color="#4F80FF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -10147,7 +10147,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 16" color="#FF4F4F" locked="true">
+        <DOMLayer name="图层 16" color="#FF4F4F">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -10172,7 +10172,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 33" color="#4FFF4F" locked="true">
+        <DOMLayer name="图层 33" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -10239,7 +10239,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="影子" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements>
