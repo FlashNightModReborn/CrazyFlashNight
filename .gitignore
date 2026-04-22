@@ -102,3 +102,9 @@ tools/mercenary-ai-sim/results/
 tools/mercenary-ai-sim/__pycache__/
 tools/combat-movement-sim/results/
 tools/combat-movement-sim/__pycache__/
+
+# 调试探针/临时 DOM 快照等 ad-hoc 产物, 禁止入库
+/tmp-*
+/tmp-*.html
+/tmp-*.json
+/tmp-*.txt

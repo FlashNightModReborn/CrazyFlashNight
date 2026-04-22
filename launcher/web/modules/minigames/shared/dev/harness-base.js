@@ -7,6 +7,9 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function() {
     "use strict";
 
+    // QA 通道 (location / Bridge / __qaResult) 需要稳定的 globalThis 引用,
+    // 不能依赖 factory 内部的 `this` (strict mode + IIFE 组合下 this=undefined)。
+    // 故意遮蔽外层 UMD 参数 root, 让 factory body 内所有引用统一指向 globalThis。
     var root = typeof globalThis !== "undefined" ? globalThis : this;
 
     function parseQuery(search) {

@@ -1,6 +1,12 @@
 var MapPanel = (function() {
     'use strict';
 
+    // Stage 最大 scale · 单一真相源
+    //   - map-panel.js syncStageLayout 的一级缩放上限
+    //   - tools/tune-map-filter-fit.js STAGE_MAX_SCALE 必须同步 (离线 fit 算分才能对齐)
+    //   - 调大需回查 composite PNG 源分辨率, 否则最终总放大 > 1.5x 会 pixelated
+    var STAGE_MAX_SCALE = 1.3;
+
     var _el, _titleEl, _bodyEl, _stageEl, _stageShellEl, _railEl, _backdropEl, _filterOverlayEl, _anomalyEl, _contentFitEl, _imageEl, _sceneLayer, _hotspotLayer, _avatarLayer, _feedbackLayer, _overlayLayer, _loadingEl, _errorEl, _errorTextEl, _badgeEl;
     var _pageTabsEl, _pageSummaryEl;
     var _activePage = null;
@@ -1704,9 +1710,7 @@ function resolveFeedbackAnchor(item) {
         var availableHeight = Math.max(220, Math.floor(Math.max(_stageShellEl.clientHeight || 0, shellRect.height || 0, bodyAvailableHeight)));
         var widthScale = availableWidth / _activePage.width;
         var heightScale = availableHeight / _activePage.height;
-        var maxStageScale = 1.3;
-
-        _stageScale = Math.min(widthScale, heightScale, maxStageScale);
+        _stageScale = Math.min(widthScale, heightScale, STAGE_MAX_SCALE);
         if (!isFinite(_stageScale) || _stageScale <= 0) {
             _stageScale = 1;
         }

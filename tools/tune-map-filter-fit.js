@@ -38,6 +38,17 @@ const BOUNDS_MARGIN_X = 12;
 const BOUNDS_MARGIN_Y = 16;
 const PAGE_GAIN_THRESHOLD = 0.12;
 const FILTER_GAIN_THRESHOLD = 0.1;
+// stage max scale 与 map-panel.js syncStageLayout 的 maxStageScale 必须保持一致;
+// 改动时两处同步, 否则离线算分与运行时实际 fit 会偏差。
+const STAGE_MAX_SCALE = 1.3;
+// composite "视觉放大倍数" = stageScale * fitScale / sourceRatio (PNG px / logical rect)
+// 超过此阈值说明 PNG 被拉伸绘制到屏幕, 有明显 pixelated 风险。
+// 此阈值既用于告警, 也用于在 selectFilterOverride 里 clip candidate maxScale, 防止生成超采 preset。
+const COMPOSITE_VISUAL_SCALE_CAP = 1.5;
+// fallback: 当无法读到 PNG 时, 假设 sourceRatio = 1.0 (一张刚好够 1× 绘制的资产)
+const DEFAULT_SOURCE_RATIO = 1.0;
+const webRoot = path.join(projectRoot, 'launcher', 'web');
+const pngSizeCache = {};
 
 function parseArgs(argv) {
     const args = {
@@ -78,6 +89,59 @@ function printHelp(exitCode, error) {
     }
     console.error('usage: node tools/tune-map-filter-fit.js [--write] [--out <file>] [--json]');
     process.exit(exitCode);
+}
+
+function readPngSize(absPath) {
+    if (pngSizeCache[absPath] !== undefined) return pngSizeCache[absPath];
+    try {
+        const fd = fs.openSync(absPath, 'r');
+        const buf = Buffer.alloc(24);
+        fs.readSync(fd, buf, 0, 24, 0);
+        fs.closeSync(fd);
+        if (buf.readUInt32BE(0) !== 0x89504e47 || buf.toString('ascii', 12, 16) !== 'IHDR') {
+            pngSizeCache[absPath] = null;
+            return null;
+        }
+        const size = { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+        pngSizeCache[absPath] = size;
+        return size;
+    } catch (err) {
+        pngSizeCache[absPath] = null;
+        return null;
+    }
+}
+
+function computeFilterSourceCeiling(mapData, pageId, filterId) {
+    // 取 filter 下所有可见 sceneVisual 的 PNG 采样率, 返回最严 (最小) 的 ratio,
+    // 即 "PNG 能支撑的最大逻辑放大倍数"。filter 里只要有一张低清素材, 整张 fit 上限就被它锁死。
+    const visuals = mapData.getVisibleSceneVisuals(pageId, filterId || '');
+    let minRatio = Infinity;
+    let worst = null;
+    for (let i = 0; i < visuals.length; i += 1) {
+        const visual = visuals[i];
+        if (!visual || !visual.rect || !visual.assetUrl) continue;
+        const pngPath = path.join(webRoot, visual.assetUrl.replace(/^\/+/, ''));
+        const size = readPngSize(pngPath);
+        if (!size) continue;
+        const ratioW = size.w / Math.max(1, visual.rect.w);
+        const ratioH = size.h / Math.max(1, visual.rect.h);
+        const ratio = Math.min(ratioW, ratioH);
+        if (ratio < minRatio) {
+            minRatio = ratio;
+            worst = {
+                assetUrl: visual.assetUrl,
+                pngW: size.w,
+                pngH: size.h,
+                rectW: visual.rect.w,
+                rectH: visual.rect.h,
+                ratio: round(ratio)
+            };
+        }
+    }
+    if (!isFinite(minRatio)) {
+        return { sourceRatio: DEFAULT_SOURCE_RATIO, worstAsset: null };
+    }
+    return { sourceRatio: round(minRatio), worstAsset: worst };
 }
 
 function evaluateScript(filePath, globalName) {
@@ -219,7 +283,7 @@ function pickChangedKeys(preset, basePreset) {
 }
 
 function computeStageMetrics(page, bounds, fitPreset, stagePreset) {
-    const stageScale = Math.min(stagePreset.width / page.width, stagePreset.height / page.height, 1.3);
+    const stageScale = Math.min(stagePreset.width / page.width, stagePreset.height / page.height, STAGE_MAX_SCALE);
     const stageWidth = Math.round(page.width * stageScale);
     const stageHeight = Math.round(page.height * stageScale);
     const scaledBounds = {
@@ -355,11 +419,36 @@ function selectPageDefaults(page, filters, boundsByFilter) {
     };
 }
 
-function selectFilterOverride(page, filterId, bounds, basePreset) {
+function selectFilterOverride(page, filterId, bounds, basePreset, sourceRatio) {
     const baseline = evaluateFilter(page, bounds, basePreset);
     const baselineCoverage = averageCoverage(baseline.stageMetrics);
-    const capBoundCount = countCapBoundStages(baseline.stageMetrics);
 
+    // PNG source 能支撑的最大 fitScale: visualCap * sourceRatio / STAGE_MAX_SCALE
+    // 保证在最大 stage (roomy/1.3×) 下 composite 视觉放大 <= COMPOSITE_VISUAL_SCALE_CAP
+    const safeRatio = Number(sourceRatio) > 0 ? Number(sourceRatio) : DEFAULT_SOURCE_RATIO;
+    const sourceAwareCap = (COMPOSITE_VISUAL_SCALE_CAP * safeRatio) / STAGE_MAX_SCALE;
+    // fitScale=1 是下限 (Math.max(1, ...) clamp), 所以 clipCap 至少 1.0;
+    // 但 maxScale 设成 < 1.0 对运行时无意义 (fit 不会小于 1)
+    const clipCap = Math.max(1.0, sourceAwareCap);
+
+    // === 向下强制 clip: basePreset 超出 source 能力时, 强制降级 maxScale ===
+    // 即使没有 cap-bound stage, 也必须生成 override 压住 maxScale, 否则运行时会撞上限
+    if (basePreset.maxScale > clipCap + 0.005) {
+        const clippedPreset = mergePreset(basePreset, { maxScale: round(clipCap) });
+        const clippedMetrics = evaluateFilter(page, bounds, clippedPreset);
+        return {
+            changed: pickChangedKeys(clippedPreset, basePreset),
+            baselineMetrics: baseline,
+            candidateMetrics: clippedMetrics,
+            baselineCoverage: baselineCoverage,
+            candidateCoverage: averageCoverage(clippedMetrics.stageMetrics),
+            sourceRatio: safeRatio,
+            sourceAwareCap: round(sourceAwareCap),
+            reason: 'source_cap_clip'
+        };
+    }
+
+    const capBoundCount = countCapBoundStages(baseline.stageMetrics);
     if (!capBoundCount) {
         return null;
     }
@@ -371,8 +460,10 @@ function selectFilterOverride(page, filterId, bounds, basePreset) {
     };
 
     for (let i = 0; i < FILTER_MAX_SCALE_CANDIDATES.length; i += 1) {
+        const rawCandidateMax = FILTER_MAX_SCALE_CANDIDATES[i];
+        if (rawCandidateMax > clipCap) continue; // 超出 source 能力, 丢弃
         const candidatePreset = mergePreset(basePreset, {
-            maxScale: FILTER_MAX_SCALE_CANDIDATES[i]
+            maxScale: rawCandidateMax
         });
         const candidateMetrics = evaluateFilter(page, bounds, candidatePreset);
         const changeCost = Math.max(0, candidatePreset.maxScale - basePreset.maxScale) * 0.35;
@@ -396,7 +487,10 @@ function selectFilterOverride(page, filterId, bounds, basePreset) {
         baselineMetrics: baseline,
         candidateMetrics: best.metrics,
         baselineCoverage: baselineCoverage,
-        candidateCoverage: averageCoverage(best.metrics.stageMetrics)
+        candidateCoverage: averageCoverage(best.metrics.stageMetrics),
+        sourceRatio: safeRatio,
+        sourceAwareCap: round(sourceAwareCap),
+        reason: 'upward_override'
     };
 }
 
@@ -441,7 +535,11 @@ function buildTuningReport(mapData) {
 
         for (let j = 0; j < filters.length; j += 1) {
             const filterId = filters[j].id;
-            const filterOverride = selectFilterOverride(page, filterId, boundsByFilter[filterId], pagePreset);
+            const sourceCeiling = computeFilterSourceCeiling(mapData, pageId, filterId);
+            const filterOverride = selectFilterOverride(page, filterId, boundsByFilter[filterId], pagePreset, sourceCeiling.sourceRatio);
+            const tunedEvaluation = filterOverride
+                ? filterOverride.candidateMetrics
+                : evaluateFilter(page, boundsByFilter[filterId], pagePreset);
 
             pageEntry.filters.push({
                 filterId: filterId,
@@ -451,15 +549,16 @@ function buildTuningReport(mapData) {
                     w: round(boundsByFilter[filterId].w),
                     h: round(boundsByFilter[filterId].h)
                 },
+                sourceRatio: sourceCeiling.sourceRatio,
+                worstAsset: sourceCeiling.worstAsset,
                 override: filterOverride ? filterOverride.changed : {},
                 baselineCompact: filterOverride
                     ? filterOverride.baselineMetrics.stageMetrics[0].metrics
-                    : evaluateFilter(page, boundsByFilter[filterId], pagePreset).stageMetrics[0].metrics,
-                tunedCompact: filterOverride
-                    ? filterOverride.candidateMetrics.stageMetrics[0].metrics
-                    : evaluateFilter(page, boundsByFilter[filterId], pagePreset).stageMetrics[0].metrics,
-                averageCoverage: filterOverride ? filterOverride.candidateCoverage : averageCoverage(evaluateFilter(page, boundsByFilter[filterId], pagePreset).stageMetrics),
-                capBoundStages: countCapBoundStages(evaluateFilter(page, boundsByFilter[filterId], pagePreset).stageMetrics)
+                    : tunedEvaluation.stageMetrics[0].metrics,
+                tunedCompact: tunedEvaluation.stageMetrics[0].metrics,
+                tunedStageMetrics: tunedEvaluation.stageMetrics, // 所有 stage preset × filter 的 fit 结果, 供放大告警扫描
+                averageCoverage: filterOverride ? filterOverride.candidateCoverage : averageCoverage(tunedEvaluation.stageMetrics),
+                capBoundStages: countCapBoundStages(tunedEvaluation.stageMetrics)
             });
 
             if (filterOverride && Object.keys(filterOverride.changed).length) {
@@ -534,6 +633,43 @@ function buildRuntimeFile(runtimePresets) {
     ].join('\n');
 }
 
+function collectPixelWarnings(report) {
+    // 告警真实 composite 视觉放大 = stageScale * fitScale / sourceRatio
+    // (PNG 实际被绘制到屏幕时相对自身像素的放大倍数; >1 有失真可能, > CAP 明显 pixelated)
+    const warnings = [];
+    const pages = (report && report.pages) ? report.pages : [];
+    for (let i = 0; i < pages.length; i += 1) {
+        const page = pages[i];
+        const filters = page.filters || [];
+        for (let j = 0; j < filters.length; j += 1) {
+            const filter = filters[j];
+            const stageMetrics = filter.tunedStageMetrics || [];
+            const sourceRatio = Number(filter.sourceRatio) > 0 ? Number(filter.sourceRatio) : DEFAULT_SOURCE_RATIO;
+            for (let k = 0; k < stageMetrics.length; k += 1) {
+                const entry = stageMetrics[k];
+                const m = entry.metrics;
+                if (!m) continue;
+                const total = m.stageScale * m.fitScale;
+                const visualScale = total / sourceRatio;
+                if (visualScale > COMPOSITE_VISUAL_SCALE_CAP) {
+                    warnings.push({
+                        pageId: page.pageId,
+                        filterId: filter.filterId,
+                        stageId: entry.stageId,
+                        stageScale: m.stageScale,
+                        fitScale: m.fitScale,
+                        totalScale: round(total),
+                        sourceRatio: round(sourceRatio),
+                        visualScale: round(visualScale),
+                        worstAsset: filter.worstAsset
+                    });
+                }
+            }
+        }
+    }
+    return warnings;
+}
+
 function printSummary(result, asJson) {
     if (asJson) {
         console.log(JSON.stringify(result.report, null, 2));
@@ -557,6 +693,20 @@ function printSummary(result, asJson) {
                 ' override=' + JSON.stringify(changedFilters[j].override) +
                 ' compact=' + changedFilters[j].baselineCompact.coverageX + '/' + changedFilters[j].baselineCompact.coverageY +
                 ' -> ' + changedFilters[j].tunedCompact.coverageX + '/' + changedFilters[j].tunedCompact.coverageY);
+        }
+    }
+
+    const pixelWarnings = collectPixelWarnings(result.report);
+    if (pixelWarnings.length) {
+        console.log('');
+        console.log('[warn] composite 视觉放大 > ' + COMPOSITE_VISUAL_SCALE_CAP + 'x (PNG 相对自身像素被拉伸, 可能 pixelated):');
+        for (let i = 0; i < pixelWarnings.length; i += 1) {
+            const w = pixelWarnings[i];
+            const asset = w.worstAsset ? ' [' + w.worstAsset.assetUrl + ' ratio=' + w.worstAsset.ratio + ']' : '';
+            console.log('  ' + w.pageId + ':' + w.filterId + '@' + w.stageId +
+                ' stage=' + w.stageScale + ' fit=' + w.fitScale +
+                ' total=' + w.totalScale + 'x / sourceRatio=' + w.sourceRatio +
+                ' -> visual=' + w.visualScale + 'x' + asset);
         }
     }
 }

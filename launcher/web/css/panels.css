@@ -2784,7 +2784,10 @@
 .map-stage-content-fit {
     position:absolute;
     inset:0;
-    z-index:2;
+    /* z-index 显式到 4: 确保 content-fit wrapper (包 scenes/hotspots/avatars/feedback) 在
+     * backdrop(0) / filter-overlay(2) / anomaly(3) 之上, 但仍低于 scanline(7) / overlay-layer(6).
+     * 不依赖 DOM 顺序, 避免未来重排兄弟节点时层级偷偷翻转。 */
+    z-index:4;
     transform-origin:0 0;
     will-change:transform;
 }

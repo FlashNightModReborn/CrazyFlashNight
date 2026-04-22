@@ -103,6 +103,10 @@ _root._mapNavigateTargets = {
 _root._mapPendingHotspotId = "";
 _root._mapPendingSourceHotspotId = "";
 _root._mapLastResolvedHotspotId = "";
+_root._mapPendingStaleTicks = 0;
+// 若 pending 连续这么多次 resolve 仍未被 source 追上/回退, 强制清空 fallback 到 source,
+// 避免跳转失败 + 场景滑到第三个位置时 pending 僵死到下一次 navigate
+_root._mapPendingMaxStaleTicks = 6;
 
 _root._mapHotspotPages = {
     base_roof: "base",
@@ -377,17 +381,33 @@ _root._mapResolveCurrentHotspotId = function() {
         if (sourceHotspotId == pendingHotspotId) {
             _root._mapPendingHotspotId = "";
             _root._mapPendingSourceHotspotId = "";
+            _root._mapPendingStaleTicks = 0;
             _root._mapLastResolvedHotspotId = sourceHotspotId;
             return sourceHotspotId;
         }
 
         if (sourceHotspotId == "" || sourceHotspotId == pendingSourceHotspotId) {
+            // 兜底: source 滞后或回到起始态, 继续使用 pending, 但累加 stale 计数
+            _root._mapPendingStaleTicks = Number(_root._mapPendingStaleTicks || 0) + 1;
+            if (_root._mapPendingStaleTicks >= Number(_root._mapPendingMaxStaleTicks || 6)) {
+                // TTL 到期: 跳转可能失败且场景飘到第三位置, 强制清空 pending fallback 回 source
+                _root._mapPendingHotspotId = "";
+                _root._mapPendingSourceHotspotId = "";
+                _root._mapPendingStaleTicks = 0;
+                if (sourceHotspotId != "") {
+                    _root._mapLastResolvedHotspotId = sourceHotspotId;
+                    return sourceHotspotId;
+                }
+                return String(_root._mapLastResolvedHotspotId || "");
+            }
             _root._mapLastResolvedHotspotId = pendingHotspotId;
             return pendingHotspotId;
         }
 
+        // source 到达了第三个位置 (既不是 pending 也不是 old source), 直接清空 pending
         _root._mapPendingHotspotId = "";
         _root._mapPendingSourceHotspotId = "";
+        _root._mapPendingStaleTicks = 0;
     }
 
     if (sourceHotspotId != "") {
@@ -557,6 +577,7 @@ _root.gameCommands["mapPanelNavigate"] = function(params) {
 
     _root._mapPendingSourceHotspotId = _root._mapResolveCurrentHotspotIdFromSources();
     _root._mapPendingHotspotId = targetId;
+    _root._mapPendingStaleTicks = 0;
     _root._mapLastResolvedHotspotId = targetId;
     _root.关卡结束界面._visible = 0;
     _root.场景进入位置名 = "出生地";

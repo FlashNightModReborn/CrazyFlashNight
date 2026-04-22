@@ -38,13 +38,16 @@ var MapFitPresets = (function() {
                 "maxScale": 1.72
             },
             "rock": {
-                "maxScale": 1.72
+                "maxScale": 1.154
             },
             "blackiron": {
-                "maxScale": 1.72
+                "maxScale": 1.154
             },
             "fallen": {
-                "maxScale": 1.72
+                "maxScale": 1.154
+            },
+            "all": {
+                "maxScale": 1.154
             }
         },
         "defense": {
@@ -53,10 +56,13 @@ var MapFitPresets = (function() {
                 "padYRate": 0.045
             },
             "first_line": {
-                "maxScale": 1.72
+                "maxScale": 1.154
             },
             "restricted": {
-                "maxScale": 1.72
+                "maxScale": 1.154
+            },
+            "all": {
+                "maxScale": 1.154
             }
         },
         "school": {
@@ -64,8 +70,14 @@ var MapFitPresets = (function() {
                 "padXRate": 0.04,
                 "padYRate": 0.045
             },
+            "inside": {
+                "maxScale": 1
+            },
             "outside": {
-                "maxScale": 1.72
+                "maxScale": 1
+            },
+            "all": {
+                "maxScale": 1
             }
         }
     };
