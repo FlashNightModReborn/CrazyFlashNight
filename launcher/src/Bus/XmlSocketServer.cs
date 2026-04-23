@@ -369,7 +369,7 @@ namespace CF7Launcher.Bus
                     // Wave timer 快车道：W{wave}|{total}|{mmss}|{state} 或 W隐藏
                     if (_notchOverlay == null) return;
                     string payload = message.Substring(1);
-                    if (payload == "隐藏") // "隐藏"
+                    if (payload == "隐藏")
                     {
                         _notchOverlay.ClearStatusItem("wave_timer");
                     }
@@ -387,7 +387,7 @@ namespace CF7Launcher.Bus
 
                             string text;
                             System.Drawing.Color accent;
-                            if (state == "计时") // 计时
+                            if (state == "计时")
                             {
                                 // ⚔ 波次 3/10 · 剩余 01:23 · 敌人 5
                                 text = "⚔ 波次 " + wave + "/" + total + " · 剩余 " + timer;
@@ -400,7 +400,7 @@ namespace CF7Launcher.Bus
                                 accent = System.Drawing.Color.FromArgb(100, 200, 255);
                             }
                             if (enemies.Length > 0 && enemies != "0")
-                                text += " · 残敌 " + enemies; // · 残敌 N
+                                text += " · 残敌 " + enemies;
                             _notchOverlay.SetStatusItem("wave_timer", text, "", accent);
                         }
                     }

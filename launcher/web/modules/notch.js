@@ -162,7 +162,7 @@ var Notch = (function() {
             if (val === '1') {
                 // 存盘中 → ✕ 变脉冲
                 if (seBtn) {
-                    seBtn.textContent = '··'; // ··
+                    seBtn.textContent = '··';
                     seBtn.classList.add('saving');
                 }
                 if (seStatus) { seStatus.textContent = '存盘中…'; seStatus.className = 'saving'; }
@@ -171,11 +171,11 @@ var Notch = (function() {
                 // 存盘成功 → ✕ 短暂变 ✓
                 if (seBtn) {
                     seBtn.classList.remove('saving');
-                    seBtn.textContent = '✓'; // ✓
+                    seBtn.textContent = '✓';
                     seBtn.classList.add('save-done');
                     setTimeout(function() {
                         seBtn.classList.remove('save-done');
-                        seBtn.textContent = '✕'; // ✕
+                        seBtn.textContent = '✕';
                     }, 1500);
                 }
                 if (seStatus) { seStatus.textContent = '存盘成功'; seStatus.className = 'done'; }
@@ -780,8 +780,8 @@ var Notch = (function() {
     var currentMapMode = '0';
     var deliverHotspotId = '';
     var deliverNavigable = false;
-    var ICON_PLACEHOLDER = '◆'; // ◆ 占位符（后续替换为阵营图标）
-    var ICON_DONE = '❗';        // ❗ 任务完成
+    var ICON_PLACEHOLDER = '◆'; // 占位符（后续替换为阵营图标）
+    var ICON_DONE = '❗';        // 任务完成
 
     function initQuestRow() {
         contextPanel = document.getElementById('context-panel');
@@ -1032,7 +1032,7 @@ var Notch = (function() {
         var exitBtn = document.querySelector('[data-key="SAFEEXIT"]');
         if (!panel) return;
         // 重置状态
-        status.textContent = '存盘中…'; // 存盘中…
+        status.textContent = '存盘中…';
         status.className = 'saving';
         btns.style.display = 'none';
         panel.style.display = 'block';

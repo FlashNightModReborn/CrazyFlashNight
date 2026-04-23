@@ -26,7 +26,7 @@
   if (vEl) vEl.textContent = m.version;
 
   var tEl = document.getElementById('version-tail');
-  if (tEl) tEl.textContent = '· ' + m.tail;  // ·
+  if (tEl) tEl.textContent = '· ' + m.tail;
 
   var cEl = document.getElementById('version-channel');
   if (cEl) {

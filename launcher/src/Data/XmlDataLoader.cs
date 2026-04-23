@@ -210,17 +210,17 @@ namespace CF7Launcher.Data
             foreach (XmlNode teamNode in teamNodes)
             {
                 JObject team = new JObject();
-                team["战队抬头"] = GetChildText(teamNode, "Title");    // 战队抬头
-                team["战队名"] = GetChildText(teamNode, "Name");            // 战队名
+                team["战队抬头"] = GetChildText(teamNode, "Title");
+                team["战队名"] = GetChildText(teamNode, "Name");
 
                 string weightStr = GetChildText(teamNode, "Weight");
                 int weight;
                 if (weightStr != null && int.TryParse(weightStr, out weight))
-                    team["权重"] = weight;                                       // 权重 (number)
+                    team["权重"] = weight;
                 else
                     team["权重"] = 1;
 
-                team["战队项链"] = GetChildText(teamNode, "Necklace");  // 战队项链
+                team["战队项链"] = GetChildText(teamNode, "Necklace");
                 teams.Add(team);
             }
 

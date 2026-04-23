@@ -435,23 +435,23 @@ var GameInput;
     // 事件名称（调试 + 可视化提示）
     const _names = [
         "NONE",
-        "→", // →  FORWARD
-        "←", // ←  BACK
-        "↓", // ↓  DOWN
-        "↑", // ↑  UP
-        "↘", // ↘  DOWN_FORWARD
-        "↙", // ↙  DOWN_BACK
-        "↗", // ↗  UP_FORWARD
-        "↖", // ↖  UP_BACK
+        "→", // FORWARD
+        "←", // BACK
+        "↓", // DOWN
+        "↑", // UP
+        "↘", // DOWN_FORWARD
+        "↙", // DOWN_BACK
+        "↗", // UP_FORWARD
+        "↖", // UP_BACK
         "A", // A_PRESS
         "B", // B_PRESS
         "C", // C_PRESS
-        "→→", // →→ DOUBLE_TAP_FORWARD
-        "←←", // ←← DOUBLE_TAP_BACK
+        "→→", // DOUBLE_TAP_FORWARD
+        "←←", // DOUBLE_TAP_BACK
         "Shift", // SHIFT_HOLD
-        "Shift+→", // Shift+→ SHIFT_FORWARD
-        "Shift+←", // Shift+← SHIFT_BACK
-        "Shift+↓" // Shift+↓ SHIFT_DOWN
+        "Shift+→", // SHIFT_FORWARD
+        "Shift+←", // SHIFT_BACK
+        "Shift+↓" // SHIFT_DOWN
     ];
     function eventName(id) {
         return (id >= 0 && id < _names.length) ? _names[id] : "?";
