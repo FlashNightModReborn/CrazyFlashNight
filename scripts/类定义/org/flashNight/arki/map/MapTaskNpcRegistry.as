@@ -133,15 +133,16 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
      * @return Boolean 是否成功
      */
     public static function applyFromXml(raw:Object):Boolean {
+        // 先无条件重置为安全零值：reload 时若后续校验失败，不会留下旧 marker 造成"陈旧 stale"混合态
+        _aliases = {};
+        _markers = {};
+        _markersLower = {};
+        isLoaded = false;
+
         if (raw == null) { trace("[MapTaskNpcRegistry] raw 为 null"); return false; }
         var taskNpcs:Object = raw.task_npcs;
         var npcList:Array = (taskNpcs == undefined) ? [] : XMLParser.configureDataAsArray(taskNpcs.npc);
         var aliasList:Array = (taskNpcs == undefined) ? [] : XMLParser.configureDataAsArray(taskNpcs.alias);
-
-        // 重置（reload 场景 + 失败也回空字典）
-        _aliases = {};
-        _markers = {};
-        _markersLower = {};
 
         var i:Number;
 

@@ -9,6 +9,9 @@
  * XML 未到达前 5 张表保持"安全零值"（空集合；GROUPED_HOTSPOT_IDS 预置 8 个空数组，
  * 因为 MapPanelService.buildEnabledHotspotIds 会直接读 .xxx.length，undefined 会崩）。
  *
+ * 失败语义：applyFromXml 入口先无条件 resetTables()，任一校验失败直接 return false，
+ * 保证 reload 场景下不会留下"旧表 + 空 registry"的混合陈旧态；isLoaded 同步复位。
+ *
  * 与 MapPanelService / MapHotspotResolver 配合使用。
  */
 
@@ -57,6 +60,9 @@ class org.flashNight.arki.map.MapPanelCatalog {
      * @return Boolean 是否成功
      */
     public static function applyFromXml(raw:Object):Boolean {
+        // 先无条件重置为安全零值：reload 时若后续校验失败，不会留下旧数据造成"陈旧 stale"混合态
+        resetTables();
+
         if (raw == null) { trace("[MapPanelCatalog] raw 为 null"); return false; }
 
         var groupList:Array = XMLParser.configureDataAsArray(raw.groups.group);
@@ -75,6 +81,11 @@ class org.flashNight.arki.map.MapPanelCatalog {
             if (g.label == undefined || g.label == "") { trace("[MapPanelCatalog] group '" + g.id + "' 缺 label"); return false; }
             if (!inList(VALID_PAGE_IDS, g.page)) { trace("[MapPanelCatalog] group '" + g.id + "' page='" + g.page + "' 非法"); return false; }
             if (groupIdSet[g.id] != undefined) { trace("[MapPanelCatalog] group id 重复: " + g.id); return false; }
+            // 非 base 组必须显式声明 lockedReason（为空会让锁区提示静默消失，违背"坏数据尽早硬失败"）
+            if (g.id != "base" && (g.lockedReason == undefined || g.lockedReason == "")) {
+                trace("[MapPanelCatalog] group '" + g.id + "' 缺 lockedReason（非 base 组必填）");
+                return false;
+            }
             groupIdSet[g.id] = true;
             groupPageMap[g.id] = String(g.page);
         }
@@ -117,9 +128,10 @@ class org.flashNight.arki.map.MapPanelCatalog {
         for (i = 0; i < groupList.length; i++) {
             var g2:Object = groupList[i];
             if (g2.id == "base") continue;  // base 组无 lockedReason，不进 UNLOCK_META（保持与旧表一致）
+            // 此处 g2.lockedReason 已在上面校验为非空
             meta[g2.id] = {
                 label: String(g2.label),
-                lockedReason: (g2.lockedReason == undefined) ? "" : String(g2.lockedReason)
+                lockedReason: String(g2.lockedReason)
             };
         }
 
@@ -134,6 +146,19 @@ class org.flashNight.arki.map.MapPanelCatalog {
     }
 
     // ── 内部工具 ──
+
+    /** 把 5 张表全部复位为安全零值；isLoaded = false。applyFromXml 开头无条件调用。 */
+    private static function resetTables():Void {
+        BASE_HOTSPOT_IDS = [];
+        GROUPED_HOTSPOT_IDS = {
+            warlord: [], rock: [], blackiron: [], fallen: [],
+            defense: [], restricted: [], schoolOutside: [], schoolInside: []
+        };
+        UNLOCK_META = {};
+        NAVIGATE_TARGETS = {};
+        HOTSPOT_PAGES = {};
+        isLoaded = false;
+    }
 
     private static function inList(list:Array, value):Boolean {
         for (var i:Number = 0; i < list.length; i++) {

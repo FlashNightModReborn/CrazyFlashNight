@@ -29,14 +29,19 @@ class org.flashNight.gesh.xml.LoadXml.MapPanelLoader extends BaseXMLLoader {
      *   （parser 行为：返回的 data 是根节点内容，不是 {rootName: content}；见 XMLLoader.as L43-51）
      */
     public function load(onLoadHandler:Function, onErrorHandler:Function):Void {
+        var self:MapPanelLoader = this;
         super.load(function(data:Object):Void {
+            // BaseXMLLoader.load 在回调前已把 parsedData 写入缓存。若此处判坏，需主动 clearCache，
+            // 否则后续 load() 会反复吐出同一份坏 data 且 isLoaded() 误报为 true。
             if (data == null) {
                 trace("MapPanelLoader: 加载成功但数据为 null（XML 空根节点），视为失败");
+                self.clearCache();
                 if (onErrorHandler != null) onErrorHandler();
                 return;
             }
             if (data.groups == undefined && data.hotspots == undefined && data.task_npcs == undefined) {
                 trace("MapPanelLoader: 根节点下无 groups/hotspots/task_npcs，视为失败");
+                self.clearCache();
                 if (onErrorHandler != null) onErrorHandler();
                 return;
             }
