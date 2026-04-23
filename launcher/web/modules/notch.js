@@ -881,11 +881,17 @@ var Notch = (function() {
         // 通知播放期 + 非完成态回落为「打开任务栏」，与实际 click 分发一致
         var inTaskDone = noticeBar.classList.contains('task-done');
         noticeMain.title = (questTaskDone && inTaskDone) ? buildDeliverTitle() : '打开任务栏';
+        // \u5B8C\u6210\u6001\u5E38\u9A7B\u6587\u672C\u4E5F\u968F deliverable state \u53D8\u5316\u5237\u65B0\uFF0C\u907F\u514D\u4E0E\u5B9E\u9645\u884C\u4E3A\u4E0D\u4E00\u81F4
+        if (inTaskDone) showNoticeBar(buildTaskDoneText());
     }
 
     function buildTaskDoneText() {
-        if (currentMapMode === '1' || currentMapMode === '2') return '\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u53EF\u4EA4\u4ED8';
-        return '\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u6218\u540E\u4EA4\u4ED8';
+        // \u4E0E canDeliverNow / buildDeliverTitle \u540C\u4E00\u4F18\u5148\u7EA7\uFF1B\u786E\u4FDD\u6761\u4E0A\u6587\u6848\u4E0E\u5B9E\u9645 click \u884C\u4E3A\u4E00\u81F4
+        if (canDeliverNow()) return '\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u53EF\u4EA4\u4ED8';
+        if (currentMapMode === '3') return '\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u6218\u540E\u4EA4\u4ED8';
+        if (deliverHotspotId === '') return '\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u6682\u65E0\u4EA4\u4ED8\u76EE\u6807';
+        if (!deliverNavigable) return '\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u4EA4\u4ED8\u70B9\u672A\u89E3\u9501';
+        return '\u4EFB\u52A1\u5DF2\u8FBE\u6210';
     }
 
     function enterTaskDoneState() {
@@ -896,8 +902,8 @@ var Notch = (function() {
         if (noticeMain) {
             noticeMain.setAttribute('aria-label', '\u6253\u5F00\u4EFB\u52A1\u680F');
         }
+        // refreshDeliverButton 在 task-done 态下已负责 showNoticeBar(buildTaskDoneText())，避免重复触发滚动测量
         refreshDeliverButton();
-        showNoticeBar(buildTaskDoneText());
     }
 
     /** 设置图标（文字或后续图片） */
