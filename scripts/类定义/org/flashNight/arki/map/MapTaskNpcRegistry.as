@@ -125,6 +125,32 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
     }
 
     /**
+     * 扫描 _root.tasks_to_do，返回首个可交付任务的 finish_npc 所在 hotspotId。
+     * 仅用于 HUD 交付按钮快路径；不去重、不构建 marker、命中即返回。
+     * 未命中或无任务返回空串。
+     */
+    public static function findFirstDeliverableHotspotId():String {
+        var tasks:Array = _root.tasks_to_do;
+        if (tasks == undefined) return "";
+
+        for (var i:Number = 0; i < tasks.length; i++) {
+            if (!_root.taskCompleteCheck(i)) continue;
+
+            var taskData:Object = _root.getTaskData(tasks[i].id);
+            if (taskData == undefined || taskData.finish_npc == undefined) continue;
+
+            var finishNpc:String = resolveAliasKey(String(taskData.finish_npc));
+            if (finishNpc == "") continue;
+
+            var markerDef:Object = findMarker(finishNpc);
+            if (markerDef == undefined) continue;
+
+            return String(markerDef.hotspotId);
+        }
+        return "";
+    }
+
+    /**
      * 从 XML parse 结果填表。任一校验失败 → trace + 回退空字典 + 返回 false。
      * 前置：调用者必须确保 MapPanelCatalog.applyFromXml 已先行成功（本方法读 Catalog.HOTSPOT_PAGES
      * 派生 npc.pageId）。

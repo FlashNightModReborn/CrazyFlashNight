@@ -770,7 +770,7 @@ var Notch = (function() {
     // 状态: hidden → playing → task-done → hidden
     // 图标: 播放通知时=占位符(后续可换阵营图标), 任务完成=❗
     var noticeBar = null, noticeText = null, noticeIcon = null, noticeWrap = null;
-    var noticeMain = null, noticeNav = null, contextPanel = null;
+    var noticeMain = null, noticeArrow = null, contextPanel = null;
     var mapToggleBtn = null, mapToggleIcon = null, mapToggleLabel = null;
     var contextResizeObserver = null, layoutSyncRaf = 0;
     var noticeTimer = null;
@@ -778,6 +778,8 @@ var Notch = (function() {
     var NOTICE_MS = 5000;
     var questTaskDone = false;
     var currentMapMode = '0';
+    var deliverHotspotId = '';
+    var deliverNavigable = false;
     var ICON_PLACEHOLDER = '\u25C6'; // ◆ 占位符（后续替换为阵营图标）
     var ICON_DONE = '\u2757';        // ❗ 任务完成
 
@@ -788,7 +790,7 @@ var Notch = (function() {
         noticeIcon = document.getElementById('quest-notice-icon');
         noticeWrap = document.getElementById('quest-notice-text-wrap');
         noticeMain = document.getElementById('quest-notice-main');
-        noticeNav = document.getElementById('quest-notice-nav');
+        noticeArrow = document.getElementById('quest-notice-arrow');
         mapToggleBtn = document.getElementById('map-hud-toggle');
         mapToggleIcon = document.getElementById('map-hud-toggle-icon');
         mapToggleLabel = document.getElementById('map-hud-toggle-label');
@@ -807,13 +809,12 @@ var Notch = (function() {
         });
         if (noticeMain) {
             noticeMain.addEventListener('click', function() {
-                Bridge.send({ type: 'click', key: 'TASK_UI' });
-            });
-        }
-        if (noticeNav) {
-            noticeNav.addEventListener('click', function() {
-                if (!canOpenMapForTask()) return;
-                Bridge.send({ type: 'click', key: 'TASK_MAP' });
+                // 整条任务条：可交付则直接传送，否则退化为打开任务栏
+                if (canDeliverNow()) {
+                    Bridge.send({ type: 'click', key: 'TASK_DELIVER', hotspotId: deliverHotspotId });
+                } else {
+                    Bridge.send({ type: 'click', key: 'TASK_UI' });
+                }
             });
         }
         if (contextPanel && typeof ResizeObserver !== 'undefined') {
@@ -823,13 +824,22 @@ var Notch = (function() {
             });
             contextResizeObserver.observe(contextPanel);
         }
-        setNoticeNavEnabled(false);
+        refreshDeliverButton();
         updateMapHudToggleButton();
         scheduleContextLayoutSync();
     }
 
-    function canOpenMapForTask() {
-        return questTaskDone && (currentMapMode === '1' || currentMapMode === '2');
+    function canDeliverNow() {
+        // 战斗地图(mm=='3')禁用；需 AS2 侧标记 tdn=1（包含：非战斗、NAVIGATE_TARGETS 命中、所在组已解锁）
+        return questTaskDone && deliverNavigable && deliverHotspotId !== '' && currentMapMode !== '3';
+    }
+
+    function buildDeliverTitle() {
+        if (!questTaskDone) return '';
+        if (currentMapMode === '3') return '当前处于战斗中';
+        if (deliverHotspotId === '') return '暂无可交付任务';
+        if (!deliverNavigable) return '传送尚未解锁';
+        return '前往交付地点';
     }
 
     function syncContextNoticeState() {
@@ -859,13 +869,15 @@ var Notch = (function() {
         if (mapToggleLabel) mapToggleLabel.textContent = '\u5730\u56FE';
     }
 
-    function setNoticeNavEnabled(enabled) {
-        if (!noticeNav) return;
-        enabled = !!enabled;
-        noticeNav.disabled = !enabled;
-        noticeNav.style.display = enabled ? '' : 'none';
-        noticeNav.title = enabled ? '\u5728\u5730\u56FE\u4E2D\u67E5\u770B\u4EA4\u4ED8\u4F4D\u7F6E' : '';
-        noticeNav.setAttribute('aria-hidden', enabled ? 'false' : 'true');
+    function refreshDeliverButton() {
+        if (!noticeBar || !noticeMain) return;
+        var canDeliver = canDeliverNow();
+        // can-deliver class 触发箭头装饰显示；click 分发由 noticeMain 统一判定
+        if (canDeliver) noticeBar.classList.add('can-deliver');
+        else noticeBar.classList.remove('can-deliver');
+        noticeMain.title = questTaskDone
+            ? (canDeliver ? buildDeliverTitle() : '打开任务栏')
+            : '打开任务栏';
     }
 
     function buildTaskDoneText() {
@@ -878,11 +890,10 @@ var Notch = (function() {
         setNoticeIcon(ICON_DONE);
         noticeBar.classList.remove('notice-active', 'notice-flash', 'scrolling');
         noticeBar.classList.add('task-done');
-        setNoticeNavEnabled(canOpenMapForTask());
         if (noticeMain) {
-            noticeMain.title = '\u6253\u5F00\u4EFB\u52A1\u680F';
             noticeMain.setAttribute('aria-label', '\u6253\u5F00\u4EFB\u52A1\u680F');
         }
+        refreshDeliverButton();
         showNoticeBar(buildTaskDoneText());
     }
 
@@ -922,7 +933,7 @@ var Notch = (function() {
     /** 收起通知条 */
     function hideNoticeBar() {
         if (!noticeBar) return;
-        noticeBar.classList.remove('visible', 'scrolling', 'task-done');
+        noticeBar.classList.remove('visible', 'scrolling', 'task-done', 'can-deliver');
         setTimeout(function() {
             if (!noticeBar.classList.contains('visible')) {
                 noticeBar.style.display = 'none';
@@ -968,8 +979,7 @@ var Notch = (function() {
         if (noticeTimer || noticeQueue.length === 0) return;
         var item = noticeQueue.shift();
         setNoticeIcon(item.icon || ICON_PLACEHOLDER);
-        setNoticeNavEnabled(false);
-        noticeBar.classList.remove('task-done');
+        noticeBar.classList.remove('task-done', 'can-deliver');
         noticeBar.classList.add('notice-active');
         noticeBar.classList.remove('notice-flash');
         void noticeBar.offsetWidth;
@@ -997,7 +1007,8 @@ var Notch = (function() {
         if (questTaskDone && !wasDone) {
             if (!noticeTimer) enterTaskDoneState();
         } else if (!questTaskDone && wasDone) {
-            noticeBar.classList.remove('task-done');
+            noticeBar.classList.remove('task-done', 'can-deliver');
+            refreshDeliverButton();
             if (!noticeTimer) hideNoticeBar();
         } else if (questTaskDone && !noticeTimer && noticeBar.classList.contains('task-done')) {
             enterTaskDoneState();
@@ -1038,9 +1049,18 @@ var Notch = (function() {
             if (fields.length > 0) showAnnouncement(fields[0]);
         });
         UiData.on('td', onTaskDoneChange);
+        UiData.on('tdh', function(val) {
+            deliverHotspotId = String(val || '');
+            refreshDeliverButton();
+        });
+        UiData.on('tdn', function(val) {
+            deliverNavigable = (String(val) === '1');
+            refreshDeliverButton();
+        });
         UiData.on('mm', function(val) {
             currentMapMode = String(val || '0');
             updateMapHudToggleButton();
+            refreshDeliverButton();
             if (questTaskDone && !noticeTimer && noticeBar && noticeBar.classList.contains('task-done')) {
                 enterTaskDoneState();
             }

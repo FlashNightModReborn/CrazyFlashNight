@@ -38,8 +38,61 @@ class org.flashNight.arki.map.MapPanelService {
         _root.gameCommands["openWebMap"] = function(params) {
             org.flashNight.arki.map.MapPanelService.handleOpenWebMap(params);
         };
+        _root.gameCommands["navigateToHotspot"] = function(params) {
+            org.flashNight.arki.map.MapPanelService.navigateToHotspot(String(params.targetId));
+        };
 
         _inited = true;
+    }
+
+    // ─────────────────────────────────────────────
+    // 对外：任务交付直传入口（供 launcher 侧 TASK_DELIVER 点击调用）
+    // ─────────────────────────────────────────────
+
+    /**
+     * hotspotId 是否可直接跳转：非战斗地图 + NAVIGATE_TARGETS 命中 + 所在组已解锁（base 永解锁）
+     */
+    public static function canNavigateToHotspot(hotspotId:String):Boolean {
+        if (_root.当前为战斗地图) return false;
+        if (hotspotId == undefined || hotspotId == "") return false;
+        if (MapPanelCatalog.NAVIGATE_TARGETS[hotspotId] == undefined) return false;
+
+        var groupName:String = resolveHotspotGroup(hotspotId);
+        if (groupName == "") return false;
+        if (groupName == "base") return true;
+        return isUnlocked(groupName);
+    }
+
+    /**
+     * 直接跳转到指定 hotspot。调用方需自行保证 canNavigateToHotspot == true。
+     * 无 callId/无响应，副作用与 handleNavigate 一致。
+     * @return Boolean 是否发起了跳转
+     */
+    public static function navigateToHotspot(hotspotId:String):Boolean {
+        if (!canNavigateToHotspot(hotspotId)) {
+            log("navigateToHotspot rejected hotspotId=" + hotspotId);
+            return false;
+        }
+        var targetFrame:String = MapPanelCatalog.NAVIGATE_TARGETS[hotspotId];
+        log("navigateToHotspot hotspotId=" + hotspotId + " frame=" + targetFrame);
+        MapHotspotResolver.beginPending(hotspotId);
+        performNavigate(targetFrame);
+        return true;
+    }
+
+    /** 反查 hotspotId 所属组名；未命中返回空串 */
+    private static function resolveHotspotGroup(hotspotId:String):String {
+        var i:Number;
+        for (i = 0; i < MapPanelCatalog.BASE_HOTSPOT_IDS.length; i++) {
+            if (MapPanelCatalog.BASE_HOTSPOT_IDS[i] == hotspotId) return "base";
+        }
+        for (var g:String in MapPanelCatalog.GROUPED_HOTSPOT_IDS) {
+            var list:Array = MapPanelCatalog.GROUPED_HOTSPOT_IDS[g];
+            for (i = 0; i < list.length; i++) {
+                if (list[i] == hotspotId) return g;
+            }
+        }
+        return "";
     }
 
     // ─────────────────────────────────────────────

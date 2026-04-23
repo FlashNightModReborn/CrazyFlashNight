@@ -983,7 +983,7 @@ shadow 链不仅是运行中存盘的 JSON 冗余副本，也是启动期 Resolv
 |-----------|---------|------|
 | 弹出公告界面 (新任务横幅) | notch.js 通知条 `#quest-notice-bar` | `Utask\|{name}` (旧格式透传) |
 | 弹出公告界面 (公告) | notch.js 通知条 | `Uannounce\|{text}` (旧格式透传) |
-| 任务完成提示 | notch.js 通知条完成态 (❗ 图标呼吸 + 可点击) | `td:0/1` (KV 帧同步) |
+| 任务完成提示 | notch.js 通知条完成态 (❗ 图标呼吸 + 整条可点击) | `td:0/1` + `tdh:<hotspotId>` + `tdn:0/1` (KV 帧同步) |
 | 地图界面（旧右上角小地图位） | `map-hud.js` 右上角 HUD + `map-panel.js` 全屏地图面板 | `mm/mh` (KV 帧同步) + `TASK_MAP` click |
 | 功能按钮界面 (装备/任务) | `#quest-row` 工具条按钮行 | `cmd` gameCommand |
 | 存盘动画 | ✕ 按钮状态变化 (·· → ✓) | `sv:1/2` (KV 帧同步) |
@@ -1006,7 +1006,9 @@ shadow 链不仅是运行中存盘的 JSON 冗余副本，也是启动期 Resolv
 
 最右侧 `80px` 窄列现在由 `map-hud.js` 占用，直接复用 `map-panel-data.js` 的热点/scene 几何；AS2 只经 UiData 推 `mm`（模式）和 `mh`（当前 hotspotId），HUD 只做当前区块高亮 + 固定 beacon 点，点击后走 `TASK_MAP` 打开全屏地图 panel。
 
-**通知条状态机**：隐藏 → (新任务/公告到达) → 播放通知 → (队列空+td:1) → 完成态常驻 → (td:0) → 隐藏。完成态图标持续呼吸脉冲 (`icon-breathe`)，可点击跳转地图交付。
+**通知条状态机**：隐藏 → (新任务/公告到达) → 播放通知 → (队列空+td:1) → 完成态常驻 → (td:0) → 隐藏。完成态图标持续呼吸脉冲 (`icon-breathe`)。
+
+**任务条点击分派**：完成态整条 `#quest-notice-main` 可点击。`tdh` 非空且 `tdn=1`（非战斗地图 + hotspot 在 `NAVIGATE_TARGETS` + 所在组已解锁）时，右侧 `⇨` 装饰亮起，点击发 `TASK_DELIVER` → C# 转发 `navigateToHotspot` gameCommand → AS2 `MapPanelService.navigateToHotspot` 直传到 NPC 所在地图；否则退化为 `TASK_UI` 打开任务栏。
 
 ### 面板系统（Panel System）
 

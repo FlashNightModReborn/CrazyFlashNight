@@ -520,7 +520,7 @@ namespace CF7Launcher.Guardian
                 {
                     string key = ExtractString(json, "\"key\":\"");
                     if (key != null)
-                        HandleButtonClick(key);
+                        HandleButtonClick(key, json);
                 }
                 else if (json.Contains("\"ready\""))
                 {
@@ -1113,6 +1113,11 @@ namespace CF7Launcher.Guardian
 
         private void HandleButtonClick(string key)
         {
+            HandleButtonClick(key, null);
+        }
+
+        private void HandleButtonClick(string key, string rawJson)
+        {
             switch (key)
             {
                 case "Q": if (_onSendKey != null) _onSendKey(Keys.Q); break;
@@ -1160,6 +1165,18 @@ namespace CF7Launcher.Guardian
                 case "JUKEBOX": SendGameCommand("openJukebox"); break;
                 case "TASK_MAP":
                     OpenMapPanel("task_map", false);
+                    break;
+                case "TASK_DELIVER":
+                    {
+                        string hotspotId = rawJson != null ? ExtractString(rawJson, "\"hotspotId\":\"") : null;
+                        if (string.IsNullOrEmpty(hotspotId))
+                        {
+                            LogManager.Log("[Panel] TASK_DELIVER missing hotspotId");
+                            break;
+                        }
+                        SendGameCommand("navigateToHotspot",
+                            "\"targetId\":\"" + EscapeJsonString(hotspotId) + "\"");
+                    }
                     break;
                 case "TASK_UI": SendGameCommand("openTaskUI"); break;
                 case "EQUIP_UI": SendGameCommand("openEquipUI"); break;

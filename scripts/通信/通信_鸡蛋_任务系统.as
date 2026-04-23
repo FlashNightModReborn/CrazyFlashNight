@@ -449,8 +449,18 @@ _root.是否达成任务检测 = function() {
             break;
         }
     }
-    // 任务完成状态 → Launcher 刘海屏
-    org.flashNight.arki.render.FrameBroadcaster.pushUiState("td:" + (found ? "1" : "0"));
+    // 任务完成状态 + 首个可交付 hotspot + 是否可直接传送 → Launcher 刘海屏
+    var tdh:String = "";
+    var tdn:String = "0";
+    if (found) {
+        tdh = org.flashNight.arki.map.MapTaskNpcRegistry.findFirstDeliverableHotspotId();
+        if (tdh != "" && org.flashNight.arki.map.MapPanelService.canNavigateToHotspot(tdh)) {
+            tdn = "1";
+        }
+    }
+    org.flashNight.arki.render.FrameBroadcaster.pushUiState(
+        "td:" + (found ? "1" : "0") + "|tdh:" + tdh + "|tdn:" + tdn
+    );
     return found;
 }
 
