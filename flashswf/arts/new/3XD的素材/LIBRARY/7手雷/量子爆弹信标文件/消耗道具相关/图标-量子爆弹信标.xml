@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="7手雷/量子爆弹信标文件/消耗道具相关/图标-量子爆弹信标" itemID="69e8a8ca-00000124" linkageExportForAS="true" linkageIdentifier="图标-量子爆弹信标" lastModified="1776855242">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="7手雷/量子爆弹信标文件/消耗道具相关/图标-量子爆弹信标" itemID="69e8a8ca-00000124" linkageExportForAS="true" linkageIdentifier="图标-量子爆弹信标" lastModified="1776915376">
   <timeline>
     <DOMTimeline name="图标-量子爆弹信标">
       <layers>
-        <DOMLayer name="Script Layer" color="#F532DE">
+        <DOMLayer name="Script Layer" color="#F532DE" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -26,13 +26,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#33B9DD" parentLayerIndex="1" locked="true">
+        <DOMLayer name="Layer 3" color="#33B9DD" parentLayerIndex="1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="7手雷/量子爆弹信标文件/消耗道具相关/Symbol 3797" centerPoint3DX="30.8" centerPoint3DY="23.8">
+                <DOMSymbolInstance libraryItemName="7手雷/量子爆弹信标文件/消耗道具相关/Symbol 3797" selected="true" centerPoint3DX="34.55" centerPoint3DY="22.9">
                   <matrix>
-                    <Matrix a="0" b="-0.447845458984375" c="0.447845458984375" d="0" tx="-1" ty="2.65"/>
+                    <Matrix a="0.0001068115234375" b="-0.5" c="0.5" d="0.0001068115234375" tx="-1" ty="-0.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -42,11 +42,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#72C882" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#72C882" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="7手雷/量子爆弹信标文件/无AS链接/Symbol 16" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="7手雷/量子爆弹信标文件/无AS链接/Symbol 16" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/众神之力/图标-众神之力" itemID="69e74dfa-000009a6" linkageExportForAS="true" linkageIdentifier="图标-众神之力" lastModified="1776768077">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/众神之力/图标-众神之力" itemID="69e74dfa-000009a6" linkageExportForAS="true" linkageIdentifier="图标-众神之力" lastModified="1776914963">
   <timeline>
     <DOMTimeline name="图标-众神之力">
       <layers>
@@ -26,13 +26,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#1AADD8" parentLayerIndex="1" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#1AADD8" parentLayerIndex="1" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1主武器/众神之力/枪-长枪-众神之力" selected="true" centerPoint3DX="185.35" centerPoint3DY="64.85">
+                <DOMSymbolInstance libraryItemName="1主武器/众神之力/枪-长枪-众神之力" selected="true" centerPoint3DX="186.85" centerPoint3DY="65.6">
                   <matrix>
-                    <Matrix a="0.0986480712890625" b="-0.099029541015625" c="0.099029541015625" d="0.0986480712890625" tx="-10.8" ty="15.15"/>
+                    <Matrix a="0.0986480712890625" b="-0.099029541015625" c="0.099029541015625" d="0.0986480712890625" tx="-9.3" ty="15.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -42,11 +42,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#C8BFAC" locked="true">
+        <DOMLayer name="Layer 4" color="#C8BFAC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1主武器/众神之力/Symbol 16" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="1主武器/众神之力/Symbol 16" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

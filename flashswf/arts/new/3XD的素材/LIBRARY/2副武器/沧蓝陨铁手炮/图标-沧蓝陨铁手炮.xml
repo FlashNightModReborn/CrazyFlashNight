@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2副武器/沧蓝陨铁手炮/图标-沧蓝陨铁手炮" itemID="69e7383c-00000424" linkageExportForAS="true" linkageIdentifier="图标-沧蓝陨铁手炮" lastModified="1776761046">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2副武器/沧蓝陨铁手炮/图标-沧蓝陨铁手炮" itemID="69e7383c-00000424" linkageExportForAS="true" linkageIdentifier="图标-沧蓝陨铁手炮" lastModified="1776915105">
   <timeline>
     <DOMTimeline name="图标-沧蓝陨铁手炮">
       <layers>
@@ -26,7 +26,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#2C78FA" parentLayerIndex="1" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#2C78FA" parentLayerIndex="1" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -42,11 +42,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#19E7E2" locked="true">
+        <DOMLayer name="Layer 4" color="#19E7E2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="2副武器/沧蓝陨铁手炮/阴影所用" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="2副武器/沧蓝陨铁手炮/阴影所用" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

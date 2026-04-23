@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/反坦克炮/枪-长枪-反坦克炮" itemID="69e990e9-000003cc" linkageExportForAS="true" linkageIdentifier="枪-长枪-反坦克炮" lastModified="1776914671">
+  <timeline>
+    <DOMTimeline name="枪-长枪-反坦克炮">
+      <layers>
+        <DOMLayer name="Layer 1" color="#8FF6A0" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/反坦克炮/Symbol 13" name="枪口位置" centerPoint3DX="281.4" centerPoint3DY="-38">
+                  <matrix>
+                    <Matrix tx="268.9" ty="-50.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/游戏/Lady2.0/人物的部件/武器素材/反坦克炮" symbolType="graphic" centerPoint3DX="75.6" centerPoint3DY="-43.5" loop="loop">
+                  <matrix>
+                    <Matrix a="1.04998779296875" d="1.04998779296875" tx="-107.55" ty="-101.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="86.35" y="103.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

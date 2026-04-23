@@ -720,4 +720,33 @@
       <reloadPenalty>0</reloadPenalty>
     </data>
   </item>
+   <item weapontype="发射器">
+    <name>反坦克炮</name>
+    <displayname>反坦克炮</displayname>
+    <icon>反坦克炮</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>250000</price>
+    <description>暂无</description>
+    <data>
+      <level>22</level>
+      <weight>5</weight>
+      <dressup>枪-长枪-反坦克炮</dressup>
+      <capacity>4</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>220</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>20</velocity>
+      <bullet>蓝旋反坦克炮弹</bullet>
+      <sound>反坦克炮.wav</sound>
+      <muzzle>发射器枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>火箭弹弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>2700</power>
+      <impact>0</impact>
+      <reloadPenalty>0</reloadPenalty>
+    </data>
+  </item>
 </root>

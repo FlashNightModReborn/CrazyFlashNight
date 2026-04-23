@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/FSC7/图标-FSC7" itemID="69e737dc-00000404" linkageExportForAS="true" linkageIdentifier="图标-FSC7" lastModified="1776761057">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/FSC7/图标-FSC7" itemID="69e737dc-00000404" linkageExportForAS="true" linkageIdentifier="图标-FSC7" lastModified="1776915019">
   <timeline>
     <DOMTimeline name="图标-FSC7">
       <layers>
@@ -26,7 +26,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#1AADD8" parentLayerIndex="1" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#1AADD8" parentLayerIndex="1" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -42,11 +42,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#C8BFAC" locked="true">
+        <DOMLayer name="Layer 4" color="#C8BFAC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1主武器/FSC7/Symbol 16" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="1主武器/FSC7/Symbol 16" selected="true" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

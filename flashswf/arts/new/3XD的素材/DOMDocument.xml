@@ -39,6 +39,7 @@
           <DOMFolderItem name="1主武器/巴雷特印花集/瞄具/部件4" itemID="67226313-0000027d"/>
           <DOMFolderItem name="1主武器/巴雷特印花集/未命名文件夹 1" itemID="672260cd-000001ff"/>
           <DOMFolderItem name="1主武器/巴雷特印花集/长枪" itemID="6707c512-000007cd"/>
+          <DOMFolderItem name="1主武器/反坦克炮" itemID="69e990e5-000003ca"/>
           <DOMFolderItem name="1主武器/人物对位置" itemID="69e74eb8-000017b6"/>
           <DOMFolderItem name="1主武器/人物对位置/其他" itemID="69e74eb8-000017b7"/>
           <DOMFolderItem name="1主武器/人物对位置/其他/shape" itemID="69e74eb8-000017b8"/>
@@ -88,6 +89,10 @@
           <DOMFolderItem name="1主武器/一部分武器1/武器本体/sp12战术/spas12战术图标" itemID="66325ce5-00000728"/>
           <DOMFolderItem name="1主武器/一部分武器1/武器本体/sp12战术/武器" itemID="66325b6c-00000417"/>
           <DOMFolderItem name="1主武器/一部分武器1/武器本体/其他" itemID="6976d259-000017b0"/>
+          <DOMFolderItem name="1主武器/游戏" itemID="69e991d9-00000b49"/>
+          <DOMFolderItem name="1主武器/游戏/Lady2.0" itemID="69e991d9-00000b4a"/>
+          <DOMFolderItem name="1主武器/游戏/Lady2.0/人物的部件" itemID="69e991d9-00000b4b"/>
+          <DOMFolderItem name="1主武器/游戏/Lady2.0/人物的部件/武器素材" itemID="69e991d9-00000b4c"/>
           <DOMFolderItem name="1主武器/众神之力" itemID="69e74df6-000009a3"/>
           <DOMFolderItem name="1主武器/众神之力/众神之力素材" itemID="69e74d8b-000008f0"/>
           <DOMFolderItem name="2副武器" itemID="6976d736-00001fef"/>
@@ -258,15 +263,15 @@
           <DOMFolderItem name="4人物服饰外观/战术JK套装/衣服图标/衣服/做的新玩意" itemID="65f51de1-00000201"/>
           <DOMFolderItem name="4人物服饰外观/战术JK套装/衣服图标/衣服/做的新玩意/战术JK套装" itemID="65f51de1-00000202"/>
           <DOMFolderItem name="4人物服饰外观/战术JK套装/衣服图标/衣服/做的新玩意/战术JK套装/联合计划服装" itemID="65f51de1-00000203"/>
-          <DOMFolderItem name="5武器特效和子弹" itemID="6976d73f-00001ff2"/>
+          <DOMFolderItem name="5武器特效和子弹" itemID="6976d73f-00001ff2" isExpanded="true"/>
           <DOMFolderItem name="5武器特效和子弹/爆炸狙击子弹" itemID="6973101c-0000005e"/>
           <DOMFolderItem name="5武器特效和子弹/爆炸狙击子弹/3.音效相关" itemID="69733068-00000e78"/>
           <DOMFolderItem name="5武器特效和子弹/爆炸狙击子弹/无AS链接" itemID="6690f257-00002761"/>
-          <DOMFolderItem name="5武器特效和子弹/冰流爆发特效" itemID="69721fdf-000001df"/>
+          <DOMFolderItem name="5武器特效和子弹/冰流爆发特效" itemID="69721fdf-000001df" isExpanded="true"/>
           <DOMFolderItem name="5武器特效和子弹/冰流爆发特效/图片" itemID="697221f2-0000044f"/>
           <DOMFolderItem name="5武器特效和子弹/高爆子弹" itemID="662f2ed4-000021fb"/>
           <DOMFolderItem name="5武器特效和子弹/高爆子弹/爆炸" itemID="662f2edd-000021fd"/>
-          <DOMFolderItem name="5武器特效和子弹/火焰爆发特效" itemID="6971c2b6-00000955"/>
+          <DOMFolderItem name="5武器特效和子弹/火焰爆发特效" itemID="6971c2b6-00000955" isExpanded="true"/>
           <DOMFolderItem name="5武器特效和子弹/火焰爆发特效/图片" itemID="6971c4f8-0000008b"/>
           <DOMFolderItem name="6消耗品" itemID="6976d741-00001ff3"/>
           <DOMFolderItem name="6消耗品/罐头" itemID="66a92619-0000001f" isExpanded="true"/>
@@ -289,7 +294,7 @@
      <media>
           <DOMBitmapItem name="3冷兵器/一部分武器1/永恒之刃/永恒之刃的素材/ 副本" itemID="6976d6b2-00001f87" sourceExternalFilepath="./LIBRARY/3冷兵器/一部分武器1/永恒之刃/永恒之刃的素材/ 副本" sourceLastImported="1708507630" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="3冷兵器/一部分武器1/永恒之刃/永恒之刃的素材/ 副本" bitmapDataHRef="M 3 1769395890.dat" frameRight="37700" frameBottom="17780"/>
           <DOMBitmapItem name="杂项/教程图片/1-1" itemID="653b9ab3-000001ee" sourceExternalFilepath="./LIBRARY/杂项/教程图片/1-1" sourceLastImported="1698405043" originalCompressionType="lossless" quality="50" href="杂项/教程图片/1-1" bitmapDataHRef="M 1 1769395847.dat" frameRight="11060" frameBottom="7920"/>
-          <DOMBitmapItem name="4人物服饰外观/一部分服饰2/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" itemID="65f1bf06-0000022d" sourceExternalFilepath="./LIBRARY/4人物服饰外观/一部分服饰2/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" sourceLastImported="1566474425" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="4人物服饰外观/一部分服饰2/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" bitmapDataHRef="M 2 1769395860.dat" frameRight="20000" frameBottom="12000"/>
+          <DOMBitmapItem name="4人物服饰外观/一部分服饰2/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" itemID="65f1bf06-0000022d" sourceExternalFilepath="./LIBRARY/4人物服饰外观/一部分服饰2/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" sourceLastImported="1566474425" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="4人物服饰外观/一部分服饰2/做的新玩意/半遮脸猪鼻式防毒面具/11p1000x600.png" bitmapDataHRef="M 2 1769395860.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="5武器特效和子弹/冰流爆发特效/图片/bing0001.png" itemID="6970e8ab-0000014d" sourceExternalFilepath="./LIBRARY/5武器特效和子弹/冰流爆发特效/图片/bing0001.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="5武器特效和子弹/冰流爆发特效/图片/bing0001.png" bitmapDataHRef="M 6 1769396006.dat" frameRight="15240" frameBottom="11480"/>
           <DOMBitmapItem name="5武器特效和子弹/冰流爆发特效/图片/bing0002.png" itemID="6970e8b0-00000151" sourceExternalFilepath="./LIBRARY/5武器特效和子弹/冰流爆发特效/图片/bing0002.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="5武器特效和子弹/冰流爆发特效/图片/bing0002.png" bitmapDataHRef="M 7 1769396006.dat" frameRight="15240" frameBottom="11480"/>
           <DOMBitmapItem name="5武器特效和子弹/冰流爆发特效/图片/bing0003.png" itemID="6970e8ba-00000155" sourceExternalFilepath="./LIBRARY/5武器特效和子弹/冰流爆发特效/图片/bing0003.png" sourceLastImported="1769007260" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="5武器特效和子弹/冰流爆发特效/图片/bing0003.png" bitmapDataHRef="M 8 1769396006.dat" frameRight="15240" frameBottom="11480"/>
@@ -353,17 +358,17 @@
           <Include href="1主武器/FM92刺弹炮/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="69e73945-000008d3" lastModified="1720533000"/>
           <Include href="1主武器/FM92刺弹炮/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="69e73945-000008d2" lastModified="1720533000"/>
           <Include href="1主武器/FM92刺弹炮/Symbol 13.xml" loadImmediate="false" itemID="69e73945-000008d1" lastModified="1720533000"/>
-          <Include href="1主武器/FM92刺弹炮/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="69e73945-000008d4" lastModified="1720533000"/>
+          <Include href="1主武器/FM92刺弹炮/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="69e73945-000008d4" lastModified="1776915102"/>
           <Include href="1主武器/FM92刺弹炮/枪-长枪-FM92刺弹炮.xml" itemID="69e7372c-000003da" lastModified="1776765820"/>
-          <Include href="1主武器/FM92刺弹炮/图标-FM92刺弹炮.xml" itemID="69e73730-000003db" lastModified="1776760713"/>
+          <Include href="1主武器/FM92刺弹炮/图标-FM92刺弹炮.xml" itemID="69e73730-000003db" lastModified="1776915072"/>
           <Include href="1主武器/FSC7/fsc7素材/fsc7本体.xml" itemIcon="1" loadImmediate="false" itemID="698308aa-00000178" lastModified="1770195114"/>
           <Include href="1主武器/FSC7/fsc7素材/fsc7炮弹.xml" itemIcon="1" loadImmediate="false" itemID="692aeef1-0000019d" lastModified="1764421414"/>
           <Include href="1主武器/FSC7/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="69e73781-000003f2" lastModified="1720533000"/>
           <Include href="1主武器/FSC7/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="69e73781-000003f1" lastModified="1720533000"/>
           <Include href="1主武器/FSC7/Symbol 13.xml" loadImmediate="false" itemID="69e73781-000003f0" lastModified="1720533000"/>
-          <Include href="1主武器/FSC7/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="69e73781-000003f3" lastModified="1720533000"/>
+          <Include href="1主武器/FSC7/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="69e73781-000003f3" lastModified="1776915037"/>
           <Include href="1主武器/FSC7/枪-长枪-FSC7.xml" itemID="69e737d3-00000403" lastModified="1776765966"/>
-          <Include href="1主武器/FSC7/图标-FSC7.xml" itemID="69e737dc-00000404" lastModified="1776761057"/>
+          <Include href="1主武器/FSC7/图标-FSC7.xml" itemID="69e737dc-00000404" lastModified="1776915019"/>
           <Include href="1主武器/m4a1科技白/部分1/Symbol 3726.xml" loadImmediate="false" itemID="668e7c1e-00000f2f" lastModified="1728405736"/>
           <Include href="1主武器/m4a1科技白/部分1/Symbol 3727.xml" loadImmediate="false" itemID="668e7c1e-00000f30" lastModified="1720533000"/>
           <Include href="1主武器/m4a1科技白/部分1/Symbol 3731.xml" loadImmediate="false" itemID="668e7c1e-00000f33" lastModified="1728406532"/>
@@ -422,7 +427,7 @@
           <Include href="1主武器/rpg武器/RPG素材/Symbol 1050.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-0000163f" lastModified="1701508661"/>
           <Include href="1主武器/rpg武器/其他/shape/Symbol 5 副本.xml" itemIcon="1" loadImmediate="false" itemID="68d21d80-0000043f" lastModified="1702343951"/>
           <Include href="1主武器/rpg武器/其他/其他部件/Symbol 6 副本.xml" loadImmediate="false" itemID="660a1fad-00000af7" lastModified="1702343951"/>
-          <Include href="1主武器/rpg武器/枪-长枪-RPG.xml" itemID="686cdedc-000004e5" lastModified="1758676309"/>
+          <Include href="1主武器/rpg武器/枪-长枪-RPG.xml" itemID="686cdedc-000004e5" lastModified="1776915071"/>
           <Include href="1主武器/rpg武器/图标/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005b7" lastModified="1720533000"/>
           <Include href="1主武器/rpg武器/图标/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="68d21d80-0000043d" lastModified="1720533000"/>
           <Include href="1主武器/rpg武器/图标/图标-RPG.xml" itemID="686ce0fb-00001283" lastModified="1758602685"/>
@@ -437,6 +442,12 @@
           <Include href="1主武器/巴雷特印花集/长枪/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="67226495-00000474" lastModified="1731210672"/>
           <Include href="1主武器/巴雷特印花集/长枪/枪-长枪-AK74.xml" itemID="67226495-00000475" lastModified="1769395638"/>
           <Include href="1主武器/巴雷特印花集/长枪/图标-AK74.xml" itemID="67226495-0000046f" lastModified="1731210801"/>
+          <Include href="1主武器/反坦克炮/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="69e990b7-000003bc" lastModified="1720533000"/>
+          <Include href="1主武器/反坦克炮/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="69e990b7-000003bb" lastModified="1720533000"/>
+          <Include href="1主武器/反坦克炮/Symbol 13.xml" loadImmediate="false" itemID="69e990b7-000003ba" lastModified="1720533000"/>
+          <Include href="1主武器/反坦克炮/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="69e990b7-000003bd" lastModified="1720533000"/>
+          <Include href="1主武器/反坦克炮/枪-长枪-反坦克炮.xml" itemID="69e990e9-000003cc" lastModified="1776914671"/>
+          <Include href="1主武器/反坦克炮/图标-反坦克炮.xml" itemID="69e990eb-000003cd" lastModified="1776914942"/>
           <Include href="1主武器/人物对位置/其他/shape/Symbol 566.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000ac6" lastModified="1770289730"/>
           <Include href="1主武器/人物对位置/其他/shape/Symbol 570.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000ac7" lastModified="1770289907"/>
           <Include href="1主武器/人物对位置/其他/shape/Symbol 573.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000ac8" lastModified="1770289914"/>
@@ -550,12 +561,13 @@
           <Include href="1主武器/一部分武器1/武器本体/sp12战术/武器/元件 8.xml" loadImmediate="false" itemID="6632594d-00000172" lastModified="1714575694"/>
           <Include href="1主武器/一部分武器1/武器本体/其他/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="655b3573-00000210" lastModified="1699803847"/>
           <Include href="1主武器/一部分武器1/武器本体/其他/Symbol 6.xml" loadImmediate="false" itemID="655b3573-00000211" lastModified="1699803847"/>
+          <Include href="1主武器/游戏/Lady2.0/人物的部件/武器素材/反坦克炮.xml" itemIcon="1" loadImmediate="false" itemID="691c8cad-00000134" lastModified="1769592826"/>
           <Include href="1主武器/众神之力/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="69e74d75-000008e8" lastModified="1720533000"/>
           <Include href="1主武器/众神之力/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="69e74d75-000008e7" lastModified="1720533000"/>
           <Include href="1主武器/众神之力/Symbol 13.xml" loadImmediate="false" itemID="69e74d75-000008e6" lastModified="1720533000"/>
-          <Include href="1主武器/众神之力/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="69e74d75-000008e9" lastModified="1720533000"/>
+          <Include href="1主武器/众神之力/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="69e74d75-000008e9" lastModified="1776915017"/>
           <Include href="1主武器/众神之力/枪-长枪-众神之力.xml" itemID="69e74df8-000009a5" lastModified="1776766641"/>
-          <Include href="1主武器/众神之力/图标-众神之力.xml" itemID="69e74dfa-000009a6" lastModified="1776768077"/>
+          <Include href="1主武器/众神之力/图标-众神之力.xml" itemID="69e74dfa-000009a6" lastModified="1776914963"/>
           <Include href="1主武器/众神之力/众神之力素材/橙色光.xml" loadImmediate="false" itemID="69847d9d-000002f0" lastModified="1770291308"/>
           <Include href="1主武器/众神之力/众神之力素材/蓝色光.xml" itemIcon="1" loadImmediate="false" itemID="69847da8-000002f1" lastModified="1770290600"/>
           <Include href="1主武器/众神之力/众神之力素材/小光效.xml" loadImmediate="false" itemID="69847dae-000002f2" lastModified="1770290606"/>
@@ -564,10 +576,10 @@
           <Include href="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件/部件1.xml" itemIcon="1" loadImmediate="false" itemID="69874aea-00000142" lastModified="1770474218"/>
           <Include href="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件/沧蓝陨铁手炮素材.xml" itemIcon="1" loadImmediate="false" itemID="6987e4a3-000001f5" lastModified="1770513571"/>
           <Include href="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="69874af9-00000144" lastModified="1770474233"/>
-          <Include href="2副武器/沧蓝陨铁手炮/判定使用.xml" itemID="69e73956-000008ec" lastModified="1720540686"/>
+          <Include href="2副武器/沧蓝陨铁手炮/判定使用.xml" loadImmediate="false" itemID="69e73956-000008ec" lastModified="1776915100"/>
           <Include href="2副武器/沧蓝陨铁手炮/枪-手枪-沧蓝陨铁手炮.xml" itemID="69e73840-00000425" lastModified="1776760950"/>
-          <Include href="2副武器/沧蓝陨铁手炮/图标-沧蓝陨铁手炮.xml" itemID="69e7383c-00000424" lastModified="1776761046"/>
-          <Include href="2副武器/沧蓝陨铁手炮/阴影所用.xml" itemIcon="1" itemID="69e73956-000008ee" lastModified="1720539430"/>
+          <Include href="2副武器/沧蓝陨铁手炮/图标-沧蓝陨铁手炮.xml" itemID="69e7383c-00000424" lastModified="1776915105"/>
+          <Include href="2副武器/沧蓝陨铁手炮/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="69e73956-000008ee" lastModified="1776915122"/>
           <Include href="2副武器/短剑印花集/部件1/Symbol 3721.xml" itemIcon="1" loadImmediate="false" itemID="67225fe2-00000134" lastModified="1728315431"/>
           <Include href="2副武器/短剑印花集/部件1/元件 1.xml" loadImmediate="false" itemID="67225fe2-0000013a" lastModified="1730308187"/>
           <Include href="2副武器/短剑印花集/部件1/元件 3.xml" loadImmediate="false" itemID="67225fe2-00000136" lastModified="1728314106"/>
@@ -583,8 +595,8 @@
           <Include href="2副武器/加农手炮/加农手炮素材.xml" itemIcon="1" loadImmediate="false" itemID="69e738ac-00000444" lastModified="1776761004"/>
           <Include href="2副武器/加农手炮/判定使用.xml" loadImmediate="false" itemID="69e73865-00000431" lastModified="1776761250"/>
           <Include href="2副武器/加农手炮/枪-手枪-加农手炮.xml" itemID="69e73898-00000442" lastModified="1776761014"/>
-          <Include href="2副武器/加农手炮/图标-加农手炮.xml" itemID="69e738a3-00000443" lastModified="1776761029"/>
-          <Include href="2副武器/加农手炮/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="69e73865-00000433" lastModified="1776761259"/>
+          <Include href="2副武器/加农手炮/图标-加农手炮.xml" itemID="69e738a3-00000443" lastModified="1776915125"/>
+          <Include href="2副武器/加农手炮/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="69e73865-00000433" lastModified="1776915141"/>
           <Include href="2副武器/沙鹰战术/Symbol 3799.xml" itemID="668e7c1e-00000f64" lastModified="1762002043"/>
           <Include href="2副武器/沙鹰战术/Symbol 3819.xml" itemID="668e7c1e-00000f73" lastModified="1762002058"/>
           <Include href="2副武器/沙鹰战术/其他/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
@@ -1158,7 +1170,7 @@
           <Include href="5武器特效和子弹/爆炸狙击子弹/无AS链接/Symbol 429.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006bd" lastModified="1720533000"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/小火焰爆炸.xml" itemID="69732f4b-00000781" lastModified="1769157201"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml" itemIcon="1" loadImmediate="false" itemID="69732d7a-00000747" lastModified="1769156228"/>
-          <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发.xml" itemID="69721fc4-000001dc" lastModified="1769087231"/>
+          <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发.xml" itemID="69721fc4-000001dc" lastModified="1776916666"/>
           <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="69721fc1-000001db" lastModified="1769086913"/>
           <Include href="5武器特效和子弹/冰流爆发特效/寒冰爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="69721f34-000001c9" lastModified="1769086959"/>
           <Include href="5武器特效和子弹/冰流爆发特效/图片/area40X40.xml" loadImmediate="false" itemID="697221f2-0000045b" lastModified="1762772154"/>
@@ -1172,9 +1184,9 @@
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1231.xml" loadImmediate="false" itemID="662f2a77-00000011" lastModified="1714395009"/>
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1234.xml" loadImmediate="false" itemID="662f2a77-00000012" lastModified="1714367025"/>
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1236.xml" loadImmediate="false" itemID="662f2a77-00000013" lastModified="1714367025"/>
-          <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发.xml" itemID="6971c15c-000008f1" lastModified="1769171016"/>
+          <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发.xml" itemID="6971c15c-000008f1" lastModified="1776934366"/>
           <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="6971c148-000008ef" lastModified="1769064265"/>
-          <Include href="5武器特效和子弹/火焰爆发特效/图片/area40X40.xml" loadImmediate="false" itemID="6911c3eb-00001ee6" lastModified="1762772154"/>
+          <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发引子.xml" itemID="69e9dc62-00000500" lastModified="1776936203"/>
           <Include href="6消耗品/罐头/白米饭罐头.xml" loadImmediate="false" itemID="66a92613-0000001b" lastModified="1722405828"/>
           <Include href="6消耗品/罐头/番茄炒鸡蛋罐头.xml" loadImmediate="false" itemID="66a92607-0000001a" lastModified="1722361351"/>
           <Include href="6消耗品/罐头/图标-白米饭罐头.xml" itemID="66a9d3dc-000002cd" lastModified="1763134765"/>
@@ -1188,8 +1200,9 @@
           <Include href="7手雷/量子爆弹信标文件/无AS链接/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="69e8a9a0-000008a6" lastModified="1720533000"/>
           <Include href="7手雷/量子爆弹信标文件/无AS链接/Symbol 3796.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f61" lastModified="1721724861"/>
           <Include href="7手雷/量子爆弹信标文件/消耗道具相关/Symbol 3797.xml" itemID="668e7c1e-00000f62" lastModified="1776866684"/>
-          <Include href="7手雷/量子爆弹信标文件/消耗道具相关/图标-量子爆弹信标.xml" itemID="69e8a8ca-00000124" lastModified="1776855242"/>
+          <Include href="7手雷/量子爆弹信标文件/消耗道具相关/图标-量子爆弹信标.xml" itemID="69e8a8ca-00000124" lastModified="1776915376"/>
           <Include href="7手雷/量子爆弹信标文件/信标.xml" itemIcon="1" loadImmediate="false" itemID="669f5e7c-00000cfa" lastModified="1776866890"/>
+          <Include href="area40X40.xml" loadImmediate="false" itemID="6911c3eb-00001ee6" lastModified="1762772154"/>
           <Include href="非JohnWcik内容/手雷/无AS链接/Symbol 13.xml" loadImmediate="false" itemID="66e8e5fc-00000961" lastModified="1726539260"/>
           <Include href="杂项/0.area.xml" loadImmediate="false" itemID="65bdb932-00000079" lastModified="1701486304"/>
           <Include href="杂项/3XD的素材.xml" itemID="65b5e7ed-00000904" lastModified="1706840515"/>
@@ -1227,25 +1240,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="1878521" publishTime="1776855471"/>
-          <PublishItem publishSize="1874958" publishTime="1776766672"/>
-          <PublishItem publishSize="1830285" publishTime="1776761311"/>
-          <PublishItem publishSize="1830285" publishTime="1776761301"/>
-          <PublishItem publishSize="1830197" publishTime="1776761281" publishDebug="true"/>
-          <PublishItem publishSize="1830234" publishTime="1776761199"/>
-          <PublishItem publishSize="1871406" publishTime="1769400104"/>
-          <PublishItem publishSize="1871405" publishTime="1769400088"/>
-          <PublishItem publishSize="1871402" publishTime="1769399976"/>
-          <PublishItem publishSize="1871405" publishTime="1769399917"/>
-          <PublishItem publishSize="1871399" publishTime="1769399888"/>
-          <PublishItem publishSize="1871404" publishTime="1769399551"/>
-          <PublishItem publishSize="1871404" publishTime="1769399340"/>
-          <PublishItem publishSize="1871413" publishTime="1769399257"/>
-          <PublishItem publishSize="1871413" publishTime="1769399156"/>
-          <PublishItem publishSize="1806700" publishTime="1769396823" publishDebug="true"/>
-          <PublishItem publishSize="1806699" publishTime="1769396813" publishDebug="true"/>
-          <PublishItem publishSize="1806701" publishTime="1769396719" publishDebug="true"/>
-          <PublishItem publishSize="1806670" publishTime="1769396604" publishDebug="true"/>
-          <PublishItem publishSize="1806673" publishTime="1769396460" publishDebug="true"/>
+          <PublishItem publishSize="1886173" publishTime="1776935565"/>
+          <PublishItem publishSize="1886170" publishTime="1776935261"/>
+          <PublishItem publishSize="1886173" publishTime="1776935087"/>
+          <PublishItem publishSize="1886173" publishTime="1776934986"/>
+          <PublishItem publishSize="1886170" publishTime="1776934965"/>
+          <PublishItem publishSize="1886170" publishTime="1776934560"/>
+          <PublishItem publishSize="1886156" publishTime="1776934470"/>
+          <PublishItem publishSize="1886378" publishTime="1776934228"/>
+          <PublishItem publishSize="1885890" publishTime="1776919775"/>
+          <PublishItem publishSize="1885907" publishTime="1776919746"/>
+          <PublishItem publishSize="1885293" publishTime="1776919617"/>
+          <PublishItem publishSize="1885311" publishTime="1776919573"/>
+          <PublishItem publishSize="1885876" publishTime="1776919429"/>
+          <PublishItem publishSize="1885898" publishTime="1776919411"/>
+          <PublishItem publishSize="1885870" publishTime="1776919262"/>
+          <PublishItem publishSize="1885893" publishTime="1776919208"/>
+          <PublishItem publishSize="1885888" publishTime="1776919187"/>
+          <PublishItem publishSize="1885888" publishTime="1776919152"/>
+          <PublishItem publishSize="1885871" publishTime="1776919051"/>
+          <PublishItem publishSize="1885863" publishTime="1776918854"/>
      </publishHistory>
 </DOMDocument>
