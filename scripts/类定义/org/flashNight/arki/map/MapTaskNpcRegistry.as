@@ -1,10 +1,13 @@
-﻿/**
+﻿import org.flashNight.arki.map.MapPanelCatalog;
+import org.flashNight.gesh.xml.XMLParser;
+
+/**
  * 文件：org/flashNight/arki/map/MapTaskNpcRegistry.as
  * 说明：WebView 地图面板的任务 NPC 坐标 registry。
  *
  * 职责：
  *   - 维护 NPC 原名 → marker 定义的映射（包括 alias 别名与小写 fallback 查询）
- *   - 类加载时 seed 全部硬编码 NPC 坐标
+ *   - 数据由 data/map/map_panel.xml 启动时经 applyFromXml 填充（必须在 MapPanelCatalog.applyFromXml 成功之后调用）
  *   - 对外提供按 _root.tasks_to_do 筛选的 marker 投影（buildTaskNpcMarkers）
  *
  * marker 结构：{ pageId:String, hotspotId:String, point:{x:Number, y:Number} }
@@ -15,7 +18,27 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
     private static var _markers:Object;
     private static var _markersLower:Object;
 
+    public static var isLoaded:Boolean = false;
+
     private static var _seeded:Boolean = seedAll();
+
+    // Canonical whitelist：XML 必须至少包含这 54 个 canonical npc name（允许超集）
+    // alias 的名字不算；新增/改名 npc 属于设计变更，需同步更新此处 + XML
+    private static var REQUIRED_NPC_NAMES:Array = [
+        "Pig", "Boy", "King", "冷兵器商人", "杀马特",
+        "酒保", "格格巫", "丽丽丝", "舞女",
+        "宝石线人", "前治安官", "黑铁会外交部长", "学生妹", "幸存老兵",
+        "The Girl", "Andy Law", "Shop Girl", "Blue", "小F",
+        "厨师",
+        "general", "gazer", "director", "itinerant", "surveyor",
+        "singer", "keyboard", "guitar",
+        "火凤", "翅虎", "黑龙", "黑铁",
+        "牛仔", "假肢仙人", "吸特乐",
+        "artist", "soldier", "排骨", "机哥", "阿波", "PROPHET",
+        "黑仔", "Bat", "Tomboy", "武器订购系统",
+        "体育老师", "室友", "程铮", "剑道社长", "冯佑权",
+        "理科教授", "文科老师", "Vanshuther", "教导主任"
+    ];
 
     /**
      * 登记一个 NPC marker。小写 fallback key 遵循 "先来先占" 语义：
@@ -101,75 +124,104 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
         return markers;
     }
 
-    private static function seedAll():Boolean {
+    /**
+     * 从 XML parse 结果填表。任一校验失败 → trace + 回退空字典 + 返回 false。
+     * 前置：调用者必须确保 MapPanelCatalog.applyFromXml 已先行成功（本方法读 Catalog.HOTSPOT_PAGES
+     * 派生 npc.pageId）。
+     *
+     * @param raw  MapPanelLoader 成功回调拿到的 data 对象（即 <map_panel> 内容，非 {map_panel: ...}）
+     * @return Boolean 是否成功
+     */
+    public static function applyFromXml(raw:Object):Boolean {
+        if (raw == null) { trace("[MapTaskNpcRegistry] raw 为 null"); return false; }
+        var taskNpcs:Object = raw.task_npcs;
+        var npcList:Array = (taskNpcs == undefined) ? [] : XMLParser.configureDataAsArray(taskNpcs.npc);
+        var aliasList:Array = (taskNpcs == undefined) ? [] : XMLParser.configureDataAsArray(taskNpcs.alias);
+
+        // 重置（reload 场景 + 失败也回空字典）
         _aliases = {};
         _markers = {};
         _markersLower = {};
 
-        _aliases["∞天ㄙ★使的剪∞"] = "杀马特";
+        var i:Number;
 
-        // ── base ──
-        register("Pig", "base", "base_garage", 171.55, 217.85);
-        register("Boy", "base", "base_garage", 212.95, 246.0);
-        register("King", "base", "base_garage", 265.35, 217.85);
-        register("冷兵器商人", "base", "base_garage", 120.5, 222.05);
-        register("杀马特", "base", "base_garage", 365.95, 217.6);
-        register("酒保", "base", "merc_bar", 444.85, 136.15);
-        register("格格巫", "base", "merc_bar", 567.05, 173.8);
-        register("丽丽丝", "base", "merc_bar", 621.55, 173.8);
-        register("舞女", "base", "merc_bar", 389.55, 140.2);
-        register("宝石线人", "base", "base_lobby", 564.15, 249.75);
-        register("前治安官", "base", "base_lobby", 625.5, 237.2);
-        register("黑铁会外交部长", "base", "base_lobby", 363.25, 264.75);
-        register("学生妹", "base", "base_lobby", 414.1, 245.45);
-        register("幸存老兵", "base", "base_lobby", 466.5, 259.35);
-        register("The Girl", "base", "basement1", 436.25, 332.65);
-        register("Andy Law", "base", "basement1", 497.55, 329.4);
-        register("Shop Girl", "base", "basement1", 549.95, 291.2);
-        register("Blue", "base", "basement1", 620.9, 336.8);
-        register("小F", "base", "basement1", 609.15, 279.75);
-        register("厨师", "base", "cafeteria", 324.85, 431.85);
+        // 1) npc 结构 + 类型 + 名字冲突（含大小写折叠）
+        var npcNameSet:Object = {};
+        var npcNameLowerSet:Object = {};
+        for (i = 0; i < npcList.length; i++) {
+            var n:Object = npcList[i];
+            if (n.name == undefined || n.name == "") { trace("[MapTaskNpcRegistry] npc[" + i + "] 缺 name"); return false; }
+            if (n.hotspot == undefined || n.hotspot == "") { trace("[MapTaskNpcRegistry] npc '" + n.name + "' 缺 hotspot"); return false; }
+            if (n.x == undefined || n.y == undefined) { trace("[MapTaskNpcRegistry] npc '" + n.name + "' 缺 x 或 y"); return false; }
+            var nx:Number = Number(n.x);
+            var ny:Number = Number(n.y);
+            if (isNaN(nx) || isNaN(ny)) { trace("[MapTaskNpcRegistry] npc '" + n.name + "' 坐标非数字"); return false; }
+            var nameStr:String = String(n.name);
+            var nameLower:String = nameStr.toLowerCase();
+            if (npcNameSet[nameStr] != undefined) { trace("[MapTaskNpcRegistry] npc name 重复: " + nameStr); return false; }
+            if (npcNameLowerSet[nameLower] != undefined) { trace("[MapTaskNpcRegistry] npc name 仅大小写不同冲突: " + nameStr + " vs " + npcNameLowerSet[nameLower]); return false; }
+            npcNameSet[nameStr] = true;
+            npcNameLowerSet[nameLower] = nameStr;
+        }
 
-        // ── faction ──
-        register("general", "faction", "warlord_base", 239.3, 170.6);
-        register("gazer", "faction", "warlord_base", 128.95, 168.1);
-        register("director", "faction", "warlord_tent", 190.85, 125.0);
-        register("itinerant", "faction", "firing_range", 154.35, 293.6);
-        register("surveyor", "faction", "firing_range", 254.35, 264.1);
-        register("singer", "faction", "rock_park", 540.55, 158.5);
-        register("keyboard", "faction", "rock_park", 603.75, 187.7);
-        register("guitar", "faction", "rock_park", 476.95, 186.1);
-        register("火凤", "faction", "blackiron_training", 135.7, 425.45);
-        register("翅虎", "faction", "blackiron_training", 230.95, 412.7);
-        register("黑龙", "faction", "blackiron_pavilion", 277.5, 433.2);
-        register("黑铁", "faction", "blackiron_pavilion", 186.9, 514.5);
-        register("牛仔", "faction", "fallen_bar", 522.75, 471.7);
-        register("假肢仙人", "faction", "fallen_street", 753.55, 488.45);
-        register("吸特乐", "faction", "fallen_street", 675.8, 482.0);
+        // 2) 关系校验：npc.hotspot 必须在 Catalog 里已登记
+        for (i = 0; i < npcList.length; i++) {
+            var n2:Object = npcList[i];
+            if (MapPanelCatalog.HOTSPOT_PAGES[String(n2.hotspot)] == undefined) {
+                trace("[MapTaskNpcRegistry] npc '" + n2.name + "' 指向未登记热点: " + n2.hotspot);
+                return false;
+            }
+        }
 
-        // ── defense ──
-        register("artist", "defense", "first_defense", 161.65, 155.15);
-        register("soldier", "defense", "first_defense", 250.7, 162.6);
-        register("排骨", "defense", "alliance_dock", 137.45, 332.3);
-        register("机哥", "defense", "alliance_dock", 189.45, 333.65);
-        register("阿波", "defense", "alliance_dock", 241.2, 331.65);
-        register("PROPHET", "defense", "alliance_corridor", 228.45, 392.45);
+        // 3) alias 校验：结构、名字冲突（与 npc 同名 / 两 alias 同名）、canonical 必须命中
+        var aliasNameSet:Object = {};
+        for (i = 0; i < aliasList.length; i++) {
+            var a:Object = aliasList[i];
+            if (a.name == undefined || a.name == "") { trace("[MapTaskNpcRegistry] alias[" + i + "] 缺 name"); return false; }
+            if (a.canonical == undefined || a.canonical == "") { trace("[MapTaskNpcRegistry] alias '" + a.name + "' 缺 canonical"); return false; }
+            var an:String = String(a.name);
+            var ac:String = String(a.canonical);
+            if (npcNameSet[an] != undefined) { trace("[MapTaskNpcRegistry] alias name '" + an + "' 与已有 npc 重名"); return false; }
+            if (aliasNameSet[an] != undefined) { trace("[MapTaskNpcRegistry] alias name 重复: " + an); return false; }
+            if (npcNameSet[ac] == undefined) { trace("[MapTaskNpcRegistry] alias '" + an + "' 的 canonical='" + ac + "' 未命中任何 npc"); return false; }
+            aliasNameSet[an] = true;
+        }
 
-        // ── school ──
-        register("黑仔", "school", "union_university", 430.05, 508.2);
-        register("Bat", "school", "union_university", 471.4, 529.7);
-        register("Tomboy", "school", "union_university", 516.9, 513.2);
-        register("武器订购系统", "school", "union_university", 570.4, 516.7);
-        register("体育老师", "school", "university_playground", 539.2, 428.65);
-        register("室友", "school", "school_dormitory", 130.3, 347.3);
-        register("程铮", "school", "teaching_interior", 486.65, 255.75);
-        register("剑道社长", "school", "kendo_club", 663.3, 213.1);
-        register("冯佑权", "school", "teaching_interior", 593.3, 211.9);
-        register("理科教授", "school", "science_class", 744.65, 212.35);
-        register("文科老师", "school", "arts_class", 810.9, 213.1);
-        register("Vanshuther", "school", "university_interior", 555.75, 327.2);
-        register("教导主任", "school", "office", 538.9, 104.15);
+        // 4) Canonical 完整性（⊇ REQUIRED_NPC_NAMES，允许超集）
+        var missing:Array = [];
+        for (i = 0; i < REQUIRED_NPC_NAMES.length; i++) {
+            if (npcNameSet[REQUIRED_NPC_NAMES[i]] == undefined) missing.push(REQUIRED_NPC_NAMES[i]);
+        }
+        if (missing.length > 0) {
+            trace("[MapTaskNpcRegistry] REQUIRED_NPC_NAMES 缺少: " + missing.join(", "));
+            return false;
+        }
 
+        // 通过校验，开始填表
+        for (i = 0; i < npcList.length; i++) {
+            var n3:Object = npcList[i];
+            var hid:String = String(n3.hotspot);
+            register(
+                String(n3.name),
+                String(MapPanelCatalog.HOTSPOT_PAGES[hid]),  // page 由 Catalog 派生
+                hid,
+                Number(n3.x),
+                Number(n3.y)
+            );
+        }
+        for (i = 0; i < aliasList.length; i++) {
+            var a2:Object = aliasList[i];
+            _aliases[String(a2.name)] = String(a2.canonical);
+        }
+
+        isLoaded = true;
+        return true;
+    }
+
+    private static function seedAll():Boolean {
+        _aliases = {};
+        _markers = {};
+        _markersLower = {};
         return true;
     }
 }

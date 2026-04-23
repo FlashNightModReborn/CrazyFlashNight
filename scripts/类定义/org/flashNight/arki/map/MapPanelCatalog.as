@@ -1,156 +1,166 @@
-﻿/**
+﻿import org.flashNight.gesh.xml.XMLParser;
+
+/**
  * 文件：org/flashNight/arki/map/MapPanelCatalog.as
  * 说明：WebView 地图面板的静态目录表。
  *
  * 包含：基地热点列表、分组热点列表、分组解锁元信息、导航帧名映射、热点→页签映射。
- * 所有数据在类加载时通过 initTables() 一次性初始化；运行时只读。
+ * 数据由 data/map/map_panel.xml 在启动时通过 MapPanelLoader + applyFromXml 填充。
+ * XML 未到达前 5 张表保持"安全零值"（空集合；GROUPED_HOTSPOT_IDS 预置 8 个空数组，
+ * 因为 MapPanelService.buildEnabledHotspotIds 会直接读 .xxx.length，undefined 会崩）。
  *
  * 与 MapPanelService / MapHotspotResolver 配合使用。
  */
 
 class org.flashNight.arki.map.MapPanelCatalog {
-    public static var BASE_HOTSPOT_IDS:Array;
-    public static var GROUPED_HOTSPOT_IDS:Object;
-    public static var UNLOCK_META:Object;
-    public static var NAVIGATE_TARGETS:Object;
-    public static var HOTSPOT_PAGES:Object;
+    // 安全零值：XML 未到达前这些表允许被读取，只会返回空结果，不崩
+    public static var BASE_HOTSPOT_IDS:Array = [];
+    public static var GROUPED_HOTSPOT_IDS:Object = {
+        warlord: [], rock: [], blackiron: [], fallen: [],
+        defense: [], restricted: [], schoolOutside: [], schoolInside: []
+    };
+    public static var UNLOCK_META:Object = {};
+    public static var NAVIGATE_TARGETS:Object = {};
+    public static var HOTSPOT_PAGES:Object = {};
 
-    private static var _inited:Boolean = initTables();
+    public static var isLoaded:Boolean = false;
 
-    private static function initTables():Boolean {
-        BASE_HOTSPOT_IDS = [
-            "base_roof",
-            "base_lobby",
-            "base_entrance",
-            "base_garage",
-            "merc_bar",
-            "infirmary",
-            "dormitory",
-            "basement1",
-            "gym",
-            "armory",
-            "cafeteria",
-            "corridor",
-            "lab",
-            "underground_water"
-        ];
+    // Canonical whitelist：XML 实际集合必须精确等于这些（Phase 2 语义）
+    // 新增/改名 hotspot 属于设计变更，需同步更新此处 + XML + launcher 侧 manifest
+    private static var REQUIRED_GROUP_IDS:Array = [
+        "base", "warlord", "rock", "blackiron", "fallen",
+        "defense", "restricted", "schoolOutside", "schoolInside"
+    ];
+    private static var REQUIRED_HOTSPOT_IDS:Array = [
+        "base_roof", "base_lobby", "base_entrance", "base_garage",
+        "merc_bar", "infirmary", "dormitory", "basement1",
+        "gym", "armory", "cafeteria", "corridor", "lab", "underground_water",
+        "warlord_base", "warlord_tent", "firing_range",
+        "rock_park", "rock_rehearsal",
+        "blackiron_training", "blackiron_pavilion",
+        "fallen_bar", "fallen_street",
+        "first_defense",
+        "alliance_dock", "alliance_corridor",
+        "union_university",
+        "workshop", "university_interior", "university_playground",
+        "dorm_downstairs", "school_dormitory", "office",
+        "kendo_club", "science_class", "arts_class",
+        "teaching_interior", "teaching_right"
+    ];
+    private static var VALID_PAGE_IDS:Array = ["base", "faction", "defense", "school"];
 
-        GROUPED_HOTSPOT_IDS = {
-            warlord: ["warlord_base", "warlord_tent", "firing_range"],
-            rock: ["rock_park", "rock_rehearsal"],
-            blackiron: ["blackiron_training", "blackiron_pavilion"],
-            fallen: ["fallen_bar", "fallen_street"],
-            defense: ["first_defense"],
-            restricted: ["alliance_dock", "alliance_corridor"],
-            schoolOutside: ["union_university"],
-            schoolInside: [
-                "workshop",
-                "university_interior",
-                "university_playground",
-                "dorm_downstairs",
-                "school_dormitory",
-                "office",
-                "kendo_club",
-                "science_class",
-                "arts_class",
-                "teaching_interior",
-                "teaching_right"
-            ]
+    /**
+     * 从 XML parse 结果填表。任一校验失败 → trace + 回退空表 + 返回 false。
+     * 失败时绝不部分填表（避免"加载成功但数据残缺"的误导）。
+     *
+     * @param raw  MapPanelLoader 成功回调拿到的 data 对象（即 <map_panel> 内容，非 {map_panel: ...}）
+     * @return Boolean 是否成功
+     */
+    public static function applyFromXml(raw:Object):Boolean {
+        if (raw == null) { trace("[MapPanelCatalog] raw 为 null"); return false; }
+
+        var groupList:Array = XMLParser.configureDataAsArray(raw.groups.group);
+        var hotspotList:Array = XMLParser.configureDataAsArray(raw.hotspots.hotspot);
+        if (groupList.length == 0) { trace("[MapPanelCatalog] groups/group 为空"); return false; }
+        if (hotspotList.length == 0) { trace("[MapPanelCatalog] hotspots/hotspot 为空"); return false; }
+
+        // 结构 + 关系校验（同时构建 groupPageMap）
+        var groupIdSet:Object = {};
+        var groupPageMap:Object = {};
+        var i:Number;
+        for (i = 0; i < groupList.length; i++) {
+            var g:Object = groupList[i];
+            if (g.id == undefined || g.id == "") { trace("[MapPanelCatalog] group[" + i + "] 缺 id"); return false; }
+            if (g.page == undefined || g.page == "") { trace("[MapPanelCatalog] group '" + g.id + "' 缺 page"); return false; }
+            if (g.label == undefined || g.label == "") { trace("[MapPanelCatalog] group '" + g.id + "' 缺 label"); return false; }
+            if (!inList(VALID_PAGE_IDS, g.page)) { trace("[MapPanelCatalog] group '" + g.id + "' page='" + g.page + "' 非法"); return false; }
+            if (groupIdSet[g.id] != undefined) { trace("[MapPanelCatalog] group id 重复: " + g.id); return false; }
+            groupIdSet[g.id] = true;
+            groupPageMap[g.id] = String(g.page);
+        }
+
+        var hotspotIdSet:Object = {};
+        for (i = 0; i < hotspotList.length; i++) {
+            var h:Object = hotspotList[i];
+            if (h.id == undefined || h.id == "") { trace("[MapPanelCatalog] hotspot[" + i + "] 缺 id"); return false; }
+            if (h.group == undefined || h.group == "") { trace("[MapPanelCatalog] hotspot '" + h.id + "' 缺 group"); return false; }
+            if (h.frame == undefined || h.frame == "") { trace("[MapPanelCatalog] hotspot '" + h.id + "' 缺 frame"); return false; }
+            if (groupIdSet[h.group] == undefined) { trace("[MapPanelCatalog] hotspot '" + h.id + "' 引用未声明的 group: " + h.group); return false; }
+            if (hotspotIdSet[h.id] != undefined) { trace("[MapPanelCatalog] hotspot id 重复: " + h.id); return false; }
+            hotspotIdSet[h.id] = true;
+        }
+
+        // Canonical 精确相等校验
+        if (!setEquals(groupIdSet, REQUIRED_GROUP_IDS, "group", "MapPanelCatalog")) return false;
+        if (!setEquals(hotspotIdSet, REQUIRED_HOTSPOT_IDS, "hotspot", "MapPanelCatalog")) return false;
+
+        // 通过校验，开始构建（GROUPED_HOTSPOT_IDS 初值已有 8 个空数组 key，此处只 push）
+        var base_:Array = [];
+        var grouped:Object = {
+            warlord: [], rock: [], blackiron: [], fallen: [],
+            defense: [], restricted: [], schoolOutside: [], schoolInside: []
         };
+        var navigate:Object = {};
+        var pages:Object = {};
+        for (i = 0; i < hotspotList.length; i++) {
+            var h2:Object = hotspotList[i];
+            var hid:String = String(h2.id);
+            navigate[hid] = String(h2.frame);
+            pages[hid] = groupPageMap[h2.group];
+            if (h2.group == "base") {
+                base_.push(hid);
+            } else {
+                grouped[h2.group].push(hid);
+            }
+        }
+        var meta:Object = {};
+        for (i = 0; i < groupList.length; i++) {
+            var g2:Object = groupList[i];
+            if (g2.id == "base") continue;  // base 组无 lockedReason，不进 UNLOCK_META（保持与旧表一致）
+            meta[g2.id] = {
+                label: String(g2.label),
+                lockedReason: (g2.lockedReason == undefined) ? "" : String(g2.lockedReason)
+            };
+        }
 
-        UNLOCK_META = {
-            warlord: { label: "军阀线路", lockedReason: "军阀线路尚未开放" },
-            rock: { label: "摇滚线路", lockedReason: "摇滚线路尚未开放" },
-            blackiron: { label: "黑铁会线路", lockedReason: "黑铁会线路尚未开放" },
-            fallen: { label: "堕落城线路", lockedReason: "堕落城线路尚未开放" },
-            defense: { label: "第一防线", lockedReason: "第一防线尚未开放" },
-            restricted: { label: "禁区", lockedReason: "禁区尚未开放" },
-            schoolOutside: { label: "学校外部", lockedReason: "学校外部尚未开放" },
-            schoolInside: { label: "学校内部", lockedReason: "学校内部尚未开放" }
-        };
+        // 原子替换（校验全过后才动 public 字段）
+        BASE_HOTSPOT_IDS = base_;
+        GROUPED_HOTSPOT_IDS = grouped;
+        NAVIGATE_TARGETS = navigate;
+        HOTSPOT_PAGES = pages;
+        UNLOCK_META = meta;
+        isLoaded = true;
+        return true;
+    }
 
-        NAVIGATE_TARGETS = {
-            base_roof: "基地房顶",
-            base_lobby: "基地1层",
-            base_entrance: "基地门口",
-            base_garage: "基地车库",
-            merc_bar: "佣兵酒吧",
-            infirmary: "医务室",
-            dormitory: "房间",
-            basement1: "地下室1层",
-            gym: "健身房",
-            armory: "武器库",
-            cafeteria: "地图-食堂",
-            corridor: "地图-走廊",
-            lab: "地图-实验室",
-            underground_water: "地下2层",
-            warlord_base: "地图-军阀基地",
-            warlord_tent: "地图-军阀帐篷",
-            firing_range: "地图-靶场",
-            rock_park: "地图-摇滚公园",
-            rock_rehearsal: "地图-摇滚排练室",
-            blackiron_training: "地图-黑铁会修炼场",
-            blackiron_pavilion: "地图-黑铁阁",
-            fallen_bar: "地图-堕落城酒吧",
-            fallen_street: "地图-堕落城商业街",
-            first_defense: "地图-第一防线防区",
-            alliance_dock: "地图-同盟卸货站",
-            alliance_corridor: "地图-同盟通路",
-            workshop: "地图-大学地下工坊",
-            union_university: "地图-联合大学",
-            university_interior: "地图-大学内部",
-            university_playground: "地图-大学操场",
-            dorm_downstairs: "地图-大学宿舍楼下",
-            school_dormitory: "地图-大学宿舍",
-            office: "地图-教学楼办公室",
-            kendo_club: "地图-剑道社",
-            science_class: "地图-理科教室",
-            arts_class: "地图-文科教室",
-            teaching_interior: "地图-教学楼内部",
-            teaching_right: "地图-教学楼内部右侧"
-        };
+    // ── 内部工具 ──
 
-        HOTSPOT_PAGES = {
-            base_roof: "base",
-            base_lobby: "base",
-            base_entrance: "base",
-            base_garage: "base",
-            merc_bar: "base",
-            infirmary: "base",
-            dormitory: "base",
-            basement1: "base",
-            gym: "base",
-            armory: "base",
-            cafeteria: "base",
-            corridor: "base",
-            lab: "base",
-            underground_water: "base",
-            warlord_base: "faction",
-            warlord_tent: "faction",
-            firing_range: "faction",
-            rock_park: "faction",
-            rock_rehearsal: "faction",
-            blackiron_training: "faction",
-            blackiron_pavilion: "faction",
-            fallen_bar: "faction",
-            fallen_street: "faction",
-            first_defense: "defense",
-            alliance_dock: "defense",
-            alliance_corridor: "defense",
-            workshop: "school",
-            union_university: "school",
-            university_interior: "school",
-            university_playground: "school",
-            dorm_downstairs: "school",
-            school_dormitory: "school",
-            office: "school",
-            kendo_club: "school",
-            science_class: "school",
-            arts_class: "school",
-            teaching_interior: "school",
-            teaching_right: "school"
-        };
+    private static function inList(list:Array, value):Boolean {
+        for (var i:Number = 0; i < list.length; i++) {
+            if (list[i] == value) return true;
+        }
+        return false;
+    }
 
+    /** 校验 XML 实际 id 集合（Object 形式的 set）与 required 列表精确相等；trace 缺失/多余条目 */
+    private static function setEquals(actualSet:Object, required:Array, kindLabel:String, cls:String):Boolean {
+        var requiredSet:Object = {};
+        var i:Number;
+        for (i = 0; i < required.length; i++) requiredSet[required[i]] = true;
+
+        var missing:Array = [];
+        for (i = 0; i < required.length; i++) {
+            if (actualSet[required[i]] == undefined) missing.push(required[i]);
+        }
+        var extra:Array = [];
+        for (var k:String in actualSet) {
+            if (requiredSet[k] == undefined) extra.push(k);
+        }
+        if (missing.length > 0 || extra.length > 0) {
+            if (missing.length > 0) trace("[" + cls + "] REQUIRED_" + kindLabel + " 缺少: " + missing.join(", "));
+            if (extra.length > 0) trace("[" + cls + "] " + kindLabel + " 存在多余条目（未在 whitelist 内）: " + extra.join(", "));
+            return false;
+        }
         return true;
     }
 
