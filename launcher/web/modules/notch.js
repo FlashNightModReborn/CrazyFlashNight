@@ -205,12 +205,11 @@ var Notch = (function() {
         // 游戏状态：s:0=未加载 s:1=已进入
         // 用 CSS class 控制，比 inline style 更可靠
         UiData.on('s', function(val) {
-            var cp = document.getElementById('context-panel');
+            var cp = contextPanel || document.getElementById('context-panel');
             var qr = document.getElementById('quest-row');
+            var nb = document.getElementById('quest-notice-bar');
             if (val === '1') notchEl.classList.add('game-ready');
             else notchEl.classList.remove('game-ready');
-            if (cp) contextPanel = cp;
-            var nb = document.getElementById('quest-notice-bar');
             if (val === '1') {
                 if (cp) cp.style.display = '';
                 if (qr) qr.style.display = '';
@@ -227,7 +226,6 @@ var Notch = (function() {
                 }
             }
             scheduleContextLayoutSync();
-            // 可交互区域几何形状已变（toolbar/center/pause 显隐），重报 hitRect
         });
         // 初始态：未加载（无 .game-ready → CSS 隐藏 toolbar + pause）
 
@@ -801,11 +799,12 @@ var Notch = (function() {
                 if (typeof MapHud !== 'undefined' && MapHud && typeof MapHud.toggleCollapsed === 'function') {
                     MapHud.toggleCollapsed();
                 }
-                updateMapHudToggleButton();
-                scheduleContextLayoutSync();
             });
         }
-        document.addEventListener('maphudstatechange', updateMapHudToggleButton);
+        document.addEventListener('maphudstatechange', function() {
+            updateMapHudToggleButton();
+            scheduleContextLayoutSync();
+        });
         if (noticeMain) {
             noticeMain.addEventListener('click', function() {
                 Bridge.send({ type: 'click', key: 'TASK_UI' });

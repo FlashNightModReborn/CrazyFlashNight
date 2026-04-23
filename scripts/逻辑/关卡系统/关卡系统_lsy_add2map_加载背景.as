@@ -105,8 +105,6 @@ _root.贴背景图 = function(){
 _root.配置场景环境信息 = function(){
 	var 游戏世界 = _root.gameworld;
 	var 环境信息 = WeatherSystem.getInstance().getEnvConfig().getSceneEnv(_root.关卡标志);
-	//显示场景名称
-	_root.场景名称文本.text = _root.关卡标志.split("地图-").join("");
 	//寻找出生点，但似乎由于异步原因没有生效
 	// var 出生点列表 = [];
 	// for (var 单位 in 游戏世界){

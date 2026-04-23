@@ -90,20 +90,26 @@ class org.flashNight.arki.map.MapPanelService {
 
     /**
      * 所有旧地图入口统一走此入口，接入 WebView 新地图面板。
+     * params.pageId 可选（base/faction/defense/school），指定面板打开时默认页。
      */
     public static function handleOpenWebMap(params:Object):Void {
         var source:String = (params != undefined && params.source != undefined)
             ? String(params.source)
             : "as2_legacy_button";
-        log("openWebMap request source=" + source);
+        var pageId:String = (params != undefined && params.pageId != undefined)
+            ? String(params.pageId)
+            : "";
+        log("openWebMap request source=" + source + " pageId=" + pageId);
 
-        // 交给 Launcher 打开 WebView 面板，不再隐藏 gameworld（WebView overlay 自己会盖住）
-        if (_root.server != undefined && _root.server.sendSocketMessage != undefined) {
-            _root.server.sendSocketMessage(
-                '{"task":"panel_request","panel":"map","source":"' + source + '"}');
-        } else {
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) {
             log("openWebMap failed: server/sendSocketMessage unavailable");
+            return;
         }
+
+        var payload:String = '{"task":"panel_request","panel":"map","source":"' + source + '"';
+        if (pageId != "") payload += ',"pageId":"' + pageId + '"';
+        payload += '}';
+        _root.server.sendSocketMessage(payload);
     }
 
     // ─────────────────────────────────────────────

@@ -1184,7 +1184,15 @@ namespace CF7Launcher.Guardian
 
         private void OpenMapPanel(string source, bool dev)
         {
-            string initData = "{\"source\":\"" + EscapeJsonString(source) + "\",\"dev\":" + (dev ? "true" : "false") + "}";
+            OpenMapPanel(source, dev, null);
+        }
+
+        private void OpenMapPanel(string source, bool dev, string pageId)
+        {
+            string initData = "{\"source\":\"" + EscapeJsonString(source) + "\",\"dev\":" + (dev ? "true" : "false");
+            if (!string.IsNullOrEmpty(pageId))
+                initData += ",\"page\":\"" + EscapeJsonString(pageId) + "\"";
+            initData += "}";
             PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"map\",\"initData\":" + initData + "}");
             _activePanel = "map";
             if (_onPanelStateChanged != null) _onPanelStateChanged(true);
@@ -1197,6 +1205,11 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void RequestOpenPanel(string panelName, string source)
         {
+            RequestOpenPanel(panelName, source, null);
+        }
+
+        public void RequestOpenPanel(string panelName, string source, string pageId)
+        {
             if (_disposed) return;
             if (this.IsHandleCreated && this.InvokeRequired)
             {
@@ -1204,7 +1217,7 @@ namespace CF7Launcher.Guardian
                 {
                     this.BeginInvoke(new Action(delegate()
                     {
-                        RequestOpenPanel(panelName, source);
+                        RequestOpenPanel(panelName, source, pageId);
                     }));
                 }
                 catch { }
@@ -1214,8 +1227,8 @@ namespace CF7Launcher.Guardian
             string safeSource = string.IsNullOrEmpty(source) ? "as2_request" : source;
             if (string.Equals(panelName, "map", StringComparison.OrdinalIgnoreCase))
             {
-                LogManager.Log("[Panel] RequestOpenPanel map source=" + safeSource);
-                OpenMapPanel(safeSource, false);
+                LogManager.Log("[Panel] RequestOpenPanel map source=" + safeSource + " pageId=" + (pageId ?? ""));
+                OpenMapPanel(safeSource, false, pageId);
             }
             else
             {
