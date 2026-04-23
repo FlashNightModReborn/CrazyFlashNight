@@ -877,9 +877,10 @@ var Notch = (function() {
         // can-deliver class 触发箭头装饰显示；click 分发由 noticeMain 统一判定
         if (canDeliver) noticeBar.classList.add('can-deliver');
         else noticeBar.classList.remove('can-deliver');
-        noticeMain.title = questTaskDone
-            ? (canDeliver ? buildDeliverTitle() : '打开任务栏')
-            : '打开任务栏';
+        // 任务完成态常驻期间用 buildDeliverTitle 告知「可交付 / 传送尚未解锁 / 暂无可交付 / 战斗中」；
+        // 通知播放期 + 非完成态回落为「打开任务栏」，与实际 click 分发一致
+        var inTaskDone = noticeBar.classList.contains('task-done');
+        noticeMain.title = (questTaskDone && inTaskDone) ? buildDeliverTitle() : '打开任务栏';
     }
 
     function buildTaskDoneText() {

@@ -518,6 +518,75 @@ button[data-key="SAFEEXIT"].save-done {
     height:86px;
     position:relative;
     pointer-events:auto;
+    /* 默认色板：base 绿金，其它 data-group 选择器覆盖三组变量 */
+    --hud-accent: 190,255,220;
+    --hud-silhouette: 188,236,212;
+    --hud-current: 110,225,255;
+    --hud-stage-a: 11,16,14;
+    --hud-stage-b: 6,9,10;
+}
+#map-hud[data-group="base"] {
+    --hud-accent: 190,255,220;
+    --hud-silhouette: 188,236,212;
+    --hud-current: 110,225,255;
+    --hud-stage-a: 11,16,14;
+    --hud-stage-b: 6,9,10;
+}
+#map-hud[data-group="warlord"] {
+    --hud-accent: 255,184,130;
+    --hud-silhouette: 255,200,148;
+    --hud-current: 255,140,80;
+    --hud-stage-a: 22,14,10;
+    --hud-stage-b: 10,7,6;
+}
+#map-hud[data-group="rock"] {
+    --hud-accent: 230,170,255;
+    --hud-silhouette: 220,180,240;
+    --hud-current: 220,130,255;
+    --hud-stage-a: 18,12,22;
+    --hud-stage-b: 10,7,14;
+}
+#map-hud[data-group="blackiron"] {
+    --hud-accent: 255,140,140;
+    --hud-silhouette: 230,170,170;
+    --hud-current: 255,110,110;
+    --hud-stage-a: 20,10,10;
+    --hud-stage-b: 10,6,6;
+}
+#map-hud[data-group="fallen"] {
+    --hud-accent: 180,200,220;
+    --hud-silhouette: 190,205,222;
+    --hud-current: 140,180,220;
+    --hud-stage-a: 12,14,18;
+    --hud-stage-b: 6,8,10;
+}
+#map-hud[data-group="defense"] {
+    --hud-accent: 140,220,240;
+    --hud-silhouette: 170,220,238;
+    --hud-current: 110,225,255;
+    --hud-stage-a: 8,14,18;
+    --hud-stage-b: 5,9,11;
+}
+#map-hud[data-group="restricted"] {
+    --hud-accent: 255,220,120;
+    --hud-silhouette: 255,225,150;
+    --hud-current: 255,210,90;
+    --hud-stage-a: 20,16,8;
+    --hud-stage-b: 10,8,5;
+}
+#map-hud[data-group="schoolOutside"] {
+    --hud-accent: 170,220,200;
+    --hud-silhouette: 186,228,208;
+    --hud-current: 140,220,190;
+    --hud-stage-a: 10,16,14;
+    --hud-stage-b: 6,10,9;
+}
+#map-hud[data-group="schoolInside"] {
+    --hud-accent: 180,210,255;
+    --hud-silhouette: 196,218,250;
+    --hud-current: 140,180,255;
+    --hud-stage-a: 10,13,20;
+    --hud-stage-b: 6,8,12;
 }
 #map-hud.is-visible {
     display:block;
@@ -544,51 +613,32 @@ button[data-key="SAFEEXIT"].save-done {
     outline-offset:-2px;
 }
 #map-hud-mode {
-    position:absolute;
-    top:7px;
-    left:8px;
-    width:17px;
-    height:17px;
-    display:flex;
+    display:inline-flex;
     align-items:center;
     justify-content:center;
-    border:1px solid rgba(177,255,119,0.2);
-    border-radius:999px;
-    background:rgba(11,14,16,0.88);
-    color:rgba(224,255,210,0.96);
-    box-shadow:0 1px 4px rgba(0,0,0,0.28);
-    z-index:2;
-}
-#map-hud[data-mode="2"] #map-hud-mode {
-    border-color:rgba(255,197,120,0.2);
-    background:rgba(16,13,10,0.9);
-    color:rgba(255,228,195,0.94);
+    width:12px;
+    height:12px;
+    flex-shrink:0;
+    color:rgba(var(--hud-accent),0.96);
+    filter:drop-shadow(0 0 3px rgba(var(--hud-current),0.4));
 }
 #map-hud-stage {
     position:relative;
     width:100%;
     height:100%;
     border-radius:10px;
-    border:1px solid rgba(190,255,220,0.12);
+    border:1px solid rgba(var(--hud-accent),0.14);
     background:
-        linear-gradient(180deg, rgba(11,16,14,0.96), rgba(6,9,10,0.98)),
-        repeating-linear-gradient(0deg, rgba(190,255,220,0.02) 0 1px, transparent 1px 9px),
-        repeating-linear-gradient(90deg, rgba(190,255,220,0.02) 0 1px, transparent 1px 9px);
+        linear-gradient(180deg, rgba(var(--hud-stage-a),0.96), rgba(var(--hud-stage-b),0.98)),
+        repeating-linear-gradient(0deg, rgba(var(--hud-accent),0.024) 0 1px, transparent 1px 9px),
+        repeating-linear-gradient(90deg, rgba(var(--hud-accent),0.024) 0 1px, transparent 1px 9px);
     overflow:hidden;
     box-shadow:inset 0 1px 0 rgba(255,255,255,0.04);
-}
-#map-hud[data-mode="2"] #map-hud-stage {
-    border-color:rgba(255,214,150,0.12);
-    background:
-        linear-gradient(180deg, rgba(20,15,10,0.96), rgba(10,9,8,0.98)),
-        repeating-linear-gradient(0deg, rgba(255,214,150,0.024) 0 1px, transparent 1px 9px),
-        repeating-linear-gradient(90deg, rgba(255,214,150,0.024) 0 1px, transparent 1px 9px);
+    transition:border-color 160ms ease-out, box-shadow 160ms ease-out;
 }
 #map-hud-button:hover #map-hud-stage {
-    border-color:rgba(200,240,220,0.18);
-}
-#map-hud[data-mode="2"] #map-hud-button:hover #map-hud-stage {
-    border-color:rgba(255,214,150,0.18);
+    border-color:rgba(var(--hud-accent),0.24);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 0 10px rgba(var(--hud-current),0.14);
 }
 #map-hud-outline {
     position:absolute;
@@ -599,23 +649,29 @@ button[data-key="SAFEEXIT"].save-done {
 }
 #map-hud-label {
     position:absolute;
-    left:8px;
-    right:auto;
-    max-width:calc(100% - 16px);
-    bottom:6px;
-    padding:2px 6px;
-    border-radius:5px;
-    background:linear-gradient(180deg, rgba(7,9,10,0.18), rgba(7,9,10,0.72));
-    font:600 11px/1.05 "Microsoft YaHei",sans-serif;
-    color:rgba(236,242,246,0.84);
+    top:6px;
+    left:6px;
+    max-width:calc(100% - 12px);
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    padding:2px 8px 2px 6px;
+    border-radius:999px;
+    border:1px solid rgba(var(--hud-accent),0.28);
+    background:linear-gradient(180deg, rgba(var(--hud-stage-a),0.82), rgba(var(--hud-stage-b),0.92));
+    -webkit-backdrop-filter:blur(4px);
+    backdrop-filter:blur(4px);
+    box-shadow:0 1px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05), 0 0 6px rgba(var(--hud-current),0.1);
+    font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+    color:rgba(246,248,250,0.92);
     text-shadow:0 1px 2px rgba(0,0,0,0.54);
-    text-align:left;
+    z-index:2;
+}
+#map-hud-label-text {
+    min-width:0;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-}
-#map-hud[data-mode="2"] #map-hud-label {
-    color:rgba(246,234,214,0.84);
 }
 .map-hud-svg {
     width:100%;
@@ -624,38 +680,44 @@ button[data-key="SAFEEXIT"].save-done {
     overflow:visible;
 }
 .map-hud-svg-silhouette {
-    fill:rgba(188,236,212,0.18);
-    opacity:0.9;
-}
-#map-hud[data-mode="2"] .map-hud-svg-silhouette {
-    fill:rgba(255,216,168,0.18);
+    fill:rgba(var(--hud-silhouette),0.2);
+    opacity:0.92;
 }
 .map-hud-svg-current-glow {
-    fill:rgba(110,225,255,0.28);
+    fill:rgba(var(--hud-current),0.32);
     opacity:0.95;
-    filter:drop-shadow(0 0 4px rgba(110,225,255,0.4));
+    filter:drop-shadow(0 0 5px rgba(var(--hud-current),0.5));
+    animation:map-hud-current-breathe 2.4s ease-in-out infinite;
+    transform-origin:center;
+    transform-box:fill-box;
 }
 .map-hud-svg-current {
-    fill:rgba(214,248,255,0.96);
+    fill:rgba(var(--hud-current),0.96);
     opacity:0.96;
+    animation:map-hud-current-breathe 2.4s ease-in-out infinite;
+    transform-origin:center;
+    transform-box:fill-box;
+}
+@keyframes map-hud-current-breathe {
+    0%,100% { opacity:0.78; }
+    50%     { opacity:1; }
 }
 .map-hud-svg-fallback-block {
-    fill:rgba(164,226,191,0.08);
-    stroke:rgba(190,255,220,0.3);
+    fill:rgba(var(--hud-silhouette),0.08);
+    stroke:rgba(var(--hud-accent),0.32);
     stroke-width:1.2;
     vector-effect:non-scaling-stroke;
 }
-#map-hud[data-mode="2"] .map-hud-svg-fallback-block {
-    fill:rgba(255,196,120,0.08);
-    stroke:rgba(255,214,150,0.28);
-}
 .map-hud-svg-fallback-block.is-current {
-    fill:rgba(64,180,255,0.16);
-    stroke:rgba(110,225,255,0.86);
+    fill:rgba(var(--hud-current),0.18);
+    stroke:rgba(var(--hud-current),0.88);
+    animation:map-hud-current-breathe 2.4s ease-in-out infinite;
+    transform-origin:center;
+    transform-box:fill-box;
 }
 .map-hud-svg-beacon-ring {
     fill:none;
-    stroke:rgba(198,242,255,0.76);
+    stroke:rgba(var(--hud-current),0.78);
     stroke-width:1.4;
     vector-effect:non-scaling-stroke;
     animation:map-hud-beacon-pulse 1.8s ease-out infinite;
@@ -663,8 +725,8 @@ button[data-key="SAFEEXIT"].save-done {
     transform-box:fill-box;
 }
 .map-hud-svg-beacon-core {
-    fill:#eefcff;
-    filter:drop-shadow(0 0 4px rgba(110,225,255,0.76));
+    fill:rgba(var(--hud-current),1);
+    filter:drop-shadow(0 0 4px rgba(var(--hud-current),0.76));
 }
 @keyframes map-hud-beacon-pulse {
     0% {
@@ -681,8 +743,8 @@ button[data-key="SAFEEXIT"].save-done {
     }
 }
 .map-hud-mode-icon {
-    width:10px;
-    height:10px;
+    width:12px;
+    height:12px;
     display:block;
 }
 .map-hud-mode-icon path,
