@@ -205,20 +205,29 @@ var Notch = (function() {
         // 游戏状态：s:0=未加载 s:1=已进入
         // 用 CSS class 控制，比 inline style 更可靠
         UiData.on('s', function(val) {
+            var cp = document.getElementById('context-panel');
+            var qr = document.getElementById('quest-row');
             if (val === '1') notchEl.classList.add('game-ready');
             else notchEl.classList.remove('game-ready');
-            // 任务行 + 通知条跟随游戏状态显隐
-            var qr = document.getElementById('quest-row');
+            if (cp) contextPanel = cp;
             var nb = document.getElementById('quest-notice-bar');
             if (val === '1') {
+                if (cp) cp.style.display = '';
                 if (qr) qr.style.display = '';
+                if (questTaskDone && !noticeTimer) enterTaskDoneState();
             } else {
+                if (cp) {
+                    cp.style.display = 'none';
+                    cp.classList.remove('has-notice');
+                }
                 if (qr) qr.style.display = 'none';
-                if (nb) { nb.style.display = 'none'; nb.classList.remove('visible', 'task-done'); }
+                if (nb) {
+                    nb.style.display = 'none';
+                    nb.classList.remove('visible', 'task-done', 'notice-active', 'notice-flash', 'scrolling');
+                }
             }
-            updateJukeboxTop();
+            scheduleContextLayoutSync();
             // 可交互区域几何形状已变（toolbar/center/pause 显隐），重报 hitRect
-            setTimeout(reportRect, 50);
         });
         // 初始态：未加载（无 .game-ready → CSS 隐藏 toolbar + pause）
 
@@ -303,12 +312,8 @@ var Notch = (function() {
             if (subs[si].offsetParent !== null) pushRect(subs[si]);
         }
         if (chartVisible && expandedPanel) pushRect(expandedPanel);
-        // 任务+装备行（右上角独立定位）
-        var questRow = document.getElementById('quest-row');
-        if (questRow && questRow.offsetParent !== null) pushRect(questRow);
-        // 通知条（任务完成态可点击）
-        if (noticeBar && noticeBar.offsetParent !== null && noticeBar.classList.contains('visible'))
-            pushRect(noticeBar);
+        var contextPanel = document.getElementById('context-panel');
+        if (contextPanel && contextPanel.offsetParent !== null) pushRect(contextPanel);
         // 安全退出面板
         var sep = document.getElementById('safe-exit-panel');
         if (sep && sep.style.display === 'block') pushRect(sep);
@@ -767,25 +772,119 @@ var Notch = (function() {
     // 状态: hidden → playing → task-done → hidden
     // 图标: 播放通知时=占位符(后续可换阵营图标), 任务完成=❗
     var noticeBar = null, noticeText = null, noticeIcon = null, noticeWrap = null;
+    var noticeMain = null, noticeNav = null, contextPanel = null;
+    var mapToggleBtn = null, mapToggleIcon = null, mapToggleLabel = null;
+    var contextResizeObserver = null, layoutSyncRaf = 0;
     var noticeTimer = null;
     var noticeQueue = [];
     var NOTICE_MS = 5000;
     var questTaskDone = false;
+    var currentMapMode = '0';
     var ICON_PLACEHOLDER = '\u25C6'; // ◆ 占位符（后续替换为阵营图标）
     var ICON_DONE = '\u2757';        // ❗ 任务完成
 
     function initQuestRow() {
+        contextPanel = document.getElementById('context-panel');
         noticeBar = document.getElementById('quest-notice-bar');
         noticeText = document.getElementById('quest-notice-text');
         noticeIcon = document.getElementById('quest-notice-icon');
         noticeWrap = document.getElementById('quest-notice-text-wrap');
+        noticeMain = document.getElementById('quest-notice-main');
+        noticeNav = document.getElementById('quest-notice-nav');
+        mapToggleBtn = document.getElementById('map-hud-toggle');
+        mapToggleIcon = document.getElementById('map-hud-toggle-icon');
+        mapToggleLabel = document.getElementById('map-hud-toggle-label');
         if (!noticeBar) return;
-
-        noticeBar.addEventListener('click', function() {
-            if (questTaskDone && !noticeTimer) {
+        if (mapToggleBtn) {
+            mapToggleBtn.addEventListener('click', function() {
+                if (!isMapHudToggleAvailable()) return;
+                if (typeof MapHud !== 'undefined' && MapHud && typeof MapHud.toggleCollapsed === 'function') {
+                    MapHud.toggleCollapsed();
+                }
+                updateMapHudToggleButton();
+                scheduleContextLayoutSync();
+            });
+        }
+        document.addEventListener('maphudstatechange', updateMapHudToggleButton);
+        if (noticeMain) {
+            noticeMain.addEventListener('click', function() {
+                Bridge.send({ type: 'click', key: 'TASK_UI' });
+            });
+        }
+        if (noticeNav) {
+            noticeNav.addEventListener('click', function() {
+                if (!canOpenMapForTask()) return;
                 Bridge.send({ type: 'click', key: 'TASK_MAP' });
-            }
-        });
+            });
+        }
+        if (contextPanel && typeof ResizeObserver !== 'undefined') {
+            if (contextResizeObserver) contextResizeObserver.disconnect();
+            contextResizeObserver = new ResizeObserver(function() {
+                scheduleContextLayoutSync();
+            });
+            contextResizeObserver.observe(contextPanel);
+        }
+        setNoticeNavEnabled(false);
+        updateMapHudToggleButton();
+        scheduleContextLayoutSync();
+    }
+
+    function canOpenMapForTask() {
+        return questTaskDone && (currentMapMode === '1' || currentMapMode === '2');
+    }
+
+    function syncContextNoticeState() {
+        if (!contextPanel || !noticeBar) return;
+        if (noticeBar.classList.contains('visible')) contextPanel.classList.add('has-notice');
+        else contextPanel.classList.remove('has-notice');
+    }
+
+    function isMapHudToggleAvailable() {
+        if (typeof MapHud !== 'undefined' && MapHud && typeof MapHud.isAvailable === 'function') {
+            return MapHud.isAvailable();
+        }
+        return currentMapMode === '1' || currentMapMode === '2';
+    }
+
+    function updateMapHudToggleButton() {
+        var collapsed = false;
+        var available = isMapHudToggleAvailable();
+        if (!mapToggleBtn) return;
+        if (typeof MapHud !== 'undefined' && MapHud && typeof MapHud.isCollapsed === 'function') {
+            collapsed = MapHud.isCollapsed();
+        }
+        mapToggleBtn.disabled = !available;
+        mapToggleBtn.setAttribute('data-collapsed', collapsed ? '1' : '0');
+        mapToggleBtn.title = available ? (collapsed ? '\u5C55\u5F00\u5C0F\u5730\u56FE' : '\u6536\u8D77\u5C0F\u5730\u56FE') : '\u5F53\u524D\u65E0\u5C0F\u5730\u56FE';
+        if (mapToggleIcon) mapToggleIcon.innerHTML = collapsed ? '&#9656;' : '&#9662;';
+        if (mapToggleLabel) mapToggleLabel.textContent = '\u5730\u56FE';
+    }
+
+    function setNoticeNavEnabled(enabled) {
+        if (!noticeNav) return;
+        enabled = !!enabled;
+        noticeNav.disabled = !enabled;
+        noticeNav.style.display = enabled ? '' : 'none';
+        noticeNav.title = enabled ? '\u5728\u5730\u56FE\u4E2D\u67E5\u770B\u4EA4\u4ED8\u4F4D\u7F6E' : '';
+        noticeNav.setAttribute('aria-hidden', enabled ? 'false' : 'true');
+    }
+
+    function buildTaskDoneText() {
+        if (currentMapMode === '1' || currentMapMode === '2') return '\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u53EF\u4EA4\u4ED8';
+        return '\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u6218\u540E\u4EA4\u4ED8';
+    }
+
+    function enterTaskDoneState() {
+        if (!noticeBar) return;
+        setNoticeIcon(ICON_DONE);
+        noticeBar.classList.remove('notice-active', 'notice-flash', 'scrolling');
+        noticeBar.classList.add('task-done');
+        setNoticeNavEnabled(canOpenMapForTask());
+        if (noticeMain) {
+            noticeMain.title = '\u6253\u5F00\u4EFB\u52A1\u680F';
+            noticeMain.setAttribute('aria-label', '\u6253\u5F00\u4EFB\u52A1\u680F');
+        }
+        showNoticeBar(buildTaskDoneText());
     }
 
     /** 设置图标（文字或后续图片） */
@@ -816,8 +915,8 @@ var Notch = (function() {
                     noticeBar.classList.add('scrolling');
                 }
             });
-            updateJukeboxTop();
-            setTimeout(reportRect, 50);
+            syncContextNoticeState();
+            scheduleContextLayoutSync();
         });
     }
 
@@ -828,22 +927,29 @@ var Notch = (function() {
         setTimeout(function() {
             if (!noticeBar.classList.contains('visible')) {
                 noticeBar.style.display = 'none';
-                updateJukeboxTop();
-                setTimeout(reportRect, 50);
+                syncContextNoticeState();
+                scheduleContextLayoutSync();
             }
         }, 280);
     }
 
     /** 联动 jukebox 面板 top */
+    function scheduleContextLayoutSync() {
+        if (layoutSyncRaf) return;
+        layoutSyncRaf = requestAnimationFrame(function() {
+            layoutSyncRaf = 0;
+            updateJukeboxTop();
+            reportRect();
+        });
+    }
+
     function updateJukeboxTop() {
         var jbp = document.getElementById('jukebox-panel');
         if (!jbp) return;
-        var qr = document.getElementById('quest-row');
-        var qrVisible = qr && qr.style.display !== 'none';
-        var nbVisible = noticeBar && noticeBar.classList.contains('visible');
         var top = 32;
-        if (qrVisible) top += 28;
-        if (nbVisible) top += 24;
+        if (contextPanel && contextPanel.style.display !== 'none' && contextPanel.offsetParent !== null) {
+            top += contextPanel.offsetHeight;
+        }
         jbp.style.top = top + 'px';
     }
 
@@ -862,13 +968,12 @@ var Notch = (function() {
     function drainNoticeQueue() {
         if (noticeTimer || noticeQueue.length === 0) return;
         var item = noticeQueue.shift();
-        // 播放通知时：图标=阵营图标或占位符
         setNoticeIcon(item.icon || ICON_PLACEHOLDER);
+        setNoticeNavEnabled(false);
         noticeBar.classList.remove('task-done');
-        // 入场动效：暖色高亮文字 + 图标闪亮
         noticeBar.classList.add('notice-active');
         noticeBar.classList.remove('notice-flash');
-        void noticeBar.offsetWidth; // reflow 重启动画
+        void noticeBar.offsetWidth;
         noticeBar.classList.add('notice-flash');
         showNoticeBar(item.text);
 
@@ -885,32 +990,21 @@ var Notch = (function() {
         }, NOTICE_MS);
     }
 
-    /** 进入任务完成常驻态 */
-    function enterTaskDoneState() {
-        if (!noticeBar) return;
-        setNoticeIcon(ICON_DONE);
-        noticeBar.classList.add('task-done');
-        showNoticeBar('\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u70B9\u51FB\u4EA4\u4ED8');
-    }
-
-    /** 任务完成状态变化 (td:0/1) */
     function onTaskDoneChange(val) {
         var wasDone = questTaskDone;
         questTaskDone = (val === '1');
         if (!noticeBar) return;
 
         if (questTaskDone && !wasDone) {
-            // 变为完成
             if (!noticeTimer) enterTaskDoneState();
-            // 有通知在播→等播完自动切换
         } else if (!questTaskDone && wasDone) {
-            // 不再完成
             noticeBar.classList.remove('task-done');
             if (!noticeTimer) hideNoticeBar();
+        } else if (questTaskDone && !noticeTimer && noticeBar.classList.contains('task-done')) {
+            enterTaskDoneState();
         }
     }
 
-    // ── 安全退出面板 ──
     function openSafeExitPanel() {
         var panel = document.getElementById('safe-exit-panel');
         var status = document.getElementById('safe-exit-status');
@@ -945,9 +1039,21 @@ var Notch = (function() {
             if (fields.length > 0) showAnnouncement(fields[0]);
         });
         UiData.on('td', onTaskDoneChange);
+        UiData.on('mm', function(val) {
+            currentMapMode = String(val || '0');
+            updateMapHudToggleButton();
+            if (questTaskDone && !noticeTimer && noticeBar && noticeBar.classList.contains('task-done')) {
+                enterTaskDoneState();
+            }
+        });
     }
 
-    window.addEventListener('load', function() { init(); initQuestRow(); initTaskListeners(); });
+    window.addEventListener('load', function() {
+        init();
+        initQuestRow();
+        initTaskListeners();
+        scheduleContextLayoutSync();
+    });
     return { addNotice:addNotice, setStatus:setStatus, clearStatus:clearStatus,
              reportRect:function(){ if(_reportRect) _reportRect(); } };
 })();

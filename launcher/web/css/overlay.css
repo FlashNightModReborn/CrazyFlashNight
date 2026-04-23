@@ -5,6 +5,13 @@ html, body {
     font-family:"Microsoft YaHei","Segoe UI",sans-serif;
     color:white; pointer-events:none;
 }
+:root {
+    --right-toolbar-unit:34px;
+    --right-toolbar-count:5;
+    --right-tools-width:calc(var(--right-toolbar-unit) * var(--right-toolbar-count));
+    --right-context-width:var(--right-tools-width);
+    --right-cluster-offset:80px;
+}
 
 /* === Toast === */
 #toast-container {
@@ -406,12 +413,25 @@ html, body {
 /* === 右上角工具条：设置/帮助/退出/暂停 === */
 #top-right-tools {
     position:absolute;
-    top:0; right:80px; /* 避开 Flash 右上角小地图，同时不被 notch 展开态遮挡 */
-    display:flex; align-items:stretch;
+    top:0;
+    right:var(--right-cluster-offset);
+    width:var(--right-tools-width);
+    display:flex; align-items:stretch; justify-content:flex-end;
     pointer-events:auto;
     gap:0;
+    z-index:32;
 }
-#top-right-tools button {
+#top-right-tools::before {
+    content:"";
+    flex:1 1 auto;
+    min-width:0;
+    background:rgba(24,24,26,0.82);
+    -webkit-backdrop-filter:blur(12px) saturate(1.2);
+    backdrop-filter:blur(12px) saturate(1.2);
+    border-left:1px solid rgba(255,255,255,0.12);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+#top-right-tools > button {
     font-size:14px; line-height:1;
     width:34px; height:32px;
     display:flex; align-items:center; justify-content:center;
@@ -425,15 +445,15 @@ html, body {
     border-bottom:1px solid rgba(255,255,255,0.08);
 }
 /* 工具条与下方 jukebox 面板是同一卡片，底部圆角交给面板 */
-#top-right-tools button:first-child {
+#top-right-tools > button:first-of-type {
     border-radius:0;
     border-left:1px solid rgba(255,255,255,0.12);
 }
-#top-right-tools button:last-child {
+#top-right-tools > button:last-of-type {
     border-radius:0;
     border-right:1px solid rgba(255,255,255,0.12);
 }
-#top-right-tools button:hover {
+#top-right-tools > button:hover {
     background:rgba(60,60,64,0.9);
     color:white;
 }
@@ -462,6 +482,214 @@ button[data-key="SAFEEXIT"].save-done {
 }
 /* 游戏未加载时隐藏右上角工具条（设置/帮助/退出/暂停） */
 #notch:not(.game-ready) ~ #top-right-tools { display:none; }
+
+/* === 右上角上下文面板：地图 + 装备/任务 + 任务状态 === */
+#context-panel {
+    position:absolute;
+    top:32px;
+    right:var(--right-cluster-offset);
+    width:var(--right-context-width);
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    pointer-events:auto;
+    background:rgba(24,24,26,0.82);
+    -webkit-backdrop-filter:blur(12px) saturate(1.2);
+    backdrop-filter:blur(12px) saturate(1.2);
+    border-left:1px solid rgba(255,255,255,0.12);
+    border-right:1px solid rgba(255,255,255,0.12);
+    border-bottom:none;
+    border-radius:0;
+    box-shadow:none;
+    overflow:hidden;
+    z-index:31;
+}
+#notch:not(.game-ready) ~ #context-panel { display:none; }
+#context-sidebar {
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    border-top:1px solid rgba(255,255,255,0.06);
+}
+
+#map-hud {
+    width:100%;
+    height:86px;
+    position:relative;
+    pointer-events:auto;
+}
+#map-hud.is-visible {
+    display:block;
+}
+#map-hud-button {
+    width:100%;
+    height:86px;
+    padding:5px;
+    display:block;
+    position:relative;
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    pointer-events:auto;
+    color:rgba(255,255,255,0.82);
+    text-align:left;
+    transition:filter 140ms ease-out;
+}
+#map-hud-button:hover {
+    filter:brightness(1.04);
+}
+#map-hud-button:focus-visible {
+    outline:1px solid rgba(120,220,255,0.9);
+    outline-offset:-2px;
+}
+#map-hud-mode {
+    position:absolute;
+    top:7px;
+    left:8px;
+    width:17px;
+    height:17px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid rgba(177,255,119,0.2);
+    border-radius:999px;
+    background:rgba(11,14,16,0.88);
+    color:rgba(224,255,210,0.96);
+    box-shadow:0 1px 4px rgba(0,0,0,0.28);
+    z-index:2;
+}
+#map-hud[data-mode="2"] #map-hud-mode {
+    border-color:rgba(255,197,120,0.2);
+    background:rgba(16,13,10,0.9);
+    color:rgba(255,228,195,0.94);
+}
+#map-hud-stage {
+    position:relative;
+    width:100%;
+    height:100%;
+    border-radius:10px;
+    border:1px solid rgba(190,255,220,0.12);
+    background:
+        linear-gradient(180deg, rgba(11,16,14,0.96), rgba(6,9,10,0.98)),
+        repeating-linear-gradient(0deg, rgba(190,255,220,0.02) 0 1px, transparent 1px 9px),
+        repeating-linear-gradient(90deg, rgba(190,255,220,0.02) 0 1px, transparent 1px 9px);
+    overflow:hidden;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.04);
+}
+#map-hud[data-mode="2"] #map-hud-stage {
+    border-color:rgba(255,214,150,0.12);
+    background:
+        linear-gradient(180deg, rgba(20,15,10,0.96), rgba(10,9,8,0.98)),
+        repeating-linear-gradient(0deg, rgba(255,214,150,0.024) 0 1px, transparent 1px 9px),
+        repeating-linear-gradient(90deg, rgba(255,214,150,0.024) 0 1px, transparent 1px 9px);
+}
+#map-hud-button:hover #map-hud-stage {
+    border-color:rgba(200,240,220,0.18);
+}
+#map-hud[data-mode="2"] #map-hud-button:hover #map-hud-stage {
+    border-color:rgba(255,214,150,0.18);
+}
+#map-hud-outline {
+    position:absolute;
+    inset:8px 8px 8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+#map-hud-label {
+    position:absolute;
+    left:8px;
+    right:auto;
+    max-width:calc(100% - 16px);
+    bottom:6px;
+    padding:2px 6px;
+    border-radius:5px;
+    background:linear-gradient(180deg, rgba(7,9,10,0.18), rgba(7,9,10,0.72));
+    font:600 11px/1.05 "Microsoft YaHei",sans-serif;
+    color:rgba(236,242,246,0.84);
+    text-shadow:0 1px 2px rgba(0,0,0,0.54);
+    text-align:left;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+#map-hud[data-mode="2"] #map-hud-label {
+    color:rgba(246,234,214,0.84);
+}
+.map-hud-svg {
+    width:100%;
+    height:100%;
+    display:block;
+    overflow:visible;
+}
+.map-hud-svg-silhouette {
+    fill:rgba(188,236,212,0.18);
+    opacity:0.9;
+}
+#map-hud[data-mode="2"] .map-hud-svg-silhouette {
+    fill:rgba(255,216,168,0.18);
+}
+.map-hud-svg-current-glow {
+    fill:rgba(110,225,255,0.28);
+    opacity:0.95;
+    filter:drop-shadow(0 0 4px rgba(110,225,255,0.4));
+}
+.map-hud-svg-current {
+    fill:rgba(214,248,255,0.96);
+    opacity:0.96;
+}
+.map-hud-svg-fallback-block {
+    fill:rgba(164,226,191,0.08);
+    stroke:rgba(190,255,220,0.3);
+    stroke-width:1.2;
+    vector-effect:non-scaling-stroke;
+}
+#map-hud[data-mode="2"] .map-hud-svg-fallback-block {
+    fill:rgba(255,196,120,0.08);
+    stroke:rgba(255,214,150,0.28);
+}
+.map-hud-svg-fallback-block.is-current {
+    fill:rgba(64,180,255,0.16);
+    stroke:rgba(110,225,255,0.86);
+}
+.map-hud-svg-beacon-ring {
+    fill:none;
+    stroke:rgba(198,242,255,0.76);
+    stroke-width:1.4;
+    vector-effect:non-scaling-stroke;
+    animation:map-hud-beacon-pulse 1.8s ease-out infinite;
+    transform-origin:center;
+    transform-box:fill-box;
+}
+.map-hud-svg-beacon-core {
+    fill:#eefcff;
+    filter:drop-shadow(0 0 4px rgba(110,225,255,0.76));
+}
+@keyframes map-hud-beacon-pulse {
+    0% {
+        transform:scale(0.92);
+        opacity:0.66;
+    }
+    45% {
+        transform:scale(1.16);
+        opacity:1;
+    }
+    100% {
+        transform:scale(1.46);
+        opacity:0.12;
+    }
+}
+.map-hud-mode-icon {
+    width:10px;
+    height:10px;
+    display:block;
+}
+.map-hud-mode-icon path,
+.map-hud-mode-icon polyline,
+.map-hud-mode-icon circle {
+    vector-effect:non-scaling-stroke;
+}
 
 /* === 通知栈 === */
 #notch-info {
@@ -582,7 +810,8 @@ button[data-key="SAFEEXIT"].save-done {
 #safe-exit-panel {
     display:none;
     position:absolute;
-    top:32px; right:80px;
+    top:32px;
+    right:var(--right-cluster-offset);
     width:120px;
     background:rgba(24,24,26,0.92);
     -webkit-backdrop-filter:blur(14px) saturate(1.2);
@@ -592,7 +821,7 @@ button[data-key="SAFEEXIT"].save-done {
     border-radius:0 0 6px 6px;
     padding:8px 10px;
     pointer-events:auto;
-    z-index:20;
+    z-index:33;
 }
 #safe-exit-status {
     font:10px/1.4 "Microsoft YaHei",sans-serif;
@@ -643,79 +872,120 @@ button[data-key="SAFEEXIT"].save-done {
     color:#ff8888;
 }
 
-/* ── 装备 + 任务 按钮行 ── */
+/* ── 上下文右栏：装备/任务 + 任务状态 ── */
 #quest-row {
-    position:absolute;
-    top:32px; right:80px;
-    width:170px;
+    width:100%;
+    height:32px;
     display:flex;
-    align-items:center;
+    align-items:stretch;
     gap:0;
-    height:28px;
-    background:rgba(24,24,26,0.82);
-    -webkit-backdrop-filter:blur(12px) saturate(1.2);
-    backdrop-filter:blur(12px) saturate(1.2);
-    border-left:1px solid rgba(255,255,255,0.12);
-    border-right:1px solid rgba(255,255,255,0.12);
-    border-top:1px solid rgba(255,255,255,0.06);
     pointer-events:auto;
 }
 #quest-row button {
-    flex:1;
+    flex:1 1 33.333%;
+    min-width:0;
+    padding:0 4px;
+    gap:4px;
     font:11px/1 "Microsoft YaHei",sans-serif;
-    height:28px;
+    height:32px;
     display:flex; align-items:center; justify-content:center;
     border:none;
     background:transparent;
-    color:rgba(255,255,255,0.7);
+    color:rgba(255,255,255,0.72);
     cursor:pointer; pointer-events:auto;
     transition:background 100ms, color 100ms;
     white-space:nowrap;
 }
-#quest-row button:first-child {
+#quest-row button:not(:last-child) {
     border-right:1px solid rgba(255,255,255,0.06);
 }
 #quest-row button:hover {
     background:rgba(255,255,255,0.12);
     color:white;
 }
+#quest-row button[disabled] {
+    color:rgba(255,255,255,0.26);
+    cursor:default;
+}
+#quest-row button[disabled]:hover {
+    background:transparent;
+    color:rgba(255,255,255,0.26);
+}
+.quest-row-icon {
+    flex:0 0 auto;
+    font-size:11px;
+    line-height:1;
+    opacity:0.9;
+}
+.quest-row-label {
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
 
-/* ── 通知条：按钮行下方，icon(1格) + text(4格) ── */
 #quest-notice-bar {
-    position:absolute;
-    top:60px; right:80px;
-    width:170px;
+    width:100%;
     height:0;
     overflow:hidden;
-    display:flex; align-items:center;
-    background:rgba(24,24,26,0.82);
-    -webkit-backdrop-filter:blur(12px) saturate(1.2);
-    backdrop-filter:blur(12px) saturate(1.2);
-    border-left:1px solid rgba(255,255,255,0.12);
-    border-right:1px solid rgba(255,255,255,0.12);
-    border-top:1px solid rgba(255,255,255,0.06);
-    pointer-events:auto;
-    transition:height 250ms cubic-bezier(0.34,1.2,0.64,1),
-               opacity 200ms ease-out;
+    display:flex;
+    align-items:stretch;
     opacity:0;
+    pointer-events:auto;
+    border-top:1px solid rgba(255,255,255,0.06);
+    transition:height 220ms cubic-bezier(0.34,1.2,0.64,1), opacity 180ms ease-out;
 }
 #quest-notice-bar.visible {
-    height:24px;
+    height:32px;
     opacity:1;
 }
-
-/* 图标槽位 */
+#quest-notice-main,
+#quest-notice-nav {
+    border:none;
+    padding:0;
+    cursor:pointer;
+    pointer-events:auto;
+    -webkit-backdrop-filter:blur(12px) saturate(1.2);
+    backdrop-filter:blur(12px) saturate(1.2);
+}
+#quest-notice-main {
+    flex:1 1 auto;
+    width:100%;
+    min-width:0;
+    display:flex;
+    align-items:center;
+    background:linear-gradient(180deg, rgba(34,22,22,0.92), rgba(20,14,16,0.9));
+    color:rgba(255,228,196,0.9);
+}
+#quest-notice-main:hover {
+    background:linear-gradient(180deg, rgba(48,28,28,0.94), rgba(26,18,20,0.92));
+    color:#fff2dd;
+}
+#quest-notice-nav {
+    width:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(180deg, rgba(18,22,26,0.92), rgba(12,16,18,0.9));
+    color:rgba(160,226,255,0.88);
+    font-size:11px;
+    line-height:1;
+}
+#quest-notice-nav:hover {
+    background:linear-gradient(180deg, rgba(24,34,40,0.94), rgba(16,22,26,0.92));
+    color:#dff6ff;
+}
+#quest-notice-nav[disabled] {
+    display:none;
+}
 #quest-notice-icon {
-    width:24px; height:24px;
+    width:28px; height:32px;
     display:flex; align-items:center; justify-content:center;
     flex-shrink:0;
-    font-size:12px;
+    font-size:13px;
     color:rgba(255,255,255,0.35);
     border-right:1px solid rgba(255,255,255,0.06);
     transition:color 300ms ease-out, text-shadow 300ms ease-out;
 }
-
-/* 新通知入场：图标闪亮一次 */
 #quest-notice-bar.notice-flash #quest-notice-icon {
     animation:icon-flash 0.8s ease-out;
 }
@@ -723,8 +993,6 @@ button[data-key="SAFEEXIT"].save-done {
     0%   { color:#fff; background:rgba(255,200,100,0.3); text-shadow:0 0 10px rgba(255,200,100,0.8); }
     100% { color:rgba(255,255,255,0.35); background:transparent; text-shadow:none; }
 }
-
-/* 任务完成态：图标背景+颜色持续脉冲 */
 #quest-notice-bar.task-done #quest-notice-icon {
     animation:icon-breathe 1.5s ease-in-out infinite;
 }
@@ -740,40 +1008,27 @@ button[data-key="SAFEEXIT"].save-done {
         text-shadow:0 0 10px rgba(255,180,40,0.6);
     }
 }
-
-/* 文本区 */
 #quest-notice-text-wrap {
     flex:1;
     min-width:0;
-    height:24px;
+    height:32px;
     overflow:hidden;
     position:relative;
 }
 #quest-notice-text {
     display:block;
-    font:10px/24px "Microsoft YaHei",sans-serif;
+    font:11px/32px "Microsoft YaHei",sans-serif;
     color:rgba(255,255,255,0.6);
     white-space:nowrap;
-    padding:0 6px;
+    padding:0 8px;
     transition:color 300ms ease-out;
 }
-/* 新通知高亮文字 */
 #quest-notice-bar.notice-active #quest-notice-text {
     color:rgba(255,220,150,0.9);
-}
-
-/* 任务完成态 */
-#quest-notice-bar.task-done {
-    cursor:pointer;
-}
-#quest-notice-bar.task-done:hover {
-    background:rgba(40,40,42,0.9);
 }
 #quest-notice-bar.task-done #quest-notice-text {
     color:rgba(255,200,80,0.85);
 }
-
-/* 通知文本过长时滚动 */
 #quest-notice-bar.scrolling #quest-notice-text {
     animation:quest-scroll var(--scroll-dur, 8s) linear infinite;
 }
@@ -787,8 +1042,9 @@ button[data-key="SAFEEXIT"].save-done {
 /* === 点歌面板 (Jukebox) === */
 #jukebox-panel {
     position:absolute;
-    top:32px; right:80px; /* 默认紧贴工具条下方，quest-row 显示时由 JS 推到 60px */
-    width:170px; /* 5 buttons × 34px = 与工具条等宽 */
+    top:138px;
+    right:var(--right-cluster-offset);
+    width:var(--right-context-width);
     background:rgba(24,24,26,0.82);
     -webkit-backdrop-filter:blur(12px) saturate(1.2);
     backdrop-filter:blur(12px) saturate(1.2);
@@ -801,6 +1057,8 @@ button[data-key="SAFEEXIT"].save-done {
     /* 不设 overflow:hidden — body 自身的 max-height+overflow 控制收起动画，
        面板需要 overflow:visible 让弹出菜单（设置/专辑下拉）可以超出 */
     overflow:visible;
+    z-index:28;
+    box-shadow:0 8px 18px rgba(0,0,0,0.28);
 }
 /* 游戏未加载时隐藏 */
 #notch:not(.game-ready) ~ #jukebox-panel { display:none; }
@@ -820,6 +1078,7 @@ button[data-key="SAFEEXIT"].save-done {
     font:10px/1 "Microsoft YaHei",sans-serif;
     cursor:pointer; pointer-events:auto;
     flex-shrink:0;
+    border-right:1px solid rgba(255,255,255,0.06);
     border-radius:0 0 0 6px; /* 左下角跟随面板圆角 */
     transition:background 120ms, color 120ms;
     white-space:nowrap;

@@ -123,7 +123,8 @@ Program.Run(args)
      │  'F' → FrameTask.HandleRaw(...)                 │
      │       payload: F{cam}\x01{hn}[\x02{fps}]        │
      │                [\x03{uiState}][\x04{inputPayload}] │
-     │       uiState 透传 overlay/bench；inputPayload 喂 DFA │
+     │       uiState 透传 overlay/bench（含 mm/mh 地图 HUD） │
+     │       inputPayload 喂 DFA                             │
      │  'R' → FrameTask.HandleReset()           │
      │  'S' → AudioTask.HandleSfxFastLane()     │
      │  'B' → Bench echo（AS2 冒烟，回 K 前缀）    │
@@ -365,7 +366,7 @@ launcher/
 │       ├── icons.js                       图标 manifest 加载与解析
 │       ├── kshop.js                       K 点商城面板（ShopTask 双层 callId）
 │       ├── help.js / help-panel.js        帮助系统（顶层入口 + 面板骨架）
-│       ├── map-panel.js / map-panel-data.js / map-fit-presets.js 地图面板（正式 map panel + 静态页面/热点数据 + filter fit preset 表）
+│       ├── map-panel.js / map-panel-data.js / map-fit-presets.js / map-hud.js 地图系统（正式 map panel + 静态页面/热点数据 + filter fit preset 表 + 右上角常驻 HUD）
 │       ├── map/
 │       │   └── dev/
 │       │       ├── harness.html           地图 panel browser harness + QA suite
@@ -983,6 +984,7 @@ shadow 链不仅是运行中存盘的 JSON 冗余副本，也是启动期 Resolv
 | 弹出公告界面 (新任务横幅) | notch.js 通知条 `#quest-notice-bar` | `Utask\|{name}` (旧格式透传) |
 | 弹出公告界面 (公告) | notch.js 通知条 | `Uannounce\|{text}` (旧格式透传) |
 | 任务完成提示 | notch.js 通知条完成态 (❗ 图标呼吸 + 可点击) | `td:0/1` (KV 帧同步) |
+| 地图界面（旧右上角小地图位） | `map-hud.js` 右上角 HUD + `map-panel.js` 全屏地图面板 | `mm/mh` (KV 帧同步) + `TASK_MAP` click |
 | 功能按钮界面 (装备/任务) | `#quest-row` 工具条按钮行 | `cmd` gameCommand |
 | 存盘动画 | ✕ 按钮状态变化 (·· → ✓) | `sv:1/2` (KV 帧同步) |
 | 安全退出界面 | `#safe-exit-panel` 面板 | `sv:1/2` + `EXIT_CONFIRM` click |
@@ -991,16 +993,18 @@ shadow 链不仅是运行中存盘的 JSON 冗余副本，也是启动期 Resolv
 
 **右上角工具条布局**：
 ```
-┌──────────────────────┐
-│ ⚙  🔧  ⏸  ?  ✕      │  ← #top-right-tools
-├──────────────────────┤
-│ ☰ 装备  │  ☰ 任务   │  ← #quest-row (游戏中常驻)
-├──────────────────────┤
-│ [❗] 任务已达成·交付  │  ← #quest-notice-bar (动态)
-├──────────────────────┤
-│ ♪ 点歌  未播放        │  ← #jukebox-panel
-└──────────────────────┘
+┌──────────────────────┬────────┐
+│ ⚙  🔧  ⏸  ?  ✕      │ 基地   │
+├──────────────────────┤ 线框概览│
+│ ☰ 装备  │  ☰ 任务   │ 当前区块│
+├──────────────────────┤        │
+│ [❗] 任务已达成·交付  │        │
+├──────────────────────┤        │
+│ ♪ 点歌  未播放        │        │
+└──────────────────────┴────────┘
 ```
+
+最右侧 `80px` 窄列现在由 `map-hud.js` 占用，直接复用 `map-panel-data.js` 的热点/scene 几何；AS2 只经 UiData 推 `mm`（模式）和 `mh`（当前 hotspotId），HUD 只做当前区块高亮 + 固定 beacon 点，点击后走 `TASK_MAP` 打开全屏地图 panel。
 
 **通知条状态机**：隐藏 → (新任务/公告到达) → 播放通知 → (队列空+td:1) → 完成态常驻 → (td:0) → 隐藏。完成态图标持续呼吸脉冲 (`icon-breathe`)，可点击跳转地图交付。
 
@@ -1026,7 +1030,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
 **面板类型**：
 - **kshop**（K 点商城）: 需要 Flash 交互；打开/关闭会走 `shopPanelOpen/shopPanelClose`，并参与 `_pauseNeedsRestore`
 - **help**（游戏帮助）: 纯 Web 侧 Markdown 帮助面板，不触发 Flash 暂停恢复
-- **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面均已切到 `assembled` 场景拼接模式，右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit
+- **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面均已切到 `assembled` 场景拼接模式，右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit；右上角常驻 HUD 由 `web/modules/map-hud.js` 消费同一份 `MapPanelData` + UiData `mm/mh`，只显示当前区块高亮与固定 beacon，点击后打开 map panel
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 

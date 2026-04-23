@@ -739,6 +739,60 @@ var MapPanelData = (function() {
         return ids;
     }
 
+    function cloneRect(rect) {
+        if (!rect) return null;
+        return {
+            x: +Number(rect.x || 0).toFixed(2),
+            y: +Number(rect.y || 0).toFixed(2),
+            w: +Number(rect.w || 0).toFixed(2),
+            h: +Number(rect.h || 0).toFixed(2)
+        };
+    }
+
+    function unionRect(a, b) {
+        var left, top, right, bottom;
+        if (!a) return cloneRect(b);
+        if (!b) return cloneRect(a);
+
+        left = Math.min(a.x, b.x);
+        top = Math.min(a.y, b.y);
+        right = Math.max(a.x + a.w, b.x + b.w);
+        bottom = Math.max(a.y + a.h, b.y + b.h);
+        return {
+            x: +left.toFixed(2),
+            y: +top.toFixed(2),
+            w: +(right - left).toFixed(2),
+            h: +(bottom - top).toFixed(2)
+        };
+    }
+
+    function padRectToPage(bounds, page, padX, padY) {
+        var left = Math.max(0, bounds.x - padX);
+        var top = Math.max(0, bounds.y - padY);
+        var right = Math.min(page.width, bounds.x + bounds.w + padX);
+        var bottom = Math.min(page.height, bounds.y + bounds.h + padY);
+        return {
+            x: +left.toFixed(2),
+            y: +top.toFixed(2),
+            w: +Math.max(1, right - left).toFixed(2),
+            h: +Math.max(1, bottom - top).toFixed(2)
+        };
+    }
+
+    function normalizeHudRect(rect, bounds) {
+        return {
+            x: +((rect.x - bounds.x) / bounds.w).toFixed(4),
+            y: +((rect.y - bounds.y) / bounds.h).toFixed(4),
+            w: +(rect.w / bounds.w).toFixed(4),
+            h: +(rect.h / bounds.h).toFixed(4)
+        };
+    }
+
+    function buildHudHotspotRect(page, hotspot) {
+        var sceneRect = buildSceneVisualUnionRect(page && page.sceneVisuals ? page.sceneVisuals : [], hotspot.id);
+        return cloneRect(sceneRect || hotspot.rect);
+    }
+
     function findHotspot(pageId, hotspotId) {
         var page = getPage(pageId);
         var hotspots = page.hotspots || [];
@@ -748,6 +802,87 @@ var MapPanelData = (function() {
             }
         }
         return null;
+    }
+
+    function findHudFocusFilter(page, hotspotId) {
+        var filters = page && page.filters ? page.filters : [];
+        var hotspotCount = page && page.hotspots ? page.hotspots.length : 0;
+        var best = null;
+        var ids;
+        var i;
+
+        if (!page || !hotspotId || hotspotCount <= 1) return null;
+
+        for (i = 0; i < filters.length; i++) {
+            ids = filters[i] && filters[i].hotspotIds ? filters[i].hotspotIds : [];
+            if (!ids.length || ids.indexOf(hotspotId) < 0) continue;
+            if (filters[i].id === 'all' || filters[i].id === 'hierarchy') continue;
+            if (ids.length >= hotspotCount) continue;
+
+            if (!best || ids.length < best.hotspotIds.length) {
+                best = filters[i];
+            }
+        }
+
+        return best;
+    }
+
+    function clampNumber(value, min, max) {
+        value = isFinite(value) ? Number(value) : min;
+        return Math.max(min, Math.min(max, value));
+    }
+
+    function intersectsHotspotIds(leftIds, rightIds) {
+        var i;
+        if (!leftIds || !rightIds || !leftIds.length || !rightIds.length) return false;
+        for (i = 0; i < leftIds.length; i++) {
+            if (rightIds.indexOf(leftIds[i]) >= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function buildHudVisualEntries(page, focusIds, focusHotspotId) {
+        var visuals = page && page.sceneVisuals ? page.sceneVisuals : [];
+        var entries = [];
+        var i;
+        var rect;
+        var hotspotIds;
+
+        for (i = 0; i < visuals.length; i++) {
+            hotspotIds = (visuals[i].hotspotIds || []).slice();
+            if (focusIds && hotspotIds.length && !intersectsHotspotIds(hotspotIds, focusIds)) continue;
+
+            rect = cloneRect(visuals[i].rect);
+            if (!rect || rect.w <= 0 || rect.h <= 0) continue;
+
+            entries.push({
+                id: visuals[i].id,
+                label: visuals[i].label || visuals[i].id,
+                assetUrl: visuals[i].assetUrl,
+                hotspotIds: hotspotIds,
+                sourceRect: rect,
+                isCurrent: hotspotIds.indexOf(focusHotspotId) >= 0
+            });
+        }
+
+        return entries;
+    }
+
+    function resolveHudFitPreset(pageId, focusFilterId) {
+        var source = (typeof MapFitPresets !== 'undefined' && MapFitPresets && typeof MapFitPresets.resolve === 'function')
+            ? MapFitPresets.resolve(pageId || '', focusFilterId || '')
+            : null;
+
+        return {
+            padXRate: clampNumber((source && source.padXRate != null ? source.padXRate : 0.055) * 0.42, 0.012, 0.07),
+            padXMin: clampNumber((source && source.padXMin != null ? source.padXMin : 22) * 0.22, 2, 20),
+            padXMax: clampNumber((source && source.padXMax != null ? source.padXMax : 54) * 0.24, 6, 28),
+            padYRate: clampNumber((source && source.padYRate != null ? source.padYRate : 0.07) * 0.38, 0.012, 0.075),
+            padYMin: clampNumber((source && source.padYMin != null ? source.padYMin : 20) * 0.18, 2, 18),
+            padYMax: clampNumber((source && source.padYMax != null ? source.padYMax : 48) * 0.2, 6, 22)
+        };
     }
 
     function findHotspotPageId(hotspotId) {
@@ -761,6 +896,78 @@ var MapPanelData = (function() {
             }
         }
         return '';
+    }
+
+    function resolveHotspotMeta(hotspotId) {
+        var pageId = findHotspotPageId(hotspotId);
+        var page = pageId ? getPage(pageId) : null;
+        var hotspot = page ? findHotspot(pageId, hotspotId) : null;
+        if (!page || !hotspot) return null;
+
+        return {
+            pageId: page.id,
+            pageLabel: page.title || page.tabLabel || page.id,
+            hotspotId: hotspot.id,
+            label: hotspot.label || hotspot.id,
+            sceneName: hotspot.sceneName || '',
+            rect: buildHudHotspotRect(page, hotspot)
+        };
+    }
+
+    function getHudOutline(pageId, focusHotspotId) {
+        var page = getPage(pageId);
+        var hotspots = page && page.hotspots ? page.hotspots : [];
+        var focusFilter = findHudFocusFilter(page, focusHotspotId);
+        var focusIds = focusFilter && focusFilter.hotspotIds ? focusFilter.hotspotIds : null;
+        var focusHotspot = focusHotspotId ? findHotspot(pageId, focusHotspotId) : null;
+        var visuals = buildHudVisualEntries(page, focusIds, focusHotspotId);
+        var fitPreset = resolveHudFitPreset(pageId, focusFilter ? focusFilter.id : '');
+        var blocks = [];
+        var bounds = null;
+        var i;
+        var rect;
+        var viewportRect;
+        var padX;
+        var padY;
+
+        if (!page || !hotspots.length) return null;
+
+        for (i = 0; i < visuals.length; i++) {
+            bounds = unionRect(bounds, visuals[i].sourceRect);
+        }
+
+        for (i = 0; i < hotspots.length; i++) {
+            if (focusIds && focusIds.indexOf(hotspots[i].id) < 0) continue;
+            rect = buildHudHotspotRect(page, hotspots[i]);
+            if (!rect || rect.w <= 0 || rect.h <= 0) continue;
+            bounds = unionRect(bounds, rect);
+            blocks.push({
+                hotspotId: hotspots[i].id,
+                label: hotspots[i].label || hotspots[i].id,
+                sourceRect: rect
+            });
+        }
+
+        if (!bounds || !blocks.length) return null;
+
+        padX = clampNumber(bounds.w * fitPreset.padXRate, fitPreset.padXMin, fitPreset.padXMax);
+        padY = clampNumber(bounds.h * fitPreset.padYRate, fitPreset.padYMin, fitPreset.padYMax);
+        viewportRect = padRectToPage(bounds, page, padX, padY);
+
+        for (i = 0; i < blocks.length; i++) {
+            blocks[i].rect = normalizeHudRect(blocks[i].sourceRect, viewportRect);
+        }
+
+        return {
+            pageId: page.id,
+            pageLabel: page.title || page.tabLabel || page.id,
+            focusFilterId: focusFilter ? focusFilter.id : '',
+            focusFilterLabel: focusFilter ? (focusFilter.label || focusFilter.id) : '',
+            currentRect: focusHotspot ? buildHudHotspotRect(page, focusHotspot) : null,
+            viewportRect: viewportRect,
+            visuals: visuals,
+            blocks: blocks
+        };
     }
 
     function findFilter(pageId, filterId) {
@@ -993,6 +1200,8 @@ var MapPanelData = (function() {
         getAllHotspotIds: getAllHotspotIds,
         findHotspot: findHotspot,
         findHotspotPageId: findHotspotPageId,
+        resolveHotspotMeta: resolveHotspotMeta,
+        getHudOutline: getHudOutline,
         findFilter: findFilter,
         getVisibleHotspots: getVisibleHotspots,
         getVisibleSceneVisuals: getVisibleSceneVisuals,

@@ -114,12 +114,69 @@ _root.gameCommands["safeExit"] = function() {
 };
 
 _root.gameCommands["openTaskMap"] = function() {
-    // 旧路径 _root.地图界面.gotoAndStop(2) 已被 WebView 面板取代;
-    // 统一转发到 openWebMap, 旧 Flash 地图界面保持在 frame 1 (collapsed)
+    // 旧地图入口已被 WebView 面板取代，统一转发到 openWebMap
     if (_root.gameCommands["openWebMap"] != undefined) {
         _root.gameCommands["openWebMap"]({ source: "as2_task_map_cmd" });
     }
 };
+
+// ============================================================
+// 右上角地图 HUD 状态桥：mm=模式，mh=当前热点
+// mm: 0 hidden / 1 base / 2 outdoor / 3 combat_reserved
+// ============================================================
+if (_root.__mapHudStateBridgeInstalled != true) {
+    _root.__mapHudStateBridgeInstalled = true;
+    _root.__mapHudStateBridge = {
+        lastMode: null,
+        lastHotspotId: null
+    };
+
+    _root.__resolveMapHudMode = function():String {
+        var hotspotId:String;
+        var pageId:String;
+        var currentLabel:String = String(_root._currentlabel || "");
+        if (_root.当前为战斗地图 == true) return "3";
+
+        hotspotId = String(org.flashNight.arki.map.MapHotspotResolver.resolveCurrent() || "");
+        if (hotspotId != "") {
+            pageId = String(org.flashNight.arki.map.MapPanelCatalog.resolvePageId(hotspotId) || "");
+            if (pageId == "base") return "1";
+            if (pageId == "faction" || pageId == "defense" || pageId == "school") return "2";
+        }
+
+        if (currentLabel == "基地地图") return "1";
+        if (currentLabel == "外部地图") return "2";
+        return "0";
+    };
+
+    _root.__pushMapHudState = function(force:Boolean):Void {
+        var bridge:Object = _root.__mapHudStateBridge;
+        var mode:String = _root.__resolveMapHudMode();
+        var hotspotId:String = "";
+        if (mode != "0") {
+            hotspotId = String(org.flashNight.arki.map.MapHotspotResolver.resolveCurrent() || "");
+        }
+
+        if (!force && bridge.lastMode == mode && bridge.lastHotspotId == hotspotId) {
+            return;
+        }
+
+        org.flashNight.arki.render.FrameBroadcaster.pushUiState("mm:" + mode);
+        org.flashNight.arki.render.FrameBroadcaster.pushUiState("mh:" + hotspotId);
+        bridge.lastMode = mode;
+        bridge.lastHotspotId = hotspotId;
+    };
+
+    _root.帧计时器.eventBus.subscribe("frameEnd", function():Void {
+        _root.__pushMapHudState(false);
+    }, null);
+
+    _root.帧计时器.eventBus.subscribe("SceneChanged", function():Void {
+        _root.__mapHudStateBridge.lastMode = null;
+        _root.__mapHudStateBridge.lastHotspotId = null;
+        _root.__pushMapHudState(true);
+    }, null);
+}
 
 _root.gameCommands["openTaskUI"] = function() {
     _root.从库中加载全屏UI("任务栏界面");

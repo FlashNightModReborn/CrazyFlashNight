@@ -89,20 +89,13 @@ class org.flashNight.arki.map.MapPanelService {
     }
 
     /**
-     * 旧版 Flash 地图界面（flashswf/UI/地图界面/LIBRARY/地图界面.xml 内
-     * gotoAndStop(2) 的按钮）统一走此入口，接入 WebView 新地图面板。
-     * 绕过旧 frame 跳转，避免双 UI。
+     * 所有旧地图入口统一走此入口，接入 WebView 新地图面板。
      */
     public static function handleOpenWebMap(params:Object):Void {
         var source:String = (params != undefined && params.source != undefined)
             ? String(params.source)
             : "as2_legacy_button";
         log("openWebMap request source=" + source);
-
-        // 旧 Flash 地图如果已经跳到 frame 2，先收回避免双叠
-        if (_root.地图界面 != undefined && _root.地图界面.gotoAndStop != undefined) {
-            _root.地图界面.gotoAndStop(1);
-        }
 
         // 交给 Launcher 打开 WebView 面板，不再隐藏 gameworld（WebView overlay 自己会盖住）
         if (_root.server != undefined && _root.server.sendSocketMessage != undefined) {
@@ -303,8 +296,5 @@ class org.flashNight.arki.map.MapPanelService {
         _root.关卡结束界面._visible = 0;
         _root.场景进入位置名 = "出生地";
         _root.淡出动画.淡出跳转帧(targetFrame);
-        if (_root.地图界面 != undefined && _root.地图界面.gotoAndStop != undefined) {
-            _root.地图界面.gotoAndStop(1);
-        }
     }
 }

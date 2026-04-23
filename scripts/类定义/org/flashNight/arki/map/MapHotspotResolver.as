@@ -13,8 +13,9 @@
  *   _pendingStaleTicks       — pending 连续多少次解析仍未被 source 追上
  *   _pendingMaxStaleTicks    — 超过这个阈值强制清空 pending, fallback 到 source
  *
- * 三源定义：
+ * 四源定义：
  *   _root._currentlabel   — Flash 内置当前帧标签
+ *   _root.关卡标志        — 当前场景标识（外部地图/基地部分地图的权威源）
  *   _root.场景进入位置名  — 场景进入位置名
  *   _root.关卡地图帧值    — 关卡地图帧值
  */
@@ -29,12 +30,16 @@ class org.flashNight.arki.map.MapHotspotResolver {
     private static var _pendingMaxStaleTicks:Number = 6;
 
     /**
-     * 从三源解析当前 hotspotId（不考虑 pending）。
-     * 命中顺序：_currentlabel → 场景进入位置名 → 关卡地图帧值。
+     * 从四源解析当前 hotspotId（不考虑 pending）。
+     * 命中顺序：_currentlabel → 关卡标志 → 场景进入位置名 → 关卡地图帧值。
      */
     public static function resolveCurrentFromSources():String {
         var hotspotId:String = MapPanelCatalog.resolveHotspotIdByFrameName(
             String(_root._currentlabel || ""));
+        if (hotspotId != "") return hotspotId;
+
+        hotspotId = MapPanelCatalog.resolveHotspotIdByFrameName(
+            String(_root.关卡标志 || ""));
         if (hotspotId != "") return hotspotId;
 
         hotspotId = MapPanelCatalog.resolveHotspotIdByFrameName(
@@ -44,6 +49,37 @@ class org.flashNight.arki.map.MapHotspotResolver {
         hotspotId = MapPanelCatalog.resolveHotspotIdByFrameName(
             String(_root.关卡地图帧值 || ""));
         return hotspotId;
+    }
+
+    private static function resolveRuntimeSceneKind():String {
+        var currentLabel:String = String(_root._currentlabel || "");
+        var stageFlagHotspotId:String = MapPanelCatalog.resolveHotspotIdByFrameName(
+            String(_root.关卡标志 || ""));
+        var pageId:String;
+
+        if (_root.当前为战斗地图 == true) return "combat";
+
+        if (stageFlagHotspotId != "") {
+            pageId = String(MapPanelCatalog.resolvePageId(stageFlagHotspotId) || "base");
+            return pageId == "base" ? "base" : "outdoor";
+        }
+
+        if (currentLabel == "基地地图") return "base";
+        if (currentLabel == "外部地图") return "outdoor";
+        return "";
+    }
+
+    private static function isHotspotCompatibleWithRuntime(hotspotId:String):Boolean {
+        var sceneKind:String = resolveRuntimeSceneKind();
+        var pageId:String;
+        if (hotspotId == undefined || hotspotId == "") return false;
+        if (sceneKind == "") return true;
+        if (sceneKind == "combat") return false;
+
+        pageId = String(MapPanelCatalog.resolvePageId(hotspotId) || "base");
+        if (sceneKind == "base") return pageId == "base";
+        if (sceneKind == "outdoor") return pageId != "base";
+        return true;
     }
 
     /**
@@ -82,7 +118,10 @@ class org.flashNight.arki.map.MapHotspotResolver {
                         _lastResolvedHotspotId = sourceHotspotId;
                         return sourceHotspotId;
                     }
-                    return String(_lastResolvedHotspotId || "");
+                    if (isHotspotCompatibleWithRuntime(String(_lastResolvedHotspotId || ""))) {
+                        return String(_lastResolvedHotspotId || "");
+                    }
+                    return "";
                 }
                 _lastResolvedHotspotId = pendingHotspotId;
                 return pendingHotspotId;
@@ -99,7 +138,10 @@ class org.flashNight.arki.map.MapHotspotResolver {
             return sourceHotspotId;
         }
 
-        return String(_lastResolvedHotspotId || "");
+        if (isHotspotCompatibleWithRuntime(String(_lastResolvedHotspotId || ""))) {
+            return String(_lastResolvedHotspotId || "");
+        }
+        return "";
     }
 
     /**
