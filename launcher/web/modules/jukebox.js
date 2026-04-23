@@ -456,7 +456,7 @@
         pauseBtn.addEventListener('click', function() {
             isPaused = !isPaused;
             pauseBtn.classList.toggle('paused', isPaused);
-            pauseBtn.textContent = isPaused ? '\u25B6' : '\u2016'; // ▶ or ‖
+            pauseBtn.textContent = isPaused ? '▶' : '‖'; // ▶ or ‖
             Bridge.send({type: 'jukebox', cmd: isPaused ? 'pause' : 'resume'});
         });
     }
@@ -466,7 +466,7 @@
             isPaused = false;
             if (pauseBtn) {
                 pauseBtn.classList.remove('paused');
-                pauseBtn.textContent = '\u2016';
+                pauseBtn.textContent = '‖';
             }
             Bridge.send({type: 'jukebox', cmd: 'stop'});
         });
@@ -536,7 +536,7 @@
             isPaused = false;
             if (pauseBtn) {
                 pauseBtn.classList.remove('paused');
-                pauseBtn.textContent = '\u2016';
+                pauseBtn.textContent = '‖';
             }
         }
     }

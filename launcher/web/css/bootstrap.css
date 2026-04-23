@@ -196,8 +196,8 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
 .tree-node { margin-left: 16px; }
 .tree-node > summary { cursor: pointer; color: #4da6ff; padding: 2px 0; list-style: none; }
 .tree-node > summary::-webkit-details-marker { display: none; }
-.tree-node > summary::before { content: '\u25b6 '; font-size: var(--fs-xs); color: #888; }
-.tree-node[open] > summary::before { content: '\u25bc '; }
+.tree-node > summary::before { content: '▶ '; font-size: var(--fs-xs); color: #888; }
+.tree-node[open] > summary::before { content: '▼ '; }
 .tree-leaf { display: flex; align-items: center; gap: 6px; padding: 1px 0; margin-left: 16px; }
 .tree-leaf .tree-key { color: #bbb; min-width: 40px; }
 .tree-leaf input {

@@ -147,7 +147,7 @@ var Notch = (function() {
             var pb = document.getElementById('notch-pause');
             if (!pb) return;
             var paused = (val === '1');
-            pb.textContent = paused ? '\u25B6' : '\u23F8';
+            pb.textContent = paused ? '▶' : '⏸';
             if (paused) pb.classList.add('paused');
             else pb.classList.remove('paused');
         });
@@ -162,23 +162,23 @@ var Notch = (function() {
             if (val === '1') {
                 // 存盘中 → ✕ 变脉冲
                 if (seBtn) {
-                    seBtn.textContent = '\u00B7\u00B7'; // ··
+                    seBtn.textContent = '··'; // ··
                     seBtn.classList.add('saving');
                 }
-                if (seStatus) { seStatus.textContent = '\u5B58\u76D8\u4E2D\u2026'; seStatus.className = 'saving'; }
+                if (seStatus) { seStatus.textContent = '存盘中…'; seStatus.className = 'saving'; }
                 if (seButtons) seButtons.style.display = 'none';
             } else if (val === '2') {
                 // 存盘成功 → ✕ 短暂变 ✓
                 if (seBtn) {
                     seBtn.classList.remove('saving');
-                    seBtn.textContent = '\u2713'; // ✓
+                    seBtn.textContent = '✓'; // ✓
                     seBtn.classList.add('save-done');
                     setTimeout(function() {
                         seBtn.classList.remove('save-done');
-                        seBtn.textContent = '\u2715'; // ✕
+                        seBtn.textContent = '✕'; // ✕
                     }, 1500);
                 }
-                if (seStatus) { seStatus.textContent = '\u5B58\u76D8\u6210\u529F'; seStatus.className = 'done'; }
+                if (seStatus) { seStatus.textContent = '存盘成功'; seStatus.className = 'done'; }
                 if (seButtons) { seButtons.style.display = ''; }
                 setTimeout(reportRect, 50);
             }
@@ -780,8 +780,8 @@ var Notch = (function() {
     var currentMapMode = '0';
     var deliverHotspotId = '';
     var deliverNavigable = false;
-    var ICON_PLACEHOLDER = '\u25C6'; // ◆ 占位符（后续替换为阵营图标）
-    var ICON_DONE = '\u2757';        // ❗ 任务完成
+    var ICON_PLACEHOLDER = '◆'; // ◆ 占位符（后续替换为阵营图标）
+    var ICON_DONE = '❗';        // ❗ 任务完成
 
     function initQuestRow() {
         contextPanel = document.getElementById('context-panel');
@@ -866,9 +866,9 @@ var Notch = (function() {
         }
         mapToggleBtn.disabled = !available;
         mapToggleBtn.setAttribute('data-collapsed', collapsed ? '1' : '0');
-        mapToggleBtn.title = available ? (collapsed ? '\u5C55\u5F00\u5C0F\u5730\u56FE' : '\u6536\u8D77\u5C0F\u5730\u56FE') : '\u5F53\u524D\u65E0\u5C0F\u5730\u56FE';
+        mapToggleBtn.title = available ? (collapsed ? '展开小地图' : '收起小地图') : '当前无小地图';
         if (mapToggleIcon) mapToggleIcon.innerHTML = collapsed ? '&#9656;' : '&#9662;';
-        if (mapToggleLabel) mapToggleLabel.textContent = '\u5730\u56FE';
+        if (mapToggleLabel) mapToggleLabel.textContent = '地图';
     }
 
     function refreshDeliverButton() {
@@ -881,17 +881,17 @@ var Notch = (function() {
         // 通知播放期 + 非完成态回落为「打开任务栏」，与实际 click 分发一致
         var inTaskDone = noticeBar.classList.contains('task-done');
         noticeMain.title = (questTaskDone && inTaskDone) ? buildDeliverTitle() : '打开任务栏';
-        // \u5B8C\u6210\u6001\u5E38\u9A7B\u6587\u672C\u4E5F\u968F deliverable state \u53D8\u5316\u5237\u65B0\uFF0C\u907F\u514D\u4E0E\u5B9E\u9645\u884C\u4E3A\u4E0D\u4E00\u81F4
+        // 完成态常驻文本也随 deliverable state 变化刷新，避免与实际行为不一致
         if (inTaskDone) showNoticeBar(buildTaskDoneText());
     }
 
     function buildTaskDoneText() {
-        // \u4E0E canDeliverNow / buildDeliverTitle \u540C\u4E00\u4F18\u5148\u7EA7\uFF1B\u786E\u4FDD\u6761\u4E0A\u6587\u6848\u4E0E\u5B9E\u9645 click \u884C\u4E3A\u4E00\u81F4
-        if (canDeliverNow()) return '\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u53EF\u4EA4\u4ED8';
-        if (currentMapMode === '3') return '\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u6218\u540E\u4EA4\u4ED8';
-        if (deliverHotspotId === '') return '\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u6682\u65E0\u4EA4\u4ED8\u76EE\u6807';
-        if (!deliverNavigable) return '\u4EFB\u52A1\u5DF2\u8FBE\u6210 \u00B7 \u4EA4\u4ED8\u70B9\u672A\u89E3\u9501';
-        return '\u4EFB\u52A1\u5DF2\u8FBE\u6210';
+        // 与 canDeliverNow / buildDeliverTitle 同一优先级；确保条上文案与实际 click 行为一致
+        if (canDeliverNow()) return '任务已达成 · 可交付';
+        if (currentMapMode === '3') return '任务已达成 · 战后交付';
+        if (deliverHotspotId === '') return '任务已达成 · 暂无交付目标';
+        if (!deliverNavigable) return '任务已达成 · 交付点未解锁';
+        return '任务已达成';
     }
 
     function enterTaskDoneState() {
@@ -900,7 +900,7 @@ var Notch = (function() {
         noticeBar.classList.remove('notice-active', 'notice-flash', 'scrolling');
         noticeBar.classList.add('task-done');
         if (noticeMain) {
-            noticeMain.setAttribute('aria-label', '\u6253\u5F00\u4EFB\u52A1\u680F');
+            noticeMain.setAttribute('aria-label', '打开任务栏');
         }
         // refreshDeliverButton 在 task-done 态下已负责 showNoticeBar(buildTaskDoneText())，避免重复触发滚动测量
         refreshDeliverButton();
@@ -974,7 +974,7 @@ var Notch = (function() {
 
     /** 新任务通知 */
     function showTaskCard(taskName) {
-        noticeQueue.push({ text: '\u65B0\u4EFB\u52A1: ' + taskName, icon: null });
+        noticeQueue.push({ text: '新任务: ' + taskName, icon: null });
         drainNoticeQueue();
     }
 
@@ -1032,7 +1032,7 @@ var Notch = (function() {
         var exitBtn = document.querySelector('[data-key="SAFEEXIT"]');
         if (!panel) return;
         // 重置状态
-        status.textContent = '\u5B58\u76D8\u4E2D\u2026'; // 存盘中…
+        status.textContent = '存盘中…'; // 存盘中…
         status.className = 'saving';
         btns.style.display = 'none';
         panel.style.display = 'block';

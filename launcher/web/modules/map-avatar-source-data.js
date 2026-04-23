@@ -2,9 +2,9 @@ var MapAvatarSourceData = (function() {
     'use strict';
 
     var _entries = {
-  "andy\u5934\u50cf": {
-    "symbolName": "andy\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/andy\u5934\u50cf.png",
+  "andy头像": {
+    "symbolName": "andy头像",
+    "assetUrl": "assets/map/avatars/andy头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -30,9 +30,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "artist\u5934\u50cf": {
-    "symbolName": "artist\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/artist\u5934\u50cf.png",
+  "artist头像": {
+    "symbolName": "artist头像",
+    "assetUrl": "assets/map/avatars/artist头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -58,9 +58,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "Bat\u5934\u50cf": {
-    "symbolName": "Bat\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/Bat\u5934\u50cf.png",
+  "Bat头像": {
+    "symbolName": "Bat头像",
+    "assetUrl": "assets/map/avatars/Bat头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -86,9 +86,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "blue\u5934\u50cf": {
-    "symbolName": "blue\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/blue\u5934\u50cf.png",
+  "blue头像": {
+    "symbolName": "blue头像",
+    "assetUrl": "assets/map/avatars/blue头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -114,9 +114,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "boy\u5934\u50cf": {
-    "symbolName": "boy\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/boy\u5934\u50cf.png",
+  "boy头像": {
+    "symbolName": "boy头像",
+    "assetUrl": "assets/map/avatars/boy头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -142,9 +142,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "director\u5934\u50cf": {
-    "symbolName": "director\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/director\u5934\u50cf.png",
+  "director头像": {
+    "symbolName": "director头像",
+    "assetUrl": "assets/map/avatars/director头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -170,9 +170,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "gazer\u5934\u50cf": {
-    "symbolName": "gazer\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/gazer\u5934\u50cf.png",
+  "gazer头像": {
+    "symbolName": "gazer头像",
+    "assetUrl": "assets/map/avatars/gazer头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -198,9 +198,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "general\u5934\u50cf": {
-    "symbolName": "general\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/general\u5934\u50cf.png",
+  "general头像": {
+    "symbolName": "general头像",
+    "assetUrl": "assets/map/avatars/general头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -226,9 +226,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "guitar\u5934\u50cf": {
-    "symbolName": "guitar\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/guitar\u5934\u50cf.png",
+  "guitar头像": {
+    "symbolName": "guitar头像",
+    "assetUrl": "assets/map/avatars/guitar头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -254,9 +254,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "itinerant\u5934\u50cf": {
-    "symbolName": "itinerant\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/itinerant\u5934\u50cf.png",
+  "itinerant头像": {
+    "symbolName": "itinerant头像",
+    "assetUrl": "assets/map/avatars/itinerant头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -282,9 +282,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "keyboard\u5934\u50cf": {
-    "symbolName": "keyboard\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/keyboard\u5934\u50cf.png",
+  "keyboard头像": {
+    "symbolName": "keyboard头像",
+    "assetUrl": "assets/map/avatars/keyboard头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -310,9 +310,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "king\u5934\u50cf": {
-    "symbolName": "king\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/king\u5934\u50cf.png",
+  "king头像": {
+    "symbolName": "king头像",
+    "assetUrl": "assets/map/avatars/king头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -338,9 +338,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "pig\u5934\u50cf": {
-    "symbolName": "pig\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/pig\u5934\u50cf.png",
+  "pig头像": {
+    "symbolName": "pig头像",
+    "assetUrl": "assets/map/avatars/pig头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -366,9 +366,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "PROPHET\u5934\u50cf": {
-    "symbolName": "PROPHET\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/PROPHET\u5934\u50cf.png",
+  "PROPHET头像": {
+    "symbolName": "PROPHET头像",
+    "assetUrl": "assets/map/avatars/PROPHET头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -394,9 +394,9 @@ var MapAvatarSourceData = (function() {
       "h": 116
     }
   },
-  "shopgirl\u5934\u50cf": {
-    "symbolName": "shopgirl\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/shopgirl\u5934\u50cf.png",
+  "shopgirl头像": {
+    "symbolName": "shopgirl头像",
+    "assetUrl": "assets/map/avatars/shopgirl头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -422,9 +422,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "singer\u5934\u50cf": {
-    "symbolName": "singer\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/singer\u5934\u50cf.png",
+  "singer头像": {
+    "symbolName": "singer头像",
+    "assetUrl": "assets/map/avatars/singer头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -450,9 +450,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "soldier\u5934\u50cf": {
-    "symbolName": "soldier\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/soldier\u5934\u50cf.png",
+  "soldier头像": {
+    "symbolName": "soldier头像",
+    "assetUrl": "assets/map/avatars/soldier头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -478,9 +478,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "surveyor\u5934\u50cf": {
-    "symbolName": "surveyor\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/surveyor\u5934\u50cf.png",
+  "surveyor头像": {
+    "symbolName": "surveyor头像",
+    "assetUrl": "assets/map/avatars/surveyor头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -506,9 +506,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "the girl\u5934\u50cf": {
-    "symbolName": "the girl\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/the girl\u5934\u50cf.png",
+  "the girl头像": {
+    "symbolName": "the girl头像",
+    "assetUrl": "assets/map/avatars/the girl头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -534,9 +534,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "Tomboy\u5934\u50cf": {
-    "symbolName": "Tomboy\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/Tomboy\u5934\u50cf.png",
+  "Tomboy头像": {
+    "symbolName": "Tomboy头像",
+    "assetUrl": "assets/map/avatars/Tomboy头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -562,9 +562,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "Vanshuther\u5934\u50cf": {
-    "symbolName": "Vanshuther\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/Vanshuther\u5934\u50cf.png",
+  "Vanshuther头像": {
+    "symbolName": "Vanshuther头像",
+    "assetUrl": "assets/map/avatars/Vanshuther头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -590,9 +590,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u221e\u5929\u3119\u2605\u4f7f\u7684\u526a\u221e\u5934\u50cf": {
-    "symbolName": "\u221e\u5929\u3119\u2605\u4f7f\u7684\u526a\u221e\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u221e\u5929\u3119\u2605\u4f7f\u7684\u526a\u221e\u5934\u50cf.png",
+  "∞天ㄙ★使的剪∞头像": {
+    "symbolName": "∞天ㄙ★使的剪∞头像",
+    "assetUrl": "assets/map/avatars/∞天ㄙ★使的剪∞头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -618,9 +618,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u4e3d\u4e3d\u4e1d\u5934\u50cf": {
-    "symbolName": "\u4e3d\u4e3d\u4e1d\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u4e3d\u4e3d\u4e1d\u5934\u50cf.png",
+  "丽丽丝头像": {
+    "symbolName": "丽丽丝头像",
+    "assetUrl": "assets/map/avatars/丽丽丝头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -646,9 +646,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u4f53\u80b2\u8001\u5e08\u5934\u50cf": {
-    "symbolName": "\u4f53\u80b2\u8001\u5e08\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u4f53\u80b2\u8001\u5e08\u5934\u50cf.png",
+  "体育老师头像": {
+    "symbolName": "体育老师头像",
+    "assetUrl": "assets/map/avatars/体育老师头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -674,9 +674,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u5047\u80a2\u4ed9\u4eba\u5934\u50cf": {
-    "symbolName": "\u5047\u80a2\u4ed9\u4eba\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u5047\u80a2\u4ed9\u4eba\u5934\u50cf.png",
+  "假肢仙人头像": {
+    "symbolName": "假肢仙人头像",
+    "assetUrl": "assets/map/avatars/假肢仙人头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -702,9 +702,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u51af\u4f51\u6743\u5934\u50cf": {
-    "symbolName": "\u51af\u4f51\u6743\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u51af\u4f51\u6743\u5934\u50cf.png",
+  "冯佑权头像": {
+    "symbolName": "冯佑权头像",
+    "assetUrl": "assets/map/avatars/冯佑权头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -730,9 +730,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u51b7\u5175\u5668\u5546\u4eba\u5934\u50cf": {
-    "symbolName": "\u51b7\u5175\u5668\u5546\u4eba\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u51b7\u5175\u5668\u5546\u4eba\u5934\u50cf.png",
+  "冷兵器商人头像": {
+    "symbolName": "冷兵器商人头像",
+    "assetUrl": "assets/map/avatars/冷兵器商人头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -758,9 +758,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u524d\u6cbb\u5b89\u5b98\u5934\u50cf": {
-    "symbolName": "\u524d\u6cbb\u5b89\u5b98\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u524d\u6cbb\u5b89\u5b98\u5934\u50cf.png",
+  "前治安官头像": {
+    "symbolName": "前治安官头像",
+    "assetUrl": "assets/map/avatars/前治安官头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -786,9 +786,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u5251\u9053\u793e\u957f\u5934\u50cf": {
-    "symbolName": "\u5251\u9053\u793e\u957f\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u5251\u9053\u793e\u957f\u5934\u50cf.png",
+  "剑道社长头像": {
+    "symbolName": "剑道社长头像",
+    "assetUrl": "assets/map/avatars/剑道社长头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -814,9 +814,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u53a8\u5e08\u5934\u50cf": {
-    "symbolName": "\u53a8\u5e08\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u53a8\u5e08\u5934\u50cf.png",
+  "厨师头像": {
+    "symbolName": "厨师头像",
+    "assetUrl": "assets/map/avatars/厨师头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -842,9 +842,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u5438\u7279\u4e50\u5934\u50cf": {
-    "symbolName": "\u5438\u7279\u4e50\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u5438\u7279\u4e50\u5934\u50cf.png",
+  "吸特乐头像": {
+    "symbolName": "吸特乐头像",
+    "assetUrl": "assets/map/avatars/吸特乐头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -870,9 +870,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u5b66\u751f\u59b9\u5934\u50cf": {
-    "symbolName": "\u5b66\u751f\u59b9\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u5b66\u751f\u59b9\u5934\u50cf.png",
+  "学生妹头像": {
+    "symbolName": "学生妹头像",
+    "assetUrl": "assets/map/avatars/学生妹头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -898,9 +898,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u5b9d\u77f3\u7ebf\u4eba\u5934\u50cf": {
-    "symbolName": "\u5b9d\u77f3\u7ebf\u4eba\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u5b9d\u77f3\u7ebf\u4eba\u5934\u50cf.png",
+  "宝石线人头像": {
+    "symbolName": "宝石线人头像",
+    "assetUrl": "assets/map/avatars/宝石线人头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -926,9 +926,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u5c0fF\u5934\u50cf": {
-    "symbolName": "\u5c0fF\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u5c0fF\u5934\u50cf.png",
+  "小F头像": {
+    "symbolName": "小F头像",
+    "assetUrl": "assets/map/avatars/小F头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -954,9 +954,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u5e78\u5b58\u8001\u5175\u5934\u50cf": {
-    "symbolName": "\u5e78\u5b58\u8001\u5175\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u5e78\u5b58\u8001\u5175\u5934\u50cf.png",
+  "幸存老兵头像": {
+    "symbolName": "幸存老兵头像",
+    "assetUrl": "assets/map/avatars/幸存老兵头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -982,9 +982,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u6392\u9aa8\u5934\u50cf": {
-    "symbolName": "\u6392\u9aa8\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u6392\u9aa8\u5934\u50cf.png",
+  "排骨头像": {
+    "symbolName": "排骨头像",
+    "assetUrl": "assets/map/avatars/排骨头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1010,9 +1010,9 @@ var MapAvatarSourceData = (function() {
       "h": 48
     }
   },
-  "\u6559\u5bfc\u4e3b\u4efb\u5934\u50cf": {
-    "symbolName": "\u6559\u5bfc\u4e3b\u4efb\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u6559\u5bfc\u4e3b\u4efb\u5934\u50cf.png",
+  "教导主任头像": {
+    "symbolName": "教导主任头像",
+    "assetUrl": "assets/map/avatars/教导主任头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1038,9 +1038,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u6587\u79d1\u8001\u5e08\u5934\u50cf": {
-    "symbolName": "\u6587\u79d1\u8001\u5e08\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u6587\u79d1\u8001\u5e08\u5934\u50cf.png",
+  "文科老师头像": {
+    "symbolName": "文科老师头像",
+    "assetUrl": "assets/map/avatars/文科老师头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1066,9 +1066,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u673a\u54e5\u5934\u50cf": {
-    "symbolName": "\u673a\u54e5\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u673a\u54e5\u5934\u50cf.png",
+  "机哥头像": {
+    "symbolName": "机哥头像",
+    "assetUrl": "assets/map/avatars/机哥头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1094,9 +1094,9 @@ var MapAvatarSourceData = (function() {
       "h": 45
     }
   },
-  "\u683c\u683c\u5deb\u5934\u50cf": {
-    "symbolName": "\u683c\u683c\u5deb\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u683c\u683c\u5deb\u5934\u50cf.png",
+  "格格巫头像": {
+    "symbolName": "格格巫头像",
+    "assetUrl": "assets/map/avatars/格格巫头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1122,9 +1122,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u6b66\u5668\u8ba2\u8d2d\u7cfb\u7edf\u5934\u50cf": {
-    "symbolName": "\u6b66\u5668\u8ba2\u8d2d\u7cfb\u7edf\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u6b66\u5668\u8ba2\u8d2d\u7cfb\u7edf\u5934\u50cf.png",
+  "武器订购系统头像": {
+    "symbolName": "武器订购系统头像",
+    "assetUrl": "assets/map/avatars/武器订购系统头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1150,9 +1150,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u706b\u51e4\u5934\u50cf": {
-    "symbolName": "\u706b\u51e4\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u706b\u51e4\u5934\u50cf.png",
+  "火凤头像": {
+    "symbolName": "火凤头像",
+    "assetUrl": "assets/map/avatars/火凤头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1178,9 +1178,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u725b\u4ed4\u5934\u50cf": {
-    "symbolName": "\u725b\u4ed4\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u725b\u4ed4\u5934\u50cf.png",
+  "牛仔头像": {
+    "symbolName": "牛仔头像",
+    "assetUrl": "assets/map/avatars/牛仔头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1206,9 +1206,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u7406\u79d1\u6559\u6388\u5934\u50cf": {
-    "symbolName": "\u7406\u79d1\u6559\u6388\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u7406\u79d1\u6559\u6388\u5934\u50cf.png",
+  "理科教授头像": {
+    "symbolName": "理科教授头像",
+    "assetUrl": "assets/map/avatars/理科教授头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1234,9 +1234,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u7a0b\u94ee\u5934\u50cf": {
-    "symbolName": "\u7a0b\u94ee\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u7a0b\u94ee\u5934\u50cf.png",
+  "程铮头像": {
+    "symbolName": "程铮头像",
+    "assetUrl": "assets/map/avatars/程铮头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1262,9 +1262,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u7fc5\u864e\u5934\u50cf": {
-    "symbolName": "\u7fc5\u864e\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u7fc5\u864e\u5934\u50cf.png",
+  "翅虎头像": {
+    "symbolName": "翅虎头像",
+    "assetUrl": "assets/map/avatars/翅虎头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1290,9 +1290,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u821e\u5973\u5934\u50cf": {
-    "symbolName": "\u821e\u5973\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u821e\u5973\u5934\u50cf.png",
+  "舞女头像": {
+    "symbolName": "舞女头像",
+    "assetUrl": "assets/map/avatars/舞女头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1318,9 +1318,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u9152\u4fdd\u5934\u50cf": {
-    "symbolName": "\u9152\u4fdd\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u9152\u4fdd\u5934\u50cf.png",
+  "酒保头像": {
+    "symbolName": "酒保头像",
+    "assetUrl": "assets/map/avatars/酒保头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1346,9 +1346,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u963f\u6ce2\u5934\u50cf": {
-    "symbolName": "\u963f\u6ce2\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u963f\u6ce2\u5934\u50cf.png",
+  "阿波头像": {
+    "symbolName": "阿波头像",
+    "assetUrl": "assets/map/avatars/阿波头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1374,9 +1374,9 @@ var MapAvatarSourceData = (function() {
       "h": 67
     }
   },
-  "\u9ed1\u4ed4\u5934\u50cf": {
-    "symbolName": "\u9ed1\u4ed4\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u9ed1\u4ed4\u5934\u50cf.png",
+  "黑仔头像": {
+    "symbolName": "黑仔头像",
+    "assetUrl": "assets/map/avatars/黑仔头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1402,9 +1402,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u9ed1\u94c1\u4f1a\u5916\u4ea4\u90e8\u957f\u5934\u50cf": {
-    "symbolName": "\u9ed1\u94c1\u4f1a\u5916\u4ea4\u90e8\u957f\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u9ed1\u94c1\u4f1a\u5916\u4ea4\u90e8\u957f\u5934\u50cf.png",
+  "黑铁会外交部长头像": {
+    "symbolName": "黑铁会外交部长头像",
+    "assetUrl": "assets/map/avatars/黑铁会外交部长头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1430,9 +1430,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u9ed1\u94c1\u5934\u50cf": {
-    "symbolName": "\u9ed1\u94c1\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u9ed1\u94c1\u5934\u50cf.png",
+  "黑铁头像": {
+    "symbolName": "黑铁头像",
+    "assetUrl": "assets/map/avatars/黑铁头像.png",
     "size": {
       "w": 44,
       "h": 44
@@ -1458,9 +1458,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-  "\u9ed1\u9f99\u5934\u50cf": {
-    "symbolName": "\u9ed1\u9f99\u5934\u50cf",
-    "assetUrl": "assets/map/avatars/\u9ed1\u9f99\u5934\u50cf.png",
+  "黑龙头像": {
+    "symbolName": "黑龙头像",
+    "assetUrl": "assets/map/avatars/黑龙头像.png",
     "size": {
       "w": 44,
       "h": 44

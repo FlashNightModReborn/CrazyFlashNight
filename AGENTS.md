@@ -15,6 +15,7 @@
 - **`.as` 编码**：必须 **UTF-8 with BOM**；新增 / 重建用“复制现有 `.as` → 改名”保留 BOM（见 [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) §0）
 - **SWF**：禁止手动编辑；`scripts/asLoader.swf` 达到可用节点时可提交，其他 SWF 完成功能后封档上传
 - **终端编码**（PowerShell）：运行命令前先执行 `chcp.com 65001 | Out-Null`，避免 GBK 乱码
+- **Unicode 直写**：代码字符串字面量、注释中直接使用 UTF-8 中文字符；除非目标语境明确要求转义（如协议样例、规范文本或必须 escape 的格式），不要写 `\uXXXX` Unicode 转义
 - **可直接修改**：`data/`、`config/` 下 XML（重启生效）
 - **验证矩阵**：不要在本文件背命令清单；统一看 [testing-guide.md](agentsDoc/testing-guide.md)
 - **不提交**：大型二进制资源、`node_modules`

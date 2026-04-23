@@ -597,7 +597,7 @@ namespace CF7Launcher.Guardian
                     {
                         using (SolidBrush arrowBrush = new SolidBrush(Color.FromArgb(120, 255, 255, 255)))
                         {
-                            g.DrawString("\u25BC", _buttonFont, arrowBrush, contentX, 7);
+                            g.DrawString("▼", _buttonFont, arrowBrush, contentX, 7);
                         }
                     }
 

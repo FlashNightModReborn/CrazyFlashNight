@@ -337,20 +337,20 @@ var MapHud = (function() {
 
     function render(meta, outline) {
         var renderMode = meta.pageId === 'base' ? '1' : '2';
-        var pageText = renderMode === '1' ? '\u57fa\u5730' : '\u5916\u90e8';
-        var titleText = meta.label || meta.pageLabel || '\u5f53\u524d\u4f4d\u7f6e';
+        var pageText = renderMode === '1' ? '基地' : '外部';
+        var titleText = meta.label || meta.pageLabel || '当前位置';
         var svg = buildSvg(outline, meta.hotspotId);
         var groupId = (typeof MapPanelData !== 'undefined' && MapPanelData && typeof MapPanelData.getHotspotUnlockGroup === 'function')
             ? (MapPanelData.getHotspotUnlockGroup(meta.pageId, meta.hotspotId) || '')
             : '';
-        // base \u7ec4\u5728 catalog \u4e2d\u65e0 unlockGroup\uff08\u8fd4\u56de\u7a7a\u4e32\uff09\uff0c\u89c6\u4f5c base \u7ec4\u4ee5\u4fbf\u67d3\u8272
+        // base 组在 catalog 中无 unlockGroup（返回空串），视作 base 组以便染色
         if (!groupId && meta.pageId === 'base') groupId = 'base';
 
         _rootEl.setAttribute('data-mode', renderMode);
         _rootEl.setAttribute('data-page-id', meta.pageId || '');
         _rootEl.setAttribute('data-focus-filter-id', outline.focusFilterId || '');
         _rootEl.setAttribute('data-group', groupId);
-        _buttonEl.title = pageText + ' / ' + titleText + ' \u00b7 \u6253\u5f00\u5730\u56fe';
+        _buttonEl.title = pageText + ' / ' + titleText + ' · 打开地图';
         _buttonEl.setAttribute('aria-label', pageText + ' / ' + titleText);
 
         _modeEl.innerHTML = '';

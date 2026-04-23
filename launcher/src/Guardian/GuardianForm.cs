@@ -322,7 +322,7 @@ namespace CF7Launcher.Guardian
             searchBar.Controls.Add(_searchBox);
 
             Label searchHint = new Label();
-            searchHint.Text = "\u641C\u7D22";
+            searchHint.Text = "搜索";
             searchHint.Dock = DockStyle.Left;
             searchHint.Width = 36;
             searchHint.Font = uiFont;
@@ -1115,10 +1115,10 @@ namespace CF7Launcher.Guardian
         private void SetupTrayIcon()
         {
             _trayMenu = new ContextMenuStrip();
-            _trayMenu.Items.Add("\u663E\u793A", null, delegate { ShowMainWindow(); });
-            _trayMenu.Items.Add("\u65E5\u5FD7", null, delegate { ShowMainWindow(); if (!_logVisible) ToggleLog(); });
+            _trayMenu.Items.Add("显示", null, delegate { ShowMainWindow(); });
+            _trayMenu.Items.Add("日志", null, delegate { ShowMainWindow(); if (!_logVisible) ToggleLog(); });
             _trayMenu.Items.Add("-");
-            _trayMenu.Items.Add("\u9000\u51FA", null, delegate { ForceExit(); });
+            _trayMenu.Items.Add("退出", null, delegate { ForceExit(); });
 
             _trayIcon = new NotifyIcon();
             _trayIcon.Text = "CF7:ME";

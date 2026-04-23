@@ -57,10 +57,10 @@
   var FONT_SCALE_MIN = 0.7;
   var FONT_SCALE_MAX = 1.9;
   var FONT_SCALE_PRESETS = [
-    { value: 1.15, label: '\u7d27\u51d1' },  // 紧凑 (大屏/密集布局)
-    { value: 1.35, label: '\u6807\u51c6' },  // 标准 (默认)
-    { value: 1.55, label: '\u5927' },        // 大 (轻松阅读)
-    { value: 1.75, label: '\u8d85\u5927' }   // 超大 (GPD 掌机 / 高 DPI)
+    { value: 1.15, label: '紧凑' },  // 紧凑 (大屏/密集布局)
+    { value: 1.35, label: '标准' },  // 标准 (默认)
+    { value: 1.55, label: '大' },        // 大 (轻松阅读)
+    { value: 1.75, label: '超大' }   // 超大 (GPD 掌机 / 高 DPI)
   ];
 
   function clampFontScale(v) {
@@ -138,7 +138,7 @@
   function send(obj) {
     obj.type = 'bootstrap';
     var json = JSON.stringify(obj);
-    logLine('tag-out', '\u2192 ' + json);
+    logLine('tag-out', '→ ' + json);
     try { window.chrome.webview.postMessage(json); }
     catch (e) { logLine('tag-err', 'postMessage failed: ' + e.message); }
   }
@@ -160,7 +160,7 @@
     var m = /^crazyflasher7_saves(\d*)$/.exec(slot);
     if (!m) return slot;
     var idx = m[1] === '' ? 0 : parseInt(m[1], 10);
-    return '\u5b58\u6863 ' + (idx + 1);
+    return '存档 ' + (idx + 1);
   }
 
   function mergeSlots(fromLauncher) {
@@ -250,8 +250,8 @@
     var s = pickDefaultSlot();
     _welcomeSlot = s;
     if (!s) {
-      welcomeSlotNameEl.textContent = '\u65e0\u53ef\u7528\u5b58\u6863';
-      welcomeSlotTimeEl.textContent = '\u2014';
+      welcomeSlotNameEl.textContent = '无可用存档';
+      welcomeSlotTimeEl.textContent = '—';
       applyConfirmLabel('normal', null);
       return;
     }
@@ -261,19 +261,19 @@
     var modeHint = '';
     if (mode === 'fresh') {
       modeHint = s.__empty
-        ? '<span class="flag fresh-mode">\u5c06\u65b0\u5efa\u89d2\u8272</span>'
-        : '<span class="flag fresh-mode">\u5c06\u91cd\u5efa \u00b7 \u539f\u6570\u636e\u4e22\u5f03</span>';
+        ? '<span class="flag fresh-mode">将新建角色</span>'
+        : '<span class="flag fresh-mode">将重建 · 原数据丢弃</span>';
     }
 
     if (s.__empty) {
-      welcomeSlotTimeEl.innerHTML = modeHint || '<span class="flag empty">\u7a7a\u69fd\u4f4d</span>';
+      welcomeSlotTimeEl.innerHTML = modeHint || '<span class="flag empty">空槽位</span>';
     } else {
       var meta = fmtBytes(s.size);
-      if (s.lastModified) meta += ' \u00b7 ' + s.lastModified.slice(0, 16).replace('T', ' ');
+      if (s.lastModified) meta += ' · ' + s.lastModified.slice(0, 16).replace('T', ' ');
       var flags = '';
-      if (s.corrupt)      flags = '<span class="flag corrupt">\u635f\u574f</span>';
-      if (s.tombstoned)   flags = '<span class="flag tombstoned">\u5df2\u5220\u9664</span>';
-      if (s.inconsistent) flags = '<span class="flag inconsistent">\u4e0d\u4e00\u81f4</span>';
+      if (s.corrupt)      flags = '<span class="flag corrupt">损坏</span>';
+      if (s.tombstoned)   flags = '<span class="flag tombstoned">已删除</span>';
+      if (s.inconsistent) flags = '<span class="flag inconsistent">不一致</span>';
       welcomeSlotTimeEl.innerHTML = modeHint + flags + escapeHtml(meta);
     }
     applyConfirmLabel(mode, s);
@@ -284,9 +284,9 @@
     if (!btnConfirmStart) return;
     if (_lastLaunchState === 'Error') return;
     if (mode === 'fresh') {
-      btnConfirmStart.textContent = (s && s.__empty) ? '\u65b0 \u5efa \u89d2 \u8272' : '\u91cd \u5efa';
+      btnConfirmStart.textContent = (s && s.__empty) ? '新 建 角 色' : '重 建';
     } else {
-      btnConfirmStart.textContent = '\u786e \u8ba4';
+      btnConfirmStart.textContent = '确 认';
     }
   }
 
@@ -407,7 +407,7 @@
     skipBtn.style.display = '';
     // 复位 flash-ready 样式 (下一 attempt 全新开始)
     skipBtn.classList.remove('flash-ready');
-    skipBtn.textContent = '\u8df3 \u8fc7 \u00b7 ESC';
+    skipBtn.textContent = '跳 过 · ESC';
   }
 
   // 所有"无片头" start_game 入口统一封装: loading overlay + 带 requireFlashReveal flag.
@@ -442,41 +442,41 @@
     card.className = classes.join(' ');
 
     var flags = '';
-    if (s.__empty && s.__preset) flags += '<span class="flag empty">\u7a7a\u69fd\u4f4d</span>';
-    if (s.corrupt)      flags += '<span class="flag corrupt">\u635f\u574f</span>';
-    if (s.tombstoned && !s.inconsistent) flags += '<span class="flag tombstoned">\u5df2\u5220\u9664</span>';
-    if (s.inconsistent) flags += '<span class="flag inconsistent">\u4e0d\u4e00\u81f4</span>';
+    if (s.__empty && s.__preset) flags += '<span class="flag empty">空槽位</span>';
+    if (s.corrupt)      flags += '<span class="flag corrupt">损坏</span>';
+    if (s.tombstoned && !s.inconsistent) flags += '<span class="flag tombstoned">已删除</span>';
+    if (s.inconsistent) flags += '<span class="flag inconsistent">不一致</span>';
 
     var meta = '';
     if (!s.__empty) {
       meta = fmtBytes(s.size);
-      if (s.lastModified) meta += ' \u00b7 ' + s.lastModified.slice(0, 16).replace('T', ' ');
+      if (s.lastModified) meta += ' · ' + s.lastModified.slice(0, 16).replace('T', ' ');
     }
 
     var displayName = s.__preset ? presetDisplayName(s.slot) : s.slot;
-    var progressText = s.__empty ? '\u2014' : (s.mainProgress || '\u2014');
+    var progressText = s.__empty ? '—' : (s.mainProgress || '—');
 
     var actions = '';
     if (s.__empty) {
-      actions = '<button class="btn-newchar">\u65b0\u5efa\u89d2\u8272</button>';
+      actions = '<button class="btn-newchar">新建角色</button>';
     } else if (s.inconsistent) {
-      actions = '<button class="btn-rebuild">\u91cd\u5efa</button>'
-              + '<button class="btn-edit">\u7f16\u8f91</button>'
-              + '<button class="btn-export">\u5bfc\u51fa</button>'
-              + '<button class="btn-reset danger">\u6e05\u7406\u526f\u672c</button>';
+      actions = '<button class="btn-rebuild">重建</button>'
+              + '<button class="btn-edit">编辑</button>'
+              + '<button class="btn-export">导出</button>'
+              + '<button class="btn-reset danger">清理副本</button>';
     } else if (s.tombstoned) {
-      actions = '<button class="btn-rebuild">\u91cd\u5efa</button>'
-              + '<button class="btn-reset danger">\u6e05\u7406\u526f\u672c</button>';
+      actions = '<button class="btn-rebuild">重建</button>'
+              + '<button class="btn-reset danger">清理副本</button>';
     } else if (s.corrupt) {
-      actions = '<button class="btn-edit">\u7f16\u8f91</button>'
-              + '<button class="btn-export">\u5bfc\u51fa</button>'
-              + '<button class="btn-delete danger">\u5220\u9664</button>'
-              + '<button class="btn-reset danger">\u6e05\u7406\u526f\u672c</button>';
+      actions = '<button class="btn-edit">编辑</button>'
+              + '<button class="btn-export">导出</button>'
+              + '<button class="btn-delete danger">删除</button>'
+              + '<button class="btn-reset danger">清理副本</button>';
     } else {
-      actions = '<button class="btn-start primary">\u9009 \u62e9</button>'
-              + '<button class="btn-edit">\u7f16\u8f91</button>'
-              + '<button class="btn-export">\u5bfc\u51fa</button>'
-              + '<button class="btn-delete danger">\u5220\u9664</button>';
+      actions = '<button class="btn-start primary">选 择</button>'
+              + '<button class="btn-edit">编辑</button>'
+              + '<button class="btn-export">导出</button>'
+              + '<button class="btn-delete danger">删除</button>';
     }
 
     card.innerHTML =
@@ -496,10 +496,10 @@
 
     if (startBtn) startBtn.onclick = function() { selectSlotAndReturn(s.slot, 'normal'); };
     if (deleteBtn) deleteBtn.onclick = function() {
-      if (confirm('\u786e\u5b9a\u5220\u9664\u5b58\u6863 "' + displayName + '" ?')) send({ cmd: 'delete', slot: s.slot });
+      if (confirm('确定删除存档 "' + displayName + '" ?')) send({ cmd: 'delete', slot: s.slot });
     };
     if (rebuildBtn) rebuildBtn.onclick = function() {
-      if (confirm('\u91cd\u5efa\u5b58\u6863 "' + displayName + '" (\u539f\u6570\u636e\u5c06\u4e22\u5f03)?')) selectSlotAndReturn(s.slot, 'fresh');
+      if (confirm('重建存档 "' + displayName + '" (原数据将丢弃)?')) selectSlotAndReturn(s.slot, 'fresh');
     };
     if (newCharBtn) newCharBtn.onclick = function() { selectSlotAndReturn(s.slot, 'fresh'); };
     if (editBtn) editBtn.onclick = function() {
@@ -512,7 +512,7 @@
       send({ cmd: 'export', slot: s.slot, defaultName: dn + '_' + ts + '.json', forceRaw: forceRaw });
     };
     if (resetBtn) resetBtn.onclick = function() {
-      if (confirm('\u786e\u5b9a\u6e05\u7406 "' + displayName + '" \u7684 launcher \u526f\u672c?\n\n\u6b64\u64cd\u4f5c\u4ec5\u6e05\u7406 launcher \u4fa7 JSON \u5907\u4efd\u548c\u5220\u9664\u6807\u8bb0\uff0c\u4e0d\u5f71\u54cd Flash \u5185\u90e8 SOL \u5b58\u6863\u3002'))
+      if (confirm('确定清理 "' + displayName + '" 的 launcher 副本?\n\n此操作仅清理 launcher 侧 JSON 备份和删除标记，不影响 Flash 内部 SOL 存档。'))
         send({ cmd: 'reset', slot: s.slot, confirm: true });
     };
     return card;
@@ -530,22 +530,22 @@
     var defaultName = pickAutoSlotName();
     playUiCue('playModalOpen');
     var input = prompt(
-      '\u8f93\u5165\u5b58\u6863\u540d\u79f0:\n'
-      + '\u2022 \u7559\u7a7a\u81ea\u52a8\u9009\u7528: ' + defaultName + '\n'
-      + '\u2022 \u4ec5\u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e0b\u5212\u7ebf/\u77ed\u6a2a\u7ebf, 1-32 \u5b57\u7b26',
+      '输入存档名称:\n'
+      + '• 留空自动选用: ' + defaultName + '\n'
+      + '• 仅允许字母/数字/下划线/短横线, 1-32 字符',
       defaultName);
     if (input == null) { playUiCue('playCancel'); return; }
     var slot = input.trim();
     if (!slot) slot = defaultName;
-    if (!SLOT_NAME_RE.test(slot)) { playUiCue('playError'); alert('\u5b58\u6863\u540d\u79f0\u4e0d\u5408\u6cd5: ' + slot); return; }
+    if (!SLOT_NAME_RE.test(slot)) { playUiCue('playError'); alert('存档名称不合法: ' + slot); return; }
     for (var k = 0; k < lastSlotsFromLauncher.length; k++) {
       if (lastSlotsFromLauncher[k].slot === slot) {
         var entry = lastSlotsFromLauncher[k];
         if (entry.tombstoned) {
-          if (!confirm('\u6b64\u6863\u5df2\u5220\u9664, \u662f\u5426\u91cd\u5efa?')) return;
+          if (!confirm('此档已删除, 是否重建?')) return;
           selectSlotAndReturn(slot, 'fresh'); return;
         }
-        if (!confirm('\u5b58\u6863 "' + slot + '" \u5df2\u5b58\u5728, \u76f4\u63a5\u52a0\u8f7d?')) return;
+        if (!confirm('存档 "' + slot + '" 已存在, 直接加载?')) return;
         selectSlotAndReturn(slot, 'normal'); return;
       }
     }
@@ -613,7 +613,7 @@
     var data = e.data, msg;
     try { msg = (typeof data === 'string') ? JSON.parse(data) : data; }
     catch (err) { logLine('tag-err', 'bad JSON from C#: ' + err.message); return; }
-    logLine('tag-in', '\u2190 ' + JSON.stringify(msg));
+    logLine('tag-in', '← ' + JSON.stringify(msg));
 
     if (msg.cmd === 'state')            applyState(msg.state, msg.msg);
     else if (msg.cmd === 'list_resp') {
@@ -693,20 +693,20 @@
     }
     else if (msg.cmd === 'export_resp') {
       if (msg.ok) {
-        logLine('tag-in', '\u5bfc\u51fa\u6210\u529f: ' + (msg.path || ''));
+        logLine('tag-in', '导出成功: ' + (msg.path || ''));
         playUiCue('playSuccess');
       } else if (msg.error !== 'cancelled') {
-        logLine('tag-err', '\u5bfc\u51fa\u5931\u8d25: ' + (msg.error || ''));
+        logLine('tag-err', '导出失败: ' + (msg.error || ''));
         playUiCue('playError');
       }
     }
     else if (msg.cmd === 'import_resp') {
       if (msg.ok) {
-        logLine('tag-in', '\u5bfc\u5165\u6210\u529f: ' + (msg.slot || ''));
+        logLine('tag-in', '导入成功: ' + (msg.slot || ''));
         playUiCue('playSuccess');
         send({ cmd: 'list' });
       } else if (msg.error !== 'cancelled') {
-        logLine('tag-err', '\u5bfc\u5165\u5931\u8d25: ' + (msg.error || ''));
+        logLine('tag-err', '导入失败: ' + (msg.error || ''));
         playUiCue('playError');
       }
     }
@@ -719,27 +719,27 @@
     var sourceData = msg.sourceData;
     var suggestedSlot = msg.suggestedSlot || '';
     playUiCue('playModalOpen');
-    var slot = prompt('\u9009\u62e9\u76ee\u6807\u5b58\u6863\u69fd\u4f4d:\n\u5efa\u8bae: ' + suggestedSlot + '\n\u4ec5\u5141\u8bb8\u5b57\u6bcd/\u6570\u5b57/\u4e0b\u5212\u7ebf/\u77ed\u6a2a\u7ebf, 1-32 \u5b57\u7b26', suggestedSlot);
+    var slot = prompt('选择目标存档槽位:\n建议: ' + suggestedSlot + '\n仅允许字母/数字/下划线/短横线, 1-32 字符', suggestedSlot);
     if (slot == null) { playUiCue('playCancel'); return; }
     slot = slot.trim();
-    if (!slot) { logLine('tag-err', '\u5bfc\u5165\u53d6\u6d88: \u672a\u8f93\u5165\u69fd\u4f4d\u540d'); playUiCue('playCancel'); return; }
-    if (!SLOT_NAME_RE.test(slot)) { playUiCue('playError'); alert('\u69fd\u4f4d\u540d\u4e0d\u5408\u6cd5: "' + slot + '"'); return; }
+    if (!slot) { logLine('tag-err', '导入取消: 未输入槽位名'); playUiCue('playCancel'); return; }
+    if (!SLOT_NAME_RE.test(slot)) { playUiCue('playError'); alert('槽位名不合法: "' + slot + '"'); return; }
     var meta = window.BootstrapApp.getSlotMeta(slot);
     if (meta == null) {
       send({ cmd: 'import_commit', slot: slot, data: sourceData });
     } else if (meta.tombstoned || meta.inconsistent) {
-      if (confirm('\u6b64 slot \u5df2\u6807\u8bb0\u5220\u9664/\u4e0d\u4e00\u81f4\uff0c\u9700\u5148\u6e05\u7406\u624d\u80fd\u5bfc\u5165\u3002\u662f\u5426\u81ea\u52a8\u6e05\u7406\uff1f')) {
+      if (confirm('此 slot 已标记删除/不一致，需先清理才能导入。是否自动清理？')) {
         var unsub = window.BootstrapApp.onMessage('reset_resp', function(resp) {
           unsub();
           if (resp.ok) send({ cmd: 'import_commit', slot: slot, data: sourceData });
-          else logLine('tag-err', '\u6e05\u7406\u5931\u8d25: ' + (resp.error || ''));
+          else logLine('tag-err', '清理失败: ' + (resp.error || ''));
         });
         send({ cmd: 'reset', slot: slot, confirm: true });
       }
     } else if (meta.corrupt) {
-      if (confirm('\u6b64\u5b58\u6863\u5df2\u635f\u574f\uff0c\u8986\u76d6\uff1f')) send({ cmd: 'import_commit', slot: slot, data: sourceData });
+      if (confirm('此存档已损坏，覆盖？')) send({ cmd: 'import_commit', slot: slot, data: sourceData });
     } else {
-      if (confirm('\u5b58\u6863\u5df2\u5b58\u5728\uff0c\u8986\u76d6\uff1f')) send({ cmd: 'import_commit', slot: slot, data: sourceData });
+      if (confirm('存档已存在，覆盖？')) send({ cmd: 'import_commit', slot: slot, data: sourceData });
     }
   }
 
@@ -871,15 +871,15 @@
     }
     if (_launchInFlight) return;
     var s = _welcomeSlot;
-    if (!s) { alert('\u6ca1\u6709\u53ef\u542f\u52a8\u7684\u5b58\u6863\uff0c\u8bf7\u70b9\u300c\u5207\u6362\u300d\u9009\u62e9\u69fd\u4f4d'); return; }
+    if (!s) { alert('没有可启动的存档，请点「切换」选择槽位'); return; }
     var mode = effectiveMode(s);
     if (s.corrupt) {
-      alert('\u5b58\u6863\u5df2\u635f\u574f\uff0c\u65e0\u6cd5\u542f\u52a8\uff1b\u8bf7\u70b9\u300c\u5207\u6362\u300d\u5230\u69fd\u4f4d\u9875\u7f16\u8f91\u6216\u5220\u9664');
+      alert('存档已损坏，无法启动；请点「切换」到槽位页编辑或删除');
       return;
     }
     if (mode === 'normal' && (s.__empty || s.tombstoned || s.inconsistent)) {
       // 这些状态下不应该是 normal 模式 — pickDefaultSlot 已做降级, 这里兜底防御
-      alert('\u5f53\u524d\u9ed8\u8ba4\u5b58\u6863\u5904\u4e8e\u5f02\u5e38\u72b6\u6001\uff0c\u8bf7\u70b9\u300c\u5207\u6362\u300d\u5230\u69fd\u4f4d\u9875\u5904\u7406');
+      alert('当前默认存档处于异常状态，请点「切换」到槽位页处理');
       return;
     }
     if (chkIntro.checked) {
