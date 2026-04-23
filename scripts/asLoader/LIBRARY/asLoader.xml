@@ -518,6 +518,33 @@ var 材料大全loader:MaterialDictionaryLoader = MaterialDictionaryLoader.getIn
     function():Void {
         trace("主程序：材料大全数据加载失败！");
     }
+);
+
+// ── 地图面板配置（data/map/map_panel.xml → MapPanelCatalog + MapTaskNpcRegistry） ──
+import org.flashNight.gesh.xml.LoadXml.*;
+import org.flashNight.arki.map.*;
+
+var mapPanelLoader:MapPanelLoader = MapPanelLoader.getInstance();
+mapPanelLoader.load(
+    function(data:Object):Void {
+        // 顺序要求：Catalog 先应用（Registry 依赖 Catalog.HOTSPOT_PAGES 派生 page）
+        if (!MapPanelCatalog.applyFromXml(data)) {
+            trace("主程序：地图面板配置结构不合法，面板将不可用。");
+            _root.发布消息("[错误] 地图面板配置结构不合法");
+            return;
+        }
+        if (!MapTaskNpcRegistry.applyFromXml(data)) {
+            trace("主程序：任务 NPC 配置不合法，任务 marker 将不可用。");
+            _root.发布消息("[错误] 地图任务 NPC 配置不合法");
+            return;
+        }
+        trace("主程序：地图面板配置加载成功！");
+        _root.发布消息("地图面板配置加载完毕");
+    },
+    function():Void {
+        trace("主程序：地图面板配置加载失败！面板将不可用。");
+        _root.发布消息("[错误] 地图面板配置加载失败");
+    }
 );]]></script>
               </Actionscript>
               <elements/>

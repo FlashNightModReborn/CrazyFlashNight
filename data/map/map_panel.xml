@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- WebView 地图面板配置：唯一权威源。派生 MapPanelCatalog 的 5 张表 + MapTaskNpcRegistry 的 marker 字典 -->
+<map_panel>
+    <groups>
+        <group id="base"          page="base"    label="基地"/>
+        <group id="warlord"       page="faction" label="军阀线路"   lockedReason="军阀线路尚未开放"/>
+        <group id="rock"          page="faction" label="摇滚线路"   lockedReason="摇滚线路尚未开放"/>
+        <group id="blackiron"     page="faction" label="黑铁会线路" lockedReason="黑铁会线路尚未开放"/>
+        <group id="fallen"        page="faction" label="堕落城线路" lockedReason="堕落城线路尚未开放"/>
+        <group id="defense"       page="defense" label="第一防线"   lockedReason="第一防线尚未开放"/>
+        <group id="restricted"    page="defense" label="禁区"       lockedReason="禁区尚未开放"/>
+        <group id="schoolOutside" page="school"  label="学校外部"   lockedReason="学校外部尚未开放"/>
+        <group id="schoolInside"  page="school"  label="学校内部"   lockedReason="学校内部尚未开放"/>
+    </groups>
+
+    <hotspots>
+        <!-- base (14) -->
+        <hotspot id="base_roof"          group="base" frame="基地房顶"/>
+        <hotspot id="base_lobby"         group="base" frame="基地1层"/>
+        <hotspot id="base_entrance"      group="base" frame="基地门口"/>
+        <hotspot id="base_garage"        group="base" frame="基地车库"/>
+        <hotspot id="merc_bar"           group="base" frame="佣兵酒吧"/>
+        <hotspot id="infirmary"          group="base" frame="医务室"/>
+        <hotspot id="dormitory"          group="base" frame="房间"/>
+        <hotspot id="basement1"          group="base" frame="地下室1层"/>
+        <hotspot id="gym"                group="base" frame="健身房"/>
+        <hotspot id="armory"             group="base" frame="武器库"/>
+        <hotspot id="cafeteria"          group="base" frame="地图-食堂"/>
+        <hotspot id="corridor"           group="base" frame="地图-走廊"/>
+        <hotspot id="lab"                group="base" frame="地图-实验室"/>
+        <hotspot id="underground_water"  group="base" frame="地下2层"/>
+
+        <!-- warlord (3) -->
+        <hotspot id="warlord_base"       group="warlord" frame="地图-军阀基地"/>
+        <hotspot id="warlord_tent"       group="warlord" frame="地图-军阀帐篷"/>
+        <hotspot id="firing_range"       group="warlord" frame="地图-靶场"/>
+
+        <!-- rock (2) -->
+        <hotspot id="rock_park"          group="rock" frame="地图-摇滚公园"/>
+        <hotspot id="rock_rehearsal"     group="rock" frame="地图-摇滚排练室"/>
+
+        <!-- blackiron (2) -->
+        <hotspot id="blackiron_training" group="blackiron" frame="地图-黑铁会修炼场"/>
+        <hotspot id="blackiron_pavilion" group="blackiron" frame="地图-黑铁阁"/>
+
+        <!-- fallen (2) -->
+        <hotspot id="fallen_bar"         group="fallen" frame="地图-堕落城酒吧"/>
+        <hotspot id="fallen_street"      group="fallen" frame="地图-堕落城商业街"/>
+
+        <!-- defense (1) -->
+        <hotspot id="first_defense"      group="defense" frame="地图-第一防线防区"/>
+
+        <!-- restricted (2) -->
+        <hotspot id="alliance_dock"      group="restricted" frame="地图-同盟卸货站"/>
+        <hotspot id="alliance_corridor"  group="restricted" frame="地图-同盟通路"/>
+
+        <!-- schoolOutside (1) -->
+        <hotspot id="union_university"   group="schoolOutside" frame="地图-联合大学"/>
+
+        <!-- schoolInside (11) -->
+        <hotspot id="workshop"              group="schoolInside" frame="地图-大学地下工坊"/>
+        <hotspot id="university_interior"   group="schoolInside" frame="地图-大学内部"/>
+        <hotspot id="university_playground" group="schoolInside" frame="地图-大学操场"/>
+        <hotspot id="dorm_downstairs"       group="schoolInside" frame="地图-大学宿舍楼下"/>
+        <hotspot id="school_dormitory"      group="schoolInside" frame="地图-大学宿舍"/>
+        <hotspot id="office"                group="schoolInside" frame="地图-教学楼办公室"/>
+        <hotspot id="kendo_club"            group="schoolInside" frame="地图-剑道社"/>
+        <hotspot id="science_class"         group="schoolInside" frame="地图-理科教室"/>
+        <hotspot id="arts_class"            group="schoolInside" frame="地图-文科教室"/>
+        <hotspot id="teaching_interior"     group="schoolInside" frame="地图-教学楼内部"/>
+        <hotspot id="teaching_right"        group="schoolInside" frame="地图-教学楼内部右侧"/>
+    </hotspots>
+
+    <task_npcs>
+        <!-- base (20) -->
+        <npc name="Pig"                hotspot="base_garage" x="171.55" y="217.85"/>
+        <npc name="Boy"                hotspot="base_garage" x="212.95" y="246.0"/>
+        <npc name="King"               hotspot="base_garage" x="265.35" y="217.85"/>
+        <npc name="冷兵器商人"         hotspot="base_garage" x="120.5"  y="222.05"/>
+        <npc name="杀马特"             hotspot="base_garage" x="365.95" y="217.6"/>
+        <npc name="酒保"               hotspot="merc_bar"    x="444.85" y="136.15"/>
+        <npc name="格格巫"             hotspot="merc_bar"    x="567.05" y="173.8"/>
+        <npc name="丽丽丝"             hotspot="merc_bar"    x="621.55" y="173.8"/>
+        <npc name="舞女"               hotspot="merc_bar"    x="389.55" y="140.2"/>
+        <npc name="宝石线人"           hotspot="base_lobby"  x="564.15" y="249.75"/>
+        <npc name="前治安官"           hotspot="base_lobby"  x="625.5"  y="237.2"/>
+        <npc name="黑铁会外交部长"     hotspot="base_lobby"  x="363.25" y="264.75"/>
+        <npc name="学生妹"             hotspot="base_lobby"  x="414.1"  y="245.45"/>
+        <npc name="幸存老兵"           hotspot="base_lobby"  x="466.5"  y="259.35"/>
+        <npc name="The Girl"           hotspot="basement1"   x="436.25" y="332.65"/>
+        <npc name="Andy Law"           hotspot="basement1"   x="497.55" y="329.4"/>
+        <npc name="Shop Girl"          hotspot="basement1"   x="549.95" y="291.2"/>
+        <npc name="Blue"               hotspot="basement1"   x="620.9"  y="336.8"/>
+        <npc name="小F"                hotspot="basement1"   x="609.15" y="279.75"/>
+        <npc name="厨师"               hotspot="cafeteria"   x="324.85" y="431.85"/>
+
+        <!-- faction (15) -->
+        <npc name="general"            hotspot="warlord_base"       x="239.3"  y="170.6"/>
+        <npc name="gazer"              hotspot="warlord_base"       x="128.95" y="168.1"/>
+        <npc name="director"           hotspot="warlord_tent"       x="190.85" y="125.0"/>
+        <npc name="itinerant"          hotspot="firing_range"       x="154.35" y="293.6"/>
+        <npc name="surveyor"           hotspot="firing_range"       x="254.35" y="264.1"/>
+        <npc name="singer"             hotspot="rock_park"          x="540.55" y="158.5"/>
+        <npc name="keyboard"           hotspot="rock_park"          x="603.75" y="187.7"/>
+        <npc name="guitar"             hotspot="rock_park"          x="476.95" y="186.1"/>
+        <npc name="火凤"               hotspot="blackiron_training" x="135.7"  y="425.45"/>
+        <npc name="翅虎"               hotspot="blackiron_training" x="230.95" y="412.7"/>
+        <npc name="黑龙"               hotspot="blackiron_pavilion" x="277.5"  y="433.2"/>
+        <npc name="黑铁"               hotspot="blackiron_pavilion" x="186.9"  y="514.5"/>
+        <npc name="牛仔"               hotspot="fallen_bar"         x="522.75" y="471.7"/>
+        <npc name="假肢仙人"           hotspot="fallen_street"      x="753.55" y="488.45"/>
+        <npc name="吸特乐"             hotspot="fallen_street"      x="675.8"  y="482.0"/>
+
+        <!-- defense (6) -->
+        <npc name="artist"             hotspot="first_defense"      x="161.65" y="155.15"/>
+        <npc name="soldier"            hotspot="first_defense"      x="250.7"  y="162.6"/>
+        <npc name="排骨"               hotspot="alliance_dock"      x="137.45" y="332.3"/>
+        <npc name="机哥"               hotspot="alliance_dock"      x="189.45" y="333.65"/>
+        <npc name="阿波"               hotspot="alliance_dock"      x="241.2"  y="331.65"/>
+        <npc name="PROPHET"            hotspot="alliance_corridor"  x="228.45" y="392.45"/>
+
+        <!-- school (13) -->
+        <npc name="黑仔"               hotspot="union_university"    x="430.05" y="508.2"/>
+        <npc name="Bat"                hotspot="union_university"    x="471.4"  y="529.7"/>
+        <npc name="Tomboy"             hotspot="union_university"    x="516.9"  y="513.2"/>
+        <npc name="武器订购系统"       hotspot="union_university"    x="570.4"  y="516.7"/>
+        <npc name="体育老师"           hotspot="university_playground" x="539.2" y="428.65"/>
+        <npc name="室友"               hotspot="school_dormitory"    x="130.3"  y="347.3"/>
+        <npc name="程铮"               hotspot="teaching_interior"   x="486.65" y="255.75"/>
+        <npc name="剑道社长"           hotspot="kendo_club"          x="663.3"  y="213.1"/>
+        <npc name="冯佑权"             hotspot="teaching_interior"   x="593.3"  y="211.9"/>
+        <npc name="理科教授"           hotspot="science_class"       x="744.65" y="212.35"/>
+        <npc name="文科老师"           hotspot="arts_class"          x="810.9"  y="213.1"/>
+        <npc name="Vanshuther"         hotspot="university_interior" x="555.75" y="327.2"/>
+        <npc name="教导主任"           hotspot="office"              x="538.9"  y="104.15"/>
+
+        <alias name="∞天ㄙ★使的剪∞" canonical="杀马特"/>
+    </task_npcs>
+</map_panel>
