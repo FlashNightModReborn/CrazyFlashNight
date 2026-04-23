@@ -449,14 +449,14 @@ _root.是否达成任务检测 = function() {
             break;
         }
     }
-    // 任务完成状态 + 首个可交付 hotspot + 是否可直接传送 → Launcher 刘海屏
+    // 任务完成状态 + 最佳可交付 hotspot + 是否可直接传送 → Launcher 刘海屏
+    // resolveDeliverableState 会扫描全部已达成任务，优先挑可导航的；全部不可导航则回落首个
     var tdh:String = "";
     var tdn:String = "0";
     if (found) {
-        tdh = org.flashNight.arki.map.MapTaskNpcRegistry.findFirstDeliverableHotspotId();
-        if (tdh != "" && org.flashNight.arki.map.MapPanelService.canNavigateToHotspot(tdh)) {
-            tdn = "1";
-        }
+        var state:Object = org.flashNight.arki.map.MapPanelService.resolveDeliverableState();
+        tdh = String(state.hotspotId);
+        if (state.navigable) tdn = "1";
     }
     org.flashNight.arki.render.FrameBroadcaster.pushUiState(
         "td:" + (found ? "1" : "0") + "|tdh:" + tdh + "|tdn:" + tdn

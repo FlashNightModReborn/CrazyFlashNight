@@ -64,6 +64,23 @@ class org.flashNight.arki.map.MapPanelService {
     }
 
     /**
+     * 聚合 HUD 交付按钮所需状态：扫描全部已达成任务，优先挑选首个可导航的 hotspot；
+     * 若无可导航但存在已达成任务，回落为首个 hotspot（用于告知「传送尚未解锁」）。
+     * @return { hotspotId:String, navigable:Boolean }
+     */
+    public static function resolveDeliverableState():Object {
+        var ids:Array = MapTaskNpcRegistry.collectDeliverableHotspotIds();
+        if (ids.length == 0) return { hotspotId: "", navigable: false };
+
+        for (var i:Number = 0; i < ids.length; i++) {
+            if (canNavigateToHotspot(ids[i])) {
+                return { hotspotId: ids[i], navigable: true };
+            }
+        }
+        return { hotspotId: ids[0], navigable: false };
+    }
+
+    /**
      * 直接跳转到指定 hotspot。调用方需自行保证 canNavigateToHotspot == true。
      * 无 callId/无响应，副作用与 handleNavigate 一致。
      * @return Boolean 是否发起了跳转

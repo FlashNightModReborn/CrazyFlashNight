@@ -831,6 +831,8 @@ var Notch = (function() {
 
     function canDeliverNow() {
         // 战斗地图(mm=='3')禁用；需 AS2 侧标记 tdn=1（包含：非战斗、NAVIGATE_TARGETS 命中、所在组已解锁）
+        // 通知播放期(notice-active 态)不可交付，避免误点新任务横幅直传
+        if (!noticeBar || !noticeBar.classList.contains('task-done')) return false;
         return questTaskDone && deliverNavigable && deliverHotspotId !== '' && currentMapMode !== '3';
     }
 
@@ -980,6 +982,7 @@ var Notch = (function() {
         var item = noticeQueue.shift();
         setNoticeIcon(item.icon || ICON_PLACEHOLDER);
         noticeBar.classList.remove('task-done', 'can-deliver');
+        refreshDeliverButton();
         noticeBar.classList.add('notice-active');
         noticeBar.classList.remove('notice-flash');
         void noticeBar.offsetWidth;

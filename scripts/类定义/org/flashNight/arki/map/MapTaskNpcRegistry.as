@@ -125,14 +125,16 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
     }
 
     /**
-     * 扫描 _root.tasks_to_do，返回首个可交付任务的 finish_npc 所在 hotspotId。
-     * 仅用于 HUD 交付按钮快路径；不去重、不构建 marker、命中即返回。
-     * 未命中或无任务返回空串。
+     * 扫描 _root.tasks_to_do，按任务顺序收集所有已达成任务 finish_npc 对应的 hotspotId。
+     * 去重、保持任务顺序；无命中返回空数组。
+     * 上层（MapPanelService.resolveDeliverableState）负责挑选首个可导航的作为直传目标。
      */
-    public static function findFirstDeliverableHotspotId():String {
+    public static function collectDeliverableHotspotIds():Array {
+        var result:Array = [];
         var tasks:Array = _root.tasks_to_do;
-        if (tasks == undefined) return "";
+        if (tasks == undefined) return result;
 
+        var seen:Object = {};
         for (var i:Number = 0; i < tasks.length; i++) {
             if (!_root.taskCompleteCheck(i)) continue;
 
@@ -145,9 +147,12 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
             var markerDef:Object = findMarker(finishNpc);
             if (markerDef == undefined) continue;
 
-            return String(markerDef.hotspotId);
+            var hid:String = String(markerDef.hotspotId);
+            if (seen[hid]) continue;
+            seen[hid] = true;
+            result.push(hid);
         }
-        return "";
+        return result;
     }
 
     /**

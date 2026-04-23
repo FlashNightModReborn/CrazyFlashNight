@@ -60,7 +60,7 @@ Launcher 侧 Web 地图 panel 的正式打开路径已收敛为以下三条：
 
 - `TASK_MAP`（小地图 HUD 点击）：`WebOverlayForm.cs` 直接打开 `panel:"map"`，参数固定为 `{"source":"task_map","dev":false}`
 - `panel_request` + `source="as2_garage_*"`（AS2 `openWebMap(params)` → `MapPanelService.handleOpenWebMap`）：AS2 侧车库等旧入口通过 `gameCommands["openWebMap"]` 统一转发，payload 可携带 `pageId` 指定初始页
-- `TASK_DELIVER`（任务条可交付态）：不进 `panel` 面板，直接调用 `MapPanelService.navigateToHotspot(hotspotId)` 做跳转，入口依赖 `MapTaskNpcRegistry.findFirstDeliverableHotspotId()` 与 `MapPanelService.canNavigateToHotspot()` 共同闸门
+- `TASK_DELIVER`（任务条可交付态）：不进 `panel` 面板，直接调用 `MapPanelService.navigateToHotspot(hotspotId)` 做跳转。状态聚合由 `MapPanelService.resolveDeliverableState()` 负责——它读 `MapTaskNpcRegistry.collectDeliverableHotspotIds()` 拿到所有已达成任务的 hotspot，再用 `canNavigateToHotspot()` 挑首个可导航的作为 `tdh`，全部不可导航时回落到首个并置 `tdn=0` 让 UI 告知「传送尚未解锁」
 
 任务条的状态由 AS2 `是否达成任务检测` 推送的 `td / tdh / tdn` KV 驱动：`td=1` 时显示「任务已达成」，若 `tdh` 非空且 `tdn=1`，整条 notice 点击会触发 `TASK_DELIVER`；否则退化为打开任务栏。
 
