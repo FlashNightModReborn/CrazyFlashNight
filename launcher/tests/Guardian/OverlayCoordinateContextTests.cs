@@ -67,5 +67,25 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.Equal(new Point(-1, -1), ctx.PhysicalPointToCss(-1, -1));
         }
+
+        [Fact]
+        public void WebViewZoomMatchesPhysicalScaleAtOneHundredPercentDpi()
+        {
+            double physicalScale = WebOverlayForm.CalculateCssPhysicalScale(900);
+            double webZoom = WebOverlayForm.CalculateWebViewZoomFactor(900, 96);
+
+            Assert.Equal(1.5625, physicalScale, 4);
+            Assert.Equal(physicalScale, webZoom, 4);
+        }
+
+        [Fact]
+        public void WebViewZoomIsDpiNormalized()
+        {
+            double physicalScale = WebOverlayForm.CalculateCssPhysicalScale(900);
+            double webZoom = WebOverlayForm.CalculateWebViewZoomFactor(900, 144);
+
+            Assert.Equal(1.5625, physicalScale, 4);
+            Assert.Equal(1.0417, webZoom, 4);
+        }
     }
 }

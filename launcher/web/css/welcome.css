@@ -216,8 +216,8 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 /* ── 槽位视图覆盖 ── */
 /* bootstrap.css 的 .wrap / .cards / .card 在槽位视图内继续生效基础布局,
    这里整体重皮匹配欢迎页 DLS 青 / 锈红 / 黑铁主题 (Consolas monospace + clip-path + 主题色) */
-#view-slots{padding:70px 24px 50px 24px}
-#view-slots .wrap{padding:0;background:transparent;height:100%;display:flex;flex-direction:column}
+#view-slots{padding:70px 24px 50px 24px;--slot-secondary-scale:min(var(--fs-scale),1.45);--slot-control-scale:min(var(--fs-scale),1.55)}
+#view-slots .wrap{padding:0;background:transparent;height:100%;min-height:0;display:flex;flex-direction:column}
 #view-slots .slots-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--rust-dim);position:relative}
 #view-slots .slots-header::before{content:"";position:absolute;bottom:-1px;left:0;width:80px;height:1px;background:var(--dls);box-shadow:0 0 6px var(--dls)}
 /* "选择存档" 4 个中文字原 letter-spacing:8px 严重拉散, 降到 4px 保留仪式感又不失连读性 */
@@ -227,19 +227,19 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 #view-slots .btn-back:hover{background:var(--dls);color:#000;box-shadow:0 0 10px rgba(61,213,255,.4)}
 
 /* 工具栏按钮 */
-#view-slots .toolbar{display:flex;gap:8px;margin-bottom:14px;align-items:center}
-#view-slots .toolbar button{background:transparent;border:1px solid rgba(200,178,138,.25);color:var(--bone);padding:6px 14px;font-size:var(--fs-sm);letter-spacing:calc(2px * var(--ls-scale));cursor:pointer;font-family:Consolas,monospace;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);border-radius:0;transition:all .15s}
+#view-slots .toolbar{display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap;min-width:0}
+#view-slots .toolbar button{background:transparent;border:1px solid rgba(200,178,138,.25);color:var(--bone);padding:6px 14px;font-size:var(--fs-sm);letter-spacing:calc(2px * var(--ls-scale));cursor:pointer;font-family:Consolas,monospace;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);border-radius:0;transition:all .15s;white-space:nowrap}
 #view-slots .toolbar button:hover{border-color:var(--dls);color:var(--dls);background:rgba(61,213,255,.06);text-shadow:0 0 6px var(--dls)}
 
 /* 卡片网格 */
-#view-slots .cards{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;align-content:start;padding-right:4px}
+#view-slots .cards{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(216px + 92px * var(--fs-scale))),1fr));gap:calc(10px + 2px * var(--geom-scale));align-content:start;align-items:stretch;padding-right:4px}
 #view-slots .cards::-webkit-scrollbar{width:6px}
 #view-slots .cards::-webkit-scrollbar-track{background:rgba(0,0,0,.3)}
 #view-slots .cards::-webkit-scrollbar-thumb{background:var(--dls-dim)}
 #view-slots .cards::-webkit-scrollbar-thumb:hover{background:var(--dls-deep)}
 
 /* 卡片本体: 深底 + 左锈红竖条 + 右下角斜切 */
-#view-slots .card{position:relative;background:linear-gradient(180deg,rgba(12,14,18,.85) 0%,rgba(5,7,10,.9) 100%);border:1px solid var(--dls-dim);border-left:3px solid var(--rust-dim);border-radius:0;padding:14px 14px 12px;display:flex;flex-direction:column;min-height:138px;clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);transition:border-color .15s,box-shadow .2s}
+#view-slots .card{position:relative;box-sizing:border-box;min-width:0;background:linear-gradient(180deg,rgba(12,14,18,.85) 0%,rgba(5,7,10,.9) 100%);border:1px solid var(--dls-dim);border-left:3px solid var(--rust-dim);border-radius:0;padding:calc(12px + 5px * var(--geom-scale)) calc(12px + 4px * var(--geom-scale)) calc(10px + 3px * var(--geom-scale));display:flex;flex-direction:column;min-height:calc(128px + 62px * var(--fs-scale));clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);transition:border-color .15s,box-shadow .2s;overflow:hidden}
 #view-slots .card:hover{border-color:var(--dls);border-left-color:var(--rust);box-shadow:0 0 16px rgba(61,213,255,.15)}
 
 #view-slots .card.corrupt{border-color:var(--rust);border-left-color:var(--rust);background:linear-gradient(180deg,rgba(58,19,13,.35) 0%,rgba(12,6,6,.9) 100%)}
@@ -250,28 +250,29 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 #view-slots .card.empty-slot:hover{border-color:var(--dls);border-left-color:var(--dls);opacity:1}
 
 /* 卡片顶部 SAVE 角标 (仅已有存档卡片显示, 空槽省略避免视觉噪音) */
-#view-slots .card:not(.empty-slot)::before{content:"SAVE";position:absolute;top:-7px;left:10px;background:var(--bg0);color:var(--rust);font-size:var(--fs-2xs);letter-spacing:calc(4px * var(--ls-scale));font-family:Consolas,monospace;padding:0 6px;pointer-events:none}
+#view-slots .card:not(.empty-slot){padding-top:calc(22px + 5px * var(--geom-scale))}
+#view-slots .card:not(.empty-slot)::before{content:"SAVE";position:absolute;top:5px;left:10px;background:rgba(5,7,10,.96);color:var(--rust);font-size:var(--fs-2xs);line-height:1;letter-spacing:calc(4px * var(--ls-scale));font-family:Consolas,monospace;padding:0 6px;pointer-events:none}
 #view-slots .card.corrupt::before{content:"CORRUPT";color:var(--rust)}
 #view-slots .card.tombstoned::before{content:"TOMB";color:#aaa}
 #view-slots .card.inconsistent::before{content:"INCON";color:#d08040}
 
 /* 文本层级 */
-#view-slots .card .slot{color:var(--bone);font-weight:700;font-size:var(--fs-lg);letter-spacing:calc(2px * var(--ls-scale));margin-bottom:2px;font-family:"Microsoft YaHei",sans-serif}
+#view-slots .card .slot{color:var(--bone);font-weight:700;font-size:var(--fs-lg);line-height:1.12;letter-spacing:calc(1px * var(--ls-scale));margin-bottom:4px;font-family:"Microsoft YaHei",sans-serif;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #view-slots .card.empty-slot .slot{color:var(--dust)}
-#view-slots .card .slot-id{color:var(--dust);font-size:var(--fs-2xs);margin-bottom:6px;font-family:Consolas,monospace;letter-spacing:1px;opacity:.7}
-#view-slots .card .progress{color:var(--dls);font-size:var(--fs-sm);min-height:16px;margin-bottom:4px;font-family:Consolas,monospace;letter-spacing:1px}
-#view-slots .card .meta{color:var(--dust);font-size:var(--fs-xs);margin-bottom:10px;min-height:14px;font-family:Consolas,monospace;letter-spacing:1px}
+#view-slots .card .slot-id{color:var(--dust);font-size:calc(11px * var(--slot-secondary-scale));line-height:1.15;margin-bottom:8px;font-family:Consolas,monospace;letter-spacing:1px;opacity:.7;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#view-slots .card .progress{color:var(--dls);font-size:calc(13px * var(--slot-control-scale));line-height:1.18;min-height:1.18em;margin-bottom:5px;font-family:Consolas,monospace;letter-spacing:1px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#view-slots .card .meta{color:var(--dust);font-size:calc(12px * var(--slot-secondary-scale));line-height:1.18;margin-bottom:10px;min-height:1.18em;font-family:Consolas,monospace;letter-spacing:1px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* 标签 (复用欢迎页 flag 配色体系) */
-#view-slots .card .flag{display:inline-block;font-size:var(--fs-2xs);padding:1px 6px;margin-right:4px;letter-spacing:1px;font-family:Consolas,monospace;border-radius:0}
+#view-slots .card .flag{display:inline-block;font-size:calc(11px * var(--slot-secondary-scale));line-height:1.15;padding:1px 6px;margin-right:4px;letter-spacing:1px;font-family:Consolas,monospace;border-radius:0}
 #view-slots .card .flag.empty{background:rgba(200,178,138,.15);color:var(--bone)}
 #view-slots .card .flag.corrupt{background:rgba(184,58,46,.2);color:var(--rust)}
 #view-slots .card .flag.tombstoned{background:#2a2a2a;color:#aaa}
 #view-slots .card .flag.inconsistent{background:rgba(208,128,64,.2);color:#d08040}
 
 /* 卡片动作按钮: 主题化 + 小斜切 */
-#view-slots .card-actions{margin-top:auto;display:flex;gap:5px;flex-wrap:wrap}
-#view-slots .card-actions button{flex:1;min-width:52px;padding:6px 8px;font-size:var(--fs-sm);font-family:Consolas,monospace;letter-spacing:1px;background:transparent;border:1px solid var(--dust);color:var(--bone);border-radius:0;cursor:pointer;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);transition:all .15s}
+#view-slots .card-actions{margin-top:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+#view-slots .card-actions button{box-sizing:border-box;min-width:0;width:100%;padding:6px 8px;font-size:calc(13px * var(--slot-control-scale));line-height:1.15;font-family:Consolas,monospace;letter-spacing:1px;background:transparent;border:1px solid var(--dust);color:var(--bone);border-radius:0;cursor:pointer;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);transition:all .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #view-slots .card-actions button:hover{border-color:var(--dls);color:var(--dls);background:rgba(61,213,255,.08);text-shadow:0 0 5px var(--dls)}
 #view-slots .card-actions .btn-start.primary,
 #view-slots .card-actions .btn-rebuild,
@@ -284,8 +285,8 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 #view-slots .card-actions button:disabled{border-color:#2a2a2a;color:#444;cursor:not-allowed;background:transparent}
 
 /* 空槽位: "新建角色"按钮独占一行, 限宽避免拉伸过丑 */
-#view-slots .card.empty-slot .card-actions{justify-content:center}
-#view-slots .card.empty-slot .card-actions .btn-newchar{flex:0 0 auto;min-width:120px;padding:7px 16px}
+#view-slots .card.empty-slot .card-actions{grid-template-columns:1fr;justify-items:center}
+#view-slots .card.empty-slot .card-actions .btn-newchar{width:min(72%,220px);padding:7px 16px}
 
 /* 欢迎页 slot-plate: fresh-mode 标签配色 (新建/重建预告) */
 .slot-plate .meta .flag.fresh-mode{background:rgba(61,213,255,.15);color:var(--dls);border:1px solid rgba(61,213,255,.3)}

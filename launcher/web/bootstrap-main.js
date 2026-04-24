@@ -73,7 +73,7 @@
   function applyFontScale(v) {
     v = clampFontScale(v);
     _prefsUiFontScale = v;
-    // 写到 :root 上；bootstrap.css 会按当前视口 cap 得到最终 --fs-scale，避免默认小窗裁内容。
+    // 写到 :root 上；bootstrap.css 直接以用户选择作为 --fs-scale。
     document.documentElement.style.setProperty('--user-fs-scale', String(v));
   }
 
@@ -255,7 +255,7 @@
       applyConfirmLabel('normal', null);
       return;
     }
-    welcomeSlotNameEl.textContent = s.__preset ? presetDisplayName(s.slot) : s.slot;
+    welcomeSlotNameEl.textContent = presetDisplayName(s.slot);
 
     var mode = effectiveMode(s);
     var modeHint = '';
@@ -453,7 +453,7 @@
       if (s.lastModified) meta += ' · ' + s.lastModified.slice(0, 16).replace('T', ' ');
     }
 
-    var displayName = s.__preset ? presetDisplayName(s.slot) : s.slot;
+    var displayName = presetDisplayName(s.slot);
     var progressText = s.__empty ? '—' : (s.mainProgress || '—');
 
     var actions = '';
@@ -473,7 +473,7 @@
               + '<button class="btn-delete danger">删除</button>'
               + '<button class="btn-reset danger">清理副本</button>';
     } else {
-      actions = '<button class="btn-start primary">选 择</button>'
+      actions = '<button class="btn-start primary">选择</button>'
               + '<button class="btn-edit">编辑</button>'
               + '<button class="btn-export">导出</button>'
               + '<button class="btn-delete danger">删除</button>';

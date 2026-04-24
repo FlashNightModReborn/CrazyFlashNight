@@ -180,6 +180,7 @@ $requiredWebPaths = @(
     "modules\archive-schema.js",
     "modules\archive-editor.js",
     "modules\diagnostic-log.js",
+    "modules\display.js",
     "modules\about.js",
     "modules\bridge.js",
     "modules\uidata.js",

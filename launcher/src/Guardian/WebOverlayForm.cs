@@ -365,8 +365,14 @@ namespace CF7Launcher.Guardian
 
         #region Owner 跟随
 
-        /// <summary>当前缩放比（viewport 实际高度 / Flash 设计高度 576）。</summary>
+        private const double FlashDesignHeight = 576.0;
+
+        /// <summary>
+        /// 当前 CSS → 物理像素兜底缩放比（viewport 物理高度 / Flash 设计高度 576）。
+        /// 注意：这不是直接写入 WebView2 的 ZoomFactor；高 DPI 下 WebView2 还会乘 DPR。
+        /// </summary>
         private double _zoomFactor = 1.0;
+        private double _webViewZoomFactor = 1.0;
 
         private void ScheduleSyncPosition()
         {
@@ -480,10 +486,15 @@ namespace CF7Launcher.Guardian
 
                 SetWindowPos(this.Handle, HWND_TOP, x, y, w, h, SWP_NOACTIVATE);
 
-                // WebView2 缩放：viewport 实际高度 / Flash 设计高度
-                double newZoom = Math.Max(0.25, vpH / 576.0);
-                bool zoomChanged = Math.Abs(newZoom - _lastViewportZoom) > 0.001;
-                _zoomFactor = newZoom;
+                // CSS→物理命中比例仍按 Flash 设计高度计算；WebView2 视觉 ZoomFactor
+                // 需要除以当前 DPI scale，避免 125%/150% 系统缩放下视觉层被 DPR 二次放大。
+                uint dpiX, dpiY;
+                DpiDiagnostics.TryGetWindowDpi(this.Handle, out dpiX, out dpiY);
+                double cssPhysicalScale = CalculateCssPhysicalScale(vpH);
+                double newWebViewZoom = CalculateWebViewZoomFactor(vpH, dpiY);
+                bool zoomChanged = Math.Abs(newWebViewZoom - _lastViewportZoom) > 0.001;
+                _zoomFactor = cssPhysicalScale;
+                _webViewZoomFactor = newWebViewZoom;
 
                 _coordinateContext.UpdateOverlay(new Rectangle(x, y, w, h),
                     vpX, vpY, vpW, vpH, this.Handle, _zoomFactor, reason);
@@ -498,14 +509,14 @@ namespace CF7Launcher.Guardian
                     _inputShield.RequestPositionSync();
                 }
 
-                if (_webReady && _webView != null && Math.Abs(newZoom - _webView.ZoomFactor) > 0.001)
+                if (_webReady && _webView != null && Math.Abs(newWebViewZoom - _webView.ZoomFactor) > 0.001)
                 {
-                    _webView.ZoomFactor = _zoomFactor;
+                    _webView.ZoomFactor = _webViewZoomFactor;
                 }
 
                 _lastViewportWidth = w;
                 _lastViewportHeight = h;
-                _lastViewportZoom = newZoom;
+                _lastViewportZoom = newWebViewZoom;
 
                 if (_webReady && (viewportChanged || zoomChanged || monitorChanged || dpiChanged))
                 {
@@ -657,7 +668,7 @@ namespace CF7Launcher.Guardian
             if (!_coordinateContext.HasWebMetrics && !_missingMetricsWarned)
             {
                 _missingMetricsWarned = true;
-                LogManager.Log("[DPI] interactiveRect arrived before viewportMetrics; using fallback zoom=" + _zoomFactor.ToString("0.###"));
+                LogManager.Log("[DPI] interactiveRect arrived before viewportMetrics; using fallback physicalScale=" + _zoomFactor.ToString("0.###"));
             }
 
             List<Rectangle> rects = new List<Rectangle>();
@@ -733,6 +744,23 @@ namespace CF7Launcher.Guardian
                 return 0;
             try { return token.Value<double>(); }
             catch { return 0; }
+        }
+
+        public static double CalculateCssPhysicalScale(double viewportPhysicalHeight)
+        {
+            if (double.IsNaN(viewportPhysicalHeight) || double.IsInfinity(viewportPhysicalHeight))
+                return 1.0;
+            return Math.Max(0.25, viewportPhysicalHeight / FlashDesignHeight);
+        }
+
+        public static double CalculateWebViewZoomFactor(double viewportPhysicalHeight, double dpiY)
+        {
+            double dpiScale = (dpiY > 0 && !double.IsNaN(dpiY) && !double.IsInfinity(dpiY))
+                ? dpiY / 96.0
+                : 1.0;
+            if (dpiScale <= 0)
+                dpiScale = 1.0;
+            return Math.Max(0.25, CalculateCssPhysicalScale(viewportPhysicalHeight) / dpiScale);
         }
 
         /// <summary>向 JS 发送结构化消息。</summary>
