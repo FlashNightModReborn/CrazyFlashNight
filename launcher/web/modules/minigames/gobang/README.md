@@ -35,9 +35,11 @@ Thematic vocabulary (see `docs/worldbuilding/07-祛魅补丁与支线储备.md`)
 
 - Deterministic gameplay core and rules in `core/index.js`
 - Browser panel shell + thematic skin in `gobang-panel.js`
+- Web Audio synthesis cues in `gobang-audio.js`
 - Runtime-specific visuals in `gobang.css`
 - Standalone browser harness in `dev/harness.html`
 - Pure logic QA suite in `dev/qa-suite.js`
+- The toolbar includes an internal read-only 教程/规则 manual with rules, visual opening snippets, and AI usage notes.
 
 ## Rulesets
 

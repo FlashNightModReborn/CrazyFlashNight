@@ -2121,7 +2121,7 @@
 
 /* Tabs */
 .help-tabs {
-    display:flex; gap:2px; padding:6px 14px;
+    display:flex; flex-wrap:wrap; gap:2px; padding:6px 14px;
     border-bottom:1px solid var(--cp-border);
     background:rgba(0,0,0,0.2);
 }

@@ -63,6 +63,30 @@ window.__minigameOverlayRoot = "../../../../";
         });
     }
 
+    function rectSnapshot(selector) {
+        var node = document.querySelector(selector);
+        if (!node) return null;
+        var rect = node.getBoundingClientRect();
+        return {
+            left: Math.round(rect.left),
+            top: Math.round(rect.top),
+            right: Math.round(rect.right),
+            bottom: Math.round(rect.bottom),
+            width: Math.round(rect.width),
+            height: Math.round(rect.height)
+        };
+    }
+
+    function captureGobangLayout(api) {
+        var layout = api.captureLayout({ panel: ".gobang-panel", main: ".gobang-main", side: ".gobang-side-pane" });
+        layout.content = rectSnapshot("#panel-content");
+        layout.boardShell = rectSnapshot(".gobang-board-shell");
+        layout.board = rectSnapshot(".gobang-board");
+        layout.toolbar = rectSnapshot(".gobang-toolbar");
+        api.setDump("gobangLayout", layout);
+        return layout;
+    }
+
     function browserCases(api) {
         return [
             {
@@ -88,10 +112,17 @@ window.__minigameOverlayRoot = "../../../../";
                     return openSession(api).then(function() {
                         var cells = document.querySelectorAll(".gobang-cell");
                         api.assertEqual(cells.length, 225, "gobang cell count");
-                        var layout = api.captureLayout({ panel: ".gobang-panel", main: ".gobang-main", side: ".gobang-side-pane" });
+                        var layout = captureGobangLayout(api);
                         api.assert(layout.panel.width > 500, "panel width too small");
                         api.assert(layout.side.width >= 250, "side pane too narrow: " + layout.side.width);
-                        return "cells=" + cells.length + ", sideWidth=" + layout.side.width;
+                        api.assert(!!layout.board && layout.board.width > 300, "board missing or too small");
+                        api.assert(Math.abs(layout.board.width - layout.board.height) <= 1, "board is not square");
+                        api.assert(layout.board.left >= layout.content.left - 1, "board overflows content left");
+                        api.assert(layout.board.right <= layout.content.right + 1, "board overflows content right");
+                        api.assert(layout.board.top >= layout.content.top - 1, "board overflows content top");
+                        api.assert(layout.board.bottom <= layout.content.bottom + 1, "board overflows content bottom");
+                        api.assert(layout.board.bottom <= layout.viewport.height + 1, "board overflows viewport bottom");
+                        return "cells=" + cells.length + ", board=" + layout.board.width + "x" + layout.board.height + ", sideWidth=" + layout.side.width;
                     });
                 }
             },
@@ -132,6 +163,52 @@ window.__minigameOverlayRoot = "../../../../";
                             api.assert(api.getSessionEvents("export").length > 0, "export event missing");
                             return "undo+export ok";
                         });
+                    });
+                }
+            },
+            {
+                id: "gb-ui5",
+                title: "thematic stone styles keep black anchor readable",
+                run: function() {
+                    return openSession(api, { aiEnabled: false }).then(function() {
+                        GobangPanel._debugClick(7, 7);
+                        GobangPanel._debugClick(7, 8);
+                        var black = document.querySelector(".gobang-cell.black .gobang-stone");
+                        var white = document.querySelector(".gobang-cell.white .gobang-stone");
+                        api.assert(!!black && !!white, "both stone styles should render");
+                        var bs = getComputedStyle(black);
+                        var ws = getComputedStyle(white);
+                        api.assert(bs.outlineWidth !== "0px", "black anchor needs visible outline");
+                        api.assert(bs.boxShadow !== "none", "black anchor needs glow/shadow separation");
+                        api.assert(bs.clipPath !== ws.clipPath, "black and white silhouettes should differ");
+                        return "blackOutline=" + bs.outlineWidth + ", blackShadow=" + bs.boxShadow.slice(0, 32);
+                    });
+                }
+            },
+            {
+                id: "gb-ui6",
+                title: "internal manual exposes rules, books and AI guidance",
+                run: function() {
+                    return openSession(api).then(function() {
+                        var button = document.querySelector('[data-action="manual"]');
+                        api.assert(!!button, "manual button missing");
+                        button.click();
+                        var manual = document.querySelector("[data-gb-manual]");
+                        var body = document.querySelector("[data-gb-manual-body]");
+                        api.assert(manual && manual.getAttribute("data-open") === "1", "manual did not open");
+                        api.assert(body && body.textContent.indexOf("先看目标") >= 0, "rules content missing");
+                        api.assert(document.querySelectorAll(".gobang-book-board").length >= 1, "rules diagram missing");
+                        document.querySelector('[data-gb-manual-tab="books"]').click();
+                        api.assert(body.textContent.indexOf("星月应手") >= 0, "book content missing");
+                        api.assert(document.querySelectorAll(".gobang-book-card .gobang-book-board").length >= 4, "book diagrams missing");
+                        api.assert(document.querySelectorAll(".gobang-book-axis.col").length >= 9, "book coordinate axis missing");
+                        var bookRect = document.querySelector(".gobang-book-card .gobang-book-board").getBoundingClientRect();
+                        api.assert(bookRect.width >= 300, "book diagram too small: " + Math.round(bookRect.width));
+                        document.querySelector('[data-gb-manual-tab="ai"]').click();
+                        api.assert(body.textContent.indexOf("不会下时怎么用引擎") >= 0, "AI guidance content missing");
+                        document.querySelector('[data-action="manual-close"]').click();
+                        api.assert(manual.getAttribute("data-open") === "0", "manual did not close");
+                        return "manual tabs ok";
                     });
                 }
             }
@@ -176,7 +253,7 @@ window.__minigameOverlayRoot = "../../../../";
 
     function collectDump(api) {
         return {
-            layout: api.captureLayout({ panel: ".gobang-panel", main: ".gobang-main", side: ".gobang-side-pane" }),
+            layout: captureGobangLayout(api),
             state: window.GobangPanel && GobangPanel._debugGetState ? GobangPanel._debugGetState() : null
         };
     }
@@ -187,7 +264,13 @@ window.__minigameOverlayRoot = "../../../../";
         openPanel: function() {
             return openSession({ getSessionEvents: function() { return []; }, waitForNextSessionEvent: function() { return Promise.resolve(); } });
         },
-        runScenario: function(api) {
+        runScenario: function(api, scenario) {
+            if (scenario === "manual-books") {
+                return openSession(api).then(function() {
+                    GobangPanel._debugOpenManual("books");
+                    return MinigameHarness.wait(120);
+                });
+            }
             return openSession(api).then(function() {
                 GobangPanel._debugClick(7, 7);
                 return api.waitFor(function() {

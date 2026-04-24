@@ -50,6 +50,7 @@ scripts/screenshot.png
 
 # Claude Code local settings (machine-specific)
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
 scripts/TestLoader.as
 scripts/testloader_options.txt
 scripts/compile_output.txt

@@ -5,7 +5,7 @@
  * 网格 = 天网节点拓扑；1.3s 回响周期 = θ-域呼吸
  */
 .minigame-panel.gobang-panel {
-    --gb-board-max: min(72vh, 720px);
+    --gb-board-max: min(62vh, calc(100vw - 430px), 640px);
     --gb-cell-pct: calc(100% / 15);
     --gb-abyss-0: #05070d;
     --gb-abyss-1: #0a1020;
@@ -37,6 +37,7 @@
 }
 
 .gobang-panel .minigame-header {
+    padding: 10px 16px;
     border-bottom-color: rgba(120, 200, 255, 0.22);
     background: linear-gradient(180deg, rgba(8, 12, 20, 0.95), rgba(8, 12, 20, 0.85));
 }
@@ -117,8 +118,8 @@
 
 .gobang-main {
     grid-template-columns: minmax(0, 1fr) minmax(262px, 284px);
-    gap: 10px;
-    padding: 10px 12px;
+    gap: 8px;
+    padding: 8px 10px 10px;
 }
 
 .gobang-board-pane {
@@ -182,6 +183,20 @@
     min-height: 0;
     flex: 1;
     position: relative;
+}
+
+.gobang-board-shell::before {
+    content: "";
+    grid-column: 2;
+    grid-row: 2;
+    pointer-events: none;
+    z-index: 2;
+    background:
+        linear-gradient(90deg, transparent 48%, rgba(255, 106, 42, 0.22) 49.5%, transparent 51%) center / 100% 100% no-repeat,
+        linear-gradient(0deg, transparent 48%, rgba(255, 106, 42, 0.18) 49.5%, transparent 51%) center / 100% 100% no-repeat,
+        radial-gradient(circle at 50% 50%, transparent 0 10%, rgba(120, 214, 255, 0.18) 10.5% 11%, transparent 11.5% 100%);
+    opacity: 0.34;
+    mix-blend-mode: screen;
 }
 
 .gobang-coordinate-row {
@@ -395,10 +410,10 @@
 
 .gobang-stone {
     position: absolute;
-    width: 78%;
-    height: 78%;
-    left: 11%;
-    top: 11%;
+    width: 82%;
+    height: 82%;
+    left: 9%;
+    top: 9%;
     opacity: 0;
     transform: scale(0.5);
     transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.25, 1.3), opacity 0.16s ease;
@@ -418,30 +433,72 @@
         50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%
     );
     background:
+        /* 琥珀敌我识别点 */
+        radial-gradient(circle at 50% 17%,
+            #ffd49a 0%,
+            var(--gb-amber) 7%,
+            rgba(255, 176, 74, 0.20) 14%,
+            transparent 22%),
         /* 中心电蓝核心 */
         radial-gradient(circle at 50% 50%,
-            #9fe7ff 0%,
-            var(--gb-anchor-core) 12%,
-            rgba(120, 214, 255, 0.32) 22%,
-            transparent 34%),
+            #d7f7ff 0%,
+            #9fe7ff 9%,
+            var(--gb-anchor-core) 17%,
+            rgba(120, 214, 255, 0.38) 29%,
+            transparent 43%),
         /* 拉丝金属高光 */
         linear-gradient(155deg,
-            rgba(180, 210, 240, 0.35) 0%,
-            rgba(80, 110, 150, 0.12) 30%,
-            transparent 55%),
+            rgba(238, 250, 255, 0.58) 0%,
+            rgba(150, 190, 230, 0.26) 30%,
+            transparent 58%),
+        linear-gradient(335deg,
+            transparent 0%,
+            rgba(120, 214, 255, 0.20) 42%,
+            rgba(238, 250, 255, 0.34) 50%,
+            transparent 62%),
         /* 钛钢底 */
         radial-gradient(circle at 50% 55%,
-            #2a3850 0%,
-            #141c2c 55%,
-            #070c18 100%);
+            #4c6280 0%,
+            #25364f 48%,
+            #121e32 78%,
+            #08101f 100%);
+    outline: 1.5px solid rgba(170, 238, 255, 0.9);
+    outline-offset: -1px;
     box-shadow:
-        inset 0 0 0 1px rgba(120, 214, 255, 0.6),
-        inset 0 0 10px rgba(120, 214, 255, 0.18),
-        inset -3px -5px 10px rgba(0, 0, 0, 0.55),
-        inset 2px 2px 6px rgba(180, 220, 255, 0.12),
-        0 0 12px rgba(92, 180, 255, 0.42),
-        0 2px 4px rgba(0, 0, 0, 0.55);
-    filter: drop-shadow(0 0 2px rgba(120, 214, 255, 0.55));
+        inset 0 0 0 2px rgba(210, 240, 255, 0.26),
+        inset 0 0 12px rgba(120, 214, 255, 0.26),
+        inset -3px -5px 10px rgba(0, 0, 0, 0.48),
+        inset 2px 2px 8px rgba(225, 245, 255, 0.24),
+        0 0 15px rgba(92, 190, 255, 0.64),
+        0 0 2px rgba(255, 176, 74, 0.95),
+        0 2px 5px rgba(0, 0, 0, 0.64);
+    filter:
+        drop-shadow(0 0 3px rgba(120, 214, 255, 0.85))
+        drop-shadow(0 0 1px rgba(255, 176, 74, 0.8));
+}
+
+.gobang-cell.black .gobang-stone::before,
+.gobang-cell.black .gobang-stone::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+}
+
+.gobang-cell.black .gobang-stone::before {
+    inset: 18%;
+    clip-path: polygon(50% 0%, 92% 26%, 92% 74%, 50% 100%, 8% 74%, 8% 26%);
+    border: 1px solid rgba(255, 176, 74, 0.72);
+    opacity: 0.72;
+}
+
+.gobang-cell.black .gobang-stone::after {
+    left: 50%;
+    top: 50%;
+    width: 42%;
+    height: 2px;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(90deg, transparent, #d7f7ff, transparent);
+    box-shadow: 0 0 6px rgba(120, 214, 255, 0.9);
 }
 
 /* ================== 白子 = 尸解仙模因 ================== */
@@ -469,6 +526,29 @@
         0 0 4px rgba(220, 180, 255, 0.8),
         0 2px 4px rgba(0, 0, 0, 0.45);
     filter: drop-shadow(0 0 3px rgba(200, 160, 255, 0.55));
+}
+
+.gobang-cell.white .gobang-stone::before,
+.gobang-cell.white .gobang-stone::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    inset: 16%;
+    border-radius: 50%;
+}
+
+.gobang-cell.white .gobang-stone::before {
+    background:
+        linear-gradient(35deg, transparent 0 42%, rgba(255, 255, 255, 0.68) 43% 44%, transparent 45% 100%),
+        linear-gradient(115deg, transparent 0 52%, rgba(220, 180, 255, 0.48) 53% 54%, transparent 55% 100%);
+    opacity: 0.62;
+}
+
+.gobang-cell.white .gobang-stone::after {
+    inset: 9%;
+    border: 1px solid rgba(235, 220, 255, 0.58);
+    box-shadow: inset 0 0 7px rgba(255, 255, 255, 0.16);
+    opacity: 0.8;
 }
 
 /* ================== last-move 铁枪会瞄准准星 ================== */
@@ -525,6 +605,15 @@
     border-radius: 50%;
     box-shadow: 0 0 8px rgba(120, 200, 255, 0.45);
     filter: none;
+}
+
+.gobang-cell.empty:hover::before {
+    content: "";
+    position: absolute;
+    inset: 20%;
+    border: 1px dashed rgba(120, 214, 255, 0.45);
+    border-radius: 50%;
+    pointer-events: none;
 }
 
 .gobang-panel[data-pending-ai="1"] .gobang-cell.empty:hover .gobang-stone,
@@ -666,6 +755,319 @@
     padding: 6px 8px;
 }
 
+/* ================== 内置教程 / 规则 / 棋谱 ================== */
+
+.gobang-manual {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background:
+        radial-gradient(ellipse at 30% 18%, rgba(120, 200, 255, 0.16), transparent 56%),
+        radial-gradient(ellipse at 72% 82%, rgba(180, 116, 255, 0.14), transparent 58%),
+        rgba(3, 6, 12, 0.78);
+    z-index: 20;
+    backdrop-filter: blur(4px);
+}
+
+.gobang-manual[data-open="1"] {
+    display: flex;
+}
+
+.gobang-manual-card {
+    width: min(1040px, calc(100vw - 56px));
+    max-height: min(640px, calc(100vh - 96px));
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(120, 200, 255, 0.32);
+    background:
+        linear-gradient(180deg, rgba(10, 18, 32, 0.98), rgba(5, 9, 18, 0.98));
+    box-shadow:
+        0 16px 42px rgba(0, 0, 0, 0.58),
+        inset 0 0 42px rgba(120, 200, 255, 0.05);
+}
+
+.gobang-manual-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(120, 200, 255, 0.22);
+}
+
+.gobang-manual-kicker {
+    color: rgba(140, 198, 240, 0.62);
+    font: 10px/1.3 "Consolas", "Cascadia Mono", monospace;
+    letter-spacing: 2px;
+}
+
+.gobang-manual-title {
+    color: #d9eaff;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.gobang-manual-close {
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(120, 200, 255, 0.28);
+    background: rgba(6, 10, 18, 0.85);
+    color: #cfe4ff;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.gobang-manual-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 8px 14px;
+    border-bottom: 1px solid rgba(120, 200, 255, 0.16);
+    background: rgba(3, 7, 13, 0.55);
+}
+
+.gobang-manual-tabs button {
+    min-width: 72px;
+    height: 28px;
+    border: 1px solid rgba(120, 200, 255, 0.24);
+    background: rgba(8, 14, 24, 0.92);
+    color: rgba(205, 218, 234, 0.72);
+    font: 11px/1 "Consolas", "Cascadia Mono", monospace;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.gobang-manual-tabs button.active {
+    border-color: rgba(120, 214, 255, 0.68);
+    color: #aeeaff;
+    box-shadow: 0 0 8px rgba(120, 214, 255, 0.16);
+}
+
+.gobang-manual-body {
+    overflow: auto;
+    padding: 14px 18px 18px;
+    color: rgba(205, 218, 234, 0.9);
+    font-size: 12.5px;
+    line-height: 1.68;
+}
+
+.gobang-manual-section {
+    margin: 0 0 14px;
+}
+
+.gobang-manual-section h3 {
+    margin: 0 0 6px;
+    color: var(--gb-signal);
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.gobang-manual-section p {
+    margin: 5px 0;
+}
+
+.gobang-manual-section ul,
+.gobang-manual-section ol {
+    margin: 6px 0 0;
+    padding-left: 20px;
+}
+
+.gobang-manual-section li {
+    margin: 3px 0;
+}
+
+.gobang-manual-section code {
+    padding: 1px 5px;
+    border: 1px solid rgba(120, 200, 255, 0.16);
+    background: rgba(120, 200, 255, 0.07);
+    color: var(--gb-amber);
+    font-family: "Consolas", "Cascadia Mono", monospace;
+}
+
+.gobang-manual-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 6px;
+}
+
+.gobang-manual-section th,
+.gobang-manual-section td {
+    padding: 7px 8px;
+    border: 1px solid rgba(120, 200, 255, 0.14);
+    text-align: left;
+    vertical-align: top;
+}
+
+.gobang-manual-section th {
+    width: 72px;
+    color: #cfe4ff;
+    background: rgba(120, 200, 255, 0.06);
+}
+
+.gobang-rule-demo {
+    display: grid;
+    grid-template-columns: 324px minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    margin-top: 8px;
+}
+
+.gobang-book-card {
+    padding: 10px;
+    border: 1px solid rgba(120, 200, 255, 0.14);
+    background: rgba(5, 10, 18, 0.45);
+}
+
+.gobang-book-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.gobang-book-head h3 {
+    margin: 0;
+}
+
+.gobang-book-head span,
+.gobang-book-caption {
+    color: rgba(178, 198, 222, 0.66);
+}
+
+.gobang-book-visual {
+    display: grid;
+    grid-template-columns: 324px minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+}
+
+.gobang-book-board {
+    --gb-book-cell: 28px;
+    display: inline-grid;
+    grid-template-columns: 40px repeat(9, var(--gb-book-cell));
+    grid-template-rows: 28px repeat(9, var(--gb-book-cell));
+    width: max-content;
+    height: max-content;
+    padding: 8px 10px 10px 8px;
+    border: 1px solid rgba(120, 200, 255, 0.28);
+    background:
+        radial-gradient(circle at 50% 50%, rgba(120, 200, 255, 0.08), transparent 58%),
+        linear-gradient(135deg, rgba(8, 18, 34, 0.98), rgba(4, 8, 16, 0.98)),
+        #07101d;
+    box-shadow:
+        inset 0 0 18px rgba(0, 0, 0, 0.35),
+        0 0 14px rgba(120, 200, 255, 0.08);
+}
+
+.gobang-book-corner,
+.gobang-book-axis {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(140, 198, 240, 0.62);
+    font: 10px/1 "Consolas", "Cascadia Mono", monospace;
+}
+
+.gobang-book-corner {
+    color: rgba(178, 198, 222, 0.42);
+    letter-spacing: 1px;
+}
+
+.gobang-book-axis.col {
+    align-items: end;
+    padding-bottom: 5px;
+    color: rgba(120, 214, 255, 0.78);
+}
+
+.gobang-book-axis.row {
+    justify-content: flex-end;
+    padding-right: 8px;
+}
+
+.gobang-book-cell {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    border-left: 1px solid rgba(120, 200, 255, 0.22);
+    border-top: 1px solid rgba(120, 200, 255, 0.22);
+    background:
+        linear-gradient(135deg, rgba(120, 200, 255, 0.025), transparent 58%);
+}
+
+.gobang-book-cell.star::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: rgba(120, 214, 255, 0.65);
+    box-shadow: 0 0 4px rgba(120, 214, 255, 0.5);
+}
+
+.gobang-book-cell span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 24px;
+    height: 24px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: 12px/1 "Consolas", "Cascadia Mono", monospace;
+    font-weight: 700;
+    z-index: 2;
+}
+
+.gobang-book-cell.black span {
+    clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+    background: radial-gradient(circle at 50% 48%, #9fe7ff 0 16%, #263952 18% 64%, #08101f 100%);
+    color: #e7fbff;
+    border: 1px solid rgba(170, 238, 255, 0.9);
+    box-shadow: 0 0 10px rgba(92, 190, 255, 0.58), inset 0 0 4px rgba(210, 240, 255, 0.24);
+}
+
+.gobang-book-cell.white span {
+    background: radial-gradient(circle at 38% 32%, #fff 0 18%, #e0cbff 20% 58%, #6d45a8 100%);
+    color: #25163b;
+    border: 1px solid rgba(235, 220, 255, 0.78);
+    box-shadow: 0 0 10px rgba(190, 150, 255, 0.48), inset 0 0 4px rgba(255, 255, 255, 0.2);
+}
+
+.gobang-book-cell.last span {
+    outline: 2px solid var(--gb-reticle);
+    outline-offset: 1px;
+}
+
+.gobang-book-steps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 10px;
+    margin: 0;
+    padding-left: 18px;
+}
+
+.gobang-book-side {
+    display: grid;
+    gap: 8px;
+}
+
+.gobang-book-notes {
+    margin: 4px 0 0;
+    padding-left: 18px;
+    color: rgba(205, 218, 234, 0.78);
+}
+
 /* ================== 音频开关按钮 ================== */
 
 .gobang-audio-toggle {
@@ -701,11 +1103,38 @@
 }
 
 @media (max-width: 1000px) {
+    .minigame-panel.gobang-panel {
+        --gb-board-max: min(50vh, calc(100vw - 76px), 540px);
+    }
+
     .gobang-main {
         grid-template-columns: 1fr;
+        overflow-y: auto;
+        align-content: start;
     }
 
     .gobang-board {
         max-width: calc(100vw - 76px);
+    }
+
+    .gobang-side-pane {
+        min-height: 180px;
+    }
+
+    .gobang-manual {
+        padding: 10px;
+    }
+
+    .gobang-manual-card {
+        max-height: calc(100vh - 46px);
+    }
+
+    .gobang-rule-demo,
+    .gobang-book-visual {
+        grid-template-columns: 1fr;
+    }
+
+    .gobang-book-steps {
+        grid-template-columns: 1fr;
     }
 }
