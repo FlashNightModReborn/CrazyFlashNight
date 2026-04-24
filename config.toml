@@ -4,3 +4,12 @@ swfPath = "CRAZYFLASHER7MercenaryEmpire.swf"
 # GPU CAS 锐化（实验性，显示管线待完善）
 gpuSharpening = false
 sharpness = 0.5
+
+# WebView2 / bootstrap + overlay performance diagnostics.
+# Keep defaults false while investigating; use env vars or toggle one at a time.
+webOverlayLowEffects = false
+webOverlayDisableCssAnimations = false
+webOverlayDisableVisualizers = false
+webView2DisableGpu = false
+webView2AdditionalArgs = ""
+nativeCursorOverlay = true

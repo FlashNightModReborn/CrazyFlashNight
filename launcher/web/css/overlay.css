@@ -13,6 +13,116 @@ html, body {
     --right-cluster-offset:80px;
 }
 
+html.perf-low-effects *,
+html.perf-low-effects *::before,
+html.perf-low-effects *::after,
+html.perf-no-css-animations *,
+html.perf-no-css-animations *::before,
+html.perf-no-css-animations *::after {
+    animation:none !important;
+    transition-duration:0ms !important;
+    transition-delay:0ms !important;
+    scroll-behavior:auto !important;
+}
+
+html.perf-low-effects #jukebox-wave,
+html.perf-low-effects #jukebox-mini-wave,
+html.perf-low-effects #notch-sparkline,
+html.perf-low-effects #notch-clock,
+html.perf-low-effects #notch-expanded-canvas,
+html.perf-no-visualizers #jukebox-wave,
+html.perf-no-visualizers #jukebox-mini-wave,
+html.perf-no-visualizers #notch-sparkline,
+html.perf-no-visualizers #notch-clock,
+html.perf-no-visualizers #notch-expanded-canvas {
+    visibility:hidden !important;
+}
+
+/* === Cursor overlay === */
+#cursor-overlay {
+    position:fixed;
+    left:0; top:0;
+    width:28px; height:34px;
+    z-index:2147483000;
+    pointer-events:none;
+    opacity:0;
+    transform:translate3d(-100px,-100px,0);
+    transition:opacity 70ms linear;
+    will-change:transform,opacity;
+}
+#cursor-overlay.is-visible { opacity:1; }
+#cursor-overlay::before,
+#cursor-overlay::after {
+    content:"";
+    position:absolute;
+    pointer-events:none;
+}
+#cursor-overlay::before {
+    left:4px; top:1px;
+    width:15px; height:23px;
+    background:#f2d4ad;
+    border:2px solid #241a16;
+    border-radius:9px 9px 7px 7px;
+    box-shadow:
+        6px 11px 0 -3px #f2d4ad,
+        6px 11px 0 -1px #241a16,
+        12px 11px 0 -3px #f2d4ad,
+        12px 11px 0 -1px #241a16,
+        2px 24px 0 -3px #f2d4ad,
+        2px 24px 0 -1px #241a16,
+        0 2px 8px rgba(0,0,0,.36);
+    transform:rotate(-18deg);
+    transform-origin:9px 3px;
+}
+#cursor-overlay::after {
+    left:1px; top:0;
+    width:8px; height:17px;
+    background:#f6dfbf;
+    border:2px solid #241a16;
+    border-radius:7px 7px 5px 5px;
+    transform:rotate(-28deg);
+}
+#cursor-overlay[data-state="click"]::before,
+#cursor-overlay[data-state="grab"]::before {
+    height:20px;
+    border-radius:10px 10px 9px 9px;
+    transform:rotate(-13deg) translateY(3px);
+}
+#cursor-overlay[data-state="hoverGrab"]::before {
+    box-shadow:
+        6px 11px 0 -3px #f2d4ad,
+        6px 11px 0 -1px #241a16,
+        12px 11px 0 -3px #f2d4ad,
+        12px 11px 0 -1px #241a16,
+        2px 24px 0 -3px #f2d4ad,
+        2px 24px 0 -1px #241a16,
+        0 0 0 2px rgba(93,213,255,.35),
+        0 2px 10px rgba(93,213,255,.28);
+}
+#cursor-overlay[data-state="attack"]::before {
+    background:#f0c2a2;
+    box-shadow:
+        6px 11px 0 -3px #f0c2a2,
+        6px 11px 0 -1px #241a16,
+        12px 11px 0 -3px #f0c2a2,
+        12px 11px 0 -1px #241a16,
+        2px 24px 0 -3px #f0c2a2,
+        2px 24px 0 -1px #241a16,
+        0 0 0 2px rgba(255,95,68,.28),
+        0 2px 10px rgba(255,95,68,.26);
+}
+#cursor-overlay[data-state="openDoor"]::before {
+    box-shadow:
+        6px 11px 0 -3px #f2d4ad,
+        6px 11px 0 -1px #241a16,
+        12px 11px 0 -3px #f2d4ad,
+        12px 11px 0 -1px #241a16,
+        2px 24px 0 -3px #f2d4ad,
+        2px 24px 0 -1px #241a16,
+        0 0 0 2px rgba(242,203,109,.34),
+        0 2px 10px rgba(242,203,109,.24);
+}
+
 /* === Toast === */
 #toast-container {
     position:absolute;

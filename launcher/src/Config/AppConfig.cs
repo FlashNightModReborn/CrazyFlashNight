@@ -14,6 +14,12 @@ namespace CF7Launcher.Config
         public string SwfPath { get; private set; }
         public bool GpuSharpeningEnabled { get; private set; }
         public float Sharpness { get; private set; }
+        public bool WebOverlayLowEffects { get; private set; }
+        public bool WebOverlayDisableCssAnimations { get; private set; }
+        public bool WebOverlayDisableVisualizers { get; private set; }
+        public bool WebView2DisableGpu { get; private set; }
+        public string WebView2AdditionalArgs { get; private set; }
+        public bool NativeCursorOverlayEnabled { get; private set; }
 
         private static readonly string DefaultFlashPlayer = "Adobe Flash Player 20.exe";
         private static readonly string DefaultSwf = "CRAZYFLASHER7MercenaryEmpire.swf";
@@ -24,6 +30,12 @@ namespace CF7Launcher.Config
             SwfPath = DefaultSwf;
             GpuSharpeningEnabled = true;
             Sharpness = 0.5f;
+            WebOverlayLowEffects = false;
+            WebOverlayDisableCssAnimations = false;
+            WebOverlayDisableVisualizers = false;
+            WebView2DisableGpu = false;
+            WebView2AdditionalArgs = "";
+            NativeCursorOverlayEnabled = true;
 
             string configPath = Path.Combine(projectRoot, "config.toml");
             if (File.Exists(configPath))
@@ -47,8 +59,22 @@ namespace CF7Launcher.Config
                         GpuSharpeningEnabled = ParseBool(val, true);
                     else if (string.Equals(key, "sharpness", StringComparison.OrdinalIgnoreCase))
                         Sharpness = ParseFloat(val, 0.5f);
+                    else if (string.Equals(key, "webOverlayLowEffects", StringComparison.OrdinalIgnoreCase))
+                        WebOverlayLowEffects = ParseBool(val, false);
+                    else if (string.Equals(key, "webOverlayDisableCssAnimations", StringComparison.OrdinalIgnoreCase))
+                        WebOverlayDisableCssAnimations = ParseBool(val, false);
+                    else if (string.Equals(key, "webOverlayDisableVisualizers", StringComparison.OrdinalIgnoreCase))
+                        WebOverlayDisableVisualizers = ParseBool(val, false);
+                    else if (string.Equals(key, "webView2DisableGpu", StringComparison.OrdinalIgnoreCase))
+                        WebView2DisableGpu = ParseBool(val, false);
+                    else if (string.Equals(key, "webView2AdditionalArgs", StringComparison.OrdinalIgnoreCase))
+                        WebView2AdditionalArgs = val;
+                    else if (string.Equals(key, "nativeCursorOverlay", StringComparison.OrdinalIgnoreCase))
+                        NativeCursorOverlayEnabled = ParseBool(val, true);
                 }
             }
+
+            ApplyEnvironmentOverrides();
 
             // 相对路径 → 绝对路径
             if (!Path.IsPathRooted(FlashPlayerPath))
@@ -70,6 +96,42 @@ namespace CF7Launcher.Config
             if (float.TryParse(val, NumberStyles.Float, CultureInfo.InvariantCulture, out result))
                 return result;
             return fallback;
+        }
+
+        private void ApplyEnvironmentOverrides()
+        {
+            string lowEffects = Environment.GetEnvironmentVariable("CF7_WEB_LOW_EFFECTS");
+            if (!string.IsNullOrEmpty(lowEffects))
+                WebOverlayLowEffects = ParseBoolLike(lowEffects, WebOverlayLowEffects);
+
+            string disableCssAnimations = Environment.GetEnvironmentVariable("CF7_WEB_DISABLE_CSS_ANIMATIONS");
+            if (!string.IsNullOrEmpty(disableCssAnimations))
+                WebOverlayDisableCssAnimations = ParseBoolLike(disableCssAnimations, WebOverlayDisableCssAnimations);
+
+            string disableVisualizers = Environment.GetEnvironmentVariable("CF7_WEB_DISABLE_VISUALIZERS");
+            if (!string.IsNullOrEmpty(disableVisualizers))
+                WebOverlayDisableVisualizers = ParseBoolLike(disableVisualizers, WebOverlayDisableVisualizers);
+
+            string disableGpu = Environment.GetEnvironmentVariable("CF7_WEBVIEW2_DISABLE_GPU");
+            if (!string.IsNullOrEmpty(disableGpu))
+                WebView2DisableGpu = ParseBoolLike(disableGpu, WebView2DisableGpu);
+
+            string extraArgs = Environment.GetEnvironmentVariable("CF7_WEBVIEW2_ARGS");
+            if (!string.IsNullOrEmpty(extraArgs))
+                WebView2AdditionalArgs = extraArgs;
+
+            string nativeCursorOverlay = Environment.GetEnvironmentVariable("CF7_NATIVE_CURSOR_OVERLAY");
+            if (!string.IsNullOrEmpty(nativeCursorOverlay))
+                NativeCursorOverlayEnabled = ParseBoolLike(nativeCursorOverlay, NativeCursorOverlayEnabled);
+        }
+
+        private static bool ParseBoolLike(string val, bool fallback)
+        {
+            if (string.IsNullOrEmpty(val)) return fallback;
+            string normalized = val.Trim().ToLowerInvariant();
+            if (normalized == "1" || normalized == "yes" || normalized == "on") return true;
+            if (normalized == "0" || normalized == "no" || normalized == "off") return false;
+            return ParseBool(val, fallback);
         }
     }
 }

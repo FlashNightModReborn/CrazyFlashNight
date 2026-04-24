@@ -148,11 +148,16 @@ namespace CF7Launcher.Guardian
         /// - bootstrapWebDir != null：正常模式。创建 BootstrapPanel 启动期可见，FlashHostPanel 隐藏.
         /// - bootstrapWebDir == null：bus-only 模式。无 BootstrapPanel，FlashHostPanel 直接可见.
         /// </summary>
-        public GuardianForm() : this(null) { }
+        public GuardianForm() : this(null, false, "") { }
 
         public GuardianForm(string bootstrapWebDir)
+            : this(bootstrapWebDir, false, "")
         {
-            InitializeComponent(bootstrapWebDir);
+        }
+
+        public GuardianForm(string bootstrapWebDir, bool bootstrapWebView2DisableGpu, string bootstrapWebView2AdditionalArgs)
+        {
+            InitializeComponent(bootstrapWebDir, bootstrapWebView2DisableGpu, bootstrapWebView2AdditionalArgs);
             SetupTrayIcon();
             SetupHotkeys();
             LogManager.Init(this, _logBox);
@@ -260,7 +265,7 @@ namespace CF7Launcher.Guardian
         //  布局
         // ============================================================
 
-        private void InitializeComponent(string bootstrapWebDir)
+        private void InitializeComponent(string bootstrapWebDir, bool bootstrapWebView2DisableGpu, string bootstrapWebView2AdditionalArgs)
         {
             this.Text = "CF7:FlashNight";
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -394,7 +399,7 @@ namespace CF7Launcher.Guardian
             // Phase A: BootstrapPanel（仅正常模式；后加 = 更高 z-order 显示在 Flash 之上）
             if (bootstrapWebDir != null)
             {
-                _bootstrapPanel = new BootstrapPanel(bootstrapWebDir);
+                _bootstrapPanel = new BootstrapPanel(bootstrapWebDir, bootstrapWebView2DisableGpu, bootstrapWebView2AdditionalArgs);
                 _bootstrapPanel.Dock = DockStyle.Fill;
                 _bootstrapPanel.Visible = true;
                 this.Controls.Add(_bootstrapPanel);
@@ -919,6 +924,7 @@ namespace CF7Launcher.Guardian
                 return;
 
             _flashPanel.Focus();
+            SampleCursorFromFlashPanel(e);
             ForwardMouseMessage(GetMouseDownMessage(e.Button), e);
         }
 
@@ -927,6 +933,7 @@ namespace CF7Launcher.Guardian
             if (!_gpuMode)
                 return;
 
+            SampleCursorFromFlashPanel(e);
             ForwardMouseMessage(GetMouseUpMessage(e.Button), e);
         }
 
@@ -935,6 +942,7 @@ namespace CF7Launcher.Guardian
             if (!_gpuMode)
                 return;
 
+            SampleCursorFromFlashPanel(e);
             ForwardMouseMessage(WM_MOUSEMOVE, e);
         }
 
@@ -942,6 +950,8 @@ namespace CF7Launcher.Guardian
         {
             if (!_gpuMode)
                 return;
+
+            SampleCursorFromFlashPanel(e);
 
             IntPtr flashHwnd = (_windowManager != null) ? _windowManager.FlashHwnd : IntPtr.Zero;
             if (flashHwnd == IntPtr.Zero)
@@ -961,7 +971,16 @@ namespace CF7Launcher.Guardian
             if (!_gpuMode)
                 return;
 
+            SampleCursorFromFlashPanel(e);
             ForwardMouseMessage(GetMouseDoubleClickMessage(e.Button), e);
+        }
+
+        private void SampleCursorFromFlashPanel(MouseEventArgs e)
+        {
+            if (_webOverlay == null || _flashPanel == null || _flashPanel.IsDisposed)
+                return;
+
+            _webOverlay.UpdateCursorFromScreenPoint(_flashPanel.PointToScreen(e.Location));
         }
 
         private void OnFlashPanelKeyDown(object sender, KeyEventArgs e)

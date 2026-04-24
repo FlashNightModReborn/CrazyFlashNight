@@ -111,6 +111,7 @@
     <Compile Include="src\Tasks\ArchiveTask.cs" />
     <Compile Include="src\Guardian\IToastSink.cs" />
     <Compile Include="src\Guardian\INotchSink.cs" />
+    <Compile Include="src\Guardian\CursorOverlayForm.cs" />
     <Compile Include="src\Guardian\WebOverlayForm.cs" />
     <Compile Include="src\Guardian\BootstrapPanel.cs" />
     <Compile Include="src\Guardian\InputShieldForm.cs" />

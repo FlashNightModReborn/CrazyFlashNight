@@ -1931,38 +1931,7 @@ _root.无限过图模式 = true;
                                    </elements>
                               </DOMFrame>
                               <DOMFrame index="54" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="鼠标元件/鼠标" name="鼠标" centerPoint3DX="519.1" centerPoint3DY="-30.9">
-                                             <matrix>
-                                                  <Matrix tx="493.4" ty="-55.25"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent (load) {
-	Mouse.hide();
-	this.swapDepths(_root.层级管理器.mouse);
-	stop();
-}
-onClipEvent (mouseUp) {
-	this.gotoAndStop("手型普通");
-}
-onClipEvent (mouseDown) {
-	_root.注释结束();
-	Mouse.hide();
-	this.gotoAndStop("手型点击");
-}
-onClipEvent (mouseMove) {
-	this._x = _root._xmouse;
-	this._y = _root._ymouse;
-}]]></script>
-                                             </Actionscript>
-                                             <filters>
-                                                  <DropShadowFilter angle="89.9993852829918" quality="3"/>
-                                             </filters>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                               <DOMFrame index="55" keyMode="9728">
                                    <elements>

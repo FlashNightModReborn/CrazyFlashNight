@@ -23,6 +23,7 @@ chcp.com 65001 | Out-Null
 | XML / 数据 / 游戏数值 | 受影响路径运行时 smoke | `compile_test`、游戏内人工验证 |
 | 导弹运动 / 追踪参数离线调优 | `python tools/missile-tuning-sim/run_sim.py compare --configs ...` | `scan --objective loiter|pressure|hit` / `audit`、`compile_test`、游戏内人工验证 |
 | Launcher C# / Host / Bus | `launcher/build.ps1` | `launcher/tests/run_tests.ps1`、`tools/cfn-cli`、`--bus-only` |
+| Launcher WebView2 / GPU 诊断 | `powershell -ExecutionPolicy Bypass -File tools/set-launcher-gpu-preference.ps1 -List` + `powershell -ExecutionPolicy Bypass -File tools/sample-launcher-gpu.ps1 -DurationSeconds 6` + `node tools/audit-web-overlay-complexity.js` | `-Apply` / `-Revert` 后完整重启 launcher / game，再复核 WebView2 GPU engine；机器不稳定时优先用静态复杂度审计 |
 | Launcher Web / Minigame | `node launcher/tools/run-minigame-qa.js --game lockbox\|pinalign\|gobang\|all` | browser harness、`node launcher/tools/validate-minigame-final-state.js` |
 | Launcher Web / Map Panel | `powershell -ExecutionPolicy Bypass -File launcher/build.ps1` + `node tools/audit-map-taskmarkers.js`（契约守门，必须 0 error / 0 warn） | browser harness `map-ui1`~`map-ui23` 全绿（`launcher/web/modules/map/dev/harness.html` → 面板"Run suite"）、`node tools/audit-map-layout.js`；重算 filter-fit preset 时跑 `node tools/tune-map-filter-fit.js --write` |
 | 文档与治理 | `node tools/validate-doc-governance.js` | 交叉 grep / 链接检查 / 基线复核 |

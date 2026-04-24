@@ -92,6 +92,7 @@ namespace CF7Launcher.Guardian
         /// <summary>Overlay/WebView2 坐标上下文；缺失 Web metrics 时使用 fallback zoom。</summary>
         private OverlayCoordinateContext _coordinateContext;
         private double _fallbackZoom = 1.0;
+        private Action<int, int> _cursorSampleSink;
 
         /// <summary>收起冷却：hitRect 缩小后短暂禁止 CDP mouseMoved，防振荡。</summary>
         private int _lastHitWidth;
@@ -119,6 +120,11 @@ namespace CF7Launcher.Guardian
         public void SetCoordinateContext(OverlayCoordinateContext context)
         {
             _coordinateContext = context;
+        }
+
+        public void SetCursorSampleSink(Action<int, int> sink)
+        {
+            _cursorSampleSink = sink;
         }
 
         #region 命中区域管理
@@ -425,6 +431,8 @@ namespace CF7Launcher.Guardian
 
             // 物理像素 → CSS 像素（CDP 坐标空间）
             Point css = PhysicalPointToCss(physX, physY);
+            if (physX >= 0 && physY >= 0 && _cursorSampleSink != null)
+                _cursorSampleSink(physX, physY);
 
             string clickCount = (type == "mousePressed") ? ",\"clickCount\":1" : "";
             string json = "{\"type\":\"" + type + "\""

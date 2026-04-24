@@ -25,6 +25,8 @@ C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView
 
 Launcher 现在显式声明并初始化 **PerMonitorV2 / PerMonitor DPI-aware**。运行态 WebView2 overlay 的物理视觉尺寸仍跟随 Flash 视口高度，但写入 `WebView2.ZoomFactor` 前会按当前 monitor DPI 归一化，避免 125% / 150% 系统缩放把右侧 HUD 与顶部资源条二次放大；输入命中则由 Web 端 `viewportMetrics`（CSS viewport / DPR / visualViewport）和 C# `OverlayCoordinateContext` 共同换算，不再把 `WebView2.ZoomFactor` 直接当作鼠标坐标比例。
 
+运行态鼠标手型视觉只由 C# `CursorOverlayForm` 原生 layered window 接管，避免 WebView2 特效或 JS 队列影响 cursor 延迟。AS2 侧保留 `_root.鼠标` 兼容代理，只把 `gotoAndStop` 状态通过 `cursor_control` task 低频推送到 Launcher；`WebOverlayForm` 负责状态调度、低级鼠标 hook 与坐标泵。Web DOM 交互通过 `cursorFeedback` 只回传 hover/press 状态变化，不回传坐标，也不再提供 Web 视觉 fallback；native cursor 不可用时恢复系统鼠标并写入诊断日志。native cursor 贴图按当前 monitor DPI 缩放并同步缩放热点。物品拖拽图标第一阶段仍留在 AS2 空容器内，仅拖拽期间同步位置，不进入 Flash 每帧 UI 状态管线。
+
 | Windows 兼容性设置 | 支持口径 |
 |------------------|----------|
 | 不勾选“替代高 DPI 缩放行为” | 正式支持 |
@@ -230,7 +232,7 @@ launcher/
 │   ├── Program.cs                         入口：正常模式先做 WebView2 预检，再尽早构造 GuardianForm；随后初始化 Steam/Trust/总线并接 GameLaunchFlow
 │   │
 │   ├── Config/
-│   │   ├── AppConfig.cs                   config.toml 解析（flashPlayerPath/swfPath/gpuSharpening/sharpness）
+│   │   ├── AppConfig.cs                   config.toml 解析（Flash/SWF 路径、GPU/overlay 诊断开关）
 │   │   ├── UserPrefs.cs                   用户级偏好持久化（优先 LocalAppData，不可用时回退项目根）
 │   │   ├── SteamOwnershipCheck.cs         Steam 进程 + SteamAPI AppID 正版校验（开发仓库 fail-open，发行环境 fail-closed）
 │   │   └── FlashTrustManager.cs           `cf7me.cfg` trust 租约（用户级/系统级多目录尝试，退出按租约清理）
@@ -250,6 +252,7 @@ launcher/
 │   │   ├── ToastOverlay.cs                GDI+ toast 消息（WS_EX_TRANSPARENT）
 │   │   ├── NotchOverlay.cs                GDI+ 刘海栏（选择性穿透, 状态机）
 │   │   ├── HitNumberOverlay.cs            GDI+ 伤害数字
+│   │   ├── CursorOverlayForm.cs           原生 cursor 视觉层（Layered Window，高频低延迟）
 │   │   ├── WebOverlayForm.cs              WebView2 视觉层（WS_EX_TRANSPARENT）
 │   │   ├── InputShieldForm.cs             幽灵输入层（GDI+ α 命中 + CDP 注入）
 │   │   ├── IToastSink.cs / INotchSink.cs  Toast / Notch 抽象接口
@@ -617,7 +620,7 @@ Launcher 的配置被**显式拆成两份**，避免互相污染：
 
 #### config.toml（项目根目录，机器级，只读）
 
-只 4 个 key 会被识别，缺失即落代码默认：
+只 8 个 key 会被识别，缺失即落代码默认：
 
 ```toml
 flashPlayerPath = "Adobe Flash Player 20.exe"
@@ -627,9 +630,36 @@ swfPath = "CRAZYFLASHER7MercenaryEmpire.swf"
 # 保留为未来 feature flag；写什么都不影响当前运行行为。
 gpuSharpening = false
 sharpness = 0.5
+
+# WebView2 / overlay performance diagnostics.
+# Keep defaults false while investigating; toggle one at a time or use env vars.
+webOverlayLowEffects = false
+webOverlayDisableCssAnimations = false
+webOverlayDisableVisualizers = false
+webView2DisableGpu = false
+webView2AdditionalArgs = ""
+nativeCursorOverlay = true
 ```
 
 代码默认（[AppConfig.cs:23-26](src/Config/AppConfig.cs#L23)）：`GpuSharpeningEnabled = true`, `Sharpness = 0.5`。示例显式写 `false` 是遵循正文「当前禁用」语义，等 pipeline 接上以后再统一默认。
+
+`webOverlayLowEffects` 是运行态 overlay 聚合诊断开关，等价于同时启用 `webOverlayDisableCssAnimations` 与 `webOverlayDisableVisualizers`，并对 map panel 额外关闭全屏 scanline / radar / pulse、移除大图与场景节点的 CSS filter/drop-shadow、降低 full-surface overlay 透明覆膜成本。`webOverlayDisableCssAnimations` 只注入 `perf-no-css-animations`，关闭 CSS animation / transition；`webOverlayDisableVisualizers` 只隐藏 BGM/FPS canvas，并把 BGM 可视化推送从 60ms 降为 250ms 的 track-end 轮询。`webView2DisableGpu` 会同时给 BootstrapPanel 与运行态 WebOverlayForm 追加 `--disable-gpu --disable-gpu-rasterization --disable-accelerated-2d-canvas`，用于验证核显占满是否来自 WebView2 合成；它可能把负载转移到 CPU，不建议作为默认运行配置。`nativeCursorOverlay=false` 或环境变量 `CF7_NATIVE_CURSOR_OVERLAY=0` 会关闭 C# 原生 cursor layered window，恢复系统鼠标，用于 A/B 排除 cursor 迁移对 GPU 满载的影响。`webView2AdditionalArgs` 和环境变量 `CF7_WEBVIEW2_ARGS` 用于一次性追加 Chromium 参数；环境变量 `CF7_WEB_LOW_EFFECTS`、`CF7_WEB_DISABLE_CSS_ANIMATIONS`、`CF7_WEB_DISABLE_VISUALIZERS`、`CF7_WEBVIEW2_DISABLE_GPU` 可覆盖对应布尔配置。
+
+BootstrapPanel 使用 `launcher/webview2_userdata`；运行态 WebOverlayForm 使用独立的 `launcher/webview2_overlay_userdata`。两者不能共用目录，因为 WebView2 同一个 user-data 目录下的 browser process group 要求启动参数一致，诊断参数（如禁 GPU）会导致启动阶段和运行阶段互相冲突。BootstrapPanel 在 reveal 后隐藏时会调用 WebView2 `TrySuspendAsync()`，避免启动页在游戏运行中继续参与 GPU 合成。
+
+双显卡机器上可用 `tools/set-launcher-gpu-preference.ps1` 查看或写入 Windows 每应用 GPU 偏好，用于把 Launcher、Flash SA 与 WebView2 runtime 标记为高性能 GPU：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\set-launcher-gpu-preference.ps1 -List
+powershell -ExecutionPolicy Bypass -File tools\set-launcher-gpu-preference.ps1 -Apply
+powershell -ExecutionPolicy Bypass -File tools\set-launcher-gpu-preference.ps1 -Revert
+powershell -ExecutionPolicy Bypass -File tools\sample-launcher-gpu.ps1 -DurationSeconds 6
+node tools\audit-web-overlay-complexity.js
+```
+
+`-Apply` 写入当前用户注册表后必须完整关闭并重启 launcher / game。WebView2 Evergreen runtime 升级后 `msedgewebview2.exe` 路径可能变更，需要重新运行 `-Apply`。`sample-launcher-gpu.ps1` 只读采样 Windows GPU engine 计数器，并按 `launcher` / `flash` / `bootstrap` / `web_overlay` 分组输出平均与峰值，用于复核负载是否仍集中在运行态 WebOverlayForm。`audit-web-overlay-complexity.js` 不启动浏览器，只静态统计 overlay CSS / JS 中 animation、filter、drop-shadow、box-shadow、blend、clip-path、layout measurement、RAF 等高风险点，用于在机器不稳定时优先做低风险定位。在无独显直连 / MUX 的笔记本上，即使渲染进程被调度到独显，桌面合成与最终扫描输出仍可能经过核显，因此任务管理器中核显 3D 不一定归零；若重启后 WebOverlayForm 仍完全落在 `phys_0`，下一步应继续削减 map overlay 的 WebView2 渲染成本。
+
+2026-04-25 地图界面排查记录见 [Web Overlay 性能排查记录](../docs/web-overlay-performance-audit-2026-04-25.md)。
 
 #### launcher_user_prefs.json（用户级，频繁读写）
 
@@ -777,7 +807,7 @@ currentValue (Plan A+):
 
 ### 与运行态生命周期的关系
 
-**reveal 成功 = panel swap，不是 Form 切换**：BootstrapPanel.SetPanelVisible(false) + FlashHostPanel.Visible=true + readyWiring。BootstrapPanel 不会 Dispose，仍在同一 GuardianForm 里，只是不可见。**代码库没有任何让它在 Ready 之后重新显形的路径**。
+**reveal 成功 = panel swap，不是 Form 切换**：BootstrapPanel.SetPanelVisible(false) + FlashHostPanel.Visible=true + readyWiring。BootstrapPanel 不会 Dispose，仍在同一 GuardianForm 里；隐藏后会请求 WebView2 suspend，避免启动页继续占用 GPU 合成资源。**代码库没有任何让它在 Ready 之后重新显形的路径**。
 
 **Ready 后的退出路径**：
 
