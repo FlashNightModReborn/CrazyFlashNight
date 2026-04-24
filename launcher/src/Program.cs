@@ -109,6 +109,10 @@ class Program
         LogManager.InitFileLog(projectRoot);
 
         LogManager.Log("[Guardian] Project root: " + projectRoot);
+
+        // UserGpuPreferences 在子进程创建时被 Windows 读取。WebView2 真正 spawn 发生在 Application.Run
+        // 触发 BootstrapPanel.Load 之后，所以这里写入仍然赶得上；放在日志通道就绪之后可以把诊断完整写进 launcher.log。
+        GpuPreferenceManager.ApplyIfNeeded(projectRoot, config.GpuPreference);
         // Phase 2b: 用户级偏好 (lastPlayedSlot / introEnabled), 落盘到 launcher_user_prefs.json
         CF7Launcher.Config.UserPrefs userPrefs = new CF7Launcher.Config.UserPrefs(projectRoot);
 
@@ -554,6 +558,9 @@ class Program
             // 都确保清理本次写入的信任条目，不留残留
             if (trustAcquired)
                 FlashTrustManager.RevokeTrust();
+
+            // UserGpuPreferences 注册表条目一律在退出时清理，避免玩家卸载后残留。
+            try { GpuPreferenceManager.Revert(projectRoot); } catch { }
         }
     }
 }

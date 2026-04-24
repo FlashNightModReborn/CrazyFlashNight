@@ -639,6 +639,9 @@ webOverlayDisableVisualizers = false
 webView2DisableGpu = false
 webView2AdditionalArgs = ""
 nativeCursorOverlay = true
+
+# off | auto | on — 管理 HKCU UserGpuPreferences；见下方"每应用 GPU 偏好"一节。
+gpuPreference = "off"
 ```
 
 代码默认（[AppConfig.cs:23-26](src/Config/AppConfig.cs#L23)）：`GpuSharpeningEnabled = true`, `Sharpness = 0.5`。示例显式写 `false` 是遵循正文「当前禁用」语义，等 pipeline 接上以后再统一默认。
@@ -647,7 +650,26 @@ nativeCursorOverlay = true
 
 BootstrapPanel 使用 `launcher/webview2_userdata`；运行态 WebOverlayForm 使用独立的 `launcher/webview2_overlay_userdata`。两者不能共用目录，因为 WebView2 同一个 user-data 目录下的 browser process group 要求启动参数一致，诊断参数（如禁 GPU）会导致启动阶段和运行阶段互相冲突。BootstrapPanel 在 reveal 后隐藏时会调用 WebView2 `TrySuspendAsync()`，避免启动页在游戏运行中继续参与 GPU 合成。
 
-双显卡机器上可用 `tools/set-launcher-gpu-preference.ps1` 查看或写入 Windows 每应用 GPU 偏好，用于把 Launcher、Flash SA 与 WebView2 runtime 标记为高性能 GPU：
+#### 每应用 GPU 偏好 (`gpuPreference`)
+
+`config.toml` 的 `gpuPreference` 字段让 launcher 自己维护 `HKCU\Software\Microsoft\DirectX\UserGpuPreferences` 下 launcher exe 与 `msedgewebview2.exe` 的条目：
+
+| 模式 | 行为 |
+|------|------|
+| `off`（默认） | 启动时清理遗留条目，不写入新条目 |
+| `auto` | DXGI 探测到非 Intel / 非软件适配器的独显 **且** `GetSystemPowerStatus` 回 AC Online 时才写入；否则 revert |
+| `on`  | 无条件写入（副作用自担） |
+
+退出时**始终** revert 写入的条目，保证卸载 / 升级后注册表干净。环境变量 `CF7_GPU_PREFERENCE=off|auto|on` 覆盖配置。诊断日志以 `[GpuPref]` 前缀进 `logs/launcher.log`，记录探测到的独显名 / VendorId / ACLineStatus。
+
+**Flash Player 刻意不纳入**：Flash SA 的 Stage3D 走 DX9 老路径，在部分独显驱动组合下稳定性反而不如核显；保持跟随系统默认。
+
+**副作用警告**（`auto` 会自动规避大部分）：
+- Optimus 笔记本 dGPU 渲染 → iGPU 输出的合成结果要经 PCIe 回传，PCIe 流量反而上升；PCIe 链路本身有信号完整性问题的机器可能因此更不稳。
+- dGPU 陪跑 WebView2 合成会额外抽电；电池模式续航明显下降。
+- Optimus 模式下桌面合成与最终扫描输出仍可能经核显，任务管理器里核显 3D 不一定归零；建议用 `sample-launcher-gpu.ps1` A/B 验证，确认 `web_overlay` 的 3D 负载是否真迁到 `phys_1`。
+
+双显卡机器上可用 `tools/set-launcher-gpu-preference.ps1` 查看或手动写入 Windows 每应用 GPU 偏好（仅诊断用途；launcher 启动时会按 `gpuPreference` 自动覆盖本脚本的写入）：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools\set-launcher-gpu-preference.ps1 -List

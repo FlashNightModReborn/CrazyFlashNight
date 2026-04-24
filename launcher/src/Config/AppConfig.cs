@@ -20,6 +20,8 @@ namespace CF7Launcher.Config
         public bool WebView2DisableGpu { get; private set; }
         public string WebView2AdditionalArgs { get; private set; }
         public bool NativeCursorOverlayEnabled { get; private set; }
+        /// <summary>"off" | "auto" | "on"。控制是否把 launcher 与 WebView2 标记为高性能 GPU。见 GpuPreferenceManager。</summary>
+        public string GpuPreference { get; private set; }
 
         private static readonly string DefaultFlashPlayer = "Adobe Flash Player 20.exe";
         private static readonly string DefaultSwf = "CRAZYFLASHER7MercenaryEmpire.swf";
@@ -36,6 +38,7 @@ namespace CF7Launcher.Config
             WebView2DisableGpu = false;
             WebView2AdditionalArgs = "";
             NativeCursorOverlayEnabled = true;
+            GpuPreference = "off";
 
             string configPath = Path.Combine(projectRoot, "config.toml");
             if (File.Exists(configPath))
@@ -71,6 +74,8 @@ namespace CF7Launcher.Config
                         WebView2AdditionalArgs = val;
                     else if (string.Equals(key, "nativeCursorOverlay", StringComparison.OrdinalIgnoreCase))
                         NativeCursorOverlayEnabled = ParseBool(val, true);
+                    else if (string.Equals(key, "gpuPreference", StringComparison.OrdinalIgnoreCase))
+                        GpuPreference = NormalizeGpuPreference(val, "off");
                 }
             }
 
@@ -123,6 +128,21 @@ namespace CF7Launcher.Config
             string nativeCursorOverlay = Environment.GetEnvironmentVariable("CF7_NATIVE_CURSOR_OVERLAY");
             if (!string.IsNullOrEmpty(nativeCursorOverlay))
                 NativeCursorOverlayEnabled = ParseBoolLike(nativeCursorOverlay, NativeCursorOverlayEnabled);
+
+            string gpuPref = Environment.GetEnvironmentVariable("CF7_GPU_PREFERENCE");
+            if (!string.IsNullOrEmpty(gpuPref))
+                GpuPreference = NormalizeGpuPreference(gpuPref, GpuPreference);
+        }
+
+        private static string NormalizeGpuPreference(string val, string fallback)
+        {
+            if (string.IsNullOrEmpty(val)) return fallback;
+            string n = val.Trim().ToLowerInvariant();
+            if (n == "off" || n == "auto" || n == "on") return n;
+            // 容忍 bool-like 输入：true→on / false→off
+            if (n == "1" || n == "yes" || n == "true") return "on";
+            if (n == "0" || n == "no" || n == "false") return "off";
+            return fallback;
         }
 
         private static bool ParseBoolLike(string val, bool fallback)

@@ -73,3 +73,29 @@ var OverlayViewportMetrics = (function() {
         schedule: schedule
     };
 })();
+
+// 启动期一次性探针：把 WebGL renderer 回报给 launcher，验证 gpuPreference 是否真的把 WebView2 调度到独显。
+// 写 reg 不等于 Windows 一定遵从（Optimus / MUX / 驱动策略可能覆盖），事后验证比静态推理可靠。
+(function reportGpuInfoOnce() {
+    if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') return;
+    function probe() {
+        var vendor = null, renderer = null;
+        try {
+            var canvas = document.createElement('canvas');
+            var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if (gl) {
+                var ext = gl.getExtension('WEBGL_debug_renderer_info');
+                if (ext) {
+                    vendor = gl.getParameter(ext.UNMASKED_VENDOR_WEBGL) || null;
+                    renderer = gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) || null;
+                } else {
+                    vendor = gl.getParameter(gl.VENDOR) || null;
+                    renderer = gl.getParameter(gl.RENDERER) || null;
+                }
+            }
+        } catch (e) {}
+        Bridge.send({ type: 'gpuInfo', vendor: vendor, renderer: renderer });
+    }
+    if (document.readyState === 'complete' || document.readyState === 'interactive') probe();
+    else window.addEventListener('DOMContentLoaded', probe);
+})();

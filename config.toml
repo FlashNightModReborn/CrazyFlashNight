@@ -13,3 +13,10 @@ webOverlayDisableVisualizers = false
 webView2DisableGpu = false
 webView2AdditionalArgs = ""
 nativeCursorOverlay = true
+
+# Windows per-app GPU preference 管理
+# off  = 不干预系统 GPU 偏好（默认）
+# auto = 探测到独显 + 当前接 AC 电源 同时满足时，把 launcher 与 msedgewebview2.exe 标为高性能 GPU
+# on   = 无条件标记（副作用自担：续航下降 / Optimus 回传 PCIe 流量上升 / 部分链路脆弱机型负向）
+# 所有模式都会在退出时清理写入的注册表条目，不污染系统。
+gpuPreference = "auto"

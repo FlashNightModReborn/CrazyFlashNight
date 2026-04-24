@@ -716,6 +716,15 @@ namespace CF7Launcher.Guardian
                 {
                     HandleDebugMessage(json);
                 }
+                else if (type == "gpuInfo")
+                {
+                    // overlay 启动探针：从 WebGL renderer 字符串判断 WebView2 实际落在哪块 GPU 上，
+                    // 用于事后验证 gpuPreference=auto/on 是否真的生效（写 reg 不等于 Windows 一定遵从）。
+                    string vendor = parsed != null ? parsed.Value<string>("vendor") : null;
+                    string renderer = parsed != null ? parsed.Value<string>("renderer") : null;
+                    LogManager.Log("[GpuPref] WebView2 WebGL renderer: " + (renderer ?? "(null)")
+                        + " | vendor: " + (vendor ?? "(null)"));
+                }
                 else if (type == "click" || json.Contains("\"click\""))
                 {
                     string key = ExtractString(json, "\"key\":\"");

@@ -32,8 +32,9 @@ function Add-Candidate {
 function Get-CandidateExecutables {
     $candidates = New-Object "System.Collections.Generic.List[string]"
 
+    # 只纳入 launcher 与 WebView2 运行时。Adobe Flash Player 刻意排除：
+    # Flash SA 的 Stage3D 走 DX9 老路径，在某些独显驱动组合下稳定性不如核显，不应无差别切换。
     Add-Candidate $candidates (Join-Path $projectRoot "CRAZYFLASHER7MercenaryEmpire.exe")
-    Add-Candidate $candidates (Join-Path $projectRoot "Adobe Flash Player 20.exe")
     Add-Candidate $candidates (Join-Path $projectRoot "launcher\bin\Release\CRAZYFLASHER7MercenaryEmpire.exe")
     Add-Candidate $candidates (Join-Path $projectRoot "launcher\bin\Debug\CRAZYFLASHER7MercenaryEmpire.exe")
     Add-Candidate $candidates (Join-Path $projectRoot "launcher\bin\CRAZYFLASHER7MercenaryEmpire.exe")
@@ -106,4 +107,6 @@ if ($List) {
     }
     Write-Host ""
     Write-Host "Use -Apply to set GpuPreference=2; use -Revert to remove these entries."
+    Write-Host "Note: launcher now also manages these entries via config.toml 'gpuPreference = off|auto|on'."
+    Write-Host "      launcher always reverts on exit; this script is for manual diagnostics only."
 }
