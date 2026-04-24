@@ -44,6 +44,7 @@
     <Compile Include="SanityTests.cs" />
     <Compile Include="Save\SaveMigratorTests.cs" />
     <Compile Include="Bus\MessageRouterTests.cs" />
+    <Compile Include="Tasks\IconBakeTaskTests.cs" />
     <Compile Include="Save\SolResolverTests.cs" />
     <Compile Include="Save\SolFileLocatorTests.cs" />
     <Compile Include="Save\LegacyPresetSlotSeederTests.cs" />

@@ -30,7 +30,10 @@ namespace CF7Launcher.Tasks
     public class IconBakeTask
     {
         private const int ICON_SIZE = 256;
-        private const int BYTES_PER_PIXEL = 4; // ARGB
+        private const int BYTES_PER_PIXEL = 4; // 32bpp
+        private const int MICRO_DIFF_MAX_CHANGED_PIXELS = 512;
+        private const int MICRO_DIFF_MAX_SINGLE_CHANNEL_DELTA = 96;
+        private const long MICRO_DIFF_MAX_TOTAL_CHANNEL_DELTA = 20000;
 
         private readonly string _iconsDir;
         private readonly string _manifestPath;
@@ -202,11 +205,19 @@ namespace CF7Launcher.Tasks
 
                 if (File.Exists(filePath))
                 {
-                    byte[] existing = File.ReadAllBytes(filePath);
-                    if (ByteArrayEqual(existing, newPng))
+                    IconBakePixelDiffStats diffStats;
+                    if (ShouldTreatExistingPngAsUnchanged(filePath, bgra, out diffStats))
                     {
                         action = "unchanged";
                         _unchanged++;
+                        if (diffStats.IsMicroDiff)
+                        {
+                            LogManager.Log("[IconBakeTask] ignored microdiff: " + iconNameForLog
+                                + " [" + frameKey + "] changedPixels=" + diffStats.ChangedPixels
+                                + " maxDelta=" + diffStats.MaxChannelDelta
+                                + " totalDelta=" + diffStats.TotalChannelDelta
+                                + " alphaPixels=" + diffStats.ChangedAlphaPixels);
+                        }
                     }
                     else
                     {
@@ -476,14 +487,117 @@ namespace CF7Launcher.Tasks
             return crc.ToString("x8");
         }
 
-        private static bool ByteArrayEqual(byte[] a, byte[] b)
+        public struct IconBakePixelDiffStats
         {
-            if (a.Length != b.Length) return false;
-            for (int i = 0; i < a.Length; i++)
+            public bool ExactPixels;
+            public bool IsMicroDiff;
+            public int ChangedPixels;
+            public int ChangedAlphaPixels;
+            public int MaxChannelDelta;
+            public long TotalChannelDelta;
+        }
+
+        public static bool ShouldTreatExistingPngAsUnchanged(
+            string existingPngPath,
+            byte[] newBgra,
+            out IconBakePixelDiffStats stats)
+        {
+            stats = new IconBakePixelDiffStats();
+
+            byte[] existingBgra;
+            if (!TryReadPngBgra(existingPngPath, out existingBgra))
+                return false;
+
+            if (newBgra == null || existingBgra.Length != newBgra.Length)
+                return false;
+
+            for (int i = 0; i < existingBgra.Length; i += BYTES_PER_PIXEL)
             {
-                if (a[i] != b[i]) return false;
+                int bDelta = Math.Abs(existingBgra[i] - newBgra[i]);
+                int gDelta = Math.Abs(existingBgra[i + 1] - newBgra[i + 1]);
+                int rDelta = Math.Abs(existingBgra[i + 2] - newBgra[i + 2]);
+                int aDelta = Math.Abs(existingBgra[i + 3] - newBgra[i + 3]);
+
+                if (bDelta == 0 && gDelta == 0 && rDelta == 0 && aDelta == 0)
+                    continue;
+
+                stats.ChangedPixels++;
+                if (aDelta != 0) stats.ChangedAlphaPixels++;
+
+                int maxDelta = bDelta;
+                if (gDelta > maxDelta) maxDelta = gDelta;
+                if (rDelta > maxDelta) maxDelta = rDelta;
+                if (aDelta > maxDelta) maxDelta = aDelta;
+                if (maxDelta > stats.MaxChannelDelta) stats.MaxChannelDelta = maxDelta;
+
+                stats.TotalChannelDelta += bDelta + gDelta + rDelta + aDelta;
+
+                if (stats.ChangedPixels > MICRO_DIFF_MAX_CHANGED_PIXELS
+                    || stats.MaxChannelDelta > MICRO_DIFF_MAX_SINGLE_CHANNEL_DELTA
+                    || stats.TotalChannelDelta > MICRO_DIFF_MAX_TOTAL_CHANNEL_DELTA)
+                {
+                    return false;
+                }
             }
+
+            if (stats.ChangedPixels == 0)
+            {
+                stats.ExactPixels = true;
+                return true;
+            }
+
+            stats.IsMicroDiff = true;
             return true;
+        }
+
+        private static bool TryReadPngBgra(string filePath, out byte[] bgra)
+        {
+            bgra = null;
+
+            try
+            {
+                using (Bitmap bmp = new Bitmap(filePath))
+                {
+                    if (bmp.Width != ICON_SIZE || bmp.Height != ICON_SIZE)
+                        return false;
+
+                    bgra = new byte[ICON_SIZE * ICON_SIZE * BYTES_PER_PIXEL];
+                    BitmapData data = null;
+                    try
+                    {
+                        data = bmp.LockBits(
+                            new Rectangle(0, 0, ICON_SIZE, ICON_SIZE),
+                            ImageLockMode.ReadOnly,
+                            PixelFormat.Format32bppArgb);
+
+                        int sourceStride = data.Stride;
+                        int absStride = Math.Abs(sourceStride);
+                        byte[] source = new byte[absStride * ICON_SIZE];
+                        Marshal.Copy(data.Scan0, source, 0, source.Length);
+
+                        int targetStride = ICON_SIZE * BYTES_PER_PIXEL;
+                        for (int y = 0; y < ICON_SIZE; y++)
+                        {
+                            int sourceRow = sourceStride > 0
+                                ? y * absStride
+                                : (ICON_SIZE - 1 - y) * absStride;
+                            Buffer.BlockCopy(source, sourceRow, bgra, y * targetStride, targetStride);
+                        }
+                    }
+                    finally
+                    {
+                        if (data != null) bmp.UnlockBits(data);
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[IconBakeTask] Failed to read existing PNG for pixel compare: " + ex.Message);
+                bgra = null;
+                return false;
+            }
         }
 
         private static string BuildError(string error)
