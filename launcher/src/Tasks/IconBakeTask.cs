@@ -31,6 +31,9 @@ namespace CF7Launcher.Tasks
     {
         private const int ICON_SIZE = 256;
         private const int BYTES_PER_PIXEL = 4; // 32bpp
+        // 阈值来源：全量烘焙实测 p99（ChangedPixels≈14872 / TotalDelta≈362K / AlphaPixels≈1001），各留 ~20-25% 余量。
+        // SingleChannelDelta=255 当前等于关闭该门（byte 上限，判定恒假）：保留字段作为预留开关，
+        // 后续若能从源头抑制大 delta（如统一编码器或渲染器），再收紧为有效值。
         private const int MICRO_DIFF_MAX_CHANGED_PIXELS = 18000;
         private const int MICRO_DIFF_MAX_SINGLE_CHANNEL_DELTA = 255;
         private const long MICRO_DIFF_MAX_TOTAL_CHANNEL_DELTA = 450000;
