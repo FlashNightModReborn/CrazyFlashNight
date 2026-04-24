@@ -65,7 +65,7 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void ShouldTreatExistingPngAsChanged_WhenSinglePixelDeltaIsLarge()
+        public void ShouldTreatExistingPngAsUnchanged_WhenSinglePixelDeltaIsLarge()
         {
             string dir = CreateTempDir();
             try
@@ -80,7 +80,10 @@ namespace CF7Launcher.Tests.Tasks
                 IconBakeTask.IconBakePixelDiffStats stats;
                 bool unchanged = IconBakeTask.ShouldTreatExistingPngAsUnchanged(path, changed, out stats);
 
-                Assert.False(unchanged);
+                Assert.True(unchanged);
+                Assert.True(stats.IsMicroDiff);
+                Assert.Equal(1, stats.ChangedPixels);
+                Assert.Equal(128, stats.MaxChannelDelta);
             }
             finally
             {
@@ -99,9 +102,63 @@ namespace CF7Launcher.Tests.Tasks
                 SaveBgraPng(path, bgra);
 
                 byte[] changed = (byte[])bgra.Clone();
-                for (int i = 0; i < 513; i++)
+                for (int i = 0; i < 18001; i++)
                 {
                     AddToChannel(changed, i % 256, i / 256, 2, 1);
+                }
+
+                IconBakeTask.IconBakePixelDiffStats stats;
+                bool unchanged = IconBakeTask.ShouldTreatExistingPngAsUnchanged(path, changed, out stats);
+
+                Assert.False(unchanged);
+            }
+            finally
+            {
+                Directory.Delete(dir, true);
+            }
+        }
+
+        [Fact]
+        public void ShouldTreatExistingPngAsChanged_WhenTotalDeltaIsTooLarge()
+        {
+            string dir = CreateTempDir();
+            try
+            {
+                string path = Path.Combine(dir, "icon.png");
+                byte[] bgra = CreateBaseIcon();
+                SaveBgraPng(path, bgra);
+
+                byte[] changed = (byte[])bgra.Clone();
+                for (int i = 0; i < 3000; i++)
+                {
+                    AddToChannel(changed, i % 256, i / 256, 0, 151);
+                }
+
+                IconBakeTask.IconBakePixelDiffStats stats;
+                bool unchanged = IconBakeTask.ShouldTreatExistingPngAsUnchanged(path, changed, out stats);
+
+                Assert.False(unchanged);
+            }
+            finally
+            {
+                Directory.Delete(dir, true);
+            }
+        }
+
+        [Fact]
+        public void ShouldTreatExistingPngAsChanged_WhenTooManyAlphaPixelsMove()
+        {
+            string dir = CreateTempDir();
+            try
+            {
+                string path = Path.Combine(dir, "icon.png");
+                byte[] bgra = CreateBaseIcon();
+                SaveBgraPng(path, bgra);
+
+                byte[] changed = (byte[])bgra.Clone();
+                for (int i = 0; i < 1251; i++)
+                {
+                    AddToChannel(changed, i % 256, i / 256, 3, 1);
                 }
 
                 IconBakeTask.IconBakePixelDiffStats stats;

@@ -31,9 +31,10 @@ namespace CF7Launcher.Tasks
     {
         private const int ICON_SIZE = 256;
         private const int BYTES_PER_PIXEL = 4; // 32bpp
-        private const int MICRO_DIFF_MAX_CHANGED_PIXELS = 512;
-        private const int MICRO_DIFF_MAX_SINGLE_CHANNEL_DELTA = 96;
-        private const long MICRO_DIFF_MAX_TOTAL_CHANNEL_DELTA = 20000;
+        private const int MICRO_DIFF_MAX_CHANGED_PIXELS = 18000;
+        private const int MICRO_DIFF_MAX_SINGLE_CHANNEL_DELTA = 255;
+        private const long MICRO_DIFF_MAX_TOTAL_CHANNEL_DELTA = 450000;
+        private const int MICRO_DIFF_MAX_CHANGED_ALPHA_PIXELS = 1250;
 
         private readonly string _iconsDir;
         private readonly string _manifestPath;
@@ -534,7 +535,8 @@ namespace CF7Launcher.Tasks
 
                 if (stats.ChangedPixels > MICRO_DIFF_MAX_CHANGED_PIXELS
                     || stats.MaxChannelDelta > MICRO_DIFF_MAX_SINGLE_CHANNEL_DELTA
-                    || stats.TotalChannelDelta > MICRO_DIFF_MAX_TOTAL_CHANNEL_DELTA)
+                    || stats.TotalChannelDelta > MICRO_DIFF_MAX_TOTAL_CHANNEL_DELTA
+                    || stats.ChangedAlphaPixels > MICRO_DIFF_MAX_CHANGED_ALPHA_PIXELS)
                 {
                     return false;
                 }
