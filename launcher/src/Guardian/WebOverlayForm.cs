@@ -82,6 +82,7 @@ namespace CF7Launcher.Guardian
         // 面板系统
         private ShopTask _shopTask;
         private MapTask _mapTask;
+        private GomokuTask _gomokuTask;
         private Action<bool> _onPanelStateChanged;
         private string _activePanel;  // null = 无面板, "kshop"/"help"/...
         private bool _pauseNeedsRestore;
@@ -1278,6 +1279,11 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetGomokuTask(GomokuTask task)
+        {
+            _gomokuTask = task;
+        }
+
         public void SetMapTask(MapTask task)
         {
             _mapTask = task;
@@ -1327,6 +1333,10 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[Panel] Routing cmd=" + cmd + " to MapTask, _mapTask=" + (_mapTask != null ? "ok" : "NULL"));
                     if (_mapTask != null) _mapTask.HandleWebRequest(cmd, parsed);
                     break;
+                case "gomoku_eval":
+                    LogManager.Log("[Panel] Routing cmd=gomoku_eval to GomokuTask, _gomokuTask=" + (_gomokuTask != null ? "ok" : "NULL"));
+                    HandleGobangEvalRequest(parsed);
+                    break;
                 case "minigame_session":
                     {
                         JToken payload = parsed["payload"];
@@ -1337,12 +1347,66 @@ namespace CF7Launcher.Guardian
                         string prefix;
                         if (string.Equals(game, "lockbox", StringComparison.OrdinalIgnoreCase)) prefix = "Lockbox";
                         else if (string.Equals(game, "pinalign", StringComparison.OrdinalIgnoreCase)) prefix = "PinAlign";
+                        else if (string.Equals(game, "gobang", StringComparison.OrdinalIgnoreCase)) prefix = "Gobang";
                         else prefix = "Minigame";
 
                         LogManager.Log("[" + prefix + "] " + payload.ToString(Newtonsoft.Json.Formatting.None));
                     }
                     break;
             }
+        }
+
+        private void HandleGobangEvalRequest(JObject parsed)
+        {
+            string webCallId = parsed.Value<string>("callId");
+            if (string.IsNullOrEmpty(webCallId))
+            {
+                LogManager.Log("[Gobang] webCallId is empty");
+                return;
+            }
+
+            if (_gomokuTask == null)
+            {
+                PostGobangEvalResponse(webCallId, "{\"success\":false,\"error\":\"gomoku_task_unavailable\"}");
+                return;
+            }
+
+            _gomokuTask.HandleAsync(parsed, delegate(string response)
+            {
+                if (_disposed) return;
+                Action post = delegate { PostGobangEvalResponse(webCallId, response); };
+                try
+                {
+                    if (this.IsHandleCreated && this.InvokeRequired) this.BeginInvoke(post);
+                    else post();
+                }
+                catch { }
+            });
+        }
+
+        private void PostGobangEvalResponse(string webCallId, string response)
+        {
+            JObject msg;
+            try
+            {
+                msg = string.IsNullOrEmpty(response)
+                    ? new JObject()
+                    : JObject.Parse(response);
+            }
+            catch
+            {
+                msg = new JObject();
+                msg["success"] = false;
+                msg["error"] = "invalid_gomoku_response";
+            }
+
+            if (msg["success"] == null) msg["success"] = false;
+            msg.Remove("task");
+            msg["type"] = "panel_resp";
+            msg["panel"] = "gobang";
+            msg["cmd"] = "gomoku_eval";
+            msg["callId"] = webCallId;
+            PostToWeb(msg.ToString(Newtonsoft.Json.Formatting.None));
         }
 
         private bool TrySendGameCommand(string action)
@@ -1465,6 +1529,11 @@ namespace CF7Launcher.Guardian
                 case "PINALIGN_TEST":
                     PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"pinalign\",\"initData\":{\"mode\":\"dev\",\"specId\":\"mvp-3pin-v1\",\"masterSeed\":\"dev-default\",\"debug\":true}}");
                     _activePanel = "pinalign";
+                    if (_onPanelStateChanged != null) _onPanelStateChanged(true);
+                    break;
+                case "GOBANG_TEST":
+                    PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"gobang\",\"initData\":{\"mode\":\"dev\",\"source\":\"runtime\",\"ruleset\":\"casual\",\"difficulty\":\"normal\",\"playerRole\":1,\"aiEnabled\":true,\"debug\":true}}");
+                    _activePanel = "gobang";
                     if (_onPanelStateChanged != null) _onPanelStateChanged(true);
                     break;
                 case "EXIT_CONFIRM": if (_onForceExit != null) _onForceExit(); break;

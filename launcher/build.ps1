@@ -206,7 +206,10 @@ $requiredWebPaths = @(
     "modules\minigames\lockbox\lockbox.css",
     "modules\minigames\lockbox\lockbox-panel.js",
     "modules\minigames\pinalign\pinalign.css",
-    "modules\minigames\pinalign\pinalign-panel.js"
+    "modules\minigames\pinalign\pinalign-panel.js",
+    "modules\minigames\gobang\gobang.css",
+    "modules\minigames\gobang\gobang-panel.js",
+    "modules\minigames\gobang\core\index.js"
 )
 $missingWebPaths = @()
 foreach ($relativePath in $requiredWebPaths) {

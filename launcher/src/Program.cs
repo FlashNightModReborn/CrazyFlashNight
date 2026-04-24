@@ -307,6 +307,7 @@ class Program
 
         // 面板系统接线 (11c: webOverlay 必有)
         webOverlay.SetShopTask(shopTask);
+        webOverlay.SetGomokuTask(gomokuTask);
         webOverlay.SetMapTask(mapTask);
         webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
         form.SetWebOverlay(webOverlay);

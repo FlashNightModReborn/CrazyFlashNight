@@ -83,6 +83,7 @@ namespace CF7Launcher.Tasks
             JArray moves = payload.Value<JArray>("moves");
             int timeLimit = payload.Value<int>("timeLimit");
             if (timeLimit <= 0) timeLimit = 5000;
+            string ruleset = NormalizeRuleset(payload.Value<string>("ruleset"));
 
             try
             {
@@ -107,6 +108,7 @@ namespace CF7Launcher.Tasks
                 board.AppendLine("DONE");
 
                 // 设置时间限制
+                _engine.StandardInput.WriteLine("INFO rule " + RuleCodeFor(ruleset));
                 _engine.StandardInput.WriteLine("INFO timeout_turn " + timeLimit);
                 _engine.StandardInput.Write(board.ToString());
                 _engine.StandardInput.Flush();
@@ -166,6 +168,7 @@ namespace CF7Launcher.Tasks
                 result["score"] = score;
                 result["depth"] = depth;
                 result["pv"] = pv;
+                result["ruleset"] = ruleset;
 
                 JObject resp = new JObject();
                 resp["success"] = true;
@@ -179,6 +182,19 @@ namespace CF7Launcher.Tasks
                 KillEngine();
                 return Error(ex.Message);
             }
+        }
+
+        private static string NormalizeRuleset(string value)
+        {
+            if (string.Equals(value, "renju", StringComparison.OrdinalIgnoreCase))
+                return "renju";
+            return "casual";
+        }
+
+        private static int RuleCodeFor(string ruleset)
+        {
+            // Piskvork/Rapfi: 0 = freestyle, 4 = renju.
+            return string.Equals(ruleset, "renju", StringComparison.OrdinalIgnoreCase) ? 4 : 0;
         }
 
         private void ParseMessageLine(string line, ref int depth, ref int score, ref string pv)

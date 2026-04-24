@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Gobang Harness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../../../css/panels.css">
+<link rel="stylesheet" href="../../shared/minigame-shell.css">
+<link rel="stylesheet" href="../../shared/dev/harness-base.css">
+<link rel="stylesheet" href="../gobang.css">
+</head>
+<body>
+<div id="panel-container" data-panel="gobang">
+    <div id="panel-backdrop"></div>
+    <div id="panel-content"></div>
+</div>
+
+<script>
+window.__minigameOverlayRoot = "../../../../";
+</script>
+<script src="../../../bridge.js"></script>
+<script src="../../../panels.js"></script>
+<script src="../../shared/host-bridge.js"></script>
+<script src="../../shared/dev/harness-base.js"></script>
+<script src="../core/index.js"></script>
+<script src="../gobang-panel.js"></script>
+<script src="./qa-suite.js"></script>
+<script>
+(function() {
+    "use strict";
+
+    var query = MinigameHarness.parseQuery(location.search);
+
+    function buildInit(overrides) {
+        var out = {
+            mode: "dev",
+            source: "harness",
+            ruleset: query.ruleset || "casual",
+            difficulty: query.difficulty || "normal",
+            playerRole: query.playerRole === "-1" ? -1 : 1,
+            aiEnabled: query.local === "1" ? false : true,
+            debug: true
+        };
+        overrides = overrides || {};
+        var key;
+        for (key in overrides) out[key] = overrides[key];
+        return out;
+    }
+
+    function openSession(api, overrides) {
+        var readyCount = api.getSessionEvents("ready").length;
+        window.GobangAiStub = function(payload) {
+            return { success: true, result: { x: 7, y: 8, score: 0, depth: 1, pv: "I8" } };
+        };
+        if (window.GobangPanel && GobangPanel._debugBoot) {
+            GobangPanel._debugBoot(buildInit(overrides));
+        } else {
+            Panels.open("gobang", buildInit(overrides));
+        }
+        return api.waitForNextSessionEvent("ready", readyCount, 4000).then(function() {
+            return GobangPanel._debugGetState();
+        });
+    }
+
+    function browserCases(api) {
+        return [
+            {
+                id: "gb-ui1",
+                title: "protocol emits open+ready with requested/resolved split",
+                run: function() {
+                    return openSession(api).then(function() {
+                        var openEvent = api.getSessionEvents("open").slice(-1)[0];
+                        var readyEvent = api.getSessionEvents("ready").slice(-1)[0];
+                        api.assert(!!openEvent && !!readyEvent, "open/ready events missing");
+                        api.assert(!!openEvent.payload.data.requested, "open.requested missing");
+                        api.assert(openEvent.payload.data.resolved === null, "open.resolved should be null");
+                        api.assert(!!readyEvent.payload.data.resolved, "ready.resolved missing");
+                        api.assert(!!readyEvent.payload.data.metrics, "ready.metrics missing");
+                        return "open/ready envelope present";
+                    });
+                }
+            },
+            {
+                id: "gb-ui2",
+                title: "layout renders 15x15 board",
+                run: function() {
+                    return openSession(api).then(function() {
+                        var cells = document.querySelectorAll(".gobang-cell");
+                        api.assertEqual(cells.length, 225, "gobang cell count");
+                        var layout = api.captureLayout({ panel: ".gobang-panel", main: ".gobang-main", side: ".gobang-side-pane" });
+                        api.assert(layout.panel.width > 500, "panel width too small");
+                        api.assert(layout.side.width >= 250, "side pane too narrow: " + layout.side.width);
+                        return "cells=" + cells.length + ", sideWidth=" + layout.side.width;
+                    });
+                }
+            },
+            {
+                id: "gb-ui3",
+                title: "clicking a player move asks AI and applies stub response",
+                run: function() {
+                    return openSession(api).then(function() {
+                        var before = api.getSessionEvents("turn").length;
+                        GobangPanel._debugClick(7, 7);
+                        return api.waitFor(function() {
+                            var s = GobangPanel._debugGetState();
+                            return s && s.moves.length >= 2 ? s : null;
+                        }, 2500, "AI stub move").then(function(state) {
+                            api.assertEqual(state.moves[0].row, 7, "player row");
+                            api.assertEqual(state.moves[1].col, 8, "AI col");
+                            api.assert(api.getSessionEvents("turn").length >= before + 2, "turn events missing");
+                            return "moves=" + state.moves.length;
+                        });
+                    });
+                }
+            },
+            {
+                id: "gb-ui4",
+                title: "undo and export keep session state coherent",
+                run: function() {
+                    return openSession(api).then(function() {
+                        GobangPanel._debugClick(7, 7);
+                        return api.waitFor(function() {
+                            var s = GobangPanel._debugGetState();
+                            return s && s.moves.length >= 2 ? s : null;
+                        }, 2500, "AI stub move").then(function() {
+                            GobangPanel._debugUndo();
+                            var after = GobangPanel._debugGetState();
+                            api.assertEqual(after.moves.length, 0, "undo should remove player+AI pair");
+                            var exported = GobangPanel._debugExport();
+                            api.assert(!!exported && exported.Meta.game === "gobang", "export missing");
+                            api.assert(api.getSessionEvents("export").length > 0, "export event missing");
+                            return "undo+export ok";
+                        });
+                    });
+                }
+            }
+        ];
+    }
+
+    function runSuite(api, caseId) {
+        var defs = [];
+        var i;
+        for (i = 0; i < GobangQA.SUITE.length; i += 1) {
+            defs.push({
+                id: GobangQA.SUITE[i].id,
+                title: GobangQA.SUITE[i].title,
+                run: (function(id) {
+                    return function() {
+                        var result = GobangQA.runOne(GobangCore, id);
+                        if (!result.pass) throw new Error(result.detail || "logic suite failed");
+                        return result.detail || "pass";
+                    };
+                })(GobangQA.SUITE[i].id)
+            });
+        }
+        defs = defs.concat(browserCases(api));
+        if (caseId) {
+            defs = defs.filter(function(item) { return item.id === caseId; });
+        }
+        var results = [];
+        var flow = Promise.resolve();
+        defs.forEach(function(def) {
+            flow = flow.then(function() {
+                return api.runCase(def.id, def.title, function() {
+                    return def.run(api);
+                });
+            }).then(function(result) {
+                results.push(result);
+            });
+        });
+        return flow.then(function() {
+            return MinigameHarness.normalizeBundle(results);
+        });
+    }
+
+    function collectDump(api) {
+        return {
+            layout: api.captureLayout({ panel: ".gobang-panel", main: ".gobang-main", side: ".gobang-side-pane" }),
+            state: window.GobangPanel && GobangPanel._debugGetState ? GobangPanel._debugGetState() : null
+        };
+    }
+
+    var harness = MinigameHarness.create({
+        panelId: "gobang",
+        title: "Gobang QA",
+        openPanel: function() {
+            return openSession({ getSessionEvents: function() { return []; }, waitForNextSessionEvent: function() { return Promise.resolve(); } });
+        },
+        runScenario: function(api) {
+            return openSession(api).then(function() {
+                GobangPanel._debugClick(7, 7);
+                return api.waitFor(function() {
+                    var s = GobangPanel._debugGetState();
+                    return s && s.moves.length >= 2 ? s : null;
+                }, 2500, "scenario move");
+            });
+        },
+        runSuite: runSuite,
+        collectDump: collectDump
+    });
+
+    window.addEventListener("load", function() {
+        harness.boot();
+    });
+})();
+</script>
+</body>
+</html>

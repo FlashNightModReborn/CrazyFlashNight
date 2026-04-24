@@ -391,7 +391,8 @@ launcher/
 │       └── minigames/
 │           ├── shared/                    小游戏共享层（host-bridge + minigame-shell + shared/dev QA 基础层）
 │           ├── lockbox/                   开锁小游戏（core/dev + lockbox-audio/panel/css/README）
-│           └── pinalign/                  定位小游戏（core/adapter/app/dev/reference + audio/panel/css/README）
+│           ├── pinalign/                  定位小游戏（core/adapter/app/dev/reference + audio/panel/css/README）
+│           └── gobang/                    五子棋小游戏（core/dev + panel/css/README，AI 走 GomokuTask/Rapfi）
 │
 ├── tests/                                 【xUnit 2.4.2 C# 单测，见测试基建节】
 │   ├── Launcher.Tests.csproj              legacy csproj + packages.config（net462 对齐主工程）
@@ -406,7 +407,7 @@ launcher/
 │
 └── tools/
     ├── lockbox-bake.js                    Lockbox 变体池离线生成工具（写入 web/data/lockbox-variants.json）
-    ├── run-minigame-qa.js                 小游戏 Node QA 入口（lockbox / pinalign / all）
+    ├── run-minigame-qa.js                 小游戏 Node QA 入口（lockbox / pinalign / gobang / all）
     ├── validate-minigame-final-state.js   小游戏最终态静态校验（旧路径 / 旧协议 / 旧共享类名）
     └── nuget.exe                          NuGet CLI
 ```
@@ -547,13 +548,14 @@ powershell -File run_tests.ps1
 
 小游戏测试不走 `launcher/tests/`，地图 panel 的 DOM / 布局 / 交互回归也不走 C# 单测；统一按各模块自带的 QA 入口执行：
 
-- **Node QA**：`node tools/run-minigame-qa.js --game lockbox|pinalign|all`
+- **Node QA**：`node tools/run-minigame-qa.js --game lockbox|pinalign|gobang|all`
   - 实际入口文件：`tools/run-minigame-qa.js`
   - 共享 runner：`web/modules/minigames/shared/dev/node-qa-runner.js`
   - 适用场景：纯逻辑、确定性、导出结构、回归脚本
 - **Browser harness**：直接打开各自 `dev/harness.html`
   - `web/modules/minigames/lockbox/dev/harness.html`
   - `web/modules/minigames/pinalign/dev/harness.html`
+  - `web/modules/minigames/gobang/dev/harness.html`
   - `web/modules/map/dev/harness.html`
   - 共享 QA 基础层：`web/modules/minigames/shared/dev/harness-base.js` + `harness-base.css`
   - 支持 query 驱动的 `?qa=1` / `?case=` / `?scenario=` / `?dump=1`
@@ -579,7 +581,7 @@ powershell -File run_tests.ps1
   - 读取本地审计图与 audit JSON，让外部视觉模型辅助判断热点框/头像是否仍有肉眼可见偏差
   - 仅作视觉意见补充，不替代本地 audit / harness / 游戏内联调
 - **静态收口校验**：`node tools/validate-minigame-final-state.js`
-  - 用于阻止旧 `modules/lockbox-*.js`、旧 `lockbox_session/pinalign_session`、旧共享结构 class 名回流
+  - 用于阻止旧 `modules/lockbox-*.js`、旧版分游戏 session 命令名、旧共享结构 class 名回流
 
 ### LogManager 测试 hook
 
@@ -1052,6 +1054,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
 - **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面均已切到 `assembled` 场景拼接模式，右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit；右上角常驻 HUD 由 `web/modules/map-hud.js` 消费同一份 `MapPanelData` + UiData `mm/mh`，只显示当前区块高亮与固定 beacon，点击后打开 map panel
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
+- **gobang**（五子棋小游戏）: `web/modules/minigames/gobang/` 下的正式小游戏模块；Web core 负责规则裁判，AI 经 Web→C# `gomoku_eval` 调用 `GomokuTask` / Rapfi
 
 **通用模块**：
 - `panels.js`: 面板注册/生命周期管理 (register/open/close/force_close)
@@ -1061,15 +1064,16 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
 - `web/modules/minigames/shared/minigame-shell.css`: 小游戏共享结构样式
 
 **小游戏宿主协议**：
-- Lockbox / Pinalign 不再各自发 `lockbox_session` / `pinalign_session`
+- Lockbox / Pinalign / Gobang 统一使用共享 session envelope，不再维护分游戏 session 命令名
 - 统一发 `Bridge.send({ type:'panel', cmd:'minigame_session', payload:{ game, kind, data } })`
 - 生命周期约定：
   - `open`: 面板已打开，只保证 `data.requested`
   - `ready`: 状态已建立，`data.requested` / `data.resolved` / `data.metrics` 都必须存在
   - `close`: 带最后一次已知 `phase` / `metrics`
   - `turn` / `result` / `export`: 沿用各游戏语义，但都走同一 envelope
+- Gobang AI 额外走 Web panel → C# `gomoku_eval`：`{ type:'panel', panel:'gobang', cmd:'gomoku_eval', callId, payload:{ moves, timeLimit, ruleset } }`；响应为同 `callId` 的 `panel_resp`，`moves` 为 `[[x,y,role],...]`，`role` 使用 `1` 黑 / `-1` 白
 
-**状态机 (_activePanel)**：`null` → `"kshop" / "help" / "lockbox" / "pinalign" / ...` → `null`。当前只有 `kshop` 会在断连或强制关闭路径里设置 `_pauseNeedsRestore`；其余纯 Web / dev panel 只做面板生命周期管理，不触发 Flash 暂停恢复。
+**状态机 (_activePanel)**：`null` → `"kshop" / "help" / "lockbox" / "pinalign" / "gobang" / ...` → `null`。当前只有 `kshop` 会在断连或强制关闭路径里设置 `_pauseNeedsRestore`；其余纯 Web / dev panel 只做面板生命周期管理，不触发 Flash 暂停恢复。
 
 **热重载恢复**：`_uiDataSnapshot` 按 KV key 维护最新值快照，WebView2 热重载后 `FlushUiDataBuffer` 先回放完整快照，确保 game-ready 等关键状态不丢失。
 

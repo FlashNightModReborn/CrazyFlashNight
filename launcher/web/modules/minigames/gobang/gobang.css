@@ -1,0 +1,318 @@
+.minigame-panel.gobang-panel {
+    --gb-board-max: min(72vh, 720px);
+    --gb-line: rgba(38, 31, 21, 0.7);
+    --gb-wood: #b98b54;
+    --gb-wood-dark: #8b5d35;
+    --gb-ink: #171514;
+    --gb-paper: #f3eee2;
+    background:
+        linear-gradient(135deg, rgba(13,18,22,0.98), rgba(17,16,13,0.98)),
+        #111;
+    border-color: rgba(212, 162, 92, 0.25);
+    box-shadow: inset 0 0 80px rgba(217, 167, 101, 0.04), 0 0 32px rgba(0, 240, 255, 0.04);
+}
+
+.gobang-panel .minigame-header {
+    border-bottom-color: rgba(212, 162, 92, 0.22);
+    background: rgba(12, 15, 17, 0.88);
+}
+
+.gobang-panel .minigame-title {
+    color: #f0c277;
+    text-shadow: 0 0 8px rgba(240, 194, 119, 0.18);
+}
+
+.gobang-select-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--cp-dim);
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+.gobang-select-label select {
+    min-width: 64px;
+    height: 26px;
+    border: 1px solid rgba(212, 162, 92, 0.24);
+    background: rgba(8, 10, 12, 0.9);
+    color: var(--cp-text);
+    font: inherit;
+    padding: 2px 6px;
+}
+
+.gobang-main {
+    grid-template-columns: minmax(0, 1fr) minmax(258px, 278px);
+    gap: 10px;
+    padding: 10px 12px;
+}
+
+.gobang-board-pane {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+}
+
+.gobang-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-height: 32px;
+}
+
+.gobang-readout {
+    margin-left: auto;
+    color: #f0c277;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.gobang-board-shell {
+    display: grid;
+    grid-template-rows: 20px minmax(0, 1fr);
+    gap: 4px;
+    justify-content: center;
+    align-content: center;
+    min-height: 0;
+    flex: 1;
+}
+
+.gobang-coordinate-row {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    width: var(--gb-board-max);
+    max-width: calc(100vw - 370px);
+    color: rgba(243, 238, 226, 0.58);
+    font-size: 10px;
+    text-align: center;
+}
+
+.gobang-board-frame {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 4px;
+}
+
+.gobang-coordinate-col {
+    display: grid;
+    grid-template-rows: repeat(15, 1fr);
+    height: var(--gb-board-max);
+    max-height: calc(100vh - 158px);
+    color: rgba(243, 238, 226, 0.58);
+    font-size: 10px;
+    text-align: right;
+    align-items: center;
+    padding-right: 4px;
+}
+
+.gobang-board {
+    display: grid;
+    grid-template-columns: repeat(15, minmax(0, 1fr));
+    grid-template-rows: repeat(15, minmax(0, 1fr));
+    width: var(--gb-board-max);
+    height: var(--gb-board-max);
+    max-width: calc(100vw - 370px);
+    max-height: calc(100vh - 158px);
+    aspect-ratio: 1;
+    padding: 10px;
+    border: 1px solid rgba(240, 194, 119, 0.34);
+    background:
+        linear-gradient(90deg, transparent calc(50% - 0.5px), var(--gb-line) calc(50% - 0.5px), var(--gb-line) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+        linear-gradient(0deg, transparent calc(50% - 0.5px), var(--gb-line) calc(50% - 0.5px), var(--gb-line) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+        radial-gradient(circle at 20% 18%, rgba(255,255,255,0.13), transparent 16%),
+        linear-gradient(135deg, var(--gb-wood), var(--gb-wood-dark));
+    background-size:
+        calc((100% - 20px) / 14) calc((100% - 20px) / 14),
+        calc((100% - 20px) / 14) calc((100% - 20px) / 14),
+        100% 100%,
+        100% 100%;
+    background-position:
+        10px 10px,
+        10px 10px,
+        0 0,
+        0 0;
+    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.28), 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+.gobang-cell {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gobang-cell::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(42, 30, 18, 0);
+}
+
+.gobang-cell:nth-child(49)::after,
+.gobang-cell:nth-child(53)::after,
+.gobang-cell:nth-child(57)::after,
+.gobang-cell:nth-child(109)::after,
+.gobang-cell:nth-child(113)::after,
+.gobang-cell:nth-child(117)::after,
+.gobang-cell:nth-child(169)::after,
+.gobang-cell:nth-child(173)::after,
+.gobang-cell:nth-child(177)::after {
+    background: rgba(42, 30, 18, 0.85);
+}
+
+.gobang-stone {
+    position: absolute;
+    width: 76%;
+    height: 76%;
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0.88);
+    transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.gobang-cell.black .gobang-stone,
+.gobang-cell.white .gobang-stone {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.gobang-cell.black .gobang-stone {
+    background:
+        radial-gradient(circle at 34% 28%, rgba(255,255,255,0.16), transparent 18%),
+        radial-gradient(circle at 50% 56%, #282421, #060505 68%);
+    box-shadow: inset -4px -6px 12px rgba(0,0,0,0.45), 0 2px 4px rgba(0,0,0,0.42);
+}
+
+.gobang-cell.white .gobang-stone {
+    background:
+        radial-gradient(circle at 34% 28%, #fff, transparent 20%),
+        radial-gradient(circle at 50% 58%, #f5f2e8, #bbb4a8 72%);
+    box-shadow: inset -4px -6px 12px rgba(80,70,60,0.18), 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.gobang-cell.last .gobang-stone {
+    outline: 2px solid rgba(255, 72, 72, 0.78);
+    outline-offset: 2px;
+}
+
+.gobang-cell.empty:hover .gobang-stone {
+    opacity: 0.36;
+    background: rgba(255, 255, 255, 0.44);
+}
+
+.gobang-order {
+    position: absolute;
+    font-size: 9px;
+    line-height: 1;
+    color: rgba(240, 194, 119, 0.8);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    pointer-events: none;
+}
+
+.gobang-cell.white .gobang-order {
+    color: rgba(20, 18, 16, 0.66);
+    text-shadow: none;
+}
+
+.gobang-side-pane {
+    overflow-y: auto;
+}
+
+.gobang-status-card {
+    border-color: rgba(240, 194, 119, 0.18);
+}
+
+.gobang-status-line {
+    min-height: 38px;
+    color: var(--cp-text);
+    line-height: 1.5;
+}
+
+.gobang-panel[data-pending-ai="1"] .gobang-status-line {
+    color: #f0c277;
+}
+
+.gobang-panel[data-status="win"] .gobang-status-line {
+    color: #8de8ab;
+}
+
+.gobang-kv {
+    display: grid;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.gobang-kv-row,
+.gobang-engine-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--cp-dim);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.gobang-kv-row b {
+    color: var(--cp-text);
+    font-weight: normal;
+}
+
+.gobang-engine-line {
+    display: block;
+}
+
+.gobang-engine-line.active {
+    color: #f0c277;
+}
+
+.gobang-engine-line.error {
+    color: #ff8fa3;
+}
+
+.gobang-engine-line.dim {
+    color: rgba(202, 214, 222, 0.52);
+}
+
+.gobang-export-wrap {
+    flex: 1;
+    min-height: 160px;
+}
+
+.gobang-export {
+    height: 150px;
+    overflow: auto;
+    white-space: pre-wrap;
+    color: rgba(202, 214, 222, 0.72);
+    margin: 0;
+    font-size: 11px;
+}
+
+#panel-container[data-panel="gobang"] #panel-content {
+    inset: 1.2% 1.4%;
+}
+
+#panel-container[data-panel="gobang"] #panel-backdrop {
+    background:
+        linear-gradient(135deg, rgba(11,15,18,0.92), rgba(16,13,10,0.9)),
+        rgba(0,0,0,0.88);
+}
+
+@media (max-width: 1000px) {
+    .gobang-main {
+        grid-template-columns: 1fr;
+    }
+
+    .gobang-coordinate-row,
+    .gobang-board {
+        max-width: calc(100vw - 76px);
+    }
+}
