@@ -30,6 +30,10 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
+        [DllImport("user32.dll")]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+            int X, int Y, int cx, int cy, uint uFlags);
+
         private const uint MOD_CONTROL = 0x0002;
         private const int WM_HOTKEY = 0x0312;
         private const uint KEYEVENTF_KEYUP = 0x0002;
@@ -53,6 +57,8 @@ namespace CF7Launcher.Guardian
         private const int WM_XBUTTONUP = 0x020C;
         private const int WM_XBUTTONDBLCLK = 0x020D;
         private const int WM_DPICHANGED = 0x02E0;
+        private const uint SWP_NOZORDER = 0x0004;
+        private const uint SWP_NOACTIVATE = 0x0010;
         private const int MK_LBUTTON = 0x0001;
         private const int MK_RBUTTON = 0x0002;
         private const int MK_SHIFT = 0x0004;
@@ -532,7 +538,7 @@ namespace CF7Launcher.Guardian
                 ApplySuggestedDpiBounds(m.LParam);
                 DpiDiagnostics.LogWindow("GuardianForm.WM_DPICHANGED", this.Handle);
                 ScheduleViewportRefresh("guardian_dpi_changed");
-                m.Result = IntPtr.Zero;
+                base.WndProc(ref m);
                 return;
             }
 
@@ -574,7 +580,8 @@ namespace CF7Launcher.Guardian
                 NativeRect r = (NativeRect)Marshal.PtrToStructure(lParam, typeof(NativeRect));
                 int w = Math.Max(1, r.Right - r.Left);
                 int h = Math.Max(1, r.Bottom - r.Top);
-                this.Bounds = new Rectangle(r.Left, r.Top, w, h);
+                SetWindowPos(this.Handle, IntPtr.Zero, r.Left, r.Top, w, h,
+                    SWP_NOZORDER | SWP_NOACTIVATE);
             }
             catch { }
         }
@@ -724,6 +731,13 @@ namespace CF7Launcher.Guardian
             _viewportSettleTimer.Stop();
             _viewportSettleTimer.Start();
 
+            if (!IsDpiRelatedReason(reason))
+            {
+                if (_viewportLongSettleTimer != null)
+                    _viewportLongSettleTimer.Stop();
+                return;
+            }
+
             if (_viewportLongSettleTimer == null)
             {
                 _viewportLongSettleTimer = new System.Windows.Forms.Timer();
@@ -738,6 +752,12 @@ namespace CF7Launcher.Guardian
 
             _viewportLongSettleTimer.Stop();
             _viewportLongSettleTimer.Start();
+        }
+
+        private static bool IsDpiRelatedReason(string reason)
+        {
+            return !string.IsNullOrEmpty(reason)
+                && reason.IndexOf("dpi", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private void RefreshRuntimeViewport(string reason)

@@ -22,6 +22,7 @@ namespace CF7Launcher.Guardian
         public IntPtr MonitorHandle { get; private set; }
         public string LastReason { get; private set; }
         public bool HasWebMetrics { get; private set; }
+        public bool LastDpiResolved { get; private set; }
 
         private double _fallbackZoom;
 
@@ -31,6 +32,7 @@ namespace CF7Launcher.Guardian
             WindowDpiX = 96;
             WindowDpiY = 96;
             DevicePixelRatio = 1.0;
+            LastDpiResolved = false;
             _fallbackZoom = 1.0;
             LastReason = "init";
         }
@@ -47,7 +49,8 @@ namespace CF7Launcher.Guardian
             LastReason = reason ?? "overlay";
 
             uint dpiX, dpiY;
-            if (DpiDiagnostics.TryGetWindowDpi(hwnd, out dpiX, out dpiY))
+            LastDpiResolved = DpiDiagnostics.TryGetWindowDpi(hwnd, out dpiX, out dpiY);
+            if (LastDpiResolved)
             {
                 WindowDpiX = (int)dpiX;
                 WindowDpiY = (int)dpiY;
@@ -135,6 +138,7 @@ namespace CF7Launcher.Guardian
                 + " dpr=" + DevicePixelRatio.ToString("0.###")
                 + " scale=" + CssToPhysicalX.ToString("0.###") + "x" + CssToPhysicalY.ToString("0.###")
                 + " dpi=" + WindowDpiX + "x" + WindowDpiY
+                + " dpiResolved=" + LastDpiResolved
                 + " monitor=0x" + MonitorHandle.ToString("X")
                 + " metrics=" + HasWebMetrics
                 + " reason=" + LastReason;

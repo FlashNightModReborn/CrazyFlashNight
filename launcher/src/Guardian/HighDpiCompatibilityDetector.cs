@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using CF7Launcher.Config;
 
 namespace CF7Launcher.Guardian
 {
@@ -59,10 +60,16 @@ namespace CF7Launcher.Guardian
             return result;
         }
 
-        public static void ScheduleRiskWarning(Form owner, HighDpiCompatibilityResult result)
+        public static void ScheduleRiskWarning(Form owner, HighDpiCompatibilityResult result, UserPrefs userPrefs)
         {
             if (owner == null || result == null || !result.IsRiskyOverride || _warningShown)
                 return;
+            if (userPrefs != null && !string.IsNullOrEmpty(result.RawValue) &&
+                string.Equals(userPrefs.SuppressedHighDpiWarningRaw, result.RawValue, StringComparison.Ordinal))
+            {
+                LogManager.Log("[DPI] Compatibility warning suppressed by user preference raw=" + result.RawValue);
+                return;
+            }
             _warningShown = true;
 
             Action show = delegate
@@ -77,7 +84,7 @@ namespace CF7Launcher.Guardian
                     dialog.MinimizeBox = false;
                     dialog.ShowInTaskbar = false;
                     dialog.AutoScaleMode = AutoScaleMode.None;
-                    dialog.ClientSize = new Size(560, 220);
+                    dialog.ClientSize = new Size(560, 250);
 
                     Label label = new Label();
                     label.AutoSize = false;
@@ -89,15 +96,31 @@ namespace CF7Launcher.Guardian
                         + "正式支持的设置是：不勾选高 DPI 缩放替代，或勾选后选择“应用程序”。\r\n\r\n"
                         + "当前兼容性值: " + (result.RawValue ?? "");
 
+                    CheckBox suppress = new CheckBox();
+                    suppress.AutoSize = true;
+                    suppress.Text = "不再提示当前兼容性设置";
+                    suppress.Location = new Point(18, dialog.ClientSize.Height - 42);
+                    suppress.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
+
                     Button ok = new Button();
                     ok.Text = "知道了";
                     ok.Size = new Size(88, 28);
                     ok.Location = new Point(dialog.ClientSize.Width - ok.Width - 18,
                         dialog.ClientSize.Height - ok.Height - 16);
                     ok.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
-                    ok.Click += delegate { dialog.Close(); };
+                    ok.Click += delegate
+                    {
+                        if (suppress.Checked && userPrefs != null)
+                        {
+                            userPrefs.SuppressedHighDpiWarningRaw = result.RawValue ?? "";
+                            if (userPrefs.Save())
+                                LogManager.Log("[DPI] Compatibility warning suppression saved raw=" + (result.RawValue ?? ""));
+                        }
+                        dialog.Close();
+                    };
 
                     dialog.Controls.Add(label);
+                    dialog.Controls.Add(suppress);
                     dialog.Controls.Add(ok);
                     dialog.AcceptButton = ok;
                     dialog.Show(owner);

@@ -58,6 +58,8 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.Equal(new Rectangle(17, 17, 36, 36), r);
             Assert.Equal(new Point(100, 200), p);
+            Assert.False(ctx.LastDpiResolved);
+            Assert.Equal(96, ctx.WindowDpiY);
         }
 
         [Fact]

@@ -18,7 +18,7 @@ namespace CF7Launcher.Guardian
 
     public static class DpiAwarenessBootstrap
     {
-        private static DpiAwarenessInitResult _result;
+        private static volatile DpiAwarenessInitResult _result;
 
         private const int ERROR_ACCESS_DENIED = 5;
         private const int PROCESS_PER_MONITOR_DPI_AWARE = 2;

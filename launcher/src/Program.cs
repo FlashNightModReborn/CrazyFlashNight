@@ -104,18 +104,18 @@ class Program
         LogManager.InitFileLog(projectRoot);
 
         LogManager.Log("[Guardian] Project root: " + projectRoot);
+        // Phase 2b: 用户级偏好 (lastPlayedSlot / introEnabled), 落盘到 launcher_user_prefs.json
+        CF7Launcher.Config.UserPrefs userPrefs = new CF7Launcher.Config.UserPrefs(projectRoot);
+
         HighDpiCompatibilityResult dpiCompat = HighDpiCompatibilityDetector.Detect(exePath);
         DpiDiagnostics.LogProcessStartup(DpiAwarenessBootstrap.Result, dpiCompat);
         DpiDiagnostics.LogWindow("GuardianForm", form.Handle);
-        HighDpiCompatibilityDetector.ScheduleRiskWarning(form, dpiCompat);
+        HighDpiCompatibilityDetector.ScheduleRiskWarning(form, dpiCompat, userPrefs);
         if (busOnly)
             LogManager.Log("[Guardian] --bus-only mode: skipping Flash Player startup");
 
         // 读配置（bus-only 跳过文件验证）
         AppConfig config = new AppConfig(projectRoot);
-
-        // Phase 2b: 用户级偏好 (lastPlayedSlot / introEnabled), 落盘到 launcher_user_prefs.json
-        CF7Launcher.Config.UserPrefs userPrefs = new CF7Launcher.Config.UserPrefs(projectRoot);
 
         // Steam 正版所有权校验（不通过则不写信任文件，Flash 无法联网）
         if (!SteamOwnershipCheck.Check(projectRoot))

@@ -124,7 +124,15 @@ namespace CF7Launcher.Guardian
 
         private readonly OverlayCoordinateContext _coordinateContext = new OverlayCoordinateContext();
         private bool _missingMetricsWarned;
+        private bool _dpiResolveWarned;
+        private bool _interactiveRectShapeWarned;
         private long _lastHitRectLogTick;
+        private long _lastOverlayContextLogTick;
+        private int _lastLoggedDpiX = -1;
+        private int _lastLoggedDpiY = -1;
+        private IntPtr _lastLoggedMonitor = IntPtr.Zero;
+        private double _lastLoggedScaleX = -1.0;
+        private double _lastLoggedScaleY = -1.0;
 
         public WebOverlayForm(Form owner, Control anchor, string webDir)
         {
@@ -420,6 +428,13 @@ namespace CF7Launcher.Guardian
             _positionSettleTimer.Stop();
             _positionSettleTimer.Start();
 
+            if (!IsDpiRelatedReason(reason))
+            {
+                if (_positionLongSettleTimer != null)
+                    _positionLongSettleTimer.Stop();
+                return;
+            }
+
             if (_positionLongSettleTimer == null)
             {
                 _positionLongSettleTimer = new System.Windows.Forms.Timer();
@@ -486,18 +501,26 @@ namespace CF7Launcher.Guardian
 
                 SetWindowPos(this.Handle, HWND_TOP, x, y, w, h, SWP_NOACTIVATE);
 
-                // CSS→物理命中比例仍按 Flash 设计高度计算；WebView2 视觉 ZoomFactor
-                // 需要除以当前 DPI scale，避免 125%/150% 系统缩放下视觉层被 DPR 二次放大。
-                uint dpiX, dpiY;
-                DpiDiagnostics.TryGetWindowDpi(this.Handle, out dpiX, out dpiY);
+                // CSS→物理命中比例仍按 Flash 设计高度计算。
                 double cssPhysicalScale = CalculateCssPhysicalScale(vpH);
-                double newWebViewZoom = CalculateWebViewZoomFactor(vpH, dpiY);
-                bool zoomChanged = Math.Abs(newWebViewZoom - _lastViewportZoom) > 0.001;
                 _zoomFactor = cssPhysicalScale;
-                _webViewZoomFactor = newWebViewZoom;
 
                 _coordinateContext.UpdateOverlay(new Rectangle(x, y, w, h),
                     vpX, vpY, vpW, vpH, this.Handle, _zoomFactor, reason);
+
+                // WebView2 视觉 ZoomFactor 需要除以当前 DPI scale，避免 125%/150%
+                // 系统缩放下视觉层被 DPR 二次放大。DPI 统一使用 UpdateOverlay 已采样
+                // 并带 monitor fallback 的值，避免 handle 初建/跨屏时首帧读到 96。
+                double newWebViewZoom = CalculateWebViewZoomFactor(vpH, _coordinateContext.WindowDpiY);
+                bool zoomChanged = Math.Abs(newWebViewZoom - _lastViewportZoom) > 0.001;
+                _webViewZoomFactor = newWebViewZoom;
+                if (!_coordinateContext.LastDpiResolved && !_dpiResolveWarned)
+                {
+                    _dpiResolveWarned = true;
+                    LogManager.Log("[DPI] WebOverlay DPI query failed; using cached/default dpi="
+                        + _coordinateContext.WindowDpiY + " for WebView2 zoom normalization");
+                }
+
                 bool monitorChanged = previousMonitor != _coordinateContext.MonitorHandle;
                 bool dpiChanged = previousDpiX != _coordinateContext.WindowDpiX ||
                     previousDpiY != _coordinateContext.WindowDpiY;
@@ -523,7 +546,8 @@ namespace CF7Launcher.Guardian
                     ExecScript("window.dispatchEvent(new Event('resize'));");
                     RequestViewportMetrics(reason);
                     ExecScript("if(window.Notch&&Notch.reportRect){Notch.reportRect();}");
-                    DpiDiagnostics.LogOverlayContext("WebOverlay.SyncPosition", _coordinateContext);
+                    if (ShouldLogOverlayContext(dpiChanged || monitorChanged))
+                        DpiDiagnostics.LogOverlayContext("WebOverlay.SyncPosition", _coordinateContext);
                 }
 
             }
@@ -660,7 +684,8 @@ namespace CF7Launcher.Guardian
                 _inputShield.RequestPositionSync();
             }
 
-            DpiDiagnostics.LogOverlayContext("WebOverlay.viewportMetrics", _coordinateContext);
+            if (ShouldLogOverlayContext(false))
+                DpiDiagnostics.LogOverlayContext("WebOverlay.viewportMetrics", _coordinateContext);
         }
 
         private void HandleInteractiveRects(JObject parsed, string rawJson)
@@ -686,6 +711,19 @@ namespace CF7Launcher.Guardian
                         Rectangle r = _coordinateContext.CssRectToPhysical(rx, ry, rw, rh);
                         if (r.Width > 0 && r.Height > 0)
                             rects.Add(r);
+                    }
+                }
+                else
+                {
+                    ReadInteractiveRectsFallback(rawJson, rects);
+                    if (rects.Count == 0)
+                    {
+                        if (!_interactiveRectShapeWarned)
+                        {
+                            _interactiveRectShapeWarned = true;
+                            LogManager.Log("[DPI] interactiveRect JSON missing r array; preserving previous hitRects");
+                        }
+                        return;
                     }
                 }
             }
@@ -761,6 +799,36 @@ namespace CF7Launcher.Guardian
             if (dpiScale <= 0)
                 dpiScale = 1.0;
             return Math.Max(0.25, CalculateCssPhysicalScale(viewportPhysicalHeight) / dpiScale);
+        }
+
+        private static bool IsDpiRelatedReason(string reason)
+        {
+            return !string.IsNullOrEmpty(reason)
+                && reason.IndexOf("dpi", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private bool ShouldLogOverlayContext(bool force)
+        {
+            double sx = _coordinateContext.CssToPhysicalX;
+            double sy = _coordinateContext.CssToPhysicalY;
+            bool changed = _lastOverlayContextLogTick == 0
+                || force
+                || _lastLoggedDpiX != _coordinateContext.WindowDpiX
+                || _lastLoggedDpiY != _coordinateContext.WindowDpiY
+                || _lastLoggedMonitor != _coordinateContext.MonitorHandle
+                || Math.Abs(sx - _lastLoggedScaleX) > 0.05
+                || Math.Abs(sy - _lastLoggedScaleY) > 0.05;
+
+            if (!changed)
+                return false;
+
+            _lastOverlayContextLogTick = Environment.TickCount;
+            _lastLoggedDpiX = _coordinateContext.WindowDpiX;
+            _lastLoggedDpiY = _coordinateContext.WindowDpiY;
+            _lastLoggedMonitor = _coordinateContext.MonitorHandle;
+            _lastLoggedScaleX = sx;
+            _lastLoggedScaleY = sy;
+            return true;
         }
 
         /// <summary>向 JS 发送结构化消息。</summary>
