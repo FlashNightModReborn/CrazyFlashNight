@@ -659,7 +659,7 @@ var GobangPanel = (function() {
                 [7, 6, 1], [7, 7, 1], [7, 8, 1], [7, 5, -1]
             ], null),
             termCard("冲四", "只剩一个点就能连五的四，必须马上挡——忽视一手就会直接被连五。", [
-                [7, 5, 1], [7, 6, 1], [7, 7, 1], [7, 8, 1]
+                [7, 4, -1], [7, 5, 1], [7, 6, 1], [7, 7, 1], [7, 8, 1]
             ], [7, 9]),
             termCard("活四", "两头都能连五的四。无论挡哪一头，下一手还能从另一头连五，几乎等于赢。", [
                 [7, 5, 1], [7, 6, 1], [7, 7, 1], [7, 8, 1]
@@ -695,7 +695,7 @@ var GobangPanel = (function() {
                 '<ul>',
                     "<li><b>反制落点：</b>AI 刚落在哪个坐标。对照棋盘能看清它的意图。</li>",
                     "<li><b>深度：</b>AI 往后算了几手。数字越大越深思熟虑；<code>烈度</code>越高深度上限越大。</li>",
-                    "<li><b>评估：</b>AI 视角的局面分值。正数对 AI 有利，负数对你有利；0 附近意味着双方势均力敌。",
+                    "<li><b>评估：</b>AI 视角的局面分值。正数对 AI 有利，负数对你有利；0 附近意味着双方势均力敌。</li>",
                     "<li><b>PV：</b>引擎预想的最佳后续走法序列。看不懂没关系，主要看它预估了多远。</li>",
                 "</ul>",
             "</section>",
@@ -711,7 +711,7 @@ var GobangPanel = (function() {
         return [
             '<div class="gobang-forbid-card">',
                 '<div class="gobang-forbid-title">' + escapeHtml(title) + "</div>",
-                buildBookBoard(moves, title, { star: star }),
+                buildBookBoard(moves, title, { star: star, labels: false }),
                 '<div class="gobang-forbid-note">' + escapeHtml(note) + "</div>",
             "</div>"
         ].join("");
@@ -722,7 +722,7 @@ var GobangPanel = (function() {
             '<section class="gobang-manual-section gobang-term-card">',
                 '<div class="gobang-term-head"><h3>' + escapeHtml(title) + "</h3></div>",
                 '<div class="gobang-term-body">',
-                    buildBookBoard(moves, title, { star: star }),
+                    buildBookBoard(moves, title, { star: star, labels: false }),
                     "<p>" + escapeHtml(body) + "</p>",
                 "</div>",
             "</section>"
@@ -734,6 +734,7 @@ var GobangPanel = (function() {
             _bookStep[bookId] = moves.length;
         }
         var step = Math.max(0, Math.min(moves.length, _bookStep[bookId]));
+        _bookStep[bookId] = step;
         var visibleMoves = moves.slice(0, step);
         var canPrev = step > 1;
         var canNext = step < moves.length;
@@ -745,7 +746,7 @@ var GobangPanel = (function() {
                     '<span>中心局部放大 · 第 ' + step + " / " + moves.length + " 手</span>",
                 "</div>",
                 '<div class="gobang-book-visual">',
-                    buildBookBoard(visibleMoves, title),
+                    buildBookBoard(visibleMoves, title, { framing: moves }),
                     '<div class="gobang-book-side">',
                         '<div class="gobang-book-controls" role="group" aria-label="单步控制">',
                             '<button type="button" data-action="book-step" data-gb-book="' + escapeAttr(bookId) + '" data-gb-step-mode="reset" data-gb-step-delta="0" aria-label="复位到第 1 手">复位</button>',
@@ -806,8 +807,9 @@ var GobangPanel = (function() {
         var moveByKey = {};
         var i;
         var opts = options || {};
-        // 计算视图时同时考虑 star，避免只 1 子或 star 在外围时被裁掉
-        var framingPoints = moves.slice();
+        // 计算视图时同时考虑完整棋谱和 star，避免单步推进时局部取景跳动
+        var framingSource = opts.framing && opts.framing.length ? opts.framing : moves;
+        var framingPoints = framingSource.slice();
         if (opts.star && opts.star.length === 2) framingPoints.push([opts.star[0], opts.star[1], 0]);
         var view = bookViewForMoves(framingPoints);
         for (i = 0; i < moves.length; i += 1) {
@@ -831,8 +833,8 @@ var GobangPanel = (function() {
                 var body = "";
                 if (move) {
                     cls += move.role === 1 ? " black" : " white";
-                    if (move.order === moves.length) cls += " last";
-                    body = "<span>" + move.order + "</span>";
+                    if (opts.labels !== false && move.order === moves.length) cls += " last";
+                    body = "<span>" + (opts.labels === false ? "" : move.order) + "</span>";
                 } else if (starKey && key === starKey) {
                     cls += " mark";
                     body = '<span class="gobang-book-mark">★</span>';

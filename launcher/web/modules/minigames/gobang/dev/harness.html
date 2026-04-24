@@ -207,22 +207,57 @@ window.__minigameOverlayRoot = "../../../../";
                         api.assert(document.querySelectorAll(".gobang-book-axis.col").length >= 9, "book coordinate axis missing");
                         var bookRect = document.querySelector(".gobang-book-card .gobang-book-board").getBoundingClientRect();
                         api.assert(bookRect.width >= 300, "book diagram too small: " + Math.round(bookRect.width));
-                        // step-through: 复位到第 1 手
-                        var firstCard = document.querySelector(".gobang-book-card");
-                        var resetBtn = firstCard.querySelector('[data-gb-step-mode="reset"]');
+                        function firstCard() {
+                            return document.querySelector(".gobang-book-card");
+                        }
+                        function stepReadout() {
+                            return firstCard().querySelector(".gobang-book-step-readout").textContent;
+                        }
+                        function colAxisText() {
+                            var nodes = firstCard().querySelectorAll(".gobang-book-axis.col");
+                            var out = [];
+                            for (var i = 0; i < nodes.length; i += 1) out.push(nodes[i].textContent);
+                            return out.join("|");
+                        }
+                        var fullAxis = colAxisText();
+                        // step-through: 复位到第 1 手，且局部取景不跳
+                        var first = firstCard();
+                        var resetBtn = first.querySelector('[data-gb-step-mode="reset"]');
                         api.assert(!!resetBtn, "step-through reset button missing");
                         resetBtn.click();
-                        var stones = document.querySelectorAll(".gobang-book-card .gobang-book-cell.black, .gobang-book-card .gobang-book-cell.white");
-                        api.assert(stones.length >= 4, "expected stones from other cards after reset on first");
-                        // 点下一手
-                        var nextBtn = document.querySelector(".gobang-book-card [data-gb-step-delta='1']:not([disabled])");
+                        api.assert(stepReadout().indexOf("1 / ") === 0, "reset should show first move, got " + stepReadout());
+                        api.assertEqual(colAxisText(), fullAxis, "book framing should stay stable after reset");
+                        var stones = firstCard().querySelectorAll(".gobang-book-cell.black, .gobang-book-cell.white");
+                        api.assertEqual(stones.length, 1, "reset should show exactly first move");
+                        // 点下一手，取景仍不跳
+                        var nextBtn = firstCard().querySelector("[data-gb-step-delta='1']:not([disabled])");
                         api.assert(!!nextBtn, "step next button missing");
                         nextBtn.click();
+                        api.assert(stepReadout().indexOf("2 / ") === 0, "next should show second move, got " + stepReadout());
+                        api.assertEqual(colAxisText(), fullAxis, "book framing should stay stable after next");
+                        // 全貌后上一手应立即回退，不应卡在虚高 step
+                        var fullBtn = firstCard().querySelector("[data-gb-step-mode='full']:not([disabled])");
+                        api.assert(!!fullBtn, "step full button missing after partial view");
+                        fullBtn.click();
+                        var fullReadout = stepReadout();
+                        api.assert(fullReadout.indexOf("4 / 4") === 0, "full should show complete book, got " + fullReadout);
+                        var prevBtn = firstCard().querySelector("[data-gb-step-delta='-1']:not([disabled])");
+                        api.assert(!!prevBtn, "step prev button missing after full");
+                        prevBtn.click();
+                        api.assert(stepReadout().indexOf("3 / 4") === 0, "prev after full should move back one step, got " + stepReadout());
                         // 术语 tab
                         document.querySelector('[data-gb-manual-tab="terms"]').click();
                         api.assert(body.textContent.indexOf("活三") >= 0, "term 活三 missing");
                         api.assert(body.textContent.indexOf("冲四") >= 0, "term 冲四 missing");
                         api.assert(document.querySelectorAll(".gobang-term-card").length >= 5, "term cards missing");
+                        var termCards = document.querySelectorAll(".gobang-term-card");
+                        var rushFour = null;
+                        for (var j = 0; j < termCards.length; j += 1) {
+                            if (termCards[j].textContent.indexOf("冲四") >= 0) rushFour = termCards[j];
+                        }
+                        api.assert(!!rushFour, "冲四 term card missing");
+                        api.assert(rushFour.querySelectorAll(".gobang-book-cell.white").length >= 1, "冲四 should show one blocked end");
+                        api.assert(rushFour.querySelectorAll(".gobang-book-cell.mark").length >= 1, "冲四 should mark only winning point");
                         document.querySelector('[data-gb-manual-tab="ai"]').click();
                         api.assert(body.textContent.indexOf("不会下时怎么用引擎") >= 0, "AI guidance content missing");
                         api.assert(body.textContent.indexOf("深度") >= 0, "engine column explanation missing");
