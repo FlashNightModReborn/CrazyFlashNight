@@ -3,6 +3,7 @@ var CursorFeedback = (function() {
     var lastActive = null;
     var hoverTarget = null;
     var pressed = false;
+    var stateCache = (typeof WeakMap === "function") ? new WeakMap() : null;
 
     function closestInteractive(node) {
         while (node && node !== document && node.nodeType === 1) {
@@ -21,21 +22,25 @@ var CursorFeedback = (function() {
         var explicit = target.getAttribute("data-cursor-state");
         if (explicit) return explicit;
 
+        if (stateCache && stateCache.has(target)) return stateCache.get(target);
+
         var cursor = "";
         try { cursor = window.getComputedStyle(target).cursor || ""; } catch(e) {}
+        var result;
         switch (cursor) {
             case "grab":
             case "grabbing":
             case "move":
-                return "grab";
+                result = "grab"; break;
             case "crosshair":
-                return "attack";
+                result = "attack"; break;
             case "pointer":
             case "help":
-                return "hoverGrab";
             default:
-                return "hoverGrab";
+                result = "hoverGrab"; break;
         }
+        if (stateCache) stateCache.set(target, result);
+        return result;
     }
 
     function send(state, active, reason) {

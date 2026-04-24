@@ -487,8 +487,12 @@ var Notch = (function() {
         return lines.join('<br>');
     }
 
+    var sparkRectCache = null;
+
     function onSparkMouseMove(e) {
-        var rect = sparkCanvas.getBoundingClientRect();
+        // sparkCanvas 位置只在 notch 展开/收起时变化，而这些切换都会触发 mouseleave 清空缓存；
+        // 单次 hover 过程内 rect 不会移动，缓存掉能避免每次 mousemove 都付一次 layout 读取。
+        var rect = sparkRectCache || (sparkRectCache = sparkCanvas.getBoundingClientRect());
         var mouseX = e.clientX - rect.left;
         var idx = sparkRenderer.hitTest(mouseX);
         if (idx < 0 || idx >= fpsPoints.length) {
@@ -512,6 +516,7 @@ var Notch = (function() {
     }
 
     function onSparkMouseLeave() {
+        sparkRectCache = null;
         sparkRenderer.setTooltipIdx(-1);
         sparkRenderer.render(fpsPoints, perfLevel, gameHour, lightLevels);
         tooltipEl.style.display = 'none';
