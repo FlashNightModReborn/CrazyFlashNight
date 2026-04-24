@@ -261,7 +261,9 @@
 (function() {
     window.addEventListener('load', function() {
         Panels.init();
+        if (window.OverlayViewportMetrics) OverlayViewportMetrics.report('load_before_ready');
         Bridge.send({ type: 'ready' });
+        if (window.OverlayViewportMetrics) OverlayViewportMetrics.schedule('load_after_ready');
     });
 })();
 </script>

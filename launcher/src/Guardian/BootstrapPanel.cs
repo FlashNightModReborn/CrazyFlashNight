@@ -31,6 +31,7 @@ namespace CF7Launcher.Guardian
         {
             _webDir = webDir;
 
+            this.AutoScaleMode = AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(24, 24, 26);
 
             _webView = new WebView2();

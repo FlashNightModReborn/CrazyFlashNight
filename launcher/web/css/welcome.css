@@ -48,19 +48,21 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 
 /* ── 公共 bottom ── */
 .bottom{position:fixed;bottom:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:10px 22px;font-size:var(--fs-xs);color:var(--dust);letter-spacing:calc(3px * var(--ls-scale));font-family:Consolas,monospace;background:linear-gradient(0deg,rgba(0,0,0,.8),transparent)}
-.bottom .left{display:flex;align-items:center;gap:10px}
+.bottom .left{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.bottom>span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bottom .steam-ico{width:16px;height:16px;filter:drop-shadow(0 0 4px rgba(61,213,255,.5))}
 .bottom .steam{color:var(--dls);font-weight:600;letter-spacing:4px}
 .bottom .dls-mark{color:var(--dls);letter-spacing:5px}
 
 /* ── 视图容器 ── */
-.view{position:relative;z-index:10;height:100%;padding:56px 0 36px;box-sizing:border-box;overflow:hidden}
+.view{position:relative;z-index:10;height:100%;padding:56px 0 36px;box-sizing:border-box;overflow-x:hidden;overflow-y:auto}
 .view[hidden]{display:none}
 
 /* ── 欢迎视图布局 ──
    侧栏基准 230px (匹配默认 1.35 字号), 超过默认后走 --geom-scale 软增长 (67% 字号增速),
    避免 1.55/1.75 档位下 230px 装不下 FACTIONS / 传输状态块而挤断换行 */
-.stage-welcome{height:100%;display:grid;grid-template-columns:calc(230px * var(--geom-scale)) 1fr calc(230px * var(--geom-scale));gap:calc(26px * var(--geom-scale));align-items:center;padding:0 28px;font-family:"Segoe UI","Microsoft YaHei",sans-serif}
+.stage-welcome{height:100%;display:grid;grid-template-columns:calc(230px * var(--geom-scale)) minmax(0,1fr) calc(230px * var(--geom-scale));gap:calc(26px * var(--geom-scale));align-items:center;padding:0 28px;font-family:"Segoe UI","Microsoft YaHei",sans-serif;min-width:0}
+.stage-welcome>*{min-width:0}
 
 /* 左栏: 传输状态 */
 .side-l{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;padding:16px 0 16px 8px;border-left:1px solid var(--dls-dim);position:relative}
@@ -81,7 +83,7 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 @keyframes pulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
 
 /* 中央卡片 */
-.welcome-card{position:relative;padding:24px 38px 20px;background:linear-gradient(180deg,rgba(10,14,18,.88) 0%,rgba(4,6,9,.92) 100%);clip-path:polygon(24px 0,100% 0,100% calc(100% - 24px),calc(100% - 24px) 100%,0 100%,0 24px)}
+.welcome-card{position:relative;padding:24px 38px 20px;background:linear-gradient(180deg,rgba(10,14,18,.88) 0%,rgba(4,6,9,.92) 100%);clip-path:polygon(24px 0,100% 0,100% calc(100% - 24px),calc(100% - 24px) 100%,0 100%,0 24px);min-width:0}
 .welcome-card::before{content:"";position:absolute;inset:0;padding:1px;background:linear-gradient(135deg,var(--dls) 0%,var(--rust-deep) 25%,transparent 40%,transparent 60%,var(--rust-deep) 75%,var(--dls) 100%);clip-path:polygon(24px 0,100% 0,100% calc(100% - 24px),calc(100% - 24px) 100%,0 100%,0 24px);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 
 .title-logo-wrap{position:relative;display:flex;justify-content:center;padding:0 0 6px}
@@ -139,9 +141,9 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 .side-r .lbl{color:var(--dust);font-size:var(--fs-2xs);letter-spacing:calc(4px * var(--ls-scale));margin-bottom:2px}
 .side-r .ver{color:var(--dls);font-size:var(--fs-hero);font-weight:900;letter-spacing:-2px;line-height:1;font-family:"Segoe UI",sans-serif;text-shadow:0 0 18px rgba(61,213,255,.4);margin:4px 0 2px}
 .side-r .ver-tail{color:var(--rust);font-size:var(--fs-base);letter-spacing:calc(3px * var(--ls-scale));margin-bottom:14px}
-.side-r .row{display:flex;justify-content:space-between;margin-top:10px;font-size:var(--fs-sm);letter-spacing:calc(2px * var(--ls-scale))}
-.side-r .row .k{color:var(--dust)}
-.side-r .row .v{color:#d4d8dc}
+.side-r .row{display:flex;justify-content:space-between;gap:8px;margin-top:10px;font-size:var(--fs-sm);letter-spacing:calc(2px * var(--ls-scale))}
+.side-r .row .k{color:var(--dust);flex-shrink:0}
+.side-r .row .v{color:#d4d8dc;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
 .side-r .row .v.g{color:var(--dls)}
 .side-r .row .v.r{color:var(--rust)}
 .side-r .faction{margin-top:24px;padding-top:16px;border-top:1px dashed var(--rust-dim)}
@@ -149,6 +151,67 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 .side-r .faction .f{display:flex;align-items:center;gap:6px;color:#9aa2a9;font-size:var(--fs-sm);margin-top:5px}
 .side-r .faction .f .dot{width:8px;height:8px;display:inline-block;border-radius:50%;flex-shrink:0}
 .side-r .faction .f .f-sep{color:var(--dust);opacity:.6}
+
+/* ── Bootstrap 默认窗体 / 低高宽视口适配 ──
+   默认 WinForms client size 已提升到 16:9；这里负责在 1366x768、125%/150% DPI
+   或用户手动缩小时收紧布局，避免欢迎页三栏被硬裁。 */
+@media (max-width: 1480px), (max-height: 780px){
+  .topbar{padding:10px 18px;gap:8px}
+  .topbar .brand-seal{padding:5px 12px;letter-spacing:calc(3px * var(--ls-scale))}
+  .topbar button{padding:6px 12px}
+  .view{padding:50px 0 32px}
+  .stage-welcome{grid-template-columns:minmax(190px,calc(218px * var(--geom-scale))) minmax(0,1fr) minmax(205px,calc(218px * var(--geom-scale)));gap:18px;padding:0 20px}
+  .side-l,.side-r{padding-top:12px;padding-bottom:12px}
+  .side-l .val{font-size:var(--fs-sm);line-height:1.55;letter-spacing:calc(1px * var(--ls-scale))}
+  .side-r .row{font-size:var(--fs-xs);letter-spacing:calc(1px * var(--ls-scale))}
+  .side-r .ver{font-size:calc(42px * var(--fs-scale));letter-spacing:-1px}
+  .side-r .ver-tail{margin-bottom:10px}
+  .side-r .faction{margin-top:18px;padding-top:12px}
+  .welcome-card{padding:20px 30px 18px}
+  .title-logo-wrap img{max-width:138px}
+  .title-logo-wrap::before{width:210px;height:210px}
+  .eyebrow{letter-spacing:calc(6px * var(--ls-scale))}
+  .welcome-sub{margin-bottom:7px}
+  .hr-rune{height:17px;margin:3px 0 7px}
+  .slot-plate{padding:8px 12px;gap:12px}
+  .briefing{font-size:var(--fs-xs);line-height:1.58;padding:7px 12px}
+  .welcome-controls{margin-top:9px}
+  .btn-go{padding:9px 24px}
+  .bottom{padding:8px 18px;letter-spacing:calc(2px * var(--ls-scale))}
+}
+
+@media (max-width: 1300px), (max-height: 700px){
+  .topbar{padding:8px 14px;gap:7px}
+  .topbar .brand-seal{padding:5px 10px}
+  .topbar button{padding:5px 10px}
+  .topbar .brand-sub{letter-spacing:calc(2px * var(--ls-scale))}
+  .view{padding:46px 0 28px}
+  .stage-welcome{grid-template-columns:180px minmax(0,1fr) 190px;gap:12px;padding:0 14px}
+  .side-l,.side-r{padding-top:10px;padding-bottom:10px}
+  .side-l .block{padding-left:10px}
+  .side-l .lbl,.side-r .lbl{letter-spacing:calc(3px * var(--ls-scale))}
+  .side-l .val{line-height:1.45}
+  .side-r{padding-left:14px}
+  .side-r .ver{font-size:calc(38px * var(--fs-scale))}
+  .side-r .ver-tail{margin-bottom:8px}
+  .side-r .row{margin-top:8px}
+  .side-r .faction{margin-top:12px;padding-top:10px}
+  .side-r .faction .f{margin-top:4px}
+  .welcome-card{padding:16px 24px 14px}
+  .title-logo-wrap{padding-bottom:3px}
+  .title-logo-wrap img{max-width:116px}
+  .title-logo-wrap::before{width:178px;height:178px}
+  .eyebrow{letter-spacing:calc(4px * var(--ls-scale))}
+  .welcome-sub{letter-spacing:calc(2px * var(--ls-scale));margin-bottom:5px}
+  .hr-rune{height:14px;margin:2px 0 5px}
+  .slot-plate{padding:7px 10px;margin-bottom:6px}
+  .slot-plate .icon{width:26px;height:26px}
+  .slot-plate .switch{padding:6px 11px;letter-spacing:calc(1px * var(--ls-scale))}
+  .briefing{line-height:1.42;padding:6px 10px;margin:5px 0}
+  .welcome-controls{margin-top:7px}
+  .btn-go{padding:8px 22px;letter-spacing:calc(3px * var(--ls-scale))}
+  .bottom{padding:7px 14px;gap:12px}
+}
 
 /* ── 槽位视图覆盖 ── */
 /* bootstrap.css 的 .wrap / .cards / .card 在槽位视图内继续生效基础布局,

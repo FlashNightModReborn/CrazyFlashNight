@@ -285,6 +285,9 @@ var Notch = (function() {
 
     // ── hitRect 上报 ──
     function reportRect() {
+        if (typeof OverlayViewportMetrics !== 'undefined' && OverlayViewportMetrics && OverlayViewportMetrics.report) {
+            OverlayViewportMetrics.report('before_interactive_rect');
+        }
         var rects = [];
         function pushRect(el) {
             var r = el.getBoundingClientRect();

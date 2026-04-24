@@ -1,5 +1,5 @@
 /* ── 字号缩放系统 ──
-   --fs-scale 由 bootstrap-main.js 在 list_resp 到达时从 UserPrefs.uiFontScale 注入。
+   --user-fs-scale 由 bootstrap-main.js 在 list_resp 到达时从 UserPrefs.uiFontScale 注入。
    4 档预设: 1.15 / 1.35 / 1.55 / 1.75 (紧凑 / 标准 / 大 / 超大)。
 
    基线 1.35 是实测调得的"可读默认" — 1080p 普屏 + 中英混排 CJK 刚好不挤压。
@@ -7,7 +7,8 @@
    --fs-scale 乘数, 生产默认落在 1.35 (first-paint 已等于标准档避免闪烁).
 */
 :root {
-  --fs-scale: 1.35;
+  --user-fs-scale: 1.35;
+  --fs-scale: var(--user-fs-scale);
   --fs-2xs:  calc(11px * var(--fs-scale));   /* micro-label: was 9 */
   --fs-xs:   calc(12px * var(--fs-scale));   /* meta / id: was 10 */
   --fs-sm:   calc(13px * var(--fs-scale));   /* briefing / log / badge: was 11 */

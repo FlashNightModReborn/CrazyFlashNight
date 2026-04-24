@@ -21,6 +21,20 @@ C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView
 | 测试框架 | xUnit 2.4.2（legacy packages.config + net462，见 [tests/](#测试基建)） |
 | GPU (实验, 当前休眠) | SharpDX 4.2.0 (D3D11, 管线待完善，`gpuSharpening` 配置当前无消费者) |
 
+## 高 DPI 与多显示器支持
+
+Launcher 现在显式声明并初始化 **PerMonitorV2 / PerMonitor DPI-aware**。运行态 WebView2 overlay 的视觉缩放仍跟随 Flash 视口高度，输入命中则由 Web 端 `viewportMetrics`（CSS viewport / DPR / visualViewport）和 C# `OverlayCoordinateContext` 共同换算，不再把 `WebView2.ZoomFactor` 直接当作鼠标坐标比例。
+
+| Windows 兼容性设置 | 支持口径 |
+|------------------|----------|
+| 不勾选“替代高 DPI 缩放行为” | 正式支持 |
+| 勾选后“缩放执行：应用程序” | 正式支持 |
+| “系统” / “系统(增强)” | 仅检测并提示；不承诺 Web overlay 像素级交互正确 |
+
+诊断日志以 `[DPI]` 前缀写入 Guardian 日志，包含进程 DPI 初始化结果、AppCompatFlags 原始值、窗口 / monitor DPI、overlay bounds、Web CSS viewport、输入换算比例与 hitRect 样本。若测试员反馈地图、商城、帮助或小游戏点击错位，先核对兼容性值是否为 `DPIUNAWARE` / `GDIDPISCALING`；正式建议是关闭覆盖或改为“应用程序”。
+
+引导器默认窗口现在按当前屏幕工作区选择 16:9 client size（目标 1600×900，过小屏幕自动收敛），欢迎页在窄宽 / 低高视口下会压缩侧栏宽度和卡片间距；极端手动缩小时改为垂直滚动兜底，避免启动说明、存档行、右侧版本 / 阵营信息被直接裁掉。字号入口独立放在顶栏“显示”按钮内，用户选择的 1.15 / 1.35 / 1.55 / 1.75 会直接作为启动器字号倍率生效并持久化，不再被小视口偷偷钳制。
+
 ## 架构概览
 
 ### 单窗体模型

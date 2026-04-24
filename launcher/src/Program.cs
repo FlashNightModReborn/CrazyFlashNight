@@ -31,6 +31,8 @@ class Program
     [STAThread]
     static int Main(string[] args)
     {
+        DpiAwarenessBootstrap.Initialize();
+
         // 单例检查
         bool createdNew;
         Mutex mutex = new Mutex(true, "Global\\CF7ME_Guardian", out createdNew);
@@ -102,6 +104,10 @@ class Program
         LogManager.InitFileLog(projectRoot);
 
         LogManager.Log("[Guardian] Project root: " + projectRoot);
+        HighDpiCompatibilityResult dpiCompat = HighDpiCompatibilityDetector.Detect(exePath);
+        DpiDiagnostics.LogProcessStartup(DpiAwarenessBootstrap.Result, dpiCompat);
+        DpiDiagnostics.LogWindow("GuardianForm", form.Handle);
+        HighDpiCompatibilityDetector.ScheduleRiskWarning(form, dpiCompat);
         if (busOnly)
             LogManager.Log("[Guardian] --bus-only mode: skipping Flash Player startup");
 

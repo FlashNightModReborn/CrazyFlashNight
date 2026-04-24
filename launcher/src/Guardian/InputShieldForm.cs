@@ -89,8 +89,9 @@ namespace CF7Launcher.Guardian
         /// <summary>鼠标按钮按下期间是否持有 capture。</summary>
         private bool _captured;
 
-        /// <summary>WebView2 缩放比，用于 物理像素 ↔ CSS像素 转换。</summary>
-        private double _zoomFactor = 1.0;
+        /// <summary>Overlay/WebView2 坐标上下文；缺失 Web metrics 时使用 fallback zoom。</summary>
+        private OverlayCoordinateContext _coordinateContext;
+        private double _fallbackZoom = 1.0;
 
         /// <summary>收起冷却：hitRect 缩小后短暂禁止 CDP mouseMoved，防振荡。</summary>
         private int _lastHitWidth;
@@ -112,14 +113,19 @@ namespace CF7Launcher.Guardian
         /// <summary>更新缩放比。WebOverlayForm 在 SyncPosition 时调用。</summary>
         public void SetZoomFactor(double zoom)
         {
-            _zoomFactor = Math.Max(0.25, zoom);
+            _fallbackZoom = Math.Max(0.25, zoom);
+        }
+
+        public void SetCoordinateContext(OverlayCoordinateContext context)
+        {
+            _coordinateContext = context;
         }
 
         #region 命中区域管理
 
         /// <summary>
         /// 更新交互区域矩形列表。由 WebOverlayForm 在收到 JS hitRects 消息后调用。
-        /// 物理像素坐标，已由 WebOverlayForm 乘过 zoom。
+        /// 物理像素坐标，已由 WebOverlayForm 通过 OverlayCoordinateContext 转换。
         /// </summary>
         public void UpdateHitRects(List<Rectangle> rects)
         {
@@ -218,16 +224,28 @@ namespace CF7Launcher.Guardian
 
         protected override void OnPositionChanged()
         {
-            float vpX, vpY, vpW, vpH;
-            _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
+            if (_coordinateContext != null && _coordinateContext.OverlayPhysicalBounds.Width > 0 &&
+                _coordinateContext.OverlayPhysicalBounds.Height > 0)
+            {
+                Rectangle bounds = _coordinateContext.OverlayPhysicalBounds;
+                _screenX = bounds.X;
+                _screenY = bounds.Y;
+                _maskW = Math.Max(1, bounds.Width);
+                _maskH = Math.Max(1, bounds.Height);
+            }
+            else
+            {
+                float vpX, vpY, vpW, vpH;
+                _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
 
-            Point origin;
-            if (!GetAnchorScreenOrigin(out origin)) return;
+                Point origin;
+                if (!GetAnchorScreenOrigin(out origin)) return;
 
-            _screenX = origin.X + (int)vpX;
-            _screenY = origin.Y + (int)vpY;
-            _maskW = Math.Max(1, (int)vpW);
-            _maskH = Math.Max(1, (int)vpH);
+                _screenX = origin.X + (int)vpX;
+                _screenY = origin.Y + (int)vpY;
+                _maskW = Math.Max(1, (int)vpW);
+                _maskH = Math.Max(1, (int)vpH);
+            }
 
             // mask 就绪后，重新应用启动期暂存的 hitRects
             if (_pendingRawRects != null)
@@ -251,7 +269,7 @@ namespace CF7Launcher.Guardian
             {
                 case WM_NCHITTEST:
                 {
-                    int lp = m.LParam.ToInt32();
+                    long lp = m.LParam.ToInt64();
                     int sx = (short)(lp & 0xFFFF);
                     int sy = (short)((lp >> 16) & 0xFFFF);
                     Point pt = new Point(sx - _screenX, sy - _screenY);
@@ -367,12 +385,11 @@ namespace CF7Launcher.Guardian
             int sy = (short)((lp >> 16) & 0xFFFF);
             Point clientPt = this.PointToClient(new Point(sx, sy));
 
-            int x = (int)(clientPt.X / _zoomFactor);
-            int y = (int)(clientPt.Y / _zoomFactor);
+            Point css = PhysicalPointToCss(clientPt.X, clientPt.Y);
 
             string json = "{\"type\":\"mouseWheel\""
-                + ",\"x\":" + x
-                + ",\"y\":" + y
+                + ",\"x\":" + css.X
+                + ",\"y\":" + css.Y
                 + ",\"deltaX\":0"
                 + ",\"deltaY\":" + (-delta)
                 + ",\"button\":\"none\"}";
@@ -394,7 +411,7 @@ namespace CF7Launcher.Guardian
         {
             if (_targetWebView == null) return;
 
-            int lp = lParam.ToInt32();
+            long lp = lParam.ToInt64();
             int x = (short)(lp & 0xFFFF);
             int y = (short)((lp >> 16) & 0xFFFF);
 
@@ -407,13 +424,12 @@ namespace CF7Launcher.Guardian
             if (_targetWebView == null) return;
 
             // 物理像素 → CSS 像素（CDP 坐标空间）
-            int x = (int)(physX / _zoomFactor);
-            int y = (int)(physY / _zoomFactor);
+            Point css = PhysicalPointToCss(physX, physY);
 
             string clickCount = (type == "mousePressed") ? ",\"clickCount\":1" : "";
             string json = "{\"type\":\"" + type + "\""
-                + ",\"x\":" + x
-                + ",\"y\":" + y
+                + ",\"x\":" + css.X
+                + ",\"y\":" + css.Y
                 + ",\"button\":\"" + button + "\""
                 + clickCount + "}";
 
@@ -460,6 +476,19 @@ namespace CF7Launcher.Guardian
             {
                 _cdpBusy = false;
             }
+        }
+
+        private Point PhysicalPointToCss(int physicalX, int physicalY)
+        {
+            if (_coordinateContext != null)
+                return _coordinateContext.PhysicalPointToCss(physicalX, physicalY);
+
+            if (physicalX < 0 || physicalY < 0)
+                return new Point(physicalX, physicalY);
+
+            return new Point(
+                (int)Math.Round(physicalX / _fallbackZoom),
+                (int)Math.Round(physicalY / _fallbackZoom));
         }
 
         #endregion

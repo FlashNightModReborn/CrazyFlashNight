@@ -59,6 +59,7 @@ chcp.com 65001 | Out-Null
 
 当前 `launcher/build.ps1` 除编译外，还会 fail-fast 校验 `launcher/web` 的必需运行时资源（bootstrap/overlay/config/assets/help/icons/data 与关键 modules / minigame 入口），不再是只看 `overlay.html` 的弱检查。
 
+DPI 相关 smoke：改 DPI manifest / overlay 坐标 / Web viewport metrics 时，除 build + xUnit 外人工覆盖单屏 100/125/150/175%、Windows 未勾选与“应用程序”覆盖、双屏混合 DPI 启动/跨屏/全屏切换；“系统/系统(增强)”只要求 `[DPI]` 日志和提示，不把点击正确性列为通过标准。
 ## 4. Launcher Web / Minigame 验证
 
 | 用途 | 命令 |

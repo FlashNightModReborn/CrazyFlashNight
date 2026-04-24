@@ -52,6 +52,7 @@ namespace CF7Launcher.Guardian
         private const int WM_XBUTTONDOWN = 0x020B;
         private const int WM_XBUTTONUP = 0x020C;
         private const int WM_XBUTTONDBLCLK = 0x020D;
+        private const int WM_DPICHANGED = 0x02E0;
         private const int MK_LBUTTON = 0x0001;
         private const int MK_RBUTTON = 0x0002;
         private const int MK_SHIFT = 0x0004;
@@ -65,6 +66,10 @@ namespace CF7Launcher.Guardian
 
         public const int DefaultGpuCaptureWidth = 1024;
         public const int DefaultGpuCaptureHeight = 576;
+        private const int DesiredBootstrapClientWidth = 1600;
+        private const int DesiredBootstrapClientHeight = 900;
+        private const int MinimumBootstrapClientWidth = 1120;
+        private const int MinimumBootstrapClientHeight = 640;
 
         // RegisterHotKey ID（仅 Guardian 自身动作）
         private const int HK_CTRL_F = 0xCF01;
@@ -92,6 +97,7 @@ namespace CF7Launcher.Guardian
         private Rectangle _savedBounds;
         private FormBorderStyle _savedBorderStyle;
         private System.Windows.Forms.Timer _viewportSettleTimer;
+        private System.Windows.Forms.Timer _viewportLongSettleTimer;
         private string _viewportSettleReason = "viewport_refresh";
 
         private bool _hotkeysRegistered;
@@ -251,10 +257,11 @@ namespace CF7Launcher.Guardian
         private void InitializeComponent(string bootstrapWebDir)
         {
             this.Text = "CF7:FlashNight";
-            this.Size = new Size(1280, 660);
-            this.MinimumSize = new Size(800, 480);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.AutoScaleMode = AutoScaleMode.None;
+            this.MinimumSize = SizeFromClientSize(new Size(MinimumBootstrapClientWidth, MinimumBootstrapClientHeight));
+            this.ClientSize = CalculateInitialBootstrapClientSize();
             this.BackColor = Color.Black;
 
             // 窗口图标：从 exe 自身资源提取（app.ico 已嵌入为 ApplicationIcon）
@@ -520,6 +527,15 @@ namespace CF7Launcher.Guardian
 
         protected override void WndProc(ref Message m)
         {
+            if (m.Msg == WM_DPICHANGED)
+            {
+                ApplySuggestedDpiBounds(m.LParam);
+                DpiDiagnostics.LogWindow("GuardianForm.WM_DPICHANGED", this.Handle);
+                ScheduleViewportRefresh("guardian_dpi_changed");
+                m.Result = IntPtr.Zero;
+                return;
+            }
+
             // fallback 模式下处理 RegisterHotKey 的 WM_HOTKEY
             if (m.Msg == WM_HOTKEY && _kbHook == null)
             {
@@ -538,6 +554,29 @@ namespace CF7Launcher.Guardian
                 }
             }
             base.WndProc(ref m);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct NativeRect
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
+        private void ApplySuggestedDpiBounds(IntPtr lParam)
+        {
+            if (lParam == IntPtr.Zero)
+                return;
+            try
+            {
+                NativeRect r = (NativeRect)Marshal.PtrToStructure(lParam, typeof(NativeRect));
+                int w = Math.Max(1, r.Right - r.Left);
+                int h = Math.Max(1, r.Bottom - r.Top);
+                this.Bounds = new Rectangle(r.Left, r.Top, w, h);
+            }
+            catch { }
         }
 
         // ============================================================
@@ -673,17 +712,32 @@ namespace CF7Launcher.Guardian
             if (_viewportSettleTimer == null)
             {
                 _viewportSettleTimer = new System.Windows.Forms.Timer();
-                _viewportSettleTimer.Interval = 140;
+                _viewportSettleTimer.Interval = 120;
                 _viewportSettleTimer.Tick += delegate
                 {
                     if (_viewportSettleTimer != null)
                         _viewportSettleTimer.Stop();
-                    RefreshRuntimeViewport(_viewportSettleReason + ":settled");
+                    RefreshRuntimeViewport(_viewportSettleReason + ":settled_120ms");
                 };
             }
 
             _viewportSettleTimer.Stop();
             _viewportSettleTimer.Start();
+
+            if (_viewportLongSettleTimer == null)
+            {
+                _viewportLongSettleTimer = new System.Windows.Forms.Timer();
+                _viewportLongSettleTimer.Interval = 500;
+                _viewportLongSettleTimer.Tick += delegate
+                {
+                    if (_viewportLongSettleTimer != null)
+                        _viewportLongSettleTimer.Stop();
+                    RefreshRuntimeViewport(_viewportSettleReason + ":settled_500ms");
+                };
+            }
+
+            _viewportLongSettleTimer.Stop();
+            _viewportLongSettleTimer.Start();
         }
 
         private void RefreshRuntimeViewport(string reason)
@@ -692,6 +746,35 @@ namespace CF7Launcher.Guardian
                 _windowManager.ResizeFlashToPanel();
             if (_webOverlay != null)
                 _webOverlay.RequestLayoutSync(reason);
+        }
+
+        private static Size CalculateInitialBootstrapClientSize()
+        {
+            Rectangle work = Screen.FromPoint(Cursor.Position).WorkingArea;
+            int maxW = Math.Max(800, (int)Math.Floor(work.Width * 0.92));
+            int maxH = Math.Max(480, (int)Math.Floor(work.Height * 0.92));
+
+            int w = Math.Min(DesiredBootstrapClientWidth, maxW);
+            int h = Math.Min(DesiredBootstrapClientHeight, maxH);
+            const double aspect = 16.0 / 9.0;
+
+            if (w / aspect > h)
+                w = Math.Max(1, (int)Math.Round(h * aspect));
+            else
+                h = Math.Max(1, (int)Math.Round(w / aspect));
+
+            if (w < MinimumBootstrapClientWidth && maxW >= MinimumBootstrapClientWidth)
+            {
+                w = MinimumBootstrapClientWidth;
+                h = Math.Min(maxH, Math.Max(1, (int)Math.Round(w / aspect)));
+            }
+            if (h < MinimumBootstrapClientHeight && maxH >= MinimumBootstrapClientHeight)
+            {
+                h = MinimumBootstrapClientHeight;
+                w = Math.Min(maxW, Math.Max(1, (int)Math.Round(h * aspect)));
+            }
+
+            return new Size(Math.Max(800, w), Math.Max(480, h));
         }
 
         // ============================================================
@@ -1329,6 +1412,12 @@ namespace CF7Launcher.Guardian
                     _viewportSettleTimer.Stop();
                     _viewportSettleTimer.Dispose();
                     _viewportSettleTimer = null;
+                }
+                if (_viewportLongSettleTimer != null)
+                {
+                    _viewportLongSettleTimer.Stop();
+                    _viewportLongSettleTimer.Dispose();
+                    _viewportLongSettleTimer = null;
                 }
                 StopGpuRenderer();
                 CleanupTrayIcon();

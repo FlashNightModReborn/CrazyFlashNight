@@ -73,8 +73,8 @@
   function applyFontScale(v) {
     v = clampFontScale(v);
     _prefsUiFontScale = v;
-    // 写到 :root 上, 让 bootstrap.css 的 --fs-* calc(... * var(--fs-scale)) 全局更新
-    document.documentElement.style.setProperty('--fs-scale', String(v));
+    // 写到 :root 上；bootstrap.css 会按当前视口 cap 得到最终 --fs-scale，避免默认小窗裁内容。
+    document.documentElement.style.setProperty('--user-fs-scale', String(v));
   }
 
   // config_set 的"服务端权威对齐"机制 (Plan A+).
@@ -895,6 +895,7 @@
   document.getElementById('briefing-about').onclick = function() { openModal('about', {}); };
 
   // Topbar 按钮
+  document.getElementById('btn-display').onclick = function() { openModal('display', {}); };
   document.getElementById('btn-about').onclick = function() { openModal('about', {}); };
   document.getElementById('btn-fullscreen').onclick = function() {
     if (!document.fullscreenElement) { try { document.documentElement.requestFullscreen(); } catch (e) {} }
