@@ -19,4 +19,12 @@ nativeCursorOverlay = true
 # auto = 探测到独显 + 当前接 AC 电源 同时满足时，把 launcher 与 msedgewebview2.exe 标为高性能 GPU
 # on   = 无条件标记（副作用自担：续航下降 / Optimus 回传 PCIe 流量上升 / 部分链路脆弱机型负向）
 # 所有模式都会在退出时清理写入的注册表条目，不污染系统。
-gpuPreference = "auto"
+#
+# 适用性提示：仅在"独显直连 / MUX 直连 / 桌面机独显"场景下建议开 auto。
+# Optimus 混合输出 (dGPU 渲染 → iGPU 扫描输出) 的游戏本/笔记本不建议开启：
+#   - 独显渲染结果需经 PCIe 回传 iGPU 合成，额外 1-2 帧延迟，鼠标跟手感下降
+#   - 断续的 WebView2 合成负载使独显频繁 P-state 抖动，反而不如核显稳态
+#   - 核显仍需承担 DWM 合成与 Flash 渲染，不会因此归零
+# 判断方法：BIOS 里若有"独显直连 / MUX Switch / Discrete Graphics Mode"可切换硬连接独显，即适用；
+#          否则保持 off，等上游削减 WebView2 合成复杂度后再评估。
+gpuPreference = "off"
